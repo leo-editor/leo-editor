@@ -786,95 +786,48 @@ class HelpCommandsClass(BaseEditCommandsClass):
     @cmd('help-for-layouts')
     def helpForLayouts(self, event: LeoKeyEvent = None) -> None:
         """Print a messages telling you how to get started with Leo."""
-        # A bug in Leo: triple quotes puts indentation before each line.
+        # A bug in Leo: triple quotes puts indentation before each line except
+        # the first.
         c = self.c
-        #@+<< define s >>
-        #@+node:ekr.20240822071105.1: *4* << define s >>
-        #@@language rest
-        #@@nowrap
+        #@+<< create listing >>
+        #@+node:tom.20241022174807.1: *4* << create listing >>
+        dw = c.frame.top
+        cache = dw.layout_cache
+        layouts = cache.layout_registry
 
-        s = '''\
+        # putHelpFor() messes up the format of a triple-quoted string here
+        # by indenting lines after the first.  This ruins the formatting of the 
+        # rendered display. Concatenating the string from its paragraphs somehow
+        # prevents this. Weird!
+        intro = ("A *layout* is an arrangement of the various frames and panels of Leo's interface. Each layout has a name, such as ``vertical-thirds`` and an associated command that will change to that layout, such as ``layout-vertical-thirds``\n\n"
 
-        About layouts
-        =============
+            + 'The layout that Leo will use when starting up can be specified using the setting ``@string qt-layout-name = vertical-thirds`` (change "vertical-thirds" to whatever layout is wanted).\n\n'
 
-        The following commands create the layouts shown:
+            + 'Most layouts include a position for either the ``viewrendered`` (VR) or the ``viewrendered3`` (VR3) plugins depending on whether VR3 has been enabled in the settings or not. The plugin may not be visible until it has been commanded to be shown or toggled.  These commands can be executed in the Minibuffer in the form ``vr-show``, ``vr-toggle``, or ``vr3-toggle``.\n\n'
 
-        use-legacy-layout
-        -----------------
+            + 'The available layouts can be displayed using the commands ``help-for-layouts`` (this command) or ``layout-show-layouts``.\n\n')
 
-        ::
+        listing = intro
 
-            ┌───────────┬───────┐
-            │  outline  │  log  │
-            ├───────────┼───────┤
-            │  body     │  VR   │
-            └───────────┴───────┘
-            
-        use-big-tree-layout
-        -------------------
+        for name, docstr in list(layouts.items()):
+            name = name.lstrip()
+            lines = docstr.split('\n')
+            wrapped_name = f'**{name}**\n'
+            if len(lines) > 0:
+                doc_list = []
+                for line in lines:
+                    if not line.startswith(' '*4):
+                        line = ' '*4 + line.lstrip()
+                    doc_list.append(line)
+                doc = '\n'.join(doc_list)
+                listing += f'{wrapped_name}::\n\n{doc}\n\n'
+            else:
+                # Handle docstrings that are are one-liners without a layout diagram.
+                listing += f'{wrapped_name}\n'
 
-        ::
+        #@-<< create listing >>
 
-            ┌───────────────────┐
-            │  outline          │
-            ├──────────┬────────┤
-            │  body    │  log   │
-            ├──────────┴────────┤
-            │  VR               │
-            └───────────────────┘
-
-        use-horizontal-thirds-layout
-        ----------------------------
-
-        ::
-
-            ┌───────────┬───────┐
-            │  outline  │  log  │
-            ├───────────┴───────┤
-            │  body             │
-            ├───────────────────┤
-            │  VR               │
-            └───────────────────┘
-
-        use-render-focused-layout
-        -------------------------
-
-        ::
-
-            ┌───────────┬─────┐
-            │ outline   │     │
-            ├───────────┤     │
-            │ body      │ VR  │
-            ├───────────┤     │
-            │ log       │     │
-            └───────────┴─────┘
-
-        use-vertical-thirds-layout
-        --------------------------
-
-        ::
-
-            ┌───────────┬────────┬──────┐
-            │  outline  │        │      │
-            ├───────────┤  body  │  VR  │
-            │  log      │        │      │
-            └───────────┴────────┴──────┘
-
-
-        use-vertical-thirds2-layout
-        ---------------------------
-
-        ::
-
-            ┌───────────┬───────┬───────┐
-            │           │  log  │       │
-            │  outline  ├───────┤  VR   │
-            │           │  body │       │
-            └───────────┴───────┴───────┘
-        '''
-        #@-<< define s >>
-        c.putHelpFor(s)
+        c.putHelpFor(listing)
     #@+node:ekr.20150514063305.396: *3* helpForMinibuffer
     @cmd('help-for-minibuffer')
     def helpForMinibuffer(self, event: LeoKeyEvent = None) -> None:

@@ -66,7 +66,8 @@ def register_layout(name:str): # type: ignore
 @g.command('layout-big-tree')
 @register_layout('layout-big-tree')
 def big_tree(event: LeoKeyEvent) -> None:
-    """Create Leo's big-tree layout:
+    """Create Leo's big-tree layout
+
         ┌──────────────────┐
         │  outline         │
         ├──────────┬───────┤
@@ -162,7 +163,7 @@ def horizontal_thirds(event: LeoKeyEvent) -> None:
 @register_layout('layout-legacy')
 @register_layout('layout-quadrant')
 def quadrants(event: LeoKeyEvent) -> None:
-    """Create Leo's quadrant layout:
+    """Create Leo's quadrant layout. "quadrant" and "legacy" are the same.
         ┌───────────────┬───────────┐
         │   outline     │   log     │
         ├───────────────┼───────────┤
@@ -197,6 +198,8 @@ def render_focused(event: LeoKeyEvent) -> None:
 @register_layout('layout-restore-to-setting')
 def restoreDefaultLayout(event: LeoKeyEvent) -> None:
     """Restore the default layout specified in @settings, if known.
+
+'layout-restore-default' and 'layout-restore-to-setting' are the same.
     
     If the layout name:
         
@@ -323,6 +326,7 @@ def vertical_thirds2(event: LeoKeyEvent) -> None:
 #@+node:tom.20241022170042.1: *3* command: layout-show-layouts
 @g.command('layout-show-layouts')
 def showLayouts(event) -> None:
+    """Show a list of layout diagrams in a tab in the Log frame."""
     c = event.get('c')
     if not c:
         return
