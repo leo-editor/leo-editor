@@ -11732,11 +11732,7 @@ vertical-thirds2
 <t tx="ekr.20240926065158.1">True: beautify all @&lt;file&gt; nodes in the outline using Leo's token-based beautifier.</t>
 <t tx="ekr.20241012050620.1">True: Leo's git-diff command will diff .leo and .leojs files.</t>
 <t tx="ekr.20241024123618.1"></t>
-<t tx="ekr.20241024123633.1">Recommended: py:percent
-If not given, this option defaults to py:percent.
-
-ipynb,py:percent  # Enables pairing.
-ipynb:percent"    # Disables pairing.
+<t tx="ekr.20241024123633.1">This option defaults to py:percent.
 
 See https://jupytext.readthedocs.io/en/latest/config.html
 </t>
