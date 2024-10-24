@@ -1127,7 +1127,7 @@ class AtFile:
             (p.isAtCleanNode, at.writeOneAtCleanNode),
             (p.isAtEditNode, at.writeOneAtEditNode),
             (p.isAtFileNode, at.writeOneAtFileNode),
-            (p.isAtJupytextNode, at.writeOneJupytextNode),
+            (p.isAtJupytextNode, at.writeOneAtJupytextNode),
             (p.isAtNoSentFileNode, at.writeOneAtNosentNode),
             (p.isAtShadowFileNode, at.writeOneAtShadowNode),
             (p.isAtThinFileNode, at.writeOneAtFileNode),
@@ -1485,8 +1485,8 @@ class AtFile:
                 at.replaceFile(contents, at.encoding, fileName, root)
         except Exception:
             at.writeException(fileName, root)
-    #@+node:ekr.20241023134114.1: *6* at.writeOneJupytextNode
-    def writeOneJupytextNode(self, root: Position) -> None:  # pragma: no cover
+    #@+node:ekr.20241023134114.1: *6* at.writeOneAtJupytextNode
+    def writeOneAtJupytextNode(self, root: Position) -> None:  # pragma: no cover
         """
         p must be an @jupytext node.
         Write the corresponding .ipynb file from p and all p's descendants.
