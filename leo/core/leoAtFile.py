@@ -637,14 +637,14 @@ class AtFile:
             new_private_lines = x.propagate_changed_lines(
                 new_public_lines, old_private_lines, marker, p=root)
         else:
-            g.es_print('No old_public_lines!')
+            g.es_print('No old_public_lines!', fileName)
             new_private_lines = []
             root.b = ''.join(new_public_lines)
             return
         if new_private_lines == old_private_lines:
             return
         if not g.unitTesting:
-            g.es_print('updating:')
+            g.es_print('updating:', fileName)
         root.clearVisitedInTree()
         gnx2vnode = at.fileCommands.gnxDict
         new_contents = ''.join(new_private_lines)
