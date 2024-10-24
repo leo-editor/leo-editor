@@ -92,12 +92,9 @@ class JupytextManager:
         """
         Update the @jupytext node at p when the path has changed externally.
         """
-        contents = self.read(c, p)
-        if contents and contents != p.b:
-            print('')
-            g.es_print(f"updated {p.h}", color='blue')
-            print('')
-            p.b = contents
+        at = c.atFileCommands
+        at.readOneAtJupytextNode(p)
+        c.redraw()
     #@+node:ekr.20241023165243.1: *3* jtm.warn_bad_at_jupytext_node
     bad_paths: Dict[str, bool] = {}
 
@@ -130,9 +127,16 @@ class JupytextManager:
         path = self.full_path(c, p)  # full_path gives any errors.
         if not path:
             return
-        # Write the .ipynb file.
+        # Write the .ipynb file *and* the paired .py file.
         notebook = jupytext.reads(contents, fmt='py:percent')
         jupytext.write(notebook, path, fmt="py:percent")
+
+        if 1:  # Delete the paired .py file!
+            assert path.endswith('.ipynb'), repr(path)
+            py_path = path[:-6] + '.py'
+            if os.path.exists(py_path):
+                os.remove(py_path)
+
     #@-others
 #@-others
 

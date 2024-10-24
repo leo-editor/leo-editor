@@ -618,11 +618,6 @@ class AtFile:
             g.internalError(f"does not exist: {fileName!r}")
             return
 
-        def banner(s: str) -> None:
-            print('')
-            g.es_print(s, root.h, color='red')
-            print('')
-
         at.rememberReadPath(fileName, root)
         at.initReadIvars(root, fileName)
 
@@ -642,14 +637,14 @@ class AtFile:
             new_private_lines = x.propagate_changed_lines(
                 new_public_lines, old_private_lines, marker, p=root)
         else:
-            banner('No old_public_lines!')
+            g.es_print('No old_public_lines!')
             new_private_lines = []
             root.b = ''.join(new_public_lines)
             return
         if new_private_lines == old_private_lines:
             return
         if not g.unitTesting:
-            banner('updating:')
+            g.es_print('updating:')
         root.clearVisitedInTree()
         gnx2vnode = at.fileCommands.gnxDict
         new_contents = ''.join(new_private_lines)
@@ -1535,12 +1530,6 @@ class AtFile:
         This code is adapted from at.writeOneAtCleanNode.
         """
         at, c = self, self.c
-
-        def banner(s: str) -> None:
-            print('')
-            g.es_print(s, root.h, color='blue')
-            print('')
-
         try:
             c.endEditing()
             fileName = at.initWriteIvars(root)
@@ -1551,7 +1540,7 @@ class AtFile:
             at.putFile(root, sentinels=False)
             at.warnAboutOrphandAndIgnoredNodes()
             if at.errors:
-                banner(f"not written: {g.shortFileName(fileName)}")
+                g.es_print(f"not written: {g.shortFileName(fileName)}")
                 at.addToOrphanList(root)
             else:
                 new_contents = ''.join(at.outputList)
@@ -1559,7 +1548,7 @@ class AtFile:
                 # Similar to at.replaceFile.
                 c.setFileTimeStamp(fileName)
                 at.rememberReadPath(fileName, root)
-                banner(f"wrote: {g.shortFileName(fileName)}")
+                g.es_print(f"wrote: {g.shortFileName(fileName)}")
         except Exception:
             at.writeException(fileName, root)
     #@+node:ekr.20210501065352.1: *6* at.writeOneAtNosentNode
