@@ -9,8 +9,9 @@ https://github.com/mwouts/jupytext
 #@+<< leoJupytext: imports and annotations >>
 #@+node:ekr.20241022093347.1: ** << leoJupytext: imports and annotations >>
 from __future__ import annotations
+import io
 import os
-from typing import Any, Dict, TYPE_CHECKING
+from typing import Any, Dict, Tuple, TYPE_CHECKING
 
 try:
     import jupytext  # pylint: disable=unused-import
@@ -28,6 +29,8 @@ if TYPE_CHECKING:  # pragma: no cover
 #@+others
 #@+node:ekr.20241022093215.1: ** class JupytextManager
 class JupytextManager:
+
+    use_sentinels = False  # True: @file, False: @clean
 
     #@+others
     #@+node:ekr.20241023162459.1: *3* jtm.dump_notebook
@@ -67,18 +70,23 @@ class JupytextManager:
         self.warn_bad_at_jupytext_node(p, path)
         return ''
     #@+node:ekr.20241023155136.1: *3* jtm.read
-    def read(self, c: Cmdr, p: Position) -> str:  # pragma: no cover
+    def read(self, c: Cmdr, p: Position) -> Tuple[str, str]:  # pragma: no cover
         """
         p must be an @jupytext node describing an .ipynb file.
-        Convert x.ipynb to a string and return that string.
+        Convert x.ipynb to a string s.
+        Return (s, path)
         """
         path = self.full_path(c, p)
         if not path:
-            return ''  # full_path gives any errors.
+            return '', ''  # full_path gives any errors.
+
         # Read the .ipynb file into contents.
+        # Use jupytext.write, *not* jupytext.writes.
         notebook = jupytext.read(path, fmt='py:percent')
-        contents = jupytext.writes(notebook, fmt="py:percent")
-        return contents
+        with io.StringIO() as f:
+            jupytext.write(notebook, f, fmt="py:percent")
+            contents = f.getvalue()
+        return contents, path
     #@+node:ekr.20241023073354.1: *3* jtm.update
     def update(self, c: Cmdr, p: Position, path: str) -> None:
         """
@@ -114,7 +122,7 @@ class JupytextManager:
             g.es_print('`pip install jupytext`', color='blue')
             print('')
     #@+node:ekr.20241023155519.1: *3* jtm.write
-    def write(self, c: Cmdr, p: Position) -> None:
+    def write(self, c: Cmdr, p: Position, contents: str) -> None:
         """
         - Check that p is an @jupytext node. 
         - Write the .ipynb file corresponding to p.b
@@ -123,7 +131,7 @@ class JupytextManager:
         if not path:
             return
         # Write the .ipynb file.
-        notebook = jupytext.reads(p.b, fmt='py:percent')
+        notebook = jupytext.reads(contents, fmt='py:percent')
         jupytext.write(notebook, path, fmt="py:percent")
     #@-others
 #@-others

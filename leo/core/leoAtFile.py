@@ -601,18 +601,60 @@ class AtFile:
         p.b = head + g.toUnicode(s, encoding=encoding, reportErrors=True)
         g.doHook('after-edit', p=p)
         g.doHook('after-reading-external-file', c=c, p=p)
-    #@+node:ekr.20241023135739.1: *5* at.readOneAtJupytextNode
-    def readOneAtJupytextNode(self, p: Position) -> None:  # pragma: no cover
+    #@+node:ekr.20241023135739.1: *5* at.readOneAtJupytextNode (new)
+    def readOneAtJupytextNode(self, root: Position) -> None:  # pragma: no cover
         """
         p must be an @jupytext node.
         - Convert the .ipynb file to a string s.
         - Update p.b's tree using s. 
+        
+        This code is adapted from at.readOneAtCleanNode.
         """
-        c = self.c
-        contents = g.app.jupytextManager.read(c, p)
-        if contents:
-            p.b = '@language json\n\n' + contents  ### Prototype only.
+        at, c, x = self, self.c, self.c.shadowController
+        contents, fileName = g.app.jupytextManager.read(c, root)
+        if not contents:
+            return
+        if not os.path.exists(fileName):
+            g.internalError(f"does not exist: {fileName!r}")
+            return
 
+        def banner(s: str) -> None:
+            print('')
+            g.es_print(s, root.h, color='red')
+            print('')
+
+        at.rememberReadPath(fileName, root)
+        at.initReadIvars(root, fileName)
+
+        # Always use python comments.
+        at.startSentinelComment = '#'
+        at.endSentinelComment = ""  # Must not be None.
+        delims = '#', '', ''
+        marker = x.Marker(delims)
+
+        # The body of the update algorithm.
+        new_public_lines = g.splitLines(contents)
+        old_private_lines = self.write_at_clean_sentinels(root)
+        old_public_lines, junk = x.separate_sentinels(old_private_lines, marker)
+        new_private_lines = x.propagate_changed_lines(
+            new_public_lines, old_private_lines, marker, p=root)
+        if old_public_lines:  # Don't even *think* about removing this test.
+            new_private_lines = x.propagate_changed_lines(
+                new_public_lines, old_private_lines, marker, p=root)
+        else:
+            banner('No old_public_lines!')
+            new_private_lines = []
+            root.b = ''.join(new_public_lines)
+            return
+        if new_private_lines == old_private_lines:
+            banner('no change:')
+            return
+        if not g.unitTesting:
+            banner('updating:')
+        root.clearVisitedInTree()
+        gnx2vnode = at.fileCommands.gnxDict
+        new_contents = ''.join(new_private_lines)
+        FastAtRead(c, gnx2vnode).read_into_root(new_contents, fileName, root)
     #@+node:ekr.20080711093251.7: *5* at.readOneAtShadowNode & helper
     def readOneAtShadowNode(self, fn: str, p: Position) -> None:  # pragma: no cover
 
@@ -1485,14 +1527,15 @@ class AtFile:
                 at.replaceFile(contents, at.encoding, fileName, root)
         except Exception:
             at.writeException(fileName, root)
-    #@+node:ekr.20241023134114.1: *6* at.writeOneAtJupytextNode
+    #@+node:ekr.20241023134114.1: *6* at.writeOneAtJupytextNode (to do)
     def writeOneAtJupytextNode(self, root: Position) -> None:  # pragma: no cover
         """
         p must be an @jupytext node.
         Write the corresponding .ipynb file from p and all p's descendants.
         """
-        c = self.c
-        return g.app.jupytextManager.write(c, root)
+        at, c = self, self.c
+        ### contents = ""
+        ### g.app.jupytextManager.write(c, root, contents)
     #@+node:ekr.20210501065352.1: *6* at.writeOneAtNosentNode
     def writeOneAtNosentNode(self, root: Position) -> None:  # pragma: no cover
         """Write one @nosent node.
