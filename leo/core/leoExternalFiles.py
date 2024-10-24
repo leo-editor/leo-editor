@@ -176,9 +176,6 @@ class ExternalFilesController:
         for p in c.all_unique_positions():
             if not p.isAnyAtFileNode():
                 continue
-            ###
-            # if p.h.endswith('.ipynb'):
-                # g.trace(p.isAtJupytextNode(), p.h)  ###
             path = c.fullPath(p)
             if not self.has_changed(path):
                 continue
