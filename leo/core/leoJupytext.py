@@ -82,9 +82,10 @@ class JupytextManager:
 
         # Read the .ipynb file into contents.
         # Use jupytext.write, *not* jupytext.writes.
-        notebook = jupytext.read(path, fmt='py:percent')
+        fmt = c.config.getString('jupytext-fmt') or 'py:percent'
+        notebook = jupytext.read(path, fmt=fmt)
         with io.StringIO() as f:
-            jupytext.write(notebook, f, fmt="py:percent")
+            jupytext.write(notebook, f, fmt=fmt)
             contents = f.getvalue()
         return contents, path
     #@+node:ekr.20241023073354.1: *3* jtm.update
@@ -127,11 +128,15 @@ class JupytextManager:
         path = self.full_path(c, p)  # full_path gives any errors.
         if not path:
             return
-        # Write the .ipynb file *and* the paired .py file.
-        notebook = jupytext.reads(contents, fmt='py:percent')
-        jupytext.write(notebook, path, fmt="py:percent")
 
-        if 1:  # Delete the paired .py file!
+        # Write the .ipynb file.
+        # Write the paired .py file, only if fmt specifies pairing.
+        # See https://jupytext.readthedocs.io/en/latest/config.html
+        fmt = c.config.getString('jupytext-fmt') or 'py:percent'
+        notebook = jupytext.reads(contents, fmt=fmt)
+        jupytext.write(notebook, path, fmt=fmt)
+
+        if 0:  # Delete the paired .py file!
             assert path.endswith('.ipynb'), repr(path)
             py_path = path[:-6] + '.py'
             if os.path.exists(py_path):
