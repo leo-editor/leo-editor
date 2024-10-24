@@ -4401,15 +4401,16 @@ class ViewRenderedController3(QtWidgets.QWidget):
                         url = fields[1].strip()
                         if url.startswith('data:'):
                             base = ''
+                            line = f'\n.. image:: {url}\n'
                         else:
                             is_absolute = Path(url).is_absolute()
                             if is_absolute:
-                                url = g.finalize(url)
+                                url = 'file:///' + g.finalize(url)
                                 line = f'\n.. image:: {url}\n'
                             else:
                                 base = self.base_url + '/' if os.path.isabs(self.base_url) else ''
-                                url = g.finalize(base + url)
-                        line = f'\n.. image:: {url}\n'
+                                url = 'file:///' + g.finalize(base + url)
+                                line = f'\n.. image:: {url}\n'
                 elif rst_directive:
                     fields = line.split(rst_directive)
                     if len(fields) > 1:
@@ -4421,7 +4422,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                             if not is_absolute:
                                 base = self.base_url + '/' if os.path.isabs(self.base_url) else ''
                                 url = Path(f'{base}{url}').resolve()
-                                url = g.finalize(url)
+                                url = 'file:///' + g.finalize(url)
                                 line = f'\n{rst_directive} {url}'
                     else:
                         # No url for an image: ignore and skip to next line
