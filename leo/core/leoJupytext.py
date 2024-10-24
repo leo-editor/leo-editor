@@ -53,7 +53,7 @@ class JupytextManager:
         """
         Return the full path in effect for the `@jupytext x.ipynb` node at p.
         
-        Return '' on errors.
+        Return '' on any error, after giving the appropriate error message.
         """
         if not has_jupytext:
             self.warn_no_jupytext()
@@ -69,13 +69,13 @@ class JupytextManager:
     #@+node:ekr.20241023155136.1: *3* jtm.read
     def read(self, c: Cmdr, p: Position) -> str:  # pragma: no cover
         """
-        Return jupytext's conversion of the .ipynb text given by the @jupytext
-        node at p.
+        p must be an @jupytext node describing an .ipynb file.
+        Convert x.ipynb to a string and return that string.
         """
-        path = self.full_path(c, p)  # full_path gives the error.
+        path = self.full_path(c, p)
         if not path:
-            return ''
-        # Read .ipynb file.
+            return ''  # full_path gives any errors.
+        # Read the .ipynb file into contents.
         notebook = jupytext.read(path, fmt='py:percent')
         contents = jupytext.writes(notebook, fmt="py:percent")
         return contents
@@ -119,7 +119,7 @@ class JupytextManager:
         - Check that p is an @jupytext node. 
         - Write the .ipynb file corresponding to p.b
         """
-        path = self.full_path(c, p)  # full_path gives the error.
+        path = self.full_path(c, p)  # full_path gives any errors.
         if not path:
             return
         # Write the .ipynb file.

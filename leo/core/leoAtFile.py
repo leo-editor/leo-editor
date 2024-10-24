@@ -605,8 +605,8 @@ class AtFile:
     def readOneAtJupytextNode(self, p: Position) -> None:  # pragma: no cover
         """
         p must be an @jupytext node.
-        - Convert the .ipynb file to the contents of the corresponding node.
-        - Update p.b's tree using the contents. 
+        - Convert the .ipynb file to a string s.
+        - Update p.b's tree using s. 
         """
         c = self.c
         contents = g.app.jupytextManager.read(c, p)
