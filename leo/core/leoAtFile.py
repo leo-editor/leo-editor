@@ -601,7 +601,7 @@ class AtFile:
         p.b = head + g.toUnicode(s, encoding=encoding, reportErrors=True)
         g.doHook('after-edit', p=p)
         g.doHook('after-reading-external-file', c=c, p=p)
-    #@+node:ekr.20241023135739.1: *5* at.readOneAtJupytextNode (new)
+    #@+node:ekr.20241023135739.1: *5* at.readOneAtJupytextNode
     def readOneAtJupytextNode(self, root: Position) -> None:  # pragma: no cover
         """
         p must be an @jupytext node.
@@ -647,7 +647,6 @@ class AtFile:
             root.b = ''.join(new_public_lines)
             return
         if new_private_lines == old_private_lines:
-            banner('no change:')
             return
         if not g.unitTesting:
             banner('updating:')
@@ -1527,15 +1526,42 @@ class AtFile:
                 at.replaceFile(contents, at.encoding, fileName, root)
         except Exception:
             at.writeException(fileName, root)
-    #@+node:ekr.20241023134114.1: *6* at.writeOneAtJupytextNode (to do)
+    #@+node:ekr.20241023134114.1: *6* at.writeOneAtJupytextNode
     def writeOneAtJupytextNode(self, root: Position) -> None:  # pragma: no cover
         """
         p must be an @jupytext node.
         Write the corresponding .ipynb file from p and all p's descendants.
+        
+        This code is adapted from at.writeOneAtCleanNode.
         """
         at, c = self, self.c
-        ### contents = ""
-        ### g.app.jupytextManager.write(c, root, contents)
+
+        def banner(s: str) -> None:
+            print('')
+            g.es_print(s, root.h, color='blue')
+            print('')
+
+        try:
+            c.endEditing()
+            fileName = at.initWriteIvars(root)
+            at.sentinels = False
+            if not fileName or not at.precheck(fileName, root):
+                return
+            at.outputList = []
+            at.putFile(root, sentinels=False)
+            at.warnAboutOrphandAndIgnoredNodes()
+            if at.errors:
+                banner(f"not written: {g.shortFileName(fileName)}")
+                at.addToOrphanList(root)
+            else:
+                new_contents = ''.join(at.outputList)
+                g.app.jupytextManager.write(c, root, new_contents)
+                # Similar to at.replaceFile.
+                c.setFileTimeStamp(fileName)
+                at.rememberReadPath(fileName, root)
+                banner(f"wrote: {g.shortFileName(fileName)}")
+        except Exception:
+            at.writeException(fileName, root)
     #@+node:ekr.20210501065352.1: *6* at.writeOneAtNosentNode
     def writeOneAtNosentNode(self, root: Position) -> None:  # pragma: no cover
         """Write one @nosent node.
