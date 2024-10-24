@@ -2765,7 +2765,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
     def set_rst_stylesheet(self):
         """Set rst stylesheet to default if none specified.
 
-        A file location must start with 'file:///';. If
+        An absolute file location must start with 'file:///';. If
         a file does not exist for the path, use the default
         stylesheet.
 
@@ -4409,7 +4409,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                             else:
                                 base = self.base_url + '/' if os.path.isabs(self.base_url) else ''
                                 url = g.finalize(base + url)
-                                line = f'\n.. image:: {url}\n'
+                        line = f'\n.. image:: {url}\n'
                 elif rst_directive:
                     fields = line.split(rst_directive)
                     if len(fields) > 1:
