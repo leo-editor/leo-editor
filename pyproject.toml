@@ -2,6 +2,10 @@
 #@+node:ekr.20240227064614.1: * @file ../../pyproject.toml
 #@@language toml
 
+# leo-editor/pyproject.toml
+
+# The dependencies here should match those in requirements.txt.
+
 # https://packaging.python.org/en/latest/guides/writing-pyproject-toml/
 #     pypi: https://pypi.org/project/leo/
 # testpypi: https://test.pypi.org/project/leo/
@@ -272,13 +276,13 @@ keywords = ["PIM", "IDE", "Outliner"]
 license = {text = "MIT License"}
 readme = "README.md"
 #@-<< description >>
+
 # Yes, we must duplicate requirements.txt.
-# Warning: these dependencies should match those in requirements.txt.
 #@+<< pyproject.toml: dependencies >>
 #@+node:ekr.20240713074535.1: ** << pyproject.toml: dependencies >>
-dependencies = [
+# Warning: these dependencies should match those in pyproject.toml.
 
-  # Warning: these dependencies should match those in pyproject.toml.
+dependencies = [
 
   # For build devs.
   "build>=1.2.1",
@@ -304,6 +308,7 @@ dependencies = [
   "docutils",        # For Sphinx and rST plugins.
   "flexx",           # leoflexx.py plugin.
   "jedi",            # For autocompletion.
+  "jupytext",        # For paired .ipynb/.py files.
   "markdown",        # VR3 plugin.
   "matplotlib",      # VR3 plugin.
   "meta",            # livecode.py plugin.
