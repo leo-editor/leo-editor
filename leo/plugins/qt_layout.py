@@ -318,9 +318,8 @@ def showLayouts(event) -> None:
     layouts = cache.layout_registry
     listing = []
     for name, docstr in layouts.items():
-        # This trick is a bug in neither Leo nor textrap.
+        # This trick is *not* a bug in Leo!
         doc_s = textwrap.dedent(docstr.rstrip()).strip()
-        # g.printObj(doc_s, tag=f"doc_s: {name}")
         listing.append(f'{name}\n' + '=' * len(name) + f'\n\n{doc_s}\n\n')
     listing_s = ''.join(listing)
     g.es(listing_s, tabName='layouts')
