@@ -49,14 +49,14 @@ def show_vr3_pane(c: Cmdr, w: QW) -> None:
     w.setUpdatesEnabled(True)
     c.doCommandByName('vr3-show')
 #@+node:tom.20241009141223.1: *3* function: is_module_loaded
-def is_module_loaded(module_name:str) -> bool:
+def is_module_loaded(module_name: str) -> bool:
     """Return True if the plugins controller has loaded the module.
     """
     controller = g.app.pluginsController
     return controller.isLoaded(module_name)
 #@+node:tom.20241015161609.1: *3* decorator:  register_layout
-def register_layout(name:str): # type: ignore
-    def decorator(func): 
+def register_layout(name: str):  # type: ignore
+    def decorator(func):
         # Register the function's name and docstring in the dictionary
         LAYOUT_REGISTRY[name] = func.__doc__
         return func  # Ensure the original function is returned
@@ -148,9 +148,9 @@ def horizontal_thirds(event: LeoKeyEvent) -> None:
     dw = c.frame.top
     cache = dw.layout_cache
     cache.restoreFromLayout(HORIZONTAL_THIRDS_LAYOUT)
-#@+node:ekr.20241008180407.1: *3* command: 'layout-quadrant'
-@g.command('layout-quadrant')
-@register_layout('layout-quadrant')
+#@+node:ekr.20241008180407.1: *3* command: 'layout-legacy'
+@g.command('layout-legacy')
+@register_layout('layout-legacy')
 def quadrants(event: LeoKeyEvent) -> None:
     """Create Leo's quadrant layout.
 
@@ -314,6 +314,7 @@ def vertical_thirds2(event: LeoKeyEvent) -> None:
     cache.restoreFromLayout(VERTICAL_THIRDS2_LAYOUT)
 #@+node:tom.20241022170042.1: *3* command: layout-show-layouts
 @g.command('layout-show-layouts')
+@g.command('show-layouts')
 def showLayouts(event) -> None:
     """Show a list of layout diagrams in a tab in the Log frame."""
     c = event.get('c')
@@ -453,7 +454,7 @@ class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
 
     #@+others
     #@+node:tom.20240923194438.5: *3* LayoutCacheWidget.find_splitter_by_name
-    def find_splitter_by_name(self: QW, name:str, _: Optional[QW] = None) -> QW:
+    def find_splitter_by_name(self: QW, name: str, _: Optional[QW] = None) -> QW:
         """Return a splitter instance given its objectName.
         
         This method could return other types of widgets but is intended
@@ -483,11 +484,11 @@ class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
         
         The "_" argument is needed to satisfy mypy.  It is never used.
         """
-        widget:QW = g.app.gui.find_widget_by_name(self.c, name) # type: ignore[attr-defined]
+        widget: QW = g.app.gui.find_widget_by_name(self.c, name)  # type: ignore[attr-defined]
         return widget
 
     #@+node:tom.20240923194438.4: *3* LayoutCacheWidget.find_widget_in_children
-    def find_widget_in_children(self, name:str, _: Optional[QW] = None) -> QW:
+    def find_widget_in_children(self, name: str, _: Optional[QW] = None) -> QW:
         """Return a child widget if its objectName matches "name".
         
         The "_" argument is needed to satisfy mypy.  It is never used.
@@ -499,7 +500,7 @@ class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
         return w
 
     #@+node:tom.20240923194438.6: *3* LayoutCacheWidget.restoreFromLayout
-    def restoreFromLayout(self, layout:Dict=None) -> None:
+    def restoreFromLayout(self, layout: Dict = None) -> None:
         if layout is None:
             layout = FALLBACK_LAYOUT
         #@+<< initialize data structures >>
@@ -527,7 +528,7 @@ class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
         # If a splitter name is not known or does not exist, create one
         # and add it to self.created_splitter_dict.
         for _, name in SPLITTERS.items():
-            splitter:QW = self.find_splitter_by_name(name)
+            splitter: QW = self.find_splitter_by_name(name)
             if splitter is None:
                 splitter = QtWidgets.QSplitter(self)  # type: ignore [assignment]
                 splitter.setObjectName(name)

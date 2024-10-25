@@ -215,7 +215,7 @@
 <v t="ekr.20190422173857.1"><vh>@string qt-style-name = None</vh></v>
 <v t="ekr.20210914081311.1"><vh>@bool highlight-body-line = False</vh></v>
 <v t="ekr.20210914081428.1"><vh>@string line-highlight-color = None</vh></v>
-<v t="ekr.20240726065425.1"><vh>@string qt-layout-name = vertical-thirds</vh></v>
+<v t="ekr.20240726065425.1"><vh>@string qt-layout-name = legacy</vh></v>
 <v t="ekr.20140915194122.23431"><vh>Colors</vh>
 <v t="ekr.20140912075503.19318"><vh>Body pane colors</vh>
 <v t="ekr.20140912075503.19319"><vh>@color body-bg = white</vh></v>
@@ -2279,6 +2279,7 @@
 </v>
 <v t="ekr.20140915194122.23428"></v>
 <v t="ekr.20241012050620.1"></v>
+<v t="ekr.20240726065425.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
