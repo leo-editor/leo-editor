@@ -69,6 +69,21 @@ class JupytextManager:
             return path
         self.warn_bad_at_jupytext_node(p, path)
         return ''
+    #@+node:ekr.20241024160108.1: *3* jtm.get_jupytext_config_file
+    def get_jupytext_config_file(self) -> str:
+        """
+        Print the name and contents of the jupytext config file in effect.
+        
+        This is a debugging method. No other method calls it.
+        """
+        from jupytext.config import find_jupytext_configuration_file
+        import tomllib
+        config_file = find_jupytext_configuration_file(os.getcwd())
+        if config_file:
+            with open(config_file, 'rb') as f:
+                data = tomllib.load(f)
+                g.printObj(data, tag=f"jupytext: contents of {config_file!r}")
+        return config_file
     #@+node:ekr.20241023155136.1: *3* jtm.read
     def read(self, c: Cmdr, p: Position) -> Tuple[str, str]:  # pragma: no cover
         """
@@ -135,13 +150,6 @@ class JupytextManager:
         fmt = c.config.getString('jupytext-fmt') or 'py:percent'
         notebook = jupytext.reads(contents, fmt=fmt)
         jupytext.write(notebook, path, fmt=fmt)
-
-        if 0:  # Delete the paired .py file!
-            assert path.endswith('.ipynb'), repr(path)
-            py_path = path[:-6] + '.py'
-            if os.path.exists(py_path):
-                os.remove(py_path)
-
     #@-others
 #@-others
 
