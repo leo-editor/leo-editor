@@ -2,8 +2,8 @@
 #@+node:tom.20240923194438.1: * @file ../plugins/qt_layout.py
 """The basic machinery to support applying layouts of the main Leo panels."""
 
-#@+<< qt_layout: imports >>
-#@+node:tom.20240923194438.2: ** << qt_layout: imports >>
+#@+<< qt_layout: imports & annotations >>
+#@+node:tom.20240923194438.2: ** << qt_layout: imports & annotations >>
 from __future__ import annotations
 
 import textwrap
@@ -26,7 +26,7 @@ if TYPE_CHECKING:  # pragma: no cover
     Args = Any
     KWargs = Any
 
-#@-<< qt_layout: imports >>
+#@-<< qt_layout: imports & annotations >>
 #@+<< qt_layout: declarations >>
 #@+node:tom.20241009141008.1: ** << qt_layout: declarations >>
 VR3_OBJ_NAME = 'viewrendered3_pane'
@@ -304,7 +304,7 @@ def vertical_thirds2(event: LeoKeyEvent) -> None:
     dw = c.frame.top
     cache = dw.layout_cache
     cache.restoreFromLayout(VERTICAL_THIRDS2_LAYOUT)
-#@+node:tom.20241022170042.1: *3* command: 'show-layouts', aka 'layout-show-layouts'
+#@+node:tom.20241022170042.1: *3* command: 'show-layouts'
 @g.command('layout-show-layouts')
 @g.command('show-layouts')
 def showLayouts(event) -> None:
