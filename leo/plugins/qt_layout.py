@@ -186,42 +186,20 @@ def render_focused(event: LeoKeyEvent) -> None:
 @g.command('layout-restore-to-setting')
 @register_layout('layout-restore-to-setting')
 def restoreDefaultLayout(event: LeoKeyEvent) -> None:
-    """Restore the initial layout specified in @settings.
-
-    This command does not specify an actual layout itself.
-    
-    If the layout name:
-        
-        - starts with 'layout-', it is used as the name of the 
-          layout command;
-        - does not start with 'layout-', then that prefix is added
-          and the result is used as the name of the layout command.
-          
-    Use the 'default' layout if the command is not known.
+    """
+    Select the layout specified by the 'qt-layout-name' setting in effect
+    for c. Use the 'default' layout if the user's setting is erroneous.
     """
     c = event.get('c')
     if not c:
         return
     event = g.app.gui.create_key_event(c)
-
-    found_layout = False
-    default_layout = 'layout-legacy'
-    layout = c.config.getString('qt-layout-name')
-    g.trace(repr(layout))
-    if not layout:
-        layout = default_layout
-    elif layout.startswith('layout-'):
-        if layout in c.commandsDict:
-            found_layout = True
-        else:
-            layout = default_layout
-    else:
-        layout = 'layout-' + layout
-        if layout in c.commandsDict:
-            found_layout = True
-    if not found_layout:
-        g.es_print(f'Cannot find command {layout}; Using {default_layout}', color='red')
-        layout = default_layout
+    layout = c.config.getString('qt-layout-name') or 'legacy'
+    if not layout.startswith('layout-'):
+        layout = 'layout-' + layout.strip()
+    if layout not in c.commandsDict:
+        g.es_print(f"Unknown layout: {layout}; Using 'legacy' layout", color='red')
+        layout = 'layout-legacy'
     c.commandsDict[layout](event)
 
 #@+node:tom.20241005163724.1: *3* command: 'layout-swap-log-panel'
