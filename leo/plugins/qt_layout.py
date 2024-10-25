@@ -152,7 +152,7 @@ def horizontal_thirds(event: LeoKeyEvent) -> None:
 @g.command('layout-legacy')
 @register_layout('layout-legacy')
 def quadrants(event: LeoKeyEvent) -> None:
-    """Create Leo's quadrant layout.
+    """Create Leo's legacy layout.
 
         ┌───────────────┬───────────┐
         │   outline     │   log     │
@@ -163,7 +163,7 @@ def quadrants(event: LeoKeyEvent) -> None:
     c = event.get('c')
     dw = c.frame.top
     cache = dw.layout_cache
-    cache.restoreFromLayout(QUADRANT_LAYOUT)
+    cache.restoreFromLayout(LEGACY_LAYOUT)
 #@+node:ekr.20241008174427.2: *3* command: 'layout-render-focused'
 @g.command('layout-render-focused')
 @register_layout('layout-render-focused')
@@ -182,7 +182,6 @@ def render_focused(event: LeoKeyEvent) -> None:
     cache = dw.layout_cache
     cache.restoreFromLayout(RENDERED_FOCUSED_LAYOUT)
 #@+node:tom.20240930101515.1: *3* command: 'layout-restore-to-setting'
-@g.command('layout-restore-default')
 @g.command('layout-restore-to-setting')
 @register_layout('layout-restore-to-setting')
 def restoreDefaultLayout(event: LeoKeyEvent) -> None:
@@ -196,9 +195,8 @@ def restoreDefaultLayout(event: LeoKeyEvent) -> None:
           layout command;
         - does not start with 'layout-', then that prefix is added
           and the result is used as the name of the layout command.
-
-    If the resulting command is not known, then the 'vertical-thirds'
-    is applied.
+          
+    Use the 'default' layout if the command is not known.
     """
     c = event.get('c')
     if not c:
@@ -206,8 +204,9 @@ def restoreDefaultLayout(event: LeoKeyEvent) -> None:
     event = g.app.gui.create_key_event(c)
 
     found_layout = False
-    default_layout = 'layout-vertical-thirds'
+    default_layout = 'layout-legacy'
     layout = c.config.getString('qt-layout-name')
+    g.trace(repr(layout))
     if not layout:
         layout = default_layout
     elif layout.startswith('layout-'):
@@ -220,7 +219,7 @@ def restoreDefaultLayout(event: LeoKeyEvent) -> None:
         if layout in c.commandsDict:
             found_layout = True
     if not found_layout:
-        g.es(f'Cannot find command {layout}; Using {default_layout}')
+        g.es_print(f'Cannot find command {layout}; Using {default_layout}', color='red')
         layout = default_layout
     c.commandsDict[layout](event)
 
@@ -238,7 +237,7 @@ def swapLogPanel(event: LeoKeyEvent) -> None:
     and secondary splitters.
 
     The effect of this command depends on the existing layout. For example,
-    if the quadrant layout is in effect, this command changes the layout
+    if the legacy layout is in effect, this command changes the layout
     from:
         ┌───────────┬──────┐
         │ outline   │ log  │
@@ -312,7 +311,7 @@ def vertical_thirds2(event: LeoKeyEvent) -> None:
     dw = c.frame.top
     cache = dw.layout_cache
     cache.restoreFromLayout(VERTICAL_THIRDS2_LAYOUT)
-#@+node:tom.20241022170042.1: *3* command: layout-show-layouts
+#@+node:tom.20241022170042.1: *3* command: 'show-layouts', aka 'layout-show-layouts'
 @g.command('layout-show-layouts')
 @g.command('show-layouts')
 def showLayouts(event) -> None:
@@ -358,8 +357,8 @@ HORIZONTAL_THIRDS_LAYOUT = {
         'main_splitter': Orientation.Vertical
     }
 }
-#@+node:tom.20240930164155.1: *3* QUADRANT_LAYOUT
-QUADRANT_LAYOUT = {
+#@+node:tom.20240930164155.1: *3* LEGACY_LAYOUT
+LEGACY_LAYOUT = {
     'SPLITTERS': OrderedDict(
         (
             ('bodyFrame', 'secondary_splitter'),
