@@ -819,7 +819,6 @@ class HelpCommandsClass(BaseEditCommandsClass):
         for name, docstr in list(layouts.items()):
             name = name.lstrip()
             doc_s = textwrap.dedent(docstr)
-            lines = doc_s.split('\n')
             listing.append(f"**{name}**\n\n{doc_s}\n\n")
         #@-<< create listing list>>
         c.putHelpFor(''.join(listing))
