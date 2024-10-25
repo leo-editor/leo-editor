@@ -6,6 +6,7 @@
 #@+node:tom.20240923194438.2: ** << qt_layout: imports >>
 from __future__ import annotations
 
+import textwrap
 from collections import OrderedDict
 from typing import Any, Dict, TYPE_CHECKING, TypeVar, Optional
 from typing import Generic
@@ -26,9 +27,8 @@ if TYPE_CHECKING:  # pragma: no cover
     KWargs = Any
 
 #@-<< qt_layout: imports >>
-
-#@+others
-#@+node:tom.20241009141008.1: ** Declarations
+#@+<< qt_layout: declarations >>
+#@+node:tom.20241009141008.1: ** << qt_layout: declarations >>
 VR3_OBJ_NAME = 'viewrendered3_pane'
 VR_OBJ_NAME = 'viewrendered_pane'
 VRX_PLACEHOLDER_NAME = 'viewrenderedx_pane'
@@ -38,6 +38,9 @@ VR3_MODULE_NAME = 'viewrendered3.py'
 
 # Will contain {layout_name: layout_docstring}
 LAYOUT_REGISTRY = {}
+#@-<< qt_layout: declarations >>
+
+#@+others
 #@+node:ekr.20241008174359.1: ** Top-level functions
 #@+node:ekr.20241008141246.1: *3* function: init
 def init() -> bool:
@@ -63,11 +66,13 @@ def register_layout(name: str):  # type: ignore
         return func  # Ensure the original function is returned
     return decorator
 #@+node:ekr.20241008174351.1: ** Layout commands
+# The docstrings for all these commands must start with a newline.
 #@+node:tom.20240928171510.1: *3* command: 'layout-big-tree'
 @g.command('layout-big-tree')
 @register_layout('layout-big-tree')
 def big_tree(event: LeoKeyEvent) -> None:
-    """Create Leo's big-tree layout
+    """
+    Create Leo's big-tree layout:
 
         ┌──────────────────┐
         │  outline         │
@@ -136,7 +141,9 @@ def big_tree(event: LeoKeyEvent) -> None:
 @g.command('layout-horizontal-thirds')
 @register_layout('layout-horizontal-thirds')
 def horizontal_thirds(event: LeoKeyEvent) -> None:
-    """Create Leo's horizontal-thirds layout:
+    """
+    Create Leo's horizontal-thirds layout:
+
         ┌───────────┬───────┐
         │  outline  │  log  │
         ├───────────┴───────┤
@@ -153,7 +160,8 @@ def horizontal_thirds(event: LeoKeyEvent) -> None:
 @g.command('layout-legacy')
 @register_layout('layout-legacy')
 def quadrants(event: LeoKeyEvent) -> None:
-    """Create Leo's legacy layout.
+    """
+    Create Leo's legacy layout:
 
         ┌───────────────┬───────────┐
         │   outline     │   log     │
@@ -169,7 +177,9 @@ def quadrants(event: LeoKeyEvent) -> None:
 @g.command('layout-render-focused')
 @register_layout('layout-render-focused')
 def render_focused(event: LeoKeyEvent) -> None:
-    """Create Leo's render-focused layout:
+    """
+    Create Leo's render-focused layout:
+
         ┌───────────┬─────┐
         │ outline   │     │
         ├───────────┤     │
@@ -187,8 +197,8 @@ def render_focused(event: LeoKeyEvent) -> None:
 @register_layout('layout-restore-to-setting')
 def restoreDefaultLayout(event: LeoKeyEvent) -> None:
     """
-    Select the layout specified by the 'qt-layout-name' setting in effect
-    for c. Use the 'default' layout if the user's setting is erroneous.
+    Select the layout specified by the '@string qt-layout-name' setting in effect
+    for this outline. Use the **default** layout if the user's setting is erroneous.
     """
     c = event.get('c')
     if not c:
@@ -201,12 +211,12 @@ def restoreDefaultLayout(event: LeoKeyEvent) -> None:
         g.es_print(f"Unknown layout: {layout}; Using 'legacy' layout", color='red')
         layout = 'layout-legacy'
     c.commandsDict[layout](event)
-
 #@+node:tom.20241005163724.1: *3* command: 'layout-swap-log-panel'
 @g.command('layout-swap-log-panel')
 @register_layout('layout-swap-log-panel')
 def swapLogPanel(event: LeoKeyEvent) -> None:
-    """Move Log frame between main and secondary splitters.
+    """
+    Move Log frame between main and secondary splitters.
 
     This command does not actually create a layout of its own.  It
     should not be used as the initial layout.
@@ -263,7 +273,9 @@ def swapLogPanel(event: LeoKeyEvent) -> None:
 @g.command('layout-vertical-thirds')
 @register_layout('layout-vertical-thirds')
 def vertical_thirds(event: LeoKeyEvent) -> None:
-    """Create Leo's vertical-thirds layout:
+    """
+    Create Leo's vertical-thirds layout:
+
         ┌───────────┬────────┬────────┐
         │  outline  │        │        │
         ├───────────┤  body  │ VR/VR3 │
@@ -279,7 +291,9 @@ def vertical_thirds(event: LeoKeyEvent) -> None:
 @g.command('layout-vertical-thirds2')
 @register_layout('layout-vertical-thirds2')
 def vertical_thirds2(event: LeoKeyEvent) -> None:
-    """Create Leo's vertical-thirds2 layout:
+    """
+    Create Leo's vertical-thirds2 layout:
+
         ┌───────────┬───────┬─────────┐
         │           │  log  │         │
         │  outline  ├───────┤ VR/VR3  │
@@ -302,12 +316,14 @@ def showLayouts(event) -> None:
     dw = c.frame.top
     cache = dw.layout_cache
     layouts = cache.layout_registry
-    listing = ''
-
+    listing = []
     for name, docstr in layouts.items():
-        listing += f'{name}:\n' + '=' * len(name) + f'\n{docstr}\n'
-
-    g.es(listing, tabName='layouts')
+        # This trick is a bug in neither Leo nor textrap.
+        doc_s = textwrap.dedent(docstr.rstrip()).strip()
+        # g.printObj(doc_s, tag=f"doc_s: {name}")
+        listing.append(f'{name}\n' + '=' * len(name) + f'\n\n{doc_s}\n\n')
+    listing_s = ''.join(listing)
+    g.es(listing_s, tabName='layouts')
 #@+node:ekr.20241008174638.1: ** Layouts
 #@+node:tom.20240923194438.3: *3* FALLBACK_LAYOUT
 FALLBACK_LAYOUT = {
