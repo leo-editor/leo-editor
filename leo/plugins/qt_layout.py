@@ -7,18 +7,24 @@
 from __future__ import annotations
 
 from collections import OrderedDict
-from typing import Any, Dict, TYPE_CHECKING
+from typing import Any, Dict, TYPE_CHECKING, TypeVar, Optional
+from typing import Generic
 
 from leo.core.leoQt import QtWidgets, Orientation, QtCore
 from leo.core import leoGlobals as g
 
+QW = TypeVar('QW', bound=QtWidgets.QWidget)
+OD = TypeVar('OD', bound=OrderedDict)
+
 QWidget = QtWidgets.QWidget
+
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
     # from typing import TypeAlias  # Requires Python 3.12+
     Args = Any
     KWargs = Any
+
 #@-<< qt_layout: imports >>
 
 #@+others
@@ -29,6 +35,9 @@ VRX_PLACEHOLDER_NAME = 'viewrenderedx_pane'
 
 VR_MODULE_NAME = 'viewrendered.py'
 VR3_MODULE_NAME = 'viewrendered3.py'
+
+# Will contain {layout_name: layout_docstring}
+LAYOUT_REGISTRY = {}
 #@+node:ekr.20241008174359.1: ** Top-level functions
 #@+node:ekr.20241008141246.1: *3* function: init
 def init() -> bool:
@@ -36,26 +45,35 @@ def init() -> bool:
     # qt_layout is not a true plugin.
     return True
 #@+node:ekr.20241008141353.1: *3* function: show_vr3_pane
-def show_vr3_pane(c, w):
+def show_vr3_pane(c: Cmdr, w: QW) -> None:
     w.setUpdatesEnabled(True)
     c.doCommandByName('vr3-show')
 #@+node:tom.20241009141223.1: *3* function: is_module_loaded
-def is_module_loaded(module_name):
+def is_module_loaded(module_name:str) -> bool:
     """Return True if the plugins controller has loaded the module.
     """
     controller = g.app.pluginsController
     return controller.isLoaded(module_name)
+#@+node:tom.20241015161609.1: *3* decorator:  register_layout
+def register_layout(name:str): # type: ignore
+    def decorator(func): 
+        # Register the function's name and docstring in the dictionary
+        LAYOUT_REGISTRY[name] = func.__doc__
+        return func  # Ensure the original function is returned
+    return decorator
 #@+node:ekr.20241008174351.1: ** Layout commands
 #@+node:tom.20240928171510.1: *3* command: 'layout-big-tree'
 @g.command('layout-big-tree')
+@register_layout('layout-big-tree')
 def big_tree(event: LeoKeyEvent) -> None:
-    """Create Leo's big-tree layout:
+    """Create Leo's big-tree layout
+
         ┌──────────────────┐
         │  outline         │
         ├──────────┬───────┤
         │  body    │  log  │
         ├──────────┴───────┤
-        │  VR              │
+        │  VR/VR3          │
         └──────────────────┘
     """
     c = event.get('c')
@@ -113,16 +131,9 @@ def big_tree(event: LeoKeyEvent) -> None:
             QtCore.QTimer.singleShot(60, lambda: show_vr3_pane(c, vr))
         else:
             c.doCommandByName('vr-show')
-#@+node:ekr.20241008174424.1: *3* command: 'layout-fallback-layout'
-@g.command('layout-fallback-layout')
-def fallback_layout(event: LeoKeyEvent) -> None:
-    """Apply a workable layout in case the layout setting is invalid."""
-    c = event.get('c')
-    dw = c.frame.top
-    cache = dw.layout_cache
-    cache.restoreFromLayout(FALLBACK_LAYOUT)
 #@+node:ekr.20241008174427.1: *3* command: 'layout-horizontal-thirds'
 @g.command('layout-horizontal-thirds')
+@register_layout('layout-horizontal-thirds')
 def horizontal_thirds(event: LeoKeyEvent) -> None:
     """Create Leo's horizontal-thirds layout:
         ┌───────────┬───────┐
@@ -130,7 +141,7 @@ def horizontal_thirds(event: LeoKeyEvent) -> None:
         ├───────────┴───────┤
         │  body             │
         ├───────────────────┤
-        │  VR               │
+        │  VR/VR3           │
         └───────────────────┘
     """
     c = event.get('c')
@@ -139,13 +150,14 @@ def horizontal_thirds(event: LeoKeyEvent) -> None:
     cache.restoreFromLayout(HORIZONTAL_THIRDS_LAYOUT)
 #@+node:ekr.20241008180407.1: *3* command: 'layout-quadrant'
 @g.command('layout-quadrant')
-@g.command('layout-legacy')
+@register_layout('layout-quadrant')
 def quadrants(event: LeoKeyEvent) -> None:
-    """Create Leo's quadrant layout:
+    """Create Leo's quadrant layout.
+
         ┌───────────────┬───────────┐
         │   outline     │   log     │
         ├───────────────┼───────────┤
-        │   body        │     vr    │
+        │   body        │  VR/VR3   │
         └───────────────┴───────────┘
     """
     c = event.get('c')
@@ -154,13 +166,14 @@ def quadrants(event: LeoKeyEvent) -> None:
     cache.restoreFromLayout(QUADRANT_LAYOUT)
 #@+node:ekr.20241008174427.2: *3* command: 'layout-render-focused'
 @g.command('layout-render-focused')
+@register_layout('layout-render-focused')
 def render_focused(event: LeoKeyEvent) -> None:
     """Create Leo's render-focused layout:
         ┌───────────┬─────┐
         │ outline   │     │
         ├───────────┤     │
-        │ body      │ VR  │
-        ├───────────┤     │
+        │ body      │ VR/ │
+        ├───────────┤ VR3 │
         │ log       │     │
         └───────────┴─────┘
     """
@@ -168,59 +181,77 @@ def render_focused(event: LeoKeyEvent) -> None:
     dw = c.frame.top
     cache = dw.layout_cache
     cache.restoreFromLayout(RENDERED_FOCUSED_LAYOUT)
-#@+node:tom.20240930101515.1: *3* command: 'layout-restore-default'
+#@+node:tom.20240930101515.1: *3* command: 'layout-restore-to-setting'
 @g.command('layout-restore-default')
 @g.command('layout-restore-to-setting')
+@register_layout('layout-restore-to-setting')
 def restoreDefaultLayout(event: LeoKeyEvent) -> None:
-    """Restore the default layout specified in @settings, if known."""
+    """Restore the initial layout specified in @settings.
+
+    This command does not specify an actual layout itself.
+    
+    If the layout name:
+        
+        - starts with 'layout-', it is used as the name of the 
+          layout command;
+        - does not start with 'layout-', then that prefix is added
+          and the result is used as the name of the layout command.
+
+    If the resulting command is not known, then the 'vertical-thirds'
+    is applied.
+    """
     c = event.get('c')
     if not c:
         return
     event = g.app.gui.create_key_event(c)
 
     found_layout = False
-    layout = default_layout = c.config.getString('qt-layout-name')
+    default_layout = 'layout-vertical-thirds'
+    layout = c.config.getString('qt-layout-name')
     if not layout:
-        layout = 'layout-fallback-layout'
-    elif default_layout.startswith('layout-'):
-        if default_layout in c.commandsDict:
-            found_layout = True
-    else:
-        layout = 'layout-' + default_layout
+        layout = default_layout
+    elif layout.startswith('layout-'):
         if layout in c.commandsDict:
             found_layout = True
-        elif default_layout in c.commandsDict:
-            layout = default_layout
-            found_layout = True
         else:
-            g.es(f'Cannot find command {layout} or {default_layout}')
-    if found_layout:
-        c.commandsDict[layout](event)
+            layout = default_layout
+    else:
+        layout = 'layout-' + layout
+        if layout in c.commandsDict:
+            found_layout = True
+    if not found_layout:
+        g.es(f'Cannot find command {layout}; Using {default_layout}')
+        layout = default_layout
+    c.commandsDict[layout](event)
 
 #@+node:tom.20241005163724.1: *3* command: 'layout-swap-log-panel'
 @g.command('layout-swap-log-panel')
+@register_layout('layout-swap-log-panel')
 def swapLogPanel(event: LeoKeyEvent) -> None:
     """Move Log frame between main and secondary splitters.
+
+    This command does not actually create a layout of its own.  It
+    should not be used as the initial layout.
 
     If the Log frame is contained in a different splitter, possibly with
     some other widget, the entire splitter will be swapped between the main
     and secondary splitters.
 
     The effect of this command depends on the existing layout. For example,
-    if the legacy layout is in effect, this command changes the layout
+    if the quadrant layout is in effect, this command changes the layout
     from:
         ┌───────────┬──────┐
         │ outline   │ log  │
         ├───────────┼──────┤
-        │ body      │ VR   │
+        │ body      │VR/VR3│
         └───────────┴──────┘
     to:
         ┌──────────────────┐
         │  outline         │
         ├──────────┬───────┤
-        │  body    │  VR   │
+        │  body    │ VR/VR3│
         ├──────────┴───────┤
-        │  Log             │
+        │  log             │
         └──────────────────┘
     """
     c = event.get('c')
@@ -228,9 +259,9 @@ def swapLogPanel(event: LeoKeyEvent) -> None:
         return
     gui = g.app.gui
 
-    ms = gui.find_widget_by_name(c, 'main_splitter')
-    ss = gui.find_widget_by_name(c, 'secondary_splitter')
-    lf = gui.find_widget_by_name(c, 'logFrame')
+    ms = gui.find_widget_by_name(c, 'main_splitter')  # type: ignore
+    ss = gui.find_widget_by_name(c, 'secondary_splitter')  # type: ignore
+    lf = gui.find_widget_by_name(c, 'logFrame')  # type: ignore
 
     lf_parent = lf.parent()
     lf_parent_container = lf_parent.parent()
@@ -249,16 +280,17 @@ def swapLogPanel(event: LeoKeyEvent) -> None:
 
     if widget is not None:
         target.addWidget(widget)
-        g.app.gui.equalize_splitter(target)
+        gui.equalize_splitter(target)  # type: ignore
 #@+node:ekr.20241008175137.1: *3* command: 'layout-vertical-thirds'
 @g.command('layout-vertical-thirds')
+@register_layout('layout-vertical-thirds')
 def vertical_thirds(event: LeoKeyEvent) -> None:
     """Create Leo's vertical-thirds layout:
-        ┌───────────┬────────┬──────┐
-        │  outline  │        │      │
-        ├───────────┤  body  │  VR  │
-        │  log      │        │      │
-        └───────────┴────────┴──────┘
+        ┌───────────┬────────┬────────┐
+        │  outline  │        │        │
+        ├───────────┤  body  │ VR/VR3 │
+        │  log      │        │        │
+        └───────────┴────────┴────────┘
     """
     c = event.get('c')
     dw = c.frame.top
@@ -267,18 +299,36 @@ def vertical_thirds(event: LeoKeyEvent) -> None:
 
 #@+node:ekr.20241008175303.1: *3* command: 'layout-vertical-thirds2'
 @g.command('layout-vertical-thirds2')
+@register_layout('layout-vertical-thirds2')
 def vertical_thirds2(event: LeoKeyEvent) -> None:
     """Create Leo's vertical-thirds2 layout:
-        ┌───────────┬───────┬───────┐
-        │           │  log  │       │
-        │  outline  ├───────┤  VR   │
-        │           │  body │       │
-        └───────────┴───────┴───────┘
+        ┌───────────┬───────┬─────────┐
+        │           │  log  │         │
+        │  outline  ├───────┤ VR/VR3  │
+        │           │  body │         │
+        └───────────┴───────┴─────────┘
     """
     c = event.get('c')
     dw = c.frame.top
     cache = dw.layout_cache
     cache.restoreFromLayout(VERTICAL_THIRDS2_LAYOUT)
+#@+node:tom.20241022170042.1: *3* command: layout-show-layouts
+@g.command('layout-show-layouts')
+def showLayouts(event) -> None:
+    """Show a list of layout diagrams in a tab in the Log frame."""
+    c = event.get('c')
+    if not c:
+        return
+
+    dw = c.frame.top
+    cache = dw.layout_cache
+    layouts = cache.layout_registry
+    listing = ''
+
+    for name, docstr in layouts.items():
+        listing += f'{name}:\n' + '=' * len(name) + f'\n{docstr}\n'
+
+    g.es(listing, tabName='layouts')
 #@+node:ekr.20241008174638.1: ** Layouts
 #@+node:tom.20240923194438.3: *3* FALLBACK_LAYOUT
 FALLBACK_LAYOUT = {
@@ -300,7 +350,7 @@ HORIZONTAL_THIRDS_LAYOUT = {
             ('logFrame', 'secondary_splitter'),
             ('secondary_splitter', 'main_splitter'),
             ('bodyFrame', 'main_splitter'),
-            ('viewrenderedx_pane', 'main_splitter'))
+            (VRX_PLACEHOLDER_NAME, 'main_splitter'))
         ),
     'ORIENTATIONS': {
         'secondary_splitter': Orientation.Horizontal,
@@ -312,7 +362,7 @@ QUADRANT_LAYOUT = {
     'SPLITTERS': OrderedDict(
         (
             ('bodyFrame', 'secondary_splitter'),
-            ('viewrenderedx_pane', 'secondary_splitter'),
+            (VRX_PLACEHOLDER_NAME, 'secondary_splitter'),
             ('outlineFrame', 'outline-log-splitter'),
             ('logFrame', 'outline-log-splitter'),
             ('outline-log-splitter', 'main_splitter'),
@@ -331,7 +381,7 @@ RENDERED_FOCUSED_LAYOUT = {
             (('outlineFrame', 'secondary_splitter'),
             ('bodyFrame', 'secondary_splitter'),
             ('logFrame', 'secondary_splitter'),
-            ('viewrenderedx_pane', 'body-vr-splitter'),
+            (VRX_PLACEHOLDER_NAME, 'body-vr-splitter'),
             ('secondary_splitter', 'main_splitter'),
             ('body-vr-splitter', 'main_splitter'))
         ),
@@ -348,7 +398,7 @@ VERTICAL_THIRDS2_LAYOUT = {
         (('logFrame', 'secondary_splitter'),
         ('bodyFrame', 'secondary_splitter'),
         ('outlineFrame', 'main_splitter'),
-        ('viewrenderedx_pane', 'vr-splitter'),
+        (VRX_PLACEHOLDER_NAME, 'vr-splitter'),
         ('secondary_splitter', 'main_splitter'),
         ('vr-splitter', 'main_splitter')
         )
@@ -366,7 +416,7 @@ VERTICAL_THIRDS_LAYOUT = {
             ('logFrame', 'secondary_splitter'),
             ('secondary_splitter', 'main_splitter'),
             ('bodyFrame', 'main_splitter'),
-            ('viewrenderedx_pane', 'main_splitter'))
+            (VRX_PLACEHOLDER_NAME, 'main_splitter'))
         ),
     'ORIENTATIONS': {
         'secondary_splitter': Orientation.Vertical,
@@ -374,9 +424,10 @@ VERTICAL_THIRDS_LAYOUT = {
     }
 }
 #@+node:tom.20240930095459.1: ** class LayoutCacheWidget
-class LayoutCacheWidget(QWidget):
+class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
     """
-    Manage layout such as the following:
+    Manage layouts, which may be defined by methods or by
+    a layout data structure such as the following:
 
         FALLBACK_LAYOUT = {
             'SPLITTERS':OrderedDict(
@@ -391,18 +442,27 @@ class LayoutCacheWidget(QWidget):
         }
     """
 
-    def __init__(self, c: Cmdr, parent: QWidget = None) -> None:
+    def __init__(self, c: Cmdr, parent: Optional[QW]) -> None:
         super().__init__(parent)
         self.c = c
         self.setObjectName('leo-layout-cache')
+
         # maps splitter objectNames to their splitter object.
-        self.created_splitter_dict: Dict[str, Any] = {}
+        self.created_splitter_dict: Dict[str, QW] = {}
+        self.layout_registry = LAYOUT_REGISTRY
 
     #@+others
     #@+node:tom.20240923194438.5: *3* LayoutCacheWidget.find_splitter_by_name
-    def find_splitter_by_name(self, name):
+    def find_splitter_by_name(self: QW, name:str, _: Optional[QW] = None) -> QW:
+        """Return a splitter instance given its objectName.
+        
+        This method could return other types of widgets but is intended
+        for finding known splitters.
+        
+        The "_" argument is needed to satisfy mypy.  It is never used.
+        """
         foundit = False
-        splitter = None
+        splitter: QW = None
         splitter = self.find_widget(name)
         if splitter is not None:
             foundit = True
@@ -411,25 +471,35 @@ class LayoutCacheWidget(QWidget):
             if splitter is not None:
                 foundit = True
         if not foundit:
-            for kid in self.children():
+            for kid in self.children():  # type: ignore [assignment]
                 if kid.objectName() == name:
                     foundit = True
-                    splitter = kid
+                    splitter = kid  # type: ignore [assignment]
                     break
         return splitter
     #@+node:ekr.20241008180818.1: *3* LayoutCacheWidget.find_widget
-    def find_widget(self, name):
-        return g.app.gui.find_widget_by_name(self.c, name)
+    def find_widget(self, name: str, _: Optional[QW] = None) -> QW:
+        """Return a widget given it objectName.
+        
+        The "_" argument is needed to satisfy mypy.  It is never used.
+        """
+        widget:QW = g.app.gui.find_widget_by_name(self.c, name) # type: ignore[attr-defined]
+        return widget
+
     #@+node:tom.20240923194438.4: *3* LayoutCacheWidget.find_widget_in_children
-    def find_widget_in_children(self, name):
-        w = None
+    def find_widget_in_children(self, name:str, _: Optional[QW] = None) -> QW:
+        """Return a child widget if its objectName matches "name".
+        
+        The "_" argument is needed to satisfy mypy.  It is never used.
+        """
+        w: QW = None
         for kid in self.children():
             if kid.objectName() == name:
-                w = kid
+                w = kid  # type: ignore [assignment]
         return w
 
     #@+node:tom.20240923194438.6: *3* LayoutCacheWidget.restoreFromLayout
-    def restoreFromLayout(self, layout=None):
+    def restoreFromLayout(self, layout:Dict=None) -> None:
         if layout is None:
             layout = FALLBACK_LAYOUT
         #@+<< initialize data structures >>
@@ -457,9 +527,9 @@ class LayoutCacheWidget(QWidget):
         # If a splitter name is not known or does not exist, create one
         # and add it to self.created_splitter_dict.
         for _, name in SPLITTERS.items():
-            splitter = self.find_splitter_by_name(name)
+            splitter:QW = self.find_splitter_by_name(name)
             if splitter is None:
-                splitter = QtWidgets.QSplitter(self)
+                splitter = QtWidgets.QSplitter(self)  # type: ignore [assignment]
                 splitter.setObjectName(name)
                 self.created_splitter_dict[name] = splitter
 
@@ -542,7 +612,7 @@ class LayoutCacheWidget(QWidget):
         #@+<< resize splitters >>
         #@+node:tom.20240923194438.12: *4* << resize splitters >>
         for splt in SPLITTER_DICT.values():
-            g.app.gui.equalize_splitter(splt)
+            g.app.gui.equalize_splitter(splt)  # type: ignore[attr-defined]
         #@-<< resize splitters >>
         editor.show()
     #@-others
