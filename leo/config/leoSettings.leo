@@ -1298,6 +1298,7 @@
 <v t="tbrown.20140814090009.57475"><vh>@menu &amp;Show Settings</vh>
 <v t="ekr.20131213135427.21957"><vh>@item show-&amp;bindings</vh></v>
 <v t="ekr.20131213135427.21958"><vh>@item show-&amp;commands</vh></v>
+<v t="tom.20241023123442.1"><vh>@item show-&amp;layouts</vh></v>
 <v t="ekr.20131213135427.21960"><vh>@item show-&amp;settings</vh></v>
 <v t="ekr.20131213135427.21959"><vh>@item show-&amp;plugins-info</vh></v>
 </v>
@@ -1483,6 +1484,7 @@
 <v t="ekr.20131213135427.22362"><vh>@item help-for-&amp;find-commands</vh></v>
 <v t="tom.20220424213334.1"><vh>@item help-for-&amp;highlight-current-line</vh></v>
 <v t="ekr.20180403100839.1"><vh>@item help-for-&amp;keystroke</vh></v>
+<v t="tom.20241023130011.1"><vh>@item help-for-&amp;layouts</vh></v>
 <v t="ekr.20131213135427.22363"><vh>@item help-for-&amp;minibuffer</vh></v>
 <v t="ekr.20180403100900.1"><vh>@item help-for-&amp;python</vh></v>
 <v t="tom.20220424213426.1"><vh>@item help-for-&amp;right-margin-guide</vh></v>
@@ -2277,6 +2279,7 @@
 </v>
 <v t="ekr.20140915194122.23428"></v>
 <v t="ekr.20241012050620.1"></v>
+<v t="ekr.20240726065425.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -12409,6 +12412,8 @@ want the visual clutter of repeated class / file names.</t>
 <t tx="tom.20210922141748.1"></t>
 <t tx="tom.20220424213334.1"></t>
 <t tx="tom.20220424213426.1"></t>
+<t tx="tom.20241023123442.1"></t>
+<t tx="tom.20241023130011.1"></t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 # cm-external-editor = Alt-v</t>
 <t tx="ville.20091008201813.3909">Qt ui uses a different (simpler) setup for creating context menus,
