@@ -73,8 +73,9 @@ class JupytextManager:
     def get_jupytext_config_file(self) -> str:
         """
         Print the name and contents of the jupytext config file in effect.
+        Call this method with this Leonine script:
         
-        This is a debugging method. No other method calls it.
+            g.app.jupytextManager.get_jupytext_config_file()
         """
         from jupytext.config import find_jupytext_configuration_file
         import tomllib
