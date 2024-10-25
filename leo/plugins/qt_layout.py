@@ -453,7 +453,7 @@ class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
 
     #@+others
     #@+node:tom.20240923194438.5: *3* LayoutCacheWidget.find_splitter_by_name
-    def find_splitter_by_name(self, name:str, _: Optional[QW] = None) -> QW:
+    def find_splitter_by_name(self: QW, name:str, _: Optional[QW] = None) -> QW:
         """Return a splitter instance given its objectName.
         
         This method could return other types of widgets but is intended
@@ -471,10 +471,10 @@ class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
             if splitter is not None:
                 foundit = True
         if not foundit:
-            for kid in self.children():
+            for kid in self.children():  # type: ignore [assignment]
                 if kid.objectName() == name:
                     foundit = True
-                    splitter = kid
+                    splitter = kid  # type: ignore [assignment]
                     break
         return splitter
     #@+node:ekr.20241008180818.1: *3* LayoutCacheWidget.find_widget
@@ -495,7 +495,7 @@ class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
         w: QW = None
         for kid in self.children():
             if kid.objectName() == name:
-                w = kid
+                w = kid  # type: ignore [assignment]
         return w
 
     #@+node:tom.20240923194438.6: *3* LayoutCacheWidget.restoreFromLayout
@@ -529,7 +529,7 @@ class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
         for _, name in SPLITTERS.items():
             splitter:QW = self.find_splitter_by_name(name)
             if splitter is None:
-                splitter = QtWidgets.QSplitter(self)
+                splitter = QtWidgets.QSplitter(self)  # type: ignore [assignment]
                 splitter.setObjectName(name)
                 self.created_splitter_dict[name] = splitter
 
