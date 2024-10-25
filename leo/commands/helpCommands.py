@@ -785,96 +785,43 @@ class HelpCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20240822071015.1: *3* helpForLayouts
     @cmd('help-for-layouts')
     def helpForLayouts(self, event: LeoKeyEvent = None) -> None:
-        """Print a messages telling you how to get started with Leo."""
-        # A bug in Leo: triple quotes puts indentation before each line.
+        """Print a message telling you how to use Leo's layouts."""
         c = self.c
-        #@+<< define s >>
-        #@+node:ekr.20240822071105.1: *4* << define s >>
-        #@@language rest
-        #@@nowrap
+        #@+<< create listing list>>
+        #@+node:tom.20241022174807.1: *4* << create listing list >> (help-for-layouts)
+        dw = c.frame.top
+        cache = dw.layout_cache
+        layouts = cache.layout_registry
 
-        s = '''\
+        intro = textwrap.dedent("""
+            A **layout** is an arrangement of the various frames and panels of Leo's
+            interface. Each layout has a name, such as **vertical-thirds**, and a
+            command that enables that layout, such as **layout-vertical-thirds**.
 
-        About layouts
-        =============
+            By default, Leo uses the **legacy** layout. LeoSettings.leo contains:
 
-        The following commands create the layouts shown:
+                @string qt-layout-name=legacy
 
-        use-legacy-layout
-        -----------------
+            As usual, you can override this setting in myLeoSettings.leo.
 
-        ::
+            Most layouts allocate screen space for the **viewrendered** (VR) or
+            **viewrendered3** (VR3) plugins, whichever you have enabled.
 
-            ┌───────────┬───────┐
-            │  outline  │  log  │
-            ├───────────┼───────┤
-            │  body     │  VR   │
-            └───────────┴───────┘
-            
-        use-big-tree-layout
-        -------------------
+            The plugin will not be visible until you execute one of the
+            **vr-show**, **vr-toggle**, or **vr3-toggle** commands.
 
-        ::
+            The **help-for-layouts** (this command) and **layout-show-layouts**
+            commands show the avaialable layouts.
+        """)
 
-            ┌───────────────────┐
-            │  outline          │
-            ├──────────┬────────┤
-            │  body    │  log   │
-            ├──────────┴────────┤
-            │  VR               │
-            └───────────────────┘
-
-        use-horizontal-thirds-layout
-        ----------------------------
-
-        ::
-
-            ┌───────────┬───────┐
-            │  outline  │  log  │
-            ├───────────┴───────┤
-            │  body             │
-            ├───────────────────┤
-            │  VR               │
-            └───────────────────┘
-
-        use-render-focused-layout
-        -------------------------
-
-        ::
-
-            ┌───────────┬─────┐
-            │ outline   │     │
-            ├───────────┤     │
-            │ body      │ VR  │
-            ├───────────┤     │
-            │ log       │     │
-            └───────────┴─────┘
-
-        use-vertical-thirds-layout
-        --------------------------
-
-        ::
-
-            ┌───────────┬────────┬──────┐
-            │  outline  │        │      │
-            ├───────────┤  body  │  VR  │
-            │  log      │        │      │
-            └───────────┴────────┴──────┘
-
-
-        use-vertical-thirds2-layout
-        ---------------------------
-
-        ::
-
-            ┌───────────┬───────┬───────┐
-            │           │  log  │       │
-            │  outline  ├───────┤  VR   │
-            │           │  body │       │
-            └───────────┴───────┴───────┘
-        '''
-        #@-<< define s >>
-        c.putHelpFor(s)
+        # Append descriptions.
+        listing = [intro + '\n\n']
+        for name, docstr in list(layouts.items()):
+            name = name.lstrip()
+            doc_s = textwrap.dedent(docstr)
+            listing.append(f"**{name}**\n\n{doc_s}\n\n")
+        #@-<< create listing list>>
+        c.putHelpFor(''.join(listing))
     #@+node:ekr.20150514063305.396: *3* helpForMinibuffer
     @cmd('help-for-minibuffer')
     def helpForMinibuffer(self, event: LeoKeyEvent = None) -> None:
