@@ -1298,7 +1298,7 @@
 <v t="tbrown.20140814090009.57475"><vh>@menu &amp;Show Settings</vh>
 <v t="ekr.20131213135427.21957"><vh>@item show-&amp;bindings</vh></v>
 <v t="ekr.20131213135427.21958"><vh>@item show-&amp;commands</vh></v>
-<v t="tom.20241023123442.1"><vh>@item layout-show-&amp;layouts</vh></v>
+<v t="tom.20241023123442.1"><vh>@item show-&amp;layouts</vh></v>
 <v t="ekr.20131213135427.21960"><vh>@item show-&amp;settings</vh></v>
 <v t="ekr.20131213135427.21959"><vh>@item show-&amp;plugins-info</vh></v>
 </v>
