@@ -41,8 +41,9 @@ LAYOUT_REGISTRY = {}
 #@+node:ekr.20241008174359.1: ** Top-level functions
 #@+node:ekr.20241008141246.1: *3* function: init
 def init() -> bool:
-    """Return True if this plugin should be enabled."""
-    # qt_layout is not a true plugin.
+    """
+    qt_layout is not a true plugin, but return True just in case.
+    """
     return True
 #@+node:ekr.20241008141353.1: *3* function: show_vr3_pane
 def show_vr3_pane(c: Cmdr, w: QW) -> None:
