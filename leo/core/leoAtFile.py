@@ -1534,8 +1534,15 @@ class AtFile:
             c.endEditing()
             fileName = at.initWriteIvars(root)
             at.sentinels = False
+            # Prompt for dangerous write if the file exists.
             if not fileName or not at.precheck(fileName, root):
                 return
+            # Write a minimal Jupyter file if the @jupytext tree is empty.
+            if not root.b.strip() and not root.hasChildren():
+                prefix = c.config.getData('jupyter-prefix',
+                    strip_comments=False, strip_data=False)
+                if prefix and prefix.strip():
+                    root.b = prefix.strip() + '\n\n'
             at.outputList = []
             at.putFile(root, sentinels=False)
             at.warnAboutOrphandAndIgnoredNodes()

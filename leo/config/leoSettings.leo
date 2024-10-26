@@ -659,6 +659,7 @@
 </v>
 <v t="ekr.20241024123618.1"><vh>Jupytext options</vh>
 <v t="ekr.20241024123633.1"><vh>@string jupytext-fmt = py:percent</vh></v>
+<v t="ekr.20241026115515.1"><vh>@data jupyter-prefix</vh></v>
 </v>
 <v t="ekr.20041119034357.7"><vh>Leo files</vh>
 <v t="ekr.20041119034357.8"><vh>@string output-initial-comment = None</vh></v>
@@ -2281,8 +2282,7 @@
 </v>
 </v>
 <v t="ekr.20140915194122.23428"></v>
-<v t="ekr.20241012050620.1"></v>
-<v t="ekr.20240726065425.1"></v>
+<v t="ekr.20241024123618.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -11738,6 +11738,26 @@ vertical-thirds2
 <t tx="ekr.20241024123633.1">This option defaults to py:percent.
 
 See https://jupytext.readthedocs.io/en/latest/config.html
+</t>
+<t tx="ekr.20241026115515.1"># Leo created this prefix from @data jupyter-prefix.
+# Jupyter's 'New Python Text Notebook with Percent Format` created this file.
+
+# ---
+# jupyter:
+#   jupytext:
+#     formats: py:percent
+#     text_representation:
+#       extension: .py
+#       format_name: percent
+#       format_version: '1.3'
+#       jupytext_version: 1.16.4
+#   kernelspec:
+#     display_name: Python 3 (ipykernel)
+#     language: python
+#     name: python3
+# ---
+
+# %%
 </t>
 <t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 
