@@ -793,33 +793,49 @@ class HelpCommandsClass(BaseEditCommandsClass):
         cache = dw.layout_cache
         layouts = cache.layout_registry
 
-        intro = textwrap.dedent("""
-            A **layout** is an arrangement of the various frames and panels of Leo's
-            interface. Each layout has a name, such as **vertical-thirds**, and a
-            command that enables that layout, such as **layout-vertical-thirds**.
+        # Rendered the intro as rST
+        intro = textwrap.dedent("""\
+            =============
+            About Layouts
+            =============
 
-            By default, Leo uses the **legacy** layout. LeoSettings.leo contains:
+            A **layout** is an arrangement of the various frames and panels of
+            Leo's interface.
+            
+            Each layout has a **name**, such as ``vertical-thirds``, and a
+            **command** such as ``layout-vertical-thirds``. Such commands switch to
+            the given layout.
+
+            By default, Leo uses the ``legacy`` layout. LeoSettings.leo contains:
 
                 @string qt-layout-name=legacy
 
             As usual, you can override this setting in myLeoSettings.leo.
 
-            Most layouts allocate screen space for the **viewrendered** (VR) or
-            **viewrendered3** (VR3) plugins, whichever you have enabled.
+            Most layouts allocate screen space for the viewrendered (VR) or
+            viewrendered3 (VR3) plugins, whichever you have enabled.
 
-            The plugin will not be visible until you execute one of the
-            **vr-show**, **vr-toggle**, or **vr3-toggle** commands.
+            The plugin will not be visible until you execute one of the vr-show,
+            vr-toggle, or vr3-toggle commands.
 
-            The **help-for-layouts** (this command) and **layout-show-layouts**
-            commands show the avaialable layouts.
+            The show-layouts command and this command (help-for-layouts) show the
+            avaialable layouts.
         """)
 
-        # Append descriptions.
+        # Create lesser rST sections for each layout command.
         listing = [intro + '\n\n']
         for name, docstr in list(layouts.items()):
-            name = name.lstrip()
-            doc_s = textwrap.dedent(docstr)
-            listing.append(f"**{name}**\n\n{doc_s}\n\n")
+            name = name.strip()
+            if 1:  # Use bold lines for command names.
+                listing.append(f"\n\n**{name}**")
+            else:  # Works, but the section names are too big.
+                underline = '-' * len(name)
+                listing.append(name + '\n')
+                listing.append(underline)
+            # The show-layout command renders docstrings as plain text.
+            # That is, all docstrings start literal blocks with ':', not '::'.
+            doc_s = textwrap.dedent(docstr).replace(':\n', '::\n')
+            listing.append(f"\n\n{doc_s}\n\n")
         #@-<< create listing list>>
         c.putHelpFor(''.join(listing))
     #@+node:ekr.20150514063305.396: *3* helpForMinibuffer
