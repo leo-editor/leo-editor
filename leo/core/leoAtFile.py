@@ -1534,20 +1534,23 @@ class AtFile:
             c.endEditing()
             fileName = at.initWriteIvars(root)
             at.sentinels = False
+
             # Prompt for dangerous write if the file exists.
             if not fileName or not at.precheck(fileName, root):
                 return
             # Write a minimal Jupyter file if the @jupytext tree is empty.
             if not root.b.strip() and not root.hasChildren():
-                prefix = c.config.getData('jupyter-prefix',
+                prefix_list = c.config.getData('jupyter-prefix',
                     strip_comments=False, strip_data=False)
-                if prefix and prefix.strip():
+                if prefix_list:
+                    prefix = ''.join(prefix_list)
                     root.b = prefix.strip() + '\n\n'
             at.outputList = []
             at.putFile(root, sentinels=False)
             at.warnAboutOrphandAndIgnoredNodes()
             if at.errors:
-                g.es_print(f"not written: {g.shortFileName(fileName)}")
+                ### g.es_print(f"not written: {g.shortFileName(fileName)}")
+                g.es_print(f"not written: {fileName}")  ## Testing.
                 at.addToOrphanList(root)
             else:
                 new_contents = ''.join(at.outputList)
@@ -1555,7 +1558,8 @@ class AtFile:
                 # Similar to at.replaceFile.
                 c.setFileTimeStamp(fileName)
                 at.rememberReadPath(fileName, root)
-                g.es_print(f"wrote: {g.shortFileName(fileName)}")
+                ### g.es_print(f"wrote: {g.shortFileName(fileName)}")
+                g.es_print(f"wrote: {fileName}")
         except Exception:
             at.writeException(fileName, root)
     #@+node:ekr.20210501065352.1: *6* at.writeOneAtNosentNode

@@ -56,7 +56,7 @@ class JupytextManager:
         """
         Return the full path in effect for the `@jupytext x.ipynb` node at p.
         
-        Return '' on any error, after giving the appropriate error message.
+        On errors, print an error message and return ''.
         """
         if not has_jupytext:
             self.warn_no_jupytext()
@@ -65,10 +65,7 @@ class JupytextManager:
             g.trace(f"Can not happen: not an @jupytext node: {p.h!r}")
             return ''
         path = p.h[len('@jupytext') :].strip()
-        if path.endswith('.ipynb') and os.path.exists(path):
-            return path
-        self.warn_bad_at_jupytext_node(p, path)
-        return ''
+        return path
     #@+node:ekr.20241024160108.1: *3* jtm.get_jupytext_config_file
     def get_jupytext_config_file(self) -> str:
         """
@@ -94,7 +91,11 @@ class JupytextManager:
         """
         path = self.full_path(c, p)
         if not path:
-            return '', ''  # full_path gives any errors.
+            # full_path has given the error.
+            return '', ''
+        if not os.path.exists(path):
+            self.warn_bad_at_jupytext_node(p, path)
+            return '', ''
 
         # Read the .ipynb file into contents.
         # Use jupytext.write, *not* jupytext.writes.
@@ -141,8 +142,9 @@ class JupytextManager:
         - Check that p is an @jupytext node. 
         - Write the .ipynb file corresponding to p.b
         """
-        path = self.full_path(c, p)  # full_path gives any errors.
+        path = self.full_path(c, p)
         if not path:
+            # full_path has given the error.
             return
 
         # Write the .ipynb file.
