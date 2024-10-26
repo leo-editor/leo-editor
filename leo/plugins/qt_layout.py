@@ -66,7 +66,19 @@ def register_layout(name: str):  # type: ignore
         return func  # Ensure the original function is returned
     return decorator
 #@+node:ekr.20241008174351.1: ** Layout commands
-# The docstrings for all these commands must start with a newline.
+#@+at
+# Read Me or Suffer
+#
+# The help-for-layouts and show-layout commands use these docstrings,
+# so the following constraints apply to the following docstrings:
+#
+# 1. All docstrings must start with a newline.
+# 2. Use a *single* ':', followed by a blank line
+#    to denote the start of a layout diagram or
+#    any other verbatim text.
+# 3. All verbatim text must end with a blank line unless
+#    the verbatim text ends the docstring.
+#@@c
 #@+node:tom.20240928171510.1: *3* command: 'layout-big-tree'
 @g.command('layout-big-tree')
 @register_layout('layout-big-tree')
@@ -197,7 +209,7 @@ def render_focused(event: LeoKeyEvent) -> None:
 @register_layout('layout-restore-to-setting')
 def restoreDefaultLayout(event: LeoKeyEvent) -> None:
     """
-    Select the layout specified by the '@string qt-layout-name' setting in effect
+    Select the layout specified by the `@string qt-layout-name` setting in effect
     for this outline. Use the **default** layout if the user's setting is erroneous.
     """
     c = event.get('c')
@@ -216,24 +228,22 @@ def restoreDefaultLayout(event: LeoKeyEvent) -> None:
 @register_layout('layout-swap-log-panel')
 def swapLogPanel(event: LeoKeyEvent) -> None:
     """
-    Move Log frame between main and secondary splitters.
-
-    This command does not actually create a layout of its own.  It
-    should not be used as the initial layout.
-
-    If the Log frame is contained in a different splitter, possibly with
-    some other widget, the entire splitter will be swapped between the main
-    and secondary splitters.
+    Move the Log frame between main and secondary splitters.
+    
+    **Do not use this layout as the initial layout.**
 
     The effect of this command depends on the existing layout. For example,
     if the legacy layout is in effect, this command changes the layout
     from:
+
         ┌───────────┬──────┐
         │ outline   │ log  │
         ├───────────┼──────┤
         │ body      │VR/VR3│
         └───────────┴──────┘
+
     to:
+
         ┌──────────────────┐
         │  outline         │
         ├──────────┬───────┤
@@ -308,7 +318,7 @@ def vertical_thirds2(event: LeoKeyEvent) -> None:
 @g.command('layout-show-layouts')
 @g.command('show-layouts')
 def showLayouts(event) -> None:
-    """Show a list of layout diagrams in a tab in the Log frame."""
+    """Show all layout diagrams in the Log Frame's `layouts` tab."""
     c = event.get('c')
     if not c:
         return
