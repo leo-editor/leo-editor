@@ -1549,8 +1549,7 @@ class AtFile:
             at.putFile(root, sentinels=False)
             at.warnAboutOrphandAndIgnoredNodes()
             if at.errors:
-                ### g.es_print(f"not written: {g.shortFileName(fileName)}")
-                g.es_print(f"not written: {fileName}")  ## Testing.
+                g.es_print(f"not written: {fileName}")
                 at.addToOrphanList(root)
             else:
                 new_contents = ''.join(at.outputList)
@@ -1558,7 +1557,6 @@ class AtFile:
                 # Similar to at.replaceFile.
                 c.setFileTimeStamp(fileName)
                 at.rememberReadPath(fileName, root)
-                ### g.es_print(f"wrote: {g.shortFileName(fileName)}")
                 g.es_print(f"wrote: {fileName}")
         except Exception:
             at.writeException(fileName, root)
