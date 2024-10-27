@@ -210,7 +210,7 @@ def render_focused(event: LeoKeyEvent) -> None:
 def restoreDefaultLayout(event: LeoKeyEvent) -> None:
     """
     Select the layout specified by the `@string qt-layout-name` setting in effect
-    for this outline. Use the **default** layout if the user's setting is erroneous.
+    for this outline. Use the **legacy** layout if the user's setting is erroneous.
     """
     c = event.get('c')
     if not c:
