@@ -727,6 +727,9 @@ class Position:
     def isAtFileNode(self) -> bool:
         return self.v.isAtFileNode()
 
+    def isAtJupytextNode(self) -> bool:
+        return self.v.isAtJupytextNode()
+
     def isAtIgnoreNode(self) -> bool:
         return self.v.isAtIgnoreNode()
 
@@ -2135,6 +2138,10 @@ class VNode:
         names = ("@file", "@thin")  # Fix #403.
         return self.findAtFileName(names)
 
+    def atJupytextNodeName(self) -> str:
+        names = ("@jupytext",)
+        return self.findAtFileName(names)
+
     def atNoSentinelsFileNodeName(self) -> str:
         names = ("@nosent", "@file-nosent",)
         return self.findAtFileName(names)
@@ -2183,6 +2190,9 @@ class VNode:
 
     def isAtFileNode(self) -> bool:
         return bool(self.atFileNodeName())
+
+    def isAtJupytextNode(self) -> bool:
+        return bool(self.atJupytextNodeName())
 
     def isAtRstFileNode(self) -> bool:
         return bool(self.atRstFileNodeName())
