@@ -460,15 +460,15 @@ class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
     #@+node:ekr.20241027124630.1: *4* LayoutCacheWidget.contract_body
     def contract_body(self):
         """Contract the body pane"""
-        self.contract_pane(self.c.frame.body)
+        self.contract_pane(self.c.frame.body.widget)
     #@+node:ekr.20241027125414.1: *4* LayoutCacheWidget.contract_log
     def contract_log(self):
         """Contract the log pane"""
-        self.contract_pane(self.c.frame.log)
+        self.contract_pane(self.c.frame.log.logWidget)
     #@+node:ekr.20241027125415.1: *4* LayoutCacheWidget.contract_outline
     def contract_outline(self):
         """Contract the outline pane"""
-        self.contract_pane(self.c.frame.tree)
+        self.contract_pane(self.c.frame.tree.treeWidget)
     #@+node:ekr.20241027141341.1: *4* LayoutCacheWidget.contract_vr
     def contract_vr(self):
         """Contract the VR pane if VR is running"""
@@ -492,15 +492,15 @@ class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
     #@+node:ekr.20241027124500.1: *4* LayoutCacheWidget.expand_body
     def expand_body(self):
         """Expand the body pane"""
-        self.expand_pane(self.c.frame.body)
+        self.expand_pane(self.c.frame.body.widget)
     #@+node:ekr.20241027125500.1: *4* LayoutCacheWidget.expand_log
     def expand_log(self):
         """Expand the log pane"""
-        self.expand_pane(self.c.frame.log)
+        self.expand_pane(self.c.frame.log.logWidget)
     #@+node:ekr.20241027124703.1: *4* LayoutCacheWidget.expand_outline
     def expand_outline(self):
         """Expand the outline pane."""
-        self.expand_pane(self.c.frame.tree)
+        self.expand_pane(self.c.frame.tree.treeWidget)
     #@+node:ekr.20241027141425.1: *4* LayoutCacheWidget.expand_vr
     def expand_vr(self):
         """Expand the VR pane if VR is running"""
@@ -521,26 +521,22 @@ class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
         else:
             g.es_print('VR3 is not running', color='blue')
     #@+node:ekr.20241027162525.1: *3* LayoutCacheWidget: utils
-    #@+node:ekr.20241027161121.1: *4* LayoutCacheWidget.contract_pane
+    #@+node:ekr.20241027161121.1: *4* LayoutCacheWidget.contract_pane & expand_pane
     def contract_pane(self, widget: Any) -> None:
         """Contract the pane containing the given widget."""
-        try:
-            name = widget.objectName()
-            g.trace(name)
-        except Exception:
-            g.es_print('Oops', color='red')
-            g.trace(g.callers())
-            g.es_exception()
-    #@+node:ekr.20241027161215.1: *4* LayoutCacheWidget.expand_pane
+        self.contract_pane_by_name(widget.objectName())
+
     def expand_pane(self, widget: Any) -> None:
         """Expand the pane containing the given widget."""
-        try:
-            name = widget.objectName()
-            g.trace(name)
-        except Exception:
-            g.es_print('Oops', color='red')
-            g.trace(g.callers())
-            g.es_exception()
+        self.expand_pane_by_name(widget.objectName())
+    #@+node:ekr.20241027161215.1: *4* LayoutCacheWidget.contract_pane_by_name
+    def contract_pane_by_name(self, name: str) -> None:
+        """Contract the pane whose objectName is given"""
+        g.trace(name)
+    #@+node:ekr.20241027172516.1: *4* LayoutCacheWidget.expand_pane_by_name
+    def expand_pane_by_name(self, name: str) -> None:
+        """Expand the pane whose objectName is given"""
+        g.trace(name)
     #@+node:tom.20240923194438.5: *4* LayoutCacheWidget.find_splitter_by_name
     def find_splitter_by_name(self, name: str) -> QW:
         """Return a splitter instance given its objectName.
