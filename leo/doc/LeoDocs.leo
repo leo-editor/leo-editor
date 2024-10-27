@@ -1280,6 +1280,9 @@
 </v>
 </v>
 </v>
+<v t="ekr.20241027051721.1"><vh>Leo and Jupyter Notebooks</vh>
+<v t="ekr.20241027051739.1"><vh>@rst html\jupyternotebooks.html</vh></v>
+</v>
 <v t="ekr.20070317033759"><vh>Embedding Leo with the leoBridge module</vh>
 <v t="ekr.20070317033759.1"><vh>@rst html\leoBridge.html</vh>
 <v t="ekr.20070317033759.3"><vh>The basics</vh></v>
@@ -2517,6 +2520,8 @@
 </v>
 <v t="ekr.20240828095959.1"></v>
 <v t="ekr.20240828094953.1"><vh>Leo 6.8.2 release notes</vh></v>
+<v t="ekr.20241027051721.1"></v>
+<v t="ekr.20241027051739.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -14570,6 +14575,7 @@ Leo and Other Programs
 .. toctree::
    :maxdepth: 2
 
+   jupyternotebooks
    leoandasciidoc
    emacs
    vimBindings
@@ -33030,6 +33036,23 @@ Retired features:
 - `PR #4113`_: Retire ILeo, Leo's IPython bridge. It hasn't worked in years.
 </t>
 <t tx="ekr.20240919055407.1"></t>
+<t tx="ekr.20241027051721.1"></t>
+<t tx="ekr.20241027051739.1">################################
+Using Leo with Jupyter Notebooks
+################################
+
+.. _`jupytext`: https://jupytext.readthedocs.io/en/latest/
+
+The chapter discusses `@jupytext`, a new kind of `@&lt;file&gt;`.
+
+`@jupytext` works much like `@clean`, but it's a thin wrapper around
+the `jupytext`_ library.
+
+.. contents:: Contents
+    :depth: 3
+    :local:
+
+</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
