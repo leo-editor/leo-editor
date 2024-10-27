@@ -468,6 +468,14 @@ class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
     def contract_outline(self):
         """Contract the outline pane"""
         g.trace('Not ready')
+    #@+node:ekr.20241027141341.1: *3* LayoutCacheWidget.contract_vr
+    def contract_vr(self):
+        """Contract the VR pane if VR is running"""
+        g.trace('Not ready')
+    #@+node:ekr.20241027141411.1: *3* LayoutCacheWidget.contract_vr3
+    def contract_vr3(self):
+        """Contract the VR3 pane if VR3 is running"""
+        g.trace('Not ready')
     #@+node:ekr.20241027124500.1: *3* LayoutCacheWidget.expand_body
     def expand_body(self):
         """Expand the body pane"""
@@ -479,6 +487,14 @@ class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
     #@+node:ekr.20241027124703.1: *3* LayoutCacheWidget.expand_outline
     def expand_outline(self):
         """Expand the outline pane."""
+        g.trace('Not ready')
+    #@+node:ekr.20241027141425.1: *3* LayoutCacheWidget.expand_vr
+    def expand_vr(self):
+        """Expand the VR pane if VR is running"""
+        g.trace('Not ready')
+    #@+node:ekr.20241027141446.1: *3* LayoutCacheWidget.expand_vr3
+    def expand_vr3(self):
+        """Expand the VR3 pane if VR3 is running"""
         g.trace('Not ready')
     #@+node:tom.20240923194438.5: *3* LayoutCacheWidget.find_splitter_by_name
     def find_splitter_by_name(self: QW, name: str, _: Optional[QW] = None) -> QW:
