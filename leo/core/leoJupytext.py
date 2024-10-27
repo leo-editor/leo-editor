@@ -65,7 +65,8 @@ class JupytextManager:
             g.trace(f"Can not happen: not an @jupytext node: {p.h!r}")
             return ''
         path = p.h[len('@jupytext') :].strip()
-        return path
+        full_path = c.fullPath(p)
+        return full_path
     #@+node:ekr.20241024160108.1: *3* jtm.get_jupytext_config_file
     def get_jupytext_config_file(self) -> str:
         """
