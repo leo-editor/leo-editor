@@ -648,7 +648,7 @@ class AtFile:
             g.es_print('updating:', fileName)
         root.clearVisitedInTree()
         gnx2vnode = at.fileCommands.gnxDict
-        new_contents = ''.join(new_private_lines)
+        new_contents = '@language python\n' + ''.join(new_private_lines)
         FastAtRead(c, gnx2vnode).read_into_root(new_contents, fileName, root)
     #@+node:ekr.20080711093251.7: *5* at.readOneAtShadowNode & helper
     def readOneAtShadowNode(self, fn: str, p: Position) -> None:  # pragma: no cover
