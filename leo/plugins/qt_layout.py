@@ -17,6 +17,7 @@ from leo.core import leoGlobals as g
 QW = TypeVar('QW', bound=QtWidgets.QWidget)
 OD = TypeVar('OD', bound=OrderedDict)
 
+QSplitter = QtWidgets.QSplitter
 QWidget = QtWidgets.QWidget
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -457,19 +458,19 @@ class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
 
     #@+others
     #@+node:ekr.20241027142532.1: *3* LayoutCasheWidget: contract_*
-    #@+node:ekr.20241027124630.1: *4* LayoutCacheWidget.contract_body
+    #@+node:ekr.20241027124630.1: *4* LCW.contract_body
     def contract_body(self):
         """Contract the body pane"""
         self.contract_pane(self.c.frame.body.widget)
-    #@+node:ekr.20241027125414.1: *4* LayoutCacheWidget.contract_log
+    #@+node:ekr.20241027125414.1: *4* LCW.contract_log
     def contract_log(self):
         """Contract the log pane"""
         self.contract_pane(self.c.frame.log.logWidget)
-    #@+node:ekr.20241027125415.1: *4* LayoutCacheWidget.contract_outline
+    #@+node:ekr.20241027125415.1: *4* LCW.contract_outline
     def contract_outline(self):
         """Contract the outline pane"""
         self.contract_pane(self.c.frame.tree.treeWidget)
-    #@+node:ekr.20241027141341.1: *4* LayoutCacheWidget.contract_vr
+    #@+node:ekr.20241027141341.1: *4* LCW.contract_vr
     def contract_vr(self):
         """Contract the VR pane if VR is running"""
         c = self.c
@@ -478,7 +479,7 @@ class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
             self.expand_pane(vr)
         else:
             g.es_print('VR is not running', color='blue')
-    #@+node:ekr.20241027141411.1: *4* LayoutCacheWidget.contract_vr3
+    #@+node:ekr.20241027141411.1: *4* LCW.contract_vr3
     def contract_vr3(self):
         """Contract the VR3 pane if VR3 is running"""
         c = self.c
@@ -489,19 +490,19 @@ class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
         else:
             g.es_print('VR3 is not running', color='blue')
     #@+node:ekr.20241027142605.1: *3* LayoutCacheWidget: expand_*
-    #@+node:ekr.20241027124500.1: *4* LayoutCacheWidget.expand_body
+    #@+node:ekr.20241027124500.1: *4* LCW.expand_body
     def expand_body(self):
         """Expand the body pane"""
         self.expand_pane(self.c.frame.body.widget)
-    #@+node:ekr.20241027125500.1: *4* LayoutCacheWidget.expand_log
+    #@+node:ekr.20241027125500.1: *4* LCW.expand_log
     def expand_log(self):
         """Expand the log pane"""
         self.expand_pane(self.c.frame.log.logWidget)
-    #@+node:ekr.20241027124703.1: *4* LayoutCacheWidget.expand_outline
+    #@+node:ekr.20241027124703.1: *4* LCW.expand_outline
     def expand_outline(self):
         """Expand the outline pane."""
         self.expand_pane(self.c.frame.tree.treeWidget)
-    #@+node:ekr.20241027141425.1: *4* LayoutCacheWidget.expand_vr
+    #@+node:ekr.20241027141425.1: *4* LCW.expand_vr
     def expand_vr(self):
         """Expand the VR pane if VR is running"""
         c = self.c
@@ -510,7 +511,7 @@ class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
             self.expand_pane(vr)
         else:
             g.es_print('VR is not running', color='blue')
-    #@+node:ekr.20241027141446.1: *4* LayoutCacheWidget.expand_vr3
+    #@+node:ekr.20241027141446.1: *4* LCW.expand_vr3
     def expand_vr3(self):
         """Expand the VR3 pane if VR3 is running"""
         c = self.c
@@ -521,7 +522,7 @@ class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
         else:
             g.es_print('VR3 is not running', color='blue')
     #@+node:ekr.20241027162525.1: *3* LayoutCacheWidget: utils
-    #@+node:ekr.20241027161121.1: *4* LayoutCacheWidget.contract_pane & expand_pane
+    #@+node:ekr.20241027161121.1: *4* LCW.contract_pane & expand_pane
     def contract_pane(self, widget: Any) -> None:
         """Contract the pane containing the given widget."""
         self.contract_pane_by_name(widget.objectName())
@@ -529,15 +530,35 @@ class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
     def expand_pane(self, widget: Any) -> None:
         """Expand the pane containing the given widget."""
         self.expand_pane_by_name(widget.objectName())
-    #@+node:ekr.20241027161215.1: *4* LayoutCacheWidget.contract_pane_by_name
+    #@+node:ekr.20241027161215.1: *4* LCW.contract_pane_by_name
     def contract_pane_by_name(self, name: str) -> None:
         """Contract the pane whose objectName is given"""
-        g.trace(name)
-    #@+node:ekr.20241027172516.1: *4* LayoutCacheWidget.expand_pane_by_name
+        widget = self.find_widget(name)
+        if not widget:
+            g.trace(f"No widget with name: {name!r}")
+            return
+        splitter = self.find_parent_splitter(widget)
+        if splitter:
+            index = splitter.indexOf(widget)
+            self.resize_splitter(splitter, index, -10)
+        else:
+            g.trace(f"No splitter for name: {name!r}")
+
+    #@+node:ekr.20241027172516.1: *4* LCW.expand_pane_by_name
     def expand_pane_by_name(self, name: str) -> None:
         """Expand the pane whose objectName is given"""
-        g.trace(name)
-    #@+node:tom.20240923194438.5: *4* LayoutCacheWidget.find_splitter_by_name
+        widget = self.find_widget(name)
+        if not widget:
+            g.trace(f"No widget with name: {name!r}")
+            return
+        splitter = self.find_parent_splitter(widget)
+        if splitter:
+            index = splitter.indexOf(widget)
+            self.resize_splitter(splitter, index, 10)
+        else:
+            g.trace(f"No splitter for name: {name!r}")
+
+    #@+node:tom.20240923194438.5: *4* LCW.find_splitter_by_name
     def find_splitter_by_name(self, name: str) -> QW:
         """Return a splitter instance given its objectName.
         
@@ -560,11 +581,20 @@ class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
                     splitter = kid  # type: ignore [assignment]
                     break
         return splitter
-    #@+node:ekr.20241008180818.1: *4* LayoutCacheWidget.find_widget
+    #@+node:ekr.20241027183453.1: *4* LCW.find_parent_splitter
+    def find_parent_splitter(self, widget: QW) -> Optional[QSplitter]:
+        """Return the nearest parent QSplitter widget."""
+        parent = widget.parent()
+        while parent:
+            if isinstance(parent, QtWidgets.QSplitter):
+                return parent
+            parent = parent.parent()
+        return None
+    #@+node:ekr.20241008180818.1: *4* LCW.find_widget
     def find_widget(self, name: str) -> QW:
         """Return a widget given it objectName."""
         return g.app.gui.find_widget_by_name(self.c, name)
-    #@+node:tom.20240923194438.4: *4* LayoutCacheWidget.find_widget_in_children
+    #@+node:tom.20240923194438.4: *4* LCW.find_widget_in_children
     def find_widget_in_children(self, name: str) -> QW:  ### : Optional[QW] = None
         """Return a child widget with the given objectName.
         """
@@ -574,7 +604,11 @@ class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
                 w = kid  # type: ignore [assignment]
         return w
 
-    #@+node:tom.20240923194438.6: *4* LayoutCacheWidget.restoreFromLayout
+    #@+node:ekr.20241027181931.1: *4* LCW.resize_splitter
+    def resize_splitter(self, splitter: Any, index: int, factor: int) -> None:
+        """Resize the splitter."""
+        g.trace(splitter.objectName(), index, factor)
+    #@+node:tom.20240923194438.6: *4* LCW.restoreFromLayout
     def restoreFromLayout(self, layout: Dict = None) -> None:
         if layout is None:
             layout = FALLBACK_LAYOUT
