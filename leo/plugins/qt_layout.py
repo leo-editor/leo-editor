@@ -456,7 +456,7 @@ class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
         self.layout_registry = LAYOUT_REGISTRY
 
     #@+others
-    #@+node:ekr.20241027142532.1: *3* LayoutCaseWidget: contract_*
+    #@+node:ekr.20241027142532.1: *3* LayoutCasheWidget: contract_*
     #@+node:ekr.20241027124630.1: *4* LayoutCacheWidget.contract_body
     def contract_body(self):
         """Contract the body pane"""
@@ -483,7 +483,7 @@ class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
             g.es_print('VR3 is not running', color='blue')
             return
         g.trace('Not ready')
-    #@+node:ekr.20241027142605.1: *3* LayoutCaseWidget: expand_*
+    #@+node:ekr.20241027142605.1: *3* LayoutCacheWidget: expand_*
     #@+node:ekr.20241027124500.1: *4* LayoutCacheWidget.expand_body
     def expand_body(self):
         """Expand the body pane"""
@@ -510,14 +510,21 @@ class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
             g.es_print('VR3 is not running', color='blue')
             return
         g.trace('Not ready')
-    #@+node:tom.20240923194438.5: *3* LayoutCacheWidget.find_splitter_by_name
-    def find_splitter_by_name(self: QW, name: str, _: Optional[QW] = None) -> QW:
+    #@+node:ekr.20241027162525.1: *3* LayoutCacheWidget: utils
+    #@+node:ekr.20241027161121.1: *4* LayoutCacheWidget.contract_pane_by_name
+    def contract_pane_by_name(self, name: str) -> None:
+        """Contract the pane with the given Qt objectName."""
+        g.trace('Not ready', name)
+    #@+node:ekr.20241027161215.1: *4* LayoutCacheWidget.expand_pane_by_name
+    def expand_pane_by_name(self, name: str) -> None:
+        """Expand the pane with the given Qt objectName."""
+        g.trace('Not ready', name)
+    #@+node:tom.20240923194438.5: *4* LayoutCacheWidget.find_splitter_by_name
+    def find_splitter_by_name(self, name: str) -> QW:
         """Return a splitter instance given its objectName.
         
         This method could return other types of widgets but is intended
         for finding known splitters.
-        
-        The "_" argument is needed to satisfy mypy.  It is never used.
         """
         foundit = False
         splitter: QW = None
@@ -535,20 +542,13 @@ class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
                     splitter = kid  # type: ignore [assignment]
                     break
         return splitter
-    #@+node:ekr.20241008180818.1: *3* LayoutCacheWidget.find_widget
-    def find_widget(self, name: str, _: Optional[QW] = None) -> QW:
-        """Return a widget given it objectName.
-        
-        The "_" argument is needed to satisfy mypy.  It is never used.
-        """
-        widget: QW = g.app.gui.find_widget_by_name(self.c, name)  # type: ignore[attr-defined]
-        return widget
-
-    #@+node:tom.20240923194438.4: *3* LayoutCacheWidget.find_widget_in_children
-    def find_widget_in_children(self, name: str, _: Optional[QW] = None) -> QW:
-        """Return a child widget if its objectName matches "name".
-        
-        The "_" argument is needed to satisfy mypy.  It is never used.
+    #@+node:ekr.20241008180818.1: *4* LayoutCacheWidget.find_widget
+    def find_widget(self, name: str) -> QW:
+        """Return a widget given it objectName."""
+        return g.app.gui.find_widget_by_name(self.c, name)
+    #@+node:tom.20240923194438.4: *4* LayoutCacheWidget.find_widget_in_children
+    def find_widget_in_children(self, name: str) -> QW:  ### : Optional[QW] = None
+        """Return a child widget with the given objectName.
         """
         w: QW = None
         for kid in self.children():
@@ -556,12 +556,12 @@ class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
                 w = kid  # type: ignore [assignment]
         return w
 
-    #@+node:tom.20240923194438.6: *3* LayoutCacheWidget.restoreFromLayout
+    #@+node:tom.20240923194438.6: *4* LayoutCacheWidget.restoreFromLayout
     def restoreFromLayout(self, layout: Dict = None) -> None:
         if layout is None:
             layout = FALLBACK_LAYOUT
         #@+<< initialize data structures >>
-        #@+node:tom.20240923194438.7: *4* << initialize data structures >> restoreFromLayout
+        #@+node:tom.20240923194438.7: *5* << initialize data structures >> restoreFromLayout
         ORIENTATIONS = layout['ORIENTATIONS']
 
         has_vr3 = is_module_loaded(VR3_MODULE_NAME)
@@ -599,7 +599,7 @@ class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
 
         #@-<< initialize data structures >>
         #@+<< rehome body editor >>
-        #@+node:tom.20240923194438.8: *4* << rehome body editor >> restoreFromLayout
+        #@+node:tom.20240923194438.8: *5* << rehome body editor >> restoreFromLayout
         # In case the editor has been moved to e.g. a QTabWidget,
         # Move it back to its standard place.
 
@@ -610,7 +610,7 @@ class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
         bsw.setCurrentIndex(0)
         #@-<< rehome body editor >>
         #@+<< clean up splitters >>
-        #@+node:tom.20240923194438.9: *4* << clean up splitters >> restoreFromLayout
+        #@+node:tom.20240923194438.9: *5* << clean up splitters >> restoreFromLayout
         # Remove extra (no longer wanted) widgets to the cache.
         # Then insert the required widgets into their home splitters
 
@@ -641,7 +641,7 @@ class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
                 splitter.setParent(self)
         #@-<< clean up splitters >>
         #@+<< set default orientations >>
-        #@+node:tom.20240923194438.11: *4* << set default orientations >> restoreFromLayout
+        #@+node:tom.20240923194438.11: *5* << set default orientations >> restoreFromLayout
         # SPLITTER_DICT: {'main_splitter':ms, ...}
         # DEFAULT_ORIENTATIONS:
         # {'main_splitter':Orientation.Horizontal...}
@@ -651,7 +651,7 @@ class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
             splitter.setOrientation(orientation)
         #@-<< set default orientations >>
         #@+<< move widgets to targets >>
-        #@+node:tom.20240923194438.10: *4* << move widgets to targets >> restoreFromLayout
+        #@+node:tom.20240923194438.10: *5* << move widgets to targets >> restoreFromLayout
         # Move all desired widgets into their home splitters
         # SPLITTERS is an OrderedDict so the widgets will
         # be inserted in the right order.
@@ -668,7 +668,7 @@ class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
                     dest.insertWidget(i, widget)
         #@-<< move widgets to targets >>
         #@+<< resize splitters >>
-        #@+node:tom.20240923194438.12: *4* << resize splitters >> restoreFromLayout
+        #@+node:tom.20240923194438.12: *5* << resize splitters >> restoreFromLayout
         for splt in SPLITTER_DICT.values():
             g.app.gui.equalize_splitter(splt)  # type: ignore[attr-defined]
         #@-<< resize splitters >>
