@@ -227,7 +227,8 @@ class ShadowController:
         sm = difflib.SequenceMatcher(None, x.a, x.b)
         # Ensure leading sentinels are put first.
         x.put_sentinels(0)
-        x.sentinels[0] = []
+        if x.sentinels:  # 2024/10/25.
+            x.sentinels[0] = []
         for tag, ai, aj, bi, bj in sm.get_opcodes():
             f = x.dispatch_dict.get(tag, x.op_bad)
             f(tag, ai, aj, bi, bj)

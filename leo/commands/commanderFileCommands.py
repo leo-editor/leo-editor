@@ -165,6 +165,7 @@ def importAnyFile(self: Self, event: LeoKeyEvent = None) -> None:
         ("FreeMind files", "*.mm.html"),
         ("Java files", "*.java"),
         ("JavaScript files", "*.js"),
+        ("Jupyter notebooks", "*.ipynb"),
         # ("JSON files", "*.json"),
         ("Mindjet files", "*.csv"),
         ("MORE files", "*.MORE"),
@@ -204,6 +205,8 @@ def importAnyFile(self: Self, event: LeoKeyEvent = None) -> None:
             ic.importMindMap([fn])
         elif ext in ('cw', 'cweb'):
             ic.importWebCommand([fn], "cweb")
+        elif ext == 'ipynb':
+            ic.importJupytextFiles([fn])
         # Not useful. Use @auto x.json instead.
         # elif ext == 'json':
             # ic.importJSON([fn])
@@ -362,6 +365,9 @@ def refreshFromDisk(self: Self, event: LeoKeyEvent = None) -> None:
     elif p.isAtCleanNode():
         # Don't delete children!
         at.readOneAtCleanNode(p)
+    elif p.isAtJupytextNode():
+        # Don't delete children!
+        at.readOneAtJupytextNode(p)
     elif p.isAtShadowFileNode():
         p.v._deleteAllChildren()
         at.read(p)
@@ -370,7 +376,7 @@ def refreshFromDisk(self: Self, event: LeoKeyEvent = None) -> None:
     elif p.isAtAsisFileNode():
         at.readOneAtAsisNode(p)  # Always deletes children.
     else:
-        g.es_print(f"Unknown @<file> node: {p.h!r}")
+        g.es_print(f"refresh-from-disk: Unknown @<file> node: {p.h!r}")
         return
     if p.v.gnx != old_gnx and not g.unitTesting:
         g.es_print(f"refresh-from-disk changed the gnx for `{p.h}`")

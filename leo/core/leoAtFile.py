@@ -385,7 +385,8 @@ class AtFile:
                 p.isAtEditNode() or
                 p.isAtShadowFileNode() or
                 p.isAtFileNode() or
-                p.isAtCleanNode()  # 1134.
+                p.isAtCleanNode() or
+                p.isAtJupytextNode()
             ):
                 files.append(p.copy())
                 p.moveToNodeAfterTree()
@@ -412,6 +413,8 @@ class AtFile:
             at.rememberReadPath(c.fullPath(p), p)
         elif p.isAtCleanNode():
             at.readOneAtCleanNode(p)
+        elif p.isAtJupytextNode():
+            at.readOneAtJupytextNode(p)
     #@+node:ekr.20220121052056.1: *5* at.readAllSelected
     def readAllSelected(self, root: Position) -> None:  # pragma: no cover
         """Read all @<file> nodes in root's tree."""
@@ -445,6 +448,27 @@ class AtFile:
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
+    #@+node:ekr.20190201104956.1: *5* at.readOneAtAsisNode
+    def readOneAtAsisNode(self, p: Position) -> None:  # pragma: no cover
+        """Read one @asis node. Used only by refresh-from-disk"""
+        at, c = self, self.c
+        fn = c.fullPath(p)
+        junk, ext = g.os_path_splitext(fn)
+        # Remember the full fileName.
+        at.rememberReadPath(fn, p)
+        # if not g.unitTesting: g.es("reading: @asis %s" % (g.shortFileName(fn)))
+        s, e = g.readFileIntoString(fn, kind='@edit')
+        if s is None:
+            return
+        encoding = 'utf-8' if e is None else e
+        # Delete all children.
+        while p.hasChildren():
+            p.firstChild().doDelete()
+        old_body = p.b
+        p.b = g.toUnicode(s, encoding=encoding, reportErrors=True)
+        if not c.isChanged() and p.b != old_body:
+            c.setChanged()
+        g.doHook('after-reading-external-file', c=c, p=p)
     #@+node:ekr.20070909100252: *5* at.readOneAtAutoNode
     def readOneAtAutoNode(self, p: Position) -> Position:  # pragma: no cover
         """Read an @auto file into p. Return the *new* position."""
@@ -480,59 +504,6 @@ class AtFile:
             g.doHook('after-auto', c=c, p=p)
             g.doHook('after-reading-external-file', c=c, p=p)
         return p  # For #451: return p.
-    #@+node:ekr.20090225080846.3: *5* at.readOneAtEditNode
-    def readOneAtEditNode(self, p: Position) -> None:  # pragma: no cover
-        at = self
-        c = at.c
-        ic = c.importCommands
-        fn = c.fullPath(p)
-        junk, ext = g.os_path_splitext(fn)
-        # Fix bug 889175: Remember the full fileName.
-        at.rememberReadPath(fn, p)
-        # if not g.unitTesting: g.es("reading: @edit %s" % (g.shortFileName(fn)))
-        s, e = g.readFileIntoString(fn, kind='@edit')
-        if s is None:
-            return
-        encoding = 'utf-8' if e is None else e
-        # Delete all children.
-        while p.hasChildren():
-            p.firstChild().doDelete()
-        head = ''
-        ext = ext.lower()
-        if ext in ('.html', '.htm'):
-            head = '@language html\n'
-        elif ext in ('.txt', '.text'):
-            head = '@nocolor\n'
-        else:
-            language = ic.languageForExtension(ext)
-            if language and language != 'unknown_language':
-                head = f"@language {language}\n"
-            else:
-                head = '@nocolor\n'
-        p.b = head + g.toUnicode(s, encoding=encoding, reportErrors=True)
-        g.doHook('after-edit', p=p)
-        g.doHook('after-reading-external-file', c=c, p=p)
-    #@+node:ekr.20190201104956.1: *5* at.readOneAtAsisNode
-    def readOneAtAsisNode(self, p: Position) -> None:  # pragma: no cover
-        """Read one @asis node. Used only by refresh-from-disk"""
-        at, c = self, self.c
-        fn = c.fullPath(p)
-        junk, ext = g.os_path_splitext(fn)
-        # Remember the full fileName.
-        at.rememberReadPath(fn, p)
-        # if not g.unitTesting: g.es("reading: @asis %s" % (g.shortFileName(fn)))
-        s, e = g.readFileIntoString(fn, kind='@edit')
-        if s is None:
-            return
-        encoding = 'utf-8' if e is None else e
-        # Delete all children.
-        while p.hasChildren():
-            p.firstChild().doDelete()
-        old_body = p.b
-        p.b = g.toUnicode(s, encoding=encoding, reportErrors=True)
-        if not c.isChanged() and p.b != old_body:
-            c.setChanged()
-        g.doHook('after-reading-external-file', c=c, p=p)
     #@+node:ekr.20150204165040.5: *5* at.readOneAtCleanNode & helpers
     def readOneAtCleanNode(self, root: Position) -> bool:  # pragma: no cover
         """Update the @clean/@nosent node at root."""
@@ -598,6 +569,87 @@ class AtFile:
         result = at.atFileToString(root, sentinels=True)
         s = g.toUnicode(result, encoding=at.encoding)
         return g.splitLines(s)
+    #@+node:ekr.20090225080846.3: *5* at.readOneAtEditNode
+    def readOneAtEditNode(self, p: Position) -> None:  # pragma: no cover
+        at = self
+        c = at.c
+        ic = c.importCommands
+        fn = c.fullPath(p)
+        junk, ext = g.os_path_splitext(fn)
+        # Fix bug 889175: Remember the full fileName.
+        at.rememberReadPath(fn, p)
+        # if not g.unitTesting: g.es("reading: @edit %s" % (g.shortFileName(fn)))
+        s, e = g.readFileIntoString(fn, kind='@edit')
+        if s is None:
+            return
+        encoding = 'utf-8' if e is None else e
+        # Delete all children.
+        while p.hasChildren():
+            p.firstChild().doDelete()
+        head = ''
+        ext = ext.lower()
+        if ext in ('.html', '.htm'):
+            head = '@language html\n'
+        elif ext in ('.txt', '.text'):
+            head = '@nocolor\n'
+        else:
+            language = ic.languageForExtension(ext)
+            if language and language != 'unknown_language':
+                head = f"@language {language}\n"
+            else:
+                head = '@nocolor\n'
+        p.b = head + g.toUnicode(s, encoding=encoding, reportErrors=True)
+        g.doHook('after-edit', p=p)
+        g.doHook('after-reading-external-file', c=c, p=p)
+    #@+node:ekr.20241023135739.1: *5* at.readOneAtJupytextNode
+    def readOneAtJupytextNode(self, root: Position) -> None:  # pragma: no cover
+        """
+        p must be an @jupytext node.
+        - Convert the .ipynb file to a string s.
+        - Update p.b's tree using s. 
+        
+        This code is adapted from at.readOneAtCleanNode.
+        """
+        at, c, x = self, self.c, self.c.shadowController
+        contents, fileName = g.app.jupytextManager.read(c, root)
+        if not contents:
+            return
+        if not os.path.exists(fileName):
+            g.internalError(f"does not exist: {fileName!r}")
+            return
+
+        at.rememberReadPath(fileName, root)
+        at.initReadIvars(root, fileName)
+
+        # Always use python comments.
+        at.startSentinelComment = '#'
+        at.endSentinelComment = ""  # Must not be None.
+        delims = '#', '', ''
+        marker = x.Marker(delims)
+
+        # The body of the update algorithm.
+        new_public_lines = g.splitLines(contents)
+        old_private_lines = self.write_at_clean_sentinels(root)
+        old_public_lines, junk = x.separate_sentinels(old_private_lines, marker)
+        new_private_lines = x.propagate_changed_lines(
+            new_public_lines, old_private_lines, marker, p=root)
+        if old_public_lines:  # Don't even *think* about removing this test.
+            new_private_lines = x.propagate_changed_lines(
+                new_public_lines, old_private_lines, marker, p=root)
+        else:
+            # This is not an error.
+            # g.es_print('No old_public_lines!', fileName)
+            new_private_lines = []
+            root.b = ''.join(new_public_lines)
+            return
+        if new_private_lines == old_private_lines:
+            return
+        if not g.unitTesting:
+            g.es_print('updating:', fileName)
+        root.clearVisitedInTree()
+        gnx2vnode = at.fileCommands.gnxDict
+        new_contents = '@language python\n' + ''.join(new_private_lines)
+        FastAtRead(c, gnx2vnode).read_into_root(new_contents, fileName, root)
     #@+node:ekr.20080711093251.7: *5* at.readOneAtShadowNode & helper
     def readOneAtShadowNode(self, fn: str, p: Position) -> None:  # pragma: no cover
 
@@ -1112,6 +1164,7 @@ class AtFile:
             (p.isAtCleanNode, at.writeOneAtCleanNode),
             (p.isAtEditNode, at.writeOneAtEditNode),
             (p.isAtFileNode, at.writeOneAtFileNode),
+            (p.isAtJupytextNode, at.writeOneAtJupytextNode),
             (p.isAtNoSentFileNode, at.writeOneAtNosentNode),
             (p.isAtShadowFileNode, at.writeOneAtShadowNode),
             (p.isAtThinFileNode, at.writeOneAtFileNode),
@@ -1467,6 +1520,45 @@ class AtFile:
             else:
                 contents = ''.join(at.outputList)
                 at.replaceFile(contents, at.encoding, fileName, root)
+        except Exception:
+            at.writeException(fileName, root)
+    #@+node:ekr.20241023134114.1: *6* at.writeOneAtJupytextNode
+    def writeOneAtJupytextNode(self, root: Position) -> None:  # pragma: no cover
+        """
+        p must be an @jupytext node.
+        Write the corresponding .ipynb file from p and all p's descendants.
+        
+        This code is adapted from at.writeOneAtCleanNode.
+        """
+        at, c = self, self.c
+        try:
+            c.endEditing()
+            fileName = at.initWriteIvars(root)
+            at.sentinels = False
+
+            # Prompt for dangerous write if the file exists.
+            if not fileName or not at.precheck(fileName, root):
+                return
+            # Write a minimal Jupyter file if the @jupytext tree is empty.
+            if not root.b.strip() and not root.hasChildren():
+                prefix_list = c.config.getData('jupyter-prefix',
+                    strip_comments=False, strip_data=False)
+                if prefix_list:
+                    prefix = ''.join(prefix_list)
+                    root.b = prefix.strip() + '\n\n'
+            at.outputList = []
+            at.putFile(root, sentinels=False)
+            at.warnAboutOrphandAndIgnoredNodes()
+            if at.errors:
+                g.es_print(f"not written: {fileName}")
+                at.addToOrphanList(root)
+            else:
+                new_contents = ''.join(at.outputList)
+                g.app.jupytextManager.write(c, root, new_contents)
+                # Similar to at.replaceFile.
+                c.setFileTimeStamp(fileName)
+                at.rememberReadPath(fileName, root)
+                g.es_print(f"wrote: {fileName}")
         except Exception:
             at.writeException(fileName, root)
     #@+node:ekr.20210501065352.1: *6* at.writeOneAtNosentNode

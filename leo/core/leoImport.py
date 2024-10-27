@@ -790,6 +790,34 @@ class LeoImportCommands:
         http://freemind.sourceforge.net/wiki/index.php/Main_Page
         """
         FreeMindImporter(self.c).import_files(files)
+    #@+node:ekr.20241027003435.1: *4* ic.importJupytextFiles
+    def importJupytextFiles(self, paths: list[str] = None) -> Optional[Position]:
+        """
+        Import one or more .ipynb files.
+        This is not a command.  It must *not* have an event arg.
+        """
+        at, c, u = self.c.atFileCommands, self.c, self.c.undoer
+        command = 'Import Jupyter Notebook'
+        parent = c.p
+        if not parent or not paths:
+            return None
+        u.beforeChangeGroup(parent, command)
+        for fileName in paths:
+            fileName = fileName.replace('\\', '/')
+            g.setGlobalOpenDir(fileName)
+            undoData = u.beforeInsertNode(parent)
+            p = parent.insertAfter()
+            p.initHeadString("@jupytext " + fileName)
+            at.readOneAtJupytextNode(p)
+            p.contract()
+            p.setDirty()
+            u.afterInsertNode(p, command, undoData)
+        parent.expand()
+        c.setChanged()
+        u.afterChangeGroup(parent, command)
+        c.recolor(parent)
+        c.redraw(parent)
+        return parent
     #@+node:ekr.20160503125219.1: *4* ic.importMindMap
     def importMindMap(self, files: list[str]) -> None:
         """
