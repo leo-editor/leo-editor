@@ -460,65 +460,87 @@ class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
     #@+node:ekr.20241027124630.1: *4* LayoutCacheWidget.contract_body
     def contract_body(self):
         """Contract the body pane"""
-        g.trace('Not ready')
+        self.contract_pane(self.c.frame.body)
     #@+node:ekr.20241027125414.1: *4* LayoutCacheWidget.contract_log
     def contract_log(self):
         """Contract the log pane"""
-        g.trace('Not ready')
+        self.contract_pane(self.c.frame.log)
     #@+node:ekr.20241027125415.1: *4* LayoutCacheWidget.contract_outline
     def contract_outline(self):
         """Contract the outline pane"""
-        g.trace('Not ready')
+        self.contract_pane(self.c.frame.tree)
     #@+node:ekr.20241027141341.1: *4* LayoutCacheWidget.contract_vr
     def contract_vr(self):
         """Contract the VR pane if VR is running"""
-        if not is_module_loaded(VR_MODULE_NAME):
+        c = self.c
+        if is_module_loaded(VR_MODULE_NAME):
+            vr = getattr(c, 'vr', None)
+            self.expand_pane(vr)
+        else:
             g.es_print('VR is not running', color='blue')
-            return
-        g.trace('Not ready')
     #@+node:ekr.20241027141411.1: *4* LayoutCacheWidget.contract_vr3
     def contract_vr3(self):
         """Contract the VR3 pane if VR3 is running"""
-        if not is_module_loaded(VR3_MODULE_NAME):
+        c = self.c
+        if is_module_loaded(VR3_MODULE_NAME):
+            from leo.plugins.viewrendered3 import controllers
+            vr3 = controllers.get(c.hash())
+            self.contract_pane(vr3)
+        else:
             g.es_print('VR3 is not running', color='blue')
-            return
-        g.trace('Not ready')
     #@+node:ekr.20241027142605.1: *3* LayoutCacheWidget: expand_*
     #@+node:ekr.20241027124500.1: *4* LayoutCacheWidget.expand_body
     def expand_body(self):
         """Expand the body pane"""
-        g.trace('Not ready')
+        self.expand_pane(self.c.frame.body)
     #@+node:ekr.20241027125500.1: *4* LayoutCacheWidget.expand_log
     def expand_log(self):
         """Expand the log pane"""
-        g.trace('Not ready')
+        self.expand_pane(self.c.frame.log)
     #@+node:ekr.20241027124703.1: *4* LayoutCacheWidget.expand_outline
     def expand_outline(self):
         """Expand the outline pane."""
-        g.trace('Not ready')
+        self.expand_pane(self.c.frame.tree)
     #@+node:ekr.20241027141425.1: *4* LayoutCacheWidget.expand_vr
     def expand_vr(self):
         """Expand the VR pane if VR is running"""
-        if not is_module_loaded(VR_MODULE_NAME):
+        c = self.c
+        if is_module_loaded(VR_MODULE_NAME):
+            vr = getattr(c, 'vr', None)
+            self.expand_pane(vr)
+        else:
             g.es_print('VR is not running', color='blue')
-            return
-        g.trace('Not ready')
     #@+node:ekr.20241027141446.1: *4* LayoutCacheWidget.expand_vr3
     def expand_vr3(self):
         """Expand the VR3 pane if VR3 is running"""
-        if not is_module_loaded(VR3_MODULE_NAME):
+        c = self.c
+        if is_module_loaded(VR3_MODULE_NAME):
+            from leo.plugins.viewrendered3 import controllers
+            vr3 = controllers.get(c.hash())
+            self.expand_pane(vr3)
+        else:
             g.es_print('VR3 is not running', color='blue')
-            return
-        g.trace('Not ready')
     #@+node:ekr.20241027162525.1: *3* LayoutCacheWidget: utils
-    #@+node:ekr.20241027161121.1: *4* LayoutCacheWidget.contract_pane_by_name
-    def contract_pane_by_name(self, name: str) -> None:
-        """Contract the pane with the given Qt objectName."""
-        g.trace('Not ready', name)
-    #@+node:ekr.20241027161215.1: *4* LayoutCacheWidget.expand_pane_by_name
-    def expand_pane_by_name(self, name: str) -> None:
-        """Expand the pane with the given Qt objectName."""
-        g.trace('Not ready', name)
+    #@+node:ekr.20241027161121.1: *4* LayoutCacheWidget.contract_pane
+    def contract_pane(self, widget: Any) -> None:
+        """Contract the pane containing the given widget."""
+        try:
+            name = widget.objectName()
+            g.trace(name)
+        except Exception:
+            g.es_print('Oops', color='red')
+            g.trace(g.callers())
+            g.es_exception()
+    #@+node:ekr.20241027161215.1: *4* LayoutCacheWidget.expand_pane
+    def expand_pane(self, widget: Any) -> None:
+        """Expand the pane containing the given widget."""
+        try:
+            name = widget.objectName()
+            g.trace(name)
+        except Exception:
+            g.es_print('Oops', color='red')
+            g.trace(g.callers())
+            g.es_exception()
     #@+node:tom.20240923194438.5: *4* LayoutCacheWidget.find_splitter_by_name
     def find_splitter_by_name(self, name: str) -> QW:
         """Return a splitter instance given its objectName.
