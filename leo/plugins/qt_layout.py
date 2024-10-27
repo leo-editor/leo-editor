@@ -456,6 +456,30 @@ class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
         self.layout_registry = LAYOUT_REGISTRY
 
     #@+others
+    #@+node:ekr.20241027124630.1: *3* LayoutCacheWidget.contract_body
+    def contract_body(self):
+        """Contract the body pane"""
+        g.trace('Not ready')
+    #@+node:ekr.20241027125414.1: *3* LayoutCacheWidget.contract_log
+    def contract_log(self):
+        """Contract the log pane"""
+        g.trace('Not ready')
+    #@+node:ekr.20241027125415.1: *3* LayoutCacheWidget.contract_outline
+    def contract_outline(self):
+        """Contract the outline pane"""
+        g.trace('Not ready')
+    #@+node:ekr.20241027124500.1: *3* LayoutCacheWidget.expand_body
+    def expand_body(self):
+        """Expand the body pane"""
+        g.trace('Not ready')
+    #@+node:ekr.20241027125500.1: *3* LayoutCacheWidget.expand_log
+    def expand_log(self):
+        """Expand the log pane"""
+        g.trace('Not ready')
+    #@+node:ekr.20241027124703.1: *3* LayoutCacheWidget.expand_outline
+    def expand_outline(self):
+        """Expand the outline pane."""
+        g.trace('Not ready')
     #@+node:tom.20240923194438.5: *3* LayoutCacheWidget.find_splitter_by_name
     def find_splitter_by_name(self: QW, name: str, _: Optional[QW] = None) -> QW:
         """Return a splitter instance given its objectName.
@@ -507,7 +531,7 @@ class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
         if layout is None:
             layout = FALLBACK_LAYOUT
         #@+<< initialize data structures >>
-        #@+node:tom.20240923194438.7: *4* << initialize data structures >>
+        #@+node:tom.20240923194438.7: *4* << initialize data structures >> restoreFromLayout
         ORIENTATIONS = layout['ORIENTATIONS']
 
         has_vr3 = is_module_loaded(VR3_MODULE_NAME)
@@ -545,7 +569,7 @@ class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
 
         #@-<< initialize data structures >>
         #@+<< rehome body editor >>
-        #@+node:tom.20240923194438.8: *4* << rehome body editor >>
+        #@+node:tom.20240923194438.8: *4* << rehome body editor >> restoreFromLayout
         # In case the editor has been moved to e.g. a QTabWidget,
         # Move it back to its standard place.
 
@@ -556,7 +580,7 @@ class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
         bsw.setCurrentIndex(0)
         #@-<< rehome body editor >>
         #@+<< clean up splitters >>
-        #@+node:tom.20240923194438.9: *4* << clean up splitters >>
+        #@+node:tom.20240923194438.9: *4* << clean up splitters >> restoreFromLayout
         # Remove extra (no longer wanted) widgets to the cache.
         # Then insert the required widgets into their home splitters
 
@@ -587,7 +611,7 @@ class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
                 splitter.setParent(self)
         #@-<< clean up splitters >>
         #@+<< set default orientations >>
-        #@+node:tom.20240923194438.11: *4* << set default orientations >>
+        #@+node:tom.20240923194438.11: *4* << set default orientations >> restoreFromLayout
         # SPLITTER_DICT: {'main_splitter':ms, ...}
         # DEFAULT_ORIENTATIONS:
         # {'main_splitter':Orientation.Horizontal...}
@@ -597,7 +621,7 @@ class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
             splitter.setOrientation(orientation)
         #@-<< set default orientations >>
         #@+<< move widgets to targets >>
-        #@+node:tom.20240923194438.10: *4* << move widgets to targets >>
+        #@+node:tom.20240923194438.10: *4* << move widgets to targets >> restoreFromLayout
         # Move all desired widgets into their home splitters
         # SPLITTERS is an OrderedDict so the widgets will
         # be inserted in the right order.
@@ -614,7 +638,7 @@ class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
                     dest.insertWidget(i, widget)
         #@-<< move widgets to targets >>
         #@+<< resize splitters >>
-        #@+node:tom.20240923194438.12: *4* << resize splitters >>
+        #@+node:tom.20240923194438.12: *4* << resize splitters >> restoreFromLayout
         for splt in SPLITTER_DICT.values():
             g.app.gui.equalize_splitter(splt)  # type: ignore[attr-defined]
         #@-<< resize splitters >>

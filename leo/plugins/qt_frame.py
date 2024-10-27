@@ -4285,50 +4285,48 @@ class TabbedFrameFactory:
             c.redraw()
     #@-others
 #@+node:ekr.20200303082457.1: ** top-level commands (qt_frame.py)
-#@+node:ekr.20200303082511.6: *3* 'contract-body-pane' & 'expand-outline-pane'
+#@+node:ekr.20200303082511.6: *3* 'contract-body-pane'
 @g.command('contract-body-pane')
-@g.command('expand-outline-pane')
 def contractBodyPane(event: LeoKeyEvent) -> None:
     """Contract the body pane. Expand the outline/log splitter."""
     c = event.get('c')
-    if not c:
-        return
-    r = min(1.0, c.frame.compute_ratio() + 0.1)
-    c.frame.divideLeoSplitter1(r)
-
-expandOutlinePane = contractBodyPane
+    if c:
+        c.frame.top.layout_cache.contract_body()
 #@+node:ekr.20200303084048.1: *3* 'contract-log-pane'
 @g.command('contract-log-pane')
 def contractLogPane(event: LeoKeyEvent) -> None:
     """Contract the log pane. Expand the outline pane."""
     c = event.get('c')
-    if not c:
-        return
-    f = c.frame
-    r = min(1.0, f.compute_secondary_ratio() + 0.1)
-    f.divideLeoSplitter2(r)
-#@+node:ekr.20200303084225.1: *3* 'contract-outline-pane' & 'expand-body-pane'
+    if c:
+        c.frame.top.layout_cache.contract_log()
+#@+node:ekr.20200303084225.1: *3* 'contract-outline-pane'
 @g.command('contract-outline-pane')
-@g.command('expand-body-pane')
 def contractOutlinePane(event: LeoKeyEvent) -> None:
     """Contract the outline pane. Expand the body pane."""
     c = event.get('c')
-    if not c:
-        return
-    r = max(0.0, c.frame.compute_ratio() - 0.1)
-    c.frame.divideLeoSplitter1(r)
-
-expandBodyPane = contractOutlinePane
+    if c:
+        c.frame.top.layout_cache.contract_outline()
+#@+node:ekr.20241027124820.1: *3* 'expand-body-pane
+@g.command('expand-body-pane')
+def expandBodyPane(event: LeoKeyEvent) -> None:
+    """Expand the log pane. Contract the outline pane."""
+    c = event.get('c')
+    if c:
+        c.frame.top.layout_cache.expand_body()
 #@+node:ekr.20200303084226.1: *3* 'expand-log-pane'
 @g.command('expand-log-pane')
 def expandLogPane(event: LeoKeyEvent) -> None:
     """Expand the log pane. Contract the outline pane."""
     c = event.get('c')
-    if not c:
-        return
-    f = c.frame
-    r = max(0.0, f.compute_secondary_ratio() - 0.1)
-    f.divideLeoSplitter2(r)
+    if c:
+        c.frame.top.layout_cache.expand_log()
+#@+node:ekr.20241027124753.1: *3* 'expand-outline-pane'
+@g.command('expand-outline-pane')
+def expandOutlinePane(event: LeoKeyEvent) -> None:
+    """Expand the log pane. Contract the outline pane."""
+    c = event.get('c')
+    if c:
+        c.frame.top.layout_cache.expand_outline()
 #@+node:ekr.20200303084610.1: *3* 'hide-body-pane'
 @g.command('hide-body-pane')
 def hideBodyPane(event: LeoKeyEvent) -> None:
