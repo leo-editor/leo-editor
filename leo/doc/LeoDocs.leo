@@ -32972,12 +32972,19 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 
 **The highlights of Leo 6.8.2**
 
+The big one:
+
+- PR #4119: @jupytext makes it *easy* to work with Jupyter notebooks!
+
+Others:
+
+- PR #4033: Complete Leo's new layout work.
 - PR #4038: Add reload-outline command.
 - PR #4047: Delete add-editor command and all related code.
-- PR #4033: Add four new layouts and related code and commands.
 - PR #4068: Optionally run pylint when saving changed files.
 - PR #4071: Optionally run Leo's beautifier when saving changed files.
 - PR #4113: Retire ILeo, Leo's IPython bridge. It hasn't worked in years.
+
 - The usual assortment of small bug fixes and code cleanups.
 
 **Links**
@@ -33002,6 +33009,13 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 .. _`PR #4068`: https://github.com/leo-editor/leo-editor/pull/4068
 .. _`PR #4071`: https://github.com/leo-editor/leo-editor/pull/4071
 .. _`PR #4113`: https://github.com/leo-editor/leo-editor/pull/4113
+.. _`PR #4113`: https://github.com/leo-editor/leo-editor/pull/4119
+
+The big one:
+
+- `PR #4119`_: @jupytext makes it *easy* to work with Jupyter notebooks!
+
+Others:
 
 - `PR #4033`_: Add four new layouts and related code and commands.
 - `PR #4038`_: Add reload-outline command.
