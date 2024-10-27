@@ -41,24 +41,24 @@ LAYOUT_REGISTRY = {}
 #@-<< qt_layout: declarations >>
 
 #@+others
-#@+node:ekr.20241008174359.1: ** Top-level functions
-#@+node:ekr.20241008141246.1: *3* function: init
+#@+node:ekr.20241008174359.1: ** Top-level functions: qt_layout.py
+#@+node:ekr.20241008141246.1: *3* function: init (qt_layout.py)
 def init() -> bool:
     """
     qt_layout is not a true plugin, but return True just in case.
     """
     return True
-#@+node:ekr.20241008141353.1: *3* function: show_vr3_pane
+#@+node:ekr.20241008141353.1: *3* function: show_vr3_pane (qt_layout.py)
 def show_vr3_pane(c: Cmdr, w: QW) -> None:
     w.setUpdatesEnabled(True)
     c.doCommandByName('vr3-show')
-#@+node:tom.20241009141223.1: *3* function: is_module_loaded
+#@+node:tom.20241009141223.1: *3* function: is_module_loaded (qt_layout.py)
 def is_module_loaded(module_name: str) -> bool:
     """Return True if the plugins controller has loaded the module.
     """
     controller = g.app.pluginsController
     return controller.isLoaded(module_name)
-#@+node:tom.20241015161609.1: *3* decorator:  register_layout
+#@+node:tom.20241015161609.1: *3* decorator:  register_layout (qt_layout.py)
 def register_layout(name: str):  # type: ignore
     def decorator(func):
         # Register the function's name and docstring in the dictionary
@@ -456,45 +456,59 @@ class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
         self.layout_registry = LAYOUT_REGISTRY
 
     #@+others
-    #@+node:ekr.20241027124630.1: *3* LayoutCacheWidget.contract_body
+    #@+node:ekr.20241027142532.1: *3* LayoutCaseWidget: contract_*
+    #@+node:ekr.20241027124630.1: *4* LayoutCacheWidget.contract_body
     def contract_body(self):
         """Contract the body pane"""
         g.trace('Not ready')
-    #@+node:ekr.20241027125414.1: *3* LayoutCacheWidget.contract_log
+    #@+node:ekr.20241027125414.1: *4* LayoutCacheWidget.contract_log
     def contract_log(self):
         """Contract the log pane"""
         g.trace('Not ready')
-    #@+node:ekr.20241027125415.1: *3* LayoutCacheWidget.contract_outline
+    #@+node:ekr.20241027125415.1: *4* LayoutCacheWidget.contract_outline
     def contract_outline(self):
         """Contract the outline pane"""
         g.trace('Not ready')
-    #@+node:ekr.20241027141341.1: *3* LayoutCacheWidget.contract_vr
+    #@+node:ekr.20241027141341.1: *4* LayoutCacheWidget.contract_vr
     def contract_vr(self):
         """Contract the VR pane if VR is running"""
+        if not is_module_loaded(VR_MODULE_NAME):
+            g.es_print('VR is not running', color='blue')
+            return
         g.trace('Not ready')
-    #@+node:ekr.20241027141411.1: *3* LayoutCacheWidget.contract_vr3
+    #@+node:ekr.20241027141411.1: *4* LayoutCacheWidget.contract_vr3
     def contract_vr3(self):
         """Contract the VR3 pane if VR3 is running"""
+        if not is_module_loaded(VR3_MODULE_NAME):
+            g.es_print('VR3 is not running', color='blue')
+            return
         g.trace('Not ready')
-    #@+node:ekr.20241027124500.1: *3* LayoutCacheWidget.expand_body
+    #@+node:ekr.20241027142605.1: *3* LayoutCaseWidget: expand_*
+    #@+node:ekr.20241027124500.1: *4* LayoutCacheWidget.expand_body
     def expand_body(self):
         """Expand the body pane"""
         g.trace('Not ready')
-    #@+node:ekr.20241027125500.1: *3* LayoutCacheWidget.expand_log
+    #@+node:ekr.20241027125500.1: *4* LayoutCacheWidget.expand_log
     def expand_log(self):
         """Expand the log pane"""
         g.trace('Not ready')
-    #@+node:ekr.20241027124703.1: *3* LayoutCacheWidget.expand_outline
+    #@+node:ekr.20241027124703.1: *4* LayoutCacheWidget.expand_outline
     def expand_outline(self):
         """Expand the outline pane."""
         g.trace('Not ready')
-    #@+node:ekr.20241027141425.1: *3* LayoutCacheWidget.expand_vr
+    #@+node:ekr.20241027141425.1: *4* LayoutCacheWidget.expand_vr
     def expand_vr(self):
         """Expand the VR pane if VR is running"""
+        if not is_module_loaded(VR_MODULE_NAME):
+            g.es_print('VR is not running', color='blue')
+            return
         g.trace('Not ready')
-    #@+node:ekr.20241027141446.1: *3* LayoutCacheWidget.expand_vr3
+    #@+node:ekr.20241027141446.1: *4* LayoutCacheWidget.expand_vr3
     def expand_vr3(self):
         """Expand the VR3 pane if VR3 is running"""
+        if not is_module_loaded(VR3_MODULE_NAME):
+            g.es_print('VR3 is not running', color='blue')
+            return
         g.trace('Not ready')
     #@+node:tom.20240923194438.5: *3* LayoutCacheWidget.find_splitter_by_name
     def find_splitter_by_name(self: QW, name: str, _: Optional[QW] = None) -> QW:
