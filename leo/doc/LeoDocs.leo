@@ -2520,7 +2520,6 @@
 </v>
 <v t="ekr.20240828095959.1"></v>
 <v t="ekr.20240828094953.1"><vh>Leo 6.8.2 release notes</vh></v>
-<v t="ekr.20241027051721.1"></v>
 <v t="ekr.20241027051739.1"></v>
 </vnodes>
 <tnodes>
@@ -32978,13 +32977,13 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 
 **The highlights of Leo 6.8.2**
 
-The big one:
+Most important:
 
 - PR #4119: @jupytext makes it *easy* to work with Jupyter notebooks!
+- PR #4033: Complete Leo's new layout work.
 
 Others:
 
-- PR #4033: Complete Leo's new layout work.
 - PR #4038: Add reload-outline command.
 - PR #4068: Optionally run pylint when saving changed files.
 - PR #4071: Optionally run Leo's beautifier when saving changed files.
@@ -33019,13 +33018,13 @@ Retired features:
 .. _`PR #4113`: https://github.com/leo-editor/leo-editor/pull/4113
 .. _`PR #4113`: https://github.com/leo-editor/leo-editor/pull/4119
 
-The big one:
+Most important:
 
 - `PR #4119`_: @jupytext makes it *easy* to work with Jupyter notebooks!
+- `PR #4033`_: Add four new layouts and related code and commands.
 
 Others:
 
-- `PR #4033`_: Add four new layouts and related code and commands.
 - `PR #4038`_: Add reload-outline command.
 - `PR #4068`_: Optionally run pylint when saving changed files.
 - `PR #4071`_: Optionally run Leo's beautifier when saving changed files.
