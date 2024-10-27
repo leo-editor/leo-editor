@@ -637,7 +637,8 @@ class AtFile:
             new_private_lines = x.propagate_changed_lines(
                 new_public_lines, old_private_lines, marker, p=root)
         else:
-            g.es_print('No old_public_lines!', fileName)
+            # This is not an error.
+            # g.es_print('No old_public_lines!', fileName)
             new_private_lines = []
             root.b = ''.join(new_public_lines)
             return

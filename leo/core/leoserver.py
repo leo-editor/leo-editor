@@ -1416,6 +1416,8 @@ class LeoServer:
                 ic.importMindMap([fn])
             elif ext in ('cw', 'cweb'):
                 ic.importWebCommand([fn], "cweb")
+            elif ext == 'ipynb':
+                ic.importJupytext([fn])
             # Not useful. Use @auto x.json instead.
             # elif ext == 'json':
                 # ic.importJSON([fn])

@@ -165,6 +165,7 @@ def importAnyFile(self: Self, event: LeoKeyEvent = None) -> None:
         ("FreeMind files", "*.mm.html"),
         ("Java files", "*.java"),
         ("JavaScript files", "*.js"),
+        ("Jupyter notebooks", "*.ipynb"),
         # ("JSON files", "*.json"),
         ("Mindjet files", "*.csv"),
         ("MORE files", "*.MORE"),
@@ -204,6 +205,8 @@ def importAnyFile(self: Self, event: LeoKeyEvent = None) -> None:
             ic.importMindMap([fn])
         elif ext in ('cw', 'cweb'):
             ic.importWebCommand([fn], "cweb")
+        elif ext == 'ipynb':
+            ic.importJupytextFiles([fn])
         # Not useful. Use @auto x.json instead.
         # elif ext == 'json':
             # ic.importJSON([fn])
