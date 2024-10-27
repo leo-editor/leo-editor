@@ -32980,12 +32980,14 @@ Others:
 
 - PR #4033: Complete Leo's new layout work.
 - PR #4038: Add reload-outline command.
-- PR #4047: Delete add-editor command and all related code.
 - PR #4068: Optionally run pylint when saving changed files.
 - PR #4071: Optionally run Leo's beautifier when saving changed files.
-- PR #4113: Retire ILeo, Leo's IPython bridge. It hasn't worked in years.
-
 - The usual assortment of small bug fixes and code cleanups.
+
+Retired features:
+
+- PR #4047: Delete add-editor command and all related code.
+- PR #4113: Retire ILeo, Leo's IPython bridge. It hasn't worked in years.
 
 **Links**
 
@@ -33019,9 +33021,12 @@ Others:
 
 - `PR #4033`_: Add four new layouts and related code and commands.
 - `PR #4038`_: Add reload-outline command.
-- `PR #4047`_: Delete add-editor command and all related code.
 - `PR #4068`_: Optionally run pylint when saving changed files.
 - `PR #4071`_: Optionally run Leo's beautifier when saving changed files.
+
+Retired features:
+
+- `PR #4047`_: Delete add-editor command and all related code.
 - `PR #4113`_: Retire ILeo, Leo's IPython bridge. It hasn't worked in years.
 </t>
 <t tx="ekr.20240919055407.1"></t>
