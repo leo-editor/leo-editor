@@ -187,6 +187,10 @@ class ExternalFilesController:
                 # #1081: issue a warning.
                 self.warn(c, path, p=p)
                 continue
+            # #4117: Always update .ipynb files.
+            if p.isAtJupytextNode():
+                g.app.jupytextManager.update(c, p, path)
+                continue
             if state in ('yes', 'no'):
                 state = self.ask(c, path, p=p)
             if state in ('yes', 'yes-all'):
