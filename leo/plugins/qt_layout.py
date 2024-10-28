@@ -520,12 +520,12 @@ class LayoutCacheWidget(QWidget):
     #@+node:ekr.20241027161121.1: *4* LCW.contract_pane
     def contract_pane(self, widget: Any) -> None:
         """Contract the pane containing the given widget."""
-        self.resize_pane(widget, delta=10)
+        self.resize_pane(widget, delta=-40)
 
     #@+node:ekr.20241028045021.1: *4* LCW.expand_pane
     def expand_pane(self, widget: Any) -> None:
         """Expand the pane containing the given widget."""
-        self.resize_pane(widget, delta=-10)
+        self.resize_pane(widget, delta=40)
     #@+node:tom.20240923194438.5: *4* LCW.find_splitter_by_name
     def find_splitter_by_name(self, name: str) -> Optional[QSplitter]:
         """Return the splitter with the given objectName."""
@@ -562,38 +562,35 @@ class LayoutCacheWidget(QWidget):
         c = self.c
         splitter, direct_child = g.app.gui.find_parent_splitter(widget)
         if not splitter:
-            g.trace(f"Can not happen: no splitter for name: {widget.objectName()!r}")
+            g.trace(f"Oops! no splitter for name: {widget.objectName()!r}")
             return
-        # A complication.
         try:
             index = splitter.indexOf(direct_child)
             sizes = splitter.sizes()
             widget_size = sizes[index]
         except Exception:
-            g.trace(f"Can not happen: {widget} not in {splitter}")
+            g.trace(f"Oops! {widget} not in: {splitter!r}")
             g.es_exception()
             return
-
-        ### c.frame.compute_ratio()
-        ## ratio = 0.5 if n1 + n2 == 0 else float(n1) / float(n1 + n2)
-
-        ###
-        ### r = max(0, min(1.0, c.frame.compute_ratio() + delta))
-        print('')
-        g.trace('splitter:', splitter.objectName())
-        g.trace('direct_child:', direct_child.objectName())
-        g.trace('widget:', widget.objectName())
-        for i, child in enumerate(splitter.children()):
-            print(i, f"{child.objectName():35} {child.__class__.__name__}")
-        g.trace('index', index, 'sizes', sizes)
-        g.trace(f"delta: {delta} widget_size: {widget_size}")
-
-        ### Similar to c.frame.divideAnySplitter.
-        # s1, s2 = sizes
-        # s = s1 + s2
-        # s1 = int(s * frac + 0.5)
-        # s2 = s - s1
-        # splitter.setSizes([s1, s2])
+        if index == -1:
+            g.trace(f"Oops! direct child: {direct_child!r} not in {splitter}")
+            return
+        if widget_size == 0:
+            # The pane is invisible.
+            return
+        if len(sizes) < 2:
+            # There are no other widgets in the splitter.
+            return
+        # Look for another *visible* widget.
+        for other_index, size in enumerate(sizes):
+            if other_index != index and size > 0:
+                break
+        else:
+            # There is no other visible pane.
+            return
+        sizes[index] += delta
+        sizes[other_index] -= delta
+        splitter.setSizes(sizes)
     #@+node:tom.20240923194438.6: *4* LCW.restoreFromLayout
     def restoreFromLayout(self, layout: Dict = None) -> None:
         if layout is None:
