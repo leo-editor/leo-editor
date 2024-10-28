@@ -527,28 +527,22 @@ class LayoutCacheWidget(QWidget):
         """Expand the pane containing the given widget."""
         self.resize_pane(widget, delta=-10)
     #@+node:tom.20240923194438.5: *4* LCW.find_splitter_by_name
-    def find_splitter_by_name(self, name: str) -> QWidget:
-        """Return a splitter instance given its objectName.
-        
-        This method could return other types of widgets but is intended
-        for finding known splitters.
-        """
-        foundit = False
-        splitter: QWidget = self.find_widget(name)
-        if splitter is not None:
-            foundit = True
-        if not foundit:
-            splitter = self.created_splitter_dict.get(name, None)
-            if splitter is not None:
-                foundit = True
-        if not foundit:
-            ###
-            for kid in self.children():  # type: ignore [assignment]
-                if kid.objectName() == name:
-                    foundit = True
-                    splitter = kid  # type: ignore [assignment]
-                    break
-        return splitter
+    def find_splitter_by_name(self, name: str) -> Optional[QSplitter]:
+        """Return the splitter with the given objectName."""
+
+        def is_splitter(obj: Any) -> bool:
+            return obj is not None and isinstance(obj, QSplitter)
+
+        splitter = self.find_widget(name)
+        if is_splitter(splitter):
+            return splitter  # type:ignore  # We've just checked the type.
+        splitter = self.created_splitter_dict.get(name, None)
+        if is_splitter(splitter):
+            return splitter  # type:ignore  # We've just checked the type.
+        for child in self.children():
+            if child.objectName() == name and is_splitter(child):
+                return child  # type:ignore  # We've just checked the type.
+        return None
     #@+node:ekr.20241008180818.1: *4* LCW.find_widget
     def find_widget(self, name: str) -> QWidget:
         """Return a widget given it objectName."""
