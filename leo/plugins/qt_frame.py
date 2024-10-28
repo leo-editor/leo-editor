@@ -1944,7 +1944,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         """Resize splitter1 and splitter2 using the given ratios."""
         self.divideLeoSplitter1(ratio)
         self.divideLeoSplitter2(ratio2)
-    #@+node:ekr.20110605121601.18283: *4* LeoQtFrame.divideLeoSplitter1/2 (to do)
+    #@+node:ekr.20110605121601.18283: *4* LeoQtFrame.divideLeoSplitter1/2
     def divideLeoSplitter1(self, frac: float) -> None:
         """Divide the main splitter."""
         gui = g.app.gui

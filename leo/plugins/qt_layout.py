@@ -427,7 +427,7 @@ VERTICAL_THIRDS_LAYOUT = {
 class LayoutCacheWidget(QWidget):
     """
     Manage layouts, which may be defined by methods or by
-    a layout data structure such as the following:
+    a layout data structure such as the following:0
 
         FALLBACK_LAYOUT = {
             'SPLITTERS':OrderedDict(
@@ -559,13 +559,41 @@ class LayoutCacheWidget(QWidget):
     #@+node:ekr.20241027181931.1: *4* LCW.resize_widget
     def resize_pane(self, widget: QWidget, delta: int) -> None:
         """Resize the pane containing the given widget."""
-        splitter = g.app.gui.find_parent_splitter(widget)
-        if splitter:
-            index = splitter.indexOf(widget)
-            g.trace(f"to do: {splitter.objectName()}, delta: {delta}")
-        else:
-            g.trace(f"No splitter for name: {widget.objectName()!r}")
+        c = self.c
+        splitter, direct_child = g.app.gui.find_parent_splitter(widget)
+        if not splitter:
+            g.trace(f"Can not happen: no splitter for name: {widget.objectName()!r}")
+            return
+        # A complication.
+        try:
+            index = splitter.indexOf(direct_child)
+            sizes = splitter.sizes()
+            widget_size = sizes[index]
+        except Exception:
+            g.trace(f"Can not happen: {widget} not in {splitter}")
+            g.es_exception()
+            return
 
+        ### c.frame.compute_ratio()
+        ## ratio = 0.5 if n1 + n2 == 0 else float(n1) / float(n1 + n2)
+
+        ###
+        ### r = max(0, min(1.0, c.frame.compute_ratio() + delta))
+        print('')
+        g.trace('splitter:', splitter.objectName())
+        g.trace('direct_child:', direct_child.objectName())
+        g.trace('widget:', widget.objectName())
+        for i, child in enumerate(splitter.children()):
+            print(i, f"{child.objectName():35} {child.__class__.__name__}")
+        g.trace('index', index, 'sizes', sizes)
+        g.trace(f"delta: {delta} widget_size: {widget_size}")
+
+        ### Similar to c.frame.divideAnySplitter.
+        # s1, s2 = sizes
+        # s = s1 + s2
+        # s1 = int(s * frac + 0.5)
+        # s2 = s - s1
+        # splitter.setSizes([s1, s2])
     #@+node:tom.20240923194438.6: *4* LCW.restoreFromLayout
     def restoreFromLayout(self, layout: Dict = None) -> None:
         if layout is None:

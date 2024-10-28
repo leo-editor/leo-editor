@@ -11,7 +11,7 @@ import re
 import sys
 import textwrap
 from time import sleep
-from typing import Any, Generator, Optional, Union, TYPE_CHECKING
+from typing import Any, Generator, Optional, Tuple, Union, TYPE_CHECKING
 from leo.core import leoColor
 from leo.core import leoGlobals as g
 from leo.core import leoGui
@@ -1533,12 +1533,21 @@ class LeoQtGui(leoGui.LeoGui):
         else:
             g.trace(f"Not a QSplitter: {splitter.__class__.__name__}")
     #@+node:ekr.20241027183453.1: *4* LeoQtGui.find_parent_splitter
-    def find_parent_splitter(self, widget: QWidget) -> Optional[QSplitter]:
-        """Return the nearest parent QSplitter widget."""
+    def find_parent_splitter(self, widget: QWidget) -> Optional[Tuple[QSplitter, Any]]:
+        """
+        Find the nearest parent QSplitter widget for the given widget.
+        
+        Return (splitter, child) where:
+        - splitter is the QSplitter containing the widget.
+        - child is the *direct* child of the splitter that contains the widget.
+          The child might or might not be the widget itself.
+        """
+        direct_child: Any = widget
         parent = widget.parent()
         while parent:
             if isinstance(parent, QtWidgets.QSplitter):
-                return parent
+                return parent, direct_child
+            direct_child = parent
             parent = parent.parent()
         return None
     #@+node:ekr.20240519115301.1: *4* LeoQtGui.find_widget_by_name
