@@ -517,42 +517,15 @@ class LayoutCacheWidget(QWidget):
         else:
             g.es_print('VR3 is not running', color='blue')
     #@+node:ekr.20241027162525.1: *3* LayoutCacheWidget: utils
-    #@+node:ekr.20241027161121.1: *4* LCW.contract_pane & expand_pane
+    #@+node:ekr.20241027161121.1: *4* LCW.contract_pane
     def contract_pane(self, widget: Any) -> None:
         """Contract the pane containing the given widget."""
-        self.contract_pane_by_name(widget.objectName())
+        self.resize_pane(widget, delta=10)
 
+    #@+node:ekr.20241028045021.1: *4* LCW.expand_pane
     def expand_pane(self, widget: Any) -> None:
         """Expand the pane containing the given widget."""
-        self.expand_pane_by_name(widget.objectName())
-    #@+node:ekr.20241027161215.1: *4* LCW.contract_pane_by_name
-    def contract_pane_by_name(self, name: str) -> None:
-        """Contract the pane whose objectName is given"""
-        widget: QWidget = self.find_widget(name)
-        if not widget:
-            g.trace(f"No widget with name: {name!r}")
-            return
-        splitter = g.app.gui.find_parent_splitter(widget)
-        if splitter:
-            index = splitter.indexOf(widget)
-            self.resize_splitter(splitter, index, -10)
-        else:
-            g.trace(f"No splitter for name: {name!r}")
-
-    #@+node:ekr.20241027172516.1: *4* LCW.expand_pane_by_name
-    def expand_pane_by_name(self, name: str) -> None:
-        """Expand the pane whose objectName is given"""
-        widget: QWidget = self.find_widget(name)
-        if not widget:
-            g.trace(f"No widget with name: {name!r}")
-            return
-        splitter = g.app.gui.find_parent_splitter(widget)
-        if splitter:
-            index = splitter.indexOf(widget)
-            self.resize_splitter(splitter, index, 10)
-        else:
-            g.trace(f"No splitter for name: {name!r}")
-
+        self.resize_pane(widget, delta=-10)
     #@+node:tom.20240923194438.5: *4* LCW.find_splitter_by_name
     def find_splitter_by_name(self, name: str) -> QWidget:
         """Return a splitter instance given its objectName.
@@ -589,10 +562,16 @@ class LayoutCacheWidget(QWidget):
             if kid.objectName() == name:
                 w = kid  # type: ignore [assignment]
         return w
-    #@+node:ekr.20241027181931.1: *4* LCW.resize_splitter
-    def resize_splitter(self, splitter: Any, index: int, factor: int) -> None:
-        """Resize the splitter."""
-        g.trace(splitter.objectName(), index, factor)
+    #@+node:ekr.20241027181931.1: *4* LCW.resize_widget
+    def resize_pane(self, widget: QWidget, delta: int) -> None:
+        """Resize the pane containing the given widget."""
+        splitter = g.app.gui.find_parent_splitter(widget)
+        if splitter:
+            index = splitter.indexOf(widget)
+            g.trace(f"to do: {splitter.objectName()}, delta: {delta}")
+        else:
+            g.trace(f"No splitter for name: {widget.objectName()!r}")
+
     #@+node:tom.20240923194438.6: *4* LCW.restoreFromLayout
     def restoreFromLayout(self, layout: Dict = None) -> None:
         if layout is None:
