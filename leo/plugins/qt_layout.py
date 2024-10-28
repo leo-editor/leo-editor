@@ -8,13 +8,10 @@ from __future__ import annotations
 
 import textwrap
 from collections import OrderedDict
-from typing import Any, Dict, TYPE_CHECKING, TypeVar, Optional
-from typing import Generic
+from typing import Any, Dict, TYPE_CHECKING, Optional
 
 from leo.core.leoQt import QtWidgets, Orientation, QtCore
 from leo.core import leoGlobals as g
-
-OD = TypeVar('OD', bound=OrderedDict)
 
 QSplitter = QtWidgets.QSplitter
 QWidget = QtWidgets.QWidget
@@ -25,7 +22,6 @@ if TYPE_CHECKING:  # pragma: no cover
     # from typing import TypeAlias  # Requires Python 3.12+
     Args = Any
     KWargs = Any
-
 #@-<< qt_layout: imports & annotations >>
 #@+<< qt_layout: declarations >>
 #@+node:tom.20241009141008.1: ** << qt_layout: declarations >>
