@@ -532,7 +532,7 @@ class LayoutCacheWidget(QWidget):
         if not widget:
             g.trace(f"No widget with name: {name!r}")
             return
-        splitter = self.find_parent_splitter(widget)
+        splitter = g.app.gui.find_parent_splitter(widget)
         if splitter:
             index = splitter.indexOf(widget)
             self.resize_splitter(splitter, index, -10)
@@ -546,7 +546,7 @@ class LayoutCacheWidget(QWidget):
         if not widget:
             g.trace(f"No widget with name: {name!r}")
             return
-        splitter = self.find_parent_splitter(widget)
+        splitter = g.app.gui.find_parent_splitter(widget)
         if splitter:
             index = splitter.indexOf(widget)
             self.resize_splitter(splitter, index, 10)
@@ -576,15 +576,6 @@ class LayoutCacheWidget(QWidget):
                     splitter = kid  # type: ignore [assignment]
                     break
         return splitter
-    #@+node:ekr.20241027183453.1: *4* LCW.find_parent_splitter
-    def find_parent_splitter(self, widget: QWidget) -> Optional[QSplitter]:
-        """Return the nearest parent QSplitter widget."""
-        parent = widget.parent()
-        while parent:
-            if isinstance(parent, QtWidgets.QSplitter):
-                return parent
-            parent = parent.parent()
-        return None
     #@+node:ekr.20241008180818.1: *4* LCW.find_widget
     def find_widget(self, name: str) -> QWidget:
         """Return a widget given it objectName."""
@@ -633,7 +624,7 @@ class LayoutCacheWidget(QWidget):
         for _, name in SPLITTERS.items():
             splitter: QWidget = self.find_splitter_by_name(name)
             if splitter is None:
-                splitter = QtWidgets.QSplitter(self)  # type: ignore [assignment]
+                splitter = QSplitter(self)
                 splitter.setObjectName(name)
                 self.created_splitter_dict[name] = splitter
 
