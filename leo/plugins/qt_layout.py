@@ -14,7 +14,6 @@ from typing import Generic
 from leo.core.leoQt import QtWidgets, Orientation, QtCore
 from leo.core import leoGlobals as g
 
-QW = TypeVar('QW', bound=QtWidgets.QWidget)
 OD = TypeVar('OD', bound=OrderedDict)
 
 QSplitter = QtWidgets.QSplitter
@@ -50,7 +49,7 @@ def init() -> bool:
     """
     return True
 #@+node:ekr.20241008141353.1: *3* function: show_vr3_pane (qt_layout.py)
-def show_vr3_pane(c: Cmdr, w: QW) -> None:
+def show_vr3_pane(c: Cmdr, w: QWidget) -> None:
     w.setUpdatesEnabled(True)
     c.doCommandByName('vr3-show')
 #@+node:tom.20241009141223.1: *3* function: is_module_loaded (qt_layout.py)
@@ -429,7 +428,7 @@ VERTICAL_THIRDS_LAYOUT = {
     }
 }
 #@+node:tom.20240930095459.1: ** class LayoutCacheWidget
-class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
+class LayoutCacheWidget(QWidget):
     """
     Manage layouts, which may be defined by methods or by
     a layout data structure such as the following:
@@ -447,13 +446,13 @@ class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
         }
     """
 
-    def __init__(self, c: Cmdr, parent: Optional[QW]) -> None:
+    def __init__(self, c: Cmdr, parent: Optional[QWidget]) -> None:
         super().__init__(parent)
         self.c = c
         self.setObjectName('leo-layout-cache')
 
         # maps splitter objectNames to their splitter object.
-        self.created_splitter_dict: Dict[str, QW] = {}
+        self.created_splitter_dict: Dict[str, QWidget] = {}
         self.layout_registry = LAYOUT_REGISTRY
 
     #@+others
@@ -533,7 +532,7 @@ class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
     #@+node:ekr.20241027161215.1: *4* LCW.contract_pane_by_name
     def contract_pane_by_name(self, name: str) -> None:
         """Contract the pane whose objectName is given"""
-        widget = self.find_widget(name)
+        widget: QWidget = self.find_widget(name)
         if not widget:
             g.trace(f"No widget with name: {name!r}")
             return
@@ -547,7 +546,7 @@ class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
     #@+node:ekr.20241027172516.1: *4* LCW.expand_pane_by_name
     def expand_pane_by_name(self, name: str) -> None:
         """Expand the pane whose objectName is given"""
-        widget = self.find_widget(name)
+        widget: QWidget = self.find_widget(name)
         if not widget:
             g.trace(f"No widget with name: {name!r}")
             return
@@ -559,15 +558,14 @@ class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
             g.trace(f"No splitter for name: {name!r}")
 
     #@+node:tom.20240923194438.5: *4* LCW.find_splitter_by_name
-    def find_splitter_by_name(self, name: str) -> QW:
+    def find_splitter_by_name(self, name: str) -> QWidget:
         """Return a splitter instance given its objectName.
         
         This method could return other types of widgets but is intended
         for finding known splitters.
         """
         foundit = False
-        splitter: QW = None
-        splitter = self.find_widget(name)
+        splitter: QWidget = self.find_widget(name)
         if splitter is not None:
             foundit = True
         if not foundit:
@@ -575,6 +573,7 @@ class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
             if splitter is not None:
                 foundit = True
         if not foundit:
+            ###
             for kid in self.children():  # type: ignore [assignment]
                 if kid.objectName() == name:
                     foundit = True
@@ -582,7 +581,7 @@ class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
                     break
         return splitter
     #@+node:ekr.20241027183453.1: *4* LCW.find_parent_splitter
-    def find_parent_splitter(self, widget: QW) -> Optional[QSplitter]:
+    def find_parent_splitter(self, widget: QWidget) -> Optional[QSplitter]:
         """Return the nearest parent QSplitter widget."""
         parent = widget.parent()
         while parent:
@@ -591,19 +590,18 @@ class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
             parent = parent.parent()
         return None
     #@+node:ekr.20241008180818.1: *4* LCW.find_widget
-    def find_widget(self, name: str) -> QW:
+    def find_widget(self, name: str) -> QWidget:
         """Return a widget given it objectName."""
         return g.app.gui.find_widget_by_name(self.c, name)
     #@+node:tom.20240923194438.4: *4* LCW.find_widget_in_children
-    def find_widget_in_children(self, name: str) -> QW:  ### : Optional[QW] = None
+    def find_widget_in_children(self, name: str) -> Optional[QWidget]:
         """Return a child widget with the given objectName.
         """
-        w: QW = None
+        w: QWidget = None
         for kid in self.children():
             if kid.objectName() == name:
                 w = kid  # type: ignore [assignment]
         return w
-
     #@+node:ekr.20241027181931.1: *4* LCW.resize_splitter
     def resize_splitter(self, splitter: Any, index: int, factor: int) -> None:
         """Resize the splitter."""
@@ -637,7 +635,7 @@ class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
         # If a splitter name is not known or does not exist, create one
         # and add it to self.created_splitter_dict.
         for _, name in SPLITTERS.items():
-            splitter: QW = self.find_splitter_by_name(name)
+            splitter: QWidget = self.find_splitter_by_name(name)
             if splitter is None:
                 splitter = QtWidgets.QSplitter(self)  # type: ignore [assignment]
                 splitter.setObjectName(name)
@@ -655,8 +653,8 @@ class LayoutCacheWidget(Generic[QW], QtWidgets.QWidget):
         # In case the editor has been moved to e.g. a QTabWidget,
         # Move it back to its standard place.
 
-        bsw = self.find_widget('bodyStackedWidget')
-        editor = self.find_widget('bodyPage2')
+        bsw: QWidget = self.find_widget('bodyStackedWidget')
+        editor: QWidget = self.find_widget('bodyPage2')
         if bsw.indexOf(editor) == -1:
             bsw.insertWidget(0, editor)
         bsw.setCurrentIndex(0)
