@@ -50,8 +50,8 @@ class JupytextManager:
             progress = i
             i = self.make_cell(i, contents, root)
             assert i > progress
-        # Replace root.b by markup.
-        root.b = self.markup(header)
+        # Replace root.b by the computed markup.
+        root.b = self.compute_markup(header)
         c.redraw()
     #@+node:ekr.20241029153032.1: *4* jtm.compute_headline
     def compute_headline(self, cell: str, p: Position) -> str:
@@ -62,6 +62,17 @@ class JupytextManager:
             if line and not line.startswith('%%') and len(line) > 10:
                 return line
         return f"cell {p.childIndex()}"
+    #@+node:ekr.20241029160441.1: *4* jtm.compute_markup
+    def compute_markup(self, header: str) -> str:
+        """Return the proper markup for root.b"""
+        markup_list = [
+            '@others\n',
+            '@language python\n',
+            '@tabwidth -4\n',
+        ]
+        if header:
+            markup_list.insert(0, g.angleBrackets(' prefix ') + '\n')
+        return ''.join(markup_list)
     #@+node:ekr.20241029152029.1: *4* jtm.make_cell
     def make_cell(self, i: int, contents: str, root: Position) -> int:
         """
@@ -99,17 +110,6 @@ class JupytextManager:
         # The prefix starts at 0, not start.
         p.b = contents[0:end]
         return end
-    #@+node:ekr.20241029160441.1: *4* jtm.markup
-    def markup(self, header: str) -> str:
-        """Return the proper markup for root.b"""
-        markup_list = [
-            '@others\n',
-            '@language python\n',
-            '@tabwidth -4\n',
-        ]
-        if header:
-            markup_list.insert(0, g.angleBrackets(' prefix ') + '\n')
-        return ''.join(markup_list)
     #@+node:ekr.20241023162459.1: *3* jtm.dump_notebook
     def dump_notebook(self, nb: Any) -> None:
         """Dump a notebook (class nbformat.notebooknode.NotebookNode)"""
