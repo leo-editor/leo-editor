@@ -30,8 +30,6 @@ if TYPE_CHECKING:  # pragma: no cover
 #@+node:ekr.20241022093215.1: ** class JupytextManager
 class JupytextManager:
 
-    use_sentinels = False  # True: @file, False: @clean
-
     #@+others
     #@+node:ekr.20241023162459.1: *3* jtm.dump_notebook
     def dump_notebook(self, nb: Any) -> None:
