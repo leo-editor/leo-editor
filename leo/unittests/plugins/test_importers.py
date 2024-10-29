@@ -1841,24 +1841,26 @@ class TestJupytext(BaseTestImporter):
                     '#     language: python\n'
                     '#     name: python3\n'
                     '# ---\n'
-                    '\n'
             ),
-            (1, 'python',
+            (1, '2 + 666 + 4',
                     '# %%\n'
                     '2 + 666 + 4\n'
             ),
-            (1, 'python',
+            (1, "print('hi changed externally')",
                     '# %%\n'
                     "print('hi changed externally')\n"
             ),
-            (1, 'markdown',
+            (1, 'This is a markdown cell',
                     '# %% [markdown]\n'
                     '# This is a markdown cell\n'
+                    '\n'
             ),
-            (1, 'markdown',
+            (1, 'Another markdown cell',
                     '# %% [markdown]\n'
                     '# Another markdown cell\n'
                     '\n'
+            ),
+            (1, 'cell 5',
                     '# %%\n'
             ),
         )

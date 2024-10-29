@@ -31,9 +31,85 @@ if TYPE_CHECKING:  # pragma: no cover
 class JupytextManager:
 
     #@+others
-    #@+node:ekr.20241029065713.1: *3* jtm.create_outline
+    #@+node:ekr.20241029065713.1: *3* jtm.create_outline & helpers
     def create_outline(self, c: Cmdr, root: Position) -> None:
-        g.trace(root.h, g.callers(2))
+        """
+        Scan root.b, creating child nodes and
+        replacing root.b by standard Leo markup.
+        """
+        if root.hasChildren():
+            g.es_print(f"{root.h!r} has children", color='blue')
+            g.es_print('Adding an empty child preserves raw text')
+            return
+        contents = root.b
+        # Make the header if it exists.
+        i = self.make_prefix(0, contents, root)
+        header = contents[0:i]
+        # Make all other cells.
+        while i < len(contents):
+            progress = i
+            i = self.make_cell(i, contents, root)
+            assert i > progress
+        # Replace root.b by markup.
+        root.b = self.markup(header)
+        c.redraw()
+    #@+node:ekr.20241029153032.1: *4* jtm.compute_headline
+    def compute_headline(self, cell: str, p: Position) -> str:
+        """Return the headline given the contents of a cell."""
+        lines = g.splitLines(cell)
+        for line in lines[1:]:
+            line = line.replace('#', '').strip()
+            if line and not line.startswith('%%') and len(line) > 10:
+                return line
+        return f"cell {p.childIndex()}"
+    #@+node:ekr.20241029152029.1: *4* jtm.make_cell
+    def make_cell(self, i: int, contents: str, root: Position) -> int:
+        """
+        Scan for a cell starting at contents[i].
+        If found, create a new node as the last child of the root.
+        Return the index of the line following the cell.
+        """
+        marker = '# %%'  # The start of all cells.
+        i = contents.find(marker, i)
+        if i == -1:
+            return len(contents)
+        j = contents.find(marker, i + len(marker) + 1)
+        if j == -1:
+            j = len(contents)
+        cell = contents[i:j]
+        child = root.insertAsLastChild()
+        child.b = cell
+        child.h = self.compute_headline(cell, child)
+        return j
+    #@+node:ekr.20241029155214.1: *4* jtm.make_prefix
+    def make_prefix(self, i: int, contents: str, root: Position) -> int:
+        """
+        Create a child node for the header.
+        Return the next index into contents.
+        """
+        tag = '# ---\n'
+        start = contents.find(tag)
+        if start == -1:
+            return i
+        end = contents.find('# ---', start + len(tag)) + len(tag)
+        if end == -1:
+            return i
+        p = root.insertAsLastChild()
+        p.h = g.angleBrackets(' prefix ')
+        # The prefix starts at 0 (not start)
+        p.b = contents[0:end]
+        return end
+    #@+node:ekr.20241029160441.1: *4* jtm.markup
+    def markup(self, header: str) -> str:
+        """Return the proper markup for root.b"""
+        markup_list = [
+            '@others\n',
+            '@language python\n',
+            '@tabwidth -4\n',
+        ]
+        if header:
+            markup_list.insert(0, g.angleBrackets(' prefix ') + '\n')
+        return ''.join(markup_list)
     #@+node:ekr.20241023162459.1: *3* jtm.dump_notebook
     def dump_notebook(self, nb: Any) -> None:
         """Dump a notebook (class nbformat.notebooknode.NotebookNode)"""
