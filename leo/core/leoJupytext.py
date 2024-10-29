@@ -69,11 +69,11 @@ class JupytextManager:
         If found, create a new node as the last child of the root.
         Return the index of the line following the cell.
         """
-        marker = '# %%'  # The start of all cells.
-        i = contents.find(marker, i)
+        cell_marker = '# %%'  # The start of all cells.
+        i = contents.find(cell_marker, i)
         if i == -1:
             return len(contents)
-        j = contents.find(marker, i + len(marker) + 1)
+        j = contents.find(cell_marker, i + len(cell_marker) + 1)
         if j == -1:
             j = len(contents)
         cell = contents[i:j]
@@ -85,18 +85,18 @@ class JupytextManager:
     def make_prefix(self, i: int, contents: str, root: Position) -> int:
         """
         Create a child node for the header.
-        Return the next index into contents.
+        Return index after the prefix, or i if there is no prefix.
         """
-        tag = '# ---\n'
-        start = contents.find(tag)
+        prefix_marker = '# ---\n'  # The start of all prefixes.
+        start = contents.find(prefix_marker)
         if start == -1:
             return i
-        end = contents.find('# ---', start + len(tag)) + len(tag)
+        end = contents.find(prefix_marker, start + len(prefix_marker)) + len(prefix_marker)
         if end == -1:
             return i
         p = root.insertAsLastChild()
         p.h = g.angleBrackets(' prefix ')
-        # The prefix starts at 0 (not start)
+        # The prefix starts at 0, not start.
         p.b = contents[0:end]
         return end
     #@+node:ekr.20241029160441.1: *4* jtm.markup
