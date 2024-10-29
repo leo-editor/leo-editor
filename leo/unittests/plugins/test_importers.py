@@ -1762,6 +1762,89 @@ class TestJavascript(BaseTestImporter):
         line1 = guide_lines[0]
         assert not line1.strip(), repr(line1)
     #@-others
+#@+node:ekr.20241029091227.1: ** class TestJupytext (BaseTextImporter) (to do)
+class TestJupytext(BaseTestImporter):
+
+    ext = '.ipynb'
+    treeType = '@jupytext'
+
+    #@+others
+    #@+node:ekr.20241029093840.1: *3* TestJupytext.run_jupytext_test
+    def run_jupytext_test(self, s: str, expected_results: tuple, brief: bool = False) -> None:
+
+        g.trace(g.callers())
+        test_s = textwrap.dedent(s).strip() + '\n'
+        g.printObj(test_s, tag='test_s')
+        g.printObj(expected_results, tag='expected_results')
+    #@+node:ekr.20241029092043.1: *3* TestJupytext.test_small_file
+    def test_small_ipynb_file(self):
+
+        # Must be in standard form, with a space after '#'.
+        s = """\
+            # %%
+            # A leading (misleading?) comment.
+            # %%
+            # ---
+            # jupyter:
+            #   kernelspec:
+            #     display_name: Python 3 (ipykernel)
+            #     language: python
+            #     name: python3
+            # ---
+
+            # %%
+            2 + 666 + 4
+            # %%
+            print('hi changed externally')
+            # %% [markdown]
+            # This is a markdown cell
+
+            # %% [markdown]
+            # Another markdown cell
+
+            # %%
+        """
+        expected_results = (
+            (0, '',  # check_outlines ignores the first headline.
+                    '<< prefix >>\n'
+                    '@others\n'
+                    '@language python\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, '<< prefix >>',
+                    '# %%\n'
+                    '# A leading (misleading?) comment.\n'
+                    '# %%\n'
+                    '# ---\n'
+                    '# jupyter:\n'
+                    '#   kernelspec:\n'
+                    '#     display_name: Python 3 (ipykernel)\n'
+                    '#     language: python\n'
+                    '#     name: python3\n'
+                    '# ---\n'
+                    '\n'
+            ),
+            (1, 'python',
+                    '# %%\n'
+                    '2 + 666 + 4\n'
+            ),
+            (1, 'python',
+                    '# %%\n'
+                    "print('hi changed externally')\n"
+            ),
+            (1, 'markdown',
+                    '# %% [markdown]\n'
+                    '# This is a markdown cell\n'
+            ),
+            (1, 'markdown',
+                    '# %% [markdown]\n'
+                    '# Another markdown cell\n'
+                    '\n'
+                    '# %%\n'
+            ),
+        )
+        self.run_jupytext_test(s, expected_results)
+    #@-others
 #@+node:ekr.20220816082603.1: ** class TestLua (BaseTestImporter)
 class TestLua(BaseTestImporter):
 
