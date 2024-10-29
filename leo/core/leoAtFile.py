@@ -641,7 +641,7 @@ class AtFile:
             # the first time the @jupytext has been read.
             new_private_lines = []
             root.b = ''.join(new_public_lines)
-            g.app.jupytextManager.create_outline(root)
+            g.app.jupytextManager.create_outline(c, root)
             return
         if new_private_lines == old_private_lines:
             return

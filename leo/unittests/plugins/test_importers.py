@@ -7,6 +7,7 @@ import os
 import sys
 import textwrap
 from leo.core import leoGlobals as g
+from leo.core.leoJupytext import JupytextManager
 from leo.core.leoNodes import Position
 from leo.core.leoTest2 import LeoUnitTest
 from leo.plugins.importers.base_importer import Block
@@ -58,7 +59,7 @@ class BaseTestImporter(LeoUnitTest):
             print('')
             print(f"Fail: {self.id()}")
             self.dump_tree(p, tag='Actual results...')
-            if 0:  # Sometimes good.
+            if 1:  # Sometimes good.
                 # Dump the expected results, as in LeoUnitTest.dump_tree.
                 print('Expected results')
                 for (level, headline, body) in expected:
@@ -1762,20 +1763,38 @@ class TestJavascript(BaseTestImporter):
         line1 = guide_lines[0]
         assert not line1.strip(), repr(line1)
     #@-others
-#@+node:ekr.20241029091227.1: ** class TestJupytext (BaseTextImporter) (to do)
+#@+node:ekr.20241029091227.1: ** class TestJupytext (BaseTextImporter)
 class TestJupytext(BaseTestImporter):
 
-    ext = '.ipynb'
-    treeType = '@jupytext'
+    def setUp(self):
+        super().setUp()
+        g.app.jupytextManager = JupytextManager()
 
     #@+others
     #@+node:ekr.20241029093840.1: *3* TestJupytext.run_jupytext_test
     def run_jupytext_test(self, s: str, expected_results: tuple, brief: bool = False) -> None:
 
-        g.trace(g.callers())
-        test_s = textwrap.dedent(s).strip() + '\n'
-        g.printObj(test_s, tag='test_s')
-        g.printObj(expected_results, tag='expected_results')
+        c = self.c
+        p = c.p
+
+        # Compute the short id. TestCase.id() has the form leo.unittests.core.file.class.test_name
+        id_parts = self.id().split('.')
+        self.short_id = f"{id_parts[-2]}.{id_parts[-1]}"
+
+        # Create the @jupytext node.
+        parent = p.insertAsLastChild()
+        parent.h = f"@jupytext {self.short_id}"
+        parent.b = textwrap.dedent(s).strip() + '\n'
+
+        # Execute the code under test.
+        g.app.jupytextManager.create_outline(c, parent)
+
+        # Dump the actual results on failure and raise AssertionError.
+        self.check_outline(parent, expected_results)
+
+        # g.printObj(test_s, tag='test_s')
+        # g.printObj(expected_results, tag='expected_results')
+
     #@+node:ekr.20241029092043.1: *3* TestJupytext.test_small_file
     def test_small_ipynb_file(self):
 

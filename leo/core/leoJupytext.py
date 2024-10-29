@@ -32,7 +32,7 @@ class JupytextManager:
 
     #@+others
     #@+node:ekr.20241029065713.1: *3* jtm.create_outline
-    def create_outline(self, root: Position) -> None:
+    def create_outline(self, c: Cmdr, root: Position) -> None:
         g.trace(root.h, g.callers(2))
     #@+node:ekr.20241023162459.1: *3* jtm.dump_notebook
     def dump_notebook(self, nb: Any) -> None:
