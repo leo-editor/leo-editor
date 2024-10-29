@@ -11,7 +11,7 @@ import re
 import sys
 import textwrap
 from time import sleep
-from typing import Any, Generator, Optional, Union, TYPE_CHECKING
+from typing import Any, Generator, Optional, Tuple, Union, TYPE_CHECKING
 from leo.core import leoColor
 from leo.core import leoGlobals as g
 from leo.core import leoGui
@@ -57,6 +57,7 @@ if TYPE_CHECKING:  # pragma: no cover
     QPixmap = QtGui.QPixmap
     QPoint = QtCore.QPoint
     QPushButton = QtWidgets.QPushButton
+    QSplitter = QtWidgets.QSplitter
     QTabWidget = QtWidgets.QTabWidget
     QVBoxLayout = QtWidgets.QVBoxLayout
     QWidget = QtWidgets.QWidget
@@ -1517,6 +1518,38 @@ class LeoQtGui(leoGui.LeoGui):
         yield qt_obj
         for child in qt_obj.children():
             yield from self._self_and_subtree(child)
+    #@+node:ekr.20111027083744.16532: *4* LeoQtGui.enableSignalDebugging
+    import PyQt6.QtTest as QtTest
+
+    QSignalSpy = QtTest.QSignalSpy
+    assert QSignalSpy
+    #@+node:ekr.20240521171848.1: *4* LeoQtGui.equalize_splitter
+    def equalize_splitter(self, splitter):
+        """Equalize all the splitter's contents."""
+        if not splitter:
+            return
+        if isinstance(splitter, QtWidgets.QSplitter):
+            splitter.setSizes([100000] * len(splitter.sizes()))
+        else:
+            g.trace(f"Not a QSplitter: {splitter.__class__.__name__}")
+    #@+node:ekr.20241027183453.1: *4* LeoQtGui.find_parent_splitter
+    def find_parent_splitter(self, widget: QWidget) -> Optional[Tuple[QSplitter, Any]]:
+        """
+        Find the nearest parent QSplitter widget for the given widget.
+        
+        Return (splitter, child) where:
+        - splitter is the QSplitter containing the widget.
+        - child is the *direct* child of the splitter that contains the widget.
+          The child might or might not be the widget itself.
+        """
+        direct_child: Any = widget
+        parent = widget.parent()
+        while parent:
+            if isinstance(parent, QtWidgets.QSplitter):
+                return parent, direct_child
+            direct_child = parent
+            parent = parent.parent()
+        return None
     #@+node:ekr.20240519115301.1: *4* LeoQtGui.find_widget_by_name
     def find_widget_by_name(self, c: Cmdr, name: str) -> Optional[QWidget]:
         for w in self._self_and_subtree(c.frame.top):
@@ -1554,20 +1587,6 @@ class LeoQtGui(leoGui.LeoGui):
         else:
             name = repr(w)
         return name
-    #@+node:ekr.20111027083744.16532: *4* LeoQtGui.enableSignalDebugging
-    import PyQt6.QtTest as QtTest
-
-    QSignalSpy = QtTest.QSignalSpy
-    assert QSignalSpy
-    #@+node:ekr.20240521171848.1: *4* LeoQtGui.equalize_splitter
-    def equalize_splitter(self, splitter):
-        """Equalize all the splitter's contents."""
-        if not splitter:
-            return
-        if isinstance(splitter, QtWidgets.QSplitter):
-            splitter.setSizes([100000] * len(splitter.sizes()))
-        else:
-            g.trace(f"Not a QSplitter: {splitter.__class__.__name__}")
     #@+node:ekr.20190819091957.1: *3* LeoQtGui:Widget constructors
     #@+node:ekr.20190819094016.1: *4* LeoQtGui.createButton
     def createButton(self, parent: QWidget, name: str, label: str) -> QPushButton:
