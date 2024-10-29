@@ -427,7 +427,7 @@ VERTICAL_THIRDS_LAYOUT = {
 class LayoutCacheWidget(QWidget):
     """
     Manage layouts, which may be defined by methods or by
-    a layout data structure such as the following:0
+    a layout data structure such as the following::
 
         FALLBACK_LAYOUT = {
             'SPLITTERS':OrderedDict(
@@ -556,7 +556,7 @@ class LayoutCacheWidget(QWidget):
             if kid.objectName() == name:
                 w = kid  # type: ignore [assignment]
         return w
-    #@+node:ekr.20241027181931.1: *4* LCW.resize_widget
+    #@+node:ekr.20241027181931.1: *4* LCW.resize_pane
     def resize_pane(self, widget: QWidget, delta: int) -> None:
         """Resize the pane containing the given widget."""
         c = self.c
