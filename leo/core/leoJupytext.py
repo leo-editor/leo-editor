@@ -31,6 +31,9 @@ if TYPE_CHECKING:  # pragma: no cover
 class JupytextManager:
 
     #@+others
+    #@+node:ekr.20241029065713.1: *3* jtm.create_outline
+    def create_outline(self, root: Position) -> None:
+        g.trace(root.h, g.callers(2))
     #@+node:ekr.20241023162459.1: *3* jtm.dump_notebook
     def dump_notebook(self, nb: Any) -> None:
         """Dump a notebook (class nbformat.notebooknode.NotebookNode)"""
@@ -84,10 +87,12 @@ class JupytextManager:
     #@+node:ekr.20241023155136.1: *3* jtm.read
     def read(self, c: Cmdr, p: Position) -> Tuple[str, str]:  # pragma: no cover
         """
+        Called from at.readOneAtJupytextNode.
         p must be an @jupytext node describing an .ipynb file.
         Convert x.ipynb to a string s.
         Return (s, path)
         """
+        g.trace(p.h, g.callers(2))  ###
         path = self.full_path(c, p)
         if not path:
             # full_path has given the error.
