@@ -2219,7 +2219,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.create_pane()
 
         #@+<< Set ivars >>
-        #@+node:tom.20240919181141.1: *4* << Set ivars >>
+        #@+node:tom.20240919181141.1: *4* << Set ivars >> (VR3)
         self.active = False
         self.badColors = []
         self.controllers = controllers
@@ -2249,7 +2249,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.w = None  # The present widget in the rendering pane.
         #@-<< Set ivars >>
         #@+<< initialize configuration ivars >>
-        #@+node:tom.20240919181318.1: *4* << initialize configuration ivars >>
+        #@+node:tom.20240919181318.1: *4* << initialize configuration ivars >> (VR3)
         self.base_path = ''  # A node's base path including @path directive
         self.code_only = False
         self.code_only = False
@@ -2267,7 +2267,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.setObjectName('viewrendered3_pane')
         #@-<< initialize configuration ivars >>
         #@+<< asciidoc-specific >>
-        #@+node:tom.20240919181508.1: *4* << asciidoc-specific >>
+        #@+node:tom.20240919181508.1: *4* << asciidoc-specific >> (VR3)
         self.asciidoc3_internal_ok = True
         self.asciidoc_internal_ok = True
         self.using_ext_proc_msg_shown = False
