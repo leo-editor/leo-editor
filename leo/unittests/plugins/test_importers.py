@@ -7,6 +7,7 @@ import os
 import sys
 import textwrap
 from leo.core import leoGlobals as g
+from leo.core.leoJupytext import JupytextManager
 from leo.core.leoNodes import Position
 from leo.core.leoTest2 import LeoUnitTest
 from leo.plugins.importers.base_importer import Block
@@ -58,7 +59,7 @@ class BaseTestImporter(LeoUnitTest):
             print('')
             print(f"Fail: {self.id()}")
             self.dump_tree(p, tag='Actual results...')
-            if 0:  # Sometimes good.
+            if 1:  # Sometimes good.
                 # Dump the expected results, as in LeoUnitTest.dump_tree.
                 print('Expected results')
                 for (level, headline, body) in expected:
@@ -1761,6 +1762,109 @@ class TestJavascript(BaseTestImporter):
         guide_lines = x.delete_comments_and_strings(lines)
         line1 = guide_lines[0]
         assert not line1.strip(), repr(line1)
+    #@-others
+#@+node:ekr.20241029091227.1: ** class TestJupytext (BaseTextImporter)
+class TestJupytext(BaseTestImporter):
+
+    def setUp(self):
+        super().setUp()
+        g.app.jupytextManager = JupytextManager()
+
+    #@+others
+    #@+node:ekr.20241029093840.1: *3* TestJupytext.run_jupytext_test
+    def run_jupytext_test(self, s: str, expected_results: tuple, brief: bool = False) -> None:
+
+        c = self.c
+        p = c.p
+
+        # Compute the short id. TestCase.id() has the form leo.unittests.core.file.class.test_name
+        id_parts = self.id().split('.')
+        self.short_id = f"{id_parts[-2]}.{id_parts[-1]}"
+
+        # Create the @jupytext node.
+        parent = p.insertAsLastChild()
+        parent.h = f"@jupytext {self.short_id}"
+        parent.b = textwrap.dedent(s).strip() + '\n'
+
+        # Execute the code under test.
+        g.app.jupytextManager.create_outline(c, parent)
+
+        # Dump the actual results on failure and raise AssertionError.
+        self.check_outline(parent, expected_results)
+
+        # g.printObj(test_s, tag='test_s')
+        # g.printObj(expected_results, tag='expected_results')
+
+    #@+node:ekr.20241029092043.1: *3* TestJupytext.test_small_file
+    def test_small_ipynb_file(self):
+
+        # Must be in standard form, with a space after '#'.
+        s = """\
+            # %%
+            # A leading (misleading?) comment.
+            # %%
+            # ---
+            # jupyter:
+            #   kernelspec:
+            #     display_name: Python 3 (ipykernel)
+            #     language: python
+            #     name: python3
+            # ---
+
+            # %%
+            2 + 666 + 4
+            # %%
+            print('hi changed externally')
+            # %% [markdown]
+            # # This is a markdown cell
+
+            # %% [markdown]
+            # ## Another markdown cell
+
+            # %%
+        """
+        expected_results = (
+            (0, '',  # check_outlines ignores the first headline.
+                    '<< prefix >>\n'
+                    '@others\n'
+                    '@language python\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, '<< prefix >>',
+                    '# %%\n'
+                    '# A leading (misleading?) comment.\n'
+                    '# %%\n'
+                    '# ---\n'
+                    '# jupyter:\n'
+                    '#   kernelspec:\n'
+                    '#     display_name: Python 3 (ipykernel)\n'
+                    '#     language: python\n'
+                    '#     name: python3\n'
+                    '# ---\n'
+            ),
+            (1, '2 + 666 + 4',
+                    '# %%\n'
+                    '2 + 666 + 4\n'
+            ),
+            (1, "print('hi changed externally')",
+                    '# %%\n'
+                    "print('hi changed externally')\n"
+            ),
+            (1, '# This is a markdown cell',
+                    '# %% [markdown]\n'
+                    '# # This is a markdown cell\n'
+                    '\n'
+            ),
+            (1, '## Another markdown cell',
+                    '# %% [markdown]\n'
+                    '# ## Another markdown cell\n'
+                    '\n'
+            ),
+            (1, 'Cell 5',
+                    '# %%\n'
+            ),
+        )
+        self.run_jupytext_test(s, expected_results)
     #@-others
 #@+node:ekr.20220816082603.1: ** class TestLua (BaseTestImporter)
 class TestLua(BaseTestImporter):
