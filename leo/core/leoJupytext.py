@@ -11,6 +11,7 @@ https://github.com/mwouts/jupytext
 from __future__ import annotations
 import io
 import os
+import textwrap
 from typing import Any, Dict, Tuple, TYPE_CHECKING
 
 try:
@@ -48,20 +49,54 @@ class JupytextManager:
         # Make all other cells.
         while i < len(contents):
             progress = i
-            i = self.make_cell(i, contents, root)
+            i = self.make_cell(c, i, contents, root)
             assert i > progress
         # Replace root.b by the computed markup.
         root.b = self.compute_markup(header)
         c.redraw()
     #@+node:ekr.20241029153032.1: *4* jtm.compute_headline
-    def compute_headline(self, cell: str, p: Position) -> str:
+    def compute_headline(self, c: Cmdr, cell: str, p: Position) -> str:
         """Return the headline given the contents of a cell."""
+
+        width = c.config.getInt('jupytext-max-headline-length') or 60
+
+        def shorten(s: str) -> str:
+            """Shorten s to width 60"""
+            return textwrap.shorten(s, width=width, placeholder='')
+
         lines = g.splitLines(cell)
-        for line in lines[1:]:
-            line = line.replace('#', '').strip()
-            if line and not line.startswith('%%'):
-                return line
-        return f"Cell {p.childIndex()}"
+
+        # Handle markdown sections.
+        if len(lines) > 1 and '[markdown]' in lines[0]:
+            # Strip '# ' if '#' follows.
+            line1 = lines[1].strip()
+            if line1.startswith('# ') and line1[2:].strip().startswith('#'):
+                return shorten(line1[2:].strip())
+            return shorten(line1)
+
+        # Filter blank lines.
+        stripped_lines = [z.strip() for z in lines[1:] if z.strip()]
+        if not stripped_lines:
+            return f"Cell {p.childIndex()}"
+
+        # Now we'll return the first line, possibly shortened.
+        line1 = stripped_lines[0]
+
+        # Case 1: the first line is a non-trivial comment.
+        if line1.startswith('#'):
+            comment = line1[1:].strip()
+            if comment:
+                return shorten(comment)
+
+        # Case 2: The first line contains a non-trivial comment.
+        i = line1.find('#')
+        if i > -1:
+            comment = line1[i + 1 :].strip()
+            if comment:
+                return shorten(comment)
+
+        # Case 3: Return the entire shortened python line.
+        return shorten(line1)
     #@+node:ekr.20241029160441.1: *4* jtm.compute_markup
     def compute_markup(self, header: str) -> str:
         """Return the proper markup for root.b"""
@@ -74,7 +109,7 @@ class JupytextManager:
             markup_list.insert(0, g.angleBrackets(' prefix ') + '\n')
         return ''.join(markup_list)
     #@+node:ekr.20241029152029.1: *4* jtm.make_cell
-    def make_cell(self, i: int, contents: str, root: Position) -> int:
+    def make_cell(self, c: Cmdr, i: int, contents: str, root: Position) -> int:
         """
         Scan for a cell starting at contents[i].
         If found, create a new node as the last child of the root.
@@ -90,7 +125,7 @@ class JupytextManager:
         cell = contents[i:j]
         child = root.insertAsLastChild()
         child.b = cell
-        child.h = self.compute_headline(cell, child)
+        child.h = self.compute_headline(c, cell, child)
         return j
     #@+node:ekr.20241029155214.1: *4* jtm.make_prefix
     def make_prefix(self, i: int, contents: str, root: Position) -> int:

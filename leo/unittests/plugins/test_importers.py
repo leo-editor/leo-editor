@@ -1816,10 +1816,10 @@ class TestJupytext(BaseTestImporter):
             # %%
             print('hi changed externally')
             # %% [markdown]
-            # This is a markdown cell
+            # # This is a markdown cell
 
             # %% [markdown]
-            # Another markdown cell
+            # ## Another markdown cell
 
             # %%
         """
@@ -1850,14 +1850,14 @@ class TestJupytext(BaseTestImporter):
                     '# %%\n'
                     "print('hi changed externally')\n"
             ),
-            (1, 'This is a markdown cell',
+            (1, '# This is a markdown cell',
                     '# %% [markdown]\n'
-                    '# This is a markdown cell\n'
+                    '# # This is a markdown cell\n'
                     '\n'
             ),
-            (1, 'Another markdown cell',
+            (1, '## Another markdown cell',
                     '# %% [markdown]\n'
-                    '# Another markdown cell\n'
+                    '# ## Another markdown cell\n'
                     '\n'
             ),
             (1, 'Cell 5',

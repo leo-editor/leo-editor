@@ -658,6 +658,7 @@
 <v t="ekr.20041119041747"><vh>@string output-newline = nl</vh></v>
 </v>
 <v t="ekr.20241024123618.1"><vh>Jupytext options</vh>
+<v t="ekr.20241030020739.1"><vh>@int jupytext-max-headline-length = 60</vh></v>
 <v t="ekr.20241024123633.1"><vh>@string jupytext-fmt = py:percent</vh></v>
 <v t="ekr.20241026115515.1"><vh>@data jupyter-prefix</vh></v>
 </v>
@@ -11758,6 +11759,8 @@ See https://jupytext.readthedocs.io/en/latest/config.html
 # ---
 
 # %%
+</t>
+<t tx="ekr.20241030020739.1">The maximum size of imported headlines.
 </t>
 <t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 
