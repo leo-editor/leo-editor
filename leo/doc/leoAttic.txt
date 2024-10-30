@@ -1490,6 +1490,91 @@ def focusToSpell(self, event: LeoKeyEvent = None) -> None:
     # This is not a great idea. There is no indication of focus.
         # if self.handler and self.handler.tab:
             # self.handler.tab.setFocus()
+#@+node:ekr.20241029111205.1: *3* retire old testing code
+#@+node:ekr.20241029111221.1: *4* at-command test-one
+### This code no longer works, possibly because 
+### site_customize.py *MUST NOT* add the leo-editor directory to sys.path
+
+g.cls()
+if c.isChanged():
+    print('Saved!')
+    c.save()
+<< test-one: test kind >>
+<< prefixes >>
+<< old commands >>
+assert kind in ('check-all', 'check-one', 'beautify', 'test'), repr(kind)
+if kind == 'check-all':  # Check all files.
+    command = 'python -m leo.scripts.check_leo'
+    g.execute_shell_commands(command)
+elif kind == 'check-one':
+    # path = 'plugins/qt_gui.py'
+    path = 'core/leoApp.py'
+    command = f"python -m leo.scripts.check_leo {path}"
+    g.execute_shell_commands(command)
+elif kind == 'beautify':
+    << test the beautifier >>
+elif kind == 'test':
+    commands = (
+        f"{importers}.TestJupytext.test_small_file",
+    )
+    verbose_flag = ''  # -v
+    commands_s = f"python -m unittest {verbose_flag} {' '.join(commands)}"
+    g.execute_shell_commands(commands_s, trace=True)
+else:
+    # command = 'run'  # run Nim tests.
+    script = 'build-leo.py'
+    command = fr"python C:\Repos\leo-editor\leo\scripts\{script}"
+    g.execute_shell_commands(command)
+#@+node:ekr.20241029111221.2: *5* << test-one: test kind >>
+# Last one wins.
+kind = 'beautify'
+kind = 'test'  # Run unit test.
+#@+node:ekr.20241029111221.3: *5* << test the beautifier >>
+# Can be run from the command line as follows:
+# python -c "import leo.core.leoTokens" --all --report --write leo/core/leoAst.py
+args = '--all --report --write'  # --beautified --diff --write'
+for command in (
+    # f'python -c "import leo.core.leoTokens" {args} leoAst.py',
+    f'python -c "import leo.core.leoTokens" {args} leo/core',
+    'echo done!',
+):
+    print(command)
+    g.execute_shell_commands(command)
+#@+node:ekr.20241029111221.4: *5* << old commands >>
+# 'python c:/test/mypy_test.py',
+# 'python -m mypy c:/test/mypy_test.py',
+# 'python -m ruff check c:/test/mypy_test.py',
+# 'python -m pyflakes c:/test/mypy_test.py',
+
+### "leo.scripts.check_leo.TestCheckLeo",
+# f"{misc}.test_check_leo.TestCheckLeo",
+# f"{core}.test_leoserver.TestLeoServer.test_find_commands",
+# f"{core}.test_leoFind.TestFind.test_find_var",
+# f"{core}.test_leoTokens.TestTokenBasedOrange",
+# f"{core}.test_leoTokens.TestTokens",
+# f"{core}.test_leoTokens.TestTokenBasedOrange.test_blank_lines_after_function",
+# f"{core}.test_leoAtFile.TestAtFile.test_putBody_unterminated_at_doc_part",
+#@+node:ekr.20241029111221.5: *5* << prefixes >>
+commands = 'leo.unittests.commands'
+core = 'leo.unittests.core'
+gui = 'leo.unittests.test_gui'
+importers = 'leo.unittests.plugins.test_importers'
+misc = 'leo.unittests.misc_tests'
+plugins = 'leo.unittests.plugins'
+syntax = 'leo.unittests.plugins.test_syntax'
+writers = 'leo.unittests.plugins.test_writers'
+
+# f"{core}.test_leoGlobals",
+# f"{core}.test_leoTokens",
+
+# f"{misc}.test_design",
+# f"{misc}.test_doctests",
+# f"{misc}.test_syntax",
+
+# f"{plugins}.test_gui",
+# f"{plugins}.test_importers",
+# f"{plugins}.test_plugins",
+# f"{plugins}.test_writers",
 #@+node:ekr.20240820045246.1: ** To be cleared later
 # Clear after 6.8.2.
 #@+node:ekr.20110605121601.18254: *3* LeoQtFrame.destroyAllObjects (not used)
