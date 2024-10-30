@@ -43,6 +43,10 @@ class JupytextManager:
             g.es_print('Adding an empty child preserves raw text')
             return
         contents = root.b
+        # Recover from a read exception in jupytext.read.
+        if contents.strip().startswith('{'):
+            g.es_print('Using raw contents', color='blue')
+            return
         # Make the header if it exists.
         i = self.make_prefix(0, contents, root)
         header = contents[0:i]
@@ -204,7 +208,6 @@ class JupytextManager:
         Convert x.ipynb to a string s.
         Return (s, path)
         """
-        g.trace(p.h, g.callers(2))  ###
         path = self.full_path(c, p)
         if not path:
             # full_path has given the error.
@@ -214,12 +217,20 @@ class JupytextManager:
             return '', ''
 
         # Read the .ipynb file into contents.
-        # Use jupytext.write, *not* jupytext.writes.
+        # jupytext.read can crash, so be safe.
         fmt = c.config.getString('jupytext-fmt') or 'py:percent'
-        notebook = jupytext.read(path, fmt=fmt)
-        with io.StringIO() as f:
-            jupytext.write(notebook, f, fmt=fmt)
-            contents = f.getvalue()
+        try:
+            notebook = jupytext.read(path, fmt=fmt)
+            with io.StringIO() as f:
+            # Use jupytext.write, *not* jupytext.writes.
+                jupytext.write(notebook, f, fmt=fmt)
+                contents = f.getvalue()
+        except Exception:
+            g.es_print('Exception in jupytext.read', color='red')
+            g.es_exception()
+            with open(path, 'rb') as f:
+                raw_contents = f.read()
+                contents = g.toUnicode(raw_contents)
         return contents, path
     #@+node:ekr.20241023073354.1: *3* jtm.update
     def update(self, c: Cmdr, p: Position, path: str) -> None:
