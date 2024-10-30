@@ -65,7 +65,7 @@ class JupytextManager:
         width = c.config.getInt('jupytext-max-headline-length') or 60
 
         def shorten(s: str) -> str:
-            """Shorten s to width 60"""
+            """Shorten s to the configured width"""
             return textwrap.shorten(s, width=width, placeholder='')
 
         lines = g.splitLines(cell)
@@ -213,7 +213,7 @@ class JupytextManager:
             # full_path has given the error.
             return '', ''
         if not os.path.exists(path):
-            self.warn_bad_at_jupytext_node(p, path)
+            self.warn_file_not_found(p, path)
             return '', ''
 
         # Read the .ipynb file into contents.
@@ -226,7 +226,7 @@ class JupytextManager:
                 jupytext.write(notebook, f, fmt=fmt)
                 contents = f.getvalue()
         except Exception:
-            g.es_print('Exception in jupytext.read', color='red')
+            g.es_print('Exception in jupytext!', color='red')
             g.es_exception()
             with open(path, 'rb') as f:
                 raw_contents = f.read()
@@ -240,17 +240,16 @@ class JupytextManager:
         at = c.atFileCommands
         at.readOneAtJupytextNode(p)
         c.redraw()
-    #@+node:ekr.20241023165243.1: *3* jtm.warn_bad_at_jupytext_node
+    #@+node:ekr.20241023165243.1: *3* jtm.warn_file_not_found
     bad_paths: Dict[str, bool] = {}
 
-    def warn_bad_at_jupytext_node(self, p: Position, path: str) -> None:
+    def warn_file_not_found(self, p: Position, path: str) -> None:
         """Warn (once) about each bad path"""
         if path not in self.bad_paths:
             key = path if path else 'None'
             self.bad_paths[key] = True
             print('')
-            g.es_print(f"Bad @jupytext node: {p.h!r}", color='red')
-            g.es_print(f"File not found: {path!r}", color='blue')
+            g.es_print(f"File not found: {path!r}", color='red')
             print('')
     #@+node:ekr.20241023161034.1: *3* jtm.warn_no_jupytext
     warning_given = False
