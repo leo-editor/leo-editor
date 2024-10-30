@@ -68,10 +68,11 @@ class JupytextManager:
 
         # Handle markdown sections.
         if len(lines) > 1 and '[markdown]' in lines[0]:
-            # Strip '# ' if '#' follows.
             line1 = lines[1].strip()
-            if line1.startswith('# ') and line1[2:].strip().startswith('#'):
-                return shorten(line1[2:].strip())
+            if line1.startswith('# '):
+                section = line1[2:].strip()
+                if section.startswith('#'):
+                    return shorten(section)
             return shorten(line1)
 
         # Filter blank lines.
