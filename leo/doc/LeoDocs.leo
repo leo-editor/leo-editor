@@ -2520,7 +2520,9 @@
 </v>
 <v t="ekr.20240828095959.1"></v>
 <v t="ekr.20240828094953.1"><vh>Leo 6.8.2 release notes</vh></v>
+<v t="ekr.20241030133008.1"><vh>*** make sure create-node hook appears on the web</vh></v>
 <v t="ekr.20241027051739.1"></v>
+<v t="ekr.20060612103240" descendentVnodeUnknownAttributes="7d71002858010000003071017d710258090000007374725f6174696d657103580c000000313337363431343136332e307104735803000000302e3171057d710658090000007374725f6174696d657107580c000000313337363431323033382e307108735803000000302e3271097d710a2858090000007374725f6174696d65710b580c000000313337363431343136342e30710c58090000007374725f6374696d65710d580c000000313337363431323033392e30710e58090000007374725f6d74696d65710f580c000000313337363431323033392e307110755803000000302e3571117d711258090000007374725f6174696d657113580c000000313337363431313938372e30711473752e"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -33052,6 +33054,7 @@ the `jupytext`_ library.
     :local:
 
 </t>
+<t tx="ekr.20241030133008.1"></t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
