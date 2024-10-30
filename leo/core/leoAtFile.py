@@ -637,10 +637,12 @@ class AtFile:
             new_private_lines = x.propagate_changed_lines(
                 new_public_lines, old_private_lines, marker, p=root)
         else:
-            # This is not an error.
-            # g.es_print('No old_public_lines!', fileName)
+            # This is not an error, it is
+            # the first time the @jupytext has been read.
             new_private_lines = []
             root.b = ''.join(new_public_lines)
+            g.app.jupytextManager.create_outline(c, root)
+            g.doHook('after-reading-external-file', c=c, p=root)
             return
         if new_private_lines == old_private_lines:
             return
@@ -650,6 +652,7 @@ class AtFile:
         gnx2vnode = at.fileCommands.gnxDict
         new_contents = '@language python\n' + ''.join(new_private_lines)
         FastAtRead(c, gnx2vnode).read_into_root(new_contents, fileName, root)
+        g.doHook('after-reading-external-file', c=c, p=root)
     #@+node:ekr.20080711093251.7: *5* at.readOneAtShadowNode & helper
     def readOneAtShadowNode(self, fn: str, p: Position) -> None:  # pragma: no cover
 
@@ -1530,7 +1533,7 @@ class AtFile:
         
         This code is adapted from at.writeOneAtCleanNode.
         """
-        at, c = self, self.c
+        at, c, p = self, self.c, self.c.p
         try:
             c.endEditing()
             fileName = at.initWriteIvars(root)
@@ -1539,6 +1542,13 @@ class AtFile:
             # Prompt for dangerous write if the file exists.
             if not fileName or not at.precheck(fileName, root):
                 return
+
+            try:
+                g.doHook('before-writing-external-file', c=c, p=p)
+            except Exception:
+                # The hook must print an error message.
+                return
+
             # Write a minimal Jupyter file if the @jupytext tree is empty.
             if not root.b.strip() and not root.hasChildren():
                 prefix_list = c.config.getData('jupyter-prefix',
@@ -1567,7 +1577,7 @@ class AtFile:
         root is the position of an @<file> node.
         sentinels will be False for @clean and @nosent nodes.
         """
-        at, c = self, self.c
+        at, c, p = self, self.c, self.c.p
         try:
             c.endEditing()
             fileName = at.initWriteIvars(root)
@@ -1575,7 +1585,11 @@ class AtFile:
             if not fileName or not at.precheck(fileName, root):
                 return
 
-            g.doHook('before-writing-external-file', c=c, p=root)
+            try:
+                g.doHook('before-writing-external-file', c=c, p=p)
+            except Exception:
+                # The hook must print an error message.
+                return
 
             at.outputList = []
             at.putFile(root, sentinels=False)

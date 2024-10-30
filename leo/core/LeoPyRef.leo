@@ -187,6 +187,7 @@
 <v t="ekr.20031218072017.3093"><vh>@file leoGlobals.py</vh></v>
 <v t="ekr.20150514154159.1"><vh>@file leoHistory.py</vh></v>
 <v t="ekr.20031218072017.3206"><vh>@file leoImport.py</vh></v>
+<v t="ekr.20241022090855.1"><vh>@file leoJupytext.py</vh></v>
 <v t="ekr.20190515070742.1"><vh>@file leoMarkup.py</vh></v>
 <v t="ekr.20031218072017.3320"><vh>@file leoNodes.py</vh></v>
 <v t="ekr.20140821055201.18331"><vh>@file leoPersistence.py</vh></v>
@@ -2786,43 +2787,15 @@ def do_sec(i, m, s):
 </t>
 <t tx="ekr.20211020091540.1">c.backup_helper(sub_dir='leoPy')
 </t>
-<t tx="ekr.20220306092217.1">g.cls()
+<t tx="ekr.20220306092217.1">"""Invoke EKR's private test-one.cmd script."""
+
+import os
+
 if c.isChanged():
     print('Saved!')
     c.save()
-&lt;&lt; test-one: test kind &gt;&gt;
-&lt;&lt; prefixes &gt;&gt;
-&lt;&lt; old commands &gt;&gt;
-assert kind in ('check-all', 'check-one', 'beautify', 'test'), repr(kind)
-if kind == 'check-all':  # Check all files.
-    command = 'python -m leo.scripts.check_leo'
-    g.execute_shell_commands(command)
-elif kind == 'check-one':
-    # path = 'plugins/qt_gui.py'
-    path = 'core/leoApp.py'
-    command = f"python -m leo.scripts.check_leo {path}"
-    g.execute_shell_commands(command)
-elif kind == 'beautify':
-    &lt;&lt; test the beautifier &gt;&gt;
-elif kind == 'test':
-    commands = (
-        ### "leo.scripts.check_leo.TestCheckLeo",
-        f"{misc}.test_check_leo.TestCheckLeo",
-        # f"{core}.test_leoserver.TestLeoServer.test_find_commands",
-        # f"{core}.test_leoFind.TestFind.test_find_var",
-        # f"{core}.test_leoTokens.TestTokenBasedOrange",
-        # f"{core}.test_leoTokens.TestTokens",
-        # f"{core}.test_leoTokens.TestTokenBasedOrange.test_blank_lines_after_function",
-        # f"{core}.test_leoAtFile.TestAtFile.test_putBody_unterminated_at_doc_part",
-    )
-    verbose_flag = ''  # -v
-    commands_s = f"python -m unittest {verbose_flag} {' '.join(commands)}"
-    g.execute_shell_commands(commands_s)
-else:
-    # command = 'run'  # run Nim tests.
-    script = 'build-leo.py'
-    command = fr"python C:\Repos\leo-editor\leo\scripts\{script}"
-    g.execute_shell_commands(command)
+
+os.system('test-one.cmd')
 </t>
 <t tx="ekr.20220318085657.1">"""
 Find and mark all nodes containing underindented trailing comments in c's outline.
@@ -3529,6 +3502,15 @@ print('Done!')
 # 'python -m mypy c:/test/mypy_test.py',
 # 'python -m ruff check c:/test/mypy_test.py',
 # 'python -m pyflakes c:/test/mypy_test.py',
+
+### "leo.scripts.check_leo.TestCheckLeo",
+# f"{misc}.test_check_leo.TestCheckLeo",
+# f"{core}.test_leoserver.TestLeoServer.test_find_commands",
+# f"{core}.test_leoFind.TestFind.test_find_var",
+# f"{core}.test_leoTokens.TestTokenBasedOrange",
+# f"{core}.test_leoTokens.TestTokens",
+# f"{core}.test_leoTokens.TestTokenBasedOrange.test_blank_lines_after_function",
+# f"{core}.test_leoAtFile.TestAtFile.test_putBody_unterminated_at_doc_part",
 </t>
 <t tx="ekr.20240528034319.1"># Can be run from the command line as follows:
 # python -c "import leo.core.leoTokens" --all --report --write leo/core/leoAst.py
