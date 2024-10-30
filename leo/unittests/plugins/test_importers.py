@@ -1860,7 +1860,7 @@ class TestJupytext(BaseTestImporter):
                     '# Another markdown cell\n'
                     '\n'
             ),
-            (1, 'cell 5',
+            (1, 'Cell 5',
                     '# %%\n'
             ),
         )
