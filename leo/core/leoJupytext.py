@@ -59,9 +59,9 @@ class JupytextManager:
         lines = g.splitLines(cell)
         for line in lines[1:]:
             line = line.replace('#', '').strip()
-            if line and not line.startswith('%%') and len(line) > 10:
+            if line and not line.startswith('%%'):
                 return line
-        return f"cell {p.childIndex()}"
+        return f"Cell {p.childIndex()}"
     #@+node:ekr.20241029160441.1: *4* jtm.compute_markup
     def compute_markup(self, header: str) -> str:
         """Return the proper markup for root.b"""
