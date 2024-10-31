@@ -307,7 +307,17 @@ class LeoQtTree(leoFrame.LeoTree):
             elif cmd == 'WEIGHT':
 
                 def weight_modifier(item: Item, param: str) -> None:
-                    arg = getattr(QtGui.QFont, param, 75)
+                    wd = {"Thin": QtGui.QFont.Weight.Thin,
+                        "ExtraLight": QtGui.QFont.Weight.ExtraLight,
+                        "Light": QtGui.QFont.Weight.Light,
+                        "Normal": QtGui.QFont.Weight.Normal,
+                        "Medium": QtGui.QFont.Weight.Medium,
+                        "DemiBold": QtGui.QFont.Weight.DemiBold,
+                        "Bold": QtGui.QFont.Weight.Bold,
+                        "ExtraBold": QtGui.QFont.Weight.ExtraBold,
+                        "Black": QtGui.QFont.Weight.Black
+                        }
+                    arg = wd.get(param, QtGui.QFont.Weight.Medium)
                     font = item.font(0)
                     font.setWeight(arg)
                     item.setFont(0, font)
