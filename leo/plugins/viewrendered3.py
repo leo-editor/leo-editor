@@ -1429,7 +1429,7 @@ def is_theme_dark(c):
     bg = pallete.window().color()
     return fg.value() > bg.value()
 #@+node:tom.20241005134508.1: ** tinker with colors()
-def tinker_with_colors(c):
+def tinker_with_colors(c, kind = None):
     """Use Editor's fore- and back-ground colors.
     
     ARGUMENT
@@ -1448,18 +1448,26 @@ def tinker_with_colors(c):
     fg = f'#{fg_hex:06x}'
     bg = f'#{bg_hex:06x}'
 
-    css_fragment = f"""
-<style type='text/css'>
-    body, th, td, pre.literal-block, pre.doctest-block, pre.math,
-    pre.code, blockquote, div.topic, blockquote > table,
-    div.topic > table, blockquote p.attribution,
-    div.topic p.attribution {{
-        color: {fg};
-        background: {bg};
-    }}
-</style>
-    """
-
+    css_fragment = ''
+    if kind == REST:
+        css_fragment = rf"""
+    <style type='text/css'>
+        body, th, td, pre.literal-block, pre.doctest-block, pre.math,
+        pre.code, blockquote, div.topic, blockquote > table,
+        div.topic > table, blockquote p.attribution,
+        div.topic p.attribution {{
+            color: {fg};
+            background: {bg};
+        }}
+    </style>
+        """
+    elif kind == MD:
+        css_fragment = rf"""
+        body, th, td, pre, code, div.codehilite pre {{
+            color: {fg};
+            background: {bg};
+        }}
+        """
     # Graft the colors after any previous stylesheet so they have priority.
     return css_fragment
 #@+node:tom.20211125003406.1: ** configure_asciidoc
@@ -2392,13 +2400,16 @@ class ViewRenderedController3(QtWidgets.QWidget):
         """
 
         script_str = ''
+        css_fragment = tinker_with_colors(self.c, MD)
+
         if self.md_math_output and self.mathjax_url:
             script_str = fr'<script defer type="text/javascript" src="{self.mathjax_url}"></script>'
-        self.md_header = fr'''
+        self.md_header = f'''
     <!DOCTYPE html>
     <html><head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <link rel="stylesheet" type="text/css" href="{self.md_stylesheet}">
+    <style type="text/css">{css_fragment}</style>\n
     {script_str}
     </head>
     '''
@@ -2752,9 +2763,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 with redirect_stdout(out):
                     cmdline.main(args)
             # Add some fine-tuning css
-            css_fragment = tinker_with_colors(self.c)
             with ioOpen(style_path, 'a') as out:
-                out.write(MD_STYLESHEET_APPEND + css_fragment)
+                out.write(MD_STYLESHEET_APPEND)
             self.md_stylesheet = 'file:///' + style_path
 
         g.es('VR3 Markdown stylesheet:', self.md_stylesheet)
