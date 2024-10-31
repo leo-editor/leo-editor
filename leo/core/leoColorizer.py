@@ -1036,6 +1036,8 @@ class JEditColorizer(BaseColorizer):
         fn = g.os_path_join(path, f"{language}.py")
         if g.os_path_exists(fn):
             mode = g.import_module(name=f"leo.modes.{language}")
+            if mode is None:  # An important message.
+                g.trace(f"Import failed! leo.modes.{language}")
         else:
             mode = None
         return self.init_mode_from_module(name, mode)
@@ -2330,14 +2332,6 @@ class JEditColorizer(BaseColorizer):
         """
         Return n >= 0 if s[i] ends with a non-escaped 'end' string.
         """
-        ### To be removed.
-        # Leo 6.8.3:
-        # If end_pattern starts with '\n', match only at the start of a line.
-        if end_pattern.startswith('\n'):
-            pat = end_pattern[1:]
-            # FAIL if we see the end_pattern, otherwise colorize the whole line.
-            n = -1 if s.startswith(pat) else len(s)
-            return n
         esc = self.escape
         while 1:
             if self.nested:
