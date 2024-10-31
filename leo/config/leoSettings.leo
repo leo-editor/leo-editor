@@ -215,7 +215,7 @@
 <v t="ekr.20190422173857.1"><vh>@string qt-style-name = None</vh></v>
 <v t="ekr.20210914081311.1"><vh>@bool highlight-body-line = False</vh></v>
 <v t="ekr.20210914081428.1"><vh>@string line-highlight-color = None</vh></v>
-<v t="ekr.20240726065425.1"><vh>@string qt-layout-name = vertical-thirds</vh></v>
+<v t="ekr.20240726065425.1"><vh>@string qt-layout-name = legacy</vh></v>
 <v t="ekr.20140915194122.23431"><vh>Colors</vh>
 <v t="ekr.20140912075503.19318"><vh>Body pane colors</vh>
 <v t="ekr.20140912075503.19319"><vh>@color body-bg = white</vh></v>
@@ -656,6 +656,11 @@
 <v t="ekr.20041119034357.14"><vh>@bool at-root-bodies-start-in-doc-mode = True</vh></v>
 <v t="ekr.20070419103554"><vh>@bool force-newlines-in-at-nosent-bodies = True</vh></v>
 <v t="ekr.20041119041747"><vh>@string output-newline = nl</vh></v>
+</v>
+<v t="ekr.20241024123618.1"><vh>Jupytext options</vh>
+<v t="ekr.20241030020739.1"><vh>@int jupytext-max-headline-length = 60</vh></v>
+<v t="ekr.20241024123633.1"><vh>@string jupytext-fmt = py:percent</vh></v>
+<v t="ekr.20241026115515.1"><vh>@data jupyter-prefix</vh></v>
 </v>
 <v t="ekr.20041119034357.7"><vh>Leo files</vh>
 <v t="ekr.20041119034357.8"><vh>@string output-initial-comment = None</vh></v>
@@ -1298,7 +1303,7 @@
 <v t="tbrown.20140814090009.57475"><vh>@menu &amp;Show Settings</vh>
 <v t="ekr.20131213135427.21957"><vh>@item show-&amp;bindings</vh></v>
 <v t="ekr.20131213135427.21958"><vh>@item show-&amp;commands</vh></v>
-<v t="tom.20241023123442.1"><vh>@item layout-show-&amp;layouts</vh></v>
+<v t="tom.20241023123442.1"><vh>@item show-&amp;layouts</vh></v>
 <v t="ekr.20131213135427.21960"><vh>@item show-&amp;settings</vh></v>
 <v t="ekr.20131213135427.21959"><vh>@item show-&amp;plugins-info</vh></v>
 </v>
@@ -2278,7 +2283,7 @@
 </v>
 </v>
 <v t="ekr.20140915194122.23428"></v>
-<v t="ekr.20241012050620.1"></v>
+<v t="ekr.20241024123618.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -11730,6 +11735,33 @@ vertical-thirds2
 <t tx="ekr.20240924055407.1">True: run Pylint on each saved file, but only if it has been changed.</t>
 <t tx="ekr.20240926065158.1">True: beautify all @&lt;file&gt; nodes in the outline using Leo's token-based beautifier.</t>
 <t tx="ekr.20241012050620.1">True: Leo's git-diff command will diff .leo and .leojs files.</t>
+<t tx="ekr.20241024123618.1"></t>
+<t tx="ekr.20241024123633.1">This option defaults to py:percent.
+
+See https://jupytext.readthedocs.io/en/latest/config.html
+</t>
+<t tx="ekr.20241026115515.1"># Leo created this prefix from @data jupyter-prefix.
+# Jupyter's 'New Python Text Notebook with Percent Format` created this file.
+
+# ---
+# jupyter:
+#   jupytext:
+#     formats: py:percent
+#     text_representation:
+#       extension: .py
+#       format_name: percent
+#       format_version: '1.3'
+#       jupytext_version: 1.16.4
+#   kernelspec:
+#     display_name: Python 3 (ipykernel)
+#     language: python
+#     name: python3
+# ---
+
+# %%
+</t>
+<t tx="ekr.20241030020739.1">The maximum size of imported headlines.
+</t>
 <t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 
 False: (Recommended) The commands act as simple navigation commands, and do not change the outline state.</t>

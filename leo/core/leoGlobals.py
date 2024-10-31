@@ -5895,6 +5895,8 @@ def cls(event: LeoKeyEvent = None) -> None:
         # Leo 6.7.5: Two calls seem to be required!
         os.system('cls')
         os.system('cls')
+    else:
+        os.system('clear')
 #@+node:ekr.20131114124839.16665: *3* g.createScratchCommander
 def createScratchCommander(fileName: str = None) -> None:
     c = g.app.newCommander(fileName)

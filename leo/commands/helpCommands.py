@@ -785,49 +785,59 @@ class HelpCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20240822071015.1: *3* helpForLayouts
     @cmd('help-for-layouts')
     def helpForLayouts(self, event: LeoKeyEvent = None) -> None:
-        """Print a messages telling you how to get started with Leo."""
-        # A bug in Leo: triple quotes puts indentation before each line except
-        # the first.
+        """Print a message telling you how to use Leo's layouts."""
         c = self.c
-        #@+<< create listing >>
-        #@+node:tom.20241022174807.1: *4* << create listing >>
+        #@+<< create listing list>>
+        #@+node:tom.20241022174807.1: *4* << create listing list >> (help-for-layouts)
         dw = c.frame.top
         cache = dw.layout_cache
         layouts = cache.layout_registry
 
-        # putHelpFor() messes up the format of a triple-quoted string here
-        # by indenting lines after the first.  This ruins the formatting of the 
-        # rendered display. Concatenating the string from its paragraphs somehow
-        # prevents this. Weird!
-        intro = ("A *layout* is an arrangement of the various frames and panels of Leo's interface. Each layout has a name, such as ``vertical-thirds`` and an associated command that will change to that layout, such as ``layout-vertical-thirds``\n\n"
+        # Rendered the intro as rST
+        intro = textwrap.dedent("""\
+            =============
+            About Layouts
+            =============
 
-            + 'The layout that Leo will use when starting up can be specified using the setting ``@string qt-layout-name = vertical-thirds`` (change "vertical-thirds" to whatever layout is wanted).\n\n'
+            A **layout** is an arrangement of the various frames and panels of
+            Leo's interface.
+            
+            Each layout has a **name**, such as ``vertical-thirds``, and a
+            **command** such as ``layout-vertical-thirds``. Such commands switch to
+            the given layout.
 
-            + 'Most layouts include a position for either the ``viewrendered`` (VR) or the ``viewrendered3`` (VR3) plugins depending on whether VR3 has been enabled in the settings or not. The plugin may not be visible until it has been commanded to be shown or toggled.  These commands can be executed in the Minibuffer in the form ``vr-show``, ``vr-toggle``, or ``vr3-toggle``.\n\n'
+            By default, Leo uses the ``legacy`` layout. LeoSettings.leo contains:
 
-            + 'The available layouts can be displayed using the commands ``help-for-layouts`` (this command) or ``layout-show-layouts``.\n\n')
+                @string qt-layout-name=legacy
 
-        listing = intro
+            As usual, you can override this setting in myLeoSettings.leo.
 
+            Most layouts allocate screen space for the viewrendered (VR) or
+            viewrendered3 (VR3) plugins, whichever you have enabled.
+
+            The plugin will not be visible until you execute one of the vr-show,
+            vr-toggle, or vr3-toggle commands.
+
+            The show-layouts command and this command (help-for-layouts) show the
+            avaialable layouts.
+        """)
+
+        # Create lesser rST sections for each layout command.
+        listing = [intro + '\n\n']
         for name, docstr in list(layouts.items()):
-            name = name.lstrip()
-            lines = docstr.split('\n')
-            wrapped_name = f'**{name}**\n'
-            if len(lines) > 0:
-                doc_list = []
-                for line in lines:
-                    if not line.startswith(' '*4):
-                        line = ' '*4 + line.lstrip()
-                    doc_list.append(line)
-                doc = '\n'.join(doc_list)
-                listing += f'{wrapped_name}::\n\n{doc}\n\n'
-            else:
-                # Handle docstrings that are are one-liners without a layout diagram.
-                listing += f'{wrapped_name}\n'
-
-        #@-<< create listing >>
-
-        c.putHelpFor(listing)
+            name = name.strip()
+            if 1:  # Use bold lines for command names.
+                listing.append(f"\n\n**{name}**")
+            else:  # Works, but the section names are too big.
+                underline = '-' * len(name)
+                listing.append(name + '\n')
+                listing.append(underline)
+            # The show-layout command renders docstrings as plain text.
+            # That is, all docstrings start literal blocks with ':', not '::'.
+            doc_s = textwrap.dedent(docstr).replace(':\n', '::\n')
+            listing.append(f"\n\n{doc_s}\n\n")
+        #@-<< create listing list>>
+        c.putHelpFor(''.join(listing))
     #@+node:ekr.20150514063305.396: *3* helpForMinibuffer
     @cmd('help-for-minibuffer')
     def helpForMinibuffer(self, event: LeoKeyEvent = None) -> None:

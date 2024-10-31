@@ -428,7 +428,7 @@ class TestAtFile(LeoUnitTest):
         at.putLeadInSentinel(s, 0, 2)
     #@+node:ekr.20211104142459.1: *3* TestAtFile.test_putLine
     def test_putLine(self):
-        
+
         from leo.core.leoAtFile import LeoIOStatus
 
         at, p = self.at, self.c.p
