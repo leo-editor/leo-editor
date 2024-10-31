@@ -1399,6 +1399,8 @@ class JEditColorizer(BaseColorizer):
             return
         self.delegate_name = delegate
         if delegate:
+            if not g.unitTesting:  ###
+                g.trace('****', delegate)
             self.modeStack.append(self.modeBunch)
             self.init_mode(delegate)
             while 0 <= i < j and i < len(s):
@@ -2436,6 +2438,8 @@ class JEditColorizer(BaseColorizer):
             self.clearState()
         return j  # Return the new i, *not* the length of the match.
     #@+node:ekr.20241031070448.1: *4* jedit.match_span_delegated_lines & helpers
+    span_lockout = False
+
     def match_span_delegated_lines(self, s: str, i: int, target: str, delegate: str) -> int:
         """
         We s[i:] is the start of a range of lines.
@@ -2446,32 +2450,25 @@ class JEditColorizer(BaseColorizer):
         # New in Leo 6.8.2.
         ### g.trace(s.strip().startswith(target), i, repr(s))
 
+        if self.span_lockout:
+            g.trace('LOCKOUT')
+            return -1
+
         j = self.match_span_delegated_lines_helper(s, i, target)
-        g.trace(j)
         if j == -1:
+            g.trace('MARKER', repr(s))
             return -1  # Done!
 
         # Colorize another line with the delegate.
-
-        ###
-            # i2 = i  ###  + len(begin)
-            # j2 = j  ### + len(end)
-            # kind = None
-            # if delegate:
-                # # self.colorRangeWithTag(
-                    # # s, i, i2, kind, delegate=None, exclude_match=exclude_match)
-                # # self.colorRangeWithTag(
-                    # # s, i2, j, kind, delegate=delegate, exclude_match=exclude_match)
-                # self.colorRangeWithTag(s, i2, j, kind, delegate=delegate)
-                # # self.colorRangeWithTag(
-                    # # s, j, j2, kind, delegate=None, exclude_match=exclude_match)
-            # else:
-                # # self.colorRangeWithTag(
-                    # # s, i, j2, kind, delegate=None, exclude_match=exclude_match)
-                # self.colorRangeWithTag(s, i, j2, kind)
-
-        g.trace(i, j, repr(s[i:j]))
-        self.colorRangeWithTag(s, i, j, tag=None, delegate=delegate)
+        if 1:
+            n = self.currentState()
+            color_state = self.stateDict.get(n, 'no-state')
+        g.trace('COLOR', color_state, i, j, repr(s[i:j]))
+        try:
+            self.span_lockout = True
+            self.colorRangeWithTag(s, i, j, tag=None, delegate=delegate)
+        finally:
+            self.span_lockout = False
         ### j = j2
         kind = None
         self.prev = (i, j, kind)
