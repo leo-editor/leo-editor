@@ -52,8 +52,12 @@ def comment_helper(colorer: Any, s: str, i: int) -> int:
     delegate = delegate_dict.get(state)
     target = marker_dict.get(state)
     n = colorer.match_span_delegated_lines(s, i, target, delegate)
+    if 1:
+        g.trace(f"returns: {n} state: {state!r} {s!r}")
+        # g.trace(f"target: {target!r} delegate: {delegate!r}")
+        print('')
     if n > 0:
-        global_state = '??'
+        ### colorer.clearState()
         colorer.match_line(s, i, kind='comment1')
     return n
 #@+node:ekr.20241031024936.1: *3* notebook_keyword
@@ -75,10 +79,10 @@ def notebook_comment(colorer, s, i) -> int:
         if line.startswith(target):
             # Switch to a new state.
             global_state = state
-            g.trace('   NEW STATE', global_state, line)
+            g.trace('   NEW STATE', global_state, line)  ###
             return comment_helper(colorer, s, i)
     # Continue the present state
-    g.trace('FALL THROUGH', global_state, line)
+    ### g.trace('FALL THROUGH', global_state, line)
     return comment_helper(colorer, s, i)
 #@-others
 

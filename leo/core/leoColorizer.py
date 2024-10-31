@@ -2447,6 +2447,7 @@ class JEditColorizer(BaseColorizer):
         ### g.trace(s.strip().startswith(target), i, repr(s))
 
         j = self.match_span_delegated_lines_helper(s, i, target)
+        g.trace(j)
         if j == -1:
             return -1  # Done!
 
@@ -2469,6 +2470,7 @@ class JEditColorizer(BaseColorizer):
                     # # s, i, j2, kind, delegate=None, exclude_match=exclude_match)
                 # self.colorRangeWithTag(s, i, j2, kind)
 
+        g.trace(i, j, repr(s[i:j]))
         self.colorRangeWithTag(s, i, j, tag=None, delegate=delegate)
         ### j = j2
         kind = None
@@ -2476,6 +2478,8 @@ class JEditColorizer(BaseColorizer):
         self.trace_match(kind, s, i, j)
         # New in Leo 5.5: don't recolor everything after continued strings.
         if j > len(s):  ### and not dots:
+
+            g.trace('RESTART')
             j = len(s) + 1
 
             def span(s: str) -> int:
