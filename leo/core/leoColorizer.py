@@ -2254,7 +2254,8 @@ class JEditColorizer(BaseColorizer):
             return 0
         if at_word_start and i + len(begin) + 1 < len(s) and s[i + len(begin)] in self.word_chars:
             return 0
-        if not g.match(s, i, begin):
+        # New in Leo 6.8.3: allow an empty 'begin' string.
+        if begin and not g.match(s, i, begin):
             return 0
 
         # We have matched the start of the span.
@@ -2315,7 +2316,7 @@ class JEditColorizer(BaseColorizer):
                 no_line_break=no_line_break,
                 no_word_break=no_word_break)
         return j - i  # Correct, whatever j is.
-    #@+node:ekr.20110605121601.18623: *5* jedit.match_span_helper
+    #@+node:ekr.20110605121601.18623: *5* jedit.match_span_helper (changed)
     def match_span_helper(self,
         s: str,
         i: int,
@@ -2329,6 +2330,13 @@ class JEditColorizer(BaseColorizer):
         """
         Return n >= 0 if s[i] ends with a non-escaped 'end' string.
         """
+        # Leo 6.8.3:
+        # If end_pattern starts with '\n', match only at the start of a line.
+        if end_pattern.startswith('\n'):
+            pat = end_pattern[1:]
+            # FAIL if we see the end_pattern, otherwise colorize the whole line.
+            n = -1 if s.startswith(pat) else len(s)
+            return n
         esc = self.escape
         while 1:
             if self.nested:
