@@ -1399,8 +1399,6 @@ class JEditColorizer(BaseColorizer):
             return
         self.delegate_name = delegate
         if delegate:
-            if not g.unitTesting:  ###
-                g.trace('****', delegate)
             self.modeStack.append(self.modeBunch)
             self.init_mode(delegate)
             while 0 <= i < j and i < len(s):
@@ -2437,7 +2435,7 @@ class JEditColorizer(BaseColorizer):
         else:
             self.clearState()
         return j  # Return the new i, *not* the length of the match.
-    #@+node:ekr.20241031070448.1: *4* jedit.match_span_delegated_lines & helper (new)
+    #@+node:ekr.20241031070448.1: *4* jedit.match_span_delegated_lines & helper
     delegated_lines_language = None
 
     def match_span_delegated_lines(self, s: str, i: int, *, language: str, predicate: Callable) -> None:
@@ -2456,7 +2454,7 @@ class JEditColorizer(BaseColorizer):
             return self.restart_match_span_delegated_lines(s, predicate=predicate)  # Must be kwargs.
 
         self.setRestart(span, predicate=predicate)
-    #@+node:ekr.20241031072812.1: *5* jedit.restart_match_span_delegated_lines (new)
+    #@+node:ekr.20241031072812.1: *5* jedit.restart_match_span_delegated_lines
     def restart_match_span_delegated_lines(self, s: str, *, predicate: Callable) -> int:
         """
         Colorize all lines with delegated_lines_language until the predicate matches.

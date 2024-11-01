@@ -44,9 +44,6 @@ def jupytext_comment(colorer, s, i) -> int:
     if line.startswith('# %%'):
         # Colorize the *next* lines until the predicate matches.
         language = 'md' if line.startswith('# %% [markdown]') else 'python'
-        if 0:  ###
-            print('')
-            g.trace(language, repr(s))
         colorer.match_span_delegated_lines(s, i, language=language, predicate=predicate)
 
     return -1  # This line has been completely handled.
