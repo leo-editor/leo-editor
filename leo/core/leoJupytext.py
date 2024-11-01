@@ -107,7 +107,7 @@ class JupytextManager:
         """Return the proper markup for root.b"""
         markup_list = [
             '@others\n',
-            '@language python\n',
+            '@language jupytext\n',
             '@tabwidth -4\n',
         ]
         if header:
