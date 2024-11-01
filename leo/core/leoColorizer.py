@@ -2457,8 +2457,6 @@ class JEditColorizer(BaseColorizer):
         """
         Colorize all lines with delegated_lines_language until the predicate matches.
         """
-        trace = False
-
         line = s.strip()
         if s.startswith('@language'):
             return 0
@@ -2466,15 +2464,10 @@ class JEditColorizer(BaseColorizer):
         language = predicate(s)
         if language:
             self.delegated_lines_language = language
-            if trace:
-                print('')
-                g.trace('Change Language', self.delegated_lines_language, repr(s))
             return 0
 
         # Colorize *this* entire line with the language.
         if line:
-            if trace:
-                g.trace(self.delegated_lines_language, repr(s))
             n = self.currentState()
             self.init()
             self.language = self.delegated_lines_language
