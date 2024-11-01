@@ -1827,7 +1827,7 @@ class TestJupytext(BaseTestImporter):
             (0, '',  # check_outlines ignores the first headline.
                     '<< prefix >>\n'
                     '@others\n'
-                    '@language python\n'
+                    '@language jupytext\n'
                     '@tabwidth -4\n'
             ),
             (1, '<< prefix >>',
