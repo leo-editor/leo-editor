@@ -2256,9 +2256,6 @@ class JEditColorizer(BaseColorizer):
             return 0
         if at_word_start and i + len(begin) + 1 < len(s) and s[i + len(begin)] in self.word_chars:
             return 0
-        # New in Leo 6.8.3: allow an empty 'begin' string.
-        if begin and not g.match(s, i, begin):
-            return 0
 
         # We have matched the start of the span.
         j = self.match_span_helper(s, i + len(begin), begin, end,
