@@ -2461,31 +2461,23 @@ class JEditColorizer(BaseColorizer):
         """
         Colorize all lines with delegated_lines_language until the predicate matches.
         """
+        trace = False
         language = predicate(s)
         if language:
             self.delegated_lines_language = language
-            if 1:  ###
+            if trace:
                 print('')
                 g.trace('Change Language', self.delegated_lines_language, repr(s))
             return 0
 
         # Colorize *this* entire line with the language.
         if s:
-            g.trace(self.delegated_lines_language, repr(s))  ###
-            if 1:  ### Experimental.
-                n = self.currentState()
-                self.init()
-                self.language = self.delegated_lines_language
-                self.mainLoop(n, s)
-            else:
-                try:
-                    old_state = self.currentState()
-                    self.language = self.delegated_lines_language
-                    self.init()
-                    n = self.clearState()
-                    self.mainLoop(n, s)
-                finally:
-                    self.setState(old_state)
+            if trace:
+                g.trace(self.delegated_lines_language, repr(s))
+            n = self.currentState()
+            self.init()
+            self.language = self.delegated_lines_language
+            self.mainLoop(n, s)
 
         # Continue the colorizing on the *next* line.
 
@@ -2493,7 +2485,6 @@ class JEditColorizer(BaseColorizer):
             return self.restart_match_span_delegated_lines(s, predicate=predicate)  # Must be kwargs.
 
         self.setRestart(span, predicate=predicate)
-
         return len(s)  # Suppress any other rules.
     #@+node:ekr.20110605121601.18625: *4* jedit.match_span_regexp
     def match_span_regexp(
