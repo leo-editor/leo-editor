@@ -26,10 +26,6 @@ def jupytext_comment(colorer, s, i) -> int:
     
     Return: n > 1 if n characters match, otherwise -1.
     """
-    if 1:
-        print('')
-        g.trace(repr(s))
-        print('')
     assert s[i] == '#'
 
     # Colorize *this* line.
@@ -47,15 +43,12 @@ def jupytext_comment(colorer, s, i) -> int:
                 return 'python'
             return ''
 
-        ###
-            # delegate = (
-                # 'md:md_main' if line.startswith('# %% [markdown]')
-                # else 'python:python_main'
-            # )
-
-        language = 'md' if line.startswith('md') else 'python'
+        language = 'md' if line.startswith('# %% [markdown]') else 'python'
+        if 1:
+            print('')
+            g.trace(language, repr(s))
+            print('')
         colorer.match_span_delegated_lines(s, i, language=language, predicate=predicate)
-            ### delegate=delegate, predicate=predicate)
 
     return -1  # This line has been completely handled.
 #@+node:ekr.20241031024936.1: *3* jupytext_keyword

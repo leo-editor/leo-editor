@@ -2438,6 +2438,8 @@ class JEditColorizer(BaseColorizer):
             self.clearState()
         return j  # Return the new i, *not* the length of the match.
     #@+node:ekr.20241031070448.1: *4* jedit.match_span_delegated_lines & helper (new)
+    delegated_lines_language = ''
+
     def match_span_delegated_lines(self, s: str, i: int, *, language: str, predicate: Callable) -> None:
         """
         Colorize the *following* lines with the given delegate until the predicate is true.
@@ -2447,49 +2449,49 @@ class JEditColorizer(BaseColorizer):
             return
 
         # Continue the colorizing on the *next* line.
+        self.delegated_lines_language = language
 
         def span(s: str) -> int:
             # Freeze all bindings.
-            return self.restart_match_span_delegated_lines(s,
-                language=language, predicate=predicate)  # Must be kwargs.
+            return self.restart_match_span_delegated_lines(s, predicate=predicate)  # Must be kwargs.
 
-        self.setRestart(span, language=language, predicate=predicate)
+        self.setRestart(span, predicate=predicate)
     #@+node:ekr.20241031072812.1: *5* jedit.restart_match_span_delegated_lines (new)
-    delegated_lines_language = ''
-
-    def restart_match_span_delegated_lines(self, s: str, *, language: str, predicate: Callable) -> int:
+    def restart_match_span_delegated_lines(self, s: str, *, predicate: Callable) -> int:
         """
-        Colorize all lines with the given language until the predicate matches.
+        Colorize all lines with delegated_lines_language until the predicate matches.
         """
         if predicate(s):
-            print('')
             self.delegated_lines_language = 'md' if s.startswith('md') else 'python'
+            print('')
             g.trace('Change Language', self.delegated_lines_language, repr(s))
-            self.init()
-            n = self.clearState()
-            # self.clearState()
             return 0
 
         # Colorize *this* entire line with the language.
         if s:
             g.trace(self.delegated_lines_language, repr(s))  ###
-            try:
-                old_state = self.currentState()
-                g.trace('old_state', old_state)
-                self.language = self.delegated_lines_language
+            if 0:  ### Experimental. Do minimal init.
+                n = self.currentState()
                 self.init()
-                n = self.clearState()
+                self.language = self.delegated_lines_language
                 self.mainLoop(n, s)
-            finally:
-                self.setState(old_state)
+            else:
+                try:
+                    old_state = self.currentState()
+                    g.trace('old_state', old_state)
+                    self.language = self.delegated_lines_language
+                    self.init()
+                    n = self.clearState()
+                    self.mainLoop(n, s)
+                finally:
+                    self.setState(old_state)
 
         # Continue the colorizing on the *next* line.
 
         def span(s: str) -> int:
-            return self.restart_match_span_delegated_lines(s,
-                language=language, predicate=predicate)  # Must be kwargs.
+            return self.restart_match_span_delegated_lines(s, predicate=predicate)  # Must be kwargs.
 
-        self.setRestart(span, language=language, predicate=predicate)
+        self.setRestart(span, predicate=predicate)
 
         return len(s)  # Suppress any other rules.
     #@+node:ekr.20110605121601.18625: *4* jedit.match_span_regexp
