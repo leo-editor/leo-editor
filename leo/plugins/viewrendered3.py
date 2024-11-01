@@ -1755,6 +1755,7 @@ def getVr3(event):
         controllers[h] = vr3 = ViewRenderedController3(c)
         dw = c.frame.top
         vr3.setParent(dw.layout_cache)
+        vr3.set_freeze()
 
     return vr3
 #@+node:TomP.20191215195433.16: ** vr3.Commands
@@ -4219,7 +4220,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                     output += f'<pre style="{RST_ERROR_BODY_STYLE}">{result}</pre>'
                     _html = output.encode(ENCODING)
 
-        css_fragment = tinker_with_colors(self.c)
+        css_fragment = tinker_with_colors(self.c, REST)
         _html = _html.decode(ENCODING)
         _html = _html.replace('</head>', f'{css_fragment}</head>')
         _html = _html.encode(ENCODING)
