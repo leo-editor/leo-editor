@@ -1036,6 +1036,8 @@ class JEditColorizer(BaseColorizer):
         fn = g.os_path_join(path, f"{language}.py")
         if g.os_path_exists(fn):
             mode = g.import_module(name=f"leo.modes.{language}")
+            if mode is None:  # An important message.
+                g.trace(f"Import failed! leo.modes.{language}")
         else:
             mode = None
         return self.init_mode_from_module(name, mode)
@@ -2432,6 +2434,52 @@ class JEditColorizer(BaseColorizer):
         else:
             self.clearState()
         return j  # Return the new i, *not* the length of the match.
+    #@+node:ekr.20241031070448.1: *4* jedit.match_span_delegated_lines & helper
+    delegated_lines_language = None
+
+    def match_span_delegated_lines(self, s: str, i: int, *, language: str, predicate: Callable) -> None:
+        """
+        Colorize the *following* lines with the given delegate until the predicate is true.
+        """
+        if i > 0:  # Should not happen.
+            return
+
+        # Continue the colorizing on the *next* line.
+        self.delegated_lines_language = language
+
+        def span(s: str) -> int:
+            # Freeze all bindings.
+            return self.restart_match_span_delegated_lines(s, predicate=predicate)  # Must be kwargs.
+
+        self.setRestart(span, predicate=predicate)
+    #@+node:ekr.20241031072812.1: *5* jedit.restart_match_span_delegated_lines
+    def restart_match_span_delegated_lines(self, s: str, *, predicate: Callable) -> int:
+        """
+        Colorize all lines with delegated_lines_language until the predicate matches.
+        """
+        line = s.strip()
+        if s.startswith('@language'):
+            return 0
+
+        language = predicate(s)
+        if language:
+            self.delegated_lines_language = language
+            return 0
+
+        # Colorize *this* entire line with the language.
+        if line:
+            n = self.currentState()
+            self.init()
+            self.language = self.delegated_lines_language
+            self.mainLoop(n, s)
+
+        # Continue the colorizing on the *next* line.
+
+        def span(s: str) -> int:
+            return self.restart_match_span_delegated_lines(s, predicate=predicate)  # Must be kwargs.
+
+        self.setRestart(span, predicate=predicate)
+        return len(s)  # Suppress any other rules.
     #@+node:ekr.20110605121601.18625: *4* jedit.match_span_regexp
     def match_span_regexp(
         self,
