@@ -2438,7 +2438,7 @@ class JEditColorizer(BaseColorizer):
             self.clearState()
         return j  # Return the new i, *not* the length of the match.
     #@+node:ekr.20241031070448.1: *4* jedit.match_span_delegated_lines & helper (new)
-    delegated_lines_language = ''
+    delegated_lines_language = None
 
     def match_span_delegated_lines(self, s: str, i: int, *, language: str, predicate: Callable) -> None:
         """
@@ -2462,6 +2462,11 @@ class JEditColorizer(BaseColorizer):
         Colorize all lines with delegated_lines_language until the predicate matches.
         """
         trace = False
+
+        line = s.strip()
+        if s.startswith('@language'):
+            return 0
+
         language = predicate(s)
         if language:
             self.delegated_lines_language = language
@@ -2471,7 +2476,7 @@ class JEditColorizer(BaseColorizer):
             return 0
 
         # Colorize *this* entire line with the language.
-        if s:
+        if line:
             if trace:
                 g.trace(self.delegated_lines_language, repr(s))
             n = self.currentState()
