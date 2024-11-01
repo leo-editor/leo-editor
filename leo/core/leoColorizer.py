@@ -2437,55 +2437,23 @@ class JEditColorizer(BaseColorizer):
         else:
             self.clearState()
         return j  # Return the new i, *not* the length of the match.
-    #@+node:ekr.20241031070448.1: *4* jedit.match_span_delegated_lines & helpers
-    span_lockout = False
-
-    def match_span_delegated_lines(self, s: str, i: int, target: str, delegate: str) -> int:
+    #@+node:ekr.20241031070448.1: *4* jedit.match_span_delegated_lines & helpers (new)
+    def match_span_delegated_lines(self, s: str, i: int, *, delegate: str, predicate: Callable) -> None:
         """
-        We s[i:] is the start of a range of lines.
-        
-        Colorize the *following* lines with the given delegate.
-        
+        Colorize the *following* lines with the given delegate until the predicate is true.
         """
-        # New in Leo 6.8.2.
-        ### g.trace(s.strip().startswith(target), i, repr(s))
+        if i > 0:  # Should not happen.
+            g.trace('Oops: i > 0', repr(s))
+            return
 
-        if self.span_lockout:
-            g.trace('LOCKOUT')
-            return -1
+        # Continue the colorizing on the *next* line.
 
-        j = self.match_span_delegated_lines_helper(s, i, target)
-        if j == -1:
-            g.trace('MARKER', repr(s))
-            return -1  # Done!
+        def span(s: str) -> int:
+            # Freeze all bindings.
+            return self.restart_match_span_delegated_lines(s,
+                delegate=delegate, predicate=predicate)  # Must be kwargs.
 
-        # Colorize another line with the delegate.
-        if 1:
-            n = self.currentState()
-            color_state = self.stateDict.get(n, 'no-state')
-        g.trace('COLOR', color_state, i, j, repr(s[i:j]))
-        try:
-            self.span_lockout = True
-            self.colorRangeWithTag(s, i, j, tag=None, delegate=delegate)
-        finally:
-            self.span_lockout = False
-        ### j = j2
-        kind = None
-        self.prev = (i, j, kind)
-        self.trace_match(kind, s, i, j)
-        # New in Leo 5.5: don't recolor everything after continued strings.
-        if j > len(s):  ### and not dots:
-
-            g.trace('RESTART')
-            j = len(s) + 1
-
-            def span(s: str) -> int:
-                # Freeze all bindings.
-                return self.restart_match_span_delegated_lines(s,
-                    target=target, delegate=delegate)
-
-            self.setRestart(span, target=target, delegate=delegate)
-        return j - i  # Correct, whatever j is.
+        self.setRestart(span, delegate=delegate, predicate=predicate)
     #@+node:ekr.20241031071124.1: *5* jedit.match_span_delegated_lines_helper (new)
     # New in Leo 6.8.3:
 
@@ -2493,53 +2461,32 @@ class JEditColorizer(BaseColorizer):
         """Fail (return -1) is s[i:] is the target line"""
         return -1 if s.strip().startswith(target) else len(s)
 
-    #@+node:ekr.20241031072812.1: *5* jedit.restart_match_span_deleted_lines (new) (****)
-    def restart_match_span_delegated_lines(self, s: str, target: str, delegate: str) -> int:
-        """Remain in this state until we see a line starting with the target."""
-        g.trace(repr(s))
-        i = 0
-        j = self.match_span_delegated_lines_helper(s, i, target=target)
-        if j == -1:
-            return -1  # Done. Do *not* color the target line.
-
-        # if j == -1:
-            # j2 = len(s) + 1
-        # elif j > len(s):
-            # j2 = j
-        # else:
-            # j2 = j + len(end)
-
-        j0 = j
-        j = min(j, len(s))
-
-        ###
-            # if delegate:
-                # self.colorRangeWithTag(s, i, j, kind,
-                    # delegate=delegate, exclude_match=exclude_match)
-                # self.colorRangeWithTag(s, j, j2, kind,
-                    # delegate=None, exclude_match=exclude_match)
-            # else:  # avoid having to merge ranges in addTagsToList.
-                # self.colorRangeWithTag(s, i, j2, kind,
-                    # delegate=None, exclude_match=exclude_match)
-
-        kind = None
-        self.colorRangeWithTag(s, i, j, kind, delegate=delegate)
-        ### self.colorRangeWithTag(s, j, j2, kind=None, delegate=None)
-
-        ### j = j2
-        self.trace_match(kind, s, i, j0)
-        ### if j > len(s):
-        if j0 > len(s):
-
-            def span(s: str) -> int:
-                return self.restart_match_span_delegated_lines(s,
-                    target=target, delegate=delegate)
-
-            self.setRestart(span, target=target, delegate=delegate)
-
-        else:
+    #@+node:ekr.20241031072812.1: *5* jedit.restart_match_span_deleted_lines (new)
+    def restart_match_span_delegated_lines(self, s: str, *, delegate: str, predicate: Callable) -> int:
+        """
+        Colorize all lines with the given delegate until the predicate matches.
+        """
+        if predicate(s):
             self.clearState()
-        return j  # Return the new i, *not* the length of the match.
+            return -1
+
+        # Colorize *this* entire line with the delegate.
+        if s:
+            g.trace(repr(s))  ###
+            i, j = 0, len(s)
+            tag = 'DELEGATED'
+            self.trace_match(tag, s, i, j)
+            self.colorRangeWithTag(s, i, j, tag=tag, delegate=delegate)
+
+        # Continue the colorizing on the *next* line.
+
+        def span(s: str) -> int:
+            return self.restart_match_span_delegated_lines(s,
+                delegate=delegate, predicate=predicate)  # Must be kwargs.
+
+        self.setRestart(span, delegate=delegate, predicate=predicate)
+
+        return len(s)  # Suppress any other rules.
     #@+node:ekr.20110605121601.18625: *4* jedit.match_span_regexp
     def match_span_regexp(
         self,

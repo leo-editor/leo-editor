@@ -15,11 +15,9 @@ from typing import Any
 from leo.core import leoGlobals as g
 assert g
 #@-<< jupytext.py: imports >>
+global_state = '??'
 #@+<< jupytext.py: global data >>
 #@+node:ekr.20241031140131.1: ** << jupytext.py: global data >>
-# The state of the previous line: ('??', 'md', 'py').
-global_state = '??'
-
 delegate_dict = {
     'md': 'md:md_main',
     'py': 'python:python_main',
@@ -43,27 +41,32 @@ markup_table = (
 # n < 0: total failure, skip n chars.
 
 #@+others
-#@+node:ekr.20241031043109.1: *3* comment_helper (Needs a loop????)
+#@+node:ekr.20241031043109.1: *3* comment_helper
 # This is a helper, not a rule!
 
-def comment_helper(colorer: Any, s: str, i: int) -> int:
-    """Continue coloring until match_span finds the end_markup."""
-    global global_state
-    state = global_state
+def predicate(s: str) -> bool:
+    return s.strip().startswith('# %%)')  # Also matches '# %% [markdown]'.
 
-    # Bind the target and the delegate.
-    delegate = delegate_dict.get(state)
-    target = marker_dict.get(state)
-    n = colorer.match_span_delegated_lines(s, i, target, delegate)
-    if 1:
-        g.trace(f"returns: {n} state: {state!r} i: {i} {s!r}")
-        # g.trace(f"target: {target!r} delegate: {delegate!r}")
+def comment_helper(colorer: Any, s: str, i: int) -> int:
+    """Continue coloring."""
+    global global_state
+
+    if 1:  ###
         print('')
-    if n == -1:
-        colorer.match_line(s, i, kind='comment1')
-    return n
-#@+node:ekr.20241031024939.2: *3* notebook_comment
-def notebook_comment(colorer, s, i) -> int:
+        g.trace(global_state, i, s)
+
+    # Colorize *this* line.
+    colorer.match_line(s, i, kind='comment1')
+
+    # Continue colorizing on the *next* line.
+    colorer.match_span_delegated_lines(s, i,
+        delegate=delegate_dict.get(global_state),
+        predicate=predicate)
+
+    # We have completely colorized *this* line.
+    return -1
+#@+node:ekr.20241031024939.2: *3* jupytext_comment
+def jupytext_comment(colorer, s, i) -> int:
     """
     Color a *single line* in the appropriate state.
     
@@ -73,59 +76,35 @@ def notebook_comment(colorer, s, i) -> int:
     global global_state
     # Check for the next target.
     line = s.strip()
-    for (state, target) in markup_table:
-        if line.startswith(target):
-            # Switch to a new state.
-            global_state = state
-            g.trace('   NEW STATE', global_state, line)  ###
-            colorer.clearState()
-            return comment_helper(colorer, s, i)
-    # Continue the present state
-    ### g.trace('FALL THROUGH', global_state, line)
+    if True:  ### global_state == '??':
+        for (state, target) in markup_table:
+            if line.startswith(target):
+                # Switch to a new state.
+                global_state = state
+                g.trace('   NEW STATE', global_state, line)  ###
+                colorer.clearState()
+                return comment_helper(colorer, s, i)
+    # This is not an error.
     return comment_helper(colorer, s, i)
-#@+node:ekr.20241031143235.1: *3* notebook_default (not used)
-def notebook_default(colorer, s, i):
-    global global_state
-    assert False, g.callers()
-    return -1  ############
-    state = global_state
-    if i > 0:
-        return -1
-    # n = colorer.currentState()
-    # color_state = colorer.stateDict.get(n, 'no-state')
-    # g.trace('COLOR_STATE', color_state)
-    if colorer.language != 'notebook':
-        g.trace('LANGUAGE', colorer.language)
-        return -1
 
-    # Bind the target and the delegate.
-    delegate = delegate_dict.get(state)
-    target = marker_dict.get(state)
-    # g.trace(f"state: {state!r} target: {target!r} delegate: {delegate!r} {s!r}")
-    g.trace(f"state: {state!r} {s!r}")
-    n = colorer.match_span_delegated_lines(s, i, target, delegate)
-    if 1:
-        g.trace(f"returns: {n}")
-        print('')
-    ###
-        # # # colorer.match_line(s, i, kind='comment1')
-    return n
-#@+node:ekr.20241031024936.1: *3* notebook_keyword
-def notebook_keyword(colorer, s, i):
+#@+node:ekr.20241031024936.1: *3* jupytext_keyword
+def jupytext_keyword(colorer, s, i):
     return colorer.match_keywords(s, i)
 
 #@-others
 
 #@-<< jupytext.py: rules >>
+#@+<< jupytext.py: interface dicts >>
+#@+node:ekr.20241101031846.1: ** << jupytext.py: interface dicts >>
+properties = {}
 
-notebook_rules_dict = {
-    '@': [notebook_keyword],
-    '#': [notebook_comment],
+jupytext_rules_dict = {
+    '@': [jupytext_keyword],
+    '#': [jupytext_comment],
 }
 
 rulesDictDict = {
-    "notebook_main": notebook_rules_dict,
+    "jupytext_main": jupytext_rules_dict,
 }
-
-properties = {}
+#@-<< jupytext.py: interface dicts >>
 #@-leo
