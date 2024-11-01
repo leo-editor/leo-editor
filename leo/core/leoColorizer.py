@@ -2472,7 +2472,7 @@ class JEditColorizer(BaseColorizer):
         # Colorize *this* entire line with the language.
         if s:
             g.trace(self.delegated_lines_language, repr(s))  ###
-            if 0:  ### Experimental. Do minimal init.
+            if 1:  ### Experimental.
                 n = self.currentState()
                 self.init()
                 self.language = self.delegated_lines_language
@@ -2480,7 +2480,6 @@ class JEditColorizer(BaseColorizer):
             else:
                 try:
                     old_state = self.currentState()
-                    g.trace('old_state', old_state)
                     self.language = self.delegated_lines_language
                     self.init()
                     n = self.clearState()

@@ -20,6 +20,15 @@ assert g
 
 #@+others
 #@+node:ekr.20241031024939.2: *3* jupytext_comment
+def predicate(s: str) -> str:
+    """Return a valid language name if s is a jupytext marker."""
+    line = s.strip()
+    if line.startswith('# %% [markdown]'):
+        return 'md'
+    if line.startswith('# %%'):
+        return 'python'
+    return ''
+
 def jupytext_comment(colorer, s, i) -> int:
     """
     Color a *single line* in the appropriate state.
@@ -34,21 +43,10 @@ def jupytext_comment(colorer, s, i) -> int:
     line = s.strip()
     if line.startswith('# %%'):
         # Colorize the *next* lines until the predicate matches.
-
-        def predicate(s: str) -> str:
-            """Return a valid language name if s is a jupytext marker."""
-            line = s.strip()
-            if line.startswith('# %% [markdown]'):
-                return 'md'
-            if line.startswith('# %%'):
-                return 'python'
-            return ''
-
         language = 'md' if line.startswith('# %% [markdown]') else 'python'
         if 1:
             print('')
             g.trace(language, repr(s))
-            print('')
         colorer.match_span_delegated_lines(s, i, language=language, predicate=predicate)
 
     return -1  # This line has been completely handled.
