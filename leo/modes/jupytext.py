@@ -123,12 +123,6 @@ notebook_rules_dict = {
     '#': [notebook_comment],
 }
 
-# Add all ascii characters.
-if 0:  # This may not be necessary!
-    for ch in string.printable:
-        if ch not in notebook_rules_dict:
-            notebook_rules_dict[ch] = [notebook_default]
-
 rulesDictDict = {
     "notebook_main": notebook_rules_dict,
 }
