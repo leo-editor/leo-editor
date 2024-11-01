@@ -1460,14 +1460,14 @@ def tinker_with_colors(c, kind = None):
             background: {bg};
         }}
     </style>
-        """
+"""
     elif kind == MD:
         css_fragment = rf"""
         body, th, td, pre, code, div.codehilite pre {{
             color: {fg};
             background: {bg};
-        }}
-        """
+    }}
+"""
     # Graft the colors after any previous stylesheet so they have priority.
     return css_fragment
 #@+node:tom.20211125003406.1: ** configure_asciidoc
