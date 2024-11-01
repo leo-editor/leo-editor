@@ -2467,10 +2467,13 @@ class JEditColorizer(BaseColorizer):
         Colorize all lines with the given delegate until the predicate matches.
         """
         if predicate(s):
-            g.trace(delegate, 'DONE', repr(s))
+            g.trace(delegate, 'Change State', repr(s))
             print('')
-            ### self.clearState()
-            return -1
+            self.language = 'md' if s.startswith('md') else 'python'
+            self.init()
+            n = self.clearState()
+            # self.clearState()
+            return 0  ### Experimental.
 
         # Colorize *this* entire line with the delegate.
         if s:
@@ -2478,8 +2481,9 @@ class JEditColorizer(BaseColorizer):
             ### Temporary hack. The langauge should be a separate binding.
             try:
                 old_state = self.currentState()
+                g.trace('old_state', old_state)
                 self.language = 'md' if delegate.startswith('md') else 'python'
-                self.init()  ### Maybe not needed.
+                self.init()
                 n = self.clearState()
                 self.mainLoop(n, s)
             finally:
