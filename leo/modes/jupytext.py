@@ -1,22 +1,22 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20241030151621.1: * @file ../modes/notebook.py
+#@+node:ekr.20241030151621.1: * @file ../modes/jupytext.py
 #@@language python
 """
 Leo colorizer control file for @language notebook.
 This file is in the public domain.
 """
 
-#@+<< notebook: imports >>
-#@+node:ekr.20241031140333.1: ** << notebook: imports >>
+#@+<< jupytext.py: imports >>
+#@+node:ekr.20241031140333.1: ** << jupytext.py: imports >>
 from __future__ import annotations
 import string
 from typing import Any
 
 from leo.core import leoGlobals as g
 assert g
-#@-<< notebook: imports >>
-#@+<< notebook: global data >>
-#@+node:ekr.20241031140131.1: ** << notebook: global data >>
+#@-<< jupytext.py: imports >>
+#@+<< jupytext.py: global data >>
+#@+node:ekr.20241031140131.1: ** << jupytext.py: global data >>
 # The state of the previous line: ('??', 'md', 'py').
 global_state = '??'
 
@@ -34,9 +34,9 @@ markup_table = (
     ('md', '# %% [markdown]'),
     ('py', '# %%'),
 )
-#@-<< notebook: global data >>
-#@+<< notebook: rules >>
-#@+node:ekr.20241031024909.1: ** << notebook: rules >>
+#@-<< jupytext.py: global data >>
+#@+<< jupytext.py: rules >>
+#@+node:ekr.20241031024909.1: ** << jupytext.py: rules >>
 
 # n > 0: success.
 # n == 0: temporary failure.
@@ -116,7 +116,7 @@ def notebook_keyword(colorer, s, i):
 
 #@-others
 
-#@-<< notebook: rules >>
+#@-<< jupytext.py: rules >>
 
 notebook_rules_dict = {
     '@': [notebook_keyword],

@@ -2493,7 +2493,7 @@ class JEditColorizer(BaseColorizer):
         """Fail (return -1) is s[i:] is the target line"""
         return -1 if s.strip().startswith(target) else len(s)
 
-    #@+node:ekr.20241031072812.1: *5* jedit.restart_match_span_deleted_lines (new)
+    #@+node:ekr.20241031072812.1: *5* jedit.restart_match_span_deleted_lines (new) (****)
     def restart_match_span_delegated_lines(self, s: str, target: str, delegate: str) -> int:
         """Remain in this state until we see a line starting with the target."""
         g.trace(repr(s))
