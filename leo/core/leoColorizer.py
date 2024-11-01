@@ -2454,15 +2454,17 @@ class JEditColorizer(BaseColorizer):
                 language=language, predicate=predicate)  # Must be kwargs.
 
         self.setRestart(span, language=language, predicate=predicate)
-    #@+node:ekr.20241031072812.1: *5* jedit.restart_match_span_deleted_lines (new)
+    #@+node:ekr.20241031072812.1: *5* jedit.restart_match_span_delegated_lines (new)
+    delegated_lines_language = ''
+
     def restart_match_span_delegated_lines(self, s: str, *, language: str, predicate: Callable) -> int:
         """
         Colorize all lines with the given language until the predicate matches.
         """
         if predicate(s):
             print('')
-            self.language = 'md' if s.startswith('md') else 'python'
-            g.trace('Change Language', self.language, repr(s))
+            self.delegated_lines_language = 'md' if s.startswith('md') else 'python'
+            g.trace('Change Language', self.delegated_lines_language, repr(s))
             self.init()
             n = self.clearState()
             # self.clearState()
@@ -2470,12 +2472,11 @@ class JEditColorizer(BaseColorizer):
 
         # Colorize *this* entire line with the language.
         if s:
-            g.trace(language, repr(s))  ###
-            ### Temporary hack. The langauge should be a separate binding.
+            g.trace(self.delegated_lines_language, repr(s))  ###
             try:
                 old_state = self.currentState()
                 g.trace('old_state', old_state)
-                self.language = language
+                self.language = self.delegated_lines_language
                 self.init()
                 n = self.clearState()
                 self.mainLoop(n, s)
