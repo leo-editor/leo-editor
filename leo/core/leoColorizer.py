@@ -2437,7 +2437,7 @@ class JEditColorizer(BaseColorizer):
         else:
             self.clearState()
         return j  # Return the new i, *not* the length of the match.
-    #@+node:ekr.20241031070448.1: *4* jedit.match_span_delegated_lines & helpers (new)
+    #@+node:ekr.20241031070448.1: *4* jedit.match_span_delegated_lines & helper (new)
     def match_span_delegated_lines(self, s: str, i: int, *, delegate: str, predicate: Callable) -> None:
         """
         Colorize the *following* lines with the given delegate until the predicate is true.
@@ -2454,13 +2454,6 @@ class JEditColorizer(BaseColorizer):
                 delegate=delegate, predicate=predicate)  # Must be kwargs.
 
         self.setRestart(span, delegate=delegate, predicate=predicate)
-    #@+node:ekr.20241031071124.1: *5* jedit.match_span_delegated_lines_helper (new)
-    # New in Leo 6.8.3:
-
-    def match_span_delegated_lines_helper(self, s: str, i: int, target: str) -> int:
-        """Fail (return -1) is s[i:] is the target line"""
-        return -1 if s.strip().startswith(target) else len(s)
-
     #@+node:ekr.20241031072812.1: *5* jedit.restart_match_span_deleted_lines (new)
     def restart_match_span_delegated_lines(self, s: str, *, delegate: str, predicate: Callable) -> int:
         """
