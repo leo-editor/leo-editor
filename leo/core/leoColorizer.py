@@ -2467,16 +2467,29 @@ class JEditColorizer(BaseColorizer):
         Colorize all lines with the given delegate until the predicate matches.
         """
         if predicate(s):
-            self.clearState()
+            g.trace(delegate, 'DONE', repr(s))
+            print('')
+            ### self.clearState()
             return -1
 
         # Colorize *this* entire line with the delegate.
         if s:
-            g.trace(repr(s))  ###
-            i, j = 0, len(s)
-            tag = 'DELEGATED'
-            self.trace_match(tag, s, i, j)
-            self.colorRangeWithTag(s, i, j, tag=tag, delegate=delegate)
+            g.trace(delegate, repr(s))  ###
+            ### Temporary hack. The langauge should be a separate binding.
+            try:
+                old_state = self.currentState()
+                self.language = 'md' if delegate.startswith('md') else 'python'
+                self.init()  ### Maybe not needed.
+                n = self.clearState()
+                self.mainLoop(n, s)
+            finally:
+                self.setState(old_state)
+
+            # i, j = 0, len(s)
+            # ### To do: restart the main loop!
+            # tag = 'DELEGATED'
+            # self.trace_match(tag, s, i, j)
+            # self.colorRangeWithTag(s, i, j, tag=tag, delegate=delegate)
 
         # Continue the colorizing on the *next* line.
 

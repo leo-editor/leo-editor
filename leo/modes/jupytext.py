@@ -2,10 +2,8 @@
 #@+node:ekr.20241030151621.1: * @file ../modes/jupytext.py
 #@@language python
 """
-Leo colorizer control file for @language notebook.
-This file is in the public domain.
+leo/modes/jupytext.py, Leo's colorizer for @language jupytext.
 """
-
 #@+<< jupytext.py: imports >>
 #@+node:ekr.20241031140333.1: ** << jupytext.py: imports >>
 from __future__ import annotations
@@ -28,6 +26,10 @@ def jupytext_comment(colorer, s, i) -> int:
     
     Return: n > 1 if n characters match, otherwise -1.
     """
+    if 1:
+        print('')
+        g.trace(repr(s))
+        print('')
     assert s[i] == '#'
     marker = '# %%'  # Matches the start of Python and Markdown modes.
 
