@@ -37,9 +37,10 @@ def jupytext_comment(colorer, s, i) -> int:
 
         def predicate(s: str) -> str:
             """Return a valid language name if s is a jupytext marker."""
-            if s.startswith('# %% [markdown]'):
+            line = s.strip()
+            if line.startswith('# %% [markdown]'):
                 return 'md'
-            if s.startswith('# %%'):
+            if line.startswith('# %%'):
                 return 'python'
             return ''
 
