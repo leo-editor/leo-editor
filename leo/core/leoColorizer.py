@@ -2442,7 +2442,6 @@ class JEditColorizer(BaseColorizer):
         Colorize the *following* lines with the given delegate until the predicate is true.
         """
         if i > 0:  # Should not happen.
-            g.trace('Oops: i > 0', repr(s))
             return
 
         # Continue the colorizing on the *next* line.
