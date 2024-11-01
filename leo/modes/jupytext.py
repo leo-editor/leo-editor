@@ -31,25 +31,31 @@ def jupytext_comment(colorer, s, i) -> int:
         g.trace(repr(s))
         print('')
     assert s[i] == '#'
-    marker = '# %%'  # Matches the start of Python and Markdown modes.
 
     # Colorize *this* line.
     colorer.match_line(s, i, kind='comment1')
 
     line = s.strip()
-
-    if line.startswith(marker):
+    if line.startswith('# %%'):
         # Colorize the *next* lines until the predicate matches.
 
-        def predicate(s: str) -> bool:
-            return s.strip().startswith(marker)
+        def predicate(s: str) -> str:
+            """Return a valid language name if s is a jupytext marker."""
+            if s.startswith('# %% [markdown]'):
+                return 'md'
+            if s.startswith('# %%'):
+                return 'python'
+            return ''
 
-        delegate = (
-            'md:md_main' if line.startswith('# %% [markdown]')
-            else 'python:python_main'
-        )
-        colorer.match_span_delegated_lines(s, i,
-            delegate=delegate, predicate=predicate)
+        ###
+            # delegate = (
+                # 'md:md_main' if line.startswith('# %% [markdown]')
+                # else 'python:python_main'
+            # )
+
+        language = 'md' if line.startswith('md') else 'python'
+        colorer.match_span_delegated_lines(s, i, language=language, predicate=predicate)
+            ### delegate=delegate, predicate=predicate)
 
     return -1  # This line has been completely handled.
 #@+node:ekr.20241031024936.1: *3* jupytext_keyword
