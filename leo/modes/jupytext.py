@@ -13,11 +13,6 @@ assert g
 #@-<< jupytext.py: imports >>
 #@+<< jupytext.py: rules >>
 #@+node:ekr.20241031024909.1: ** << jupytext.py: rules >>
-
-# n > 0: success.
-# n == 0: temporary failure.
-# n < 0: total failure, skip n chars.
-
 #@+others
 #@+node:ekr.20241031024939.2: *3* jupytext_comment
 def predicate(s: str) -> str:
