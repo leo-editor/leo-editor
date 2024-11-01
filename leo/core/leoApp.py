@@ -358,7 +358,7 @@ class LeoApp:
             "info":     "texinfo",
             "ini":      "ini",
             "io":       "io",
-            "ipynb":    "json",  # "jupyter",
+            "ipynb":    "jupytext",
             "iss":      "inno_setup",
             "java":     "java",
             "jhtml":    "jhtml",
@@ -569,6 +569,7 @@ class LeoApp:
             "jsp"                : "<%-- --%>",
             "julia"              : "#",
             "jupyter"            : "<%-- --%>", # Default to markdown?
+            "jupytext"           : "#", 
             "kivy"               : "#", # PeckJ 2014/05/05
             "kshell"             : "#", # Leo 4.5.1.
             "latex"              : "%",
@@ -754,7 +755,7 @@ class LeoApp:
             "json"          : "json",
             "jsp"           : "jsp",
             "julia"         : "jl",
-            # "jupyter"       : "ipynb",
+            "jupytext"      : "ipynb",
             "kivy"          : "kv", # PeckJ 2014/05/05
             "kshell"        : "ksh", # Leo 4.5.1.
             "latex"         : "tex", # 1/8/04
