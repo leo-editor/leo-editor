@@ -1429,7 +1429,7 @@ def is_theme_dark(c):
     bg = pallete.window().color()
     return fg.value() > bg.value()
 #@+node:tom.20241005134508.1: ** tinker with colors()
-def tinker_with_colors(c, kind:str = REST):
+def tinker_with_colors(c, kind: str = REST):
     """Use Editor's fore- and back-ground colors.
     
     ARGUMENT
@@ -4222,11 +4222,12 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 g.es('RsT conversion to HTML failed:', e)
                 g.es(f'Rst input: {result}')
 
-        css_fragment = tinker_with_colors(self.c, REST)
-        _html = _html.decode(ENCODING)
-        _html = _html.replace('</head>', f'{css_fragment}</head>')
-        _html = _html.encode(ENCODING)
-        self.rst_html = _html
+        if _html:
+            css_fragment = tinker_with_colors(self.c, REST)
+            html_str = _html.decode(ENCODING)
+            html_str = html_str.replace('</head>', f'{css_fragment}</head>')
+            _html = html_str.encode(ENCODING)
+            self.rst_html = _html
         return _html
         #@-others
 
