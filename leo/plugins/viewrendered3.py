@@ -4579,7 +4579,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         codelines = []
         if self.execute_flag:
             codelines = ['\n'.join(ch.text_lines) for ch in chunks if ch.tag == CODE]
-
+        g.es(f'{final_text=}')
         return final_text, codelines
         #@-<< Finalize Node >>
     #@+node:tom.20210621144739.1: *5* vr3.make_title_from_headline
