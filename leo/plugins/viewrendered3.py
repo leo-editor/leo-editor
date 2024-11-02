@@ -4207,7 +4207,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         # Call docutils to get the html rendering.
         _html = ''.encode(ENCODING)
-
         if result.strip():
             try:
                 self.last_markup = result
@@ -4219,6 +4218,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
                     output = f'<pre style="{RST_ERROR_MSG_STYLE}">RST error: {msg}\n</pre><b><b>'
                     output += f'<pre style="{RST_ERROR_BODY_STYLE}">{result}</pre>'
                     _html = output.encode(ENCODING)
+            except OSError as e:
+                g.es('RsT conversion to HTML failed:', e)
+                g.es(f'Rst input: {result}')
 
         css_fragment = tinker_with_colors(self.c, REST)
         _html = _html.decode(ENCODING)
@@ -4579,7 +4581,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         codelines = []
         if self.execute_flag:
             codelines = ['\n'.join(ch.text_lines) for ch in chunks if ch.tag == CODE]
-        g.es(f'{final_text=}')
         return final_text, codelines
         #@-<< Finalize Node >>
     #@+node:tom.20210621144739.1: *5* vr3.make_title_from_headline
