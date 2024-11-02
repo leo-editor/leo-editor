@@ -1429,7 +1429,7 @@ def is_theme_dark(c):
     bg = pallete.window().color()
     return fg.value() > bg.value()
 #@+node:tom.20241005134508.1: ** tinker with colors()
-def tinker_with_colors(c, kind = None):
+def tinker_with_colors(c, kind:str = REST):
     """Use Editor's fore- and back-ground colors.
     
     ARGUMENT
