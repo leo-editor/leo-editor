@@ -9,24 +9,32 @@ leo/modes/jupytext.py, Leo's colorizer for @language jupytext.
 #@+node:ekr.20241103040135.2: ** << new_jupytext.py: imports >>
 from __future__ import annotations
 
-from typing import Any, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
+from leo.core.leoColorizer import JEditColorizer as Colorer
 from leo.core import leoGlobals as g
 assert g
 
 if TYPE_CHECKING:
-    from leo.core.leoColorizer import JEditColorizer as Colorer
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position
 #@-<< new_jupytext.py: imports >>
+#@+<< new_jupytext.py: data >>
+#@+node:ekr.20241103083624.1: ** << new_jupytext.py: data >>
+outer_state = 'outer-state'
+#@-<< new_jupytext.py: data >>
 
 #@+others
 #@+node:ekr.20241103040332.1: ** colorize_line (new_jupytext.py)
 def colorize_line(colorizer: Colorer, n: int, s: str) -> str:
-    g.trace(n, repr(s))
-    # assert isinstance(colorizer, Colorer), colorizer
-    assert colorizer.__class__.__name__ == 'JEditColorizer', repr(colorizer)
-    return 'jupytext'
+    ### g.trace(f"{n:2}     {s!r}")
+    assert isinstance(colorizer, Colorer), colorizer
+    return 'outer-state'  ###
+#@+node:ekr.20241103072835.1: ** init_scanner (new_jupytext.py)
+def init_scanner(n: int) -> str:
+    """Init this file and return the initial state."""
+    ### g.trace(outer_state, g.callers(2))
+    return outer_state
 #@+node:ekr.20241103040135.4: ** jupytext_comment
 def predicate(s: str) -> str:
     """Return a valid language name if s is a jupytext marker."""
