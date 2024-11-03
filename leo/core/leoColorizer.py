@@ -1294,10 +1294,11 @@ class JEditColorizer(BaseColorizer):
     #@+node:ekr.20241103021141.1: *3* jedit.newMainLoop
     def newMainLoop(self, n: int, s: str) -> None:
         """Colorize a *single* line s, starting in state n."""
+        c = self.c
+        p = c.p
 
         # Maintain the legacy trace.
         if 'coloring' in g.app.debug:
-            p = self.c and self.c.p
             if p and p.v != self.last_v:
                 self.last_v = p.v
                 g.trace(f"NEW NODE: {p.h}\n")
@@ -1305,7 +1306,7 @@ class JEditColorizer(BaseColorizer):
         t1 = time.process_time()
 
         # colorize line s.
-        state = self.new_mode_module.colorize_line(s, n)
+        state = self.new_mode_module.colorize_line(self, n, s)
         assert isinstance(state, str), g.callers()
 
         # Set the QSyntaxHighlighter state.
