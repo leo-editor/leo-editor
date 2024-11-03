@@ -169,35 +169,6 @@ Asciidoctor enhancements
 
 The Dart programming language is now supported.
 
-New minibuffer commands *vr3-freeze* and *vr3-unfreeze*.
-
-Improved detection of the notebook URL in *@jupyter* nodes. The
-URL no longer has to be the second item in the headline after the
-string "@jupyter". If a URL is not found in the headline, the
-first line of the body is tried.
-
-Fix commands "vr3-lock", "vr3-unlock", "vr3-lock-unlock-tree" so
-that they correctly lock or unlock the rendering to the current
-subtree, including changing the checked/unchecked character of
-the toolbar menu "locked to tree" item.
-
-Correct Asciidoc rendering bug when rendering entire tree.
-
-Correct handling of case when markdown package is not installed.
-
-Mathjax, html pages with script imports work with PyQt6.
-
-Added new command *vr3-render-html-from-clip*.
-
-Added Lua to the list of supported languages. Lua programs can be
-syntax-colored and executed using the ``@language lua``
-directive. For Lua programs to be executable, the path to a Lua
-processor must be added to the *.leo/vr3/vr3_config.ini* file.
-
-Added a line similar to the following to the *[executables]*
-section::
-
-    lua = C:\Program Files (x86)\Lua\5.1\lua.exe
 #@+node:TomP.20200309205046.1: *3* Compatibility
 #@@pagewidth 65
 Compatibility
