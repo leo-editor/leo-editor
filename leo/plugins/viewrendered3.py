@@ -17,12 +17,12 @@ notebooks, etc.
 
 #@+others
 #@+node:tom.20240521004125.1: *3* About
-About Viewrendered3 V5.05
+About Viewrendered3 V5.1
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") renders Restructured
 Text (RsT), Markdown (MD), and Asciidoc (nodes and subtrees) in a
-separate pane. it duplicates and extendes the functionality of
+separate pane. it duplicates and extends the functionality of
 the ViewRendered plugin. The plugin can:
 
     #. Render entire subtrees starting at the selected node;
@@ -83,15 +83,24 @@ the plugin.
 
 New With This Version
 ======================
-The command vr3-toggle use to failed sometimes; fixed.
+Commands *vr3* and *vr3-show* work better with Leo's new layout system.
+
+VR3 starts in a non-active mode.  This prevents it from slowing down body editing by rendering even when it hasn't been made visible.  The command *vr3* makes sure the plugin is present but does not show it.
+
+For both RsT and markdown nodes, the stylesheet foreground and background colors are automatically changed to be the same as the body editor's.
+
+A new RsT stylesheet has been added: *vr3-medium-black.css*.
+
+Previous Recent Changes
+========================
+The command vr3-toggle use to fail sometimes; fixed.
 The command vr3-show did not do anything. The behavior is now:
 
     1. If VR3 has never been opened, create it and open it in the default layout's target splitter.
     2. If VR3 exists but has been removed from any splitter, open it in the default layout's target splitter. 
     3. If VR3 has been displayed in some splitter but turned off by. e.g. the vr3-toggle command, show it in that same location.
 
-Previous Recent Changes
-========================
+
 Showing a plugin's docstring using the Plugin menu now works right the first time.
 The "vr3" command and the default opening positions have been changed:
 
@@ -122,7 +131,7 @@ In @jupyter nodes, for the path to the jupyter file or url:
 Bug fixes:
 
     - Quit early if no qt gui.
-    - Fix messags with "VR4" to read "VR3".
+    - Fix messages with "VR4" to read "VR3".
 
 `@language plain` is equivalent to `@language text`.
 
