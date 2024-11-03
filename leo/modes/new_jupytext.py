@@ -24,7 +24,8 @@ if TYPE_CHECKING:
 #@+node:ekr.20241103040332.1: ** colorize_line (new_jupytext.py)
 def colorize_line(colorizer: Colorer, n: int, s: str) -> str:
     g.trace(n, repr(s))
-    assert isinstance(colorizer, Colorer), colorizer
+    # assert isinstance(colorizer, Colorer), colorizer
+    assert colorizer.__class__.__name__ == 'JEditColorizer', repr(colorizer)
     return 'jupytext'
 #@+node:ekr.20241103040135.4: ** jupytext_comment
 def predicate(s: str) -> str:

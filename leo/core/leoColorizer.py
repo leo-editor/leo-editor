@@ -891,7 +891,8 @@ class JEditColorizer(BaseColorizer):
         self.old_v: VNode = None
         self.nested = False  # True: allow nested comments, etc.
         self.nested_level = 0  # Nesting level if self.nested is True.
-        self.new_mode_module: Any = None
+        # Keys are language names, values are imported *new* modes.
+        self.new_mode_module_dict: dict[str, Any] = {}
         self.nextState = 1  # Don't use 0.
         self.n2languageDict: dict[int, str] = {-1: c.target_language}
         self.prev: tuple[int, int, str] = None
@@ -1032,13 +1033,25 @@ class JEditColorizer(BaseColorizer):
             self.initModeFromBunch(bunch)
             self.language = language  # 2011/05/30
             return True
-        # Don't try to import a non-existent language.
+        # Don't try to import a non-existent language
         path = g.os_path_join(g.app.loadDir, '..', 'modes')
-        fn = g.os_path_join(path, f"{language}.py")
-        if g.os_path_exists(fn):
-            mode = g.import_module(name=f"leo.modes.{language}")
-            if mode is None:  # An important message.
-                g.trace(f"Import failed! leo.modes.{language}")
+        mode_paths = (
+            f"new_{language}",  # Prefer the new mode file.
+            language,
+        )
+        for mode_path in mode_paths:
+            fn = g.os_path_join(path, f"{mode_path}.py")
+            if g.os_path_exists(fn):
+                mode = g.import_module(name=f"leo.modes.{mode_path}")
+                if mode is None:
+                    g.trace(f"Import failed! leo.modes.{language}")
+                else:
+                    if 'coloring' in g.app.debug:
+                        g.trace('imported:', g.shortFileName(mode.__file__))
+                        g.trace('mode:', repr(mode))
+                    if mode_path.startswith('new_'):
+                        self.new_mode_module_dict[language] = mode
+                    break
         else:
             mode = None
         return self.init_mode_from_module(name, mode)
@@ -1255,19 +1268,37 @@ class JEditColorizer(BaseColorizer):
         self.init()
         # Force QSyntaxHighlighter to do a full recolor.
         self.highlighter.rehighlight()
-    #@+node:ekr.20110605121601.18638: *3* jedit.mainLoop
+    #@+node:ekr.20110605121601.18638: *3* jedit.mainLoop & helpers
     last_v = None
     tot_time = 0.0
 
     def mainLoop(self, n: int, s: str) -> None:
         """Colorize a *single* line s, starting in state n."""
-        f = self.restartDict.get(n)
-        if 'coloring' in g.app.debug:
-            p = self.c and self.c.p
+
+        if True or 'coloring' in g.app.debug:  ###
+            c = self.c
+            p = c.p
             if p and p.v != self.last_v:
                 self.last_v = p.v
                 g.trace(f"NEW NODE: {p.h}\n")
+
         t1 = time.process_time()
+
+        mode_module = self.new_mode_module_dict.get(self.language)
+        if mode_module is None:
+            self.legacy_main_loop(n, s)
+        else:
+            self.new_main_loop(mode_module, n, s)
+
+        self.tot_time += time.process_time() - t1
+    #@+node:ekr.20241103060926.1: *4* jedit.legacy_main_loop
+    def legacy_main_loop(self, n: int, s: str) -> None:
+        """
+        The legacy main loop. Colorize using legacy mode files.
+        
+        Colorize a *single* line s, starting in state n.
+        """
+        f = self.restartDict.get(n)
         i = f(s) if f else 0
         while i < len(s):
             progress = i
@@ -1290,30 +1321,22 @@ class JEditColorizer(BaseColorizer):
                 i += 1
             assert i > progress
         # Don't even *think* about changing state here.
-        self.tot_time += time.process_time() - t1
-    #@+node:ekr.20241103021141.1: *3* jedit.newMainLoop
-    def newMainLoop(self, n: int, s: str) -> None:
-        """Colorize a *single* line s, starting in state n."""
-        c = self.c
-        p = c.p
-
-        # Maintain the legacy trace.
-        if 'coloring' in g.app.debug:
-            if p and p.v != self.last_v:
-                self.last_v = p.v
-                g.trace(f"NEW NODE: {p.h}\n")
-
-        t1 = time.process_time()
+    #@+node:ekr.20241103060929.1: *4* jedit.new_main_loop
+    def new_main_loop(self, mode_module: Any, n: int, s: str) -> None:
+        """
+        The new main colorizing loop. Colorize using new mode files.
+        
+        Colorize a *single* line "s".
+        The "n" arg is the previous QSyntaxHighlighter state.
+        """
 
         # colorize line s.
-        state = self.new_mode_module.colorize_line(self, n, s)
+        state = mode_module.colorize_line(self, n, s)
         assert isinstance(state, str), g.callers()
 
         # Set the QSyntaxHighlighter state.
         n = self.computeState(f=None, keys={'state': state})
         self.setState(n)
-
-        self.tot_time += time.process_time() - t1
     #@+node:ekr.20110605121601.18640: *3* jedit.recolor & helpers
     def recolor(self, s: str) -> None:
         """
