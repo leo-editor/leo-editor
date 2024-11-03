@@ -1309,7 +1309,7 @@ class JEditColorizer(BaseColorizer):
         assert isinstance(state, str), g.callers()
 
         # Set the QSyntaxHighlighter state.
-        n = self.computeState(f=None, keys={'state: state'})
+        n = self.computeState(f=None, keys={'state': state})
         self.setState(n)
 
         self.tot_time += time.process_time() - t1
