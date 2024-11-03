@@ -1301,15 +1301,17 @@ class JEditColorizer(BaseColorizer):
             if p and p.v != self.last_v:
                 self.last_v = p.v
                 g.trace(f"NEW NODE: {p.h}\n")
+
         t1 = time.process_time()
 
-        # colorize_line line s. New colorizers are free to ignore n.
+        # colorize_line s.
         state = self.new_mode_module.colorize_line(s, n)
         assert isinstance(state, str), g.callers()
 
-        # Set the state for QSyntaxHighlighter!
+        # Set the QSyntaxHighlighter state.
         n = self.computeState(f=None, keys={'state: state'})
         self.setState(n)
+
         self.tot_time += time.process_time() - t1
     #@+node:ekr.20110605121601.18640: *3* jedit.recolor & helpers
     def recolor(self, s: str) -> None:
