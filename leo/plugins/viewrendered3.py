@@ -1767,9 +1767,8 @@ def viewrendered(event):
     The VR3 instance will be created as a child of the widget cache splitter
     of the Dynamic Window that represents the Entire window of this outline.
 
-    The VR3 instance will not be visible until the 
-    vr3-show or vr3-toggle commands are executed, or until vr3.show() is
-    called.
+    The VR3 instance will not become visible until the vr3-show or vr3-toggle
+    commands are executed.
     """
     global controllers
     gui = g.app.gui
@@ -1779,8 +1778,7 @@ def viewrendered(event):
     if not c:
         return None
 
-    vr3 = getVr3({'c': c})
-    return vr3
+    getVr3({'c': c})
 #@+node:TomP.20200112232719.1: *3* g.command('vr3-execute')
 @g.command('vr3-execute')
 def execute_code(event):
@@ -2123,16 +2121,14 @@ def show_rendering_pane(event):
     if not vr3:
         c.doCommandByName('vr3')
     elif vr3.parent().objectName() in (None, 'leo-layout-cache'):
-        # VR3 object is in limbo, insert it into the default layout's splitter
+        # VR3 object is in limbo, insert it into the default layout splitter
         dw = c.frame.top
         target = dw.vr_parent_frame
         target.addWidget(vr3)
-        g.app.gui.equalize_splitter(target)
-        vr3.show()
-        vr3.set_unfreeze()
-    else:
-        vr3.show()
-        vr3.set_unfreeze()
+        if isinstance(target, QtWidgets.QSplitter):
+            g.app.gui.equalize_splitter(target)
+    vr3.show()
+    vr3.set_unfreeze()
 
 #@+node:TomP.20201003182453.1: *3* g.command('vr3-shrink-view')
 @g.command('vr3-shrink-view')
