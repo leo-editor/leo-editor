@@ -1304,7 +1304,7 @@ class JEditColorizer(BaseColorizer):
 
         t1 = time.process_time()
 
-        # colorize_line s.
+        # colorize line s.
         state = self.new_mode_module.colorize_line(s, n)
         assert isinstance(state, str), g.callers()
 
