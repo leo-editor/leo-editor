@@ -996,7 +996,7 @@ Currently VR3 has to be open for the command to work.
 Acknowledgments
 ================
 
-The original Viewrendered plugin was created by Terry Brown, and
+The original Viewrendered plugin was created by Terry Brown and
 enhanced by Edward K. Ream. Jacob Peck added markdown support.
 
 Viewrendered2 was created by Peter Mills, based on the
@@ -1004,14 +1004,14 @@ viewrendered.py plugin. It added the ability to render an entire
 RsT tree, the ability to display only the code blocks, and to
 execute one block of Python code in a node and insert any printed
 output into the node. Thomas B. Passin enhanced Viewrendered2,
-adding the ability to change from RsT to Python and back within a
-node.
+adding the ability to change between RsT/MD/Asciidoc to programming
+languages and back within a single node.
 
 Viewrendered3 was created by Thomas B. Passin to provide VR2
 functionality with Python 3/QT5+. VR3 brings more enhancements to
 ReStructured Text and Markdown rendering, and adds Asciidoc
-rendering. Most functionality of the Viewrendered is included,
-and some additional capability has been added..
+rendering. Most functionality of Viewrendered is included,
+and some additional capabilities have been added.
 
 Enhancements to the RsT stylesheets were adapted from Peter Mills' stylesheet.
 
