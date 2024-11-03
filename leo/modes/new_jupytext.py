@@ -21,7 +21,7 @@ if TYPE_CHECKING:
 #@-<< new_jupytext.py: imports >>
 #@+<< new_jupytext.py: data >>
 #@+node:ekr.20241103083624.1: ** << new_jupytext.py: data >>
-outer_state = 'outer-state'
+outer_state = None  ### 'outer-state'
 #@-<< new_jupytext.py: data >>
 
 #@+others

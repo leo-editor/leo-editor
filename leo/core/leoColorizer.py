@@ -1275,8 +1275,9 @@ class JEditColorizer(BaseColorizer):
 
     def mainLoop(self, n: int, s: str) -> None:
         """Colorize a *single* line s, starting in state n."""
-        trace = False
+        trace = True and 'leoPy.leo' not in self.c.fileName()
         t1 = time.process_time()
+        self.tot_calls += 1
 
         mode_module = self.new_mode_module_dict.get(self.language)
         if mode_module is None:
@@ -1287,8 +1288,8 @@ class JEditColorizer(BaseColorizer):
         self.tot_time += time.process_time() - t1
 
         if trace:
-            self.tot_calls += 1
-            g.trace(self.tot_calls)
+            new = int(mode_module is not None)
+            g.trace(f"new? {new} calls: {self.tot_calls:2} state: {n} {s!r}")
     #@+node:ekr.20241103060926.1: *4* jedit.legacy_main_loop
     def legacy_main_loop(self, n: int, s: str) -> None:
         """
@@ -1296,7 +1297,7 @@ class JEditColorizer(BaseColorizer):
         
         Colorize a *single* line s, starting in state n.
         """
-        trace = False  ###
+        trace = False and 'leoPy.leo' not in self.c.fileName()
         c = self.c
         p = c.p
         if 'coloring' in g.app.debug:
@@ -1340,20 +1341,20 @@ class JEditColorizer(BaseColorizer):
         The "n" arg is the previous QSyntaxHighlighter state.
         """
 
-        trace = False
+        trace = False and 'leoPy.leo' not in self.c.fileName()
+        c = self.c
+        p = c.p
         old_n: int
 
         def update_state(state: str) -> int:
             """Set the QSyntaxHighlighter state."""
-            assert isinstance(state, str), g.callers()
+            ### assert isinstance(state, str), g.callers()
             state_number = self.computeState(f=None, keys={'state': state})
             n = self.setState(state_number)
             return n
 
-        c = self.c
-        p = c.p
 
-        if 0:  ###
+        if True:  ###
             if p and p.v == self.last_v:
                 old_n = n
             else:
@@ -1361,7 +1362,7 @@ class JEditColorizer(BaseColorizer):
                 state1 = mode_module.init_scanner(n)
                 n = old_n = update_state(state1)
                 ### g.trace(state1, '-->', old_n)
-                if True or 'coloring' in g.app.debug:  ###
+                if trace or 'coloring' in g.app.debug:  ###
                     print('')
                     g.trace(f"NEW NODE: {state1!r} -> {n} {p.h}\n")
 
@@ -1381,19 +1382,21 @@ class JEditColorizer(BaseColorizer):
         jEdit.recolor: Recolor a *single* line, s.
         QSyntaxHighligher calls this method repeatedly and automatically.
         """
+        trace = True and 'leoPy.leo' not in self.c.fileName()  ###
         p = self.c.p
         self.recolorCount += 1
         block_n = self.currentBlockNumber()
         n = self.prevState()
         if p.v == self.old_v:
             new_language = self.n2languageDict.get(n)
-            if 0:  ###
-                print('')
-                g.trace('Full recolor!', self.language != new_language, p.h, g.callers())
             if new_language != self.language:
                 self.language = new_language
                 self.init()
         else:
+            if trace:  ###
+                print('')
+                g.trace('Full recolor!', self.language, p.h, g.callers(2))
+                print('')
             self.updateSyntaxColorer(p)  # Force a full recolor
             assert self.language
             self.init_all_state(p.v)
