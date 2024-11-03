@@ -877,20 +877,21 @@ class JEditColorizer(BaseColorizer):
     def __init__(self, c: Cmdr, widget: Widget) -> None:
         """Ctor for JEditColorizer class."""
         super().__init__(c, widget)
-        #
+
         # Create the highlighter. The default is NullObject.
         if isinstance(widget, QtWidgets.QTextEdit):
             self.highlighter = LeoHighlighter(c,
                 colorizer=self,
                 document=widget.document(),
             )
-        #
+
         # State data used only by this class...
         self.after_doc_language: str = None
         self.initialStateNumber = -1
         self.old_v: VNode = None
         self.nested = False  # True: allow nested comments, etc.
         self.nested_level = 0  # Nesting level if self.nested is True.
+        self.new_mode_module: Any = None
         self.nextState = 1  # Don't use 0.
         self.n2languageDict: dict[int, str] = {-1: c.target_language}
         self.prev: tuple[int, int, str] = None
@@ -1289,6 +1290,26 @@ class JEditColorizer(BaseColorizer):
                 i += 1
             assert i > progress
         # Don't even *think* about changing state here.
+        self.tot_time += time.process_time() - t1
+    #@+node:ekr.20241103021141.1: *3* jedit.newMainLoop
+    def newMainLoop(self, n: int, s: str) -> None:
+        """Colorize a *single* line s, starting in state n."""
+
+        # Maintain the legacy trace.
+        if 'coloring' in g.app.debug:
+            p = self.c and self.c.p
+            if p and p.v != self.last_v:
+                self.last_v = p.v
+                g.trace(f"NEW NODE: {p.h}\n")
+        t1 = time.process_time()
+
+        # colorize_line line s. New colorizers are free to ignore n.
+        state = self.new_mode_module.colorize_line(s, n)
+        assert isinstance(state, str), g.callers()
+
+        # Set the state for QSyntaxHighlighter!
+        n = self.computeState(f=None, keys={'state: state'})
+        self.setState(n)
         self.tot_time += time.process_time() - t1
     #@+node:ekr.20110605121601.18640: *3* jedit.recolor & helpers
     def recolor(self, s: str) -> None:
