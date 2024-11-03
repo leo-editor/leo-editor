@@ -4,6 +4,7 @@
 """
 leo/modes/jupytext.py, Leo's colorizer for @language jupytext.
 """
+
 #@+<< new_jupytext.py: imports >>
 #@+node:ekr.20241103040135.2: ** << new_jupytext.py: imports >>
 from __future__ import annotations
@@ -11,19 +12,19 @@ from __future__ import annotations
 from typing import Any, TYPE_CHECKING
 
 from leo.core import leoGlobals as g
-from leo.core.leoColorizer import JEditColorizer
-
 assert g
 
 if TYPE_CHECKING:
+    from leo.core.leoColorizer import JEditColorizer as Colorer
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position
 #@-<< new_jupytext.py: imports >>
+
 #@+others
 #@+node:ekr.20241103040332.1: ** colorize_line (new_jupytext.py)
-def colorize_line(colorizer: Any, n: int, s: str) -> str:
+def colorize_line(colorizer: Colorer, n: int, s: str) -> str:
     g.trace(n, repr(s))
-    assert isinstance(colorizer, JEditColorizer), colorizer
+    assert isinstance(colorizer, Colorer), colorizer
     return 'jupytext'
 #@+node:ekr.20241103040135.4: ** jupytext_comment
 def predicate(s: str) -> str:
@@ -35,7 +36,7 @@ def predicate(s: str) -> str:
         return 'python'
     return ''
 
-def jupytext_comment(colorer, s, i) -> int:
+def jupytext_comment(colorer: Colorer, s: str, i: int) -> int:
     """
     Color a *single line* in the appropriate state.
     
@@ -58,5 +59,4 @@ def jupytext_keyword(colorer, s, i):
     return colorer.match_keywords(s, i)
 
 #@-others
-
 #@-leo

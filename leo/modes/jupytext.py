@@ -8,8 +8,13 @@ leo/modes/jupytext.py, Leo's colorizer for @language jupytext.
 #@+node:ekr.20241031140333.1: ** << jupytext.py: imports >>
 from __future__ import annotations
 
+from typing import Dict, TYPE_CHECKING
+
 from leo.core import leoGlobals as g
 assert g
+
+if TYPE_CHECKING:
+    from leo.core.leoColorizer import JEditColorizer as Colorer
 #@-<< jupytext.py: imports >>
 #@+<< jupytext.py: rules >>
 #@+node:ekr.20241031024909.1: ** << jupytext.py: rules >>
@@ -24,7 +29,7 @@ def predicate(s: str) -> str:
         return 'python'
     return ''
 
-def jupytext_comment(colorer, s, i) -> int:
+def jupytext_comment(colorer: Colorer, s: str, i: int) -> int:
     """
     Color a *single line* in the appropriate state.
     
@@ -43,7 +48,7 @@ def jupytext_comment(colorer, s, i) -> int:
 
     return -1  # This line has been completely handled.
 #@+node:ekr.20241031024936.1: *3* jupytext_keyword
-def jupytext_keyword(colorer, s, i):
+def jupytext_keyword(colorer: Colorer, s: str, i: str) -> int:
     return colorer.match_keywords(s, i)
 
 #@-others
@@ -51,14 +56,14 @@ def jupytext_keyword(colorer, s, i):
 #@-<< jupytext.py: rules >>
 #@+<< jupytext.py: interface dicts >>
 #@+node:ekr.20241101031846.1: ** << jupytext.py: interface dicts >>
-properties = {}
+properties: Dict = {}
 
-jupytext_rules_dict = {
+jupytext_rules_dict: Dict = {
     '@': [jupytext_keyword],
     '#': [jupytext_comment],
 }
 
-rulesDictDict = {
+rulesDictDict: Dict = {
     "jupytext_main": jupytext_rules_dict,
 }
 #@-<< jupytext.py: interface dicts >>
