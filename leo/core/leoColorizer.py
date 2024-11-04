@@ -77,6 +77,7 @@ class BaseColorizer:
         # Common state ivars...
         self.enabled = False  # Per-node enable/disable flag set by updateSyntaxColorer.
         self.highlighter: Any = g.NullObject()  # May be overridden in subclass...
+        self.in_full_recolor = False  # A flag for tracing.
         self.language = 'python'  # set by scanLanguageDirectives.
         self.prev: tuple[int, int, str] = None  # Used by setTag.
         self.showInvisibles = False
@@ -1248,8 +1249,6 @@ class JEditColorizer(BaseColorizer):
                     d[ch] = aList
         self.rulesDict = d
     #@+node:ekr.20240423042341.1: *3* jedit.colorize (***Changed***)
-    in_full_recolor = False  # A flag for tracing.
-
     def colorize(self, p: Position) -> None:
         """jedit.Colorize: fully recolor p.b."""
         if not p:
@@ -1292,7 +1291,7 @@ class JEditColorizer(BaseColorizer):
             self.highlighter.rehighlight()
         finally:
             self.in_full_recolor = False
-    #@+node:ekr.20110605121601.18638: *3* jedit.mainLoop (**add trace**)
+    #@+node:ekr.20110605121601.18638: *3* jedit.mainLoop
     last_v = None
     tot_time = 0.0
     tot_count = 0
@@ -1303,24 +1302,34 @@ class JEditColorizer(BaseColorizer):
         p = c.p
         if not p:
             return
-
-        suppressions = (
-            # 'change_current_position',
-            # 'updateAfterTyping',
-            # 'doPlainChar',
-            # 'backwardDeleteCharacter',
-            'setAllText',
-        )
+        #@+<< trace jedit.mainLoop >>
+        #@+node:ekr.20241104105301.1: *4* << trace jedit.mainLoop >>
+        # These traces are important. Do not remove them! See #4146.
         trace = (
-            not g.unitTesting
+            False  # 'coloring' in g.app.debug
+            and not g.unitTesting
             and 'leoPy.leo' not in c.fileName()
             and not self.in_full_recolor
-            and not any(z in g.callers(10) for z in suppressions)
         )
         if trace:
-            g.trace(self.language, 'n', n, repr(s))  ### self.recolorCount,
-            g.trace(g.callers())
-
+            known_callers = (
+                'backwardDeleteCharacter',
+                'change_current_position',
+                'doPlainChar',
+                'mainLoop',  # via various 'restart' pattern matchers.
+                'pasteText',
+                'setAllText',
+                'set_body_text_after_select',
+                'updateAfterTyping',
+            )
+            callers = g.callers(6)
+            for z in known_callers:
+                if z in callers:
+                    g.trace(f"{z:>25} {self.language} {s!r}")
+                    break
+            else:
+                g.trace(f"{'unexpected caller!':>25} {self.language} {s!r}\n{callers}")
+        #@-<< trace jedit.mainLoop >>
         f = self.restartDict.get(n)
         t1 = time.process_time()
         i = f(s) if f else 0
