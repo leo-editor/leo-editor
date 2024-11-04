@@ -1458,7 +1458,7 @@ class LeoTree:
         w.setAllText(s)
         # This is now done after c.p has been changed.
             # p.restoreCursorAndScroll()
-    #@+node:ekr.20140829053801.18458: *5* 3. LeoTree.change_current_position (***Changed***)
+    #@+node:ekr.20140829053801.18458: *5* 3. LeoTree.change_current_position
     def change_current_position(self, old_p: Position, p: Position) -> None:
         """Select the new node, part 2."""
         c = self.c
