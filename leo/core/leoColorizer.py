@@ -816,6 +816,8 @@ class BaseColorizer:
             try:
                 self.enabled = self.useSyntaxColoring(p)
                 self.language = self.scanLanguageDirectives(p)
+                ### g.trace(self.language, p.h)  ###
+                ### g.trace(g.callers(2))  ###
             except Exception:
                 g.es_print('unexpected exception in updateSyntaxColorer')
                 g.es_exception()
@@ -1243,29 +1245,45 @@ class JEditColorizer(BaseColorizer):
                     aList.insert(0, wiki_rule)
                     d[ch] = aList
         self.rulesDict = d
-    #@+node:ekr.20240423042341.1: *3* jedit.colorize
+    #@+node:ekr.20240423042341.1: *3* jedit.colorize (***Changed***)
     def colorize(self, p: Position) -> None:
         """jedit.Colorize: fully recolor p.b."""
         if not p:
             return
+        ### g.trace('******* full recolor *******', g.callers(4))
+        old_language = self.language
         self.updateSyntaxColorer(p)
-        # Similar to code in jedit.recolor.
-        self.init_all_state(p.v)
-        self.init()
-        # Force QSyntaxHighlighter to do a full recolor.
-        self.highlighter.rehighlight()
+        full_recolor = (
+            self.language != old_language
+            or p.v != self.old_v
+        )
+        ### g.trace(g.callers(2))  ###
+        if full_recolor:  ### Experimental.
+            print('')
+            g.trace('===== Full recolor =====', self.language, p.h)
+            # g.trace(p.v, self.old_v, self.language, old_language)
+
+            # Similar to code in jedit.recolor.
+            self.init_all_state(p.v)
+            self.init()
+            # Suppress later recolors ### Experimental
+            self.old_v = p.v
+            # Force QSyntaxHighlighter to do a full recolor.
+            self.highlighter.rehighlight()
     #@+node:ekr.20110605121601.18638: *3* jedit.mainLoop
     last_v = None
     tot_time = 0.0
+    tot_count = 0
 
     def mainLoop(self, n: int, s: str) -> None:
         """Colorize a *single* line s, starting in state n."""
+        c = self.c
+        p = c.p
+        if not p:
+            return
+        if True and 'leoPy.leo' not in c.fileName():
+            g.trace(self.language, 'n', n, repr(s))  ### self.recolorCount,
         f = self.restartDict.get(n)
-        if 'coloring' in g.app.debug:
-            p = self.c and self.c.p
-            if p and p.v != self.last_v:
-                self.last_v = p.v
-                g.trace(f"NEW NODE: {p.h}\n")
         t1 = time.process_time()
         i = f(s) if f else 0
         while i < len(s):
@@ -1290,7 +1308,7 @@ class JEditColorizer(BaseColorizer):
             assert i > progress
         # Don't even *think* about changing state here.
         self.tot_time += time.process_time() - t1
-    #@+node:ekr.20110605121601.18640: *3* jedit.recolor & helpers
+    #@+node:ekr.20110605121601.18640: *3* jedit.recolor & helpers (***Changed***)
     def recolor(self, s: str) -> None:
         """
         jEdit.recolor: Recolor a *single* line, s.
@@ -1298,21 +1316,31 @@ class JEditColorizer(BaseColorizer):
         """
         p = self.c.p
         self.recolorCount += 1
-        block_n = self.currentBlockNumber()
-        n = self.prevState()
-        if p.v == self.old_v:
-            new_language = self.n2languageDict.get(n)
-            if new_language != self.language:
-                self.language = new_language
+
+        if 0:  ################ Legacy.
+            block_n = self.currentBlockNumber()
+            g.trace('======', g.callers(2))  ###
+            n = self.prevState()
+            if p.v == self.old_v:
+                new_language = self.n2languageDict.get(n)
+                if new_language != self.language:
+                    self.language = new_language
+                    self.init()
+            else:
+                self.updateSyntaxColorer(p)  # Force a full recolor
+                assert self.language
+                self.init_all_state(p.v)
                 self.init()
-        else:
-            self.updateSyntaxColorer(p)  # Force a full recolor
-            assert self.language
-            self.init_all_state(p.v)
-            self.init()
-        if block_n == 0:
-            n = self.initBlock0()
-        n = self.setState(n)  # Required.
+                ### g.trace(block_n, self.language, p.h, repr(s))  ###
+            if block_n == 0:
+                n = self.initBlock0()
+            n = self.setState(n)  # Required.
+        else:  ### Experimental.
+            n = self.currentBlockNumber()
+            if n == 0:
+                n = self.initBlock0()
+            ### g.trace('======', 'n', n, g.callers(2))  ###
+
         # Always color the line, even if colorizing is disabled.
         if s:
             self.mainLoop(n, s)
