@@ -1826,16 +1826,13 @@ class LocalConfigManager:
         assert d is None
         return None
     #@+node:ekr.20120215072959.12539: *5* c.config.getShortcut
-    no_menu_dict: dict[Cmdr, bool] = {}
-
     def getShortcut(self, commandName: str) -> tuple[str, list]:
         """Return rawKey,accel for shortcutName"""
         c = self.c
         d = self.shortcutsDict
         if not c.frame.menu:
-            if c not in self.no_menu_dict:
-                self.no_menu_dict[c] = True
-                g.trace(f"no menu: {c.shortFileName()}:{commandName}")
+            err = f"no menu: {c.shortFileName()}:{commandName}"
+            g.trace_unique_message(err)
             return None, []
         if d:
             assert isinstance(d, g.SettingsDict), repr(d)  # was TypedDictOfLists.

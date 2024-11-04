@@ -3011,21 +3011,16 @@ if QtGui:
                 # self._document.setHtml(html)
             return QtGui.QTextCursor(self._document).charFormat()
         #@+node:ekr.20190320153716.1: *5* leo_h._get_format_from_style
-        key_error_d: dict[str, bool] = {}
-
         def _get_format_from_style(self, token: Any, style: Any) -> Any:
             """ Returns a QTextCharFormat for token by reading a Pygments style.
             """
             result = QtGui.QTextCharFormat()
-            #
+
             # EKR: handle missing tokens.
             try:
                 data = style.style_for_token(token).items()
             except KeyError as err:
-                key = repr(err)
-                if key not in self.key_error_d:
-                    self.key_error_d[key] = True
-                    g.trace(err)
+                g.trace_unique_message(repr(err))
                 return result
             for key, value in data:
                 if value:
