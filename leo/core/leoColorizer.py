@@ -725,7 +725,11 @@ class BaseColorizer:
     #@+node:ekr.20110605121601.18641: *3* BaseColorizer.setTag
     def setTag(self, tag: str, s: str, i: int, j: int) -> None:
         """Set the tag in the highlighter."""
-        trace = 'coloring' in g.app.debug and not g.unitTesting
+        trace = (
+            'coloring' in g.app.debug
+            and not g.unitTesting
+            and not self.in_full_recolor
+        )
         full_tag = f"{self.language}.{tag}"
         default_tag = f"{tag}_font"  # See default_font_dict.
         font: Any = None  # Set below. Define here for report().
@@ -1348,35 +1352,29 @@ class JEditColorizer(BaseColorizer):
         jEdit.recolor: Recolor a *single* line, s.
         QSyntaxHighligher calls this method repeatedly and automatically.
         """
+        trace = False and not g.unitTesting
         p = self.c.p
         if not p:
             return
         self.recolorCount += 1
 
-        if 1:  ################ Legacy.
-            block_n = self.currentBlockNumber()
-            n = self.prevState()
-            if p.v == self.old_v:
-                new_language = self.n2languageDict.get(n)
-                if new_language != self.language:
-                    self.language = new_language
-                    self.init()
-            else:
-                g.trace('====== Full recolor', p.h)  ###
-                self.updateSyntaxColorer(p)  # Force a full recolor
-                assert self.language
-                self.init_all_state(p.v)
+        block_n = self.currentBlockNumber()
+        n = self.prevState()
+        if p.v == self.old_v:
+            new_language = self.n2languageDict.get(n)
+            if new_language != self.language:
+                self.language = new_language
                 self.init()
-                ### g.trace(block_n, self.language, p.h, repr(s))  ###
-            if block_n == 0:
-                n = self.initBlock0()
-            n = self.setState(n)  # Required.
-        else:  ### Experimental.
-            n = self.currentBlockNumber()
-            n = self.setState(n)  # Required.
-            # if n == 0:
-                # n = self.initBlock0()
-            ### g.trace('======', 'n', n, g.callers(2))  ###
+        else:
+            self.updateSyntaxColorer(p)  # Force a full recolor
+            assert self.language
+            self.init_all_state(p.v)
+            self.init()
+            ### g.trace('====== Full recolor', p.h)  ###
+            ### g.trace(block_n, self.language, p.h, repr(s))  ###
+        if block_n == 0:
+            n = self.initBlock0()
+        n = self.setState(n)  # Required.
 
         # Always color the line, even if colorizing is disabled.
         if s:
@@ -1456,7 +1454,11 @@ class JEditColorizer(BaseColorizer):
         This is called whenever a pattern matcher succeed.
         """
         # setTag does most tracing.
-        trace = 'coloring' in g.app.debug and not g.unitTesting
+        trace = (
+            'coloring' in g.app.debug
+            and not g.unitTesting
+            and not self.in_full_recolor
+        )
         if not self.inColorState():
             # Do *not* check x.flag here. It won't work.
             if trace:
