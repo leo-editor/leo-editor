@@ -1303,8 +1303,8 @@ class JEditColorizer(BaseColorizer):
         suppressions = (
             # 'change_current_position',
             # 'updateAfterTyping',
-            'doPlainChar',
-            'backwardDeleteCharacter',
+            # 'doPlainChar',
+            # 'backwardDeleteCharacter',
             'setAllText',
         )
         trace = (
