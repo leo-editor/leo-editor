@@ -816,8 +816,6 @@ class BaseColorizer:
             try:
                 self.enabled = self.useSyntaxColoring(p)
                 self.language = self.scanLanguageDirectives(p)
-                ### g.trace(self.language, p.h)  ###
-                ### g.trace(g.callers(2))  ###
             except Exception:
                 g.es_print('unexpected exception in updateSyntaxColorer')
                 g.es_exception()
@@ -1253,16 +1251,22 @@ class JEditColorizer(BaseColorizer):
         ### g.trace('******* full recolor *******', g.callers(4))
         old_language = self.language
         self.updateSyntaxColorer(p)
-        full_recolor = (
-            self.language != old_language
-            or p.v != self.old_v
-        )
+        new_language = self.language != old_language
+        new_node = p.v != self.old_v
         ### g.trace(g.callers(2))  ###
-        if full_recolor:  ### Experimental.
-            print('')
-            g.trace('===== Full recolor =====', self.language, p.h)
-            # g.trace(p.v, self.old_v, self.language, old_language)
-
+        if new_node or new_language:  ### Experimental.
+            if not g.unitTesting:  ###
+                print('')
+                g.trace('===== Full recolor =====')
+                if new_node:
+                    old_h = self.old_v.h if self.old_v else '<None>'
+                    new_h = p.h if p else '<None>'
+                    g.trace(f"Change node. old: {old_h} new: {new_h}")
+                if new_language:
+                    g.trace(f"Change language. old: {old_language!r} new: {self.language!r}")
+                if new_node or new_language:
+                    g.trace(g.callers(4))
+                    print('')
             # Similar to code in jedit.recolor.
             self.init_all_state(p.v)
             self.init()
@@ -1281,7 +1285,7 @@ class JEditColorizer(BaseColorizer):
         p = c.p
         if not p:
             return
-        if True and 'leoPy.leo' not in c.fileName():
+        if True and not g.unitTesting and 'leoPy.leo' not in c.fileName():
             g.trace(self.language, 'n', n, repr(s))  ### self.recolorCount,
         f = self.restartDict.get(n)
         t1 = time.process_time()
