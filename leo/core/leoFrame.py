@@ -1458,7 +1458,7 @@ class LeoTree:
         w.setAllText(s)
         # This is now done after c.p has been changed.
             # p.restoreCursorAndScroll()
-    #@+node:ekr.20140829053801.18458: *5* 3. LeoTree.change_current_position
+    #@+node:ekr.20140829053801.18458: *5* 3. LeoTree.change_current_position (***Changed***)
     def change_current_position(self, old_p: Position, p: Position) -> None:
         """Select the new node, part 2."""
         c = self.c
@@ -1475,6 +1475,7 @@ class LeoTree:
         # Do not call treeFocusHelper here!
             # c.treeFocusHelper()
         c.undoer.onSelect(old_p, p)
+        c.recolor()  # #4145.
     #@+node:ekr.20140829053801.18459: *5* 4. LeoTree.scroll_cursor
     def scroll_cursor(self, p: Position) -> None:
         """Scroll the cursor."""
