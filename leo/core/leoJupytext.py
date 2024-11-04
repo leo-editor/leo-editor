@@ -12,7 +12,7 @@ from __future__ import annotations
 import io
 import os
 import textwrap
-from typing import Any, Dict, Tuple, TYPE_CHECKING
+from typing import Any, Tuple, TYPE_CHECKING
 
 try:
     import jupytext  # pylint: disable=unused-import
@@ -213,7 +213,8 @@ class JupytextManager:
             # full_path has given the error.
             return '', ''
         if not os.path.exists(path):
-            self.warn_file_not_found(p, path)
+            message = f"\nFile not found: {path!r}\n"
+            g.trace_unique_message(message, es_flag=True, color='red')
             return '', ''
 
         # Read the .ipynb file into contents.
@@ -240,17 +241,6 @@ class JupytextManager:
         at = c.atFileCommands
         at.readOneAtJupytextNode(p)
         c.redraw()
-    #@+node:ekr.20241023165243.1: *3* jtm.warn_file_not_found
-    bad_paths: Dict[str, bool] = {}
-
-    def warn_file_not_found(self, p: Position, path: str) -> None:
-        """Warn (once) about each bad path"""
-        if path not in self.bad_paths:
-            key = path if path else 'None'
-            self.bad_paths[key] = True
-            print('')
-            g.es_print(f"File not found: {path!r}", color='red')
-            print('')
     #@+node:ekr.20241023161034.1: *3* jtm.warn_no_jupytext
     warning_given = False
 
