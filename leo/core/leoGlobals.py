@@ -5727,6 +5727,14 @@ def trace(*args: Args, **kwargs: KWargs) -> None:
     if name.endswith(".pyc"):
         name = name[:-1]
     g.pr(name, *args)
+#@+node:ekr.20241104143456.1: *3* g.trace_unique_message
+trace_unique_d: dict[str, bool] = {}
+
+def trace_unique_message(message: str) -> None:
+    """Print the given message once."""
+    if message not in trace_unique_d:
+        trace_unique_d[message] = True
+        g.trace(message)
 #@+node:ekr.20240325064618.1: *3* g.traceUnique & traceUniqueClass
 # Keys are strings: g.callers. Values are lists of str(value).
 trace_unique_dict: dict[str, list[str]] = {}
