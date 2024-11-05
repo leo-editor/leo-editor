@@ -1271,6 +1271,7 @@ class JEditColorizer(BaseColorizer):
         # Tell QSyntaxHighlighter to do a full recolor.
         try:
             self.in_full_recolor = True  # A flag for debugging traces.
+            # This is the *only* call to rehighlight.
             self.highlighter.rehighlight()
         finally:
             self.in_full_recolor = False
@@ -1281,16 +1282,10 @@ class JEditColorizer(BaseColorizer):
 
     def mainLoop(self, n: int, s: str) -> None:
         """Colorize a *single* line s, starting in state n."""
-        #@+<< trace jedit.mainLoop >>
-        #@+node:ekr.20241104105301.1: *4* << trace jedit.mainLoop >>
-        # These traces are important. Do not remove them! See #4146.
-        trace = (
-            False  # 'coloring' in g.app.debug
-            and not g.unitTesting
-            and 'leoPy.leo' not in self.c.fileName()
-            and not self.in_full_recolor
-        )
-        if trace:
+        #@+<< jedit.mainLoop: tests >>
+        #@+node:ekr.20241104105301.1: *4* << jedit.mainLoop: tests >>
+        # These tests are important. Do not remove them! See #4146.
+        if not g.unitTesting:
             known_callers = (
                 'backwardDeleteCharacter',
                 'change_current_position',
@@ -1303,16 +1298,17 @@ class JEditColorizer(BaseColorizer):
                 'updateAfterTyping',
             )
             callers = g.callers(6)
+            if not any(z in callers for z in known_callers):
+                message = f"unexpected callers: {callers}"
+                g.trace_unique_message(message)
+
+        if False and not g.unitTesting:  # A useful debugging trace.
             for z in known_callers:
                 if z in callers:
                     string_state = self.stateNumberToStateString(n)
                     g.trace(f"{z:>25} state: {n} {string_state:<10} {s!r}")
-                    # g.trace(f"{z:>25} {self.language} {s!r}")
                     break
-            else:
-                message = f"{'unexpected caller!':>25} {self.language} {s!r}\n{callers}"
-                g.trace_unique_message(message)
-        #@-<< trace jedit.mainLoop >>
+        #@-<< jedit.mainLoop: tests >>
         f = self.restartDict.get(n)
         t1 = time.process_time()
         i = f(s) if f else 0
@@ -1325,8 +1321,9 @@ class JEditColorizer(BaseColorizer):
                     g.trace('Can not happen: n is None', repr(f))
                     break
                 elif n > 0:  # Success. The match has already been colored.
-                    # if trace and f.__name__ != 'match_blanks':
-                        # g.trace(f"n: {n:<2} i: {i:<3} {f.__name__:30} {s.rstrip()}")
+                    # Trace successful matches.
+                    # f.__name__ != 'match_blanks':
+                        # g.trace(f"{i:<3} {f.__name__:30} {s.rstrip()}")
                     i += n
                     break
                 elif n < 0:  # Total failure.
@@ -1339,17 +1336,18 @@ class JEditColorizer(BaseColorizer):
             assert i > progress
         # Don't even *think* about changing state here.
         self.tot_time += time.process_time() - t1
-    #@+node:ekr.20110605121601.18640: *3* jedit.recolor & helpers
-    def recolor(self, s: str) -> None:
+    #@+node:ekr.20110605121601.18640: *3* jedit._recolor & helpers
+    def _recolor(self, s: str) -> None:
         """
         jEdit.recolor: Recolor a *single* line, s.
         QSyntaxHighligher calls this method repeatedly and automatically.
         """
         self.recolorCount += 1
 
-        # A permanent test. *only* LeoHighlighter.highlightBlock should call this method!
+        # A permanent test:
+        # *only* LeoHighlighter.highlightBlock should call this method!
         if g.callers(1) != 'highlightBlock':
-            message = f"jedit.recolor: unexpected callers: {g.callers(2)}"
+            message = f"jedit._recolor: unexpected callers: {g.callers(2)}"
             g.trace_unique_message(message)
 
         # Set n, the integer state number.
@@ -2813,7 +2811,9 @@ class JEditColorizer(BaseColorizer):
         for key in sorted(keys):
             keyVal = keys.get(key)
             val = d.get(key)
-            if val is None:
+            if key == 'predicate':
+                pass
+            elif val is None:
                 val = keys.get(key)
                 result.append(f"{key}={val}")
             elif keyVal is True:
@@ -2929,7 +2929,7 @@ if QtGui:
             """ Called by QSyntaxHighlighter """
             self.n_calls += 1
             s = g.toUnicode(s)
-            self.colorizer.recolor(s)  # Highlight just one line.
+            self.colorizer._recolor(s)  # Highlight just one line.
         #@+node:ekr.20190327052228.1: *3* leo_h.reloadSettings
         def reloadSettings(self) -> None:
             """Reload all reloadable settings."""
