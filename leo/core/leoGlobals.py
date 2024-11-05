@@ -2593,7 +2593,7 @@ def get_directives_dict(p: Position) -> dict[str, str]:
             # Warning if @path is in the body of an @file node.
             if word == 'path' and kind == 'body' and p.isAtFileNode():
                 message = '\n@path is not allowed in the body text of @file nodes\n'
-                g.print_unique_message(message, es_flag=True, color='red')
+                g.print_unique_message(message, color='red')
                 continue
             k = g.skip_line(s, j)
             val = s[j:k].strip()
@@ -5731,9 +5731,6 @@ def es_print_unique_message(message: str, *, color: str) -> None:
     if message not in g_unique_message_d:
         g_unique_message_d[message] = True
         g.es_print(message, color=color)
-
-
-
 #@+node:ekr.20240325064618.1: *3* g.traceUnique & traceUniqueClass
 # Keys are strings: g.callers. Values are lists of str(value).
 trace_unique_dict: dict[str, list[str]] = {}

@@ -1231,7 +1231,7 @@ class LeoTree:
         # New in Leo 4.4.5: we must recolor the body because
         # the headline may contain directives.
         c.frame.scanForTabWidth(p)
-        c.frame.body.recolor(p)
+        c.recolor(p)
         p.setDirty()
         u.afterChangeHeadline(p, undoType, undoData)
         # Fix bug 1280689: don't call the non-existent c.treeEditFocusHelper
@@ -1475,6 +1475,7 @@ class LeoTree:
         # Do not call treeFocusHelper here!
             # c.treeFocusHelper()
         c.undoer.onSelect(old_p, p)
+        c.recolor()  # #4145.
     #@+node:ekr.20140829053801.18459: *5* 4. LeoTree.scroll_cursor
     def scroll_cursor(self, p: Position) -> None:
         """Scroll the cursor."""

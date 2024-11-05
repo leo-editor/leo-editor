@@ -31,20 +31,20 @@ def predicate(s: str) -> str:
 
 def jupytext_comment(colorer: Colorer, s: str, i: int) -> int:
     """
-    Color a *single line* in the appropriate state.
+    Color a *range* of lines from the starting %% comment to the next @language directive.
     
-    Return: n > 1 if n characters match, otherwise -1.
+    All following lines are delegated to the markdown or python colorizers,
+    so we can assert that *this* line starts with '# %%'.
     """
     assert s[i] == '#'
-
-    # Colorize *this* line.
-    colorer.match_line(s, i, kind='comment1')
-
     line = s.strip()
     if line.startswith('# %%'):
         # Colorize the *next* lines until the predicate matches.
+        # **** NOTE **** This language pertains only to the first %% of p.b.
         language = 'md' if line.startswith('# %% [markdown]') else 'python'
         colorer.match_span_delegated_lines(s, i, language=language, predicate=predicate)
+    else:
+        g.trace(f"Can not happen: {s!r}")
 
     return -1  # This line has been completely handled.
 #@+node:ekr.20241031024936.1: *3* jupytext_keyword
