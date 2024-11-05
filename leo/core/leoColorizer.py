@@ -3036,7 +3036,7 @@ if QtGui:
             try:
                 data = style.style_for_token(token).items()
             except KeyError as err:
-                g.trace_unique_message(repr(err))
+                g.print_unique_message(repr(err))
                 return result
             for key, value in data:
                 if value:
