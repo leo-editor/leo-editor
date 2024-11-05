@@ -1276,9 +1276,7 @@ class JEditColorizer(BaseColorizer):
         finally:
             self.in_full_recolor = False
     #@+node:ekr.20110605121601.18638: *3* jedit.mainLoop
-    last_v = None
     tot_time = 0.0
-    tot_count = 0
 
     def mainLoop(self, n: int, s: str) -> None:
         """Colorize a *single* line s, starting in state n."""
