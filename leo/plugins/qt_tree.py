@@ -923,7 +923,7 @@ class LeoQtTree(leoFrame.LeoTree):
                     c.setChanged()
                 # We must recolor the body because
                 # the headline may contain directives.
-                c.frame.body.recolor(p)
+                c.recolor(p)
                 p.setDirty()
                 u.afterChangeHeadline(p, 'Edit Headline', undoData)
             self.redraw_after_head_changed()

@@ -1231,7 +1231,7 @@ class LeoTree:
         # New in Leo 4.4.5: we must recolor the body because
         # the headline may contain directives.
         c.frame.scanForTabWidth(p)
-        c.frame.body.recolor(p)
+        c.recolor(p)
         p.setDirty()
         u.afterChangeHeadline(p, undoType, undoData)
         # Fix bug 1280689: don't call the non-existent c.treeEditFocusHelper

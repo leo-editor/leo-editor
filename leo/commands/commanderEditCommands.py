@@ -1119,7 +1119,7 @@ def showInvisiblesHelper(c: Cmdr, val: Any) -> None:
     # #240: Set the status bits here.
     if hasattr(frame.body, 'set_invisibles'):
         frame.body.set_invisibles(c)
-    c.frame.body.recolor(c.p)
+    c.recolor(c.p)
 #@+node:ekr.20171123135625.55: ** c_ec.toggleAngleBrackets
 @g.commander_command('toggle-angle-brackets')
 def toggleAngleBrackets(self: Self, event: LeoKeyEvent = None) -> None:
