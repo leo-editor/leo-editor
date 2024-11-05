@@ -2593,7 +2593,7 @@ def get_directives_dict(p: Position) -> dict[str, str]:
             # Warning if @path is in the body of an @file node.
             if word == 'path' and kind == 'body' and p.isAtFileNode():
                 message = '\n@path is not allowed in the body text of @file nodes\n'
-                g.print_unique_message(message, es_flag=True, color='red')
+                g.print_unique_message(message, color='red')
                 continue
             k = g.skip_line(s, j)
             val = s[j:k].strip()
@@ -4928,7 +4928,7 @@ def checkUnicode(s: str, encoding: str = None) -> str:
 
     # Report the unexpected conversion.
     message = f"\n{tag}: expected unicode. got: {s!r}\n{g.callers()}"
-    g.trace_unique_message(message)
+    g.es_print_unique_message(message, color='red')
 
     # Convert to unicode, reporting all errors.
     if not encoding:
@@ -5717,16 +5717,20 @@ def trace(*args: Args, **kwargs: KWargs) -> None:
     if name.endswith(".pyc"):
         name = name[:-1]
     g.pr(name, *args)
-#@+node:ekr.20241104143456.1: *3* g.trace_unique_message
-trace_unique_message_d: dict[str, bool] = {}
+#@+node:ekr.20241104143456.1: *3* g.print_unique_message & es_print_unique_message
+g_unique_message_d: dict[str, bool] = {}
 
-def trace_unique_message(message: str, es_flag: bool = False, color: str = None) -> None:
+def print_unique_message(message: str) -> None:
     """Print the given message once."""
-    if message not in trace_unique_message_d:
-        trace_unique_message_d[message] = True
+    if message not in g_unique_message_d:
+        g_unique_message_d[message] = True
         print(message)
-        if es_flag:
-            g.es(message, color=color)
+
+def es_print_unique_message(message: str, *, color: str) -> None:
+    """Print the given message once."""
+    if message not in g_unique_message_d:
+        g_unique_message_d[message] = True
+        g.es_print(message, color=color)
 #@+node:ekr.20240325064618.1: *3* g.traceUnique & traceUniqueClass
 # Keys are strings: g.callers. Values are lists of str(value).
 trace_unique_dict: dict[str, list[str]] = {}

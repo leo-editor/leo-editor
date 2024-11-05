@@ -1298,7 +1298,7 @@ class JEditColorizer(BaseColorizer):
             callers = g.callers(6)
             if not any(z in callers for z in known_callers):
                 message = f"jedit.mainLoop: unexpected callers: {callers}"
-                g.trace_unique_message(message)
+                g.print_unique_message(message)
 
         if False and not g.unitTesting:  # A useful debugging trace.
             for z in known_callers:
@@ -1346,7 +1346,7 @@ class JEditColorizer(BaseColorizer):
         # *only* LeoHighlighter.highlightBlock should call this method!
         if g.callers(1) != 'highlightBlock':
             message = f"jedit._recolor: unexpected callers: {g.callers(2)}"
-            g.trace_unique_message(message)
+            g.print_unique_message(message)
 
         # Set n, the integer state number.
         block_n = self.currentBlockNumber()
@@ -2997,7 +2997,7 @@ if QtGui:
                 data = style.style_for_token(token).items()
             except KeyError as err:
                 message = f"_get_format_from_style: {err!r}"
-                g.trace_unique_message(message)
+                g.print_unique_message(message)
                 return result
             for key, value in data:
                 if value:
