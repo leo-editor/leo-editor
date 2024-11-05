@@ -1299,7 +1299,7 @@ class JEditColorizer(BaseColorizer):
             )
             callers = g.callers(6)
             if not any(z in callers for z in known_callers):
-                message = f"unexpected callers: {callers}"
+                message = f"jedit.mainLoop: unexpected callers: {callers}"
                 g.trace_unique_message(message)
 
         if False and not g.unitTesting:  # A useful debugging trace.
@@ -2998,7 +2998,8 @@ if QtGui:
             try:
                 data = style.style_for_token(token).items()
             except KeyError as err:
-                g.trace_unique_message(repr(err))
+                message = f"_get_format_from_style: {err!r}"
+                g.trace_unique_message(message)
                 return result
             for key, value in data:
                 if value:

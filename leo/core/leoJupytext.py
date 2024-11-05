@@ -213,7 +213,7 @@ class JupytextManager:
             # full_path has given the error.
             return '', ''
         if not os.path.exists(path):
-            message = f"\nFile not found: {path!r}\n"
+            message = f"\njtm.read: File not found: {path!r}\n"
             g.trace_unique_message(message, es_flag=True, color='red')
             return '', ''
 
