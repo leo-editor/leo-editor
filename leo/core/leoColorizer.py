@@ -2514,7 +2514,13 @@ class JEditColorizer(BaseColorizer):
         language = predicate(s)
         if language:
             self.delegated_lines_language = language
-            return 0
+            if 1:
+                n = self.currentState()
+                self.init()
+                self.language = 'python'
+                self.mainLoop(n, s)
+                self.language = language
+            ### return -1
 
         # Colorize *this* entire line with the language.
         if line:
@@ -2522,6 +2528,7 @@ class JEditColorizer(BaseColorizer):
             self.init()
             self.language = self.delegated_lines_language
             self.mainLoop(n, s)
+            g.trace(self.language, s)
 
         # Continue the colorizing on the *next* line.
 
