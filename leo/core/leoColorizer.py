@@ -896,6 +896,8 @@ class JEditColorizer(BaseColorizer):
         self.old_v: VNode = None
         self.nested = False  # True: allow nested comments, etc.
         self.nested_level = 0  # Nesting level if self.nested is True.
+        # Keys are language names, values are imported *new* modes.
+        self.new_mode_module_dict: dict[str, Any] = {}
         self.nextState = 1  # Don't use 0.
         self.n2languageDict: dict[int, str] = {-1: c.target_language}
         self.prev: tuple[int, int, str] = None
@@ -1038,6 +1040,23 @@ class JEditColorizer(BaseColorizer):
             return True
         # Don't try to import a non-existent language.
         path = g.os_path_join(g.app.loadDir, '..', 'modes')
+        mode_paths = (
+            f"new_{language}",  # Prefer the new mode file.
+            language,
+        )
+        for mode_path in mode_paths:
+            fn = g.os_path_join(path, f"{mode_path}.py")
+            if g.os_path_exists(fn):
+                mode = g.import_module(name=f"leo.modes.{mode_path}")
+                if mode is None:
+                    g.trace(f"Import failed! leo.modes.{language}")
+                else:
+                    if 'coloring' in g.app.debug:
+                        g.trace('imported:', g.shortFileName(mode.__file__))
+                        g.trace('mode:', repr(mode))
+                    if mode_path.startswith('new_'):
+                        self.new_mode_module_dict[language] = mode
+                    break
         fn = g.os_path_join(path, f"{language}.py")
         if g.os_path_exists(fn):
             mode = g.import_module(name=f"leo.modes.{language}")
@@ -1262,7 +1281,8 @@ class JEditColorizer(BaseColorizer):
         if p.v == self.old_v and self.language == old_language:
             return
 
-        # g.trace(f"Full Redraw: {self.language} {p.h}")
+        if not g.unitTesting:
+            g.trace(f"Full Redraw: {self.language} {p.h}")
 
         # Initialize *all* state.
         self.init_all_state(p.v)  # Sets self.old_v.
@@ -1275,11 +1295,12 @@ class JEditColorizer(BaseColorizer):
             self.highlighter.rehighlight()
         finally:
             self.in_full_recolor = False
-    #@+node:ekr.20110605121601.18638: *3* jedit.mainLoop
+    #@+node:ekr.20110605121601.18638: *3* jedit.mainLoop & helpers
     tot_time = 0.0
 
     def mainLoop(self, n: int, s: str) -> None:
         """Colorize a *single* line s, starting in state n."""
+
         #@+<< jedit.mainLoop: tests >>
         #@+node:ekr.20241104105301.1: *4* << jedit.mainLoop: tests >>
         # Do not remove this test! See #4146.
@@ -1292,21 +1313,36 @@ class JEditColorizer(BaseColorizer):
                 message = f"jedit.mainLoop: unexpected callers: {g.callers(6)}"
                 g.print_unique_message(message)
         #@-<< jedit.mainLoop: tests >>
-        f = self.restartDict.get(n)
+
         t1 = time.process_time()
+
+        mode_module = self.new_mode_module_dict.get(self.language)
+        if mode_module is None or self.language != 'jupytext':
+            self.legacy_main_loop(n, s)
+        else:
+            self.new_main_loop(mode_module, n, s)
+
+        t2 = time.process_time()
+        self.tot_time += (t2 - t1)
+    #@+node:ekr.20241105092359.1: *4* jedit.legacyMainLoop
+    def legacy_main_loop(self, n: int, s: str) -> None:
+        """
+        The legacy main loop. Colorize using legacy mode files.
+        
+        Colorize a *single* line s, starting in state n.
+        """
+        f = self.restartDict.get(n)
         i = f(s) if f else 0
         while i < len(s):
             progress = i
             functions = self.rulesDict.get(s[i], [])
             for f in functions:
+                # g.trace(f"n: {n:<2} i: {i:<3} {f.__name__:30} {s.rstrip()}")
                 n = f(self, s, i)
                 if n is None:
                     g.trace('Can not happen: n is None', repr(f))
                     break
                 elif n > 0:  # Success. The match has already been colored.
-                    # Trace successful matches.
-                    # f.__name__ != 'match_blanks':
-                        # g.trace(f"{i:<3} {f.__name__:30} {s.rstrip()}")
                     i += n
                     break
                 elif n < 0:  # Total failure.
@@ -1318,7 +1354,22 @@ class JEditColorizer(BaseColorizer):
                 i += 1
             assert i > progress
         # Don't even *think* about changing state here.
-        self.tot_time += time.process_time() - t1
+    #@+node:ekr.20241105092234.1: *4* jedit.newMainLoop
+    def new_main_loop(self, mode_module: Any, n: int, s: str) -> None:
+        """
+        The new main colorizing loop. Colorize using new mode files.
+        
+        Colorize a *single* line "s".
+        The "n" arg is the previous QSyntaxHighlighter state.
+        """
+
+        # colorize line s.
+        state = mode_module.colorize_line(self, n, s)
+        assert isinstance(state, str), g.callers()
+
+        # Set the QSyntaxHighlighter state.
+        n = self.computeState(f=None, keys={'state': state})
+        self.setState(n)
     #@+node:ekr.20110605121601.18640: *3* jedit._recolor & helpers
     def _recolor(self, s: str) -> None:
         """

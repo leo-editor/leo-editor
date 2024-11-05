@@ -27,7 +27,7 @@ outer_state = None  ### 'outer-state'
 #@+others
 #@+node:ekr.20241103040332.1: ** colorize_line (new_jupytext.py)
 def colorize_line(colorizer: Colorer, n: int, s: str) -> str:
-    ### g.trace(f"{n:2}     {s!r}")
+    g.trace(f"{n:2}     {s!r}")
     assert isinstance(colorizer, Colorer), colorizer
     return 'outer-state'  ###
 #@+node:ekr.20241103072835.1: ** init_scanner (new_jupytext.py)
