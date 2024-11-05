@@ -1282,30 +1282,15 @@ class JEditColorizer(BaseColorizer):
         """Colorize a *single* line s, starting in state n."""
         #@+<< jedit.mainLoop: tests >>
         #@+node:ekr.20241104105301.1: *4* << jedit.mainLoop: tests >>
-        # These tests are important. Do not remove them! See #4146.
+        # Do not remove this test! See #4146.
         if not g.unitTesting:
             known_callers = (
-                'backwardDeleteCharacter',
-                'change_current_position',
-                'doPlainChar',
-                'insert',
-                'mainLoop',  # via various 'restart' pattern matchers.
-                'pasteText',
-                'setAllText',
-                'set_body_text_after_select',
-                'updateAfterTyping',
+                '_recolor',
+                'restart_match_span_delegated_lines',  # This hack may be removed.
             )
-            callers = g.callers(6)
-            if not any(z in callers for z in known_callers):
-                message = f"jedit.mainLoop: unexpected callers: {callers}"
+            if g.callers(1) not in known_callers:
+                message = f"jedit.mainLoop: unexpected callers: {g.callers(6)}"
                 g.print_unique_message(message)
-
-        if False and not g.unitTesting:  # A useful debugging trace.
-            for z in known_callers:
-                if z in callers:
-                    string_state = self.stateNumberToStateString(n)
-                    g.trace(f"{z:>25} state: {n} {string_state:<10} {s!r}")
-                    break
         #@-<< jedit.mainLoop: tests >>
         f = self.restartDict.get(n)
         t1 = time.process_time()
