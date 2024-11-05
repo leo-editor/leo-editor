@@ -1281,7 +1281,12 @@
 </v>
 </v>
 <v t="ekr.20241027051721.1"><vh>Leo and Jupyter Notebooks</vh>
-<v t="ekr.20241027051739.1"><vh>@rst html\jupyternotebooks.html</vh></v>
+<v t="ekr.20241027051739.1"><vh>@rst html\jupyternotebooks.html</vh>
+<v t="ekr.20241105100407.1"><vh>The Jupytext library</vh></v>
+<v t="ekr.20241105100420.1"><vh>Using @jupytext</vh></v>
+<v t="ekr.20241105100428.1"><vh>Using @language jupytext</vh></v>
+<v t="ekr.20241105103314.1"><vh>Settings</vh></v>
+</v>
 </v>
 <v t="ekr.20070317033759"><vh>Embedding Leo with the leoBridge module</vh>
 <v t="ekr.20070317033759.1"><vh>@rst html\leoBridge.html</vh>
@@ -2521,8 +2526,8 @@
 <v t="ekr.20240828095959.1"></v>
 <v t="ekr.20240828094953.1"><vh>Leo 6.8.2 release notes</vh></v>
 <v t="ekr.20241030133008.1"><vh>*** make sure create-node hook appears on the web</vh></v>
+<v t="ekr.20241105103151.1"><vh>pre-writing</vh></v>
 <v t="ekr.20241027051739.1"></v>
-<v t="ekr.20060612103240" descendentVnodeUnknownAttributes="7d71002858010000003071017d710258090000007374725f6174696d657103580c000000313337363431343136332e307104735803000000302e3171057d710658090000007374725f6174696d657107580c000000313337363431323033382e307108735803000000302e3271097d710a2858090000007374725f6174696d65710b580c000000313337363431343136342e30710c58090000007374725f6374696d65710d580c000000313337363431323033392e30710e58090000007374725f6d74696d65710f580c000000313337363431323033392e307110755803000000302e3571117d711258090000007374725f6174696d657113580c000000313337363431313938372e30711473752e"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -33044,7 +33049,7 @@ Using Leo with Jupyter Notebooks
 
 .. _`jupytext`: https://jupytext.readthedocs.io/en/latest/
 
-The chapter discusses `@jupytext`, a new kind of `@&lt;file&gt;`.
+The chapter discusses `@jupytext`, a new kind of `@&lt;file&gt;` node.
 
 `@jupytext` works much like `@clean`, but it's a thin wrapper around
 the `jupytext`_ library.
@@ -33055,6 +33060,36 @@ the `jupytext`_ library.
 
 </t>
 <t tx="ekr.20241030133008.1"></t>
+<t tx="ekr.20241105100407.1"></t>
+<t tx="ekr.20241105100420.1"></t>
+<t tx="ekr.20241105100428.1"></t>
+<t tx="ekr.20241105103151.1">- Leo now seamlessly interacts with Jupyter notebooks.
+- Leo reads @jupytext trees using the @clean upgrade algorithm.
+- Leo updates @jupytext trees when the Jupyter changes the corresponding .ipynb file.</t>
+<t tx="ekr.20241105103314.1">@int jupytext-max-headline-length = 60
+
+@string jupytext-fmt = py:percent
+See https://jupytext.readthedocs.io/en/latest/config.html
+
+@data jupyter-prefix
+
+# ---
+# jupyter:
+#   jupytext:
+#     formats: py:percent
+#     text_representation:
+#       extension: .py
+#       format_name: percent
+#       format_version: '1.3'
+#       jupytext_version: 1.16.4
+#   kernelspec:
+#     display_name: Python 3 (ipykernel)
+#     language: python
+#     name: python3
+# ---
+
+# %%
+</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
