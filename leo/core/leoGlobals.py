@@ -5724,7 +5724,7 @@ def trace_unique_message(message: str, es_flag: bool = False, color: str = None)
     """Print the given message once."""
     if message not in trace_unique_message_d:
         trace_unique_message_d[message] = True
-        g.trace(message)
+        print(message)
         if es_flag:
             g.es(message, color=color)
 #@+node:ekr.20240325064618.1: *3* g.traceUnique & traceUniqueClass
