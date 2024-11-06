@@ -8,58 +8,33 @@ leo/modes/jupytext.py, Leo's colorizer for @language jupytext.
 #@+node:ekr.20241031140333.1: ** << jupytext.py: imports >>
 from __future__ import annotations
 
+from typing import Any
+
 from leo.core import leoGlobals as g
 assert g
 #@-<< jupytext.py: imports >>
-#@+<< jupytext.py: rules >>
-#@+node:ekr.20241031024909.1: ** << jupytext.py: rules >>
+
 #@+others
-#@+node:ekr.20241031024939.2: *3* jupytext_comment
-def predicate(s: str) -> str:
-    """Return a valid language name if s is a jupytext marker."""
-    line = s.strip()
-    if line.startswith('# %% [markdown]'):
-        return 'md'
-    if line.startswith('# %%'):
-        return 'python'
-    return ''
+#@+node:ekr.20241105203501.1: ** alternate_main_loop (jupytext.py)
+def alternate_main_loop(colorer: Any, n: int, s: str) -> None:
+    """A main loop to replace jedit.mainLoop"""
+    self = colorer
+    # g.trace(n, s)
 
-def jupytext_comment(colorer, s, i) -> int:
-    """
-    Color a *range* of lines from the starting %% comment to the next @language directive.
-    
-    All following lines are delegated to the markdown or python colorizers,
-    so we can assert that *this* line starts with '# %%'.
-    """
-    assert s[i] == '#'
-    line = s.strip()
-    if line.startswith('# %%'):
-        # Colorize the *next* lines until the predicate matches.
-        # **** NOTE **** This language pertains only to the first %% of p.b.
-        language = 'md' if line.startswith('# %% [markdown]') else 'python'
-        colorer.match_span_delegated_lines(s, i, language=language, predicate=predicate)
-    else:
-        g.trace(f"Can not happen: {s!r}")
+    if self.match_at_language(s, 0) > 0:  # Sets state
+        g.trace('-->', self.language, s)
+        return
 
-    return -1  # This line has been completely handled.
-#@+node:ekr.20241031024936.1: *3* jupytext_keyword
-def jupytext_keyword(colorer, s, i):
-    return colorer.match_keywords(s, i)
+    if s.startswith('# %%'):
+        language = 'md' if s.startswith('# %% [markdown]') else 'python'
+        g.trace('-->', language, s)
+        self.colorRangeWithTag(s, 0, len(s), tag='comment1')
+        ok = self.init_mode(language)
+        assert ok, language
+        # Solves the recoloring problem!
+        n = self.setInitialStateNumber()
+        self.setState(n)
+        return
 
 #@-others
-
-#@-<< jupytext.py: rules >>
-#@+<< jupytext.py: interface dicts >>
-#@+node:ekr.20241101031846.1: ** << jupytext.py: interface dicts >>
-properties = {}
-
-jupytext_rules_dict = {
-    '@': [jupytext_keyword],
-    '#': [jupytext_comment],
-}
-
-rulesDictDict = {
-    "jupytext_main": jupytext_rules_dict,
-}
-#@-<< jupytext.py: interface dicts >>
 #@-leo
