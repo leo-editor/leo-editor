@@ -1252,12 +1252,14 @@ class JEditColorizer(BaseColorizer):
             return
 
         # #4146: Fully recolor p.b *only* if c.p changes.
-        old_language = self.language  ###
         self.updateSyntaxColorer(p)
-        if p.v == self.old_v:  ###  and old_language == self.language:
+        if p.v == self.old_v:
             return
 
-        # g.trace(f"Full Redraw: {self.language} {p.h}")
+        if 'coloring' in g.app.debug:
+            print('')
+            g.trace(f"Full Redraw: {self.language} {p.h}")
+            print('')
 
         # Initialize *all* state.
         self.init_all_state(p.v)  # Sets self.old_v.
@@ -1272,15 +1274,10 @@ class JEditColorizer(BaseColorizer):
         """Colorize a *single* line s, starting in state n."""
         #@+<< jedit.mainLoop: tests >>
         #@+node:ekr.20241104105301.1: *4* << jedit.mainLoop: tests >>
-        # Do not remove this test! See #4146.
-        if not g.unitTesting:
-            known_callers = (
-                '_recolor',
-                'restart_match_span_delegated_lines',  # This hack may be removed.
-            )
-            if g.callers(1) not in known_callers:
-                message = f"jedit.mainLoop: unexpected callers: {g.callers(6)}"
-                g.print_unique_message(message)
+        # Do not remove this test!
+        if not g.unitTesting and g.callers(1) != '_recolor':
+            message = f"jedit.mainLoop: unexpected callers: {g.callers(6)}"
+            g.print_unique_message(message)
         #@-<< jedit.mainLoop: tests >>
         f = self.restartDict.get(n)
         t1 = time.process_time()
