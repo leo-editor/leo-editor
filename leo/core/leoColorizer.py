@@ -1323,16 +1323,14 @@ class JEditColorizer(BaseColorizer):
             message = f"jedit._recolor: unexpected callers: {g.callers(2)}"
             g.print_unique_message(message)
 
-        if not s:
-            return
-
         # Set n, the integer state number.
         block_n = self.currentBlockNumber()
         n = self.initBlock0() if block_n == 0 else self.prevState()
         n = self.setState(n)  # Required.
 
         # Always color the line, even if colorizing is disabled.
-        self.mainLoop(n, s)
+        if s:
+            self.mainLoop(n, s)
     #@+node:ekr.20170126100139.1: *4* jedit.initBlock0
     def initBlock0(self) -> int:
         """
