@@ -1342,11 +1342,7 @@ class JEditColorizer(BaseColorizer):
         n = self.setState(n)  # Required.
 
         # Always color the line, even if colorizing is disabled.
-        alternate_main_loop = getattr(self.mode, 'alternate_main_loop', None)
-        if alternate_main_loop:
-            alternate_main_loop(self, n, s)
-        else:
-            self.mainLoop(n, s)
+        self.mainLoop(n, s)
     #@+node:ekr.20170126100139.1: *4* jedit.initBlock0
     def initBlock0(self) -> int:
         """

@@ -6,6 +6,8 @@
 
 import re
 import sys
+from leo.core import leoGlobals as g
+assert g
 
 v1, v2, junk1, junk2, junk3 = sys.version_info
 
@@ -323,9 +325,7 @@ def python_comment(colorer, s, i):
         self.init_mode('md')
         state_i = self.setInitialStateNumber()
         self.setState(state_i)
-
-    return len(s)  # Complete success, no matter what.
-
+    return len(s)
 #@+node:ekr.20230419163819.4: *3* python_double_quote
 def python_double_quote(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"")
