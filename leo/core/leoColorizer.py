@@ -1252,9 +1252,9 @@ class JEditColorizer(BaseColorizer):
             return
 
         # #4146: Fully recolor p.b *only* if c.p changes.
-        old_language = self.language
+        old_language = self.language  ###
         self.updateSyntaxColorer(p)
-        if p.v == self.old_v:
+        if p.v == self.old_v:  ###  and old_language == self.language:
             return
 
         # g.trace(f"Full Redraw: {self.language} {p.h}")
