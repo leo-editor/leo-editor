@@ -19,22 +19,19 @@ assert g
 def alternate_main_loop(colorer: Any, n: int, s: str) -> None:
     """A main loop to replace jedit.mainLoop"""
     self = colorer
-    # g.trace(n, s)
 
     if self.match_at_language(s, 0) > 0:  # Sets state
-        g.trace('-->', self.language, s)
+        return
+    if not s.startswith('# %%'):
         return
 
-    if s.startswith('# %%'):
-        language = 'md' if s.startswith('# %% [markdown]') else 'python'
-        g.trace('-->', language, s)
-        self.colorRangeWithTag(s, 0, len(s), tag='comment1')
-        ok = self.init_mode(language)
-        assert ok, language
-        # Solves the recoloring problem!
-        n = self.setInitialStateNumber()
-        self.setState(n)
-        return
+    # Colorize with jupytext comments.
+    self.colorRangeWithTag(s, 0, len(s), tag='comment1')
 
+    # Simulate @language md or @language python.
+    language = 'md' if s.startswith('# %% [markdown]') else 'python'
+    self.init_mode(language)
+    n = self.setInitialStateNumber()
+    self.setState(n)
 #@-others
 #@-leo

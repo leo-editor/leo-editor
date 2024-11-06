@@ -312,20 +312,19 @@ keywordsDictDict = {
 #@+node:ekr.20230419163736.1: ** Python rules
 #@+node:ekr.20230419163819.1: *3* python_comment
 def python_comment(colorer, s, i):
-    # Leo 6.8.3. Add special cases for @language jupytext.
     self = colorer
 
     # Color the line as a *python* comment.
     self.match_eol_span(s, i, kind="comment1", seq="#")
 
+    # Leo 6.8.3. Add special case for @language jupytext.
     if i == 0 and s.startswith('# %% [markdown]'):
+        # Simulate @language md.
         self.init_mode('md')
-        # Solves the recoloring problem!
-        print('python_comment', s)
         state_i = self.setInitialStateNumber()
         self.setState(state_i)
 
-    return len(s)  # Complete success
+    return len(s)  # Complete success, no matter what.
 
 #@+node:ekr.20230419163819.4: *3* python_double_quote
 def python_double_quote(colorer, s, i):

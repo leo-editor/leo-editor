@@ -1,6 +1,13 @@
-# Leo colorizer control file for md mode.
-# This file is in the public domain.
+#@+leo-ver=5-thin
+#@+node:ekr.20241030152835.1: * @file ../modes/md.py
+#@@language python
+"""
+Leo's colorizer control file for md mode.
 
+This file is in the public domain.
+"""
+#@+<< md.py: properties >>
+#@+node:ekr.20241105214411.1: ** << md.py: properties >>
 
 # Properties for md mode.
 # Important: most of this file is actually an html colorizer.
@@ -11,6 +18,9 @@ properties = {
     "maxLineLen": "120",
     "tabSize": "4",
 }
+#@-<< md.py: properties >>
+#@+<< md.py: attributes dicts >>
+#@+node:ekr.20241105214446.1: ** << md.py: attributes dicts >>
 
 # Attributes dict for md_main ruleset.
 md_main_attributes_dict = {
@@ -101,6 +111,9 @@ md_markdown_blockquote_attributes_dict = {
     "ignore_case": "false",
     "no_word_sep": "",
 }
+#@-<< md.py: attributes dicts >>
+#@+<< md.py: dictionaries >>
+#@+node:ekr.20241105214525.1: ** << md.py: dictionaries >>
 
 # Dictionary of attributes dictionaries for md mode.
 attributesDictDict = {
@@ -154,17 +167,21 @@ keywordsDictDict = {
     "md_markdown": md_markdown_keywords_dict,
     "md_markdown_blockquote": md_markdown_blockquote_keywords_dict,
 }
+#@-<< md.py: dictionaries >>
+#@+<< md.py: md_main: rules & dict >>
+#@+node:ekr.20241105214614.1: ** << md.py: md_main: rules & dict >> (new rule!)
 
 def md_jupytext_comment(colorer, s, i):
     self = colorer
     # New in Leo 6.8.2. Switch to python for %% comments.
     if i > 0 or s.startswith('# %% [markdown]') or not s.startswith('# %%'):
         return 0  # Fail, but allow other matches.
-    print('md_jupytext_comment', s)
+
+    # Simulate @language python.
     self.init_mode('python')
-    # Solves the recoloring problem!
     state_i = self.setInitialStateNumber()
     self.setState(state_i)
+
     # Color the line as a *python* comment.
     colorer.match_eol_span(s, i, kind="comment1", seq="#")
     return len(s)  # Complete success.
@@ -244,10 +261,16 @@ rulesDict1 = {
     " ": [md_rule4],
     "<": [md_rule0, md_rule1, md_rule2, md_rule3, md_rule5],
 }
+#@-<< md.py: md_main: rules & dict >>
+#@+<< md.py: md_inline_markup: rules & dict >>
+#@+node:ekr.20241105214946.1: ** << md.py: md_inline_markup: rules & dict >>
 
 # Rules for md_inline_markup ruleset.
 # Rules dict for md_inline_markup ruleset.
 rulesDict2 = {}
+#@-<< md.py: md_inline_markup: rules & dict >>
+#@+<< md.py: md_block_html_tags: rules & dict >>
+#@+node:ekr.20241105215036.1: ** << md.py: md_block_html_tags: rules & dict >>
 
 # Rules for md_block_html_tags ruleset.
 
@@ -287,6 +310,9 @@ rulesDict3 = {
     # "[": [md_rule6], # Will never fire: the leadin character is any non-space!
     # "{": [md_rule7], # Will never fire: the leading character is any non-space!
 }
+#@-<< md.py: md_block_html_tags: rules & dict >>
+#@+<< md.py: md_markdown: rules & dict >>
+#@+node:ekr.20241105215135.1: ** << md.py: md_markdown: rules & dict >>
 
 # Rules for md_markdown ruleset.
 
@@ -401,6 +427,9 @@ rulesDict4 = {
     "8": [md_rule25],
     "9": [md_rule25],
 }
+#@-<< md.py: md_markdown: rules & dict >>
+#@+<< md.py: md_link_label_definition: rules & dict >>
+#@+node:ekr.20241105215258.1: ** << md.py: md_link_label_definition: rules & dict >>
 
 # Rules for md_link_label_definition ruleset.
 
@@ -423,6 +452,9 @@ rulesDict5 = {
     ")": [md_rule33],
     "\\": [md_rule30],
 }
+#@-<< md.py: md_link_label_definition: rules & dict >>
+#@+<< md.py: md_link_inline_url_title: rules & dict >>
+#@+node:ekr.20241105215340.1: ** << md.py: md_link_inline_url_title: rules & dict >>
 
 # Rules for md_link_inline_url_title ruleset.
 
@@ -445,6 +477,9 @@ rulesDict6 = {
     "[": [md_rule35],
     "]": [md_rule34],
 }
+#@-<< md.py: md_link_inline_url_title: rules & dict >>
+#@+<< md.py: md_link_inline_url_title_close: rules & dict >>
+#@+node:ekr.20241105215437.1: ** << md.py: md_link_inline_url_title_close: rules & dict >>
 
 # Rules for md_link_inline_url_title_close ruleset.
 
@@ -456,6 +491,9 @@ def md_rule37(colorer, s, i):
 rulesDict7 = {
     ")": [md_rule37],
 }
+#@-<< md.py: md_link_inline_url_title_close: rules & dict >>
+#@+<< md.py: md_link_inline_label_close: rules & dict >>
+#@+node:ekr.20241105215506.1: ** << md.py: md_link_inline_label_close: rules & dict >>
 
 # Rules for md_link_inline_label_close ruleset.
 
@@ -467,6 +505,9 @@ def md_rule38(colorer, s, i):
 rulesDict8 = {
     "]": [md_rule38],
 }
+#@-<< md.py: md_link_inline_label_close: rules & dict >>
+#@+<< md.py: md_markdown_blockquote: rules & dict >>
+#@+node:ekr.20241105215622.1: ** << md.py: md_markdown_blockquote: rules & dict >>
 
 # Rules for md_markdown_blockquote ruleset.
 
@@ -568,6 +609,9 @@ rulesDict9 = {
     "8": [md_rule50],
     "9": [md_rule50],
 }
+#@-<< md.py: md_markdown_blockquote: rules & dict >>
+#@+<< md.py: interface dicts >>
+#@+node:ekr.20241105221310.1: ** << md.py: interface dicts >>
 
 # x.rulesDictDict for md mode.
 rulesDictDict = {
@@ -588,3 +632,5 @@ importDict = {
     "md_link_label_definition": ["md_link_label_definition::markdown"],
     "md_main": ["md_main::markdown"],
 }
+#@-<< md.py: interface dicts >>
+#@-leo

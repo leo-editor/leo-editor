@@ -1262,8 +1262,7 @@ class JEditColorizer(BaseColorizer):
         if p.v == self.old_v:  ### and self.language == old_language:
             return
 
-        if not g.unitTesting:  ###
-            g.trace(f"Full Redraw: {self.language} {p.h}")
+        # g.trace(f"Full Redraw: {self.language} {p.h}")
 
         # Initialize *all* state.
         self.init_all_state(p.v)  # Sets self.old_v.
