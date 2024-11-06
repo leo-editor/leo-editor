@@ -1398,9 +1398,9 @@ class JEditColorizer(BaseColorizer):
         s: str, i: int, j: int, tag: str, delegate: str = '', exclude_match: bool = False,
     ) -> None:
         """
-        Actually colorize the selected range.
-
-        This is called whenever a pattern matcher succeed.
+        Pattern matchers call this helper to colorize the selected range.
+        
+        Mode files should not call this helper directly!
         """
         # setTag does most tracing.
         trace = 'coloring' in g.app.debug and not g.unitTesting

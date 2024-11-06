@@ -314,17 +314,34 @@ keywordsDictDict = {
 #@+node:ekr.20230419163736.1: ** Python rules
 #@+node:ekr.20230419163819.1: *3* python_comment
 def python_comment(colorer, s, i):
+    """
+    Switch to md coloring if s is '# %% [markdown]', provided that c.p.b
+    contains @language jupytext.
+    
+    New in Leo 6.8.3.
+    """
+    try:
+        c = colorer.c
+    except Exception:
+        return 0  # Fail, allowing other matches.
 
-    # Color the line as a *python* comment.
+    # Always colorize the comment line as a *python* comment.
     n = colorer.match_eol_span(s, i, kind="comment1", seq="#")
 
     # Leo 6.8.3. Add special case for @language jupytext.
-    if i == 0 and s.startswith('# %% [markdown]'):
+    is_jupytext_md_comment = (
+        i == 0
+        and s.startswith('# %% [markdown]')
+        and any(z.startswith('@language jupytext')
+            for z in g.splitLines(c.p.b))
+    )
+    if is_jupytext_md_comment:
         # Simulate @language md.
         colorer.init_mode('md')
         state_i = colorer.setInitialStateNumber()
         colorer.setState(state_i)
-    return n
+
+    return n  # Succeed. Do not allow other matches.
 #@+node:ekr.20230419163819.4: *3* python_double_quote
 def python_double_quote(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"")

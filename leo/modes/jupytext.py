@@ -16,17 +16,34 @@ assert g
 #@+others  # Define rules.
 #@+node:ekr.20241105203501.1: ** jupytext_comment
 def jupytext_comment(colorer: Any, s: str, i: int) -> int:
+    """
+    Switch to md or python coloring if s is a %% comment, provided that
+    c.p.b contains @language jupytext.
+    
+    New in Leo 6.8.3.
+    """
+    try:
+        c = colorer.c
+    except Exception:
+        return 0  # Fail, allowing other matches.
 
-    # Colorize with jupytext comments.
-    colorer.match_eol_span(s, i, kind="comment1", seq="#")
+    # *Always* colorize the comment line as a *jupytext* comment.
+    n = colorer.match_eol_span(s, i, kind="comment1", seq="#")
 
-    if s.startswith('# %%'):
+    is_any_jupytext_comment = (
+        i == 0
+        and s.startswith('# %%')
+        and any(z.startswith('@language jupytext')
+            for z in g.splitLines(c.p.b))
+    )
+    if is_any_jupytext_comment:
         # Simulate @language md or @language python.
         language = 'md' if s.startswith('# %% [markdown]') else 'python'
         colorer.init_mode(language)
-        n = colorer.setInitialStateNumber()
-        colorer.setState(n)
-    return len(s)
+        state_i = colorer.setInitialStateNumber()
+        colorer.setState(state_i)
+
+    return n  # Succeed. Do not allow other matches.
 #@+node:ekr.20241105230332.1: ** jupytext_directive
 def jupytext_directive(colorer: Any, s: str, i: int) -> int:
     return colorer.match_leo_keywords(s, i)
