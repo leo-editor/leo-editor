@@ -1327,38 +1327,34 @@ class JEditColorizer(BaseColorizer):
         jEdit.recolor: Recolor a *single* line, s.
         QSyntaxHighligher calls this method repeatedly and automatically.
         """
-
-        test = 'coloring' in g.app.debug  ###  and 'leoPy' not in self.c.fileName()
-        trace = test and not g.unitTesting
+        trace = 'coloring' in g.app.debug and not g.unitTesting
         self.recolorCount += 1
 
-        # A permanent test:
-        # *only* LeoHighlighter.highlightBlock should call this method!
+        # *Only* LeoHighlighter.highlightBlock should call this method!
         if g.callers(1) != 'highlightBlock':
             message = f"jedit._recolor: unexpected callers: {g.callers(2)}"
             g.print_unique_message(message)
 
-        if s and test and not self.in_full_redraw:  ###  Experimental.
-
-            at_languages = sum(
-                1 for z in g.splitLines(self.c.p.b)
-                if z.startswith('@language ')
-            )
-            prev_state = self.prevState()
-            prev_state_s = self.stateNumberToStateString(prev_state)
-            prev_lang = self.stateNumberToLanguage(prev_state)
-            if trace:
-                g.trace(
-                    f"at_languages: {at_languages} "
-                    f"prev state: {prev_state:2}={prev_state_s:<15} "
-                    f"prev lang: {prev_lang:6} {s!r}"
-                )
-            ### if self.old_v is not None:
-            if self.language != self.language and self.old_v is None:
-                if trace:
-                    g.trace('Reschedule full redraw')
-                    print('')
+        if s and not self.in_full_redraw:
+            #@+<< Schedule a full redraw there are multiple @language directives >>
+            #@+node:ekr.20241106113025.1: *4* << Schedule a full redraw there are multiple @language directives >>
+            # Don't even *think* about removing this hack.
+            lines = g.splitLines(self.c.p.b)
+            at_languages = sum(1 for z in lines if z.startswith('@language '))
+            if at_languages > 1:
                 self.old_v = None
+                if trace:
+                    prev_state = self.prevState()
+                    prev_state_s = self.stateNumberToStateString(prev_state)
+                    prev_lang = self.stateNumberToLanguage(prev_state)
+                    g.trace('===== Reschedule full redraw ====')
+                    g.trace(
+                        f"{self.recolorCount:4} at_languages: {at_languages} "
+                        f"prev state: {prev_state:2}={prev_state_s:<15} "
+                        f"prev lang: {prev_lang:6} {s!r}"
+                    )
+                    print('')
+            #@-<< Schedule a full redraw there are multiple @language directives >>
 
         # Set n, the integer state number.
         block_n = self.currentBlockNumber()
