@@ -77,6 +77,7 @@ class BaseColorizer:
         # Common state ivars...
         self.enabled = False  # Per-node enable/disable flag set by updateSyntaxColorer.
         self.highlighter: Any = g.NullObject()  # May be overridden in subclass...
+        self.in_full_redraw = False  # A lockout.
         self.language = 'python'  # set by scanLanguageDirectives.
         self.prev: tuple[int, int, str] = None  # Used by setTag.
         self.showInvisibles = False
@@ -1251,22 +1252,36 @@ class JEditColorizer(BaseColorizer):
         if not p:  # This guard is required.
             return
 
+        trace = 'coloring' in g.app.debug
+
+        # if trace:  ###
+            # g.trace(p.v == self.old_v, p.h)
+
         # #4146: Fully recolor p.b *only* if c.p changes.
         self.updateSyntaxColorer(p)
         if p.v == self.old_v:
             return
 
-        if 'coloring' in g.app.debug:
-            print('')
-            g.trace(f"Full Redraw: {self.language} {p.h}")
-            print('')
-
         # Initialize *all* state.
         self.init_all_state(p.v)  # Sets self.old_v.
         self.init()
 
+        if trace:
+            print('')
+            g.trace(f"Start full redraw: {self.language} {p.h}")
+            print('')
+
         # Tell QSyntaxHighlighter to do a full recolor.
-        self.highlighter.rehighlight()
+        try:
+            self.in_full_redraw = True
+            self.highlighter.rehighlight()
+        finally:
+            self.in_full_redraw = False
+
+        if trace:
+            print('')
+            g.trace(f" End full redraw: {self.language} {p.h}")
+            print('')
     #@+node:ekr.20110605121601.18638: *3* jedit.mainLoop
     tot_time = 0.0
 
@@ -1312,6 +1327,9 @@ class JEditColorizer(BaseColorizer):
         jEdit.recolor: Recolor a *single* line, s.
         QSyntaxHighligher calls this method repeatedly and automatically.
         """
+
+        test = 'coloring' in g.app.debug  ###  and 'leoPy' not in self.c.fileName()
+        trace = test and not g.unitTesting
         self.recolorCount += 1
 
         # A permanent test:
@@ -1319,6 +1337,28 @@ class JEditColorizer(BaseColorizer):
         if g.callers(1) != 'highlightBlock':
             message = f"jedit._recolor: unexpected callers: {g.callers(2)}"
             g.print_unique_message(message)
+
+        if s and test and not self.in_full_redraw:  ###  Experimental.
+
+            at_languages = sum(
+                1 for z in g.splitLines(self.c.p.b)
+                if z.startswith('@language ')
+            )
+            prev_state = self.prevState()
+            prev_state_s = self.stateNumberToStateString(prev_state)
+            prev_lang = self.stateNumberToLanguage(prev_state)
+            if trace:
+                g.trace(
+                    f"at_languages: {at_languages} "
+                    f"prev state: {prev_state:2}={prev_state_s:<15} "
+                    f"prev lang: {prev_lang:6} {s!r}"
+                )
+            ### if self.old_v is not None:
+            if self.language != self.language and self.old_v is None:
+                if trace:
+                    g.trace('Reschedule full redraw')
+                    print('')
+                self.old_v = None
 
         # Set n, the integer state number.
         block_n = self.currentBlockNumber()
@@ -2807,12 +2847,34 @@ class JEditColorizer(BaseColorizer):
             self.nextState += 1
             self.n2languageDict[n] = self.language
         return n
+    #@+node:ekr.20241106082615.1: *4* jedit.stateNumberToLanguage
+    def stateNumberToLanguage(self, n: int) -> str:
+        """
+        Return the string state corresponding to the given integer state.
+        """
+        c = self.c
+
+        def default_language(n: int) -> str:
+            c = self.c
+            p = c.p
+            language = g.getLanguageFromAncestorAtFileNode(p)
+            return language or c.target_language
+
+        state_s = self.stateNumberToStateString(n)
+        language = state_s.split(';')[0]
+        d = {
+            'py': 'python',
+            'initial-state': default_language(n),
+        }
+        return d.get(language, language)
+
+
     #@+node:ekr.20241104162429.1: *4* jedit.stateNumberToStateString
     def stateNumberToStateString(self, n: int) -> str:
         """
         Return the string state corresponding to the given integer state.
         """
-        return self.stateDict.get(n, f"No state for {n}")
+        return self.stateDict.get(n, 'initial-state')
     #@-others
 #@+node:ekr.20110605121601.18565: ** class LeoHighlighter (QSyntaxHighlighter)
 # Careful: we may be running from the bridge.
