@@ -1342,18 +1342,20 @@ class JEditColorizer(BaseColorizer):
             lines = g.splitLines(self.c.p.b)
             at_languages = sum(1 for z in lines if z.startswith('@language '))
             if at_languages > 1:
-                self.old_v = None
-                if trace:
+                # Do this trace first.
+                if trace and self.old_v is not None:
                     prev_state = self.prevState()
                     prev_state_s = self.stateNumberToStateString(prev_state)
                     prev_lang = self.stateNumberToLanguage(prev_state)
-                    g.trace('===== Reschedule full redraw ====')
-                    g.trace(
+                    print(
+                        'j.edit._recolor: Schedule later full redraw '
                         f"{self.recolorCount:4} at_languages: {at_languages} "
                         f"prev state: {prev_state:2}={prev_state_s:<15} "
                         f"prev lang: {prev_lang:6} {s!r}"
                     )
-                    print('')
+                # Tell jedit.colorize to schedule a full redraw *later*.
+                # Doing so is safe because we are not *already* in a full redraw.
+                self.old_v = None
             #@-<< Schedule a full redraw there are multiple @language directives >>
 
         # Set n, the integer state number.
