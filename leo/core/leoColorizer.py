@@ -77,7 +77,6 @@ class BaseColorizer:
         # Common state ivars...
         self.enabled = False  # Per-node enable/disable flag set by updateSyntaxColorer.
         self.highlighter: Any = g.NullObject()  # May be overridden in subclass...
-        self.in_full_recolor = False  # A flag for tracing.
         self.language = 'python'  # set by scanLanguageDirectives.
         self.prev: tuple[int, int, str] = None  # Used by setTag.
         self.showInvisibles = False
@@ -726,11 +725,7 @@ class BaseColorizer:
     #@+node:ekr.20110605121601.18641: *3* BaseColorizer.setTag
     def setTag(self, tag: str, s: str, i: int, j: int) -> None:
         """Set the tag in the highlighter."""
-        trace = (
-            'coloring' in g.app.debug
-            and not g.unitTesting
-            and not self.in_full_recolor
-        )
+        trace = 'coloring' in g.app.debug and not g.unitTesting
         full_tag = f"{self.language}.{tag}"
         default_tag = f"{tag}_font"  # See default_font_dict.
         font: Any = None  # Set below. Define here for report().
@@ -1269,12 +1264,7 @@ class JEditColorizer(BaseColorizer):
         self.init()
 
         # Tell QSyntaxHighlighter to do a full recolor.
-        try:
-            self.in_full_recolor = True  # A flag for debugging traces.
-            # This is the *only* call to rehighlight.
-            self.highlighter.rehighlight()
-        finally:
-            self.in_full_recolor = False
+        self.highlighter.rehighlight()
     #@+node:ekr.20110605121601.18638: *3* jedit.mainLoop
     tot_time = 0.0
 
@@ -1418,11 +1408,7 @@ class JEditColorizer(BaseColorizer):
         This is called whenever a pattern matcher succeed.
         """
         # setTag does most tracing.
-        trace = (
-            'coloring' in g.app.debug
-            and not g.unitTesting
-            and not self.in_full_recolor
-        )
+        trace = 'coloring' in g.app.debug and not g.unitTesting
         if not self.inColorState():
             # Do *not* check x.flag here. It won't work.
             if trace:
@@ -2750,9 +2736,7 @@ class JEditColorizer(BaseColorizer):
         for key in sorted(keys):
             keyVal = keys.get(key)
             val = d.get(key)
-            if key == 'predicate':
-                pass
-            elif val is None:
+            if val is None:
                 val = keys.get(key)
                 result.append(f"{key}={val}")
             elif keyVal is True:
