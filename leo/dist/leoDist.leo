@@ -1581,6 +1581,8 @@ python -m pip uninstall leo
 
 This checklist may seem daunting. In most cases errors are harmless, so don't despair.
 
+Step 0: Update the version numbers in pyproject.toml
+
 Step 1: Create and test the distribution files in leo/dist:
 
 - Do *not* change `PKG-INFO.TXT` if there are problems with file name in later steps!
