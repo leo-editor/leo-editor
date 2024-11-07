@@ -658,6 +658,7 @@
 <v t="ekr.20170618015524.1"><vh>Adrian Calvin</vh></v>
 <v t="ekr.20200526090848.1"><vh>Satheesh Vattekkat</vh></v>
 <v t="ekr.20220420153633.1"><vh>Thomas Passin</vh></v>
+<v t="ekr.20241107122714.1"><vh>HaveF</vh></v>
 </v>
 <v t="ekr.20160304081437.7"><vh>Why Leo is noteworthy</vh>
 <v t="ekr.20160304081437.8"><vh>Offray Luna Cárdenas</vh></v>
@@ -1282,10 +1283,12 @@
 </v>
 <v t="ekr.20241027051721.1"><vh>Leo and Jupyter Notebooks</vh>
 <v t="ekr.20241027051739.1"><vh>@rst html\jupyternotebooks.html</vh>
-<v t="ekr.20241105100407.1"><vh>The Jupytext library</vh></v>
-<v t="ekr.20241105100420.1"><vh>Using @jupytext</vh></v>
-<v t="ekr.20241105100428.1"><vh>Using @language jupytext</vh></v>
+<v t="ekr.20241107063856.1"><vh>Creating and populating @jupytext trees</vh></v>
+<v t="ekr.20241105100428.1"><vh>Reading @jupytext trees</vh></v>
+<v t="ekr.20241107070438.1"><vh>Editing @jupytext tree</vh></v>
+<v t="ekr.20241107062843.1"><vh>Writing @jupytext trees</vh></v>
 <v t="ekr.20241105103314.1"><vh>Settings</vh></v>
+<v t="ekr.20241107080948.1"><vh>Extended comments about @jupytext</vh></v>
 </v>
 </v>
 <v t="ekr.20070317033759"><vh>Embedding Leo with the leoBridge module</vh>
@@ -2526,7 +2529,9 @@
 <v t="ekr.20240828095959.1"></v>
 <v t="ekr.20240828094953.1"><vh>Leo 6.8.2 release notes</vh></v>
 <v t="ekr.20241030133008.1"><vh>*** make sure create-node hook appears on the web</vh></v>
-<v t="ekr.20241105103151.1"><vh>pre-writing</vh></v>
+<v t="ekr.20241107124245.1"><vh>Recent additions to Leo's documentation</vh>
+<v t="ekr.20241107122714.1"></v>
+</v>
 <v t="ekr.20241027051739.1"></v>
 </vnodes>
 <tnodes>
@@ -33047,26 +33052,53 @@ Retired features:
 Using Leo with Jupyter Notebooks
 ################################
 
-.. _`jupytext`: https://jupytext.readthedocs.io/en/latest/
+.. _`jupytext library`: https://jupytext.readthedocs.io/en/latest/
+.. _`jupytext text notebook`: https://jupytext.readthedocs.io/en/latest/#text-notebooks
 
-The chapter discusses `@jupytext`, a new kind of `@&lt;file&gt;` node.
+The chapter discusses `@jupytext`, a new kind of `@&lt;file&gt;` node
 
-`@jupytext` works much like `@clean`, but it's a thin wrapper around
-the `jupytext`_ library.
+**Summary**
+
+- Use `@jupytext` instead of `@clean` to manage `.ipynb` files.
+- `@jupytext` nodes are thin wrappers around the `jupytext library`_.
+- `@jupytext` nodes should have the form::
+  
+  @jupytext x.ipynb
+  
+- After creating an `@jupytext` node, *do not save the outline*.
+  Instead, use `refresh-from-disk` to populate the `@jupytext` node..
+  This **initial read** splits the incoming text into Leo nodes, one cell per node.
+- After the initial read, you can use `@jupytext` just like `@clean`:
+  You can edit the `@jupytext` tree any way you like:
+  - Leo will remember those changes when you save an outline.
+  - Leo will restore those changes when you next open the outline.
+
+In short, Editing `.ipynb` files with `@jupytext` trees just works:
 
 .. contents:: Contents
-    :depth: 3
-    :local:
-
-</t>
+   :depth: 2
+   :local:</t>
 <t tx="ekr.20241030133008.1"></t>
-<t tx="ekr.20241105100407.1"></t>
-<t tx="ekr.20241105100420.1"></t>
-<t tx="ekr.20241105100428.1"></t>
-<t tx="ekr.20241105103151.1">- Leo now seamlessly interacts with Jupyter notebooks.
-- Leo reads @jupytext trees using the @clean upgrade algorithm.
-- Leo updates @jupytext trees when the Jupyter changes the corresponding .ipynb file.</t>
-<t tx="ekr.20241105103314.1">@int jupytext-max-headline-length = 60
+<t tx="ekr.20241105100428.1">When reading an outline, Leo **populates** each `@jupytext x.ipynb` tree as follows:
+
+1. Use the jupytext library to convert `x.ipynb` to `jupytext text notebook`_ text.
+2. Use Leo's `@clean` update algorithm to propagate any changes from `x.ipynb`
+   to the corresponding node in the `@jupytext` tree.
+
+*Notes:*
+
+- **Notebook text** looks like Python, but usually contains syntax errors,
+  so Leo never checks notebook text for syntax errors.
+- Notebook text *exists only within Leo.*
+  You never need to synchronize `x.ipynb` with `x.py`!
+</t>
+<t tx="ekr.20241105103314.1">Three settings control how `@jupytext` nodes work
+
+**@int jupytext-max-headline-length = 60**
+
+This setting sets the maximum length of child headlines.
+
+Leo truncates long lines at word boundaries.
 
 @string jupytext-fmt = py:percent
 See https://jupytext.readthedocs.io/en/latest/config.html
@@ -33090,6 +33122,115 @@ See https://jupytext.readthedocs.io/en/latest/config.html
 
 # %%
 </t>
+<t tx="ekr.20241107062843.1">Each time you save an outline, Leo uses the jupytext library to write each
+`@jupytext` tree back to the corresponding `ipynb` file.
+
+- Leo *remembers all your changes* when you save an outline.
+- Leo *restore those changes* when you reopen that outline.
+</t>
+<t tx="ekr.20241107063856.1">`@jupytext` nodes must have the form::
+
+    @jupytext &lt;path&gt;x.ipynb
+    
+The path is optional. It may be absolute or relative.
+As usual, Leo resolves relative paths by appending the outline's directory.
+    
+After creating this node you can **populate** the `@jupytext` node in two ways.
+
+2. [recommended] Execute `refresh-from-disk` *before* saving the outline.
+   Leo will immediately populate the outline.
+   
+1. [also works] Save the outline. **Say "no"** when Leo asks whether you want to overwrite `x.ipynb`!
+   Leo will populate `@jupytext x.ipynb` when you reopen the outline.
+
+**Populating the outline**
+
+Populating the outline splits the incoming notebook text into child nodes,
+one node per Jupyter Notebook cell.
+
+- Leo populates `@jupytext` only if the node contains no children.
+- Otherwise,Leo uses the `clean` update algorithm to propagate changes from
+  `x.ipynb` to the `@jupytext x.ipynb` tree.
+</t>
+<t tx="ekr.20241107070438.1">Once you create and populate an `@jupytext` node, everything works just like `@clean`:
+
+- You can add, delete, change and reorganize child nodes as usual.
+- Leo will remember any changes you make. See the next section.</t>
+<t tx="ekr.20241107080948.1">.. _`HaveF`: https://github.com/HaveF
+.. _`GoNB`: https://github.com/janpfeifer/gonb
+.. _`jupytext library`: https://jupytext.readthedocs.io/en/latest/
+.. _`Jupyter kernels`: https://docs.jupyter.org/en/stable/projects/kernels.html#kernels
+.. _`go`: https://go.dev/
+.. _`block-level syncing`: https://github.com/user-attachments/assets/e29d4b27-48d9-4006-ab94-d4e8276c2e79
+
+This section contains comments by `HaveF` (edited by EKR) about `@jupytext`. For the full version of these remarks, go to this node: unl:gnx://LeoDocs.leo#ekr.20241107122714.1
+
+Users of Jupyter Notebooks have a love-hate relationship with `.ipynb` files. Notebooks make it super easy to write code and see the results, but version control systems don't handle `.json` files very well. However, GitHub now offers comparison tools for `.ipynb` files.
+
+That's where the `jupytext library`_ comes in. This library converts between `.ipynb` files to **pseudo-python** `.py` files. These files look like Python, but they usually contain syntax errors.
+
+Furthermore, the jupytext library isn't limited to converting Python-based `.ipynb` files. The library can handle `.ipynb` files created with many other `Jupyter kernels`_ such as the `GoNB`_ kernel.
+
+`@jupytext` integrates Leo with Jupyter notebooks. You can store your notebooks directly in Leo and use Leo's powerful outlining capabilities to manage them. When you save, Leo converts them right back to `.ipynb` files. This is huge.
+
+You can edit one notebook, save it, and boom—every notebook that shares that content is automatically updated. No fuss, no hassle. The workflow is completely flexible and you won’t find these features in any other editor.
+
+And just to make things sweeter, Thomas Passin (another Leo contributor) added a rendering feature for jupytext files in Leo, so you can even see the rendered content directly within Leo.
+
+**Summary**
+
+Working with `.ipynb` files becomes a breeze with Leo.
+
+Leo can handle any `.ipynb` file, regardless of the Jupyter kernel that created the file.
+</t>
+<t tx="ekr.20241107122714.1">Ever heard of the Lindy Effect? https://en.wikipedia.org/wiki/Lindy_effect
+
+It says that the longer an idea or a technology sticks around, the longer it’s likely to stay. So if something has lasted for a long time already, chances are it's here for the long haul. And that's exactly what’s happening with Leo, under development for 20 years. You’d think it might be outdated by now, right? But nope—Leo still feels full of life, fresh, and even groundbreaking. Although it is not so well known.
+
+So what exactly is Leo Editor? Well, it's hard to compare it to anything. If your first thought is that it's just another IDE or text editor, think again—it's way more than that. Leo describes itself as a
+
+PIM: https://en.wikipedia.org/wiki/Personal_information_manager an
+IDE https://en.wikipedia.org/wiki/Integrated_development_environment
+
+and an outliner all rolled into one. It helps programmers, authors, and web designers organize their work like never before. In Leo, outline nodes can exist in multiple places, letting you organize data in all sorts of creative ways.
+
+Now, outlining is definitely a core feature of Leo, but it’s just scratching the surface. Imagine an editor that has the ability to program itself. Sounds wild, right? If you’ve used VS Code, you know there are a ton of plugins to add extra features. But with Leo, adding features can be as simple as writing a script directly in the editor. No need to learn an entire plugin system—just control the nodes, write a Python script, run it, and voila! You've got a new feature.
+
+If you've used Jupyter notebooks, you might have a love-hate relationship with `.ipynb` files. They make it super easy to write code and see the results, but the JSON format can be tough to manage in version control (although GitHub does now offer some comparison tools for `.ipynb` files). That's where jupytext comes in—it lets you convert `.ipynb` files to a more version-control-friendly .py file format, and vice versa. Jupyter supports kernels beyond just Python, which means jupytext isn't limited to converting Python-based `.ipynb` files to .py. It also supports other kernels, such as
+
+Go with GoNB: https://github.com/janpfeifer/gonb
+
+and many others that I won't go into here. Maybe you don't like Jupyter either, thinking it's not suitable for serious software development. Honestly, I'm not here to argue that—it really depends on your context. But there's no denying that it's a core tool in data science. If you haven't seen Jeremy Howard's (FastAI) video, I highly recommend checking it out:
+
+Someone told me not to use notebooks for 'serious' software development!
+https://nbdev.fast.ai/getting_started.html#q-someone-told-me-not-to-use-notebooks-for-serious-software-development
+
+So far, so good, right?
+
+Then one day, Edward K. Ream found a brilliant way to integrate jupytext with Leo. Essentially, you can store the text content (jupytext's output) of your notebooks directly in Leo, use Leo's powerful outlining capabilities to manage them, and when you save, Leo converts it right back to an `.ipynb` file.
+
+And this is huge. Imagine having a Jupyter notebook, let's call it A, that you're using for some kind of step-by-step workflow (in this case, let's say a machine learning example)—gathering data, cleaning data, training a model, and validating results. Now imagine you have another notebook, B, which follows a similar flow but isn't quite the same. The part where you clean the data (step 2) is identical. Without Leo, you'd need to copy all the relevant cells from A to B and hope nothing changes later. But if you update A, you also need to go back and manually update B. It’s a headache. Now imagine you have five similar notebooks. Ouch.
+
+With Leo, this becomes a breeze. You make an edit to the cleaning part of one notebook, save it, and boom—every notebook that shares that content is automatically updated. Leo’s nodes can be cloned and reused—no fuss, no hassle. **That's block-level syncing**, and it's completely flexible. Honestly, it’s something you just won’t find in any other editor. (Btw, If you do this in the context of a Version Control Systems (VCS) like git, you will feel very safe and confident.)
+
+Screen shot: https://github.com/user-attachments/assets/e29d4b27-48d9-4006-ab94-d4e8276c2e79)
+
+You might say, "But wait, isn't it better to abstract repeated code into reusable modules?" Sure, in an ideal world, everything should be neatly abstracted. But when you’re in the early stages of experimentation, abstraction can feel like premature optimization—it just adds overhead. With Leo, you can reuse content with zero effort or cost and feel free to abstract later.
+
+For example, in the screenshot above, `exp_A.ipynb` and `exp_B.ipynb` share some common code by coping in jupyter lab, but we are not sure whether we need to abstract this part into another module (there may be more files that need this part later, but we are not sure for now). When we are not sure whether to abstract this part of the code, let Leo be responsible for synchronizing the code in the two ipynb files(we still use jupyter lab to write code and conduct experiments, but use Leo's `@jupytext node` to organize all related ipynb files). Once we decide to abstract this part, we only need to change the code in one file directly (for example, this part is reduced to a simple function call), and then use Leo to synchronize the changes to all ipynb files.
+
+You can understand it this way: Leo uses the characteristics of jupytext to achieve very powerful collaboration between ipynb files. Leo did not change the workflow we were used to, we just used its outline feature to enhance our process, manipulating sections between multiple ipynb files at once.
+
+And just to make things sweeter, Thomas Passin (another Leo contributor) added a rendering feature for jupytext files in Leo, so you can even see the rendered content directly within the tool.
+
+So if you're using Jupyter, you should definitely give jupytext a try. If you’re using jupytext, try out Leo's `@jupytext` nodes. Even if you’re not using Jupyter, I’d say give Leo a shot. Sure, IDEs come and go—VS Code, JetBrains, Vim, you name it—but there’s really nothing quite like Leo in some aspects. I’m not suggesting you replace those editors with Leo, but rather, consider using Leo alongside them. It’s genuinely unique in this world. You can even try LeoJS, a vs-code plugin
+
+LeoJS: https://boltex.github.io/leojs/
+
+Yes, Leo does have a bit of a learning curve, but mastering the basics is easier than you’d think, and you’ll quickly be leveraging its outlining power. It’s the kind of investment that pays off big time. Leo is definitely an underrated gem.
+
+Big thanks to Edward, Thomas, Félix, aka boltex (the author of LeoJS and leointeg), and all the other contributors—you guys are truly amazing, and Leo is living proof of that!</t>
+<t tx="ekr.20241107124245.1"></t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
