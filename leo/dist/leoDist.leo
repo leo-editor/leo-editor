@@ -213,22 +213,34 @@ Classifier: Topic :: Software Development
 Classifier: Topic :: Text Processing
 Download-URL: https://github.com/leo-editor/leo-editor/releases
 </t>
-<t tx="EKR.20040519090846.9">Leo https://leo-editor.github.io/leo-editor/ 6.8.1 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
+<t tx="EKR.20040519090846.9">Leo https://leo-editor.github.io/leo-editor/ 6.8.2 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
 
 Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/preface.html).
 
-**The highlights of Leo 6.8.1**
+**The highlights of Leo 6.8.2**
 
-This release:
+Most important:
 
-- Synchronizes Leo with LeoJS 1.0.
-- Consists solely of minor bug fixes.
+- PR #4119 &amp; PR #4138: @jupytext makes it *easy* to work with Jupyter notebooks!
+- PR #4033: Complete Leo's new layout work.
+
+Others:
+
+- PR #4038: Add reload-outline command.
+- PR #4068: Optionally run pylint when saving changed files.
+- PR #4071: Optionally run Leo's beautifier when saving changed files.
+- The usual assortment of small bug fixes and code cleanups.
+
+Retired features:
+
+- PR #4047: Delete add-editor command and all related code.
+- PR #4113: Retire ILeo, Leo's IPython bridge. It hasn't worked in years.
 
 **Links**
 
 - [Install Leo](https://leo-editor.github.io/leo-editor/installing.html)
-- [6.8.1 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.8.1+)
-- [6.8.1 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.8.1)
+- [6.8.2 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.8.2+)
+- [6.8.2 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.8.2)
 - [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
 - [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
 - [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
@@ -237,8 +249,7 @@ This release:
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
 - [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
-- [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
-</t>
+- [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)</t>
 <t tx="EKR.20040519091259.2"></t>
 <t tx="EKR.20040519091259.3">I like Leo more the more I use it...It's an unexpected pleasure to
 see my (linearly written) code outlined in Leo. I can't wait to use
@@ -1403,14 +1414,13 @@ It's ok to merge devel into release branch
 </t>
 <t tx="ekr.20180405171433.2" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Make sure copyright dates are correct.
 - Update the version numbers in index.html and conf.py:
-  Search for 6.7.
+  Search for 6.8.
 - Update the release notes. *Make sure to update links*.
 - Create new "what's new" section.
 - Remove top-level clones.
 - Spell check entire file, starting at the "Web pages" node.
-- Copy release notes to leoDist.leo.
+- Copy release notes to leoDist.leo, the node `@clean ../../README.md`.
 - Copy release notes to LeoReleaseNotes.leo
-
 </t>
 <t tx="ekr.20180405171433.3" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- git checkout `gh-pages`.
 - git merge 6.8.2
@@ -1420,7 +1430,8 @@ It's ok to merge devel into release branch
 - Check the GitHub Pages actions page:
   https://github.com/leo-editor/leo-editor/actions
 - Check Leo's website.
-</t>
+
+*** make sure create-node hook appears on the web.</t>
 <t tx="ekr.20180405171433.4" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Make sure Leo looks good without myLeoSettings.leo.
 
 - Make sure Leo runs with Python 3.9.
