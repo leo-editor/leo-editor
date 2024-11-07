@@ -1090,13 +1090,6 @@
 <v t="ekr.20131213135427.21884"><vh>@item &amp;paste-text</vh></v>
 <v t="ekr.20131213135427.21886"><vh>@item &amp;select-all</vh></v>
 <v t="ekr.20180403115138.1"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22260"><vh>@menu &amp;Check Spelling</vh>
-<v t="ekr.20131213135427.22261"><vh>@item &amp;spell-tab-open</vh></v>
-<v t="ekr.20131213135427.22262"><vh>@item spell-&amp;change</vh></v>
-<v t="ekr.20131213135427.22263"><vh>@item spell-change-&amp;then-find</vh></v>
-<v t="ekr.20131213135427.22264"><vh>@item spell-&amp;find</vh></v>
-<v t="ekr.20131213135427.22265"><vh>@item spell-&amp;ignore</vh></v>
-</v>
 <v t="ekr.20131213135427.21904"><vh>@menu &amp;Edit Headline</vh>
 <v t="tom.20210922141748.1"><vh>@item &amp;capitalize-headline</vh></v>
 <v t="ekr.20131213135427.21905"><vh>@item edit-&amp;headline</vh></v>
@@ -1468,7 +1461,6 @@
 <v t="ekr.20131213135427.22158"><vh>@item focus-to-&amp;log</vh></v>
 <v t="ekr.20141112072219.1"><vh>@item focus-to-&amp;find</vh></v>
 <v t="ekr.20131213135427.22159"><vh>@item focus-to-&amp;minibuffer</vh></v>
-<v t="ekr.20141112072219.2"><vh>@item focus-to-&amp;spell-tab</vh></v>
 <v t="ekr.20131213135427.22160"><vh>@item focus-to-&amp;tree</vh></v>
 </v>
 <v t="ekr.20170509104949.1"></v>
@@ -2262,7 +2254,7 @@
 <v t="ekr.20041119052015.1"><vh>@bool log-pane-wraps = False</vh></v>
 </v>
 <v t="ekr.20041119034357.56"><vh>Options for new windows</vh>
-<v t="ekr.20071024145953"><vh>@bool big-outline-pane = False</vh></v>
+<v t="ekr.20071024145953"><vh>@@@bool big-outline-pane = False</vh></v>
 <v t="ekr.20060930085332"><vh>@bool outline-pane-has-initial-focus = False</vh></v>
 <v t="ekr.20041119034357.57"><vh>@ratio initial-horizontal-ratio = 0.4</vh></v>
 <v t="ekr.20041119034357.58"><vh>@ratio initial-horizontal-secondary-ratio = 0.8</vh></v>
@@ -2283,7 +2275,7 @@
 </v>
 </v>
 <v t="ekr.20140915194122.23428"></v>
-<v t="ekr.20241024123618.1"></v>
+<v t="ekr.20111006212449.11850"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -3224,10 +3216,7 @@ goto-prev-visible
 
 Panes
 
-spell-tab-hide
-
-Furthermore, the find commands are a good tool for using Leo without a mouse
-(More commands are coming)
+Furthermore, the find commands are a good tool for using Leo without a mouse.
 
 replace
 replace-all
@@ -5676,12 +5665,6 @@ minibuffer-find-mode    use-find-dialog     mode: Ctrl-F puts focus in
 <t tx="ekr.20131213135427.22249"></t>
 <t tx="ekr.20131213135427.22258"></t>
 <t tx="ekr.20131213135427.22259"></t>
-<t tx="ekr.20131213135427.22260"></t>
-<t tx="ekr.20131213135427.22261"></t>
-<t tx="ekr.20131213135427.22262"></t>
-<t tx="ekr.20131213135427.22263"></t>
-<t tx="ekr.20131213135427.22264"></t>
-<t tx="ekr.20131213135427.22265"></t>
 <t tx="ekr.20131213135427.22266"></t>
 <t tx="ekr.20131213135427.22267"></t>
 <t tx="ekr.20131213135427.22268"></t>
@@ -5908,7 +5891,6 @@ goto-prev-node                      = Alt-Shift-UpArrow
 goto-prev-sibling                   = Alt-Shift-R
 goto-prev-visible                   = None         # Alt-UpArrow conflicts with beginning-of-line.
 help-for-minibuffer                 = None
-spell-tab-hide                      = None
 hoist                               = None
 iconify-frame                       = Ctrl-z
 import-file                         = None
@@ -6030,10 +6012,6 @@ sort-columns                    = None
 # sort-fields                   = None
 sort-lines                      = None
 sort-siblings                   = Shift-Alt-A  # Alt-A conflicts with back-sentence.
-spell-change                    = None
-spell-change-then-find          = None
-spell-find                      = None
-spell-ignore                    = None
 split-line                      = Alt-Ctrl-o
 suspend                         = None
 tabify                          = None
@@ -6329,20 +6307,19 @@ help-for-command                    = None
 help-for-find-commands              = None
 help-for-minibuffer                 = None
 help-for-python                     = None
-# hide-body-pane                      = None
-# hide-log-pane                       = None
-# hide-pane                           = None
-# hide-outline-pane                   = None
-spell-tab-hide                      = None
+# hide-body-pane                    = None
+# hide-log-pane                     = None
+# hide-pane                         = None
+# hide-outline-pane                 = None
 hoist                               = None
 iconify-frame                       = None
 import-file                         = None
-# import-at-file                      = None
-# import-at-root                      = None
-# import-cweb-files                   = None
-# import-derived-file                 = None
-# import-flattened-outline            = None
-# import-noweb-files                  = None
+# import-at-file                    = None
+# import-at-root                    = None
+# import-cweb-files                 = None
+# import-derived-file               = None
+# import-flattened-outline          = None
+# import-noweb-files                = None
 indent-region                       = None
 indent-relative                     = None
 indent-rigidly                      = None
@@ -6493,10 +6470,6 @@ sort-lines                          = None
 sort-lines-ignoring-case            = None
 sort-recent-files                   = None
 sort-siblings                       = None
-spell-change                        = None
-spell-change-then-find              = None
-spell-find                          = None
-spell-ignore                        = None
 split-line                          = None
 start-ipython                       = None
 start-search                        = None
@@ -9155,7 +9128,6 @@ c.k.simulateCommand('show-color-wheel')
 <t tx="ekr.20141024165714.1">True:  Scroll the find tab ensure find input field visible. (fixes bug 1254861)
 False: Never scroll the find tab automatically.</t>
 <t tx="ekr.20141112072219.1"></t>
-<t tx="ekr.20141112072219.2"></t>
 <t tx="ekr.20141204160426.5">New.</t>
 <t tx="ekr.20150216135059.1">With @clean and @file, Leo can store persistent data in nodes. This
 information consists of the node’s gnx (Global Node Index) and the node’s
