@@ -5,12 +5,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Leo and Other Programs &#8212; Leo 6.8.1 documentation</title>
+    <title>Leo and Other Programs &#8212; Leo 6.8.2 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=db26dd79" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css?v=524d4423" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css?v=8453e47e" />
     
-    <script src="_static/documentation_options.js?v=8ea55b7a"></script>
+    <script src="_static/documentation_options.js?v=b95dd110"></script>
     <script src="_static/doctools.js?v=13a9ecda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     
@@ -18,7 +18,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Leo and Asciidoctor" href="leoandasciidoc.html" />
+    <link rel="next" title="Using Leo with Jupyter Notebooks" href="jupyternotebooks.html" />
     <link rel="prev" title="Directives Reference" href="directives.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -28,12 +28,12 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="leoandasciidoc.html" title="Leo and Asciidoctor"
+          <a href="jupyternotebooks.html" title="Using Leo with Jupyter Notebooks"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="directives.html" title="Directives Reference"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.8.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.8.2 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Leo and Other Programs</a></li> 
       </ul>
     </div>  
@@ -47,6 +47,15 @@
 <h1>Leo and Other Programs<a class="headerlink" href="#leo-and-other-programs" title="Link to this heading">¶</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="jupyternotebooks.html">Using Leo with Jupyter Notebooks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="jupyternotebooks.html#creating-and-populating-jupytext-trees">Creating and populating &#64;jupytext trees</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jupyternotebooks.html#reading-jupytext-trees">Reading &#64;jupytext trees</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jupyternotebooks.html#editing-jupytext-trees">Editing &#64;jupytext trees</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jupyternotebooks.html#writing-jupytext-trees">Writing &#64;jupytext trees</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jupyternotebooks.html#settings">Settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="jupyternotebooks.html#extended-comments-about-jupytext">Extended comments about &#64;jupytext</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="leoandasciidoc.html">Leo and Asciidoctor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="emacs.html">Leo and Emacs, including org mode</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="emacs.html#leo-vs-org-mode">Leo vs org mode</a></li>
@@ -65,16 +74,6 @@
 <li class="toctree-l1"><a class="reference internal" href="leoBridge.html">Embedding Leo with the leoBridge module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="leoBridge.html#the-basics">The basics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="leoBridge.html#running-leobridge-from-within-leo">Running leoBridge from within Leo</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="IPythonBridge.html">ILeo: Leo’s IPython Bridge</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="IPythonBridge.html#overview">Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="IPythonBridge.html#starting-ileo">Starting ILeo</a></li>
-<li class="toctree-l2"><a class="reference internal" href="IPythonBridge.html#running-leo-scripts-from-ipython">Running Leo scripts from IPython</a></li>
-<li class="toctree-l2"><a class="reference internal" href="IPythonBridge.html#running-ipython-scripts-from-leo">Running IPython scripts from Leo</a></li>
-<li class="toctree-l2"><a class="reference internal" href="IPythonBridge.html#ileo-as-an-ipython-notebook">ILeo as an IPython notebook</a></li>
-<li class="toctree-l2"><a class="reference internal" href="IPythonBridge.html#ileo-and-the-valuespace-plugin">ILeo and the valuespace plugin</a></li>
-<li class="toctree-l2"><a class="reference internal" href="IPythonBridge.html#acknowledgements-and-history">Acknowledgements and history</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="leoserver.html">Leo’s WebSocket Server</a><ul>
@@ -107,8 +106,8 @@
   </div>
   <div>
     <h4>Next topic</h4>
-    <p class="topless"><a href="leoandasciidoc.html"
-                          title="next chapter">Leo and Asciidoctor</a></p>
+    <p class="topless"><a href="jupyternotebooks.html"
+                          title="next chapter">Using Leo with Jupyter Notebooks</a></p>
   </div>
 <div id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
@@ -135,18 +134,18 @@
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="leoandasciidoc.html" title="Leo and Asciidoctor"
+          <a href="jupyternotebooks.html" title="Using Leo with Jupyter Notebooks"
              >next</a> |</li>
         <li class="right" >
           <a href="directives.html" title="Directives Reference"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.8.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.8.2 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Leo and Other Programs</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 1997-2024, Edward K. Ream.
-      Last updated on July 27, 2024.
+      Last updated on November 07, 2024.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
     </div>
   </body>

@@ -5,12 +5,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Customizing Leo &#8212; Leo 6.8.1 documentation</title>
+    <title>Customizing Leo &#8212; Leo 6.8.2 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=db26dd79" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css?v=524d4423" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css?v=8453e47e" />
     
-    <script src="_static/documentation_options.js?v=8ea55b7a"></script>
+    <script src="_static/documentation_options.js?v=b95dd110"></script>
     <script src="_static/doctools.js?v=13a9ecda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     
@@ -33,7 +33,7 @@
         <li class="right" >
           <a href="leomarkup.html" title="Leo’s Markup Language"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.8.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.8.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="usersguide.html" accesskey="U">Leo’s Users Guide</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Customizing Leo</a></li> 
       </ul>
@@ -103,7 +103,7 @@
 <ol class="arabic simple">
 <li><p><strong>Default settings files</strong>, named <strong>leoSettings.leo</strong>. Although they can be used in other ways, they typically contain default settings.</p></li>
 <li><p><strong>Personal settings files</strong>, named <strong>myLeoSettings.leo</strong>. They provide a way of ensuring that your customized settings are not altered when updating Leo from git or while installing a new version of Leo. The <code class="docutils literal notranslate"><span class="pre">myLeoSettings.leo</span></code> file acts much like Python’s <code class="docutils literal notranslate"><span class="pre">site-customize.py</span></code> file. <code class="docutils literal notranslate"><span class="pre">myLeoSettings.leo</span></code> will never be part of any Leo distribution, and it will never exist in Leo’s cvs repository. This solution is <em>much</em> better than trying to update <code class="docutils literal notranslate"><span class="pre">leoSettings.leo</span></code> with scripts.</p></li>
-<li><p><strong>Machine settings files</strong>, named <strong>LeoSettings.leo</strong> (note the capital ‘L’), and appearing in a unique directory.</p></li>
+<li><p><strong>Machine settings files</strong>, named <strong>&lt;prefix&gt;myLeoSettings.leo</strong>, where <strong>prefix</strong> comes from os.getenv(‘HOSTNAME’)or os.getenv(‘COMPUTERNAME’).</p></li>
 <li><p><strong>Theme files</strong>. These are .leo files containing stylesheets and other appearance-related settings.</p></li>
 </ol>
 <p>The following sections describe the kinds of nodes in <code class="docutils literal notranslate"><span class="pre">&#64;settings</span></code> trees.</p>
@@ -162,17 +162,22 @@
 <h3><a class="toc-backref" href="#id6" role="doc-backlink">&#64;ignore and &#64;if nodes</a><a class="headerlink" href="#ignore-and-if-nodes" title="Link to this heading">¶</a></h3>
 <p>Leo ignores any subtree of an <code class="docutils literal notranslate"><span class="pre">&#64;settings</span></code> tree whose headline starts with <code class="docutils literal notranslate"><span class="pre">&#64;ignore</span></code>.</p>
 <p>You can use several other kinds of nodes to cause Leo to ignore parts of an <code class="docutils literal notranslate"><span class="pre">&#64;settings</span></code> tree:</p>
-<ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">&#64;if</span> <span class="pre">&lt;expression&gt;</span></code></p>
-<p>A node whose headline starts with <code class="docutils literal notranslate"><span class="pre">&#64;if</span></code> <em>expression</em> acts like an organizer node if the expression evaluates to True, otherwise acts like an <code class="docutils literal notranslate"><span class="pre">&#64;ignore</span></code> node. If the expression is empty the body text should contain a script that will be evaluated (in an empty context).</p>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">&#64;ifplatform</span> <span class="pre">&lt;platform-name&gt;</span></code></p>
-<p>Same as <code class="docutils literal notranslate"><span class="pre">&#64;if</span> <span class="pre">sys.platform</span> <span class="pre">==</span> <span class="pre">&quot;platform-name&quot;</span></code> except that it isn’t necessary to import sys.</p>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">&#64;ifhostname</span> <span class="pre">*hostA,!hostB*</span></code></p>
-<p>Evaluates to True if and only if: <code class="docutils literal notranslate"><span class="pre">h=g.computeMachineName();</span> <span class="pre">h==hostA</span> <span class="pre">and</span> <span class="pre">h!=hostB</span></code>. The <code class="docutils literal notranslate"><span class="pre">!</span></code> version allows matching to every machine name except the given one to allow differing settings on only a few machines.</p>
-</li>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&#64;ifenv</span> <span class="pre">&lt;list</span> <span class="pre">of</span> <span class="pre">environments&gt;</span></code></p></li>
 </ul>
+<p>True if sys.env matches any of given list of environments.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&#64;ifplatform</span> <span class="pre">&lt;platform&gt;</span></code></p></li>
+</ul>
+<p>True if sys.platform matches the give platform name.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&#64;ifhostname</span> <span class="pre">&lt;host&gt;</span></code></p></li>
+</ul>
+<p>True if os.getenv(‘HOSTNAME’) or os.getenv(‘COMPUTERNAME’) matches the given host.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&#64;ifhostname</span> <span class="pre">!&lt;host&gt;</span></code></p></li>
+</ul>
+<p>True if <code class="docutils literal notranslate"><span class="pre">&#64;ifhostname</span> <span class="pre">&lt;host&gt;</span></code> <em>doesn’t</em> match.</p>
 </section>
 <section id="simple-settings-nodes">
 <h3><a class="toc-backref" href="#id7" role="doc-backlink">Simple settings nodes</a><a class="headerlink" href="#simple-settings-nodes" title="Link to this heading">¶</a></h3>
@@ -707,14 +712,14 @@ REPLACE …\1\2
         <li class="right" >
           <a href="leomarkup.html" title="Leo’s Markup Language"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.8.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.8.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="usersguide.html" >Leo’s Users Guide</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Customizing Leo</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 1997-2024, Edward K. Ream.
-      Last updated on July 27, 2024.
+      Last updated on November 07, 2024.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
     </div>
   </body>

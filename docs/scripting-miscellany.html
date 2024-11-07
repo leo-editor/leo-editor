@@ -5,12 +5,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>A Miscellany of Leo Scripting &#8212; Leo 6.8.1 documentation</title>
+    <title>A Miscellany of Leo Scripting &#8212; Leo 6.8.2 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=db26dd79" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css?v=524d4423" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css?v=8453e47e" />
     
-    <script src="_static/documentation_options.js?v=8ea55b7a"></script>
+    <script src="_static/documentation_options.js?v=b95dd110"></script>
     <script src="_static/doctools.js?v=13a9ecda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     
@@ -33,7 +33,7 @@
         <li class="right" >
           <a href="console-gui.html" title="Leo’s Console Gui"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.8.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.8.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="intermediatetopics.html" accesskey="U">Advanced Topics</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">A Miscellany of Leo Scripting</a></li> 
       </ul>
@@ -219,11 +219,12 @@ conversion is undoable:</p>
 </div>
 <p>The values returned are in (‘ok’,’yes’,’no’,’cancel’), as indicated by the method names. Some dialogs also return strings or numbers, again as indicated by their names.</p>
 <p>Scripts can run File Open and Save dialogs with these methods:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">gui</span><span class="o">.</span><span class="n">runOpenFileDialog</span><span class="p">(</span><span class="n">title</span><span class="p">,</span><span class="n">filetypes</span><span class="p">,</span><span class="n">defaultextension</span><span class="p">,</span><span class="n">multiple</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">gui</span><span class="o">.</span><span class="n">runOpenFileDialog</span><span class="p">(</span><span class="n">title</span><span class="p">,</span><span class="n">filetypes</span><span class="p">,</span><span class="n">defaultextension</span><span class="p">)</span>
+<span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">gui</span><span class="o">.</span><span class="n">runOpenFilesDialog</span><span class="p">(</span><span class="n">title</span><span class="p">,</span><span class="n">filetypes</span><span class="p">,</span><span class="n">defaultextension</span><span class="p">)</span>
 <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">gui</span><span class="o">.</span><span class="n">runSaveFileDialog</span><span class="p">(</span><span class="n">initialfile</span><span class="p">,</span><span class="n">title</span><span class="p">,</span><span class="n">filetypes</span><span class="p">,</span><span class="n">defaultextension</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>For details about how to use these file dialogs, look for examples in Leo’s own source code. The runOpenFileDialog returns a list of file names.</p>
+<p>For details about how to use these file dialogs, look for examples in Leo’s own source code. The runOpenFilesDialog returns a list of file names.</p>
 </section>
 <section id="getting-commander-preferences">
 <h2><a class="toc-backref" href="#id8" role="doc-backlink">Getting commander preferences</a><a class="headerlink" href="#getting-commander-preferences" title="Link to this heading">¶</a></h2>
@@ -231,7 +232,6 @@ conversion is undoable:</p>
 <p>Scripts can get the following ivars of the Commands class:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ivars</span> <span class="o">=</span> <span class="p">(</span>
     <span class="s1">&#39;output_doc_flag&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;page_width&#39;</span><span class="p">,</span>
     <span class="s1">&#39;page_width&#39;</span><span class="p">,</span>
     <span class="s1">&#39;tab_width&#39;</span><span class="p">,</span>
     <span class="s1">&#39;target_language&#39;</span><span class="p">,</span>
@@ -385,12 +385,8 @@ conversion is undoable:</p>
 </section>
 <section id="modifying-the-body-pane-directly">
 <h2><a class="toc-backref" href="#id15" role="doc-backlink">Modifying the body pane directly</a><a class="headerlink" href="#modifying-the-body-pane-directly" title="Link to this heading">¶</a></h2>
-<p><strong>Important</strong>: The changes you make below <strong>will not persist</strong> unless your script calls c.frame.body.onBodyChanged after making those changes. This method has the following signature:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">onBodyChanged</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">undoType</span><span class="p">,</span><span class="n">oldSel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">oldText</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">oldYview</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-</pre></div>
-</div>
 <p>Let:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">w</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">wrapper</span> <span class="c1"># Leo&#39;s body pane.</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">w</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">wrapper</span>  <span class="c1"># Leo&#39;s body pane.</span>
 </pre></div>
 </div>
 <p>Scripts can get or change the context of the body as follows:</p>
@@ -473,71 +469,63 @@ the callback to be called at idle time forever. This should suffice for most pur
 <p>For greater control, g.IdleTime is a thin wrapper for the Leo’s IdleTime class. The IdleTime class executes a handler with a given delay at idle time. The handler takes a single argument, the IdleTime instance:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">handler</span><span class="p">(</span><span class="n">it</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;IdleTime handler.  it is an IdleTime instance.&quot;&quot;&quot;</span>
-    <span class="n">delta_t</span> <span class="o">=</span> <span class="n">it</span><span class="o">.</span><span class="n">time</span><span class="o">-</span><span class="n">it</span><span class="o">.</span><span class="n">starting_time</span>
-    <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">it</span><span class="o">.</span><span class="n">count</span><span class="p">,</span><span class="n">it</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">shortFileName</span><span class="p">(),</span><span class="s1">&#39;</span><span class="si">%2.4f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">delta_t</span><span class="p">))</span>
+    <span class="n">delta_t</span> <span class="o">=</span> <span class="n">it</span><span class="o">.</span><span class="n">time</span> <span class="o">-</span> <span class="n">it</span><span class="o">.</span><span class="n">starting_time</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">it</span><span class="o">.</span><span class="n">count</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">c</span><span class="o">.</span><span class="n">shortFileName</span><span class="p">()</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">delta_t</span><span class="si">:</span><span class="s2">2.2</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">it</span><span class="o">.</span><span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">5</span><span class="p">:</span>
         <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;done&#39;</span><span class="p">)</span>
         <span class="n">it</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
 
 <span class="c1"># Execute handler every 500 msec. at idle time.</span>
-<span class="n">it</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">IdleTime</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span><span class="n">delay</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
-<span class="k">if</span> <span class="n">it</span><span class="p">:</span> <span class="n">it</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+<span class="n">it</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">IdleTime</span><span class="p">(</span><span class="n">handler</span><span class="p">,</span> <span class="n">delay</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">it</span><span class="p">:</span>
+    <span class="n">it</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>The code creates an instance of the IdleTime class that calls the given handler at idle time, and no more than once every 500 msec.  Here is the output:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">handler</span> <span class="mi">1</span> <span class="n">ekr</span><span class="o">.</span><span class="n">leo</span> <span class="mf">0.5100</span>
-<span class="n">handler</span> <span class="mi">2</span> <span class="n">ekr</span><span class="o">.</span><span class="n">leo</span> <span class="mf">1.0300</span>
-<span class="n">handler</span> <span class="mi">3</span> <span class="n">ekr</span><span class="o">.</span><span class="n">leo</span> <span class="mf">1.5400</span>
-<span class="n">handler</span> <span class="mi">4</span> <span class="n">ekr</span><span class="o">.</span><span class="n">leo</span> <span class="mf">2.0500</span>
-<span class="n">handler</span> <span class="mi">5</span> <span class="n">ekr</span><span class="o">.</span><span class="n">leo</span> <span class="mf">2.5610</span>
-<span class="n">handler</span> <span class="n">done</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">handler</span> <span class="mi">1</span> <span class="n">LeoDocs</span><span class="o">.</span><span class="n">leo</span> <span class="mf">0.5</span>
+<span class="n">handler</span> <span class="mi">2</span> <span class="n">LeoDocs</span><span class="o">.</span><span class="n">leo</span> <span class="mf">1.0</span>
+<span class="n">handler</span> <span class="mi">3</span> <span class="n">LeoDocs</span><span class="o">.</span><span class="n">leo</span> <span class="mf">1.5</span>
+<span class="n">handler</span> <span class="mi">4</span> <span class="n">LeoDocs</span><span class="o">.</span><span class="n">leo</span> <span class="mf">2.0</span>
+<span class="n">handler</span> <span class="mi">5</span> <span class="n">LeoDocs</span><span class="o">.</span><span class="n">leo</span> <span class="mf">2.5</span>
 </pre></div>
 </div>
 <p>Timer instances are completely independent:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">handler1</span><span class="p">(</span><span class="n">it</span><span class="p">):</span>
     <span class="n">delta_t</span> <span class="o">=</span> <span class="n">it</span><span class="o">.</span><span class="n">time</span><span class="o">-</span><span class="n">it</span><span class="o">.</span><span class="n">starting_time</span>
-    <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%2s</span><span class="s1"> </span><span class="si">%s</span><span class="s1"> </span><span class="si">%2.4f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">it</span><span class="o">.</span><span class="n">count</span><span class="p">,</span><span class="n">it</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">shortFileName</span><span class="p">(),</span><span class="n">delta_t</span><span class="p">))</span>
-    <span class="k">if</span> <span class="n">it</span><span class="o">.</span><span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">5</span><span class="p">:</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">it</span><span class="o">.</span><span class="n">count</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">c</span><span class="o">.</span><span class="n">shortFileName</span><span class="p">()</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">delta_t</span><span class="si">:</span><span class="s2">2.2</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">it</span><span class="o">.</span><span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">4</span><span class="p">:</span>
         <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;done&#39;</span><span class="p">)</span>
         <span class="n">it</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
 
 <span class="k">def</span> <span class="nf">handler2</span><span class="p">(</span><span class="n">it</span><span class="p">):</span>
     <span class="n">delta_t</span> <span class="o">=</span> <span class="n">it</span><span class="o">.</span><span class="n">time</span><span class="o">-</span><span class="n">it</span><span class="o">.</span><span class="n">starting_time</span>
-    <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%2s</span><span class="s1"> </span><span class="si">%s</span><span class="s1"> </span><span class="si">%2.4f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">it</span><span class="o">.</span><span class="n">count</span><span class="p">,</span><span class="n">it</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">shortFileName</span><span class="p">(),</span><span class="n">delta_t</span><span class="p">))</span>
-    <span class="k">if</span> <span class="n">it</span><span class="o">.</span><span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">10</span><span class="p">:</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">it</span><span class="o">.</span><span class="n">count</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">c</span><span class="o">.</span><span class="n">shortFileName</span><span class="p">()</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">delta_t</span><span class="si">:</span><span class="s2">2.2</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">it</span><span class="o">.</span><span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">6</span><span class="p">:</span>
         <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;done&#39;</span><span class="p">)</span>
         <span class="n">it</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
 
-<span class="n">it1</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">IdleTime</span><span class="p">(</span><span class="n">handler1</span><span class="p">,</span><span class="n">delay</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
-<span class="n">it2</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">IdleTime</span><span class="p">(</span><span class="n">handler2</span><span class="p">,</span><span class="n">delay</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+<span class="n">it1</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">IdleTime</span><span class="p">(</span><span class="n">handler1</span><span class="p">,</span> <span class="n">delay</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
+<span class="n">it2</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">IdleTime</span><span class="p">(</span><span class="n">handler2</span><span class="p">,</span> <span class="n">delay</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
 <span class="k">if</span> <span class="n">it1</span> <span class="ow">and</span> <span class="n">it2</span><span class="p">:</span>
     <span class="n">it1</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
     <span class="n">it2</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Here is the output:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">handler1</span>  <span class="mi">1</span> <span class="n">ekr</span><span class="o">.</span><span class="n">leo</span> <span class="mf">0.5200</span>
-<span class="n">handler2</span>  <span class="mi">1</span> <span class="n">ekr</span><span class="o">.</span><span class="n">leo</span> <span class="mf">1.0100</span>
-<span class="n">handler1</span>  <span class="mi">2</span> <span class="n">ekr</span><span class="o">.</span><span class="n">leo</span> <span class="mf">1.0300</span>
-<span class="n">handler1</span>  <span class="mi">3</span> <span class="n">ekr</span><span class="o">.</span><span class="n">leo</span> <span class="mf">1.5400</span>
-<span class="n">handler2</span>  <span class="mi">2</span> <span class="n">ekr</span><span class="o">.</span><span class="n">leo</span> <span class="mf">2.0300</span>
-<span class="n">handler1</span>  <span class="mi">4</span> <span class="n">ekr</span><span class="o">.</span><span class="n">leo</span> <span class="mf">2.0600</span>
-<span class="n">handler1</span>  <span class="mi">5</span> <span class="n">ekr</span><span class="o">.</span><span class="n">leo</span> <span class="mf">2.5600</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">handler1</span> <span class="mi">1</span> <span class="n">LeoDocs</span><span class="o">.</span><span class="n">leo</span> <span class="mf">0.5</span>
+<span class="n">handler1</span> <span class="mi">2</span> <span class="n">LeoDocs</span><span class="o">.</span><span class="n">leo</span> <span class="mf">1.0</span>
+<span class="n">handler2</span> <span class="mi">1</span> <span class="n">LeoDocs</span><span class="o">.</span><span class="n">leo</span> <span class="mf">1.0</span>
+<span class="n">handler1</span> <span class="mi">3</span> <span class="n">LeoDocs</span><span class="o">.</span><span class="n">leo</span> <span class="mf">1.5</span>
+<span class="n">handler1</span> <span class="mi">4</span> <span class="n">LeoDocs</span><span class="o">.</span><span class="n">leo</span> <span class="mf">2.0</span>
 <span class="n">handler1</span> <span class="n">done</span>
-<span class="n">handler2</span>  <span class="mi">3</span> <span class="n">ekr</span><span class="o">.</span><span class="n">leo</span> <span class="mf">3.0400</span>
-<span class="n">handler2</span>  <span class="mi">4</span> <span class="n">ekr</span><span class="o">.</span><span class="n">leo</span> <span class="mf">4.0600</span>
-<span class="n">handler2</span>  <span class="mi">5</span> <span class="n">ekr</span><span class="o">.</span><span class="n">leo</span> <span class="mf">5.0700</span>
-<span class="n">handler2</span>  <span class="mi">6</span> <span class="n">ekr</span><span class="o">.</span><span class="n">leo</span> <span class="mf">6.0800</span>
-<span class="n">handler2</span>  <span class="mi">7</span> <span class="n">ekr</span><span class="o">.</span><span class="n">leo</span> <span class="mf">7.1000</span>
-<span class="n">handler2</span>  <span class="mi">8</span> <span class="n">ekr</span><span class="o">.</span><span class="n">leo</span> <span class="mf">8.1100</span>
-<span class="n">handler2</span>  <span class="mi">9</span> <span class="n">ekr</span><span class="o">.</span><span class="n">leo</span> <span class="mf">9.1300</span>
-<span class="n">handler2</span> <span class="mi">10</span> <span class="n">ekr</span><span class="o">.</span><span class="n">leo</span> <span class="mf">10.1400</span>
+<span class="n">handler2</span> <span class="mi">2</span> <span class="n">LeoDocs</span><span class="o">.</span><span class="n">leo</span> <span class="mf">2.0</span>
+<span class="n">handler2</span> <span class="mi">3</span> <span class="n">LeoDocs</span><span class="o">.</span><span class="n">leo</span> <span class="mf">3.1</span>
+<span class="n">handler2</span> <span class="mi">4</span> <span class="n">LeoDocs</span><span class="o">.</span><span class="n">leo</span> <span class="mf">4.1</span>
+<span class="n">handler2</span> <span class="mi">5</span> <span class="n">LeoDocs</span><span class="o">.</span><span class="n">leo</span> <span class="mf">5.1</span>
+<span class="n">handler2</span> <span class="mi">6</span> <span class="n">LeoDocs</span><span class="o">.</span><span class="n">leo</span> <span class="mf">6.1</span>
 <span class="n">handler2</span> <span class="n">done</span>
 </pre></div>
 </div>
-<p><strong>Recycling timers</strong></p>
-<p>The g.app.idle_timers list retrains references to all timers so they <em>won’t</em> be recycled after being stopped.  This allows timers to be restarted safely.</p>
-<p>There is seldom a need to recycle a timer, but if you must, you can call its destroySelf method. This removes the reference to the timer in g.app.idle_timers. <strong>Warning</strong>: Accessing a timer after calling its destroySelf method can lead to a hard crash.</p>
 </section>
 <section id="running-code-in-separate-processes">
 <h2><a class="toc-backref" href="#id20" role="doc-backlink">Running code in separate processes</a><a class="headerlink" href="#running-code-in-separate-processes" title="Link to this heading">¶</a></h2>
@@ -567,7 +555,8 @@ the callback to be called at idle time forever. This should suffice for most pur
 </section>
 <section id="call-g-execute-shell-commands">
 <h4><a class="toc-backref" href="#id23" role="doc-backlink">Call g.execute_shell_commands</a><a class="headerlink" href="#call-g-execute-shell-commands" title="Link to this heading">¶</a></h4>
-<p>Use g.execute_shell_commands is a thin wrapper around subprocess.popen.  It calls subprocess.popen once for every command in a list.  This function waits for commands that start with ‘&amp;’. Here it is:</p>
+<p>Use g.execute_shell_commands is a thin wrapper around subprocess.popen.  It calls subprocess.popen once for every command in a list.</p>
+<p>This function waits for each command to complete, except those commands starting with ‘&amp;’.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">execute_shell_commands</span><span class="p">(</span><span class="n">commands</span><span class="p">,</span> <span class="n">trace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">isString</span><span class="p">(</span><span class="n">commands</span><span class="p">):</span> <span class="n">commands</span> <span class="o">=</span> <span class="p">[</span><span class="n">commands</span><span class="p">]</span>
     <span class="k">for</span> <span class="n">command</span> <span class="ow">in</span> <span class="n">commands</span><span class="p">:</span>
@@ -645,7 +634,9 @@ warning:            A warning to be printed before executing the commands.
 </section>
 <section id="using-g-execute-shell-commands">
 <h3><a class="toc-backref" href="#id26" role="doc-backlink">Using g.execute_shell_commands</a><a class="headerlink" href="#using-g-execute-shell-commands" title="Link to this heading">¶</a></h3>
-<p>g.execute_shell_command tales a single argument, which may be either a string or a list of strings. Each string represents one command. g.execute_shell_command executes each command in order.  Commands starting with ‘&amp;’ are executed without waiting. Commands that do not start with ‘&amp;’ finish before running later commands. Examples:</p>
+<p>g.execute_shell_command takes a single argument, which may be either a string or a list of strings. Each string represents one command.</p>
+<p>g.execute_shell_command executes each command in order, waiting for each command to complete, except those commands starting with ‘&amp;’.</p>
+<p>Examples:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run the qml app in a separate process:</span>
 <span class="n">g</span><span class="o">.</span><span class="n">execute_shell_commands</span><span class="p">(</span><span class="s1">&#39;qmlscene /test/qml_test.qml&#39;</span><span class="p">)</span>
 
@@ -836,14 +827,14 @@ message to the Log pane.</p>
         <li class="right" >
           <a href="console-gui.html" title="Leo’s Console Gui"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.8.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.8.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="intermediatetopics.html" >Advanced Topics</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">A Miscellany of Leo Scripting</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 1997-2024, Edward K. Ream.
-      Last updated on July 27, 2024.
+      Last updated on November 07, 2024.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
     </div>
   </body>
