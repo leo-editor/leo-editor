@@ -907,11 +907,10 @@ class JEditColorizer(BaseColorizer):
     #@+node:ekr.20110605121601.18580: *5* jedit.init
     def init(self) -> None:
         """Init the colorizer, but *not* state."""
-        #
         # These *must* be recomputed.
         self.initialStateNumber = self.setInitialStateNumber()
-        #
-        # Fix #389. Do *not* change these.
+
+        # Fix #389. Only jedit.stateNameToStateNumber should change these!
             # self.nextState = 1 # Don't use 0.
             # self.stateDict = {}
             # self.stateNameDict = {}
@@ -1249,13 +1248,9 @@ class JEditColorizer(BaseColorizer):
         """
         jedit.Colorize: recolor p.b using the QSyntaxHighlighter class.
         """
+        trace = 'coloring' in g.app.debug and not g.unitTesting
         if not p:  # This guard is required.
             return
-
-        trace = 'coloring' in g.app.debug
-
-        # if trace:  ###
-            # g.trace(p.v == self.old_v, p.h)
 
         # #4146: Fully recolor p.b *only* if c.p changes.
         self.updateSyntaxColorer(p)
@@ -1268,7 +1263,7 @@ class JEditColorizer(BaseColorizer):
 
         if trace:
             print('')
-            g.trace(f"Start full redraw: {self.language} {p.h}")
+            g.trace(f"Start full redraw: language: {self.language} p: {p.h}")
             print('')
 
         # Tell QSyntaxHighlighter to do a full recolor.
@@ -1280,13 +1275,14 @@ class JEditColorizer(BaseColorizer):
 
         if trace:
             print('')
-            g.trace(f" End full redraw: {self.language} {p.h}")
+            g.trace(f" End full redraw: language: {self.language} p: {p.h}")
             print('')
     #@+node:ekr.20110605121601.18638: *3* jedit.mainLoop
     tot_time = 0.0
 
-    def mainLoop(self, n: int, s: str) -> None:
+    def mainLoop(self, state: int, s: str) -> None:
         """Colorize a *single* line s, starting in state n."""
+        trace = 'coloring' in g.app.debug and not g.unitTesting
         #@+<< jedit.mainLoop: tests >>
         #@+node:ekr.20241104105301.1: *4* << jedit.mainLoop: tests >>
         # Do not remove this test!
@@ -1294,21 +1290,27 @@ class JEditColorizer(BaseColorizer):
             message = f"jedit.mainLoop: unexpected callers: {g.callers(6)}"
             g.print_unique_message(message)
         #@-<< jedit.mainLoop: tests >>
-        f = self.restartDict.get(n)
+        f = self.restartDict.get(state)
+        if trace:
+            self.traceState(s, state=state)
+            if self.in_full_redraw:
+                print('')
         t1 = time.process_time()
         i = f(s) if f else 0
+        if s == '.. comment..':
+            self.traceRulesDict()
         while i < len(s):
             progress = i
             functions = self.rulesDict.get(s[i], [])
             for f in functions:
                 n = f(self, s, i)
+                # Trace all matches.
+                if trace and n > 0:
+                    g.trace(f"Match: index {i:<3} delta: {n!r:<3} {f.__name__:>30} {s!r}")
                 if n is None:
                     g.trace('Can not happen: n is None', repr(f))
                     break
                 elif n > 0:  # Success. The match has already been colored.
-                    # Trace successful matches.
-                    # f.__name__ != 'match_blanks':
-                        # g.trace(f"{i:<3} {f.__name__:30} {s.rstrip()}")
                     i += n
                     break
                 elif n < 0:  # Total failure.
@@ -1328,44 +1330,34 @@ class JEditColorizer(BaseColorizer):
         QSyntaxHighligher calls this method repeatedly and automatically.
         """
         trace = 'coloring' in g.app.debug and not g.unitTesting
+
         self.recolorCount += 1
 
         # *Only* LeoHighlighter.highlightBlock should call this method!
         if g.callers(1) != 'highlightBlock':
-            message = f"jedit._recolor: unexpected callers: {g.callers(2)}"
+            message = f"jedit._recolor: invalid caller: {g.callers()}"
             g.print_unique_message(message)
 
         if s and not self.in_full_redraw:
-            #@+<< Schedule a full redraw there are multiple @language directives >>
-            #@+node:ekr.20241106113025.1: *4* << Schedule a full redraw there are multiple @language directives >>
-            # Don't even *think* about removing this hack.
-            lines = g.splitLines(self.c.p.b)
-            at_languages = sum(1 for z in lines if z.startswith('@language '))
-            if at_languages > 1:
-                # Do this trace first.
-                if trace and self.old_v is not None:
-                    prev_state = self.prevState()
-                    prev_state_s = self.stateNumberToStateString(prev_state)
-                    prev_lang = self.stateNumberToLanguage(prev_state)
-                    print(
-                        'j.edit._recolor: Schedule later full redraw '
-                        f"{self.recolorCount:4} at_languages: {at_languages} "
-                        f"prev state: {prev_state:2}={prev_state_s:<15} "
-                        f"prev lang: {prev_lang:6} {s!r}"
-                    )
-                # Tell jedit.colorize to schedule a full redraw *later*.
-                # Doing so is safe because we are not *already* in a full redraw.
-                self.old_v = None
-            #@-<< Schedule a full redraw there are multiple @language directives >>
+            if self.scheduleRedraw(s):
+                if 1:  ### We want to make all this optional.
+                    self.old_v = None
 
-        # Set n, the integer state number.
-        block_n = self.currentBlockNumber()
-        n = self.initBlock0() if block_n == 0 else self.prevState()
-        n = self.setState(n)  # Required.
+        # Get the line number and state associated with s.
+        line_number = self.currentBlockNumber()
+        state1 = self.currentState()
+        n = self.initBlock0() if line_number == 0 else self.prevState()
+        state = self.setState(n)  # Required.
+        if trace and state1 != -1 and state1 != state:
+            state1_s = self.stateNumberToStateString(state1)
+            state_s = self.stateNumberToStateString(state)
+            g.trace(
+                f"Change State?? {state1} -> {state} "
+                f"{state1_s:>15} -> {state_s:<15} {s!r}")
 
         # Always color the line, even if colorizing is disabled.
         if s:
-            self.mainLoop(n, s)
+            self.mainLoop(state, s)
     #@+node:ekr.20170126100139.1: *4* jedit.initBlock0
     def initBlock0(self) -> int:
         """
@@ -1406,6 +1398,63 @@ class JEditColorizer(BaseColorizer):
                 name = name.replace(pattern, s)
             return name
         return 'no-language'
+    #@+node:ekr.20241106113025.1: *4* jedit.scheduleRedraw
+    def scheduleRedraw(self, s: str) -> bool:
+        """
+        Return True if _recolor should request a full redraw of p.b.
+        """
+        # This hack should be removed.
+        # But ithout it, the colorizer doesn't work properly when coloring incrementally.
+        c = self.c
+        trace = 'coloring' in g.app.debug and not g.unitTesting
+        lines = g.splitLines(c.p.b)
+
+        # Don't redraw if p.b starts with `@killcolor`.
+        if lines and '@killcolor' in lines[0]:
+            return False
+
+        # Count the number of `@language` directives in p.b.
+        at_languages = sum(1 for z in lines if z.startswith('@language '))
+
+        # Do not remove this trace.
+        if trace and self.old_v is not None:
+            state1 = self.currentState()
+            self.traceState(s, state=state1)
+
+        # Return True if p.b contains multiple `@language` nodes.
+        return at_languages > 1
+    #@+node:ekr.20241106185836.1: *4* jedit.traceState
+    def traceState(self, s: str, *, state: int) -> None:
+        """Print everything interesting about the QSH state."""
+        # Count the number of `@language` directives in p.b.
+        c = self.c
+        lines = g.splitLines(c.p.b)
+        at_languages = sum(1 for z in lines if z.startswith('@language '))
+        line_number = self.currentBlockNumber()
+
+        # The all-important state.
+        in_s = f"in {g.callers(1)}"
+        state_s = self.stateNumberToStateString(state)
+        state_lang = self.stateNumberToLanguage(state)
+        if self.in_full_redraw:
+            print('')
+        print(
+            f"{in_s:>20} line: {line_number:2} at_languages: {at_languages} "
+            f"self.language: {self.language} state_lang: {state_lang} "
+            f"state: {state}={state_s} {s!r}")
+    #@+node:ekr.20241106195155.1: *4* jedit.traceRulesDict
+    def traceRulesDict(self) -> None:
+        """Trace jedit.rulesDict in a more readable form."""
+        for key, value in self.rulesDict.items():
+            names = [z.__name__ for z in value]
+            len_names = sum(len(z) for z in names)
+            if len_names > 50:
+                print(f"{key!r:>4}: [")
+                for name in names:
+                    print(f"        {name}")
+                print('      ]')
+            else:
+                print(f"{key!r:>4}: {[z.__name__ for z in value]}")
     #@+node:ekr.20110605121601.18589: *3* jedit:Pattern matchers
     #@+node:ekr.20110605121601.18590: *4*  About the pattern matchers
     #@@language rest
@@ -1566,20 +1615,24 @@ class JEditColorizer(BaseColorizer):
         # Only matches at start of line.
         if i != 0:
             return 0
-        if g.match_word(s, i, '@language'):
-            old_name = self.language
-            j = g.skip_ws(s, i + len('@language'))
-            k = g.skip_c_id(s, j)
-            name = s[j:k]
-            ok = self.init_mode(name)
-            if ok:
-                self.colorRangeWithTag(s, i, k, 'leokeyword')
-                if name != old_name:
-                    # Solves the recoloring problem!
-                    n = self.setInitialStateNumber()
-                    self.setState(n)
-            return k - i
-        return 0
+        if not g.match_word(s, i, '@language'):
+            return 0
+        old_name = self.language
+        j = g.skip_ws(s, i + len('@language'))
+        k = g.skip_c_id(s, j)
+        name = s[j:k]
+        ok = self.init_mode(name)
+        if 'coloring' in g.app.debug:
+            g.trace(f"old: {old_name} new: {self.language} {s}")
+        if ok:
+            self.language = name  ### Experimental.
+            self.colorRangeWithTag(s, i, k, 'leokeyword')
+            if name != old_name:
+                # Solves the recoloring problem!
+                n = self.setInitialStateNumber()
+                self.setState(n)
+        return k - i
+
     #@+node:ekr.20110605121601.18595: *5* jedit.match_at_nocolor & restarter
     def match_at_nocolor(self, s: str, i: int) -> int:
 
@@ -2832,10 +2885,17 @@ class JEditColorizer(BaseColorizer):
     #@+node:ekr.20110605121601.18636: *4* jedit.stateNameToStateNumber
     def stateNameToStateNumber(self, f: Any, stateName: Any) -> int:
         """
+        Update the following ivars when seeing stateName for the first time:
+
         stateDict:     Keys are state numbers, values state names.
         stateNameDict: Keys are state names, values are state numbers.
         restartDict:   Keys are state numbers, values are restart functions
         """
+        # Make sure nobody calls this method by accident.
+        if g.callers(1) not in ('computeState', 'setInitialStateNumber'):
+            message = f"jedit.stateNameToStateNumber: invalid caller: {g.callers()}"
+            g.print_unique_message(message)
+
         n = self.stateNameDict.get(stateName)
         if n is None:
             n = self.nextState
