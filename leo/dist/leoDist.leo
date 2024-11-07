@@ -1430,8 +1430,7 @@ It's ok to merge devel into release branch
 - Check the GitHub Pages actions page:
   https://github.com/leo-editor/leo-editor/actions
 - Check Leo's website.
-
-*** make sure create-node hook appears on the web.</t>
+</t>
 <t tx="ekr.20180405171433.4" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Make sure Leo looks good without myLeoSettings.leo.
 
 - Make sure Leo runs with Python 3.9.
