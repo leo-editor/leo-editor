@@ -1285,7 +1285,7 @@
 <v t="ekr.20241027051739.1"><vh>@rst html\jupyternotebooks.html</vh>
 <v t="ekr.20241107063856.1"><vh>Creating and populating @jupytext trees</vh></v>
 <v t="ekr.20241105100428.1"><vh>Reading @jupytext trees</vh></v>
-<v t="ekr.20241107070438.1"><vh>Editing @jupytext tree</vh></v>
+<v t="ekr.20241107070438.1"><vh>Editing @jupytext trees</vh></v>
 <v t="ekr.20241107062843.1"><vh>Writing @jupytext trees</vh></v>
 <v t="ekr.20241105103314.1"><vh>Settings</vh></v>
 <v t="ekr.20241107080948.1"><vh>Extended comments about @jupytext</vh></v>
@@ -2528,10 +2528,6 @@
 </v>
 <v t="ekr.20240828095959.1"></v>
 <v t="ekr.20240828094953.1"><vh>Leo 6.8.2 release notes</vh></v>
-<v t="ekr.20241030133008.1"><vh>*** make sure create-node hook appears on the web</vh></v>
-<v t="ekr.20241107124245.1"><vh>Recent additions to Leo's documentation</vh>
-<v t="ekr.20241107122714.1"></v>
-</v>
 <v t="ekr.20241027051739.1"></v>
 </vnodes>
 <tnodes>
@@ -33055,39 +33051,31 @@ Using Leo with Jupyter Notebooks
 .. _`jupytext library`: https://jupytext.readthedocs.io/en/latest/
 .. _`jupytext text notebook`: https://jupytext.readthedocs.io/en/latest/#text-notebooks
 
-The chapter discusses `@jupytext`, a new kind of `@&lt;file&gt;` node
+The chapter discusses `@jupytext`, a new kind of `@&lt;file&gt;` node.
 
 **Summary**
 
 - Use `@jupytext` instead of `@clean` to manage `.ipynb` files.
 - `@jupytext` nodes are thin wrappers around the `jupytext library`_.
-- `@jupytext` nodes should have the form::
-  
-  @jupytext x.ipynb
-  
-- After creating an `@jupytext` node, *do not save the outline*.
-  Instead, use `refresh-from-disk` to populate the `@jupytext` node..
-  This **initial read** splits the incoming text into Leo nodes, one cell per node.
-- After the initial read, you can use `@jupytext` just like `@clean`:
-  You can edit the `@jupytext` tree any way you like:
+- `@jupytext` nodes have the form: `@jupytext x.ipynb`.
+- When Leo reads an `@jupytext` node without children,
+  Leo splits the text into Leo nodes, one cell per node.
+- You can edit the `@jupytext` tree as usual:
   - Leo will remember those changes when you save an outline.
-  - Leo will restore those changes when you next open the outline.
-
-In short, Editing `.ipynb` files with `@jupytext` trees just works:
+  - Leo will restore those changes when you reopen the outline.
 
 .. contents:: Contents
    :depth: 2
    :local:</t>
-<t tx="ekr.20241030133008.1"></t>
 <t tx="ekr.20241105100428.1">When reading an outline, Leo **populates** each `@jupytext x.ipynb` tree as follows:
 
 1. Use the jupytext library to convert `x.ipynb` to `jupytext text notebook`_ text.
-2. Use Leo's `@clean` update algorithm to propagate any changes from `x.ipynb`
-   to the corresponding node in the `@jupytext` tree.
+2. Use Leo's `@clean` update algorithm to propagate all changes in the `x.ipynb` file
+   back to the corresponding node in the `@jupytext` tree.
 
 *Notes:*
 
-- **Notebook text** looks like Python, but usually contains syntax errors,
+- **Notebook text** looks like Python but usually contains syntax errors,
   so Leo never checks notebook text for syntax errors.
 - Notebook text *exists only within Leo.*
   You never need to synchronize `x.ipynb` with `x.py`!
@@ -33122,11 +33110,10 @@ See https://jupytext.readthedocs.io/en/latest/config.html
 
 # %%
 </t>
-<t tx="ekr.20241107062843.1">Each time you save an outline, Leo uses the jupytext library to write each
-`@jupytext` tree back to the corresponding `ipynb` file.
+<t tx="ekr.20241107062843.1">Each time you save an outline, Leo uses the jupytext library to write each `@jupytext` tree back to the corresponding `ipynb` file.
 
 - Leo *remembers all your changes* when you save an outline.
-- Leo *restore those changes* when you reopen that outline.
+- Leo *restores those changes* when you reopen that outline.
 </t>
 <t tx="ekr.20241107063856.1">`@jupytext` nodes must have the form::
 
@@ -33135,7 +33122,7 @@ See https://jupytext.readthedocs.io/en/latest/config.html
 The path is optional. It may be absolute or relative.
 As usual, Leo resolves relative paths by appending the outline's directory.
     
-After creating this node you can **populate** the `@jupytext` node in two ways.
+After creating this node you can **populate** the `@jupytext` node in two ways:
 
 2. [recommended] Execute `refresh-from-disk` *before* saving the outline.
    Leo will immediately populate the outline.
@@ -33145,17 +33132,14 @@ After creating this node you can **populate** the `@jupytext` node in two ways.
 
 **Populating the outline**
 
-Populating the outline splits the incoming notebook text into child nodes,
-one node per Jupyter Notebook cell.
+Populating the outline splits the incoming notebook text into child nodes, one node per Jupyter Notebook cell.
 
 - Leo populates `@jupytext` only if the node contains no children.
-- Otherwise,Leo uses the `clean` update algorithm to propagate changes from
+- Otherwise, Leo uses the `clean` update algorithm to propagate changes from
   `x.ipynb` to the `@jupytext x.ipynb` tree.
 </t>
-<t tx="ekr.20241107070438.1">Once you create and populate an `@jupytext` node, everything works just like `@clean`:
-
-- You can add, delete, change and reorganize child nodes as usual.
-- Leo will remember any changes you make. See the next section.</t>
+<t tx="ekr.20241107070438.1">`@jupytext` nodes work just like `@clean`.
+You can add, delete, change and reorganize child nodes like any other outline tree.</t>
 <t tx="ekr.20241107080948.1">.. _`HaveF`: https://github.com/HaveF
 .. _`GoNB`: https://github.com/janpfeifer/gonb
 .. _`jupytext library`: https://jupytext.readthedocs.io/en/latest/
@@ -33230,7 +33214,6 @@ LeoJS: https://boltex.github.io/leojs/
 Yes, Leo does have a bit of a learning curve, but mastering the basics is easier than you’d think, and you’ll quickly be leveraging its outlining power. It’s the kind of investment that pays off big time. Leo is definitely an underrated gem.
 
 Big thanks to Edward, Thomas, Félix, aka boltex (the author of LeoJS and leointeg), and all the other contributors—you guys are truly amazing, and Leo is living proof of that!</t>
-<t tx="ekr.20241107124245.1"></t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
