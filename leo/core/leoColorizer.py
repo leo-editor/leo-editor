@@ -1249,6 +1249,7 @@ class JEditColorizer(BaseColorizer):
         jedit.Colorize: recolor p.b using the QSyntaxHighlighter class.
         """
         trace = 'coloring' in g.app.debug and not g.unitTesting
+
         if not p:  # This guard is required.
             return
 
@@ -1283,18 +1284,18 @@ class JEditColorizer(BaseColorizer):
     def mainLoop(self, state: int, s: str) -> None:
         """Colorize a *single* line s, starting in state n."""
         trace = 'coloring' in g.app.debug and not g.unitTesting
-        #@+<< jedit.mainLoop: tests >>
-        #@+node:ekr.20241104105301.1: *4* << jedit.mainLoop: tests >>
-        # Do not remove this test!
+
+        # Do not remove this unit test!
         if not g.unitTesting and g.callers(1) != '_recolor':
             message = f"jedit.mainLoop: unexpected callers: {g.callers(6)}"
             g.print_unique_message(message)
-        #@-<< jedit.mainLoop: tests >>
-        f = self.restartDict.get(state)
-        if trace:
+
+        if trace:  ###
             self.traceState(s, state=state)
             if self.in_full_redraw:
                 print('')
+
+        f = self.restartDict.get(state)
         t1 = time.process_time()
         i = f(s) if f else 0
         if s == '.. comment..':
@@ -1333,7 +1334,7 @@ class JEditColorizer(BaseColorizer):
 
         self.recolorCount += 1
 
-        # *Only* LeoHighlighter.highlightBlock should call this method!
+        # Do not remove this unit test!
         if g.callers(1) != 'highlightBlock':
             message = f"jedit._recolor: invalid caller: {g.callers()}"
             g.print_unique_message(message)
