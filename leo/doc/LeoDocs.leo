@@ -32968,7 +32968,7 @@ See the `What's new in Leo 6.8.0` section for details.
 <t tx="ekr.20240724062137.1"></t>
 <t tx="ekr.20240818070101.1">`pip install leo` does not install PyQt6-WebEngine on some Linux distributions.
 
-The real problems are missing system libraries (*.so files). This missing files aren't exactly a Python/PyQt issue but have to be solved if a distro doesn't have them installed.
+The real problems are missing system libraries (`*.so` files). This missing files aren't exactly a Python/PyQt issue but have to be solved if a distro doesn't have them installed.
 
 Follow the suggestion in the error message if the message tells how to install the missing libraries.
 
