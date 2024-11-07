@@ -33124,7 +33124,7 @@ As usual, Leo resolves relative paths by appending the outline's directory.
     
 After creating this node you can **populate** the `@jupytext` node in two ways:
 
-1. [recommended] Execute `refresh-from-disk` *before* saving the outline.
+1. [recommended] Execute the `refresh-from-disk` command *before* saving the outline.
    Leo will immediately populate the outline.
    
 2. [also works] Save the outline. **Say "no"** when Leo asks whether you want to overwrite `x.ipynb`!
