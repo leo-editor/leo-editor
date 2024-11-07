@@ -195,7 +195,7 @@ Portions of Leo's pyzo interface uses code from pyzo:
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 6.8.1
+Version: 6.8.2
 Summary: An IDE, PIM and Outliner. See http://leo-editor.github.io/leo-editor/preface.html.
 Description: See users own descriptions of Leo at leo-editor.github.io/leo-editor/testimonials.html.
 Home-page: http://leo-editor.github.io/leo-editor/
@@ -1554,14 +1554,14 @@ python -m pip uninstall leo
 </t>
 <t tx="ekr.20230301070404.1">LeoDist.leo:
 - Make sure copyright dates are correct.
-- Update version numbers. Search for 6.7.
+- Update version numbers. Search for 6.8.
   The final version in PKG-INFO.TXT must be called 6.8.2, not 6.8.2-final.
   See Pep 440: https://www.python.org/dev/peps/pep-0440/
 - Update readme.md.
 - Update version in 'PKG-INFO.TXT'
 - Check readme.md spelling.
 - Make sure no distributed .leo file contains xml-stylesheet elements.
-  Run @button check .leo files in leo-dist.leo.
+  Run @button check .leo files in leoDist.leo.
 </t>
 <t tx="ekr.20230301070738.1">- Run all "check" buttons in leoSettings.leo.
 
