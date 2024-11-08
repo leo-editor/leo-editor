@@ -1297,17 +1297,18 @@ class JEditColorizer(BaseColorizer):
 
     def mainLoop(self, state: int, s: str) -> None:
         """Colorize a *single* line s, starting in state n."""
-        trace = 'coloring' in g.app.debug and not g.unitTesting
+        trace = False  ### 'coloring' in g.app.debug and not g.unitTesting
 
         ###### For testing only !!!
-        if trace:  ### new
-            return  ### new
+            # if trace:  ### new
+                # return  ### new
 
         # Do not remove this unit test!
         if not g.unitTesting and g.callers(1) != '_recolor':
             message = f"jedit.mainLoop: unexpected callers: {g.callers(6)}"
             g.print_unique_message(message)
 
+        ### To be removed?
         if trace:  ###
             self.traceState(s, state=state)
             if self.in_full_redraw:
@@ -1350,7 +1351,7 @@ class JEditColorizer(BaseColorizer):
         """
         trace = 'coloring' in g.app.debug and not g.unitTesting
 
-        if trace:  ### new
+        if trace:  ### and not self.in_full_redraw:  ### new
             ### Trace *only* what qsm is giving us.
             line_number = self.currentBlockNumber()
             state1 = self.currentState()
@@ -1364,22 +1365,25 @@ class JEditColorizer(BaseColorizer):
             message = f"jedit._recolor: invalid caller: {g.callers()}"
             g.print_unique_message(message)
 
-        if s and not self.in_full_redraw:
-            if self.scheduleRedraw(s):
-                if 0:  ### We want to make all this optional.
-                    self.old_v = None
+        ### To be removed.
+            # if s and not self.in_full_redraw:
+                # if self.scheduleRedraw(s):
+                    # if 0:  ### We want to make all this optional.
+                        # self.old_v = None
 
         # Get the line number and state associated with s.
         line_number = self.currentBlockNumber()
         state1 = self.currentState()
         n = self.initBlock0() if line_number == 0 else self.prevState()
         state = self.setState(n)  # Required.
-        if False:  ### trace and state1 != -1 and state1 != state:
-            state1_s = self.stateNumberToStateString(state1)
-            state_s = self.stateNumberToStateString(state)
-            g.trace(
-                f"Change State?? {state1} -> {state} "
-                f"{state1_s:>15} -> {state_s:<15} {s!r}")
+
+        ### To be removed.
+            # if trace and state1 != -1 and state1 != state:
+                # state1_s = self.stateNumberToStateString(state1)
+                # state_s = self.stateNumberToStateString(state)
+                # g.trace(
+                    # f"Change State?? {state1} -> {state} "
+                    # f"{state1_s:>15} -> {state_s:<15} {s!r}")
 
         # Always color the line, even if colorizing is disabled.
         if s:
@@ -1452,9 +1456,11 @@ class JEditColorizer(BaseColorizer):
 
         # Return True if p.b contains multiple `@language` nodes.
         return at_languages > 1
-    #@+node:ekr.20241106185836.1: *4* jedit.traceState
+    #@+node:ekr.20241106185836.1: *4* jedit.traceState (to be removed)
     def traceState(self, s: str, *, state: int) -> None:
         """Print everything interesting about the QSH state."""
+        return  ###
+
         # Count the number of `@language` directives in p.b.
         c = self.c
         lines = g.splitLines(c.p.b)
