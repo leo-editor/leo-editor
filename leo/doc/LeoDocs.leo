@@ -33093,22 +33093,24 @@ See https://jupytext.readthedocs.io/en/latest/config.html
 
 @data jupyter-prefix
 
-# ---
-# jupyter:
-#   jupytext:
-#     formats: py:percent
-#     text_representation:
-#       extension: .py
-#       format_name: percent
-#       format_version: '1.3'
-#       jupytext_version: 1.16.4
-#   kernelspec:
-#     display_name: Python 3 (ipykernel)
-#     language: python
-#     name: python3
-# ---
+Here is the default::
 
-# %%
+    # ---
+    # jupyter:
+    #   jupytext:
+    #     formats: py:percent
+    #     text_representation:
+    #       extension: .py
+    #       format_name: percent
+    #       format_version: '1.3'
+    #       jupytext_version: 1.16.4
+    #   kernelspec:
+    #     display_name: Python 3 (ipykernel)
+    #     language: python
+    #     name: python3
+    # ---
+
+    # %%
 </t>
 <t tx="ekr.20241107062843.1">Each time you save an outline, Leo uses the jupytext library to write each `@jupytext` tree back to the corresponding `ipynb` file.
 
@@ -33147,7 +33149,9 @@ You can add, delete, change and reorganize child nodes like any other outline tr
 .. _`go`: https://go.dev/
 .. _`block-level syncing`: https://github.com/user-attachments/assets/e29d4b27-48d9-4006-ab94-d4e8276c2e79
 
-This section contains comments by `HaveF` (edited by EKR) about `@jupytext`. For the full version of these remarks, go to this node: unl:gnx://LeoDocs.leo#ekr.20241107122714.1
+This section contains comments by `HaveF` (edited by EKR) about `@jupytext`.
+The `What People are Saying about Leo` page contains the full version of these remarks.
+.. Here's the direct link unl:gnx://LeoDocs.leo#ekr.20241107122714.1
 
 Users of Jupyter Notebooks have a love-hate relationship with `.ipynb` files. Notebooks make it super easy to write code and see the results, but version control systems don't handle `.json` files very well. However, GitHub now offers comparison tools for `.ipynb` files.
 
