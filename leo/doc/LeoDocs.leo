@@ -2528,6 +2528,8 @@
 </v>
 <v t="ekr.20240828095959.1"></v>
 <v t="ekr.20240828094953.1"><vh>Leo 6.8.2 release notes</vh></v>
+<v t="ekr.20241027051721.1"></v>
+<v t="ekr.20241107080948.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -33055,32 +33057,32 @@ The chapter discusses `@jupytext`, a new kind of `@&lt;file&gt;` node.
 
 **Summary**
 
-- Use `@jupytext` instead of `@clean` to manage `.ipynb` files.
-- `@jupytext` nodes are thin wrappers around the `jupytext library`_.
-- `@jupytext` nodes have the form: `@jupytext x.ipynb`.
-- When Leo reads an `@jupytext` node without children,
+- Use ``@jupytext`` instead of ``@clean`` to manage ``.ipynb`` files.
+- ``@jupytext`` nodes are thin wrappers around the `jupytext library`_.
+- ``@jupytext`` nodes have the form: ``@jupytext x.ipynb``.
+- When Leo reads an ``@jupytext`` node without children,
   Leo splits the text into Leo nodes, one cell per node.
-- You can edit the `@jupytext` tree as usual:
+- You can edit the ``@jupytext`` tree as usual:
   - Leo will remember those changes when you save an outline.
   - Leo will restore those changes when you reopen the outline.
 
 .. contents:: Contents
    :depth: 2
    :local:</t>
-<t tx="ekr.20241105100428.1">When reading an outline, Leo **populates** each `@jupytext x.ipynb` tree as follows:
+<t tx="ekr.20241105100428.1">When reading an outline, Leo **populates** each ``@jupytext x.ipynb`` tree as follows:
 
-1. Use the jupytext library to convert `x.ipynb` to `jupytext text notebook`_ text.
-2. Use Leo's `@clean` update algorithm to propagate all changes in the `x.ipynb` file
-   back to the corresponding node in the `@jupytext` tree.
+1. Use the jupytext library to convert ``x.ipynb`` to `jupytext text notebook`_ text.
+2. Use Leo's ``@clean`` update algorithm to propagate all changes in the ``x.ipynb`` file
+   back to the corresponding node in the ``@jupytext`` tree.
 
 *Notes:*
 
 - **Notebook text** looks like Python but usually contains syntax errors,
   so Leo never checks notebook text for syntax errors.
 - Notebook text *exists only within Leo.*
-  You never need to synchronize `x.ipynb` with `x.py`!
+  You never need to synchronize ``x.ipynb`` with ``x.py``!
 </t>
-<t tx="ekr.20241105103314.1">Three settings control how `@jupytext` nodes work
+<t tx="ekr.20241105103314.1">Three settings control how ``@jupytext`` nodes work
 
 **@int jupytext-max-headline-length = 60**
 
@@ -33112,35 +33114,35 @@ Here is the default::
 
     # %%
 </t>
-<t tx="ekr.20241107062843.1">Each time you save an outline, Leo uses the jupytext library to write each `@jupytext` tree back to the corresponding `ipynb` file.
+<t tx="ekr.20241107062843.1">Each time you save an outline, Leo uses the jupytext library to write each ``@jupytext`` tree back to the corresponding ``ipynb`` file.
 
 - Leo *remembers all your changes* when you save an outline.
 - Leo *restores those changes* when you reopen that outline.
 </t>
-<t tx="ekr.20241107063856.1">`@jupytext` nodes must have the form::
+<t tx="ekr.20241107063856.1">``@jupytext`` nodes must have the form::
 
     @jupytext &lt;path&gt;x.ipynb
     
 The path is optional. It may be absolute or relative.
 As usual, Leo resolves relative paths by appending the outline's directory.
     
-After creating this node you can **populate** the `@jupytext` node in two ways:
+After creating this node you can **populate** the ``@jupytext`` node in two ways:
 
-1. [recommended] Execute the `refresh-from-disk` command *before* saving the outline.
+1. [recommended] Execute the ``refresh-from-disk`` command *before* saving the outline.
    Leo will immediately populate the outline.
    
-2. [also works] Save the outline. **Say "no"** when Leo asks whether you want to overwrite `x.ipynb`!
-   Leo will populate `@jupytext x.ipynb` when you reopen the outline.
+2. [also works] Save the outline. **Say "no"** when Leo asks whether you want to overwrite ``x.ipynb``!
+   Leo will populate ``@jupytext x.ipynb`` when you reopen the outline.
 
 **Populating the outline**
 
 Populating the outline splits the incoming notebook text into child nodes, one node per Jupyter Notebook cell.
 
-- Leo populates `@jupytext` only if the node contains no children.
-- Otherwise, Leo uses the `clean` update algorithm to propagate changes from
-  `x.ipynb` to the `@jupytext x.ipynb` tree.
+- Leo populates ``@jupytext`` only if the node contains no children.
+- Otherwise, Leo uses the ``@clean`` update algorithm to propagate changes from
+  ``x.ipynb`` to the ``@jupytext x.ipynb`` tree.
 </t>
-<t tx="ekr.20241107070438.1">`@jupytext` nodes work just like `@clean`.
+<t tx="ekr.20241107070438.1">``@jupytext`` nodes work just like ``@clean``.
 You can add, delete, change and reorganize child nodes like any other outline tree.</t>
 <t tx="ekr.20241107080948.1">.. _`HaveF`: https://github.com/HaveF
 .. _`GoNB`: https://github.com/janpfeifer/gonb
@@ -33149,16 +33151,16 @@ You can add, delete, change and reorganize child nodes like any other outline tr
 .. _`go`: https://go.dev/
 .. _`block-level syncing`: https://github.com/user-attachments/assets/e29d4b27-48d9-4006-ab94-d4e8276c2e79
 
-This section contains comments by `HaveF` (edited by EKR) about `@jupytext`.
-The `What People are Saying about Leo` page contains the full version of these remarks.
+This section contains comments by ``HaveF`` (edited by EKR) about ``@jupytext``.
+The ``What People are Saying about Leo`` page contains the full version of these remarks.
 
-Users of Jupyter Notebooks have a love-hate relationship with `.ipynb` files. Notebooks make it super easy to write code and see the results, but version control systems don't handle `.json` files very well. However, GitHub now offers comparison tools for `.ipynb` files.
+Users of Jupyter Notebooks have a love-hate relationship with ``.ipynb`` files. Notebooks make it super easy to write code and see the results, but version control systems don't handle ``.json`` files very well. However, GitHub now offers comparison tools for ``.ipynb`` files.
 
-That's where the `jupytext library`_ comes in. This library converts between `.ipynb` files to **pseudo-python** `.py` files. These files look like Python, but they usually contain syntax errors.
+That's where the `jupytext library`_ comes in. This library converts between ``.ipynb`` files to **pseudo-python** ``.py`` files. These files look like Python, but they usually contain syntax errors.
 
-Furthermore, the jupytext library isn't limited to converting Python-based `.ipynb` files. The library can handle `.ipynb` files created with many other `Jupyter kernels`_ such as the `GoNB`_ kernel.
+Furthermore, the jupytext library isn't limited to converting Python-based ``.ipynb`` files. The library can handle ``.ipynb`` files created with many other `Jupyter kernels`_ such as the `GoNB`_ kernel.
 
-`@jupytext` integrates Leo with Jupyter notebooks. You can store your notebooks directly in Leo and use Leo's powerful outlining capabilities to manage them. When you save, Leo converts them right back to `.ipynb` files. This is huge.
+``@jupytext`` integrates Leo with Jupyter notebooks. You can store your notebooks directly in Leo and use Leo's powerful outlining capabilities to manage them. When you save, Leo converts them right back to ``.ipynb`` files. This is huge.
 
 You can edit one notebook, save it, and boom—every notebook that shares that content is automatically updated. No fuss, no hassle. The workflow is completely flexible and you won’t find these features in any other editor.
 
@@ -33166,9 +33168,9 @@ And just to make things sweeter, Thomas Passin (another Leo contributor) added a
 
 **Summary**
 
-Working with `.ipynb` files becomes a breeze with Leo.
+Working with ``.ipynb`` files becomes a breeze with Leo.
 
-Leo can handle any `.ipynb` file, regardless of the Jupyter kernel that created the file.
+Leo can handle any ``.ipynb`` file, regardless of the Jupyter kernel that created the file.
 </t>
 <t tx="ekr.20241107122714.1">Ever heard of the Lindy Effect? https://en.wikipedia.org/wiki/Lindy_effect
 
