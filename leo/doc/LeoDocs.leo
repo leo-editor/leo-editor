@@ -33050,6 +33050,10 @@ Retired features:
 Using Leo with Jupyter Notebooks
 ################################
 
+.. |br| raw:: html
+
+   &lt;br /&gt;
+
 .. _`jupytext library`: https://jupytext.readthedocs.io/en/latest/
 .. _`jupytext text notebook`: https://jupytext.readthedocs.io/en/latest/#text-notebooks
 
@@ -33062,9 +33066,9 @@ The chapter discusses ``@jupytext``, a new kind of ``@&lt;file&gt;`` node.
 - ``@jupytext`` nodes have the form: ``@jupytext x.ipynb``.
 - When Leo reads an ``@jupytext`` node without children,
   Leo splits the text into Leo nodes, one cell per node.
-- You can edit the ``@jupytext`` tree as usual:
-  - Leo will remember those changes when you save an outline.
-  - Leo will restore those changes when you reopen the outline.
+- You can edit the ``@jupytext`` tree as usual: |br|
+  Leo will remember those changes when you save an outline. |br|
+  Leo will restore those changes when you reopen the outline.
 
 .. contents:: Contents
    :depth: 2
