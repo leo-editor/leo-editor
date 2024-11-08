@@ -1584,6 +1584,8 @@ This checklist may seem daunting. In most cases errors are harmless, so don't de
 Step 0: Update the version numbers all build files:
 
 - pyproject.toml
+- scripts/inspect_wheel.py
+- scripts/install_leo_locally.py
 
 Step 1: Create and test the distribution files in leo/dist:
 
