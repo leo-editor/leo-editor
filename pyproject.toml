@@ -329,9 +329,13 @@ dependencies = [
   "PyQt6-QScintilla",
   "PyQt6-WebEngine",
   "Send2Trash; platform_system == 'Windows'",      # picture_viewer plugin.
-  "windows-curses; platform_system == 'Windows'",  # cursesGui2 plugin.
-]
+  
+  # For now, the windows-curses package does not exist for Python 3.13.
 
+  # "windows-curses; platform_system == 'Windows'",  # cursesGui2 plugin.
+  # "windows-curses; platform_system == 'Windows'; python_version < '3.13'"
+
+]
 #@-<< pyproject.toml: dependencies >>
 
 [project.scripts]

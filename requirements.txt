@@ -53,7 +53,10 @@ PyQt6>= 6.6
 PyQt6-QScintilla
 PyQt6-WebEngine
 Send2Trash; platform_system=="Windows"      # picture_viewer plugin.
-windows-curses; platform_system=="Windows"  # cursesGui2 plugin.
+
+# For now, the windows-curses package does not exist for Python 3.13.
+  
+# windows-curses[curses]; platform_system=="Windows"  # cursesGui2 plugin.
 #@-<< requirements.txt: dependencies >>
 
 #@@language python
