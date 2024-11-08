@@ -34,6 +34,7 @@
 <v t="ekr.20240417150035.1"><vh>&lt;&lt; old commands &gt;&gt;</vh></v>
 <v t="ekr.20230511074046.1"><vh>&lt;&lt; prefixes &gt;&gt;</vh></v>
 </v>
+<v t="ekr.20241103050115.1"><vh>@command mypy-modes</vh></v>
 <v t="ekr.20201013034659.1"><vh>@ignore Unused buttons and commands</vh>
 <v t="ekr.20211020091540.1"><vh>@@command b</vh></v>
 <v t="ekr.20220527065937.1"><vh>@command json-to-outline</vh></v>
@@ -353,9 +354,11 @@
 <v t="ekr.20230419052236.1"><vh>@file ../modes/javascript.py</vh></v>
 <v t="ekr.20210223151922.1"><vh>@file ../modes/julia.py</vh></v>
 <v t="ekr.20240202211600.1"><vh>@file ../modes/nim.py</vh></v>
+<v t="ekr.20241030151621.1"><vh>@file ../modes/jupytext.py</vh></v>
 <v t="ekr.20210219115553.109"><vh>@file ../modes/python.py</vh></v>
 <v t="ekr.20231103124615.1"><vh>@file ../modes/rust.py</vh></v>
 <v t="ekr.20231012163843.1"><vh>@file ../modes/scheme.py</vh></v>
+<v t="ekr.20241030152835.1"><vh>@edit ../modes/md.py</vh></v>
 </v>
 </v>
 <v t="ekr.20201012111545.1"><vh>Plugins</vh>
@@ -1224,8 +1227,9 @@ print('done: %s nodes, %s clones' % (nodes,clones))
 @tabwidth -4
 @language python
 </t>
-<t tx="ekr.20150425145248.1">restart-leo
-test-one
+<t tx="ekr.20150425145248.1">test-one
+mypy-modes
+restart-leo
 execute-script
 
 # pyflakes
@@ -3749,5 +3753,15 @@ if new_b != proj_p.b:
     proj_p.b = new_b
     c.redraw()
     c.save()</t>
+<t tx="ekr.20241103050115.1">"""Invoke EKR's private test-mypy.cmd script."""
+
+import os
+
+if c.isChanged():
+    print('Saved!')
+    c.save()
+
+os.system('mypy-modes.cmd')
+</t>
 </tnodes>
 </leo_file>
