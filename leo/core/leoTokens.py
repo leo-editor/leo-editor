@@ -1138,7 +1138,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # This is the only call to next(i) anywhere!
         next_i = self._next(self.index)
         next = 'None' if next_i is None else self.input_tokens[next_i]
-        import_is_next = next and next.kind == 'name' and next.value == 'import'
+        import_is_next = next and next.kind == 'name' and next.value == 'import'  # type:ignore
 
         if context == 'import':
             if (
