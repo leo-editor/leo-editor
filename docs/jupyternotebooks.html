@@ -130,25 +130,31 @@ You can add, delete, change and reorganize child nodes like any other outline tr
 <p>&#64;string jupytext-fmt = py:percent
 See https://jupytext.readthedocs.io/en/latest/config.html</p>
 <p>&#64;data jupyter-prefix</p>
-<p># —
-# jupyter:
-#   jupytext:
-#     formats: py:percent
-#     text_representation:
-#       extension: .py
-#       format_name: percent
-#       format_version: ‘1.3’
-#       jupytext_version: 1.16.4
-#   kernelspec:
-#     display_name: Python 3 (ipykernel)
-#     language: python
-#     name: python3
-# —</p>
-<p># %%</p>
+<p>Here is the default:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># ---</span>
+<span class="c1"># jupyter:</span>
+<span class="c1">#   jupytext:</span>
+<span class="c1">#     formats: py:percent</span>
+<span class="c1">#     text_representation:</span>
+<span class="c1">#       extension: .py</span>
+<span class="c1">#       format_name: percent</span>
+<span class="c1">#       format_version: &#39;1.3&#39;</span>
+<span class="c1">#       jupytext_version: 1.16.4</span>
+<span class="c1">#   kernelspec:</span>
+<span class="c1">#     display_name: Python 3 (ipykernel)</span>
+<span class="c1">#     language: python</span>
+<span class="c1">#     name: python3</span>
+<span class="c1"># ---</span>
+
+<span class="c1"># %%</span>
+</pre></div>
+</div>
 </section>
 <section id="extended-comments-about-jupytext">
 <h2><a class="toc-backref" href="#id7" role="doc-backlink">Extended comments about &#64;jupytext</a><a class="headerlink" href="#extended-comments-about-jupytext" title="Link to this heading">¶</a></h2>
-<p>This section contains comments by <cite>HaveF</cite> (edited by EKR) about <cite>&#64;jupytext</cite>. For the full version of these remarks, go to this node: unl:gnx://LeoDocs.leo#ekr.20241107122714.1</p>
+<p>This section contains comments by <cite>HaveF</cite> (edited by EKR) about <cite>&#64;jupytext</cite>.
+The <cite>What People are Saying about Leo</cite> page contains the full version of these remarks.
+.. Here’s the direct link unl:gnx://LeoDocs.leo#ekr.20241107122714.1</p>
 <p>Users of Jupyter Notebooks have a love-hate relationship with <cite>.ipynb</cite> files. Notebooks make it super easy to write code and see the results, but version control systems don’t handle <cite>.json</cite> files very well. However, GitHub now offers comparison tools for <cite>.ipynb</cite> files.</p>
 <p>That’s where the <a class="reference external" href="https://jupytext.readthedocs.io/en/latest/">jupytext library</a> comes in. This library converts between <cite>.ipynb</cite> files to <strong>pseudo-python</strong> <cite>.py</cite> files. These files look like Python, but they usually contain syntax errors.</p>
 <p>Furthermore, the jupytext library isn’t limited to converting Python-based <cite>.ipynb</cite> files. The library can handle <cite>.ipynb</cite> files created with many other <a class="reference external" href="https://docs.jupyter.org/en/stable/projects/kernels.html#kernels">Jupyter kernels</a> such as the <a class="reference external" href="https://github.com/janpfeifer/gonb">GoNB</a> kernel.</p>
