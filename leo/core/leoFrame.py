@@ -330,6 +330,8 @@ class LeoBody:
             self.colorizer.updateSyntaxColorer(p.copy())
 
     def recolor(self, p: Position) -> None:
+        g.print_unique_message(
+            f"LeoBody.recolor is deprecated: callers: {g.callers(6)}")
         self.c.recolor()
 
     recolor_now = recolor
