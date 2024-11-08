@@ -1361,6 +1361,9 @@ class LeoTree:
             self.tree_select_lockout = True
             self.prev_v = c.p.v
             self.selectHelper(p)
+            ### Experimental
+            c.recolor(p)  ### Experimental.
+
         finally:
             self.tree_select_lockout = False
             if c.enableRedrawFlag:
@@ -1464,8 +1467,10 @@ class LeoTree:
     def change_current_position(self, old_p: Position, p: Position) -> None:
         """Select the new node, part 2."""
         c = self.c
+
         # c.setCurrentPosition(p)
             # This is now done in set_body_text_after_select.
+
         # GS I believe this should also get into the select1 hook
         c.frame.scanForTabWidth(p)
         use_chapters = c.config.getBool('use-chapters')
@@ -1474,10 +1479,10 @@ class LeoTree:
             theChapter = cc and cc.getSelectedChapter()
             if theChapter:
                 theChapter.p = p.copy()
+
         # Do not call treeFocusHelper here!
             # c.treeFocusHelper()
         c.undoer.onSelect(old_p, p)
-        c.recolor()  # #4145.
     #@+node:ekr.20140829053801.18459: *5* 4. LeoTree.scroll_cursor
     def scroll_cursor(self, p: Position) -> None:
         """Scroll the cursor."""

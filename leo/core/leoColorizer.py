@@ -813,13 +813,25 @@ class BaseColorizer:
         Return True unless an coloring is unambiguously disabled.
         Called from Leo's node-selection logic and from the colorizer.
         """
-        if p:  # This guard is required.
-            try:
-                self.enabled = self.useSyntaxColoring(p)
-                self.language = self.scanLanguageDirectives(p)
-            except Exception:
-                g.es_print('unexpected exception in updateSyntaxColorer')
-                g.es_exception()
+        trace = 'coloring' in g.app.debug and not g.unitTesting
+
+        message = f"(BaseColorizer) enabled? {int(self.enabled)} {self.language!r} {g.callers(2)}"
+
+        if not p:  # This guard is required.
+            if trace:  ### new
+                g.trace('NO P!', message)
+            return
+
+        try:
+            self.enabled = self.useSyntaxColoring(p)
+            self.language = self.scanLanguageDirectives(p)
+            if trace:  ### new
+                print('')
+                g.trace(message)
+                print('')
+        except Exception:
+            g.es_print('unexpected exception in updateSyntaxColorer')
+            g.es_exception()
     #@+node:ekr.20170127142001.2: *4* BaseColorizer.scanLanguageDirectives
     def scanLanguageDirectives(self, p: Position) -> str:
         """Return language based on the directives in p's ancestors."""
@@ -1254,9 +1266,11 @@ class JEditColorizer(BaseColorizer):
             return
 
         # #4146: Fully recolor p.b *only* if c.p changes.
-        self.updateSyntaxColorer(p)
+        ### self.updateSyntaxColorer(p)
         if p.v == self.old_v:
             return
+
+        self.updateSyntaxColorer(p)
 
         # Initialize *all* state.
         self.init_all_state(p.v)  # Sets self.old_v.
@@ -1285,6 +1299,10 @@ class JEditColorizer(BaseColorizer):
         """Colorize a *single* line s, starting in state n."""
         trace = 'coloring' in g.app.debug and not g.unitTesting
 
+        ###### For testing only !!!
+        if trace:  ### new
+            return  ### new
+
         # Do not remove this unit test!
         if not g.unitTesting and g.callers(1) != '_recolor':
             message = f"jedit.mainLoop: unexpected callers: {g.callers(6)}"
@@ -1298,7 +1316,7 @@ class JEditColorizer(BaseColorizer):
         f = self.restartDict.get(state)
         t1 = time.process_time()
         i = f(s) if f else 0
-        if s == '.. comment..':
+        if s == '.. comment..':  ###
             self.traceRulesDict()
         while i < len(s):
             progress = i
@@ -1332,6 +1350,13 @@ class JEditColorizer(BaseColorizer):
         """
         trace = 'coloring' in g.app.debug and not g.unitTesting
 
+        if trace:  ### new
+            ### Trace *only* what qsm is giving us.
+            line_number = self.currentBlockNumber()
+            state1 = self.currentState()
+            state1_s = self.stateNumberToStateString(state1)
+            g.trace(f"line: {line_number:<2} state: {state1_s:<20} {s}")
+
         self.recolorCount += 1
 
         # Do not remove this unit test!
@@ -1341,7 +1366,7 @@ class JEditColorizer(BaseColorizer):
 
         if s and not self.in_full_redraw:
             if self.scheduleRedraw(s):
-                if 1:  ### We want to make all this optional.
+                if 0:  ### We want to make all this optional.
                     self.old_v = None
 
         # Get the line number and state associated with s.
@@ -1349,7 +1374,7 @@ class JEditColorizer(BaseColorizer):
         state1 = self.currentState()
         n = self.initBlock0() if line_number == 0 else self.prevState()
         state = self.setState(n)  # Required.
-        if trace and state1 != -1 and state1 != state:
+        if False:  ### trace and state1 != -1 and state1 != state:
             state1_s = self.stateNumberToStateString(state1)
             state_s = self.stateNumberToStateString(state)
             g.trace(
@@ -1365,9 +1390,12 @@ class JEditColorizer(BaseColorizer):
         Init *local* ivars when handling block 0.
         This prevents endless recalculation of the proper default state.
         """
+        trace = 'coloring' in g.app.debug and not g.unitTesting
         if self.enabled:
             n = self.setInitialStateNumber()
         else:
+            if trace:
+                g.trace('*** Not enabled ***')  ### new
             n = self.setRestart(self.restartNoColor)
         return n
     #@+node:ekr.20170126101049.1: *4* jedit.setInitialStateNumber
@@ -1399,7 +1427,7 @@ class JEditColorizer(BaseColorizer):
                 name = name.replace(pattern, s)
             return name
         return 'no-language'
-    #@+node:ekr.20241106113025.1: *4* jedit.scheduleRedraw
+    #@+node:ekr.20241106113025.1: *4* jedit.scheduleRedraw (to be removed)
     def scheduleRedraw(self, s: str) -> bool:
         """
         Return True if _recolor should request a full redraw of p.b.
@@ -1407,7 +1435,7 @@ class JEditColorizer(BaseColorizer):
         # This hack should be removed.
         # But ithout it, the colorizer doesn't work properly when coloring incrementally.
         c = self.c
-        trace = 'coloring' in g.app.debug and not g.unitTesting
+        trace = False  ### 'coloring' in g.app.debug and not g.unitTesting
         lines = g.splitLines(c.p.b)
 
         # Don't redraw if p.b starts with `@killcolor`.
@@ -2798,7 +2826,7 @@ class JEditColorizer(BaseColorizer):
         n = self.initialStateNumber
         self.setState(n)
         return n
-    #@+node:ekr.20110605121601.18631: *4* jedit.computeState
+    #@+node:ekr.20110605121601.18631: *4* jedit.computeState (uses self.language)
     def computeState(self, f: Any, keys: Any) -> int:
         """
         Compute the state name associated with f and all the keys.
@@ -2832,11 +2860,11 @@ class JEditColorizer(BaseColorizer):
                 pass
             elif keyVal not in (None, ''):
                 result.append(f"{key}={keyVal}")
-        state = ';'.join(result).lower()
+        state = ';'.join(result)  ###.lower()
         table = (
             ('kind=', ''),
             ('literal', 'lit'),
-            ('restart', '@'),
+            ### ('restart', '@'),
         )
         for pattern, s in table:
             state = state.replace(pattern, s)
@@ -2868,6 +2896,11 @@ class JEditColorizer(BaseColorizer):
         return enabled
     #@+node:ekr.20110605121601.18633: *4* jedit.setRestart
     def setRestart(self, f: Any, **keys: Any) -> int:
+
+        trace = 'coloring' in g.app.debug and not g.unitTesting
+        if trace:  ### new
+            g.trace(f.__name__, 'keys', keys, g.callers(2))
+
         n = self.computeState(f, keys)
         self.setState(n)
         return n
@@ -2892,11 +2925,12 @@ class JEditColorizer(BaseColorizer):
         stateNameDict: Keys are state names, values are state numbers.
         restartDict:   Keys are state numbers, values are restart functions
         """
+        trace = 'coloring' in g.app.debug and not g.unitTesting
+
         # Make sure nobody calls this method by accident.
         if g.callers(1) not in ('computeState', 'setInitialStateNumber'):
             message = f"jedit.stateNameToStateNumber: invalid caller: {g.callers()}"
             g.print_unique_message(message)
-
         n = self.stateNameDict.get(stateName)
         if n is None:
             n = self.nextState
@@ -2905,6 +2939,10 @@ class JEditColorizer(BaseColorizer):
             self.restartDict[n] = f
             self.nextState += 1
             self.n2languageDict[n] = self.language
+
+        if trace:
+            g.trace(f"{stateName:20} --> {n}  {g.callers(2)}")  ### new
+
         return n
     #@+node:ekr.20241106082615.1: *4* jedit.stateNumberToLanguage
     def stateNumberToLanguage(self, n: int) -> str:
