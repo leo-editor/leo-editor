@@ -17,8 +17,8 @@ source_suffix = '.html.txt'
 #@+node:ekr.20230121091126.1: ** << general settings >>
 project = 'Leo'
 copyright = '1997-2024, Edward K. Ream'
-version = '6.8.1'
-release = '6.8.1'
+version = '6.8.2'
+release = '6.8.2'
 
 # The master toctree document, without suffix.
 master_doc = 'leo_toc'
@@ -52,10 +52,10 @@ html_css_files = [
 # Theme options. All colors are CSS colors.
 html_theme_options = {
     'collapsiblesidebar': True,
-    'sidebarbgcolor': "#fffdbc", # Leo yellow.
+    'sidebarbgcolor': "#fffdbc",  # Leo yellow.
     'sidebartextcolor': 'black',  # Text color for the sidebar.
     'sidebarlinkcolor': 'black',
-    'bgcolor': "#fffbdc", # Body background color.
+    'bgcolor': "#fffbdc",  # Body background color.
 }
 
 # The name of an image file (relative to this directory) at the top of the sidebar.

@@ -5,12 +5,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Directives Reference &#8212; Leo 6.8.0 documentation</title>
+    <title>Directives Reference &#8212; Leo 6.8.2 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=db26dd79" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css?v=524d4423" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css?v=8453e47e" />
     
-    <script src="_static/documentation_options.js?v=2adddf63"></script>
+    <script src="_static/documentation_options.js?v=b95dd110"></script>
     <script src="_static/doctools.js?v=13a9ecda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     
@@ -33,7 +33,7 @@
         <li class="right" >
           <a href="commands.html" title="Leo’s Commands Reference"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.8.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.8.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="usersguide.html" accesskey="U">Leo’s Users Guide</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Directives Reference</a></li> 
       </ul>
@@ -212,7 +212,8 @@ By default, the file’s extension determines the importer:</p>
 <p id="index-7">The <code class="docutils literal notranslate"><span class="pre">&#64;clean</span> <span class="pre">&lt;filename&gt;</span></code> creates an external file without sentinel lines.
 <code class="docutils literal notranslate"><span class="pre">&#64;clean</span></code> trees will probably be the most convenient way of creating and
 accessing external files for most people.</p>
-<p>When writing an <code class="docutils literal notranslate"><span class="pre">&#64;clean</span></code> tree, Leo expands section references, <code class="docutils literal notranslate"><span class="pre">&#64;all</span></code> and</p>
+<p>When writing an <code class="docutils literal notranslate"><span class="pre">&#64;clean</span></code> tree, Leo expands section references, <code class="docutils literal notranslate"><span class="pre">&#64;all</span></code> and
+<code class="docutils literal notranslate"><span class="pre">&#64;others</span></code> directives, but Leo writes no sentinels to the external file.</p>
 <p>When reading an <code class="docutils literal notranslate"><span class="pre">&#64;clean</span></code> tree, Leo propagates changes from the external file
 to the <code class="docutils literal notranslate"><span class="pre">&#64;clean</span></code> tree using the <a class="reference external" href="appendices.html#the-mulder-ream-update-algorithm">Mulder/Ream update algorithm</a>.</p>
 <p><strong>Note</strong>: The <code class="docutils literal notranslate"><span class="pre">&#64;bool</span> <span class="pre">force_newlines_in_at_nosent_bodies</span></code> setting controls whether
@@ -542,9 +543,26 @@ This directive also controls how <code class="docutils literal notranslate"><spa
 <p>The <code class="docutils literal notranslate"><span class="pre">&#64;pagewidth</span></code> directive overrides the <code class="docutils literal notranslate"><span class="pre">&#64;int</span> <span class="pre">page_width</span></code> setting.</p>
 </div></blockquote>
 <p id="index-37"><code class="docutils literal notranslate"><span class="pre">&#64;persistence</span></code></p>
-<p>With <code class="docutils literal notranslate"><span class="pre">&#64;clean</span></code> and <code class="docutils literal notranslate"><span class="pre">&#64;file</span></code>, Leo can store <strong>persistent data</strong> in nodes. This information consists of the node’s <strong>gnx</strong> (Global Node Index) and the node’s <strong>uA</strong>, (User Attributes). The gnx gives each node a unique, immutable identity. Gnx’s make clones possible. The uA allows scripts and plugins to associate arbitrarily much additional data with each node.</p>
-<p>By default, Leo’s importers preserve neither gnx’s nor uA’s. This makes imported <code class="docutils literal notranslate"><span class="pre">&#64;auto</span></code> trees second class citizens. To remedy this, if an outline contains an <code class="docutils literal notranslate"><span class="pre">&#64;persistence</span></code> node, Leo will save data in the <code class="docutils literal notranslate"><span class="pre">&#64;persistence</span></code> tree that allows Leo to recover gnx’s and uA’s when re-reading <code class="docutils literal notranslate"><span class="pre">&#64;auto</span></code> files later. This allows clone links and uA’s to persist.</p>
-<p>&#64;persistence is an optional feature. The stored data is akin to bookmarks. The data can “break” (become inaccessible) if the structure (including class/method/function names) changes. However, the data will typically break infrequently. To disable this feature, just delete an existing <code class="docutils literal notranslate"><span class="pre">&#64;persistence</span></code> node or change <code class="docutils literal notranslate"><span class="pre">&#64;persistence</span></code> to <code class="docutils literal notranslate"><span class="pre">&#64;&#64;persistence</span></code>.</p>
+<blockquote>
+<div><p>With <code class="docutils literal notranslate"><span class="pre">&#64;clean</span></code> and <code class="docutils literal notranslate"><span class="pre">&#64;file</span></code>, Leo can store <strong>persistent data</strong>
+in nodes. This information consists of the node’s <strong>gnx</strong> (Global
+Node Index) and the node’s <strong>uA</strong>, (User Attributes). The gnx
+gives each node a unique, immutable identity. Gnx’s make clones
+possible. The uA allows scripts and plugins to associate
+arbitrarily much additional data with each node.</p>
+<p>By default, Leo’s importers preserve neither gnx’s nor uA’s. This
+makes imported <code class="docutils literal notranslate"><span class="pre">&#64;auto</span></code> trees second class citizens. To remedy
+this, if an outline contains an <code class="docutils literal notranslate"><span class="pre">&#64;persistence</span></code> node, Leo will
+save data in the <code class="docutils literal notranslate"><span class="pre">&#64;persistence</span></code> tree that allows Leo to recover
+gnx’s and uA’s when re-reading <code class="docutils literal notranslate"><span class="pre">&#64;auto</span></code> files later. This allows
+clone links and uA’s to persist.</p>
+<p>&#64;persistence is an optional feature. The stored data is akin to
+bookmarks. The data can “break” (become inaccessible) if the
+structure (including class/method/function names) changes.
+However, the data will typically break infrequently. To disable
+this feature, just delete an existing <code class="docutils literal notranslate"><span class="pre">&#64;persistence</span></code> node or
+change <code class="docutils literal notranslate"><span class="pre">&#64;persistence</span></code> to <code class="docutils literal notranslate"><span class="pre">&#64;&#64;persistence</span></code>.</p>
+</div></blockquote>
 <p id="index-39"><span id="index-38"></span><code class="docutils literal notranslate"><span class="pre">&#64;tabwidth</span> <span class="pre">&lt;n&gt;</span></code></p>
 <blockquote>
 <div><p>Sets the width of tabs.
@@ -609,14 +627,14 @@ Negative tab widths cause Leo to convert tabs to spaces.</p>
         <li class="right" >
           <a href="commands.html" title="Leo’s Commands Reference"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.8.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.8.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="usersguide.html" >Leo’s Users Guide</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Directives Reference</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 1997-2024, Edward K. Ream.
-      Last updated on May 28, 2024.
+      Last updated on November 07, 2024.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
     </div>
   </body>

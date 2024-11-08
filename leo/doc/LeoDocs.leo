@@ -2528,7 +2528,6 @@
 </v>
 <v t="ekr.20240828095959.1"></v>
 <v t="ekr.20240828094953.1"><vh>Leo 6.8.2 release notes</vh></v>
-<v t="ekr.20241027051739.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -32969,7 +32968,7 @@ See the `What's new in Leo 6.8.0` section for details.
 <t tx="ekr.20240724062137.1"></t>
 <t tx="ekr.20240818070101.1">`pip install leo` does not install PyQt6-WebEngine on some Linux distributions.
 
-The real problems are missing system libraries (*.so files). This missing files aren't exactly a Python/PyQt issue but have to be solved if a distro doesn't have them installed.
+The real problems are missing system libraries (`*.so` files). This missing files aren't exactly a Python/PyQt issue but have to be solved if a distro doesn't have them installed.
 
 Follow the suggestion in the error message if the message tells how to install the missing libraries.
 
@@ -32987,7 +32986,7 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 
 Most important:
 
-- PR #4119: @jupytext makes it *easy* to work with Jupyter notebooks!
+- PR #4119 &amp; PR #4138: @jupytext makes it *easy* to work with Jupyter notebooks!
 - PR #4033: Complete Leo's new layout work.
 
 Others:
@@ -33024,11 +33023,12 @@ Retired features:
 .. _`PR #4068`: https://github.com/leo-editor/leo-editor/pull/4068
 .. _`PR #4071`: https://github.com/leo-editor/leo-editor/pull/4071
 .. _`PR #4113`: https://github.com/leo-editor/leo-editor/pull/4113
-.. _`PR #4113`: https://github.com/leo-editor/leo-editor/pull/4119
+.. _`PR #4119`: https://github.com/leo-editor/leo-editor/pull/4119
+.. _`PR #4138`: https://github.com/leo-editor/leo-editor/pull/4138
 
 Most important:
 
-- `PR #4119`_: @jupytext makes it *easy* to work with Jupyter notebooks!
+- `PR #4119`_ and `PR #4138`_: @jupytext makes it *easy* to work with Jupyter notebooks!
 - `PR #4033`_: Add four new layouts and related code and commands.
 
 Others:
@@ -33093,22 +33093,24 @@ See https://jupytext.readthedocs.io/en/latest/config.html
 
 @data jupyter-prefix
 
-# ---
-# jupyter:
-#   jupytext:
-#     formats: py:percent
-#     text_representation:
-#       extension: .py
-#       format_name: percent
-#       format_version: '1.3'
-#       jupytext_version: 1.16.4
-#   kernelspec:
-#     display_name: Python 3 (ipykernel)
-#     language: python
-#     name: python3
-# ---
+Here is the default::
 
-# %%
+    # ---
+    # jupyter:
+    #   jupytext:
+    #     formats: py:percent
+    #     text_representation:
+    #       extension: .py
+    #       format_name: percent
+    #       format_version: '1.3'
+    #       jupytext_version: 1.16.4
+    #   kernelspec:
+    #     display_name: Python 3 (ipykernel)
+    #     language: python
+    #     name: python3
+    # ---
+
+    # %%
 </t>
 <t tx="ekr.20241107062843.1">Each time you save an outline, Leo uses the jupytext library to write each `@jupytext` tree back to the corresponding `ipynb` file.
 
@@ -33124,10 +33126,10 @@ As usual, Leo resolves relative paths by appending the outline's directory.
     
 After creating this node you can **populate** the `@jupytext` node in two ways:
 
-2. [recommended] Execute `refresh-from-disk` *before* saving the outline.
+1. [recommended] Execute the `refresh-from-disk` command *before* saving the outline.
    Leo will immediately populate the outline.
    
-1. [also works] Save the outline. **Say "no"** when Leo asks whether you want to overwrite `x.ipynb`!
+2. [also works] Save the outline. **Say "no"** when Leo asks whether you want to overwrite `x.ipynb`!
    Leo will populate `@jupytext x.ipynb` when you reopen the outline.
 
 **Populating the outline**
@@ -33147,7 +33149,8 @@ You can add, delete, change and reorganize child nodes like any other outline tr
 .. _`go`: https://go.dev/
 .. _`block-level syncing`: https://github.com/user-attachments/assets/e29d4b27-48d9-4006-ab94-d4e8276c2e79
 
-This section contains comments by `HaveF` (edited by EKR) about `@jupytext`. For the full version of these remarks, go to this node: unl:gnx://LeoDocs.leo#ekr.20241107122714.1
+This section contains comments by `HaveF` (edited by EKR) about `@jupytext`.
+The `What People are Saying about Leo` page contains the full version of these remarks.
 
 Users of Jupyter Notebooks have a love-hate relationship with `.ipynb` files. Notebooks make it super easy to write code and see the results, but version control systems don't handle `.json` files very well. However, GitHub now offers comparison tools for `.ipynb` files.
 
