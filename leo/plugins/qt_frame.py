@@ -534,7 +534,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 if type_ == Type.KeyPress:
                     return self.keyPress(event)
                 if type_ == Type.KeyRelease:
-                    return self.keyRelease(event)
+                    return self.keyRelease(event)  # type:ignore[arg-type]
                 return self.oldEvent(event)
             #@+node:ekr.20131118172620.16894: *7* EventWrapper.keyPress
             def keyPress(self, event: LeoKeyEvent) -> Any:
