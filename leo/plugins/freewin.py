@@ -904,6 +904,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
             self.current_text = self.current_text.replace('\t', ' ' * TAB2SPACES)
             self.p.b = self.current_text
             self.doc.setModified(False)
+            self.host_editor.document().setModified(False)
 
         # If the current position in the outline is our own node,
         # then synchronize the text if it's changed in
