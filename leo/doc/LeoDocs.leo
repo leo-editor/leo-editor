@@ -33151,7 +33151,6 @@ You can add, delete, change and reorganize child nodes like any other outline tr
 
 This section contains comments by `HaveF` (edited by EKR) about `@jupytext`.
 The `What People are Saying about Leo` page contains the full version of these remarks.
-.. Here's the direct link unl:gnx://LeoDocs.leo#ekr.20241107122714.1
 
 Users of Jupyter Notebooks have a love-hate relationship with `.ipynb` files. Notebooks make it super easy to write code and see the results, but version control systems don't handle `.json` files very well. However, GitHub now offers comparison tools for `.ipynb` files.
 
