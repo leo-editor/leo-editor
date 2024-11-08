@@ -33053,7 +33053,7 @@ Using Leo with Jupyter Notebooks
 .. _`jupytext library`: https://jupytext.readthedocs.io/en/latest/
 .. _`jupytext text notebook`: https://jupytext.readthedocs.io/en/latest/#text-notebooks
 
-The chapter discusses `@jupytext`, a new kind of `@&lt;file&gt;` node.
+The chapter discusses ``@jupytext``, a new kind of ``@&lt;file&gt;`` node.
 
 **Summary**
 
@@ -33090,12 +33090,13 @@ This setting sets the maximum length of child headlines.
 
 Leo truncates long lines at word boundaries.
 
-@string jupytext-fmt = py:percent
+**@string jupytext-fmt = py:percent**
+
 See https://jupytext.readthedocs.io/en/latest/config.html
 
-@data jupyter-prefix
+**@data jupyter-prefix**
 
-Here is the default::
+The default body text of this node is::
 
     # ---
     # jupyter:

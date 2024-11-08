@@ -46,7 +46,7 @@
             
   <section id="using-leo-with-jupyter-notebooks">
 <h1>Using Leo with Jupyter Notebooks<a class="headerlink" href="#using-leo-with-jupyter-notebooks" title="Link to this heading">¶</a></h1>
-<p>The chapter discusses <cite>&#64;jupytext</cite>, a new kind of <cite>&#64;&lt;file&gt;</cite> node.</p>
+<p>The chapter discusses <code class="docutils literal notranslate"><span class="pre">&#64;jupytext</span></code>, a new kind of <code class="docutils literal notranslate"><span class="pre">&#64;&lt;file&gt;</span></code> node.</p>
 <p><strong>Summary</strong></p>
 <ul class="simple">
 <li><p>Use <code class="docutils literal notranslate"><span class="pre">&#64;jupytext</span></code> instead of <code class="docutils literal notranslate"><span class="pre">&#64;clean</span></code> to manage <code class="docutils literal notranslate"><span class="pre">.ipynb</span></code> files.</p></li>
@@ -127,10 +127,10 @@ You can add, delete, change and reorganize child nodes like any other outline tr
 <p><strong>&#64;int jupytext-max-headline-length = 60</strong></p>
 <p>This setting sets the maximum length of child headlines.</p>
 <p>Leo truncates long lines at word boundaries.</p>
-<p>&#64;string jupytext-fmt = py:percent
-See https://jupytext.readthedocs.io/en/latest/config.html</p>
-<p>&#64;data jupyter-prefix</p>
-<p>Here is the default:</p>
+<p><strong>&#64;string jupytext-fmt = py:percent</strong></p>
+<p>See <a class="reference external" href="https://jupytext.readthedocs.io/en/latest/config.html">https://jupytext.readthedocs.io/en/latest/config.html</a></p>
+<p><strong>&#64;data jupyter-prefix</strong></p>
+<p>The default body text of this node is:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># ---</span>
 <span class="c1"># jupyter:</span>
 <span class="c1">#   jupytext:</span>
