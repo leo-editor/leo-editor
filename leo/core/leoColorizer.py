@@ -890,30 +890,33 @@ class JEditColorizer(BaseColorizer):
     def __init__(self, c: Cmdr, widget: Widget) -> None:
         """Ctor for JEditColorizer class."""
         super().__init__(c, widget)
-        #
+
         # Create the highlighter. The default is NullObject.
         if isinstance(widget, QtWidgets.QTextEdit):
             self.highlighter = LeoHighlighter(c,
                 colorizer=self,
                 document=widget.document(),
             )
-        #
-        # State data used only by this class...
+
+        # *Global* state data. This is entirely correct, but it's not worth fixing.
         self.after_doc_language: str = None
+
+        # *Local* state data. Such state is harmless.
         self.initialStateNumber = -1
-        self.old_v: VNode = None
+        self.n2languageDict: dict[int, str] = {-1: c.target_language}
         self.nested = False  # True: allow nested comments, etc.
         self.nested_level = 0  # Nesting level if self.nested is True.
         self.nextState = 1  # Don't use 0.
-        self.n2languageDict: dict[int, str] = {-1: c.target_language}
-        self.prev: tuple[int, int, str] = None
+        self.old_v: VNode = None
+        self.prev: tuple[int, int, str] = None  # For traces.
         self.restartDict: dict[int, Callable] = {}  # Keys are state numbers, values are restart functions.
         self.stateDict: dict[int, str] = {}  # Keys are state numbers, values state names.
         self.stateNameDict: dict[str, int] = {}  # Keys are state names, values are state numbers.
+
         # #2276: Set by init_section_delims.
         self.section_delim1 = '<<'
         self.section_delim2 = '>>'
-        #
+
         # Init common data...
         self.reloadSettings()
     #@+node:ekr.20110605121601.18580: *5* jedit.init
@@ -1265,6 +1268,11 @@ class JEditColorizer(BaseColorizer):
         if not p:  # This guard is required.
             return
 
+        # Only c.recolor should call this method!
+        if g.callers(1) != 'recolor':
+            message = f"jedit._colorize: invalid caller: {g.callers()}"
+            g.print_unique_message(message)
+
         # #4146: Fully recolor p.b *only* if c.p changes.
         ### self.updateSyntaxColorer(p)
         if p.v == self.old_v:
@@ -1299,17 +1307,12 @@ class JEditColorizer(BaseColorizer):
         """Colorize a *single* line s, starting in state n."""
         trace = False  ### 'coloring' in g.app.debug and not g.unitTesting
 
-        ###### For testing only !!!
-            # if trace:  ### new
-                # return  ### new
-
         # Do not remove this unit test!
         if not g.unitTesting and g.callers(1) != '_recolor':
             message = f"jedit.mainLoop: unexpected callers: {g.callers(6)}"
             g.print_unique_message(message)
 
-        ### To be removed?
-        if trace:  ###
+        if trace:  ### To be removed.
             self.traceState(s, state=state)
             if self.in_full_redraw:
                 print('')
@@ -1364,12 +1367,6 @@ class JEditColorizer(BaseColorizer):
         if g.callers(1) != 'highlightBlock':
             message = f"jedit._recolor: invalid caller: {g.callers()}"
             g.print_unique_message(message)
-
-        ### To be removed.
-            # if s and not self.in_full_redraw:
-                # if self.scheduleRedraw(s):
-                    # if 0:  ### We want to make all this optional.
-                        # self.old_v = None
 
         # Get the line number and state associated with s.
         line_number = self.currentBlockNumber()
@@ -1431,35 +1428,9 @@ class JEditColorizer(BaseColorizer):
                 name = name.replace(pattern, s)
             return name
         return 'no-language'
-    #@+node:ekr.20241106113025.1: *4* jedit.scheduleRedraw (to be removed)
-    def scheduleRedraw(self, s: str) -> bool:
-        """
-        Return True if _recolor should request a full redraw of p.b.
-        """
-        # This hack should be removed.
-        # But ithout it, the colorizer doesn't work properly when coloring incrementally.
-        c = self.c
-        trace = False  ### 'coloring' in g.app.debug and not g.unitTesting
-        lines = g.splitLines(c.p.b)
-
-        # Don't redraw if p.b starts with `@killcolor`.
-        if lines and '@killcolor' in lines[0]:
-            return False
-
-        # Count the number of `@language` directives in p.b.
-        at_languages = sum(1 for z in lines if z.startswith('@language '))
-
-        # Do not remove this trace.
-        if trace and self.old_v is not None:
-            state1 = self.currentState()
-            self.traceState(s, state=state1)
-
-        # Return True if p.b contains multiple `@language` nodes.
-        return at_languages > 1
     #@+node:ekr.20241106185836.1: *4* jedit.traceState (to be removed)
     def traceState(self, s: str, *, state: int) -> None:
         """Print everything interesting about the QSH state."""
-        return  ###
 
         # Count the number of `@language` directives in p.b.
         c = self.c
