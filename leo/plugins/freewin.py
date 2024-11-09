@@ -910,13 +910,20 @@ class ZEditorWin(QtWidgets.QMainWindow):
         # then synchronize the text if it's changed in
         # the host outline.
         elif self.c.p.v == self.v:
-            doc = self.host_editor.document()
+            host_editor = self.host_editor
+            fw_editor = self.editor
+            doc = host_editor.document()
             if doc.isModified():
-                scrollbar = self.editor.verticalScrollBar()
-                old_scroll = scrollbar.value()
-                self.current_text = doc.toPlainText()
-                self.editor.setPlainText(self.current_text)
-                scrollbar.setValue(old_scroll)
+                host_cursor = host_editor.textCursor()
+                fw_cursor = fw_editor.textCursor()
+                self.current_text = host_editor.toPlainText()
+                fw_editor.setPlainText(self.current_text)
+
+                position = host_cursor.position()
+                fw_cursor.setPosition(position)
+                fw_editor.setTextCursor(fw_cursor)
+                fw_editor.ensureCursorVisible()
+
                 doc.setModified(False)
                 self.set_and_render(False)
 
