@@ -1261,7 +1261,14 @@ class JEditColorizer(BaseColorizer):
     #@+node:ekr.20240423042341.1: *3* jedit.colorize
     def colorize(self, p: Position) -> None:
         """
-        jedit.Colorize: recolor p.b using the QSyntaxHighlighter class.
+        jedit.colorize: recolor p.b using the QSyntaxHighlighter class.
+        
+        This is the main entry point for Leo's colorizer.
+        Only c.recolor should ever call it.
+        
+        Don't even *think* about changing leoColorizer.py until
+        you understand *every word* of the Theory of Operation:
+        https://github.com/leo-editor/leo-editor/issues/4158
         """
         trace = 'coloring' in g.app.debug and not g.unitTesting
 
@@ -1270,7 +1277,7 @@ class JEditColorizer(BaseColorizer):
 
         # Only c.recolor should call this method!
         if g.callers(1) != 'recolor':
-            message = f"jedit._colorize: invalid caller: {g.callers()}"
+            message = f"jedit.colorize: invalid caller: {g.callers()}"
             g.print_unique_message(message)
 
         # #4146: Fully recolor p.b *only* if c.p changes.
@@ -1351,6 +1358,10 @@ class JEditColorizer(BaseColorizer):
         """
         jEdit.recolor: Recolor a *single* line, s.
         QSyntaxHighligher calls this method repeatedly and automatically.
+        
+        Don't even *think* about this method unless you
+        understand *every word* of the Theory of Operation:  
+        https://github.com/leo-editor/leo-editor/issues/4158
         """
         trace = 'coloring' in g.app.debug and not g.unitTesting
 
