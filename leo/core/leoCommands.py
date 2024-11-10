@@ -3670,13 +3670,13 @@ class Commands:
                 g.doHook(kind, c=c, nodes=mods)
                 mods.clear()
     #@+node:ekr.20080514131122.13: *5* c.recolor
-    def recolor(self, p: Position = None, *, force: bool = False) -> None:
+    def recolor(self, p: Position = None) -> None:
         c = self
         colorizer = c.frame.body.colorizer
         if colorizer and hasattr(colorizer, 'colorize'):
             # Both jEditColorizer and QScintillaColorizer have colorize methods.
             p = p or c.p
-            colorizer.colorize(p, force=force)
+            colorizer.colorize(p)
 
     recolor_now = recolor
     #@+node:ekr.20080514131122.14: *5* c.redrawing...
@@ -3696,7 +3696,11 @@ class Commands:
         if c:
             p = c.p
             c.redraw()
-            c.recolor(p, force=True)  # #4146
+            # Use a trap door, not a kwarg.
+            colorizer = c.frame.body.colorizer
+            if colorizer and hasattr(colorizer, 'old_v'):
+                colorizer.old_v = None  # #4146
+            c.recolor(p)
 
     def redraw(self, p: Position = None) -> None:
         """

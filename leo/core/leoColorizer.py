@@ -880,7 +880,10 @@ class BaseColorizer:
 
 class JEditColorizer(BaseColorizer):
     """
-    The JEditColorizer class adapts jEdit pattern matchers for QSyntaxHighlighter.
+    The JEditColorizer class adapts jEdit pattern matchers for
+    the QSyntaxHighlighter class.
+    
+    This is c.frame.body.colorizer.
     
     Don't even *think* about this method unless you
     understand *every word* of the Theory of Operation:  
@@ -1261,7 +1264,7 @@ class JEditColorizer(BaseColorizer):
                     d[ch] = aList
         self.rulesDict = d
     #@+node:ekr.20240423042341.1: *3* jedit.colorize
-    def colorize(self, p: Position, *, force: bool = False) -> None:
+    def colorize(self, p: Position) -> None:
         """
         jedit.colorize: recolor p.b using the QSyntaxHighlighter class.
         
@@ -1282,11 +1285,9 @@ class JEditColorizer(BaseColorizer):
             message = f"jedit.colorize: invalid caller: {g.callers()}"
             g.print_unique_message(message)
 
-        # #4146: Fully recolor p.b *only* if c.p changes.
-        ### self.updateSyntaxColorer(p)
-
-        #
-        if not force and p.v == self.old_v:
+        # Test p.v instead of p so that moving from one
+        # clone to another does not cause a redraw.
+        if p.v == self.old_v:
             return
 
         self.updateSyntaxColorer(p)
