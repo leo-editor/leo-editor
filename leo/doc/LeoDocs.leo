@@ -1315,6 +1315,7 @@
 <v t="ekr.20101025080245.5799" descendentVnodeUnknownAttributes="7d71002858010000003071017d710258090000007374725f6174696d657103580c000000313337363431313936352e307104735803000000302e3271057d710658090000007374725f6174696d657107580c000000313337363431343136312e307108735805000000302e322e3071097d710a58090000007374725f6174696d65710b580c000000313337363431343136332e30710c735807000000302e322e302e31710d7d710e58090000007374725f6174696d65710f580c000000313337363431323033382e307110735807000000302e322e302e3271117d71122858090000007374725f6174696d657113580c000000313337363431343136342e30711458090000007374725f6374696d657115580c000000313337363431323033392e30711658090000007374725f6d74696d657117580c000000313337363431323033392e307118755807000000302e322e302e3571197d711a58090000007374725f6174696d65711b580c000000313337363431313938372e30711c735803000000302e33711d7d711e58090000007374725f6174696d65711f580c000000313337363431343135392e307120735807000000302e352e302e3771217d712258120000007273745f687474705f61747472696275746571235d71242858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d323922206e616d653d22687474702d6e6f64652d6d61726b65722d3239223e712558040000003c2f613e71265d71272858390000003c64697620636c6173733d2273656374696f6e222069643d22696e766f6b696e672d636f6d6d616e64732d66726f6d2d73637269707473223e712858060000003c2f6469763e71295d712a28583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e712b58060000003c2f6469763e712c5d712d2858060000003c626f64793e712e58070000003c2f626f64793e712f5d71302858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e713158070000003c2f68746d6c3e71324e6565656558070000003c2f6469763e0a7133583b0000003c64697620636c6173733d2273656374696f6e222069643d2267657474696e672d616e642d73657474696e672d707265666572656e636573223e0a713458780000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964313522206e616d653d2267657474696e672d616e642d73657474696e672d707265666572656e636573223e47657474696e6720616e642073657474696e6720707265666572656e6365733c2f613e3c2f68313e0a713565735808000000302e352e302e313171367d713758120000007273745f687474705f61747472696275746571385d71392858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d323722206e616d653d22687474702d6e6f64652d6d61726b65722d3237223e713a58040000003c2f613e713b5d713c28582e0000003c64697620636c6173733d2273656374696f6e222069643d227570646174696e672d7468652d73637265656e223e713d58060000003c2f6469763e713e5d713f28583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e714058060000003c2f6469763e71415d71422858060000003c626f64793e714358070000003c2f626f64793e71445d71452858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e714658070000003c2f68746d6c3e71474e6565656558070000003c2f6469763e0a7148583a0000003c64697620636c6173733d2273656374696f6e222069643d22696e766f6b696e672d636f6d6d616e64732d66726f6d2d73637269707473223e0a714958760000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964313422206e616d653d22696e766f6b696e672d636f6d6d616e64732d66726f6d2d73637269707473223e496e766f6b696e6720636f6d6d616e64732066726f6d20736372697074733c2f613e3c2f68313e0a714a65735808000000302e352e302e3230714b7d714c58120000007273745f687474705f617474726962757465714d5d714e2858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d333722206e616d653d22687474702d6e6f64652d6d61726b65722d3337223e714f58040000003c2f613e71505d71512858260000003c64697620636c6173733d2273656374696f6e222069643d22672d726566696e64616c6c223e715258060000003c2f6469763e71535d715428584f0000003c64697620636c6173733d2273656374696f6e222069643d2266756e6374696f6e732d666f722d66696e64696e672d616e642d6368616e67696e672d746578742d66726f6d2d73637269707473223e715558060000003c2f6469763e71565d715728583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e715858060000003c2f6469763e71595d715a2858060000003c626f64793e715b58070000003c2f626f64793e715c5d715d2858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e715e58070000003c2f68746d6c3e715f4e656565656558070000003c2f6469763e0a716058070000003c2f6469763e0a716158350000003c64697620636c6173733d2273656374696f6e222069643d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e0a7162586c0000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964313922206e616d653d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e52756e6e696e67204c656f20696e206261746368206d6f64653c2f613e3c2f68313e0a71636573752e"><vh>Advanced Topics</vh>
 <v t="ekr.20131008041326.16099"><vh>@rst html/intermediatetopics.html</vh></v>
 <v t="ekr.20060430221745"><vh>Controlling syntax coloring</vh>
+<v t="ekr.20241110135002.1"><vh>Theory of operation (off line)</vh></v>
 <v t="ekr.20060430221745.1"><vh>@rst html\coloring.html</vh>
 <v t="ekr.20060830142929"><vh>Settings for syntax coloring</vh>
 <v t="ekr.20190422181351.1"><vh>Color settings</vh></v>
@@ -2528,6 +2529,7 @@
 </v>
 <v t="ekr.20240828095959.1"></v>
 <v t="ekr.20240828094953.1"><vh>Leo 6.8.2 release notes</vh></v>
+<v t="ekr.20060430221745"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -33222,6 +33224,132 @@ LeoJS: https://boltex.github.io/leojs/
 Yes, Leo does have a bit of a learning curve, but mastering the basics is easier than you’d think, and you’ll quickly be leveraging its outlining power. It’s the kind of investment that pays off big time. Leo is definitely an underrated gem.
 
 Big thanks to Edward, Thomas, Félix, aka boltex (the author of LeoJS and leointeg), and all the other contributors—you guys are truly amazing, and Leo is living proof of that!</t>
+<t tx="ekr.20241110135002.1">@language rest
+@wrap
+
+This node is *backup* for Leo issue #4158: Theory of Operation for Leo's colorizer
+https://github.com/leo-editor/leo-editor/issues/4158
+
+This node is part of LeoDocs.leo, but these notes do *not* appear on Leo's website.
+
+=== Start of Notes ===
+
+Don't even *think* about changing Leo's colorizer unless you understand *every word* of these notes.
+
+Future project leader should **immediately reject** any proposal that contemplates wholesale changes to `leoColorizer.py`.
+Such proposals would be profoundly misguided.
+
+**Terminology**
+
+- **qsh** means the singleton instance of the [QSyntaxHighlighter](https://doc.qt.io/qt-6/qsyntaxhighlighter.html) class.
+- Unless qualified, all methods are instances of the `JEditColorizer` (**jedit**) class.
+
+**Guidelines for changing the colorizer**
+
+Only the profoundly ignorant would suggest wholesale changes to Leo's colorizer. Don't even think about doing so.
+
+Devs ignore the following guidelines at their peril. These guidelines should ensure that future PRs retain the colorizer's outstanding reliability
+
+- Future PRs *must not* change any code outside `leoColorizer.py`. 
+- Future PRs *must not* attempt to "help" the qsh. The qsh is highly optimized and needs no help!
+- Future PRs *should not* change the helpers that access qsh's state. These helpers are solid.
+- Future PRs should change `_recolor` , `mainLoop`, and the pattern matchers *only as a last resort*.
+
+**The big picture**
+
+`_redraw` and the qsh collaborate to colorize changed lines *without unnecessary work*.
+
+`_redraw` must:
+
+- Call qsh methods to colorize **s**, a *single* line of text.
+- Inform the qsh of the **ending state**, an *integer* representing the coloring state of the *end* of the colorized line.
+
+If `_redraw` sets ending states properly, the qsh will issue highly optimized calls to `_redraw(s)`. In other words, the qsh will call `_redraw(s)` only if the coloring for s might change. This optimization is the reason why the qsh exists!
+
+In other words: *handling qsh states is the colorizer's most important task!* Colorizing is secondary!
+
+**The challenge**
+
+The qsh can (and will) `call _recolor(s)` where s is *out-of-sequence* with the preceding call. For example, the following snippet is typical in @jupytext nodes:
+```python
+# %% (like @language python)
+
+def spam():
+
+# %% [markdown] (like @language md)
+
+# Section 1
+It was the best of times; it was the worst of times.
+```
+The user can click (or cut or paste) anywhere in this text. The qsh will then call `_recolor(s)` starting with the first changed line. There is no necessary relationship between `s` and the line that `_re` last saw!
+
+**Calling sequence**
+
+- `LeoTree.select` changes c.p. It's a complex task. 
+- LeoTree.select calls `c.recolor(p)`, where `p` is the *new* position. This call happens last.
+- `c.recolor` calls `c.colorize`, the *only* entry point for the jedit colorizer.
+- `c.colorize` ends as follows:
+```python
+# Tell QSyntaxHighlighter to do a full recolor.
+try:
+    self.in_full_redraw = True # Debugging only.
+    self.highlighter.rehighlight()
+finally:
+    self.in_full_redraw = False
+```
+This code causes the qsh to call `_redraw(s)` whenever `p.b` changes.
+
+- `_redraw` computes the initial qsh state and calls `mainLine` to colorize s.
+- `mainLine` does not change state directly! It only calls pattern matches.
+- The pattern matchers compute the final qsh state as a side effect.
+
+**mainLoop(s)**
+
+`mainLoop` calls pattern matchers for a *single* line of text, so the coloring state
+**can not possibly change** while `mainLoop` is executing. It's so easy to lose sight of this fact!
+
+`mainLoop` calls pattern matchers as follows:
+
+- First, `_mainLoop` calls the pattern matcher for the *starting* state.
+- `_mainLoop` then calls pattern matchers until every character of the line has been handled.
+
+*Important*: `mainLoop` does not change the ending state itself! That pattern matches do that as a side effect.
+
+**About pattern matchers**
+
+- Pattern matchers adapt jEdit patterns for the qsh.
+- There are one or more **restarter methods** for syntax elements that might match across line boundaries.
+
+The `JEditColorizer` class defines surprisingly few restarters.
+The Python colorizers defines restarters for only for continued strings and docstrings.
+
+**About states**
+
+The qsh uses *integer* states. Leo's pattern matchers use a corresponding *string* state. 
+`_redraw` converts to and from these two representations.
+
+*Regardless of representation*, the  state represents:
+
+- The language in effect for the *single* line s.
+- The ending state of s.
+- The coloring directive in effect for s.
+
+Pattern matchers do the following when they only partially succeed:
+
+- They create a binding for its restarter and call `setRestart`.
+- `setRestart` calls `computeState` to create the *string* state.
+- `setRestart` then calls `stateNameToStateNumber` to convert that string to an integer state.
+  This state then gets passed to `qsh.setCurrentBlockState`. 
+  As a side effect, `stateNameToStateNumber` updates the `stateDict`, `stateNameDict`, and `restartDict`.
+  **These dicts must never clash**! That is, integer state numbers must be unique across all languages.
+
+**Summary**
+
+Informing the qsh of ending state of each line is the colorizer's main task. The colorizer does so as follows:
+
+- `_redraw(s)` retrieves the *starting* state from the qsh, then calls `mainLoop(s)` to colorize s.
+- `_mainLoop` calls pattern matchers.
+- The pattern matchers change the *ending state* as a side effect.</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
