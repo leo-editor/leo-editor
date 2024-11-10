@@ -21,7 +21,8 @@ no matter how the user navigates within or between outlines.
 #@+node:tom.20240811231850.1: *3* New With This Version
 New With This Version
 ======================
-1. When text is changed in the host node, the cursor position in the FW editor will match the cursor position of the nost;
+1. When text is changed in the host node, the cursor position in the FW
+   editor will match the cursor position of the nost;
 2. The FW editor will scroll to put the new cursor postion into view if needed.
 
 
