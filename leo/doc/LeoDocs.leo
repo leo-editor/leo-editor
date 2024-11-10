@@ -33232,17 +33232,22 @@ https://github.com/leo-editor/leo-editor/issues/4158
 
 This node is part of LeoDocs.leo, but these notes do *not* appear on Leo's website.
 
-=== Start of Notes ===
+**Warning**
 
 Don't even *think* about changing Leo's colorizer unless you understand *every word* of these notes.
 
-Future project leader should **immediately reject** any proposal that contemplates wholesale changes to `leoColorizer.py`.
-Such proposals would be profoundly misguided.
+Future project leader should **immediately reject** any proposal that contemplates wholesale changes to `leoColorizer.py`. Such proposals would be profoundly misguided.
 
 **Terminology**
 
 - **qsh** means the singleton instance of the [QSyntaxHighlighter](https://doc.qt.io/qt-6/qsyntaxhighlighter.html) class.
 - Unless qualified, all methods are instances of the `JEditColorizer` (**jedit**) class.
+
+**Background reading**
+
+Please read and understand the Controlling Syntax Coloring
+https://leo-editor.github.io/leo-editor/coloring.html
+chapter on Leo's website. This chapter discusses Leo's colorizer from another point of view.
 
 **Guidelines for changing the colorizer**
 
