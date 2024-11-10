@@ -881,8 +881,10 @@ class BaseColorizer:
 class JEditColorizer(BaseColorizer):
     """
     The JEditColorizer class adapts jEdit pattern matchers for QSyntaxHighlighter.
-    For full documentation, see:
-    https://github.com/leo-editor/leo-editor/blob/master/leo/doc/colorizer.md
+    
+    Don't even *think* about this method unless you
+    understand *every word* of the Theory of Operation:  
+    https://github.com/leo-editor/leo-editor/issues/4158
     """
     #@+others
     #@+node:ekr.20220317050804.1: *3*  jedit: Birth
@@ -2919,6 +2921,7 @@ class JEditColorizer(BaseColorizer):
         if g.callers(1) not in ('computeState', 'setInitialStateNumber'):
             message = f"jedit.stateNameToStateNumber: invalid caller: {g.callers()}"
             g.print_unique_message(message)
+
         n = self.stateNameDict.get(stateName)
         if n is None:
             n = self.nextState
