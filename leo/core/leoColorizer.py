@@ -1261,7 +1261,7 @@ class JEditColorizer(BaseColorizer):
                     d[ch] = aList
         self.rulesDict = d
     #@+node:ekr.20240423042341.1: *3* jedit.colorize
-    def colorize(self, p: Position) -> None:
+    def colorize(self, p: Position, *, force: bool = False) -> None:
         """
         jedit.colorize: recolor p.b using the QSyntaxHighlighter class.
         
@@ -1284,7 +1284,9 @@ class JEditColorizer(BaseColorizer):
 
         # #4146: Fully recolor p.b *only* if c.p changes.
         ### self.updateSyntaxColorer(p)
-        if p.v == self.old_v:
+
+        #
+        if not force and p.v == self.old_v:
             return
 
         self.updateSyntaxColorer(p)
@@ -3484,7 +3486,7 @@ class QScintillaColorizer(BaseColorizer):
         self.lexer = self.lexersDict.get(language, self.nullLexer)  # type:ignore
         w.setLexer(self.lexer)
     #@+node:ekr.20140906081909.18707: *3* qsc.colorize
-    def colorize(self, p: Position) -> None:
+    def colorize(self, p: Position, *, force: bool = False) -> None:
         """The main Scintilla colorizer entry point."""
         # It would be much better to use QSyntaxHighlighter.
         # Alas, a QSciDocument is not a QTextDocument.

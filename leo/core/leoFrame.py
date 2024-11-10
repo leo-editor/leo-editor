@@ -1559,7 +1559,7 @@ class NullColorizer(leoColorizer.BaseColorizer):
 
     recolorCount = 0
 
-    def colorize(self, p: Position) -> None:
+    def colorize(self, p: Position, *, force: bool = False) -> None:
         self.recolorCount += 1  # For #503: Use string/null gui for unit tests
 #@+node:ekr.20031218072017.2222: ** class NullFrame (LeoFrame)
 class NullFrame(LeoFrame):
