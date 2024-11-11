@@ -1370,8 +1370,13 @@ class JEditColorizer(BaseColorizer):
         """
         trace = 'coloring' in g.app.debug and not g.unitTesting
 
-        if trace:  ### and not self.in_full_redraw:  ### new
-            ### Trace *only* what qsm is giving us.
+        # Do not remove this unit test!
+        if g.callers(1) != 'highlightBlock':
+            message = f"jedit._recolor: invalid caller: {g.callers()}"
+            g.print_unique_message(message)
+
+        if trace:  ### new
+            # Trace *only* what qsm is giving us.
             line_number = self.currentBlockNumber()
             state1 = self.currentState()
             state1_s = self.stateNumberToStateString(state1)
@@ -1379,24 +1384,17 @@ class JEditColorizer(BaseColorizer):
 
         self.recolorCount += 1
 
-        # Do not remove this unit test!
-        if g.callers(1) != 'highlightBlock':
-            message = f"jedit._recolor: invalid caller: {g.callers()}"
-            g.print_unique_message(message)
-
         # Get the line number and state associated with s.
         line_number = self.currentBlockNumber()
         state1 = self.currentState()
         n = self.initBlock0() if line_number == 0 else self.prevState()
         state = self.setState(n)  # Required.
 
-        ### To be removed.
-            # if trace and state1 != -1 and state1 != state:
-                # state1_s = self.stateNumberToStateString(state1)
-                # state_s = self.stateNumberToStateString(state)
-                # g.trace(
-                    # f"Change State?? {state1} -> {state} "
-                    # f"{state1_s:>15} -> {state_s:<15} {s!r}")
+        ### Experimental
+        old_v = self.old_v  ### TEMP.
+        self.language = self.stateNumberToLanguage(state)  ###
+        self.init()  ### Experimental.
+        self.old_v = old_v  ### TEMP.
 
         # Always color the line, even if colorizing is disabled.
         if s:
