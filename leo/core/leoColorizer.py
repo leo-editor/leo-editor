@@ -1315,7 +1315,13 @@ class JEditColorizer(BaseColorizer):
     tot_time = 0.0
 
     def mainLoop(self, state: int, s: str) -> None:
-        """Colorize a *single* line s, starting in state n."""
+        """
+        Colorize a *single* line s, starting in state n.
+        
+        Except for traces, do not change this method in any way!
+        
+        Any substantial change would break all the pattern matchers!
+        """
         # Do not remove this unit test!
         if not g.unitTesting and g.callers(1) != '_recolor':
             message = f"jedit.mainLoop: unexpected callers: {g.callers(6)}"
