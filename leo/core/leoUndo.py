@@ -1405,7 +1405,7 @@ class Undoer:
             i, j = u.newSel
             w.setSelectionRange(i, j, insert=u.newIns)
             w.setYScrollPosition(u.newYScroll)
-            c.frame.body.recolor(u.p)
+            c.recolor(u.p)
         u.updateMarks('new')
         u.p.setDirty()
     #@+node:ekr.20201107150619.1: *4* u.redoChangeHeadline
@@ -1415,7 +1415,7 @@ class Undoer:
         if c.p != u.p:  # #1333.
             c.selectPosition(u.p)
         u.p.setDirty()
-        c.frame.body.recolor(u.p)
+        c.recolor(u.p)
         # Restore the headline.
         u.p.initHeadString(u.newHead)
         # This is required. Otherwise redraw will revert the change!
@@ -1423,7 +1423,7 @@ class Undoer:
     #@+node:felix.20230326231408.1: *4* u.redoChangeMultiHeadline
     def redoChangeMultiHeadline(self) -> None:
         c, u = self.c, self
-        c.frame.body.recolor(u.p)
+        c.recolor(u.p)
         # Swap the ones from the 'bunch.headline' dict
         for gnx, oldNewTuple in u.headlines.items():
             v = c.fileCommands.gnxDict.get(gnx)
@@ -1455,7 +1455,7 @@ class Undoer:
             i, j = u.newSel
             w.setSelectionRange(i, j, insert=u.newIns)
             w.setYScrollPosition(u.newYScroll)
-            c.frame.body.recolor(u.p)
+            c.recolor(u.p)
         u.updateMarks('new')
         u.p.setDirty()
     #@+node:ekr.20231225134021.1: *4* u.redoChangeUA
@@ -1637,7 +1637,7 @@ class Undoer:
         # Restore the body.
         u.p.setBodyString(u.newBody)
         w.setAllText(u.newBody)
-        c.frame.body.recolor(u.p)
+        c.recolor(u.p)
         # Restore the headline.
         u.p.initHeadString(u.newHead)
         # This is required so.  Otherwise redraw will revert the change!
@@ -1781,7 +1781,7 @@ class Undoer:
             i, j = u.oldSel
             w.setSelectionRange(i, j, insert=u.oldIns)
             w.setYScrollPosition(u.oldYScroll)
-            c.frame.body.recolor(u.p)
+            c.recolor(u.p)
         u.updateMarks('old')
     #@+node:ekr.20201107150041.1: *4* u.undoChangeHeadline
     def undoChangeHeadline(self) -> None:
@@ -1791,7 +1791,7 @@ class Undoer:
         if c.p != u.p:  # #1333.
             c.selectPosition(u.p)
         u.p.setDirty()
-        c.frame.body.recolor(u.p)
+        c.recolor(u.p)
         u.p.initHeadString(u.oldHead)
         # This is required. Otherwise c.redraw will revert the change!
         c.frame.tree.setHeadline(u.p, u.oldHead)
@@ -1800,7 +1800,7 @@ class Undoer:
         """Undo a change to a node's headline."""
         c, u = self.c, self
         # selectPosition causes recoloring, so don't do this unless needed.
-        c.frame.body.recolor(u.p)
+        c.recolor(u.p)
         # Swap the ones from the 'bunch.headline' dict
         for gnx, oldNewTuple in u.headlines.items():
             v = c.fileCommands.gnxDict.get(gnx)
@@ -2007,7 +2007,7 @@ class Undoer:
         u.p.setDirty()
         u.p.b = u.oldBody
         w.setAllText(u.oldBody)
-        c.frame.body.recolor(u.p)
+        c.recolor(u.p)
         u.p.h = u.oldHead
         # This is required.  Otherwise c.redraw will revert the change!
         c.frame.tree.setHeadline(u.p, u.oldHead)
@@ -2042,7 +2042,7 @@ class Undoer:
 
         # Finish
         w.setAllText(u.oldBody)
-        c.frame.body.recolor(p)
+        c.recolor(u.p)
         p.h = u.oldHead
         # This is required.  Otherwise c.redraw will revert the change!
         c.frame.tree.setHeadline(p, u.oldHead)
@@ -2132,7 +2132,7 @@ class Undoer:
         if sel:
             i, j = sel
             w.setSelectionRange(i, j, insert=j)
-        c.frame.body.recolor(p)
+        c.recolor(u.p)
         w.seeInsertPoint()  # 2009/12/21
     #@+node:ekr.20080425060424.5: *4* u.undoSort
     def undoSort(self) -> None:

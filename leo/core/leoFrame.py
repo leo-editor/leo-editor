@@ -330,6 +330,8 @@ class LeoBody:
             self.colorizer.updateSyntaxColorer(p.copy())
 
     def recolor(self, p: Position) -> None:
+        g.print_unique_message(
+            f"LeoBody.recolor is deprecated: callers: {g.callers(6)}")
         self.c.recolor()
 
     recolor_now = recolor
@@ -1231,7 +1233,7 @@ class LeoTree:
         # New in Leo 4.4.5: we must recolor the body because
         # the headline may contain directives.
         c.frame.scanForTabWidth(p)
-        c.frame.body.recolor(p)
+        c.recolor(p)
         p.setDirty()
         u.afterChangeHeadline(p, undoType, undoData)
         # Fix bug 1280689: don't call the non-existent c.treeEditFocusHelper
@@ -1359,6 +1361,8 @@ class LeoTree:
             self.tree_select_lockout = True
             self.prev_v = c.p.v
             self.selectHelper(p)
+            c.recolor(p)  # #4146.
+
         finally:
             self.tree_select_lockout = False
             if c.enableRedrawFlag:
@@ -1462,8 +1466,10 @@ class LeoTree:
     def change_current_position(self, old_p: Position, p: Position) -> None:
         """Select the new node, part 2."""
         c = self.c
+
         # c.setCurrentPosition(p)
             # This is now done in set_body_text_after_select.
+
         # GS I believe this should also get into the select1 hook
         c.frame.scanForTabWidth(p)
         use_chapters = c.config.getBool('use-chapters')
@@ -1472,6 +1478,7 @@ class LeoTree:
             theChapter = cc and cc.getSelectedChapter()
             if theChapter:
                 theChapter.p = p.copy()
+
         # Do not call treeFocusHelper here!
             # c.treeFocusHelper()
         c.undoer.onSelect(old_p, p)
@@ -1551,7 +1558,7 @@ class NullColorizer(leoColorizer.BaseColorizer):
 
     recolorCount = 0
 
-    def colorize(self, p: Position) -> None:
+    def colorize(self, p: Position, *, force: bool = False) -> None:
         self.recolorCount += 1  # For #503: Use string/null gui for unit tests
 #@+node:ekr.20031218072017.2222: ** class NullFrame (LeoFrame)
 class NullFrame(LeoFrame):
