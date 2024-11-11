@@ -653,7 +653,7 @@ class PylintCommand:
             g.finalize_join(g.app.homeDir, '.leo', base1),
             g.finalize_join(g.app.homeDir, '.leo', base2),
             # In leo/test
-            g.finalize_join(g.app.loadDir, '..', '..', 'leo', 'test', base2),
+            g.finalize_join(g.app.loadDir, '..', '..', 'leo', 'test', base1),
             g.finalize_join(g.app.loadDir, '..', '..', 'leo', 'test', base2),
         )
         for fn in table:
