@@ -1323,7 +1323,7 @@ class JEditColorizer(BaseColorizer):
         Any substantial change would break all the pattern matchers!
         """
         # Do not remove this unit test!
-        if not g.unitTesting and g.callers(1) != '_recolor':
+        if not g.unitTesting and g.callers(1) != 'recolor':
             message = f"jedit.mainLoop: unexpected callers: {g.callers(6)}"
             g.print_unique_message(message)
         f = self.restartDict.get(state)
@@ -1352,8 +1352,8 @@ class JEditColorizer(BaseColorizer):
             assert i > progress
         # Don't even *think* about changing state here.
         self.tot_time += time.process_time() - t1
-    #@+node:ekr.20110605121601.18640: *3* jedit._recolor & helpers
-    def _recolor(self, s: str) -> None:
+    #@+node:ekr.20110605121601.18640: *3* jedit.recolor & helpers
+    def recolor(self, s: str) -> None:
         """
         jEdit.recolor: Recolor a *single* line, s.
         QSyntaxHighligher calls this method repeatedly and automatically.
@@ -1366,7 +1366,7 @@ class JEditColorizer(BaseColorizer):
 
         # Do not remove this unit test!
         if g.callers(1) != 'highlightBlock':
-            message = f"jedit._recolor: invalid caller: {g.callers()}"
+            message = f"jedit.recolor: invalid caller: {g.callers()}"
             g.print_unique_message(message)
 
         self.recolorCount += 1
@@ -2948,7 +2948,7 @@ if QtGui:
             """ Called by QSyntaxHighlighter """
             self.n_calls += 1
             s = g.toUnicode(s)
-            self.colorizer._recolor(s)  # Highlight just one line.
+            self.colorizer.recolor(s)  # Highlight just one line.
         #@+node:ekr.20190327052228.1: *3* leo_h.reloadSettings
         def reloadSettings(self) -> None:
             """Reload all reloadable settings."""
