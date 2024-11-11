@@ -2800,22 +2800,21 @@ class TestTokens(BaseTest):
         table = (
             TokenOrderGenerator,
         )
+        missing_names: list[str] = []
         for class_ in table:
+            nodes, ops = 0, 0
             traverser = class_()
-            errors, nodes, ops = 0, 0, 0
             for z in aList:
                 if hasattr(traverser, 'do_' + z):
                     nodes += 1
                 elif _op_names.get(z):
                     ops += 1
                 else:  # pragma: no cover
-                    errors += 1
+                    missing_name = f"{traverser.__class__.__name__}.{z}"
+                    missing_names.append(missing_name)
                     print('')
-                    print(
-                        f"Missing visitor: "
-                        f"{traverser.__class__.__name__}.{z}")
-        msg = f"{nodes} node types, {ops} op types, {errors} errors"
-        assert not errors, msg
+                    print(f"Missing visitor: {missing_name}")
+        assert not missing_names, '\n'.join(missing_names)
     #@-others
 #@-others
 #@-leo
