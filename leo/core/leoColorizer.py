@@ -1419,26 +1419,6 @@ class JEditColorizer(BaseColorizer):
                 name = name.replace(pattern, s)
             return name
         return 'no-language'
-    #@+node:ekr.20241106185836.1: *4* jedit.traceState (to be removed)
-    def traceState(self, s: str, *, state: int) -> None:
-        """Print everything interesting about the QSH state."""
-
-        # Count the number of `@language` directives in p.b.
-        c = self.c
-        lines = g.splitLines(c.p.b)
-        at_languages = sum(1 for z in lines if z.startswith('@language '))
-        line_number = self.currentBlockNumber()
-
-        # The all-important state.
-        in_s = f"in {g.callers(1)}"
-        state_s = self.stateNumberToStateString(state)
-        state_lang = self.stateNumberToLanguage(state)
-        if self.in_full_redraw:
-            print('')
-        print(
-            f"{in_s:>20} line: {line_number:2} at_languages: {at_languages} "
-            f"self.language: {self.language} state_lang: {state_lang} "
-            f"state: {state}={state_s} {s!r}")
     #@+node:ekr.20241106195155.1: *4* jedit.traceRulesDict
     def traceRulesDict(self) -> None:
         """Trace jedit.rulesDict in a more readable form."""
