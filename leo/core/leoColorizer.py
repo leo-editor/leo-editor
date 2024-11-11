@@ -945,7 +945,6 @@ class JEditColorizer(BaseColorizer):
     def init_all_state(self, v: VNode) -> None:
         """Completely init all state data."""
         assert self.language, g.callers(8)
-        self.old_v = v
         self.n2languageDict = {-1: self.language}
         self.nextState = 1  # Don't use 0.
         self.restartDict = {}
@@ -1287,13 +1286,16 @@ class JEditColorizer(BaseColorizer):
 
         # Test p.v instead of p so that moving from one
         # clone to another does not cause a redraw.
-        if p.v == self.old_v:
+        if p.v and p.v == self.old_v:
             return
+
+        # Remember old_v here. Do not set it anywhere else!
+        self.old_v = p.v
 
         self.updateSyntaxColorer(p)
 
         # Initialize *all* state.
-        self.init_all_state(p.v)  # Sets self.old_v.
+        self.init_all_state(p.v)
         self.init()
 
         if trace:
@@ -1375,26 +1377,18 @@ class JEditColorizer(BaseColorizer):
             message = f"jedit._recolor: invalid caller: {g.callers()}"
             g.print_unique_message(message)
 
-        if trace:  ### new
-            # Trace *only* what qsm is giving us.
-            line_number = self.currentBlockNumber()
-            state1 = self.currentState()
-            state1_s = self.stateNumberToStateString(state1)
-            g.trace(f"line: {line_number:<2} state: {state1_s:<20} {s}")
-
         self.recolorCount += 1
 
         # Get the line number and state associated with s.
         line_number = self.currentBlockNumber()
-        state1 = self.currentState()
         n = self.initBlock0() if line_number == 0 else self.prevState()
         state = self.setState(n)  # Required.
 
-        ### Experimental
-        old_v = self.old_v  ### TEMP.
-        self.language = self.stateNumberToLanguage(state)  ###
-        self.init()  ### Experimental.
-        self.old_v = old_v  ### TEMP.
+        # #4146: Update self.language from the *previous* state.
+        self.language = self.stateNumberToLanguage(state)
+
+        # #4146: Update the state, *without* disrupting restarters.
+        self.init_mode(self.language)
 
         # Always color the line, even if colorizing is disabled.
         if s:
@@ -2888,10 +2882,6 @@ class JEditColorizer(BaseColorizer):
     #@+node:ekr.20110605121601.18633: *4* jedit.setRestart
     def setRestart(self, f: Any, **keys: Any) -> int:
 
-        trace = 'coloring' in g.app.debug and not g.unitTesting
-        if trace:  ### new
-            g.trace(f.__name__, 'keys', keys, g.callers(2))
-
         n = self.computeState(f, keys)
         self.setState(n)
         return n
@@ -2916,8 +2906,6 @@ class JEditColorizer(BaseColorizer):
         stateNameDict: Keys are state names, values are state numbers.
         restartDict:   Keys are state numbers, values are restart functions
         """
-        trace = 'coloring' in g.app.debug and not g.unitTesting
-
         # Make sure nobody calls this method by accident.
         if g.callers(1) not in ('computeState', 'setInitialStateNumber'):
             message = f"jedit.stateNameToStateNumber: invalid caller: {g.callers()}"
@@ -2931,10 +2919,6 @@ class JEditColorizer(BaseColorizer):
             self.restartDict[n] = f
             self.nextState += 1
             self.n2languageDict[n] = self.language
-
-        if trace:
-            g.trace(f"{stateName:20} --> {n}  {g.callers(2)}")  ### new
-
         return n
     #@+node:ekr.20241106082615.1: *4* jedit.stateNumberToLanguage
     def stateNumberToLanguage(self, n: int) -> str:
@@ -2956,8 +2940,6 @@ class JEditColorizer(BaseColorizer):
             'initial-state': default_language(n),
         }
         return d.get(language, language)
-
-
     #@+node:ekr.20241104162429.1: *4* jedit.stateNumberToStateString
     def stateNumberToStateString(self, n: int) -> str:
         """
