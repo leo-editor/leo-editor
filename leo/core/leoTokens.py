@@ -93,7 +93,7 @@ def input_tokens_to_string(tokens: list[InputToken]) -> str:  # pragma: no cover
         print('')
         return ''
     return ''.join([z.to_string() for z in tokens])
-#@+node:ekr.20240926050431.1: *3* function: beautify_file (leoTokens.py) (new)
+#@+node:ekr.20240926050431.1: *3* function: beautify_file (leoTokens.py)
 def beautify_file(filename: str) -> bool:
     """
     Beautify the given file, writing it if has changed.
