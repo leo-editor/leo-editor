@@ -2359,9 +2359,11 @@ class AtFile:
             return False
         finally:
             sys.arg_v = old_sys_argv
+            # #4159: This may not restore the outline as it was,
+            # but it's much better than doing nothing.
             c.selectPosition(old_p)
-            # c.redraw(old_p)
-
+            c.contractAllOtherNodes()
+            c.redraw(old_p)
     #@+node:ekr.20221128123139.1: *6* at.runFlake8
     def runFlake8(self, root: Position) -> bool:  # pragma: no cover
         """Run flake8 on the selected node."""
