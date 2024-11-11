@@ -1291,10 +1291,10 @@ class LeoQtGui(leoGui.LeoGui):
         """LeoQtGui: Common context menu handling."""
         # #1286.
         handlers = g.tree_popup_handlers
+        if not handlers:
+            return  # #4164: The "No popup handlers" message is annoying.
         menu = QtWidgets.QMenu(c.frame.top)  # #1995.
         menuPos = w.mapToGlobal(point)
-        if not handlers:
-            menu.addAction("No popup handlers")
         p = c.p.copy()
         done: set[Callable] = set()
         for handler in handlers:
