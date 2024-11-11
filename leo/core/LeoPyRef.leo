@@ -358,7 +358,7 @@
 <v t="ekr.20210219115553.109"><vh>@file ../modes/python.py</vh></v>
 <v t="ekr.20231103124615.1"><vh>@file ../modes/rust.py</vh></v>
 <v t="ekr.20231012163843.1"><vh>@file ../modes/scheme.py</vh></v>
-<v t="ekr.20241030152835.1"><vh>@edit ../modes/md.py</vh></v>
+<v t="ekr.20241030152835.1"><vh>@file ../modes/md.py</vh></v>
 </v>
 </v>
 <v t="ekr.20201012111545.1"><vh>Plugins</vh>
@@ -1227,11 +1227,12 @@ print('done: %s nodes, %s clones' % (nodes,clones))
 @tabwidth -4
 @language python
 </t>
-<t tx="ekr.20150425145248.1">test-one
-mypy-modes
+<t tx="ekr.20150425145248.1">redraw
+test-one
 restart-leo
 execute-script
 
+# mypy-modes
 # pyflakes
 # test1-pyflakes
 # test-pyflakes

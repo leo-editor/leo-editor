@@ -1831,8 +1831,8 @@ class LocalConfigManager:
         c = self.c
         d = self.shortcutsDict
         if not c.frame.menu:
-            err = f"no menu: {c.shortFileName()}:{commandName}"
-            g.es_print_unique_message(err, color='red')
+            err = f"c.config.getShortcut: no menu: {c.shortFileName()}:{commandName}"
+            g.print_unique_message(err)
             return None, []
         if d:
             assert isinstance(d, g.SettingsDict), repr(d)  # was TypedDictOfLists.
