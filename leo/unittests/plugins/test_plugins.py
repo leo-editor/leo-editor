@@ -112,6 +112,10 @@ class TestPlugins(LeoUnitTest):
         # New unit test for #3008
         # https://github.com/leo-editor/leo-editor/issues/3008
 
+        # Suppress this test for Python 3.13+
+        if g.python_version_tuple >= (3, 13, 0):
+            self.skipTest('_curses not available on Python 3.13+')
+
         # #3017: Skip the test if npyscreen, curses (_curses) or tkinter are missing.
         try:
             import leo.plugins.cursesGui2 as cursesGui2

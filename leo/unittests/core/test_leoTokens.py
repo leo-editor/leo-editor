@@ -666,7 +666,7 @@ class TestTokenBasedOrange(BaseTest):
         table = (
             ### Duplicate entry to fail first.
             """f(a[1 + 2])""",
-        
+
             # Assignments...
             """a = b * c""",
             """a = b + c""",
