@@ -818,17 +818,14 @@ class BaseColorizer:
         message = f"(BaseColorizer) enabled? {int(self.enabled)} {self.language!r} {g.callers(2)}"
 
         if not p:  # This guard is required.
-            if trace:  ### new
-                g.trace('NO P!', message)
             return
 
         try:
             self.enabled = self.useSyntaxColoring(p)
             self.language = self.scanLanguageDirectives(p)
-            if trace:  ### new
+            if trace:
                 print('')
                 g.trace(message)
-                print('')
         except Exception:
             g.es_print('unexpected exception in updateSyntaxColorer')
             g.es_exception()
@@ -1319,31 +1316,20 @@ class JEditColorizer(BaseColorizer):
 
     def mainLoop(self, state: int, s: str) -> None:
         """Colorize a *single* line s, starting in state n."""
-        trace = False  ### 'coloring' in g.app.debug and not g.unitTesting
-
         # Do not remove this unit test!
         if not g.unitTesting and g.callers(1) != '_recolor':
             message = f"jedit.mainLoop: unexpected callers: {g.callers(6)}"
             g.print_unique_message(message)
-
-        if trace:  ### To be removed.
-            self.traceState(s, state=state)
-            if self.in_full_redraw:
-                print('')
-
         f = self.restartDict.get(state)
         t1 = time.process_time()
         i = f(s) if f else 0
-        if s == '.. comment..':  ###
-            self.traceRulesDict()
         while i < len(s):
             progress = i
             functions = self.rulesDict.get(s[i], [])
             for f in functions:
                 n = f(self, s, i)
                 # Trace all matches.
-                if trace and n > 0:
-                    g.trace(f"Match: index {i:<3} delta: {n!r:<3} {f.__name__:>30} {s!r}")
+                # g.trace(f"Match: index {i:<3} delta: {n!r:<3} {f.__name__:>30} {s!r}")
                 if n is None:
                     g.trace('Can not happen: n is None', repr(f))
                     break
@@ -1399,12 +1385,9 @@ class JEditColorizer(BaseColorizer):
         Init *local* ivars when handling block 0.
         This prevents endless recalculation of the proper default state.
         """
-        trace = 'coloring' in g.app.debug and not g.unitTesting
         if self.enabled:
             n = self.setInitialStateNumber()
         else:
-            if trace:
-                g.trace('*** Not enabled ***')  ### new
             n = self.setRestart(self.restartNoColor)
         return n
     #@+node:ekr.20170126101049.1: *4* jedit.setInitialStateNumber
@@ -1639,7 +1622,7 @@ class JEditColorizer(BaseColorizer):
         if 'coloring' in g.app.debug:
             g.trace(f"old: {old_name} new: {self.language} {s}")
         if ok:
-            self.language = name  ### Experimental.
+            self.language = name
             self.colorRangeWithTag(s, i, k, 'leokeyword')
             if name != old_name:
                 # Solves the recoloring problem!
@@ -2845,11 +2828,10 @@ class JEditColorizer(BaseColorizer):
                 pass
             elif keyVal not in (None, ''):
                 result.append(f"{key}={keyVal}")
-        state = ';'.join(result)  ###.lower()
+        state = ';'.join(result)
         table = (
             ('kind=', ''),
             ('literal', 'lit'),
-            ### ('restart', '@'),
         )
         for pattern, s in table:
             state = state.replace(pattern, s)
