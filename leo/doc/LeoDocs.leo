@@ -1563,37 +1563,11 @@
 <v t="ekr.20060921064744.1"><vh>Format of external files</vh></v>
 <v t="ekr.20190414193500.1"><vh>The Leonine way to refactor code</vh></v>
 <v t="ekr.20200319035525.1"><vh>Theory of operation: c.deletePositionsInList</vh></v>
-<v t="ekr.20241112030815.1"><vh>Theory of operation: Leo's colorizer</vh>
-<v t="ekr.20241112044024.1"><vh>Guidelines for changing the colorizer</vh></v>
-<v t="ekr.20241112044056.1"><vh>Terminology</vh></v>
-<v t="ekr.20241112045447.1"><vh>Changing nodes</vh></v>
-<v t="ekr.20241112044630.1"><vh>Collaboration with the qsh</vh></v>
+<v t="ekr.20241112030815.1"><vh>Leo's Colorizer: Theory of Operation</vh>
+<v t="ekr.20241112094914.1"><vh>Components of the jedit class</vh></v>
 <v t="ekr.20241112044810.1"><vh>The big challenge</vh></v>
-<v t="ekr.20241112045117.1"><vh>Overview of jedit methods (rewrite)</vh></v>
-<v t="ekr.20241110135002.1"><vh>Theory of operation (new, to be deleted)</vh></v>
-<v t="ekr.20060430220749"><vh>Files</vh></v>
-<v t="ekr.20060502084233"><vh>The colorizer's inner loop</vh></v>
-<v t="ekr.20060502084233.1"><vh>Format of colorizer control files</vh>
-<v t="ekr.20060502100550"><vh>Ruleset names</vh></v>
-<v t="ekr.20060502090516"><vh>x.properties</vh></v>
-<v t="ekr.20060510085547"><vh>Attribute dictionaries and x.attributesDictDict</vh></v>
-<v t="ekr.20060502090516.1"><vh>Keyword dictionaries and x.keywordsDictDict</vh></v>
-<v t="ekr.20060502090516.2"><vh>Rules, rules dictionaries and x.rulesDictDict</vh></v>
-<v t="ekr.20060503072213"><vh>x.importDict and imported versus delegated rulesets</vh></v>
-</v>
-<v t="ekr.20060502122950"><vh>Rule methods</vh>
-<v t="ekr.20060503064515"><vh>Arguments to rule methods</vh></v>
-<v t="ekr.20060502122950.7"><vh>match_eol_span</vh></v>
-<v t="ekr.20060502122950.10"><vh>match_eol_span_regexp</vh></v>
-<v t="ekr.20060502122950.13"><vh>match_keywords</vh></v>
-<v t="ekr.20060502122950.14"><vh>match_mark_following</vh></v>
-<v t="ekr.20060502125223"><vh>match_mark_previous</vh></v>
-<v t="ekr.20060502122950.40"><vh>match_seq</vh></v>
-<v t="ekr.20060502122950.41"><vh>match_seq_regexp</vh></v>
-<v t="ekr.20060502122950.42"><vh>match_span</vh></v>
-<v t="ekr.20060502122950.47"><vh>match_span_regexp</vh></v>
-<v t="ekr.20060502122950.48"><vh>match_terminate</vh></v>
-</v>
+<v t="ekr.20241112111533.1"><vh>States to the rescue (to do)</vh></v>
+<v t="ekr.20060430220749"><vh>Mode files</vh></v>
 </v>
 <v t="ekr.20200807105709.1"><vh>leoAst.py</vh>
 <v t="ekr.20200807111156.1"><vh>Running leoAst.py</vh>
@@ -2533,7 +2507,36 @@
 <v t="ekr.20240828095959.1"></v>
 <v t="ekr.20240828094953.1"><vh>Leo 6.8.2 release notes</vh></v>
 <v t="ekr.20241112030725.1"><vh>=== Revise the colorizing docs</vh></v>
-<v t="ekr.20241112064750.1"></v>
+<v t="ekr.20050831184021.5"></v>
+<v t="ekr.20241112110253.1"><vh>--- Theory of operation: no longer used</vh>
+<v t="ekr.20241112045447.1"><vh>Changing nodes</vh></v>
+<v t="ekr.20241112044630.1"><vh>Collaboration with the qsh</vh></v>
+<v t="ekr.20241112045117.1"><vh>Overview of jedit methods (rewrite)</vh></v>
+<v t="ekr.20060502084233"><vh>The colorizer's inner loop</vh></v>
+<v t="ekr.20241112110508.1"><vh>Unused mode files</vh></v>
+<v t="ekr.20060502084233.1"><vh>Format of colorizer control files</vh>
+<v t="ekr.20060502100550"><vh>Ruleset names</vh></v>
+<v t="ekr.20060502090516"><vh>x.properties</vh></v>
+<v t="ekr.20060510085547"><vh>Attribute dictionaries and x.attributesDictDict</vh></v>
+<v t="ekr.20060502090516.1"><vh>Keyword dictionaries and x.keywordsDictDict</vh></v>
+<v t="ekr.20060502090516.2"><vh>Rules, rules dictionaries and x.rulesDictDict</vh></v>
+<v t="ekr.20060503072213"><vh>x.importDict and imported versus delegated rulesets</vh></v>
+</v>
+<v t="ekr.20060502122950"><vh>Rule methods</vh>
+<v t="ekr.20060503064515"><vh>Arguments to rule methods</vh></v>
+<v t="ekr.20060502122950.7"><vh>match_eol_span</vh></v>
+<v t="ekr.20060502122950.10"><vh>match_eol_span_regexp</vh></v>
+<v t="ekr.20060502122950.13"><vh>match_keywords</vh></v>
+<v t="ekr.20060502122950.14"><vh>match_mark_following</vh></v>
+<v t="ekr.20060502125223"><vh>match_mark_previous</vh></v>
+<v t="ekr.20060502122950.40"><vh>match_seq</vh></v>
+<v t="ekr.20060502122950.41"><vh>match_seq_regexp</vh></v>
+<v t="ekr.20060502122950.42"><vh>match_span</vh></v>
+<v t="ekr.20060502122950.47"><vh>match_span_regexp</vh></v>
+<v t="ekr.20060502122950.48"><vh>match_terminate</vh></v>
+</v>
+<v t="ekr.20241110135002.1"><vh>Theory of operation (new, to be deleted)</vh></v>
+</v>
 <v t="ekr.20241112030815.1"></v>
 </vnodes>
 <tnodes>
@@ -5024,26 +5027,17 @@ except Exception:
 </t>
 <t tx="ekr.20060430220749">.. _jEdit: http://www.jedit.org/
 
-The `jEdit`_ editor drives its syntax colorer using xml **language description files.** Rather than using the xml language description files directly, Leo uses Python **colorer control files**, created automatically from the xml files by a script called jEdit2Py.  All these files reside in the leo/modes directory.
+The `jEdit`_ editor drives its syntax colorer using ``.xml`` files. Leo uses ``.py`` files instead.
 
-These Python files contain all the information in the jEdit's xml files, so we can (loosely) speak of modes, rulesets, rules, properties and attributes in the Python colorer control files. Later sections of this documentation will make this loose correspondence exact.
+Long ago, the ``jEdit2Py`` script created these (Python!) **mode files**. They reside in the `leo/modes` directory. Roughly speaking, there is one mode file for every language that Leo can colorizer. Over the years, Leo's devs have modified several of these mode files by hand.
 
-Each xml file describes one **colorizing mode**. A mode consists of one or more **rulesets**, and each ruleset consists of a list of **colorizing rules**. In addition, modes, rulesets and rules may have associated **properties** and **attributes**. Various rules may specify that the colorizer uses another ruleset (either in the same mode or another mode).
+**How Leo uses mode files**
 
-**Important**: jEdit's xml language description files contain no explicit &lt;RULE&gt; elements Rules are simply sub-elements of an enclosing &lt;RULES&gt; element. The element indicates the kind of rule that is specified, for example, &lt;SPAN&gt;, &lt;SEQ&gt;, etc. By the term **rule element** we shall mean any sub-element of the &lt;RULES&gt; element.
+``jedit.init`` retrieves a **rulesDict** from the mode file for the language in effect. Keys are character, the **lead-in character**. Values are lists of **rule functions** ( **rules** for short). Each *mode file* defines its own rulesDict and rules.
 
-**Important**: throughout this documentation, **x.py** will refer to the Python colorer for language x, and **x.xml** will refer to the corresponding xml language-description file.
+``jedit.mainLoop`` retrieves a list of zero-or more rules based on the character at ``s[i]``. ``mainLoop`` calls those rules until one matches or no more rules remain. Rule functions call exactly one jedit pattern matcher. It's that simple!
 
-Using Python colorer control files has the following advantages:
-
-- Running jEdit2Py need only be done when x.xml changes, and the speed of the xml parser in jEdit2Py does not affect the speed of Leo's colorizer in any way. Moreover, the jEdit2Py script can contain debugging traces and checks.
-
-- Colorer control files are valid .py files, so all of Python's import optimizations work as usual. In particular, all the data in colorer control files is immediately accessible to Leo's colorer.
-
-- Colorer control files are easier for humans to understand and modify than the equivalent xml file. Furthermore, it is easy to insert debugging information into Python colorer control files.
-
-- It is easy to modify the Python colorer control files 'by hand' without changing the corresponding xml file. In particular, it would be easy to define entirely new kinds of pattern-matching rules in Python merely by creating functions in a colorer control file.
-</t>
+If this scheme still seems mysterious, studying ``init``, ``mainLoop`` and a mode file like ``leo/modes/python.py`` should help.</t>
 <t tx="ekr.20060502084233">When Leo's syntax colorer sees the '@language x' directive, it will import x.py from Leo's modes folder. The colorer can then access any module-level object obj in x.py as x.obj.
 
 Colorizer control files contain **rules functions** corresponding to rule elements in x.xml. The colorizer can call these functions as if they were members of the colorizer class by passing 'self' as the first argument of these functions. I call these rules *functions* to distinguish them from the corresponding **rules methods** which are actual methods of the colorizer class. Rules *functions* merely call corresponding rules *methods*. Indeed, rules functions are simply a way of binding values to keyword arguments of rules methods. These keywords arguments correspond to the xml attributes of rule elements in x.xml.
@@ -33267,29 +33261,18 @@ Informing the qsh of ending state of each line is the colorizer's main task. The
 - The pattern matchers change the *ending state* as a side effect.</t>
 <t tx="ekr.20241112030725.1">https://github.com/leo-editor/leo-editor/issues/4166
 PR: https://github.com/leo-editor/leo-editor/pull/4174</t>
-<t tx="ekr.20241112030815.1">Are you sure you want to read this appendix?
-It is intended *only* for Leo's core developers.
+<t tx="ekr.20241112030815.1">Are you sure you want to read this appendix? It is intended *only* for Leo's core developers.
 
-This appendix contains the theory of operation for the ``JEditColorizer`` class in ``leoColorizer.py``. This class does a complex job efficiently and reliably.
+**The Grand Overview**
 
-This appendix also discusses **mode files**, files in the ``leo/modes`` directory. These files tell the colorizer the syntax and colors to be usef for each languages.
+This appendix contains the theory of operation for the ``JEditColorizer`` (**jedit**) class in ``leoColorizer.py``. Unless qualified, all methods are members of the jedit class.
+
+The jedit class collaborates with the **qsh**, the singleton instance of the [QSyntaxHighlighter](https://doc.qt.io/qt-6/qsyntaxhighlighter.html) class.
+
+This collaboration allows the qsh *minimize* the calls to ``jedit.redraw``. The qsh calls ``redraw(s)`` *only* if line ``s`` could possibly need recoloring.
+
+This appendix also discusses **mode files**, files in the ``leo/modes`` directory. These files tell the jedit class how to colorize specific languages.
 </t>
-<t tx="ekr.20241112044024.1">Future project leader should *immediately reject* any proposal that suggests wholesale changes to ``leoColorizer.py``. Such proposals would be profoundly misguided.
-
-These following guidelines should ensure that future PRs retain the colorizer's outstanding reliability:
-
-- Future PRs *must not* change any code outside ``leoColorizer.py``. 
-- Future PRs *must not* attempt to "help" the qsh.
-  The qsh is highly optimized and needs no help!
-- Future PRs *should not* change the helpers that access qsh's state.
-  These helpers are solid.
-- Future PRs should change ``recolor`` , ``mainLoop``, and the pattern matchers
-  *only as a last resort*.
-
-</t>
-<t tx="ekr.20241112044056.1">**qsh** means the singleton instance of the [QSyntaxHighlighter](https://doc.qt.io/qt-6/qsyntaxhighlighter.html) class.
-
-Unless qualified, all methods are instances of the ``JEditColorizer`` (**jedit**) class.</t>
 <t tx="ekr.20241112044630.1">``redraw`` must collaborate with the qsh so the qsh will call ``redraw`` *as few times as possible.* If the collaboration is effective, the qsh will call ``redraw(s)`` only if the coloring for ``s`` could possibly change. This optimization is the reason why the qsh exists!
 
 ``redraw(s)`` has two primary tasks:
@@ -33362,6 +33345,62 @@ The following sections discuss what ``redraw`` (and its helpers) must do.
 
 You may specify default fonts and colors.
 You may also specify fonts and colors on a language-by-language basis.</t>
+<t tx="ekr.20241112094914.1">The ``JEditColorizer`` class consists **drivers**, **pattern matchers**, and **utilities**.
+
+**Drivers**
+
+The driver methods are ``colorize``, ``redraw``, and ``mainLoop``. These methods are the interface between Leo's core, the qsh, and the other methods of the jedit class.
+
+``colorize`` stands between Leo's core and the qsh. Only ``LeoTree.select`` calls this method. ``colorize`` calls ``qsh.rehighlight`` to schedule a full redraw of ``p.b``.
+
+``redraw`` stands between the qsh and the pattern matchers. ``qsh.rehighlight`` calls ``redraw(s)`` to colorize a *single* line ``s``. After initing the **initial state**, ``redraw`` calls ``mainLoop``.
+ 
+``mainLoop(s)`` stands between ``redraw`` and the **pattern matchers** (described next).  ``mainLoop(s)`` calls pattern matchers until ``s`` has been completely scanned.
+
+But ``mainLoop`` does *not* call pattern matchers directly. *Pattern matchers are callbacks.* ``mainLoop`` actually calls **rule functions** (**rules** for short) defined within the mode file for the language in effect at line ``s``. These rules then call pattern matchers.
+
+Yes, this is a complex scheme. The scheme is an relic jEdit *editor's* xml mode files.
+
+**Pattern matchers**
+
+Pattern matchers form the bulk of the jedit class. Most pattern matchers contain a large number of kwargs. These kwargs are further relics of the original xml mode files.
+
+As mentioned above, pattern matchers are callbacks. Nevertheless, the purpose of each pattern matcher is straightforward. Each pattern matcher does the following:
+
+- Examine the string s[i:], where s is the argument to `mainLoop(s)`.
+- Return an *integer* indicating whether the pattern matched.
+- Update the **ending state** of the line for successful matches.
+
+``mainLoop`` uses the value returned from pattern matchers as follows:
+  -1 means complete failure. `mainLoop` will return.
+  0 means partial failure. `mainLoop` will attempt to match other rules.
+  &gt; 0 means success. `mainLoop` will increment ``i`` and continue.
+  
+**Utilities**
+
+To do: Behind-the-scenes utilities, including state-related helpers.
+</t>
+<t tx="ekr.20241112110253.1"></t>
+<t tx="ekr.20241112110508.1">**Important**: throughout this documentation, **x.py** will refer to the Python colorer for language x, and **x.xml** will refer to the corresponding xml language-description file.
+
+These Python files contain all the information in the jEdit's xml files, so we can (loosely) speak of modes, rulesets, rules, properties and attributes in the Python colorer control files. Later sections of this documentation will make this loose correspondence exact.
+
+Each xml file describes one **colorizing mode**. A mode consists of one or more **rulesets**, and each ruleset consists of a list of **colorizing rules**. In addition, modes, rulesets and rules may have associated **properties** and **attributes**. Various rules may specify that the colorizer uses another ruleset (either in the same mode or another mode).
+
+
+**Important**: jEdit's xml language description files contain no explicit &lt;RULE&gt; elements Rules are simply sub-elements of an enclosing &lt;RULES&gt; element. The element indicates the kind of rule that is specified, for example, &lt;SPAN&gt;, &lt;SEQ&gt;, etc. By the term **rule element** we shall mean any sub-element of the &lt;RULES&gt; element.
+
+Using Python colorer control files has the following advantages:
+
+- Running jEdit2Py need only be done when x.xml changes, and the speed of the xml parser in jEdit2Py does not affect the speed of Leo's colorizer in any way. Moreover, the jEdit2Py script can contain debugging traces and checks.
+
+- Colorer control files are valid .py files, so all of Python's import optimizations work as usual. In particular, all the data in colorer control files is immediately accessible to Leo's colorer.
+
+- Colorer control files are easier for humans to understand and modify than the equivalent xml file. Furthermore, it is easy to insert debugging information into Python colorer control files.
+
+- It is easy to modify the Python colorer control files 'by hand' without changing the corresponding xml file. In particular, it would be easy to define entirely new kinds of pattern-matching rules in Python merely by creating functions in a colorer control file.
+</t>
+<t tx="ekr.20241112111533.1">To do.</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
