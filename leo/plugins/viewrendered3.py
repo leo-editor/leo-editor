@@ -86,7 +86,7 @@ Commands *vr3* and *vr3-show* work better with Leo's new layout system.
 
 VR3 starts in a non-active mode.  This prevents it from slowing down body editing by rendering even when it hasn't been made visible.  The command *vr3* makes sure the plugin is present but does not show it.
 
-For both RsT and markdown nodes, the stylesheet foreground and background colors can be automatically changed to be the same as the body editor's. This behavior is controlled by a new setting:
+For both RsT and Markdown nodes, the stylesheet foreground and background colors can be automatically changed to be the same as the body editor's. This behavior is controlled by a new setting:
 *vr3-adapt-fgbg-colors*.  The default value is ``True``.
 
 A new RsT stylesheet has been added: *vr3-medium-black.css*.
@@ -327,30 +327,45 @@ Stylesheets
 ReStructuredText
 ------------------
 
-Default CSS stylesheets are located in Leo's plugin/viewrendered3 directory. For
-Restructured Text, stylesheet handling is quite flexible.
+Default CSS stylesheets are located in Leo's plugin/viewrendered3
+directory. For Restructured Text, stylesheet handling is quite
+flexible.
 
-There are dark-theme and light-theme default stylesheets for RsT and MD. If no
-related settings are present, then VR3 chooses the dark one if the Leo
-theme name contains "dark" or the theme name is "DefaultTheme".
+There are dark-theme and light-theme default stylesheets for RsT
+and MD. If no related settings are present, then VR3 chooses the
+dark one if the Leo theme name contains "dark" or the theme name
+is "DefaultTheme".
 
-If the setting ``@bool vr3-rst-use-dark-theme = True``, then the dark theme will
-be used. If it is set to ``False``, then the light one will be used.
+If the setting ``@bool vr3-rst-use-dark-theme = True``, then the
+dark theme will be used. If it is set to ``False``, then the
+light one will be used.
 
-The use of these default stylesheets can be overridden by the setting ``@string
-vr3-rst-stylesheet``. This setting must be set to the path of a css stylesheet
-file. If it is a relative path, it is taken to be relative to the user's
-.leo/vr3 directory. If it is an absolute path, then the string ``file:///`` may
-be prepended to the path; it will be removed if present.
+The use of these default stylesheets can be overridden by the
+setting ``@string vr3-rst-stylesheet``. This setting must be set
+to the path of a css stylesheet file. If it is a relative path,
+it is taken to be relative to the user's .leo/vr3 directory. If
+it is an absolute path, then the string ``file:///`` may be
+prepended to the path; it will be removed if present.
 
-These stylesheet settings can be changed and will take effect when the settings
-are reloaded, and VR3 is refreshed or restarted. There is no need to close Leo
-and restart it.
+These stylesheet settings can be changed and will take effect
+when the settings are reloaded, and VR3 is refreshed or
+restarted. There is no need to close Leo and restart it.
 
-These settings can be placed into the @settings tree of an outline, and then
-that outline's settings will be used when that outline is active. It is possible
-for one outline to use the dark stylesheet, another to use the light stylesheet,
-and a third to use a custom one.
+These settings can be placed into the @settings tree of an
+outline, and then that outline's settings will be used when that
+outline is active. It is possible for one outline to use the dark
+stylesheet, another to use the light stylesheet, and a third to
+use a custom one.
+
+Automatic Color Switching
+--------------------------
+
+When the setting *vr3-adapt-fgbg-colors* has the value True,
+The text and background colors of the body editor will replace
+those colors specified by the stylesheet.  This lets the main VR3
+colors match those of the Leo theme that is in use.
+
+.. Note:: Only the text and background colors will be changed. Other colors, such as syntax coloring, warnings, etc., are not changed. This is usually not a problem if the VR3 stylesheet and Leo's stylesheet are both dark or both light.  It is better not to mix the light/dark character because this could lead to readability problems with, for example, syntax coloring.
 #@+node:tom.20211118000432.1: *5* Markdown
 Markdown
 ---------
@@ -384,6 +399,15 @@ This priority scheme allow a user to modify any of the standard stylesheets in t
 When a specific stylesheet path is specified by the `vr3-md-stylesheet` setting, the path separators
 can be any mix of Windows and Linux separators.
 
+Automatic Color Switching
+--------------------------
+
+When the setting *vr3-adapt-fgbg-colors* has the value True,
+The text and background colors of the body editor will replace
+those colors specified by the stylesheet.  This lets the main VR3
+colors match those of the Leo theme that is in use.
+
+.. Note:: Only the text and background colors will be changed. Other colors, such as syntax coloring, warnings, etc., are not changed. This is usually not a problem if the VR3 stylesheet and Leo's stylesheet are both dark or both light.  It is better not to mix the light/dark character because this could lead to readability problems with, for example, syntax coloring.
 #@+node:tom.20210612193820.1: *4* MathJax Script Location
 MathJax Script Location
 =======================
