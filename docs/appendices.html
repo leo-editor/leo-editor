@@ -52,56 +52,94 @@
 <li><p><a class="reference internal" href="#format-of-external-files" id="id3">Format of external files</a></p></li>
 <li><p><a class="reference internal" href="#the-leonine-way-to-refactor-code" id="id4">The Leonine way to refactor code</a></p></li>
 <li><p><a class="reference internal" href="#theory-of-operation-c-deletepositionsinlist" id="id5">Theory of operation: c.deletePositionsInList</a></p></li>
-<li><p><a class="reference internal" href="#leoast-py" id="id6">leoAst.py</a></p>
+<li><p><a class="reference internal" href="#theory-of-operation-leo-s-colorizer" id="id6">Theory of operation: Leo’s colorizer</a></p>
 <ul>
-<li><p><a class="reference internal" href="#running-leoast-py" id="id7">Running leoAst.py</a></p>
+<li><p><a class="reference internal" href="#guidelines-for-changing-the-colorizer" id="id7">Guidelines for changing the colorizer</a></p></li>
+<li><p><a class="reference internal" href="#terminology" id="id8">Terminology</a></p></li>
+<li><p><a class="reference internal" href="#changing-nodes" id="id9">Changing nodes</a></p></li>
+<li><p><a class="reference internal" href="#collaboration-with-the-qsh" id="id10">Collaboration with the qsh</a></p></li>
+<li><p><a class="reference internal" href="#the-big-challenge" id="id11">The big challenge</a></p></li>
+<li><p><a class="reference internal" href="#overview-of-jedit-methods-rewrite" id="id12">Overview of jedit methods (rewrite)</a></p></li>
+<li><p><a class="reference internal" href="#theory-of-operation-new-to-be-deleted" id="id13">Theory of operation (new, to be deleted)</a></p></li>
+<li><p><a class="reference internal" href="#files" id="id14">Files</a></p></li>
+<li><p><a class="reference internal" href="#the-colorizer-s-inner-loop" id="id15">The colorizer’s inner loop</a></p></li>
+<li><p><a class="reference internal" href="#format-of-colorizer-control-files" id="id16">Format of colorizer control files</a></p>
 <ul>
-<li><p><a class="reference internal" href="#running-leoast-py-from-the-command-line" id="id8">Running leoAst.py from the command line</a></p></li>
-<li><p><a class="reference internal" href="#running-the-code-python-programmatically" id="id9">Running the code python programmatically</a></p></li>
-<li><p><a class="reference internal" href="#running-unit-tests-and-coverage-tests-programmatically" id="id10">Running unit tests and coverage tests programmatically</a></p></li>
+<li><p><a class="reference internal" href="#ruleset-names" id="id17">Ruleset names</a></p></li>
+<li><p><a class="reference internal" href="#x-properties" id="id18">x.properties</a></p></li>
+<li><p><a class="reference internal" href="#attribute-dictionaries-and-x-attributesdictdict" id="id19">Attribute dictionaries and x.attributesDictDict</a></p></li>
+<li><p><a class="reference internal" href="#keyword-dictionaries-and-x-keywordsdictdict" id="id20">Keyword dictionaries and x.keywordsDictDict</a></p></li>
+<li><p><a class="reference internal" href="#rules-rules-dictionaries-and-x-rulesdictdict" id="id21">Rules, rules dictionaries and x.rulesDictDict</a></p></li>
+<li><p><a class="reference internal" href="#x-importdict-and-imported-versus-delegated-rulesets" id="id22">x.importDict and imported versus delegated rulesets</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#tokenorder-classes-theory-of-operation" id="id11">TokenOrder classes: Theory of operation</a></p>
+<li><p><a class="reference internal" href="#rule-methods" id="id23">Rule methods</a></p>
 <ul>
-<li><p><a class="reference internal" href="#token-order-classes" id="id12">Token-order classes</a></p></li>
-<li><p><a class="reference internal" href="#other-classes" id="id13">Other classes</a></p></li>
-<li><p><a class="reference internal" href="#significant-vs-insignificant-tokens" id="id14">Significant vs insignificant tokens</a></p></li>
-<li><p><a class="reference internal" href="#helping-tog-visitors" id="id15">Helping TOG visitors</a></p></li>
-<li><p><a class="reference internal" href="#syncing-tokens" id="id16">Syncing tokens</a></p></li>
-<li><p><a class="reference internal" href="#figures-of-merit" id="id17">Figures of merit</a></p></li>
+<li><p><a class="reference internal" href="#arguments-to-rule-methods" id="id24">Arguments to rule methods</a></p></li>
+<li><p><a class="reference internal" href="#match-eol-span" id="id25">match_eol_span</a></p></li>
+<li><p><a class="reference internal" href="#match-eol-span-regexp" id="id26">match_eol_span_regexp</a></p></li>
+<li><p><a class="reference internal" href="#match-keywords" id="id27">match_keywords</a></p></li>
+<li><p><a class="reference internal" href="#match-mark-following" id="id28">match_mark_following</a></p></li>
+<li><p><a class="reference internal" href="#match-mark-previous" id="id29">match_mark_previous</a></p></li>
+<li><p><a class="reference internal" href="#match-seq" id="id30">match_seq</a></p></li>
+<li><p><a class="reference internal" href="#match-seq-regexp" id="id31">match_seq_regexp</a></p></li>
+<li><p><a class="reference internal" href="#match-span" id="id32">match_span</a></p></li>
+<li><p><a class="reference internal" href="#match-span-regexp" id="id33">match_span_regexp</a></p></li>
+<li><p><a class="reference internal" href="#match-terminate" id="id34">match_terminate</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#notable-functions-methods" id="id18">Notable functions &amp; methods</a></p>
-<ul>
-<li><p><a class="reference internal" href="#initing-data-structures" id="id19">Initing data structures</a></p></li>
-<li><p><a class="reference internal" href="#reading-writing-files" id="id20">Reading &amp; writing files</a></p></li>
-<li><p><a class="reference internal" href="#reports" id="id21">Reports</a></p></li>
-<li><p><a class="reference internal" href="#updating-tokens-and-parse-trees" id="id22">Updating tokens and parse trees</a></p></li>
-<li><p><a class="reference internal" href="#tokenordergenerator-init-from-file" id="id23">TokenOrderGenerator.init_from_file</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#maintaining-leoast-py" id="id24">Maintaining leoAst.py</a></p></li>
+<li><p><a class="reference internal" href="#leoast-py" id="id35">leoAst.py</a></p>
+<ul>
+<li><p><a class="reference internal" href="#running-leoast-py" id="id36">Running leoAst.py</a></p>
+<ul>
+<li><p><a class="reference internal" href="#running-leoast-py-from-the-command-line" id="id37">Running leoAst.py from the command line</a></p></li>
+<li><p><a class="reference internal" href="#running-the-code-python-programmatically" id="id38">Running the code python programmatically</a></p></li>
+<li><p><a class="reference internal" href="#running-unit-tests-and-coverage-tests-programmatically" id="id39">Running unit tests and coverage tests programmatically</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#unicode-reference" id="id25">Unicode reference</a></p></li>
-<li><p><a class="reference internal" href="#valid-url-s" id="id26">Valid URL’s</a></p></li>
-<li><p><a class="reference internal" href="#the-mulder-ream-update-algorithm" id="id27">The Mulder/Ream update algorithm</a></p>
+<li><p><a class="reference internal" href="#tokenorder-classes-theory-of-operation" id="id40">TokenOrder classes: Theory of operation</a></p>
 <ul>
-<li><p><a class="reference internal" href="#what-the-algorithm-does" id="id28">What the algorithm does</a></p></li>
-<li><p><a class="reference internal" href="#guesses-don-t-matter" id="id29">Guesses don’t matter</a></p></li>
-<li><p><a class="reference internal" href="#background-of-the-code" id="id30">Background of the code</a></p></li>
-<li><p><a class="reference internal" href="#aha-the-x-sentinels-array" id="id31">Aha: the x.sentinels array</a></p></li>
-<li><p><a class="reference internal" href="#strategy-proof-of-correctness" id="id32">Strategy &amp; proof of correctness</a></p></li>
-<li><p><a class="reference internal" href="#summary" id="id33">Summary</a></p></li>
+<li><p><a class="reference internal" href="#token-order-classes" id="id41">Token-order classes</a></p></li>
+<li><p><a class="reference internal" href="#other-classes" id="id42">Other classes</a></p></li>
+<li><p><a class="reference internal" href="#significant-vs-insignificant-tokens" id="id43">Significant vs insignificant tokens</a></p></li>
+<li><p><a class="reference internal" href="#helping-tog-visitors" id="id44">Helping TOG visitors</a></p></li>
+<li><p><a class="reference internal" href="#syncing-tokens" id="id45">Syncing tokens</a></p></li>
+<li><p><a class="reference internal" href="#figures-of-merit" id="id46">Figures of merit</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#why-i-like-python" id="id34">Why I like Python</a></p>
+<li><p><a class="reference internal" href="#notable-functions-methods" id="id47">Notable functions &amp; methods</a></p>
 <ul>
-<li><p><a class="reference internal" href="#clarity" id="id35">Clarity</a></p></li>
-<li><p><a class="reference internal" href="#power" id="id36">Power</a></p></li>
-<li><p><a class="reference internal" href="#safety" id="id37">Safety</a></p></li>
-<li><p><a class="reference internal" href="#speed" id="id38">Speed</a></p></li>
-<li><p><a class="reference internal" href="#conclusions" id="id39">Conclusions</a></p></li>
+<li><p><a class="reference internal" href="#initing-data-structures" id="id48">Initing data structures</a></p></li>
+<li><p><a class="reference internal" href="#reading-writing-files" id="id49">Reading &amp; writing files</a></p></li>
+<li><p><a class="reference internal" href="#reports" id="id50">Reports</a></p></li>
+<li><p><a class="reference internal" href="#updating-tokens-and-parse-trees" id="id51">Updating tokens and parse trees</a></p></li>
+<li><p><a class="reference internal" href="#tokenordergenerator-init-from-file" id="id52">TokenOrderGenerator.init_from_file</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#maintaining-leoast-py" id="id53">Maintaining leoAst.py</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#unicode-reference" id="id54">Unicode reference</a></p></li>
+<li><p><a class="reference internal" href="#valid-url-s" id="id55">Valid URL’s</a></p></li>
+<li><p><a class="reference internal" href="#the-mulder-ream-update-algorithm" id="id56">The Mulder/Ream update algorithm</a></p>
+<ul>
+<li><p><a class="reference internal" href="#what-the-algorithm-does" id="id57">What the algorithm does</a></p></li>
+<li><p><a class="reference internal" href="#guesses-don-t-matter" id="id58">Guesses don’t matter</a></p></li>
+<li><p><a class="reference internal" href="#background-of-the-code" id="id59">Background of the code</a></p></li>
+<li><p><a class="reference internal" href="#aha-the-x-sentinels-array" id="id60">Aha: the x.sentinels array</a></p></li>
+<li><p><a class="reference internal" href="#strategy-proof-of-correctness" id="id61">Strategy &amp; proof of correctness</a></p></li>
+<li><p><a class="reference internal" href="#summary" id="id62">Summary</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#why-i-like-python" id="id63">Why I like Python</a></p>
+<ul>
+<li><p><a class="reference internal" href="#clarity" id="id64">Clarity</a></p></li>
+<li><p><a class="reference internal" href="#power" id="id65">Power</a></p></li>
+<li><p><a class="reference internal" href="#safety" id="id66">Safety</a></p></li>
+<li><p><a class="reference internal" href="#speed" id="id67">Speed</a></p></li>
+<li><p><a class="reference internal" href="#conclusions" id="id68">Conclusions</a></p></li>
 </ul>
 </li>
 </ul>
@@ -493,8 +531,573 @@ any particular v, the main loop will process the set of tuples (i, v) in
 descending order of i. This resolves the question of whether deleting
 already deleted positions is valid.</p>
 </section>
+<section id="theory-of-operation-leo-s-colorizer">
+<h2><a class="toc-backref" href="#id6" role="doc-backlink">Theory of operation: Leo’s colorizer</a><a class="headerlink" href="#theory-of-operation-leo-s-colorizer" title="Link to this heading">¶</a></h2>
+<p>Are you sure you want to read this appendix?
+It is intended <em>only</em> for Leo’s core developers.</p>
+<p>This appendix contains the theory of operation for the <code class="docutils literal notranslate"><span class="pre">JEditColorizer</span></code> class in <code class="docutils literal notranslate"><span class="pre">leoColorizer.py</span></code>. This class does a complex job efficiently and reliably.</p>
+<p>This appendix also discusses <strong>mode files</strong>, files in the <code class="docutils literal notranslate"><span class="pre">leo/modes</span></code> directory. These files tell the colorizer the syntax and colors to be usef for each languages.</p>
+<section id="guidelines-for-changing-the-colorizer">
+<h3><a class="toc-backref" href="#id7" role="doc-backlink">Guidelines for changing the colorizer</a><a class="headerlink" href="#guidelines-for-changing-the-colorizer" title="Link to this heading">¶</a></h3>
+<p>Future project leader should <em>immediately reject</em> any proposal that suggests wholesale changes to <code class="docutils literal notranslate"><span class="pre">leoColorizer.py</span></code>. Such proposals would be profoundly misguided.</p>
+<p>These following guidelines should ensure that future PRs retain the colorizer’s outstanding reliability:</p>
+<ul class="simple">
+<li><p>Future PRs <em>must not</em> change any code outside <code class="docutils literal notranslate"><span class="pre">leoColorizer.py</span></code>.</p></li>
+<li><p>Future PRs <em>must not</em> attempt to “help” the qsh.
+The qsh is highly optimized and needs no help!</p></li>
+<li><p>Future PRs <em>should not</em> change the helpers that access qsh’s state.
+These helpers are solid.</p></li>
+<li><p>Future PRs should change <code class="docutils literal notranslate"><span class="pre">recolor</span></code> , <code class="docutils literal notranslate"><span class="pre">mainLoop</span></code>, and the pattern matchers
+<em>only as a last resort</em>.</p></li>
+</ul>
+</section>
+<section id="terminology">
+<h3><a class="toc-backref" href="#id8" role="doc-backlink">Terminology</a><a class="headerlink" href="#terminology" title="Link to this heading">¶</a></h3>
+<p><strong>qsh</strong> means the singleton instance of the [QSyntaxHighlighter](<a class="reference external" href="https://doc.qt.io/qt-6/qsyntaxhighlighter.html">https://doc.qt.io/qt-6/qsyntaxhighlighter.html</a>) class.</p>
+<p>Unless qualified, all methods are instances of the <code class="docutils literal notranslate"><span class="pre">JEditColorizer</span></code> (<strong>jedit</strong>) class.</p>
+</section>
+<section id="changing-nodes">
+<h3><a class="toc-backref" href="#id9" role="doc-backlink">Changing nodes</a><a class="headerlink" href="#changing-nodes" title="Link to this heading">¶</a></h3>
+<p>The following happens whenever <code class="docutils literal notranslate"><span class="pre">c.p</span></code> changes:</p>
+<p><strong>LeoTree.select</strong></p>
+<p>Leo’s core calls this method to handle the (complex!) details of switching node.</p>
+<p>At the very end, <code class="docutils literal notranslate"><span class="pre">LeoTree.select</span></code> calls <code class="docutils literal notranslate"><span class="pre">c.recolor(p)</span></code>, where <code class="docutils literal notranslate"><span class="pre">p</span></code> is
+the <em>new</em> position.</p>
+<p><strong>c.recolor</strong></p>
+<p>This method is the <em>only</em> public interface to Leo’s colorizer. It calls
+<code class="docutils literal notranslate"><span class="pre">jedit.colorize</span></code>, the <em>only</em> entry point for the <code class="docutils literal notranslate"><span class="pre">JEditColorizer</span></code> class.</p>
+<p><strong>jedit.colorize</strong></p>
+<p>This method tells the qsh to fully recolor <code class="docutils literal notranslate"><span class="pre">p.b</span></code> by calling <code class="docutils literal notranslate"><span class="pre">qsh.rehighlight()</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">qsh.rehighlight()</span></code> collaborates with Leo’s body (an instance of <code class="docutils literal notranslate"><span class="pre">QTextEdit</span></code>).</p>
+<p>As a result of this behind-the-scenes collaboration the qsh will call <code class="docutils literal notranslate"><span class="pre">redraw(s)</span></code> (a <em>single</em> line of text)  whenever recoloring of <code class="docutils literal notranslate"><span class="pre">s</span></code> might be needed.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">redraw</span></code> does its job properly (see the next sections) the qsh will <em>optimize</em> the calls to <code class="docutils literal notranslate"><span class="pre">redraw</span></code>.  That is, the qsh will call <code class="docutils literal notranslate"><span class="pre">redraw</span></code> <em>as few times as possible.</em></p>
+<p>The following sections discuss what <code class="docutils literal notranslate"><span class="pre">redraw</span></code> (and its helpers) must do.</p>
+</section>
+<section id="collaboration-with-the-qsh">
+<h3><a class="toc-backref" href="#id10" role="doc-backlink">Collaboration with the qsh</a><a class="headerlink" href="#collaboration-with-the-qsh" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">redraw</span></code> must collaborate with the qsh so the qsh will call <code class="docutils literal notranslate"><span class="pre">redraw</span></code> <em>as few times as possible.</em> If the collaboration is effective, the qsh will call <code class="docutils literal notranslate"><span class="pre">redraw(s)</span></code> only if the coloring for <code class="docutils literal notranslate"><span class="pre">s</span></code> could possibly change. This optimization is the reason why the qsh exists!</p>
+<p><code class="docutils literal notranslate"><span class="pre">redraw(s)</span></code> has two primary tasks:</p>
+<ol class="arabic simple">
+<li><p>Call qsh methods to colorize <strong>s</strong>, a <em>single</em> line of text.</p></li>
+<li><p>Inform the qsh of the <strong>ending state</strong>, an <em>integer</em> representing the coloring state of the <em>end</em> of the colorized line.</p></li>
+</ol>
+<p><em>Handling qsh states is the colorizer’s most important task!</em>
+Colorizing is secondary!</p>
+</section>
+<section id="the-big-challenge">
+<h3><a class="toc-backref" href="#id11" role="doc-backlink">The big challenge</a><a class="headerlink" href="#the-big-challenge" title="Link to this heading">¶</a></h3>
+<p>The qsh can (and will) call <code class="docutils literal notranslate"><span class="pre">recolor(s)</span></code> where s is <em>out-of-sequence</em> with the preceding call. For example, the following snippet is typical in &#64;jupytext nodes:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># %% (like @language python)</span>
+
+<span class="k">def</span> <span class="nf">spam</span><span class="p">():</span>
+
+<span class="c1"># %% [markdown] (like @language md)</span>
+
+<span class="c1"># Section 1</span>
+<span class="n">It</span> <span class="n">was</span> <span class="n">the</span> <span class="n">best</span> <span class="n">of</span> <span class="n">times</span><span class="p">;</span> <span class="n">it</span> <span class="n">was</span> <span class="n">the</span> <span class="n">worst</span> <span class="n">of</span> <span class="n">times</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>The user can click (or cut or paste) anywhere in this text. The qsh will then call <code class="docutils literal notranslate"><span class="pre">recolor(s)</span></code> starting with the first changed line. There is no necessary relationship between <code class="docutils literal notranslate"><span class="pre">s</span></code> and the line that <code class="docutils literal notranslate"><span class="pre">_re</span></code> last saw!</p>
+</section>
+<section id="overview-of-jedit-methods-rewrite">
+<h3><a class="toc-backref" href="#id12" role="doc-backlink">Overview of jedit methods (rewrite)</a><a class="headerlink" href="#overview-of-jedit-methods-rewrite" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><cite>redraw</cite> computes the initial qsh state and calls <cite>mainLine</cite> to colorize s.</p></li>
+<li><p><cite>mainLine</cite> does not change state directly! It only calls pattern matches.</p></li>
+<li><p>The pattern matchers compute the final qsh state as a side effect.</p></li>
+</ul>
+<p><strong>mainLoop(s)</strong></p>
+<p><cite>mainLoop</cite> calls pattern matchers for a <em>single</em> line of text, so the coloring state
+<strong>can not possibly change</strong> while <cite>mainLoop</cite> is executing. It’s so easy to lose sight of this fact!</p>
+<p><cite>mainLoop</cite> calls pattern matchers as follows:</p>
+<ul class="simple">
+<li><p>First, <cite>_mainLoop</cite> calls the pattern matcher for the <em>starting</em> state.</p></li>
+<li><p><cite>_mainLoop</cite> then calls pattern matchers until every character of the line has been handled.</p></li>
+</ul>
+<p><em>Important</em>: <cite>mainLoop</cite> does not change the ending state itself! That pattern matches do that as a side effect.</p>
+</section>
+<section id="theory-of-operation-new-to-be-deleted">
+<h3><a class="toc-backref" href="#id13" role="doc-backlink">Theory of operation (new, to be deleted)</a><a class="headerlink" href="#theory-of-operation-new-to-be-deleted" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><cite>redraw</cite> computes the initial qsh state and calls <cite>mainLine</cite> to colorize s.</p></li>
+<li><p><cite>mainLine</cite> does not change state directly! It only calls pattern matches.</p></li>
+<li><p>The pattern matchers compute the final qsh state as a side effect.</p></li>
+</ul>
+<p><strong>mainLoop(s)</strong></p>
+<p><cite>mainLoop</cite> calls pattern matchers for a <em>single</em> line of text, so the coloring state
+<strong>can not possibly change</strong> while <cite>mainLoop</cite> is executing. It’s so easy to lose sight of this fact!</p>
+<p><cite>mainLoop</cite> calls pattern matchers as follows:</p>
+<ul class="simple">
+<li><p>First, <cite>_mainLoop</cite> calls the pattern matcher for the <em>starting</em> state.</p></li>
+<li><p><cite>_mainLoop</cite> then calls pattern matchers until every character of the line has been handled.</p></li>
+</ul>
+<p><em>Important</em>: <cite>mainLoop</cite> does not change the ending state itself! That pattern matches do that as a side effect.</p>
+<p><strong>About pattern matchers</strong></p>
+<ul class="simple">
+<li><p>Pattern matchers adapt jEdit patterns for the qsh.</p></li>
+<li><p>There are one or more <strong>restarter methods</strong> for syntax elements that might match across line boundaries.</p></li>
+</ul>
+<p>The <cite>JEditColorizer</cite> class defines surprisingly few restarters.
+The Python colorizers defines restarters for only for continued strings and docstrings.</p>
+<p><strong>About states</strong></p>
+<p>The qsh uses <em>integer</em> states. Leo’s pattern matchers use a corresponding <em>string</em> state.
+<cite>redraw</cite> converts to and from these two representations.</p>
+<p><em>Regardless of representation</em>, the  state represents:</p>
+<ul class="simple">
+<li><p>The language in effect for the <em>single</em> line s.</p></li>
+<li><p>The ending state of s.</p></li>
+<li><p>The coloring directive in effect for s.</p></li>
+</ul>
+<p>Pattern matchers do the following when they only partially succeed:</p>
+<ul class="simple">
+<li><p>They create a binding for its restarter and call <cite>setRestart</cite>.</p></li>
+<li><p><cite>setRestart</cite> calls <cite>computeState</cite> to create the <em>string</em> state.</p></li>
+<li><p><cite>setRestart</cite> then calls <cite>stateNameToStateNumber</cite> to convert that string to an integer state.
+This state then gets passed to <cite>qsh.setCurrentBlockState</cite>.
+As a side effect, <cite>stateNameToStateNumber</cite> updates the <cite>stateDict</cite>, <cite>stateNameDict</cite>, and <cite>restartDict</cite>.
+<strong>These dicts must never clash</strong>! That is, integer state numbers must be unique across all languages.</p></li>
+</ul>
+<p><strong>Summary</strong></p>
+<p>Informing the qsh of ending state of each line is the colorizer’s main task. The colorizer does so as follows:</p>
+<ul class="simple">
+<li><p><cite>redraw(s)</cite> retrieves the <em>starting</em> state from the qsh, then calls <cite>mainLoop(s)</cite> to colorize s.</p></li>
+<li><p><cite>_mainLoop</cite> calls pattern matchers.</p></li>
+<li><p>The pattern matchers change the <em>ending state</em> as a side effect.</p></li>
+</ul>
+</section>
+<section id="files">
+<h3><a class="toc-backref" href="#id14" role="doc-backlink">Files</a><a class="headerlink" href="#files" title="Link to this heading">¶</a></h3>
+<p>The <a class="reference external" href="http://www.jedit.org/">jEdit</a> editor drives its syntax colorer using xml <strong>language description files.</strong> Rather than using the xml language description files directly, Leo uses Python <strong>colorer control files</strong>, created automatically from the xml files by a script called jEdit2Py.  All these files reside in the leo/modes directory.</p>
+<p>These Python files contain all the information in the jEdit’s xml files, so we can (loosely) speak of modes, rulesets, rules, properties and attributes in the Python colorer control files. Later sections of this documentation will make this loose correspondence exact.</p>
+<p>Each xml file describes one <strong>colorizing mode</strong>. A mode consists of one or more <strong>rulesets</strong>, and each ruleset consists of a list of <strong>colorizing rules</strong>. In addition, modes, rulesets and rules may have associated <strong>properties</strong> and <strong>attributes</strong>. Various rules may specify that the colorizer uses another ruleset (either in the same mode or another mode).</p>
+<p><strong>Important</strong>: jEdit’s xml language description files contain no explicit &lt;RULE&gt; elements Rules are simply sub-elements of an enclosing &lt;RULES&gt; element. The element indicates the kind of rule that is specified, for example, &lt;SPAN&gt;, &lt;SEQ&gt;, etc. By the term <strong>rule element</strong> we shall mean any sub-element of the &lt;RULES&gt; element.</p>
+<p><strong>Important</strong>: throughout this documentation, <strong>x.py</strong> will refer to the Python colorer for language x, and <strong>x.xml</strong> will refer to the corresponding xml language-description file.</p>
+<p>Using Python colorer control files has the following advantages:</p>
+<ul class="simple">
+<li><p>Running jEdit2Py need only be done when x.xml changes, and the speed of the xml parser in jEdit2Py does not affect the speed of Leo’s colorizer in any way. Moreover, the jEdit2Py script can contain debugging traces and checks.</p></li>
+<li><p>Colorer control files are valid .py files, so all of Python’s import optimizations work as usual. In particular, all the data in colorer control files is immediately accessible to Leo’s colorer.</p></li>
+<li><p>Colorer control files are easier for humans to understand and modify than the equivalent xml file. Furthermore, it is easy to insert debugging information into Python colorer control files.</p></li>
+<li><p>It is easy to modify the Python colorer control files ‘by hand’ without changing the corresponding xml file. In particular, it would be easy to define entirely new kinds of pattern-matching rules in Python merely by creating functions in a colorer control file.</p></li>
+</ul>
+</section>
+<section id="the-colorizer-s-inner-loop">
+<h3><a class="toc-backref" href="#id15" role="doc-backlink">The colorizer’s inner loop</a><a class="headerlink" href="#the-colorizer-s-inner-loop" title="Link to this heading">¶</a></h3>
+<p>When Leo’s syntax colorer sees the <a class="reference external" href="mailto:'&#37;&#52;&#48;language">‘<span>&#64;</span>language</a> x’ directive, it will import x.py from Leo’s modes folder. The colorer can then access any module-level object obj in x.py as x.obj.</p>
+<p>Colorizer control files contain <strong>rules functions</strong> corresponding to rule elements in x.xml. The colorizer can call these functions as if they were members of the colorizer class by passing ‘self’ as the first argument of these functions. I call these rules <em>functions</em> to distinguish them from the corresponding <strong>rules methods</strong> which are actual methods of the colorizer class. Rules <em>functions</em> merely call corresponding rules <em>methods</em>. Indeed, rules functions are simply a way of binding values to keyword arguments of rules methods. These keywords arguments correspond to the xml attributes of rule elements in x.xml.</p>
+<p>The colorizer calls rules functions until one matches, at which point a range of text gets colored and the process repeats. The inner loop of the colorizer is this code:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rulesDict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">],[]):</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">i</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">i</span> <span class="o">+=</span> <span class="n">n</span> <span class="p">;</span> <span class="k">break</span>
+    <span class="k">else</span><span class="p">:</span> <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>rulesDict is a dictionary whose keys are rulesets and whose values are ruleset dictionaries.
+Ruleset dictionaries have keys that are single characters and whose values are
+the list of rules that can start with that character.</p></li>
+<li><p>s is the full text to be colorized.</p></li>
+<li><p>i is the position within s is to be colorized.</p></li>
+</ul>
+<p>Rules methods (and functions) return n &gt; 0 if they match, and n == 0 if they fail.</p>
+</section>
+<section id="format-of-colorizer-control-files">
+<h3><a class="toc-backref" href="#id16" role="doc-backlink">Format of colorizer control files</a><a class="headerlink" href="#format-of-colorizer-control-files" title="Link to this heading">¶</a></h3>
+<p>The following sections describe the top-level data in leo/modes/x.py.  This data is used by Leo’s Legacy (jEdit-based) colorizer. Leo’s pygments syntax colorizer does not use these files.</p>
+<section id="ruleset-names">
+<h4><a class="toc-backref" href="#id17" role="doc-backlink">Ruleset names</a><a class="headerlink" href="#ruleset-names" title="Link to this heading">¶</a></h4>
+<p>A <strong>ruleset name</strong> is a Python string having the form ‘x_setname’, where setname is the value of the SET attribute of the &lt;RULES&gt; element in x.xml. For example, the ruleset name of the ruleset whose SET attribute is JAVASCRIPT in php.xml is ‘php_JAVASCRIPT’. <strong>Important</strong>: by convention, the ruleset name of the default &lt;RULES&gt; element is ‘x_main’; note that default &lt;RULES&gt; element have no SET attributes.</p>
+<p>The colorizer uses ruleset names to gain access to all data structures in x.py. To anticipate a bit, ruleset names are keys into two standard dictionaries, x.rulesDict and x.keywordsDictDict, from which the colorizer can get all other information in x.py:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># The rules list for the &#39;JAVASCRIPT&#39; ruleset in php.xml.</span>
+<span class="n">rules</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">rulesDict</span><span class="p">(</span><span class="s1">&#39;php_JAVASCRIPT&#39;</span><span class="p">)</span>
+
+<span class="c1"># The keywords dict for the &#39;JAVASCRIPT&#39; ruleset in php.xml.</span>
+<span class="n">keywordsDict</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">keywordsDictDict</span><span class="p">(</span><span class="s1">&#39;php_JAVASCRIPT&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In fact, ruleset names (and x.rulesDict and x.keywordsDictDict) are the <strong>only</strong> names that the colorizer needs to know in order to access all information in x.py.</p>
+</section>
+<section id="x-properties">
+<h4><a class="toc-backref" href="#id18" role="doc-backlink">x.properties</a><a class="headerlink" href="#x-properties" title="Link to this heading">¶</a></h4>
+<p><strong>x.properties</strong> is a Python dictionary corresponding to the &lt;PROPS&gt; element in x.xml. Keys are property names; values are strings, namely the contents of &lt;PROPERTY&gt; elements in x.xml. x.properties contains properties for the entire mode. That is, only modes have &lt;PROPS&gt; elements. For example, here is x.properties in php.py:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># properties for mode php.xml</span>
+<span class="n">properties</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;commentEnd&quot;</span><span class="p">:</span> <span class="s2">&quot;--&gt;&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;commentStart&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;!--&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;indentCloseBrackets&quot;</span><span class="p">:</span> <span class="s2">&quot;}&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;indentOpenBrackets&quot;</span><span class="p">:</span> <span class="s2">&quot;{&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;lineUpClosingBracket&quot;</span><span class="p">:</span> <span class="s2">&quot;true&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="attribute-dictionaries-and-x-attributesdictdict">
+<h4><a class="toc-backref" href="#id19" role="doc-backlink">Attribute dictionaries and x.attributesDictDict</a><a class="headerlink" href="#attribute-dictionaries-and-x-attributesdictdict" title="Link to this heading">¶</a></h4>
+<p>x.py contains a <strong>attribute dictionary</strong> for each ruleset in x.xml. Keys are attribute names, values strings representing the values of the attributes. This dictionary is empty if a ruleset contains no attributes. The valid keys are:</p>
+<ul class="simple">
+<li><p>‘default’: the default token type.  ‘null’ is the default.</p></li>
+<li><p>‘digit_re’: a regular expression.
+Words matching this regular expression are colored with the digit token type.</p></li>
+<li><p>‘ignore_case’: ‘true’ or ‘false’.  Default is ‘true’.</p></li>
+<li><p>‘highlight_digits’: ‘true’ or ‘false’.  Default is ‘true’.</p></li>
+<li><p>‘no_word_sep’: A list of characters treated as ‘alphabetic’ characters when matching keywords.</p></li>
+</ul>
+<p>For example, here is one attribute dictionary in php.py:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Attributes dict for php_javascript ruleset.</span>
+<span class="n">php_javascript_attributes_dict</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="s2">&quot;MARKUP&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;digit_re&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;highlight_digits&quot;</span><span class="p">:</span> <span class="s2">&quot;true&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ignore_case&quot;</span><span class="p">:</span> <span class="s2">&quot;true&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;no_word_sep&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>x.py also contains <strong>x.attributesDictDict</strong>. Keys are ruleset names, values are attribute dictionaries. Here is attributesDictDict for php.py:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Dictionary of attributes dictionaries for php mode.</span>
+<span class="n">attributesDictDict</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;php_javascript&quot;</span><span class="p">:</span> <span class="n">php_javascript_attributes_dict</span><span class="p">,</span>
+    <span class="s2">&quot;php_javascript_php&quot;</span><span class="p">:</span> <span class="n">php_javascript_php_attributes_dict</span><span class="p">,</span>
+    <span class="s2">&quot;php_main&quot;</span><span class="p">:</span> <span class="n">php_main_attributes_dict</span><span class="p">,</span>
+    <span class="s2">&quot;php_php&quot;</span><span class="p">:</span> <span class="n">php_php_attributes_dict</span><span class="p">,</span>
+    <span class="s2">&quot;php_php_literal&quot;</span><span class="p">:</span> <span class="n">php_php_literal_attributes_dict</span><span class="p">,</span>
+    <span class="s2">&quot;php_phpdoc&quot;</span><span class="p">:</span> <span class="n">php_phpdoc_attributes_dict</span><span class="p">,</span>
+    <span class="s2">&quot;php_tags&quot;</span><span class="p">:</span> <span class="n">php_tags_attributes_dict</span><span class="p">,</span>
+    <span class="s2">&quot;php_tags_literal&quot;</span><span class="p">:</span> <span class="n">php_tags_literal_attributes_dict</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Note</strong>: The jEdit2Py script creates ‘friendly’ names for attribute dictionaries <em>solely</em> as an aid for people reading the code. Leo’s colorer uses only the name x.attributeDictDict; Leo’s colorer never uses the actual names of attribute dictionaries.</p>
+</section>
+<section id="keyword-dictionaries-and-x-keywordsdictdict">
+<h4><a class="toc-backref" href="#id20" role="doc-backlink">Keyword dictionaries and x.keywordsDictDict</a><a class="headerlink" href="#keyword-dictionaries-and-x-keywordsdictdict" title="Link to this heading">¶</a></h4>
+<p>x.py contains a <strong>keyword dictionary</strong> for each ruleset in x.xml. x.py contains an empty keywords dictionary if a ruleset contains no &lt;KEYWORDS&gt; element.</p>
+<p>Keys are strings representing keywords of the language describe by the mode. Values are strings representing syntactic categories, i.e. a TYPE attribute valid in x.xml, namely: COMMENT1, COMMENT2, COMMENT3, COMMENT4, FUNCTION, KEYWORD1, KEYWORD2, KEYWORD3, KEYWORD4, LABEL, LITERAL1, LITERAL2, LITERAL3, LITERAL4, MARKUP, NULL and OPERATOR.</p>
+<p>For example, here (parts of) some keyword dictionaries in php.py:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Keywords dict for mode php::PHP</span>
+<span class="n">php_PHP_keywords_dict</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;COM_invoke&quot;</span><span class="p">:</span> <span class="s2">&quot;keyword2&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;COM_load&quot;</span><span class="p">:</span> <span class="s2">&quot;keyword2&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;__CLASS__&quot;</span><span class="p">:</span> <span class="s2">&quot;keyword3&quot;</span><span class="p">,</span>
+    <span class="o">...</span>
+    <span class="s2">&quot;abs&quot;</span><span class="p">:</span> <span class="s2">&quot;keyword2&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;abstract&quot;</span><span class="p">:</span> <span class="s2">&quot;keyword1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;accept_connect&quot;</span><span class="p">:</span> <span class="s2">&quot;keyword2&quot;</span><span class="p">,</span>
+    <span class="o">...</span>
+<span class="p">}</span>
+
+<span class="c1"># Keywords dict for mode php::JAVASCRIPT_PHP</span>
+<span class="n">php_JAVASCRIPT_PHP_keywords_dict</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="c1"># Keywords dict for mode php::PHPDOC</span>
+<span class="n">php_PHPDOC_keywords_dict</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;@abstract&quot;</span><span class="p">:</span> <span class="s2">&quot;label&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;@access&quot;</span><span class="p">:</span> <span class="s2">&quot;label&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;@author&quot;</span><span class="p">:</span> <span class="s2">&quot;label&quot;</span><span class="p">,</span>
+    <span class="o">...</span>
+    <span class="s2">&quot;@var&quot;</span><span class="p">:</span> <span class="s2">&quot;label&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;@version&quot;</span><span class="p">:</span> <span class="s2">&quot;label&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>x.py also contains <strong>x.keywordsDictDict</strong>. Keys are ruleset names, values are keywords dictionaries. Here is keywordsDictDict for php.py:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Dictionary of keywords dictionaries for php mode.</span>
+<span class="n">keywordsDictDict</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;php_javascript&quot;</span><span class="p">:</span> <span class="n">php_javascript_keywords_dict</span><span class="p">,</span>
+    <span class="s2">&quot;php_javascript_php&quot;</span><span class="p">:</span> <span class="n">php_javascript_php_keywords_dict</span><span class="p">,</span>
+    <span class="s2">&quot;php_main&quot;</span><span class="p">:</span> <span class="n">php_main_keywords_dict</span><span class="p">,</span>
+    <span class="s2">&quot;php_php&quot;</span><span class="p">:</span> <span class="n">php_php_keywords_dict</span><span class="p">,</span>
+    <span class="s2">&quot;php_php_literal&quot;</span><span class="p">:</span> <span class="n">php_php_literal_keywords_dict</span><span class="p">,</span>
+    <span class="s2">&quot;php_phpdoc&quot;</span><span class="p">:</span> <span class="n">php_phpdoc_keywords_dict</span><span class="p">,</span>
+    <span class="s2">&quot;php_tags&quot;</span><span class="p">:</span> <span class="n">php_tags_keywords_dict</span><span class="p">,</span>
+    <span class="s2">&quot;php_tags_literal&quot;</span><span class="p">:</span> <span class="n">php_tags_literal_keywords_dict</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The colorizer can get the keywords dictionary for a ruleset as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">keywordsDict</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">keywordsDictDict</span><span class="p">(</span><span class="n">rulesetName</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Note</strong>: The jEdit2Py script creates ‘friendly’ names for keyword dictionaries <em>solely</em> as an aid for people reading the code. Leo’s colorer uses only the name x.keywordsDictDict; Leo’s colorer never uses the actual names of keywords dictionaries such as php_PHPDOC_keywords_dict.</p>
+</section>
+<section id="rules-rules-dictionaries-and-x-rulesdictdict">
+<h4><a class="toc-backref" href="#id21" role="doc-backlink">Rules, rules dictionaries and x.rulesDictDict</a><a class="headerlink" href="#rules-rules-dictionaries-and-x-rulesdictdict" title="Link to this heading">¶</a></h4>
+<p>x.py contains one <strong>rule function</strong> for every rule in every ruleset (&lt;RULES&gt; element) in x.xml. These rules have names rule1 through  ruleN, where N is the total number of rules in all rulesets in x.xml.</p>
+<p>Each rules <em>function</em> merely calls a rules <em>method</em> in Leo’s colorizer. Which method gets called depends on the corresponding element in <cite>x.xml</cite>. For example, the first rule in php.xml is:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;SPAN TYPE=&quot;MARKUP&quot; DELEGATE=&quot;PHP&quot;&gt;
+            &lt;BEGIN&gt;&amp;lt;?php&lt;/BEGIN&gt;
+            &lt;END&gt;?&amp;gt;&lt;/END&gt;
+    &lt;/SPAN&gt;
+</pre></div>
+</div>
+<p>and the corresponding rule function is:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">php_rule0</span><span class="p">(</span><span class="n">colorer</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">colorer</span><span class="o">.</span><span class="n">match_span</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s2">&quot;markup&quot;</span><span class="p">,</span> <span class="n">begin</span><span class="o">=</span><span class="s2">&quot;&lt;?php&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;?&gt;&quot;</span><span class="p">,</span>
+        <span class="n">at_line_start</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">at_whitespace_end</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">at_word_start</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">delegate</span><span class="o">=</span><span class="s2">&quot;PHP&quot;</span><span class="p">,</span><span class="n">exclude_match</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">no_escape</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">no_line_break</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">no_word_break</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>php_rule0 calls colorer.match_span because the corresponding xml rule is a &lt;SPAN&gt; element.</p>
+<p>For each ruleset, x.py also contains a <strong>rules dictionary</strong>, a Python dictionary whose keys are characters and whose values are all lists of rules functions that that can match the key. For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Rules dict for phpdoc ruleset.</span>
+<span class="n">rulesDict8</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;*&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">rule64</span><span class="p">,],</span>
+    <span class="s2">&quot;0&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">rule70</span><span class="p">,],</span>
+    <span class="s2">&quot;1&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">rule70</span><span class="p">,],</span>
+    <span class="s2">&quot;2&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">rule70</span><span class="p">,],</span>
+    <span class="s2">&quot;3&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">rule70</span><span class="p">,],</span>
+    <span class="s2">&quot;4&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">rule70</span><span class="p">,],</span>
+    <span class="s2">&quot;5&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">rule70</span><span class="p">,],</span>
+    <span class="s2">&quot;6&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">rule70</span><span class="p">,],</span>
+    <span class="s2">&quot;7&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">rule70</span><span class="p">,],</span>
+    <span class="s2">&quot;8&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">rule70</span><span class="p">,],</span>
+    <span class="s2">&quot;9&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">rule70</span><span class="p">,],</span>
+    <span class="s2">&quot;&lt;&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">rule65</span><span class="p">,</span><span class="n">rule66</span><span class="p">,</span><span class="n">rule67</span><span class="p">,</span><span class="n">rule68</span><span class="p">,</span><span class="n">rule69</span><span class="p">,],</span>
+    <span class="s2">&quot;@&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">rule70</span><span class="p">,],</span>
+    <span class="s2">&quot;A&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">rule70</span><span class="p">,],</span>
+    <span class="s2">&quot;B&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">rule70</span><span class="p">,],</span>
+    <span class="o">...</span>
+    <span class="s2">&quot;X&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">rule70</span><span class="p">,],</span>
+    <span class="s2">&quot;Y&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">rule70</span><span class="p">,],</span>
+    <span class="s2">&quot;Z&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">rule70</span><span class="p">,],</span>
+    <span class="s2">&quot;_&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">rule70</span><span class="p">,],</span>
+    <span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">rule70</span><span class="p">,],</span>
+    <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">rule70</span><span class="p">,],</span>
+   <span class="o">...</span>
+    <span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">rule70</span><span class="p">,],</span>
+    <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">rule70</span><span class="p">,],</span>
+    <span class="s2">&quot;z&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">rule70</span><span class="p">,],</span>
+    <span class="s2">&quot;{&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">rule63</span><span class="p">,],</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Note</strong>: The order of rules in each rules list is important; it should be the same as rules element in x.xml.</p>
+<p>Finally, x.py contains <strong>x.rulesDictDict</strong>. Keys are ruleset names, values are rules dictionaries. The colorer can get the rules list for character ch as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">rulesDict</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">rulesDictDict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">rulesetName</span><span class="p">)</span> <span class="c1"># When a mode is inited.</span>
+<span class="o">...</span>
+<span class="n">rules</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rulesDict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ch</span><span class="p">,[])</span> <span class="c1"># In the main loop.</span>
+</pre></div>
+</div>
+<p>For example, here is the rules dictionary for php.py:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># x.rulesDictDict for php mode.</span>
+<span class="n">rulesDictDict</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;php_javascript&quot;</span><span class="p">:</span> <span class="n">rulesDict6</span><span class="p">,</span>
+    <span class="s2">&quot;php_javascript_php&quot;</span><span class="p">:</span> <span class="n">rulesDict7</span><span class="p">,</span>
+    <span class="s2">&quot;php_main&quot;</span><span class="p">:</span> <span class="n">rulesDict1</span><span class="p">,</span>
+    <span class="s2">&quot;php_php&quot;</span><span class="p">:</span> <span class="n">rulesDict4</span><span class="p">,</span>
+    <span class="s2">&quot;php_php_literal&quot;</span><span class="p">:</span> <span class="n">rulesDict5</span><span class="p">,</span>
+    <span class="s2">&quot;php_phpdoc&quot;</span><span class="p">:</span> <span class="n">rulesDict8</span><span class="p">,</span>
+    <span class="s2">&quot;php_tags&quot;</span><span class="p">:</span> <span class="n">rulesDict2</span><span class="p">,</span>
+    <span class="s2">&quot;php_tags_literal&quot;</span><span class="p">:</span> <span class="n">rulesDict3</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Note</strong>: The jEdit2Py script creates ‘friendly’ names for rules lists <em>solely</em> as an aid for people reading the code. Leo’s colorer uses only the name x.rulesDictDict; Leo’s colorer never uses the actual names of rules lists such as rulesDict8, and Leo’s colorer never uses the actual names of rules functions such as rule64.</p>
+</section>
+<section id="x-importdict-and-imported-versus-delegated-rulesets">
+<h4><a class="toc-backref" href="#id22" role="doc-backlink">x.importDict and imported versus delegated rulesets</a><a class="headerlink" href="#x-importdict-and-imported-versus-delegated-rulesets" title="Link to this heading">¶</a></h4>
+<p>x.importDict is a Python dictionary. Keys are ruleset names; values are a list of ruleset names. For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import dict for php mode.</span>
+<span class="n">importDict</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;php_javascript_php&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;javascript::main&quot;</span><span class="p">],</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>For any ruleset R whose ruleset name is N, x.importDict.get(N) is the list of rulesets names whose rulesets appear in a DELEGATE attribute of an &lt;IMPORT&gt; rule element in R’s ruleset. Such <strong>imported</strong> ruleset are copied to the end of the R’s rules list. Leo’s colorizer does this copying only once, when loading ruleset R for the first time.</p>
+<p><strong>Note 1</strong>: Loading imported rulesets must be done at ‘run time’. It should definitely not be done by jEdit2Py at ‘compile time’; that would require running jEdit2Py on <em>all</em> .xml files whenever any such file changed.</p>
+<p><strong>Note 2</strong>:  Multiple &lt;IMPORT&gt; rule elements in a single ruleset are allowed: delegated rules are copied to the end of N’s rules list in the order they appear in the ruleset.</p>
+<p><strong>Note 3</strong>: The DELEGATE attribute of &lt;IMPORT&gt; elements is, in fact, completely separate from the DELEGATE attributes of other rules as discussed in <a class="reference internal" href="#arguments-to-rule-methods">Arguments to rule methods</a>. Indeed, the DELEGATE attribute of &lt;IMPORT&gt; elements creates entries in x.importDict, which in turn causes the colorizer to append the rules of the imported ruleset to the end of the present rules list. In contrast, the DELEGATE attributes of other rules sets the delegate argument to rules methods, which in tern causes the colorizer to recursively color the matched text with the <strong>delegated</strong> ruleset. In short:</p>
+<ul class="simple">
+<li><p>The rules of <strong>imported</strong> rulesets are appended to the end of another rules list; the rules of <strong>delegated</strong> rulesets never are.</p></li>
+<li><p><strong>Imported</strong> ruleset names appear as the values of items in x.importDict; <strong>delegated</strong> ruleset names appear as delegate arguments to rule methods.</p></li>
+</ul>
+</section>
+</section>
+<section id="rule-methods">
+<h3><a class="toc-backref" href="#id23" role="doc-backlink">Rule methods</a><a class="headerlink" href="#rule-methods" title="Link to this heading">¶</a></h3>
+<p>This section describes each rules method in Leo’s jEdit-based colorizer. Rules methods are called by rules functions in colorizer control file; they correspond directly to rules elements in jEdit’s language description files.</p>
+<p>All rule methods attempt to match a pattern at a particular spot in a string. These methods all return True if the match succeeds.</p>
+<section id="arguments-to-rule-methods">
+<h4><a class="toc-backref" href="#id24" role="doc-backlink">Arguments to rule methods</a><a class="headerlink" href="#arguments-to-rule-methods" title="Link to this heading">¶</a></h4>
+<p>All rule methods take three required arguments and zero or more optional keyword arguments.</p>
+<p>Here is a list of the required arguments and their meaning:</p>
+<ul class="simple">
+<li><p><strong>self</strong>: An instance of Leo’s colorizer.</p></li>
+<li><p><strong>s</strong>: The string in which matches may be found.</p></li>
+<li><p><strong>i</strong>: The location within the string at which the rule method looks for a match.</p></li>
+</ul>
+<p>Here is a list of all optional keyword arguments and their meaning:</p>
+<ul class="simple">
+<li><p><strong>at_line_start</strong>:
+If True, a match will succeed only if i is at the start of a line.</p></li>
+<li><p><strong>at_whitespace_end</strong>:
+If True, the match will succeed only if i is at the first non-whitespace text in a line.</p></li>
+<li><p><strong>at_word_start</strong>:
+If True, the match will succeed only if i is at the beginning of a word.</p></li>
+<li><p><strong>delegate</strong>:
+If non-empty, the value of this argument is a ruleset name.
+If the match succeeds, the matched text will be colored recursively with the indicate ruleset.</p></li>
+<li><p><strong>exclude_match</strong>:
+If True, the actual text that matched will not be colored.
+The meaning of this argument varies slightly depending on whether one or two sequences are matched.
+See the individual rule methods for details.</p></li>
+<li><p><strong>kind</strong>: A string representing a class of tokens, i.e., one of:
+‘comment1’, ‘comment2’, ‘comment3’, ‘comment4’, ‘function’,
+‘keyword1’, ‘keyword2’, ‘keyword3’, ‘keyword4’,
+‘label’, ‘literal1’, ‘literal2’, ‘literal3’, ‘literal4’,
+‘markup’, ‘null’ and ‘operator’.</p></li>
+<li><p><strong>no_escape</strong>:
+If True, the ruleset’s escape character will have no effect before the end argument to match_span.
+Otherwise, the presence of the escape character will cause that occurrence of the end string to be ignored.</p></li>
+<li><p><strong>no_line_break</strong>:
+If True, the match will not succeed across line breaks.</p></li>
+<li><p><strong>no_word_break</strong>:
+If True, the match will not cross word breaks.</p></li>
+</ul>
+<p>New in Leo 4.4.1 final: the regular expression rule matchers no longer get a hash_char argument
+because such matchers are called only if the present search pattern starts with hash_char.</p>
+</section>
+<section id="match-eol-span">
+<h4><a class="toc-backref" href="#id25" role="doc-backlink">match_eol_span</a><a class="headerlink" href="#match-eol-span" title="Link to this heading">¶</a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">match_eol_span</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">kind</span><span class="p">,</span><span class="n">begin</span><span class="p">,</span>
+    <span class="n">at_line_start</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">at_whitespace_end</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">at_word_start</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">delegate</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+    <span class="n">exclude_match</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+</pre></div>
+</div>
+<p>match_eol_span succeeds if s[i:].startswith(begin) and the at_line_start, at_whitespace_end and at_word_start conditions are all satisfied.</p>
+<p>If successful, match_eol_span highlights from i to the end of the line with the color specified by kind. If the exclude_match argument is True, only the text before the matched text will be colored. The delegate argument, if present, specifies the ruleset to color the colored text.</p>
+</section>
+<section id="match-eol-span-regexp">
+<h4><a class="toc-backref" href="#id26" role="doc-backlink">match_eol_span_regexp</a><a class="headerlink" href="#match-eol-span-regexp" title="Link to this heading">¶</a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">match_eol_span_regexp</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">kind</span><span class="p">,</span><span class="n">regex</span><span class="p">,</span>
+    <span class="n">at_line_start</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">at_whitespace_end</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">at_word_start</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">delegate</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+    <span class="n">exclude_match</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+</pre></div>
+</div>
+<p>match_eol_span_exp succeeds if:</p>
+<ol class="arabic simple">
+<li><p>The regular expression regex matches at s[i:], and</p></li>
+<li><p>The at_line_start, at_whitespace_end and at_word_start conditions are all satisfied.</p></li>
+</ol>
+<p>If successful, match_eol_span_regexp  highlights from i to the end of the line. If the exclude_match argument is True, only the text before the matched text will be colored. The delegate argument, if present, specifies the ruleset to color the colored text.</p>
+</section>
+<section id="match-keywords">
+<h4><a class="toc-backref" href="#id27" role="doc-backlink">match_keywords</a><a class="headerlink" href="#match-keywords" title="Link to this heading">¶</a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">match_keywords</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">i</span><span class="p">):</span>
+</pre></div>
+</div>
+<p>match_keywords succeeds if s[i:] starts with an identifier contained in the mode’s keywords dictionary d.</p>
+<p>If successful, match_keywords colors the keyword. match_keywords does not take a kind keyword argument. Instead, the keyword is colored as specified by d.get(theKeyword).</p>
+</section>
+<section id="match-mark-following">
+<h4><a class="toc-backref" href="#id28" role="doc-backlink">match_mark_following</a><a class="headerlink" href="#match-mark-following" title="Link to this heading">¶</a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">match_mark_following</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">kind</span><span class="p">,</span><span class="n">pattern</span><span class="p">,</span>
+    <span class="n">at_line_start</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">at_whitespace_end</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">at_word_start</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">exclude_match</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+</pre></div>
+</div>
+<p>match_mark_following succeeds if s[i:].startswith(pattern), and the at_line_start, at_whitespace_end and at_word_start conditions are all satisfied.</p>
+<p>If successful, match_mark_following colors from i to the start of the next token with the color specified by kind. If the exclude_match argument is True, only the text after the matched text will be colored.</p>
+</section>
+<section id="match-mark-previous">
+<h4><a class="toc-backref" href="#id29" role="doc-backlink">match_mark_previous</a><a class="headerlink" href="#match-mark-previous" title="Link to this heading">¶</a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">match_mark_previous</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">kind</span><span class="p">,</span><span class="n">pattern</span><span class="p">,</span>
+    <span class="n">at_line_start</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">at_whitespace_end</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">at_word_start</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">exclude_match</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+</pre></div>
+</div>
+<p>At present match_mark_previous does nothing (always returns 0).
+Its use is deprecated.</p>
+</section>
+<section id="match-seq">
+<h4><a class="toc-backref" href="#id30" role="doc-backlink">match_seq</a><a class="headerlink" href="#match-seq" title="Link to this heading">¶</a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">match_seq</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">kind</span><span class="p">,</span><span class="n">seq</span><span class="p">,</span>
+    <span class="n">at_line_start</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">at_whitespace_end</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">at_word_start</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">delegate</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+</pre></div>
+</div>
+<p>match_seq succeeds if s[i:].startswith(seq) and the at_line_start, at_whitespace_end and at_word_start conditions are all satisfied.</p>
+<p>If successful, match_seq highlights from i to the end of the sequence with the color specified by kind. The delegate argument, if present, specifies the ruleset to color the colored text.</p>
+</section>
+<section id="match-seq-regexp">
+<h4><a class="toc-backref" href="#id31" role="doc-backlink">match_seq_regexp</a><a class="headerlink" href="#match-seq-regexp" title="Link to this heading">¶</a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">match_seq_regexp</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">kind</span><span class="p">,</span><span class="n">regex</span><span class="p">,</span>
+    <span class="n">at_line_start</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">at_whitespace_end</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">at_word_start</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">delegate</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+</pre></div>
+</div>
+<p>match_seq succeeds if:</p>
+<ol class="arabic simple">
+<li><p>The regular expression regex matches at s[i:], and</p></li>
+<li><p>The at_line_start, at_whitespace_end and at_word_start conditions are all satisfied.</p></li>
+</ol>
+<p>If successful, match_seq_regexp highlights from i to the end of the sequence with the color specified by kind. The delegate argument, if present, specifies the ruleset to color the colored text.</p>
+</section>
+<section id="match-span">
+<h4><a class="toc-backref" href="#id32" role="doc-backlink">match_span</a><a class="headerlink" href="#match-span" title="Link to this heading">¶</a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">match_span</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">kind</span><span class="p">,</span><span class="n">begin</span><span class="p">,</span><span class="n">end</span><span class="p">,</span>
+    <span class="n">at_line_start</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">at_whitespace_end</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">at_word_start</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">exclude_match</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">delegate</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">no_escape</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">no_line_break</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">no_word_break</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+</pre></div>
+</div>
+<p>match_span succeeds if there is an index j &gt; i such that s[:i].startswith(begin) and s[i:j].endswith(end) and the at_line_start, at_whitespace_end, at_word_start, no_escape, no_line_break and no_word_break conditions are all satisfied.</p>
+<p>If successful, match_span highlights from s[i:j with the color specified by kind; but if the exclude_match argument is True, the begin and end text are not colored. The delegate argument, if present, specifies the ruleset to color the colored text.</p>
+</section>
+<section id="match-span-regexp">
+<h4><a class="toc-backref" href="#id33" role="doc-backlink">match_span_regexp</a><a class="headerlink" href="#match-span-regexp" title="Link to this heading">¶</a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">match_span</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">kind</span><span class="p">,</span><span class="n">regex</span><span class="p">,</span><span class="n">end</span><span class="p">,</span>
+    <span class="n">at_line_start</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">at_whitespace_end</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">at_word_start</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">exclude_match</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">delegate</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">no_escape</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">no_line_break</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">no_word_break</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+</pre></div>
+</div>
+<p>match_span_regex succeeds if:</p>
+<ol class="arabic simple">
+<li><p>The regular expression regex matches at s[i:],</p></li>
+<li><p>There is an index j &gt; i such that s[i:j].endswith(end),</p></li>
+<li><p>The at_line_start, at_whitespace_end, at_word_start,
+no_escape, no_line_break and no_word_break conditions are all satisfied.</p></li>
+</ol>
+<p>If successful, match_span colors s[i:j], with the color specified by kind; but if the exclude_match argument is True, the begin and end text are not colored. The delegate argument, if present, specifies the ruleset to color the colored text.</p>
+</section>
+<section id="match-terminate">
+<h4><a class="toc-backref" href="#id34" role="doc-backlink">match_terminate</a><a class="headerlink" href="#match-terminate" title="Link to this heading">¶</a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">match_terminate</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">kind</span><span class="p">,</span><span class="n">at_char</span><span class="p">):</span>
+</pre></div>
+</div>
+<p>match_terminate succeeds if s[i:] contains at least at_char more characters.</p>
+<p>If successful, match_terminate colors at_char characters with the color specified by kind.</p>
+</section>
+</section>
+</section>
 <section id="leoast-py">
-<h2><a class="toc-backref" href="#id6" role="doc-backlink">leoAst.py</a><a class="headerlink" href="#leoast-py" title="Link to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id35" role="doc-backlink">leoAst.py</a><a class="headerlink" href="#leoast-py" title="Link to this heading">¶</a></h2>
 <p>The classes in <a class="reference external" href="https://github.com/leo-editor/leo-editor/blob/devel/leo/core/leoAst.py">leoAst.py</a>
 unify python’s token-based and ast-based worlds by creating two-way links
 between tokens in the token list and ast nodes in the parse tree.</p>
@@ -509,9 +1112,9 @@ structure. These comments have the form:</p>
 <p>If you have any trouble installing or using this code, please help for help
 on <a class="reference external" href="https://groups.google.com/forum/#!forum/leo-editor">Leo’s forum</a></p>
 <section id="running-leoast-py">
-<h3><a class="toc-backref" href="#id7" role="doc-backlink">Running leoAst.py</a><a class="headerlink" href="#running-leoast-py" title="Link to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id36" role="doc-backlink">Running leoAst.py</a><a class="headerlink" href="#running-leoast-py" title="Link to this heading">¶</a></h3>
 <section id="running-leoast-py-from-the-command-line">
-<h4><a class="toc-backref" href="#id8" role="doc-backlink">Running leoAst.py from the command line</a><a class="headerlink" href="#running-leoast-py-from-the-command-line" title="Link to this heading">¶</a></h4>
+<h4><a class="toc-backref" href="#id37" role="doc-backlink">Running leoAst.py from the command line</a><a class="headerlink" href="#running-leoast-py-from-the-command-line" title="Link to this heading">¶</a></h4>
 <p>leoAst.py is designed to be run from the command line:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span>
     <span class="n">leoAst</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">help</span>
@@ -541,7 +1144,7 @@ on <a class="reference external" href="https://groups.google.com/forum/#!forum/l
 </div>
 </section>
 <section id="running-the-code-python-programmatically">
-<h4><a class="toc-backref" href="#id9" role="doc-backlink">Running the code python programmatically</a><a class="headerlink" href="#running-the-code-python-programmatically" title="Link to this heading">¶</a></h4>
+<h4><a class="toc-backref" href="#id38" role="doc-backlink">Running the code python programmatically</a><a class="headerlink" href="#running-the-code-python-programmatically" title="Link to this heading">¶</a></h4>
 <p>To access the code, do one of the following:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">leoAst</span>
 <span class="kn">import</span> <span class="nn">leo.core.leoAst</span> <span class="k">as</span> <span class="nn">leoAst</span>
@@ -554,7 +1157,7 @@ on <a class="reference external" href="https://groups.google.com/forum/#!forum/l
 </div>
 </section>
 <section id="running-unit-tests-and-coverage-tests-programmatically">
-<h4><a class="toc-backref" href="#id10" role="doc-backlink">Running unit tests and coverage tests programmatically</a><a class="headerlink" href="#running-unit-tests-and-coverage-tests-programmatically" title="Link to this heading">¶</a></h4>
+<h4><a class="toc-backref" href="#id39" role="doc-backlink">Running unit tests and coverage tests programmatically</a><a class="headerlink" href="#running-unit-tests-and-coverage-tests-programmatically" title="Link to this heading">¶</a></h4>
 <p>The following runs all unit tests for leoAst.py:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">leo</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">leoAst</span>
 </pre></div>
@@ -566,11 +1169,11 @@ on <a class="reference external" href="https://groups.google.com/forum/#!forum/l
 </section>
 </section>
 <section id="tokenorder-classes-theory-of-operation">
-<h3><a class="toc-backref" href="#id11" role="doc-backlink">TokenOrder classes: Theory of operation</a><a class="headerlink" href="#tokenorder-classes-theory-of-operation" title="Link to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id40" role="doc-backlink">TokenOrder classes: Theory of operation</a><a class="headerlink" href="#tokenorder-classes-theory-of-operation" title="Link to this heading">¶</a></h3>
 <p>This is the Theory of Operation for the TokenOrderGenerator (TOG) class and
 related classes.</p>
 <section id="token-order-classes">
-<h4><a class="toc-backref" href="#id12" role="doc-backlink">Token-order classes</a><a class="headerlink" href="#token-order-classes" title="Link to this heading">¶</a></h4>
+<h4><a class="toc-backref" href="#id41" role="doc-backlink">Token-order classes</a><a class="headerlink" href="#token-order-classes" title="Link to this heading">¶</a></h4>
 <p>The <strong>TokenOrderGenerator</strong> (TOG) class injects two-way links between all
 tokens and the corresponding ast nodes. The TOG class also injects
 parent/child links into all ast nodes.</p>
@@ -590,7 +1193,7 @@ the TOT class, client code can easily modify the token list or parse tree
 as desired.</p>
 </section>
 <section id="other-classes">
-<h4><a class="toc-backref" href="#id13" role="doc-backlink">Other classes</a><a class="headerlink" href="#other-classes" title="Link to this heading">¶</a></h4>
+<h4><a class="toc-backref" href="#id42" role="doc-backlink">Other classes</a><a class="headerlink" href="#other-classes" title="Link to this heading">¶</a></h4>
 <p>The <strong>Token</strong> class represents one token, created by tokenize.tokenize.</p>
 <p>The <strong>Fstringify</strong> class is an re-implementation of the external fstringify
 project using the TOG class.</p>
@@ -602,7 +1205,7 @@ token lists, parse trees, and the links between them.</p>
 <em>Important</em>: BaseTest.make_data is, all by itself, a very strong unit test.</p>
 </section>
 <section id="significant-vs-insignificant-tokens">
-<h4><a class="toc-backref" href="#id14" role="doc-backlink">Significant vs insignificant tokens</a><a class="headerlink" href="#significant-vs-insignificant-tokens" title="Link to this heading">¶</a></h4>
+<h4><a class="toc-backref" href="#id43" role="doc-backlink">Significant vs insignificant tokens</a><a class="headerlink" href="#significant-vs-insignificant-tokens" title="Link to this heading">¶</a></h4>
 <p>The distinction between <strong>significant</strong> and <strong>insignificant</strong> tokens is
 crucial. Visitors call TOG.gen_token, TOG.gen_op, etc. <em>only</em> for
 significant tokens. The <strong>is_significant</strong> and <strong>is_significant_token</strong>
@@ -613,7 +1216,7 @@ contain non-essential parentheses, or optional trailing commas, or whether
 two statements are separated by a semicolon.</p>
 </section>
 <section id="helping-tog-visitors">
-<h4><a class="toc-backref" href="#id15" role="doc-backlink">Helping TOG visitors</a><a class="headerlink" href="#helping-tog-visitors" title="Link to this heading">¶</a></h4>
+<h4><a class="toc-backref" href="#id44" role="doc-backlink">Helping TOG visitors</a><a class="headerlink" href="#helping-tog-visitors" title="Link to this heading">¶</a></h4>
 <p>The TOG.do_If visitor calls <strong>TOG.find_next_significant_token</strong> to
 determine whether TOG.do_If should generate an “if” or an “elif” token.
 This help is essential, because the following two source files generate
@@ -634,7 +1237,7 @@ whether a slice without a step contains an optional colon.</p>
 crucial inventions. TOG class would not be possible without them.</p>
 </section>
 <section id="syncing-tokens">
-<h4><a class="toc-backref" href="#id16" role="doc-backlink">Syncing tokens</a><a class="headerlink" href="#syncing-tokens" title="Link to this heading">¶</a></h4>
+<h4><a class="toc-backref" href="#id45" role="doc-backlink">Syncing tokens</a><a class="headerlink" href="#syncing-tokens" title="Link to this heading">¶</a></h4>
 <p><strong>TOG.px</strong> is an index into the token list. It is either -1, or it points
 at the previous significant token. <em>Note</em>: TOG.find_next_significant_token
 and TOG.get_concatenated_string_tokens use TOG.px, but never change TOG.px.</p>
@@ -667,7 +1270,7 @@ work. It is also the <em>fastest</em> thing that could possibly work.</p></li>
 </ul>
 </section>
 <section id="figures-of-merit">
-<h4><a class="toc-backref" href="#id17" role="doc-backlink">Figures of merit</a><a class="headerlink" href="#figures-of-merit" title="Link to this heading">¶</a></h4>
+<h4><a class="toc-backref" href="#id46" role="doc-backlink">Figures of merit</a><a class="headerlink" href="#figures-of-merit" title="Link to this heading">¶</a></h4>
 <p><strong>Simplicity</strong>:</p>
 <ul class="simple">
 <li><p>The distinction between significant and insignificant tokens makes
@@ -694,9 +1297,9 @@ worst case, it might contain a few thousand entries.</p></li>
 </section>
 </section>
 <section id="notable-functions-methods">
-<h3><a class="toc-backref" href="#id18" role="doc-backlink">Notable functions &amp; methods</a><a class="headerlink" href="#notable-functions-methods" title="Link to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id47" role="doc-backlink">Notable functions &amp; methods</a><a class="headerlink" href="#notable-functions-methods" title="Link to this heading">¶</a></h3>
 <section id="initing-data-structures">
-<h4><a class="toc-backref" href="#id19" role="doc-backlink">Initing data structures</a><a class="headerlink" href="#initing-data-structures" title="Link to this heading">¶</a></h4>
+<h4><a class="toc-backref" href="#id48" role="doc-backlink">Initing data structures</a><a class="headerlink" href="#initing-data-structures" title="Link to this heading">¶</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">make_tokens</span><span class="p">(</span><span class="n">contents</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return a list (not a generator) of Token objects corresponding to the</span>
@@ -722,7 +1325,7 @@ worst case, it might contain a few thousand entries.</p></li>
 </div>
 </section>
 <section id="reading-writing-files">
-<h4><a class="toc-backref" href="#id20" role="doc-backlink">Reading &amp; writing files</a><a class="headerlink" href="#reading-writing-files" title="Link to this heading">¶</a></h4>
+<h4><a class="toc-backref" href="#id49" role="doc-backlink">Reading &amp; writing files</a><a class="headerlink" href="#reading-writing-files" title="Link to this heading">¶</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">read_file_with_encoding</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Read the file, returning (e, s).</span>
@@ -742,7 +1345,7 @@ worst case, it might contain a few thousand entries.</p></li>
 </div>
 </section>
 <section id="reports">
-<h4><a class="toc-backref" href="#id21" role="doc-backlink">Reports</a><a class="headerlink" href="#reports" title="Link to this heading">¶</a></h4>
+<h4><a class="toc-backref" href="#id50" role="doc-backlink">Reports</a><a class="headerlink" href="#reports" title="Link to this heading">¶</a></h4>
 <p>The dump_* functions pretty-print tokens and parse trees in various
 formats:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">show_diffs</span><span class="p">(</span><span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
@@ -754,7 +1357,7 @@ formats:</p>
 </div>
 </section>
 <section id="updating-tokens-and-parse-trees">
-<h4><a class="toc-backref" href="#id22" role="doc-backlink">Updating tokens and parse trees</a><a class="headerlink" href="#updating-tokens-and-parse-trees" title="Link to this heading">¶</a></h4>
+<h4><a class="toc-backref" href="#id51" role="doc-backlink">Updating tokens and parse trees</a><a class="headerlink" href="#updating-tokens-and-parse-trees" title="Link to this heading">¶</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">add_token_to_token_list</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Insert token in the proper location of node.token_list.&quot;&quot;&quot;</span>
 
@@ -767,7 +1370,7 @@ formats:</p>
 </div>
 </section>
 <section id="tokenordergenerator-init-from-file">
-<h4><a class="toc-backref" href="#id23" role="doc-backlink">TokenOrderGenerator.init_from_file</a><a class="headerlink" href="#tokenordergenerator-init-from-file" title="Link to this heading">¶</a></h4>
+<h4><a class="toc-backref" href="#id52" role="doc-backlink">TokenOrderGenerator.init_from_file</a><a class="headerlink" href="#tokenordergenerator-init-from-file" title="Link to this heading">¶</a></h4>
 <p>This method creates the tokens list and the parse tree and adds all links
 between tokens and parse tree nodes:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">init_from_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
@@ -791,7 +1394,7 @@ between tokens and parse tree nodes:</p>
 </section>
 </section>
 <section id="maintaining-leoast-py">
-<h3><a class="toc-backref" href="#id24" role="doc-backlink">Maintaining leoAst.py</a><a class="headerlink" href="#maintaining-leoast-py" title="Link to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id53" role="doc-backlink">Maintaining leoAst.py</a><a class="headerlink" href="#maintaining-leoast-py" title="Link to this heading">¶</a></h3>
 <p>New ast nodes are sometimes required to support new language features, especially language features that require new syntax or keywords. Python has added new nodes fairly often in the past. New nodes may be added in future. When that happens, the following changes will be needed to leoAst.py:</p>
 <ul class="simple">
 <li><p>Add a visitor for the new node.</p></li>
@@ -802,7 +1405,7 @@ between tokens and parse tree nodes:</p>
 </section>
 </section>
 <section id="unicode-reference">
-<h2><a class="toc-backref" href="#id25" role="doc-backlink">Unicode reference</a><a class="headerlink" href="#unicode-reference" title="Link to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id54" role="doc-backlink">Unicode reference</a><a class="headerlink" href="#unicode-reference" title="Link to this heading">¶</a></h2>
 <p>Leo uses unicode internally for all strings.</p>
 <ol class="arabic">
 <li><p>Leo converts headline and body text to unicode when reading .leo files and external files. Both .leo files and external files may specify their encoding.  The default is utf-8. If the encoding used in a external file is not “utf-8” it is represented in the &#64;+leo sentinel line. For example:</p>
@@ -833,7 +1436,7 @@ between tokens and parse tree nodes:</p>
 </ol>
 </section>
 <section id="valid-url-s">
-<h2><a class="toc-backref" href="#id26" role="doc-backlink">Valid URL’s</a><a class="headerlink" href="#valid-url-s" title="Link to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id55" role="doc-backlink">Valid URL’s</a><a class="headerlink" href="#valid-url-s" title="Link to this heading">¶</a></h2>
 <p>Leo checks that the URL is valid before attempting to open it. A valid URL is:</p>
 <ul class="simple">
 <li><p>3 or more lowercase alphas</p></li>
@@ -847,12 +1450,12 @@ between tokens and parse tree nodes:</p>
 <p>You may use any type of URL that your browser supports: http, mailto, ftp, file, etc.</p>
 </section>
 <section id="the-mulder-ream-update-algorithm">
-<h2><a class="toc-backref" href="#id27" role="doc-backlink">The Mulder/Ream update algorithm</a><a class="headerlink" href="#the-mulder-ream-update-algorithm" title="Link to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id56" role="doc-backlink">The Mulder/Ream update algorithm</a><a class="headerlink" href="#the-mulder-ream-update-algorithm" title="Link to this heading">¶</a></h2>
 <p>This appendix documents the Mulder/Ream update algorithm in detail, with an informal proof of its correctness.</p>
 <p>Prior to Leo 5.1, Leo used Bernhard Mulder’s original algorithm to read &#64;shadow files. Starting with Leo 5.1, Leo uses this algorithm to read both &#64;clean and &#64;shadow files. Conceptually, both algorithms work as described in the next section.</p>
 <p>In February 2015 EKR realized that the &#64;shadow algorithm could be used to update &#64;clean (&#64;nosent) files. Simplifying the algorithm instantly became a top priority. The new code emerged several days later, made possible by the x.sentinels array. It is an important milestone in Leo’s history.</p>
 <section id="what-the-algorithm-does">
-<h3><a class="toc-backref" href="#id28" role="doc-backlink">What the algorithm does</a><a class="headerlink" href="#what-the-algorithm-does" title="Link to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id57" role="doc-backlink">What the algorithm does</a><a class="headerlink" href="#what-the-algorithm-does" title="Link to this heading">¶</a></h3>
 <p>For simplicity, this discussion will assume that we are updating an
 external file, x, created with &#64;clean x. The update algorithm works
 exactly the same way with &#64;shadow trees.</p>
@@ -889,7 +1492,7 @@ hold new lines, or for deleting nodes that become empty as the result of
 deleting lines.</p>
 </section>
 <section id="guesses-don-t-matter">
-<h3><a class="toc-backref" href="#id29" role="doc-backlink">Guesses don’t matter</a><a class="headerlink" href="#guesses-don-t-matter" title="Link to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id58" role="doc-backlink">Guesses don’t matter</a><a class="headerlink" href="#guesses-don-t-matter" title="Link to this heading">¶</a></h3>
 <p>There are several boundary cases that the update algorithm can not resolve.
 For example, if a line is inserted between nodes, the algorithm can not
 determine whether the line should be inserted at the end of one node or the
@@ -913,7 +1516,7 @@ next time Leo reads the file the line will be placed in the correct node!</p></l
 remaining sections of this document discuss code-level details.</p>
 </section>
 <section id="background-of-the-code">
-<h3><a class="toc-backref" href="#id30" role="doc-backlink">Background of the code</a><a class="headerlink" href="#background-of-the-code" title="Link to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id59" role="doc-backlink">Background of the code</a><a class="headerlink" href="#background-of-the-code" title="Link to this heading">¶</a></h3>
 <p>The algorithm depends on three simple, guaranteed, properties of
 SequenceMatcher.opcodes. See
 <a class="reference external" href="https://docs.python.org/2/library/difflib.html#sequencematcher-examples">https://docs.python.org/2/library/difflib.html#sequencematcher-examples</a></p>
@@ -943,7 +1546,7 @@ from the previous tuple).</p></li>
 </ul>
 </section>
 <section id="aha-the-x-sentinels-array">
-<h3><a class="toc-backref" href="#id31" role="doc-backlink">Aha: the x.sentinels array</a><a class="headerlink" href="#aha-the-x-sentinels-array" title="Link to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id60" role="doc-backlink">Aha: the x.sentinels array</a><a class="headerlink" href="#aha-the-x-sentinels-array" title="Link to this heading">¶</a></h3>
 <p>Mulder’s original algorithm was hard to understand or to change. The
 culprit was the x.mapping array, which mapped indices into arrays of lines
 <em>with</em> sentinels to indices into arrays of lines <em>without</em> sentinels.</p>
@@ -957,7 +1560,7 @@ len(x.a) == len(x.sentinels), so indices into x.a are <em>also</em> indices into
 x.sentinels.</p>
 </section>
 <section id="strategy-proof-of-correctness">
-<h3><a class="toc-backref" href="#id32" role="doc-backlink">Strategy &amp; proof of correctness</a><a class="headerlink" href="#strategy-proof-of-correctness" title="Link to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id61" role="doc-backlink">Strategy &amp; proof of correctness</a><a class="headerlink" href="#strategy-proof-of-correctness" title="Link to this heading">¶</a></h3>
 <p>Given the x.sentinels array, the strategy for creating the results is
 simple. Given indices ai, aj, bi, bj from an opcode, the algorithm:</p>
 <ul class="simple">
@@ -986,7 +1589,7 @@ sentinels:</p>
 </div>
 </section>
 <section id="summary">
-<h3><a class="toc-backref" href="#id33" role="doc-backlink">Summary</a><a class="headerlink" href="#summary" title="Link to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id62" role="doc-backlink">Summary</a><a class="headerlink" href="#summary" title="Link to this heading">¶</a></h3>
 <p>The algorithm creates an updated set of lines <em>with</em> sentinels using the
 &#64;clean outline and the updated external file. These new lines then replace
 the original &#64;clean with a new &#64;clean tree. The algorithm uses only
@@ -1004,18 +1607,18 @@ remember its details for the rest of my life.</p>
 </section>
 </section>
 <section id="why-i-like-python">
-<h2><a class="toc-backref" href="#id34" role="doc-backlink">Why I like Python</a><a class="headerlink" href="#why-i-like-python" title="Link to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id63" role="doc-backlink">Why I like Python</a><a class="headerlink" href="#why-i-like-python" title="Link to this heading">¶</a></h2>
 <p>I wrote this soon after discovering Python in 2001. The conclusions are still valid today.</p>
 <p>I’ve known for a while that Python was interesting; I attended a Python conference last year and added Python support to Leo. But last week I got that Python is something truly remarkable. I wanted to convert Leo from wxWindows to wxPython, so I began work on c2py, a Python script that would help convert from C++ syntax to Python. While doing so, I had an Aha experience. Python is more than an incremental improvement over Smalltalk or C++ or objective-C; it is “something completely different”. The rest of this post tries to explain this difference.</p>
 <section id="clarity">
-<h3><a class="toc-backref" href="#id35" role="doc-backlink">Clarity</a><a class="headerlink" href="#clarity" title="Link to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id64" role="doc-backlink">Clarity</a><a class="headerlink" href="#clarity" title="Link to this heading">¶</a></h3>
 <p>What struck me first as I converted C++ code to Python is how much less blah, blah, blah there is in Python. No braces, no stupid semicolons and most importantly, <em>no declarations</em>. No more pointless distinctions between const, char *, char const *, char * and wxString. No more wondering whether a variable should be signed, unsigned, short or long.</p>
 <p>Declarations add clutter, declarations are never obviously right and declarations don’t prevent memory allocation tragedies. Declarations also hinder prototyping. In C++, if I change the type of something I must change all related declarations; this can be a huge and dangerous task. With Python, I can change the type of an object without changing the code at all! It’s no accident that Leo’s new log pane was created first in Python.</p>
 <p>Functions returning tuples are a “minor” feature with a huge impact on code clarity. No more passing pointers to data, no more defining (and allocating and deallocating) temporary structs to hold multiple values.</p>
 <p>Python can’t check declarations because there aren’t any. However, there is a really nifty tool called <a class="reference external" href="https://pylint.pycqa.org/en/latest/">pylint</a> that does many of the checks typically done by compilers.</p>
 </section>
 <section id="power">
-<h3><a class="toc-backref" href="#id36" role="doc-backlink">Power</a><a class="headerlink" href="#power" title="Link to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id65" role="doc-backlink">Power</a><a class="headerlink" href="#power" title="Link to this heading">¶</a></h3>
 <p>Python is much more powerful than C++, not because Python has more features, but because Python needs <em>less</em> features. Some examples:</p>
 <ul class="simple">
 <li><p>Python does everything that the C++ Standard Template Library (STL) does, without any of the blah, blah, blah needed by STL. No fuss, no muss, no code bloat.</p></li>
@@ -1025,7 +1628,7 @@ remember its details for the rest of my life.</p>
 </ul>
 </section>
 <section id="safety">
-<h3><a class="toc-backref" href="#id37" role="doc-backlink">Safety</a><a class="headerlink" href="#safety" title="Link to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id66" role="doc-backlink">Safety</a><a class="headerlink" href="#safety" title="Link to this heading">¶</a></h3>
 <p>Before using Python I never fully realized how difficult and dangerous memory allocation is in C++. Try doing:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">aList</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">aString</span><span class="p">)</span>
 </pre></div>
@@ -1034,12 +1637,12 @@ remember its details for the rest of my life.</p>
 <p>Python is fundamentally safe. C++ is fundamentally unsafe. When I am using Python I am free from worry and anxiety. When I am using C++ I must be constantly “on guard.” A momentary lapse can create a hard-to-find pointer bug. With Python, almost nothing serious can ever go wrong, so I can work late at night, or after a beer. The Python debugger is always available. If an exception occurs, the debugger/interpreter tells me just what went wrong. I don’t have to plan a debugging strategy! Finally, Python recovers from exceptions, so Leo can keep right on going even after a crash!</p>
 </section>
 <section id="speed">
-<h3><a class="toc-backref" href="#id38" role="doc-backlink">Speed</a><a class="headerlink" href="#speed" title="Link to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id67" role="doc-backlink">Speed</a><a class="headerlink" href="#speed" title="Link to this heading">¶</a></h3>
 <p>Python has almost all the speed of C. Other interpretive environments such as icon and Smalltalk have clarity, power and safety similar to Python. What makes Python unique is its seamless way of making C code look like Python code. Python executes at essentially the speed of C code because most Python modules are written in C. The overhead in calling such modules is negligible. Moreover, if code is too slow, one can always create a C module to do the job.</p>
 <p>In fact, Python encourages optimization by moving to higher levels of expression. For example, Leo’s Open command reads an XML file. If this command is too slow I can use Python’s XML parser module. This will speed up Leo while at the same time raising the level of the code.</p>
 </section>
 <section id="conclusions">
-<h3><a class="toc-backref" href="#id39" role="doc-backlink">Conclusions</a><a class="headerlink" href="#conclusions" title="Link to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id68" role="doc-backlink">Conclusions</a><a class="headerlink" href="#conclusions" title="Link to this heading">¶</a></h3>
 <p>Little of Python is completely new. What stands out is the superb engineering judgment evident in Python’s design. Python is extremely powerful, yet small, simple and elegant. Python allows me to express my intentions clearly and at the highest possible level.</p>
 <p>The only hope of making Leo all it can be is to use the best possible tools. I believe Python will allow me to add, at long last, the new features that Leo should have.</p>
 <p>Edward K. Ream, October 25, 2001.  P.S., September, 2005:</p>
@@ -1105,7 +1708,7 @@ not possibly be what it is today without Python.</p>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 1997-2024, Edward K. Ream.
-      Last updated on November 07, 2024.
+      Last updated on November 12, 2024.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
     </div>
   </body>

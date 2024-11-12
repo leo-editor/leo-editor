@@ -1564,7 +1564,6 @@
 <v t="ekr.20190414193500.1"><vh>The Leonine way to refactor code</vh></v>
 <v t="ekr.20200319035525.1"><vh>Theory of operation: c.deletePositionsInList</vh></v>
 <v t="ekr.20241112030815.1"><vh>Theory of operation: Leo's colorizer</vh>
-<v t="ekr.20241112030947.1"><vh>@rst html\colorizer_theory_of_operation.html</vh>
 <v t="ekr.20241112044024.1"><vh>Guidelines for changing the colorizer</vh></v>
 <v t="ekr.20241112044056.1"><vh>Terminology</vh></v>
 <v t="ekr.20241112045447.1"><vh>Changing nodes</vh></v>
@@ -1594,7 +1593,6 @@
 <v t="ekr.20060502122950.42"><vh>match_span</vh></v>
 <v t="ekr.20060502122950.47"><vh>match_span_regexp</vh></v>
 <v t="ekr.20060502122950.48"><vh>match_terminate</vh></v>
-</v>
 </v>
 </v>
 <v t="ekr.20200807105709.1"><vh>leoAst.py</vh>
@@ -2535,9 +2533,9 @@
 <v t="ekr.20240828095959.1"></v>
 <v t="ekr.20240828094953.1"><vh>Leo 6.8.2 release notes</vh></v>
 <v t="ekr.20241112030725.1"><vh>=== Revise the colorizing docs</vh></v>
-<v t="ekr.20050901101608.4" descendentVnodeUnknownAttributes="7d71005807000000302e302e362e3471017d710258090000007374725f6174696d657103580c000000313337363431323835332e30710473732e"></v>
+<v t="ekr.20050831184021.5"></v>
 <v t="ekr.20241112064750.1"></v>
-<v t="ekr.20241112030947.1"></v>
+<v t="ekr.20241112030815.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -5367,9 +5365,7 @@ Its use is deprecated.
 
 ..  If successful, match_mark_previous colors from the end of the previous token to i with the color specified by kind. If the exclude_match argument is True, only the text before the matched text will be colored.
 </t>
-<t tx="ekr.20060503064515">.. _`Ruleset name`: `Ruleset names`_
-
-All rule methods take three required arguments and zero or more optional keyword arguments.
+<t tx="ekr.20060503064515">All rule methods take three required arguments and zero or more optional keyword arguments.
 
 Here is a list of the required arguments and their meaning:
 
@@ -5391,7 +5387,7 @@ Here is a list of all optional keyword arguments and their meaning:
   If True, the match will succeed only if i is at the beginning of a word.
 
 - **delegate**:
-  If non-empty, the value of this argument is a `ruleset name`_.
+  If non-empty, the value of this argument is a ruleset name.
   If the match succeeds, the matched text will be colored recursively with the indicate ruleset.
 
 - **exclude_match**:
@@ -33273,18 +33269,12 @@ Informing the qsh of ending state of each line is the colorizer's main task. The
 - The pattern matchers change the *ending state* as a side effect.</t>
 <t tx="ekr.20241112030725.1">https://github.com/leo-editor/leo-editor/issues/4166
 PR: https://github.com/leo-editor/leo-editor/pull/4174</t>
-<t tx="ekr.20241112030815.1"></t>
-<t tx="ekr.20241112030947.1">Are you sure you want to read this appendix?
+<t tx="ekr.20241112030815.1">Are you sure you want to read this appendix?
 It is intended *only* for Leo's core developers.
 
 This appendix contains the theory of operation for the ``JEditColorizer`` class in ``leoColorizer.py``. This class does a complex job efficiently and reliably.
 
 This appendix also discusses **mode files**, files in the ``leo/modes`` directory. These files tell the colorizer the syntax and colors to be usef for each languages.
-
-.. contents:: Contents
-    :depth: 3
-    :local:
-
 </t>
 <t tx="ekr.20241112044024.1">Future project leader should *immediately reject* any proposal that suggests wholesale changes to ``leoColorizer.py``. Such proposals would be profoundly misguided.
 

@@ -76,18 +76,24 @@
 </li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#customizing-the-rst3-command" id="id21">Customizing the rst3 command</a></p></li>
-<li><p><a class="reference internal" href="#theme-files" id="id22">Theme files</a></p></li>
-<li><p><a class="reference internal" href="#input-modes" id="id23">Input modes</a></p></li>
-<li><p><a class="reference internal" href="#ua-s-extensible-attribues-of-nodes" id="id24">uA’s: extensible attribues of nodes</a></p></li>
-<li><p><a class="reference internal" href="#decluttering-headlines" id="id25">Decluttering headlines</a></p>
+<li><p><a class="reference internal" href="#controlling-syntax-coloring" id="id21">Controlling syntax coloring</a></p>
 <ul>
-<li><p><a class="reference internal" href="#examples" id="id26">Examples</a></p></li>
-<li><p><a class="reference internal" href="#rule-replacement-lines" id="id27">Rule &amp; replacement lines</a></p></li>
-<li><p><a class="reference internal" href="#style-lines" id="id28">Style lines</a></p></li>
+<li><p><a class="reference internal" href="#color-settings" id="id22">Color settings</a></p></li>
+<li><p><a class="reference internal" href="#font-settings" id="id23">Font settings</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#translating-leo-s-menus-and-messages" id="id29">Translating Leo’s menus and messages</a></p></li>
+<li><p><a class="reference internal" href="#customizing-the-rst3-command" id="id24">Customizing the rst3 command</a></p></li>
+<li><p><a class="reference internal" href="#theme-files" id="id25">Theme files</a></p></li>
+<li><p><a class="reference internal" href="#input-modes" id="id26">Input modes</a></p></li>
+<li><p><a class="reference internal" href="#ua-s-extensible-attribues-of-nodes" id="id27">uA’s: extensible attribues of nodes</a></p></li>
+<li><p><a class="reference internal" href="#decluttering-headlines" id="id28">Decluttering headlines</a></p>
+<ul>
+<li><p><a class="reference internal" href="#examples" id="id29">Examples</a></p></li>
+<li><p><a class="reference internal" href="#rule-replacement-lines" id="id30">Rule &amp; replacement lines</a></p></li>
+<li><p><a class="reference internal" href="#style-lines" id="id31">Style lines</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#translating-leo-s-menus-and-messages" id="id32">Translating Leo’s menus and messages</a></p></li>
 </ul>
 </nav>
 <section id="using-settings">
@@ -364,8 +370,155 @@ Leo script to execute when the user selects the menu item.</p>
 </section>
 </section>
 </section>
+<section id="controlling-syntax-coloring">
+<h2><a class="toc-backref" href="#id21" role="doc-backlink">Controlling syntax coloring</a><a class="headerlink" href="#controlling-syntax-coloring" title="Link to this heading">¶</a></h2>
+<p>Several settings control Leo’s syntax colorer.</p>
+<p>You may specify default fonts and colors.
+You may also specify fonts and colors on a language-by-language basis.</p>
+<section id="color-settings">
+<h3><a class="toc-backref" href="#id22" role="doc-backlink">Color settings</a><a class="headerlink" href="#color-settings" title="Link to this heading">¶</a></h3>
+<p>To specify a color, say for comment1, for <em>all</em> languages, create an &#64;color node:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@color</span> <span class="n">comment1</span> <span class="o">=</span> <span class="n">blue</span>
+</pre></div>
+</div>
+<p>To specify a color for a <strong>particular</strong> language, say Python, prepend the setting name
+with the language name.  For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@color</span> <span class="n">python_comment1</span> <span class="o">=</span> <span class="n">pink</span>
+</pre></div>
+</div>
+<p>Here are Leo’s legacy (jEdit-based) &#64;color settings:</p>
+<blockquote>
+<div><p>&#64;color comment1
+&#64;color comment2
+&#64;color comment3
+&#64;color comment4
+&#64;color doc-part
+&#64;color function
+&#64;color keyword1
+&#64;color keyword2
+&#64;color keyword3
+&#64;color keyword4
+&#64;color keyword5
+&#64;color label
+&#64;color leo-keyword
+&#64;color link
+&#64;color literal1
+&#64;color literal2
+&#64;color literal3
+&#64;color literal4
+&#64;color markup
+&#64;color name
+&#64;color name-brackets
+&#64;color null
+&#64;color operator
+&#64;color show-invisibles-space
+&#64;color tab
+&#64;color trailing-whitespace
+&#64;color url</p>
+</div></blockquote>
+<p>In addition, the pygments colorizer uses these settings:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>@color comment
+@color comment.hashbang
+@color comment.multiline
+@color comment.preproc
+@color comment.single
+@color comment.special
+@color error
+@color generic
+@color generic.deleted
+@color generic.emph
+@color generic.error
+@color generic.heading
+@color generic.inserted
+@color generic.output
+@color generic.prompt
+@color generic.strong
+@color generic.subheading
+@color generic.traceback
+@color keyword
+@color keyword.constant
+@color keyword.declaration
+@color keyword.namespace
+@color keyword.pseudo
+@color keyword.reserved
+@color keyword.type
+@color literal
+@color literal.date
+@color name.attribute
+@color name.builtin
+@color name.builtin.pseudo
+@color name.class
+@color name.constant
+@color name.decorator
+@color name.entity
+@color name.exception
+@color name.function
+@color name.function.magic
+@color name.label
+@color name.namespace
+@color name.other
+@color name.pygments
+@color name.tag
+@color name.variable
+@color name.variable.class
+@color name.variable.global
+@color name.variable.instance
+@color name.variable.magic
+@color number
+@color number.bin
+@color number.float
+@color number.hex
+@color number.integer
+@color number.integer.long
+@color number.oct
+@color operator.word
+@color other
+@color punctuation
+@color string
+@color string.affix
+@color string.backtick
+@color string.char
+@color string.delimiter
+@color string.doc
+@color string.double
+@color string.escape
+@color string.heredoc
+@color string.interpol
+@color string.other
+@color string.regex
+@color string.single
+@color string.symbol
+@color whitespace
+@color xt
+</pre></div>
+</div>
+<p><strong>Note</strong>: all &#64;color settings may optionally end with the _color suffix.</p>
+</section>
+<section id="font-settings">
+<h3><a class="toc-backref" href="#id23" role="doc-backlink">Font settings</a><a class="headerlink" href="#font-settings" title="Link to this heading">¶</a></h3>
+<p>To specify a font, say for keyword_font, to be used as the default font for <strong>all</strong> languages, put the following in the body text of an &#64;font node in leoSettings.leo:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># keyword_font_family = None</span>
+<span class="n">keyword_font_size</span> <span class="o">=</span> <span class="mi">16</span>
+<span class="n">keyword_font_slant</span> <span class="o">=</span> <span class="n">roman</span>
+    <span class="c1"># roman, italic</span>
+<span class="n">keyword_font_weight</span> <span class="o">=</span> <span class="n">bold</span>
+    <span class="c1"># normal, bold</span>
+</pre></div>
+</div>
+<p>Comments are allowed and undefined settings are set to reasonable defaults. At present, comments can not follow a setting: comments must start a line.</p>
+<p>You can specify per-language settings by preceding the settings names by a prefix x. Such settings affect only colorizing for language x (i.e., all the modes in modes/x.py when using the new colorizer). For example, to specify a font for php (only), put the following in the body text of an &#64;font node in leoSettings.leo:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># php_keyword_font_family = None</span>
+<span class="n">php_keyword_font_size</span> <span class="o">=</span> <span class="mi">16</span>
+<span class="n">php_keyword_font_slant</span> <span class="o">=</span> <span class="n">roman</span>
+    <span class="c1"># roman, italic</span>
+<span class="n">php_keyword_font_weight</span> <span class="o">=</span> <span class="n">bold</span>
+    <span class="c1"># normal, bold</span>
+</pre></div>
+</div>
+</section>
+</section>
 <section id="customizing-the-rst3-command">
-<h2><a class="toc-backref" href="#id21" role="doc-backlink">Customizing the rst3 command</a><a class="headerlink" href="#customizing-the-rst3-command" title="Link to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id24" role="doc-backlink">Customizing the rst3 command</a><a class="headerlink" href="#customizing-the-rst3-command" title="Link to this heading">¶</a></h2>
 <p>This section explains how to use <strong>user filters</strong> to alter the output of
 the <code class="docutils literal notranslate"><span class="pre">rst3</span></code> command.</p>
 <p><strong>Background</strong></p>
@@ -456,7 +609,7 @@ that the <code class="docutils literal notranslate"><span class="pre">rst3</span
 <p>The example filters shown above simulate the often-requested “half clone” feature.</p>
 </section>
 <section id="theme-files">
-<h2><a class="toc-backref" href="#id22" role="doc-backlink">Theme files</a><a class="headerlink" href="#theme-files" title="Link to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id25" role="doc-backlink">Theme files</a><a class="headerlink" href="#theme-files" title="Link to this heading">¶</a></h2>
 <p>A <strong>theme</strong> file is a .leo file containing appearance-related settings.  The leo/themes folder contains several examples.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">open-theme-file</span></code> command will show you the effect of a theme file without changing Leo in any way.</p>
 <p>To enable a theme, put the following setting in <code class="docutils literal notranslate"><span class="pre">myLeoSettings.leo</span></code>:</p>
@@ -480,7 +633,7 @@ that the <code class="docutils literal notranslate"><span class="pre">rst3</span
 </div>
 </section>
 <section id="input-modes">
-<h2><a class="toc-backref" href="#id23" role="doc-backlink">Input modes</a><a class="headerlink" href="#input-modes" title="Link to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id26" role="doc-backlink">Input modes</a><a class="headerlink" href="#input-modes" title="Link to this heading">¶</a></h2>
 <p>Leo now allows you to specify input modes. You enter mode x with the <code class="docutils literal notranslate"><span class="pre">enter-x-mode</span></code> command. The purpose of a mode is to create different bindings for keys within a mode. Often plain keys are useful in input modes.</p>
 <p>You can specify modes with <code class="docutils literal notranslate"><span class="pre">&#64;mode</span></code> nodes in <code class="docutils literal notranslate"><span class="pre">leoSettings.leo</span></code>. <code class="docutils literal notranslate"><span class="pre">&#64;mode</span></code> nodes work just like <code class="docutils literal notranslate"><span class="pre">&#64;shortcuts</span></code> nodes, but in addition they have the side effect of creating the <code class="docutils literal notranslate"><span class="pre">enter-&lt;mode</span> <span class="pre">name&gt;-mode</span></code> command.</p>
 <p>Notes:</p>
@@ -500,7 +653,7 @@ that the <code class="docutils literal notranslate"><span class="pre">rst3</span
 <p>With all these options it should be possible to emulate the keyboard behavior of any other editor.</p>
 </section>
 <section id="ua-s-extensible-attribues-of-nodes">
-<h2><a class="toc-backref" href="#id24" role="doc-backlink">uA’s: extensible attribues of nodes</a><a class="headerlink" href="#ua-s-extensible-attribues-of-nodes" title="Link to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id27" role="doc-backlink">uA’s: extensible attribues of nodes</a><a class="headerlink" href="#ua-s-extensible-attribues-of-nodes" title="Link to this heading">¶</a></h2>
 <p id="index-0">Leo’s .leo file format is extensible. The basis for extending .leo files are the v.unknownAttributes ivars of vnodes, also know as <strong>user attributes</strong>, uA’s for short. Leo translates between uA’s and xml attributes in the corresponding &lt;v&gt; elements in .leo files. Plugins may also use v.tempAttributes ivars to hold temporary information that will <em>not</em> be written to the .leo file. These two ivars are called <strong>attribute ivars</strong>.</p>
 <p>Attribute ivars must be Python dictionaries, whose keys are names of plugins and whose values are <em>other</em> dictionaries, called <strong>inner dictionaries</strong>, for exclusive use of each plugin.</p>
 <p>The v.u Python property allows plugins to get and set v.unknownAttributes easily:</p>
@@ -541,7 +694,7 @@ that the <code class="docutils literal notranslate"><span class="pre">rst3</span
 </ul>
 </section>
 <section id="decluttering-headlines">
-<h2><a class="toc-backref" href="#id25" role="doc-backlink">Decluttering headlines</a><a class="headerlink" href="#decluttering-headlines" title="Link to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id28" role="doc-backlink">Decluttering headlines</a><a class="headerlink" href="#decluttering-headlines" title="Link to this heading">¶</a></h2>
 <p><strong>Decluttering</strong> replaces controls custom formatting of headlines, including:</p>
 <ul class="simple">
 <li><p>Hiding or changing headline text,</p></li>
@@ -573,7 +726,7 @@ You specify decluttering rulesets in the body text of:</p>
 Decluttering affects only those headlines that match a rule pattern.</p>
 <p>The following section shows some example rulesets. Later sections discuss decluttering commands, patterns and styles in more detail.</p>
 <section id="examples">
-<h3><a class="toc-backref" href="#id26" role="doc-backlink">Examples</a><a class="headerlink" href="#examples" title="Link to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id29" role="doc-backlink">Examples</a><a class="headerlink" href="#examples" title="Link to this heading">¶</a></h3>
 <p>Here are some examples of decluttering rulesets:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span># Hide org-mode tags and bold the headline.
 RULE :([\w_@]+:)+\s*$
@@ -592,7 +745,7 @@ REPLACE …\1\2
 </div>
 </section>
 <section id="rule-replacement-lines">
-<h3><a class="toc-backref" href="#id27" role="doc-backlink">Rule &amp; replacement lines</a><a class="headerlink" href="#rule-replacement-lines" title="Link to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id30" role="doc-backlink">Rule &amp; replacement lines</a><a class="headerlink" href="#rule-replacement-lines" title="Link to this heading">¶</a></h3>
 <p>All rulesets start with a <strong>rule line</strong> of the form:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">RULE</span> <span class="o">&lt;</span><span class="n">regular</span> <span class="n">expression</span><span class="o">&gt;</span>
 </pre></div>
@@ -618,7 +771,7 @@ REPLACE …\1\2
 </ul>
 </section>
 <section id="style-lines">
-<h3><a class="toc-backref" href="#id28" role="doc-backlink">Style lines</a><a class="headerlink" href="#style-lines" title="Link to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id31" role="doc-backlink">Style lines</a><a class="headerlink" href="#style-lines" title="Link to this heading">¶</a></h3>
 <p>Leo applies style lines only if they appear in a ruleset that matches a headline. Style lines do the following…</p>
 <p>Add an icon to the headline:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ICON</span> <span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">icon</span>
@@ -650,7 +803,7 @@ REPLACE …\1\2
 </section>
 </section>
 <section id="translating-leo-s-menus-and-messages">
-<h2><a class="toc-backref" href="#id29" role="doc-backlink">Translating Leo’s menus and messages</a><a class="headerlink" href="#translating-leo-s-menus-and-messages" title="Link to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id32" role="doc-backlink">Translating Leo’s menus and messages</a><a class="headerlink" href="#translating-leo-s-menus-and-messages" title="Link to this heading">¶</a></h2>
 <p>It is easy to translate Leo’s menu strings: simply create an <code class="docutils literal notranslate"><span class="pre">&#64;menus</span></code> tree in <code class="docutils literal notranslate"><span class="pre">leoSettings.leo</span></code> or <code class="docutils literal notranslate"><span class="pre">myLeoSettings.leo</span></code> that contains the translated menu names.</p>
 <p><strong>New in Leo 4.4.8</strong>: Leo now contains support for translating messages sent to Leo’s log:</p>
 <ul class="simple">
@@ -719,7 +872,7 @@ REPLACE …\1\2
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 1997-2024, Edward K. Ream.
-      Last updated on November 07, 2024.
+      Last updated on November 12, 2024.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
     </div>
   </body>
