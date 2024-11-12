@@ -1567,7 +1567,13 @@
 <v t="ekr.20200319035525.1"><vh>Theory of operation: c.deletePositionsInList</vh></v>
 <v t="ekr.20241112030815.1"><vh>Theory of operation: Leo's colorizer</vh>
 <v t="ekr.20241112030947.1"><vh>@rst html\colorizer_theory_of_operation.html</vh>
-<v t="ekr.20241110135002.1"><vh>Theory of operation (new)</vh></v>
+<v t="ekr.20241112044024.1"><vh>Guidelines for changing the colorizer</vh></v>
+<v t="ekr.20241112044056.1"><vh>Terminology</vh></v>
+<v t="ekr.20241112045447.1"><vh>Changing nodes</vh></v>
+<v t="ekr.20241112044630.1"><vh>Collaboration with the qsh</vh></v>
+<v t="ekr.20241112044810.1"><vh>The big challenge</vh></v>
+<v t="ekr.20241112045117.1"><vh>Overview of jedit methods (rewrite)</vh></v>
+<v t="ekr.20241110135002.1"><vh>Theory of operation (new, to be deleted)</vh></v>
 <v t="ekr.20060430220749"><vh>Files</vh></v>
 <v t="ekr.20060502084233"><vh>The colorizer's inner loop</vh></v>
 <v t="ekr.20060502084233.1"><vh>Format of colorizer control files</vh>
@@ -2531,8 +2537,8 @@
 <v t="ekr.20240828095959.1"></v>
 <v t="ekr.20240828094953.1"><vh>Leo 6.8.2 release notes</vh></v>
 <v t="ekr.20241112030725.1"><vh>=== Revise the colorizing docs</vh></v>
-<v t="ekr.20060430221745"></v>
-<v t="ekr.20241112030815.1"></v>
+<v t="ekr.20060430221745.1"></v>
+<v t="ekr.20241112030947.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -33225,84 +33231,8 @@ Big thanks to Edward, Thomas, Félix, aka boltex (the author of LeoJS and leoint
 <t tx="ekr.20241110135002.1">@language rest
 @wrap
 
-This node is *backup* for Leo issue #4158: Theory of Operation for Leo's colorizer
-https://github.com/leo-editor/leo-editor/issues/4158
 
-This node is part of LeoDocs.leo, but these notes do *not* appear on Leo's website.
-
-**Warning**
-
-Don't even *think* about changing Leo's colorizer unless you understand *every word* of these notes.
-
-Future project leader should **immediately reject** any proposal that contemplates wholesale changes to `leoColorizer.py`. Such proposals would be profoundly misguided.
-
-**Terminology**
-
-- **qsh** means the singleton instance of the [QSyntaxHighlighter](https://doc.qt.io/qt-6/qsyntaxhighlighter.html) class.
-- Unless qualified, all methods are instances of the `JEditColorizer` (**jedit**) class.
-
-**Background reading**
-
-Please read and understand the Controlling Syntax Coloring
-https://leo-editor.github.io/leo-editor/coloring.html
-chapter on Leo's website. This chapter discusses Leo's colorizer from another point of view.
-
-**Guidelines for changing the colorizer**
-
-Only the profoundly ignorant would suggest wholesale changes to Leo's colorizer. Don't even think about doing so.
-
-Devs ignore the following guidelines at their peril. These guidelines should ensure that future PRs retain the colorizer's outstanding reliability
-
-- Future PRs *must not* change any code outside `leoColorizer.py`. 
-- Future PRs *must not* attempt to "help" the qsh. The qsh is highly optimized and needs no help!
-- Future PRs *should not* change the helpers that access qsh's state. These helpers are solid.
-- Future PRs should change `_recolor` , `mainLoop`, and the pattern matchers *only as a last resort*.
-
-**The big picture**
-
-`_redraw` and the qsh collaborate to colorize changed lines *without unnecessary work*.
-
-`_redraw` must:
-
-- Call qsh methods to colorize **s**, a *single* line of text.
-- Inform the qsh of the **ending state**, an *integer* representing the coloring state of the *end* of the colorized line.
-
-If `_redraw` sets ending states properly, the qsh will issue highly optimized calls to `_redraw(s)`. In other words, the qsh will call `_redraw(s)` only if the coloring for s might change. This optimization is the reason why the qsh exists!
-
-In other words: *handling qsh states is the colorizer's most important task!* Colorizing is secondary!
-
-**The challenge**
-
-The qsh can (and will) `call _recolor(s)` where s is *out-of-sequence* with the preceding call. For example, the following snippet is typical in @jupytext nodes:
-```python
-# %% (like @language python)
-
-def spam():
-
-# %% [markdown] (like @language md)
-
-# Section 1
-It was the best of times; it was the worst of times.
-```
-The user can click (or cut or paste) anywhere in this text. The qsh will then call `_recolor(s)` starting with the first changed line. There is no necessary relationship between `s` and the line that `_re` last saw!
-
-**Calling sequence**
-
-- `LeoTree.select` changes c.p. It's a complex task. 
-- LeoTree.select calls `c.recolor(p)`, where `p` is the *new* position. This call happens last.
-- `c.recolor` calls `c.colorize`, the *only* entry point for the jedit colorizer.
-- `c.colorize` ends as follows:
-```python
-# Tell QSyntaxHighlighter to do a full recolor.
-try:
-    self.in_full_redraw = True # Debugging only.
-    self.highlighter.rehighlight()
-finally:
-    self.in_full_redraw = False
-```
-This code causes the qsh to call `_redraw(s)` whenever `p.b` changes.
-
-- `_redraw` computes the initial qsh state and calls `mainLine` to colorize s.
+- `redraw` computes the initial qsh state and calls `mainLine` to colorize s.
 - `mainLine` does not change state directly! It only calls pattern matches.
 - The pattern matchers compute the final qsh state as a side effect.
 
@@ -33329,7 +33259,7 @@ The Python colorizers defines restarters for only for continued strings and docs
 **About states**
 
 The qsh uses *integer* states. Leo's pattern matchers use a corresponding *string* state. 
-`_redraw` converts to and from these two representations.
+`redraw` converts to and from these two representations.
 
 *Regardless of representation*, the  state represents:
 
@@ -33350,7 +33280,7 @@ Pattern matchers do the following when they only partially succeed:
 
 Informing the qsh of ending state of each line is the colorizer's main task. The colorizer does so as follows:
 
-- `_redraw(s)` retrieves the *starting* state from the qsh, then calls `mainLoop(s)` to colorize s.
+- `redraw(s)` retrieves the *starting* state from the qsh, then calls `mainLoop(s)` to colorize s.
 - `_mainLoop` calls pattern matchers.
 - The pattern matchers change the *ending state* as a side effect.</t>
 <t tx="ekr.20241112030725.1">https://github.com/leo-editor/leo-editor/issues/4166
@@ -33367,6 +33297,90 @@ This chapter also discusses the **mode files** in the ``leo/modes`` directory. T
     :depth: 3
     :local:
 
+</t>
+<t tx="ekr.20241112044024.1">Future project leader should *immediately reject* any proposal that suggests wholesale changes to ``leoColorizer.py``. Such proposals would be profoundly misguided.
+
+These following guidelines should ensure that future PRs retain the colorizer's outstanding reliability:
+
+- Future PRs *must not* change any code outside ``leoColorizer.py``. 
+- Future PRs *must not* attempt to "help" the qsh.
+  The qsh is highly optimized and needs no help!
+- Future PRs *should not* change the helpers that access qsh's state.
+  These helpers are solid.
+- Future PRs should change ``recolor`` , ``mainLoop``, and the pattern matchers
+  *only as a last resort*.
+
+</t>
+<t tx="ekr.20241112044056.1">**qsh** means the singleton instance of the [QSyntaxHighlighter](https://doc.qt.io/qt-6/qsyntaxhighlighter.html) class.
+
+Unless qualified, all methods are instances of the ``JEditColorizer`` (**jedit**) class.</t>
+<t tx="ekr.20241112044630.1">``redraw`` must collaborate with the qsh so the qsh will call ``redraw`` *as few times as possible.* If the collaboration is effective, the qsh will call ``redraw(s)`` only if the coloring for ``s`` could possibly change. This optimization is the reason why the qsh exists!
+
+``redraw(s)`` has two primary tasks:
+
+1. Call qsh methods to colorize **s**, a *single* line of text.
+
+2. Inform the qsh of the **ending state**, an *integer* representing the coloring state of the *end* of the colorized line.
+
+*Handling qsh states is the colorizer's most important task!*
+Colorizing is secondary!</t>
+<t tx="ekr.20241112044810.1">The qsh can (and will) call ``recolor(s)`` where s is *out-of-sequence* with the preceding call. For example, the following snippet is typical in @jupytext nodes:
+
+.. code-block:: python
+
+    # %% (like @language python)
+
+    def spam():
+
+    # %% [markdown] (like @language md)
+
+    # Section 1
+    It was the best of times; it was the worst of times.
+
+The user can click (or cut or paste) anywhere in this text. The qsh will then call ``recolor(s)`` starting with the first changed line. There is no necessary relationship between ``s`` and the line that ``_re`` last saw!</t>
+<t tx="ekr.20241112045117.1">
+
+- `redraw` computes the initial qsh state and calls `mainLine` to colorize s.
+- `mainLine` does not change state directly! It only calls pattern matches.
+- The pattern matchers compute the final qsh state as a side effect.
+
+**mainLoop(s)**
+
+`mainLoop` calls pattern matchers for a *single* line of text, so the coloring state
+**can not possibly change** while `mainLoop` is executing. It's so easy to lose sight of this fact!
+
+`mainLoop` calls pattern matchers as follows:
+
+- First, `_mainLoop` calls the pattern matcher for the *starting* state.
+- `_mainLoop` then calls pattern matchers until every character of the line has been handled.
+
+*Important*: `mainLoop` does not change the ending state itself! That pattern matches do that as a side effect.
+</t>
+<t tx="ekr.20241112045447.1">The following happens whenever ``c.p`` changes:
+
+**LeoTree.select**
+
+Leo's core calls this method to handle the (complex!) details of switching node.
+
+At the very end, ``LeoTree.select`` calls ``c.recolor(p)``, where ``p`` is
+the *new* position.
+
+**c.recolor**
+ 
+This method is the *only* public interface to Leo's colorizer. It calls
+``jedit.colorize``, the *only* entry point for the ``JEditColorizer`` class.
+
+**jedit.colorize**
+
+This method tells the qsh to fully recolor ``p.b`` by calling ``qsh.rehighlight()``.
+
+``qsh.rehighlight()`` collaborates with Leo's body (an instance of ``QTextEdit``).
+
+As a result of this behind-the-scenes collaboration the qsh will call ``redraw(s)`` (a *single* line of text)  whenever recoloring of ``s`` might be needed.
+
+If ``redraw`` does its job properly (see the next sections) the qsh will *optimize* the calls to ``redraw``.  That is, the qsh will call ``redraw`` *as few times as possible.*
+
+The following sections discuss what ``redraw`` (and its helpers) must do.
 </t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
