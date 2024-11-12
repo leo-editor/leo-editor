@@ -1609,8 +1609,7 @@ class JEditColorizer(BaseColorizer):
         k = g.skip_c_id(s, j)
         name = s[j:k]
         ok = self.init_mode(name)
-        if 'coloring' in g.app.debug:
-            g.trace(f"old: {old_name} new: {self.language} {s}")
+        # g.trace(f"old: {old_name} new: {self.language} {s}")
         if ok:
             self.language = name
             self.colorRangeWithTag(s, i, k, 'leokeyword')
@@ -2847,9 +2846,10 @@ class JEditColorizer(BaseColorizer):
         n = self.currentState()
         state = self.stateDict.get(n, 'no-state')
         enabled = (
-            not state.endswith('@nocolor') and
-            not state.endswith('@nocolor-node') and
-            not state.endswith('@killcolor'))
+            self.enabled  # 2024/11/12
+            and not state.endswith('@nocolor')
+            and not state.endswith('@nocolor-node')
+            and not state.endswith('@killcolor'))
         return enabled
     #@+node:ekr.20110605121601.18633: *4* jedit.setRestart
     def setRestart(self, f: Any, **keys: Any) -> int:
