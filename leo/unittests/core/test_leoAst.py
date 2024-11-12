@@ -2779,12 +2779,7 @@ class TestTokens(BaseTest):
         remove = [
             'Interactive', 'Suite',  # Not necessary.
             'AST',  # The base class,
-            # Constants...
-            'PyCF_ALLOW_TOP_LEVEL_AWAIT',
-            'PyCF_ONLY_AST',
-            'PyCF_TYPE_COMMENTS',
-            # New ast nodes for Python 3.8.
-            # We can ignore these nodes because:
+            # We can ignore the newast nodes for Python 3.8 because:
             # 1. ast.parse does not generate them by default.
             # 2. The type comments are ordinary comments.
             #    They do not need to be specially synced.
@@ -2795,7 +2790,8 @@ class TestTokens(BaseTest):
         aList = [z for z in aList if not z[0].islower()]
             # Remove base classes.
         aList = [z for z in aList
-            if not z.startswith('_') and z not in remove]
+            # Constants start with 'PyCF_'.
+            if not z.startswith(('_', 'PyCF_')) and z not in remove]
         # Now test them.
         table = (
             TokenOrderGenerator,
