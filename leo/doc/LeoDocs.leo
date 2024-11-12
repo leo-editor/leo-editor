@@ -1314,34 +1314,10 @@
 <v t="ekr.20101025080245.5799" descendentVnodeUnknownAttributes="7d71002858010000003071017d710258090000007374725f6174696d657103580c000000313337363431313936352e307104735803000000302e3271057d710658090000007374725f6174696d657107580c000000313337363431343136312e307108735805000000302e322e3071097d710a58090000007374725f6174696d65710b580c000000313337363431343136332e30710c735807000000302e322e302e31710d7d710e58090000007374725f6174696d65710f580c000000313337363431323033382e307110735807000000302e322e302e3271117d71122858090000007374725f6174696d657113580c000000313337363431343136342e30711458090000007374725f6374696d657115580c000000313337363431323033392e30711658090000007374725f6d74696d657117580c000000313337363431323033392e307118755807000000302e322e302e3571197d711a58090000007374725f6174696d65711b580c000000313337363431313938372e30711c735803000000302e33711d7d711e58090000007374725f6174696d65711f580c000000313337363431343135392e307120735807000000302e352e302e3771217d712258120000007273745f687474705f61747472696275746571235d71242858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d323922206e616d653d22687474702d6e6f64652d6d61726b65722d3239223e712558040000003c2f613e71265d71272858390000003c64697620636c6173733d2273656374696f6e222069643d22696e766f6b696e672d636f6d6d616e64732d66726f6d2d73637269707473223e712858060000003c2f6469763e71295d712a28583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e712b58060000003c2f6469763e712c5d712d2858060000003c626f64793e712e58070000003c2f626f64793e712f5d71302858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e713158070000003c2f68746d6c3e71324e6565656558070000003c2f6469763e0a7133583b0000003c64697620636c6173733d2273656374696f6e222069643d2267657474696e672d616e642d73657474696e672d707265666572656e636573223e0a713458780000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964313522206e616d653d2267657474696e672d616e642d73657474696e672d707265666572656e636573223e47657474696e6720616e642073657474696e6720707265666572656e6365733c2f613e3c2f68313e0a713565735808000000302e352e302e313171367d713758120000007273745f687474705f61747472696275746571385d71392858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d323722206e616d653d22687474702d6e6f64652d6d61726b65722d3237223e713a58040000003c2f613e713b5d713c28582e0000003c64697620636c6173733d2273656374696f6e222069643d227570646174696e672d7468652d73637265656e223e713d58060000003c2f6469763e713e5d713f28583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e714058060000003c2f6469763e71415d71422858060000003c626f64793e714358070000003c2f626f64793e71445d71452858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e714658070000003c2f68746d6c3e71474e6565656558070000003c2f6469763e0a7148583a0000003c64697620636c6173733d2273656374696f6e222069643d22696e766f6b696e672d636f6d6d616e64732d66726f6d2d73637269707473223e0a714958760000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964313422206e616d653d22696e766f6b696e672d636f6d6d616e64732d66726f6d2d73637269707473223e496e766f6b696e6720636f6d6d616e64732066726f6d20736372697074733c2f613e3c2f68313e0a714a65735808000000302e352e302e3230714b7d714c58120000007273745f687474705f617474726962757465714d5d714e2858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d333722206e616d653d22687474702d6e6f64652d6d61726b65722d3337223e714f58040000003c2f613e71505d71512858260000003c64697620636c6173733d2273656374696f6e222069643d22672d726566696e64616c6c223e715258060000003c2f6469763e71535d715428584f0000003c64697620636c6173733d2273656374696f6e222069643d2266756e6374696f6e732d666f722d66696e64696e672d616e642d6368616e67696e672d746578742d66726f6d2d73637269707473223e715558060000003c2f6469763e71565d715728583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e715858060000003c2f6469763e71595d715a2858060000003c626f64793e715b58070000003c2f626f64793e715c5d715d2858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e715e58070000003c2f68746d6c3e715f4e656565656558070000003c2f6469763e0a716058070000003c2f6469763e0a716158350000003c64697620636c6173733d2273656374696f6e222069643d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e0a7162586c0000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964313922206e616d653d2272756e6e696e672d6c656f2d696e2d62617463682d6d6f6465223e52756e6e696e67204c656f20696e206261746368206d6f64653c2f613e3c2f68313e0a71636573752e"><vh>Advanced Topics</vh>
 <v t="ekr.20131008041326.16099"><vh>@rst html/intermediatetopics.html</vh></v>
 <v t="ekr.20060430221745"><vh>Controlling syntax coloring</vh>
-<v t="ekr.20241110135002.1"><vh>Theory of operation (off line)</vh></v>
 <v t="ekr.20060430221745.1"><vh>@rst html\coloring.html</vh>
 <v t="ekr.20060830142929"><vh>Settings for syntax coloring</vh>
 <v t="ekr.20190422181351.1"><vh>Color settings</vh></v>
 <v t="ekr.20190422182440.1"><vh>Font settings</vh></v>
-</v>
-<v t="ekr.20060430220749"><vh>Files</vh></v>
-<v t="ekr.20060502084233"><vh>The colorizer's inner loop</vh></v>
-<v t="ekr.20060502084233.1"><vh>Format of colorizer control files</vh>
-<v t="ekr.20060502100550"><vh>Ruleset names</vh></v>
-<v t="ekr.20060502090516"><vh>x.properties</vh></v>
-<v t="ekr.20060510085547"><vh>Attribute dictionaries and x.attributesDictDict</vh></v>
-<v t="ekr.20060502090516.1"><vh>Keyword dictionaries and x.keywordsDictDict</vh></v>
-<v t="ekr.20060502090516.2"><vh>Rules, rules dictionaries and x.rulesDictDict</vh></v>
-<v t="ekr.20060503072213"><vh>x.importDict and imported versus delegated rulesets</vh></v>
-</v>
-<v t="ekr.20060502122950"><vh>Rule methods</vh>
-<v t="ekr.20060503064515"><vh>Arguments to rule methods</vh></v>
-<v t="ekr.20060502122950.7"><vh>match_eol_span</vh></v>
-<v t="ekr.20060502122950.10"><vh>match_eol_span_regexp</vh></v>
-<v t="ekr.20060502122950.13"><vh>match_keywords</vh></v>
-<v t="ekr.20060502122950.14"><vh>match_mark_following</vh></v>
-<v t="ekr.20060502125223"><vh>match_mark_previous</vh></v>
-<v t="ekr.20060502122950.40"><vh>match_seq</vh></v>
-<v t="ekr.20060502122950.41"><vh>match_seq_regexp</vh></v>
-<v t="ekr.20060502122950.42"><vh>match_span</vh></v>
-<v t="ekr.20060502122950.47"><vh>match_span_regexp</vh></v>
-<v t="ekr.20060502122950.48"><vh>match_terminate</vh></v>
 </v>
 </v>
 </v>
@@ -1591,6 +1567,34 @@
 <v t="ekr.20060921064744.1"><vh>Format of external files</vh></v>
 <v t="ekr.20190414193500.1"><vh>The Leonine way to refactor code</vh></v>
 <v t="ekr.20200319035525.1"><vh>Theory of operation: c.deletePositionsInList</vh></v>
+<v t="ekr.20241112030815.1"><vh>Theory of operation: Leo's colorizer</vh>
+<v t="ekr.20241112030947.1"><vh>@rst html\colorizer_theory_of_operation.html</vh>
+<v t="ekr.20241110135002.1"><vh>Theory of operation (new)</vh></v>
+<v t="ekr.20060430220749"><vh>Files</vh></v>
+<v t="ekr.20060502084233"><vh>The colorizer's inner loop</vh></v>
+<v t="ekr.20060502084233.1"><vh>Format of colorizer control files</vh>
+<v t="ekr.20060502100550"><vh>Ruleset names</vh></v>
+<v t="ekr.20060502090516"><vh>x.properties</vh></v>
+<v t="ekr.20060510085547"><vh>Attribute dictionaries and x.attributesDictDict</vh></v>
+<v t="ekr.20060502090516.1"><vh>Keyword dictionaries and x.keywordsDictDict</vh></v>
+<v t="ekr.20060502090516.2"><vh>Rules, rules dictionaries and x.rulesDictDict</vh></v>
+<v t="ekr.20060503072213"><vh>x.importDict and imported versus delegated rulesets</vh></v>
+</v>
+<v t="ekr.20060502122950"><vh>Rule methods</vh>
+<v t="ekr.20060503064515"><vh>Arguments to rule methods</vh></v>
+<v t="ekr.20060502122950.7"><vh>match_eol_span</vh></v>
+<v t="ekr.20060502122950.10"><vh>match_eol_span_regexp</vh></v>
+<v t="ekr.20060502122950.13"><vh>match_keywords</vh></v>
+<v t="ekr.20060502122950.14"><vh>match_mark_following</vh></v>
+<v t="ekr.20060502125223"><vh>match_mark_previous</vh></v>
+<v t="ekr.20060502122950.40"><vh>match_seq</vh></v>
+<v t="ekr.20060502122950.41"><vh>match_seq_regexp</vh></v>
+<v t="ekr.20060502122950.42"><vh>match_span</vh></v>
+<v t="ekr.20060502122950.47"><vh>match_span_regexp</vh></v>
+<v t="ekr.20060502122950.48"><vh>match_terminate</vh></v>
+</v>
+</v>
+</v>
 <v t="ekr.20200807105709.1"><vh>leoAst.py</vh>
 <v t="ekr.20200807111156.1"><vh>Running leoAst.py</vh>
 <v t="ekr.20200807110628.1"><vh>Running leoAst.py from the command line</vh></v>
@@ -2528,6 +2532,8 @@
 </v>
 <v t="ekr.20240828095959.1"></v>
 <v t="ekr.20240828094953.1"><vh>Leo 6.8.2 release notes</vh></v>
+<v t="ekr.20241112030725.1"><vh>=== Revise the colorizing docs</vh></v>
+<v t="ekr.20241112030815.1"></v>
 <v t="ekr.20060430221745"></v>
 </vnodes>
 <tnodes>
@@ -5043,13 +5049,7 @@ Using Python colorer control files has the following advantages:
 Controlling Syntax Coloring
 ###########################
 
-This chapter discusses the settings to control Leo's syntax colorer. This chapter also discusses how to extend Leo's colorizer by creating xml language descriptions files and corresponding Python files. **Important**: this material is for those who want to support Leo's colorizing code. To use Leo's colorizers you only need to know about syntax-coloring settings.
-
-.. contents:: Contents
-    :depth: 3
-    :local:
-
-</t>
+This chapter discusses the settings to control Leo's syntax colorer. </t>
 <t tx="ekr.20060502084233">When Leo's syntax colorer sees the '@language x' directive, it will import x.py from Leo's modes folder. The colorer can then access any module-level object obj in x.py as x.obj.
 
 Colorizer control files contain **rules functions** corresponding to rule elements in x.xml. The colorizer can call these functions as if they were members of the colorizer class by passing 'self' as the first argument of these functions. I call these rules *functions* to distinguish them from the corresponding **rules methods** which are actual methods of the colorizer class. Rules *functions* merely call corresponding rules *methods*. Indeed, rules functions are simply a way of binding values to keyword arguments of rules methods. These keywords arguments correspond to the xml attributes of rule elements in x.xml.
@@ -33354,6 +33354,19 @@ Informing the qsh of ending state of each line is the colorizer's main task. The
 - `_redraw(s)` retrieves the *starting* state from the qsh, then calls `mainLoop(s)` to colorize s.
 - `_mainLoop` calls pattern matchers.
 - The pattern matchers change the *ending state* as a side effect.</t>
+<t tx="ekr.20241112030725.1">https://github.com/leo-editor/leo-editor/issues/4166
+PR: https://github.com/leo-editor/leo-editor/pull/4174</t>
+<t tx="ekr.20241112030815.1"></t>
+<t tx="ekr.20241112030947.1">This chapter contains the theory of operation for the ``JEditColorizer`` class in ``leoColorizer.py``. It also discusses the **mode files** in the ``leo/modes`` directory. These files tell how to colorize specific languages.
+
+Are you sure you want to read this chapter?
+It is intended *only* for Leo's core developers.
+
+.. contents:: Contents
+    :depth: 3
+    :local:
+
+</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
