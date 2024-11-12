@@ -33286,12 +33286,12 @@ Informing the qsh of ending state of each line is the colorizer's main task. The
 <t tx="ekr.20241112030725.1">https://github.com/leo-editor/leo-editor/issues/4166
 PR: https://github.com/leo-editor/leo-editor/pull/4174</t>
 <t tx="ekr.20241112030815.1"></t>
-<t tx="ekr.20241112030947.1">Are you sure you want to read this chapter?
+<t tx="ekr.20241112030947.1">Are you sure you want to read this appendix?
 It is intended *only* for Leo's core developers.
 
-This chapter contains the theory of operation for the ``JEditColorizer`` class in ``leoColorizer.py``.
+This appendix contains the theory of operation for the ``JEditColorizer`` class in ``leoColorizer.py``. This class does a complex job efficiently and reliably.
 
-This chapter also discusses the **mode files** in the ``leo/modes`` directory. These files tell how to colorize specific languages.
+This appendix also discusses **mode files**, files in the ``leo/modes`` directory. These files tell the colorizer the syntax and colors to be usef for each languages.
 
 .. contents:: Contents
     :depth: 3
