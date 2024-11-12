@@ -87,7 +87,8 @@ Commands *vr3* and *vr3-show* work better with Leo's new layout system.
 
 VR3 starts in a non-active mode.  This prevents it from slowing down body editing by rendering even when it hasn't been made visible.  The command *vr3* makes sure the plugin is present but does not show it.
 
-For both RsT and markdown nodes, the stylesheet foreground and background colors are automatically changed to be the same as the body editor's.
+For both RsT and markdown nodes, the stylesheet foreground and background colors can be automatically changed to be the same as the body editor's. This behavior is controlled by a new setting:
+*vr3-adapt-fgbg-colors*.  The default value is ``True``.
 
 A new RsT stylesheet has been added: *vr3-medium-black.css*.
 
@@ -280,8 +281,9 @@ All settings are of type @string unless shown as ``@bool``.
    force the use of the default dark stylesheet"
    "vr3-md-stylesheet", "''", "url string", "Optional URL for MD
    stylesheet"
+   "vr3-adapt-fgbg-color", "True", "True, False", "Whether VR3 should use body editor's foreground and background colors."
    
-   "@bool vr3-insert-headline-from-node", "True", "True, False","Render node headline as top heading if True"
+   "@bool vr3-insert-headline-from-node", "True", "True,    False","Render node headline as top heading if True"
 
 
 .. csv-table:: Asciidoctor External Processor Settings
@@ -2583,7 +2585,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         #@+<< load stylesheet settings >>
         #@+node:tom.20240919182502.1: *5* << load stylesheet settings >>
-        self.adapt_fgbg_colors = c.config.getBool('adapt-fgbg-colors', True)
+        self.adapt_fgbg_colors = c.config.getBool('vr3-adapt-fgbg-colors', True)
         self.rst_stylesheet = c.config.getString('vr3-rst-stylesheet') or ''
         self.use_dark_theme = c.config.getBool('vr3-rst-use-dark-theme', RST_USE_DARK)
 
