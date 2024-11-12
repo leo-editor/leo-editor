@@ -2378,6 +2378,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         """
 
         script_str = ''
+        css_fragment = ''
         if self.adapt_fgbg_colors:
             css_fragment = tinker_with_colors(self.c, MD)
 
