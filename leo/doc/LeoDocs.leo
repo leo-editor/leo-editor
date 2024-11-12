@@ -527,7 +527,6 @@
 </v>
 <v t="ekr.20131120115900.16329"><vh>@rst html/screencasts.html</vh></v>
 <v t="ekr.20170130080532.1"><vh>@auto-md ../doc/demo.md</vh></v>
-<v t="ekr.20170202125807.1"><vh>@auto-md ../doc/colorizer.md</vh></v>
 <v t="ekr.20161120073024.1"><vh>Technical docs on GitHub</vh>
 <v t="ekr.20161120073038.1"><vh>@auto-md importers.md </vh></v>
 </v>
