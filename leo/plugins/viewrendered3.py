@@ -12,8 +12,7 @@ r"""
 #@@pagewidth 65
 
 Creates a window for live rendering of reSTructuredText, Markdown
-and Asciidoc text, images, movies, sounds, rst, html, jupyter
-notebooks, etc.
+and Asciidoc text, images, movies, sounds, rst, html, etc.
 
 #@+others
 #@+node:tom.20240521004125.1: *3* About
@@ -92,6 +91,8 @@ For both RsT and markdown nodes, the stylesheet foreground and background colors
 
 A new RsT stylesheet has been added: *vr3-medium-black.css*.
 
+Support for Jupyter Notebooks has been removed.  Instead, use the new @jupytext external file type. A script, not part of VR3 in this version, can render an @jupyter file in VR3. 
+
 Previous Recent Changes
 ========================
 The command vr3-toggle use to fail sometimes; fixed.
@@ -124,11 +125,6 @@ Corrected errors introduced in a complicated merge:
 
 The display code has been adapted to Leo's new splitter/layout infrastructure.
 
-In @jupyter nodes, for the path to the jupyter file or url:
-    - path separators can be either backward or forward slashes.
-    - Quotation marks around paths are removed.
-    These changes let a path copied to the clipboard from the file manager work without user editing.
-
 Bug fixes:
 
     - Quit early if no qt gui.
@@ -144,7 +140,6 @@ new commands give access to the tab: *vr3-tab* and
 *@*/*@c* now work correctly for ReStructuredText for multiline
 strings. This fix makes them work the same way for all three
 structured languages: *rest*, *md*, and *asciidoc*.
-
 
 For both plain and text, an @language directive at the top of a
 node is removed.
@@ -244,7 +239,7 @@ http://http://pypi.python.org/pypi/Markdown, to render Markdown,
 so installing markdown is highly recommended when using this
 plugin.
 
-This plugin uses pygments to regenerate the MD stylesheet.
+This plugin uses pygments forsyntax coloring in the MD stylesheet.
 
 
 #@+node:TomP.20200115200807.1: *3* Settings and Configuration
@@ -903,7 +898,7 @@ reStructuredText by default, with all Leo directives removed.
 However, if the body text starts with ``<`` (after removing
 directives), the body text is rendered as html.
 
-This plugin renders @md, @image, @jupyter, @html, @movie,
+This plugin renders @md, @image, @html, @movie,
 @networkx and @svg nodes as follows:
 
 **Note**: For @image, @movie and @svg nodes, either the headline
@@ -931,17 +926,6 @@ directory.
     image file. All other lines are ignored.
 
 - ``@html`` renders the body text as html.
-
-- ``@jupyter`` renders the output from Jupyter Notebooks.
-
-  The contents of the @jupyter node can be either a url to the
-  notebook or the actual JSON notebook itself.
-
-  Use file:// urls for local files. Some examples:
-
-      Windows: ``file:///c:/Test/a_notebook.ipynb``
-
-      Linux:   ``file:///home/a_notebook.ipynb``
 
 - ``@movie`` plays a file as a movie. @movie also works for music
   files. The path to the file must be on the first line of the
@@ -1045,7 +1029,7 @@ import sys
 import textwrap
 from typing import Any, Dict, List, Tuple
 import webbrowser
-from urllib.request import urlopen
+# from urllib.request import urlopen
 
 # Leo imports...
 import leo.core.leoGlobals as g
@@ -1144,16 +1128,6 @@ try:
 except ImportError:
     print('VR3: *** No numpy')
     np = None
-
-# nbformat (@jupyter) support, non-vital.
-jupyter_ok = False
-try:
-    from nbconvert.exporters import HTMLExporter
-    import nbformat
-    jupyter_ok = True
-except ImportError:
-    # Missing imports will be mentioned if VR3 tries to render @jupyter node
-    pass
 
 try:
     from pygments import cmdline
@@ -2324,7 +2298,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
             'html': self.update_html,
             'graphics-script': self.update_graphics_script,
             'image': self.update_image,
-            'jupyter': self.update_jupyter,
             'md': self.update_md,
             'movie': self.update_movie,
             'networkx': self.update_networkx,
@@ -3186,9 +3159,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
             if node_kind in ('edit', 'file', 'clean', 'auto'):
                 node_kind = RST
 
-            if node_kind == RST and p.h.startswith('@jupyter'):
-                node_kind = 'jupyter'
-
         return node_kind
     #@+node:tom.20240724081410.1: *4* vr3.handle_scrolled_msg
     def handle_scrolled_msg(self, keywords):
@@ -3653,65 +3623,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         w = self.ensure_web_widget()
         self.set_html(template, w)
         w.show()
-    #@+node:TomP.20191215195433.61: *4* vr3.update_jupyter & helper
-    update_jupyter_count = 0
-
-    def update_jupyter(self, s, keywords):
-        """Update @jupyter node in the vr3 pane."""
-        c = self.c
-        if self.must_change_widget(has_webengineview):
-            w = self.create_web_engineview()
-            self.embed_widget(w)
-            assert w == self.w
-        else:
-            w = self.w
-        s = self.get_jupyter_source(c)
-        self.rst_html = s
-        w.hide()  # This forces a proper update.
-        w.setHtml(s)
-        w.show()
-        c.bodyWantsFocusNow()
-    #@+node:TomP.20191215195433.62: *5* vr3.get_jupyter_source
-    def get_jupyter_source(self, c):
-        """Return the html for the @jupyter node."""
-        body = c.p.b.lstrip()
-        if body.startswith('<'):
-            # Assume the body is html.
-            return body
-
-        if not jupyter_ok:
-            return 'can not render @jupyter nodes: need missing nbformat or nbconvert package'
-
-        if body.startswith('{'):
-            # Leo 5.7.1: Allow raw JSON.
-            s = body
-        else:
-            url = ''
-            fields = c.p.h.split()
-            if len(fields) > 1:
-                for f in fields:
-                    if '://' in f:
-                        url = f
-                        break
-            if not url:
-                if c.p.b:
-                    # Try first line of body
-                    url = c.p.b.split('\n')[0]
-                if not url:
-                    return 'No url found'
-            url = url.replace('\\', '/').replace('"', '')
-            try:
-                with urlopen(url) as u:
-                    s = u.read().decode()
-            except Exception:
-                return f'url not found: {url}'
-        try:
-            nb = nbformat.reads(s, as_version=4)
-            e = HTMLExporter()
-            (s, junk_resources) = e.from_notebook_node(nb)
-        except nbformat.reader.NotJSONError:
-            pass  # Assume the result is html.
-        return s
     #@+node:TomP.20191215195433.63: *4* vr3.update_latex & helper
     def update_latex(self, s, keywords):
         """Update latex in the vr3 pane."""
