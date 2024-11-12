@@ -2533,7 +2533,6 @@
 <v t="ekr.20240828095959.1"></v>
 <v t="ekr.20240828094953.1"><vh>Leo 6.8.2 release notes</vh></v>
 <v t="ekr.20241112030725.1"><vh>=== Revise the colorizing docs</vh></v>
-<v t="ekr.20050831184021.5"></v>
 <v t="ekr.20241112064750.1"></v>
 <v t="ekr.20241112030815.1"></v>
 </vnodes>
@@ -14548,7 +14547,6 @@ Advanced Topics
 .. toctree::
    :maxdepth: 2
 
-   coloring
    writingPlugins
    debuggers
    console-gui
