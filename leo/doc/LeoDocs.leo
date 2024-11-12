@@ -1315,10 +1315,8 @@
 <v t="ekr.20131008041326.16099"><vh>@rst html/intermediatetopics.html</vh></v>
 <v t="ekr.20060430221745"><vh>Controlling syntax coloring</vh>
 <v t="ekr.20060430221745.1"><vh>@rst html\coloring.html</vh>
-<v t="ekr.20060830142929"><vh>Settings for syntax coloring</vh>
 <v t="ekr.20190422181351.1"><vh>Color settings</vh></v>
 <v t="ekr.20190422182440.1"><vh>Font settings</vh></v>
-</v>
 </v>
 </v>
 <v t="ekr.20060612102055" descendentVnodeUnknownAttributes="7d71002858010000003071017d710258090000007374725f6174696d657103580c000000313337363431343136312e307104735803000000302e3071057d710658090000007374725f6174696d657107580c000000313337363431343136332e307108735805000000302e302e3171097d710a58090000007374725f6174696d65710b580c000000313337363431323033382e30710c735805000000302e302e32710d7d710e2858090000007374725f6174696d65710f580c000000313337363431343136342e30711058090000007374725f6374696d657111580c000000313337363431323033392e30711258090000007374725f6d74696d657113580c000000313337363431323033392e307114755805000000302e302e3571157d711658090000007374725f6174696d657117580c000000313337363431313938372e30711873752e"><vh>Writing Plugins</vh>
@@ -2533,8 +2531,8 @@
 <v t="ekr.20240828095959.1"></v>
 <v t="ekr.20240828094953.1"><vh>Leo 6.8.2 release notes</vh></v>
 <v t="ekr.20241112030725.1"><vh>=== Revise the colorizing docs</vh></v>
-<v t="ekr.20241112030815.1"></v>
 <v t="ekr.20060430221745"></v>
+<v t="ekr.20241112030815.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -5049,7 +5047,12 @@ Using Python colorer control files has the following advantages:
 Controlling Syntax Coloring
 ###########################
 
-This chapter discusses the settings to control Leo's syntax colorer. </t>
+.. _`Customizing Leo`: customizing.html
+
+This chapter discusses the settings to control Leo's syntax colorer.
+
+See `Customizing Leo`_ for a general discussion of Leo's settings.
+</t>
 <t tx="ekr.20060502084233">When Leo's syntax colorer sees the '@language x' directive, it will import x.py from Leo's modes folder. The colorer can then access any module-level object obj in x.py as x.obj.
 
 Colorizer control files contain **rules functions** corresponding to rule elements in x.xml. The colorizer can call these functions as if they were members of the colorizer class by passing 'self' as the first argument of these functions. I call these rules *functions* to distinguish them from the corresponding **rules methods** which are actual methods of the colorizer class. Rules *functions* merely call corresponding rules *methods*. Indeed, rules functions are simply a way of binding values to keyword arguments of rules methods. These keywords arguments correspond to the xml attributes of rule elements in x.xml.
@@ -5735,10 +5738,6 @@ Development on long-delayed projects accelerated after 4.4.</t>
    - '@keys Legacy Leo bindings'.
 
 5. Move **one** of these two legacy nodes up one level so that it is a child of the node 'Keyboard shortcuts'. It should **not** be a child of the node '@ignore Unused key bindings'.
-</t>
-<t tx="ekr.20060830142929">.. _`Customizing Leo`: customizing.html
-
-This section discusses only those settings that affect syntax coloring. See `Customizing Leo`_ for a general discussion of Leo's settings.
 </t>
 <t tx="ekr.20060915112109">Find the @file leoApp.py node in leoPy.leo. In the ctor for the LeoApp class set self.use_psyco to True or False. You will find this ctor in the node::
 
@@ -33357,10 +33356,12 @@ Informing the qsh of ending state of each line is the colorizer's main task. The
 <t tx="ekr.20241112030725.1">https://github.com/leo-editor/leo-editor/issues/4166
 PR: https://github.com/leo-editor/leo-editor/pull/4174</t>
 <t tx="ekr.20241112030815.1"></t>
-<t tx="ekr.20241112030947.1">This chapter contains the theory of operation for the ``JEditColorizer`` class in ``leoColorizer.py``. It also discusses the **mode files** in the ``leo/modes`` directory. These files tell how to colorize specific languages.
-
-Are you sure you want to read this chapter?
+<t tx="ekr.20241112030947.1">Are you sure you want to read this chapter?
 It is intended *only* for Leo's core developers.
+
+This chapter contains the theory of operation for the ``JEditColorizer`` class in ``leoColorizer.py``.
+
+This chapter also discusses the **mode files** in the ``leo/modes`` directory. These files tell how to colorize specific languages.
 
 .. contents:: Contents
     :depth: 3
