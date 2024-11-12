@@ -357,7 +357,8 @@ def getVr(*, c: Any = None, event: Any = None, parent: QtWidgets.QWidget = None)
             vr.setParent(parent)
         else:
             dw = c.frame.top
-            dw.insert_vr_frame(vr)
+            if dw:
+                dw.insert_vr_frame(vr)
     return vr
 #@+node:ekr.20110317024548.14376: *3* vr function: onCreate
 def onCreate(tag: str, keys: dict) -> None:

@@ -5,12 +5,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>What’s New in Leo &#8212; Leo 6.8.0 documentation</title>
+    <title>What’s New in Leo &#8212; Leo 6.8.2 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=db26dd79" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css?v=524d4423" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css?v=8453e47e" />
     
-    <script src="_static/documentation_options.js?v=2adddf63"></script>
+    <script src="_static/documentation_options.js?v=b95dd110"></script>
     <script src="_static/doctools.js?v=13a9ecda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     
@@ -33,7 +33,7 @@
         <li class="right" >
           <a href="glossary.html" title="Glossary"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.8.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.8.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="toc-more-links.html" accesskey="U">More Leo Links</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">What’s New in Leo</a></li> 
       </ul>
@@ -49,15 +49,35 @@
 <nav class="contents local" id="contents">
 <p class="topic-title">Contents</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="#what-s-new-in-leo-6-8-0" id="id72">What’s new in Leo 6.8.0</a></p></li>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-6-7" id="id73">What’s new in Leo 6.7</a></p></li>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-6-6-and-earlier" id="id74">What’s new in Leo 6.6 and earlier</a></p></li>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-5-x" id="id75">What’s new in Leo 5.x</a></p></li>
-<li><p><a class="reference internal" href="#what-s-new-in-leo-4-x" id="id76">What’s new in Leo 4.x</a></p></li>
+<li><p><a class="reference internal" href="#what-s-new-in-leo-6-8-2" id="id72">What’s new in Leo 6.8.2</a></p></li>
+<li><p><a class="reference internal" href="#what-s-new-in-leo-6-8-0" id="id73">What’s new in Leo 6.8.0</a></p></li>
+<li><p><a class="reference internal" href="#what-s-new-in-leo-6-7" id="id74">What’s new in Leo 6.7</a></p></li>
+<li><p><a class="reference internal" href="#what-s-new-in-leo-6-6-and-earlier" id="id75">What’s new in Leo 6.6 and earlier</a></p></li>
+<li><p><a class="reference internal" href="#what-s-new-in-leo-5-x" id="id76">What’s new in Leo 5.x</a></p></li>
+<li><p><a class="reference internal" href="#what-s-new-in-leo-4-x" id="id77">What’s new in Leo 4.x</a></p></li>
 </ul>
 </nav>
+<section id="what-s-new-in-leo-6-8-2">
+<h2><a class="toc-backref" href="#id72" role="doc-backlink">What’s new in Leo 6.8.2</a><a class="headerlink" href="#what-s-new-in-leo-6-8-2" title="Link to this heading">¶</a></h2>
+<p>Most important:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/leo-editor/leo-editor/pull/4119">PR #4119</a> and <a class="reference external" href="https://github.com/leo-editor/leo-editor/pull/4138">PR #4138</a>: &#64;jupytext makes it <em>easy</em> to work with Jupyter notebooks!</p></li>
+<li><p><a class="reference external" href="https://github.com/leo-editor/leo-editor/pull/4033">PR #4033</a>: Add four new layouts and related code and commands.</p></li>
+</ul>
+<p>Others:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/leo-editor/leo-editor/pull/4038">PR #4038</a>: Add reload-outline command.</p></li>
+<li><p><a class="reference external" href="https://github.com/leo-editor/leo-editor/pull/4068">PR #4068</a>: Optionally run pylint when saving changed files.</p></li>
+<li><p><a class="reference external" href="https://github.com/leo-editor/leo-editor/pull/4071">PR #4071</a>: Optionally run Leo’s beautifier when saving changed files.</p></li>
+</ul>
+<p>Retired features:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/leo-editor/leo-editor/pull/4047">PR #4047</a>: Delete add-editor command and all related code.</p></li>
+<li><p><a class="reference external" href="https://github.com/leo-editor/leo-editor/pull/4113">PR #4113</a>: Retire ILeo, Leo’s IPython bridge. It hasn’t worked in years.</p></li>
+</ul>
+</section>
 <section id="what-s-new-in-leo-6-8-0">
-<h2><a class="toc-backref" href="#id72" role="doc-backlink">What’s new in Leo 6.8.0</a><a class="headerlink" href="#what-s-new-in-leo-6-8-0" title="Link to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id73" role="doc-backlink">What’s new in Leo 6.8.0</a><a class="headerlink" href="#what-s-new-in-leo-6-8-0" title="Link to this heading">¶</a></h2>
 <p><strong>Breaking changes to Leo’s API</strong></p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://github.com/leo-editor/leo-editor/pull/3828">PR #3828</a>: Leo now requires PyQt6.
@@ -67,6 +87,8 @@ Scripts that rely on <cite>c.free_layout</cite> or the <cite>NestedSplitter</cit
 <li><p><a class="reference external" href="https://github.com/leo-editor/leo-editor/pull/3872">PR #3872</a>: Improve how Leo searches for definitions:
 - Add <cite>&#64;bool prefer-nav-pane</cite> setting.
 - This PR changes the signatures of <cite>LeoFind.find_def</cite> and <cite>LeoFind.find_var</cite>.</p></li>
+<li><p><a class="reference external" href="https://github.com/leo-editor/leo-editor/pull/3979">PR #3979</a>: Change name of <cite>save-file-as-zipped</cite> command to <cite>save-file-as-db</cite>
+and change the name of the corresponding method.</p></li>
 </ul>
 <p><strong>Other significant changes</strong></p>
 <ul class="simple">
@@ -79,7 +101,7 @@ Scripts that rely on <cite>c.free_layout</cite> or the <cite>NestedSplitter</cit
 </ul>
 </section>
 <section id="what-s-new-in-leo-6-7">
-<h2><a class="toc-backref" href="#id73" role="doc-backlink">What’s new in Leo 6.7</a><a class="headerlink" href="#what-s-new-in-leo-6-7" title="Link to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id74" role="doc-backlink">What’s new in Leo 6.7</a><a class="headerlink" href="#what-s-new-in-leo-6-7" title="Link to this heading">¶</a></h2>
 <section id="what-s-new-in-leo-6-7-8">
 <h3>What’s new in Leo 6.7.8<a class="headerlink" href="#what-s-new-in-leo-6-7-8" title="Link to this heading">¶</a></h3>
 <p>This release simplifies Leo’s install process.
@@ -269,7 +291,7 @@ Leo no longer supports {{python-expression}} in headlines.</p></li>
 </section>
 </section>
 <section id="what-s-new-in-leo-6-6-and-earlier">
-<h2><a class="toc-backref" href="#id74" role="doc-backlink">What’s new in Leo 6.6 and earlier</a><a class="headerlink" href="#what-s-new-in-leo-6-6-and-earlier" title="Link to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id75" role="doc-backlink">What’s new in Leo 6.6 and earlier</a><a class="headerlink" href="#what-s-new-in-leo-6-6-and-earlier" title="Link to this heading">¶</a></h2>
 <section id="what-s-new-in-leo-6-6-4">
 <h3>What’s new in Leo 6.6.4<a class="headerlink" href="#what-s-new-in-leo-6-6-4" title="Link to this heading">¶</a></h3>
 <ul class="simple">
@@ -430,7 +452,7 @@ See <a class="reference external" href="https://github.com/leo-editor/leo-editor
 </section>
 </section>
 <section id="what-s-new-in-leo-5-x">
-<h2><a class="toc-backref" href="#id75" role="doc-backlink">What’s new in Leo 5.x</a><a class="headerlink" href="#what-s-new-in-leo-5-x" title="Link to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id76" role="doc-backlink">What’s new in Leo 5.x</a><a class="headerlink" href="#what-s-new-in-leo-5-x" title="Link to this heading">¶</a></h2>
 <section id="what-s-new-in-leo-5-9">
 <h3>What’s new in Leo 5.9<a class="headerlink" href="#what-s-new-in-leo-5-9" title="Link to this heading">¶</a></h3>
 <ul class="simple">
@@ -1191,7 +1213,7 @@ Added g.getLanguageAtPosition. Should have been done long ago.
 </section>
 </section>
 <section id="what-s-new-in-leo-4-x">
-<h2><a class="toc-backref" href="#id76" role="doc-backlink">What’s new in Leo 4.x</a><a class="headerlink" href="#what-s-new-in-leo-4-x" title="Link to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id77" role="doc-backlink">What’s new in Leo 4.x</a><a class="headerlink" href="#what-s-new-in-leo-4-x" title="Link to this heading">¶</a></h2>
 <section id="what-s-new-in-leo-4-11">
 <h3>What’s new in Leo 4.11<a class="headerlink" href="#what-s-new-in-leo-4-11" title="Link to this heading">¶</a></h3>
 <section id="id26">
@@ -1279,7 +1301,6 @@ Major additions to abbreviations, including templates
     <span class="n">Create</span> <span class="k">global</span> <span class="n">data</span> <span class="n">structures</span> <span class="kn">from</span> <span class="nn">in</span> <span class="n">modes</span><span class="o">/*.</span><span class="n">py</span> <span class="n">files</span>
     <span class="n">Get</span> <span class="nb">all</span> <span class="n">comments</span> <span class="kn">from</span> <span class="nn">modes</span> <span class="p">(</span><span class="n">slow</span><span class="p">)</span>
     <span class="n">Import</span> <span class="n">org</span> <span class="n">mode</span>
-    <span class="n">jinja2</span> <span class="n">templating</span>
     <span class="n">Recursive</span> <span class="kn">import</span> <span class="nn">script</span>
 
 <span class="n">By</span> <span class="n">Brian</span> <span class="n">Theado</span><span class="p">:</span>
@@ -1723,10 +1744,7 @@ Leo is easier to use without using a mouse
 </section>
 <section id="id63">
 <h4>Commands<a class="headerlink" href="#id63" title="Link to this heading">¶</a></h4>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">add</span><span class="o">-</span><span class="n">editor</span>
-<span class="n">delete</span><span class="o">-</span><span class="n">editor</span>
-<span class="n">cycle</span><span class="o">-</span><span class="n">editor</span><span class="o">-</span><span class="n">focus</span>
-<span class="n">cycle</span><span class="o">-</span><span class="n">focus</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cycle</span><span class="o">-</span><span class="n">focus</span>
 <span class="n">debug</span>
 <span class="n">find</span><span class="o">-</span><span class="n">character</span>
 <span class="n">find</span><span class="o">-</span><span class="n">word</span>
@@ -2048,14 +2066,14 @@ New settings:
         <li class="right" >
           <a href="glossary.html" title="Glossary"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.8.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.8.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="toc-more-links.html" >More Leo Links</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">What’s New in Leo</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 1997-2024, Edward K. Ream.
-      Last updated on May 28, 2024.
+      Last updated on November 07, 2024.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
     </div>
   </body>

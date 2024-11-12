@@ -3675,7 +3675,8 @@ class Commands:
         colorizer = c.frame.body.colorizer
         if colorizer and hasattr(colorizer, 'colorize'):
             # Both jEditColorizer and QScintillaColorizer have colorize methods.
-            colorizer.colorize(p or c.p)
+            p = p or c.p
+            colorizer.colorize(p)
 
     recolor_now = recolor
     #@+node:ekr.20080514131122.14: *5* c.redrawing...
@@ -3688,12 +3689,18 @@ class Commands:
     def enable_redraw(self) -> None:
         c = self
         c.enableRedrawFlag = True
-    #@+node:ekr.20090110073010.1: *6* c.redraw
+    #@+node:ekr.20090110073010.1: *6* c.redraw ('redraw' command)
     @cmd('redraw')
     def redraw_command(self, event: LeoKeyEvent) -> None:
         c = event.get('c')
         if c:
+            p = c.p
             c.redraw()
+            # Use a trap door, not a kwarg.
+            colorizer = c.frame.body.colorizer
+            if colorizer and hasattr(colorizer, 'old_v'):
+                colorizer.old_v = None  # #4146
+            c.recolor(p)
 
     def redraw(self, p: Position = None) -> None:
         """

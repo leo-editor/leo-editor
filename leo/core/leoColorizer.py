@@ -77,6 +77,7 @@ class BaseColorizer:
         # Common state ivars...
         self.enabled = False  # Per-node enable/disable flag set by updateSyntaxColorer.
         self.highlighter: Any = g.NullObject()  # May be overridden in subclass...
+        self.in_full_redraw = False  # A lockout.
         self.language = 'python'  # set by scanLanguageDirectives.
         self.prev: tuple[int, int, str] = None  # Used by setTag.
         self.showInvisibles = False
@@ -812,13 +813,22 @@ class BaseColorizer:
         Return True unless an coloring is unambiguously disabled.
         Called from Leo's node-selection logic and from the colorizer.
         """
-        if p:  # This guard is required.
-            try:
-                self.enabled = self.useSyntaxColoring(p)
-                self.language = self.scanLanguageDirectives(p)
-            except Exception:
-                g.es_print('unexpected exception in updateSyntaxColorer')
-                g.es_exception()
+        trace = 'coloring' in g.app.debug and not g.unitTesting
+
+        message = f"(BaseColorizer) enabled? {int(self.enabled)} {self.language!r} {g.callers(2)}"
+
+        if not p:  # This guard is required.
+            return
+
+        try:
+            self.enabled = self.useSyntaxColoring(p)
+            self.language = self.scanLanguageDirectives(p)
+            if trace:
+                print('')
+                g.trace(message)
+        except Exception:
+            g.es_print('unexpected exception in updateSyntaxColorer')
+            g.es_exception()
     #@+node:ekr.20170127142001.2: *4* BaseColorizer.scanLanguageDirectives
     def scanLanguageDirectives(self, p: Position) -> str:
         """Return language based on the directives in p's ancestors."""
@@ -867,9 +877,14 @@ class BaseColorizer:
 
 class JEditColorizer(BaseColorizer):
     """
-    The JEditColorizer class adapts jEdit pattern matchers for QSyntaxHighlighter.
-    For full documentation, see:
-    https://github.com/leo-editor/leo-editor/blob/master/leo/doc/colorizer.md
+    The JEditColorizer class adapts jEdit pattern matchers for
+    the QSyntaxHighlighter class.
+    
+    This is c.frame.body.colorizer.
+    
+    Don't even *think* about this method unless you
+    understand *every word* of the Theory of Operation:  
+    https://github.com/leo-editor/leo-editor/issues/4158
     """
     #@+others
     #@+node:ekr.20220317050804.1: *3*  jedit: Birth
@@ -877,40 +892,42 @@ class JEditColorizer(BaseColorizer):
     def __init__(self, c: Cmdr, widget: Widget) -> None:
         """Ctor for JEditColorizer class."""
         super().__init__(c, widget)
-        #
+
         # Create the highlighter. The default is NullObject.
         if isinstance(widget, QtWidgets.QTextEdit):
             self.highlighter = LeoHighlighter(c,
                 colorizer=self,
                 document=widget.document(),
             )
-        #
-        # State data used only by this class...
+
+        # *Global* state data. This is entirely correct, but it's not worth fixing.
         self.after_doc_language: str = None
+
+        # *Local* state data. Such state is harmless.
         self.initialStateNumber = -1
-        self.old_v: VNode = None
+        self.n2languageDict: dict[int, str] = {-1: c.target_language}
         self.nested = False  # True: allow nested comments, etc.
         self.nested_level = 0  # Nesting level if self.nested is True.
         self.nextState = 1  # Don't use 0.
-        self.n2languageDict: dict[int, str] = {-1: c.target_language}
-        self.prev: tuple[int, int, str] = None
+        self.old_v: VNode = None
+        self.prev: tuple[int, int, str] = None  # For traces.
         self.restartDict: dict[int, Callable] = {}  # Keys are state numbers, values are restart functions.
         self.stateDict: dict[int, str] = {}  # Keys are state numbers, values state names.
         self.stateNameDict: dict[str, int] = {}  # Keys are state names, values are state numbers.
+
         # #2276: Set by init_section_delims.
         self.section_delim1 = '<<'
         self.section_delim2 = '>>'
-        #
+
         # Init common data...
         self.reloadSettings()
     #@+node:ekr.20110605121601.18580: *5* jedit.init
     def init(self) -> None:
         """Init the colorizer, but *not* state."""
-        #
         # These *must* be recomputed.
         self.initialStateNumber = self.setInitialStateNumber()
-        #
-        # Fix #389. Do *not* change these.
+
+        # Fix #389. Only jedit.stateNameToStateNumber should change these!
             # self.nextState = 1 # Don't use 0.
             # self.stateDict = {}
             # self.stateNameDict = {}
@@ -925,7 +942,6 @@ class JEditColorizer(BaseColorizer):
     def init_all_state(self, v: VNode) -> None:
         """Completely init all state data."""
         assert self.language, g.callers(8)
-        self.old_v = v
         self.n2languageDict = {-1: self.language}
         self.nextState = 1  # Don't use 0.
         self.restartDict = {}
@@ -1245,35 +1261,85 @@ class JEditColorizer(BaseColorizer):
         self.rulesDict = d
     #@+node:ekr.20240423042341.1: *3* jedit.colorize
     def colorize(self, p: Position) -> None:
-        """jedit.Colorize: fully recolor p.b."""
-        if not p:
+        """
+        jedit.colorize: recolor p.b using the QSyntaxHighlighter class.
+        
+        This is the main entry point for Leo's colorizer.
+        Only c.recolor should ever call it.
+        
+        Don't even *think* about changing leoColorizer.py until
+        you understand *every word* of the Theory of Operation:
+        https://github.com/leo-editor/leo-editor/issues/4158
+        """
+        trace = 'coloring' in g.app.debug and not g.unitTesting
+
+        if not p:  # This guard is required.
             return
+
+        # Only c.recolor should call this method!
+        if g.callers(1) != 'recolor':
+            message = f"jedit.colorize: invalid caller: {g.callers()}"
+            g.print_unique_message(message)
+
+        # Test p.v instead of p so that moving from one
+        # clone to another does not cause a redraw.
+        if p.v and p.v == self.old_v:
+            return
+
+        # Remember old_v here. Do not set it anywhere else!
+        self.old_v = p.v
+
         self.updateSyntaxColorer(p)
-        # Similar to code in jedit.recolor.
+
+        # Initialize *all* state.
         self.init_all_state(p.v)
         self.init()
-        # Force QSyntaxHighlighter to do a full recolor.
-        self.highlighter.rehighlight()
+
+        # All done if p.b startswith @killcolor.
+        if p.b.startswith('@killcolor'):
+            return
+
+        if trace:
+            print('')
+            g.trace(f"Start full redraw: language: {self.language} p: {p.h}")
+            print('')
+
+        # Tell QSyntaxHighlighter to do a full recolor.
+        try:
+            self.in_full_redraw = True
+            self.highlighter.rehighlight()
+        finally:
+            self.in_full_redraw = False
+
+        if trace:
+            print('')
+            g.trace(f" End full redraw: language: {self.language} p: {p.h}")
+            print('')
     #@+node:ekr.20110605121601.18638: *3* jedit.mainLoop
-    last_v = None
     tot_time = 0.0
 
-    def mainLoop(self, n: int, s: str) -> None:
-        """Colorize a *single* line s, starting in state n."""
-        f = self.restartDict.get(n)
-        if 'coloring' in g.app.debug:
-            p = self.c and self.c.p
-            if p and p.v != self.last_v:
-                self.last_v = p.v
-                g.trace(f"NEW NODE: {p.h}\n")
+    def mainLoop(self, state: int, s: str) -> None:
+        """
+        Colorize a *single* line s, starting in state n.
+        
+        Except for traces, do not change this method in any way!
+        
+        Any substantial change would break all the pattern matchers!
+        """
+        # Do not remove this unit test!
+        if not g.unitTesting and g.callers(1) != 'recolor':
+            message = f"jedit.mainLoop: unexpected callers: {g.callers(6)}"
+            g.print_unique_message(message)
+        f = self.restartDict.get(state)
         t1 = time.process_time()
         i = f(s) if f else 0
         while i < len(s):
             progress = i
             functions = self.rulesDict.get(s[i], [])
             for f in functions:
-                # g.trace(f"n: {n:<2} i: {i:<3} {f.__name__:30} {s.rstrip()}")
                 n = f(self, s, i)
+                # Trace all matches.
+                # g.trace(f"Match: index {i:<3} delta: {n!r:<3} {f.__name__:>30} {s!r}")
                 if n is None:
                     g.trace('Can not happen: n is None', repr(f))
                     break
@@ -1295,27 +1361,34 @@ class JEditColorizer(BaseColorizer):
         """
         jEdit.recolor: Recolor a *single* line, s.
         QSyntaxHighligher calls this method repeatedly and automatically.
+        
+        Don't even *think* about this method unless you
+        understand *every word* of the Theory of Operation:  
+        https://github.com/leo-editor/leo-editor/issues/4158
         """
-        p = self.c.p
+        trace = 'coloring' in g.app.debug and not g.unitTesting
+
+        # Do not remove this unit test!
+        if g.callers(1) != 'highlightBlock':
+            message = f"jedit.recolor: invalid caller: {g.callers()}"
+            g.print_unique_message(message)
+
         self.recolorCount += 1
-        block_n = self.currentBlockNumber()
-        n = self.prevState()
-        if p.v == self.old_v:
-            new_language = self.n2languageDict.get(n)
-            if new_language != self.language:
-                self.language = new_language
-                self.init()
-        else:
-            self.updateSyntaxColorer(p)  # Force a full recolor
-            assert self.language
-            self.init_all_state(p.v)
-            self.init()
-        if block_n == 0:
-            n = self.initBlock0()
-        n = self.setState(n)  # Required.
+
+        # Get the line number and state associated with s.
+        line_number = self.currentBlockNumber()
+        n = self.initBlock0() if line_number == 0 else self.prevState()
+        state = self.setState(n)  # Required.
+
+        # #4146: Update self.language from the *previous* state.
+        self.language = self.stateNumberToLanguage(state)
+
+        # #4146: Update the state, *without* disrupting restarters.
+        self.init_mode(self.language)
+
         # Always color the line, even if colorizing is disabled.
         if s:
-            self.mainLoop(n, s)
+            self.mainLoop(state, s)
     #@+node:ekr.20170126100139.1: *4* jedit.initBlock0
     def initBlock0(self) -> int:
         """
@@ -1356,6 +1429,19 @@ class JEditColorizer(BaseColorizer):
                 name = name.replace(pattern, s)
             return name
         return 'no-language'
+    #@+node:ekr.20241106195155.1: *4* jedit.traceRulesDict
+    def traceRulesDict(self) -> None:
+        """Trace jedit.rulesDict in a more readable form."""
+        for key, value in self.rulesDict.items():
+            names = [z.__name__ for z in value]
+            len_names = sum(len(z) for z in names)
+            if len_names > 50:
+                print(f"{key!r:>4}: [")
+                for name in names:
+                    print(f"        {name}")
+                print('      ]')
+            else:
+                print(f"{key!r:>4}: {[z.__name__ for z in value]}")
     #@+node:ekr.20110605121601.18589: *3* jedit:Pattern matchers
     #@+node:ekr.20110605121601.18590: *4*  About the pattern matchers
     #@@language rest
@@ -1386,9 +1472,9 @@ class JEditColorizer(BaseColorizer):
         s: str, i: int, j: int, tag: str, delegate: str = '', exclude_match: bool = False,
     ) -> None:
         """
-        Actually colorize the selected range.
-
-        This is called whenever a pattern matcher succeed.
+        Pattern matchers call this helper to colorize the selected range.
+        
+        Mode files should not call this helper directly!
         """
         # setTag does most tracing.
         trace = 'coloring' in g.app.debug and not g.unitTesting
@@ -1516,20 +1602,23 @@ class JEditColorizer(BaseColorizer):
         # Only matches at start of line.
         if i != 0:
             return 0
-        if g.match_word(s, i, '@language'):
-            old_name = self.language
-            j = g.skip_ws(s, i + len('@language'))
-            k = g.skip_c_id(s, j)
-            name = s[j:k]
-            ok = self.init_mode(name)
-            if ok:
-                self.colorRangeWithTag(s, i, k, 'leokeyword')
-                if name != old_name:
-                    # Solves the recoloring problem!
-                    n = self.setInitialStateNumber()
-                    self.setState(n)
-            return k - i
-        return 0
+        if not g.match_word(s, i, '@language'):
+            return 0
+        old_name = self.language
+        j = g.skip_ws(s, i + len('@language'))
+        k = g.skip_c_id(s, j)
+        name = s[j:k]
+        ok = self.init_mode(name)
+        # g.trace(f"old: {old_name} new: {self.language} {s}")
+        if ok:
+            self.language = name
+            self.colorRangeWithTag(s, i, k, 'leokeyword')
+            if name != old_name:
+                # Solves the recoloring problem!
+                n = self.setInitialStateNumber()
+                self.setState(n)
+        return k - i
+
     #@+node:ekr.20110605121601.18595: *5* jedit.match_at_nocolor & restarter
     def match_at_nocolor(self, s: str, i: int) -> int:
 
@@ -2269,8 +2358,12 @@ class JEditColorizer(BaseColorizer):
             return 0  # A real failure.
         # A hack to handle continued strings. Should work for most languages.
         # Prepend "dots" to the kind, as a flag to setTag.
-        dots = j > len(
-            s) and begin in "'\"" and end in "'\"" and kind.startswith('literal')
+        dots = (
+            j > len(s)
+            and begin in "'\""
+            and end in "'\""
+            and kind.startswith('literal')
+        )
         dots = dots and self.language not in ('lisp', 'elisp', 'rust', 'scheme')
         if dots:
             kind = 'dots' + kind
@@ -2434,52 +2527,6 @@ class JEditColorizer(BaseColorizer):
         else:
             self.clearState()
         return j  # Return the new i, *not* the length of the match.
-    #@+node:ekr.20241031070448.1: *4* jedit.match_span_delegated_lines & helper
-    delegated_lines_language = None
-
-    def match_span_delegated_lines(self, s: str, i: int, *, language: str, predicate: Callable) -> None:
-        """
-        Colorize the *following* lines with the given delegate until the predicate is true.
-        """
-        if i > 0:  # Should not happen.
-            return
-
-        # Continue the colorizing on the *next* line.
-        self.delegated_lines_language = language
-
-        def span(s: str) -> int:
-            # Freeze all bindings.
-            return self.restart_match_span_delegated_lines(s, predicate=predicate)  # Must be kwargs.
-
-        self.setRestart(span, predicate=predicate)
-    #@+node:ekr.20241031072812.1: *5* jedit.restart_match_span_delegated_lines
-    def restart_match_span_delegated_lines(self, s: str, *, predicate: Callable) -> int:
-        """
-        Colorize all lines with delegated_lines_language until the predicate matches.
-        """
-        line = s.strip()
-        if s.startswith('@language'):
-            return 0
-
-        language = predicate(s)
-        if language:
-            self.delegated_lines_language = language
-            return 0
-
-        # Colorize *this* entire line with the language.
-        if line:
-            n = self.currentState()
-            self.init()
-            self.language = self.delegated_lines_language
-            self.mainLoop(n, s)
-
-        # Continue the colorizing on the *next* line.
-
-        def span(s: str) -> int:
-            return self.restart_match_span_delegated_lines(s, predicate=predicate)  # Must be kwargs.
-
-        self.setRestart(span, predicate=predicate)
-        return len(s)  # Suppress any other rules.
     #@+node:ekr.20110605121601.18625: *4* jedit.match_span_regexp
     def match_span_regexp(
         self,
@@ -2736,7 +2783,7 @@ class JEditColorizer(BaseColorizer):
         n = self.initialStateNumber
         self.setState(n)
         return n
-    #@+node:ekr.20110605121601.18631: *4* jedit.computeState
+    #@+node:ekr.20110605121601.18631: *4* jedit.computeState (uses self.language)
     def computeState(self, f: Any, keys: Any) -> int:
         """
         Compute the state name associated with f and all the keys.
@@ -2770,11 +2817,10 @@ class JEditColorizer(BaseColorizer):
                 pass
             elif keyVal not in (None, ''):
                 result.append(f"{key}={keyVal}")
-        state = ';'.join(result).lower()
+        state = ';'.join(result)
         table = (
             ('kind=', ''),
             ('literal', 'lit'),
-            ('restart', '@'),
         )
         for pattern, s in table:
             state = state.replace(pattern, s)
@@ -2800,12 +2846,14 @@ class JEditColorizer(BaseColorizer):
         n = self.currentState()
         state = self.stateDict.get(n, 'no-state')
         enabled = (
-            not state.endswith('@nocolor') and
-            not state.endswith('@nocolor-node') and
-            not state.endswith('@killcolor'))
+            self.enabled  # 2024/11/12
+            and not state.endswith('@nocolor')
+            and not state.endswith('@nocolor-node')
+            and not state.endswith('@killcolor'))
         return enabled
     #@+node:ekr.20110605121601.18633: *4* jedit.setRestart
     def setRestart(self, f: Any, **keys: Any) -> int:
+
         n = self.computeState(f, keys)
         self.setState(n)
         return n
@@ -2824,10 +2872,17 @@ class JEditColorizer(BaseColorizer):
     #@+node:ekr.20110605121601.18636: *4* jedit.stateNameToStateNumber
     def stateNameToStateNumber(self, f: Any, stateName: Any) -> int:
         """
+        Update the following ivars when seeing stateName for the first time:
+
         stateDict:     Keys are state numbers, values state names.
         stateNameDict: Keys are state names, values are state numbers.
         restartDict:   Keys are state numbers, values are restart functions
         """
+        # Make sure nobody calls this method by accident.
+        if g.callers(1) not in ('computeState', 'setInitialStateNumber'):
+            message = f"jedit.stateNameToStateNumber: invalid caller: {g.callers()}"
+            g.print_unique_message(message)
+
         n = self.stateNameDict.get(stateName)
         if n is None:
             n = self.nextState
@@ -2837,6 +2892,32 @@ class JEditColorizer(BaseColorizer):
             self.nextState += 1
             self.n2languageDict[n] = self.language
         return n
+    #@+node:ekr.20241106082615.1: *4* jedit.stateNumberToLanguage
+    def stateNumberToLanguage(self, n: int) -> str:
+        """
+        Return the string state corresponding to the given integer state.
+        """
+        c = self.c
+
+        def default_language(n: int) -> str:
+            c = self.c
+            p = c.p
+            language = g.getLanguageFromAncestorAtFileNode(p)
+            return language or c.target_language
+
+        state_s = self.stateNumberToStateString(n)
+        language = state_s.split(';')[0]
+        d = {
+            'py': 'python',
+            'initial-state': default_language(n),
+        }
+        return d.get(language, language)
+    #@+node:ekr.20241104162429.1: *4* jedit.stateNumberToStateString
+    def stateNumberToStateString(self, n: int) -> str:
+        """
+        Return the string state corresponding to the given integer state.
+        """
+        return self.stateDict.get(n, 'initial-state')
     #@-others
 #@+node:ekr.20110605121601.18565: ** class LeoHighlighter (QSyntaxHighlighter)
 # Careful: we may be running from the bridge.
@@ -2931,21 +3012,17 @@ if QtGui:
                 # self._document.setHtml(html)
             return QtGui.QTextCursor(self._document).charFormat()
         #@+node:ekr.20190320153716.1: *5* leo_h._get_format_from_style
-        key_error_d: dict[str, bool] = {}
-
         def _get_format_from_style(self, token: Any, style: Any) -> Any:
             """ Returns a QTextCharFormat for token by reading a Pygments style.
             """
             result = QtGui.QTextCharFormat()
-            #
+
             # EKR: handle missing tokens.
             try:
                 data = style.style_for_token(token).items()
             except KeyError as err:
-                key = repr(err)
-                if key not in self.key_error_d:
-                    self.key_error_d[key] = True
-                    g.trace(err)
+                message = f"_get_format_from_style: {err!r}"
+                g.print_unique_message(message)
                 return result
             for key, value in data:
                 if value:
@@ -3362,7 +3439,7 @@ class QScintillaColorizer(BaseColorizer):
         self.lexer = self.lexersDict.get(language, self.nullLexer)  # type:ignore
         w.setLexer(self.lexer)
     #@+node:ekr.20140906081909.18707: *3* qsc.colorize
-    def colorize(self, p: Position) -> None:
+    def colorize(self, p: Position, *, force: bool = False) -> None:
         """The main Scintilla colorizer entry point."""
         # It would be much better to use QSyntaxHighlighter.
         # Alas, a QSciDocument is not a QTextDocument.

@@ -2,7 +2,7 @@
 #@+node:ekr.20110605121601.17954: * @file ../plugins/nested_splitter.py
 """Nested splitter classes."""
 from __future__ import annotations
-from typing import Any
+from typing import Any, Dict
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtGui, QtWidgets
 from leo.core.leoQt import ContextMenuPolicy, Orientation, QAction
@@ -998,7 +998,7 @@ class NestedSplitter(QtWidgets.QSplitter):
         The content entry for non-NestedSplitter items is the provider ID
         string for the item, or 'UNKNOWN', and the splitter entry is omitted.
         """
-        ans = {
+        ans: Dict[str, Any] = {
             'content': [],
             'orientation': 1 if self.orientation() == Orientation.Horizontal else 2,
             'sizes': self.sizes(),

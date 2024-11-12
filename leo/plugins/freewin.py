@@ -16,12 +16,18 @@ is node-locked - that is, it always shows a view of its original host node
 no matter how the user navigates within or between outlines.
 
 :By: T\. B\. Passin
-:Version: 2.2
-:Date: 11 Aug 2024
+:Version: 2.3
+:Date: 9 Nov 2024
 #@+node:tom.20240811231850.1: *3* New With This Version
 New With This Version
 ======================
+1. When text is changed in the host node, the cursor position in the FW
+   editor will match the cursor position of the nost;
+2. The FW editor will scroll to put the new cursor postion into view if needed.
 
+
+Previous Recent Changes
+========================
 1. The editor view now uses the same colors as the underlying host node's
    editor. The CSS style sheet previously used is no longer used.
 2. The currently selected line in the editor view is highlighted using the same
@@ -904,18 +910,26 @@ class ZEditorWin(QtWidgets.QMainWindow):
             self.current_text = self.current_text.replace('\t', ' ' * TAB2SPACES)
             self.p.b = self.current_text
             self.doc.setModified(False)
+            self.host_editor.document().setModified(False)
 
         # If the current position in the outline is our own node,
         # then synchronize the text if it's changed in
         # the host outline.
         elif self.c.p.v == self.v:
-            doc = self.host_editor.document()
+            host_editor = self.host_editor
+            fw_editor = self.editor
+            doc = host_editor.document()
             if doc.isModified():
-                scrollbar = self.editor.verticalScrollBar()
-                old_scroll = scrollbar.value()
-                self.current_text = doc.toPlainText()
-                self.editor.setPlainText(self.current_text)
-                scrollbar.setValue(old_scroll)
+                host_cursor = host_editor.textCursor()
+                fw_cursor = fw_editor.textCursor()
+                self.current_text = host_editor.toPlainText()
+                fw_editor.setPlainText(self.current_text)
+
+                position = host_cursor.position()
+                fw_cursor.setPosition(position)
+                fw_editor.setTextCursor(fw_cursor)
+                fw_editor.ensureCursorVisible()
+
                 doc.setModified(False)
                 self.set_and_render(False)
 

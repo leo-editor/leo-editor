@@ -2570,8 +2570,6 @@ def findReference(name: str, root: Position) -> Optional[Position]:
             return p.copy()
     return None
 #@+node:ekr.20090214075058.9: *3* g.get_directives_dict (must be fast)
-at_path_warnings_dict: dict[str, bool] = {}
-
 def get_directives_dict(p: Position) -> dict[str, str]:
     """
     Scan p for Leo directives found in globalDirectiveList.
@@ -2594,11 +2592,8 @@ def get_directives_dict(p: Position) -> dict[str, str]:
                 continue
             # Warning if @path is in the body of an @file node.
             if word == 'path' and kind == 'body' and p.isAtFileNode():
-                if p.h not in at_path_warnings_dict:
-                    if not at_path_warnings_dict:
-                        print('\n@path is not allowed in the body text of @file nodes\n')
-                    at_path_warnings_dict[p.h] = True
-                    print(f"Ignoring @path in {p.h}")
+                message = '\n@path is not allowed in the body text of @file nodes\n'
+                g.print_unique_message(message, color='red')
                 continue
             k = g.skip_line(s, j)
             val = s[j:k].strip()
@@ -4913,8 +4908,6 @@ def bytesToStr(b: bytes, reportErrors: bool = False) -> str:
         g.trace(g.callers())
     return s
 #@+node:ekr.20190505052756.1: *4* g.checkUnicode
-checkUnicode_dict: dict[str, bool] = {}
-
 def checkUnicode(s: str, encoding: str = None) -> str:
     """
     Warn when converting bytes. Report *all* errors.
@@ -4932,14 +4925,11 @@ def checkUnicode(s: str, encoding: str = None) -> str:
         g.error(f"{tag}: unexpected argument: {s!r}")
         g.trace('callers:', g.callers())
         return ''
-    #
+
     # Report the unexpected conversion.
-    callers = g.callers(1)
-    if callers not in checkUnicode_dict:
-        g.error(f"\n{tag}: expected unicode. got: {s!r}\n")
-        g.trace(g.callers())
-        checkUnicode_dict[callers] = True
-    #
+    message = f"\n{tag}: expected unicode. got: {s!r}\n{g.callers()}"
+    g.es_print_unique_message(message, color='red')
+
     # Convert to unicode, reporting all errors.
     if not encoding:
         encoding = 'utf-8'
@@ -5727,6 +5717,20 @@ def trace(*args: Args, **kwargs: KWargs) -> None:
     if name.endswith(".pyc"):
         name = name[:-1]
     g.pr(name, *args)
+#@+node:ekr.20241104143456.1: *3* g.print_unique_message & es_print_unique_message
+g_unique_message_d: dict[str, bool] = {}
+
+def print_unique_message(message: str) -> None:
+    """Print the given message once."""
+    if message not in g_unique_message_d:
+        g_unique_message_d[message] = True
+        print(message)
+
+def es_print_unique_message(message: str, *, color: str) -> None:
+    """Print the given message once."""
+    if message not in g_unique_message_d:
+        g_unique_message_d[message] = True
+        g.es_print(message, color=color)
 #@+node:ekr.20240325064618.1: *3* g.traceUnique & traceUniqueClass
 # Keys are strings: g.callers. Values are lists of str(value).
 trace_unique_dict: dict[str, list[str]] = {}

@@ -2339,6 +2339,7 @@ class AtFile:
         p = c.p
         if not os.path.exists(filename):
             return False
+        old_p = p.copy()
         try:
             old_sys_argv = sys.argv[:]
             sys.argv = ['tbo']  # A hack: don't run leo.core.leoTokens.main.
@@ -2352,13 +2353,17 @@ class AtFile:
                 # Reload the file immediately.
                 c.selectPosition(root)
                 c.refreshFromDisk()
-                c.redraw(p)
             return True
         except Exception:
             g.es_exception()
             return False
         finally:
             sys.arg_v = old_sys_argv
+            # #4159: This may not restore the outline as it was,
+            # but it's much better than doing nothing.
+            c.selectPosition(old_p)
+            c.contractAllOtherNodes()
+            c.redraw(old_p)
     #@+node:ekr.20221128123139.1: *6* at.runFlake8
     def runFlake8(self, root: Position) -> bool:  # pragma: no cover
         """Run flake8 on the selected node."""

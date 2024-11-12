@@ -1,6 +1,5 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20241030151621.1: * @file ../modes/jupytext.py
-#@@language python
 """
 leo/modes/jupytext.py, Leo's colorizer for @language jupytext.
 """
@@ -8,58 +7,57 @@ leo/modes/jupytext.py, Leo's colorizer for @language jupytext.
 #@+node:ekr.20241031140333.1: ** << jupytext.py: imports >>
 from __future__ import annotations
 
+from typing import Any
+
 from leo.core import leoGlobals as g
 assert g
 #@-<< jupytext.py: imports >>
-#@+<< jupytext.py: rules >>
-#@+node:ekr.20241031024909.1: ** << jupytext.py: rules >>
-#@+others
-#@+node:ekr.20241031024939.2: *3* jupytext_comment
-def predicate(s: str) -> str:
-    """Return a valid language name if s is a jupytext marker."""
-    line = s.strip()
-    if line.startswith('# %% [markdown]'):
-        return 'md'
-    if line.startswith('# %%'):
-        return 'python'
-    return ''
 
-def jupytext_comment(colorer, s, i) -> int:
+#@+others  # Define rules.
+#@+node:ekr.20241105203501.1: ** jupytext_comment
+def jupytext_comment(colorer: Any, s: str, i: int) -> int:
     """
-    Color a *single line* in the appropriate state.
+    Switch to md or python coloring if s is a %% comment, provided that
+    c.p.b contains @language jupytext.
     
-    Return: n > 1 if n characters match, otherwise -1.
+    New in Leo 6.8.3.
     """
-    assert s[i] == '#'
+    try:
+        c = colorer.c
+    except Exception:
+        return 0  # Fail, allowing other matches.
 
-    # Colorize *this* line.
-    colorer.match_line(s, i, kind='comment1')
+    # *Always* colorize the comment line as a *jupytext* comment.
+    n = colorer.match_eol_span(s, i, kind="comment1", seq="#")
 
-    line = s.strip()
-    if line.startswith('# %%'):
-        # Colorize the *next* lines until the predicate matches.
-        language = 'md' if line.startswith('# %% [markdown]') else 'python'
-        colorer.match_span_delegated_lines(s, i, language=language, predicate=predicate)
+    is_any_jupytext_comment = (
+        i == 0
+        and s.startswith('# %%')
+        and any(z.startswith('@language jupytext')
+            for z in g.splitLines(c.p.b))
+    )
+    if is_any_jupytext_comment:
+        # Simulate @language md or @language python.
+        language = 'md' if s.startswith('# %% [markdown]') else 'python'
+        colorer.init_mode(language)
+        state_i = colorer.setInitialStateNumber()
+        colorer.setState(state_i)
 
-    return -1  # This line has been completely handled.
-#@+node:ekr.20241031024936.1: *3* jupytext_keyword
-def jupytext_keyword(colorer, s, i):
-    return colorer.match_keywords(s, i)
-
+    return n  # Succeed. Do not allow other matches.
+#@+node:ekr.20241105230332.1: ** jupytext_directive
+def jupytext_directive(colorer: Any, s: str, i: int) -> int:
+    return colorer.match_leo_keywords(s, i)
 #@-others
 
-#@-<< jupytext.py: rules >>
-#@+<< jupytext.py: interface dicts >>
-#@+node:ekr.20241101031846.1: ** << jupytext.py: interface dicts >>
-properties = {}
-
-jupytext_rules_dict = {
-    '@': [jupytext_keyword],
-    '#': [jupytext_comment],
+rulesDict1 = {
+    "#": [jupytext_comment],
+    "@": [jupytext_directive],
 }
 
+# x.rulesDictDict for jupytext mode.
 rulesDictDict = {
-    "jupytext_main": jupytext_rules_dict,
+    "jupytext_main": rulesDict1,
 }
-#@-<< jupytext.py: interface dicts >>
+
+#@@language python
 #@-leo

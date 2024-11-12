@@ -93,7 +93,7 @@ def input_tokens_to_string(tokens: list[InputToken]) -> str:  # pragma: no cover
         print('')
         return ''
     return ''.join([z.to_string() for z in tokens])
-#@+node:ekr.20240926050431.1: *3* function: beautify_file (leoTokens.py) (new)
+#@+node:ekr.20240926050431.1: *3* function: beautify_file (leoTokens.py)
 def beautify_file(filename: str) -> bool:
     """
     Beautify the given file, writing it if has changed.
@@ -1138,7 +1138,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # This is the only call to next(i) anywhere!
         next_i = self._next(self.index)
         next = 'None' if next_i is None else self.input_tokens[next_i]
-        import_is_next = next and next.kind == 'name' and next.value == 'import'
+        import_is_next = next and next.kind == 'name' and next.value == 'import'  # type:ignore
 
         if context == 'import':
             if (
