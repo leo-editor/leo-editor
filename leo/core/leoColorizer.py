@@ -1295,6 +1295,10 @@ class JEditColorizer(BaseColorizer):
         self.init_all_state(p.v)
         self.init()
 
+        # All done if p.b startswith @killcolor.
+        if p.b.startswith('@killcolor'):
+            return
+
         if trace:
             print('')
             g.trace(f"Start full redraw: language: {self.language} p: {p.h}")
