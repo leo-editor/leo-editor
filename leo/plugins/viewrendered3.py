@@ -4716,14 +4716,14 @@ class ViewRenderedController3(QtWidgets.QWidget):
         """Return the proper rendering kind for node p."""
 
         #  #1287: Honor both kind of directives node by node.
+        kind = None
         for p1 in p.self_and_parents(p):
-            kind = None
             language = self.get_language(p1)
             if ((got_markdown and language in ('md', 'markdown'))
                 or (got_docutils and language in ('rest', 'rst'))
                 or (language and language in self.dispatch_dict)):
                 kind = language
-
+                break
         return kind
     #@+node:TomP.20200109132851.1: *6* vr3.get_language
     def get_language(self, p):
