@@ -2297,6 +2297,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.positions = {}
         self.last_update_was_node_change = False
         self.setObjectName('viewrendered3_pane')
+        self.adapt_fgbg_colors = True
         #@-<< initialize configuration ivars >>
         #@+<< asciidoc-specific >>
         #@+node:tom.20240919181508.1: *4* << asciidoc-specific >> (VR3)
@@ -2377,7 +2378,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
         """
 
         script_str = ''
-        css_fragment = tinker_with_colors(self.c, MD)
+        if self.adapt_fgbg_colors:
+            css_fragment = tinker_with_colors(self.c, MD)
 
         if self.md_math_output and self.mathjax_url:
             script_str = fr'<script defer type="text/javascript" src="{self.mathjax_url}"></script>'
@@ -2580,6 +2582,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         #@+<< load stylesheet settings >>
         #@+node:tom.20240919182502.1: *5* << load stylesheet settings >>
+        self.adapt_fgbg_colors = c.config.getBool('adapt-fgbg-colors', True)
         self.rst_stylesheet = c.config.getString('vr3-rst-stylesheet') or ''
         self.use_dark_theme = c.config.getBool('vr3-rst-use-dark-theme', RST_USE_DARK)
 
@@ -2590,6 +2593,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.set_md_stylesheet()
         self.set_rst_stylesheet()
         self.create_md_header()
+
+
 
         #@-<< load stylesheet settings >>
         #@+<< configure markdown >>
@@ -4199,7 +4204,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 g.es(f'Rst input: {result}')
 
         if _html:
-            css_fragment = tinker_with_colors(self.c, REST)
+            css_fragment = ''
+            if self.adapt_fgbg_colors:
+                css_fragment = tinker_with_colors(self.c, REST)
             html_str = _html.decode(ENCODING)
             html_str = html_str.replace('</head>', f'{css_fragment}</head>')
             _html = html_str.encode(ENCODING)
