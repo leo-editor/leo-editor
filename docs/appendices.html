@@ -63,83 +63,37 @@
 <li><p><a class="reference internal" href="#theory-of-operation-new-to-be-deleted" id="id13">Theory of operation (new, to be deleted)</a></p></li>
 <li><p><a class="reference internal" href="#files" id="id14">Files</a></p></li>
 <li><p><a class="reference internal" href="#the-colorizer-s-inner-loop" id="id15">The colorizer’s inner loop</a></p></li>
-<li><p><a class="reference internal" href="#format-of-colorizer-control-files" id="id16">Format of colorizer control files</a></p>
-<ul>
-<li><p><a class="reference internal" href="#ruleset-names" id="id17">Ruleset names</a></p></li>
-<li><p><a class="reference internal" href="#x-properties" id="id18">x.properties</a></p></li>
-<li><p><a class="reference internal" href="#attribute-dictionaries-and-x-attributesdictdict" id="id19">Attribute dictionaries and x.attributesDictDict</a></p></li>
-<li><p><a class="reference internal" href="#keyword-dictionaries-and-x-keywordsdictdict" id="id20">Keyword dictionaries and x.keywordsDictDict</a></p></li>
-<li><p><a class="reference internal" href="#rules-rules-dictionaries-and-x-rulesdictdict" id="id21">Rules, rules dictionaries and x.rulesDictDict</a></p></li>
-<li><p><a class="reference internal" href="#x-importdict-and-imported-versus-delegated-rulesets" id="id22">x.importDict and imported versus delegated rulesets</a></p></li>
+<li><p><a class="reference internal" href="#format-of-colorizer-control-files" id="id16">Format of colorizer control files</a></p></li>
+<li><p><a class="reference internal" href="#rule-methods" id="id17">Rule methods</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#rule-methods" id="id23">Rule methods</a></p>
+<li><p><a class="reference internal" href="#leoast-py" id="id18">leoAst.py</a></p>
 <ul>
-<li><p><a class="reference internal" href="#arguments-to-rule-methods" id="id24">Arguments to rule methods</a></p></li>
-<li><p><a class="reference internal" href="#match-eol-span" id="id25">match_eol_span</a></p></li>
-<li><p><a class="reference internal" href="#match-eol-span-regexp" id="id26">match_eol_span_regexp</a></p></li>
-<li><p><a class="reference internal" href="#match-keywords" id="id27">match_keywords</a></p></li>
-<li><p><a class="reference internal" href="#match-mark-following" id="id28">match_mark_following</a></p></li>
-<li><p><a class="reference internal" href="#match-mark-previous" id="id29">match_mark_previous</a></p></li>
-<li><p><a class="reference internal" href="#match-seq" id="id30">match_seq</a></p></li>
-<li><p><a class="reference internal" href="#match-seq-regexp" id="id31">match_seq_regexp</a></p></li>
-<li><p><a class="reference internal" href="#match-span" id="id32">match_span</a></p></li>
-<li><p><a class="reference internal" href="#match-span-regexp" id="id33">match_span_regexp</a></p></li>
-<li><p><a class="reference internal" href="#match-terminate" id="id34">match_terminate</a></p></li>
+<li><p><a class="reference internal" href="#running-leoast-py" id="id19">Running leoAst.py</a></p></li>
+<li><p><a class="reference internal" href="#tokenorder-classes-theory-of-operation" id="id20">TokenOrder classes: Theory of operation</a></p></li>
+<li><p><a class="reference internal" href="#notable-functions-methods" id="id21">Notable functions &amp; methods</a></p></li>
+<li><p><a class="reference internal" href="#maintaining-leoast-py" id="id22">Maintaining leoAst.py</a></p></li>
 </ul>
 </li>
+<li><p><a class="reference internal" href="#unicode-reference" id="id23">Unicode reference</a></p></li>
+<li><p><a class="reference internal" href="#valid-url-s" id="id24">Valid URL’s</a></p></li>
+<li><p><a class="reference internal" href="#the-mulder-ream-update-algorithm" id="id25">The Mulder/Ream update algorithm</a></p>
+<ul>
+<li><p><a class="reference internal" href="#what-the-algorithm-does" id="id26">What the algorithm does</a></p></li>
+<li><p><a class="reference internal" href="#guesses-don-t-matter" id="id27">Guesses don’t matter</a></p></li>
+<li><p><a class="reference internal" href="#background-of-the-code" id="id28">Background of the code</a></p></li>
+<li><p><a class="reference internal" href="#aha-the-x-sentinels-array" id="id29">Aha: the x.sentinels array</a></p></li>
+<li><p><a class="reference internal" href="#strategy-proof-of-correctness" id="id30">Strategy &amp; proof of correctness</a></p></li>
+<li><p><a class="reference internal" href="#summary" id="id31">Summary</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#leoast-py" id="id35">leoAst.py</a></p>
+<li><p><a class="reference internal" href="#why-i-like-python" id="id32">Why I like Python</a></p>
 <ul>
-<li><p><a class="reference internal" href="#running-leoast-py" id="id36">Running leoAst.py</a></p>
-<ul>
-<li><p><a class="reference internal" href="#running-leoast-py-from-the-command-line" id="id37">Running leoAst.py from the command line</a></p></li>
-<li><p><a class="reference internal" href="#running-the-code-python-programmatically" id="id38">Running the code python programmatically</a></p></li>
-<li><p><a class="reference internal" href="#running-unit-tests-and-coverage-tests-programmatically" id="id39">Running unit tests and coverage tests programmatically</a></p></li>
-</ul>
-</li>
-<li><p><a class="reference internal" href="#tokenorder-classes-theory-of-operation" id="id40">TokenOrder classes: Theory of operation</a></p>
-<ul>
-<li><p><a class="reference internal" href="#token-order-classes" id="id41">Token-order classes</a></p></li>
-<li><p><a class="reference internal" href="#other-classes" id="id42">Other classes</a></p></li>
-<li><p><a class="reference internal" href="#significant-vs-insignificant-tokens" id="id43">Significant vs insignificant tokens</a></p></li>
-<li><p><a class="reference internal" href="#helping-tog-visitors" id="id44">Helping TOG visitors</a></p></li>
-<li><p><a class="reference internal" href="#syncing-tokens" id="id45">Syncing tokens</a></p></li>
-<li><p><a class="reference internal" href="#figures-of-merit" id="id46">Figures of merit</a></p></li>
-</ul>
-</li>
-<li><p><a class="reference internal" href="#notable-functions-methods" id="id47">Notable functions &amp; methods</a></p>
-<ul>
-<li><p><a class="reference internal" href="#initing-data-structures" id="id48">Initing data structures</a></p></li>
-<li><p><a class="reference internal" href="#reading-writing-files" id="id49">Reading &amp; writing files</a></p></li>
-<li><p><a class="reference internal" href="#reports" id="id50">Reports</a></p></li>
-<li><p><a class="reference internal" href="#updating-tokens-and-parse-trees" id="id51">Updating tokens and parse trees</a></p></li>
-<li><p><a class="reference internal" href="#tokenordergenerator-init-from-file" id="id52">TokenOrderGenerator.init_from_file</a></p></li>
-</ul>
-</li>
-<li><p><a class="reference internal" href="#maintaining-leoast-py" id="id53">Maintaining leoAst.py</a></p></li>
-</ul>
-</li>
-<li><p><a class="reference internal" href="#unicode-reference" id="id54">Unicode reference</a></p></li>
-<li><p><a class="reference internal" href="#valid-url-s" id="id55">Valid URL’s</a></p></li>
-<li><p><a class="reference internal" href="#the-mulder-ream-update-algorithm" id="id56">The Mulder/Ream update algorithm</a></p>
-<ul>
-<li><p><a class="reference internal" href="#what-the-algorithm-does" id="id57">What the algorithm does</a></p></li>
-<li><p><a class="reference internal" href="#guesses-don-t-matter" id="id58">Guesses don’t matter</a></p></li>
-<li><p><a class="reference internal" href="#background-of-the-code" id="id59">Background of the code</a></p></li>
-<li><p><a class="reference internal" href="#aha-the-x-sentinels-array" id="id60">Aha: the x.sentinels array</a></p></li>
-<li><p><a class="reference internal" href="#strategy-proof-of-correctness" id="id61">Strategy &amp; proof of correctness</a></p></li>
-<li><p><a class="reference internal" href="#summary" id="id62">Summary</a></p></li>
-</ul>
-</li>
-<li><p><a class="reference internal" href="#why-i-like-python" id="id63">Why I like Python</a></p>
-<ul>
-<li><p><a class="reference internal" href="#clarity" id="id64">Clarity</a></p></li>
-<li><p><a class="reference internal" href="#power" id="id65">Power</a></p></li>
-<li><p><a class="reference internal" href="#safety" id="id66">Safety</a></p></li>
-<li><p><a class="reference internal" href="#speed" id="id67">Speed</a></p></li>
-<li><p><a class="reference internal" href="#conclusions" id="id68">Conclusions</a></p></li>
+<li><p><a class="reference internal" href="#clarity" id="id33">Clarity</a></p></li>
+<li><p><a class="reference internal" href="#power" id="id34">Power</a></p></li>
+<li><p><a class="reference internal" href="#safety" id="id35">Safety</a></p></li>
+<li><p><a class="reference internal" href="#speed" id="id36">Speed</a></p></li>
+<li><p><a class="reference internal" href="#conclusions" id="id37">Conclusions</a></p></li>
 </ul>
 </li>
 </ul>
@@ -705,7 +659,7 @@ the list of rules that can start with that character.</p></li>
 <h3><a class="toc-backref" href="#id16" role="doc-backlink">Format of colorizer control files</a><a class="headerlink" href="#format-of-colorizer-control-files" title="Link to this heading">¶</a></h3>
 <p>The following sections describe the top-level data in leo/modes/x.py.  This data is used by Leo’s Legacy (jEdit-based) colorizer. Leo’s pygments syntax colorizer does not use these files.</p>
 <section id="ruleset-names">
-<h4><a class="toc-backref" href="#id17" role="doc-backlink">Ruleset names</a><a class="headerlink" href="#ruleset-names" title="Link to this heading">¶</a></h4>
+<h4>Ruleset names<a class="headerlink" href="#ruleset-names" title="Link to this heading">¶</a></h4>
 <p>A <strong>ruleset name</strong> is a Python string having the form ‘x_setname’, where setname is the value of the SET attribute of the &lt;RULES&gt; element in x.xml. For example, the ruleset name of the ruleset whose SET attribute is JAVASCRIPT in php.xml is ‘php_JAVASCRIPT’. <strong>Important</strong>: by convention, the ruleset name of the default &lt;RULES&gt; element is ‘x_main’; note that default &lt;RULES&gt; element have no SET attributes.</p>
 <p>The colorizer uses ruleset names to gain access to all data structures in x.py. To anticipate a bit, ruleset names are keys into two standard dictionaries, x.rulesDict and x.keywordsDictDict, from which the colorizer can get all other information in x.py:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># The rules list for the &#39;JAVASCRIPT&#39; ruleset in php.xml.</span>
@@ -718,7 +672,7 @@ the list of rules that can start with that character.</p></li>
 <p>In fact, ruleset names (and x.rulesDict and x.keywordsDictDict) are the <strong>only</strong> names that the colorizer needs to know in order to access all information in x.py.</p>
 </section>
 <section id="x-properties">
-<h4><a class="toc-backref" href="#id18" role="doc-backlink">x.properties</a><a class="headerlink" href="#x-properties" title="Link to this heading">¶</a></h4>
+<h4>x.properties<a class="headerlink" href="#x-properties" title="Link to this heading">¶</a></h4>
 <p><strong>x.properties</strong> is a Python dictionary corresponding to the &lt;PROPS&gt; element in x.xml. Keys are property names; values are strings, namely the contents of &lt;PROPERTY&gt; elements in x.xml. x.properties contains properties for the entire mode. That is, only modes have &lt;PROPS&gt; elements. For example, here is x.properties in php.py:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># properties for mode php.xml</span>
 <span class="n">properties</span> <span class="o">=</span> <span class="p">{</span>
@@ -732,7 +686,7 @@ the list of rules that can start with that character.</p></li>
 </div>
 </section>
 <section id="attribute-dictionaries-and-x-attributesdictdict">
-<h4><a class="toc-backref" href="#id19" role="doc-backlink">Attribute dictionaries and x.attributesDictDict</a><a class="headerlink" href="#attribute-dictionaries-and-x-attributesdictdict" title="Link to this heading">¶</a></h4>
+<h4>Attribute dictionaries and x.attributesDictDict<a class="headerlink" href="#attribute-dictionaries-and-x-attributesdictdict" title="Link to this heading">¶</a></h4>
 <p>x.py contains a <strong>attribute dictionary</strong> for each ruleset in x.xml. Keys are attribute names, values strings representing the values of the attributes. This dictionary is empty if a ruleset contains no attributes. The valid keys are:</p>
 <ul class="simple">
 <li><p>‘default’: the default token type.  ‘null’ is the default.</p></li>
@@ -770,7 +724,7 @@ Words matching this regular expression are colored with the digit token type.</p
 <p><strong>Note</strong>: The jEdit2Py script creates ‘friendly’ names for attribute dictionaries <em>solely</em> as an aid for people reading the code. Leo’s colorer uses only the name x.attributeDictDict; Leo’s colorer never uses the actual names of attribute dictionaries.</p>
 </section>
 <section id="keyword-dictionaries-and-x-keywordsdictdict">
-<h4><a class="toc-backref" href="#id20" role="doc-backlink">Keyword dictionaries and x.keywordsDictDict</a><a class="headerlink" href="#keyword-dictionaries-and-x-keywordsdictdict" title="Link to this heading">¶</a></h4>
+<h4>Keyword dictionaries and x.keywordsDictDict<a class="headerlink" href="#keyword-dictionaries-and-x-keywordsdictdict" title="Link to this heading">¶</a></h4>
 <p>x.py contains a <strong>keyword dictionary</strong> for each ruleset in x.xml. x.py contains an empty keywords dictionary if a ruleset contains no &lt;KEYWORDS&gt; element.</p>
 <p>Keys are strings representing keywords of the language describe by the mode. Values are strings representing syntactic categories, i.e. a TYPE attribute valid in x.xml, namely: COMMENT1, COMMENT2, COMMENT3, COMMENT4, FUNCTION, KEYWORD1, KEYWORD2, KEYWORD3, KEYWORD4, LABEL, LITERAL1, LITERAL2, LITERAL3, LITERAL4, MARKUP, NULL and OPERATOR.</p>
 <p>For example, here (parts of) some keyword dictionaries in php.py:</p>
@@ -821,7 +775,7 @@ Words matching this regular expression are colored with the digit token type.</p
 <p><strong>Note</strong>: The jEdit2Py script creates ‘friendly’ names for keyword dictionaries <em>solely</em> as an aid for people reading the code. Leo’s colorer uses only the name x.keywordsDictDict; Leo’s colorer never uses the actual names of keywords dictionaries such as php_PHPDOC_keywords_dict.</p>
 </section>
 <section id="rules-rules-dictionaries-and-x-rulesdictdict">
-<h4><a class="toc-backref" href="#id21" role="doc-backlink">Rules, rules dictionaries and x.rulesDictDict</a><a class="headerlink" href="#rules-rules-dictionaries-and-x-rulesdictdict" title="Link to this heading">¶</a></h4>
+<h4>Rules, rules dictionaries and x.rulesDictDict<a class="headerlink" href="#rules-rules-dictionaries-and-x-rulesdictdict" title="Link to this heading">¶</a></h4>
 <p>x.py contains one <strong>rule function</strong> for every rule in every ruleset (&lt;RULES&gt; element) in x.xml. These rules have names rule1 through  ruleN, where N is the total number of rules in all rulesets in x.xml.</p>
 <p>Each rules <em>function</em> merely calls a rules <em>method</em> in Leo’s colorizer. Which method gets called depends on the corresponding element in <cite>x.xml</cite>. For example, the first rule in php.xml is:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;SPAN TYPE=&quot;MARKUP&quot; DELEGATE=&quot;PHP&quot;&gt;
@@ -896,7 +850,7 @@ Words matching this regular expression are colored with the digit token type.</p
 <p><strong>Note</strong>: The jEdit2Py script creates ‘friendly’ names for rules lists <em>solely</em> as an aid for people reading the code. Leo’s colorer uses only the name x.rulesDictDict; Leo’s colorer never uses the actual names of rules lists such as rulesDict8, and Leo’s colorer never uses the actual names of rules functions such as rule64.</p>
 </section>
 <section id="x-importdict-and-imported-versus-delegated-rulesets">
-<h4><a class="toc-backref" href="#id22" role="doc-backlink">x.importDict and imported versus delegated rulesets</a><a class="headerlink" href="#x-importdict-and-imported-versus-delegated-rulesets" title="Link to this heading">¶</a></h4>
+<h4>x.importDict and imported versus delegated rulesets<a class="headerlink" href="#x-importdict-and-imported-versus-delegated-rulesets" title="Link to this heading">¶</a></h4>
 <p>x.importDict is a Python dictionary. Keys are ruleset names; values are a list of ruleset names. For example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import dict for php mode.</span>
 <span class="n">importDict</span> <span class="o">=</span> <span class="p">{</span>
@@ -915,11 +869,11 @@ Words matching this regular expression are colored with the digit token type.</p
 </section>
 </section>
 <section id="rule-methods">
-<h3><a class="toc-backref" href="#id23" role="doc-backlink">Rule methods</a><a class="headerlink" href="#rule-methods" title="Link to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id17" role="doc-backlink">Rule methods</a><a class="headerlink" href="#rule-methods" title="Link to this heading">¶</a></h3>
 <p>This section describes each rules method in Leo’s jEdit-based colorizer. Rules methods are called by rules functions in colorizer control file; they correspond directly to rules elements in jEdit’s language description files.</p>
 <p>All rule methods attempt to match a pattern at a particular spot in a string. These methods all return True if the match succeeds.</p>
 <section id="arguments-to-rule-methods">
-<h4><a class="toc-backref" href="#id24" role="doc-backlink">Arguments to rule methods</a><a class="headerlink" href="#arguments-to-rule-methods" title="Link to this heading">¶</a></h4>
+<h4>Arguments to rule methods<a class="headerlink" href="#arguments-to-rule-methods" title="Link to this heading">¶</a></h4>
 <p>All rule methods take three required arguments and zero or more optional keyword arguments.</p>
 <p>Here is a list of the required arguments and their meaning:</p>
 <ul class="simple">
@@ -959,7 +913,7 @@ If True, the match will not cross word breaks.</p></li>
 because such matchers are called only if the present search pattern starts with hash_char.</p>
 </section>
 <section id="match-eol-span">
-<h4><a class="toc-backref" href="#id25" role="doc-backlink">match_eol_span</a><a class="headerlink" href="#match-eol-span" title="Link to this heading">¶</a></h4>
+<h4>match_eol_span<a class="headerlink" href="#match-eol-span" title="Link to this heading">¶</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">match_eol_span</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">kind</span><span class="p">,</span><span class="n">begin</span><span class="p">,</span>
     <span class="n">at_line_start</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">at_whitespace_end</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -972,7 +926,7 @@ because such matchers are called only if the present search pattern starts with 
 <p>If successful, match_eol_span highlights from i to the end of the line with the color specified by kind. If the exclude_match argument is True, only the text before the matched text will be colored. The delegate argument, if present, specifies the ruleset to color the colored text.</p>
 </section>
 <section id="match-eol-span-regexp">
-<h4><a class="toc-backref" href="#id26" role="doc-backlink">match_eol_span_regexp</a><a class="headerlink" href="#match-eol-span-regexp" title="Link to this heading">¶</a></h4>
+<h4>match_eol_span_regexp<a class="headerlink" href="#match-eol-span-regexp" title="Link to this heading">¶</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">match_eol_span_regexp</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">kind</span><span class="p">,</span><span class="n">regex</span><span class="p">,</span>
     <span class="n">at_line_start</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">at_whitespace_end</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -989,7 +943,7 @@ because such matchers are called only if the present search pattern starts with 
 <p>If successful, match_eol_span_regexp  highlights from i to the end of the line. If the exclude_match argument is True, only the text before the matched text will be colored. The delegate argument, if present, specifies the ruleset to color the colored text.</p>
 </section>
 <section id="match-keywords">
-<h4><a class="toc-backref" href="#id27" role="doc-backlink">match_keywords</a><a class="headerlink" href="#match-keywords" title="Link to this heading">¶</a></h4>
+<h4>match_keywords<a class="headerlink" href="#match-keywords" title="Link to this heading">¶</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">match_keywords</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">i</span><span class="p">):</span>
 </pre></div>
 </div>
@@ -997,7 +951,7 @@ because such matchers are called only if the present search pattern starts with 
 <p>If successful, match_keywords colors the keyword. match_keywords does not take a kind keyword argument. Instead, the keyword is colored as specified by d.get(theKeyword).</p>
 </section>
 <section id="match-mark-following">
-<h4><a class="toc-backref" href="#id28" role="doc-backlink">match_mark_following</a><a class="headerlink" href="#match-mark-following" title="Link to this heading">¶</a></h4>
+<h4>match_mark_following<a class="headerlink" href="#match-mark-following" title="Link to this heading">¶</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">match_mark_following</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">kind</span><span class="p">,</span><span class="n">pattern</span><span class="p">,</span>
     <span class="n">at_line_start</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">at_whitespace_end</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -1009,7 +963,7 @@ because such matchers are called only if the present search pattern starts with 
 <p>If successful, match_mark_following colors from i to the start of the next token with the color specified by kind. If the exclude_match argument is True, only the text after the matched text will be colored.</p>
 </section>
 <section id="match-mark-previous">
-<h4><a class="toc-backref" href="#id29" role="doc-backlink">match_mark_previous</a><a class="headerlink" href="#match-mark-previous" title="Link to this heading">¶</a></h4>
+<h4>match_mark_previous<a class="headerlink" href="#match-mark-previous" title="Link to this heading">¶</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">match_mark_previous</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">kind</span><span class="p">,</span><span class="n">pattern</span><span class="p">,</span>
     <span class="n">at_line_start</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">at_whitespace_end</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -1021,7 +975,7 @@ because such matchers are called only if the present search pattern starts with 
 Its use is deprecated.</p>
 </section>
 <section id="match-seq">
-<h4><a class="toc-backref" href="#id30" role="doc-backlink">match_seq</a><a class="headerlink" href="#match-seq" title="Link to this heading">¶</a></h4>
+<h4>match_seq<a class="headerlink" href="#match-seq" title="Link to this heading">¶</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">match_seq</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">kind</span><span class="p">,</span><span class="n">seq</span><span class="p">,</span>
     <span class="n">at_line_start</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">at_whitespace_end</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -1033,7 +987,7 @@ Its use is deprecated.</p>
 <p>If successful, match_seq highlights from i to the end of the sequence with the color specified by kind. The delegate argument, if present, specifies the ruleset to color the colored text.</p>
 </section>
 <section id="match-seq-regexp">
-<h4><a class="toc-backref" href="#id31" role="doc-backlink">match_seq_regexp</a><a class="headerlink" href="#match-seq-regexp" title="Link to this heading">¶</a></h4>
+<h4>match_seq_regexp<a class="headerlink" href="#match-seq-regexp" title="Link to this heading">¶</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">match_seq_regexp</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">kind</span><span class="p">,</span><span class="n">regex</span><span class="p">,</span>
     <span class="n">at_line_start</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">at_whitespace_end</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -1049,7 +1003,7 @@ Its use is deprecated.</p>
 <p>If successful, match_seq_regexp highlights from i to the end of the sequence with the color specified by kind. The delegate argument, if present, specifies the ruleset to color the colored text.</p>
 </section>
 <section id="match-span">
-<h4><a class="toc-backref" href="#id32" role="doc-backlink">match_span</a><a class="headerlink" href="#match-span" title="Link to this heading">¶</a></h4>
+<h4>match_span<a class="headerlink" href="#match-span" title="Link to this heading">¶</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">match_span</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">kind</span><span class="p">,</span><span class="n">begin</span><span class="p">,</span><span class="n">end</span><span class="p">,</span>
     <span class="n">at_line_start</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">at_whitespace_end</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -1065,7 +1019,7 @@ Its use is deprecated.</p>
 <p>If successful, match_span highlights from s[i:j with the color specified by kind; but if the exclude_match argument is True, the begin and end text are not colored. The delegate argument, if present, specifies the ruleset to color the colored text.</p>
 </section>
 <section id="match-span-regexp">
-<h4><a class="toc-backref" href="#id33" role="doc-backlink">match_span_regexp</a><a class="headerlink" href="#match-span-regexp" title="Link to this heading">¶</a></h4>
+<h4>match_span_regexp<a class="headerlink" href="#match-span-regexp" title="Link to this heading">¶</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">match_span</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">kind</span><span class="p">,</span><span class="n">regex</span><span class="p">,</span><span class="n">end</span><span class="p">,</span>
     <span class="n">at_line_start</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">at_whitespace_end</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -1087,7 +1041,7 @@ no_escape, no_line_break and no_word_break conditions are all satisfied.</p></li
 <p>If successful, match_span colors s[i:j], with the color specified by kind; but if the exclude_match argument is True, the begin and end text are not colored. The delegate argument, if present, specifies the ruleset to color the colored text.</p>
 </section>
 <section id="match-terminate">
-<h4><a class="toc-backref" href="#id34" role="doc-backlink">match_terminate</a><a class="headerlink" href="#match-terminate" title="Link to this heading">¶</a></h4>
+<h4>match_terminate<a class="headerlink" href="#match-terminate" title="Link to this heading">¶</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">match_terminate</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">kind</span><span class="p">,</span><span class="n">at_char</span><span class="p">):</span>
 </pre></div>
 </div>
@@ -1097,7 +1051,7 @@ no_escape, no_line_break and no_word_break conditions are all satisfied.</p></li
 </section>
 </section>
 <section id="leoast-py">
-<h2><a class="toc-backref" href="#id35" role="doc-backlink">leoAst.py</a><a class="headerlink" href="#leoast-py" title="Link to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id18" role="doc-backlink">leoAst.py</a><a class="headerlink" href="#leoast-py" title="Link to this heading">¶</a></h2>
 <p>The classes in <a class="reference external" href="https://github.com/leo-editor/leo-editor/blob/devel/leo/core/leoAst.py">leoAst.py</a>
 unify python’s token-based and ast-based worlds by creating two-way links
 between tokens in the token list and ast nodes in the parse tree.</p>
@@ -1112,9 +1066,9 @@ structure. These comments have the form:</p>
 <p>If you have any trouble installing or using this code, please help for help
 on <a class="reference external" href="https://groups.google.com/forum/#!forum/leo-editor">Leo’s forum</a></p>
 <section id="running-leoast-py">
-<h3><a class="toc-backref" href="#id36" role="doc-backlink">Running leoAst.py</a><a class="headerlink" href="#running-leoast-py" title="Link to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id19" role="doc-backlink">Running leoAst.py</a><a class="headerlink" href="#running-leoast-py" title="Link to this heading">¶</a></h3>
 <section id="running-leoast-py-from-the-command-line">
-<h4><a class="toc-backref" href="#id37" role="doc-backlink">Running leoAst.py from the command line</a><a class="headerlink" href="#running-leoast-py-from-the-command-line" title="Link to this heading">¶</a></h4>
+<h4>Running leoAst.py from the command line<a class="headerlink" href="#running-leoast-py-from-the-command-line" title="Link to this heading">¶</a></h4>
 <p>leoAst.py is designed to be run from the command line:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span>
     <span class="n">leoAst</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">help</span>
@@ -1144,7 +1098,7 @@ on <a class="reference external" href="https://groups.google.com/forum/#!forum/l
 </div>
 </section>
 <section id="running-the-code-python-programmatically">
-<h4><a class="toc-backref" href="#id38" role="doc-backlink">Running the code python programmatically</a><a class="headerlink" href="#running-the-code-python-programmatically" title="Link to this heading">¶</a></h4>
+<h4>Running the code python programmatically<a class="headerlink" href="#running-the-code-python-programmatically" title="Link to this heading">¶</a></h4>
 <p>To access the code, do one of the following:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">leoAst</span>
 <span class="kn">import</span> <span class="nn">leo.core.leoAst</span> <span class="k">as</span> <span class="nn">leoAst</span>
@@ -1157,7 +1111,7 @@ on <a class="reference external" href="https://groups.google.com/forum/#!forum/l
 </div>
 </section>
 <section id="running-unit-tests-and-coverage-tests-programmatically">
-<h4><a class="toc-backref" href="#id39" role="doc-backlink">Running unit tests and coverage tests programmatically</a><a class="headerlink" href="#running-unit-tests-and-coverage-tests-programmatically" title="Link to this heading">¶</a></h4>
+<h4>Running unit tests and coverage tests programmatically<a class="headerlink" href="#running-unit-tests-and-coverage-tests-programmatically" title="Link to this heading">¶</a></h4>
 <p>The following runs all unit tests for leoAst.py:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">leo</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">leoAst</span>
 </pre></div>
@@ -1169,11 +1123,11 @@ on <a class="reference external" href="https://groups.google.com/forum/#!forum/l
 </section>
 </section>
 <section id="tokenorder-classes-theory-of-operation">
-<h3><a class="toc-backref" href="#id40" role="doc-backlink">TokenOrder classes: Theory of operation</a><a class="headerlink" href="#tokenorder-classes-theory-of-operation" title="Link to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id20" role="doc-backlink">TokenOrder classes: Theory of operation</a><a class="headerlink" href="#tokenorder-classes-theory-of-operation" title="Link to this heading">¶</a></h3>
 <p>This is the Theory of Operation for the TokenOrderGenerator (TOG) class and
 related classes.</p>
 <section id="token-order-classes">
-<h4><a class="toc-backref" href="#id41" role="doc-backlink">Token-order classes</a><a class="headerlink" href="#token-order-classes" title="Link to this heading">¶</a></h4>
+<h4>Token-order classes<a class="headerlink" href="#token-order-classes" title="Link to this heading">¶</a></h4>
 <p>The <strong>TokenOrderGenerator</strong> (TOG) class injects two-way links between all
 tokens and the corresponding ast nodes. The TOG class also injects
 parent/child links into all ast nodes.</p>
@@ -1193,7 +1147,7 @@ the TOT class, client code can easily modify the token list or parse tree
 as desired.</p>
 </section>
 <section id="other-classes">
-<h4><a class="toc-backref" href="#id42" role="doc-backlink">Other classes</a><a class="headerlink" href="#other-classes" title="Link to this heading">¶</a></h4>
+<h4>Other classes<a class="headerlink" href="#other-classes" title="Link to this heading">¶</a></h4>
 <p>The <strong>Token</strong> class represents one token, created by tokenize.tokenize.</p>
 <p>The <strong>Fstringify</strong> class is an re-implementation of the external fstringify
 project using the TOG class.</p>
@@ -1205,7 +1159,7 @@ token lists, parse trees, and the links between them.</p>
 <em>Important</em>: BaseTest.make_data is, all by itself, a very strong unit test.</p>
 </section>
 <section id="significant-vs-insignificant-tokens">
-<h4><a class="toc-backref" href="#id43" role="doc-backlink">Significant vs insignificant tokens</a><a class="headerlink" href="#significant-vs-insignificant-tokens" title="Link to this heading">¶</a></h4>
+<h4>Significant vs insignificant tokens<a class="headerlink" href="#significant-vs-insignificant-tokens" title="Link to this heading">¶</a></h4>
 <p>The distinction between <strong>significant</strong> and <strong>insignificant</strong> tokens is
 crucial. Visitors call TOG.gen_token, TOG.gen_op, etc. <em>only</em> for
 significant tokens. The <strong>is_significant</strong> and <strong>is_significant_token</strong>
@@ -1216,7 +1170,7 @@ contain non-essential parentheses, or optional trailing commas, or whether
 two statements are separated by a semicolon.</p>
 </section>
 <section id="helping-tog-visitors">
-<h4><a class="toc-backref" href="#id44" role="doc-backlink">Helping TOG visitors</a><a class="headerlink" href="#helping-tog-visitors" title="Link to this heading">¶</a></h4>
+<h4>Helping TOG visitors<a class="headerlink" href="#helping-tog-visitors" title="Link to this heading">¶</a></h4>
 <p>The TOG.do_If visitor calls <strong>TOG.find_next_significant_token</strong> to
 determine whether TOG.do_If should generate an “if” or an “elif” token.
 This help is essential, because the following two source files generate
@@ -1237,7 +1191,7 @@ whether a slice without a step contains an optional colon.</p>
 crucial inventions. TOG class would not be possible without them.</p>
 </section>
 <section id="syncing-tokens">
-<h4><a class="toc-backref" href="#id45" role="doc-backlink">Syncing tokens</a><a class="headerlink" href="#syncing-tokens" title="Link to this heading">¶</a></h4>
+<h4>Syncing tokens<a class="headerlink" href="#syncing-tokens" title="Link to this heading">¶</a></h4>
 <p><strong>TOG.px</strong> is an index into the token list. It is either -1, or it points
 at the previous significant token. <em>Note</em>: TOG.find_next_significant_token
 and TOG.get_concatenated_string_tokens use TOG.px, but never change TOG.px.</p>
@@ -1270,7 +1224,7 @@ work. It is also the <em>fastest</em> thing that could possibly work.</p></li>
 </ul>
 </section>
 <section id="figures-of-merit">
-<h4><a class="toc-backref" href="#id46" role="doc-backlink">Figures of merit</a><a class="headerlink" href="#figures-of-merit" title="Link to this heading">¶</a></h4>
+<h4>Figures of merit<a class="headerlink" href="#figures-of-merit" title="Link to this heading">¶</a></h4>
 <p><strong>Simplicity</strong>:</p>
 <ul class="simple">
 <li><p>The distinction between significant and insignificant tokens makes
@@ -1297,9 +1251,9 @@ worst case, it might contain a few thousand entries.</p></li>
 </section>
 </section>
 <section id="notable-functions-methods">
-<h3><a class="toc-backref" href="#id47" role="doc-backlink">Notable functions &amp; methods</a><a class="headerlink" href="#notable-functions-methods" title="Link to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id21" role="doc-backlink">Notable functions &amp; methods</a><a class="headerlink" href="#notable-functions-methods" title="Link to this heading">¶</a></h3>
 <section id="initing-data-structures">
-<h4><a class="toc-backref" href="#id48" role="doc-backlink">Initing data structures</a><a class="headerlink" href="#initing-data-structures" title="Link to this heading">¶</a></h4>
+<h4>Initing data structures<a class="headerlink" href="#initing-data-structures" title="Link to this heading">¶</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">make_tokens</span><span class="p">(</span><span class="n">contents</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return a list (not a generator) of Token objects corresponding to the</span>
@@ -1325,7 +1279,7 @@ worst case, it might contain a few thousand entries.</p></li>
 </div>
 </section>
 <section id="reading-writing-files">
-<h4><a class="toc-backref" href="#id49" role="doc-backlink">Reading &amp; writing files</a><a class="headerlink" href="#reading-writing-files" title="Link to this heading">¶</a></h4>
+<h4>Reading &amp; writing files<a class="headerlink" href="#reading-writing-files" title="Link to this heading">¶</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">read_file_with_encoding</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Read the file, returning (e, s).</span>
@@ -1345,7 +1299,7 @@ worst case, it might contain a few thousand entries.</p></li>
 </div>
 </section>
 <section id="reports">
-<h4><a class="toc-backref" href="#id50" role="doc-backlink">Reports</a><a class="headerlink" href="#reports" title="Link to this heading">¶</a></h4>
+<h4>Reports<a class="headerlink" href="#reports" title="Link to this heading">¶</a></h4>
 <p>The dump_* functions pretty-print tokens and parse trees in various
 formats:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">show_diffs</span><span class="p">(</span><span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
@@ -1357,7 +1311,7 @@ formats:</p>
 </div>
 </section>
 <section id="updating-tokens-and-parse-trees">
-<h4><a class="toc-backref" href="#id51" role="doc-backlink">Updating tokens and parse trees</a><a class="headerlink" href="#updating-tokens-and-parse-trees" title="Link to this heading">¶</a></h4>
+<h4>Updating tokens and parse trees<a class="headerlink" href="#updating-tokens-and-parse-trees" title="Link to this heading">¶</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">add_token_to_token_list</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Insert token in the proper location of node.token_list.&quot;&quot;&quot;</span>
 
@@ -1370,7 +1324,7 @@ formats:</p>
 </div>
 </section>
 <section id="tokenordergenerator-init-from-file">
-<h4><a class="toc-backref" href="#id52" role="doc-backlink">TokenOrderGenerator.init_from_file</a><a class="headerlink" href="#tokenordergenerator-init-from-file" title="Link to this heading">¶</a></h4>
+<h4>TokenOrderGenerator.init_from_file<a class="headerlink" href="#tokenordergenerator-init-from-file" title="Link to this heading">¶</a></h4>
 <p>This method creates the tokens list and the parse tree and adds all links
 between tokens and parse tree nodes:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">init_from_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
@@ -1394,7 +1348,7 @@ between tokens and parse tree nodes:</p>
 </section>
 </section>
 <section id="maintaining-leoast-py">
-<h3><a class="toc-backref" href="#id53" role="doc-backlink">Maintaining leoAst.py</a><a class="headerlink" href="#maintaining-leoast-py" title="Link to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id22" role="doc-backlink">Maintaining leoAst.py</a><a class="headerlink" href="#maintaining-leoast-py" title="Link to this heading">¶</a></h3>
 <p>New ast nodes are sometimes required to support new language features, especially language features that require new syntax or keywords. Python has added new nodes fairly often in the past. New nodes may be added in future. When that happens, the following changes will be needed to leoAst.py:</p>
 <ul class="simple">
 <li><p>Add a visitor for the new node.</p></li>
@@ -1405,7 +1359,7 @@ between tokens and parse tree nodes:</p>
 </section>
 </section>
 <section id="unicode-reference">
-<h2><a class="toc-backref" href="#id54" role="doc-backlink">Unicode reference</a><a class="headerlink" href="#unicode-reference" title="Link to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id23" role="doc-backlink">Unicode reference</a><a class="headerlink" href="#unicode-reference" title="Link to this heading">¶</a></h2>
 <p>Leo uses unicode internally for all strings.</p>
 <ol class="arabic">
 <li><p>Leo converts headline and body text to unicode when reading .leo files and external files. Both .leo files and external files may specify their encoding.  The default is utf-8. If the encoding used in a external file is not “utf-8” it is represented in the &#64;+leo sentinel line. For example:</p>
@@ -1436,7 +1390,7 @@ between tokens and parse tree nodes:</p>
 </ol>
 </section>
 <section id="valid-url-s">
-<h2><a class="toc-backref" href="#id55" role="doc-backlink">Valid URL’s</a><a class="headerlink" href="#valid-url-s" title="Link to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id24" role="doc-backlink">Valid URL’s</a><a class="headerlink" href="#valid-url-s" title="Link to this heading">¶</a></h2>
 <p>Leo checks that the URL is valid before attempting to open it. A valid URL is:</p>
 <ul class="simple">
 <li><p>3 or more lowercase alphas</p></li>
@@ -1450,12 +1404,12 @@ between tokens and parse tree nodes:</p>
 <p>You may use any type of URL that your browser supports: http, mailto, ftp, file, etc.</p>
 </section>
 <section id="the-mulder-ream-update-algorithm">
-<h2><a class="toc-backref" href="#id56" role="doc-backlink">The Mulder/Ream update algorithm</a><a class="headerlink" href="#the-mulder-ream-update-algorithm" title="Link to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id25" role="doc-backlink">The Mulder/Ream update algorithm</a><a class="headerlink" href="#the-mulder-ream-update-algorithm" title="Link to this heading">¶</a></h2>
 <p>This appendix documents the Mulder/Ream update algorithm in detail, with an informal proof of its correctness.</p>
 <p>Prior to Leo 5.1, Leo used Bernhard Mulder’s original algorithm to read &#64;shadow files. Starting with Leo 5.1, Leo uses this algorithm to read both &#64;clean and &#64;shadow files. Conceptually, both algorithms work as described in the next section.</p>
 <p>In February 2015 EKR realized that the &#64;shadow algorithm could be used to update &#64;clean (&#64;nosent) files. Simplifying the algorithm instantly became a top priority. The new code emerged several days later, made possible by the x.sentinels array. It is an important milestone in Leo’s history.</p>
 <section id="what-the-algorithm-does">
-<h3><a class="toc-backref" href="#id57" role="doc-backlink">What the algorithm does</a><a class="headerlink" href="#what-the-algorithm-does" title="Link to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id26" role="doc-backlink">What the algorithm does</a><a class="headerlink" href="#what-the-algorithm-does" title="Link to this heading">¶</a></h3>
 <p>For simplicity, this discussion will assume that we are updating an
 external file, x, created with &#64;clean x. The update algorithm works
 exactly the same way with &#64;shadow trees.</p>
@@ -1492,7 +1446,7 @@ hold new lines, or for deleting nodes that become empty as the result of
 deleting lines.</p>
 </section>
 <section id="guesses-don-t-matter">
-<h3><a class="toc-backref" href="#id58" role="doc-backlink">Guesses don’t matter</a><a class="headerlink" href="#guesses-don-t-matter" title="Link to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id27" role="doc-backlink">Guesses don’t matter</a><a class="headerlink" href="#guesses-don-t-matter" title="Link to this heading">¶</a></h3>
 <p>There are several boundary cases that the update algorithm can not resolve.
 For example, if a line is inserted between nodes, the algorithm can not
 determine whether the line should be inserted at the end of one node or the
@@ -1516,7 +1470,7 @@ next time Leo reads the file the line will be placed in the correct node!</p></l
 remaining sections of this document discuss code-level details.</p>
 </section>
 <section id="background-of-the-code">
-<h3><a class="toc-backref" href="#id59" role="doc-backlink">Background of the code</a><a class="headerlink" href="#background-of-the-code" title="Link to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id28" role="doc-backlink">Background of the code</a><a class="headerlink" href="#background-of-the-code" title="Link to this heading">¶</a></h3>
 <p>The algorithm depends on three simple, guaranteed, properties of
 SequenceMatcher.opcodes. See
 <a class="reference external" href="https://docs.python.org/2/library/difflib.html#sequencematcher-examples">https://docs.python.org/2/library/difflib.html#sequencematcher-examples</a></p>
@@ -1546,7 +1500,7 @@ from the previous tuple).</p></li>
 </ul>
 </section>
 <section id="aha-the-x-sentinels-array">
-<h3><a class="toc-backref" href="#id60" role="doc-backlink">Aha: the x.sentinels array</a><a class="headerlink" href="#aha-the-x-sentinels-array" title="Link to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id29" role="doc-backlink">Aha: the x.sentinels array</a><a class="headerlink" href="#aha-the-x-sentinels-array" title="Link to this heading">¶</a></h3>
 <p>Mulder’s original algorithm was hard to understand or to change. The
 culprit was the x.mapping array, which mapped indices into arrays of lines
 <em>with</em> sentinels to indices into arrays of lines <em>without</em> sentinels.</p>
@@ -1560,7 +1514,7 @@ len(x.a) == len(x.sentinels), so indices into x.a are <em>also</em> indices into
 x.sentinels.</p>
 </section>
 <section id="strategy-proof-of-correctness">
-<h3><a class="toc-backref" href="#id61" role="doc-backlink">Strategy &amp; proof of correctness</a><a class="headerlink" href="#strategy-proof-of-correctness" title="Link to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id30" role="doc-backlink">Strategy &amp; proof of correctness</a><a class="headerlink" href="#strategy-proof-of-correctness" title="Link to this heading">¶</a></h3>
 <p>Given the x.sentinels array, the strategy for creating the results is
 simple. Given indices ai, aj, bi, bj from an opcode, the algorithm:</p>
 <ul class="simple">
@@ -1589,7 +1543,7 @@ sentinels:</p>
 </div>
 </section>
 <section id="summary">
-<h3><a class="toc-backref" href="#id62" role="doc-backlink">Summary</a><a class="headerlink" href="#summary" title="Link to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id31" role="doc-backlink">Summary</a><a class="headerlink" href="#summary" title="Link to this heading">¶</a></h3>
 <p>The algorithm creates an updated set of lines <em>with</em> sentinels using the
 &#64;clean outline and the updated external file. These new lines then replace
 the original &#64;clean with a new &#64;clean tree. The algorithm uses only
@@ -1607,18 +1561,18 @@ remember its details for the rest of my life.</p>
 </section>
 </section>
 <section id="why-i-like-python">
-<h2><a class="toc-backref" href="#id63" role="doc-backlink">Why I like Python</a><a class="headerlink" href="#why-i-like-python" title="Link to this heading">¶</a></h2>
+<h2><a class="toc-backref" href="#id32" role="doc-backlink">Why I like Python</a><a class="headerlink" href="#why-i-like-python" title="Link to this heading">¶</a></h2>
 <p>I wrote this soon after discovering Python in 2001. The conclusions are still valid today.</p>
 <p>I’ve known for a while that Python was interesting; I attended a Python conference last year and added Python support to Leo. But last week I got that Python is something truly remarkable. I wanted to convert Leo from wxWindows to wxPython, so I began work on c2py, a Python script that would help convert from C++ syntax to Python. While doing so, I had an Aha experience. Python is more than an incremental improvement over Smalltalk or C++ or objective-C; it is “something completely different”. The rest of this post tries to explain this difference.</p>
 <section id="clarity">
-<h3><a class="toc-backref" href="#id64" role="doc-backlink">Clarity</a><a class="headerlink" href="#clarity" title="Link to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id33" role="doc-backlink">Clarity</a><a class="headerlink" href="#clarity" title="Link to this heading">¶</a></h3>
 <p>What struck me first as I converted C++ code to Python is how much less blah, blah, blah there is in Python. No braces, no stupid semicolons and most importantly, <em>no declarations</em>. No more pointless distinctions between const, char *, char const *, char * and wxString. No more wondering whether a variable should be signed, unsigned, short or long.</p>
 <p>Declarations add clutter, declarations are never obviously right and declarations don’t prevent memory allocation tragedies. Declarations also hinder prototyping. In C++, if I change the type of something I must change all related declarations; this can be a huge and dangerous task. With Python, I can change the type of an object without changing the code at all! It’s no accident that Leo’s new log pane was created first in Python.</p>
 <p>Functions returning tuples are a “minor” feature with a huge impact on code clarity. No more passing pointers to data, no more defining (and allocating and deallocating) temporary structs to hold multiple values.</p>
 <p>Python can’t check declarations because there aren’t any. However, there is a really nifty tool called <a class="reference external" href="https://pylint.pycqa.org/en/latest/">pylint</a> that does many of the checks typically done by compilers.</p>
 </section>
 <section id="power">
-<h3><a class="toc-backref" href="#id65" role="doc-backlink">Power</a><a class="headerlink" href="#power" title="Link to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id34" role="doc-backlink">Power</a><a class="headerlink" href="#power" title="Link to this heading">¶</a></h3>
 <p>Python is much more powerful than C++, not because Python has more features, but because Python needs <em>less</em> features. Some examples:</p>
 <ul class="simple">
 <li><p>Python does everything that the C++ Standard Template Library (STL) does, without any of the blah, blah, blah needed by STL. No fuss, no muss, no code bloat.</p></li>
@@ -1628,7 +1582,7 @@ remember its details for the rest of my life.</p>
 </ul>
 </section>
 <section id="safety">
-<h3><a class="toc-backref" href="#id66" role="doc-backlink">Safety</a><a class="headerlink" href="#safety" title="Link to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id35" role="doc-backlink">Safety</a><a class="headerlink" href="#safety" title="Link to this heading">¶</a></h3>
 <p>Before using Python I never fully realized how difficult and dangerous memory allocation is in C++. Try doing:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">aList</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">aString</span><span class="p">)</span>
 </pre></div>
@@ -1637,12 +1591,12 @@ remember its details for the rest of my life.</p>
 <p>Python is fundamentally safe. C++ is fundamentally unsafe. When I am using Python I am free from worry and anxiety. When I am using C++ I must be constantly “on guard.” A momentary lapse can create a hard-to-find pointer bug. With Python, almost nothing serious can ever go wrong, so I can work late at night, or after a beer. The Python debugger is always available. If an exception occurs, the debugger/interpreter tells me just what went wrong. I don’t have to plan a debugging strategy! Finally, Python recovers from exceptions, so Leo can keep right on going even after a crash!</p>
 </section>
 <section id="speed">
-<h3><a class="toc-backref" href="#id67" role="doc-backlink">Speed</a><a class="headerlink" href="#speed" title="Link to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id36" role="doc-backlink">Speed</a><a class="headerlink" href="#speed" title="Link to this heading">¶</a></h3>
 <p>Python has almost all the speed of C. Other interpretive environments such as icon and Smalltalk have clarity, power and safety similar to Python. What makes Python unique is its seamless way of making C code look like Python code. Python executes at essentially the speed of C code because most Python modules are written in C. The overhead in calling such modules is negligible. Moreover, if code is too slow, one can always create a C module to do the job.</p>
 <p>In fact, Python encourages optimization by moving to higher levels of expression. For example, Leo’s Open command reads an XML file. If this command is too slow I can use Python’s XML parser module. This will speed up Leo while at the same time raising the level of the code.</p>
 </section>
 <section id="conclusions">
-<h3><a class="toc-backref" href="#id68" role="doc-backlink">Conclusions</a><a class="headerlink" href="#conclusions" title="Link to this heading">¶</a></h3>
+<h3><a class="toc-backref" href="#id37" role="doc-backlink">Conclusions</a><a class="headerlink" href="#conclusions" title="Link to this heading">¶</a></h3>
 <p>Little of Python is completely new. What stands out is the superb engineering judgment evident in Python’s design. Python is extremely powerful, yet small, simple and elegant. Python allows me to express my intentions clearly and at the highest possible level.</p>
 <p>The only hope of making Leo all it can be is to use the best possible tools. I believe Python will allow me to add, at long last, the new features that Leo should have.</p>
 <p>Edward K. Ream, October 25, 2001.  P.S., September, 2005:</p>

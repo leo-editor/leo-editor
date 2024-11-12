@@ -4599,7 +4599,7 @@ Customizing Leo
 This chapter discusses how to customize Leo using the plugins and other means. See `Using settings`_ for a description of how to change Leo's settings.
 
 .. contents:: Contents
-    :depth: 3
+    :depth: 2
     :local:
 </t>
 <t tx="ekr.20050902105852">Leo grew out of my efforts to use Donald Knuth's "CWEB system of Structured documentation." I had known of literate programming since the mid 1980's, but I never understood how to make it work for me. In November 1995 I started thinking about programming in earnest. Over the holidays I mused about making programs more understandable. </t>
@@ -14817,7 +14817,7 @@ Appendices
    &lt;br /&gt;
 
 .. contents:: Contents
-    :depth: 3
+    :depth: 2
     :local:
 
 </t>
