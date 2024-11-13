@@ -4309,7 +4309,6 @@ def parse_jEdit_file(inputFileName, language):
                 # Fails with Python 2 when the file contains non-ascii characters.
             mode = handler.getMode()
         except:
-            ### g.es('unexpected exception parsing %s' % (inputFileName), color='red')
             g.es(f"unexpected exception parsing {inputFileName}", color='red')
             g.es_exception()
     finally:
@@ -4503,7 +4502,6 @@ def endElement (self, elementName):
             else:
                 self.modeProperties.append(bunch)
         else:
-            ### self.error('end %s not matched by start %s' % (name, name))
             self.error(f"end {name} not matched by start {name}")
         self.presentProperty = None
     if name in self.ruleElements:
@@ -4511,7 +4509,6 @@ def endElement (self, elementName):
             self.rules.append(self.rule)
             self.rule = None
         else:
-            ### self.error('end %s not matched by start %s' % (name, name))
             self.error(f"end {name} not matched by start {name}")
 #@+node:ekr.20060824111500.155: *6* Mode.inRule
 def inRule (self, elementName):
@@ -4540,7 +4537,6 @@ def startElement (self, elementName):
             if name == 'keywords':
                 self.keywords = self.rule
         else:
-            ### self.error('%s not in rules element' % name)
             self.error(f"{name} not in rules element")
 #@+node:ekr.20060824111500.120: *5* Mode: Output...
 # These methods generate the output file.
@@ -4582,9 +4578,7 @@ def putAttributes (self):
     )
     for ruleset in self.rulesets:
         d = {}
-        ### prefix = '%s_%s' % (self.modeName, ruleset.name)
         prefix = f"{self.modeName}_{ruleset.name}"
-        ### self.put('# Attributes dict for %s ruleset.\n' % (prefix))
         self.put(f"# Attributes dict for {prefix} ruleset.\n")
         for key, default in data:
             val = ruleset.attributes.get(key, default)
@@ -4596,12 +4590,9 @@ def putAttributes (self):
                 else:
                     val = val or ''
             d [key] = val
-        ### self.putDict('%s_attributes_dict' % (prefix), d)
         self.putDict(f"{prefix}_attributes_dict", d)
-        ## dd [ prefix ] = '%s_attributes_dict' % (prefix)
         dd [ prefix ] = f"{prefix}_attributes_dict"
 
-    ### self.put('# Dictionary of attributes dictionaries for %s mode.\n' % (self.modeName))
     self.put(f"# Dictionary of attributes dictionaries for {self.modeName} mode.\n")
     self.putDict('attributesDictDict', dd, escape=False)
 #@+node:ekr.20060824111500.124: *6* Mode.putDict & putDictOfLists
@@ -4611,16 +4602,11 @@ def putDict (self, name, theDict, escape=True):
     esc2 = self.escapeString if escape else lambda a: a
     keys = list(set((theDict.keys())))
     keys = sorted([g.toUnicode(z) for z in keys if z])
-    ###
-        # s = ''.join([
-            # '    %s: %s,\n' % (esc(key), esc2(theDict.get(key)))
-                # for key in keys])
     s = ''.join([
         f"    {esc(key)}: {esc2(theDict.get(key))},\n" for key in keys
     ])
     if s:
         s = '\n' + s
-    ### self.put('%s = {%s}\n\n' % (name, s))
     self.put(f"{name} = {{{s}}}\n\n")
 
 def putDictOfLists (self, name, theDict, strings=False):
@@ -4645,7 +4631,6 @@ def putImportDict (self):
 
     d = {}
     for ruleset in self.rulesets:
-        ### prefix = '%s_%s' % (self.modeName, ruleset.name)
         prefix = f"{self.modeName}_{ruleset.name}"
         for rule in ruleset.rules:
             if rule.name == 'import':
@@ -4657,7 +4642,6 @@ def putImportDict (self):
                         theList.append(delegate_name)
                         d [prefix] = theList
 
-    ### self.put('# Import dict for %s mode.\n' % (self.modeName))
     self.put(f"# Import dict for {self.modeName} mode.\n")
     self.putDictOfLists('importDict', d, strings=True)
 #@+node:ekr.20060824111500.126: *6* Mode.putKeywordsData
@@ -4665,13 +4649,11 @@ def putKeywordsData (self):
 
     dd = {}
     for ruleset in self.rulesets:
-        ### prefix = '%s_%s' % (self.modeName, ruleset.name)
         prefix = f"{self.modeName}_{ruleset.name}"
         prefix = g.toUnicode(prefix)
         ignore_case = ruleset.attributes.get('ignore_case', 'false')
         if not isinstance(ignore_case, bool):
             ignore_case = ignore_case.lower() == 'false'
-        ### self.put('# Keywords dict for %s ruleset.\n' % (prefix))
         self.put(f"# Keywords dict for {prefix} ruleset.\n")
         for rule in ruleset.rules:
             if rule.name == 'keywords':
@@ -4697,7 +4679,7 @@ def putKeywordsData (self):
             d = {}
         self.putDict('%s_keywords_dict' % (prefix), d)
         dd [ prefix ] = '%s_keywords_dict' % (prefix)
-    ### self.put('# Dictionary of keywords dictionaries for %s mode.\n' % (self.modeName))
+
     self.put(f"# Dictionary of keywords dictionaries for {self.modeName} mode.\n")
     self.putDict('keywordsDictDict', dd, escape=False)
 #@+node:ekr.20060824111500.128: *6* Mode.putModeProperties
@@ -4733,7 +4715,6 @@ def putRule (self, rule):
 #@+node:ekr.20060824111500.130: *7* Mode.putBadRule
 def putBadRule (self, rule):
 
-    ### self.put('\n\n# *****no output creator for %s*****' % rule.name)
     self.put(f"\n\n# *****no output creator for {rule.name}*****")
 #@+node:ekr.20060824111500.131: *7* Mode.putEolSpan
 def putEolSpan (self, rule):
@@ -4989,9 +4970,7 @@ def putRules (self):
     d = {} ; d2Count = 0
     for ruleset in self.rulesets:
         d2 = {}
-        ### prefix = '%s_%s'% (self.modeName, ruleset.name)
         prefix = f"{self.modeName}_{ruleset.name}"
-        ### self.put('# Rules for %s ruleset.\n' % (prefix))
         self.put(f"# Rules for {prefix} ruleset.\n")
         for rule in ruleset.rules:
             ch = self.putRule(rule)
@@ -4999,24 +4978,19 @@ def putRules (self):
             if ch == 'keywords':
                 for ch in self.keywordChars:
                     theList = d2.get(ch, [])
-                    ### theList.append('%s_rule%d' % (self.fileModeName, self.handlerCount-1))
                     theList.append(f"{self.fileModeName}_rule{self.handlerCount-1}")
                     d2 [ch] = theList
             elif ch:
                 theList = d2.get(ch, [])
-                ### theList.append('%s_rule%d' % (self.fileModeName, self.handlerCount-1))
                 theList.append(f"{self.fileModeName}_rule{self.handlerCount-1}")
                 d2 [ch] = theList
         # Create the rules dict for the ruleset.
-        ### self.put('\n# Rules dict for %s ruleset.\n' % (prefix))
         self.put(f"\n# Rules dict for {prefix} ruleset.\n")
         d2Count += 1
-        ### name = 'rulesDict%d' % d2Count
         name = f"rulesDict{d2Count}"
         self.putDictOfLists(name, d2)
         d [prefix] = name
     # Create rulesDictDict.
-    ### self.put('# x.rulesDictDict for %s mode.\n' % (self.modeName))
     self.put(f"# x.rulesDictDict for {self.modeName} mode.\n")    
     self.putDict('rulesDictDict', d, escape=False)
 #@+node:ekr.20060824111500.144: *5* Mode: Printing...
@@ -5052,7 +5026,6 @@ def printRule (self, rule):
         keys = list(d2.keys())
         keys.sort()
         for key in keys:
-            ### print('%s: %d' % (key, d2.get(key)))
             print(f"{key}: {d2.get(key)}")
         print()
     else:
@@ -5136,7 +5109,6 @@ class Ruleset:
         self.defaultColor = self.attributes.get('default')
 
     def __str__ (self):
-        ### return '<ruleset %s>' % self.name
         return f"<ruleset {self.name}>"
 
     __repr__ = __str__
@@ -5188,7 +5160,6 @@ def attrsToString (self, attrs, sep='\n'):
     sep: the separator charater between attributes.'''
 
     result = [
-        ### '%s="%s"' % (bunch.name, bunch.val)
         f'{bunch.name}="{bunch.val}"' for bunch in self.attrsToList(attrs)
     ]
     return sep.join(result)
@@ -5197,8 +5168,6 @@ def error (self, message):
     print(f"\n\nXML error: {message}\n")
     self.errors += 1
 #@+node:ekr.20060824111500.169: *6* printStartElement
-### Remove ??
-
 def printStartElement(self, name, attrs):
 
     name_s = g.toEncodedString(name, "ascii").strip()
@@ -5268,17 +5237,14 @@ def doStartElement (self, elementName, attrs):
         for bunch in self.attrsToList(attrs):
             self.mode.doAttribute(bunch.name, bunch.val)
     else:
-        ### self.error('Start element appears outside of Mode:%s' % elementName)
         self.error(f"Start element appears outside of Mode:{elementName}")
         for bunch in self.attrsToList(attrs):
-            ### self.error('Attribute appears outside of Mode:%s' % bunch.name)
             self.error(f"Attribute appears outside of Mode:{bunch.name}")
 #@+node:ekr.20060824111500.180: *7* doEndElement
 def doEndElement (self, elementName):
     if self.mode:
         self.mode.endElement(elementName)
     else:
-        ### self.error('End element appears outside of Mode:%s' % elementName)
         self.error(f"End element appears outside of Mode:{elementName}")
 #@+node:ekr.20060824111500.181: *5* getMode
 def getMode (self):
