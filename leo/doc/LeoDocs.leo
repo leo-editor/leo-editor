@@ -5007,9 +5007,9 @@ Roughly speaking, there is one mode file for every language that Leo can coloriz
 
 ``mainLoop(s)`` uses the rulesDict to retrieve a list of zero or more rules to be used when scanning s. It's that simple.
 
-Legacy mode files could collaborate using the ``delegate`` keyword, but that scheme is clumsy. Leo 6.8.3 added ``leo/modes/jupytext.py``, a new mode file for ``@language jupytext``.
+Legacy mode files could collaborate using the ``delegate`` keyword, but that scheme was (and is) clumsy.
 
-``jupytext.py`` introduced a new style of collaboration. The mode files for the jupytext, python and md collaborate *directly* use modifications of *existing* rules in ``python.py`` and ``md.py``.
+Leo 6.8.3 added ``leo/modes/jupytext.py``, a new mode file for ``@language jupytext``. This mode file introduced a new style of collaboration. The mode files for the jupytext, python and md collaborate *directly* using modifications of *existing* rules in ``python.py`` and ``md.py``.
 </t>
 <t tx="ekr.20060527105211" str_atime="1376414159.0"></t>
 <t tx="ekr.20060527105617">##################
