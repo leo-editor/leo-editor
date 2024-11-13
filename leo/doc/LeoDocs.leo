@@ -33365,11 +33365,9 @@ Pattern matchers form the bulk of the jedit class. Each pattern matcher does the
 - Update the **ending state** for successful matches.
 - Return an integer **return code**::
 
-    -1: complete failure: ``mainLoop`` returns. |br|
-     0: partial failure: ``mainLoop`` attempt to match other rules. |br|
-    &gt;0: success: ``mainLoop`` increments ``i`` by ``n`` and continues. |br|
-
-.. must have blank line here.
+    -1: complete failure: mainLoop returns.
+     0: partial failure: mainLoop tries to match other rules.
+    &gt;0: success: mainLoop increments i by n and tries to match other rules.
 </t>
 <t tx="ekr.20241112110253.1"></t>
 <t tx="ekr.20241112110508.1">**Important**: throughout this documentation, **x.py** will refer to the Python colorer for language x, and **x.xml** will refer to the corresponding xml language-description file.
