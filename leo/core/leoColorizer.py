@@ -884,7 +884,7 @@ class JEditColorizer(BaseColorizer):
     Issue #4158 links to the Theory of Operation for this class:
     https://github.com/leo-editor/leo-editor/issues/4158
 
-    Do not *ever* change this class! Change mode files, not this class!
+    Do not *ever* change this class! Change mode files instead!
     """
 
     #@+others
