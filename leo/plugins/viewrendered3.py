@@ -1342,7 +1342,7 @@ latex_template = f'''\
 trace = False  # This global trace is convenient.
 
 # keys are c.hash().
-controllers: Dict[str, Any] = {}  # values: VR3 widgets
+xcontrollers: Dict[str, Any] = {}  # values: VR3 widgets
 positions: Dict[int, Any] = {}  # values: OPENED_IN_TAB, OPENED_IN_SPLITTER, OPENED_SHARING_BODY
 
 #@+others
@@ -1759,6 +1759,7 @@ def viewrendered(event):
         return None
 
     getVr3({'c': c})
+    return None  # Make pylint happy
 #@+node:TomP.20200112232719.1: *3* g.command('vr3-execute')
 @g.command('vr3-execute')
 def execute_code(event):
