@@ -1566,7 +1566,7 @@
 <v t="ekr.20241112030815.1"><vh>Leo's Colorizer: Theory of Operation</vh>
 <v t="ekr.20241112094914.1"><vh>Components of the jedit class</vh></v>
 <v t="ekr.20241112044810.1"><vh>The big challenge</vh></v>
-<v t="ekr.20241112111533.1"><vh>States to the rescue (to do)</vh></v>
+<v t="ekr.20241112111533.1"><vh>About states and restarters</vh></v>
 <v t="ekr.20060430220749"><vh>Mode files</vh></v>
 </v>
 <v t="ekr.20200807105709.1"><vh>leoAst.py</vh>
@@ -5029,15 +5029,13 @@ except Exception:
 
 The `jEdit`_ editor drives its syntax colorer using ``.xml`` files. Leo uses ``.py`` files instead.
 
-Long ago, the ``jEdit2Py`` script created these (Python!) **mode files**. They reside in the `leo/modes` directory. Roughly speaking, there is one mode file for every language that Leo can colorizer. Over the years, Leo's devs have modified several of these mode files by hand.
+Long ago, Leo's ``jEdit2Py`` script created the python **mode files** in the ``leo/modes`` directory.
 
-**How Leo uses mode files**
+Roughly speaking, there is one mode file for every language that Leo can colorizer. Over the years, Leo's devs have modified several of these mode files by hand.
 
-``jedit.init`` retrieves a **rulesDict** from the mode file for the language in effect. Keys are character, the **lead-in character**. Values are lists of **rule functions** ( **rules** for short). Each *mode file* defines its own rulesDict and rules.
+``init`` sets ``jedit.rulesDict`` from the mode file for the language in effect. Keys are **lead-in characters**; values are lists of **rule functions** (**rules** for short). Each *mode file* defines its own rulesDict and rules.
 
-``jedit.mainLoop`` retrieves a list of zero-or more rules based on the character at ``s[i]``. ``mainLoop`` calls those rules until one matches or no more rules remain. Rule functions call exactly one jedit pattern matcher. It's that simple!
-
-If this scheme still seems mysterious, studying ``init``, ``mainLoop`` and a mode file like ``leo/modes/python.py`` should help.</t>
+``mainLoop(s)`` uses the rulesDict to retrieve a list of zero-or more rules to be used when scanning s. It's that simple.</t>
 <t tx="ekr.20060502084233">When Leo's syntax colorer sees the '@language x' directive, it will import x.py from Leo's modes folder. The colorer can then access any module-level object obj in x.py as x.obj.
 
 Colorizer control files contain **rules functions** corresponding to rule elements in x.xml. The colorizer can call these functions as if they were members of the colorizer class by passing 'self' as the first argument of these functions. I call these rules *functions* to distinguish them from the corresponding **rules methods** which are actual methods of the colorizer class. Rules *functions* merely call corresponding rules *methods*. Indeed, rules functions are simply a way of binding values to keyword arguments of rules methods. These keywords arguments correspond to the xml attributes of rule elements in x.xml.
@@ -33261,17 +33259,25 @@ Informing the qsh of ending state of each line is the colorizer's main task. The
 - The pattern matchers change the *ending state* as a side effect.</t>
 <t tx="ekr.20241112030725.1">https://github.com/leo-editor/leo-editor/issues/4166
 PR: https://github.com/leo-editor/leo-editor/pull/4174</t>
-<t tx="ekr.20241112030815.1">Are you sure you want to read this appendix? It is intended *only* for Leo's core developers.
+<t tx="ekr.20241112030815.1">.. _`QSyntaxHighlighter`:   https://doc.qt.io/qt-6/qsyntaxhighlighter.html
 
-**The Grand Overview**
+Are you sure you want to read this appendix? It is intended *only* for Leo's core developers.
 
-This appendix contains the theory of operation for the ``JEditColorizer`` (**jedit**) class in ``leoColorizer.py``. Unless qualified, all methods are members of the jedit class.
+This appendix contains the theory of operation for the ``JEditColorizer`` (**jedit**) class in ``leoColorizer.py``. Unless qualified, *all methods are members of the jedit class*.
 
-The jedit class collaborates with the **qsh**, the singleton instance of the [QSyntaxHighlighter](https://doc.qt.io/qt-6/qsyntaxhighlighter.html) class.
+**Executive summary**
 
-This collaboration allows the qsh *minimize* the calls to ``jedit.redraw``. The qsh calls ``redraw(s)`` *only* if line ``s`` could possibly need recoloring.
+Use the ``--trace=coloring`` to see the colorizer in action.
 
-This appendix also discusses **mode files**, files in the ``leo/modes`` directory. These files tell the jedit class how to colorize specific languages.
+The jedit class collaborates with the **qsh**, a singleton instance of the `QSyntaxHighlighter`_ class.
+
+This collaboration allows the qsh to *minimize* the calls to ``jedit.redraw``. The qsh calls ``redraw(s)`` *only* if line ``s`` could possibly need recoloring.
+
+The jedit class uses **states** to handle constructs like strings or comments that continue from one line to another.
+
+**Mode files**, python files in the ``leo/modes`` directory, tell the jedit class how to colorize specific languages.
+
+**Pattern matchers** do the actual syntax coloring.
 </t>
 <t tx="ekr.20241112044630.1">``redraw`` must collaborate with the qsh so the qsh will call ``redraw`` *as few times as possible.* If the collaboration is effective, the qsh will call ``redraw(s)`` only if the coloring for ``s`` could possibly change. This optimization is the reason why the qsh exists!
 
@@ -33357,7 +33363,8 @@ The driver methods are ``colorize``, ``redraw``, and ``mainLoop``. These methods
 
 ``redraw`` stands between the qsh and the pattern matchers. ``qsh.rehighlight`` calls ``redraw(s)`` to colorize a *single* line ``s``. After initing the **initial state**, ``redraw`` calls ``mainLoop``.
  
-``mainLoop(s)`` stands between ``redraw`` and **rule functions** (defined in mode files) until until ``s`` has been completely scanned. Rule functions delegate all their work to **pattern matchers** (described next). In other words, *Pattern matchers are callbacks.*
+``mainLoop(s)`` stands between ``redraw`` and **rule functions** (defined in mode files).
+Rule functions delegate their work to exactly one **pattern matcher** (described next). In other words, *Pattern matchers are callbacks.*
 
 **Pattern matchers**
 
@@ -33391,7 +33398,30 @@ Using Python colorer control files has the following advantages:
 
 - It is easy to modify the Python colorer control files 'by hand' without changing the corresponding xml file. In particular, it would be easy to define entirely new kinds of pattern-matching rules in Python merely by creating functions in a colorer control file.
 </t>
-<t tx="ekr.20241112111533.1">To do.</t>
+<t tx="ekr.20241112111533.1">States allow the colorizer to handle out-of-order calls to ``recolor``.
+
+The colorizer collaborates the qsh in *only one way*, namely by calling ``self.highlighter.setCurrentBlockState(n)``, where ``n`` is an *integer* state number.
+
+Internally, the colorizer uses *string* states. The colorizer's **state utilities** handle the convertion between integer and string representations.
+
+States represent, for a *particular* line:
+
+- The ``@language`` directive is in effect.
+- Which coloring directive (``@killcolor``, ``@color``, ``@nocolor``, etc.) is in efffect.
+- Whether the line ends in the middle of a string, comment, docstring or other syntactic construct.
+
+A fine point: The state utilities ensure that all integer state numbers are unique and refer to the proper language in effect. For example, if a node contains multiple ``@language``, the default states of the two languages must have different state numbers!
+
+The colorizer keeps track of states as follows:
+
+``recolor`` first computes the line's **initial** state from the **ending state** of the *previous* line. By default, the initial state becomes the ending state of *current* state.
+
+Pattern matchers usually leave the ending state unchanged.
+
+If a pattern matcher matches an ``@language`` or coloring directive, the matcher creates (indirectly, via the state utilities) a new state representing the directive. This is the easy case.
+
+If a pattern matcher matches syntax that continues to the next line, the pattern matcher creates a **restarter matcher** by calling ``setRestart``. The restarter matchers are essentially closures, a binding of the pattern matcher *and all of its kwargs*. The details are hairy, but the coding pattern is the same for all cases. See the source code for details.
+</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have

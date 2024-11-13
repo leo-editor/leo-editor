@@ -56,7 +56,7 @@
 <ul>
 <li><p><a class="reference internal" href="#components-of-the-jedit-class" id="id7">Components of the jedit class</a></p></li>
 <li><p><a class="reference internal" href="#the-big-challenge" id="id8">The big challenge</a></p></li>
-<li><p><a class="reference internal" href="#states-to-the-rescue-to-do" id="id9">States to the rescue (to do)</a></p></li>
+<li><p><a class="reference internal" href="#about-states-and-restarters" id="id9">About states and restarters</a></p></li>
 <li><p><a class="reference internal" href="#mode-files" id="id10">Mode files</a></p></li>
 </ul>
 </li>
@@ -481,11 +481,14 @@ already deleted positions is valid.</p>
 <section id="leo-s-colorizer-theory-of-operation">
 <h2><a class="toc-backref" href="#id6" role="doc-backlink">Leo’s Colorizer: Theory of Operation</a><a class="headerlink" href="#leo-s-colorizer-theory-of-operation" title="Link to this heading">¶</a></h2>
 <p>Are you sure you want to read this appendix? It is intended <em>only</em> for Leo’s core developers.</p>
-<p><strong>The Grand Overview</strong></p>
-<p>This appendix contains the theory of operation for the <code class="docutils literal notranslate"><span class="pre">JEditColorizer</span></code> (<strong>jedit</strong>) class in <code class="docutils literal notranslate"><span class="pre">leoColorizer.py</span></code>. Unless qualified, all methods are members of the jedit class.</p>
-<p>The jedit class collaborates with the <strong>qsh</strong>, the singleton instance of the [QSyntaxHighlighter](<a class="reference external" href="https://doc.qt.io/qt-6/qsyntaxhighlighter.html">https://doc.qt.io/qt-6/qsyntaxhighlighter.html</a>) class.</p>
-<p>This collaboration allows the qsh <em>minimize</em> the calls to <code class="docutils literal notranslate"><span class="pre">jedit.redraw</span></code>. The qsh calls <code class="docutils literal notranslate"><span class="pre">redraw(s)</span></code> <em>only</em> if line <code class="docutils literal notranslate"><span class="pre">s</span></code> could possibly need recoloring.</p>
-<p>This appendix also discusses <strong>mode files</strong>, files in the <code class="docutils literal notranslate"><span class="pre">leo/modes</span></code> directory. These files tell the jedit class how to colorize specific languages.</p>
+<p>This appendix contains the theory of operation for the <code class="docutils literal notranslate"><span class="pre">JEditColorizer</span></code> (<strong>jedit</strong>) class in <code class="docutils literal notranslate"><span class="pre">leoColorizer.py</span></code>. Unless qualified, <em>all methods are members of the jedit class</em>.</p>
+<p><strong>Executive summary</strong></p>
+<p>Use the <code class="docutils literal notranslate"><span class="pre">--trace=coloring</span></code> to see the colorizer in action.</p>
+<p>The jedit class collaborates with the <strong>qsh</strong>, a singleton instance of the <a class="reference external" href="https://doc.qt.io/qt-6/qsyntaxhighlighter.html">QSyntaxHighlighter</a> class.</p>
+<p>This collaboration allows the qsh to <em>minimize</em> the calls to <code class="docutils literal notranslate"><span class="pre">jedit.redraw</span></code>. The qsh calls <code class="docutils literal notranslate"><span class="pre">redraw(s)</span></code> <em>only</em> if line <code class="docutils literal notranslate"><span class="pre">s</span></code> could possibly need recoloring.</p>
+<p>The jedit class uses <strong>states</strong> to handle constructs like strings or comments that continue from one line to another.</p>
+<p><strong>Mode files</strong>, python files in the <code class="docutils literal notranslate"><span class="pre">leo/modes</span></code> directory, tell the jedit class how to colorize specific languages.</p>
+<p><strong>Pattern matchers</strong> do the actual syntax coloring.</p>
 <section id="components-of-the-jedit-class">
 <h3><a class="toc-backref" href="#id7" role="doc-backlink">Components of the jedit class</a><a class="headerlink" href="#components-of-the-jedit-class" title="Link to this heading">¶</a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">JEditColorizer</span></code> class consists <strong>drivers</strong> and <strong>pattern matchers</strong>.</p>
@@ -493,7 +496,8 @@ already deleted positions is valid.</p>
 <p>The driver methods are <code class="docutils literal notranslate"><span class="pre">colorize</span></code>, <code class="docutils literal notranslate"><span class="pre">redraw</span></code>, and <code class="docutils literal notranslate"><span class="pre">mainLoop</span></code>. These methods are the interface between Leo’s core, the qsh, and the other methods of the jedit class.</p>
 <p><code class="docutils literal notranslate"><span class="pre">colorize</span></code> stands between Leo’s core and the qsh. Only <code class="docutils literal notranslate"><span class="pre">LeoTree.select</span></code> calls this method. <code class="docutils literal notranslate"><span class="pre">colorize</span></code> calls <code class="docutils literal notranslate"><span class="pre">qsh.rehighlight</span></code> to schedule a full redraw of <code class="docutils literal notranslate"><span class="pre">p.b</span></code>.</p>
 <p><code class="docutils literal notranslate"><span class="pre">redraw</span></code> stands between the qsh and the pattern matchers. <code class="docutils literal notranslate"><span class="pre">qsh.rehighlight</span></code> calls <code class="docutils literal notranslate"><span class="pre">redraw(s)</span></code> to colorize a <em>single</em> line <code class="docutils literal notranslate"><span class="pre">s</span></code>. After initing the <strong>initial state</strong>, <code class="docutils literal notranslate"><span class="pre">redraw</span></code> calls <code class="docutils literal notranslate"><span class="pre">mainLoop</span></code>.</p>
-<p><code class="docutils literal notranslate"><span class="pre">mainLoop(s)</span></code> stands between <code class="docutils literal notranslate"><span class="pre">redraw</span></code> and <strong>rule functions</strong> (defined in mode files) until until <code class="docutils literal notranslate"><span class="pre">s</span></code> has been completely scanned. Rule functions delegate all their work to <strong>pattern matchers</strong> (described next). In other words, <em>Pattern matchers are callbacks.</em></p>
+<p><code class="docutils literal notranslate"><span class="pre">mainLoop(s)</span></code> stands between <code class="docutils literal notranslate"><span class="pre">redraw</span></code> and <strong>rule functions</strong> (defined in mode files).
+Rule functions delegate their work to exactly one <strong>pattern matcher</strong> (described next). In other words, <em>Pattern matchers are callbacks.</em></p>
 <p><strong>Pattern matchers</strong></p>
 <p>Pattern matchers form the bulk of the jedit class. Each pattern matcher does the following:</p>
 <ul>
@@ -524,18 +528,31 @@ already deleted positions is valid.</p>
 <p>The user can click (or cut or paste) anywhere in this text. The qsh will then call <code class="docutils literal notranslate"><span class="pre">recolor(s)</span></code> starting with the first changed line.</p>
 <p><em>There is no necessary relationship between ``s`` and the line that ``_re`` last saw</em>!</p>
 </section>
-<section id="states-to-the-rescue-to-do">
-<h3><a class="toc-backref" href="#id9" role="doc-backlink">States to the rescue (to do)</a><a class="headerlink" href="#states-to-the-rescue-to-do" title="Link to this heading">¶</a></h3>
-<p>To do.</p>
+<section id="about-states-and-restarters">
+<h3><a class="toc-backref" href="#id9" role="doc-backlink">About states and restarters</a><a class="headerlink" href="#about-states-and-restarters" title="Link to this heading">¶</a></h3>
+<p>States allow the colorizer to handle out-of-order calls to <code class="docutils literal notranslate"><span class="pre">recolor</span></code>.</p>
+<p>The colorizer collaborates the qsh in <em>only one way</em>, namely by calling <code class="docutils literal notranslate"><span class="pre">self.highlighter.setCurrentBlockState(n)</span></code>, where <code class="docutils literal notranslate"><span class="pre">n</span></code> is an <em>integer</em> state number.</p>
+<p>Internally, the colorizer uses <em>string</em> states. The colorizer’s <strong>state utilities</strong> handle the convertion between integer and string representations.</p>
+<p>States represent, for a <em>particular</em> line:</p>
+<ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">&#64;language</span></code> directive is in effect.</p></li>
+<li><p>Which coloring directive (<code class="docutils literal notranslate"><span class="pre">&#64;killcolor</span></code>, <code class="docutils literal notranslate"><span class="pre">&#64;color</span></code>, <code class="docutils literal notranslate"><span class="pre">&#64;nocolor</span></code>, etc.) is in efffect.</p></li>
+<li><p>Whether the line ends in the middle of a string, comment, docstring or other syntactic construct.</p></li>
+</ul>
+<p>A fine point: The state utilities ensure that all integer state numbers are unique and refer to the proper language in effect. For example, if a node contains multiple <code class="docutils literal notranslate"><span class="pre">&#64;language</span></code>, the default states of the two languages must have different state numbers!</p>
+<p>The colorizer keeps track of states as follows:</p>
+<p><code class="docutils literal notranslate"><span class="pre">recolor</span></code> first computes the line’s <strong>initial</strong> state from the <strong>ending state</strong> of the <em>previous</em> line. By default, the initial state becomes the ending state of <em>current</em> state.</p>
+<p>Pattern matchers usually leave the ending state unchanged.</p>
+<p>If a pattern matcher matches an <code class="docutils literal notranslate"><span class="pre">&#64;language</span></code> or coloring directive, the matcher creates (indirectly, via the state utilities) a new state representing the directive. This is the easy case.</p>
+<p>If a pattern matcher matches syntax that continues to the next line, the pattern matcher creates a <strong>restarter matcher</strong> by calling <code class="docutils literal notranslate"><span class="pre">setRestart</span></code>. The restarter matchers are essentially closures, a binding of the pattern matcher <em>and all of its kwargs</em>. The details are hairy, but the coding pattern is the same for all cases. See the source code for details.</p>
 </section>
 <section id="mode-files">
 <h3><a class="toc-backref" href="#id10" role="doc-backlink">Mode files</a><a class="headerlink" href="#mode-files" title="Link to this heading">¶</a></h3>
 <p>The <a class="reference external" href="http://www.jedit.org/">jEdit</a> editor drives its syntax colorer using <code class="docutils literal notranslate"><span class="pre">.xml</span></code> files. Leo uses <code class="docutils literal notranslate"><span class="pre">.py</span></code> files instead.</p>
-<p>Long ago, the <code class="docutils literal notranslate"><span class="pre">jEdit2Py</span></code> script created these (Python!) <strong>mode files</strong>. They reside in the <cite>leo/modes</cite> directory. Roughly speaking, there is one mode file for every language that Leo can colorizer. Over the years, Leo’s devs have modified several of these mode files by hand.</p>
-<p><strong>How Leo uses mode files</strong></p>
-<p><code class="docutils literal notranslate"><span class="pre">jedit.init</span></code> retrieves a <strong>rulesDict</strong> from the mode file for the language in effect. Keys are character, the <strong>lead-in character</strong>. Values are lists of <strong>rule functions</strong> ( <strong>rules</strong> for short). Each <em>mode file</em> defines its own rulesDict and rules.</p>
-<p><code class="docutils literal notranslate"><span class="pre">jedit.mainLoop</span></code> retrieves a list of zero-or more rules based on the character at <code class="docutils literal notranslate"><span class="pre">s[i]</span></code>. <code class="docutils literal notranslate"><span class="pre">mainLoop</span></code> calls those rules until one matches or no more rules remain. Rule functions call exactly one jedit pattern matcher. It’s that simple!</p>
-<p>If this scheme still seems mysterious, studying <code class="docutils literal notranslate"><span class="pre">init</span></code>, <code class="docutils literal notranslate"><span class="pre">mainLoop</span></code> and a mode file like <code class="docutils literal notranslate"><span class="pre">leo/modes/python.py</span></code> should help.</p>
+<p>Long ago, Leo’s <code class="docutils literal notranslate"><span class="pre">jEdit2Py</span></code> script created the python <strong>mode files</strong> in the <code class="docutils literal notranslate"><span class="pre">leo/modes</span></code> directory.</p>
+<p>Roughly speaking, there is one mode file for every language that Leo can colorizer. Over the years, Leo’s devs have modified several of these mode files by hand.</p>
+<p><code class="docutils literal notranslate"><span class="pre">init</span></code> sets <code class="docutils literal notranslate"><span class="pre">jedit.rulesDict</span></code> from the mode file for the language in effect. Keys are <strong>lead-in characters</strong>; values are lists of <strong>rule functions</strong> (<strong>rules</strong> for short). Each <em>mode file</em> defines its own rulesDict and rules.</p>
+<p><code class="docutils literal notranslate"><span class="pre">mainLoop(s)</span></code> uses the rulesDict to retrieve a list of zero-or more rules to be used when scanning s. It’s that simple.</p>
 </section>
 </section>
 <section id="leoast-py">
