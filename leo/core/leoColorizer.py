@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140827092102.18574: * @file leoColorizer.py
-"""All colorizing code for Leo."""
+"""Leo's syntax colorizing code classes."""
 
 # Indicated code are copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
@@ -872,20 +872,21 @@ class BaseColorizer:
         return d
     #@-others
 #@+node:ekr.20110605121601.18569: ** class JEditColorizer(BaseColorizer)
-# This is c.frame.body.colorizer
-
-
 class JEditColorizer(BaseColorizer):
     """
-    The JEditColorizer class adapts jEdit pattern matchers for
-    the QSyntaxHighlighter class.
+    This class colorizes p.b using Qt's QSyntaxHighlighter (qsh) class:
+    https://doc.qt.io/qt-6/qsyntaxhighlighter.html
     
-    This is c.frame.body.colorizer.
-    
-    Don't even *think* about this method unless you
-    understand *every word* of the Theory of Operation:  
+    Each commander creates a single instance of this class: c.frame.body.colorizer.
+
+    Use Leo's `--tracing=coloring` command-line option to see this class in action.
+
+    Issue #4158 links to the Theory of Operation for this class:
     https://github.com/leo-editor/leo-editor/issues/4158
+
+    Do not *ever* change this class! Change mode files, not this class!
     """
+
     #@+others
     #@+node:ekr.20220317050804.1: *3*  jedit: Birth
     #@+node:ekr.20110605121601.18572: *4* jedit.__init__ & helpers
