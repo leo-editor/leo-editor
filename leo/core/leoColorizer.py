@@ -1,6 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140827092102.18574: * @file leoColorizer.py
-"""Leo's syntax colorizing code classes."""
+"""Classes that syntax color body text."""
 
 # Indicated code are copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
