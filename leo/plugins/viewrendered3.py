@@ -2105,8 +2105,13 @@ def show_rendering_pane(event):
         dw = c.frame.top
         target = dw.vr_parent_frame
         target.addWidget(vr3)
-        if isinstance(target, QtWidgets.QSplitter):
-            g.app.gui.equalize_splitter(target)
+
+        def delay_equalize():
+            if isinstance(target, QtWidgets.QSplitter):
+                g.app.gui.equalize_splitter(target)
+
+        QtCore.QTimer.singleShot(70, delay_equalize)
+
     vr3.show()
     vr3.set_unfreeze()
 
@@ -2162,7 +2167,6 @@ def toggle_rendering_pane(event):
     else:
         vr3.setVisible(True)
         vr3.show()
-        ms.setSizes([100_000] * len(ms.sizes()))
         vr3.set_unfreeze()
 #@+node:tom.20230403190542.1: *3* g.command('vr3-toggle-tab')
 @g.command('vr3-toggle-tab')
