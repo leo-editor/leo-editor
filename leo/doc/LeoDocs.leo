@@ -33296,7 +33296,9 @@ Colorizing is secondary!</t>
     # Section 1
     It was the best of times; it was the worst of times.
 
-The user can click (or cut or paste) anywhere in this text. The qsh will then call ``recolor(s)`` starting with the first changed line. There is no necessary relationship between ``s`` and the line that ``_re`` last saw!</t>
+The user can click (or cut or paste) anywhere in this text. The qsh will then call ``recolor(s)`` starting with the first changed line.
+
+*There is no necessary relationship between ``s`` and the line that ``_re`` last saw*!</t>
 <t tx="ekr.20241112045117.1">
 
 - `redraw` computes the initial qsh state and calls `mainLine` to colorize s.
@@ -33361,9 +33363,9 @@ The driver methods are ``colorize``, ``redraw``, and ``mainLoop``. These methods
 
 Pattern matchers form the bulk of the jedit class. Each pattern matcher does the following:
 
-- Examine the string s[i:], where s is the argument to `mainLoop(s)`.
-- Update the **ending state** for successful matches.
-- Return an integer **return code**::
+- Examines the string ``s[i:]``, where s is the argument to `mainLoop(s)`.
+- Updates the **ending state** for successful matches.
+- Returns an integer **return code**::
 
     -1: complete failure: mainLoop returns.
      0: partial failure: mainLoop tries to match other rules.
