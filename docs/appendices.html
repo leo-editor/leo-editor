@@ -535,16 +535,16 @@ Rule functions delegate their work to exactly one <strong>pattern matcher</stron
 <p>Internally, the colorizer uses <em>string</em> states. The colorizer’s <strong>state utilities</strong> handle the convertion between integer and string representations.</p>
 <p>States represent, for a <em>particular</em> line:</p>
 <ul class="simple">
-<li><p>The <code class="docutils literal notranslate"><span class="pre">&#64;language</span></code> directive is in effect.</p></li>
+<li><p>Which <code class="docutils literal notranslate"><span class="pre">&#64;language</span></code> directive is in effect.</p></li>
 <li><p>Which coloring directive (<code class="docutils literal notranslate"><span class="pre">&#64;killcolor</span></code>, <code class="docutils literal notranslate"><span class="pre">&#64;color</span></code>, <code class="docutils literal notranslate"><span class="pre">&#64;nocolor</span></code>, etc.) is in efffect.</p></li>
 <li><p>Whether the line ends in the middle of a string, comment, docstring or other syntactic construct.</p></li>
 </ul>
-<p>A fine point: The state utilities ensure that all integer state numbers are unique and refer to the proper language in effect. For example, if a node contains multiple <code class="docutils literal notranslate"><span class="pre">&#64;language</span></code>, the default states of the two languages must have different state numbers!</p>
+<p>A fine point: The state utilities ensure that all integer state numbers are unique and refer to the proper language in effect. For example, if a node contains multiple <code class="docutils literal notranslate"><span class="pre">&#64;language</span></code> directives, the default states of the two languages must have different state numbers!</p>
 <p>The colorizer keeps track of states as follows:</p>
-<p><code class="docutils literal notranslate"><span class="pre">recolor</span></code> first computes the line’s <strong>initial</strong> state from the <strong>ending state</strong> of the <em>previous</em> line. By default, the initial state becomes the ending state of <em>current</em> state.</p>
+<p><code class="docutils literal notranslate"><span class="pre">recolor</span></code> first computes the line’s <strong>initial state</strong> from the <strong>ending state</strong> of the <em>previous</em> line. By default, the initial state becomes the ending state of <em>current</em> state.</p>
 <p>Pattern matchers usually leave the ending state unchanged.</p>
 <p>If a pattern matcher matches an <code class="docutils literal notranslate"><span class="pre">&#64;language</span></code> or coloring directive, the matcher creates (indirectly, via the state utilities) a new state representing the directive. This is the easy case.</p>
-<p>If a pattern matcher matches syntax that continues to the next line, the pattern matcher creates a <strong>restarter matcher</strong> by calling <code class="docutils literal notranslate"><span class="pre">setRestart</span></code>. The restarter matchers are essentially closures, a binding of the pattern matcher <em>and all of its kwargs</em>. The details are hairy, but the coding pattern is the same for all cases. See the source code for details.</p>
+<p>If a pattern matcher matches syntax that continues to the next line, the pattern matcher creates a <strong>restarter matcher</strong> by calling <code class="docutils literal notranslate"><span class="pre">setRestart</span></code>. The restarter matchers are essentially closures, bindings of the pattern matcher <em>and all of its kwargs</em>. The details are hairy, but the coding pattern is the same for all cases. See the source code for details.</p>
 </section>
 <section id="mode-files">
 <h3><a class="toc-backref" href="#id10" role="doc-backlink">Mode files</a><a class="headerlink" href="#mode-files" title="Link to this heading">¶</a></h3>

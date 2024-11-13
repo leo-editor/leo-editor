@@ -33406,21 +33406,21 @@ Internally, the colorizer uses *string* states. The colorizer's **state utilitie
 
 States represent, for a *particular* line:
 
-- The ``@language`` directive is in effect.
+- Which ``@language`` directive is in effect.
 - Which coloring directive (``@killcolor``, ``@color``, ``@nocolor``, etc.) is in efffect.
 - Whether the line ends in the middle of a string, comment, docstring or other syntactic construct.
 
-A fine point: The state utilities ensure that all integer state numbers are unique and refer to the proper language in effect. For example, if a node contains multiple ``@language``, the default states of the two languages must have different state numbers!
+A fine point: The state utilities ensure that all integer state numbers are unique and refer to the proper language in effect. For example, if a node contains multiple ``@language`` directives, the default states of the two languages must have different state numbers!
 
 The colorizer keeps track of states as follows:
 
-``recolor`` first computes the line's **initial** state from the **ending state** of the *previous* line. By default, the initial state becomes the ending state of *current* state.
+``recolor`` first computes the line's **initial state** from the **ending state** of the *previous* line. By default, the initial state becomes the ending state of *current* state.
 
 Pattern matchers usually leave the ending state unchanged.
 
 If a pattern matcher matches an ``@language`` or coloring directive, the matcher creates (indirectly, via the state utilities) a new state representing the directive. This is the easy case.
 
-If a pattern matcher matches syntax that continues to the next line, the pattern matcher creates a **restarter matcher** by calling ``setRestart``. The restarter matchers are essentially closures, a binding of the pattern matcher *and all of its kwargs*. The details are hairy, but the coding pattern is the same for all cases. See the source code for details.
+If a pattern matcher matches syntax that continues to the next line, the pattern matcher creates a **restarter matcher** by calling ``setRestart``. The restarter matchers are essentially closures, bindings of the pattern matcher *and all of its kwargs*. The details are hairy, but the coding pattern is the same for all cases. See the source code for details.
 </t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
