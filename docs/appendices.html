@@ -491,22 +491,22 @@ already deleted positions is valid.</p>
 <p><strong>Pattern matchers</strong> do the actual syntax coloring.</p>
 <section id="components-of-the-jedit-class">
 <h3><a class="toc-backref" href="#id7" role="doc-backlink">Components of the jedit class</a><a class="headerlink" href="#components-of-the-jedit-class" title="Link to this heading">¶</a></h3>
-<p>The <code class="docutils literal notranslate"><span class="pre">JEditColorizer</span></code> class consists <strong>drivers</strong> and <strong>pattern matchers</strong>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">JEditColorizer</span></code> class consists of <strong>drivers</strong>, <strong>pattern matchers</strong> and various <strong>helper utilities</strong>.</p>
 <p><strong>Drivers</strong></p>
 <p>The driver methods are <code class="docutils literal notranslate"><span class="pre">colorize</span></code>, <code class="docutils literal notranslate"><span class="pre">redraw</span></code>, and <code class="docutils literal notranslate"><span class="pre">mainLoop</span></code>. These methods are the interface between Leo’s core, the qsh, and the other methods of the jedit class.</p>
 <p><code class="docutils literal notranslate"><span class="pre">colorize</span></code> stands between Leo’s core and the qsh. Only <code class="docutils literal notranslate"><span class="pre">LeoTree.select</span></code> calls this method. <code class="docutils literal notranslate"><span class="pre">colorize</span></code> calls <code class="docutils literal notranslate"><span class="pre">qsh.rehighlight</span></code> to schedule a full redraw of <code class="docutils literal notranslate"><span class="pre">p.b</span></code>.</p>
 <p><code class="docutils literal notranslate"><span class="pre">redraw</span></code> stands between the qsh and the pattern matchers. <code class="docutils literal notranslate"><span class="pre">qsh.rehighlight</span></code> calls <code class="docutils literal notranslate"><span class="pre">redraw(s)</span></code> to colorize a <em>single</em> line <code class="docutils literal notranslate"><span class="pre">s</span></code>. After initing the <strong>initial state</strong>, <code class="docutils literal notranslate"><span class="pre">redraw</span></code> calls <code class="docutils literal notranslate"><span class="pre">mainLoop</span></code>.</p>
 <p><code class="docutils literal notranslate"><span class="pre">mainLoop(s)</span></code> stands between <code class="docutils literal notranslate"><span class="pre">redraw</span></code> and <strong>rule functions</strong> (defined in mode files).
-Rule functions delegate their work to exactly one <strong>pattern matcher</strong> (described next). In other words, <em>Pattern matchers are callbacks.</em></p>
+Rule functions delegate their work to exactly one <strong>pattern matcher</strong> (described next). In other words, <em>pattern matchers are callbacks.</em></p>
 <p><strong>Pattern matchers</strong></p>
 <p>Pattern matchers form the bulk of the jedit class. Each pattern matcher does the following:</p>
 <ul>
-<li><p>Examines the string <code class="docutils literal notranslate"><span class="pre">s[i:]</span></code>, where s is the argument to <cite>mainLoop(s)</cite>.</p></li>
+<li><p>Examines the string <code class="docutils literal notranslate"><span class="pre">s[i:]</span></code>, where s is the argument to <code class="docutils literal notranslate"><span class="pre">mainLoop(s)</span></code>.</p></li>
 <li><p>Updates the <strong>ending state</strong> for successful matches.</p></li>
 <li><p>Returns an integer <strong>return code</strong>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span><span class="mi">1</span><span class="p">:</span> <span class="n">complete</span> <span class="n">failure</span><span class="p">:</span> <span class="n">mainLoop</span> <span class="n">returns</span><span class="o">.</span>
- <span class="mi">0</span><span class="p">:</span> <span class="n">partial</span> <span class="n">failure</span><span class="p">:</span> <span class="n">mainLoop</span> <span class="n">tries</span> <span class="n">to</span> <span class="n">match</span> <span class="n">other</span> <span class="n">rules</span><span class="o">.</span>
-<span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span> <span class="n">success</span><span class="p">:</span> <span class="n">mainLoop</span> <span class="n">increments</span> <span class="n">i</span> <span class="n">by</span> <span class="n">n</span> <span class="ow">and</span> <span class="n">tries</span> <span class="n">to</span> <span class="n">match</span> <span class="n">other</span> <span class="n">rules</span><span class="o">.</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span><span class="mi">1</span><span class="p">:</span> <span class="n">complete</span> <span class="n">failure</span><span class="p">:</span> <span class="n">mainLoop</span> <span class="n">returns</span>
+ <span class="mi">0</span><span class="p">:</span> <span class="n">partial</span> <span class="n">failure</span><span class="p">:</span> <span class="n">mainLoop</span> <span class="n">tries</span> <span class="n">to</span> <span class="n">match</span> <span class="n">other</span> <span class="n">rules</span>
+<span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span> <span class="n">success</span><span class="p">:</span> <span class="n">mainLoop</span> <span class="n">increments</span> <span class="n">i</span> <span class="n">by</span> <span class="n">n</span> <span class="ow">and</span> <span class="n">tries</span> <span class="n">to</span> <span class="n">match</span> <span class="n">other</span> <span class="n">rules</span>
 </pre></div>
 </div>
 </li>
@@ -514,7 +514,7 @@ Rule functions delegate their work to exactly one <strong>pattern matcher</stron
 </section>
 <section id="the-big-challenge">
 <h3><a class="toc-backref" href="#id8" role="doc-backlink">The big challenge</a><a class="headerlink" href="#the-big-challenge" title="Link to this heading">¶</a></h3>
-<p>The qsh can (and will) call <code class="docutils literal notranslate"><span class="pre">recolor(s)</span></code> where s is <em>out-of-sequence</em> with the preceding call. For example, the following snippet is typical in &#64;jupytext nodes:</p>
+<p>The qsh can (and will) call <code class="docutils literal notranslate"><span class="pre">recolor(s)</span></code> where s is <em>out-of-sequence</em> with the preceding call. For example, the following snippet is typical in <code class="docutils literal notranslate"><span class="pre">&#64;jupytext</span> <span class="pre">nodes</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># %% (like @language python)</span>
 
 <span class="k">def</span> <span class="nf">spam</span><span class="p">():</span>
@@ -526,7 +526,7 @@ Rule functions delegate their work to exactly one <strong>pattern matcher</stron
 </pre></div>
 </div>
 <p>The user can click (or cut or paste) anywhere in this text. The qsh will then call <code class="docutils literal notranslate"><span class="pre">recolor(s)</span></code> starting with the first changed line.</p>
-<p><em>There is no necessary relationship between ``s`` and the line that ``_re`` last saw</em>!</p>
+<p><em>There is no necessary relationship between</em> <code class="docutils literal notranslate"><span class="pre">s</span></code> <em>and the line that</em> <code class="docutils literal notranslate"><span class="pre">recolor</span></code> <em>last saw</em>!</p>
 </section>
 <section id="about-states-and-restarters">
 <h3><a class="toc-backref" href="#id9" role="doc-backlink">About states and restarters</a><a class="headerlink" href="#about-states-and-restarters" title="Link to this heading">¶</a></h3>
@@ -537,7 +537,8 @@ Rule functions delegate their work to exactly one <strong>pattern matcher</stron
 <ul class="simple">
 <li><p>Which <code class="docutils literal notranslate"><span class="pre">&#64;language</span></code> directive is in effect.</p></li>
 <li><p>Which coloring directive (<code class="docutils literal notranslate"><span class="pre">&#64;killcolor</span></code>, <code class="docutils literal notranslate"><span class="pre">&#64;color</span></code>, <code class="docutils literal notranslate"><span class="pre">&#64;nocolor</span></code>, etc.) is in effect.</p></li>
-<li><p>Whether the line ends in the middle of a string, comment, docstring or other syntactic construct.</p></li>
+<li><p>Whether the coloring for the line <em>continues</em> to the next line.
+For example, Python docstrings may span multiple lines.</p></li>
 </ul>
 <p>A fine point: The state utilities ensure that all integer state numbers are unique and refer to the proper language in effect. For example, if a node contains multiple <code class="docutils literal notranslate"><span class="pre">&#64;language</span></code> directives, the default states of the two languages must have different state numbers!</p>
 <p>The colorizer keeps track of states as follows:</p>
@@ -551,9 +552,9 @@ Rule functions delegate their work to exactly one <strong>pattern matcher</stron
 <p>The <a class="reference external" href="http://www.jedit.org/">jEdit</a> editor drives its syntax colorer using <code class="docutils literal notranslate"><span class="pre">.xml</span></code> files. Leo uses <code class="docutils literal notranslate"><span class="pre">.py</span></code> files instead.</p>
 <p>Long ago, Leo’s <code class="docutils literal notranslate"><span class="pre">jEdit2Py</span></code> script created the python <strong>mode files</strong> in the <code class="docutils literal notranslate"><span class="pre">leo/modes</span></code> directory.</p>
 <p>Roughly speaking, there is one mode file for every language that Leo can colorizer. Over the years, Leo’s devs have modified several of these mode files by hand.</p>
-<p><code class="docutils literal notranslate"><span class="pre">init</span></code> sets <code class="docutils literal notranslate"><span class="pre">jedit.rulesDict</span></code> from the mode file for the language in effect. Keys are <strong>lead-in characters</strong>; values are lists of <strong>rule functions</strong> (<strong>rules</strong> for short). Each <em>mode file</em> defines its own rulesDict and rules.</p>
+<p><code class="docutils literal notranslate"><span class="pre">init</span></code> sets <code class="docutils literal notranslate"><span class="pre">jedit.rulesDict</span></code> from the mode file for the language in effect. Keys are <strong>lead-in characters</strong>; values are lists of <strong>rule functions</strong> (<strong>rules</strong> for short). Each mode file defines its own rulesDict and rules.</p>
 <p><code class="docutils literal notranslate"><span class="pre">mainLoop(s)</span></code> uses the rulesDict to retrieve a list of zero-or more rules to be used when scanning s. It’s that simple.</p>
-<p>Legacy files could collaborate using the <code class="docutils literal notranslate"><span class="pre">delegate</span></code> keyword, but that scheme is clumsy. Leo 6.8.3 added <code class="docutils literal notranslate"><span class="pre">leo/modes/jupytext.py</span></code>, a new mode for <code class="docutils literal notranslate"><span class="pre">&#64;language</span> <span class="pre">jupytext</span></code>.</p>
+<p>Legacy files could collaborate using the <code class="docutils literal notranslate"><span class="pre">delegate</span></code> keyword, but that scheme is clumsy. Leo 6.8.3 added <code class="docutils literal notranslate"><span class="pre">leo/modes/jupytext.py</span></code>, a new mode file for <code class="docutils literal notranslate"><span class="pre">&#64;language</span> <span class="pre">jupytext</span></code>.</p>
 <p><code class="docutils literal notranslate"><span class="pre">jupytext.py</span></code> introduced a new style of collaboration. The mode files for the jupytext, python and md collaborate <em>directly</em> use modifications of <em>existing</em> rules in <code class="docutils literal notranslate"><span class="pre">python.py</span></code> and <code class="docutils literal notranslate"><span class="pre">md.py</span></code>.</p>
 </section>
 </section>

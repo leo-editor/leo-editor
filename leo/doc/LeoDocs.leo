@@ -5033,11 +5033,11 @@ Long ago, Leo's ``jEdit2Py`` script created the python **mode files** in the ``l
 
 Roughly speaking, there is one mode file for every language that Leo can colorizer. Over the years, Leo's devs have modified several of these mode files by hand.
 
-``init`` sets ``jedit.rulesDict`` from the mode file for the language in effect. Keys are **lead-in characters**; values are lists of **rule functions** (**rules** for short). Each *mode file* defines its own rulesDict and rules.
+``init`` sets ``jedit.rulesDict`` from the mode file for the language in effect. Keys are **lead-in characters**; values are lists of **rule functions** (**rules** for short). Each mode file defines its own rulesDict and rules.
 
 ``mainLoop(s)`` uses the rulesDict to retrieve a list of zero-or more rules to be used when scanning s. It's that simple.
 
-Legacy files could collaborate using the ``delegate`` keyword, but that scheme is clumsy. Leo 6.8.3 added ``leo/modes/jupytext.py``, a new mode for ``@language jupytext``.
+Legacy files could collaborate using the ``delegate`` keyword, but that scheme is clumsy. Leo 6.8.3 added ``leo/modes/jupytext.py``, a new mode file for ``@language jupytext``.
 
 ``jupytext.py`` introduced a new style of collaboration. The mode files for the jupytext, python and md collaborate *directly* use modifications of *existing* rules in ``python.py`` and ``md.py``.
 </t>
@@ -33294,7 +33294,7 @@ The jedit class uses **states** to handle constructs like strings or comments th
 
 *Handling qsh states is the colorizer's most important task!*
 Colorizing is secondary!</t>
-<t tx="ekr.20241112044810.1">The qsh can (and will) call ``recolor(s)`` where s is *out-of-sequence* with the preceding call. For example, the following snippet is typical in @jupytext nodes:
+<t tx="ekr.20241112044810.1">The qsh can (and will) call ``recolor(s)`` where s is *out-of-sequence* with the preceding call. For example, the following snippet is typical in ``@jupytext nodes``:
 
 .. code-block:: python
 
@@ -33309,7 +33309,7 @@ Colorizing is secondary!</t>
 
 The user can click (or cut or paste) anywhere in this text. The qsh will then call ``recolor(s)`` starting with the first changed line.
 
-*There is no necessary relationship between ``s`` and the line that ``_re`` last saw*!</t>
+*There is no necessary relationship between* ``s`` *and the line that* ``recolor`` *last saw*!</t>
 <t tx="ekr.20241112045117.1">
 
 - `redraw` computes the initial qsh state and calls `mainLine` to colorize s.
@@ -33358,7 +33358,7 @@ The following sections discuss what ``redraw`` (and its helpers) must do.
 
 You may specify default fonts and colors.
 You may also specify fonts and colors on a language-by-language basis.</t>
-<t tx="ekr.20241112094914.1">The ``JEditColorizer`` class consists **drivers** and **pattern matchers**.
+<t tx="ekr.20241112094914.1">The ``JEditColorizer`` class consists of **drivers**, **pattern matchers** and various **helper utilities**.
 
 **Drivers**
 
@@ -33369,19 +33369,19 @@ The driver methods are ``colorize``, ``redraw``, and ``mainLoop``. These methods
 ``redraw`` stands between the qsh and the pattern matchers. ``qsh.rehighlight`` calls ``redraw(s)`` to colorize a *single* line ``s``. After initing the **initial state**, ``redraw`` calls ``mainLoop``.
  
 ``mainLoop(s)`` stands between ``redraw`` and **rule functions** (defined in mode files).
-Rule functions delegate their work to exactly one **pattern matcher** (described next). In other words, *Pattern matchers are callbacks.*
+Rule functions delegate their work to exactly one **pattern matcher** (described next). In other words, *pattern matchers are callbacks.*
 
 **Pattern matchers**
 
 Pattern matchers form the bulk of the jedit class. Each pattern matcher does the following:
 
-- Examines the string ``s[i:]``, where s is the argument to `mainLoop(s)`.
+- Examines the string ``s[i:]``, where s is the argument to ``mainLoop(s)``.
 - Updates the **ending state** for successful matches.
 - Returns an integer **return code**::
 
-    -1: complete failure: mainLoop returns.
-     0: partial failure: mainLoop tries to match other rules.
-    &gt;0: success: mainLoop increments i by n and tries to match other rules.
+    -1: complete failure: mainLoop returns
+     0: partial failure: mainLoop tries to match other rules
+    &gt;0: success: mainLoop increments i by n and tries to match other rules
 </t>
 <t tx="ekr.20241112110253.1"></t>
 <t tx="ekr.20241112110508.1">**Important**: throughout this documentation, **x.py** will refer to the Python colorer for language x, and **x.xml** will refer to the corresponding xml language-description file.
@@ -33413,7 +33413,8 @@ States represent, for a *particular* line:
 
 - Which ``@language`` directive is in effect.
 - Which coloring directive (``@killcolor``, ``@color``, ``@nocolor``, etc.) is in effect.
-- Whether the line ends in the middle of a string, comment, docstring or other syntactic construct.
+- Whether the coloring for the line *continues* to the next line.
+  For example, Python docstrings may span multiple lines.
 
 A fine point: The state utilities ensure that all integer state numbers are unique and refer to the proper language in effect. For example, if a node contains multiple ``@language`` directives, the default states of the two languages must have different state numbers!
 

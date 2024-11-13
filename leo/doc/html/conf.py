@@ -13,6 +13,8 @@
 
 use_dark = False
 
+# Lib\site-packages\pydata_sphinx_theme
+
 source_suffix = '.html.txt'
 
 #@+<< general settings >>
@@ -45,6 +47,7 @@ html_static_path = ['_static', 'screen-shots']  # leo/docs/static
 
 # The theme to use for HTML and HTML Help pages.
 # 'default', 'sphinxdoc'.
+
 html_theme = 'pydata_sphinx_theme' if use_dark else 'classic'
 
 # These paths are either relative to html_static_path or fully qualified paths.
