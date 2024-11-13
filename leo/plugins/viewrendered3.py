@@ -1342,7 +1342,7 @@ latex_template = f'''\
 trace = False  # This global trace is convenient.
 
 # keys are c.hash().
-xcontrollers: Dict[str, Any] = {}  # values: VR3 widgets
+controllers: Dict[str, Any] = {}  # values: VR3 widgets
 positions: Dict[int, Any] = {}  # values: OPENED_IN_TAB, OPENED_IN_SPLITTER, OPENED_SHARING_BODY
 
 #@+others
