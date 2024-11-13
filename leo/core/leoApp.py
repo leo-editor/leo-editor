@@ -415,6 +415,7 @@ class LeoApp:
             "rib":      "rib",
             "rs":       "rust", # EKR: 2019/08/11
             "sas":      "sas",
+            "scad":     "openscad", # PeckJ 2024/11/13
             "scala":    "scala",
             "scm":      "scheme",
             "scpt":     "applescript",
