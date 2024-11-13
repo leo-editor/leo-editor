@@ -33345,7 +33345,7 @@ The following sections discuss what ``redraw`` (and its helpers) must do.
 
 You may specify default fonts and colors.
 You may also specify fonts and colors on a language-by-language basis.</t>
-<t tx="ekr.20241112094914.1">The ``JEditColorizer`` class consists **drivers**, **pattern matchers**, and **utilities**.
+<t tx="ekr.20241112094914.1">The ``JEditColorizer`` class consists **drivers** and **pattern matchers**.
 
 **Drivers**
 
@@ -33355,30 +33355,21 @@ The driver methods are ``colorize``, ``redraw``, and ``mainLoop``. These methods
 
 ``redraw`` stands between the qsh and the pattern matchers. ``qsh.rehighlight`` calls ``redraw(s)`` to colorize a *single* line ``s``. After initing the **initial state**, ``redraw`` calls ``mainLoop``.
  
-``mainLoop(s)`` stands between ``redraw`` and the **pattern matchers** (described next).  ``mainLoop(s)`` calls pattern matchers until ``s`` has been completely scanned.
-
-But ``mainLoop`` does *not* call pattern matchers directly. *Pattern matchers are callbacks.* ``mainLoop`` actually calls **rule functions** (**rules** for short) defined within the mode file for the language in effect at line ``s``. These rules then call pattern matchers.
-
-Yes, this is a complex scheme. The scheme is an relic jEdit *editor's* xml mode files.
+``mainLoop(s)`` stands between ``redraw`` and **rule functions** (defined in mode files) until until ``s`` has been completely scanned. Rule functions delegate all their work to **pattern matchers** (described next). In other words, *Pattern matchers are callbacks.*
 
 **Pattern matchers**
 
-Pattern matchers form the bulk of the jedit class. Most pattern matchers contain a large number of kwargs. These kwargs are further relics of the original xml mode files.
-
-As mentioned above, pattern matchers are callbacks. Nevertheless, the purpose of each pattern matcher is straightforward. Each pattern matcher does the following:
+Pattern matchers form the bulk of the jedit class. Each pattern matcher does the following:
 
 - Examine the string s[i:], where s is the argument to `mainLoop(s)`.
-- Return an *integer* indicating whether the pattern matched.
-- Update the **ending state** of the line for successful matches.
+- Update the **ending state** for successful matches.
+- Return an integer **return code**::
 
-``mainLoop`` uses the value returned from pattern matchers as follows:
-  -1 means complete failure. `mainLoop` will return.
-  0 means partial failure. `mainLoop` will attempt to match other rules.
-  &gt; 0 means success. `mainLoop` will increment ``i`` and continue.
-  
-**Utilities**
+    -1: complete failure: ``mainLoop`` returns. |br|
+     0: partial failure: ``mainLoop`` attempt to match other rules. |br|
+    &gt;0: success: ``mainLoop`` increments ``i`` by ``n`` and continues. |br|
 
-To do: Behind-the-scenes utilities, including state-related helpers.
+.. must have blank line here.
 </t>
 <t tx="ekr.20241112110253.1"></t>
 <t tx="ekr.20241112110508.1">**Important**: throughout this documentation, **x.py** will refer to the Python colorer for language x, and **x.xml** will refer to the corresponding xml language-description file.

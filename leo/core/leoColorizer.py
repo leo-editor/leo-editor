@@ -1378,7 +1378,7 @@ class JEditColorizer(BaseColorizer):
         # Get the line number and state associated with s.
         line_number = self.currentBlockNumber()
         n = self.initBlock0() if line_number == 0 else self.prevState()
-        state = self.setState(n)  # Required.
+        state = self.setState(n)  # By default, continue the previous state.
 
         # #4146: Update self.language from the *previous* state.
         self.language = self.stateNumberToLanguage(state)
