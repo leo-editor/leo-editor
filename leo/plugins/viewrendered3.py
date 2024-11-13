@@ -2099,11 +2099,11 @@ def show_rendering_pane(event):
     h = c.hash()
     vr3 = controllers.get(h)
     if not vr3:
-        c.doCommandByName('vr3')
-    elif vr3.parent().objectName() in (None, 'leo-layout-cache'):
-        # VR3 object is in limbo, insert it into the default layout splitter
-        dw = c.frame.top
-        target = dw.vr_parent_frame
+        vr3 = getVr3({'c': c})
+
+    if vr3.parent().objectName() in (None, 'leo-layout-cache'):
+        # VR3 object is in limbo, add it into the main splitter
+        target = g.app.gui.find_widget_by_name(c, 'main_splitter')
         target.addWidget(vr3)
 
         def delay_equalize():
@@ -2142,8 +2142,7 @@ def toggle_rendering_pane(event):
     """Toggle the rendering pane.
 
     If a VR3 instance exists for this controller, hide it.
-    Otherwise, create it, respecting its position if any from
-    the last time it was open.
+    Otherwise, create and show it.
     """
     if g.app.gui.guiName() != 'qt':
         return
@@ -2158,16 +2157,8 @@ def toggle_rendering_pane(event):
     if vr3.isVisible():
         vr3.hide()
         vr3.set_freeze()
-    elif vr3.parent() is None or vr3.parent().objectName() == 'leo-layout-cache':
-        ms = g.app.gui.find_widget_by_name(c, 'main_splitter')
-        ms.addWidget(vr3)
-        vr3.show()
-        ms.setSizes([100_000] * len(ms.sizes()))
-        vr3.set_unfreeze()
     else:
-        vr3.setVisible(True)
-        vr3.show()
-        vr3.set_unfreeze()
+        show_rendering_pane({'c': c})  # Same as "vr3-show" command
 #@+node:tom.20230403190542.1: *3* g.command('vr3-toggle-tab')
 @g.command('vr3-toggle-tab')
 def toggle_rendering_pane_tab(event):
