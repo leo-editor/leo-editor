@@ -32763,6 +32763,8 @@ Use the ``--trace=coloring`` to see the colorizer in action.
 
 The jedit class collaborates with the **qsh**, a singleton instance of the `QSyntaxHighlighter`_ class.
 
+Never change *anything* in the ``jedit`` class! Change mode files instead!
+
 This collaboration allows the qsh to *minimize* the calls to ``jedit.redraw``. The qsh calls ``redraw(s)`` *only* if line ``s`` could possibly need recoloring.
 
 The jedit class uses **states** to handle constructs like strings or comments that continue from one line to another.
