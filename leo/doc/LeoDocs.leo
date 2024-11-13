@@ -5031,11 +5031,11 @@ The `jEdit`_ editor drives its syntax colorer using ``.xml`` files. Leo uses ``.
 
 Long ago, Leo's ``jEdit2Py`` script created the python **mode files** in the ``leo/modes`` directory.
 
-Roughly speaking, there is one mode file for every language that Leo can colorizer. Over the years, Leo's devs have modified several of these mode files by hand.
+Roughly speaking, there is one mode file for every language that Leo can colorize. Over the years, Leo's devs have modified several of these mode files by hand.
 
 ``init`` sets ``jedit.rulesDict`` from the mode file for the language in effect. Keys are **lead-in characters**; values are lists of **rule functions** (**rules** for short). Each mode file defines its own rulesDict and rules.
 
-``mainLoop(s)`` uses the rulesDict to retrieve a list of zero-or more rules to be used when scanning s. It's that simple.
+``mainLoop(s)`` uses the rulesDict to retrieve a list of zero or more rules to be used when scanning s. It's that simple.
 
 Legacy files could collaborate using the ``delegate`` keyword, but that scheme is clumsy. Leo 6.8.3 added ``leo/modes/jupytext.py``, a new mode file for ``@language jupytext``.
 
@@ -33294,7 +33294,7 @@ The jedit class uses **states** to handle constructs like strings or comments th
 
 *Handling qsh states is the colorizer's most important task!*
 Colorizing is secondary!</t>
-<t tx="ekr.20241112044810.1">The qsh can (and will) call ``recolor(s)`` where s is *out-of-sequence* with the preceding call. For example, the following snippet is typical in ``@jupytext nodes``:
+<t tx="ekr.20241112044810.1">The qsh can (and will) call ``recolor(s)`` where s is *out-of-sequence* with the preceding call. For example, the following snippet is typical in ``@language jupytext`` nodes:
 
 .. code-block:: python
 
