@@ -5035,7 +5035,12 @@ Roughly speaking, there is one mode file for every language that Leo can coloriz
 
 ``init`` sets ``jedit.rulesDict`` from the mode file for the language in effect. Keys are **lead-in characters**; values are lists of **rule functions** (**rules** for short). Each *mode file* defines its own rulesDict and rules.
 
-``mainLoop(s)`` uses the rulesDict to retrieve a list of zero-or more rules to be used when scanning s. It's that simple.</t>
+``mainLoop(s)`` uses the rulesDict to retrieve a list of zero-or more rules to be used when scanning s. It's that simple.
+
+Legacy files could collaborate using the ``delegate`` keyword, but that scheme is clumsy. Leo 6.8.3 added ``leo/modes/jupytext.py``, a new mode for ``@language jupytext``.
+
+``jupytext.py`` introduced a new style of collaboration. The mode files for the jupytext, python and md collaborate *directly* use modifications of *existing* rules in ``python.py`` and ``md.py``.
+</t>
 <t tx="ekr.20060502084233">When Leo's syntax colorer sees the '@language x' directive, it will import x.py from Leo's modes folder. The colorer can then access any module-level object obj in x.py as x.obj.
 
 Colorizer control files contain **rules functions** corresponding to rule elements in x.xml. The colorizer can call these functions as if they were members of the colorizer class by passing 'self' as the first argument of these functions. I call these rules *functions* to distinguish them from the corresponding **rules methods** which are actual methods of the colorizer class. Rules *functions* merely call corresponding rules *methods*. Indeed, rules functions are simply a way of binding values to keyword arguments of rules methods. These keywords arguments correspond to the xml attributes of rule elements in x.xml.
@@ -33402,12 +33407,12 @@ Using Python colorer control files has the following advantages:
 
 The colorizer collaborates the qsh in *only one way*, namely by calling ``self.highlighter.setCurrentBlockState(n)``, where ``n`` is an *integer* state number.
 
-Internally, the colorizer uses *string* states. The colorizer's **state utilities** handle the convertion between integer and string representations.
+Internally, the colorizer uses *string* states. The colorizer's **state utilities** handle the conversion between integer and string representations.
 
 States represent, for a *particular* line:
 
 - Which ``@language`` directive is in effect.
-- Which coloring directive (``@killcolor``, ``@color``, ``@nocolor``, etc.) is in efffect.
+- Which coloring directive (``@killcolor``, ``@color``, ``@nocolor``, etc.) is in effect.
 - Whether the line ends in the middle of a string, comment, docstring or other syntactic construct.
 
 A fine point: The state utilities ensure that all integer state numbers are unique and refer to the proper language in effect. For example, if a node contains multiple ``@language`` directives, the default states of the two languages must have different state numbers!

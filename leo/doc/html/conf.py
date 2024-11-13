@@ -11,6 +11,8 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 # http://docs.readthedocs.io/en/latest/getting_started.html#in-markdown
 
+use_dark = False
+
 source_suffix = '.html.txt'
 
 #@+<< general settings >>
@@ -42,12 +44,11 @@ exclude_trees = ['_build']  # Don't search for source files.
 html_static_path = ['_static', 'screen-shots']  # leo/docs/static
 
 # The theme to use for HTML and HTML Help pages.
-html_theme = 'classic'  # 'default', 'sphinxdoc'.
+# 'default', 'sphinxdoc'.
+html_theme = 'pydata_sphinx_theme' if use_dark else 'classic'
 
 # These paths are either relative to html_static_path or fully qualified paths.
-html_css_files = [
-    'custom.css',
-]
+html_css_files = [] if use_dark else ['custom.css',]
 
 # Theme options. All colors are CSS colors.
 html_theme_options = {
