@@ -2156,12 +2156,13 @@ def toggle_rendering_pane(event):
     elif vr3.parent() is None or vr3.parent().objectName() == 'leo-layout-cache':
         ms = g.app.gui.find_widget_by_name(c, 'main_splitter')
         ms.addWidget(vr3)
-        ms.setSizes([100_000] * len(ms.sizes()))
         vr3.show()
+        ms.setSizes([100_000] * len(ms.sizes()))
         vr3.set_unfreeze()
     else:
         vr3.setVisible(True)
         vr3.show()
+        ms.setSizes([100_000] * len(ms.sizes()))
         vr3.set_unfreeze()
 #@+node:tom.20230403190542.1: *3* g.command('vr3-toggle-tab')
 @g.command('vr3-toggle-tab')
