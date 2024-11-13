@@ -32763,8 +32763,6 @@ Use the ``--trace=coloring`` to see the colorizer in action.
 
 The jedit class collaborates with the **qsh**, a singleton instance of the `QSyntaxHighlighter`_ class.
 
-Never change *anything* in the ``jedit`` class! Change mode files instead!
-
 This collaboration allows the qsh to *minimize* the calls to ``jedit.redraw``. The qsh calls ``redraw(s)`` *only* if line ``s`` could possibly need recoloring.
 
 The jedit class uses **states** to handle constructs like strings or comments that continue from one line to another.
@@ -32772,6 +32770,8 @@ The jedit class uses **states** to handle constructs like strings or comments th
 **Mode files**, python files in the ``leo/modes`` directory, tell the jedit class how to colorize specific languages.
 
 **Pattern matchers** do the actual syntax coloring.
+
+Never change *anything* in the ``jedit`` class! Change mode files instead!
 </t>
 <t tx="ekr.20241112044810.1">The qsh can (and will) call ``recolor(s)`` where s is *out-of-sequence* with the preceding call. For example, the following snippet is typical in ``@language jupytext`` nodes:
 
