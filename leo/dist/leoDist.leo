@@ -1475,6 +1475,14 @@ Public announcements, after creating a package.
 - Announce to Python-announce-list using email:
    python-announce-list@python.org
    **Paste source-forge or leo-editor announcement**.
+   
+   To make it easier to include your announcement on www.python.org's front page,
+   please include 2-3 lines of HTML code at the very end of your submission,
+   using the following template:
+
+    &lt;P&gt;&lt;A HREF="https://leo-editor.github.io/leo-editor/"&gt;Leo 6.8.2&lt;/A&gt;
+    Leo 6.8.2 released (11-8-2024)
+
 
   - Check it by visiting the archive:
     https://mail.python.org/archives/list/python-announce-list@python.org/
