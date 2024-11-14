@@ -16,22 +16,25 @@ is node-locked - that is, it always shows a view of its original host node
 no matter how the user navigates within or between outlines.
 
 :By: T\. B\. Passin
-:Version: 2.3
-:Date: 9 Nov 2024
+:Version: 2.4
+:Date: 14 Nov 2024
 #@+node:tom.20240811231850.1: *3* New With This Version
 New With This Version
 ======================
-1. When text is changed in the host node, the cursor position in the FW
-   editor will match the cursor position of the nost;
-2. The FW editor will scroll to put the new cursor postion into view if needed.
-
+The "Rendered" view now uses the same colors as the underlying host node's editor.
 
 Previous Recent Changes
 ========================
-1. The editor view now uses the same colors as the underlying host node's
-   editor. The CSS style sheet previously used is no longer used.
-2. The currently selected line in the editor view is highlighted using the same
-   algorithm as the standard Leo body editor.
+When text is changed in the host node, the cursor position in the FW editor will
+match the cursor position of the nost;
+
+The FW editor will scroll to put the new cursor postion into view if needed.
+
+The editor view now uses the same colors as the underlying host node's editor.
+The CSS style sheet previously used is no longer used.
+
+The currently selected line in the editor view is highlighted using the same
+algorithm as the standard Leo body editor.
 
 There are no settings that affect these new features.
 
