@@ -601,6 +601,7 @@ class LeoApp:
             "ocaml"              : "(* *)",
             "omnimark"           : ";",
             "pandoc"             : "<!-- -->",
+            "openscad"           : "// /* */", # EKR: 2024/11/13: same as "C".
             "pascal"             : "// { }",
             "perl"               : "#",
             "perlpod"            : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
@@ -781,6 +782,7 @@ class LeoApp:
             "occam"         : "occ",
             "ocaml"         : "ml",
             "omnimark"      : "xom",
+            "openscad"      : "scad", # EKR, per PeckJ 2024/11/13
             "pascal"        : "p",
             "perl"          : "pl",
             "perlpod"       : "pod",
