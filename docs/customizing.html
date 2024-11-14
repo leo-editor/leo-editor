@@ -522,23 +522,27 @@ options, <code class="docutils literal notranslate"><span class="pre">rst3</span
 <li><p><code class="docutils literal notranslate"><span class="pre">rst3</span></code> calls the body filter for all nodes except descendants of
 <code class="docutils literal notranslate"><span class="pre">&#64;rst-ignore</span></code> or <code class="docutils literal notranslate"><span class="pre">&#64;rst-ignore-tree</span></code> nodes.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">rst3</span></code> calls the headline filter for all nodes except:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">rst</span><span class="o">-</span><span class="n">no</span><span class="o">-</span><span class="n">head</span> <span class="n">nodes</span> <span class="ow">or</span>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">rst</span><span class="o">-</span><span class="n">no</span><span class="o">-</span><span class="n">head</span> <span class="n">nodes</span> <span class="ow">or</span>
 <span class="n">descendants</span> <span class="n">of</span> <span class="nd">@rst</span><span class="o">-</span><span class="n">ignore</span> <span class="ow">or</span> <span class="nd">@rst</span><span class="o">-</span><span class="n">ignore</span><span class="o">-</span><span class="n">tree</span> <span class="n">nodes</span><span class="o">.</span>
 </pre></div>
 </div>
+</div></blockquote>
 </li>
 <li><p>plugins or scripts register filters as follows:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">c</span><span class="o">.</span><span class="n">rstCommands</span><span class="o">.</span><span class="n">register_body_filter</span><span class="p">(</span><span class="n">body_filter</span><span class="p">)</span>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">c</span><span class="o">.</span><span class="n">rstCommands</span><span class="o">.</span><span class="n">register_body_filter</span><span class="p">(</span><span class="n">body_filter</span><span class="p">)</span>
 <span class="n">c</span><span class="o">.</span><span class="n">rstCommands</span><span class="o">.</span><span class="n">register_headline_filter</span><span class="p">(</span><span class="n">headline_filter</span><span class="p">)</span>
 </pre></div>
 </div>
+</div></blockquote>
 </li>
 <li><p>The signature of all filters is <code class="docutils literal notranslate"><span class="pre">filter-name</span> <span class="pre">(c,</span> <span class="pre">p)</span></code> where c and p are
 defined as usual.</p></li>
 </ul>
 <p><strong>Example filters</strong></p>
 <p>Do-nothing filters would be defined like this:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">body_filter</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">body_filter</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">p</span><span class="o">.</span><span class="n">b</span>
 
 <span class="k">def</span> <span class="nf">headline_filter</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
@@ -547,7 +551,7 @@ defined as usual.</p></li>
 </div>
 <p>The following filters would simulate the frequently-requested “half clone” feature.
 That is, within any <code class="docutils literal notranslate"><span class="pre">&#64;rst</span></code> tree, the following filters would skip the children of all clones:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">has_cloned_parent</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">has_cloned_parent</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return True if p has a cloned parent within the @rst tree.&quot;&quot;&quot;</span>
     <span class="n">root</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">rstCommands</span><span class="o">.</span><span class="n">root</span>  <span class="c1"># The @rst node.</span>
     <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span>
@@ -642,12 +646,12 @@ that the <code class="docutils literal notranslate"><span class="pre">rst3</span
 <p id="index-0">Leo’s .leo file format is extensible. The basis for extending .leo files are the v.unknownAttributes ivars of vnodes, also know as <strong>user attributes</strong>, uA’s for short. Leo translates between uA’s and xml attributes in the corresponding &lt;v&gt; elements in .leo files. Plugins may also use v.tempAttributes ivars to hold temporary information that will <em>not</em> be written to the .leo file. These two ivars are called <strong>attribute ivars</strong>.</p>
 <p>Attribute ivars must be Python dictionaries, whose keys are names of plugins and whose values are <em>other</em> dictionaries, called <strong>inner dictionaries</strong>, for exclusive use of each plugin.</p>
 <p>The v.u Python property allows plugins to get and set v.unknownAttributes easily:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">d</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">u</span> <span class="c1"># gets uA (the outer dict) for v</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">u</span> <span class="c1"># gets uA (the outer dict) for v</span>
 <span class="n">v</span><span class="o">.</span><span class="n">u</span> <span class="o">=</span> <span class="n">d</span> <span class="c1"># sets uA (the outer dict) for v</span>
 </pre></div>
 </div>
 <p>For example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">plugin_name</span> <span class="o">=</span> <span class="s1">&#39;xyzzy&#39;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">plugin_name</span> <span class="o">=</span> <span class="s1">&#39;xyzzy&#39;</span>
 <span class="n">d</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">u</span> <span class="c1"># Get the outer dict.</span>
 <span class="n">inner_d</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">plugin_name</span><span class="p">,{})</span> <span class="c1"># Get the inner dict.</span>
 <span class="n">inner_d</span> <span class="p">[</span><span class="s1">&#39;duration&#39;</span><span class="p">]</span><span class="o">=</span> <span class="mi">5</span>
@@ -657,7 +661,7 @@ that the <code class="docutils literal notranslate"><span class="pre">rst3</span
 </pre></div>
 </div>
 <p>No corresponding Python properties exist for v.tempAttributes, so the corresponding example would be:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">plugin_name</span> <span class="o">=</span> <span class="s1">&#39;xyzzy&#39;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">plugin_name</span> <span class="o">=</span> <span class="s1">&#39;xyzzy&#39;</span>
 <span class="c1"># Get the outer dict.</span>
 <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">v</span><span class="p">,</span><span class="s1">&#39;tempAttributes&#39;</span><span class="p">):</span> <span class="n">d</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">tempAttributes</span>
 <span class="k">else</span><span class="p">:</span> <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
@@ -857,7 +861,7 @@ REPLACE …\1\2
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 1997-2024, Edward K. Ream.
-      Last updated on November 12, 2024.
+      Last updated on November 14, 2024.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
     </div>
   </body>

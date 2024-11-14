@@ -2506,8 +2506,8 @@
 </v>
 <v t="ekr.20240828095959.1"></v>
 <v t="ekr.20240828094953.1"><vh>Leo 6.8.2 release notes</vh></v>
-<v t="ekr.20241112030725.1"><vh>=== Revise the colorizing docs</vh></v>
-<v t="ekr.20241112030815.1"></v>
+<v t="ekr.20241114025618.1"><vh>=== Use code blocks</vh></v>
+<v t="ekr.20131009065148.31758"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -3623,11 +3623,6 @@ def onQuit(self, event=None):
 Writing Leo scripts in Python
 #############################
 
-..  "Leo a way to make a "living" document. A document built out of
-..  discrete parts that can be re-organized on the fly to meet the needs of
-..  a varying audience... just the possibility of keeping system
-..  maintenance scripts in the IT manual is mind boggling."---David Nichols
-
 This chapter tells how to write **Leo scripts**, Python scripts run from any Leo node. This chapter is intended for those fairly comfortable with Python scripting. If you are not, please study the excellent `Python Tutorial &lt;http://docs.python.org/2/tutorial/&gt;`_. Jacob Peck has written a more `informal scripting tutorial &lt;http://blog.suspended-chord.info/2014/01/28/intro-to-leo-scripting/&gt;`_.
 
 Three predefined symbols, **c**, **g**, and **p** give Leo scripts easy access to all the data in the outline. These symbols also allow Leo scripts to execute any code in Leo's own codebase.
@@ -3737,12 +3732,16 @@ Leo's .leo file format is extensible. The basis for extending .leo files are the
 
 Attribute ivars must be Python dictionaries, whose keys are names of plugins and whose values are *other* dictionaries, called **inner dictionaries**, for exclusive use of each plugin.
 
-The v.u Python property allows plugins to get and set v.unknownAttributes easily::
+The v.u Python property allows plugins to get and set v.unknownAttributes easily:
+
+.. code-block:: python
 
     d = v.u # gets uA (the outer dict) for v
     v.u = d # sets uA (the outer dict) for v
 
-For example::
+For example:
+
+.. code-block:: python
 
     plugin_name = 'xyzzy'
     d = v.u # Get the outer dict.
@@ -3752,7 +3751,9 @@ For example::
     d [plugin_name] = inner_d
     v.u = d
 
-No corresponding Python properties exist for v.tempAttributes, so the corresponding example would be::
+No corresponding Python properties exist for v.tempAttributes, so the corresponding example would be:
+
+.. code-block:: python
 
     plugin_name = 'xyzzy'
     # Get the outer dict.
@@ -6897,15 +6898,6 @@ Leo's Tutorials
 
 .. _`Python`: http://www.python.org/
 
-..  "Leo should either replace or greatly augment the development tools
-..  that I use."---Zak Greant
-
-..  "Leo is a quantum leap for me in terms of how many projects I can manage
-..  and how much information I can find and organize and store in a
-..  useful way."---Dan Winkler
-
-..  "We who use Leo know that it is a breakthrough tool and a whole new way
-..  of writing code."---Joe Orr
 
 Leo is a full-featured outliner. Unique features make Leo a powerful IDE, Personal Information Manager, and scripting environment. The first three tutorials are for everyone:
 
@@ -8881,7 +8873,9 @@ Examples are:
 - Refresh ``@thin`` node from disk (e.g. after editing it in external editor)
 - Go to clone
 
-Here's an example on how to implement your own context menu items in your plugins::
+Here's an example on how to implement your own context menu items in your plugins:
+
+.. code-block:: python
 
     def nextclone_rclick(c,p, menu):
         """ Go to next clone """
@@ -8900,7 +8894,9 @@ Here's an example on how to implement your own context menu items in your plugin
         action = menu.addAction("Go to clone")
         action.connect(action, QtCore.SIGNAL("triggered()"), nextclone_rclick_cb)
 
-And call this in your plugin *once*::
+And call this in your plugin *once*:
+
+.. code-block:: python
 
     g.tree_popup_handlers.append(nextclone_rclick)
 </t>
@@ -8952,15 +8948,19 @@ loaded each time a new dialog is loaded.
 The dialog is not modal and many dialogs can exist at one time. Dialogs can be
 named and output directed to a dialog with a specific name.
 
-The plugin is invoked like this::
+The plugin is invoked like this:
 
-    g.doHook('scrolledMessage', c=c, msg='message', title='title',  ...etc    )
+.. code-block:: python
 
-or::
+    g.doHook('scrolledMessage', c=c, msg='message', title='title',  ...)
 
-    g.app.gui.runScrolledMessageDialog(c=c, ...etc)
+or:
 
-All parameters are optional except c.
+.. code-block:: python
+
+    g.app.gui.runScrolledMessageDialog(c=c, ...)
+
+All parameters are optional except ``c``.
 
 **Parameters**
 
@@ -8983,15 +8983,6 @@ flags:
 
     Flags can be combined, for example, 'rst html' causes the message
     to be interpreted as rst and displayed as html.
-
-..  To Do
-..  - Add parameters to control position, size, closing, hiding etc.
-..  - Save or print files from the dialog.
-..  - Add an option to put the dialog in leo's log notebook.
-..  - Add @settings to control default behavior
-..  - Provide a menu of plugins that allows their docstring to be displayed.
-..  - Provide a menu of @rst nodes in the current outline, automatically track changes
-..    if it is set to display any of these nodes.
 </t>
 <t tx="ekr.20101113063552.9407">Launches the spyder environment with access to Leo instance.
 See http://packages.python.org/spyder/
@@ -9832,7 +9823,9 @@ will set sys.argv to [u'a',u'b',u'c']
 <t tx="ekr.20101113063552.9471"></t>
 <t tx="ekr.20101113063552.9472">Remote control for Leo.
 
-Example client::
+Example client:
+
+.. code-block:: python
 
     from leo.external import lproto
     import os
@@ -9848,7 +9841,6 @@ Example client::
 
     # note how c persists between calls
     pc.send("""c.k.simulateCommand('stickynote')""")
-
 </t>
 <t tx="ekr.20101113063552.9473">A minimal http plugin for Leo, based on AsyncHttpServer.py.
 
@@ -10478,16 +10470,6 @@ The directive(s) for a pattern must be contained within a single set of brackets
 
   ^@files .*\.py$ [X,V&gt;]
 
-**Scripts**
-
-The script for a pattern is located in the body of the pattern's node. The following global variables are available to the script::
-
-    c
-    g
-    pClicked - node position of the double-clicked node
-    pScript - node position of the invoked script
-
-**Examples**
 
 Double-clicking on a node with a "http:\\\\www.google.com" headline will invoke the script associated with the "http:\\\\\*" pattern.  The following script in the body of the pattern's node displays the URL in a browser::
 
@@ -13864,14 +13846,14 @@ A **session** specifies a list of .leo files that Leo opens automatically when L
 <t tx="ekr.20131005214621.16090">Leo is a full-featured outliner with the following special features:
 
 - Directives control how Leo works.
-- @file and @clean nodes create external files.
-- myLeoSettings.leo specifies your personal settings.
-- Plugins extend Leo. @enabled-plugins settings nodes enable plugins.
+- ``@file`` and ``@clean`` nodes create external files.
+- ``myLeoSettings.leo`` specifies your personal settings.
+- Plugins extend Leo. ``@enabled-plugins`` settings nodes enable plugins.
 
 For programmers:
 
 - Leo has an easy-to-use scripting API, giving full access to all data in the outline.
-- @button and @command nodes define scripts that can be applied to *other* nodes.
+- ``@button`` and ``@command`` nodes define scripts that can be applied to *other* nodes.
 - Alt-1 enables autocompletion.
 
 .. _`ask for help`: https://groups.google.com/forum/#!forum/leo-editor
@@ -13893,11 +13875,11 @@ Leo has hundreds of commands, described in `Leo's Command Reference`_. Please fe
 
 - The rst3 command works acts on the nearest ancestor @rst node, if any, or on all descendant @rst nodes.
 
-- @rst-no-head nodes insert text (or markup) without an rST headline.
+- ``@rst-no-head`` nodes insert text (or markup) without an rST headline.
 
 - The rst3 command ignores @rst-ignore nodes and @rst-ignore-tree trees.
 
-- The @button make-sphinx node in LeoDocs.leo calls sphinx automatically.
+- The ``@button make-sphinx`` node in LeoDocs.leo calls sphinx automatically.
 
 - CheatSheet.leo contains an expanded version of the example used in this tutorial. |br|
   You can open CheatSheet.leo from Leo's help menu.
@@ -14022,11 +14004,6 @@ Leo's Users Guide
 #################
 
 .. _`Leo Tutorial`: tutorial.html
-
-..  "I have been absolutely seduced by Leo over the past few days. I tell
-..  you, I can not put it down. I feel like a kid with a shiny new
-..  bike...I'm already bursting with new ways I'd like to use the tool in
-..  the future."---Lyn Adams Headley
 
 This is Leo's Users Guide. It covers additional material not covered in the
 `Leo Tutorial`_.
@@ -14270,9 +14247,6 @@ For details, see https://github.com/leo-editor/leo-editor/issues/1005.</t>
 Leo in 10 Minutes
 ##################
 
-..  "Edward...you've come up with perhaps the most powerful new concept in
-..  code manipulation since VI and Emacs."---David McNab
-
 This chapter introduces Leo's most important features and terminology.
 
 .. contents:: Contents
@@ -14286,17 +14260,6 @@ This chapter introduces Leo's most important features and terminology.
 ###########################################
 Using Leo as a Personal Information Manager
 ###########################################
-
-..  "Cloning is pure genius!"---Michael Manti
-
-..  "If you are like me, you have a kind of knowledge base with infos
-..  gathered over time. And you have projects, where you use some of those
-..  infos. Now, with conventional outliners you begin to double these
-..  infos, because you want to have the infos needed for the project with
-..  your project. With Leo you can do this too, but if you change text in
-..  one place **it is updated in the other place too!** This is a feature I
-..  did not see with any other outliner (and I tried a few). Amazing! Leo
-..  directly supports the way I work!"---F. Geiger
 
 This chapter tells how you can use Leo as a Personal Information Manager. It introduces `clones`_: one of Leo's most unusual and powerful features for organizing data.
 
@@ -14324,11 +14287,6 @@ Creating Documents from Outlines
 .. _`reStructuredText`: http://docutils.sourceforge.net/rst.html
 .. _`rST primer`: https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html
 .. _`first tutorial`: tutorial-basics.html
-
-..  "I am a huge fan of Leo. I think it's quite possibly the most
-..  revolutionary programming tool I have ever used and it (along with the
-..  Python language) has utterly changed my view of programming (indeed of
-..  writing) forever."---Shakeeb Alireza
 
 Leo's rst3 command converts Leo trees containing `reStructuredText`_ (rST) or `Sphinx`_ markup to HTML, PDF, `LaTeX`_, and other kinds of output files. This tutorial gives step-by-step instructions for using the rst3 command.
 
@@ -14478,11 +14436,12 @@ When using sphinx, run sphinx's "make" utility after running the rst3 command to
 </t>
 <t tx="ekr.20131009100732.16753">You now know enough to get started with the rst3 command. Some possible next steps are:
 
-- Look at Leo's own documentation in LeoDocs.leo. Discover how the nodes in this tree correspond to the documentation you see before you.
+- Look at Leo's own documentation in LeoDocs.leo.
+  Discover how the nodes in this tree correspond to the documentation you see before you.
 
-- LeoDocs.leo has an @button make-sphinx script that calls sphinx automatically.
+- ``LeoDocs.leo`` has an @button make-sphinx script that calls sphinx automatically.
 
-- Create your own @rst nodes. Run the rst3 command on them and see what happens.
+- Create your own ``@rst`` nodes. Run the rst3 command on them and see what happens.
 
 - If you get stuck, please ask for help at https://groups.google.com/forum/#!forum/leo-editor.
 </t>
@@ -14701,7 +14660,9 @@ Much of this complexity is a direct result in the flexibility given to users in 
 <t tx="ekr.20131012060912.16775">.. index::
     pair: Generator; Tutorial
 
-Commanders and positions define several `Python generators &lt;https://wiki.python.org/moin/Generators&gt;`_ to traverse (step through) an outline. The `scripting portion`_ of `Leo's cheat sheet`_ lists all of Leo's generators. For example, c.all_positions() traverses the outline in outline order.  The following prints a properly-indented list of all headlines::
+Commanders and positions define several `Python generators &lt;https://wiki.python.org/moin/Generators&gt;`_ to traverse (step through) an outline. The `scripting portion`_ of `Leo's cheat sheet`_ lists all of Leo's generators. For example, c.all_positions() traverses the outline in outline order.  The following prints a properly-indented list of all headlines:
+
+.. code-block:: python
 
     for p in c.all_positions():
         print(' '*p.level()+p.h)
@@ -14709,14 +14670,15 @@ Commanders and positions define several `Python generators &lt;https://wiki.pyth
 .. index::
     pair: Invalid positions; Tutorial
 
-Scripts may capture positions like this::
+Scripts may capture positions like this:
+
+.. code-block:: python
 
     aList = list(c.all_positions())
 
+All of Leo's generators now yield *copies* of positions.
+
 **Warning**: stored positions become invalid when outline changes. **c.positionExists(p)** is True if p is valid in c's outline.
-
-**New in Leo 5.5**: All generators now yield *copies* of positions.
-
 </t>
 <t tx="ekr.20131012060912.16788">g.es can send it's output to tabs other than the log tab::
 
@@ -14782,14 +14744,16 @@ for p in c.all_positions():
 <t tx="ekr.20131013060803.16852">.. index::
     pair: Hello World Example; Tutorial
 
-Here is the obligatory "Hello World!" script::
+Here is the obligatory "Hello World!" script:
 
-    g.es('Hello World!') # g.es prints all its arguments to the log pane.
+.. code-block:: python
+
+    g.es('Hello World!')  # g.es prints all its arguments to the log pane.
 
 In more detail:
 
 1. Create a node anywhere in the outline.
-2. Put g.es('hello, world!') in the node's body text.
+2. Put ``g.es('hello, world!')`` in the node's body text.
 3. Select the node and type Ctrl-B.
 
 **Important** If text is selected, execute-script executes only the selected text. If you are in LeoDocs.leo, you can run the script from this node.
@@ -18412,7 +18376,9 @@ Leo also supports `Emacs-like abbreviation commands`_::
     set-ua
 </t>
 <t tx="ekr.20150318110552.79">``act-on-node``
-    Executes node-specific action, typically defined in a plugins as follows::
+    Executes node-specific action, typically defined in a plugins as follows:
+    
+    .. code-block:: python
 
         import leo.core.leoPlugins
 
@@ -18999,19 +18965,23 @@ def openUrlUnderCursor(event=None):
 ``@beautify`` and ``@nobeautify``
     These directives apply to a node and its descendants, until overridden later in a descendants. Both these directives may appear in the same node.  Such **ambiguous directives** do not affect the beautification of descendant nodes.  If both ``@beautify`` and ``@nobeautify`` appear in a node, the first directive determines whether the node will be beautified.
 
-For example::
+For example:
+
+.. code-block:: python
 
     @beautify
     ...
     @nobeautify
 
-beautifies the entire node.  Otoh::
+beautifies the entire node.  Otoh:
+
+.. code-block:: python
 
     @nobeautify
     ...
     @beautify
 
-skips beautification of the entire node. Yes, this is less precise than one could imagine, but it's good enough for now.
+skips beautification of the entire node. Yes, this is less precise than one could imagine, but it's good enough.
 </t>
 <t tx="ekr.20150603115400.1">You can run leoBeautify.py from the command line::
 
@@ -21063,7 +21033,9 @@ The following keys have special meaning in the minibuffer:
 </t>
 <t tx="ekr.20170217093636.1">.. in tutorial-basics.html (Scripting basics)
 
-Leo's markup applies to scripts as well as external files. Leo's execute-script command **composes** the script from the selected node, using Leo's markup. For example, this body text defines the top-level part of a script::
+Leo's markup applies to scripts as well as external files. Leo's execute-script command **composes** the script from the selected node, using Leo's markup. For example, this body text defines the top-level part of a script:
+
+.. code-block:: python
 
     '''My script'''
     &lt;&lt; imports &gt;&gt;
@@ -21083,19 +21055,21 @@ Leo recognizes section references only if they appear *alone* on a line.  Theref
 
 The execute-script command pre-defines three names: c, g, and p. **c** is the `commander`_ of the outline in which the script executes. **g** is the ``leo.core.leoGlobals`` module, containing dozens of useful functions and classes.  **p** is the `position`_ of the presently selected node.
 </t>
-<t tx="ekr.20170217093640.1">The **Commander class** defines both a scripting API and a DOM (Document Object Module) giving *complete* access to all data in an outline.  For example::
+<t tx="ekr.20170217093640.1">The **Commander class** defines both a scripting API and a DOM (Document Object Module) giving *complete* access to all data in an outline.  For example:
 
-    '''
+.. code-block:: python
+
+    """
         Print all headlines of the outline, properly indented,
         with the number of characters in each node's body text.
-    '''
-    # c.all_positions() is a python generator yielding all positions, in outline order.
+    """
+    # c.all_positions() yields all positions, in outline order.
+    # p.b is p's body text.
+    # p.h is p's headline.
+
     for p in c.all_positions():
-        print('%3s %s %s' % (
-            len(p.b),       # p.b is p's body text.
-            ' '*p.level(),  # p.level() is p's indentation level.
-            p.h,            # p.h is p's headline.
-        ))
+        level = ' ' * p.level()  # p.level() is p's indentation level.
+        print(f"{len(p.b):3} {len(p.b)} {p.h}")
 
 To run this script, put it in the body text of any node and do Ctrl-B, execute-script.
 
@@ -21107,22 +21081,20 @@ For more information, see Leo's `scripting tutorial`_.</t>
     pair: @button Node; Tutorial
     pair: @command Node; Tutorial
 
-**@command nodes** define a command. Running the command runs a script that can be applied to any outline node. That is, p is bound to the presently selected node, *not* the @button node. **@button nodes** work the same way, and also create a button in the icon area. Pressing that button runs the command. For example, this node defines the print-tree command bound to Ctrl-9::
+**@command nodes** define a command. Running the command runs a script that can be applied to any outline node. That is, p is bound to the presently selected node, *not* the @button node. **@button nodes** work the same way, and also create a button in the icon area. Pressing that button runs the command. For example, this node defines the print-tree command bound to Ctrl-9:
+
+.. code-block:: python
 
     @command print-tree @key=Ctrl-9 # in the headline
 
-    '''
+    """
         Print all headlines of the selected subtree, properly indented,
         with the number of characters in each node's body text.
-    '''
-    # p.self_and_subtree() is a python generator yielding p and
-    # all positions in p's subtree, in outline order.
-    for p in p.self_and_subtree():
-        print('%3s %s %s' % (
-            len(p.b),       # p.b is position p's body text.
-            ' '*p.level(),  # p.level() is p's indentation level.
-            p.h,            # p.h is p's headline.
-        )
+    """
+    # p.self_and_subtree() yields p, then all positions in p's subtree, in outline order.
+    for p in c.all_positions():
+        level = ' ' * p.level()  # p.level() is p's indentation level.
+        print(f"{len(p.b):3} {len(p.b)} {p.h}")
 </t>
 <t tx="ekr.20170217093641.1">**Autocompletion** reminds you of all members (functions, methods, ivars, etc.) contained in objects in Leo's source code, and in Python's standard library modules. ``Alt-1 (toggle-autocompleter)`` enables and disables autocompletion. **Note**: Autocompletion can be enabled only when @language python is in effect.
 
@@ -21595,13 +21567,17 @@ Finally, ``&lt;Return&gt;`` executes the ``print-commands`` command. The output 
 <t tx="ekr.20170313111502.1">**p.b** is the body text associated with position p. Similarly, **p.h** is p's headline.
 p.b and p.h are python properties, so you can assign to p.b and p.h.
 
-This script creates an outline node as the last top-level node::
+This script creates an outline node as the last top-level node:
+
+.. code-block:: python
 
     p = c.lastTopLevel().insertAfter()
     p.h = 'my new node'
     c.redraw(p) # Selects the new node.
 
-This script creates multiple nodes, with different headlines::
+This script creates multiple nodes, with different headlines:
+
+.. code-block:: python
 
     parent = c.lastTopLevel().insertAfter()
     parent.h = 'New nodes'
@@ -21617,7 +21593,9 @@ This script creates multiple nodes, with different headlines::
     c.selectPosition(parent) # Another way to select nodes.
     c.redraw()
 
-This script creates a node containing today's date in the body text::
+This script creates a node containing today's date in the body text:
+
+.. code-block:: python
 
     import time
     p = c.lastTopLevel().insertAfter()
@@ -21625,7 +21603,9 @@ This script creates a node containing today's date in the body text::
     p.b = time.strftime("%Y/%m/%d")
     c.redraw(p)
 </t>
-<t tx="ekr.20170313111626.1">The script writes the body text of the presently selected node to ~/leo_output_file.txt and then prints it to the log pane::
+<t tx="ekr.20170313111626.1">The script writes the body text of the presently selected node to ~/leo_output_file.txt and then prints it to the log pane:
+
+.. code-block:: python
 
     fn = g.os_path_finalize_join(g.app.homeDir, 'leo_output_file.txt')
     with open(fn, 'w') as f:
@@ -21675,24 +21655,26 @@ The @file node and its descendants represent an external file. Leo updates @file
 
 Leo's **markup** tells Leo how to create external files from @file trees. Markup may appear in any body text, and *must* appear in the body of the @file node itself.
 
-There are two kinds of markup: **section references** (&lt;&lt; this is my section &gt;&gt;) and the **@others** directive. Section references refer to **named nodes**, nodes whose *headlines* look like a section reference. @others refers to all *other* (unnamed) nodes. Here is the body text of a typical @file node for a python file::
+There are two kinds of markup: **section references** (&lt;&lt; this is my section &gt;&gt;) and the **@others** directive. Section references refer to **named nodes**, nodes whose *headlines* look like a section reference. @others refers to all *other* (unnamed) nodes. Here is the body text of a typical @file node for a python file:
 
-    @first # -*- coding: utf-8 -*-
-    '''whatever.py'''
+.. code-block:: python
+
+    """A docstring"""
     &lt;&lt; imports &gt;&gt;
     @others
-    # That's all, folks
+    if __name__ == '__main__':
+        main()
     @language python
     @tabwidth -4
-
+    
 A child node must define the &lt;&lt; imports &gt;&gt; node. Other children will typically define classes, methods, functions, and data.
 
-When writing this file, Leo writes the first two lines::
+When writing this file, Leo writes:
 
-    # -*- coding: utf-8 -*-
-    '''whatever.py'''
-
-followed by the *body text* of the &lt;&lt; imports&gt;&gt; node, followed by the body text of all *other* nodes, in outline order, followed by the comment # That's all, folks.
+- The docstring.
+- The *body text* of the ``&lt;&lt; imports&gt;&gt;`` node.
+- The body text of all *other* nodes, in outline order.
+- The lines after the ``@others`` directive.
 </t>
 <t tx="ekr.20170314061000.1">.. index::
     pair: @clean; Tutorial
@@ -23680,7 +23662,9 @@ as children of a new node, created as the last top-level node. Use this
 to gather nodes throughout an outline.</t>
 <t tx="ekr.20180126061429.19">g.callers() returns the last n callers (default 4) callers of a function or
 method. The verbose option shows each caller on a separate line. For
-example::
+example:
+
+.. code-block:: python
 
     g.trace(g.callers())
 
@@ -23715,17 +23699,25 @@ throughout an outline without altering the structure of @file nodes.
 </t>
 <t tx="ekr.20180126061429.3">When developing scripts that use the Log window to display results, it is
 sometimes useful to clear the Log window by inserting the following two lines
-at the beginning of your script::
+at the beginning of your script:
+
+.. code-block:: python
 
     c.frame.log.selectTab('Log')
     c.frame.log.clearLog()</t>
 <t tx="ekr.20180126061429.4">Use section references only when the exact position of a section within a file matters. 
 
-Here is a common pattern for @file nodes for python files::
+Here is a common pattern for @file nodes for python files:
 
-    @first # -*- coding: utf-8 -*-
-    &lt;&lt;imports&gt;&gt;
-    @others</t>
+.. code-block:: python
+
+    """A docstring"""
+    &lt;&lt; imports &gt;&gt;
+    @others
+    if __name__ == '__main__':
+        main()
+    @language python
+    @tabwidth -4</t>
 <t tx="ekr.20180126061429.5">The @button make-md-toc script in LeoDocs.leo writes a markdown table of
 contents to the console. You can then copy the text from the console to
 your document. The selected outline node should be an ``@auto-md`` node.</t>
@@ -29245,28 +29237,32 @@ Leo's Markup Language
 
 Leo's **markup** tells Leo how to create external files from ``@file`` trees. Markup may appear in any body text, and *must* appear in the body of the ``@file`` node itself.
 
-There are two kinds of markup: **section references** (``&lt;&lt; this is my section &gt;&gt;``) and the **@others** directive. Section references refer to **named nodes**, nodes whose *headlines* look like a section reference. ``@others`` refers to all *other* (unnamed) nodes. Here is the body text of a typical ``@file`` node for a python file::
+There are two kinds of markup: **section references** (``&lt;&lt; this is my section &gt;&gt;``) and the **@others** directive. Section references refer to **named nodes**, nodes whose *headlines* look like a section reference. ``@others`` refers to all *other* (unnamed) nodes. Here is the body text of a typical ``@file`` node for a python file:
 
-    @first # -*- coding: utf-8 -*-
-    '''whatever.py'''
+.. code-block:: python
+
+    """A docstring"""
     &lt;&lt; imports &gt;&gt;
     @others
-    # That's all, folks
+    if __name__ == '__main__':
+        main()
     @language python
     @tabwidth -4
 
 A child node must define the ``&lt;&lt; imports &gt;&gt;`` node. Other children will typically define classes, methods, functions and data.
 
-When writing this file, Leo writes the first two lines::
+When writing this file, Leo writes:
 
-    # -*- coding: utf-8 -*-
-    '''whatever.py'''
+- The docstring.
+- The *body text* of the ``&lt;&lt; imports&gt;&gt;`` node.
+- The body text of all *other* nodes, in outline order.
+- The lines after the ``@others`` directive.
 
-followed by the *body text* of the ``&lt;&lt; imports &gt;&gt;`` node, followed by the body text of all *other* nodes, in outline order, followed by the comment ``# That's all, folks``.
+Leo's markup applies to scripts as well as external files. Leo's ``execute-script`` command **composes** the script from the selected node, using Leo's markup. For example: this body text defines the top-level part of a script:
 
-Leo's markup applies to scripts as well as external files. Leo's ``execute-script`` command **composes** the script from the selected node, using Leo's markup. For example: this body text defines the top-level part of a script::
+.. code-block:: python
 
-    '''My script'''
+    """My script"""
     &lt;&lt; imports &gt;&gt;
     class Controller:
         # Child nodes define the methods of this class.
@@ -29518,22 +29514,28 @@ Plugins or scripts may define two functions: a **headline filter** and a
 - ``rst3`` calls the body filter for all nodes except descendants of
   ``@rst-ignore`` or ``@rst-ignore-tree`` nodes.
 
-- ``rst3`` calls the headline filter for all nodes except::
+- ``rst3`` calls the headline filter for all nodes except:
 
-    rst-no-head nodes or
-    descendants of @rst-ignore or @rst-ignore-tree nodes.
+    .. code-block:: python
 
-- plugins or scripts register filters as follows::
+        rst-no-head nodes or
+        descendants of @rst-ignore or @rst-ignore-tree nodes.
 
-    c.rstCommands.register_body_filter(body_filter)
-    c.rstCommands.register_headline_filter(headline_filter)
+- plugins or scripts register filters as follows:
+
+    .. code-block:: python
+
+        c.rstCommands.register_body_filter(body_filter)
+        c.rstCommands.register_headline_filter(headline_filter)
 
 - The signature of all filters is ``filter-name (c, p)`` where c and p are
   defined as usual.
 
 **Example filters**
 
-Do-nothing filters would be defined like this::
+Do-nothing filters would be defined like this:
+
+.. code-block:: python
 
     def body_filter(c, p):
         return p.b
@@ -29542,7 +29544,9 @@ Do-nothing filters would be defined like this::
         return p.h
 
 The following filters would simulate the frequently-requested "half clone" feature.
-That is, within any ``@rst`` tree, the following filters would skip the children of all clones::
+That is, within any ``@rst`` tree, the following filters would skip the children of all clones:
+
+.. code-block:: python
 
     def has_cloned_parent(c, p):
         """Return True if p has a cloned parent within the @rst tree."""
@@ -29950,19 +29954,23 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 - The user may choose *other* commands after starting repeat-complex-command.
 - Improved leoserver.py to support leointeg.
 - Many bug fixes.</t>
-<t tx="ekr.20220129083216.1">Plugins may define filters that alter the output of any node. When writing the headline of a node p, the rst3 command calls the **body filter** to change the p.b. Similarly, the rst3 command calls the **headline filter** to change p.h. By default, these filters do nothing. That is, they return p.b and p.b respectively. However, the signatures of these filters are::
+<t tx="ekr.20220129083216.1">Plugins may define filters that alter the output of any node. When writing the headline of a node p, the rst3 command calls the **body filter** to change the p.b. Similarly, the rst3 command calls the **headline filter** to change p.h. By default, these filters do nothing. That is, they return p.b and p.b respectively. However, the signatures of these filters are:
+
+.. code-block:: python
 
     def headline_filter(c, p)
     def body_filter(c, p)
 
 so these filters have full access to all nodes of the entire outline. As a result, these filters can return arbitrary text that comes from anywhere in the outline.
 
-The leo/plugins/example_rst_filter.py shows how to define and register these filters.</t>
-<t tx="ekr.20220129091501.1">Leo's status area shows the path from the root node to the selected node. We call such paths **UNLs** (Uniform Node Locators).  Given a UNL, g.handleUnl(unl, c) will select the referenced node.  For example::
+The ``leo/plugins/example_rst_filter.py`` shows how to define and register these filters.</t>
+<t tx="ekr.20220129091501.1">Leo's status area shows the path from the root node to the selected node. We call such paths **UNLs** (Uniform Node Locators).  Given a UNL, ``g.handleUnl(unl, c)`` will select the referenced node.  For example:
+
+.. code-block:: python
 
     g.handleUnl('LeoDocs.leo#Use g.handleUnl to select nodes', c)
 
-will select this node in LeoDocs.leo.
+will select this node in ``LeoDocs.leo``.
 </t>
 <t tx="ekr.20220401072939.1">Leo https://leo-editor.github.io/leo-editor/ 6.6.1 is now available on
 [GitHub](https://github.com/leo-editor/leo-editor/releases) and
@@ -32749,8 +32757,6 @@ LeoJS: https://boltex.github.io/leojs/
 Yes, Leo does have a bit of a learning curve, but mastering the basics is easier than you’d think, and you’ll quickly be leveraging its outlining power. It’s the kind of investment that pays off big time. Leo is definitely an underrated gem.
 
 Big thanks to Edward, Thomas, Félix, aka boltex (the author of LeoJS and leointeg), and all the other contributors—you guys are truly amazing, and Leo is living proof of that!</t>
-<t tx="ekr.20241112030725.1">https://github.com/leo-editor/leo-editor/issues/4166
-PR: https://github.com/leo-editor/leo-editor/pull/4174</t>
 <t tx="ekr.20241112030815.1">.. _`QSyntaxHighlighter`:   https://doc.qt.io/qt-6/qsyntaxhighlighter.html
 
 Are you sure you want to read this appendix? It is intended *only* for Leo's core developers.
@@ -32843,6 +32849,7 @@ If a pattern matcher matches an ``@language`` or coloring directive, the matcher
 
 If a pattern matcher matches syntax that continues to the next line, the pattern matcher creates a **restarter matcher** by calling ``setRestart``. The restarter matchers are essentially closures, bindings of the pattern matcher *and all of its kwargs*. The details are hairy, but the coding pattern is the same for all cases. See the source code for details.
 </t>
+<t tx="ekr.20241114025618.1">.. code-block:: python</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
