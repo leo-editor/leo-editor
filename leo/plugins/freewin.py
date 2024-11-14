@@ -21,7 +21,8 @@ no matter how the user navigates within or between outlines.
 #@+node:tom.20240811231850.1: *3* New With This Version
 New With This Version
 ======================
-The "Rendered" view now uses the same colors as the underlying host node's editor.
+The "Rendered" view now uses the same text and background colors as the
+underlying host node's editor.
 
 Previous Recent Changes
 ========================
