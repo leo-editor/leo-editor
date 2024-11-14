@@ -628,10 +628,10 @@ def get_body_colors(c: Cmdr) -> tuple[str, str]:
     w: LeoQTextBrowser = wrapper.widget
 
     pallete: QtGui.QPalette = w.viewport().palette()
-    fg_hex: int = pallete.text().color().rgb()
-    bg_hex: int = pallete.window().color().rgb()
-    fg: str = f'#{fg_hex:x}'
-    bg: str = f'#{bg_hex:x}'
+    fg_hex: int = pallete.text().color().rgb() & 0x00ffffff
+    bg_hex: int = pallete.window().color().rgb() & 0x00ffffff
+    fg: str = f'#{fg_hex:06x}'
+    bg: str = f'#{bg_hex:06x}'
 
     return fg, bg
 #@+node:tom.20220329231604.1: ** is_body_dark
@@ -709,6 +709,10 @@ class ZEditorWin(QtWidgets.QMainWindow):
                 self.rst_stylesheet = f.read()
         else:
             self.rst_stylesheet = RST_STYLESHEET_DARK if is_dark else RST_STYLESHEET_LIGHT
+
+        css_fragment = self.get_color_css()
+        self.rst_stylesheet += css_fragment
+        g.es(css_fragment)
         #@-<<set stylesheets>>
         #@+<<set up editor>>
         #@+node:tom.20210602172856.1: *4* <<set up editor>>
@@ -799,8 +803,8 @@ class ZEditorWin(QtWidgets.QMainWindow):
         self.show()
 
     #@+node:tom.20240811000132.1: *3* get_color_font_css
-    def get_color_font_css(self):
-        """Return a CSS string declaring the body editor's actual colors and font."""
+    def get_color_font_css(self) -> str:
+        """Return CSS with body editor's colors and font."""
         fg, bg = get_body_colors(self.c)
         font = self.host_editor.font()
         color_font_style = f"""QTextEdit {{
@@ -810,8 +814,21 @@ class ZEditorWin(QtWidgets.QMainWindow):
             font-size: {font.pointSizeF()}pt;
         }}
         """
-
         return color_font_style
+
+    def get_color_css(self) -> str:
+        """Return a CSS string for RsT with body editor's colors."""
+        fg, bg = get_body_colors(self.c)
+        color_style = f"""\
+        body, th, td, pre.literal-block, pre.doctest-block,
+        pre.math, pre.code, blockquote, div.topic, blockquote > table,
+        div.topic > table, blockquote p.attribution,
+        div.topic p.attribution {{
+            color: {fg};
+            background: {bg};
+        }}
+        """
+        return color_style
     #@+node:tom.20210625205847.1: *3* reload settings
     def reloadSettings(self):
         c = self.c
