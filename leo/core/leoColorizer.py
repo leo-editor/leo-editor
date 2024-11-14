@@ -739,12 +739,15 @@ class BaseColorizer:
             delegate_s = f":{self.delegate_name}:" if self.delegate_name else ''
             font_s = id(font) if font else 'None'
             matcher_name = g.caller(3)
+            print('')  ### Temp.
             print(
                 f"setTag: {full_tag:32} {i:3} {j:3} {colorName:7} font: {font_s:<14} {s2:>22} "
                 f"{self.rulesetName}:{delegate_s}{matcher_name}"
             )
             if extra:
                 print(f"{' ':48} {extra}")
+
+        print(f"\nsetTag: {i:2}:{j:2} tag: {tag!r:10} {s}")
 
         self.n_setTag += 1
         if i == j:
@@ -1327,6 +1330,7 @@ class JEditColorizer(BaseColorizer):
         
         Any substantial change would break all the pattern matchers!
         """
+        trace = 'coloring' in g.app.debug and not g.unitTesting
         # Do not remove this unit test!
         if not g.unitTesting and g.callers(1) != 'recolor':
             message = f"jedit.mainLoop: unexpected callers: {g.callers(6)}"
@@ -1339,12 +1343,13 @@ class JEditColorizer(BaseColorizer):
             functions = self.rulesDict.get(s[i], [])
             for f in functions:
                 n = f(self, s, i)
-                # Trace all matches.
-                # g.trace(f"Match: index {i:<3} delta: {n!r:<3} {f.__name__:>30} {s!r}")
                 if n is None:
                     g.trace('Can not happen: n is None', repr(f))
                     break
                 elif n > 0:  # Success. The match has already been colored.
+                    if trace:
+                        print('')
+                        g.trace(f"Match: index {i:<3} delta: {n!r:<3} {f.__name__:>12} {s!r}")
                     i += n
                     break
                 elif n < 0:  # Total failure.
@@ -1389,6 +1394,10 @@ class JEditColorizer(BaseColorizer):
 
         # Always color the line, even if colorizing is disabled.
         if s:
+            if trace:
+                state_s = self.stateNumberToStateString(n)
+                print('')
+                g.trace(f"line: {line_number:2} state: {n:2} = {state_s:10} {s}")
             self.mainLoop(state, s)
     #@+node:ekr.20170126100139.1: *4* jedit.initBlock0
     def initBlock0(self) -> int:
