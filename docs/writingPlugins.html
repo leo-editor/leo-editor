@@ -19,7 +19,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Debugging with Leo" href="debuggers.html" />
-    <link rel="prev" title="Controlling Syntax Coloring" href="coloring.html" /> 
+    <link rel="prev" title="Advanced Topics" href="intermediatetopics.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -31,7 +31,7 @@
           <a href="debuggers.html" title="Debugging with Leo"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="coloring.html" title="Controlling Syntax Coloring"
+          <a href="intermediatetopics.html" title="Advanced Topics"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.8.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="intermediatetopics.html" accesskey="U">Advanced Topics</a> &#187;</li>
@@ -84,7 +84,7 @@ details, see the section called <a class="reference internal" href="#handling-ev
 <li><p>Calls g.plugin_signon(__name__)</p></li>
 </ol>
 <p>For example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">init</span><span class="p">():</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">init</span><span class="p">():</span>
     <span class="k">if</span> <span class="o">&lt;&lt;</span> <span class="nb">all</span> <span class="n">imports</span> <span class="n">successful</span> <span class="o">&gt;&gt;</span><span class="p">:</span>
         <span class="n">g</span><span class="o">.</span><span class="n">registerHandler</span><span class="p">(</span><span class="s1">&#39;after-create-leo-frame&#39;</span><span class="p">,</span><span class="n">onCreate</span><span class="p">)</span>
         <span class="n">g</span><span class="o">.</span><span class="n">plugin_signon</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
@@ -95,11 +95,11 @@ details, see the section called <a class="reference internal" href="#handling-ev
 </div>
 <p>Plugins do <em>not</em> have automatic access to c, g and p.</p>
 <p>Plugins define g by importing it:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">leo.core.leoGlobals</span> <span class="k">as</span> <span class="nn">g</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">leo.core.leoGlobals</span> <span class="k">as</span> <span class="nn">g</span>
 </pre></div>
 </div>
 <p>Plugins gain access to c using event handlers:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">controllers</span> <span class="o">=</span> <span class="p">{}</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">controllers</span> <span class="o">=</span> <span class="p">{}</span>
 
 <span class="k">def</span> <span class="nf">init</span><span class="p">():</span>
     <span class="n">g</span><span class="o">.</span><span class="n">registerHandler</span><span class="p">(</span><span class="s1">&#39;after-create-leo-frame&#39;</span><span class="p">,</span><span class="n">onCreate</span><span class="p">)</span>
@@ -122,7 +122,7 @@ details, see the section called <a class="reference internal" href="#handling-ev
 </pre></div>
 </div>
 <p>Some plugins inject ivars into the Commands class rather than using a global controllers dict:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">onCreate</span> <span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">keys</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">onCreate</span> <span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">keys</span><span class="p">):</span>
     <span class="n">c</span> <span class="o">=</span> <span class="n">keys</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">c</span><span class="p">:</span>
         <span class="n">c</span><span class="o">.</span><span class="n">my_plugin_controller</span> <span class="o">=</span> <span class="n">ControllerClass</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
@@ -180,11 +180,11 @@ is in our &quot;own&quot; documents!
 </pre></div>
 </div>
 <p>Executing this kind of code is typically an intolerable security risk. <strong>Important</strong>: rexec provides <em>no protection whatever</em>. Leo is a repository of source code, so any text operation is potentially malicious. For example, consider the following script, which is valid in rexec mode:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>badNode = c.p
-for p in c.all_positions():
-    &lt;&lt; change `rexec` to `exec` in p&#39;s body &gt;&gt;
-&lt;&lt; delete badNode &gt;&gt;
-&lt;&lt; clear the undo stack &gt;&gt;
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">badNode</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">p</span>
+<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">c</span><span class="o">.</span><span class="n">all_positions</span><span class="p">():</span>
+    <span class="o">&lt;&lt;</span> <span class="n">change</span> <span class="err">`</span><span class="n">rexec</span><span class="err">`</span> <span class="n">to</span> <span class="err">`</span><span class="n">exec</span><span class="err">`</span> <span class="ow">in</span> <span class="n">p</span><span class="s1">&#39;s body &gt;&gt;</span>
+<span class="o">&lt;&lt;</span> <span class="n">delete</span> <span class="n">badNode</span> <span class="o">&gt;&gt;</span>
+<span class="o">&lt;&lt;</span> <span class="n">clear</span> <span class="n">the</span> <span class="n">undo</span> <span class="n">stack</span> <span class="o">&gt;&gt;</span>
 </pre></div>
 </div>
 <p>This script will introduce a security hole the .leo file without doing anything prohibited by rexec, and without leaving any traces of the perpetrating script behind. The damage will become permanent <em>outside</em> this script when the user saves the .leo file.</p>
@@ -250,18 +250,18 @@ plugins. Does not persist when Leo exists.</p></td>
 <section id="handling-events">
 <h2><a class="toc-backref" href="#id5" role="doc-backlink">Handling events</a><a class="headerlink" href="#handling-events" title="Link to this heading">¶</a></h2>
 <p>Plugins and other scripts can register event handlers (also known as hooks):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">leoPlugins</span><span class="o">.</span><span class="n">registerHandler</span><span class="p">(</span><span class="s2">&quot;after-create-leo-frame&quot;</span><span class="p">,</span><span class="n">onCreate</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">leoPlugins</span><span class="o">.</span><span class="n">registerHandler</span><span class="p">(</span><span class="s2">&quot;after-create-leo-frame&quot;</span><span class="p">,</span><span class="n">onCreate</span><span class="p">)</span>
 <span class="n">leoPlugins</span><span class="o">.</span><span class="n">registerHandler</span><span class="p">(</span><span class="s2">&quot;idle&quot;</span><span class="p">,</span> <span class="n">on_idle</span><span class="p">)</span>
 <span class="n">leoPlugins</span><span class="o">.</span><span class="n">registerHandler</span><span class="p">((</span><span class="s2">&quot;start2&quot;</span><span class="p">,</span><span class="s2">&quot;open2&quot;</span><span class="p">,</span><span class="s2">&quot;command2&quot;</span><span class="p">),</span> <span class="n">create_open_with_menu</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>As shown above, a plugin may register one or more event handlers with a single call to leoPlugins.registerHandler. Once a hook is registered, Leo will call the registered function’ at the named <strong>hook time</strong>. For example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">leoPlugins</span><span class="o">.</span><span class="n">registerHandler</span><span class="p">(</span><span class="s2">&quot;idle&quot;</span><span class="p">,</span> <span class="n">on_idle</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">leoPlugins</span><span class="o">.</span><span class="n">registerHandler</span><span class="p">(</span><span class="s2">&quot;idle&quot;</span><span class="p">,</span> <span class="n">on_idle</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>causes Leo to call on_idle at “idle” time.</p>
 <p>Event handlers must have the following signature:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">myHook</span> <span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">keywords</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">myHook</span> <span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">keywords</span><span class="p">):</span>
     <span class="n">whatever</span>
 </pre></div>
 </div>
@@ -270,7 +270,7 @@ plugins. Does not persist when Leo exists.</p></td>
 <li><p>keywords is a Python dictionary containing additional information. The following section describes the contents of the keywords dictionary in detail.</p></li>
 </ul>
 <p><strong>Important</strong>: hooks should get the proper commander this way:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">c</span> <span class="o">=</span> <span class="n">keywords</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">c</span> <span class="o">=</span> <span class="n">keywords</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <section id="summary-of-event-handlers">
@@ -831,8 +831,8 @@ dictionary whose keys are all the tags specified by the user in the body of the
             </a></p>
   <div>
     <h4>Previous topic</h4>
-    <p class="topless"><a href="coloring.html"
-                          title="previous chapter">Controlling Syntax Coloring</a></p>
+    <p class="topless"><a href="intermediatetopics.html"
+                          title="previous chapter">Advanced Topics</a></p>
   </div>
   <div>
     <h4>Next topic</h4>
@@ -867,7 +867,7 @@ dictionary whose keys are all the tags specified by the user in the body of the
           <a href="debuggers.html" title="Debugging with Leo"
              >next</a> |</li>
         <li class="right" >
-          <a href="coloring.html" title="Controlling Syntax Coloring"
+          <a href="intermediatetopics.html" title="Advanced Topics"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.8.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="intermediatetopics.html" >Advanced Topics</a> &#187;</li>
@@ -876,7 +876,7 @@ dictionary whose keys are all the tags specified by the user in the body of the
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 1997-2024, Edward K. Ream.
-      Last updated on November 07, 2024.
+      Last updated on November 14, 2024.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
     </div>
   </body>

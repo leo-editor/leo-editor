@@ -355,23 +355,24 @@ that <code class="docutils literal notranslate"><span class="pre">&#64;comment</
 <code class="docutils literal notranslate"><span class="pre">&#64;language</span></code>.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">&#64;comment</span></code> directive must precede the first section name or <code class="docutils literal notranslate"><span class="pre">&#64;c</span></code>
 directive.</p>
-<p>There are situations where using <code class="docutils literal notranslate"><span class="pre">&#64;delims</span></code> or <code class="docutils literal notranslate"><span class="pre">&#64;comment</span></code> is not avoidable or impractical to
-add new language definition, and including it causes the resulting file to be invalid.
-In place of delimiter definition, use <code class="docutils literal notranslate"><span class="pre">&#64;0x</span></code> + delimiter encoded in hexadecimal.
-The hexadecimal part must be acceptable input to binascii.unhexlify(), otherwise whole
-directive will be ignored. Use binascii.hexlify(‘my-delimiter’) to generate it.
-Decoded delimiters are not checked for validity (such as, UTF-8) and whether they
-do not clash with Leo format (like newline or NUL characters)!</p>
+<p>There are situations where using <code class="docutils literal notranslate"><span class="pre">&#64;delims</span></code> or <code class="docutils literal notranslate"><span class="pre">&#64;comment</span></code> is not
+avoidable or impractical to add new language definition, and including
+it causes the resulting file to be invalid. In place of delimiter
+definition, use <code class="docutils literal notranslate"><span class="pre">&#64;0x</span></code> + delimiter encoded in hexadecimal. The
+hexadecimal part must be acceptable input to binascii.unhexlify(),
+otherwise whole directive will be ignored. Use
+binascii.hexlify(‘my-delimiter’) to generate it. Decoded delimiters are
+not checked for validity (such as, UTF-8) and whether they do not clash
+with Leo format (like newline or NUL characters)!</p>
 <p>Example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@comment</span> <span class="o">@</span><span class="mh">0x3c212d2d2120</span> <span class="o">@</span><span class="mh">0x202d2d3e</span>
 </pre></div>
 </div>
-<p>for GenshiXML is the same definition as</p>
-<blockquote>
-<div><p>&#64;comment &lt;!–!_ _–&gt;</p>
-</div></blockquote>
-<p>to create comments that will be removed from the output by Genshi. But the latter would
-cause XML parsing error on the <code class="docutils literal notranslate"><span class="pre">&#64;comment</span></code> line.</p>
+<p>for GenshiXML is the same definition as:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>@comment &lt;!--!_ _--&gt;
+</pre></div>
+</div>
+<p>but the latter would cause XML parsing error on the <code class="docutils literal notranslate"><span class="pre">&#64;comment</span></code> line.</p>
 </div></blockquote>
 <p id="index-23"><code class="docutils literal notranslate"><span class="pre">&#64;delims</span> <span class="pre">&lt;1</span> <span class="pre">or</span> <span class="pre">2</span> <span class="pre">comment</span> <span class="pre">delims&gt;</span></code></p>
 <blockquote>
@@ -381,7 +382,7 @@ whitespace. If one delimiter is present it sets the single-line-comment
 delimiter. If two delimiters are present they set block comment delimiters.</p>
 <p>This directive is often used to place Javascript text inside XML or HTML
 files. Like this:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@delims</span> <span class="o">/*</span> <span class="o">*/</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@delims</span> <span class="o">/*</span> <span class="o">*/</span>
 <span class="n">Javascript</span> <span class="n">stuff</span>
 <span class="nd">@delims</span> <span class="o">&lt;--</span> <span class="o">--&gt;</span>
 <span class="n">HTML</span> <span class="n">stuff</span>
@@ -544,24 +545,19 @@ This directive also controls how <code class="docutils literal notranslate"><spa
 </div></blockquote>
 <p id="index-37"><code class="docutils literal notranslate"><span class="pre">&#64;persistence</span></code></p>
 <blockquote>
-<div><p>With <code class="docutils literal notranslate"><span class="pre">&#64;clean</span></code> and <code class="docutils literal notranslate"><span class="pre">&#64;file</span></code>, Leo can store <strong>persistent data</strong>
-in nodes. This information consists of the node’s <strong>gnx</strong> (Global
-Node Index) and the node’s <strong>uA</strong>, (User Attributes). The gnx
-gives each node a unique, immutable identity. Gnx’s make clones
-possible. The uA allows scripts and plugins to associate
-arbitrarily much additional data with each node.</p>
-<p>By default, Leo’s importers preserve neither gnx’s nor uA’s. This
-makes imported <code class="docutils literal notranslate"><span class="pre">&#64;auto</span></code> trees second class citizens. To remedy
-this, if an outline contains an <code class="docutils literal notranslate"><span class="pre">&#64;persistence</span></code> node, Leo will
-save data in the <code class="docutils literal notranslate"><span class="pre">&#64;persistence</span></code> tree that allows Leo to recover
-gnx’s and uA’s when re-reading <code class="docutils literal notranslate"><span class="pre">&#64;auto</span></code> files later. This allows
-clone links and uA’s to persist.</p>
-<p>&#64;persistence is an optional feature. The stored data is akin to
-bookmarks. The data can “break” (become inaccessible) if the
-structure (including class/method/function names) changes.
-However, the data will typically break infrequently. To disable
-this feature, just delete an existing <code class="docutils literal notranslate"><span class="pre">&#64;persistence</span></code> node or
-change <code class="docutils literal notranslate"><span class="pre">&#64;persistence</span></code> to <code class="docutils literal notranslate"><span class="pre">&#64;&#64;persistence</span></code>.</p>
+<div><p>With <code class="docutils literal notranslate"><span class="pre">&#64;clean</span></code> and <code class="docutils literal notranslate"><span class="pre">&#64;file</span></code>, Leo can preserve <strong>persistent data</strong>,
+each node’s <strong>gnx</strong> (global node index) <strong>uA</strong>, (user ttributes).</p>
+<p>By default, Leo’s importers preserve neither gnx’s nor uA’s. However,
+if an outline contains an <code class="docutils literal notranslate"><span class="pre">&#64;persistence</span></code> node, Leo will save data in
+the <code class="docutils literal notranslate"><span class="pre">&#64;persistence</span></code> tree that allows Leo to recover gnx’s and uA’s
+when re-reading <code class="docutils literal notranslate"><span class="pre">&#64;auto</span></code> files. This allows clone links and uA’s
+to persist.</p>
+<p><code class="docutils literal notranslate"><span class="pre">&#64;persistence</span></code> is an optional feature. The stored data is akin to
+bookmarks. The data can “break” (become inaccessible) if the structure
+(including class/method/function names) changes. However, the data will
+typically break infrequently. To disable this feature, just delete an
+existing <code class="docutils literal notranslate"><span class="pre">&#64;persistence</span></code> node or change <code class="docutils literal notranslate"><span class="pre">&#64;persistence</span></code> to
+<code class="docutils literal notranslate"><span class="pre">&#64;&#64;persistence</span></code>.</p>
 </div></blockquote>
 <p id="index-39"><span id="index-38"></span><code class="docutils literal notranslate"><span class="pre">&#64;tabwidth</span> <span class="pre">&lt;n&gt;</span></code></p>
 <blockquote>
@@ -634,7 +630,7 @@ Negative tab widths cause Leo to convert tabs to spaces.</p>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 1997-2024, Edward K. Ream.
-      Last updated on November 07, 2024.
+      Last updated on November 14, 2024.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
     </div>
   </body>

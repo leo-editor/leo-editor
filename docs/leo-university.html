@@ -94,7 +94,7 @@
 <h2>Lesson 5: c.recursiveImport imports files recursively<a class="headerlink" href="#lesson-5-c-recursiveimport-imports-files-recursively" title="Link to this heading">¶</a></h2>
 <p>c.recursiveImport is a wrapper on the RecursiveImportController class.​ ​You can find the related code by doing a regex cff (ignoring case) on ​ ​“recursive?import”.</p>
 <p>Here is how to use c.recursiveImport:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">c</span><span class="o">.</span><span class="n">recursiveImport</span><span class="p">(</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">c</span><span class="o">.</span><span class="n">recursiveImport</span><span class="p">(</span>
     <span class="n">dir_</span> <span class="o">=</span> <span class="o">&lt;&lt;</span> <span class="n">path</span> <span class="n">to</span> <span class="n">root</span> <span class="n">directory</span> <span class="o">&gt;&gt;</span><span class="p">,</span>
         <span class="c1"># You must expand ~ yourself</span>
     <span class="n">kind</span> <span class="o">=</span> <span class="s1">&#39;@clean&#39;</span><span class="p">,</span> <span class="c1"># &#39;@clean&#39;, @nosent&#39;,&#39;@auto&#39;,&#39;@file&#39;</span>
@@ -223,15 +223,14 @@ Not everyone agrees with everything I say here.</p>
 <p>Yes, the FileCommands class must know about gnx’s, but <em>the converse is not true</em>.  The VNode class knows nothing about how other classes use gnx’s.  The FileCommands class creates VNode instances without knowing <em>anything</em> about low-level VNode methods.</p>
 <p>The VNode class is, in fact, an excellent example of information hiding.  The boundary between the VNode class is well defined and well enforced.</p>
 <p><strong>Possible improvements</strong></p>
-<ol class="arabic">
-<li><p>A new c.new_vnode method could help instantiate VNodes:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">new_vnode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gnx</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<ol class="arabic simple">
+<li><p>A new c.new_vnode method could help instantiate VNodes:</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">new_vnode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gnx</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span>
     <span class="k">return</span> <span class="n">leoNodes</span><span class="o">.</span><span class="n">VNode</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="n">c</span><span class="p">,</span> <span class="n">gnx</span><span class="o">=</span><span class="n">gnx</span><span class="p">)</span>
 </pre></div>
 </div>
-</li>
-</ol>
 <p>The (small) advantage is that clients of c.new_vnode(gnx) would no longer need to import leo.core.leoNodes.</p>
 <ol class="arabic simple" start="2">
 <li><p>The  v.saveCursorAndScroll and v.restoreCursorAndScroll could be moved elsewhere. At present, these methods cause no problems, but moving them would be part of #883.</p></li>
@@ -296,7 +295,7 @@ Not everyone agrees with everything I say here.</p>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 1997-2024, Edward K. Ream.
-      Last updated on November 07, 2024.
+      Last updated on November 14, 2024.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
     </div>
   </body>

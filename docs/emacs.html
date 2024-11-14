@@ -126,41 +126,44 @@
 <p>In short, you can now do from Emacs anything that you can do with Leo scripting inside Leo.</p>
 <p>Here are step-by-step instructions for executing Python scripts in Emacs:</p>
 <p><strong>Step 1. Install pymacs</strong></p>
-<blockquote>
-<div><p>The pymacs installation instructions should be clear enough.
-A clarification is needed about two-way communication between Python and lisp scripts:
-in truth, Python scripts can call the Pymacs.lisp function <em>only</em> if the Python script
-was invoked from emacs.
-Otherwise, calling Pymacs.lisp will hang the process making the call.
-For example, executing the following script as an ordinary Leo script will hang Leo:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">Pymacs</span> <span class="kn">import</span> <span class="n">lisp</span>
+<p>A note about two-way communication between Python and lisp scripts: Python
+scripts can call the Pymacs.lisp function <em>only</em> if the Python script was
+invoked from emacs. Otherwise, calling <code class="docutils literal notranslate"><span class="pre">Pymacs.lisp</span></code> will hang the process
+making the call. For example, executing the following script as an ordinary
+Leo script will hang Leo:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">Pymacs</span> <span class="kn">import</span> <span class="n">lisp</span>
 <span class="nb">print</span> <span class="n">lisp</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;2+2&quot;&quot;&quot;</span><span class="p">)</span> <span class="c1"># Hangs</span>
 </pre></div>
 </div>
-</div></blockquote>
-<p><strong>Step 2. Load the leoPymacs module from Emacs, creating a hidden Leo application</strong></p>
-<blockquote>
-<div><p>From inside Emacs, you load Leo’s leoPymacs module as follows:</p>
+<p><strong>Step 2. Load leoPymacs, creating a hidden Leo application</strong></p>
+<p>From inside Emacs, you load Leo’s leoPymacs module as follows:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">pymacs</span><span class="o">-</span><span class="n">load</span> <span class="s2">&quot;leoPymacs&quot;</span> <span class="s2">&quot;leo-&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The call to pymacs-load is similar to ‘import leoPymacs as leo-’ in
-Python. The side effect of pymacs-load is to define the elisp
-function leo-x for every top-level function x in leoPymacs.py,
-namely leo-dump, leo-get-app, leo-get-g, leo-get-script-result,
-leo-init, leo-open and leo-run-script. The first call to any of
-these functions creates a <strong>hidden Leo application</strong> in which .leo
-files may be loaded, modified and saved, and in which Leo scripts
-may be executed. This hidden Leo application uses Leo’s nullGui
-class as its gui, so Leo commands and Leo scripts that require a
-fully functional gui will not work as expected in the hidden Leo
-application. Steps 3 and 4 tell how to use this hidden Leo
-application.</p>
-<p>pymacs-load works like a Python reload, so you can redefine
-leoPymacs.py while Emacs is running. However, calling pymacs-load
-destroys the old hidden Leo application and creates a new one, so
-typically you would want to call pymacs-load only once per Emacs
-session. Like this:</p>
+<p>The call to pymacs-load is similar to this Python code:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">leoPymacs</span> <span class="k">as</span> <span class="nn">leo</span><span class="o">-</span><span class="s1">&#39;</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">pymacs-load</span></code> defines the elisp function
+<code class="docutils literal notranslate"><span class="pre">leo-x</span></code> for every top-level function <code class="docutils literal notranslate"><span class="pre">x</span></code> in <code class="docutils literal notranslate"><span class="pre">leoPymacs.py</span></code>, namely:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">leo</span><span class="o">-</span><span class="n">dump</span>
+<span class="n">leo</span><span class="o">-</span><span class="n">get</span><span class="o">-</span><span class="n">app</span>
+<span class="n">leo</span><span class="o">-</span><span class="n">get</span><span class="o">-</span><span class="n">g</span>
+<span class="n">leo</span><span class="o">-</span><span class="n">get</span><span class="o">-</span><span class="n">script</span><span class="o">-</span><span class="n">result</span>
+<span class="n">leo</span><span class="o">-</span><span class="n">init</span>
+<span class="n">leo</span><span class="o">-</span><span class="nb">open</span>
+<span class="n">leo</span><span class="o">-</span><span class="n">run</span><span class="o">-</span><span class="n">script</span>
+</pre></div>
+</div>
+<p>Each of these creates a <strong>hidden Leo application</strong> that can load, change or
+save <code class="docutils literal notranslate"><span class="pre">.leo</span></code> files. This hidde application can also execute Leonine
+scripts.</p>
+<p>This hidden Leo application uses Leo’s “null” gui. Leo commands and Leo
+scripts that use Leo’s “qt” gui will not work as expected.</p>
+<p><code class="docutils literal notranslate"><span class="pre">pymacs-load</span></code> works like a Python reload, so you can redefine
+<code class="docutils literal notranslate"><span class="pre">leoPymacs.py</span></code> while Emacs is running. However, calling <code class="docutils literal notranslate"><span class="pre">pymacs-load</span></code>
+creates a <em>new</em> Leo application, so typically you would want to call
+pymacs-load only once per Emacs session. Like this:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">setq</span> <span class="n">reload</span> <span class="n">nil</span><span class="p">)</span> <span class="p">;</span> <span class="n">change</span> <span class="n">nil</span> <span class="n">to</span> <span class="n">t</span> <span class="n">to</span> <span class="n">force</span> <span class="n">a</span> <span class="n">reload</span><span class="o">.</span>
 
 <span class="p">(</span><span class="k">if</span> <span class="p">(</span><span class="ow">or</span> <span class="n">reload</span> <span class="p">(</span><span class="ow">not</span> <span class="p">(</span><span class="n">boundp</span> <span class="s1">&#39;leoPymacs)))</span>
@@ -169,23 +172,16 @@ session. Like this:</p>
 <span class="p">)</span>
 </pre></div>
 </div>
-</div></blockquote>
-<p><strong>Step 3. From Emacs, open .leo files</strong></p>
-<blockquote>
-<div><p>Once we have loaded the leoPymacs module
-we can open a .leo file as follows:</p>
+<p><strong>Step 3. open .leo files from emacs</strong></p>
+<p>We can now open a <code class="docutils literal notranslate"><span class="pre">.leo</span></code> file as follows:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">setq</span> <span class="n">c</span> <span class="p">(</span><span class="n">leo</span><span class="o">-</span><span class="nb">open</span> <span class="n">fileName</span><span class="p">))</span>
 </pre></div>
 </div>
-<p>This binds the elisp c variable to the Leo commander created by opening fileName.
-fileName should be the full path to a .leo file.
-In the next step we will use this c variable to execute <em>Leo</em> scripts in the
-context of an open Leo outline.</p>
-<p>Sometimes we want to execute a Leo script before opening any Leo commanders.
-For example, we might want to compute the fileName passed to leo-open.
-leo-run-script allows the c argument to be nil,
-in which case leo-run-script creates a dummy commander in which to run the script.
-For example, the following script calls g.os_path_join and g.os_path_abspath:</p>
+<p>This call binds the elisp <code class="docutils literal notranslate"><span class="pre">c</span></code> variable to the newly-opened Leo commander.
+<code class="docutils literal notranslate"><span class="pre">fileName</span></code> should be the full path to a .leo file. The <code class="docutils literal notranslate"><span class="pre">c</span></code> argument may
+be <code class="docutils literal notranslate"><span class="pre">nil</span></code>. If so, <code class="docutils literal notranslate"><span class="pre">leo-run-script</span></code> creates a <strong>dummy commander</strong> for the
+script. For example, the following script calls <code class="docutils literal notranslate"><span class="pre">g.os_path_join</span></code> and
+<code class="docutils literal notranslate"><span class="pre">g.os_path_abspath</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">setq</span> <span class="n">script</span> <span class="s2">&quot;g.app.scriptResult =</span>
     <span class="n">g</span><span class="o">.</span><span class="n">os_path_abspath</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">os_path_join</span><span class="p">(</span>
         <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">loadDir</span><span class="p">,</span><span class="s1">&#39;..&#39;</span><span class="p">,</span><span class="s1">&#39;test&#39;</span><span class="p">,</span><span class="s1">&#39;ut.leo&#39;</span><span class="p">))</span><span class="s2">&quot;</span>
@@ -194,17 +190,15 @@ For example, the following script calls g.os_path_join and g.os_path_abspath:</p
 <span class="p">(</span><span class="n">setq</span> <span class="n">fileName</span> <span class="p">(</span><span class="n">leo</span><span class="o">-</span><span class="n">run</span><span class="o">-</span><span class="n">script</span> <span class="n">nil</span> <span class="n">script</span><span class="p">))</span>
 </pre></div>
 </div>
-<p>leo-run-script returns the value of g.app.scriptResult
-As shown above, Python scripts may set g.app.scriptResult to indicate their result.
-elisp scripts can also get g.app.scriptResult using leo-script-result.
-Note that the Python script may span multiple lines.</p>
-</div></blockquote>
-<p><strong>Step 4. From Emacs, execute Leo (Python) scripts</strong></p>
-<blockquote>
-<div><p>From emacs we can execute a Python script <strong>as if</strong> it were executed in an
-open Leo outline.
-Suppose aLeoScript is an <strong>elisp</strong> string containing a Leo (Python) script.
-We can execute that script in the hidden Leo application as follows:</p>
+<p><code class="docutils literal notranslate"><span class="pre">leo-run-script</span></code> returns the value of <code class="docutils literal notranslate"><span class="pre">g.app.scriptResult</span></code>. As shown
+above, Python scripts return their results by setting
+<code class="docutils literal notranslate"><span class="pre">g.app.scriptResult</span></code>. elisp scripts may get <code class="docutils literal notranslate"><span class="pre">g.app.scriptResult</span></code>
+using <code class="docutils literal notranslate"><span class="pre">leo-script-result</span></code>.</p>
+<p><strong>Step 4. Execute Leonine scripts from emacs</strong></p>
+<p>From emacs we can execute a Python script <strong>as if</strong> it were executed in an
+open Leo outline. Suppose aLeoScript is an <strong>elisp</strong> string containing a
+Leo (Python) script. We can execute that script in the hidden Leo
+application as follows:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">leo</span><span class="o">-</span><span class="n">run</span><span class="o">-</span><span class="n">script</span> <span class="n">c</span> <span class="n">aLeoScript</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -214,7 +208,6 @@ We can execute that script in the hidden Leo application as follows:</p>
 <span class="p">(</span><span class="n">leo</span><span class="o">-</span><span class="n">run</span><span class="o">-</span><span class="n">script</span> <span class="n">c</span> <span class="n">script</span><span class="p">)</span>
 </pre></div>
 </div>
-</div></blockquote>
 <p>Putting this all together, we get:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">;</span> <span class="n">Step</span> <span class="mi">1</span><span class="p">:</span> <span class="n">load</span> <span class="n">leoPymacs</span> <span class="k">if</span> <span class="n">it</span> <span class="n">has</span> <span class="ow">not</span> <span class="n">already</span> <span class="n">been</span> <span class="n">loaded</span><span class="o">.</span>
 <span class="p">(</span><span class="n">setq</span> <span class="n">reload</span> <span class="n">nil</span><span class="p">)</span>
@@ -339,7 +332,7 @@ Returns g.app.scriptResult, where g.app is the hidden app.</p>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 1997-2024, Edward K. Ream.
-      Last updated on November 07, 2024.
+      Last updated on November 14, 2024.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
     </div>
   </body>

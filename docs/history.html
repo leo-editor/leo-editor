@@ -142,7 +142,7 @@
 <section id="the-write-code">
 <h4>The write code<a class="headerlink" href="#the-write-code" title="Link to this heading">¶</a></h4>
 <p>I next turned my attention to writing &#64;file nodes. A huge Aha: I realized that sentinel lines must contain both a leading and a trailing newline. The general principle is this: the write code must contain absolutely no “conditional” logic, because otherwise the read code could not figure out whether the condition should be true or false. So external files contain blank lines between sentinel lines. These “extra” newlines are very useful, because the read (untangle) code can now easily determine exactly where every blank, tab and newline of the external file came from. It would be hard to overstate how important this simplifying principle was in practice.</p>
-<p>Much later, with urging from a customer, I realized that the write code could safely remove “extra” newlines between sentinels with a caching scheme in the low level atFile::os() routine. This scheme does not alter the body of the write code in any way: in effect, sentinels still contain leading and trailing “logical” newlines. The read code had to be modified to handle “missing” leading newlines, but this can always be done assuming that sentinels still contain logical leading and trailing newlines!</p>
+<p>Much later, with urging from a customer, I realized that the write code could safely remove “extra” newlines between sentinels with a caching scheme in the low level <code class="docutils literal notranslate"><span class="pre">atFile::os()</span></code> routine. This scheme does not alter the body of the write code in any way: in effect, sentinels still contain leading and trailing “logical” newlines. The read code had to be modified to handle “missing” leading newlines, but this can always be done assuming that sentinels still contain logical leading and trailing newlines!</p>
 <p>At about this time I designed a clever way of having the write code tell the read code which newlines were inserted in doc parts. (The whole point of doc parts is to have the write code format long comments by splitting long lines.) To quote from my diary:</p>
 <p>“We can use the following convention to determine where putDocPart has inserted line breaks: A line in a doc part is followed by an inserted newline if and only if the newline is preceded by whitespace. This is an elegant convention, and is essentially invisible to the user. Tangle outputs words until the line would become too long, and then it inserts a newline. To preserve all whitespace, tangle always includes the whitespace that terminates a word on the same line as the word itself. Therefore, split lines always end in whitespace. To make this convention work, tangle only has to delete the trailing whitespace of all lines that are followed by a ‘real’ newline.”</p>
 </section>
@@ -443,7 +443,7 @@ are several vim-emulator modes for <cite>vs-code</cite>, each much better than L
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 1997-2024, Edward K. Ream.
-      Last updated on November 07, 2024.
+      Last updated on November 14, 2024.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
     </div>
   </body>
