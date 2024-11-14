@@ -1334,8 +1334,9 @@
 <v t="ekr.20070116062405"><vh>Using g.trace and g.pdb</vh></v>
 <v t="ekr.20060527112801"><vh>Settings for winpdb</vh></v>
 <v t="ekr.20070115172724"><vh>Debugging scripts with winpdb</vh>
-<v t="ekr.20070115172724.1"><vh>The debug command</vh></v>
+<v t="ekr.20070115172724.1"><vh>The debug command</vh>
 <v t="ekr.20070115172724.3"><vh>The execute-script command with explicit debugger breaks</vh></v>
+</v>
 </v>
 </v>
 </v>
@@ -1484,7 +1485,7 @@
 <v t="ekr.20131019061259.16690"><vh>VNode class</vh></v>
 <v t="ekr.20131019061259.16691"><vh>Position class</vh></v>
 <v t="ekr.20131019061259.16692"><vh>leo.core.leoGlobals module</vh></v>
-<v t="ekr.20170403185500.1"><vh>Performance gotchas</vh></v>
+<v t="ekr.20170403185500.1"><vh>Performance</vh></v>
 <v t="ekr.20181015144118.25"><vh>Prompting for command arguments</vh>
 <v t="ekr.20181015144118.26"><vh>Example 1: Prompt for one arg</vh></v>
 <v t="ekr.20181015144118.27"><vh>Example 2: Prompt for 2 args</vh></v>
@@ -2507,7 +2508,7 @@
 <v t="ekr.20240828095959.1"></v>
 <v t="ekr.20240828094953.1"><vh>Leo 6.8.2 release notes</vh></v>
 <v t="ekr.20241114025618.1"><vh>=== Use code blocks</vh></v>
-<v t="ekr.20131009065148.31758"></v>
+<v t="ekr.20050831184021.5"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -2572,7 +2573,9 @@ In Python it is very easy to write a script that will blindly execute other scri
                     except:
                         es_exception()
 
-Executing this kind of code is typically an intolerable security risk. **Important**: rexec provides *no protection whatever*. Leo is a repository of source code, so any text operation is potentially malicious. For example, consider the following script, which is valid in rexec mode::
+Executing this kind of code is typically an intolerable security risk. **Important**: rexec provides *no protection whatever*. Leo is a repository of source code, so any text operation is potentially malicious. For example, consider the following script, which is valid in rexec mode:
+
+.. code-block:: python
 
     badNode = c.p
     for p in c.all_positions():
@@ -2608,7 +2611,7 @@ At this time I thought there would be two kinds of "errors" while reading extern
 </t>
 <t tx="EKR.20040524104904.252">I next turned my attention to writing @file nodes. A huge Aha: I realized that sentinel lines must contain both a leading and a trailing newline. The general principle is this: the write code must contain absolutely no "conditional" logic, because otherwise the read code could not figure out whether the condition should be true or false. So external files contain blank lines between sentinel lines. These "extra" newlines are very useful, because the read (untangle) code can now easily determine exactly where every blank, tab and newline of the external file came from. It would be hard to overstate how important this simplifying principle was in practice.
 
-Much later, with urging from a customer, I realized that the write code could safely remove "extra" newlines between sentinels with a caching scheme in the low level atFile::os() routine. This scheme does not alter the body of the write code in any way: in effect, sentinels still contain leading and trailing "logical" newlines. The read code had to be modified to handle "missing" leading newlines, but this can always be done assuming that sentinels still contain logical leading and trailing newlines!
+Much later, with urging from a customer, I realized that the write code could safely remove "extra" newlines between sentinels with a caching scheme in the low level ``atFile::os()`` routine. This scheme does not alter the body of the write code in any way: in effect, sentinels still contain leading and trailing "logical" newlines. The read code had to be modified to handle "missing" leading newlines, but this can always be done assuming that sentinels still contain logical leading and trailing newlines!
 
 At about this time I designed a clever way of having the write code tell the read code which newlines were inserted in doc parts. (The whole point of doc parts is to have the write code format long comments by splitting long lines.) To quote from my diary:
 
@@ -2707,84 +2710,56 @@ The g.u function should be used *only* to convert from the Qt string type (a wra
 
 Here are the XML elements that may appear in Leo files:
 
-&lt;?xml&gt;
+``&lt;?xml&gt;``
     Leo files start with the following line::
 
         &lt;?xml version="1.0" encoding="UTF-8"?&gt;
 
-&lt;?xml-stylesheet&gt;
-    An xml-stylesheet line is option.  For example::
+``&lt;?xml-stylesheet&gt;``
+    This element is optional.  For example::
 
         &lt;?xml-stylesheet ekr_stylesheet?&gt;
 
-&lt;leo_file&gt;
-    The &lt;leo_file&gt; element opens an element that contains the entire file.
-    &lt;/leo_file&gt; ends the file.
+``&lt;leo_file&gt;``
+    This element opens an element that contains the entire file.
+    ``&lt;/leo_file&gt;`` ends the file.
 
-&lt;leo_header&gt; 
-    The &lt;leo_header&gt; element specifies version information and other information
+``&lt;leo_header&gt;`` 
+    This element specifies version information and other information
     that affects how Leo parses the file.  For example::
 
-        &lt;leo_header file_format="2" tnodes="0" max_tnode_index="5725" clone_windows="0"/&gt;
+        &lt;leo_header file_format="2"/&gt;
 
-    The file_format attribute gives the 'major' format number.
-    It is '2' for all 4.x versions of Leo.
-    The tnodes and clone_windows attributes are no longer used.
-    The max_tnode_index	attribute is the largest tnode index.
+    The ``file_format`` attribute gives the 'major' format number.
+    It is ``"2"`` for all newer versions of Leo.
 
-&lt;globals&gt;
-    The globals element specifies information relating to the entire file.
-    For example::
+``&lt;globals&gt;`` |br|
+``&lt;preferences&gt;`` |br|
+``&lt;find_panel_settings&gt;`` |br|
+``&lt;clone_windows&gt;``
+    These elements are vestigial. Modern versions of Leo ignore them when reading outlines and write empty elements when writing outlines.
 
-        &lt;globals body_outline_ratio="0.50"&gt;
-            &lt;global_window_position top="27" left="27" height="472" width="571"/&gt;
-            &lt;global_log_window_position top="183" left="446" height="397" width="534"/&gt;
-        &lt;/globals&gt;
+``&lt;vnodes&gt;``
+    A single ``&lt;vnodes&gt;`` element contains nested ``&lt;v&gt;`` elements.
+    ``&lt;v&gt;`` elements correspond to vnodes.
+    The nesting of ``&lt;v&gt;`` elements indicates outline structure in the obvious way.
 
-    -   The body_outline_ratio attribute specifies the ratio of the height of the body pane to
-        the total height of the Leo window.
-        It initializes the position of the splitter separating the outline pane from the body pane.
-
-    -   The global_window_position and global_log_window_position elements
-        specify the position of the Leo window and Log window in global coordinates.
-
-&lt;preferences&gt;
-    This element is vestigial.
-    Leo ignores the &lt;preferences&gt; element when reading.
-    Leo writes an empty &lt;preferences&gt; element.
-
-&lt;find_panel_settings&gt;
-    This element is vestigial.
-    Leo ignores the &lt;find_panel_settings&gt; element when reading.
-    Leo writes an empty &lt;find_panel_settings&gt; element.
-
-&lt;clone_windows&gt;
-    This element is vestigial.
-    Leo ignores the &lt;clone_windows&gt; element when reading.
-    Leo no longer writes &lt;clone_windows&gt; elements.
-
-&lt;vnodes&gt;
-    A single &lt;vnodes&gt; element contains nested &lt;v&gt; elements.
-    &lt;v&gt; elements correspond to vnodes.
-    The nesting of &lt;v&gt; elements indicates outline structure in the obvious way.
-
-&lt;v&gt;
-    The &lt;v&gt; element represents a single vnode and has the following form::
+``&lt;v&gt;``
+    This element represents a single vnode and has the following form::
 
         &lt;v...&gt;&lt;vh&gt;sss&lt;/vh&gt; (zero or more nested v elements) &lt;/v&gt;
 
-    The &lt;vh&gt; element specifies the headline text.
+    The ``&lt;vh&gt;`` element specifies the headline text.
     sss is the headline text encoded with the usual XML escapes.
-    As shown above, a &lt;v&gt; element may contain nested &lt;v&gt; elements.
-    This nesting indicates outline structure in the obvious way.
+    As shown above, a ``&lt;v&gt;`` element may contain nested ``&lt;v&gt;`` elements.
     Zero or more of the following attributes may appear in &lt;v&gt; elements::
 
         t=name.timestamp.n
         a="xxx"
 
-    The t="Tnnn" attribute specifies the &lt;t&gt; element associated with a &lt;v&gt; element.
-    The a="xxx" attribute specifies vnode attributes.
-    The xxx denotes one or more upper-case letters whose meanings are as follows::
+    The ``t="Tnnn"`` attribute specifies the &lt;t&gt; element associated with a &lt;v&gt; element.
+    The ``a="xxx"`` attribute specifies vnode attributes.
+    ``xxx`` denotes one or more upper-case letters whose meanings are as follows::
 
         C	The vnode is a clone. (Not used in 4.x)
         E	The vnode is expanded so its children are visible.
@@ -2792,35 +2767,27 @@ Here are the XML elements that may appear in Leo files:
         T	The vnode is the top visible node.
         V	The vnode is the current vnode.
 
-    For example, a="EM"  specifies that the vnode is expanded and is marked.
+    For example, ``a="EM"``  specifies that the vnode is expanded and is marked.
 
-    **New in 4.0**:
-
-    -   &lt;v&gt; elements corresponding to @file nodes now contain tnodeList attributes.
-        The tnodeList attribute allows Leo to recreate the order in which nodes should 
-        appear in the outline.
-
-..  The tnode list existed from Leo 4.0 until Leo 4.7.  Leo 4.7 removed the tnode list.
-..      The tnodeList attribute is a list of gnx's: global node indices.
-..      See Format of external files (4.x) for the format of gnx's.
+..  The tnode list existed from Leo 4.0 until Leo 4.7. Leo 4.7 removed the tnode list.
 
     -   Plugins and scripts may add attributes to &lt;v&gt; and &lt;t&gt; elements.
         See `Writing plugins`_ for details.
 
-&lt;tnodes&gt;
-    A single &lt;tnodes&gt; element contains a non-nested list of &lt;t&gt; elements.
+``&lt;tnodes&gt;``
+    A single ``&lt;tnodes&gt;`` element contains a non-nested list of ``&lt;t&gt;`` elements.
 
-&lt;t&gt;
-    The &lt;t&gt; element represents the body text of the corresponding &lt;v&gt; element.
+``&lt;t&gt;``
+    This element represents the body text of the corresponding &lt;v&gt; element.
     It has this form::
 
         &lt;t tx="&lt;gnx&gt;"&gt;sss&lt;/t&gt;
 
-    The tx attribute is required.
-    The t attribute of &lt;v&gt; elements refer to this tx attribute.
-    sss is the body text encoded with the usual XML escapes.
+    The ``tx`` attribute is required.
+    The ``t`` attribute of ``&lt;v&gt;`` elements refer to this ``tx`` attribute.
+    ``sss`` is the body text encoded with the usual XML escapes.
 
-    **New in 4.0**: Plugins and scripts may add attributes to &lt;v&gt; and &lt;t&gt;
+    **New in 4.0**: Plugins and scripts may add attributes to ``&lt;v&gt;`` and ``&lt;t&gt;``
     elements. See `Writing plugins`_ for details.
 </t>
 <t tx="TL.20080804095315.1"></t>
@@ -3639,7 +3606,9 @@ Three predefined symbols, **c**, **g**, and **p** give Leo scripts easy access t
     :local:
 
 </t>
-<t tx="ekr.20040403173920.18" rst_http_attribute="5d71002858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d323722206e616d653d22687474702d6e6f64652d6d61726b65722d3237223e710158040000003c2f613e71025d710328582e0000003c64697620636c6173733d2273656374696f6e222069643d227570646174696e672d7468652d73637265656e223e710458060000003c2f6469763e71055d710628583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710758060000003c2f6469763e71085d71092858060000003c626f64793e710a58070000003c2f626f64793e710b5d710c2858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710d58070000003c2f68746d6c3e710e4e6565656558070000003c2f6469763e0a710f583a0000003c64697620636c6173733d2273656374696f6e222069643d22696e766f6b696e672d636f6d6d616e64732d66726f6d2d73637269707473223e0a711058760000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964313422206e616d653d22696e766f6b696e672d636f6d6d616e64732d66726f6d2d73637269707473223e496e766f6b696e6720636f6d6d616e64732066726f6d20736372697074733c2f613e3c2f68313e0a7111652e">You can invoke minibuffer commands by name.  For example::
+<t tx="ekr.20040403173920.18" rst_http_attribute="5d71002858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d323722206e616d653d22687474702d6e6f64652d6d61726b65722d3237223e710158040000003c2f613e71025d710328582e0000003c64697620636c6173733d2273656374696f6e222069643d227570646174696e672d7468652d73637265656e223e710458060000003c2f6469763e71055d710628583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710758060000003c2f6469763e71085d71092858060000003c626f64793e710a58070000003c2f626f64793e710b5d710c2858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710d58070000003c2f68746d6c3e710e4e6565656558070000003c2f6469763e0a710f583a0000003c64697620636c6173733d2273656374696f6e222069643d22696e766f6b696e672d636f6d6d616e64732d66726f6d2d73637269707473223e0a711058760000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964313422206e616d653d22696e766f6b696e672d636f6d6d616e64732d66726f6d2d73637269707473223e496e766f6b696e6720636f6d6d616e64732066726f6d20736372697074733c2f613e3c2f68313e0a7111652e">You can invoke minibuffer commands by name.  For example:
+
+.. code-block:: python
 
     c.executeMinibufferCommand('open-outline')
 
@@ -3647,7 +3616,9 @@ c.keyHandler.funcReturn contains the value returned from the command. In many ca
 </t>
 <t tx="ekr.20040403173920.19" rst_http_attribute="5d71002858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d323922206e616d653d22687474702d6e6f64652d6d61726b65722d3239223e710158040000003c2f613e71025d71032858390000003c64697620636c6173733d2273656374696f6e222069643d22696e766f6b696e672d636f6d6d616e64732d66726f6d2d73637269707473223e710458060000003c2f6469763e71055d710628583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710758060000003c2f6469763e71085d71092858060000003c626f64793e710a58070000003c2f626f64793e710b5d710c2858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710d58070000003c2f68746d6c3e710e4e6565656558070000003c2f6469763e0a710f583b0000003c64697620636c6173733d2273656374696f6e222069643d2267657474696e672d616e642d73657474696e672d707265666572656e636573223e0a711058780000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964313522206e616d653d2267657474696e672d616e642d73657474696e672d707265666572656e636573223e47657474696e6720616e642073657474696e6720707265666572656e6365733c2f613e3c2f68313e0a7111652e">Each commander sets ivars corresponding to settings.
 
-Scripts can get the following ivars of the Commands class::
+Scripts can get the following ivars of the Commands class:
+
+.. code-block:: python
 
     ivars = (
         'output_doc_flag',
@@ -3660,7 +3631,9 @@ Scripts can get the following ivars of the Commands class::
     for ivar in ivars:
         print(getattr(c,ivar))
 
-If your script sets c.tab_width it should call f.setTabWidth to redraw the screen::
+If your script sets c.tab_width it should call f.setTabWidth to redraw the screen:
+
+.. code-block:: python
 
     c.tab_width = -4    # Change this and see what happens.
     c.frame.setTabWidth(c.tab_width)
@@ -3671,7 +3644,9 @@ If your script sets c.tab_width it should call f.setTabWidth to redraw the scree
 
 If found, Leo enters batch mode. In batch mode Leo does not show any windows. Leo assumes the scriptFile contains a Python script and executes the contents of that file using Leo's Execute Script command. By default, Leo sends all output to the console window. Scripts in the scriptFile may disable or enable this output by calling app.log.disable or app.log.enable
 
-Scripts in the scriptFile may execute any of Leo's commands except the Edit Body and Edit Headline commands. Those commands require interaction with the user. For example, the following batch script reads a Leo file and prints all the headlines in that file::
+Scripts in the scriptFile may execute any of Leo's commands except the Edit Body and Edit Headline commands. Those commands require interaction with the user. For example, the following batch script reads a Leo file and prints all the headlines in that file:
+
+.. code-block:: python
 
     path = g.os_path_finalize_join(g.app.loadDir,'..','test','test.leo')
     assert g.os_path_exists(path),path
@@ -3784,13 +3759,13 @@ Here is how Leo associates uA's with ``&lt;v&gt;`` elements in ``.leo`` files:
 <t tx="ekr.20050407144342.2"></t>
 <t tx="ekr.20050407144342.3"></t>
 <t tx="ekr.20050407144417"></t>
-<t tx="ekr.20050417072710.1">Plugins and scripts should call u.beforeX and u.afterX methods to describe the operation that is being performed. **Note**: u is shorthand for c.undoer. Most u.beforeX methods return undoData that the client code merely passes to the corresponding u.afterX method. This data contains the 'before' snapshot. The u.afterX methods then create a bead containing both the 'before' and 'after' snapshots.
+<t tx="ekr.20050417072710.1">Plugins and scripts should call ``u.beforeX`` and ``u.afterX`` methods to describe the operation that is being performed. **Note**: u is shorthand for ``c.undoer``. Most ``u.beforeX`` methods return undoData that the client code merely passes to the corresponding u.afterX method. This data contains the 'before' snapshot. The ``u.afterX`` methods then create a bead containing both the 'before' and 'after' snapshots.
 
-u.beforeChangeGroup and u.afterChangeGroup allow multiple calls to u.beforeX and u.afterX methods to be treated as a single undoable entry. See the code for the Replace All, Sort, Promote and Demote commands for examples. The u.beforeChangeGroup and u.afterChangeGroup methods substantially reduce the number of u.beforeX and afterX methods needed.
+``u.beforeChangeGroup`` and ``u.afterChangeGroup`` allow multiple calls to ``u.beforeX`` and ``u.afterX`` methods to be treated as a single undoable entry. See the code for the Replace All, Sort, Promote and Demote commands for examples. The ``u.beforeChangeGroup`` and ``u.afterChangeGroup`` methods substantially reduce the number of ``u.beforeX`` and ``afterX`` methods needed.
 
-Plugins and scripts may define their own u.beforeX and afterX methods. Indeed, u.afterX merely needs to set the bunch.undoHelper and bunch.redoHelper ivars to the methods used to undo and redo the operation. See the code for the various u.beforeX and afterX methods for guidance.
+Plugins and scripts may define their own ``u.beforeX`` and ``u.afterX`` methods. Indeed,        ``u.afterX`` merely needs to set the ``bunch.undoHelper`` and ``bunch.redoHelper`` ivars to the methods used to undo and redo the operation. See the code for the various ``u.beforeX`` and ``u.afterX`` methods for guidance.
 
-See the section &lt;&lt; How Leo implements unlimited undo &gt;&gt; in leoUndo.py for more details. In general, the best way to see how to implement undo is to see how Leo's core calls the u.beforeX and afterX methods.
+See the section &lt;&lt; How Leo implements unlimited undo &gt;&gt; in ``leoUndo.py`` for more details. In general, the best way to see how to implement undo is to see how Leo's core calls the ``u.beforeX`` and ``afterX`` methods.
 </t>
 <t tx="ekr.20050424114937.2">def writeRecentFilesFile(self, c, force=False):
     '''
@@ -4660,19 +4635,25 @@ Leo's read code now warns if any non-empty node is unvisited. This check, and th
 - Add ``@nl`` and ``@nonl`` sentinels.
 - Read errors leave the outline completely unchanged.
 </t>
-<t tx="ekr.20050903074833">Plugins and other scripts can register event handlers (also known as hooks)::
+<t tx="ekr.20050903074833">Plugins and other scripts can register event handlers (also known as hooks):
+
+.. code-block:: python
 
     leoPlugins.registerHandler("after-create-leo-frame",onCreate)
     leoPlugins.registerHandler("idle", on_idle) 
     leoPlugins.registerHandler(("start2","open2","command2"), create_open_with_menu) 
 
-As shown above, a plugin may register one or more event handlers with a single call to leoPlugins.registerHandler. Once a hook is registered, Leo will call the registered function' at the named **hook time**. For example::
+As shown above, a plugin may register one or more event handlers with a single call to leoPlugins.registerHandler. Once a hook is registered, Leo will call the registered function' at the named **hook time**. For example:
+
+.. code-block:: python
 
     leoPlugins.registerHandler("idle", on_idle)
 
 causes Leo to call on_idle at "idle" time.
 
-Event handlers must have the following signature::
+Event handlers must have the following signature:
+
+.. code-block:: python
 
     def myHook (tag, keywords):
         whatever
@@ -4680,7 +4661,9 @@ Event handlers must have the following signature::
 - tag is the name of the hook (a string).
 - keywords is a Python dictionary containing additional information. The following section describes the contents of the keywords dictionary in detail.
 
-**Important**: hooks should get the proper commander this way::
+**Important**: hooks should get the proper commander this way:
+
+.. code-block:: python
 
     c = keywords.get('c')
 </t>
@@ -4890,17 +4873,17 @@ Event name (tag argument)  Stop?    Keys in keywords dict
 </t>
 <t tx="ekr.20050907094633">Settings may be different for each commander.
 
-The c.config class has the following getters.
+The c.config class has the following getters::
 
-- c.config.getBool(settingName,default=None)
-- c.config.getColor(settingName)
-- c.config.getDirectory(settingName)
-- c.config.getFloat(settingName)
-- c.config.getInt(settingName)
-- c.config.getLanguage(settingName)
-- c.config.getRatio(settingName)
-- c.config.getShortcut(settingName)
-- c.config.getString(settingName)
+    c.config.getBool(settingName,default=None)
+    c.config.getColor(settingName)
+    c.config.getDirectory(settingName)
+    c.config.getFloat(settingName)
+    c.config.getInt(settingName)
+    c.config.getLanguage(settingName)
+    c.config.getRatio(settingName)
+    c.config.getShortcut(settingName)
+    c.config.getString(settingName)
 
 These methods return None if no setting exists.
 
@@ -5031,13 +5014,15 @@ general scripts do not.
 
     @string debugger_kind = winpdb
 
-This setting controls what debugger the 'Debug Script' script button uses. Eventually this setting will control what debugger the debug command uses:: At present the only valid value is 'winpdb'
+This setting controls what debugger the 'Debug Script' script button uses. Eventually this setting will control what debugger the debug command uses. At present the only valid value is 'winpdb'::
 
     @bool write_script_file = True
 
 True: The execute script command writes the script to be executed to a file, then executes the script using Python's execFile function. The script_file_path setting specifies the path to this file. False (legacy): The execute script command uses Python's exec command to execute the script.
 
-@string script_file_path = ../test/scriptFile.py
+::
+
+    @string script_file_path = ../test/scriptFile.py
 
 The path to the file to be written by the execute-script command. Notes:
 
@@ -5047,7 +5032,9 @@ The path to the file to be written by the execute-script command. Notes:
 - The path starts at g.app.loadDir, so for example ../test/scriptFile.py is equivalent to leo/test/scriptFile.py.
 - The filename should end in .py.
 
-@string debugger_path = None
+::
+
+    @string debugger_path = None
 
 </t>
 <t tx="ekr.20060529053407">``@ignore`` can only be used in the root node of @file trees. It tells Leo
@@ -5306,28 +5293,24 @@ External files created by @file use gnx's in @+node sentinels. Such gnx's perman
 
 The second form is used if two gnx's would otherwise be identical.
 
-- id is a string unique to a developer, e.g., a git id.
+- ``id`` is a string unique to a developer, e.g., a git id.
+- ``yyyymmddhhmmss`` is the node's creation date.
+- ``n`` is an integer.
 
-- yyyymmddhhmmss is the node's creation date.
+Closing sentinels are required for section references and the ``@all`` and ``@others`` directives, collectively known as **embedding constructs.** Proof: These constructs do not terminate the node in which they appear. Without a closing sentinel there would be no way to know where the construct ended and the following lines of the enclosing node began.
 
-- n is an integer.
+Here are the sentinels used by modern versions of Leo, in alphabetical order.
 
-Closing sentinels are required for section references and the @all and @others directives, collectively known as **embedding constructs.** Proof: These constructs do not terminate the node in which they appear. Without a closing sentinel there would be no way to know where the construct ended and the following lines of the enclosing node began.
-
-New sentinels do not include @nonl or @nl. As a result, body text always ends with at least one newline.
-
-Here are the sentinels used by Leo, in alphabetical order. Unless otherwise noted, the documentation applies to all versions of Leo. In the following discussion, gnx denotes a gnx as described above.
-
-\@&lt;&lt;
+``@&lt;&lt;``
     A sentinel of the form @&lt;&lt;section_name&gt;&gt; represents a section reference.
 
     If the reference does not end the line, the sentinel line ending
     the expansion is followed by the remainder of the reference line.
     This allows the Read code to recreate the reference line exactly.
 
-\@@
-    The @@ sentinel represents any line starting with @ in body text
-    except @*whitespace*, @doc and @others.
+``@@``
+    This sentinel represents any line starting with ``@`` in body text
+    except ``@&lt;whitespace&gt;``, ``@doc`` and ``@others``.
     Examples::
 
       @@nocolor
@@ -5335,51 +5318,48 @@ Here are the sentinels used by Leo, in alphabetical order. Unless otherwise note
       @@tabwidth 4
       @@code
 
-\@afterref
+``@afterref``
     Marks non-whitespace text appearing after a section references.
     As of Leo 6.6, Leo no longer *writes* afterref sentinels.
     However, Leo will always *read* such sentinels correctly.
 
-\@+all
+``@+all``
     Marks the start of text generated by the @all directive.
 
-\@-all
+``@-all``
     Marks the end of text generated by the @all directive.
 
-\@at and @doc
+``@at`` and ``@doc``
+    These sentinels indicate the start of a doc parts.
 
-    The @+doc @+at sentinels indicate the start of a doc parts.
-
-..  Officially retired in Leo 5.7.4.
-..  We use the following **trailing whitespace convention** to
-..  determine where putDocPart has inserted line breaks::
+..  Leo 5.7.4. retired the **trailing whitespace convention**:
 ..      A line in a doc part is followed by an inserted newline
 ..      if and only if the newline if preceded by whitespace.
-..  To make this convention work, Leo's write code deletes the trailing
+..  To make this convention work, Leo's old write code deleted the trailing
 ..  whitespace of all lines that are followed by a "real" newline.
 
-\@+body **(Leo 3.x only)**
-    Marks the start of body text.
+.. ``@+body`` **(Leo 3.x only)**
+..     Marks the start of body text.
 
-\@-body **(Leo 3.x only)**
-    Marks the end of body text.
+.. ``@-body **(Leo 3.x only)**
+..     Marks the end of body text.
 
-\@delims
-    The @delims directive inserts @@delims sentinels into the
+``@delims``
+    This directive inserts ``@@delims`` sentinels into the
     external file. The new delimiter strings continue in effect until
-    the next @@delims sentinel *in the external file* or until the
-    end of the external file. Adding, deleting or changing @@delim
+    the next ``@@delims`` sentinel *in the external file* or until the
+    end of the external file. Adding, deleting or changing ``@@delim``
     *sentinels* will destroy Leo's ability to read the external file.
-    Mistakes in using the @delims *directives* have no effect on Leo,
+    Mistakes in using the ``@delims`` *directives* have no effect on Leo,
     though such mistakes will thoroughly mess up a external file as
     far as compilers, HTML renderers, etc. are concerned.
 
-\@section-delims  (Leo 6.6+)
-    The @section-delims directive inserts @@section-delims sentinels
+``@section-delims``  (Leo 6.6+)
+    The ``@section-delims`` directive inserts ``@@section-delims`` sentinels
     into the external file. The directive must appear in the root
     @&lt;file&gt; node.
 
-\@+leo
+``@+leo``
     Marks the start of any external file. This sentinel has the form::
 
         &lt;opening_delim&gt;@leo&lt;closing_delim&gt;
@@ -5391,7 +5371,7 @@ Here are the sentinels used by Leo, in alphabetical order. Unless otherwise note
 
         &lt;opening_delim&gt;@leo-ver=4-thin&lt;closing_delim&gt;
 
-\@-leo
+``@-leo``
     Marks the end of the Leo file.
     Nothing but whitespace should follow this directive.
 
@@ -5404,27 +5384,28 @@ Here are the sentinels used by Leo, in alphabetical order. Unless otherwise note
 ..  \@nl **(Leo 3.x only)**
 ..  Insert a newline in the outline.
 
-\@+node
+``@+node``
     Mark the start and end of a node::
 
         @+node:gnx:&lt;headline&gt;
 
-\@nonl **(Leo 3.x only)**
-    Suppresses a newline in the outline.
+.. ``@nonl`` **(Leo 3.x only)**
+..      Suppresses a newline in the outline.
+..      Modern versions of Leo do not write ``@nonl`` or ``@nl``.
+..      As a result, body text always ends with at least one newline.
 
-\@others
-    The @+others sentinel indicates the start of the expansion of an @+others          
+``@others``
+    This sentinel indicates the start of the expansion of an ``@+others``          
     directive, which continues until the matching @-others sentinel.
 
-\@verbatim
-    @verbatim indicates that the next line of the external file is not a sentinel.
-    This escape convention allows body text to contain lines that would otherwise
-    be considered sentinel lines.
+``@verbatim``
+    This sentinel indicates that the next line of the external file is not
+    a sentinel. This escape convention allows body text to contain lines
+    that would otherwise be considered sentinel lines.
 
-..  \@@verbatimAfterRef 
-..  @verbatimAfterRef is generated when a comment following a section reference would
-..  otherwise be treated as a sentinel. In Python code, an example would be::
-..  &lt;&lt; ref &gt;&gt; #+others
+..  @@verbatimAfterRef 
+..  Old versions of Leo generated @verbatimAfterRef when a comment following a section reference
+..  would otherwise be treated as a sentinel.
 </t>
 <t tx="ekr.20060928172457"></t>
 <t tx="ekr.20060928172457.4">::
@@ -5558,113 +5539,118 @@ Here are step-by-step instructions for executing Python scripts in Emacs:
 
 **Step 1. Install pymacs** 
 
-   The pymacs installation instructions should be clear enough.
-   A clarification is needed about two-way communication between Python and lisp scripts:
-   in truth, Python scripts can call the Pymacs.lisp function *only* if the Python script
-   was invoked from emacs.
-   Otherwise, calling Pymacs.lisp will hang the process making the call.
-   For example, executing the following script as an ordinary Leo script will hang Leo::
+A note about two-way communication between Python and lisp scripts: Python
+scripts can call the Pymacs.lisp function *only* if the Python script was
+invoked from emacs. Otherwise, calling ``Pymacs.lisp`` will hang the process
+making the call. For example, executing the following script as an ordinary
+Leo script will hang Leo:
 
-        from Pymacs import lisp
-        print lisp("""2+2""") # Hangs
+.. code-block:: python
 
-**Step 2. Load the leoPymacs module from Emacs, creating a hidden Leo application**
+    from Pymacs import lisp
+    print lisp("""2+2""") # Hangs
 
-  From inside Emacs, you load Leo's leoPymacs module as follows::
+**Step 2. Load leoPymacs, creating a hidden Leo application**
+
+From inside Emacs, you load Leo's leoPymacs module as follows::
 
     (pymacs-load "leoPymacs" "leo-")
 
-  The call to pymacs-load is similar to 'import leoPymacs as leo-' in
-  Python. The side effect of pymacs-load is to define the elisp
-  function leo-x for every top-level function x in leoPymacs.py,
-  namely leo-dump, leo-get-app, leo-get-g, leo-get-script-result,
-  leo-init, leo-open and leo-run-script. The first call to any of
-  these functions creates a **hidden Leo application** in which .leo
-  files may be loaded, modified and saved, and in which Leo scripts
-  may be executed. This hidden Leo application uses Leo's nullGui
-  class as its gui, so Leo commands and Leo scripts that require a
-  fully functional gui will not work as expected in the hidden Leo
-  application. Steps 3 and 4 tell how to use this hidden Leo
-  application.
+The call to pymacs-load is similar to this Python code:
 
-  pymacs-load works like a Python reload, so you can redefine
-  leoPymacs.py while Emacs is running. However, calling pymacs-load
-  destroys the old hidden Leo application and creates a new one, so
-  typically you would want to call pymacs-load only once per Emacs
-  session. Like this::
+.. code-block:: python
 
-        (setq reload nil) ; change nil to t to force a reload.
+    import leoPymacs as leo-'
 
-        (if (or reload (not (boundp 'leoPymacs)))
-            (setq leoPymacs (pymacs-load "leoPymacs" "leo-"))
-            (message "leoPymacs already loaded")
-        )
+``pymacs-load`` defines the elisp function
+``leo-x`` for every top-level function ``x`` in ``leoPymacs.py``, namely::
 
-**Step 3. From Emacs, open .leo files**
+    leo-dump
+    leo-get-app
+    leo-get-g
+    leo-get-script-result
+    leo-init
+    leo-open
+    leo-run-script
 
-   Once we have loaded the leoPymacs module
-   we can open a .leo file as follows::
+Each of these creates a **hidden Leo application** that can load, change or
+save ``.leo`` files. This hidde application can also execute Leonine
+scripts.
+
+This hidden Leo application uses Leo's "null" gui. Leo commands and Leo
+scripts that use Leo's "qt" gui will not work as expected.
+
+``pymacs-load`` works like a Python reload, so you can redefine
+``leoPymacs.py`` while Emacs is running. However, calling ``pymacs-load``
+creates a *new* Leo application, so typically you would want to call
+pymacs-load only once per Emacs session. Like this::
+
+    (setq reload nil) ; change nil to t to force a reload.
+
+    (if (or reload (not (boundp 'leoPymacs)))
+        (setq leoPymacs (pymacs-load "leoPymacs" "leo-"))
+        (message "leoPymacs already loaded")
+    )
+
+**Step 3. open .leo files from emacs**
+
+We can now open a ``.leo`` file as follows::
 
     (setq c (leo-open fileName))
 
-   This binds the elisp c variable to the Leo commander created by opening fileName.
-   fileName should be the full path to a .leo file.
-   In the next step we will use this c variable to execute *Leo* scripts in the
-   context of an open Leo outline.
+This call binds the elisp ``c`` variable to the newly-opened Leo commander.
+``fileName`` should be the full path to a .leo file. The ``c`` argument may
+be ``nil``. If so, ``leo-run-script`` creates a **dummy commander** for the
+script. For example, the following script calls ``g.os_path_join`` and
+``g.os_path_abspath``::
 
-   Sometimes we want to execute a Leo script before opening any Leo commanders.
-   For example, we might want to compute the fileName passed to leo-open.
-   leo-run-script allows the c argument to be nil,
-   in which case leo-run-script creates a dummy commander in which to run the script.
-   For example, the following script calls g.os_path_join and g.os_path_abspath::
+    (setq script "g.app.scriptResult =
+        g.os_path_abspath(g.os_path_join(
+            g.app.loadDir,'..','test','ut.leo'))"
+    )
 
-        (setq script "g.app.scriptResult =
-            g.os_path_abspath(g.os_path_join(
-                g.app.loadDir,'..','test','ut.leo'))"
-        )
+    (setq fileName (leo-run-script nil script))
 
-        (setq fileName (leo-run-script nil script))
+``leo-run-script`` returns the value of ``g.app.scriptResult``. As shown
+above, Python scripts return their results by setting
+``g.app.scriptResult``. elisp scripts may get ``g.app.scriptResult``
+using ``leo-script-result``.
 
-   leo-run-script returns the value of g.app.scriptResult
-   As shown above, Python scripts may set g.app.scriptResult to indicate their result.
-   elisp scripts can also get g.app.scriptResult using leo-script-result.
-   Note that the Python script may span multiple lines.
+**Step 4. Execute Leonine scripts from emacs**
 
-**Step 4. From Emacs, execute Leo (Python) scripts**
+From emacs we can execute a Python script **as if** it were executed in an
+open Leo outline. Suppose aLeoScript is an **elisp** string containing a
+Leo (Python) script. We can execute that script in the hidden Leo
+application as follows::
 
-   From emacs we can execute a Python script **as if** it were executed in an
-   open Leo outline.
-   Suppose aLeoScript is an **elisp** string containing a Leo (Python) script.
-   We can execute that script in the hidden Leo application as follows::
+    (leo-run-script c aLeoScript)
 
-        (leo-run-script c aLeoScript)
+For example::
 
-   For example::
-
-        (setq c (leo-open fileName)
-        (csetq script "print 'c',c,'h',c.p.h")
-        (leo-run-script c script)
+    (setq c (leo-open fileName)
+    (csetq script "print 'c',c,'h',c.p.h")
+    (leo-run-script c script)
 
 Putting this all together, we get::
 
-        ; Step 1: load leoPymacs if it has not already been loaded.
-        (setq reload nil)
-        (if (or reload (not (boundp 'leoPymacs)))
-            (setq leoPymacs (pymacs-load "leoPymacs" "leo-"))
-            (message "leoPymacs already loaded")
-        )
+    ; Step 1: load leoPymacs if it has not already been loaded.
+    (setq reload nil)
+    (if (or reload (not (boundp 'leoPymacs)))
+        (setq leoPymacs (pymacs-load "leoPymacs" "leo-"))
+        (message "leoPymacs already loaded")
+    )
 
-        ; Step 2: compute the path to leo/test/ut.leo using a Leo script.
-        (setq script
-            "g.app.scriptResult = g.os_path_abspath(
-                g.os_path_join(g.app.loadDir,'..','test','ut.leo'))"
-        )
-        (setq fileName (leo-run-script nil script))
+    ; Step 2: compute the path to leo/test/ut.leo using a Leo script.
+    (setq script
+        "g.app.scriptResult = g.os_path_abspath(
+            g.os_path_join(g.app.loadDir,'..','test','ut.leo'))"
+    )
+    (setq fileName (leo-run-script nil script))
 
-        ; Step 3: execute a script in ut.leo.
-        (setq c (leo-open fileName))
-        (setq script "print 'c',c.shortFileName() ,'current:',c.p.h")
-        (leo-run-script c script)
+    ; Step 3: execute a script in ut.leo.
+    (setq c (leo-open fileName))
+    (setq script "print 'c',c.shortFileName() ,'current:',c.p.h")
+    (leo-run-script c script)
 </t>
 <t tx="ekr.20061025142434">Leo's mini-buffer is a text area at the bottom of the body pane. You use Leo's minibuffer like the Emacs mini-buffer to invoke commands by their so-called *long name*. The following commands affect the minibuffer:
 
@@ -5689,10 +5675,12 @@ winpdb_ and its documentation have been improved recently. For more details, see
 </t>
 <t tx="ekr.20070115172724.3">This way of debugging scripts allows winpdb to debug scripts that use c, g and p. A bit more work is needed because winpdb does not start automatically. Here are step-by step instructions:
 
-1. Insert the following two lines of code at the start of the script to be debugged::
+1. Insert the following two lines of code at the start of the script to be debugged:
 
-    import rpdb2
-    rpdb2.start_embedded_debugger('go',fAllowUnencrypted=True)
+    .. code-block:: python
+
+        import rpdb2
+        rpdb2.start_embedded_debugger('go',fAllowUnencrypted=True)
 
 2. Execute Leo's execute-script command (*not* the debug command). Leo will appear to hang: start_embedded_debugger is waiting for *another* copy of winpdb to 'attach' to the script's process. The default timeout is 5 minutes, after which an exception gets thrown.
 
@@ -5730,7 +5718,9 @@ p is the **position** of the presently selected node. Positions represent nodes 
 </t>
 <t tx="ekr.20070122093626">Positions become invalid whenever the outline changes. 
 
-This script finds a position p2 having the same vnode as an invalid position p::
+This script finds a position p2 having the same vnode as an invalid position p:
+
+.. code-block:: python
 
     if not c.positionExists(p):
         for p2 in c.all_positions():
@@ -5777,7 +5767,9 @@ Python programs running independently of Leo. Let us call such a program a
 
 
 </t>
-<t tx="ekr.20070317033759.3">Host programs use the leoBridge module as follows::
+<t tx="ekr.20070317033759.3">Host programs use the leoBridge module as follows:
+
+.. code-block:: python
 
     import leo.core.leoBridge as leoBridge
 
@@ -5792,19 +5784,25 @@ Python programs running independently of Leo. Let us call such a program a
 
 Let us look at these statements in detail. The first two statements import the leoBridge module and create a **bridge controller**. In effect, these statements embed an invisible copy of Leo into the host program. This embedded copy of Leo uses a null gui, which simulates all aspects of Leo's normal gui code without creating any screen objects.
 
-The statement::
+The statement:
+
+.. code-block:: python
 
     g = controller.globals()
 
 provides access to Leo's leoGlobals module, and properly inits globals such as g.app, g.app.gui, etc. *Host programs should not import leoGlobals directly*, because doing so would not init the g.app object properly.
 
-The statement::
+The statement:
+
+.. code-block:: python
 
     c = controller.openLeoFile(path)
 
 invisibly opens the .leo file given by the path argument. This call returns a completely standard Leo commander, properly inited. This is the big payoff from the leoBridge module: the host program gets instant access to c.config.getBool, etc. Do you see how sweet this is?
 
-For example, the following script runs leo/test/leoBridgeTest.py outside of Leo. leoBridgeTest.py uses the leoBridge module to run all unit tests in leo/test/unitTest.leo::
+For example, the following script runs leo/test/leoBridgeTest.py outside of Leo. leoBridgeTest.py uses the leoBridge module to run all unit tests in leo/test/unitTest.leo:
+
+.. code-block:: python
 
     import os,sys
 
@@ -5814,9 +5812,11 @@ For example, the following script runs leo/test/leoBridgeTest.py outside of Leo.
 
     os.system('%s %s' % (sys.executable,path))
 
-The file leo/test/test.leo contains the source code for leoBridgeTest.py. Here it is, stripped of its sentinel lines::
+The file leo/test/test.leo contains the source code for leoBridgeTest.py. Here it is, stripped of its sentinel lines:
 
-    '''A program to run unit tests with the leoBridge module.'''
+.. code-block:: python
+
+    """A program to run unit tests with the leoBridge module."""
 
     import leo.core.leoBridge as leoBridge
     import leo.core.leoTest as leoTest
@@ -6101,7 +6101,9 @@ For still more details, see: http://www.diveintopython.org/xml_processing/unicod
 </t>
 <t tx="ekr.20071026183116">Scripts can invoke various dialogs using the following methods of the g.app.gui object.
 
-Here is a partial list. Use typing completion to get the full list::
+Here is a partial list. Use typing completion to get the full list:
+
+.. code-block:: python
 
     g.app.gui.runAskOkCancelNumberDialog(c,title,message)
     g.app.gui.runAskOkCancelStringDialog(c,title,message)
@@ -6112,7 +6114,9 @@ Here is a partial list. Use typing completion to get the full list::
 
 The values returned are in ('ok','yes','no','cancel'), as indicated by the method names. Some dialogs also return strings or numbers, again as indicated by their names.
 
-Scripts can run File Open and Save dialogs with these methods::
+Scripts can run File Open and Save dialogs with these methods:
+
+.. code-block:: python
 
     g.app.gui.runOpenFileDialog(title,filetypes,defaultextension)
     g.app.gui.runOpenFilesDialog(title,filetypes,defaultextension)
@@ -6155,7 +6159,9 @@ You can not just run leoBridge from Leo, because the leoBridge module is designe
 
 The idea is that script A running in Leo (i.e. in a regular GUI Leo session) calls script B through subprocess.Popen(), script B uses LeoBridge to do something (parse unloaded Leo files), and returns the result to script A. Passing the result back via the clipboard seemed like a possibility, but XWindows clipboard madness being what it is, that didn't seem to work.
 
-First trick, calling script B from script A::
+First trick, calling script B from script A:
+
+.. code-block:: python
 
     import subprocess
     p = subprocess.Popen(('python',
@@ -6168,7 +6174,9 @@ First trick, calling script B from script A::
 
 Setting PYTHONPATH in the environment seemed like the easiest way to let script B find leoBridge.py (which it needs to import).  But by setting the env parameter you limit script B's environment to be **only** PYTHONPATH, which causes leoBridge to fail because, in unix at least, it depends on USER in the environment.  So you need to pass that through, too.
 
-Now, because passing stuff back on the clipboard seems unreliable, at least in XWindows, script B passes results back to script A via stdout (print), but there's some Leo initialization chatter you want to avoid.  So put a sentinel, 'START_CLIPBOARD', in the output, and collect it like this::
+Now, because passing stuff back on the clipboard seems unreliable, at least in XWindows, script B passes results back to script A via stdout (print), but there's some Leo initialization chatter you want to avoid.  So put a sentinel, 'START_CLIPBOARD', in the output, and collect it like this:
+
+.. code-block:: python
 
     response = p.stdout.readlines()
     while response and 'START_CLIPBOARD' not in response[0]:
@@ -6176,7 +6184,9 @@ Now, because passing stuff back on the clipboard seems unreliable, at least in X
     del response[0]  # delete the sentinel as well
     response = ''.join(response)
 
-This is the basic mechanism.  What I *actually* wanted to do was have script B generate a branch of nodes and pass that back to script A for insertion in the tree script A is running in.  That's relatively easy if you use::
+This is the basic mechanism.  What I *actually* wanted to do was have script B generate a branch of nodes and pass that back to script A for insertion in the tree script A is running in.  That's relatively easy if you use:
+
+.. code-block:: python
 
     c.setCurrentPosition(pos_of_branch_to_return)
     c.copyOutline()
@@ -6185,7 +6195,9 @@ This is the basic mechanism.  What I *actually* wanted to do was have script B g
     print '&lt;!-- END_CLIPBOARD --&gt;'
 
 at the end of script B. Back in script A, after you've rebuilt
-`response` as shown above, do::
+`response` as shown above, do:
+
+.. code-block:: python
 
     g.app.gui.replaceClipboardWith(response)
     c.pasteOutline()
@@ -6193,12 +6205,16 @@ at the end of script B. Back in script A, after you've rebuilt
 <t tx="ekr.20071217093444"></t>
 <t tx="ekr.20080109074102">You can add an icon to the presently selected node with c.editCommands.insertIconFromFile(path). path is an absolute path or a path relative to the leo/Icons folder. A relative path is recommended if you plan to use the icons on machines with different directory structures.
 
-For example::
+For example:
+
+.. code-block:: python
 
     path = 'rt_arrow_disabled.gif' 
     c.editCommands.insertIconFromFile(path) 
 
-Scripts can delete icons from the presently selected node using the following methods::
+Scripts can delete icons from the presently selected node using the following methods:
+
+.. code-block:: python
 
     c.editCommands.deleteFirstIcon() 
     c.editCommands.deleteLastIcon() 
@@ -6359,7 +6375,9 @@ k.get1Arg is a state machine. It has to be because it's almost always waiting fo
 
 The following examples will work in any class having a 'c' ivar bound to a commander.
 
-Example 1: get one argument from the user::
+Example 1: get one argument from the user:
+
+.. code-block:: python
 
     @cmd('my-command')
     def myCommand(self, event):
@@ -6379,7 +6397,9 @@ Example 1: get one argument from the user::
         k.resetLabel()
         k.showStateAndMode()
 
-Example 2: get two arguments from the user::
+Example 2: get two arguments from the user:
+
+.. code-block:: python
 
     @cmd('my-command')
     def myCommand(self, event):
@@ -6412,11 +6432,15 @@ Example 2: get two arguments from the user::
 
 - k.get1Arg contains many optional keyword arguments. See its docstring for details.
 </t>
-<t tx="ekr.20081205084002.2">Scripts can easily determine what directives are in effect at a particular position in an outline. c.scanAllDirectives(p) returns a Python dictionary whose keys are directive names and whose values are the value in effect at position p. For example::
+<t tx="ekr.20081205084002.2">Scripts can easily determine what directives are in effect at a particular position in an outline. c.scanAllDirectives(p) returns a Python dictionary whose keys are directive names and whose values are the value in effect at position p. For example:
+
+.. code-block:: python
 
     d = c.scanAllDirectives(p) g.es(g.dictToString(d))
 
-In particular, d.get('path') returns the full, absolute path created by all @path directives that are in ancestors of node p. If p is any kind of @file node (including @file, @auto, @clean, etc.), the following script will print the full path to the created file::
+In particular, d.get('path') returns the full, absolute path created by all @path directives that are in ancestors of node p. If p is any kind of @file node (including @file, @auto, @clean, etc.), the following script will print the full path to the created file:
+
+.. code-block:: python
 
     path = d.get('path')
     name = p.anyAtFileNodeName()
@@ -6676,11 +6700,15 @@ Portions of Leo's pyzo interface uses code from pyzo:
     The full license can be found in 'license.txt'.
 
 Leo's `Tribal Lion`_ Logo is Copyright (c) by `dreamstime.com`_ and is used by permission.</t>
-<t tx="ekr.20090223065025.3">Let::
+<t tx="ekr.20090223065025.3">Let:
+
+.. code-block:: python
 
     w = c.frame.body.wrapper  # Leo's body pane.
 
-Scripts can get or change the context of the body as follows::
+Scripts can get or change the context of the body as follows:
+
+.. code-block:: python
 
     w.appendText(s)                     # Append s to end of body text.
     w.delete(i,j=None)                  # Delete characters from i to j.
@@ -6986,7 +7014,9 @@ That's about it. It would be pointless to give you more details, because those d
 </t>
 <t tx="ekr.20100506062734.11593">The mod_scripting plugin runs @scripts before plugin initiation is complete. Thus, such scripts can not directly modify plugins. Instead, a script can create an event handler for the after-create-leo-frame that will modify the plugin.
 
-For example, the following modifies the cleo.py plugin after Leo has completed loading it::
+For example, the following modifies the cleo.py plugin after Leo has completed loading it:
+
+.. code-block:: python
 
     def prikey(self, v):
         try:
@@ -7835,6 +7865,7 @@ Unless otherwise noted, all directives listed are valid only in body text, and t
    This directive also controls how ``@doc`` parts are broken into lines.
    &lt;n&gt; should be a positive integer.  For example::
 
+
       @pagewidth 100
 
   The ``@pagewidth`` directive overrides the ``@int page_width`` setting.
@@ -7844,26 +7875,21 @@ Unless otherwise noted, all directives listed are valid only in body text, and t
 
 ``@persistence``
 
-    With ``@clean`` and ``@file``, Leo can store **persistent data**
-    in nodes. This information consists of the node's **gnx** (Global
-    Node Index) and the node's **uA**, (User Attributes). The gnx
-    gives each node a unique, immutable identity. Gnx's make clones
-    possible. The uA allows scripts and plugins to associate
-    arbitrarily much additional data with each node.
+    With ``@clean`` and ``@file``, Leo can preserve **persistent data**,
+    each node's **gnx** (global node index) **uA**, (user ttributes).
 
-    By default, Leo's importers preserve neither gnx's nor uA's. This
-    makes imported ``@auto`` trees second class citizens. To remedy
-    this, if an outline contains an ``@persistence`` node, Leo will
-    save data in the ``@persistence`` tree that allows Leo to recover
-    gnx's and uA's when re-reading ``@auto`` files later. This allows
-    clone links and uA's to persist.
+    By default, Leo's importers preserve neither gnx's nor uA's. However,
+    if an outline contains an ``@persistence`` node, Leo will save data in
+    the ``@persistence`` tree that allows Leo to recover gnx's and uA's
+    when re-reading ``@auto`` files. This allows clone links and uA's
+    to persist.
 
-    @persistence is an optional feature. The stored data is akin to
-    bookmarks. The data can "break" (become inaccessible) if the
-    structure (including class/method/function names) changes.
-    However, the data will typically break infrequently. To disable
-    this feature, just delete an existing ``@persistence`` node or
-    change ``@persistence`` to ``@@persistence``.
+    ``@persistence`` is an optional feature. The stored data is akin to
+    bookmarks. The data can "break" (become inaccessible) if the structure
+    (including class/method/function names) changes. However, the data will
+    typically break infrequently. To disable this feature, just delete an
+    existing ``@persistence`` node or change ``@persistence`` to
+    ``@@persistence``.
 
 .. index::
     pair: @tabwidth; Reference
@@ -8203,24 +8229,25 @@ Nevertheless, these sentinels can be useful in special situations.
     The ``@comment`` directive must precede the first section name or ``@c``
     directive.
 
-    There are situations where using ``@delims`` or ``@comment`` is not avoidable or impractical to
-    add new language definition, and including it causes the resulting file to be invalid.
-    In place of delimiter definition, use ``@0x`` + delimiter encoded in hexadecimal.
-    The hexadecimal part must be acceptable input to binascii.unhexlify(), otherwise whole 
-    directive will be ignored. Use binascii.hexlify('my-delimiter') to generate it.
-    Decoded delimiters are not checked for validity (such as, UTF-8) and whether they 
-    do not clash with Leo format (like newline or NUL characters)!
+    There are situations where using ``@delims`` or ``@comment`` is not
+    avoidable or impractical to add new language definition, and including
+    it causes the resulting file to be invalid. In place of delimiter
+    definition, use ``@0x`` + delimiter encoded in hexadecimal. The
+    hexadecimal part must be acceptable input to binascii.unhexlify(),
+    otherwise whole directive will be ignored. Use
+    binascii.hexlify('my-delimiter') to generate it. Decoded delimiters are
+    not checked for validity (such as, UTF-8) and whether they do not clash
+    with Leo format (like newline or NUL characters)!
 
     Example::
 
         @comment @0x3c212d2d2120 @0x202d2d3e
 
-    for GenshiXML is the same definition as 
+    for GenshiXML is the same definition as:: 
 
         @comment &lt;!--!_ _--&gt;
 
-    to create comments that will be removed from the output by Genshi. But the latter would 
-    cause XML parsing error on the ``@comment`` line.
+    but the latter would cause XML parsing error on the ``@comment`` line.
 
 .. index::
     pair: @delims; Reference
@@ -8234,7 +8261,9 @@ Nevertheless, these sentinels can be useful in special situations.
     delimiter. If two delimiters are present they set block comment delimiters.
 
     This directive is often used to place Javascript text inside XML or HTML
-    files. Like this::
+    files. Like this:
+    
+    .. code-block:: python
 
         @delims /* */
         Javascript stuff
@@ -10631,7 +10660,9 @@ Leo will never encourage cross-outline clones, because such clones are inherentl
 Indeed, the shared clones would be subject to the well-known multiple-update problem. Suppose the two outlines were open simultaneously, and each outline changed the shared clones in different ways. Whichever outline changed the data last would "win." The changes in the other outline would be lost forever!
 
 In short, Leo will never support features that encourage cross-outline clones.</t>
-<t tx="ekr.20110531155858.20563">The following script will create a minimal Leo outline::
+<t tx="ekr.20110531155858.20563">The following script will create a minimal Leo outline:
+
+.. code-block:: python
 
     if 1:
         # Create a visible frame.
@@ -11129,7 +11160,9 @@ if changed:
 <t tx="ekr.20111108052738.5507">run-marked-unit-tests-externally = Alt-4
 run-all-unit-tests-externally = Alt-5
 </t>
-<t tx="ekr.20111115063523.13619">The following puts up a test window when run as a Leo script::
+<t tx="ekr.20111115063523.13619">The following puts up a test window when run as a Leo script:
+
+.. code-block:: python
 
     from PyQt5 import QtGui
     w = QtGui.QWidget()
@@ -11139,7 +11172,9 @@ run-all-unit-tests-externally = Alt-5
     w.show()
     c.my_test = w # &lt;-- Keep a reference to the window!
 
-**Important**: Something like the last line is essential. Without it, the window would immediately disappear after being created.  The assignment::
+**Important**: Something like the last line is essential. Without it, the window would immediately disappear after being created.  The assignment:
+
+.. code-block:: python
 
     c.my_test = w
 
@@ -12757,11 +12792,15 @@ The following script won't work as intended:
     w.setWindowTitle('Simple test')
     w.show()
 
-When the script exits the sole reference to the window, w, ceases to exist, so the window is destroyed (garbage collected). To keep the window open, add the following code as the last line to keep the reference alive::
+When the script exits the sole reference to the window, w, ceases to exist, so the window is destroyed (garbage collected). To keep the window open, add the following code as the last line to keep the reference alive:
+
+.. code-block:: python
 
     g.app.scriptsDict['my-script_w'] = w
 
-Note that this reference will persist until the next time you run the execute-script. If you want something even more permanent, you can do something like::
+Note that this reference will persist until the next time you run the execute-script. If you want something even more permanent, you can do something like:
+
+.. code-block:: python
 
     g.app.my_script_w = w
 </t>
@@ -13907,7 +13946,9 @@ Every plugin should have a top-level init function that returns True if the plug
 1. Registers an onCreate event handler, called when Leo creates a new window.
 2. Calls g.plugin_signon(__name__)
 
-For example::
+For example:
+
+.. code-block:: python
 
     def init():
         if &lt;&lt; all imports successful &gt;&gt;:
@@ -13919,11 +13960,15 @@ For example::
 
 Plugins do *not* have automatic access to c, g and p.
 
-Plugins define g by importing it::
+Plugins define g by importing it:
+
+.. code-block:: python
 
     import leo.core.leoGlobals as g
 
-Plugins gain access to c using event handlers::
+Plugins gain access to c using event handlers:
+
+.. code-block:: python
 
     controllers = {}
 
@@ -13946,7 +13991,9 @@ Plugins gain access to c using event handlers::
             controller = controllers.get(c.hash())
             controller.handleEvent()
 
-Some plugins inject ivars into the Commands class rather than using a global controllers dict::
+Some plugins inject ivars into the Commands class rather than using a global controllers dict:
+
+.. code-block:: python
 
     def onCreate (tag, keys):
         c = keys.get('c')
@@ -14561,11 +14608,15 @@ Wrapper classes are useful, regardless of gui independence:
 </t>
 <t tx="ekr.20131011050613.16862">Once you know approximately where to look, it is easy to use traces to
 discover what is going on. To trace the last n (default 4) callers of any
-function::
+function:
+
+.. code-block:: python
 
     g.trace(g.callers(n))
 
-Many complex methods define a trace variable::
+Many complex methods define a trace variable:
+
+.. code-block:: python
 
     trace = False and not g.unitTesting
 
@@ -14577,7 +14628,9 @@ I typically use g.pdb() only for deep mysteries!
 
 **Note**: you must run Leo from a console window to use either g.trace or
 g.pdb. I recommend always running Leo from a console.</t>
-<t tx="ekr.20131011050613.16866">Several modules contain long comments::
+<t tx="ekr.20131011050613.16866">Several modules contain long comments:
+
+.. code-block:: python
 
     &lt;&lt; about new sentinels &gt;&gt; (leoAtFile.py)
     &lt;&lt; about the leoBridge module &gt;&gt; (leoBridge.py)
@@ -14680,7 +14733,9 @@ All of Leo's generators now yield *copies* of positions.
 
 **Warning**: stored positions become invalid when outline changes. **c.positionExists(p)** is True if p is valid in c's outline.
 </t>
-<t tx="ekr.20131012060912.16788">g.es can send it's output to tabs other than the log tab::
+<t tx="ekr.20131012060912.16788">g.es can send it's output to tabs other than the log tab:
+
+.. code-block:: python
 
     c.frame.log.selectTab('Test')
         # Create Test or make it visible.
@@ -14690,7 +14745,9 @@ All of Leo's generators now yield *copies* of positions.
 
 .. Fix Leo Issue #1101: https://github.com/leo-editor/leo-editor/issues/1101
 
-Plugins and scripts may call c.frame.log.createTab to create non-text widgets in the log pane::
+Plugins and scripts may call c.frame.log.createTab to create non-text widgets in the log pane:
+
+.. code-block:: python
 
     from leo.core.leoQt import QtWidgets
     log = c.frame.log
@@ -14775,9 +14832,11 @@ Because of clones, the *same* node may appear at *multiple positions* in the out
 For any position p, **p.b** is the node's body text, **p.h** is the node's headline and **p.u** is the node's `user attributes`_, and **p.v** is the position's vnode. Similarly, for any vnode v, **v.b** is the node's body text, **v.h** is the node's headline and **v.u** is the node's user attributes. 
 
 </t>
-<t tx="ekr.20131014053720.16816">The .leo files in Leo's distribution contain many @button nodes (many disabled), that do repetitive chores. Here is one, @button promote-child-bodies, from LeoDocs.leo::
+<t tx="ekr.20131014053720.16816">The .leo files in Leo's distribution contain many @button nodes (many disabled), that do repetitive chores. Here is one, @button promote-child-bodies, from LeoDocs.leo:
 
-    '''Copy the body text of all children to the parent's body text.'''
+.. code-block:: python
+
+    """Copy the body text of all children to the parent's body text."""
 
     # Great for creating what's new nodes.
     result = [p.b]
@@ -15088,16 +15147,17 @@ run()
 </t>
 <t tx="ekr.20131016103844.16730">See the docstring of these plugins for more details::
 
-    bookmarks.py:       Manages URL's used as bookmarks.
-    contextmenu.py:     Creates context menus for headlines.
-    demo.py:            Creates demos and slides.
-    mod_scripting.py:   Supports @button and @command nodes.
-    quicksearch.py:     Adds Nav tab for searching.
-    todo.py:            To-do lists and simple project management.
-    viewrendered.py:    Creates a rendering pane.
+    bookmarks.py        Manages URL's used as bookmarks.
+    contextmenu.py      Creates context menus for headlines.
+    demo.py             Creates demos and slides.
+    mod_scripting.py    Supports @button and @command nodes.
+    quicksearch.py      Adds Nav tab for searching.
+    todo.py             To-do lists and simple project management.
+    viewrendered.py     Creates a rendering pane.
                         Automatically loaded by Leo's help commands.
                         Supports @graphics-script, @image, @html,
                         @movie and @svg nodes.
+    viewrendered3.py    An enhanced version of viewrendered3.py.
     vim.py &amp; xemacs.py  Interface with vim and xemacs.
 </t>
 <t tx="ekr.20131017051340.16732">These are not included on the web, but may be of interest to those
@@ -15409,13 +15469,17 @@ because the position properties handle recoloring and other details.
 Scripts should use *vnode* properties only when making batch changes to
 vnodes.
 </t>
-<t tx="ekr.20131019061259.16691">**Properties**::
+<t tx="ekr.20131019061259.16691">**Properties**
+
+::
 
     p.b: same as p.v.b.  *Warning*: p.b = s is expensive.
     p.h: same as p.v.h.  *Warning*: p.h = s is expensive.
     p.u: same as p.v.u.
 
-**Generators** (New in Leo 5.5: All generators yield distinct positions)::
+**Generators** (New in Leo 5.5: All generators yield distinct positions)
+
+::
 
     p.children()
     p.parents()
@@ -15425,7 +15489,9 @@ vnodes.
     p.subtree()
     p.self_and_subtree()
 
-**Getters** These return *new positions*::
+**Getters** These return *new positions*
+
+::
 
     p.back()
     p.children()
@@ -15459,12 +15525,16 @@ vnodes.
     p.visBack()
     p.visNext()
 
-**Setters**::
+**Setters**
+
+::
 
     p.setDirty()  *Warning*: p.setDirty() is expensive.
     p.setMarked()
 
-**Operations on nodes**::
+**Operations on nodes**
+
+::
 
     p.clone()
     p.contract()
@@ -15501,7 +15571,9 @@ these when generators are not flexible enough::
 </t>
 <t tx="ekr.20131019061259.16692">For full details, see @file leoGlobals.py in LeoPyRef.leo.
 
-**g vars**::
+**g vars**
+
+::
 
     g.app
     g.app.gui
@@ -15509,11 +15581,15 @@ these when generators are not flexible enough::
     g.unitTesting
     g.user_dict  # a temporary dict for use of scripts and plugins.
 
-**g decorator**::
+**g decorator**
+
+::
 
     @g.command(command-name)
 
-**g functions** (the most interesting: there are many more in leoGlobals.py)::
+**g functions** (the most interesting: there are many more in leoGlobals.py)
+
+::
 
     g.angleBrackets()
     g.app.commanders()
@@ -16153,7 +16229,9 @@ Key handlers can call either **direct acceptance methods**, vc.accept, vc.delega
 
 **vc.motion_i** is the insertion point *before* the motion has taken place.
 </t>
-<t tx="ekr.20140810085801.18220">The simplest way of moving the cursor or changing text is to use the vc.do method, a thin wrapper for c.k.simulateCommand.  For example::
+<t tx="ekr.20140810085801.18220">The simplest way of moving the cursor or changing text is to use the vc.do method, a thin wrapper for c.k.simulateCommand.  For example:
+
+.. code-block:: python
 
     if vc.state == 'visual':
         vc.do('end-of-buffer-extend-selection')
@@ -16168,7 +16246,9 @@ The vc.vis_d method handles the d keystroke that ends visual mode.
 
 The following sections examine each piece of the code in detail. If you understand how it works you should know everything you need to write any other key handler.
 </t>
-<t tx="ekr.20140810085801.18222">::
+<t tx="ekr.20140810085801.18222">:
+
+.. code-block:: python
 
     def vim_d(vc):
         '''
@@ -16191,7 +16271,9 @@ follow-on handler. Otherwise, the handler calls vc.quit() to end the
 command.
 
 </t>
-<t tx="ekr.20140810085801.18223">::
+<t tx="ekr.20140810085801.18223">:
+
+.. code-block:: python
 
     def vim_d2(vc):
         if vc.is_text_widget(vc.w):
@@ -16242,7 +16324,9 @@ Finally, vc.vim_d2 calls vc.begin_motion, which does the following:
   vc.vim_d3 will be called when the motion is complete. The details are
   complicated, but happily the key handlers don't have to know about them!
 </t>
-<t tx="ekr.20140810085801.18224">::
+<t tx="ekr.20140810085801.18224">:
+
+.. code-block:: python
 
     def vim_d3(vc):
         '''Complete the d command after the cursor has moved.'''
@@ -16288,7 +16372,9 @@ The code then deletes the selected text.
 
 Finally, this method calls vc.done().
 </t>
-<t tx="ekr.20140810085801.18225">::
+<t tx="ekr.20140810085801.18225">:
+
+.. code-block:: python
 
     def vis_d(vc):
         '''Delete the highlighted text and terminate visual mode.'''
@@ -16436,7 +16522,9 @@ commands may cross line boundaries.
 - Mouse clicks never change vim's state.
 
 </t>
-<t tx="ekr.20140811083910.18246">The handler for the G command moves or extends the cursor depending on vc.state::
+<t tx="ekr.20140811083910.18246">The handler for the G command moves or extends the cursor depending on vc.state:
+
+.. code-block:: python
 
     def vim_G(vc):
         '''Put the cursor on the last character of the body pane.'''
@@ -17065,7 +17153,9 @@ Wrappers allow the same text-handling code to work regardless of whether the act
 </t>
 <t tx="ekr.20150312080344.14">Various vim commands advertise, just by having a tab_callback method, that they want to handle a tab that follows their name. ga.do_tab then defers to the vim command. Vim's tab handler no longer knows *anything* about colon commands, or what any command intends to do with the tab. If the command handler has a tab_callback attribute, vim's tab handler just calls it.
 
-Here is the flattened form of the class that handles the :tabnew command. Note that the __call__ and tab_callback methods are trivial::
+Here is the flattened form of the class that handles the :tabnew command. Note that the __call__ and tab_callback methods are trivial:
+
+.. code-block:: python
 
     class Tabnew:
         '''
@@ -17442,7 +17532,9 @@ p.b = ''.join(sorted(set(g.splitLines(p.b.rstrip()+'\n'))))</t>
     Switches between outline tabs. You may open multiple Leo outlines in different tabs within the same main window.
 ``Ctrl-G (keyboard-quit)``
     Puts focus in the body pane. More effective than hitting Alt-Tab twice.</t>
-<t tx="ekr.20150318043636.14">The following script imports files from a given directory and all subdirectories::
+<t tx="ekr.20150318043636.14">The following script imports files from a given directory and all subdirectories:
+
+.. code-block:: python
 
     c.recursiveImport(
         dir_ = 'path to file or directory',
@@ -18537,22 +18629,20 @@ The following commands work much like the `Emacs cursor commands`_::
     :wq
     :xa
 </t>
-<t tx="ekr.20150323102036.1">@language rest
+<t tx="ekr.20150323102036.1">Scripts and plugins can call g.app.idleTimeManager.add_callback(callback) to cause
+the callback to be called at idle time forever. This should suffice for most purposes:
 
-Scripts and plugins can call g.app.idleTimeManager.add_callback(callback) to cause
-the callback to be called at idle time forever. This should suffice for most purposes::
-
-@language python
+.. code-block:: python
 
     def print_hi():
         print('hi')
 
     g.app.idleTimeManager.add_callback(print_hi)
     
-@language rest
-For greater control, g.IdleTime is a thin wrapper for the Leo's IdleTime class. The IdleTime class executes a handler with a given delay at idle time. The handler takes a single argument, the IdleTime instance::
+For greater control, g.IdleTime is a thin wrapper for the Leo's IdleTime class. The IdleTime class executes a handler with a given delay at idle time. The handler takes a single argument, the IdleTime instance:
 
-@language python
+.. code-block:: python
+
     def handler(it):
         """IdleTime handler.  it is an IdleTime instance."""
         delta_t = it.time - it.starting_time
@@ -18565,7 +18655,6 @@ For greater control, g.IdleTime is a thin wrapper for the Leo's IdleTime class. 
     it = g.IdleTime(handler, delay=500)
     if it:
         it.start()
-@language rest
 
 The code creates an instance of the IdleTime class that calls the given handler at idle time, and no more than once every 500 msec.  Here is the output::
 
@@ -18575,8 +18664,9 @@ The code creates an instance of the IdleTime class that calls the given handler 
     handler 4 LeoDocs.leo 2.0
     handler 5 LeoDocs.leo 2.5
 
-Timer instances are completely independent::
-@language python
+Timer instances are completely independent:
+
+.. code-block:: python
 
     def handler1(it):
         delta_t = it.time-it.starting_time
@@ -18598,7 +18688,6 @@ Timer instances are completely independent::
         it1.start()
         it2.start()
 
-@language rest
 Here is the output::
 
     handler1 1 LeoDocs.leo 0.5
@@ -19046,7 +19135,9 @@ The Python beautifier works only on syntactically correct code. It issues a warn
             text="Ok")
 </t>
 <t tx="ekr.20150817125512.1">efc.compareTrees does most of the work of comparing two similar outlines.
-For example, here is "@button compare vr-controller" in leoPyRef.leo::
+For example, here is "@button compare vr-controller" in leoPyRef.leo:
+
+.. code-block:: python
 
     p1 = g.findNodeAnywhere(c, 'class ViewRenderedController (QWidget) (vr)')
     p2 = g.findNodeAnywhere(c, 'class ViewRenderedController (QWidget) (vr2)')
@@ -19523,7 +19614,9 @@ The **clone-marked** commands move clones of all marked nodes under an organizer
     else:
         app.logWaiting.append((s, color),)
 </t>
-<t tx="ekr.20161014050133.1">The following shows how to cut and paste text to the clipboard::
+<t tx="ekr.20161014050133.1">The following shows how to cut and paste text to the clipboard:
+
+.. code-block:: python
 
     g.app.gui.replaceClipboardWith('hi')
     print(g.app.gui.getTextFromClipboard())
@@ -21825,17 +21918,13 @@ Leo's main window as it appears on Linux:
 
 |leo-thesis|
 </t>
-<t tx="ekr.20170403185500.1">**Warning**: The p.b and p.h setters and p.setDirty() are *very* expensive:
+<t tx="ekr.20170403185500.1">The *Position* methods ``p.b``, ``p.h``, and ``p.setDirty()`` are *slow*.
 
-- p.b = s calls c.setBodyString(p, s) which will recolor body text and update the node's icon.
-- p.h = s calls c.setHeadString(p, s) which calls p.setDirty().
-- p.setDirty() changes the icons of all ancestor @file nodes.
+The *VNode* methods ``p.v.b``, ``p.v.b``, and ``p.v.setDirty()`` are *fast*.
 
-In contrast, the corresponding p.v.b and p.v.b setters and p.v.setDirty() are extremely fast.
+However, it's usually better to use the *Position* methods, despite their cost, because Position methods update Leo's outline completely.
 
-Usually, code *should* use the p.b and p.h setters and p.setDirty(), despite their cost, because they update Leo's outline pane properly. Calling c.redraw() is *not* enough.
-
-These performance gotchas become important for repetitive commands, like cff, replace-all and recursive import. In such situations, code should use p.v.b and p.v.h setters instead of p.b and p.h setters.
+Use the *VNode* methods only for repetitive commands, like ``cff``, ``replace-all`` and recursive import.
 </t>
 <t tx="ekr.20170608071626.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Leo 5.6 September 25, 2017
 
@@ -24061,12 +24150,14 @@ When I learned that Edward lived across town, kitty-corner from a high school sw
 </t>
 <t tx="ekr.20180226153353.1">g.app.backgroundProcessManager is the singleton instance of the BackgroundProcessManager (BPM) class. This class runs background processes, *without blocking Leo*. The BPM manages a queue of processes, and runs them *one at a time* so that their output remains separate.
 
-BPM.start_process(c, command, kind, fn=None, shell=False) adds a process to the queue that will run the given command::
+BPM.start_process(c, command, kind, fn=None, shell=False) adds a process to the queue that will run the given command:
+
+.. code-block:: python
 
     bpm = g.app.backgroundProcessManager
     bpm.start_process(c, command='ls', kind='ls', shell=True)
 
-BM.kill(kind=None) kills all process with the given kind. If kind is None or 'all', all processes are killed.
+``BM.kill(kind=None)`` kills all process with the given kind. If kind is None or 'all', all processes are killed.
 
 You can add processes to the queue at any time. For example, you can rerun the 'pylint' command while a background process is running.
 
@@ -24076,7 +24167,9 @@ The BackgroundProcessManager is completely safe: all of its code runs in the mai
 
 Only one process at a time should be producing output. All processes that *do* produce output should be managed by the singleton BPM instance.
 
-To run processes that *don't* produce output, just call subprocess.Popen::
+To run processes that *don't* produce output, just call subprocess.Popen:
+
+.. code-block:: python
 
     import subprocess
     subprocess.Popen('ls', shell=True)
@@ -24095,12 +24188,16 @@ If for some reason the launchers fail run Leo directly with::
 
     python path/to/leo-editor/launchLeo.py
 </t>
-<t tx="ekr.20180226155008.1">Calling subprocess.popen is often simple and good. For example, the following executes the 'npm run dev' command in a given directory.  Leo continues, without waiting for the command to return::
+<t tx="ekr.20180226155008.1">Calling subprocess.popen is often simple and good. For example, the following executes the 'npm run dev' command in a given directory.  Leo continues, without waiting for the command to return:
+
+.. code-block:: python
 
     os.chdir(base_dir)
     subprocess.Popen('npm run dev', shell=True)
 
-The following hangs Leo until the command completes::
+The following hangs Leo until the command completes:
+
+.. code-block:: python
 
     os.chdir(base_dir)
     proc = subprocess.Popen(command, shell=True)
@@ -24110,8 +24207,9 @@ The following hangs Leo until the command completes::
 </t>
 <t tx="ekr.20180226155010.1">Use g.execute_shell_commands is a thin wrapper around subprocess.popen.  It calls subprocess.popen once for every command in a list.  
 
-This function waits for each command to complete, except those commands starting with '&amp;'.
-::
+This function waits for each command to complete, except those commands starting with '&amp;':
+
+.. code-block:: python
 
     def execute_shell_commands(commands, trace=False):
         if g.isString(commands): commands = [commands]
@@ -24122,31 +24220,35 @@ This function waits for each command to complete, except those commands starting
             proc = subprocess.Popen(command, shell=True)
             if wait: proc.communicate()
 
-For example::
+For example:
+
+.. code-block:: python
 
     os.chdir(base_dir)
     g.execute_shell_commands(['&amp;npm run dev',])
 </t>
 <t tx="ekr.20180226155010.2">g.execute_shell_commands_with_options is more flexible.  It allows scripts to get both the starting directory and the commands themselves from Leo's settings. Its signature is:
 
-def execute_shell_commands_with_options(
-    base_dir = None,
-    c = None,
-    command_setting = None,
-    commands = None,
-    path_setting = None,
-    warning = None,
-):
-    '''
-    A helper for prototype commands or any other code that
-    runs programs in a separate process.
+.. code-block:: python
 
-    base_dir:           Base directory to use if no path_setting is given.
-    commands:           A list of commands, for g.execute_shell_commands.
-    commands_setting:   Name of @data setting for commands.
-    path_setting:       Name of @string setting for the base directory.
-    warning:            A warning to be printed before executing the commands.
-    '''
+    def execute_shell_commands_with_options(
+        base_dir = None,
+        c = None,
+        command_setting = None,
+        commands = None,
+        path_setting = None,
+        warning = None,
+    ):
+        '''
+        A helper for prototype commands or any other code that
+        runs programs in a separate process.
+
+        base_dir:           Base directory to use if no path_setting is given.
+        commands:           A list of commands, for g.execute_shell_commands.
+        commands_setting:   Name of @data setting for commands.
+        path_setting:       Name of @string setting for the base directory.
+        warning:            A warning to be printed before executing the commands.
+        '''
 
 For example, put this in myLeoSettings.leo::
 
@@ -24155,13 +24257,17 @@ For example, put this in myLeoSettings.leo::
 
     @string my-npm-base = /npmtest
 
-And then run::
+And then run:
+
+.. code-block:: python
 
     g.execute_shell_commands_with_options(
         c = c,
         command_setting = 'my-npm-commands',
         path_setting= 'my-npm-base',
     )
+    
+
 </t>
 <t tx="ekr.20180303013046.1">I came about Leo because I was interested in Learning Python and some forum said that Leo, not Zope, was a superb showcase for this language. I found that it supported a form of literate programming, which I was already interesting into. I started to use it almost exclusively for writing, not for programming, from note keeping to even draft of my thesis, since 2005, when I found Leo, to 2015 and then I found Pharo and Roassal and the idea of software as a graph (https://vimeo.com/94724841)
 
@@ -24601,7 +24707,9 @@ The VNode class is, in fact, an excellent example of information hiding.  The bo
 
 **Possible improvements**
 
-1. A new c.new_vnode method could help instantiate VNodes::
+1. A new c.new_vnode method could help instantiate VNodes:
+
+.. code-block:: python
 
     def new_vnode(self, gnx=None):
         c = self
@@ -24692,7 +24800,9 @@ Here are the basics of debugging with Leo:
 
 c.recursiveImport is a wrapper on the RecursiveImportController class.​ ​You can find the related code by doing a regex cff (ignoring case) on ​ ​"recursive?import".
 
-Here is how to use c.recursiveImport::
+Here is how to use c.recursiveImport:
+
+.. code-block:: python
 
     c.recursiveImport(
         dir_ = &lt;&lt; path to root directory &gt;&gt;,
@@ -25983,7 +26093,9 @@ Commands that *DON'T* use the printer:
 </t>
 <t tx="ekr.20180827104847.1">Leo's @pyplot nodes support
 `matplotlib &lt;https://matplotlib.org/users/index.html&gt;`_.
-\@pyplot nodes start with @pyplot in the headline.  The rest of the headline is comments. These nodes should contain matplotlib scripts that create figures or animations.  Like this::
+\@pyplot nodes start with @pyplot in the headline.  The rest of the headline is comments. These nodes should contain matplotlib scripts that create figures or animations.  Like this:
+
+.. code-block:: python
 
     fig2 = plt.figure()
     x = np.arange(-9, 10)
@@ -26003,7 +26115,9 @@ Commands that *DON'T* use the printer:
 
 1. If the viewrendered (VR) pane is open, Leo will display the animation in the VR pane whenever the user selects the @pyplot node.  This has been tested only with the viewrendered.py, not the viewrendered2.py plugin.
 
-2. In addition to c, g, and p, the VR code predefines several other vars.  The VR code does the following imports::
+2. In addition to c, g, and p, the VR code predefines several other vars.  The VR code does the following imports:
+
+.. code-block:: python
 
     import matplotlib
     import matplotlib.pyplot as plt
@@ -26013,13 +26127,17 @@ Commands that *DON'T* use the printer:
 and then predefines the animation, matplotlib, np, numpy and plt vars in the @pyplot script. numpy is also predefined as an alias for np.</t>
 <t tx="ekr.20180827105047.1">To display images and animations in an external window, *don't* put the script in an @pyplot node. Instead, put the script in a regular node, with the following modifications:
 
-1. Add the required imports::
+1. Add the required imports:
+
+.. code-block:: python
 
     import numpy as np
     import matplotlib.pyplot as plt
     import matplotlib.animation as animation
 
-2. Place the following at the end of the script::
+2. Place the following at the end of the script:
+
+.. code-block:: python
 
     plt.ion()
         # sets interactive mode. Prevents this message:
@@ -27047,7 +27165,7 @@ The change was to load_session.</t>
 <t tx="ekr.20180930062538.1">This is the presently active commander, that is, g.app.log.c.
 </t>
 <t tx="ekr.20181015144118.25"></t>
-<t tx="ekr.20181015144118.26">::
+<t tx="ekr.20181015144118.26">.. code-block:: python
 
     @g.command('i1')
     def i1_command(event):
@@ -27058,8 +27176,9 @@ The change was to load_session.</t>
             g.trace(args)
             c.bodyWantsFocus()
 
-        c.interactive(callback, event, prompts=['Prompt: '])</t>
-<t tx="ekr.20181015144118.27">::
+        c.interactive(callback, event, prompts=['Prompt: '])
+</t>
+<t tx="ekr.20181015144118.27">.. code-block:: python
 
     @g.command('i2')
     def i2_command(event):
@@ -27073,7 +27192,7 @@ The change was to load_session.</t>
         c.interactive(callback, event,
             prompts=['Find: ', ' Replace: '])
 </t>
-<t tx="ekr.20181015144118.28">::
+<t tx="ekr.20181015144118.28">.. code-block:: python
 
     @g.command('i3')
     def i3_command(event):
@@ -27087,71 +27206,73 @@ The change was to load_session.</t>
         c.interactive(callback, event,
             prompts=['One: ', ' Two: ', ' Three: '])
 </t>
-<t tx="ekr.20181015144118.29">LeoPyRef.leo contains all of Leo's core source code.
+<t tx="ekr.20181015144118.29">``LeoPyRef.leo`` contains all of Leo's core source code.
 
-Leo's code uses the following conventions throughout:
+Leo's code uses the following conventions throughout::
 
-c:  a commander.
-ch: a character.
-d:  a dialog or a dict.
-f:  an open file.
-fn: a file name.
-g:  the leoGlobals module.
-i, j, k: indices into a string.
-p:  a Position.
-s:  a string.
-t:  a text widget.
-u:  an undoer.
-w:  a gui widget.
-v:  a Vnode
-z:  a local temp.
+    c:  a commander.
+    ch: a character.
+    d:  a dialog or a dict.
+    f:  an open file.
+    fn: a file name.
+    g:  the leoGlobals module.
+    i, j, k: indices into a string.
+    p:  a Position.
+    s:  a string.
+    t:  a text widget.
+    u:  an undoer.
+    w:  a gui widget.
+    v:  a Vnode
+    z:  a local temp.
 
-In more limited contexts, the following conventions apply:
+In more limited contexts, the following conventions apply::
 
-si:     a g.ShortcutInfo object.
-ks:     a g.KeyStroke object
-stroke: a KeyStroke object.
+    si:     a g.ShortcutInfo object.
+    ks:     a g.KeyStroke object
+    stroke: a KeyStroke object.
 
-btw:    leoFrame.BaseTextWrapper
-stw:    leoFrame.StringTextWrapper
+    btw:    leoFrame.BaseTextWrapper
+    stw:    leoFrame.StringTextWrapper
 
-bqtw:   qt_text.BaseQTextWrapper
-lqtb:   qt_text.LeoQTextBrowser
-qhlw:   qt_text.QHeadlineWrapper
-qmbw:   qt_text.QMinibufferWrapper
-qlew:   qt_text.QLineEditWrapper
-qsciw:  qt_text.QScintiallaWrapper
-qtew:   qt_text.QTextEditWrapper
+    bqtw:   qt_text.BaseQTextWrapper
+    lqtb:   qt_text.LeoQTextBrowser
+    qhlw:   qt_text.QHeadlineWrapper
+    qmbw:   qt_text.QMinibufferWrapper
+    qlew:   qt_text.QLineEditWrapper
+    qsciw:  qt_text.QScintiallaWrapper
+    qtew:   qt_text.QTextEditWrapper
 
-Names defined in Leo's core are unlikely to change, especially names used outside their defining module. This includes virtually everything in leoGlobals.py, and many names in leoCommands.py and other files. </t>
-<t tx="ekr.20181015144118.30">The following 'official' ivars (instance vars) will always exist:
+Names defined in Leo's core are unlikely to change, especially names used outside their defining module. This includes virtually everything in ``leoGlobals.py``, and many names in ``leoCommands.py`` and other files. </t>
+<t tx="ekr.20181015144118.30">The following 'official' ivars (instance vars) will always exist::
 
-c.frame                 The frame containing the log,body,tree, etc.
-c.frame.body            The body pane.
-c.frame.body.widget     The gui widget for the body pane.
-c.frame.body.wrapper    The high level interface for the body widget.
-c.frame.iconBar         The icon bar.
-c.frame.log             The log pane.
-c.frame.log.widget      The gui widget for the log pane.
-c.frame.log.wrapper     The high-level interface for the log pane.
-c.frame.tree            The tree pane.
+    c.frame                 The frame containing the log,body,tree, etc.
+    c.frame.body            The body pane.
+    c.frame.body.widget     The gui widget for the body pane.
+    c.frame.body.wrapper    The high level interface for the body widget.
+    c.frame.iconBar         The icon bar.
+    c.frame.log             The log pane.
+    c.frame.log.widget      The gui widget for the log pane.
+    c.frame.log.wrapper     The high-level interface for the log pane.
+    c.frame.tree            The tree pane.
 
-The following were official ivars that no longer exist:
+The following were official ivars that no longer exist::
 
-c.frame.body.bodyCtrl   Use c.frame.body.wrapper instead.
-c.frame.log.logCtrl     Use c.frame.log.wrapper instead.
+    c.frame.body.bodyCtrl   Use c.frame.body.wrapper instead.
+    c.frame.log.logCtrl     Use c.frame.log.wrapper instead.
 </t>
 <t tx="ekr.20181015144118.31">A **widget** is an actual Qt widget. Leo's core seldom accesses widgets directly.  Instead, a  **wrapper class** defines a standard api that hides the details of the underlying gui **text** widgets.
 
 Leo's core uses the wrapper api almost exclusively. That is, Leo's core code treats wrappers *as if* they were only text widgets there are!
 
-A back door exists for special cases. All wrapper classes define an official ``widget`` ivar, so core or plugin code can gain access to the real Qt widget using wrapper.widget. Searching for wrapper.widget will find all gui-dependent snippets of code in Leo's core.
+A back door exists for special cases. All wrapper classes define an official ``widget`` ivar, so core or plugin code can gain access to the real Qt widget using wrapper.widget. Searching for ``wrapper.widget`` will find all gui-dependent snippets of code in Leo's core.
 </t>
 <t tx="ekr.20181015144118.33"></t>
 <t tx="ekr.20181015144118.34">Leo's Code Academy posts discuss how to do useful things in Leo. The following are distilled from online discussions about Leo's scripting.</t>
 <t tx="ekr.20181015144118.35">uA's (user Attributes) associate arbitrary data with any vnode. uA's are dictionaries of dictionaries--an **outer dictionary** and zero or more **inner dictionaries**. The outer dictionary associates plugin names (or Leo's core) with inner dictionaries. The inner dictionaries carry the actual data.
 
-The v.u or p.v properties get and set uA's. You can think of p.u as a synonym for p.v.unknownAttributes on both sides of an assignment. For example::
+The v.u or p.v properties get and set uA's. You can think of p.u as a synonym for p.v.unknownAttributes on both sides of an assignment. For example:
+
+.. code-block:: python
 
     plugin_name = 'test_plugin'
     d = p.u.get(plugin_name,{})
@@ -27162,13 +27283,17 @@ p.u is the outer dictionary. p.u.get.(plugin_name, {}) is the inner dictionary. 
 
 It is easy to search for particular uA's. The following script prints all the keys in the outer-level uA dictionaries:
 
+.. code-block:: python
+
     for p in c.all_unique_positions():
         if p.u:
             print(p.h, sorted(p.u.keys()))
 
 This is a typical usage of Leo's generators.  Generators visit each position (or node) quickly. Even if you aren't going to program much, you should be aware of how easy it is to get and set the data in each node. In fact, now would be a great time to read Leo's Scripting Tutorial again :-) This will allow you to "dream bigger" with Leo.
 
-The following script creates a list of all positions having an icon, that is, an outer uA dict with a 'icon' key.
+The following script creates a list of all positions having an icon, that is, an outer uA dict with a 'icon' key:
+
+.. code-block:: python
 
     aList = [p.copy() for p in c.all_unique_positions() if 'icon' in p.u]
     print('\n'.join([p.h for p in aList]))
@@ -27176,7 +27301,9 @@ The following script creates a list of all positions having an icon, that is, an
 *Important*: If you don't understand these lines, please study Python's list comprehensions.  They are incredibly useful. '\n'.join(aList) is a great idiom to know.  str.join is one of python's most useful string methods. It converts between lists and strings.
 </t>
 <t tx="ekr.20181015144118.36">This script inserts three icons in the current outline node. Running
-the script again will insert three more::
+the script again will insert three more:
+
+.. code-block:: python
 
     table = (
         'edittrash.png',
@@ -27189,7 +27316,9 @@ the script again will insert three more::
         if g.os_path_exists(fn):
             c.editCommands.insertIconFromFile(path=fn)
 
-This deletes all icons of the node at position p::
+This deletes all icons of the node at position p:
+
+.. code-block:: python
 
     c.editCommands.deleteNodeIcons(p=p)
 </t>
@@ -27205,7 +27334,9 @@ Git is great in tracking history and reverting unwanted changes. And it has many
 
 Using git is very similar to using bzr or hg or any other SCCS.  To change Leo, you add files, you commit files, and you push files.  That's about it.
 </t>
-<t tx="ekr.20181015144118.38">c.cloneFindByPredicate is a powerful new addition to Leo.  Here is its docstring::
+<t tx="ekr.20181015144118.38">c.cloneFindByPredicate is a powerful new addition to Leo.  Here is its docstring:
+
+.. code-block:: python
 
     Traverse the tree given using the generator, cloning all positions for
     which predicate(p) is True. Undoably move all clones to a new node, created
@@ -27221,7 +27352,9 @@ Using git is very similar to using bzr or hg or any other SCCS.  To change Leo, 
     undo_type=None, The undo/redo name shown in the Edit:Undo menu.
                     The default is 'clone-find-predicate'
 
-For example, clone-find-all-marked command is essentially::
+For example, clone-find-all-marked command is essentially:
+
+.. code-block:: python
 
     @cmd('clone-find-all-marked')
     def cloneFindMarked(self, flatten):
@@ -27246,7 +27379,9 @@ These following position methods make it easy to skip @ignore trees or @&lt;file
     p.is_at_ignore()       True if p is an @ignore node
     p.in_at_ignore_tree()  True if p is in an @ignore tree.
 
-For example, here is how to gather only those marked nodes that lie outside any @ignore tree::
+For example, here is how to gather only those marked nodes that lie outside any @ignore tree:
+
+.. code-block:: python
 
     def isMarked(p):
         return p.isMarked() and not p.in_at_ignore_tree()
@@ -27275,17 +27410,17 @@ https://github.com/leo-editor/leo-editor/issues/816
 </t>
 <t tx="ekr.20181015144118.7">Alt-X puts focus in the minibuffer. Ctrl-G escapes from the minibuffer.
 
-Once there, you can use tab completion to reduce typing. For example, &lt;Alt-X&gt;open&lt;tab&gt; shows all commands that start with open.
+Once there, you can use tab completion to reduce typing. For example, ``&lt;Alt-X&gt;open&lt;tab&gt;`` shows all commands that start with open.
 
-Hit &lt;Enter&gt; to run a complete command.
+Hit ``&lt;Enter&gt;`` to run a complete command.
 
-Ctrl-P (repeat-complex-command) repeat the last command entered from the minibuffer.
+``Ctrl-P`` (``repeat-complex-command``) repeats the last command entered from the minibuffer.
 
 Leo maintains a **command history list** of all minibuffer commands you have entered.
 
-When focus is in the minibuffer, UpArrow shows the previous minibuffer command, and DnArrow show the commands before that.
+When focus is in the minibuffer, ``UpArrow`` shows the previous minibuffer command, and ``DnArrow`` show the commands before that.
 
-The body text of an @data history-list *setting node* preloads commands into the command history list, ignoring lines starting with '#'. For example::
+The body text of an ``@data history-list`` *setting node* preloads commands into the command history list, ignoring lines starting with ``#``. For example::
 
     run-pylint
     beautify-tree
@@ -27297,7 +27432,9 @@ The body text of an @data history-list *setting node* preloads commands into the
     contract-log-pane</t>
 <t tx="ekr.20190101093224.1">If you want to make a command undoable, you must create "before" and "after" snapshots of the parts of the outline that may change. Here are some examples.  Leo's source code contains many other examples.
 </t>
-<t tx="ekr.20190101093224.2">To undo a single change to body text::
+<t tx="ekr.20190101093224.2">To undo a single change to body text:
+
+.. code-block:: python
 
     command = 'my-command-name'
     b = c.undoer.beforeChangeNodeContents(p, oldYScroll=ypos)
@@ -27305,7 +27442,9 @@ The body text of an @data history-list *setting node* preloads commands into the
     c.undoer.afterChangeNodeContents(p,
         command=command, bunch=b, dirtyVnodeList=[])
 </t>
-<t tx="ekr.20190101093224.3">If your command changes multiple nodes, the pattern is::
+<t tx="ekr.20190101093224.3">If your command changes multiple nodes, the pattern is:
+
+.. code-block:: python
 
     u, undoType = c.undoer, 'command-name'
     u.beforeChangeGroup(c.p, undoType)
@@ -27552,7 +27691,9 @@ https://github.com/leo-editor/leo-editor/issues/977
 
 g.execute_shell_command executes each command in order, waiting for each command to complete, except those commands starting with '&amp;'.
 
-Examples::
+Examples:
+
+.. code-block:: python
 
     # Run the qml app in a separate process:
     g.execute_shell_commands('qmlscene /test/qml_test.qml')
@@ -28997,7 +29138,9 @@ This is far from obvious at first glance.
 
 **The new code**
 
-Here is Vitalije's version of c.deletePositionsInList, without the docstring::
+Here is Vitalije's version of c.deletePositionsInList, without the docstring:
+
+.. code-block:: python
 
     def deletePositionsInList(self, aList):
         c = self
@@ -29035,7 +29178,9 @@ those vnodes implied by the positions in aList. We can tentatively assume
 that the main loop will work properly if that data in links_to_be_cut is
 correct, but there are some subtleties lurking here which I'll discuss later.
 
-The following code creates links_to_be_cut::
+The following code creates links_to_be_cut:
+
+.. code-block:: python
 
     def p2link(p):
         parent_v = p.stack[-1][0] if p.stack else c.hiddenRootNode
@@ -29046,7 +29191,9 @@ The following code creates links_to_be_cut::
 This is elegant (compressed) code. Let's examine it carefully...
 
 p2link produces tuples (childIndex, parent_v). These become bound to i, v
-in the main loop::
+in the main loop:
+
+.. code-block:: python
 
     # The main loop.
     for i, v in links_to_be_cut:
@@ -29054,7 +29201,9 @@ in the main loop::
         child_v.parents.remove(v)
 
 To make this work, parent_v must be the vnode whose i'th child should be
-deleted::
+deleted:
+
+.. code-block:: python
 
     parent_v = p.stack[-1][0] if p.stack else c.hiddenRootNode
 
@@ -29064,49 +29213,56 @@ deleted::
 
 - p._childIndex is also the correct value for i.
 
-We have just proved the following:
+We have just proved the following::
 
-    *Deleting position p means executing the main loop for (i, v) returned by p2link(p).*
+    Deleting position p means executing the main loop for (i, v) returned by p2link(p)
 
 **Sorting and filtering**
 
-The following line filters and sorts the results produced by p2link::
+The following line filters and sorts the results produced by p2link:
+
+.. code-block:: python
 
     links_to_be_cut = sorted(set(map(p2link, aList)), key=lambda x:-x[0]
 
 Let's break this into parts, from "inside" to "outside"
 
-- map(p2link, aList) applies p2link to every position in aList.
-  The result is a list of tuples (i, v). It may contain duplicates.
+- ``map(p2link, aList)`` applies ``p2link`` to every position in ``aList``.
+  The result is a list of tuples ``(i, v)``. This list may contain
+  duplicates.
 
-- set(map(p2link, aList) removes those duplicates.
-  Let **theSet** be set(map(p2link, aList).
+- ``set(map(p2link, aList)`` removes those duplicates.
+  Let **theSet** be ``set(map(p2link, aList)``.
 
-- Finally, sorted(theSet, key=lambda x:-x[0]) creates a generator
+- Finally, ``sorted(theSet, key=lambda x:-x[0])`` creates a generator
   equivalent to a sorted list.
 
-The generator will deliver the tuples (i, v) in descending order of i, when
-several tuples (i, v) have the same vnode. The generator does not order
-tuples on v, and there is no need to do so.
+The generator will deliver the tuples in descending order of ``i``, when
+several tuples have the same vnode ``v``. The generator does not order
+tuples on ``v``, and there is no need to do so.
 
 It's easy to understand the intent of this sort order. The main loop
-contains this line::
+contains this line:
+
+.. code-block:: python
 
     child_v = v.children.pop(i)
 
-The sort order means that pop(i) happens before pop(j) if i &gt; j. This
-ensures that the precomputed values of i won't change in the main loop.
+The sort order means that ``pop(i)`` happens before ``pop(j)`` if ``i &gt;
+j``. This condition ensures that the precomputed values of ``i`` won't
+change in the main loop.
+
 
 **Completing the proof**
 
-The algorithm appears sound. The tuples (i, v) computed from p2link(p)
-correctly describe the work to be done. Filtering ensures that the work is
-done once. Sorting ensures that child indices i will not change during the
-main loop.
+The algorithm appears sound. The tuples ``(i, v)`` computed from
+``p2link(p)`` correctly describe the work to be done. Filtering ensures
+that the work is done once. Sorting ensures that child indices ``i`` will
+not change during the main loop.
 
-The (i, v) tuples are sorted on i, but not v. aList can contain positions
-in any order, so we know only that for any particular vnode v the main loop
-will handle tuples (i1, v), (i2, v), ... in the correct order.
+The tuples are sorted on ``i``, but not ``v``. ``aList`` can contain positions
+in any order, so we know only that for any particular vnode ``v`` the main loop
+will handle tuples ``(i1, v), (i2, v), ...`` in the correct order.
 
 There are two final questions to consider:
 
@@ -29116,22 +29272,23 @@ No. The vnode data are independent. The main loop works regardless of
 whether a vnode has already been unlinked.
 
 Second, could the following lines ever fail?
-::
+
+.. code-block:: python
 
     child_v = v.children.pop(i)
     child_v.parents.remove(v)
 
-No. Sorting and filtering ensure that (i, v) are unique. v is guaranteed to
-be in child_v.parents because v.children[i] must exist.
+No. Sorting and filtering ensure that tuples are unique. ``v`` is guaranteed to
+be in ``child_v.parents`` because ``v.children[i]`` must exist.
 
 This concludes the proof.
 
 **Discussion**
 
-The algorithm is sound because the tuples (i, v) contain no duplicates. For
-any particular v, the main loop will process the set of tuples (i, v) in
-descending order of i. This resolves the question of whether deleting
-already deleted positions is valid.
+The algorithm is sound because the tuples ``(i, v)`` contain no duplicates.
+For any particular ``v``, the main loop will process the tuples in descending
+order of ``i``. This resolves the question of whether deleting already deleted
+positions is valid.
 </t>
 <t tx="ekr.20200526090848.1">Sun, Dec 15, 2019
 	
@@ -32988,7 +33145,6 @@ The Leo ``@adoc`` directive and the ``adoc`` command need either **Asciidoc3** o
 
 **Windows:** installing on Windows is not straightforward as one needs to install Ruby first. Asciidoc3 isn't the straightest either, but enough that it can be shortened to couple of instructions, namely::
 
-
     pip install asciidoc3
        # stuff happens
 
@@ -33049,7 +33205,9 @@ os.system('make LeoDoc.pdf')
 <t tx="tom.20230107235603.1">Title case means that all words start with capital letters.  The
 following script converts the selected body text to title case.  If
 nothing has been selected, the entire current node is converted. The
-conversion is undoable::
+conversion is undoable:
+
+.. code-block:: python
 
     """Undoably convert selection or body to title case."""
     w = c.frame.body.wrapper
