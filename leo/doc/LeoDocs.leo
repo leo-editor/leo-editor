@@ -2507,8 +2507,14 @@
 </v>
 <v t="ekr.20240828095959.1"></v>
 <v t="ekr.20240828094953.1"><vh>Leo 6.8.2 release notes</vh></v>
+<<<<<<< Updated upstream
 <v t="ekr.20241114025618.1"><vh>=== Use code blocks</vh></v>
 <v t="ekr.20050831184021.5"></v>
+=======
+<v t="ekr.20241112030725.1"><vh>=== Revise the colorizing docs</vh></v>
+<v t="ekr.20050831184021.5"></v>
+<v t="ekr.20131008041326.16341"></v>
+>>>>>>> Stashed changes
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
