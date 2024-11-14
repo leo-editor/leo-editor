@@ -2507,14 +2507,9 @@
 </v>
 <v t="ekr.20240828095959.1"></v>
 <v t="ekr.20240828094953.1"><vh>Leo 6.8.2 release notes</vh></v>
-<<<<<<< Updated upstream
-<v t="ekr.20241114025618.1"><vh>=== Use code blocks</vh></v>
-<v t="ekr.20050831184021.5"></v>
-=======
 <v t="ekr.20241112030725.1"><vh>=== Revise the colorizing docs</vh></v>
 <v t="ekr.20050831184021.5"></v>
 <v t="ekr.20131008041326.16341"></v>
->>>>>>> Stashed changes
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -32920,6 +32915,7 @@ LeoJS: https://boltex.github.io/leojs/
 Yes, Leo does have a bit of a learning curve, but mastering the basics is easier than you’d think, and you’ll quickly be leveraging its outlining power. It’s the kind of investment that pays off big time. Leo is definitely an underrated gem.
 
 Big thanks to Edward, Thomas, Félix, aka boltex (the author of LeoJS and leointeg), and all the other contributors—you guys are truly amazing, and Leo is living proof of that!</t>
+<t tx="ekr.20241112030725.1"></t>
 <t tx="ekr.20241112030815.1">.. _`QSyntaxHighlighter`:   https://doc.qt.io/qt-6/qsyntaxhighlighter.html
 
 Are you sure you want to read this appendix? It is intended *only* for Leo's core developers.
@@ -33012,7 +33008,6 @@ If a pattern matcher matches an ``@language`` or coloring directive, the matcher
 
 If a pattern matcher matches syntax that continues to the next line, the pattern matcher creates a **restarter matcher** by calling ``setRestart``. The restarter matchers are essentially closures, bindings of the pattern matcher *and all of its kwargs*. The details are hairy, but the coding pattern is the same for all cases. See the source code for details.
 </t>
-<t tx="ekr.20241114025618.1">.. code-block:: python</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
