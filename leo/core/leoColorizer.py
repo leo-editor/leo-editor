@@ -1340,12 +1340,19 @@ class JEditColorizer(BaseColorizer):
 
         verbose = True
         if trace:
+            # language_s = f"language: {self.language}"
+            line_s = f"line: {line_number:2}"
+            recolor_s = f"recolor count: {self.recolorCount:<4}"
             state_s = self.stateNumberToStateString(state)
+            state_s2 = f"state: {state}: {state_s}"
             if line_number <= 0:
                 print('')
-                g.trace(f"New node: language: {self.language} state: {state} = {state_s} {p.h}")
+                g.trace(
+                    f"New node: {recolor_s} line: {line_number} "
+                    f"{state_s2} len(s): {len(s):3} {p.h}")
+                g.trace(repr(s))
             if verbose:
-                g.trace(f"line: {line_number:2} state: {state} = {state_s} {s}")
+                g.trace(f"{recolor_s} {line_s} {state_s2} {len(s):3} {s!r}")
 
         # Color the line even if colorizing is disabled.
         if s:
