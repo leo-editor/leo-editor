@@ -733,20 +733,27 @@ class BaseColorizer:
 
         def report(extra: str = None) -> None:
             """A superb trace. Don't remove it."""
-            s2 = repr(s[i:j])
-            if len(s2) > 20:
-                s2 = repr(s[i : i + 17 - 2] + '...')
+            # width = 40
+            # s2 = repr(s[i:j])
+            # s2 = s[i:j]
+            # if len(s2) > width:
+                # # s2 = repr(s[i : i + width - 5] + '...')
+                # s2 = s[i : i + width - 3] + '...'
+            s2 = g.truncate(s, 50)
             delegate_s = f":{self.delegate_name}:" if self.delegate_name else ''
-            font_s = id(font) if font else 'None'
+            # font_s = id(font) if font else 'None'
             matcher_name = g.caller(3)
+            rule_s = f"{self.rulesetName}:{delegate_s}{matcher_name}"
+            i_j_s = f"{i:>3}:{j:<3}"
             print(
-                f"setTag: {full_tag:32} {i:3} {j:3} {colorName:7} font: {font_s:<14} {s2:>22} "
-                f"{self.rulesetName}:{delegate_s}{matcher_name}"
+                f"setTag: {self.recolorCount:4} "
+                f"{colorName:7} "
+                f"{full_tag:<20} "
+                f"{rule_s:<40} "
+                f"{i_j_s:7} {s2}"
             )
             if extra:
                 print(f"{' ':48} {extra}")
-
-        # print(f"\nsetTag: {i:2}:{j:2} tag: {tag!r:10} {s}")
 
         self.n_setTag += 1
         if i == j:
@@ -815,19 +822,12 @@ class BaseColorizer:
         Return True unless an coloring is unambiguously disabled.
         Called from Leo's node-selection logic and from the colorizer.
         """
-        trace = 'coloring' in g.app.debug and not g.unitTesting
-
-        message = f"(BaseColorizer) enabled? {int(self.enabled)} {self.language!r} {g.callers(2)}"
-
         if not p:  # This guard is required.
             return
 
         try:
             self.enabled = self.useSyntaxColoring(p)
             self.language = self.scanLanguageDirectives(p)
-            if trace:
-                print('')
-                g.trace(message)
         except Exception:
             g.es_print('unexpected exception in updateSyntaxColorer')
             g.es_exception()
@@ -1313,6 +1313,7 @@ class JEditColorizer(BaseColorizer):
         understand *every word* of the Theory of Operation:  
         https://github.com/leo-editor/leo-editor/issues/4158
         """
+        trace = 'coloring' in g.app.debug and not g.unitTesting
         c = self.c
         if not c:
             return
@@ -1329,15 +1330,18 @@ class JEditColorizer(BaseColorizer):
 
         # Get the line number and state associated with s.
         line_number = self.currentBlockNumber()
-
         if line_number == 0:
             self.updateSyntaxColorer(p)
             self.init_all_state(p.v)
             self.init()
             n = self.initBlock0()
+            if trace and self.old_v != p.v:
+                self.old_v = p.v
+                print('')
+                g.trace(f"New node: {p.h}")
+                print('')
         else:
             n = self.prevState()
-
         state = self.setState(n)  # By default, continue the previous state.
 
         # #4146: Update self.language from the *previous* state.
@@ -1348,6 +1352,8 @@ class JEditColorizer(BaseColorizer):
 
         # Always color the line, even if colorizing is disabled.
         if s:
+            # state_s = self.stateNumberToStateString(state)
+            # g.trace(f"{self.language:8} {state_s:10} {s}")
             self.mainLoop(state, s)
     #@+node:ekr.20170126100139.1: *4* jedit.initBlock0
     def initBlock0(self) -> int:
