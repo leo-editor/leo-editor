@@ -79,8 +79,7 @@ def rest_rule13(colorer, s, i):
           at_line_start=True)
 
 def rest_rule14(colorer, s, i):
-    if 1:  ###
-        print(f"\nrest_rule14: {i} {s}")  ###
+    # print(f"\nrest_rule14: {i} {s}")
     return colorer.match_seq_regexp(s, i, kind="keyword2", regexp="\\*\\*[^*]+\\*\\*")
 
 def rest_rule15(colorer, s, i):

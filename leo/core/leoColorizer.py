@@ -739,7 +739,6 @@ class BaseColorizer:
             delegate_s = f":{self.delegate_name}:" if self.delegate_name else ''
             font_s = id(font) if font else 'None'
             matcher_name = g.caller(3)
-            print('')  ### Temp.
             print(
                 f"setTag: {full_tag:32} {i:3} {j:3} {colorName:7} font: {font_s:<14} {s2:>22} "
                 f"{self.rulesetName}:{delegate_s}{matcher_name}"
@@ -747,7 +746,7 @@ class BaseColorizer:
             if extra:
                 print(f"{' ':48} {extra}")
 
-        print(f"\nsetTag: {i:2}:{j:2} tag: {tag!r:10} {s}")
+        # print(f"\nsetTag: {i:2}:{j:2} tag: {tag!r:10} {s}")
 
         self.n_setTag += 1
         if i == j:
@@ -1263,62 +1262,6 @@ class JEditColorizer(BaseColorizer):
                     aList.insert(0, wiki_rule)
                     d[ch] = aList
         self.rulesDict = d
-    #@+node:ekr.20240423042341.1: *3* jedit.colorize
-    def colorize(self, p: Position) -> None:
-        """
-        jedit.colorize: recolor p.b using the QSyntaxHighlighter class.
-        
-        This is the main entry point for Leo's colorizer.
-        Only c.recolor should ever call it.
-        
-        Don't even *think* about changing leoColorizer.py until
-        you understand *every word* of the Theory of Operation:
-        https://github.com/leo-editor/leo-editor/issues/4158
-        """
-        trace = 'coloring' in g.app.debug and not g.unitTesting
-
-        if not p:  # This guard is required.
-            return
-
-        # Only c.recolor should call this method!
-        if g.callers(1) != 'recolor':
-            message = f"jedit.colorize: invalid caller: {g.callers()}"
-            g.print_unique_message(message)
-
-        # Test p.v instead of p so that moving from one
-        # clone to another does not cause a redraw.
-        if p.v and p.v == self.old_v:
-            return
-
-        # Remember old_v here. Do not set it anywhere else!
-        self.old_v = p.v
-
-        self.updateSyntaxColorer(p)
-
-        # Initialize *all* state.
-        self.init_all_state(p.v)
-        self.init()
-
-        # All done if p.b startswith @killcolor.
-        if p.b.startswith('@killcolor'):
-            return
-
-        if trace:
-            print('')
-            g.trace(f"Start full redraw: language: {self.language} p: {p.h}")
-            print('')
-
-        # Tell QSyntaxHighlighter to do a full recolor.
-        try:
-            self.in_full_redraw = True
-            self.highlighter.rehighlight()
-        finally:
-            self.in_full_redraw = False
-
-        if trace:
-            print('')
-            g.trace(f" End full redraw: language: {self.language} p: {p.h}")
-            print('')
     #@+node:ekr.20110605121601.18638: *3* jedit.mainLoop
     tot_time = 0.0
 
@@ -1330,7 +1273,6 @@ class JEditColorizer(BaseColorizer):
         
         Any substantial change would break all the pattern matchers!
         """
-        trace = 'coloring' in g.app.debug and not g.unitTesting
         # Do not remove this unit test!
         if not g.unitTesting and g.callers(1) != 'recolor':
             message = f"jedit.mainLoop: unexpected callers: {g.callers(6)}"
@@ -1343,13 +1285,12 @@ class JEditColorizer(BaseColorizer):
             functions = self.rulesDict.get(s[i], [])
             for f in functions:
                 n = f(self, s, i)
+                # if trace and n != 0:
+                    # g.trace(f"i: {i} {f.__name__} => {n:2} {s!r}")
                 if n is None:
                     g.trace('Can not happen: n is None', repr(f))
                     break
                 elif n > 0:  # Success. The match has already been colored.
-                    if trace:
-                        print('')
-                        g.trace(f"Match: index {i:<3} delta: {n!r:<3} {f.__name__:>12} {s!r}")
                     i += n
                     break
                 elif n < 0:  # Total failure.
@@ -1372,7 +1313,12 @@ class JEditColorizer(BaseColorizer):
         understand *every word* of the Theory of Operation:  
         https://github.com/leo-editor/leo-editor/issues/4158
         """
-        trace = 'coloring' in g.app.debug and not g.unitTesting
+        c = self.c
+        if not c:
+            return
+        p = c.p
+        if not p:
+            return
 
         # Do not remove this unit test!
         if g.callers(1) != 'highlightBlock':
@@ -1383,7 +1329,15 @@ class JEditColorizer(BaseColorizer):
 
         # Get the line number and state associated with s.
         line_number = self.currentBlockNumber()
-        n = self.initBlock0() if line_number == 0 else self.prevState()
+
+        if line_number == 0:
+            self.updateSyntaxColorer(p)
+            self.init_all_state(p.v)
+            self.init()
+            n = self.initBlock0()
+        else:
+            n = self.prevState()
+
         state = self.setState(n)  # By default, continue the previous state.
 
         # #4146: Update self.language from the *previous* state.
@@ -1394,10 +1348,6 @@ class JEditColorizer(BaseColorizer):
 
         # Always color the line, even if colorizing is disabled.
         if s:
-            if trace:
-                state_s = self.stateNumberToStateString(n)
-                print('')
-                g.trace(f"line: {line_number:2} state: {n:2} = {state_s:10} {s}")
             self.mainLoop(state, s)
     #@+node:ekr.20170126100139.1: *4* jedit.initBlock0
     def initBlock0(self) -> int:

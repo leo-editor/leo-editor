@@ -29125,6 +29125,7 @@ No. The vnode data are independent. The main loop works regardless of
 whether a vnode has already been unlinked.
 
 Second, could the following lines ever fail?
+
 ::
 
     child_v = v.children.pop(i)
