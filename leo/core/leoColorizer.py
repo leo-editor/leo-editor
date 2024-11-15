@@ -1309,9 +1309,7 @@ class JEditColorizer(BaseColorizer):
         """
         trace = 'coloring' in g.app.debug and not g.unitTesting
         c = self.c
-        if not c:
-            return
-        p = c.p
+        p = self.c.p if c else None
         if not p:
             return
 
@@ -1328,15 +1326,11 @@ class JEditColorizer(BaseColorizer):
             self.updateSyntaxColorer(p)
             self.init_all_state(p.v)
             self.init()
-            n = self.initBlock0()
-            if trace and self.old_v != p.v:
-                self.old_v = p.v
-                print('')
-                g.trace(f"New node: {p.h}")
-                print('')
+            state = self.initBlock0()
         else:
-            n = self.prevState()
-        state = self.setState(n)  # By default, continue the previous state.
+            state = self.prevState()
+
+        self.setState(state)  # By default, continue the previous state.
 
         # #4146: Update self.language from the *previous* state.
         self.language = self.stateNumberToLanguage(state)
@@ -1344,10 +1338,18 @@ class JEditColorizer(BaseColorizer):
         # #4146: Update the state, *without* disrupting restarters.
         self.init_mode(self.language)
 
-        # Always color the line, even if colorizing is disabled.
+        verbose = True
+        if trace:
+            state_s = self.stateNumberToStateString(state)
+            if line_number <= 0:
+                print('')
+                g.trace(f"New node: language: {self.language} state: {state} = {state_s} {p.h}")
+            if verbose:
+                g.trace(f"line: {line_number:2} state: {state} = {state_s} {s}")
+
+        # Color the line even if colorizing is disabled.
         if s:
-            # state_s = self.stateNumberToStateString(state)
-            # g.trace(f"{self.language:8} {state_s:10} {s}")
+            # mainLoop will do nothing if s is empty.
             self.mainLoop(state, s)
     #@+node:ekr.20170126100139.1: *4* jedit.initBlock0
     def initBlock0(self) -> int:
@@ -2797,9 +2799,8 @@ class JEditColorizer(BaseColorizer):
     def prevState(self) -> int:
         return self.highlighter.previousBlockState()
 
-    def setState(self, n: int) -> int:
+    def setState(self, n: int) -> None:
         self.highlighter.setCurrentBlockState(n)
-        return n
     #@+node:ekr.20170125141148.1: *4* jedit.inColorState
     def inColorState(self) -> bool:
         """True if the *current* state is enabled."""
