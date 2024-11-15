@@ -29253,7 +29253,6 @@ The sort order means that ``pop(i)`` happens before ``pop(j)`` if ``i &gt;
 j``. This condition ensures that the precomputed values of ``i`` won't
 change in the main loop.
 
-
 **Completing the proof**
 
 The algorithm appears sound. The tuples ``(i, v)`` computed from

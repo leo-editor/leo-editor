@@ -1361,8 +1361,6 @@ class LeoTree:
             self.tree_select_lockout = True
             self.prev_v = c.p.v
             self.selectHelper(p)
-            c.recolor(p)  # #4146.
-
         finally:
             self.tree_select_lockout = False
             if c.enableRedrawFlag:
