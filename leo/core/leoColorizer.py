@@ -733,12 +733,6 @@ class BaseColorizer:
 
         def report(extra: str = None) -> None:
             """A superb trace. Don't remove it."""
-            # width = 40
-            # s2 = repr(s[i:j])
-            # s2 = s[i:j]
-            # if len(s2) > width:
-                # # s2 = repr(s[i : i + width - 5] + '...')
-                # s2 = s[i : i + width - 3] + '...'
             s2 = g.truncate(s, 50)
             delegate_s = f":{self.delegate_name}:" if self.delegate_name else ''
             # font_s = id(font) if font else 'None'
