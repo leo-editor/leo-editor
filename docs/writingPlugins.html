@@ -182,9 +182,9 @@ is in our &quot;own&quot; documents!
 <p>Executing this kind of code is typically an intolerable security risk. <strong>Important</strong>: rexec provides <em>no protection whatever</em>. Leo is a repository of source code, so any text operation is potentially malicious. For example, consider the following script, which is valid in rexec mode:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">badNode</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">p</span>
 <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">c</span><span class="o">.</span><span class="n">all_positions</span><span class="p">():</span>
-    <span class="o">&lt;&lt;</span> <span class="n">change</span> <span class="err">`</span><span class="n">rexec</span><span class="err">`</span> <span class="n">to</span> <span class="err">`</span><span class="n">exec</span><span class="err">`</span> <span class="ow">in</span> <span class="n">p</span><span class="s1">&#39;s body &gt;&gt;</span>
-<span class="o">&lt;&lt;</span> <span class="n">delete</span> <span class="n">badNode</span> <span class="o">&gt;&gt;</span>
-<span class="o">&lt;&lt;</span> <span class="n">clear</span> <span class="n">the</span> <span class="n">undo</span> <span class="n">stack</span> <span class="o">&gt;&gt;</span>
+    <span class="c1"># &lt;&lt; change `rexec` to `exec` in p&#39;s body &gt;&gt;</span>
+<span class="c1"># &lt;&lt; delete badNode &gt;&gt;</span>
+<span class="c1"># &lt;&lt; clear the undo stack &gt;&gt;</span>
 </pre></div>
 </div>
 <p>This script will introduce a security hole the .leo file without doing anything prohibited by rexec, and without leaving any traces of the perpetrating script behind. The damage will become permanent <em>outside</em> this script when the user saves the .leo file.</p>
@@ -876,7 +876,7 @@ dictionary whose keys are all the tags specified by the user in the body of the
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 1997-2024, Edward K. Ream.
-      Last updated on November 14, 2024.
+      Last updated on November 16, 2024.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.2.6.
     </div>
   </body>

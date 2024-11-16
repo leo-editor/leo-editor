@@ -2500,6 +2500,9 @@
 </v>
 <v t="ekr.20240828095959.1"></v>
 <v t="ekr.20240828094953.1"><vh>Leo 6.8.2 release notes</vh></v>
+<v t="ekr.20241116111317.1"><vh>=====</vh></v>
+<v t="EKR.20040524104904.224" descendentVnodeUnknownAttributes="7d710058010000003071017d710258090000007374725f6174696d657103580c000000313337363431323033382e30710473732e"></v>
+<v t="ekr.20090428133936.2"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -2570,9 +2573,9 @@ Executing this kind of code is typically an intolerable security risk. **Importa
 
     badNode = c.p
     for p in c.all_positions():
-        &lt;&lt; change `rexec` to `exec` in p's body &gt;&gt;
-    &lt;&lt; delete badNode &gt;&gt;
-    &lt;&lt; clear the undo stack &gt;&gt;
+        # &lt;&lt; change `rexec` to `exec` in p's body &gt;&gt;
+    # &lt;&lt; delete badNode &gt;&gt;
+    # &lt;&lt; clear the undo stack &gt;&gt;
 
 This script will introduce a security hole the .leo file without doing anything prohibited by rexec, and without leaving any traces of the perpetrating script behind. The damage will become permanent *outside* this script when the user saves the .leo file.
 </t>
@@ -32881,6 +32884,7 @@ If a pattern matcher matches an ``@language`` or coloring directive, the matcher
 
 If a pattern matcher matches syntax that continues to the next line, the pattern matcher creates a **restarter matcher** by calling ``setRestart``. The restarter matchers are essentially closures, bindings of the pattern matcher *and all of its kwargs*. The details are hairy, but the coding pattern is the same for all cases. See the source code for details.
 </t>
+<t tx="ekr.20241116111317.1"></t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have

@@ -51,16 +51,20 @@ html_static_path = ['_static', 'screen-shots']  # leo/docs/static
 html_theme = 'pydata_sphinx_theme' if use_dark else 'classic'
 
 # These paths are either relative to html_static_path or fully qualified paths.
-html_css_files = [] if use_dark else ['custom.css',]
+html_css_files = ['custom.css',]
+### html_css_files = [] if use_dark else ['custom.css',]
 
 # Theme options. All colors are CSS colors.
-html_theme_options = {
-    'collapsiblesidebar': True,
-    'sidebarbgcolor': "#fffdbc",  # Leo yellow.
-    'sidebartextcolor': 'black',  # Text color for the sidebar.
-    'sidebarlinkcolor': 'black',
-    'bgcolor': "#fffbdc",  # Body background color.
-}
+if use_dark:
+    html_theme_options = {}
+else:
+    html_theme_options = {
+        'collapsiblesidebar': True,
+        'sidebarbgcolor': "#fffdbc",  # Leo yellow.
+        'sidebartextcolor': 'black',  # Text color for the sidebar.
+        'sidebarlinkcolor': 'black',
+        'bgcolor': "#fffbdc",  # Body background color.
+    }
 
 # The name of an image file (relative to this directory) at the top of the sidebar.
 html_logo = '_static/LeoLogo.svg'
