@@ -7468,14 +7468,12 @@ Outline pane
     pair: Parent; Glossary
 
 Parent
-
     The node that directly contains a node.
 
 .. index::
     pair: Plugin; Glossary
 
 Plugin
-
     A way to modify and extend Leo without changing Leo's core code.
     See `Writing plugins and hooks`_.
 
@@ -7483,7 +7481,6 @@ Plugin
     pair: Promote; Glossary
 
 Promote
-
     To move all children of a node in an outline so that they become siblings of
     the node.
 
@@ -7491,11 +7488,11 @@ Promote
     pair: FAQ; Glossary
 
 Reference .leo file
-
-    `leoeditor/leo/core` contains a **reference .leo file**:
-    **LeoPyRef.leo**. This file should change only when adding new
-    external files to Leo. Developers should use a local copy of
-    LeoPyRef.leo (usually called **leoPy.leo**) for their own work.
+    ``leoeditor/leo/core/LeoPyRef.leo``
+    
+    This file should change only when adding new external files to Leo.
+    Developers should use a local copy of LeoPyRef.leo (usually called
+    ``leoPy.leo``) for their own work.
 
 .. index::
     pair: reStructuredText; Glossary
@@ -7505,15 +7502,12 @@ Reference .leo file
 
 
 reStructuredText (rST)
-
-    A simple, yet powerful markup language for creating .html, or LaTeX output
-    files. See the `rST primer`_.
+    A markup language for creating .html, or LaTeX output files. See the `rST primer`_.
 
 .. index::
     pair: Root; Glossary
 
 Root
-
     The first node of a .leo file, outline, suboutline or @&lt;file&gt; tree.
 </t>
 <t tx="ekr.20100804133903.7256">.. index::
