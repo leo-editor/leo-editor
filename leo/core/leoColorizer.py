@@ -1334,7 +1334,6 @@ class JEditColorizer(BaseColorizer):
             g.print_unique_message(message)
 
         self.recolorCount += 1
-        ### line_number = self.currentBlockNumber()
         prev_state = self.prevState()
         if prev_state == -1:
             self.updateSyntaxColorer(p)
