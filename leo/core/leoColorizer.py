@@ -930,7 +930,7 @@ class JEditColorizer(BaseColorizer):
             # self.stateNameDict = {}
             # self.restartDict = {}
         self.init_mode(self.language)
-        ### self.clearState()
+        self.clearState()
         # Used by matchers.
         self.prev = None
         # Must be done to support per-language @font/@color settings.
@@ -1319,13 +1319,13 @@ class JEditColorizer(BaseColorizer):
             g.print_unique_message(message)
 
         self.recolorCount += 1
+        line_number = self.currentBlockNumber()
         state = self.prevState()
         prev_state = state
-        if state == -1:
+        if line_number == 0:  # Do not test state here!
             self.updateSyntaxColorer(p)
             self.init_all_state(p.v)
             self.init()
-            self.clearState()  ###
             state = self.initBlock0()
 
         if state != prev_state:
@@ -1346,7 +1346,7 @@ class JEditColorizer(BaseColorizer):
                 )
             g.trace(
                 f"recolorCount: {self.recolorCount} "
-                f"line number: {self.currentBlockNumber()} "
+                f"line number: {line_number} "
                 f"state: {state}: {self.stateNumberToStateString(state)}\n"
                 f"    s: {s!r}"
             )
@@ -2746,7 +2746,7 @@ class JEditColorizer(BaseColorizer):
         Create a *language-specific* default state.
         This properly forces a full recoloring when @language changes.
         """
-        if not g.unitTesting:
+        if False and not g.unitTesting:
             g.trace(g.callers())  ###
         n = self.initialStateNumber
         self.setState(n)
@@ -2806,7 +2806,7 @@ class JEditColorizer(BaseColorizer):
         return self.highlighter.previousBlockState()
 
     def setState(self, n: int) -> None:
-        if not g.unitTesting:
+        if False and not g.unitTesting:
             g.trace(n, g.callers(4))  ###
         self.highlighter.setCurrentBlockState(n)
     #@+node:ekr.20170125141148.1: *4* jedit.inColorState
