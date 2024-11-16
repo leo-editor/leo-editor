@@ -1263,7 +1263,7 @@ class JEditColorizer(BaseColorizer):
         if not p:  # This guard is required.
             return
 
-        # Only c.recolor should call this method!
+        # Only the 'recolor' command should call this method!
         if g.callers(1) != 'recolorCommand':
             message = f"jedit.force_recolor: invalid caller: {g.callers()}"
             g.print_unique_message(message)
