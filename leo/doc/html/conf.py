@@ -13,7 +13,10 @@
 
 use_dark = False
 
-# Lib\site-packages\pydata_sphinx_theme
+# The theme to use for HTML and HTML Help pages.
+# 'default', 'sphinxdoc'.
+
+html_theme = 'pydata_sphinx_theme' if use_dark else 'classic'
 
 source_suffix = '.html.txt'
 
@@ -45,14 +48,9 @@ exclude_trees = ['_build']  # Don't search for source files.
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static', 'screen-shots']  # leo/docs/static
 
-# The theme to use for HTML and HTML Help pages.
-# 'default', 'sphinxdoc'.
-
-html_theme = 'pydata_sphinx_theme' if use_dark else 'classic'
-
 # These paths are either relative to html_static_path or fully qualified paths.
-html_css_files = ['custom.css',]
-### html_css_files = [] if use_dark else ['custom.css',]
+### html_css_files = ['custom.css',]
+html_css_files = [] if use_dark else ['custom.css',]
 
 # Theme options. All colors are CSS colors.
 if use_dark:
@@ -67,7 +65,7 @@ else:
     }
 
 # The name of an image file (relative to this directory) at the top of the sidebar.
-html_logo = '_static/LeoLogo.svg'
+html_logo = None if use_dark else '_static/LeoLogo.svg'
 
 # If not '', insert 'Last updated on:' at the bottom of every pages.
 # using the given strftime format.
@@ -86,9 +84,12 @@ html_use_smartypants = True
 #                   if enabled in html_show_sourcelink.
 # * searchbox.html: Add the “quick search” box.
 
-html_sidebars = {
-   '**': ['relations.html', 'searchbox.html',]
-}
+if use_dark:
+    html_sidebars = {}
+else:
+    html_sidebars = {
+       '**': ['relations.html', 'searchbox.html',]
+    }
 
 # True: generate module index.
 html_use_modindex = False
