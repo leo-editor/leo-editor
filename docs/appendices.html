@@ -442,7 +442,7 @@ positions is valid.</p>
 <p>Use the <code class="docutils literal notranslate"><span class="pre">--trace=coloring</span></code> to see the colorizer in action.</p>
 <p>The jedit class collaborates with the <strong>qsh</strong>, a singleton instance of the <a class="reference external" href="https://doc.qt.io/qt-6/qsyntaxhighlighter.html">QSyntaxHighlighter</a> class.</p>
 <p>This collaboration allows the qsh to <em>minimize</em> the calls to <code class="docutils literal notranslate"><span class="pre">jedit.redraw</span></code>. The qsh calls <code class="docutils literal notranslate"><span class="pre">redraw(s)</span></code> <em>only</em> if line <code class="docutils literal notranslate"><span class="pre">s</span></code> could possibly need recoloring.</p>
-<p>Leo’s core <em>must not ever</em> call <code class="docutils literal notranslate"><span class="pre">redraw</span></code>! These calls must happen automatically. Calling <code class="docutils literal notranslate"><span class="pre">redraw</span></code> from Leo’s core could cause hard-to-find bugs!</p>
+<p>Leo’s core <em>must never</em> call <code class="docutils literal notranslate"><span class="pre">redraw</span></code>! These calls must happen automatically. Calling <code class="docutils literal notranslate"><span class="pre">redraw</span></code> from Leo’s core could cause hard-to-find bugs!</p>
 <p><strong>States</strong> allow the jedit class to handle constructs like strings or comments that continue from one line to another.</p>
 <p><strong>Mode files</strong>, python files in the <code class="docutils literal notranslate"><span class="pre">leo/modes</span></code> directory, tell the jedit class how to colorize specific languages.</p>
 <p><strong>Pattern matchers</strong> do the actual syntax coloring.</p>
@@ -452,7 +452,7 @@ positions is valid.</p>
 <p><strong>Drivers</strong></p>
 <p>The <code class="docutils literal notranslate"><span class="pre">redraw</span></code> and <code class="docutils literal notranslate"><span class="pre">mainLoop</span></code> methods are the interface between the qsh and the methods of the jedit class.</p>
 <p><code class="docutils literal notranslate"><span class="pre">qsh.rehighlight</span></code> calls <code class="docutils literal notranslate"><span class="pre">redraw(s)</span></code> to colorize a <em>single</em> line <code class="docutils literal notranslate"><span class="pre">s</span></code>. After initing the <strong>initial state</strong>, <code class="docutils literal notranslate"><span class="pre">redraw</span></code> calls <code class="docutils literal notranslate"><span class="pre">mainLoop</span></code>.</p>
-<p>Leo’s core <em>must never ever</em> call <code class="docutils literal notranslate"><span class="pre">redraw</span></code>! Doing so could cause hard-to-find bugs.</p>
+<p>Leo’s core <em>must never</em> call <code class="docutils literal notranslate"><span class="pre">redraw</span></code>! Doing so could cause hard-to-find bugs.</p>
 <p><code class="docutils literal notranslate"><span class="pre">redraw(s)</span></code> calls <code class="docutils literal notranslate"><span class="pre">mainLoop(s)</span></code> to do the actual syntax coloring.</p>
 <p><code class="docutils literal notranslate"><span class="pre">mainLoop(s)</span></code> calls <strong>rule functions</strong> (defined in mode files).</p>
 <p>Rule functions delegate their work to exactly one <strong>pattern matcher</strong> (described next). In other words, <em>pattern matchers are callbacks.</em></p>
