@@ -32800,7 +32800,7 @@ The jedit class collaborates with the **qsh**, a singleton instance of the `QSyn
 
 This collaboration allows the qsh to *minimize* the calls to ``jedit.redraw``. The qsh calls ``redraw(s)`` *only* if line ``s`` could possibly need recoloring.
 
-Leo's core *must not ever* call ``redraw``! These calls must happen automatically. Calling ``redraw`` from Leo's core could cause hard-to-find bugs!
+Leo's core *must never* call ``redraw``! These calls must happen automatically. Calling ``redraw`` from Leo's core could cause hard-to-find bugs!
 
 **States** allow the jedit class to handle constructs like strings or comments that continue from one line to another.
 
@@ -32836,7 +32836,7 @@ The ``redraw`` and ``mainLoop`` methods are the interface between the qsh and th
 
 ``qsh.rehighlight`` calls ``redraw(s)`` to colorize a *single* line ``s``. After initing the **initial state**, ``redraw`` calls ``mainLoop``.
 
-Leo's core *must never ever* call ``redraw``! Doing so could cause hard-to-find bugs.
+Leo's core *must never* call ``redraw``! Doing so could cause hard-to-find bugs.
 
 ``redraw(s)`` calls ``mainLoop(s)`` to do the actual syntax coloring.
  
