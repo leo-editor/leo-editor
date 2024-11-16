@@ -3674,9 +3674,8 @@ class Commands:
         c = self
         colorizer = c.frame.body.colorizer
         if colorizer and hasattr(colorizer, 'colorize'):
-            # Both jEditColorizer and QScintillaColorizer have colorize methods.
-            p = p or c.p
-            colorizer.colorize(p)
+            # Only the QScintillaColorizer class has a colorize method.
+            colorizer.colorize(p or c.p)
 
     recolor_now = recolor
     #@+node:ekr.20080514131122.14: *5* c.redrawing...

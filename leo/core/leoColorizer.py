@@ -930,7 +930,7 @@ class JEditColorizer(BaseColorizer):
             # self.stateNameDict = {}
             # self.restartDict = {}
         self.init_mode(self.language)
-        self.clearState()
+        ### self.clearState()
         # Used by matchers.
         self.prev = None
         # Must be done to support per-language @font/@color settings.
@@ -1319,18 +1319,17 @@ class JEditColorizer(BaseColorizer):
             g.print_unique_message(message)
 
         self.recolorCount += 1
-
-        # Get the line number and state associated with s.
-        line_number = self.currentBlockNumber()
-        if line_number == 0:
+        state = self.prevState()
+        prev_state = state
+        if state == -1:
             self.updateSyntaxColorer(p)
             self.init_all_state(p.v)
             self.init()
+            self.clearState()  ###
             state = self.initBlock0()
-        else:
-            state = self.prevState()
 
-        self.setState(state)  # By default, continue the previous state.
+        if state != prev_state:
+            self.setState(state)  # Continue the previous state by default.
 
         # #4146: Update self.language from the *previous* state.
         self.language = self.stateNumberToLanguage(state)
@@ -1338,25 +1337,23 @@ class JEditColorizer(BaseColorizer):
         # #4146: Update the state, *without* disrupting restarters.
         self.init_mode(self.language)
 
-        verbose = True
+        # Do not delete these traces!
         if trace:
-            # language_s = f"language: {self.language}"
-            line_s = f"line: {line_number:2}"
-            recolor_s = f"recolor count: {self.recolorCount:<4}"
-            state_s = self.stateNumberToStateString(state)
-            state_s2 = f"state: {state}: {state_s}"
-            if line_number <= 0:
+            if prev_state == -1:
                 print('')
                 g.trace(
-                    f"New node: {recolor_s} line: {line_number} "
-                    f"{state_s2} len(s): {len(s):3} {p.h}")
-                g.trace(repr(s))
-            if verbose:
-                g.trace(f"{recolor_s} {line_s} {state_s2} {len(s):3} {s!r}")
+                    f"New node: prev_state: {prev_state} p.h: {p.h}"
+                )
+            g.trace(
+                f"recolorCount: {self.recolorCount} "
+                f"line number: {self.currentBlockNumber()} "
+                f"state: {state}: {self.stateNumberToStateString(state)}\n"
+                f"    s: {s!r}"
+            )
 
-        # Color the line even if colorizing is disabled.
+        # mainLoop will do nothing if s is empty.
         if s:
-            # mainLoop will do nothing if s is empty.
+            # Color the line even if colorizing is disabled.
             self.mainLoop(state, s)
     #@+node:ekr.20170126100139.1: *4* jedit.initBlock0
     def initBlock0(self) -> int:
@@ -2041,7 +2038,6 @@ class JEditColorizer(BaseColorizer):
                 return self.restart_fstring(s, delim)
 
             self.setRestart(fstring_restarter)
-
         else:
             self.clearState()
         return j  # Return the new i, *not* the length of the match.
@@ -2749,6 +2745,8 @@ class JEditColorizer(BaseColorizer):
         Create a *language-specific* default state.
         This properly forces a full recoloring when @language changes.
         """
+        if not g.unitTesting:
+            g.trace(g.callers())  ###
         n = self.initialStateNumber
         self.setState(n)
         return n
@@ -2807,6 +2805,8 @@ class JEditColorizer(BaseColorizer):
         return self.highlighter.previousBlockState()
 
     def setState(self, n: int) -> None:
+        if not g.unitTesting:
+            g.trace(n, g.callers(4))  ###
         self.highlighter.setCurrentBlockState(n)
     #@+node:ekr.20170125141148.1: *4* jedit.inColorState
     def inColorState(self) -> bool:
