@@ -1319,17 +1319,17 @@ class JEditColorizer(BaseColorizer):
             g.print_unique_message(message)
 
         self.recolorCount += 1
-        line_number = self.currentBlockNumber()
-        state = self.prevState()
-        prev_state = state
-        if line_number == 0:  # Do not test state here!
+        ### line_number = self.currentBlockNumber()
+        prev_state = self.prevState()
+        if prev_state == -1:
             self.updateSyntaxColorer(p)
             self.init_all_state(p.v)
             self.init()
             state = self.initBlock0()
+        else:
+            state = prev_state  # Continue the previous state by default.
 
-        if state != prev_state:
-            self.setState(state)  # Continue the previous state by default.
+        self.setState(state)
 
         # #4146: Update self.language from the *previous* state.
         self.language = self.stateNumberToLanguage(state)
@@ -1341,14 +1341,12 @@ class JEditColorizer(BaseColorizer):
         if trace:
             if prev_state == -1:
                 print('')
-                g.trace(
-                    f"New node: prev_state: {prev_state} p.h: {p.h}"
-                )
+                g.trace(f"New node: prev_state: {prev_state} p.h: {p.h}")
             g.trace(
-                f"recolorCount: {self.recolorCount} "
-                f"line number: {line_number} "
-                f"state: {state}: {self.stateNumberToStateString(state)}\n"
-                f"    s: {s!r}"
+                f"recolorCount: {self.recolorCount:<4} "
+                f"line: {self.currentBlockNumber():<4} "
+                f"state: {state}: {self.stateNumberToStateString(state):<10} "
+                f"s: {s!r}"
             )
 
         # mainLoop will do nothing if s is empty.
@@ -2746,8 +2744,6 @@ class JEditColorizer(BaseColorizer):
         Create a *language-specific* default state.
         This properly forces a full recoloring when @language changes.
         """
-        if False and not g.unitTesting:
-            g.trace(g.callers())  ###
         n = self.initialStateNumber
         self.setState(n)
         return n
@@ -2806,8 +2802,6 @@ class JEditColorizer(BaseColorizer):
         return self.highlighter.previousBlockState()
 
     def setState(self, n: int) -> None:
-        if False and not g.unitTesting:
-            g.trace(n, g.callers(4))  ###
         self.highlighter.setCurrentBlockState(n)
     #@+node:ekr.20170125141148.1: *4* jedit.inColorState
     def inColorState(self) -> bool:
