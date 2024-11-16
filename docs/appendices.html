@@ -598,14 +598,13 @@ related classes.</p>
 <p>The <strong>TokenOrderGenerator</strong> (TOG) class injects two-way links between all
 tokens and the corresponding ast nodes. The TOG class also injects
 parent/child links into all ast nodes.</p>
-<p>The TOG class defines generators that visit ast nodes in <strong>token order</strong>,
-the traversal order that corresponds to the order of the tokens produced by
+<p>The TOG class defines visitors that visit ast nodes in <strong>token order</strong>, the
+traversal order that corresponds to the order of the tokens produced by
 python’s tokenizer module. The only way to ensure this correspondence is to
 use separate visitors for all ast nodes. All visitors are straightforward
 generators.</p>
-<p>TOG visitors <cite>yield from</cite> tog.gen* generators to visit subtrees. All such
-generators eventually call TOG.sync_token, which checks that that tokens
-are, in fact, visited in the correct order. TOG.sync_token is an
+<p>TOG visitors eventually call <code class="docutils literal notranslate"><span class="pre">TOG.sync_token</span></code>, which checks that that tokens
+are, in fact, visited in the correct order. <code class="docutils literal notranslate"><span class="pre">TOG.sync_token</span></code> is an
 ever-present unit test.</p>
 <p>The <strong>TokenOrderTraversal</strong> (TOT) class uses the parent/child links created
 by the TOG class. TOT.traverse contains a single for-loop that calls all
@@ -628,8 +627,8 @@ token lists, parse trees, and the links between them.</p>
 <section id="significant-vs-insignificant-tokens">
 <h4>Significant vs insignificant tokens<a class="headerlink" href="#significant-vs-insignificant-tokens" title="Link to this heading">¶</a></h4>
 <p>The distinction between <strong>significant</strong> and <strong>insignificant</strong> tokens is
-crucial. Visitors call TOG.gen_token, TOG.gen_op, etc. <em>only</em> for
-significant tokens. The <strong>is_significant</strong> and <strong>is_significant_token</strong>
+crucial. Visitors call <code class="docutils literal notranslate"><span class="pre">TOG.gen_token</span></code>, <code class="docutils literal notranslate"><span class="pre">TOG.gen_op</span></code>, etc. <em>only</em> for
+significant tokens. The <code class="docutils literal notranslate"><span class="pre">is_significant</span></code> and <code class="docutils literal notranslate"><span class="pre">is_significant_token</span></code>
 functions define which tokens are significant.</p>
 <p>Visitors can’t know, just by looking at the parse tree, whether the input
 contains <em>insignificant</em> tokens. For example, the source tokens might
@@ -638,10 +637,10 @@ two statements are separated by a semicolon.</p>
 </section>
 <section id="helping-tog-visitors">
 <h4>Helping TOG visitors<a class="headerlink" href="#helping-tog-visitors" title="Link to this heading">¶</a></h4>
-<p>The TOG.do_If visitor calls <strong>TOG.find_next_significant_token</strong> to
-determine whether TOG.do_If should generate an “if” or an “elif” token.
+<p>The <code class="docutils literal notranslate"><span class="pre">TOG.do_If</span></code> visitor calls <code class="docutils literal notranslate"><span class="pre">TOG.find_next_significant_token</span></code> to
+determine whether <code class="docutils literal notranslate"><span class="pre">TOG.do_If</span></code> should generate an “if” or an “elif” token.
 This help is essential, because the following two source files generate
-identical parse trees!:</p>
+identical parse trees!</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="mi">1</span><span class="p">:</span>            <span class="k">if</span> <span class="mi">1</span><span class="p">:</span>
     <span class="k">pass</span>             <span class="k">pass</span>
 <span class="k">else</span><span class="p">:</span>            <span class="k">elif</span> <span class="mi">2</span><span class="p">:</span>
@@ -649,17 +648,17 @@ identical parse trees!:</p>
         <span class="k">pass</span>
 </pre></div>
 </div>
-<p>Similarly, the TOG.do_Str and TOG.do_JoinedStr visitors call
-<strong>TOG.get_concatenated_string_tokens</strong> to handle one ore more concatenated
+<p>Similarly, the <code class="docutils literal notranslate"><span class="pre">TOG.do_Str</span></code> and <code class="docutils literal notranslate"><span class="pre">TOG.do_JoinedStr</span></code> visitors call
+<code class="docutils literal notranslate"><span class="pre">TOG.get_concatenated_string_tokens</span></code> to handle one ore more concatenated
 string tokens.</p>
-<p>Finally, TOG.do_slice calls TOG.find_next_significant_token to determine
+<p>Finally, <code class="docutils literal notranslate"><span class="pre">TOG.do_slice</span></code> calls <code class="docutils literal notranslate"><span class="pre">TOG.find_next_significant_token</span></code> to determine
 whether a slice without a step contains an optional colon.</p>
-<p>TOG.find_next_significant_token and TOG.get_concatenated_string_tokens are
+<p><code class="docutils literal notranslate"><span class="pre">TOG.find_next_significant_token</span></code> and <code class="docutils literal notranslate"><span class="pre">TOG.get_concatenated_string_tokens</span></code> are
 crucial inventions. TOG class would not be possible without them.</p>
 </section>
 <section id="syncing-tokens">
 <h4>Syncing tokens<a class="headerlink" href="#syncing-tokens" title="Link to this heading">¶</a></h4>
-<p><strong>TOG.px</strong> is an index into the token list. It is either -1, or it points
+<p><code class="docutils literal notranslate"><span class="pre">TOG.px</span></code> is an index into the token list. It is either -1, or it points
 at the previous significant token. <em>Note</em>: TOG.find_next_significant_token
 and TOG.get_concatenated_string_tokens use TOG.px, but never change TOG.px.</p>
 <p>TOG.sync_token(self, kind, val) associates tokens with ast nodes as
@@ -705,7 +704,7 @@ token list, not the other way around!</p></li>
 <p><strong>Speed</strong>: The TOG creates links between tokens and ast nodes in roughly the time
 taken by python’s tokenize.tokenize and ast.parse library methods. The TOT
 class traverses trees annotated with parent/child links even more quickly.</p>
-<p>TOG class avoids both ast.fix_missing_locations and ast.get_source_segment,
+<p>TOG class avoids both <code class="docutils literal notranslate"><span class="pre">ast.fix_missing_locations</span></code> and <code class="docutils literal notranslate"><span class="pre">ast.get_source_segment</span></code>,
 which are too slow to be useful.</p>
 <p><strong>Memory</strong>: The TOG class makes no significant demand on python’s resources:</p>
 <ul class="simple">
@@ -719,12 +718,17 @@ worst case, it might contain a few thousand entries.</p></li>
 </section>
 <section id="maintaining-leoast-py">
 <h3><a class="toc-backref" href="#id14" role="doc-backlink">Maintaining leoAst.py</a><a class="headerlink" href="#maintaining-leoast-py" title="Link to this heading">¶</a></h3>
-<p>New ast nodes are sometimes required to support new language features, especially language features that require new syntax or keywords. Python has added new nodes fairly often in the past. New nodes may be added in future. When that happens, the following changes will be needed to leoAst.py:</p>
+<p>New ast nodes are sometimes required to support new language features,
+especially language features that require new syntax or keywords. Python
+has added new nodes fairly often in the past. New nodes may be added in
+future. When that happens, the following changes will be needed to
+leoAst.py:</p>
 <ul class="simple">
 <li><p>Add a visitor for the new node.</p></li>
 <li><p>Add one or more unit tests that fully cover the new visitor.</p></li>
 </ul>
-<p>The test_visitors_exist unit test checks that visitors exist for all ast nodes defined by to a particular version of python.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">test_visitors_exist</span></code> unit test checks that visitors exist for all
+ast nodes defined by to a particular version of python.</p>
 <p>See <a class="reference external" href="https://github.com/leo-editor/leo-editor/issues/1440">Leo issue #1440</a> for notes relating to the code.</p>
 </section>
 </section>

@@ -6886,6 +6886,10 @@ Here we see Leo's splash screen:
 Glossary
 #########
 
+.. |br| raw:: html
+
+   &lt;br /&gt;
+
 .. Links
 .. _`Customizing Leo`:              customizing.html
 .. _`git repository`:               https://github.com/leo-editor/leo-editor
@@ -7031,7 +7035,7 @@ Attempting to modify c.cleo.prikey immediately in the @script gives an Attribute
 <t tx="ekr.20100804133903.7250">.. index::
     pair: @; Glossary
 
-``\@``
+``@``
     Starts a doc part. Doc parts continue until an ``@c`` or ``@code``
     directive or the end of the body text.
 
@@ -7047,11 +7051,12 @@ Attempting to modify c.cleo.prikey immediately in the @script gives an Attribute
     pair: ``@&lt;file&gt; node``; Glossary
 
 ``@&lt;file&gt; node``
-
     A node whose headline starts with ``@asis``, ``@auto``, ``@clean``,
-    ``@edit``, ``@file``, ``@shadow``, ``@thin``. We often refer to outline
-    nodes by the directives they contain. For example, an ``@file`` node is
-    a node whose headline starts with ``@file``.
+    ``@edit``, ``@file``, ``@shadow``, ``@thin``.
+    
+    We often refer to outline nodes by the directives they contain. For
+    example, an ``@file`` node is a node whose headline starts with
+    ``@file``.
 
 .. index::
     pair: ``@all``; Glossary
@@ -7062,195 +7067,181 @@ Attempting to modify c.cleo.prikey immediately in the @script gives an Attribute
 .. index::
     pair: @asis; Glossary
 
-\@asis &lt;filename&gt;
-    Creates an external file containing no Leo sentinels directly from the @asis tree.
+``@asis &lt;filename&gt;``
+    Creates an external file containing no Leo sentinels directly from the ``@asis`` tree.
 
 .. index::
-    pair: @auto; Glossary
+    pair: ``@auto``; Glossary
 
-\@auto &lt;filename&gt;
-
-    Imports an external file into the Leo outline, splitting the file into pieces if an importer exists for the give filetype. Importers presently exist for the following languages: C, C++, C#, HTML, INI files, Java, PHP, Pascal, Python and XML.
+``@auto &lt;filename&gt;``
+    Imports an external file into the Leo outline, splitting the file into
+    nodes if an importer exists for the give filetype.
 
 .. index::
-    pair: @c; Glossary
-    pair: @code; Glossary
+    pair: ``@c``; Glossary
+    pair: ``@code``; Glossary
 
-\@c and @code
-
+``@c and @code``
     Ends a doc part and starts a code part.
 
 .. index::
-    pair: @chapter; Glossary
+    pair: ``@chapter``; Glossary
 
-\@chapter
-
-    An @chapter tree represents a chapter.
-
-.. index::
-    pair: @color; Glossary
+``@chapter``
+    An ``@chapter`` tree represents a chapter.
 
 .. index::
-    pair: @clean; Glossary
+    pair: ``@color``; Glossary
 
-\@clean
+.. index::
+    pair: ``@clean``; Glossary
 
-    Creates an external file without sentinels. Section references and the @all and @others directives are valid in @clean trees.
+``@clean``
+    Creates an external file without sentinels. |br|
+    Section references and the ``@all`` and ``@others`` directives are valid in ``@clean`` trees.
 
-\@color
-
+``@color``
     Enables syntax coloring in a node and its descendants until the next
-    @nocolor directive.
+    ``@nocolor`` directive.
 
 .. index::
-    pair: @comment; Glossary
+    pair: ``@comment``; Glossary
 
-\@comment
-
-    Sets the comment delimiters in @thin, @file and @shadow files.
-
-.. index::
-    pair: @delims; Glossary
-
-\@delims
-
-  Sets the comment delimiters in @thin, @file and @shadow files.
+``@comment``
+    Sets the comment delimiters in ``@thin``, ``@file`` and ``@shadow`` files.
 
 .. index::
-    pair: @edit; Glossary
+    pair: ``@delims``; Glossary
 
-\@edit &lt;filename&gt;
+``@delims``
+  Sets the comment delimiters in ``@thin``, ``@file`` and ``@shadow`` files.
 
+.. index::
+    pair: ``@edit``; Glossary
+
+``@edit &lt;filename&gt;``
     Reads an entire external file into a single node.
 
 .. index::
-    pair: @encoding; Glossary
+    pair: ``@encoding``; Glossary
 
-\@encoding &lt;encoding&gt;
-
+``@encoding &lt;encoding&gt;``
     Specifies the Unicode encoding for an external file.
 
 .. index::
-    pair: @file; Glossary
+    pair: ``@file``; Glossary
 
-\@file &lt;filename&gt;
-
-    Creates an external file containing sentinels. When writing @file trees, Leo expands section references and @all and @others directives. **Important**: @file is the recommended way to create and edit most files. Using @file trees is **highly recommended** when sharing external files in a collaborative environment.
+``@file &lt;filename&gt;``
+    Creates an external file containing sentinels.
+    
+    When writing ``@file`` trees, Leo expands section references and ``@all`` and
+    ``@others`` directives.
 
 .. index::
-    pair: @first; Glossary
+    pair: ``@first``; Glossary
 
-\@first &lt;text&gt;
+``@first &lt;text&gt;``
+    This directive inserts a line at the *very start* of an external file,
+    before the first sentinel.
 
-    The @first directive allows you to place one or more lines at the *very start* of an external file, before the first sentinel. The @first directive must appear at the *very start* of body text. For example::
+    The ``@first`` directive must appear at the *very start* of body text. For example::
 
 	    @first #! /usr/bin/env python
 
 .. index::
-    pair: @killcolor; Glossary
+    pair: ``@killcolor``; Glossary
 
-\@killcolor
-
+``@killcolor``
     Completely disables syntax coloring in a node, regardless of other directives.
 
 .. index::
-    pair: @language; Glossary
+    pair: ``@language``; Glossary
 
-\@language &lt;language name&gt;
-
-    Specifies the source language, which affects syntax coloring and the comments delimiters used in external files and syntax coloring.
+``@language &lt;language name&gt;``
+    Specifies the source language, which affects syntax coloring and the
+    comments delimiters used in external files and syntax coloring.
 
 .. index::
-    pair: @last; Glossary
+    pair: ``@last``; Glossary
 
-\@last &lt;text&gt;
+``@last &lt;text&gt;``
+    Allows you to place lines at the very end of external files, after the last sentinel.
 
-    Allows you to place lines at the very end of external files, after the last sentinel. This directive must appear at the *very end* of body text. For example::
+    This directive must appear at the *very end* of body text. For example::
 
         @first &lt;?php
         ...
         @last ?&gt;
 
 .. index::
-    pair: @lineending; Glossary
+    pair: ``@lineending``; Glossary
 
-\@lineending cr/lf/nl/crlf
-
+``@lineending cr/lf/nl/crlf``
     Sets the line endings for external files.
 
 .. index::
-    pair: @nocolor; Glossary
+    pair: ``@nocolor``; Glossary
 
-\@nocolor
-
-    Disables syntax coloring in a node and its descendants until the next @color
+``@nocolor``
+    Disables syntax coloring in a node and its descendants until the next ``@color``
     directive.
 
 .. index::
-    pair: @nocolor-node; Glossary
+    pair: ``@nocolor-node``; Glossary
 
-\@nocolor-node
-
+``@nocolor-node``
     Completely disables coloring for one node. Descendant nodes are not affected.
 
 .. index::
-    pair: @nosent; Glossary
+    pair: ``@nosent``; Glossary
 
-\@nosent
-
-    Creates external files without sentinels. Unlike @clean, @nosent trees
+``@nosent``
+    Creates external files without sentinels. Unlike ``@clean``, ``@nosent`` trees
     are never updated from from external files.
 
 .. index::
-    pair: @nowrap; Glossary
+    pair: ``@nowrap``; Glossary
 
-\@nowrap
-
+``@nowrap``
     Disables line wrapping the Leo's body pane.
 
 .. index::
-    pair: @others; Glossary
+    pair: ``@others``; Glossary
 
-\@others
-
+``@others``
     Copies the body text of all nodes *except* section definition nodes in an
-    @file tree to the corresponding external file.
+    ``@file`` tree to the corresponding external file.
 
 .. index::
-    pair: @pagewidth; Glossary
+    pair: ``@pagewidth``; Glossary
 
 ``@pagewidth &lt;n&gt;``
-
    Sets the page width used by the reformat-paragraph command.
-   This directive also controls how @doc parts are broken into lines.
+   This directive also controls how ``@doc`` parts are broken into lines.
 
 .. index::
-    ..  pair: @path; Glossary
+    ..  pair: ``@path``; Glossary
 
 ``@path &lt;path&gt;``
-
-  Sets the path prefix for relative filenames for descendant \@&lt;file&gt; directives.
+    Sets the path prefix for relative filenames for descendant ``@&lt;file&gt;`` directives.
 
 .. index::
-    pair: @tabwidth; Glossary
+    pair: ``@tabwidth``; Glossary
 
-\@tabwidth &lt;n&gt;
-
+``@tabwidth &lt;n&gt;``
     Sets the width of tabs. Negative tab widths cause Leo to convert tabs to
     spaces.
 
 .. index::
-    pair: @thin; Glossary
+    pair: ``@thin``; Glossary
 
-\@thin &lt;filename&gt;
-
-    A synonym for @file.
+``@thin &lt;filename&gt;``
+    A synonym for ``@file``.
 
 .. index::
-    pair: @wrap; Glossary
+    pair: ``@wrap``; Glossary
 
-\@wrap
-
+``@wrap``
     Enables line wrapping in Leo's body pane.
 </t>
 <t tx="ekr.20100804133903.7251">.. index::
@@ -28752,15 +28743,14 @@ related classes.</t>
 tokens and the corresponding ast nodes. The TOG class also injects
 parent/child links into all ast nodes.
 
-The TOG class defines generators that visit ast nodes in **token order**,
-the traversal order that corresponds to the order of the tokens produced by
+The TOG class defines visitors that visit ast nodes in **token order**, the
+traversal order that corresponds to the order of the tokens produced by
 python's tokenizer module. The only way to ensure this correspondence is to
 use separate visitors for all ast nodes. All visitors are straightforward
 generators.
 
-TOG visitors `yield from` tog.gen* generators to visit subtrees. All such
-generators eventually call TOG.sync_token, which checks that that tokens
-are, in fact, visited in the correct order. TOG.sync_token is an
+TOG visitors eventually call ``TOG.sync_token``, which checks that that tokens
+are, in fact, visited in the correct order. ``TOG.sync_token`` is an
 ever-present unit test.
 
 The **TokenOrderTraversal** (TOT) class uses the parent/child links created
@@ -28769,10 +28759,12 @@ nodes of the parse tree in token order. This loop is extremely fast. Using
 the TOT class, client code can easily modify the token list or parse tree
 as desired.
 </t>
-<t tx="ekr.20191206063508.1">The TOG.do_If visitor calls **TOG.find_next_significant_token** to
-determine whether TOG.do_If should generate an "if" or an "elif" token.
+<t tx="ekr.20191206063508.1">The ``TOG.do_If`` visitor calls ``TOG.find_next_significant_token`` to
+determine whether ``TOG.do_If`` should generate an "if" or an "elif" token.
 This help is essential, because the following two source files generate
-identical parse trees!::
+identical parse trees!
+
+::
 
   if 1:            if 1:
       pass             pass
@@ -28780,17 +28772,17 @@ identical parse trees!::
       if 2:            pass
           pass
 
-Similarly, the TOG.do_Str and TOG.do_JoinedStr visitors call
-**TOG.get_concatenated_string_tokens** to handle one ore more concatenated
+Similarly, the ``TOG.do_Str`` and ``TOG.do_JoinedStr`` visitors call
+``TOG.get_concatenated_string_tokens`` to handle one ore more concatenated
 string tokens.
 
-Finally, TOG.do_slice calls TOG.find_next_significant_token to determine
+Finally, ``TOG.do_slice`` calls ``TOG.find_next_significant_token`` to determine
 whether a slice without a step contains an optional colon.
 
-TOG.find_next_significant_token and TOG.get_concatenated_string_tokens are
+``TOG.find_next_significant_token`` and ``TOG.get_concatenated_string_tokens`` are
 crucial inventions. TOG class would not be possible without them.
 </t>
-<t tx="ekr.20191206064645.1">**TOG.px** is an index into the token list. It is either -1, or it points
+<t tx="ekr.20191206064645.1">``TOG.px`` is an index into the token list. It is either -1, or it points
 at the previous significant token. *Note*: TOG.find_next_significant_token
 and TOG.get_concatenated_string_tokens use TOG.px, but never change TOG.px.
 
@@ -28838,7 +28830,7 @@ To summarize token syncing:
 taken by python's tokenize.tokenize and ast.parse library methods. The TOT
 class traverses trees annotated with parent/child links even more quickly.
 
-TOG class avoids both ast.fix_missing_locations and ast.get_source_segment,
+TOG class avoids both ``ast.fix_missing_locations`` and ``ast.get_source_segment``,
 which are too slow to be useful.
 
 **Memory**: The TOG class makes no significant demand on python's resources:
@@ -28885,15 +28877,14 @@ The **BaseTest** class provides common infrastructure for all other test classes
 *Important*: BaseTest.make_data is, all by itself, a very strong unit test.
 </t>
 <t tx="ekr.20200113234440.1">The distinction between **significant** and **insignificant** tokens is
-crucial. Visitors call TOG.gen_token, TOG.gen_op, etc. *only* for
-significant tokens. The **is_significant** and **is_significant_token**
+crucial. Visitors call ``TOG.gen_token``, ``TOG.gen_op``, etc. *only* for
+significant tokens. The ``is_significant`` and ``is_significant_token``
 functions define which tokens are significant.
 
 Visitors can't know, just by looking at the parse tree, whether the input
 contains *insignificant* tokens. For example, the source tokens might
 contain non-essential parentheses, or optional trailing commas, or whether
 two statements are separated by a semicolon.
-
 </t>
 <t tx="ekr.20200213034654.1">Leo is starting on one of the external monitors and I have no way to
 move it back to my laptop screen.
@@ -29266,12 +29257,17 @@ on `Leo's forum &lt;https://groups.google.com/forum/#!forum/leo-editor&gt;`_
 </t>
 <t tx="ekr.20200807105737.1">.. _`Leo issue #1440`: https://github.com/leo-editor/leo-editor/issues/1440
 
-New ast nodes are sometimes required to support new language features, especially language features that require new syntax or keywords. Python has added new nodes fairly often in the past. New nodes may be added in future. When that happens, the following changes will be needed to leoAst.py:
+New ast nodes are sometimes required to support new language features,
+especially language features that require new syntax or keywords. Python
+has added new nodes fairly often in the past. New nodes may be added in
+future. When that happens, the following changes will be needed to
+leoAst.py:
 
 - Add a visitor for the new node.
 - Add one or more unit tests that fully cover the new visitor.
 
-The test_visitors_exist unit test checks that visitors exist for all ast nodes defined by to a particular version of python.
+The ``test_visitors_exist`` unit test checks that visitors exist for all
+ast nodes defined by to a particular version of python.
 
 See `Leo issue #1440`_ for notes relating to the code.
 </t>

@@ -62,7 +62,7 @@
 <section id="id1">
 <h2><a class="toc-backref" href="#id2" role="doc-backlink">&#64;</a><a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
 <dl class="simple" id="index-0">
-<dt><code class="docutils literal notranslate"><span class="pre">\&#64;</span></code></dt><dd><p>Starts a doc part. Doc parts continue until an <code class="docutils literal notranslate"><span class="pre">&#64;c</span></code> or <code class="docutils literal notranslate"><span class="pre">&#64;code</span></code>
+<dt><code class="docutils literal notranslate"><span class="pre">&#64;</span></code></dt><dd><p>Starts a doc part. Doc parts continue until an <code class="docutils literal notranslate"><span class="pre">&#64;c</span></code> or <code class="docutils literal notranslate"><span class="pre">&#64;code</span></code>
 directive or the end of the body text.</p>
 </dd>
 </dl>
@@ -72,135 +72,142 @@ writes everything in the headline following the &#64;&#64; just before the
 corresponding body text.</p>
 </dd>
 </dl>
-<p id="index-2"><code class="docutils literal notranslate"><span class="pre">&#64;&lt;file&gt;</span> <span class="pre">node</span></code></p>
-<blockquote>
-<div><p>A node whose headline starts with <code class="docutils literal notranslate"><span class="pre">&#64;asis</span></code>, <code class="docutils literal notranslate"><span class="pre">&#64;auto</span></code>, <code class="docutils literal notranslate"><span class="pre">&#64;clean</span></code>,
-<code class="docutils literal notranslate"><span class="pre">&#64;edit</span></code>, <code class="docutils literal notranslate"><span class="pre">&#64;file</span></code>, <code class="docutils literal notranslate"><span class="pre">&#64;shadow</span></code>, <code class="docutils literal notranslate"><span class="pre">&#64;thin</span></code>. We often refer to outline
-nodes by the directives they contain. For example, an <code class="docutils literal notranslate"><span class="pre">&#64;file</span></code> node is
-a node whose headline starts with <code class="docutils literal notranslate"><span class="pre">&#64;file</span></code>.</p>
-</div></blockquote>
+<dl id="index-2">
+<dt><code class="docutils literal notranslate"><span class="pre">&#64;&lt;file&gt;</span> <span class="pre">node</span></code></dt><dd><p>A node whose headline starts with <code class="docutils literal notranslate"><span class="pre">&#64;asis</span></code>, <code class="docutils literal notranslate"><span class="pre">&#64;auto</span></code>, <code class="docutils literal notranslate"><span class="pre">&#64;clean</span></code>,
+<code class="docutils literal notranslate"><span class="pre">&#64;edit</span></code>, <code class="docutils literal notranslate"><span class="pre">&#64;file</span></code>, <code class="docutils literal notranslate"><span class="pre">&#64;shadow</span></code>, <code class="docutils literal notranslate"><span class="pre">&#64;thin</span></code>.</p>
+<p>We often refer to outline nodes by the directives they contain. For
+example, an <code class="docutils literal notranslate"><span class="pre">&#64;file</span></code> node is a node whose headline starts with
+<code class="docutils literal notranslate"><span class="pre">&#64;file</span></code>.</p>
+</dd>
+</dl>
 <dl class="simple" id="index-3">
 <dt><code class="docutils literal notranslate"><span class="pre">&#64;all</span></code></dt><dd><p>Copies the body text of all nodes in an &#64;file tree to the external file.</p>
 </dd>
 </dl>
 <dl class="simple" id="index-4">
-<dt>&#64;asis &lt;filename&gt;</dt><dd><p>Creates an external file containing no Leo sentinels directly from the &#64;asis tree.</p>
+<dt><code class="docutils literal notranslate"><span class="pre">&#64;asis</span> <span class="pre">&lt;filename&gt;</span></code></dt><dd><p>Creates an external file containing no Leo sentinels directly from the <code class="docutils literal notranslate"><span class="pre">&#64;asis</span></code> tree.</p>
 </dd>
 </dl>
-<p id="index-5">&#64;auto &lt;filename&gt;</p>
-<blockquote>
-<div><p>Imports an external file into the Leo outline, splitting the file into pieces if an importer exists for the give filetype. Importers presently exist for the following languages: C, C++, C#, HTML, INI files, Java, PHP, Pascal, Python and XML.</p>
-</div></blockquote>
-<p id="index-6">&#64;c and &#64;code</p>
-<blockquote>
-<div><p>Ends a doc part and starts a code part.</p>
-</div></blockquote>
-<p id="index-7">&#64;chapter</p>
-<blockquote>
-<div><p>An &#64;chapter tree represents a chapter.</p>
-</div></blockquote>
-<p id="index-9"><span id="index-8"></span>&#64;clean</p>
-<blockquote>
-<div><p>Creates an external file without sentinels. Section references and the &#64;all and &#64;others directives are valid in &#64;clean trees.</p>
-</div></blockquote>
-<p>&#64;color</p>
-<blockquote>
-<div><p>Enables syntax coloring in a node and its descendants until the next
-&#64;nocolor directive.</p>
-</div></blockquote>
-<p id="index-10">&#64;comment</p>
-<blockquote>
-<div><p>Sets the comment delimiters in &#64;thin, &#64;file and &#64;shadow files.</p>
-</div></blockquote>
-<p id="index-11">&#64;delims</p>
-<blockquote>
-<div><p>Sets the comment delimiters in &#64;thin, &#64;file and &#64;shadow files.</p>
-</div></blockquote>
-<p id="index-12">&#64;edit &lt;filename&gt;</p>
-<blockquote>
-<div><p>Reads an entire external file into a single node.</p>
-</div></blockquote>
-<p id="index-13">&#64;encoding &lt;encoding&gt;</p>
-<blockquote>
-<div><p>Specifies the Unicode encoding for an external file.</p>
-</div></blockquote>
-<p id="index-14">&#64;file &lt;filename&gt;</p>
-<blockquote>
-<div><p>Creates an external file containing sentinels. When writing &#64;file trees, Leo expands section references and &#64;all and &#64;others directives. <strong>Important</strong>: &#64;file is the recommended way to create and edit most files. Using &#64;file trees is <strong>highly recommended</strong> when sharing external files in a collaborative environment.</p>
-</div></blockquote>
-<p id="index-15">&#64;first &lt;text&gt;</p>
-<blockquote>
-<div><p>The &#64;first directive allows you to place one or more lines at the <em>very start</em> of an external file, before the first sentinel. The &#64;first directive must appear at the <em>very start</em> of body text. For example:</p>
+<dl class="simple" id="index-5">
+<dt><code class="docutils literal notranslate"><span class="pre">&#64;auto</span> <span class="pre">&lt;filename&gt;</span></code></dt><dd><p>Imports an external file into the Leo outline, splitting the file into
+nodes if an importer exists for the give filetype.</p>
+</dd>
+</dl>
+<dl class="simple" id="index-6">
+<dt><code class="docutils literal notranslate"><span class="pre">&#64;c</span> <span class="pre">and</span> <span class="pre">&#64;code</span></code></dt><dd><p>Ends a doc part and starts a code part.</p>
+</dd>
+</dl>
+<dl class="simple" id="index-7">
+<dt><code class="docutils literal notranslate"><span class="pre">&#64;chapter</span></code></dt><dd><p>An <code class="docutils literal notranslate"><span class="pre">&#64;chapter</span></code> tree represents a chapter.</p>
+</dd>
+</dl>
+<span id="index-8"></span><dl class="simple" id="index-9">
+<dt><code class="docutils literal notranslate"><span class="pre">&#64;clean</span></code></dt><dd><p>Creates an external file without sentinels. <br />
+Section references and the <code class="docutils literal notranslate"><span class="pre">&#64;all</span></code> and <code class="docutils literal notranslate"><span class="pre">&#64;others</span></code> directives are valid in <code class="docutils literal notranslate"><span class="pre">&#64;clean</span></code> trees.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">&#64;color</span></code></dt><dd><p>Enables syntax coloring in a node and its descendants until the next
+<code class="docutils literal notranslate"><span class="pre">&#64;nocolor</span></code> directive.</p>
+</dd>
+</dl>
+<dl class="simple" id="index-10">
+<dt><code class="docutils literal notranslate"><span class="pre">&#64;comment</span></code></dt><dd><p>Sets the comment delimiters in <code class="docutils literal notranslate"><span class="pre">&#64;thin</span></code>, <code class="docutils literal notranslate"><span class="pre">&#64;file</span></code> and <code class="docutils literal notranslate"><span class="pre">&#64;shadow</span></code> files.</p>
+</dd>
+</dl>
+<dl class="simple" id="index-11">
+<dt><code class="docutils literal notranslate"><span class="pre">&#64;delims</span></code></dt><dd><p>Sets the comment delimiters in <code class="docutils literal notranslate"><span class="pre">&#64;thin</span></code>, <code class="docutils literal notranslate"><span class="pre">&#64;file</span></code> and <code class="docutils literal notranslate"><span class="pre">&#64;shadow</span></code> files.</p>
+</dd>
+</dl>
+<dl class="simple" id="index-12">
+<dt><code class="docutils literal notranslate"><span class="pre">&#64;edit</span> <span class="pre">&lt;filename&gt;</span></code></dt><dd><p>Reads an entire external file into a single node.</p>
+</dd>
+</dl>
+<dl class="simple" id="index-13">
+<dt><code class="docutils literal notranslate"><span class="pre">&#64;encoding</span> <span class="pre">&lt;encoding&gt;</span></code></dt><dd><p>Specifies the Unicode encoding for an external file.</p>
+</dd>
+</dl>
+<dl id="index-14">
+<dt><code class="docutils literal notranslate"><span class="pre">&#64;file</span> <span class="pre">&lt;filename&gt;</span></code></dt><dd><p>Creates an external file containing sentinels.</p>
+<p>When writing <code class="docutils literal notranslate"><span class="pre">&#64;file</span></code> trees, Leo expands section references and <code class="docutils literal notranslate"><span class="pre">&#64;all</span></code> and
+<code class="docutils literal notranslate"><span class="pre">&#64;others</span></code> directives.</p>
+</dd>
+</dl>
+<dl id="index-15">
+<dt><code class="docutils literal notranslate"><span class="pre">&#64;first</span> <span class="pre">&lt;text&gt;</span></code></dt><dd><p>This directive inserts a line at the <em>very start</em> of an external file,
+before the first sentinel.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">&#64;first</span></code> directive must appear at the <em>very start</em> of body text. For example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@first</span> <span class="c1">#! /usr/bin/env python</span>
 </pre></div>
 </div>
-</div></blockquote>
-<p id="index-16">&#64;killcolor</p>
-<blockquote>
-<div><p>Completely disables syntax coloring in a node, regardless of other directives.</p>
-</div></blockquote>
-<p id="index-17">&#64;language &lt;language name&gt;</p>
-<blockquote>
-<div><p>Specifies the source language, which affects syntax coloring and the comments delimiters used in external files and syntax coloring.</p>
-</div></blockquote>
-<p id="index-18">&#64;last &lt;text&gt;</p>
-<blockquote>
-<div><p>Allows you to place lines at the very end of external files, after the last sentinel. This directive must appear at the <em>very end</em> of body text. For example:</p>
+</dd>
+</dl>
+<dl class="simple" id="index-16">
+<dt><code class="docutils literal notranslate"><span class="pre">&#64;killcolor</span></code></dt><dd><p>Completely disables syntax coloring in a node, regardless of other directives.</p>
+</dd>
+</dl>
+<dl class="simple" id="index-17">
+<dt><code class="docutils literal notranslate"><span class="pre">&#64;language</span> <span class="pre">&lt;language</span> <span class="pre">name&gt;</span></code></dt><dd><p>Specifies the source language, which affects syntax coloring and the
+comments delimiters used in external files and syntax coloring.</p>
+</dd>
+</dl>
+<dl id="index-18">
+<dt><code class="docutils literal notranslate"><span class="pre">&#64;last</span> <span class="pre">&lt;text&gt;</span></code></dt><dd><p>Allows you to place lines at the very end of external files, after the last sentinel.</p>
+<p>This directive must appear at the <em>very end</em> of body text. For example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>@first &lt;?php
 ...
 @last ?&gt;
 </pre></div>
 </div>
-</div></blockquote>
-<p id="index-19">&#64;lineending cr/lf/nl/crlf</p>
-<blockquote>
-<div><p>Sets the line endings for external files.</p>
-</div></blockquote>
-<p id="index-20">&#64;nocolor</p>
-<blockquote>
-<div><p>Disables syntax coloring in a node and its descendants until the next &#64;color
+</dd>
+</dl>
+<dl class="simple" id="index-19">
+<dt><code class="docutils literal notranslate"><span class="pre">&#64;lineending</span> <span class="pre">cr/lf/nl/crlf</span></code></dt><dd><p>Sets the line endings for external files.</p>
+</dd>
+</dl>
+<dl class="simple" id="index-20">
+<dt><code class="docutils literal notranslate"><span class="pre">&#64;nocolor</span></code></dt><dd><p>Disables syntax coloring in a node and its descendants until the next <code class="docutils literal notranslate"><span class="pre">&#64;color</span></code>
 directive.</p>
-</div></blockquote>
-<p id="index-21">&#64;nocolor-node</p>
-<blockquote>
-<div><p>Completely disables coloring for one node. Descendant nodes are not affected.</p>
-</div></blockquote>
-<p id="index-22">&#64;nosent</p>
-<blockquote>
-<div><p>Creates external files without sentinels. Unlike &#64;clean, &#64;nosent trees
+</dd>
+</dl>
+<dl class="simple" id="index-21">
+<dt><code class="docutils literal notranslate"><span class="pre">&#64;nocolor-node</span></code></dt><dd><p>Completely disables coloring for one node. Descendant nodes are not affected.</p>
+</dd>
+</dl>
+<dl class="simple" id="index-22">
+<dt><code class="docutils literal notranslate"><span class="pre">&#64;nosent</span></code></dt><dd><p>Creates external files without sentinels. Unlike <code class="docutils literal notranslate"><span class="pre">&#64;clean</span></code>, <code class="docutils literal notranslate"><span class="pre">&#64;nosent</span></code> trees
 are never updated from from external files.</p>
-</div></blockquote>
-<p id="index-23">&#64;nowrap</p>
-<blockquote>
-<div><p>Disables line wrapping the Leo’s body pane.</p>
-</div></blockquote>
-<p id="index-24">&#64;others</p>
-<blockquote>
-<div><p>Copies the body text of all nodes <em>except</em> section definition nodes in an
-&#64;file tree to the corresponding external file.</p>
-</div></blockquote>
-<p id="index-25"><code class="docutils literal notranslate"><span class="pre">&#64;pagewidth</span> <span class="pre">&lt;n&gt;</span></code></p>
-<blockquote>
-<div><p>Sets the page width used by the reformat-paragraph command.
-This directive also controls how &#64;doc parts are broken into lines.</p>
-</div></blockquote>
-<p id="index-26"><code class="docutils literal notranslate"><span class="pre">&#64;path</span> <span class="pre">&lt;path&gt;</span></code></p>
-<blockquote>
-<div><p>Sets the path prefix for relative filenames for descendant &#64;&lt;file&gt; directives.</p>
-</div></blockquote>
-<p id="index-27">&#64;tabwidth &lt;n&gt;</p>
-<blockquote>
-<div><p>Sets the width of tabs. Negative tab widths cause Leo to convert tabs to
+</dd>
+</dl>
+<dl class="simple" id="index-23">
+<dt><code class="docutils literal notranslate"><span class="pre">&#64;nowrap</span></code></dt><dd><p>Disables line wrapping the Leo’s body pane.</p>
+</dd>
+</dl>
+<dl class="simple" id="index-24">
+<dt><code class="docutils literal notranslate"><span class="pre">&#64;others</span></code></dt><dd><p>Copies the body text of all nodes <em>except</em> section definition nodes in an
+<code class="docutils literal notranslate"><span class="pre">&#64;file</span></code> tree to the corresponding external file.</p>
+</dd>
+</dl>
+<dl class="simple" id="index-25">
+<dt><code class="docutils literal notranslate"><span class="pre">&#64;pagewidth</span> <span class="pre">&lt;n&gt;</span></code></dt><dd><p>Sets the page width used by the reformat-paragraph command.
+This directive also controls how <code class="docutils literal notranslate"><span class="pre">&#64;doc</span></code> parts are broken into lines.</p>
+</dd>
+</dl>
+<dl class="simple" id="index-26">
+<dt><code class="docutils literal notranslate"><span class="pre">&#64;path</span> <span class="pre">&lt;path&gt;</span></code></dt><dd><p>Sets the path prefix for relative filenames for descendant <code class="docutils literal notranslate"><span class="pre">&#64;&lt;file&gt;</span></code> directives.</p>
+</dd>
+</dl>
+<dl class="simple" id="index-27">
+<dt><code class="docutils literal notranslate"><span class="pre">&#64;tabwidth</span> <span class="pre">&lt;n&gt;</span></code></dt><dd><p>Sets the width of tabs. Negative tab widths cause Leo to convert tabs to
 spaces.</p>
-</div></blockquote>
-<p id="index-28">&#64;thin &lt;filename&gt;</p>
-<blockquote>
-<div><p>A synonym for &#64;file.</p>
-</div></blockquote>
-<p id="index-29">&#64;wrap</p>
-<blockquote>
-<div><p>Enables line wrapping in Leo’s body pane.</p>
-</div></blockquote>
+</dd>
+</dl>
+<dl class="simple" id="index-28">
+<dt><code class="docutils literal notranslate"><span class="pre">&#64;thin</span> <span class="pre">&lt;filename&gt;</span></code></dt><dd><p>A synonym for <code class="docutils literal notranslate"><span class="pre">&#64;file</span></code>.</p>
+</dd>
+</dl>
+<dl class="simple" id="index-29">
+<dt><code class="docutils literal notranslate"><span class="pre">&#64;wrap</span></code></dt><dd><p>Enables line wrapping in Leo’s body pane.</p>
+</dd>
+</dl>
 </section>
 <section id="a-c">
 <h2><a class="toc-backref" href="#id3" role="doc-backlink">A - C</a><a class="headerlink" href="#a-c" title="Link to this heading">¶</a></h2>
