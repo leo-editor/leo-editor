@@ -77,7 +77,6 @@ class BaseColorizer:
         # Common state ivars...
         self.enabled = False  # Per-node enable/disable flag set by updateSyntaxColorer.
         self.highlighter: Any = g.NullObject()  # May be overridden in subclass...
-        self.in_full_redraw = False  # A lockout.
         self.language = 'python'  # set by scanLanguageDirectives.
         self.prev: tuple[int, int, str] = None  # Used by setTag.
         self.showInvisibles = False
@@ -1256,6 +1255,22 @@ class JEditColorizer(BaseColorizer):
                     aList.insert(0, wiki_rule)
                     d[ch] = aList
         self.rulesDict = d
+    #@+node:ekr.20241116071343.1: *3* jedit.force_recolor
+    def force_recolor(self) -> None:
+        """jedit.force_recolor: A helper for Leo's 'recolor' command."""
+        c = self.c
+        p = c.p
+        if not p:  # This guard is required.
+            return
+
+        # Only c.recolor should call this method!
+        if g.callers(1) != 'recolorCommand':
+            message = f"jedit.force_recolor: invalid caller: {g.callers()}"
+            g.print_unique_message(message)
+
+        # Tell QSyntaxHighlighter to do a full recolor.
+        g.es_print(f"recolor: `{p.h}`", color='blue')
+        self.highlighter.rehighlight()
     #@+node:ekr.20110605121601.18638: *3* jedit.mainLoop
     tot_time = 0.0
 
