@@ -5375,7 +5375,7 @@ Here are the sentinels used by modern versions of Leo, in alphabetical order.
 
         @+node:gnx:&lt;headline&gt;
         
-    Nodes continue unti the next ``@+node``, ``at-all`` or ``at-others`` sentinel.
+    Nodes continue until the next ``@+node``, ``at-all`` or ``at-others`` sentinel.
 
 .. ``@nl`` and ``@nonl``: Leo 3.x only
 ..      These sentinels inserted or suppressed newlines in the outline.
