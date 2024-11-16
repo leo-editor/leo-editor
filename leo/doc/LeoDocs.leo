@@ -32805,7 +32805,7 @@ This collaboration allows the qsh to *minimize* the calls to ``jedit.redraw``. T
 
 Leo's core *must not ever* call ``redraw``! These calls must happen automatically. Calling ``redraw`` from Leo's core could cause hard-to-find bugs!
 
-**States** allow the jedic class to handle constructs like strings or comments that continue from one line to another.
+**States** allow the jedit class to handle constructs like strings or comments that continue from one line to another.
 
 **Mode files**, python files in the ``leo/modes`` directory, tell the jedit class how to colorize specific languages.
 

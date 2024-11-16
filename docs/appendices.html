@@ -443,7 +443,7 @@ positions is valid.</p>
 <p>The jedit class collaborates with the <strong>qsh</strong>, a singleton instance of the <a class="reference external" href="https://doc.qt.io/qt-6/qsyntaxhighlighter.html">QSyntaxHighlighter</a> class.</p>
 <p>This collaboration allows the qsh to <em>minimize</em> the calls to <code class="docutils literal notranslate"><span class="pre">jedit.redraw</span></code>. The qsh calls <code class="docutils literal notranslate"><span class="pre">redraw(s)</span></code> <em>only</em> if line <code class="docutils literal notranslate"><span class="pre">s</span></code> could possibly need recoloring.</p>
 <p>Leo’s core <em>must not ever</em> call <code class="docutils literal notranslate"><span class="pre">redraw</span></code>! These calls must happen automatically. Calling <code class="docutils literal notranslate"><span class="pre">redraw</span></code> from Leo’s core could cause hard-to-find bugs!</p>
-<p><strong>States</strong> allow the jedic class to handle constructs like strings or comments that continue from one line to another.</p>
+<p><strong>States</strong> allow the jedit class to handle constructs like strings or comments that continue from one line to another.</p>
 <p><strong>Mode files</strong>, python files in the <code class="docutils literal notranslate"><span class="pre">leo/modes</span></code> directory, tell the jedit class how to colorize specific languages.</p>
 <p><strong>Pattern matchers</strong> do the actual syntax coloring.</p>
 <section id="components-of-the-jedit-class">
