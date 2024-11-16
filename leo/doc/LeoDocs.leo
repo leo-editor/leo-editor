@@ -2500,6 +2500,9 @@
 </v>
 <v t="ekr.20240828095959.1"></v>
 <v t="ekr.20240828094953.1"><vh>Leo 6.8.2 release notes</vh></v>
+<v t="ekr.20241116082938.1"><vh>==== update theory of operation</vh></v>
+<v t="ekr.20131008041326.16341"></v>
+<v t="ekr.20241112030815.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -32800,13 +32803,13 @@ The jedit class collaborates with the **qsh**, a singleton instance of the `QSyn
 
 This collaboration allows the qsh to *minimize* the calls to ``jedit.redraw``. The qsh calls ``redraw(s)`` *only* if line ``s`` could possibly need recoloring.
 
-The jedit class uses **states** to handle constructs like strings or comments that continue from one line to another.
+Leo's core *must not ever* call ``redraw``! These calls must happen automatically. Calling ``redraw`` from Leo's core could cause hard-to-find bugs!
+
+**States** allow the jedic class to handle constructs like strings or comments that continue from one line to another.
 
 **Mode files**, python files in the ``leo/modes`` directory, tell the jedit class how to colorize specific languages.
 
 **Pattern matchers** do the actual syntax coloring.
-
-Never change *anything* in the ``jedit`` class! Change mode files instead!
 </t>
 <t tx="ekr.20241112044810.1">The qsh can (and will) call ``recolor(s)`` where s is *out-of-sequence* with the preceding call. For example, the following snippet is typical in ``@language jupytext`` nodes:
 
@@ -32832,13 +32835,16 @@ You may also specify fonts and colors on a language-by-language basis.</t>
 
 **Drivers**
 
-The driver methods are ``colorize``, ``redraw``, and ``mainLoop``. These methods are the interface between Leo's core, the qsh, and the other methods of the jedit class.
+The ``redraw`` and ``mainLoop`` methods are the interface between the qsh and the methods of the jedit class. 
 
-``colorize`` stands between Leo's core and the qsh. Only ``LeoTree.select`` calls this method. ``colorize`` calls ``qsh.rehighlight`` to schedule a full redraw of ``p.b``.
+``qsh.rehighlight`` calls ``redraw(s)`` to colorize a *single* line ``s``. After initing the **initial state**, ``redraw`` calls ``mainLoop``.
 
-``redraw`` stands between the qsh and the pattern matchers. ``qsh.rehighlight`` calls ``redraw(s)`` to colorize a *single* line ``s``. After initing the **initial state**, ``redraw`` calls ``mainLoop``.
+Leo's core *must never ever* call ``redraw``! Doing so could cause hard-to-find bugs.
+
+``redraw(s)`` calls ``mainLoop(s)`` to do the actual syntax coloring.
  
-``mainLoop(s)`` stands between ``redraw`` and **rule functions** (defined in mode files).
+``mainLoop(s)`` calls **rule functions** (defined in mode files).
+
 Rule functions delegate their work to exactly one **pattern matcher** (described next). In other words, *pattern matchers are callbacks.*
 
 **Pattern matchers**
@@ -32878,6 +32884,7 @@ If a pattern matcher matches an ``@language`` or coloring directive, the matcher
 
 If a pattern matcher matches syntax that continues to the next line, the pattern matcher creates a **restarter matcher** by calling ``setRestart``. The restarter matchers are essentially closures, bindings of the pattern matcher *and all of its kwargs*. The details are hairy, but the coding pattern is the same for all cases. See the source code for details.
 </t>
+<t tx="ekr.20241116082938.1"></t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
