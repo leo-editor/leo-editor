@@ -12,17 +12,16 @@ r"""
 #@@pagewidth 65
 
 Creates a window for live rendering of reSTructuredText, Markdown
-and Asciidoc text, images, movies, sounds, rst, html, jupyter
-notebooks, etc.
+and Asciidoc text, images, movies, sounds, rst, html, etc.
 
 #@+others
 #@+node:tom.20240521004125.1: *3* About
-About Viewrendered3 V5.05
+About Viewrendered3 V5.1
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") renders Restructured
 Text (RsT), Markdown (MD), and Asciidoc (nodes and subtrees) in a
-separate pane. it duplicates and extendes the functionality of
+separate pane. it duplicates and extends the functionality of
 the ViewRendered plugin. The plugin can:
 
     #. Render entire subtrees starting at the selected node;
@@ -83,15 +82,27 @@ the plugin.
 
 New With This Version
 ======================
-The command vr3-toggle use to failed sometimes; fixed.
+Commands *vr3* and *vr3-show* work better with Leo's new layout system.
+
+VR3 starts in a non-active mode.  This prevents it from slowing down body editing by rendering even when it hasn't been made visible.  The command *vr3* makes sure the plugin is present but does not show it.
+
+For both RsT and Markdown nodes, the stylesheet foreground and background colors can be automatically changed to be the same as the body editor's. This behavior is controlled by a new setting:
+*vr3-adapt-fgbg-colors*.  The default value is ``True``.
+
+A new RsT stylesheet has been added: *vr3-medium-black.css*.
+
+Support for Jupyter Notebooks has been removed.  Instead, use the new @jupytext external file type. A script, not part of VR3 in this version, can render an @jupyter file in VR3. 
+
+Previous Recent Changes
+========================
+The command vr3-toggle use to fail sometimes; fixed.
 The command vr3-show did not do anything. The behavior is now:
 
     1. If VR3 has never been opened, create it and open it in the default layout's target splitter.
     2. If VR3 exists but has been removed from any splitter, open it in the default layout's target splitter. 
     3. If VR3 has been displayed in some splitter but turned off by. e.g. the vr3-toggle command, show it in that same location.
 
-Previous Recent Changes
-========================
+
 Showing a plugin's docstring using the Plugin menu now works right the first time.
 The "vr3" command and the default opening positions have been changed:
 
@@ -114,15 +125,10 @@ Corrected errors introduced in a complicated merge:
 
 The display code has been adapted to Leo's new splitter/layout infrastructure.
 
-In @jupyter nodes, for the path to the jupyter file or url:
-    - path separators can be either backward or forward slashes.
-    - Quotation marks around paths are removed.
-    These changes let a path copied to the clipboard from the file manager work without user editing.
-
 Bug fixes:
 
     - Quit early if no qt gui.
-    - Fix messags with "VR4" to read "VR3".
+    - Fix messages with "VR4" to read "VR3".
 
 `@language plain` is equivalent to `@language text`.
 
@@ -134,7 +140,6 @@ new commands give access to the tab: *vr3-tab* and
 *@*/*@c* now work correctly for ReStructuredText for multiline
 strings. This fix makes them work the same way for all three
 structured languages: *rest*, *md*, and *asciidoc*.
-
 
 For both plain and text, an @language directive at the top of a
 node is removed.
@@ -160,35 +165,6 @@ Asciidoctor enhancements
 
 The Dart programming language is now supported.
 
-New minibuffer commands *vr3-freeze* and *vr3-unfreeze*.
-
-Improved detection of the notebook URL in *@jupyter* nodes. The
-URL no longer has to be the second item in the headline after the
-string "@jupyter". If a URL is not found in the headline, the
-first line of the body is tried.
-
-Fix commands "vr3-lock", "vr3-unlock", "vr3-lock-unlock-tree" so
-that they correctly lock or unlock the rendering to the current
-subtree, including changing the checked/unchecked character of
-the toolbar menu "locked to tree" item.
-
-Correct Asciidoc rendering bug when rendering entire tree.
-
-Correct handling of case when markdown package is not installed.
-
-Mathjax, html pages with script imports work with PyQt6.
-
-Added new command *vr3-render-html-from-clip*.
-
-Added Lua to the list of supported languages. Lua programs can be
-syntax-colored and executed using the ``@language lua``
-directive. For Lua programs to be executable, the path to a Lua
-processor must be added to the *.leo/vr3/vr3_config.ini* file.
-
-Added a line similar to the following to the *[executables]*
-section::
-
-    lua = C:\Program Files (x86)\Lua\5.1\lua.exe
 #@+node:TomP.20200309205046.1: *3* Compatibility
 #@@pagewidth 65
 Compatibility
@@ -263,7 +239,7 @@ http://http://pypi.python.org/pypi/Markdown, to render Markdown,
 so installing markdown is highly recommended when using this
 plugin.
 
-This plugin uses pygments to regenerate the MD stylesheet.
+This plugin uses pygments forsyntax coloring in the MD stylesheet.
 
 
 #@+node:TomP.20200115200807.1: *3* Settings and Configuration
@@ -300,8 +276,9 @@ All settings are of type @string unless shown as ``@bool``.
    force the use of the default dark stylesheet"
    "vr3-md-stylesheet", "''", "url string", "Optional URL for MD
    stylesheet"
+   "vr3-adapt-fgbg-color", "True", "True, False", "Whether VR3 should use body editor's foreground and background colors."
    
-   "@bool vr3-insert-headline-from-node", "True", "True, False","Render node headline as top heading if True"
+   "@bool vr3-insert-headline-from-node", "True", "True,    False","Render node headline as top heading if True"
 
 
 .. csv-table:: Asciidoctor External Processor Settings
@@ -350,30 +327,45 @@ Stylesheets
 ReStructuredText
 ------------------
 
-Default CSS stylesheets are located in Leo's plugin/viewrendered3 directory. For
-Restructured Text, stylesheet handling is quite flexible.
+Default CSS stylesheets are located in Leo's plugin/viewrendered3
+directory. For Restructured Text, stylesheet handling is quite
+flexible.
 
-There are dark-theme and light-theme default stylesheets for RsT and MD. If no
-related settings are present, then VR3 chooses the dark one if the Leo
-theme name contains "dark" or the theme name is "DefaultTheme".
+There are dark-theme and light-theme default stylesheets for RsT
+and MD. If no related settings are present, then VR3 chooses the
+dark one if the Leo theme name contains "dark" or the theme name
+is "DefaultTheme".
 
-If the setting ``@bool vr3-rst-use-dark-theme = True``, then the dark theme will
-be used. If it is set to ``False``, then the light one will be used.
+If the setting ``@bool vr3-rst-use-dark-theme = True``, then the
+dark theme will be used. If it is set to ``False``, then the
+light one will be used.
 
-The use of these default stylesheets can be overridden by the setting ``@string
-vr3-rst-stylesheet``. This setting must be set to the path of a css stylesheet
-file. If it is a relative path, it is taken to be relative to the user's
-.leo/vr3 directory. If it is an absolute path, then the string ``file:///`` may
-be prepended to the path; it will be removed if present.
+The use of these default stylesheets can be overridden by the
+setting ``@string vr3-rst-stylesheet``. This setting must be set
+to the path of a css stylesheet file. If it is a relative path,
+it is taken to be relative to the user's .leo/vr3 directory. If
+it is an absolute path, then the string ``file:///`` may be
+prepended to the path; it will be removed if present.
 
-These stylesheet settings can be changed and will take effect when the settings
-are reloaded, and VR3 is refreshed or restarted. There is no need to close Leo
-and restart it.
+These stylesheet settings can be changed and will take effect
+when the settings are reloaded, and VR3 is refreshed or
+restarted. There is no need to close Leo and restart it.
 
-These settings can be placed into the @settings tree of an outline, and then
-that outline's settings will be used when that outline is active. It is possible
-for one outline to use the dark stylesheet, another to use the light stylesheet,
-and a third to use a custom one.
+These settings can be placed into the @settings tree of an
+outline, and then that outline's settings will be used when that
+outline is active. It is possible for one outline to use the dark
+stylesheet, another to use the light stylesheet, and a third to
+use a custom one.
+
+Automatic Color Switching
+--------------------------
+
+When the setting *vr3-adapt-fgbg-colors* has the value True,
+The text and background colors of the body editor will replace
+those colors specified by the stylesheet.  This lets the main VR3
+colors match those of the Leo theme that is in use.
+
+.. Note:: Only the text and background colors will be changed. Other colors, such as syntax coloring, warnings, etc., are not changed. This is usually not a problem if the VR3 stylesheet and Leo's stylesheet are both dark or both light.  It is better not to mix the light/dark character because this could lead to readability problems with, for example, syntax coloring.
 #@+node:tom.20211118000432.1: *5* Markdown
 Markdown
 ---------
@@ -407,6 +399,15 @@ This priority scheme allow a user to modify any of the standard stylesheets in t
 When a specific stylesheet path is specified by the `vr3-md-stylesheet` setting, the path separators
 can be any mix of Windows and Linux separators.
 
+Automatic Color Switching
+--------------------------
+
+When the setting *vr3-adapt-fgbg-colors* has the value True,
+The text and background colors of the body editor will replace
+those colors specified by the stylesheet.  This lets the main VR3
+colors match those of the Leo theme that is in use.
+
+.. Note:: Only the text and background colors will be changed. Other colors, such as syntax coloring, warnings, etc., are not changed. This is usually not a problem if the VR3 stylesheet and Leo's stylesheet are both dark or both light.  It is better not to mix the light/dark character because this could lead to readability problems with, for example, syntax coloring.
 #@+node:tom.20210612193820.1: *4* MathJax Script Location
 MathJax Script Location
 =======================
@@ -921,7 +922,7 @@ reStructuredText by default, with all Leo directives removed.
 However, if the body text starts with ``<`` (after removing
 directives), the body text is rendered as html.
 
-This plugin renders @md, @image, @jupyter, @html, @movie,
+This plugin renders @md, @image, @html, @movie,
 @networkx and @svg nodes as follows:
 
 **Note**: For @image, @movie and @svg nodes, either the headline
@@ -949,17 +950,6 @@ directory.
     image file. All other lines are ignored.
 
 - ``@html`` renders the body text as html.
-
-- ``@jupyter`` renders the output from Jupyter Notebooks.
-
-  The contents of the @jupyter node can be either a url to the
-  notebook or the actual JSON notebook itself.
-
-  Use file:// urls for local files. Some examples:
-
-      Windows: ``file:///c:/Test/a_notebook.ipynb``
-
-      Linux:   ``file:///home/a_notebook.ipynb``
 
 - ``@movie`` plays a file as a movie. @movie also works for music
   files. The path to the file must be on the first line of the
@@ -1016,7 +1006,7 @@ Currently VR3 has to be open for the command to work.
 Acknowledgments
 ================
 
-The original Viewrendered plugin was created by Terry Brown, and
+The original Viewrendered plugin was created by Terry Brown and
 enhanced by Edward K. Ream. Jacob Peck added markdown support.
 
 Viewrendered2 was created by Peter Mills, based on the
@@ -1024,14 +1014,14 @@ viewrendered.py plugin. It added the ability to render an entire
 RsT tree, the ability to display only the code blocks, and to
 execute one block of Python code in a node and insert any printed
 output into the node. Thomas B. Passin enhanced Viewrendered2,
-adding the ability to change from RsT to Python and back within a
-node.
+adding the ability to change between RsT/MD/Asciidoc to programming
+languages and back within a single node.
 
 Viewrendered3 was created by Thomas B. Passin to provide VR2
 functionality with Python 3/QT5+. VR3 brings more enhancements to
 ReStructured Text and Markdown rendering, and adds Asciidoc
-rendering. Most functionality of the Viewrendered is included,
-and some additional capability has been added..
+rendering. Most functionality of Viewrendered is included,
+and some additional capabilities have been added.
 
 Enhancements to the RsT stylesheets were adapted from Peter Mills' stylesheet.
 
@@ -1063,7 +1053,7 @@ import sys
 import textwrap
 from typing import Any, Dict, List, Tuple
 import webbrowser
-from urllib.request import urlopen
+# from urllib.request import urlopen
 
 # Leo imports...
 import leo.core.leoGlobals as g
@@ -1080,6 +1070,10 @@ try:
     from leo.core.leoQt import QtMultimedia, QtSvg
     from leo.core.leoQt import KeyboardModifier, WrapMode
     from leo.core.leoQt import QAction, QActionGroup
+    from leo.core.leoQt import QtGui
+    QColor = QtGui.QColor
+
+
 except ImportError:
     g.es('Viewrendered3: cannot import QT modules')
     raise ImportError from None
@@ -1158,16 +1152,6 @@ try:
 except ImportError:
     print('VR3: *** No numpy')
     np = None
-
-# nbformat (@jupyter) support, non-vital.
-jupyter_ok = False
-try:
-    from nbconvert.exporters import HTMLExporter
-    import nbformat
-    jupyter_ok = True
-except ImportError:
-    # Missing imports will be mentioned if VR3 tries to render @jupyter node
-    pass
 
 try:
     from pygments import cmdline
@@ -1415,6 +1399,57 @@ def check_gems(gem: str, encoding: str = 'utf-8') -> bool:
     installed = gem in proc.stdout.decode(encoding)
     return installed
 
+#@+node:tom.20241005133916.1: ** is_theme_dark()
+def is_theme_dark(c):
+    """Return True if editor background is darker than foreground."""
+    wrapper = c.frame.body.wrapper
+    w = wrapper.widget
+    pallete = w.viewport().palette()
+    fg = pallete.text().color()
+    bg = pallete.window().color()
+    return fg.value() > bg.value()
+#@+node:tom.20241005134508.1: ** tinker with colors()
+def tinker_with_colors(c, kind: str = REST):
+    """Use Editor's fore- and back-ground colors.
+    
+    ARGUMENT
+    html -- The HTML to be re-colored.  Must be a string, not a byte array.
+    
+    Note that this will not change any other colors. So some of the output
+    colors may not be as well coordinated as before the fg/bg colors
+    were changed.
+    """
+    # Get fg, bg colors
+    wrapper = c.frame.body.wrapper
+    w = wrapper.widget
+    pallete = w.viewport().palette()
+    fg_hex = pallete.text().color().rgb() & 0x00ffffff
+    bg_hex = pallete.window().color().rgb() & 0x00ffffff
+    fg = f'#{fg_hex:06x}'
+    bg = f'#{bg_hex:06x}'
+
+    css_fragment = ''
+    if kind == REST:
+        css_fragment = rf"""
+    <style type='text/css'>
+        body, th, td, pre.literal-block, pre.doctest-block, pre.math,
+        pre.code, blockquote, div.topic, blockquote > table,
+        div.topic > table, blockquote p.attribution,
+        div.topic p.attribution {{
+            color: {fg};
+            background: {bg};
+        }}
+    </style>
+"""
+    elif kind == MD:
+        css_fragment = rf"""
+        body, th, td, pre, code, div.codehilite pre {{
+            color: {fg};
+            background: {bg};
+    }}
+"""
+    # Graft the colors after any previous stylesheet so they have priority.
+    return css_fragment
 #@+node:tom.20211125003406.1: ** configure_asciidoc
 def configure_asciidoc():
     r"""
@@ -1700,6 +1735,7 @@ def getVr3(event):
         controllers[h] = vr3 = ViewRenderedController3(c)
         dw = c.frame.top
         vr3.setParent(dw.layout_cache)
+        vr3.set_freeze()
 
     return vr3
 #@+node:TomP.20191215195433.16: ** vr3.Commands
@@ -1711,9 +1747,8 @@ def viewrendered(event):
     The VR3 instance will be created as a child of the widget cache splitter
     of the Dynamic Window that represents the Entire window of this outline.
 
-    The VR3 instance will not be visible until the 
-    vr3-show or vr3-toggle commands are executed, or until vr3.show() is
-    called.
+    The VR3 instance will not become visible until the vr3-show or vr3-toggle
+    commands are executed.
     """
     global controllers
     gui = g.app.gui
@@ -1723,8 +1758,8 @@ def viewrendered(event):
     if not c:
         return None
 
-    vr3 = getVr3({'c': c})
-    return vr3
+    getVr3({'c': c})
+    return None  # Make pylint happy
 #@+node:TomP.20200112232719.1: *3* g.command('vr3-execute')
 @g.command('vr3-execute')
 def execute_code(event):
@@ -2065,18 +2100,21 @@ def show_rendering_pane(event):
     h = c.hash()
     vr3 = controllers.get(h)
     if not vr3:
-        c.doCommandByName('vr3')
-    elif vr3.parent().objectName() in (None, 'leo-layout-cache'):
-        # VR3 object is in limbo, insert it into the default layout's splitter
-        dw = c.frame.top
-        target = dw.vr_parent_frame
+        vr3 = getVr3({'c': c})
+
+    if vr3.parent().objectName() in (None, 'leo-layout-cache'):
+        # VR3 object is in limbo, add it into the main splitter
+        target = g.app.gui.find_widget_by_name(c, 'main_splitter')
         target.addWidget(vr3)
-        g.app.gui.equalize_splitter(target)
-        vr3.show()
-        vr3.set_unfreeze()
-    else:
-        vr3.show()
-        vr3.set_unfreeze()
+
+        def delay_equalize():
+            if isinstance(target, QtWidgets.QSplitter):
+                g.app.gui.equalize_splitter(target)
+
+        QtCore.QTimer.singleShot(70, delay_equalize)
+
+    vr3.show()
+    vr3.set_unfreeze()
 
 #@+node:TomP.20201003182453.1: *3* g.command('vr3-shrink-view')
 @g.command('vr3-shrink-view')
@@ -2105,8 +2143,7 @@ def toggle_rendering_pane(event):
     """Toggle the rendering pane.
 
     If a VR3 instance exists for this controller, hide it.
-    Otherwise, create it, respecting its position if any from
-    the last time it was open.
+    Otherwise, create and show it.
     """
     if g.app.gui.guiName() != 'qt':
         return
@@ -2121,16 +2158,8 @@ def toggle_rendering_pane(event):
     if vr3.isVisible():
         vr3.hide()
         vr3.set_freeze()
-    elif vr3.parent() is None or vr3.parent().objectName() == 'leo-layout-cache':
-        ms = g.app.gui.find_widget_by_name(c, 'main_splitter')
-        ms.addWidget(vr3)
-        ms.setSizes([100_000] * len(ms.sizes()))
-        vr3.show()
-        vr3.set_unfreeze()
     else:
-        vr3.setVisible(True)
-        vr3.show()
-        vr3.set_unfreeze()
+        show_rendering_pane({'c': c})  # Same as "vr3-show" command
 #@+node:tom.20230403190542.1: *3* g.command('vr3-toggle-tab')
 @g.command('vr3-toggle-tab')
 def toggle_rendering_pane_tab(event):
@@ -2265,6 +2294,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.positions = {}
         self.last_update_was_node_change = False
         self.setObjectName('viewrendered3_pane')
+        self.adapt_fgbg_colors = True
         #@-<< initialize configuration ivars >>
         #@+<< asciidoc-specific >>
         #@+node:tom.20240919181508.1: *4* << asciidoc-specific >> (VR3)
@@ -2289,7 +2319,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
             'html': self.update_html,
             'graphics-script': self.update_graphics_script,
             'image': self.update_image,
-            'jupyter': self.update_jupyter,
             'md': self.update_md,
             'movie': self.update_movie,
             'networkx': self.update_networkx,
@@ -2345,13 +2374,18 @@ class ViewRenderedController3(QtWidgets.QWidget):
         """
 
         script_str = ''
+        css_fragment = ''
+        if self.adapt_fgbg_colors:
+            css_fragment = tinker_with_colors(self.c, MD)
+
         if self.md_math_output and self.mathjax_url:
             script_str = fr'<script defer type="text/javascript" src="{self.mathjax_url}"></script>'
-        self.md_header = fr'''
+        self.md_header = f'''
     <!DOCTYPE html>
     <html><head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
     <link rel="stylesheet" type="text/css" href="{self.md_stylesheet}">
+    <style type="text/css">{css_fragment}</style>\n
     {script_str}
     </head>
     '''
@@ -2545,6 +2579,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         #@+<< load stylesheet settings >>
         #@+node:tom.20240919182502.1: *5* << load stylesheet settings >>
+        self.adapt_fgbg_colors = c.config.getBool('vr3-adapt-fgbg-colors', True)
         self.rst_stylesheet = c.config.getString('vr3-rst-stylesheet') or ''
         self.use_dark_theme = c.config.getBool('vr3-rst-use-dark-theme', RST_USE_DARK)
 
@@ -2555,6 +2590,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.set_md_stylesheet()
         self.set_rst_stylesheet()
         self.create_md_header()
+
+
 
         #@-<< load stylesheet settings >>
         #@+<< configure markdown >>
@@ -2676,8 +2713,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         # See if we should try to use stylesheet for Leo theme's light/dark character
         if self.md_style_switch_auto:
-            dict_ = g.app.loadManager.globalSettingsDict
-            is_dark = dict_.get_setting('color-theme-is-dark')
+            is_dark = is_theme_dark(self.c)
             stylefile = MD_STYLESHEET_DARK if is_dark else MD_STYLESHEET_LIGHT
             style_path = check_paths(stylefile, style_dirs)
             if style_path:
@@ -2718,7 +2754,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
     def set_rst_stylesheet(self):
         """Set rst stylesheet to default if none specified.
 
-        A file location must start with 'file:///';. If
+        An absolute file location must start with 'file:///';. If
         a file does not exist for the path, use the default
         stylesheet.
 
@@ -3143,9 +3179,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
             node_kind = self.get_kind(p) or self.default_kind
             if node_kind in ('edit', 'file', 'clean', 'auto'):
                 node_kind = RST
-
-            if node_kind == RST and p.h.startswith('@jupyter'):
-                node_kind = 'jupyter'
 
         return node_kind
     #@+node:tom.20240724081410.1: *4* vr3.handle_scrolled_msg
@@ -3611,65 +3644,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         w = self.ensure_web_widget()
         self.set_html(template, w)
         w.show()
-    #@+node:TomP.20191215195433.61: *4* vr3.update_jupyter & helper
-    update_jupyter_count = 0
-
-    def update_jupyter(self, s, keywords):
-        """Update @jupyter node in the vr3 pane."""
-        c = self.c
-        if self.must_change_widget(has_webengineview):
-            w = self.create_web_engineview()
-            self.embed_widget(w)
-            assert w == self.w
-        else:
-            w = self.w
-        s = self.get_jupyter_source(c)
-        self.rst_html = s
-        w.hide()  # This forces a proper update.
-        w.setHtml(s)
-        w.show()
-        c.bodyWantsFocusNow()
-    #@+node:TomP.20191215195433.62: *5* vr3.get_jupyter_source
-    def get_jupyter_source(self, c):
-        """Return the html for the @jupyter node."""
-        body = c.p.b.lstrip()
-        if body.startswith('<'):
-            # Assume the body is html.
-            return body
-
-        if not jupyter_ok:
-            return 'can not render @jupyter nodes: need missing nbformat or nbconvert package'
-
-        if body.startswith('{'):
-            # Leo 5.7.1: Allow raw JSON.
-            s = body
-        else:
-            url = ''
-            fields = c.p.h.split()
-            if len(fields) > 1:
-                for f in fields:
-                    if '://' in f:
-                        url = f
-                        break
-            if not url:
-                if c.p.b:
-                    # Try first line of body
-                    url = c.p.b.split('\n')[0]
-                if not url:
-                    return 'No url found'
-            url = url.replace('\\', '/').replace('"', '')
-            try:
-                with urlopen(url) as u:
-                    s = u.read().decode()
-            except Exception:
-                return f'url not found: {url}'
-        try:
-            nb = nbformat.reads(s, as_version=4)
-            e = HTMLExporter()
-            (s, junk_resources) = e.from_notebook_node(nb)
-        except nbformat.reader.NotJSONError:
-            pass  # Assume the result is html.
-        return s
     #@+node:TomP.20191215195433.63: *4* vr3.update_latex & helper
     def update_latex(self, s, keywords):
         """Update latex in the vr3 pane."""
@@ -4149,7 +4123,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         # Call docutils to get the html rendering.
         _html = ''.encode(ENCODING)
-
         if result.strip():
             try:
                 self.last_markup = result
@@ -4161,8 +4134,18 @@ class ViewRenderedController3(QtWidgets.QWidget):
                     output = f'<pre style="{RST_ERROR_MSG_STYLE}">RST error: {msg}\n</pre><b><b>'
                     output += f'<pre style="{RST_ERROR_BODY_STYLE}">{result}</pre>'
                     _html = output.encode(ENCODING)
+            except OSError as e:
+                g.es('RsT conversion to HTML failed:', e)
+                g.es(f'Rst input: {result}')
 
-        self.rst_html = _html
+        if _html:
+            css_fragment = ''
+            if self.adapt_fgbg_colors:
+                css_fragment = tinker_with_colors(self.c, REST)
+            html_str = _html.decode(ENCODING)
+            html_str = html_str.replace('</head>', f'{css_fragment}</head>')
+            _html = html_str.encode(ENCODING)
+            self.rst_html = _html
         return _html
         #@-others
 
@@ -4350,14 +4333,15 @@ class ViewRenderedController3(QtWidgets.QWidget):
                         url = fields[1].strip()
                         if url.startswith('data:'):
                             base = ''
+                            line = f'\n.. image:: {url}\n'
                         else:
                             is_absolute = Path(url).is_absolute()
                             if is_absolute:
-                                url = g.finalize(url)
+                                url = 'file:///' + g.finalize(url)
                                 line = f'\n.. image:: {url}\n'
                             else:
                                 base = self.base_url + '/' if os.path.isabs(self.base_url) else ''
-                                url = g.finalize(base + url)
+                                url = 'file:///' + g.finalize(base + url)
                                 line = f'\n.. image:: {url}\n'
                 elif rst_directive:
                     fields = line.split(rst_directive)
@@ -4370,7 +4354,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                             if not is_absolute:
                                 base = self.base_url + '/' if os.path.isabs(self.base_url) else ''
                                 url = Path(f'{base}{url}').resolve()
-                                url = g.finalize(url)
+                                url = 'file:///' + g.finalize(url)
                                 line = f'\n{rst_directive} {url}'
                     else:
                         # No url for an image: ignore and skip to next line
@@ -4516,7 +4500,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         codelines = []
         if self.execute_flag:
             codelines = ['\n'.join(ch.text_lines) for ch in chunks if ch.tag == CODE]
-
         return final_text, codelines
         #@-<< Finalize Node >>
     #@+node:tom.20210621144739.1: *5* vr3.make_title_from_headline
@@ -4668,14 +4651,14 @@ class ViewRenderedController3(QtWidgets.QWidget):
         """Return the proper rendering kind for node p."""
 
         #  #1287: Honor both kind of directives node by node.
+        kind = None
         for p1 in p.self_and_parents(p):
-            kind = None
             language = self.get_language(p1)
             if ((got_markdown and language in ('md', 'markdown'))
                 or (got_docutils and language in ('rest', 'rst'))
                 or (language and language in self.dispatch_dict)):
                 kind = language
-
+                break
         return kind
     #@+node:TomP.20200109132851.1: *6* vr3.get_language
     def get_language(self, p):
