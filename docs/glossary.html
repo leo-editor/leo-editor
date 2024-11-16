@@ -211,43 +211,43 @@ spaces.</p>
 </section>
 <section id="a-c">
 <h2><a class="toc-backref" href="#id3" role="doc-backlink">A - C</a><a class="headerlink" href="#a-c" title="Link to this heading">¶</a></h2>
-<p id="index-30">Body pane</p>
-<blockquote>
-<div><p>The pane containing the body text of the currently selected headline in the
+<dl class="simple" id="index-30">
+<dt>Body pane</dt><dd><p>The pane containing the body text of the currently selected headline in the
 outline pane.</p>
-</div></blockquote>
-<p id="index-31">Body text</p>
-<blockquote>
-<div><p>The text in the body pane. That is, the contents of a node.</p>
-</div></blockquote>
-<p id="index-32">Body text box</p>
-<blockquote>
-<div><p>A small blue box in the icon box indicating that the node contains body
+</dd>
+</dl>
+<dl class="simple" id="index-31">
+<dt>Body text</dt><dd><p>The text in the body pane. That is, the contents of a node.</p>
+</dd>
+</dl>
+<dl class="simple" id="index-32">
+<dt>Body text box</dt><dd><p>A small blue box in the icon box indicating that the node contains body
 text.</p>
-</div></blockquote>
-<p id="index-33">Child</p>
-<blockquote>
-<div><p>The direct descendant of a node.</p>
-</div></blockquote>
+</dd>
+</dl>
+<dl class="simple" id="index-33">
+<dt>Child</dt><dd><p>The direct descendant of a node.</p>
+</dd>
+</dl>
 <dl class="simple" id="index-34">
 <dt>Clone</dt><dd><p>A copy of a tree that changes whenever the original changes.
 The original and all clones are treated equally:
 no special status is given to the “original” node.</p>
 </dd>
 </dl>
-<p id="index-35">Clone arrow</p>
-<blockquote>
-<div><p>A small red arrow in the icon box indicating that the node is a clone.</p>
-</div></blockquote>
-<p id="index-36">Code part</p>
-<blockquote>
-<div><p>A part of a section definition that contains code. Code parts start with &#64;c
-or &#64;code directives and continue until the next doc part.</p>
-</div></blockquote>
-<p id="index-37">Contract</p>
-<blockquote>
-<div><p>To hide all descendants of a node.</p>
-</div></blockquote>
+<dl class="simple" id="index-35">
+<dt>Clone arrow</dt><dd><p>A small red arrow in the icon box indicating that the node is a clone.</p>
+</dd>
+</dl>
+<dl class="simple" id="index-36">
+<dt>Code part</dt><dd><p>A part of a section definition that contains code. Code parts start with <code class="docutils literal notranslate"><span class="pre">&#64;c</span></code>
+or <code class="docutils literal notranslate"><span class="pre">&#64;code</span></code> directives and continue until the next doc part.</p>
+</dd>
+</dl>
+<dl class="simple" id="index-37">
+<dt>Contract</dt><dd><p>To hide all descendants of a node.</p>
+</dd>
+</dl>
 </section>
 <section id="d-g">
 <h2><a class="toc-backref" href="#id4" role="doc-backlink">D - G</a><a class="headerlink" href="#d-g" title="Link to this heading">¶</a></h2>
@@ -259,117 +259,119 @@ or &#64;code directives and continue until the next doc part.</p>
 <dt>Descendant</dt><dd><p>An offspring of a node.  That is, a child, grandchild, etc. of a node.</p>
 </dd>
 </dl>
-<p id="index-40">Directive</p>
-<blockquote>
-<div><p>A keyword, preceded by an ‘&#64;’ sign, in body text that controls Leo’s
-operation. The keyword is empty for the &#64; directive.</p>
-</div></blockquote>
-<p id="index-41">Dirty Node</p>
-<blockquote>
-<div><p>A node whose headline or body text has changed.</p>
-</div></blockquote>
-<p id="index-42">Doc part</p>
-<blockquote>
-<div><p>A part of a section definition that contains comments. Doc parts start with
-&#64; and continue until the &#64;c directive or the end of the body text.</p>
-</div></blockquote>
-<p>Escape convention</p>
-<blockquote>
-<div><p>A convention for representing sequences of characters that would otherwise
-have special meaning. <strong>Important</strong>: Leo does not support escape conventions
-used by <a class="reference external" href="https://www.cs.tufts.edu/~nr/noweb/">noweb</a>. Any line containing matched &lt;&lt; and &gt;&gt; is a section
-reference, regardless of context. To use &lt;&lt; and &gt;&gt; as ordinary characters,
-place them on separate lines.</p>
-</div></blockquote>
-<p id="index-44">Expand</p>
-<blockquote>
-<div><p>To make the children of a node visible.</p>
-</div></blockquote>
-<p id="index-45">External file</p>
-<blockquote>
-<div><p>A file outside of Leo that is connected to Leo by an &#64;&lt;file&gt; node.</p>
-</div></blockquote>
-<p>Gnx (Global Node Index)</p>
-<blockquote>
-<div><p>A unique, immutable string permanently associated with each vnode.
+<dl class="simple" id="index-40">
+<dt>Directive</dt><dd><p>A keyword, preceded by an <code class="docutils literal notranslate"><span class="pre">&#64;</span></code> sign, in body text that controls Leo’s
+operation. The keyword is empty for the <code class="docutils literal notranslate"><span class="pre">&#64;</span></code> directive.</p>
+</dd>
+</dl>
+<dl class="simple" id="index-41">
+<dt>Dirty Node</dt><dd><p>A node whose headline or body text has changed.</p>
+</dd>
+</dl>
+<dl class="simple" id="index-42">
+<dt>Doc part</dt><dd><p>A part of a section definition that contains comments. Doc parts start with
+<code class="docutils literal notranslate"><span class="pre">&#64;</span></code> and continue until the <code class="docutils literal notranslate"><span class="pre">&#64;c</span></code> directive or the end of the body text.</p>
+</dd>
+</dl>
+<dl>
+<dt>Escape convention</dt><dd><p>A convention for representing sequences of characters that would otherwise
+have special meaning.</p>
+<p><strong>Important</strong>: Within any <code class="docutils literal notranslate"><span class="pre">&#64;&lt;file&gt;</span></code> node, any line containing matched
+<code class="docutils literal notranslate"><span class="pre">&lt;&lt;</span></code> and <code class="docutils literal notranslate"><span class="pre">&gt;&gt;</span></code> characters is a section reference. To use <code class="docutils literal notranslate"><span class="pre">&lt;&lt;</span></code> and
+<code class="docutils literal notranslate"><span class="pre">&gt;&gt;</span></code> as ordinary characters, place them on separate lines.</p>
+</dd>
+</dl>
+<dl class="simple" id="index-44">
+<dt>Expand</dt><dd><p>To make the children of a node visible.</p>
+</dd>
+</dl>
+<dl class="simple" id="index-45">
+<dt>External file</dt><dd><p>A file outside of Leo that is connected to Leo by an <code class="docutils literal notranslate"><span class="pre">&#64;&lt;file&gt;</span></code> node.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Gnx (Global Node Index)</dt><dd><p>A unique, immutable string permanently associated with each vnode.
 See <a class="reference external" href="appendices.html#format-of-external-files">format of external files</a>.</p>
-</div></blockquote>
-<p id="index-47">Grandchild</p>
-<blockquote>
-<div><p>The child of a child of a node.</p>
-</div></blockquote>
+</dd>
+</dl>
+<dl class="simple" id="index-47">
+<dt>Grandchild</dt><dd><p>The child of a child of a node.</p>
+</dd>
+</dl>
 </section>
 <section id="h-l">
 <h2><a class="toc-backref" href="#id5" role="doc-backlink">H - L</a><a class="headerlink" href="#h-l" title="Link to this heading">¶</a></h2>
-<p id="index-48">Headline</p>
-<blockquote>
-<div><p>The headline text of a node.  The part of the node visible in the outline pane.</p>
-</div></blockquote>
-<p id="index-49">Hoist &amp; dehoist</p>
-<blockquote>
-<div><p>Hoisting a node redraws the screen that node and its descendants becomes the
+<dl class="simple" id="index-48">
+<dt>Headline</dt><dd><p>The headline text of a node.  The part of the node visible in the outline pane.</p>
+</dd>
+</dl>
+<dl class="simple" id="index-49">
+<dt>Hoist &amp; dehoist</dt><dd><p>Hoisting a node redraws the screen that node and its descendants becomes the
 only visible part of the outline. Leo prevents the you from moving nodes
 outside the hoisted outline. Dehoisting a node restores the outline.
 Multiple hoists may be in effect: each dehoist undoes the effect of the
 immediately preceding hoist.</p>
-</div></blockquote>
-<p id="index-50">Icon box</p>
-<blockquote>
-<div><p>An icon just to the left of headline text of a node indicating whether the
+</dd>
+</dl>
+<dl class="simple" id="index-50">
+<dt>Icon box</dt><dd><p>An icon just to the left of headline text of a node indicating whether the
 node is cloned, marked or dirty, and indicating whether the node contains
 body text.</p>
-</div></blockquote>
-<p id="index-51">Log Pane</p>
-<blockquote>
-<div><p>The part of Leo’s main window that shows informational messages from Leo. It
+</dd>
+</dl>
+<dl class="simple" id="index-51">
+<dt>Log Pane</dt><dd><p>The part of Leo’s main window that shows informational messages from Leo. It
 also contains the Find tab, the Spell tab, the autocompletion tab.</p>
-</div></blockquote>
+</dd>
+</dl>
 </section>
 <section id="m-o">
 <h2><a class="toc-backref" href="#id6" role="doc-backlink">M - O</a><a class="headerlink" href="#m-o" title="Link to this heading">¶</a></h2>
-<p id="index-52">Mark</p>
-<blockquote>
-<div><p>A red vertical line in the icon box of a node.</p>
-</div></blockquote>
-<p id="index-53">Node</p>
-<blockquote>
-<div><p>The organizational unit of an outline. The combination of headline text and
+<dl class="simple" id="index-52">
+<dt>Mark</dt><dd><p>A red vertical line in the icon box of a node.</p>
+</dd>
+</dl>
+<dl class="simple" id="index-53">
+<dt>Node</dt><dd><p>The organizational unit of an outline. The combination of headline text and
 body text. Sometimes used as a synonym for tree.</p>
-</div></blockquote>
-<p id="index-54">Offspring</p>
-<blockquote>
-<div><p>A synonym for the descendants of a node.
+</dd>
+</dl>
+<dl class="simple" id="index-54">
+<dt>Offspring</dt><dd><p>A synonym for the descendants of a node.
 The children, grandchildren, etc. of a node.</p>
-</div></blockquote>
-<p id="index-55">Organizer node</p>
-<blockquote>
-<div><p>A node containing no body text. Organizing nodes may appear anywhere in an
-&#64;file tree; they do not affect the external file in any way. In particular,
+</dd>
+</dl>
+<dl class="simple" id="index-55">
+<dt>Organizer node</dt><dd><p>A node containing no body text. Organizing nodes may appear anywhere in an
+<code class="docutils literal notranslate"><span class="pre">&#64;file</span></code> tree; they do not affect the external file in any way. In particular,
 organizing nodes do not affect indentation in external files.</p>
-</div></blockquote>
-<p id="index-56">Orphan node</p>
-<blockquote>
-<div><p>A node that would not be copied to a external file. Orphan nodes can arise
-because an &#64;file tree has no &#64;others or &#64;all directives. Sections that are
-defined but not used also create orphan nodes.</p>
-<p>Leo issues a warning when attempting to write an &#64;file tree containing
-orphan nodes, and does not save the external file. No information is lost;
-Leo saves the information in the &#64;file tree in the .leo file. Leo will load
-the &#64;file tree from the .leo file the next time Leo opens the .leo file.</p>
-</div></blockquote>
-<p id="index-57">Outline</p>
-<blockquote>
-<div><p>A node and its descendants. A tree. All the nodes of a .leo file.</p>
-</div></blockquote>
-<p id="index-58">Outline order</p>
-<blockquote>
-<div><p>The order that nodes appear on the screen when all nodes are expanded.</p>
-</div></blockquote>
-<p id="index-59">Outline pane</p>
-<blockquote>
-<div><p>The pane containing a visual representation of the entire outline, or a part
+</dd>
+</dl>
+<dl id="index-56">
+<dt>Orphan node</dt><dd><p>A node that would not be copied to a external file. Orphan nodes can
+arise because an <code class="docutils literal notranslate"><span class="pre">&#64;file</span></code> tree has no <code class="docutils literal notranslate"><span class="pre">&#64;others</span></code> or <code class="docutils literal notranslate"><span class="pre">&#64;all</span></code>
+directives. Sections that are defined but not used also create orphan
+nodes.</p>
+<p>Leo issues a warning when attempting to write an <code class="docutils literal notranslate"><span class="pre">&#64;file</span></code> tree
+containing orphan nodes, and does not save the external file. No
+information is lost; Leo saves the information in the <code class="docutils literal notranslate"><span class="pre">&#64;file</span></code> tree in
+the .leo file. Leo will load the <code class="docutils literal notranslate"><span class="pre">&#64;file</span></code> tree from the .leo file the
+next time Leo opens the .leo file.</p>
+</dd>
+</dl>
+<dl class="simple" id="index-57">
+<dt>Outline</dt><dd><p>A node and its descendants. A tree. All the nodes of a <code class="docutils literal notranslate"><span class="pre">.leo</span></code> file.</p>
+</dd>
+</dl>
+<dl class="simple" id="index-58">
+<dt>Outline order</dt><dd><p>The order that nodes appear on the screen when all nodes are expanded.</p>
+</dd>
+</dl>
+<dl class="simple" id="index-59">
+<dt>Outline pane</dt><dd><p>The pane containing a visual representation of the entire outline, or a part
 of the outline if the outline is hoisted.</p>
-</div></blockquote>
+</dd>
+</dl>
 </section>
 <section id="p-r">
 <h2><a class="toc-backref" href="#id7" role="doc-backlink">P - R</a><a class="headerlink" href="#p-r" title="Link to this heading">¶</a></h2>
@@ -406,80 +408,81 @@ files. See the <a class="reference external" href="http://docutils.sourceforge.n
 </section>
 <section id="s-z">
 <h2><a class="toc-backref" href="#id8" role="doc-backlink">S - Z</a><a class="headerlink" href="#s-z" title="Link to this heading">¶</a></h2>
-<p id="index-66">Section</p>
-<blockquote>
-<div><p>A fragment of text that can be incorporated into external files.</p>
-</div></blockquote>
-<p id="index-67">Section definition</p>
-<blockquote>
-<div><p>The body text of a section definition node.</p>
-</div></blockquote>
-<p id="index-68">Section definition node</p>
-<blockquote>
-<div><p>A node whose headline starts with a section name and whose body text defines
+<dl class="simple" id="index-66">
+<dt>Section</dt><dd><p>A fragment of text that can be incorporated into external files.</p>
+</dd>
+</dl>
+<dl class="simple" id="index-67">
+<dt>Section definition</dt><dd><p>The body text of a section definition node.</p>
+</dd>
+</dl>
+<dl class="simple" id="index-68">
+<dt>Section definition node</dt><dd><p>A node whose headline starts with a section name and whose body text defines
 a section.</p>
-</div></blockquote>
-<p id="index-69">Section name</p>
-<blockquote>
-<div><p>A name enclosed in &lt;&lt; and &gt;&gt;. Section names may contain any characters
-except newlines and “&gt;&gt;”.</p>
-</div></blockquote>
-<p id="index-70">Section reference</p>
-<blockquote>
-<div><p>A section name appearing in a code part. When writing to an external file,
+</dd>
+</dl>
+<dl class="simple" id="index-69">
+<dt>Section name</dt><dd><p>A name between <code class="docutils literal notranslate"><span class="pre">&lt;&lt;</span></code> and <code class="docutils literal notranslate"><span class="pre">&gt;&gt;</span></code>. Section names may contain any character
+except newlines and <code class="docutils literal notranslate"><span class="pre">&gt;&gt;</span></code>.</p>
+</dd>
+</dl>
+<dl class="simple" id="index-70">
+<dt>Section reference</dt><dd><p>A section name appearing in a code part. When writing to an external file,
 Leo replaces all references by their definitions.</p>
-</div></blockquote>
-<p id="index-71">Sentinel</p>
-<blockquote>
-<div><p>Comment lines in external files used to represent Leo’s outline structure.
+</dd>
+</dl>
+<dl id="index-71">
+<dt>Sentinel</dt><dd><p>Comment lines in external files used to represent Leo’s outline structure.
 Such lines start with an &#64; following the opening comment delimiter.
 Sentinels embed outline structure into external files.</p>
 <p><strong>Do not alter sentinel lines</strong>. Doing so can corrupt the outline structure.</p>
-</div></blockquote>
-<p id="index-72">Settings</p>
-<blockquote>
-<div><p>Plugins and other parts of Leo can get options from &#64;settings trees,
-outlines whose headline is &#64;settings. When opening a .leo file, Leo looks
-for &#64;settings trees in the outline being opened and also in various
-leoSettings.leo files. &#64;settings trees allow plugins to get options without
-any further support from Leo’s core code. For a full discussion of &#64;settings
+</dd>
+</dl>
+<dl id="index-72">
+<dt>Settings</dt><dd><p>Plugins and other parts of Leo can get options from <code class="docutils literal notranslate"><span class="pre">&#64;settings</span></code> trees,
+outlines whose headline is <code class="docutils literal notranslate"><span class="pre">&#64;settings</span></code>.</p>
+<p>When opening a .leo file, Leo looks for <code class="docutils literal notranslate"><span class="pre">&#64;settings</span></code> trees in the
+outline being opened and also in various leoSettings.leo files.</p>
+<p><code class="docutils literal notranslate"><span class="pre">&#64;settings</span></code> trees allow plugins to get options without any further
+support from Leo’s core code. For a full discussion of <code class="docutils literal notranslate"><span class="pre">&#64;settings</span></code>
 trees, see <a class="reference external" href="customizing.html">Customizing Leo</a>.</p>
-</div></blockquote>
-<p id="index-73">Sibling</p>
-<blockquote>
-<div><p>Nodes with the same parent. Siblings of the root node have the hidden root
+</dd>
+</dl>
+<dl class="simple" id="index-73">
+<dt>Sibling</dt><dd><p>Nodes with the same parent. Siblings of the root node have the hidden root
 node as their parent.</p>
-</div></blockquote>
-<p id="index-74">Target language</p>
-<blockquote>
-<div><p>The language used to syntax color text. This determines the default comment
+</dd>
+</dl>
+<dl class="simple" id="index-74">
+<dt>Target language</dt><dd><p>The language used to syntax color text. This determines the default comment
 delimiters used when writing external files.</p>
-</div></blockquote>
-<p id="index-75">Tree</p>
-<blockquote>
-<div><p>An outline. A node and its descendants.</p>
-</div></blockquote>
-<p id="index-76">Underindent line</p>
-<blockquote>
-<div><p>A line of body text that is indented less then the starting line of the
+</dd>
+</dl>
+<dl class="simple" id="index-75">
+<dt>Tree</dt><dd><p>An outline. A node and its descendants.</p>
+</dd>
+</dl>
+<dl class="simple" id="index-76">
+<dt>Underindented line</dt><dd><p>A line of body text that is indented less then the starting line of the
 class, method or function in which it appears. Leo outlines can not
 represent such lines exactly: every line in an external file will have at
 least the indentation of any unindented line of the corresponding node in
 the outline.</p>
-</div></blockquote>
-<p>uA</p>
-<blockquote>
-<div><p>uA’s (User Attributes) are persistent Python dicts that allows scripts
+</dd>
+</dl>
+<dl class="simple">
+<dt>uA</dt><dd><p>uA’s (User Attributes) are persistent Python dicts that allows scripts
 and plugins to associate additional data with each node. See
 <a class="reference external" href="customizing.html#adding-extensible-attributes-to-nodes-and-leo-files">extensible attributes</a>.</p>
-</div></blockquote>
-<p id="index-78">View node</p>
-<blockquote>
-<div><p>A node that represents a view of an outline. View nodes are typically
+</dd>
+</dl>
+<dl class="simple" id="index-78">
+<dt>View node</dt><dd><p>A node that represents a view of an outline. View nodes are typically
 ordinary, non-cloned nodes that contain cloned descendant nodes. The cloned
 descendant nodes comprise most of the data of the view. Other non-cloned
 nodes may add additional information to the view.</p>
-</div></blockquote>
+</dd>
+</dl>
 </section>
 </section>
 

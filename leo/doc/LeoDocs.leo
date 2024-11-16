@@ -7248,7 +7248,6 @@ Attempting to modify c.cleo.prikey immediately in the @script gives an Attribute
     pair: Body pane; Glossary
 
 Body pane
-
     The pane containing the body text of the currently selected headline in the
     outline pane.
 
@@ -7256,14 +7255,12 @@ Body pane
     pair: Body text; Glossary
 
 Body text
-
     The text in the body pane. That is, the contents of a node.
 
 .. index::
     pair: Body text box; Glossary
 
 Body text box
-
     A small blue box in the icon box indicating that the node contains body
     text.
 
@@ -7271,7 +7268,6 @@ Body text box
     pair: Child; Glossary
 
 Child
-
     The direct descendant of a node.
 
 .. index::
@@ -7286,22 +7282,19 @@ Clone
     pair: Clone arrow; Glossary
 
 Clone arrow
-
     A small red arrow in the icon box indicating that the node is a clone.
 
 .. index::
     pair: Code part; Glossary
 
 Code part
-
-    A part of a section definition that contains code. Code parts start with @c
-    or @code directives and continue until the next doc part.
+    A part of a section definition that contains code. Code parts start with ``@c``
+    or ``@code`` directives and continue until the next doc part.
 
 .. index::
     pair: Contract; Glossary
 
 Contract
-
     To hide all descendants of a node.
 </t>
 <t tx="ekr.20100804133903.7252">.. index::
@@ -7320,24 +7313,21 @@ Descendant
     pair: Directive; Glossary
 
 Directive
-
-    A keyword, preceded by an '@' sign, in body text that controls Leo's
-    operation. The keyword is empty for the @ directive.
+    A keyword, preceded by an ``@`` sign, in body text that controls Leo's
+    operation. The keyword is empty for the ``@`` directive.
 
 .. index::
     pair: Dirty Node; Glossary
 
 Dirty Node
-
     A node whose headline or body text has changed.
 
 .. index::
     pair: Doc part; Glossary
 
 Doc part
-
     A part of a section definition that contains comments. Doc parts start with
-    @ and continue until the @c directive or the end of the body text.
+    ``@`` and continue until the ``@c`` directive or the end of the body text.
 
 .. index::
     pair: Escape convention; Glossary
@@ -7345,26 +7335,24 @@ Doc part
 .. _`noweb`: https://www.cs.tufts.edu/~nr/noweb/
 
 Escape convention
-
     A convention for representing sequences of characters that would otherwise
-    have special meaning. **Important**: Leo does not support escape conventions
-    used by `noweb`_. Any line containing matched &lt;\&lt; and &gt;\&gt; is a section
-    reference, regardless of context. To use &lt;\&lt; and &gt;\&gt; as ordinary characters,
-    place them on separate lines.
+    have special meaning.
+    
+    **Important**: Within any ``@&lt;file&gt;`` node, any line containing matched
+    ``&lt;&lt;`` and ``&gt;&gt;`` characters is a section reference. To use ``&lt;&lt;`` and
+    ``&gt;&gt;`` as ordinary characters, place them on separate lines.
 
 .. index::
     pair: Expand; Glossary
 
 Expand
-
     To make the children of a node visible.
 
 .. index::
     pair: External file; Glossary
 
 External file
-
-    A file outside of Leo that is connected to Leo by an @&lt;file&gt; node.
+    A file outside of Leo that is connected to Leo by an ``@&lt;file&gt;`` node.
 
 .. index::
     pair: gnx; Glossary
@@ -7373,7 +7361,6 @@ External file
 .. _`format of external files`: appendices.html#format-of-external-files
 
 Gnx (Global Node Index)
-
     A unique, immutable string permanently associated with each vnode.
     See `format of external files`_.
 
@@ -7381,14 +7368,12 @@ Gnx (Global Node Index)
     pair: Grandchild; Glossary
 
 Grandchild
-
     The child of a child of a node.
 </t>
 <t tx="ekr.20100804133903.7253">.. index::
     pair: Headline; Glossary
 
 Headline
-
     The headline text of a node.  The part of the node visible in the outline pane.
 
 .. index::
@@ -7396,7 +7381,6 @@ Headline
     pair: Dehoist; Glossary
 
 Hoist &amp; dehoist
-
     Hoisting a node redraws the screen that node and its descendants becomes the
     only visible part of the outline. Leo prevents the you from moving nodes
     outside the hoisted outline. Dehoisting a node restores the outline.
@@ -7407,7 +7391,6 @@ Hoist &amp; dehoist
     pair: Icon box; Glossary
 
 Icon box
-
     An icon just to the left of headline text of a node indicating whether the
     node is cloned, marked or dirty, and indicating whether the node contains
     body text.
@@ -7416,7 +7399,6 @@ Icon box
     pair: Log pane; Glossary
 
 Log Pane
-
     The part of Leo's main window that shows informational messages from Leo. It
     also contains the Find tab, the Spell tab, the autocompletion tab.
 </t>
@@ -7424,14 +7406,12 @@ Log Pane
     pair: Mark; Glossary
 
 Mark
-
     A red vertical line in the icon box of a node.
 
 .. index::
     pair: Node; Glossary
 
 Node
-
     The organizational unit of an outline. The combination of headline text and
     body text. Sometimes used as a synonym for tree.
 
@@ -7439,7 +7419,6 @@ Node
     pair: Offspring; Glossary
 
 Offspring
-
     A synonym for the descendants of a node.
     The children, grandchildren, etc. of a node.
 
@@ -7447,44 +7426,41 @@ Offspring
     pair: Organizer node; Glossary
 
 Organizer node
-
     A node containing no body text. Organizing nodes may appear anywhere in an
-    @file tree; they do not affect the external file in any way. In particular,
+    ``@file`` tree; they do not affect the external file in any way. In particular,
     organizing nodes do not affect indentation in external files.
 
 .. index::
     pair: Orphan node; Glossary
 
 Orphan node
+    A node that would not be copied to a external file. Orphan nodes can
+    arise because an ``@file`` tree has no ``@others`` or ``@all``
+    directives. Sections that are defined but not used also create orphan
+    nodes.
 
-    A node that would not be copied to a external file. Orphan nodes can arise
-    because an @file tree has no @others or @all directives. Sections that are
-    defined but not used also create orphan nodes.
-
-    Leo issues a warning when attempting to write an @file tree containing
-    orphan nodes, and does not save the external file. No information is lost;
-    Leo saves the information in the @file tree in the .leo file. Leo will load
-    the @file tree from the .leo file the next time Leo opens the .leo file.
+    Leo issues a warning when attempting to write an ``@file`` tree
+    containing orphan nodes, and does not save the external file. No
+    information is lost; Leo saves the information in the ``@file`` tree in
+    the .leo file. Leo will load the ``@file`` tree from the .leo file the
+    next time Leo opens the .leo file.
 
 .. index::
     pair: Outline; Glossary
 
 Outline
-
-    A node and its descendants. A tree. All the nodes of a .leo file.
+    A node and its descendants. A tree. All the nodes of a ``.leo`` file.
 
 .. index::
     pair: Outline order; Glossary
 
 Outline order
-
     The order that nodes appear on the screen when all nodes are expanded.
 
 .. index::
     pair: Outline pane; Glossary
 
 Outline pane
-
     The pane containing a visual representation of the entire outline, or a part
     of the outline if the outline is hoisted.
 </t>
@@ -7544,21 +7520,18 @@ Root
     pair: Section; Glossary
 
 Section
-
     A fragment of text that can be incorporated into external files.
 
 .. index::
     pair: Section definition; Glossary
 
 Section definition
-
     The body text of a section definition node.
 
 .. index::
     pair: Section definition node; Glossary
 
 Section definition node
-
     A node whose headline starts with a section name and whose body text defines
     a section.
 
@@ -7566,15 +7539,13 @@ Section definition node
     pair: Section name; Glossary
 
 Section name
-
-    A name enclosed in &lt;\&lt; and &gt;\&gt;. Section names may contain any characters
-    except newlines and "&gt;&gt;".
+    A name between ``&lt;&lt;`` and ``&gt;&gt;``. Section names may contain any character
+    except newlines and ``&gt;&gt;``.
 
 .. index::
     pair: Section reference; Glossary
 
 Section reference
-
     A section name appearing in a code part. When writing to an external file,
     Leo replaces all references by their definitions.
 
@@ -7583,7 +7554,6 @@ Section reference
     pair: Sentinel Lines; Glossary
 
 Sentinel
-
     Comment lines in external files used to represent Leo's outline structure.
     Such lines start with an @ following the opening comment delimiter.
     Sentinels embed outline structure into external files.
@@ -7594,19 +7564,20 @@ Sentinel
     pair: Setting; Glossary
 
 Settings
+    Plugins and other parts of Leo can get options from ``@settings`` trees,
+    outlines whose headline is ``@settings``.
 
-    Plugins and other parts of Leo can get options from @settings trees,
-    outlines whose headline is @settings. When opening a .leo file, Leo looks
-    for @settings trees in the outline being opened and also in various
-    leoSettings.leo files. @settings trees allow plugins to get options without
-    any further support from Leo's core code. For a full discussion of @settings
+    When opening a .leo file, Leo looks for ``@settings`` trees in the
+    outline being opened and also in various leoSettings.leo files.
+
+    ``@settings`` trees allow plugins to get options without any further
+    support from Leo's core code. For a full discussion of ``@settings``
     trees, see `Customizing Leo`_.
 
 .. index::
     pair: Sibling; Glossary
 
 Sibling
-
     Nodes with the same parent. Siblings of the root node have the hidden root
     node as their parent.
 
@@ -7614,7 +7585,6 @@ Sibling
     pair: Target language; Glossary
 
 Target language
-
     The language used to syntax color text. This determines the default comment
     delimiters used when writing external files.
 
@@ -7622,14 +7592,12 @@ Target language
     pair: Tree; Glossary
 
 Tree
-
     An outline. A node and its descendants.
 
 .. index::
     pair: Underindented Line; Glossary
 
-Underindent line
-
+Underindented line
     A line of body text that is indented less then the starting line of the
     class, method or function in which it appears. Leo outlines can not
     represent such lines exactly: every line in an external file will have at
@@ -7642,7 +7610,6 @@ Underindent line
 .. _`extensible attributes`: customizing.html#adding-extensible-attributes-to-nodes-and-leo-files
 
 uA
-
     uA's (User Attributes) are persistent Python dicts that allows scripts
     and plugins to associate additional data with each node. See
     `extensible attributes`_.
@@ -7651,7 +7618,6 @@ uA
     pair: View node; Glossary
 
 View node
-
     A node that represents a view of an outline. View nodes are typically
     ordinary, non-cloned nodes that contain cloned descendant nodes. The cloned
     descendant nodes comprise most of the data of the view. Other non-cloned
