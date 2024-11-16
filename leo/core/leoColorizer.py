@@ -2038,6 +2038,7 @@ class JEditColorizer(BaseColorizer):
                 return self.restart_fstring(s, delim)
 
             self.setRestart(fstring_restarter)
+
         else:
             self.clearState()
         return j  # Return the new i, *not* the length of the match.
