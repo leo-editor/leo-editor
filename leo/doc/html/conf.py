@@ -49,8 +49,8 @@ exclude_trees = ['_build']  # Don't search for source files.
 html_static_path = ['_static', 'screen-shots']  # leo/docs/static
 
 # These paths are either relative to html_static_path or fully qualified paths.
-### html_css_files = ['custom.css',]
-html_css_files = [] if use_dark else ['custom.css',]
+html_css_files = ['custom.css',]
+### html_css_files = [] if use_dark else ['custom.css',]
 
 # Theme options. All colors are CSS colors.
 if use_dark:
