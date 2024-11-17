@@ -2285,16 +2285,23 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.current_tree_root = None
         self.execute_flag = False
         self.freeze = False
+
         self.last_markup = ''
         self.lock_to_tree = False
         self.qwev = self.create_web_engineview()
+        self.qwev.loadFinished.connect(self.restore_scroll_position)
+
         self.rst_html: Any = ''  # bytes or str.
         self.show_whole_tree = False
         self.base_url = ''
+
         self.positions = {}
         self.last_update_was_node_change = False
         self.setObjectName('viewrendered3_pane')
         self.adapt_fgbg_colors = True
+        self.qwev.loadFinished.connect(self.restore_scroll_position)
+        self.scroll_position = 0
+
         #@-<< initialize configuration ivars >>
         #@+<< asciidoc-specific >>
         #@+node:tom.20240919181508.1: *4* << asciidoc-specific >> (VR3)
@@ -3144,6 +3151,22 @@ class ViewRenderedController3(QtWidgets.QWidget):
             f(s2, keywords)
         else:
             self.show_literal(s)
+    #@+node:tom.20241116145648.1: *4* vr3.restore_scroll_position
+    # Support for saving and restoring scroll position.
+    def capture_scroll_position(self):
+        self.qwev.page().runJavaScript("window.pageYOffset", self.store_scroll_position)
+
+    def store_scroll_position(self, position):
+        self.scroll_position = position
+
+    def unfreeze_and_enable_updates(self):
+        self.qwev.setUpdatesEnabled(True)
+        self.set_unfreeze()
+
+    def restore_scroll_position(self):
+        self.qwev.page().runJavaScript(f"window.scrollTo(0, {self.scroll_position});")
+        QtCore.QTimer.singleShot(1000, self.unfreeze_and_enable_updates)
+
     #@+node:tom.20240724103143.1: *4* vr3.create_node_tree
     def create_node_tree(self, p, kind):
         _root = (self.current_tree_root or p) if self.lock_to_tree else p
@@ -4902,6 +4925,10 @@ class ViewRenderedController3(QtWidgets.QWidget):
         s = g.toUnicode(s)
         try:
             url_base = QtCore.QUrl('file:///' + path + '/')
+            self.capture_scroll_position()
+            self.set_freeze()
+            self.qwev.setUpdatesEnabled(False)
+            # self.unfreeze_and_enable_updates() will be called after page load:
             w.setHtml(s, url_base)
         except Exception as e:
             # Oops, don't have a QWebEngineView
