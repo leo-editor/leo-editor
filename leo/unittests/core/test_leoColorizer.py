@@ -31,7 +31,7 @@ class TestColorizer(LeoUnitTest):
         x.language = language_name
         x.enabled = True
         x.init()
-        x.init_all_state(p.v)
+        x.init_all_state()
         n = x.initBlock0()
         for s in g.splitLines(text):
             x.mainLoop(n, s)

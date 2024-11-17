@@ -905,7 +905,6 @@ class JEditColorizer(BaseColorizer):
         self.nested = False  # True: allow nested comments, etc.
         self.nested_level = 0  # Nesting level if self.nested is True.
         self.nextState = 1  # Don't use 0.
-        self.old_v: VNode = None
         self.prev: tuple[int, int, str] = None  # For traces.
         self.restartDict: dict[int, Callable] = {}  # Keys are state numbers, values are restart functions.
         self.stateDict: dict[int, str] = {}  # Keys are state numbers, values state names.
@@ -935,9 +934,16 @@ class JEditColorizer(BaseColorizer):
         # Must be done to support per-language @font/@color settings.
         self.init_section_delims()  # #2276
     #@+node:ekr.20170201082248.1: *5* jedit.init_all_state
-    def init_all_state(self, v: VNode) -> None:
+    def init_all_state(self) -> None:
         """Completely init all state data."""
         assert self.language, g.callers(8)
+
+        # Only jedit.recolor shouuld ever call this method.
+        # However, one unit test calls this method.
+        if g.callers(1) != 'recolor' and not g.unitTesting:
+            message = f"jedit.init_all_state: invalid caller: {g.callers()}"
+            g.print_unique_message(message)
+
         self.n2languageDict = {-1: self.language}
         self.nextState = 1  # Don't use 0.
         self.restartDict = {}
@@ -1337,7 +1343,7 @@ class JEditColorizer(BaseColorizer):
         prev_state = self.prevState()
         if prev_state == -1:
             self.updateSyntaxColorer(p)
-            self.init_all_state(p.v)
+            self.init_all_state()  # The only call to this method.
             self.init()
             state = self.initBlock0()
         else:
