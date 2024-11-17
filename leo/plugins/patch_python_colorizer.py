@@ -43,7 +43,6 @@ def python_rule_global(colorer, s, i):
         if m.start() == i:
             j = i + len(m.group(0))
             self.colorRangeWithTag(s, i, j, kind, delegate=None)
-            ### self.prev = (i, j, kind)
             self.trace_match(kind, s, i, j)
             break
     else:
