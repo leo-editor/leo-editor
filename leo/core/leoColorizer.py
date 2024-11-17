@@ -917,19 +917,16 @@ class JEditColorizer(BaseColorizer):
     def init(self) -> None:
         """
         Init the colorizer to match self.language.
+        
+        The caller must set or clear state after calling this method.
         """
-        # These *must* be recomputed.
+        # Init the *per-language* initial state number.
         self.initialStateNumber = self.setInitialStateNumber()
 
-        # Fix #389. Only jedit.stateNameToStateNumber should change these!
-            # self.nextState = 1 # Don't use 0.
-            # self.stateDict = {}
-            # self.stateNameDict = {}
-            # self.restartDict = {}
-
+        # Init mode-related ivars.
         self.init_mode(self.language)
 
-        # Must be done to support per-language @font/@color settings.
+        # Support per-language @font/@color settings.
         self.init_section_delims()  # #2276
     #@+node:ekr.20170201082248.1: *5* jedit.init_all_state
     def init_all_state(self) -> None:
