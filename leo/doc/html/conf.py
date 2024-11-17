@@ -11,7 +11,7 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 # http://docs.readthedocs.io/en/latest/getting_started.html#in-markdown
 
-use_dark = False
+use_dark = False  # pip install pydata-sphinx-theme
 
 # The theme to use for HTML and HTML Help pages.
 # 'default', 'sphinxdoc'.
