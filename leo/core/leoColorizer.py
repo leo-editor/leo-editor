@@ -915,7 +915,9 @@ class JEditColorizer(BaseColorizer):
         self.reloadSettings()
     #@+node:ekr.20110605121601.18580: *5* jedit.init
     def init(self) -> None:
-        """Init the colorizer, but *not* state."""
+        """
+        Init the colorizer to match self.language.
+        """
         # These *must* be recomputed.
         self.initialStateNumber = self.setInitialStateNumber()
 
@@ -924,8 +926,9 @@ class JEditColorizer(BaseColorizer):
             # self.stateDict = {}
             # self.stateNameDict = {}
             # self.restartDict = {}
+
         self.init_mode(self.language)
-        self.clearState()
+
         # Must be done to support per-language @font/@color settings.
         self.init_section_delims()  # #2276
     #@+node:ekr.20170201082248.1: *5* jedit.init_all_state
@@ -1668,8 +1671,8 @@ class JEditColorizer(BaseColorizer):
             # Switch languages.
             self.after_doc_language = self.language
             self.language = 'rest'
-            self.clearState()
             self.init()
+            self.clearState()
             # Restart.
             self.setRestart(self.restartDocPart)
             # Do *not* color the text here!
@@ -1692,8 +1695,8 @@ class JEditColorizer(BaseColorizer):
                 self.colorRangeWithTag(s, 0, j, 'leokeyword')  # 'docpart')
                 # Switch languages.
                 self.language = self.after_doc_language
-                self.clearState()
                 self.init()
+                self.clearState()
                 self.after_doc_language = None
                 return j
         # Color the next line.
