@@ -78,7 +78,6 @@ class BaseColorizer:
         self.enabled = False  # Per-node enable/disable flag set by updateSyntaxColorer.
         self.highlighter: Any = g.NullObject()  # May be overridden in subclass...
         self.language = 'python'  # set by scanLanguageDirectives.
-        self.prev: tuple[int, int, str] = None  # Used by setTag.
         self.showInvisibles = False
         # Statistics....
         self.count = 0
@@ -693,7 +692,6 @@ class BaseColorizer:
         self.totalLeoKeywordsCalls = 0
         # Mode data...
         self.importedRulesets: dict[str, RuleSet] = {}
-        self.prev = None  # The previous token.
         self.fonts: dict[str, Font] = {}  # Keys are config names.  Values are actual fonts.
         self.keywords: dict[str, int] = {}  # Keys are keywords, values are 0..5.
         self.modes: dict[str, Mode] = {}  # Keys are languages, values are modes.
@@ -905,8 +903,6 @@ class JEditColorizer(BaseColorizer):
         self.nested = False  # True: allow nested comments, etc.
         self.nested_level = 0  # Nesting level if self.nested is True.
         self.nextState = 1  # Don't use 0.
-        self.old_v: VNode = None
-        self.prev: tuple[int, int, str] = None  # For traces.
         self.restartDict: dict[int, Callable] = {}  # Keys are state numbers, values are restart functions.
         self.stateDict: dict[int, str] = {}  # Keys are state numbers, values state names.
         self.stateNameDict: dict[str, int] = {}  # Keys are state names, values are state numbers.
@@ -919,25 +915,30 @@ class JEditColorizer(BaseColorizer):
         self.reloadSettings()
     #@+node:ekr.20110605121601.18580: *5* jedit.init
     def init(self) -> None:
-        """Init the colorizer, but *not* state."""
-        # These *must* be recomputed.
+        """
+        Init the colorizer to match self.language.
+        
+        The caller must set or clear state after calling this method.
+        """
+        # Init the *per-language* initial state number.
         self.initialStateNumber = self.setInitialStateNumber()
 
-        # Fix #389. Only jedit.stateNameToStateNumber should change these!
-            # self.nextState = 1 # Don't use 0.
-            # self.stateDict = {}
-            # self.stateNameDict = {}
-            # self.restartDict = {}
+        # Init mode-related ivars.
         self.init_mode(self.language)
-        self.clearState()
-        # Used by matchers.
-        self.prev = None
-        # Must be done to support per-language @font/@color settings.
+
+        # Support per-language @font/@color settings.
         self.init_section_delims()  # #2276
     #@+node:ekr.20170201082248.1: *5* jedit.init_all_state
-    def init_all_state(self, v: VNode) -> None:
+    def init_all_state(self) -> None:
         """Completely init all state data."""
         assert self.language, g.callers(8)
+
+        # Only jedit.recolor shouuld ever call this method.
+        # However, one unit test calls this method.
+        if g.callers(1) != 'recolor' and not g.unitTesting:
+            message = f"jedit.init_all_state: invalid caller: {g.callers()}"
+            g.print_unique_message(message)
+
         self.n2languageDict = {-1: self.language}
         self.nextState = 1  # Don't use 0.
         self.restartDict = {}
@@ -1337,7 +1338,7 @@ class JEditColorizer(BaseColorizer):
         prev_state = self.prevState()
         if prev_state == -1:
             self.updateSyntaxColorer(p)
-            self.init_all_state(p.v)
+            self.init_all_state()  # The only call to this method.
             self.init()
             state = self.initBlock0()
         else:
@@ -1531,7 +1532,6 @@ class JEditColorizer(BaseColorizer):
         j = i + n
         kind = 'url'
         self.colorRangeWithTag(s, i, j, kind)
-        self.prev = (i, j, kind)
         self.trace_match(kind, s, i, j)
         return n
     #@+node:ekr.20110605121601.18593: *5* jedit.match_at_color
@@ -1668,8 +1668,8 @@ class JEditColorizer(BaseColorizer):
             # Switch languages.
             self.after_doc_language = self.language
             self.language = 'rest'
-            self.clearState()
             self.init()
+            self.clearState()
             # Restart.
             self.setRestart(self.restartDocPart)
             # Do *not* color the text here!
@@ -1692,8 +1692,8 @@ class JEditColorizer(BaseColorizer):
                 self.colorRangeWithTag(s, 0, j, 'leokeyword')  # 'docpart')
                 # Switch languages.
                 self.language = self.after_doc_language
-                self.clearState()
                 self.init()
+                self.clearState()
                 self.after_doc_language = None
                 return j
         # Color the next line.
@@ -1753,7 +1753,6 @@ class JEditColorizer(BaseColorizer):
         if self.leoKeywordsDict.get(word):
             kind = 'leokeyword'
             self.colorRangeWithTag(s, i, j, kind)
-            self.prev = (i, j, kind)
             result = j - i + 1  # Bug fix: skip the last character.
             self.trace_match(kind, s, i, j)
             return result
@@ -1765,7 +1764,6 @@ class JEditColorizer(BaseColorizer):
         kind = self.keywordsDict.get(word)
         if kind:
             self.colorRangeWithTag(s, i, j, kind)
-            self.prev = (i, j, kind)
             self.trace_match(kind, s, i, j)
             return j - i
         # Bug fix: allow rescan.  Affects @language patch.
@@ -1848,7 +1846,6 @@ class JEditColorizer(BaseColorizer):
         if n > 0:
             j = i + n
             self.colorRangeWithTag(s, i, j, kind, delegate=delegate)
-            self.prev = (i, j, kind)
             self.trace_match(kind, s, i, j)
             return n
         return 0
@@ -1893,7 +1890,6 @@ class JEditColorizer(BaseColorizer):
             j = len(s)
             self.colorRangeWithTag(
                 s, i, j, kind, delegate=delegate, exclude_match=exclude_match)
-            self.prev = (i, j, kind)
             self.trace_match(kind, s, i, j)
             return j  # (was j-1) With a delegate, this could clear state.
         return 0
@@ -1922,7 +1918,6 @@ class JEditColorizer(BaseColorizer):
             j = len(s)
             self.colorRangeWithTag(
                 s, i, j, kind, delegate=delegate, exclude_match=exclude_match)
-            self.prev = (i, j, kind)
             self.trace_match(kind, s, i, j)
             return j - i
         return 0
@@ -1973,7 +1968,6 @@ class JEditColorizer(BaseColorizer):
 
         # Color this line.
         self.colorRangeWithTag(s, start, end, tag='literal1')
-        self.prev = (i, end, delim)
         self.trace_match(delim, s, i, end)
 
         # Continue the f-string if necessary.
@@ -2096,7 +2090,6 @@ class JEditColorizer(BaseColorizer):
         kind = self.keywordsDict.get(word)
         if kind:
             self.colorRangeWithTag(s, i, j, kind)
-            self.prev = (i, j, kind)
             result = j - i
             self.trace_match(kind, s, i, j)
             return result
@@ -2160,7 +2153,6 @@ class JEditColorizer(BaseColorizer):
                 self.colorRangeWithTag(s, i, j, kind, exclude_match=exclude_match)
                 self.colorRangeWithTag(s, j, k, kind, exclude_match=False)
                 j = k
-                self.prev = (i, j, kind)
                 self.trace_match(kind, s, i, j)
                 return j - i
         return 0
@@ -2260,7 +2252,6 @@ class JEditColorizer(BaseColorizer):
         elif g.match(s, i, seq):
             j = i + len(seq)
             self.colorRangeWithTag(s, i, j, kind, delegate=delegate)
-            self.prev = (i, j, kind)
             self.trace_match(kind, s, i, j)
         else:
             j = i
@@ -2288,7 +2279,6 @@ class JEditColorizer(BaseColorizer):
         j = i + n
         assert j - i == n
         self.colorRangeWithTag(s, i, j, kind, delegate=delegate)
-        self.prev = (i, j, kind)
         self.trace_match(kind, s, i, j)
         return j - i
     #@+node:ekr.20110605121601.18622: *4* jedit.match_span & helpers
@@ -2359,7 +2349,6 @@ class JEditColorizer(BaseColorizer):
             self.colorRangeWithTag(
                 s, i, j2, kind, delegate=None, exclude_match=exclude_match)
         j = j2
-        self.prev = (i, j, kind)
         self.trace_match(kind, s, i, j)
         # New in Leo 5.5: don't recolor everything after continued strings.
         if j > len(s) and not dots:
@@ -2574,7 +2563,6 @@ class JEditColorizer(BaseColorizer):
             else:  # avoid having to merge ranges in addTagsToList.
                 self.colorRangeWithTag(
                     s, i, j2, kind, delegate=None, exclude_match=exclude_match)
-            self.prev = (i, j, kind)
             self.trace_match(kind, s, i, j2)
             return j2 - i
         return 0
@@ -2597,7 +2585,6 @@ class JEditColorizer(BaseColorizer):
             # Colorize the backslash plus exactly one more character.
             j = i + 2
         self.colorRangeWithTag(s, i, j, kind, delegate='')
-        self.prev = (i, j, kind)
         self.trace_match(kind, s, i, j)
         return j - i
     #@+node:ekr.20170205074106.1: *4* jedit.match_wiki_pattern
@@ -2646,7 +2633,6 @@ class JEditColorizer(BaseColorizer):
         self.colorRangeWithTag(s, i, j, kind1, exclude_match=exclude_match)
         k = j + n
         self.colorRangeWithTag(s, j, k, kind2, exclude_match=False)
-        self.prev = (j, k, kind2)
         self.trace_match(kind1, s, i, j)
         self.trace_match(kind2, s, j, k)
         return k - i
@@ -2657,7 +2643,6 @@ class JEditColorizer(BaseColorizer):
             return 0
         j = i + len(seq)
         self.colorRangeWithTag(s, i, j, kind)
-        self.prev = (i, j, kind)
         self.trace_match(kind, s, i, j)
         return len(seq)
     #@+node:ekr.20230420052841.1: *4* jedit.match_plain_span
@@ -2684,7 +2669,6 @@ class JEditColorizer(BaseColorizer):
         j2 = j + len(end)
         self.colorRangeWithTag(s, i, j2, kind)
         j = j2
-        self.prev = (i, j, kind)
         self.trace_match(kind, s, i, j)
 
         # Don't recolor everything after continued strings.
