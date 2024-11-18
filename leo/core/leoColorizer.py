@@ -1448,7 +1448,7 @@ class JEditColorizer(BaseColorizer):
     # - kind                  The color tag to be applied to colored text.
     #@+node:ekr.20110605121601.18637: *4* jedit.colorRangeWithTag
     def colorRangeWithTag(self,
-        s: str, i: int, j: int, tag: str, delegate: str = '', exclude_match: bool = False,
+        s: str, i: int, j: int, tag: str, *, delegate: str = '', exclude_match: bool = False,
     ) -> None:
         """
         Pattern matchers call this helper to colorize the selected range.
@@ -1822,7 +1822,7 @@ class JEditColorizer(BaseColorizer):
                 # self.colorRangeWithTag(s, i, j, 'tab')
                 # return j - i
             # return 0
-    #@+node:tbrown.20170707150713.1: *5* jedit.match_tabs
+    #@+node:tbrown.20170707150713.1: *5* jedit.match_trailing_ws
     def match_trailing_ws(self, s: str, i: int) -> int:
         """match trailing whitespace"""
         j = i
@@ -1838,8 +1838,10 @@ class JEditColorizer(BaseColorizer):
         # Called by the main colorizer loop and colorRangeWithTag.
         return self.match_compiled_regexp(s, i, kind='url', regexp=g.unl_regex)
     #@+node:ekr.20110605121601.18609: *4* jedit.match_compiled_regexp
-    def match_compiled_regexp(self,
-        s: str, i: int, kind: str, regexp: Any, delegate: str = '',
+    def match_compiled_regexp(self, s: str, i: int,
+        *, kind: str,
+        regexp: Any,
+        delegate: str = '',
     ) -> int:
         """Succeed if the compiled regular expression regexp matches at s[i:]."""
         n = self.match_compiled_regexp_helper(s, i, regexp)
@@ -1864,10 +1866,8 @@ class JEditColorizer(BaseColorizer):
             return 0
         return end - start
     #@+node:ekr.20110605121601.18611: *4* jedit.match_eol_span
-    def match_eol_span(
-        self,
-        s: str,
-        i: int,
+    def match_eol_span(self, s: str, i: int,
+        *,
         kind: str = None,
         seq: str = '',
         at_line_start: bool = False,
@@ -1894,10 +1894,8 @@ class JEditColorizer(BaseColorizer):
             return j  # (was j-1) With a delegate, this could clear state.
         return 0
     #@+node:ekr.20110605121601.18612: *4* jedit.match_eol_span_regexp
-    def match_eol_span_regexp(
-        self,
-        s: str,
-        i: int,
+    def match_eol_span_regexp(self, s: str, i: int,
+        *,
         kind: str = '',
         regexp: str = '',
         at_line_start: bool = False,
@@ -2095,15 +2093,18 @@ class JEditColorizer(BaseColorizer):
             return result
         return -len(word)  # An important new optimization.
     #@+node:ekr.20110605121601.18615: *4* jedit.match_line
-    def match_line(self,
-        s: str, i: int, kind: str = None, delegate: str = '', exclude_match: bool = False,
+    def match_line(self, s: str, i: int,
+        *,
+        kind: str = None,
+        delegate: str = '',
+        exclude_match: bool = False,
     ) -> int:
         """Match the rest of the line."""
         j = g.skip_to_end_of_line(s, i)
         self.colorRangeWithTag(s, i, j, kind, delegate=delegate)
         return j - i
     #@+node:ekr.20190606201152.1: *4* jedit.match_lua_literal
-    def match_lua_literal(self, s: str, i: int, kind: str) -> int:
+    def match_lua_literal(self, s: str, i: int, *, kind: str) -> int:
         """Succeed if s[i:] is a lua literal. See #1175"""
         k = self.match_span(s, i, kind=kind, begin="[[", end="]]")
         if k not in (None, 0):
@@ -2118,10 +2119,8 @@ class JEditColorizer(BaseColorizer):
             return 0
         return self.match_span(s, i, kind=kind, begin=s[i:j], end=s[i + 1 : j] + ']')
     #@+node:ekr.20110605121601.18616: *4* jedit.match_mark_following & getNextToken
-    def match_mark_following(
-        self,
-        s: str,
-        i: int,
+    def match_mark_following(self, s: str, i: int,
+        *,
         kind: str = '',
         pattern: str = '',
         at_line_start: bool = False,
@@ -2176,10 +2175,8 @@ class JEditColorizer(BaseColorizer):
             return i0
         return min(len(s), i)
     #@+node:ekr.20110605121601.18618: *4* jedit.match_mark_previous
-    def match_mark_previous(
-        self,
-        s: str,
-        i: int,
+    def match_mark_previous(self, s: str, i: int,
+        *,
         kind: str = '',
         pattern: str = '',
         at_line_start: bool = False,
@@ -2227,12 +2224,9 @@ class JEditColorizer(BaseColorizer):
             return 0
         return end - start
     #@+node:ekr.20110605121601.18620: *4* jedit.match_seq
-    def match_seq(
-        self,
-        s: str,
-        i: int,
-        kind: str = '',
+    def match_seq(self, s: str, i: int,
         *,
+        kind: str = '',
         seq: str = '',
         at_line_start: bool = False,
         at_whitespace_end: bool = False,
@@ -2257,10 +2251,8 @@ class JEditColorizer(BaseColorizer):
             j = i
         return j - i
     #@+node:ekr.20110605121601.18621: *4* jedit.match_seq_regexp
-    def match_seq_regexp(
-        self,
-        s: str,
-        i: int,
+    def match_seq_regexp(self, s: str, i: int,
+        *,
         kind: str = '',
         regexp: str = '',
         at_line_start: bool = False,
@@ -2282,10 +2274,7 @@ class JEditColorizer(BaseColorizer):
         self.trace_match(kind, s, i, j)
         return j - i
     #@+node:ekr.20110605121601.18622: *4* jedit.match_span & helpers
-    def match_span(
-        self,
-        s: str,
-        i: int,
+    def match_span(self, s: str, i: int,
         *,
         kind: str,
         begin: str,
@@ -2431,10 +2420,7 @@ class JEditColorizer(BaseColorizer):
         # For pylint.
         return -1
     #@+node:ekr.20110605121601.18624: *5* jedit.restart_match_span
-    def restart_match_span(
-        self,
-        s: str,
-        kind: str,
+    def restart_match_span(self, s: str, kind: str,
         *,
         begin: str,
         end: str,
@@ -2495,10 +2481,8 @@ class JEditColorizer(BaseColorizer):
             self.clearState()
         return j  # Return the new i, *not* the length of the match.
     #@+node:ekr.20110605121601.18625: *4* jedit.match_span_regexp
-    def match_span_regexp(
-        self,
-        s: str,
-        i: int,
+    def match_span_regexp(self, s: str, i: int,
+        *,
         kind: str = '',
         begin: Union[re.Pattern, str] = '',
         end: str = '',
@@ -2569,7 +2553,7 @@ class JEditColorizer(BaseColorizer):
     #@+node:ekr.20190623132338.1: *4* jedit.match_tex_backslash
     ascii_letters = re.compile(r'[a-zA-Z]+')
 
-    def match_tex_backslash(self, s: str, i: int, kind: str) -> int:
+    def match_tex_backslash(self, s: str, i: int, *, kind: str) -> int:
         """
         Match the tex s[i:].
 
@@ -2646,7 +2630,12 @@ class JEditColorizer(BaseColorizer):
         self.trace_match(kind, s, i, j)
         return len(seq)
     #@+node:ekr.20230420052841.1: *4* jedit.match_plain_span
-    def match_plain_span(self, s: str, i: int, kind: str, *, begin: str, end: str) -> int:
+    def match_plain_span(self, s: str, i: int,
+        *,
+        kind: str,
+        begin: str,
+        end: str,
+    ) -> int:
         """Matcher for simple span at s[i:] with no delegate."""
         if not g.match(s, i, begin):
             return 0
