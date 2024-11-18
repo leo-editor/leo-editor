@@ -295,9 +295,11 @@ def pandoc_rule14(colorer, s, i):
 
 def pandoc_rule15(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="null", seq="\\][")
+    
+if 0:  # Invalid regular expression.
 
-def pandoc_rule16(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="null", regexp="\\\\[\\Q*_\\`[](){}#+.!-\\E]")
+    def pandoc_rule16(colorer, s, i):
+        return colorer.match_seq_regexp(s, i, kind="null", regexp="\\\\[\\Q*_\\`[](){}#+.!-\\E]")
 
 def pandoc_rule17(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="``` ruby", end="```",
@@ -346,12 +348,14 @@ def pandoc_rule26(colorer, s, i):
     return colorer.match_eol_span_regexp(s, i, kind="label", regexp="\\[(.*?)\\]\\:",
           at_whitespace_end=True,
           delegate="pandoc::link_label_definition")
+          
+if 0:  # Invalid regex.
 
-def pandoc_rule27(colorer, s, i):
-    # leadin: [
-    return colorer.match_span_regexp(s, i, kind="keyword4", begin="!?\\[[\\p{Alnum}\\p{Blank}]*", end="\\]",
-          delegate="pandoc::link_inline_url_title",
-          no_line_break=True)
+    def pandoc_rule27(colorer, s, i):
+        # leadin: [
+        return colorer.match_span_regexp(s, i, kind="keyword4", begin="!?\\[[\\p{Alnum}\\p{Blank}]*", end="\\]",
+              delegate="pandoc::link_inline_url_title",
+              no_line_break=True)
 
 def pandoc_rule28(colorer, s, i):
     # Leadins: [*_]
@@ -366,13 +370,17 @@ def pandoc_rule29(colorer, s, i):
 # Rules dict for pandoc_markdown ruleset.
 rulesDict4 = {
 # Existing leadins...
-    "!": [pandoc_rule27,],
+    # "!": [pandoc_rule27,],
     "#": [pandoc_rule22,],
     "*": [pandoc_rule13, pandoc_rule23, pandoc_rule24, pandoc_rule28, pandoc_rule29],  # new: 23,24,28,29.
-    "\\": [pandoc_rule15, pandoc_rule16, pandoc_rule26,],
+    "\\": [
+            pandoc_rule15,
+            # pandoc_rule16,
+            pandoc_rule26,
+        ],
     "_": [pandoc_rule14, pandoc_rule23, pandoc_rule24, pandoc_rule28, pandoc_rule29],  # new: 23,24,28,29.
     "`": [pandoc_rule17, pandoc_rule18, pandoc_rule19,],  # new: 19
-    "[": [pandoc_rule27,],  # new: 27 old: 12,21,23,24,25.
+    # "[": [pandoc_rule27,],  # new: 27 old: 12,21,23,24,25.
 # Unused leadins...
     # "(": [pandoc_rule28,pandoc_rule29,],
 # New leadins...
@@ -395,8 +403,10 @@ rulesDict4 = {
 
 # Rules for pandoc_link_label_definition ruleset.
 
-def pandoc_rule30(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="null", regexp="\\\\[\\Q*_\\`[](){}#+.!-\\E]")
+if 0:  # Invalid regular expression.
+
+    def pandoc_rule30(colorer, s, i):
+        return colorer.match_seq_regexp(s, i, kind="null", regexp="\\\\[\\Q*_\\`[](){}#+.!-\\E]")
 
 def pandoc_rule31(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq="\"")
@@ -412,7 +422,7 @@ rulesDict5 = {
     "\"": [pandoc_rule31,],
     "(": [pandoc_rule32,],
     ")": [pandoc_rule33,],
-    "\\": [pandoc_rule30,],
+    # "\\": [pandoc_rule30],
 }
 
 # Rules for pandoc_link_inline_url_title ruleset.
@@ -477,10 +487,12 @@ def pandoc_rule42(colorer, s, i):
 def pandoc_rule43(colorer, s, i):
     # leadin: backslash.
     return colorer.match_plain_seq(s, i, kind="null", seq="\\][")
+    
+if 0:  # Invalid regular expression.
 
-def pandoc_rule44(colorer, s, i):
-    # leadin: backslash.
-    return colorer.match_seq_regexp(s, i, kind="null", regexp="\\\\[\\Q*_\\`[](){}#+.!-\\E]")
+    def pandoc_rule44(colorer, s, i):
+        # leadin: backslash.
+        return colorer.match_seq_regexp(s, i, kind="null", regexp="\\\\[\\Q*_\\`[](){}#+.!-\\E]")
 
 def pandoc_rule45(colorer, s, i):
     # leadin: `
@@ -514,12 +526,14 @@ def pandoc_rule52(colorer, s, i):
     # leadin: [
     return colorer.match_eol_span_regexp(s, i, kind="label", regexp="\\[(.*?)\\]\\:",
           delegate="pandoc::link_label_definition")
+          
+if 0:  # Invalid regular expression.
 
-def pandoc_rule53(colorer, s, i):
-    # leadin: [
-    return colorer.match_span_regexp(s, i, kind="keyword4", begin="!?\\[[\\p{Alnum}\\p{Blank}]*", end="\\]",
-          delegate="pandoc::link_inline_url_title",
-          no_line_break=True)
+    def pandoc_rule53(colorer, s, i):
+        # leadin: [
+        return colorer.match_span_regexp(s, i, kind="keyword4", begin="!?\\[[\\p{Alnum}\\p{Blank}]*", end="\\]",
+              delegate="pandoc::link_inline_url_title",
+              no_line_break=True)
 
 def pandoc_rule54(colorer, s, i):
     # leadins: [*_]
@@ -540,13 +554,19 @@ rulesDict9 = {
     "(": [pandoc_rule54, pandoc_rule55,],  # 45,46
     "*": [pandoc_rule41, pandoc_rule49, pandoc_rule50, pandoc_rule54, pandoc_rule55,],  # new: 49,50,54,55
     "<": [pandoc_rule40,],
-    "\\": [pandoc_rule43, pandoc_rule44,],  # 52,53
+    "\\": [
+            pandoc_rule43,
+            # pandoc_rule44,
+        ],  # 52,53
     "_": [pandoc_rule42, pandoc_rule49, pandoc_rule54, pandoc_rule55,],  # new: 49,54,55
 # new leadins:
     "+": [pandoc_rule50,],
     "-": [pandoc_rule47, pandoc_rule49, pandoc_rule50,],
     "=": [pandoc_rule47,],
-    "[": [pandoc_rule52, pandoc_rule53],
+    "[": [
+            pandoc_rule52,
+            # pandoc_rule53,
+        ],
     "`": [pandoc_rule45,],
     "0": [pandoc_rule50,],
     "1": [pandoc_rule50,],

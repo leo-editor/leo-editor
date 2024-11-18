@@ -49,8 +49,8 @@ class TestSyntax(LeoUnitTest):
                     fn = g.shortFileName(z)
                     s, e = g.readFileIntoString(z)
                     self.assertTrue(self.check_syntax(fn, s), msg=fn)
-    #@+node:ekr.20241118022857.1: *4* TestSyntax.slow_test_all_mode_files
-    def slow_test_all_mode_files(self):
+    #@+node:ekr.20241118022857.1: *4* TestSyntax.test_all_mode_files
+    def test_all_mode_files(self):
 
         tag = 'slow_test_all_mode_files'
 
