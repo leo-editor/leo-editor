@@ -179,11 +179,11 @@ rulesDict2 = {
 # Rules for html_javascript ruleset.
 
 def html_rule9(colorer, s, i):
-    return colorer.match_seq(s, i, "markup", seq=">",
+    return colorer.match_seq(s, i, kind="markup", seq=">",
         delegate="javascript::main")
 
 def html_rule10(colorer, s, i):
-    return colorer.match_seq(s, i, "markup", seq="SRC=",
+    return colorer.match_seq(s, i, kind="markup", seq="SRC=",
         delegate="html::back_to_html")
 
 # Rules dict for html_javascript ruleset.
@@ -196,7 +196,7 @@ rulesDict3 = {
 # Rules for html_back_to_html ruleset.
 
 def html_rule11(colorer, s, i):
-    return colorer.match_seq(s, i, "markup", seq=">",
+    return colorer.match_seq(s, i, kind="markup", seq=">",
         delegate="html::main")
 
 # Rules dict for html_back_to_html ruleset.
@@ -208,7 +208,7 @@ rulesDict4 = {
 # Rules for html_css ruleset.
 
 def html_rule12(colorer, s, i):
-    return colorer.match_seq(s, i, "markup", seq=">",
+    return colorer.match_seq(s, i, kind="markup", seq=">",
         delegate="css::main")
 
 # Rules dict for html_css ruleset.

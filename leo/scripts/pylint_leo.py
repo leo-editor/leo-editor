@@ -8,13 +8,10 @@ pylint_leo.py: Run pylint on Leo's core files.
 Info item #3867 describes all of Leo's test scripts:
 https://github.com/leo-editor/leo-editor/issues/2867
 """
-
-# No longer used by Leo's official test scripts.
-# pylint is not part of requirements.txt.
-
 import os
 import subprocess
 import sys
+from leo.commands.checkerCommands import PylintCommand
 
 print(os.path.basename(__file__))
 
@@ -25,8 +22,11 @@ args = ' '.join(sys.argv[1:])
 isWindows = sys.platform.startswith('win')
 python = 'py' if isWindows else 'python'
 
-rc_file = r'--rcfile C:\Users\Dev\.leo\.pylintrc'
-extension_pkg = '--extension-pkg-allow-list=PyQt6.QtCore,PyQt6.QtGui,PyQt6.QtWidgets'
+rc_file_name = PylintCommand(c=None).get_rc_file()  # #4191.
+rc_file = rf"--rcfile {rc_file_name}"
+# print(__file__, rc_file)
+extensions = 'PyQt6.QtCore,PyQt6.QtGui,PyQt6.QtWidgets,PyQt6.QtWebEngineWidgets'
+extension_pkg = f"--extension-pkg-allow-list={extensions}"
 command = fr"{python} -m pylint leo {rc_file} {extension_pkg}"
 
 subprocess.Popen(command, shell=True).communicate()

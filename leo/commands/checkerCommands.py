@@ -5,6 +5,7 @@
 #@+node:ekr.20161021092038.1: ** << checkerCommands imports >>
 from __future__ import annotations
 import os
+import pathlib
 import re
 import shlex
 import sys
@@ -644,17 +645,23 @@ class PylintCommand:
         c = self.c
         base1 = '.pylintrc'  # Standard name.
         base2 = 'pylint-leo-rc.txt'  # Leo-centric name
-        local_dir = g.os_path_dirname(c.fileName())
+        local_dir = g.os_path_dirname(c.fileName()) if c else os.getcwd()
+        # 4191: Allow scripts to call this method.
+        try:
+            load_dir = g.app.loadDir
+        except AttributeError:
+            load_dir = g.finalize_join(local_dir, 'leo')
+        home_dir = pathlib.Path.home()
         table = (
             # In the directory containing the outline.
             g.finalize_join(local_dir, base1),
             g.finalize_join(local_dir, base2),
             # In ~/.leo
-            g.finalize_join(g.app.homeDir, '.leo', base1),
-            g.finalize_join(g.app.homeDir, '.leo', base2),
+            g.finalize_join(home_dir, '.leo', base1),
+            g.finalize_join(home_dir, '.leo', base2),
             # In leo/test
-            g.finalize_join(g.app.loadDir, '..', '..', 'leo', 'test', base1),
-            g.finalize_join(g.app.loadDir, '..', '..', 'leo', 'test', base2),
+            g.finalize_join(load_dir, '..', '..', 'leo', 'test', base1),
+            g.finalize_join(load_dir, '..', '..', 'leo', 'test', base2),
         )
         for fn in table:
             fn = g.os_path_abspath(fn)
