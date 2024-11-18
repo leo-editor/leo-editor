@@ -2480,10 +2480,7 @@ class JEditColorizer(BaseColorizer):
         at_whitespace_end: bool = False,
         at_word_start: bool = False,
         delegate: str = '',
-        exclude_match: bool = False,
-        no_escape: bool = False,
         no_line_break: bool = False,
-        no_word_break: bool = False,
     ) -> int:
         """
         Succeed if s[i:] matches 'begin' a regex string or compiled regex.
@@ -2499,7 +2496,7 @@ class JEditColorizer(BaseColorizer):
         if at_whitespace_end and i != g.skip_ws(s, 0):
             return 0
         if at_word_start and i > 0 and s[i - 1] in self.word_chars:
-            return 0  # 7/5/2008
+            return 0
         if (
             isinstance(begin, str)
             and at_word_start
@@ -2515,7 +2512,7 @@ class JEditColorizer(BaseColorizer):
                 j2 = s.find(end, j)
                 if j2 == -1:
                     return 0
-            if self.escape and not no_escape:
+            if self.escape:
                 # Only an odd number of escapes is a 'real' escape.
                 escapes = 0
                 k = 1
@@ -2528,15 +2525,11 @@ class JEditColorizer(BaseColorizer):
                     return 0
             i2 = j2 - len(end)
             if delegate:
-                self.colorRangeWithTag(
-                    s, i, j, kind, delegate=None, exclude_match=exclude_match)
-                self.colorRangeWithTag(
-                    s, j, i2, kind, delegate=delegate, exclude_match=False)
-                self.colorRangeWithTag(
-                    s, i2, j2, kind, delegate=None, exclude_match=exclude_match)
+                self.colorRangeWithTag(s, i, j, kind)
+                self.colorRangeWithTag(s, j, i2, kind, delegate=delegate)
+                self.colorRangeWithTag(s, i2, j2, kind)
             else:  # avoid having to merge ranges in addTagsToList.
-                self.colorRangeWithTag(
-                    s, i, j2, kind, delegate=None, exclude_match=exclude_match)
+                self.colorRangeWithTag(s, i, j2, kind)
             self.trace_match(kind, s, i, j2)
             return j2 - i
         return 0
