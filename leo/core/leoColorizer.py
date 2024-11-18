@@ -2088,15 +2088,10 @@ class JEditColorizer(BaseColorizer):
             return result
         return -len(word)  # An important new optimization.
     #@+node:ekr.20110605121601.18615: *4* jedit.match_line
-    def match_line(self, s: str, i: int,
-        *,
-        kind: str = None,
-        delegate: str = '',
-        exclude_match: bool = False,
-    ) -> int:
+    def match_line(self, s: str, i: int, *, kind: str = None) -> int:
         """Match the rest of the line."""
         j = g.skip_to_end_of_line(s, i)
-        self.colorRangeWithTag(s, i, j, kind, delegate=delegate)
+        self.colorRangeWithTag(s, i, j, kind)
         return j - i
     #@+node:ekr.20190606201152.1: *4* jedit.match_lua_literal
     def match_lua_literal(self, s: str, i: int, *, kind: str) -> int:
