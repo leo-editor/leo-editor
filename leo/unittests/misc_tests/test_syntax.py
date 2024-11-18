@@ -61,8 +61,9 @@ class TestSyntax(LeoUnitTest):
             from leo.core.leoColorizer import JEditColorizer
             c = self.c
             module_name = module.__name__
-            # if not name.endswith('python'):
-                # return
+            # Skip modes/plain.py. It has only one rule and the rulesDict is a hack.
+            if module_name.endswith('plain'):
+                return
             colorer = JEditColorizer(c, widget=None)
             rules = []
             for ruleDict_name, ruleDict in module.rulesDictDict.items():

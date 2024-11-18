@@ -2211,7 +2211,8 @@ class JEditColorizer(BaseColorizer):
                     re_obj = re.compile(pattern, flags)
             except Exception:
                 # Do not call g.es here!
-                g.trace(f"Invalid regular expression: {pattern:<30} {g.callers(2)}")
+                if not g.unitTesting:
+                    g.trace(f"Invalid regular expression: {pattern:<30} {g.callers(2)}")
                 return 0
         else:
             re_obj = pattern
@@ -2561,7 +2562,8 @@ class JEditColorizer(BaseColorizer):
         1. One or more ascii letters, or
         2. Exactly one character, of any kind.
         """
-        assert s[i] == '\\'
+        if not g.unitTesting:
+            assert s[i] == '\\'
         if m := self.ascii_letters.match(s, i + 1):
             n = len(m.group(0))
             j = i + n + 1
