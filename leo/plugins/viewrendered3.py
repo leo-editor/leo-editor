@@ -4921,6 +4921,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
             self.zoomView()
         elif bare_key == '-' and mod == 'cntrl':
             self.shrinkView()
+        else:
+            super().keyPressEvent(event)
     #@+node:TomP.20200329230503.1: *4* vr3: utils
     #@+node:TomP.20200329230503.2: *5* vr3.set_html
     def set_html(self, s, w):
