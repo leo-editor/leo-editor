@@ -295,7 +295,7 @@ def pandoc_rule14(colorer, s, i):
 
 def pandoc_rule15(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="null", seq="\\][")
-    
+
 if 0:  # Invalid regular expression.
 
     def pandoc_rule16(colorer, s, i):
@@ -348,7 +348,7 @@ def pandoc_rule26(colorer, s, i):
     return colorer.match_eol_span_regexp(s, i, kind="label", regexp="\\[(.*?)\\]\\:",
           at_whitespace_end=True,
           delegate="pandoc::link_label_definition")
-          
+
 if 0:  # Invalid regex.
 
     def pandoc_rule27(colorer, s, i):
@@ -487,7 +487,7 @@ def pandoc_rule42(colorer, s, i):
 def pandoc_rule43(colorer, s, i):
     # leadin: backslash.
     return colorer.match_plain_seq(s, i, kind="null", seq="\\][")
-    
+
 if 0:  # Invalid regular expression.
 
     def pandoc_rule44(colorer, s, i):
@@ -526,7 +526,7 @@ def pandoc_rule52(colorer, s, i):
     # leadin: [
     return colorer.match_eol_span_regexp(s, i, kind="label", regexp="\\[(.*?)\\]\\:",
           delegate="pandoc::link_label_definition")
-          
+
 if 0:  # Invalid regular expression.
 
     def pandoc_rule53(colorer, s, i):
