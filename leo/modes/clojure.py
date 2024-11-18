@@ -3,7 +3,7 @@
 import re
 number_pat = re.compile('\\b0x[0-9a-fA-F]+|\\b\\d*\\.\\d+|\\b\\d+\\.?')
 def clojure_match_numbers(colorer, s, i):
-    return colorer.match_compiled_regexp(s, i, 'literal4', number_pat)
+    return colorer.match_compiled_regexp(s, i, kind='literal4', regexp=number_pat)
 
 # Properties for clojure mode.
 properties = {
