@@ -348,12 +348,14 @@ def pandoc_rule26(colorer, s, i):
     return colorer.match_eol_span_regexp(s, i, kind="label", regexp="\\[(.*?)\\]\\:",
           at_whitespace_end=True,
           delegate="pandoc::link_label_definition")
+          
+if 0:  # Invalid regex.
 
-def pandoc_rule27(colorer, s, i):
-    # leadin: [
-    return colorer.match_span_regexp(s, i, kind="keyword4", begin="!?\\[[\\p{Alnum}\\p{Blank}]*", end="\\]",
-          delegate="pandoc::link_inline_url_title",
-          no_line_break=True)
+    def pandoc_rule27(colorer, s, i):
+        # leadin: [
+        return colorer.match_span_regexp(s, i, kind="keyword4", begin="!?\\[[\\p{Alnum}\\p{Blank}]*", end="\\]",
+              delegate="pandoc::link_inline_url_title",
+              no_line_break=True)
 
 def pandoc_rule28(colorer, s, i):
     # Leadins: [*_]
@@ -378,7 +380,7 @@ rulesDict4 = {
         ],
     "_": [pandoc_rule14, pandoc_rule23, pandoc_rule24, pandoc_rule28, pandoc_rule29],  # new: 23,24,28,29.
     "`": [pandoc_rule17, pandoc_rule18, pandoc_rule19,],  # new: 19
-    "[": [pandoc_rule27,],  # new: 27 old: 12,21,23,24,25.
+    # "[": [pandoc_rule27,],  # new: 27 old: 12,21,23,24,25.
 # Unused leadins...
     # "(": [pandoc_rule28,pandoc_rule29,],
 # New leadins...
