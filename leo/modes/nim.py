@@ -678,7 +678,7 @@ def nim_unusual_single_quote(colorer, s, i):
 
     # Find the suffix.
     # assert s[i : i + 1] == "'", repr(s)
-    if s[i : i + 1] != "'": 
+    if s[i : i + 1] != "'":
         return  # TestSyntax.slow_test_all_mode_files only tests signatures.
     head = s[:i]
     for suffix in suffixes:
