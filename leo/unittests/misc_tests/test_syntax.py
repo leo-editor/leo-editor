@@ -4,7 +4,6 @@
 import importlib
 import glob
 import os
-import re
 from typing import Any
 
 from leo.core import leoGlobals as g
