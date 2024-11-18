@@ -2211,7 +2211,7 @@ class JEditColorizer(BaseColorizer):
                     re_obj = re.compile(pattern, flags)
             except Exception:
                 # Do not call g.es here!
-                g.trace(f"Invalid regular expression: {pattern}")
+                g.trace(f"Invalid regular expression: {pattern:<30} {g.callers(2)}")
                 return 0
         else:
             re_obj = pattern
