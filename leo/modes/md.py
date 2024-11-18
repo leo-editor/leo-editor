@@ -352,8 +352,10 @@ def md_rule14(colorer, s, i):
 def md_rule15(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="null", seq="\\][")
 
-def md_rule16(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="null", regexp="\\\\[\\Q*_\\`[](){}#+.!-\\E]")
+# Invalid regex.
+
+    def md_rule16(colorer, s, i):
+        return colorer.match_seq_regexp(s, i, kind="null", regexp="\\\\[\\Q*_\\`[](){}#+.!-\\E]")
 
 def md_rule17(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="``` ruby", end="```",
@@ -403,11 +405,13 @@ def md_rule26(colorer, s, i):
           at_whitespace_end=True,
           delegate="md::link_label_definition")
 
-def md_rule27(colorer, s, i):
-    # leadin: [
-    return colorer.match_span_regexp(s, i, kind="keyword4", begin="!?\\[[\\p{Alnum}\\p{Blank}]*", end="\\]",
-          delegate="md::link_inline_url_title",
-          no_line_break=True)
+# Invalid regex.
+
+    def md_rule27(colorer, s, i):
+        # leadin: [
+        return colorer.match_span_regexp(s, i, kind="keyword4", begin="!?\\[[\\p{Alnum}\\p{Blank}]*", end="\\]",
+              delegate="md::link_inline_url_title",
+              no_line_break=True)
 
 def md_rule28(colorer, s, i):
     # Leadins: [*_]
@@ -422,13 +426,17 @@ def md_rule29(colorer, s, i):
 # Rules dict for md_markdown ruleset.
 rulesDict4 = {
 # Existing leadins...
-    "!": [md_rule27],
+    # "!": [md_rule27],
     "#": [md_rule22],
     "*": [md_rule13, md_rule23, md_rule24, md_rule28, md_rule29],  # new: 23,24,28,29.
-    "\\": [md_rule15, md_rule16, md_rule26],
+    "\\": [
+        md_rule15,
+        # md_rule16,
+        md_rule26,
+    ],
     "_": [md_rule14, md_rule23, md_rule24, md_rule28, md_rule29],  # new: 23,24,28,29.
     "`": [md_rule17, md_rule18, md_rule19],  # new: 19
-    "[": [md_rule27],  # new: 27 old: 12,21,23,24,25.
+    # "[": [md_rule27],  # new: 27 old: 12,21,23,24,25.
 # Unused leadins...
     # "(": [md_rule28,md_rule29],
 # New leadins...
@@ -453,8 +461,10 @@ rulesDict4 = {
 #@+node:ekr.20241105215258.1: ** << md.py: md_link_label_definition: rules & dict >>
 # Rules for md_link_label_definition ruleset.
 
-def md_rule30(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="null", regexp="\\\\[\\Q*_\\`[](){}#+.!-\\E]")
+if 0:  # Invalid regex.
+
+    def md_rule30(colorer, s, i):
+        return colorer.match_seq_regexp(s, i, kind="null", regexp="\\\\[\\Q*_\\`[](){}#+.!-\\E]")
 
 def md_rule31(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq="\"")
@@ -470,7 +480,7 @@ rulesDict5 = {
     "\"": [md_rule31],
     "(": [md_rule32],
     ")": [md_rule33],
-    "\\": [md_rule30],
+    # "\\": [md_rule30],
 }
 #@-<< md.py: md_link_label_definition: rules & dict >>
 #@+<< md.py: md_link_inline_url_title: rules & dict >>
@@ -544,9 +554,11 @@ def md_rule43(colorer, s, i):
     # leadin: backslash.
     return colorer.match_plain_seq(s, i, kind="null", seq="\\][")
 
-def md_rule44(colorer, s, i):
-    # leadin: backslash.
-    return colorer.match_seq_regexp(s, i, kind="null", regexp="\\\\[\\Q*_\\`[](){}#+.!-\\E]")
+if 0:  # Invalid regex.
+
+    def md_rule44(colorer, s, i):
+        # leadin: backslash.
+        return colorer.match_seq_regexp(s, i, kind="null", regexp="\\\\[\\Q*_\\`[](){}#+.!-\\E]")
 
 def md_rule45(colorer, s, i):
     # leadin: `
@@ -581,11 +593,13 @@ def md_rule52(colorer, s, i):
     return colorer.match_eol_span_regexp(s, i, kind="label", regexp="\\[(.*?)\\]\\:",
           delegate="md::link_label_definition")
 
-def md_rule53(colorer, s, i):
-    # leadin: [
-    return colorer.match_span_regexp(s, i, kind="keyword4", begin="!?\\[[\\p{Alnum}\\p{Blank}]*", end="\\]",
-          delegate="md::link_inline_url_title",
-          no_line_break=True)
+if 0:  # invalid regex.
+
+    def md_rule53(colorer, s, i):
+        # leadin: [
+        return colorer.match_span_regexp(s, i, kind="keyword4", begin="!?\\[[\\p{Alnum}\\p{Blank}]*", end="\\]",
+              delegate="md::link_inline_url_title",
+              no_line_break=True)
 
 def md_rule54(colorer, s, i):
     # leadins: [*_]
@@ -606,13 +620,19 @@ rulesDict9 = {
     "(": [md_rule54, md_rule55],  # 45,46
     "*": [md_rule41, md_rule49, md_rule50, md_rule54, md_rule55],  # new: 49,50,54,55
     "<": [md_rule40],
-    "\\": [md_rule43, md_rule44],  # 52,53
+    "\\": [
+        md_rule43,
+        # md_rule44,
+    ],  # 52,53
     "_": [md_rule42, md_rule49, md_rule54, md_rule55],  # new: 49,54,55
 # new leadins:
     "+": [md_rule50],
     "-": [md_rule47, md_rule49, md_rule50],
     "=": [md_rule47],
-    "[": [md_rule52, md_rule53],
+    "[": [
+            md_rule52,
+            # md_rule53,
+        ],
     "`": [md_rule45],
     "0": [md_rule50],
     "1": [md_rule50],

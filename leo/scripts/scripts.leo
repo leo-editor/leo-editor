@@ -454,6 +454,15 @@
 <v t="ekr.20060824111500.181"><vh>getMode</vh></v>
 </v>
 </v>
+<v t="ekr.20241117081230.1"><vh>script: scan-modes</vh>
+<v t="ekr.20241117081901.1"><vh>scan</vh></v>
+<v t="ekr.20241117082739.1"><vh>scan_def</vh></v>
+<v t="ekr.20241117125039.1"><vh>add_matcher</vh></v>
+<v t="ekr.20241117145426.1"><vh>delete_cruft</vh></v>
+<v t="ekr.20241117131431.1"><vh>delete_strings</vh></v>
+<v t="ekr.20241117125038.1"><vh>filter_line</vh></v>
+<v t="ekr.20241117125039.2"><vh>show_line</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20060824111500.108">"""
@@ -5924,6 +5933,192 @@ else:
     g.es(f"Path {direc} doesn't exist")
 
 </t>
+<t tx="ekr.20241117081230.1">"""
+This script has been mostly obsoleted by TestSyntax.slow_test_all_mode_files.
+
+It summarizes the rules in mode files.
+"""
+
+g.cls()
+g.cls()
+
+import glob
+import os
+import re
+
+join = g.os_path_finalize_join
+finalize = g.os_path_finalize
+
+@others
+
+all = True
+
+languages = (
+    '/actionscript.py',
+    # '/javascript.py',
+    # '/md.py',
+    # '/python.py',
+    # '/html.py',
+    # '/xml.py',
+)
+mode_path = join(g.app.loadDir, '..', 'modes')
+paths = glob.glob(f"{mode_path}{os.sep}*.py")
+paths = [finalize(z) for z in paths if not z.startswith('__')]
+
+summary = set()
+for path in paths:
+    if all or path.endswith(languages):
+        scan(path, summary)
+# Print the cumulative results.
+lines = sorted(list(summary))
+for i, s in enumerate(lines):
+    print(f"{i:2} {s.rstrip()}")
+</t>
+<t tx="ekr.20241117081901.1">def scan(path: str, summary: set) -&gt; None:
+    matchers: dict[str, set[str]] = {}
+    fn = os.path.basename(path)
+    with open(path, 'r') as f:
+        contents = f.read()
+    if 0:
+        print('')
+        g.trace(f"contents: {len(contents):&gt;6} {fn} ")
+        print('')
+    lines = g.splitLines(contents)
+    for i, line in enumerate(lines):
+        if line.startswith('def '):
+            scan_def(i, fn, lines, matchers)
+            
+    if 0:  # Print per-file results.
+        for fn, result_set in matchers.items():
+            g.printObj(list(sorted(list(result_set))), tag=fn)
+    if 1:  # Add the result_set to the global summary.
+        for fn, result_set in matchers.items():
+            lines = list(sorted(list(result_set)))
+            # g.printObj(lines, tag=fn)
+            for line in lines:
+                line = delete_cruft(line)
+                if line:
+                    # print(line)
+                    summary.add(line)
+</t>
+<t tx="ekr.20241117082739.1"># matcher_pat = re.compile(r'return colorer\.(match_.*?)\s*\(')
+
+def scan_def(
+    i: int,
+    fn: str,
+    lines: list[str],
+    matchers: dict[str, set[str]],
+) -&gt; None:
+    """
+    Print the definition starting at lines[i].
+    
+    Add all calls to matchers to the matchers_dict
+    """
+    show_line(i, lines[i])
+    if 0:  # Brief
+        i += 1
+        add_matcher(fn, i, i+1, lines, matchers)
+    else:
+        i += 1
+        i1 = i
+        while i &lt; len(lines) and not lines[i].startswith('def '):
+            show_line(i, lines[i])
+            i += 1
+        add_matcher(fn, i1, i, lines, matchers)
+</t>
+<t tx="ekr.20241117125038.1">def filter_line(line: str) -&gt; bool:
+    """
+    Return True if s is neither empty, nor a comment nor a dictionary
+    entry.
+    """
+    s = line.strip()
+    # This is mostly a hack, but it gets the job done.
+    return s and not s.startswith((
+        '#', '"', "'", '}',
+        'importDict', 'rulesDict'
+    ))
+</t>
+<t tx="ekr.20241117125039.1">def add_matcher(fn: str, i: int, j: int,
+    lines: list[str],
+    matchers: dict[str, set[str]],
+) -&gt; None:
+    """Add matchers to the matchers dict"""
+    filtered_lines = [z for z in lines[i: j] if filter_line(z)]
+    result_lines = [
+        z.replace('\n', ' ').replace('  ', ' ').lstrip()
+            for z in filtered_lines
+    ]
+    result_lines = [delete_strings(z) for z in result_lines]
+    result_lines = [z.rstrip() for z in result_lines if z.strip()]
+    a_set = matchers.get(fn, set())
+    result = ''.join(result_lines)
+    a_set.add(result)
+    matchers [fn] = a_set
+
+</t>
+<t tx="ekr.20241117125039.2">trace = False
+
+def show_line(i: int, line: str) -&gt; None:
+    if trace and filter_line(line):
+        print(f"{i:4}: {line.rstrip()}")</t>
+<t tx="ekr.20241117131431.1">def delete_strings(s: str) -&gt; str:
+    """
+    Replace all string kwargs by ""
+    """
+    i, result = 0, s
+    has_r = '=r"' in s
+    trace = False and has_r
+    if trace:
+        g.trace('===== Entry', s)
+    while True:
+        progress = i
+        if trace:
+            g.trace('Loop:', i, len(result), result)
+            g.trace('Loop: TAIL:', result[i:])   ###
+        for target in ('="', '=r"'):
+            i2 = result.find(target, i)
+            if i2 &gt; -1:
+                i = i2
+                j = result.find('"', i2 + len(target))
+                break
+        else:
+            if trace:
+                g.trace('Fail i', i, target, 'result:', result)
+                print('')
+            return result
+        if j == -1:
+            if has_r:
+                g.trace('Fail j', i, target, 'result', result)
+                print('')
+            return result
+        if result[j + 1] == '"':
+            j += 1
+        if trace:
+            g.trace(f" FOUND: {i}:{j} target: {target:4} result: {result}")
+            g.trace('DELETE:', result[i + len(target):j])
+        result = result[:i + len(target)] + result[j:]
+        result = result.replace('r""', '""')
+        i += len(target) + 1
+        assert i &gt; progress
+    if trace:
+        g.trace('----- Return', result)
+        print('')
+    return result
+        </t>
+<t tx="ekr.20241117145426.1">def delete_cruft(s: str) -&gt; str:
+    """
+    Return an empty string for lines that don't look like a real match.
+    Otherwise, return cruft from the end.
+    """
+    if not s.startswith('return colorer.match_'):
+        return ''
+    if s.count('colorer.match') != 1:
+        return ''
+    if s.count('(') != 1 or s.count(')') != 1:
+        return ''
+    i = s.find('(')
+    j = s.find(')')
+    return '' if j &lt;= i else s[:j+1]</t>
 <t tx="lkj.20190712002811.1"></t>
 <t tx="maphew.20190209160547.1">gnx: maphew.20130809155103.2863
 </t>
