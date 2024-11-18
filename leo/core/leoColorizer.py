@@ -2562,7 +2562,7 @@ class JEditColorizer(BaseColorizer):
         2. Exactly one character, of any kind.
         """
         if not g.unitTesting:
-            assert s[i] == '\\'
+            assert s[i] == '\\'  # TestSyntax.slow_test_all_mode_files only tests signatures.
         if m := self.ascii_letters.match(s, i + 1):
             n = len(m.group(0))
             j = i + n + 1
