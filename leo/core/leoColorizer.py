@@ -2571,43 +2571,20 @@ class JEditColorizer(BaseColorizer):
             return n
         return 0
     #@+node:ekr.20110605121601.18626: *4* jedit.match_word_and_regexp
-    def match_word_and_regexp(
-        self,
-        s: str,
-        i: int,
-        kind1: str = '',
-        word: str = '',
-        kind2: str = '',
-        pattern: str = '',
-        at_line_start: bool = False,
-        at_whitespace_end: bool = False,
-        at_word_start: bool = False,
-        exclude_match: bool = False,
+    def match_word_and_regexp(self, s: str, i: int,
+        *, kind1: str = '', word: str = '', kind2: str = '', pattern: str = '',
     ) -> int:
         """Succeed if s[i:] matches pattern."""
-        if not self.allow_mark_prev:
-            return 0
-        if at_line_start and i != 0 and s[i - 1] != '\n':
-            return 0
-        if at_whitespace_end and i != g.skip_ws(s, 0):
-            return 0
-        if at_word_start and i > 0 and s[i - 1] in self.word_chars:
-            return 0
-        if (
-            at_word_start
-            and i + len(word) + 1 < len(s)
-            and s[i + len(word)] in self.word_chars
-        ):
-            j = i
+        # Only forth mode uses this matcher, so g.match is probably correct.
         if not g.match(s, i, word):
             return 0
         j = i + len(word)
         n = self.match_regexp_helper(s, j, pattern)
         if n == 0:
             return 0
-        self.colorRangeWithTag(s, i, j, kind1, exclude_match=exclude_match)
+        self.colorRangeWithTag(s, i, j, kind1)
         k = j + n
-        self.colorRangeWithTag(s, j, k, kind2, exclude_match=False)
+        self.colorRangeWithTag(s, j, k, kind2)
         self.trace_match(kind1, s, i, j)
         self.trace_match(kind2, s, j, k)
         return k - i
