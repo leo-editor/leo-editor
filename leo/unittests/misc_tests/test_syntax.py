@@ -73,7 +73,8 @@ class TestSyntax(LeoUnitTest):
                             rules.append(rule)
             rules = sorted(list(set(rules)), key=lambda z: z.__name__)
             # g.printObj([z.__name__ for z in rules], tag=f"Rules for {module_name}")
-            i, s = 0, 'def spam()'
+            i = 0
+            s = 'def spam()'
             for rule in rules:
                 rule(colorer, s, i)
         #@-others
@@ -83,8 +84,11 @@ class TestSyntax(LeoUnitTest):
         paths = [os.path.basename(z)[:-3] for z in paths]
         paths = [z for z in paths if not z.startswith('__')]
         for path in paths:
-            module = importlib.import_module(f"leo.modes.{path}")
-            test_one_mode_file(module)
+            try:
+                module = importlib.import_module(f"leo.modes.{path}")
+                test_one_mode_file(module)
+            except Exception:
+                raise AssertionError(f"{tag}:Test failed: {module.__name__}")
     #@-others
 #@-others
 #@-leo
