@@ -1900,22 +1900,17 @@ class JEditColorizer(BaseColorizer):
         regexp: str = '',
         at_line_start: bool = False,
         at_whitespace_end: bool = False,
-        at_word_start: bool = False,
         delegate: str = '',
-        exclude_match: bool = False,
     ) -> int:
         """Succeed if the regular expression regex matches s[i:]."""
         if at_line_start and i != 0 and s[i - 1] != '\n':
             return 0
         if at_whitespace_end and i != g.skip_ws(s, 0):
             return 0
-        if at_word_start and i > 0 and s[i - 1] in self.word_chars:
-            return 0  # 7/5/2008
         n = self.match_regexp_helper(s, i, regexp)
         if n > 0:
             j = len(s)
-            self.colorRangeWithTag(
-                s, i, j, kind, delegate=delegate, exclude_match=exclude_match)
+            self.colorRangeWithTag(s, i, j, kind, delegate=delegate)
             self.trace_match(kind, s, i, j)
             return j - i
         return 0
