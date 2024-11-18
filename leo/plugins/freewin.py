@@ -16,16 +16,19 @@ is node-locked - that is, it always shows a view of its original host node
 no matter how the user navigates within or between outlines.
 
 :By: T\. B\. Passin
-:Version: 2.4
-:Date: 14 Nov 2024
+:Version: 2.41
+:Date: 16 Nov 2024
 #@+node:tom.20240811231850.1: *3* New With This Version
 New With This Version
 ======================
-The "Rendered" view now uses the same text and background colors as the
-underlying host node's editor.
+Removed diagnostic startup message.
 
 Previous Recent Changes
 ========================
+
+The "Rendered" view now uses the same text and background colors as the
+underlying host node's editor.
+
 When text is changed in the host node, the cursor position in the FW editor will
 match the cursor position of the nost;
 
@@ -716,7 +719,6 @@ class ZEditorWin(QtWidgets.QMainWindow):
 
         css_fragment = self.get_color_css()
         self.rst_stylesheet += css_fragment
-        g.es(css_fragment)
         #@-<<set stylesheets>>
         #@+<<set up editor>>
         #@+node:tom.20210602172856.1: *4* <<set up editor>>
