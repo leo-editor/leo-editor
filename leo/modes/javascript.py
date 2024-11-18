@@ -224,12 +224,12 @@ def javascript_rule2(colorer, s, i):
 
 #@+node:ekr.20230419052250.4: *3* javascript_rule3
 def javascript_rule3(colorer, s, i):
-    return colorer.match_mark_previous(s, i, "function", pattern="(",
+    return colorer.match_mark_previous(s, i, kind="function", pattern="(",
         exclude_match=True)
 
 #@+node:ekr.20230419052250.5: *3* javascript_rule4
 def javascript_rule4(colorer, s, i):
-    return colorer.match_eol_span(s, i, "comment2", seq="//")
+    return colorer.match_eol_span(s, i, kind="comment2", seq="//")
 
 #@+node:ekr.20230419052250.6: *3* javascript_rule5
 def javascript_rule5(colorer, s, i):
@@ -329,7 +329,7 @@ def javascript_rule28(colorer, s, i):
 
 #@+node:ekr.20230419052250.30: *3* javascript_rule29
 def javascript_rule29(colorer, s, i):
-    return colorer.match_mark_previous(s, i, "label", pattern=":",
+    return colorer.match_mark_previous(s, i, kind="label", pattern=":",
         at_whitespace_end=True, exclude_match=True)
 
 #@+node:ekr.20230419052250.31: *3* javascript_rule30
