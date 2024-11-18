@@ -2210,11 +2210,11 @@ def update_rendering_pane(event):
 
     c = event.get('c')
     old_freeze = vr3.freeze
-    if vr3.freeze:
-        vr3.freeze = False
+    if old_freeze:
+        vr3.set_unfreeze()
     vr3.update(tag='view', keywords={'c': c, 'force': True})
     if old_freeze:
-        vr3.freeze = old_freeze
+        vr3.set_freeze()
 #@+node:TomP.20200923123015.1: *3* g.command('vr3-use-default-layout')
 @g.command('vr3-use-default-layout')
 def open_with_layout(event):
@@ -3160,8 +3160,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.scroll_position = position
 
     def unfreeze_and_enable_updates(self):
-        self.qwev.setUpdatesEnabled(True)
-        self.set_unfreeze()
+        # self.qwev.setUpdatesEnabled(True)
+        if not self.old_freeze:
+            self.set_unfreeze()
+        else:
+            self.set_freeze()
 
     def restore_scroll_position(self):
         self.qwev.page().runJavaScript(f"window.scrollTo(0, {self.scroll_position});")
@@ -3271,6 +3274,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
         """Return True if we must update the rendering pane."""
         _must_update = False
         c, p = self.c, self.c.p
+        body_editor = c.frame.body.widget  # LeoQTextBrowser
+        doc = body_editor.document()
 
         if not (g.unitTesting
                 or c != keywords.get('c')
@@ -3281,8 +3286,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 _must_update = True
             elif self.gnx != p.v.gnx:
                 _must_update = True
-            elif (len(p.b) != self.length
-                  or self.last_text != p.b
+            elif (doc.isModified()
+                  # or len(p.b) != self.length
+                  # or self.last_text != p.b
                   or self.last_headline != p.h
                   ):
                 if self.get_kind(p) in ('html', 'pyplot'):
@@ -3295,6 +3301,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             self.last_text = p.b
             self.gnx = p.v.gnx
             self.last_headline = p.v.h
+            doc.setModified(False)
 
         return _must_update
     #@+node:TomP.20191215195433.54: *4* vr3.update_asciidoc & helpers
@@ -4926,8 +4933,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
         try:
             url_base = QtCore.QUrl('file:///' + path + '/')
             self.capture_scroll_position()
+            self.old_freeze = self.freeze
             self.set_freeze()
-            self.qwev.setUpdatesEnabled(False)
+            # self.qwev.setUpdatesEnabled(False)
             # self.unfreeze_and_enable_updates() will be called after page load:
             w.setHtml(s, url_base)
         except Exception as e:
