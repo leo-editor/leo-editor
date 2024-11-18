@@ -4,7 +4,6 @@
 import importlib
 import glob
 import os
-import re
 from typing import Any
 
 from leo.core import leoGlobals as g
@@ -80,6 +79,7 @@ class TestSyntax(LeoUnitTest):
                 rule(colorer, s, i)
         #@-others
 
+        fails = []
         mode_path = g.os_path_finalize_join(g.app.loadDir, '..', 'modes')
         paths = glob.glob(f"{mode_path}{os.sep}*.py")
         paths = [os.path.basename(z)[:-3] for z in paths]
@@ -88,8 +88,14 @@ class TestSyntax(LeoUnitTest):
             try:
                 module = importlib.import_module(f"leo.modes.{path}")
                 test_one_mode_file(module)
-            except Exception:
-                raise AssertionError(f"{tag}:Test failed: {module.__name__}")
+            except Exception as e:
+                # raise AssertionError(f"{tag}:Test failed: {module.__name__}")
+                fails.append(f"{module.__name__:<20} {e!r}")
+        if fails:
+            fails_s = '\n'.join(fails)
+            message = f"\n{tag}:Test failed:...\n{fails_s}\n"
+            raise AssertionError(message)
+
     #@-others
 #@-others
 #@-leo

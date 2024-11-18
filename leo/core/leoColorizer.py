@@ -1900,22 +1900,17 @@ class JEditColorizer(BaseColorizer):
         regexp: str = '',
         at_line_start: bool = False,
         at_whitespace_end: bool = False,
-        at_word_start: bool = False,
         delegate: str = '',
-        exclude_match: bool = False,
     ) -> int:
         """Succeed if the regular expression regex matches s[i:]."""
         if at_line_start and i != 0 and s[i - 1] != '\n':
             return 0
         if at_whitespace_end and i != g.skip_ws(s, 0):
             return 0
-        if at_word_start and i > 0 and s[i - 1] in self.word_chars:
-            return 0  # 7/5/2008
         n = self.match_regexp_helper(s, i, regexp)
         if n > 0:
             j = len(s)
-            self.colorRangeWithTag(
-                s, i, j, kind, delegate=delegate, exclude_match=exclude_match)
+            self.colorRangeWithTag(s, i, j, kind, delegate=delegate)
             self.trace_match(kind, s, i, j)
             return j - i
         return 0
@@ -2093,15 +2088,10 @@ class JEditColorizer(BaseColorizer):
             return result
         return -len(word)  # An important new optimization.
     #@+node:ekr.20110605121601.18615: *4* jedit.match_line
-    def match_line(self, s: str, i: int,
-        *,
-        kind: str = None,
-        delegate: str = '',
-        exclude_match: bool = False,
-    ) -> int:
+    def match_line(self, s: str, i: int, *, kind: str = None) -> int:
         """Match the rest of the line."""
         j = g.skip_to_end_of_line(s, i)
-        self.colorRangeWithTag(s, i, j, kind, delegate=delegate)
+        self.colorRangeWithTag(s, i, j, kind)
         return j - i
     #@+node:ekr.20190606201152.1: *4* jedit.match_lua_literal
     def match_lua_literal(self, s: str, i: int, *, kind: str) -> int:
@@ -2490,10 +2480,7 @@ class JEditColorizer(BaseColorizer):
         at_whitespace_end: bool = False,
         at_word_start: bool = False,
         delegate: str = '',
-        exclude_match: bool = False,
-        no_escape: bool = False,
         no_line_break: bool = False,
-        no_word_break: bool = False,
     ) -> int:
         """
         Succeed if s[i:] matches 'begin' a regex string or compiled regex.
@@ -2509,7 +2496,7 @@ class JEditColorizer(BaseColorizer):
         if at_whitespace_end and i != g.skip_ws(s, 0):
             return 0
         if at_word_start and i > 0 and s[i - 1] in self.word_chars:
-            return 0  # 7/5/2008
+            return 0
         if (
             isinstance(begin, str)
             and at_word_start
@@ -2525,7 +2512,7 @@ class JEditColorizer(BaseColorizer):
                 j2 = s.find(end, j)
                 if j2 == -1:
                     return 0
-            if self.escape and not no_escape:
+            if self.escape:
                 # Only an odd number of escapes is a 'real' escape.
                 escapes = 0
                 k = 1
@@ -2538,15 +2525,11 @@ class JEditColorizer(BaseColorizer):
                     return 0
             i2 = j2 - len(end)
             if delegate:
-                self.colorRangeWithTag(
-                    s, i, j, kind, delegate=None, exclude_match=exclude_match)
-                self.colorRangeWithTag(
-                    s, j, i2, kind, delegate=delegate, exclude_match=False)
-                self.colorRangeWithTag(
-                    s, i2, j2, kind, delegate=None, exclude_match=exclude_match)
+                self.colorRangeWithTag(s, i, j, kind)
+                self.colorRangeWithTag(s, j, i2, kind, delegate=delegate)
+                self.colorRangeWithTag(s, i2, j2, kind)
             else:  # avoid having to merge ranges in addTagsToList.
-                self.colorRangeWithTag(
-                    s, i, j2, kind, delegate=None, exclude_match=exclude_match)
+                self.colorRangeWithTag(s, i, j2, kind)
             self.trace_match(kind, s, i, j2)
             return j2 - i
         return 0
@@ -2581,43 +2564,20 @@ class JEditColorizer(BaseColorizer):
             return n
         return 0
     #@+node:ekr.20110605121601.18626: *4* jedit.match_word_and_regexp
-    def match_word_and_regexp(
-        self,
-        s: str,
-        i: int,
-        kind1: str = '',
-        word: str = '',
-        kind2: str = '',
-        pattern: str = '',
-        at_line_start: bool = False,
-        at_whitespace_end: bool = False,
-        at_word_start: bool = False,
-        exclude_match: bool = False,
+    def match_word_and_regexp(self, s: str, i: int,
+        *, kind1: str = '', word: str = '', kind2: str = '', pattern: str = '',
     ) -> int:
         """Succeed if s[i:] matches pattern."""
-        if not self.allow_mark_prev:
-            return 0
-        if at_line_start and i != 0 and s[i - 1] != '\n':
-            return 0
-        if at_whitespace_end and i != g.skip_ws(s, 0):
-            return 0
-        if at_word_start and i > 0 and s[i - 1] in self.word_chars:
-            return 0
-        if (
-            at_word_start
-            and i + len(word) + 1 < len(s)
-            and s[i + len(word)] in self.word_chars
-        ):
-            j = i
+        # Only forth mode uses this matcher, so g.match is probably correct.
         if not g.match(s, i, word):
             return 0
         j = i + len(word)
         n = self.match_regexp_helper(s, j, pattern)
         if n == 0:
             return 0
-        self.colorRangeWithTag(s, i, j, kind1, exclude_match=exclude_match)
+        self.colorRangeWithTag(s, i, j, kind1)
         k = j + n
-        self.colorRangeWithTag(s, j, k, kind2, exclude_match=False)
+        self.colorRangeWithTag(s, j, k, kind2)
         self.trace_match(kind1, s, i, j)
         self.trace_match(kind2, s, j, k)
         return k - i
