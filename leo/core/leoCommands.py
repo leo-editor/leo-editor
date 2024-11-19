@@ -1212,6 +1212,25 @@ class Commands:
         runPyflakes=True        True: run pyflakes if allowed by setting.
         """
         c = self
+        p = p or c.p
+        if not script:  # #4197.
+            w = c.frame.body.wrapper
+            has_selection = w and p == c.p and w.getSelectedText().strip()
+            language = g.findLanguageDirectives(c, p)
+            valid = (
+                not c.forceExecuteEntireBody
+                and useSelectedText
+                and has_selection
+                and language in ('jupytext', 'md', 'pandoc', 'python', 'rest')
+            )
+            if not valid:
+                message = (
+                    f"Can't execute {language}"
+                    if has_selection else
+                    f"Can't execute {language}: no selected text"
+                )
+                g.es_print(message, color='blue')
+                return
         if runPyflakes:
             run_pyflakes = c.config.getBool('run-pyflakes-on-write', default=False)
         else:
@@ -1219,7 +1238,7 @@ class Commands:
         if not script:
             if c.forceExecuteEntireBody:
                 useSelectedText = False
-            script = g.getScript(c, p or c.p, useSelectedText=useSelectedText)
+            script = g.getScript(c, p, useSelectedText=useSelectedText)
         script_p = p or c.p  # Only for error reporting below.
         # #532: check all scripts with pyflakes.
         if run_pyflakes and not g.unitTesting:
