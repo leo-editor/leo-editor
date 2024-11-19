@@ -1183,8 +1183,8 @@ class Commands:
             del sys.path[:2]
     #@+node:ekr.20171123135625.4: *3* @cmd execute-script & public helpers
     @cmd('execute-script')
-    def executeScript(
-        self,
+    def executeScript(self,
+        *,
         event: LeoKeyEvent = None,
         args: Any = None,
         p: Position = None,
