@@ -1220,7 +1220,7 @@ class Commands:
             valid = (
                 # There must be a selection,
                 w and w.getSelectedText().strip()
-                # And the selection must apply to p,
+                # and the selection must apply to p,
                 and p == c.p
                 # and the 'useSelectedText` kwarg must be True,
                 and useSelectedText
