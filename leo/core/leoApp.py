@@ -282,14 +282,13 @@ class LeoApp:
     def define_delegate_language_dict(self) -> None:
         self.delegate_language_dict: dict[str, str] = {
             # Keys are new language names.
-            # Values are existing languages in leo/modes.
             "codon": "python",
-            "less": "css",
-            "hbs": "html",
+            "glsl": "c",
             "handlebars": "html",
-            # "rust": "c",
+            "hbs": "html",
+            "less": "css",
             "toml": "ini",
-            # "vue": "c",
+            # Values are existing languages in leo/modes.
         }
     #@+node:ekr.20120522160137.9911: *5* app.define_extension_dict
     #@@nobeautify
@@ -315,17 +314,18 @@ class LeoApp:
             "bib":      "bibtex",
             "c":        "c",
             "c++":      "cplusplus",
-            "cc":       "cplusplus",
             "cbl":      "cobol", # Only one extension is valid: .cob
+            "cc":       "cplusplus",
             "cfg":      "config",
             "cfm":      "coldfusion",
+            "ch":       "chill", # Other extensions, .c186,.c286
             "clj":      "clojure", # 2013/09/25: Fix bug 879338.
-            "cljs":     "clojure",
             "cljc":     "clojure",
+            "cljs":     "clojure",
             "cmd":      "batch",
             "codon":    "codon",
-            "ch":       "chill", # Other extensions, .c186,.c286
             "coffee":   "coffeescript",
+            "comp":     "glsl",
             "conf":     "apacheconf",
             "cpp":      "cplusplus", # 2020/08/12: was cpp.
             "css":      "css",
@@ -340,7 +340,10 @@ class LeoApp:
             "f90":      "fortran90",
             "factor":   "factor",
             "forth":    "forth",
+            "frag":     "glsl",
             "g":        "antlr",
+            "geom":     "glsl",
+            "glsl":     "glsl",
             "go":       "go",
             "groovy":   "groovy",
             "h":        "c", # 2012/05/23.
@@ -431,6 +434,8 @@ class LeoApp:
             "sty":      "latex",
             "tcl":      "tcl", # modes/tcl.py exists.
             # "tcl":    "tcltk",
+            "tesc":     "glsl",
+            "tese":     "glsl",
             "tex":      "latex",
             # "tex":      "tex",
             "toml":     "toml",
@@ -452,6 +457,7 @@ class LeoApp:
             "xom":      "omnimark",
             "xsl":      "xsl",
             "yaml":     "yaml",
+            "vert":     "glsl",
             "vue":      "javascript",
             "zpt":      "zpt",
         }
@@ -546,6 +552,7 @@ class LeoApp:
             "fortran90"          : "!",
             "foxpro"             : "&&",
             "gettext"            : "# ",
+            "glsl"               : "// /* */",  # Same as C.
             "go"                 : "//",
             "groovy"             : "// /* */",
             "handlebars"         : "<!-- -->", # McNab: delegate to html.
@@ -737,6 +744,7 @@ class LeoApp:
             "fortran90"     : "f90",
             "foxpro"        : "prg",
             "gettext"       : "po",
+            "glsl"          : "glsl",  # .comp, .frag, .geom, .tesc, .tese, .vert.
             "go"            : "go",
             "groovy"        : "groovy",
             "haskell"       : "hs",
