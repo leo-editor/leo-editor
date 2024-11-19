@@ -1742,7 +1742,7 @@ def getVr3(event):
 #@+node:TomP.20191215195433.18: *3* g.command('vr3')
 @g.command('vr3')
 def viewrendered(event):
-    """Create VR3 in this commander in not already created.
+    """Create VR3 in this commander if not already created.
     
     The VR3 instance will be created as a child of the widget cache splitter
     of the Dynamic Window that represents the Entire window of this outline.
@@ -2111,7 +2111,7 @@ def show_rendering_pane(event):
             if isinstance(target, QtWidgets.QSplitter):
                 g.app.gui.equalize_splitter(target)
 
-        QtCore.QTimer.singleShot(70, delay_equalize)
+        QtCore.QTimer.singleShot(100, delay_equalize)
 
     vr3.show()
     vr3.set_unfreeze()
