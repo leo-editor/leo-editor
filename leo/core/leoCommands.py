@@ -1183,8 +1183,8 @@ class Commands:
             del sys.path[:2]
     #@+node:ekr.20171123135625.4: *3* @cmd execute-script & public helpers
     @cmd('execute-script')
-    def executeScript(
-        self,
+    def executeScript(self,
+        *,
         event: LeoKeyEvent = None,
         args: Any = None,
         p: Position = None,
@@ -1212,6 +1212,25 @@ class Commands:
         runPyflakes=True        True: run pyflakes if allowed by setting.
         """
         c = self
+        p = p or c.p
+        language = g.findLanguageDirectives(c, p)
+        if not script and language != 'python':  # #4197.
+            w = c.frame.body.wrapper
+            # For non-python languages...
+            valid = (
+                # There must be a selection,
+                w and w.getSelectedText().strip()
+                # and the selection must apply to p,
+                and p == c.p
+                # and the 'useSelectedText` kwarg must be True,
+                and useSelectedText
+                # and script *won't* be expanded to the entire body.
+                and not c.forceExecuteEntireBody
+            )
+            if not valid:
+                message = f"Must select text to execute {language} script"
+                g.es_print(message, color='blue')
+                return
         if runPyflakes:
             run_pyflakes = c.config.getBool('run-pyflakes-on-write', default=False)
         else:
@@ -1219,7 +1238,7 @@ class Commands:
         if not script:
             if c.forceExecuteEntireBody:
                 useSelectedText = False
-            script = g.getScript(c, p or c.p, useSelectedText=useSelectedText)
+            script = g.getScript(c, p, useSelectedText=useSelectedText)
         script_p = p or c.p  # Only for error reporting below.
         # #532: check all scripts with pyflakes.
         if run_pyflakes and not g.unitTesting:
