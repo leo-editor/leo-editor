@@ -1213,22 +1213,21 @@ class Commands:
         """
         c = self
         p = p or c.p
-        if not script:  # #4197.
+        language = g.findLanguageDirectives(c, p)
+        if not script and language != 'python':  # #4197.
             w = c.frame.body.wrapper
             has_selection = w and p == c.p and w.getSelectedText().strip()
-            language = g.findLanguageDirectives(c, p)
+            # For non-python languages...
             valid = (
-                not c.forceExecuteEntireBody
+                # There must be a selection,
+                has_selection
+                # and the 'useSelectedText` kwarg must be True,
                 and useSelectedText
-                and has_selection
-                and language in ('jupytext', 'md', 'pandoc', 'python', 'rest')
+                # and script *won't* be expanded to the entire body.
+                and not c.forceExecuteEntireBody
             )
             if not valid:
-                message = (
-                    f"Can't execute {language}"
-                    if has_selection else
-                    f"Can't execute {language}: no selected text"
-                )
+                message = f"Must select text to execute {language} script"
                 g.es_print(message, color='blue')
                 return
         if runPyflakes:
