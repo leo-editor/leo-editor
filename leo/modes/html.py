@@ -10,10 +10,6 @@ from typing import Any
 from leo.core import leoGlobals as g
 assert g
 #@-<< html.py: imports >>
-
-# This file calls colorizer.end_delegated_mode().
-supports_delegated_modes = True
-
 #@+<< html.py: rules >>
 #@+node:ekr.20241120012017.1: ** << html.py: rules >>
 #@+others
@@ -72,7 +68,7 @@ def html_rule7(colorer, s, i):
 
 def html_rule8(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq="=")
-#@+node:ekr.20230419050529.1: *3* html_javascript ruleset (to be removed)
+#@+node:ekr.20230419050529.1: *3* html_javascript ruleset (to be removed?)
 # Rules for html_javascript ruleset.
 
 def html_rule9(colorer, s, i):
@@ -82,14 +78,14 @@ def html_rule9(colorer, s, i):
 def html_rule10(colorer, s, i):
     return colorer.match_seq(s, i, kind="markup", seq="SRC=",
         delegate="html::back_to_html")
-#@+node:ekr.20230419050552.1: *3* back_to_html ruleset (to be removed)
+#@+node:ekr.20230419050552.1: *3* back_to_html ruleset (to be removed?)
 # Rules for html_back_to_html ruleset.
 
 def html_rule11(colorer, s, i):
     return colorer.match_seq(s, i, kind="markup", seq=">",
         delegate="html::main")
 
-#@+node:ekr.20230419051037.1: *3* html_css ruleset (to be removed)
+#@+node:ekr.20230419051037.1: *3* html_css ruleset (to be removed?)
 # Rules for html_css ruleset.
 
 def html_rule12(colorer, s, i):

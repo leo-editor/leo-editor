@@ -10,10 +10,6 @@ from typing import Any
 from leo.core import leoGlobals as g
 assert g
 #@-<< css.py: imports >>
-
-# This file calls colorizer.end_delegated_mode().
-supports_delegated_modes = True
-
 #@+<< css.py rules >>
 #@+node:ekr.20241120010414.1: ** << css.py rules >>
 #@+others
@@ -67,13 +63,6 @@ def css_rule9(colorer, s, i):
 
 def css_rule10(colorer, s, i):
     return colorer.match_keywords(s, i)
-#@+node:ekr.20241120011035.1: *3* ccc.py: css_end_css
-# New rule for css_main ruleset.
-def css_end_css(colorer: Any, s: str, i: int) -> int:
-    if not g.unitTesting:
-        g.trace(i, s)
-    colorer.end_delegated_mode()
-    return 0
 #@-others
 #@-<< css.py rules >>
 #@+<< css.py dictionaries >>

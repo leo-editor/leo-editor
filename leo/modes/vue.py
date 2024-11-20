@@ -10,10 +10,6 @@ from typing import Any
 from leo.core import leoGlobals as g
 assert g
 #@-<< vue.py: imports >>
-
-# This file does *not* call colorizer.end_delegated_mode().
-supports_delegated_modes = False
-
 #@+<< vue.py: rules >>
 #@+node:ekr.20241120011456.1: ** << vue.py: rules >>
 #@+others

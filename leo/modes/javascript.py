@@ -10,10 +10,6 @@ from __future__ import annotations
 from leo.core import leoGlobals as g
 assert g
 #@-<< javascript.py: imports >>
-
-# This file does *not* call colorizer.end_delegated_mode().
-supports_delegated_modes = False
-
 #@+<< javascript.py: rules >>
 #@+node:ekr.20241120014525.1: ** << javascript.py: rules >>
 #@+others
