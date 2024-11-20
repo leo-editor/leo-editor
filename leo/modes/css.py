@@ -1,10 +1,15 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20241119064750.1: * @file ../modes/css.py
-"""Leo colorizer control file for css mode"""
-
+"""
+leo/modes/css.py: Leo's mode file for @language css.
+"""
+#@+<< css.py: imports >>
+#@+node:ekr.20241120011923.1: ** << css.py: imports >>
+from __future__ import annotations
 from typing import Any
 from leo.core import leoGlobals as g
 assert g
+#@-<< css.py: imports >>
 
 # This file calls colorizer.end_delegated_mode().
 supports_delegated_modes = True
@@ -692,4 +697,5 @@ keywordsDictDict = {
 #@-<< css.py dictionaries >>
 
 #@@language python
+#@@tabwidth -4
 #@-leo
