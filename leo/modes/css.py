@@ -1,8 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20241119064750.1: * @file ../modes/css.py
-#@@language python
-# Leo colorizer control file for css mode.
-# This file is in the public domain.
+"""Leo colorizer control file for css mode"""
 
 from typing import Any
 from leo.core import leoGlobals as g
@@ -692,4 +690,6 @@ keywordsDictDict = {
     "css_main": css_main_keywords_dict,
 }
 #@-<< css.py dictionaries >>
+
+#@@language python
 #@-leo
