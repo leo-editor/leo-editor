@@ -587,7 +587,7 @@ rulesDict1 = {
     ",": [css_rule5,],
     "-": [css_rule10,],
     ".": [css_rule8A,],  # Fix #585. Was css_rule6
-    ">": [css_rule8B, css_end_css],  # Fix #585.
+    ">": [css_rule8B],  # Fix #585.
     "+": [css_rule8C,],  # Fix #585.
     "~": [css_rule8D,],  # Fix #585.
     "/": [css_rule9,],
