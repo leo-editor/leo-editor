@@ -5,6 +5,9 @@
 
 from typing import Any
 
+# This file calls colorizer.end_delegated_mode().
+supports_nested_modes = True
+
 # Properties for html mode.
 properties = {
     "commentEnd": "-->",

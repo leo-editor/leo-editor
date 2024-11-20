@@ -1,5 +1,18 @@
+#@+leo-ver=5-thin
+#@+node:ekr.20241119064750.1: * @file ../modes/css.py
+#@@language python
 # Leo colorizer control file for css mode.
 # This file is in the public domain.
+
+from typing import Any
+from leo.core import leoGlobals as g
+assert g
+
+# This file calls colorizer.end_delegated_mode().
+supports_nested_modes = True
+
+#@+<< css.py: properties >>
+#@+node:ekr.20241119185615.1: ** << css.py: properties >>
 
 # Properties for css mode.
 properties = {
@@ -10,6 +23,9 @@ properties = {
     "lineUpClosingBracket": "true",
     "noWordSep": "_",
 }
+#@-<< css.py: properties >>
+#@+<< css.py: attributes dicts >>
+#@+node:ekr.20241119185711.1: ** << css.py: attributes dicts >>
 
 # Attributes dict for css_main ruleset.
 css_main_attributes_dict = {
@@ -36,6 +52,9 @@ attributesDictDict = {
     "css_literal": css_literal_attributes_dict,
     "css_main": css_main_attributes_dict,
 }
+#@-<< css.py: attributes dicts >>
+#@+<< css.py: keywords dict for css_main ruleset >>
+#@+node:ekr.20241119185813.1: ** << css.py: keywords dict for css_main ruleset >>
 
 # Keywords dict for css_main ruleset.
 css_main_keywords_dict = {
@@ -510,16 +529,9 @@ css_main_keywords_dict = {
     "yellowgreen": "keyword3",
     "z-index": "keyword2",
 }
-
-# Keywords dict for css_literal ruleset.
-css_literal_keywords_dict = {}
-
-# Dictionary of keywords dictionaries for css mode.
-keywordsDictDict = {
-    "css_literal": css_literal_keywords_dict,
-    "css_main": css_main_keywords_dict,
-}
-
+#@-<< css.py: keywords dict for css_main ruleset >>
+#@+<< css.py: rules for css_main ruleset >>
+#@+node:ekr.20241119185920.1: ** << css.py: rules for css_main ruleset >>
 # Rules for css_main ruleset.
 
 def css_rule0(colorer, s, i):
@@ -564,13 +576,22 @@ def css_rule8C(colorer, s, i):
 def css_rule8D(colorer, s, i):
     return colorer.match_mark_following(s, i, kind="literal2", pattern="~")
 
-
 def css_rule9(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/")
 
 def css_rule10(colorer, s, i):
     return colorer.match_keywords(s, i)
+#@-<< css.py: rules for css_main ruleset >>
 
+# New rule for css_main ruleset.
+def css_end_css(colorer: Any, s: str, i: int) -> int:
+    if not g.unitTesting:
+        g.trace(i, s)
+    colorer.end_delegated_mode()
+    return 0
+
+#@+<< css.py: rules dict for css_main ruleset >>
+#@+node:ekr.20241119190054.1: ** << css.py: rules dict for css_main ruleset >>
 # Rules dict for css_main ruleset.
 rulesDict1 = {
     "!": [css_rule7,],
@@ -579,7 +600,7 @@ rulesDict1 = {
     ",": [css_rule5,],
     "-": [css_rule10,],
     ".": [css_rule8A,],  # Fix #585. Was css_rule6
-    ">": [css_rule8B,],  # Fix #585.
+    ">": [css_rule8B, css_end_css],  # Fix #585.
     "+": [css_rule8C,],  # Fix #585.
     "~": [css_rule8D,],  # Fix #585.
     "/": [css_rule9,],
@@ -651,11 +672,18 @@ rulesDict1 = {
     "{": [css_rule3,],
     "}": [css_rule4,],
 }
-
+#@-<< css.py: rules dict for css_main ruleset >>
+#@+<< css.py: css_literal ruleset (empty) >>
+#@+node:ekr.20241119190259.1: ** << css.py: css_literal ruleset (empty) >>
 # Rules for css_literal ruleset.
 
 # Rules dict for css_literal ruleset.
 rulesDict2 = {}
+
+# Keywords dict for css_literal ruleset.
+css_literal_keywords_dict = {}
+#@-<< css.py: css_literal ruleset (empty) >>
+
 
 # x.rulesDictDict for css mode.
 rulesDictDict = {
@@ -665,3 +693,10 @@ rulesDictDict = {
 
 # Import dict for css mode.
 importDict = {}
+
+# Dictionary of keywords dictionaries for css mode.
+keywordsDictDict = {
+    "css_literal": css_literal_keywords_dict,
+    "css_main": css_main_keywords_dict,
+}
+#@-leo

@@ -1508,6 +1508,14 @@ class JEditColorizer(BaseColorizer):
                         i += n
                         continue
                 i += 1
+    #@+node:ekr.20241119191526.1: *4* jedit.begin/end_deletegated_mode
+    def begin_delegated_mode(self) -> None:
+        if not g.unitTesting:
+            g.trace(g.callers(2))
+
+    def end_delegated_mode(self) -> None:
+        if not g.unitTesting:
+            g.trace(g.callers(2))
     #@+node:ekr.20110605121601.18591: *4* jedit.dump
     def dump(self, s: str) -> str:
         if s.find('\n') == -1:
