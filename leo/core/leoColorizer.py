@@ -1508,7 +1508,7 @@ class JEditColorizer(BaseColorizer):
                         i += n
                         continue
                 i += 1
-    #@+node:ekr.20241119191526.1: *4* jedit.begin/end_deletegated_mode
+    #@+node:ekr.20241119191526.1: *4* jedit.begin/end_delegated_mode
     def begin_delegated_mode(self) -> None:
         if not g.unitTesting:
             g.trace(g.callers(2))
