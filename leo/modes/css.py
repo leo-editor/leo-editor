@@ -9,7 +9,7 @@ from leo.core import leoGlobals as g
 assert g
 
 # This file calls colorizer.end_delegated_mode().
-supports_nested_modes = True
+supports_delegated_modes = True
 
 #@+<< css.py: properties >>
 #@+node:ekr.20241119185615.1: ** << css.py: properties >>
