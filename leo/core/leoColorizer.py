@@ -2631,11 +2631,13 @@ class JEditColorizer(BaseColorizer):
         return k - i
     #@+node:ekr.20241121030605.1: *4* jedit.pop_delegate
     def pop_delegate(self) -> None:
-        """Pop the delegate stack."""
+        """Pop the delegate stack restart the previous delegate."""
         if not self.delegate_stack:
-            g.trace(f"Oops: empty delegate stack {g.callers()}")
+            g.trace(f"Oops: empty delegate stack {self.language} {g.callers()}")
             return
-        self.delegate_stack.pop()
+
+        old_delegate = self.delegate_stack.pop()
+        self.push_delegate(old_delegate)
     #@+node:ekr.20241121024111.1: *4* jedit.push_delegate
     delegate_stack: list[str] = []
 
@@ -2643,9 +2645,17 @@ class JEditColorizer(BaseColorizer):
         """
         Push the old language on the delegate stack and switch to the new language.
         """
+        # An excellent trace. Do not delete.
+        # g.trace(f"{new_language:12} {g.callers(1)}")
+
         if self.language == new_language:
-            g.trace(f"Oops: same language: {self.language}")
+            # This is not an error.
             return
+
+        if not new_language:
+            g.trace(f"Oops: no new language: {self.language} {g.callers()}")
+            return
+
         self.delegate_stack.append(self.language)
 
         # Switch to the new language.

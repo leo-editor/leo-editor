@@ -62,10 +62,10 @@ def html_rule_end_vue(colorer, s, i):
     if s.startswith("</template>"):
         # Colorize the element as an html element.
         colorer.match_seq(s, i, kind="markup", seq="</template>")
-        # Simulate `@language vue`
+        # Restart the previous delegate.
         colorer.pop_delegate()
-        colorer.push_delegate('vue')
         return len(s)  # Success.
+
     return 0  # Fail, but allow other matches.
 #@-others
 

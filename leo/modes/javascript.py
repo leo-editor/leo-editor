@@ -156,10 +156,10 @@ def javascript_rule_end_vue(colorer, s, i):
     if s.startswith("</script>"):
         # Colorize the element as an html element.
         colorer.match_seq(s, i, kind="markup", seq="</script>", delegate="html")
-        # Simulate `@language vue`
+        # Restart the previous delegate.
         colorer.pop_delegate()
-        colorer.push_delegate('vue')
         return len(s)  # Success.
+
     return 0  # Fail, but allow other matches.
 #@-others
 #@-<< javascript.py: rules >>

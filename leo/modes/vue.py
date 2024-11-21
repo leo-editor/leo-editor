@@ -34,7 +34,6 @@ def vue_element(colorer: Any, s: str, i: int) -> int:
     for block, language in blocks:
         if s.startswith(block):
             # Colorize the element as an html element.
-            # g.trace(f"new language: {language}")
             colorer.match_seq(s, i, kind="markup", seq=block, delegate="html")
 
             # Simulate `@language language`.

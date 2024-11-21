@@ -69,10 +69,10 @@ def css_rule_end_vue(colorer: Any, s: str, i: int) -> int:
     if s.startswith("</style"):
         # Colorize the element as an html element..
         colorer.match_seq(s, i, kind="markup", seq="</style>", delegate="html")
-        # Simulate `@language vue`
+        # Restart the previous delegate.
         colorer.pop_delegate()
-        colorer.push_delegate('vue')
         return len(s)  # Success.
+
     return 0  # Fail, but allow other matches.
 #@-others
 #@-<< css.py rules >>
