@@ -57,16 +57,16 @@ def html_rule_handlebar(colorer, s, i):
     return colorer.match_span(s, i, kind="literal3", begin="{{", end="}}")
 #@+node:ekr.20241120172252.1: *4* html_rule_end_template </template>
 def html_rule_end_template(colorer, s, i):
-    if i != 0:
-        return 0  # Fail, but allow other matches.
-    if s.startswith("</template>"):
-        # Colorize the element as an html element.
-        colorer.match_seq(s, i, kind="markup", seq="</template>")
-        # Restart the previous delegate.
-        colorer.pop_delegate()
-        return len(s)  # Success.
 
-    return 0  # Fail, but allow other matches.
+    if i != 0 or not s.startswith("</template>"):
+        return 0  # Fail, but allow other matches.
+
+    # Colorize the element as an html element.
+    colorer.match_seq(s, i, kind="markup", seq="</template>")
+
+    # Restart any previous delegate.
+    colorer.pop_delegate()
+    return len(s)  # Success.
 #@-others
 
 #@+node:ekr.20230419050351.1: *3* html_tags ruleset

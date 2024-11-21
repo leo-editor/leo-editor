@@ -64,16 +64,18 @@ def css_rule10(colorer, s, i):
     return colorer.match_keywords(s, i)
 #@+node:ekr.20241120174643.1: *4* css_rule_end_style </style>
 def css_rule_end_style(colorer: Any, s: str, i: int) -> int:
-    if i != 0:
-        return 0  # Fail, but allow other matches.
-    if s.startswith("</style"):
-        # Colorize the element as an html element..
-        colorer.match_seq(s, i, kind="markup", seq="</style>", delegate="html")
-        # Restart the previous delegate.
-        colorer.pop_delegate()
-        return len(s)  # Success.
 
-    return 0  # Fail, but allow other matches.
+    if i != 0 or not s.startswith("</style"):
+        return 0  # Fail, but allow other matches.
+
+    # Colorize the element as an html element..
+    colorer.match_seq(s, i, kind="markup", seq="</style>", delegate="html")
+
+    # Restart any previous delegate.
+    colorer.pop_delegate()
+    return len(s)  # Success.
+
+
 #@-others
 #@-<< css.py rules >>
 #@+<< css.py dictionaries >>

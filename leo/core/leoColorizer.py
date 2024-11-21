@@ -1294,8 +1294,8 @@ class JEditColorizer(BaseColorizer):
             functions = self.rulesDict.get(s[i], [])
             for f in functions:
                 n = f(self, s, i)
-                # if trace and n != 0:
-                    # g.trace(f"i: {i} {f.__name__} => {n:2} {s!r}")
+                if False and not g.unitTesting:
+                    g.trace(f"i: {i} {f.__name__} => {n:2} {s!r}")
                 if n is None:
                     g.trace('Can not happen: n is None', repr(f))
                     break
@@ -1322,7 +1322,7 @@ class JEditColorizer(BaseColorizer):
         understand *every word* of the Theory of Operation:  
         https://github.com/leo-editor/leo-editor/issues/4158
         """
-        trace = 'coloring' in g.app.debug and not g.unitTesting
+        trace = (False or 'coloring' in g.app.debug) and not g.unitTesting
         c = self.c
         p = self.c.p if c else None
         if not p:
@@ -1337,9 +1337,9 @@ class JEditColorizer(BaseColorizer):
         prev_state = self.prevState()
         if prev_state == -1:
             self.updateSyntaxColorer(p)
+            self.delegate_stack = []
             self.init_all_state()  # The only call to this method.
             self.init()
-            self.delegate_stack = []
             state = self.initBlock0()
         else:
             state = prev_state  # Continue the previous state by default.
@@ -1585,15 +1585,19 @@ class JEditColorizer(BaseColorizer):
         k = g.skip_c_id(s, j)
         name = s[j:k]
         ok = self.init_mode(name)
-        # g.trace(f"old: {old_name} new: {self.language} {s}")
+        if False and not g.unitTesting:
+            language_s = '???' if self.language == 'unknown-language' else self.language
+            stack_s = f"delegate_stack: {self.delegate_stack!r}"
+            g.trace(f"{language_s} ==> {self.language} {s} {stack_s} {g.callers(2)}")
         if ok:
             self.language = name
             self.colorRangeWithTag(s, i, k, 'leokeyword')
             if name != old_name:
+                # Init the stack.
+                self.delegate_stack.append(self.language)
                 # Solves the recoloring problem!
                 n = self.setInitialStateNumber()
                 self.setState(n)
-                self.delegate_stack = []
         return k - i
 
     #@+node:ekr.20110605121601.18595: *5* jedit.match_at_nocolor & restarter
@@ -2634,21 +2638,34 @@ class JEditColorizer(BaseColorizer):
         return k - i
     #@+node:ekr.20241121030605.1: *4* jedit.pop_delegate
     def pop_delegate(self) -> None:
-        """Pop the delegate stack restart the previous delegate."""
+        """Pop the delegate stack amd restart the previous delegate."""
+        if False and not g.unitTesting:
+            g.trace(repr(self.delegate_stack))
+
         if not self.delegate_stack:
-            g.trace(f"Oops: empty delegate stack {self.language} {g.callers()}")
+            # This is not an error.
+            # g.trace(f"Oops: empty delegate stack {self.language} {g.callers()}")
             return
 
-        old_delegate = self.delegate_stack.pop()
-        self.push_delegate(old_delegate)
+        old_language = self.delegate_stack.pop()
+        if old_language == self.language:
+            # This is not an error.
+            self.delegate_stack.append(old_language)
+            return
+
+        # Switch to the previous language.
+        self.init_mode(old_language)
+        state_i = self.setInitialStateNumber()
+        self.setState(state_i)
     #@+node:ekr.20241121024111.1: *4* jedit.push_delegate
     def push_delegate(self, new_language: str) -> None:
         """
         Push the old language on the delegate stack and switch to the new language.
         """
-        if 1:  # An excellent trace. Do not delete.
+        if False and not g.unitTesting:
             language_s = '???' if self.language == 'unknown-language' else self.language
             g.trace(f"{language_s:5} ==> {new_language:10} {g.callers(2)}")
+            g.trace(repr(self.delegate_stack))
             # g.printObj(self.delegate_stack)
 
         if not new_language:

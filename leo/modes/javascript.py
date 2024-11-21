@@ -151,15 +151,21 @@ def javascript_rule31(colorer, s, i):
 
 #@+node:ekr.20241120174105.1: *4* javascript_rule_end_script </script>
 def javascript_rule_end_script(colorer, s, i):
-    if i != 0:
-        return 0  # Fail, but allow other matches.
-    if s.startswith("</script>"):
-        # Colorize the element as an html element.
-        colorer.match_seq(s, i, kind="markup", seq="</script>", delegate="html")
-        # Restart the previous delegate.
-        colorer.pop_delegate()
-        return len(s)  # Success.
 
+    if i != 0 or not s.startswith("</script>"):
+        return 0  # Fail, but allow other matches.
+
+    # Colorize the element as an html element.
+    colorer.match_seq(s, i, kind="markup", seq="</script>", delegate="html")
+
+    # Restart any previous delegate.
+    colorer.pop_delegate()
+    return len(s)  # Success.
+#@+node:ekr.20241121063243.1: *4* javascript_rule_at_language @language
+def javascript_rule_at_language(colorer, s, i):
+
+    if i == 0 and s.startswith("@language "):
+        return colorer.match_at_language(s, i)
     return 0  # Fail, but allow other matches.
 #@-others
 #@-<< javascript.py: rules >>
@@ -388,7 +394,10 @@ rulesDict1 = {
     "=": [javascript_rule6],
     ">": [javascript_rule8, javascript_rule14],
     "?": [javascript_rule28],
-    "@": [javascript_rule31],
+    "@": [
+        javascript_rule_at_language,
+        javascript_rule31,
+    ],
     "A": [javascript_rule31],
     "B": [javascript_rule31],
     "C": [javascript_rule31],
