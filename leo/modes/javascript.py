@@ -6,7 +6,7 @@ leo/modes/javascript.py: Leo's mode file for @language javascript.
 #@+<< javascript.py: imports >>
 #@+node:ekr.20241120014425.1: ** << javascript.py: imports >>
 from __future__ import annotations
-# from typing import Any
+from typing import Any
 from leo.core import leoGlobals as g
 assert g
 #@-<< javascript.py: imports >>
@@ -149,6 +149,18 @@ def javascript_rule30(colorer, s, i):
 def javascript_rule31(colorer, s, i):
     return colorer.match_keywords(s, i)
 
+#@+node:ekr.20241121110739.1: *4* javascript_rule_script <script>
+def javascript_rule_script(colorer: Any, s: str, i: int) -> int:
+
+    if i != 0 or not s.startswith("<script"):
+        return 0  # Fail, but allow other matches.
+
+    # Colorize the element as an html element..
+    colorer.match_span(s, i, kind="markup", begin="<script", end=">")
+
+    # Start css mode.
+    colorer.push_delegate('javascript')
+    return len(s)  # Success.
 #@+node:ekr.20241120174105.1: *4* javascript_rule_end_script </script>
 def javascript_rule_end_script(colorer, s, i):
 
@@ -389,8 +401,13 @@ rulesDict1 = {
     ":": [javascript_rule29, javascript_rule30],
     ";": [javascript_rule25],
     "<": [
+        javascript_rule_script,
         javascript_rule_end_script,
-        javascript_rule5, javascript_rule9, javascript_rule15],
+        # After the rules above.
+        javascript_rule5,
+        javascript_rule9,
+        javascript_rule15
+    ],
     "=": [javascript_rule6],
     ">": [javascript_rule8, javascript_rule14],
     "?": [javascript_rule28],
