@@ -149,8 +149,8 @@ def javascript_rule30(colorer, s, i):
 def javascript_rule31(colorer, s, i):
     return colorer.match_keywords(s, i)
 
-#@+node:ekr.20241120174105.1: *4* javascript_rule_end_vue </script>
-def javascript_rule_end_vue(colorer, s, i):
+#@+node:ekr.20241120174105.1: *4* javascript_rule_end_script </script>
+def javascript_rule_end_script(colorer, s, i):
     if i != 0:
         return 0  # Fail, but allow other matches.
     if s.startswith("</script>"):
@@ -383,7 +383,7 @@ rulesDict1 = {
     ":": [javascript_rule29, javascript_rule30],
     ";": [javascript_rule25],
     "<": [
-        javascript_rule_end_vue,
+        javascript_rule_end_script,
         javascript_rule5, javascript_rule9, javascript_rule15],
     "=": [javascript_rule6],
     ">": [javascript_rule8, javascript_rule14],

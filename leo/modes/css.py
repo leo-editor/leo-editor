@@ -62,8 +62,8 @@ def css_rule9(colorer, s, i):
 #@+node:ekr.20241120174607.15: *4* css_rule10
 def css_rule10(colorer, s, i):
     return colorer.match_keywords(s, i)
-#@+node:ekr.20241120174643.1: *4* css_rule_end_vue </style>
-def css_rule_end_vue(colorer: Any, s: str, i: int) -> int:
+#@+node:ekr.20241120174643.1: *4* css_rule_end_style </style>
+def css_rule_end_style(colorer: Any, s: str, i: int) -> int:
     if i != 0:
         return 0  # Fail, but allow other matches.
     if s.startswith("</style"):
@@ -598,7 +598,7 @@ rulesDict1 = {
     ",": [css_rule5],
     "-": [css_rule10],
     ".": [css_rule8A],  # Fix #585. Was css_rule6
-    "<": [css_rule_end_vue],
+    "<": [css_rule_end_style],
     ">": [css_rule8B],  # Fix #585.
     "+": [css_rule8C],  # Fix #585.
     "~": [css_rule8D],  # Fix #585.
