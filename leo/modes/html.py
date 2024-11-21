@@ -55,6 +55,12 @@ def html_rule5(colorer, s, i):
 # New rule for handlebar markup, colored with the literal3 color.
 def html_rule_handlebar(colorer, s, i):
     return colorer.match_span(s, i, kind="literal3", begin="{{", end="}}")
+#@+node:ekr.20241121083510.1: *4* html_rule_at_language @language
+def html_rule_at_language(colorer, s, i):
+
+    if i == 0 and s.startswith("@language "):
+        return colorer.match_at_language(s, i)
+    return 0  # Fail, but allow other matches.
 #@+node:ekr.20241120172252.1: *4* html_rule_end_template </template>
 def html_rule_end_template(colorer, s, i):
 
@@ -201,6 +207,7 @@ keywordsDictDict = {
 # Rules dict for html_main ruleset.
 rulesDict1 = {
     "&": [html_rule5],
+    "@": [html_rule_at_language],
     "<": [
         html_rule_end_template,
         html_rule0, html_rule1, html_rule2, html_rule3, html_rule4],

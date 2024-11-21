@@ -62,6 +62,12 @@ def css_rule9(colorer, s, i):
 #@+node:ekr.20241120174607.15: *4* css_rule10
 def css_rule10(colorer, s, i):
     return colorer.match_keywords(s, i)
+#@+node:ekr.20241121083146.1: *4* css_rule_at_language @language
+def css_rule_at_language(colorer, s, i):
+
+    if i == 0 and s.startswith("@language "):
+        return colorer.match_at_language(s, i)
+    return 0  # Fail, but allow other matches.
 #@+node:ekr.20241120174643.1: *4* css_rule_end_style </style>
 def css_rule_end_style(colorer: Any, s: str, i: int) -> int:
 
@@ -617,7 +623,10 @@ rulesDict1 = {
     "9": [css_rule10],
     ":": [css_rule0, css_rule10],
     ";": [css_rule1],
-    "@": [css_rule10],
+    "@": [
+            css_rule_at_language,
+            css_rule10,
+        ],
     "A": [css_rule10],
     "B": [css_rule10],
     "C": [css_rule10],
