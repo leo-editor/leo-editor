@@ -1585,10 +1585,6 @@ class JEditColorizer(BaseColorizer):
         k = g.skip_c_id(s, j)
         name = s[j:k]
         ok = self.init_mode(name)
-        if False and not g.unitTesting:
-            language_s = '???' if self.language == 'unknown-language' else self.language
-            stack_s = f"delegate_stack: {self.delegate_stack!r}"
-            g.trace(f"{language_s} ==> {self.language} {s} {stack_s} {g.callers(2)}")
         if ok:
             self.language = name
             self.colorRangeWithTag(s, i, k, 'leokeyword')
@@ -1598,6 +1594,9 @@ class JEditColorizer(BaseColorizer):
                 # Solves the recoloring problem!
                 n = self.setInitialStateNumber()
                 self.setState(n)
+        if True and not g.unitTesting:
+            language_s = '???' if self.language == 'unknown-language' else self.language
+            g.trace(f"{language_s:10} stack: {self.delegate_stack!r:15} {s}")
         return k - i
 
     #@+node:ekr.20110605121601.18595: *5* jedit.match_at_nocolor & restarter

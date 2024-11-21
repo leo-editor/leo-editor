@@ -71,7 +71,7 @@ def css_rule_at_language(colorer, s, i):
 #@+node:ekr.20241120174643.1: *4* css_rule_end_style </style>
 def css_rule_end_style(colorer: Any, s: str, i: int) -> int:
 
-    if i != 0 or not s.startswith("</style"):
+    if i != 0 or not s.startswith("</style>"):
         return 0  # Fail, but allow other matches.
 
     # Colorize the element as an html element..
@@ -80,7 +80,18 @@ def css_rule_end_style(colorer: Any, s: str, i: int) -> int:
     # Restart any previous delegate.
     colorer.pop_delegate()
     return len(s)  # Success.
+#@+node:ekr.20241121083900.1: *4* css_rule_style <style>
+def css_rule_style(colorer: Any, s: str, i: int) -> int:
 
+    if i != 0 or not s.startswith("<style"):
+        return 0  # Fail, but allow other matches.
+
+    # Colorize the element as an html element..
+    colorer.match_span(s, i, kind="markup", begin="<style", end=">", delegate="html")
+
+    # Start html mode.
+    colorer.push_delegate('html')
+    return len(s)  # Success.
 
 #@-others
 #@-<< css.py rules >>
@@ -606,7 +617,10 @@ rulesDict1 = {
     ",": [css_rule5],
     "-": [css_rule10],
     ".": [css_rule8A],  # Fix #585. Was css_rule6
-    "<": [css_rule_end_style],
+    "<": [
+        css_rule_style,
+        css_rule_end_style,
+    ],
     ">": [css_rule8B],  # Fix #585.
     "+": [css_rule8C],  # Fix #585.
     "~": [css_rule8D],  # Fix #585.
