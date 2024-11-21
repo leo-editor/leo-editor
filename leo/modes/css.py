@@ -90,7 +90,7 @@ def css_rule_style(colorer: Any, s: str, i: int) -> int:
     colorer.match_span(s, i, kind="markup", begin="<style", end=">", delegate="html")
 
     # Start html mode.
-    colorer.push_delegate('html')
+    colorer.push_delegate('css')
     return len(s)  # Success.
 
 #@-others

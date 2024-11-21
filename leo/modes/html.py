@@ -15,28 +15,37 @@ assert g
 #@+others
 #@+node:ekr.20230419051223.1: *3* main ruleset
 #@+others
-#@+node:ekr.20230419050050.1: *4* html_rule0 <!--..-->
-def html_rule0(colorer, s, i):
+#@+node:ekr.20230419050050.1: *4* html_rule_comment <!--..-->
+def html_rule_comment(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="<!--", end="-->")
 
-#@+node:ekr.20230419050050.2: *4* html_rule1 <script..</script>
-def match(s: str, i: int, pattern: str) -> bool:
-    """Same as g.match."""
-    return s and s.find(pattern, i, i + len(pattern)) == i
+#@+node:ekr.20230419050050.2: *4* html_rule_script <script..</script>
+def html_rule_script(colorer: Any, s: str, i: int) -> int:
 
-def html_rule1(colorer: Any, s: str, i: int) -> int:
+    if i != 0 or not s.startswith("<script"):
+        return 0  # Fail, but allow other matches.
 
-    # Do quick check first.
-    if not match(s, i, '<script') and not match(s, i, '<SCRIPT'):
-        return 0
+    # Colorize the element as an html element..
+    colorer.match_span(s, i, kind="markup", begin="<script", end=">")
 
-    return colorer.match_span(s, i, kind="markup", begin="<script", end="</script>",
-        delegate='javascript')  # "html::javascript"
-#@+node:ekr.20230419050050.4: *4* html_rule2 <style..</style>
-def html_rule2(colorer, s, i):
-    return colorer.match_span(s, i, kind="markup", begin="<style", end="</style>",
-        delegate="html::css")
+    # Start css mode.
+    colorer.push_delegate('javascript')
+    return len(s)  # Success.
 
+
+
+#@+node:ekr.20230419050050.4: *4* html_rule_style <style..</style>
+def html_rule_style(colorer, s, i):
+
+    if i != 0 or not s.startswith("<style"):
+        return 0  # Fail, but allow other matches.
+
+    # Colorize the element as an html element..
+    colorer.match_span(s, i, kind="markup", begin="<style", end=">")
+
+    # Start css mode.
+    colorer.push_delegate('css')
+    return len(s)  # Success.
 #@+node:ekr.20230419050050.6: *4* html_rule3 <!..>
 def html_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword2", begin="<!", end=">")
@@ -209,8 +218,14 @@ rulesDict1 = {
     "&": [html_rule5],
     "@": [html_rule_at_language],
     "<": [
+        html_rule_script,
+        html_rule_style,
         html_rule_end_template,
-        html_rule0, html_rule1, html_rule2, html_rule3, html_rule4],
+        html_rule_comment,
+        # After all the above rules.
+        html_rule3,
+        html_rule4,
+    ],
     "{": [html_rule_handlebar],
 }
 
