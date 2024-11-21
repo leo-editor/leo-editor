@@ -149,6 +149,19 @@ def javascript_rule30(colorer, s, i):
 def javascript_rule31(colorer, s, i):
     return colorer.match_keywords(s, i)
 
+#@+node:ekr.20241120174105.1: *4* javascript_rule_end_vue </script>
+def javascript_rule_end_vue(colorer, s, i):
+    if i != 0:
+        return 0  # Fail, but allow other matches.
+    if s.startswith("</script>"):
+        # Colorize the element as an html element.
+        colorer.match_seq(s, i, kind="markup", seq="</script>", delegate="html")
+        # Simulate `@language vue`
+        colorer.init_mode('vue')
+        state_i = colorer.setInitialStateNumber()
+        colorer.setState(state_i)
+        return len(s)  # Success.
+    return 0  # Fail, but allow other matches.
 #@-others
 #@-<< javascript.py: rules >>
 #@+<< javascript.py: dictionaries >>
@@ -370,7 +383,9 @@ rulesDict1 = {
     "9": [javascript_rule31],
     ":": [javascript_rule29, javascript_rule30],
     ";": [javascript_rule25],
-    "<": [javascript_rule5, javascript_rule9, javascript_rule15],
+    "<": [
+        javascript_rule_end_vue,
+        javascript_rule5, javascript_rule9, javascript_rule15],
     "=": [javascript_rule6],
     ">": [javascript_rule8, javascript_rule14],
     "?": [javascript_rule28],

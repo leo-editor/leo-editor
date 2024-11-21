@@ -21,35 +21,32 @@ def vue_element(colorer: Any, s: str, i: int) -> int:
     """
     Handle `<`, the start of an element.
     Switch between modes provided that c.p.b contains @language vue.
-    
-    New in Leo 6.8.3.
     """
-    try:
-        c = colorer.c
-    except Exception:
-        return 0  # Fail, allowing other matches.
+    if i != 0:
+        return -len(s)  # Fail completely.
 
-    # Prototype.
-    # g.trace(i, s)
-    n = colorer.match_span(s, i, kind="comment1",
-        begin="<", end=">", at_line_start=True)
+    # top-level language blocks and their corresponding mode files.
+    blocks = (
+        ('<script', 'javascript'),
+        ('<style', 'css'),
+        ('<template', 'html'),
+    )
+    for block, language in blocks:
+        if s.startswith(block):
+            # Colorize the element as an html element.
+            # g.trace(f"new language: {language}")
+            colorer.match_seq(s, i, kind="markup", seq=block, delegate="html")
 
-    # # *Always* colorize the comment line as a *vue* comment.
-    # n = colorer.match_eol_span(s, i, kind="comment1", seq="#")
-    # is_any_vue_comment = (
-        # i == 0
-        # and s.startswith('# %%')
-        # and any(z.startswith('@language vue')
-            # for z in g.splitLines(c.p.b))
-    # )
-    # if is_any_vue_comment:
-        # # Simulate @language md or @language python.
-        # language = 'md' if s.startswith('# %% [markdown]') else 'python'
-        # colorer.init_mode(language)
-        # state_i = colorer.setInitialStateNumber()
-        # colorer.setState(state_i)
+            # Simulate `@language language`.
+            colorer.init_mode(language)
+            state_i = colorer.setInitialStateNumber()
+            colorer.setState(state_i)
+            return len(s)  # Success.
 
-    return n  # Succeed. Do not allow other matches.
+    # Error: colorizer the element as a comment.
+    # g.trace('Oops:', s)
+    colorer.match_span(s, i, kind="comment1", begin="<", end=">")
+    return -len(s)  # Fail completely.
 #@-others
 #@-<< vue.py: rules >>
 #@+<< vue.py: dictionaries >>

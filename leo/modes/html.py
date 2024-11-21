@@ -15,7 +15,7 @@ assert g
 #@+others
 #@+node:ekr.20230419051223.1: *3* main ruleset
 #@+others
-#@+node:ekr.20230419050050.1: *4* html_rule0
+#@+node:ekr.20230419050050.1: *4* html_rule0 <!--..-->
 def html_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="<!--", end="-->")
 
@@ -55,6 +55,19 @@ def html_rule5(colorer, s, i):
 # New rule for handlebar markup, colored with the literal3 color.
 def html_rule_handlebar(colorer, s, i):
     return colorer.match_span(s, i, kind="literal3", begin="{{", end="}}")
+#@+node:ekr.20241120172252.1: *4* html_rule_end_vue </template>
+def html_rule_end_vue(colorer, s, i):
+    if i != 0:
+        return 0  # Fail, but allow other matches.
+    if s.startswith("</template>"):
+        # Colorize the element as an html element.
+        colorer.match_seq(s, i, kind="markup", seq="</template>")
+        # Simulate `@language vue`
+        colorer.init_mode('vue')
+        state_i = colorer.setInitialStateNumber()
+        colorer.setState(state_i)
+        return len(s)  # Success.
+    return 0  # Fail, but allow other matches.
 #@-others
 
 #@+node:ekr.20230419050351.1: *3* html_tags ruleset
@@ -189,7 +202,9 @@ keywordsDictDict = {
 # Rules dict for html_main ruleset.
 rulesDict1 = {
     "&": [html_rule5],
-    "<": [html_rule0, html_rule1, html_rule2, html_rule3, html_rule4],
+    "<": [
+        html_rule_end_vue,
+        html_rule0, html_rule1, html_rule2, html_rule3, html_rule4],
     "{": [html_rule_handlebar],
 }
 

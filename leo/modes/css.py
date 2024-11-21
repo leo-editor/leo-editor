@@ -14,55 +14,67 @@ assert g
 #@+node:ekr.20241120010414.1: ** << css.py rules >>
 #@+others
 #@+node:ekr.20241119185920.1: *3* css.py: rules for css_main ruleset
-# Rules for css_main ruleset.
-
+#@+node:ekr.20241120174607.1: *4* css_rule0
 def css_rule0(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq=":")
-
+#@+node:ekr.20241120174607.2: *4* css_rule1
 def css_rule1(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="null", seq=";")
-
+#@+node:ekr.20241120174607.3: *4* css_rule2 (..)
 def css_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="null", begin="(", end=")",
           delegate="css::literal")
-
+#@+node:ekr.20241120174607.4: *4* css_rule3
 def css_rule3(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq="{")
-
+#@+node:ekr.20241120174607.5: *4* css_rule4
 def css_rule4(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq="}")
-
+#@+node:ekr.20241120174607.6: *4* css_rule5
 def css_rule5(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="null", seq=",")
-
+#@+node:ekr.20241120174607.7: *4* css_rule6
 def css_rule6(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="null", seq=".")
-
+#@+node:ekr.20241120174607.8: *4* css_rule7
 def css_rule7(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq="!")
-
+#@+node:ekr.20241120174607.9: *4* css_rule8
 def css_rule8(colorer, s, i):
     return colorer.match_mark_following(s, i, kind="literal2", pattern="#")
-
+#@+node:ekr.20241120174607.10: *4* css_rule8A
 # For selectors...
 
 def css_rule8A(colorer, s, i):
     return colorer.match_mark_following(s, i, kind="literal2", pattern=".")
-
+#@+node:ekr.20241120174607.11: *4* css_rule8B
 def css_rule8B(colorer, s, i):
     return colorer.match_mark_following(s, i, kind="literal2", pattern=">")
-
+#@+node:ekr.20241120174607.12: *4* css_rule8C
 def css_rule8C(colorer, s, i):
     return colorer.match_mark_following(s, i, kind="literal2", pattern="+")
-
+#@+node:ekr.20241120174607.13: *4* css_rule8D
 def css_rule8D(colorer, s, i):
     return colorer.match_mark_following(s, i, kind="literal2", pattern="~")
-
+#@+node:ekr.20241120174607.14: *4* css_rule9
 def css_rule9(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/")
-
+#@+node:ekr.20241120174607.15: *4* css_rule10
 def css_rule10(colorer, s, i):
     return colorer.match_keywords(s, i)
+#@+node:ekr.20241120174643.1: *4* css_rule_end_vue </style>
+def css_rule_end_vue(colorer: Any, s: str, i: int) -> int:
+    if i != 0:
+        return 0  # Fail, but allow other matches.
+    if s.startswith("</style"):
+        # Colorize the element as an html element..
+        colorer.match_seq(s, i, kind="markup", seq="</style>", delegate="html")
+        # Simulate `@language vue`
+        colorer.init_mode('vue')
+        state_i = colorer.setInitialStateNumber()
+        colorer.setState(state_i)
+        return len(s)  # Success.
+    return 0  # Fail, but allow other matches.
 #@-others
 #@-<< css.py rules >>
 #@+<< css.py dictionaries >>
@@ -587,6 +599,7 @@ rulesDict1 = {
     ",": [css_rule5],
     "-": [css_rule10],
     ".": [css_rule8A],  # Fix #585. Was css_rule6
+    "<": [css_rule_end_vue],
     ">": [css_rule8B],  # Fix #585.
     "+": [css_rule8C],  # Fix #585.
     "~": [css_rule8D],  # Fix #585.
