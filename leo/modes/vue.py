@@ -38,9 +38,7 @@ def vue_element(colorer: Any, s: str, i: int) -> int:
             colorer.match_seq(s, i, kind="markup", seq=block, delegate="html")
 
             # Simulate `@language language`.
-            colorer.init_mode(language)
-            state_i = colorer.setInitialStateNumber()
-            colorer.setState(state_i)
+            colorer.push_delegate(language)
             return len(s)  # Success.
 
     # Error: colorizer the element as a comment.

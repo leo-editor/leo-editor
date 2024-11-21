@@ -2629,7 +2629,29 @@ class JEditColorizer(BaseColorizer):
         k = j + n
         self.colorRangeWithTag(s, j, k, kind2)
         return k - i
-    #@+node:ekr.20241121024111.1: *4* jedit.push/pop_delegate
+    #@+node:ekr.20241121030605.1: *4* jedit.pop_delegate
+    def pop_delegate(self) -> None:
+        """Pop the delegate stack."""
+        if not self.delegate_stack:
+            g.trace(f"Oops: empty delegate stack {g.callers()}")
+            return
+        self.delegate_stack.pop()
+    #@+node:ekr.20241121024111.1: *4* jedit.push_delegate
+    delegate_stack: list[str] = []
+
+    def push_delegate(self, new_language: str) -> None:
+        """
+        Push the old language on the delegate stack and switch to the new language.
+        """
+        if self.language == new_language:
+            g.trace(f"Oops: same language: {self.language}")
+            return
+        self.delegate_stack.append(self.language)
+
+        # Switch to the new language.
+        self.init_mode(new_language)
+        state_i = self.setInitialStateNumber()
+        self.setState(state_i)
     #@+node:ekr.20110605121601.18627: *4* jedit.skip_line
     def skip_line(self, s: str, i: int) -> int:
         if self.escape:
