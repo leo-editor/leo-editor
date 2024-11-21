@@ -896,6 +896,7 @@ class JEditColorizer(BaseColorizer):
         self.after_doc_language: str = None
 
         # *Local* state data. Such state is harmless.
+        self.delegate_stack: list[str] = []
         self.initialStateNumber = -1
         self.n2languageDict: dict[int, str] = {-1: c.target_language}
         self.nested = False  # True: allow nested comments, etc.
@@ -1338,6 +1339,7 @@ class JEditColorizer(BaseColorizer):
             self.updateSyntaxColorer(p)
             self.init_all_state()  # The only call to this method.
             self.init()
+            self.delegate_stack = []
             state = self.initBlock0()
         else:
             state = prev_state  # Continue the previous state by default.
@@ -1591,6 +1593,7 @@ class JEditColorizer(BaseColorizer):
                 # Solves the recoloring problem!
                 n = self.setInitialStateNumber()
                 self.setState(n)
+                self.delegate_stack = []
         return k - i
 
     #@+node:ekr.20110605121601.18595: *5* jedit.match_at_nocolor & restarter
@@ -2639,24 +2642,25 @@ class JEditColorizer(BaseColorizer):
         old_delegate = self.delegate_stack.pop()
         self.push_delegate(old_delegate)
     #@+node:ekr.20241121024111.1: *4* jedit.push_delegate
-    delegate_stack: list[str] = []
-
     def push_delegate(self, new_language: str) -> None:
         """
         Push the old language on the delegate stack and switch to the new language.
         """
-        # An excellent trace. Do not delete.
-        # g.trace(f"{new_language:12} {g.callers(1)}")
-
-        if self.language == new_language:
-            # This is not an error.
-            return
+        if 1:  # An excellent trace. Do not delete.
+            language_s = '???' if self.language == 'unknown-language' else self.language
+            g.trace(f"{language_s:5} ==> {new_language:10} {g.callers(2)}")
+            # g.printObj(self.delegate_stack)
 
         if not new_language:
             g.trace(f"Oops: no new language: {self.language} {g.callers()}")
             return
 
+        # Append the *old* language.
         self.delegate_stack.append(self.language)
+
+        if self.language == new_language:
+            # This is not an error.
+            return
 
         # Switch to the new language.
         self.init_mode(new_language)
