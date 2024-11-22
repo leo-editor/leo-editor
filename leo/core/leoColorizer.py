@@ -2669,7 +2669,7 @@ class JEditColorizer(BaseColorizer):
         """
         trace = 'coloring' in g.app.debug and not g.unitTesting
 
-        if self.language == 'unknown-language':  ### Experimental.
+        if self.language == 'unknown-language':  # Defensive.
             old_language = new_language
         else:
             old_language = self.language
@@ -2679,7 +2679,7 @@ class JEditColorizer(BaseColorizer):
             g.trace(f"Oops: no new language: {self.language} {g.callers()}")
             return
 
-        if trace and not g.unitTesting:
+        if trace:
             print('')
             g.trace(f"{old_language} ==> {new_language} {self.delegate_stack} {g.callers(2)}")
 
