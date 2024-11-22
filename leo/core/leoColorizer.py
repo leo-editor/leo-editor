@@ -1048,7 +1048,7 @@ class JEditColorizer(BaseColorizer):
         fn = g.os_path_join(path, f"{language}.py")
         if g.os_path_exists(fn):
             mode = g.import_module(name=f"leo.modes.{language}")
-            if mode is None:  # An important message.
+            if mode is None and g.unitTesting:  # Too intrusive otherwise.
                 g.print_unique_message(f"Import failed! leo.modes.{language}")
         else:
             mode = None
@@ -1080,9 +1080,11 @@ class JEditColorizer(BaseColorizer):
             )
             self.rulesetName = rulesetName
             self.language = 'unknown-language'
-            g.print_unique_message(
-                f"{'\n'}jedit.init_mode: no mode file for {language!r}! {g.callers(8)}"
-            )
+            if g.unitTesting:  # Too intrusive otherwise.
+                g.print_unique_message(
+                    "{'\n'}jedit.init_mode_from_module: "
+                    f"no mode file for {language!r}! {g.callers(8)}"
+                )
             return False
         self.language = language
         self.rulesetName = rulesetName
