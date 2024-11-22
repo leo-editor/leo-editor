@@ -439,10 +439,9 @@ class TestColorizer(LeoUnitTest):
             <HEAD>
               <META NAME="GENERATOR" CONTENT="Microsoft FrontPage 4.0">
               <TITLE> Leo's Home Page </TITLE>
-              <META NAME="description" CONTENT="This page describes Leo.
-            Leo adds powerful outlines to the noweb and CWEB literate programming languages.">
-              <META NAME="keywords" CONTENT="LEO, LITERATE PROGRAMMING, OUTLINES, CWEB,
-            NOWEB, OUTLINES, EDWARD K. REAM, DONALD E. KNUTH, SILVIO LEVY, OPEN SOFTWARE">
+              <META NAME="description" CONTENT="This page describes Leo."
+              <META NAME="keywords" CONTENT="LEO, LITERATE PROGRAMMING, OUTLINES,,
+                OUTLINES, EDWARD K. REAM, OPEN SOFTWARE">
             </HEAD>
             <!-- Last Modified: May 12, 2002 -->
             <BODY BGCOLOR="#fffbdc">
