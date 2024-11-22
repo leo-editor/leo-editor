@@ -726,14 +726,18 @@ class BaseColorizer:
         default_tag = f"{tag}_font"  # See default_font_dict.
         font: Any = None  # Set below. Define here for report().
 
-        def report(extra: str = None) -> None:
+        def report(color) -> None:
             """A superb trace. Don't remove it."""
-            s2 = g.truncate(s, 50)
+            # s2 = g.truncate(s, 50)
+            s2 = s[i:j]  # Show only the colored string.
             delegate_s = f":{self.delegate_name}:" if self.delegate_name else ''
             # font_s = id(font) if font else 'None'
             matcher_name = g.caller(3)
             rule_s = f"{self.rulesetName}:{delegate_s}{matcher_name}"
             i_j_s = f"{i:>3}:{j:<3}"
+            # Don't report one-character markup.
+            if j - i == 1 and tag in ('markup', 'operator', 'null'):
+                return
             print(
                 f"setTag: {self.recolorCount:4} "
                 f"{colorName:7} "
@@ -741,8 +745,6 @@ class BaseColorizer:
                 f"{rule_s:<40} "
                 f"{i_j_s:7} {s2}"
             )
-            if extra:
-                print(f"{' ':48} {extra}")
 
         self.n_setTag += 1
         if i == j:
@@ -800,7 +802,7 @@ class BaseColorizer:
             format.setUnderlineStyle(UnderlineStyle.NoUnderline)
         self.tagCount += 1
         if trace:
-            report()  # A superb trace.
+            report(color)  # A superb trace.
         self.highlighter.setFormat(i, j - i, format)
     #@+node:ekr.20170127142001.1: *3* BaseColorizer.updateSyntaxColorer & helpers
     # Note: these are used by unit tests.
@@ -2646,6 +2648,7 @@ class JEditColorizer(BaseColorizer):
         if trace:
             print('')
             g.trace(repr(self.delegate_stack))
+            print('')
 
         if not self.delegate_stack:
             # This is not an error.
@@ -2681,7 +2684,8 @@ class JEditColorizer(BaseColorizer):
 
         if trace:
             print('')
-            g.trace(f"{old_language} ==> {new_language} {self.delegate_stack} {g.callers(2)}")
+            g.trace(f"{old_language} ==> {new_language} {self.delegate_stack}")
+            print('')
 
         # Ignore redundant <style> or <script> elements.
         if not self.delegate_stack or self.delegate_stack[-1] != old_language:

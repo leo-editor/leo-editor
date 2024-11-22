@@ -116,7 +116,7 @@ html_main_attributes_dict = {
 
 # Attributes dict for html_tags ruleset.
 html_tags_attributes_dict = {
-    "default": "MARKUP",
+    "default": "markup",
     "digit_re": "",
     "escape": "\\",
     "highlight_digits": "true",
@@ -126,7 +126,7 @@ html_tags_attributes_dict = {
 
 # Attributes dict for html_javascript ruleset.
 html_javascript_attributes_dict = {
-    "default": "MARKUP",
+    "default": "markup",
     "digit_re": "",
     "escape": "\\",
     "highlight_digits": "true",
@@ -136,7 +136,7 @@ html_javascript_attributes_dict = {
 
 # Attributes dict for html_back_to_html ruleset.
 html_back_to_html_attributes_dict = {
-    "default": "MARKUP",
+    "default": "markup",
     "digit_re": "",
     "escape": "\\",
     "highlight_digits": "true",
@@ -146,7 +146,7 @@ html_back_to_html_attributes_dict = {
 
 # Attributes dict for html_css ruleset.
 html_css_attributes_dict = {
-    "default": "MARKUP",
+    "default": "markup",
     "digit_re": "",
     "escape": "\\",
     "highlight_digits": "true",
