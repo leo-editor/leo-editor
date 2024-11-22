@@ -158,7 +158,7 @@ def javascript_rule_script(colorer: Any, s: str, i: int) -> int:
     # Colorize the element as an html element..
     colorer.match_span(s, i, kind="markup", begin="<script", end=">")
 
-    # Start css mode.
+    # Start javascript mode.
     colorer.push_delegate('javascript')
     return len(s)  # Success.
 #@+node:ekr.20241120174105.1: *4* javascript_rule_end_script </script>
