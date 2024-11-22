@@ -1080,7 +1080,7 @@ class JEditColorizer(BaseColorizer):
             )
             self.rulesetName = rulesetName
             self.language = 'unknown-language'
-            g.print_unique_message(f"{'\n'}no mode file for {language!r}! {g.callers(6)}")
+            g.print_unique_message(f"{'\n'}no mode file for {language!r}! {g.callers(8)}")
             return False
         self.language = language
         self.rulesetName = rulesetName

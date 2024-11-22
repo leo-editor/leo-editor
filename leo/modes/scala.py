@@ -777,6 +777,6 @@ rulesDictDict = {
 
 # Import dict for scala mode.
 importDict = {
-    "scala_main": ["scala_main::primary",],
-    "scala_pattern": ["scala_pattern::primary",],
+    # "scala_main": ["scala_main::primary",],
+    # "scala_pattern": ["scala_pattern::primary",],
 }
