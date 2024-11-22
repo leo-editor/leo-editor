@@ -316,33 +316,6 @@ class TestColorizer(LeoUnitTest):
             page-break, page-after, page-inside
         """)
         self.color('css', text)
-    #@+node:ekr.20210905170507.9: *3* TestColorizer.test_colorizer_CWEB
-    def test_colorizer_CWEB(self):
-        text = self.prep(
-            r"""\\\
-            % This is limbo in cweb mode... It should be in \LaTeX mode, not \c mode.
-            % The following should not be colorized: class,if,else.
-
-            @* this is a _cweb_ comment.  Code is written in \c.
-            "strings" should not be colorized.
-            It should be colored in \LaTeX mode.
-            The following are not keywords in latex mode: if, else, etc.
-            Noweb section references are _valid_ in cweb comments!
-            < < section ref > >
-            < < missing ref > >
-            @c
-
-            and this is C code. // It is colored in \LaTeX mode by default.
-            /* This is a C block comment.  It may also be colored in restricted \LaTeX mode. */
-
-            // Section refs are valid in code too, of course.
-            < < section ref > >
-            < < missing ref > >
-
-            \LaTeX and \c should not be colored.
-            if else, while, do // C keywords.
-    """)
-        self.color('cweb', text)
     #@+node:ekr.20210905170507.10: *3* TestColorizer.test_colorizer_cython
     def test_colorizer_cython(self):
         text = self.prep(

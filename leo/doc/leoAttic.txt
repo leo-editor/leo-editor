@@ -1575,6 +1575,33 @@ writers = 'leo.unittests.plugins.test_writers'
 # f"{plugins}.test_importers",
 # f"{plugins}.test_plugins",
 # f"{plugins}.test_writers",
+#@+node:ekr.20210905170507.9: *4* TestColorizer.test_colorizer_CWEB
+def test_colorizer_CWEB(self):
+    text = self.prep(
+        r"""\\\
+        % This is limbo in cweb mode... It should be in \LaTeX mode, not \c mode.
+        % The following should not be colorized: class,if,else.
+
+        @* this is a _cweb_ comment.  Code is written in \c.
+        "strings" should not be colorized.
+        It should be colored in \LaTeX mode.
+        The following are not keywords in latex mode: if, else, etc.
+        Noweb section references are _valid_ in cweb comments!
+        < < section ref > >
+        < < missing ref > >
+        @c
+
+        and this is C code. // It is colored in \LaTeX mode by default.
+        /* This is a C block comment.  It may also be colored in restricted \LaTeX mode. */
+
+        // Section refs are valid in code too, of course.
+        < < section ref > >
+        < < missing ref > >
+
+        \LaTeX and \c should not be colored.
+        if else, while, do // C keywords.
+""")
+    self.color('cweb', text)
 #@+node:ekr.20240820045246.1: ** To be cleared later
 # Clear after 6.8.2.
 #@+node:ekr.20110605121601.18254: *3* LeoQtFrame.destroyAllObjects (not used)
