@@ -1049,7 +1049,7 @@ class JEditColorizer(BaseColorizer):
         if g.os_path_exists(fn):
             mode = g.import_module(name=f"leo.modes.{language}")
             if mode is None:  # An important message.
-                g.trace(f"Import failed! leo.modes.{language}")
+                g.print_unique_message(f"Import failed! leo.modes.{language}")
         else:
             mode = None
         return self.init_mode_from_module(name, mode)
@@ -1080,6 +1080,7 @@ class JEditColorizer(BaseColorizer):
             )
             self.rulesetName = rulesetName
             self.language = 'unknown-language'
+            g.print_unique_message(f"{'\n'}no mode file for {language!r}! {g.callers()}")
             return False
         self.language = language
         self.rulesetName = rulesetName
@@ -1387,26 +1388,23 @@ class JEditColorizer(BaseColorizer):
 
         Called from init() and initBlock0.
         """
-        state = self.languageTag(self.language)
+        state = self.languageToMode(self.language)
         n = self.stateNameToStateNumber(None, state)
         self.initialStateNumber = n
         self.blankStateNumber = self.stateNameToStateNumber(None, state + ';blank')
         return n
-    #@+node:ekr.20170126103925.1: *4* jedit.languageTag
-    def languageTag(self, name: str) -> str:
-        """
-        Return the standardized form of the language name.
-        Doing this consistently prevents subtle bugs.
-        """
+    #@+node:ekr.20170126103925.1: *4* jedit.languageToMode
+    def languageToMode(self, name: str) -> str:
+        """Return name of the mode file for the given language name."""
         if name:
             table = (
                 ('markdown', 'md'),
                 ('python', 'py'),
-                ('javascript', 'js'),
             )
             for pattern, s in table:
                 name = name.replace(pattern, s)
             return name
+        g.print_unique_message(f"jedit.languageToMode. Should not happend: {language!r}")
         return 'no-language'
     #@+node:ekr.20241106195155.1: *4* jedit.traceRulesDict
     def traceRulesDict(self) -> None:
@@ -2729,7 +2727,7 @@ class JEditColorizer(BaseColorizer):
             'no_line_break': '!lbrk',
             'no_word_break': '!wbrk',
         }
-        result = [self.languageTag(self.language)]
+        result = [self.languageToMode(self.language)]
         if not self.rulesetName.endswith('_main'):
             result.append(self.rulesetName)
         if f:
