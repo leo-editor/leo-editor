@@ -2299,8 +2299,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.last_update_was_node_change = False
         self.setObjectName('viewrendered3_pane')
         self.adapt_fgbg_colors = True
-        self.qwev.loadFinished.connect(self.restore_scroll_position)
-        self.scroll_position = 0
+        self.scroll_position: int = 0
 
         #@-<< initialize configuration ivars >>
         #@+<< asciidoc-specific >>
@@ -3159,16 +3158,15 @@ class ViewRenderedController3(QtWidgets.QWidget):
     def store_scroll_position(self, position):
         self.scroll_position = position
 
-    def unfreeze_and_enable_updates(self):
-        # self.qwev.setUpdatesEnabled(True)
-        if not self.old_freeze:
-            self.set_unfreeze()
-        else:
-            self.set_freeze()
+    # def reset_freeze(self):
+        # if not self.old_freeze:
+            # self.set_unfreeze()
+        # else:
+            # self.set_freeze()
 
     def restore_scroll_position(self):
         self.qwev.page().runJavaScript(f"window.scrollTo(0, {self.scroll_position});")
-        QtCore.QTimer.singleShot(1000, self.unfreeze_and_enable_updates)
+        QtCore.QTimer.singleShot(1000, self.set_unfreeze)
 
     #@+node:tom.20240724103143.1: *4* vr3.create_node_tree
     def create_node_tree(self, p, kind):
@@ -3287,8 +3285,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
             elif self.gnx != p.v.gnx:
                 _must_update = True
             elif (doc.isModified()
-                  # or len(p.b) != self.length
-                  # or self.last_text != p.b
+                  or len(p.b) != self.length
+                  or self.last_text != p.b
                   or self.last_headline != p.h
                   ):
                 if self.get_kind(p) in ('html', 'pyplot'):
@@ -4935,10 +4933,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
         try:
             url_base = QtCore.QUrl('file:///' + path + '/')
             self.capture_scroll_position()
-            self.old_freeze = self.freeze
             self.set_freeze()
-            # self.qwev.setUpdatesEnabled(False)
-            # self.unfreeze_and_enable_updates() will be called after page load:
+            # self.reset_freeze() will be called after page load and scroll:
             w.setHtml(s, url_base)
         except Exception as e:
             # Oops, don't have a QWebEngineView
