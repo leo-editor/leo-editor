@@ -260,11 +260,15 @@ importDict = {}
 
 # x.rulesDictDict for html mode.
 rulesDictDict = {
-    "html_back_to_html": rulesDict4,
-    "html_css": rulesDict5,
-    "html_javascript": rulesDict3,
+
+    # No longer needed.
+        # "html_back_to_html": rulesDict4,
+        # "html_css": rulesDict5,
+        # "html_javascript": rulesDict3,
+
+    # Can be used outside this file.
     "html_main": rulesDict1,
-    "html_tags": rulesDict2,
+    "html_tags": rulesDict2,  # Used by md.py and pandoc.py.
 }
 #@-<< html.py: dictionaries >>
 

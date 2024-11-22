@@ -1575,6 +1575,7 @@ class JEditColorizer(BaseColorizer):
     #@+node:ekr.20110605121601.18594: *5* jedit.match_at_language
     def match_at_language(self, s: str, i: int) -> int:
         """Match Leo's @language directive."""
+        trace = 'coloring' in g.app.debug and not g.unitTesting
         # Only matches at start of line.
         if i != 0:
             return 0
@@ -1594,7 +1595,7 @@ class JEditColorizer(BaseColorizer):
                 # Solves the recoloring problem!
                 n = self.setInitialStateNumber()
                 self.setState(n)
-        if True and not g.unitTesting:
+        if trace:
             language_s = '???' if self.language == 'unknown-language' else self.language
             g.trace(f"{language_s:10} stack: {self.delegate_stack!r:15} {s}")
         return k - i
@@ -2638,19 +2639,22 @@ class JEditColorizer(BaseColorizer):
     #@+node:ekr.20241121030605.1: *4* jedit.pop_delegate
     def pop_delegate(self) -> None:
         """Pop the delegate stack amd restart the previous delegate."""
-        if False and not g.unitTesting:
+        trace = 'coloring' in g.app.debug and not g.unitTesting
+
+        if trace:
+            print('')
             g.trace(repr(self.delegate_stack))
 
         if not self.delegate_stack:
             # This is not an error.
-            # g.trace(f"Oops: empty delegate stack {self.language} {g.callers()}")
             return
 
         old_language = self.delegate_stack.pop()
-        if old_language == self.language:
-            # This is not an error.
-            self.delegate_stack.append(old_language)
-            return
+        if False:  ### Experimental.
+            if old_language == self.language:
+                # This is not an error.
+                self.delegate_stack.append(old_language)
+                return
 
         # Switch to the previous language.
         self.init_mode(old_language)
@@ -2661,22 +2665,25 @@ class JEditColorizer(BaseColorizer):
         """
         Push the old language on the delegate stack and switch to the new language.
         """
-        if False and not g.unitTesting:
-            language_s = '???' if self.language == 'unknown-language' else self.language
-            g.trace(f"{language_s:5} ==> {new_language:10} {g.callers(2)}")
-            g.trace(repr(self.delegate_stack))
-            # g.printObj(self.delegate_stack)
+        trace = 'coloring' in g.app.debug and not g.unitTesting
+
+        if self.language == 'unknown-language':  ### Experimental.
+            old_language = new_language
+        else:
+            old_language = self.language
+        self.language = new_language
 
         if not new_language:
             g.trace(f"Oops: no new language: {self.language} {g.callers()}")
             return
 
-        # Append the *old* language.
-        self.delegate_stack.append(self.language)
+        if trace and not g.unitTesting:
+            print('')
+            g.trace(f"{old_language} ==> {new_language} {self.delegate_stack} {g.callers(2)}")
 
-        if self.language == new_language:
-            # This is not an error.
-            return
+        # Ignore redundant <style> or <script> elements.
+        if not self.delegate_stack or self.delegate_stack[-1] != old_language:
+            self.delegate_stack.append(old_language)
 
         # Switch to the new language.
         self.init_mode(new_language)

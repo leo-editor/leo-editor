@@ -711,7 +711,7 @@ importDict = {}
 
 # x.rulesDictDict for css mode.
 rulesDictDict = {
-    "css_literal": rulesDict2,
+    "css_literal": rulesDict2,  # Used only in this file.
     "css_main": rulesDict1,
 }
 
