@@ -1080,7 +1080,7 @@ class JEditColorizer(BaseColorizer):
             )
             self.rulesetName = rulesetName
             self.language = 'unknown-language'
-            g.print_unique_message(f"{'\n'}no mode file for {language!r}! {g.callers()}")
+            g.print_unique_message(f"{'\n'}no mode file for {language!r}! {g.callers(6)}")
             return False
         self.language = language
         self.rulesetName = rulesetName
@@ -1404,7 +1404,7 @@ class JEditColorizer(BaseColorizer):
             for pattern, s in table:
                 name = name.replace(pattern, s)
             return name
-        g.print_unique_message(f"jedit.languageToMode. Should not happend: {language!r}")
+        g.print_unique_message(f"jedit.languageToMode. Should not happen: {name!r}")
         return 'no-language'
     #@+node:ekr.20241106195155.1: *4* jedit.traceRulesDict
     def traceRulesDict(self) -> None:
