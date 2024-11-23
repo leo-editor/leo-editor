@@ -1051,7 +1051,6 @@ import string
 import subprocess
 import sys
 import textwrap
-from time import monotonic
 from typing import Any, Dict, List, Tuple
 
 import webbrowser
@@ -2257,6 +2256,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.delete_callback = None
         self.gnx = None
         self.graphics_class = QtWidgets.QGraphicsWidget
+
+        self.in_forced_message = False
         self.positions = positions
         self.pyplot_canvas = None
 
@@ -2272,6 +2273,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         self.pyplot_active = False
         self.scrollbar_pos_dict = {}  # Keys are vnodes, values are positions.
+        self.scrolling = False
         self.sizes = []  # Saved splitter sizes.
         self.splitter_index = None  # The index of the rendering pane in the splitter.
         self.title = None
@@ -3108,10 +3110,13 @@ class ViewRenderedController3(QtWidgets.QWidget):
         """
 
         if tag in ('show-scrolled-message',):
+            self.in_forced_message = True
             self.handle_scrolled_msg(keywords)
             return
 
-        if self.freeze:
+        g.es(f'{self.freeze=}, {self.scrolling=}, {self.in_forced_message=}')
+
+        if self.freeze or self.scrolling:
             return
 
         self.controlling_code_lang = None
@@ -3175,11 +3180,18 @@ class ViewRenderedController3(QtWidgets.QWidget):
         if current_scroll == self.scroll_position:
             self.timer.stop()
             self.set_unfreeze()
+            self.scrolling = False
+            self.in_forced_message = False
 
     def restore_scroll_position(self):
-        self.qwev.page().runJavaScript(f"window.scrollTo(0, {self.scroll_position});")
-        self.timer.start(1000)
-        self.set_unfreeze_when_scrolled()
+        if self.in_forced_message:
+            self.in_forced_message = False
+            self.set_unfreeze()
+        else:
+            self.qwev.page().runJavaScript(f"window.scrollTo(0, {self.scroll_position});")
+            self.scrolling = True
+            self.timer.start(300)
+            self.set_unfreeze_when_scrolled()
 
     #@+node:tom.20240724103143.1: *4* vr3.create_node_tree
     def create_node_tree(self, p, kind):
@@ -4946,7 +4958,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
         try:
             url_base = QtCore.QUrl('file:///' + path + '/')
             self.capture_scroll_position()
-            self.set_freeze()
+            # self.set_freeze()
+            self.scrolling = True  # Will be reset to False after scroll
             # self.reset_freeze() will be called after page load and scroll:
             w.setHtml(s, url_base)
         except Exception as e:
