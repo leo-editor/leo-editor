@@ -1062,11 +1062,7 @@ class JEditColorizer(BaseColorizer):
         coloring rule attributes for the mode.
         """
         language, rulesetName = self.nameToRulesetName(name)
-        if mode:
-            # A hack to give modes/forth.py access to c.
-            if hasattr(mode, 'pre_init_mode'):
-                mode.pre_init_mode(self.c)
-        else:
+        if not mode:
             # Create a dummy bunch to limit recursion.
             self.modes[language] = self.modeBunch = g.Bunch(
                 attributesDict={},
@@ -1087,12 +1083,15 @@ class JEditColorizer(BaseColorizer):
                     f"no mode file for {language!r}! {g.callers(8)}"
                 )
             return False
+
+        # A hack to give modes/forth.py access to c.
+        if hasattr(mode, 'pre_init_mode'):
+            mode.pre_init_mode(self.c)
         self.language = language
         self.rulesetName = rulesetName
         self.properties = getattr(mode, 'properties', None) or {}
-        #
+
         # #1334: Careful: getattr(mode, ivar, {}) might be None!
-        #
         d: dict[Any, Any] = getattr(mode, 'keywordsDictDict', {}) or {}
         self.keywordsDict = d.get(rulesetName, {})
         self.setKeywords()
@@ -1280,9 +1279,9 @@ class JEditColorizer(BaseColorizer):
     #@+node:ekr.20110605121601.18638: *3* jedit.mainLoop
     tot_time = 0.0
 
-    def mainLoop(self, state: int, s: str) -> None:
+    def mainLoop(self, state: int, s: str, i0: int, j: int) -> None:
         """
-        Colorize a *single* line s, starting in state n.
+        Colorize a *single* line s[i:j] starting in state n.
         
         Except for traces, do not change this method in any way!
         
@@ -1294,8 +1293,9 @@ class JEditColorizer(BaseColorizer):
             g.print_unique_message(message)
         f = self.restartDict.get(state)
         t1 = time.process_time()
-        i = f(s) if f else 0
-        while i < len(s):
+        i = f(s) if f else i0
+        j = min(j, len(s))  # Required.
+        while i < j:
             progress = i
             functions = self.rulesDict.get(s[i], [])
             for f in functions:
@@ -1374,7 +1374,7 @@ class JEditColorizer(BaseColorizer):
         # mainLoop will do nothing if s is empty.
         if s:
             # Color the line even if colorizing is disabled.
-            self.mainLoop(state, s)
+            self.mainLoop(state, s, 0, len(s))
     #@+node:ekr.20170126100139.1: *4* jedit.initBlock0
     def initBlock0(self) -> int:
         """
@@ -1470,7 +1470,7 @@ class JEditColorizer(BaseColorizer):
         if delegate:
             self.push_delegate(delegate)
             state = self.currentState()
-            self.mainLoop(state, s[:j])
+            self.mainLoop(state, s, i, j)
             self.pop_delegate()
         elif not exclude_match:
             self.setTag(tag, s, i, j)
@@ -2638,14 +2638,8 @@ class JEditColorizer(BaseColorizer):
             # This is not an error.
             return
 
-        old_language = self.delegate_stack.pop()
-        if False:  ### Experimental.
-            if old_language == self.language:
-                # This is not an error.
-                self.delegate_stack.append(old_language)
-                return
-
         # Switch to the previous language.
+        old_language = self.delegate_stack.pop()
         self.init_mode(old_language)
         state_i = self.setInitialStateNumber()
         self.setState(state_i)

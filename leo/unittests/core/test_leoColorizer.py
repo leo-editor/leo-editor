@@ -34,7 +34,7 @@ class TestColorizer(LeoUnitTest):
         x.init_all_state()
         n = x.initBlock0()
         for s in g.splitLines(text):
-            x.mainLoop(n, s)
+            x.mainLoop(n, s, 0, len(s))
 
         # Test 2: test the pygments colorizer.
         x = leoColorizer.PygmentsColorizer(c, None)
