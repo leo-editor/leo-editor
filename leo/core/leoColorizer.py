@@ -1289,7 +1289,7 @@ class JEditColorizer(BaseColorizer):
         Any substantial change would break all the pattern matchers!
         """
         # Do not remove this unit test!
-        if not g.unitTesting and g.callers(1) != 'recolor':
+        if not g.unitTesting and g.callers(1) not in ('recolor', 'colorRangeWithTag'):
             message = f"jedit.mainLoop: unexpected callers: {g.callers(6)}"
             g.print_unique_message(message)
         f = self.restartDict.get(state)
