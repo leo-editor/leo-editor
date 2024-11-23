@@ -1468,13 +1468,10 @@ class JEditColorizer(BaseColorizer):
             return
         self.delegate_name = delegate
         if delegate:
-            self.modeStack.append(self.modeBunch)
-            try:
-                self.init_mode(delegate)
-                self.setTag(tag, s, i, j)
-            finally:
-                bunch = self.modeStack.pop()
-                self.initModeFromBunch(bunch)
+            self.push_delegate(delegate)
+            state = self.currentState()
+            self.mainLoop(state, s[i:j])
+            self.pop_delegate()
         elif not exclude_match:
             self.setTag(tag, s, i, j)
 

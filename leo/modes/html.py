@@ -6,6 +6,7 @@ leo/modes/html.py: Leo's mode file for @language html.
 #@+<< html.py: imports >>
 #@+node:ekr.20241120013234.1: ** << html.py: imports >>
 from __future__ import annotations
+import re
 from typing import Any
 from leo.core import leoGlobals as g
 assert g
@@ -23,7 +24,7 @@ def html_rule_script(colorer: Any, s: str, i: int) -> int:
     if i != 0 or not s.startswith("<script"):
         return 0  # Fail, but allow other matches.
 
-    # Colorize the element as an html element..
+    # Colorize the element as an html element...
     colorer.match_span(s, i, kind="markup", begin="<script", end=">")
 
     # Start javascript mode.
@@ -49,11 +50,19 @@ def html_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword2", begin="<!", end=">")
 
 #@+node:ekr.20230419050050.7: *3* html_rule4 <..>
+tag_pat = re.compile(r"/?[\w]+")  # Match both opening and closing tags
+
 def html_rule4(colorer, s, i):
-    if i == 0 and s.startswith(('<style', '</style')):
-        return 0  # Defer to the new rules.
-    return colorer.match_span(s, i, kind="markup", begin="<", end=">",
-        delegate="html::tags")
+
+    # Find the opening or closing tag.
+    for m in tag_pat.finditer(s, i):  # Don't create substrings.
+        if m.group(0) and m.start() == i + 1:
+            tag = '<' + m.group(0)
+            return colorer.match_span(s, i,
+                kind="markup", begin=tag, end=">", delegate="html::tags")
+
+    # An error.
+    return colorer.match_span(s, i, kind="comment", begin="<", end=">")
 #@+node:ekr.20230419050050.8: *3* html_rule5 &..;
 def html_rule5(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="&", end=";",
