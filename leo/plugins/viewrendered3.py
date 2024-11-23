@@ -1051,7 +1051,9 @@ import string
 import subprocess
 import sys
 import textwrap
+from time import monotonic
 from typing import Any, Dict, List, Tuple
+
 import webbrowser
 # from urllib.request import urlopen
 
@@ -2263,6 +2265,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.gv = None  # For @graphics-script: a QGraphicsView
         self.inited = False
         self.length = 0  # The length of previous p.b.
+        self.last_key = 0  # Track keystroke durations
         self.last_text = ''
         self.last_headline = ''
         self.locked = False
@@ -2276,6 +2279,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.Markdown = None  # MD processor instance
         self.vp = None  # The present video player.
         self.w = None  # The present widget in the rendering pane.
+
+        self.temp_scroll_postion = 0
+        self.timer = QtCore.QTimer()
+        self.timer.timeout.connect(self.set_unfreeze_when_scrolled)
+
         #@-<< Set ivars >>
         #@+<< initialize configuration ivars >>
         #@+node:tom.20240919181318.1: *4* << initialize configuration ivars >> (VR3)
@@ -3158,15 +3166,20 @@ class ViewRenderedController3(QtWidgets.QWidget):
     def store_scroll_position(self, position):
         self.scroll_position = position
 
-    # def reset_freeze(self):
-        # if not self.old_freeze:
-            # self.set_unfreeze()
-        # else:
-            # self.set_freeze()
+    def store_temp_scroll_position(self, position):
+        self.temp_scroll_postion = position
+
+    def set_unfreeze_when_scrolled(self):
+        self.qwev.page().runJavaScript("window.pageYOffset", self.store_temp_scroll_position)
+        current_scroll = self.temp_scroll_postion
+        if current_scroll == self.scroll_position:
+            self.timer.stop()
+            self.set_unfreeze()
 
     def restore_scroll_position(self):
         self.qwev.page().runJavaScript(f"window.scrollTo(0, {self.scroll_position});")
-        QtCore.QTimer.singleShot(1000, self.set_unfreeze)
+        self.timer.start(1000)
+        self.set_unfreeze_when_scrolled()
 
     #@+node:tom.20240724103143.1: *4* vr3.create_node_tree
     def create_node_tree(self, p, kind):
@@ -3253,7 +3266,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             w.leo_wrapper = wrapper
             c.k.completeAllBindingsForWidget(wrapper)
             w.setWordWrapMode(WrapMode.WrapAtWordBoundaryOrAnywhere)
-    #@+node:TomP.20191215195433.52: *5* vr3.setBackgroundColor
+    #@+node:TomP.20191215195433.52: *4* vr3.setBackgroundColor
     def setBackgroundColor(self, colorName, name, w):
         """Set the background color of the vr3 pane."""
 
