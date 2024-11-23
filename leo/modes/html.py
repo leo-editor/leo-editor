@@ -50,14 +50,14 @@ def html_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="keyword2", begin="<!", end=">")
 
 #@+node:ekr.20230419050050.7: *3* html_rule4 <..>
-tag_pat = re.compile(r"/?[\w]+")  # Match both opening and closing tags
+tag_pat = re.compile(r"</?[\w]+")  # Match both opening and closing tags
 
 def html_rule4(colorer, s, i):
 
     # Find the opening or closing tag.
     for m in tag_pat.finditer(s, i):  # Don't create substrings.
-        if m.group(0) and m.start() == i + 1:
-            tag = '<' + m.group(0)
+        if m.group(0) and m.start() == i:
+            tag = m.group(0)
             return colorer.match_span(s, i,
                 kind="markup", begin=tag, end=">", delegate="html::tags")
 
