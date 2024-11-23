@@ -1280,7 +1280,7 @@ class JEditColorizer(BaseColorizer):
     #@+node:ekr.20110605121601.18638: *3* jedit.mainLoop
     tot_time = 0.0
 
-    def mainLoop(self, state: int, s: str) -> None:
+    def mainLoop(self, state: int, s: str, begin=None, end=None) -> None:
         """
         Colorize a *single* line s, starting in state n.
         
@@ -1294,8 +1294,12 @@ class JEditColorizer(BaseColorizer):
             g.print_unique_message(message)
         f = self.restartDict.get(state)
         t1 = time.process_time()
-        i = f(s) if f else 0
-        while i < len(s):
+        if begin is None:
+            begin = 0
+        if end is None:
+            end = len(s)
+        i = f(s) if f else begin
+        while i < end:
             progress = i
             functions = self.rulesDict.get(s[i], [])
             for f in functions:
@@ -1470,7 +1474,7 @@ class JEditColorizer(BaseColorizer):
         if delegate:
             self.push_delegate(delegate)
             state = self.currentState()
-            self.mainLoop(state, s[i:j])
+            self.mainLoop(state, s, begin=i, end=j)
             self.pop_delegate()
         elif not exclude_match:
             self.setTag(tag, s, i, j)
