@@ -722,27 +722,23 @@ class BaseColorizer:
     def setTag(self, tag: str, s: str, i: int, j: int) -> None:
         """Set the tag in the highlighter."""
         trace = 'coloring' in g.app.debug and not g.unitTesting
-        full_tag = f"{self.language}.{tag}"
+
         default_tag = f"{tag}_font"  # See default_font_dict.
+        full_tag = f"{self.language}.{tag}"
         font: Any = None  # Set below. Define here for report().
 
-        def report(color) -> None:
+        def report(color: str) -> None:
             """A superb trace. Don't remove it."""
-            # s2 = g.truncate(s, 50)
-            s2 = s[i:j]  # Show only the colored string.
-            delegate_s = f":{self.delegate_name}:" if self.delegate_name else ''
-            # font_s = id(font) if font else 'None'
-            matcher_name = g.caller(3)
-            rule_s = f"{self.rulesetName}:{delegate_s}{matcher_name}"
             i_j_s = f"{i:>3}:{j:<3}"
-            # Don't report one-character markup.
-            if j - i == 1 and tag in ('markup', 'operator', 'null'):
-                return
+            matcher_name = g.caller(3)
+            rule_name = g.caller(4)
+            matcher_s = f"{self.rulesetName}::{rule_name}:{matcher_name}"
+            s2 = s[i:j]  # Show only the colored string.
             print(
                 f"setTag: {self.recolorCount:4} "
-                f"{colorName:7} "
-                f"{full_tag:<20} "
-                f"{rule_s:<40} "
+                f"{matcher_s:<50} "
+                f"color: {colorName:7} "
+                f"tag: {full_tag:<20} "
                 f"{i_j_s:7} {s2}"
             )
 
@@ -773,9 +769,12 @@ class BaseColorizer:
                 self.actualColorDict[colorName] = color
             else:
                 # Leo 6.7.2: This should never happen: configure_colors does a pre-check.
-                report(extra='*** unknown color name')
-                g.trace(full_tag, d.get(full_tag))
-                g.trace(tag, d.get(tag))
+                message = (
+                    "jedit.setTag: can not happen: "
+                    f"full_tag: {full_tag} = {d.get(full_tag)!r} "
+                    f"tag: {tag} = {d.get(tag)!r}"
+                )
+                g.print_unique_message(message)
                 return
         underline = self.configUnderlineDict.get(tag)
         format = QtGui.QTextCharFormat()
@@ -1325,7 +1324,7 @@ class JEditColorizer(BaseColorizer):
         jEdit.recolor: Recolor a *single* line, s.
         QSyntaxHighligher calls this method repeatedly and automatically.
         
-        Don't even *think* about this method unless you
+        Don't even *think* about changing this method unless you
         understand *every word* of the Theory of Operation:  
         https://github.com/leo-editor/leo-editor/issues/4158
         """
@@ -1364,12 +1363,13 @@ class JEditColorizer(BaseColorizer):
             if prev_state == -1:
                 print('')
                 g.trace(f"New node: prev_state: {prev_state} p.h: {p.h}")
-            g.trace(
-                f"recolorCount: {self.recolorCount:<4} "
-                f"line: {self.currentBlockNumber():<4} "
-                f"state: {state}: {self.stateNumberToStateString(state):<10} "
-                f"s: {s!r}"
-            )
+            if 0:  # Distracting.
+                g.trace(
+                    f"recolorCount: {self.recolorCount:<4} "
+                    f"line: {self.currentBlockNumber():<4} "
+                    f"state: {state}: {self.stateNumberToStateString(state):<10} "
+                    f"s: {s!r}"
+                )
 
         # mainLoop will do nothing if s is empty.
         if s:
@@ -1469,30 +1469,17 @@ class JEditColorizer(BaseColorizer):
         self.delegate_name = delegate
         if delegate:
             self.modeStack.append(self.modeBunch)
-            self.init_mode(delegate)
-            while 0 <= i < j and i < len(s):
-                progress = i
-                assert j >= 0, j
-                for f in self.rulesDict.get(s[i], []):
-                    n = f(self, s, i)
-                    if n is None:
-                        g.trace('Can not happen: delegate matcher returns None')
-                    elif n > 0:
-                        i += n
-                        break
-                else:
-                    # Use the default chars for everything else.
-                    # Use the *delegate's* default characters if possible.
-                    default_tag = self.attributesDict.get('default')
-                    self.setTag(default_tag or tag, s, i, i + 1)
-                    i += 1
-                assert i > progress
-            bunch = self.modeStack.pop()
-            self.initModeFromBunch(bunch)
+            try:
+                self.init_mode(delegate)
+                self.setTag(tag, s, i, j)
+            finally:
+                bunch = self.modeStack.pop()
+                self.initModeFromBunch(bunch)
         elif not exclude_match:
             self.setTag(tag, s, i, j)
+
+        # Allow UNL's, URL's, and GNX's *everywhere*.
         if tag != 'url':
-            # Allow UNL's, URL's, and GNX's *everywhere*.
             j = min(j, len(s))
             while i < j:
                 ch = s[i].lower()
