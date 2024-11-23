@@ -50,9 +50,10 @@ def html_rule3(colorer, s, i):
 
 #@+node:ekr.20230419050050.7: *3* html_rule4 <..>
 def html_rule4(colorer, s, i):
+    if i == 0 and s.startswith(('<style', '</style')):
+        return 0  # Defer to the new rules.
     return colorer.match_span(s, i, kind="markup", begin="<", end=">",
         delegate="html::tags")
-
 #@+node:ekr.20230419050050.8: *3* html_rule5 &..;
 def html_rule5(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="&", end=";",

@@ -34,14 +34,13 @@ def vue_element(colorer: Any, s: str, i: int) -> int:
     for block, language in blocks:
         if s.startswith(block):
             # Colorize the element as an html element.
-            colorer.match_seq(s, i, kind="markup", seq=block, delegate="html")
+            colorer.match_span(s, i, kind="markup", begin=block, end='>', delegate="html")
 
             # Simulate `@language language`.
             colorer.push_delegate(language)
             return len(s)  # Success.
 
     # Error: colorizer the element as a comment.
-    # g.trace('Oops:', s)
     colorer.match_span(s, i, kind="comment1", begin="<", end=">")
     return -len(s)  # Fail completely.
 #@-others
