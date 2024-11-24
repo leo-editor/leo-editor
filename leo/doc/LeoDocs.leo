@@ -2500,12 +2500,13 @@
 </v>
 <v t="ekr.20240828095959.1"></v>
 <v t="ekr.20240828094953.1"><vh>Leo 6.8.2 release notes</vh></v>
-<v t="ekr.20241116111317.1"><vh>===== Dark theme?</vh></v>
+<v t="ekr.20241116111317.1"><vh>===== Dark theme</vh>
 <v t="ekr.20241124074331.1"><vh>--- changed docs</vh>
 <v t="ekr.20150318110552.30"></v>
 </v>
-<v t="ekr.20090428133936.2"></v>
 <v t="ekr.20241124033307.1"><vh>unused from conf.py</vh></v>
+</v>
+<v t="ekr.20090428133936.2"></v>
 <v t="ekr.20241124032830.1"><vh>*** classic.css sets the color!!!</vh></v>
 </vnodes>
 <tnodes>
@@ -32887,8 +32888,11 @@ If a pattern matcher matches an ``@language`` or coloring directive, the matcher
 
 If a pattern matcher matches syntax that continues to the next line, the pattern matcher creates a **restarter matcher** by calling ``setRestart``. The restarter matchers are essentially closures, bindings of the pattern matcher *and all of its kwargs*. The details are hairy, but the coding pattern is the same for all cases. See the source code for details.
 </t>
-<t tx="ekr.20241116111317.1"></t>
-<t tx="ekr.20241124032830.1">.. How did this happen????????????????</t>
+<t tx="ekr.20241116111317.1">.. Before: classic.css set the color!!!
+
+.. It looks like there was way too much in the _static folders.
+</t>
+<t tx="ekr.20241124032830.1"></t>
 <t tx="ekr.20241124033307.1">@language python
 
 # All colors are CSS colors.
