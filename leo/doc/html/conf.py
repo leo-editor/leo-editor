@@ -16,7 +16,7 @@ copyright = '1997-2024, Edward K. Ream'
 version = '6.8.2'
 release = '6.8.2'
 
-use_dark = True
+use_dark = False
 
 html_theme = 'classic'
 pygments_style = 'sphinx'
@@ -24,11 +24,12 @@ source_suffix = '.html.txt'
 master_doc = 'leo_toc'  # The master toctree document, without suffix.
 html_last_updated_fmt = '%B %d, %Y'
 
-# Paths.  All relative to this directory.
+# Paths.
 extensions = []
-templates_path = ['_templates']
+templates_path = []  # '_templates']
 exclude_trees = ['_build']  # Don't search for source files.
 html_logo = '_static/LeoLogo.svg'
+# These folders are copied to the documentation's HTML output.
 html_static_path = ['_static', 'screen-shots']
 html_css_files = ['custom.css',]  # Relative to html_static_paths.
 
