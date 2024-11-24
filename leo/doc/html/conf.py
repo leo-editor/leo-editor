@@ -23,12 +23,11 @@ source_suffix = '.html.txt'
 html_last_updated_fmt = '%B %d, %Y'
 html_use_index = True
 master_doc = 'leo_toc'              # The master toctree document, without suffix.
+html_logo = '_static/LeoLogo.svg'   
 
 # These folders are copied to the documentation's HTML output.
 html_static_path = ['_static']      # 'screen-shots' aren't going to change.
 html_css_files = ['custom.css',]    # Relative to html_static_paths.
-### html_logo = '_static/LeoLogo.svg'
-html_logo = 'LeoLogo.svg'           # Relative to '_static' ???
 
 # Options...
 html_sidebars = {

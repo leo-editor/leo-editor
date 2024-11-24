@@ -2506,7 +2506,7 @@
 </v>
 <v t="ekr.20090428133936.2"></v>
 <v t="ekr.20241124033307.1"><vh>unused from conf.py</vh></v>
-<v t="ekr.20241124032830.1"><vh>*** classic.conf sets the color!!!</vh></v>
+<v t="ekr.20241124032830.1"><vh>*** classic.css sets the color!!!</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
