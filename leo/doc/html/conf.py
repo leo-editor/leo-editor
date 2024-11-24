@@ -2,11 +2,12 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20090428133936.2: * @file html/conf.py
 #@@first
-#@@nobeautify
-#@@language python
 
-# This file must be in the source directory.
-# leo/doc/html/conf.py
+"""
+leo/doc/html/conf.py
+
+This file must be in the source directory.
+"""
 
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 # http://docs.readthedocs.io/en/latest/getting_started.html#in-markdown
@@ -20,14 +21,16 @@ release = '6.8.2'
 html_theme = 'classic'
 pygments_style = 'sphinx'
 source_suffix = '.html.txt'
+
 html_last_updated_fmt = '%B %d, %Y'
+html_logo = '_static/LeoLogo.svg'
 html_use_index = True
-master_doc = 'leo_toc'              # The master toctree document, without suffix.
-html_logo = '_static/LeoLogo.svg'   
+html_use_smartypants = True
+master_doc = 'leo_toc'  # The master toctree document, without suffix.
 
 # These folders are copied to the documentation's HTML output.
-html_static_path = ['_static']      # 'screen-shots' aren't going to change.
-html_css_files = ['custom.css',]    # Relative to html_static_paths.
+html_static_path = ['_static']  # 'screen-shots' aren't going to change.
+html_css_files = ['custom.css',]  # Relative to html_static_paths.
 
 # Options...
 html_sidebars = {
@@ -43,10 +46,11 @@ html_sidebars = {
 # extensions = []
 # templates_path = []
 # exclude_trees = []              # Don't search these for source files.
-# html_show_sourcelink = False
 # html_split_index = False        # True: one page per letter.
 # html_use_modindex = False
 # html_use_opensearch = ''
-# html_use_smartypants = True
-# htmlhelp_basename = 'Leodoc'    # Output file base name for HTML help builder.
+#
+
+#@@nobeautify
+#@@language python
 #@-leo
