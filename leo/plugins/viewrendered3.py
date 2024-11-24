@@ -2328,6 +2328,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.create_dispatch_dict()
         self.activate()
         self.zoomed = False
+
+        self.dbg_print(f'Created {self=}')
     #@+node:TomP.20200329223820.3: *4* vr3.create_dispatch_dict
     def create_dispatch_dict(self):
         self.dispatch_dict = {
@@ -3115,7 +3117,12 @@ class ViewRenderedController3(QtWidgets.QWidget):
             self.handle_scrolled_msg(keywords)
             return
 
-        # g.es(f'{self.freeze=}, {self.scrolling=}, {self.in_forced_message=}')
+        # self.reps = self.reps + 1 if hasattr(self, 'reps') else 1
+        # if self.reps < 30:
+            # g.es(self.reps)
+            # g.es(f'    {self.freeze=}, {self.scrolling=}')
+            # g.es(f'    {self.must_update(keywords)=}')
+            # g.es(f'    {self.qwev=}')
 
         if self.freeze or self.scrolling:
             return
@@ -3185,14 +3192,10 @@ class ViewRenderedController3(QtWidgets.QWidget):
             self.in_forced_message = False
 
     def restore_scroll_position(self):
-        if self.in_forced_message:
-            self.in_forced_message = False
-            self.set_unfreeze()
-        else:
-            self.qwev.page().runJavaScript(f"window.scrollTo(0, {self.scroll_position});")
-            self.scrolling = True
-            self.timer.start(300)
-            self.set_unfreeze_when_scrolled()
+        self.qwev.page().runJavaScript(f"window.scrollTo(0, {self.scroll_position});")
+        self.scrolling = True
+        self.timer.start(300)
+        self.set_unfreeze_when_scrolled()
 
     #@+node:tom.20240724103143.1: *4* vr3.create_node_tree
     def create_node_tree(self, p, kind):
@@ -3251,11 +3254,12 @@ class ViewRenderedController3(QtWidgets.QWidget):
         # Prevent VR3 from showing the selected node at
         # the next idle-time callback,
         # which would over-write the scrolled message.
-        self.node_changed = False
         self.gnx = p.v.gnx
         self.length = len(p.b)  # not s
         self.last_text = p.b
-        self.in_forced_message = False
+        self.last_headline = p.v.h
+
+        self.dbg_print(f'Scrolled msg: {keywords=}, {self=}')
     #@+node:TomP.20191215195433.51: *4* vr3.embed_widget & helper
     def embed_widget(self, w, delete_callback=None):
         """Embed widget w in the appropriate splitter."""
