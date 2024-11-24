@@ -11,6 +11,6 @@ img {
     width: 50%;
 }
 
-p {
-    background-color: yellow;
+body {
+    background-color: #fffdbc;  /* Leo yellow */
 }
