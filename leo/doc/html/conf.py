@@ -17,6 +17,7 @@ version = '6.8.2'
 release = '6.8.2'
 
 use_dark = True
+
 html_theme = 'classic'
 pygments_style = 'sphinx'
 source_suffix = '.html.txt'
@@ -24,21 +25,30 @@ master_doc = 'leo_toc'  # The master toctree document, without suffix.
 html_last_updated_fmt = '%B %d, %Y'
 
 # Paths.  All relative to this directory.
-extensions = []  # Sphinx extension modules.
+extensions = []
 templates_path = ['_templates']
 exclude_trees = ['_build']  # Don't search for source files.
 html_logo = '_static/LeoLogo.svg'
-html_static_path = ['_static', 'screen-shots']  # leo/docs/static
-html_css_files = ['custom.css',]  # Relative to html_static_path.
+html_static_path = ['_static', 'screen-shots']
+html_css_files = ['custom.css',]  # Relative to html_static_paths.
 
 # All colors are CSS colors.
 if use_dark:
     html_theme_options = {
         'collapsiblesidebar': True,
-        'sidebarbgcolor': "black",
+        'sidebarbgcolor': 'black',
         'sidebartextcolor': 'white',
         'sidebarlinkcolor': 'white',
-        'bgcolor': "black",
+        # Text:
+        'bgcolor': 'black',
+        'textcolor': 'white',
+        # Links:
+        'linkcolor': 'yellow',
+        'visitedlinkcolor': 'purple',
+        # Headlines:
+        'headbgcolor': 'black',
+        'headtextcolor': 'white',
+        'headlinkcolor': 'while',
     }
 else:
     html_theme_options = {

@@ -2503,6 +2503,8 @@
 <v t="ekr.20241116111317.1"><vh>=====</vh></v>
 <v t="EKR.20040524104904.224" descendentVnodeUnknownAttributes="7d710058010000003071017d710258090000007374725f6174696d657103580c000000313337363431323033382e30710473732e"></v>
 <v t="ekr.20090428133936.2"></v>
+<v t="ekr.20241124025925.1"><vh>classic theme settings colors</vh></v>
+<v t="ekr.20241124030026.1"><vh>classic theme settings: others</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -32883,6 +32885,48 @@ If a pattern matcher matches an ``@language`` or coloring directive, the matcher
 If a pattern matcher matches syntax that continues to the next line, the pattern matcher creates a **restarter matcher** by calling ``setRestart``. The restarter matchers are essentially closures, bindings of the pattern matcher *and all of its kwargs*. The details are hairy, but the coding pattern is the same for all cases. See the source code for details.
 </t>
 <t tx="ekr.20241116111317.1"></t>
+<t tx="ekr.20241124025925.1">The classic theme looks like the Python 2 documentation.
+It can be customized via these options:
+
+Various color and font options without having to write a custom stylesheet:
+All colors are css colors.
+
+footerbgcolor: Background color for the footer line.
+footertextcolor: Text color for the footer line.
+
+sidebarbgcolor: Background color for the sidebar.
+sidebarbtncolor: Background color for the sidebar collapse button.
+sidebartextcolor: Text color for the sidebar.
+sidebarlinkcolor: Link color for the sidebar.
+
+relbarbgcolor: Background color for the relation bar.
+relbartextcolor: Text color for the relation bar.
+relbarlinkcolor: Link color for the relation bar.
+
+bgcolor: Body background color.
+textcolor: Body text color.
+linkcolor: Body link color.
+
+visitedlinkcolor: Body color for visited links.
+
+headbgcolor: Background color for headings.
+headtextcolor: Text color for headings.
+headlinkcolor: Link color for headings.
+
+codebgcolor: Background color for code blocks.
+codetextcolor: Default text color for code blocks, if not set differently by the highlighting style.
+</t>
+<t tx="ekr.20241124030026.1">bodyfont (CSS font-family): Font for normal text.
+headfont (CSS font-family): Font for headings.
+
+rightsidebar: True: Put the sidebar on the right side
+
+stickysidebar: True: Make the sidebar “fixed” so that it doesn’t scroll out of view for long body content. This may not work well with all browsers. Defaults to False.
+
+collapsiblesidebar: True: Add an experimental JavaScript snippet that makes the sidebar collapsible via a button on its side. Defaults to False.
+
+externalrefs: True: Display external links differently from internal links. Defaults to False.
+</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
