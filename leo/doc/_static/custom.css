@@ -1,0 +1,32 @@
+/*
+leo/doc/_static/custom.css.
+
+The make-sphinx script will copy this to leo-editor/docs/static
+*/
+
+img.logo {
+    background-color: white;
+    width: 100%;
+}
+
+img {
+    width: 50%;
+}
+
+/* #fffbdc; Leo yellow */
+
+
+div.body {
+    background-color: #fffbdc;
+}
+
+/*
+
+body {
+    background-color: #fffbdc;
+}
+
+div.document {
+  background-color: #fffbdc;
+}
+*/
