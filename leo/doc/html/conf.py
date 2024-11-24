@@ -23,13 +23,13 @@ pygments_style = 'sphinx'
 source_suffix = '.html.txt'
 
 html_last_updated_fmt = '%B %d, %Y'
-html_logo = '_static/LeoLogo.svg'
+html_logo = '../_static/LeoLogo.svg'
 html_use_index = False  # Not necessary for glossary.
 html_use_smartypants = False
 master_doc = 'leo_toc'
 
 # These folders are copied to the documentation's HTML output.
-html_static_path = ['_static']  # 'screen-shots' aren't going to change.
+html_static_path = ['../_static']  # 'screen-shots' aren't going to change.
 html_css_files = ['custom.css']  # Relative to html_static_paths.
 
 # Options...

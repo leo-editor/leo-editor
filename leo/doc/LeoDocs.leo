@@ -2507,7 +2507,7 @@
 <v t="ekr.20241124033307.1"><vh>unused from conf.py</vh></v>
 </v>
 <v t="ekr.20131016083406.16724"></v>
-<v t="ekr.20241124083101.1"><vh>@edit html/_static/custom.css</vh></v>
+<v t="ekr.20241124083101.1"><vh>@edit _static/custom.css</vh></v>
 <v t="ekr.20090428133936.2"></v>
 </vnodes>
 <tnodes>
