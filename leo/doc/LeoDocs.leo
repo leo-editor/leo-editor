@@ -15073,9 +15073,9 @@ Run this script from the `gh-pages` branch.
 1. Generate intermediate files for all headlines in the table.
 2. Run `make html` from the leo/doc/html directory.
 
-After running this script, copy files from leo/doc/html/_build/html to leo-editor/docs
-
-This script does *not* change leo/docs/_static.
+After running this script, copy files
+- from leo/doc/html/_build/html to leo-editor/docs
+- from leo/doc/html/_build/html/_static to leo/editor-docs/_static
 """
 
 @language python
@@ -31690,7 +31690,9 @@ Leo's ``beautify`` command differs from `Black`_ as follows:
 <t tx="ekr.20230228100301.2">When checked, the Find and Change commands ignore the case of alphabetic characters when determining matches.
 </t>
 <t tx="ekr.20230228100301.3"></t>
-<t tx="ekr.20230228105847.1">def run():
+<t tx="ekr.20230228105847.1">@language python
+
+def run():
     """
     Make all html files using sphinx and copy the results to leo-editor/docs.
     """
@@ -31699,20 +31701,20 @@ Leo's ``beautify`` command differs from `Black`_ as follows:
     # Base paths. Not finalized.
     docs = join(g.app.loadDir, '..', '..', 'docs')
     doc = join(g.app.loadDir, '..', 'doc')
-
-    # leo-editor/docs
-    docs_path = finalize(docs)
-    # leo-editor/docs/_static
-    docs_static_path = finalize(join(docs, '_static'))
-    # leo/doc/_static
-    doc_static_path = finalize(join(doc, '_static'))
-    # leo/doc/html
+    
+    # We will cd to the html path.
     html_path = finalize(join(doc, 'html'))
-    # leo/doc/html/_bulid/html
+
+    # We will copy all files from build_path to docs_path.
     build_path = finalize(join(doc, 'html', '_build', 'html'))
+    docs_path = finalize(docs)
+    
+    # We will copy the static folder from doc to docs
+    docs_static_path = finalize(join(docs, '_static'))
+    doc_static_path = finalize(join(doc, 'html', '_build', 'html', '_static' ))
     
     # Step 2: Make sure all paths exist.
-    paths = (build_path, docs_path, html_path)
+    paths = (build_path, docs_path, docs_static_path, html_path)
     fails = [z for z in paths if not g.os_path_exists(z)]
     if fails:
         g.printObj(fails, tag='Missing paths')
@@ -31726,11 +31728,11 @@ Leo's ``beautify`` command differs from `Black`_ as follows:
         old_p = c.p
         os.chdir(html_path)
         write_intermediate_files()
-        # prev_timestamp = last_timestamp(build_path)
         make_html(html_path)
-        # copy_files(build_path, docs_path, prev_timestamp)
+        print('')
         copy_all_files(build_path, docs_path)
         copy_all_files(doc_static_path, docs_static_path)
+        print('')
         git_status()
     finally:
         c.selectPosition(old_p)
@@ -32974,24 +32976,22 @@ else:
 <t tx="ekr.20241124074331.1"></t>
 <t tx="ekr.20241124122954.1">def copy_all_files(from_directory: str, to_directory: str) -&gt; None:
     """Copy *all* html files from `from_directory` to `to_directory`."""
+    trace = False
     if not os.path.exists(to_directory):
         print(f"Directory not found: {to_directory!r}")
         return
     files = glob.glob(f"{from_directory}{os.sep}*")
-    if 1:
-        print('')
-        print(f"Copy all files {from_directory} to {to_directory}")
-        print('')
+    files = [z for z in files if os.path.isfile(z)]
+    # Announce.
     written = 0
     for f in files:
         try:
             fn = finalize(f)
             shutil.copy2(fn, to_directory)
-            print(f"    Copied {fn:70} to {to_directory}")
             written += 1
         except Exception:
             print(f"Not Copied {fn}")
-    print(f"copied {written} file{g.plural(written)} to {to_directory}")
+    print(f"Copied {written} files from {from_directory:55} to {to_directory}")
 </t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
