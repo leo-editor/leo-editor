@@ -2508,6 +2508,7 @@
 <v t="ekr.20241124033307.1"><vh>unused from conf.py</vh></v>
 </v>
 <v t="ekr.20131016083406.16724"></v>
+<v t="ekr.20230228105847.1"></v>
 <v t="ekr.20241124083101.1"><vh>@edit _static/custom.css</vh></v>
 <v t="ekr.20090428133936.2"></v>
 </vnodes>
@@ -31711,7 +31712,8 @@ def run():
     
     # We will copy the static folder from doc to docs
     docs_static_path = finalize(join(docs, '_static'))
-    doc_static_path = finalize(join(doc, 'html', '_build', 'html', '_static' ))
+    ### doc_static_path = finalize(join(doc, 'html', '_build', 'html', '_static' ))
+    doc_static_path = finalize(join(doc, '_static' ))
     
     # Step 2: Make sure all paths exist.
     paths = (build_path, docs_path, docs_static_path, html_path)
