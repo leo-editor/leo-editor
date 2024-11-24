@@ -23,7 +23,7 @@ body {
 }
 
 div.document {
-    background-color: #fffdbc;
+    background-color: #fffdbc; /* #fffdbc; */
 }
 
 div.documentwrapper {

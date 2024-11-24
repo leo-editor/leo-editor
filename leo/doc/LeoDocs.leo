@@ -2501,7 +2501,12 @@
 <v t="ekr.20240828095959.1"></v>
 <v t="ekr.20240828094953.1"><vh>Leo 6.8.2 release notes</vh></v>
 <v t="ekr.20241116111317.1"><vh>===== Dark theme?</vh></v>
+<v t="ekr.20241124074331.1"><vh>--- changed docs</vh>
+<v t="ekr.20150318110552.30"></v>
+</v>
 <v t="ekr.20090428133936.2"></v>
+<v t="ekr.20241124033307.1"><vh>unused from conf.py</vh></v>
+<v t="ekr.20241124032830.1"><vh>*** classic.conf sets the color!!!</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -17637,8 +17642,9 @@ Leo preprocesses all scripts by simulating the writing of a external file to a s
 ``save-file or file-save (Ctrl-S)``
     Saves the Leo window to a file.
 ``save-file-as``
-    Saves a copy of the Leo outline, changing outline's file name.
+    Saves the Leo outline, changing outline's file name.
 ``save-file-to``
+    Saves a copy of the Leo outline, changing outline's file name.
 
 **Opening specific files**:
 
@@ -31671,7 +31677,7 @@ Leo's ``beautify`` command differs from `Black`_ as follows:
 <t tx="ekr.20230228100301.3"></t>
 <t tx="ekr.20230228105847.1">def run():
 
-    if g.gitBranchName() != 'gh-pages':
+    if not g.gitBranchName().startswith('gh-pages'):
         g.es_print('Run `make-sphinx` from `gh-pages` branch')
         return
 
@@ -32882,6 +32888,36 @@ If a pattern matcher matches an ``@language`` or coloring directive, the matcher
 If a pattern matcher matches syntax that continues to the next line, the pattern matcher creates a **restarter matcher** by calling ``setRestart``. The restarter matchers are essentially closures, bindings of the pattern matcher *and all of its kwargs*. The details are hairy, but the coding pattern is the same for all cases. See the source code for details.
 </t>
 <t tx="ekr.20241116111317.1"></t>
+<t tx="ekr.20241124032830.1">.. How did this happen????????????????</t>
+<t tx="ekr.20241124033307.1">@language python
+
+# All colors are CSS colors.
+if use_dark:
+    html_theme_options = {
+        'collapsiblesidebar': True,
+        'sidebarbgcolor': 'black',
+        'sidebartextcolor': 'white',
+        'sidebarlinkcolor': 'white',
+        # Text:
+        'bgcolor': 'black',
+        'textcolor': 'white',
+        # Links:
+        'linkcolor': 'yellow',
+        'visitedlinkcolor': 'purple',
+        # Headlines:
+        'headbgcolor': 'black',
+        'headtextcolor': 'white',
+        'headlinkcolor': 'while',
+    }
+else:
+    html_theme_options = {
+        'collapsiblesidebar': True,
+        'sidebarbgcolor': "#fffdbc",  # Leo yellow.
+        'sidebartextcolor': 'black',
+        'sidebarlinkcolor': 'black',
+        'bgcolor': 'red',  ### "#fffbdc",  # Leo yellow.
+    }</t>
+<t tx="ekr.20241124074331.1"></t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
