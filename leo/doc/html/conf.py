@@ -46,10 +46,6 @@ html_sidebars = {
 # extensions = []
 # templates_path = []
 # exclude_trees = []              # Don't search these for source files.
-# html_split_index = False        # True: one page per letter.
-# html_use_modindex = False
-# html_use_opensearch = ''
-#
 
 #@@nobeautify
 #@@language python
