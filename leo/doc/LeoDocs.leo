@@ -18257,8 +18257,6 @@ Searches creating clones:
     Undo the last spelling correction.
 ``spell-as-you-type-wrap``
     Toggle wrapping in spell-as-you-type mode.
-
-The following commands refer to the Spell Tab:
 ``spell-tab-open``
     Show the Spell tab.
 
