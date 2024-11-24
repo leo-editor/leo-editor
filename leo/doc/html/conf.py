@@ -16,7 +16,7 @@ copyright = '1997-2024, Edward K. Ream'
 version = '6.8.2'
 release = '6.8.2'
 
-use_dark = False
+use_dark = True
 
 html_theme = 'classic'
 pygments_style = 'sphinx'
@@ -26,11 +26,11 @@ html_last_updated_fmt = '%B %d, %Y'
 
 # Paths.
 extensions = []
-templates_path = []  # '_templates']
-exclude_trees = ['_build']  # Don't search for source files.
+templates_path = []
+exclude_trees = []  # '_build']  # Don't search for source files.
 html_logo = '_static/LeoLogo.svg'
 # These folders are copied to the documentation's HTML output.
-html_static_path = ['_static', 'screen-shots']
+html_static_path = ['_static']  # 'screen-shots' aren't going to change.
 html_css_files = ['custom.css',]  # Relative to html_static_paths.
 
 # All colors are CSS colors.
