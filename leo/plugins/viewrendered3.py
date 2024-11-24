@@ -2271,9 +2271,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.last_headline = ''
         self.locked = False
 
-        self.pyplot_active = False
-        self.scrollbar_pos_dict = {}  # Keys are vnodes, values are positions.
-        self.scrolling = False
+        self.pyplot_active: bool = False
+        self.scrollbar_pos_dict: dict = {}  # Keys are vnodes, values are positions.
+        self.scrolling: bool = False
+        self.scroll_position: int = 0
+
         self.sizes = []  # Saved splitter sizes.
         self.splitter_index = None  # The index of the rendering pane in the splitter.
         self.title = None
@@ -2309,7 +2311,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.last_update_was_node_change = False
         self.setObjectName('viewrendered3_pane')
         self.adapt_fgbg_colors = True
-        self.scroll_position: int = 0
 
         #@-<< initialize configuration ivars >>
         #@+<< asciidoc-specific >>
@@ -3114,7 +3115,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             self.handle_scrolled_msg(keywords)
             return
 
-        g.es(f'{self.freeze=}, {self.scrolling=}, {self.in_forced_message=}')
+        # g.es(f'{self.freeze=}, {self.scrolling=}, {self.in_forced_message=}')
 
         if self.freeze or self.scrolling:
             return
@@ -3124,9 +3125,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
         p = self.c.p
 
         if self.must_update(keywords):
-            if self.w:
-                # Hide the old widget so it won't keep us from seeing the new one.
-                self.w.hide()
+            # if self.w:
+                # # Hide the old widget so it won't keep us from seeing the new one.
+                # self.w.hide()
             self.prep_for_dispatch(p, keywords)
 
             # Dispatch based on the computed kind.
@@ -3249,11 +3250,12 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         # Prevent VR3 from showing the selected node at
         # the next idle-time callback,
-        # Which would over-write the scrolled message.
+        # which would over-write the scrolled message.
         self.node_changed = False
         self.gnx = p.v.gnx
         self.length = len(p.b)  # not s
         self.last_text = p.b
+        self.in_forced_message = False
     #@+node:TomP.20191215195433.51: *4* vr3.embed_widget & helper
     def embed_widget(self, w, delete_callback=None):
         """Embed widget w in the appropriate splitter."""
@@ -4955,17 +4957,18 @@ class ViewRenderedController3(QtWidgets.QWidget):
         # URLs, e.g., image or included files.
         path = c.getNodePath(c.p)
         s = g.toUnicode(s)
+        url_base = QtCore.QUrl('file:///' + path + '/')
+        self.capture_scroll_position()
+        self.scrolling = True  # Will be reset to False after scroll
         try:
-            url_base = QtCore.QUrl('file:///' + path + '/')
-            self.capture_scroll_position()
-            # self.set_freeze()
-            self.scrolling = True  # Will be reset to False after scroll
             # self.reset_freeze() will be called after page load and scroll:
             w.setHtml(s, url_base)
         except Exception as e:
             # Oops, don't have a QWebEngineView
             g.es(e)
             w.setHtml(s)
+            self.scrolling = False
+            self.set_unfreeze()
 
         w.show()
     #@+node:TomP.20200329230503.3: *5* vr3.underline
