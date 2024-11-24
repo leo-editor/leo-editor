@@ -16,7 +16,7 @@ and Asciidoc text, images, movies, sounds, rst, html, etc.
 
 #@+others
 #@+node:tom.20240521004125.1: *3* About
-About Viewrendered3 V5.1
+About Viewrendered3 V5.2
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") renders Restructured
@@ -80,8 +80,17 @@ section `Special Renderings`_.
 \@setting nodes in an @settings tree can modify the behavior of
 the plugin.
 
+
+
+#@+node:tom.20241124124334.1: *3* New With This Version
 New With This Version
 ======================
+- VR3 restores the scroll position after an update.  This is especially useful when an entire tree is displayed and changes are made to a node in the tree.
+
+- VR3's "Default Kind" menu now sets the initial checked kind to match the *vr3-default-kind* setting.
+#@+node:tom.20241124124347.1: *3* Previous Recent Changes
+Previous Recent Changes
+========================
 Commands *vr3* and *vr3-show* work better with Leo's new layout system.
 
 VR3 starts in a non-active mode.  This prevents it from slowing down body editing by rendering even when it hasn't been made visible.  The command *vr3* makes sure the plugin is present but does not show it.
@@ -93,8 +102,6 @@ A new RsT stylesheet has been added: *vr3-medium-black.css*.
 
 Support for Jupyter Notebooks has been removed.  Instead, use the new @jupytext external file type. A script, not part of VR3 in this version, can render an @jupyter file in VR3. 
 
-Previous Recent Changes
-========================
 The command vr3-toggle use to fail sometimes; fixed.
 The command vr3-show did not do anything. The behavior is now:
 
@@ -164,7 +171,6 @@ Asciidoctor enhancements
       vr3-asciidoctor-imagesdir=''``).
 
 The Dart programming language is now supported.
-
 #@+node:TomP.20200309205046.1: *3* Compatibility
 #@@pagewidth 65
 Compatibility
@@ -194,7 +200,7 @@ Limitations and Quirks
 
     #. Without MathJax, mathematical symbols in RsT are rendered
        using CSS, which has a cruder appearance than MathJax
-       rendering but may be servicable. With MD, mathematical
+       rendering but may be serviceable. With MD, mathematical
        symbols are not rendered without MathJax.
 
     #. Code blocks for several programming languages can be
@@ -239,7 +245,7 @@ http://http://pypi.python.org/pypi/Markdown, to render Markdown,
 so installing markdown is highly recommended when using this
 plugin.
 
-This plugin uses pygments forsyntax coloring in the MD stylesheet.
+This plugin uses pygments for syntax coloring in the MD stylesheet.
 
 
 #@+node:TomP.20200115200807.1: *3* Settings and Configuration
@@ -420,7 +426,7 @@ exported HTML file is sent to someone else.
 If the MathJax scripts are installed on the local computer, it is recommended
 that one of the ``.js`` script files in the ``es`` directory be used, as shown
 in the above table.  If the script is loaded from the Internet, the URL must
-include a ``?config`` specifer.  The one shown in the example above works well.
+include a ``?config`` specifier.  The one shown in the example above works well.
 
 #@+node:TomP.20210422235304.1: *4* External Processors For Other Languages
 External Processors For Other Languages
@@ -665,7 +671,7 @@ the language instead::
 
 Mathematics
 ------------
-Mathematics symbols and equations can be rendered with MathJax.  When enabled by the *vr3-md-math-output* setting, inline formulas and separate equation blocks can be specifed.  Equations are written in a Latex dialect.
+Mathematics symbols and equations can be rendered with MathJax.  When enabled by the *vr3-md-math-output* setting, inline formulas and separate equation blocks can be specified.  Equations are written in a Latex dialect.
 
 Inline Formulas
 ________________
@@ -830,7 +836,7 @@ math renderings do not look right.
 
     \(a = \sqrt{b}\ \)
 
-.. Note:: There must be a backslash following the last character of the inline math, with no space bfore that added backslash.
+.. Note:: There must be a backslash following the last character of the inline math, with no space before that added backslash.
 
 2. Blocks, such as aligned equations: enclose the latex block with ``$$ .... $$``,
 where ``....`` represents the Latex expressions.
@@ -912,62 +918,6 @@ The names of the languages **must** be spelled exactly as they
 are used in `@language` directives.
 
 The languages that can currently be used are `javascript` and `julia`.  This list may be expanded in the future.
-
-#@+node:TomP.20200115200704.1: *3* Special Renderings
-Special Renderings
-==================
-
-As stated above, the rendering pane renders body text as
-reStructuredText by default, with all Leo directives removed.
-However, if the body text starts with ``<`` (after removing
-directives), the body text is rendered as html.
-
-This plugin renders @md, @image, @html, @movie,
-@networkx and @svg nodes as follows:
-
-**Note**: For @image, @movie and @svg nodes, either the headline
-or the first line of body text may contain a filename. If
-relative, the filename is resolved relative to Leo's load
-directory.
-
-- ``@md`` renders the body text as markdown, as described above.
-
-- ``@graphics-script`` executes the script in the body text in a
-  context containing two predefined variables:
-
-    - gs is the QGraphicsScene for the rendering pane.
-    - gv is the QGraphicsView for the rendering pane.
-
-  Using these variables, the script in the body text may create
-  graphics to the rendering pane.
-
-- ``@image`` renders the file as an image.
-
-    The headline should start with @image.
-    All other characters in the headline are ignored.
-
-    The first line of the body should be the full path to the
-    image file. All other lines are ignored.
-
-- ``@html`` renders the body text as html.
-
-- ``@movie`` plays a file as a movie. @movie also works for music
-  files. The path to the file must be on the first line of the
-  body of the node. Media can be started or paused using the
-  *vr3-pause-play-movie* command. Movies might not render in the
-  current version, depending in video type and installed codecs.
-
-- ``@networkx`` is non-functional at present. It is intended to
-  render the body text as a networkx graph. See
-  http://networkx.lanl.gov/
-
-- ``@svg`` renders the file as a (possibly animated) svg
-  (Scalable Vector Image). See
-  http://en.wikipedia.org/wiki/Scalable_Vector_Graphics
-
-  .. note:: if the first character of the body text is ``<``
-            after removing Leo directives, the contents of body
-            pane is taken to svg code.
 
 #@+node:tom.20211104225431.1: *3* Easy Plotting Of X-Y Data
 Easy Plotting Of X-Y Data
@@ -2335,15 +2285,15 @@ class ViewRenderedController3(QtWidgets.QWidget):
             'asciidoc': self.update_asciidoc,
             'big': self.update_rst,
             'html': self.update_html,
-            'graphics-script': self.update_graphics_script,
+            # 'graphics-script': self.update_graphics_script,
             'image': self.update_image,
             'md': self.update_md,
-            'movie': self.update_movie,
-            'networkx': self.update_networkx,
+            # 'movie': self.update_movie,
+            # 'networkx': self.update_networkx,
             'plain': self.update_text,
-            'pyplot': self.update_pyplot,
+            # 'pyplot': self.update_pyplot,
             'rst': self.update_rst,
-            'svg': self.update_svg,
+            # 'svg': self.update_svg,
             'text': self.update_text,
             # 'url': self.update_url,
         }
@@ -2600,12 +2550,13 @@ class ViewRenderedController3(QtWidgets.QWidget):
         set_group_action('Text', TEXT)
         set_group_action('Asciidoc', ASCIIDOC)
 
-        lables = {'rst': 'RsT', 'rest': 'RsT', 'md': 'MD', 'text': 'Text', 'asciidoc':'Asciidoc'}
+        labels = {'rst': 'RsT', 'rest': 'RsT', 'md': 'MD', 'text': 'Text', 'asciidoc':'Asciidoc'}
         default_string = c.config.getString('vr3-default-kind') or 'rst'
-        default_lable = lables.get(default_string.lower())
+        default_label = labels.get(default_string.lower())
         for action in group.actions():
-            if action.text() == default_lable:
+            if action.text() == default_label:
                 action.setChecked(True)
+
         _default_type_button.setMenu(menu)
 
         # "Other Actions"
