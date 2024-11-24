@@ -2322,7 +2322,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         # User settings.
         self.reloadSettings()
-        self.node_changed = True
 
         # Init.
         self.create_dispatch_dict()
@@ -2418,6 +2417,63 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.setLayout(QtWidgets.QVBoxLayout())
         self.layout().setContentsMargins(0, 0, 0, 0)
         self.create_toolbar()
+    #@+node:TomP.20200329223820.15: *4* vr3.reloadSettings
+    def reloadSettings(self):
+        c = self.c
+        c.registerReloadSettings(self)
+        self.default_kind = c.config.getString('vr3-default-kind') or 'rst'
+
+        self.math_output = c.config.getBool('vr3-math-output', default=False)
+        self.mathjax_url = c.config.getString('vr3-mathjax-url') or ''
+        self.rst_math_output = 'mathjax ' + self.mathjax_url
+
+        self.use_node_headline = c.config.getBool('vr3-insert-headline-from-node', default=True)
+
+        #@+<< load stylesheet settings >>
+        #@+node:tom.20240919182502.1: *5* << load stylesheet settings >>
+        self.adapt_fgbg_colors = c.config.getBool('vr3-adapt-fgbg-colors', True)
+        self.rst_stylesheet = c.config.getString('vr3-rst-stylesheet') or ''
+        self.use_dark_theme = c.config.getBool('vr3-rst-use-dark-theme', RST_USE_DARK)
+
+        self.md_math_output = c.config.getBool('vr3-md-math-output', default=False)
+        self.md_stylesheet = c.config.getString('vr3-md-stylesheet') or ''
+        self.md_style_switch_auto = c.config.getBool('vr3-md-style-auto', default=True)
+
+        self.set_md_stylesheet()
+        self.set_rst_stylesheet()
+        self.create_md_header()
+
+
+
+        #@-<< load stylesheet settings >>
+        #@+<< configure markdown >>
+        #@+node:tom.20240919182545.1: *5* << configure markdown >>
+        if got_markdown:
+            ext = ['fenced_code', 'codehilite', 'def_list', 'tables']
+            if self.md_math_output:
+                ext.append('leo.extensions.mdx_math_gi')
+            self.Markdown = markdown.Markdown(extensions=ext)
+        #@-<< configure markdown >>
+        #@+<< configure asciidoc >>
+        #@+node:tom.20240919182710.1: *5* << configure asciidoc >>
+        self.asciidoc_path = c.config.getString('vr3-asciidoc-path') or ''
+        self.prefer_asciidoc3 = c.config.getBool('vr3-prefer-asciidoc3', default=False)
+        self.prefer_external = c.config.getString('vr3-prefer-external') or ''
+        if self.prefer_external:
+            self.asciidoctor = find_exe(self.prefer_external) or None
+
+        self.asciidoc_show_proc_fail_msgs = True
+        self.asciidoctor_suppress_footer = c.config.getBool('vr3-asciidoctor-nofooter', default=False)
+        self.asciidoctor_icons = c.config.getString('vr3-asciidoctor-icons') or ''
+        self.asciidoctor_imagesdir = c.config.getString('vr3-asciidoctor-imagesdir') or ''
+        self.asciidoctor_diagram = (
+            asciidoc_has_diagram and
+            c.config.getBool('vr3-asciidoctor-diagram', default=False)
+        )
+        #@-<< configure asciidoc >>
+
+        self.external_editor = c.config.getString('vr3-ext-editor') or ''
+        self.DEBUG = bool(os.environ.get("VR3_DEBUG", None))
     #@+node:TomP.20200329223820.6: *4* vr3.create_toolbar & helper functions
     def create_toolbar(self):
         """Create toolbar and attach to the VR3 widget.
@@ -2543,6 +2599,13 @@ class ViewRenderedController3(QtWidgets.QWidget):
         set_group_action('MD', MD)
         set_group_action('Text', TEXT)
         set_group_action('Asciidoc', ASCIIDOC)
+
+        lables = {'rst': 'RsT', 'rest': 'RsT', 'md': 'MD', 'text': 'Text', 'asciidoc':'Asciidoc'}
+        default_string = c.config.getString('vr3-default-kind') or 'rst'
+        default_lable = lables.get(default_string.lower())
+        for action in group.actions():
+            if action.text() == default_lable:
+                action.setChecked(True)
         _default_type_button.setMenu(menu)
 
         # "Other Actions"
@@ -2584,63 +2647,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.vr3_toolbar = _toolbar
 
         #@-<< vr3: finish toolbar >>
-    #@+node:TomP.20200329223820.15: *4* vr3.reloadSettings
-    def reloadSettings(self):
-        c = self.c
-        c.registerReloadSettings(self)
-        self.default_kind = c.config.getString('vr3-default-kind') or 'rst'
-
-        self.math_output = c.config.getBool('vr3-math-output', default=False)
-        self.mathjax_url = c.config.getString('vr3-mathjax-url') or ''
-        self.rst_math_output = 'mathjax ' + self.mathjax_url
-
-        self.use_node_headline = c.config.getBool('vr3-insert-headline-from-node', default=True)
-
-        #@+<< load stylesheet settings >>
-        #@+node:tom.20240919182502.1: *5* << load stylesheet settings >>
-        self.adapt_fgbg_colors = c.config.getBool('vr3-adapt-fgbg-colors', True)
-        self.rst_stylesheet = c.config.getString('vr3-rst-stylesheet') or ''
-        self.use_dark_theme = c.config.getBool('vr3-rst-use-dark-theme', RST_USE_DARK)
-
-        self.md_math_output = c.config.getBool('vr3-md-math-output', default=False)
-        self.md_stylesheet = c.config.getString('vr3-md-stylesheet') or ''
-        self.md_style_switch_auto = c.config.getBool('vr3-md-style-auto', default=True)
-
-        self.set_md_stylesheet()
-        self.set_rst_stylesheet()
-        self.create_md_header()
-
-
-
-        #@-<< load stylesheet settings >>
-        #@+<< configure markdown >>
-        #@+node:tom.20240919182545.1: *5* << configure markdown >>
-        if got_markdown:
-            ext = ['fenced_code', 'codehilite', 'def_list', 'tables']
-            if self.md_math_output:
-                ext.append('leo.extensions.mdx_math_gi')
-            self.Markdown = markdown.Markdown(extensions=ext)
-        #@-<< configure markdown >>
-        #@+<< configure asciidoc >>
-        #@+node:tom.20240919182710.1: *5* << configure asciidoc >>
-        self.asciidoc_path = c.config.getString('vr3-asciidoc-path') or ''
-        self.prefer_asciidoc3 = c.config.getBool('vr3-prefer-asciidoc3', default=False)
-        self.prefer_external = c.config.getString('vr3-prefer-external') or ''
-        if self.prefer_external:
-            self.asciidoctor = find_exe(self.prefer_external) or None
-
-        self.asciidoc_show_proc_fail_msgs = True
-        self.asciidoctor_suppress_footer = c.config.getBool('vr3-asciidoctor-nofooter', default=False)
-        self.asciidoctor_icons = c.config.getString('vr3-asciidoctor-icons') or ''
-        self.asciidoctor_imagesdir = c.config.getString('vr3-asciidoctor-imagesdir') or ''
-        self.asciidoctor_diagram = (
-            asciidoc_has_diagram and
-            c.config.getBool('vr3-asciidoctor-diagram', default=False)
-        )
-        #@-<< configure asciidoc >>
-
-        self.external_editor = c.config.getString('vr3-ext-editor') or ''
-        self.DEBUG = bool(os.environ.get("VR3_DEBUG", None))
     #@+node:TomP.20200329223820.16: *4* vr3.set_md_stylesheet
     def set_md_stylesheet(self):
         """Set or create css stylesheet for Markdown node.
@@ -3117,13 +3123,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
             self.handle_scrolled_msg(keywords)
             return
 
-        # self.reps = self.reps + 1 if hasattr(self, 'reps') else 1
-        # if self.reps < 30:
-            # g.es(self.reps)
-            # g.es(f'    {self.freeze=}, {self.scrolling=}')
-            # g.es(f'    {self.must_update(keywords)=}')
-            # g.es(f'    {self.qwev=}')
-
         if self.freeze or self.scrolling:
             return
 
@@ -3132,9 +3131,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         p = self.c.p
 
         if self.must_update(keywords):
-            # if self.w:
-                # # Hide the old widget so it won't keep us from seeing the new one.
-                # self.w.hide()
             self.prep_for_dispatch(p, keywords)
 
             # Dispatch based on the computed kind.
@@ -3209,7 +3205,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:tom.20240724102606.1: *4* vr3.prep_for_dispatch
     def prep_for_dispatch(self, p, keywords):
         # Suppress updates until we change nodes.
-        self.node_changed = self.gnx != p.v.gnx
         self.gnx = p.v.gnx
         self.length = len(p.b)  # not s
 
