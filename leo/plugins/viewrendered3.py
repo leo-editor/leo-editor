@@ -2546,9 +2546,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
         menu = QtWidgets.QMenu()
         group = QActionGroup(self)
         set_group_action('RsT', RST)
+        set_group_action('Asciidoc', ASCIIDOC)
         set_group_action('MD', MD)
         set_group_action('Text', TEXT)
-        set_group_action('Asciidoc', ASCIIDOC)
 
         labels = {'rst': 'RsT', 'rest': 'RsT', 'md': 'MD', 'text': 'Text', 'asciidoc':'Asciidoc'}
         default_string = c.config.getString('vr3-default-kind') or 'rst'
@@ -2556,6 +2556,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         for action in group.actions():
             if action.text() == default_label:
                 action.setChecked(True)
+                break
 
         _default_type_button.setMenu(menu)
 
