@@ -2516,7 +2516,7 @@
 <v t="ekr.20131016083406.16724"></v>
 <v t="ekr.20230303064734.1"></v>
 <v t="ekr.20241125103850.1"><vh>*** Temporary files ***</vh></v>
-<v t="ekr.20241125100922.1"><vh>@edit c:/scripts/sphinx-build.cmd</vh></v>
+<v t="ekr.20241125100922.1"><vh>@@@edit c:/scripts/sphinx-build.cmd</vh></v>
 <v t="ekr.20241125100825.1"><vh>@edit ../scripts/sphinx_build.py</vh></v>
 </vnodes>
 <tnodes>
@@ -33003,6 +33003,20 @@ os.chdir(html_path)
 make_html(html_path)
 </t>
 <t tx="ekr.20241125100904.1"></t>
+<t tx="ekr.20241125100922.1">@language batch
+@echo OFF
+
+echo.
+echo sphinx-build.cmd %*
+echo.
+
+rem Works, but *must* match python version!
+rem C:\Python\Python3.13\Scripts\sphinx-build.exe %*
+
+rem Works as long as the path to leo-editor doesn't change.
+python c:\Repos\leo-editor\leo\Scripts\sphinx_build.py %*
+
+</t>
 <t tx="ekr.20241125103850.1"></t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
