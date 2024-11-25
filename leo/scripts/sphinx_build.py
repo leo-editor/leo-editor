@@ -8,7 +8,7 @@ Note: This straightforward script works on EKR's Windows 11 machine.
       There is *no* guarantee that it will work elsewhere.
       
       EKR's sphinx-build.cmd calls this script as follows:
-      python <path to>/leo-editor\leo\Scripts\sphinx_build.py %*
+      python <path to>/leo-editor/leo/Scripts/sphinx_build.py %*
 """
 
 import os

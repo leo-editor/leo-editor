@@ -2509,7 +2509,7 @@
 <v t="ekr.20241125071308.1"><vh>=== #4208: improve sphinx-build</vh></v>
 <v t="ekr.20241125122822.1"><vh>--- recent</vh>
 <v t="ekr.20241125100922.1"><vh>@@@edit c:/scripts/sphinx-build.cmd</vh></v>
-<v t="ekr.20241125100825.1"><vh>@edit ../scripts/sphinx_build.py</vh></v>
+<v t="ekr.20241125100825.1"><vh>@@@edit ../scripts/sphinx_build.py</vh></v>
 <v t="ekr.20090428133936.2"></v>
 <v t="ekr.20241125100109.1"><vh>test make_html</vh>
 <v t="ekr.20230303064734.1"></v>
@@ -15118,8 +15118,6 @@ def finalize(s):
 if c.isChanged():  # Save this file initially.
     c.save()
 run()
-if c.isChanged():  # The home page may have changed.
-    c.save()
 </t>
 <t tx="ekr.20131016103844.16730">See the docstring of these plugins for more details::
 
@@ -33012,6 +33010,44 @@ html_path = finalize(join(doc, 'html'))
 os.chdir(html_path)
 make_html(html_path)
 </t>
+<t tx="ekr.20241125100825.1">@language python
+
+"""
+leo/scripts/sphinx_build.py.
+
+Invoke python/scripts/sphinx_build.exe
+
+Note: This straightforward script works on EKR's Windows 11 machine.
+      There is *no* guarantee that it will work elsewhere.
+      
+      EKR's sphinx-build.cmd calls this script as follows:
+      python &lt;path to&gt;/leo-editor\leo\Scripts\sphinx_build.py %*
+"""
+
+import os
+import subprocess
+import sys
+
+# Find python/Scripts/sphinx-build.exe.
+python_folder = os.path.dirname(sys.executable)
+script = os.path.normpath(os.path.join(
+    python_folder, 'Scripts', 'sphinx-build.exe'))
+
+
+if os.path.exists(script):
+    # Create a command that executes python/Scripts/sphinx-build.exe.
+    args_s = ' '.join(sys.argv[1:])
+    script_s = f'"{script}" {args_s}'
+    command = fr"python {script_s}"
+    # Print and execute the command!
+    print(f"sphinx_build.py: {command}\n")
+    subprocess.Popen(command, shell=True).communicate()
+else:
+    print('')
+    print(f"Not found: {script!r}")
+    print('pip install sphinx')
+    print('')
+</t>
 <t tx="ekr.20241125100922.1">@language batch
 @echo OFF
 
@@ -33027,26 +33063,54 @@ python c:\Repos\leo-editor\leo\Scripts\sphinx_build.py %*
 
 </t>
 <t tx="ekr.20241125122822.1"></t>
-<t tx="ekr.20241125122939.1">last_updated_pat = re.compile(r'Last updated on (.*?)\.')
-created_using_pat = re.compile(
-    r'Created using &lt;a href='
-    r'"https://www.sphinx-doc.org/en/master/"&gt;Sphinx'
-    r'\s*(.*?)&lt;/a&gt;\.'
-)
+<t tx="ekr.20241125122939.1">last_updated_pat = re.compile(r'^(.*?)(Last updated on\s*)(.+)(.*)$')
+created_using_pat = re.compile(r'^(.*?)Sphinx\s*([0-9]+\.[0-9]+\.[0-9]+)(.*)$')
 
 def patch_home_page():
     """
     Update (in *this*file) the "Last updated" and "Created using" fields in
-    the node `@file ../../docs/index.html`.
+    the node `@file ../../docs/index.html` or its descendants.
     """
+    
+    def date_repl(m: re.Match) -&gt; str:
+        s = m.group(0)
+        # Compute date with "%B %d, %Y", per conf.py.
+        i, j = m.start(3), m.end(3)
+        return s[:i] + 'DATE.' + s[j:]
+        
+    def version_repl(m: re.Match) -&gt; s:
+        s = m.group(0)
+        i, j = m.start(2), m.end(2)
+        # Get the version number of sphinx.
+        return s[:i] + 'VERSION' + s[j:]
+
+    table = (
+        (last_updated_pat, date_repl),
+        (created_using_pat, version_repl),
+    )
     h = '@file ../../docs/index.html'
     home_page = g.findNodeAnywhere(c, h)
-    assert home_page, h
-    h2 = g.angleBrackets(' div footer ')
-    footer = g.findNodeInTree(c, home_page, h2)
-    assert footer, h2
-
-    #- Compute date with "%B %d, %Y", per conf.py.</t>
+    if not home_page:
+        g.trace(f"Not found: {h!r}")
+        return
+    changed = False
+    g.trace('...')
+    for p in home_page.self_and_subtree():
+        old_lines = g.splitLines(p.b)
+        new_lines = old_lines[:]
+        for i, old_line in enumerate(old_lines):
+            new_line = old_line
+            for pattern, repl in table:
+                new_line = re.sub(pattern, repl, new_line)
+                if new_line != old_lines[i]:
+                    print('')
+                    print(f"Changed line {i:&lt;2} of {p.h}")
+                    print(f"old: {old_line!r}\nnew: {new_line!r}")
+                    new_lines[i] = old_lines[i] = new_line
+                    changed = True
+    if False and changed:  ###
+        print('')
+        c.save()</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
