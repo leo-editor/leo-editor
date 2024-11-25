@@ -2550,7 +2550,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         set_group_action('MD', MD)
         set_group_action('Text', TEXT)
 
-        labels = {'rst': 'RsT', 'rest': 'RsT', 'md': 'MD', 'text': 'Text', 'asciidoc':'Asciidoc'}
+        labels = {'rst': 'RsT', 'rest': 'RsT', 'md': 'MD', 'text': 'Text', 'asciidoc': 'Asciidoc'}
         default_string = c.config.getString('vr3-default-kind') or 'rst'
         default_label = labels.get(default_string.lower())
         for action in group.actions():
