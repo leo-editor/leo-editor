@@ -2507,9 +2507,9 @@
 <v t="ekr.20150318110552.30"></v>
 </v>
 </v>
-<v t="ekr.20131016083406.16724"></v>
 <v t="ekr.20241124083101.1"></v>
 <v t="ekr.20090428133936.2"></v>
+<v t="ekr.20131016083406.16724"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -31709,10 +31709,10 @@ def run():
     build_path = finalize(join(doc, 'html', '_build', 'html'))
     docs_path = finalize(docs)
     
-    # We will copy the static folder from doc to docs
+    # We will copy the static folder from doc/html/_build/html/_static to docs.
+    # We *must* use the _build-related path to update sphinx .css files.
     docs_static_path = finalize(join(docs, '_static'))
-    ### doc_static_path = finalize(join(doc, 'html', '_build', 'html', '_static' ))
-    doc_static_path = finalize(join(doc, '_static' ))
+    doc_static_path = finalize(join(doc, 'html', '_build', 'html', '_static' ))
     
     # Step 2: Make sure all paths exist.
     paths = (build_path, docs_path, docs_static_path, html_path)
