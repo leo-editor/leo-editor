@@ -32943,8 +32943,7 @@ If a pattern matcher matches an ``@language`` or coloring directive, the matcher
 If a pattern matcher matches syntax that continues to the next line, the pattern matcher creates a **restarter matcher** by calling ``setRestart``. The restarter matchers are essentially closures, bindings of the pattern matcher *and all of its kwargs*. The details are hairy, but the coding pattern is the same for all cases. See the source code for details.
 </t>
 <t tx="ekr.20241116111317.1">.. https://github.com/leo-editor/leo-editor/issues/4179
-
-- Experiment with legacy color setting in conf.py.</t>
+</t>
 <t tx="ekr.20241124033307.1">@language python
 
 # All colors are CSS colors.
