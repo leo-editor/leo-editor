@@ -2502,6 +2502,8 @@
 </v>
 <v t="ekr.20240828095959.1"></v>
 <v t="ekr.20240828094953.1"><vh>Leo 6.8.2 release notes</vh></v>
+<v t="ekr.20090428133936.2"></v>
+<v t="ekr.20241125071308.1"><vh>*** Make sure sphinx-build matches python.exe</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -32951,6 +32953,7 @@ If a pattern matcher matches syntax that continues to the next line, the pattern
             print(f"Not Copied {fn}")
     print(f"Copied {written} files from {from_directory:55} to {to_directory}")
 </t>
+<t tx="ekr.20241125071308.1"></t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
