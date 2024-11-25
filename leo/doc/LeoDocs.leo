@@ -2506,9 +2506,18 @@
 <v t="ekr.20240828095959.1"></v>
 <v t="ekr.20240828094953.1"><vh>Leo 6.8.2 release notes</vh></v>
 <v t="ekr.20241125071308.1"><vh>=== #4208: improve sphinx-build</vh></v>
+<v t="ekr.20241125100904.1"><vh>--- testing</vh>
+<v t="ekr.20241125100109.1"><vh>test make_html</vh>
+<v t="ekr.20230303064734.1"></v>
+</v>
+</v>
 <v t="ekr.20090428133936.2"></v>
 <v t="ekr.20100808060203.4273"></v>
 <v t="ekr.20131016083406.16724"></v>
+<v t="ekr.20230303064734.1"></v>
+<v t="ekr.20241125103850.1"><vh>*** Temporary files ***</vh></v>
+<v t="ekr.20241125100922.1"><vh>@edit c:/scripts/sphinx-build.cmd</vh></v>
+<v t="ekr.20241125100825.1"><vh>@edit ../scripts/sphinx_build.py</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -32959,17 +32968,42 @@ If a pattern matcher matches syntax that continues to the next line, the pattern
 https://github.com/leo-editor/leo-editor/issues/4208
 PR: https://github.com/leo-editor/leo-editor/pull/xxx
 
-- Check that the python version and the sphinx-build versions match.
-  retire sphinx-build.cmd: C:\Python\Python3.13\Scripts\sphinx-build.exe %*
+Step 1: Ensure the python version and the sphinx-build versions match:
 
-- Automatically update the "Last updated" and "Created using" fields in
+- Create leo/scripts/sphinx_build.py.
+- sphinx-build.cmd invokes sphinx_build.py.
+
+Step 2: Automatically update the "Last updated" and "Created using" fields in
   index.html.
-  Compute date with "%B %d, %Y", per conf.py.
+
+- Compute date with "%B %d, %Y", per conf.py.
 
 @language python
 </t>
 <t tx="ekr.20241125091943.1">@nosearch</t>
 <t tx="ekr.20241125092047.1"></t>
+<t tx="ekr.20241125100109.1">@language python
+import os
+
+join = os.path.join
+norm = os.path.normpath
+
+def finalize(s):
+    return g.os_path_finalize(norm(s))
+
+# Base paths. Not finalized.
+doc = join(g.app.loadDir, '..', 'doc')
+
+# We will cd to the html path.
+html_path = finalize(join(doc, 'html'))
+
+@others
+
+os.chdir(html_path)
+make_html(html_path)
+</t>
+<t tx="ekr.20241125100904.1"></t>
+<t tx="ekr.20241125103850.1"></t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
