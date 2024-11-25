@@ -509,6 +509,7 @@
 </v>
 <v t="ekr.20100805171546.4412"><vh>Web pages</vh>
 <v t="ekr.20090428133936.2"><vh>@edit html/conf.py</vh></v>
+<v t="ekr.20241124083101.1"><vh>@edit _static/custom.css</vh></v>
 <v t="ekr.20101112045055.5064"><vh>@file plugin_catalog.py</vh></v>
 <v t="ekr.20131005214621.16088"><vh>Home pages</vh>
 <v t="ekr.20230110155708.1"><vh>@file ../../docs/redirect_index.html</vh></v>
@@ -2505,13 +2506,10 @@
 <v t="ekr.20241124074331.1"><vh>--- changed docs</vh>
 <v t="ekr.20150318110552.30"></v>
 </v>
-<v t="ekr.20241124033307.1"><vh>unused from conf.py</vh></v>
 </v>
-<v t="ekr.20230110152344.1"></v>
 <v t="ekr.20131016083406.16724"></v>
-<v t="ekr.20230228105847.1"></v>
+<v t="ekr.20241124083101.1"></v>
 <v t="ekr.20090428133936.2"></v>
-<v t="ekr.20241124083101.1"><vh>@edit _static/custom.css</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -32943,35 +32941,6 @@ If a pattern matcher matches an ``@language`` or coloring directive, the matcher
 If a pattern matcher matches syntax that continues to the next line, the pattern matcher creates a **restarter matcher** by calling ``setRestart``. The restarter matchers are essentially closures, bindings of the pattern matcher *and all of its kwargs*. The details are hairy, but the coding pattern is the same for all cases. See the source code for details.
 </t>
 <t tx="ekr.20241116111317.1">.. https://github.com/leo-editor/leo-editor/issues/4179
-</t>
-<t tx="ekr.20241124033307.1">@language python
-
-# All colors are CSS colors.
-if 0:  # Legacy: light.  Doesnot work.
-    html_theme_options = {
-        'collapsiblesidebar': True,
-        'sidebarbgcolor': '#fffbdc',  # Leo yellow.
-        'sidebartextcolor': 'black',
-        'sidebarlinkcolor': 'black',
-        'bgcolor': '#fffbdc',  # Leo yellow.
-    }
-if 0:  # Experimental: dark.
-    html_theme_options = {
-        'collapsiblesidebar': True,
-        'sidebarbgcolor': 'black',
-        'sidebartextcolor': 'white',
-        'sidebarlinkcolor': 'white',
-        # Text:
-        'bgcolor': 'black',
-        'textcolor': 'white',
-        # Links:
-        'linkcolor': 'yellow',
-        'visitedlinkcolor': 'purple',
-        # Headlines:
-        'headbgcolor': 'black',
-        'headtextcolor': 'white',
-        'headlinkcolor': 'while',
-    }
 </t>
 <t tx="ekr.20241124074331.1"></t>
 <t tx="ekr.20241124122954.1">def copy_all_files(from_directory: str, to_directory: str) -&gt; None:
