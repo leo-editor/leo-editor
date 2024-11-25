@@ -64,12 +64,13 @@
 <v t="ekr.20230110153501.1"><vh>find_broken_links</vh></v>
 </v>
 <v t="ekr.20131016083406.16724"><vh>@button make-sphinx</vh>
+<v t="ekr.20241124122954.1"><vh>copy_all_files</vh></v>
 <v t="ekr.20230303064647.1"><vh>copy_files</vh></v>
-<v t="ekr.20230111164618.1"><vh>get_paths</vh></v>
+<v t="ekr.20230111164618.1"><vh>get_paths (not used)</vh></v>
 <v t="ekr.20230303080626.1"><vh>git_status</vh></v>
+<v t="ekr.20230303065849.1"><vh>last_timestamp</vh></v>
 <v t="ekr.20230303064734.1"><vh>make_html</vh></v>
 <v t="ekr.20230228105847.1"><vh>run</vh></v>
-<v t="ekr.20230303065849.1"><vh>last_timestamp</vh></v>
 <v t="ekr.20230111165336.1"><vh>write_intermediate_files</vh></v>
 </v>
 <v t="ekr.20230110152349.1" descendentVnodeUnknownAttributes="7d71005807000000302e302e302e3371017d710258090000007374725f6174696d657103580c000000313337363431323930312e30710473732e"><vh>@ignore disabled buttons</vh>
@@ -507,7 +508,8 @@
 <v t="ekr.20230121110533.1"><vh>@clean ../scripts/make-html.cmd</vh></v>
 </v>
 <v t="ekr.20100805171546.4412"><vh>Web pages</vh>
-<v t="ekr.20090428133936.2"><vh>@file html/conf.py</vh></v>
+<v t="ekr.20090428133936.2"><vh>@edit html/conf.py</vh></v>
+<v t="ekr.20241124083101.1"><vh>@edit _static/custom.css</vh></v>
 <v t="ekr.20101112045055.5064"><vh>@file plugin_catalog.py</vh></v>
 <v t="ekr.20131005214621.16088"><vh>Home pages</vh>
 <v t="ekr.20230110155708.1"><vh>@file ../../docs/redirect_index.html</vh></v>
@@ -2500,7 +2502,13 @@
 </v>
 <v t="ekr.20240828095959.1"></v>
 <v t="ekr.20240828094953.1"><vh>Leo 6.8.2 release notes</vh></v>
-<v t="ekr.20241116111317.1"><vh>===== Dark theme?</vh></v>
+<v t="ekr.20241116111317.1"><vh>===== Dark theme</vh>
+<v t="ekr.20241124074331.1"><vh>--- changed docs</vh>
+<v t="ekr.20150318110552.30"></v>
+</v>
+</v>
+<v t="ekr.20131016083406.16724"></v>
+<v t="ekr.20241124083101.1"></v>
 <v t="ekr.20090428133936.2"></v>
 </vnodes>
 <tnodes>
@@ -15065,12 +15073,16 @@ Run this script from the `gh-pages` branch.
 1. Generate intermediate files for all headlines in the table.
 2. Run `make html` from the leo/doc/html directory.
 
-After running this script, copy files from leo/doc/html/_build/html to leo-editor/docs
+After running this script, copy files
+- from leo/doc/html/_build/html to leo-editor/docs
+- from leo/doc/html/_build/html/_static to leo/editor-docs/_static
 """
 
 @language python
 
 g.cls()
+g.cls()
+
 import glob
 import os
 import shutil
@@ -15078,6 +15090,12 @@ trace = False
 headlines = [
     "Leo's Documentation"
 ]
+
+join = os.path.join
+norm = os.path.normpath
+
+def finalize(s):
+    return g.os_path_finalize(norm(s))
 
 @others  # define helpers
 
@@ -17637,8 +17655,9 @@ Leo preprocesses all scripts by simulating the writing of a external file to a s
 ``save-file or file-save (Ctrl-S)``
     Saves the Leo window to a file.
 ``save-file-as``
-    Saves a copy of the Leo outline, changing outline's file name.
+    Saves the Leo outline, changing outline's file name.
 ``save-file-to``
+    Saves a copy of the Leo outline, changing outline's file name.
 
 **Opening specific files**:
 
@@ -30450,12 +30469,14 @@ Bugs
     docs_path = norm(join(g.app.loadDir,'..','..','docs'))
     html_path = norm(join(g.app.loadDir,'..','doc','html'))
     paths = build_path, docs_path, html_path
-    if all((os.path.exists(z) for z in paths)):
-        return paths
-    for path in paths:
-        if not os.path.exists(path):
-            g.es_print(f"Not found: {path!r}")
-    return None, None, None
+    # build_path need not exist.
+    return paths
+    # if all((os.path.exists(z) for z in paths)):
+        # return paths
+    # for path in paths:
+        # if not os.path.exists(path):
+            # g.es_print(f"Not found: {path!r}")
+    # return None, None, None
 </t>
 <t tx="ekr.20230111165336.1">def write_intermediate_files() -&gt; int:
     """Return True if the rst3 command wrote any intermediate files."""
@@ -31669,22 +31690,51 @@ Leo's ``beautify`` command differs from `Black`_ as follows:
 <t tx="ekr.20230228100301.2">When checked, the Find and Change commands ignore the case of alphabetic characters when determining matches.
 </t>
 <t tx="ekr.20230228100301.3"></t>
-<t tx="ekr.20230228105847.1">def run():
+<t tx="ekr.20230228105847.1">@language python
 
-    if g.gitBranchName() != 'gh-pages':
+def run():
+    """
+    Make all html files using sphinx and copy the results to leo-editor/docs.
+    """
+    # Step 1. Compute all paths.
+
+    # Base paths. Not finalized.
+    docs = join(g.app.loadDir, '..', '..', 'docs')
+    doc = join(g.app.loadDir, '..', 'doc')
+    
+    # We will cd to the html path.
+    html_path = finalize(join(doc, 'html'))
+
+    # We will copy all files from build_path to docs_path.
+    build_path = finalize(join(doc, 'html', '_build', 'html'))
+    docs_path = finalize(docs)
+    
+    # We will copy the static folder from doc to docs
+    docs_static_path = finalize(join(docs, '_static'))
+    ### doc_static_path = finalize(join(doc, 'html', '_build', 'html', '_static' ))
+    doc_static_path = finalize(join(doc, '_static' ))
+    
+    # Step 2: Make sure all paths exist.
+    paths = (build_path, docs_path, docs_static_path, html_path)
+    fails = [z for z in paths if not g.os_path_exists(z)]
+    if fails:
+        g.printObj(fails, tag='Missing paths')
+        return
+        
+    # Step 3: Do nothing else outside 'gh-pages' branches.
+    if not g.gitBranchName().startswith('gh-pages'):
         g.es_print('Run `make-sphinx` from `gh-pages` branch')
         return
-
-    old_p = c.p
     try:
-        build_path, docs_path, html_path = get_paths()
-        if html_path:
-            os.chdir(html_path)
-            write_intermediate_files()
-            prev_timestamp = last_timestamp(build_path)
-            make_html(html_path)
-            copy_files(build_path, docs_path, prev_timestamp)
-            git_status()
+        old_p = c.p
+        os.chdir(html_path)
+        write_intermediate_files()
+        make_html(html_path)
+        print('')
+        copy_all_files(build_path, docs_path)
+        copy_all_files(doc_static_path, docs_static_path)
+        print('')
+        git_status()
     finally:
         c.selectPosition(old_p)
 </t>
@@ -31694,6 +31744,10 @@ Leo's ``beautify`` command differs from `Black`_ as follows:
         print(f"Directory not found: {to_directory!r}")
         return
     files = glob.glob(f"{from_directory}{os.sep}*")
+    if 1:
+        print('')
+        g.trace(f"Copy {from_directory} to {to_directory}")
+        print('')
     written = 0
     for f in files:
         timestamp = os.path.getmtime(f)
@@ -31707,7 +31761,12 @@ Leo's ``beautify`` command differs from `Black`_ as follows:
     """
     Run the `make html` command in the `html_path` directory.
     """
-    assert os.getcwd() == html_path, os.getcwd()
+    final = g.os_path_finalize
+    join = os.path.join
+    norm = os.path.normpath
+    
+    cwd = final(norm(join(os.getcwd())))
+    assert cwd == html_path, (cwd, html_path)
     g.execute_shell_commands([
         'make html',
     ])</t>
@@ -32881,7 +32940,28 @@ If a pattern matcher matches an ``@language`` or coloring directive, the matcher
 
 If a pattern matcher matches syntax that continues to the next line, the pattern matcher creates a **restarter matcher** by calling ``setRestart``. The restarter matchers are essentially closures, bindings of the pattern matcher *and all of its kwargs*. The details are hairy, but the coding pattern is the same for all cases. See the source code for details.
 </t>
-<t tx="ekr.20241116111317.1"></t>
+<t tx="ekr.20241116111317.1">.. https://github.com/leo-editor/leo-editor/issues/4179
+</t>
+<t tx="ekr.20241124074331.1"></t>
+<t tx="ekr.20241124122954.1">def copy_all_files(from_directory: str, to_directory: str) -&gt; None:
+    """Copy *all* html files from `from_directory` to `to_directory`."""
+    trace = False
+    if not os.path.exists(to_directory):
+        print(f"Directory not found: {to_directory!r}")
+        return
+    files = glob.glob(f"{from_directory}{os.sep}*")
+    files = [z for z in files if os.path.isfile(z)]
+    # Announce.
+    written = 0
+    for f in files:
+        try:
+            fn = finalize(f)
+            shutil.copy2(fn, to_directory)
+            written += 1
+        except Exception:
+            print(f"Not Copied {fn}")
+    print(f"Copied {written} files from {from_directory:55} to {to_directory}")
+</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have

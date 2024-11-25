@@ -1,0 +1,28 @@
+/*
+leo/doc/_static/custom.css.
+
+This is the ultimate cource of custom.css.
+
+The make-sphinx script will copy this to leo-editor/docs/static.
+*/
+
+img.logo {
+    background-color: white;
+    width: 100%;
+}
+
+img {
+    width: 50%;
+}
+
+
+/* --- These apply to all pages, including Leo's home page --- */
+.section, .body, div.body {
+    background-color: #fffbdc;  /* Leo yellow */
+    color: black;
+}
+
+a:link {
+  /* --- color: purple; --- */
+  text-decoration: underline;
+}
