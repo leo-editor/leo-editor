@@ -2507,10 +2507,11 @@
 </v>
 <v t="ekr.20241124033307.1"><vh>unused from conf.py</vh></v>
 </v>
+<v t="ekr.20230110152344.1"></v>
 <v t="ekr.20131016083406.16724"></v>
 <v t="ekr.20230228105847.1"></v>
-<v t="ekr.20241124083101.1"><vh>@edit _static/custom.css</vh></v>
 <v t="ekr.20090428133936.2"></v>
+<v t="ekr.20241124083101.1"><vh>@edit _static/custom.css</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -32943,14 +32944,19 @@ If a pattern matcher matches syntax that continues to the next line, the pattern
 </t>
 <t tx="ekr.20241116111317.1">.. https://github.com/leo-editor/leo-editor/issues/4179
 
-.. Before: classic.css set the color!!!
-
-.. It looks like there was way too much in the _static folders.
-</t>
+- Experiment with legacy color setting in conf.py.</t>
 <t tx="ekr.20241124033307.1">@language python
 
 # All colors are CSS colors.
-if use_dark:
+if 0:  # Legacy: light.  Doesnot work.
+    html_theme_options = {
+        'collapsiblesidebar': True,
+        'sidebarbgcolor': '#fffbdc',  # Leo yellow.
+        'sidebartextcolor': 'black',
+        'sidebarlinkcolor': 'black',
+        'bgcolor': '#fffbdc',  # Leo yellow.
+    }
+if 0:  # Experimental: dark.
     html_theme_options = {
         'collapsiblesidebar': True,
         'sidebarbgcolor': 'black',
@@ -32967,14 +32973,7 @@ if use_dark:
         'headtextcolor': 'white',
         'headlinkcolor': 'while',
     }
-else:
-    html_theme_options = {
-        'collapsiblesidebar': True,
-        'sidebarbgcolor': "#fffdbc",  # Leo yellow.
-        'sidebartextcolor': 'black',
-        'sidebarlinkcolor': 'black',
-        'bgcolor': 'red',  ### "#fffbdc",  # Leo yellow.
-    }</t>
+</t>
 <t tx="ekr.20241124074331.1"></t>
 <t tx="ekr.20241124122954.1">def copy_all_files(from_directory: str, to_directory: str) -&gt; None:
     """Copy *all* html files from `from_directory` to `to_directory`."""

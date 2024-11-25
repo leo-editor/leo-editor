@@ -15,20 +15,14 @@ img {
     width: 50%;
 }
 
-/* #fffbdc; Leo yellow */
 
-
-div.body {
-    background-color: #fffbdc;
+/* --- These apply to all pages, including Leo's home page --- */
+.section, .body, div.body {
+    background-color: #fffbdc;  /* Leo yellow */
+    color: black;
 }
 
-/*
-
-body {
-    background-color: #fffbdc;
+a:link {
+  /* --- color: purple; --- */
+  text-decoration: underline;
 }
-
-div.document {
-  background-color: #fffbdc;
-}
-*/

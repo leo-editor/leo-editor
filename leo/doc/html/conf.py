@@ -2,15 +2,8 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20090428133936.2: * @file html/conf.py
 #@@first
-
-"""
-leo/doc/html/conf.py
-
-This file must be in the source directory.
-"""
-
+"""leo/doc/html/conf.py"""
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
-# http://docs.readthedocs.io/en/latest/getting_started.html#in-markdown
 # https://www.sphinx-doc.org/en/master/usage/theming.html#builtin-themes
 
 project = 'Leo'
@@ -37,16 +30,14 @@ html_sidebars = {
    '**': [
         'relations.html',  # Enable links to the previous and next documents.
         'searchbox.html',  # Enable “quick search” box.
-        # localtoc.html:        # Use a fine-grained table of contents.
-        # globaltoc.html:       # Use a coarse-grained table of contents.
-        # sourcelink.html:      # Add links to the source of the current document.
+        # 'localtoc.html',  # Use a fine-grained table of contents.
+        # 'globaltoc.html,  # Use a coarse-grained table of contents.
     ]
 }
 
 # extensions = []
 # templates_path = []
 # exclude_trees = []              # Don't search these for source files.
-
 #@@nobeautify
 #@@language python
 #@-leo
