@@ -31730,7 +31730,7 @@ def run():
         return
         
     # Step 3: Do nothing else outside 'gh-pages' branches.
-    if not g.gitBranchName().startswith('gh-pages'):
+    if not g.gitBranchName().startswith(('gh-pages', 'ekr-4208')):
         g.es_print('Run `make-sphinx` from `gh-pages` branch')
         return
     try:
