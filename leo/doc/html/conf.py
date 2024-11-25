@@ -1,7 +1,4 @@
 # flake8: noqa
-#@+leo-ver=5-thin
-#@+node:ekr.20090428133936.2: * @file html/conf.py
-#@@first
 """leo/doc/html/conf.py"""
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 # https://www.sphinx-doc.org/en/master/usage/theming.html#builtin-themes
@@ -38,6 +35,3 @@ html_sidebars = {
 # extensions = []
 # templates_path = []
 # exclude_trees = []              # Don't search these for source files.
-#@@nobeautify
-#@@language python
-#@-leo
