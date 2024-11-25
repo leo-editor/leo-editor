@@ -34,7 +34,7 @@ class TestColorizer(LeoUnitTest):
         x.init_all_state()
         n = x.initBlock0()
         for s in g.splitLines(text):
-            x.mainLoop(n, s)
+            x.mainLoop(n, s, 0, len(s))
 
         # Test 2: test the pygments colorizer.
         x = leoColorizer.PygmentsColorizer(c, None)
@@ -316,33 +316,6 @@ class TestColorizer(LeoUnitTest):
             page-break, page-after, page-inside
         """)
         self.color('css', text)
-    #@+node:ekr.20210905170507.9: *3* TestColorizer.test_colorizer_CWEB
-    def test_colorizer_CWEB(self):
-        text = self.prep(
-            r"""\\\
-            % This is limbo in cweb mode... It should be in \LaTeX mode, not \c mode.
-            % The following should not be colorized: class,if,else.
-
-            @* this is a _cweb_ comment.  Code is written in \c.
-            "strings" should not be colorized.
-            It should be colored in \LaTeX mode.
-            The following are not keywords in latex mode: if, else, etc.
-            Noweb section references are _valid_ in cweb comments!
-            < < section ref > >
-            < < missing ref > >
-            @c
-
-            and this is C code. // It is colored in \LaTeX mode by default.
-            /* This is a C block comment.  It may also be colored in restricted \LaTeX mode. */
-
-            // Section refs are valid in code too, of course.
-            < < section ref > >
-            < < missing ref > >
-
-            \LaTeX and \c should not be colored.
-            if else, while, do // C keywords.
-    """)
-        self.color('cweb', text)
     #@+node:ekr.20210905170507.10: *3* TestColorizer.test_colorizer_cython
     def test_colorizer_cython(self):
         text = self.prep(
@@ -439,10 +412,9 @@ class TestColorizer(LeoUnitTest):
             <HEAD>
               <META NAME="GENERATOR" CONTENT="Microsoft FrontPage 4.0">
               <TITLE> Leo's Home Page </TITLE>
-              <META NAME="description" CONTENT="This page describes Leo.
-            Leo adds powerful outlines to the noweb and CWEB literate programming languages.">
-              <META NAME="keywords" CONTENT="LEO, LITERATE PROGRAMMING, OUTLINES, CWEB,
-            NOWEB, OUTLINES, EDWARD K. REAM, DONALD E. KNUTH, SILVIO LEVY, OPEN SOFTWARE">
+              <META NAME="description" CONTENT="This page describes Leo."
+              <META NAME="keywords" CONTENT="LEO, LITERATE PROGRAMMING, OUTLINES,,
+                OUTLINES, EDWARD K. REAM, OPEN SOFTWARE">
             </HEAD>
             <!-- Last Modified: May 12, 2002 -->
             <BODY BGCOLOR="#fffbdc">
@@ -1257,41 +1229,6 @@ class TestColorizer(LeoUnitTest):
             return uu
         """)
         self.color('r', text)
-    #@+node:ekr.20210905170507.28: *3* TestColorizer.test_colorizer_rapidq
-    def test_colorizer_rapidq(self):
-        text = self.prep(
-        """
-            ' New in 4.2.
-            ' a comment.
-
-            $APPTYPE,$DEFINE,$ELSE,$ENDIF,$ESCAPECHARS,$IFDEF,$IFNDEF,
-            $INCLUDE,$MACRO,$OPTIMIZE,$OPTION,$RESOURCE,$TYPECHECK,$UNDEF,
-            ABS,ACOS,ALIAS,AND,AS,ASC,ASIN,ATAN,ATN,BIN$,BIND,BYTE,
-            CALL,CALLBACK,CALLFUNC,CASE,CEIL,CHDIR,CHDRIVE,CHR$,CINT,
-            CLNG,CLS,CODEPTR,COMMAND$,COMMANDCOUNT,CONSOLE,CONST,CONSTRUCTOR,
-            CONVBASE$,COS,CREATE,CSRLIN,CURDIR$,DATA,DATE$,DEC,DECLARE,
-            DEFBYTE,DEFDBL,DEFDWORD,DEFINT,DEFLNG,DEFSHORT,DEFSNG,DEFSTR,
-            DEFWORD,DELETE$,DIM,DIR$,DIREXISTS,DO,DOEVENTS,DOUBLE,DWORD,
-            ELSE,ELSEIF,END,ENVIRON,ENVIRON$,EVENT,EXIT,EXP,EXTENDS,
-            EXTRACTRESOURCE,FIELD$,FILEEXISTS,FIX,FLOOR,FOR,FORMAT$,FRAC,
-            FUNCTION,FUNCTIONI,GET$,GOSUB,GOTO,HEX$,IF,INC,INITARRAY,
-            INKEY$,INP,INPUT,INPUT$,INPUTHANDLE,INSERT$,INSTR,INT,INTEGER,
-            INV,IS,ISCONSOLE,KILL,KILLMESSAGE,LBOUND,LCASE$,LEFT$,LEN,
-            LFLUSH,LIB,LIBRARYINST,LOCATE,LOG,LONG,LOOP,LPRINT,LTRIM$,
-            MEMCMP,MESSAGEBOX,MESSAGEDLG,MID$,MKDIR,MOD,MOUSEX,MOUSEY,
-            NEXT,NOT,OFF,ON,OR,OUT,OUTPUTHANDLE,PARAMSTR$,PARAMSTRCOUNT,
-            PARAMVAL,PARAMVALCOUNT,PCOPY,PEEK,PLAYWAV,POKE,POS,POSTMESSAGE,
-            PRINT,PROPERTY,QUICKSORT,RANDOMIZE,REDIM,RENAME,REPLACE$,
-            REPLACESUBSTR$,RESOURCE,RESOURCECOUNT,RESTORE,RESULT,RETURN,
-            REVERSE$,RGB,RIGHT$,RINSTR,RMDIR,RND,ROUND,RTRIM$,RUN,
-            SCREEN,SELECT,SENDER,SENDMESSAGE,SETCONSOLETITLE,SGN,SHELL,
-            SHL,SHORT,SHOWMESSAGE,SHR,SIN,SINGLE,SIZEOF,SLEEP,SOUND,
-            SPACE$,SQR,STACK,STATIC,STEP,STR$,STRF$,STRING,STRING$,
-            SUB,SUBI,SWAP,TALLY,TAN,THEN,TIME$,TIMER,TO,TYPE,UBOUND,
-            UCASE$,UNLOADLIBRARY,UNTIL,VAL,VARIANT,VARPTR,VARPTR$,VARTYPE,
-            WEND,WHILE,WITH,WORD,XOR
-        """)
-        self.color('rapidq', text)
     #@+node:ekr.20210905170507.29: *3* TestColorizer.test_colorizer_Rebol
     def test_colorizer_Rebol(self):
         text = self.prep(

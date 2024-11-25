@@ -38,7 +38,7 @@ md_main_attributes_dict = {
 
 # Attributes dict for md_inline_markup ruleset.
 md_inline_markup_attributes_dict = {
-    "default": "MARKUP",
+    "default": "markup",
     "digit_re": "",
     "escape": "",
     "highlight_digits": "true",
@@ -48,7 +48,7 @@ md_inline_markup_attributes_dict = {
 
 # Attributes dict for md_block_html_tags ruleset.
 md_block_html_tags_attributes_dict = {
-    "default": "MARKUP",
+    "default": "markup",
     "digit_re": "",
     "escape": "",
     "highlight_digits": "true",
@@ -58,7 +58,7 @@ md_block_html_tags_attributes_dict = {
 
 # Attributes dict for md_markdown ruleset.
 md_markdown_attributes_dict = {
-    "default": "MARKUP",
+    "default": "markup",
     "digit_re": "",
     "escape": "",
     "highlight_digits": "true",

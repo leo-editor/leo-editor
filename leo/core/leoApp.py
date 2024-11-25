@@ -283,6 +283,7 @@ class LeoApp:
         self.delegate_language_dict: dict[str, str] = {
             # Keys are new language names.
             "codon": "python",
+            "elisp": "lisp",
             "glsl": "c",
             "handlebars": "html",
             "hbs": "html",
