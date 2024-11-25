@@ -67,6 +67,7 @@
 <v t="ekr.20241124122954.1"><vh>copy_all_files</vh></v>
 <v t="ekr.20230303080626.1"><vh>git_status</vh></v>
 <v t="ekr.20230303064734.1"><vh>make_html</vh></v>
+<v t="ekr.20241125122939.1"><vh>patch_home_page</vh></v>
 <v t="ekr.20230228105847.1"><vh>run</vh></v>
 <v t="ekr.20230111165336.1"><vh>write_intermediate_files</vh></v>
 </v>
@@ -2506,18 +2507,18 @@
 <v t="ekr.20240828095959.1"></v>
 <v t="ekr.20240828094953.1"><vh>Leo 6.8.2 release notes</vh></v>
 <v t="ekr.20241125071308.1"><vh>=== #4208: improve sphinx-build</vh></v>
-<v t="ekr.20241125100904.1"><vh>--- testing</vh>
+<v t="ekr.20241125122822.1"><vh>--- recent</vh>
+<v t="ekr.20241125100922.1"><vh>@@@edit c:/scripts/sphinx-build.cmd</vh></v>
+<v t="ekr.20241125100825.1"><vh>@edit ../scripts/sphinx_build.py</vh></v>
+<v t="ekr.20090428133936.2"></v>
 <v t="ekr.20241125100109.1"><vh>test make_html</vh>
 <v t="ekr.20230303064734.1"></v>
 </v>
 </v>
-<v t="ekr.20090428133936.2"></v>
 <v t="ekr.20100808060203.4273"></v>
+<v t="ekr.20100808060203.4278"><vh>&lt;&lt; div footer &gt;&gt;</vh></v>
 <v t="ekr.20131016083406.16724"></v>
-<v t="ekr.20230303064734.1"></v>
-<v t="ekr.20241125103850.1"><vh>*** Temporary files ***</vh></v>
-<v t="ekr.20241125100922.1"><vh>@@@edit c:/scripts/sphinx-build.cmd</vh></v>
-<v t="ekr.20241125100825.1"><vh>@edit ../scripts/sphinx_build.py</vh></v>
+<v t="ekr.20241125122939.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -8275,6 +8276,12 @@ Nevertheless, these sentinels can be useful in special situations.
 
     A single node may contain only one ``@others`` directive, but descendant nodes
     may have other ``@others`` directives.
+</t>
+<t tx="ekr.20100808060203.4278">&lt;div class="footer"&gt;
+  &amp;copy; Copyright 1997-2024, Edward K. Ream.
+  Last updated on November 7, 2024.
+  Created using &lt;a href="https://www.sphinx-doc.org/en/master/"&gt;Sphinx 8.1.3&lt;/a&gt;.
+&lt;/div&gt;
 </t>
 <t tx="ekr.20100821182153.4343">.. This file must be located in the leo/doc/html.
 
@@ -15093,6 +15100,7 @@ g.cls()
 
 import glob
 import os
+import re
 import shutil
 trace = False
 headlines = [
@@ -15107,10 +15115,11 @@ def finalize(s):
 
 @others  # define helpers
 
-if c.isChanged():
+if c.isChanged():  # Save this file initially.
     c.save()
 run()
-
+if c.isChanged():  # The home page may have changed.
+    c.save()
 </t>
 <t tx="ekr.20131016103844.16730">See the docstring of these plugins for more details::
 
@@ -31736,6 +31745,7 @@ def run():
     try:
         old_p = c.p
         os.chdir(html_path)
+        patch_home_page()
         write_intermediate_files()
         make_html(html_path)
         print('')
@@ -33002,7 +33012,6 @@ html_path = finalize(join(doc, 'html'))
 os.chdir(html_path)
 make_html(html_path)
 </t>
-<t tx="ekr.20241125100904.1"></t>
 <t tx="ekr.20241125100922.1">@language batch
 @echo OFF
 
@@ -33017,7 +33026,27 @@ rem Works as long as the path to leo-editor doesn't change.
 python c:\Repos\leo-editor\leo\Scripts\sphinx_build.py %*
 
 </t>
-<t tx="ekr.20241125103850.1"></t>
+<t tx="ekr.20241125122822.1"></t>
+<t tx="ekr.20241125122939.1">last_updated_pat = re.compile(r'Last updated on (.*?)\.')
+created_using_pat = re.compile(
+    r'Created using &lt;a href='
+    r'"https://www.sphinx-doc.org/en/master/"&gt;Sphinx'
+    r'\s*(.*?)&lt;/a&gt;\.'
+)
+
+def patch_home_page():
+    """
+    Update (in *this*file) the "Last updated" and "Created using" fields in
+    the node `@file ../../docs/index.html`.
+    """
+    h = '@file ../../docs/index.html'
+    home_page = g.findNodeAnywhere(c, h)
+    assert home_page, h
+    h2 = g.angleBrackets(' div footer ')
+    footer = g.findNodeInTree(c, home_page, h2)
+    assert footer, h2
+
+    #- Compute date with "%B %d, %Y", per conf.py.</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
