@@ -2510,15 +2510,15 @@
 <v t="ekr.20241125122822.1"><vh>--- recent</vh>
 <v t="ekr.20241125100922.1"><vh>@@@edit c:/scripts/sphinx-build.cmd</vh></v>
 <v t="ekr.20241125100825.1"><vh>@@@edit ../scripts/sphinx_build.py</vh></v>
-<v t="ekr.20090428133936.2"></v>
 <v t="ekr.20241125100109.1"><vh>test make_html</vh>
 <v t="ekr.20230303064734.1"></v>
 </v>
 </v>
+<v t="ekr.20090428133936.2"></v>
 <v t="ekr.20100808060203.4273"></v>
 <v t="ekr.20100808060203.4278"><vh>&lt;&lt; div footer &gt;&gt;</vh></v>
 <v t="ekr.20131016083406.16724"></v>
-<v t="ekr.20241125122939.1"></v>
+<v t="ekr.20230303064734.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -31738,7 +31738,7 @@ def run():
     paths = (build_path, docs_path, docs_static_path, html_path)
     fails = [z for z in paths if not g.os_path_exists(z)]
     if fails:
-        g.printObj(fails, tag='Missing paths')
+        g.printObj(fails, tag='run: Missing paths...')
         return
         
     # Step 3: Do nothing else outside 'gh-pages' branches.
@@ -31780,13 +31780,34 @@ def run():
 </t>
 <t tx="ekr.20230303064734.1">def make_html(html_path):
     """
-    Run the `make html` command in the `html_path` directory.
+    Run the `make html` command in the leo/doc/html directory.
     """
     cwd = finalize(os.getcwd())
     assert cwd.lower() == html_path.lower(), (cwd, html_path)
-    g.execute_shell_commands([
-        'make html',
-    ])</t>
+    
+    if 0:  # `make clean` is good for testing.
+        g.execute_shell_commands(['make clean'])
+
+    if 1:  # Run sphinx build directly.
+        # This is *much* faster and there is no need
+        # for sphinx-build.cmd or python/Scripts/sphinx_build.py.
+        from sphinx.cmd import build
+        argv = [
+            '-b', 'html', '-d', '_build/doctrees', '.', '_build/html'
+        ]
+        build.build_main(argv)
+    else:
+        commands = [
+            # 'make clean',
+
+            # These two are equivalent.
+            # On EKR's machine sphinx-build is sphinx-build.cmd.
+
+            # 'sphinx-build -b html -d _build/doctrees . _build/html',
+            'make html',  # Calls sphinx-build (sphinx-build.cmd).
+        ]
+        g.execute_shell_commands(commands)
+</t>
 <t tx="ekr.20230303065849.1">def last_timestamp(directory: str) -&gt; str:
     """Return the last time stamp for all the files in the given directory."""
     files = glob.glob(f"{directory}{os.sep}*")

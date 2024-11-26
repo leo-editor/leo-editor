@@ -20,7 +20,6 @@ python_folder = os.path.dirname(sys.executable)
 script = os.path.normpath(os.path.join(
     python_folder, 'Scripts', 'sphinx-build.exe'))
 
-
 if os.path.exists(script):
     # Create a command that executes python/Scripts/sphinx-build.exe.
     args_s = ' '.join(sys.argv[1:])
