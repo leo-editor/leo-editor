@@ -165,15 +165,20 @@ class Python_Importer(Importer):
                     break
 
         non_tail_lines = tail_lines = 0
+        angles, curlies, parens = 0, 0, 0
         if i < i2:
             lws1 = lws_n(prev_line)
             while i < i2:
                 s = self.guide_lines[i]
                 if s.strip():
-                    # A code line.
-                    if lws_n(s) <= lws1:
+                    # A code line. Test the bracket state at the *start* of the line.
+                    if lws_n(s) <= lws1 and (angles, curlies, parens) == (0, 0, 0):
                         # A code line that ends the block.
                         return i if non_tail_lines == 0 else i - tail_lines
+                    # Update the bracket state.
+                    angles = angles + s.count('<') - s.count('>')
+                    curlies = curlies + s.count('{') - s.count('}')
+                    parens = parens + s.count('(') - s.count(')')
                     # A code line in the block.
                     non_tail_lines += 1
                     tail_lines = 0

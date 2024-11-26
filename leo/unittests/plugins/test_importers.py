@@ -3298,19 +3298,19 @@ class TestPython(BaseTestImporter):
                     'class HistoryTrim(BaseIPythonApplication):\n'
                     '    @others\n'
             ),
-            (2, 'HistroyTrim.start',
+            (2, 'HistoryTrim.start',
                     'def start(self):\n'
                     '\n'
-                    '# Create the new history database.\n'
-                    'new_db.execute("""CREATE TABLE IF NOT EXISTS sessions (session integer\n'
-                    '                    primary key autoincrement, start timestamp,\n'
-                    '                    end timestamp, num_cmds integer, remark text)""")\n'
-                    'new_db.close()\n'
-                    'if self.backup:\n'
-                    '    print("Backed up longer history file to", backup_hist_file)\n'
-                    'else:\n'
-                    '    hist_file.unlink()\n'
-                    'new_hist_file.rename(hist_file)\n'
+                    '    # Create the new history database.\n'
+                    '    new_db.execute("""CREATE TABLE IF NOT EXISTS sessions (session integer\n'
+                    '                        primary key autoincrement, start timestamp,\n'
+                    '                        end timestamp, num_cmds integer, remark text)""")\n'
+                    '    new_db.close()\n'
+                    '    if self.backup:\n'
+                    '        print("Backed up longer history file to", backup_hist_file)\n'
+                    '    else:\n'
+                    '        hist_file.unlink()\n'
+                    '    new_hist_file.rename(hist_file)\n'
             ),
         )
         self.new_run_test(s, expected_results)
