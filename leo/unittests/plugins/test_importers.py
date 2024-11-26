@@ -3269,6 +3269,33 @@ class TestPython(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
+    #@+node:ekr.20241126104128.1: *3* TestPython.test_ipython_ideom
+    def test_ipython_idiom(self):
+
+        s = '''
+        class AClass:
+            description = ("""<A multi-line docstring""")
+        '''
+        expected_results = (
+            (0, '',  # Ignore the first headline.
+                    '@others\n'
+                    '@language python\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, 'function: get_target_type',
+                    'def get_target_type(\n'
+                    '    tvar: TypeVarLikeType,\n'
+                    '    type: Type,\n'
+                    '    callable: CallableType,\n'
+                    ') -> Type | None:\n'
+                    '    if isinstance(tvar, ParamSpecType):\n'
+                    '        return type\n'
+                    '    if isinstance(tvar, TypeVarTupleType):\n'
+                    '        return type\n'
+                    '    return type\n'
+            ),
+        )
+        self.new_run_test(s, expected_results)
     #@+node:ekr.20230612072414.1: *3* TestPython.test_long_declaration
     def test_long_declaration(self):
 
