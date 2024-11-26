@@ -2506,7 +2506,7 @@
 </v>
 <v t="ekr.20240828095959.1"></v>
 <v t="ekr.20240828094953.1"><vh>Leo 6.8.2 release notes</vh></v>
-<v t="ekr.20241125071308.1"><vh>=== #4208: improve sphinx-build</vh></v>
+<v t="ekr.20241125071308.1"><vh>=== PR #4209: improve sphinx-build</vh></v>
 <v t="ekr.20241125122822.1"><vh>--- recent</vh>
 <v t="ekr.20241125100109.1"><vh>test make_html</vh>
 <v t="ekr.20230303064734.1"></v>
@@ -32989,7 +32989,7 @@ If a pattern matcher matches syntax that continues to the next line, the pattern
 @nosearch
 
 https://github.com/leo-editor/leo-editor/issues/4208
-PR: https://github.com/leo-editor/leo-editor/pull/xxx
+PR: https://github.com/leo-editor/leo-editor/pull/4209
 
 @language python
 </t>

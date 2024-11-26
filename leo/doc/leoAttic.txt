@@ -1662,7 +1662,7 @@ vList = [z for z in c.all_unique_nodes()]
 for v in vList:
     g.clearAllIvars(v)
 vList = []  # Remove these references immediately.
-#@+node:ekr.20241125100825.1: *3* @@@edit ../scripts/sphinx_build.py
+#@+node:ekr.20241125100825.1: *3* @@@edit leo/scripts/sphinx_build.py
 @language python
 
 """
