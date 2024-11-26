@@ -3128,16 +3128,16 @@ class ViewRenderedController3(QtWidgets.QWidget):
             self.show_literal(s)
     #@+node:tom.20241116145648.1: *4* vr3 scroll methods
     # Support for saving and restoring scroll position.
-    def capture_scroll_position(self):
+    def capture_scroll_position(self) -> None:
         self.qwev.page().runJavaScript("window.pageYOffset", self.store_scroll_position)
 
-    def store_scroll_position(self, position):
+    def store_scroll_position(self, position) -> None:
         self.scroll_position = position
 
-    def store_temp_scroll_position(self, position):
+    def store_temp_scroll_position(self, position) -> None:
         self.temp_scroll_postion = position
 
-    def set_unfreeze_when_scrolled(self):
+    def set_unfreeze_when_scrolled(self) -> None:
         self.qwev.page().runJavaScript("window.pageYOffset", self.store_temp_scroll_position)
         current_scroll = self.temp_scroll_postion
         if current_scroll >= self.scroll_position:
@@ -3146,13 +3146,13 @@ class ViewRenderedController3(QtWidgets.QWidget):
             self.scrolling = False
             self.in_forced_message = False
 
-    def restore_scroll_position(self):
+    def restore_scroll_position(self) -> None:
         self.qwev.page().runJavaScript(f"window.scrollTo(0, {self.scroll_position});")
         self.scrolling = True
         self.timer.start(300)
         self.set_unfreeze_when_scrolled()
 
-    def cancel_scroll(self):
+    def cancel_scroll(self) -> None:
         self.timer.stop()
         self.set_unfreeze()
         self.scrolling = False
