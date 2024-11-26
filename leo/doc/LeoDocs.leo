@@ -8279,7 +8279,7 @@ Nevertheless, these sentinels can be useful in special situations.
 </t>
 <t tx="ekr.20100808060203.4278">&lt;div class="footer"&gt;
   &amp;copy; Copyright 1997-2024, Edward K. Ream.
-  Last updated on November 7, 2024.
+  Last updated on November 25, 2024
   Created using &lt;a href="https://www.sphinx-doc.org/en/master/"&gt;Sphinx 8.1.3&lt;/a&gt;.
 &lt;/div&gt;
 </t>
@@ -15098,10 +15098,13 @@ After running this script, copy files
 g.cls()
 g.cls()
 
+from datetime import datetime
 import glob
 import os
 import re
 import shutil
+from sphinx import __version__ as version
+
 trace = False
 headlines = [
     "Leo's Documentation"
@@ -15118,6 +15121,8 @@ def finalize(s):
 if c.isChanged():  # Save this file initially.
     c.save()
 run()
+if c.isChanged():  # Save this file again if we have patched the home page.
+    c.save()
 </t>
 <t tx="ekr.20131016103844.16730">See the docstring of these plugins for more details::
 
@@ -31778,7 +31783,7 @@ def run():
     Run the `make html` command in the `html_path` directory.
     """
     cwd = finalize(os.getcwd())
-    assert cwd == html_path, (cwd, html_path)
+    assert cwd.lower() == html_path.lower(), (cwd, html_path)
     g.execute_shell_commands([
         'make html',
     ])</t>
@@ -32976,16 +32981,6 @@ If a pattern matcher matches syntax that continues to the next line, the pattern
 https://github.com/leo-editor/leo-editor/issues/4208
 PR: https://github.com/leo-editor/leo-editor/pull/xxx
 
-Step 1: Ensure the python version and the sphinx-build versions match:
-
-- Create leo/scripts/sphinx_build.py.
-- sphinx-build.cmd invokes sphinx_build.py.
-
-Step 2: Automatically update the "Last updated" and "Created using" fields in
-  index.html.
-
-- Compute date with "%B %d, %Y", per conf.py.
-
 @language python
 </t>
 <t tx="ekr.20241125091943.1">@nosearch</t>
@@ -33063,38 +33058,37 @@ python c:\Repos\leo-editor\leo\Scripts\sphinx_build.py %*
 
 </t>
 <t tx="ekr.20241125122822.1"></t>
-<t tx="ekr.20241125122939.1">last_updated_pat = re.compile(r'^(.*?)(Last updated on\s*)(.+)(.*)$')
-created_using_pat = re.compile(r'^(.*?)Sphinx\s*([0-9]+\.[0-9]+\.[0-9]+)(.*)$')
+<t tx="ekr.20241125122939.1">date_pat = re.compile(r'^(.*?)(Last updated on\s*)(.+)(.*)$')
+version_pat = re.compile(r'^(.*?)Sphinx\s*([0-9]+\.[0-9]+\.[0-9]+)(.*)$')
 
 def patch_home_page():
     """
     Update (in *this*file) the "Last updated" and "Created using" fields in
     the node `@file ../../docs/index.html` or its descendants.
     """
+    today = datetime.today()
+    date = datetime.date(today).strftime("%B %d, %Y")  # Same as conf.py.
     
     def date_repl(m: re.Match) -&gt; str:
         s = m.group(0)
-        # Compute date with "%B %d, %Y", per conf.py.
         i, j = m.start(3), m.end(3)
-        return s[:i] + 'DATE.' + s[j:]
-        
-    def version_repl(m: re.Match) -&gt; s:
+        return s[:i] + date + s[j:]
+
+    def version_repl(m: re.Match) -&gt; str:
         s = m.group(0)
         i, j = m.start(2), m.end(2)
-        # Get the version number of sphinx.
-        return s[:i] + 'VERSION' + s[j:]
+        return s[:i] + version + s[j:]
 
     table = (
-        (last_updated_pat, date_repl),
-        (created_using_pat, version_repl),
+        (date_pat, date_repl),
+        (version_pat, version_repl),
     )
     h = '@file ../../docs/index.html'
     home_page = g.findNodeAnywhere(c, h)
     if not home_page:
         g.trace(f"Not found: {h!r}")
         return
-    changed = False
-    g.trace('...')
+    any_changed = False
     for p in home_page.self_and_subtree():
         old_lines = g.splitLines(p.b)
         new_lines = old_lines[:]
@@ -33105,12 +33099,16 @@ def patch_home_page():
                 if new_line != old_lines[i]:
                     print('')
                     print(f"Changed line {i:&lt;2} of {p.h}")
-                    print(f"old: {old_line!r}\nnew: {new_line!r}")
+                    # print(f"old: {old_line!r}\nnew: {new_line!r}")
+                    print(new_line.rstrip())
                     new_lines[i] = old_lines[i] = new_line
                     changed = True
-    if False and changed:  ###
-        print('')
-        c.save()</t>
+        if new_lines != g.splitLines(p.b):
+            p.b = ''.join(new_lines)
+            print('')
+            c.setChanged()
+            home_page.setDirty()
+            any_changed = True</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
