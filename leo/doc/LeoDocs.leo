@@ -67,6 +67,7 @@
 <v t="ekr.20241124122954.1"><vh>copy_all_files</vh></v>
 <v t="ekr.20230303080626.1"><vh>git_status</vh></v>
 <v t="ekr.20230303064734.1"><vh>make_html</vh></v>
+<v t="ekr.20241125122939.1"><vh>patch_home_page</vh></v>
 <v t="ekr.20230228105847.1"><vh>run</vh></v>
 <v t="ekr.20230111165336.1"><vh>write_intermediate_files</vh></v>
 </v>
@@ -2505,19 +2506,17 @@
 </v>
 <v t="ekr.20240828095959.1"></v>
 <v t="ekr.20240828094953.1"><vh>Leo 6.8.2 release notes</vh></v>
-<v t="ekr.20241125071308.1"><vh>=== #4208: improve sphinx-build</vh></v>
-<v t="ekr.20241125100904.1"><vh>--- testing</vh>
+<v t="ekr.20241125071308.1"><vh>=== PR #4209: improve sphinx-build</vh></v>
+<v t="ekr.20241125122822.1"><vh>--- recent</vh>
 <v t="ekr.20241125100109.1"><vh>test make_html</vh>
 <v t="ekr.20230303064734.1"></v>
 </v>
+<v t="ekr.20241126021422.1"><vh>tests of imports</vh></v>
+<v t="ekr.20100808060203.4278"><vh>&lt;&lt; div footer &gt;&gt;</vh></v>
 </v>
 <v t="ekr.20090428133936.2"></v>
-<v t="ekr.20100808060203.4273"></v>
 <v t="ekr.20131016083406.16724"></v>
 <v t="ekr.20230303064734.1"></v>
-<v t="ekr.20241125103850.1"><vh>*** Temporary files ***</vh></v>
-<v t="ekr.20241125100922.1"><vh>@edit c:/scripts/sphinx-build.cmd</vh></v>
-<v t="ekr.20241125100825.1"><vh>@edit ../scripts/sphinx_build.py</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -8275,6 +8274,12 @@ Nevertheless, these sentinels can be useful in special situations.
 
     A single node may contain only one ``@others`` directive, but descendant nodes
     may have other ``@others`` directives.
+</t>
+<t tx="ekr.20100808060203.4278">&lt;div class="footer"&gt;
+  &amp;copy; Copyright 1997-2024, Edward K. Ream.
+  Last updated on November 26, 2024
+  Created using &lt;a href="https://www.sphinx-doc.org/en/master/"&gt;Sphinx 8.1.3&lt;/a&gt;.
+&lt;/div&gt;
 </t>
 <t tx="ekr.20100821182153.4343">.. This file must be located in the leo/doc/html.
 
@@ -15091,9 +15096,13 @@ After running this script, copy files
 g.cls()
 g.cls()
 
+from datetime import datetime
 import glob
 import os
+import re
 import shutil
+from sphinx import __version__ as version
+
 trace = False
 headlines = [
     "Leo's Documentation"
@@ -15107,10 +15116,11 @@ def finalize(s):
 
 @others  # define helpers
 
-if c.isChanged():
+if c.isChanged():  # Save this file initially.
     c.save()
 run()
-
+if c.isChanged():  # Save this file again if we have patched the home page.
+    c.save()
 </t>
 <t tx="ekr.20131016103844.16730">See the docstring of these plugins for more details::
 
@@ -31726,16 +31736,17 @@ def run():
     paths = (build_path, docs_path, docs_static_path, html_path)
     fails = [z for z in paths if not g.os_path_exists(z)]
     if fails:
-        g.printObj(fails, tag='Missing paths')
+        g.printObj(fails, tag='run: Missing paths...')
         return
         
     # Step 3: Do nothing else outside 'gh-pages' branches.
-    if not g.gitBranchName().startswith('gh-pages'):
+    if not g.gitBranchName().startswith(('gh-pages', 'ekr-4208')):
         g.es_print('Run `make-sphinx` from `gh-pages` branch')
         return
     try:
         old_p = c.p
         os.chdir(html_path)
+        patch_home_page()
         write_intermediate_files()
         make_html(html_path)
         print('')
@@ -31767,13 +31778,25 @@ def run():
 </t>
 <t tx="ekr.20230303064734.1">def make_html(html_path):
     """
-    Run the `make html` command in the `html_path` directory.
+    Run the `make html` command in the leo/doc/html directory.
     """
     cwd = finalize(os.getcwd())
-    assert cwd == html_path, (cwd, html_path)
-    g.execute_shell_commands([
-        'make html',
-    ])</t>
+    assert cwd.lower() == html_path.lower(), (cwd, html_path)
+    
+    if 0:  # `make clean` is good for testing.
+        g.execute_shell_commands(['make clean'])
+        
+    if 1:  # Simplest, safest.
+        g.execute_shell_commands(['make html'])
+    elif 0:  # Works. Arguments are from the MakeFile.
+        g.execute_shell_commands([
+            'python -m sphinx -b html -d _build/doctrees . _build/html',
+        ])
+    else:  # Fastest, but depends on sphinx's API.
+        from sphinx.cmd import build
+        args = '-b html -d _build/doctrees . _build/html'
+        argv = args.split(' ')
+        build.build_main(argv)</t>
 <t tx="ekr.20230303065849.1">def last_timestamp(directory: str) -&gt; str:
     """Return the last time stamp for all the files in the given directory."""
     files = glob.glob(f"{directory}{os.sep}*")
@@ -32966,17 +32989,7 @@ If a pattern matcher matches syntax that continues to the next line, the pattern
 @nosearch
 
 https://github.com/leo-editor/leo-editor/issues/4208
-PR: https://github.com/leo-editor/leo-editor/pull/xxx
-
-Step 1: Ensure the python version and the sphinx-build versions match:
-
-- Create leo/scripts/sphinx_build.py.
-- sphinx-build.cmd invokes sphinx_build.py.
-
-Step 2: Automatically update the "Last updated" and "Created using" fields in
-  index.html.
-
-- Compute date with "%B %d, %Y", per conf.py.
+PR: https://github.com/leo-editor/leo-editor/pull/4209
 
 @language python
 </t>
@@ -33002,8 +33015,61 @@ html_path = finalize(join(doc, 'html'))
 os.chdir(html_path)
 make_html(html_path)
 </t>
-<t tx="ekr.20241125100904.1"></t>
-<t tx="ekr.20241125103850.1"></t>
+<t tx="ekr.20241125122822.1"></t>
+<t tx="ekr.20241125122939.1">date_pat = re.compile(r'^(.*?)(Last updated on\s*)(.+)(.*)$')
+version_pat = re.compile(r'^(.*?)Sphinx\s*([0-9]+\.[0-9]+\.[0-9]+)(.*)$')
+
+def patch_home_page():
+    """
+    Update (in *this*file) the "Last updated" and "Created using" fields in
+    the node `@file ../../docs/index.html` or its descendants.
+    """
+    today = datetime.today()
+    date = datetime.date(today).strftime("%B %d, %Y")  # Same as conf.py.
+    
+    def date_repl(m: re.Match) -&gt; str:
+        s = m.group(0)
+        i, j = m.start(3), m.end(3)
+        return s[:i] + date + s[j:]
+
+    def version_repl(m: re.Match) -&gt; str:
+        s = m.group(0)
+        i, j = m.start(2), m.end(2)
+        return s[:i] + version + s[j:]
+
+    table = (
+        (date_pat, date_repl),
+        (version_pat, version_repl),
+    )
+    h = '@file ../../docs/index.html'
+    home_page = g.findNodeAnywhere(c, h)
+    if not home_page:
+        g.trace(f"Not found: {h!r}")
+        return
+    any_changed = False
+    for p in home_page.self_and_subtree():
+        old_lines = g.splitLines(p.b)
+        new_lines = old_lines[:]
+        for i, old_line in enumerate(old_lines):
+            new_line = old_line
+            for pattern, repl in table:
+                new_line = re.sub(pattern, repl, new_line)
+                if new_line != old_lines[i]:
+                    print('')
+                    print(f"Changed line {i:&lt;2} of {p.h}")
+                    print(new_line.rstrip())
+                    new_lines[i] = old_lines[i] = new_line
+                    changed = True
+        if new_lines != g.splitLines(p.b):
+            p.b = ''.join(new_lines)
+            print('')
+            c.setChanged()
+            home_page.setDirty()
+            any_changed = True</t>
+<t tx="ekr.20241126021422.1">@language python
+
+import Scripts
+print(Scripts.__path__[0])</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
