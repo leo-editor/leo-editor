@@ -3269,12 +3269,24 @@ class TestPython(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20241126104128.1: *3* TestPython.test_ipython_ideom
+    #@+node:ekr.20241126104128.1: *3* TestPython.test_ipython_idiom
     def test_ipython_idiom(self):
 
         s = '''
-        class AClass:
-            description = ("""<A multi-line docstring""")
+    class HistoryTrim(BaseIPythonApplication):
+
+        def start(self):
+
+            # Create the new history database.
+            new_db.execute("""CREATE TABLE IF NOT EXISTS sessions (session integer
+                                primary key autoincrement, start timestamp,
+                                end timestamp, num_cmds integer, remark text)""")
+            new_db.close()
+            if self.backup:
+                print("Backed up longer history file to", backup_hist_file)
+            else:
+                hist_file.unlink()
+            new_hist_file.rename(hist_file)
         '''
         expected_results = (
             (0, '',  # Ignore the first headline.
@@ -3282,17 +3294,23 @@ class TestPython(BaseTestImporter):
                     '@language python\n'
                     '@tabwidth -4\n'
             ),
-            (1, 'function: get_target_type',
-                    'def get_target_type(\n'
-                    '    tvar: TypeVarLikeType,\n'
-                    '    type: Type,\n'
-                    '    callable: CallableType,\n'
-                    ') -> Type | None:\n'
-                    '    if isinstance(tvar, ParamSpecType):\n'
-                    '        return type\n'
-                    '    if isinstance(tvar, TypeVarTupleType):\n'
-                    '        return type\n'
-                    '    return type\n'
+            (1, 'class HistoryTrim',
+                    'class HistoryTrim(BaseIPythonApplication):\n'
+                    '    @others\n'
+            ),
+            (2, 'HistroyTrim.start',
+                    'def start(self):\n'
+                    '\n'
+                    '# Create the new history database.\n'
+                    'new_db.execute("""CREATE TABLE IF NOT EXISTS sessions (session integer\n'
+                    '                    primary key autoincrement, start timestamp,\n'
+                    '                    end timestamp, num_cmds integer, remark text)""")\n'
+                    'new_db.close()\n'
+                    'if self.backup:\n'
+                    '    print("Backed up longer history file to", backup_hist_file)\n'
+                    'else:\n'
+                    '    hist_file.unlink()\n'
+                    'new_hist_file.rename(hist_file)\n'
             ),
         )
         self.new_run_test(s, expected_results)
