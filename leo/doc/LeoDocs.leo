@@ -31799,13 +31799,8 @@ def run():
         build.build_main(argv)
     else:
         commands = [
-            # 'make clean',
-
-            # These two are equivalent.
-            # On EKR's machine sphinx-build is sphinx-build.cmd.
-
-            # 'sphinx-build -b html -d _build/doctrees . _build/html',
-            'make html',  # Calls sphinx-build (sphinx-build.cmd).
+            # Calls sphinx-build.cmd on EKR's machine.
+            'make html',
         ]
         g.execute_shell_commands(commands)
 </t>
