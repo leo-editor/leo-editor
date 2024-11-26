@@ -2508,15 +2508,13 @@
 <v t="ekr.20240828094953.1"><vh>Leo 6.8.2 release notes</vh></v>
 <v t="ekr.20241125071308.1"><vh>=== #4208: improve sphinx-build</vh></v>
 <v t="ekr.20241125122822.1"><vh>--- recent</vh>
-<v t="ekr.20241125100922.1"><vh>@@@edit c:/scripts/sphinx-build.cmd</vh></v>
-<v t="ekr.20241125100825.1"><vh>@@@edit ../scripts/sphinx_build.py</vh></v>
 <v t="ekr.20241125100109.1"><vh>test make_html</vh>
 <v t="ekr.20230303064734.1"></v>
 </v>
+<v t="ekr.20241126021422.1"><vh>tests of imports</vh></v>
+<v t="ekr.20100808060203.4278"><vh>&lt;&lt; div footer &gt;&gt;</vh></v>
 </v>
 <v t="ekr.20090428133936.2"></v>
-<v t="ekr.20100808060203.4273"></v>
-<v t="ekr.20100808060203.4278"><vh>&lt;&lt; div footer &gt;&gt;</vh></v>
 <v t="ekr.20131016083406.16724"></v>
 <v t="ekr.20230303064734.1"></v>
 </vnodes>
@@ -8279,7 +8277,7 @@ Nevertheless, these sentinels can be useful in special situations.
 </t>
 <t tx="ekr.20100808060203.4278">&lt;div class="footer"&gt;
   &amp;copy; Copyright 1997-2024, Edward K. Ream.
-  Last updated on November 25, 2024
+  Last updated on November 26, 2024
   Created using &lt;a href="https://www.sphinx-doc.org/en/master/"&gt;Sphinx 8.1.3&lt;/a&gt;.
 &lt;/div&gt;
 </t>
@@ -31788,26 +31786,17 @@ def run():
     if 0:  # `make clean` is good for testing.
         g.execute_shell_commands(['make clean'])
         
-    if 1:
-        commands = [
+    if 1:  # Simplest, safest.
+        g.execute_shell_commands(['make html'])
+    elif 0:  # Works. Arguments are from the MakeFile.
+        g.execute_shell_commands([
             'python -m sphinx -b html -d _build/doctrees . _build/html',
-        ]
-        g.execute_shell_commands(commands)
-    elif 1:  # Run sphinx.cmd.build.build_main directly.
-        # This is *much* faster and there is no need
-        # for sphinx-build.cmd or python/Scripts/sphinx_build.py.
+        ])
+    else:  # Fastest, but depends on sphinx's API.
         from sphinx.cmd import build
-        # The arguments are from the MakeFile.
         args = '-b html -d _build/doctrees . _build/html'
         argv = args.split(' ')
-        build.build_main(argv)
-    else:
-        commands = [
-            # Calls sphinx-build.cmd on EKR's machine.
-            'make html',
-        ]
-        g.execute_shell_commands(commands)
-</t>
+        build.build_main(argv)</t>
 <t tx="ekr.20230303065849.1">def last_timestamp(directory: str) -&gt; str:
     """Return the last time stamp for all the files in the given directory."""
     files = glob.glob(f"{directory}{os.sep}*")
@@ -33026,58 +33015,6 @@ html_path = finalize(join(doc, 'html'))
 os.chdir(html_path)
 make_html(html_path)
 </t>
-<t tx="ekr.20241125100825.1">@language python
-
-"""
-leo/scripts/sphinx_build.py.
-
-Invoke python/scripts/sphinx_build.exe
-
-Note: This straightforward script works on EKR's Windows 11 machine.
-      There is *no* guarantee that it will work elsewhere.
-      
-      EKR's sphinx-build.cmd calls this script as follows:
-      python &lt;path to&gt;/leo-editor\leo\Scripts\sphinx_build.py %*
-"""
-
-import os
-import subprocess
-import sys
-
-# Find python/Scripts/sphinx-build.exe.
-python_folder = os.path.dirname(sys.executable)
-script = os.path.normpath(os.path.join(
-    python_folder, 'Scripts', 'sphinx-build.exe'))
-
-
-if os.path.exists(script):
-    # Create a command that executes python/Scripts/sphinx-build.exe.
-    args_s = ' '.join(sys.argv[1:])
-    script_s = f'"{script}" {args_s}'
-    command = fr"python {script_s}"
-    # Print and execute the command!
-    print(f"sphinx_build.py: {command}\n")
-    subprocess.Popen(command, shell=True).communicate()
-else:
-    print('')
-    print(f"Not found: {script!r}")
-    print('pip install sphinx')
-    print('')
-</t>
-<t tx="ekr.20241125100922.1">@language batch
-@echo OFF
-
-echo.
-echo sphinx-build.cmd %*
-echo.
-
-rem Works, but *must* match python version!
-rem C:\Python\Python3.13\Scripts\sphinx-build.exe %*
-
-rem Works as long as the path to leo-editor doesn't change.
-python c:\Repos\leo-editor\leo\Scripts\sphinx_build.py %*
-
-</t>
 <t tx="ekr.20241125122822.1"></t>
 <t tx="ekr.20241125122939.1">date_pat = re.compile(r'^(.*?)(Last updated on\s*)(.+)(.*)$')
 version_pat = re.compile(r'^(.*?)Sphinx\s*([0-9]+\.[0-9]+\.[0-9]+)(.*)$')
@@ -33129,6 +33066,10 @@ def patch_home_page():
             c.setChanged()
             home_page.setDirty()
             any_changed = True</t>
+<t tx="ekr.20241126021422.1">@language python
+
+import Scripts
+print(Scripts.__path__[0])</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
