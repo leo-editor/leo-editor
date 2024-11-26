@@ -174,6 +174,7 @@ Become familiar with Leo's most important plugins:
 - quicksearch.py adds a Nav tab for searching.
 - todo.py handles to-do lists and is a project manager.
 - viewrendered.py renders content in the rendering pane.
+- viewrendered3.py: an alternate renderer.
 
 """),
 #@+node:ekr.20180324072923.1: *4* Move clones to last top-level node
@@ -212,7 +213,7 @@ UserTip(
     title="The @button make-md-toc script in LeoDocs.leo",
     text="""
 
-The @button make-md-toc script in LeoDocs.leo writes a markdown table of contents to the console.
+The (disabled) @button make-md-toc script in LeoDocs.leo writes a markdown table of contents to the console.
 
 You can then copy the text from the console to your document.
 
@@ -589,21 +590,6 @@ UserTip(
 myLeoSettings.leo can define *common* @command nodes that apply to all outlines.
 
 Such nodes reside in the @commands subtree of the @settings tree in myLeoSettings.leo.
-
-"""),
-#@+node:ekr.20180509070202.1: *4* How to minimize panes
-UserTip(
-    n=0,
-    tags=['Tutorial',],
-    title="How to minimize panes",
-    text="""
-
-Middle mouse click on the window divider (splitter) to
-minimize all windows to the left of vertical splitters and
-below horizontal splitters.
-
-Using this with "Toggle Split Direction" allows a maximized
-body, tree or even log window.
 
 """),
 #@+node:ekr.20180503082333.1: *4* How to see all @command commands
