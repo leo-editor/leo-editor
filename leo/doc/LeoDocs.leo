@@ -2509,6 +2509,902 @@
 <v t="ekr.20240828094953.1"><vh>Leo 6.8.2 release notes</vh></v>
 <v t="ekr.20241126091611.1"></v>
 <v t="ekr.20241126091524.1"><vh>Leo 6.8.3 release nodes</vh></v>
+<v t="ekr.20241126093914.1"><vh>Leo 6.8.3: Done</vh>
+<v t="ekr.20241126093914.2"><vh>=== #4109: restart-leo (invalid)</vh></v>
+<v t="ekr.20241126093914.3"><vh>=== #4199: restart-leo (invalid)</vh>
+<v t="ekr.20241126093914.4"><vh>class LoadManager</vh>
+<v t="ekr.20241126093914.5"><vh> LM.ctor</vh></v>
+<v t="ekr.20241126093914.6"><vh>LM.Directory &amp; file utils</vh>
+<v t="ekr.20241126093914.7"><vh>LM.completeFileName</vh></v>
+<v t="ekr.20241126093914.8"><vh>LM.computeLeoSettingsPath</vh></v>
+<v t="ekr.20241126093914.9"><vh>LM.computeMyLeoSettingsPath</vh></v>
+<v t="ekr.20241126093914.10"><vh>LM.computeStandardDirectories &amp; helpers</vh>
+<v t="ekr.20241126093914.11"><vh>LM.computeGlobalConfigDir</vh></v>
+<v t="ekr.20241126093914.12"><vh>LM.computeHomeDir</vh></v>
+<v t="ekr.20241126093914.13"><vh>LM.computeHomeLeoDir</vh></v>
+<v t="ekr.20241126093914.14"><vh>LM.computeLeoDir</vh></v>
+<v t="ekr.20241126093914.15"><vh>LM.computeLoadDir</vh>
+<v t="ekr.20241126093914.16"><vh>&lt;&lt; resolve symlinks &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20241126093914.17"><vh>LM.computeMachineName</vh></v>
+</v>
+<v t="ekr.20241126093914.18"><vh>LM.computeThemeDirectories</vh></v>
+<v t="ekr.20241126093914.19"><vh>LM.computeThemeFilePath &amp; helper</vh>
+<v t="ekr.20241126093914.20"><vh>LM.resolve_theme_path</vh></v>
+</v>
+<v t="ekr.20241126093914.21"><vh>LM.computeWorkbookFileName</vh></v>
+<v t="ekr.20241126093914.22"><vh>LM.reportDirectories</vh></v>
+</v>
+<v t="ekr.20241126093914.23"><vh>LM.Settings</vh>
+<v t="ekr.20241126093914.24"><vh>LM.computeBindingLetter</vh></v>
+<v t="ekr.20241126093914.25"><vh>LM.computeLocalSettings</vh></v>
+<v t="ekr.20241126093914.26"><vh>LM.createDefaultSettingsDicts</vh></v>
+<v t="ekr.20241126093914.27"><vh>LM.createSettingsDicts</vh></v>
+<v t="ekr.20241126093914.28"><vh>LM.getPreviousSettings</vh></v>
+<v t="ekr.20241126093914.29"><vh>LM.mergeShortcutsDicts &amp; helpers</vh>
+<v t="ekr.20241126093914.30"><vh>&lt;&lt; trace the binding &gt;&gt;</vh></v>
+<v t="ekr.20241126093914.31"><vh>LM.checkForDuplicateShortcuts</vh></v>
+<v t="ekr.20241126093914.32"><vh>LM.invert</vh></v>
+<v t="ekr.20241126093914.33"><vh>LM.uninvert</vh></v>
+</v>
+<v t="ekr.20241126093914.34"><vh>LM.openSettingsFile</vh></v>
+<v t="ekr.20241126093914.35"><vh>LM.readGlobalSettingsFiles</vh></v>
+<v t="ekr.20241126093914.36"><vh>LM.traceSettingsDict</vh></v>
+<v t="ekr.20241126093914.37"><vh>LM.traceShortcutsDict</vh></v>
+</v>
+<v t="ekr.20241126093914.79"><vh>LM.load &amp; helpers</vh>
+<v t="ekr.20241126093914.80"><vh>LM.doDiff</vh></v>
+<v t="ekr.20241126093914.81"><vh>LM.doPostPluginsInit &amp; helpers</vh>
+<v t="ekr.20241126093914.82"><vh>LM.openWorkBook</vh></v>
+</v>
+<v t="ekr.20241126093914.83"><vh>LM.doPrePluginsInit &amp; helpers</vh>
+<v t="ekr.20241126093914.84"><vh>LM.createAllImporterData &amp; helpers</vh>
+<v t="ekr.20241126093914.85"><vh>LM.createImporterData &amp; helper</vh>
+<v t="ekr.20241126093914.86"><vh>LM.parse_importer_dict</vh></v>
+</v>
+<v t="ekr.20241126093914.87"><vh>LM.createWritersData &amp; helper</vh>
+<v t="ekr.20241126093914.88"><vh>LM.parse_writer_dict</vh></v>
+</v>
+</v>
+<v t="ekr.20241126093914.89"><vh>LM.createGui</vh></v>
+<v t="ekr.20241126093914.90"><vh>LM.createSpecialGui</vh></v>
+<v t="ekr.20241126093914.91"><vh>LM.getDefaultFile</vh></v>
+<v t="ekr.20241126093914.92"><vh>LM.initApp</vh></v>
+<v t="ekr.20241126093914.93"><vh>LM.scanOptions &amp; helpers</vh>
+<v t="ekr.20241126093914.94"><vh>function: computeFilesList</vh></v>
+<v t="ekr.20241126093914.95"><vh>function: defineUsage</vh></v>
+<v t="ekr.20241126093914.96"><vh>function: doGuiOption</vh></v>
+<v t="ekr.20241126093914.97"><vh>function: doScriptOption</vh></v>
+<v t="ekr.20241126093914.98"><vh>function: doSelectOption</vh></v>
+<v t="ekr.20241126093914.99"><vh>function: doSimpleOptions</vh>
+<v t="ekr.20241126093914.100"><vh>&lt;&lt; define scanArgv helpers &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20241126093914.101"><vh>function: doThemeOption</vh></v>
+<v t="ekr.20241126093914.102"><vh>function: doTraceOptions</vh></v>
+<v t="ekr.20241126093914.103"><vh>function: doWindowSizeOption</vh></v>
+<v t="ekr.20241126093914.104"><vh>function: doWindowSpotOption</vh></v>
+</v>
+<v t="ekr.20241126093914.105"><vh>LM.setStdStreams</vh>
+<v t="ekr.20241126093914.106"><vh>class LeoStdOut</vh>
+<v t="ekr.20241126093914.107"><vh>LeoStdOut.write</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20241126093914.108"><vh>LM.isValidPython</vh></v>
+<v t="ekr.20241126093914.109"><vh>LM.openWithFileName &amp; helpers</vh>
+<v t="ekr.20241126093914.110"><vh>LM.createMenu</vh></v>
+<v t="ekr.20241126093914.111"><vh>LM.findOpenFile</vh></v>
+<v t="ekr.20241126093914.112"><vh>LM.finishOpen</vh></v>
+<v t="ekr.20241126093914.113"><vh>LM.openExternalFile</vh></v>
+<v t="ekr.20241126093914.114"><vh>LM.isLeoFile &amp; LM.isZippedFile</vh></v>
+<v t="ekr.20241126093914.115"><vh>LM.openEmptyLeoFile</vh></v>
+<v t="ekr.20241126093914.116"><vh>LM.openExistingLeoFile &amp; helper</vh>
+<v t="ekr.20241126093914.117"><vh>LM.openBadLeoFile</vh></v>
+</v>
+<v t="ekr.20241126093914.118"><vh>LM.openZipFile</vh></v>
+</v>
+</v>
+<v t="ekr.20241126093914.78"><vh>LM.revertCommander</vh></v>
+</v>
+<v t="ekr.20241126093914.79"></v>
+<v t="ekr.20241126093914.119"><vh>class Commands</vh>
+<v t="ekr.20241126093914.120"><vh>&lt;&lt; docstring: Commands class &gt;&gt;</vh></v>
+<v t="ekr.20241126093914.121"><vh> c.Birth &amp; death</vh>
+<v t="ekr.20241126093914.122"><vh>c.__init__ &amp; helpers</vh>
+<v t="ekr.20241126093914.123"><vh>c.computeTabTitle</vh></v>
+<v t="ekr.20241126093914.124"><vh>c.computeWindowTitle</vh></v>
+<v t="ekr.20241126093914.125"><vh>c.initCommandIvars</vh></v>
+<v t="ekr.20241126093914.126"><vh>c.initDebugIvars</vh></v>
+<v t="ekr.20241126093914.127"><vh>c.initDocumentIvars</vh></v>
+<v t="ekr.20241126093914.128"><vh>c.initEventIvars</vh></v>
+<v t="ekr.20241126093914.129"><vh>c.initFileIvars</vh></v>
+<v t="ekr.20241126093914.130"><vh>c.initObjects</vh></v>
+<v t="ekr.20241126093914.131"><vh>c.initOptionsIvars</vh></v>
+<v t="ekr.20241126093914.132"><vh>c.initSettings</vh></v>
+</v>
+<v t="ekr.20241126093914.133"><vh>c.__repr__ &amp; __str__</vh></v>
+<v t="ekr.20241126093914.134"><vh>c.finishCreate &amp; helpers</vh>
+<v t="ekr.20241126093914.135"><vh>c.createCommandNames</vh></v>
+<v t="ekr.20241126093914.136"><vh>c.printCommandsDict</vh></v>
+</v>
+<v t="ekr.20241126093914.137"><vh>c.hash</vh></v>
+<v t="ekr.20241126093914.138"><vh>c.idle_focus_helper &amp; helpers</vh>
+<v t="ekr.20241126093914.139"><vh>c.is_unusual_focus</vh></v>
+<v t="ekr.20241126093914.140"><vh>c.trace_idle_focus</vh></v>
+</v>
+<v t="ekr.20241126093914.141"><vh>c.initAfterLoad</vh></v>
+<v t="ekr.20241126093914.142"><vh>c.initConfigSettings</vh></v>
+<v t="ekr.20241126093914.143"><vh>c.setWindowPosition</vh></v>
+</v>
+<v t="ekr.20241126093914.144"><vh>@cmd c.execute-general-script</vh></v>
+<v t="ekr.20241126093914.145"><vh>@cmd c.execute-external-file</vh>
+<v t="ekr.20241126093914.146"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
+<v t="ekr.20241126093914.147"><vh>Declarations</vh></v>
+<v t="ekr.20241126093914.148"><vh>SETTINGS_HELP</vh></v>
+<v t="ekr.20241126093914.149"><vh>extension map</vh></v>
+<v t="ekr.20241126093914.150"><vh>processor map</vh></v>
+<v t="ekr.20241126093914.151"><vh>get_external_maps</vh>
+<v t="ekr.20241126093914.152"><vh>&lt;&lt; get_external_maps: docstring &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20241126093914.153"><vh>getExeKind</vh></v>
+<v t="ekr.20241126093914.154"><vh>getProcessor</vh></v>
+<v t="ekr.20241126093914.155"><vh>Get Windows File Associations</vh></v>
+<v t="ekr.20241126093914.156"><vh>getShell</vh></v>
+<v t="ekr.20241126093914.157"><vh>getTerminal</vh>
+<v t="ekr.20241126093914.158"><vh>getTerminalFromDirectory</vh></v>
+<v t="ekr.20241126093914.159"><vh>getCommonTerminal</vh></v>
+</v>
+<v t="ekr.20241126093914.160"><vh>getTermExecuteCmd</vh>
+<v t="ekr.20241126093914.161"><vh>get_help_message</vh></v>
+<v t="ekr.20241126093914.162"><vh>find_ex_arg</vh></v>
+</v>
+<v t="ekr.20241126093914.163"><vh>checkShebang</vh></v>
+<v t="ekr.20241126093914.164"><vh>runFile</vh></v>
+</v>
+<v t="ekr.20241126093914.165"><vh>@cmd execute-pytest</vh></v>
+<v t="ekr.20241126093914.1291"><vh>@cmd execute-script &amp; public helpers</vh>
+<v t="ekr.20241126093914.1292"><vh>c.executeScriptHelper</vh></v>
+<v t="ekr.20241126093914.1293"><vh>c.redirectScriptOutput</vh></v>
+<v t="ekr.20241126093914.1294"><vh>c.setCurrentDirectoryFromContext</vh></v>
+<v t="ekr.20241126093914.1295"><vh>c.unredirectScriptOutput</vh></v>
+</v>
+<v t="ekr.20241126093914.1223"><vh>@cmd recolor</vh></v>
+<v t="ekr.20241126093914.172"><vh>c.API</vh>
+<v t="ekr.20241126093914.173"><vh>c.Generators</vh>
+<v t="ekr.20241126093914.174"><vh>c.all_nodes &amp; all_unique_nodes</vh></v>
+<v t="ekr.20241126093914.175"><vh>c.all_positions</vh></v>
+<v t="ekr.20241126093914.176"><vh>c.all_positions_for_v</vh></v>
+<v t="ekr.20241126093914.177"><vh>c.all_roots</vh></v>
+<v t="ekr.20241126093914.178"><vh>c.all_unique_positions</vh></v>
+<v t="ekr.20241126093914.179"><vh>c.all_unique_roots</vh></v>
+</v>
+<v t="ekr.20241126093914.180"><vh>c.Getters</vh>
+<v t="ekr.20241126093914.181"><vh>c.currentPosition</vh></v>
+<v t="ekr.20241126093914.182"><vh>c.dumpExpanded</vh></v>
+<v t="ekr.20241126093914.183"><vh>c.edit_widget</vh></v>
+<v t="ekr.20241126093914.184"><vh>c.fileName &amp; relativeFileName &amp; shortFileName</vh></v>
+<v t="ekr.20241126093914.185"><vh>c.firstVisible</vh></v>
+<v t="ekr.20241126093914.186"><vh>c.getBodyLines</vh></v>
+<v t="ekr.20241126093914.187"><vh>c.getTabWidth</vh></v>
+<v t="ekr.20241126093914.188"><vh>c.is...Position</vh>
+<v t="ekr.20241126093914.189"><vh>c.currentPositionIsRootPosition</vh></v>
+<v t="ekr.20241126093914.190"><vh>c.currentPositionHasNext</vh></v>
+<v t="ekr.20241126093914.191"><vh>c.isCurrentPosition</vh></v>
+<v t="ekr.20241126093914.192"><vh>c.isRootPosition</vh></v>
+</v>
+<v t="ekr.20241126093914.193"><vh>c.isChanged</vh></v>
+<v t="ekr.20241126093914.194"><vh>c.lastPosition</vh></v>
+<v t="ekr.20241126093914.195"><vh>c.lastTopLevel</vh></v>
+<v t="ekr.20241126093914.196"><vh>c.lastVisible</vh></v>
+<v t="ekr.20241126093914.197"><vh>c.positionExists</vh>
+<v t="ekr.20241126093914.198"><vh>c.dumpPosition</vh></v>
+</v>
+<v t="ekr.20241126093914.199"><vh>c.rootPosition</vh></v>
+<v t="ekr.20241126093914.200"><vh>c.shouldBeExpanded</vh></v>
+<v t="ekr.20241126093914.201"><vh>c.visLimit</vh></v>
+<v t="ekr.20241126093914.202"><vh>c.vnode2allPositions</vh></v>
+<v t="ekr.20241126093914.203"><vh>c.vnode2position</vh></v>
+</v>
+<v t="ekr.20241126093914.204"><vh>c.Properties</vh></v>
+<v t="ekr.20241126093914.205"><vh>c.Setters</vh>
+<v t="ekr.20241126093914.206"><vh>c.appendStringToBody</vh></v>
+<v t="ekr.20241126093914.207"><vh>c.clearAllMarked</vh></v>
+<v t="ekr.20241126093914.208"><vh>c.clearAllVisited</vh></v>
+<v t="ekr.20241126093914.209"><vh>c.clearChanged</vh></v>
+<v t="ekr.20241126093914.210"><vh>c.clearMarked</vh></v>
+<v t="ekr.20241126093914.211"><vh>c.setBodyString</vh></v>
+<v t="ekr.20241126093914.212"><vh>c.setChanged</vh></v>
+<v t="ekr.20241126093914.213"><vh>c.setCurrentPosition</vh></v>
+<v t="ekr.20241126093914.214"><vh>c.setHeadString</vh></v>
+<v t="ekr.20241126093914.215"><vh>c.setLog</vh></v>
+<v t="ekr.20241126093914.216"><vh>c.setMarked (calls hook)</vh></v>
+<v t="ekr.20241126093914.217"><vh>c.setRootPosition (A do-nothing)</vh></v>
+<v t="ekr.20241126093914.218"><vh>c.setRootVnode (A do-nothing)</vh></v>
+<v t="ekr.20241126093914.219"><vh>c.topPosition &amp; c.setTopPosition</vh></v>
+</v>
+</v>
+<v t="ekr.20241126093914.220"><vh>c.Check Outline...</vh>
+<v t="ekr.20241126093914.221"><vh>c.checkGnxs</vh></v>
+<v t="ekr.20241126093914.222"><vh>c.checkLinks &amp; helpers</vh>
+<v t="ekr.20241126093914.223"><vh>c.checkParentAndChildren</vh></v>
+<v t="ekr.20241126093914.224"><vh>c.checkSiblings</vh></v>
+<v t="ekr.20241126093914.225"><vh>c.checkThreadLinks</vh></v>
+<v t="ekr.20241126093914.226"><vh>c.checkVnodeLinks &amp; helpers</vh>
+<v t="ekr.20241126093914.227"><vh>find_errors</vh></v>
+<v t="ekr.20241126093914.228"><vh>fix_errors</vh></v>
+<v t="ekr.20241126093914.229"><vh>undelete_nodes</vh></v>
+<v t="ekr.20241126093914.230"><vh>recheck</vh></v>
+</v>
+</v>
+<v t="ekr.20241126093914.231"><vh>c.checkMoveWithParentWithWarning &amp; c.checkDrag</vh>
+<v t="ekr.20241126093914.232"><vh>c.checkMoveWithParentWithWarning</vh></v>
+<v t="ekr.20241126093914.233"><vh>c.checkDrag</vh></v>
+</v>
+<v t="ekr.20241126093914.234"><vh>c.checkOutline</vh></v>
+<v t="ekr.20241126093914.235"><vh>c.validateOutline (compatibility only)</vh></v>
+<v t="ekr.20241126093914.236"><vh>c.checkOutlineXML</vh></v>
+</v>
+<v t="ekr.20241126093914.237"><vh>c.Check Python code</vh>
+<v t="ekr.20241126093914.238"><vh>c.checkAllPythonCode</vh>
+<v t="ekr.20241126093914.239"><vh>&lt;&lt; print dots &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20241126093914.240"><vh>c.checkPythonCode</vh>
+<v t="ekr.20241126093914.241"><vh>&lt;&lt; print dots &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20241126093914.242"><vh>c.checkPythonNode</vh></v>
+<v t="ekr.20241126093914.243"><vh>c.tabNannyNode</vh></v>
+</v>
+<v t="ekr.20241126093914.244"><vh>c.Convenience methods</vh>
+<v t="ekr.20241126093914.245"><vh>c.fullPath</vh></v>
+<v t="ekr.20241126093914.246"><vh>c.getTime</vh></v>
+<v t="ekr.20241126093914.247"><vh>c.goToLineNumber &amp; goToScriptLineNumber</vh></v>
+<v t="ekr.20241126093914.248"><vh>c.setFileTimeStamp</vh></v>
+<v t="ekr.20241126093914.249"><vh>c.updateSyntaxColorer</vh></v>
+<v t="ekr.20241126093914.250"><vh>c.interactive*</vh>
+<v t="ekr.20241126093914.251"><vh>c.interactive</vh>
+<v t="ekr.20241126093914.252"><vh>&lt;&lt; c.interactive docstring &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20241126093914.253"><vh>c.interactive1</vh></v>
+<v t="ekr.20241126093914.254"><vh>c.interactive2</vh></v>
+<v t="ekr.20241126093914.255"><vh>c.interactive3</vh></v>
+</v>
+</v>
+<v t="ekr.20241126093914.256"><vh>c.Directive scanning</vh>
+<v t="ekr.20241126093914.257"><vh>c.getLanguageAtCursor</vh></v>
+<v t="ekr.20241126093914.258"><vh>c.getNodePath &amp; c.getNodeFileName</vh></v>
+<v t="ekr.20241126093914.259"><vh>c.hasAmbiguousLanguage</vh></v>
+<v t="ekr.20241126093914.260"><vh>c.scanAllDirectives</vh></v>
+<v t="ekr.20241126093914.261"><vh>c.scanAtPathDirectives</vh></v>
+</v>
+<v t="ekr.20241126093914.262"><vh>c.Executing commands &amp; scripts</vh>
+<v t="ekr.20241126093914.263"><vh>c.check_event</vh></v>
+<v t="ekr.20241126093914.264"><vh>c.doCommand</vh></v>
+<v t="ekr.20241126093914.265"><vh>c.doCommandByName</vh></v>
+<v t="ekr.20241126093914.266"><vh>c.executeMinibufferCommand</vh></v>
+<v t="ekr.20241126093914.267"><vh>c.general_script_helper &amp; helpers</vh>
+<v t="ekr.20241126093914.268"><vh>function: put_line (c.general_script_helper)</vh></v>
+<v t="ekr.20241126093914.269"><vh>function: find_line (c.general_script_helper)</vh></v>
+</v>
+<v t="ekr.20241126093914.270"><vh>c.insertCharFromEvent</vh></v>
+<v t="ekr.20241126093914.271"><vh>c.setComplexCommand</vh></v>
+<v t="ekr.20241126093914.272"><vh>c.universalCallback &amp; minibufferCallback</vh></v>
+<v t="ekr.20241126093914.273"><vh>c.writeScriptFile (changed: does not expand expressions)</vh></v>
+</v>
+<v t="ekr.20241126093914.274"><vh>c.expand_path_expression</vh></v>
+<v t="ekr.20241126093914.275"><vh>c.File</vh>
+<v t="ekr.20241126093914.276"><vh>c.archivedPositionToPosition (new)</vh></v>
+<v t="ekr.20241126093914.277"><vh>c.backup</vh></v>
+<v t="ekr.20241126093914.278"><vh>c.backup_helper</vh></v>
+<v t="ekr.20241126093914.279"><vh>c.checkFileTimeStamp</vh></v>
+<v t="ekr.20241126093914.280"><vh>c.looksLikeDerivedFile</vh></v>
+<v t="ekr.20241126093914.281"><vh>c.markAllAtFileNodesDirty</vh></v>
+<v t="ekr.20241126093914.282"><vh>c.markAtFileNodesDirty</vh></v>
+<v t="ekr.20241126093914.283"><vh>c.openWith</vh></v>
+<v t="ekr.20241126093914.284"><vh>c.recreateGnxDict</vh></v>
+<v t="ekr.20241126093914.285"><vh>c.openRecentFile</vh></v>
+</v>
+<v t="ekr.20241126093914.286"><vh>c.Git</vh>
+<v t="ekr.20241126093914.287"><vh>c.diff_file</vh></v>
+<v t="ekr.20241126093914.288"><vh>c.diff_two_revs</vh></v>
+<v t="ekr.20241126093914.289"><vh>c.diff_two_branches</vh></v>
+<v t="ekr.20241126093914.290"><vh>c.git_diff</vh></v>
+<v t="ekr.20241126093914.291"><vh>c.git_node_history</vh></v>
+</v>
+<v t="ekr.20241126093914.292"><vh>c.Gui</vh>
+<v t="ekr.20241126093914.293"><vh>c.Dialogs &amp; messages</vh>
+<v t="ekr.20241126093914.294"><vh>c.alert</vh></v>
+<v t="ekr.20241126093914.295"><vh>c.init_error_dialogs</vh></v>
+<v t="ekr.20241126093914.296"><vh>c.notValidInBatchMode</vh></v>
+<v t="ekr.20241126093914.297"><vh>c.putHelpFor</vh></v>
+<v t="ekr.20241126093914.298"><vh>c.raise_error_dialogs</vh></v>
+<v t="ekr.20241126093914.299"><vh>c.syntaxErrorDialog</vh></v>
+</v>
+<v t="ekr.20241126093914.300"><vh>c.Dragging</vh>
+<v t="ekr.20241126093914.301"><vh>c.dragToNthChildOf</vh></v>
+<v t="ekr.20241126093914.302"><vh>c.dragAfter</vh></v>
+<v t="ekr.20241126093914.303"><vh>c.dragCloneToNthChildOf</vh></v>
+<v t="ekr.20241126093914.304"><vh>c.dragCloneAfter</vh></v>
+</v>
+<v t="ekr.20241126093914.305"><vh>c.Drawing</vh>
+<v t="ekr.20241126093914.306"><vh>c.bringToFront</vh></v>
+<v t="ekr.20241126093914.307"><vh>c.expandAllAncestors</vh></v>
+<v t="ekr.20241126093914.308"><vh>c.outerUpdate</vh></v>
+<v t="ekr.20241126093914.1228"><vh>c.recolor</vh></v>
+<v t="ekr.20241126093914.310"><vh>c.redrawing...</vh>
+<v t="ekr.20241126093914.311"><vh>c.enable/disable_redraw</vh></v>
+<v t="ekr.20241126093914.593"><vh>c.redraw ('redraw' command)</vh></v>
+<v t="ekr.20241126093914.313"><vh>c.redraw_after_contract</vh></v>
+<v t="ekr.20241126093914.314"><vh>c.redraw_after_expand</vh></v>
+<v t="ekr.20241126093914.315"><vh>c.redraw_after_head_changed</vh></v>
+<v t="ekr.20241126093914.316"><vh>c.redraw_after_select</vh></v>
+<v t="ekr.20241126093914.317"><vh>c.redraw_later</vh></v>
+</v>
+<v t="ekr.20241126093914.318"><vh>c.widget_name</vh></v>
+</v>
+<v t="ekr.20241126093914.319"><vh>c.Events</vh>
+<v t="ekr.20241126093914.320"><vh>c.onCanvasKey</vh>
+<v t="ekr.20241126093914.321"><vh>c.navQuickKey</vh></v>
+<v t="ekr.20241126093914.322"><vh>c.navHelper</vh></v>
+</v>
+</v>
+<v t="ekr.20241126093914.323"><vh>c.Expand/contract</vh>
+<v t="ekr.20241126093914.324"><vh>c.contractAllHeadlines</vh></v>
+<v t="ekr.20241126093914.325"><vh>c.contractSubtree</vh></v>
+<v t="ekr.20241126093914.326"><vh>c.expandSubtree</vh></v>
+<v t="ekr.20241126093914.327"><vh>c.expandToLevel</vh></v>
+</v>
+<v t="ekr.20241126093914.328"><vh>c.Focus</vh>
+<v t="ekr.20241126093914.329"><vh>c.get/request/set_focus</vh></v>
+<v t="ekr.20241126093914.330"><vh>c.invalidateFocus (do nothing)</vh></v>
+<v t="ekr.20241126093914.331"><vh>c.traceFocus (not used)</vh></v>
+<v t="ekr.20241126093914.332"><vh>c.treeFocusHelper &amp; initialFocusHelper</vh></v>
+<v t="ekr.20241126093914.333"><vh>c.xWantsFocus</vh></v>
+<v t="ekr.20241126093914.334"><vh>c.xWantsFocusNow</vh></v>
+</v>
+<v t="ekr.20241126093914.335"><vh>c.Menus</vh>
+<v t="ekr.20241126093914.336"><vh>c.add_command</vh></v>
+<v t="ekr.20241126093914.337"><vh>c.Menu Enablers</vh>
+<v t="ekr.20241126093914.338"><vh>c.canClone</vh></v>
+<v t="ekr.20241126093914.339"><vh>c.canContractAllHeadlines</vh></v>
+<v t="ekr.20241126093914.340"><vh>c.canContractAllSubheads</vh></v>
+<v t="ekr.20241126093914.341"><vh>c.canContractParent</vh></v>
+<v t="ekr.20241126093914.342"><vh>c.canContractSubheads</vh></v>
+<v t="ekr.20241126093914.343"><vh>c.canCutOutline &amp; canDeleteHeadline</vh></v>
+<v t="ekr.20241126093914.344"><vh>c.canDemote</vh></v>
+<v t="ekr.20241126093914.345"><vh>c.canExpandAllHeadlines</vh></v>
+<v t="ekr.20241126093914.346"><vh>c.canExpandAllSubheads</vh></v>
+<v t="ekr.20241126093914.347"><vh>c.canExpandSubheads</vh></v>
+<v t="ekr.20241126093914.348"><vh>c.canExtract, canExtractSection &amp; canExtractSectionNames</vh></v>
+<v t="ekr.20241126093914.349"><vh>c.canFindMatchingBracket</vh></v>
+<v t="ekr.20241126093914.350"><vh>c.canHoist &amp; canDehoist</vh></v>
+<v t="ekr.20241126093914.351"><vh>c.canMoveOutlineDown</vh></v>
+<v t="ekr.20241126093914.352"><vh>c.canMoveOutlineLeft</vh></v>
+<v t="ekr.20241126093914.353"><vh>c.canMoveOutlineRight</vh></v>
+<v t="ekr.20241126093914.354"><vh>c.canMoveOutlineUp</vh></v>
+<v t="ekr.20241126093914.355"><vh>c.canPasteOutline</vh></v>
+<v t="ekr.20241126093914.356"><vh>c.canPromote</vh></v>
+<v t="ekr.20241126093914.357"><vh>c.canSelect....</vh></v>
+<v t="ekr.20241126093914.358"><vh>c.canShiftBodyLeft/Right</vh></v>
+<v t="ekr.20241126093914.359"><vh>c.canSortChildren, canSortSiblings</vh></v>
+<v t="ekr.20241126093914.360"><vh>c.canUndo &amp; canRedo</vh></v>
+<v t="ekr.20241126093914.361"><vh>c.canUnmarkAll</vh></v>
+<v t="ekr.20241126093914.362"><vh>Slow routines: no longer used</vh>
+<v t="ekr.20241126093914.363"><vh>c.canGoToNextDirtyHeadline (slow)</vh></v>
+<v t="ekr.20241126093914.364"><vh>c.canGoToNextMarkedHeadline (slow)</vh></v>
+<v t="ekr.20241126093914.365"><vh>c.canMarkChangedHeadline (slow)</vh></v>
+<v t="ekr.20241126093914.366"><vh>c.canMarkChangedRoots</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20241126093914.367"><vh>c.Selecting</vh>
+<v t="ekr.20241126093914.368"><vh>c.endEditing</vh></v>
+<v t="ekr.20241126093914.369"><vh>c.getSelectedPositions</vh></v>
+<v t="ekr.20241126093914.370"><vh>c.redrawAndEdit</vh></v>
+<v t="ekr.20241126093914.371"><vh>c.selectPosition</vh></v>
+<v t="ekr.20241126093914.372"><vh>c.treeSelectHelper</vh></v>
+</v>
+</v>
+<v t="ekr.20241126093914.373"><vh>c.recursiveImport</vh>
+<v t="ekr.20241126093914.374"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20241126093914.375"><vh>c.Scripting utils</vh>
+<v t="ekr.20241126093914.376"><vh>c.cloneFindByPredicate</vh>
+<v t="ekr.20241126093914.377"><vh>c.setCloneFindByPredicateIcon</vh></v>
+<v t="ekr.20241126093914.378"><vh>c.createCloneFindPredicateRoot</vh></v>
+</v>
+<v t="ekr.20241126093914.379"><vh>c.createNodeHierarchy</vh></v>
+<v t="ekr.20241126093914.380"><vh>c.deletePositionsInList</vh></v>
+<v t="ekr.20241126093914.381"><vh>c.doBatchOperations &amp; helpers</vh>
+<v t="ekr.20241126093914.382"><vh>c.checkBatchOperationsList</vh></v>
+</v>
+<v t="ekr.20241126093914.383"><vh>c.find_b &amp; find_h</vh>
+<v t="ekr.20241126093914.384"><vh>c.find_b</vh></v>
+<v t="ekr.20241126093914.385"><vh>c.find_h</vh></v>
+</v>
+<v t="ekr.20241126093914.386"><vh>c.undoableDeletePositions</vh></v>
+</v>
+<v t="ekr.20241126093914.387"><vh>c.Settings</vh>
+<v t="ekr.20241126093914.388"><vh>c.registerReloadSettings</vh></v>
+<v t="ekr.20241126093914.389"><vh>c.reloadConfigurableSettings</vh></v>
+</v>
+</v>
+<v t="ekr.20241126093914.390"><vh>c_file.restartLeo</vh></v>
+</v>
+<v t="ekr.20241126093914.391"><vh>=== PR #4147: colorizer performance bug</vh>
+<v t="ekr.20241126093914.392"><vh>--- not used</vh>
+<v t="ekr.20241126093914.393"><vh>jedit.traceState (not used)</vh></v>
+<v t="ekr.20241126093914.394"><vh>jedit.match_span_delegated_lines &amp; helper  (not used)</vh></v>
+<v t="ekr.20241126093914.395"><vh>jedit.restart_match_span_delegated_lines (not used)</vh></v>
+</v>
+<v t="ekr.20241126093914.396"><vh>--- classes</vh>
+<v t="ekr.20241126093914.938"><vh>class BaseColorizer</vh>
+<v t="ekr.20241126093914.939"><vh> BaseColorizer: birth</vh>
+<v t="ekr.20241126093914.940"><vh>BaseColorizer.__init__</vh></v>
+<v t="ekr.20241126093914.941"><vh>BaseColorizer.init</vh></v>
+<v t="ekr.20241126093914.942"><vh>BaseColorizer.configureTags &amp; helpers</vh>
+<v t="ekr.20241126093914.943"><vh>BaseColorizer.configure_colors &amp; helper</vh>
+<v t="ekr.20241126093914.944"><vh>&lt;&lt; function: resolve_color_key &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20241126093914.945"><vh>BaseColorizer.configure_fonts &amp; helpers</vh>
+<v t="ekr.20241126093914.946"><vh>BaseColorizer.resolve_font</vh></v>
+<v t="ekr.20241126093914.947"><vh>BaseColorizer.create_font</vh></v>
+<v t="ekr.20241126093914.948"><vh>BaseColorizer.zoomed_size</vh></v>
+</v>
+<v t="ekr.20241126093914.949"><vh>BaseColorizer.configure_hard_tab_width</vh></v>
+<v t="ekr.20241126093914.950"><vh>BaseColorizer.configure_variable_tags</vh></v>
+</v>
+<v t="ekr.20241126093914.951"><vh>BaseColorizer.defineDefaultColorsDict</vh></v>
+<v t="ekr.20241126093914.952"><vh>BaseColorizer.defineDefaultFontDict</vh></v>
+<v t="ekr.20241126093914.953"><vh>BaseColorizer.defineLeoKeywordsDict</vh></v>
+</v>
+<v t="ekr.20241126093914.954"><vh>BaseColorizer.normalize</vh></v>
+<v t="ekr.20241126093914.955"><vh>BaseColorizer.reloadSettings</vh>
+<v t="ekr.20241126093914.956"><vh>BaseColorizer.report_changes</vh></v>
+<v t="ekr.20241126093914.957"><vh>BaseColorizer.init_style_ivars</vh></v>
+</v>
+<v t="ekr.20241126093914.1124"><vh>BaseColorizer.setTag</vh></v>
+<v t="ekr.20241126093914.1125"><vh>BaseColorizer.updateSyntaxColorer &amp; helpers</vh>
+<v t="ekr.20241126093914.1126"><vh>BaseColorizer.scanLanguageDirectives</vh></v>
+<v t="ekr.20241126093914.1127"><vh>BaseColorizer.useSyntaxColoring &amp; helper</vh>
+<v t="ekr.20241126093914.1128"><vh>BaseColorizer.findColorDirectives</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20241126093914.1132"><vh>class JEditColorizer(BaseColorizer)</vh>
+<v t="ekr.20241126093914.1133"><vh> jedit: Birth</vh>
+<v t="ekr.20241126093914.1309"><vh>jedit.__init__ &amp; helpers</vh>
+<v t="ekr.20241126093914.1310"><vh>jedit.init</vh></v>
+<v t="ekr.20241126093914.1311"><vh>jedit.init_all_state</vh></v>
+<v t="ekr.20241126093914.1312"><vh>jedit.init_section_delims</vh></v>
+</v>
+<v t="ekr.20241126093914.1138"><vh>jedit.addImportedRules</vh></v>
+<v t="ekr.20241126093914.1139"><vh>jedit.addLeoRules</vh></v>
+<v t="ekr.20241126093914.1140"><vh>jedit.init_mode &amp; helpers</vh>
+<v t="ekr.20241126093914.1313"><vh>jedit.init_mode_from_module</vh></v>
+<v t="ekr.20241126093914.1142"><vh>jedit.nameToRulesetName</vh></v>
+<v t="ekr.20241126093914.1143"><vh>jedit.setKeywords</vh></v>
+<v t="ekr.20241126093914.1144"><vh>jedit.setModeAttributes</vh></v>
+<v t="ekr.20241126093914.1145"><vh>jedit.initModeFromBunch</vh></v>
+<v t="ekr.20241126093914.1146"><vh>jedit.updateDelimsTables</vh></v>
+</v>
+<v t="ekr.20241126093914.1147"><vh>jedit.munge</vh></v>
+<v t="ekr.20241126093914.1148"><vh>jedit.set_wikiview_patterns</vh></v>
+</v>
+<v t="ekr.20241126093914.1229"><vh>jedit.force_recolor</vh></v>
+<v t="ekr.20241126093914.1315"><vh>jedit.mainLoop</vh></v>
+<v t="ekr.20241126093914.1319"><vh>jedit.recolor &amp; helpers</vh>
+<v t="ekr.20241126093914.1320"><vh>jedit.initBlock0</vh></v>
+<v t="ekr.20241126093914.1321"><vh>jedit.setInitialStateNumber</vh></v>
+<v t="ekr.20241126093914.1322"><vh>jedit.languageToMode</vh></v>
+<v t="ekr.20241126093914.1323"><vh>jedit.traceRulesDict</vh></v>
+</v>
+<v t="ekr.20241126093914.1156"><vh>jedit:Pattern matchers</vh>
+<v t="ekr.20241126093914.1157"><vh> About the pattern matchers</vh></v>
+<v t="ekr.20241126093914.1158"><vh>jedit.colorRangeWithTag</vh></v>
+<v t="ekr.20241126093914.1159"><vh>jedit.dump</vh></v>
+<v t="ekr.20241126093914.1160"><vh>jedit.Leo rule functions</vh>
+<v t="ekr.20241126093914.1161"><vh>jedit.match_any_url</vh></v>
+<v t="ekr.20241126093914.1162"><vh>jedit.match_at_color</vh>
+<v t="ekr.20241126093914.1163"><vh>restartColor</vh></v>
+</v>
+<v t="ekr.20241126093914.1164"><vh>jedit.match_at_killcolor &amp; restarter</vh>
+<v t="ekr.20241126093914.1165"><vh>jedit.restartKillColor</vh></v>
+</v>
+<v t="ekr.20241126093914.1316"><vh>jedit.match_at_language</vh></v>
+<v t="ekr.20241126093914.1167"><vh>jedit.match_at_nocolor &amp; restarter</vh>
+<v t="ekr.20241126093914.1168"><vh>jedit.restartNoColor</vh></v>
+</v>
+<v t="ekr.20241126093914.1169"><vh>jedit.match_at_nocolor_node &amp; restarter</vh>
+<v t="ekr.20241126093914.1170"><vh>jedit.restartNoColorNode</vh></v>
+</v>
+<v t="ekr.20241126093914.1171"><vh>jedit.match_at_wrap</vh></v>
+<v t="ekr.20241126093914.1172"><vh>jedit.match_blanks</vh></v>
+<v t="ekr.20241126093914.1250"><vh>jedit.match_doc_part &amp; restarter</vh>
+<v t="ekr.20241126093914.1252"><vh>jedit.restartDocPart</vh></v>
+</v>
+<v t="ekr.20241126093914.1175"><vh>jedit.match_gnx</vh></v>
+<v t="ekr.20241126093914.1176"><vh>jedit.match_image</vh></v>
+<v t="ekr.20241126093914.1177"><vh>jedit.match_leo_keywords</vh></v>
+<v t="ekr.20241126093914.1178"><vh>jedit.match_section_ref</vh>
+<v t="ekr.20241126093914.1179"><vh>&lt;&lt; set the hyperlink &gt;&gt; (jedit)</vh></v>
+</v>
+<v t="ekr.20241126093914.1180"><vh>jedit.match_tabs</vh></v>
+<v t="ekr.20241126093914.1181"><vh>jedit.match_trailing_ws</vh></v>
+<v t="ekr.20241126093914.1182"><vh>jedit.match_unl</vh></v>
+</v>
+<v t="ekr.20241126093914.1183"><vh>jedit.match_compiled_regexp</vh>
+<v t="ekr.20241126093914.1184"><vh>jedit.match_compiled_regexp_helper</vh></v>
+</v>
+<v t="ekr.20241126093914.1275"><vh>jedit.match_eol_span</vh></v>
+<v t="ekr.20241126093914.1286"><vh>jedit.match_eol_span_regexp</vh></v>
+<v t="ekr.20241126093914.1187"><vh>jedit.match_everything</vh></v>
+<v t="ekr.20241126093914.1188"><vh>jedit.match_fstring &amp; helper</vh>
+<v t="ekr.20241126093914.1189"><vh>jedit.match_fstring_helper</vh></v>
+<v t="ekr.20241126093914.1190"><vh>jedit.restart_fstring</vh></v>
+</v>
+<v t="ekr.20241126093914.1191"><vh>jedit.match_keywords</vh></v>
+<v t="ekr.20241126093914.1287"><vh>jedit.match_line</vh></v>
+<v t="ekr.20241126093914.1193"><vh>jedit.match_lua_literal</vh></v>
+<v t="ekr.20241126093914.1277"><vh>jedit.match_mark_following &amp; getNextToken</vh>
+<v t="ekr.20241126093914.1278"><vh>jedit.getNextToken</vh></v>
+</v>
+<v t="ekr.20241126093914.1279"><vh>jedit.match_mark_previous</vh></v>
+<v t="ekr.20241126093914.1197"><vh>jedit.match_plain_seq</vh></v>
+<v t="ekr.20241126093914.1198"><vh>jedit.match_plain_span</vh>
+<v t="ekr.20241126093914.1199"><vh>jedit.match_plain_span_helper</vh></v>
+</v>
+<v t="ekr.20241126093914.1200"><vh>jedit.match_regexp_helper</vh></v>
+<v t="ekr.20241126093914.1280"><vh>jedit.match_seq</vh></v>
+<v t="ekr.20241126093914.1281"><vh>jedit.match_seq_regexp</vh></v>
+<v t="ekr.20241126093914.1282"><vh>jedit.match_span &amp; helpers</vh>
+<v t="ekr.20241126093914.1283"><vh>jedit.match_span_helper</vh></v>
+<v t="ekr.20241126093914.1284"><vh>jedit.restart_match_span</vh></v>
+</v>
+<v t="ekr.20241126093914.1289"><vh>jedit.match_span_regexp</vh></v>
+<v t="ekr.20241126093914.1207"><vh>jedit.match_tex_backslash</vh></v>
+<v t="ekr.20241126093914.1208"><vh>jedit.match_wiki_pattern</vh></v>
+<v t="ekr.20241126093914.1288"><vh>jedit.match_word_and_regexp</vh></v>
+<v t="ekr.20241126093914.1317"><vh>jedit.pop_delegate</vh></v>
+<v t="ekr.20241126093914.1318"><vh>jedit.push_delegate</vh></v>
+<v t="ekr.20241126093914.1212"><vh>jedit.skip_line</vh></v>
+</v>
+<v t="ekr.20241126093914.1213"><vh>jedit:State methods</vh>
+<v t="ekr.20241126093914.1226"><vh>jedit.clearState</vh></v>
+<v t="ekr.20241126093914.1215"><vh>jedit.computeState (uses self.language)</vh></v>
+<v t="ekr.20241126093914.1225"><vh>jedit.getters &amp; setters</vh></v>
+<v t="ekr.20241126093914.1217"><vh>jedit.inColorState</vh></v>
+<v t="ekr.20241126093914.1218"><vh>jedit.setRestart</vh></v>
+<v t="ekr.20241126093914.1219"><vh>jedit.show...</vh></v>
+<v t="ekr.20241126093914.1220"><vh>jedit.stateNameToStateNumber</vh></v>
+<v t="ekr.20241126093914.1221"><vh>jedit.stateNumberToLanguage</vh></v>
+<v t="ekr.20241126093914.1222"><vh>jedit.stateNumberToStateString</vh></v>
+</v>
+</v>
+<v t="ekr.20241126093914.513"><vh>class LeoHighlighter (QSyntaxHighlighter)</vh>
+<v t="ekr.20241126093914.514"><vh>leo_h.ctor (sets style)</vh></v>
+<v t="ekr.20241126093914.515"><vh>leo_h.highlightBlock</vh></v>
+<v t="ekr.20241126093914.516"><vh>leo_h.reloadSettings</vh></v>
+<v t="ekr.20241126093914.517"><vh>leo_h: From PygmentsHighlighter</vh>
+<v t="ekr.20241126093914.518"><vh>leo_h._get_format &amp; helpers</vh>
+<v t="ekr.20241126093914.519"><vh>pyg_h._get_format_from_document</vh></v>
+<v t="ekr.20241126093914.624"><vh>leo_h._get_format_from_style</vh></v>
+</v>
+<v t="ekr.20241126093914.521"><vh>leo_h.setStyle</vh></v>
+<v t="ekr.20241126093914.522"><vh>leo_h.clear_caches</vh></v>
+<v t="ekr.20241126093914.523"><vh>leo_h._get_brush/color</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20241126093914.524"><vh>--- older</vh>
+<v t="ekr.20241126093914.525"><vh>--- New delegation pattern</vh>
+<v t="ekr.20241126093914.588"><vh>&lt;&lt; md.py: md_jupytext_comment &gt;&gt;</vh></v>
+<v t="ekr.20241126093914.589"><vh>jupytext_comment</vh></v>
+<v t="ekr.20241126093914.590"><vh>python_comment</vh></v>
+</v>
+<v t="ekr.20241126093914.529"><vh>--- jedit ref</vh>
+<v t="ekr.20241126093914.940"></v>
+<v t="ekr.20241126093914.1124"></v>
+<v t="ekr.20241126093914.1158"></v>
+<v t="ekr.20241126093914.1215"></v>
+<v t="ekr.20241126093914.1225"></v>
+<v t="ekr.20241126093914.1316"></v>
+<v t="ekr.20241126093914.1213"></v>
+</v>
+<v t="ekr.20241126093914.546"><vh>--- initBlock0 logic</vh>
+<v t="ekr.20241126093914.1320"></v>
+<v t="ekr.20241126093914.1218"></v>
+<v t="ekr.20241126093914.1321"></v>
+<v t="ekr.20241126093914.1215"></v>
+</v>
+<v t="ekr.20241126093914.551"><vh>--- states</vh>
+<v t="ekr.20241126093914.1213"></v>
+<v t="ekr.20241126093914.1220"></v>
+</v>
+</v>
+<v t="ekr.20241126093914.563"><vh>--- most important docstrings</vh>
+<v t="ekr.20241126093914.1315"></v>
+<v t="ekr.20241126093914.1319"></v>
+</v>
+<v t="ekr.20241126093914.570"><vh>--- changed and new</vh>
+<v t="ekr.20241126093914.571"><vh>--- jedit &amp; base class</vh>
+<v t="ekr.20241126093914.940"></v>
+<v t="ekr.20241126093914.1124"></v>
+<v t="ekr.20241126093914.1228"></v>
+<v t="ekr.20241126093914.1319"></v>
+<v t="ekr.20241126093914.1158"></v>
+<v t="ekr.20241126093914.1315"></v>
+<v t="ekr.20241126093914.1221"></v>
+<v t="ekr.20241126093914.1222"></v>
+<v t="ekr.20241126093914.1323"></v>
+</v>
+<v t="ekr.20241126093914.585"><vh>--- mode files</vh>
+<v t="ekr.20241126093914.588"></v>
+<v t="ekr.20241126093914.587"><vh>&lt;&lt; md.py: md_main: rules &amp; dict &gt;&gt;</vh>
+<v t="ekr.20241126093914.588"></v>
+</v>
+<v t="ekr.20241126093914.589"></v>
+<v t="ekr.20241126093914.590"></v>
+</v>
+<v t="ekr.20241126093914.591"><vh>--- core files</vh>
+<v t="ekr.20241126093914.1104"><vh>3. LeoTree.change_current_position</vh></v>
+<v t="ekr.20241126093914.593"></v>
+<v t="ekr.20241126093914.622"><vh>g.print_unique_message &amp; es_print_unique_message</vh></v>
+<v t="ekr.20241126093914.595"><vh>LeoBody.Coloring</vh></v>
+</v>
+</v>
+<v t="ekr.20241126093914.1109"><vh>--- calling sequence (do not delete)</vh>
+<v t="ekr.20241126093914.1223"></v>
+<v t="ekr.20241126093914.1229"></v>
+<v t="ekr.20241126093914.1112"><vh>qtew.setAllText</vh></v>
+<v t="ekr.20241126093914.1309"></v>
+<v t="ekr.20241126093914.1228"></v>
+<v t="ekr.20241126093914.1319"></v>
+<v t="ekr.20241126093914.1315"></v>
+<v t="ekr.20241126093914.1124"></v>
+<v t="ekr.20241126093914.1125"></v>
+<v t="ekr.20241126093914.1225"></v>
+</v>
+</v>
+<v t="ekr.20241126093914.617"><vh>=== PR #4149: g.es/print_unique_message</vh>
+<v t="ekr.20241126093914.618"><vh>--- changed &amp; new</vh>
+<v t="ekr.20241126093914.619"><vh>c.config.getShortcut</vh></v>
+<v t="ekr.20241126093914.620"><vh>g.checkUnicode</vh></v>
+<v t="ekr.20241126093914.621"><vh>g.get_directives_dict (must be fast)</vh></v>
+<v t="ekr.20241126093914.622"></v>
+<v t="ekr.20241126093914.623"><vh>jtm.read</vh></v>
+<v t="ekr.20241126093914.624"></v>
+</v>
+</v>
+<v t="ekr.20241126093914.625"><vh>=== PR #4154: fix mypy complaints</vh>
+<v t="ekr.20241126093914.626"><vh>EventWrapper.wrapper</vh></v>
+<v t="ekr.20241126093914.627"><vh>tbo.gen_dot_op &amp; _next</vh>
+<v t="ekr.20241126093914.628"><vh>tbo._next</vh></v>
+</v>
+</v>
+<v t="ekr.20241126093914.629"><vh>=== PR #4163: pylintrc path</vh>
+<v t="ekr.20241126093914.1270"><vh>3. pylint.get_rc_file</vh></v>
+</v>
+<v t="ekr.20241126093914.631"><vh>=== PR #4165: Disable the no popup handlers popup!</vh>
+<v t="ekr.20241126093914.632"><vh>LeoQtGui.onContextMenu</vh></v>
+</v>
+<v t="ekr.20241126093914.633"><vh>=== PR #4167: auto-beautify</vh>
+<v t="ekr.20241126093914.634"><vh>--- calling sequence</vh>
+<v t="ekr.20241126093914.635"><vh>at.checkPythonCode &amp; helpers</vh>
+<v t="ekr.20241126093914.636"><vh>at.checkPythonSyntax</vh>
+<v t="ekr.20241126093914.637"><vh>at.syntaxError (leoAtFile)</vh></v>
+</v>
+<v t="ekr.20241126093914.646"><vh>at.runTokenBasedBeautifier</vh></v>
+<v t="ekr.20241126093914.639"><vh>at.runFlake8</vh></v>
+<v t="ekr.20241126093914.640"><vh>at.runPyflakes</vh></v>
+<v t="ekr.20241126093914.641"><vh>at.runPylint</vh></v>
+</v>
+<v t="ekr.20241126093914.642"><vh>function: beautify_file (leoTokens.py)</vh></v>
+<v t="ekr.20241126093914.643"><vh>c_oc.contractAllOtherNodes &amp; helper</vh>
+<v t="ekr.20241126093914.644"><vh>def contractIfNotCurrent</vh></v>
+</v>
+</v>
+<v t="ekr.20241126093914.645"><vh>--- changed</vh>
+<v t="ekr.20241126093914.646"></v>
+</v>
+</v>
+<v t="ekr.20241126093914.647"><vh>=== PR #4168: pygments crash</vh></v>
+<v t="ekr.20241126093914.648"><vh>=== PR #4169: Python3.13 unit tests</vh>
+<v t="ekr.20241126093914.649"><vh>--- changed</vh>
+<v t="ekr.20241126093914.650"><vh>TT.test_visitors_exist</vh></v>
+<v t="ekr.20241126093914.651"><vh>TestPlugins.test_cursesGui2</vh></v>
+</v>
+</v>
+<v t="ekr.20241126093914.652"><vh>=== PR #4172: @killcolor</vh>
+<v t="ekr.20241126093914.653"><vh>--- classes</vh>
+<v t="ekr.20241126093914.938"></v>
+<v t="ekr.20241126093914.1132"></v>
+</v>
+<v t="ekr.20241126093914.770"><vh>--- ref</vh>
+<v t="ekr.20241126093914.1158"></v>
+<v t="ekr.20241126093914.1217"></v>
+<v t="ekr.20241126093914.1319"></v>
+<v t="ekr.20241126093914.1316"></v>
+</v>
+<v t="ekr.20241126093914.779"><vh>--- changed</vh>
+<v t="ekr.20241126093914.1217"></v>
+</v>
+</v>
+<v t="ekr.20241126093914.781"><vh>=== PR #4174: colorizer docs</vh>
+<v t="ekr.20241126093914.938"></v>
+<v t="ekr.20241126093914.1132"></v>
+<v t="ekr.20241126093914.1213"></v>
+<v t="ekr.20241126093914.1109"></v>
+</v>
+<v t="ekr.20241126093914.929"><vh>=== PR #4177 &amp; 4178: OpenSCAD</vh>
+<v t="ekr.20241126093914.1299"><vh>app.define_extension_dict</vh></v>
+<v t="ekr.20241126093914.1300"><vh>app.define_language_delims_dict</vh></v>
+<v t="ekr.20241126093914.1301"><vh>app.define_language_extension_dict</vh></v>
+</v>
+<v t="ekr.20241126093914.933"><vh>=== PR #4182: Severe colorizing bug</vh>
+<v t="ekr.20241126093914.934"><vh>--- no longer used</vh>
+<v t="ekr.20241126093914.935"><vh>jedit.colorize (no longer used)</vh></v>
+<v t="ekr.20241126093914.936"><vh>unused trace in rest_rule14</vh></v>
+</v>
+<v t="ekr.20241126093914.937"><vh>--- classes</vh>
+<v t="ekr.20241126093914.938"></v>
+<v t="ekr.20241126093914.1132"></v>
+</v>
+<v t="ekr.20241126093914.1054"><vh>--- states</vh>
+<v t="ekr.20241126093914.1213"></v>
+<v t="ekr.20241126093914.1221"></v>
+<v t="ekr.20241126093914.1222"></v>
+</v>
+<v t="ekr.20241126093914.1067"><vh>--- No changes to select !!!</vh>
+<v t="ekr.20241126093914.1099"><vh>LeoTree.select &amp; helpers</vh>
+<v t="ekr.20241126093914.1100"><vh>LeoTree.selectHelper &amp; helpers</vh>
+<v t="ekr.20241126093914.1101"><vh>1. LeoTree.unselect_helper</vh></v>
+<v t="ekr.20241126093914.1102"><vh>2. LeoTree.select_new_node &amp; helper</vh>
+<v t="ekr.20241126093914.1103"><vh>LeoTree.set_body_text_after_select</vh></v>
+</v>
+<v t="ekr.20241126093914.1104"></v>
+<v t="ekr.20241126093914.1105"><vh>4. LeoTree.scroll_cursor</vh></v>
+<v t="ekr.20241126093914.1106"><vh>5. LeoTree.set_status_line</vh></v>
+</v>
+</v>
+<v t="ekr.20241126093914.1100"></v>
+<v t="ekr.20241126093914.1104"></v>
+</v>
+<v t="ekr.20241126093914.1084"><vh>--- changed</vh>
+<v t="ekr.20241126093914.1085"><vh>--- changed traces</vh>
+<v t="ekr.20241126093914.1124"></v>
+<v t="ekr.20241126093914.1125"></v>
+<v t="ekr.20241126093914.1315"></v>
+</v>
+<v t="ekr.20241126093914.1092"><vh>--- changed: substantive</vh>
+<v t="ekr.20241126093914.1225"></v>
+<v t="ekr.20241126093914.1319"></v>
+<v t="ekr.20241126093914.1099"></v>
+</v>
+<v t="ekr.20241126093914.1107"><vh>--- deleted</vh>
+<v t="ekr.20241126093914.1108"><vh>jedit.colorize</vh></v>
+</v>
+</v>
+<v t="ekr.20241126093914.1109"></v>
+</v>
+<v t="ekr.20241126093914.1130"><vh>=== PR #4183: ekr-jedit-tweaks</vh>
+<v t="ekr.20241126093914.1131"><vh>--- ref</vh>
+<v t="ekr.20241126093914.1132"></v>
+<v t="ekr.20241126093914.1223"></v>
+<v t="ekr.20241126093914.1224"><vh>--- state</vh>
+<v t="ekr.20241126093914.1225"></v>
+<v t="ekr.20241126093914.1226"></v>
+</v>
+</v>
+<v t="ekr.20241126093914.1227"><vh>--- changed</vh>
+<v t="ekr.20241126093914.1228"></v>
+<v t="ekr.20241126093914.1229"></v>
+<v t="ekr.20241126093914.1319"></v>
+</v>
+</v>
+<v t="ekr.20241126093914.1235"><vh>=== PR #4188: last jedit tweaks</vh>
+<v t="ekr.20241126093914.1236"><vh>--- changed</vh>
+<v t="ekr.20241126093914.1310"></v>
+</v>
+<v t="ekr.20241126093914.1238"><vh>--- ref</vh>
+<v t="ekr.20241126093914.1319"></v>
+<v t="ekr.20241126093914.1244"><vh>--- 3 calls to: self.init</vh>
+<v t="ekr.20241126093914.1319"></v>
+<v t="ekr.20241126093914.1250"></v>
+<v t="ekr.20241126093914.1252"></v>
+</v>
+</v>
+</v>
+<v t="ekr.20241126093914.1253"><vh>=== PR #4190: required kwargs</vh>
+<v t="ekr.20241126093914.1254"><vh>--- New unit test</vh>
+<v t="ekr.20241126093914.1272"><vh>TestSyntax.test_all_mode_files</vh>
+<v t="ekr.20241126093914.1273"><vh>function: test_one_mode_file</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20241126093914.1257"><vh>=== PR #4192: fix regexes</vh>
+<v t="ekr.20241126093914.1272"></v>
+</v>
+<v t="ekr.20241126093914.1260"><vh>=== PR #4194: pylint script</vh>
+<v t="ekr.20241126093914.1261"><vh>--- ref</vh>
+<v t="ekr.20241126093914.1262"><vh>pylint command</vh></v>
+<v t="ekr.20241126093914.1263"><vh>class PylintCommand</vh>
+<v t="ekr.20241126093914.1264"><vh>1. pylint.run</vh></v>
+<v t="ekr.20241126093914.1270"></v>
+<v t="ekr.20241126093914.1266"><vh>4. pylint.get_fn</vh></v>
+<v t="ekr.20241126093914.1267"><vh>5. pylint.run_pylint</vh></v>
+</v>
+</v>
+<v t="ekr.20241126093914.1268"><vh>--- changed</vh>
+<v t="ekr.20241126093914.1269"><vh>&lt;&lt; checkerCommands imports &gt;&gt;</vh></v>
+<v t="ekr.20241126093914.1270"></v>
+</v>
+</v>
+<v t="ekr.20241126093914.1271"><vh>=== PR #4195: remove jedit kwargs</vh>
+<v t="ekr.20241126093914.1272"></v>
+<v t="ekr.20241126093914.1274"><vh>--- do not simplify</vh>
+<v t="ekr.20241126093914.1275"></v>
+<v t="ekr.20241126093914.1286"></v>
+<v t="ekr.20241126093914.1277"></v>
+<v t="ekr.20241126093914.1279"></v>
+<v t="ekr.20241126093914.1280"></v>
+<v t="ekr.20241126093914.1281"></v>
+<v t="ekr.20241126093914.1282"></v>
+</v>
+<v t="ekr.20241126093914.1285"><vh>--- simplified</vh>
+<v t="ekr.20241126093914.1286"></v>
+<v t="ekr.20241126093914.1287"></v>
+<v t="ekr.20241126093914.1288"></v>
+<v t="ekr.20241126093914.1289"></v>
+</v>
+</v>
+<v t="ekr.20241126093914.1290"><vh>=== PR #4197: execute-script</vh>
+<v t="ekr.20241126093914.1291"></v>
+</v>
+<v t="ekr.20241126093914.1296"><vh>=== PR #4198: colorize-GLSL</vh>
+<v t="ekr.20241126093914.1297"><vh>--- changed</vh>
+<v t="ekr.20241126093914.1298"><vh>app.define_delegate_language_dict</vh></v>
+<v t="ekr.20241126093914.1299"></v>
+<v t="ekr.20241126093914.1300"></v>
+<v t="ekr.20241126093914.1301"></v>
+</v>
+</v>
+<v t="ekr.20241126093914.1302"><vh>=== PR #4203: @language-vue</vh>
+<v t="ekr.20241126093914.1303"><vh>--- testing</vh>
+<v t="ekr.20241126093914.1304"><vh>test </vh></v>
+<v t="ekr.20241126093914.1305"><vh>TestColorizer.color</vh></v>
+<v t="ekr.20241126093914.1306"><vh>TestColorizer.test_colorizer_HTML1</vh></v>
+<v t="ekr.20241126093914.1307"><vh>TestColorizer.test_colorizer_objective_c</vh></v>
+</v>
+<v t="ekr.20241126093914.1308"><vh>--- changed and new</vh>
+<v t="ekr.20241126093914.1309"></v>
+<v t="ekr.20241126093914.1313"></v>
+<v t="ekr.20241126093914.1322"></v>
+<v t="ekr.20241126093914.1315"></v>
+<v t="ekr.20241126093914.1316"></v>
+<v t="ekr.20241126093914.1317"></v>
+<v t="ekr.20241126093914.1318"></v>
+<v t="ekr.20241126093914.1319"></v>
+</v>
+<v t="ekr.20241126093914.1324"><vh>--- rules: changed &amp; new</vh>
+<v t="ekr.20241126093914.1325"><vh>css.py: rules dict for css_main ruleset</vh></v>
+<v t="ekr.20241126093914.1326"><vh>css_rule_at_language @language</vh></v>
+<v t="ekr.20241126093914.1327"><vh>css_rule_end_style &lt;/style&gt;</vh></v>
+<v t="ekr.20241126093914.1328"><vh>css_rule_style &lt;style&gt;</vh></v>
+<v t="ekr.20241126093914.1329"><vh>html.py: Rules dicts</vh></v>
+<v t="ekr.20241126093914.1330"><vh>html_rule4 &lt;..&gt;</vh></v>
+<v t="ekr.20241126093914.1331"><vh>html_rule_at_language @language</vh></v>
+<v t="ekr.20241126093914.1332"><vh>html_rule_end_template &lt;/template&gt;</vh></v>
+<v t="ekr.20241126093914.1333"><vh>html_rule_script &lt;script..&lt;/script&gt;</vh></v>
+<v t="ekr.20241126093914.1334"><vh>html_rule_style &lt;style..&lt;/style&gt;</vh></v>
+<v t="ekr.20241126093914.1335"><vh>javascript.py: Rules dict for javascript_main ruleset</vh></v>
+<v t="ekr.20241126093914.1336"><vh>javascript_rule_at_language @language</vh></v>
+<v t="ekr.20241126093914.1337"><vh>javascript_rule_end_script &lt;/script&gt;</vh></v>
+<v t="ekr.20241126093914.1338"><vh>javascript_rule_script &lt;script&gt;</vh></v>
+<v t="ekr.20241126093914.1339"><vh>vue_element</vh></v>
+</v>
+</v>
+<v t="ekr.20241126093914.1340"><vh>=== PR #4209: improve sphinx-build</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -33045,6 +33941,12091 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 - [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
 - [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)</t>
 <t tx="ekr.20241126091611.1">.. Use the link-pr abbreviation to create these links.</t>
+<t tx="ekr.20241126093914.1"></t>
+<t tx="ekr.20241126093914.10">def computeStandardDirectories(self) -&gt; None:
+    """
+    Compute the locations of standard directories and
+    set the corresponding ivars.
+    """
+    lm = self
+    join = os.path.join
+    g.app.loadDir = lm.computeLoadDir()
+    g.app.globalConfigDir = lm.computeGlobalConfigDir()
+    g.app.homeDir = lm.computeHomeDir()
+    g.app.homeLeoDir = lm.computeHomeLeoDir()
+    g.app.leoDir = lm.computeLeoDir()
+    # These use g.app.loadDir...
+    g.app.extensionsDir = join(g.app.loadDir, '..', 'extensions')
+    g.app.leoEditorDir = join(g.app.loadDir, '..', '..')
+    g.app.testDir = join(g.app.loadDir, '..', 'test')
+</t>
+<t tx="ekr.20241126093914.100">def _black() -&gt; None:
+    g.app.write_black_sentinels = True
+
+def _diff() -&gt; None:
+    g.app.diff = True
+
+def _fail_fast() -&gt; None:
+    g.app.failFast = True
+
+def _full_screen() -&gt; None:
+    g.app.start_fullscreen = True
+
+def _listen_to_log() -&gt; None:
+    g.app.listen_to_log_flag = True
+
+def _maximized() -&gt; None:
+    g.app.start_maximized = True
+
+def _minimized() -&gt; None:
+    g.app.start_minimized = True
+    g.app.use_splash_screen = False
+
+def _no_plugins() -&gt; None:
+    g.app.enablePlugins = False
+
+def _no_splash() -&gt; None:
+    g.app.use_splash_screen = False
+
+def _quit() -&gt; None:
+    g.app.quit_after_load = True
+
+def _save_session() -&gt; None:
+    g.app.always_write_session_data = True
+
+def _silent() -&gt; None:
+    g.app.silentMode = True
+</t>
+<t tx="ekr.20241126093914.101">def doThemeOption() -&gt; Optional[str]:
+    """Handle --theme=path"""
+    m = utils.find_complex_option(r'--theme=(.+)')
+    return m.group(1).replace('"', '') if m else None
+</t>
+<t tx="ekr.20241126093914.102">def doTraceOptions() -&gt; None:
+    """Handle --trace-binding, --trace-setting and --trace"""
+
+    # --trace-binding
+    if m := utils.find_complex_option(r'--trace-binding=([\w\-\+]+)'):
+        g.app.trace_binding = m.group(1)
+        print(f"Enabling --trace-binding={m.group(1)}")
+
+    # --trace-setting=setting
+    if m := utils.find_complex_option(r'--trace-setting=([\w]+)'):
+        # g.app.config does not exist yet.
+        g.app.trace_setting = m.group(1)
+        print(f"Enabling --trace-setting={m.group(1)}")
+
+    # --trace=option.
+    valid = [
+        'abbrev', 'beauty', 'cache', 'coloring', 'drawing', 'events',
+        'focus', 'git', 'gnx', 'importers', 'keys',
+        'layouts', 'plugins', 'save', 'select', 'sections', 'shutdown',
+        'size', 'speed', 'startup', 'themes', 'undo', 'verbose', 'zoom',
+    ]
+    m = utils.find_complex_option(r'--trace=([\w\,]+)')
+    if not m:
+        return
+    values = m.group(1).split(',')
+    error = False
+    for value in values:
+        if value in valid:
+            g.app.debug.append(value)
+        else:
+            error = True
+    if error:
+        arg = m.group(0)
+        valid_s = '\n   '.join(valid)
+        print(f"Valid --trace values are:\n   {valid_s}")
+        utils.option_error(arg, 'Invalid value')
+    print(f"\nEnabling --trace={', '.join(g.app.debug)}\n")
+</t>
+<t tx="ekr.20241126093914.103">def doWindowSizeOption() -&gt; Optional[tuple[int, int]]:
+    """Handle --window-size"""
+    m = utils.find_complex_option(r'--window-size=(\d+)x(\d+)')
+    if not m:
+        return None
+    try:
+        h, w = int(m.group(1)), int(m.group(2))
+    except ValueError:
+        arg = m.group(0)
+        utils.option_error(arg, 'Invalid value: expected int x int')
+    return h, w
+</t>
+<t tx="ekr.20241126093914.104">def doWindowSpotOption() -&gt; Optional[tuple[int, int]]:
+    """Handle --window-spot"""
+    m = utils.find_complex_option(r'--window-spot=(\d+)x(\d+)')
+    if not m:
+        return None
+    try:
+        top, left = int(m.group(1)), int(m.group(2))
+    except ValueError:
+        arg = m.group(0)
+        utils.option_error(arg, 'Invalid value: expected int x int')
+    return top, left
+</t>
+<t tx="ekr.20241126093914.105">def setStdStreams(self) -&gt; None:
+    """
+    Make sure that stdout and stderr exist.
+    This is an issue when running Leo with pythonw.exe.
+    """
+    # Define class LeoStdOut
+    @others
+    if not sys.stdout:
+        sys.stdout = sys.__stdout__ = LeoStdOut('stdout')  # type:ignore
+    if not sys.stderr:
+        sys.stderr = sys.__stderr__ = LeoStdOut('stderr')  # type:ignore
+</t>
+<t tx="ekr.20241126093914.1054"></t>
+<t tx="ekr.20241126093914.106">class LeoStdOut:
+    """A class to put stderr &amp; stdout to Leo's log pane."""
+
+    def __init__(self, kind: str) -&gt; None:
+        self.kind = kind
+        g.es_print = self.write
+        g.pr = self.write
+
+    def flush(self, *args: list, **keys: dict) -&gt; None:
+        pass
+    @others
+</t>
+<t tx="ekr.20241126093914.1067"></t>
+<t tx="ekr.20241126093914.107">def write(self, *args: list, **keys: dict) -&gt; None:
+    """Put all non-keyword args to the log pane, as in g.es."""
+    #
+    # Tracing will lead to unbounded recursion unless
+    # sys.stderr has been redirected on the command line.
+    app = g.app
+    if not app or app.killed:
+        return
+    if app.gui and app.gui.consoleOnly:
+        return
+    log = app.log
+    # Compute the effective args.
+    d = {
+        'color': None,
+        'commas': False,
+        'newline': True,
+        'spaces': True,
+        'tabName': 'Log',
+    }
+    # Handle keywords for g.pr and g.es_print.
+    d = g.doKeywordArgs(keys, d)
+    color: str = d.get('color')  # type:ignore
+    if color == 'suppress':
+        return
+    if log and color is None:
+        color = g.actualColor('black')
+    color = g.actualColor(color)
+    tabName = d.get('tabName') or 'Log'
+    newline = d.get('newline')
+    s = g.translateArgs(args, d)
+    if app.batchMode:
+        if log:
+            log.put(s)
+    elif log and app.logInited:
+        # from_redirect is the big difference between this and g.es.
+        log.put(s, color=color, tabName=tabName, from_redirect=True)
+    else:
+        app.logWaiting.append((s, color, newline),)
+</t>
+<t tx="ekr.20241126093914.108">def isValidPython(self) -&gt; bool:
+    if sys.platform == 'cli':
+        return True
+    message = (
+        f"Leo requires Python {g.minimum_python_version} or higher"
+        "You may download Python from http://python.org/download/"
+    )
+    try:
+        if not g.isValidPython:
+            print(message)
+            try:
+                # g.app.gui does not exist yet.
+                d = g.EmergencyDialog(
+                    title='Python Version Error',
+                    message=message)
+                d.run()
+            except Exception:
+                g.es_exception()
+        return g.isValidPython
+    except Exception as e:
+        print(f"LM.isValidPython: unexpected exception {e}")
+        return False
+</t>
+<t tx="ekr.20241126093914.1084"></t>
+<t tx="ekr.20241126093914.1085"></t>
+<t tx="ekr.20241126093914.109">def openWithFileName(self, fn: str, gui: LeoGui, old_c: Cmdr) -&gt; Optional[Cmdr]:
+    """
+    Completely read a file, creating the corresponding outline.
+
+    1. If fn is an existing .leo, .db or .leojs file:
+       - Read fn once with a NullGui to discover all settings.
+       - Read fn again with the requested gui to create the outline.
+
+    2. If fn is an *existing* external file.
+       - Get settings from the leoSettings.leo and myLeoSetting.leo.
+       - Create an *unnamed* outline containing an @file or @edit node.
+       - Refresh the @file or @edit node from disk
+
+    3. If fn is empty or does not exist.
+       - Get settings from the leoSettings.leo and myLeoSetting.leo.
+       - Open an empty outline.
+    """
+    lm = self
+
+    file_name = g.finalize(fn) if fn else None
+
+    # #2489: If file_name is empty, open an empty, untitled .leo file.
+    if not file_name:
+        return lm.openEmptyLeoFile(file_name, gui, old_c)
+
+    # Return the commander if the file is an already open outline.
+    c = lm.findOpenFile(file_name)
+    if c:
+        return c
+
+    # Open an outline or an external file.
+    exists = os.path.exists(file_name)
+    is_leo = lm.isLeoFile(file_name)
+    # pylint: disable=no-else-return
+    if is_leo:
+        if exists:
+            return lm.openExistingLeoFile(file_name, gui, old_c)
+        else:
+            return lm.openEmptyLeoFile(file_name, gui, old_c)
+    return lm.openExternalFile(file_name, gui, old_c)
+
+loadLocalFile = openWithFileName  # Compatibility.
+</t>
+<t tx="ekr.20241126093914.1092"></t>
+<t tx="ekr.20241126093914.1099">tree_select_lockout = False
+
+def select(self, p: Position) -&gt; None:
+    """
+    Select a node.
+    Never redraws outline, but may change coloring of individual headlines.
+    The scroll argument is used by the gui to suppress scrolling while dragging.
+    """
+    trace = 'select' in g.app.debug and not g.unitTesting
+    tag = 'LeoTree.select'
+    c = self.c
+    if g.app.killed or self.tree_select_lockout:  # Essential.
+        return
+    if trace:
+        print(f"----- {tag}: {p.h}")
+        # print(f"{tag:&gt;30}: {c.frame.body.wrapper} {p.h}")
+        # Format matches traces in leoflexx.py
+            # print(f"{tag:30}: {len(p.b):4} {p.gnx} {p.h}")
+    try:
+        self.tree_select_lockout = True
+        self.prev_v = c.p.v
+        self.selectHelper(p)
+    finally:
+        self.tree_select_lockout = False
+        if c.enableRedrawFlag:
+            p = c.p
+            # Don't redraw during unit testing: an important speedup.
+            if c.expandAllAncestors(p) and not g.unitTesting:
+                # This can happen when doing goto-next-clone.
+                c.redraw_later()  # This *does* happen sometimes.
+            else:
+                c.outerUpdate()  # Bring the tree up to date.
+                if hasattr(self, 'setItemForCurrentPosition'):
+                    self.setItemForCurrentPosition()
+        else:
+            c.requestLaterRedraw = True
+</t>
+<t tx="ekr.20241126093914.11">def computeGlobalConfigDir(self) -&gt; Optional[str]:
+    leo_config_dir = getattr(sys, 'leo_config_directory', None)
+    if leo_config_dir:
+        theDir = leo_config_dir
+    else:
+        theDir = os.path.join(g.app.loadDir, "..", "config")
+    if theDir:
+        theDir = os.path.abspath(theDir)
+    if not theDir or not g.os_path_exists(theDir) or not g.os_path_isdir(theDir):
+        theDir = None
+    return theDir
+</t>
+<t tx="ekr.20241126093914.110">def createMenu(self, c: Cmdr, fn: str = None) -&gt; None:
+    # lm = self
+    # Create the menu as late as possible so it can use user commands.
+    if not g.doHook("menu1", c=c, p=c.p, v=c.p):
+        c.frame.menu.createMenuBar(c.frame)
+        g.app.recentFilesManager.updateRecentFiles(fn)
+        g.doHook("menu2", c=c, p=c.p, v=c.p)
+        g.doHook("after-create-leo-frame", c=c)
+        g.doHook("after-create-leo-frame2", c=c)
+        # Fix bug 844953: tell Unity which menu to use.
+            # c.enableMenuBar()
+</t>
+<t tx="ekr.20241126093914.1100">def selectHelper(self, p: Position) -&gt; None:
+    """
+    A helper function for leoTree.select.
+    Do **not** "optimize" this by returning if p==c.p!
+    """
+    if not p:
+        # This is not an error! We may be changing roots.
+        # Do *not* test c.positionExists(p) here!
+        return
+    c = self.c
+    if not c.frame.body.wrapper:
+        return  # Defensive.
+    if p.v.context != c:
+        # Selecting a foreign position will not be pretty.
+        g.trace(f"Wrong context: {p.v.context!r} != {c!r}")
+        g.trace(g.callers())
+        return
+    old_p = c.p
+    call_event_handlers = p != old_p
+    # Order is important...
+    # 1. Call c.endEditLabel.
+    self.unselect_helper(old_p, p)
+    # 2. Call set_body_text_after_select.
+    self.select_new_node(old_p, p)
+    # 3. Call c.undoer.onSelect.
+    self.change_current_position(old_p, p)
+    # 4. Set cursor in body.
+    self.scroll_cursor(p)
+    # 5. Last tweaks.
+    self.set_status_line(p)
+    if call_event_handlers:
+        g.doHook("select2", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
+        g.doHook("select3", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
+</t>
+<t tx="ekr.20241126093914.1101">def unselect_helper(self, old_p: Position, p: Position) -&gt; None:
+    """Unselect the old node, calling the unselect hooks."""
+    c = self.c
+    call_event_handlers = p != old_p
+    if call_event_handlers:
+        unselect = not g.doHook(
+            "unselect1", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
+    else:
+        unselect = True
+
+    # Actually unselect the old node.
+    if unselect and old_p and old_p != p:
+        self.endEditLabel()
+        # #1168: Ctrl-minus selects multiple nodes.
+        if hasattr(self, 'unselectItem'):
+            self.unselectItem(old_p)
+    if call_event_handlers:
+        g.doHook("unselect2", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
+</t>
+<t tx="ekr.20241126093914.1102">def select_new_node(self, old_p: Position, p: Position) -&gt; None:
+    """Select the new node, part 1."""
+    c = self.c
+    call_event_handlers = p != old_p
+    if (
+        call_event_handlers and g.doHook("select1",
+        c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
+    ):
+        if 'select' in g.app.debug:
+            g.trace('select1 override')
+        return
+    c.frame.setWrap(p)  # Not that expensive
+    self.set_body_text_after_select(p, old_p)
+    c.nodeHistory.update(p)
+</t>
+<t tx="ekr.20241126093914.1103">def set_body_text_after_select(self, p: Position, old_p: Position) -&gt; None:
+    """Set the text after selecting a node."""
+    c = self.c
+    w = c.frame.body.wrapper
+    s = p.v.b  # Guaranteed to be unicode.
+    # Part 1: get the old text.
+    old_s = w.getAllText()
+    if p and p == old_p and s == old_s:
+        return
+    # Part 2: set the new text. This forces a recolor.
+    # Important: do this *before* setting text,
+    # so that the colorizer will have the proper c.p.
+    c.setCurrentPosition(p)
+    w.setAllText(s)
+    # This is now done after c.p has been changed.
+        # p.restoreCursorAndScroll()
+</t>
+<t tx="ekr.20241126093914.1104">def change_current_position(self, old_p: Position, p: Position) -&gt; None:
+    """Select the new node, part 2."""
+    c = self.c
+
+    # c.setCurrentPosition(p)
+        # This is now done in set_body_text_after_select.
+
+    # GS I believe this should also get into the select1 hook
+    c.frame.scanForTabWidth(p)
+    use_chapters = c.config.getBool('use-chapters')
+    if use_chapters:
+        cc = c.chapterController
+        theChapter = cc and cc.getSelectedChapter()
+        if theChapter:
+            theChapter.p = p.copy()
+
+    # Do not call treeFocusHelper here!
+        # c.treeFocusHelper()
+    c.undoer.onSelect(old_p, p)
+</t>
+<t tx="ekr.20241126093914.1105">def scroll_cursor(self, p: Position) -&gt; None:
+    """Scroll the cursor."""
+    p.restoreCursorAndScroll()  # Was in setBodyTextAfterSelect
+</t>
+<t tx="ekr.20241126093914.1106">def set_status_line(self, p: Position) -&gt; None:
+    """Update the status line."""
+    c = self.c
+    c.frame.updateStatusLine()
+    c.frame.clearStatusLine()
+    if p and p.v:
+        s = c.frame.computeStatusUnl(p)
+        c.frame.putStatusLine(s)
+</t>
+<t tx="ekr.20241126093914.1107"></t>
+<t tx="ekr.20241126093914.1108">def colorize(self, p: Position) -&gt; None:
+    """
+    jedit.colorize: recolor p.b using the QSyntaxHighlighter class.
+    
+    This is the main entry point for Leo's colorizer.
+    Only c.recolor should ever call it.
+    
+    Don't even *think* about changing leoColorizer.py until
+    you understand *every word* of the Theory of Operation:
+    https://github.com/leo-editor/leo-editor/issues/4158
+    """
+    trace = 'coloring' in g.app.debug and not g.unitTesting
+
+    if not p:  # This guard is required.
+        return
+
+    # Only c.recolor should call this method!
+    if g.callers(1) != 'recolor':
+        message = f"jedit.colorize: invalid caller: {g.callers()}"
+        g.print_unique_message(message)
+
+    # Test p.v instead of p so that moving from one
+    # clone to another does not cause a redraw.
+    if p.v and p.v == self.old_v:
+        return
+
+    # Remember old_v here. Do not set it anywhere else!
+    self.old_v = p.v
+
+    self.updateSyntaxColorer(p)
+
+    # Initialize *all* state.
+    self.init_all_state(p.v)
+    self.init()
+
+    # All done if p.b startswith @killcolor.
+    if p.b.startswith('@killcolor'):
+        return
+
+    if trace:
+        print('')
+        g.trace(f"Start full redraw: language: {self.language} p: {p.h}")
+        print('')
+
+    # Tell QSyntaxHighlighter to do a full recolor.
+    try:
+        self.in_full_redraw = True
+        self.highlighter.rehighlight()
+    finally:
+        self.in_full_redraw = False
+
+    if trace:
+        print('')
+        g.trace(f" End full redraw: language: {self.language} p: {p.h}")
+        print('')
+</t>
+<t tx="ekr.20241126093914.1109"></t>
+<t tx="ekr.20241126093914.111">def findOpenFile(self, fn: str) -&gt; Optional[Cmdr]:
+
+    def munge(name: str) -&gt; str:
+        return g.os_path_normpath(name or '').lower()
+
+    for frame in g.app.windowList:
+        c = frame.c
+        if g.os_path_realpath(munge(fn)) == g.os_path_realpath(munge(c.mFileName)):
+            # Don't call frame.bringToFront(), it breaks --minimize
+            c.setLog()
+            # Selecting the new tab ensures focus is set.
+            master = getattr(frame.top, 'leo_master', None)
+            if master:  # master is a TabbedTopLevel.
+                master.select(frame.c)
+            c.outerUpdate()
+            return c
+    return None
+</t>
+<t tx="ekr.20241126093914.1112">def setAllText(self, s: str) -&gt; None:
+    """Set the text of body pane."""
+    w = self.widget
+    try:
+        self.changingText = True  # Disable onTextChanged.
+        w.setReadOnly(False)
+        w.setPlainText(s)
+    finally:
+        self.changingText = False
+</t>
+<t tx="ekr.20241126093914.112">def finishOpen(self, c: Cmdr) -&gt; None:
+    """
+    Common operations to finish opening any file.
+    """
+    lm = self
+    k = c.k
+
+    # New in Leo 4.6: provide an official way for very late initialization.
+    c.frame.tree.initAfterLoad()
+    c.initAfterLoad()
+    lm.createMenu(c, c.fileName())
+
+    # Leo 6.7.6: New common finishing code.
+    g.app.disable_redraw = False
+    g.app.unlockLog()
+    g.app.writeWaitingLog(c)
+    c.setLog()
+    c.frame.log.enable(True)
+
+    # chapterController.finishCreate must be called after the first real redraw
+    # because it requires a valid value for c.rootPosition().
+    if c.chapterController:
+        c.chapterController.finishCreate()
+    if k:
+        k.setDefaultInputState()
+    c.initialFocusHelper()
+    if k:
+        k.showStateAndMode()
+    c.frame.initCompleteHint()
+    c.outerUpdate()  # #181: Honor focus requests.
+</t>
+<t tx="ekr.20241126093914.1124">def setTag(self, tag: str, s: str, i: int, j: int) -&gt; None:
+    """Set the tag in the highlighter."""
+    trace = 'coloring' in g.app.debug and not g.unitTesting
+
+    default_tag = f"{tag}_font"  # See default_font_dict.
+    full_tag = f"{self.language}.{tag}"
+    font: Any = None  # Set below. Define here for report().
+
+    def report(color: str) -&gt; None:
+        """A superb trace. Don't remove it."""
+        i_j_s = f"{i:&gt;3}:{j:&lt;3}"
+        matcher_name = g.caller(3)
+        rule_name = g.caller(4)
+        matcher_s = f"{self.rulesetName}::{rule_name}:{matcher_name}"
+        s2 = s[i:j]  # Show only the colored string.
+        print(
+            f"setTag: {self.recolorCount:4} "
+            f"{matcher_s:&lt;50} "
+            f"color: {colorName:7} "
+            f"tag: {full_tag:&lt;20} "
+            f"{i_j_s:7} {s2}"
+        )
+
+    self.n_setTag += 1
+    if i == j:
+        return
+    if not tag or not tag.strip():
+        return
+    tag = tag.lower().strip()
+    # A hack to allow continuation dots on any tag.
+    dots = tag.startswith('dots')
+    if dots:
+        tag = tag[len('dots') :]
+    # This color name should already be valid.
+    d = self.configDict
+    colorName = d.get(f"{self.language}.{tag}") or d.get(tag)
+    if not colorName:
+        return
+    # New in Leo 5.8.1: allow symbolic color names here.
+    #                   (All keys in leo_color_database are normalized.)
+    colorName = self.normalize(colorName)
+    colorName = leo_color_database.get(colorName, colorName)
+    # Get the actual color.
+    color = self.actualColorDict.get(colorName)
+    if not color:
+        color = QtGui.QColor(colorName)
+        if color.isValid():
+            self.actualColorDict[colorName] = color
+        else:
+            # Leo 6.7.2: This should never happen: configure_colors does a pre-check.
+            message = (
+                "jedit.setTag: can not happen: "
+                f"full_tag: {full_tag} = {d.get(full_tag)!r} "
+                f"tag: {tag} = {d.get(tag)!r}"
+            )
+            g.print_unique_message(message)
+            return
+    underline = self.configUnderlineDict.get(tag)
+    format = QtGui.QTextCharFormat()
+    for font_name in (full_tag, tag, default_tag):
+        font = self.fonts.get(font_name)
+        if font:
+            format.setFont(font)
+            self.configure_hard_tab_width(font)  # #1919.
+            break
+    if tag in ('blank', 'tab'):
+        if tag == 'tab' or colorName == 'black':
+            format.setFontUnderline(True)
+        if colorName != 'black':
+            format.setBackground(color)
+    elif underline:
+        format.setForeground(color)
+        format.setUnderlineStyle(UnderlineStyle.SingleUnderline)
+        format.setFontUnderline(True)
+    elif dots or tag == 'trailing_whitespace':
+        format.setForeground(color)
+        format.setUnderlineStyle(UnderlineStyle.DotLine)
+    else:
+        format.setForeground(color)
+        format.setUnderlineStyle(UnderlineStyle.NoUnderline)
+    self.tagCount += 1
+    if trace:
+        report(color)  # A superb trace.
+    self.highlighter.setFormat(i, j - i, format)
+</t>
+<t tx="ekr.20241126093914.1125"># Note: these are used by unit tests.
+
+def updateSyntaxColorer(self, p: Position) -&gt; None:
+    """
+    Scan for color directives in p and its ancestors.
+    Return True unless an coloring is unambiguously disabled.
+    Called from Leo's node-selection logic and from the colorizer.
+    """
+    if not p:  # This guard is required.
+        return
+
+    try:
+        self.enabled = self.useSyntaxColoring(p)
+        self.language = self.scanLanguageDirectives(p)
+    except Exception:
+        g.es_print('unexpected exception in updateSyntaxColorer')
+        g.es_exception()
+</t>
+<t tx="ekr.20241126093914.1126">def scanLanguageDirectives(self, p: Position) -&gt; str:
+    """Return language based on the directives in p's ancestors."""
+    c = self.c
+    language = g.getLanguageFromAncestorAtFileNode(p)
+    return language or c.target_language
+</t>
+<t tx="ekr.20241126093914.1127">def useSyntaxColoring(self, p: Position) -&gt; bool:
+    """True if syntax coloring is enabled in p."""
+    # @nocolor-node only applies to p.
+    d = self.findColorDirectives(p)
+    if 'nocolor-node' in d:
+        return False
+    # Bug fix 2024/07/15: Examine p, then its parents.
+    for p in p.self_and_parents():
+        d = self.findColorDirectives(p)
+        if 'killcolor' in d:
+            # @killcolor anywhere disables coloring.
+            return False
+        # unambiguous @color enables coloring.
+        if 'color' in d and 'nocolor' not in d:
+            return True
+        # Unambiguous @nocolor disables coloring.
+        if 'nocolor' in d and 'color' not in d:
+            return False
+    return True
+</t>
+<t tx="ekr.20241126093914.1128"># Order is important: put longest matches first.
+color_directives_pat = re.compile(
+    r'(^@color|^@killcolor|^@nocolor-node|^@nocolor)'
+    , re.MULTILINE)
+
+def findColorDirectives(self, p: Position) -&gt; dict[str, str]:
+    """Return a dict with each color directive in p.b, without the leading '@'."""
+    d: dict[str, str] = {}
+    for m in self.color_directives_pat.finditer(p.b):
+        word = m.group(0)[1:]
+        d[word] = word
+    return d
+</t>
+<t tx="ekr.20241126093914.113">def openExternalFile(self, fn: str, gui: Optional[LeoGui], old_c: Optional[Cmdr]) -&gt; Cmdr:
+    """
+    Create a wrapper commander (in a new tab) for the given external file.
+
+    The commander's outline contains an @edit or @file node for the external file.
+    """
+    lm = self
+
+    # Suppress redraws until later.
+    g.app.disable_redraw = True
+    g.app.setLog(None)
+    g.app.lockLog()
+
+    # Create the commander.
+    c = g.app.newCommander(
+        fileName=fn,
+        gui=gui,
+        previousSettings=lm.getPreviousSettings(None),
+    )
+    # Use the config params to set the size and location of the window.
+    g.doHook('open0')
+    g.doHook("open1", old_c=old_c, c=c, new_c=c, fileName=None)
+    frame = c.frame
+    frame.setInitialWindowGeometry()
+    frame.deiconify()
+    frame.lift()
+    # #1570: Resize the _new_ frame.
+    frame.splitVerticalFlag, r1, r2 = frame.initialRatios()
+    frame.resizePanesToRatio(r1, r2)
+    if not g.os_path_exists(fn):
+        p = c.rootPosition()
+        # Create an empty @edit node unless fn is an .leo file.
+        # Fix #1070: Use "newHeadline", not fn.
+        p.h = "newHeadline" if fn.endswith('.leo') else f"@edit {fn}"
+        c.selectPosition(p)
+        c.redraw()
+    elif c.looksLikeDerivedFile(fn):
+        # 2011/10/10: Create an @file node.
+        p = c.importCommands.importDerivedFiles(parent=c.rootPosition(),
+            paths=[fn], command=None)  # Not undoable.
+        if not p:
+            return None
+        if p.hasBack():
+            p.back().doDelete()
+            p = c.rootPosition()
+        c.selectPosition(p)
+        c.redraw()
+    else:
+        # Make the root node an @auto node if an importer exists. @edit otherwise.
+        unused, ext = os.path.splitext(fn)
+        func = g.app.scanner_for_ext(ext)
+        p = c.rootPosition()
+        p.h = f"@auto {fn}" if func else f"@edit {fn}"
+        c.selectPosition(p)
+        c.refreshFromDisk()  # Calls c.redraw() # pylint: disable=no-member
+
+    c.mFileName = None  # #3546: Do *not* automatically save the .leo file.
+    c.frame.title = c.computeTabTitle()
+    c.frame.setTitle(c.frame.title)
+
+    g.doHook("open2", old_c=old_c, c=c, new_c=c, fileName=fn)
+    # Finish.
+    frame.c.clearChanged()
+    lm.finishOpen(c)
+    return c
+</t>
+<t tx="ekr.20241126093914.1130">https://github.com/leo-editor/leo-editor/pull/4183</t>
+<t tx="ekr.20241126093914.1131"></t>
+<t tx="ekr.20241126093914.1132">class JEditColorizer(BaseColorizer):
+    """
+    This class colorizes p.b using Qt's QSyntaxHighlighter (qsh) class:
+    https://doc.qt.io/qt-6/qsyntaxhighlighter.html
+    
+    Each commander creates a single instance of this class: c.frame.body.colorizer.
+
+    Use Leo's `--tracing=coloring` command-line option to see this class in action.
+
+    Issue #4158 links to the Theory of Operation for this class:
+    https://github.com/leo-editor/leo-editor/issues/4158
+
+    Do not *ever* change this class! Change mode files instead!
+    """
+
+    @others
+</t>
+<t tx="ekr.20241126093914.1133"></t>
+<t tx="ekr.20241126093914.1138">def addImportedRules(self, mode: Mode, rulesDict: dict[str, Any], rulesetName: str) -&gt; None:
+    """Append any imported rules at the end of the rulesets specified in mode.importDict"""
+    if self.importedRulesets.get(rulesetName):
+        return
+    self.importedRulesets[rulesetName] = True
+    names = mode.importDict.get(rulesetName, []) if hasattr(mode, 'importDict') else []
+    for name in names:
+        savedBunch = self.modeBunch
+        ok = self.init_mode(name)
+        if ok:
+            rulesDict2 = self.rulesDict
+            for key in rulesDict2.keys():
+                aList = self.rulesDict.get(key, [])
+                aList2 = rulesDict2.get(key)
+                if aList2:
+                    # Don't add the standard rules again.
+                    rules = [z for z in aList2 if z not in aList]
+                    if rules:
+                        aList.extend(rules)
+                        self.rulesDict[key] = aList
+        self.initModeFromBunch(savedBunch)
+</t>
+<t tx="ekr.20241126093914.1139">def addLeoRules(self, theDict: dict[str, Any]) -&gt; None:
+    """Put Leo-specific rules to theList."""
+    table = [
+        # Rules added at front are added in **reverse** order.
+        # Debatable: Leo keywords override langauge keywords.
+        ('@', self.match_leo_keywords, True),  # Called after all other Leo matchers.
+        ('@', self.match_at_color, True),
+        ('@', self.match_at_killcolor, True),
+        ('@', self.match_at_language, True),  # 2011/01/17
+        ('@', self.match_at_nocolor, True),
+        ('@', self.match_at_nocolor_node, True),
+        ('@', self.match_at_wrap, True),  # 2015/06/22
+        ('@', self.match_doc_part, True),
+        ('f', self.match_any_url, True),
+        ('g', self.match_gnx, True),  # Leo 6.6.3.
+        ('g', self.match_any_url, True),
+        ('h', self.match_any_url, True),
+        ('m', self.match_any_url, True),
+        ('n', self.match_any_url, True),
+        ('p', self.match_any_url, True),
+        ('t', self.match_any_url, True),
+        ('u', self.match_unl, True),
+        ('w', self.match_any_url, True),
+        ('&lt;', self.match_section_ref, True),  # Called **first**.
+        # Rules added at back are added in normal order.
+        (' ', self.match_blanks, False),
+        ('\t', self.match_tabs, False),
+    ]
+    if self.c.config.getBool("color-trailing-whitespace"):
+        table += [
+            (' ', self.match_trailing_ws, True),
+            ('\t', self.match_trailing_ws, True),
+        ]
+    # Replace the bound method by an unbound method.
+    for ch, rule, atFront, in table:
+        rule = rule.__func__
+        theList = theDict.get(ch, [])
+        if rule not in theList:
+            if atFront:
+                theList.insert(0, rule)
+            else:
+                theList.append(rule)
+            theDict[ch] = theList
+</t>
+<t tx="ekr.20241126093914.114">def isLeoFile(self, fn: str) -&gt; bool:
+    """
+    Return True if fn has the extension of any kind of Leo file,
+    including a zipped file or .leo, .db, or .leojs file.
+    """
+    if not fn:
+        return False
+    return zipfile.is_zipfile(fn) or fn.endswith(('.leo', 'db', '.leojs'))
+
+def isZippedFile(self, fn: str) -&gt; bool:
+    """Return True if fn is a zipped file."""
+    return bool(fn and zipfile.is_zipfile(fn))
+</t>
+<t tx="ekr.20241126093914.1140">def init_mode(self, name: str) -&gt; bool:
+    """Name may be a language name or a delegate name."""
+    if not name:
+        return False
+    if name == 'latex':
+        name = 'tex'  # #1088: use tex mode for both tex and latex.
+    language, rulesetName = self.nameToRulesetName(name)
+    bunch = self.modes.get(rulesetName)
+    if bunch:
+        if bunch.language == 'unknown-language':
+            return False
+        self.initModeFromBunch(bunch)
+        self.language = language  # 2011/05/30
+        return True
+    # Don't try to import a non-existent language.
+    path = g.os_path_join(g.app.loadDir, '..', 'modes')
+    fn = g.os_path_join(path, f"{language}.py")
+    if g.os_path_exists(fn):
+        mode = g.import_module(name=f"leo.modes.{language}")
+        if mode is None and g.unitTesting:  # Too intrusive otherwise.
+            g.print_unique_message(f"Import failed! leo.modes.{language}")
+    else:
+        mode = None
+    return self.init_mode_from_module(name, mode)
+</t>
+<t tx="ekr.20241126093914.1142">def nameToRulesetName(self, name: str) -&gt; tuple[str, str]:
+    """
+    Compute language and rulesetName from name, which is either a language
+    name or a delegate name.
+    """
+    if not name:
+        return 'unknown-language', None
+    # #1334. Lower-case the name, regardless of the spelling in @language.
+    name = name.lower()
+    i = name.find('::')
+    if i == -1:
+        # New in Leo 5.0: allow delegated language names.
+        language = g.app.delegate_language_dict.get(name, name)
+        rulesetName = f"{language}_main"
+    else:
+        language = name[:i]
+        delegate_language = name[i + 2 :]
+        rulesetName = self.munge(f"{language}_{delegate_language}")
+    return language, rulesetName
+</t>
+<t tx="ekr.20241126093914.1143">def setKeywords(self) -&gt; None:
+    """
+    Initialize the keywords for the present language.
+
+     Set self.word_chars ivar to string.letters + string.digits + '_'
+     plus any other character appearing in any keyword.
+     """
+    # Add any new user keywords to leoKeywordsDict.
+    d = self.keywordsDict
+    keys = list(d.keys())
+    for s in g.globalDirectiveList:
+        key = '@' + s
+        if key not in keys:
+            d[key] = 'leokeyword'
+    # Create a temporary chars list.  It will be converted to a dict later.
+    chars = [z for z in string.ascii_letters + string.digits]
+    chars.append('_')  # #2933.
+    for key in list(d.keys()):
+        for ch in key:
+            if ch not in chars:
+                chars.append(g.checkUnicode(ch))
+    # jEdit2Py now does this check, so this isn't really needed.
+    # But it is needed for forth.py.
+    for ch in (' ', '\t'):
+        if ch in chars:
+            # g.es_print('removing %s from word_chars' % (repr(ch)))
+            chars.remove(ch)
+    # Convert chars to a dict for faster access.
+    self.word_chars: dict[str, str] = {}
+    for z in chars:
+        self.word_chars[z] = z
+</t>
+<t tx="ekr.20241126093914.1144">def setModeAttributes(self) -&gt; None:
+    """
+    Set the ivars from self.attributesDict,
+    converting 'true'/'false' to True and False.
+    """
+    d = self.attributesDict
+    aList = (
+        ('default', 'null'),
+        ('digit_re', ''),
+        ('escape', ''),  # New in Leo 4.4.2.
+        ('highlight_digits', True),
+        ('ignore_case', True),
+        ('no_word_sep', ''),
+    )
+    for key, default in aList:
+        val = d.get(key, default)
+        if val in ('true', 'True'):
+            val = True
+        if val in ('false', 'False'):
+            val = False
+        setattr(self, key, val)
+</t>
+<t tx="ekr.20241126093914.1145">def initModeFromBunch(self, bunch: Any) -&gt; None:
+    self.modeBunch = bunch
+    self.attributesDict = bunch.attributesDict
+    self.setModeAttributes()
+    self.defaultColor = bunch.defaultColor
+    self.keywordsDict = bunch.keywordsDict
+    self.language = bunch.language
+    self.mode = bunch.mode
+    self.properties = bunch.properties
+    self.rulesDict = bunch.rulesDict
+    self.rulesetName = bunch.rulesetName
+    self.word_chars = bunch.word_chars  # 2011/05/21
+</t>
+<t tx="ekr.20241126093914.1146">def updateDelimsTables(self) -&gt; None:
+    """Update g.app.language_delims_dict if no entry for the language exists."""
+    d = self.properties
+    lineComment = d.get('lineComment')
+    startComment = d.get('commentStart')
+    endComment = d.get('commentEnd')
+    if lineComment and startComment and endComment:
+        delims = f"{lineComment} {startComment} {endComment}"
+    elif startComment and endComment:
+        delims = f"{startComment} {endComment}"
+    elif lineComment:
+        delims = f"{lineComment}"
+    else:
+        delims = None
+    if delims:
+        d = g.app.language_delims_dict
+        if not d.get(self.language):
+            d[self.language] = delims
+</t>
+<t tx="ekr.20241126093914.1147">def munge(self, s: str) -&gt; str:
+    """Munge a mode name so that it is a valid python id."""
+    valid = string.ascii_letters + string.digits + '_'
+    return ''.join([ch.lower() if ch in valid else '_' for ch in s])
+</t>
+<t tx="ekr.20241126093914.1148">def set_wikiview_patterns(self, leadins: list[str], patterns: list[re.Pattern]) -&gt; None:
+    """
+    Init the colorizer so it will *skip* all patterns.
+    The wikiview plugin calls this method.
+    """
+    d = self.rulesDict
+    for leadins_list, pattern in zip(leadins, patterns):
+        for ch in leadins_list:
+
+            def wiki_rule(self: Any, s: str, i: int, pattern: re.Pattern = pattern) -&gt; int:
+                """Bind pattern and leadin for jedit.match_wiki_pattern."""
+                return self.match_wiki_pattern(s, i, pattern)
+
+            aList = d.get(ch, [])
+            if wiki_rule not in aList:
+                aList.insert(0, wiki_rule)
+                d[ch] = aList
+    self.rulesDict = d
+</t>
+<t tx="ekr.20241126093914.115">def openEmptyLeoFile(self, fn: str, gui: Optional[LeoGui], old_c: Optional[Cmdr]) -&gt; Cmdr:
+    """Open an empty Leo file with the given file name."""
+    lm = self
+
+    # Suppress redraws until later.
+    g.app.disable_redraw = True
+    g.app.setLog(None)
+    g.app.lockLog()
+
+    # Create the commander.
+    c = g.app.newCommander(
+        fileName=fn,
+        gui=gui,
+        previousSettings=lm.getPreviousSettings(fn),
+    )
+
+    # Init the frame.
+    g.doHook('open0')
+    g.doHook("open1", old_c=old_c, c=c, new_c=c, fileName=None)
+    c.frame.setInitialWindowGeometry()
+    c.frame.deiconify()
+    c.frame.lift()
+    c.frame.splitVerticalFlag, r1, r2 = c.frame.initialRatios()
+    c.frame.resizePanesToRatio(r1, r2)
+    c.frame.setTitle(c.frame.title)
+    g.doHook("open2", old_c=old_c, c=c, new_c=c, fileName=None)
+    g.doHook("new", old_c=old_c, c=c, new_c=c)
+
+    # Finish
+    c.clearChanged()
+    lm.finishOpen(c)
+    return c
+</t>
+<t tx="ekr.20241126093914.1156"></t>
+<t tx="ekr.20241126093914.1157">@language rest
+@
+The following jEdit matcher methods return the length of the matched text if the
+match succeeds, and zero otherwise. In most cases, these methods colorize all
+the matched text.
+
+The following arguments affect matching:
+
+- at_line_start         True: sequence must start the line.
+- at_whitespace_end     True: sequence must be first non-whitespace text of the line.
+- at_word_start         True: sequence must start a word.
+- hash_char             The first character that must match in a regular expression.
+- no_escape:            True: ignore an 'end' string if it is preceded by
+                        the ruleset's escape character.
+- no_line_break         True: the match will not succeed across line breaks.
+- no_word_break:        True: the match will not cross word breaks.
+
+The following arguments affect coloring when a match succeeds:
+
+- delegate              A ruleset name. The matched text will be colored recursively
+                        by the indicated ruleset.
+- exclude_match         If True, the actual text that matched will not be colored.
+- kind                  The color tag to be applied to colored text.
+</t>
+<t tx="ekr.20241126093914.1158">def colorRangeWithTag(self,
+    s: str, i: int, j: int, tag: str, *, delegate: str = '', exclude_match: bool = False,
+) -&gt; None:
+    """
+    Pattern matchers call this helper to colorize the selected range.
+    
+    Mode files should not call this helper directly!
+    """
+    # setTag does most tracing.
+    trace = 'coloring' in g.app.debug and not g.unitTesting
+    if not self.inColorState():
+        # Do *not* check x.flag here. It won't work.
+        if trace:
+            g.trace('not in color state')
+        return
+    self.delegate_name = delegate
+    if delegate:
+        self.push_delegate(delegate)
+        state = self.currentState()
+        self.mainLoop(state, s, i, j)
+        self.pop_delegate()
+    elif not exclude_match:
+        self.setTag(tag, s, i, j)
+
+    # Colorize UNL's, URL's, and GNX's *everywhere*.
+    if tag != 'url':
+        j = min(j, len(s))
+        while i &lt; j:
+            ch = s[i].lower()
+            if ch == 'g':
+                n = self.match_gnx(s, i)
+                if n &gt; 0:
+                    i += n
+                    continue
+            if ch == 'u':
+                n = self.match_unl(s, i)
+                if n &gt; 0:
+                    i += n
+                    continue
+            if ch in g.url_leadins:
+                n = self.match_any_url(s, i)
+                if n &gt; 0:
+                    i += n
+                    continue
+            i += 1
+</t>
+<t tx="ekr.20241126093914.1159">def dump(self, s: str) -&gt; str:
+    if s.find('\n') == -1:
+        return s
+    return '\n' + s + '\n'
+</t>
+<t tx="ekr.20241126093914.116">def openExistingLeoFile(self, fn: str, gui: Optional[LeoGui], old_c: Optional[Cmdr]) -&gt; Cmdr:
+    """
+    Create a commander for an existing .leo, .db, or .leojs file.
+    """
+    lm = self
+    if not fn:
+        return None  # Should not happen.
+    if not os.path.exists(fn):
+        return None  # Should not happen.
+
+    # Disable the log.
+    g.app.disable_redraw = True
+    g.app.setLog(None)
+    g.app.lockLog()
+
+    # Get the appropriate settings.
+    previousSettings = lm.getPreviousSettings(fn)
+
+    # Create the a commander for the .leo file.
+    c = g.app.newCommander(
+        fileName=fn,
+        gui=gui, previousSettings=previousSettings,
+    )
+
+    # Read the outline.
+    g.doHook('open0')
+    v = c.fileCommands.getAnyLeoFileByName(fn, readAtFileNodesFlag=bool(previousSettings))
+    if not v:
+        # #3656: Recover gracefully.
+        lm.openBadLeoFile(c, fn)
+
+    g.doHook("open1", old_c=None, c=c, new_c=c, fileName=fn)
+    g.doHook("open2", old_c=old_c, c=c, new_c=c, fileName=fn)
+
+    # Finish.
+    lm.finishOpen(c)
+    return c
+</t>
+<t tx="ekr.20241126093914.1160"></t>
+<t tx="ekr.20241126093914.1161">def match_any_url(self, s: str, i: int) -&gt; int:
+    """Like match_compiled_regexp, but with special case for trailing ')'"""
+    # Called by the main colorizer loop and colorRangeWithTag.
+    n = self.match_compiled_regexp_helper(s, i, g.url_regex)
+    if n &lt;= 0:
+        return 0
+    # Special case for trailing period.
+    s2 = s[i : i + n]
+    if s2.endswith('.'):
+        n -= 1
+        s2 = s[i : i + n]
+    # Special case for trailing ')'
+    if s2.endswith(')') and '(' not in s2:
+        n -= 1
+    j = i + n
+    kind = 'url'
+    self.colorRangeWithTag(s, i, j, kind)
+    return n
+</t>
+<t tx="ekr.20241126093914.1162">def match_at_color(self, s: str, i: int) -&gt; int:
+
+    # Only matches at start of line.
+    if i == 0 and g.match_word(s, 0, '@color'):
+        n = self.setRestart(self.restartColor)
+        self.setState(n)  # Enable coloring of *this* line.
+        # Now required. Sets state.
+        self.colorRangeWithTag(s, 0, len('@color'), 'leokeyword')
+        return len('@color')
+    return 0
+</t>
+<t tx="ekr.20241126093914.1163">def restartColor(self, s: str) -&gt; int:
+    """Change all lines up to the next color directive."""
+    if g.match_word(s, 0, '@killcolor'):
+        self.colorRangeWithTag(s, 0, len('@color'), 'leokeyword')
+        self.setRestart(self.restartKillColor)
+        return -len(s)  # Continue to suppress coloring.
+    if g.match_word(s, 0, '@nocolor-node'):
+        self.setRestart(self.restartNoColorNode)
+        return -len(s)  # Continue to suppress coloring.
+    if g.match_word(s, 0, '@nocolor'):
+        self.setRestart(self.restartNoColor)
+        return -len(s)  # Continue to suppress coloring.
+    n = self.setRestart(self.restartColor)
+    self.setState(n)  # Enables coloring of *this* line.
+    return 0  # Allow colorizing!
+</t>
+<t tx="ekr.20241126093914.1164">def match_at_killcolor(self, s: str, i: int) -&gt; int:
+
+    # Only matches at start of line.
+    if i == 0 and g.match_word(s, i, '@killcolor'):
+        self.setRestart(self.restartKillColor)
+        return len(s)  # Match everything.
+    return 0
+</t>
+<t tx="ekr.20241126093914.1165">def restartKillColor(self, s: str) -&gt; int:
+    self.setRestart(self.restartKillColor)
+    return len(s) + 1
+</t>
+<t tx="ekr.20241126093914.1167">def match_at_nocolor(self, s: str, i: int) -&gt; int:
+
+    # Only matches at start of line.
+    if i == 0 and not g.match(s, i, '@nocolor-') and g.match_word(s, i, '@nocolor'):
+        self.setRestart(self.restartNoColor)
+        return len(s)  # Match everything.
+    return 0
+</t>
+<t tx="ekr.20241126093914.1168">def restartNoColor(self, s: str) -&gt; int:
+
+    if g.match_word(s, 0, '@color'):
+        n = self.setRestart(self.restartColor)
+        self.setState(n)  # Enables coloring of *this* line.
+        self.colorRangeWithTag(s, 0, len('@color'), 'leokeyword')
+        return len('@color')
+    self.setRestart(self.restartNoColor)
+    return len(s)  # Match everything.
+</t>
+<t tx="ekr.20241126093914.1169">def match_at_nocolor_node(self, s: str, i: int) -&gt; int:
+
+    # Only matches at start of line.
+    if i == 0 and g.match_word(s, i, '@nocolor-node'):
+        self.setRestart(self.restartNoColorNode)
+        return len(s)  # Match everything.
+    return 0
+</t>
+<t tx="ekr.20241126093914.117">def openBadLeoFile(self, c: Cmdr, fn: str) -&gt; None:
+    """
+    Open a bad Leo file using some of the logic of lm.openExternalFile.
+    """
+    # lm = self
+    if not fn:
+        return  # Should not happen.
+    if not os.path.exists(fn):
+        return  # Should not happen.
+
+    if c.looksLikeDerivedFile(fn):
+        # Create an @file node.
+        p = c.importCommands.importDerivedFiles(parent=c.rootPosition(),
+            paths=[fn], command=None)  # Not undoable.
+        if not p:
+            return
+        if p.hasBack():
+            p.back().doDelete()
+            p = c.rootPosition()
+        c.selectPosition(p)
+        c.redraw()
+    else:
+        # Make the root node an @edit node.
+        p = c.rootPosition()
+        p.h = f"@edit {fn}"
+        c.selectPosition(p)
+        c.refreshFromDisk()  # Calls c.redraw()
+
+    c.mFileName = fn  # It *is* valid to save the file.
+    title = c.computeWindowTitle()
+    c.frame.title = title
+    c.frame.setTitle(title)
+    c.clearChanged()
+</t>
+<t tx="ekr.20241126093914.1170">def restartNoColorNode(self, s: str) -&gt; int:
+    self.setRestart(self.restartNoColorNode)
+    return len(s) + 1
+</t>
+<t tx="ekr.20241126093914.1171">def match_at_wrap(self, s: str, i: int) -&gt; int:
+    """Match Leo's @wrap directive."""
+    c = self.c
+    # Only matches at start of line.
+    seq = '@wrap'
+    if i == 0 and g.match_word(s, i, seq):
+        j = i + len(seq)
+        k = g.skip_ws(s, j)
+        self.colorRangeWithTag(s, i, k, 'leokeyword')
+        c.frame.forceWrap(c.p)
+        return k - i
+    return 0
+</t>
+<t tx="ekr.20241126093914.1172">def match_blanks(self, s: str, i: int) -&gt; int:
+    # Use Qt code to show invisibles.
+    return 0
+</t>
+<t tx="ekr.20241126093914.1175">def match_gnx(self, s: str, i: int) -&gt; int:
+    # Called by the main colorizer loop and colorRangeWithTag.
+    return self.match_compiled_regexp(s, i, kind='url', regexp=g.gnx_regex)
+</t>
+<t tx="ekr.20241126093914.1176">image_url = re.compile(r'^\s*&lt;\s*img\s+.*src=\"(.*)\".*&gt;\s*$')
+
+def match_image(self, s: str, i: int) -&gt; int:
+    """Matcher for &lt;img...&gt;"""
+    if m := self.image_url.match(s, i):
+        self.image_src = src = m.group(1)
+        j = len(src)
+        doc = self.highlighter.document()
+        block_n = self.currentBlockNumber()
+        text_block = doc.findBlockByNumber(block_n)
+        g.trace(f"block_n: {block_n:2} {s!r}")
+        # How to get the cursor of the colorized line.
+            # body = self.c.frame.body
+            # s = body.wrapper.getAllText()
+            # wrapper.delete(0, j)
+            # cursor.insertHtml(src)
+        g.trace(f"block text: {repr(text_block.text())}")
+        return j
+    return 0
+</t>
+<t tx="ekr.20241126093914.1177">def match_leo_keywords(self, s: str, i: int) -&gt; int:
+    """Succeed if s[i:] is a Leo keyword."""
+    self.totalLeoKeywordsCalls += 1
+    if s[i] != '@':
+        return 0
+    # fail if something besides whitespace precedes the word on the line.
+    i2 = i - 1
+    while i2 &gt;= 0:
+        ch = s[i2]
+        if ch == '\n':
+            break
+        elif ch in (' ', '\t'):
+            i2 -= 1
+        else:
+            return 0
+    # Get the word as quickly as possible.
+    j = i + 1
+    while j &lt; len(s) and s[j] in self.word_chars:
+        j += 1
+    word = s[i + 1 : j]  # entries in leoKeywordsDict do not start with '@'.
+    if j &lt; len(s) and s[j] not in (' ', '\t', '\n'):
+        return 0  # Fail, but allow a rescan, as in objective_c.
+    if self.leoKeywordsDict.get(word):
+        kind = 'leokeyword'
+        self.colorRangeWithTag(s, i, j, kind)
+        result = j - i + 1  # Bug fix: skip the last character.
+        return result
+    # 2010/10/20: also check the keywords dict here.
+    # This allows for objective_c keywords starting with '@'
+    # This will not slow down Leo, because it is called
+    # for things that look like Leo directives.
+    word = '@' + word
+    kind = self.keywordsDict.get(word)
+    if kind:
+        self.colorRangeWithTag(s, i, j, kind)
+        return j - i
+    # Bug fix: allow rescan.  Affects @language patch.
+    return 0
+</t>
+<t tx="ekr.20241126093914.1178">def match_section_ref(self, s: str, i: int) -&gt; int:
+    p = self.c.p
+
+    # Special case for @language patch: section references are not honored.
+    if self.language == 'patch':
+        return 0
+    n1, n2 = len(self.section_delim1), len(self.section_delim2)
+    if not g.match(s, i, self.section_delim1):
+        return 0
+    k = g.find_on_line(s, i + n1, self.section_delim2)
+    if k == -1:
+        return 0
+    j = k + n2
+
+    # Special case for @section-delims.
+    if s.startswith('@section-delims'):
+        self.colorRangeWithTag(s, i, i + n1, 'namebrackets')
+        self.colorRangeWithTag(s, k, j, 'namebrackets')
+        return j - i
+    # An actual section reference.
+    self.colorRangeWithTag(s, i, i + n1, 'namebrackets')
+    ref = g.findReference(s[i:j], p)
+    if ref:
+        if self.use_hyperlinks:
+            &lt;&lt; set the hyperlink &gt;&gt;
+        else:
+            self.colorRangeWithTag(s, i + n1, k, 'link')
+    else:
+        self.colorRangeWithTag(s, i + n1, k, 'name')
+    self.colorRangeWithTag(s, k, j, 'namebrackets')
+    return j - i
+</t>
+<t tx="ekr.20241126093914.1179"># Set the bindings to VNode callbacks.
+tagName = "hyper" + str(self.hyperCount)
+self.hyperCount += 1
+ref.tagName = tagName
+</t>
+<t tx="ekr.20241126093914.118">def openZipFile(self, fn: str) -&gt; Optional[StringIO]:
+    """
+    Open a zipped file for reading.
+    Return a StringIO file if successful.
+    """
+    try:
+        theFile = zipfile.ZipFile(fn, 'r')
+        if not theFile:
+            return None
+        # Read the file into an StringIO file.
+        aList = theFile.namelist()
+        name = aList and len(aList) == 1 and aList[0]
+        if not name:
+            return None
+        s = theFile.read(name)
+        s2 = g.toUnicode(s, 'utf-8')
+        return StringIO(s2)
+    except IOError:
+        # Do not use string + here: it will fail for non-ascii strings!
+        if not g.unitTesting:
+            g.error("can not open:", fn)
+        return None
+</t>
+<t tx="ekr.20241126093914.1180">def match_tabs(self, s: str, i: int) -&gt; int:
+    # Use Qt code to show invisibles.
+    return 0
+</t>
+<t tx="ekr.20241126093914.1181">def match_trailing_ws(self, s: str, i: int) -&gt; int:
+    """match trailing whitespace"""
+    j = i
+    n = len(s)
+    while j &lt; n and s[j] in ' \t':
+        j += 1
+    if j &gt; i and j == n:
+        self.colorRangeWithTag(s, i, j, 'trailing_whitespace')
+        return j - i
+    return 0
+</t>
+<t tx="ekr.20241126093914.1182">def match_unl(self, s: str, i: int) -&gt; int:
+    # Called by the main colorizer loop and colorRangeWithTag.
+    return self.match_compiled_regexp(s, i, kind='url', regexp=g.unl_regex)
+</t>
+<t tx="ekr.20241126093914.1183">def match_compiled_regexp(self, s: str, i: int,
+    *, kind: str,
+    regexp: Any,
+    delegate: str = '',
+) -&gt; int:
+    """Succeed if the compiled regular expression regexp matches at s[i:]."""
+    n = self.match_compiled_regexp_helper(s, i, regexp)
+    if n &gt; 0:
+        j = i + n
+        self.colorRangeWithTag(s, i, j, kind, delegate=delegate)
+        return n
+    return 0
+</t>
+<t tx="ekr.20241126093914.1184">def match_compiled_regexp_helper(self, s: str, i: int, regex: re.Pattern) -&gt; int:
+    """
+    Return the length of the matching text if
+    seq (a regular expression) matches the present position.
+    """
+    # Match succeeds or fails more quickly than search.
+    self.match_obj = mo = regex.match(s, i)  # re_obj.search(s,i)
+    if mo is None:
+        return 0
+    start, end = mo.start(), mo.end()
+    if start != i:
+        return 0
+    return end - start
+</t>
+<t tx="ekr.20241126093914.1187"># def match_everything (self,s,i,kind=None,delegate='',exclude_match=False):
+    # """Match the entire rest of the string."""
+    # j = len(s)
+    # self.colorRangeWithTag(s,i,j,kind,delegate=delegate)
+    # return j
+</t>
+<t tx="ekr.20241126093914.1188">f_string_nesting_level = 0
+
+def match_fstring(self, s: str, i: int) -&gt; int:
+    """
+    Match a python 3.12 f-string.
+
+    Called only for python 3.12+.
+    """
+    # Fail quickly if possible.
+    if i + 1 &gt;= len(s):
+        return 0
+
+    # Make sure this is an f-string.
+    if 'f' not in s[i : i + 2].lower():
+        return 0
+
+    # Find the opening string delim.
+    j = 1 if s[i + 1] in 'rfRF' else 0
+    delim_offset = i + j + 1
+    if delim_offset &gt;= len(s):
+        return 0
+    delim = s[delim_offset]
+    if delim not in ('"', '"'):
+        return 0
+
+    # Init.
+    self.f_string_nesting_level = 0
+    if g.match(s, delim_offset, delim * 3):
+        delim = delim * 3
+
+    # print(f"  match_fstring i: {i:2} delim: {delim} s: {s}")
+
+    # Similar to code for docstrings (match_span).
+    start = delim_offset
+    end = self.match_fstring_helper(s, start + len(delim), delim)
+    if end == -1:
+        return 0  # A real failure.
+
+    # Color this line.
+    self.colorRangeWithTag(s, start, end, tag='literal1')
+
+    # Continue the f-string if necessary.
+    if end &gt; len(s):
+        end = len(s) + 1
+
+        def fstring_restarter(s: str) -&gt; int:
+            """Freeze the binding of delim"""
+            return self.restart_fstring(s, delim)
+
+        self.setRestart(fstring_restarter)
+
+    return end - i  # Correct, whatever end is.
+</t>
+<t tx="ekr.20241126093914.1189">def match_fstring_helper(self, s: str, i: int, delim: str) -&gt; int:
+    """
+    s is an fstring (or its continuation) *without* the leadin characters and the opening delim.
+
+    Return n &gt;= 0 if s[i:] contains with a non-escaped delim at fstring-level 0.
+
+    Return len(s) + 1 if the fstring should continue.
+    """
+    escape, escapes = '\\', 0
+    level = self.f_string_nesting_level
+    alt_delim = '"' if delim == "'" else "'"  # Works for triple delims.
+    in_alt_delim, in_comment = False, False
+
+    # Scan, incrementing escape count and f-string level.
+    while i &lt; len(s):
+        progress = i
+        if g.match(s, i, delim):
+            if (escapes % 2) == 0 and level == 0 and not in_alt_delim:
+                return i + len(delim)
+            i += len(delim)
+            continue
+        if g.match(s, i, alt_delim):
+            in_alt_delim = not in_alt_delim
+            i += 1
+            continue
+        if in_comment:
+            i += 1
+            continue
+        ch = s[i]
+        i += 1
+        if ch == '#' and (escapes % 2) == 0 and not in_alt_delim:
+            in_comment = True
+        elif ch == escape:
+            escapes += 1
+        elif ch == '{':
+            level += 1
+        elif ch == '}':
+            level -= 1
+        else:
+            escapes = 0
+        assert progress &lt; i, (i, s)
+
+    # Continue scanning.
+    self.f_string_nesting_level = level
+    return len(s) + 1
+</t>
+<t tx="ekr.20241126093914.119">class Commands:
+    &lt;&lt; docstring: Commands class &gt;&gt;
+
+    @others
+</t>
+<t tx="ekr.20241126093914.1190">def restart_fstring(self, s: str, delim: str) -&gt; int:
+    """Remain in this state until 'delim' is seen."""
+    i = 0
+    j = self.match_fstring_helper(s, i, delim)
+    j2 = len(s) + 1 if j == -1 else j
+    self.colorRangeWithTag(s, i, j2, tag='literal1')
+
+    # Restart if necessary.
+    if j &gt; len(s):
+
+        def fstring_restarter(s: str) -&gt; int:
+            """Freeze the binding of delim."""
+            return self.restart_fstring(s, delim)
+
+        self.setRestart(fstring_restarter)
+
+    else:
+        self.clearState()
+    return j  # Return the new i, *not* the length of the match.
+</t>
+<t tx="ekr.20241126093914.1191"># This is a time-critical method.
+
+def match_keywords(self, s: str, i: int) -&gt; int:
+    """
+    Succeed if s[i:] is a keyword.
+    Returning -len(word) for failure greatly reduces the number of times this
+    method is called.
+    """
+    self.totalKeywordsCalls += 1
+    # We must be at the start of a word.
+    if i &gt; 0 and s[i - 1] in self.word_chars:
+        return 0
+    # Get the word as quickly as possible.
+    j = i
+    n = len(s)
+    chars = self.word_chars
+    # Special cases...
+    if self.language in ('haskell', 'clojure'):
+        chars["'"] = "'"
+    if self.language == 'c':
+        chars['_'] = '_'
+    while j &lt; n and s[j] in chars:
+        j += 1
+    word = s[i:j]
+    # Fix part of #585: A kludge for css.
+    if self.language == 'css' and word.endswith(':'):
+        j -= 1
+        word = word[:-1]
+    if not word:
+        g.trace(
+            'can not happen',
+            repr(s[i : max(j, i + 1)]),
+            repr(s[i : i + 10]),
+            g.callers(),
+        )
+        return 0
+    if self.ignore_case:
+        word = word.lower()
+    kind = self.keywordsDict.get(word)
+    if kind:
+        self.colorRangeWithTag(s, i, j, kind)
+        result = j - i
+        return result
+    return -len(word)  # An important new optimization.
+</t>
+<t tx="ekr.20241126093914.1193">def match_lua_literal(self, s: str, i: int, *, kind: str) -&gt; int:
+    """Succeed if s[i:] is a lua literal. See #1175"""
+    k = self.match_span(s, i, kind=kind, begin="[[", end="]]")
+    if k not in (None, 0):
+        return k
+    if not g.match(s, i, '[='):
+        return 0
+    # Calculate begin and end, then just call match_span
+    j = i + 2
+    while g.match(s, j, '='):
+        j += 1
+    if not g.match(s, j, '['):
+        return 0
+    return self.match_span(s, i, kind=kind, begin=s[i:j], end=s[i + 1 : j] + ']')
+</t>
+<t tx="ekr.20241126093914.1197">def match_plain_seq(self, s: str, i: int, *, kind: str, seq: str) -&gt; int:
+    """Matcher for plain sequence match at at s[i:]."""
+    if not g.match(s, i, seq):
+        return 0
+    j = i + len(seq)
+    self.colorRangeWithTag(s, i, j, kind)
+    return len(seq)
+</t>
+<t tx="ekr.20241126093914.1198">def match_plain_span(self, s: str, i: int,
+    *,
+    kind: str,
+    begin: str,
+    end: str,
+) -&gt; int:
+    """Matcher for simple span at s[i:] with no delegate."""
+    if not g.match(s, i, begin):
+        return 0
+    j = self.match_plain_span_helper(s, i + len(begin), end)
+    if j == -1:
+        return 0  # A real failure.
+
+    # A hack to handle continued strings. Should work for most languages.
+    # Prepend "dots" to the kind, as a flag to setTag.
+    quotes = "'\""
+    dots = (
+        j &gt; len(s)
+        and begin in quotes
+        and end in quotes
+        and kind.startswith('literal')
+        and self.language not in ('lisp', 'elisp', 'rust')
+    )
+    if dots:
+        kind = 'dots' + kind
+    j2 = j + len(end)
+    self.colorRangeWithTag(s, i, j2, kind)
+    j = j2
+
+    # Don't recolor everything after continued strings.
+    if j &gt; len(s) and not dots:
+        j = len(s) + 1
+
+        def span(s: str) -&gt; int:
+            # Freeze all bindings.
+            return self.restart_match_span(s, kind, begin=begin, end=end)
+
+        self.setRestart(span,
+            # These must be keyword args.
+            delegate='',
+            end=end,
+            exclude_match=False,
+            kind=kind,
+            no_escape=False,
+            no_line_break=False,
+            no_word_break=False)
+    return j - i  # Correct, whatever j is.
+</t>
+<t tx="ekr.20241126093914.1199">def match_plain_span_helper(self, s: str, i: int, pattern: str,
+) -&gt; int:
+    """
+    Return n &gt;= 0 if s[i] ends with the 'end' string.
+    """
+    esc = self.escape
+    while 1:
+        j = s.find(pattern, i)
+        if j == -1:
+            # Match to end of text if not found and no_line_break is False
+            return len(s) + 1
+        if esc:
+            # Only an odd number of escapes is a 'real' escape.
+            escapes = 0
+            k = 1
+            while j - k &gt;= 0 and s[j - k] == esc:
+                escapes += 1
+                k += 1
+            if (escapes % 2) == 1:
+                assert s[j - 1] == esc
+                i += 1  # Advance past *one* escaped character.
+            else:
+                return j
+        else:
+            return j
+    # For pylint.
+    return -1
+</t>
+<t tx="ekr.20241126093914.12">def computeHomeDir(self) -&gt; Optional[str]:
+    """Returns the user's home directory."""
+    # Windows searches the HOME, HOMEPATH and HOMEDRIVE
+    # environment vars, then gives up.
+    home = os.path.expanduser("~")
+    if home and len(home) &gt; 1 and home[0] == '%' and home[-1] == '%':
+        # Get the indirect reference to the true home.
+        home = os.getenv(home[1:-1], default=None)
+    if home:
+        # Important: This returns the _working_ directory if home is None!
+        # This was the source of the 4.3 .leoID.txt problems.
+        home = g.finalize(home)
+        if (not g.os_path_exists(home) or not g.os_path_isdir(home)):
+            home = None
+    return home
+</t>
+<t tx="ekr.20241126093914.120">"""
+A per-outline class that implements most of Leo's commands. The
+"c" predefined object is an instance of this class.
+
+c.initObjects() creates subcommanders corresponding to files in the
+leo/core and leo/commands. All of Leo's core code is accessible
+via this class and its subcommanders.
+
+g.app.pluginsController is Leo's plugins controller. Many plugins
+inject controllers objects into the Commands class. These are
+another kind of subcommander.
+
+The @g..commander_command decorator injects methods into this class.
+"""
+</t>
+<t tx="ekr.20241126093914.1200">def match_regexp_helper(self, s: str, i: int, pattern: Any) -&gt; int:
+    """
+    Return the length of the matching text if
+    seq (a regular expression) matches the present position.
+    """
+    # Leo 6.7.6: Allow compiled regexes.
+    if isinstance(pattern, str):
+        try:
+            flags = re.MULTILINE
+            if self.ignore_case:
+                flags |= re.IGNORECASE
+            # Suppress a FutureWarning: possible nested set.
+            with warnings.catch_warnings():
+                warnings.filterwarnings("ignore", category=FutureWarning)
+                re_obj = re.compile(pattern, flags)
+        except Exception:
+            # Do not call g.es here!
+            g.trace(f"Invalid regular expression: {pattern:&lt;30} {g.callers(2)}")
+            return 0
+    else:
+        re_obj = pattern
+    # Match succeeds or fails more quickly than search.
+    self.match_obj = mo = re_obj.match(s, i)  # re_obj.search(s,i)
+    if mo is None:
+        return 0
+    start, end = mo.start(), mo.end()
+    if start != i:  # Bug fix 2007-12-18: no match at i
+        return 0
+    return end - start
+</t>
+<t tx="ekr.20241126093914.1207">ascii_letters = re.compile(r'[a-zA-Z]+')
+
+def match_tex_backslash(self, s: str, i: int, *, kind: str) -&gt; int:
+    """
+    Match the tex s[i:].
+
+    (Conventional) macro names are a backslash followed by either:
+    1. One or more ascii letters, or
+    2. Exactly one character, of any kind.
+    """
+    if not g.unitTesting:
+        assert s[i] == '\\'  # TestSyntax.slow_test_all_mode_files only tests signatures.
+    if m := self.ascii_letters.match(s, i + 1):
+        n = len(m.group(0))
+        j = i + n + 1
+    else:
+        # Colorize the backslash plus exactly one more character.
+        j = i + 2
+    self.colorRangeWithTag(s, i, j, kind, delegate='')
+    return j - i
+</t>
+<t tx="ekr.20241126093914.1208">def match_wiki_pattern(self, s: str, i: int, pattern: Any) -&gt; int:
+    """Show or hide a regex pattern managed by the wikiview plugin."""
+    if m := pattern.match(s, i):
+        n = len(m.group(0))
+        self.colorRangeWithTag(s, i, i + n, 'url')
+        return n
+    return 0
+</t>
+<t tx="ekr.20241126093914.121"></t>
+<t tx="ekr.20241126093914.1212">def skip_line(self, s: str, i: int) -&gt; int:
+    if self.escape:
+        escape = self.escape + '\n'
+        n = len(escape)
+        while i &lt; len(s):
+            j = g.skip_line(s, i)
+            if not g.match(s, j - n, escape):
+                return j
+            i = j
+        return i
+    # Include the newline so we don't get a flash at the end of the line.
+    return g.skip_line(s, i)
+</t>
+<t tx="ekr.20241126093914.1213"></t>
+<t tx="ekr.20241126093914.1215">def computeState(self, f: Any, keys: Any) -&gt; int:
+    """
+    Compute the state name associated with f and all the keys.
+    Return a unique int n representing that state.
+    """
+    # Abbreviate arg names.
+    d = {
+        'delegate': '=&gt;',
+        'end': 'end',
+        'at_line_start': 'start',
+        'at_whitespace_end': 'ws-end',
+        'exclude_match': '!match',
+        'no_escape': '!esc',
+        'no_line_break': '!lbrk',
+        'no_word_break': '!wbrk',
+    }
+    result = [self.languageToMode(self.language)]
+    if not self.rulesetName.endswith('_main'):
+        result.append(self.rulesetName)
+    if f:
+        result.append(f.__name__)
+    for key in sorted(keys):
+        keyVal = keys.get(key)
+        val = d.get(key)
+        if val is None:
+            val = keys.get(key)
+            result.append(f"{key}={val}")
+        elif keyVal is True:
+            result.append(f"{val}")
+        elif keyVal is False:
+            pass
+        elif keyVal not in (None, ''):
+            result.append(f"{key}={keyVal}")
+    state = ';'.join(result)
+    table = (
+        ('kind=', ''),
+        ('literal', 'lit'),
+    )
+    for pattern, s in table:
+        state = state.replace(pattern, s)
+    n = self.stateNameToStateNumber(f, state)
+    return n
+</t>
+<t tx="ekr.20241126093914.1217">def inColorState(self) -&gt; bool:
+    """True if the *current* state is enabled."""
+    n = self.currentState()
+    state = self.stateDict.get(n, 'no-state')
+    enabled = (
+        self.enabled  # 2024/11/12
+        and not state.endswith('@nocolor')
+        and not state.endswith('@nocolor-node')
+        and not state.endswith('@killcolor'))
+    return enabled
+</t>
+<t tx="ekr.20241126093914.1218">def setRestart(self, f: Any, **keys: Any) -&gt; int:
+
+    n = self.computeState(f, keys)
+    self.setState(n)
+    return n
+</t>
+<t tx="ekr.20241126093914.1219">def showState(self, n: int) -&gt; str:
+    state = self.stateDict.get(n, 'no-state')
+    return f"{n:2}:{state}"
+
+def showCurrentState(self) -&gt; str:
+    n = self.currentState()
+    return self.showState(n)
+
+def showPrevState(self) -&gt; str:
+    n = self.prevState()
+    return self.showState(n)
+</t>
+<t tx="ekr.20241126093914.122">def __init__(
+    self,
+    fileName: str,
+    gui: LeoGui = None,
+    parentFrame: Wrapper = None,
+    previousSettings: "PreviousSettings" = None,
+    relativeFileName: str = None,
+) -&gt; None:
+    t1 = time.process_time()
+    c = self
+    # Official ivars.
+    self._currentPosition: Optional[Position] = None
+    self._topPosition: Optional[Position] = None
+    self.command_count = 0
+    self.frame: Widget = None
+    self.parentFrame: Widget = parentFrame  # New in Leo 6.0.
+    self.gui: LeoGui = gui or g.app.gui
+    # New ivars
+    self.config: LocalConfigManager = None
+    self.idle_focus_count = 0
+    self.last_unusual_focus = 0
+    # Declare subcommanders (and one alias) (created later).
+    self.atFileCommands: AtFile = None
+    self.chapterController: ChapterController = None
+    self.fileCommands: FileCommands = None
+    self.findCommands: LeoFind = None
+    self.importCommands: LeoImportCommands = None
+    self.keyHandler: KeyHandlerClass = None
+    self.nodeHistory: NodeHistory = None
+    self.persistenceController: PersistenceDataController = None
+    self.printingController: PrintingController = None
+    self.shadowController: ShadowController = None
+    self.undoer: Undoer = None
+    self.vimCommands: VimCommands = None
+    # Declare command handlers (created later).
+    self.abbrevCommands: AbbrevCommandsClass = None
+    self.bufferCommands: BufferCommandsClass = None
+    self.controlCommands: ControlCommandsClass = None
+    self.convertCommands: ConvertCommandsClass = None
+    self.debugCommands: DebugCommandsClass = None
+    self.editCommands: EditCommandsClass = None
+    self.editFileCommands: EditFileCommandsClass = None
+    self.gotoCommands: GoToCommands = None
+    self.helpCommands: HelpCommandsClass = None
+    self.keyHandlerCommands: KeyHandlerCommandsClass = None
+    self.killBufferCommands: KillBufferCommandsClass = None
+    self.rectangleCommands: RectangleCommandsClass = None
+    self.rstCommands: RstCommands = None
+    self.spellCommands: SpellCommandsClass = None
+    # Declare alias for self.keyHandler.
+    self.k: KeyHandlerClass = None
+    # The stylesheet manager does not exist in all guis.
+    self.styleSheetManager: StyleSheetManager = None
+    # The order of these calls does not matter.
+    c.initCommandIvars()
+    c.initDebugIvars()
+    c.initDocumentIvars()
+    c.initEventIvars()
+    c.initFileIvars(fileName, relativeFileName)
+    c.initOptionsIvars()
+    # Instantiate c.config *before* initing objects.
+    self.config = None
+    c.initSettings(previousSettings)
+    # Initialize all subsidiary objects, including subcommanders.
+    c.initObjects(self.gui)
+    assert c.frame
+    assert c.frame.c
+    # Complete the init!
+    t2 = time.process_time()
+    c.finishCreate()  # Slightly slow.
+    t3 = time.process_time()
+    if 'speed' in g.app.debug:
+        print('c.__init__')
+        print(
+            f"    1: {t2-t1:5.2f}\n"  # 0.00 sec.
+            f"    2: {t3-t2:5.2f}\n"  # 0.53 sec: c.finishCreate.
+            f"total: {t3-t1:5.2f}"
+        )
+</t>
+<t tx="ekr.20241126093914.1220">def stateNameToStateNumber(self, f: Any, stateName: Any) -&gt; int:
+    """
+    Update the following ivars when seeing stateName for the first time:
+
+    stateDict:     Keys are state numbers, values state names.
+    stateNameDict: Keys are state names, values are state numbers.
+    restartDict:   Keys are state numbers, values are restart functions
+    """
+    # Make sure nobody calls this method by accident.
+    if g.callers(1) not in ('computeState', 'setInitialStateNumber'):
+        message = f"jedit.stateNameToStateNumber: invalid caller: {g.callers()}"
+        g.print_unique_message(message)
+
+    n = self.stateNameDict.get(stateName)
+    if n is None:
+        n = self.nextState
+        self.stateNameDict[stateName] = n
+        self.stateDict[n] = stateName
+        self.restartDict[n] = f
+        self.nextState += 1
+        self.n2languageDict[n] = self.language
+    return n
+</t>
+<t tx="ekr.20241126093914.1221">def stateNumberToLanguage(self, n: int) -&gt; str:
+    """
+    Return the string state corresponding to the given integer state.
+    """
+    c = self.c
+
+    def default_language(n: int) -&gt; str:
+        c = self.c
+        p = c.p
+        language = g.getLanguageFromAncestorAtFileNode(p)
+        return language or c.target_language
+
+    state_s = self.stateNumberToStateString(n)
+    language = state_s.split(';')[0]
+    d = {
+        'py': 'python',
+        'initial-state': default_language(n),
+    }
+    return d.get(language, language)
+</t>
+<t tx="ekr.20241126093914.1222">def stateNumberToStateString(self, n: int) -&gt; str:
+    """
+    Return the string state corresponding to the given integer state.
+    """
+    return self.stateDict.get(n, 'initial-state')
+</t>
+<t tx="ekr.20241126093914.1223">@cmd('recolor')
+def recolorCommand(self, event: LeoKeyEvent = None) -&gt; None:
+    """Force a full recolor."""
+    c = self
+    # Call colorer.force_recolor for pygments.
+    colorer = c.frame.body.colorizer
+    if hasattr(colorer, 'force_recolor'):
+        colorer.force_recolor()
+    # Setting all text appears to be the only way.
+    wrapper = c.frame.body.wrapper
+    i, j = wrapper.getSelectionRange()
+    ins = wrapper.getInsertPoint()
+    wrapper.setAllText(c.p.b)
+    wrapper.setSelectionRange(i, j, insert=ins)
+</t>
+<t tx="ekr.20241126093914.1224"></t>
+<t tx="ekr.20241126093914.1225">def currentBlockNumber(self) -&gt; int:
+    block = self.highlighter.currentBlock()
+    return block.blockNumber() if block and block.isValid() else -1
+
+def currentState(self) -&gt; int:
+    return self.highlighter.currentBlockState()
+
+def prevState(self) -&gt; int:
+    return self.highlighter.previousBlockState()
+
+def setState(self, n: int) -&gt; None:
+    self.highlighter.setCurrentBlockState(n)
+</t>
+<t tx="ekr.20241126093914.1226">def clearState(self) -&gt; int:
+    """
+    Create a *language-specific* default state.
+    This properly forces a full recoloring when @language changes.
+    """
+    n = self.initialStateNumber
+    self.setState(n)
+    return n
+</t>
+<t tx="ekr.20241126093914.1227"></t>
+<t tx="ekr.20241126093914.1228">def recolor(self, p: Position = None) -&gt; None:
+    c = self
+    colorizer = c.frame.body.colorizer
+    if colorizer and hasattr(colorizer, 'colorize'):
+        # Only the QScintillaColorizer class has a colorize method.
+        colorizer.colorize(p or c.p)
+
+recolor_now = recolor
+</t>
+<t tx="ekr.20241126093914.1229">def force_recolor(self) -&gt; None:
+    """jedit.force_recolor: A helper for Leo's 'recolor' command."""
+    c = self.c
+    p = c.p
+    if not p:  # This guard is required.
+        return
+
+    # Only the 'recolor' command should call this method!
+    if g.callers(1) != 'recolorCommand':
+        message = f"jedit.force_recolor: invalid caller: {g.callers()}"
+        g.print_unique_message(message)
+
+    # Tell QSyntaxHighlighter to do a full recolor.
+    g.es_print(f"recolor: `{p.h}`", color='blue')
+    self.highlighter.rehighlight()
+</t>
+<t tx="ekr.20241126093914.123">def computeTabTitle(self) -&gt; str:
+    """
+    Return the tab title for this commander.
+    """
+    c = self
+    file_name = c.fileName()
+    if file_name:
+        return file_name
+    # Return 'untitled' or 'untitled{n}
+    n = g.app.numberOfUntitledWindows
+    n_s = '' if n &lt; 2 else str(n)
+    title = f"untitled{n_s}"
+    return title
+</t>
+<t tx="ekr.20241126093914.1235">@language rest
+@wrap
+@nosearch
+
+https://github.com/leo-editor/leo-editor/issues/4187
+PR: https://github.com/leo-editor/leo-editor/pull/4188
+
+@language python
+</t>
+<t tx="ekr.20241126093914.1236"></t>
+<t tx="ekr.20241126093914.1238"></t>
+<t tx="ekr.20241126093914.124">def computeWindowTitle(self, fileName: str = None) -&gt; str:
+    """
+    Return the title for the top-level window.
+    """
+    c = self
+    file_name = fileName or c.fileName()
+    if not file_name:
+        return 'untitled'
+    if re.match(r'^untitled\d+$', file_name):
+        return file_name
+    branch = g.gitBranchName(file_name)
+    branch_s = f"{branch}: " if branch else ''
+    # Pretty-print file_name.
+    path, fn = g.os_path_split(file_name)
+    name_s = f"{fn} in {path}" if path else fn
+    # Regularize slashes.
+    if os.sep in '/\\':
+        name_s = name_s.replace('/', os.sep).replace('\\', os.sep)
+    return f"{branch_s}{name_s}"
+</t>
+<t tx="ekr.20241126093914.1244">@nosearch
+
+# Word, [Outline Only], Head, Body
+
+# root: class JEditColorizer(BaseColorizer)
+
+# found 3 nodes</t>
+<t tx="ekr.20241126093914.125">def initCommandIvars(self) -&gt; None:
+    """Init ivars used while executing a command."""
+    self.commandsDict: dict[str, Callable] = {}  # Keys are command names, values are functions.
+    self.disableCommandsMessage = ''  # The presence of this message disables all commands.
+    self.hookFunction: Optional[Callable] = None  # One of three places that g.doHook looks for hook functions.
+    self.ignoreChangedPaths = False  # True: disable path changed message in at.WriteAllHelper.
+    self.inCommand = False  # Interlocks to prevent premature closing of a window.
+    self.outlineToNowebDefaultFileName: str = "noweb.nw"  # For Outline To Noweb dialog.
+    # For hoist/dehoist commands.
+    # Affects drawing routines and find commands, but *not* generators.
+    self.hoistStack: list[g.Bunch] = []  # Stack of g.Bunches to be root of drawn tree.
+    # For outline navigation.
+    self.navPrefix: str = ''  # Must always be a string.
+    self.navTime: Optional[float] = None
+    self.recent_commands_list: list[str] = []  # List of command names.
+</t>
+<t tx="ekr.20241126093914.1250">def match_doc_part(self, s: str, i: int) -&gt; int:
+    """
+    Colorize Leo's @ and @ doc constructs.
+    Matches only at the start of the line.
+    """
+    if i != 0:
+        return 0
+    if g.match_word(s, i, '@doc'):
+        j = i + 4
+    elif g.match(s, i, '@') and (i + 1 &gt;= len(s) or s[i + 1] in (' ', '\t', '\n')):
+        j = i + 1
+    else:
+        return 0
+    c = self.c
+    self.colorRangeWithTag(s, 0, j, 'leokeyword')
+    # New in Leo 5.5: optionally colorize doc parts using reStructuredText
+    if c.config.getBool('color-doc-parts-as-rest'):
+        # Switch languages.
+        self.after_doc_language = self.language
+        self.language = 'rest'
+        self.init()
+        self.clearState()
+        # Restart.
+        self.setRestart(self.restartDocPart)
+        # Do *not* color the text here!
+        return j
+    self.clearState()
+    self.setRestart(self.restartDocPart)
+    self.colorRangeWithTag(s, j, len(s), 'docpart')
+    return len(s)
+</t>
+<t tx="ekr.20241126093914.1252">def restartDocPart(self, s: str) -&gt; int:
+    """
+    Restarter for @ and @ constructs.
+    Continue until an @c, @code or @language at the start of the line.
+    """
+    for tag in ('@c', '@code', '@language'):
+        if g.match_word(s, 0, tag):
+            if tag == '@language':
+                return self.match_at_language(s, 0)
+            j = len(tag)
+            self.colorRangeWithTag(s, 0, j, 'leokeyword')  # 'docpart')
+            # Switch languages.
+            self.language = self.after_doc_language
+            self.init()
+            self.clearState()
+            self.after_doc_language = None
+            return j
+    # Color the next line.
+    self.setRestart(self.restartDocPart)
+    if self.c.config.getBool('color-doc-parts-as-rest'):
+        # Do *not* colorize the text here.
+        return 0
+    self.colorRangeWithTag(s, 0, len(s), 'docpart')
+    return len(s)
+</t>
+<t tx="ekr.20241126093914.1253">@language rest
+@wrap
+@nosearch
+
+PR: https://github.com/leo-editor/leo-editor/pull/4190
+
+@language python
+</t>
+<t tx="ekr.20241126093914.1254"></t>
+<t tx="ekr.20241126093914.1257">https://github.com/leo-editor/leo-editor/pull/4192
+</t>
+<t tx="ekr.20241126093914.126">def initDebugIvars(self) -&gt; None:
+    """Init Commander debugging ivars."""
+    self.command_count = 0
+    self.scanAtPathDirectivesCount = 0
+    self.trace_focus_count = 0
+</t>
+<t tx="ekr.20241126093914.1260">@language rest
+@wrap
+@nosearch
+
+https://github.com/leo-editor/leo-editor/issues/4191
+PR: https://github.com/leo-editor/leo-editor/pull/4194
+
+Add PyQt6.QtWidgets to the list of extensions.
+
+@language python
+</t>
+<t tx="ekr.20241126093914.1261"></t>
+<t tx="ekr.20241126093914.1262">last_pylint_path: str = None
+
+@g.command('pylint')
+def pylint_command(event: LeoKeyEvent) -&gt; None:
+    """
+    Run pylint on all nodes of the selected tree,
+    or the first @&lt;file&gt; node in an ancestor,
+    or the last checked @&lt;file&gt; node.
+    """
+    global last_pylint_path
+    c = event and event.get('c')
+    if c:
+        if c.isChanged():
+            c.save()
+        data = PylintCommand(c).run(c.p, last_path=last_pylint_path)
+        if data:
+            path, p = data  # pylint: disable=unpacking-non-sequence
+            last_pylint_path = path
+</t>
+<t tx="ekr.20241126093914.1263">class PylintCommand:
+    """A class to run pylint on all Python @&lt;file&gt; nodes in c.p's tree."""
+
+    def __init__(self, c: Cmdr) -&gt; None:
+        self.c = c
+        self.rc_fn: str = None  # Name of the rc file.
+    @others
+</t>
+<t tx="ekr.20241126093914.1264">def run(self, root: Position, *, last_path: str = None) -&gt; Optional[tuple[str, Position]]:
+    """Run Pylint on all Python @&lt;file&gt; nodes in root's tree."""
+    c = self.c
+    if not lint:
+        g.es_print('pylint is not installed')
+        return None
+    self.rc_fn = self.get_rc_file()
+    if not self.rc_fn:
+        return None
+    # Make sure the parent of the leo directory is on sys.path.
+    path = os.path.normpath(os.path.join(g.app.loadDir, '..', '..'))
+    if path not in sys.path:
+        sys.path.insert(0, path)
+
+    # Ignore @nopylint trees.
+    def predicate(p: Position) -&gt; bool:
+        for parent in p.self_and_parents():
+            if g.match_word(parent.h, 0, '@nopylint'):
+                return False
+        return p.isAnyAtFileNode() and p.h.strip().endswith(('.py', '.pyw'))  # #2354.
+
+    data: list[tuple[str, Position]] = []
+    is_at_file = False
+    roots = g.findRootsWithPredicate(c, root, predicate=predicate)
+    if roots:
+        roots = g.findRootsWithPredicate(c, root, predicate=predicate)
+        data = [(self.get_fn(p), p.copy()) for p in roots]
+        data = [z for z in data if z[0] is not None]
+        is_at_file = True
+    else:
+        last_path = None
+    if not data:
+        if not last_path:
+            return None
+        # Default to the last path.
+        fn = last_path
+        for p in c.all_positions():
+            if p.isAnyAtFileNode() and c.fullPath(p) == fn:
+                data = [(fn, p.copy())]
+                break
+    for fn, p in data:
+        self.run_pylint(fn, p)
+    # #1808: return the last data file.
+    return data[-1] if data and is_at_file else None
+</t>
+<t tx="ekr.20241126093914.1266">def get_fn(self, p: Position) -&gt; Optional[str]:
+    """
+    Finalize p's file name.
+    Return if p is not an @file node for a python file.
+    """
+    c = self.c
+    fn = p.isAnyAtFileNode()
+    if not fn:
+        g.trace(f"not an @&lt;file&gt; node: {p.h!r}")
+        return None
+    return c.fullPath(p)  # #1914
+</t>
+<t tx="ekr.20241126093914.1267">def run_pylint(self, fn: str, p: Position) -&gt; None:
+    """Run pylint on fn with the given pylint configuration file."""
+    c, rc_fn = self.c, self.rc_fn
+
+    # Invoke pylint directly.
+    is_win = sys.platform.startswith('win')
+    args = ','.join([f"'--rcfile={rc_fn}'", f"'{fn}'"])
+    if is_win:
+        args = args.replace('\\', '\\\\')
+    command = (
+        f'{sys.executable} -c "from pylint import lint; args=[{args}]; lint.Run(args)"')
+    if not is_win:
+        command = shlex.split(command)  # type:ignore
+
+    # Run the command using the BPM.
+    bpm = g.app.backgroundProcessManager
+    bpm.start_process(c, command, fn=fn, kind='pylint')
+</t>
+<t tx="ekr.20241126093914.1268"></t>
+<t tx="ekr.20241126093914.1269">from __future__ import annotations
+import os
+import pathlib
+import re
+import shlex
+import sys
+import time
+from typing import Optional, TYPE_CHECKING
+#
+# Third-party imports.
+try:
+    from mypy import api as mypy_api
+except Exception:
+    mypy_api = None
+try:
+    import flake8
+    # #2248: Import only flake8.
+except ImportError:
+    flake8 = None  # type:ignore
+try:
+    import mypy
+except Exception:
+    mypy = None  # type:ignore
+try:
+    import pyflakes
+    from pyflakes import api, reporter
+except Exception:
+    pyflakes = None  # type:ignore
+try:
+    from pylint import lint
+except Exception:
+    lint = None  # type:ignore
+#
+# Leo imports.
+from leo.core import leoGlobals as g
+</t>
+<t tx="ekr.20241126093914.127">def initDocumentIvars(self) -&gt; None:
+    """Init per-document ivars."""
+    self.expansionLevel = 0  # The expansion level of this outline.
+    self.expansionNode = None  # The last node we expanded or contracted.
+    self.nodeConflictList: list[Position] = []  # List of nodes with conflicting read-time data.
+    self.nodeConflictFileName: Optional[str] = None  # The fileName for c.nodeConflictList.
+    self.user_dict: dict[str, Any] = {}  # Non-persistent dictionary for free use by scripts and plugins.
+</t>
+<t tx="ekr.20241126093914.1270">def get_rc_file(self) -&gt; Optional[str]:
+    """Return the path to the pylint configuration file."""
+    c = self.c
+    base1 = '.pylintrc'  # Standard name.
+    base2 = 'pylint-leo-rc.txt'  # Leo-centric name
+    local_dir = g.os_path_dirname(c.fileName()) if c else os.getcwd()
+    # 4191: Allow scripts to call this method.
+    try:
+        load_dir = g.app.loadDir
+    except AttributeError:
+        load_dir = g.finalize_join(local_dir, 'leo')
+    home_dir = pathlib.Path.home()
+    table = (
+        # In the directory containing the outline.
+        g.finalize_join(local_dir, base1),
+        g.finalize_join(local_dir, base2),
+        # In ~/.leo
+        g.finalize_join(home_dir, '.leo', base1),
+        g.finalize_join(home_dir, '.leo', base2),
+        # In leo/test
+        g.finalize_join(load_dir, '..', '..', 'leo', 'test', base1),
+        g.finalize_join(load_dir, '..', '..', 'leo', 'test', base2),
+    )
+    for fn in table:
+        fn = g.os_path_abspath(fn)
+        if g.os_path_exists(fn):
+            return fn
+    table_s = '\n'.join(table)
+    g.es_print(f"no pylint configuration file found in\n{table_s}")
+    # g.es_print('Not found: .pylintrc and pylint-leo-rc.txt')
+    return None
+</t>
+<t tx="ekr.20241126093914.1271">https://github.com/leo-editor/leo-editor/pull/4195</t>
+<t tx="ekr.20241126093914.1272">def test_all_mode_files(self):
+
+    tag = 'slow_test_all_mode_files'
+
+    @others  # Define test_one_mode_file
+
+    fails = []
+    mode_path = g.os_path_finalize_join(g.app.loadDir, '..', 'modes')
+    paths = glob.glob(f"{mode_path}{os.sep}*.py")
+    paths = [os.path.basename(z)[:-3] for z in paths]
+    paths = [z for z in paths if not z.startswith('__')]
+    for path in paths:
+        try:
+            module = importlib.import_module(f"leo.modes.{path}")
+            test_one_mode_file(module)
+        except Exception as e:
+            # raise AssertionError(f"{tag}:Test failed: {module.__name__}")
+            fails.append(f"{module.__name__:&lt;20} {e!r}")
+    if fails:
+        fails_s = '\n'.join(fails)
+        message = f"\n{tag}:Test failed:...\n{fails_s}\n"
+        raise AssertionError(message)
+
+</t>
+<t tx="ekr.20241126093914.1273">def test_one_mode_file(module: Any) -&gt; None:
+    """Call all rules in the given module, a mode file."""
+    from leo.core.leoColorizer import JEditColorizer
+    c = self.c
+    module_name = module.__name__
+    # Skip modes/plain.py. It has only one rule and the rulesDict is a hack.
+    if module_name.endswith('plain'):
+        return
+    colorer = JEditColorizer(c, widget=None)
+    rules = []
+    for ruleDict_name, ruleDict in module.rulesDictDict.items():
+        # The colorizer adds Leo-specific rules to these dicts. Don't call them!
+        for char, rules_list in ruleDict.items():
+            for rule in rules_list:
+                if not rule.__name__.startswith('match_'):
+                    rules.append(rule)
+    rules = sorted(list(set(rules)), key=lambda z: z.__name__)
+    # g.printObj([z.__name__ for z in rules], tag=f"Rules for {module_name}")
+    i = 0
+    s = 'def spam()'
+    for rule in rules:
+        rule(colorer, s, i)
+</t>
+<t tx="ekr.20241126093914.1274"></t>
+<t tx="ekr.20241126093914.1275">def match_eol_span(self, s: str, i: int,
+    *,
+    kind: str = None,
+    seq: str = '',
+    at_line_start: bool = False,
+    at_whitespace_end: bool = False,
+    at_word_start: bool = False,
+    delegate: str = '',
+    exclude_match: bool = False,
+) -&gt; int:
+    """Succeed if seq matches s[i:]"""
+    if at_line_start and i != 0 and s[i - 1] != '\n':
+        return 0
+    if at_whitespace_end and i != g.skip_ws(s, 0):
+        return 0
+    if at_word_start and i &gt; 0 and s[i - 1] in self.word_chars:
+        return 0
+    if at_word_start and i + len(
+        seq) + 1 &lt; len(s) and s[i + len(seq)] in self.word_chars:
+        return 0
+    if g.match(s, i, seq):
+        j = len(s)
+        self.colorRangeWithTag(s, i, j, kind,
+            delegate=delegate, exclude_match=exclude_match)
+        return j  # (was j-1) With a delegate, this could clear state.
+    return 0
+</t>
+<t tx="ekr.20241126093914.1277">def match_mark_following(self, s: str, i: int,
+    *,
+    kind: str = '',
+    pattern: str = '',
+    at_line_start: bool = False,
+    at_whitespace_end: bool = False,
+    at_word_start: bool = False,
+    exclude_match: bool = False,
+) -&gt; int:
+    """Succeed if s[i:] matches pattern."""
+    if not self.allow_mark_prev:
+        return 0
+    if at_line_start and i != 0 and s[i - 1] != '\n':
+        return 0
+    if at_whitespace_end and i != g.skip_ws(s, 0):
+        return 0
+    if at_word_start and i &gt; 0 and s[i - 1] in self.word_chars:
+        return 0  # 7/5/2008
+    if (
+        at_word_start
+        and i + len(pattern) + 1 &lt; len(s)
+        and s[i + len(pattern)] in self.word_chars
+    ):
+        return 0
+    if g.match(s, i, pattern):
+        j = i + len(pattern)
+        # self.colorRangeWithTag(s,i,j,kind,exclude_match=exclude_match)
+        k = self.getNextToken(s, j)
+        # 2011/05/31: Do not match *anything* unless there is a token following.
+        if k &gt; j:
+            self.colorRangeWithTag(s, i, j, kind, exclude_match=exclude_match)
+            self.colorRangeWithTag(s, j, k, kind, exclude_match=False)
+            j = k
+            return j - i
+    return 0
+</t>
+<t tx="ekr.20241126093914.1278">def getNextToken(self, s: str, i: int) -&gt; int:
+    """
+    Return the index of the end of the next token for match_mark_following.
+
+    The jEdit docs are not clear about what a 'token' is, but experiments with jEdit
+    show that token means a word, as defined by word_chars.
+    """
+    # 2011/05/31: Might we extend the concept of token?
+    # If s[i] is not a word char, should we return just it?
+    i0 = i
+    while i &lt; len(s) and s[i].isspace():
+        i += 1
+    i1 = i
+    while i &lt; len(s) and s[i] in self.word_chars:
+        i += 1
+    if i == i1:
+        return i0
+    return min(len(s), i)
+</t>
+<t tx="ekr.20241126093914.1279">def match_mark_previous(self, s: str, i: int,
+    *,
+    kind: str = '',
+    pattern: str = '',
+    at_line_start: bool = False,
+    at_whitespace_end: bool = False,
+    at_word_start: bool = False,
+    exclude_match: bool = False,
+) -&gt; int:
+    """
+    Return the length of a matched SEQ or 0 if no match.
+
+    'at_line_start':    True: sequence must start the line.
+    'at_whitespace_end':True: sequence must be first non-whitespace text of the line.
+    'at_word_start':    True: sequence must start a word.
+    """
+    # This match was causing most of the syntax-color problems.
+    return 0  # 2009/6/23
+</t>
+<t tx="ekr.20241126093914.128">def initEventIvars(self) -&gt; None:
+    """Init ivars relating to gui events."""
+    self.configInited = False
+    self.doubleClickFlag = False
+    self.exists = True  # Indicate that this class exists and has not been destroyed.
+    self.in_qt_dialog = False  # True: in a qt dialog.
+    self.loading = False  # True: we are loading a file: disables c.setChanged()
+    self.promptingForClose = False  # True: lock out additional closing dialogs.
+    #
+    # Flags for c.outerUpdate...
+    self.enableRedrawFlag = True
+    self.requestCloseWindow = False
+    self.requestedFocusWidget: Widget = None
+    self.requestLaterRedraw = False
+</t>
+<t tx="ekr.20241126093914.1280">def match_seq(self, s: str, i: int,
+    *,
+    kind: str = '',
+    seq: str = '',
+    at_line_start: bool = False,
+    at_whitespace_end: bool = False,
+    at_word_start: bool = False,
+    delegate: str = '',
+) -&gt; int:
+    """Succeed if s[:] matches seq."""
+    if at_line_start and i != 0 and s[i - 1] != '\n':
+        j = i
+    elif at_whitespace_end and i != g.skip_ws(s, 0):
+        j = i
+    elif at_word_start and i &gt; 0 and s[i - 1] in self.word_chars:  # 7/5/2008
+        j = i
+    if at_word_start and i + len(
+        seq) + 1 &lt; len(s) and s[i + len(seq)] in self.word_chars:
+        j = i  # 7/5/2008
+    elif g.match(s, i, seq):
+        j = i + len(seq)
+        self.colorRangeWithTag(s, i, j, kind, delegate=delegate)
+    else:
+        j = i
+    return j - i
+</t>
+<t tx="ekr.20241126093914.1281">def match_seq_regexp(self, s: str, i: int,
+    *,
+    kind: str = '',
+    regexp: str = '',
+    at_line_start: bool = False,
+    at_whitespace_end: bool = False,
+    at_word_start: bool = False,
+    delegate: str = '',
+) -&gt; int:
+    """Succeed if the regular expression regexp matches at s[i:]."""
+    if at_line_start and i != 0 and s[i - 1] != '\n':
+        return 0
+    if at_whitespace_end and i != g.skip_ws(s, 0):
+        return 0
+    if at_word_start and i &gt; 0 and s[i - 1] in self.word_chars:
+        return 0
+    n = self.match_regexp_helper(s, i, regexp)
+    j = i + n
+    assert j - i == n
+    self.colorRangeWithTag(s, i, j, kind, delegate=delegate)
+    return j - i
+</t>
+<t tx="ekr.20241126093914.1282">def match_span(self, s: str, i: int,
+    *,
+    kind: str,
+    begin: str,
+    end: str,
+    at_line_start: bool = False,
+    at_whitespace_end: bool = False,
+    at_word_start: bool = False,
+    delegate: str = '',
+    exclude_match: bool = False,
+    nested: bool = False,  # New in Leo 6.7.8.
+    no_escape: bool = False,
+    no_line_break: bool = False,
+    no_word_break: bool = False,
+) -&gt; int:
+    """Succeed if s[i:] starts with 'begin' and contains a following 'end'."""
+    self.nested = nested
+    self.nesting_level = -1
+    if i &gt;= len(s):
+        return 0
+    if at_line_start and i != 0 and s[i - 1] != '\n':
+        return 0
+    if at_whitespace_end and i != g.skip_ws(s, 0):
+        return 0
+    if at_word_start and i &gt; 0 and s[i - 1] in self.word_chars:
+        return 0
+    if at_word_start and i + len(begin) + 1 &lt; len(s) and s[i + len(begin)] in self.word_chars:
+        return 0
+    if not g.match(s, i, begin):
+        return 0
+
+    # We have matched the start of the span.
+    j = self.match_span_helper(s, i + len(begin), begin, end,
+        no_escape=no_escape,
+        no_line_break=no_line_break,
+        no_word_break=no_word_break,
+    )
+    if j == -1:
+        return 0  # A real failure.
+    # A hack to handle continued strings. Should work for most languages.
+    # Prepend "dots" to the kind, as a flag to setTag.
+    dots = (
+        j &gt; len(s)
+        and begin in "'\""
+        and end in "'\""
+        and kind.startswith('literal')
+    )
+    dots = dots and self.language not in ('lisp', 'elisp', 'rust', 'scheme')
+    if dots:
+        kind = 'dots' + kind
+    # A match
+    i2 = i + len(begin)
+    j2 = j + len(end)
+    if delegate:
+        self.colorRangeWithTag(
+            s, i, i2, kind, delegate=None, exclude_match=exclude_match)
+        self.colorRangeWithTag(
+            s, i2, j, kind, delegate=delegate, exclude_match=exclude_match)
+        self.colorRangeWithTag(
+            s, j, j2, kind, delegate=None, exclude_match=exclude_match)
+    else:
+        self.colorRangeWithTag(
+            s, i, j2, kind, delegate=None, exclude_match=exclude_match)
+    j = j2
+    # New in Leo 5.5: don't recolor everything after continued strings.
+    if j &gt; len(s) and not dots:
+        j = len(s) + 1
+
+        def span(s: str) -&gt; int:
+            # Freeze all bindings.
+            return self.restart_match_span(s, kind,
+                # Keyword args...
+                delegate=delegate,
+                begin=begin,
+                end=end,
+                exclude_match=exclude_match,
+                no_escape=no_escape,
+                no_line_break=no_line_break,
+                no_word_break=no_word_break,
+            )
+
+        self.setRestart(span,
+            # These must be keyword args.
+            delegate=delegate,
+            end=end,
+            exclude_match=exclude_match,
+            kind=kind,
+            no_escape=no_escape,
+            no_line_break=no_line_break,
+            no_word_break=no_word_break)
+    return j - i  # Correct, whatever j is.
+</t>
+<t tx="ekr.20241126093914.1283">def match_span_helper(self,
+    s: str,
+    i: int,
+    begin_pattern: str,
+    end_pattern: str,
+    *,
+    no_escape: bool,
+    no_line_break: bool,
+    no_word_break: bool,
+) -&gt; int:
+    """
+    Return n &gt;= 0 if s[i] ends with a non-escaped 'end' string.
+    """
+    esc = self.escape
+    while 1:
+        if self.nested:
+            j = s.find(begin_pattern, i)
+            if j &gt; -1:
+                self.nesting_level += 1
+                i += len(begin_pattern)
+                continue
+        j = s.find(end_pattern, i)
+        if j == -1:
+            # Match to end of text if not found and no_line_break is False
+            if no_line_break:
+                return -1
+            return len(s) + 1
+        if self.nested:
+            self.nesting_level -= 1
+            if self.nesting_level &gt; 0:
+                return -1
+        if no_word_break and j &gt; 0 and s[j - 1] in self.word_chars:
+            return -1  # New in Leo 4.5.
+        if no_line_break and '\n' in s[i:j]:
+            return -1
+        if esc and not no_escape:
+            # Only an odd number of escapes is a 'real' escape.
+            escapes = 0
+            k = 1
+            while j - k &gt;= 0 and s[j - k] == esc:
+                escapes += 1
+                k += 1
+            if (escapes % 2) == 1:
+                assert s[j - 1] == esc
+                # Advance past *one* escaped character.
+                i += 1
+            else:
+                return j
+        else:
+            return j
+    # For pylint.
+    return -1
+</t>
+<t tx="ekr.20241126093914.1284">def restart_match_span(self, s: str, kind: str,
+    *,
+    begin: str,
+    end: str,
+    delegate: str = '',
+    exclude_match: bool = False,
+    no_escape: bool = False,
+    no_line_break: bool = False,
+    no_word_break: bool = False,
+) -&gt; int:
+    """Remain in this state until 'end' is seen."""
+    i = 0
+    j = self.match_span_helper(s, i, begin, end,
+        # Must be keyword arguments.
+        no_escape=no_escape,
+        no_line_break=no_line_break,
+        no_word_break=no_word_break,
+    )
+    if j == -1:
+        j2 = len(s) + 1
+    elif j &gt; len(s):
+        j2 = j
+    else:
+        j2 = j + len(end)
+    if delegate:
+        self.colorRangeWithTag(s, i, j, kind,
+            delegate=delegate, exclude_match=exclude_match)
+        self.colorRangeWithTag(s, j, j2, kind,
+            delegate=None, exclude_match=exclude_match)
+    else:  # avoid having to merge ranges in addTagsToList.
+        self.colorRangeWithTag(s, i, j2, kind,
+            delegate=None, exclude_match=exclude_match)
+    j = j2
+    if j &gt; len(s):
+
+        def span(s: str) -&gt; int:
+            return self.restart_match_span(s, kind,
+                # Must be keyword arguments.
+                delegate=delegate,
+                begin=begin,
+                end=end,
+                exclude_match=exclude_match,
+                no_escape=no_escape,
+                no_line_break=no_line_break,
+                no_word_break=no_word_break,
+            )
+
+        self.setRestart(span,
+            # Must be keyword arguments.
+            delegate=delegate,
+            end=end,
+            kind=kind,
+            no_escape=no_escape,
+            no_line_break=no_line_break,
+            no_word_break=no_word_break,
+        )
+    else:
+        self.clearState()
+    return j  # Return the new i, *not* the length of the match.
+</t>
+<t tx="ekr.20241126093914.1285"></t>
+<t tx="ekr.20241126093914.1286">def match_eol_span_regexp(self, s: str, i: int,
+    *,
+    kind: str = '',
+    regexp: str = '',
+    at_line_start: bool = False,
+    at_whitespace_end: bool = False,
+    delegate: str = '',
+) -&gt; int:
+    """Succeed if the regular expression regex matches s[i:]."""
+    if at_line_start and i != 0 and s[i - 1] != '\n':
+        return 0
+    if at_whitespace_end and i != g.skip_ws(s, 0):
+        return 0
+    n = self.match_regexp_helper(s, i, regexp)
+    if n &gt; 0:
+        j = len(s)
+        self.colorRangeWithTag(s, i, j, kind, delegate=delegate)
+        return j - i
+    return 0
+</t>
+<t tx="ekr.20241126093914.1287">def match_line(self, s: str, i: int, *, kind: str = None) -&gt; int:
+    """Match the rest of the line."""
+    j = g.skip_to_end_of_line(s, i)
+    self.colorRangeWithTag(s, i, j, kind)
+    return j - i
+</t>
+<t tx="ekr.20241126093914.1288">def match_word_and_regexp(self, s: str, i: int,
+    *, kind1: str = '', word: str = '', kind2: str = '', pattern: str = '',
+) -&gt; int:
+    """Succeed if s[i:] matches pattern."""
+    # Only forth mode uses this matcher, so g.match is probably correct.
+    if not g.match(s, i, word):
+        return 0
+    j = i + len(word)
+    n = self.match_regexp_helper(s, j, pattern)
+    if n == 0:
+        return 0
+    self.colorRangeWithTag(s, i, j, kind1)
+    k = j + n
+    self.colorRangeWithTag(s, j, k, kind2)
+    return k - i
+</t>
+<t tx="ekr.20241126093914.1289">def match_span_regexp(self, s: str, i: int,
+    *,
+    kind: str = '',
+    begin: Union[re.Pattern, str] = '',
+    end: str = '',
+    at_line_start: bool = False,
+    at_whitespace_end: bool = False,
+    at_word_start: bool = False,
+    delegate: str = '',
+    no_line_break: bool = False,
+) -&gt; int:
+    """
+    Succeed if s[i:] matches 'begin' a regex string or compiled regex.
+
+    Callers should use regex features to limit the search.
+
+    New in Leo 6.7.6:
+    - The 'begin' arg may be compiled pattern (re.Pattern).
+    - The 'end' arg is optional.
+    """
+    if at_line_start and i != 0 and s[i - 1] != '\n':
+        return 0
+    if at_whitespace_end and i != g.skip_ws(s, 0):
+        return 0
+    if at_word_start and i &gt; 0 and s[i - 1] in self.word_chars:
+        return 0
+    if (
+        isinstance(begin, str)
+        and at_word_start
+        and i + len(begin) + 1 &lt; len(s)
+        and s[i + len(begin)] in self.word_chars
+    ):
+        return 0  # 7/5/2008
+    n = self.match_regexp_helper(s, i, begin)
+    # We may have to allow $n here, in which case we must use a regex object?
+    if n &gt; 0:
+        j = j2 = i + n
+        if end:  # Leo 6.7.6.
+            j2 = s.find(end, j)
+            if j2 == -1:
+                return 0
+        if self.escape:
+            # Only an odd number of escapes is a 'real' escape.
+            escapes = 0
+            k = 1
+            while j - k &gt;= 0 and s[j - k] == self.escape:
+                escapes += 1
+                k += 1
+            if (escapes % 2) == 1:
+                # An escaped end **aborts the entire match**:
+                # there is no way to 'restart' the regex.
+                return 0
+        i2 = j2 - len(end)
+        if delegate:
+            self.colorRangeWithTag(s, i, j, kind)
+            self.colorRangeWithTag(s, j, i2, kind, delegate=delegate)
+            self.colorRangeWithTag(s, i2, j2, kind)
+        else:  # avoid having to merge ranges in addTagsToList.
+            self.colorRangeWithTag(s, i, j2, kind)
+        return j2 - i
+    return 0
+</t>
+<t tx="ekr.20241126093914.129">def initFileIvars(self, fileName: str, relativeFileName: str) -&gt; None:
+    """Init file-related ivars of the commander."""
+    self.changed = False  # True: the outline has changed since the last save.
+    self.ignored_at_file_nodes: list[Position] = []  # List of nodes for c.raise_error_dialogs.
+    self.import_error_nodes: list[Position] = []  # List of nodes for c.raise_error_dialogs.
+    self.last_dir: str = None  # The last used directory.
+    self.mFileName: str = fileName or ''  # Do _not_ use os_path_norm: it converts an empty path to '.' (!!)
+    self.mRelativeFileName = relativeFileName or ''  #
+    self.orphan_at_file_nodes: list[Position] = []  # List of orphaned nodes for c.raise_error_dialogs.
+</t>
+<t tx="ekr.20241126093914.1290">@language rest
+@wrap
+@nosearch
+
+https://github.com/leo-editor/leo-editor/issues/4193
+PR: https://github.com/leo-editor/leo-editor/pull/4197
+
+@language python
+</t>
+<t tx="ekr.20241126093914.1291">@cmd('execute-script')
+def executeScript(self,
+    *,
+    event: LeoKeyEvent = None,
+    args: Any = None,
+    p: Position = None,
+    script: str = None,
+    useSelectedText: bool = True,
+    define_g: bool = True,
+    define_name: str = '__main__',
+    silent: bool = False,
+    namespace: dict = None,
+    raiseFlag: bool = False,
+    runPyflakes: bool = True,
+) -&gt; None:
+    """
+    Execute a *Leo* script, written in python.
+    Keyword args:
+    args=None               Not None: set script_args in the execution environment.
+    p=None                  Get the script from p.b, unless script is given.
+    script=None             None: use script in p.b or c.p.b
+    useSelectedText=True    False: use all the text in p.b or c.p.b.
+    define_g=True           True: define g for the script.
+    define_name='__main__'  Not None: define the name symbol.
+    silent=False            No longer used.
+    namespace=None          Not None: execute the script in this namespace.
+    raiseFlag=False         True: reraise any exceptions.
+    runPyflakes=True        True: run pyflakes if allowed by setting.
+    """
+    c = self
+    p = p or c.p
+    language = g.findLanguageDirectives(c, p)
+    if not script and language != 'python':  # #4197.
+        w = c.frame.body.wrapper
+        # For non-python languages...
+        valid = (
+            # There must be a selection,
+            w and w.getSelectedText().strip()
+            # and the selection must apply to p,
+            and p == c.p
+            # and the 'useSelectedText` kwarg must be True,
+            and useSelectedText
+            # and script *won't* be expanded to the entire body.
+            and not c.forceExecuteEntireBody
+        )
+        if not valid:
+            message = f"Must select text to execute {language} script"
+            g.es_print(message, color='blue')
+            return
+    if runPyflakes:
+        run_pyflakes = c.config.getBool('run-pyflakes-on-write', default=False)
+    else:
+        run_pyflakes = False
+    if not script:
+        if c.forceExecuteEntireBody:
+            useSelectedText = False
+        script = g.getScript(c, p, useSelectedText=useSelectedText)
+    script_p = p or c.p  # Only for error reporting below.
+    # #532: check all scripts with pyflakes.
+    if run_pyflakes and not g.unitTesting:
+        from leo.commands import checkerCommands as cc
+        prefix = ('c,g,p,script_gnx=None,None,None,None;'
+                  'assert c and g and p and script_gnx;\n')
+        cc.PyflakesCommand(c).check_script(script_p, prefix + script)
+    self.redirectScriptOutput()
+    oldLog = g.app.log
+    try:
+        log = c.frame.log
+        g.app.log = log
+        if script.strip():
+            sys.path.insert(0, os.getcwd())
+            sys.path.insert(0, g.os_path_dirname(c.fileName()))  # per SegundoBob
+            script += '\n'  # Make sure we end the script properly.
+            try:
+                if not namespace or namespace.get('script_gnx') is None:
+                    namespace = namespace or {}
+                    namespace.update(script_gnx=script_p.gnx)
+                # We *always* execute the script with p = c.p.
+                c.executeScriptHelper(args, define_g, define_name, namespace, script)
+            except KeyboardInterrupt:
+                g.es('interrupted')
+            except Exception:
+                if raiseFlag:
+                    raise
+                g.handleScriptException(c, script_p)
+            finally:
+                del sys.path[0]
+                del sys.path[0]
+        else:
+            tabName = log and hasattr(log, 'tabName') and log.tabName or 'Log'
+            g.warning("no script selected", tabName=tabName)
+    finally:
+        g.app.log = oldLog
+        self.unredirectScriptOutput()
+</t>
+<t tx="ekr.20241126093914.1292">def executeScriptHelper(self,
+    args: list,
+    define_g: bool,
+    define_name: str,
+    namespace: dict,
+    script: str,
+) -&gt; None:
+    c = self
+    if c.p:
+        p = c.p.copy()  # *Always* use c.p and pass c.p to script.
+        c.setCurrentDirectoryFromContext(p)
+    else:
+        p = None
+    d = {'c': c, 'g': g, 'input': g.input_, 'p': p} if define_g else {}
+    if define_name:
+        d['__name__'] = define_name
+    d['script_args'] = args or []
+    d['script_gnx'] = g.app.scriptDict.get('script_gnx')
+    if namespace:
+        d.update(namespace)
+    # A kludge: reset c.inCommand here to handle the case where we *never* return.
+    # (This can happen when there are multiple event loops.)
+    # This does not prevent zombie windows if the script puts up a dialog...
+    try:
+        c.inCommand = False
+        g.inScript = g.app.inScript = True  # g.inScript is a synonym for g.app.inScript.
+        if c.write_script_file:
+            scriptFile = self.writeScriptFile(script)
+            exec(compile(script, scriptFile, 'exec'), d)
+        else:
+            exec(script, d)
+    finally:
+        g.inScript = g.app.inScript = False
+</t>
+<t tx="ekr.20241126093914.1293">def redirectScriptOutput(self) -&gt; None:
+    c = self
+    if c.exists and c.config.getBool('redirect-execute-script-output-to-log-pane'):
+        g.redirectStdout()  # Redirect stdout
+        g.redirectStderr()  # Redirect stderr
+</t>
+<t tx="ekr.20241126093914.1294">def setCurrentDirectoryFromContext(self, p: Position) -&gt; None:
+    c = self
+    aList = g.get_directives_dict_list(p)
+    path = c.scanAtPathDirectives(aList)
+    curDir = g.os_path_abspath(os.getcwd())
+    if path and path != curDir:
+        try:
+            os.chdir(path)
+        except Exception:
+            pass
+</t>
+<t tx="ekr.20241126093914.1295">def unredirectScriptOutput(self) -&gt; None:
+    c = self
+    if c.exists and c.config.getBool('redirect-execute-script-output-to-log-pane'):
+        g.restoreStderr()
+        g.restoreStdout()
+</t>
+<t tx="ekr.20241126093914.1296">@language rest
+@wrap
+@nosearch
+
+https://github.com/leo-editor/leo-editor/issues/3967
+PR: https://github.com/leo-editor/leo-editor/pull/4198
+
+.vert, .tesc, .tese, .geom, .frag, .comp, .glsl.
+
+@language python
+</t>
+<t tx="ekr.20241126093914.1297"></t>
+<t tx="ekr.20241126093914.1298">def define_delegate_language_dict(self) -&gt; None:
+    self.delegate_language_dict: dict[str, str] = {
+        # Keys are new language names.
+        "codon": "python",
+        "elisp": "lisp",
+        "glsl": "c",
+        "handlebars": "html",
+        "hbs": "html",
+        "less": "css",
+        "toml": "ini",
+        # Values are existing languages in leo/modes.
+    }
+</t>
+<t tx="ekr.20241126093914.1299">@nobeautify
+
+def define_extension_dict(self) -&gt; None:
+
+    # Keys are extensions, values are languages
+    self.extension_dict: dict[str, str] = {
+        # "ada":    "ada",
+        "ada":      "ada95", # modes/ada95.py exists.
+        "ahk":      "autohotkey",
+        "aj":       "aspect_j",
+        "apdl":     "apdl",
+        "as":       "actionscript", # jason 2003-07-03
+        "asp":      "asp",
+        "awk":      "awk",
+        "b":        "b",
+        "bas":      "rapidq", # fil 2004-march-11
+        "bash":     "shellscript",
+        "bat":      "batch",
+        "bbj":      "bbj",
+        "bcel":     "bcel",
+        "bib":      "bibtex",
+        "c":        "c",
+        "c++":      "cplusplus",
+        "cbl":      "cobol", # Only one extension is valid: .cob
+        "cc":       "cplusplus",
+        "cfg":      "config",
+        "cfm":      "coldfusion",
+        "ch":       "chill", # Other extensions, .c186,.c286
+        "clj":      "clojure", # 2013/09/25: Fix bug 879338.
+        "cljc":     "clojure",
+        "cljs":     "clojure",
+        "cmd":      "batch",
+        "codon":    "codon",
+        "coffee":   "coffeescript",
+        "comp":     "glsl",
+        "conf":     "apacheconf",
+        "cpp":      "cplusplus", # 2020/08/12: was cpp.
+        "css":      "css",
+        "d":        "d",
+        "dart":     "dart",
+        "e":        "eiffel",
+        "el":       "elisp",
+        "eml":      "mail",
+        "erl":      "erlang",
+        "ex":       "elixir",
+        "f":        "fortran",
+        "f90":      "fortran90",
+        "factor":   "factor",
+        "forth":    "forth",
+        "frag":     "glsl",
+        "g":        "antlr",
+        "geom":     "glsl",
+        "glsl":     "glsl",
+        "go":       "go",
+        "groovy":   "groovy",
+        "h":        "c", # 2012/05/23.
+        "hh":       "cplusplus",
+        "handlebars": "html", # McNab.
+        "hbs":      "html", # McNab.
+        "hs":       "haskell",
+        "html":     "html",
+        "hx":       "haxe",
+        "i":        "swig",
+        "i4gl":     "i4gl",
+        "icn":      "icon",
+        "idl":      "idl",
+        "inf":      "inform",
+        "info":     "texinfo",
+        "ini":      "ini",
+        "io":       "io",
+        "ipynb":    "jupytext",
+        "iss":      "inno_setup",
+        "java":     "java",
+        "jhtml":    "jhtml",
+        "jl":       "julia",
+        "jmk":      "jmk",
+        "js":       "javascript", # For javascript import test.
+        "jsp":      "javaserverpage",
+        "json":     "json",
+        # "jsp":      "jsp",
+        "ksh":      "kshell",
+        "kv":       "kivy", # PeckJ 2014/05/05
+        "latex":    "latex",
+        "less":     "css", # McNab
+        "lua":      "lua", # ddm 13/02/06
+        "ly":       "lilypond",
+        "m":        "matlab",
+        "mak":      "makefile",
+        "md":       "md",  # PeckJ 2013/02/07
+        "ml":       "ml",  # Also ocaml.
+        "mm":       "objective_c", # Only one extension is valid: .m
+        "mod":      "modula3",
+        "mpl":      "maple",
+        "mqsc":     "mqsc",
+        "nqc":      "nqc",
+        "nim":      "nim",
+        "nsi":      "nsi", # EKR: 2010/10/27
+        # "nsi":      "nsis2",
+        "nw":       "noweb",
+        "occ":      "occam",
+        "otl":      "vimoutline", # TL 8/25/08 Vim's outline plugin
+        "p":        "pascal",
+        # "p":      "pop11", # Conflicts with pascal.
+        "php":      "php",
+        "pike":     "pike",
+        "pl":       "perl",
+        "pl1":      "pl1",
+        "po":       "gettext",
+        "pod":      "perlpod",
+        "pov":      "povray",
+        "prg":      "foxpro",
+        "pro":      "prolog",
+        "ps":       "postscript",
+        "psp":      "psp",
+        "ptl":      "ptl",
+        "py":       "python",
+        "pyx":      "cython", # Other extensions, .pyd,.pyi
+        # "pyx":    "pyrex",
+        # "r":      "r", # modes/r.py does not exist.
+        "r":        "rebol", # jason 2003-07-03
+        "rb":       "ruby", # thyrsus 2008-11-05
+        "rest":     "rst",
+        "rex":      "objectrexx",
+        "rhtml":    "rhtml",
+        "rib":      "rib",
+        "rs":       "rust", # EKR: 2019/08/11
+        "sas":      "sas",
+        "scad":     "openscad", # PeckJ 2024/11/13
+        "scala":    "scala",
+        "scm":      "scheme",
+        "scpt":     "applescript",
+        "sgml":     "sgml",
+        "sh":       "shell", # DS 4/1/04. modes/shell.py exists.
+        "shtml":    "shtml",
+        "sm":       "smalltalk",
+        "splus":    "splus",
+        "sql":      "plsql", # qt02537 2005-05-27
+        "sqr":      "sqr",
+        "ss":       "ssharp",
+        "ssi":      "shtml",
+        "sty":      "latex",
+        "tcl":      "tcl", # modes/tcl.py exists.
+        # "tcl":    "tcltk",
+        "tesc":     "glsl",
+        "tese":     "glsl",
+        "tex":      "latex",
+        # "tex":      "tex",
+        "toml":     "toml",
+        "tpl":      "tpl",
+        "ts":       "typescript",
+        "txt":      "plain",
+        # "txt":      "text",
+        # "txt":      "unknown", # Set when @comment is seen.
+        "uc":       "uscript",
+        "v":        "verilog",
+        "vbs":      "vbscript",
+        "vhd":      "vhdl",
+        "vhdl":     "vhdl",
+        "vim":      "vim",
+        "vtl":      "velocity",
+        "w":        "cweb",
+        "wiki":     "moin",
+        "xml":      "xml",
+        "xom":      "omnimark",
+        "xsl":      "xsl",
+        "yaml":     "yaml",
+        "vert":     "glsl",
+        "vue":      "javascript",
+        "zpt":      "zpt",
+    }
+
+    # These aren't real languages, or have no delims...
+        # cvs_commit, dsssl, embperl, freemarker, hex, jcl,
+        # patch, phpsection, progress, props, pseudoplain,
+        # relax_ng_compact, rtf, svn_commit.
+
+    # These have extensions which conflict with other languages.
+        # assembly_6502:    .asm or .a or .s
+        # assembly_macro32: .asm or .a
+        # assembly_mcs51:   .asm or .a
+        # assembly_parrot:  .asm or .a
+        # assembly_r2000:   .asm or .a
+        # assembly_x86:     .asm or .a
+        # squidconf:        .conf
+        # rpmspec:          .rpm
+
+    # Extra language extensions, used to associate extensions with mode files.
+    # Used by importCommands.languageForExtension.
+    # Keys are extensions, values are corresponding mode file (without .py)
+    # A value of 'none' is a signal to unit tests that no extension file exists.
+    self.extra_extension_dict = {
+        'pod'   : 'perl',
+        'unknown_language': 'none',
+        'w'     : 'c',
+    }
+</t>
+<t tx="ekr.20241126093914.13">def computeHomeLeoDir(self) -&gt; str:
+    # lm = self
+    homeLeoDir = g.finalize_join(g.app.homeDir, '.leo')
+    if g.os_path_exists(homeLeoDir):
+        return homeLeoDir
+    ok = g.makeAllNonExistentDirectories(homeLeoDir)
+    return homeLeoDir if ok else ''  # #1450
+</t>
+<t tx="ekr.20241126093914.130">@nobeautify
+
+def initObjects(self, gui: LeoGui) -&gt; None:
+
+    c = self
+    self.hiddenRootNode = leoNodes.VNode(context=c, gnx='hidden-root-vnode-gnx')
+    self.hiddenRootNode.h = '&lt;hidden root vnode&gt;'
+    # Create the gui frame.
+    title = c.computeTabTitle()
+    if not g.app.initing:
+        g.doHook("before-create-leo-frame", c=c)
+    self.frame = gui.createLeoFrame(c, title)
+    assert self.frame
+    assert self.frame.c == c
+    from leo.core import leoHistory
+    self.nodeHistory = leoHistory.NodeHistory(c)
+    self.initConfigSettings()
+    c.setWindowPosition() # Do this after initing settings.
+
+    # Break circular import dependencies by doing imports here.
+    # All these imports take almost 3/4 sec in the leoBridge.
+
+    from leo.core import leoAtFile
+    from leo.core import leoBeautify  # So decorators are executed.
+    assert leoBeautify  # for pyflakes.
+    from leo.core.leoCache import CommanderWrapper
+    from leo.core import leoChapters
+    # User commands...
+    from leo.commands import abbrevCommands
+    from leo.commands import bufferCommands
+    from leo.commands import checkerCommands  # The import *is* required to define commands.
+    assert checkerCommands  # To suppress a pyflakes warning.
+    from leo.commands import controlCommands
+    from leo.commands import convertCommands
+    from leo.commands import debugCommands
+    from leo.commands import editCommands
+    from leo.commands import editFileCommands
+    from leo.commands import gotoCommands
+    from leo.commands import helpCommands
+    from leo.commands import keyCommands
+    from leo.commands import killBufferCommands
+    from leo.commands import rectangleCommands
+    from leo.commands import spellCommands
+    # Import files to execute @g.commander_command decorators
+    from leo.core import leoCompare
+    assert leoCompare
+    from leo.core import leoDebugger
+    assert leoDebugger
+    from leo.commands import commanderEditCommands
+    assert commanderEditCommands
+    from leo.commands import commanderFileCommands
+    assert commanderFileCommands
+    from leo.commands import commanderHelpCommands
+    assert commanderHelpCommands
+    from leo.commands import commanderOutlineCommands
+    assert commanderOutlineCommands
+    # Other subcommanders.
+    from leo.core import leoFind  # Leo 4.11.1
+    from leo.core import leoKeys
+    from leo.core import leoFileCommands
+    from leo.core import leoImport
+    from leo.core import leoMarkup
+    from leo.core import leoPersistence
+    from leo.core import leoPrinting
+    from leo.core import leoRst
+    from leo.core import leoShadow
+    from leo.core import leoUndo
+    from leo.core import leoVim
+    # Define 11 subcommanders.
+    self.keyHandler = self.k    = leoKeys.KeyHandlerClass(c)
+    self.chapterController      = leoChapters.ChapterController(c)
+    self.shadowController       = leoShadow.ShadowController(c)
+    self.fileCommands           = leoFileCommands.FileCommands(c)
+    self.findCommands           = leoFind.LeoFind(c)
+    self.atFileCommands         = leoAtFile.AtFile(c)
+    self.importCommands         = leoImport.LeoImportCommands(c)
+    self.markupCommands         = leoMarkup.MarkupCommands(c)
+    self.persistenceController  = leoPersistence.PersistenceDataController(c)
+    self.printingController     = leoPrinting.PrintingController(c)
+    self.undoer                 = leoUndo.Undoer(c)
+    # 15 command handlers...
+    self.abbrevCommands     = abbrevCommands.AbbrevCommandsClass(c)
+    self.bufferCommands     = bufferCommands.BufferCommandsClass(c)
+    self.controlCommands    = controlCommands.ControlCommandsClass(c)
+    self.convertCommands    = convertCommands.ConvertCommandsClass(c)
+    self.debugCommands      = debugCommands.DebugCommandsClass(c)
+    self.editCommands       = editCommands.EditCommandsClass(c)
+    self.editFileCommands   = editFileCommands.EditFileCommandsClass(c)
+    self.gotoCommands       = gotoCommands.GoToCommands(c)
+    self.helpCommands       = helpCommands.HelpCommandsClass(c)
+    self.keyHandlerCommands = keyCommands.KeyHandlerCommandsClass(c)
+    self.killBufferCommands = killBufferCommands.KillBufferCommandsClass(c)
+    self.rectangleCommands  = rectangleCommands.RectangleCommandsClass(c)
+    self.rstCommands        = leoRst.RstCommands(c)
+    self.spellCommands      = spellCommands.SpellCommandsClass(c)
+    self.vimCommands        = leoVim.VimCommands(c)
+    # Create the list of subcommanders.
+    self.subCommanders = [
+        self.abbrevCommands,
+        self.atFileCommands,
+        self.bufferCommands,
+        self.chapterController,
+        self.controlCommands,
+        self.convertCommands,
+        self.debugCommands,
+        self.editCommands,
+        self.editFileCommands,
+        self.fileCommands,
+        self.findCommands,
+        self.gotoCommands,
+        self.helpCommands,
+        self.importCommands,
+        self.keyHandler,
+        self.keyHandlerCommands,
+        self.killBufferCommands,
+        self.persistenceController,
+        self.printingController,
+        self.rectangleCommands,
+        self.rstCommands,
+        self.shadowController,
+        self.spellCommands,
+        self.vimCommands,
+        self.undoer,
+    ]
+
+    # Other objects
+    # A list of other classes that have a reloadSettings method
+    c.configurables = c.subCommanders[:]
+    c.db = CommanderWrapper(c)
+    c.free_layout = None  # Compatibility. Always None.
+    c.quicksearch_controller = None  # Leo 6.8.0: Set by quicksearch plugin.
+        
+    if hasattr(g.app.gui, 'styleSheetManagerClass'):
+        self.styleSheetManager = g.app.gui.styleSheetManagerClass(c)
+        self.subCommanders.append(self.styleSheetManager)
+    else:
+        self.styleSheetManager = None
+</t>
+<t tx="ekr.20241126093914.1300">@nobeautify
+
+def define_language_delims_dict(self) -&gt; None:
+
+    self.language_delims_dict: dict[str, str] = {
+        # Internally, lower case is used for all language names.
+        # Keys are languages, values are strings that contain 1, 2 or 3 delims separated by spaces.
+        "actionscript"       : "// /* */", # jason 2003-07-03
+        "ada"                : "--",
+        "ada95"              : "--",
+        "ahk"                : ";",
+        "antlr"              : "// /* */",
+        "apacheconf"         : "#",
+        "apdl"               : "!",
+        "applescript"        : "-- (* *)",
+        "asp"                : "&lt;!-- --&gt;",
+        "aspect_j"           : "// /* */",
+        "assembly_6502"      : ";",
+        "assembly_macro32"   : ";",
+        "assembly_mcs51"     : ";",
+        "assembly_parrot"    : "#",
+        "assembly_r2000"     : "#",
+        "assembly_x86"       : ";",
+        "autohotkey"         : "; /* */", # TL - AutoHotkey language
+        "awk"                : "#",
+        "b"                  : "// /* */",
+        "batch"              : "REM_", # Use the REM hack.
+        "bbj"                : "/* */",
+        "bcel"               : "// /* */",
+        "bibtex"             : "%",
+        "c"                  : "// /* */", # C, C++ or objective C.
+        "chill"              : "/* */",
+        "clojure"            : ";", # 2013/09/25: Fix bug 879338.
+        "cobol"              : "*",
+        "codon"              : "#",
+        "coldfusion"         : "&lt;!-- --&gt;",
+        "coffeescript"       : "#", # 2016/02/26.
+        "config"             : "#", # Leo 4.5.1
+        "cplusplus"          : "// /* */",
+        "cpp"                : "// /* */", # C++.
+        "csharp"             : "// /* */", # C#
+        "css"                : "/* */", # 4/1/04
+        "cweb"               : "@q@ @&gt;", # Use the "cweb hack"
+        "cython"             : "#",
+        "d"                  : "// /* */",
+        "dart"               : "// /* */", # Leo 5.0.
+        "doxygen"            : "#",
+        "eiffel"             : "--",
+        "elisp"              : ";",
+        "erlang"             : "%",
+        "elixir"             : "#",
+        "factor"             : "!_ ( )", # Use the rem hack.
+        "forth"              : "\\_ _(_ _)", # Use the "REM hack"
+        "fortran"            : "C",
+        "fortran90"          : "!",
+        "foxpro"             : "&amp;&amp;",
+        "gettext"            : "# ",
+        "glsl"               : "// /* */",  # Same as C.
+        "go"                 : "//",
+        "groovy"             : "// /* */",
+        "handlebars"         : "&lt;!-- --&gt;", # McNab: delegate to html.
+        "haskell"            : "--_ {-_ _-}",
+        "haxe"               : "// /* */",
+        "hbs"                : "&lt;!-- --&gt;", # McNab: delegate to html.
+        "html"               : "&lt;!-- --&gt;",
+        "i4gl"               : "-- { }",
+        "icon"               : "#",
+        "idl"                : "// /* */",
+        "inform"             : "!",
+        "ini"                : ";",
+        "inno_setup"         : ";",
+        "interlis"           : "/* */",
+        "io"                 : "// */",
+        "java"               : "// /* */",
+        "javascript"         : "// /* */", # EKR: 2011/11/12: For javascript import test.
+        "javaserverpage"     : "&lt;%-- --%&gt;", # EKR: 2011/11/25 (See also, jsp)
+        "jhtml"              : "&lt;!-- --&gt;",
+        "jmk"                : "#",
+        "json"               : "#", # EKR: 2020/07/27: Json has no delims. This is a dummy entry.
+        "jsp"                : "&lt;%-- --%&gt;",
+        "julia"              : "#",
+        "jupyter"            : "&lt;%-- --%&gt;", # Default to markdown?
+        "jupytext"           : "#", 
+        "kivy"               : "#", # PeckJ 2014/05/05
+        "kshell"             : "#", # Leo 4.5.1.
+        "latex"              : "%",
+        "less"               : "/* */", # NcNab: delegate to css.
+        "lilypond"           : "% %{ %}",
+        "lisp"               : ";", # EKR: 2010/09/29
+        "lotos"              : "(* *)",
+        "lua"                : "--", # ddm 13/02/06
+        "mail"               : "&gt;",
+        "makefile"           : "#",
+        "maple"              : "//",
+        "markdown"           : "&lt;!-- --&gt;", # EKR, 2018/03/03: html comments.
+        "matlab"             : "%", # EKR: 2011/10/21
+        "md"                 : "&lt;!-- --&gt;", # PeckJ: 2013/02/08
+        "ml"                 : "(* *)",
+        "modula3"            : "(* *)",
+        "moin"               : "##",
+        "mqsc"               : "*",
+        "netrexx"            : "-- /* */",
+        "nim"                : "#",
+        "noweb"              : "%", # EKR: 2009-01-30. Use Latex for doc chunks.
+        "nqc"                : "// /* */",
+        "nsi"                : ";", # EKR: 2010/10/27
+        "nsis2"              : ";",
+        "objective_c"        : "// /* */",
+        "objectrexx"         : "-- /* */",
+        "occam"              : "--",
+        "ocaml"              : "(* *)",
+        "omnimark"           : ";",
+        "pandoc"             : "&lt;!-- --&gt;",
+        "openscad"           : "// /* */", # EKR: 2024/11/13: same as "C".
+        "pascal"             : "// { }",
+        "perl"               : "#",
+        "perlpod"            : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
+        "php"                : "// /* */", # 6/23/07: was "//",
+        "pike"               : "// /* */",
+        "pl1"                : "/* */",
+        "plain"              : "#", # We must pick something.
+        "plsql"              : "-- /* */", # SQL scripts qt02537 2005-05-27
+        "pop11"              : ";;; /* */",
+        "postscript"         : "%",
+        "povray"             : "// /* */",
+        "powerdynamo"        : "// &lt;!-- --&gt;",
+        "prolog"             : "% /* */",
+        "psp"                : "&lt;!-- --&gt;",
+        "ptl"                : "#",
+        "pvwave"             : ";",
+        "pyrex"              : "#",
+        "python"             : "#",
+        "r"                  : "#",
+        "rapidq"             : "'", # fil 2004-march-11
+        "rebol"              : ";", # jason 2003-07-03
+        "redcode"            : ";",
+        "rest"               : ".._",
+        "rhtml"              : "&lt;%# %&gt;",
+        "rib"                : "#",
+        "rpmspec"            : "#",
+        "rst"                : ".._",
+        "rust"               : "// /* */",
+        "ruby"               : "#", # thyrsus 2008-11-05
+        "rview"              : "// /* */",
+        "sas"                : "* /* */",
+        "scala"              : "// /* */",
+        "scheme"             : "; #| |#",
+        "sdl_pr"             : "/* */",
+        "sgml"               : "&lt;!-- --&gt;",
+        "shell"              : "#",     # shell scripts
+        "shellscript"        : "#",
+        "shtml"              : "&lt;!-- --&gt;",
+        "smalltalk"          : '" "', # Comments are enclosed in double quotes(!!)
+        "smi_mib"            : "--",
+        "splus"              : "#",
+        "sqr"                : "!",
+        "squidconf"          : "#",
+        "ssharp"             : "#",
+        "swig"               : "// /* */",
+        "tcl"                : "#",
+        "tcltk"              : "#",
+        "tex"                : "%", # Bug fix: 2008-1-30: Fixed Mark Edginton's bug.
+        "text"               : "#", # We must pick something.
+        "texinfo"            : "@c",
+        "toml"               : "#",
+        "tpl"                : "&lt;!-- --&gt;",
+        "tsql"               : "-- /* */",
+        "typescript"         : "// /* */", # For typescript import test.
+        "unknown"            : "#", # Set when @comment is seen.
+        "unknown_language"   : '#--unknown-language--', # For unknown extensions in @shadow files.
+        "uscript"            : "// /* */",
+        "vbscript"           : "'",
+        "velocity"           : "## #* *#",
+        "verilog"            : "// /* */",
+        "vhdl"               : "--",
+        "vim"                : "\"",
+        "vimoutline"         : "#", # TL 8/25/08 Vim's outline plugin
+        "xml"                : "&lt;!-- --&gt;",
+        "xsl"                : "&lt;!-- --&gt;",
+        "xslt"               : "&lt;!-- --&gt;",
+        "yaml"               : "#",
+        "zpt"                : "&lt;!-- --&gt;",
+
+        # These aren't real languages, or have no delims...
+        # "cvs_commit"         : "",
+        # "dsssl"              : "; &lt;!-- --&gt;",
+        # "embperl"            : "&lt;!-- --&gt;",  # Internal colorizing state.
+        # "freemarker"         : "",
+        # "hex"                : "",
+        # "jcl"                : "",
+        # "patch"              : "",
+        # "phpsection"         : "&lt;!-- --&gt;",  # Internal colorizing state.
+        # "props"              : "#",         # Unknown language.
+        # "pseudoplain"        : "",
+        # "relax_ng_compact"   : "#",         # An xml schema.
+        # "rtf"                : "",
+        # "svn_commit"         : "",
+    }
+</t>
+<t tx="ekr.20241126093914.1301">@nobeautify
+
+def define_language_extension_dict(self) -&gt; None:
+
+    # Used only by g.app.externalFilesController.get_ext.
+
+    # Keys are languages, values are extensions.
+    self.language_extension_dict: dict[str, str] = {
+        "actionscript"  : "as", # jason 2003-07-03
+        "ada"           : "ada",
+        "ada95"         : "ada",
+        "ahk"           : "ahk",
+        "antlr"         : "g",
+        "apacheconf"    : "conf",
+        "apdl"          : "apdl",
+        "applescript"   : "scpt",
+        "asp"           : "asp",
+        "aspect_j"      : "aj",
+        "autohotkey"    : "ahk", # TL - AutoHotkey language
+        "awk"           : "awk",
+        "b"             : "b",
+        "batch"         : "bat", # Leo 4.5.1.
+        "bbj"           : "bbj",
+        "bcel"          : "bcel",
+        "bibtex"        : "bib",
+        "c"             : "c",
+        "chill"         : "ch",  # Only one extension is valid: .c186, .c286
+        "clojure"       : "clj", # 2013/09/25: Fix bug 879338.
+        "cobol"         : "cbl", # Only one extension is valid: .cob
+        "codon"         : "codon",
+        "coldfusion"    : "cfm",
+        "coffeescript"  : "coffee",
+        "config"        : "cfg",
+        "cplusplus"     : "c++",
+        "cpp"           : "cpp",
+        "css"           : "css", # 4/1/04
+        "cweb"          : "w",
+        "cython"        : "pyx", # Only one extension is valid at present: .pyi, .pyd.
+        "d"             : "d",
+        "dart"          : "dart",
+        "eiffel"        : "e",
+        "elisp"         : "el",
+        "erlang"        : "erl",
+        "elixir"        : "ex",
+        "factor"        : "factor",
+        "forth"         : "forth",
+        "fortran"       : "f",
+        "fortran90"     : "f90",
+        "foxpro"        : "prg",
+        "gettext"       : "po",
+        "glsl"          : "glsl",  # .comp, .frag, .geom, .tesc, .tese, .vert.
+        "go"            : "go",
+        "groovy"        : "groovy",
+        "haskell"       : "hs",
+        "haxe"          : "hx",
+        "html"          : "html",
+        "i4gl"          : "i4gl",
+        "icon"          : "icn",
+        "idl"           : "idl",
+        "inform"        : "inf",
+        "ini"           : "ini",
+        "inno_setup"    : "iss",
+        "io"            : "io",
+        "java"          : "java",
+        "javascript"    : "js", # EKR: 2011/11/12: For javascript import test.
+        "javaserverpage": "jsp", # EKR: 2011/11/25
+        "jhtml"         : "jhtml",
+        "jmk"           : "jmk",
+        "json"          : "json",
+        "jsp"           : "jsp",
+        "julia"         : "jl",
+        "jupytext"      : "ipynb",
+        "kivy"          : "kv", # PeckJ 2014/05/05
+        "kshell"        : "ksh", # Leo 4.5.1.
+        "latex"         : "tex", # 1/8/04
+        "lilypond"      : "ly",
+        "lua"           : "lua", # ddm 13/02/06
+        "mail"          : "eml",
+        "makefile"      : "mak",
+        "maple"         : "mpl",
+        "matlab"        : "m",
+        "md"            : "md", # PeckJ: 2013/02/07
+        "ml"            : "ml",  # Also ocaml.
+        "modula3"       : "mod",
+        "moin"          : "wiki",
+        "mqsc"          : "mqsc",
+        "nim"           : "nim",
+        "noweb"         : "nw",
+        "nqc"           : "nqc",
+        "nsi"           : "nsi", # EKR: 2010/10/27
+        "nsis2"         : "nsi",
+        "objective_c"   : "mm", # Only one extension is valid: .m
+        "objectrexx"    : "rex",
+        "occam"         : "occ",
+        "ocaml"         : "ml",
+        "omnimark"      : "xom",
+        "openscad"      : "scad", # EKR, per PeckJ 2024/11/13
+        "pascal"        : "p",
+        "perl"          : "pl",
+        "perlpod"       : "pod",
+        "php"           : "php",
+        "pike"          : "pike",
+        "pl1"           : "pl1",
+        "plain"         : "txt",
+        "plsql"         : "sql", # qt02537 2005-05-27
+        # "pop11"       : "p", # Conflicts with pascal.
+        "postscript"    : "ps",
+        "povray"        : "pov",
+        "prolog"        : "pro",
+        "psp"           : "psp",
+        "ptl"           : "ptl",
+        "pyrex"         : "pyx",
+        "python"        : "py",
+        "r"             : "r",
+        "rapidq"        : "bas", # fil 2004-march-11
+        "rebol"         : "r", # jason 2003-07-03
+        "rhtml"         : "rhtml",
+        "rib"           : "rib",
+        "rst"           : "rest",
+        "ruby"          : "rb", # thyrsus 2008-11-05
+        "rust"          : "rs", # EKR: 2019/08/11
+        "sas"           : "sas",
+        "scala"         : "scala",
+        "scheme"        : "scm",
+        "sgml"          : "sgml",
+        "shell"         : "sh", # DS 4/1/04
+        "shellscript"   : "bash",
+        "shtml"         : "ssi", # Only one extension is valid: .shtml
+        "smalltalk"     : "sm",
+        "splus"         : "splus",
+        "sqr"           : "sqr",
+        "ssharp"        : "ss",
+        "swig"          : "i",
+        "tcl"           : "tcl",
+        "tcltk"         : "tcl",
+        "tex"           : "tex",
+        "texinfo"       : "info",
+        "text"          : "txt",
+        "toml"          : "toml",
+        "tpl"           : "tpl",
+        "tsql"          : "sql", # A guess.
+        "typescript"    : "ts",
+        "unknown"       : "txt", # Set when @comment is seen.
+        "uscript"       : "uc",
+        "vbscript"      : "vbs",
+        "velocity"      : "vtl",
+        "verilog"       : "v",
+        "vhdl"          : "vhd", # Only one extension is valid: .vhdl
+        "vim"           : "vim",
+        "vimoutline"    : "otl", # TL 8/25/08 Vim's outline plugin
+        "xml"           : "xml",
+        "xsl"           : "xsl",
+        "xslt"          : "xsl",
+        "yaml"          : "yaml",
+        "zpt"           : "zpt",
+    }
+
+    # These aren't real languages, or have no delims...
+        # cvs_commit, dsssl, embperl, freemarker, hex, jcl,
+        # patch, phpsection, progress, props, pseudoplain,
+        # relax_ng_compact, rtf, svn_commit.
+
+    # These have extensions which conflict with other languages.
+        # assembly_6502:    .asm or .a or .s
+        # assembly_macro32: .asm or .a
+        # assembly_mcs51:   .asm or .a
+        # assembly_parrot:  .asm or .a
+        # assembly_r2000:   .asm or .a
+        # assembly_x86:     .asm or .a
+        # squidconf:        .conf
+        # rpmspec:          .rpm
+</t>
+<t tx="ekr.20241126093914.1302">@language rest
+@wrap
+@nosearch
+
+https://github.com/leo-editor/leo-editor/issues/726
+PR2: https://github.com/leo-editor/leo-editor/pull/4203
+
+@language python
+</t>
+<t tx="ekr.20241126093914.1303"></t>
+<t tx="ekr.20241126093914.1304">@language vue
+
+&lt;script setup&gt;
+import { ref } from 'vue'
+const greeting = ref('Hello World!')
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;p class="greeting"&gt;{{ greeting }}&lt;/p&gt;
+&lt;/template&gt;
+
+&lt;style&gt;
+.greeting {
+  color: red;
+  font-weight: bold;
+}
+&lt;/style&gt;</t>
+<t tx="ekr.20241126093914.1305">def color(self, language_name, text):
+    """
+    Run the test by colorizing a node with the given text.
+    
+    Colorize using the jEdit and pygments colorizers.
+    """
+    c = self.c
+    p = c.p
+    text = text.replace('&gt; &gt;', '&gt;&gt;').replace('&lt; &lt;', '&lt;&lt;')
+    p.b = f"@language {language_name}\n{text}"
+
+    # Test 1: test the jEdit colorizer.
+    x = leoColorizer.JEditColorizer(c, None)
+    x.language = language_name
+    x.enabled = True
+    x.init()
+    x.init_all_state()
+    n = x.initBlock0()
+    for s in g.splitLines(text):
+        x.mainLoop(n, s, 0, len(s))
+
+    # Test 2: test the pygments colorizer.
+    x = leoColorizer.PygmentsColorizer(c, None)
+    x.language = language_name
+    x.enabled = True
+    x.init()
+    for s in g.splitLines(text):
+        x.mainLoop(s)
+</t>
+<t tx="ekr.20241126093914.1306">def test_colorizer_HTML1(self):
+    text = self.prep(
+    """
+        &lt;HTML&gt;
+        &lt;!-- Author: Edward K. Ream, edream@tds.net --&gt;
+        &lt;HEAD&gt;
+          &lt;META NAME="GENERATOR" CONTENT="Microsoft FrontPage 4.0"&gt;
+          &lt;TITLE&gt; Leo's Home Page &lt;/TITLE&gt;
+          &lt;META NAME="description" CONTENT="This page describes Leo."
+          &lt;META NAME="keywords" CONTENT="LEO, LITERATE PROGRAMMING, OUTLINES,,
+            OUTLINES, EDWARD K. REAM, OPEN SOFTWARE"&gt;
+        &lt;/HEAD&gt;
+        &lt;!-- Last Modified: May 12, 2002 --&gt;
+        &lt;BODY BGCOLOR="#fffbdc"&gt;
+
+        &lt;H1 ALIGN=CENTER&gt;&lt;a NAME="top"&gt;&lt;/a&gt;&lt;IMG SRC="Blank.gif" width=
+        "32" height="32" ALIGN="BOTTOM" NATURALSIZEFLAG="3"&gt;&lt;IMG SRC="leo.gif"
+        WIDTH="32" HEIGHT="32" ALIGN="BOTTOM" NATURALSIZEFLAG="3"&gt;&lt;a href="leo_TOC.html#top"&gt;&lt;IMG SRC=
+        "arrow_rt.gif" WIDTH="32" HEIGHT="32" ALIGN="BOTTOM" NATURALSIZEFLAG="3"&gt;&lt;/a&gt; &amp;nbsp;&lt;/H1&gt;
+
+        &lt;H1 ALIGN=CENTER&gt; Leo's Home Page&lt;/H1&gt;
+
+        &lt;p align="center"&gt;&lt;a href="http://www.python.org/"&gt;&lt;img border="0" src="PythonPowered.gif" width="110" height="44"&gt; &lt;/a&gt; &lt;A HREF="http://sourceforge.net/"&gt;&lt;IMG SRC="http://sourceforge.net/sflogo.php?group_id=3458&amp;type=1" NATURALSIZEFLAG="0" ALT="SourceForge Logo"&gt;&lt;/A&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;
+        &lt;A HREF="http://sourceforge.net/project/?group_id=3458"&gt;Leo at SourceForge&lt;/A&gt;&amp;nbsp;&amp;nbsp;
+        &lt;a href="icons.html"&gt;&lt;img border="0" src="LeoCodeGray.gif" width="77" height="42"&gt;&lt;/a&gt;&amp;nbsp;&amp;nbsp;
+        &lt;a href="icons.html"&gt;&lt;img border="0" src="LeoProse.gif" width="81" height="42"&gt;&lt;/a&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;
+
+        &lt;H3&gt;&lt;A NAME="anchor127554"&gt;&lt;/A&gt;Summary&lt;/H3&gt;
+
+        &lt;UL&gt;
+          &lt;LI&gt;Leo is a &lt;i&gt; programmer's editor&lt;/i&gt;  and a flexible &lt;i&gt;browser&lt;/i&gt; for
+            projects, programs, classes or data. Leo clarifies design, coding, debugging, testing
+          and maintenance.
+          &lt;LI&gt;Leo is an &lt;i&gt;outlining editor&lt;/i&gt;. Outlines clarify the big picture while
+            providing unlimited space for details.
+          &lt;LI&gt;Leo
+            is a &lt;a HREF="http://www.literateprogramming.com/"&gt;&lt;i&gt;literate
+            programming&lt;/i&gt;&lt;/a&gt; tool, compatible with &lt;A HREF="http://www.eecs.harvard.edu/~nr/noweb/"&gt;noweb&lt;/A&gt;
+            and &lt;a HREF="http://www-cs-faculty.stanford.edu/~knuth/cweb.html"&gt;CWEB&lt;/a&gt;.
+            Leo enhances any text-based
+        programming language, from assembly language and C to Java, Python and XML.
+          &lt;LI&gt;Leo is also a &lt;i&gt;data organizer&lt;/i&gt;. A single Leo outline can generate complex
+            data spanning many different files.&amp;nbsp; Leo has been used to manage web sites.
+          &lt;LI&gt;Leo is a &lt;i&gt; project manager&lt;/i&gt;. Leo provides multiple views
+        of a project within a single outline. Leo naturally represents tasks that remain
+            up-to-date.
+          &lt;LI&gt;Leo is fully &lt;i&gt; scriptable&lt;/i&gt; using &lt;A HREF="http://www.python.org/"&gt;Python&lt;/A&gt;
+          and saves its files in &lt;A HREF="http://www.w3.org/XML/"&gt;XML&lt;/A&gt; format.
+          &lt;LI&gt;Leo is &lt;i&gt;portable&lt;/i&gt;.&amp;nbsp; Leo.py is 100% pure Python and will run on
+            any platform supporting &lt;A HREF="http://www.python.org/"&gt;Python&lt;/A&gt;
+            and &lt;a href="http://tcl.activestate.com/"&gt;Tk/tcl&lt;/a&gt;, including Windows,
+            Linux and MacOS X.&amp;nbsp; Leo.exe runs on any Windows platform.
+          &lt;LI&gt;Leo is &lt;a href="http://www.opensource.org/"&gt; &lt;i&gt; Open Software&lt;/i&gt;&lt;/a&gt;, distributed under
+            the &lt;a href="http://www.python.org/doc/Copyright.html"&gt; Python License&lt;/a&gt;.
+        &lt;/UL&gt;
+
+        &lt;H3&gt;More Information and downloads&lt;/H3&gt;
+
+        &lt;ul&gt;
+          &lt;LI&gt;An excellent &lt;a href="http://www.3dtree.com/ev/e/sbooks/leo/sbframetoc_ie.htm"&gt;online
+            tutorial&lt;/a&gt; and &lt;A HREF="http://www.jserv.com/jk_orr/xml/leo.htm"&gt;Leo resource
+          page&lt;/A&gt;, both written by &lt;a href="http://www.jserv.com/jk_orr"&gt;Joe Orr&lt;/a&gt;.
+          &lt;LI&gt;My brother's &lt;a href="SpeedReam.html"&gt;slashdot
+            article about Leo&lt;/a&gt;, the best description about why Leo is special.
+          &lt;LI&gt;&lt;A HREF="testimonials.html#anchor104391"&gt;What people are saying about Leo&lt;/A&gt;
+          &lt;LI&gt;&lt;A HREF="leo_TOC.html#anchor964914"&gt;Complete users guide&lt;/A&gt;
+            and
+            &lt;A HREF="intro.html#anchor887874"&gt;tutorial introduction&lt;/A&gt;  with
+          screen shots.
+          &lt;li&gt;&lt;a href="FAQ.html"&gt;FAQ&lt;/a&gt; and &lt;a href="http://sourceforge.net/forum/?group_id=3458"&gt;help and discussion
+            forums&lt;/a&gt;, preferable to &lt;A HREF="mailto:edream@tds.net"&gt;email&lt;/A&gt; so others may join
+            in.&lt;/li&gt;
+          &lt;li&gt;&lt;a href="icons.html"&gt;Icons&lt;/a&gt; for bragging about Leo.&lt;/li&gt;
+        &lt;/ul&gt;
+
+        &lt;a href="http://sourceforge.net/project/showfiles.php?group_id=3458"&gt;Download
+            Leo&lt;/a&gt; from &lt;A HREF="http://sourceforge.net/project/?group_id=3458"&gt;Leo's SourceForge
+        site&lt;/A&gt;.
+
+        &lt;P ALIGN=left&gt;Leo's author is &lt;A HREF="http://personalpages.tds.net/~edream/index.html"&gt;Edward
+          K. Ream&lt;/A&gt; email: &lt;A HREF="mailto:edream@tds.net"&gt;edream@tds.net&lt;/A&gt; voice: (608) 231-0766
+
+        &lt;HR ALIGN=LEFT&gt;
+
+        &lt;p align="center"&gt;
+
+        &lt;IMG SRC="Blank.gif" ALIGN="left" NATURALSIZEFLAG=
+        "3" width="34" height="34"&gt;&lt;IMG SRC="leo.gif" ALIGN="left" NATURALSIZEFLAG=
+        "3" width="32" height="32"&gt;&lt;a HREF="leo_TOC.html"&gt;&lt;IMG SRC="arrow_rt.gif" WIDTH="32"
+        HEIGHT="32" ALIGN="left" NATURALSIZEFLAG="3"&gt;
+
+        &lt;/BODY&gt;
+        &lt;/HTML&gt;
+    """)
+    self.color('html', text)
+</t>
+<t tx="ekr.20241126093914.1307">def test_colorizer_objective_c(self):
+    text = self.prep(
+    """
+        @interface Application
+            -(void) init;
+            -(void) showMessage;
+        @end
+
+        @implementation Application
+            -(id) init {
+                if (self = [super init]) {
+                    NSLog(@"Init ok");
+                    return self;
+                }
+                return nil;
+            }
+            -(void) showMessage {
+                NSLog(@"Hello there");
+            }
+        @end
+
+        @"Hello there"
+
+        ,@interface
+        , @interface
+        the @interface
+
+        // By the way, I have noticed that such kind of words in doxygen block
+        // are highlighted properly, but they are labels here, not keywords1 as in my case.
+        /**
+        @var test
+        @todo
+        */
+    """)
+    self.color('objective_c', text)
+</t>
+<t tx="ekr.20241126093914.1308"></t>
+<t tx="ekr.20241126093914.1309">def __init__(self, c: Cmdr, widget: Widget) -&gt; None:
+    """Ctor for JEditColorizer class."""
+    super().__init__(c, widget)
+
+    # Create the highlighter. The default is NullObject.
+    if isinstance(widget, QtWidgets.QTextEdit):
+        self.highlighter = LeoHighlighter(c,
+            colorizer=self,
+            document=widget.document(),
+        )
+
+    # *Global* state data. This is entirely correct, but it's not worth fixing.
+    self.after_doc_language: str = None
+
+    # *Local* state data. Such state is harmless.
+    self.delegate_stack: list[str] = []
+    self.initialStateNumber = -1
+    self.n2languageDict: dict[int, str] = {-1: c.target_language}
+    self.nested = False  # True: allow nested comments, etc.
+    self.nested_level = 0  # Nesting level if self.nested is True.
+    self.nextState = 1  # Don't use 0.
+    self.restartDict: dict[int, Callable] = {}  # Keys are state numbers, values are restart functions.
+    self.stateDict: dict[int, str] = {}  # Keys are state numbers, values state names.
+    self.stateNameDict: dict[str, int] = {}  # Keys are state names, values are state numbers.
+
+    # #2276: Set by init_section_delims.
+    self.section_delim1 = '&lt;&lt;'
+    self.section_delim2 = '&gt;&gt;'
+
+    # Init common data...
+    self.reloadSettings()
+</t>
+<t tx="ekr.20241126093914.131">def initOptionsIvars(self) -&gt; None:
+    """Init Commander ivars corresponding to user options."""
+    self.fixed = False
+    self.fixedWindowPosition: list[tuple[int, int, int, int]] = []
+    self.forceExecuteEntireBody = False
+    self.focus_border_color = 'white'
+    self.focus_border_width = 1  # pixels
+    self.outlineHasInitialFocus = False
+    self.page_width = 132
+    self.sparse_find = True
+    self.sparse_move = True
+    self.sparse_spell = True
+    self.sparse_goto_visible = False
+    self.stayInTreeAfterSelect = False
+    self.tab_width = -4
+    self.tangle_batch_flag = False
+    self.target_language = "python"
+    self.untangle_batch_flag = False
+    self.vim_mode = False
+</t>
+<t tx="ekr.20241126093914.1310">def init(self) -&gt; None:
+    """
+    Init the colorizer to match self.language.
+    
+    The caller must set or clear state after calling this method.
+    """
+    # Init the *per-language* initial state number.
+    self.initialStateNumber = self.setInitialStateNumber()
+
+    # Init mode-related ivars.
+    self.init_mode(self.language)
+
+    # Support per-language @font/@color settings.
+    self.init_section_delims()  # #2276
+</t>
+<t tx="ekr.20241126093914.1311">def init_all_state(self) -&gt; None:
+    """Completely init all state data."""
+    assert self.language, g.callers(8)
+
+    # Only jedit.recolor shouuld ever call this method.
+    # However, one unit test calls this method.
+    if g.callers(1) != 'recolor' and not g.unitTesting:
+        message = f"jedit.init_all_state: invalid caller: {g.callers()}"
+        g.print_unique_message(message)
+
+    self.n2languageDict = {-1: self.language}
+    self.nextState = 1  # Don't use 0.
+    self.restartDict = {}
+    self.stateDict = {}
+    self.stateNameDict = {}
+</t>
+<t tx="ekr.20241126093914.1312">def init_section_delims(self) -&gt; None:
+
+    p = self.c.p
+
+    def find_delims(v: VNode) -&gt; Optional[re.Match]:
+        for s in g.splitLines(v.b):
+            if m := g.g_section_delims_pat.match(s):
+                return m
+        return None
+
+    v = g.findAncestorVnodeByPredicate(p, v_predicate=find_delims)
+    if v:
+        m = find_delims(v)
+        self.section_delim1 = m.group(1)
+        self.section_delim2 = m.group(2)
+    else:
+        self.section_delim1 = '&lt;&lt;'
+        self.section_delim2 = '&gt;&gt;'
+</t>
+<t tx="ekr.20241126093914.1313">def init_mode_from_module(self, name: str, mode: Mode) -&gt; bool:
+    """
+    Name may be a language name or a delegate name.
+    Mode is a python module or class containing all
+    coloring rule attributes for the mode.
+    """
+    language, rulesetName = self.nameToRulesetName(name)
+    if not mode:
+        # Create a dummy bunch to limit recursion.
+        self.modes[language] = self.modeBunch = g.Bunch(
+            attributesDict={},
+            defaultColor=None,
+            keywordsDict={},
+            language='unknown-language',
+            mode=mode,
+            properties={},
+            rulesDict={},
+            rulesetName=rulesetName,
+            word_chars=self.word_chars,  # 2011/05/21
+        )
+        self.rulesetName = rulesetName
+        self.language = 'unknown-language'
+        if g.unitTesting:  # Too intrusive otherwise.
+            g.print_unique_message(
+                "{'\n'}jedit.init_mode_from_module: "
+                f"no mode file for {language!r}! {g.callers(8)}"
+            )
+        return False
+
+    # A hack to give modes/forth.py access to c.
+    if hasattr(mode, 'pre_init_mode'):
+        mode.pre_init_mode(self.c)
+    self.language = language
+    self.rulesetName = rulesetName
+    self.properties = getattr(mode, 'properties', None) or {}
+
+    # #1334: Careful: getattr(mode, ivar, {}) might be None!
+    d: dict[Any, Any] = getattr(mode, 'keywordsDictDict', {}) or {}
+    self.keywordsDict = d.get(rulesetName, {})
+    self.setKeywords()
+    d = getattr(mode, 'attributesDictDict', {}) or {}
+    self.attributesDict: dict[str, Any] = d.get(rulesetName, {})
+    self.setModeAttributes()
+    d = getattr(mode, 'rulesDictDict', {}) or {}
+    self.rulesDict: dict[str, Any] = d.get(rulesetName, {})
+    self.addLeoRules(self.rulesDict)
+    self.defaultColor = 'null'
+    self.mode = mode
+    self.modes[rulesetName] = self.modeBunch = g.Bunch(
+        attributesDict=self.attributesDict,
+        defaultColor=self.defaultColor,
+        keywordsDict=self.keywordsDict,
+        language=self.language,
+        mode=self.mode,
+        properties=self.properties,
+        rulesDict=self.rulesDict,
+        rulesetName=self.rulesetName,
+        word_chars=self.word_chars,  # 2011/05/21
+    )
+    # Do this after 'officially' initing the mode, to limit recursion.
+    self.addImportedRules(mode, self.rulesDict, rulesetName)
+    self.updateDelimsTables()
+    initialDelegate = self.properties.get('initialModeDelegate')
+    if initialDelegate:
+        # Replace the original mode by the delegate mode.
+        self.init_mode(initialDelegate)
+        language2, rulesetName2 = self.nameToRulesetName(initialDelegate)
+        self.modes[rulesetName] = self.modes.get(rulesetName2)
+        self.language = language2  # 2017/01/31
+    else:
+        self.language = language  # 2017/01/31
+    # Complete the late replacements.
+    self.modeBunch.language = self.language
+    self.modes[rulesetName] = self.modeBunch
+    return True
+</t>
+<t tx="ekr.20241126093914.1315">tot_time = 0.0
+
+def mainLoop(self, state: int, s: str, i0: int, j: int) -&gt; None:
+    """
+    Colorize a *single* line s[i:j] starting in state n.
+    
+    Except for traces, do not change this method in any way!
+    
+    Any substantial change would break all the pattern matchers!
+    """
+    # Do not remove this unit test!
+    if not g.unitTesting and g.callers(1) not in ('recolor', 'colorRangeWithTag'):
+        message = f"jedit.mainLoop: unexpected callers: {g.callers(6)}"
+        g.print_unique_message(message)
+    f = self.restartDict.get(state)
+    t1 = time.process_time()
+    i = f(s) if f else i0
+    j = min(j, len(s))  # Required.
+    while i &lt; j:
+        progress = i
+        functions = self.rulesDict.get(s[i], [])
+        for f in functions:
+            n = f(self, s, i)
+            if False and not g.unitTesting:
+                g.trace(f"i: {i} {f.__name__} =&gt; {n:2} {s!r}")
+            if n is None:
+                g.trace('Can not happen: n is None', repr(f))
+                break
+            elif n &gt; 0:  # Success. The match has already been colored.
+                i += n
+                break
+            elif n &lt; 0:  # Total failure.
+                i += -n
+                break
+            else:  # Partial failure: Do not break or change i!
+                pass
+        else:
+            i += 1
+        assert i &gt; progress
+    # Don't even *think* about changing state here.
+    self.tot_time += time.process_time() - t1
+</t>
+<t tx="ekr.20241126093914.1316">def match_at_language(self, s: str, i: int) -&gt; int:
+    """Match Leo's @language directive."""
+    trace = 'coloring' in g.app.debug and not g.unitTesting
+    # Only matches at start of line.
+    if i != 0:
+        return 0
+    if not g.match_word(s, i, '@language'):
+        return 0
+    old_name = self.language
+    j = g.skip_ws(s, i + len('@language'))
+    k = g.skip_c_id(s, j)
+    name = s[j:k]
+    ok = self.init_mode(name)
+    if ok:
+        self.language = name
+        self.colorRangeWithTag(s, i, k, 'leokeyword')
+        if name != old_name:
+            # Init the stack.
+            self.delegate_stack.append(self.language)
+            # Solves the recoloring problem!
+            n = self.setInitialStateNumber()
+            self.setState(n)
+    if trace:
+        language_s = '???' if self.language == 'unknown-language' else self.language
+        g.trace(f"{language_s:10} stack: {self.delegate_stack!r:15} {s}")
+    return k - i
+
+</t>
+<t tx="ekr.20241126093914.1317">def pop_delegate(self) -&gt; None:
+    """Pop the delegate stack amd restart the previous delegate."""
+    trace = 'coloring' in g.app.debug and not g.unitTesting
+
+    if trace:
+        print('')
+        g.trace(repr(self.delegate_stack))
+        print('')
+
+    if not self.delegate_stack:
+        # This is not an error.
+        return
+
+    # Switch to the previous language.
+    old_language = self.delegate_stack.pop()
+    self.init_mode(old_language)
+    state_i = self.setInitialStateNumber()
+    self.setState(state_i)
+</t>
+<t tx="ekr.20241126093914.1318">def push_delegate(self, new_language: str) -&gt; None:
+    """
+    Push the old language on the delegate stack and switch to the new language.
+    """
+    trace = 'coloring' in g.app.debug and not g.unitTesting
+
+    if self.language == 'unknown-language':  # Defensive.
+        old_language = new_language
+    else:
+        old_language = self.language
+    self.language = new_language
+
+    if not new_language:
+        g.trace(f"Oops: no new language: {self.language} {g.callers()}")
+        return
+
+    if trace:
+        print('')
+        g.trace(f"{old_language} ==&gt; {new_language} {self.delegate_stack}")
+        print('')
+
+    # Ignore redundant &lt;style&gt; or &lt;script&gt; elements.
+    if not self.delegate_stack or self.delegate_stack[-1] != old_language:
+        self.delegate_stack.append(old_language)
+
+    # Switch to the new language.
+    self.init_mode(new_language)
+    state_i = self.setInitialStateNumber()
+    self.setState(state_i)
+</t>
+<t tx="ekr.20241126093914.1319">def recolor(self, s: str) -&gt; None:
+    """
+    jEdit.recolor: Recolor a *single* line, s.
+    QSyntaxHighligher calls this method repeatedly and automatically.
+    
+    Don't even *think* about changing this method unless you
+    understand *every word* of the Theory of Operation:  
+    https://github.com/leo-editor/leo-editor/issues/4158
+    """
+    trace = (False or 'coloring' in g.app.debug) and not g.unitTesting
+    c = self.c
+    p = self.c.p if c else None
+    if not p:
+        return
+
+    # Do not remove this unit test!
+    if g.callers(1) != 'highlightBlock':
+        message = f"jedit.recolor: invalid caller: {g.callers()}"
+        g.print_unique_message(message)
+
+    self.recolorCount += 1
+    prev_state = self.prevState()
+    if prev_state == -1:
+        self.updateSyntaxColorer(p)
+        self.delegate_stack = []
+        self.init_all_state()  # The only call to this method.
+        self.init()
+        state = self.initBlock0()
+    else:
+        state = prev_state  # Continue the previous state by default.
+
+    self.setState(state)
+
+    # #4146: Update self.language from the *previous* state.
+    self.language = self.stateNumberToLanguage(state)
+
+    # #4146: Update the state, *without* disrupting restarters.
+    self.init_mode(self.language)
+
+    # Do not delete these traces!
+    if trace:
+        if prev_state == -1:
+            print('')
+            g.trace(f"New node: prev_state: {prev_state} p.h: {p.h}")
+        if 0:  # Distracting.
+            g.trace(
+                f"recolorCount: {self.recolorCount:&lt;4} "
+                f"line: {self.currentBlockNumber():&lt;4} "
+                f"state: {state}: {self.stateNumberToStateString(state):&lt;10} "
+                f"s: {s!r}"
+            )
+
+    # mainLoop will do nothing if s is empty.
+    if s:
+        # Color the line even if colorizing is disabled.
+        self.mainLoop(state, s, 0, len(s))
+</t>
+<t tx="ekr.20241126093914.132">def initSettings(self, previousSettings: "PreviousSettings") -&gt; None:
+    """Instantiate c.config from previous settings."""
+    c = self
+    from leo.core import leoConfig
+    c.config = leoConfig.LocalConfigManager(c, previousSettings)
+</t>
+<t tx="ekr.20241126093914.1320">def initBlock0(self) -&gt; int:
+    """
+    Init *local* ivars when handling block 0.
+    This prevents endless recalculation of the proper default state.
+    """
+    if self.enabled:
+        n = self.setInitialStateNumber()
+    else:
+        n = self.setRestart(self.restartNoColor)
+    return n
+</t>
+<t tx="ekr.20241126093914.1321">def setInitialStateNumber(self) -&gt; int:
+    """
+    Init the initialStateNumber ivar for clearState()
+    This saves a lot of work.
+
+    Called from init() and initBlock0.
+    """
+    state = self.languageToMode(self.language)
+    n = self.stateNameToStateNumber(None, state)
+    self.initialStateNumber = n
+    self.blankStateNumber = self.stateNameToStateNumber(None, state + ';blank')
+    return n
+</t>
+<t tx="ekr.20241126093914.1322">def languageToMode(self, name: str) -&gt; str:
+    """Return name of the mode file for the given language name."""
+    if name:
+        table = (
+            ('markdown', 'md'),
+            ('python', 'py'),
+        )
+        for pattern, s in table:
+            name = name.replace(pattern, s)
+        return name
+    g.print_unique_message(f"jedit.languageToMode. Should not happen: {name!r}")
+    return 'no-language'
+</t>
+<t tx="ekr.20241126093914.1323">def traceRulesDict(self) -&gt; None:
+    """Trace jedit.rulesDict in a more readable form."""
+    for key, value in self.rulesDict.items():
+        names = [z.__name__ for z in value]
+        len_names = sum(len(z) for z in names)
+        if len_names &gt; 50:
+            print(f"{key!r:&gt;4}: [")
+            for name in names:
+                print(f"        {name}")
+            print('      ]')
+        else:
+            print(f"{key!r:&gt;4}: {[z.__name__ for z in value]}")
+</t>
+<t tx="ekr.20241126093914.1324"></t>
+<t tx="ekr.20241126093914.1325"># Rules dict for css_main ruleset.
+rulesDict1 = {
+    "!": [css_rule7],
+    "#": [css_rule8],
+    "(": [css_rule2],
+    ",": [css_rule5],
+    "-": [css_rule10],
+    ".": [css_rule8A],  # Fix #585. Was css_rule6
+    "&lt;": [
+        css_rule_style,
+        css_rule_end_style,
+    ],
+    "&gt;": [css_rule8B],  # Fix #585.
+    "+": [css_rule8C],  # Fix #585.
+    "~": [css_rule8D],  # Fix #585.
+    "/": [css_rule9],
+    "0": [css_rule10],
+    "1": [css_rule10],
+    "2": [css_rule10],
+    "3": [css_rule10],
+    "4": [css_rule10],
+    "5": [css_rule10],
+    "6": [css_rule10],
+    "7": [css_rule10],
+    "8": [css_rule10],
+    "9": [css_rule10],
+    ":": [css_rule0, css_rule10],
+    ";": [css_rule1],
+    "@": [
+            css_rule_at_language,
+            css_rule10,
+        ],
+    "A": [css_rule10],
+    "B": [css_rule10],
+    "C": [css_rule10],
+    "D": [css_rule10],
+    "E": [css_rule10],
+    "F": [css_rule10],
+    "G": [css_rule10],
+    "H": [css_rule10],
+    "I": [css_rule10],
+    "J": [css_rule10],
+    "K": [css_rule10],
+    "L": [css_rule10],
+    "M": [css_rule10],
+    "N": [css_rule10],
+    "O": [css_rule10],
+    "P": [css_rule10],
+    "Q": [css_rule10],
+    "R": [css_rule10],
+    "S": [css_rule10],
+    "T": [css_rule10],
+    "U": [css_rule10],
+    "V": [css_rule10],
+    "W": [css_rule10],
+    "X": [css_rule10],
+    "Y": [css_rule10],
+    "Z": [css_rule10],
+    "a": [css_rule10],
+    "b": [css_rule10],
+    "c": [css_rule10],
+    "d": [css_rule10],
+    "e": [css_rule10],
+    "f": [css_rule10],
+    "g": [css_rule10],
+    "h": [css_rule10],
+    "i": [css_rule10],
+    "j": [css_rule10],
+    "k": [css_rule10],
+    "l": [css_rule10],
+    "m": [css_rule10],
+    "n": [css_rule10],
+    "o": [css_rule10],
+    "p": [css_rule10],
+    "q": [css_rule10],
+    "r": [css_rule10],
+    "s": [css_rule10],
+    "t": [css_rule10],
+    "u": [css_rule10],
+    "v": [css_rule10],
+    "w": [css_rule10],
+    "x": [css_rule10],
+    "y": [css_rule10],
+    "z": [css_rule10],
+    "{": [css_rule3],
+    "}": [css_rule4],
+}
+</t>
+<t tx="ekr.20241126093914.1326">def css_rule_at_language(colorer, s, i):
+
+    if i == 0 and s.startswith("@language "):
+        return colorer.match_at_language(s, i)
+    return 0  # Fail, but allow other matches.
+</t>
+<t tx="ekr.20241126093914.1327">def css_rule_end_style(colorer: Any, s: str, i: int) -&gt; int:
+
+    if i != 0 or not s.startswith("&lt;/style&gt;"):
+        return 0  # Fail, but allow other matches.
+
+    # Colorize the element as an html element..
+    colorer.match_seq(s, i, kind="markup", seq="&lt;/style&gt;", delegate="html")
+
+    # Restart any previous delegate.
+    colorer.pop_delegate()
+    return len(s)  # Success.
+</t>
+<t tx="ekr.20241126093914.1328">def css_rule_style(colorer: Any, s: str, i: int) -&gt; int:
+
+    if i != 0 or not s.startswith("&lt;style"):
+        return 0  # Fail, but allow other matches.
+
+    # Colorize the element as an html element..
+    colorer.match_span(s, i, kind="markup", begin="&lt;style", end="&gt;", delegate="html")
+
+    # Start css mode.
+    colorer.push_delegate('css')
+    return len(s)  # Success.
+
+</t>
+<t tx="ekr.20241126093914.1329"># Rules dict for html_main ruleset.
+rulesDict1 = {
+    "&amp;": [html_rule5],
+    "@": [html_rule_at_language],
+    "&lt;": [
+        html_rule_script,
+        html_rule_style,
+        html_rule_end_template,
+        html_rule_comment,
+        # After all the above rules.
+        html_rule3,
+        html_rule4,
+    ],
+    "{": [html_rule_handlebar],
+}
+
+# Rules dict for html_tags ruleset.
+rulesDict2 = {
+    "\"": [html_rule6],
+    "'": [html_rule7],
+    "=": [html_rule8],
+}
+</t>
+<t tx="ekr.20241126093914.133">def __repr__(self) -&gt; str:
+    return f"Commander {id(self)}: {repr(self.mFileName)}"
+
+__str__ = __repr__
+</t>
+<t tx="ekr.20241126093914.1330">tag_pat = re.compile(r"&lt;/?[\w]+")  # Match both opening and closing tags
+
+def html_rule4(colorer, s, i):
+
+    # Find the opening or closing tag.
+    for m in tag_pat.finditer(s, i):  # Don't create substrings.
+        if m.group(0) and m.start() == i:
+            tag = m.group(0)
+            return colorer.match_span(s, i,
+                kind="markup", begin=tag, end="&gt;", delegate="html::tags")
+
+    # An error.
+    return colorer.match_span(s, i, kind="comment", begin="&lt;", end="&gt;")
+</t>
+<t tx="ekr.20241126093914.1331">def html_rule_at_language(colorer, s, i):
+
+    if i == 0 and s.startswith("@language "):
+        return colorer.match_at_language(s, i)
+    return 0  # Fail, but allow other matches.
+</t>
+<t tx="ekr.20241126093914.1332">def html_rule_end_template(colorer, s, i):
+
+    if i != 0 or not s.startswith("&lt;/template&gt;"):
+        return 0  # Fail, but allow other matches.
+
+    # Colorize the element as an html element.
+    colorer.match_seq(s, i, kind="markup", seq="&lt;/template&gt;")
+
+    # Restart any previous delegate.
+    colorer.pop_delegate()
+    return len(s)  # Success.
+</t>
+<t tx="ekr.20241126093914.1333">def html_rule_script(colorer: Any, s: str, i: int) -&gt; int:
+
+    if i != 0 or not s.startswith("&lt;script"):
+        return 0  # Fail, but allow other matches.
+
+    # Colorize the element as an html element...
+    colorer.match_span(s, i, kind="markup", begin="&lt;script", end="&gt;")
+
+    # Start javascript mode.
+    colorer.push_delegate('javascript')
+    return len(s)  # Success.
+
+
+
+</t>
+<t tx="ekr.20241126093914.1334">def html_rule_style(colorer, s, i):
+
+    if i != 0 or not s.startswith("&lt;style"):
+        return 0  # Fail, but allow other matches.
+
+    # Colorize the element as an html element..
+    colorer.match_span(s, i, kind="markup", begin="&lt;style", end="&gt;")
+
+    # Start css mode.
+    colorer.push_delegate('css')
+    return len(s)  # Success.
+</t>
+<t tx="ekr.20241126093914.1335"># Rules dict for javascript_main ruleset.
+rulesDict1 = {
+    "!": [javascript_rule7],
+    "\"": [javascript_rule1],
+    "%": [javascript_rule16],
+    "&amp;": [javascript_rule17],
+    "'": [javascript_rule2],
+    "(": [javascript_rule3],
+    "*": [javascript_rule13],
+    "+": [javascript_rule10],
+    ",": [javascript_rule24],
+    "-": [javascript_rule11],
+    ".": [javascript_rule21],
+    "/": [javascript_rule0, javascript_rule4, javascript_rule12],
+    "0": [javascript_rule31],
+    "1": [javascript_rule31],
+    "2": [javascript_rule31],
+    "3": [javascript_rule31],
+    "4": [javascript_rule31],
+    "5": [javascript_rule31],
+    "6": [javascript_rule31],
+    "7": [javascript_rule31],
+    "8": [javascript_rule31],
+    "9": [javascript_rule31],
+    ":": [javascript_rule29, javascript_rule30],
+    ";": [javascript_rule25],
+    "&lt;": [
+        javascript_rule_script,
+        javascript_rule_end_script,
+        # After the rules above.
+        javascript_rule5,
+        javascript_rule9,
+        javascript_rule15
+    ],
+    "=": [javascript_rule6],
+    "&gt;": [javascript_rule8, javascript_rule14],
+    "?": [javascript_rule28],
+    "@": [
+        javascript_rule_at_language,
+        javascript_rule31,
+    ],
+    "A": [javascript_rule31],
+    "B": [javascript_rule31],
+    "C": [javascript_rule31],
+    "D": [javascript_rule31],
+    "E": [javascript_rule31],
+    "F": [javascript_rule31],
+    "G": [javascript_rule31],
+    "H": [javascript_rule31],
+    "I": [javascript_rule31],
+    "J": [javascript_rule31],
+    "K": [javascript_rule31],
+    "L": [javascript_rule31],
+    "M": [javascript_rule31],
+    "N": [javascript_rule31],
+    "O": [javascript_rule31],
+    "P": [javascript_rule31],
+    "Q": [javascript_rule31],
+    "R": [javascript_rule31],
+    "S": [javascript_rule31],
+    "T": [javascript_rule31],
+    "U": [javascript_rule31],
+    "V": [javascript_rule31],
+    "W": [javascript_rule31],
+    "X": [javascript_rule31],
+    "Y": [javascript_rule31],
+    "Z": [javascript_rule31],
+    "[": [javascript_rule27],
+    "]": [javascript_rule26],
+    "^": [javascript_rule19],
+    "a": [javascript_rule31],
+    "b": [javascript_rule31],
+    "c": [javascript_rule31],
+    "d": [javascript_rule31],
+    "e": [javascript_rule31],
+    "f": [javascript_rule31],
+    "g": [javascript_rule31],
+    "h": [javascript_rule31],
+    "i": [javascript_rule31],
+    "j": [javascript_rule31],
+    "k": [javascript_rule31],
+    "l": [javascript_rule31],
+    "m": [javascript_rule31],
+    "n": [javascript_rule31],
+    "o": [javascript_rule31],
+    "p": [javascript_rule31],
+    "q": [javascript_rule31],
+    "r": [javascript_rule31],
+    "s": [javascript_rule31],
+    "t": [javascript_rule31],
+    "u": [javascript_rule31],
+    "v": [javascript_rule31],
+    "w": [javascript_rule31],
+    "x": [javascript_rule31],
+    "y": [javascript_rule31],
+    "z": [javascript_rule31],
+    "{": [javascript_rule23],
+    "|": [javascript_rule18],
+    "}": [javascript_rule22],
+    "~": [javascript_rule20],
+}
+
+</t>
+<t tx="ekr.20241126093914.1336">def javascript_rule_at_language(colorer, s, i):
+
+    if i == 0 and s.startswith("@language "):
+        return colorer.match_at_language(s, i)
+    return 0  # Fail, but allow other matches.
+</t>
+<t tx="ekr.20241126093914.1337">def javascript_rule_end_script(colorer, s, i):
+
+    if i != 0 or not s.startswith("&lt;/script&gt;"):
+        return 0  # Fail, but allow other matches.
+
+    # Colorize the element as an html element.
+    colorer.match_seq(s, i, kind="markup", seq="&lt;/script&gt;", delegate="html")
+
+    # Restart any previous delegate.
+    colorer.pop_delegate()
+    return len(s)  # Success.
+</t>
+<t tx="ekr.20241126093914.1338">def javascript_rule_script(colorer: Any, s: str, i: int) -&gt; int:
+
+    if i != 0 or not s.startswith("&lt;script"):
+        return 0  # Fail, but allow other matches.
+
+    # Colorize the element as an html element..
+    colorer.match_span(s, i, kind="markup", begin="&lt;script", end="&gt;")
+
+    # Start javascript mode.
+    colorer.push_delegate('javascript')
+    return len(s)  # Success.
+</t>
+<t tx="ekr.20241126093914.1339">def vue_element(colorer: Any, s: str, i: int) -&gt; int:
+    """
+    Handle `&lt;`, the start of an element.
+    Switch between modes provided that c.p.b contains @language vue.
+    """
+    if i != 0:
+        return -len(s)  # Fail completely.
+
+    # top-level language blocks and their corresponding mode files.
+    blocks = (
+        ('&lt;script', 'javascript'),
+        ('&lt;style', 'css'),
+        ('&lt;template', 'html'),
+    )
+    for block, language in blocks:
+        if s.startswith(block):
+            # Colorize the element as an html element.
+            colorer.match_span(s, i, kind="markup", begin=block, end='&gt;', delegate="html")
+
+            # Simulate `@language language`.
+            colorer.push_delegate(language)
+            return len(s)  # Success.
+
+    # Error: colorizer the element as a comment.
+    colorer.match_span(s, i, kind="comment1", begin="&lt;", end="&gt;")
+    return -len(s)  # Fail completely.
+</t>
+<t tx="ekr.20241126093914.134">def finishCreate(self) -&gt; None:
+    """
+    Finish creating the commander and all sub-objects.
+    This is the last step in the startup process.
+    """
+    c, k = self, self.k
+    assert c.gui
+    assert k
+    t1 = time.process_time()
+    c.frame.finishCreate()  # Slightly slow.
+    t2 = time.process_time()
+    c.miniBufferWidget = c.frame.miniBufferWidget  # Will be None for nullGui.
+    # Only c.abbrevCommands needs a finishCreate method.
+    c.abbrevCommands.finishCreate()
+    # Finish other objects...
+    c.createCommandNames()
+    k.finishCreate()
+    c.findCommands.finishCreate()
+    if not c.gui.isNullGui:
+        # #2485: register idle_focus_helper in the proper context.
+        try:
+            g.app.pluginsController.loadingModuleNameStack.append('leo.core.leoCommands')
+            g.registerHandler('idle', c.idle_focus_helper)
+        finally:
+            g.app.pluginsController.loadingModuleNameStack.pop()
+    if getattr(c.frame, 'menu', None):
+        c.frame.menu.finishCreate()
+    if getattr(c.frame, 'log', None):
+        c.frame.log.finishCreate()
+    c.undoer.clearUndoState()
+    if c.vimCommands and c.vim_mode:
+        c.vimCommands.finishCreate()  # Menus must exist at this point.
+    # Do not call chapterController.finishCreate here:
+    # It must be called after the first real redraw.
+    g.check_cmd_instance_dict(c, g)
+    c.bodyWantsFocus()
+    t3 = time.process_time()
+    if 'speed' in g.app.debug:
+        print('c.finishCreate')
+        print(
+            f"    1: {t2-t1:5.2f}\n"  # 0.20 sec: qtGui.finishCreate.
+            f"    2: {t3-t2:5.2f}\n"  # 0.16 sec: everything else.
+            f"total: {t3-t1:5.2f}"
+        )
+</t>
+<t tx="ekr.20241126093914.1340">@language rest
+@wrap
+@nosearch
+
+https://github.com/leo-editor/leo-editor/issues/4208
+PR: https://github.com/leo-editor/leo-editor/pull/4209
+
+@language python
+</t>
+<t tx="ekr.20241126093914.135">def createCommandNames(self) -&gt; None:
+    """
+    Create all entries in c.commandsDict.
+    Do *not* clear c.commandsDict here.
+    """
+    for commandName, func in g.global_commands_dict.items():
+        self.k.registerCommand(commandName, func)
+</t>
+<t tx="ekr.20241126093914.136">def printCommandsDict(self) -&gt; None:
+    c = self
+    print('Commands...')
+    for key in sorted(c.commandsDict):
+        command = c.commandsDict.get(key)
+        print(f"{key:30} = {command.__name__ if command else '&lt;None&gt;'}")
+    print('')
+</t>
+<t tx="ekr.20241126093914.137"># This is a bad idea.
+
+def hash(self) -&gt; str:  # Leo 6.6.2: Always return a string.
+    c = self
+    if c.mFileName:
+        return g.finalize(c.mFileName).lower()
+    return f"{id(self)!s}"
+</t>
+<t tx="ekr.20241126093914.138">def idle_focus_helper(self, tag: str, keys: dict) -&gt; None:
+    """An idle-time handler that ensures that focus is *somewhere*."""
+    trace = 'focus' in g.app.debug
+    trace_inactive_focus = False  # Too disruptive for --trace-focus
+    trace_in_dialog = False  # Not useful enough for --trace-focus
+    c = self
+    assert tag == 'idle'
+    if g.unitTesting:
+        return
+    if keys.get('c') != c:
+        if trace:
+            g.trace('no c')
+        return
+    self.idle_focus_count += 1
+    if c.in_qt_dialog:
+        if trace and trace_in_dialog:
+            g.trace('in_qt_dialog')
+        return
+    w = g.app.gui.get_focus(at_idle=True)
+    if g.app.gui.active:
+        # Always call trace_idle_focus.
+        self.trace_idle_focus(w)
+        if w and self.is_unusual_focus(w):
+            if trace:
+                w_class = w and w.__class__.__name__
+                g.trace('***** unusual focus', w_class)
+            # Fix bug 270: Leo's keyboard events doesn't work after "Insert"
+            # on headline and Alt+Tab, Alt+Tab
+            # Presumably, intricate details of Qt event handling are involved.
+            # The focus was in the tree, so put the focus back in the tree.
+            c.treeWantsFocusNow()
+        # elif not w and active:
+            # c.bodyWantsFocusNow()
+    elif trace and trace_inactive_focus:
+        w_class = w and w.__class__.__name__
+        count = c.idle_focus_count
+        g.trace(f"{count} inactive focus: {w_class}")
+</t>
+<t tx="ekr.20241126093914.139">def is_unusual_focus(self, w: Wrapper) -&gt; bool:
+    """Return True if w is not in an expected place."""
+    #
+    # #270: Leo's keyboard events doesn't work after "Insert"
+    #       on headline and Alt+Tab, Alt+Tab
+    #
+    # #276: Focus lost...in Nav text input
+    from leo.plugins import qt_frame
+    return isinstance(w, qt_frame.QtTabBarWrapper)
+</t>
+<t tx="ekr.20241126093914.14">def computeLeoDir(self) -&gt; str:
+    # lm = self
+    loadDir = g.app.loadDir
+    # We don't want the result in sys.path
+    return g.os_path_dirname(loadDir)
+</t>
+<t tx="ekr.20241126093914.140">def trace_idle_focus(self, w: Wrapper) -&gt; None:
+    """Trace the focus for w, minimizing chatter."""
+    from leo.core.leoQt import QtWidgets
+    from leo.plugins import qt_frame
+    trace = 'focus' in g.app.debug
+    trace_known = False
+    c = self
+    table = (QtWidgets.QWidget, qt_frame.LeoQTreeWidget,)
+    count = c.idle_focus_count
+    if w:
+        w_class = w and w.__class__.__name__
+        c.last_no_focus = False
+        if self.is_unusual_focus(w):
+            if trace:
+                g.trace(f"{count} unusual focus: {w_class}")
+        else:
+            c.last_unusual_focus = None
+            if isinstance(w, table):
+                if trace and trace_known:
+                    g.trace(f"{count} known focus: {w_class}")
+            elif trace:
+                g.trace(f"{count} unknown focus: {w_class}")
+    else:
+        if trace:
+            g.trace(f"{count:3} no focus")
+</t>
+<t tx="ekr.20241126093914.141">def initAfterLoad(self) -&gt; None:
+    """Provide an official hook for late inits of the commander."""
+    pass
+</t>
+<t tx="ekr.20241126093914.142">def initConfigSettings(self) -&gt; None:
+    """Init all cached commander config settings."""
+    c = self
+    getBool = c.config.getBool
+    getColor = c.config.getColor
+    getData = c.config.getData
+    getInt = c.config.getInt
+    getString = c.config.getString
+    c.autoindent_in_nocolor = getBool('autoindent-in-nocolor-mode')
+    c.collapse_nodes_after_move = getBool('collapse-nodes-after-move')
+    c.collapse_on_lt_arrow = getBool('collapse-on-lt-arrow', default=True)
+    c.contractVisitedNodes = getBool('contractVisitedNodes')
+    c.fixedWindowPositionData = getData('fixedWindowPosition')
+    c.focus_border_color = getColor('focus-border-color') or 'red'
+    c.focus_border_command_state_color = getColor(
+        'focus-border-command-state-color') or 'blue'
+    c.focus_border_overwrite_state_color = getColor(
+        'focus-border-overwrite-state-color') or 'green'
+    c.focus_border_width = getInt('focus-border-width') or 1  # pixels
+    c.forceExecuteEntireBody = getBool('force-execute-entire-body', default=False)
+    c.make_node_conflicts_node = getBool('make-node-conflicts-node', default=True)
+    c.outlineHasInitialFocus = getBool('outline-pane-has-initial-focus')
+    c.page_width = getInt('page-width') or 132
+    c.sparse_move = getBool('sparse-move-outline-left')
+    c.sparse_find = getBool('collapse-nodes-during-finds')
+    c.sparse_spell = getBool('collapse-nodes-while-spelling')
+    c.sparse_goto_visible = getBool('collapse-on-goto-first-last-visible', default=False)
+    c.stayInTreeAfterSelect = getBool('stayInTreeAfterSelect')
+    c.smart_tab = getBool('smart-tab')
+    c.tab_width = getInt('tab-width') or -4
+    c.target_language = getString('target-language') or 'python'
+    c.verbose_check_outline = getBool('verbose-check-outline', default=False)
+    c.vim_mode = getBool('vim-mode', default=False)
+    c.write_script_file = getBool('write-script-file')
+</t>
+<t tx="ekr.20241126093914.143">def setWindowPosition(self) -&gt; None:
+    c = self
+    if c.fixedWindowPositionData:
+        try:
+            aList = [z.strip() for z in c.fixedWindowPositionData if z.strip()]
+            w, h, left, t = aList
+            c.fixedWindowPosition = int(w), int(h), int(left), int(t)  # type:ignore
+        except Exception:
+            g.error('bad @data fixedWindowPosition',
+                repr(self.fixedWindowPosition))
+    else:
+        c.windowPosition = 500, 700, 50, 50  # width,height,left,top.
+</t>
+<t tx="ekr.20241126093914.144">@cmd('execute-general-script')
+def execute_general_script_command(self, event: LeoKeyEvent = None) -&gt; None:
+    """
+    Execute c.p and all its descendants as a script.
+
+    Create a temp file if c.p is not an @&lt;file&gt; node.
+
+    @data exec-script-commands associates commands with languages.
+
+    @data exec-script-patterns provides patterns to create clickable
+    links for error messages.
+
+    Set the cwd before calling the command.
+    """
+    c, p, tag = self, self.p, 'execute-general-script'
+    def get_setting_for_language(setting: str) -&gt; Optional[str]:
+        """
+        Return the setting from the given @data setting.
+        The first colon ends each key.
+        """
+        for s in c.config.getData(setting) or []:
+            key, val = s.split(':', 1)
+            if key.strip() == language:
+                return val.strip()
+        return None
+
+    # Get the language and extension.
+    d = c.scanAllDirectives(p)
+    language: str = d.get('language')
+    if not language:
+        print(f"{tag}: No language in effect at {p.h}")
+        return
+    ext = g.app.language_extension_dict.get(language)
+    if not ext:
+        print(f"{tag}: No extension for {language}")
+        return
+    # Get the command.
+    command = get_setting_for_language('exec-script-commands')
+    if not command:
+        print(f"{tag}: No command for {language} in @data exec-script-commands")
+        return
+    # Get the optional pattern.
+    regex = get_setting_for_language('exec-script-patterns')
+    # Set the directory, if possible.
+    if p.isAnyAtFileNode():
+        path = c.fullPath(p)
+        directory = os.path.dirname(path)
+    else:
+        directory = None
+    c.general_script_helper(command, ext, language,
+        directory=directory, regex=regex, root=p)
+</t>
+<t tx="ekr.20241126093914.145">@language python
+@cmd('execute-external-file')
+def execute_external_file(self, event: LeoKeyEvent = None) -&gt; None:
+    r"""
+    &lt;&lt; docstring &gt;&gt;
+    """
+    c = self
+    MAP_SETTING_NODE = 'run-external-processor-map'
+    @others
+
+    language, path = None, None
+    root, path = c.gotoCommands.find_root(c.p)
+    if root and path:
+        processor_map, extension_map, terminal = get_external_maps()
+        if extension_map:
+            LANGUAGE_EXTENSION_MAP = LANGUAGE_EXTENSION_MAP | extension_map
+        if processor_map:
+            PROCESSORS = PROCESSORS | processor_map
+        _, ext = os.path.splitext(path)
+
+        # Check terminal from MAP_SETTING_NODE setting
+        setting_terminal = terminal
+        if setting_terminal:
+            terminal = which(terminal)
+            if not terminal:
+                g.es(f'Cannot find terminal specified in setting: {setting_terminal}')
+                g.es('Trying an alternative')
+                terminal = getTerminal()
+                g.es('using', terminal)
+
+        path = c.fullPath(root)
+        language = getExeKind(ext)
+        processor = getProcessor(language, path, ext)
+        runfile(path, processor, terminal)
+    else:
+        g.es('Cannot find an @- file', color='red')
+</t>
+<t tx="ekr.20241126093914.146">Run external files.
+
+If there is an @language directive in the top node of the file,
+the external processor will be chosen based on it if known.
+Otherwise, the processor will be chosen using the file's extension
+if known.  Otherwise, on Linux a shebang line will be used if the
+external file has one. The candidate processor will be verified
+to be reachable by the shell.
+
+On Windows, "@language batch" and "@language shell" both will cause
+cmd.exe to be invoked as the file processor. On Linux, "@language
+shell" will cause the system's shell to be invoked. By default, this
+will be bash. If bash is not present, then the environmental variable
+$SHELL will be invoked.
+
+The processing programs and language file extensions can be
+specified in an @data settings node with the name
+"run-external-processor-map".
+
+The data in the @data node body must have a PROCESSORS, an
+EXTENSIONS section, and optionally a TERMINAL section,
+looking like this example:
+
+    # A comment line
+    # Map file extensions to language names
+    EXTENSIONS
+    .lua: lua    # Trailing comments allowed
+    .rb: ruby
+
+    # Map language names to processor names or paths
+    PROCESSORS
+    lua: lua
+    ruby: C:\Ruby27-x64\bin\ruby.exe
+
+    # Optionally specify a Linux terminal here (e.g., konsole)
+    TERMINAL
+    # konsole
+
+Blank lines and lines starting with a "#" are ignored.  If a
+full path to the processor is included, that path will be used.
+Otherwise, the processor must be findable by the shell: this
+normally means it must be on the PATH.
+
+Any output will be displayed in a newly-opened launching console.
+
+</t>
+<t tx="ekr.20241126093914.147">EXECUTE_ARGS = {
+    'konsole': '--noclose -e ',
+    'gnome-terminal': '-- ',
+    'xfce4-terminal': '-- ',
+    'mate-terminal': '-- ',
+    'tillix': '-- ',
+    'lxterminal': '-- ',
+    'alacritty': '-e',
+    'kitty': '-e',
+    'urvxt': '-e',
+    'terminator': '-e',
+    'xterm': '-e '
+}
+
+PREFERRED_TERMINALS = EXECUTE_ARGS.keys()
+</t>
+<t tx="ekr.20241126093914.148">SETTINGS_HELP = r'''The data in the @data node body must have a
+PROCESSORS and an EXTENSIONS section, plus an optional TERMINAL
+section, looking like this example:
+
+    # A comment line
+    # Map file extensions to language names
+    EXTENSIONS
+    .lua: lua   # Trailing comments are allowed
+    .rb: ruby
+
+    # Map language names to processor names or paths
+    PROCESSORS
+    lua: lua
+    ruby: C:\Ruby27-x64\bin\ruby.exe
+
+    # Optionally specify a Linux terminal (e.g., konsole) on the
+    # line after the "TERMINAL" line.
+    TERMINAL
+
+Blank lines and lines starting with a "#" are ignored.
+'''
+</t>
+<t tx="ekr.20241126093914.149">LANGUAGE_EXTENSION_MAP = {
+'.cmd': 'batch',
+'.bat': 'batch',  # We'll get confused if a Linux program uses a .bat extension
+'.jl': 'julia',
+'.lua': 'lua',
+'.ps1': 'powershell',
+'.py': 'python',
+'.pyw': 'python',
+'rb': 'ruby',
+}
+</t>
+<t tx="ekr.20241126093914.15">def computeLoadDir(self) -&gt; str:
+    """Returns the directory containing leo.py."""
+    try:
+        # Fix a hangnail: on Windows the drive letter returned by
+        # __file__ is randomly upper or lower case!
+        # The made for an ugly recent files list.
+        path = g.__file__  # was leo.__file__
+        if path:
+            # Possible fix for bug 735938:
+            # Do the following only if path exists.
+            &lt;&lt; resolve symlinks &gt;&gt;
+            if sys.platform == 'win32':
+                if len(path) &gt; 2 and path[1] == ':':
+                    # Convert the drive name to upper case.
+                    path = path[0].upper() + path[1:]
+            path = g.finalize(path)
+            loadDir = g.os_path_dirname(path)
+        else:
+            loadDir = None
+        if (
+            not loadDir or
+            not g.os_path_exists(loadDir) or
+            not g.os_path_isdir(loadDir)
+        ):
+            loadDir = os.getcwd()
+            # From Marc-Antoine Parent.
+            if loadDir.endswith("Contents/Resources"):
+                loadDir += "/leo/plugins"
+            else:
+                g.pr("Exception getting load directory")
+        loadDir = g.finalize(loadDir)
+        return loadDir
+    except Exception:
+        print("Exception getting load directory")
+        raise
+</t>
+<t tx="ekr.20241126093914.150">PROCESSORS = {
+'batch': 'cmd.exe',
+'julia': 'julia',
+'lua': 'lua',
+'powershell': 'powershell',
+'ruby': 'ruby',
+'shellscript': 'bash',
+}
+</t>
+<t tx="ekr.20241126093914.151">MAP_SETTING_NODE = "run-external-processor-map"
+
+def get_external_maps() -&gt; tuple[dict, dict, str]:
+    &lt;&lt; get_external_maps: docstring &gt;&gt;
+
+    data: list[str] = c.config.getData(MAP_SETTING_NODE)  # Strip comment lines.
+    if not data:
+        return None, None, ''
+
+    # Allow trailing comments:
+    lines = [z.split('#', 1)[0] for z in data]
+
+    def scan_map(kind: str) -&gt; dict[str, str]:
+        d = {}
+        other_kind = 'PROCESSORS' if kind == 'EXTENSIONS' else 'EXTENSIONS'
+        scanning = False
+        for line in lines:
+            if not line.strip():
+                continue
+            if kind in line:
+                scanning = True
+            elif other_kind in line:
+                scanning = False
+            elif scanning:
+                # Line format: a: b
+                keyval = line.split(':', 1)
+                if len(keyval) &gt; 1:
+                    key = keyval[0].strip()
+                    val = keyval[1].strip()
+                    d[key] = val
+        return d
+
+    # Get terminal value.
+    terminal = ''
+    found_terminal = False
+    for line in lines:
+        if found_terminal:
+            terminal = line.strip()
+            if terminal:
+                break
+        elif 'TERMINAL' in line:
+            found_terminal = True
+
+    # Set the maps.
+    processor_map = scan_map('PROCESSORS')
+    extension_map = scan_map('EXTENSIONS')
+    return processor_map, extension_map, terminal
+
+maps = get_external_maps()
+</t>
+<t tx="ekr.20241126093914.152">r"""Return processor, extension maps for @data node.
+
+The data in the @data node body must have a PROCESSORS and an
+EXTENSIONS section, looking like this example:
+
+    # A comment line
+    # Map file extensions to language names
+    EXTENSIONS
+    .lua: lua  # Trailing comments are allowed
+    .rb: ruby
+
+    # Map language names to processor names or paths
+    PROCESSORS
+    lua: lua
+    ruby: C:\Ruby27-x64\bin\ruby.exe
+
+    # Specify a particular Linux terminal to use
+    # e.g, /usr/bin/konsole
+    TERMINAL
+
+Blank lines and lines starting with a "#" are ignored.  Trailing
+in-line comments are allowed, delineated by "#".
+
+RETURNS
+a tuple (processor_map, extension_map, terminal)
+"""
+</t>
+<t tx="ekr.20241126093914.153">def getExeKind(ext: str) -&gt; str:
+    """
+    Return the executable kind (a language) of the external file.
+
+    If there is a language directive in effect, return it,
+    otherwise use the file extension.
+    """
+    return (
+        g.getLanguageFromAncestorAtFileNode(c.p)
+        or LANGUAGE_EXTENSION_MAP.get(ext, None)
+    )
+
+</t>
+<t tx="ekr.20241126093914.154">def getProcessor(language: str, path: str, extension: str) -&gt; str:
+    """Return the name or path of a program able to run our external program."""
+    processor = ''
+    if language == 'python':
+        processor = sys.executable
+    else:
+        if g.isWindows and language == 'shell':
+            return 'cmd.exe'
+        processor = PROCESSORS.get(language, '')
+        if not processor:
+            if g.isWindows:
+                ftype = get_win_assoc(extension)
+                processor = get_win_processor(ftype)
+    # Check to make sure we can run this processor
+    if processor:
+        proc = which(processor)
+        if not proc:
+            processor = ''
+    return processor
+</t>
+<t tx="ekr.20241126093914.155">def get_win_assoc(extension: str) -&gt; str:
+    """Return Windows association for given file extension, or ''.
+
+    The extension must include the dot.
+    """
+    cmd = f'assoc {extension}'
+    # pylint: disable=subprocess-run-check
+    proc = subprocess.run(cmd, shell=True, capture_output=True)
+    filetype = proc.stdout.decode('utf-8')  #e.g., ".py=Python.File"
+    filetype = filetype.split('=')[1] if filetype else ''
+    return filetype
+
+def get_win_processor(filetype: str) -&gt; str:
+    r"""Get Windows' idea of the program to use for running this file type.
+
+    Example return from ftype:
+        Lua.Script="C:\Program Files (x86)\Lua\5.1\lua.exe" "%1" %*
+
+    ARGUMENT
+    filetype -- a file type returned by the assoc command.
+
+    RETURNS
+    the processor or ''
+    """
+    if not filetype:
+        return ''
+    cmd = f'ftype {filetype}'
+    # pylint: disable=subprocess-run-check
+    proc = subprocess.run(cmd, shell=True, capture_output=True)
+    ftype_str = proc.stdout.decode('utf-8') or 'none'
+    if not ftype_str:
+        return ''
+    prog_str = ftype_str.split('=')[1]
+    return prog_str.split('"')[1]
+</t>
+<t tx="ekr.20241126093914.156">def getShell() -&gt; str:
+    # Prefer bash unless it is not present - we know its options' names
+    shell = 'bash'
+    has_bash = which(shell)
+    if not has_bash:
+        # Need bare shell name, not whole path
+        shell = os.environ['SHELL'].split('/')[-1]
+    return shell
+</t>
+<t tx="ekr.20241126093914.157">@others
+
+def getTerminal() -&gt; str:
+    if (term := os.environ.get('TERMINAL', '')):
+        return term
+    return (getCommonTerminal(PREFERRED_TERMINALS)
+            or getTerminalFromDirectory('/usr/bin')
+            or getTerminalFromDirectory('/usr/local/bin')
+            or getTerminalFromDirectory('/bin')
+            )
+</t>
+<t tx="ekr.20241126093914.158">def getTerminalFromDirectory(dir: str) -&gt; str:
+    BAD_NAMES = ('xdg-terminal', 'setterm', 'ppmtoterm',
+                 'koi8rxterm', 'rofi-sensible-terminal',
+                 'x-terminal-emulator')
+    TERM_STRINGS = ('*-terminal', '*term')
+    # pylint: disable=subprocess-run-check
+    for ts in TERM_STRINGS:
+        cmd = f'find {dir} -type f -name {ts}'
+        proc = subprocess.run(cmd, shell=True, capture_output=True)
+        terminals = proc.stdout.decode('utf-8')
+        for t in terminals.splitlines():
+            bare_term = t.split('/')[-1]
+            if bare_term not in BAD_NAMES:
+                return t
+    return ''
+</t>
+<t tx="ekr.20241126093914.159">def getCommonTerminal(names: Union[str, Iterable[str]]) -&gt; str:
+    """Return a terminal name given candidate names.
+
+    ARGUMENT
+    names -- a string containing one name, or a sequence of strings.
+
+    RETURNS
+    a path of an existing terminal, if found, else an empty string
+    """
+    term = ''
+    if isinstance(names, str):
+        names = (names,)
+    term = ''
+    for name in names:
+        term = which(name)
+        if term:
+            break
+    return term
+</t>
+<t tx="ekr.20241126093914.16">if path.endswith('pyc'):
+    srcfile = path[:-1]
+    if os.path.islink(srcfile):
+        path = os.path.realpath(srcfile)
+</t>
+<t tx="ekr.20241126093914.160">def getTermExecuteCmd(terminal: str) -&gt; str:
+    """Given a terminal's name, find the command line arg to launch a program.
+
+    If the terminal's arg is known, use that. Otherwise, try "--help".
+    If that fails, see try "--help-all".  If neither has an argument
+    or switch for "Execute", give up and assume the arg is "-x".
+    """
+    HELP_CMDS = ('-h', '--help', '--help-all')
+    EXECUTESTR = 'execute'
+
+    if terminal in EXECUTE_ARGS:
+        return EXECUTE_ARGS[terminal]
+
+    @others
+
+    for cmd in HELP_CMDS:
+        msg = get_help_message(terminal, cmd)
+        arg = find_ex_arg(msg)
+        if arg:
+            if arg.startswith('--'):
+                arg += '='
+            else:
+                arg += ' '
+            break
+    else:
+        arg = '-x '  # We can only hope
+    return arg
+</t>
+<t tx="ekr.20241126093914.161">def get_help_message(terminal: str, help_cmd: str) -&gt; str:
+    cmd = f'{terminal} {help_cmd}'
+    # pylint: disable=subprocess-run-check
+    proc = subprocess.run(cmd, shell=True, capture_output=True)
+    msg = proc.stdout.decode('utf-8')
+    if not msg:
+        # g.es('error:', proc.stderr.decode('utf-8'))
+        return ''
+    return msg
+</t>
+<t tx="ekr.20241126093914.162">def find_ex_arg(help_msg: str) -&gt; str:
+    for line in help_msg.splitlines():
+        if '--command' in line:
+            return '--command'
+        if '-e' in line:
+            return '-e'
+        if EXECUTESTR in line.lower():
+            fields = line.lstrip().split()
+            # There may be more than one arg; if so, use the first one
+            arg = fields[0]
+            # May have trailing comma; remove it
+            args = arg.split(',')
+            return args[0]
+    return ''
+</t>
+<t tx="ekr.20241126093914.163">def checkShebang(path: str) -&gt; bool:
+    """Return True if file begins with a shebang line, else False."""
+    path = g.finalize(path)
+    with open(path, encoding='utf-8') as f:
+        first_line = f.readline()
+    return first_line.startswith('#!')
+</t>
+<t tx="ekr.20241126093914.164">def runfile(fullpath: str, processor: str, terminal: str) -&gt; None:
+    direc: str = os.path.expanduser(os.path.dirname(fullpath))
+    if g.isWindows:
+        fullpath = fullpath.replace('/', '\\')
+        if processor:
+            if processor == 'cmd.exe':
+                cmd = ['start', processor, '/k', fullpath]
+                subprocess.Popen(cmd, shell=True)
+            else:
+                cmd = ['start', 'cmd.exe', '/k', processor, fullpath]
+                subprocess.Popen(cmd, shell=True)
+        else:
+            g.es('Unknown processor', fullpath, color='red')
+    elif g.isMac:
+        g.es('Cannot launch external files on a Mac yet', color='red')
+    else:  # Presumably Linux
+        fullpath = fullpath.replace('\\', '/')
+        term = terminal or getTerminal()
+
+        if not term:
+            g.es('Cannot find a terminal to launch the external file', color='red')
+            g.es(f'   You can specify a terminal in an "@data {MAP_SETTING_NODE}" setting node')
+            g.es('  ', SETTINGS_HELP)
+            return
+
+        shell_name = getShell()
+        execute_arg = getTermExecuteCmd(term)
+        if (not processor) and checkShebang(fullpath):
+            cmd_ = f"""{term} {execute_arg}"{shell_name} -c 'cd {direc}; {fullpath} ;read'" """
+        elif processor:
+            cmd_ = f"""{term} {execute_arg}"{shell_name} -c 'cd {direc};{processor} {fullpath} ;read'" """
+        else:
+            g.es(f'No processor for {fullpath}', color='red')
+            return
+
+        subprocess.Popen(cmd_, shell=True, start_new_session=True)
+</t>
+<t tx="ekr.20241126093914.165">@cmd('execute-pytest')
+def execute_pytest(self, event: LeoKeyEvent = None) -&gt; None:
+    """Using pytest, execute all @test nodes for p, p's parents and p's subtree."""
+    c = self
+
+    def it(p: Position) -&gt; Generator:
+        for p1 in p.self_and_parents():
+            if p1.h.startswith('@test '):
+                yield p1
+                return
+        for p1 in p.subtree():
+            if p1.h.startswith('@test '):
+                yield p1
+
+    try:
+        for p in it(c.p):
+            self.execute_single_pytest(p)
+    except ImportError:
+        g.es('pytest needs to be installed')
+
+def execute_single_pytest(self, p: Position) -&gt; None:
+    c = self
+    from _pytest.config import get_config
+    from _pytest.assertion.rewrite import rewrite_asserts
+    import ast
+    cfg = get_config()
+    script = g.getScript(c, p, useSentinels=False) + (
+        '\n'
+        'ls = dict(locals())\n'
+        'failed = 0\n'
+        'for x in ls:\n'
+        '    if x.startswith("test_") and callable(ls[x]):\n'
+        '        try:\n'
+        '            ls[x]()\n'
+        '        except AssertionError as e:\n'
+        '            failed += 1\n'
+        '            g.es(f"-------{p.h[6:].strip()}/{x} failed---------")\n'
+        '            g.es(str(e))\n'
+        'if failed == 0:\n'
+        '    g.es("all tests passed")\n'
+        'else:\n'
+        '    g.es(f"failed:{failed} tests")\n')
+
+    fname = g.finalize_join(g.app.homeLeoDir, 'leoPytestScript.py')
+    with open(fname, 'wt', encoding='utf8') as out:
+        out.write(script)
+    tree = ast.parse(script, filename=fname)
+    # A mypy bug? the script can be str.
+    rewrite_asserts(tree, script, config=cfg)  # type:ignore
+    co = compile(tree, fname, "exec", dont_inherit=True)
+    sys.path.insert(0, os.getcwd())
+    sys.path.insert(0, g.os_path_dirname(c.fileName()))  # per SegundoBob
+    try:
+        exec(co, {'c': c, 'g': g, 'p': p})
+    except KeyboardInterrupt:
+        g.es('interrupted')
+    except Exception:
+        g.handleScriptException(c, p)
+    finally:
+        del sys.path[:2]
+</t>
+<t tx="ekr.20241126093914.17">def computeMachineName(self) -&gt; str:
+    """Return the name of the current machine, i.e, HOSTNAME."""
+    # This is prepended to leoSettings.leo or myLeoSettings.leo
+    # to give the machine-specific setting name.
+    # How can this be worth doing??
+    try:
+        name = os.getenv('HOSTNAME')
+        if not name:
+            name = os.getenv('COMPUTERNAME')
+        if not name:
+            import socket
+            name = socket.gethostname()
+    except Exception:
+        name = ''
+    return name
+</t>
+<t tx="ekr.20241126093914.172"># These methods are a fundamental, unchanging, part of Leo's API.
+</t>
+<t tx="ekr.20241126093914.173"></t>
+<t tx="ekr.20241126093914.174">def all_nodes(self) -&gt; Generator:
+    """A generator returning all vnodes in the outline, in outline order."""
+    c = self
+    for p in c.all_positions():
+        yield p.v
+
+def all_unique_nodes(self) -&gt; Generator:
+    """A generator returning each vnode of the outline."""
+    c = self
+    for p in c.all_unique_positions(copy=False):
+        yield p.v
+
+# Compatibility with old code...
+
+all_vnodes_iter = all_nodes
+all_unique_vnodes_iter = all_unique_nodes
+</t>
+<t tx="ekr.20241126093914.175">def all_positions(self, copy: bool = True) -&gt; Generator:
+    """A generator return all positions of the outline, in outline order."""
+    c = self
+    p = c.rootPosition()
+    while p:
+        yield p.copy() if copy else p
+        p.moveToThreadNext()
+
+# Compatibility with old code...
+
+all_positions_iter = all_positions
+allNodes_iter = all_positions
+safe_all_positions = all_positions
+</t>
+<t tx="ekr.20241126093914.176">def all_positions_for_v(self, v: VNode, stack: list[tuple] = None) -&gt; Generator:
+    """
+    Generates all positions p in this outline where p.v is v.
+
+    Should be called with stack=None.
+
+    The generated positions are not necessarily in outline order.
+
+    By Виталије Милошевић (Vitalije Milosevic).
+    """
+    c = self
+
+    if stack is None:
+        stack = []
+
+    if not isinstance(v, leoNodes.VNode):
+        g.es_print(f"not a VNode: {v!r}")
+        return  # Stop the generator.
+
+    def allinds(v: VNode, target_v: VNode) -&gt; Generator:
+        """Yield all indices i such that v.children[i] == target_v."""
+        for i, x in enumerate(v.children):
+            if x is target_v:
+                yield i
+
+    def stack2pos(stack: list[tuple]) -&gt; Position:
+        """Convert the stack to a position."""
+        v, i = stack[-1]
+        return leoNodes.Position(v, i, stack[:-1])
+
+    for v2 in set(v.parents):
+        for i in allinds(v2, v):
+            stack.insert(0, (v, i))
+            if v2 is c.hiddenRootNode:
+                yield stack2pos(stack)
+            else:
+                yield from c.all_positions_for_v(v2, stack)
+            stack.pop(0)
+</t>
+<t tx="ekr.20241126093914.177">def all_roots(self, copy: bool = True, predicate: Callable = None) -&gt; Generator:
+    """
+    A generator yielding *all* the root positions in the outline that
+    satisfy the given predicate. p.isAnyAtFileNode is the default
+    predicate.
+    """
+    c = self
+    if predicate is None:
+
+        # pylint: disable=function-redefined
+
+        def predicate(p: Position) -&gt; bool:
+            return p.isAnyAtFileNode()
+
+    p = c.rootPosition()
+    while p:
+        if predicate(p):
+            yield p.copy()  # 2017/02/19
+            p.moveToNodeAfterTree()
+        else:
+            p.moveToThreadNext()
+</t>
+<t tx="ekr.20241126093914.178">def all_unique_positions(self, copy: bool = True) -&gt; Generator:
+    """
+    A generator return all positions of the outline, in outline order.
+    Returns only the first position for each vnode.
+    """
+    c = self
+    p = c.rootPosition()
+    seen = set()
+    while p:
+        if p.v in seen:
+            p.moveToNodeAfterTree()
+        else:
+            seen.add(p.v)
+            yield p.copy() if copy else p
+            p.moveToThreadNext()
+
+# Compatibility with old code...
+
+all_positions_with_unique_vnodes_iter = all_unique_positions
+</t>
+<t tx="ekr.20241126093914.179">def all_unique_roots(self, copy: bool = True, predicate: Callable = None) -&gt; Generator:
+    """
+    A generator yielding all unique root positions in the outline that
+    satisfy the given predicate. p.isAnyAtFileNode is the default
+    predicate.
+    """
+    c = self
+    if predicate is None:
+
+        # pylint: disable=function-redefined
+
+        def predicate(p: Position) -&gt; bool:
+            return p.isAnyAtFileNode()
+
+    seen = set()
+    p = c.rootPosition()
+    while p:
+        if p.v not in seen and predicate(p):
+            seen.add(p.v)
+            yield p.copy() if copy else p
+            p.moveToNodeAfterTree()
+        else:
+            p.moveToThreadNext()
+</t>
+<t tx="ekr.20241126093914.18">def computeThemeDirectories(self) -&gt; list[str]:
+    """
+    Return a list of *existing* directories that might contain theme .leo files.
+    """
+    join = g.finalize_join
+    home = g.app.homeDir
+    leo = join(g.app.loadDir, '..')
+    table = [
+        home,
+        join(home, 'themes'),
+        join(home, '.leo'),
+        join(home, '.leo', 'themes'),
+        join(leo, 'themes'),
+    ]
+    # Make sure home has normalized slashes.
+    return [g.os_path_normslashes(z) for z in table if g.os_path_exists(z)]
+</t>
+<t tx="ekr.20241126093914.180"></t>
+<t tx="ekr.20241126093914.181">def currentPosition(self) -&gt; Position:
+    """
+    Return a copy of the presently selected position or None.
+    So c.p.copy() is never necessary.
+    """
+    c = self
+    if getattr(c, '_currentPosition', None):
+        # *Always* return a copy.
+        return c._currentPosition.copy()
+    # Returns a new copy of the root position or None
+    return c.rootPosition()
+
+# For compatibility with old scripts...
+
+currentVnode = currentPosition
+</t>
+<t tx="ekr.20241126093914.182">@cmd('dump-expanded')
+def dump_expanded(self, event: LeoKeyEvent) -&gt; None:
+    """Print all non-empty v.expandedPositions lists."""
+    c = event.get('c')
+    if not c:
+        return
+    g.es_print('dump-expanded...')
+    for p in c.all_positions():
+        if p.v.expandedPositions:
+            g.printObj(p.v.expandedPositions, indent=p.level(), tag=p.h)
+</t>
+<t tx="ekr.20241126093914.183">def edit_widget(self, p: Position) -&gt; Widget:
+    c = self
+    return p and c.frame.tree.edit_widget(p)
+</t>
+<t tx="ekr.20241126093914.184"># Compatibility with scripts
+
+def fileName(self) -&gt; str:
+    s = self.mFileName or ""
+    if g.isWindows:
+        s = s.replace('\\', '/')
+    return s
+
+def relativeFileName(self) -&gt; str:
+    return self.mRelativeFileName or self.mFileName
+
+def shortFileName(self) -&gt; str:
+    return g.shortFileName(self.mFileName)
+
+shortFilename = shortFileName
+</t>
+<t tx="ekr.20241126093914.185">def firstVisible(self) -&gt; Position:
+    """Move to the first visible node of the present chapter or hoist."""
+    c, p = self, self.p
+    while 1:
+        back = p.visBack(c)
+        if back and back.isVisible(c):
+            p = back
+        else:
+            break
+    return p
+</t>
+<t tx="ekr.20241126093914.186">def getBodyLines(self) -&gt; tuple[str, list[str], str, Optional[tuple], Optional[tuple]]:
+    """
+    Return (head, lines, tail, oldSel, oldYview).
+
+    - head: string containing all the lines before the selected text (or the
+      text before the insert point if no selection)
+    - lines: list of lines containing the selected text
+      (or the line containing the insert point if no selection)
+    - after: string containing all lines after the selected text
+      (or the text after the insert point if no  selection)
+    - oldSel: tuple containing the old selection range, or None.
+    - oldYview: int containing the old y-scroll value, or None.
+    """
+    c = self
+    body = c.frame.body
+    w = body.wrapper
+    oldYview = w.getYScrollPosition()
+    # Note: lines is the entire line containing the insert point if no selection.
+    head, s, tail = body.getSelectionLines()
+    lines = g.splitLines(s)  # Retain the newlines of each line.
+    # Expand the selection.
+    i = len(head)
+    j = len(head) + len(s)
+    oldSel = i, j
+    return head, lines, tail, oldSel, oldYview  # string,list,string,tuple,int.
+</t>
+<t tx="ekr.20241126093914.187">def getTabWidth(self, p: Position) -&gt; int:
+    """Return the tab width in effect at p."""
+    c = self
+    val = g.scanAllAtTabWidthDirectives(c, p)
+    return val
+</t>
+<t tx="ekr.20241126093914.188"></t>
+<t tx="ekr.20241126093914.189">def currentPositionIsRootPosition(self) -&gt; bool:
+    """Return True if the current position is the root position.
+
+    This method is called during idle time, so not generating positions
+    here fixes a major leak.
+    """
+    c = self
+    root = c.rootPosition()
+    return bool(c._currentPosition and root and c._currentPosition == root)
+</t>
+<t tx="ekr.20241126093914.19">def computeThemeFilePath(self) -&gt; str:
+    """
+    Return the absolute path to the theme .leo file, resolved using the search order for themes.
+
+    1. Use the --theme command-line option if it exists.
+
+    2. Otherwise, preload the first .leo file.
+       Load the file given by @string theme-name setting.
+
+    3. Finally, look up the @string theme-name in the already-loaded, myLeoSettings.leo.
+       Load the file if setting exists.  Otherwise return None.
+    """
+    trace = 'themes' in g.app.db
+    lm = self
+    resolve = self.resolve_theme_path
+    #
+    # Step 1: Use the --theme command-line options if it exists
+    path = resolve(lm.options.get('theme_path'), tag='--theme')
+    if path:
+        # Caller (LM.readGlobalSettingsFiles) sets lm.theme_path
+        if trace:
+            g.trace('--theme:', path)
+        return path
+    #
+    # Step 2: look for the @string theme-name setting in the first loaded file.
+    path = lm.files[0] if lm.files else ''
+    if path and g.os_path_exists(path):
+        # Tricky: we must call lm.computeLocalSettings *here*.
+        theme_c = lm.openSettingsFile(path)
+        if theme_c:
+            settings_d, junk_shortcuts_d = lm.computeLocalSettings(
+                c=theme_c,
+                settings_d=lm.globalSettingsDict,
+                bindings_d=lm.globalBindingsDict,
+                localFlag=False,
+            )
+            setting = settings_d.get_string_setting('theme-name')
+            if setting:
+                tag = theme_c.shortFileName()
+                path = resolve(setting, tag=tag)
+                if path:
+                    # Caller (LM.readGlobalSettingsFiles) sets lm.theme_path
+                    if trace:
+                        g.trace("First loaded file", theme_c.shortFileName(), path)
+                    return path
+    #
+    # Step 3: use the @string theme-name setting in myLeoSettings.leo.
+    # Note: the setting should *never* appear in leoSettings.leo!
+    setting = lm.globalSettingsDict.get_string_setting('theme-name')
+    tag = 'myLeoSettings.leo'
+    path = resolve(setting, tag=tag)
+    if trace:
+        g.trace("myLeoSettings.leo", path)
+    return path
+</t>
+<t tx="ekr.20241126093914.190">def currentPositionHasNext(self) -&gt; bool:
+    """Return True if the current position is the root position.
+
+    This method is called during idle time, so not generating positions
+    here fixes a major leak.
+    """
+    c = self
+    current = c._currentPosition
+    return bool(current and current.hasNext())
+</t>
+<t tx="ekr.20241126093914.191">def isCurrentPosition(self, p: Position) -&gt; bool:
+    c = self
+    if p is None or c._currentPosition is None:
+        return False
+    return p == c._currentPosition
+</t>
+<t tx="ekr.20241126093914.192">def isRootPosition(self, p: Position) -&gt; bool:
+    c = self
+    root = c.rootPosition()
+    return bool(p and root and p == root)
+</t>
+<t tx="ekr.20241126093914.193">def isChanged(self) -&gt; bool:
+    return self.changed
+</t>
+<t tx="ekr.20241126093914.194">def lastPosition(self) -&gt; Position:
+    c = self
+    p = c.rootPosition()
+    while p.hasNext():
+        p.moveToNext()
+    while p.hasThreadNext():
+        p.moveToThreadNext()
+    return p
+</t>
+<t tx="ekr.20241126093914.195">def lastTopLevel(self) -&gt; Position:
+    """Return the last top-level position in the outline."""
+    c = self
+    p = c.rootPosition()
+    while p.hasNext():
+        p.moveToNext()
+    return p
+</t>
+<t tx="ekr.20241126093914.196">def lastVisible(self) -&gt; Position:
+    """Move to the last visible node of the present chapter or hoist."""
+    c, p = self, self.p
+    while 1:
+        next = p.visNext(c)
+        if next and next.isVisible(c):
+            p = next
+        else:
+            break
+    return p
+</t>
+<t tx="ekr.20241126093914.197">def positionExists(self, p: Position, root: Position = None, trace: bool = False) -&gt; bool:
+    """Return True if a position exists in c's tree"""
+    if not p or not p.v:
+        return False
+
+    rstack = root.stack + [(root.v, root._childIndex)] if root else []
+    pstack = p.stack + [(p.v, p._childIndex)]
+
+    if len(rstack) &gt; len(pstack):
+        return False
+
+    par = self.hiddenRootNode
+    for j, x in enumerate(pstack):
+        if j &lt; len(rstack) and x != rstack[j]:
+            return False
+        v, i = x
+        if i &gt;= len(par.children) or v is not par.children[i]:
+            return False
+        par = v
+    return True
+</t>
+<t tx="ekr.20241126093914.198">def dumpPosition(self, p: Position) -&gt; None:
+    """Dump position p and it's ancestors."""
+    g.trace('=====', p.h, p._childIndex)
+    for i, data in enumerate(p.stack):
+        v, childIndex = data
+        print(f"{i} {childIndex} {v._headString}")
+</t>
+<t tx="ekr.20241126093914.199">_rootCount = 0
+
+def rootPosition(self) -&gt; Optional[Position]:
+    """Return a new *copy* of the root position or None."""
+    c = self
+    if c.hiddenRootNode.children:
+        v = c.hiddenRootNode.children[0]
+        return leoNodes.Position(v, childIndex=0, stack=None)
+    return None
+
+# For compatibility with old scripts...
+
+rootVnode = rootPosition
+findRootPosition = rootPosition
+</t>
+<t tx="ekr.20241126093914.2">@language rest
+@wrap
+@nosearch
+
+https://github.com/leo-editor/leo-editor/issues/4109
+Thread: https://groups.google.com/g/leo-editor/c/xii7Zbkn_Y0
+
+@language python
+</t>
+<t tx="ekr.20241126093914.20">def resolve_theme_path(self, fn: str, tag: str) -&gt; Optional[str]:
+    """Search theme directories for the given .leo file."""
+    if not fn:
+        return None
+    # Make --theme and theme-name setting do the same thing for "None"
+    if fn.lower().strip() == 'none':
+        return LoadManager.LM_NOTHEME_FLAG
+    if not fn.endswith('.leo'):
+        fn += '.leo'
+    for directory in self.computeThemeDirectories():
+        path = g.os_path_join(directory, fn)  # Normalizes slashes, etc.
+        if g.os_path_exists(path):
+            return path
+    print(f"theme .leo file not found: {fn}")
+    return None
+</t>
+<t tx="ekr.20241126093914.200">def shouldBeExpanded(self, p: Position) -&gt; bool:
+    """Return True if the node at position p should be expanded."""
+    c, v = self, p.v
+    if not p.hasChildren():
+        return False
+    # Always clear non-existent positions.
+    v.expandedPositions = [z for z in v.expandedPositions if c.positionExists(z)]
+    if not p.isCloned():
+        # Do not call p.isExpanded here! It calls this method.
+        return p.v.isExpanded()
+    if p.isAncestorOf(c.p):
+        return True
+    for p2 in v.expandedPositions:
+        if p == p2:
+            return True
+    return False
+</t>
+<t tx="ekr.20241126093914.201">def visLimit(self) -&gt; Union[tuple[None, None], tuple[Position, bool]]:
+    """
+    Return the topmost visible node.
+    This is affected by chapters and hoists.
+    """
+    c = self
+    cc = c.chapterController
+    if c.hoistStack:
+        bunch = c.hoistStack[-1]
+        p = bunch.p
+        limitIsVisible = not cc or not p.h.startswith('@chapter')
+        return p, limitIsVisible
+    return None, None
+</t>
+<t tx="ekr.20241126093914.202">def vnode2allPositions(self, v: VNode) -&gt; list[Position]:
+    """
+    Given a VNode v, find all valid positions p such that p.v = v.
+
+    Not really all, just all for each of v's distinct immediate parents.
+    """
+    c = self
+    context = v.context  # v's commander.
+    assert c == context
+    positions = []
+    for immediate in v.parents:
+        if v in immediate.children:
+            n = immediate.children.index(v)
+        else:
+            continue
+        stack = [(v, n)]
+        while immediate.parents:
+            parent = immediate.parents[0]
+            if immediate in parent.children:
+                n = parent.children.index(immediate)
+            else:
+                break
+            stack.insert(0, (immediate, n),)
+            immediate = parent
+        else:
+            v, n = stack.pop()
+            p = leoNodes.Position(v, n, stack)
+            positions.append(p)
+    return positions
+</t>
+<t tx="ekr.20241126093914.203">def vnode2position(self, v: VNode) -&gt; Position:
+    """
+    Given a VNode v, construct a valid position p such that p.v = v.
+    """
+    c = self
+    context = v.context  # v's commander.
+    assert c == context
+    stack: list[tuple[VNode, int]] = []
+    while v.parents:
+        parent = v.parents[0]
+        if v in parent.children:
+            n = parent.children.index(v)
+        else:
+            return None
+        stack.insert(0, (v, n),)
+        v = parent
+    # v.parents includes the hidden root node.
+    if not stack:
+        # a VNode not in the tree
+        return None
+    v, n = stack.pop()
+    p = leoNodes.Position(v, n, stack)  # type:ignore
+    return p
+</t>
+<t tx="ekr.20241126093914.204">def __get_p(self) -&gt; Position:
+    c = self
+    return c.currentPosition()
+
+p = property(
+    __get_p,  # No setter.
+    doc="commander current position property")
+</t>
+<t tx="ekr.20241126093914.205"></t>
+<t tx="ekr.20241126093914.206">def appendStringToBody(self, p: Position, s: str) -&gt; None:
+
+    if s:
+        p.b = p.b + g.toUnicode(s)
+</t>
+<t tx="ekr.20241126093914.207">def clearAllMarked(self) -&gt; None:
+    c = self
+    for p in c.all_unique_positions(copy=False):
+        p.v.clearMarked()
+</t>
+<t tx="ekr.20241126093914.208">def clearAllVisited(self) -&gt; None:
+    c = self
+    for p in c.all_unique_positions(copy=False):
+        p.v.clearVisited()
+        p.v.clearWriteBit()
+</t>
+<t tx="ekr.20241126093914.209">def clearChanged(self) -&gt; None:
+    """clear the marker that indicates that the .leo file has been changed."""
+    c = self
+    if not c.frame:
+        return
+    c.changed = False
+    if c.loading:
+        return  # don't update while loading.
+    # Clear all dirty bits _before_ setting the caption.
+    for v in c.all_unique_nodes():
+        if v.statusBits &amp; v.dirtyBit:  # Only clear if actually dirty
+            v.clearDirty()
+    c.changed = False
+    # Do nothing for null frames.
+    assert c.gui
+    if c.gui.guiName() == 'nullGui':
+        return
+    if not c.frame.top:
+        return
+    master = getattr(c.frame.top, 'leo_master', None)
+    if master:
+        master.setChanged(c, changed=False)  # LeoTabbedTopLevel.setChanged.
+    s = c.frame.getTitle()
+    if len(s) &gt; 2 and s[0:2] == "* ":
+        c.frame.setTitle(s[2:])
+</t>
+<t tx="ekr.20241126093914.21">def computeWorkbookFileName(self) -&gt; Optional[str]:
+    """
+    Return full path to the workbook.
+
+    Return None if testing, or in batch mode, or if the containing
+    directory does not exist.
+    """
+    # lm = self
+    # Never create a workbook during unit tests or in batch mode.
+    if g.unitTesting or g.app.batchMode:
+        return None
+    fn = g.app.config.getString(setting='default_leo_file') or '~/.leo/workbook.leo'
+    fn = g.finalize(fn)
+    directory = g.finalize(os.path.dirname(fn))
+
+    return fn if os.path.exists(directory) else None
+</t>
+<t tx="ekr.20241126093914.210">def clearMarked(self, p: Position) -&gt; None:
+    c = self
+    p.v.clearMarked()
+    g.doHook("clear-mark", c=c, p=p)
+</t>
+<t tx="ekr.20241126093914.211">def setBodyString(self, p: Position, s: str) -&gt; None:
+    """
+    This is equivalent to p.b = s.
+
+    Warning: This method may call c.recolor() or c.redraw().
+    """
+    c, v = self, p.v
+    if not c or not v:
+        return
+    s = g.toUnicode(s)
+    current = c.p
+    # 1/22/05: Major change: the previous test was: 'if p == current:'
+    # This worked because commands work on the presently selected node.
+    # But setRecentFiles may change a _clone_ of the selected node!
+    if current and p.v == current.v:
+        w = c.frame.body.wrapper
+        w.setAllText(s)
+        v.setSelection(0, 0)
+        c.recolor()
+    # Keep the body text in the VNode up-to-date.
+    if v.b != s:
+        v.setBodyString(s)
+        v.setSelection(0, 0)
+        p.setDirty()
+        if not c.isChanged():
+            c.setChanged()
+</t>
+<t tx="ekr.20241126093914.212">def setChanged(self) -&gt; None:
+    """Set the marker that indicates that the .leo file has been changed."""
+    c = self
+    if not c.frame:
+        return
+    c.changed = True
+    if c.loading:
+        return  # don't update while loading.
+    # Do nothing for null frames.
+    assert c.gui
+    if c.gui.guiName() == 'nullGui':
+        return
+    if not c.frame.top:
+        return
+    master = getattr(c.frame.top, 'leo_master', None)
+    if master:
+        master.setChanged(c, changed=True)  # LeoTabbedTopLevel.setChanged.
+    s = c.frame.getTitle()
+    if len(s) &gt; 2 and s[0] != '*':
+        c.frame.setTitle("* " + s)
+</t>
+<t tx="ekr.20241126093914.213">_currentCount = 0
+
+def setCurrentPosition(self, p: Position) -&gt; None:
+    """
+    Set the presently selected position. For internal use only.
+    Client code should use c.selectPosition instead.
+    """
+    c = self
+    if not p:
+        g.trace('===== no p', g.callers())
+        return
+    if c.positionExists(p):
+        if c._currentPosition and p == c._currentPosition:
+            pass  # We have already made a copy.
+        else:  # Make a copy _now_
+            c._currentPosition = p.copy()
+    else:
+        if g.unitTesting:
+            # New in Leo 6.7.4: *Do* raise an exception.
+            raise ValueError(f"Invalid position: {p!r}")
+        c._currentPosition = c.rootPosition()
+        g.trace('Invalid position', repr(p), repr(c))
+        g.printObj(g.callers(20).split(','), tag='Callers')
+
+# For compatibility with old scripts.
+
+setCurrentVnode = setCurrentPosition
+</t>
+<t tx="ekr.20241126093914.214">def setHeadString(self, p: Position, s: str) -&gt; None:
+    """
+    Set the p's headline and the corresponding tree widget to s.
+
+    This is used in by unit tests to restore the outline.
+    """
+    c = self
+    p.initHeadString(s)
+    p.setDirty()
+    # Change the actual tree widget so
+    # A later call to c.endEditing or c.redraw will use s.
+    c.frame.tree.setHeadline(p, s)
+</t>
+<t tx="ekr.20241126093914.215">def setLog(self) -&gt; None:
+    c = self
+    if c.exists:
+        try:
+            # c.frame or c.frame.log may not exist.
+            g.app.setLog(c.frame.log)
+        except AttributeError:
+            pass
+</t>
+<t tx="ekr.20241126093914.216">def setMarked(self, p: Position) -&gt; None:
+    c = self
+    p.setMarked()
+    p.setDirty()  # Defensive programming.
+    g.doHook("set-mark", c=c, p=p)
+</t>
+<t tx="ekr.20241126093914.217">def setRootPosition(self, unused_p: Position = None) -&gt; None:
+    """Set c._rootPosition."""
+    # 2011/03/03: No longer used.
+</t>
+<t tx="ekr.20241126093914.218">def setRootVnode(self, v: VNode) -&gt; None:
+    pass
+    # c = self
+    # # 2011/02/25: c.setRootPosition needs no arguments.
+    # c.setRootPosition()
+</t>
+<t tx="ekr.20241126093914.219">def topPosition(self) -&gt; Optional[Position]:
+    """Return the root position."""
+    c = self
+    if c._topPosition:
+        return c._topPosition.copy()
+    return None
+
+def setTopPosition(self, p: Position) -&gt; None:
+    """Set the root position."""
+    c = self
+    if p:
+        c._topPosition = p.copy()
+    else:
+        c._topPosition = None
+
+# Define these for compatibility with old scripts...
+
+topVnode = topPosition
+setTopVnode = setTopPosition
+</t>
+<t tx="ekr.20241126093914.22">def reportDirectories(self) -&gt; None:
+    """Report directories."""
+    # The cwd changes later, so it would be misleading to report it here.
+    for kind, theDir in (
+        ('home', g.app.homeDir),
+        ('leo-editor', g.app.leoEditorDir),
+        ('load', g.app.loadDir),
+        ('config', g.app.globalConfigDir),
+    ):  # g.blue calls g.es_print, and that's annoying.
+        g.es(f"{kind:&gt;10}:", os.path.normpath(theDir), color='blue')
+</t>
+<t tx="ekr.20241126093914.220"></t>
+<t tx="ekr.20241126093914.221">def checkGnxs(self) -&gt; int:
+    """
+    Check the consistency of all gnx's.
+    Reallocate gnx's for duplicates or empty gnx's.
+    Return the number of errors found.
+    """
+    c = self
+    # Keys are gnx's; values are lists of (id(v), v).
+    vnode_d: dict[str, list[tuple[int, VNode]]] = {}
+    ni = g.app.nodeIndices
+    t1 = time.time()
+
+    def new_gnx(v: VNode) -&gt; None:
+        """Set v.fileIndex."""
+        v.fileIndex = ni.getNewIndex(v)
+
+    count, gnx_errors = 0, 0
+    for p in c.all_positions(copy=False):
+        count += 1
+        v = p.v
+        gnx = v.fileIndex
+        if gnx:  # gnx must be a string.
+            aList = vnode_d.get(gnx, [])
+            aList.append((id(v), v))
+        else:
+            gnx_errors += 1
+            new_gnx(v)
+            g.es_print(f"empty v.fileIndex: {v} new: {p.v.gnx!r}", color='red')
+    for gnx in sorted(vnode_d.keys()):
+        aList = list(vnode_d.get(gnx))
+        ids = [id_ for (id_, v) in aList]
+        if len(ids) &gt; 1:
+            print('\nc.checkGnxs...')
+            g.es_print(f"multiple vnodes with gnx: {gnx!r}", color='red')
+            for (id_, v) in aList:
+                gnx_errors += 1
+                g.es_print(f"id(v): {id(v)} gnx: {v.fileIndex} {v.h}", color='red')
+                new_gnx(v)
+    ok = not gnx_errors
+    t2 = time.time()
+    if not ok:
+        g.es_print(
+            f"check-outline ERROR! {c.shortFileName()} "
+            f"{count} nodes, {gnx_errors} gnx errors, ",
+            color='red'
+        )
+    elif c.verbose_check_outline and not g.unitTesting:
+        print(
+            f"check-outline OK: {t2 - t1:4.2f} sec. "
+            f"{c.shortFileName()} {count} nodes")
+    return gnx_errors
+</t>
+<t tx="ekr.20241126093914.222">def checkLinks(self) -&gt; int:
+    """
+    Check the consistency of all links in the outline.
+    """
+    # This is too slow a test to be run outside of unit tests.
+    c = self
+    count, errors = 0, 0
+    for p in c.all_positions():
+        count += 1
+        if not c.checkThreadLinks(p):
+            errors += 1
+            break
+        if not c.checkSiblings(p):
+            errors += 1
+            break
+        if not c.checkParentAndChildren(p):
+            errors += 1
+            break
+    return errors
+</t>
+<t tx="ekr.20241126093914.223">def checkParentAndChildren(self, p: Position) -&gt; bool:
+    """Check consistency of parent and child data structures."""
+    c = self
+
+    def _assert(condition: Any) -&gt; bool:
+        return g._assert(condition, show_callers=False)
+
+    def dump(p: Position) -&gt; None:
+        if p and p.v:
+            p.v.dump()
+        elif p:
+            print('&lt;no p.v&gt;')
+        else:
+            print('&lt;no p&gt;')
+
+    if p.hasParent():
+        n = p.childIndex()
+        if not _assert(p == p.parent().moveToNthChild(n)):
+            g.trace(f"p != parent().moveToNthChild({n})")
+            dump(p)
+            dump(p.parent())
+            return False
+    if p.level() &gt; 0 and not _assert(p.v.parents):
+        g.trace("no parents")
+        dump(p)
+        return False
+    for child in p.children():
+        if not c.checkParentAndChildren(child):
+            return False
+        if not _assert(p == child.parent()):
+            g.trace("p != child.parent()")
+            dump(p)
+            dump(child.parent())
+            return False
+    if p.hasNext():
+        if not _assert(p.next().parent() == p.parent()):
+            g.trace("p.next().parent() != p.parent()")
+            dump(p.next().parent())
+            dump(p.parent())
+            return False
+    if p.hasBack():
+        if not _assert(p.back().parent() == p.parent()):
+            g.trace("p.back().parent() != parent()")
+            dump(p.back().parent())
+            dump(p.parent())
+            return False
+    # Check consistency of parent and children arrays.
+    # Every nodes gets visited, so a strong test need only check consistency
+    # between p and its parent, not between p and its children.
+    parent_v = p._parentVnode()
+    n = p.childIndex()
+    if not _assert(parent_v.children[n] == p.v):
+        g.trace("parent_v.children[n] != p.v")
+        parent_v.dump()
+        p.v.dump()
+        return False
+    return True
+</t>
+<t tx="ekr.20241126093914.224">def checkSiblings(self, p: Position) -&gt; bool:
+    """Check the consistency of next and back links."""
+    back = p.back()
+    next = p.next()
+    if back:
+        if not g._assert(p == back.next()):
+            g.trace(
+                f"p!=p.back().next()\n"
+                f"     back: {back}\n"
+                f"back.next: {back.next()}")
+            return False
+    if next:
+        if not g._assert(p == next.back()):
+            g.trace(
+                f"p!=p.next().back\n"
+                f"     next: {next}\n"
+                f"next.back: {next.back()}")
+            return False
+    return True
+</t>
+<t tx="ekr.20241126093914.225">def checkThreadLinks(self, p: Position) -&gt; bool:
+    """Check consistency of threadNext &amp; threadBack links."""
+    threadBack = p.threadBack()
+    threadNext = p.threadNext()
+    if threadBack:
+        if not g._assert(p == threadBack.threadNext()):
+            g.trace("p!=p.threadBack().threadNext()")
+            return False
+    if threadNext:
+        if not g._assert(p == threadNext.threadBack()):
+            g.trace("p!=p.threadNext().threadBack()")
+            return False
+    return True
+</t>
+<t tx="ekr.20241126093914.226">def checkVnodeLinks(self) -&gt; int:
+    """
+    Check all vnode links.
+
+    Attempt error recovery if recover_flag is True.
+    Unit tests may set recover_flag to False for strict tests.
+
+    Return the number of errors.
+    """
+    c = self
+
+    @others  # Define helpers.
+
+    # For unit testing.
+    strict = 'test:strict' in g.app.debug
+    verbose = any(z in g.app.debug for z in ('test:verbose', 'gnx', 'shutdown', 'startup', 'verbose'))
+    error_list, messages, n = find_errors()
+    if n == 0:
+        return 0
+    if verbose:  # pragma: no cover
+        print('\n')
+        g.trace(f"{len(messages)} link error{g.plural(len(messages))}:\n")
+        print('\n'.join(messages) + '\n')
+    if strict:  # pragma: no cover
+        return n
+    old_n = n
+    fix_errors(error_list)
+    undelete_nodes(error_list)
+    error_list, messages, n = recheck()
+    if n:  # pragma: no cover
+        # Report the *failure* to fix links!
+        print('\n'.join(messages))
+    elif verbose:  # pragma: no cover
+        g.trace(f"Fixed {old_n} link error{g.plural(old_n)}")
+    return n
+</t>
+<t tx="ekr.20241126093914.227">def find_errors() -&gt; tuple[list[tuple[VNode, VNode]], list[str], int]:
+    """
+    Scan all vnodes for erroneous parent/child pairs.
+
+    Return (error_list, messages, n)
+    """
+    error_list: list[tuple[VNode, VNode]] = []
+    messages: list[str] = []
+    n = 0
+    for parent_v in c.all_unique_nodes():  # Avoids recursion.
+        for child_v in parent_v.children:
+            children_n = parent_v.children.count(child_v)
+            parents_n = child_v.parents.count(parent_v)
+            if children_n != parents_n:
+                error_list.append((parent_v, child_v))
+                messages.append(
+                    'Mismatch between parent.children and child.parents\n'
+                    f"parent: {parent_v.h:30} count(parent.children) = {children_n}\n"
+                    f" child: {child_v.h:30} count(child.parents = {parents_n}")
+                n += 1
+    return error_list, messages, n
+</t>
+<t tx="ekr.20241126093914.228">def fix_errors(error_list: list[tuple[VNode, VNode]]) -&gt; None:
+    """Fix all erroneous nodes by adding/deleting entries from v.parents."""
+    for parent_v, child_v in error_list:
+        children_n = parent_v.children.count(child_v)
+        parents_n = child_v.parents.count(parent_v)
+        if parents_n == children_n:
+            pass  # Already fixed.
+        elif parents_n &lt; children_n:
+            while parents_n &lt; children_n:
+                # Safe.
+                child_v.parents.append(parent_v)
+                parents_n += 1
+        else:
+            while children_n &lt; parents_n:
+                if child_v.parents:
+                    # Safe.
+                    child_v.parents.remove(parent_v)
+                    children_n += 1
+                else:  # pragma: no cover
+                    # This could delete the child.
+                    parent_v.children.remove(child_v)
+                    parents_n += 1
+</t>
+<t tx="ekr.20241126093914.229">def undelete_nodes(error_list: list[tuple[VNode, VNode]]) -&gt; None:
+
+    """Restore a parent link to any node that would otherwise be deleted."""
+    seen: list[VNode] = []
+    for parent_v, child_v in error_list:
+        if not child_v.parents and child_v not in seen:  # pragma: no cover
+            # Add child_v to *one* parent.
+            seen.append(child_v)
+            parent_v.children.append(child_v)
+            child_v.parents.append(parent_v)
+</t>
+<t tx="ekr.20241126093914.23"></t>
+<t tx="ekr.20241126093914.230">def recheck() -&gt; tuple[list[tuple[VNode, VNode]], list[str], int]:
+    """
+    Rescan all vnodes to ensure that no errors remain.
+
+    Return (error_list, messages, n).
+    """
+    error_list: list[tuple[VNode, VNode]] = []
+    messages: list[str] = []
+    n = 0
+    for parent_v in c.all_unique_nodes():  # Avoids recursion.
+        for child_v in parent_v.children:
+            children_n = parent_v.children.count(child_v)
+            parents_n = child_v.parents.count(parent_v)
+            if children_n != parents_n:  # pragma: no cover
+                error_list.append((parent_v, child_v))
+                messages.append(
+                    'Error recovery failed!\n'
+                    f"parent: {parent_v.h:30} count(parent.children) = {children_n}\n"
+                    f" child: {child_v.h:30} count(child.parents = {parents_n}")
+                n += 1
+    return error_list, messages, n
+</t>
+<t tx="ekr.20241126093914.231"></t>
+<t tx="ekr.20241126093914.232">def checkMoveWithParentWithWarning(self,
+    root: Position,
+    parent: Position,
+    warningFlag: bool,
+) -&gt; bool:
+    """
+    Return False if root or any of root's descendants is a clone of parent
+    or any of parents ancestors.
+    """
+    c = self
+    message = "Illegal move or drag: no clone may contain a clone of itself"
+    clonedVnodes = {}
+    for ancestor in parent.self_and_parents(copy=False):
+        if ancestor.isCloned():
+            v = ancestor.v
+            clonedVnodes[v] = v
+    if not clonedVnodes:
+        return True
+    for p in root.self_and_subtree(copy=False):  # pragma: no cover
+        if p.isCloned() and clonedVnodes.get(p.v):
+            if not g.unitTesting and warningFlag:
+                c.alert(message)
+            return False
+    return True
+</t>
+<t tx="ekr.20241126093914.233">def checkDrag(self, root: Position, target: Position) -&gt; bool:
+    """Return False if target is any descendant of root."""
+    c = self
+    message = "Can not drag a node into its descendant tree."
+    for z in root.subtree():
+        if z == target:
+            if not g.unitTesting:
+                c.alert(message)
+            return False
+    return True
+</t>
+<t tx="ekr.20241126093914.234">def checkOutline(self) -&gt; int:
+    """
+    Check for errors in the outline.
+    Return the number of errors.
+    """
+    c, errors = self, 0
+    for f in (c.checkVnodeLinks, c.checkGnxs):
+        errors += f()
+    return errors
+</t>
+<t tx="ekr.20241126093914.235"># Makes sure all nodes are valid.
+
+def validateOutline(self, event: LeoKeyEvent = None) -&gt; bool:
+    """
+    A legacy outline checker, retained only for compatibility.
+
+    Not used in Leo's core or unit tests.
+    """
+    c = self
+    return c.checkOutline() == 0
+
+
+</t>
+<t tx="ekr.20241126093914.236">def checkOutlineXML(self, dump: bool = True) -&gt; bool:
+    """Validate outline's xml."""
+    c = self
+    # #1510: https://en.wikipedia.org/wiki/Valid_characters_in_XML.
+    translate_dict = {z: None for z in range(20) if chr(z) not in '\t\r\n'}
+    xml_contents = c.fileCommands.outline_to_xml_string()
+    table = xml_contents.maketrans(translate_dict)
+    translated_contents = xml_contents.translate(table)
+    try:
+        xroot = ElementTree.fromstring(translated_contents)
+        assert xroot
+        return True
+    except Exception:
+        g.es_print('The outline is invalid!', color='red')
+        g.es_exception()
+        if dump:
+            # Write the invalid ouitline to the corresponding leo.txt file.
+            filename = os.path.normpath(os.path.expanduser(f"~/.leo/BAD-{c.shortFileName()}.txt"))
+            try:
+                with open(filename, 'bw') as f:
+                    for s in g.splitLines(translated_contents):
+                        f.write(g.toEncodedString(s, reportErrors=True))
+                g.es_print('')
+                g.es_print(f"Wrote {filename}")
+                g.es_print('')
+            except Exception:
+                g.es_print(f"Exception writing {filename}")
+                g.es_exception()
+        return False
+</t>
+<t tx="ekr.20241126093914.237"># This code is no longer used by any Leo command,
+# but it will be retained for use of scripts.
+</t>
+<t tx="ekr.20241126093914.238">def checkAllPythonCode(self, event: LeoKeyEvent = None, ignoreAtIgnore: bool = True) -&gt; str:
+    """Check all nodes in the selected tree for syntax and tab errors."""
+    c = self
+    count = 0
+    result = "ok"
+    for p in c.all_unique_positions():
+        count += 1
+        if not g.unitTesting:
+            &lt;&lt; print dots &gt;&gt;
+        if g.scanForAtLanguage(c, p) == "python":
+            if not g.scanForAtSettings(p) and (
+                not ignoreAtIgnore or not g.scanForAtIgnore(c, p)
+            ):
+                try:
+                    c.checkPythonNode(p)
+                except(SyntaxError, tokenize.TokenError, tabnanny.NannyNag):
+                    result = "error"  # Continue to check.
+                except Exception:
+                    return "surprise"  # abort
+                if result != 'ok':
+                    g.pr(f"Syntax error in {p.h}")
+                    return result  # End the unit test: it has failed.
+    if not g.unitTesting:
+        g.blue("check complete")
+    return result
+</t>
+<t tx="ekr.20241126093914.239">if count % 100 == 0:
+    g.es('', '.', newline=False)
+if count % 2000 == 0:
+    g.enl()
+</t>
+<t tx="ekr.20241126093914.24">def computeBindingLetter(self, c: Cmdr, path: str) -&gt; str:
+    lm = self
+    if not path:
+        return 'D'
+    path = path.lower()
+    table = (
+        ('M', 'myLeoSettings.leo'),
+        (' ', 'leoSettings.leo'),
+        ('F', c.shortFileName()),
+    )
+    for letter, path2 in table:
+        if path2 and path.endswith(path2.lower()):
+            return letter
+    if lm.theme_path and path.endswith(lm.theme_path.lower()):
+        return 'T'
+    tag = 'register-command:'
+    if path.startswith(tag):
+        return self.computeBindingLetter(c, path=path[len(tag) :])
+    if path.endswith('-mode'):
+        return '@'
+    return 'D'
+</t>
+<t tx="ekr.20241126093914.240">def checkPythonCode(
+    self,
+    event: LeoKeyEvent = None,
+    ignoreAtIgnore: bool = True,
+    checkOnSave: bool = False,
+) -&gt; str:
+    """Check the selected tree for syntax and tab errors."""
+    c = self
+    count = 0
+    result = "ok"
+    if not g.unitTesting:
+        g.es("checking Python code   ")
+    for p in c.p.self_and_subtree():
+        count += 1
+        if not g.unitTesting and not checkOnSave:
+            &lt;&lt; print dots &gt;&gt;
+        if g.scanForAtLanguage(c, p) == "python":
+            if not ignoreAtIgnore or not g.scanForAtIgnore(c, p):
+                try:
+                    c.checkPythonNode(p)
+                except(SyntaxError, tokenize.TokenError, tabnanny.NannyNag):
+                    result = "error"  # Continue to check.
+                except Exception:
+                    return "surprise"  # abort
+    if not g.unitTesting:
+        g.blue("check complete")
+    # We _can_ return a result for unit tests because we aren't using doCommand.
+    return result
+</t>
+<t tx="ekr.20241126093914.241">if count % 100 == 0:
+    g.es('', '.', newline=False)
+if count % 2000 == 0:
+    g.enl()
+</t>
+<t tx="ekr.20241126093914.242">def checkPythonNode(self, p: Position) -&gt; None:
+    c, h = self, p.h
+    # Call getScript to ignore directives and section references.
+    body = g.getScript(c, p.copy())
+    if not body:
+        return
+    try:
+        fn = f"&lt;node: {p.h}&gt;"
+        compile(body + '\n', fn, 'exec')
+        c.tabNannyNode(p, h, body)
+    except SyntaxError:
+        if g.unitTesting:
+            raise
+        g.warning(f"Syntax error in: {h}")
+        g.es_exception()
+    except Exception:
+        g.es_print('unexpected exception')
+        g.es_exception()
+        raise
+</t>
+<t tx="ekr.20241126093914.243"># This code is based on tabnanny.check.
+
+def tabNannyNode(self, p: Position, headline: str, body: str) -&gt; None:
+    """Check indentation using tabnanny."""
+    try:
+        readline = g.ReadLinesClass(body).next
+        tabnanny.process_tokens(tokenize.generate_tokens(readline))
+    except IndentationError:
+        if g.unitTesting:
+            raise
+        junk1, msg, junk2 = sys.exc_info()
+        g.warning("IndentationError in", headline)
+        g.es('', msg)
+    except tokenize.TokenError:
+        if g.unitTesting:
+            raise
+        junk1, msg, junk2 = sys.exc_info()
+        g.warning("TokenError in", headline)
+        g.es('', msg)
+    except tabnanny.NannyNag:
+        if g.unitTesting:
+            raise
+        junk1, nag, junk2 = sys.exc_info()
+        badline = nag.get_lineno()
+        line = nag.get_line()
+        message = nag.get_msg()
+        g.warning("indentation error in", headline, "line", badline)
+        g.es(message)
+        line2 = repr(str(line))[1:-1]
+        g.es("offending line:\n", line2)
+    except Exception:
+        g.trace("unexpected exception")
+        g.es_exception()
+        raise
+</t>
+<t tx="ekr.20241126093914.244"></t>
+<t tx="ekr.20241126093914.245">def fullPath(self, p: Position) -&gt; str:
+    """
+    Return the full path in effect at p.
+
+    If p is an @&lt;file&gt; node, return the path, including the filename.
+    Otherwise the return the path to the enclosing directory.
+
+    Neither the path nor the fileName will be created if it does not exist.
+    """
+    c = self
+    aList = g.get_directives_dict_list(p)
+    path = c.scanAtPathDirectives(aList)
+    return g.finalize_join(path, p.anyAtFileNodeName())
+</t>
+<t tx="ekr.20241126093914.246">def getTime(self, body: bool = True) -&gt; str:
+    c = self
+    default_format = "%m/%d/%Y %H:%M:%S"  # E.g., 1/30/2003 8:31:55
+    # Try to get the format string from settings.
+    if body:
+        format = c.config.getString("body-time-format-string")
+        gmt = c.config.getBool("body-gmt-time")
+    else:
+        format = c.config.getString("headline-time-format-string")
+        gmt = c.config.getBool("headline-gmt-time")
+    if format is None:
+        format = default_format
+    try:
+        # import time
+        if gmt:
+            s = time.strftime(format, time.gmtime())
+        else:
+            s = time.strftime(format, time.localtime())
+    except(ImportError, NameError):
+        g.warning("time.strftime not available on this platform")
+        return ""
+    except Exception:
+        g.es_exception()  # Probably a bad format string in leoSettings.leo.
+        s = time.strftime(default_format, time.gmtime())
+    return s
+</t>
+<t tx="ekr.20241126093914.247">def goToLineNumber(self, n: int) -&gt; None:
+    """
+    Go to line n (zero-based) of a script.
+    A convenience method called from g.handleScriptException.
+    """
+    c = self
+    c.gotoCommands.find_file_line(n)
+
+def goToScriptLineNumber(self, n: int, p: Position) -&gt; None:
+    """
+    Go to line n (zero-based) of a script.
+    A convenience method called from g.handleScriptException.
+    """
+    c = self
+    c.gotoCommands.find_script_line(n, p)
+</t>
+<t tx="ekr.20241126093914.248">def setFileTimeStamp(self, fn: str) -&gt; None:
+    """Update the timestamp for fn.."""
+    # c = self
+    if g.app.externalFilesController:
+        g.app.externalFilesController.set_time(fn)
+</t>
+<t tx="ekr.20241126093914.249">def updateSyntaxColorer(self, p: Position) -&gt; None:
+    self.frame.body.updateSyntaxColorer(p)
+</t>
+<t tx="ekr.20241126093914.25">def computeLocalSettings(self,
+    c: Cmdr,
+    settings_d: g.SettingsDict,
+    bindings_d: g.SettingsDict,
+    localFlag: bool,
+) -&gt; tuple[g.SettingsDict, g.SettingsDict]:
+    """
+    Merge the settings dicts from c's outline into *new copies of*
+    settings_d and bindings_d.
+    """
+    lm = self
+    shortcuts_d2, settings_d2 = lm.createSettingsDicts(c, localFlag)
+    if not bindings_d:  # #1766: unit tests.
+        settings_d, bindings_d = lm.createDefaultSettingsDicts()
+    if settings_d2:
+        if g.app.trace_setting:
+            key = g.app.config.munge(g.app.trace_setting)
+            val = settings_d2.get(key)
+            if val:
+                fn = g.shortFileName(val.path)
+                g.es_print(
+                    f"--trace-setting: in {fn:20}: "
+                    f"@{val.kind} {g.app.trace_setting}={val.val}")
+        settings_d = settings_d.copy()
+        settings_d.update(settings_d2)
+    if shortcuts_d2:
+        bindings_d = lm.mergeShortcutsDicts(c, bindings_d, shortcuts_d2, localFlag)
+    return settings_d, bindings_d
+</t>
+<t tx="ekr.20241126093914.250"></t>
+<t tx="ekr.20241126093914.251">def interactive(self, callback: Callable, event: LeoKeyEvent, prompts: Sequence) -&gt; None:
+    &lt;&lt; c.interactive docstring &gt;&gt;
+    #
+    # This pathetic code should be generalized,
+    # but it's not as easy as one might imagine.
+    c = self
+    d = {1: c.interactive1, 2: c.interactive2, 3: c.interactive3,}
+    f = d.get(len(prompts))
+    if f:
+        f(callback, event, prompts)
+    else:
+        g.trace('At most 3 arguments are supported.')
+</t>
+<t tx="ekr.20241126093914.252">"""
+c.interactive: Prompt for up to three arguments from the minibuffer.
+
+The number of prompts determines the number of arguments.
+
+Use the @command decorator to define commands.  Examples:
+
+    @g.command('i3')
+    def i3_command(event: LeoKeyEvent) -&gt; None:
+        c = event.get('c')
+        if not c: return
+
+        def callback(args: Any, c: Cmdr, event: LeoKeyEvent) -&gt; None:
+            g.trace(args)
+            c.bodyWantsFocus()
+
+        c.interactive(callback, event,
+            prompts=['Arg1: ', ' Arg2: ', ' Arg3: '])
+"""
+</t>
+<t tx="ekr.20241126093914.253">def interactive1(self, callback: Callable, event: LeoKeyEvent, prompts: Sequence) -&gt; None:
+
+    c, k = self, self.k
+    prompt = prompts[0]
+
+    def state1(event: LeoKeyEvent) -&gt; None:
+        callback(args=[k.arg], c=c, event=event)
+        k.clearState()
+        k.resetLabel()
+        k.showStateAndMode()
+
+    k.setLabelBlue(prompt)
+    k.get1Arg(event, handler=state1)
+</t>
+<t tx="ekr.20241126093914.254">def interactive2(self, callback: Callable, event: LeoKeyEvent, prompts: Sequence) -&gt; None:
+
+    c, d, k = self, {}, self.k
+    prompt1, prompt2 = prompts
+
+    def state1(event: LeoKeyEvent) -&gt; None:
+        d['arg1'] = k.arg
+        k.extendLabel(prompt2, select=False, protect=True)
+        k.getNextArg(handler=state2)
+
+    def state2(event: LeoKeyEvent) -&gt; None:
+        callback(args=[d.get('arg1'), k.arg], c=c, event=event)
+        k.clearState()
+        k.resetLabel()
+        k.showStateAndMode()
+
+    k.setLabelBlue(prompt1)
+    k.get1Arg(event, handler=state1)
+</t>
+<t tx="ekr.20241126093914.255">def interactive3(self, callback: Callable, event: LeoKeyEvent, prompts: Sequence) -&gt; None:
+
+    c, d, k = self, {}, self.k
+    prompt1, prompt2, prompt3 = prompts
+
+    def state1(event: LeoKeyEvent) -&gt; None:
+        d['arg1'] = k.arg
+        k.extendLabel(prompt2, select=False, protect=True)
+        k.getNextArg(handler=state2)
+
+    def state2(event: LeoKeyEvent) -&gt; None:
+        d['arg2'] = k.arg
+        k.extendLabel(prompt3, select=False, protect=True)
+        k.get1Arg(event, handler=state3)  # Restart.
+
+    def state3(event: LeoKeyEvent) -&gt; None:
+        args = [d.get('arg1'), d.get('arg2'), k.arg]
+        callback(args=args, c=c, event=event)
+        k.clearState()
+        k.resetLabel()
+        k.showStateAndMode()
+
+    k.setLabelBlue(prompt1)
+    k.get1Arg(event, handler=state1)
+</t>
+<t tx="ekr.20241126093914.256"># These are all new in Leo 4.5.1.
+</t>
+<t tx="ekr.20241126093914.257">def getLanguageAtCursor(self, p: Position, language: str) -&gt; str:
+    """
+    Return the language in effect at the present insert point.
+    Use the language argument as a default if no @language directive seen.
+    """
+    c = self
+    tag = '@language'
+    w = c.frame.body.wrapper
+    ins = w.getInsertPoint()
+    n = 0
+    for s in g.splitLines(p.b):
+        if g.match_word(s, 0, tag):
+            i = g.skip_ws(s, len(tag))
+            j = g.skip_id(s, i)
+            language = s[i:j]
+        if n &lt;= ins &lt; n + len(s):
+            break
+        else:
+            n += len(s)
+    return language
+</t>
+<t tx="ekr.20241126093914.258">def getNodePath(self, p: Position) -&gt; str:
+    """Return the path in effect at node p."""
+    c = self
+    aList = g.get_directives_dict_list(p)
+    path = c.scanAtPathDirectives(aList)
+    return path
+
+def getNodeFileName(self, p: Position) -&gt; str:
+    """
+    Return the full file name at node p,
+    including effects of all @path directives.
+    Return '' if p is no kind of @file node.
+    """
+    c = self
+    for p in p.self_and_parents(copy=False):
+        name = p.anyAtFileNodeName()
+        if name:
+            return c.fullPath(p)  # #1914.
+    return ''
+</t>
+<t tx="ekr.20241126093914.259">def hasAmbiguousLanguage(self, p: Position) -&gt; int:
+    """Return True if p.b contains different @language directives."""
+    # c = self
+    languages, tag = set(), '@language'
+    for s in g.splitLines(p.b):
+        if g.match_word(s, 0, tag):
+            i = g.skip_ws(s, len(tag))
+            j = g.skip_id(s, i)
+            word = s[i:j]
+            languages.add(word)
+    return len(list(languages)) &gt; 1
+</t>
+<t tx="ekr.20241126093914.26">def createDefaultSettingsDicts(self) -&gt; tuple[g.SettingsDict, g.SettingsDict]:
+    """Create lm.globalSettingsDict &amp; lm.globalBindingsDict."""
+    settings_d = g.SettingsDict('lm.globalSettingsDict')
+    bindings_d = g.SettingsDict('lm.globalBindingsDict')
+    return settings_d, bindings_d
+</t>
+<t tx="ekr.20241126093914.260">@nobeautify
+
+def scanAllDirectives(self, p: Position) -&gt; dict[str, Any]:
+    """
+    Scan p and ancestors for directives.
+
+    Returns a dict containing the results, including defaults.
+    """
+    c = self
+    p = p or c.p
+    # Defaults...
+    default_language = g.getLanguageFromAncestorAtFileNode(p) or c.target_language or 'python'
+    default_delims = g.set_delims_from_language(default_language)
+    wrap = c.config.getBool("body-pane-wraps")
+    table = (  # type:ignore
+        ('encoding',    None,           g.scanAtEncodingDirectives),
+        ('lang-dict',   {},             g.scanAtCommentAndAtLanguageDirectives),
+        ('lineending',  None,           g.scanAtLineendingDirectives),
+        ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
+        ('path',        None,           c.scanAtPathDirectives),
+        ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
+        ('wrap',        wrap,           g.scanAtWrapDirectives),
+    )
+    # Set d by scanning all directives.
+    aList = g.get_directives_dict_list(p)
+    d: dict[str, Any] = {}
+    for key, default, func in table:
+        val = func(aList)  # type:ignore
+        d[key] = default if val is None else val
+    # Post process: do *not* set commander ivars.
+    lang_dict = d.get('lang-dict')
+    d = {
+        "delims":       lang_dict.get('delims') or default_delims,
+        "comment":      lang_dict.get('comment'),  # Leo 6.4: New.
+        "encoding":     d.get('encoding'),
+        # Note: at.scanAllDirectives does not use the defaults for "language".
+        "language":     lang_dict.get('language') or default_language,
+        "lang-dict":    lang_dict,  # Leo 6.4: New.
+        "lineending":   d.get('lineending'),
+        "pagewidth":    d.get('pagewidth'),
+        "path":         d.get('path'),
+        "tabwidth":     d.get('tabwidth'),
+        "wrap":         d.get('wrap'),
+    }
+    return d
+</t>
+<t tx="ekr.20241126093914.261">def scanAtPathDirectives(self, aList: list) -&gt; str:
+    """
+    Scan aList (created by g.get_directives_dict_list) for @path directives.
+
+    Return a reasonable default if no @path directive is found.
+    """
+    c = self
+    c.scanAtPathDirectivesCount += 1  # An important statistic.
+    if c.fileName():
+        absbase = g.os_path_dirname(c.fileName())
+    else:
+        absbase = os.getcwd()
+
+    # Look for @path directives.
+    paths = []
+    for d in aList:
+        # Look for @path directives.
+        path = d.get('path')
+        if path is not None:  # retain empty paths for warnings.
+            # Convert "path" or &lt;path&gt; to path.
+            path = g.stripPathCruft(path)
+            if path:
+                paths.append(path)
+
+    # Add absbase and reverse the list.
+    paths.append(absbase)
+    paths.reverse()
+
+    # Compute the full, effective, absolute path.
+    path = g.finalize_join(*paths)
+    return path
+</t>
+<t tx="ekr.20241126093914.262"></t>
+<t tx="ekr.20241126093914.263">def check_event(self, event: LeoKeyEvent) -&gt; None:
+    """Check an event object."""
+    # c = self
+    from leo.core import leoGui
+
+    if not event:
+        return
+    stroke = event.stroke
+    got = event.char
+    if g.unitTesting:
+        return
+    if stroke and (stroke.find('Alt+') &gt; -1 or stroke.find('Ctrl+') &gt; -1):
+        # Alas, Alt and Ctrl bindings must *retain* the char field,
+        # so there is no way to know what char field to expect.
+        expected = event.char
+    else:
+        # disable the test.
+        # We will use the (weird) key value for, say, Ctrl-s,
+        # if there is no binding for Ctrl-s.
+        expected = event.char
+    if not isinstance(event, leoGui.LeoKeyEvent):
+        if g.app.gui.guiName() not in ('browser', 'console', 'curses'):  # #1839.
+            g.trace(f"not leo event: {event!r}, callers: {g.callers(8)}")
+    if expected != got:
+        g.trace(f"stroke: {stroke!r}, expected char: {expected!r}, got: {got!r}")
+</t>
+<t tx="ekr.20241126093914.264">def doCommand(self, command_func: Callable, command_name: str, event: LeoKeyEvent) -&gt; Any:
+    """
+    Execute the given command function, invoking hooks and catching exceptions.
+
+    The code assumes that the "command1" hook has completely handled the
+    command func if g.doHook("command1") returns False. This provides a
+    simple mechanism for overriding commands.
+    """
+    c, p = self, self.p
+    c.setLog()
+    self.command_count += 1
+    # New in Leo 6.2. Set command_function and command_name ivars.
+    self.command_function = command_func
+    self.command_name = command_name
+    # The presence of this message disables all commands.
+    if c.disableCommandsMessage:
+        g.blue(c.disableCommandsMessage)
+        return None
+    if c.exists and c.inCommand and not g.unitTesting:
+        g.app.commandInterruptFlag = True  # For sc.make_slide_show_command.
+        # 1912: This message is annoying and unhelpful.
+        # g.error('ignoring command: already executing a command.')
+        return None
+    g.app.commandInterruptFlag = False
+    # #2256: Update the list of recent commands.
+    if len(c.recent_commands_list) &gt; 99:
+        c.recent_commands_list.pop()
+    c.recent_commands_list.insert(0, command_name)
+    if not g.doHook("command1", c=c, p=p, label=command_name):
+        try:
+            c.inCommand = True
+            try:
+                return_value = command_func(event)
+            except Exception:
+                g.es_exception()
+                return_value = None
+            if c and c.exists:  # Be careful: the command could destroy c.
+                c.inCommand = False
+        except Exception:
+            c.inCommand = False
+            if g.unitTesting:
+                raise
+            g.es_print("exception executing command")
+            g.es_exception()
+        if c and c.exists:
+            if c.requestCloseWindow:
+                c.requestCloseWindow = False
+                g.app.closeLeoWindow(c.frame)
+            else:
+                c.outerUpdate()
+    # Be careful: the command could destroy c.
+    if c and c.exists:
+        p = c.p
+        g.doHook("command2", c=c, p=p, label=command_name)
+    return return_value
+</t>
+<t tx="ekr.20241126093914.265">def doCommandByName(self, command_name: str, event: LeoKeyEvent = None) -&gt; Any:
+    """
+    Execute one command, given the name of the command.
+
+    The caller must do any required keystroke-only tasks.
+
+    Return the result, if any, of the command.
+    """
+    c = self
+    if not event:
+        # Create a default key event.
+        event = g.app.gui.create_key_event(c)
+
+    # Get the command's function.
+    command_func = c.commandsDict.get(command_name.replace('&amp;', ''))
+    if not command_func:
+        message = f"no command function for {command_name!r}"
+        if g.unitTesting or g.app.inBridge:
+            raise AttributeError(message)
+        g.es_print(message, color='red')
+        g.trace(g.callers())
+        return None
+    # Invoke the function.
+    val = c.doCommand(command_func, command_name, event)
+    if c.exists:
+        c.frame.updateStatusLine()
+    return val
+</t>
+<t tx="ekr.20241126093914.266">def executeMinibufferCommand(self, commandName: str) -&gt; Any:
+    """Call c.doCommandByName, creating the required event."""
+    c = self
+    event = g.app.gui.create_key_event(c)
+    return c.doCommandByName(commandName, event)
+</t>
+<t tx="ekr.20241126093914.267">@nobeautify
+
+def general_script_helper(self,
+    command: str,
+    ext: str,
+    language: str,
+    root: Position,
+    directory: str=None,
+    regex: str=None,
+) -&gt; None:
+    """
+    The official helper for the execute-general-script command.
+
+    c:          The Commander of the outline.
+    command:    The os command to execute the script.
+    directory:  Optional: Change to this directory before executing command.
+    ext:        The file extension for the temporary file.
+    language:   The language name.
+    regex:      Optional regular expression describing error messages.
+                If present, group(1) should evaluate to a line number.
+                May be a compiled regex expression or a string.
+    root:       The root of the tree containing the script,
+                The script may contain section references and @others.
+
+    Other features:
+
+    - Create a temporary external file if `not root.isAnyAtFileNode()`.
+    - Compute the final command as follows.
+      1. If command contains &lt;FILE&gt;, replace &lt;FILE&gt; with the full path.
+      2. If command contains &lt;NO-FILE&gt;, just remove &lt;NO-FILE&gt;.
+         This allows, for example, `go run .` to work as expected.
+      3. Append the full path to the command.
+    """
+    c, log = self, self.frame.log
+    @others  # Define helper functions
+    # Compile and check the regex.
+    if regex:
+        if isinstance(regex, str):
+            try:
+                re.compile(regex)
+            except Exception:
+                g.trace(f"Bad regex: {regex!s}")
+                return None
+    # Get the script.
+    script = g.getScript(c, root,
+        useSelectedText=False,
+        forcePythonSentinels=False,  # language=='python',
+        useSentinels=True,
+    )
+    # Create a temp file if root is not an @&lt;file&gt; node.
+    use_temp = not root.isAnyAtFileNode()
+    if use_temp:
+        fd, root_path = tempfile.mkstemp(suffix=ext, prefix="")
+        with os.fdopen(fd, 'w', encoding='utf-8') as f:
+            f.write(script)
+    else:
+        root_path = c.fullPath(root)
+    # Compute the final command.
+    if '&lt;FILE&gt;' in command:
+        final_command = command.replace('&lt;FILE&gt;', root_path)
+    elif '&lt;NO-FILE&gt;' in command:
+        final_command = command.replace('&lt;NO-FILE&gt;', '').replace(root_path, '')
+    else:
+        final_command = f"{command} {root_path}"
+    # Change directory.
+    old_dir = os.path.abspath(os.path.curdir)
+    if not directory:
+        directory = os.path.dirname(root_path)
+    os.chdir(directory)
+    # Execute the final command.
+    try:
+        proc = subprocess.Popen(final_command,
+            shell=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE)
+        out, err = proc.communicate()
+        for s in g.splitLines(g.toUnicode(out)):
+            print(s.rstrip())
+        print('')
+        for s in g.splitLines(g.toUnicode(err)):
+            put_line(s.rstrip())
+    finally:
+        if use_temp:
+            os.remove(root_path)
+        os.chdir(old_dir)
+</t>
+<t tx="ekr.20241126093914.268">def put_line(s: str) -&gt; None:
+    """
+    Put the line, creating a clickable link if the regex matches.
+    """
+    if not regex:
+        g.es_print(s)
+        return
+    # Get the line number.
+    m = regex.match(s)
+    if not m:
+        g.es_print(s)
+        return
+    # If present, the regex should define two groups.
+    try:
+        s1 = m.group(1)
+        s2 = m.group(2)
+    except IndexError:
+        g.es_print(f"Regex {regex.pattern()} must define two groups")
+        return
+    if s1.isdigit():
+        n = int(s1)
+        fn = s2
+    elif s2.isdigit():
+        n = int(s2)
+        fn = s1
+    else:
+        # No line number.
+        g.es_print(s)
+        return
+    s = s.replace(root_path, root.h)
+    # Print to the console.
+    print(s)
+    # Find the node and offset corresponding to line n.
+    p, n2 = find_line(fn, n)
+    # Create the link.
+    unl = p.get_UNL()
+    if unl:
+        log.put(s + '\n', nodeLink=f"{unl}::{n2}")  # local line.
+    else:
+        log.put(s + '\n')
+</t>
+<t tx="ekr.20241126093914.269">def find_line(path: str, n: int) -&gt; tuple[Position, int]:
+    """
+    Return the node corresponding to line n of external file given by path.
+    """
+    if path == root_path:
+        p, offset = c.gotoCommands.find_file_line(n, root)
+    else:
+        # Find an @&lt;file&gt; node with the given path.
+        for p in c.all_positions():
+            if p.isAnyAtFileNode():
+                norm_path = os.path.normpath(c.fullPath(p))
+                if path == norm_path:
+                    p, offset = c.gotoCommands.find_file_line(n, p)
+                    break
+    return (p, offset) if p else (root, n)
+</t>
+<t tx="ekr.20241126093914.27">def createSettingsDicts(self, c: Cmdr, localFlag: bool) -&gt; Optional[tuple[g.SettingsDict, g.SettingsDict]]:
+
+    from leo.core import leoConfig
+    if c:
+        # returns the *raw* shortcutsDict, not a *merged* shortcuts dict.
+        parser = leoConfig.SettingsTreeParser(c, localFlag)
+        shortcutsDict, settingsDict = parser.traverse()
+        return shortcutsDict, settingsDict
+    return None, None
+</t>
+<t tx="ekr.20241126093914.270">def insertCharFromEvent(self, event: LeoKeyEvent) -&gt; None:
+    """
+    Handle the character given by event, ignoring various special keys:
+    - getArg state: k.getArg.
+    - Tree: onCanvasKey or onHeadlineKey.
+    - Body: ec.selfInsertCommand
+    - Log: log_w.insert
+    """
+    trace = all(z in g.app.debug for z in ('keys', 'verbose'))
+    c, k, w = self, self.k, event.widget
+    name = c.widget_name(w)
+    stroke = event.stroke
+    if trace:
+        g.trace('stroke', stroke, 'plain:', k.isPlainKey(stroke), 'widget', name)
+    if not stroke:
+        return
+    #
+    # Part 1: Very late special cases.
+    #
+    # #1448
+    if stroke.isNumPadKey() and k.state.kind == 'getArg':
+        stroke.removeNumPadModifier()
+        k.getArg(event, stroke=stroke)
+        return
+    # Handle all unbound characters in command mode.
+    if k.unboundKeyAction == 'command':
+        w = g.app.gui.get_focus(c)
+        if w and g.app.gui.widget_name(w).lower().startswith('canvas'):
+            c.onCanvasKey(event)
+        return
+    #
+    # Part 2: Filter out keys that should never be inserted by default.
+    #
+    # Ignore unbound F-keys.
+    if stroke.isFKey():
+        return
+    # Ignore unbound Alt/Ctrl keys.
+    if stroke.isAltCtrl():
+        if not k.enable_alt_ctrl_bindings:
+            return
+        if k.ignore_unbound_non_ascii_keys:
+            return
+    # #868
+    if stroke.isPlainNumPad():
+        stroke.removeNumPadModifier()
+        event.stroke = stroke
+    # #868
+    if stroke.isNumPadKey():
+        return
+    # Ignore unbound non-ascii character.
+    if k.ignore_unbound_non_ascii_keys and not stroke.isPlainKey():
+        return
+    # Never insert escape or insert characters.
+    if 'Escape' in stroke.s or 'Insert' in stroke.s:
+        return
+    #
+    # Part 3: Handle the event depending on the pane and state.
+    #
+    # Handle events in the body pane.
+    if name.startswith('body'):
+        action = k.unboundKeyAction
+        if action in ('insert', 'overwrite'):
+            c.editCommands.selfInsertCommand(event, action=action)
+            c.frame.updateStatusLine()
+        return
+    #
+    # Handle events in headlines.
+    if name.startswith('head'):
+        c.frame.tree.onHeadlineKey(event)
+        return
+    #
+    # Handle events in the background tree (not headlines).
+    if name.startswith('canvas'):
+        if event.char:
+            k.searchTree(event.char)
+        # Not exactly right, but it seems to be good enough.
+        elif not stroke:
+            c.onCanvasKey(event)
+        return
+    #
+    # Ignore all events outside the log pane.
+    if not name.startswith('log'):
+        return
+    #
+    # Make sure we can insert into w.
+    log_w = event.widget
+    if not hasattr(log_w, 'supportsHighLevelInterface'):
+        return
+    #
+    # Send the event to the text widget, not the LeoLog instance.
+    i = log_w.getInsertPoint()
+    s = stroke.toGuiChar()
+    log_w.insert(i, s)
+</t>
+<t tx="ekr.20241126093914.271">def setComplexCommand(self, commandName: str) -&gt; None:
+    """Make commandName the command to be executed by repeat-complex-command."""
+    c = self
+    c.k.mb_history.insert(0, commandName)
+</t>
+<t tx="ekr.20241126093914.272">def universalCallback(self, source_c: Commands, function: Callable) -&gt; Callable:
+    """Create a universal command callback.
+
+    Create and return a callback that wraps a function with an rClick
+    signature in a callback which adapts standard minibuffer command
+    callbacks to a compatible format.
+
+    This also serves to allow rClick callback functions to handle
+    minibuffer commands from sources other than rClick menus so allowing
+    a single function to handle calls from all sources.
+
+    A function wrapped in this wrapper can handle rclick generator
+    and invocation commands and commands typed in the minibuffer.
+
+    It will also be able to handle commands from the minibuffer even
+    if rclick is not installed.
+    """
+
+    def minibufferCallback(event: LeoKeyEvent, function: Callable = function) -&gt; None:
+        # Avoid a pylint complaint.
+        if hasattr(self, 'theContextMenuController'):
+            cm = self.theContextMenuController
+            keywords = cm.mb_keywords
+        else:
+            cm = keywords = None
+        if not keywords:
+            # If rClick is not loaded or no keywords dict was provided
+            #  then the command must have been issued in a minibuffer
+            #  context.
+            keywords = {'c': self, 'rc_phase': 'minibuffer'}
+        keywords['mb_event'] = event
+        retval = None
+        try:
+            retval = function(keywords)
+        finally:
+            if cm:
+                # Even if there is an error:
+                #   clear mb_keywords prior to next command and
+                #   ensure mb_retval from last command is wiped
+                cm.mb_keywords = None
+                cm.mb_retval = retval
+
+    minibufferCallback.__doc__ = function.__doc__  # For g.getDocStringForFunction
+    minibufferCallback.source_c = source_c  # For GetArgs.command_source
+    return minibufferCallback
+
+# fix bobjack's spelling error.
+universallCallback = universalCallback
+</t>
+<t tx="ekr.20241126093914.273">def writeScriptFile(self, script: str) -&gt; str:
+
+    # Get the path to the file.
+    c = self
+    path = c.config.getString('script-file-path')
+    if path:
+        isAbsPath = os.path.isabs(path)
+        driveSpec, path = os.path.splitdrive(path)
+        parts = path.split('/')
+        # xxx bad idea, loadDir is often read only!
+        path = g.app.loadDir
+        if isAbsPath:
+            # make the first element absolute
+            parts[0] = driveSpec + os.sep + parts[0]
+        allParts = [path] + parts
+        path = g.finalize_join(*allParts)
+    else:
+        path = g.finalize_join(g.app.homeLeoDir, 'scriptFile.py')
+
+    # Write the file.
+    try:
+        with open(path, encoding='utf-8', mode='w') as f:
+            f.write(script)
+    except Exception:
+        g.es_exception()
+        g.es(f"Failed to write script to {path}")
+        # g.es("Check your configuration of script_file_path, currently %s" %
+            # c.config.getString('script-file-path'))
+        path = None
+    return path
+</t>
+<t tx="ekr.20241126093914.274">def expand_path_expression(self, s: str) -&gt; str:
+    """
+    Apply Python's *standard* os.path tools to s:
+
+    - os.path.expanduser: https://docs.python.org/3/library/os.path.html#os.path.expanduser
+    - os.path.expandvars: https://docs.python.org/3/library/os.path.html#os.path.expandvars
+
+    Do *not* call os.path.abspath, os.path.normpath, or g.os_path_normslashes.
+    """
+    if not s:
+        return ''
+    path = g.toUnicode(s)
+    path = os.path.expanduser(path)
+    path = os.path.expandvars(path)
+    return path
+</t>
+<t tx="ekr.20241126093914.275"></t>
+<t tx="ekr.20241126093914.276">def archivedPositionToPosition(self, s: str) -&gt; Position:
+    """Convert an archived position (a string) to a position."""
+    c = self
+    s = g.toUnicode(s)
+    aList: list[int]
+    aList_s = s.split(',')
+    try:
+        aList = [int(z) for z in aList_s]
+    except Exception:
+        return None
+    if not aList:
+        return None
+    p = c.rootPosition()
+    level = 0
+    while level &lt; len(aList):
+        i = aList[level]
+        while i &gt; 0:
+            if p.hasNext():
+                p.moveToNext()
+                i -= 1
+            else:
+                return None
+        level += 1
+        if level &lt; len(aList):
+            p.moveToFirstChild()
+    return p
+</t>
+<t tx="ekr.20241126093914.277">def backup(self,
+    fileName: str = None,
+    prefix: str = None,
+    silent: bool = False,
+    useTimeStamp: bool = True,
+) -&gt; Optional[str]:
+    """
+    Back up given fileName or c.fileName().
+    If useTimeStamp is True, append a timestamp to the filename.
+    """
+    c = self
+    fn = fileName or c.fileName()
+    if not fn:
+        return None
+    theDir, base = g.os_path_split(fn)
+    if useTimeStamp:
+        if base.endswith('.leo'):
+            base = base[:-4]
+        stamp = time.strftime("%Y%m%d-%H%M%S")
+        branch = prefix + '-' if prefix else ''
+        fn = f"{branch}{base}-{stamp}.leo"
+        path = g.finalize_join(theDir, fn)
+    else:
+        path = fn
+    if path:
+        c.saveTo(fileName=path, silent=silent)  # Issues saved message.  # pylint: disable=no-member
+        # g.es('in', theDir)
+    return path
+</t>
+<t tx="ekr.20241126093914.278">def backup_helper(
+    self,
+    base_dir: str = None,
+    env_key: str = 'LEO_BACKUP',
+    sub_dir: str = None,
+    use_git_prefix: bool = True,
+) -&gt; None:
+    """
+    A helper for scripts that back up a .leo file.
+    Use os.environ[env_key] as the base_dir only if base_dir is not given.
+    Backup to base_dir or join(base_dir, sub_dir).
+    """
+    c = self
+    old_cwd = os.getcwd()
+    join = g.finalize_join
+    if not base_dir:
+        if env_key:
+            try:
+                base_dir = os.environ[env_key]
+            except KeyError:
+                print(f"No environment var: {env_key}")
+                base_dir = None
+    if base_dir and g.os_path_exists(base_dir):
+        if use_git_prefix:
+            git_branch, junk = g.gitInfo()
+        else:
+            git_branch = None
+        theDir, fn = g.os_path_split(c.fileName())
+        backup_dir = join(base_dir, sub_dir) if sub_dir else base_dir
+        path = join(backup_dir, fn)
+        if g.os_path_exists(backup_dir):
+            written_fn = c.backup(
+                path,
+                prefix=git_branch,
+                silent=True,
+                useTimeStamp=True,
+            )
+            g.es_print(f"wrote: {written_fn}")
+        else:
+            g.es_print(f"backup_dir not found: {backup_dir!r}")
+    else:
+        g.es_print(f"base_dir not found: {base_dir!r}")
+    os.chdir(old_cwd)
+</t>
+<t tx="ekr.20241126093914.279">def checkFileTimeStamp(self, fn: str) -&gt; bool:
+    """
+    Return True if the file given by fn has not been changed
+    since Leo read it or if the user agrees to overwrite it.
+    """
+    c = self
+    if g.app.externalFilesController:
+        return g.app.externalFilesController.check_overwrite(c, fn)
+    return True
+</t>
+<t tx="ekr.20241126093914.28">def getPreviousSettings(self, fn: str) -&gt; "PreviousSettings":
+    """
+    Return the settings in effect for fn. Typically, this involves
+    pre-reading fn.
+    """
+    lm = self
+    settingsName = f"settings dict for {g.shortFileName(fn)}"
+    shortcutsName = f"shortcuts dict for {g.shortFileName(fn)}"
+    # A special case: settings in leoSettings.leo do *not* override
+    # the global settings, that is, settings in myLeoSettings.leo.
+    isLeoSettings = fn and g.shortFileName(fn).lower() == 'leosettings.leo'
+    exists = g.os_path_exists(fn)
+    if fn and exists and lm.isLeoFile(fn) and not isLeoSettings:
+        # Open the file using a null gui.
+        try:
+            g.app.preReadFlag = True
+            c = lm.openSettingsFile(fn)
+        finally:
+            g.app.preReadFlag = False
+        # Merge the settings from c into *copies* of the global dicts.
+        d1, d2 = lm.computeLocalSettings(c,
+            lm.globalSettingsDict,
+            lm.globalBindingsDict,
+            localFlag=True)  # d1 and d2 are copies.
+        d1.setName(settingsName)
+        d2.setName(shortcutsName)
+        return PreviousSettings(d1, d2)
+    #
+    # The file does not exist, or is not valid.
+    # Get the settings from the globals settings dicts.
+    if lm.globalSettingsDict and lm.globalBindingsDict:  # #1766.
+        d1 = lm.globalSettingsDict.copy()
+        d2 = lm.globalBindingsDict.copy()
+    else:
+        d1 = d2 = None
+    return PreviousSettings(d1, d2)
+</t>
+<t tx="ekr.20241126093914.280">def looksLikeDerivedFile(self, fn: str) -&gt; bool:
+    """
+    Return True if fn names a file that looks like an
+    external file written by Leo.
+    """
+    # c = self
+    try:
+        with open(fn, 'rb') as f:  # 2020/11/14: Allow unicode characters!
+            b = f.read()
+            s = g.toUnicode(b)
+        return s.find('@+leo-ver=') &gt; -1
+    except Exception:
+        g.es_exception()
+        return False
+</t>
+<t tx="ekr.20241126093914.281">def markAllAtFileNodesDirty(self, event: LeoKeyEvent = None) -&gt; None:
+    """Mark all @file nodes as changed."""
+    c = self
+    c.endEditing()
+    p = c.rootPosition()
+    while p:
+        if p.isAtFileNode():
+            p.setDirty()
+            c.setChanged()
+            p.moveToNodeAfterTree()
+        else:
+            p.moveToThreadNext()
+</t>
+<t tx="ekr.20241126093914.282">def markAtFileNodesDirty(self, event: LeoKeyEvent = None) -&gt; None:
+    """Mark all @file nodes in the selected tree as changed."""
+    c = self
+    p = c.p
+    if not p:
+        return
+    c.endEditing()
+    after = p.nodeAfterTree()
+    while p and p != after:
+        if p.isAtFileNode():
+            p.setDirty()
+            c.setChanged()
+            p.moveToNodeAfterTree()
+        else:
+            p.moveToThreadNext()
+</t>
+<t tx="ekr.20241126093914.283">def openWith(self, event: LeoKeyEvent = None, d: dict[str, Position] = None) -&gt; None:
+    """
+    This is *not* a command.
+
+    Handles the items in the Open With... menu.
+
+    See ExternalFilesController.open_with for details about d.
+    """
+    c = self
+    if d and g.app.externalFilesController:
+        # Select an ancestor @&lt;file&gt; node if possible.
+        if not d.get('p'):
+            d['p'] = None
+            p = c.p
+            while p:
+                if p.isAnyAtFileNode():
+                    d['p'] = p
+                    break
+                p.moveToParent()
+        g.app.externalFilesController.open_with(c, d)
+    elif not d:
+        g.trace('can not happen: no d', g.callers())
+</t>
+<t tx="ekr.20241126093914.284">def recreateGnxDict(self) -&gt; None:
+    """Recreate the gnx dict prior to refreshing nodes from disk."""
+    c, d = self, {}
+    # Start with the hidden-root-vnode
+    vHiddenRoot = c.hiddenRootNode
+    d[vHiddenRoot.gnx] = vHiddenRoot
+    # And fill up the with rest of the commander's VNodes.
+    for v in c.all_unique_nodes():
+        gnxString = v.fileIndex
+        if isinstance(gnxString, str):
+            d[gnxString] = v
+            if 'gnx' in g.app.debug:
+                g.trace(c.shortFileName(), gnxString, v)
+        else:
+            g.internalError(f"no gnx for vnode: {v}")
+    c.fileCommands.gnxDict = d
+</t>
+<t tx="ekr.20241126093914.285">def openRecentFile(self, event: LeoKeyEvent = None, fn: str = None) -&gt; None:
+    """
+    c.openRecentFile: This is not a command!
+
+    This method is a helper called only from the recentFilesCallback in
+    rf.createRecentFilesMenuItems.
+    """
+    c = self
+    if g.doHook("recentfiles1", c=c, p=c.p, v=c.p, fileName=fn):
+        return
+    c2 = g.openWithFileName(fn, old_c=c)
+    if c2:
+        g.app.makeAllBindings()
+        g.doHook("recentfiles2", c=c2, p=c2.p, v=c2.p, fileName=fn)
+</t>
+<t tx="ekr.20241126093914.286"></t>
+<t tx="ekr.20241126093914.287">def diff_file(self, fn: str, rev1: str = 'HEAD', rev2: str = '') -&gt; None:
+    """
+    Create an outline describing the git diffs for all files changed
+    between rev1 and rev2.
+    """
+    from leo.commands import editFileCommands as efc
+    x = efc.GitDiffController(c=self)
+    x.diff_file(fn=fn, rev1=rev1, rev2=rev2)
+</t>
+<t tx="ekr.20241126093914.288">def diff_two_revs(self, directory: str = None, rev1: str = '', rev2: str = '') -&gt; None:
+    """
+    Create an outline describing the git diffs for all files changed
+    between rev1 and rev2.
+    """
+    from leo.commands import editFileCommands as efc
+    efc.GitDiffController(c=self).diff_two_revs(rev1=rev1, rev2=rev2)
+</t>
+<t tx="ekr.20241126093914.289">def diff_two_branches(self, branch1: Any, branch2: Any, fn: str) -&gt; None:
+    """
+    Create an outline describing the git diffs for all files changed
+    between rev1 and rev2.
+    """
+    from leo.commands import editFileCommands as efc
+    efc.GitDiffController(c=self).diff_two_branches(
+        branch1=branch1, branch2=branch2, fn=fn)
+</t>
+<t tx="ekr.20241126093914.29">def mergeShortcutsDicts(self,
+    c: Cmdr,
+    old_d: g.SettingsDict,
+    new_d: g.SettingsDict,
+    localFlag: bool,
+) -&gt; g.SettingsDict:
+    """
+    Create a new dict by overriding all shortcuts in old_d by shortcuts in new_d.
+
+    Both old_d and new_d remain unchanged.
+    """
+    lm = self
+    if not old_d:
+        return new_d
+    if not new_d:
+        return old_d
+    inverted_old_d = lm.invert(old_d)
+    inverted_new_d = lm.invert(new_d)
+    # #510 &amp; #327: always honor --trace-binding here.
+    if g.app.trace_binding:
+        &lt;&lt; trace the binding &gt;&gt;
+    # Check for duplicate shortcuts only in the new file.
+    lm.checkForDuplicateShortcuts(c, inverted_new_d)
+    inverted_old_d.update(inverted_new_d)  # Updates inverted_old_d in place.
+    result = lm.uninvert(inverted_old_d)
+    return result
+</t>
+<t tx="ekr.20241126093914.290">def git_diff(self, rev1: str = 'HEAD', rev2: str = '') -&gt; None:
+
+    from leo.commands import editFileCommands as efc
+    efc.GitDiffController(c=self).git_diff(rev1, rev2)
+</t>
+<t tx="ekr.20241126093914.291">def git_node_history(self, file_name: str, gnx: str) -&gt; None:
+
+    from leo.commands import editFileCommands as efc
+    efc.GitDiffController(c=self).node_history(file_name, [gnx])
+</t>
+<t tx="ekr.20241126093914.292"></t>
+<t tx="ekr.20241126093914.293"></t>
+<t tx="ekr.20241126093914.294">def alert(self, message: str) -&gt; None:
+    c = self
+    # The unit tests just tests the args.
+    if not g.unitTesting:
+        g.es(message)
+        g.app.gui.alert(c, message)
+</t>
+<t tx="ekr.20241126093914.295">def init_error_dialogs(self) -&gt; None:
+    c = self
+    g.app.syntax_error_files = []
+    c.import_error_nodes = []
+    c.ignored_at_file_nodes = []
+    c.orphan_at_file_nodes = []
+</t>
+<t tx="ekr.20241126093914.296">def notValidInBatchMode(self, commandName: str) -&gt; None:
+    g.es('the', commandName, "command is not valid in batch mode")
+</t>
+<t tx="ekr.20241126093914.297">def putHelpFor(self, s: str, short_title: str = '') -&gt; None:
+    """Helper for various help commands."""
+    c = self
+    g.app.gui.put_help(c, s, short_title)
+</t>
+<t tx="ekr.20241126093914.298">warnings_dict: dict[str, bool] = {}
+
+def raise_error_dialogs(self, kind: str = 'read') -&gt; None:
+    """Warn about read/write failures."""
+    c = self
+    use_dialogs = False
+    if g.unitTesting:
+        c.init_error_dialogs()
+        return
+    # Issue one or two dialogs or messages.
+    saved_body = c.rootPosition().b  # Save the root's body. The dialog destroys it!
+    if c.import_error_nodes or c.ignored_at_file_nodes or c.orphan_at_file_nodes:
+        g.app.gui.dismiss_splash_screen()
+    else:
+        # #1007: Exit now, so we don't have to restore c.rootPosition().b.
+        c.init_error_dialogs()
+        return
+    if c.import_error_nodes:
+        files = '\n'.join(sorted(set(c.import_error_nodes)))  # type:ignore
+        if files not in self.warnings_dict:
+            self.warnings_dict[files] = True
+            import_message1 = 'The following were not imported properly.'
+            import_message2 = f"Inserted @ignore in...\n{files}"
+            g.es_print(import_message1, color='red')
+            g.es_print(import_message2)
+            if use_dialogs:
+                import_dialog_message = f"{import_message1}\n{import_message2}"
+                g.app.gui.runAskOkDialog(c,
+                    message=import_dialog_message, title='Import errors')
+    if c.ignored_at_file_nodes:
+        files = '\n'.join(sorted(set(c.ignored_at_file_nodes)))  # type:ignore
+        if files not in self.warnings_dict:
+            self.warnings_dict[files] = True
+            kind_s = 'read' if kind == 'read' else 'written'
+            ignored_message = f"The following were not {kind_s} because they contain @ignore:"
+            kind = 'read' if kind.startswith('read') else 'written'
+            g.es_print(ignored_message, color='red')
+            g.es_print(files)
+            if use_dialogs:
+                ignored_dialog_message = f"{ignored_message}\n{files}"
+                g.app.gui.runAskOkDialog(c,
+                    message=ignored_dialog_message, title=f"Not {kind.capitalize()}")
+    # #1050: always raise a dialog for orphan @&lt;file&gt; nodes.
+    if c.orphan_at_file_nodes:
+        message = '\n'.join([
+            'The following were not written because of errors:\n',
+            '\n'.join(sorted(set(c.orphan_at_file_nodes))),  # type:ignore
+            '',
+            'Warning: changes to these files will be lost\n'
+            'unless you can save the files successfully.'
+        ])
+        g.app.gui.runAskOkDialog(c, message=message, title='Not Written')
+        # Mark all the nodes dirty.
+        for z in c.all_unique_positions():
+            if z.isOrphan():
+                z.setDirty()
+                z.clearOrphan()
+        c.setChanged()
+        c.redraw()
+    # Restore the root position's body.
+    c.rootPosition().v.b = saved_body  # #1007: just set v.b.
+    c.init_error_dialogs()
+</t>
+<t tx="ekr.20241126093914.299">def syntaxErrorDialog(self) -&gt; None:
+    """Warn about syntax errors in files."""
+    c = self
+    if g.app.syntax_error_files and c.config.getBool(
+        'syntax-error-popup', default=False):
+        aList = sorted(set(g.app.syntax_error_files))
+        g.app.syntax_error_files = []
+        list_s = '\n'.join(aList)
+        g.app.gui.runAskOkDialog(
+            c,
+            title='Python Errors',
+            message=f"Python errors in:\n\n{list_s}",
+            text="Ok",
+        )
+</t>
+<t tx="ekr.20241126093914.3">@language rest
+@wrap
+@nosearch
+
+https://github.com/leo-editor/leo-editor/issues/4199
+
+@language python
+</t>
+<t tx="ekr.20241126093914.30">binding = g.app.trace_binding
+# First, see if the binding is for a command. (Doesn't work for plugin commands).
+if localFlag and binding in c.k.killedBindings:
+    g.es_print(
+        f"--trace-binding: {c.shortFileName()} "
+        f"sets {binding} to None")
+elif localFlag and binding in c.commandsDict:
+    d = c.k.computeInverseBindingDict()
+    g.trace(
+        f"--trace-binding: {c.shortFileName():20} "
+        f"binds {binding} to {d.get(binding) or []}")
+else:
+    stroke = g.KeyStroke(binding)
+    bi_list = inverted_new_d.get(stroke)
+    if bi_list:
+        print('')
+        for bi in bi_list:
+            fn = bi.kind.split(' ')[-1]  # bi.kind #
+            stroke2 = c.k.prettyPrintKey(stroke)
+            if bi.pane and bi.pane != 'all':
+                pane = f" in {bi.pane} panes"
+            else:
+                pane = ''
+            g.es_print(
+                f"--trace-binding: {fn:20} binds {stroke2} "
+                f"to {bi.commandName:&gt;20}{pane}")
+        print('')
+</t>
+<t tx="ekr.20241126093914.300"></t>
+<t tx="ekr.20241126093914.301">def dragToNthChildOf(self, p: Position, parent: Position, n: int) -&gt; None:
+    c, p, u = self, self.p, self.undoer
+    if not c.checkDrag(p, parent):
+        return
+    if not c.checkMoveWithParentWithWarning(p, parent, True):
+        return
+    c.endEditing()
+    undoData = u.beforeMoveNode(p)
+    p.setDirty()
+    p.moveToNthChildOf(parent, n)
+    p.setDirty()
+    c.setChanged()
+    u.afterMoveNode(p, 'Drag', undoData)
+    c.redraw(p)
+    c.updateSyntaxColorer(p)  # Dragging can change syntax coloring.
+</t>
+<t tx="ekr.20241126093914.302">def dragAfter(self, p: Position, after: Optional[Position]) -&gt; None:
+    c, p, u = self, self.p, self.undoer
+    if not c.checkDrag(p, after):
+        return
+    if not c.checkMoveWithParentWithWarning(p, after.parent(), True):
+        return
+    c.endEditing()
+    undoData = u.beforeMoveNode(p)
+    p.setDirty()
+    p.moveAfter(after)
+    p.setDirty()
+    c.setChanged()
+    u.afterMoveNode(p, 'Drag', undoData)
+    c.redraw(p)
+    c.updateSyntaxColorer(p)  # Dragging can change syntax coloring.
+</t>
+<t tx="ekr.20241126093914.303">def dragCloneToNthChildOf(self, p: Position, parent: Position, n: int) -&gt; None:
+    c = self
+    u = c.undoer
+    undoType = 'Clone Drag'
+    current = c.p
+    clone = p.clone()  # Creates clone &amp; dependents, does not set undo.
+    if (
+        not c.checkDrag(p, parent) or
+        not c.checkMoveWithParentWithWarning(clone, parent, True)
+    ):
+        clone.doDelete(newNode=p)  # Destroys clone and makes p the current node.
+        c.selectPosition(p)  # Also sets root position.
+        return
+    c.endEditing()
+    undoData = u.beforeInsertNode(current)
+    clone.setDirty()
+    clone.moveToNthChildOf(parent, n)
+    clone.setDirty()
+    c.setChanged()
+    u.afterInsertNode(clone, undoType, undoData)
+    c.redraw(clone)
+    c.updateSyntaxColorer(clone)  # Dragging can change syntax coloring.
+</t>
+<t tx="ekr.20241126093914.304">def dragCloneAfter(self, p: Position, after: Position) -&gt; None:
+    c = self
+    u = c.undoer
+    undoType = 'Clone Drag'
+    current = c.p
+    clone = p.clone()  # Creates clone.  Does not set undo.
+    if c.checkDrag(
+        p, after) and c.checkMoveWithParentWithWarning(clone, after.parent(), True):
+        c.endEditing()
+        undoData = u.beforeInsertNode(current)
+        clone.setDirty()
+        clone.moveAfter(after)
+        clone.v.setDirty()
+        c.setChanged()
+        u.afterInsertNode(clone, undoType, undoData)
+        p = clone
+    else:
+        clone.doDelete(newNode=p)
+    c.redraw(p)
+    c.updateSyntaxColorer(clone)  # Dragging can change syntax coloring.
+</t>
+<t tx="ekr.20241126093914.305"></t>
+<t tx="ekr.20241126093914.306">def bringToFront(self, c2: "Commands" = None) -&gt; None:
+    c = self
+    c2 = c2 or c
+    g.app.gui.ensure_commander_visible(c2)
+
+BringToFront = bringToFront  # Compatibility with old scripts
+</t>
+<t tx="ekr.20241126093914.307">def expandAllAncestors(self, p: Position) -&gt; bool:
+    """
+    Expand all ancestors without redrawing.
+    Return a flag telling whether a redraw is needed.
+    """
+    # c = self
+    redraw_flag = False
+    for p in p.parents():
+        if not p.v.isExpanded():
+            p.v.expand()
+            p.expand()
+            redraw_flag = True
+        elif p.isExpanded():
+            p.v.expand()
+        else:
+            p.expand()
+            redraw_flag = True
+    return redraw_flag
+</t>
+<t tx="ekr.20241126093914.308">def outerUpdate(self) -&gt; None:
+    """Handle delayed focus requests and modified events."""
+    c = self
+    if not c.exists or not c.k:
+        return
+    # New in Leo 5.6: Delayed redraws are useful in utility methods.
+    if c.requestLaterRedraw:
+        if c.enableRedrawFlag:
+            c.requestLaterRedraw = False
+            if 'drawing' in g.app.debug and not g.unitTesting:
+                g.trace('\nDELAYED REDRAW')
+                time.sleep(1.0)
+            c.redraw()
+    # Delayed focus requests will always be useful.
+    if c.requestedFocusWidget:
+        w = c.requestedFocusWidget
+        if 'focus' in g.app.debug and not g.unitTesting:
+            if hasattr(w, 'objectName'):
+                name = w.objectName()
+            else:
+                name = w.__class__.__name__
+            g.trace('DELAYED FOCUS', name)
+        c.set_focus(w)
+        c.requestedFocusWidget = None
+    table = (
+        ("childrenModified", g.childrenModifiedSet),
+        ("contentModified", g.contentModifiedSet),
+    )
+    for kind, mods in table:
+        if mods:
+            g.doHook(kind, c=c, nodes=mods)
+            mods.clear()
+</t>
+<t tx="ekr.20241126093914.31">def checkForDuplicateShortcuts(self, c: Cmdr, d: dict[str, str]) -&gt; None:
+    """
+    Check for duplicates in an "inverted" dictionary d
+    whose keys are strokes and whose values are lists of BindingInfo nodes.
+
+    Duplicates happen only if panes conflict.
+    """
+    # Fix bug 951921: check for duplicate shortcuts only in the new file.
+    for ks in sorted(list(d.keys())):
+        duplicates, panes = [], ['all']
+        aList = d.get(ks)  # A list of bi objects.
+        aList2 = [z for z in aList if not z.pane.startswith('mode')]
+        if len(aList) &gt; 1:
+            for bi in aList2:
+                if bi.pane in panes:
+                    duplicates.append(bi)
+                else:
+                    panes.append(bi.pane)
+        if duplicates:
+            bindings = list(set([z.stroke.s for z in duplicates]))
+            if len(bindings) == 1:
+                kind = 'duplicate, (not conflicting)'
+            else:
+                kind = 'conflicting'
+            g.es_print(f"{kind} key bindings in {c.shortFileName()}")
+            for bi in aList2:
+                g.es_print(f"{bi.pane:6} {bi.stroke.s} {bi.commandName}")
+</t>
+<t tx="ekr.20241126093914.310"></t>
+<t tx="ekr.20241126093914.311">def disable_redraw(self) -&gt; None:
+    """Disable all redrawing until enabled."""
+    c = self
+    c.enableRedrawFlag = False
+
+def enable_redraw(self) -&gt; None:
+    c = self
+    c.enableRedrawFlag = True
+</t>
+<t tx="ekr.20241126093914.313">def redraw_after_contract(self, p: Position = None) -&gt; None:
+    c = self
+    if c.enableRedrawFlag:
+        if p:
+            c.setCurrentPosition(p)
+        else:
+            p = c.currentPosition()
+        c.frame.tree.redraw_after_contract(p)
+        c.treeFocusHelper()
+    else:
+        c.requestLaterRedraw = True
+</t>
+<t tx="ekr.20241126093914.314">def redraw_after_expand(self, p: Position) -&gt; None:
+    c = self
+    if c.enableRedrawFlag:
+        if p:
+            c.setCurrentPosition(p)
+        else:
+            p = c.currentPosition()
+        c.frame.tree.redraw_after_expand(p)
+        c.treeFocusHelper()
+    else:
+        c.requestLaterRedraw = True
+</t>
+<t tx="ekr.20241126093914.315">def redraw_after_head_changed(self) -&gt; None:
+    """
+    Redraw the screen (if needed) when editing ends.
+    This may be a do-nothing for some gui's.
+    """
+    c = self
+    if c.enableRedrawFlag:
+        self.frame.tree.redraw_after_head_changed()
+    else:
+        c.requestLaterRedraw = True
+</t>
+<t tx="ekr.20241126093914.316">def redraw_after_select(self, p: Position) -&gt; None:
+    """Redraw the screen after node p has been selected."""
+    c = self
+    if c.enableRedrawFlag:
+        flag = c.expandAllAncestors(p)
+        if flag:
+            # This is the same as c.frame.tree.full_redraw().
+            c.frame.tree.redraw_after_select(p)
+    else:
+        c.requestLaterRedraw = True
+</t>
+<t tx="ekr.20241126093914.317">def redraw_later(self) -&gt; None:
+    """
+    Ensure that c.redraw() will be called eventually.
+
+    c.outerUpdate will call c.redraw() only if no other code calls c.redraw().
+    """
+    c = self
+    c.requestLaterRedraw = True
+    if 'drawing' in g.app.debug:
+        # g.trace('\n' + g.callers(8))
+        g.trace(g.callers())
+</t>
+<t tx="ekr.20241126093914.318">def widget_name(self, widget: Widget) -&gt; str:
+    # c = self
+    return g.app.gui.widget_name(widget) if g.app.gui else '&lt;no widget&gt;'
+</t>
+<t tx="ekr.20241126093914.319"></t>
+<t tx="ekr.20241126093914.32">def invert(self, d: dict) -&gt; g.SettingsDict:
+    """
+    Invert a shortcut dict whose keys are command names,
+    returning a dict whose keys are strokes.
+    """
+    if d is None:
+        d = {}
+    result = g.SettingsDict(f"inverted {d.name()}")
+    for commandName in d.keys():
+        for bi in d.get(commandName, []):
+            stroke = bi.stroke  # This is canonicalized.
+            bi.commandName = commandName  # Add info.
+            assert stroke
+            result.add_to_list(stroke, bi)
+    return result
+</t>
+<t tx="ekr.20241126093914.320">def onCanvasKey(self, event: LeoKeyEvent) -&gt; None:
+    """
+    Navigate to the next headline starting with ch = event.char.
+    If ch is uppercase, search all headlines; otherwise search only visible headlines.
+    This is modeled on Windows explorer.
+    """
+    if not event or not event.char or not event.char.isalnum():
+        return
+    c, p = self, self.p
+    p1 = p.copy()
+    invisible = c.config.getBool('invisible-outline-navigation')
+    ch = event.char if event else ''
+    allFlag = ch.isupper() and invisible  # all is a global (!?)
+    if not invisible:
+        ch = ch.lower()
+    found = False
+    extend = self.navQuickKey()
+    attempts = (True, False) if extend else (False,)
+    for extend2 in attempts:
+        p = p1.copy()
+        while 1:
+            if allFlag:
+                p.moveToThreadNext()
+            else:
+                p.moveToVisNext(c)
+            if not p:
+                p = c.rootPosition()
+            if p == p1:  # Never try to match the same position.
+                found = False
+                break
+            newPrefix = c.navHelper(p, ch, extend2)
+            if newPrefix:
+                found = True
+                break
+        if found:
+            break
+    if found:
+        c.selectPosition(p)
+        c.redraw_after_select(p)
+        c.navTime = time.time()
+        c.navPrefix = newPrefix
+    else:
+        c.navTime = None
+        c.navPrefix = ''
+    c.treeWantsFocus()
+</t>
+<t tx="ekr.20241126093914.321">def navQuickKey(self) -&gt; bool:
+    """
+    Return true if there are two quick outline navigation keys
+    in quick succession.
+
+    Returns False if @float outline_nav_extend_delay setting is 0.0 or unspecified.
+    """
+    c = self
+    deltaTime = c.config.getFloat('outline-nav-extend-delay')
+    if deltaTime in (None, 0.0):
+        return False
+    if c.navTime is None:
+        return False  # mypy.
+    return time.time() - c.navTime &lt; deltaTime
+</t>
+<t tx="ekr.20241126093914.322">def navHelper(self, p: Position, ch: str, extend: bool) -&gt; str:
+    c = self
+    h = p.h.lower()
+    if extend:
+        prefix = c.navPrefix + ch
+        return h.startswith(prefix.lower()) and prefix
+    if h.startswith(ch):
+        return ch
+    # New feature: search for first non-blank character after @x for common x.
+    if ch != '@' and h.startswith('@'):
+        for s in ('button', 'command', 'file', 'thin', 'asis', 'nosent',):
+            prefix = '@' + s
+            if h.startswith('@' + s):
+                while 1:
+                    n = len(prefix)
+                    ch2 = h[n] if n &lt; len(h) else ''
+                    if ch2.isspace():
+                        prefix = prefix + ch2
+                    else:
+                        break
+                if len(prefix) &lt; len(h) and h.startswith(prefix + ch.lower()):
+                    return prefix + ch
+    return ''
+</t>
+<t tx="ekr.20241126093914.323"></t>
+<t tx="ekr.20241126093914.324">def contractAllHeadlines(self, event: LeoKeyEvent = None) -&gt; None:
+    """Contract all nodes in the outline."""
+    c = self
+    for v in c.all_nodes():
+        v.contract()
+        v.expandedPositions = []  # #2571
+    if c.hoistStack:
+        # #2380: Handle hoists properly.
+        bunch = c.hoistStack[-1]
+        p = bunch.p
+    else:
+        # Select the topmost ancestor of the presently selected node.
+        p = c.p
+        while p and p.hasParent():
+            p.moveToParent()
+    c.selectPosition(p)  # #2380: Don't redraw here.
+    c.expansionLevel = 1  # Reset expansion level.
+</t>
+<t tx="ekr.20241126093914.325">def contractSubtree(self, p: Position) -&gt; None:
+    for p in p.subtree():
+        p.contract()
+</t>
+<t tx="ekr.20241126093914.326">def expandSubtree(self, p: Position) -&gt; None:
+    # c = self
+    last = p.lastNode()
+    p = p.copy()
+    while p and p != last:
+        p.expand()
+        p = p.moveToThreadNext()
+</t>
+<t tx="ekr.20241126093914.327">def expandToLevel(self, level: int) -&gt; None:
+
+    c = self
+    n = c.p.level()
+    old_expansion_level = c.expansionLevel
+    max_level = 0
+    for p in c.p.self_and_subtree(copy=False):
+        if p.level() - n + 1 &lt; level:
+            p.expand()
+            max_level = max(max_level, p.level() - n + 1)
+        else:
+            p.contract()
+    c.expansionNode = c.p.copy()
+    c.expansionLevel = max_level + 1
+    if c.expansionLevel != old_expansion_level:
+        c.redraw()
+    # It's always useful to announce the level.
+    # c.k.setLabelBlue('level: %s' % (max_level+1))
+    # g.es('level', max_level + 1)
+    c.frame.putStatusLine(f"level: {max_level + 1}")  # bg='red', fg='red')
+</t>
+<t tx="ekr.20241126093914.328"></t>
+<t tx="ekr.20241126093914.329">def get_focus(self) -&gt; Widget:
+    c = self
+    w = g.app.gui and g.app.gui.get_focus(c)
+    if 'focus' in g.app.debug:
+        name = w.objectName() if hasattr(w, 'objectName') else w.__class__.__name__
+        g.trace('(c)', name)
+        # g.trace('\n(c)',  w.__class__.__name__)
+        # g.trace(g.callers(6))
+    return w
+
+def get_requested_focus(self) -&gt; Widget:
+    c = self
+    return c.requestedFocusWidget
+
+def request_focus(self, w: Widget) -&gt; None:
+    c = self
+    if w and g.app.gui:
+        if 'focus' in g.app.debug:
+            # g.trace('\n(c)', repr(w))
+            name = w.objectName(
+                ) if hasattr(w, 'objectName') else w.__class__.__name__
+            g.trace('(c)', name)
+        c.requestedFocusWidget = w
+
+def set_focus(self, w: Widget) -&gt; None:
+    trace = 'focus' in g.app.debug
+    c = self
+    if w and g.app.gui:
+        if trace:
+            name = w.objectName(
+                ) if hasattr(w, 'objectName') else w.__class__.__name__
+            g.trace('(c)', name)
+        g.app.gui.set_focus(c, w)
+    elif trace:
+        g.trace('(c) no w')
+    c.requestedFocusWidget = None
+</t>
+<t tx="ekr.20241126093914.33">def uninvert(
+    self,
+    d: g.SettingsDict) -&gt; g.SettingsDict:
+    """
+    Uninvert an inverted shortcut dict whose keys are strokes,
+    returning a dict whose keys are command names.
+    """
+    result = g.SettingsDict(f"uninverted {d.name()}")
+    for stroke in d.keys():
+        for bi in d.get(stroke, []):
+            commandName = bi.commandName
+            assert commandName
+            result.add_to_list(commandName, bi)
+    return result
+</t>
+<t tx="ekr.20241126093914.330">def invalidateFocus(self) -&gt; None:
+    """Indicate that the focus is in an invalid location, or is unknown."""
+    # c = self
+    # c.requestedFocusWidget = None
+    pass
+</t>
+<t tx="ekr.20241126093914.331">def traceFocus(self, w: Wrapper) -&gt; None:
+    c = self
+    if 'focus' in g.app.debug:
+        c.trace_focus_count += 1
+        g.pr(f"{c.trace_focus_count:4d}", c.widget_name(w), g.callers(8))
+</t>
+<t tx="ekr.20241126093914.332">def treeFocusHelper(self) -&gt; None:
+    c = self
+    if c.stayInTreeAfterSelect:
+        c.treeWantsFocus()
+    else:
+        c.bodyWantsFocus()
+
+def initialFocusHelper(self) -&gt; None:
+    c = self
+    if c.outlineHasInitialFocus:
+        c.treeWantsFocus()
+    else:
+        c.bodyWantsFocus()
+</t>
+<t tx="ekr.20241126093914.333">def bodyWantsFocus(self) -&gt; None:
+    c = self
+    body = c.frame.body
+    c.request_focus(body and body.wrapper)
+
+def logWantsFocus(self) -&gt; None:
+    c = self
+    log = c.frame.log
+    c.request_focus(log and log.logCtrl)
+
+def minibufferWantsFocus(self) -&gt; None:
+    c = self
+    c.request_focus(c.miniBufferWidget)
+
+def treeWantsFocus(self) -&gt; None:
+    c = self
+    tree = c.frame.tree
+    c.request_focus(tree and tree.canvas)
+
+def widgetWantsFocus(self, w: Wrapper) -&gt; None:
+    c = self
+    c.request_focus(w)
+</t>
+<t tx="ekr.20241126093914.334"># widgetWantsFocusNow does an automatic update.
+
+def widgetWantsFocusNow(self, w: Widget) -&gt; None:
+    c = self
+    if w:
+        c.set_focus(w)
+        c.requestedFocusWidget = None
+
+# New in 4.9: all FocusNow methods now *do* call c.outerUpdate().
+
+def bodyWantsFocusNow(self) -&gt; None:
+    c, body = self, self.frame.body
+    c.widgetWantsFocusNow(body and body.wrapper)
+
+def logWantsFocusNow(self) -&gt; None:
+    c, log = self, self.frame.log
+    c.widgetWantsFocusNow(log and log.logCtrl)
+
+def minibufferWantsFocusNow(self) -&gt; None:
+    c = self
+    c.widgetWantsFocusNow(c.miniBufferWidget)
+
+def treeWantsFocusNow(self) -&gt; None:
+    c, tree = self, self.frame.tree
+    c.widgetWantsFocusNow(tree and tree.canvas)
+</t>
+<t tx="ekr.20241126093914.335"></t>
+<t tx="ekr.20241126093914.336">def add_command(self, menu: Widget,
+    accelerator: str = '',  # Not used.
+    command: Callable = None,
+    commandName: str = None,  # Not used.
+    label: str = None,  # Not used.
+    underline: int = 0,
+) -&gt; None:
+    c = self
+    if command:
+        # Command is one of two callbacks defined in createMenuEntries.
+
+        def add_commandCallback(c: Commands = c, command: Callable = command) -&gt; Any:
+            val = command()
+            # Careful: func may destroy c.
+            if c.exists:
+                c.outerUpdate()
+            return val
+
+        menu.add_command(menu,
+            accelerator=accelerator,
+            command=command,
+            commandName=commandName,
+            label=label,
+            underline=underline,
+        )
+    else:
+        g.trace('can not happen: no "command" arg')
+</t>
+<t tx="ekr.20241126093914.337"></t>
+<t tx="ekr.20241126093914.338">def canClone(self) -&gt; bool:
+    c = self
+    if c.hoistStack:
+        current = c.p
+        bunch = c.hoistStack[-1]
+        return current != bunch.p
+    return True
+</t>
+<t tx="ekr.20241126093914.339">def canContractAllHeadlines(self) -&gt; bool:
+    """Contract all nodes in the tree."""
+    c = self
+    for p in c.all_positions():  # was c.all_unique_positions()
+        if p.isExpanded():
+            return True
+    return False
+</t>
+<t tx="ekr.20241126093914.34">def openSettingsFile(self, fn: str) -&gt; Optional[Cmdr]:
+    """
+    Open a settings file with a null gui.  Return the commander.
+
+    The caller must init the c.config object.
+    """
+    lm = self
+    if not (fn and os.path.exists(fn) and lm.isLeoFile(fn)):
+        return None
+
+    if not any([g.unitTesting, g.app.silentMode, g.app.batchMode]):
+        # This occurs early in startup, so use the following.
+        s = f"reading settings in {os.path.normpath(fn)}"
+        if 'startup' in g.app.debug:
+            print(s)
+        g.es(s, color='blue')
+
+    # Changing g.app.gui here is a major hack.  It is necessary.
+    oldGui = g.app.gui
+    g.app.gui = g.app.nullGui
+    c = g.app.newCommander(fn)
+    fc = c.fileCommands
+    frame = c.frame
+    try:
+        frame.log.enable(False)
+        g.app.lockLog()
+        v = fc.getAnyLeoFileByName(fn, checkOpenFiles=False, readAtFileNodesFlag=False)
+        return c if v else None
+    finally:
+        # Never put a return in a finally clause.
+        g.app.unlockLog()
+        g.app.gui = oldGui
+</t>
+<t tx="ekr.20241126093914.340">def canContractAllSubheads(self) -&gt; bool:
+    current = self.p
+    for p in current.subtree():
+        if p != current and p.isExpanded():
+            return True
+    return False
+</t>
+<t tx="ekr.20241126093914.341">def canContractParent(self) -&gt; bool:
+    c = self
+    return c.p.parent()
+</t>
+<t tx="ekr.20241126093914.342">def canContractSubheads(self) -&gt; bool:
+    current = self.p
+    for child in current.children():
+        if child.isExpanded():
+            return True
+    return False
+</t>
+<t tx="ekr.20241126093914.343">def canDeleteHeadline(self) -&gt; bool:
+    c, p = self, self.p
+    if c.hoistStack:
+        bunch = c.hoistStack[0]
+        if p == bunch.p:
+            return False
+    return p.hasParent() or p.hasThreadBack() or p.hasNext()
+
+canCutOutline = canDeleteHeadline
+</t>
+<t tx="ekr.20241126093914.344">def canDemote(self) -&gt; bool:
+    c = self
+    return c.p.hasNext()
+</t>
+<t tx="ekr.20241126093914.345">def canExpandAllHeadlines(self) -&gt; bool:
+    """Return True if the Expand All Nodes menu item should be enabled."""
+    c = self
+    for p in c.all_positions():  # was c.all_unique_positions()
+        if not p.isExpanded():
+            return True
+    return False
+</t>
+<t tx="ekr.20241126093914.346">def canExpandAllSubheads(self) -&gt; bool:
+    c = self
+    for p in c.p.subtree():
+        if not p.isExpanded():
+            return True
+    return False
+</t>
+<t tx="ekr.20241126093914.347">def canExpandSubheads(self) -&gt; bool:
+    current = self.p
+    for p in current.children():
+        if p != current and not p.isExpanded():
+            return True
+    return False
+</t>
+<t tx="ekr.20241126093914.348">def canExtract(self) -&gt; bool:
+    return True  # #4015.
+
+canExtractSectionNames = canExtract
+
+def canExtractSection(self) -&gt; bool:
+    c = self
+    w = c.frame.body.wrapper
+    if not w:
+        return False
+    s = w.getSelectedText()
+    if not s:
+        return False
+    line = g.get_line(s, 0)
+    i1 = line.find("&lt;&lt;")
+    j1 = line.find("&gt;&gt;")
+    i2 = line.find("@&lt;")
+    j2 = line.find("@&gt;")
+    return -1 &lt; i1 &lt; j1 or -1 &lt; i2 &lt; j2
+</t>
+<t tx="ekr.20241126093914.349">@nobeautify
+
+def canFindMatchingBracket(self) -&gt; bool:
+    c = self
+    brackets = "()[]{}"
+    w = c.frame.body.wrapper
+    s = w.getAllText()
+    ins = w.getInsertPoint()
+    c1 = s[ins]   if 0 &lt;= ins   &lt; len(s) else ''
+    c2 = s[ins-1] if 0 &lt;= ins-1 &lt; len(s) else ''
+    val = (c1 and c1 in brackets) or (c2 and c2 in brackets)
+    return bool(val)
+</t>
+<t tx="ekr.20241126093914.35">def readGlobalSettingsFiles(self) -&gt; None:
+    """
+    Read leoSettings.leo and myLeoSettings.leo using a null gui.
+
+    New in Leo 6.1: this sets ivars for the ActiveSettingsOutline class.
+    """
+    trace = 'themes' in g.app.debug
+    lm = self
+    # Open the standard settings files with a nullGui.
+    # Important: their commanders do not exist outside this method!
+    old_commanders = g.app.commanders()
+    lm.leo_settings_path = lm.computeLeoSettingsPath()
+    lm.my_settings_path = lm.computeMyLeoSettingsPath()
+    lm.leo_settings_c = lm.openSettingsFile(self.leo_settings_path)
+    lm.my_settings_c = lm.openSettingsFile(self.my_settings_path)
+    commanders = [lm.leo_settings_c, lm.my_settings_c]
+    commanders = [z for z in commanders if z]
+    settings_d, bindings_d = lm.createDefaultSettingsDicts()
+    for c in commanders:
+        # Merge the settings dicts from c's outline into
+        # *new copies of* settings_d and bindings_d.
+        settings_d, bindings_d = lm.computeLocalSettings(
+            c, settings_d, bindings_d, localFlag=False)
+    # Adjust the name.
+    bindings_d.setName('lm.globalBindingsDict')
+    lm.globalSettingsDict = settings_d
+    lm.globalBindingsDict = bindings_d
+    # Add settings from --theme or @string theme-name files.
+    # This must be done *after* reading myLeoSettings.leo.
+    lm.theme_path = lm.computeThemeFilePath()
+    if lm.theme_path and lm.theme_path != LoadManager.LM_NOTHEME_FLAG:
+        lm.theme_c = lm.openSettingsFile(lm.theme_path)
+        if lm.theme_c:
+            # Merge theme_c's settings into globalSettingsDict.
+            settings_d, junk_shortcuts_d = lm.computeLocalSettings(
+                lm.theme_c, settings_d, bindings_d, localFlag=False)
+            lm.globalSettingsDict = settings_d
+            # Set global var used by the StyleSheetManager.
+            g.app.theme_directory = g.os_path_dirname(lm.theme_path)
+            if trace:
+                g.trace('g.app.theme_directory', g.app.theme_directory)
+    # Clear the cache entries for the commanders.
+    # This allows this method to be called outside the startup logic.
+    for c in commanders:
+        if c not in old_commanders:
+            g.app.forgetOpenFile(c.fileName())
+</t>
+<t tx="ekr.20241126093914.350">def canDehoist(self) -&gt; bool:
+    """
+    Return True if do-hoist should be enabled in a menu.
+    Should not be used in any other context.
+    """
+    c = self
+    return bool(c.hoistStack)
+
+def canHoist(self) -&gt; bool:
+    # This is called at idle time, so minimizing positions is crucial!
+    """
+    Return True if hoist should be enabled in a menu.
+    Should not be used in any other context.
+    """
+    return True
+</t>
+<t tx="ekr.20241126093914.351">def canMoveOutlineDown(self) -&gt; bool:
+    c, p = self, self.p
+    return p and p.visNext(c)
+</t>
+<t tx="ekr.20241126093914.352">def canMoveOutlineLeft(self) -&gt; bool:
+    c, p = self, self.p
+    if c.hoistStack:
+        bunch = c.hoistStack[-1]
+        if p and p.hasParent():
+            p.moveToParent()
+            return p != bunch.p and bunch.p.isAncestorOf(p)
+        return False
+    return p and p.hasParent()
+</t>
+<t tx="ekr.20241126093914.353">def canMoveOutlineRight(self) -&gt; bool:
+    c, p = self, self.p
+    if c.hoistStack:
+        bunch = c.hoistStack[-1]
+        return p and p.hasBack() and p != bunch.p
+    return p and p.hasBack()
+</t>
+<t tx="ekr.20241126093914.354">def canMoveOutlineUp(self) -&gt; bool:
+    c, current = self, self.p
+    visBack = current and current.visBack(c)
+    if not visBack:
+        return False
+    if visBack.visBack(c):
+        return True
+    if c.hoistStack:
+        limit, limitIsVisible = c.visLimit()
+        if limitIsVisible:  # A hoist
+            return current != limit
+        # A chapter.
+        return current != limit.firstChild()
+    return current != c.rootPosition()
+</t>
+<t tx="ekr.20241126093914.355">def canPasteOutline(self, s: str = None) -&gt; bool:
+    # c = self
+    if not s:
+        s = g.app.gui.getTextFromClipboard()
+    # check for JSON
+    if s and s.lstrip().startswith("{"):
+        try:
+            d = json.loads(s)
+            if not ('vnodes' in d and 'tnodes' in d):
+                return False
+        except Exception:
+            return False
+        return True
+    if s and g.match(s, 0, g.app.prolog_prefix_string):
+        return True
+    return False
+</t>
+<t tx="ekr.20241126093914.356">def canPromote(self) -&gt; bool:
+    p = self.p
+    return p and p.hasChildren()
+</t>
+<t tx="ekr.20241126093914.357">def canSelectThreadBack(self) -&gt; bool:
+    p = self.p
+    return p.hasThreadBack()
+
+def canSelectThreadNext(self) -&gt; bool:
+    p = self.p
+    return p.hasThreadNext()
+
+def canSelectVisBack(self) -&gt; bool:
+    c, p = self, self.p
+    return p.visBack(c)
+
+def canSelectVisNext(self) -&gt; bool:
+    c, p = self, self.p
+    return p.visNext(c)
+</t>
+<t tx="ekr.20241126093914.358">def canShiftBodyLeft(self) -&gt; bool:
+    c = self
+    w = c.frame.body.wrapper
+    return w and w.getAllText()
+
+canShiftBodyRight = canShiftBodyLeft
+</t>
+<t tx="ekr.20241126093914.359">def canSortChildren(self) -&gt; bool:
+    p = self.p
+    return p and p.hasChildren()
+
+def canSortSiblings(self) -&gt; bool:
+    p = self.p
+    return p and (p.hasNext() or p.hasBack())
+</t>
+<t tx="ekr.20241126093914.36">def traceSettingsDict(self, d: dict[str, str], verbose: bool = False) -&gt; None:
+    if verbose:
+        print(d)
+        for key in sorted(list(d.keys())):
+            gs = d.get(key)
+            print(f"{key:35} {g.shortFileName(gs.path):17} {gs.val}")
+        if d:
+            print('')
+    else:
+        print(f"{d.name()} {len(d.keys())}")
+</t>
+<t tx="ekr.20241126093914.360">def canUndo(self) -&gt; bool:
+    c = self
+    return c.undoer.canUndo()
+
+def canRedo(self) -&gt; bool:
+    c = self
+    return c.undoer.canRedo()
+</t>
+<t tx="ekr.20241126093914.361">def canUnmarkAll(self) -&gt; bool:
+    c = self
+    for p in c.all_unique_positions():
+        if p.isMarked():
+            return True
+    return False
+</t>
+<t tx="ekr.20241126093914.362"></t>
+<t tx="ekr.20241126093914.363">def canGoToNextDirtyHeadline(self) -&gt; bool:
+    c, current = self, self.p
+    for p in c.all_unique_positions():
+        if p != current and p.isDirty():
+            return True
+    return False
+</t>
+<t tx="ekr.20241126093914.364">def canGoToNextMarkedHeadline(self) -&gt; bool:
+    c, current = self, self.p
+    for p in c.all_unique_positions():
+        if p != current and p.isMarked():
+            return True
+    return False
+</t>
+<t tx="ekr.20241126093914.365">def canMarkChangedHeadlines(self) -&gt; bool:
+    c = self
+    for p in c.all_unique_positions():
+        if p.isDirty():
+            return True
+    return False
+</t>
+<t tx="ekr.20241126093914.366">def canMarkChangedRoots(self) -&gt; bool:
+    c = self
+    for p in c.all_unique_positions():
+        if p.isDirty() and p.isAnyAtFileNode():
+            return True
+    return False
+</t>
+<t tx="ekr.20241126093914.367"></t>
+<t tx="ekr.20241126093914.368">def endEditing(self) -&gt; None:
+    """End the editing of a headline."""
+    c = self
+    p = c.p
+    if p:
+        c.frame.tree.endEditLabel()
+</t>
+<t tx="ekr.20241126093914.369">def getSelectedPositions(self) -&gt; list[Position]:
+    """ Get list of currently selected positions.
+
+    So far only makes sense on qt gui (which supports multiselection)
+    """
+    c = self
+    return c.frame.tree.getSelectedPositions()
+</t>
+<t tx="ekr.20241126093914.37">def traceShortcutsDict(self, d: dict[str, str], verbose: bool = False) -&gt; None:
+    if verbose:
+        print(d)
+        for key in sorted(list(d.keys())):
+            val = d.get(key)
+            # print('%20s %s' % (key,val.dump()))
+            print(f"{key:35} {[z.stroke for z in val]}")
+        if d:
+            print('')
+    else:
+        print(d)
+</t>
+<t tx="ekr.20241126093914.370">def redrawAndEdit(self,
+    p: Position,
+    selectAll: bool = False,
+    selection: tuple = None,
+    keepMinibuffer: bool = False,
+) -&gt; None:
+    """Redraw the screen and edit p's headline."""
+    c, k = self, self.k
+    c.redraw(p)  # This *must* be done now.
+    if p:
+        # This should request focus.
+        c.frame.tree.editLabel(p, selectAll=selectAll, selection=selection)
+        if k and not keepMinibuffer:
+            # Setting the input state has no effect on focus.
+            if selectAll:
+                k.setInputState('insert')
+            else:
+                k.setDefaultInputState()
+            # This *does* affect focus.
+            k.showStateAndMode()
+    else:
+        g.trace('** no p')
+    # Update the focus immediately.
+    if not keepMinibuffer:
+        c.outerUpdate()
+</t>
+<t tx="ekr.20241126093914.371">def selectPosition(self, p: Position, **kwargs: KWargs) -&gt; None:
+    """
+    Select a new position, redrawing the screen *only* if we must
+    change chapters.
+    """
+    trace = False  # For # 2167.
+    if kwargs:
+        print('c.selectPosition: all keyword args are ignored', g.callers())
+    c = self
+    cc = c.chapterController
+    if not p:
+        if not g.app.batchMode:  # A serious error.
+            g.trace('Warning: no p', g.callers())
+        return
+    if cc and not cc.selectChapterLockout:
+        # Calls c.redraw_later if the chapter changes.
+        cc.selectChapterForPosition(p)
+    # De-hoist as necessary to make p visible.
+    if c.hoistStack:
+        while c.hoistStack:
+            bunch = c.hoistStack[-1]
+            if c.positionExists(p, bunch.p):
+                break
+            if trace:
+                # #2167: Give detailed trace.
+                print('')
+                print('pop hoist stack! callers:', g.callers())
+                g.printObj(c.hoistStack, tag='c.hoistStack before pop')
+                print('Recent keystrokes')
+                for i, data in enumerate(reversed(g.app.lossage)):
+                    print(f"{i:&gt;2} {data!r}")
+                print('Recently-executed commands...')
+                for i, command in enumerate(reversed(c.recent_commands_list)):
+                    print(f"{i:&gt;2} {command}")
+            c.hoistStack.pop()
+    c.frame.tree.select(p)
+    # Do *not* test whether the position exists!
+    # We may be in the midst of an undo.
+    c.setCurrentPosition(p)
+
+# Compatibility, but confusing.
+
+selectVnode = selectPosition
+</t>
+<t tx="ekr.20241126093914.372">def treeSelectHelper(self, p: Position) -&gt; None:
+    c = self
+    if not p:
+        p = c.p
+    if p:
+        # Do not call expandAllAncestors here.
+        c.selectPosition(p)
+        c.redraw_after_select(p)
+    c.treeFocusHelper()  # This is essential.
+</t>
+<t tx="ekr.20241126093914.373">def recursiveImport(
+    self,
+    *,  # All arguments are kwargs.
+    dir_: str = None,  # A directory or file name.
+    ignore_pattern: re.Pattern = None,  # Ignore files matching this regex pattern.
+    kind: str = None,
+    recursive: bool = True,
+    safe_at_file: bool = True,
+    theTypes: list[str] = None,
+    verbose: bool = True,
+) -&gt; None:
+    &lt;&lt; docstring &gt;&gt;
+    c = self
+
+    # Import all files in dir_ after c.p.
+    try:
+        from leo.core import leoImport
+        cc = leoImport.RecursiveImportController(c,
+            dir_=dir_,
+            ignore_pattern=ignore_pattern,
+            kind=kind,
+            recursive=recursive,
+            safe_at_file=safe_at_file,
+            theTypes=['.py'] if not theTypes else theTypes,
+            verbose=verbose,
+        )
+        cc.run(dir_)
+    except AssertionError:
+        g.es_exception()
+    finally:
+        c.redraw()
+</t>
+<t tx="ekr.20241126093914.374">"""
+Recursively import all python files in a directory and clean the results.
+
+Parameters::
+    dir_              The path to a directory or file.
+                      Relative paths must exist relative to the outline's directory.
+    kind              One of ('@clean','@edit','@file','@nosent').
+    recursive=True    True: recurse into subdirectories.
+    safe_at_file=True True: produce @@file nodes instead of @file nodes.
+    theTypes=None     A list of file extensions to import.
+                      None is equivalent to ['.py']
+    verbose=False     True: report imported directories.
+
+This method cleans imported files as follows:
+
+- Replace backslashes with forward slashes in headlines.
+- Remove empty nodes.
+- Add @path directives that reduce the needed path specifiers in descendant nodes.
+- Add @file to nodes or replace @file with @@file.
+"""
+</t>
+<t tx="ekr.20241126093914.375"></t>
+<t tx="ekr.20241126093914.376">@nobeautify
+
+def cloneFindByPredicate(
+    self,
+    generator: Any,         # The generator used to traverse the tree.
+    predicate: Callable,    # A function of one argument p, returning True
+                            # if p should be included in the results.
+    failMsg: str = None,    # Failure message. Default is no message.
+    flatten: bool = False,  # True: Put all matches at the top level.
+    iconPath: str = None,   # Full path to icon to attach to all matches.
+    undoType: str = None,   # The undo name, shown in the Edit:Undo menu.
+                            # The default is 'clone-find-predicate'
+) -&gt; Position:
+    """
+    Traverse the tree given using the generator, cloning all positions for
+    which predicate(p) is True. Undoably move all clones to a new node, created
+    as the last top-level node. Returns the newly-created node. Arguments:
+
+    generator,      The generator used to traverse the tree.
+    predicate,      A function of one argument p returning true if p should be included.
+    failMsg=None,   Message given if nothing found. Default is no message.
+    flatten=False,  True: Move all node to be parents of the root node.
+    iconPath=None,  Full path to icon to attach to all matches.
+    undo_type=None, The undo/redo name shown in the Edit:Undo menu.
+                    The default is 'clone-find-predicate'
+    """
+    c = self
+    u, undoType = c.undoer, undoType or 'clone-find-predicate'
+    clones, root, seen = [], None, set()
+    for p in generator():
+        if predicate(p) and p.v not in seen:
+            c.setCloneFindByPredicateIcon(iconPath, p)
+            if flatten:
+                seen.add(p.v)
+            else:
+                for p2 in p.self_and_subtree(copy=False):
+                    seen.add(p2.v)
+            clones.append(p.copy())
+    if clones:
+        undoData = u.beforeInsertNode(c.p)
+        root = c.createCloneFindPredicateRoot(flatten, undoType)
+        for p in clones:
+            # Create the clone directly as a child of found.
+            p2 = p.copy()
+            n = root.numberOfChildren()
+            p2._linkCopiedAsNthChild(root, n)
+        u.afterInsertNode(root, undoType, undoData)
+        c.selectPosition(root)
+        c.setChanged()
+        c.contractAllHeadlines()
+        root.expand()
+    elif failMsg:
+        g.es(failMsg, color='red')
+    return root
+</t>
+<t tx="ekr.20241126093914.377">def setCloneFindByPredicateIcon(self, iconPath: str, p: Position) -&gt; None:
+    """Attach an icon to p.v.u."""
+    if iconPath and g.os_path_exists(iconPath) and not g.os_path_isdir(iconPath):
+        aList = p.v.u.get('icons', [])
+        for d in aList:
+            if d.get('file') == iconPath:
+                break
+        else:
+            aList.append({
+                'type': 'file',
+                'file': iconPath,
+                'on': 'VNode',
+                # 'relPath': iconPath,
+                'where': 'beforeHeadline',
+                'xoffset': 2, 'xpad': 1,
+                'yoffset': 0,
+
+            })
+            p.v.u['icons'] = aList
+    elif iconPath:
+        g.trace('bad icon path', iconPath)
+</t>
+<t tx="ekr.20241126093914.378">def createCloneFindPredicateRoot(self, flatten: bool, undoType: str) -&gt; Position:
+    """Create a root node for clone-find-predicate."""
+    c = self
+    root = c.lastTopLevel().insertAfter()
+    root.h = undoType + (' (flattened)' if flatten else '')
+    return root
+</t>
+<t tx="ekr.20241126093914.379">def createNodeHierarchy(self,
+    heads: list[str], parent: Position = None, forcecreate: bool = False,
+) -&gt; Position:
+    """ Create the proper hierarchy of nodes with headlines defined in
+        'heads' under 'parent'
+
+        params:
+        parent - parent node to start from.  Set to None for top-level nodes
+        heads - list of headlines in order to create, i.e. ['foo','bar','baz']
+                will create:
+                  parent
+                  -foo
+                  --bar
+                  ---baz
+        forcecreate - If False (default), will not create nodes unless they don't exist
+                      If True, will create nodes regardless of existing nodes
+        returns the final position ('baz' in the above example)
+    """
+    u = self.undoer
+    undoType = 'Create Node Hierarchy'
+    undoType2 = 'Insert Node In Hierarchy'
+    u_node = parent or self.rootPosition()
+    u.beforeChangeGroup(u_node, undoType)
+    changed_node = False
+    for idx, head in enumerate(heads):
+        if parent is None and idx == 0:  # if parent = None, create top level node for first head
+            if not forcecreate:
+                for pos in self.all_positions():
+                    if pos.h == head:
+                        parent = pos
+                        break
+            if parent is None or forcecreate:
+                u_d = u.beforeInsertNode(u_node)
+                n = self.rootPosition().insertAfter()
+                n.h = head
+                u.afterInsertNode(n, undoType2, u_d)
+                parent = n
+        else:  # else, simply create child nodes each round
+            if not forcecreate:
+                for ch in parent.children():
+                    if ch.h == head:
+                        parent = ch
+                        changed_node = True
+                        break
+            if parent.h != head or not changed_node or forcecreate:
+                u_d = u.beforeInsertNode(parent)
+                n = parent.insertAsLastChild()
+                n.h = head
+                u.afterInsertNode(n, undoType2, u_d)
+                parent = n
+        changed_node = False
+    u.afterChangeGroup(parent, undoType)
+    return parent  # actually the last created/found position
+</t>
+<t tx="ekr.20241126093914.380">def deletePositionsInList(self, aList: list) -&gt; list[tuple[str, int, str]]:
+    """
+    Delete all vnodes corresponding to the positions in aList.
+
+    Set c.p if the old position no longer exists.
+
+    See "Theory of operation of c.deletePositionsInList" in LeoDocs.leo.
+    """
+    # New implementation by Vitalije 2020-03-17 17:29
+    c = self
+    # Ensure all positions are valid.
+    aList = [p for p in aList if c.positionExists(p)]
+    if not aList:
+        return []
+
+    def p2link(p: Position) -&gt; tuple[int, VNode]:
+        parent_v = p.stack[-1][0] if p.stack else c.hiddenRootNode
+        return p._childIndex, parent_v
+
+    links_to_be_cut = sorted(set(map(p2link, aList)), key=lambda x: -x[0])
+    undodata = []
+    for i, v in links_to_be_cut:
+        ch = v.children.pop(i)
+        ch.parents.remove(v)
+        undodata.append((v.gnx, i, ch.gnx))
+    if not c.positionExists(c.p):
+        c.selectPosition(c.rootPosition())
+    return undodata
+
+</t>
+<t tx="ekr.20241126093914.381">def doBatchOperations(self, aList: list = None) -&gt; None:
+    # Validate aList and create the parents dict
+    if aList is None:
+        aList = []
+    ok, d = self.checkBatchOperationsList(aList)
+    if not ok:
+        g.error('do-batch-operations: invalid list argument')
+        return
+    for v in list(d.keys()):
+        aList2 = d.get(v, [])
+        if aList2:
+            aList.sort()
+</t>
+<t tx="ekr.20241126093914.382">def checkBatchOperationsList(self, aList: list) -&gt; tuple[bool, dict]:
+    ok = True
+    d: dict[VNode, list[Any]] = {}
+    for z in aList:
+        try:
+            op, p, n = z
+            ok = (op in ('insert', 'delete') and
+                isinstance(p, leoNodes.position) and isinstance(n, int))
+            if ok:
+                aList2 = d.get(p.v, [])
+                data = n, op
+                aList2.append(data)
+                d[p.v] = aList2
+        except ValueError:
+            ok = False
+        if not ok:
+            break
+    return ok, d
+</t>
+<t tx="ekr.20241126093914.383"></t>
+<t tx="ekr.20241126093914.384">def find_b(self,
+    regex: re.Pattern,
+    flags: re.RegexFlag = re.IGNORECASE,
+    it: Iterable[Position] = None,
+) -&gt; list[Position]:
+    """
+    Return list of all Positions whose body matches the regex at least once.
+    """
+    c = self
+    if it is None:
+        it = c.all_positions()
+    try:
+        pattern = re.compile(regex, flags)
+        return [p.copy() for p in it if any(m for m in re.finditer(pattern, p.b))]
+    except Exception:
+        g.es_error('Exception in c.find_b')
+        g.es_exception()
+        return []
+</t>
+<t tx="ekr.20241126093914.385">def find_h(self,
+    regex: re.Pattern,
+    flags: re.RegexFlag = re.IGNORECASE,
+    it: Iterable[Position] = None,
+) -&gt; list[Position]:
+    """
+    Return list of all Positions whose headline matches the regex.
+    """
+    c = self
+    if it is None:
+        it = c.all_positions()
+    try:
+        pattern = re.compile(regex, flags)
+        return [z.copy() for z in it if re.match(pattern, z.h)]
+    except Exception:
+        g.es_error('Exception in c.find_h')
+        g.es_exception()
+        return []
+</t>
+<t tx="ekr.20241126093914.386">def undoableDeletePositions(self, aList: list) -&gt; None:
+    """
+    Deletes all vnodes corresponding to the positions in aList,
+    and make changes undoable.
+    """
+    c = self
+    u = c.undoer
+    data = c.deletePositionsInList(aList)
+    gnx2v = c.fileCommands.gnxDict
+
+    def undo() -&gt; None:
+        for pgnx, i, chgnx in reversed(u.getBead(u.bead).data):
+            v = gnx2v[pgnx]
+            ch = gnx2v[chgnx]
+            v.children.insert(i, ch)
+            ch.parents.append(v)
+        if not c.positionExists(c.p):
+            c.setCurrentPosition(c.rootPosition())
+
+    def redo() -&gt; None:
+        for pgnx, i, _chgnx in u.getBead(u.bead + 1).data:
+            v = gnx2v[pgnx]
+            ch = v.children.pop(i)
+            ch.parents.remove(v)
+        if not c.positionExists(c.p):
+            c.setCurrentPosition(c.rootPosition())
+
+    u.pushBead(g.Bunch(
+        data=data,
+        undoType='delete nodes',
+        undoHelper=undo,
+        redoHelper=redo,
+    ))
+</t>
+<t tx="ekr.20241126093914.387"></t>
+<t tx="ekr.20241126093914.388">def registerReloadSettings(self, obj: Any) -&gt; None:
+    """Enter object into c.configurables."""
+    c = self
+    if obj not in c.configurables:
+        c.configurables.append(obj)
+</t>
+<t tx="ekr.20241126093914.389">def reloadConfigurableSettings(self) -&gt; None:
+    """
+    Call all reloadSettings method in c.subcommanders, c.configurables and
+    other known classes.
+    """
+    c = self
+    table = [
+        g.app.gui,
+        g.app.pluginsController,
+        c.k.autoCompleter,
+        c.frame, c.frame.body, c.frame.log, c.frame.tree,
+        c.frame.body.colorizer,
+        getattr(c.frame.body.colorizer, 'highlighter', None),
+    ]
+    for obj in table:
+        if obj:
+            c.registerReloadSettings(obj)
+    # Useful now that instances add themselves to c.configurables.
+    c.configurables = list(set(c.configurables))
+    c.configurables.sort(key=lambda obj: obj.__class__.__name__.lower())
+    for obj in c.configurables:
+        func = (
+            getattr(obj, 'reloadSettings', None)
+            or getattr(obj, 'reload_settings', None)  # An official alias.
+        )
+        if func:
+            try:
+                func()  # pylint: disable=not-callable
+                g.doHook("after-reload-settings", c=c)
+            except Exception:
+                g.es_exception()
+                c.configurables.remove(obj)
+</t>
+<t tx="ekr.20241126093914.390">@g.commander_command('restart-leo')
+def restartLeo(self: Self, event: LeoKeyEvent = None) -&gt; None:
+    """Restart Leo, reloading all presently open outlines."""
+    c = self
+    # Write .leoRecentFiles.txt.
+    g.app.recentFilesManager.writeRecentFilesFile(c)
+    # Abort the restart if the user veto's any close.
+    for c in g.app.commanders():
+        if c.changed:
+            veto = False
+            try:
+                c.promptingForClose = True
+                veto = c.frame.promptForSave()
+            finally:
+                c.promptingForClose = False
+            if veto:
+                g.es_print('Cancelling restart-leo command')
+                return
+    # Officially begin the restart process. A flag for efc.ask and efc.on_idle.
+    g.app.restarting = True
+    # Save session data.
+    g.app.saveSession()
+    g.app.setLog(None)  # Kill the log.
+    # Close all unsaved outlines.
+    for c in g.app.commanders():
+        frame = c.frame
+        # This is similar to g.app.closeLeoWindow.
+        g.doHook("close-frame", c=c)
+        # Save the window state
+        # This may remove frame from the window list.
+        if frame in g.app.windowList:
+            g.app.destroyWindow(frame)
+            g.app.windowList.remove(frame)
+        else:
+            # #69.
+            g.app.forgetOpenFile(fn=c.fileName())
+    g.app.windowList = []
+    # Complete the shutdown.
+    g.app.finishQuit()
+    sys.stdout.flush()
+    sys.stderr.flush()
+    # Restart Leo with subprocess.run.
+    print('')
+    print('Restarting Leo...')
+    print(f"os.chdir({g.app.initial_cwd})")
+    os.chdir(g.app.initial_cwd)
+    if 1:  # #3916.
+        if g.isWindows:
+            sys_args = [z.replace('/', os.sep) for z in sys.argv]
+        else:
+            sys_args = sys.argv[:]
+        args = [sys.executable] + sys_args
+    else:
+        # #3141: Remember all open outlines.
+        restart_paths: list[str] = [
+            c.fileName() for c in g.app.commanders() if c.fileName()
+        ]
+        if g.isWindows:
+            restart_paths = [z.replace('/', os.sep) for z in restart_paths]
+        # Warning: Python 3.9 does not allow newlines within f-strings.
+        leo_editor_dir = os.path.normpath(os.path.join(g.app.loadDir, '..', '..'))
+        launchLeo_s = fr'{leo_editor_dir}{os.sep}launchLeo.py'
+        args = [sys.executable, launchLeo_s] + restart_paths + ['--no-splash']
+    args_s = 'subprocess.run([\n  ' + ',\n  '.join(args) + '\n])'
+    print(args_s)
+    print('')
+    subprocess.run(args)  # pylint: disable=subprocess-run-check
+</t>
+<t tx="ekr.20241126093914.391">@language rest
+@wrap
+@nosearch
+
+https://github.com/leo-editor/leo-editor/issues/4146
+PR: https://github.com/leo-editor/leo-editor/pull/4147
+Theory of Operation: https://github.com/leo-editor/leo-editor/issues/4158
+Rewrite jedit docs: https://github.com/leo-editor/leo-editor/issues/4166
+
+@language python
+
+</t>
+<t tx="ekr.20241126093914.392">@nosearch</t>
+<t tx="ekr.20241126093914.393">def traceState(self, s: str, *, state: int) -&gt; None:
+    """Print everything interesting about the QSH state."""
+
+    # Count the number of `@language` directives in p.b.
+    c = self.c
+    lines = g.splitLines(c.p.b)
+    at_languages = sum(1 for z in lines if z.startswith('@language '))
+    line_number = self.currentBlockNumber()
+
+    # The all-important state.
+    in_s = f"in {g.callers(1)}"
+    state_s = self.stateNumberToStateString(state)
+    state_lang = self.stateNumberToLanguage(state)
+    if self.in_full_redraw:
+        print('')
+    print(
+        f"{in_s:&gt;20} line: {line_number:2} at_languages: {at_languages} "
+        f"self.language: {self.language} state_lang: {state_lang} "
+        f"state: {state}={state_s} {s!r}")
+</t>
+<t tx="ekr.20241126093914.394">delegated_lines_language = None
+
+def match_span_delegated_lines(self, s: str, i: int, *, language: str, predicate: Callable) -&gt; None:
+    """
+    Colorize the *following* lines with the given delegate until the predicate is true.
+    """
+    if i &gt; 0:  # Should not happen.
+        return
+
+    # Continue the colorizing on the *next* line.
+    self.delegated_lines_language = language
+
+    def span(s: str) -&gt; int:
+        # Freeze all bindings.
+        return self.restart_match_span_delegated_lines(s, predicate=predicate)  # Must be kwargs.
+
+    self.setRestart(span, predicate=predicate)
+</t>
+<t tx="ekr.20241126093914.395">def restart_match_span_delegated_lines(self, s: str, *, predicate: Callable) -&gt; int:
+    """
+    Colorize all lines with delegated_lines_language until the predicate matches.
+    """
+    line = s.strip()
+    if s.startswith('@language'):
+        return 0
+
+    language = predicate(s)
+    if language:
+        self.delegated_lines_language = language
+        return 0
+
+    # Colorize *this* entire line with the language.
+    if line:
+        n = self.currentState()
+        self.init()
+        self.language = self.delegated_lines_language
+        self.mainLoop(n, s)
+
+    # Continue the colorizing on the *next* line.
+
+    def span(s: str) -&gt; int:
+        return self.restart_match_span_delegated_lines(s, predicate=predicate)  # Must be kwargs.
+
+    self.setRestart(span, predicate=predicate)
+    return len(s)  # Suppress any other rules.
+</t>
+<t tx="ekr.20241126093914.396">@language python</t>
+<t tx="ekr.20241126093914.4">class LoadManager:
+    """A class to manage loading .leo files, including configuration files."""
+
+    __slots__ = (
+        'files',
+        'globalBindingsDict',
+        'globalSettingsDict',
+        'leo_settings_c',
+        'leo_settings_path',
+        'more_cmdline_files',
+        'my_settings_c',
+        'my_settings_path',
+        'old_argv',
+        'options',
+        'theme_c',
+        'theme_path',
+    )
+
+    LM_NOTHEME_FLAG = 'lm_theme_use_none'
+
+    @others
+</t>
+<t tx="ekr.20241126093914.5">def __init__(self) -&gt; None:
+
+    # Global settings &amp; shortcuts dicts...
+    # The are the defaults for computing settings and shortcuts for all loaded files.
+
+    # A g.SettingsDict: the join of settings in leoSettings.leo &amp; myLeoSettings.leo
+    self.globalSettingsDict: g.SettingsDict = None
+    # A g.SettingsDict: the join of shortcuts in leoSettings.leo &amp; myLeoSettings.leo.
+    self.globalBindingsDict: g.SettingsDict = None
+
+    # LoadManager ivars corresponding to user options...
+
+    self.files: list[str] = []  # List of files to be loaded.
+    self.options: dict[str, Any] = {}  # Keys are option names; values are user options.
+    self.old_argv: list[str] = []  # A copy of sys.argv for debugging.
+
+    # True when more files remain on the command line to be loaded.
+    # If the user is answering "No" to each file as Leo asks
+    # "file already open, open again".
+    # This must be False for a complete exit to be appropriate
+    # (finish_quit=True param for closeLeoWindow())
+    self.more_cmdline_files = False
+
+    # Themes...
+    self.leo_settings_c: Cmdr = None
+    self.leo_settings_path: str = None
+    self.my_settings_c: Cmdr = None
+    self.my_settings_path: str = None
+    self.theme_c: Cmdr = None  # #1374.
+    self.theme_path: str = None
+</t>
+<t tx="ekr.20241126093914.513"># Careful: we may be running from the bridge.
+
+if QtGui:
+
+
+    class LeoHighlighter(QtGui.QSyntaxHighlighter):  # type:ignore
+        """
+        A subclass of QSyntaxHighlighter that overrides
+        the highlightBlock and rehighlight methods.
+
+        All actual syntax coloring is done in the highlighter class.
+
+        Used by both the JeditColorizer and PygmentsColorizer classes.
+        """
+        # This is c.frame.body.colorizer.highlighter
+        @others
+</t>
+<t tx="ekr.20241126093914.514">def __init__(self, c: Cmdr, colorizer: Any, document: Any) -&gt; None:
+    """ctor for LeoHighlighter class."""
+    self.c = c
+    self.colorizer = colorizer
+    self.n_calls = 0
+    # Alas, a QsciDocument is not a QTextDocument.
+    assert isinstance(document, QtGui.QTextDocument), document
+    self.leo_document = document
+    super().__init__(document)
+    self.reloadSettings()
+</t>
+<t tx="ekr.20241126093914.515">def highlightBlock(self, s: str) -&gt; None:
+    """ Called by QSyntaxHighlighter """
+    self.n_calls += 1
+    s = g.toUnicode(s)
+    self.colorizer.recolor(s)  # Highlight just one line.
+</t>
+<t tx="ekr.20241126093914.516">def reloadSettings(self) -&gt; None:
+    """Reload all reloadable settings."""
+    c, document = self.c, self.leo_document
+    if not pygments:
+        return
+    if not c.config.getBool('use-pygments', default=False):
+        return
+    # Init pygments ivars.
+    self._brushes: dict = {}
+    self._document = document
+    self._formats: dict = {}
+    self.colorizer.style_name = 'default'
+    # Style gallery: https://help.farbox.com/pygments.html
+    # Dark styles: fruity, monokai, native, vim
+    # https://github.com/gthank/solarized-dark-pygments
+    style_name = c.config.getString('pygments-style-name') or 'default'
+    if not c.config.getBool('use-pygments-styles', default=True):
+        return
+    # Init pygments style.
+    try:
+        self.setStyle(style_name)
+        # print('using %r pygments style in %r' % (style_name, c.shortFileName()))
+    except Exception:
+        print(f'pygments {style_name!r} style not found. Using "default" style')
+        self.setStyle('default')
+        style_name = 'default'
+    self.colorizer.style_name = style_name
+    assert self._style
+</t>
+<t tx="ekr.20241126093914.517">#
+# All code in this tree is based on PygmentsHighlighter.
+#
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+@others
+</t>
+<t tx="ekr.20241126093914.518">def _get_format(self, token: Any) -&gt; Any:
+    """ Returns a QTextCharFormat for token or None.
+    """
+    if token in self._formats:
+        return self._formats[token]
+    if self._style is None:
+        result = self._get_format_from_document(token, self._document)
+    else:
+        result = self._get_format_from_style(token, self._style)
+    result = self._get_format_from_style(token, self._style)
+    self._formats[token] = result
+    return result
+</t>
+<t tx="ekr.20241126093914.519">def _get_format_from_document(self, token: Any, document: Any) -&gt; Any:
+    """ Returns a QTextCharFormat for token by
+    """
+    # Modified by EKR.
+    # These lines cause unbounded recursion.
+        # code, html = next(self._formatter._format_lines([(token, 'dummy')]))
+        # self._document.setHtml(html)
+    return QtGui.QTextCursor(self._document).charFormat()
+</t>
+<t tx="ekr.20241126093914.521">def setStyle(self, style: Any) -&gt; None:
+    """ Sets the style to the specified Pygments style.
+    """
+    from pygments.styles import get_style_by_name  # type:ignore
+
+    if isinstance(style, str):
+        style = get_style_by_name(style)
+    self._style = style
+    self._clear_caches()
+</t>
+<t tx="ekr.20241126093914.522">def _clear_caches(self) -&gt; None:
+    """ Clear caches for brushes and formats.
+    """
+    self._brushes = {}
+    self._formats = {}
+</t>
+<t tx="ekr.20241126093914.523">def _get_brush(self, color: Any) -&gt; Any:
+    """ Returns a brush for the color.
+    """
+    result = self._brushes.get(color)
+    if result is None:
+        qcolor = self._get_color(color)
+        result = QtGui.QBrush(qcolor)
+        self._brushes[color] = result
+    return result
+
+def _get_color(self, color: Any) -&gt; Any:
+    """ Returns a QColor built from a Pygments color string.
+    """
+    qcolor = QtGui.QColor()
+    qcolor.setRgb(int(color[:2], base=16),
+                  int(color[2:4], base=16),
+                  int(color[4:6], base=16))
+    return qcolor
+</t>
+<t tx="ekr.20241126093914.524"></t>
+<t tx="ekr.20241126093914.525">@language python</t>
+<t tx="ekr.20241126093914.529">@language python</t>
+<t tx="ekr.20241126093914.546"># Calls either
+# self.enabled: setInitialStateNumber()
+#    otherwise: setRestart(self.restartNoColor)
+
+@language python</t>
+<t tx="ekr.20241126093914.551"></t>
+<t tx="ekr.20241126093914.563"></t>
+<t tx="ekr.20241126093914.570">@language rest
+@wrap
+
+- Change recolor to _recolor.
+- Change c.frame.body.redraw to c.redraw everywhere.
+- Use g.es_print_unique_message or g.print_unique_message to print one-time messages.
+- init_all_state no longer changes the old_v ivar.
+
+@language python</t>
+<t tx="ekr.20241126093914.571"></t>
+<t tx="ekr.20241126093914.585"></t>
+<t tx="ekr.20241126093914.587"># Rules for the md_main ruleset.
+
+# New in Leo 6.8.3: support @language jupytext.
+&lt;&lt; md.py: md_jupytext_comment &gt;&gt;
+
+def md_heading(colorer, s, i):
+    # issue 386.
+    # print('md_heading',i)
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"^[#]+")
+
+def md_link(colorer, s, i):
+    # issue 386.
+    # print('md_link',i)
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"\[[^]]+\]\([^)]+\)")
+
+def md_star_emphasis1(colorer, s, i):
+    # issue 386.
+    # print('md_underscore_emphasis1',i)
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"\*[^\s*][^*]*\*")
+
+def md_star_emphasis2(colorer, s, i):
+    # issue 386.
+    # print('md_star_emphasis2',i)
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"\*\*[^*]+\*\*")
+
+def md_underscore_emphasis1(colorer, s, i):
+    # issue 386.
+    # print('md_underscore_emphasis1',i)
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"_[^_]+_")
+
+def md_underline_equals(colorer, s, i):
+    # issue 386.
+    # print('md_underline_equals',i)
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"^===[=]+$")
+
+def md_underline_minus(colorer, s, i):
+    # issue 386.
+    # print('md_underline_minus',i)
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"---[-]+$")
+
+def md_underscore_emphasis2(colorer, s, i):
+    # issue 386.
+    # print('md_underscore_emphasis2',i)
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp=r"__[^_]+__")
+
+def md_rule0(colorer, s, i):
+    return colorer.match_span(s, i, kind="comment1", begin="&lt;!--", end="--&gt;")
+
+def md_rule1(colorer, s, i):
+    return colorer.match_span(s, i, kind="markup", begin="&lt;script", end="&lt;/script&gt;",
+          at_line_start=True,
+          delegate="html::javascript")
+
+def md_rule2(colorer, s, i):
+    return colorer.match_seq_regexp(s, i, kind="markup", regexp="&lt;hr\\b([^&lt;&gt;])*?/?&gt;",
+          at_line_start=True)
+
+def md_rule3(colorer, s, i):
+    return colorer.match_span_regexp(s, i,
+        kind="markup",
+        begin="&lt;(p|div|h[1-6]|blockquote|pre|table|dl|ol|ul|noscript|form|fieldset|iframe|math|ins|del)\\b", end="&lt;/$1&gt;",
+          at_line_start=True,
+          delegate="md::block_html_tags")
+
+def md_rule4(colorer, s, i):
+    return colorer.match_plain_seq(s, i, kind="null", seq=" &lt; ")
+
+def md_rule5(colorer, s, i):
+    return colorer.match_span(s, i, kind="markup", begin="&lt;", end="&gt;",
+          delegate="md::inline_markup")
+
+# Rules dict for md_main ruleset.
+rulesDict1 = {
+    "#": [md_jupytext_comment, md_heading],  # Order important. #4146 and #386
+    "[": [md_link],  # # #386.
+    "*": [md_star_emphasis2, md_star_emphasis1],  # #386. Order important
+    "=": [md_underline_equals],  # # #386.
+    "-": [md_underline_minus],  # # #386.
+    "_": [md_underscore_emphasis2, md_underscore_emphasis1],  # #386. Order important.
+    " ": [md_rule4],
+    "&lt;": [md_rule0, md_rule1, md_rule2, md_rule3, md_rule5],
+}
+</t>
+<t tx="ekr.20241126093914.588">def md_jupytext_comment(colorer, s, i):
+    """
+    Switch to python coloring if s is '# %%', provided that c.p.b contains
+    @language jupytext.
+    
+    New in Leo 6.8.3.
+    """
+    try:
+        c = colorer.c
+    except Exception:
+        return 0  # Fail, allowing other matches.
+
+    is_jupytext_python_comment = (
+        i == 0
+        and s.startswith('# %%')
+        and any(z.startswith('@language jupytext')
+            for z in g.splitLines(c.p.b))
+    )
+    if not is_jupytext_python_comment:
+        return 0  # Fail. Allow other matches.
+
+    # Color the line as a *jupytext markdown* comment.
+    n = colorer.match_eol_span(s, i, kind="comment1", seq="#")
+
+    # Simulate @language python.
+    colorer.init_mode('python')
+    state_i = colorer.setInitialStateNumber()
+    colorer.setState(state_i)
+
+    return n  # Succeed. Do not allow other matches.
+</t>
+<t tx="ekr.20241126093914.589">def jupytext_comment(colorer: Any, s: str, i: int) -&gt; int:
+    """
+    Switch to md or python coloring if s is a %% comment, provided that
+    c.p.b contains @language jupytext.
+    
+    New in Leo 6.8.3.
+    """
+    try:
+        c = colorer.c
+    except Exception:
+        return 0  # Fail, allowing other matches.
+
+    # *Always* colorize the comment line as a *jupytext* comment.
+    n = colorer.match_eol_span(s, i, kind="comment1", seq="#")
+
+    is_any_jupytext_comment = (
+        i == 0
+        and s.startswith('# %%')
+        and any(z.startswith('@language jupytext')
+            for z in g.splitLines(c.p.b))
+    )
+    if is_any_jupytext_comment:
+        # Simulate @language md or @language python.
+        language = 'md' if s.startswith('# %% [markdown]') else 'python'
+        colorer.init_mode(language)
+        state_i = colorer.setInitialStateNumber()
+        colorer.setState(state_i)
+
+    return n  # Succeed. Do not allow other matches.
+</t>
+<t tx="ekr.20241126093914.590">def python_comment(colorer, s, i):
+    """
+    Switch to md coloring if s is '# %% [markdown]', provided that c.p.b
+    contains @language jupytext.
+    
+    New in Leo 6.8.3.
+    """
+    try:
+        c = colorer.c
+    except Exception:
+        return 0  # Fail, allowing other matches.
+
+    # Always colorize the comment line as a *python* comment.
+    n = colorer.match_eol_span(s, i, kind="comment1", seq="#")
+
+    # Leo 6.8.3. Add special case for @language jupytext.
+    is_jupytext_md_comment = (
+        i == 0
+        and s.startswith('# %% [markdown]')
+        and any(z.startswith('@language jupytext')
+            for z in g.splitLines(c.p.b))
+    )
+    if is_jupytext_md_comment:
+        # Simulate @language md.
+        colorer.init_mode('md')
+        state_i = colorer.setInitialStateNumber()
+        colorer.setState(state_i)
+
+    return n  # Succeed. Do not allow other matches.
+</t>
+<t tx="ekr.20241126093914.591"></t>
+<t tx="ekr.20241126093914.593">@cmd('redraw')
+def redraw_command(self, event: LeoKeyEvent) -&gt; None:
+    c = event.get('c')
+    if c:
+        p = c.p
+        c.redraw()
+        # Use a trap door, not a kwarg.
+        colorizer = c.frame.body.colorizer
+        if colorizer and hasattr(colorizer, 'old_v'):
+            colorizer.old_v = None  # #4146
+        c.recolor(p)
+
+def redraw(self, p: Position = None) -&gt; None:
+    """
+    Redraw the screen immediately.
+    If p is given, set c.p to p.
+    """
+    c = self
+    # New in Leo 5.6: clear the redraw request.
+    c.requestLaterRedraw = False
+    if not p:
+        p = c.p or c.rootPosition()
+    if not p:
+        return
+    c.expandAllAncestors(p)
+    if p:
+        # Fix bug https://bugs.launchpad.net/leo-editor/+bug/1183855
+        # This looks redundant, but it is probably the only safe fix.
+        c.frame.tree.select(p)
+    # tree.redraw will change the position if p is a hoisted @chapter node.
+    p2 = c.frame.tree.redraw(p)
+    # Be careful.  NullTree.redraw returns None.
+    # #503: NullTree.redraw(p) now returns p.
+    c.selectPosition(p2 or p)
+    # Do not call treeFocusHelper here.
+        # c.treeFocusHelper()
+    # Clear the redraw request, again.
+    c.requestLaterRedraw = False
+
+# Compatibility with old scripts
+
+force_redraw = redraw
+redraw_now = redraw
+</t>
+<t tx="ekr.20241126093914.595">def forceFullRecolor(self) -&gt; None:
+    pass
+
+def getColorizer(self) -&gt; None:
+    return self.colorizer
+
+def updateSyntaxColorer(self, p: Position) -&gt; None:
+    if p:
+        self.colorizer.updateSyntaxColorer(p.copy())
+
+def recolor(self, p: Position) -&gt; None:
+    g.print_unique_message(
+        f"LeoBody.recolor is deprecated: callers: {g.callers(6)}")
+    self.c.recolor()
+
+recolor_now = recolor
+</t>
+<t tx="ekr.20241126093914.6"></t>
+<t tx="ekr.20241126093914.617">@language rest
+@wrap
+@nosearch
+
+https://github.com/leo-editor/leo-editor/issues/4148
+PR: https://github.com/leo-editor/leo-editor/pull/4149
+
+@language python
+</t>
+<t tx="ekr.20241126093914.618"># Found 10 marked nodes</t>
+<t tx="ekr.20241126093914.619">def getShortcut(self, commandName: str) -&gt; tuple[str, list]:
+    """Return rawKey,accel for shortcutName"""
+    c = self.c
+    d = self.shortcutsDict
+    if not c.frame.menu:
+        err = f"c.config.getShortcut: no menu: {c.shortFileName()}:{commandName}"
+        g.print_unique_message(err)
+        return None, []
+    if d:
+        assert isinstance(d, g.SettingsDict), repr(d)  # was TypedDictOfLists.
+        key = c.frame.menu.canonicalizeMenuName(commandName)
+        key = key.replace('&amp;', '')  # Allow '&amp;' in names.
+        aList = d.get(commandName, [])
+        if aList:  # A list of g.BindingInfo objects.
+            # It's important to filter empty strokes here.
+            aList = [z for z in aList
+                if z.stroke and z.stroke.lower() != 'none']
+        return key, aList
+    #
+    # lm.readGlobalSettingsFiles is opening a settings file.
+    # lm.readGlobalSettingsFiles has not yet set lm.globalSettingsDict.
+    return None, []
+</t>
+<t tx="ekr.20241126093914.620">def checkUnicode(s: str, encoding: str = None) -&gt; str:
+    """
+    Warn when converting bytes. Report *all* errors.
+
+    This method is meant to document defensive programming. We don't expect
+    these errors, but they might arise as the result of problems in
+    user-defined plugins or scripts.
+    """
+    tag = 'g.checkUnicode'
+    if s is None and g.unitTesting:
+        return ''
+    if isinstance(s, str):
+        return s
+    if not isinstance(s, bytes):
+        g.error(f"{tag}: unexpected argument: {s!r}")
+        g.trace('callers:', g.callers())
+        return ''
+
+    # Report the unexpected conversion.
+    message = f"\n{tag}: expected unicode. got: {s!r}\n{g.callers()}"
+    g.es_print_unique_message(message, color='red')
+
+    # Convert to unicode, reporting all errors.
+    if not encoding:
+        encoding = 'utf-8'
+    try:
+        s = s.decode(encoding, 'strict')
+    except(UnicodeDecodeError, UnicodeError):  # noqa
+        # https://wiki.python.org/moin/UnicodeDecodeError
+        s = s.decode(encoding, 'replace')
+        g.trace(g.callers())
+        g.error(f"{tag}: unicode error. encoding: {encoding!r}, s:\n{s!r}")
+    except Exception:
+        g.trace(g.callers())
+        g.es_exception()
+        g.error(f"{tag}: unexpected error! encoding: {encoding!r}, s:\n{s!r}")
+    return s
+</t>
+<t tx="ekr.20241126093914.621">def get_directives_dict(p: Position) -&gt; dict[str, str]:
+    """
+    Scan p for Leo directives found in globalDirectiveList.
+
+    Returns a dict containing the stripped remainder of the line
+    following the first occurrence of each recognized directive.
+    """
+    d = {}
+    # The headline has higher precedence because it is more visible.
+    for kind, s in (('head', p.h), ('body', p.b)):
+        anIter = g.directives_pat.finditer(s)
+        for m in anIter:
+            word = m.group(1).strip()
+            i = m.start(1)
+            if word in d:
+                continue
+            j = i + len(word)
+            if j &lt; len(s) and s[j] not in ' \t\n':
+                # Not a valid directive: just ignore it.
+                continue
+            # Warning if @path is in the body of an @file node.
+            if word == 'path' and kind == 'body' and p.isAtFileNode():
+                message = '\n@path is not allowed in the body text of @file nodes\n'
+                g.print_unique_message(message, color='red')
+                continue
+            k = g.skip_line(s, j)
+            val = s[j:k].strip()
+            d[word] = val
+    return d
+</t>
+<t tx="ekr.20241126093914.622">g_unique_message_d: dict[str, bool] = {}
+
+def print_unique_message(message: str) -&gt; None:
+    """Print the given message once."""
+    if message not in g_unique_message_d:
+        g_unique_message_d[message] = True
+        print(message)
+
+def es_print_unique_message(message: str, *, color: str) -&gt; None:
+    """Print the given message once."""
+    if message not in g_unique_message_d:
+        g_unique_message_d[message] = True
+        g.es_print(message, color=color)
+</t>
+<t tx="ekr.20241126093914.623">def read(self, c: Cmdr, p: Position) -&gt; Tuple[str, str]:  # pragma: no cover
+    """
+    Called from at.readOneAtJupytextNode.
+    p must be an @jupytext node describing an .ipynb file.
+    Convert x.ipynb to a string s.
+    Return (s, path)
+    """
+    path = self.full_path(c, p)
+    if not path:
+        # full_path has given the error.
+        return '', ''
+    if not os.path.exists(path):
+        message = f"\njtm.read: File not found: {path!r}\n"
+        g.es_print_unique_message(message, color='red')
+        return '', ''
+
+    # Read the .ipynb file into contents.
+    # jupytext.read can crash, so be safe.
+    fmt = c.config.getString('jupytext-fmt') or 'py:percent'
+    try:
+        notebook = jupytext.read(path, fmt=fmt)
+        with io.StringIO() as f:
+        # Use jupytext.write, *not* jupytext.writes.
+            jupytext.write(notebook, f, fmt=fmt)
+            contents = f.getvalue()
+    except Exception:
+        g.es_print('Exception in jupytext!', color='red')
+        g.es_exception()
+        with open(path, 'rb') as f:
+            raw_contents = f.read()
+            contents = g.toUnicode(raw_contents)
+    return contents, path
+</t>
+<t tx="ekr.20241126093914.624">def _get_format_from_style(self, token: Any, style: Any) -&gt; Any:
+    """ Returns a QTextCharFormat for token by reading a Pygments style.
+    """
+    result = QtGui.QTextCharFormat()
+
+    # EKR: handle missing tokens.
+    try:
+        data = style.style_for_token(token).items()
+    except KeyError as err:
+        message = f"_get_format_from_style: {err!r}"
+        g.print_unique_message(message)
+        return result
+    for key, value in data:
+        if value:
+            if key == 'color':
+                result.setForeground(self._get_brush(value))
+            elif key == 'bgcolor':
+                result.setBackground(self._get_brush(value))
+            elif key == 'bold':
+                result.setFontWeight(Weight.Bold)
+            elif key == 'italic':
+                result.setFontItalic(True)
+            elif key == 'underline':
+                result.setUnderlineStyle(UnderlineStyle.SingleUnderline)
+            elif key == 'sans':
+                result.setFontStyleHint(Weight.SansSerif)
+            elif key == 'roman':
+                result.setFontStyleHint(Weight.Times)
+            elif key == 'mono':
+                result.setFontStyleHint(Weight.TypeWriter)
+    return result
+</t>
+<t tx="ekr.20241126093914.625">@language rest
+@wrap
+@nosearch
+
+https://github.com/leo-editor/leo-editor/issues/4153
+PR: https://github.com/leo-editor/leo-editor/pull/4154
+
+@language python
+</t>
+<t tx="ekr.20241126093914.626">def wrapper(self, event: LeoKeyEvent) -&gt; Any:
+
+    type_ = event.type()
+    # Must intercept KeyPress for events that generate FocusOut!
+    if type_ == Type.KeyPress:
+        return self.keyPress(event)
+    if type_ == Type.KeyRelease:
+        return self.keyRelease(event)  # type:ignore[arg-type]
+    return self.oldEvent(event)
+</t>
+<t tx="ekr.20241126093914.627">def gen_dot_op(self) -&gt; None:
+    """Handle the '.' input token."""
+    context = self.input_token.context
+
+    # Get the previous significant **input** token.
+    # This is the only call to next(i) anywhere!
+    next_i = self._next(self.index)
+    next = 'None' if next_i is None else self.input_tokens[next_i]
+    import_is_next = next and next.kind == 'name' and next.value == 'import'  # type:ignore
+
+    if context == 'import':
+        if (
+            self.prev_output_kind == 'word'
+            and self.prev_output_value in ('from', 'import')
+        ):
+            self.gen_blank()
+            op = 'op' if import_is_next else 'op-no-blanks'
+            self.gen_token(op, '.')
+        elif import_is_next:
+            self.gen_token('op', '.')
+            self.gen_blank()
+        else:
+            self.pending_ws = ''
+            self.gen_token('op-no-blanks', '.')
+    else:
+        self.pending_ws = ''
+        self.gen_token('op-no-blanks', '.')
+</t>
+<t tx="ekr.20241126093914.628">def _next(self, i: int) -&gt; Optional[int]:
+    """
+    Return the next *significant* input token.
+
+    Ignore insignificant tokens: whitespace, indentation, comments, etc.
+
+    The **Global Token Ratio** is tbo.n_scanned_tokens / len(tbo.tokens),
+    where tbo.n_scanned_tokens is the total number of calls calls to
+    tbo.next or tbo.prev.
+
+    For Leo's sources, this ratio ranges between 0.48 and 1.51!
+
+    The orange_command function warns if this ratio is greater than 2.5.
+    Previous versions of this code suffered much higher ratios.
+    """
+    i += 1
+    while i &lt; len(self.input_tokens):
+        token = self.input_tokens[i]
+        if token.kind not in self.insignificant_tokens:
+            # g.trace(f"token: {token!r}")
+            return i
+        i += 1
+    return None  # pragma: no cover
+</t>
+<t tx="ekr.20241126093914.629">@language rest
+@wrap
+@nosearch
+
+https://github.com/leo-editor/leo-editor/issues/4160
+PR2: https://github.com/leo-editor/leo-editor/pull/4163
+
+@language python
+</t>
+<t tx="ekr.20241126093914.631">@language rest
+@wrap
+@nosearch
+
+https://github.com/leo-editor/leo-editor/issues/4164
+PR: https://github.com/leo-editor/leo-editor/pull/4165
+
+@language python
+</t>
+<t tx="ekr.20241126093914.632">def onContextMenu(self, c: Cmdr, w: Wrapper, point: QPoint) -&gt; None:
+    """LeoQtGui: Common context menu handling."""
+    # #1286.
+    handlers = g.tree_popup_handlers
+    if not handlers:
+        return  # #4164: The "No popup handlers" message is annoying.
+    menu = QtWidgets.QMenu(c.frame.top)  # #1995.
+    menuPos = w.mapToGlobal(point)
+    p = c.p.copy()
+    done: set[Callable] = set()
+    for handler in handlers:
+        # every handler has to add it's QActions by itself
+        if handler in done:
+            # do not run the same handler twice
+            continue
+        try:
+            handler(c, p, menu)
+            done.add(handler)
+        except Exception:
+            g.es_print('Exception executing right-click handler')
+            g.es_exception()
+    menu.popup(menuPos)
+    self._contextmenu = menu
+</t>
+<t tx="ekr.20241126093914.633">@language rest
+@wrap
+@nosearch
+
+https://github.com/leo-editor/leo-editor/issues/4159
+PR: https://github.com/leo-editor/leo-editor/pull/4167
+
+@bool beautify-python-code-on-write
+
+@language python
+</t>
+<t tx="ekr.20241126093914.634"></t>
+<t tx="ekr.20241126093914.635">def checkPythonCode(self, contents: str, fileName: str, root: Position) -&gt; None:  # pragma: no cover
+    """Perform python-related checks on root."""
+    if not g.app.log:
+        return  # We are auto-saving.
+    is_python = fileName and fileName.endswith(('py', 'pyw'))
+    if g.unitTesting or not contents or not is_python:
+        return
+    ok = True
+    if self.checkPythonCodeOnWrite:  # First
+        ok = self.checkPythonSyntax(root, contents)
+    if ok and self.beautifyOnWrite:  # Second.
+        ok = self.runTokenBasedBeautifier(root, fileName)
+    if ok and self.runPyFlakesOnWrite:  # Creates clickable links.
+        ok = self.runPyflakes(root)
+    if ok and self.runFlake8OnWrite:  # Does *not* create clickable links.
+        ok = self.runFlake8(root)
+    if ok and self.runPylintOnWrite:
+        ok = self.runPylint(root)
+    if not ok:
+        g.app.syntax_error_files.append(g.shortFileName(fileName))
+</t>
+<t tx="ekr.20241126093914.636">def checkPythonSyntax(self, p: Position, body: str) -&gt; bool:
+    """Check the syntax of the given node."""
+    try:
+        body = body.replace('\r', '')
+        fn = f"&lt;node: {p.h}&gt;"
+        compile(body + '\n', fn, 'exec')
+        return True
+    except SyntaxError:  # pragma: no cover
+        if not g.unitTesting:
+            self.syntaxError(p, body)
+    except Exception:  # pragma: no cover
+        g.trace("unexpected exception")
+        g.es_exception()
+    return False
+</t>
+<t tx="ekr.20241126093914.637">def syntaxError(self, p: Position, body: str) -&gt; None:  # pragma: no cover
+    """Report a syntax error."""
+    g.error(f"Syntax error in: {p.h}")
+    typ, val, tb = sys.exc_info()
+    message = hasattr(val, 'message') and val.message
+    if message:
+        g.es_print(message)
+    if val is None:
+        return
+    lines = g.splitLines(body)
+    n = val.lineno
+    offset = val.offset or 0
+    if n is None:
+        return
+    i = val.lineno - 1
+    for j in range(max(0, i - 2), min(i + 2, len(lines) - 1)):
+        line = lines[j].rstrip()
+        if j == i:
+            unl = p.get_UNL()
+            g.es_print(f"{j+1:5}:* {line}", nodeLink=f"{unl}::-{j+1}")  # Global line.
+            g.es_print(' ' * (7 + offset) + '^')
+        else:
+            g.es_print(f"{j+1:5}: {line}")
+</t>
+<t tx="ekr.20241126093914.639">def runFlake8(self, root: Position) -&gt; bool:  # pragma: no cover
+    """Run flake8 on the selected node."""
+    try:
+        from leo.commands import checkerCommands
+        if checkerCommands.flake8:
+            x = checkerCommands.Flake8Command(self.c)
+            x.run(root)
+            return True
+        return True  # Suppress error if pyflakes can not be imported.
+    except Exception:
+        g.es_exception()
+        return True  # Pretend all is well
+</t>
+<t tx="ekr.20241126093914.640">def runPyflakes(self, root: Position) -&gt; bool:  # pragma: no cover
+    """Run pyflakes on the selected node."""
+    try:
+        from leo.commands import checkerCommands
+        if checkerCommands.pyflakes:
+            x = checkerCommands.PyflakesCommand(self.c)
+            ok = x.run(root)
+            return ok
+        return True  # Suppress error if pyflakes can not be imported.
+    except Exception:
+        g.es_exception()
+        return True  # Pretend all is well
+</t>
+<t tx="ekr.20241126093914.641">def runPylint(self, root: Position) -&gt; bool:  # pragma: no cover
+    """Run pylint on the selected node."""
+    try:
+        from leo.commands import checkerCommands
+        if checkerCommands.lint:
+            x = checkerCommands.PylintCommand(self.c)
+            ok = bool(x.run(root))
+            return ok
+        return True  # Suppress error if pylint can not be imported.
+    except Exception:
+        g.es_exception()
+        return True  # Pretend all is well
+</t>
+<t tx="ekr.20241126093914.642">def beautify_file(filename: str) -&gt; bool:
+    """
+    Beautify the given file, writing it if has changed.
+    """
+    settings: dict[str, Any] = {
+        'all': False,  # Don't beautify all files.
+        'beautified': True,  # Report changed files.
+        'diff': False,  # Don't show diffs.
+        'report': True,  # Report changed files.
+        'write': True,  # Write changed files.
+    }
+    tbo = TokenBasedOrange(settings)
+    return tbo.beautify_file(filename)
+</t>
+<t tx="ekr.20241126093914.643">@g.commander_command('contract-all-other-nodes')
+def contractAllOtherNodes(self: Cmdr, event: LeoKeyEvent = None) -&gt; None:
+    """
+    Contract all nodes except those needed to make the
+    presently selected node visible.
+    """
+    c = self
+    leaveOpen = c.p
+    for p in c.rootPosition().self_and_siblings():
+        contractIfNotCurrent(c, p, leaveOpen)
+    c.redraw()
+</t>
+<t tx="ekr.20241126093914.644">def contractIfNotCurrent(c: Cmdr, p: Position, leaveOpen: Position) -&gt; None:
+    if p == leaveOpen or not p.isAncestorOf(leaveOpen):
+        p.contract()
+    for child in p.children():
+        if child != leaveOpen and child.isAncestorOf(leaveOpen):
+            contractIfNotCurrent(c, child, leaveOpen)
+        else:
+            for p2 in child.self_and_subtree():
+                p2.contract()
+</t>
+<t tx="ekr.20241126093914.645"></t>
+<t tx="ekr.20241126093914.646">def runTokenBasedBeautifier(self, root: Position, filename: str) -&gt; bool:
+    """Run Leo's token-based beautifier on the selecte position."""
+    c = self.c
+    p = c.p
+    if not os.path.exists(filename):
+        return False
+    old_p = p.copy()
+    try:
+        old_sys_argv = sys.argv[:]
+        sys.argv = ['tbo']  # A hack: don't run leo.core.leoTokens.main.
+        from leo.core.leoTokens import beautify_file
+        changed = beautify_file(filename)
+        if changed:
+            g.es(f"beautified: {g.shortFileName(filename)}")
+            # Suppress the reload prompt.
+            efc = g.app.externalFilesController
+            efc.set_time(filename)
+            # Reload the file immediately.
+            c.selectPosition(root)
+            c.refreshFromDisk()
+        return True
+    except Exception:
+        g.es_exception()
+        return False
+    finally:
+        sys.arg_v = old_sys_argv
+        # #4159: This may not restore the outline as it was,
+        # but it's much better than doing nothing.
+        c.selectPosition(old_p)
+        c.contractAllOtherNodes()
+        c.redraw(old_p)
+</t>
+<t tx="ekr.20241126093914.647">https://github.com/leo-editor/leo-editor/pull/4168
+
+- Rename _recolor to recolor everywhere.</t>
+<t tx="ekr.20241126093914.648">@language rest
+@wrap
+@nosearch
+
+https://github.com/leo-editor/leo-editor/issues/4156
+PR: https://github.com/leo-editor/leo-editor/pull/4169
+
+Missing visitor: TokenOrderGenerator.PyCF_OPTIMIZED_AS
+
+@language python
+</t>
+<t tx="ekr.20241126093914.649"></t>
+<t tx="ekr.20241126093914.650">def test_visitors_exist(self):
+    """Ensure that visitors exist for all ast nodes."""
+    import _ast
+    # Compute all fields to BaseTest.
+    aList = sorted(dir(_ast))
+    remove = [
+        'Interactive', 'Suite',  # Not necessary.
+        'AST',  # The base class,
+        # We can ignore the newast nodes for Python 3.8 because:
+        # 1. ast.parse does not generate them by default.
+        # 2. The type comments are ordinary comments.
+        #    They do not need to be specially synced.
+        # 3. Tools such as black, orange, and fstringify will
+        #    only ever handle comments as comments.
+        'FunctionType', 'NamedExpr', 'TypeIgnore',
+    ]
+    aList = [z for z in aList if not z[0].islower()]
+        # Remove base classes.
+    aList = [z for z in aList
+        # Constants start with 'PyCF_'.
+        if not z.startswith(('_', 'PyCF_')) and z not in remove]
+    # Now test them.
+    table = (
+        TokenOrderGenerator,
+    )
+    missing_names: list[str] = []
+    for class_ in table:
+        nodes, ops = 0, 0
+        traverser = class_()
+        for z in aList:
+            if hasattr(traverser, 'do_' + z):
+                nodes += 1
+            elif _op_names.get(z):
+                ops += 1
+            else:  # pragma: no cover
+                missing_name = f"{traverser.__class__.__name__}.{z}"
+                missing_names.append(missing_name)
+                print('')
+                print(f"Missing visitor: {missing_name}")
+    assert not missing_names, '\n'.join(missing_names)
+</t>
+<t tx="ekr.20241126093914.651">def test_cursesGui2(self):
+
+    # New unit test for #3008
+    # https://github.com/leo-editor/leo-editor/issues/3008
+
+    # Suppress this test for Python 3.13+
+    if g.python_version_tuple &gt;= (3, 13, 0):
+        self.skipTest('_curses not available on Python 3.13+')
+
+    # #3017: Skip the test if npyscreen, curses (_curses) or tkinter are missing.
+    try:
+        import leo.plugins.cursesGui2 as cursesGui2
+    except Exception:
+        self.skipTest('Requires cursesGui2 requirements')
+
+    # Instantiating this class caused the crash.
+    cursesGui2.LeoTreeData()
+</t>
+<t tx="ekr.20241126093914.652">@language rest
+@wrap
+@nosearch
+
+https://github.com/leo-editor/leo-editor/issues/4171
+PR: https://github.com/leo-editor/leo-editor/pull/4172
+
+@language python
+</t>
+<t tx="ekr.20241126093914.653"></t>
+<t tx="ekr.20241126093914.7">def completeFileName(self, fileName: str) -&gt; str:
+    fileName = g.toUnicode(fileName)
+    fileName = g.finalize(fileName)
+    # 2011/10/12: don't add .leo to *any* file.
+    return fileName
+</t>
+<t tx="ekr.20241126093914.770"></t>
+<t tx="ekr.20241126093914.779"></t>
+<t tx="ekr.20241126093914.78">def revertCommander(self, c: Cmdr) -&gt; None:
+    """Revert c to the previously saved contents."""
+    lm = self
+    fc = c.fileCommands
+    fn = c.mFileName
+    if not fn:
+        return
+    if not os.path.exists(fn):
+        return
+    if not lm.isLeoFile(fn):
+        return
+    # Re-read the file.
+    c.fileCommands.initIvars()
+    try:
+        g.app.reverting = True
+        v = fc.getAnyLeoFileByName(fn, readAtFileNodesFlag=True)
+        # Report failure.
+        if not v:
+            g.error(f"Revert failed: {fn!r}")
+            return
+        # #3596: Redo all buttons.
+        sc = getattr(c, 'theScriptingController', None)
+        if sc:
+            sc.createAllButtons()
+        if not g.unitTesting:
+            g.es_print(f"Reverted {c.fileName()}")
+    finally:
+        g.app.reverting = False
+</t>
+<t tx="ekr.20241126093914.781">@language rest
+@wrap
+@nosearch
+
+https://github.com/leo-editor/leo-editor/issues/4166
+PR: https://github.com/leo-editor/leo-editor/pull/4174
+PR2: https://github.com/leo-editor/leo-editor/pull/4188
+
+Theory of Operation: https://github.com/leo-editor/leo-editor/issues/4158
+Rewrite jedit docs: https://github.com/leo-editor/leo-editor/issues/4166
+
+@language python
+</t>
+<t tx="ekr.20241126093914.79">def load(self, fileName: str = None, pymacs: bool = None) -&gt; None:
+    """This is Leo's main startup method."""
+    lm = self
+    #
+    # Phase 1: before loading plugins.
+    # Scan options, set directories and read settings.
+    t1 = time.process_time()
+    if not lm.isValidPython():
+        return
+    lm.doPrePluginsInit(fileName, pymacs)  # sets lm.options and lm.files
+    # Compute the signon after initing the gui.
+    g.app.computeSignon()
+    g.app.printSignon()
+    if lm.options.get('version'):
+        return
+    if not g.app.gui:
+        return
+    # Disable redraw until all files are loaded.
+    g.app.disable_redraw = True
+    #
+    # Phase 2: load plugins: the gui has already been set.
+    t2 = time.process_time()
+    g.doHook("start1")
+    t3 = time.process_time()
+    if g.app.killed:
+        return
+    g.app.idleTimeManager.start()
+    #
+    # Phase 3: after loading plugins. Create one or more frames.
+    t4 = time.process_time()
+    if lm.options.get('script') and not self.files:
+        ok = True
+    else:
+        ok = lm.doPostPluginsInit()
+        # Fix #579: Key bindings don't take for commands defined in plugins
+        g.app.makeAllBindings()
+        if ok and g.app.diff:
+            lm.doDiff()
+    if not ok:
+        # --screen-shot causes an immediate exit.
+        if 'shutdown' in g.app.debug or 'startup' in g.app.debug:
+            print('Can not create a commander')
+        g.app.forceShutdown()
+        return
+    g.es('')  # Clears horizontal scrolling in the log pane.
+    if g.app.listen_to_log_flag:
+        g.app.listenToLog()
+    if 'startup' in g.app.debug:
+        t5 = time.process_time()
+        print('')
+        g.es_print(f"settings:{t2 - t1:5.2f} sec")
+        g.es_print(f" plugins:{t3 - t2:5.2f} sec")
+        g.es_print(f"   files:{t4 - t3:5.2f} sec")
+        g.es_print(f"  frames:{t5 - t4:5.2f} sec")
+        g.es_print(f"   total:{t5 - t1:5.2f} sec")
+        print('')
+    # -- quit
+    if g.app.quit_after_load:
+        if 'shutdown' in g.app.debug or 'startup' in g.app.debug:
+            print('--quit')
+        g.app.forceShutdown()
+        return
+    # #1128: support for restart-leo.
+    if not g.app.start_minimized:
+        try:  # Careful: we may be unit testing.
+            g.app.log.c.frame.bringToFront()
+        except Exception:
+            pass
+    g.app.gui.runMainLoop()
+    # For scripts, the gui is a nullGui.
+    # and the gui.setScript has already been called.
+</t>
+<t tx="ekr.20241126093914.8">def computeLeoSettingsPath(self) -&gt; Optional[str]:
+    """Return the full path to leoSettings.leo."""
+    # lm = self
+    join = g.finalize_join
+    settings_fn = 'leoSettings.leo'
+    table = (
+        # First, leoSettings.leo in the home directories.
+        join(g.app.homeDir, settings_fn),
+        join(g.app.homeLeoDir, settings_fn),
+        # Last, leoSettings.leo in leo/config directory.
+        join(g.app.globalConfigDir, settings_fn)
+    )
+    for path in table:
+        if g.os_path_exists(path):
+            break
+    else:
+        path = None
+    return path
+</t>
+<t tx="ekr.20241126093914.80">def doDiff(self) -&gt; None:
+    """Support --diff option after loading Leo."""
+    if len(self.old_argv[2:]) == 2:
+        pass  # c.editFileCommands.compareAnyTwoFiles gives a message.
+    else:
+        # This is an unusual situation.
+        g.es('--diff mode. sys.argv[2:]...', color='red')
+        for z in self.old_argv[2:]:
+            g.es(g.shortFileName(z) if z else repr(z), color='blue')
+    commanders = g.app.commanders()
+    if len(commanders) == 2:
+        c = commanders[0]
+        c.editFileCommands.compareAnyTwoFiles(event=None)
+</t>
+<t tx="ekr.20241126093914.81">def doPostPluginsInit(self) -&gt; bool:
+    """Create a Leo window for each file in the lm.files list."""
+    # Clear g.app.initing _before_ creating commanders.
+    lm = self
+    g.app.initing = False  # "idle" hooks may now call g.app.forceShutdown.
+    # Create the main frame.Show it and all queued messages.
+    c = c1 = fn = None
+    g.app.loaded_session = not lm.files
+    if lm.files:
+        try:
+            for n, fn in enumerate(lm.files):
+                lm.more_cmdline_files = n &lt; len(lm.files) - 1
+                # Returns None if the file is open in another instance of Leo.
+                c = g.openWithFileName(fn, gui=g.app.gui, old_c=None)
+                if c and not c1:
+                    c1 = c
+        except Exception:
+            g.es_print(f"Unexpected exception reading {fn!r}")
+            g.es_exception()
+            c = None
+
+    # Load a session if the command line contains no files.
+    if g.app.sessionManager and not lm.files:
+        try:
+            aList = g.app.sessionManager.load_snapshot()
+            if aList:
+                g.app.sessionManager.load_session(c1, aList)
+                if g.app.windowList:
+                    c = c1 = g.app.windowList[0].c
+                else:
+                    c = c1 = None
+        except Exception:
+            g.es_print('Can not load session')
+            g.es_exception()
+
+    # Enable redraws.
+    g.app.disable_redraw = False
+    if not c1:
+        # Open or create a workbook.
+        try:
+            c1 = lm.openWorkBook()
+        except Exception:
+            g.es_print('Can not create workbook')
+            g.es_exception()
+    c = c1
+    if not c:
+        # Leo is out of options: Force an immediate exit.
+        return False
+    # #199.
+    g.app.runAlreadyOpenDialog(c1)
+    #
+    # Final inits...
+    # For qt gui, select the first-loaded tab.
+    if hasattr(g.app.gui, 'frameFactory'):
+        factory = g.app.gui.frameFactory
+        if factory and hasattr(factory, 'setTabForCommander'):
+            factory.setTabForCommander(c)
+    g.app.logInited = True
+    g.app.initComplete = True
+    c.setLog()
+    c.redraw()
+    g.doHook("start2", c=c, p=c.p, fileName=c.fileName())
+    c.initialFocusHelper()
+    return True
+</t>
+<t tx="ekr.20241126093914.82">def openWorkBook(self) -&gt; Cmdr:
+    """
+    Open or create a new workbook.
+
+    @string default-leo-file gives the path, defaulting to ~/.leo/workbook.leo.
+
+    Return the new commander.
+    """
+    # Never create a workbook during unit tests or in batch mode.
+    if g.unitTesting or g.app.batchMode:
+        return None
+    fn = self.computeWorkbookFileName()
+    exists = fn and os.path.exists(fn)
+    if not fn:
+        # The usual directory does not exist. Create an empty file.
+        c = self.openEmptyLeoFile(fn, gui=g.app.gui, old_c=None)
+        c.rootPosition().h = 'Workbook'
+    else:
+        # Open the workbook or create an empty file.
+        c = g.openWithFileName(fn, gui=g.app.gui, old_c=None)
+        if not exists:
+            c.rootPosition().h = 'Workbook'
+    # Create the outline with workbook's name.
+    c.frame.title = title = c.computeWindowTitle()
+    c.frame.setTitle(title)
+    if getattr(c.frame, 'top', None):
+        c.frame.top.leo_master.setTabName(c, fn)
+    # Finish: Do *not* save the file!
+    g.chdir(fn)
+    g.app.already_open_files = []
+    c.clearChanged()
+    # Do not redraw. Do not set c.p.
+    return c
+</t>
+<t tx="ekr.20241126093914.83">def doPrePluginsInit(self, fileName: str, pymacs: bool) -&gt; None:
+    """ Scan options, set directories and read settings."""
+    lm = self
+    lm.computeStandardDirectories()
+    # Scan the options as early as possible.
+    lm.options = options = lm.scanOptions(fileName, pymacs)  # also sets lm.files.
+    if options.get('version'):
+        return
+    script = options.get('script')
+    verbose = script is None
+    # Init the app.
+    lm.initApp(verbose)
+    g.app.setGlobalDb()
+    if verbose:
+        lm.reportDirectories()
+    # Read settings *after* setting g.app.config and *before* opening plugins.
+    # This means if-gui has effect only in per-file settings.
+    if g.app.quit_after_load:
+        localConfigFile = None
+    else:
+        # Read only standard settings files, using a null gui.
+        # uses lm.files[0] to compute the local directory
+        # that might contain myLeoSettings.leo.
+        lm.readGlobalSettingsFiles()
+        # Read the recent files file.
+        localConfigFile = lm.files[0] if lm.files else None
+        g.app.recentFilesManager.readRecentFiles(localConfigFile)
+    # Create the gui after reading options and settings.
+    lm.createGui(pymacs)
+</t>
+<t tx="ekr.20241126093914.84">def createAllImporterData(self) -&gt; None:
+    """
+    New in Leo 5.5:
+
+    Create global data structures describing importers and writers.
+    """
+    assert g.app.loadDir  # This is the only data required.
+    self.createWritersData()  # Was an AtFile method.
+    self.createImporterData()  # Was a LeoImportCommands method.
+</t>
+<t tx="ekr.20241126093914.85">def createImporterData(self) -&gt; None:
+    """Create the data structures describing importer plugins."""
+    # Allow plugins to be defined in ~/.leo/plugins.
+    for pattern in (
+        # ~/.leo/plugins.
+        g.finalize_join(g.app.homeDir, '.leo', 'plugins'),
+        # leo/plugins/importers.
+        g.finalize_join(g.app.loadDir, '..', 'plugins', 'importers', '*.py'),
+    ):
+        filenames = g.glob_glob(pattern)
+        for filename in filenames:
+            sfn = g.shortFileName(filename)
+            if sfn != '__init__.py':
+                try:
+                    module_name = sfn[:-3]
+                    # Important: use importlib to give imported modules their fully qualified names.
+                    m = importlib.import_module(f"leo.plugins.importers.{module_name}")
+                    self.parse_importer_dict(sfn, m)
+                    # print('createImporterData', m.__name__)
+                except Exception:
+                    g.warning(f"can not import leo.plugins.importers.{module_name}")
+                    g.printObj(filenames)
+</t>
+<t tx="ekr.20241126093914.86">def parse_importer_dict(self, sfn: str, m: Module) -&gt; None:
+    """
+    Set entries in g.app.classDispatchDict, g.app.atAutoDict and
+    g.app.atAutoNames using entries in m.importer_dict.
+    """
+    importer_d = getattr(m, 'importer_dict', None)
+    if importer_d:
+        at_auto = importer_d.get('@auto', [])
+        scanner_func = importer_d.get('func', None)
+        # scanner_name = scanner_class.__name__
+        extensions = importer_d.get('extensions', [])
+        if at_auto:
+            # Make entries for each @auto type.
+            d = g.app.atAutoDict
+            for s in at_auto:
+                d[s] = scanner_func
+                g.app.atAutoDict[s] = scanner_func
+                g.app.atAutoNames.add(s)
+        if extensions:
+            # Make entries for each extension.
+            d = g.app.classDispatchDict
+            for ext in extensions:
+                d[ext] = scanner_func  #importer_d.get('func')#scanner_class
+    elif sfn not in (
+        # This is a base class, not a real plugin.
+        'base_importer.py',
+    ):
+        g.warning(f"leo/plugins/importers/{sfn} has no importer_dict")
+</t>
+<t tx="ekr.20241126093914.87">def createWritersData(self) -&gt; None:
+    """Create the data structures describing writer plugins."""
+    # Do *not* remove this trace.
+    trace = False and 'createWritersData' not in g.app.debug_dict
+    if trace:
+        # Suppress multiple traces.
+        g.app.debug_dict['createWritersData'] = True
+    g.app.writersDispatchDict = {}
+    g.app.atAutoWritersDict = {}
+
+    # Allow plugins to be defined in ~/.leo/plugins.
+    for pattern in (
+        g.finalize_join(g.app.homeDir, '.leo', 'plugins'),  # ~/.leo/plugins.
+        g.finalize_join(g.app.loadDir, '..', 'plugins', 'writers', '*.py'),  # leo/plugins/writers
+    ):
+        for filename in g.glob_glob(pattern):
+            sfn = g.shortFileName(filename)
+            if sfn.endswith('.py') and sfn != '__init__.py':
+                try:
+                    # Important: use importlib to give imported modules their fully qualified names.
+                    m = importlib.import_module(f"leo.plugins.writers.{sfn[:-3]}")
+                    self.parse_writer_dict(sfn, m)
+                except Exception:
+                    g.es_exception()
+                    g.warning(f"can not import leo.plugins.writers.{sfn}")
+    if trace:
+        g.trace('LM.writersDispatchDict')
+        g.printDict(g.app.writersDispatchDict)
+        g.trace('LM.atAutoWritersDict')
+        g.printDict(g.app.atAutoWritersDict)
+</t>
+<t tx="ekr.20241126093914.88">def parse_writer_dict(self, sfn: str, m: Module) -&gt; None:
+    """
+    Set entries in g.app.writersDispatchDict and g.app.atAutoWritersDict
+    using entries in m.writers_dict.
+    """
+    writer_d = getattr(m, 'writer_dict', None)
+    if writer_d:
+        at_auto = writer_d.get('@auto', [])
+        scanner_class = writer_d.get('class', None)
+        extensions = writer_d.get('extensions', [])
+        if at_auto:
+            # Make entries for each @auto type.
+            d = g.app.atAutoWritersDict
+            for s in at_auto:
+                aClass = d.get(s)
+                if aClass and aClass != scanner_class:
+                    g.trace(
+                        f"{sfn}: duplicate {s} class {aClass.__name__} "
+                        f"in {m.__file__}:")
+                else:
+                    d[s] = scanner_class
+                    g.app.atAutoNames.add(s)
+        if extensions:
+            # Make entries for each extension.
+            d = g.app.writersDispatchDict
+            for ext in extensions:
+                aClass = d.get(ext)
+                if aClass and aClass != scanner_class:
+                    g.trace(f"{sfn}: duplicate {ext} class", aClass, scanner_class)
+                else:
+                    d[ext] = scanner_class
+    elif sfn not in ('basewriter.py',):
+        g.warning(f"leo/plugins/writers/{sfn} has no writer_dict")
+</t>
+<t tx="ekr.20241126093914.89">def createGui(self, pymacs: bool) -&gt; None:
+    lm = self
+    gui_option = lm.options.get('gui')
+    windowFlag = lm.options.get('windowFlag')
+    script = lm.options.get('script')
+    if g.app.gui:
+        if g.app.gui == g.app.nullGui:
+            g.app.gui = None  # Enable g.app.createDefaultGui
+            g.app.createDefaultGui(__file__)
+        else:
+            # This can also happen when leoID does not exist.
+            pass
+    elif gui_option is None:
+        if script and not windowFlag:
+            # Always use null gui for scripts.
+            g.app.createNullGuiWithScript(script)
+        else:
+            g.app.createDefaultGui(__file__)
+    else:
+        lm.createSpecialGui(gui_option, pymacs, script, windowFlag)
+</t>
+<t tx="ekr.20241126093914.9">def computeMyLeoSettingsPath(self) -&gt; Optional[str]:
+    """
+    Return the full path to myLeoSettings.leo.
+
+    The "footnote": Get the local directory from lm.files[0]
+    """
+    lm = self
+    join = g.finalize_join
+    settings_fn = 'myLeoSettings.leo'
+    # This seems pointless: we need a machine *directory*.
+    # For now, however, we'll keep the existing code as is.
+    machine_fn = lm.computeMachineName() + settings_fn
+    # First, compute the directory of the first loaded file.
+    # All entries in lm.files are full, absolute paths.
+    localDir = g.os_path_dirname(lm.files[0]) if lm.files else ''
+    table = (
+        # First, myLeoSettings.leo in the local directory
+        join(localDir, settings_fn),
+        # Next, myLeoSettings.leo in the home directories.
+        join(g.app.homeDir, settings_fn),
+        join(g.app.homeLeoDir, settings_fn),
+        # Next, &lt;machine-name&gt;myLeoSettings.leo in the home directories.
+        join(g.app.homeDir, machine_fn),
+        join(g.app.homeLeoDir, machine_fn),
+        # Last, leoSettings.leo in leo/config directory.
+        join(g.app.globalConfigDir, settings_fn),
+    )
+    for path in table:
+        if g.os_path_exists(path):
+            break
+    else:
+        path = None
+    return path
+</t>
+<t tx="ekr.20241126093914.90">def createSpecialGui(self, gui: str, pymacs: bool, script: str, windowFlag: bool) -&gt; None:
+    # lm = self
+    if pymacs:
+        g.app.createNullGuiWithScript(script=None)
+    elif script:
+        if windowFlag:
+            g.app.createDefaultGui()
+            g.app.gui.setScript(script=script)
+            sys.argv = []  # 2021/06/24: corrected by mypy.
+        else:
+            g.app.createNullGuiWithScript(script=script)
+    else:
+        g.app.createDefaultGui()
+</t>
+<t tx="ekr.20241126093914.91">def getDefaultFile(self) -&gt; Optional[str]:
+    # Get the name of the workbook.
+    fn = g.app.config.getString('default-leo-file')
+    fn = g.finalize(fn)
+    if not fn:
+        return None
+    if g.os_path_exists(fn):
+        return fn
+    if g.os_path_isabs(fn):
+        # Create the file.
+        g.error(f"Using default leo file name:\n{fn}")
+        return fn
+    # It's too risky to open a default file if it is relative.
+    return None
+</t>
+<t tx="ekr.20241126093914.92">def initApp(self, verbose: bool) -&gt; None:
+
+    # Can be done early. Uses only g.app.loadDir &amp; g.app.homeDir.
+    self.createAllImporterData()
+    assert g.app.loadManager
+    from leo.core import leoBackground
+    from leo.core import leoConfig
+    from leo.core import leoJupytext
+    from leo.core import leoNodes
+    from leo.core import leoPlugins
+    from leo.core import leoSessions
+    self.setStdStreams()
+    # Make sure we call the new leoPlugins.init top-level function.
+    leoPlugins.init()
+    # Force the user to set g.app.leoID.
+    g.app.setLeoID(verbose=verbose)
+    # Create early classes *after* doing plugins.init()
+    g.app.idleTimeManager = IdleTimeManager()
+    g.app.backgroundProcessManager = leoBackground.BackgroundProcessManager()
+    g.app.externalFilesController = leoExternalFiles.ExternalFilesController()
+    g.app.jupytextManager = leoJupytext.JupytextManager()
+    g.app.recentFilesManager = RecentFilesManager()
+    g.app.config = leoConfig.GlobalConfigManager()
+    g.app.nodeIndices = leoNodes.NodeIndices(g.app.leoID)
+    g.app.sessionManager = leoSessions.SessionManager()
+    # Complete the plugins class last.
+    g.app.pluginsController.finishCreate()
+</t>
+<t tx="ekr.20241126093914.929">PR1: https://github.com/leo-editor/leo-editor/pull/4177
+PR2: https://github.com/leo-editor/leo-editor/pull/4178</t>
+<t tx="ekr.20241126093914.93">def scanOptions(self, fileName: str, pymacs: bool) -&gt; dict[str, Any]:
+    """Handle all options, remove them from sys.argv and set lm.options."""
+    # Define helper functions.
+    @others
+
+    obsolete_options = [
+        '--dock', '--global-docks', '--init-docks', '--no-dock', '--use-docks',
+        '--load-type', '--load-type=@edit', '--load-type=@file',
+        '--no-cache',
+        '--ipython',
+        '--session-restore', '--session-save',
+    ]
+    usage = defineUsage()
+    utils = g.OptionsUtils(usage, obsolete_options)
+    # Handle help args.
+    if any(z in sys.argv for z in ('-h', '-?', '--help')):
+        print(usage)
+        sys.exit()
+    doSimpleOptions()
+    doTraceOptions()
+    # Set the LoadManager.files ivar.
+    self.files = computeFilesList(fileName)
+    # Return a dictionary of complex options.
+    script = None if pymacs else doScriptOption()  # Used twice below.
+    return {
+        'gui': doGuiOption(),
+        'script': script,
+        'select': doSelectOption(),
+        'theme_path': doThemeOption(),
+        'version': any(z in sys.argv for z in ('-v', '--version')),
+        'windowFlag': script and '--script-window' in sys.argv,
+        'windowSize': doWindowSizeOption(),
+        'windowSpot': doWindowSpotOption(),
+    }
+</t>
+<t tx="ekr.20241126093914.933">@language rest
+@wrap
+@nosearch
+
+https://github.com/leo-editor/leo-editor/issues/4181
+PR: https://github.com/leo-editor/leo-editor/pull/4182
+
+@language python
+</t>
+<t tx="ekr.20241126093914.934"></t>
+<t tx="ekr.20241126093914.935">def colorize(self, p: Position) -&gt; None:
+    """
+    jedit.colorize: recolor p.b using the QSyntaxHighlighter class.
+    
+    This is a secondary entry point for Leo's colorizer.
+    Only c.recolor should ever call it.
+    
+    """
+    trace = True  ### 'coloring' in g.app.debug and not g.unitTesting
+
+    if not p:  # This guard is required.
+        return
+
+    # Only c.recolor should call this method!
+    if g.callers(1) != 'recolor':
+        message = f"jedit.colorize: invalid caller: {g.callers()}"
+        g.print_unique_message(message)
+
+    ### jedit.recolor does all the work.
+
+        # # Test p.v instead of p so that moving from one
+        # # clone to another does not cause a redraw.
+        # if p.v and p.v == self.old_v:
+            # return
+
+        # # Remember old_v here. Do not set it anywhere else!
+        # self.old_v = p.v
+
+        # self.updateSyntaxColorer(p)
+
+        # # Initialize *all* state.
+        # self.init_all_state(p.v)
+        # self.init()
+
+    # All done if p.b startswith @killcolor.
+    if p.b.startswith('@killcolor'):
+        return
+    if g.unitTesting:
+        return
+
+    if trace:
+        ### print('')
+        g.trace(f"Start full redraw: language: {self.language} p: {p.h}")
+        ### print('')
+
+    ###
+        # if 0:  ### The block count is updated properly.
+            # g.trace('=====', g.callers())
+            # doc = self.highlighter.document()
+            # g.trace('block count', doc.blockCount())
+            # # g.trace('modified?', doc.isModified())
+            # print('')
+
+    # Tell QSyntaxHighlighter to do a full recolor.
+    try:
+        self.in_full_redraw = True
+        self.highlighter.rehighlight()
+    finally:
+        self.in_full_redraw = False
+
+    if trace:
+        ### print('')
+        g.trace(f" End full redraw: language: {self.language} p: {p.h}")
+        ### print('')
+</t>
+<t tx="ekr.20241126093914.936">def rest_rule14(colorer, s, i):
+    # print(f"\nrest_rule14: {i} {s}")
+    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp="\\*\\*[^*]+\\*\\*")</t>
+<t tx="ekr.20241126093914.937"></t>
+<t tx="ekr.20241126093914.938">class BaseColorizer:
+    """
+    The base class for all Leo colorizers.
+    
+    c.frame.body.colorizer is the actual colorizer.
+    """
+    @others
+</t>
+<t tx="ekr.20241126093914.939"></t>
+<t tx="ekr.20241126093914.94">def computeFilesList(fileName: str) -&gt; list[str]:
+    """Return the list of files on the command line."""
+    lm = self
+    files = []
+    if fileName:
+        files.append(fileName)
+    for arg in sys.argv[1:]:
+        if arg and not arg.startswith('-'):
+            files.append(arg)
+    result = []
+    for z in files:
+        aList = g.glob_glob(lm.completeFileName(z))
+        if aList:
+            result.extend(aList)
+        else:
+            result.append(z)
+    return [g.os_path_normslashes(z) for z in result]
+</t>
+<t tx="ekr.20241126093914.940">def __init__(self, c: Cmdr, widget: Widget = None) -&gt; None:
+    """ctor for BaseColorizer class."""
+    # Copy args...
+    self.c = c
+    self.widget: Widget = widget
+    if widget:  # #503: widget may be None during unit tests.
+        widget.leo_colorizer = self
+    # Configuration dicts...
+    self.configDict: dict[str, Any] = {}  # Keys are tags, values are colors (names or values).
+    self.configUnderlineDict: dict[str, bool] = {}  # Keys are tags, values are bools.
+    # Common state ivars...
+    self.enabled = False  # Per-node enable/disable flag set by updateSyntaxColorer.
+    self.highlighter: Any = g.NullObject()  # May be overridden in subclass...
+    self.language = 'python'  # set by scanLanguageDirectives.
+    self.showInvisibles = False
+    # Statistics....
+    self.count = 0
+    self.full_recolor_count = 0  # For unit tests.
+    self.recolorCount = 0
+    # For traces...
+    self.matcher_name: str = ''
+    self.rulesetName: str = ''
+    self.delegate_name: str = ''
+</t>
+<t tx="ekr.20241126093914.941">def init(self) -&gt; None:
+    """May be over-ridden in subclasses."""
+    pass
+</t>
+<t tx="ekr.20241126093914.942">def configureTags(self) -&gt; None:
+    """Configure all tags."""
+    self.configure_fonts()
+    self.configure_colors()
+    self.configure_variable_tags()
+</t>
+<t tx="ekr.20241126093914.943">def configure_colors(self) -&gt; None:
+    """Configure all colors in the default colors dict."""
+    c = self.c
+
+    # getColor puts the color name in standard form:
+    # color = color.replace(' ', '').lower().strip()
+
+    &lt;&lt; function: resolve_color_key &gt;&gt;
+
+    # Compute *all* color keys, not just those in default_colors_dict.
+    all_color_keys = list(self.default_colors_dict.keys())
+    if c.config.settingsDict:
+        gs: GeneralSetting
+        for key, gs in c.config.settingsDict.items():
+            if gs and gs.kind == 'color' and gs.val:
+                all_color_keys.append(key)
+                self.default_colors_dict[key] = (key, self.normalize(gs.val))
+    for key in sorted(all_color_keys):
+        self.configDict[key] = resolve_color_key(key)
+</t>
+<t tx="ekr.20241126093914.944">def resolve_color_key(key: str) -&gt; str:
+    """
+    Resolve the given color name to a *valid* color.
+    """
+    option_name, default_color = self.default_colors_dict[key]
+    colors = (
+        c.config.getColor(f"{self.language}.{option_name}"),  # Preferred.
+        c.config.getColor(f"{self.language}{option_name}"),  # Legacy.
+        c.config.getColor(option_name),
+        default_color,
+    )
+    for color in colors:
+        color1 = color
+        while color:
+            color = self.normalize(color)
+            if color in leo_color_database:
+                color = leo_color_database.get(color)
+            qt_color = QtGui.QColor(color)
+            if qt_color.isValid():
+                return color
+            if color.startswith('@'):
+                color = color[1:]
+            else:
+                g.trace('Invalid @color setting:', key, color1)
+                break
+    return None  # Reasonable default.
+</t>
+<t tx="ekr.20241126093914.945">def configure_fonts(self) -&gt; None:
+    """
+    Configure:
+    - All fonts in the the default fonts dict.
+    - All fonts mentioned in any @font setting.
+    """
+    c = self.c
+    self.font_selectors = ('family', 'size', 'slant', 'weight')
+    # Keys are font names. Values are Dicts[selector, value]
+    self.new_fonts: dict[str, dict] = {}
+
+    # Get the default body font.
+    defaultBodyfont = self.fonts.get('default_body_font')
+    if not defaultBodyfont:
+        defaultBodyfont = c.config.getFontFromParams(
+            "body_text_font_family", "body_text_font_size",
+            "body_text_font_slant", "body_text_font_weight",
+            c.config.defaultBodyFontSize)
+        self.fonts['default_body_font'] = defaultBodyfont
+
+    # Handle syntax-coloring fonts.
+    if c.config.settingsDict:
+        gs: GeneralSetting
+        setting_pat = re.compile(r'@font\s+(\w+)\.(\w+)')
+        valid_languages = g.app.language_delims_dict.keys()
+        valid_tags = self.default_font_dict.keys()
+        for setting in sorted(c.config.settingsDict):
+            gs = c.config.settingsDict.get(setting)
+            if gs and gs.source:  # An @font setting.
+                if m := setting_pat.match(gs.source):
+                    language, tag = m.group(1), m.group(2)
+                    if language in valid_languages and tag in valid_tags:
+                        self.resolve_font(setting, language, tag, gs.val)
+                    else:
+                        g.trace('Ignoring', gs.source)
+
+    # Create all new syntax-coloring fonts.
+    for font_name in self.new_fonts:
+        d = self.new_fonts[font_name]
+        font = g.app.gui.getFontFromParams(
+            family=d.get('family'),
+            size=self.zoomed_size(font_name, d.get('size')),
+            slant=d.get('slant'),
+            weight=d.get('weight'),
+            tag=font_name,
+        )
+        # #1919: This really isn't correct.
+        self.configure_hard_tab_width(font)
+        self.fonts[font_name] = font
+
+    # Set default fonts.
+    for key in self.default_font_dict.keys():
+        self.fonts[key] = None  # Default
+        option_name = self.default_font_dict[key]
+        for name in (
+            f"{self.language}_{option_name}",
+            option_name,
+        ):
+            font = self.fonts.get(name)
+            if font:
+                break
+            font = self.create_font(key, name)
+            if font:
+                self.fonts[name] = font
+                if key == 'url':
+                    try:  # Special case for Qt.
+                        font.setUnderline(True)
+                    except Exception:
+                        pass
+                # #1919: This really isn't correct.
+                self.configure_hard_tab_width(font)
+                break
+</t>
+<t tx="ekr.20241126093914.946">def resolve_font(self, setting: str, language: str, tag: str, val: str) -&gt; None:
+    """
+    Resolve the arguments to a selector and font name.
+
+    Add the selector to the font's entry in self.new_fonts.
+    """
+    for selector in self.font_selectors:
+        if selector in setting:
+            font_name = f"{language}.{tag}".lower()
+            font_info = self.new_fonts.get(font_name, {})
+            font_info[selector] = val
+            self.new_fonts[font_name] = font_info
+</t>
+<t tx="ekr.20241126093914.947"># Keys are key::settings_names. Values are cumulative font size.
+zoom_dict: dict[str, int] = {}
+
+def create_font(self, key: str, setting_name: str) -&gt; Any:
+    """
+    Return the font for the given setting name.
+
+    Return None if no font setting with the given name exists.
+    """
+    trace = 'coloring' in g.app.debug
+    c = self.c
+    get = c.config.get
+    for name in (setting_name, setting_name.rstrip('_font')):
+        family = get(name + '_family', 'family')
+        size = get(name + '_size', 'size')
+        slant = get(name + '_slant', 'slant')
+        weight = get(name + '_weight', 'weight')
+        if family or slant or weight or size:
+            slant = slant or 'roman'
+            weight = weight or 'normal'
+            size = self.zoomed_size(f"{key}::{setting_name}", size)
+            font = g.app.gui.getFontFromParams(family, size, slant, weight, tag=setting_name)
+            if font:
+                if trace:
+                    # A good trace: the key shows what is happening.
+                    g.trace(
+                        f"Create font: {id(font)} "
+                        f"setting: {setting_name} "
+                        f"key: {key} family: {family or 'None'} "
+                        f"size: {size or 'None'} {slant} {weight}")
+                return font
+    return None
+</t>
+<t tx="ekr.20241126093914.948">def zoomed_size(self, key: str, size: str) -&gt; str:
+    """
+    Return the effect size (as a string) of the font after zooming.
+
+    `key`: key for the zoom_dict.
+    """
+    c = self.c
+    default_size = str(c.config.defaultBodyFontSize)
+    # Compute i_size.
+    i_size: int
+    if key in self.zoom_dict:
+        i_size = self.zoom_dict.get(key)
+    else:
+        s_size: str = size or default_size
+        if s_size.endswith(('pt', 'px'),):
+            s_size = s_size[:-2]
+        try:
+            i_size = int(s_size)
+        except ValueError:
+            # Don't zoom.
+            return s_size
+
+    # Bump i_size by the zoom_delta.
+    zoom_delta: int = getattr(c, 'zoom_delta', 0)
+    if zoom_delta:
+        i_size += zoom_delta
+        self.zoom_dict[key] = i_size
+    return str(i_size)
+</t>
+<t tx="ekr.20241126093914.949">def configure_hard_tab_width(self, font: Font) -&gt; None:
+    """
+    Set the width of a hard tab.
+
+    Qt does not appear to have the required methods. Indeed,
+    https://stackoverflow.com/questions/13027091/how-to-override-tab-width-in-qt
+    assumes that QTextEdit's have only a single font(!).
+
+    This method probably only works probably if the body text contains
+    a single @language directive, and it may not work properly even then.
+    """
+    c, widget = self.c, self.widget
+    if isinstance(widget, QtWidgets.QTextEdit):
+        # #1919: https://forum.qt.io/topic/99371/how-to-set-tab-stop-width-and-space-width
+        fm = QtGui.QFontMetrics(font)
+        try:  # fm.horizontalAdvance
+            width = fm.horizontalAdvance(' ') * abs(c.tab_width)
+            widget.setTabStopDistance(width)
+        except Exception:
+            width = fm.width(' ') * abs(c.tab_width)
+            widget.setTabStopWidth(width)  # Obsolete.
+    else:
+        # To do: configure the QScintilla widget.
+        pass
+</t>
+<t tx="ekr.20241126093914.95">def defineUsage() -&gt; str:
+    """
+    Return Leo's usage message.
+
+    The g.OptionsUtils class uses this message to compute the list of valid options!
+    """
+    # Abbreviations (-whatever) must appear before full options (--whatever).
+    return textwrap.dedent("""
+usage: launchLeo.py [options] file1, file2, ...
+
+options:
+  -h, --help            show this help message and exit
+  -b, --black-sentinels write black-compatible sentinel comments
+  --diff                use Leo as an external git diff
+  --fail-fast           stop unit tests after the first failure
+  --fullscreen          start fullscreen
+  --gui=GUI             specify gui: browser,console,curses,qt,text,null
+  --listen-to-log       start log_listener.py on startup
+  --maximized           start maximized
+  --minimized           start minimized
+  --no-plugins          disable all plugins
+  --no-splash           disable the splash screen
+  --quit                quit immediately after loading
+  --save-session        always save session data when Leo closes
+  --script=PATH         execute a script and then exit
+  --script-window       execute script using default gui
+  --select=ID           headline or gnx of node to select
+  --silent              disable all log messages
+  --theme=NAME          use the named theme file
+  --trace=LIST          add one or more strings to g.app.debug
+
+        A comma-separated list. Valid values are:
+        abbrev, beauty, cache, coloring, drawing, events, focus, git, gnx,
+        importers, keys, layouts, plugins, save, select, sections,
+        shutdown, size, speed, startup, themes, undo, verbose, zoom.
+
+  --trace-binding=KEY   trace commands bound to a key
+  --trace-setting=NAME  trace where named setting is set
+  --window-size=SIZE    initial window size: (height x width)
+  --window-spot=SPOT    initial window position: (top x left)
+  -v, --version         print version number and exit
+""")
+</t>
+<t tx="ekr.20241126093914.950">def configure_variable_tags(self) -&gt; None:
+    c = self.c
+    use_pygments = pygments and c.config.getBool('use-pygments', default=False)
+    name = 'name.other' if use_pygments else 'name'
+    self.configUnderlineDict[name] = self.underline_undefined
+    for name, option_name, default_color in (
+        # ("blank", "show_invisibles_space_background_color", "Gray90"),
+        # ("tab", "show_invisibles_tab_background_color", "Gray80"),
+        ("elide", None, "yellow"),
+    ):
+        if self.showInvisibles:
+            color = c.config.getColor(option_name) if option_name else default_color
+        else:
+            option_name, default_color = self.default_colors_dict.get(name, (None, None))
+            color = c.config.getColor(option_name) if option_name else ''
+        self.configDict[name] = color  # 2022/05/20: Discovered by pyflakes.
+</t>
+<t tx="ekr.20241126093914.951">@nobeautify
+
+def defineDefaultColorsDict(self) -&gt; None:
+
+    # These defaults are sure to exist.
+    self.default_colors_dict = {
+        #
+        # Used in Leo rules...
+        # tag name      :( option name,                  default color),
+        'blank'         :('show_invisibles_space_color', '#E5E5E5'), # gray90
+        'docpart'       :('doc_part_color',              'red'),
+        'leokeyword'    :('leo_keyword_color',           'blue'),
+        'link'          :('section_name_color',          'red'),
+        'name'          :('undefined_section_name_color','red'),
+        'namebrackets'  :('section_name_brackets_color', 'blue'),
+        'tab'           :('show_invisibles_tab_color',   '#CCCCCC'), # gray80
+        'url'           :('url_color',                   'purple'),
+        #
+        # Pygments tags.  Non-default values are taken from 'default' style.
+        #
+        # Top-level...
+        # tag name          :( option name,         default color),
+        'error'             :('error',              '#FF0000'), # border
+        'other'             :('other',              'white'),
+        'punctuation'       :('punctuation',        'white'),
+        'whitespace'        :('whitespace',         '#bbbbbb'),
+        'xt'                :('xt',                 '#bbbbbb'),
+        #
+        # Comment...
+        # tag name          :( option name,         default color),
+        'comment'           :('comment',            '#408080'), # italic
+        'comment.hashbang'  :('comment.hashbang',   '#408080'),
+        'comment.multiline' :('comment.multiline',  '#408080'),
+        'comment.special'   :('comment.special',    '#408080'),
+        'comment.preproc'   :('comment.preproc',    '#BC7A00'), # noitalic
+        'comment.single'    :('comment.single',     '#BC7A00'), # italic
+        #
+        # Generic...
+        # tag name          :( option name,         default color),
+        'generic'           :('generic',            '#A00000'),
+        'generic.deleted'   :('generic.deleted',    '#A00000'),
+        'generic.emph'      :('generic.emph',       '#000080'), # italic
+        'generic.error'     :('generic.error',      '#FF0000'),
+        'generic.heading'   :('generic.heading',    '#000080'), # bold
+        'generic.inserted'  :('generic.inserted',   '#00A000'),
+        'generic.output'    :('generic.output',     '#888'),
+        'generic.prompt'    :('generic.prompt',     '#000080'), # bold
+        'generic.strong'    :('generic.strong',     '#000080'), # bold
+        'generic.subheading':('generic.subheading', '#800080'), # bold
+        'generic.traceback' :('generic.traceback',  '#04D'),
+        #
+        # Keyword...
+        # tag name              :( option name,             default color),
+        'keyword'               :('keyword',                '#008000'), # bold
+        'keyword.constant'      :('keyword.constant',       '#008000'),
+        'keyword.declaration'   :('keyword.declaration',    '#008000'),
+        'keyword.namespace'     :('keyword.namespace',      '#008000'),
+        'keyword.pseudo'        :('keyword.pseudo',         '#008000'), # nobold
+        'keyword.reserved'      :('keyword.reserved',       '#008000'),
+        'keyword.type'          :('keyword.type',           '#B00040'),
+        #
+        # Literal...
+        # tag name              :( option name,         default color),
+        'literal'               :('literal',            'white'),
+        'literal.date'          :('literal.date',       'white'),
+        #
+        # Name...
+        # tag name              :( option name,         default color
+        # 'name' defined below.
+        'name.attribute'        :('name.attribute',     '#7D9029'), # bold
+        'name.builtin'          :('name.builtin',       '#008000'),
+        'name.builtin.pseudo'   :('name.builtin.pseudo','#008000'),
+        'name.class'            :('name.class',         '#0000FF'), # bold
+        'name.constant'         :('name.constant',      '#880000'),
+        'name.decorator'        :('name.decorator',     '#AA22FF'),
+        'name.entity'           :('name.entity',        '#999999'), # bold
+        'name.exception'        :('name.exception',     '#D2413A'), # bold
+        'name.function'         :('name.function',      '#0000FF'),
+        'name.function.magic'   :('name.function.magic','#0000FF'),
+        'name.label'            :('name.label',         '#A0A000'),
+        'name.namespace'        :('name.namespace',     '#0000FF'), # bold
+        'name.other'            :('name.other',         'red'),
+        # A hack: getLegacyFormat returns name.pygments instead of name.
+        'name.pygments'         :('name.pygments',      'white'),
+        'name.tag'              :('name.tag',               '#008000'), # bold
+        'name.variable'         :('name.variable',          '#19177C'),
+        'name.variable.class'   :('name.variable.class',    '#19177C'),
+        'name.variable.global'  :('name.variable.global',   '#19177C'),
+        'name.variable.instance':('name.variable.instance', '#19177C'),
+        'name.variable.magic'   :('name.variable.magic',    '#19177C'),
+        #
+        # Number...
+        # tag name              :( option name,         default color
+        'number'                :('number',             '#666666'),
+        'number.bin'            :('number.bin',         '#666666'),
+        'number.float'          :('number.float',       '#666666'),
+        'number.hex'            :('number.hex',         '#666666'),
+        'number.integer'        :('number.integer',     '#666666'),
+        'number.integer.long'   :('number.integer.long','#666666'),
+        'number.oct'            :('number.oct',         '#666666'),
+        #
+        # Operator...
+        # tag name          :( option name,         default color
+        # 'operator' defined below.
+        'operator.word'     :('operator.Word',      '#AA22FF'), # bold
+        #
+        # String...
+        # tag name          :( option name,         default color
+        'string'            :('string',             '#BA2121'),
+        'string.affix'      :('string.affix',       '#BA2121'),
+        'string.backtick'   :('string.backtick',    '#BA2121'),
+        'string.char'       :('string.char',        '#BA2121'),
+        'string.delimiter'  :('string.delimiter',   '#BA2121'),
+        'string.doc'        :('string.doc',         '#BA2121'), # italic
+        'string.double'     :('string.double',      '#BA2121'),
+        'string.escape'     :('string.escape',      '#BB6622'), # bold
+        'string.heredoc'    :('string.heredoc',     '#BA2121'),
+        'string.interpol'   :('string.interpol',    '#BB6688'), # bold
+        'string.other'      :('string.other',       '#008000'),
+        'string.regex'      :('string.regex',       '#BB6688'),
+        'string.single'     :('string.single',      '#BA2121'),
+        'string.symbol'     :('string.symbol',      '#19177C'),
+        #
+        # jEdit tags.
+        # tag name  :( option name,     default color),
+        'comment1'  :('comment1_color', 'red'),
+        'comment2'  :('comment2_color', 'red'),
+        'comment3'  :('comment3_color', 'red'),
+        'comment4'  :('comment4_color', 'red'),
+        'function'  :('function_color', 'black'),
+        'keyword1'  :('keyword1_color', 'blue'),
+        'keyword2'  :('keyword2_color', 'blue'),
+        'keyword3'  :('keyword3_color', 'blue'),
+        'keyword4'  :('keyword4_color', 'blue'),
+        'keyword5'  :('keyword5_color', 'blue'),
+        'label'     :('label_color',    'black'),
+        'literal1'  :('literal1_color', '#00aa00'),
+        'literal2'  :('literal2_color', '#00aa00'),
+        'literal3'  :('literal3_color', '#00aa00'),
+        'literal4'  :('literal4_color', '#00aa00'),
+        'markup'    :('markup_color',   'red'),
+        'null'      :('null_color',     None),  # 'black'
+        'operator'  :('operator_color', 'black'),
+        'trailing_whitespace': ('trailing_whitespace_color', '#808080'),
+    }
+</t>
+<t tx="ekr.20241126093914.952">@nobeautify
+
+def defineDefaultFontDict(self) -&gt; None:
+
+    self.default_font_dict = {
+        #
+        # Used in Leo rules...
+        # tag name      : option name
+        'blank'         :'show_invisibles_space_font', # 2011/10/24.
+        'docpart'       :'doc_part_font',
+        'leokeyword'    :'leo_keyword_font',
+        'link'          :'section_name_font',
+        'name'          :'undefined_section_name_font',
+        'namebrackets'  :'section_name_brackets_font',
+        'tab'           :'show_invisibles_tab_font', # 2011/10/24.
+        'url'           :'url_font',
+        #
+        # Pygments tags (lower case)...
+        # tag name          : option name
+        "comment"           :'comment1_font',
+        "comment.preproc"   :'comment2_font',
+        "comment.single"    :'comment1_font',
+        "error"             :'null_font',
+        "generic.deleted"   :'literal4_font',
+        "generic.emph"      :'literal4_font',
+        "generic.error"     :'literal4_font',
+        "generic.heading"   :'literal4_font',
+        "generic.inserted"  :'literal4_font',
+        "generic.output"    :'literal4_font',
+        "generic.prompt"    :'literal4_font',
+        "generic.strong"    :'literal4_font',
+        "generic.subheading":'literal4_font',
+        "generic.traceback" :'literal4_font',
+        "keyword"           :'keyword1_font',
+        "keyword.pseudo"    :'keyword2_font',
+        "keyword.type"      :'keyword3_font',
+        "name.attribute"    :'null_font',
+        "name.builtin"      :'null_font',
+        "name.class"        :'null_font',
+        "name.constant"     :'null_font',
+        "name.decorator"    :'null_font',
+        "name.entity"       :'null_font',
+        "name.exception"    :'null_font',
+        "name.function"     :'null_font',
+        "name.label"        :'null_font',
+        "name.namespace"    :'null_font',
+        "name.tag"          :'null_font',
+        "name.variable"     :'null_font',
+        "number"            :'null_font',
+        "operator.word"     :'keyword4_font',
+        "string"            :'literal1_font',
+        "string.doc"        :'literal1_font',
+        "string.escape"     :'literal1_font',
+        "string.interpol"   :'literal1_font',
+        "string.other"      :'literal1_font',
+        "string.regex"      :'literal1_font',
+        "string.single"     :'literal1_font',
+        "string.symbol"     :'literal1_font',
+        'xt'                :'text_font',
+        "whitespace"        :'text_font',
+        #
+        # jEdit tags.
+        # tag name     : option name
+        'comment1'      :'comment1_font',
+        'comment2'      :'comment2_font',
+        'comment3'      :'comment3_font',
+        'comment4'      :'comment4_font',
+        # 'default'     :'default_font',
+        'function'      :'function_font',
+        'keyword1'      :'keyword1_font',
+        'keyword2'      :'keyword2_font',
+        'keyword3'      :'keyword3_font',
+        'keyword4'      :'keyword4_font',
+        'keyword5'      :'keyword5_font',
+        'label'         :'label_font',
+        'literal1'      :'literal1_font',
+        'literal2'      :'literal2_font',
+        'literal3'      :'literal3_font',
+        'literal4'      :'literal4_font',
+        'markup'        :'markup_font',
+        # 'nocolor' This tag is used, but never generates code.
+        'null'          :'null_font',
+        'operator'      :'operator_font',
+        'trailing_whitespace' :'trailing_whitespace_font',
+    }
+</t>
+<t tx="ekr.20241126093914.953">def defineLeoKeywordsDict(self) -&gt; None:
+    self.leoKeywordsDict = {}
+    for key in g.globalDirectiveList:
+        self.leoKeywordsDict[key] = 'leokeyword'
+</t>
+<t tx="ekr.20241126093914.954">def normalize(self, s: str) -&gt; str:
+    """Return the normalized value of s."""
+    if s.startswith('@'):
+        s = s[1:]
+    return s.replace(' ', '').replace('-', '').replace('_', '').lower().strip()
+</t>
+<t tx="ekr.20241126093914.955">@nobeautify
+def reloadSettings(self) -&gt; None:
+    c, getBool = self.c, self.c.config.getBool
+    #
+    # Init all settings ivars.
+    self.color_tags_list: list[str] = []
+    self.showInvisibles      = getBool("show-invisibles-by-default")
+    self.underline_undefined = getBool("underline-undefined-section-names")
+    self.use_hyperlinks      = getBool("use-hyperlinks")
+    self.use_pygments        = None # Set in report_changes.
+    self.use_pygments_styles = getBool('use-pygments-styles', default=True)
+    #
+    # Report changes to pygments settings.
+    self.report_changes()
+    #
+    # Init the default fonts.
+    self.bold_font = c.config.getFontFromParams(
+        "body_text_font_family", "body_text_font_size",
+        "body_text_font_slant", "body_text_font_weight",
+        c.config.defaultBodyFontSize)
+    self.italic_font = c.config.getFontFromParams(
+        "body_text_font_family", "body_text_font_size",
+        "body_text_font_slant", "body_text_font_weight",
+        c.config.defaultBodyFontSize)
+    self.bolditalic_font = c.config.getFontFromParams(
+        "body_text_font_family", "body_text_font_size",
+        "body_text_font_slant", "body_text_font_weight",
+        c.config.defaultBodyFontSize)
+    # Init everything else.
+    self.init_style_ivars()
+    self.defineLeoKeywordsDict()
+    self.defineDefaultColorsDict()
+    self.defineDefaultFontDict()
+    self.configureTags()
+    self.init()
+</t>
+<t tx="ekr.20241126093914.956">prev_use_pygments: bool = None
+prev_use_styles: bool = None
+prev_style: str = None
+
+def report_changes(self) -&gt; None:
+    """Report changes to pygments settings"""
+    c = self.c
+    use_pygments = c.config.getBool('use-pygments', default=False)
+    if not use_pygments:  # 1696.
+        return
+    trace = 'coloring' in g.app.debug and not g.unitTesting
+    if trace:
+        g.es_print('\nreport changes...')
+
+    def show(setting: str, val: Any) -&gt; None:
+        if trace:
+            g.es_print(f"{setting:35}: {val}")
+
+    # Set self.use_pygments only once: it can't be changed later.
+    # There is no easy way to re-instantiate classes created by make_colorizer.
+    if self.prev_use_pygments is None:
+        self.use_pygments = self.prev_use_pygments = use_pygments
+        show('@bool use-pygments', use_pygments)
+    elif use_pygments == self.prev_use_pygments:
+        show('@bool use-pygments', use_pygments)
+    else:
+        g.es_print(
+            f"{'Can not change @bool use-pygments':35}: "
+            f"{self.prev_use_pygments}",
+            color='red')
+    # This setting is used only in the LeoHighlighter class
+    style_name = c.config.getString('pygments-style-name') or 'default'
+    # Report everything if we are tracing.
+    show('@bool use-pygments-styles', self.use_pygments_styles)
+    show('@string pygments-style-name', style_name)
+    # Report changes to @bool use-pygments-style
+    if self.prev_use_styles is None:
+        self.prev_use_styles = self.use_pygments_styles
+    elif self.use_pygments_styles != self.prev_use_styles:
+        g.es_print(f"using pygments styles: {self.use_pygments_styles}")
+    # Report @string pygments-style-name only if we are using styles.
+    if not self.use_pygments_styles:
+        return
+    # Report changes to @string pygments-style-name
+    if self.prev_style is None:
+        self.prev_style = style_name
+    elif style_name != self.prev_style:
+        g.es_print(f"New pygments style: {style_name}")
+        self.prev_style = style_name
+</t>
+<t tx="ekr.20241126093914.957">def init_style_ivars(self) -&gt; None:
+    """Init Style data common to JEdit and Pygments colorizers."""
+    # init() properly sets these for each language.
+    self.actualColorDict: dict[str, Color] = {}  # Used only by setTag.
+    self.hyperCount = 0
+    # Attributes dict ivars: defaults are as shown...
+    self.default = 'null'
+    self.digit_re = ''
+    self.escape = ''
+    self.highlight_digits = True
+    self.ignore_case = True
+    self.no_word_sep = ''
+    # Debugging...
+    self.allow_mark_prev = True
+    self.n_setTag = 0
+    self.tagCount = 0
+    # Profiling...
+    self.recolorCount = 0  # Total calls to recolor
+    self.stateCount = 0  # Total calls to setCurrentState
+    self.totalStates = 0
+    self.maxStateNumber = 0
+    self.totalKeywordsCalls = 0
+    self.totalLeoKeywordsCalls = 0
+    # Mode data...
+    self.importedRulesets: dict[str, RuleSet] = {}
+    self.fonts: dict[str, Font] = {}  # Keys are config names.  Values are actual fonts.
+    self.keywords: dict[str, int] = {}  # Keys are keywords, values are 0..5.
+    self.modes: dict[str, Mode] = {}  # Keys are languages, values are modes.
+    self.mode: Mode = None  # The mode object for the present language.
+    self.modeBunch: g.Bunch = None  # A bunch fully describing a mode.
+    self.modeStack: list[Mode] = []
+    self.rulesDict: dict[str, Any] = {}
+    # self.defineAndExtendForthWords()
+    self.word_chars: dict[str, str] = {}  # Inited by init_keywords().
+    self.tags = [
+        # 8 Leo-specific tags.
+        "blank",  # show_invisibles_space_color
+        "docpart",
+        "leokeyword",
+        "link",  # section reference.
+        "name",
+        "namebrackets",
+        "tab",  # show_invisibles_space_color
+        "url",
+        # jEdit tags.
+        'comment1', 'comment2', 'comment3', 'comment4',
+        # default, # exists, but never generated.
+        'function',
+        'keyword1', 'keyword2', 'keyword3', 'keyword4',
+        'label', 'literal1', 'literal2', 'literal3', 'literal4',
+        'markup', 'operator',
+        'trailing_whitespace',
+    ]
+</t>
+<t tx="ekr.20241126093914.96">def doGuiOption() -&gt; str:
+    """Handle --gui option. Default to 'qt'"""
+    m = utils.find_complex_option(r'--gui=(\w+)')
+    valid = ('console', 'curses', 'null', 'qt', 'text')
+    if not m:
+        g.app.guiArgName = 'qt'
+        return 'qt'
+    # Validate the gui.
+    gui = m.group(1).lower()
+    if gui == 'qttabs':
+        gui = 'qt'  # Allow legacy qttabs gui.
+    elif not gui.startswith('browser') and gui not in valid:
+        arg = m.group(0)
+        valid_s = ', '.join(valid)
+        utils.option_error(arg, f"Expected one of {valid_s}")
+    g.app.guiArgName = gui
+    return gui
+
+</t>
+<t tx="ekr.20241126093914.97">def doScriptOption() -&gt; Optional[str]:
+    """Handle --script=path"""
+    m = utils.find_complex_option(r'--script=(.+)')
+    if not m:
+        return None
+    fn = m.group(1).replace('"', '')
+    # #1090: use cwd, not g.app.loadDir, to find scripts.
+    path = g.finalize_join(os.getcwd(), fn)
+    script, e = g.readFileIntoString(path, kind='script:', verbose=False)
+    if not script:
+        arg = m.group(0)
+        utils.option_error(arg, f"Script not found: {m.group(1)!r}")
+    return script
+</t>
+<t tx="ekr.20241126093914.98">def doSelectOption() -&gt; Optional[str]:
+    """Handle --select=headline"""
+    m = utils.find_complex_option(r'--select=(.+)')
+    return m.group(1) if m else None
+</t>
+<t tx="ekr.20241126093914.99">def doSimpleOptions() -&gt; None:
+    """Handle options without arguments."""
+    &lt;&lt; define scanArgv helpers &gt;&gt;
+
+    options_dict: dict[str, Callable] = {
+        '-b': _black,
+        '--black-sentinels': _black,
+        '--diff': _diff,
+        '--fail-fast': _fail_fast,
+        '--fullscreen': _full_screen,
+        '--listen-to-log': _listen_to_log,
+        '--maximized': _maximized,
+        '--minimized': _minimized,
+        '--no-plugins': _no_plugins,
+        '--no-splash': _no_splash,
+        '--quit': _quit,
+        '--save-session': _save_session,
+        '--silent': _silent,
+    }
+    for option, helper in options_dict.items():
+        if option in sys.argv:
+            helper()
+</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
