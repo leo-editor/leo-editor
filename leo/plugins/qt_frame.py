@@ -2361,8 +2361,8 @@ class LeoQtLog(leoFrame.LeoLog):
         if nodeLink:
             link = urllib.parse.quote(nodeLink)
             s = f'<a href="{link}" title="{link}">{s}</a>'
-        w.insertHtml(s)
         w.moveCursor(MoveOperation.End)
+        w.insertHtml(s)
         sb.setSliderPosition(0)  # Force the slider to the initial position.
         w.repaint()  # Slow, but essential.
     #@+node:ekr.20220411085334.1: *5* LeoQtLog.to_html
