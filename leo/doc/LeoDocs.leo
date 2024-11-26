@@ -33099,7 +33099,6 @@ def patch_home_page():
                 if new_line != old_lines[i]:
                     print('')
                     print(f"Changed line {i:&lt;2} of {p.h}")
-                    # print(f"old: {old_line!r}\nnew: {new_line!r}")
                     print(new_line.rstrip())
                     new_lines[i] = old_lines[i] = new_line
                     changed = True
