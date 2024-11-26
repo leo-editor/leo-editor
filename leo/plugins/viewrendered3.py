@@ -3075,8 +3075,15 @@ class ViewRenderedController3(QtWidgets.QWidget):
             self.handle_scrolled_msg(keywords)
             return
 
-        if self.freeze or self.scrolling:
+        if self.freeze:
             return
+
+        if self.scrolling:
+            if self.gnx != self.c.p.v.gnx and not self.lock_to_tree:
+                # User selected a new node while scrolling was occurring
+                self.cancel_scroll()
+            else:
+                return
 
         self.controlling_code_lang = None
         self.params = []
@@ -3119,32 +3126,38 @@ class ViewRenderedController3(QtWidgets.QWidget):
             f(s2, keywords)
         else:
             self.show_literal(s)
-    #@+node:tom.20241116145648.1: *4* vr3.restore_scroll_position
+    #@+node:tom.20241116145648.1: *4* vr3 scroll methods
     # Support for saving and restoring scroll position.
-    def capture_scroll_position(self):
+    def capture_scroll_position(self) -> None:
         self.qwev.page().runJavaScript("window.pageYOffset", self.store_scroll_position)
 
-    def store_scroll_position(self, position):
+    def store_scroll_position(self, position) -> None:
         self.scroll_position = position
 
-    def store_temp_scroll_position(self, position):
+    def store_temp_scroll_position(self, position) -> None:
         self.temp_scroll_postion = position
 
-    def set_unfreeze_when_scrolled(self):
+    def set_unfreeze_when_scrolled(self) -> None:
         self.qwev.page().runJavaScript("window.pageYOffset", self.store_temp_scroll_position)
         current_scroll = self.temp_scroll_postion
-        if current_scroll == self.scroll_position:
+        if current_scroll >= self.scroll_position:
             self.timer.stop()
             self.set_unfreeze()
             self.scrolling = False
             self.in_forced_message = False
 
-    def restore_scroll_position(self):
+    def restore_scroll_position(self) -> None:
         self.qwev.page().runJavaScript(f"window.scrollTo(0, {self.scroll_position});")
         self.scrolling = True
         self.timer.start(300)
         self.set_unfreeze_when_scrolled()
 
+    def cancel_scroll(self) -> None:
+        self.timer.stop()
+        self.set_unfreeze()
+        self.scrolling = False
+        self.in_forced_message = False
+        self.temp_scroll_postion = self.scroll_position = 0
     #@+node:tom.20240724103143.1: *4* vr3.create_node_tree
     def create_node_tree(self, p, kind):
         _root = (self.current_tree_root or p) if self.lock_to_tree else p
@@ -3260,8 +3273,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
             if keywords.get('force'):
                 self.active = True
                 _must_update = True
-            elif self.gnx != p.v.gnx:
+            elif self.gnx != p.v.gnx and not self.lock_to_tree:
                 _must_update = True
+                self.cancel_scroll()
             elif (doc.isModified()
                   or len(p.b) != self.length
                   or self.last_text != p.b
