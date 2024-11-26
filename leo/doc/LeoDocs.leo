@@ -31793,9 +31793,8 @@ def run():
         # for sphinx-build.cmd or python/Scripts/sphinx_build.py.
         from sphinx.cmd import build
         # The arguments are from the MakeFile.
-        argv = [
-            '-b', 'html', '-d', '_build/doctrees', '.', '_build/html'
-        ]
+        args = '-b html -d _build/doctrees . _build/html'
+        argv = args.split(' ')
         build.build_main(argv)
     else:
         commands = [
