@@ -31788,10 +31788,11 @@ def run():
     if 0:  # `make clean` is good for testing.
         g.execute_shell_commands(['make clean'])
 
-    if 1:  # Run sphinx build directly.
+    if 1:  # Run sphinx.cmd.build.build_main directly.
         # This is *much* faster and there is no need
         # for sphinx-build.cmd or python/Scripts/sphinx_build.py.
         from sphinx.cmd import build
+        # The arguments are from the MakeFile.
         argv = [
             '-b', 'html', '-d', '_build/doctrees', '.', '_build/html'
         ]
