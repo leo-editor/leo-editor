@@ -2701,8 +2701,8 @@ class LoadManager:
           --trace=LIST          add one or more strings to g.app.debug
 
                 A comma-separated list. Valid values are:
-                abbrev, beauty, cache, coloring, drawing, events, focus, git, gnx,
-                importers, keys, layouts, plugins, save, select, sections,
+                abbrev, beauty, cache, coloring, drawing, events, focus,
+                git, gnx, keys, layouts, plugins, save, select, sections,
                 shutdown, size, speed, startup, themes, undo, verbose, zoom.
 
           --trace-binding=KEY   trace commands bound to a key
@@ -2832,10 +2832,9 @@ class LoadManager:
 
             # --trace=option.
             valid = [
-                'abbrev', 'beauty', 'cache', 'coloring', 'drawing', 'events',
-                'focus', 'git', 'gnx', 'importers', 'keys',
-                'layouts', 'plugins', 'save', 'select', 'sections', 'shutdown',
-                'size', 'speed', 'startup', 'themes', 'undo', 'verbose', 'zoom',
+                'abbrev', 'beauty', 'cache', 'coloring', 'drawing', 'events', 'focus',
+                'git', 'gnx', 'keys', 'layouts', 'plugins', 'save', 'select', 'sections',
+                'shutdown', 'size', 'speed', 'startup', 'themes', 'undo', 'verbose', 'zoom',
             ]
             m = utils.find_complex_option(r'--trace=([\w\,]+)')
             if not m:
