@@ -65,6 +65,7 @@
 </v>
 <v t="ekr.20131016083406.16724"><vh>@button make-sphinx</vh>
 <v t="ekr.20241124122954.1"><vh>copy_all_files</vh></v>
+<v t="ekr.20241127053544.1"><vh>get_leo_version</vh></v>
 <v t="ekr.20230303080626.1"><vh>git_status</vh></v>
 <v t="ekr.20230303064734.1"><vh>make_html</vh></v>
 <v t="ekr.20241125122939.1"><vh>patch_home_page</vh></v>
@@ -2507,17 +2508,6 @@
 </v>
 <v t="ekr.20241126091611.1"></v>
 <v t="ekr.20241126091524.1"><vh>Leo 6.8.3 release nodes</vh></v>
-<v t="ekr.20090428133936.2"></v>
-<v t="ekr.20131016083406.16724"></v>
-<v t="ekr.20241125122939.1"></v>
-<v t="ekr.20100808060203.4274"><vh>&lt;&lt; head contents &gt;&gt;</vh>
-<v t="ekr.20230110051126.1"><vh>&lt;&lt; DOCUMENTATION_OPTIONS &gt;&gt;</vh></v>
-<v t="ekr.20230110051147.1"><vh>&lt;&lt; scale screen-shot to fit parent container &gt;&gt;</vh></v>
-<v t="ekr.20230110042146.1"><vh>&lt;&lt; search script &gt;&gt;</vh></v>
-<v t="ekr.20230110050910.1"><vh>&lt;&lt; search box &gt;&gt;</vh></v>
-<v t="ekr.20110518101739.18155"><vh>&lt;&lt; flattr head &gt;&gt;</vh></v>
-<v t="ekr.20111028195854.16608"><vh>&lt;&lt; feed2js stylesheet &gt;&gt;</vh></v>
-</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -8276,29 +8266,6 @@ Nevertheless, these sentinels can be useful in special situations.
     A single node may contain only one ``@others`` directive, but descendant nodes
     may have other ``@others`` directives.
 </t>
-<t tx="ekr.20100808060203.4274">&lt;link rel="stylesheet" href="_static/classic.css" type="text/css" /&gt;
-&lt;link rel="stylesheet" href="_static/pygments.css" type="text/css" /&gt;
-&lt;link rel="stylesheet" href="_static/custom.css" type="text/css" /&gt;
-
-&lt;&lt; DOCUMENTATION_OPTIONS &gt;&gt;
-
-&lt;script type="text/javascript" src="_static/jquery.js"&gt;&lt;/script&gt;
-&lt;script type="text/javascript" src="_static/underscore.js"&gt;&lt;/script&gt;
-&lt;script type="text/javascript" src="_static/doctools.js"&gt;&lt;/script&gt;
-&lt;script type="text/javascript" src="_static/sidebar.js"&gt;&lt;/script&gt;
-
-&lt;&lt; scale screen-shot to fit parent container &gt;&gt;
-&lt;&lt; search script &gt;&gt;
-&lt;&lt; search box &gt;&gt;
-
-&lt;!-- Disabled --&gt;
-&lt;&lt; flattr head &gt;&gt;
-&lt;&lt; feed2js stylesheet &gt;&gt;
-
-&lt;link rel="top" title="Leo 6.8.3 documentation" href="index.html" /&gt;
-&lt;link rel="next" title="Table of Contents" href="leo_toc.html" /&gt;
-&lt;link rel="Users Guide" title="Leo&amp;#8217;s Users Guide" href="leo_toc.html" /&gt;
-</t>
 <t tx="ekr.20100821182153.4343">.. This file must be located in the leo/doc/html.
 
 ######
@@ -10631,20 +10598,6 @@ Leo's outline or hierarchical structure is distinct from the web of interleaved 
 [[Category:Software that uses Scintilla]]
 [[Category:Software using the MIT license]]
 </t>
-<t tx="ekr.20110518101739.18155">&lt;!--
-    &lt;script type="text/javascript"&gt;
-    /* &lt;![CDATA[ */
-        (function() {
-            var s = document.createElement('script'), t = document.getElementsByTagName('script')[0];
-            s.type = 'text/javascript';
-            s.async = true;
-            s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
-            t.parentNode.insertBefore(s, t);
-        })();
-    /* ]]&gt; */
-    &lt;/script&gt;
---&gt;
-</t>
 <t tx="ekr.20110521135104.18151">Any outline (.leo file) may contain clones that appear in multiple external files defined *within* that outline. There is no problem with such **intra-outline clones**.
 
 In contrast, **cross-outline clones** are clones that appear in more than one outline.  Leo's paste-retaining-clones command makes it possible for two outlines to contain nodes with the same gnx. Conceivably, both outlines could use those clones in the *same* external file!
@@ -11150,30 +11103,6 @@ if changed:
     g.es('deleted %s nodes' % (changed))
     c.undoer.afterChangeTree(p,'remove-@url-final-output',b)
     c.redraw()
-</t>
-<t tx="ekr.20111028195854.16608">&lt;!-- See: http://feed2js.org/index.php?s=style --&gt;
-&lt;!--
-    &lt;style type="text/css" media="all"&gt;
-
-
-    .rss_box {
-        width:   0px;
-        padding: 0px;
-        border:  0px solid white;
-        margin:  0px;
-    }
-
-    .rss_title {
-        visibility:hidden;
-        line-height: 0px;
-    }
-
-    .rss_items {
-        font-size: 80%;
-    }
-
-    &lt;/style&gt;
---&gt;
 </t>
 <t tx="ekr.20111108052738.5507">run-marked-unit-tests-externally = Alt-4
 run-all-unit-tests-externally = Alt-5
@@ -30350,43 +30279,6 @@ needed attention.
   The body of the ``@data`` node contains a list of strings, one per line.
   Headlines that match these suppressions *exactly* are not considered
   dubious. Default: None.</t>
-<t tx="ekr.20230110042146.1">&lt;script type="text/javascript"&gt;
-function search(event) {
-  if (event === null || (event.keyCode || event.which) === 13) {
-    window.open('http://www.google.com/search?q=site:leo-editor.github.io/leo-editor+'+document.getElementById('q').value);
-  }
-}
-&lt;/script&gt;
-</t>
-<t tx="ekr.20230110050910.1">&lt;link rel="search" title="Search" href="search.html" /&gt;
-&lt;div id="searchbox" style="display: none" role="search"&gt;
-  &lt;h3&gt;Quick search&lt;/h3&gt;
-    &lt;form class="search" action="search.html" method="get"&gt;
-      &lt;div&gt;&lt;input type="text" name="q" /&gt;&lt;/div&gt;
-      &lt;div&gt;&lt;input type="submit" value="Go" /&gt;&lt;/div&gt;
-      &lt;input type="hidden" name="check_keywords" value="yes" /&gt;
-      &lt;input type="hidden" name="area" value="default" /&gt;
-    &lt;/form&gt;
-&lt;/div&gt;
-</t>
-<t tx="ekr.20230110051126.1">
-&lt;script type="text/javascript"&gt;
-var DOCUMENTATION_OPTIONS = {
-  URL_ROOT:    './',
-  VERSION:     '6.8.2',
-  COLLAPSE_INDEX: false,
-  FILE_SUFFIX: '.html',
-  HAS_SOURCE:  true,
-  SOURCELINK_SUFFIX: '.txt'
-};
-&lt;/script&gt;
-</t>
-<t tx="ekr.20230110051147.1">&lt;style type="text/css"&gt;
-img {
-    max-width:50%; max-height:50%;
-}
-&lt;/style&gt;
-</t>
 <t tx="ekr.20230110152131.1">Leo https://leo-editor.github.io/leo-editor/ 6.7.2 is now available on
 [GitHub](https://github.com/leo-editor/leo-editor/releases) and
 [pypi](https://pypi.org/project/leo/).
@@ -33054,12 +32946,8 @@ def patch_home_page():
     """
     today = datetime.today()
     date = datetime.date(today).strftime("%B %d, %Y")  # Same as conf.py.
-    leo_version = '6.8.3'  ### Temp.
-    
-    h = '@edit html/conf.py'
-    conf_py = g.findNodeAnywhere(c, h)
-    assert conf_py, h
-    
+    leo_version = get_leo_version()
+
     def date_repl(m: re.Match) -&gt; str:
         s = m.group(0)
         i, j = m.start(3), m.end(3)
@@ -33163,6 +33051,19 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 - `PR #4203`_: Add ``@language vue``.
 - `PR #4207`_: Upgrade Leo's website using the latest version of Sphinx.
 - `PR #4209`_: Improve the ``@button sphinx-build`` script in ``LeoDocs.leo``.
+</t>
+<t tx="ekr.20241127053544.1">conf_version_pat = re.compile(r"version\s*= '([0-9]+\.[0-9]+\.[0-9]+)'")
+
+def get_leo_version():
+    """Return the version in conf.py"""    
+    h = '@edit html/conf.py'
+    p = g.findNodeAnywhere(c, h)
+    assert p, h
+    for m in conf_version_pat.finditer(p.b):
+        version = m.group(1)
+        if version:
+            return version
+    assert False, 'no version in conf.py'
 </t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
