@@ -3164,6 +3164,24 @@ class TestPython(BaseTestImporter):
         result = importer.delete_comments_and_strings(lines)
         self.assertEqual(len(result), len(expected_lines))
         self.assertEqual(result, expected_lines)
+    #@+node:ekr.20241127163654.1: *3* TestPython.test_delete_comments_and_strings2
+    def test_delete_comments_and_strings2(self):
+
+                # "No subcommand specified. Must specify one of: "
+                # + ", ".join(map(repr, self.subcommands))
+            # print(
+            # )
+        s = '''
+            "end\n"
+        '''
+        expected_results = (
+            (0, '',  # Ignore the first headline.
+                "end\n"
+                '@language python\n'
+                '@tabwidth -4\n'
+            ),
+        )
+        self.new_run_test(s, expected_results)
     #@+node:vitalije.20211206201240.1: *3* TestPython.test_general_test_1
     def test_general_test_1(self):
 
@@ -3272,22 +3290,53 @@ class TestPython(BaseTestImporter):
     #@+node:ekr.20241126104128.1: *3* TestPython.test_ipython_idiom
     def test_ipython_idiom(self):
 
-        s = '''
+        s = '''\
+    # test_ipython_idiom
     class HistoryTrim(BaseIPythonApplication):
 
-        def start(self):
+        description = trim_hist_help
 
-            # Create the new history database.
-            new_db.execute("""CREATE TABLE IF NOT EXISTS sessions (session integer
-                                primary key autoincrement, start timestamp,
-                                end timestamp, num_cmds integer, remark text)""")
-            new_db.close()
-            if self.backup:
-                print("Backed up longer history file to", backup_hist_file)
-            else:
-                hist_file.unlink()
+        backup = Bool(False, help="Keep the old history file as history.sqlite.<N>").tag(
+            config=True
+        )
+
+        def start(self):
+            new_db.execute("""CREATE TABLE IF NOT EXISTS output_history
+                            (session integer, line integer, output text,
+                            PRIMARY KEY (session, line))""")
+            new_db.commit()
+
             new_hist_file.rename(hist_file)
-        '''
+
+
+    class HistoryClear(HistoryTrim):
+
+        def start(self):
+            if self.force or ask_yes_no(
+                "Really delete all ipython history? ", default="no", interrupt="no"
+            ):
+                HistoryTrim.start(self)
+
+
+    class HistoryApp(Application):
+
+        subcommands = Dict(dict(
+            trim = (HistoryTrim, HistoryTrim.description.splitlines()[0]),
+            clear = (HistoryClear, HistoryClear.description.splitlines()[0]),
+        ))
+
+        def start(self):
+            if self.subapp is None:
+                print(
+                    "No subcommand specified. Must specify one of: "
+                    + ", ".join(map(repr, self.subcommands))
+                    + ".\n"
+                )
+                self.print_description()
+            else:
+                return self.subapp.start()
+
+    '''
         expected_results = (
             (0, '',  # Ignore the first headline.
                     '@others\n'
