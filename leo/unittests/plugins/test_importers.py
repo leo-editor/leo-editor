@@ -3169,18 +3169,32 @@ class TestPython(BaseTestImporter):
 
                 # "No subcommand specified. Must specify one of: "
                 # + ", ".join(map(repr, self.subcommands))
-            # print(
             # )
-        s = '''
-            "end\n"
+        s = r'''
+            """
+            An application for managing IPython history.
+
+            To be invoked as the `ipython history` subcommand.
+            """
+            print(
+                "end\n"
+            )
         '''
         expected_results = (
             (0, '',  # Ignore the first headline.
-                "end\n"
+                '"""\n'
+                'An application for managing IPython history.\n'
+                '\n'
+                'To be invoked as the `ipython history` subcommand.\n'
+                '"""\n'
+                'print(\n'
+                '    "end\\n"\n'
+                ')\n'
                 '@language python\n'
                 '@tabwidth -4\n'
             ),
         )
+
         self.new_run_test(s, expected_results)
     #@+node:vitalije.20211206201240.1: *3* TestPython.test_general_test_1
     def test_general_test_1(self):
@@ -3290,7 +3304,7 @@ class TestPython(BaseTestImporter):
     #@+node:ekr.20241126104128.1: *3* TestPython.test_ipython_idiom
     def test_ipython_idiom(self):
 
-        s = '''\
+        s = r'''
     # test_ipython_idiom
     class HistoryTrim(BaseIPythonApplication):
 
@@ -3305,7 +3319,6 @@ class TestPython(BaseTestImporter):
                             (session integer, line integer, output text,
                             PRIMARY KEY (session, line))""")
             new_db.commit()
-
             new_hist_file.rename(hist_file)
 
 
@@ -3335,10 +3348,10 @@ class TestPython(BaseTestImporter):
                 self.print_description()
             else:
                 return self.subapp.start()
-
     '''
         expected_results = (
             (0, '',  # Ignore the first headline.
+                    '# test_ipython_idiom\n'
                     '@others\n'
                     '@language python\n'
                     '@tabwidth -4\n'
@@ -3348,21 +3361,80 @@ class TestPython(BaseTestImporter):
                     '    @others\n'
             ),
             (2, 'HistoryTrim.start',
-                    'def start(self):\n'
+                    'description = trim_hist_help\n'
                     '\n'
-                    '    # Create the new history database.\n'
-                    '    new_db.execute("""CREATE TABLE IF NOT EXISTS sessions (session integer\n'
-                    '                        primary key autoincrement, start timestamp,\n'
-                    '                        end timestamp, num_cmds integer, remark text)""")\n'
-                    '    new_db.close()\n'
-                    '    if self.backup:\n'
-                    '        print("Backed up longer history file to", backup_hist_file)\n'
-                    '    else:\n'
-                    '        hist_file.unlink()\n'
+                    'backup = Bool(False, help="Keep the old history file as history.sqlite.<N>").tag(\n'
+                    '    config=True\n'
+                    ')\n'
+                    '\n'
+                    'def start(self):\n'
+                    '    new_db.execute("""CREATE TABLE IF NOT EXISTS output_history\n'
+                    '                    (session integer, line integer, output text,\n'
+                    '                    PRIMARY KEY (session, line))""")\n'
+                    '    new_db.commit()\n'
                     '    new_hist_file.rename(hist_file)\n'
+            ),
+            (1, 'class HistoryClear',
+                    'class HistoryClear(HistoryTrim):\n'
+                    '    @others\n'
+            ),
+            (2, 'HistoryClear.start',
+
+                    'def start(self):\n'
+                    '    if self.force or ask_yes_no(\n'
+                    '        "Really delete all ipython history? ", default="no", interrupt="no"\n'
+                    '    ):\n'
+                    '        HistoryTrim.start(self)\n'
+            ),
+            (1, 'class HistoryApp',
+                    'class HistoryApp(Application):\n'
+                    '    @others\n'
+            ),
+            (2, 'HistoryApp.start',
+
+                    'subcommands = Dict(dict(\n'
+                    '    trim = (HistoryTrim, HistoryTrim.description.splitlines()[0]),\n'
+                    '    clear = (HistoryClear, HistoryClear.description.splitlines()[0]),\n'
+                    '))\n'
+                    '\n'
+                    'def start(self):\n'
+                    '    if self.subapp is None:\n'
+                    '        print(\n'
+                    '            "No subcommand specified. Must specify one of: "\n'
+                    '            + ", ".join(map(repr, self.subcommands))\n'
+                    '            + ".\\n"\n'  # Tricky. Can't use 'r' prefix here.
+                    '        )\n'
+                    '        self.print_description()\n'
+                    '    else:\n'
+                    '        return self.subapp.start()\n'
             ),
         )
         self.new_run_test(s, expected_results)
+    #@+node:ekr.20241128022708.1: *3* TestPython.test_ipython_file
+    def test_ipython_file(self):
+
+        path = r'C:\Python\Python3.13\Lib\site-packages\IPython\core\historyapp.py'
+
+        if not os.path.exists(path):
+            self.skipTest(f"Requires {path}")
+
+        with open(path, 'rb') as f:
+            contents = g.toUnicode(f.read())
+
+        # g.printObj(contents, tag=path)
+
+        expected_results = (
+            (0, '',  # Ignore the first headline.
+                '@language python\n'
+                '@tabwidth -4\n'
+            ),
+        )
+
+        try:
+            # self.maxDiff = None
+            self.new_run_test(contents, expected_results)
+        except AssertionError as e:
+            print(repr(e))
     #@+node:ekr.20230612072414.1: *3* TestPython.test_long_declaration
     def test_long_declaration(self):
 

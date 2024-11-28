@@ -3,6 +3,7 @@
 """The new, tokenize based, @auto importer for Python."""
 from __future__ import annotations
 import re
+import textwrap
 from typing import Optional, TYPE_CHECKING
 import leo.core.leoGlobals as g
 from leo.plugins.importers.base_importer import Block, Importer
@@ -53,6 +54,7 @@ class Python_Importer(Importer):
             """
             if delim not in line:
                 return delim, len(line)
+            # Create a pattern so we don't have to create substrings.
             delim_pat = re.compile(delim)
             while i < len(line):
                 ch = line[i]
@@ -63,6 +65,8 @@ class Python_Importer(Importer):
                     return '', i + len(delim)
                 i += 1
             return delim, i
+
+        # g.printObj(lines, tag='delete_comments_and_strings')
 
         delim: str = ''  # The open string delim.
         result: list[str] = []
@@ -93,8 +97,13 @@ class Python_Importer(Importer):
             # End the line and append it to the result.
             if line.endswith('\n'):
                 result_line.append('\n')
-            result.append(''.join(result_line))
+            # Finally, strip blank lines.
+            result_line_s = ''.join(result_line)
+            if not result_line_s.strip():
+                result_line_s = '\n'
+            result.append(result_line_s)
         assert len(result) == len(lines)  # A crucial invariant.
+        assert textwrap.dedent(''.join(result)) == ''.join(result)  # A crucial check.
         return result
     #@+node:ekr.20230514140918.1: *3* python_i.find_blocks
     def find_blocks(self, i1: int, i2: int) -> list[Block]:
