@@ -32,7 +32,7 @@ class BaseTestImporter(LeoUnitTest):
 
     #@+others
     #@+node:ekr.20230526135305.1: *3* BaseTestImporter.check_outline
-    def check_outline(self, p: Position, expected: tuple) -> None:
+    def check_outline(self, p: Position, expected: tuple, trace: bool = True) -> None:
         """
         BaseTestImporter.check_outline.
 
@@ -56,16 +56,17 @@ class BaseTestImporter(LeoUnitTest):
                 self.assertEqual(g.splitLines(e_str), g.splitLines(a_str), msg=msg)
         except AssertionError:
             # Dump actual results, including bodies.
-            print('')
-            print(f"Fail: {self.id()}")
-            self.dump_tree(p, tag='Actual results...')
-            if 1:  # Sometimes good.
-                # Dump the expected results, as in LeoUnitTest.dump_tree.
-                print('Expected results')
-                for (level, headline, body) in expected:
-                    print('')
-                    print('level:', level, headline)
-                    g.printObj(g.splitLines(body))
+            if trace:
+                print('')
+                print(f"Fail: {self.id()}")
+                self.dump_tree(p, tag='Actual results...')
+                if True:  # Usually a great trace.
+                    # Dump the expected results, as in LeoUnitTest.dump_tree.
+                    print('Expected results')
+                    for (level, headline, body) in expected:
+                        print('')
+                        print('level:', level, headline)
+                        g.printObj(g.splitLines(body))
             raise
     #@+node:ekr.20220809054555.1: *3* BaseTestImporter.check_round_trip
     def check_round_trip(self, p: Position, s: str) -> None:
@@ -105,7 +106,7 @@ class BaseTestImporter(LeoUnitTest):
         p = self.run_test(s)
         self.check_round_trip(p, expected_s or s)
     #@+node:ekr.20230526124600.1: *3* BaseTestImporter.new_run_test
-    def new_run_test(self, s: str, expected_results: tuple, brief: bool = False) -> None:
+    def new_run_test(self, s: str, expected_results: tuple, *, trace: bool = False) -> None:
         """
         Run a unit test of an import scanner,
         i.e., create a tree from string s at location p.
@@ -128,7 +129,7 @@ class BaseTestImporter(LeoUnitTest):
         c.importCommands.createOutline(parent.copy(), ext, test_s)
 
         # Dump the actual results on failure and raise AssertionError.
-        self.check_outline(parent, expected_results)
+        self.check_outline(parent, expected_results, trace=trace)
     #@+node:ekr.20211127042843.1: *3* BaseTestImporter.run_test
     def run_test(self, s: str) -> Position:
         """
@@ -3164,6 +3165,38 @@ class TestPython(BaseTestImporter):
         result = importer.delete_comments_and_strings(lines)
         self.assertEqual(len(result), len(expected_lines))
         self.assertEqual(result, expected_lines)
+    #@+node:ekr.20241127163654.1: *3* TestPython.test_delete_comments_and_strings2
+    def test_delete_comments_and_strings2(self):
+
+                # "No subcommand specified. Must specify one of: "
+                # + ", ".join(map(repr, self.subcommands))
+            # )
+        s = r'''
+            """
+            An application for managing IPython history.
+
+            To be invoked as the `ipython history` subcommand.
+            """
+            print(
+                "end\n"
+            )
+        '''
+        expected_results = (
+            (0, '',  # Ignore the first headline.
+                '"""\n'
+                'An application for managing IPython history.\n'
+                '\n'
+                'To be invoked as the `ipython history` subcommand.\n'
+                '"""\n'
+                'print(\n'
+                '    "end\\n"\n'
+                ')\n'
+                '@language python\n'
+                '@tabwidth -4\n'
+            ),
+        )
+
+        self.new_run_test(s, expected_results)
     #@+node:vitalije.20211206201240.1: *3* TestPython.test_general_test_1
     def test_general_test_1(self):
 
@@ -3266,6 +3299,115 @@ class TestPython(BaseTestImporter):
                    '\n'
                    'def main():\n'
                    '    pass\n'
+            ),
+        )
+        self.new_run_test(s, expected_results)
+    #@+node:ekr.20241126104128.1: *3* TestPython.test_ipython_idiom
+    def test_ipython_idiom(self):
+
+        s = r'''
+    # test_ipython_idiom
+    class HistoryTrim(BaseIPythonApplication):
+
+        description = trim_hist_help
+
+        backup = Bool(False, help="Keep the old history file as history.sqlite.<N>").tag(
+            config=True
+        )
+
+        def start(self):
+            new_db.execute("""CREATE TABLE IF NOT EXISTS output_history
+                            (session integer, line integer, output text,
+                            PRIMARY KEY (session, line))""")
+            new_db.commit()
+            new_hist_file.rename(hist_file)
+
+
+    class HistoryClear(HistoryTrim):
+
+        def start(self):
+            if self.force or ask_yes_no(
+                "Really delete all ipython history? ", default="no", interrupt="no"
+            ):
+                HistoryTrim.start(self)
+
+
+    class HistoryApp(Application):
+
+        subcommands = Dict(dict(
+            trim = (HistoryTrim, HistoryTrim.description.splitlines()[0]),
+            clear = (HistoryClear, HistoryClear.description.splitlines()[0]),
+        ))
+
+        def start(self):
+            if self.subapp is None:
+                print(
+                    "No subcommand specified. Must specify one of: "
+                    + ", ".join(map(repr, self.subcommands))
+                    + ".\n"
+                )
+                self.print_description()
+            else:
+                return self.subapp.start()
+    '''
+        expected_results = (
+            (0, '',  # Ignore the first headline.
+                    '# test_ipython_idiom\n'
+                    '@others\n'
+                    '@language python\n'
+                    '@tabwidth -4\n'
+            ),
+            (1, 'class HistoryTrim',
+                    'class HistoryTrim(BaseIPythonApplication):\n'
+                    '    @others\n'
+            ),
+            (2, 'HistoryTrim.start',
+                    'description = trim_hist_help\n'
+                    '\n'
+                    'backup = Bool(False, help="Keep the old history file as history.sqlite.<N>").tag(\n'
+                    '    config=True\n'
+                    ')\n'
+                    '\n'
+                    'def start(self):\n'
+                    '    new_db.execute("""CREATE TABLE IF NOT EXISTS output_history\n'
+                    '                    (session integer, line integer, output text,\n'
+                    '                    PRIMARY KEY (session, line))""")\n'
+                    '    new_db.commit()\n'
+                    '    new_hist_file.rename(hist_file)\n'
+            ),
+            (1, 'class HistoryClear',
+                    'class HistoryClear(HistoryTrim):\n'
+                    '    @others\n'
+            ),
+            (2, 'HistoryClear.start',
+
+                    'def start(self):\n'
+                    '    if self.force or ask_yes_no(\n'
+                    '        "Really delete all ipython history? ", default="no", interrupt="no"\n'
+                    '    ):\n'
+                    '        HistoryTrim.start(self)\n'
+            ),
+            (1, 'class HistoryApp',
+                    'class HistoryApp(Application):\n'
+                    '    @others\n'
+            ),
+            (2, 'HistoryApp.start',
+
+                    'subcommands = Dict(dict(\n'
+                    '    trim = (HistoryTrim, HistoryTrim.description.splitlines()[0]),\n'
+                    '    clear = (HistoryClear, HistoryClear.description.splitlines()[0]),\n'
+                    '))\n'
+                    '\n'
+                    'def start(self):\n'
+                    '    if self.subapp is None:\n'
+                    '        print(\n'
+                    '            "No subcommand specified. Must specify one of: "\n'
+                    '            + ", ".join(map(repr, self.subcommands))\n'
+                    '            + ".\\n"\n'  # Tricky. Can't use 'r' prefix here.
+                    '        )\n'
+                    '        self.print_description()\n'
+                    '    else:\n'
+                    '        return self.subapp.start()\n'
             ),
         )
         self.new_run_test(s, expected_results)
