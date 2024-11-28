@@ -32,7 +32,7 @@ class BaseTestImporter(LeoUnitTest):
 
     #@+others
     #@+node:ekr.20230526135305.1: *3* BaseTestImporter.check_outline
-    def check_outline(self, p: Position, expected: tuple) -> None:
+    def check_outline(self, p: Position, expected: tuple, trace: bool = True) -> None:
         """
         BaseTestImporter.check_outline.
 
@@ -56,16 +56,17 @@ class BaseTestImporter(LeoUnitTest):
                 self.assertEqual(g.splitLines(e_str), g.splitLines(a_str), msg=msg)
         except AssertionError:
             # Dump actual results, including bodies.
-            print('')
-            print(f"Fail: {self.id()}")
-            self.dump_tree(p, tag='Actual results...')
-            if 1:  # Sometimes good.
-                # Dump the expected results, as in LeoUnitTest.dump_tree.
-                print('Expected results')
-                for (level, headline, body) in expected:
-                    print('')
-                    print('level:', level, headline)
-                    g.printObj(g.splitLines(body))
+            if trace:
+                print('')
+                print(f"Fail: {self.id()}")
+                self.dump_tree(p, tag='Actual results...')
+                if True:  # Usually a great trace.
+                    # Dump the expected results, as in LeoUnitTest.dump_tree.
+                    print('Expected results')
+                    for (level, headline, body) in expected:
+                        print('')
+                        print('level:', level, headline)
+                        g.printObj(g.splitLines(body))
             raise
     #@+node:ekr.20220809054555.1: *3* BaseTestImporter.check_round_trip
     def check_round_trip(self, p: Position, s: str) -> None:
@@ -105,7 +106,7 @@ class BaseTestImporter(LeoUnitTest):
         p = self.run_test(s)
         self.check_round_trip(p, expected_s or s)
     #@+node:ekr.20230526124600.1: *3* BaseTestImporter.new_run_test
-    def new_run_test(self, s: str, expected_results: tuple, brief: bool = False) -> None:
+    def new_run_test(self, s: str, expected_results: tuple, *, trace: bool = False) -> None:
         """
         Run a unit test of an import scanner,
         i.e., create a tree from string s at location p.
@@ -128,7 +129,7 @@ class BaseTestImporter(LeoUnitTest):
         c.importCommands.createOutline(parent.copy(), ext, test_s)
 
         # Dump the actual results on failure and raise AssertionError.
-        self.check_outline(parent, expected_results)
+        self.check_outline(parent, expected_results, trace=trace)
     #@+node:ekr.20211127042843.1: *3* BaseTestImporter.run_test
     def run_test(self, s: str) -> Position:
         """
@@ -3410,31 +3411,6 @@ class TestPython(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20241128022708.1: *3* TestPython.test_ipython_file
-    def test_ipython_file(self):
-
-        path = r'C:\Python\Python3.13\Lib\site-packages\IPython\core\historyapp.py'
-
-        if not os.path.exists(path):
-            self.skipTest(f"Requires {path}")
-
-        with open(path, 'rb') as f:
-            contents = g.toUnicode(f.read())
-
-        # g.printObj(contents, tag=path)
-
-        expected_results = (
-            (0, '',  # Ignore the first headline.
-                '@language python\n'
-                '@tabwidth -4\n'
-            ),
-        )
-
-        try:
-            # self.maxDiff = None
-            self.new_run_test(contents, expected_results)
-        except AssertionError as e:
-            print(repr(e))
     #@+node:ekr.20230612072414.1: *3* TestPython.test_long_declaration
     def test_long_declaration(self):
 

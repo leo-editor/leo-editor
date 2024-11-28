@@ -116,6 +116,8 @@ class Python_Importer(Importer):
         **Important**: An @others directive will refer to the returned blocks,
                        so there must be *no gaps* between blocks!
         """
+        trace = False  # Only while debugging.
+
         i, prev_i, results = i1, i1, []
 
         def lws_n(s: str) -> int:
@@ -132,6 +134,10 @@ class Python_Importer(Importer):
                 if m := pattern.match(s):
                     # cython may include trailing whitespace.
                     name = m.group(1).strip()
+                    if trace:
+                        print('')
+                        g.trace(name, m)
+                        print('')
                     end = self.find_end_of_block(i, i2)
                     assert i1 + 1 <= end <= i2, (i1, end, i2)
 
@@ -142,8 +148,8 @@ class Python_Importer(Importer):
                     ):
                         i = end
                     else:
-                        # Keep this trace.
-                        # g.printObj(self.lines[prev_i:end], tag=f"{prev_i}:{end} {name}")
+                        if trace:  # Keep this trace.
+                            g.printObj(self.lines[prev_i:end], tag=f"{prev_i}:{end} {name}")
                         block = Block(kind, name,
                             start=prev_i, start_body=i, end=end, lines=self.lines)
                         results.append(block)
@@ -158,10 +164,13 @@ class Python_Importer(Importer):
 
         Return the index of the line *following* the entire class/def.
         """
+        trace = False  # This would be useful only while running unit tests.
+
         def lws_n(s: str) -> int:
             """Return the length of the leading whitespace for s."""
             return len(s) - len(s.lstrip())
 
+        i0 = i - 1  # For traces.
         prev_line = self.guide_lines[i - 1]
         kinds = ('class', 'def', '->')  # '->' denotes a coffeescript function.
         assert any(z in prev_line for z in kinds), (i, repr(prev_line))
@@ -174,18 +183,20 @@ class Python_Importer(Importer):
                     break
 
         non_tail_lines = tail_lines = 0
-        angles, curlies, parens = 0, 0, 0
+        curlies, parens = 0, 0
         if i < i2:
             lws1 = lws_n(prev_line)
             while i < i2:
                 s = self.guide_lines[i]
                 if s.strip():
+                    if trace:
+                        dedent_s = lws_n(s) <= lws1
+                        g.trace(f"dedent? {int(dedent_s)} state: {(curlies, parens)} {s!r}")
                     # A code line. Test the bracket state at the *start* of the line.
-                    if lws_n(s) <= lws1 and (angles, curlies, parens) == (0, 0, 0):
+                    if lws_n(s) <= lws1 and (curlies, parens) == (0, 0):
                         # A code line that ends the block.
                         return i if non_tail_lines == 0 else i - tail_lines
                     # Update the bracket state.
-                    angles = angles + s.count('<') - s.count('>')
                     curlies = curlies + s.count('{') - s.count('}')
                     parens = parens + s.count('(') - s.count(')')
                     # A code line in the block.
@@ -210,6 +221,7 @@ class Python_Importer(Importer):
                     non_tail_lines += 1
                     tail_lines = 0
                 i += 1
+        # g.printObj(self.guide_lines[i0:i2], tag=f"find_end_of_block: {i0}:{i2}")
         return i2
     #@+node:ekr.20230825095926.1: *3* python_i.postprocess & helpers
     def postprocess(self, parent: Position, result_blocks: list[Block]) -> None:
