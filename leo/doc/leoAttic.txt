@@ -1639,30 +1639,7 @@ def test_colorizer_rapidq(self):
     self.color('rapidq', text)
 #@+node:ekr.20240820045246.1: ** To be cleared later
 # Clear after 6.8.2.
-#@+node:ekr.20110605121601.18254: *3* LeoQtFrame.destroyAllObjects (not used)
-def destroyAllObjects(self) -> None:
-    """Clear all links to objects in a Leo window."""
-    c = self.c
-    # g.printGcAll()
-    # Do this first.
-    << clear all vnodes in the tree >>
-    # Destroy all ivars in subcommanders.
-    g.clearAllIvars(c.atFileCommands)
-    if c.chapterController:  # New in Leo 4.4.3.
-        g.clearAllIvars(c.chapterController)
-    g.clearAllIvars(c.fileCommands)
-    g.clearAllIvars(c.keyHandler)  # New in Leo 4.4.3.
-    g.clearAllIvars(c.importCommands)
-    g.clearAllIvars(c.tangleCommands)
-    g.clearAllIvars(c.undoer)
-    g.clearAllIvars(c)
-
-#@+node:ekr.20110605121601.18255: *4* << clear all vnodes in the tree>> (LeoQtFrame)
-vList = [z for z in c.all_unique_nodes()]
-for v in vList:
-    g.clearAllIvars(v)
-vList = []  # Remove these references immediately.
-#@+node:ekr.20241125100825.1: *3* @@@edit leo/scripts/sphinx_build.py
+#@+node:ekr.20241125100825.1: *3* leo/scripts/sphinx_build.py (not used)
 @language python
 
 """
@@ -1699,6 +1676,38 @@ else:
     print(f"Not found: {script!r}")
     print('pip install sphinx')
     print('')
+#@+node:ekr.20240821135031.1: *3* dw.change_layout (not used)
+def change_layout(self, layout_name: str) -> None:
+    """
+    Find and change the @string qt-layout-name setting,
+    then execute the restart-leo command.
+    """
+    c = self.leo_c
+    h = '@string qt-layout-name'
+    root = c.config.settingsRoot()
+    if not root:
+        top = c.lastTopLevel()
+        root = top.insertAfter()
+        root.h = '@settings'
+        print('Adding @settings node')
+        c.redraw()
+    p = g.findNodeInTree(c, root, h, exact=False)
+    if not p:
+        p = root.insertAsLastChild()
+        p.h = f"{h} = {layout_name}"
+        print(f"Adding {p.h}")
+        print(f"Switching to {layout_name}")
+        c.save()
+        # c.frame.reloadOutline()
+        c.restartLeo()
+    elif p.h.endswith(f" {layout_name}"):
+        g.es_print(f"Already using {layout_name}")
+    else:
+        p.h = f"{h} = {layout_name}"
+        c.save()
+        print(f"Switching to {layout_name}")
+        # c.frame.reloadOutline()
+        c.restartLeo()
 #@-all
 #@@nosearch
 #@-leo
