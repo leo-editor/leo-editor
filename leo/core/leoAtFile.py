@@ -618,6 +618,13 @@ class AtFile:
             g.internalError(f"does not exist: {fileName!r}")
             return
 
+        if fileName.endswith(('ipynb', '.m')):
+            language = 'm' if fileName.endswith('.m') else 'python'
+            # Put the whole file into the node.
+            root.deleteAllChildren()
+            root.b = f"@language {language}\n\n" + contents
+            return
+
         at.rememberReadPath(fileName, root)
         at.initReadIvars(root, fileName)
 
