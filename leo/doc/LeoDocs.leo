@@ -15879,7 +15879,6 @@ More Leo Resources
 .. _`literate programming`: http://www.literateprogramming.com/
 .. _`scripting tutorial`:   http://blog.suspended-chord.info/2014/01/28/intro-to-leo-scripting/
 .. _`slashdot article`:     testimonials.html#speed-ream-s-slashdot-article
-.. _`web viewer`:           load-leo.html
 .. _`wikipedia page`:       http://en.wikipedia.org/wiki/Leo_(editor)
 .. _`Leo's IRC channel`:    http://webchat.freenode.net/?channels=%23leo&amp;uio=d4
 
@@ -15899,7 +15898,6 @@ More resources:
 - Joe Orr's `Leo page viewer`_.
 - Satish Goda's `Leo tutorial &lt;https://github.com/satishgoda/leo-editor-tutorial&gt;`_.
 - The `Mind Mapping`_ page.
-- A `web viewer`_ page for .leo files.
 - `Icons`_ telling the world that you used Leo.
 - `Leo in a nutshell`_: A summary Leo's more than one million lines of source code.
 - Rickard Lindberg's `blog post`_ about how Leo improves computer code.
@@ -33019,7 +33017,6 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
 - [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
-- [A web page that displays .leo files](https://leo-editor.github.io/leo-editor/load-leo.html)
 - [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)</t>
 <t tx="ekr.20241126091611.1">.. Use the link-pr abbreviation to create these links.
 
