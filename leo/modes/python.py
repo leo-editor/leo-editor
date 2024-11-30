@@ -320,6 +320,8 @@ def python_comment(colorer, s, i):
     
     New in Leo 6.8.3.
     """
+    trace = 'coloring' in g.app.debug and not g.unitTesting
+
     try:
         c = colorer.c
     except Exception:
@@ -329,15 +331,23 @@ def python_comment(colorer, s, i):
     n = colorer.match_eol_span(s, i, kind="comment1", seq="#")
 
     # Leo 6.8.3. Add special case for @language jupytext.
-    is_jupytext_md_comment = (
-        i == 0
-        and s.startswith('# %% [markdown]')
-        and any(z.startswith('@language jupytext')
-            for z in g.splitLines(c.p.b))
+    in_jupytext_tree = any(
+        z.startswith('@language jupytext')
+        for z_p in c.p.self_and_parents()
+        for z in g.splitLines(z_p.b)
     )
-    if is_jupytext_md_comment:
-        # Simulate @language md.
-        colorer.init_mode('md')
+    is_any_jupytext_comment = (
+        i == 0
+        and s.startswith('# %%')
+        and in_jupytext_tree
+    )
+    if is_any_jupytext_comment:
+        # Simulate @language md or @language python.
+        language = 'md' if s.startswith('# %% [markdown]') else 'python'
+        if trace:
+            print('')
+            g.trace(f"init_mode({language}) {c.p.h}")
+        colorer.init_mode(language)
         state_i = colorer.setInitialStateNumber()
         colorer.setState(state_i)
 

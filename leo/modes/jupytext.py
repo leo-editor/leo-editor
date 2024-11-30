@@ -22,6 +22,8 @@ def jupytext_comment(colorer: Any, s: str, i: int) -> int:
     
     New in Leo 6.8.3.
     """
+    trace = 'coloring' in g.app.debug and not g.unitTesting
+
     try:
         c = colorer.c
     except Exception:
@@ -30,15 +32,22 @@ def jupytext_comment(colorer: Any, s: str, i: int) -> int:
     # *Always* colorize the comment line as a *jupytext* comment.
     n = colorer.match_eol_span(s, i, kind="comment1", seq="#")
 
+    in_jupytext_tree = any(
+        z.startswith('@language jupytext')
+        for z_p in c.p.self_and_parents()
+        for z in g.splitLines(z_p.b)
+    )
     is_any_jupytext_comment = (
         i == 0
         and s.startswith('# %%')
-        and any(z.startswith('@language jupytext')
-            for z in g.splitLines(c.p.b))
+        and in_jupytext_tree
     )
     if is_any_jupytext_comment:
         # Simulate @language md or @language python.
         language = 'md' if s.startswith('# %% [markdown]') else 'python'
+        if trace:
+            print('')
+            g.trace(f"init_mode({language}) {c.p.h}")
         colorer.init_mode(language)
         state_i = colorer.setInitialStateNumber()
         colorer.setState(state_i)

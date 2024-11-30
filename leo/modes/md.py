@@ -185,28 +185,36 @@ def md_jupytext_comment(colorer, s, i):
     
     New in Leo 6.8.3.
     """
+    trace = 'coloring' in g.app.debug and not g.unitTesting
+
     try:
         c = colorer.c
     except Exception:
         return 0  # Fail, allowing other matches.
 
-    is_jupytext_python_comment = (
+    # Leo 6.8.3. Add special case for @language jupytext.
+    in_jupytext_tree = any(
+        z.startswith('@language jupytext')
+        for z_p in c.p.self_and_parents()
+        for z in g.splitLines(z_p.b)
+    )
+    is_any_jupytext_comment = (
         i == 0
         and s.startswith('# %%')
-        and any(z.startswith('@language jupytext')
-            for z in g.splitLines(c.p.b))
+        and in_jupytext_tree
     )
-    if not is_jupytext_python_comment:
-        return 0  # Fail. Allow other matches.
+    if is_any_jupytext_comment:
+        # Simulate @language md or @language python.
+        language = 'md' if s.startswith('# %% [markdown]') else 'python'
+        if trace:
+            print('')
+            g.trace(f"init_mode({language}) {c.p.h}")
+        colorer.init_mode(language)
+        state_i = colorer.setInitialStateNumber()
+        colorer.setState(state_i)
 
-    # Color the line as a *jupytext markdown* comment.
+    # Color the line as comment in the current languages.
     n = colorer.match_eol_span(s, i, kind="comment1", seq="#")
-
-    # Simulate @language python.
-    colorer.init_mode('python')
-    state_i = colorer.setInitialStateNumber()
-    colorer.setState(state_i)
-
     return n  # Succeed. Do not allow other matches.
 #@-<< md.py: md_jupytext_comment >>
 
