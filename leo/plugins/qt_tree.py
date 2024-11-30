@@ -676,7 +676,7 @@ class LeoQtTree(leoFrame.LeoTree):
             # 2011/06/01: A second *single* click on a selected node
             # enters editing state.
             if auto_edit and self.auto_edit:
-                e, wrapper = self.createTreeEditorForItem(item)
+                self.createTreeEditorForItem(item)
         finally:
             self.busy = False
     #@+node:ekr.20110605121601.17895: *4* qtree.onItemCollapsed
@@ -704,9 +704,7 @@ class LeoQtTree(leoFrame.LeoTree):
         c = self.c
         try:
             self.busy = True
-            e, wrapper = self.createTreeEditorForItem(item)
-            if not e:
-                g.trace('*** no e')
+            self.createTreeEditorForItem(item)
             p = self.item2position(item)
         # 2011/07/28: End the lockout here, not at the end.
         finally:
@@ -943,8 +941,7 @@ class LeoQtTree(leoFrame.LeoTree):
     def expandItem(self, item: Item) -> None:
         self.treeWidget.expandItem(item)
     #@+node:ekr.20110605121601.18420: *4* qtree.createTreeEditorForItem
-    def createTreeEditorForItem(self, item: Item) -> tuple[Editor, Wrapper]:
-
+    def createTreeEditorForItem(self, item: Item) -> None:
         c = self.c
         w = self.treeWidget
         w.setCurrentItem(item)  # Must do this first.
@@ -952,10 +949,9 @@ class LeoQtTree(leoFrame.LeoTree):
             item.setText(0, item._real_text)
         w.editItem(item)
         e = w.itemWidget(item, 0)  # e is a QLineEdit
-        e.setObjectName('headline')
-        wrapper = self.connectEditorWidget(e, item)
-        self.sizeTreeEditor(c, e)
-        return e, wrapper
+        if e:
+            e.setObjectName('headline')
+            self.sizeTreeEditor(c, e)
     #@+node:ekr.20110605121601.18421: *4* qtree.createTreeItem
     def createTreeItem(self, p: Position, parent_item: Item) -> Item:
 
