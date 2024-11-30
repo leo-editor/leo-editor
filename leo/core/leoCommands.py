@@ -1214,7 +1214,7 @@ class Commands:
         c = self
         p = p or c.p
         language = g.findLanguageDirectives(c, p)
-        if not script and language != 'python':  # #4197.
+        if not script and language not in ('jupytext', 'python'):  # #4197, #4226.
             w = c.frame.body.wrapper
             # For non-python languages...
             valid = (
