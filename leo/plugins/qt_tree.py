@@ -932,7 +932,7 @@ class LeoQtTree(leoFrame.LeoTree):
             wrapper = self.getWrapper(e, item)
             e.editingFinished.connect(editingFinished_callback)
             return wrapper  # 2011/02/12
-        g.trace('can not happen: no e')
+        # g.trace('can not happen: no e')
         return None
     #@+node:ekr.20110605121601.18419: *4* qtree.contractItem & expandItem
     def contractItem(self, item: Item) -> None:
@@ -951,7 +951,10 @@ class LeoQtTree(leoFrame.LeoTree):
         e = w.itemWidget(item, 0)  # e is a QLineEdit
         if e:
             e.setObjectName('headline')
-            self.sizeTreeEditor(c, e)
+        # Always do these!
+        wrapper = self.connectEditorWidget(e, item)
+        self.sizeTreeEditor(c, e)
+
     #@+node:ekr.20110605121601.18421: *4* qtree.createTreeItem
     def createTreeItem(self, p: Position, parent_item: Item) -> Item:
 
