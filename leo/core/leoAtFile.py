@@ -611,18 +611,24 @@ class AtFile:
         This code is adapted from at.readOneAtCleanNode.
         """
         at, c, x = self, self.c, self.c.shadowController
+
+        # Special cases: just read everything into the @jupytext node.
+        path = c.fullPath(root)
+        if path.endswith(('ipynb', '.m')):
+            at.rememberReadPath(path, root)
+            with open(path, 'r') as f:
+                contents = f.read()
+            root.deleteAllChildren()
+            # Put the whole file into the node.
+            language = 'matlab' if path.endswith('.m') else 'python'
+            root.b = f"@language {language}\n\n" + contents
+            return
+
         contents, fileName = g.app.jupytextManager.read(c, root)
         if not contents:
             return
         if not os.path.exists(fileName):
             g.internalError(f"does not exist: {fileName!r}")
-            return
-
-        if fileName.endswith(('ipynb', '.m')):
-            language = 'm' if fileName.endswith('.m') else 'python'
-            # Put the whole file into the node.
-            root.deleteAllChildren()
-            root.b = f"@language {language}\n\n" + contents
             return
 
         at.rememberReadPath(fileName, root)
@@ -1563,6 +1569,21 @@ class AtFile:
                 if prefix_list:
                     prefix = ''.join(prefix_list)
                     root.b = prefix.strip() + '\n\n'
+
+            # Special case for .m and .ipynb files.
+            if root.h.endswith(('.ipynb', '.m')):
+                path = c.fullPath(root)
+                lines = g.splitLines(root.b)
+                if lines and lines[0].startswith('@language'):
+                    lines = lines[1:]
+                contents = ''.join(lines).strip() + '\n'
+                with open(path, 'w') as f:
+                    f.write(contents)
+                c.setFileTimeStamp(fileName)
+                at.rememberReadPath(fileName, root)
+                g.es_print(f"wrote: {fileName}")
+                return
+
             at.outputList = []
             at.putFile(root, sentinels=False)
             at.warnAboutOrphandAndIgnoredNodes()
