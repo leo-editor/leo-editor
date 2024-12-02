@@ -2593,7 +2593,7 @@ def get_directives_dict(p: Position) -> dict[str, str]:
             # Warning if @path is in the body of an @file node.
             if word == 'path' and kind == 'body' and p.isAtFileNode():
                 message = '\n@path is not allowed in the body text of @file nodes\n'
-                g.print_unique_message(message, color='red')
+                g.print_unique_message(message, es_flag=True, color='red')
                 continue
             k = g.skip_line(s, j)
             val = s[j:k].strip()
@@ -5731,6 +5731,9 @@ def es_print_unique_message(message: str, *, color: str) -> None:
     if message not in g_unique_message_d:
         g_unique_message_d[message] = True
         g.es_print(message, color=color)
+
+
+
 #@+node:ekr.20240325064618.1: *3* g.traceUnique & traceUniqueClass
 # Keys are strings: g.callers. Values are lists of str(value).
 trace_unique_dict: dict[str, list[str]] = {}
@@ -6886,7 +6889,26 @@ def run_unit_tests(tests: str = None, verbose: bool = False) -> None:
 def computeFileUrl(fn: str, c: Cmdr = None, p: Position = None) -> str:
     """
     Compute finalized url for filename fn.
+    unifies use of 'file://...' prefix in Windows environments
+
+
     """
+    def expand_file_scheme_on_windows(url: str):
+        """ look at 'file://...' scheme prefixes on Windows platform
+        """
+        tag = 'file://'
+        tag2 = 'file:///'
+        tag2 = 'file:////'
+        if url.startswith(tag2):
+            path = url[len(tag2):].lstrip()
+        elif url.startswith(tag):
+            path = url[len(tag) :].lstrip()
+        else:
+            path = url
+        g.es(f"expand_file_scheme_on_windows({url=}) => {path=}")
+        return path
+
+    g.es(f"# computeFileUrl(), {fn=}")
     # First, replace special characters (especially %20, by their equivalent).
     url = urllib.parse.unquote(fn)
     # Finalize the path *before* parsing the url.
@@ -6899,19 +6921,52 @@ def computeFileUrl(fn: str, c: Cmdr = None, p: Position = None) -> str:
     else:
         tag = 'file://'
         tag2 = 'file:///'
-        if sys.platform.startswith('win') and url.startswith(tag2):
-            path = url[len(tag2) :].lstrip()
-        elif url.startswith(tag):
-            path = url[len(tag) :].lstrip()
+        if 1:
+            if sys.platform.startswith('win'):
+                if url.startswith(tag2):
+                    path = url[len(tag2):].lstrip()
+            elif url.startswith(tag):
+                path = url[len(tag) :].lstrip()
+            else:
+                path = url
+            g.es(f"# computeFileUrl()-0, {path=}")
         else:
-            path = url
+            # JKN experiment
+            # get 'path' - windows has special treatment for file://... schemes
+            if sys.platform.startswith('win'):
+                tag3 = 'file:////'
+                # Try longest file://... scheme first
+                if url.startswith(tag3):
+                    # extract to the right of the tag
+                    g.es(f"# computeFileUrl(): 1")
+                    path = url[len(tag3) :].lstrip()
+                    # arrange for '//' to be prepended further down
+                    #  so that urlparse extracts netloc
+                    # XXX a bit messy
+                    tag = "//"
+                    url = f"{tag}{path}"
+                    g.es(f"# computeFileUrl() => rv={url}")
+                    return url
+                elif url.startswith(tag2):
+                    g.es(f"# computeFileUrl(): 2")
+                    path = url[len(tag2) :].lstrip()
+            elif url.startswith(tag):
+                g.es(f"# computeFileUrl(): 3")
+                path = url[len(tag) :].lstrip()
+            else:
+                g.es(f"# computeFileUrl(): 4")
+                path = url
         # Handle ancestor @path directives.
+        g.es(f"# computeFileUrl(): 5, {path=}")
         if c and c.fileName():
             base = c.getNodePath(p)
             path = g.finalize_join(g.os_path_dirname(c.fileName()), base, path)
         else:
             path = g.finalize(path)
+        # prepend the 'file://' or '//' we think should be there
+        g.es(f"# computeFileUrl(): 6, {path=}")
         url = f"{tag}{path}"
+    g.es(f"# computeFileUrl() => rv={url}")
     return url
 #@+node:ekr.20190608090856.1: *3* g.es_clickable_link (not used)
 def es_clickable_link(c: Cmdr, p: Position, line_number: int, message: str) -> None:  # pragma: no cover
@@ -7134,12 +7189,14 @@ def getUrlFromNode(p: Position) -> Optional[str]:
         return None
     c = p.v.context
     assert c
+    g.es(f"# getUrlFromNode()")
     table = [p.h, g.splitLines(p.b)[0] if p.b else '']
     table = [s[4:] if g.match_word(s, 0, '@url') else s for s in table]
     table = [s.strip() for s in table if s.strip()]
     # First, check for url's with an explicit scheme.
     for s in table:
         if g.isValidUrl(s):
+            g.es(f"# getUrlFromNode_1() -> {s}")
             return s
     # Next check for existing file and add a file:// scheme.
     for s in table:
@@ -7151,11 +7208,14 @@ def getUrlFromNode(p: Position) -> Optional[str]:
             if g.os_path_isfile(fn):
                 # Return the *original* url, with a file:// scheme.
                 # g.handleUrl will call computeFileUrl again.
+                g.es(f"# getUrlFromNode_2() -> file://{s}")
                 return 'file://' + s
     # Finally, check for local url's.
     for s in table:
         if s.startswith("#"):
+            g.es(f"# getUrlFromNode_3() -> {s}")
             return s
+    g.es(f"# getUrlFromNode_3() -> None")
     return None
 #@+node:ekr.20170221063527.1: *3* g.handleUnl
 def handleUnl(unl_s: str, c: Cmdr) -> Optional[Cmdr]:
@@ -7210,28 +7270,50 @@ def handleUrlHelper(url: str, c: Cmdr, p: Position) -> None:  # pragma: no cover
         ftp://ftp.uu.net/public/whatever
         http://localhost/MySiteUnderDevelopment/index.html
         file:///home/me/todolist.html
+
+        a Windows UNC filename should get passed as
+            file:////server/path/to/file
     """
     if g.unitTesting:
         return
+    g.es(f"# handleUrlHelper: {url=}")
     tag = 'file://'
     original_url = url
     if url.startswith(tag) and not url.startswith(tag + '#'):
         # Finalize the path *before* parsing the url.
         url = g.computeFileUrl(url, c=c, p=p)
     parsed = urlparse.urlparse(url)
+    g.es(f"# handleUrlHelper({url}) -> {parsed=}")
+
     if parsed.netloc:
-        leo_path = os.path.join(parsed.netloc, parsed.path)
+        # leo_path = os.path.join(parsed.netloc, parsed.path)
+        # leo_path = os.path.join("netloc", parsed.path)
         # "readme.txt" gets parsed into .netloc...
+
+        # NB: if path has a leading slash, (may be the case if netloc is not None),
+        # the path gets reset within os.path.join() - we don't want this
+        if parsed.path.startswith('/'):
+            path_no_reset = parsed.path[1:]
+        else:
+            path_no_reset = parsed.path
+        leo_path = "\\\\" + os.path.join(parsed.netloc, path_no_reset)
+
+        g.es(f"# handleUrlHelper_1: {leo_path=}, {parsed.netloc=}, {parsed.path=}")
     else:
         leo_path = parsed.path
+        g.es(f"# handleUrlHelper_2: {leo_path=}")
     if leo_path.endswith('\\'):
         leo_path = leo_path[:-1]
+        g.es(f"# handleUrlHelper_3: {leo_path=}")
     if leo_path.endswith('/'):
         leo_path = leo_path[:-1]
+        g.es(f"# handleUrlHelper_4: {leo_path=}")
     if parsed.scheme == 'file' and leo_path.endswith('.leo'):
         g.handleUnl(original_url, c)
     elif parsed.scheme in ('', 'file'):
+        g.es(f"# handleUrlHelper_5: {leo_path=}")
         unquote_path = g.unquoteUrl(leo_path)
+        g.es(f"# handleUrlHelper_6: {leo_path=}")
         if g.os_path_exists(leo_path):
             g.os_startfile(unquote_path)
         else:
@@ -7299,6 +7381,7 @@ def openUrlOnClick(event: QMouseEvent, url: str = None) -> Optional[str]:  # pra
     """Open the URL under the cursor.  Return it for unit testing."""
     # QTextEditWrapper.mouseReleaseEvent calls this outside Leo's command logic.
     # Make sure to catch all exceptions!
+    g.es(f"# openUrlOnClick({url=})")
     try:
         return openUrlHelper(event, url)
     except Exception:
@@ -7306,7 +7389,11 @@ def openUrlOnClick(event: QMouseEvent, url: str = None) -> Optional[str]:  # pra
         return None
 #@+node:ekr.20170216091704.1: *4* g.openUrlHelper
 def openUrlHelper(event: LeoKeyEvent, url: str = None) -> Optional[str]:
-    """Open the unl, url or gnx under the cursor.  Return it for unit testing."""
+    """attempt to treat the text under the cursor as 
+        a unl, url or gnx, and to open it
+        Return it for unit testing
+    """
+    #
     c = getattr(event, 'c', None)
     if not c:
         return None
@@ -7316,6 +7403,7 @@ def openUrlHelper(event: LeoKeyEvent, url: str = None) -> Optional[str]:
         return None
     if event:
         event.widget = w
+    g.es(f"# openUrlHelper({url=})")
     # Part 1: get the url.
     if url is None:
         s = w.getAllText()
