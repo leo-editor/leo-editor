@@ -331,8 +331,9 @@ dependencies = [
   "Send2Trash; platform_system == 'Windows'",      # picture_viewer plugin.
   
   # For now, the windows-curses package does not exist for Python 3.13.
-  "windows-curses; platform_system == 'Windows'; python_version < '3.13'"
+  # "windows-curses[curses]; platform_system == 'Windows'; python_version < '3.13'",
 ]
+
 #@-<< pyproject.toml: dependencies >>
 
 [project.scripts]
