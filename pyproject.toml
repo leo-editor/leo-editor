@@ -235,7 +235,7 @@ packages = [
 
 [project]
 requires-python = ">= 3.9"
-version = "6.8.2"  # No space.
+version = "6.8.3"  # No space.
 name = "leo"
 
 #@+<< developer info >>
@@ -331,10 +331,7 @@ dependencies = [
   "Send2Trash; platform_system == 'Windows'",      # picture_viewer plugin.
   
   # For now, the windows-curses package does not exist for Python 3.13.
-
-  # "windows-curses; platform_system == 'Windows'",  # cursesGui2 plugin.
-  # "windows-curses; platform_system == 'Windows'; python_version < '3.13'"
-
+  "windows-curses; platform_system == 'Windows'; python_version < '3.13'"
 ]
 #@-<< pyproject.toml: dependencies >>
 
