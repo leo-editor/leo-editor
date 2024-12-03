@@ -40,8 +40,6 @@ filename string as its only argument and set as open_func.
 
 # By Dan White <etihwnad _at_ gmail _dot_ com>.
 
-import mailcap
-import mimetypes
 import os
 import subprocess
 import sys
@@ -81,13 +79,12 @@ def init():
     return ok
 #@+node:dan.20090203174248.31: ** open_mimetype
 def open_mimetype(tag, keywords, val=None):
-    """Simulate double-clicking on the filename in a file manager.  Order of
-    preference is:
-
-        1) @string mime_open_cmd setting
-        2) _mime_open_cmd, defined per sys.platform detection
-        3) open_func(fpath), defined per sys.platform detection
-        4) mailcap file for mimetype handling
+    """Simulate double-clicking on the filename in a file manager.
+    
+    Order of preference is:
+    1) @string mime_open_cmd setting
+    2) _mime_open_cmd, defined per sys.platform detection
+    3) open_func(fpath), defined per sys.platform detection
     """
 
     global open_func
@@ -97,58 +94,36 @@ def open_mimetype(tag, keywords, val=None):
     if not c or not p:
         return None
 
-    if p.h.startswith('@mime'):
-        fname = p.h[6:]
+    if not p.h.startswith('@mime'):
+        # not an @mime node
+        return val
 
-        # honor @path
-        d = c.scanAllDirectives(p)
-        path = d.get('path')
-        fpath = g.finalize_join(path, fname)
+    # honor @path
+    fname = p.h[6:]
+    d = c.scanAllDirectives(p)
+    path = d.get('path')
+    fpath = g.finalize_join(path, fname)
 
-        # stop here if the file doesn't exist
-        if not g.os_path_exists(fpath):
-            g.error('@mime: file does not exist, %s' % fpath)
-            return True
-
-        # user-specified command string, or sys.platform-determined string
-        mime_cmd = c.config.getString('mime-open-cmd') or _mime_open_cmd
-        if mime_cmd:
-            if '%s' not in mime_cmd:
-                mime_cmd += ' %s'
-            open_func = exec_string_cmd(mime_cmd)
-
-        # no special handler function specified (unknown platform),
-        # try mailcap/mimetype entries explicitly
-        if open_func is None:
-            (ftype, encoding) = mimetypes.guess_type(fname)
-            if ftype:
-                caps = mailcap.getcaps()
-                (fullcmd, entry) = mailcap.findmatch(caps, ftype,
-                                                     filename=fpath,
-                                                     key='view')
-                if fullcmd:
-                    # create a function which merely executes the fullcmd in
-                    # a shell for e.g. PATH access
-                    open_func = exec_full_cmd(fullcmd)
-                else:
-                    g.error('@mime: no mailcap entry for %s: %s' % (ftype, fname))
-                g.trace('mailcap command:', fullcmd)
-            else:
-                g.error('@mime: unknown file type: %s' % fname)
-
-
-        # use the custom open_func to open external file viewer
-        if open_func:
-            open_func(fpath)
-        else:
-            g.error('@mime: no known way to open %s' % fname)
-
-        # block execution of e.g. vim plugin
+    # stop here if the file doesn't exist
+    if not g.os_path_exists(fpath):
+        g.error('@mime: file does not exist, %s' % fpath)
         return True
 
-    # not an @mime node
-    return val
+    # user-specified command string, or sys.platform-determined string
+    mime_cmd = c.config.getString('mime-open-cmd') or _mime_open_cmd
+    if mime_cmd:
+        if '%s' not in mime_cmd:
+            mime_cmd += ' %s'
+        open_func = exec_string_cmd(mime_cmd)
 
+    # use the custom open_func to open external file viewer
+    if open_func:
+        open_func(fpath)
+    else:
+        g.error('@mime: no known way to open %s' % fname)
+
+    # block execution of e.g. vim plugin
+    return True
 #@-others
 #@@language python
 #@@tabwidth -4
