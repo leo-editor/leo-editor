@@ -251,9 +251,6 @@
 <v t="ekr.20181009072707.1"><vh>@file ../../run_travis_unit_tests.py</vh></v>
 <v t="ekr.20150304130753.4"><vh>leo-viewer/leo_to_html.xsl</vh></v>
 </v>
-<v t="ekr.20230717210524.1"><vh>In leo/docs</vh>
-<v t="ekr.20230716154653.1"><vh>@edit ../../docs/load-leo.html</vh></v>
-</v>
 <v t="ekr.20180225010913.1"><vh>In leo/core</vh>
 <v t="ekr.20210202110241.1"><vh>@file leoclient.py</vh></v>
 <v t="ekr.20031218072017.2605"><vh>@file runLeo.py</vh></v>
@@ -340,9 +337,7 @@
 <v t="ekr.20170428084208.381"><vh>@file ../external/npyscreen/wgtitlefield.py</vh></v>
 <v t="ekr.20170428084208.398"><vh>@file ../external/npyscreen/wgwidget.py</vh></v>
 <v t="ekr.20170428084208.436"><vh>@file ../external/npyscreen/wgwidget_proto.py</vh></v>
-<v t="ekr.20170428084208.443"><vh>@@file ../external/npyscreen/__init__.py</vh>
-<v t="ekr.20170428084208.444"><vh>Declarations</vh></v>
-</v>
+<v t="ekr.20170428084208.443"><vh>@file ../external/npyscreen/__init__.py</vh></v>
 </v>
 </v>
 </v>
@@ -353,12 +348,12 @@
 <v t="ekr.20240227082119.1"><vh>@file ../modes/ini.py</vh></v>
 <v t="ekr.20230419052236.1"><vh>@file ../modes/javascript.py</vh></v>
 <v t="ekr.20210223151922.1"><vh>@file ../modes/julia.py</vh></v>
-<v t="ekr.20240202211600.1"><vh>@file ../modes/nim.py</vh></v>
 <v t="ekr.20241030151621.1"><vh>@file ../modes/jupytext.py</vh></v>
+<v t="ekr.20241030152835.1"><vh>@file ../modes/md.py</vh></v>
+<v t="ekr.20240202211600.1"><vh>@file ../modes/nim.py</vh></v>
 <v t="ekr.20210219115553.109"><vh>@file ../modes/python.py</vh></v>
 <v t="ekr.20231103124615.1"><vh>@file ../modes/rust.py</vh></v>
 <v t="ekr.20231012163843.1"><vh>@file ../modes/scheme.py</vh></v>
-<v t="ekr.20241030152835.1"><vh>@file ../modes/md.py</vh></v>
 </v>
 </v>
 <v t="ekr.20201012111545.1"><vh>Plugins</vh>
@@ -713,7 +708,6 @@
 <v t="ekr.20240204082420.1"><vh>in unittests/misc_tests</vh>
 <v t="ekr.20210926044012.1"><vh>@file ../unittests/misc_tests/test_doctests.py</vh></v>
 <v t="ekr.20210901140718.1"><vh>@file ../unittests/misc_tests/test_syntax.py</vh></v>
-<v t="ekr.20240609044830.1"><vh>@@@file ../unittests/misc_tests/test_check_leo.py</vh></v>
 </v>
 <v t="ekr.20240204082924.1"><vh>in unittests/plugins</vh>
 <v t="ekr.20220812224747.1"><vh>@file ../unittests/plugins/test_writers.py</vh></v>
@@ -1125,11 +1119,7 @@ Leo uses a model/view/controller architecture.
 </t>
 <t tx="ekr.20140902155015.18674"></t>
 <t tx="ekr.20140916101314.19538">The default language if no @language or @comment is in effect.
-
-Valid values are (case is ignored):
-
-actionscript,c,csharp,css,cweb,elisp,html,java,latex,
-pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
+</t>
 <t tx="ekr.20150304130753.4">@language xml
 &lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;xsl:stylesheet version="1.0"
@@ -1227,7 +1217,8 @@ print('done: %s nodes, %s clones' % (nodes,clones))
 @tabwidth -4
 @language python
 </t>
-<t tx="ekr.20150425145248.1">redraw
+<t tx="ekr.20150425145248.1">ctrl-click-at-cursor
+pylint
 test-one
 restart-leo
 execute-script
@@ -1602,127 +1593,7 @@ if 1:
         last.firstChild().expand()
     c.redraw(last)
 print('Done')</t>
-<t tx="ekr.20170428084208.443">#!/usr/bin/python
-# This file generates pyflakes warnings for *all* imported symbols.
-@others
-@language python
-@tabwidth -4
-</t>
-<t tx="ekr.20170428084208.444">from .globals                   import DEBUG, DISABLE_RESIZE_SYSTEM
-
-from .wgwidget                  import TEST_SETTINGS, ExhaustedTestInput, add_test_input_from_iterable, add_test_input_ch
-
-from .npyssafewrapper           import wrapper, wrapper_basic
-
-from   .npysThemeManagers       import ThemeManager, disableColor, enableColor
-from   . import npysThemes      as     Themes
-from   .apNPSApplication        import NPSApp
-from   .apNPSApplicationManaged import NPSAppManaged
-from   .proto_fm_screen_area    import setTheme
-from   .fmForm                  import FormBaseNew, Form, TitleForm, TitleFooterForm, SplitForm, FormExpanded, FormBaseNewExpanded, blank_terminal
-from   .fmActionForm            import ActionForm, ActionFormExpanded
-from   .fmActionFormV2          import ActionFormV2, ActionFormExpandedV2, ActionFormMinimal
-from   .fmFormWithMenus         import FormWithMenus, ActionFormWithMenus, \
-                                       FormBaseNewWithMenus, SplitFormWithMenus, \
-                                       ActionFormV2WithMenus
-from   .fmPopup                 import Popup, MessagePopup, ActionPopup, PopupWide, ActionPopupWide
-from   .fmFormMutt              import FormMutt, FormMuttWithMenus
-from   .fmFileSelector          import FileSelector, selectFile
-
-from .fmFormMuttActive          import ActionControllerSimple, TextCommandBox, \
-                                       FormMuttActive, FormMuttActiveWithMenus
-from .fmFormMuttActive          import FormMuttActiveTraditional, FormMuttActiveTraditionalWithMenus
-
-
-from .fmFormMultiPage           import FormMultiPage, FormMultiPageAction,\
-                                       FormMultiPageActionWithMenus, FormMultiPageWithMenus
-
-from .npysNPSFilteredData       import NPSFilteredDataBase, NPSFilteredDataList
-
-from .wgbutton                  import MiniButton
-from .wgbutton                  import MiniButtonPress
-from .wgbutton                  import MiniButton      as Button
-from .wgbutton                  import MiniButtonPress as ButtonPress
-
-from .wgtextbox                 import Textfield, FixedText
-from .wgtitlefield              import TitleText, TitleFixedText
-from .wgpassword                import PasswordEntry, TitlePassword
-from .wgannotatetextbox         import AnnotateTextboxBase
-from .wgannotatetextbox         import AnnotateTextboxBaseRight
-
-from .wgslider                  import Slider, TitleSlider
-from .wgslider                  import SliderNoLabel, TitleSliderNoLabel
-from .wgslider                  import SliderPercent, TitleSliderPercent
-
-from .wgwidget                  import DummyWidget, NotEnoughSpaceForWidget
-from . import wgwidget as widget
-
-from .wgmultiline               import MultiLine, Pager, TitleMultiLine, TitlePager, MultiLineAction, BufferPager, TitleBufferPager
-from .wgmultiselect             import MultiSelect, TitleMultiSelect, MultiSelectFixed, \
-                                       TitleMultiSelectFixed, MultiSelectAction
-from .wgeditmultiline           import MultiLineEdit
-from .wgcombobox                import ComboBox, TitleCombo
-from .wgcheckbox                import Checkbox, RoundCheckBox, CheckBoxMultiline, RoundCheckBoxMultiline, CheckBox, CheckboxBare
-from .wgFormControlCheckbox     import FormControlCheckbox
-from .wgautocomplete            import TitleFilename, Filename, Autocomplete
-from .muMenu                    import Menu
-from .wgselectone               import SelectOne, TitleSelectOne
-from .wgdatecombo               import DateCombo, TitleDateCombo
-
-from .npysTree import TreeData
-from .wgmultilinetree           import MLTree, MLTreeAnnotated, MLTreeAction, MLTreeAnnotatedAction
-from .wgmultilinetreeselectable import MLTreeMultiSelect, TreeLineSelectable
-from .wgmultilinetreeselectable import MLTreeMultiSelectAnnotated, TreeLineSelectableAnnotated
-
-
-# The following are maintained for compatibility with old code only. ##########################################
-
-from .compatibility_code.oldtreeclasses import MultiLineTree, SelectOneTree
-from .compatibility_code.oldtreeclasses import MultiLineTreeNew, MultiLineTreeNewAction, TreeLine, TreeLineAnnotated # Experimental
-from .compatibility_code.oldtreeclasses import MultiLineTreeNewAnnotatedAction, MultiLineTreeNewAnnotated # Experimental
-from .compatibility_code.npysNPSTree import NPSTreeData
-
-# End compatibility. ###########################################################################################
-
-from .wgfilenamecombo           import FilenameCombo, TitleFilenameCombo
-from .wgboxwidget               import BoxBasic, BoxTitle
-from .wgmultiline               import MultiLineActionWithShortcuts
-from .wgmultilineeditable       import MultiLineEditable, MultiLineEditableTitle, MultiLineEditableBoxed
-
-from .wgmonthbox                import MonthBox
-from .wggrid                    import SimpleGrid
-from .wggridcoltitles           import GridColTitles
-
-from .muNewMenu                 import NewMenu, MenuItem
-from .wgNMenuDisplay            import MenuDisplay, MenuDisplayScreen
-
-from .npyspmfuncs               import CallSubShell
-
-from .utilNotify                 import notify, notify_confirm, notify_wait, notify_ok_cancel, notify_yes_no
-
-# Base classes for overriding:
-
-# Standard Forms:
-from . import stdfmemail
-
-# Experimental Only
-from .wgtextboxunicode import TextfieldUnicode
-from .wgtexttokens     import TextTokens, TitleTextTokens
-
-# Very experimental. Don't use for anything serious
-from .apOptions import SimpleOptionForm
-from .apOptions import OptionListDisplay, OptionChanger, OptionList, OptionLimitedChoices, OptionListDisplayLine
-from .apOptions import OptionFreeText, OptionSingleChoice, OptionMultiChoice, OptionMultiFreeList, \
-                       OptionBoolean, OptionFilename, OptionDate, OptionMultiFreeText
-
-
-# This really is about as experimental as it gets
-from .apNPSApplicationEvents import StandardApp
-from .eveventhandler import Event
-
-
-</t>
-<t tx="ekr.20170428085201.1">@nosearch
+<t tx="ekr.20170428085201.1">### @nosearch
 @nobeautify</t>
 <t tx="ekr.20170811173924.1">@language python
 import os
@@ -3305,7 +3176,6 @@ writers = 'leo.unittests.plugins.test_writers'
 # f"{plugins}.test_writers",
 </t>
 <t tx="ekr.20230624114517.1"></t>
-<t tx="ekr.20230717210524.1"></t>
 <t tx="ekr.20230720115916.1">g.cls()
 import leo.commands.editFileCommands as efc
 
@@ -3532,7 +3402,6 @@ for command in (
 kind = 'beautify'
 kind = 'test'  # Run unit test.
 </t>
-<t tx="ekr.20240609044830.1"></t>
 <t tx="ekr.20240707233742.1">"""
 Convert the names of Ast visitors from all caps to the names of the corresponding Ast node.
 Saved in PR #4: https://github.com/edreamleo/ekr-fork-pyflakes/pull/4
