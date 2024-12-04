@@ -4,7 +4,10 @@
 # encoding: utf-8
 #@+others
 #@+node:ekr.20170428084207.378: ** Declarations
-import curses
+# import curses
+import unicurses
+curses = unicurses
+
 from . import npysGlobalOptions
 
 #@+node:ekr.20170428084207.379: ** disableColor
@@ -23,16 +26,14 @@ class ThemeManager:
     # Beware that effects will last beyond the end of the
     # application.
     _color_values = (
-        #(curses.COLOR_GREEN, (150,250,100)),
+        # (curses.COLOR_GREEN, (150,250,100)),
     )
 
+    curses = unicurses  ###
 
     _colors_to_define = (
      # DO NOT DEFINE THE WHITE_BLACK COLOR - THINGS BREAK
-     #('WHITE_BLACK',      DO_NOT_DO_THIS,      DO_NOT_DO_THIS),
      ('BLACK_WHITE', curses.COLOR_BLACK, curses.COLOR_WHITE),
-     #('BLACK_ON_DEFAULT', curses.COLOR_BLACK,      -1),
-     #('WHITE_ON_DEFAULT', curses.COLOR_WHITE,      -1),
      ('BLUE_BLACK', curses.COLOR_BLUE, curses.COLOR_BLACK),
      ('CYAN_BLACK', curses.COLOR_CYAN, curses.COLOR_BLACK),
      ('GREEN_BLACK', curses.COLOR_GREEN, curses.COLOR_BLACK),
@@ -75,7 +76,7 @@ class ThemeManager:
     #@+others
     #@+node:ekr.20170428084207.382: *3* __init__
     def __init__(self):
-        #curses.use_default_colors()
+        # curses.use_default_colors()
         self.define_colour_numbers()
         self._defined_pairs = {}
         self._names = {}

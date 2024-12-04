@@ -1,8 +1,11 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20170428084208.318: * @file ../external/npyscreen/wgtextbox.py
-#!/usr/bin/python
-import curses
-import curses.ascii
+# import curses
+import unicurses
+curses = unicurses
+
+# import curses.ascii
+
 import sys
 import locale
 from . import wgwidget as widget
@@ -76,10 +79,10 @@ class TextfieldBase(widget.Widget):
         # pylint: disable=arguments-differ
 
         # cursor not working. See later for a fake cursor
-            #if self.editing: pmfuncs.show_cursor()
-            #else: pmfuncs.hide_cursor()
+            # if self.editing: pmfuncs.show_cursor()
+            # else: pmfuncs.hide_cursor()
         # Not needed here -- gets called too much!
-            #pmfuncs.hide_cursor()
+            # pmfuncs.hide_cursor()
 
         self.update_count += 1
         # name = self.__class__.__name__
@@ -150,16 +153,16 @@ class TextfieldBase(widget.Widget):
         # This needs fixing for Unicode multi-width chars.
 
         # Cursors do not seem to work on pads.
-            #self.parent.curses_pad.move(self.rely, self.cursor_position - self.begin_at)
+            # self.parent.curses_pad.move(self.rely, self.cursor_position - self.begin_at)
         # let's have a fake cursor
             # _cur_loc_x = self.cursor_position - self.begin_at + self.relx + self.left_margin
         # The following two lines work fine for ascii, but not for unicode
-            #char_under_cur = self.parent.curses_pad.inch(self.rely, _cur_loc_x)
-            #self.parent.curses_pad.addch(self.rely, self.cursor_position - self.begin_at + self.relx, char_under_cur, curses.A_STANDOUT)
-        #The following appears to work for unicode as well.
+            # char_under_cur = self.parent.curses_pad.inch(self.rely, _cur_loc_x)
+            # self.parent.curses_pad.addch(self.rely, self.cursor_position - self.begin_at + self.relx, char_under_cur, curses.A_STANDOUT)
+        # The following appears to work for unicode as well.
 
         try:
-            #char_under_cur = self.value[self.cursor_position] #use the real value
+            # char_under_cur = self.value[self.cursor_position] #use the real value
             char_under_cur = self._get_string_to_print()[self.cursor_position]
             char_under_cur = self.safe_string(char_under_cur)
         except IndexError:
@@ -181,13 +184,13 @@ class TextfieldBase(widget.Widget):
     #@+node:ekr.20170428084208.327: *3* print_cursor_pre_unicode
     def print_cursor_pre_unicode(self):
         # Cursors do not seem to work on pads.
-            #self.parent.curses_pad.move(self.rely, self.cursor_position - self.begin_at)
+            # self.parent.curses_pad.move(self.rely, self.cursor_position - self.begin_at)
         # let's have a fake cursor
             # _cur_loc_x = self.cursor_position - self.begin_at + self.relx + self.left_margin
         # The following two lines work fine for ascii, but not for unicode
-            #char_under_cur = self.parent.curses_pad.inch(self.rely, _cur_loc_x)
-            #self.parent.curses_pad.addch(self.rely, self.cursor_position - self.begin_at + self.relx, char_under_cur, curses.A_STANDOUT)
-        #The following appears to work for unicode as well.
+            # char_under_cur = self.parent.curses_pad.inch(self.rely, _cur_loc_x)
+            # self.parent.curses_pad.addch(self.rely, self.cursor_position - self.begin_at + self.relx, char_under_cur, curses.A_STANDOUT)
+        # The following appears to work for unicode as well.
         try:
             char_under_cur = self.display_value(self.value)[self.cursor_position]
         except Exception:
@@ -430,16 +433,18 @@ class Textfield(TextfieldBase):
             # return True
         # else:
             # return False
-        return curses.ascii.isprint(inp) and chr(inp) not in '\n\t\r'
+
+        # return curses.ascii.isprint(inp) and chr(inp) not in '\n\t\r'
+        return curses.isprint(inp) and chr(inp) not in '\n\t\r'
 
 
     #@+node:ekr.20170526065621.1: *3* Textfield handlers
     #@+node:ekr.20170428084208.340: *4* Textfield.h_addch
     def h_addch(self, inp):
         if self.editable:
-            #self.value = self.value[:self.cursor_position] + curses.keyname(input) \
+            # self.value = self.value[:self.cursor_position] + curses.keyname(input) \
             #   + self.value[self.cursor_position:]
-            #self.cursor_position += len(curses.keyname(input))
+            # self.cursor_position += len(curses.keyname(input))
 
             # workaround for the metamode bug:
             if self._last_get_ch_was_unicode == True and isinstance(self.value, bytes):
@@ -458,9 +463,9 @@ class Textfield(TextfieldBase):
             self.cursor_position += len(ch_adding)
 
             # or avoid it entirely:
-            #self.value = self.value[:self.cursor_position] + curses.ascii.unctrl(input) \
+            # self.value = self.value[:self.cursor_position] + curses.ascii.unctrl(input) \
             #   + self.value[self.cursor_position:]
-            #self.cursor_position += len(curses.ascii.unctrl(input))
+            # self.cursor_position += len(curses.ascii.unctrl(input))
 
     #@+node:ekr.20170428084208.341: *4* Textfield.h_cursor_left
     def h_cursor_left(self, input):
@@ -499,8 +504,8 @@ class Textfield(TextfieldBase):
 
     #@+node:ekr.20170428084208.347: *4* Textfield.handle_mouse_event
     def handle_mouse_event(self, mouse_event):
-        #mouse_id, x, y, z, bstate = mouse_event
-        #rel_mouse_x = x - self.relx - self.parent.show_atx
+        # mouse_id, x, y, z, bstate = mouse_event
+        # rel_mouse_x = x - self.relx - self.parent.show_atx
         mouse_id, rel_x, rel_y, z, bstate = self.interpret_mouse_event(mouse_event)
         self.cursor_position = rel_x + self.begin_at
         self.display()
@@ -516,8 +521,8 @@ class Textfield(TextfieldBase):
             curses.KEY_LEFT: self.h_cursor_left,
             curses.KEY_RIGHT: self.h_cursor_right,
             curses.KEY_DC: self.h_delete_right,
-            curses.ascii.DEL: self.h_delete_left,
-            curses.ascii.BS: self.h_delete_left,
+            # curses.ascii.DEL: self.h_delete_left,
+            # curses.ascii.BS: self.h_delete_left,
             curses.KEY_BACKSPACE: self.h_delete_left,
             # mac os x curses reports DEL as escape oddly
             # no solution yet

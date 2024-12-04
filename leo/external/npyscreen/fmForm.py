@@ -10,10 +10,12 @@ from . import proto_fm_screen_area
 from . import wgwidget as widget
 from . import wgbutton as button
 import weakref
-# from . import npyspmfuncs as pmfuncs
-#import Menu
-import curses
-import _curses
+
+# import curses
+# import _curses
+import unicurses
+curses = unicurses
+
 from . import npysGlobalOptions
 from . import wgwidget_proto
 from . import fm_form_edit_loop as form_edit_loop
@@ -144,7 +146,7 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
         '''FormBase.set_up_handlers.'''
         self.complex_handlers = []
         self.handlers = {
-            curses.KEY_F1: self.h_display_help,
+            # curses.KEY_F1: self.h_display_help,
             "KEY_F(1)": self.h_display_help,
             "^O": self.h_display_help,
             "^L": self.h_display,
@@ -256,7 +258,7 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
         else: help_name = None
         curses.flushinp()
         util_viewhelp.view_help(self.help, title=help_name, autowrap=self.WRAP_HELP)
-        #select.ViewText(self.help, name=help_name)
+        # select.ViewText(self.help, name=help_name)
         self.display()
         return True
 
@@ -282,7 +284,8 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
         try:
             mouse_event = curses.getmouse()
             return mouse_event
-        except _curses.error:
+        ### except _curses.error:
+        except Exception:
             return None
 
     #@+node:ekr.20170428084207.196: *3* get_and_use_mouse_event
@@ -303,7 +306,7 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
 
     #@+node:ekr.20170428084207.198: *3* find_mouse_handler
     def find_mouse_handler(self, mouse_event):
-        #mouse_id, x, y, z, bstate = mouse_event
+        # mouse_id, x, y, z, bstate = mouse_event
         for wd in self._widgets__:
             try:
                 if wd.intersted_in_mouse_event(mouse_event) == True:
@@ -348,7 +351,7 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
                     self.editw = n
                     break
 
-    #def widget_useable_space(self, rely=0, relx=0):
+    # def widget_useable_space(self, rely=0, relx=0):
     #    #Slightly misreports space available.
     #    mxy, mxx = self.lines-1, self.columns-1
     #    return (mxy-1-rely, mxx-1-relx)
@@ -369,7 +372,7 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
 
     #@+node:ekr.20170428084207.203: *3* _FormBase.display
     def display(self, clear=False):
-        #APPLICATION_THEME_MANAGER.setTheme(self)
+        # APPLICATION_THEME_MANAGER.setTheme(self)
         if curses.has_colors() and not npysGlobalOptions.DISABLE_ALL_COLORS:
             self.curses_pad.attrset(0)
             color_attribute = self.theme_manager.findPair(self, self.color)
@@ -390,7 +393,7 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
             if self.name:
                 _title = self.name[: (self.columns - 4)]
                 _title = ' ' + str(_title) + ' '
-                #self.curses_pad.addstr(0,1, ' '+str(_title)+' ')
+                # self.curses_pad.addstr(0,1, ' '+str(_title)+' ')
                 if isinstance(_title, bytes):
                     _title = _title.decode('utf-8', 'replace')
                 self.add_line(0, 1,
@@ -446,7 +449,7 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
                 rely=rely,
                 relx=relx,
                 max_height=max_height,
-                * args, **keywords)
+                *args, **keywords)
 
         self.nextrely = _w.height + _w.rely
         self._widgets__.append(_w)
@@ -472,7 +475,7 @@ class FormBaseNew(form_edit_loop.FormNewEditLoop, _FormBase):
 
 #@+node:ekr.20170428084207.209: ** class Form
 class Form(form_edit_loop.FormDefaultEditLoop, _FormBase,):
-    #use the old-style edit loop
+    # use the old-style edit loop
 
     def resize(self):
         super(Form, self).resize()
@@ -487,7 +490,7 @@ class FormBaseNewExpanded(form_edit_loop.FormNewEditLoop, _FormBase):
 class FormExpanded(form_edit_loop.FormDefaultEditLoop, _FormBase,):
     BLANK_LINES_BASE = 1
     OK_BUTTON_BR_OFFSET = (1, 6)
-    #use the old-style edit loop
+    # use the old-style edit loop
 
 
 
@@ -501,8 +504,8 @@ class TitleForm(Form):
     DEFAULT_NEXTRELY = 1
     BLANK_COLUMNS_RIGHT = 0
     OK_BUTTON_BR_OFFSET = (1, 6)
-    #OKBUTTON_TYPE = button.MiniButton
-    #DEFAULT_X_OFFSET = 1
+    # OKBUTTON_TYPE = button.MiniButton
+    # DEFAULT_X_OFFSET = 1
     #@+others
     #@+node:ekr.20170428084207.214: *3* draw_form
     def draw_form(self):

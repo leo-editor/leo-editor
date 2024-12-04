@@ -4,7 +4,10 @@
 # encoding: utf-8
 #@+others
 #@+node:ekr.20170428084207.286: ** Declarations
-import curses
+# import curses
+import unicurses
+curses = unicurses
+
 from . import fmForm
 from . import fmActionForm
 from . import fmActionFormV2

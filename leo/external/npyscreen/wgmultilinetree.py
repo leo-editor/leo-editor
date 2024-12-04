@@ -3,7 +3,10 @@
 #!/usr/bin/python
 #@+<< wgmultilinetree imports >>
 #@+node:ekr.20170428084208.174: ** << wgmultilinetree imports >>
-import curses
+# import curses
+import unicurses
+curses = unicurses
+
 import weakref
 
 from . import wgmultiline as multiline
@@ -220,8 +223,8 @@ class TreeLineAnnotated(TreeLine):
     #@+node:ekr.20170428084208.185: *3* annotationNoColor
     def annotationNoColor(self, real_x):
         # Must return the "Margin" needed before the entry begins
-        #self.parent.curses_pad.addstr(self.rely, real_x, 'xxx')
-        #return 3
+        # self.parent.curses_pad.addstr(self.rely, real_x, 'xxx')
+        # return 3
         _annotation, _color = self.getAnnotationAndColor()
         self.parent.curses_pad.addstr(self.rely, real_x, _annotation)
         return len(_annotation)

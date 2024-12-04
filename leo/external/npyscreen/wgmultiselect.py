@@ -6,7 +6,10 @@
 from . import wgmultiline as multiline
 from . import wgselectone as selectone
 from . import wgcheckbox as checkbox
-import curses
+# import curses
+import unicurses
+curses = unicurses
+
 
 #@+node:ekr.20170428084208.227: ** class MultiSelect
 class MultiSelect(selectone.SelectOne):
@@ -19,7 +22,7 @@ class MultiSelect(selectone.SelectOne):
         super(MultiSelect, self).set_up_handlers()
         self.handlers.update({
             ord("x"): self.h_select_toggle,
-            curses.ascii.SP: self.h_select_toggle,
+            # curses.ascii.SP: self.h_select_toggle,
             ord("X"): self.h_select,
             "^U": self.h_select_none,
         })
@@ -74,11 +77,11 @@ class MultiSelectAction(MultiSelect):
         '''MultiSelectAction.set_up_handlers.'''
         super(MultiSelectAction, self).set_up_handlers()
         self.handlers.update({
-            curses.ascii.NL: self.h_act_on_highlighted,
-            curses.ascii.CR: self.h_act_on_highlighted,
+            # curses.ascii.NL: self.h_act_on_highlighted,
+            # curses.ascii.CR: self.h_act_on_highlighted,
             ord(';'): self.h_act_on_selected,
             # "^L":             self.h_set_filtered_to_selected,
-            curses.ascii.SP: self.h_act_on_highlighted,
+            # curses.ascii.SP: self.h_act_on_highlighted,
         })
 
     #@+node:ekr.20170428084208.238: *3* MultiSelectAction.h_act_on_highlighted
@@ -111,10 +114,10 @@ class MultiSelectFixed(MultiSelect):
         self.handlers.update({
             ord("x"): self.user_set_value,
             ord("X"): self.user_set_value,
-            curses.ascii.SP: self.user_set_value,
+            # curses.ascii.SP: self.user_set_value,
             "^U": self.user_set_value,
-            curses.ascii.NL: self.h_exit_down,
-            curses.ascii.CR: self.h_exit_down,
+            # curses.ascii.NL: self.h_exit_down,
+            # curses.ascii.CR: self.h_exit_down,
         })
     #@-others
 #@+node:ekr.20170428084208.243: ** class TitleMultiSelect

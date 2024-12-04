@@ -1,6 +1,9 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20170428084207.503: * @file ../external/npyscreen/wgboxwidget.py
-import curses
+# import curses
+import unicurses
+curses = unicurses
+
 import weakref
 from .wgwidget import Widget
 from .wgmultiline import MultiLine
@@ -100,7 +103,7 @@ class BoxBasic(Widget):
 
         if self.editing:
             footer_attributes = footer_attributes | curses.A_BOLD
-        #footer_attributes = self.parent.theme_manager.findPair(self, self.color)
+        # footer_attributes = self.parent.theme_manager.findPair(self, self.color)
         return self.make_attributes_list(footer_text, footer_attributes)
 
 
@@ -140,7 +143,7 @@ class BoxTitle(BoxBasic):
                     relx=self.relx + 2,
                     max_width=self.width - 4,
                     max_height=self.height - 2,
-                    ** contained_widget_arguments
+                    **contained_widget_arguments
             ))
         else:
             self._my_widgets.append(
@@ -177,7 +180,7 @@ class BoxTitle(BoxBasic):
         self.editing = True
         self.display()
         self.entry_widget.edit()
-        #self.value = self.textarea.value
+        # self.value = self.textarea.value
         self.how_exited = self.entry_widget.how_exited
         self.editing = False
         self.display()

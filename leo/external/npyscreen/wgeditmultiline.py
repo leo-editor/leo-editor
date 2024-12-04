@@ -8,7 +8,10 @@ from . import wgwidget as widget
 from . import npysGlobalOptions as GlobalOptions
 import locale
 import sys
-import curses
+# import curses
+import unicurses
+curses = unicurses
+
 import textwrap
 import re
 # from functools import reduce
@@ -147,11 +150,11 @@ class MultiLineEdit(widget.Widget):
             # This needs altering using the methods from the textbox class
             # to properly deal with unicode.
 
-            #if self.do_colors():
+            # if self.do_colors():
             #    self.parent.curses_pad.addnstr(self.rely+line_counter, self.relx,
             #        text_to_display[self.start_display_at+line_counter][xdisplay_offset:], display_width,
             #        self.parent.theme_manager.findPair(self))
-            #else:
+            # else:
             #    self.parent.curses_pad.addnstr(self.rely+line_counter, self.relx,
             #        text_to_display[self.start_display_at+line_counter][xdisplay_offset:], display_width)
             #
@@ -199,10 +202,10 @@ class MultiLineEdit(widget.Widget):
     #@+node:ekr.20170428084207.596: *3* MultiLineEdit.reformat_preserve_nl
     def reformat_preserve_nl(self, *ignorethese):
         # Adapted from a script found at:
-        #http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/148061
-        #width=self.maximum_display_width
-        #text = self.value
-        #self.value = reduce(lambda line, word, width=width: '%s%s%s' %
+        # http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/148061
+        # width=self.maximum_display_width
+        # text = self.value
+        # self.value = reduce(lambda line, word, width=width: '%s%s%s' %
         #          (line,
         #           ' \n'[(len(line)-line.rfind('\n')-1
         #             + len(word.split('\n',1)[0]
@@ -237,13 +240,13 @@ class MultiLineEdit(widget.Widget):
         w = DocWrapper(width=self.maximum_display_width)
         self.value = w.fill(self.value)
 
-    #def handle_mouse_event(self, mouse_event):
+    # def handle_mouse_event(self, mouse_event):
         # unfinished
-        #mouse_id, x, y, z, bstate = mouse_event
-        #rel_mouse_x = x - self.relx
-        #rel_mouse_y = y = self.rely
-        #self.cursor_position = rel_mouse_x + self.begin_at
-        #self.display()
+        # mouse_id, x, y, z, bstate = mouse_event
+        # rel_mouse_x = x - self.relx
+        # rel_mouse_y = y = self.rely
+        # self.cursor_position = rel_mouse_x + self.begin_at
+        # self.display()
     #@+node:ekr.20170429220117.1: *3* MultiLineEdit.Handlers
     #@+node:ekr.20170428084207.598: *4* MultiLineEdit.set_up_handlers
     def set_up_handlers(self):
@@ -252,21 +255,21 @@ class MultiLineEdit(widget.Widget):
         # For OS X
         # del_key = curses.ascii.alt('~')
         self.handlers.update({
-            curses.ascii.NL: self.h_add_nl,
-            curses.ascii.CR: self.h_add_nl,
+            # curses.ascii.NL: self.h_add_nl,
+            # curses.ascii.CR: self.h_add_nl,
             curses.KEY_LEFT: self.h_cursor_left,
             curses.KEY_RIGHT: self.h_cursor_right,
             curses.KEY_UP: self.h_line_up,
             curses.KEY_DOWN: self.h_line_down,
             curses.KEY_DC: self.h_delete_right,
-            curses.ascii.DEL: self.h_delete_left,
-            curses.ascii.BS: self.h_delete_left,
+            # curses.ascii.DEL: self.h_delete_left,
+            # curses.ascii.BS: self.h_delete_left,
             curses.KEY_BACKSPACE: self.h_delete_left,
             # mac os x curses reports DEL as escape oddly
             "^R": self.full_reformat,
             # no solution yet
-            #"^K":          self.h_erase_right,
-            #"^U":          self.h_erase_left,
+            # "^K":          self.h_erase_right,
+            # "^U":          self.h_erase_left,
         })
         self.complex_handlers.extend((
             (self.t_input_isprint, self.h_addch),
@@ -299,10 +302,13 @@ class MultiLineEdit(widget.Widget):
     def t_input_isprint(self, inp):
         if self._last_get_ch_was_unicode and inp not in '\n\t\r':
             return True
-        if curses.ascii.isprint(inp) and (chr(inp) not in '\n\t\r'):
-            return True
-        else:
-            return False
+        return False
+
+        ###
+        # if curses.ascii.isprint(inp) and (chr(inp) not in '\n\t\r'):
+            # return True
+        # else:
+            # return False
 
     #@+node:ekr.20170428084207.601: *4* MultiLineEdit.h_addch_disabled
     def h_addch_disabled(self, input):

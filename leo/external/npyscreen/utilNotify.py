@@ -6,8 +6,11 @@
 #@+node:ekr.20170428084207.465: ** Declarations
 from . import fmPopup
 from . import wgmultiline
-# from . import fmPopup
-import curses
+
+# import curses
+import unicurses
+curses = unicurses
+
 import textwrap
 
 #@+node:ekr.20170428084207.466: ** class ConfirmCancelPopup (fmPopup.ActionPopup)
@@ -30,7 +33,7 @@ class YesNoPopup(ConfirmCancelPopup):
 def _prepare_message(message):
     if isinstance(message, (list, tuple)):
         return "\n".join([s.rstrip() for s in message])
-        #return "\n".join(message)
+        # return "\n".join(message)
     else:
         return message
 

@@ -4,7 +4,10 @@
 
 #@+others
 #@+node:ekr.20170428084207.525: ** Declarations
-import curses
+# import curses
+import unicurses
+curses = unicurses
+
 import locale
 # import weakref
 from . import npysGlobalOptions as GlobalOptions
@@ -97,8 +100,8 @@ class MiniButtonPress(MiniButton):
         '''MiniButtonPress.set_up_handlers.'''
         super(MiniButtonPress, self).set_up_handlers()
         self.handlers.update({
-            curses.ascii.NL: self.h_toggle,
-            curses.ascii.CR: self.h_toggle,
+            # curses.ascii.NL: self.h_toggle,
+            # curses.ascii.CR: self.h_toggle,
         })
 
     #@+node:ekr.20170428084207.533: *3* destroy

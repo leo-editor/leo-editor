@@ -1,13 +1,16 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20170428084208.157: * @file ../external/npyscreen/wgmultilineeditable.py
-import curses
+# import curses
+import unicurses
+curses = unicurses
+
 from . import wgwidget
 from . import wgmultiline
 from . import wgtextbox as textbox
 from . import wgboxwidget
 from leo.core import leoGlobals as g
 assert g
-#pylint: disable=no-member
+# pylint: disable=no-member
 #@+others
 #@+node:ekr.20170428084208.159: ** class MultiLineEditable (MultiLine)
 class MultiLineEditable(wgmultiline.MultiLine):
@@ -124,11 +127,11 @@ class MultiLineEditable(wgmultiline.MultiLine):
         self.handlers.update({
             ord('i'): self.h_insert_value,
             ord('o'): self.h_insert_next_line,
-            curses.ascii.CR: self.h_edit_cursor_line_value,
-            curses.ascii.NL: self.h_edit_cursor_line_value,
-            curses.ascii.SP: self.h_edit_cursor_line_value,
-            curses.ascii.DEL: self.h_delete_line_value,
-            curses.ascii.BS: self.h_delete_line_value,
+            # curses.ascii.CR: self.h_edit_cursor_line_value,
+            # curses.ascii.NL: self.h_edit_cursor_line_value,
+            # curses.ascii.SP: self.h_edit_cursor_line_value,
+            # curses.ascii.DEL: self.h_delete_line_value,
+            # curses.ascii.BS: self.h_delete_line_value,
             curses.KEY_BACKSPACE: self.h_delete_line_value,
         })
     #@-others

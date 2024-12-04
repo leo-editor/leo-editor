@@ -7,8 +7,13 @@
 #@+<< wgwidget imports >>
 #@+node:ekr.20170428084208.399: ** << wgwidget imports >>
 import copy
-import curses
-import curses.ascii
+
+# import curses
+import unicurses
+curses = unicurses
+
+# import curses.ascii
+
 import re
 import sys
 import weakref
@@ -90,7 +95,8 @@ class InputHandler:
         parent = getattr(self, 'parent', None)
         if trace and trace_entry:
             # g.trace('self: %20s, parent: %8s, %3s = %r' % (
-            s = curses.ascii.unctrl(i)
+            # s = curses.ascii.unctrl(i)
+            s = unicurses.unctrl(i)
             if s == '^I': s = 'TAB'
             if s == '^J': s = 'RETURN'
             g.trace('========== %s, parent: %s, %s = %r' % (
@@ -109,7 +115,8 @@ class InputHandler:
             f(i)
             return True
         try:
-            _unctrl_input = curses.ascii.unctrl(i)
+            # _unctrl_input = curses.ascii.unctrl(i)
+            _unctrl_input = unicurses.unctrl(i)
         except TypeError:
             _unctrl_input = None
         if _unctrl_input and (_unctrl_input in self.handlers):
@@ -147,20 +154,20 @@ class InputHandler:
         in your own definition, but in most cases the add_handers or
         add_complex_handlers methods are what you want.
         """
-        #called in __init__
+        # called in __init__
         self.handlers = {
-            curses.ascii.NL: self.h_exit_down,
-            curses.ascii.CR: self.h_exit_down,
-            curses.ascii.TAB: self.h_exit_down,
-            curses.KEY_BTAB: self.h_exit_up,
-            curses.KEY_DOWN: self.h_exit_down,
-            curses.KEY_UP: self.h_exit_up,
-            curses.KEY_LEFT: self.h_exit_left,
-            curses.KEY_RIGHT: self.h_exit_right,
+            # curses.ascii.NL: self.h_exit_down,
+            # curses.ascii.CR: self.h_exit_down,
+            # curses.ascii.TAB: self.h_exit_down,
+            unicurses.KEY_BTAB: self.h_exit_up,
+            unicurses.KEY_DOWN: self.h_exit_down,
+            unicurses.KEY_UP: self.h_exit_up,
+            unicurses.KEY_LEFT: self.h_exit_left,
+            unicurses.KEY_RIGHT: self.h_exit_right,
             "^P": self.h_exit_up,
             "^N": self.h_exit_down,
-            curses.ascii.ESC: self.h_exit_escape,
-            curses.KEY_MOUSE: self.h_exit_mouse,
+            # curses.ascii.ESC: self.h_exit_escape,
+            unicurses.KEY_MOUSE: self.h_exit_mouse,
         }
         self.complex_handlers = []
 
@@ -284,8 +291,8 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
             self.parent = screen
         self.use_max_space = use_max_space
         self.set_relyx(rely, relx)
-        #self.relx = relx
-        #self.rely = rely
+        # self.relx = relx
+        # self.rely = rely
         self.color = color
         self.encoding = 'utf-8'  #locale.getpreferredencoding()
         if GlobalOptions.ASCII_ONLY or locale.getpreferredencoding() == 'US-ASCII':
@@ -319,8 +326,13 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         self.editing = False  # Change to true during an edit
 
         self.editable = editable
-        if self.parent.curses_pad.getmaxyx()[0] - 1 == self.rely: self.on_last_line = True
-        else: self.on_last_line = False
+
+        self.on_last_line = False  ###
+        ###
+            # if self.parent.curses_pad.getmaxyx()[0] - 1 == self.rely:
+                # self.on_last_line = True
+            # else:
+                # self.on_last_line = False
 
         if value_changed_callback:
             self.value_changed_callback = value_changed_callback
@@ -349,11 +361,11 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
             self.how_exited = True
     #@+node:ekr.20170429213619.5: *3* Widget._get_ch
     def _get_ch(self):
-        #try:
+        # try:
         #    # Python3.3 and above - returns unicode
         #    ch = self.parent.curses_pad.get_wch()
         #    self._last_get_ch_was_unicode = True
-        #except AttributeError:
+        # except AttributeError:
 
         # For now, disable all attempt to use get_wch()
         # but everything that follows could be in the except clause above.
@@ -458,22 +470,24 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
     def clear(self, usechar=' '):
         """Blank the screen area used by this widget, ready for redrawing"""
         for y in range(self.height):
-            #This method is too slow
+            # This method is too slow
             #   for x in range(self.width+1):
             #       try:
             #           # We are in a try loop in case the cursor is moved off the bottom right corner of the screen
             #           self.parent.curses_pad.addch(self.rely+y, self.relx + x, usechar)
             #       except Exception: pass
-            #Use this instead
-            pad = self.parent.curses_pad
-            s = usechar * (self.width)
-            if self.do_colors():
-                color = self.parent.theme_manager.findPair(self, self.parent.color)
-                for y in range(self.height):
-                    pad.addstr(self.rely + y, self.relx, s, color)
-            else:
-                for y in range(self.height):
-                    pad.addstr(self.rely + y, self.relx, s)
+            # Use this instead
+
+            if 0:  ### Not ready yet.
+                pad = self.parent.curses_pad
+                s = usechar * (self.width)
+                if self.do_colors():
+                    color = self.parent.theme_manager.findPair(self, self.parent.color)
+                    for y in range(self.height):
+                        pad.addstr(self.rely + y, self.relx, s, color)
+                else:
+                    for y in range(self.height):
+                        pad.addstr(self.rely + y, self.relx, s)
             # Old code
             # if self.do_colors():
                 # self.parent.curses_pad.addstr(
@@ -541,14 +555,16 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
                 self.parent.curses_pad.timeout(-1)
                 ch = self._get_ch()
             # handle escape-prefixed rubbish.
-            if ch == curses.ascii.ESC:
-                #self.parent.curses_pad.timeout(1)
+            ### if ch == curses.ascii.ESC:
+            if False:
+                # self.parent.curses_pad.timeout(1)
                 self.parent.curses_pad.nodelay(1)
                 ch2 = self.parent.curses_pad.getch()
                 if ch2 != -1:
-                    ch = curses.ascii.alt(ch2)
+                    ###ch = curses.ascii.alt(ch2)
+                    ch = unicurses.alt(ch2)
                 self.parent.curses_pad.timeout(-1)  # back to blocking mode
-                #curses.flushinp()
+                # curses.flushinp()
         elif (TEST_SETTINGS['INPUT_GENERATOR']):
             self._last_get_ch_was_unicode = True
             try:
@@ -595,9 +611,9 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         rel_x = x - self.relx - self.parent.show_atx
         return (mouse_id, rel_x, rel_y, z, bstate)
 
-    #def when_parent_changes_value(self):
+    # def when_parent_changes_value(self):
         # Can be called by forms when they change their value.
-        #pass
+        # pass
     #@+node:ekr.20170429213619.9: *3* Widget.intersted_in_mouse_event
     def intersted_in_mouse_event(self, mouse_event):
         if not self.editable and not self.interested_in_mouse_even_when_not_editable:
@@ -627,9 +643,9 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
                 pass
             s = []
             for cha in this_string.replace('\n', ' '):
-                #if curses.ascii.isprint(cha):
+                # if curses.ascii.isprint(cha):
                 #    s.append(cha)
-                #else:
+                # else:
                 #    s.append('?')
                 try:
                     s.append(str(cha))
@@ -640,13 +656,13 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
             self._safe_filter_value_cache = (this_string, s)
 
             return s
-        #s = ''
-        #for cha in this_string.replace('\n', ''):
+        # s = ''
+        # for cha in this_string.replace('\n', ''):
         #    try:
         #        s += cha.encode('ascii')
         #    except Exception:
         #        s += '?'
-        #return s
+        # return s
     #@+node:ekr.20170429213619.20: *3* widget.safe_string
     def safe_string(self, this_string):
         """Check that what you are trying to display contains only
@@ -660,9 +676,9 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         try:
             if not this_string:
                 return ""
-            #this_string = str(this_string)
+            # this_string = str(this_string)
             # In python 3
-            #if sys.version_info[0] >= 3:
+            # if sys.version_info[0] >= 3:
             #    return this_string.replace('\n', ' ')
             if self.__class__._SAFE_STRING_STRIPS_NL == True:
                 rtn_value = this_string.replace('\n', ' ')
@@ -733,7 +749,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
             self._requested_rely = y
             self.rely = self.parent.curses_pad.getmaxyx()[0] + y
             # I don't think there is any real value in using these margins
-            #if self.parent.BLANK_LINES_BASE and not self.use_max_space:
+            # if self.parent.BLANK_LINES_BASE and not self.use_max_space:
             #    self.rely -= self.parent.BLANK_LINES_BASE
             if self.rely < 0:
                 self.rely = 0
@@ -742,7 +758,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         else:
             self.relx = self.parent.curses_pad.getmaxyx()[1] + x
             # I don't think there is any real value in using these margins
-            #if self.parent.BLANK_COLUMNS_RIGHT and not self.use_max_space:
+            # if self.parent.BLANK_COLUMNS_RIGHT and not self.use_max_space:
             #    self.relx -= self.parent.BLANK_COLUMNS_RIGHT
             if self.relx < 0:
                 self.relx = 0
@@ -750,7 +766,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
     def set_size(self):
         """Set the size of the object, reconciling the user's request with the space available"""
         my, mx = self.space_available()
-        #my = my+1 # Probably want to remove this.
+        # my = my+1 # Probably want to remove this.
         ny, nx = self.calculate_area_needed()
 
         max_height = self.max_height
@@ -779,7 +795,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         else:
             self.height = (self.request_height or my)
 
-        #if mx <= 0 or my <= 0:
+        # if mx <= 0 or my <= 0:
         #    raise Exception("Not enough space for widget")
 
 

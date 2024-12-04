@@ -1,16 +1,19 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20170428084207.248: * @file ../external/npyscreen/fmFormMutt.py
-#/usr/bin/env python
+# /usr/bin/env python
 # type: ignore
 #@+others
 #@+node:ekr.20170428084207.249: ** Declarations
-import curses
+# import curses
+import unicurses
+curses = unicurses
+
 from . import fmForm
 from . import fmFormWithMenus
 from . import wgtextbox
 from . import wgmultiline
-#import grid
-#import editmultiline
+# import grid
+# import editmultiline
 
 
 #@+node:ekr.20170428084207.250: ** class FormMutt
@@ -27,8 +30,8 @@ class FormMutt(fmForm.FormBaseNew):
     COMMAND_WIDGET_NAME = None
     COMMAND_WIDGET_BEGIN_ENTRY_AT = None
     COMMAND_ALLOW_OVERRIDE_BEGIN_ENTRY_AT = True
-    #MAIN_WIDGET_CLASS = grid.SimpleGrid
-    #MAIN_WIDGET_CLASS = editmultiline.MultiLineEdit
+    # MAIN_WIDGET_CLASS = grid.SimpleGrid
+    # MAIN_WIDGET_CLASS = editmultiline.MultiLineEdit
     #@+others
     #@+node:ekr.20170428084207.251: *3* __init__
     def __init__(self, cycle_widgets=True, *args, **keywords):

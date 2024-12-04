@@ -2,7 +2,10 @@
 #@+node:ekr.20170428084207.434: * @file ../external/npyscreen/stdfmemail.py
 #@+others
 #@+node:ekr.20170428084207.435: ** Declarations
-import curses
+# import curses
+import unicurses
+curses = unicurses
+
 import weakref
 from .. import npyscreen
 import mimetypes
@@ -27,7 +30,7 @@ class EmailTree(npyscreen.MultiLineTreeNew):
     #@+node:ekr.20170428084207.439: *3* display_value
     def display_value(self, vl):
         return vl.getContent().get_content_type()
-        #return vl.get_content_type()
+        # return vl.get_content_type()
 
     #@+node:ekr.20170428084207.440: *3* EmailTree.h_select
     def h_select(self, ch):
@@ -78,7 +81,7 @@ class EmailPager(npyscreen.Pager):
             ord('s'): self.h_save_message_part,
             ord('x'): self.h_exit_tree,
             ord('q'): self.h_exit_tree,
-            curses.ascii.ESC: self.h_exit_tree,
+            # curses.ascii.ESC: self.h_exit_tree,
         })
 
     #@+node:ekr.20170428084207.446: *3* EmailPager.h_exit_tree
@@ -103,7 +106,7 @@ class EmailViewFm(npyscreen.SplitFormWithMenus):
     #@+others
     #@+node:ekr.20170428084207.449: *3* setEmail
     def setEmail(self, this_email):
-        #Clear everything
+        # Clear everything
         self.this_email = this_email
         self.wSubject.value = ""
         self.wFrom.value = ""

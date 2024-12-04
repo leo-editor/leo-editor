@@ -9,7 +9,10 @@ from . import wggrid
 from . import wgautocomplete
 from . import utilNotify
 
-import curses
+# import curses
+import unicurses
+curses = unicurses
+
 import os
 import os.path
 # import operator
@@ -22,8 +25,8 @@ class FileCommand(wgautocomplete.Filename):
         '''FileCommand.set_up_handlers.'''
         super(FileCommand, self).set_up_handlers()
         self.handlers.update({
-            curses.ascii.NL: self.h_select_file,
-            curses.ascii.CR: self.h_select_file,
+            # curses.ascii.NL: self.h_select_file,
+            # curses.ascii.CR: self.h_select_file,
             "^W": self.h_up_level,
         })
 
@@ -85,7 +88,7 @@ class FileCommand(wgautocomplete.Filename):
                 self.value = self.value + os.sep
             self.cursor_position = len(self.value)
 
-            #self.h_exit_up(None)
+            # self.h_exit_up(None)
         else:
             self.parent.value = directory
             self.parent.update_grid()
@@ -102,9 +105,9 @@ class FileGrid(wggrid.SimpleGrid):
         '''FileGrid.set_up_handlers.'''
         super(FileGrid, self).set_up_handlers()
         self.handlers.update({
-            curses.ascii.NL: self.h_select_file,
-            curses.ascii.CR: self.h_select_file,
-            curses.ascii.SP: self.h_select_file,
+            # curses.ascii.NL: self.h_select_file,
+            # curses.ascii.CR: self.h_select_file,
+            # curses.ascii.SP: self.h_select_file,
         })
 
     #@+node:ekr.20170428084207.162: *3* FileGrid.change_dir

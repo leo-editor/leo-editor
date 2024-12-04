@@ -5,7 +5,7 @@
 from . import wgtextbox
 
 import unicodedata
-# import curses
+
 
 
 

@@ -3,7 +3,10 @@
 #!/usr/bin/env python
 #@+others
 #@+node:ekr.20170428084207.495: ** Declarations
-import curses
+# import curses
+import unicurses
+curses = unicurses
+
 from . import wgtextbox as textbox
 from . import wgmultiline as multiline
 from . import wgtitlefield as titlefield
@@ -20,7 +23,7 @@ class Autocomplete(textbox.Textfield):
         '''Autocomplete.set_up_handlers.'''
         super(Autocomplete, self).set_up_handlers()
         self.handlers.update({
-            curses.ascii.TAB: self.auto_complete
+            # curses.ascii.TAB: self.auto_complete
         })
 
     #@+node:ekr.20170428084207.498: *3* auto_complete
@@ -31,13 +34,13 @@ class Autocomplete(textbox.Textfield):
     def get_choice(self, values):
         # If auto_complete needs the user to select from a list of values, this function lets them do that.
 
-        #tmp_window = Form.TitleForm(name=self.name, framed=True)
+        # tmp_window = Form.TitleForm(name=self.name, framed=True)
         tmp_window = Popup.Popup(name=self.name, framed=True)
         sel = tmp_window.add_widget(multiline.MultiLine,
                 values=values,
                 value=self.value,
                 return_exit=True, select_exit=True)
-        #sel = multiline.MultiLine(tmp_window, values=values, value=self.value)
+        # sel = multiline.MultiLine(tmp_window, values=values, value=self.value)
         tmp_window.display()
         sel.value = 0
         sel.edit()
@@ -122,7 +125,7 @@ class Filename(Autocomplete):
 
             # Can't complete
             curses.beep()
-        #os.path.normpath(self.value)
+        # os.path.normpath(self.value)
         os.path.normcase(self.value)
         self.cursor_position = len(self.value)
 

@@ -2,8 +2,6 @@
 #@+node:ekr.20170428084208.366: * @file ../external/npyscreen/wgtexttokens.py
 #@+others
 #@+node:ekr.20170428084208.367: ** Declarations
-import curses
-# import sys
 from . import wgwidget
 from . import wgtextbox
 from . import wgtitlefield
@@ -168,9 +166,9 @@ class TextTokens(wgtextbox.Textfield, wgwidget.Widget):
     #@+node:ekr.20170428084208.377: *3* TextTokens.h_addch
     def h_addch(self, inp):
         if self.editable:
-            #self.value = self.value[:self.cursor_position] + curses.keyname(input) \
+            # self.value = self.value[:self.cursor_position] + curses.keyname(input) \
             #   + self.value[self.cursor_position:]
-            #self.cursor_position += len(curses.keyname(input))
+            # self.cursor_position += len(curses.keyname(input))
 
             # workaround for the metamode bug:
             if self._last_get_ch_was_unicode == True and isinstance(self.value, bytes):

@@ -37,10 +37,12 @@ from typing import Any, Generator, Optional, Union, TYPE_CHECKING
 
 # Third-party.
 try:
-    import curses
+    # import curses
+    import unicurses
 except Exception:
     print('cursesGui2.py: curses required.')
-    print('pip install windows-curses')
+    # print('pip install windows-curses')
+    print('pip install unicurses')
     raise
 from leo.external import npyscreen
 import leo.external.npyscreen.utilNotify as utilNotify
@@ -154,10 +156,12 @@ class LeoBodyTextfield(npyscreen.Textfield):
         From InputHandler.h_exit_down
         Terminate editing for *this* line, but not overall editing.
         """
-        if ch_i in (curses.ascii.CR, curses.ascii.NL):
+        ###
+        # if ch_i in (curses.ascii.CR, curses.ascii.NL):
             # A kludge, but much better than adding a blank.
-            self.h_addch(ord('\n'))
-            self.cursor_position = 0
+            # self.h_addch(ord('\n'))
+            # self.cursor_position = 0
+
         if not self._test_safe_to_exit():
             return False
         # Don't end overall editing.
@@ -205,21 +209,22 @@ class LeoBodyTextfield(npyscreen.Textfield):
         # pylint: disable=no-member
         self.handlers = {
             # From InputHandler...
-            curses.ascii.NL: self.h_exit_down,
-            curses.ascii.CR: self.h_exit_down,
+            # curses.ascii.NL: self.h_exit_down,
+            # curses.ascii.CR: self.h_exit_down,
             curses.KEY_DOWN: self.h_exit_down,
             curses.KEY_UP: self.h_exit_up,  # 2017/06/06.
-            curses.ascii.ESC: self.h_exit_escape,
+            # curses.ascii.ESC: self.h_exit_escape,
             curses.KEY_MOUSE: self.h_exit_mouse,
             # From Textfield...
             curses.KEY_BACKSPACE: self.h_delete_left,
             curses.KEY_DC: self.h_delete_right,
             curses.KEY_LEFT: self.h_cursor_left,
             curses.KEY_RIGHT: self.h_cursor_right,
-            curses.ascii.BS: self.h_delete_left,
-            curses.ascii.DEL: self.h_delete_left,
+            # curses.ascii.BS: self.h_delete_left,
+            # curses.ascii.DEL: self.h_delete_left,
+
             # New bindings...
-            curses.ascii.TAB: self.h_addch,
+            # curses.ascii.TAB: self.h_addch,
         }
         # dump_handlers(self)
     #@-others
@@ -270,7 +275,8 @@ class LeoLogTextfield(npyscreen.Textfield):
     def h_exit_down(self, ch_i: int) -> Optional[bool]:
         """LeoLogTextfield.h_exit_up. Delegate to LeoLog."""
         # g.trace('(LeoLogTextfield)', self._test_safe_to_exit())
-        if ch_i in (curses.ascii.CR, curses.ascii.NL):
+
+        if False:  ### ch_i in (curses.ascii.CR, curses.ascii.NL):
             # A pretty horrible kludge.
             self.h_addch(ord(' '))
             self.cursor_position = 0
@@ -298,21 +304,21 @@ class LeoLogTextfield(npyscreen.Textfield):
         # pylint: disable=no-member
         self.handlers = {
             # From InputHandler...
-            curses.ascii.NL: self.h_exit_down,
-            curses.ascii.CR: self.h_exit_down,
+            # curses.ascii.CR: self.h_exit_down,
+            # curses.ascii.NL: self.h_exit_down,
             curses.KEY_DOWN: self.h_exit_down,
             curses.KEY_UP: self.h_exit_up,  # 2017/06/06.
-            curses.ascii.ESC: self.h_exit_escape,
+            # curses.ascii.ESC: self.h_exit_escape,
             curses.KEY_MOUSE: self.h_exit_mouse,
             # From Textfield...
             curses.KEY_BACKSPACE: self.h_delete_left,
             curses.KEY_DC: self.h_delete_right,
             curses.KEY_LEFT: self.h_cursor_left,
             curses.KEY_RIGHT: self.h_cursor_right,
-            curses.ascii.BS: self.h_delete_left,
-            curses.ascii.DEL: self.h_delete_left,
+            # curses.ascii.BS: self.h_delete_left,
+            # curses.ascii.DEL: self.h_delete_left,
             # New bindings...
-            curses.ascii.TAB: self.h_addch,
+            # curses.ascii.TAB: self.h_addch,
         }
         # dump_handlers(self)
     #@-others
@@ -698,17 +704,17 @@ class LeoTreeLine(npyscreen.TreeLine):
         # pylint: disable=no-member
         # Override *all* other complex handlers.
         self.complex_handlers = (
-            (curses.ascii.isprint, self.h_insert),
+            # (curses.ascii.isprint, self.h_insert),
         )
         self.handlers.update({
-            curses.ascii.ESC:       self.h_end_editing,
-            curses.ascii.NL:        self.h_end_editing,
-            curses.ascii.LF:        self.h_end_editing,
+            # curses.ascii.ESC:       self.h_end_editing,
+            # curses.ascii.NL:        self.h_end_editing,
+            # curses.ascii.LF:        self.h_end_editing,
             curses.KEY_HOME:        self.h_cursor_beginning,  # 262
             curses.KEY_END:         self.h_cursor_end,        # 358.
             curses.KEY_LEFT:        self.h_cursor_left,
             curses.KEY_RIGHT:       self.h_cursor_right,
-            curses.ascii.BS:        self.h_delete_left,
+            # curses.ascii.BS:        self.h_delete_left,
             curses.KEY_BACKSPACE:   self.h_delete_left,
             curses.KEY_MOUSE:       self.h_exit_mouse, # New
         })
@@ -775,7 +781,7 @@ def init() -> bool:
             s = "Can't install text gui: previous gui installed"
             g.es_print(s, color="red")
         return False
-    return bool(curses and not g.unitTesting)  # Not Ok for unit testing!
+    return bool(unicurses and not g.unitTesting)  # Not Ok for unit testing!
 #@+node:ekr.20170501032705.1: *3* curses2: leoGlobals replacements
 # CGui.init_logger monkey-patches leoGlobals with these functions.
 #@+node:ekr.20170430112645.1: *4* curses2: es
@@ -1230,7 +1236,8 @@ class KeyHandler:
     def to_key(self, i: int) -> tuple[str, str]:
         """Convert int i to a char and shortcut."""
         trace = False
-        a = curses.ascii
+        # a = curses.ascii
+        a = unicurses
         char, shortcut = '', ''
         s = a.unctrl(i)
         if i <= 32:
@@ -1571,7 +1578,9 @@ class LeoCursesGui(leoGui.LeoGui):
         self.curses_app = LeoApp()
 
         if 1:  # Call our own version of curses.initscr().
-            import _curses
+            # import _curses
+            import unicurses
+            _curses = curses = unicurses
             stdscr = _curses.initscr()
             for key, value in _curses.__dict__.items():
                 if key[0:4] == 'ACS_' or key in ('LINES', 'COLS'):
@@ -1585,7 +1594,7 @@ class LeoCursesGui(leoGui.LeoGui):
             self.curses_app.run()  # run calls CApp.main(), which calls CGui.run().
         finally:
             curses.nocbreak()
-            stdscr.keypad(True)  # Must be True!
+            ### stdscr.keypad(True)  # Must be True!
             curses.echo()
             curses.endwin()
             if 'shutdown' in g.app.debug:
@@ -2754,8 +2763,8 @@ class LeoBody(npyscreen.MultiLineEditable):
     #@+node:ekr.20170604181755.1: *5* LeoBody.h_exit_down
     def h_exit_down(self, ch_i: int) -> Optional[bool]:
         """Called when user leaves the widget to the next widget"""
-        if ch_i in (curses.ascii.CR, curses.ascii.NL):
-            return False
+        # if ch_i in (curses.ascii.CR, curses.ascii.NL):
+            # return False
         self.set_box_name('Body Pane')
         if not self._test_safe_to_exit():
             return False
@@ -2827,8 +2836,8 @@ class LeoBody(npyscreen.MultiLineEditable):
         self.handlers = {
             # From InputHandler...
             curses.KEY_BTAB:    self.h_exit_up,
-            curses.ascii.TAB:   self.h_exit_down,
-            curses.ascii.ESC:   self.h_exit_escape,
+            # curses.ascii.TAB:   self.h_exit_down,
+            # curses.ascii.ESC:   self.h_exit_escape,
             curses.KEY_MOUSE:   self.h_exit_mouse,
             # From MultiLine...
             curses.KEY_DOWN:    self.h_cursor_line_down,
@@ -2957,8 +2966,9 @@ class LeoLog(npyscreen.MultiLineEditable):
     def h_exit_down(self, ch_i: int) -> Optional[bool]:
         """Called when user leaves the widget to the next widget"""
         trace = False and not g.unitTesting
-        if ch_i in (curses.ascii.CR, curses.ascii.NL):
-            return False
+        ###
+            # if ch_i in (curses.ascii.CR, curses.ascii.NL):
+                # return False
         if trace:
             g.trace('(LeoLog) safe:', self._test_safe_to_exit())
             g.trace(g.callers())
@@ -3019,10 +3029,10 @@ class LeoLog(npyscreen.MultiLineEditable):
             # From InputHandler...
             curses.KEY_BTAB: self.h_exit_up,
             curses.KEY_MOUSE: self.h_exit_mouse,
-            curses.ascii.CR: self.h_exit_down,
-            curses.ascii.ESC: self.h_exit_escape,
-            curses.ascii.NL: self.h_exit_down,
-            curses.ascii.TAB: self.h_exit_down,
+            # curses.ascii.CR: self.h_exit_down,
+            # curses.ascii.ESC: self.h_exit_escape,
+            # curses.ascii.NL: self.h_exit_down,
+            # curses.ascii.TAB: self.h_exit_down,
             # From MultiLine...
             curses.KEY_DOWN: self.h_cursor_line_down,
             curses.KEY_END: self.h_cursor_end,
@@ -3204,19 +3214,19 @@ class LeoMiniBuffer(npyscreen.Textfield):
         # pylint: disable=no-member
         # Override *all* other complex handlers.
         self.complex_handlers = [
-            (curses.ascii.isprint, self.h_insert),
+            # (curses.ascii.isprint, self.h_insert),
         ]
         self.handlers.update({
             # All other keys are passed on.
                 # curses.ascii.TAB:    self.h_exit_down,
                 # curses.KEY_BTAB:     self.h_exit_up,
-            curses.ascii.NL: self.h_return,
-            curses.ascii.CR: self.h_return,
+            # curses.ascii.NL: self.h_return,
+            # curses.ascii.CR: self.h_return,
             curses.KEY_HOME: self.h_cursor_beginning,  # 262
             curses.KEY_END: self.h_cursor_end,  # 358.
             curses.KEY_LEFT: self.h_cursor_left,
             curses.KEY_RIGHT: self.h_cursor_right,
-            curses.ascii.BS: self.h_delete_left,
+            # curses.ascii.BS: self.h_delete_left,
             curses.KEY_BACKSPACE: self.h_delete_left,
         })
     #@-others
@@ -3665,7 +3675,7 @@ class LeoMLTree(npyscreen.MLTree):
             curses.KEY_LEFT:    self.h_move_left,
             curses.KEY_RIGHT:   self.h_move_right,
             curses.KEY_UP:      self.h_cursor_line_up,
-            curses.ascii.TAB:   self.h_exit_down,
+            # curses.ascii.TAB:   self.h_exit_down,
             ord('d'):           self.h_delete,
             ord('e'):           self.h_edit_headline,
             ord('i'):           self.h_insert,

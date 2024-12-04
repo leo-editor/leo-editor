@@ -4,12 +4,13 @@
 # encoding: utf-8
 #@+others
 #@+node:ekr.20170428084207.371: ** Declarations
-import curses
-# import _curses
-#import curses.wrapper
+# import curses
+import unicurses
+curses = unicurses
+
 import locale
 import os
-#import pty
+# import pty
 import subprocess
 import sys
 import warnings
@@ -19,11 +20,11 @@ _SCREEN = None
 
 #@+node:ekr.20170428084207.372: ** wrapper_basic
 def wrapper_basic(call_function):
-    #set the locale properly
+    # set the locale properly
     locale.setlocale(locale.LC_ALL, '')
     return curses.wrapper(call_function)
 
-#def wrapper(call_function):
+# def wrapper(call_function):
 #   locale.setlocale(locale.LC_ALL, '')
 #   screen = curses.initscr()
 #   curses.noecho()
@@ -81,31 +82,33 @@ def external_reset():
 
 #@+node:ekr.20170428084207.376: ** wrapper_no_fork
 def wrapper_no_fork(call_function, reset=False):
-    global _NEVER_RUN_INITSCR
-    if not _NEVER_RUN_INITSCR:
-        warnings.warn("""Repeated calls of endwin may cause a memory leak. Use wrapper_fork to avoid.""")
-    global _SCREEN
-    return_code = None
-    if _NEVER_RUN_INITSCR:
-        _NEVER_RUN_INITSCR = False
-        locale.setlocale(locale.LC_ALL, '')
-        _SCREEN = curses.initscr()
-        try:
-            curses.start_color()
-        except Exception:
-            pass
-        curses.noecho()
-        curses.cbreak()
-        _SCREEN.keypad(1)
+    ###
+        # global _NEVER_RUN_INITSCR
+        # if not _NEVER_RUN_INITSCR:
+            # warnings.warn("""Repeated calls of endwin may cause a memory leak. Use wrapper_fork to avoid.""")
+        # global _SCREEN
+        # return_code = None
+        # if _NEVER_RUN_INITSCR:
+            # _NEVER_RUN_INITSCR = False
+            # locale.setlocale(locale.LC_ALL, '')
+            # _SCREEN = curses.initscr()
+            # try:
+                # curses.start_color()
+            # except Exception:
+                # pass
+            # curses.noecho()
+            # curses.cbreak()
+            # _SCREEN.keypad(1)
 
     curses.noecho()
     curses.cbreak()
-    _SCREEN.keypad(1)
+    ### _SCREEN.keypad(1)
 
     try:
-        return_code = call_function(_SCREEN)
+        ### return_code = call_function(_SCREEN)
+        return_code = call_function(None)
     finally:
-        _SCREEN.keypad(0)
+        ### _SCREEN.keypad(0)
         curses.echo()
         curses.nocbreak()
         # Calling endwin() and then refreshing seems to cause a memory leak.

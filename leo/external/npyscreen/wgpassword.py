@@ -3,7 +3,6 @@
 #!/usr/bin/python
 #@+others
 #@+node:ekr.20170428084208.286: ** Declarations
-# import curses
 from .wgtextbox import Textfield
 from . import wgtitlefield as titlefield
 

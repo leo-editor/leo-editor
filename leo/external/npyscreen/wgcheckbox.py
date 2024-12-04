@@ -6,9 +6,12 @@
 #@+node:ekr.20170428084207.537: ** Declarations
 from .wgtextbox import Textfield
 from .wgwidget import Widget
-#from .wgmultiline import MultiLine
+# from .wgmultiline import MultiLine
 from . import wgwidget as widget
-import curses
+# import curses
+import unicurses
+curses = unicurses
+
 
 #@+node:ekr.20170428084207.538: ** class _ToggleControl
 class _ToggleControl(Widget):
@@ -18,10 +21,10 @@ class _ToggleControl(Widget):
         '''ToggleControl.set_up_handlers.'''
         super(_ToggleControl, self).set_up_handlers()
         self.handlers.update({
-            curses.ascii.SP: self.h_toggle,
+            # curses.ascii.SP: self.h_toggle,
             ord('x'): self.h_toggle,
-            curses.ascii.NL: self.h_select_exit,
-            curses.ascii.CR: self.h_select_exit,
+            # curses.ascii.NL: self.h_select_exit,
+            # curses.ascii.CR: self.h_select_exit,
             ord('j'): self.h_exit_down,
             ord('k'): self.h_exit_up,
             ord('h'): self.h_exit_left,

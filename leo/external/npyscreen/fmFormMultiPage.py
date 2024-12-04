@@ -5,7 +5,10 @@ from leo.core import leoGlobals as g
 assert g
 #@+others
 #@+node:ekr.20170428084207.224: ** Declarations
-import curses
+# import curses
+import unicurses
+curses = unicurses
+
 from . import fmForm
 from .wgwidget import NotEnoughSpaceForWidget
 from . import wgNMenuDisplay
@@ -235,7 +238,7 @@ class FormMultiPageAction(FormMultiPage):
         del self.ok_button
         del self._widgets__[self._c_button_postion]
         del self.c_button
-        #self.nextrely, self.nextrelx = tmp_rely, tmp_relx
+        # self.nextrely, self.nextrelx = tmp_rely, tmp_relx
         self.display()
         self.editing = False
 

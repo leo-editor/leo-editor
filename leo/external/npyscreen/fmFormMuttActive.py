@@ -4,7 +4,11 @@
 #@+node:ekr.20170428084207.259: ** Declarations
 import weakref
 import re
-import curses
+
+# import curses
+import unicurses
+curses = unicurses
+
 import collections
 from . import fmFormMutt
 from . import fmFormWithMenus
@@ -48,13 +52,13 @@ class ActionControllerSimple:
     def process_command_live(self, command_line, control_widget_proxy):
         for a in self._action_list:
             if a['identifier'].match(command_line) and a['live'] == True:
-                a['function'](command_line, control_widget_proxy, live=True)
+                a['function'](command_line, control_widget_proxy, live = True)
 
     #@+node:ekr.20170428084207.265: *3* process_command_complete
     def process_command_complete(self, command_line, control_widget_proxy):
         for a in self._action_list:
             if a['identifier'].match(command_line):
-                a['function'](command_line, control_widget_proxy, live=False)
+                a['function'](command_line, control_widget_proxy, live = False)
 
 
     #@-others
@@ -86,8 +90,8 @@ class TextCommandBox(wgtextbox.Textfield):
         '''TextCommandBox.set_up_handlers.'''
         super(TextCommandBox, self).set_up_handlers()
         self.handlers.update({
-           curses.ascii.NL: self.h_execute_command,
-           curses.ascii.CR: self.h_execute_command,
+           # curses.ascii.CR: self.h_execute_command,
+           # curses.ascii.NL: self.h_execute_command,
         })
 
     #@+node:ekr.20170428084207.269: *3* set_up_history_keys
@@ -170,7 +174,7 @@ class TextCommandBoxTraditional(TextCommandBox):
          history=history,
          history_max=history_max,
          set_up_history_keys=set_up_history_keys,
-         * args, **keywords
+         *args, **keywords
         )
         self.linked_widget = None
         self.always_pass_to_linked_widget = []
@@ -183,7 +187,8 @@ class TextCommandBoxTraditional(TextCommandBox):
             inputchstr = False
 
         try:
-            input_unctrl = curses.ascii.unctrl(inputch)
+            # input_unctrl = curses.ascii.unctrl(inputch)
+            input_unctrl = unicurses.unctrl(inputch)
         except TypeError:
             input_unctrl = False
 

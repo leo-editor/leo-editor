@@ -5,7 +5,10 @@
 # type: ignore
 import collections
 import copy
-import curses
+# import curses
+import unicurses
+curses = unicurses
+
 import textwrap
 import weakref
 from . import wgwidget as widget
@@ -180,7 +183,7 @@ class MultiLine(widget.Widget):
             self.values = []
         # clear = None is a good value for this widget
         display_length = len(self._my_widgets)
-        #self._remake_filter_cache()
+        # self._remake_filter_cache()
         self._filtered_values_cache = self.get_filtered_indexes()
         if self.editing or self.always_show_cursor:
             # EKR: Put cursor_line in range.
@@ -258,11 +261,11 @@ class MultiLine(widget.Widget):
                 else:
                     self.parent.curses_pad.addstr(self.rely + self.height - 1, self.relx, MORE_LABEL)
             else:
-                #line.value = MORE_LABEL
+                # line.value = MORE_LABEL
                 line.name = MORE_LABEL
                 line.task = MORE_LABEL
-                #line.highlight = False
-                #line.show_bold = False
+                # line.highlight = False
+                # line.show_bold = False
                 line.clear()
                 if self.do_colors():
                     self.parent.curses_pad.addstr(
@@ -442,8 +445,8 @@ class MultiLine(widget.Widget):
     #@+node:ekr.20170428084208.100: *4* MultiLine.handle_mouse_event
     def handle_mouse_event(self, mouse_event):
         # unfinished
-        #mouse_id, x, y, z, bstate = mouse_event
-        #self.cursor_line = y - self.rely - self.parent.show_aty + self.start_display_at
+        # mouse_id, x, y, z, bstate = mouse_event
+        # self.cursor_line = y - self.rely - self.parent.show_aty + self.start_display_at
         mouse_id, rel_x, rel_y, z, bstate = self.interpret_mouse_event(mouse_event)
         self.cursor_line = rel_y // self._contained_widget_height + self.start_display_at
         ##if self.cursor_line > len(self.values):
@@ -462,17 +465,17 @@ class MultiLine(widget.Widget):
             curses.KEY_RIGHT: self.h_cursor_line_down,
             curses.KEY_NPAGE: self.h_cursor_page_down,
             curses.KEY_PPAGE: self.h_cursor_page_up,
-            curses.ascii.TAB: self.h_exit_down,
-            curses.ascii.NL: self.h_select_exit,
+            # curses.ascii.TAB: self.h_exit_down,
+            # curses.ascii.NL: self.h_select_exit,
             curses.KEY_HOME: self.h_cursor_beginning,
             curses.KEY_END: self.h_cursor_end,
             ord('g'): self.h_cursor_beginning,
             ord('G'): self.h_cursor_end,
             ord('x'): self.h_select,
             # "^L":        self.h_set_filtered_to_selected,
-            curses.ascii.SP: self.h_select,
-            curses.ascii.ESC: self.h_exit_escape,
-            curses.ascii.CR: self.h_select_exit,
+            # curses.ascii.SP: self.h_select,
+            # curses.ascii.ESC: self.h_exit_escape,
+            # curses.ascii.CR: self.h_select_exit,
         })
         if self.allow_filtering:
             self.handlers.update({
@@ -509,8 +512,12 @@ class MultiLine(widget.Widget):
                 break
     #@+node:ekr.20170428084208.103: *4* MultiLine.t_input_isprint
     def t_input_isprint(self, input):
-        if curses.ascii.isprint(input): return True
-        else: return False
+
+        return False
+
+        ###
+        # if curses.ascii.isprint(input): return True
+        # else: return False
     #@+node:ekr.20170428084208.104: *4* MultiLine.h_set_filter
     def h_set_filter(self, ch):
         if not self.allow_filtering:
@@ -616,7 +623,7 @@ class MultiLine(widget.Widget):
             g.trace('===== (MultiLine:%s)' % self.__class__.__name__)
         self.editing = True
         self.how_exited = None
-        #if self.value: self.cursor_line = self.value
+        # if self.value: self.cursor_line = self.value
         self.display()
         while self.editing:
             if trace: g.trace('(MultiLine:%s) LOOP' % self.__class__.__name__)
@@ -658,10 +665,10 @@ class MultiLineAction(MultiLine):
         '''MultiLineAction.set_up_handlers.'''
         super(MultiLineAction, self).set_up_handlers()
         self.handlers.update({
-            curses.ascii.NL: self.h_act_on_highlighted,
-            curses.ascii.CR: self.h_act_on_highlighted,
+            # curses.ascii.NL: self.h_act_on_highlighted,
+            # curses.ascii.CR: self.h_act_on_highlighted,
             ord('x'): self.h_act_on_highlighted,
-            curses.ascii.SP: self.h_act_on_highlighted,
+            # curses.ascii.SP: self.h_act_on_highlighted,
         })
 
 
@@ -679,7 +686,8 @@ class MultiLineActionWithShortcuts(MultiLineAction):
 
     #@+node:ekr.20170428084208.124: *3* MultiLineActionWithShortcuts.h_find_shortcut_action
     def h_find_shortcut_action(self, _input):
-        _input_decoded = curses.ascii.unctrl(_input)
+        # _input_decoded = curses.ascii.unctrl(_input)
+        _input_decoded = curses.unctrl(_input)
         for r in range(len(self.values)):
             if hasattr(self.values[r], self.shortcut_attribute_name):
                 # from . import utilNotify
@@ -755,7 +763,7 @@ class Pager(MultiLine):
 
     #@+node:ekr.20170428084208.133: *3* Pager.update
     def update(self, clear=True):
-        #we look this up a lot. Let's have it here.
+        # we look this up a lot. Let's have it here.
         if self.autowrap:
             self.setValuesWrap(list(self.values))
 
@@ -847,17 +855,17 @@ class Pager(MultiLine):
             curses.KEY_PPAGE: self.h_scroll_page_up,
             curses.KEY_HOME: self.h_show_beginning,
             curses.KEY_END: self.h_show_end,
-            curses.ascii.NL: self.h_exit,
-            curses.ascii.CR: self.h_exit,
-            curses.ascii.SP: self.h_scroll_page_down,
-            curses.ascii.TAB: self.h_exit,
+            # curses.ascii.NL: self.h_exit,
+            # curses.ascii.CR: self.h_exit,
+            # curses.ascii.SP: self.h_scroll_page_down,
+            # curses.ascii.TAB: self.h_exit,
             ord('j'): self.h_scroll_line_down,
             ord('k'): self.h_scroll_line_up,
             ord('x'): self.h_exit,
             ord('q'): self.h_exit,
             ord('g'): self.h_show_beginning,
             ord('G'): self.h_show_end,
-            curses.ascii.ESC: self.h_exit_escape,
+            # curses.ascii.ESC: self.h_exit_escape,
         }
         self.complex_handlers = []
 

@@ -5,7 +5,6 @@ from leo.core import leoGlobals as g
 assert g
 #@+others
 #@+node:ekr.20170428084208.382: ** Declarations
-# import curses
 import weakref
 from . import wgtextbox as textbox
 from . import wgwidget as widget
@@ -60,7 +59,7 @@ class TitleText(widget.Widget):
                         self._passon['max_width'] -= self.text_field_begin_at + 1
 
         if 'width' in self._passon:
-            #if 0 < self._passon['width'] < self.text_field_begin_at:
+            # if 0 < self._passon['width'] < self.text_field_begin_at:
             #    raise ValueError("The maximum width specified %s is less than the text_field_begin_at value %s." % (self._passon['width'], self.text_field_begin_at))
             if self._passon['width'] > 0:
                 self._passon['width'] -= self.text_field_begin_at + 1
@@ -113,7 +112,7 @@ class TitleText(widget.Widget):
         self.entry_widget = self.__class__._entry_type(self.parent,
                                 relx=(self.relx + self.text_field_begin_at),
                                 rely=(self.rely + self._contained_rely_offset), value=self.value,
-                                ** self._passon)
+                                **self._passon)
         self.entry_widget.parent_widget = weakref.proxy(self)
         self.recalculate_size()
 
@@ -132,7 +131,7 @@ class TitleText(widget.Widget):
         self.editing = True
         self.display()
         self.entry_widget.edit()
-        #self.value = self.textarea.value
+        # self.value = self.textarea.value
         self.how_exited = self.entry_widget.how_exited
         self.editing = False
         self.display()

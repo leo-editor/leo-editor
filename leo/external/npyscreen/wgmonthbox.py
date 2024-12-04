@@ -7,7 +7,10 @@
 from . import wgwidget as widget
 import calendar
 import datetime
-import curses
+# import curses
+import unicurses
+curses = unicurses
+
 
 #@+node:ekr.20170428084208.45: ** class DateEntryBase
 class DateEntryBase(widget.Widget):
@@ -289,7 +292,7 @@ class MonthBox(DateEntryBase):
             curses.KEY_RIGHT: self.h_day_more,
             curses.KEY_UP: self.h_week_less,
             curses.KEY_DOWN: self.h_week_more,
-            curses.ascii.SP: self.h_exit_down,
+            # curses.ascii.SP: self.h_exit_down,
             "^T": self.h_find_today,
         })
 

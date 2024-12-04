@@ -9,7 +9,10 @@ from . import wgmonthbox as monthbox
 from . import fmPopup as Popup
 # from . import fmForm        as Form
 # import datetime
-import curses
+# import curses
+import unicurses
+curses = unicurses
+
 
 
 #@+node:ekr.20170428084207.577: ** class DateCombo
@@ -29,7 +32,7 @@ class DateCombo(textbox.Textfield, monthbox.DateEntryBase):
 
     #@+node:ekr.20170428084207.580: *3* DateCombo.edit
     def edit(self):
-        #We'll just use the widget one
+        # We'll just use the widget one
         super(textbox.Textfield, self).edit()
 
     #@+node:ekr.20170428084207.581: *3* display_value
@@ -59,7 +62,7 @@ class DateCombo(textbox.Textfield, monthbox.DateEntryBase):
                         columns=(monthbox.MonthBox.DAY_FIELD_WIDTH * 7) + 4,
                         lines=13,
                         )
-        #F = Form.Form()
+        # F = Form.Form()
         m = F.add(monthbox.MonthBox,
                     allowPastDate=self.allow_date_in_past,
                     allowTodaysDate=self.allow_todays_date,
@@ -80,17 +83,19 @@ class DateCombo(textbox.Textfield, monthbox.DateEntryBase):
         m.edit()
         self.value = m.value
         # The following is perhaps confusing.
-        #if self.value == _old_date:
+        # if self.value == _old_date:
         #   self.h_exit_down('')
 
     #@+node:ekr.20170428084207.584: *3* set_up_handlers
     def set_up_handlers(self):
         '''DataCombo.set_up_handlers.'''
         super(textbox.Textfield, self).set_up_handlers()
-        self.handlers.update({curses.ascii.SP: self.h_change_value,
-            #curses.ascii.TAB: self.h_change_value,
-            curses.ascii.CR: self.h_change_value,
-            curses.ascii.NL: self.h_change_value,
+        ### self.handlers.update({curses.ascii.SP: self.h_change_value,
+        self.handlers.update({
+            # curses.ascii.SP: self.h_change_value,
+            # curses.ascii.TAB: self.h_change_value,
+            # curses.ascii.CR: self.h_change_value,
+            # curses.ascii.NL: self.h_change_value,
             ord('x'): self.h_change_value,
             ord('j'): self.h_exit_down,
             ord('k'): self.h_exit_up,

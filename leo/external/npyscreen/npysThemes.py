@@ -2,7 +2,10 @@
 #@+node:ekr.20170428084207.390: * @file ../external/npyscreen/npysThemes.py
 #@+others
 #@+node:ekr.20170428084207.391: ** Declarations
-import curses
+# import curses
+import unicurses
+curses = unicurses
+
 from . import npysThemeManagers as ThemeManagers
 
 #@+node:ekr.20170428084207.392: ** class DefaultTheme

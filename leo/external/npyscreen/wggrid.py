@@ -4,7 +4,10 @@
 # encoding: utf-8
 #@+others
 #@+node:ekr.20170428084208.2: ** Declarations
-import curses
+# import curses
+import unicurses
+curses = unicurses
+
 from . import wgwidget as widget
 from . import wgtextbox as textbox
 
@@ -209,15 +212,15 @@ class SimpleGrid(widget.Widget):
             curses.KEY_END: self.h_show_end,
             ord('g'): self.h_show_beginning,
             ord('G'): self.h_show_end,
-            curses.ascii.TAB: self.h_exit,
+            # curses.ascii.TAB: self.h_exit,
             curses.KEY_BTAB: self.h_exit_up,
             '^P': self.h_exit_up,
             '^N': self.h_exit_down,
-            #curses.ascii.NL:    self.h_exit,
-            #curses.ascii.SP:    self.h_exit,
-            #ord('x'):       self.h_exit,
+            # curses.ascii.NL:    self.h_exit,
+            # curses.ascii.SP:    self.h_exit,
+            # ord('x'):       self.h_exit,
             ord('q'): self.h_exit,
-            curses.ascii.ESC: self.h_exit,
+            # curses.ascii.ESC: self.h_exit,
             curses.KEY_MOUSE: self.h_exit_mouse,
         }
         self.complex_handlers = []

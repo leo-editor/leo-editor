@@ -941,8 +941,10 @@ class LeoApp:
     #@+node:ekr.20100831090251.5840: *5* app.createCursesGui
     def createCursesGui(self, fileName: str = '', verbose: bool = False) -> None:
         try:
-            import curses
-            assert curses
+            # import curses
+            # assert curses
+            import unicurses
+            assert unicurses
         except Exception:
             # g.es_exception()
             print('can not import curses.')

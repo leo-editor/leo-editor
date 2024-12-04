@@ -3,7 +3,9 @@
 #!/usr/bin/env python
 #@+others
 #@+node:ekr.20170428084207.562: ** Declarations
-import curses
+# import curses
+import unicurses
+curses = unicurses
 
 from . import wgtextbox as textbox
 from . import wgmultiline as multiline
@@ -51,7 +53,7 @@ class ComboBox(textbox.Textfield):
 
     #@+node:ekr.20170428084207.568: *3* ComboBox.edit
     def edit(self):
-        #We'll just use the widget one
+        # We'll just use the widget one
         super(textbox.Textfield, self).edit()
 
     #@+node:ekr.20170428084207.569: *3* ComboBox.set_up_handlers
@@ -59,10 +61,9 @@ class ComboBox(textbox.Textfield):
         '''ComboBox.set_up_handlers.'''
         super(textbox.Textfield, self).set_up_handlers()
         self.handlers.update({
-            curses.ascii.SP: self.h_change_value,
-            #curses.ascii.TAB: self.h_change_value,
-            curses.ascii.NL: self.h_change_value,
-            curses.ascii.CR: self.h_change_value,
+            # curses.ascii.SP: self.h_change_value,
+            # curses.ascii.NL: self.h_change_value,
+            # curses.ascii.CR: self.h_change_value,
             ord('x'): self.h_change_value,
             ord('k'): self.h_exit_up,
             ord('j'): self.h_exit_down,

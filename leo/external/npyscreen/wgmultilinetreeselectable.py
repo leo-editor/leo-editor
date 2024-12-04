@@ -4,7 +4,10 @@ from leo.core import leoGlobals as g
 assert g
 #@+others
 #@+node:ekr.20170428084208.214: ** Declarations
-import curses
+# import curses
+import unicurses
+curses = unicurses
+
 from . import wgmultilinetree
 
 #@+node:ekr.20170428084208.215: ** class TreeLineSelectable
@@ -40,7 +43,7 @@ class TreeLineSelectable(wgmultilinetree.TreeLine):
             attribute_list = curses.A_NORMAL
 
 
-        #python2 compatibility
+        # python2 compatibility
         if isinstance(SELECT_DISPLAY, bytes):
             SELECT_DISPLAY = SELECT_DISPLAY.decode()
 

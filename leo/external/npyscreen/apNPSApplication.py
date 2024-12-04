@@ -5,9 +5,9 @@ from leo.core import leoGlobals as g
 assert g
 #@+others
 #@+node:ekr.20170428084207.4: ** Declarations
-import curses
-# import locale
-# import _curses
+# import curses
+import unicurses
+curses = unicurses
 
 from . import npyssafewrapper
 
@@ -32,7 +32,8 @@ class NPSApp:
     def __remove_argument_call_main(self, screen, enable_mouse=True):
         # screen discarded.
         if enable_mouse:
-            curses.mousemask(curses.ALL_MOUSE_EVENTS)
+            # curses.mousemask(curses.ALL_MOUSE_EVENTS)
+            unicurses.mousemask(unicurses.ALL_MOUSE_EVENTS)
         del screen
         return self.main()
 

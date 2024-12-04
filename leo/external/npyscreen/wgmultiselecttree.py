@@ -4,7 +4,10 @@
 #@+node:ekr.20170428084208.246: ** Declarations
 from . import wgmultilinetree as multilinetree
 from . import wgcheckbox as checkbox
-import curses
+# import curses
+import unicurses
+curses = unicurses
+
 import weakref
 
 
@@ -19,7 +22,7 @@ class MultiSelectTree(multilinetree.SelectOneTree):
         super(MultiSelectTree, self).set_up_handlers()
         self.handlers.update({
             ord("x"): self.h_select_toggle,
-            curses.ascii.SP: self.h_select_toggle,
+            # curses.ascii.SP: self.h_select_toggle,
             ord("X"): self.h_select,
             "^U": self.h_select_none,
         })

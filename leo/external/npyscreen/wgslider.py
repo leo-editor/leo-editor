@@ -3,7 +3,10 @@
 #!/usr/bin/python
 #@+others
 #@+node:ekr.20170428084208.298: ** Declarations
-import curses
+# import curses
+import unicurses
+curses = unicurses
+
 from . import wgwidget as widget
 from . import wgtitlefield as titlefield
 
@@ -78,15 +81,15 @@ class Slider(widget.Widget):
 
         if self.editing:
             self.parent.curses_pad.attron(curses.A_BOLD)
-            #self.parent.curses_pad.bkgdset(curses.ACS_HLINE)
-            #self.parent.curses_pad.bkgdset(">")
-            #self.parent.curses_pad.bkgdset(curses.A_NORMAL)
+            # self.parent.curses_pad.bkgdset(curses.ACS_HLINE)
+            # self.parent.curses_pad.bkgdset(">")
+            # self.parent.curses_pad.bkgdset(curses.A_NORMAL)
             BACKGROUND_CHAR = ">"
             BARCHAR = curses.ACS_HLINE
         else:
             self.parent.curses_pad.attroff(curses.A_BOLD)
             self.parent.curses_pad.bkgdset(curses.A_NORMAL)
-            #self.parent.curses_pad.bkgdset(curses.ACS_HLINE)
+            # self.parent.curses_pad.bkgdset(curses.ACS_HLINE)
             BACKGROUND_CHAR = curses.ACS_HLINE
             BARCHAR = " "
 
@@ -112,7 +115,7 @@ class Slider(widget.Widget):
 
     #@+node:ekr.20170428084208.304: *3* Slider.set_value
     def set_value(self, val):
-        #"We can only represent ints or floats, and must be less than what we are out of..."
+        # "We can only represent ints or floats, and must be less than what we are out of..."
         if val is None: val = 0
         if not isinstance(val, int) and not isinstance(val, float):
             raise ValueError

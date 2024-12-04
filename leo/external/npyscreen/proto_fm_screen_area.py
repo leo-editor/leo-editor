@@ -5,13 +5,14 @@ from leo.core import leoGlobals as g
 assert g
 #@+others
 #@+node:ekr.20170428084207.423: ** Declarations
-import curses
-import curses.panel
-#import curses.wrapper
-from . import npyspmfuncs as pmfuncs
-# import os
-from . import npysThemeManagers as ThemeManagers
+# import curses
+import unicurses
+curses = unicurses
 
+# import curses.panel
+
+from . import npyspmfuncs as pmfuncs
+from . import npysThemeManagers as ThemeManagers
 
 # For more complex method of getting the size of screen
 try:
@@ -114,10 +115,11 @@ class ScreenArea:
         if self.min_c > self.columns:
             self.columns = self.min_c
 
-        #self.area = curses.newpad(self.lines, self.columns)
+        # self.area = curses.newpad(self.lines, self.columns)
         self.curses_pad = curses.newpad(self.lines, self.columns)
-        #self.max_y, self.max_x = self.lines, self.columns
-        self.max_y, self.max_x = self.curses_pad.getmaxyx()
+        # self.max_y, self.max_x = self.lines, self.columns
+        ### self.max_y, self.max_x = self.curses_pad.getmaxyx()
+        self.max_y, self.max_x = self.lines, self.columns
 
     #@+node:ekr.20170428084207.429: *3* ScreenArea._max_physical
     def _max_physical(self):
@@ -125,15 +127,19 @@ class ScreenArea:
         # On OS X newwin does not correctly get the size of the screen.
         # let's see how big we could be: create a temp screen
         # and see the size curses makes it.  No good to keep, though
-        try:
-            mxy, mxx = struct.unpack('hh', fcntl.ioctl(sys.stderr.fileno(), termios.TIOCGWINSZ, 'xxxx'))
-            if (mxy, mxx) == (0, 0):
-                raise ValueError
-        except(ValueError, NameError):
-            mxy, mxx = curses.newwin(0, 0).getmaxyx()
+        if 1:  # unicurses
+            curses.newwin(0, 0, 0, 0)
+            return 20, 20
+        else:  # legacy.
+            try:
+                mxy, mxx = struct.unpack('hh', fcntl.ioctl(sys.stderr.fileno(), termios.TIOCGWINSZ, 'xxxx'))
+                if (mxy, mxx) == (0, 0):
+                    raise ValueError
+            except(ValueError, NameError):
+                mxy, mxx = curses.newwin(0, 0).getmaxyx()
 
-        # return safe values, i.e. slightly smaller.
-        return (mxy - 1, mxx - 1)
+            # return safe values, i.e. slightly smaller.
+            return (mxy - 1, mxx - 1)
 
     #@+node:ekr.20170428084207.430: *3* ScreenArea.useable_space
     def useable_space(self, rely=0, relx=0):
@@ -142,8 +148,8 @@ class ScreenArea:
 
     #@+node:ekr.20170428084207.431: *3* ScreenArea.widget_useable_space
     def widget_useable_space(self, rely=0, relx=0):
-        #Slightly misreports space available.
-        #mxy, mxx = self.lines, self.columns-1
+        # Slightly misreports space available.
+        # mxy, mxx = self.lines, self.columns-1
         mxy, mxx = self.useable_space(rely=rely, relx=relx)
         return (mxy - self.BLANK_LINES_BASE, mxx - self.BLANK_COLUMNS_RIGHT)
 

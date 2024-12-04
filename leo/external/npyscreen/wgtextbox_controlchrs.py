@@ -2,7 +2,6 @@
 #@+node:ekr.20170428084208.359: * @file ../external/npyscreen/wgtextbox_controlchrs.py
 #@+others
 #@+node:ekr.20170428084208.360: ** Declarations
-# import curses
 from . import wgtextbox as textbox
 
 #@+node:ekr.20170428084208.361: ** class TextfieldCtrlChars

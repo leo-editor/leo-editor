@@ -4,7 +4,10 @@
 # encoding: utf-8
 #@+others
 #@+node:ekr.20170428084208.37: ** Declarations
-import curses
+# import curses
+import unicurses
+curses = unicurses
+
 from . import wggrid as grid
 from . import wgtextbox as textbox
 

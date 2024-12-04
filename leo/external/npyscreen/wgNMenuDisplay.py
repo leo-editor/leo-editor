@@ -11,7 +11,10 @@ from . import wgmultiline as multiline
 from . import wgannotatetextbox
 # from . import utilNotify
 import weakref
-import curses
+# import curses
+import unicurses
+curses = unicurses
+
 
 #@+node:ekr.20170428084208.255: ** class MenuViewerController
 class MenuViewerController:
@@ -179,7 +182,7 @@ class wgMenuListWithSortCuts(multiline.MultiLineActionWithShortcuts):
     def __init__(self, screen, allow_filtering=False, *args, **keywords):
         return super(wgMenuListWithSortCuts, self).__init__(screen, allow_filtering=allow_filtering, *args, **keywords)
 
-    #def actionHighlighted(self, act_on_this, key_press):
+    # def actionHighlighted(self, act_on_this, key_press):
     #    if isinstance(act_on_this, MenuItem):
     #        return act_on_this.do()
     #    else:
@@ -199,13 +202,14 @@ class MenuDisplayScreen(Form.Form):
     #@+node:ekr.20170428084208.277: *3* __init__
     def __init__(self, *args, **keywords):
         super(MenuDisplayScreen, self).__init__(*args, **keywords)
-        #self._menuListWidget = self.add(multiline.MultiLine, return_exit=True)
+        # self._menuListWidget = self.add(multiline.MultiLine, return_exit=True)
         self._menuListWidget = self.add(wgMenuListWithSortCuts, return_exit=True)
         self._menuListWidget.add_handlers({
             ord('q'): self._menuListWidget.h_exit_down,
             ord('Q'): self._menuListWidget.h_exit_down,
             ord('x'): self._menuListWidget.h_select_exit,
-            curses.ascii.SP: self._menuListWidget.h_select_exit,
+            # curses.ascii.SP: self._menuListWidget.h_select_exit,
+            unicurses.SP: self._menuListWidget.h_select_exit,
         })
 
     #@-others
