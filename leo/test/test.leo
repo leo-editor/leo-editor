@@ -13675,8 +13675,10 @@ p    {color: red;}
 &lt;/style&gt;
 
 </t>
-<t tx="ekr.20241206101345.483"></t>
-<t tx="ekr.20241206101345.484">g.cls()
+<t tx="ekr.20241206101345.483"># The</t>
+<t tx="ekr.20241206101345.484"># This @button script works only on EKR's machine.
+
+g.cls()
 g.cls()
 
 import os

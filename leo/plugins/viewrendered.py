@@ -266,6 +266,7 @@ try:
     import matplotlib.pyplot as pyplot
     import numpy as np
     got_pyplot = True
+    assert np
     assert pyplot
 except Exception:
     pass
