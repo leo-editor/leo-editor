@@ -260,9 +260,11 @@ try:
 except Exception:
     pyperclip = None
 
+# matplotlib, pyplot, numpy.
 got_pyplot = False
 try:
-    from matplotlib import pyplot
+    import matplotlib.pyplot as pyplot
+    import numpy as np
     got_pyplot = True
     assert pyplot
 except Exception:
@@ -403,7 +405,7 @@ def show_scrolled_message(tag: str, kw: Any) -> None:
     f = vr.dispatch_dict.get('rest')
     f(s, kw)
     c.bodyWantsFocusNow()
-#@+node:ekr.20110320120020.14490: ** vr.Commands (all changed)
+#@+node:ekr.20110320120020.14490: ** vr.Commands
 #@+node:ekr.20131213163822.16471: *3* g.command('preview')
 @g.command('preview')
 def preview(event: Event) -> None:
