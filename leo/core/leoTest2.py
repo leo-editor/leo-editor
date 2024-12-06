@@ -48,6 +48,7 @@ def create_app(gui_name: str = 'null') -> Cmdr:
     from leo.core import leoConfig
     from leo.core import leoNodes
     from leo.core import leoCommands
+    from leo.core import leoJupytext
     from leo.core.leoGui import NullGui
     if gui_name == 'qt':
         # Don't fail if Qt has not been installed.
@@ -62,6 +63,7 @@ def create_app(gui_name: str = 'null') -> Cmdr:
     g.app.leoID = 'TestLeoId'  # Use a standard user id for all tests.
     g.app.nodeIndices = leoNodes.NodeIndices(g.app.leoID)
     g.app.config = leoConfig.GlobalConfigManager()
+    g.app.jupytextManager = leoJupytext.JupytextManager()
     # Disable dangerous code.
     g.app.db = g.NullObject('g.app.db')  # type:ignore
     g.app.pluginsController = g.NullObject('g.app.pluginsController')  # type:ignore

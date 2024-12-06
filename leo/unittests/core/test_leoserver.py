@@ -162,15 +162,18 @@ class TestLeoServer(LeoUnitTest):
             ("!open_file", {"log": log, "filename": test_dot_leo}),  # Does exist.
             # Open again. This should be valid.
             ("!open_file", {"log": False, "filename": test_dot_leo}),
-            # Better test of _ap_to_p.
-            ("!set_current_position", {
-                "ap": {
-                    "gnx": "ekr.20180311131424.1",  # Recent
-                    "childIndex": 1,
-                    "stack": [],
-                }
-            }),
-            ("!get_ua", {"log": log}),
+            # This test depends too much on the contents of test.leo.
+
+                # Better test of _ap_to_p.
+                # ("!set_current_position", {
+                    # "ap": {
+                        # "gnx": "ekr.20180311131424.1",  # Recent
+                        # "childIndex": 1,
+                        # "stack": [],
+                    # }
+                # }),
+                # ("!get_ua", {"log": log}),
+
             # Close the second file.
             ("!close_file", {"log": log, "forced": True}),
             # Close the first file.
