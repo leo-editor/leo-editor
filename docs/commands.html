@@ -689,7 +689,7 @@ possible. It’s not necessary to select all of the first or last lines.</p>
 <dt><code class="docutils literal notranslate"><span class="pre">insert-body-time</span></code> and <code class="docutils literal notranslate"><span class="pre">insert-headline-time</span></code></dt><dd><p>Insert formatted time and date into body or headline text. You must be editing a headline to be able to insert the time/date into the headline. The body_time_format_string and headline_time_format_string settings specify the format of the inserted text. These settings are the format string passed to time.strftime.</p>
 </dd>
 </dl>
-<p><strong>Time format</strong>: For format options see <a class="reference external" href="http://www.python.org/doc/current/lib/module-time.html">Python’s time module</a>. By default, the commands use <code class="docutils literal notranslate"><span class="pre">%m/%d/%Y</span> <span class="pre">%H:%M:%S</span></code>, giving timestamps like <code class="docutils literal notranslate"><span class="pre">1/30/2003</span> <span class="pre">8:31:55</span></code>.</p>
+<p><strong>Time format</strong>: For format options see <a class="reference external" href="https://docs.python.org/3/library/time.html">Python’s time module</a>. By default, the commands use <code class="docutils literal notranslate"><span class="pre">%m/%d/%Y</span> <span class="pre">%H:%M:%S</span></code>, giving timestamps like <code class="docutils literal notranslate"><span class="pre">1/30/2003</span> <span class="pre">8:31:55</span></code>.</p>
 <dl>
 <dt><code class="docutils literal notranslate"><span class="pre">pretty-print-python-code</span></code> and <code class="docutils literal notranslate"><span class="pre">pretty-print-all-python-code</span></code></dt><dd><p>Pretty prints body text. You can customize this code by overriding the following methods of class prettyPrinter in leoCommands.py:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">putOperator</span><span class="p">:</span>      <span class="n">puts</span> <span class="n">whitespace</span> <span class="n">around</span> <span class="n">operators</span><span class="o">.</span>
@@ -796,7 +796,7 @@ Helpers defined in <code class="docutils literal notranslate"><span class="pre">
 <li><p>Added a new example node: <code class="docutils literal notranslate"><span class="pre">&#64;data</span> <span class="pre">abbreviations</span></code> examples.  This contains
 several extremely useful scripts.</p></li>
 </ol>
-<p>Leo also supports <a class="reference external" href="http://www.gnu.org/software/emacs/manual/html_node/emacs/Abbrevs.html#Abbrevs">Emacs-like abbreviation commands</a>:</p>
+<p>Leo also supports <a class="reference external" href="https://www.gnu.org/software/emacs/manual/html_node/emacs/Abbrevs.html#Abbrevs">Emacs-like abbreviation commands</a>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dabbrev</span><span class="o">-</span><span class="n">completion</span>
 <span class="n">dabbrev</span><span class="o">-</span><span class="n">expands</span>
 </pre></div>
@@ -813,7 +813,7 @@ several extremely useful scripts.</p></li>
 <span class="n">backward</span><span class="o">-</span><span class="n">delete</span><span class="o">-</span><span class="n">word</span><span class="o">-</span><span class="n">smart</span>
 </pre></div>
 </div>
-<p>The following commands work much like the <a class="reference external" href="http://www.gnu.org/software/emacs/manual/html_node/emacs/Moving-Point.html#Moving-Point">Emacs cursor commands</a>:</p>
+<p>The following commands work much like the <a class="reference external" href="https://www.gnu.org/software/emacs/manual/html_node/emacs/Moving-Point.html#Moving-Point">Emacs cursor commands</a>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">back</span><span class="o">-</span><span class="n">char</span>
 <span class="n">back</span><span class="o">-</span><span class="n">char</span><span class="o">-</span><span class="n">extend</span><span class="o">-</span><span class="n">selection</span>
 <span class="n">back</span><span class="o">-</span><span class="n">page</span>
@@ -944,7 +944,7 @@ several extremely useful scripts.</p></li>
 </section>
 <section id="rectangle-commands">
 <h4><a class="toc-backref" href="#id116" role="doc-backlink">Rectangle commands</a><a class="headerlink" href="#rectangle-commands" title="Link to this heading">¶</a></h4>
-<p>The following commands emulate the <a class="reference external" href="http://www.gnu.org/software/emacs/manual/html_node/emacs/Rectangles.html">Emacs rectangle commands</a>:</p>
+<p>The following commands emulate the <a class="reference external" href="https://www.gnu.org/software/emacs/manual/html_node/emacs/Rectangles.html">Emacs rectangle commands</a>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">rectangle</span><span class="o">-</span><span class="n">clear</span>
 <span class="n">rectangle</span><span class="o">-</span><span class="n">close</span>
 <span class="n">rectangle</span><span class="o">-</span><span class="n">delete</span>
@@ -1111,7 +1111,7 @@ several extremely useful scripts.</p></li>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">import-tabbed-files</span></code></dt><dd><p>Import one or more tab-or-space-delimited files into <code class="docutils literal notranslate"><span class="pre">&#64;file</span></code> nodes.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">import-zim-folder</span></code></dt><dd><p>Imports a zim folder, <a class="reference external" href="http://zim-wiki.org/">http://zim-wiki.org/</a>, as the last top-level node of the outline. This command uses the following Leo settings:</p>
+<dt><code class="docutils literal notranslate"><span class="pre">import-zim-folder</span></code></dt><dd><p>Imports a zim folder, <a class="reference external" href="https://zim-wiki.org/">https://zim-wiki.org/</a>, as the last top-level node of the outline. This command uses the following Leo settings:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@int</span> <span class="n">rst_level</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="nd">@string</span> <span class="n">rst_type</span>
 <span class="nd">@string</span> <span class="n">zim_node_name</span>
@@ -1119,7 +1119,7 @@ several extremely useful scripts.</p></li>
 </pre></div>
 </div>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">outline-to-cweb</span></code></dt><dd><p>Creates a <a class="reference external" href="http://www-cs-faculty.stanford.edu/~knuth/cweb.html">CWEB</a> file from the selected outline.</p>
+<dt><code class="docutils literal notranslate"><span class="pre">outline-to-cweb</span></code></dt><dd><p>Creates a <a class="reference external" href="https://www-cs-faculty.stanford.edu/~knuth/cweb.html">CWEB</a> file from the selected outline.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">outline-to-noweb</span></code></dt><dd><p>Creates a <a class="reference external" href="https://www.cs.tufts.edu/~nr/noweb/">noweb</a> file from the selected outline.</p>
 </dd>
@@ -1164,11 +1164,11 @@ several extremely useful scripts.</p></li>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">cm-external-editor</span></code></dt><dd><p>Open the selected node in the external editor specified by the <code class="docutils literal notranslate"><span class="pre">LEO_EDITOR/EDITOR</span></code> environment variable.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">open-with-idle</span></code></dt><dd><p>Open the selected node in <a class="reference external" href="http://en.wikipedia.org/wiki/IDLE_%28Python%29">Idle</a>.</p>
+<dt><code class="docutils literal notranslate"><span class="pre">open-with-idle</span></code></dt><dd><p>Open the selected node in <a class="reference external" href="https://en.wikipedia.org/wiki/IDLE_%28Python%29">Idle</a>.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">open-with-open</span> <span class="pre">office</span></code></dt><dd><p>Open the selected node in <a class="reference external" href="https://www.openoffice.org/">Open Office</a>.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">open-with-scite</span></code></dt><dd><p>Open the selected node in <a class="reference external" href="http://www.scintilla.org/SciTE.html">SciTe</a>.</p>
+<dt><code class="docutils literal notranslate"><span class="pre">open-with-scite</span></code></dt><dd><p>Open the selected node in <a class="reference external" href="https://www.scintilla.org/SciTE.html">SciTe</a>.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">open-with-word</span></code></dt><dd><p>Open the selected node in Word.</p>
 </dd>
@@ -2184,7 +2184,7 @@ Technically, this is a pep8 violation, but these extra lines are not Leonine.</p
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 1997-2024, Edward K. Ream.
-      Last updated on November 27, 2024.
+      Last updated on December 06, 2024.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
     </div>
   </body>

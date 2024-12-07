@@ -390,7 +390,7 @@ Open Console Window and Open Explorer.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">redirect_to_log.py</span></code></dt><dd><p>Sends all output to the log pane.</p>
 </dd>
-<dt><code class="docutils literal notranslate"><span class="pre">richtext.py</span></code></dt><dd><p>Enables rich text using the <a class="reference external" href="http://ckeditor.com/">CKEditor</a> editor.</p>
+<dt><code class="docutils literal notranslate"><span class="pre">richtext.py</span></code></dt><dd><p>Enables rich text using the <a class="reference external" href="https://ckeditor.com/">CKEditor</a> editor.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">rss.py</span></code></dt><dd><p>Adds rss reader features to Leo.</p>
 </dd>
@@ -411,7 +411,7 @@ Open Console Window and Open Explorer.</p>
 <dt><code class="docutils literal notranslate"><span class="pre">slideshow.py</span></code></dt><dd><p>Support slideshows in Leo outlines.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">spydershell.py</span></code></dt><dd><p>Launches the spyder environment with access to Leo instance.
-See <a class="reference external" href="http://packages.python.org/spyder/">http://packages.python.org/spyder/</a>.</p>
+See <a class="reference external" href="https://packages.python.org/spyder/">https://packages.python.org/spyder/</a>.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">startfile.py</span></code></dt><dd><p>Launches (starts) a file given by a headline when double-clicking the icon.</p>
 </dd>
@@ -434,7 +434,7 @@ See <a class="reference external" href="http://packages.python.org/spyder/">http
 <dt><code class="docutils literal notranslate"><span class="pre">trace_tags.py</span></code></dt><dd><p>Traces most common hooks, but not key, drag or idle hooks.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">viewrendered.py</span></code></dt><dd><p>Creates a window for <em>live</em> rendering of rst, html, etc.
-This plugin uses docutils, <a class="reference external" href="http://docutils.sourceforge.net/">http://docutils.sourceforge.net/</a>,
+This plugin uses docutils, <a class="reference external" href="https://docutils.sourceforge.net/">https://docutils.sourceforge.net/</a>,
 to do the rendering, so installing docutils is recommended.
 Supports <code class="docutils literal notranslate"><span class="pre">&#64;graphics-script</span></code>, <code class="docutils literal notranslate"><span class="pre">&#64;image</span></code>, <code class="docutils literal notranslate"><span class="pre">&#64;html</span></code>, <code class="docutils literal notranslate"><span class="pre">&#64;movie</span></code> and <code class="docutils literal notranslate"><span class="pre">&#64;svg</span></code> nodes.</p>
 </dd>
@@ -621,7 +621,7 @@ money in the world.
 <span class="o">|</span>
 <span class="o">+-</span> <span class="n">nodeActions</span>
    <span class="o">|</span>
-   <span class="o">+-</span> <span class="n">http</span><span class="p">:</span>\\<span class="o">*</span>
+   <span class="o">+-</span> <span class="n">https</span><span class="p">:</span>\\<span class="o">*</span>
    <span class="o">|</span>
    <span class="o">+-</span> <span class="nd">@file</span> <span class="o">*.</span><span class="n">py</span>
 </pre></div>
@@ -704,7 +704,7 @@ The following integer values are supported:</p>
 <span class="o">|</span>
 <span class="o">+-</span> <span class="nd">@files</span> <span class="n">C</span><span class="p">:</span>\\<span class="n">Leo</span>\\<span class="n">nodeActions_Patterns</span><span class="o">.</span><span class="n">txt</span>
     <span class="o">|</span>
-    <span class="o">+-</span> <span class="n">http</span><span class="p">:</span>\\<span class="o">*</span>
+    <span class="o">+-</span> <span class="n">https</span><span class="p">:</span>\\<span class="o">*</span>
     <span class="o">|</span>
     <span class="o">+-</span> <span class="nd">@file</span> <span class="o">*.</span><span class="n">py</span>
 </pre></div>
@@ -754,7 +754,7 @@ directive is associated with any of the matched patterns.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>^@files .*\.py$ [X,V&gt;]
 </pre></div>
 </div>
-<p>Double-clicking on a node with a “http:\\www.google.com” headline will invoke the script associated with the “http:\\*” pattern.  The following script in the body of the pattern’s node displays the URL in a browser:</p>
+<p>Double-clicking on a node with a “https:\\www.google.com” headline will invoke the script associated with the “https:\\*” pattern.  The following script in the body of the pattern’s node displays the URL in a browser:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">webbrowser</span>
 <span class="n">hClicked</span> <span class="o">=</span> <span class="n">pClicked</span><span class="o">.</span><span class="n">h</span>     <span class="c1">#Clicked node&#39;s Headline text</span>
 <span class="n">webbrowser</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">hClicked</span><span class="p">)</span> <span class="c1">#Invoke browser</span>
@@ -863,7 +863,7 @@ interest.  The nodes with that tag will be listed in the <cite>Links</cite> tab 
 <section id="debugger-pudb-py">
 <h4><a class="toc-backref" href="#id35" role="doc-backlink">debugger_pudb.py</a><a class="headerlink" href="#debugger-pudb-py" title="Link to this heading">¶</a></h4>
 <p>Makes <code class="docutils literal notranslate"><span class="pre">g.pdb()</span></code> enter the Pudb debugger instead of pdb.</p>
-<p>Pudb is a full-screen Python debugger: <a class="reference external" href="http://pypi.python.org/pypi/pudb">http://pypi.python.org/pypi/pudb</a></p>
+<p>Pudb is a full-screen Python debugger: <a class="reference external" href="https://pypi.python.org/pypi/pudb">https://pypi.python.org/pypi/pudb</a></p>
 </section>
 <section id="dump-globals-py">
 <h4><a class="toc-backref" href="#id36" role="doc-backlink">dump_globals.py</a><a class="headerlink" href="#dump-globals-py" title="Link to this heading">¶</a></h4>
@@ -1134,7 +1134,7 @@ an ancestor a copy of the file is created. These directives must at the beginnin
 <li><p>The body text of a <code class="docutils literal notranslate"><span class="pre">&#64;read-only</span></code> file cannot be modified in leo.</p></li>
 </ul>
 <p>The syntax to access files in <code class="docutils literal notranslate"><span class="pre">&#64;read-only</span></code> via ftp/http is the following:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@read</span><span class="o">-</span><span class="n">only</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="o">.</span><span class="n">ietf</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">rfc</span><span class="o">/</span><span class="n">rfc0791</span><span class="o">.</span><span class="n">txt</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@read</span><span class="o">-</span><span class="n">only</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="o">.</span><span class="n">ietf</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">rfc</span><span class="o">/</span><span class="n">rfc0791</span><span class="o">.</span><span class="n">txt</span>
 <span class="nd">@read</span><span class="o">-</span><span class="n">only</span> <span class="n">ftp</span><span class="p">:</span><span class="o">//</span><span class="n">ftp</span><span class="o">.</span><span class="n">someserver</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">filepath</span>
 </pre></div>
 </div>
@@ -1194,14 +1194,14 @@ resolving section references and Leo directives.</p></li>
 </dl>
 </li>
 </ul>
-<p>Requires 4Suite 1.0a3 or better, downloadable from <a class="reference external" href="http://4Suite.org">http://4Suite.org</a>.</p>
+<p>Requires 4Suite 1.0a3 or better, downloadable from <a class="reference external" href="https://4Suite.org">https://4Suite.org</a>.</p>
 </section>
 </section>
 <section id="scripting">
 <h3><a class="toc-backref" href="#id69" role="doc-backlink">Scripting</a><a class="headerlink" href="#scripting" title="Link to this heading">¶</a></h3>
 <section id="dyna-menu">
 <h4><a class="toc-backref" href="#id70" role="doc-backlink">dyna_menu</a><a class="headerlink" href="#dyna-menu" title="Link to this heading">¶</a></h4>
-<p>The dyna_menu plugin is a remarkable body of work by ‘e’. This plugin creates a dyna_menu menu from which you can execute commands. You may download the latest version at: <a class="reference external" href="http://rclick.netfirms.com/dyna_menu.py.html">http://rclick.netfirms.com/dyna_menu.py.html</a></p>
+<p>The dyna_menu plugin is a remarkable body of work by ‘e’. This plugin creates a dyna_menu menu from which you can execute commands. You may download the latest version at: <a class="reference external" href="https://rclick.netfirms.com/dyna_menu.py.html">https://rclick.netfirms.com/dyna_menu.py.html</a></p>
 </section>
 <section id="leoscreen-py">
 <h4><a class="toc-backref" href="#id71" role="doc-backlink">leoscreen.py</a><a class="headerlink" href="#leoscreen-py" title="Link to this heading">¶</a></h4>
@@ -1436,15 +1436,15 @@ nodes, the name of the command is the cleaned name of the headline.</p>
 <p><code class="docutils literal notranslate"><span class="pre">&#64;slide</span></code> nodes may contain <code class="docutils literal notranslate"><span class="pre">&#64;url</span> <span class="pre">nodes</span></code>. These <code class="docutils literal notranslate"><span class="pre">&#64;url</span></code> nodes serve two purposes. First, they allow you to see various files (slides, initial screenshots, working files and final screenshots). Second, these <code class="docutils literal notranslate"><span class="pre">&#64;url</span></code> nodes guide the meld script and the four commands defined by this plugin (see below). By inserting or deleting these <code class="docutils literal notranslate"><span class="pre">&#64;url</span></code> nodes you (or your scripts) can customize how the commands (and meld) work. In effect, the <code class="docutils literal notranslate"><span class="pre">&#64;url</span></code> nodes become per-slide settings.</p>
 <p><strong>Prerequisites</strong></p>
 <dl class="simple">
-<dt>Inkscape (Required)</dt><dd><p>An SVG editor: <a class="reference external" href="http://www.inkscape.org/">http://www.inkscape.org/</a>
+<dt>Inkscape (Required)</dt><dd><p>An SVG editor: <a class="reference external" href="https://www.inkscape.org/">https://www.inkscape.org/</a>
 Allows the user to edit screenshots.
 Required to create final output (PNG) files.</p>
 </dd>
 <dt>PIL (Optional but highly recommended)</dt><dd><p>The Python Imaging Library,
-<a class="reference external" href="http://www.pythonware.com/products/pil/">http://www.pythonware.com/products/pil/</a></p>
+<a class="reference external" href="https://www.pythonware.com/products/pil/">https://www.pythonware.com/products/pil/</a></p>
 </dd>
 <dt>Wink (Optional)</dt><dd><p>A program that creates slideshows and slides.
-<a class="reference external" href="http://www.debugmode.com/wink/">http://www.debugmode.com/wink/</a></p>
+<a class="reference external" href="https://www.debugmode.com/wink/">https://www.debugmode.com/wink/</a></p>
 </dd>
 </dl>
 <p><strong>Summary</strong></p>
@@ -1535,7 +1535,7 @@ options section below.</p>
 </ol>
 <blockquote>
 <div><p>The work file is an SVG (Scalable Vector
-Graphics) file: <a class="reference external" href="http://www.w3.org/Graphics/SVG/">http://www.w3.org/Graphics/SVG/</a>.</p>
+Graphics) file: <a class="reference external" href="https://www.w3.org/Graphics/SVG/">https://www.w3.org/Graphics/SVG/</a>.</p>
 </div></blockquote>
 <ol class="upperalpha simple" start="4">
 <li><p>(Optional) Edit the work file.</p></li>
@@ -1753,8 +1753,8 @@ Typing:</p>
 <span class="n">output</span> <span class="kn">from</span> <span class="nn">the</span> <span class="n">standard</span> <span class="n">Python</span> <span class="n">interpreter</span><span class="o">.</span>
 </pre></div>
 </div>
-<p><a class="reference external" href="http://tinyurl.com/cqh53">http://tinyurl.com/cqh53</a> - Python.org doctest page</p>
-<p><a class="reference external" href="http://tinyurl.com/pxhlq">http://tinyurl.com/pxhlq</a> - Jim Fulton’s presentation:</p>
+<p><a class="reference external" href="https://tinyurl.com/cqh53">https://tinyurl.com/cqh53</a> - Python.org doctest page</p>
+<p><a class="reference external" href="https://tinyurl.com/pxhlq">https://tinyurl.com/pxhlq</a> - Jim Fulton’s presentation:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Literate</span> <span class="n">Testing</span><span class="p">:</span>
 <span class="n">Automated</span> <span class="n">Testing</span> <span class="k">with</span> <span class="n">doctest</span>
 </pre></div>
@@ -2099,7 +2099,7 @@ For example:</p>
 <section id="leomylyn-py">
 <h3><a class="toc-backref" href="#id106" role="doc-backlink">leomylyn.py</a><a class="headerlink" href="#leomylyn-py" title="Link to this heading">¶</a></h3>
 <p>By Ville M. Vainio
-See: <a class="reference external" href="http://en.wikipedia.org/wiki/Mylyn">http://en.wikipedia.org/wiki/Mylyn</a></p>
+See: <a class="reference external" href="https://en.wikipedia.org/wiki/Mylyn">https://en.wikipedia.org/wiki/Mylyn</a></p>
 <p>I went on to start a “leo mylyn” plugin to exercise using the childrenModified and contentModified signals.</p>
 <p>If you want to play with it, enable leomylyn.py, modify stuff around the tree and do <code class="docutils literal notranslate"><span class="pre">alt-x</span> <span class="pre">mylyn-scores</span></code>.</p>
 <p>Of course as it is useless in this state, but becomes useful when it has a proper gui (maybe in Nav pane), where you would then have a list of “most interesting” nodes.</p>
@@ -2165,11 +2165,11 @@ want to search for a regexp, use ‘r:’ prefix, e.g. r:foo.*bar.</p>
 expression search (or any kind of case-sensitive search in the first place), do it
 by searching for “r:(?i)Foo”. (?i) is a standard feature of Python regular expression
 syntax, as documented in</p>
-<p><a class="reference external" href="http://docs.python.org/library/re.html#regular-expression-syntax">http://docs.python.org/library/re.html#regular-expression-syntax</a></p>
+<p><a class="reference external" href="https://docs.python.org/library/re.html#regular-expression-syntax">https://docs.python.org/library/re.html#regular-expression-syntax</a></p>
 </section>
 <section id="richtext-py">
 <h3><a class="toc-backref" href="#id115" role="doc-backlink">richtext.py</a><a class="headerlink" href="#richtext-py" title="Link to this heading">¶</a></h3>
-<p>Enables rich text using the <a class="reference external" href="http://ckeditor.com/">CKEditor</a> editor.</p>
+<p>Enables rich text using the <a class="reference external" href="https://ckeditor.com/">CKEditor</a> editor.</p>
 </section>
 <section id="screen-capture-py">
 <h3><a class="toc-backref" href="#id116" role="doc-backlink">screen_capture.py</a><a class="headerlink" href="#screen-capture-py" title="Link to this heading">¶</a></h3>
@@ -2234,7 +2234,7 @@ to be interpreted as rst and displayed as html.</p>
 <section id="spydershell-py">
 <h3><a class="toc-backref" href="#id120" role="doc-backlink">spydershell.py</a><a class="headerlink" href="#spydershell-py" title="Link to this heading">¶</a></h3>
 <p>Launches the spyder environment with access to Leo instance.
-See <a class="reference external" href="http://packages.python.org/spyder/">http://packages.python.org/spyder/</a></p>
+See <a class="reference external" href="https://packages.python.org/spyder/">https://packages.python.org/spyder/</a></p>
 <p>Execute <code class="docutils literal notranslate"><span class="pre">alt-x</span> <span class="pre">spyder-launch</span></code> to start spyder. Execute <code class="docutils literal notranslate"><span class="pre">alt-x</span> <span class="pre">spyder-update</span></code> to pass
 current c, p, g to spyder interactive session. <code class="docutils literal notranslate"><span class="pre">spyder-update</span></code> also shows the window
 if it was closed before.</p>
@@ -2284,7 +2284,7 @@ empty the node, then paste it into the note.</p>
 <p>This plugin adds time required, progress and priority settings for nodes. With
 the <code class="docutils literal notranslate"><span class="pre">&#64;project</span></code> tag a branch can display progress and time required with dynamic
 hierarchical updates.</p>
-<p>For more documentation see: <a class="reference external" href="http://leo.zwiki.org/tododoc">http://leo.zwiki.org/tododoc</a>.</p>
+<p>For more documentation see: <a class="reference external" href="https://leo.zwiki.org/tododoc">https://leo.zwiki.org/tododoc</a>.</p>
 </section>
 <section id="viewrendered-py">
 <h3><a class="toc-backref" href="#id124" role="doc-backlink">viewrendered.py</a><a class="headerlink" href="#viewrendered-py" title="Link to this heading">¶</a></h3>
@@ -2373,7 +2373,7 @@ errors and warnings may be shown.  For example, both:</p>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 1997-2024, Edward K. Ream.
-      Last updated on November 27, 2024.
+      Last updated on December 06, 2024.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
     </div>
   </body>
