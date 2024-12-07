@@ -510,8 +510,7 @@ class Commands:
         if g.unitTesting:
             return
         if keys.get('c') != c:
-            if trace:
-                g.trace('no c')
+            # g.trace('no c')
             return
         self.idle_focus_count += 1
         if c.in_qt_dialog:
@@ -3959,8 +3958,6 @@ class Commands:
         if 'focus' in g.app.debug:
             name = w.objectName() if hasattr(w, 'objectName') else w.__class__.__name__
             g.trace('(c)', name)
-            # g.trace('\n(c)',  w.__class__.__name__)
-            # g.trace(g.callers(6))
         return w
 
     def get_requested_focus(self) -> Widget:
@@ -3969,12 +3966,11 @@ class Commands:
 
     def request_focus(self, w: Widget) -> None:
         c = self
+        trace = 'focus' in g.app.debug
         if w and g.app.gui:
-            if 'focus' in g.app.debug:
-                # g.trace('\n(c)', repr(w))
-                name = w.objectName(
-                    ) if hasattr(w, 'objectName') else w.__class__.__name__
-                g.trace('(c)', name)
+            if trace:
+                name = w.objectName() if hasattr(w, 'objectName') else w.__class__.__name__
+                g.trace('(c)', name, g.callers(2))
             c.requestedFocusWidget = w
 
     def set_focus(self, w: Widget) -> None:
@@ -3982,9 +3978,8 @@ class Commands:
         c = self
         if w and g.app.gui:
             if trace:
-                name = w.objectName(
-                    ) if hasattr(w, 'objectName') else w.__class__.__name__
-                g.trace('(c)', name)
+                name = w.objectName() if hasattr(w, 'objectName') else w.__class__.__name__
+                g.trace('(c)', name, g.callers(4))
             g.app.gui.set_focus(c, w)
         elif trace:
             g.trace('(c) no w')
