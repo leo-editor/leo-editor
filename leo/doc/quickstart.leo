@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
-<leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
+<!-- Created by Leo: https://leo-editor.github.io/leo-editor/leo_toc.html -->
+<leo_file xmlns:leo="https://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2"/>
 <globals/>
 <preferences/>
@@ -18,8 +18,8 @@
 <v t="ekr.20090628092604.1829"><vh>change log</vh></v>
 </v>
 <v t="ville.20090627211608.5784"><vh>Tree manipulation basics</vh></v>
-<v t="ville.20090630234425.12394"><vh>Programming</vh>
-<v t="ville.20090627211608.10118"><vh>External files</vh>
+<v t="ville.20090630234425.12394" descendentVnodeUnknownAttributes="7d71005809000000302e302e342e302e3071017d7102580a0000007273742d696d706f727471037d710428580b000000756e6465726c696e657332710558000000007106580b000000756e6465726c696e657331710768067573732e"><vh>Programming</vh>
+<v t="ville.20090627211608.10118" descendentVnodeUnknownAttributes="7d71005807000000302e342e302e3071017d7102580a0000007273742d696d706f727471037d710428580b000000756e6465726c696e657332710558000000007106580b000000756e6465726c696e657331710768067573732e"><vh>External files</vh>
 <v t="ville.20090627211608.10116"><vh>\@file (explanation &amp; exercise)</vh>
 <v t="ville.20090627211608.10119"><vh>@path ~</vh>
 <v t="ville.20090627211608.10117"><vh>@@file myfile_file.py</vh>
@@ -78,9 +78,9 @@
 </v>
 </v>
 </v>
-<v t="ville.20090701184416.1554"><vh>reStructuredText (@auto-rst)</vh>
-<v t="ville.20090701184416.1555"><vh>@path ~</vh>
-<v t="ville.20090701184416.1556"><vh>@@auto-rst myfile_rst.txt</vh>
+<v t="ville.20090701184416.1554" descendentVnodeUnknownAttributes="7d71005805000000302e302e3071017d7102580a0000007273742d696d706f727471037d710428580b000000756e6465726c696e657332710558000000007106580b000000756e6465726c696e657331710768067573732e"><vh>reStructuredText (@auto-rst)</vh>
+<v t="ville.20090701184416.1555" descendentVnodeUnknownAttributes="7d71005803000000302e3071017d7102580a0000007273742d696d706f727471037d710428580b000000756e6465726c696e657332710558000000007106580b000000756e6465726c696e657331710768067573732e"><vh>@path ~</vh>
+<v t="ville.20090701184416.1556" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580a0000007273742d696d706f727471037d710428580b000000756e6465726c696e657332710558000000007106580b000000756e6465726c696e657331710768067573732e"><vh>@@auto-rst myfile_rst.txt</vh>
 <v t="ville.20090701184416.1557"><vh>Main heading</vh>
 <v t="ville.20090701184416.1558"><vh>subheading 1</vh></v>
 <v t="ville.20090703222440.1472"><vh>subheading 2</vh></v>
@@ -596,9 +596,9 @@ for n in nodes:
     # .b gets the body text, .h is headline
     body = n.b
     res.append("- " + n.h)
-    
     res.append("   " + str(body.count('\n')) + " lines")
-    
+    g.es(n.h)
+
 # 'p' is the 'current position'    
 child = p.insertAsLastChild()    
 child.b = "\n".join(res)

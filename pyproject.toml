@@ -311,7 +311,7 @@ dependencies = [
   "jupytext",        # For paired .ipynb/.py files.
   "markdown",        # VR3 plugin.
   "matplotlib",      # VR3 plugin.
-  "meta",            # livecode.py plugin.
+  # "meta",          # livecode.py plugin.
   "numpy",           # VR3 plugin.
   "pyenchant",       # The spell tab.
   "pyflakes",
