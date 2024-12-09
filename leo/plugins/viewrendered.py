@@ -485,7 +485,7 @@ def show_rendering_pane(event: Event) -> None:
     vr = getVr(event=event)
     if vr:
         c = vr.c
-        vr.show()
+        vr.show()  # QWidget.show.
         vr.is_visible = True
         c.bodyWantsFocusNow()
 #@+node:ekr.20131001100335.16606: *3* g.command('vr-toggle-visibility')
