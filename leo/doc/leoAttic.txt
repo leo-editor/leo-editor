@@ -2253,6 +2253,125 @@ echo $out_file_name;
 //echo "<br>Good Return<br>\n";
 /*************************************************************************/
 ?>
+#@+node:ekr.20241210053936.1: *3* script: alt implementation of show-buttons
+'''For each @button and @command node, show its file and gnx.'''
+# https://github.com/leo-editor/leo-editor/issues/993
+# https://github.com/leo-editor/leo-editor/issues/1511
+
+class ShowCommands:
+    @others
+
+g.cls()
+ShowCommands(c).run()
+#@+node:ekr.20241210061551.1: *4* __init__
+def __init__(self, c):
+    """Ctor for ShowCommands class."""
+    self.c = c
+    
+    # Define the results dictionary.
+    # Keys are munged @button/@command headlines.
+    # Values are list of tuples: (gnx, stripped-headline, short-filename).
+    self.d: dict[str, list[tuple[str, str, str]]] = {}
+    
+    # Compute paths to leoSettings.leo and myLeoSettings.leo.
+    local_fn = c.fileName()
+    settings_path = g.os_path_finalize_join(g.app.loadDir, '..', 'config', 'leoSettings.leo')
+    user_settings_path = g.app.loadManager.my_settings_path
+
+    # Open two or three files.
+    self.leo_settings = self.open_hidden_commander(settings_path)
+    self.user_settings = self.open_hidden_commander(user_settings_path)
+    self.local_settings = None if local_fn in (settings_path, user_settings_path) else c
+#@+node:ekr.20241210053936.15: *4* munge
+def munge(self, s):
+    '''Return the canonicalized name for @button and @command scripts.'''
+    return g.toUnicode(s.replace('-', '').replace('_', '').lower())
+#@+node:ekr.20241210055239.1: *4* open_hidden_commander
+def open_hidden_commander(self, fn):
+    """Open a hidden commander with the given filename."""
+    c = g.openWithFileName(fn, old_c=self.c, gui=g.app.nullGui)
+    if not c:
+        g.es_print(f"not found: {fn}", color='red')
+    return c
+#@+node:ekr.20241210053936.16: *4* run
+def run(self):
+
+    self.scan_buttons_and_commands(self.leo_settings)
+    self.scan_buttons_and_commands(self.user_settings)
+    if self.local_settings:
+        self.scan_buttons_and_commands(self.local_settings)
+    self.show_results()
+    g.trace('done')
+#@+node:ekr.20241210053936.12: *4* scan_buttons_and_commands & helpers
+def scan_buttons_and_commands(self, c):
+    '''Return a dict containing a representation
+    of all settings in leoSettings.leo or myLeoSettings.leo.
+    '''
+    sfn = c.shortFileName()
+    settings_node = g.findNodeAnywhere(c, '@settings', exact=False)
+    if not settings_node:
+        g.es_print(f"no @settings node in {sfn}", color='red')
+        return
+
+    # print(f"scanning: {sfn}")
+    for p in settings_node.subtree():
+        if self.is_setting(p):
+            kind, name = self.parse_setting(p)
+            aList = self.d.get(kind, [])
+            aList.append((p.gnx, p.h.strip(), sfn))
+            self.d[self.munge(name)] = aList
+#@+node:ekr.20241210053936.13: *5* is_setting
+def is_setting(self, p):
+    return any(g.match_word(p.h, 0, s) for s in ('@button', '@command'))
+      
+#@+node:ekr.20241210053936.14: *5* parse_setting
+def parse_setting(self, p):
+    s = p.h
+    assert s[0] == '@'
+    i = g.skip_id(s, 1)
+    kind = s[: i]
+    assert kind
+    i = g.skip_ws(s, i)
+    j = g.skip_id(s, i, chars='-')
+    name = s[i: j]
+    return kind, name
+#@+node:ekr.20241210065335.1: *4* show_results
+def show_results(self):
+    """Pretty-print self.d"""
+
+    # Compute the maximum length of all file names.
+    files = (self.leo_settings, self.user_settings, self.local_settings)
+    max_fn = max(len(z.shortFileName()) for z in files)
+
+    # Compute the maximum length of all gnxs.
+    max_gnx_len = 0
+    for aList in self.d.values():
+        for item in aList:
+            gnx, h, fn = item
+            max_gnx_len = max(max_gnx_len, len(gnx))
+
+    def pad_fn(fn):
+        n = max(0, max_fn - len(fn))
+        return ' '*n
+
+    def pad_gnx(gnx):
+        n = max(0, max_gnx_len - len(gnx))
+        return ' '*n
+
+    print('')
+    print(f"gnx{pad_gnx('gnx')} file{pad_fn('file')} node")
+    for key, aList in sorted(self.d.items()):
+        if len(aList) == 1:
+            gnx, h, fn = aList[0]
+            # No need to print the key.
+            print(f"{pad_gnx(gnx)}{gnx} {pad_fn(fn)}{fn} {h}")
+        else:
+            print(f"duplicate entries for key: {key}")
+            print('[')
+            for i, item in enumerate(aList):
+                gnx, h, fn = item
+                print(f"  {i}: {pad_gnx(gnx)}{gnx} {pad_fn(fn)}{fn} {h}")
+            print(']')
 #@+node:ekr.20240820045246.1: ** To be cleared later
 # Clear after 6.8.2.
 #@+node:ekr.20241125100825.1: *3* leo/scripts/sphinx_build.py (not used)
