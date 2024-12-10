@@ -2563,6 +2563,7 @@ class KeyHandlerClass:
             result.append('\n')
     #@+node:ekr.20120520174745.9867: *4* k.printButtons
     @cmd('show-buttons')
+    @cmd('show-@buttons-and-@commands')
     def printButtons(self, event: LeoKeyEvent = None) -> None:
         """Print all @button and @command commands, their bindings and their source."""
         c = self.c
@@ -2570,7 +2571,7 @@ class KeyHandlerClass:
         c.frame.log.clearTab(tabName)
 
         def put(s: str) -> None:
-            g.es('', s, tabName=tabName)
+            g.es_print('', s, tabName=tabName)
 
         data = []
         for aList in [c.config.getButtons(), c.config.getCommands()]:
