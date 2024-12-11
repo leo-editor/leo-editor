@@ -2562,8 +2562,8 @@ class KeyHandlerClass:
         if data:
             result.append('\n')
     #@+node:ekr.20120520174745.9867: *4* 'show-buttons-legacy'
-    @cmd('show-buttons-legacy')
-    def showButtonsLegacy(self, event: LeoKeyEvent = None) -> None:
+    @cmd('show-buttons')
+    def showButtons(self, event: LeoKeyEvent = None) -> None:
         """Print all @button and @command commands, their bindings and their source."""
         c = self.c
         tabName = '@buttons && @commands'
@@ -2723,7 +2723,7 @@ class KeyHandlerClass:
         ShowCommands(self.c).run()
     #@+node:ekr.20061031131434.121: *4* 'show-commands'
     @cmd('show-commands')
-    def showCommands(self, event: LeoKeyEvent = None) -> None:
+    def printCommands(self, event: LeoKeyEvent = None) -> None:
         """Print all the known commands and their bindings, if any."""
         c, k = self.c, self
         tabName = 'Commands'
@@ -2747,7 +2747,7 @@ class KeyHandlerClass:
         g.es_print('The show-buttons command shows the source of all @button and @command nodes')
     #@+node:tom.20220320235059.1: *4* 'show-commands-with-docs'
     @cmd('show-commands-with-docs')
-    def showCommandsWithDocs(self, event: LeoKeyEvent = None) -> None:
+    def printCommandsWithDocs(self, event: LeoKeyEvent = None) -> None:
         """Show all the known commands and their bindings, if any."""
         c, k = self.c, self
         tabName = 'List'
