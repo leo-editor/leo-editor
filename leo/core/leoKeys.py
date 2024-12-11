@@ -2561,9 +2561,9 @@ class KeyHandlerClass:
             result.append('%s %*s %s\n' % (letter, -n, left, commandName))
         if data:
             result.append('\n')
-    #@+node:ekr.20120520174745.9867: *4* 'show-buttons-legacy'
+    #@+node:ekr.20120520174745.9867: *4* 'show-buttons'
     @cmd('show-buttons')
-    def showButtons(self, event: LeoKeyEvent = None) -> None:
+    def printButtons(self, event: LeoKeyEvent = None) -> None:
         """Print all @button and @command commands, their bindings and their source."""
         c = self.c
         tabName = '@buttons && @commands'
