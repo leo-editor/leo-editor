@@ -2480,7 +2480,7 @@ class KeyHandlerClass:
     def menuCommandKey(self, event: LeoKeyEvent = None) -> None:
         # This method must exist, but it never gets called.
         pass
-    #@+node:ekr.20061031131434.119: *4* k.showBindings & helper
+    #@+node:ekr.20061031131434.119: *4* 'show-bindings'
     @cmd('show-bindings')
     def showBindings(self, event: LeoKeyEvent = None) -> list[str]:
         """Print all the bindings presently in effect."""
@@ -2561,9 +2561,8 @@ class KeyHandlerClass:
             result.append('%s %*s %s\n' % (letter, -n, left, commandName))
         if data:
             result.append('\n')
-    #@+node:ekr.20120520174745.9867: *4* k.printButtons
+    #@+node:ekr.20120520174745.9867: *4* 'show-buttons'
     @cmd('show-buttons')
-    @cmd('show-@buttons-and-@commands')
     def printButtons(self, event: LeoKeyEvent = None) -> None:
         """Print all @button and @command commands, their bindings and their source."""
         c = self.c
@@ -2595,7 +2594,134 @@ class KeyHandlerClass:
             'M myLeoSettings.leo',
         ])
         put('\n'.join(result))
-    #@+node:ekr.20061031131434.121: *4* k.printCommands
+    #@+node:ekr.20241211005649.1: *4* 'show-buttons-and-at-commands'
+    @cmd('show-buttons-and-at-commands')
+    def showButtonsAndAtCommands(self, event: LeoKeyEvent = None) -> None:
+        '''For each @button and @command node, show its file and gnx.'''
+
+
+        class ShowCommands:
+            #@+others
+            #@+node:ekr.20241210061551.1: *5* ShowCommands.__init__
+            def __init__(self, c: Cmdr) -> None:
+                """Ctor for ShowCommands class."""
+                self.c = c
+                self.log = c.frame.log
+
+                # Define the results dictionary.
+                # Keys are munged @button/@command headlines.
+                # Values are list of tuples: (gnx, stripped-headline, short-filename).
+                self.d: dict[str, list[tuple[str, str, str]]] = {}
+
+                # Compute paths to leoSettings.leo and myLeoSettings.leo.
+                local_fn = c.fileName()
+                settings_path = g.os_path_finalize_join(g.app.loadDir, '..', 'config', 'leoSettings.leo')
+                user_settings_path = g.app.loadManager.my_settings_path
+
+                # Open two or three files.
+                self.leo_settings = self.open_hidden_commander(settings_path)
+                self.user_settings = self.open_hidden_commander(user_settings_path)
+                self.local_settings = None if local_fn in (settings_path, user_settings_path) else c
+            #@+node:ekr.20241210053936.15: *5* ShowCommands.munge
+            def munge(self, s: str) -> str:
+                '''Return the canonicalized name for @button and @command scripts.'''
+                return g.toUnicode(s.replace('-', '').replace('_', '').lower())
+            #@+node:ekr.20241210055239.1: *5* ShowCommands.open_hidden_commander
+            def open_hidden_commander(self, path: str) -> Optional[Cmdr]:
+                """Open a hidden commander with the given filename."""
+                c = g.openWithFileName(path, old_c=self.c, gui=g.app.nullGui)
+                if not c:
+                    g.es_print(f"not found: {path}", color='red')
+                return c
+
+            #@+node:ekr.20241210053936.16: *5* ShowCommands.run
+            def run(self) -> None:
+                """Driver for show-buttons-and-at-commands"""
+                self.scan_buttons_and_commands(self.leo_settings)
+                self.scan_buttons_and_commands(self.user_settings)
+                if self.local_settings:
+                    self.scan_buttons_and_commands(self.local_settings)
+                self.show_results()
+            #@+node:ekr.20241210053936.12: *5* ShowCommands.scan_buttons_and_commands & helpers
+            def scan_buttons_and_commands(self, c: Cmdr) -> None:
+                '''Return a dict containing a representation
+                of all settings in leoSettings.leo or myLeoSettings.leo.
+                '''
+                sfn = c.shortFileName()
+                settings_node = g.findNodeAnywhere(c, '@settings', exact=False)
+                if not settings_node:
+                    g.es_print(f"no @settings node in {sfn}", color='red')
+                    return
+
+                for p in settings_node.subtree():
+                    if self.is_setting(p):
+                        kind, name = self.parse_setting(p)
+                        aList = self.d.get(kind, [])
+                        aList.append((p.gnx, p.h.strip(), sfn))
+                        self.d[self.munge(name)] = aList
+            #@+node:ekr.20241210053936.13: *6* is_setting
+            def is_setting(self, p: Position) -> bool:
+                return any(g.match_word(p.h, 0, s) for s in ('@button', '@command'))
+
+            #@+node:ekr.20241210053936.14: *6* parse_setting
+            def parse_setting(self, p: Position) -> tuple[str, str]:
+                s = p.h
+                assert s[0] == '@'
+                i = g.skip_id(s, 1)
+                kind = s[:i]
+                assert kind
+                i = g.skip_ws(s, i)
+                j = g.skip_id(s, i, chars='-')
+                name = s[i:j]
+                return kind, name
+            #@+node:ekr.20241210065335.1: *5* ShowCommands.show_results
+            def show_results(self) -> None:
+                """Pretty-print self.d"""
+                c = self.c
+
+                # Compute the maximum length of all file names.
+                files = (self.leo_settings, self.user_settings, self.local_settings)
+                max_fn = max(len(z.shortFileName()) for z in files)
+
+                # Compute the maximum length of all gnxs.
+                max_gnx_len = 0
+                for aList in self.d.values():
+                    for item in aList:
+                        gnx, h, fn = item
+                        max_gnx_len = max(max_gnx_len, len(gnx))
+
+                def pad_fn(fn: str) -> str:
+                    n = max(0, max_fn - len(fn))
+                    return ' ' * n
+
+                def pad_gnx(gnx: str) -> str:
+                    n = max(0, max_gnx_len - len(gnx))
+                    return ' ' * n
+
+                results = [f"gnx{pad_gnx('gnx')} file{pad_fn('file')} node"]
+                for key, aList in sorted(self.d.items()):
+                    if len(aList) == 1:
+                        gnx, h, fn = aList[0]
+                        # No need to print the key.
+                        results.append(f"{gnx}{pad_gnx(gnx)} {fn}{pad_fn(fn)} {h}")
+                    else:
+                        results.append(f"duplicate entries for key: {key}")
+                        results.append('[')
+                        for i, item in enumerate(aList):
+                            gnx, h, fn = item
+                            results.append(f"  {i}: {gnx}{pad_gnx(gnx)} {fn}{pad_fn(fn)} {h}")
+                        results.append(']')
+
+                results_s = '\n'.join(results)
+                tabName = '@buttons && @commands'
+                self.log.clearTab(tabName)
+                self.log.put(results_s, tabName=tabName)
+                print(results_s)
+            #@-others
+
+
+        ShowCommands(self.c).run()
+    #@+node:ekr.20061031131434.121: *4* 'show-commands'
     @cmd('show-commands')
     def printCommands(self, event: LeoKeyEvent = None) -> None:
         """Print all the known commands and their bindings, if any."""
@@ -2619,7 +2745,7 @@ class KeyHandlerClass:
         g.es_print('', ''.join(lines), tabName=tabName)
         print('')
         g.es_print('The show-buttons command shows the source of all @button and @command nodes')
-    #@+node:tom.20220320235059.1: *4* k.printCommandsWithDocs
+    #@+node:tom.20220320235059.1: *4* 'show-commands-with-docs'
     @cmd('show-commands-with-docs')
     def printCommandsWithDocs(self, event: LeoKeyEvent = None) -> None:
         """Show all the known commands and their bindings, if any."""
@@ -2660,7 +2786,7 @@ class KeyHandlerClass:
                 data.append((binding, cmd, doc))
         lines = ['[%*s] %s%s\n' % (-n, binding, cmd, doc) for binding, cmd, doc in data]
         g.es(''.join(lines), tabName=tabName)
-    #@+node:ekr.20061031131434.122: *4* k.repeatComplexCommand
+    #@+node:ekr.20061031131434.122: *4* 'repeat-complex-command'
     @cmd('repeat-complex-command')
     def repeatComplexCommand(self, event: LeoKeyEvent) -> None:
         """Repeat the previously executed minibuffer command."""
@@ -2673,7 +2799,7 @@ class KeyHandlerClass:
         command = k.mb_history[0] if k.mb_history else ''
         k.setLabelBlue(f"{k.altX_prompt}", protect=True)
         k.extendLabel(command, select=False, protect=False)
-    #@+node:ekr.20061031131434.123: *4* k.set-xxx-State
+    #@+node:ekr.20061031131434.123: *4* 'set-command-state'
     @cmd('set-command-state')
     def setCommandState(self, event: LeoKeyEvent) -> None:
         """Enter the 'command' editing state."""
@@ -2682,7 +2808,7 @@ class KeyHandlerClass:
         # This command is also valid in headlines.
             # k.c.bodyWantsFocus()
         k.showStateAndMode()
-
+    #@+node:ekr.20241211005855.1: *4* 'set-insert-state'
     @cmd('set-insert-state')
     def setInsertState(self, event: LeoKeyEvent) -> None:
         """Enter the 'insert' editing state."""
@@ -2692,6 +2818,7 @@ class KeyHandlerClass:
             # k.c.bodyWantsFocus()
         k.showStateAndMode()
 
+    #@+node:ekr.20241211005856.1: *4* 'set-overwrite-state'
     @cmd('set-overwrite-state')
     def setOverwriteState(self, event: LeoKeyEvent) -> None:
         """Enter the 'overwrite' editing state."""
@@ -2700,7 +2827,7 @@ class KeyHandlerClass:
         # This command is also valid in headlines.
             # k.c.bodyWantsFocus()
         k.showStateAndMode()
-    #@+node:ekr.20061031131434.124: *4* k.toggle-input-state
+    #@+node:ekr.20061031131434.124: *4* 'toggle-input-state'
     @cmd('toggle-input-state')
     def toggleInputState(self, event: LeoKeyEvent = None) -> None:
         """The toggle-input-state command."""
