@@ -201,9 +201,9 @@ The Python importer must count parens, curly-brackets and square-brackets. Keepi
 
 ```python
 s = '''\
-NS = { 'i': 'http://www.inkscape.org/namespaces/inkscape',
-        's': 'http://www.w3.org/2000/svg',
-    'xlink' : 'http://www.w3.org/1999/xlink'}
+NS = { 'i': 'https://www.inkscape.org/namespaces/inkscape',
+        's': 'https://www.w3.org/2000/svg',
+    'xlink' : 'https://www.w3.org/1999/xlink'}
 
 tabLevels = 4
 ```

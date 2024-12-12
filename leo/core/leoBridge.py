@@ -150,6 +150,11 @@ class BridgeController:
         from leo.core import leoPlugins
         leoPlugins.init()  # Necessary. Sets g.app.pluginsController.
         try:
+            from leo.core import leoJupytext
+        except ImportError:
+            print("Error importing leoJupytext.py")
+            traceback.print_exc()
+        try:
             from leo.core import leoNodes
         except ImportError:
             print("Error importing leoNodes.py")
@@ -162,6 +167,7 @@ class BridgeController:
         #@-<< initLeo imports >>
         g.app.recentFilesManager = leoApp.RecentFilesManager()
         g.app.loadManager = lm = leoApp.LoadManager()
+        g.app.jupytextManager = leoJupytext.JupytextManager()
         lm.computeStandardDirectories()
         # #2519: Call sys.exit if leoID does not exist.
         g.app.setLeoID(useDialog=False, verbose=True)

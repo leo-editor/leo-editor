@@ -145,7 +145,7 @@ g.pdb. I recommend always running Leo from a console.</p>
 <li><p>Model (data): The VNode and Position classes in leoNodes.py.</p></li>
 <li><p>View: The gui-independent base classes are in the node “Gui Base Classes”. The Qt-Specific subclasses are in the node “Qt gui”.</p></li>
 </ul>
-<p>In Leo, each class hides (encapsulates) the details of its internal workings from user (client) classes. This design principle has been spectacularly successful. Leo’s overall design has remained remarkably stable for 20 years, even as the internal details of many classes have radically changed. Two computer scientists influenced my thinking greatly: <a class="reference external" href="http://en.wikipedia.org/wiki/David_Parnas">David Parnas</a> and <a class="reference external" href="http://en.wikipedia.org/wiki/Glenford_Myers">Glenford Myers</a>.</p>
+<p>In Leo, each class hides (encapsulates) the details of its internal workings from user (client) classes. This design principle has been spectacularly successful. Leo’s overall design has remained remarkably stable for 20 years, even as the internal details of many classes have radically changed. Two computer scientists influenced my thinking greatly: <a class="reference external" href="https://en.wikipedia.org/wiki/David_Parnas">David Parnas</a> and <a class="reference external" href="https://en.wikipedia.org/wiki/Glenford_Myers">Glenford Myers</a>.</p>
 <p>The distinction between gui-dependent and gui-independent is important. Almost all gui-dependent code resides in the plugins folder. Leo’s core code is almost completely gui independent.</p>
 <p>Leo’s core typically assumes that w (an abstract widget) is a subclass of the baseTextWidget class. This class implements the DummyHighLevelInterface interface. Actually, w is usually a LeoQTextBrowser or leoQtBaseTextWidget object, defined in qtGui.py. These classes provide thin wrappers for corresponding Qt widgets.</p>
 <p>Wrapper classes are useful, regardless of gui independence:</p>
@@ -303,7 +303,7 @@ mode-and-pane-dependent bindings.</p></li>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 1997-2024, Edward K. Ream.
-      Last updated on November 27, 2024.
+      Last updated on December 06, 2024.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
     </div>
   </body>

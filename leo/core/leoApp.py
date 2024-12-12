@@ -3094,11 +3094,11 @@ class LoadManager:
             c.chapterController.finishCreate()
         if k:
             k.setDefaultInputState()
-        c.initialFocusHelper()
         if k:
             k.showStateAndMode()
         c.frame.initCompleteHint()
         c.outerUpdate()  # #181: Honor focus requests.
+        c.initialFocusHelper()
     #@+node:ekr.20120223062418.10408: *5* LM.openExternalFile
     def openExternalFile(self, fn: str, gui: Optional[LeoGui], old_c: Optional[Cmdr]) -> Cmdr:
         """
