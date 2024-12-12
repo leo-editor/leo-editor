@@ -2593,7 +2593,7 @@ def get_directives_dict(p: Position) -> dict[str, str]:
             # Warning if @path is in the body of an @file node.
             if word == 'path' and kind == 'body' and p.isAtFileNode():
                 message = '\n@path is not allowed in the body text of @file nodes\n'
-                g.print_unique_message(message, color='red')
+                g.print_unique_message(message)
                 continue
             k = g.skip_line(s, j)
             val = s[j:k].strip()
