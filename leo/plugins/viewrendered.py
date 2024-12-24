@@ -199,6 +199,7 @@ from __future__ import annotations
 from collections.abc import Callable
 import os
 from pathlib import Path
+import re
 import shutil
 import sys
 import textwrap
@@ -210,13 +211,11 @@ from leo.core.leoQt import QtMultimedia, QtSvg
 from leo.core.leoQt import ContextMenuPolicy, WrapMode
 from leo.plugins import qt_text
 
-# From VR3
 has_webengineview = False
 try:
     from leo.core.leoQt import QtWebEngineWidgets
     has_webengineview = True
 except ImportError:
-    # Might have Qt without QtWebEngineWidgets
     pass
 
 qwv = None
@@ -323,7 +322,7 @@ image_template = '''\
  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head></head>
-<body bgcolor="#ffffff">
+<body bgcolor=white>
 <img src="%s">
 </body>
 </html>
@@ -880,7 +879,9 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
 
         if pyperclip:
             pyperclip.copy(s)
-    #@+node:ekr.20170324064811.1: *4* vr.update_latex (same as mathjax)
+    #@+node:ekr.20170324064811.1: *4* vr.update_latex
+    latex_comment_pat = re.compile(r'\%(.*?)$')
+
     def update_latex(self, s: str, keywords: Any) -> None:
         """Update latex text in the VR pane."""
         p = self.c.p
@@ -893,7 +894,12 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         # Compute the contents.
         h = f"<h3>{p.h.strip()}</h3>\n\n"
         if has_webengineview:
-            contents = mathjax_template + '\n\n' + h + s
+            # Replace latex comments with html comments.
+            result = []
+            for line in g.splitLines(s):
+                i = line.find('%')
+                result.append(line[:i] + '<!--' + line[i + 1 :] + '-->' if i > -1 else line)
+            contents = mathjax_template + '\n\n' + h + ''.join(result)
         else:
             contents = h + s
         w.setHtml(contents)
@@ -1320,6 +1326,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             )
             return w
         n = c.config.getInt('qweb-view-font-size') or 16
+        # g.trace(f"@int qweb-view-font-size: {n}")
         try:
             settings = w.settings()
             settings.setFontSize(settings.FontSize.DefaultFontSize, abs(n))
