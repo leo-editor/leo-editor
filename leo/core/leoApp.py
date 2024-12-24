@@ -288,6 +288,7 @@ class LeoApp:
             "handlebars": "html",
             "hbs": "html",
             "less": "css",
+            "mathjax": "html",  # 2024/12/24
             "toml": "ini",
             # Values are existing languages in leo/modes.
         }

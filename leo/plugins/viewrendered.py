@@ -1,7 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:tbrown.20100318101414.5990: * @file ../plugins/viewrendered.py
-#@+<< vr docstring >>
-#@+node:tbrown.20100318101414.5991: ** << vr docstring >>
+#@+<< vr: docstring >>
+#@+node:tbrown.20100318101414.5991: ** << vr: docstring >>
 """
 
 Creates a window for *live* rendering of reSTructuredText, markdown text,
@@ -192,12 +192,11 @@ Edward K. Ream generalized this plugin.
 Jacob Peck added markdown support to this plugin.
 
 """
-#@-<< vr docstring >>
-#@+<< vr imports >>
-#@+node:tbrown.20100318101414.5993: ** << vr imports >>
+#@-<< vr: docstring >>
+#@+<< vr: imports >>
+#@+node:tbrown.20100318101414.5993: ** << vr: imports >>
 from __future__ import annotations
 from collections.abc import Callable
-import html
 import os
 from pathlib import Path
 import shutil
@@ -210,6 +209,30 @@ from leo.core.leoQt import QtCore, QtWidgets
 from leo.core.leoQt import QtMultimedia, QtSvg
 from leo.core.leoQt import ContextMenuPolicy, WrapMode
 from leo.plugins import qt_text
+
+# From VR3
+has_webengineview = False
+try:
+    from leo.core.leoQt import QtWebEngineWidgets
+    has_webengineview = True
+except ImportError:
+    # Might have Qt without QtWebEngineWidgets
+    pass
+
+qwv = None
+if has_webengineview:
+    qwv = QtWebEngineWidgets.QWebEngineView
+    try:
+        from leo.core.leoQt import QtWebEngineCore
+        QWebEngineSettings = QtWebEngineCore.QWebEngineSettings
+    except Exception:
+        QWebEngineSettings = QtWebEngineWidgets.QWebEngineSettings
+    from leo.core.leoQt import WebEngineAttribute
+else:
+    try:
+        qwv = QtWidgets.QTextBrowser
+    except Exception as e:
+        g.trace(e)
 
 BaseTextWidget = QtWidgets.QTextBrowser
 
@@ -273,9 +296,9 @@ except Exception:
 
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
-#@-<< vr imports >>
-#@+<< vr annotations >>
-#@+node:ekr.20220828161918.1: ** << vr annotations >>
+#@-<< vr: imports >>
+#@+<< vr: annotations >>
+#@+node:ekr.20220828161918.1: ** << vr: annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position, VNode
@@ -285,42 +308,40 @@ if TYPE_CHECKING:  # pragma: no cover
     QWidget = QtWidgets.QWidget
     Widget = Any
     Wrapper = Any
-#@-<< vr annotations >>
+#@-<< vr: annotations >>
 trace = False  # This global trace is convenient.
 asciidoctor_exec = shutil.which('asciidoctor')
 asciidoc3_exec = shutil.which('asciidoc3')
 pandoc_exec = shutil.which('pandoc')
-#@+<< vr set BaseTextWidget >>
-#@+node:ekr.20190424081947.1: ** << vr set BaseTextWidget >>
-#@-<< vr set BaseTextWidget >>
-#@+<< vr define html templates >>
-#@+node:ekr.20170324090828.1: ** << vr define html templates >>
+#@+<< vr: set BaseTextWidget >>
+#@+node:ekr.20190424081947.1: ** << vr: set BaseTextWidget >>
+#@-<< vr: set BaseTextWidget >>
+#@+<< vr: image template >>
+#@+node:ekr.20170324090828.1: ** << vr: image template >>
 image_template = '''\
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head></head>
-<body bgcolor="#fffbdc">
+<body bgcolor="#ffffff">
 <img src="%s">
 </body>
 </html>
 '''
-
-# http://docs.mathjax.org/en/latest/start.html
-latex_template = '''\
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
- "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+#@-<< vr: image template >>
+#@+<< vr: mathjax template >>
+#@+node:ekr.20241224072714.1: ** << vr: mathjax template >>
+mathjax_template = '''\
 <head>
-    <script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'>
-    </script>
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+  </script>
+  <script type="text/javascript" async
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML">
+  </script>
 </head>
-<body bgcolor="#fffbdc">
-%s
-</body>
-</html>
 '''
-#@-<< vr define html templates >>
+#@-<< vr: mathjax template >>
 #@+others
 #@+node:ekr.20110320120020.14491: ** vr.Top-level functions
 #@+node:tbrown.20100318101414.5995: *3* vr function: init
@@ -574,9 +595,11 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             'html': self.update_html,
             'graphics-script': self.update_graphics_script,
             'image': self.update_image,
+            'jinja': self.update_jinja,
             'jupyter': self.update_jupyter,
-            'latex': self.update_latex,
+            'latex': self.update_latex,  # Doesn't work.
             'markdown': self.update_md,
+            'mathjax': self.update_mathjax,
             'md': self.update_md,
             'movie': self.update_movie,
             'networkx': self.update_networkx,
@@ -586,7 +609,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             'rst': self.update_rst,
             'svg': self.update_svg,
             'plantuml': self.update_plantuml,
-            'jinja': self.update_jinja,
             # 'url': self.update_url,
             # 'xml': self.update_xml,
         }
@@ -616,73 +638,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.active = False
         g.unregisterHandler('select2', self.update)
         g.unregisterHandler('idle', self.update)
-    #@+node:ekr.20130413061407.10363: *3* vr.contract & expand
-    def contract(self) -> None:
-        self.change_size(-100)
-
-    def expand(self) -> None:
-        self.change_size(100)
-
-    def change_size(self, delta: int) -> None:
-        splitter = self.parent()
-        if not splitter:
-            return
-        i = splitter.indexOf(self)
-        assert i > -1
-        sizes = splitter.sizes()
-        n = len(sizes)
-        for j, size in enumerate(sizes):
-            if j == i:
-                sizes[j] = max(0, size + delta)
-            else:
-                sizes[j] = max(0, size - int(delta / (n - 1)))
-        splitter.setSizes(sizes)
-    #@+node:ekr.20240507100254.1: *3* vr.fully_expand
-    def fully_expand(self) -> None:
-        """Cover the body pane with the VR pane."""
-        splitter = self.parent()
-        if splitter and isinstance(splitter, QtWidgets.QSplitter):
-            i = splitter.indexOf(self)
-            splitter.moveSplitter(0, i)
-        self.show()
-    #@+node:ekr.20110321072702.14508: *3* vr.lock/unlock
-    def lock(self) -> None:
-        """Lock the VR pane."""
-        g.note('rendering pane locked')
-        self.locked = True
-
-    def unlock(self) -> None:
-        """Unlock the VR pane."""
-        g.note('rendering pane unlocked')
-        self.locked = False
-    #@+node:ekr.20240507100402.1: *3* vr.restore_body
-    def restore_body(self) -> None:
-        """Restore the visibility of the body pane."""
-        splitter = self.parent()  # A NestedSplitter
-        if splitter and isinstance(splitter, QtWidgets.QSplitter):
-            i = splitter.indexOf(self)
-            splitter.moveSplitter(int(sum(splitter.sizes()) / 2), i)
-        self.show()
-    #@+node:ekr.20160921071239.1: *3* vr.set_html
-    def set_html(self, s: str, w: Wrapper) -> None:
-        """Set text in w to s, preserving scroll position."""
-        p = self.c.p
-        sb = w.verticalScrollBar()
-        if sb:
-            d = self.scrollbar_pos_dict
-            if self.node_changed:
-                # Set the scrollbar.
-                pos = d.get(p.v, sb.sliderPosition())
-                sb.setSliderPosition(pos)
-            else:
-                # Save the scrollbars
-                d[p.v] = pos = sb.sliderPosition()
-        # if trace: g.trace('\n'+s)
-        w.setHtml(s)
-        if sb:
-            # Restore the scrollbars
-            assert pos is not None
-            sb.setSliderPosition(pos)
     #@+node:ekr.20101112195628.5426: *3* vr.update & helpers
     # Must have this signature: called by leoPlugins.callTagHandler.
 
@@ -804,11 +759,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             except Exception:
                 g.es_exception()
         self.update_rst(s, keywords)
-    #@+node:ekr.20191004144242.1: *5* vr.make_asciidoc_title (not used)
-    def make_asciidoc_title(self, s: str) -> str:
-        """Generate an asciidoc title for s."""
-        line = '#' * (min(4, len(s)))
-        return f"{line}\n{s}\n{line}\n\n"
     #@+node:ekr.20191004143805.1: *5* vr.convert_to_asciidoctor
     def convert_to_asciidoctor(self, s: str) -> str:
         """Convert s to html using the asciidoctor or asciidoc processor."""
@@ -930,63 +880,43 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
 
         if pyperclip:
             pyperclip.copy(s)
-    #@+node:ekr.20180311090852.1: *5* vr.get_jupyter_source
-    def get_jupyter_source(self, c: Cmdr) -> str:
-        """Return the html for the @jupyter node."""
-        body = c.p.b.lstrip()
-        if body.startswith('<'):
-            # Assume the body is html.
-            return body
-        if body.startswith('{'):
-            # Leo 5.7.1: Allow raw JSON.
-            s = body
-        else:
-            url = c.p.h.split()[1]
-            if not url:
-                return ''
-            if not nbformat:
-                return 'can not import nbformat to render url: %r' % url
-            try:
-                s = urlopen(url).read().decode()
-            except Exception:
-                return 'url not found: %s' % url
-
-        try:
-            nb = nbformat.reads(s, as_version=4)
-            e = HTMLExporter()
-            (s, junk_resources) = e.from_notebook_node(nb)
-        except nbformat.reader.NotJSONError:
-            pass  # Assume the result is html.
-        return s
-    #@+node:ekr.20170324064811.1: *4* vr.update_latex & helper
+    #@+node:ekr.20170324064811.1: *4* vr.update_latex (same as mathjax)
     def update_latex(self, s: str, keywords: Any) -> None:
-        """Update latex in the VR pane."""
-        c = self.c
-        if sys.platform.startswith('win'):
-            g.es_print('latex rendering not ready for Python 3')
-            w = self.ensure_text_widget()
-            self.show()
-            w.setPlainText(s)
-            c.bodyWantsFocusNow()
-            return
-        if self.must_change_widget(BaseTextWidget):
-            w = self.create_base_text_widget()
+        """Update latex text in the VR pane."""
+        p = self.c.p
+        if self.must_change_widget(has_webengineview):
+            w = self.create_web_engineview()  # Gives error message.
             self.embed_widget(w)
             assert w == self.w
         else:
             w = self.w
-        w.hide()  # This forces a proper update.
-        s = self.create_latex_html(s)
-        w.setHtml(s)
-        w.show()
-        c.bodyWantsFocusNow()
-    #@+node:ekr.20170324085132.1: *5* vr.create_latex_html
-    def create_latex_html(self, s: str) -> str:
-        """Create an html page embedding the latex code s."""
-        html_s = html.escape(s)
-        template = latex_template % (html_s)
-        template = textwrap.dedent(template).strip()
-        return template
+        # Compute the contents.
+        h = f"<h3>{p.h.strip()}</h3>\n\n"
+        if has_webengineview:
+            contents = mathjax_template + '\n\n' + h + s
+        else:
+            contents = h + s
+        w.setHtml(contents)
+        self.show()
+    #@+node:ekr.20241224072334.1: *4* vr.update_mathjax
+    def update_mathjax(self, s: str, keywords: Any) -> None:
+        """Update mathhjax text in the VR pane."""
+        p = self.c.p
+        if self.must_change_widget(has_webengineview):
+            w = self.create_web_engineview()  # Gives error message.
+            self.embed_widget(w)
+            assert w == self.w
+        else:
+            w = self.w
+        # Compute the contents.
+        h = f"<h3>{p.h.strip()}</h3>\n\n"
+        if has_webengineview:
+            contents = mathjax_template + '\n\n' + h + s
+        else:
+            contents = h + s
+        w.setHtml(contents)
+        self.show()
+
     #@+node:peckj.20130207132858.3671: *4* vr.update_md & helper
     def update_md(self, s: str, keywords: Any) -> None:
         """Update markdown text in the VR pane."""
@@ -1356,8 +1286,49 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             w = self.ensure_text_widget()
             self.show()
             w.setPlainText('')
-    #@+node:ekr.20110322031455.5765: *4* vr.utils for update helpers...
-    #@+node:ekr.20110322031455.5764: *5* vr.ensure_text_widget
+    #@+node:ekr.20110322031455.5765: *3* vr: utils...
+    #@+node:ekr.20130413061407.10363: *4* vr.contract & expand
+    def contract(self) -> None:
+        self.change_size(-100)
+
+    def expand(self) -> None:
+        self.change_size(100)
+
+    def change_size(self, delta: int) -> None:
+        splitter = self.parent()
+        if not splitter:
+            return
+        i = splitter.indexOf(self)
+        assert i > -1
+        sizes = splitter.sizes()
+        n = len(sizes)
+        for j, size in enumerate(sizes):
+            if j == i:
+                sizes[j] = max(0, size + delta)
+            else:
+                sizes[j] = max(0, size - int(delta / (n - 1)))
+        splitter.setSizes(sizes)
+    #@+node:ekr.20241224074331.1: *4* vr.create_web_engineview
+    def create_web_engineview(self) -> QWidget:
+        """Return a QWebEngineView instance."""
+        c = self.c
+        w = qwv()
+        if isinstance(w, QtWidgets.QTextBrowser):
+            g.print_unique_message(
+                'VR can not render latex or mathjax:\n'
+                'pip install PyQt6-WebEngine\n'
+            )
+            return w
+        n = c.config.getInt('qweb-view-font-size') or 16
+        try:
+            settings = w.settings()
+            settings.setFontSize(settings.FontSize.DefaultFontSize, abs(n))
+        except Exception:
+            pass
+        wa = WebEngineAttribute.LocalContentCanAccessRemoteUrls
+        settings.setAttribute(wa, True)
+        return w
+    #@+node:ekr.20110322031455.5764: *4* vr.ensure_text_widget
     def ensure_text_widget(self) -> Widget:
         """Swap a text widget into the rendering pane if necessary."""
         c = self.c
@@ -1386,7 +1357,61 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             self.embed_widget(w)  # Creates w.wrapper
             assert w == self.w
         return self.w
-    #@+node:ekr.20110320120020.14483: *5* vr.get_kind
+    #@+node:ekr.20240507100254.1: *4* vr.fully_expand
+    def fully_expand(self) -> None:
+        """Cover the body pane with the VR pane."""
+        splitter = self.parent()
+        if splitter and isinstance(splitter, QtWidgets.QSplitter):
+            i = splitter.indexOf(self)
+            splitter.moveSplitter(0, i)
+        self.show()
+    #@+node:ekr.20110320233639.5776: *4* vr.get_fn
+    def get_fn(self, s: str, tag: str) -> tuple[bool, str]:
+        c = self.c
+        fn = s or c.p.h[len(tag) :]
+        fn = fn.strip()
+        # Similar to code in g.computeFileUrl
+        if fn.startswith('~'):
+            fn = fn[1:]
+            fn = g.finalize(fn)
+        else:
+            # Handle ancestor @path directives.
+            if c and c.fileName():
+                base = c.getNodePath(c.p)
+                fn = g.finalize_join(g.os_path_dirname(c.fileName()), base, fn)
+            else:
+                fn = g.finalize(fn)
+        ok = g.os_path_exists(fn)
+        return ok, fn
+    #@+node:ekr.20180311090852.1: *4* vr.get_jupyter_source
+    def get_jupyter_source(self, c: Cmdr) -> str:
+        """Return the html for the @jupyter node."""
+        body = c.p.b.lstrip()
+        if body.startswith('<'):
+            # Assume the body is html.
+            return body
+        if body.startswith('{'):
+            # Leo 5.7.1: Allow raw JSON.
+            s = body
+        else:
+            url = c.p.h.split()[1]
+            if not url:
+                return ''
+            if not nbformat:
+                return 'can not import nbformat to render url: %r' % url
+            try:
+                s = urlopen(url).read().decode()
+            except Exception:
+                return 'url not found: %s' % url
+
+        try:
+            nb = nbformat.reads(s, as_version=4)
+            e = HTMLExporter()
+            (s, junk_resources) = e.from_notebook_node(nb)
+        except nbformat.reader.NotJSONError:
+            pass  # Assume the result is html.
+        return s
+    #@+node:ekr.20110320120020.14483: *4* vr.get_kind
     def get_kind(self, p: Position) -> Optional[str]:
         """Return the proper rendering kind for node p."""
 
@@ -1432,34 +1457,26 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
                 if language in self.dispatch_dict:
                     return language
         return None
-    #@+node:ekr.20110320233639.5776: *5* vr.get_fn
-    def get_fn(self, s: str, tag: str) -> tuple[bool, str]:
-        c = self.c
-        fn = s or c.p.h[len(tag) :]
-        fn = fn.strip()
-        # Similar to code in g.computeFileUrl
-        if fn.startswith('~'):
-            fn = fn[1:]
-            fn = g.finalize(fn)
-        else:
-            # Handle ancestor @path directives.
-            if c and c.fileName():
-                base = c.getNodePath(c.p)
-                fn = g.finalize_join(g.os_path_dirname(c.fileName()), base, fn)
-            else:
-                fn = g.finalize(fn)
-        ok = g.os_path_exists(fn)
-        return ok, fn
-    #@+node:ekr.20110321005148.14536: *5* vr.get_url
+    #@+node:ekr.20110321005148.14536: *4* vr.get_url
     def get_url(self, s: str, tag: str) -> str:
         p = self.c.p
         url = s or p.h[len(tag) :]
         url = url.strip()
         return url
-    #@+node:ekr.20110322031455.5763: *5* vr.must_change_widget
+    #@+node:ekr.20110321072702.14508: *4* vr.lock/unlock
+    def lock(self) -> None:
+        """Lock the VR pane."""
+        g.note('rendering pane locked')
+        self.locked = True
+
+    def unlock(self) -> None:
+        """Unlock the VR pane."""
+        g.note('rendering pane unlocked')
+        self.locked = False
+    #@+node:ekr.20110322031455.5763: *4* vr.must_change_widget
     def must_change_widget(self, widget_class: Widget) -> bool:
         return not self.w or self.w.__class__ != widget_class
-    #@+node:ekr.20110320120020.14485: *5* vr.remove_directives
+    #@+node:ekr.20110320120020.14485: *4* vr.remove_directives
     def remove_directives(self, s: str) -> str:
         lines = g.splitLines(s)
         result = []
@@ -1471,6 +1488,34 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
                     continue
             result.append(s1)
         return ''.join(result)
+    #@+node:ekr.20240507100402.1: *4* vr.restore_body
+    def restore_body(self) -> None:
+        """Restore the visibility of the body pane."""
+        splitter = self.parent()  # A NestedSplitter
+        if splitter and isinstance(splitter, QtWidgets.QSplitter):
+            i = splitter.indexOf(self)
+            splitter.moveSplitter(int(sum(splitter.sizes()) / 2), i)
+        self.show()
+    #@+node:ekr.20160921071239.1: *4* vr.set_html
+    def set_html(self, s: str, w: Wrapper) -> None:
+        """Set text in w to s, preserving scroll position."""
+        p = self.c.p
+        sb = w.verticalScrollBar()
+        if sb:
+            d = self.scrollbar_pos_dict
+            if self.node_changed:
+                # Set the scrollbar.
+                pos = d.get(p.v, sb.sliderPosition())
+                sb.setSliderPosition(pos)
+            else:
+                # Save the scrollbars
+                d[p.v] = pos = sb.sliderPosition()
+        # if trace: g.trace('\n'+s)
+        w.setHtml(s)
+        if sb:
+            # Restore the scrollbars
+            assert pos is not None
+            sb.setSliderPosition(pos)
     #@-others
 #@-others
 #@@language python
