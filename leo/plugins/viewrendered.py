@@ -330,7 +330,7 @@ image_template = '''\
 #@-<< vr: image template >>
 #@+<< vr: mathjax template >>
 #@+node:ekr.20241224072714.1: ** << vr: mathjax template >>
-mathjax_template = '''\
+mathjax_template = '''
 <head>
   <script type="text/x-mathjax-config">
     MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
@@ -354,6 +354,7 @@ def init() -> bool:
     # Always enable this plugin, even if imports fail.
     g.plugin_signon(__name__)
     g.registerHandler('after-create-leo-frame', onCreate)
+    g.registerHandler('close-frame', onClose)
     g.registerHandler('scrolledMessage', show_scrolled_message)
     return True
 #@+node:ekr.20240727091022.1: *3* vr function: getVR
@@ -394,11 +395,19 @@ def onCreate(tag: str, keys: dict) -> None:
     vr.active = True
     vr.is_visible = False
     vr.hide()
-#@+node:vitalije.20170712174157.1: *3* vr function: onClose (does nothing)
+#@+node:vitalije.20170712174157.1: *3* vr function: onClose
 def onClose(tag: str, keys: dict) -> None:
     """
-    Handle a close event in the Leo *outline*, not the VR pane.
+    Handle a close event in the Leo outline.
     """
+    c = keys.get('c')
+    if not c:
+        return
+    vr = getattr(c, 'vr', None)
+    if vr and vr.qwv:
+        vr.qwv.hide()
+        del vr.qwv
+        vr.qwv = None
 #@+node:tbrown.20110629132207.8984: *3* vr function: show_scrolled_message
 def show_scrolled_message(tag: str, kw: Any) -> None:
     if g.unitTesting:
@@ -573,6 +582,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.is_visible = False
         self.length = 0  # The length of previous p.b.
         self.locked = False
+        self.qwv = None  # The singleton qwv instance.
         self.scrollbar_pos_dict: dict[VNode, Position] = {}  # Keys are vnodes, values are positions.
         self.vp: Widget = None  # A QtMultimedia.QMediaPlayer or None.
         self.w: Wrapper = None  # The present widget in the rendering pane.
@@ -892,14 +902,19 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         else:
             w = self.w
         # Compute the contents.
-        h = f"<h3>{p.h.strip()}</h3>\n\n"
+        h = f"<h3>{p.h.strip()}</h3>\n"
         if has_webengineview:
-            # Replace latex comments with html comments.
+            # Replace latex comments with html comments
             result = []
             for line in g.splitLines(s):
                 i = line.find('%')
-                result.append(line[:i] + '<!--' + line[i + 1 :] + '-->' if i > -1 else line)
-            contents = mathjax_template + '\n\n' + h + ''.join(result)
+                if i > -1:
+                    result.append(line[:i] + '<!--' + line[i + 1 :] + '-->')
+                else:
+                    result.append(line)
+            # Replace \\ with <br>, but this hack only works outside of math mode!
+            result_s = ''.join(result).replace(r'\\', '<br>')
+            contents = mathjax_template + '\n\n' + h + result_s
         else:
             contents = h + s
         w.setHtml(contents)
@@ -1318,7 +1333,10 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     def create_web_engineview(self) -> QWidget:
         """Return a QWebEngineView instance."""
         c = self.c
-        w = qwv()
+        # Allocate the qwv instance only once.
+        if self.qwv:
+            return self.qwv
+        self.qwv = w = qwv()
         if isinstance(w, QtWidgets.QTextBrowser):
             g.print_unique_message(
                 'VR can not render latex or mathjax:\n'
