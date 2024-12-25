@@ -747,7 +747,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             return True
         if self.length != len(p.b):
             self.length = len(p.b)  # Suppress updates until next change.
-            if self.get_kind(p) in ('html', 'pyplot'):
+            if self.get_kind(p) == 'pyplot':
                 return False  # Only update explicitly.
             return True
         return False
@@ -914,8 +914,9 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
                     result.append(line)
                 else:
                     result.append('<p>')  # Works only outside math mode!
+            # Do *not* replace \\: It would interfere with alignment!
             # Replacing \\ with <br> works outside of math mode!
-            result_s = ''.join(result).replace(r'\\', '<br>')
+            result_s = ''.join(result)
             contents = mathjax_template + '\n\n' + h + result_s
         else:
             contents = h + s
