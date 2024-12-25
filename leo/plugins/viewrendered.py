@@ -910,9 +910,11 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
                 i = line.find('%')
                 if i > -1:
                     result.append(line[:i] + '<!--' + line[i + 1 :] + '-->')
-                else:
+                elif line.strip():
                     result.append(line)
-            # Replace \\ with <br>, but this hack only works outside of math mode!
+                else:
+                    result.append('<p>')  # Works only outside math mode!
+            # Replacing \\ with <br> works outside of math mode!
             result_s = ''.join(result).replace(r'\\', '<br>')
             contents = mathjax_template + '\n\n' + h + result_s
         else:
