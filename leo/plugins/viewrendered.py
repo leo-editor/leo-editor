@@ -835,8 +835,8 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     def update_html(self, s: str, keywords: Any) -> None:
         """Update html in the VR pane."""
         c = self.c
-        if self.must_change_widget(BaseTextWidget):
-            w = self.create_base_text_widget()
+        if self.must_change_widget(has_webengineview):
+            w = self.create_web_engineview()  # Gives error message.
             self.embed_widget(w)
             assert w == self.w
         else:
