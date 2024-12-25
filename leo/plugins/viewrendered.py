@@ -890,8 +890,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         if pyperclip:
             pyperclip.copy(s)
     #@+node:ekr.20170324064811.1: *4* vr.update_latex
-    latex_comment_pat = re.compile(r'\%(.*?)$')
-
     def update_latex(self, s: str, keywords: Any) -> None:
         """Update latex text in the VR pane."""
         p = self.c.p
@@ -904,22 +902,19 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         # Compute the contents.
         h = f"<h3>{p.h.strip()}</h3>\n"
         if has_webengineview:
-            # Replace latex comments with html comments
-            result = []
-            for line in g.splitLines(s):
-                i = line.find('%')
-                if i > -1:
-                    result.append(line[:i] + '<!--' + line[i + 1 :] + '-->')
-                elif line.strip():
-                    result.append(line)
-                else:
-                    result.append('<p>')  # Works only outside math mode!
-            # Do *not* replace \\: It would interfere with alignment!
-            # Replacing \\ with <br> works outside of math mode!
-            result_s = ''.join(result)
-            contents = mathjax_template + '\n\n' + h + result_s
+            if 1:
+                # Replace whole-line latex comments with html comments.
+                # Don't make any other changes!
+                result_s = ''.join([
+                    f"<!-- {z} -->" if z.strip().startswith('%') else z
+                    for z in g.splitLines(s)
+                ])
+                contents = mathjax_template + '\n\n' + h + result_s
+            else:
+                contents = mathjax_template + '\n\n' + h + s
         else:
             contents = h + s
+        g.trace('len(contents)', len(contents))
         w.setHtml(contents)
         self.show()
     #@+node:ekr.20241224072334.1: *4* vr.update_mathjax
