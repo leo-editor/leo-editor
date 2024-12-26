@@ -310,7 +310,7 @@ if TYPE_CHECKING:  # pragma: no cover
 trace = False  # This global trace is convenient.
 asciidoctor_exec = shutil.which('asciidoctor')
 asciidoc3_exec = shutil.which('asciidoc3')
-pandoc_exec = shutil.which('pandoc')
+# pandoc_exec = shutil.which('pandoc')
 #@+<< vr: set BaseTextWidget >>
 #@+node:ekr.20190424081947.1: ** << vr: set BaseTextWidget >>
 #@-<< vr: set BaseTextWidget >>
@@ -403,7 +403,13 @@ def onClose(tag: str, keys: dict) -> None:
     if not c:
         return
     vr = getattr(c, 'vr', None)
-    if vr and vr.qwv:
+    if not vr:
+        return
+    if vr.pdf_qwv:
+        vr.pdf_qwv.hide()
+        del vr.pdf_qwv
+        vr.pdf_qwv = None
+    if vr.qwv:
         vr.qwv.hide()
         del vr.qwv
         vr.qwv = None
@@ -558,21 +564,6 @@ def update_rendering_pane(event: Event) -> None:
     if vr:
         c = vr.c
         vr.update(tag='view', keywords={'c': c, 'force': True})  # type:ignore
-#@+node:ekr.20241226070023.1: *3* g.command('vr-zoom-in' & 'zoom-out')
-@g.command('vr-zoom-in')
-def zoom_in(event: Event) -> None:
-    """Update the rendering pane"""
-    vr = getVr(event=event)
-    if vr:
-        vr.zoom_in()
-
-@g.command('vr-zoom-out')
-def zoom_out(event: Event) -> None:
-    """Update the rendering pane"""
-    vr = getVr(event=event)
-    if vr:
-        vr.zoom_out()
-
 #@+node:ekr.20110317024548.14375: ** class ViewRenderedController (QWidget)
 class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     """A class to control rendering in a rendering pane."""
@@ -596,6 +587,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.is_visible = False
         self.length = 0  # The length of previous p.b.
         self.locked = False
+        self.pdf_qwv = None  # The singleton qwv instance, with support for pdf.
         self.qwv = None  # The singleton qwv instance.
         self.scrollbar_pos_dict: dict[VNode, Position] = {}  # Keys are vnodes, values are positions.
         self.vp: Widget = None  # A QtMultimedia.QMediaPlayer or None.
@@ -626,9 +618,9 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             'md': self.update_md,
             'movie': self.update_movie,
             'networkx': self.update_networkx,
-            'pandoc': self.update_pandoc,
+            # 'pandoc': self.update_pandoc,
             'pdf': self.update_pdf,
-            'pyplot': self.update_pyplot,
+            # 'pyplot': self.update_pyplot,
             'rest': self.update_rst,
             'rst': self.update_rst,
             'svg': self.update_svg,
@@ -1025,60 +1017,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         w = self.ensure_text_widget()
         w.setPlainText('')  # 'Networkx: len: %s' % (len(s)))
         self.show()
-    #@+node:ekr.20191006155748.1: *4* vr.update_pandoc & helpers
-    def update_pandoc(self, s: str, keywords: Any) -> None:
-        """
-        Update an @pandoc in the VR pane.
-
-        There is no such thing as @language pandoc,
-        so only @pandoc nodes trigger this code.
-        """
-        global pandoc_exec
-        w = self.ensure_text_widget()
-        assert self.w
-        if s:
-            self.show()
-        if pandoc_exec:
-            try:
-                s2 = self.convert_to_pandoc(s)
-                self.set_html(s2, w)
-            except Exception:
-                g.es_exception()
-            return
-        self.update_rst(s, keywords)
-    #@+node:ekr.20191006155748.3: *5* vr.convert_to_pandoc
-    def convert_to_pandoc(self, s: str) -> str:
-        """Convert s to html using the asciidoctor or asciidoc processor."""
-        c, p = self.c, self.c.p
-        path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
-        if not os.path.isdir(path):
-            path = os.path.dirname(path)
-        if os.path.isdir(path):
-            os.chdir(path)
-        s = self.run_pandoc(s)
-        return g.toUnicode(s)
-    #@+node:ekr.20191006155748.4: *5* vr.run_pandoc
-    def run_pandoc(self, s: str) -> str:
-        """
-        Process s with pandoc.
-        return the contents of the html file.
-        The caller handles all exceptions.
-        """
-        global pandoc_exec
-        assert pandoc_exec, g.callers()
-        home = g.os.path.expanduser('~')
-        i_path = g.finalize_join(home, 'vr_input.pandoc')
-        o_path = g.finalize_join(home, 'vr_output.html')
-        # Write the input file.
-        with open(i_path, 'w') as f:
-            f.write(s)
-        # Call pandoc to write the output file.
-        # --quiet does no harm.
-        command = f"pandoc {i_path} -t html5 -o {o_path}"
-        g.execute_shell_commands(command)
-        # Read the output file and return it.
-        with open(o_path, 'r') as f:
-            return f.read()
     #@+node:ekr.20241226011006.1: *4* vr.update_pdf
     def update_pdf(self, s: str, keywords: Any) -> None:
         """Update latex text in the VR pane."""
@@ -1097,7 +1035,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             return
 
         # Create a new QWebEngineView, deleting the old if it exists.
-        w = self.create_web_engineview()
+        w = self.create_web_engineview_with_pdf()
         self.embed_widget(w)
         assert w == self.w
 
@@ -1112,61 +1050,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         url = QUrl.fromLocalFile(path)
         w.load(url)
         self.show()
-    #@+node:ekr.20160928023915.1: *4* vr.update_pyplot
-    def update_pyplot(self, s: str, keywords: Any) -> None:
-        """Get the pyplot script at c.p.b and show it."""
-        if not got_pyplot:
-            g.es(('==== Viewrendered: MISSING matplotlib.  Cannot process @pyplot node'))
-            return
-
-        c = self.c
-
-        backend = pyplot.get_backend()  # Returns 'qtagg' initially.
-        if backend != 'module://leo.plugins.pyplot_backend':
-            backend = g.finalize_join(g.app.loadDir, '..', 'plugins', 'pyplot_backend.py')
-            if g.os_path_exists(backend):
-                try:
-                    # The order of these statements is important...
-                    import matplotlib
-                    matplotlib.use('module://leo.plugins.pyplot_backend')
-                except ImportError:
-                    g.trace('===== FAIL: pyplot.backend')
-            else:
-                g.trace('===== MISSING: pyplot.backend')
-        try:
-            import matplotlib  # Make *sure* this is imported.
-            import matplotlib.pyplot as plt
-            import numpy as np
-            from matplotlib import animation
-            plt.ion()  # Automatically set interactive mode.
-            namespace = {
-                'animation': animation,
-                'matplotlib': matplotlib,
-                'numpy': np, 'np': np,
-                'pyplot': plt, 'plt': plt,
-            }
-        except Exception:
-            g.es_print('matplotlib imports failed')
-            namespace = {}
-        # Embedding already works without this!
-            # self.embed_pyplot_widget()
-        # pyplot will throw RuntimeError if we close the pane.
-        c.executeScript(
-            event=None,
-            args=None, p=None,
-            script=None,
-            useSelectedText=False,
-            define_g=True,
-            define_name='__main__',
-            silent=False,
-            namespace=namespace,
-            raiseFlag=False,
-            runPyflakes=False,  # Suppress warnings about pre-defined symbols.
-        )
-        c.bodyWantsFocusNow()
-
-        # Be courteous to other users - restore default pyplot drawing target
-        matplotlib.use('QtAgg')
     #@+node:ekr.20110320120020.14477: *4* vr.update_rst & helpers
     def update_rst(self, s: str, keywords: Any) -> None:
         """Update rst in the VR pane."""
@@ -1386,26 +1269,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             i = splitter.indexOf(self)
             splitter.moveSplitter(0, i)
         self.show()
-    #@+node:ekr.20241226065433.1: *4* vr.zoom_in & zoom_out
-    def zoom_in(self) -> None:
-        w = self.w
-        if isinstance(w, QtWidgets.QTextBrowser):
-            return
-        settings = w.settings()
-        kind = settings.FontSize.DefaultFontSize
-        n = settings.fontSize(kind)
-        g.trace(n)
-        settings.setFontSize(kind, n + 2)
-
-    def zoom_out(self) -> None:
-        w = self.w
-        if isinstance(w, QtWidgets.QTextBrowser):
-            return
-        settings = w.settings()
-        kind = settings.FontSize.DefaultFontSize
-        n = settings.fontSize(kind)
-        g.trace(n)
-        settings.setFontSize(kind, n - 2)
     #@+node:ekr.20110322031455.5765: *3* vr: utils...
     #@+node:ekr.20241224074331.1: *4* vr.create_web_engineview
     def create_web_engineview(self) -> QWidget:
@@ -1427,8 +1290,34 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             return w
         n = c.config.getInt('qweb-view-font-size') or 16
         n = abs(n)
-        # g.trace(f"@int qweb-view-font-size: {n}")
-        # g.trace(f"w.page(): {w.page()!r}")
+        settings = w.settings()
+        # Allow remote access.
+        wa = WebEngineAttribute.LocalContentCanAccessRemoteUrls
+        settings.setAttribute(wa, True)
+        # Fonts: https://doc.qt.io/qt-6/qwebenginesettings.html#FontSize-enum
+        settings.setFontSize(settings.FontSize.DefaultFontSize, n)
+        return w
+    #@+node:ekr.20241226173150.1: *4* vr.create_web_engineview_with_pdf
+    def create_web_engineview_with_pdf(self) -> QWidget:
+        """
+        Return a *new* QWebEngineView instance with support for pdf,
+        deleting any previous instance.
+        """
+        c = self.c
+        # Kill the old QWebEngineView!
+        if self.pdf_qwv:
+            del self.pdf_qwv
+            self.pdf_qwv = None
+        # Always create a new QWebEngineView.
+        self.pdf_qwv = w = qwv()
+        if isinstance(w, QtWidgets.QTextBrowser):
+            g.print_unique_message(
+                'VR can not render latex or mathjax:\n'
+                'pip install PyQt6-WebEngine\n'
+            )
+            return w
+        n = c.config.getInt('qweb-view-font-size') or 16
+        n = abs(n)
         settings = w.settings()
         # Allow remote access.
         wa = WebEngineAttribute.LocalContentCanAccessRemoteUrls
