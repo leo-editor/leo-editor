@@ -1247,39 +1247,49 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     # http://doc.trolltech.com/4.4/painting-svgviewer.html
     def update_svg(self, s: str, keywords: Any) -> None:
 
-        if hasattr(QtSvg, "QSvgWidget"):  # #2134
-            QSvgWidget = QtSvg.QSvgWidget
-        else:
-            try:
-                from PyQt6 import QtSvgWidgets
-                QSvgWidget = QtSvgWidgets.QSvgWidget
-            except Exception:
-                QSvgWidget = None
-        if not QSvgWidget:
-            w = self.ensure_text_widget()
-            w.setPlainText(s)
-            return
-        if self.must_change_widget(QSvgWidget):
-            w = QSvgWidget()
-            self.embed_widget(w)
-            assert w == self.w
-        else:
-            w = self.w
-        if s.strip().startswith('<'):
-            # Assume it is the svg (xml) source.
-            # Sensitive to leading blank lines.
-            s = textwrap.dedent(s).strip()
-            s_bytes = g.toEncodedString(s)
-            self.show()
-            w.load(QtCore.QByteArray(s_bytes))
+        if 0:  # Use webengine. Works, but scaling is big.
+            if self.must_change_widget(has_webengineview):
+                w = self.create_web_engineview()  # Gives error message.
+                self.embed_widget(w)
+                assert w == self.w
+            else:
+                w = self.w
+            w.setHtml(s)
             w.show()
-        else:
-            # Get a filename from the headline or body text.
-            ok, path = self.get_fn(s, '@svg')
-            if ok:
+        else:  # Legacy:  Better scaling.
+            if hasattr(QtSvg, "QSvgWidget"):  # #2134
+                QSvgWidget = QtSvg.QSvgWidget
+            else:
+                try:
+                    from PyQt6 import QtSvgWidgets
+                    QSvgWidget = QtSvgWidgets.QSvgWidget
+                except Exception:
+                    QSvgWidget = None
+            if not QSvgWidget:
+                w = self.ensure_text_widget()
+                w.setPlainText(s)
+                return
+            if self.must_change_widget(QSvgWidget):
+                w = QSvgWidget()
+                self.embed_widget(w)
+                assert w == self.w
+            else:
+                w = self.w
+            if s.strip().startswith('<'):
+                # Assume it is the svg (xml) source.
+                # Sensitive to leading blank lines.
+                s = textwrap.dedent(s).strip()
+                s_bytes = g.toEncodedString(s)
                 self.show()
-                w.load(path)
+                w.load(QtCore.QByteArray(s_bytes))
                 w.show()
+            else:
+                # Get a filename from the headline or body text.
+                ok, path = self.get_fn(s, '@svg')
+                if ok:
+                    self.show()
+                    w.load(path)
+                    w.show()
     #@+node:ekr.20110321005148.14537: *4* vr.update_url
     def update_url(self, s: str, keywords: Any) -> None:
         c, p = self.c, self.c.p
