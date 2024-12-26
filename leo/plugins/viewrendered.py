@@ -199,7 +199,6 @@ from __future__ import annotations
 from collections.abc import Callable
 import os
 from pathlib import Path
-import re
 import shutil
 import sys
 import textwrap
@@ -559,6 +558,21 @@ def update_rendering_pane(event: Event) -> None:
     if vr:
         c = vr.c
         vr.update(tag='view', keywords={'c': c, 'force': True})  # type:ignore
+#@+node:ekr.20241226070023.1: *3* g.command('vr-zoom-in' & 'zoom-out')
+@g.command('vr-zoom-in')
+def zoom_in(event: Event) -> None:
+    """Update the rendering pane"""
+    vr = getVr(event=event)
+    if vr:
+        vr.zoom_in()
+
+@g.command('vr-zoom-out')
+def zoom_out(event: Event) -> None:
+    """Update the rendering pane"""
+    vr = getVr(event=event)
+    if vr:
+        vr.zoom_out()
+
 #@+node:ekr.20110317024548.14375: ** class ViewRenderedController (QWidget)
 class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     """A class to control rendering in a rendering pane."""
@@ -1075,9 +1089,11 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         fn = lines and lines[0].strip()
         if not fn:
             g.trace(f"No file name in {p.h}")
+            self.hide()
             return
         if not has_webengineview:
             g.trace('@pdf requires PyQt6-WebEngine')
+            self.hide()
             return
 
         # Create a new QWebEngineView, deleting the old if it exists.
@@ -1088,7 +1104,8 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         # Check the path.
         ok, path = self.get_fn(fn, '@image')
         if not ok:
-            w.setPlainText('@pdf: file not found: %s' % (path))
+            g.trace(f"@pdf: file not found: {path!r}")
+            self.hide()
             return
 
         # Create a URL to the file.
@@ -1339,7 +1356,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             w = self.ensure_text_widget()
             self.show()
             w.setPlainText('')
-    #@+node:ekr.20110322031455.5765: *3* vr: utils...
+    #@+node:ekr.20241226065904.1: *3* vr: commands
     #@+node:ekr.20130413061407.10363: *4* vr.contract & expand
     def contract(self) -> None:
         self.change_size(-100)
@@ -1361,6 +1378,35 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             else:
                 sizes[j] = max(0, size - int(delta / (n - 1)))
         splitter.setSizes(sizes)
+    #@+node:ekr.20240507100254.1: *4* vr.fully_expand
+    def fully_expand(self) -> None:
+        """Cover the body pane with the VR pane."""
+        splitter = self.parent()
+        if splitter and isinstance(splitter, QtWidgets.QSplitter):
+            i = splitter.indexOf(self)
+            splitter.moveSplitter(0, i)
+        self.show()
+    #@+node:ekr.20241226065433.1: *4* vr.zoom_in & zoom_out
+    def zoom_in(self) -> None:
+        w = self.w
+        if isinstance(w, QtWidgets.QTextBrowser):
+            return
+        settings = w.settings()
+        kind = settings.FontSize.DefaultFontSize
+        n = settings.fontSize(kind)
+        g.trace(n)
+        settings.setFontSize(kind, n + 2)
+
+    def zoom_out(self) -> None:
+        w = self.w
+        if isinstance(w, QtWidgets.QTextBrowser):
+            return
+        settings = w.settings()
+        kind = settings.FontSize.DefaultFontSize
+        n = settings.fontSize(kind)
+        g.trace(n)
+        settings.setFontSize(kind, n - 2)
+    #@+node:ekr.20110322031455.5765: *3* vr: utils...
     #@+node:ekr.20241224074331.1: *4* vr.create_web_engineview
     def create_web_engineview(self) -> QWidget:
         """
@@ -1380,19 +1426,24 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             )
             return w
         n = c.config.getInt('qweb-view-font-size') or 16
+        n = abs(n)
+        # g.trace(f"@int qweb-view-font-size: {n}")
+        # g.trace(f"w.page(): {w.page()!r}")
         settings = w.settings()
-        try:
-            settings.setFontSize(settings.FontSize.DefaultFontSize, abs(n))
-        except Exception:
-            pass
+        # Allow remote access.
         wa = WebEngineAttribute.LocalContentCanAccessRemoteUrls
         settings.setAttribute(wa, True)
-        try:
-            # Works.
-            settings.setAttribute(settings.WebAttribute.PluginsEnabled, True)
-            settings.setAttribute(settings.WebAttribute.PdfViewerEnabled, True)
-        except Exception:
-            pass
+        # Allow rendering of .pdf files.
+        settings.setAttribute(settings.WebAttribute.PluginsEnabled, True)
+        settings.setAttribute(settings.WebAttribute.PdfViewerEnabled, True)
+        # Fonts: https://doc.qt.io/qt-6/qwebenginesettings.html#FontSize-enum
+        # Set size of controls.
+        settings.setFontSize(settings.FontSize.DefaultFontSize, n)
+        # Set other font sizes.
+        # settings.setFontSize(settings.FontSize.DefaultFixedFontSize, n)
+        # settings.setFontSize(settings.FontSize.MinimumFontSize, n)
+        # settings.setFontSize(settings.FontSize.MinimumLogicalFontSize, n)
+        # w.setZoomFactor(2.0)  # Only affects frame, not contents!
         return w
     #@+node:ekr.20110322031455.5764: *4* vr.ensure_text_widget
     def ensure_text_widget(self) -> Widget:
@@ -1423,14 +1474,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             self.embed_widget(w)  # Creates w.wrapper
             assert w == self.w
         return self.w
-    #@+node:ekr.20240507100254.1: *4* vr.fully_expand
-    def fully_expand(self) -> None:
-        """Cover the body pane with the VR pane."""
-        splitter = self.parent()
-        if splitter and isinstance(splitter, QtWidgets.QSplitter):
-            i = splitter.indexOf(self)
-            splitter.moveSplitter(0, i)
-        self.show()
     #@+node:ekr.20110320233639.5776: *4* vr.get_fn
     def get_fn(self, s: str, tag: str) -> tuple[bool, str]:
         c = self.c
