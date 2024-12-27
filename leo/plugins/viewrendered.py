@@ -281,17 +281,6 @@ try:
 except Exception:
     pyperclip = None
 
-# matplotlib, pyplot, numpy.
-got_pyplot = False
-try:
-    import matplotlib.pyplot as pyplot
-    import numpy as np
-    got_pyplot = True
-    assert np
-    assert pyplot
-except Exception:
-    pass
-
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@-<< vr: imports >>
@@ -612,7 +601,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             'image': self.update_image,
             'jinja': self.update_jinja,
             'jupyter': self.update_jupyter,
-            'latex': self.update_latex,  # Doesn't work.
+            'latex': self.update_latex,
             'markdown': self.update_md,
             'mathjax': self.update_mathjax,
             'md': self.update_md,
@@ -754,8 +743,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             return True
         if self.length != len(p.b):
             self.length = len(p.b)  # Suppress updates until next change.
-            if self.get_kind(p) == 'pyplot':
-                return False  # Only update explicitly.
             return True
         return False
     #@+node:ekr.20191004143229.1: *4* vr.update_asciidoc & helpers
