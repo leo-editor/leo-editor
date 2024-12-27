@@ -601,7 +601,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             'image': self.update_image,
             'jinja': self.update_jinja,
             'jupyter': self.update_jupyter,
-            'latex': self.update_latex,
+            # 'latex': self.update_latex,
             'markdown': self.update_md,
             'mathjax': self.update_mathjax,
             'md': self.update_md,
@@ -609,7 +609,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             'networkx': self.update_networkx,
             # 'pandoc': self.update_pandoc,
             'pdf': self.update_pdf,
-            # 'pyplot': self.update_pyplot,
+            'pyplot': self.update_pyplot,
             'rest': self.update_rst,
             'rst': self.update_rst,
             'svg': self.update_svg,
@@ -881,9 +881,13 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
 
         if pyperclip:
             pyperclip.copy(s)
-    #@+node:ekr.20170324064811.1: *4* vr.update_latex
+    #@+node:ekr.20170324064811.1: *4* vr.update_latex (disabled)
     def update_latex(self, s: str, keywords: Any) -> None:
-        """Update latex text in the VR pane."""
+        """
+        Update latex text in the VR pane.
+        
+        This code has been disabled. Use @language mathjax instead.
+        """
         p = self.c.p
 
         # Create a new QWebEngineView, deleting the old if it exists.
@@ -1004,6 +1008,62 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         w = self.ensure_text_widget()
         w.setPlainText('')  # 'Networkx: len: %s' % (len(s)))
         self.show()
+    #@+node:ekr.20191006155748.1: *4* vr.update_pandoc & helpers (disabled)
+    def update_pandoc(self, s: str, keywords: Any) -> None:
+        """
+        Update an @pandoc in the VR pane.
+        
+        This code has been disabled.
+
+        There is no such thing as @language pandoc,
+        so only @pandoc nodes trigger this code.
+        """
+        global pandoc_exec
+        w = self.ensure_text_widget()
+        assert self.w
+        if s:
+            self.show()
+        if pandoc_exec:
+            try:
+                s2 = self.convert_to_pandoc(s)
+                self.set_html(s2, w)
+            except Exception:
+                g.es_exception()
+            return
+        self.update_rst(s, keywords)
+    #@+node:ekr.20191006155748.3: *5* vr.convert_to_pandoc
+    def convert_to_pandoc(self, s: str) -> str:
+        """Convert s to html using the asciidoctor or asciidoc processor."""
+        c, p = self.c, self.c.p
+        path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
+        if not os.path.isdir(path):
+            path = os.path.dirname(path)
+        if os.path.isdir(path):
+            os.chdir(path)
+        s = self.run_pandoc(s)
+        return g.toUnicode(s)
+    #@+node:ekr.20191006155748.4: *5* vr.run_pandoc
+    def run_pandoc(self, s: str) -> str:
+        """
+        Process s with pandoc.
+        return the contents of the html file.
+        The caller handles all exceptions.
+        """
+        global pandoc_exec
+        assert pandoc_exec, g.callers()
+        home = g.os.path.expanduser('~')
+        i_path = g.finalize_join(home, 'vr_input.pandoc')
+        o_path = g.finalize_join(home, 'vr_output.html')
+        # Write the input file.
+        with open(i_path, 'w') as f:
+            f.write(s)
+        # Call pandoc to write the output file.
+        # --quiet does no harm.
+        command = f"pandoc {i_path} -t html5 -o {o_path}"
+        g.execute_shell_commands(command)
+        # Read the output file and return it.
+        with open(o_path, 'r') as f:
+            return f.read()
     #@+node:ekr.20241226011006.1: *4* vr.update_pdf
     def update_pdf(self, s: str, keywords: Any) -> None:
         """Update latex text in the VR pane."""
@@ -1037,6 +1097,59 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         url = QUrl.fromLocalFile(path)
         w.load(url)
         self.show()
+    #@+node:ekr.20160928023915.1: *4* vr.update_pyplot
+    def update_pyplot(self, s: str, keywords: Any) -> None:
+        """
+        Get the pyplot script at c.p.b and show it in the VR pane.
+        """
+        c = self.c
+        try:
+            import matplotlib
+            import matplotlib.pyplot as plt
+            from matplotlib import animation
+            import numpy as np
+        except Exception:
+            g.print_unique_message('VR: missing imports: cannot process @pyplot node')
+            return
+        backend = plt.get_backend()  # Returns 'qtagg' initially.
+        if backend != 'module://leo.plugins.pyplot_backend':
+            backend = g.finalize_join(g.app.loadDir, '..', 'plugins', 'pyplot_backend.py')
+            if g.os_path_exists(backend):
+                try:
+                    matplotlib.use('module://leo.plugins.pyplot_backend')
+                except ImportError:
+                    g.trace('===== FAIL: pyplot.backend')
+            else:
+                g.trace('===== MISSING: pyplot.backend')
+
+        plt.ion()  # Set interactive mode.
+
+        if 0:  # Embedding works without this!
+            self.embed_pyplot_widget()
+
+        # pyplot will throw RuntimeError if we close the pane.
+        namespace = {
+            'animation': animation,
+            'matplotlib': matplotlib,
+            'numpy': np, 'np': np,
+            'pyplot': plt, 'plt': plt,
+        }
+        c.executeScript(
+            event=None,
+            args=None, p=None,
+            script=None,
+            useSelectedText=False,
+            define_g=True,
+            define_name='__main__',
+            silent=False,
+            namespace=namespace,
+            raiseFlag=False,
+            runPyflakes=False,  # Suppress warnings about pre-defined symbols.
+        )
+        c.bodyWantsFocusNow()
+
+        # Be courteous to other users - restore default pyplot drawing target
+        matplotlib.use('QtAgg')
     #@+node:ekr.20110320120020.14477: *4* vr.update_rst & helpers
     def update_rst(self, s: str, keywords: Any) -> None:
         """Update rst in the VR pane."""
