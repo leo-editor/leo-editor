@@ -232,8 +232,6 @@ else:
     except Exception as e:
         g.trace(e)
 
-BaseTextWidget = QtWidgets.QTextBrowser
-
 # Optional third-party imports...
 
 # Docutils.
@@ -299,10 +297,7 @@ if TYPE_CHECKING:  # pragma: no cover
 trace = False  # This global trace is convenient.
 asciidoctor_exec = shutil.which('asciidoctor')
 asciidoc3_exec = shutil.which('asciidoc3')
-# pandoc_exec = shutil.which('pandoc')
-#@+<< vr: set BaseTextWidget >>
-#@+node:ekr.20190424081947.1: ** << vr: set BaseTextWidget >>
-#@-<< vr: set BaseTextWidget >>
+pandoc_exec = shutil.which('pandoc')
 #@+<< vr: image template >>
 #@+node:ekr.20170324090828.1: ** << vr: image template >>
 image_template = '''\
@@ -392,16 +387,9 @@ def onClose(tag: str, keys: dict) -> None:
     if not c:
         return
     vr = getattr(c, 'vr', None)
-    if not vr:
-        return
-    if vr.pdf_qwv:
-        vr.pdf_qwv.hide()
-        del vr.pdf_qwv
-        vr.pdf_qwv = None
-    if vr.qwv:
-        vr.qwv.hide()
-        del vr.qwv
-        vr.qwv = None
+    if vr:
+        vr.closeEvent(event=None)
+
 #@+node:tbrown.20110629132207.8984: *3* vr function: show_scrolled_message
 def show_scrolled_message(tag: str, kw: Any) -> None:
     if g.unitTesting:
@@ -567,11 +555,15 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         # Ivars set by reloadSettings.
         self.auto_create: bool = None
         self.keep_open: bool = None
+        # Widgets managed by destroy_widgets.
+        self.browser: Widget = None
+        self.gs: Widget = None  # For @graphics-script: a QGraphicsScene
+        self.gv: Widget = None  # For @graphics-script: a QGraphicsView
+        self.vp: Widget = None  # A QtMultimedia.QMediaPlayer or None.
+        self.w: Wrapper = None  # The present widget in the rendering pane.
         # Set the ivars.
         self.active = True
         self.gnx: str = None
-        self.gs: Widget = None  # For @graphics-script: a QGraphicsScene
-        self.gv: Widget = None  # For @graphics-script: a QGraphicsView
         self.keep_open = False  # True: keep the VR pane open even when showing text.
         self.is_visible = False
         self.length = 0  # The length of previous p.b.
@@ -579,8 +571,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.pdf_qwv = None  # The singleton qwv instance, with support for pdf.
         self.qwv = None  # The singleton qwv instance.
         self.scrollbar_pos_dict: dict[VNode, Position] = {}  # Keys are vnodes, values are positions.
-        self.vp: Widget = None  # A QtMultimedia.QMediaPlayer or None.
-        self.w: Wrapper = None  # The present widget in the rendering pane.
         # User settings.
         self.reloadSettings()
         self.node_changed = True
@@ -643,6 +633,8 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.active = False
         g.unregisterHandler('select2', self.update)
         g.unregisterHandler('idle', self.update)
+        g.unregisterHandler('scrolledMessage', show_scrolled_message)
+        self.destroy_widgets()
     #@+node:ekr.20101112195628.5426: *3* vr.update & helpers
     # Must have this signature: called by leoPlugins.callTagHandler.
 
@@ -679,7 +671,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             f = self.dispatch_dict.get(kind)
         else:
             # Do *not* try to render plain text.
-            w = self.ensure_text_widget()
+            w = self.get_base_text_widget()
             w.setPlainText(s)
         if f:
             f(s, keywords)
@@ -688,46 +680,117 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             self.show()
         else:
             self.hide()
-    #@+node:ekr.20190424083049.1: *4* vr.create_base_text_widget
-    def create_base_text_widget(self) -> Wrapper:
+    #@+node:ekr.20241227053437.1: *4* vr.update: helpers
+    #@+node:ekr.20190424083049.1: *5* vr.get_base_text_widget
+    def get_base_text_widget(self) -> QWidget:
         """Create a QTextBrowser."""
         c = self.c
-        w = BaseTextWidget()
-        n = c.config.getInt('qweb-view-font-size')
-        if n:
-            try:
-                # BaseTextWidget is a QWebView.
-                settings = w.settings()
-                settings.setFontSize(settings.DefaultFontSize, n)
-            except AttributeError:
-                # BaseTextWidget is a QTextBrowser.
-                pass
-        return w
-    #@+node:ekr.20110320120020.14486: *4* vr.embed_widget
-    def embed_widget(self, w: Wrapper, delete_callback: Callable = None) -> None:
-        """Embed widget w in the appropriate widget."""
-        c = self.c
-        self.w = w
+        if isinstance(self.w, QtWidgets.QTextBrowser):
+            return self.w
 
-        # #3892: Replace the body pane
+        self.destroy_widgets()
+        self.browser = self.w = w = QtWidgets.QTextBrowser()
+        self.embed_widget(w)  # Creates w.wrapper
+
+        text_name = 'body-text-renderer'
+        w.setObjectName(text_name)
+        w.setReadOnly(True)
+        # Create the standard Leo bindings.
+        wrapper_name = 'rendering-pane-wrapper'
+        wrapper = qt_text.QTextEditWrapper(w, wrapper_name, c)
+        w.leo_wrapper = wrapper
+        c.k.completeAllBindingsForWidget(wrapper)
+        w.setWordWrapMode(WrapMode.WrapAtWordBoundaryOrAnywhere)
+
+        def contextMenuCallback(point: Any) -> None:
+            """LeoQtTree: Callback for customContextMenuRequested events."""
+            # #1286.
+            w = self  # Required.
+            g.app.gui.onContextMenu(c, w, point)
+
+        # #1286.
+        w.setContextMenuPolicy(ContextMenuPolicy.CustomContextMenu)
+        w.customContextMenuRequested.connect(contextMenuCallback)
+
+        def handleClick(url: str, w: Widget = w) -> None:
+            wrapper = qt_text.QTextEditWrapper(w, name='vr-body', c=c)
+            event = g.Bunch(c=c, w=wrapper)
+            g.openUrlOnClick(event, url=url)
+
+        w.anchorClicked.connect(handleClick)
+        w.setOpenLinks(False)
+        return w
+    #@+node:ekr.20241224074331.1: *5* vr.create_web_engineview
+    def create_web_engineview(self) -> QWidget:
+        """
+        Return a *new* QWebEngineView instance, deleting any previous instance.
+        """
+        c = self.c
+        # Kill the old QWebEngineView!
+        self.destroy_widgets()
+
+        # Always create a new QWebEngineView.
+        self.qwv = self.w = w = qwv()
+        self.embed_widget(w)
+        if isinstance(w, QtWidgets.QTextBrowser):
+            g.print_unique_message(
+                'VR can not render latex or mathjax:\n'
+                'pip install PyQt6-WebEngine\n'
+            )
+            return w
+
+        # Allow remote access.
+        settings = w.settings()
+        wa = WebEngineAttribute.LocalContentCanAccessRemoteUrls
+        settings.setAttribute(wa, True)
+
+        # Set the font size, but this does very little.
+        n = c.config.getInt('qweb-view-font-size') or 16
+        n = abs(n)
+        settings.setFontSize(settings.FontSize.DefaultFontSize, n)
+        return w
+    #@+node:ekr.20241226173150.1: *5* vr.create_web_engineview_with_pdf
+    def create_web_engineview_with_pdf(self) -> QWidget:
+        """
+        Return a *new* QWebEngineView instance with support for pdf,
+        deleting any previous instance.
+        """
+        c = self.c
+
+        # Create the QWebEngineView if possible and embed the widget.
+        w = self.create_web_engineview()
+        assert w == self.w, g.callers()
+        if isinstance(w, QtWidgets.QTextBrowser):
+            # create_web_engineview has issued the warning.
+            return w
+
+        # Allow rendering of .pdf files.
+        settings = w.settings()
+        settings.setAttribute(settings.WebAttribute.PluginsEnabled, True)
+        return w
+    #@+node:ekr.20241227044803.1: *5* vr.destroy_widgets
+    def destroy_widgets(self) -> None:
+        """Destroy all widgets."""
+        # g.trace(g.shortFileName(self.c.fileName()))
+        for ivar in ('gs', 'gv', 'pdf_qwv', 'qwv', 'vp'):
+            var = getattr(self, ivar)
+            del var
+            setattr(self, ivar, None)
+    #@+node:ekr.20110320120020.14486: *5* vr.embed_widget
+    def embed_widget(self, w: Wrapper) -> None:
+        """Embed widget w in the layout."""
+
+        assert w == self.w, g.callers()  # Invariant.
+
+        # Delete all previous widgets.
         layout = self.layout()
         for i in range(layout.count()):
             layout.removeItem(layout.itemAt(0))
+
+        # Add the new widget.
         self.layout().addWidget(w)
         w.show()
-
-        # Special inits for text widgets...
-        if w.__class__ == QtWidgets.QTextBrowser:
-            text_name = 'body-text-renderer'
-            w.setObjectName(text_name)
-            w.setReadOnly(True)
-            # Create the standard Leo bindings.
-            wrapper_name = 'rendering-pane-wrapper'
-            wrapper = qt_text.QTextEditWrapper(w, wrapper_name, c)
-            w.leo_wrapper = wrapper
-            c.k.completeAllBindingsForWidget(wrapper)
-            w.setWordWrapMode(WrapMode.WrapAtWordBoundaryOrAnywhere)
-    #@+node:ekr.20110320120020.14476: *4* vr.must_update
+    #@+node:ekr.20110320120020.14476: *5* vr.must_update
     def must_update(self, keywords: Any) -> bool:
         """Return True if we must update the rendering pane."""
         c, p = self.c, self.c.p
@@ -743,14 +806,14 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             return True
         if self.length != len(p.b):
             self.length = len(p.b)  # Suppress updates until next change.
-            return True
+            return self.get_kind(p) != 'pyplot'
         return False
     #@+node:ekr.20191004143229.1: *4* vr.update_asciidoc & helpers
     def update_asciidoc(self, s: str, keywords: Any) -> None:
         """Update asciidoc in the VR pane."""
         global asciidoctor_exec, asciidoc3_exec
         # Do this regardless of whether we show the widget or not.
-        w = self.ensure_text_widget()
+        w = self.get_base_text_widget()
         assert self.w
         if s:
             self.show()
@@ -805,24 +868,19 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         force = keywords.get('force')
         if self.gs and not force:
             return
+
+        # Create the widgets.
         if not self.gs:
             splitter = g.app.gui.get_top_splitter()
-            # Create the widgets.
             self.gs = QtWidgets.QGraphicsScene(splitter)
             self.gv = QtWidgets.QGraphicsView(self.gs)
-            w = self.gv.viewport()  # A QWidget
-            # Embed the widgets.
-
-            def delete_callback() -> None:
-                for w in (self.gs, self.gv):
-                    w.deleteLater()
-                self.gs = self.gv = None
-
-            self.embed_widget(w, delete_callback=delete_callback)
+            w = self.w = self.gv.viewport()  # A QWidget
+            self.embed_widget(w)
 
         c.executeScript(
             script=s,
-            namespace={'gs': self.gs, 'gv': self.gv})
+            namespace={'gs': self.gs, 'gv': self.gv},
+        )
     #@+node:ekr.20110321005148.14534: *4* vr.update_html
     update_html_count = 0
 
@@ -832,8 +890,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
 
         # Create a new QWebEngineView, deleting the old if it exists.
         w = self.create_web_engineview()
-        self.embed_widget(w)
-        assert w == self.w
 
         # Set the html.
         w.setHtml(s)
@@ -848,7 +904,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         fn = lines and lines[0].strip()
         if not fn:
             return
-        w = self.ensure_text_widget()
+        w = self.get_base_text_widget()
         ok, path = self.get_fn(fn, '@image')
         if not ok:
             w.setPlainText('@image: file not found: %s' % (path))
@@ -866,13 +922,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     def update_jupyter(self, s: str, keywords: Any) -> None:
         """Update @jupyter node in the VR pane."""
         c = self.c
-        if self.must_change_widget(BaseTextWidget):
-            w = self.create_base_text_widget()
-            self.embed_widget(w)
-            assert w == self.w
-        else:
-            w = self.w
-
+        w = self.get_base_text_widget()
         s = self.get_jupyter_source(c)
         w.hide()  # This forces a proper update.
         w.setHtml(s)
@@ -892,8 +942,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
 
         # Create a new QWebEngineView, deleting the old if it exists.
         w = self.create_web_engineview()
-        self.embed_widget(w)
-        assert w == self.w
 
         # Compute the contents.
         h = f"<h3>{p.h.strip()}</h3>\n"
@@ -913,10 +961,8 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     def update_mathjax(self, s: str, keywords: Any) -> None:
         """Update mathhjax text in the VR pane."""
 
-        # Create a new QWebEngineView, deleting the old if it exists.
+        # Create a new QWebEngineView.
         w = self.create_web_engineview()
-        self.embed_widget(w)
-        assert w == self.w
 
         # Compute the contents.
         p = self.c.p
@@ -927,7 +973,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             contents = h + s
         w.setHtml(contents)
         self.show()
-
     #@+node:peckj.20130207132858.3671: *4* vr.update_md & helper
     def update_md(self, s: str, keywords: Any) -> None:
         """Update markdown text in the VR pane."""
@@ -936,7 +981,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         s = s.strip().strip('"""').strip("'''").strip()
         isHtml = s.startswith('<') and not s.startswith('<<')
         # Do this regardless of whether we show the widget or not.
-        w = self.ensure_text_widget()
+        w = self.get_base_text_widget()
         assert self.w
         if s:
             self.show()
@@ -977,14 +1022,14 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         """Update a movie in the VR pane."""
         ok, path = self.get_fn(s, '@movie')
         if not ok:
-            w = self.ensure_text_widget()
+            w = self.get_base_text_widget()
             w.setPlainText('Not found: %s' % (path))
             return
         if not QtMultimedia:
             if not self.movie_warning:
                 self.movie_warning = True
                 g.es_print('No QtMultimedia module')
-            w = self.ensure_text_widget()
+            w = self.get_base_text_widget()
             w.setPlainText('')
             return
         if self.vp:
@@ -1005,7 +1050,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     #@+node:ekr.20110320120020.14484: *4* vr.update_networkx
     def update_networkx(self, s: str, keywords: Any) -> None:
         """Update a networkx graphic in the VR pane."""
-        w = self.ensure_text_widget()
+        w = self.get_base_text_widget()
         w.setPlainText('')  # 'Networkx: len: %s' % (len(s)))
         self.show()
     #@+node:ekr.20191006155748.1: *4* vr.update_pandoc & helpers (disabled)
@@ -1019,7 +1064,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         so only @pandoc nodes trigger this code.
         """
         global pandoc_exec
-        w = self.ensure_text_widget()
+        w = self.get_base_text_widget()
         assert self.w
         if s:
             self.show()
@@ -1083,8 +1128,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
 
         # Create a new QWebEngineView, deleting the old if it exists.
         w = self.create_web_engineview_with_pdf()
-        self.embed_widget(w)
-        assert w == self.w
 
         # Check the path.
         ok, path = self.get_fn(fn, '@image')
@@ -1155,9 +1198,9 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         """Update rst in the VR pane."""
         s = s.strip().strip('"""').strip("'''").strip()
         isHtml = s.startswith('<') and not s.startswith('<<')
+
         # Do this regardless of whether we show the widget or not.
-        w = self.ensure_text_widget()
-        assert self.w
+        w = self.get_base_text_widget()
         if s:
             self.show()
         if got_docutils:
@@ -1192,7 +1235,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         return s
 
     def update_plantuml(self, s: str, keywords: Any) -> None:
-        w = self.ensure_text_widget()
+        w = self.get_base_text_widget()
         path = self.c.p.h[9:].strip()
         print("Plantuml output file name: ", path)
         with open("temp.plantuml", "w") as f:
@@ -1262,7 +1305,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
 
         tmpl = Template(Path(template_path).read_text())
         out = tmpl.render(template_data)
-        w = self.ensure_text_widget()
+        w = self.get_base_text_widget()
         self.show()
         w.setPlainText(out)
         p.b = out
@@ -1277,11 +1320,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     def update_svg(self, s: str, keywords: Any) -> None:
 
         if 0:  # Use webengine. Works, but scaling is too big.
-
-            # Create a new QWebEngineView, deleting the old if it exists.
             w = self.create_web_engineview()
-            self.embed_widget(w)
-            assert w == self.w
             w.setHtml(s)
             w.show()
         else:  # Legacy:  Better scaling.
@@ -1294,15 +1333,16 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
                 except Exception:
                     QSvgWidget = None
             if not QSvgWidget:
-                w = self.ensure_text_widget()
+                w = self.get_base_text_widget()
                 w.setPlainText(s)
                 return
-            if self.must_change_widget(QSvgWidget):
-                w = QSvgWidget()
-                self.embed_widget(w)
-                assert w == self.w
-            else:
+            if isinstance(self.w, QSvgWidget):
                 w = self.w
+            else:
+                w = self.w = QSvgWidget()
+                self.embed_widget(w)
+
+            # Compute the contents.
             if s.strip().startswith('<'):
                 # Assume it is the svg (xml) source.
                 # Sensitive to leading blank lines.
@@ -1336,7 +1376,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         else:
             # Do nothing.
             g.trace('ignore', s)
-            w = self.ensure_text_widget()
+            w = self.get_base_text_widget()
             self.show()
             w.setPlainText('')
     #@+node:ekr.20241226065904.1: *3* vr: commands
@@ -1370,99 +1410,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             splitter.moveSplitter(0, i)
         self.show()
     #@+node:ekr.20110322031455.5765: *3* vr: utils...
-    #@+node:ekr.20241224074331.1: *4* vr.create_web_engineview
-    def create_web_engineview(self) -> QWidget:
-        """
-        Return a *new* QWebEngineView instance, deleting any previous instance.
-        """
-        c = self.c
-        # Kill the old QWebEngineView!
-        if self.qwv:
-            del self.qwv
-            self.qwv = None
-        # Always create a new QWebEngineView.
-        self.qwv = w = qwv()
-        if isinstance(w, QtWidgets.QTextBrowser):
-            g.print_unique_message(
-                'VR can not render latex or mathjax:\n'
-                'pip install PyQt6-WebEngine\n'
-            )
-            return w
-        n = c.config.getInt('qweb-view-font-size') or 16
-        n = abs(n)
-        settings = w.settings()
-        # Allow remote access.
-        wa = WebEngineAttribute.LocalContentCanAccessRemoteUrls
-        settings.setAttribute(wa, True)
-        # Fonts: https://doc.qt.io/qt-6/qwebenginesettings.html#FontSize-enum
-        settings.setFontSize(settings.FontSize.DefaultFontSize, n)
-        return w
-    #@+node:ekr.20241226173150.1: *4* vr.create_web_engineview_with_pdf
-    def create_web_engineview_with_pdf(self) -> QWidget:
-        """
-        Return a *new* QWebEngineView instance with support for pdf,
-        deleting any previous instance.
-        """
-        c = self.c
-        # Kill the old QWebEngineView!
-        if self.pdf_qwv:
-            del self.pdf_qwv
-            self.pdf_qwv = None
-        # Always create a new QWebEngineView.
-        self.pdf_qwv = w = qwv()
-        if isinstance(w, QtWidgets.QTextBrowser):
-            g.print_unique_message(
-                'VR can not render latex or mathjax:\n'
-                'pip install PyQt6-WebEngine\n'
-            )
-            return w
-        n = c.config.getInt('qweb-view-font-size') or 16
-        n = abs(n)
-        settings = w.settings()
-        # Allow remote access.
-        wa = WebEngineAttribute.LocalContentCanAccessRemoteUrls
-        settings.setAttribute(wa, True)
-        # Allow rendering of .pdf files.
-        settings.setAttribute(settings.WebAttribute.PluginsEnabled, True)
-        settings.setAttribute(settings.WebAttribute.PdfViewerEnabled, True)
-        # Fonts: https://doc.qt.io/qt-6/qwebenginesettings.html#FontSize-enum
-        # Set size of controls.
-        settings.setFontSize(settings.FontSize.DefaultFontSize, n)
-        # Set other font sizes.
-        # settings.setFontSize(settings.FontSize.DefaultFixedFontSize, n)
-        # settings.setFontSize(settings.FontSize.MinimumFontSize, n)
-        # settings.setFontSize(settings.FontSize.MinimumLogicalFontSize, n)
-        # w.setZoomFactor(2.0)  # Only affects frame, not contents!
-        return w
-    #@+node:ekr.20110322031455.5764: *4* vr.ensure_text_widget
-    def ensure_text_widget(self) -> Widget:
-        """Swap a text widget into the rendering pane if necessary."""
-        c = self.c
-        if self.must_change_widget(QtWidgets.QTextBrowser):
-            # Instantiate a new QTextBrowser.
-            # Allow non-ctrl clicks to open url's.
-            w = QtWidgets.QTextBrowser()
-
-            def contextMenuCallback(point: Any) -> None:
-                """LeoQtTree: Callback for customContextMenuRequested events."""
-                # #1286.
-                w = self  # Required.
-                g.app.gui.onContextMenu(c, w, point)
-
-            # #1286.
-            w.setContextMenuPolicy(ContextMenuPolicy.CustomContextMenu)
-            w.customContextMenuRequested.connect(contextMenuCallback)
-
-            def handleClick(url: str, w: Widget = w) -> None:
-                wrapper = qt_text.QTextEditWrapper(w, name='vr-body', c=c)
-                event = g.Bunch(c=c, w=wrapper)
-                g.openUrlOnClick(event, url=url)
-
-            w.anchorClicked.connect(handleClick)
-            w.setOpenLinks(False)
-            self.embed_widget(w)  # Creates w.wrapper
-            assert w == self.w
-        return self.w
     #@+node:ekr.20110320233639.5776: *4* vr.get_fn
     def get_fn(self, s: str, tag: str) -> tuple[bool, str]:
         c = self.c
@@ -1571,9 +1518,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         """Unlock the VR pane."""
         g.note('rendering pane unlocked')
         self.locked = False
-    #@+node:ekr.20110322031455.5763: *4* vr.must_change_widget
-    def must_change_widget(self, widget_class: Widget) -> bool:
-        return not self.w or self.w.__class__ != widget_class
     #@+node:ekr.20110320120020.14485: *4* vr.remove_directives
     def remove_directives(self, s: str) -> str:
         lines = g.splitLines(s)

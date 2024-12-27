@@ -101,6 +101,7 @@ class LeoFigureManagerQT(FigureManager):
         self.toolbar = NavigationToolbar(self.canvas, self.frame)
         w.layout().addWidget(self.toolbar)
         if vc:
+            vc.w = w
             vc.embed_widget(w)
         self.window = DummyWindow(c)
         self.canvas.setFocusPolicy(FocusPolicy.StrongFocus)
