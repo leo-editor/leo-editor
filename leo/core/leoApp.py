@@ -593,7 +593,7 @@ class LeoApp:
             "maple"              : "//",
             "markdown"           : "<!-- -->", # EKR, 2018/03/03: html comments.
             "matlab"             : "%", # EKR: 2011/10/21
-            "mathjax"            : "<!-- -->", # EKR: 2024/12/25
+            "mathjax"            : "% <!-- -->", # EKR: 2024/12/27: latex & html comments.
             "md"                 : "<!-- -->", # PeckJ: 2013/02/08
             "ml"                 : "(* *)",
             "modula3"            : "(* *)",

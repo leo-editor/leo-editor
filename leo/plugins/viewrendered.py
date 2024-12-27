@@ -968,7 +968,12 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         p = self.c.p
         h = f"<h3>{p.h.strip()}</h3>\n\n"
         if has_webengineview:
-            contents = mathjax_template + '\n\n' + h + s
+            # Replace whole-line latex comments with html comments.
+            result_s = ''.join([
+                f"<!-- {z} -->" if z.strip().startswith('%') else z
+                for z in g.splitLines(s)
+            ])
+            contents = mathjax_template + '\n\n' + h + result_s
         else:
             contents = h + s
         w.setHtml(contents)
