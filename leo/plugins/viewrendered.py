@@ -773,9 +773,11 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         """Destroy all widgets."""
         # g.trace(g.shortFileName(self.c.fileName()))
         for ivar in ('gs', 'gv', 'pdf_qwv', 'qwv', 'vp'):
-            var = getattr(self, ivar)
-            del var
+            var = getattr(self, ivar, None)
+            if var is not None:
+                del var
             setattr(self, ivar, None)
+        self.w = None
     #@+node:ekr.20110320120020.14486: *5* vr.embed_widget
     def embed_widget(self, w: Wrapper) -> None:
         """Embed widget w in the layout."""
