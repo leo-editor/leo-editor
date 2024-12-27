@@ -65,9 +65,12 @@ def html_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="comment", begin="<", end=">")
 #@+node:ekr.20230419050050.8: *3* html_rule5 &..;
 def html_rule5(colorer, s, i):
+    c = colorer.c
+    if c.p.b.startswith(('@language latex', '@language mathjax')):
+        # This rule interferes with LaTeX coloring.
+        return 0
     return colorer.match_span(s, i, kind="literal2", begin="&", end=";",
         no_word_break=True)
-
 #@+node:ekr.20230419050050.9: *3* html_rule_handlebar {{..}}
 # New rule for handlebar markup, colored with the literal3 color.
 def html_rule_handlebar(colorer, s, i):
@@ -90,6 +93,17 @@ def html_rule_end_template(colorer, s, i):
     # Restart any previous delegate.
     colorer.pop_delegate()
     return len(s)  # Success.
+#@+node:ekr.20241227074125.1: *3* html_rule_percent
+def html_rule_percent(colorer, s, i):
+    # A hack for @language latex/mathjax.
+    c = colorer.c
+    if c.p.b.startswith(('@language latex', '@language mathjax')):
+        if i == 0 and s and s[i] == '%':
+            # Color '%' as a whole-line comment.
+            colorer.match_eol_span(s, i, kind="comment1", seq="%")
+            return len(s)
+    return 0
+
 #@-others
 
 #@+node:ekr.20230419050351.1: ** html_tags ruleset
@@ -199,6 +213,7 @@ keywordsDictDict = {
 #@+node:ekr.20241120012542.1: *3* html.py: Rules dicts
 # Rules dict for html_main ruleset.
 rulesDict1 = {
+    "%": [html_rule_percent],
     "&": [html_rule5],
     "@": [html_rule_at_language],
     "<": [
