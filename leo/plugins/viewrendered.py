@@ -748,45 +748,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         else:
             self.hide()
     #@+node:ekr.20241227053437.1: *4* vr.update: helpers
-    #@+node:ekr.20190424083049.1: *5* vr.get_base_text_widget
-    def get_base_text_widget(self) -> QWidget:
-        """Create a QTextBrowser."""
-        c = self.c
-        if isinstance(self.w, QtWidgets.QTextBrowser):
-            return self.w
-
-        self.destroy_widgets()
-        self.browser = self.w = w = QtWidgets.QTextBrowser()
-        self.embed_widget(w)  # Creates w.wrapper
-
-        text_name = 'body-text-renderer'
-        w.setObjectName(text_name)
-        w.setReadOnly(True)
-        # Create the standard Leo bindings.
-        wrapper_name = 'rendering-pane-wrapper'
-        wrapper = qt_text.QTextEditWrapper(w, wrapper_name, c)
-        w.leo_wrapper = wrapper
-        c.k.completeAllBindingsForWidget(wrapper)
-        w.setWordWrapMode(WrapMode.WrapAtWordBoundaryOrAnywhere)
-
-        def contextMenuCallback(point: Any) -> None:
-            """LeoQtTree: Callback for customContextMenuRequested events."""
-            # #1286.
-            w = self  # Required.
-            g.app.gui.onContextMenu(c, w, point)
-
-        # #1286.
-        w.setContextMenuPolicy(ContextMenuPolicy.CustomContextMenu)
-        w.customContextMenuRequested.connect(contextMenuCallback)
-
-        def handleClick(url: str, w: Widget = w) -> None:
-            wrapper = qt_text.QTextEditWrapper(w, name='vr-body', c=c)
-            event = g.Bunch(c=c, w=wrapper)
-            g.openUrlOnClick(event, url=url)
-
-        w.anchorClicked.connect(handleClick)
-        w.setOpenLinks(False)
-        return w
     #@+node:ekr.20241224074331.1: *5* vr.create_web_engineview
     def create_web_engineview(self) -> QWidget:
         """
@@ -1482,6 +1443,45 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             self.show()
             w.setPlainText('')
     #@+node:ekr.20110322031455.5765: *3* vr: utils...
+    #@+node:ekr.20190424083049.1: *4* vr.get_base_text_widget
+    def get_base_text_widget(self) -> QWidget:
+        """Create a QTextBrowser."""
+        c = self.c
+        if isinstance(self.w, QtWidgets.QTextBrowser):
+            return self.w
+
+        self.destroy_widgets()
+        self.browser = self.w = w = QtWidgets.QTextBrowser()
+        self.embed_widget(w)  # Creates w.wrapper
+
+        text_name = 'body-text-renderer'
+        w.setObjectName(text_name)
+        w.setReadOnly(True)
+        # Create the standard Leo bindings.
+        wrapper_name = 'rendering-pane-wrapper'
+        wrapper = qt_text.QTextEditWrapper(w, wrapper_name, c)
+        w.leo_wrapper = wrapper
+        c.k.completeAllBindingsForWidget(wrapper)
+        w.setWordWrapMode(WrapMode.WrapAtWordBoundaryOrAnywhere)
+
+        def contextMenuCallback(point: Any) -> None:
+            """LeoQtTree: Callback for customContextMenuRequested events."""
+            # #1286.
+            w = self  # Required.
+            g.app.gui.onContextMenu(c, w, point)
+
+        # #1286.
+        w.setContextMenuPolicy(ContextMenuPolicy.CustomContextMenu)
+        w.customContextMenuRequested.connect(contextMenuCallback)
+
+        def handleClick(url: str, w: Widget = w) -> None:
+            wrapper = qt_text.QTextEditWrapper(w, name='vr-body', c=c)
+            event = g.Bunch(c=c, w=wrapper)
+            g.openUrlOnClick(event, url=url)
+
+        w.anchorClicked.connect(handleClick)
+        w.setOpenLinks(False)
+        return w
     #@+node:ekr.20110320120020.14483: *4* vr.get_kind
     def get_kind(self, p: Position) -> Optional[str]:
         """Return the proper rendering kind for node p."""
