@@ -635,6 +635,73 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         g.unregisterHandler('idle', self.update)
         g.unregisterHandler('scrolledMessage', show_scrolled_message)
         self.destroy_widgets()
+    #@+node:ekr.20130413061407.10363: *3* vr.contract & expand
+    def contract(self) -> None:
+        self.change_size(-100)
+
+    def expand(self) -> None:
+        self.change_size(100)
+
+    def change_size(self, delta: int) -> None:
+        splitter = self.parent()
+        if not splitter:
+            return
+        i = splitter.indexOf(self)
+        assert i > -1
+        sizes = splitter.sizes()
+        n = len(sizes)
+        for j, size in enumerate(sizes):
+            if j == i:
+                sizes[j] = max(0, size + delta)
+            else:
+                sizes[j] = max(0, size - int(delta / (n - 1)))
+        splitter.setSizes(sizes)
+    #@+node:ekr.20240507100254.1: *3* vr.fully_expand
+    def fully_expand(self) -> None:
+        """Cover the body pane with the VR pane."""
+        splitter = self.parent()
+        if splitter and isinstance(splitter, QtWidgets.QSplitter):
+            i = splitter.indexOf(self)
+            splitter.moveSplitter(0, i)
+        self.show()
+    #@+node:ekr.20110321072702.14508: *3* vr.lock/unlock
+    def lock(self) -> None:
+        """Lock the VR pane."""
+        g.note('rendering pane locked')
+        self.locked = True
+
+    def unlock(self) -> None:
+        """Unlock the VR pane."""
+        g.note('rendering pane unlocked')
+        self.locked = False
+    #@+node:ekr.20240507100402.1: *3* vr.restore_body
+    def restore_body(self) -> None:
+        """Restore the visibility of the body pane."""
+        splitter = self.parent()  # A NestedSplitter
+        if splitter and isinstance(splitter, QtWidgets.QSplitter):
+            i = splitter.indexOf(self)
+            splitter.moveSplitter(int(sum(splitter.sizes()) / 2), i)
+        self.show()
+    #@+node:ekr.20160921071239.1: *3* vr.set_html
+    def set_html(self, s: str, w: Wrapper) -> None:
+        """Set text in w to s, preserving scroll position."""
+        p = self.c.p
+        sb = w.verticalScrollBar()
+        if sb:
+            d = self.scrollbar_pos_dict
+            if self.node_changed:
+                # Set the scrollbar.
+                pos = d.get(p.v, sb.sliderPosition())
+                sb.setSliderPosition(pos)
+            else:
+                # Save the scrollbars
+                d[p.v] = pos = sb.sliderPosition()
+        # if trace: g.trace('\n'+s)
+        w.setHtml(s)
+        if sb:
+            # Restore the scrollbars
+            assert pos is not None
+            sb.setSliderPosition(pos)
     #@+node:ekr.20101112195628.5426: *3* vr.update & helpers
     # Must have this signature: called by leoPlugins.callTagHandler.
 
@@ -933,6 +1000,34 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
 
         if pyperclip:
             pyperclip.copy(s)
+    #@+node:ekr.20180311090852.1: *5* vr.get_jupyter_source
+    def get_jupyter_source(self, c: Cmdr) -> str:
+        """Return the html for the @jupyter node."""
+        body = c.p.b.lstrip()
+        if body.startswith('<'):
+            # Assume the body is html.
+            return body
+        if body.startswith('{'):
+            # Leo 5.7.1: Allow raw JSON.
+            s = body
+        else:
+            url = c.p.h.split()[1]
+            if not url:
+                return ''
+            if not nbformat:
+                return 'can not import nbformat to render url: %r' % url
+            try:
+                s = urlopen(url).read().decode()
+            except Exception:
+                return 'url not found: %s' % url
+
+        try:
+            nb = nbformat.reads(s, as_version=4)
+            e = HTMLExporter()
+            (s, junk_resources) = e.from_notebook_node(nb)
+        except nbformat.reader.NotJSONError:
+            pass  # Assume the result is html.
+        return s
     #@+node:ekr.20170324064811.1: *4* vr.update_latex (disabled)
     def update_latex(self, s: str, keywords: Any) -> None:
         """
@@ -1386,83 +1481,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             w = self.get_base_text_widget()
             self.show()
             w.setPlainText('')
-    #@+node:ekr.20241226065904.1: *3* vr: commands
-    #@+node:ekr.20130413061407.10363: *4* vr.contract & expand
-    def contract(self) -> None:
-        self.change_size(-100)
-
-    def expand(self) -> None:
-        self.change_size(100)
-
-    def change_size(self, delta: int) -> None:
-        splitter = self.parent()
-        if not splitter:
-            return
-        i = splitter.indexOf(self)
-        assert i > -1
-        sizes = splitter.sizes()
-        n = len(sizes)
-        for j, size in enumerate(sizes):
-            if j == i:
-                sizes[j] = max(0, size + delta)
-            else:
-                sizes[j] = max(0, size - int(delta / (n - 1)))
-        splitter.setSizes(sizes)
-    #@+node:ekr.20240507100254.1: *4* vr.fully_expand
-    def fully_expand(self) -> None:
-        """Cover the body pane with the VR pane."""
-        splitter = self.parent()
-        if splitter and isinstance(splitter, QtWidgets.QSplitter):
-            i = splitter.indexOf(self)
-            splitter.moveSplitter(0, i)
-        self.show()
     #@+node:ekr.20110322031455.5765: *3* vr: utils...
-    #@+node:ekr.20110320233639.5776: *4* vr.get_fn
-    def get_fn(self, s: str, tag: str) -> tuple[bool, str]:
-        c = self.c
-        fn = s or c.p.h[len(tag) :]
-        fn = fn.strip()
-        # Similar to code in g.computeFileUrl
-        if fn.startswith('~'):
-            fn = fn[1:]
-            fn = g.finalize(fn)
-        else:
-            # Handle ancestor @path directives.
-            if c and c.fileName():
-                base = c.getNodePath(c.p)
-                fn = g.finalize_join(g.os_path_dirname(c.fileName()), base, fn)
-            else:
-                fn = g.finalize(fn)
-        ok = g.os_path_exists(fn)
-        return ok, fn
-    #@+node:ekr.20180311090852.1: *4* vr.get_jupyter_source
-    def get_jupyter_source(self, c: Cmdr) -> str:
-        """Return the html for the @jupyter node."""
-        body = c.p.b.lstrip()
-        if body.startswith('<'):
-            # Assume the body is html.
-            return body
-        if body.startswith('{'):
-            # Leo 5.7.1: Allow raw JSON.
-            s = body
-        else:
-            url = c.p.h.split()[1]
-            if not url:
-                return ''
-            if not nbformat:
-                return 'can not import nbformat to render url: %r' % url
-            try:
-                s = urlopen(url).read().decode()
-            except Exception:
-                return 'url not found: %s' % url
-
-        try:
-            nb = nbformat.reads(s, as_version=4)
-            e = HTMLExporter()
-            (s, junk_resources) = e.from_notebook_node(nb)
-        except nbformat.reader.NotJSONError:
-            pass  # Assume the result is html.
-        return s
     #@+node:ekr.20110320120020.14483: *4* vr.get_kind
     def get_kind(self, p: Position) -> Optional[str]:
         """Return the proper rendering kind for node p."""
@@ -1509,22 +1528,30 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
                 if language in self.dispatch_dict:
                     return language
         return None
+    #@+node:ekr.20110320233639.5776: *4* vr.get_fn
+    def get_fn(self, s: str, tag: str) -> tuple[bool, str]:
+        c = self.c
+        fn = s or c.p.h[len(tag) :]
+        fn = fn.strip()
+        # Similar to code in g.computeFileUrl
+        if fn.startswith('~'):
+            fn = fn[1:]
+            fn = g.finalize(fn)
+        else:
+            # Handle ancestor @path directives.
+            if c and c.fileName():
+                base = c.getNodePath(c.p)
+                fn = g.finalize_join(g.os_path_dirname(c.fileName()), base, fn)
+            else:
+                fn = g.finalize(fn)
+        ok = g.os_path_exists(fn)
+        return ok, fn
     #@+node:ekr.20110321005148.14536: *4* vr.get_url
     def get_url(self, s: str, tag: str) -> str:
         p = self.c.p
         url = s or p.h[len(tag) :]
         url = url.strip()
         return url
-    #@+node:ekr.20110321072702.14508: *4* vr.lock/unlock
-    def lock(self) -> None:
-        """Lock the VR pane."""
-        g.note('rendering pane locked')
-        self.locked = True
-
-    def unlock(self) -> None:
-        """Unlock the VR pane."""
-        g.note('rendering pane unlocked')
-        self.locked = False
     #@+node:ekr.20110320120020.14485: *4* vr.remove_directives
     def remove_directives(self, s: str) -> str:
         lines = g.splitLines(s)
@@ -1537,34 +1564,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
                     continue
             result.append(s1)
         return ''.join(result)
-    #@+node:ekr.20240507100402.1: *4* vr.restore_body
-    def restore_body(self) -> None:
-        """Restore the visibility of the body pane."""
-        splitter = self.parent()  # A NestedSplitter
-        if splitter and isinstance(splitter, QtWidgets.QSplitter):
-            i = splitter.indexOf(self)
-            splitter.moveSplitter(int(sum(splitter.sizes()) / 2), i)
-        self.show()
-    #@+node:ekr.20160921071239.1: *4* vr.set_html
-    def set_html(self, s: str, w: Wrapper) -> None:
-        """Set text in w to s, preserving scroll position."""
-        p = self.c.p
-        sb = w.verticalScrollBar()
-        if sb:
-            d = self.scrollbar_pos_dict
-            if self.node_changed:
-                # Set the scrollbar.
-                pos = d.get(p.v, sb.sliderPosition())
-                sb.setSliderPosition(pos)
-            else:
-                # Save the scrollbars
-                d[p.v] = pos = sb.sliderPosition()
-        # if trace: g.trace('\n'+s)
-        w.setHtml(s)
-        if sb:
-            # Restore the scrollbars
-            assert pos is not None
-            sb.setSliderPosition(pos)
     #@-others
 #@-others
 #@@language python
