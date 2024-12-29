@@ -1201,6 +1201,8 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
 
         # Create a URL to the file.
         url = QUrl.fromLocalFile(path)
+        # https://www.rfc-editor.org/rfc/rfc8118
+        url.setFragment("zoom=200")
         w.load(url)
         self.show()
     #@+node:ekr.20160928023915.1: *4* vr.update_pyplot
