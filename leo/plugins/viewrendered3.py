@@ -3,7 +3,7 @@
 #@@tabwidth -4
 #@@language python
 # The line-too-long suppression must appear before the docstring.
-# pylint: disable=invalid-name,line-too-long,multiple-statements,undefined-variable,used-before-assignment 
+# pylint: disable=invalid-name,line-too-long,multiple-statements,undefined-variable,used-before-assignment
 r"""
 #@+<< vr3 docstring >>
 #@+node:TomP.20191215195433.2: ** << vr3 docstring >>
