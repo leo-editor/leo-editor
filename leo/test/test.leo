@@ -673,16 +673,6 @@
 <v t="ekr.20241206101345.482"><vh>css</vh></v>
 </v>
 </v>
-<v t="ekr.20241206101345.483"><vh>Jupytext tests</vh>
-<v t="ekr.20241206101345.484"><vh>@button test.ipynb</vh></v>
-<v t="ekr.20241206101345.485"><vh>@jupytext C:/Users/Dev/EKR-Study/python/CODE_PYTHON/CH01/CH01_SEC02.ipynb</vh>
-<v t="ekr.20241206101345.486"><vh>&lt;&lt; prefix &gt;&gt;</vh></v>
-<v t="ekr.20241206101345.487"><vh>imports</vh></v>
-<v t="ekr.20241206101345.488"><vh>Graphs</vh></v>
-<v t="ekr.20241206101345.489"><vh>Images</vh></v>
-<v t="ekr.20241206101345.490"><vh>Figures 1 &amp; 2</vh></v>
-</v>
-</v>
 <v t="ekr.20241206101345.491"><vh>ai script</vh>
 <v t="ekr.20241206101345.492"><vh>function: summarize_and_reformat</vh></v>
 <v t="ekr.20241206101345.493"><vh>function: process_node_with_openai</vh></v>
@@ -13675,79 +13665,6 @@ p    {color: red;}
 &lt;/style&gt;
 
 </t>
-<t tx="ekr.20241206101345.483"># The</t>
-<t tx="ekr.20241206101345.484"># This @button script works only on EKR's machine.
-
-g.cls()
-g.cls()
-
-import os
-
-h = '@jupytext C:/Users/Dev/EKR-Study/python/CODE_PYTHON/CH01/CH01_SEC02.ipynb'
-root = g.findNodeAnywhere(c, h)
-assert root, h
-
-c.selectPosition(root)
-c.executeScript()
-</t>
-<t tx="ekr.20241206101345.485">&lt;&lt; prefix &gt;&gt;
-@others
-@language jupytext
-@tabwidth -4
-</t>
-<t tx="ekr.20241206101345.486"># ---
-# jupyter:
-#   jupytext:
-#     text_representation:
-#       extension: .py
-#       format_name: percent
-#       format_version: '1.3'
-#       jupytext_version: 1.16.4
-#   kernelspec:
-#     display_name: Python 3
-#     language: python
-#     name: python3
-# ---
-
-</t>
-<t tx="ekr.20241206101345.487"># %%
-
-from matplotlib.image import imread
-import matplotlib.pyplot as plt
-import numpy as np
-import os
-
-# c:/Users/Data is the data folder.</t>
-<t tx="ekr.20241206101345.488"># %%
-
-plt.rcParams['figure.figsize'] = [16, 8]
-A = imread(os.path.join('..', 'DATA', 'dog.jpg'))
-X = np.mean(A, -1); # Convert RGB to grayscale
-
-img = plt.imshow(X)
-img.set_cmap('gray')
-plt.axis('off')
-plt.show()
-
-</t>
-<t tx="ekr.20241206101345.489"># %%
-
-U, S, VT = np.linalg.svd(X,full_matrices=False)
-S = np.diag(S)
-
-j = 0
-for r in (5, 20, 100):
-    # Construct approximate image
-    Xapprox = U[:,:r] @ S[0:r,:r] @ VT[:r,:]
-    plt.figure(j+1)
-    j += 1
-    img = plt.imshow(Xapprox)
-    img.set_cmap('gray')
-    plt.axis('off')
-    plt.title('r = ' + str(r))
-    plt.show()
-
-</t>
 <t tx="ekr.20241206101345.49">def metadata_to_text(language_or_title, metadata=None, plain_json=False):
     """Write the cell metadata in the format key=value"""
     # Was metadata the first argument?
@@ -13778,19 +13695,6 @@ for r in (5, 20, 100):
             else:
                 text.append(f"{key}={dumps(metadata[key])}")
     return " ".join(text)
-</t>
-<t tx="ekr.20241206101345.490"># %%
-
-plt.figure(1)
-plt.semilogy(np.diag(S))
-plt.title('Singular Values')
-plt.show()
-
-plt.figure(2)
-plt.plot(np.cumsum(np.diag(S))/np.sum(np.diag(S)))
-plt.title('Singular Values: Cumulative Sum')
-plt.show()
-
 </t>
 <t tx="ekr.20241206101345.491">import leo.core.leoGlobals as g
 from openai import OpenAI
