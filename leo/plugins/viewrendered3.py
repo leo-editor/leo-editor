@@ -3,7 +3,7 @@
 #@@tabwidth -4
 #@@language python
 # The line-too-long suppression must appear before the docstring.
-# pylint: disable=invalid-name,line-too-long,multiple-statements,undefined-variable,used-before-assignment
+# pylint: disable=invalid-name,line-too-long,multiple-statements,undefined-variable,used-before-assignment 
 r"""
 #@+<< vr3 docstring >>
 #@+node:TomP.20191215195433.2: ** << vr3 docstring >>
@@ -16,7 +16,7 @@ and Asciidoc text, images, movies, sounds, rst, html, etc.
 
 #@+others
 #@+node:tom.20240521004125.1: *3* About
-About Viewrendered3 V5.2
+About Viewrendered3 V5.21
 ===========================
 
 The ViewRendered3 plugin (hereafter "VR3") renders Restructured
@@ -85,12 +85,15 @@ the plugin.
 #@+node:tom.20241124124334.1: *3* New With This Version
 New With This Version
 ======================
-- VR3 restores the scroll position after an update.  This is especially useful when an entire tree is displayed and changes are made to a node in the tree.
-
-- VR3's "Default Kind" menu now sets the initial checked kind to match the *vr3-default-kind* setting.
+Fixed: the freeze state was getting set to "unfreeze" after an
+update.
 #@+node:tom.20241124124347.1: *3* Previous Recent Changes
 Previous Recent Changes
 ========================
+- VR3 restores the scroll position after an update.  This is especially useful when an entire tree is displayed and changes are made to a node in the tree.
+
+- VR3's "Default Kind" menu now sets the initial checked kind to match the *vr3-default-kind* setting.
+
 Commands *vr3* and *vr3-show* work better with Leo's new layout system.
 
 VR3 starts in a non-active mode.  This prevents it from slowing down body editing by rendering even when it hasn't been made visible.  The command *vr3* makes sure the plugin is present but does not show it.
@@ -2236,7 +2239,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         self.temp_scroll_postion = 0
         self.timer = QtCore.QTimer()
-        self.timer.timeout.connect(self.set_unfreeze_when_scrolled)
+        self.timer.timeout.connect(self.finish_when_scrolled)
 
         #@-<< Set ivars >>
         #@+<< initialize configuration ivars >>
@@ -3137,12 +3140,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
     def store_temp_scroll_position(self, position) -> None:
         self.temp_scroll_postion = position
 
-    def set_unfreeze_when_scrolled(self) -> None:
+    def finish_when_scrolled(self) -> None:
         self.qwev.page().runJavaScript("window.pageYOffset", self.store_temp_scroll_position)
         current_scroll = self.temp_scroll_postion
         if current_scroll >= self.scroll_position:
             self.timer.stop()
-            self.set_unfreeze()
             self.scrolling = False
             self.in_forced_message = False
 
@@ -3150,11 +3152,10 @@ class ViewRenderedController3(QtWidgets.QWidget):
         self.qwev.page().runJavaScript(f"window.scrollTo(0, {self.scroll_position});")
         self.scrolling = True
         self.timer.start(300)
-        self.set_unfreeze_when_scrolled()
+        self.finish_when_scrolled()
 
     def cancel_scroll(self) -> None:
         self.timer.stop()
-        self.set_unfreeze()
         self.scrolling = False
         self.in_forced_message = False
         self.temp_scroll_postion = self.scroll_position = 0
