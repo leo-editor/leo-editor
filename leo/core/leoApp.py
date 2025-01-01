@@ -288,8 +288,10 @@ class LeoApp:
             "handlebars": "html",
             "hbs": "html",
             "less": "css",
-            "mathjax": "html",  # 2024/12/24
+            "katex": "html",  # Leo 6.8.4
+            "mathjax": "html",  # Leo 6.8.4
             "toml": "ini",
+            "typst": "rest",  # Leo 6.8.4
             # Values are existing languages in leo/modes.
         }
     #@+node:ekr.20120522160137.9911: *5* app.define_extension_dict
@@ -579,7 +581,8 @@ class LeoApp:
             "jsp"                : "<%-- --%>",
             "julia"              : "#",
             "jupyter"            : "<%-- --%>", # Default to markdown?
-            "jupytext"           : "#", 
+            "jupytext"           : "#",
+            "katex"              : "%", # Leo 6.8.7.
             "kivy"               : "#", # PeckJ 2014/05/05
             "kshell"             : "#", # Leo 4.5.1.
             "latex"              : "%",
@@ -665,6 +668,7 @@ class LeoApp:
             "toml"               : "#",
             "tpl"                : "<!-- -->",
             "tsql"               : "-- /* */",
+            "typst"              : "//",
             "typescript"         : "// /* */", # For typescript import test.
             "unknown"            : "#", # Set when @comment is seen.
             "unknown_language"   : '#--unknown-language--', # For unknown extensions in @shadow files.
