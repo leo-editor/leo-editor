@@ -1126,7 +1126,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         s = ''.join([
             z for z in g.splitLines(s) if not z.strip().startswith('%')
         ])
-        contents = self.mathjax_template + '\n\n' + result_s
+        contents = self.mathjax_template + '\n\n' + s
         w.setHtml(contents)
         self.show()
     #@+node:peckj.20130207132858.3671: *4* vr.update_md & helper
