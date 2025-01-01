@@ -3060,11 +3060,11 @@ class AtFile:
             # No language directive.  Look for @<file> nodes.
             # Do *not* use d.get('language')!
             language = g.getLanguageFromAncestorAtFileNode(p) or 'python'
+
         at.language = language
         if delims in (None, (None, None, None)):  # #4256
             delims = g.set_delims_from_language(language)
 
-        # Previously, setting delims was sometimes skipped, depending on kwargs.
         #@+<< Set comment strings from delims >>
         #@+node:ekr.20080923070954.13: *5* << Set comment strings from delims >> (at.scanAllDirectives)
         delim1, delim2, delim3 = delims
