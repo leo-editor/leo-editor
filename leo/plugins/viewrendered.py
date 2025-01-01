@@ -657,7 +657,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             'image': self.update_image,
             'jinja': self.update_jinja,
             'jupyter': self.update_jupyter,
-            'katex': self.update_katex,  # New.
+            'katex': self.update_katex,
             'latex': self.update_latex,
             'markdown': self.update_md,
             'mathjax': self.update_mathjax,
@@ -670,7 +670,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             'rst': self.update_rst,
             'svg': self.update_svg,
             'plantuml': self.update_plantuml,
-            'typst': self.update_typst,  # New.
+            'typst': self.update_typst,
             # 'url': self.update_url,
             # 'xml': self.update_xml,
         }
@@ -1078,12 +1078,9 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     #@+node:ekr.20241231121212.1: *4* vr.update_katex
     def update_katex(self, s: str, keywords: Any) -> None:
         """Update katex text in the VR pane."""
-        p = self.c.p
 
         # Create a new QWebEngineView.
         w = self.create_web_engineview()
-
-        # Compute the contents.
         if not has_webengineview:
             w.setHtml(s)
             self.show()
@@ -1098,28 +1095,20 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.show()
     #@+node:ekr.20170324064811.1: *4* vr.update_latex
     def update_latex(self, s: str, keywords: Any) -> None:
-        """
-        Update latex text in the VR pane.
-        
-        This code has been disabled. Use @language mathjax instead.
-        """
-        p = self.c.p
+        """Update LaTeX text in the VR pane."""
 
-        # Create a new QWebEngineView, deleting the old if it exists.
+        # Create a new QWebEngineView.
         w = self.create_web_engineview()
+        if not has_webengineview:
+            w.setHtml(s)
+            self.show()
+            return
 
-        # Compute the contents.
-        h = f"<h3>{p.h.strip()}</h3>\n"
-        if has_webengineview:
-            # Replace whole-line latex comments with html comments.
-            # Don't make any other changes!
-            result_s = ''.join([
-                f"<!-- {z} -->" if z.strip().startswith('%') else z
-                for z in g.splitLines(s)
-            ])
-            contents = self.latex_template + '\n\n' + h + result_s
-        else:
-            contents = h + s
+        # Replace whole-line latex comments with html comments.
+        s = ''.join([
+            z for z in g.splitLines(s) if not z.strip().startswith('%')
+        ])
+        contents = self.latex_template + '\n\n' + s
         w.setHtml(contents)
         self.show()
     #@+node:ekr.20241224072334.1: *4* vr.update_mathjax
