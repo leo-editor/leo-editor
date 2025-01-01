@@ -582,7 +582,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
 
     \end{document}
     '''
-    #@+node:ekr.20241224072714.1: *4* vr.default_mathjax template
+    #@+node:ekr.20241224072714.1: *4* vr.default_mathjax_template
     default_mathjax_template = '''
     <head>
       <script type="text/x-mathjax-config">
@@ -593,6 +593,8 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
       </script>
     </head>
     '''
+    #@+node:ekr.20241231180612.1: *4* vr.default_typst_template
+    default_typst_template = None
     #@-others
     #@-<< vr: default templates >>
     #@+others
@@ -610,6 +612,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.katex_template: str = None
         self.latex_template: str = None
         self.mathjax_template: str = None
+        self.typst_template = None
         self.pdf_zoom: int = None
         # Widgets managed by destroy_widgets.
         self.browser: Widget = None
@@ -693,6 +696,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             c.config.getString('view-rendered-mathjax-template')
             or self.default_mathjax_template
         )
+        self.typst_template = c.config.getString('view-rendered-typst-template') or ''
     #@+node:ekr.20190614065659.1: *4* vr.create_pane
     def create_pane(self, parent: Position) -> None:
         """Create the VR pane."""
@@ -1539,20 +1543,16 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             self.show()
             return
 
-        ### h = f"=== {p.h.strip()}\n\n"
-
+        # Render as pdf.
         tex_path = g.os_path_finalize_join(os.getcwd(), f"{p.gnx}.tex")
         pdf_path = tex_path.replace('.tex', '.pdf')
-        contents = s.strip() + '\n'
+        contents = self.typst_template + '\n\n' + s.strip() + '\n'
         with open(tex_path, 'w') as f:
             f.write(contents)
-            print(f"Wrote {tex_path}")
-
-        # Render and open.
+            # print(f"Wrote {tex_path}")
         g.execute_shell_commands([
             f"typst compile {tex_path}",  # Invoke the typst app.
         ])
-        # g.trace(f"Loading {pdf_path}")
         url = QUrl.fromLocalFile(pdf_path)
         # https://www.rfc-editor.org/rfc/rfc8118
         url.setFragment(f"zoom={self.pdf_zoom}")
