@@ -665,6 +665,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             'movie': self.update_movie,
             'networkx': self.update_networkx,
             # 'pandoc': self.update_pandoc,
+            'pdf': self.update_pdf,
             'pyplot': self.update_pyplot,
             'rest': self.update_rst,
             'rst': self.update_rst,
@@ -1265,6 +1266,38 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         # Read the output file and return it.
         with open(o_path, 'r') as f:
             return f.read()
+    #@+node:ekr.20241226011006.1: *4* vr.update_pdf
+    def update_pdf(self, s: str, keywords: Any) -> None:
+        """Update latex text in the VR pane."""
+        p = self.c.p
+        if not s.strip():
+            return
+
+        # Create a new QWebEngineView.
+        w = self.create_web_engineview_with_pdf()
+        if not has_webengineview:
+            g.print_unique_message('@pdf requires PyQt6-WebEngine')
+            w.setHtml(s)
+            self.show()
+            return
+
+        # Render as pdf.
+        tex_path = g.os_path_finalize_join(os.getcwd(), f"{p.gnx}.tex")
+        pdf_path = tex_path.replace('.tex', '.pdf')
+        contents = self.typst_template + '\n\n' + s.strip() + '\n'
+        with open(tex_path, 'w') as f:
+            f.write(contents)
+            g.print_unique_message(f"Wrote {tex_path}")
+        g.execute_shell_commands([
+            f"pdflatex {tex_path}",  # Invoke pdflatex.cmd.
+        ])
+
+        # Create a URL to the file.
+        url = QUrl.fromLocalFile(pdf_path)
+        # https://www.rfc-editor.org/rfc/rfc8118
+        url.setFragment(f"zoom={self.pdf_zoom}")
+        w.load(url)
+        self.show()
     #@+node:ekr.20160928023915.1: *4* vr.update_pyplot
     def update_pyplot(self, s: str, keywords: Any) -> None:
         """
@@ -1490,9 +1523,8 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
 
         # Create a new QWebEngineView.
         w = self.create_web_engineview_with_pdf()
-
-        # Compute the contents.
         if not has_webengineview:
+            g.print_unique_message('@pdf requires PyQt6-WebEngine')
             w.setHtml(s)
             self.show()
             return
@@ -1503,7 +1535,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         contents = self.typst_template + '\n\n' + s.strip() + '\n'
         with open(tex_path, 'w') as f:
             f.write(contents)
-            # print(f"Wrote {tex_path}")
+            g.print_unique_message(f"Wrote {tex_path}")
         g.execute_shell_commands([
             f"typst compile {tex_path}",  # Invoke the typst app.
         ])
