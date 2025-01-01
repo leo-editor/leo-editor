@@ -1117,19 +1117,16 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
 
         # Create a new QWebEngineView.
         w = self.create_web_engineview()
+        if not has_webengineview:
+            w.setHtml(s)
+            self.show()
+            return
 
-        # Compute the contents.
-        p = self.c.p
-        h = f"<h3>{p.h.strip()}</h3>\n\n"
-        if has_webengineview:
-            # Replace whole-line latex comments with html comments.
-            result_s = ''.join([
-                f"<!-- {z} -->" if z.strip().startswith('%') else z
-                for z in g.splitLines(s)
-            ])
-            contents = self.mathjax_template + '\n\n' + h + result_s
-        else:
-            contents = h + s
+        # Replace whole-line latex comments with html comments.
+        s = ''.join([
+            z for z in g.splitLines(s) if not z.strip().startswith('%')
+        ])
+        contents = self.mathjax_template + '\n\n' + result_s
         w.setHtml(contents)
         self.show()
     #@+node:peckj.20130207132858.3671: *4* vr.update_md & helper
