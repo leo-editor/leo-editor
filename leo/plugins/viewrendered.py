@@ -298,32 +298,6 @@ trace = False  # This global trace is convenient.
 asciidoctor_exec = shutil.which('asciidoctor')
 asciidoc3_exec = shutil.which('asciidoc3')
 pandoc_exec = shutil.which('pandoc')
-#@+<< vr: image template >>
-#@+node:ekr.20170324090828.1: ** << vr: image template >>
-image_template = '''\
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
- "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head></head>
-<body bgcolor=white>
-<img src="%s">
-</body>
-</html>
-'''
-#@-<< vr: image template >>
-#@+<< vr: mathjax template >>
-#@+node:ekr.20241224072714.1: ** << vr: mathjax template >>
-mathjax_template = '''
-<head>
-  <script type="text/x-mathjax-config">
-    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
-  </script>
-  <script type="text/javascript" async
-    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML">
-  </script>
-</head>
-'''
-#@-<< vr: mathjax template >>
 #@+others
 #@+node:ekr.20110320120020.14491: ** vr.Top-level functions
 #@+node:tbrown.20100318101414.5995: *3* vr function: init
@@ -544,6 +518,83 @@ def update_rendering_pane(event: Event) -> None:
 #@+node:ekr.20110317024548.14375: ** class ViewRenderedController (QWidget)
 class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     """A class to control rendering in a rendering pane."""
+    #@+<< vr: default templates >>
+    #@+node:ekr.20241231164944.1: *3* << vr: default templates >>
+    #@+others
+    #@+node:ekr.20170324090828.1: *4* vr.default_image template
+    default_image_template = '''\
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head></head>
+    <body bgcolor=white>
+    <img src="%s">
+    </body>
+    </html>
+    '''
+    #@+node:ekr.20241231121842.1: *4* vr.default_katex_template
+    default_katex_template = '''
+    <!DOCTYPE html>
+    <!-- KaTeX requires the use of the HTML5 doctype. Without it, KaTeX may not render properly -->
+    <html>
+      <head>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.19/dist/katex.min.css" integrity="sha384-7lU0muIg/i1plk7MgygDUp3/bNRA65orrBub4/OSWHECgwEsY83HaS1x3bljA/XV" crossorigin="anonymous">
+
+        <!-- The loading of KaTeX is deferred to speed up page rendering -->
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.19/dist/katex.min.js" integrity="sha384-RdymN7NRJ+XoyeRY4185zXaxq9QWOOx3O7beyyrRK4KQZrPlCDQQpCu95FoCGPAE" crossorigin="anonymous"></script>
+
+        <!-- To automatically render math in text elements, include the auto-render extension: -->
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.19/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+            onload="renderMathInElement(document.body);"></script>
+      </head>
+      ...
+    </html>
+    '''
+    #@+node:ekr.20241231122327.1: *4* vr.default_latex template
+    default_latex_template = r'''
+    \documentclass[12pt, letter-paper]{article}
+    \usepackage{graphicx} % Images.
+    \usepackage{tikz} % Evaluate expressions.
+    \usepackage{hyperref} % For \href.
+    \hypersetup{colorlinks=true, urlcolor=cyan}
+    \urlstyle{same}
+    \usepackage{pgfplots} % For inline plots.
+    \usepackage{amsmath} % For alignment.
+    \usepackage[
+        bindingoffset=0.2in, footskip=.25in,
+        left=0.5in, right=2.5in, top=0.5in, bottom=0.5in,
+    ]{geometry}
+
+    \title{My Title}
+    \author{Edward K. Ream}
+    \date{December 2024}
+
+    \pagenumbering{gobble}
+    \setlength{\parskip}{6pt}
+    \setlength{\parindent}{0pt}
+    \pgfplotsset{compat=1.18}
+
+    \begin{document}
+    % \maketitle
+
+    \section*{Section name}
+
+
+    \end{document}
+    '''
+    #@+node:ekr.20241224072714.1: *4* vr.default_mathjax template
+    default_mathjax_template = '''
+    <head>
+      <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+      </script>
+      <script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML">
+      </script>
+    </head>
+    '''
+    #@-others
+    #@-<< vr: default templates >>
     #@+others
     #@+node:ekr.20110317080650.14380: *3*  vr.ctor & helpers
     def __init__(self, c: Cmdr, parent: Widget = None) -> None:
@@ -554,7 +605,12 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.create_pane(parent)
         # Ivars set by reloadSettings.
         self.auto_create: bool = None
+        self.background_color: str = None
         self.keep_open: bool = None
+        self.katex_template: str = None
+        self.latex_template: str = None
+        self.mathjax_template: str = None
+        self.pdf_zoom: int = None
         # Widgets managed by destroy_widgets.
         self.browser: Widget = None
         self.gs: Widget = None  # For @graphics-script: a QGraphicsScene
@@ -591,19 +647,21 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             'image': self.update_image,
             'jinja': self.update_jinja,
             'jupyter': self.update_jupyter,
-            # 'latex': self.update_latex,
+            'katex': self.update_katex,  # New.
+            'latex': self.update_latex,
             'markdown': self.update_md,
             'mathjax': self.update_mathjax,
             'md': self.update_md,
             'movie': self.update_movie,
             'networkx': self.update_networkx,
             # 'pandoc': self.update_pandoc,
-            'pdf': self.update_pdf,
+            # 'pdf': self.update_pdf,  # Replaced by katex or typst.
             'pyplot': self.update_pyplot,
             'rest': self.update_rst,
             'rst': self.update_rst,
             'svg': self.update_svg,
             'plantuml': self.update_plantuml,
+            'typst': self.update_typst,  # New.
             # 'url': self.update_url,
             # 'xml': self.update_xml,
         }
@@ -617,7 +675,24 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.keep_open = c.config.getBool('view-rendered-keep-open', True)
         self.background_color = c.config.getColor('rendering-pane-background-color') or 'white'
         self.default_kind = c.config.getString('view-rendered-default-kind') or 'rst'
-
+        self.pdf_zoom = c.config.getInt('view-rendered-pdf-zoom') or 100
+        # Templates
+        self.image_template = (
+            c.config.getString('view-rendered-image-template')
+            or self.default_image_template
+        )
+        self.katex_template = (
+            c.config.getString('view-rendered-katex-template')
+            or self.default_katex_template
+        )
+        self.latex_template = (
+            c.config.getString('view-rendered-latex-template')
+            or self.default_latex_template
+        )
+        self.mathjax_template = (
+            c.config.getString('view-rendered-mathjax-template')
+            or self.default_mathjax_template
+        )
     #@+node:ekr.20190614065659.1: *4* vr.create_pane
     def create_pane(self, parent: Position) -> None:
         """Create the VR pane."""
@@ -734,6 +809,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         s = self.remove_directives(s)
         # Dispatch based on the computed kind.
         kind = keywords.get('flags') if 'flags' in keywords else self.get_kind(p)
+        # g.trace('kind', repr(kind))
         if kind or keywords.get('force'):
             f = self.dispatch_dict.get(kind)
         else:
@@ -940,7 +1016,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             w.setPlainText('@image: file not found: %s' % (path))
             return
         path = path.replace('\\', '/')
-        template = image_template % (path)
+        template = self.image_template % (path)
         template = textwrap.dedent(template).strip()
         self.show()
         # w.setReadOnly(False)
@@ -989,7 +1065,30 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         except nbformat.reader.NotJSONError:
             pass  # Assume the result is html.
         return s
-    #@+node:ekr.20170324064811.1: *4* vr.update_latex (disabled)
+    #@+node:ekr.20241231121212.1: *4* vr.update_katex (new)
+    def update_katex(self, s: str, keywords: Any) -> None:
+        """Update katex text in the VR pane."""
+        p = self.c.p
+        g.trace(p.h)  ###
+
+        # Create a new QWebEngineView.
+        w = self.create_web_engineview()
+
+
+        # Compute the contents.
+        h = f"<h3>{p.h.strip()}</h3>\n\n"
+        if has_webengineview:
+            # # Replace whole-line latex comments with html comments.
+            # result_s = ''.join([
+                # f"<!-- {z} -->" if z.strip().startswith('%') else z
+                # for z in g.splitLines(s)
+            # ])
+            contents = self.katex_template + '\n\n' + h + s
+        else:
+            contents = h + s
+        w.setHtml(contents)
+        self.show()
+    #@+node:ekr.20170324064811.1: *4* vr.update_latex
     def update_latex(self, s: str, keywords: Any) -> None:
         """
         Update latex text in the VR pane.
@@ -1010,7 +1109,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
                 f"<!-- {z} -->" if z.strip().startswith('%') else z
                 for z in g.splitLines(s)
             ])
-            contents = mathjax_template + '\n\n' + h + result_s
+            contents = self.latex_template + '\n\n' + h + result_s
         else:
             contents = h + s
         w.setHtml(contents)
@@ -1031,7 +1130,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
                 f"<!-- {z} -->" if z.strip().startswith('%') else z
                 for z in g.splitLines(s)
             ])
-            contents = mathjax_template + '\n\n' + h + result_s
+            contents = self.mathjax_template + '\n\n' + h + result_s
         else:
             contents = h + s
         w.setHtml(contents)
@@ -1172,18 +1271,23 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         # Read the output file and return it.
         with open(o_path, 'r') as f:
             return f.read()
-    #@+node:ekr.20241226011006.1: *4* vr.update_pdf
+    #@+node:ekr.20241226011006.1: *4* vr.update_pdf (Disabled)
     def update_pdf(self, s: str, keywords: Any) -> None:
         """Update latex text in the VR pane."""
         p = self.c.p
         if not s.strip():
             return
-        lines = g.splitLines(s) or []
-        fn = lines and lines[0].strip()
-        if not fn:
-            g.trace(f"No file name in {p.h}")
-            self.hide()
-            return
+        if 1:  # New: create a temp file from p.gnx.
+
+            fn = f"{p.gnx}.pdf"
+        else:  # Legacy
+            lines = g.splitLines(s) or []
+            fn = lines and lines[0].strip()
+            if not fn:
+                g.trace(f"No file name in {p.h}")
+                self.hide()
+                return
+
         if not has_webengineview:
             g.trace('@pdf requires PyQt6-WebEngine')
             self.hide()
@@ -1191,9 +1295,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
 
         # Create a new QWebEngineView, deleting the old if it exists.
         w = self.create_web_engineview_with_pdf()
-
-        # Check the path.
-        ok, path = self.get_fn(fn, '@image')
+        ok, path = self.get_fn(fn, tag=None)
         if not ok:
             g.trace(f"@pdf: file not found: {path!r}")
             self.hide()
@@ -1202,7 +1304,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         # Create a URL to the file.
         url = QUrl.fromLocalFile(path)
         # https://www.rfc-editor.org/rfc/rfc8118
-        url.setFragment("zoom=200")
+        url.setFragment(f"zoom={self.pdf_zoom}")
         w.load(url)
         self.show()
     #@+node:ekr.20160928023915.1: *4* vr.update_pyplot
@@ -1307,7 +1409,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             f.write(s)
         pth_plantuml_jar = "~/.leo"
         os.system("cat temp.plantuml | java -jar %s/plantuml.jar -pipe > %s" % (pth_plantuml_jar, path))
-        template = image_template % (path)
+        template = self.image_template % (path)
         template = textwrap.dedent(template).strip()
         self.show()
         w.setReadOnly(False)
@@ -1423,6 +1525,39 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
                     self.show()
                     w.load(path)
                     w.show()
+    #@+node:ekr.20241231121247.1: *4* vr.update_typst (new)
+    def update_typst(self, s: str, keywords: Any) -> None:
+        """Update mathhjax text in the VR pane."""
+        p = self.c.p
+
+        # Create a new QWebEngineView.
+        w = self.create_web_engineview_with_pdf()
+
+        # Compute the contents.
+        if not has_webengineview:
+            w.setHtml(s)
+            self.show()
+            return
+
+        ### h = f"=== {p.h.strip()}\n\n"
+
+        tex_path = g.os_path_finalize_join(os.getcwd(), f"{p.gnx}.tex")
+        pdf_path = tex_path.replace('.tex', '.pdf')
+        contents = s.strip() + '\n'
+        with open(tex_path, 'w') as f:
+            f.write(contents)
+            print(f"Wrote {tex_path}")
+
+        # Render and open.
+        g.execute_shell_commands([
+            f"typst compile {tex_path}",  # Invoke the typst app.
+        ])
+        # g.trace(f"Loading {pdf_path}")
+        url = QUrl.fromLocalFile(pdf_path)
+        # https://www.rfc-editor.org/rfc/rfc8118
+        url.setFragment(f"zoom={self.pdf_zoom}")
+        w.load(url)
+        self.show()
     #@+node:ekr.20110321005148.14537: *4* vr.update_url
     def update_url(self, s: str, keywords: Any) -> None:
         c, p = self.c, self.c.p
@@ -1535,7 +1670,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         c = self.c
         fn = s or c.p.h[len(tag) :]
         fn = fn.strip()
-        # Similar to code in g.computeFileUrl
+        # Similar to code in g.computeFileUrl.
         if fn.startswith('~'):
             fn = fn[1:]
             fn = g.finalize(fn)
