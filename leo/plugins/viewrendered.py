@@ -533,23 +533,30 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     </html>
     '''
     #@+node:ekr.20241231121842.1: *4* vr.default_katex_template
-    default_katex_template = '''
+    default_katex_template = textwrap.dedent('''
     <!DOCTYPE html>
-    <!-- KaTeX requires the use of the HTML5 doctype. Without it, KaTeX may not render properly -->
     <html>
-      <head>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.19/dist/katex.min.css" integrity="sha384-7lU0muIg/i1plk7MgygDUp3/bNRA65orrBub4/OSWHECgwEsY83HaS1x3bljA/XV" crossorigin="anonymous">
+    <head>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.19/dist/katex.min.css"
+            integrity="sha384-7lU0muIg/i1plk7MgygDUp3/bNRA65orrBub4/OSWHECgwEsY83HaS1x3bljA/XV"
+            crossorigin="anonymous">
 
         <!-- The loading of KaTeX is deferred to speed up page rendering -->
-        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.19/dist/katex.min.js" integrity="sha384-RdymN7NRJ+XoyeRY4185zXaxq9QWOOx3O7beyyrRK4KQZrPlCDQQpCu95FoCGPAE" crossorigin="anonymous"></script>
+        <script defer
+            src="https://cdn.jsdelivr.net/npm/katex@0.16.19/dist/katex.min.js"
+            integrity="sha384-RdymN7NRJ+XoyeRY4185zXaxq9QWOOx3O7beyyrRK4KQZrPlCDQQpCu95FoCGPAE"
+            crossorigin="anonymous"></script>
 
         <!-- To automatically render math in text elements, include the auto-render extension: -->
         <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.19/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
-            onload="renderMathInElement(document.body);"></script>
-      </head>
-      ...
+            onload="renderMathInElement(document.body);">
+        </script>
+    </head>
+    <body>
+    [[body]]
+    </body>
     </html>
-    '''
+    ''')
     #@+node:ekr.20241231122327.1: *4* vr.default_latex template
     default_latex_template = r'''
     \documentclass[12pt, letter-paper]{article}
@@ -658,7 +665,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             'movie': self.update_movie,
             'networkx': self.update_networkx,
             # 'pandoc': self.update_pandoc,
-            # 'pdf': self.update_pdf,  # Replaced by katex or typst.
             'pyplot': self.update_pyplot,
             'rest': self.update_rst,
             'rst': self.update_rst,
@@ -1069,27 +1075,25 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         except nbformat.reader.NotJSONError:
             pass  # Assume the result is html.
         return s
-    #@+node:ekr.20241231121212.1: *4* vr.update_katex (new)
+    #@+node:ekr.20241231121212.1: *4* vr.update_katex
     def update_katex(self, s: str, keywords: Any) -> None:
         """Update katex text in the VR pane."""
         p = self.c.p
-        g.trace(p.h)  ###
 
         # Create a new QWebEngineView.
         w = self.create_web_engineview()
 
-
         # Compute the contents.
-        h = f"<h3>{p.h.strip()}</h3>\n\n"
-        if has_webengineview:
-            # # Replace whole-line latex comments with html comments.
-            # result_s = ''.join([
-                # f"<!-- {z} -->" if z.strip().startswith('%') else z
-                # for z in g.splitLines(s)
-            # ])
-            contents = self.katex_template + '\n\n' + h + s
-        else:
-            contents = h + s
+        if not has_webengineview:
+            w.setHtml(s)
+            self.show()
+            return
+
+        # Replace whole-line katex comments with html comments.
+        s = ''.join([
+            z for z in g.splitLines(s) if not z.strip().startswith('%')
+        ])
+        contents = self.katex_template.replace('[[body]]', s)
         w.setHtml(contents)
         self.show()
     #@+node:ekr.20170324064811.1: *4* vr.update_latex
@@ -1275,42 +1279,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         # Read the output file and return it.
         with open(o_path, 'r') as f:
             return f.read()
-    #@+node:ekr.20241226011006.1: *4* vr.update_pdf (Disabled)
-    def update_pdf(self, s: str, keywords: Any) -> None:
-        """Update latex text in the VR pane."""
-        p = self.c.p
-        if not s.strip():
-            return
-        if 1:  # New: create a temp file from p.gnx.
-
-            fn = f"{p.gnx}.pdf"
-        else:  # Legacy
-            lines = g.splitLines(s) or []
-            fn = lines and lines[0].strip()
-            if not fn:
-                g.trace(f"No file name in {p.h}")
-                self.hide()
-                return
-
-        if not has_webengineview:
-            g.trace('@pdf requires PyQt6-WebEngine')
-            self.hide()
-            return
-
-        # Create a new QWebEngineView, deleting the old if it exists.
-        w = self.create_web_engineview_with_pdf()
-        ok, path = self.get_fn(fn, tag=None)
-        if not ok:
-            g.trace(f"@pdf: file not found: {path!r}")
-            self.hide()
-            return
-
-        # Create a URL to the file.
-        url = QUrl.fromLocalFile(path)
-        # https://www.rfc-editor.org/rfc/rfc8118
-        url.setFragment(f"zoom={self.pdf_zoom}")
-        w.load(url)
-        self.show()
     #@+node:ekr.20160928023915.1: *4* vr.update_pyplot
     def update_pyplot(self, s: str, keywords: Any) -> None:
         """
@@ -1529,7 +1497,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
                     self.show()
                     w.load(path)
                     w.show()
-    #@+node:ekr.20241231121247.1: *4* vr.update_typst (new)
+    #@+node:ekr.20241231121247.1: *4* vr.update_typst
     def update_typst(self, s: str, keywords: Any) -> None:
         """Update mathhjax text in the VR pane."""
         p = self.c.p
