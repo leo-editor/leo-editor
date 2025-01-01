@@ -533,7 +533,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     </html>
     '''
     #@+node:ekr.20241231121842.1: *4* vr.default_katex_template
-    default_katex_template = textwrap.dedent('''
+    default_katex_template = textwrap.dedent(r'''
     <!DOCTYPE html>
     <html>
     <head>
