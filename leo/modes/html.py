@@ -66,7 +66,7 @@ def html_rule4(colorer, s, i):
 #@+node:ekr.20230419050050.8: *3* html_rule5 &..;
 def html_rule5(colorer, s, i):
     c = colorer.c
-    if c.p.b.startswith(('@language latex', '@language mathjax')):
+    if c.p.b.startswith(('@language katex', '@language latex', '@language mathjax')):
         # This rule interferes with LaTeX coloring.
         return 0
     return colorer.match_span(s, i, kind="literal2", begin="&", end=";",
@@ -97,7 +97,7 @@ def html_rule_end_template(colorer, s, i):
 def html_rule_percent(colorer, s, i):
     # A hack for @language latex/mathjax.
     c = colorer.c
-    if c.p.b.startswith(('@language latex', '@language mathjax')):
+    if c.p.b.startswith(('@language katex', '@language latex', '@language mathjax')):
         if i == 0 and s and s[i] == '%':
             # Color '%' as a whole-line comment.
             colorer.match_eol_span(s, i, kind="comment1", seq="%")
