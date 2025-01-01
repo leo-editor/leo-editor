@@ -612,7 +612,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.katex_template: str = None
         self.latex_template: str = None
         self.mathjax_template: str = None
-        self.typst_template = None
+        self.typst_template: str = None
         self.pdf_zoom: int = None
         # Widgets managed by destroy_widgets.
         self.browser: Widget = None
