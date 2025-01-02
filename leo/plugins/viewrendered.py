@@ -687,24 +687,20 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.default_kind = c.config.getString('view-rendered-default-kind') or 'rst'
         self.pdf_zoom = c.config.getInt('view-rendered-pdf-zoom') or 100
 
-        # Templates
-        self.image_template = (
-            c.config.getString('view-rendered-image-template')
-            or self.default_image_template
-        )
-        self.katex_template = (
-            c.config.getString('view-rendered-katex-template')
-            or self.default_katex_template
-        )
-        self.latex_template = (
-            c.config.getString('view-rendered-latex-template')
-            or self.default_latex_template
-        )
-        self.mathjax_template = (
-            c.config.getString('view-rendered-mathjax-template')
-            or self.default_mathjax_template
-        )
-        self.typst_template = c.config.getString('view-rendered-typst-template') or ''
+        # Templates...
+
+        def get_template(kind: str) -> str:
+            setting_name = f"view-rendered-{kind}-template"
+            aList = c.config.getData(setting_name, strip_comments=True, strip_data=True)
+            if aList is None:
+                return getattr(self, f"default_{kind}_template")
+            return '\n'.join(aList)
+
+        self.image_template = get_template('image')
+        self.katex_template = get_template('katex')
+        self.latex_template = get_template('latex')
+        self.mathjax_template = get_template('mathjax')
+        self.typst_template = get_template('typst')
     #@+node:ekr.20190614065659.1: *4* vr.create_pane
     def create_pane(self, parent: Position) -> None:
         """Create the VR pane."""

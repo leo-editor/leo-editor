@@ -1990,6 +1990,11 @@
 <v t="ekr.20181018105748.1"><vh>viewrendered plugin</vh>
 <v t="ekr.20181018105800.1"><vh>@bool view-rendered-auto-create = False</vh></v>
 <v t="ekr.20240519122612.1"><vh>@bool view-rendered-keep-open = True</vh></v>
+<v t="ekr.20250102061338.1"><vh>@data view-rendered-image-template</vh></v>
+<v t="ekr.20250102061340.1"><vh>@data view-rendered-katex-template</vh></v>
+<v t="ekr.20250102061341.1"><vh>@data view-rendered-latex-template</vh></v>
+<v t="ekr.20250102061341.2"><vh>@data view-rendered-mathjax-template</vh></v>
+<v t="ekr.20250102062018.1"><vh>@data view-rendered-typst-template</vh></v>
 <v t="ekr.20181018113446.1"><vh>@string view-rendered-default-kind = rst</vh></v>
 <v t="ekr.20181018113502.1"><vh>@string view-rendered-md-extensions = extra</vh></v>
 </v>
@@ -2275,6 +2280,7 @@
 </v>
 </v>
 <v t="ekr.20140915194122.23428"></v>
+<v t="ekr.20181018105748.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -11016,7 +11022,8 @@ See https://jedi.readthedocs.io/en/latest/index.html
 <t tx="ekr.20181018105625.1"></t>
 <t tx="ekr.20181018105650.1"></t>
 <t tx="ekr.20181018105704.1"></t>
-<t tx="ekr.20181018105748.1"></t>
+<t tx="ekr.20181018105748.1">@language html
+</t>
 <t tx="ekr.20181018105800.1">True: open the VR pane automatically.</t>
 <t tx="ekr.20181018105904.1"></t>
 <t tx="ekr.20181018105945.1"></t>
@@ -11732,6 +11739,94 @@ See https://jupytext.readthedocs.io/en/latest/config.html
 # %%
 </t>
 <t tx="ekr.20241030020739.1">The maximum size of imported headlines.
+</t>
+<t tx="ekr.20250102061338.1"># The default html template for @image nodes.
+# Blank lines and comments lines (lines starting with '#') are ignored.
+
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;
+&lt;head&gt;&lt;/head&gt;
+&lt;body bgcolor=white&gt;
+&lt;img src="%s"&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</t>
+<t tx="ekr.20250102061340.1"># The default html template for @language katex nodes.
+# Blank lines and comments lines (lines starting with '#') are ignored.
+
+# Important: VR replaces [[body]] with the p.b.
+
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.19/dist/katex.min.css"
+        integrity="sha384-7lU0muIg/i1plk7MgygDUp3/bNRA65orrBub4/OSWHECgwEsY83HaS1x3bljA/XV"
+        crossorigin="anonymous"&gt;
+
+    &lt;!-- The loading of KaTeX is deferred to speed up page rendering --&gt;
+    &lt;script defer
+        src="https://cdn.jsdelivr.net/npm/katex@0.16.19/dist/katex.min.js"
+        integrity="sha384-RdymN7NRJ+XoyeRY4185zXaxq9QWOOx3O7beyyrRK4KQZrPlCDQQpCu95FoCGPAE"
+        crossorigin="anonymous"&gt;&lt;/script&gt;
+
+    &lt;!-- To automatically render math in text elements, include the auto-render extension: --&gt;
+    &lt;script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.19/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"&gt;
+    &lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+[[body]]
+&lt;/body&gt;
+&lt;/html&gt;
+</t>
+<t tx="ekr.20250102061341.1"># The default html template for @language latex nodes.
+# Blank lines and comments lines (lines starting with '#') are ignored.
+
+\documentclass[12pt, letter-paper]{article}
+\usepackage{graphicx} % Images.
+\usepackage{tikz} % Evaluate expressions.
+\usepackage{hyperref} % For \href.
+\hypersetup{colorlinks=true, urlcolor=cyan}
+\urlstyle{same}
+\usepackage{pgfplots} % For inline plots.
+\usepackage{amsmath} % For alignment.
+\usepackage[
+    bindingoffset=0.2in, footskip=.25in,
+    left=0.5in, right=2.5in, top=0.5in, bottom=0.5in,
+]{geometry}
+
+\title{My Title}
+\author{A. U. Thor}
+\date{A long time ago}
+
+\pagenumbering{gobble}
+\setlength{\parskip}{6pt}
+\setlength{\parindent}{0pt}
+\pgfplotsset{compat=1.18}
+
+\begin{document}
+% \maketitle
+
+\section*{Section name}
+
+\end{document}
+</t>
+<t tx="ekr.20250102061341.2"># The default html template for @language mathjax nodes.
+# Blank lines and comments lines (lines starting with '#') are ignored.
+
+&lt;head&gt;
+  &lt;script type="text/x-mathjax-config"&gt;
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+  &lt;/script&gt;
+  &lt;script type="text/javascript" async
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML"&gt;
+  &lt;/script&gt;
+&lt;/head&gt;
+</t>
+<t tx="ekr.20250102062018.1"># The default html template for @language typst nodes.
+# Blank lines and comments lines (lines starting with '#') are ignored.
+
 </t>
 <t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 
