@@ -686,6 +686,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.background_color = c.config.getColor('rendering-pane-background-color') or 'white'
         self.default_kind = c.config.getString('view-rendered-default-kind') or 'rst'
         self.pdf_zoom = c.config.getInt('view-rendered-pdf-zoom') or 100
+
         # Templates
         self.image_template = (
             c.config.getString('view-rendered-image-template')
@@ -1268,9 +1269,13 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             return f.read()
     #@+node:ekr.20241226011006.1: *4* vr.update_pdf
     def update_pdf(self, s: str, keywords: Any) -> None:
-        """Update latex text in the VR pane."""
+        """Load a pdf file and show it in the VR pane."""
         p = self.c.p
         if not s.strip():
+            return
+        ok, path = self.get_fn(s, '@pdf')
+        if not ok:
+            g.print_unique_message(f"File not found: {path!r}")
             return
 
         # Create a new QWebEngineView.
@@ -1281,19 +1286,8 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             self.show()
             return
 
-        # Render as pdf.
-        tex_path = g.os_path_finalize_join(os.getcwd(), f"{p.gnx}.tex")
-        pdf_path = tex_path.replace('.tex', '.pdf')
-        contents = self.typst_template + '\n\n' + s.strip() + '\n'
-        with open(tex_path, 'w') as f:
-            f.write(contents)
-            g.print_unique_message(f"Wrote {tex_path}")
-        g.execute_shell_commands([
-            f"pdflatex {tex_path}",  # Invoke pdflatex.cmd.
-        ])
-
-        # Create a URL to the file.
-        url = QUrl.fromLocalFile(pdf_path)
+        # Load the file.
+        url = QUrl.fromLocalFile(path)
         # https://www.rfc-editor.org/rfc/rfc8118
         url.setFragment(f"zoom={self.pdf_zoom}")
         w.load(url)
@@ -1529,8 +1523,13 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             self.show()
             return
 
-        # Render as pdf.
-        tex_path = g.os_path_finalize_join(os.getcwd(), f"{p.gnx}.tex")
+        sfn = 'temp.tex'
+        tex_path = self.resolve_path(sfn)
+        if not tex_path:
+            g.print_unique_message(f"File not found: {sfn}")
+            return
+
+        # Create the .pdf file.
         pdf_path = tex_path.replace('.tex', '.pdf')
         contents = self.typst_template + '\n\n' + s.strip() + '\n'
         with open(tex_path, 'w') as f:
@@ -1539,6 +1538,8 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         g.execute_shell_commands([
             f"typst compile {tex_path}",  # Invoke the typst app.
         ])
+
+        # Render the .pdf file.
         url = QUrl.fromLocalFile(pdf_path)
         # https://www.rfc-editor.org/rfc/rfc8118
         url.setFragment(f"zoom={self.pdf_zoom}")
@@ -1656,6 +1657,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         c = self.c
         fn = s or c.p.h[len(tag) :]
         fn = fn.strip()
+
         # Similar to code in g.computeFileUrl.
         if fn.startswith('~'):
             fn = fn[1:]
@@ -1687,6 +1689,27 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
                     continue
             result.append(s1)
         return ''.join(result)
+    #@+node:ekr.20250102053905.1: *4* vr.resolve_path
+    def resolve_path(self, path: str) -> str:
+        """Resolve the given path to an absolute path."""
+        c = self.c
+        if not os.path.isfile(path):
+            return ''
+        if os.path.isabs(path):
+            return path
+
+        # Similar to code in g.computeFileUrl.
+        if path.startswith('~'):
+            path = path[1:]
+            path = g.finalize(path)
+        else:
+            # Handle ancestor @path directives.
+            if c and c.fileName():
+                base = c.getNodePath(c.p)
+                path = g.finalize_join(g.os_path_dirname(c.fileName()), base, path)
+            else:
+                path = g.finalize(path)
+        return path
     #@-others
 #@-others
 #@@language python
