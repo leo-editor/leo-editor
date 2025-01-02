@@ -789,7 +789,10 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     # Must have this signature: called by leoPlugins.callTagHandler.
 
     def update(self, tag: str, keywords: Any) -> None:  # type:ignore
-        """Update the VR pane. Called at idle time."""
+        """
+        vr.update: Update the VR pane.
+        Called at idle time and by the vr-update command.
+        """
         p = self.c.p
         if not self.active:
             try:
@@ -845,10 +848,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.qwv = self.w = w = qwv()
         self.embed_widget(w)
         if isinstance(w, QtWidgets.QTextBrowser):
-            g.print_unique_message(
-                'VR can not render latex or mathjax:\n'
-                'pip install PyQt6-WebEngine\n'
-            )
             return w
 
         # Allow remote access.
@@ -975,7 +974,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             return f.read()
     #@+node:ekr.20110321151523.14463: *4* vr.update_graphics_script
     def update_graphics_script(self, s: str, keywords: Any) -> None:
-        """Update the graphics script in the VR pane."""
+        """Display the graphics script in `s` in the VR pane."""
         c = self.c
         if g.unitTesting:
             return
@@ -999,10 +998,10 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     update_html_count = 0
 
     def update_html(self, s: str, keywords: Any) -> None:
-        """Update html in the VR pane."""
+        """Display the html text in `s` in the VR pane."""
         c = self.c
 
-        # Create a new QWebEngineView, deleting the old if it exists.
+        # Create a new QWebEngineView.
         w = self.create_web_engineview()
 
         # Set the html.
@@ -1011,7 +1010,10 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         c.bodyWantsFocusNow()
     #@+node:ekr.20110320120020.14482: *4* vr.update_image
     def update_image(self, s: str, keywords: Any) -> None:
-        """Update an image in the VR pane."""
+        """
+        Display an image in the VR pane.
+        The first line of `s` should be a `@image <path>`.
+        """
         if not s.strip():
             return
         lines = g.splitLines(s) or []
@@ -1021,20 +1023,18 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         w = self.get_base_text_widget()
         ok, path = self.get_fn(fn, '@image')
         if not ok:
-            w.setPlainText('@image: file not found: %s' % (path))
+            w.setPlainText(f"@image: file not found: {path!r}")
             return
         path = path.replace('\\', '/')
         template = self.image_template % (path)
         template = textwrap.dedent(template).strip()
         self.show()
-        # w.setReadOnly(False)
         w.setHtml(template)
-        # w.setReadOnly(True)
     #@+node:ekr.20170105124347.1: *4* vr.update_jupyter & helper
     update_jupyter_count = 0
 
     def update_jupyter(self, s: str, keywords: Any) -> None:
-        """Update @jupyter node in the VR pane."""
+        """Update an @jupyter node in the VR pane."""
         c = self.c
         w = self.get_base_text_widget()
         s = self.get_jupyter_source(c)
@@ -1075,11 +1075,12 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         return s
     #@+node:ekr.20241231121212.1: *4* vr.update_katex
     def update_katex(self, s: str, keywords: Any) -> None:
-        """Update katex text in the VR pane."""
+        """Display the katex text `s` in the VR pane."""
 
         # Create a new QWebEngineView.
         w = self.create_web_engineview()
         if not has_webengineview:
+            g.print_unique_message('katex rendering requires PyQt6-WebEngine')
             w.setHtml(s)
             self.show()
             return
@@ -1093,11 +1094,12 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.show()
     #@+node:ekr.20170324064811.1: *4* vr.update_latex
     def update_latex(self, s: str, keywords: Any) -> None:
-        """Update LaTeX text in the VR pane."""
+        """Display the LaTeX text `s` in the VR pane."""
 
         # Create a new QWebEngineView.
         w = self.create_web_engineview()
         if not has_webengineview:
+            g.print_unique_message('LaTeX rendering requires PyQt6-WebEngine')
             w.setHtml(s)
             self.show()
             return
@@ -1111,11 +1113,12 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.show()
     #@+node:ekr.20241224072334.1: *4* vr.update_mathjax
     def update_mathjax(self, s: str, keywords: Any) -> None:
-        """Update mathhjax text in the VR pane."""
+        """Display the mathjax text `s` in the VR pane."""
 
         # Create a new QWebEngineView.
         w = self.create_web_engineview()
         if not has_webengineview:
+            g.print_unique_message('mathjax rendering requires PyQt6-WebEngine')
             w.setHtml(s)
             self.show()
             return
@@ -1129,7 +1132,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.show()
     #@+node:peckj.20130207132858.3671: *4* vr.update_md & helper
     def update_md(self, s: str, keywords: Any) -> None:
-        """Update markdown text in the VR pane."""
+        """Display the markdown text in `s` in the VR pane."""
         c = self.c
         p = c.p
         s = s.strip().strip('"""').strip("'''").strip()
@@ -1173,7 +1176,11 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     movie_warning = False
 
     def update_movie(self, s: str, keywords: Any) -> None:
-        """Update a movie in the VR pane."""
+        """
+        Show an @movie in the VR pane.
+        
+        The first line of `s` should be the path to the movie.
+        """
         ok, path = self.get_fn(s, '@movie')
         if not ok:
             w = self.get_base_text_widget()
@@ -1203,19 +1210,16 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
 
     #@+node:ekr.20110320120020.14484: *4* vr.update_networkx
     def update_networkx(self, s: str, keywords: Any) -> None:
-        """Update a networkx graphic in the VR pane."""
+        """Dispaly a networkx graphic in `s` in the VR pane."""
         w = self.get_base_text_widget()
         w.setPlainText('')  # 'Networkx: len: %s' % (len(s)))
         self.show()
     #@+node:ekr.20191006155748.1: *4* vr.update_pandoc & helpers (disabled)
     def update_pandoc(self, s: str, keywords: Any) -> None:
         """
-        Update an @pandoc in the VR pane.
+        Display an @pandoc node in the VR pane.
         
         This code has been disabled.
-
-        There is no such thing as @language pandoc,
-        so only @pandoc nodes trigger this code.
         """
         global pandoc_exec
         w = self.get_base_text_widget()
@@ -1265,7 +1269,10 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             return f.read()
     #@+node:ekr.20241226011006.1: *4* vr.update_pdf
     def update_pdf(self, s: str, keywords: Any) -> None:
-        """Load a pdf file and show it in the VR pane."""
+        """
+        Display a pdf file in the VR pane.
+        The first line of `s` should be a `@pdf <path>`.
+        """
         p = self.c.p
         if not s.strip():
             return
@@ -1277,7 +1284,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         # Create a new QWebEngineView.
         w = self.create_web_engineview_with_pdf()
         if not has_webengineview:
-            g.print_unique_message('@pdf requires PyQt6-WebEngine')
+            g.print_unique_message('@pdf rendering requires PyQt6-WebEngine')
             w.setHtml(s)
             self.show()
             return
@@ -1291,7 +1298,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     #@+node:ekr.20160928023915.1: *4* vr.update_pyplot
     def update_pyplot(self, s: str, keywords: Any) -> None:
         """
-        Get the pyplot script at c.p.b and show it in the VR pane.
+        Execute the pyplot script in `s` and show the results in the VR pane.
         """
         c = self.c
         try:
@@ -1343,7 +1350,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         matplotlib.use('QtAgg')
     #@+node:ekr.20110320120020.14477: *4* vr.update_rst & helpers
     def update_rst(self, s: str, keywords: Any) -> None:
-        """Update rst in the VR pane."""
+        """Show the rst text in `s` in the VR pane."""
         s = s.strip().strip('"""').strip("'''").strip()
         isHtml = s.startswith('<') and not s.startswith('<<')
 
@@ -1466,7 +1473,11 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     # http://doc.trolltech.com/4.4/qtsvg.html
     # http://doc.trolltech.com/4.4/painting-svgviewer.html
     def update_svg(self, s: str, keywords: Any) -> None:
-
+        """
+        Show an svg image in the VR pane.
+        
+        `s` may be a path to the image or the image itself.
+        """
         if 0:  # Use webengine. Works, but scaling is too big.
             w = self.create_web_engineview()
             w.setHtml(s)
@@ -1481,6 +1492,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
                 except Exception:
                     QSvgWidget = None
             if not QSvgWidget:
+                g.print_unique_message('svg rendering requires PyQt6-WebEngine')
                 w = self.get_base_text_widget()
                 w.setPlainText(s)
                 return
@@ -1508,13 +1520,13 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
                     w.show()
     #@+node:ekr.20241231121247.1: *4* vr.update_typst
     def update_typst(self, s: str, keywords: Any) -> None:
-        """Update mathhjax text in the VR pane."""
+        """Display the typest text in `s` in the VR pane."""
         p = self.c.p
 
         # Create a new QWebEngineView.
         w = self.create_web_engineview_with_pdf()
         if not has_webengineview:
-            g.print_unique_message('@pdf requires PyQt6-WebEngine')
+            g.print_unique_message('typst rendering requires PyQt6-WebEngine')
             w.setHtml(s)
             self.show()
             return
@@ -1543,6 +1555,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.show()
     #@+node:ekr.20110321005148.14537: *4* vr.update_url
     def update_url(self, s: str, keywords: Any) -> None:
+        """Display the url in `s` in the VR pane."""
         c, p = self.c, self.c.p
         colorizer = c.frame.body.colorizer
         language = colorizer.scanLanguageDirectives(p)
