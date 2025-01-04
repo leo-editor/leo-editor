@@ -3944,7 +3944,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         
         The path to the PDF file must be either in the headline after
         the leading "@pdf " or the first line in the body. The
-        path must use "/" separators and may start with "file:///"
+        path must use "/" separators and may not start with "file:".
         """
         c = self.c
         if self.must_change_widget(has_webengineview):
@@ -3956,7 +3956,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
         w.hide()  # This forces a proper update.
 
         path = self.get_file_path('@pdf')
-        g.es(f'---{path=}---')
         if path:
             url = QUrl.fromLocalFile(path)
             # https://www.rfc-editor.org/rfc/rfc8118
@@ -4002,6 +4001,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
         an existing file. If it does, return the fully resolved
         path or an empty string. The path may be absolute or
         relative to the node's effective path.
+        
+        For an unsaved outline, assume that relative paths are
+        relative to the .leo directory.
         """
         c = self.c
         is_absolute = Path(s).is_absolute()
@@ -4016,7 +4018,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 path = Path.resolve(Path(fn1))
                 fn = str(path)
             else:
-                fn = g.finalize(fn)
+                # If outline is not saved, assume file is relative to ~/.leo
+                fn = g.finalize('~/.leo/' + s)
 
         path = fn if Path.exists(Path(fn)) else ''
         return path
