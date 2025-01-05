@@ -3967,13 +3967,17 @@ class ViewRenderedController3(QtWidgets.QWidget):
         c.bodyWantsFocusNow()
     #@+node:tom.20250104125231.1: *5* v3.get_file_path
     def get_file_path(self, kind=None):
-        """Return an absolute file path, with ~, .., and symbolic links resolved.
+        """Return an absolute file path from a node.
+        
+        ~, .., and symbolic links resolved.
         
         The file path may be absolute or relative to the path
-        applicable to the selected node. If the headline contains
-        a path to a file, that path is used.  Otherwise if the string s
-        contains a line to a file, that path is used.
-        
+        applicable to the selected node. If the headline starts
+        with a kind, such as "@pdf", and contains a path to an
+        existing file, that path is returned. Otherwise if first
+        line of the string s contains a path to a file, that
+        path is returned.
+
         ARGUMENTS
         s -- a single line of text that may contain a path to a file.
         kind -- A headline prefix starting with "@", such as "@pdf".
@@ -3982,25 +3986,25 @@ class ViewRenderedController3(QtWidgets.QWidget):
         A fully resolved absolute path or None.
         """
         c = self.c
-        fn = ''
+        path = ''
         if kind:
             # Try headline first
             s = c.p.h[len(kind):].strip()
             if s:
-                fn = self.get_file_from_string(s)
-        if not (kind and fn):
+                path = self.get_file_from_string(s)
+        if not (kind and path):
             # Try body text
             s = c.p.b.split('\n')[0].strip()
-            fn = self.get_file_from_string(s)
-        return fn
+            path = self.get_file_from_string(s)
+        return path
     #@+node:tom.20250104130838.1: *5* v3.get_file_from_string
     def get_file_from_string(self, s):
         """Return the path to an existing file based on s.
         
         s is a string whose first line may contain a path to
-        an existing file. If it does, return the fully resolved
-        path or an empty string. The path may be absolute or
-        relative to the node's effective path.
+        a file. If it does, return the fully resolved
+        path to an existing file, else an empty string. The path
+        may be absolute or relative to the node's effective path.
         
         For an unsaved outline, assume that relative paths are
         relative to the .leo directory.
