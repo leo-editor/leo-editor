@@ -10,7 +10,7 @@ import textwrap
 from collections import OrderedDict
 from typing import Any, Dict, TYPE_CHECKING, Optional
 
-from leo.core.leoQt import QtWidgets, Orientation, QtCore
+from leo.core.leoQt import QtWidgets, Orientation
 from leo.core import leoGlobals as g
 
 QSplitter = QtWidgets.QSplitter
@@ -84,11 +84,11 @@ def big_tree(event: LeoKeyEvent) -> None:
 
         ┌──────────────────┐
         │  outline         │
-        ├──────────┬───────┤
-        │  body    │  log  │
-        ├──────────┴───────┤
-        │  VR/VR3          │
-        └──────────────────┘
+        ├─────────┬────────┤
+        │  body   │  log   │
+        ├─────────┼────────┤
+        │    VR   │  VR3   │
+        └─────────┴────────┘
     """
     c = event.get('c')
     cache = c.frame.top.layout_cache
@@ -98,53 +98,46 @@ def big_tree(event: LeoKeyEvent) -> None:
 
     ms = cache.find_widget('main_splitter')
     ss = cache.find_widget('secondary_splitter')
+    vs = cache.find_widget('vrx_splitter')
+    if vs is None:
+        vs = QSplitter(cache)
+        vs.setObjectName('vrx_splitter')
     of = cache.find_widget('outlineFrame')
     lf = cache.find_widget('logFrame')
     bf = cache.find_widget('bodyFrame')
 
     if has_vr3:
-        vr = cache.find_widget('viewrendered3_pane')
-        if vr is None:
+        vr3 = cache.find_widget('viewrendered3_pane')
+        if vr3 is None:
             import leo.plugins.viewrendered3 as vr3_mod
             h = c.hash()
-            vr3_mod.controllers[h] = vr = vr3_mod.ViewRenderedController3(c)
+            vr3_mod.controllers[h] = vr3_mod.ViewRenderedController3(c)
     else:
-        vr = cache.find_widget('viewrendered_pane')
+        vr3 = None
+    vr = c.vr
 
     # Clear out splitters so we can add widgets back in the right order
-    for widget in (ss, of, lf, bf, vr):  # Don't remove ms!
+    for widget in (ss, of, lf, bf, vr, vr3):  # Don't remove ms!
         if widget is not None:
-            widget.setParent(None)
+            widget.setParent(cache)
 
     # Move widgets to target splitters
-    of.setParent(ms)
-    ss.setParent(ms)
-    if vr is not None:
-        vr.setParent(ms)
-    bf.setParent(ss)
-    lf.setParent(ss)
+    ms.addWidget(of)
+    ms.addWidget(ss)
+    ms.addWidget(vs)
+    vs.addWidget(vr)
+    if vr3 is not None:
+        vs.addWidget(vr3)
+    ss.addWidget(bf)
+    ss.addWidget(lf)
 
-    # set Orientations
     ms.setOrientation(Orientation.Vertical)
     ss.setOrientation(Orientation.Horizontal)
+    vs.setOrientation(Orientation.Horizontal)
 
-    # Re-parenting a widget to None hides it, so show it now
-    widgets = [ss, of, lf, bf]
-    if vr is not None:
-        widgets.append(vr)
-    for widget in widgets:
-        widget.show()
-
-    # Set splitter sizes
     ms.setSizes([100_000] * len(ms.sizes()))
     ss.setSizes([100_000] * len(ss.sizes()))
-
-    if vr is not None:
-        if has_vr3:
-            # Avoid flash each time VR pane is re-opened.
-            QtCore.QTimer.singleShot(60, lambda: show_vr3_pane(c, vr))
-        else:
-            c.doCommandByName('vr-show')
+    vs.setSizes([100_000] * len(vs.sizes()))
 #@+node:ekr.20241008174427.1: *3* command: 'layout-horizontal-thirds'
 @g.command('layout-horizontal-thirds')
 @register_layout('layout-horizontal-thirds')
@@ -173,9 +166,9 @@ def quadrants(event: LeoKeyEvent) -> None:
 
         ┌───────────────┬───────────┐
         │   outline     │   log     │
-        ├───────────────┼───────────┤
-        │   body        │  VR/VR3   │
-        └───────────────┴───────────┘
+        ├───────────────┼────┬──────┤
+        │   body        │ VR │ VR3  │
+        └───────────────┴────┴──────┘
     """
     c = event.get('c')
     dw = c.frame.top
@@ -282,11 +275,11 @@ def vertical_thirds(event: LeoKeyEvent) -> None:
     """
     Create Leo's vertical-thirds layout:
 
-        ┌───────────┬────────┬────────┐
-        │  outline  │        │        │
-        ├───────────┤  body  │ VR/VR3 │
-        │  log      │        │        │
-        └───────────┴────────┴────────┘
+        ┌───────────┬────────┬────┬─────┐
+        │  outline  │        │    │     │
+        ├───────────┤  body  │ VR │ VR3 │
+        │  log      │        │    │     │
+        └───────────┴────────┴────┴─────┘
     """
     c = event.get('c')
     dw = c.frame.top
@@ -300,11 +293,11 @@ def vertical_thirds2(event: LeoKeyEvent) -> None:
     """
     Create Leo's vertical-thirds2 layout:
 
-        ┌───────────┬───────┬─────────┐
-        │           │  log  │         │
-        │  outline  ├───────┤ VR/VR3  │
-        │           │  body │         │
-        └───────────┴───────┴─────────┘
+        ┌───────────┬───────┬────┬─────┐
+        │           │  log  │    │     │
+        │  outline  ├───────┤ VR │ VR3 │
+        │           │  body │    │     │
+        └───────────┴───────┴────┴─────┘
     """
     c = event.get('c')
     dw = c.frame.top
@@ -343,6 +336,25 @@ FALLBACK_LAYOUT = {
         'secondary_splitter': Orientation.Vertical,
     }
 }
+#@+node:tom.20240930164155.1: *3* LEGACY_LAYOUT
+LEGACY_LAYOUT = {
+    'SPLITTERS': OrderedDict(
+        (
+            ('bodyFrame', 'secondary_splitter'),
+            (VR_OBJ_NAME, 'secondary_splitter'),
+            (VR3_OBJ_NAME, 'secondary_splitter'),
+            ('outlineFrame', 'outline-log-splitter'),
+            ('logFrame', 'outline-log-splitter'),
+            ('outline-log-splitter', 'main_splitter'),
+            ('secondary_splitter', 'main_splitter'),
+        )
+    ),
+    'ORIENTATIONS': {
+        'outline-log-splitter': Orientation.Horizontal,
+        'secondary_splitter': Orientation.Horizontal,
+        'main_splitter': Orientation.Vertical,
+    }
+}
 #@+node:tom.20240928170706.1: *3* HORIZONTAL_THIRDS_LAYOUT
 HORIZONTAL_THIRDS_LAYOUT = {
     'SPLITTERS': OrderedDict(
@@ -357,24 +369,6 @@ HORIZONTAL_THIRDS_LAYOUT = {
         'main_splitter': Orientation.Vertical
     }
 }
-#@+node:tom.20240930164155.1: *3* LEGACY_LAYOUT
-LEGACY_LAYOUT = {
-    'SPLITTERS': OrderedDict(
-        (
-            ('bodyFrame', 'secondary_splitter'),
-            (VRX_PLACEHOLDER_NAME, 'secondary_splitter'),
-            ('outlineFrame', 'outline-log-splitter'),
-            ('logFrame', 'outline-log-splitter'),
-            ('outline-log-splitter', 'main_splitter'),
-            ('secondary_splitter', 'main_splitter'),
-        )
-    ),
-    'ORIENTATIONS': {
-        'outline-log-splitter': Orientation.Horizontal,
-        'secondary_splitter': Orientation.Horizontal,
-        'main_splitter': Orientation.Vertical,
-    }
-}
 #@+node:tom.20240929101820.1: *3* RENDERED_FOCUSED_LAYOUT
 RENDERED_FOCUSED_LAYOUT = {
     'SPLITTERS': OrderedDict(
@@ -383,7 +377,8 @@ RENDERED_FOCUSED_LAYOUT = {
             ('logFrame', 'secondary_splitter'),
             (VRX_PLACEHOLDER_NAME, 'body-vr-splitter'),
             ('secondary_splitter', 'main_splitter'),
-            ('body-vr-splitter', 'main_splitter'))
+            ('body-vr-splitter', 'main_splitter'),
+            )
         ),
     'ORIENTATIONS': {
         'body-vr-splitter': Orientation.Horizontal,
@@ -398,13 +393,14 @@ VERTICAL_THIRDS2_LAYOUT = {
         (('logFrame', 'secondary_splitter'),
         ('bodyFrame', 'secondary_splitter'),
         ('outlineFrame', 'main_splitter'),
-        (VRX_PLACEHOLDER_NAME, 'vr-splitter'),
+        (VR_OBJ_NAME, 'vr-splitter'),
+        (VR3_OBJ_NAME, 'vr-splitter'),
         ('secondary_splitter', 'main_splitter'),
         ('vr-splitter', 'main_splitter')
         )
     ),
     'ORIENTATIONS': {
-        'vr-splitter': Orientation.Vertical,
+        'vr-splitter': Orientation.Horizontal,
         'secondary_splitter': Orientation.Vertical,
         'main_splitter': Orientation.Horizontal
     }
@@ -412,12 +408,14 @@ VERTICAL_THIRDS2_LAYOUT = {
 #@+node:tom.20240929104728.1: *3* VERTICAL_THIRDS_LAYOUT
 VERTICAL_THIRDS_LAYOUT = {
     'SPLITTERS': OrderedDict(
-            (('outlineFrame', 'secondary_splitter'),
-            ('logFrame', 'secondary_splitter'),
-            ('secondary_splitter', 'main_splitter'),
-            ('bodyFrame', 'main_splitter'),
-            (VRX_PLACEHOLDER_NAME, 'main_splitter'))
-        ),
+        (('outlineFrame', 'secondary_splitter'),
+        ('logFrame', 'secondary_splitter'),
+        ('secondary_splitter', 'main_splitter'),
+        ('bodyFrame', 'main_splitter'),
+        (VR_OBJ_NAME, 'main_splitter'),
+        (VR3_OBJ_NAME, 'main_splitter'),
+        )
+    ),
     'ORIENTATIONS': {
         'secondary_splitter': Orientation.Vertical,
         'main_splitter': Orientation.Horizontal
@@ -559,7 +557,6 @@ class LayoutCacheWidget(QWidget):
     #@+node:ekr.20241027181931.1: *4* LCW.resize_pane
     def resize_pane(self, widget: QWidget, delta: int) -> None:
         """Resize the pane containing the given widget."""
-        c = self.c
         splitter, direct_child = g.app.gui.find_parent_splitter(widget)
         if not splitter:
             g.trace(f"Oops! no splitter for name: {widget.objectName()!r}")
@@ -697,6 +694,7 @@ class LayoutCacheWidget(QWidget):
             if widget is None:
                 widget = self.created_splitter_dict.get(name, None)
             dest = SPLITTER_DICT.get(target, None)
+
             if widget is not None and dest is not None:
                 i = splitter_index[dest] = splitter_index.get(dest, -1) + 1
                 if dest is not None:

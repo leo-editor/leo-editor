@@ -2055,7 +2055,6 @@ def show_rendering_pane(event):
     vr3 = controllers.get(h)
     if not vr3:
         vr3 = getVr3({'c': c})
-
     if vr3.parent().objectName() in (None, 'leo-layout-cache'):
         # VR3 object is in limbo, add it into the main splitter
         target = g.app.gui.find_widget_by_name(c, 'main_splitter')
