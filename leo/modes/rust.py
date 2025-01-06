@@ -307,14 +307,16 @@ def rust_keywords(colorer, s, i):
 #@+node:ekr.20231103125350.1: ** << Rust rules dicts >>
 # Rules dict for rust.
 rulesDict1 = {
-    "!": [rust_rule9],
+    # New rules...
+    ">": [rust_close_angle],
+    "'": [rust_char],
+    "<": [rust_open_angle],
     "#": [rust_pound],
+    "r": [rust_raw_string_literal],
     "/": [rust_slash],
-    "r": [rust_raw_string_literal],  # New.
-    '"': [rust_string],  # New.
-    "'": [rust_char],  # New.
-    "<": [rust_open_angle],  # New.
-    ">": [rust_close_angle],  # New.
+    '"': [rust_string],
+    # Existing rules...
+    "!": [rust_rule9],
     "&": [rust_rule19],
     "%": [rust_rule18],
     "(": [rust_rule26],
