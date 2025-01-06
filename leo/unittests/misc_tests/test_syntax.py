@@ -90,6 +90,7 @@ class TestSyntax(LeoUnitTest):
                 test_one_mode_file(module)
             except Exception as e:
                 # raise AssertionError(f"{tag}:Test failed: {module.__name__}")
+                g.trace(repr(e))
                 fails.append(f"{module.__name__:<20} {e!r}")
         if fails:
             fails_s = '\n'.join(fails)

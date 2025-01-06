@@ -122,38 +122,70 @@ keywordsDictDict = {
 #@+node:ekr.20250105163810.1: ** << Rust rules >>
 # Rules for rust_main ruleset.
 #@+others
-#@+node:ekr.20250106042808.1: *3* function: rust_rule0
-def rust_rule0(colorer, s, i):
-    return colorer.match_span(s, i, kind="comment3", begin="/**", end="*/",
-          delegate="doxygen::doxygen")
-#@+node:ekr.20250106042808.2: *3* function: rust_rule1
-def rust_rule1(colorer, s, i):
-    return colorer.match_span(s, i, kind="comment3", begin="/*!", end="*/",
-          delegate="doxygen::doxygen")
 #@+node:ekr.20250106042808.3: *3* function: rust_rule2
 def rust_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/")
-#@+node:ekr.20250106052237.1: *3* function: rust_string (to do: char escapes)
-def rust_string(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal2", begin="\"", end="\"")
-#@+node:ekr.20250106042808.5: *3* function: rust_char
+#@+node:ekr.20250106054207.1: *3* function: rust_slash (comments & operators)
+def rust_slash(colorer, s, i):
+
+    # match_span constructs.
+    match_span_table = (
+        ('/**', 'comment3', 'doxygen'),
+        ('/*!', 'comment3', 'doxygen'),
+        ('/*', 'comment1', None),
+    )
+    for begin, kind, delegate in match_span_table:
+        if i + len(begin) < len(s) and s[i : i + len(begin)] == begin:
+            return colorer.match_span(s, i,
+                kind=kind, begin=begin, end="*/", delegate=delegate)
+
+    # match_seq constructs.
+    match_seq_table = (
+        ('//', 'comment2', colorer.match_eol_span),
+        ('/', 'operator', colorer.match_plain_seq),
+    )
+    for seq, kind, matcher in match_seq_table:
+        if i + len(seq) < len(s) and s[i : i + len(seq)] == seq:
+            return matcher(s, i, kind=kind, seq=seq)
+
+    # Fail.
+    return i + 1
+#@+node:ekr.20250106062326.1: *3* rust: strings and chars, with escapes
+#@+node:ekr.20250106062904.1: *4* function: get_escaped_char
+# '\u{7FFF}'
+char10_pat = re.compile(r"'\\u\{[0-7][0-7a-fA-F]{3}\}'")
+# '\x7F'
+char6_pat = re.compile(r"'\\x[0-7][0-7a-fA-F]'")
+# '\n', '\r', '\t', '\\', '\0', '\'', '\"'
+char4_pat = re.compile(r"'\\[\\\"'nrt0]'")
+# 'x' where x is any unicode character.
+char3_pat = re.compile(r"'.'", re.UNICODE)
+
+def get_escaped_char(s, i):
+    """
+    This is a helper, not a matcher.
+    
+    Return the entire escaped character.
+    """
+    for pat in char10_pat, char6_pat, char4_pat, char3_pat:
+        m = pat.match(s, i)
+        if m:
+            return m.group(0)
+    return i + 2  # User error?
+#@+node:ekr.20250106042808.5: *4* function: rust_char
 # A single quote does not always denote a character literal.
 
 # These patterns are the same as in the rust importer:
-
-char10_pat = re.compile(r"'\\u\{[0-7][0-7a-fA-F]{3}\}'")  # '\u{7FFF}'
-char6_pat = re.compile(r"'\\x[0-7][0-7a-fA-F]'")  # '\x7F'
-char4_pat = re.compile(r"'\\[\\\"'nrt0]'")  # '\n', '\r', '\t', '\\', '\0', '\'', '\"'
-char3_pat = re.compile(r"'.'", re.UNICODE)  # 'x' where x is any unicode character.
-
 def rust_char(colorer, s, i):
+    ### assert s[i] == "'"
+    g.trace(s[i:])  ###
     if i + 1 >= len(s):
         return len(s)
     if i + 1 == '\\':
-        for pat in char10_pat, char6_pat, char4_pat, char3_pat:
-            if pat.match(s, i):
-                return colorer.match_span_regexp(s, i, kind="literal2", begin=pat)
-    return i + 1
+        seq = get_escaped_char(s, i)
+    else:
+        seq = s[i : i + 2]
+    return colorer.match_seq(s, i, kind="literal2", seq=s[i : i + 2])
 
 # def rust_char10(colorer, s, i):
     # return colorer.match_span_regexp(s, i, kind="literal2", begin=char10_pat)
@@ -163,6 +195,9 @@ def rust_char(colorer, s, i):
     # return colorer.match_span_regexp(s, i, kind="literal2", begin=char4_pat)
 # def rust_char3(colorer, s, i):
     # return colorer.match_span_regexp(s, i, kind="literal2", begin=char3_pat)
+#@+node:ekr.20250106052237.1: *4* function: rust_string (to do: char escapes)
+def rust_string(colorer, s, i):
+    return colorer.match_span(s, i, kind="literal2", begin="\"", end="\"")
 #@+node:ekr.20250106042808.9: *3* function: rust_raw_string_literal
 # #3631
 # https://doc.rust-lang.org/reference/tokens.html#raw-string-literals
@@ -189,36 +224,41 @@ def rust_raw_string_literal(colorer, s, i):
 #@+node:ekr.20250106042808.12: *3* function: rust_at_operator
 def rust_at_operator(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq="@")
-#@+node:ekr.20250106042808.13: *3* function: rust_rule5
-def rust_rule5(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="keyword2", seq="##")
+#@+node:ekr.20250106054547.1: *3* function: rust_pound
+def rust_pound(colorer, s, i):
+    return 0  ###
+
+# def rust_rule5(colorer, s, i):
+    # return colorer.match_plain_seq(s, i, kind="keyword2", seq="##")
+# def rust_rule6(colorer, s, i):
+    # return colorer.match_eol_span(s, i, kind="keyword2", seq="#")
+#@+node:ekr.20250106054731.1: *3* function: rust_open_angle & rust_close_angle
+def rust_open_angle(colorer, s, i):
+    if s[i] != '<':  # May fail during unit tests!
+        return 0
+    seq = '<=' if i + i < len(s) and s[i + 1] == '=' else '<'
+    return colorer.match_plain_seq(s, i, kind="operator", seq=seq)
+
+def rust_close_angle(colorer, s, i):
+    if s[i] != '>':
+        return 0
+    seq = '>=' if i + i < len(s) and s[i + 1] == '=' else '>'
+    return colorer.match_plain_seq(s, i, kind="operator", seq=seq)
 #@+node:ekr.20250106042808.14: *3* function: rust_rule6
 def rust_rule6(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="keyword2", seq="#")
-#@+node:ekr.20250106042808.15: *3* function: rust_rule7
-def rust_rule7(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment2", seq="//")
 #@+node:ekr.20250106042808.16: *3* function: rust_rule8
 def rust_rule8(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 #@+node:ekr.20250106042808.17: *3* function: rust_rule9
 def rust_rule9(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq="!")
-#@+node:ekr.20250106042808.18: *3* function: rust_rule10
-def rust_rule10(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq=">=")
-#@+node:ekr.20250106042808.19: *3* function: rust_rule11
-def rust_rule11(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq="<=")
 #@+node:ekr.20250106042808.20: *3* function: rust_rule12
 def rust_rule12(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 #@+node:ekr.20250106042808.21: *3* function: rust_rule13
 def rust_rule13(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq="-")
-#@+node:ekr.20250106042808.22: *3* function: rust_rule14
-def rust_rule14(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
 #@+node:ekr.20250106042808.23: *3* function: rust_rule15
 def rust_rule15(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq="*")
@@ -268,12 +308,13 @@ def rust_keywords(colorer, s, i):
 # Rules dict for rust.
 rulesDict1 = {
     "!": [rust_rule9],
-    ### "\"": [rust_rule3],
-    "#": [rust_rule5, rust_rule6],
-    "/": [rust_rule0, rust_rule1, rust_rule2, rust_rule7, rust_rule14],  ### To do.
+    "#": [rust_pound],
+    "/": [rust_slash],
     "r": [rust_raw_string_literal],  # New.
     '"': [rust_string],  # New.
     "'": [rust_char],  # New.
+    "<": [rust_open_angle],  # New.
+    ">": [rust_close_angle],  # New.
     "&": [rust_rule19],
     "%": [rust_rule18],
     "(": [rust_rule26],
@@ -281,9 +322,7 @@ rulesDict1 = {
     "+": [rust_rule12],
     "-": [rust_rule13],
     ":": [rust_rule25],
-    "<": [rust_rule11, rust_rule17],
     "=": [rust_rule8],
-    ">": [rust_rule10, rust_rule16],
     "@": [rust_at_operator],
     "^": [rust_rule21],
     "{": [rust_rule24],
@@ -299,6 +338,8 @@ for lead_in in lead_ins:
     aList = rulesDict1.get(lead_in, [])
     aList.insert(0, rust_keywords)
     rulesDict1[lead_in] = aList
+
+# g.printObj(rulesDict1, tag='rulesDict1')
 
 # x.rulesDictDict for rust mode.
 rulesDictDict = {
