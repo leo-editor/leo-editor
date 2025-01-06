@@ -93,7 +93,7 @@ def big_tree(event: LeoKeyEvent) -> None:
     c = event.get('c')
     cache = c.frame.top.layout_cache
     cache.restoreFromLayout()
-    cache.layout = {'name': 'big-tree'}
+    cache.layout_dict = {'name': 'big-tree'}
 
     has_vr3 = is_module_loaded(VR3_MODULE_NAME)
 
@@ -328,8 +328,8 @@ def showLayouts(event) -> None:
 def show_layout_name(event: LeoKeyEvent) -> None:
     c = event.get('c')
     cache = c.frame.top.layout_cache
-    if cache.layout:
-        name = cache.layout.get('name', 'unnamed layout')
+    if cache.layout_dict:
+        name = cache.layout_dict.get('name', 'unnamed layout')
     else:
         name = 'unnamed layout'
     g.es(name)
@@ -467,7 +467,7 @@ class LayoutCacheWidget(QWidget):
         super().__init__(parent)
         self.c = c
         self.setObjectName('leo-layout-cache')
-        self.layoutName = ''
+        self.layout_dict: Dict = None
 
         # maps splitter objectNames to their splitter object.
         self.created_splitter_dict: Dict[str, QWidget] = {}
@@ -614,7 +614,7 @@ class LayoutCacheWidget(QWidget):
         splitter.setSizes(sizes)
     #@+node:tom.20240923194438.6: *4* LCW.restoreFromLayout
     def restoreFromLayout(self, layout: Dict = None) -> None:
-        self.layout = layout
+        self.layout_dict = layout
         if layout is None:
             layout = FALLBACK_LAYOUT
         #@+<< initialize data structures >>
