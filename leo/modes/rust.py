@@ -4,7 +4,10 @@
 # This file is in the public domain.
 
 import re
+from leo.core import leoGlobals as g
 
+#@+<< Rust properties dict >>
+#@+node:ekr.20250106042726.1: ** << Rust properties dict >>
 # Properties for rust mode.
 properties = {
     "commentEnd": "*/",
@@ -17,7 +20,7 @@ properties = {
     "lineUpClosingBracket": "true",
     "wordBreakChars": ",+-=<>/?^&*",
 }
-
+#@-<< Rust properties dict >>
 #@+<< Rust attributes dicts >>
 #@+node:ekr.20250105164117.1: ** << Rust attributes dicts >>
 # Attributes dict for rust_main ruleset.
@@ -35,135 +38,8 @@ attributesDictDict = {
     "rust_main": rust_main_attributes_dict,
 }
 #@-<< Rust attributes dicts >>
-#@+<< Rust rules >>
-#@+node:ekr.20250105163810.1: ** << Rust rules >>
-# Rules for rust_main ruleset.
-
-def rust_rule0(colorer, s, i):
-    return colorer.match_span(s, i, kind="comment3", begin="/**", end="*/",
-          delegate="doxygen::doxygen")
-
-def rust_rule1(colorer, s, i):
-    return colorer.match_span(s, i, kind="comment3", begin="/*!", end="*/",
-          delegate="doxygen::doxygen")
-
-def rust_rule2(colorer, s, i):
-    return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/")
-
-def rust_rule3(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal2", begin="\"", end="\"")
-
-# A single quote does not always denote a character literal.
-
-# These patterns are the same as in the rust importer:
-
-char10_pat = re.compile(r"'\\u\{[0-7][0-7a-fA-F]{3}\}'")  # '\u{7FFF}'
-char6_pat = re.compile(r"'\\x[0-7][0-7a-fA-F]'")  # '\x7F'
-char4_pat = re.compile(r"'\\[\\\"'nrt0]'")  # '\n', '\r', '\t', '\\', '\0', '\'', '\"'
-char3_pat = re.compile(r"'.'", re.UNICODE)  # 'x' where x is any unicode character.
-
-def rust_char10(colorer, s, i):
-    return colorer.match_span_regexp(s, i, kind="literal2", begin=char10_pat)
-
-def rust_char6(colorer, s, i):
-    return colorer.match_span_regexp(s, i, kind="literal2", begin=char6_pat)
-
-def rust_char4(colorer, s, i):
-    return colorer.match_span_regexp(s, i, kind="literal2", begin=char4_pat)
-
-def rust_char3(colorer, s, i):
-    return colorer.match_span_regexp(s, i, kind="literal2", begin=char3_pat)
-
-# #3631
-# https://doc.rust-lang.org/reference/tokens.html#raw-string-literals
-# Up to 255 '#' are allowed. Ruff only uses 1 and 3.
-
-def rust_raw_string_literal3(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal2", begin='r###"', end='"###')
-
-def rust_raw_string_literal2(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal2", begin='r##"', end='"##')
-
-def rust_raw_string_literal1(colorer, s, i):
-    return colorer.match_span(s, i, kind="literal2", begin='r#"', end='"#')
-
-def rust_at_operator(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq="@")
-
-def rust_rule5(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="keyword2", seq="##")
-
-def rust_rule6(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="keyword2", seq="#")
-
-def rust_rule7(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="comment2", seq="//")
-
-def rust_rule8(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
-
-def rust_rule9(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq="!")
-
-def rust_rule10(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq=">=")
-
-def rust_rule11(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq="<=")
-
-def rust_rule12(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
-
-def rust_rule13(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq="-")
-
-def rust_rule14(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
-
-def rust_rule15(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
-
-def rust_rule16(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
-
-def rust_rule17(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq="<")
-
-def rust_rule18(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq="%")
-
-def rust_rule19(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq="&")
-
-def rust_rule20(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq="|")
-
-def rust_rule21(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq="^")
-
-def rust_rule22(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq="~")
-
-def rust_rule23(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq="}")
-
-def rust_rule24(colorer, s, i):
-    return colorer.match_plain_seq(s, i, kind="operator", seq="{")
-
-def rust_rule25(colorer, s, i):
-    return colorer.match_mark_previous(s, i, kind="label", pattern=":",
-          at_whitespace_end=True,
-          exclude_match=True)
-
-def rust_rule26(colorer, s, i):
-    return colorer.match_mark_previous(s, i, kind="function", pattern="(",
-          exclude_match=True)
-
-def rust_rule27(colorer, s, i):
-    return colorer.match_keywords(s, i)
-#@-<< Rust rules >>
-#@+<< Rust dictionaries >>
-#@+node:ekr.20231103125350.1: ** << Rust dictionaries >>
+#@+<< Rust keywords dicts >>
+#@+node:ekr.20250106043953.1: ** << Rust keywords dicts >>
 # Keywords dict for rust_main ruleset.
 rust_main_keywords_dict = {
     'Self': 'keyword1',
@@ -241,113 +117,195 @@ rust_main_keywords_dict = {
 keywordsDictDict = {
     "rust_main": rust_main_keywords_dict,
 }
+#@-<< Rust keywords dicts >>
+#@+<< Rust rules >>
+#@+node:ekr.20250105163810.1: ** << Rust rules >>
+# Rules for rust_main ruleset.
+#@+others
+#@+node:ekr.20250106042808.1: *3* function: rust_rule0
+def rust_rule0(colorer, s, i):
+    return colorer.match_span(s, i, kind="comment3", begin="/**", end="*/",
+          delegate="doxygen::doxygen")
+#@+node:ekr.20250106042808.2: *3* function: rust_rule1
+def rust_rule1(colorer, s, i):
+    return colorer.match_span(s, i, kind="comment3", begin="/*!", end="*/",
+          delegate="doxygen::doxygen")
+#@+node:ekr.20250106042808.3: *3* function: rust_rule2
+def rust_rule2(colorer, s, i):
+    return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/")
+#@+node:ekr.20250106052237.1: *3* function: rust_string (to do: char escapes)
+def rust_string(colorer, s, i):
+    return colorer.match_span(s, i, kind="literal2", begin="\"", end="\"")
+#@+node:ekr.20250106042808.5: *3* function: rust_char
+# A single quote does not always denote a character literal.
 
+# These patterns are the same as in the rust importer:
+
+char10_pat = re.compile(r"'\\u\{[0-7][0-7a-fA-F]{3}\}'")  # '\u{7FFF}'
+char6_pat = re.compile(r"'\\x[0-7][0-7a-fA-F]'")  # '\x7F'
+char4_pat = re.compile(r"'\\[\\\"'nrt0]'")  # '\n', '\r', '\t', '\\', '\0', '\'', '\"'
+char3_pat = re.compile(r"'.'", re.UNICODE)  # 'x' where x is any unicode character.
+
+def rust_char(colorer, s, i):
+    if i + 1 >= len(s):
+        return len(s)
+    if i + 1 == '\\':
+        for pat in char10_pat, char6_pat, char4_pat, char3_pat:
+            if pat.match(s, i):
+                return colorer.match_span_regexp(s, i, kind="literal2", begin=pat)
+    return i + 1
+
+# def rust_char10(colorer, s, i):
+    # return colorer.match_span_regexp(s, i, kind="literal2", begin=char10_pat)
+# def rust_char6(colorer, s, i):
+    # return colorer.match_span_regexp(s, i, kind="literal2", begin=char6_pat)
+# def rust_char4(colorer, s, i):
+    # return colorer.match_span_regexp(s, i, kind="literal2", begin=char4_pat)
+# def rust_char3(colorer, s, i):
+    # return colorer.match_span_regexp(s, i, kind="literal2", begin=char3_pat)
+#@+node:ekr.20250106042808.9: *3* function: rust_raw_string_literal
+# #3631
+# https://doc.rust-lang.org/reference/tokens.html#raw-string-literals
+# Up to 255 '#' are allowed. Ruff only uses 1 and 3.
+
+def rust_raw_string_literal(colorer, s, i):
+    if i + 1 >= len(s):
+        return len(s)
+    if s[i + 1] != '#':
+        return i + 1
+    for n in (3, 2, 1):
+        begin = 'r' + '#' * n
+        end = '#' * n
+        if g.match(s, i, begin):
+            return colorer.match_span(s, i, kind="literal2", begin=begin, end=end)
+    return i + 1
+
+# def rust_raw_string_literal3(colorer, s, i):
+    # return colorer.match_span(s, i, kind="literal2", begin='r###"', end='"###')
+# def rust_raw_string_literal2(colorer, s, i):
+    # return colorer.match_span(s, i, kind="literal2", begin='r##"', end='"##')
+# def rust_raw_string_literal1(colorer, s, i):
+    # return colorer.match_span(s, i, kind="literal2", begin='r#"', end='"#')
+#@+node:ekr.20250106042808.12: *3* function: rust_at_operator
+def rust_at_operator(colorer, s, i):
+    return colorer.match_plain_seq(s, i, kind="operator", seq="@")
+#@+node:ekr.20250106042808.13: *3* function: rust_rule5
+def rust_rule5(colorer, s, i):
+    return colorer.match_plain_seq(s, i, kind="keyword2", seq="##")
+#@+node:ekr.20250106042808.14: *3* function: rust_rule6
+def rust_rule6(colorer, s, i):
+    return colorer.match_eol_span(s, i, kind="keyword2", seq="#")
+#@+node:ekr.20250106042808.15: *3* function: rust_rule7
+def rust_rule7(colorer, s, i):
+    return colorer.match_eol_span(s, i, kind="comment2", seq="//")
+#@+node:ekr.20250106042808.16: *3* function: rust_rule8
+def rust_rule8(colorer, s, i):
+    return colorer.match_plain_seq(s, i, kind="operator", seq="=")
+#@+node:ekr.20250106042808.17: *3* function: rust_rule9
+def rust_rule9(colorer, s, i):
+    return colorer.match_plain_seq(s, i, kind="operator", seq="!")
+#@+node:ekr.20250106042808.18: *3* function: rust_rule10
+def rust_rule10(colorer, s, i):
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">=")
+#@+node:ekr.20250106042808.19: *3* function: rust_rule11
+def rust_rule11(colorer, s, i):
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<=")
+#@+node:ekr.20250106042808.20: *3* function: rust_rule12
+def rust_rule12(colorer, s, i):
+    return colorer.match_plain_seq(s, i, kind="operator", seq="+")
+#@+node:ekr.20250106042808.21: *3* function: rust_rule13
+def rust_rule13(colorer, s, i):
+    return colorer.match_plain_seq(s, i, kind="operator", seq="-")
+#@+node:ekr.20250106042808.22: *3* function: rust_rule14
+def rust_rule14(colorer, s, i):
+    return colorer.match_plain_seq(s, i, kind="operator", seq="/")
+#@+node:ekr.20250106042808.23: *3* function: rust_rule15
+def rust_rule15(colorer, s, i):
+    return colorer.match_plain_seq(s, i, kind="operator", seq="*")
+#@+node:ekr.20250106042808.24: *3* function: rust_rule16
+def rust_rule16(colorer, s, i):
+    return colorer.match_plain_seq(s, i, kind="operator", seq=">")
+#@+node:ekr.20250106042808.25: *3* function: rust_rule17
+def rust_rule17(colorer, s, i):
+    return colorer.match_plain_seq(s, i, kind="operator", seq="<")
+#@+node:ekr.20250106042808.26: *3* function: rust_rule18
+def rust_rule18(colorer, s, i):
+    return colorer.match_plain_seq(s, i, kind="operator", seq="%")
+#@+node:ekr.20250106042808.27: *3* function: rust_rule19
+def rust_rule19(colorer, s, i):
+    return colorer.match_plain_seq(s, i, kind="operator", seq="&")
+#@+node:ekr.20250106042808.28: *3* function: rust_rule20
+def rust_rule20(colorer, s, i):
+    return colorer.match_plain_seq(s, i, kind="operator", seq="|")
+#@+node:ekr.20250106042808.29: *3* function: rust_rule21
+def rust_rule21(colorer, s, i):
+    return colorer.match_plain_seq(s, i, kind="operator", seq="^")
+#@+node:ekr.20250106042808.30: *3* function: rust_rule22
+def rust_rule22(colorer, s, i):
+    return colorer.match_plain_seq(s, i, kind="operator", seq="~")
+#@+node:ekr.20250106042808.31: *3* function: rust_rule23
+def rust_rule23(colorer, s, i):
+    return colorer.match_plain_seq(s, i, kind="operator", seq="}")
+#@+node:ekr.20250106042808.32: *3* function: rust_rule24
+def rust_rule24(colorer, s, i):
+    return colorer.match_plain_seq(s, i, kind="operator", seq="{")
+#@+node:ekr.20250106042808.33: *3* function: rust_rule25
+def rust_rule25(colorer, s, i):
+    return colorer.match_mark_previous(s, i, kind="label", pattern=":",
+          at_whitespace_end=True,
+          exclude_match=True)
+#@+node:ekr.20250106042808.34: *3* function: rust_rule26
+def rust_rule26(colorer, s, i):
+    return colorer.match_mark_previous(s, i, kind="function", pattern="(",
+          exclude_match=True)
+#@+node:ekr.20250106042808.35: *3* function: rust_keywords
+def rust_keywords(colorer, s, i):
+    return colorer.match_keywords(s, i)
+#@-others
+#@-<< Rust rules >>
+#@+<< Rust rules dicts >>
+#@+node:ekr.20231103125350.1: ** << Rust rules dicts >>
 # Rules dict for rust.
 rulesDict1 = {
     "!": [rust_rule9],
-    "\"": [rust_rule3],
+    ### "\"": [rust_rule3],
     "#": [rust_rule5, rust_rule6],
-    "%": [rust_rule18],
+    "/": [rust_rule0, rust_rule1, rust_rule2, rust_rule7, rust_rule14],  ### To do.
+    "r": [rust_raw_string_literal],  # New.
+    '"': [rust_string],  # New.
+    "'": [rust_char],  # New.
     "&": [rust_rule19],
-
-    "'": [
-        rust_char10,
-        rust_char6,
-        rust_char4,
-        rust_char3,
-    ],
-
+    "%": [rust_rule18],
     "(": [rust_rule26],
     "*": [rust_rule15],
     "+": [rust_rule12],
     "-": [rust_rule13],
-    "/": [rust_rule0, rust_rule1, rust_rule2, rust_rule7, rust_rule14],
-    "0": [rust_rule27],
-    "1": [rust_rule27],
-    "2": [rust_rule27],
-    "3": [rust_rule27],
-    "4": [rust_rule27],
-    "5": [rust_rule27],
-    "6": [rust_rule27],
-    "7": [rust_rule27],
-    "8": [rust_rule27],
-    "9": [rust_rule27],
     ":": [rust_rule25],
     "<": [rust_rule11, rust_rule17],
     "=": [rust_rule8],
     ">": [rust_rule10, rust_rule16],
     "@": [rust_at_operator],
-    "A": [rust_rule27],
-    "B": [rust_rule27],
-    "C": [rust_rule27],
-    "D": [rust_rule27],
-    "E": [rust_rule27],
-    "F": [rust_rule27],
-    "G": [rust_rule27],
-    "H": [rust_rule27],
-    "I": [rust_rule27],
-    "J": [rust_rule27],
-    "K": [rust_rule27],
-    "L": [rust_rule27],
-    "M": [rust_rule27],
-    "N": [rust_rule27],
-    "O": [rust_rule27],
-    "P": [rust_rule27],
-    "Q": [rust_rule27],
-    "R": [rust_rule27],
-    "S": [rust_rule27],
-    "T": [rust_rule27],
-    "U": [rust_rule27],
-    "V": [rust_rule27],
-    "W": [rust_rule27],
-    "X": [rust_rule27],
-    "Y": [rust_rule27],
-    "Z": [rust_rule27],
     "^": [rust_rule21],
-    "_": [rust_rule27],
-    "a": [rust_rule27],
-    "b": [rust_rule27],
-    "c": [rust_rule27],
-    "d": [rust_rule27],
-    "e": [rust_rule27],
-    "f": [rust_rule27],
-    "g": [rust_rule27],
-    "h": [rust_rule27],
-    "i": [rust_rule27],
-    "j": [rust_rule27],
-    "k": [rust_rule27],
-    "l": [rust_rule27],
-    "m": [rust_rule27],
-    "n": [rust_rule27],
-    "o": [rust_rule27],
-    "p": [rust_rule27],
-    "q": [rust_rule27],
-    "r": [
-        rust_raw_string_literal3,
-        rust_raw_string_literal2,
-        rust_raw_string_literal1,
-        rust_rule27,
-    ],
-    "s": [rust_rule27],
-    "t": [rust_rule27],
-    "u": [rust_rule27],
-    "v": [rust_rule27],
-    "w": [rust_rule27],
-    "x": [rust_rule27],
-    "y": [rust_rule27],
-    "z": [rust_rule27],
     "{": [rust_rule24],
     "|": [rust_rule20],
     "}": [rust_rule23],
     "~": [rust_rule22],
 }
 
+# Prepend entries for rust_keyword to rulesDict1.
+lead_ins = list(sorted(set(key[0] for key in rust_main_keywords_dict)))
+# print('rust lead-ins', lead_ins)
+for lead_in in lead_ins:
+    aList = rulesDict1.get(lead_in, [])
+    aList.insert(0, rust_keywords)
+    rulesDict1[lead_in] = aList
+
 # x.rulesDictDict for rust mode.
 rulesDictDict = {
     "rust_main": rulesDict1,
 }
+#@-<< Rust rules dicts >>
 
 # Import dict for rust mode.
 importDict = {}
-#@-<< Rust dictionaries >>
 #@-leo
