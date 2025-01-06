@@ -177,8 +177,8 @@ def get_escaped_char(s, i):
 
 # These patterns are the same as in the rust importer:
 def rust_char(colorer, s, i):
-    ### assert s[i] == "'"
-    g.trace(s[i:])  ###
+    if s[i] != "'":
+        return 0
     if i + 1 >= len(s):
         return len(s)
     if i + 1 == '\\':
@@ -316,21 +316,21 @@ rulesDict1 = {
     "/": [rust_slash],
     '"': [rust_string],
     # Existing rules...
+    "@": [rust_at_operator],
+    "=": [rust_rule8],
     "!": [rust_rule9],
-    "&": [rust_rule19],
-    "%": [rust_rule18],
-    "(": [rust_rule26],
-    "*": [rust_rule15],
     "+": [rust_rule12],
     "-": [rust_rule13],
-    ":": [rust_rule25],
-    "=": [rust_rule8],
-    "@": [rust_at_operator],
-    "^": [rust_rule21],
-    "{": [rust_rule24],
+    "*": [rust_rule15],
+    "%": [rust_rule18],
+    "&": [rust_rule19],
     "|": [rust_rule20],
-    "}": [rust_rule23],
+    "^": [rust_rule21],
     "~": [rust_rule22],
+    "}": [rust_rule23],
+    "{": [rust_rule24],
+    ":": [rust_rule25],
+    "(": [rust_rule26],
 }
 
 # Prepend entries for rust_keyword to rulesDict1.
