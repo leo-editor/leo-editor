@@ -2366,7 +2366,7 @@ class JEditColorizer(BaseColorizer):
             and end in "'\""
             and kind.startswith('literal')
         )
-        dots = dots and self.language not in ('lisp', 'elisp', 'rust', 'scheme')
+        dots = dots and self.language not in ('lisp', 'elisp', 'scheme')  #  'rust'
         if dots:
             kind = 'dots' + kind
         # A match

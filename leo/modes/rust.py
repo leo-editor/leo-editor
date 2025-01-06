@@ -197,6 +197,22 @@ def rust_char(colorer, s, i):
     # return colorer.match_span_regexp(s, i, kind="literal2", begin=char3_pat)
 #@+node:ekr.20250106052237.1: *4* function: rust_string (to do: char escapes)
 def rust_string(colorer, s, i):
+    if s[i] != '"':
+        return 0
+    if 0:
+        j = i + 1
+        kind = 'literal2'
+        while j < len(s):
+            progress = j
+            if s[j] == "'":
+                seq = get_escaped_char(s, j)
+                j += len(seq)
+            elif s[j] == '"':
+                return colorer.match_seq(s, i, kind=kind, seq=s[i : j + 1])
+            else:
+                j += 1
+            assert progress < j, repr(s[j])
+    ### Does not handle escapes in continued strings.
     return colorer.match_span(s, i, kind="literal2", begin="\"", end="\"")
 #@+node:ekr.20250106042808.9: *3* function: rust_raw_string_literal
 # #3631
