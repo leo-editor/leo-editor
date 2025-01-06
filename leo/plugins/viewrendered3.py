@@ -4025,8 +4025,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 # If outline is not saved, assume file is relative to ~/.leo
                 fn = g.finalize('~/.leo/' + s)
 
-        path = fn if Path.exists(Path(fn)) else ''
-        return path
+        path1 = fn if Path.exists(Path(fn)) else ''
+        return path1
     #@+node:TomP.20191215195433.72: *4* vr3.update_pyplot
     def update_pyplot(self, s, keywords):
         """Get the pyplot script at c.p.b and show it."""
