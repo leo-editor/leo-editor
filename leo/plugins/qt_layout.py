@@ -93,6 +93,7 @@ def big_tree(event: LeoKeyEvent) -> None:
     c = event.get('c')
     cache = c.frame.top.layout_cache
     cache.restoreFromLayout()
+    cache.layout = {'name': 'big-tree'}
 
     has_vr3 = is_module_loaded(VR3_MODULE_NAME)
 
@@ -138,25 +139,6 @@ def big_tree(event: LeoKeyEvent) -> None:
     ms.setSizes([100_000] * len(ms.sizes()))
     ss.setSizes([100_000] * len(ss.sizes()))
     vs.setSizes([100_000] * len(vs.sizes()))
-#@+node:ekr.20241008174427.1: *3* command: 'layout-horizontal-thirds'
-@g.command('layout-horizontal-thirds')
-@register_layout('layout-horizontal-thirds')
-def horizontal_thirds(event: LeoKeyEvent) -> None:
-    """
-    Create Leo's horizontal-thirds layout:
-
-        ┌───────────┬───────┐
-        │  outline  │  log  │
-        ├───────────┴───────┤
-        │  body             │
-        ├───────────────────┤
-        │  VR/VR3           │
-        └───────────────────┘
-    """
-    c = event.get('c')
-    dw = c.frame.top
-    cache = dw.layout_cache
-    cache.restoreFromLayout(HORIZONTAL_THIRDS_LAYOUT)
 #@+node:ekr.20241008180407.1: *3* command: 'layout-legacy'
 @g.command('layout-legacy')
 @register_layout('layout-legacy')
@@ -174,6 +156,25 @@ def quadrants(event: LeoKeyEvent) -> None:
     dw = c.frame.top
     cache = dw.layout_cache
     cache.restoreFromLayout(LEGACY_LAYOUT)
+#@+node:ekr.20241008174427.1: *3* command: 'layout-horizontal-thirds'
+@g.command('layout-horizontal-thirds')
+@register_layout('layout-horizontal-thirds')
+def horizontal_thirds(event: LeoKeyEvent) -> None:
+    """
+    Create Leo's horizontal-thirds layout:
+
+        ┌───────────┬───────┐
+        │  outline  │  log  │
+        ├───────────┴───────┤
+        │  body             │
+        ├─────────┬─────────┤
+        │   VR    │   VR3   │
+        └─────────┴─────────┘
+    """
+    c = event.get('c')
+    dw = c.frame.top
+    cache = dw.layout_cache
+    cache.restoreFromLayout(HORIZONTAL_THIRDS_LAYOUT)
 #@+node:ekr.20241008174427.2: *3* command: 'layout-render-focused'
 @g.command('layout-render-focused')
 @register_layout('layout-render-focused')
@@ -181,13 +182,13 @@ def render_focused(event: LeoKeyEvent) -> None:
     """
     Create Leo's render-focused layout:
 
-        ┌───────────┬─────┐
-        │ outline   │     │
-        ├───────────┤     │
-        │ body      │ VR/ │
-        ├───────────┤ VR3 │
-        │ log       │     │
-        └───────────┴─────┘
+        ┌───────────┬─────┬─────┐
+        │ outline   │     │     │
+        ├───────────┤     │     │
+        │ body      │ VR  │ VR3 │
+        ├───────────┤     │     │
+        │ log       │     │     │
+        └───────────┴─────┴─────┘
     """
     c = event.get('c')
     dw = c.frame.top
@@ -322,6 +323,16 @@ def showLayouts(event) -> None:
         listing.append(f'{name}\n' + '=' * len(name) + f'\n\n{doc_s}\n\n')
     listing_s = ''.join(listing)
     g.es(listing_s, tabName='layouts')
+#@+node:tom.20250106123058.1: *3* command: show_layout_name
+@g.command('show-current-layout')
+def show_layout_name(event: LeoKeyEvent) -> None:
+    c = event.get('c')
+    cache = c.frame.top.layout_cache
+    if cache.layout:
+        name = cache.layout.get('name', 'unnamed layout')
+    else:
+        name = 'unnamed layout'
+    g.es(name)
 #@+node:ekr.20241008174638.1: ** Layouts
 #@+node:tom.20240923194438.3: *3* FALLBACK_LAYOUT
 FALLBACK_LAYOUT = {
@@ -353,21 +364,27 @@ LEGACY_LAYOUT = {
         'outline-log-splitter': Orientation.Horizontal,
         'secondary_splitter': Orientation.Horizontal,
         'main_splitter': Orientation.Vertical,
-    }
+    },
+    'name': 'legacy'
 }
 #@+node:tom.20240928170706.1: *3* HORIZONTAL_THIRDS_LAYOUT
 HORIZONTAL_THIRDS_LAYOUT = {
     'SPLITTERS': OrderedDict(
             (('outlineFrame', 'secondary_splitter'),
             ('logFrame', 'secondary_splitter'),
+            (VR_OBJ_NAME, 'vr_splitter'),
+            (VR3_OBJ_NAME, 'vr_splitter'),
             ('secondary_splitter', 'main_splitter'),
             ('bodyFrame', 'main_splitter'),
-            (VRX_PLACEHOLDER_NAME, 'main_splitter'))
+            ('vrx_splitter', 'main_splitter'),
+            )
         ),
     'ORIENTATIONS': {
         'secondary_splitter': Orientation.Horizontal,
-        'main_splitter': Orientation.Vertical
-    }
+        'main_splitter': Orientation.Vertical,
+        'vr_splitter': Orientation.Horizontal
+    },
+    'name': 'horizontal-thirds'
 }
 #@+node:tom.20240929101820.1: *3* RENDERED_FOCUSED_LAYOUT
 RENDERED_FOCUSED_LAYOUT = {
@@ -375,7 +392,9 @@ RENDERED_FOCUSED_LAYOUT = {
             (('outlineFrame', 'secondary_splitter'),
             ('bodyFrame', 'secondary_splitter'),
             ('logFrame', 'secondary_splitter'),
-            (VRX_PLACEHOLDER_NAME, 'body-vr-splitter'),
+            (VR_OBJ_NAME, 'vr_splitter'),
+            (VR3_OBJ_NAME, 'vr_splitter'),
+            ('vr_splitter', 'body-vr-splitter'),
             ('secondary_splitter', 'main_splitter'),
             ('body-vr-splitter', 'main_splitter'),
             )
@@ -383,8 +402,10 @@ RENDERED_FOCUSED_LAYOUT = {
     'ORIENTATIONS': {
         'body-vr-splitter': Orientation.Horizontal,
         'secondary_splitter': Orientation.Vertical,
-        'main_splitter': Orientation.Horizontal
-    }
+        'main_splitter': Orientation.Horizontal,
+        'vr_splitter': Orientation.Horizontal
+    },
+    'name': 'render-focused'
 }
 
 #@+node:tom.20240929115043.1: *3* VERTICAL_THIRDS2_LAYOUT
@@ -403,7 +424,8 @@ VERTICAL_THIRDS2_LAYOUT = {
         'vr-splitter': Orientation.Horizontal,
         'secondary_splitter': Orientation.Vertical,
         'main_splitter': Orientation.Horizontal
-    }
+    },
+    'name': 'vertical-thirds2'
 }
 #@+node:tom.20240929104728.1: *3* VERTICAL_THIRDS_LAYOUT
 VERTICAL_THIRDS_LAYOUT = {
@@ -419,7 +441,8 @@ VERTICAL_THIRDS_LAYOUT = {
     'ORIENTATIONS': {
         'secondary_splitter': Orientation.Vertical,
         'main_splitter': Orientation.Horizontal
-    }
+    },
+    'name': 'vertical-thirds'
 }
 #@+node:tom.20240930095459.1: ** class LayoutCacheWidget
 class LayoutCacheWidget(QWidget):
@@ -444,6 +467,7 @@ class LayoutCacheWidget(QWidget):
         super().__init__(parent)
         self.c = c
         self.setObjectName('leo-layout-cache')
+        self.layoutName = ''
 
         # maps splitter objectNames to their splitter object.
         self.created_splitter_dict: Dict[str, QWidget] = {}
@@ -590,6 +614,7 @@ class LayoutCacheWidget(QWidget):
         splitter.setSizes(sizes)
     #@+node:tom.20240923194438.6: *4* LCW.restoreFromLayout
     def restoreFromLayout(self, layout: Dict = None) -> None:
+        self.layout = layout
         if layout is None:
             layout = FALLBACK_LAYOUT
         #@+<< initialize data structures >>
