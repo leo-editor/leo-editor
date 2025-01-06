@@ -1323,8 +1323,6 @@ class JEditColorizer(BaseColorizer):
         # Don't even *think* about changing state here.
         self.tot_time += time.process_time() - t1
     #@+node:ekr.20110605121601.18640: *3* jedit.recolor & helpers
-    tot_recolor_calls = 0
-
     def recolor(self, s: str) -> None:
         """
         jEdit.recolor: Recolor a *single* line, s.
