@@ -861,6 +861,8 @@ class BaseColorizer:
         for m in self.color_directives_pat.finditer(p.b):
             word = m.group(0)[1:]
             d[word] = word
+            if word == 'killcolor':
+                break
         return d
     #@-others
 #@+node:ekr.20110605121601.18569: ** class JEditColorizer(BaseColorizer)
@@ -893,8 +895,9 @@ class JEditColorizer(BaseColorizer):
                 document=widget.document(),
             )
 
-        # *Global* state data. This is entirely correct, but it's not worth fixing.
+        # *Global* state data. This is not entirely correct, but it's not worth fixing.
         self.after_doc_language: str = None
+        self.in_killcolor: bool = False
 
         # *Local* state data. Such state is harmless.
         self.delegate_stack: list[str] = []
@@ -944,6 +947,7 @@ class JEditColorizer(BaseColorizer):
         self.restartDict = {}
         self.stateDict = {}
         self.stateNameDict = {}
+        self.in_killcolor = False
     #@+node:ekr.20211029073553.1: *5* jedit.init_section_delims
     def init_section_delims(self) -> None:
 
@@ -993,10 +997,10 @@ class JEditColorizer(BaseColorizer):
             # Debatable: Leo keywords override langauge keywords.
             ('@', self.match_leo_keywords, True),  # Called after all other Leo matchers.
             ('@', self.match_at_color, True),
-            ('@', self.match_at_killcolor, True),
             ('@', self.match_at_language, True),  # 2011/01/17
             ('@', self.match_at_nocolor, True),
             ('@', self.match_at_nocolor_node, True),
+            ('@', self.match_at_killcolor, True),  # 2025/01/05: Match this *first*
             ('@', self.match_at_wrap, True),  # 2015/06/22
             ('@', self.match_doc_part, True),
             ('f', self.match_any_url, True),
@@ -1291,8 +1295,8 @@ class JEditColorizer(BaseColorizer):
         if not g.unitTesting and g.callers(1) not in ('recolor', 'colorRangeWithTag'):
             message = f"jedit.mainLoop: unexpected callers: {g.callers(6)}"
             g.print_unique_message(message)
-        f = self.restartDict.get(state)
         t1 = time.process_time()
+        f = self.restartDict.get(state)
         i = f(s) if f else i0
         j = min(j, len(s))  # Required.
         while i < j:
@@ -1319,6 +1323,8 @@ class JEditColorizer(BaseColorizer):
         # Don't even *think* about changing state here.
         self.tot_time += time.process_time() - t1
     #@+node:ekr.20110605121601.18640: *3* jedit.recolor & helpers
+    tot_recolor_calls = 0
+
     def recolor(self, s: str) -> None:
         """
         jEdit.recolor: Recolor a *single* line, s.
@@ -1351,6 +1357,8 @@ class JEditColorizer(BaseColorizer):
             state = prev_state  # Continue the previous state by default.
 
         self.setState(state)
+        if self.in_killcolor:
+            return
 
         # #4146: Update self.language from the *previous* state.
         self.language = self.stateNumberToLanguage(state)
@@ -1532,12 +1540,11 @@ class JEditColorizer(BaseColorizer):
             self.colorRangeWithTag(s, 0, len('@color'), 'leokeyword')
             return len('@color')
         return 0
-    #@+node:ekr.20170125140113.1: *6* restartColor
+    #@+node:ekr.20170125140113.1: *6* jedit.restartColor
     def restartColor(self, s: str) -> int:
         """Change all lines up to the next color directive."""
         if g.match_word(s, 0, '@killcolor'):
-            self.colorRangeWithTag(s, 0, len('@color'), 'leokeyword')
-            self.setRestart(self.restartKillColor)
+            self.in_killcolor = True
             return -len(s)  # Continue to suppress coloring.
         if g.match_word(s, 0, '@nocolor-node'):
             self.setRestart(self.restartNoColorNode)
@@ -1553,13 +1560,9 @@ class JEditColorizer(BaseColorizer):
 
         # Only matches at start of line.
         if i == 0 and g.match_word(s, i, '@killcolor'):
-            self.setRestart(self.restartKillColor)
-            return len(s)  # Match everything.
+            self.in_killcolor = True
+            return len(s) + 1  # Match everything.
         return 0
-    #@+node:ekr.20110605121601.18598: *6* jedit.restartKillColor
-    def restartKillColor(self, s: str) -> int:
-        self.setRestart(self.restartKillColor)
-        return len(s) + 1
     #@+node:ekr.20110605121601.18594: *5* jedit.match_at_language
     def match_at_language(self, s: str, i: int) -> int:
         """Match Leo's @language directive."""
@@ -1599,13 +1602,18 @@ class JEditColorizer(BaseColorizer):
     #@+node:ekr.20110605121601.18596: *6* jedit.restartNoColor
     def restartNoColor(self, s: str) -> int:
 
+        if self.in_killcolor:
+            return len(s) + 1  # Defensive
         if g.match_word(s, 0, '@color'):
             n = self.setRestart(self.restartColor)
             self.setState(n)  # Enables coloring of *this* line.
             self.colorRangeWithTag(s, 0, len('@color'), 'leokeyword')
             return len('@color')
+        if g.match_word(s, 0, '@killcolor'):
+            self.in_killcolor = True
+            return len(s) + 1
         self.setRestart(self.restartNoColor)
-        return len(s)  # Match everything.
+        return len(s) + 1  # Match everything.
     #@+node:ekr.20110605121601.18599: *5* jedit.match_at_nocolor_node & restarter
     def match_at_nocolor_node(self, s: str, i: int) -> int:
 

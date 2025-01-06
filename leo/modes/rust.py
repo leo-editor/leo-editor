@@ -5,9 +5,7 @@
 
 import re
 
-#@+<< Rust dictionaries >>
-#@+node:ekr.20231103125350.1: ** << Rust dictionaries >>
-# Properties for c mode.
+# Properties for rust mode.
 properties = {
     "commentEnd": "*/",
     "commentStart": "/*",
@@ -20,7 +18,9 @@ properties = {
     "wordBreakChars": ",+-=<>/?^&*",
 }
 
-# Attributes dict for c_main ruleset.
+#@+<< Rust attributes dicts >>
+#@+node:ekr.20250105164117.1: ** << Rust attributes dicts >>
+# Attributes dict for rust_main ruleset.
 rust_main_attributes_dict = {
     "default": "null",
     "digit_re": "(0x[[:xdigit:]_]+[lL]?|[[:digit:]_]+(e[[:digit:]]*)?[lLdDfF]?)",
@@ -30,91 +30,13 @@ rust_main_attributes_dict = {
     "no_word_sep": "",
 }
 
-# Dictionary of attributes dictionaries for c mode.
+# Dictionary of attributes dictionaries for rust mode.
 attributesDictDict = {
     "rust_main": rust_main_attributes_dict,
 }
-
-# Keywords dict for c_main ruleset.
-rust_main_keywords_dict = {
-    'Self': 'keyword1',
-    'abstract': 'keyword1',
-    'as': 'keyword1',
-    'async': 'keyword1',
-    'become': 'keyword1',
-    'bool': 'keyword2',
-    'box': 'keyword1',
-    'break': 'keyword1',
-    'const': 'keyword1',
-    'continue': 'keyword1',
-    'crate': 'keyword1',
-    'do': 'keyword1',
-    'dyn': 'keyword1',
-    'else': 'keyword1',
-    'enum': 'keyword1',
-    'extern': 'keyword1',
-    'false': 'keyword1',
-    'final': 'keyword1',
-    'fn': 'keyword1',
-    'for': 'keyword1',
-    'i16': 'keyword2',
-    'i32': 'keyword2',
-    'i64': 'keyword2',
-    'i8': 'keyword2',
-    'if': 'keyword1',
-    'impl': 'keyword1',
-    'in': 'keyword1',
-    'let': 'keyword1',
-    'loop': 'keyword1',
-    'macro': 'keyword1',
-    'match': 'keyword1',
-    'mod': 'keyword1',
-    'move': 'keyword1',
-    'mut': 'keyword1',
-    'override': 'keyword1',
-    'priv': 'keyword1',
-    'pub': 'keyword1',
-    'ref': 'keyword1',
-    'return': 'keyword1',
-    'self': 'keyword1',
-    'static': 'keyword1',
-    'str': 'keyword2',
-    'struct': 'keyword1',
-    'super': 'keyword1',
-    'trait': 'keyword1',
-    'true': 'keyword1',
-    'try': 'keyword1',
-    'type': 'keyword1',
-    'typeof': 'keyword1',
-    'u16': 'keyword2',
-    'u32': 'keyword2',
-    'u64': 'keyword2',
-    'u8': 'keyword2',
-    'unsafe': 'keyword1',
-    'unsized': 'keyword1',
-    'use': 'keyword1',
-    'usize': 'keyword2',
-    'vec!': 'keyword2',
-    'virtual': 'keyword1',
-    'where': 'keyword1',
-    'while': 'keyword1',
-    'yield': 'keyword1',
-    'Some': 'keyword3',
-    'None': 'keyword3',
-    'Result': 'keyword3',
-    'Err': 'keyword3',
-    'Ok': 'keyword3',
-    'include_bytes': 'keyword2',
-    'include_str': 'keyword2',
-}
-
-
-# Dictionary of keywords dictionaries for c mode.
-keywordsDictDict = {
-    "rust_main": rust_main_keywords_dict,
-}
-#@-<< Rust dictionaries >>
-
+#@-<< Rust attributes dicts >>
+#@+<< Rust rules >>
+#@+node:ekr.20250105163810.1: ** << Rust rules >>
 # Rules for rust_main ruleset.
 
 def rust_rule0(colorer, s, i):
@@ -239,8 +161,88 @@ def rust_rule26(colorer, s, i):
 
 def rust_rule27(colorer, s, i):
     return colorer.match_keywords(s, i)
+#@-<< Rust rules >>
+#@+<< Rust dictionaries >>
+#@+node:ekr.20231103125350.1: ** << Rust dictionaries >>
+# Keywords dict for rust_main ruleset.
+rust_main_keywords_dict = {
+    'Self': 'keyword1',
+    'abstract': 'keyword1',
+    'as': 'keyword1',
+    'async': 'keyword1',
+    'become': 'keyword1',
+    'bool': 'keyword2',
+    'box': 'keyword1',
+    'break': 'keyword1',
+    'const': 'keyword1',
+    'continue': 'keyword1',
+    'crate': 'keyword1',
+    'do': 'keyword1',
+    'dyn': 'keyword1',
+    'else': 'keyword1',
+    'enum': 'keyword1',
+    'extern': 'keyword1',
+    'false': 'keyword1',
+    'final': 'keyword1',
+    'fn': 'keyword1',
+    'for': 'keyword1',
+    'i16': 'keyword2',
+    'i32': 'keyword2',
+    'i64': 'keyword2',
+    'i8': 'keyword2',
+    'if': 'keyword1',
+    'impl': 'keyword1',
+    'in': 'keyword1',
+    'let': 'keyword1',
+    'loop': 'keyword1',
+    'macro': 'keyword1',
+    'match': 'keyword1',
+    'mod': 'keyword1',
+    'move': 'keyword1',
+    'mut': 'keyword1',
+    'override': 'keyword1',
+    'priv': 'keyword1',
+    'pub': 'keyword1',
+    'ref': 'keyword1',
+    'return': 'keyword1',
+    'self': 'keyword1',
+    'static': 'keyword1',
+    'str': 'keyword2',
+    'struct': 'keyword1',
+    'super': 'keyword1',
+    'trait': 'keyword1',
+    'true': 'keyword1',
+    'try': 'keyword1',
+    'type': 'keyword1',
+    'typeof': 'keyword1',
+    'u16': 'keyword2',
+    'u32': 'keyword2',
+    'u64': 'keyword2',
+    'u8': 'keyword2',
+    'unsafe': 'keyword1',
+    'unsized': 'keyword1',
+    'use': 'keyword1',
+    'usize': 'keyword2',
+    'vec!': 'keyword2',
+    'virtual': 'keyword1',
+    'where': 'keyword1',
+    'while': 'keyword1',
+    'yield': 'keyword1',
+    'Some': 'keyword3',
+    'None': 'keyword3',
+    'Result': 'keyword3',
+    'Err': 'keyword3',
+    'Ok': 'keyword3',
+    'include_bytes': 'keyword2',
+    'include_str': 'keyword2',
+}
 
-# Rules dict for c_main ruleset.
+# Dictionary of keywords dictionaries for rust mode.
+keywordsDictDict = {
+    "rust_main": rust_main_keywords_dict,
+}
+
+# Rules dict for rust.
 rulesDict1 = {
     "!": [rust_rule9],
     "\"": [rust_rule3],
@@ -340,7 +342,6 @@ rulesDict1 = {
     "~": [rust_rule22],
 }
 
-
 # x.rulesDictDict for rust mode.
 rulesDictDict = {
     "rust_main": rulesDict1,
@@ -348,4 +349,5 @@ rulesDictDict = {
 
 # Import dict for rust mode.
 importDict = {}
+#@-<< Rust dictionaries >>
 #@-leo
