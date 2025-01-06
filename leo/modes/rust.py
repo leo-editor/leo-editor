@@ -151,7 +151,7 @@ def rust_slash(colorer, s, i):
     # Fail.
     return i + 1
 #@+node:ekr.20250106062326.1: *3* rust: strings and chars, with escapes
-#@+node:ekr.20250106062904.1: *4* function: get_escaped_char
+#@+node:ekr.20250106062904.1: *4* function: get_escaped_char (more work needed!)
 # '\u{7FFF}'
 char10_pat = re.compile(r"'\\u\{[0-7][0-7a-fA-F]{3}\}'")
 # '\x7F'
@@ -160,58 +160,50 @@ char6_pat = re.compile(r"'\\x[0-7][0-7a-fA-F]'")
 char4_pat = re.compile(r"'\\[\\\"'nrt0]'")
 # 'x' where x is any unicode character.
 char3_pat = re.compile(r"'.'", re.UNICODE)
+# Unterminated unicode character.
+char2_pat = re.compile(r"'.", re.UNICODE)
 
-def get_escaped_char(s, i):
+def get_escaped_char(s, i) -> str:
     """
     This is a helper, not a matcher.
     
     Return the entire escaped character.
     """
-    for pat in char10_pat, char6_pat, char4_pat, char3_pat:
+    for pat in char10_pat, char6_pat, char4_pat, char3_pat, char2_pat:
         m = pat.match(s, i)
         if m:
+            # g.trace(m.group(0))
             return m.group(0)
-    return i + 2  # User error?
+    # Colorize the starting single quote.
+    return "'"
 #@+node:ekr.20250106042808.5: *4* function: rust_char
-# A single quote does not always denote a character literal.
-
-# These patterns are the same as in the rust importer:
 def rust_char(colorer, s, i):
+    """Colorizer a Rust character literal."""
     if s[i] != "'":
         return 0
-    if i + 1 >= len(s):
-        return len(s)
-    if i + 1 == '\\':
-        seq = get_escaped_char(s, i)
-    else:
-        seq = s[i : i + 2]
-    return colorer.match_seq(s, i, kind="literal2", seq=s[i : i + 2])
+    seq = get_escaped_char(s, i)
+    if len(seq) > 1 and seq.endswith("'"):
+        return colorer.match_seq(s, i, kind="literal2", seq=seq)
 
-# def rust_char10(colorer, s, i):
-    # return colorer.match_span_regexp(s, i, kind="literal2", begin=char10_pat)
-# def rust_char6(colorer, s, i):
-    # return colorer.match_span_regexp(s, i, kind="literal2", begin=char6_pat)
-# def rust_char4(colorer, s, i):
-    # return colorer.match_span_regexp(s, i, kind="literal2", begin=char4_pat)
-# def rust_char3(colorer, s, i):
-    # return colorer.match_span_regexp(s, i, kind="literal2", begin=char3_pat)
+    # Unterminated character.
+    # This is inaccurate: the restarter does not handle escapes!
+    return colorer.match_span(s, i, kind="literal2", begin="'", end="'")
 #@+node:ekr.20250106052237.1: *4* function: rust_string (to do: char escapes)
 def rust_string(colorer, s, i):
     if s[i] != '"':
         return 0
-    if 0:
-        j = i + 1
-        kind = 'literal2'
-        while j < len(s):
-            progress = j
-            if s[j] == "'":
-                seq = get_escaped_char(s, j)
-                j += len(seq)
-            elif s[j] == '"':
-                return colorer.match_seq(s, i, kind=kind, seq=s[i : j + 1])
-            else:
-                j += 1
-            assert progress < j, repr(s[j])
+    j = i + 1
+    kind = 'literal2'
+    while j < len(s):
+        progress = j
+        if s[j] == "'":
+            seq = get_escaped_char(s, j)
+            j += len(seq)
+        elif s[j] == '"':
+            return colorer.match_seq(s, i, kind=kind, seq=s[i : j + 1])
+        else:
+            j += 1
+        assert progress < j, repr(s[j])
     ### Does not handle escapes in continued strings.
     return colorer.match_span(s, i, kind="literal2", begin="\"", end="\"")
 #@+node:ekr.20250106042808.9: *3* function: rust_raw_string_literal
