@@ -125,7 +125,7 @@ keywordsDictDict = {
 #@+node:ekr.20250106042808.3: *3* function: rust_rule2
 def rust_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/")
-#@+node:ekr.20250106054207.1: *3* function: rust_slash (comments & operators)
+#@+node:ekr.20250106054207.1: *3* function: rust_slash
 def rust_slash(colorer, s, i):
 
     # match_span constructs.
@@ -151,61 +151,21 @@ def rust_slash(colorer, s, i):
     # Fail.
     return i + 1
 #@+node:ekr.20250106062326.1: *3* rust: strings and chars, with escapes
-#@+node:ekr.20250106062904.1: *4* function: get_escaped_char
-# '\u{7FFF}'
-char10_pat = re.compile(r"'\\u\{[0-7][0-7a-fA-F]{3}\}'")
-# '\x7F'
-char6_pat = re.compile(r"'\\x[0-7][0-7a-fA-F]'")
-# '\n', '\r', '\t', '\\', '\0', '\'', '\"'
-char4_pat = re.compile(r"'\\[\\\"'nrt0]'")
-# 'x' where x is any unicode character.
-char3_pat = re.compile(r"'.'", re.UNICODE)
-# Unterminated unicode character.
-char2_pat = re.compile(r"'.", re.UNICODE)
-
-def get_escaped_char(s, i) -> str:
-    """
-    This is a helper, not a matcher.
-    
-    Return the entire escaped character.
-    """
-    for pat in char10_pat, char6_pat, char4_pat, char3_pat, char2_pat:
-        m = pat.match(s, i)
-        if m:
-            return m.group(0)
-
-    # Return the opening single quote.
-    return "'"
-#@+node:ekr.20250106042808.5: *4* function: rust_char (** inaccurate)
+#@+node:ekr.20250106042808.5: *4* function: rust_char
 def rust_char(colorer, s, i):
-    """Colorizer a Rust character literal."""
-    if s[i] != "'":
-        return 0
-    seq = get_escaped_char(s, i)
-    if len(seq) > 1 and seq.endswith("'"):
-        return colorer.match_seq(s, i, kind="literal2", seq=seq)
+    """A rust lif"""
 
-    # Unterminated character.
-    # This is inaccurate: the restarter does not handle escapes!
-    return colorer.match_span(s, i, kind="literal2", begin="'", end="'")
-#@+node:ekr.20250106052237.1: *4* function: rust_string (** inaccurate)
+    # Handle lifetimes: <'x
+    if 0 < i < len(s) - 1 and s[i - 1] == '<' and s[i + 1].isalpha():
+        seq = s[i : i + 2]
+        return colorer.match_seq(s, i, kind="literal1", seq=seq)
+
+    # match_span handles escapes.
+    return colorer.match_span(s, i, kind="literal1", begin="'", end="'")
+#@+node:ekr.20250106052237.1: *4* function: rust_string
 def rust_string(colorer, s, i):
-    if s[i] != '"':
-        return 0
-    j = i + 1
-    kind = 'literal2'
-    while j < len(s):
-        progress = j
-        if s[j] == "'":
-            seq = get_escaped_char(s, j)
-            j += len(seq)
-        elif s[j] == '"':
-            return colorer.match_seq(s, i, kind=kind, seq=s[i : j + 1])
-        else:
-            j += 1
-        assert progress < j, repr(s[j])
-    ### Does not handle escapes in continued strings.
-    return colorer.match_span(s, i, kind="literal2", begin="\"", end="\"")
+    # match_span handles escapes.
+    return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"")
 #@+node:ekr.20250106042808.9: *3* function: rust_raw_string_literal
 # #3631
 # https://doc.rust-lang.org/reference/tokens.html#raw-string-literals
@@ -242,14 +202,10 @@ def rust_pound(colorer, s, i):
     # return colorer.match_eol_span(s, i, kind="keyword2", seq="#")
 #@+node:ekr.20250106054731.1: *3* function: rust_open_angle & rust_close_angle
 def rust_open_angle(colorer, s, i):
-    if s[i] != '<':  # May fail during unit tests!
-        return 0
     seq = '<=' if i + i < len(s) and s[i + 1] == '=' else '<'
     return colorer.match_plain_seq(s, i, kind="operator", seq=seq)
 
 def rust_close_angle(colorer, s, i):
-    if s[i] != '>':
-        return 0
     seq = '>=' if i + i < len(s) and s[i + 1] == '=' else '>'
     return colorer.match_plain_seq(s, i, kind="operator", seq=seq)
 #@+node:ekr.20250106042808.14: *3* function: rust_rule6
