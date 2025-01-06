@@ -151,7 +151,7 @@ def rust_slash(colorer, s, i):
     # Fail.
     return i + 1
 #@+node:ekr.20250106062326.1: *3* rust: strings and chars, with escapes
-#@+node:ekr.20250106062904.1: *4* function: get_escaped_char (more work needed!)
+#@+node:ekr.20250106062904.1: *4* function: get_escaped_char
 # '\u{7FFF}'
 char10_pat = re.compile(r"'\\u\{[0-7][0-7a-fA-F]{3}\}'")
 # '\x7F'
@@ -172,11 +172,11 @@ def get_escaped_char(s, i) -> str:
     for pat in char10_pat, char6_pat, char4_pat, char3_pat, char2_pat:
         m = pat.match(s, i)
         if m:
-            # g.trace(m.group(0))
             return m.group(0)
-    # Colorize the starting single quote.
+
+    # Return the opening single quote.
     return "'"
-#@+node:ekr.20250106042808.5: *4* function: rust_char
+#@+node:ekr.20250106042808.5: *4* function: rust_char (** inaccurate)
 def rust_char(colorer, s, i):
     """Colorizer a Rust character literal."""
     if s[i] != "'":
@@ -188,7 +188,7 @@ def rust_char(colorer, s, i):
     # Unterminated character.
     # This is inaccurate: the restarter does not handle escapes!
     return colorer.match_span(s, i, kind="literal2", begin="'", end="'")
-#@+node:ekr.20250106052237.1: *4* function: rust_string (to do: char escapes)
+#@+node:ekr.20250106052237.1: *4* function: rust_string (** inaccurate)
 def rust_string(colorer, s, i):
     if s[i] != '"':
         return 0
@@ -216,7 +216,7 @@ def rust_raw_string_literal(colorer, s, i):
         return len(s)
     if s[i + 1] != '#':
         return i + 1
-    for n in (3, 2, 1):
+    for n in (4, 3, 2, 1):
         begin = 'r' + '#' * n
         end = '#' * n
         if g.match(s, i, begin):
