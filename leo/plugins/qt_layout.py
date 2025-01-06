@@ -376,7 +376,7 @@ HORIZONTAL_THIRDS_LAYOUT = {
             (VR3_OBJ_NAME, 'vr_splitter'),
             ('secondary_splitter', 'main_splitter'),
             ('bodyFrame', 'main_splitter'),
-            ('vrx_splitter', 'main_splitter'),
+            ('vr_splitter', 'main_splitter'),
             )
         ),
     'ORIENTATIONS': {
