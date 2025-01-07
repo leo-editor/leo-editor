@@ -3988,7 +3988,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         path = ''
         if kind:
             # Try headline first
-            s = c.p.h[len(kind):].strip()
+            s = c.p.h[len(kind) :].strip()
             if s:
                 path = self.get_file_from_string(s)
         if not (kind and path):
