@@ -1024,7 +1024,7 @@ try:
     from leo.core.leoQt import QtMultimedia, QtSvg
     from leo.core.leoQt import KeyboardModifier, WrapMode
     from leo.core.leoQt import QAction, QActionGroup
-    from leo.core.leoQt import QtGui
+    from leo.core.leoQt import QtGui, QUrl
     QColor = QtGui.QColor
 
 
@@ -2252,6 +2252,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         self.last_markup = ''
         self.lock_to_tree = False
+        self.pdf_zoom = '100'
         self.qwev = self.create_web_engineview()
         self.qwev.loadFinished.connect(self.restore_scroll_position)
 
@@ -2293,6 +2294,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             # 'movie': self.update_movie,
             # 'networkx': self.update_networkx,
             'plain': self.update_text,
+            'pdf': self.update_pdf,
             # 'pyplot': self.update_pyplot,
             'rst': self.update_rst,
             # 'svg': self.update_svg,
@@ -2317,6 +2319,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
                     pass
             wa = WebEngineAttribute.LocalContentCanAccessRemoteUrls
             settings.setAttribute(wa, True)
+            # Allow rendering of .pdf files.
+            settings.setAttribute(settings.WebAttribute.PluginsEnabled, True)
+
         return w
 
     #@+node:TomP.20200329223820.4: *4* vr3.create_md_header
@@ -3192,7 +3197,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
             node_kind = self.get_kind(p) or self.default_kind
             if node_kind in ('edit', 'file', 'clean', 'auto'):
                 node_kind = RST
-
         return node_kind
     #@+node:tom.20240724081410.1: *4* vr3.handle_scrolled_msg
     def handle_scrolled_msg(self, keywords):
@@ -3933,6 +3937,95 @@ class ViewRenderedController3(QtWidgets.QWidget):
         # Read the output file and return it.
         with open(o_path, 'r', encoding=ENCODING) as f:
             return f.read()
+    #@+node:tom.20250103185205.1: *4* vr3.update_pdf
+    def update_pdf(self, s, keywords):
+        """Display PDF file.
+        
+        The path to the PDF file must be either in the headline after
+        the leading "@pdf " or the first line in the body. The
+        path must use "/" separators and may not start with "file:".
+        """
+        c = self.c
+        if self.must_change_widget(has_webengineview):
+            w = self.create_web_engineview()
+            self.embed_widget(w)
+            assert w == self.w
+        else:
+            w = self.w
+        w.hide()  # This forces a proper update.
+
+        path = self.get_file_path('@pdf')
+        if path:
+            url = QUrl.fromLocalFile(path)
+            # https://www.rfc-editor.org/rfc/rfc8118
+            url.setFragment(f"zoom={self.pdf_zoom}")
+            w.load(url)
+        else:
+            w.setHtml('<h1>No PDF file in headline or body</h1>')
+        w.show()
+        c.bodyWantsFocusNow()
+    #@+node:tom.20250104125231.1: *5* v3.get_file_path
+    def get_file_path(self, kind=None):
+        """Return an absolute file path from a node.
+        
+        ~, .., and symbolic links resolved.
+        
+        The file path may be absolute or relative to the path
+        applicable to the selected node. If the headline starts
+        with a kind, such as "@pdf", and contains a path to an
+        existing file, that path is returned. Otherwise if first
+        line of the string s contains a path to a file, that
+        path is returned.
+
+        ARGUMENTS
+        s -- a single line of text that may contain a path to a file.
+        kind -- A headline prefix starting with "@", such as "@pdf".
+        
+        RETURNS
+        A fully resolved absolute path or None.
+        """
+        c = self.c
+        path = ''
+        if kind:
+            # Try headline first
+            s = c.p.h[len(kind):].strip()
+            if s:
+                path = self.get_file_from_string(s)
+        if not (kind and path):
+            # Try body text
+            s = c.p.b.split('\n')[0].strip()
+            path = self.get_file_from_string(s)
+        return path
+    #@+node:tom.20250104130838.1: *5* v3.get_file_from_string
+    def get_file_from_string(self, s):
+        """Return the path to an existing file based on s.
+        
+        s is a string whose first line may contain a path to
+        a file. If it does, return the fully resolved
+        path to an existing file, else an empty string. The path
+        may be absolute or relative to the node's effective path.
+        
+        For an unsaved outline, assume that relative paths are
+        relative to the .leo directory.
+        """
+        c = self.c
+        is_absolute = Path(s).is_absolute()
+        fn = ''
+        if is_absolute:
+            fn = str(Path.resolve(Path(s)))
+        else:
+            if c and c.fileName():
+                # Handle ancestor @path directives.
+                base = c.getNodePath(c.p)
+                fn1 = g.finalize_join(base, s)
+                path = Path.resolve(Path(fn1))
+                fn = str(path)
+            else:
+                # If outline is not saved, assume file is relative to ~/.leo
+                fn = g.finalize('~/.leo/' + s)
+
+        path1 = fn if Path.exists(Path(fn)) else ''
+        return path1
     #@+node:TomP.20191215195433.72: *4* vr3.update_pyplot
     def update_pyplot(self, s, keywords):
         """Get the pyplot script at c.p.b and show it."""
