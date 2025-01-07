@@ -4466,9 +4466,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
                             is_absolute = Path(url).is_absolute()
                             if not is_absolute:
                                 base = self.base_url + '/' if os.path.isabs(self.base_url) else ''
-                                url = Path(f'{base}{url}').resolve()
-                                url = 'file:///' + g.finalize(url)
-                                line = f'\n{rst_directive} {url}'
+                                url = 'file:///' + g.finalize(base + url)
+                                line = f'\n{rst_directive} {url}\n'
                     else:
                         # No url for an image: ignore and skip to next line
                         continue
