@@ -210,27 +210,17 @@ from leo.core.leoQt import QtMultimedia, QtSvg, QUrl
 from leo.core.leoQt import ContextMenuPolicy, WrapMode
 from leo.plugins import qt_text
 
-has_webengineview = False
 try:
-    from leo.core.leoQt import QtWebEngineWidgets
-    has_webengineview = True
-except ImportError:
-    pass
-
-qwv = None
-if has_webengineview:
+    from leo.core.leoQt import WebEngineAttribute, QtWebEngineWidgets
     qwv = QtWebEngineWidgets.QWebEngineView
-    try:
-        from leo.core.leoQt import QtWebEngineCore
-        QWebEngineSettings = QtWebEngineCore.QWebEngineSettings
-    except Exception:
-        QWebEngineSettings = QtWebEngineWidgets.QWebEngineSettings
-    from leo.core.leoQt import WebEngineAttribute
-else:
+    has_webengineview = True
+except Exception:
+    has_webengineview = False
     try:
         qwv = QtWidgets.QTextBrowser
     except Exception as e:
         g.trace(e)
+        qwv = None
 
 # Optional third-party imports...
 
