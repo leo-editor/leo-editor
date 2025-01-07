@@ -3,7 +3,6 @@
 # Leo colorizer control file for rust mode.
 # This file is in the public domain.
 
-import re
 from leo.core import leoGlobals as g
 
 #@+<< Rust properties dict >>
@@ -302,8 +301,9 @@ lead_ins = list(sorted(set(key[0] for key in rust_main_keywords_dict)))
 # print('rust lead-ins', lead_ins)
 for lead_in in lead_ins:
     aList = rulesDict1.get(lead_in, [])
-    aList.insert(0, rust_keywords)
-    rulesDict1[lead_in] = aList
+    if rust_keywords not in aList:
+        aList.insert(0, rust_keywords)
+        rulesDict1[lead_in] = aList
 
 # g.printObj(rulesDict1, tag='rulesDict1')
 
