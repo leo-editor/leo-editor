@@ -1262,19 +1262,24 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         """
         Display a pdf file in the VR pane.
         The first line of `s` should be a `@pdf <path>`.
+        Resolve relative paths using the outline's directory.
         """
         p = self.c.p
         if not s.strip():
-            return
-        ok, path = self.get_fn(s, '@pdf')
-        if not ok:
-            g.print_unique_message(f"File not found: {path!r}")
             return
 
         # Create a new QWebEngineView.
         w = self.create_web_engineview_with_pdf()
         if not has_webengineview:
             g.print_unique_message('@pdf rendering requires PyQt6-WebEngine')
+            w.setHtml(s)
+            self.show()
+            return
+
+        ok, path = self.get_fn(s, '@pdf')
+        if not ok:
+            s = f"File not found: {path}"
+            g.print_unique_message(s)
             w.setHtml(s)
             self.show()
             return
@@ -1653,6 +1658,11 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         return None
     #@+node:ekr.20110320233639.5776: *4* vr.get_fn
     def get_fn(self, s: str, tag: str) -> tuple[bool, str]:
+        """
+        Return an absolute path using s or c.p.h.
+        
+        Resolve relative paths using the outline's directory.
+        """
         c = self.c
         fn = s or c.p.h[len(tag) :]
         fn = fn.strip()
@@ -1669,6 +1679,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             else:
                 fn = g.finalize(fn)
         ok = g.os_path_exists(fn)
+        g.trace(fn)
         return ok, fn
     #@+node:ekr.20110321005148.14536: *4* vr.get_url
     def get_url(self, s: str, tag: str) -> str:
