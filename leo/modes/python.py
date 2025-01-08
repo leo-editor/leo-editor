@@ -17,8 +17,8 @@ properties = {
     "lineComment": "#",
 }
 
-#@+<< Attributes Dicts >>
-#@+node:ekr.20230419163615.1: ** << Attributes Dicts >>
+#@+<< Python attributes dicts >>
+#@+node:ekr.20230419163615.1: ** << Python attributes dicts >>
 
 # Attributes dict for python_main ruleset.
 python_main_attributes_dict = {
@@ -34,9 +34,9 @@ python_main_attributes_dict = {
 attributesDictDict = {
     "python_main": python_main_attributes_dict,
 }
-#@-<< Attributes Dicts >>
-#@+<< Keywords Dicts >>
-#@+node:ekr.20230419163648.1: ** << Keywords Dicts >>
+#@-<< Python attributes dicts >>
+#@+<< Python keywords dicts >>
+#@+node:ekr.20230419163648.1: ** << Python keywords dicts >>
 # Keywords dict for python_main ruleset.
 python_main_keywords_dict = {
     "ArithmeticError": "keyword3",
@@ -309,9 +309,10 @@ python_main_keywords_dict = {
 keywordsDictDict = {
     "python_main": python_main_keywords_dict,
 }
-#@-<< Keywords Dicts >>
+#@-<< Python keywords dicts >>
+#@+<< Python rules >>
+#@+node:ekr.20230419163736.1: ** << Python rules >>
 #@+others
-#@+node:ekr.20230419163736.1: ** Python rules
 #@+node:ekr.20230419163819.1: *3* python_comment
 def python_comment(colorer, s, i):
     """
@@ -423,8 +424,9 @@ def python_single_quote(colorer, s, i):
 def python_single_quote_docstring(colorer, s, i):
     return colorer.match_span(s, i, kind="literal2", begin="'''", end="'''")
 #@-others
-#@+<< Rules Dicts >>
-#@+node:ekr.20230419164059.1: ** << Rules Dicts >>
+#@-<< Python rules >>
+#@+<< Python rules dicts >>
+#@+node:ekr.20230419164059.1: ** << Python rules dicts >>
 # Rules dict for python_main ruleset.
 rulesDict1 = {
     # Operators of length 1.
@@ -450,7 +452,6 @@ rulesDict1 = {
     "#": [python_comment],
 
     # Numbers...
-    "@": [python_keyword],  # A special case.
     ".": [python_number],
     "0": [python_number],
     "1": [python_number],
@@ -462,62 +463,16 @@ rulesDict1 = {
     "7": [python_number],
     "8": [python_number],
     "9": [python_number],
-
-    # names or keywords.
-    "A": [python_keyword],
-    "B": [python_keyword],
-    "C": [python_keyword],
-    "D": [python_keyword],
-    "E": [python_keyword],
-    "F": [python_keyword],  # python_f_url
-    "G": [python_keyword],
-    "H": [python_keyword],  # python_h_url
-    "I": [python_keyword],
-    "J": [python_keyword],
-    "K": [python_keyword],
-    "L": [python_keyword],
-    "M": [python_keyword],
-    "N": [python_keyword],
-    "O": [python_keyword],
-    "P": [python_keyword],
-    "Q": [python_keyword],
-    "R": [python_keyword],  # python_f_url
-    "S": [python_keyword],
-    "T": [python_keyword],
-    "U": [python_keyword],
-    "V": [python_keyword],
-    "W": [python_keyword],
-    "X": [python_keyword],
-    "Y": [python_keyword],
-    "Z": [python_keyword],
-    "_": [python_keyword],
-    "a": [python_keyword],
-    "b": [python_keyword],
-    "c": [python_keyword],
-    "d": [python_keyword],
-    "e": [python_keyword],
-    "f": [python_keyword],  # python_f_url
-    "g": [python_keyword],
-    "h": [python_keyword],  # python_h_url
-    "i": [python_keyword],
-    "j": [python_keyword],
-    "k": [python_keyword],
-    "l": [python_keyword],
-    "m": [python_keyword],
-    "n": [python_keyword],
-    "o": [python_keyword],
-    "p": [python_keyword],
-    "q": [python_keyword],
-    "r": [python_keyword],
-    "s": [python_keyword],
-    "t": [python_keyword],
-    "u": [python_keyword],
-    "v": [python_keyword],
-    "w": [python_keyword],
-    "x": [python_keyword],
-    "y": [python_keyword],
-    "z": [python_keyword],
 }
+
+# Prepend entries for python_keyword to rulesDict1.
+lead_ins = list(sorted(set(key[0] for key in python_main_keywords_dict)))
+# print('python lead-ins', lead_ins)
+for lead_in in lead_ins:
+    aList = rulesDict1.get(lead_in, [])
+    if python_keyword not in aList:
+        aList.insert(0, python_keyword)
+        rulesDict1[lead_in] = aList
 
 if False:  # #3770: Revert colorizing of PEP 701 f-strings.
     if (v1, v2) >= (3, 12):
@@ -529,7 +484,7 @@ if False:  # #3770: Revert colorizing of PEP 701 f-strings.
 rulesDictDict = {
     "python_main": rulesDict1,
 }
-#@-<< Rules Dicts >>
+#@-<< Python rules dicts >>
 
 # Import dict for python mode.
 importDict = {}
