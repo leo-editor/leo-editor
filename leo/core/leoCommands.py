@@ -3154,7 +3154,7 @@ class Commands:
 
     # fix bobjack's spelling error.
     universallCallback = universalCallback
-    #@+node:ekr.20070115135502: *4* c.writeScriptFile (changed: does not expand expressions)
+    #@+node:ekr.20070115135502: *4* c.writeScriptFile
     def writeScriptFile(self, script: str) -> str:
 
         # Get the path to the file.
