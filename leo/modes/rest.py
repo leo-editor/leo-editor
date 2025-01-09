@@ -4,8 +4,6 @@
 # Leo colorizer control file for rest mode.
 # This file is in the public domain.
 
-from leo.core import leoGlobals as g
-
 #@+<< rest: properties and attributes >>
 #@+node:ekr.20250109073208.1: ** << rest: properties and attributes >>
 
