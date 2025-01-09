@@ -3,6 +3,7 @@
 # Leo colorizer control file for rust mode.
 # This file is in the public domain.
 
+import re
 import string
 from leo.core import leoGlobals as g
 
@@ -152,22 +153,16 @@ def rust_slash(colorer, s, i):
     return i + 1
 #@+node:ekr.20250106062326.1: *3* rust: strings and chars, with escapes
 #@+node:ekr.20250106042808.5: *4* function: rust_char
-letters = string.ascii_letters
+lifetime_pat = re.compile(r"'(static|[a-zA-Z_])")
 
 def rust_char(colorer, s, i):
 
-    # Handle lifetimes: 'x[non-alpha]
-    if i + 1 < len(s):
-        ch1 = s[i + 1]
-        ch2 = s[i + 2] if i + 2 < len(s) else ''
-        if (
-            ch1 == '_'
-            or
-            ch1 in letters and ch2 not in letters
-        ):
-            return colorer.match_seq(s, i, kind="literal1", seq=f"'{ch1}")
+    # Lifetimes.
+    m = lifetime_pat.match(s, i)
+    if m:
+        return colorer.match_seq(s, i, kind="literal1", seq=m.group(0))
 
-    # match_span handles escapes.
+    # A character delimited by "'".
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'")
 #@+node:ekr.20250106052237.1: *4* function: rust_string
 def rust_string(colorer, s, i):
