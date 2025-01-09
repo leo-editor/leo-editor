@@ -54,9 +54,8 @@ def rest_star(colorer, s, i):
         j += 1
     if j >= 3:
         return colorer.match_seq(s, i, kind="label", seq='*' * j)
-
-    g.trace(i, s)
     return colorer.match_span(s, i, kind="keyword2", begin='*', end='*')
+
     # 10.
     # return colorer.match_seq_regexp(s, i, kind="label", regexp="\\*{3,}")
 
@@ -99,9 +98,6 @@ def rest_rule8(colorer, s, i):
 #@+node:ekr.20250109073551.10: *3* function: rest_rule9
 def rest_rule9(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="label", regexp="\\+{3,}")
-#@+node:ekr.20250109073551.11: *3* function: rest_rule10 (not used)
-def rest_rule10(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="label", regexp="\\*{3,}")
 #@+node:ekr.20250109073551.12: *3* function: rest_rule11
 def rest_rule11(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="literal3", regexp="\\.\\.\\s\\|[^|]+\\|",
@@ -113,12 +109,6 @@ def rest_rule12(colorer, s, i):
 def rest_rule13(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="literal2", regexp="\\.\\.\\s[A-z][A-z0-9-_]+::",
           at_line_start=True)
-#@+node:ekr.20250109073551.15: *3* function: rest_rule14 (not used)
-def rest_rule14(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="keyword2", regexp="\\*\\*[^*]+\\*\\*")
-#@+node:ekr.20250109073551.16: *3* function: rest_rule15 (not used)
-def rest_rule15(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="keyword4", regexp="\\*[^\\s*][^*]*\\*")
 #@+node:ekr.20250109073551.17: *3* function: rest_rule16
 def rest_rule16(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="comment1", seq="..",
