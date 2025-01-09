@@ -127,7 +127,41 @@ keywordsDictDict = {
 def rust_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/")
 #@+node:ekr.20250106054207.1: *3* function: rust_slash
-def rust_slash(colorer, s, i):
+single_slash_pat = re.compile(r'^\s*/ ')
+
+star2_pat = re.compile(r'\*\*.*?\*\*')
+star_pat = re.compile(r'\*(.*?)\*')
+
+def rust_slash(colorer, s, i) -> int:
+
+    def has_tag(i, pattern: str, tag: str) -> int:
+        m = pattern.match(s, i)
+        n = len(m.group(0)) if m else 0
+        return n if n > 2 else 0
+
+    if single_slash_pat.match(s, i):
+        colorer.match_seq(s, i, kind='comment1', seq='/')
+        i += 1
+        # A hack. Support only '*' and '**'.
+        table = (
+            ('**', star2_pat),
+            ('*', star_pat),
+        )
+        while i < len(s):
+            progress = i
+            if s[i] == '*' and s[i - 1] != '*':
+                for tag, pattern in table:
+                    n = has_tag(i, pattern, tag)
+                    if n > 0:
+                        seq = s[i : i + n + 1]
+                        colorer.match_seq(s, i, kind="keyword2", seq=seq)
+                        i += n
+                        break
+                else:
+                    i += 1
+            else:
+                i += 1
+            assert progress < i
 
     # match_span constructs.
     match_span_table = (
