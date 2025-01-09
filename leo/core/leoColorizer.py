@@ -1862,15 +1862,17 @@ class JEditColorizer(BaseColorizer):
             return 0
         if at_word_start and i > 0 and s[i - 1] in self.word_chars:
             return 0
-        if at_word_start and i + len(
-            seq) + 1 < len(s) and s[i + len(seq)] in self.word_chars:
+        if (
+            at_word_start
+            and i + len(seq) + 1 < len(s)
+            and s[i + len(seq)] in self.word_chars
+        ):
             return 0
-        if g.match(s, i, seq):
-            j = len(s)
-            self.colorRangeWithTag(s, i, j, kind,
-                delegate=delegate, exclude_match=exclude_match)
-            return j  # (was j-1) With a delegate, this could clear state.
-        return 0
+        # if g.match(s, i, seq):
+        j = len(s)
+        self.colorRangeWithTag(s, i, j, kind,
+            delegate=delegate, exclude_match=exclude_match)
+        return j  # (was j-1) With a delegate, this could clear state.
     #@+node:ekr.20110605121601.18612: *4* jedit.match_eol_span_regexp
     def match_eol_span_regexp(self, s: str, i: int,
         *,
@@ -2240,6 +2242,12 @@ class JEditColorizer(BaseColorizer):
                 return j
         # For pylint.
         return -1
+    #@+node:ekr.20250109134131.1: *4* jedit.match_plain_eol_span
+    def match_plain_eol_span(self, s: str, i: int,  kind: str) -> int:
+        """Colorizer s[i:]"""
+        j = len(s)
+        self.colorRangeWithTag(s, i, j, kind)
+        return j
     #@+node:ekr.20110605121601.18619: *4* jedit.match_regexp_helper
     def match_regexp_helper(self, s: str, i: int, pattern: Any) -> int:
         """

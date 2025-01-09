@@ -48,13 +48,13 @@ keywordsDictDict = {
 #@+others
 #@+node:ekr.20250109074353.1: *3* rest_star
 def rest_star(colorer, s, i):
-
-    j = i
-    while j < len(s) and s[j] == '*':
+    j = 0
+    while i + j < len(s) and s[i + j] == '*':
         j += 1
+    seq = '*' * j
     if j >= 3:
-        return colorer.match_seq(s, i, kind="label", seq='*' * j)
-    return colorer.match_span(s, i, kind="keyword2", begin='*', end='*')
+        return colorer.match_seq(s, i, kind="label", seq=seq)
+    return colorer.match_span(s, i, kind="keyword2", begin=seq, end=seq)
 
     # 10.
     # return colorer.match_seq_regexp(s, i, kind="label", regexp="\\*{3,}")

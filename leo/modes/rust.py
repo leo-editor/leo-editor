@@ -234,12 +234,7 @@ def rust_at_operator(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq="@")
 #@+node:ekr.20250106054547.1: *3* function: rust_pound
 def rust_pound(colorer, s, i):
-    return 0  ###
-
-# def rust_rule5(colorer, s, i):
-    # return colorer.match_plain_seq(s, i, kind="keyword2", seq="##")
-# def rust_rule6(colorer, s, i):
-    # return colorer.match_eol_span(s, i, kind="keyword2", seq="#")
+    return colorer.match_plain_eol_span(s, i, kind="keyword2")
 #@+node:ekr.20250106054731.1: *3* function: rust_open_angle & rust_close_angle
 def rust_open_angle(colorer, s, i):
     seq = '<=' if i + i < len(s) and s[i + 1] == '=' else '<'
