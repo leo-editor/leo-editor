@@ -5,6 +5,7 @@
 # This file is in the public domain.
 
 import re
+import string
 import sys
 from leo.core import leoGlobals as g
 assert g
@@ -465,9 +466,8 @@ rulesDict1 = {
     "9": [python_number],
 }
 
-# Prepend entries for python_keyword to rulesDict1.
-lead_ins = list(sorted(set(key[0] for key in python_main_keywords_dict)))
-# print('python lead-ins', lead_ins)
+# Add *all* characters that could start a Python identifier.
+lead_ins = string.ascii_letters + '_'
 for lead_in in lead_ins:
     aList = rulesDict1.get(lead_in, [])
     if python_keyword not in aList:

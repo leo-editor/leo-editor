@@ -3,6 +3,8 @@
 # Leo colorizer control file for rust mode.
 # This file is in the public domain.
 
+import re
+import string
 from leo.core import leoGlobals as g
 
 #@+<< Rust properties dict >>
@@ -151,20 +153,24 @@ def rust_slash(colorer, s, i):
     return i + 1
 #@+node:ekr.20250106062326.1: *3* rust: strings and chars, with escapes
 #@+node:ekr.20250106042808.5: *4* function: rust_char
+lifetime_pat = re.compile(r"'(static|[a-zA-Z_])")
+
 def rust_char(colorer, s, i):
-    """A rust lif"""
 
-    # Handle lifetimes: <'x
-    if 0 < i < len(s) - 1 and s[i - 1] == '<' and s[i + 1].isalpha():
-        seq = s[i : i + 2]
-        return colorer.match_seq(s, i, kind="literal1", seq=seq)
+    # Lifetimes.
+    m = lifetime_pat.match(s, i)
+    if m:
+        return colorer.match_seq(s, i, kind="literal1", seq=m.group(0))
 
-    # match_span handles escapes.
+    # A character delimited by "'".
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'")
 #@+node:ekr.20250106052237.1: *4* function: rust_string
 def rust_string(colorer, s, i):
     # match_span handles escapes.
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"")
+#@+node:ekr.20250108125839.1: *3* function: rust_colon
+def rust_colon(colorer, s, i):
+    return colorer.match_plain_seq(s, i, kind="operator", seq=':')
 #@+node:ekr.20250106042808.9: *3* function: rust_raw_string_literal
 # #3631
 # https://doc.rust-lang.org/reference/tokens.html#raw-string-literals
@@ -252,11 +258,6 @@ def rust_rule23(colorer, s, i):
 #@+node:ekr.20250106042808.32: *3* function: rust_rule24
 def rust_rule24(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq="{")
-#@+node:ekr.20250106042808.33: *3* function: rust_rule25
-def rust_rule25(colorer, s, i):
-    return colorer.match_mark_previous(s, i, kind="label", pattern=":",
-          at_whitespace_end=True,
-          exclude_match=True)
 #@+node:ekr.20250106042808.34: *3* function: rust_rule26
 def rust_rule26(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="function", pattern="(",
@@ -278,6 +279,7 @@ rulesDict1 = {
     "r": [rust_raw_string_literal],
     "/": [rust_slash],
     '"': [rust_string],
+    ':': [rust_colon],
     # Existing rules...
     "@": [rust_at_operator],
     "=": [rust_rule8],
@@ -292,13 +294,11 @@ rulesDict1 = {
     "~": [rust_rule22],
     "}": [rust_rule23],
     "{": [rust_rule24],
-    ":": [rust_rule25],
     "(": [rust_rule26],
 }
 
-# Prepend entries for rust_keyword to rulesDict1.
-lead_ins = list(sorted(set(key[0] for key in rust_main_keywords_dict)))
-# print('rust lead-ins', lead_ins)
+# Add *all* characters that could start a Rust identifier.
+lead_ins = string.ascii_letters + '_'
 for lead_in in lead_ins:
     aList = rulesDict1.get(lead_in, [])
     if rust_keywords not in aList:
