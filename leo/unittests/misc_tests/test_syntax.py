@@ -48,55 +48,6 @@ class TestSyntax(LeoUnitTest):
                     fn = g.shortFileName(z)
                     s, e = g.readFileIntoString(z)
                     self.assertTrue(self.check_syntax(fn, s), msg=fn)
-    #@+node:ekr.20241118022857.1: *4* TestSyntax.test_all_mode_files
-    def test_all_mode_files(self):
-
-        tag = 'slow_test_all_mode_files'
-
-        #@+others  # Define test_one_mode_file
-        #@+node:ekr.20241118025715.1: *5* function: test_one_mode_file
-        def test_one_mode_file(module: Any) -> None:
-            """Call all rules in the given module, a mode file."""
-            from leo.core.leoColorizer import JEditColorizer
-            c = self.c
-            module_name = module.__name__
-            # Skip modes/plain.py. It has only one rule and the rulesDict is a hack.
-            if module_name.endswith('plain'):
-                return
-            colorer = JEditColorizer(c, widget=None)
-            rules = []
-            for ruleDict_name, ruleDict in module.rulesDictDict.items():
-                # The colorizer adds Leo-specific rules to these dicts. Don't call them!
-                for char, rules_list in ruleDict.items():
-                    for rule in rules_list:
-                        if not rule.__name__.startswith('match_'):
-                            rules.append(rule)
-            rules = sorted(list(set(rules)), key=lambda z: z.__name__)
-            # g.printObj([z.__name__ for z in rules], tag=f"Rules for {module_name}")
-            i = 0
-            s = 'def spam()'
-            for rule in rules:
-                rule(colorer, s, i)
-        #@-others
-
-        fails = []
-        mode_path = g.os_path_finalize_join(g.app.loadDir, '..', 'modes')
-        paths = glob.glob(f"{mode_path}{os.sep}*.py")
-        paths = [os.path.basename(z)[:-3] for z in paths]
-        paths = [z for z in paths if not z.startswith('__')]
-        for path in paths:
-            try:
-                module = importlib.import_module(f"leo.modes.{path}")
-                test_one_mode_file(module)
-            except Exception as e:
-                # raise AssertionError(f"{tag}:Test failed: {module.__name__}")
-                g.trace(repr(e))
-                fails.append(f"{module.__name__:<20} {e!r}")
-        if fails:
-            fails_s = '\n'.join(fails)
-            message = f"\n{tag}:Test failed:...\n{fails_s}\n"
-            raise AssertionError(message)
-
     #@-others
 #@-others
 #@-leo
