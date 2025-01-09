@@ -127,7 +127,7 @@ keywordsDictDict = {
 def rust_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/")
 #@+node:ekr.20250106054207.1: *3* function: rust_slash
-slash_pat = re.compile(r'(/)+ ')  # Does not match '/*'...
+slash_pat = re.compile(r'(//*)')  # Does not match '/*'...
 star2_pat = re.compile(r'\*\*(.*?)\*\*')
 star_pat = re.compile(r'\*(.*?)\*')
 tick2_pat = re.compile(r'``(.*?)``')
