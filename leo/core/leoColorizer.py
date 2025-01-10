@@ -1088,7 +1088,7 @@ class JEditColorizer(BaseColorizer):
                 )
             return False
 
-        # A hack to give modes/forth.py access to c.
+        # A hack to give modes access to c.
         if hasattr(mode, 'pre_init_mode'):
             mode.pre_init_mode(self.c)
         self.language = language
@@ -1683,13 +1683,17 @@ class JEditColorizer(BaseColorizer):
                 if tag == '@language':
                     return self.match_at_language(s, 0)
                 j = len(tag)
+                #@verbatim
+                # @c or @code.
                 self.colorRangeWithTag(s, 0, j, 'leokeyword')
                 # Switch languages.
-                old_language = self.language
-                self.language = 'rest'
+                self.language = self.after_doc_language
+                if not self.language:
+                    g.print_unique_message('no after_doc_language')
+                    self.language = 'python'
                 self.init()
                 self.clearState()
-                self.after_doc_language = old_language
+                self.after_doc_language = None
                 return j
         # Color the next line.
         self.setRestart(self.restartDocPart)
