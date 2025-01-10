@@ -1416,7 +1416,7 @@ class JEditColorizer(BaseColorizer):
             for pattern, s in table:
                 name = name.replace(pattern, s)
             return name
-        g.print_unique_message(f"jedit.languageToMode. Should not happen: {name!r}")
+        g.print_unique_message(f"jedit.languageToMode. Should not happen: {name!r} {g.callers()}")
         return 'no-language'
     #@+node:ekr.20241106195155.1: *4* jedit.traceRulesDict
     def traceRulesDict(self) -> None:
@@ -1683,12 +1683,13 @@ class JEditColorizer(BaseColorizer):
                 if tag == '@language':
                     return self.match_at_language(s, 0)
                 j = len(tag)
-                self.colorRangeWithTag(s, 0, j, 'leokeyword')  # 'docpart')
+                self.colorRangeWithTag(s, 0, j, 'leokeyword')
                 # Switch languages.
-                self.language = self.after_doc_language
+                old_language = self.language
+                self.language = 'rest'
                 self.init()
                 self.clearState()
-                self.after_doc_language = None
+                self.after_doc_language = old_language
                 return j
         # Color the next line.
         self.setRestart(self.restartDocPart)
