@@ -27,6 +27,7 @@ class Rust_Importer(Importer):
         # Patterns that *do* require '{' on the same line...
 
         ('enum', re.compile(r'\s*enum\s+(\w+)\s*\{')),
+        ('enum', re.compile(r'\s*pub\s+enum\s+(\w+)\s*\{')),
         ('macro', re.compile(r'\s*(\w+)\!\s*\{')),
         ('use', re.compile(r'\s*use.*?\{')),  # No m.group(1).
 
