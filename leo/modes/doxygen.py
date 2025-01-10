@@ -1,5 +1,10 @@
+#@+leo-ver=5-thin
+#@+node:ekr.20250110042632.1: * @file ../modes/doxygen.py
 # Leo colorizer control file for doxygen mode.
 # This file is in the public domain.
+
+#@+<< doxygen: properties and attributes dicts >>
+#@+node:ekr.20250110042800.1: ** << doxygen: properties and attributes dicts >>
 
 # Properties for doxygen mode.
 properties = {
@@ -31,6 +36,7 @@ attributesDictDict = {
     "doxygen_doxygen": doxygen_doxygen_attributes_dict,
     "doxygen_main": doxygen_main_attributes_dict,
 }
+#@-<< doxygen: properties and attributes dicts >>
 
 # Keywords dict for doxygen_main ruleset.
 doxygen_main_keywords_dict = {
@@ -38,6 +44,8 @@ doxygen_main_keywords_dict = {
     "YES": "keyword2",
 }
 
+#@+<< doxygen: doxygen_doxygen_keywords_dict >>
+#@+node:ekr.20250110042847.1: ** << doxygen: doxygen_doxygen_keywords_dict >>
 # Keywords dict for doxygen_doxygen ruleset.
 doxygen_doxygen_keywords_dict = {
     "&": "label",
@@ -290,6 +298,7 @@ doxygen_doxygen_keywords_dict = {
     "\\xrefitem": "label",
     "\\~": "label",
 }
+#@-<< doxygen: doxygen_doxygen_keywords_dict >>
 
 # Dictionary of keywords dictionaries for doxygen mode.
 keywordsDictDict = {
@@ -297,6 +306,8 @@ keywordsDictDict = {
     "doxygen_main": doxygen_main_keywords_dict,
 }
 
+#@+<< doxgen: doxygen_main rules >>
+#@+node:ekr.20250110043035.1: ** << doxgen: doxygen_main rules >>
 # Rules for doxygen_main ruleset.
 
 def doxygen_rule0(colorer, s, i):
@@ -326,7 +337,9 @@ def doxygen_rule5(colorer, s, i):
 
 def doxygen_rule6(colorer, s, i):
     return colorer.match_keywords(s, i)
-
+#@-<< doxgen: doxygen_main rules >>
+#@+<< doxygen: rulesDict1 >>
+#@+node:ekr.20250110043114.1: ** << doxygen: rulesDict1 >>
 # Rules dict for doxygen_main ruleset.
 rulesDict1 = {
     "\"": [doxygen_rule3,],
@@ -409,7 +422,9 @@ rulesDict1 = {
     "z": [doxygen_rule6,],
     "~": [doxygen_rule6,],
 }
-
+#@-<< doxygen: rulesDict1 >>
+#@+<< doxygen: doxygen_doxygen rules >>
+#@+node:ekr.20250110043203.1: ** << doxygen: doxygen_doxygen rules >>
 # Rules for doxygen_doxygen ruleset.
 
 def doxygen_rule7(colorer, s, i):
@@ -434,7 +449,9 @@ def doxygen_rule12(colorer, s, i):
 
 def doxygen_rule13(colorer, s, i):
     return colorer.match_keywords(s, i)
-
+#@-<< doxygen: doxygen_doxygen rules >>
+#@+<< doxygen: rulesDict2 >>
+#@+node:ekr.20250110043345.1: ** << doxygen: rulesDict2 >>
 # Rules dict for doxygen_doxygen ruleset.
 rulesDict2 = {
     "#": [doxygen_rule13,],
@@ -513,6 +530,7 @@ rulesDict2 = {
     "z": [doxygen_rule13,],
     "~": [doxygen_rule13,],
 }
+#@-<< doxygen: rulesDict2 >>
 
 # x.rulesDictDict for doxygen mode.
 rulesDictDict = {
@@ -522,3 +540,4 @@ rulesDictDict = {
 
 # Import dict for doxygen mode.
 importDict = {}
+#@-leo
