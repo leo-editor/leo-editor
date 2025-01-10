@@ -2052,6 +2052,7 @@
 <v t="ekr.20190324042831.1"><vh>@bool use-pygments-styles = True</vh></v>
 <v t="ekr.20190323043928.1"><vh>@string pygments-style-name = default</vh></v>
 <v t="ekr.20170202104705.1"><vh>@bool color-doc-parts-as-rest = True</vh></v>
+<v t="ekr.20250110165136.1"><vh>@bool color-docstrings-as-rest = True</vh></v>
 <v t="ekr.20060828110551"><vh>Default colors, used if no language-specific color are in effect</vh>
 <v t="ekr.20111024091133.16650"><vh>Colors for Leo constructs</vh>
 <v t="ekr.20111004182631.15542"><vh>@color doc-part-color = firebrick3</vh></v>
@@ -10277,7 +10278,7 @@ Put notes about each version here.
 </t>
 <t tx="ekr.20170123145248.1"></t>
 <t tx="ekr.20170202104705.1">False (legacy): color all @ and @doc parts with a uniform color.
-True: call all @ and @doc parts as reStructuredText (@language rest).</t>
+True: color all @ and @doc parts as reStructuredText (@language rest).</t>
 <t tx="ekr.20170208063901.1">'''
 A template for demonstrations based on plugins/demo.py.
 The demo;; abbreviation will create this tree.
@@ -11828,6 +11829,8 @@ See https://jupytext.readthedocs.io/en/latest/config.html
 # Blank lines and comments lines (lines starting with '#') are ignored.
 
 </t>
+<t tx="ekr.20250110165136.1">False (legacy): color all python docstring with a uniform color.
+True: color python docstrings as reStructuredText (@language rest).</t>
 <t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 
 False: (Recommended) The commands act as simple navigation commands, and do not change the outline state.</t>
