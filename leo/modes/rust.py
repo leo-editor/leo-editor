@@ -7,8 +7,8 @@ import re
 import string
 from leo.core import leoGlobals as g
 
-#@+<< Rust properties dict >>
-#@+node:ekr.20250106042726.1: ** << Rust properties dict >>
+#@+<< rust: properties dict >>
+#@+node:ekr.20250106042726.1: ** << rust: properties dict >>
 # Properties for rust mode.
 properties = {
     "commentEnd": "*/",
@@ -21,9 +21,9 @@ properties = {
     "lineUpClosingBracket": "true",
     "wordBreakChars": ",+-=<>/?^&*",
 }
-#@-<< Rust properties dict >>
-#@+<< Rust attributes dicts >>
-#@+node:ekr.20250105164117.1: ** << Rust attributes dicts >>
+#@-<< rust: properties dict >>
+#@+<< rust: attributes dicts >>
+#@+node:ekr.20250105164117.1: ** << rust: attributes dicts >>
 # Attributes dict for rust_main ruleset.
 rust_main_attributes_dict = {
     "default": "null",
@@ -38,9 +38,9 @@ rust_main_attributes_dict = {
 attributesDictDict = {
     "rust_main": rust_main_attributes_dict,
 }
-#@-<< Rust attributes dicts >>
-#@+<< Rust keywords dicts >>
-#@+node:ekr.20250106043953.1: ** << Rust keywords dicts >>
+#@-<< rust: attributes dicts >>
+#@+<< rust: keywords dicts >>
+#@+node:ekr.20250106043953.1: ** << rust: keywords dicts >>
 # Keywords dict for rust_main ruleset.
 rust_main_keywords_dict = {
     'Self': 'keyword1',
@@ -118,9 +118,9 @@ rust_main_keywords_dict = {
 keywordsDictDict = {
     "rust_main": rust_main_keywords_dict,
 }
-#@-<< Rust keywords dicts >>
-#@+<< Rust rules >>
-#@+node:ekr.20250105163810.1: ** << Rust rules >>
+#@-<< rust: keywords dicts >>
+#@+<< rust: rules >>
+#@+node:ekr.20250105163810.1: ** << rust: rules >>
 # Rules for rust_main ruleset.
 #@+others
 #@+node:ekr.20250106042808.3: *3* function: rust_rule2
@@ -271,9 +271,9 @@ def rust_rule26(colorer, s, i):
 def rust_keywords(colorer, s, i):
     return colorer.match_keywords(s, i)
 #@-others
-#@-<< Rust rules >>
-#@+<< Rust rules dicts >>
-#@+node:ekr.20231103125350.1: ** << Rust rules dicts >>
+#@-<< rust: rules >>
+#@+<< rust: rules dicts >>
+#@+node:ekr.20231103125350.1: ** << rust: rules dicts >>
 # Rules dict for rust.
 rulesDict1 = {
     # New rules...
@@ -309,7 +309,7 @@ for lead_in in lead_ins:
     if rust_keywords not in aList:
         aList.insert(0, rust_keywords)
         rulesDict1[lead_in] = aList
-#@-<< Rust rules dicts >>
+#@-<< rust: rules dicts >>
 #@+<< rust::rest: rules & dict >>
 #@+node:ekr.20250110050443.1: ** << rust::rest: rules & dict >>
 star2_pat = re.compile(r'\*\*(.*?)\*\*')
