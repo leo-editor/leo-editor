@@ -4,6 +4,10 @@
 # Leo colorizer control file for rest mode.
 # This file is in the public domain.
 
+import string
+from leo.core import leoGlobals as g
+assert g
+
 #@+<< rest: properties and attributes >>
 #@+node:ekr.20250109073208.1: ** << rest: properties and attributes >>
 
@@ -44,15 +48,48 @@ keywordsDictDict = {
 # Rules for rest_main ruleset.
 
 #@+others
+#@+node:ekr.20250110185142.1: *3* rest underline rules
+#@+node:ekr.20250109073551.3: *4* function: rest_rule2
+def rest_rule2(colorer, s, i):
+    return colorer.match_seq_regexp(s, i, kind="label", regexp="={3,}")
+#@+node:ekr.20250109073551.4: *4* function: rest_rule3
+def rest_rule3(colorer, s, i):
+    return colorer.match_seq_regexp(s, i, kind="label", regexp="-{3,}")
+#@+node:ekr.20250109073551.5: *4* function: rest_rule4
+def rest_rule4(colorer, s, i):
+    return colorer.match_seq_regexp(s, i, kind="label", regexp="~{3,}")
+#@+node:ekr.20250109073551.6: *4* function: rest_rule5
+def rest_rule5(colorer, s, i):
+    return colorer.match_seq_regexp(s, i, kind="label", regexp="`{3,}")
+#@+node:ekr.20250109073551.7: *4* function: rest_rule6
+def rest_rule6(colorer, s, i):
+    return colorer.match_seq_regexp(s, i, kind="label", regexp="#{3,}")
+#@+node:ekr.20250109073551.8: *4* function: rest_rule7
+def rest_rule7(colorer, s, i):
+    return colorer.match_seq_regexp(s, i, kind="label", regexp='"{3,}')
+#@+node:ekr.20250109073551.9: *4* function: rest_rule8
+def rest_rule8(colorer, s, i):
+    return colorer.match_seq_regexp(s, i, kind="label", regexp=r"\^{3,}")
+#@+node:ekr.20250109073551.10: *4* function: rest_rule9
+def rest_rule9(colorer, s, i):
+    return colorer.match_seq_regexp(s, i, kind="label", regexp=r"\+{3,}")
 #@+node:ekr.20250109074353.1: *3* rest_star
 def rest_star(colorer, s, i):
+    if i > 0 and s[i - 1] == '*':
+        return 0
     j = 0
     while i + j < len(s) and s[i + j] == '*':
         j += 1
     seq = '*' * j
     if j >= 3:
         return colorer.match_seq(s, i, kind="label", seq=seq)
-    return colorer.match_span(s, i, kind="keyword2", begin=seq, end=seq)
+
+    # Use keyword2 for italics, keyword3 for bold.
+    kind = 'keyword2' if len(seq) == 1 else 'keyword3'
+    k = s.find(seq, i + j)
+    if k == -1:
+        return 0
+    return colorer.match_seq(s, i, kind=kind, seq=s[i : k + j])
 
     # 10.
     # return colorer.match_seq_regexp(s, i, kind="label", regexp="\\*{3,}")
@@ -62,85 +99,66 @@ def rest_star(colorer, s, i):
 
     # # 15.
     # return colorer.match_seq_regexp(s, i, kind="keyword4", regexp="\\*[^\\s*][^*]*\\*")
-#@+node:ekr.20250109073551.1: *3* function: rest_rule0
-# Rules for rest_main ruleset.
+#@+node:ekr.20250110190212.1: *3* function: rest_plain_word
+def rest_plain_word(colorer, s, i):
 
+    j = i
+    while j < len(s) and s[j] in string.ascii_letters:
+        j += 1
+    return colorer.match_seq(s, i, kind='keyword5', seq=s[i : j + 1])
+#@+node:ekr.20250109073551.1: *3* function: rest_rule0 __
 def rest_rule0(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="keyword3", seq="__",
           at_line_start=True)
-#@+node:ekr.20250109073551.2: *3* function: rest_rule1
+#@+node:ekr.20250109073551.2: *3* function: rest_rule1 .. _
 def rest_rule1(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="keyword3", seq=".. _",
           at_line_start=True)
-#@+node:ekr.20250109073551.3: *3* function: rest_rule2
-def rest_rule2(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="label", regexp="={3,}")
-#@+node:ekr.20250109073551.4: *3* function: rest_rule3
-def rest_rule3(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="label", regexp="-{3,}")
-#@+node:ekr.20250109073551.5: *3* function: rest_rule4
-def rest_rule4(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="label", regexp="~{3,}")
-#@+node:ekr.20250109073551.6: *3* function: rest_rule5
-def rest_rule5(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="label", regexp="`{3,}")
-#@+node:ekr.20250109073551.7: *3* function: rest_rule6
-def rest_rule6(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="label", regexp="#{3,}")
-#@+node:ekr.20250109073551.8: *3* function: rest_rule7
-def rest_rule7(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="label", regexp="\"{3,}")
-#@+node:ekr.20250109073551.9: *3* function: rest_rule8
-def rest_rule8(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="label", regexp="\\^{3,}")
-#@+node:ekr.20250109073551.10: *3* function: rest_rule9
-def rest_rule9(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="label", regexp="\\+{3,}")
-#@+node:ekr.20250109073551.12: *3* function: rest_rule11
+#@+node:ekr.20250109073551.12: *3* function: rest_rule11 .. |...|
 def rest_rule11(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="literal3", regexp="\\.\\.\\s\\|[^|]+\\|",
+    return colorer.match_seq_regexp(s, i, kind="literal3", regexp=r"\.\.\s\|[^|]+\|",
           at_line_start=True)
-#@+node:ekr.20250109073551.13: *3* function: rest_rule12
+#@+node:ekr.20250109073551.13: *3* function: rest_rule12 |...|
 def rest_rule12(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="literal4", regexp="\\|[^|]+\\|")
-#@+node:ekr.20250109073551.14: *3* function: rest_rule13
+    return colorer.match_seq_regexp(s, i, kind="literal4", regexp=r"\|[^|]+\|")
+#@+node:ekr.20250109073551.14: *3* function: rest_rule13 .. word::
 def rest_rule13(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="literal2", regexp="\\.\\.\\s[A-z][A-z0-9-_]+::",
+    return colorer.match_seq_regexp(s, i, kind="literal2", regexp=r"\.\.\s[A-z][A-z0-9-_]+::",
           at_line_start=True)
-#@+node:ekr.20250109073551.17: *3* function: rest_rule16
+#@+node:ekr.20250109073551.17: *3* function: rest_rule16 ..
 def rest_rule16(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="comment1", seq="..",
           at_line_start=True)
-#@+node:ekr.20250109073551.18: *3* function: rest_rule17
+#@+node:ekr.20250109073551.18: *3* function: rest_rule17 `word`_
 def rest_rule17(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="label", regexp="`[A-z0-9]+[^`]+`_{1,2}")
-#@+node:ekr.20250109073551.19: *3* function: rest_rule18
+#@+node:ekr.20250109073551.19: *3* function: rest_rule18 [number]_
 def rest_rule18(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="label", regexp="\\[[0-9]+\\]_")
-#@+node:ekr.20250109073551.20: *3* function: rest_rule19
+    return colorer.match_seq_regexp(s, i, kind="label", regexp=r"\[[0-9]+\]_")
+#@+node:ekr.20250109073551.20: *3* function: rest_rule19 [#word]_
 def rest_rule19(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="label", regexp="\\[#[A-z0-9_]*\\]_")
-#@+node:ekr.20250109073551.21: *3* function: rest_rule20
+    return colorer.match_seq_regexp(s, i, kind="label", regexp=r"\[#[A-z0-9_]*\]_")
+#@+node:ekr.20250109073551.21: *3* function: rest_rule20 []_
 def rest_rule20(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="label", regexp="\\[*\\]_")
-#@+node:ekr.20250109073551.22: *3* function: rest_rule21
+    return colorer.match_seq_regexp(s, i, kind="label", regexp=r"\[*\]_")
+#@+node:ekr.20250109073551.22: *3* function: rest_rule21 [word]_
 def rest_rule21(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="label", regexp="\\[[A-z][A-z0-9_-]*\\]_")
-#@+node:ekr.20250109073551.23: *3* function: rest_rule22
+    return colorer.match_seq_regexp(s, i, kind="label", regexp=r"\[[A-z][A-z0-9_-]*\]_")
+#@+node:ekr.20250109073551.23: *3* function: rest_rule22 ``...``
 def rest_rule22(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="``", end="``")
-#@+node:ekr.20250109073551.24: *3* function: rest_rule23
+#@+node:ekr.20250109073551.24: *3* function: rest_rule23 `...`
 def rest_rule23(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="keyword1", regexp="`[^`]+`")
-#@+node:ekr.20250109073551.25: *3* function: rest_rule24
+#@+node:ekr.20250109073551.25: *3* function: rest_rule24 :word=:
 def rest_rule24(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="keyword1", regexp=":[A-z][A-z0-9 \t=\\s\\t_]*:")
-#@+node:ekr.20250109073551.26: *3* function: rest_rule25
+    return colorer.match_seq_regexp(s, i, kind="keyword1", regexp=r":[A-z][A-z0-9 \t=\s\t_]*:")
+#@+node:ekr.20250109073551.26: *3* function: rest_rule25 +-
 def rest_rule25(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="label", regexp="\\+-[+-]+")
-#@+node:ekr.20250109073551.27: *3* function: rest_rule26
+    return colorer.match_seq_regexp(s, i, kind="label", regexp=r"\+-[+-]+")
+#@+node:ekr.20250109073551.27: *3* function: rest_rule26 +=
 def rest_rule26(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="label", regexp="\\+=[+=]+")
+    return colorer.match_seq_regexp(s, i, kind="label", regexp=r"\+=[+=]+")
 #@-others
 #@-<< rest: rules >>
 #@+<< rest: rulesDict1 >>
@@ -163,6 +181,14 @@ rulesDict1 = {
     "|": [rest_rule12],
     "~": [rest_rule4],
 }
+
+# Add *all* characters that could a plain word.
+lead_ins = string.ascii_letters
+for lead_in in lead_ins:
+    aList = rulesDict1.get(lead_in, [])
+    if rest_plain_word not in aList:
+        aList.insert(0, rest_plain_word)
+        rulesDict1[lead_in] = aList
 #@-<< rest: rulesDict1 >>
 
 # x.rulesDictDict for rest mode.
