@@ -73,39 +73,55 @@ def rest_rule8(colorer, s, i):
 #@+node:ekr.20250109073551.10: *4* function: rest_rule9
 def rest_rule9(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="label", regexp=r"\+{3,}")
-#@+node:ekr.20250109074353.1: *3* function: rest_star
-def rest_star(colorer, s, i):
-    if i > 0 and s[i - 1] == '*':
-        return 0
-    j = 0
-    while i + j < len(s) and s[i + j] == '*':
-        j += 1
-    seq = '*' * j
-    if j >= 3:
-        return colorer.match_seq(s, i, kind="label", seq=seq)
-
-    # Use keyword2 for italics, keyword3 for bold.
-    kind = 'keyword2' if len(seq) == 1 else 'keyword3'
-    k = s.find(seq, i + j)
-    if k == -1:
-        return 0
-    return colorer.match_seq(s, i, kind=kind, seq=s[i : k + j])
-
-    # 10.
-    # return colorer.match_seq_regexp(s, i, kind="label", regexp="\\*{3,}")
-
-    # # 14.
-    # return colorer.match_seq_regexp(s, i, kind="keyword2", regexp="\\*\\*[^*]+\\*\\*")
-
-    # # 15.
-    # return colorer.match_seq_regexp(s, i, kind="keyword4", regexp="\\*[^\\s*][^*]*\\*")
-#@+node:ekr.20250110190212.1: *3* function: rest_plain_word
+#@+node:ekr.20250111042122.1: *3* function: rest_plain_word (literal1)
 def rest_plain_word(colorer, s, i):
 
     j = i
     while j < len(s) and s[j] in string.ascii_letters:
         j += 1
-    return colorer.match_seq(s, i, kind='keyword5', seq=s[i : j + 1])
+    return colorer.match_seq(s, i, kind='literal1', seq=s[i : j + 1])
+#@+node:ekr.20250110190212.1: *3* function: rest_number (literal2)
+def rest_number(colorer, s, i):
+
+    j = i
+    while j < len(s) and s[j] in string.digits:
+        j += 1
+    return colorer.match_seq(s, i, kind='literal2', seq=s[i : j + 1])
+#@+node:ekr.20250111053429.1: *3* function: rest_default (operator)
+def rest_default(colorer, s, i):
+    ch = s[i]
+    if ch in ' \t':
+        return 1
+    return colorer.match_seq(s, i, kind='operator', seq=s[i])
+#@+node:ekr.20250109074353.1: *3* function: rest_star (comment1, label, literal3, literal4)
+def rest_star(colorer, s, i):
+
+    # Count the number of stars in s[i:].
+    j = 0
+    while i + j < len(s) and s[i + j] == '*':
+        j += 1
+    seq = '*' * j
+
+    # Case 1: ***
+    if j >= 3:
+        return colorer.match_seq(s, i, kind="label", seq=seq)
+
+    # Case 2: no matching '*'
+    k = s.find(seq, i + j)
+    if k == -1:
+        return colorer.match_seq(s, i, kind="comment1", seq='*')
+
+    # Case 3: * or **
+    # Use keyword2 for italics, keyword3 for bold.
+    kind = 'literal3' if len(seq) == 1 else 'literal4'
+    return colorer.match_seq(s, i, kind=kind, seq=s[i : k + j])
+
+    # Rule 10.
+    # return colorer.match_seq_regexp(s, i, kind="label", regexp="\\*{3,}")
+    # Rule 14.
+    # return colorer.match_seq_regexp(s, i, kind="keyword2", regexp="\\*\\*[^*]+\\*\\*")
+    # Rule 15.
+    # return colorer.match_seq_regexp(s, i, kind="keyword4", regexp="\\*[^\\s*][^*]*\\*")
 #@+node:ekr.20250109073551.1: *3* function: rest_rule0 __
 def rest_rule0(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="keyword3", seq="__",
@@ -168,7 +184,6 @@ rulesDict1 = {
     "\"": [rest_rule7],
     "#": [rest_rule6],
     "*": [rest_star],
-        # rest_rule10, rest_rule14, rest_rule15],
     "+": [rest_rule9, rest_rule25, rest_rule26],
     "-": [rest_rule3],
     ".": [rest_rule1, rest_rule11, rest_rule13, rest_rule16],
@@ -182,13 +197,25 @@ rulesDict1 = {
     "~": [rest_rule4],
 }
 
-# Add *all* characters that could a plain word.
-lead_ins = string.ascii_letters
-for lead_in in lead_ins:
+# Color words and numbers explicitly, allowing them to have non-default colors.
+
+lead_in_table = (
+    (string.ascii_letters, rest_plain_word),
+    (string.digits, rest_number),
+)
+for lead_ins, matcher in lead_in_table:
+    for lead_in in lead_ins:
+        aList = rulesDict1.get(lead_in, [])
+        if matcher not in aList:
+            aList.insert(0, matcher)
+            rulesDict1[lead_in] = aList
+
+# Color everything as literal1 by default.
+for lead_in in string.printable:
     aList = rulesDict1.get(lead_in, [])
-    if rest_plain_word not in aList:
-        aList.insert(0, rest_plain_word)
-        rulesDict1[lead_in] = aList
+    aList.append(rest_default)
+    rulesDict1[lead_in] = aList
+
 #@-<< rest: rulesDict1 >>
 
 # x.rulesDictDict for rest mode.

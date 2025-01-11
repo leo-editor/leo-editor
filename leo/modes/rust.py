@@ -137,13 +137,13 @@ def rust_slash(colorer, s, i) -> int:
     # Case 1: match entire line.
     if g.match(s, i, '///'):
         colorer.match_seq(s, i, kind='comment1', seq='///')
-        return colorer.match_eol_span(s, i + 3, kind=None, delegate='rust::rest')
+        return colorer.match_eol_span(s, i + 3, kind=None, delegate='rest')
 
-    # Case 2: match_span constructs, delegated to rust::rest.
+    # Case 2: match_span constructs, delegated to rust.
     match_span_table = (
-        ('/**', 'comment3', 'rust::rest'),
-        ('/*!', 'comment3', 'rust::rest'),
-        ('/*', 'comment1', 'rust::rest'),
+        ('/**', 'comment3', 'rest'),
+        ('/*!', 'comment3', 'rest'),
+        ('/*', 'comment1', 'rest'),
     )
     for begin, kind, delegate in match_span_table:
         if g.match(s, i, begin):
@@ -310,61 +310,11 @@ for lead_in in lead_ins:
         aList.insert(0, rust_keywords)
         rulesDict1[lead_in] = aList
 #@-<< rust: rules dicts >>
-#@+<< rust::rest: rules & dict >>
-#@+node:ekr.20250110050443.1: ** << rust::rest: rules & dict >>
-star2_pat = re.compile(r'\*\*(.*?)\*\*')
-star_pat = re.compile(r'\*(.*?)\*')
-star_end_pat = re.compile(r'\*/')
-tick2_pat = re.compile(r'``(.*?)``')
-tick_pat = re.compile(r'`(.*?)`')
-
-def rust_rest_star_and_tick(colorer, s, i):
-
-    def has_tag(i: int, pattern: str) -> int:
-        m = pattern.match(s, i)
-        n = len(m.group(0)) if m else 0
-        return n if n > 2 else 0  # Don't
-
-    patterns = (star2_pat, star_pat, tick2_pat, tick_pat)
-    i0 = i
-    while i < len(s):
-        progress = i
-        # Case 1: end of comment.
-        n = has_tag(i, star_end_pat)
-        if n > 0:
-            colorer.match_seq(s, i, kind="comment1", seq='*/')
-            i += 2
-            break
-        # Case 2: ' *' at start of line.
-        if i == 1 and g.match(s, i, '*'):
-            colorer.match_seq(s, i, kind="comment1", seq='*')
-            i += 1
-            break
-        # General case: all other patterns.
-        for pattern in patterns:
-            # Prevent false matches.
-            if s[i] in '`*' and s[i - 1] != s[i]:
-                n = has_tag(i, pattern)
-                if n > 0:
-                    seq = s[i : i + n + 1]
-                    colorer.match_seq(s, i, kind="keyword2", seq=seq)
-                    i += n
-                    break
-        else:
-            i += 1
-        assert i > progress
-    return i - i0
-
-rust_rest_rules_dict = {
-    '*': [rust_rest_star_and_tick],
-    '`': [rust_rest_star_and_tick],
-}
-#@-<< rust::rest: rules & dict >>
 
 # x.rulesDictDict for rust mode.
 rulesDictDict = {
     "rust_main": rulesDict1,
-    "rust_rest": rust_rest_rules_dict,
+    # "rust_rest": rust_rest_rules_dict,
 }
 
 # Import dict for rust mode.
