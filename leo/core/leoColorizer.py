@@ -1693,7 +1693,7 @@ class JEditColorizer(BaseColorizer):
                     self.language = 'python'
                 self.init()
                 self.clearState()
-                self.after_doc_language = None
+                # Do not change after_doc_language.
                 return j
         # Color the next line.
         self.setRestart(self.restartDocPart)
@@ -2646,7 +2646,7 @@ class JEditColorizer(BaseColorizer):
     #@+node:ekr.20241121030605.1: *4* jedit.pop_delegate
     def pop_delegate(self) -> None:
         """Pop the delegate stack amd restart the previous delegate."""
-        trace = 'coloring' in g.app.debug and not g.unitTesting
+        trace = False  # 'coloring' in g.app.debug and not g.unitTesting
 
         if trace:
             print('')
@@ -2667,7 +2667,7 @@ class JEditColorizer(BaseColorizer):
         """
         Push the old language on the delegate stack and switch to the new language.
         """
-        trace = 'coloring' in g.app.debug and not g.unitTesting
+        trace = False  # 'coloring' in g.app.debug and not g.unitTesting
 
         if self.language == 'unknown-language':  # Defensive.
             old_language = new_language
