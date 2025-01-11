@@ -2824,6 +2824,8 @@ class JEditColorizer(BaseColorizer):
             self.n2languageDict[n] = self.language
         return n
     #@+node:ekr.20241106082615.1: *4* jedit.stateNumberToLanguage
+    state_number_cache_dict: dict[int, str] = {}
+
     def stateNumberToLanguage(self, n: int) -> str:
         """
         Return the string state corresponding to the given integer state.
@@ -2831,9 +2833,13 @@ class JEditColorizer(BaseColorizer):
         c = self.c
 
         def default_language(n: int) -> str:
+            # This optimization is crucial for large text.
+            if n in self.state_number_cache_dict:
+                return self.state_number_cache_dict.get(n)
             c = self.c
             p = c.p
             language = g.getLanguageFromAncestorAtFileNode(p)
+            self.state_number_cache_dict[n] = language or c.target_language
             return language or c.target_language
 
         state_s = self.stateNumberToStateString(n)
