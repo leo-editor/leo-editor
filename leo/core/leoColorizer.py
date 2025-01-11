@@ -1350,6 +1350,7 @@ class JEditColorizer(BaseColorizer):
             self.delegate_stack = []
             self.init_all_state()  # The only call to this method.
             self.init()
+            self.state_number_cache_dict = {}
             state = self.initBlock0()
         else:
             state = prev_state  # Continue the previous state by default.
