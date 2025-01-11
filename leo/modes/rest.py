@@ -73,7 +73,7 @@ def rest_rule8(colorer, s, i):
 #@+node:ekr.20250109073551.10: *4* function: rest_rule9
 def rest_rule9(colorer, s, i):
     return colorer.match_seq_regexp(s, i, kind="label", regexp=r"\+{3,}")
-#@+node:ekr.20250109074353.1: *3* rest_star
+#@+node:ekr.20250109074353.1: *3* function: rest_star
 def rest_star(colorer, s, i):
     if i > 0 and s[i - 1] == '*':
         return 0
