@@ -156,15 +156,7 @@ class Rust_Importer(Importer):
             g.printObj(g.splitLines(s[i0:]), tag='run-on raw string literal')
             oops(f"Unterminated raw string literal: {s[i0:]!r}")
         #@+node:ekr.20250112061020.10: *4* rust_i function: skip_single_quote
-        # lifetime_pat = re.compile(r"'(static|[a-zA-Z_])")
-        # length10_pat = re.compile(r"'\\u\{[0-7][0-7a-fA-F]{3}\}'")  # '\u{7FFF}'
-        # length6_pat = re.compile(r"'\\x[0-7][0-7a-fA-F]'")  # '\x7F'
-        # length4_pat = re.compile(r"'\\[\\\"'nrt0]'")  # '\n', '\r', '\t', '\\', '\0', '\'', '\"'
-        # length3_pat = re.compile(r"'.'", re.UNICODE)  # 'x' where x is any unicode character.
-
         quote_patterns = (
-            # Lifetime.
-            re.compile(r"'(static|[a-zA-Z_])\b"),  # Added \b
             # '\u{7FFF}'
             re.compile(r"'\\u\{[0-7][0-7a-fA-F]{3}\}'"),
             # '\x7F'
@@ -173,7 +165,9 @@ class Rust_Importer(Importer):
             re.compile(r"'\\[\\\"'nrt0]'"),
             # 'x' where x is any unicode character.
             re.compile(r"'.'", re.UNICODE),
+            # Lifetime.
         )
+        lifetime_pat = re.compile(r"('static|'[a-zA-Z_])[^']")
 
         def skip_single_quote() -> None:
             """
@@ -186,8 +180,14 @@ class Rust_Importer(Importer):
             for pattern in quote_patterns:
                 m = pattern.match(s, i)
                 if m:
+                    # Match the whole pattern.
                     skip_n(len(m.group(0)))
                     return
+            m = lifetime_pat.match(s, i)
+            if m:
+                # Don't match whatever follows.
+                skip_n(len(m.group(1)))
+                return
             add()  # Not a character constant.
         #@+node:ekr.20231105043500.1: *4* rust_i function: skip_slash
         def skip_slash() -> None:
