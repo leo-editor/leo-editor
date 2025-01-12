@@ -202,15 +202,12 @@ class Rust_Importer(Importer):
             j = i
             next_ch = s[i + 1] if i + 1 < len(s) else ''
             if next_ch == '/':  # Single-line comment.
-                ### g.trace('SINGLE LINE', s[i : i + 20])  ###
                 skip2()
-                # while i < len(s) and next() != '\n':
-                    # skip()
                 while i < len(s):
                     ch = s[i]
                     skip()
                     if ch == '\n':
-                        return  ###
+                        return
             elif next_ch == '*':  # Block comment.
                 j = i
                 level = 1  # Block comments may be nested!
@@ -288,7 +285,6 @@ class Rust_Importer(Importer):
         while i < len(s):
             ch = s[i]
             if ch == '\n':
-                # g.trace(f"{line_number:3} {s[line_start:i+1]!r}")
                 line_start = i + 1
                 line_number += 1
                 add()
@@ -305,16 +301,6 @@ class Rust_Importer(Importer):
                 skip_slash()
             elif ch == 'r':
                 skip_r()
-            ###
-            # elif experimental and ord(ch) == 12:  # Special case!
-                # # A hack.
-                # g.trace('FORM-FEED')
-                # result_lines.pop()
-                # result = []
-                # skip()
-                # result.append('\n')
-                # result_lines.append(''.join(result))
-                # result = []
             else:
                 add()
         if result:
