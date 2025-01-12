@@ -105,7 +105,10 @@ class Rust_Importer(Importer):
         - Raw string literals, lifetimes and characters.
         """
         i = 0
+        # A hack. s.split() and g.splitLines() consider that '\f' ends a line!
+        lines = [z.replace('\f', '\f\n') for z in lines]
         s = ''.join(lines)
+        result_lines = []
         result = []
         line_number, line_start = 1, 0  # For traces.
 
@@ -147,9 +150,10 @@ class Rust_Importer(Importer):
             # Skip the opening chars.
             skip_n(j + 2)
 
-            # Skip the string.
+            # Note: skip *adds* newlines.
             target = '"' + '#' * j
-            while i + len(target) < len(s):
+            while i < len(s):
+                ch = s[i]
                 if g.match(s, i, target):
                     skip_n(len(target))
                     return
@@ -198,9 +202,15 @@ class Rust_Importer(Importer):
             j = i
             next_ch = s[i + 1] if i + 1 < len(s) else ''
             if next_ch == '/':  # Single-line comment.
+                ### g.trace('SINGLE LINE', s[i : i + 20])  ###
                 skip2()
-                while i < len(s) and next() != '\n':
+                # while i < len(s) and next() != '\n':
+                    # skip()
+                while i < len(s):
+                    ch = s[i]
                     skip()
+                    if ch == '\n':
+                        return  ###
             elif next_ch == '*':  # Block comment.
                 j = i
                 level = 1  # Block comments may be nested!
@@ -228,13 +238,16 @@ class Rust_Importer(Importer):
             assert s[i] == '"', repr(s[i])
             j = i
             skip()
+            # Note: skip *adds* newlines.
             while i < len(s):
-                ch = next()
-                skip()
-                if ch == '\\':
+                ch = s[i]
+                if ch == '"':
                     skip()
-                elif ch == '"':
                     break
+                elif ch == '\\':
+                    skip2()
+                else:
+                    skip()
             else:
                 g.printObj(g.splitLines(s[j:]), tag=f"{g.my_name()}: run-on string at")
                 oops(f"Run-on string! offset: {j} line number: {line_number}")
@@ -253,9 +266,14 @@ class Rust_Importer(Importer):
             return s[i] if i < len(s) else ''
 
         def skip() -> None:
-            nonlocal i
+            nonlocal i, result, result_lines
             if i < len(s):
-                result.append('\n' if s[i] == '\n' else ' ')
+                ch = s[i]
+                result.append('\n' if ch == '\n' else ' ')
+                if ch == '\n':
+                    line = ''.join(result)
+                    result_lines.append(line)
+                    result = []
                 i += 1
 
         def skip2() -> None:
@@ -270,11 +288,13 @@ class Rust_Importer(Importer):
         while i < len(s):
             ch = s[i]
             if ch == '\n':
-                if 0:
-                    g.trace(f"{line_number:3} {s[line_start:i+1]!r}")
+                # g.trace(f"{line_number:3} {s[line_start:i+1]!r}")
                 line_start = i + 1
                 line_number += 1
                 add()
+                # Only newline adds to the result_list.
+                result_lines.append(''.join(result))
+                result = []
             elif ch == '\\':
                 add2()
             elif ch == "'":
@@ -285,10 +305,21 @@ class Rust_Importer(Importer):
                 skip_slash()
             elif ch == 'r':
                 skip_r()
+            ###
+            # elif experimental and ord(ch) == 12:  # Special case!
+                # # A hack.
+                # g.trace('FORM-FEED')
+                # result_lines.pop()
+                # result = []
+                # skip()
+                # result.append('\n')
+                # result_lines.append(''.join(result))
+                # result = []
             else:
                 add()
-        result_str = ''.join(result)
-        result_lines = g.splitLines(result_str)
+        if result:
+            result_lines.append(''.join(result))
+
         if len(result_lines) != len(lines):  # A crucial invariant.
             print('')
             g.trace(f"FAIL: {self.root.h}")
@@ -300,16 +331,15 @@ class Rust_Importer(Importer):
             for i, line in enumerate(lines):
                 try:
                     result_line = result_lines[i]
+                    # print(f"{i:3}: {result_line!r}")
                 except IndexError:
                     result_line = f"<{i} Missing line>"
                     break
                 if len(line) != len(result_line):
-                    print('First ismatched line:', i)
-                    print('       line:', repr(line))
-                    print('result_line:', repr(result_line))
+                    print('\nMismatch!\n')
+                    print(f"Original line: {i:3} {line!r}")
+                    print(f"  Result line: {i:3} {result_line!r}")
                     break
-        # assert len(result_lines) == len(lines)  # A crucial invariant.
-        # g.printObj(result_lines, tag=f"{g.my_name()}")
         return result_lines
     #@+node:ekr.20231031020646.1: *3* rust_i.find_blocks
     def find_blocks(self, i1: int, i2: int) -> list[Block]:
