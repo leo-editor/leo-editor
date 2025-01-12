@@ -510,11 +510,15 @@ class Importer:
             g.trace(f"Importer error: {e}")
             parent.deleteAllChildren()
             parent.b = ''.join(lines)
+            if g.unitTesting:
+                raise
         except Exception:
             g.trace('Unexpected exception!')
             g.es_exception()
             parent.deleteAllChildren()
             parent.b = ''.join(lines)
+            if g.unitTesting:
+                raise
 
         # Add trailing lines.
         parent.b += f"@language {self.language}\n@tabwidth {self.tab_width}\n"
