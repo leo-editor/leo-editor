@@ -100,7 +100,7 @@ class Rust_Importer(Importer):
         Changes from Importer.delete_comments_and_strings:
 
         - Block comments may be nested.
-        - Raw string literals. See the starts_raw_string_literal helper for details.
+        - Raw string literals, lifetimes and characters.
         """
         i = 0
         s = ''.join(lines)
@@ -108,33 +108,6 @@ class Rust_Importer(Importer):
         line_number, line_start = 1, 0  # For traces.
 
         #@+others  # Define helper functions.
-        #@+node:ekr.20231105045331.1: *4* rust_i function: is_raw_string_literal
-        def is_raw_string_literal() -> int:
-            """
-            Return the number of '#' characters if line[i] starts w raw_string_literal.
-
-            Raw string start with the character U+0072 (r), followed by fewer than
-            256 of the character U+0023 (#) and a U+0022 (double-quote) character.
-
-            Raw string literals do not process any escapes.
-
-            The raw string body is terminated only by another U+0022 (double-quote)
-            character, followed by the same number of U+0023 (#) characters that
-            preceded the opening U+0022 (double-quote) character.
-            """
-            nonlocal i
-            j = i  # Don't change i here!
-            assert s[j] == 'r', repr(s[j])
-            j += 1
-            if j < len(s) and s[j] != '#':
-                return 0
-            count = 0
-            while j < len(s) and s[j] == '#':
-                count += 1
-                j += 1
-            if j >= len(s) or s[j] != '"':
-                return 0
-            return count if 0 < count < 256 else 0
         #@+node:ekr.20231105043204.1: *4* rust_i function: oops
         def oops(message: str) -> None:
             full_message = f"{self.root.h} line: {line_number}:\n{message}"
@@ -142,13 +115,67 @@ class Rust_Importer(Importer):
                 assert False, full_message
             else:
                 print(full_message)
-        #@+node:ekr.20231105043049.1: *4* rust_i function: skip_possible_character_constant
-        length10_pat = re.compile(r"'\\u\{[0-7][0-7a-fA-F]{3}\}'")  # '\u{7FFF}'
-        length6_pat = re.compile(r"'\\x[0-7][0-7a-fA-F]'")  # '\x7F'
-        length4_pat = re.compile(r"'\\[\\\"'nrt0]'")  # '\n', '\r', '\t', '\\', '\0', '\'', '\"'
-        length3_pat = re.compile(r"'.'", re.UNICODE)  # 'x' where x is any unicode character.
+        #@+node:ekr.20250112060624.1: *4* rust_i function: skip_r
+        def skip_r() -> None:
+            """
+            Skip over a raw string literal or add a single character 'r'.
+          
+            Raw string literals start with: 'r', 0 <= n < 256 '#' chars, and '"'.
+            Raw string literals end with: '"' followed by n '#' chars.
+            """
+            nonlocal i  # Don't change i here!
+            assert s[i] == 'r', repr(s[i])
+            i0 = i
 
-        def skip_possible_character_constant() -> None:
+            # Part 1: Does the 'r' start a raw string?
+
+            # Set j to the number of '#' characters. Zero is valid.
+            j = 0
+            while i + 1 + j < len(s) and s[i + 1 + j] == '#':
+                j += 1
+
+            if j > 256 or s[i + 1 + j] != '"':
+                # Not a raw string. Just add the 'r'.
+                add()
+                return
+
+            # Part 2: Skip the raw string.
+            assert s[i + 1 + j] == '"', (i, j, s[i + 1 + j])
+
+            # Skip the opening chars.
+            skip_n(j + 2)
+
+            # Skip the string.
+            target = '"' + '#' * j
+            while i + len(target) < len(s):
+                if g.match(s, i, target):
+                    skip_n(len(target))
+                    return
+                skip()
+
+            g.printObj(g.splitLines(s[i0:]), tag='run-on raw string literal')
+            oops(f"Unterminated raw string literal: {s[i0:]!r}")
+        #@+node:ekr.20250112061020.10: *4* rust_i function: skip_single_quote
+        # lifetime_pat = re.compile(r"'(static|[a-zA-Z_])")
+        # length10_pat = re.compile(r"'\\u\{[0-7][0-7a-fA-F]{3}\}'")  # '\u{7FFF}'
+        # length6_pat = re.compile(r"'\\x[0-7][0-7a-fA-F]'")  # '\x7F'
+        # length4_pat = re.compile(r"'\\[\\\"'nrt0]'")  # '\n', '\r', '\t', '\\', '\0', '\'', '\"'
+        # length3_pat = re.compile(r"'.'", re.UNICODE)  # 'x' where x is any unicode character.
+
+        quote_patterns = (
+            # Lifetime.
+            re.compile(r"'(static|[a-zA-Z_])\b"),  # Added \b
+            # '\u{7FFF}'
+            re.compile(r"'\\u\{[0-7][0-7a-fA-F]{3}\}'"),
+            # '\x7F'
+            re.compile(r"'\\x[0-7][0-7a-fA-F]'"),
+            # '\n', '\r', '\t', '\\', '\0', '\'', '\"'
+            re.compile(r"'\\[\\\"'nrt0]'"),
+            # 'x' where x is any unicode character.
+            re.compile(r"'.'", re.UNICODE),
+        )
+
+        def skip_single_quote() -> None:
             """
             Rust uses ' in several ways.
             Valid character constants:
@@ -156,18 +183,14 @@ class Rust_Importer(Importer):
             """
             nonlocal i
             assert s[i] == "'", repr(s[i])
-            for n, pattern in (
-                (10, length10_pat),
-                (6, length6_pat),
-                (4, length4_pat),
-                (3, length3_pat),
-            ):
-                if pattern.match(s, i):
-                    skip_n(n)
+            for pattern in quote_patterns:
+                m = pattern.match(s, i)
+                if m:
+                    skip_n(len(m.group(0)))
                     return
             add()  # Not a character constant.
-        #@+node:ekr.20231105043500.1: *4* rust_i function: skip_possible_comments
-        def skip_possible_comments() -> None:
+        #@+node:ekr.20231105043500.1: *4* rust_i function: skip_slash
+        def skip_slash() -> None:
             nonlocal i
             assert s[i] == '/', repr(s[i])
             j = i
@@ -198,24 +221,6 @@ class Rust_Importer(Importer):
             else:
                 assert s[i] == '/', repr(s[i])
                 add()  # Just add the '/'
-        #@+node:ekr.20231105045459.1: *4* rust_i function: skip_raw_string_literal
-        def skip_raw_string_literal(n: int) -> None:
-            nonlocal i
-            assert s[i - n - 1] == 'r', repr(s[i - n - 1])
-            assert s[i - n] == '#', repr(s[i - n])
-            assert s[i] == '"', repr(s[i])
-            i += 1
-            j = i
-            target = '"' + '#' * n
-            while i + len(target) < len(s):
-                if g.match(s, i, target):
-                    skip_n(len(target))
-                    break
-                else:
-                    skip()
-            else:
-                g.printObj(g.splitLines(s[j:]), tag=f"{g.my_name()}: run-on raw string literal at")
-                oops(f"Unterminated raw string literal: {s[j:]!r}")
         #@+node:ekr.20231105043337.1: *4* rust_i function: skip_string_constant
         def skip_string_constant() -> None:
             assert s[i] == '"', repr(s[i])
@@ -271,18 +276,13 @@ class Rust_Importer(Importer):
             elif ch == '\\':
                 add2()
             elif ch == "'":
-                skip_possible_character_constant()
+                skip_single_quote()
             elif ch == '"':
                 skip_string_constant()
             elif ch == '/':
-                skip_possible_comments()
+                skip_slash()
             elif ch == 'r':
-                n = is_raw_string_literal()
-                if n > 0:
-                    skip_n(n + 1)
-                    skip_raw_string_literal(n)
-                else:
-                    add()
+                skip_r()
             else:
                 add()
         result_str = ''.join(result)
