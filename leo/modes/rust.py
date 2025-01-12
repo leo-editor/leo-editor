@@ -195,7 +195,8 @@ def rust_raw_string_literal(colorer, s, i):
     delims = '#' * j
     begin = 'r' + delims + '"'
     end = '"' + delims
-    if len(delims) <= 256:
+    if len(delims) < 256:
+        # Return 0 if there is no opening '"'.
         return colorer.match_span(s, i, kind="literal2", begin=begin, end=end)
     return 0
 
