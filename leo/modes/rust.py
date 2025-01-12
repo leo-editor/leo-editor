@@ -163,14 +163,14 @@ def rust_slash(colorer, s, i) -> int:
     return i + 1
 #@+node:ekr.20250106062326.1: *3* rust: strings and chars, with escapes
 #@+node:ekr.20250106042808.5: *4* function: rust_char
-lifetime_pat = re.compile(r"'(static|[a-zA-Z_])")
+lifetime_pat = re.compile(r"('static|'[a-zA-Z_])[^']")
 
 def rust_char(colorer, s, i):
 
     # Lifetimes.
     m = lifetime_pat.match(s, i)
     if m:
-        return colorer.match_seq(s, i, kind="literal1", seq=m.group(0))
+        return colorer.match_seq(s, i, kind="literal1", seq=m.group(1))
 
     # A character delimited by "'".
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'")
@@ -208,11 +208,11 @@ def rust_pound(colorer, s, i):
     return colorer.match_plain_eol_span(s, i, kind="keyword2")
 #@+node:ekr.20250106054731.1: *3* function: rust_open_angle & rust_close_angle
 def rust_open_angle(colorer, s, i):
-    seq = '<=' if i + i < len(s) and s[i + 1] == '=' else '<'
+    seq = '<=' if i + 2 < len(s) and s[i + 1] == '=' else '<'
     return colorer.match_plain_seq(s, i, kind="operator", seq=seq)
 
 def rust_close_angle(colorer, s, i):
-    seq = '>=' if i + i < len(s) and s[i + 1] == '=' else '>'
+    seq = '>=' if i + 2 < len(s) and s[i + 1] == '=' else '>'
     return colorer.match_plain_seq(s, i, kind="operator", seq=seq)
 #@+node:ekr.20250106042808.14: *3* function: rust_rule6
 def rust_rule6(colorer, s, i):
