@@ -31,20 +31,22 @@ class Rust_Importer(Importer):
         ('macro', re.compile(r'\s*(\w+)\!\s*\{')),
         ('use', re.compile(r'\s*use.*?\{')),  # No m.group(1).
 
-         # Patterns that do *not* require '{' on the same line...
-
-        ('fn', re.compile(r'\s*fn\s+(\w+)\s*\(')),
-        ('fn', re.compile(r'\s*pub\s+fn\s+(\w+)\s*\(')),
-
         # https://doc.rust-lang.org/stable/reference/visibility-and-privacy.html
         # 2018 edition+, paths for pub(in path) must start with crate, self, or super.
-        ('fn', re.compile(r'\s*pub\s*\(\s*crate\s*\)\s*fn\s+(\w+)\s*\(')),
-        ('fn', re.compile(r'\s*pub\s*\(\s*self\s*\)\s*fn\s+(\w+)\s*\(')),
-        ('fn', re.compile(r'\s*pub\s*\(\s*super\s*\)\s*fn\s+(\w+)\s*\(')),
 
-        ('fn', re.compile(r'\s*pub\s*\(\s*in\s*crate::.*?\)\s*fn\s+(\w+)\s*\(')),
-        ('fn', re.compile(r'\s*pub\s*\(\s*in\s*self::.*?\)\s*fn\s+(\w+)\s*\(')),
-        ('fn', re.compile(r'\s*pub\s*\(\s*in\s*super::.*?\)\s*fn\s+(\w+)\s*\(')),
+        # Function patterns require *neither* '(' nor '{' on the same line...
+
+        # Ruff starts some lines with  fn name< (!)
+        ('fn', re.compile(r'\s*fn\s+(\w+)')),
+        ('fn', re.compile(r'\s*pub\s+fn\s+(\w+)')),
+
+        ('fn', re.compile(r'\s*pub\s*\(\s*crate\s*\)\s*fn\s+(\w+)')),
+        ('fn', re.compile(r'\s*pub\s*\(\s*self\s*\)\s*fn\s+(\w+)')),
+        ('fn', re.compile(r'\s*pub\s*\(\s*super\s*\)\s*fn\s+(\w+)')),
+
+        ('fn', re.compile(r'\s*pub\s*\(\s*in\s*crate::.*?\)\s*fn\s+(\w+)')),
+        ('fn', re.compile(r'\s*pub\s*\(\s*in\s*self::.*?\)\s*fn\s+(\w+)')),
+        ('fn', re.compile(r'\s*pub\s*\(\s*in\s*super::.*?\)\s*fn\s+(\w+)')),
 
         ('impl', re.compile(r'\s*impl\b(.*?)$')),  # Use the rest of the line.
 
