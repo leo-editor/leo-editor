@@ -2372,6 +2372,7 @@ class JEditColorizer(BaseColorizer):
         )
         if j == -1:
             return 0  # A real failure.
+
         # A hack to handle continued strings. Should work for most languages.
         # Prepend "dots" to the kind, as a flag to setTag.
         dots = (
@@ -2380,7 +2381,9 @@ class JEditColorizer(BaseColorizer):
             and end in "'\""
             and kind.startswith('literal')
         )
-        dots = dots and self.language not in ('lisp', 'elisp', 'scheme')  #  'rust'
+
+        # These language can continue strings over multiple lines.
+        dots = dots and self.language not in ('lisp', 'elisp', 'rust', 'scheme')
         if dots:
             kind = 'dots' + kind
         # A match
