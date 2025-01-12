@@ -184,26 +184,21 @@ def rust_colon(colorer, s, i):
 #@+node:ekr.20250106042808.9: *3* function: rust_raw_string_literal
 # #3631
 # https://doc.rust-lang.org/reference/tokens.html#raw-string-literals
-# Up to 255 '#' are allowed. Ruff only uses 1 and 3.
+# Up to 255 '#' are allowed.
 
 def rust_raw_string_literal(colorer, s, i):
-    if i + 1 >= len(s):
-        return len(s)
-    if s[i + 1] != '#':
-        return i + 1
-    for n in (4, 3, 2, 1):
-        begin = 'r' + '#' * n
-        end = '#' * n
-        if g.match(s, i, begin):
-            return colorer.match_span(s, i, kind="literal2", begin=begin, end=end)
-    return i + 1
 
-# def rust_raw_string_literal3(colorer, s, i):
-    # return colorer.match_span(s, i, kind="literal2", begin='r###"', end='"###')
-# def rust_raw_string_literal2(colorer, s, i):
-    # return colorer.match_span(s, i, kind="literal2", begin='r##"', end='"##')
-# def rust_raw_string_literal1(colorer, s, i):
-    # return colorer.match_span(s, i, kind="literal2", begin='r#"', end='"#')
+    # Count the '#' characters after the 'r'
+    j = 0
+    while i + 1 + j < len(s) and s[i + 1 + j] == '#':
+        j += 1
+    delims = '#' * j
+    begin = 'r' + delims + '"'
+    end = '"' + delims
+    if len(delims) <= 256:
+        return colorer.match_span(s, i, kind="literal2", begin=begin, end=end)
+    return 0
+
 #@+node:ekr.20250106042808.12: *3* function: rust_at_operator
 def rust_at_operator(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq="@")
@@ -281,7 +276,7 @@ rulesDict1 = {
     "'": [rust_char],
     "<": [rust_open_angle],
     "#": [rust_pound],
-    "r": [rust_raw_string_literal],
+    "r": [rust_raw_string_literal, rust_keywords],
     "/": [rust_slash],
     '"': [rust_string],
     ':': [rust_colon],
