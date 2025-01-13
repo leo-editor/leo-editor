@@ -545,7 +545,7 @@ class Importer:
 
         # Check for intermixed blanks and tabs.
         self.tab_width = c.getTabWidth(p=root)
-        lines = g.splitLines(s)
+        lines = self.split_lines(s)
         ws_ok = self.check_blanks_and_tabs(lines)  # Issues warnings.
 
         # Regularize leading whitespace
@@ -593,6 +593,21 @@ class Importer:
         Xml_Importer uses this hook to split lines.
         """
         return lines
+    #@+node:ekr.20250113013759.1: *4* i.split_lines
+    def split_lines(self, s: str) -> list[str]:
+        """
+        A hook for importers wishing to preserve form-feeds and other unusual line-ending characters.
+            https://docs.python.org/3/library/stdtypes.html#str.splitlines
+            https://docs.python.org/3/library/stdtypes.html#str.split
+
+            s.splitLines() and g.splitLines(s) removes form-feeds.
+            s.split() removes newlines and and form-feeds.
+            s.split(sep='\n') preserves form-feeds but removes newlines.
+            
+        **Warning**: Unit tests use g.splitLines to compare results,
+                     so overriding this method may cause existing tests to fail.
+        """
+        return g.splitLines(s)
     #@+node:ekr.20230529075138.39: *4* i.regularize_whitespace
     def regularize_whitespace(self, lines: list[str]) -> list[str]:  # pragma: no cover (missing test)
         """
