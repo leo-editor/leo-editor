@@ -720,6 +720,19 @@ class TestGlobals(LeoUnitTest):
         ):
             result = g.removeBlankLines(s)
             self.assertEqual(result, expected, msg=repr(s))
+    #@+node:ekr.20250113053113.1: *4* TestGlobals.test_g_splitLinesAtNewline
+    def test_g_splitLinesAtNewline(self):
+        for s, expected in (
+            (None, []),
+            ('', []),
+            ('a\nb', ['a\n', 'b']),
+            ('a\nb\n', ['a\n', 'b\n']),
+            ('\n  \n\nb\n', ['\n', '  \n', '\n', 'b\n']),
+            ('\fa\n', ['\fa\n']),
+            ('c\fd', ['c\fd']),
+        ):
+            result = g.splitLinesAtNewline(s)
+            self.assertEqual(result, expected, msg=repr(s))
     #@+node:ekr.20210905203541.30: *4* TestGlobals.test_g_removeLeadingBlankLines
     def test_g_removeLeadingBlankLines(self):
         for s, expected in (

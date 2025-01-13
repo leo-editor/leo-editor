@@ -3876,6 +3876,20 @@ def splitLines(s: str) -> list[str]:
     return s.splitlines(True) if s else []  # This is a Python string function!
 
 splitlines = splitLines
+#@+node:ekr.20250113052850.1: *3* g.splitLinesAtNewline
+def splitLinesAtNewline(s: str) -> list[str]:
+    """
+    Split lines *only* at '\n', preserving form-feeds and other unusual line-ending characters.
+    """
+    if not s:
+        return []
+    lines = s.split(sep='\n')
+    if lines[-1] == '':
+        lines.pop()
+    lines = [f"{z}\n" for z in lines]
+    if not s.endswith('\n'):
+        lines[-1] = lines[-1][:-1]
+    return lines
 #@+node:ekr.20031218072017.3173: *3* Scanners: no error messages
 #@+node:ekr.20031218072017.3174: *4* g.escaped
 # Returns True if s[i] is preceded by an odd number of backslashes.

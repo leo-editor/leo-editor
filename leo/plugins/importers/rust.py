@@ -464,23 +464,6 @@ class Rust_Importer(Importer):
         if 0:
             for p in parent.self_and_subtree():
                 convert_docstring(p)
-    #@+node:ekr.20250113014135.1: *3* rust_i.split_lines
-    def split_lines(self, s: str) -> list[str]:
-        """
-        Override Importer.split_lines to preserve form-feeds and other unusual line-ending characters.
-            https://docs.python.org/3/library/stdtypes.html#str.splitlines
-            https://docs.python.org/3/library/stdtypes.html#str.split
-            s.splitLines() and g.splitLines(s) removes form-feeds.
-            s.split() removes newlines and and form-feeds.
-            s.split(sep='\n') preserves form-feeds but removes newlines.
-        """
-        if not s:
-            return []
-        lines = [f"{z}\n" for z in s.split(sep='\n')]
-        # Not used by unit tests, and not important for importers.
-        if not s.endswith('\n'):
-            lines[-1] = lines[-1][:-1]
-        return lines
     #@-others
 #@-others
 
