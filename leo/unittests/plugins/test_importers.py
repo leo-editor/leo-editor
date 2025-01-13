@@ -4390,8 +4390,8 @@ class TestRust(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20250112152227.1: *3* TestRust.test_rust_form_feed
-    def test_rust_form_feed(self):
+    #@+node:ekr.20250112152227.1: *3* TestRust.xxx_test_rust_form_feed
+    def xxx_test_rust_form_feed(self):
         # This is a local unit test.
         c = self.c
         p = c.p
@@ -4407,6 +4407,28 @@ class TestRust(BaseTestImporter):
         parent = p.insertAfter()
         parent.h = 'import parent'
         importer.import_from_string(parent, s)
+    #@+node:ekr.20250113015615.1: *3* TestRust.test_rust_form_feed
+    def test_rust_form_feed(self):
+
+        s = """
+            let contents = r"
+            class FormFeedIndent:
+               \fdef __init__(self, a=[]):
+                    print(a)
+            ";
+        """.replace(' print', '\fprint')
+        expected_results = (
+            (0, '',  # Ignore the first headline.
+                'let contents = r"\n'
+                'class FormFeedIndent:\n'
+                '   \fdef __init__(self, a=[]):\n'
+                '       \fprint(a)\n'
+                '";\n'
+                '@language rust\n'
+                '@tabwidth -4\n'
+            ),
+        )
+        self.new_run_test(s, expected_results, trace=True)
     #@-others
 #@+node:ekr.20231012142113.1: ** class TestScheme (BaseTestImporter)
 class TestScheme(BaseTestImporter):
