@@ -4390,23 +4390,6 @@ class TestRust(BaseTestImporter):
             ),
         )
         self.new_run_test(s, expected_results)
-    #@+node:ekr.20250112152227.1: *3* TestRust.xxx_test_rust_form_feed
-    def xxx_test_rust_form_feed(self):
-        # This is a local unit test.
-        c = self.c
-        p = c.p
-        from leo.plugins.importers.rust import Rust_Importer
-        importer = Rust_Importer(c)
-        path = r'c:/Repos/ekr-ruff/crates/ruff_python_codegen/src/stylist.rs'
-        if not os.path.exists(path):
-            self.skipTest('EKR local test')
-            return
-        with open(path, 'rb') as f:
-            b = f.read()
-        s = g.toUnicode(b)
-        parent = p.insertAfter()
-        parent.h = 'import parent'
-        importer.import_from_string(parent, s)
     #@+node:ekr.20250113015615.1: *3* TestRust.test_rust_form_feed
     def test_rust_form_feed(self):
 
