@@ -163,7 +163,7 @@ def rust_slash(colorer, s, i) -> int:
     return i + 1
 #@+node:ekr.20250106062326.1: *3* rust: strings and chars, with escapes
 #@+node:ekr.20250106042808.5: *4* function: rust_char
-lifetime_pat = re.compile(r"('static|'[a-zA-Z_])([^'])?")
+# All character patterns match completed character literals.
 char_patterns = (
     # '\u{7FFF}'
     re.compile(r"'\\u\{[0-7][0-7a-fA-F]{3}\}'"),
@@ -175,19 +175,21 @@ char_patterns = (
     re.compile(r"'.'", re.UNICODE),
 )
 
+# Lifetimes do *not* match any completed character literals.
+lifetime_pat = re.compile(r"('static|'[a-zA-Z_])\b")
+
 def rust_char(colorer, s, i):
 
-    # Lifetimes.
-    m = lifetime_pat.match(s, i)
-    if m:
-        follow = m.group(2) or ' '
-        if not follow.isalpha():  # Do not color 'xx as a lifetime!
-            return colorer.match_seq(s, i, kind="literal1", seq=m.group(1))
-
+    # Match completed patterns first.
     for pattern in char_patterns:
         m = pattern.match(s, i)
         if m:
             return colorer.match_seq(s, i, kind= "literal1", seq=m.group(0))
+
+    # Match lifetimes last.
+    m = lifetime_pat.match(s, i)
+    if m:
+        return colorer.match_seq(s, i, kind="literal1", seq=m.group(1))
 
     # An unclosed character literal.
     return colorer.match_seq(s, i, kind= "literal4", seq= "'")
