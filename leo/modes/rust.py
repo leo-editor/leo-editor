@@ -163,17 +163,34 @@ def rust_slash(colorer, s, i) -> int:
     return i + 1
 #@+node:ekr.20250106062326.1: *3* rust: strings and chars, with escapes
 #@+node:ekr.20250106042808.5: *4* function: rust_char
-lifetime_pat = re.compile(r"('static|'[a-zA-Z_])[^']")
+lifetime_pat = re.compile(r"('static|'[a-zA-Z_])([^'])?")
+char_patterns = (
+    # '\u{7FFF}'
+    re.compile(r"'\\u\{[0-7][0-7a-fA-F]{3}\}'"),
+    # '\x7F'
+    re.compile(r"'\\x[0-7][0-7a-fA-F]'"),
+    # '\n', '\r', '\t', '\\', '\0', '\'', '\"'
+    re.compile(r"'\\[\\\"'nrt0]'"),
+    # 'x' where x is any unicode character.
+    re.compile(r"'.'", re.UNICODE),
+)
 
 def rust_char(colorer, s, i):
 
     # Lifetimes.
     m = lifetime_pat.match(s, i)
     if m:
-        return colorer.match_seq(s, i, kind="literal1", seq=m.group(1))
+        follow = m.group(2) or ' '
+        if not follow.isalpha():  # Do not color 'xx as a lifetime!
+            return colorer.match_seq(s, i, kind="literal1", seq=m.group(1))
 
-    # A character delimited by "'".
-    return colorer.match_span(s, i, kind="literal1", begin="'", end="'")
+    for pattern in char_patterns:
+        m = pattern.match(s, i)
+        if m:
+            return colorer.match_seq(s, i, kind= "literal1", seq=m.group(0))
+
+    # An unclosed character literal.
+    return colorer.match_seq(s, i, kind= "literal4", seq= "'")
 #@+node:ekr.20250106052237.1: *4* function: rust_string
 def rust_string(colorer, s, i):
     # match_span handles escapes.
