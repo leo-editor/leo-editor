@@ -106,8 +106,16 @@ class TestModes(LeoUnitTest):
         colorer = TestColorizer()
 
         char_table = (
-            # Characters, length 10 and 8.
+            # Characters, length 10.
             r"'\u{7fff}'",
+            r"'\u{0aaa}'",
+            r"'\u{1bbb}'",
+            r"'\u{2ccc}'",
+            r"'\u{3ddd}'",
+            r"'\u{4eee}'",
+            r"'\u{5fff}'",
+            r"'\u{6abc}'",
+            # Characters, length 8.
             r"'\x7f'",
             # Characters, length 4.
             r"'\n'",
@@ -121,8 +129,8 @@ class TestModes(LeoUnitTest):
         )
         for s in char_table:
             kind, seq = rust_char(colorer, s, i=0)
-            assert kind == 'literal1', kind
-            assert seq == s, repr(seq)
+            assert kind == 'literal1', (kind, s)
+            assert seq == s, (kind, seq, s)
 
         # Lifetimes.
         lifetime_table = (
@@ -140,8 +148,12 @@ class TestModes(LeoUnitTest):
 
         # Errors.
         error_table = (
-            "'xx",
-            "'\\y'",
+            "'xx",  # Bad lifetime.
+            "'BSBSy'".replace('BS', '\\'),  # Too long.
+            "'BSy'".replace('BS', '\\'),  # Invalid escape: \y
+            r"'\u{ffff}'",  # Must begin with [0-7]
+            r"'\xff'",  # Must begin with [0-7]
+            r"'\u{7fhi}'",  # Invalid hex digits.
         )
         for s  in error_table:
             kind, seq = rust_char(colorer, s, i=0)
