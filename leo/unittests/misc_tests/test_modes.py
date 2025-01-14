@@ -116,6 +116,13 @@ class TestModes(LeoUnitTest):
             r"'\u{5fff}'",
             r"'\u{6abc}'",
             # Characters, length 8.
+            r"'\x00'",
+            r"'\x12'",
+            r"'\x3a'",
+            r"'\x3b'",
+            r"'\x4c'",
+            r"'\x5d'",
+            r"'\x6e'",
             r"'\x7f'",
             # Characters, length 4.
             r"'\n'",
