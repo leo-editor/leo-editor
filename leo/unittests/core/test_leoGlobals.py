@@ -725,6 +725,10 @@ class TestGlobals(LeoUnitTest):
         for s, expected in (
             (None, []),
             ('', []),
+            (' ', [' ']),
+            ('\t', ['\t']),
+            (' a', [' a']),
+            ('\t b', ['\t b']),
             ('a\nb', ['a\n', 'b']),
             ('a\nb\n', ['a\n', 'b\n']),
             ('\n  \n\nb\n', ['\n', '  \n', '\n', 'b\n']),
