@@ -93,6 +93,60 @@ class TestModes(LeoUnitTest):
         for language in ('python', 'rust'):
             mode_path = os.path.normpath(f"{mode_path}{os.sep}{language}.py")
             test_rules_dict(language, mode_path)
+    #@+node:ekr.20250114101209.1: *4* TestModes.test_rust_character_patterns
+    def test_rust_character_patterns(self):
+
+        from leo.modes.rust import rust_char
+
+        class TestColorizer:
+
+            def match_seq(self, s: str, i: int, kind: str, seq: str):
+                return kind, seq
+
+        colorer = TestColorizer()
+
+        char_table = (
+            # Characters, length 10 and 8.
+            r"'\u{7fff}'",
+            r"'\x7f'",
+            # Characters, length 4.
+            r"'\n'",
+            r"'\0'",
+            r"'\t'",
+            r"'\r'",
+            r"'\\'",
+            # Characters, length 3.
+            r"'x'",
+            r"'é'",
+        )
+        for s in char_table:
+            kind, seq = rust_char(colorer, s, i=0)
+            assert kind == 'literal1', kind
+            assert seq == s, repr(seq)
+
+        # Lifetimes.
+        lifetime_table = (
+            ("'a", "'a"),
+            ("'a>", "'a"),
+            ("'a ", "'a"),
+            ("'static", "'static"),
+            ("'static\n", "'static"),
+            ("'static ", "'static"),
+        )
+        for s, expected_seq in lifetime_table:
+            kind, seq = rust_char(colorer, s, i=0)
+            assert kind == 'literal1', kind
+            assert seq == expected_seq, (seq, expected_seq)
+
+        # Errors.
+        error_table = (
+            "'xx",
+            "'\\y'",
+        )
+        for s  in error_table:
+            kind, seq = rust_char(colorer, s, i=0)
+            assert kind == 'literal4', kind
+            assert seq == "'", repr(seq)
     #@-others
 #@-others
 #@-leo
