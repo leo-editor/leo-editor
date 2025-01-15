@@ -170,7 +170,8 @@ class BaseColorizer:
         if c.config.settingsDict:
             gs: GeneralSetting
             setting_pat = re.compile(r'@font\s+(\w+)\.(\w+)')
-            valid_languages = g.app.language_delims_dict.keys()
+            valid_languages = list(g.app.language_delims_dict.keys())
+            valid_languages.append('rest_comments')
             valid_tags = self.default_font_dict.keys()
             for setting in sorted(c.config.settingsDict):
                 gs = c.config.settingsDict.get(setting)
