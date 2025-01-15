@@ -754,7 +754,12 @@ class BaseColorizer:
             tag = tag[len('dots') :]
         # This color name should already be valid.
         d = self.configDict
-        colorName = d.get(f"{self.language}.{tag}") or d.get(tag)
+        color_key = self.language.replace('_', '')
+        colorName = (
+            d.get(f"{self.language}.{tag}") or  # Legacy.
+            d.get(f"{color_key}.{tag}") or  # Leo 6.8.4.
+            d.get(tag)  # Legacy default.
+        )
         if not colorName:
             return
         # New in Leo 5.8.1: allow symbolic color names here.

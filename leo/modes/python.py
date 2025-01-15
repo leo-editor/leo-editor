@@ -364,7 +364,7 @@ def python_double_quote_docstring(colorer, s, i):
     if not g.match(s, i, seq):
         return 0
     rest_flag = c.config.getBool('color-docstrings-as-rest', default=False)
-    delegate = 'rest' if rest_flag else None
+    delegate = 'rest_comments' if rest_flag else None
     return colorer.match_span(s, i, kind='literal2', begin=seq, end=seq, delegate=delegate)
 #@+node:ekr.20231209010502.1: *3* python_fstring (not used)
 def python_fstring(colorer, s, i):
@@ -434,7 +434,7 @@ def python_single_quote_docstring(colorer, s, i):
     if not g.match(s, i, seq):
         return 0
     rest_flag = c.config.getBool('color-docstrings-as-rest', default=False)
-    delegate = 'rest' if rest_flag else None
+    delegate = 'rest_comments' if rest_flag else None
     return colorer.match_span(s, i, kind='literal2', begin=seq, end=seq, delegate=delegate)
 #@-others
 #@-<< Python rules >>

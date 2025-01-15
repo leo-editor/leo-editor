@@ -134,18 +134,20 @@ def rust_slash(colorer, s, i) -> int:
         n = len(m.group(0)) if m else 0
         return n if n > 2 else 0
 
+    delegate = 'rest_comments'
+
     # Case 1: match entire line.
     if g.match(s, i, '///'):
         colorer.match_seq(s, i, kind='comment1', seq='///')
-        return colorer.match_eol_span(s, i + 3, kind=None, delegate='rest')
+        return colorer.match_eol_span(s, i + 3, kind=None, delegate=delegate)
 
     # Case 2: match_span constructs, delegated to rust.
     match_span_table = (
-        ('/**', 'comment3', 'rest'),
-        ('/*!', 'comment3', 'rest'),
-        ('/*', 'comment1', 'rest'),
+        ('/**', 'comment3'),
+        ('/*!', 'comment3'),
+        ('/*', 'comment1'),
     )
-    for begin, kind, delegate in match_span_table:
+    for begin, kind in match_span_table:
         if g.match(s, i, begin):
             return colorer.match_span(s, i,
                 kind=kind, begin=begin, end="*/", delegate=delegate)
