@@ -2132,6 +2132,26 @@
 <v t="ekr.20080703111151.14"><vh>@font forth.keyword4</vh></v>
 <v t="ekr.20080703111151.15"><vh>@font forth.keyword5</vh></v>
 </v>
+<v t="ekr.20250115101744.1"><vh>rest_comments (Python and Rust only)</vh>
+<v t="ekr.20250115101744.2"><vh>@font rest.literal3</vh></v>
+<v t="ekr.20250115101744.3"><vh>@font rest.literal4</vh></v>
+<v t="ekr.20250115101744.4"><vh>@font rest.keyword5</vh></v>
+<v t="ekr.20250115101744.5"><vh>@@@font rest_comments.literal1</vh></v>
+<v t="ekr.20250115101744.6"><vh>@color rest_comments.literal1 = #d33682</vh></v>
+<v t="ekr.20250115101744.7"><vh>@color rest_comments.literal2 = #d33682</vh></v>
+<v t="ekr.20250115101744.8"><vh>@color rest_comments.literal3 = #d33682</vh></v>
+<v t="ekr.20250115101744.9"><vh>@color rest_comments.literal4 = #d33682</vh></v>
+<v t="ekr.20250115101744.10"><vh>@color rest.literal1 = #d33682</vh></v>
+<v t="ekr.20250115101744.11"><vh>@color rest.literal2 = #d33682</vh></v>
+<v t="ekr.20250115101744.12"><vh>@color rest.literal3 = #d33682</vh></v>
+<v t="ekr.20250115101744.13"><vh>@color rest.literal4 = #d33682</vh></v>
+<v t="ekr.20250115101744.14"><vh>@color rest.operator = #d33682</vh></v>
+<v t="ekr.20250115101744.15"><vh>@@@color rest.keyword1 = #d33682</vh></v>
+<v t="ekr.20250115101744.16"><vh>@color rest.keyword2 = #d33682</vh></v>
+<v t="ekr.20250115101744.17"><vh>@color rest.keyword3 = #d33682</vh></v>
+<v t="ekr.20250115101744.18"><vh>@color rest.keyword4 = #d33682</vh></v>
+<v t="ekr.20250115101744.19"><vh>@color rest.keyword5 = #d33682</vh></v>
+</v>
 </v>
 <v t="ekr.20111004182631.15533"><vh>Options</vh>
 <v t="ekr.20111004182631.15534"><vh>@bool color-cweb-comments-with-latex = True</vh></v>
@@ -11831,6 +11851,69 @@ See https://jupytext.readthedocs.io/en/latest/config.html
 </t>
 <t tx="ekr.20250110165136.1">False (legacy): color all python docstring with a uniform color.
 True: color python docstrings as reStructuredText (@language rest).</t>
+<t tx="ekr.20250115101744.1">Colors and fonts. Only if at least one of the following is True
+
+@bool color-doc-parts-as-rest
+@bool color-docstrings-as-rest = True</t>
+<t tx="ekr.20250115101744.10"># plain word and default.</t>
+<t tx="ekr.20250115101744.11"># number</t>
+<t tx="ekr.20250115101744.12"># italic</t>
+<t tx="ekr.20250115101744.13"># bold</t>
+<t tx="ekr.20250115101744.14"># Everything else.</t>
+<t tx="ekr.20250115101744.15"># @doc plain and default
+
+#d33682</t>
+<t tx="ekr.20250115101744.16"># @doc italic
+
+#d33682</t>
+<t tx="ekr.20250115101744.17"># @doc bold</t>
+<t tx="ekr.20250115101744.18"># @doc numbers</t>
+<t tx="ekr.20250115101744.19"># @doc words</t>
+<t tx="ekr.20250115101744.2"># italic font
+
+rest_keyword2_family = DejaVu Sans Mono
+rest_keyword2_font_size = 12
+    # should be an int, or None.  Suffixes like pt or px will be ignored.
+rest_keyword2_font_slant = italic
+    # roman, italic
+rest_keyword2_font_weight = normal
+    # normal, bold
+</t>
+<t tx="ekr.20250115101744.3"># bold font
+
+rest_keyword3_family = DejaVu Sans Mono
+rest_keyword3_font_size = 12
+    # should be an int, or None.  Suffixes like pt or px will be ignored.
+rest_keyword3_font_slant = normal
+    # roman, italic
+rest_keyword3_font_weight = bold
+    # normal, bold
+</t>
+<t tx="ekr.20250115101744.4"># @doc fonts.
+
+rest_keyword5_family = DejaVu Sans Mono
+rest_keyword5_font_size = 12
+    # should be an int, or None.  Suffixes like pt or px will be ignored.
+rest_keyword5_font_slant = normal
+    # roman, italic
+rest_keyword5_font_weight = normal
+    # normal, bold
+</t>
+<t tx="ekr.20250115101744.5"># default
+
+rest_comments_literal1_family = DejaVu Sans Mono
+rest_comments_literal1_font_size = 24
+    # should be an int, or None.  Suffixes like pt or px will be ignored.
+rest_comments_literal1_font_slant = normal
+    # roman, italic
+rest_comments_literal1_font_weight = normal
+    # normal, bold
+</t>
+<t tx="ekr.20250115101744.6"># plain word and default.</t>
+<t tx="ekr.20250115101744.7"># number</t>
+<t tx="ekr.20250115101744.8"># italic</t>
+<t tx="ekr.20250115101744.9"># bold
+</t>
 <t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 
 False: (Recommended) The commands act as simple navigation commands, and do not change the outline state.</t>
