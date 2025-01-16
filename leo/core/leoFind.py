@@ -754,15 +754,15 @@ class LeoFind:
         r'\s*enum\s+[[word]]\s*\{',
         r'\s*pub\s+enum\s+[[word]]\s*\{',
         # impl.
-        r'\s*impl\b(.*?)[[word]]',  # Experimental.
+        r'\s*impl\b(.*?)[[word]]',
         # mod.
         r'\s*mod\s+[[word]]',
         # struct.
-        r'\s*struct\b(.*?)$',
-        r'\s*pub\s+struct\b(.*?)$',
+        r'\s*struct\b(.*?)[[word]]',
+        r'\s*pub\s+struct\b(.*?)[[word]]',
         # trait.
-        r'\s*trait\b(.*?)$',
-        r'\s*pub\s+trait\b(.*?)$',
+        r'\s*trait\b(.*?)[[word]]',
+        r'\s*pub\s+trait\b(.*?)[[word]]',
         # use.
         r'\s*use\b.*?[[word]]',  # Experimental.
     )
@@ -785,7 +785,7 @@ class LeoFind:
         # Compute the list of compiled patterns.
         results: list[re.Pattern] = []
         for pattern in patterns:
-            pattern = pattern.replace('[[word]]', word)
+            pattern = pattern.replace('[[word]]', fr"\b{word}\b")
             try:
                 results.append(re.compile(pattern))
             except Exception:
