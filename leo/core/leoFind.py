@@ -764,7 +764,7 @@ class LeoFind:
         r'\s*trait\b(.*?)[[word]]',
         r'\s*pub\s+trait\b(.*?)[[word]]',
         # use.
-        r'\s*use\b.*?[[word]]',  # Experimental.
+        r'\s*use\b.*?[[word]]',
     )
 
     def _make_patterns(self, word: str) -> list[re.Pattern]:
