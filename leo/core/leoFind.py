@@ -566,6 +566,9 @@ class LeoFind:
         c = self.c
         if not (word and word.strip()):
             return []
+        colorer = c.frame.body.colorizer
+        if not colorer:
+            return []
         patterns = self._make_patterns(word)
         matches = self._find_all_matches(patterns)
         if g.unitTesting:
@@ -662,6 +665,10 @@ class LeoFind:
         Return a list of tuples (starting-index, p, matching-string) describing the matches.
         """
         c = self.c
+        colorer = c.frame.body.colorizer
+        if not colorer:
+            return []
+        target_language = colorer.language
         p = c.rootPosition()
         results = []
         seen = set()
@@ -673,19 +680,22 @@ class LeoFind:
                 p.moveToThreadNext()
                 continue
             seen.add(p.v)
-            b = p.b
-            i = 0  # The index within p.b of the start of s.
-            found = False  # Only report the first match within p.b.
-            for s in g.splitLines(b):
-                for pattern in patterns:
-                    m = pattern.search(s)
-                    if m:
-                        results.append((i + m.start(), p.copy(), m.group(0)))
-                        found = True
+            # Only search nodes with the desired language.
+            language = colorer.scanLanguageDirectives(p)
+            if language == target_language:
+                b = p.b
+                i = 0  # The index within p.b of the start of s.
+                found = False  # Only report the first match within p.b.
+                for s in g.splitLines(b):
+                    for pattern in patterns:
+                        m = pattern.search(s)
+                        if m:
+                            results.append((i + m.start(), p.copy(), m.group(0)))
+                            found = True
+                            break
+                    if found:
                         break
-                if found:
-                    break
-                i += len(s)
+                    i += len(s)
             p.moveToThreadNext()
         return results
     #@+node:ekr.20240526071521.1: *6* find._make_clones
@@ -723,25 +733,65 @@ class LeoFind:
     #@+node:ekr.20240525172445.1: *6* find._make_patterns
     bad_regex_patterns: list[str] = []
 
+    python_patterns: tuple = (
+        r"^\s*class\s+[[word]]\b",
+        r"^\s*def\s+[[word]]\b",
+        r"\b[[word]]\s*=",
+        r"\b[[word]]:",
+    )
+
+    rust_patterns: tuple = (
+        # fn first.
+        r'\s*fn\s+[[word]]',
+        r'\s*pub\s+fn\s+[[word]]',
+        r'\s*pub\s*\(\s*crate\s*\)\s*fn\s+[[word]]',
+        r'\s*pub\s*\(\s*self\s*\)\s*fn\s+[[word]]',
+        r'\s*pub\s*\(\s*super\s*\)\s*fn\s+[[word]]',
+        r'\s*pub\s*\(\s*in\s*crate::.*?\)\s*fn\s+[[word]]',
+        r'\s*pub\s*\(\s*in\s*self::.*?\)\s*fn\s+[[word]]',
+        r'\s*pub\s*\(\s*in\s*super::.*?\)\s*fn\s+[[word]]',
+        # enum.
+        r'\s*enum\s+[[word]]\s*\{',
+        r'\s*pub\s+enum\s+[[word]]\s*\{',
+        # impl.
+        r'\s*impl\b(.*?)[[word]]',  # Experimental.
+        # mod.
+        r'\s*mod\s+[[word]]',
+        # struct.
+        r'\s*struct\b(.*?)$',
+        r'\s*pub\s+struct\b(.*?)$',
+        # trait.
+        r'\s*trait\b(.*?)$',
+        r'\s*pub\s+trait\b(.*?)$',
+        # use.
+        r'\s*use\b.*?[[word]]',  # Experimental.
+    )
+
     def _make_patterns(self, word: str) -> list[re.Pattern]:
         """Return a list of compiled regex patterns."""
-        results: list[re.Pattern] = []
+        c = self.c
+        colorer = c.frame.body.colorizer
+        p = c.p
+        if not word or not colorer:
+            return []
 
-        def compile_pattern(pattern: str) -> None:
+        # Get the patterns of the language in effect.
+        language = colorer.language
+        patterns: tuple = {
+            'python': self.python_patterns,
+            'rust': self.rust_patterns,
+        }.get(language, tuple())
+
+        # Compute the list of compiled patterns.
+        results: list[re.Pattern] = []
+        for pattern in patterns:
+            pattern = pattern.replace('[[word]]', word)
             try:
                 results.append(re.compile(pattern))
             except Exception:
                 if pattern not in self.bad_regex_patterns:
                     self.bad_regex_patterns.append(pattern)
                     g.es_print(f"bad regex pattern: {pattern}")
-
-        for pattern in (
-            fr"^\s*class\s+{word}\b",
-            fr"^\s*def\s+{word}\b",
-            fr"\b{word}\s*=",
-            fr"\b{word}:",
-        ):
-            compile_pattern(pattern)
         return results
     #@+node:ekr.20180511045458.1: *6* find._switch_style
     def _switch_style(self, word: str) -> Optional[str]:
