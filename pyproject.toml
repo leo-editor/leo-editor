@@ -332,7 +332,7 @@ dependencies = [
   
   # cursesGui2 plugin.
   # The windows-curses package has been updated for Python 3.13.
-  "windows-curses[curses]; platform_system == 'Windows'; python_version < '3.14'",
+  # "windows-curses[curses]; platform_system == 'Windows'; python_version < '3.14'",
 ]
 
 #@-<< pyproject.toml: dependencies >>
