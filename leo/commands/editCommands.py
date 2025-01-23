@@ -274,21 +274,29 @@ def promoteBodies(event: LeoKeyEvent) -> None:
     if not c:
         return
     p = c.p
-    result = [p.b.rstrip() + '\n'] if p.b.strip() else []
-    b = c.undoer.beforeChangeNodeContents(p)
-    for child in p.subtree():
-        h = child.h.strip()
-        if child.b:
-            body = '\n'.join([f"  {z}" for z in g.splitLines(child.b)])
-            s = f"- {h}\n{body}"
-        else:
-            s = f"- {h}"
-        if s.strip():
-            result.append(s.strip())
-    if result:
-        result.append('')
-    p.b = '\n'.join(result)
-    c.undoer.afterChangeNodeContents(p, 'promote-bodies', b)
+    ### result = [p.b.rstrip() + '\n'] if p.b.strip() else []
+    bunch = c.undoer.beforeChangeNodeContents(p)
+    result = [
+        child.b.rstrip() + '\n\n'
+        for child in p.subtree()
+    ]
+
+    ###
+    # for child in p.subtree():
+        # # h = child.h.strip()
+        # s = ''.join([z for z in g.splitLines(child.b)])
+        # result.append(s.strip())
+        # if child.b:
+            # body = '\n'.join([f"  {z}" for z in g.splitLines(child.b)])
+            # s = f"- {h}\n{body}"
+        # else:
+            # s = f"- {h}"
+        # if s.strip():
+            # result.append(s.strip())
+    # if result:
+        # result.append('')
+    p.b = ''.join(result).rstrip() + '\n\n'
+    c.undoer.afterChangeNodeContents(p, 'promote-bodies', bunch)
 #@+node:ekr.20190323085410.1: *3* @g.command('promote-headlines')
 @g.command('promote-headlines')
 def promoteHeadlines(event: LeoKeyEvent) -> None:
