@@ -1,5 +1,13 @@
+#@+leo-ver=5-thin
+#@+node:ekr.20250121105007.1: * @file ../modes/c.py
 # Leo colorizer control file for c mode.
 # This file is in the public domain.
+
+#@+others
+#@-others
+
+#@+<< c: properties >>
+#@+node:ekr.20250123062334.1: ** << c: properties >>
 
 # Properties for c mode.
 properties = {
@@ -13,6 +21,9 @@ properties = {
     "lineUpClosingBracket": "true",
     "wordBreakChars": ",+-=<>/?^&*",
 }
+#@-<< c: properties >>
+#@+<< c: attributes & dict >>
+#@+node:ekr.20250123062356.1: ** << c: attributes & dict >>
 
 # Attributes dict for c_main ruleset.
 c_main_attributes_dict = {
@@ -50,6 +61,9 @@ attributesDictDict = {
     "c_include": c_include_attributes_dict,
     "c_main": c_main_attributes_dict,
 }
+#@-<< c: attributes & dict >>
+#@+<< c: keywords dict >>
+#@+node:ekr.20250123062431.1: ** << c: keywords dict >>
 
 # Keywords dict for c_main ruleset.
 c_main_keywords_dict = {
@@ -129,100 +143,132 @@ keywordsDictDict = {
     "c_include": c_include_keywords_dict,
     "c_main": c_main_keywords_dict,
 }
-
+#@-<< c: keywords dict >>
+#@+<< c: rules >>
+#@+node:ekr.20250123062533.1: ** << c: rules >>
 # Rules for c_main ruleset.
 
+#@+others
+#@+node:ekr.20250123061808.1: *3* function: c_rule0
 def c_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment3", begin="/**", end="*/",
           delegate="doxygen::doxygen")
+#@+node:ekr.20250123061808.2: *3* function: c_rule1
 
 def c_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="comment3", begin="/*!", end="*/",
           delegate="doxygen::doxygen")
+#@+node:ekr.20250123061808.3: *3* function: c_rule2
 
 def c_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/")
+#@+node:ekr.20250123061808.4: *3* function: c_rule3
 
 def c_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
           no_line_break=True)
+#@+node:ekr.20250123061808.5: *3* function: c_rule4
 
 def c_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
           no_line_break=True)
+#@+node:ekr.20250123061808.6: *3* function: c_rule5
 
 def c_rule5(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="keyword2", seq="##")
+#@+node:ekr.20250123061808.7: *3* function: c_rule6
 
 def c_rule6(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="keyword2", seq="#",
           delegate="c::cpp")
+#@+node:ekr.20250123061808.8: *3* function: c_rule7
 
 def c_rule7(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="comment2", seq="//")
+#@+node:ekr.20250123061808.9: *3* function: c_rule8
 
 def c_rule8(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq="=")
+#@+node:ekr.20250123061808.10: *3* function: c_rule9
 
 def c_rule9(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq="!")
+#@+node:ekr.20250123061808.11: *3* function: c_rule10
 
 def c_rule10(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq=">=")
+#@+node:ekr.20250123061808.12: *3* function: c_rule11
 
 def c_rule11(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq="<=")
+#@+node:ekr.20250123061808.13: *3* function: c_rule12
 
 def c_rule12(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq="+")
+#@+node:ekr.20250123061808.14: *3* function: c_rule13
 
 def c_rule13(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq="-")
+#@+node:ekr.20250123061808.15: *3* function: c_rule14
 
 def c_rule14(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq="/")
+#@+node:ekr.20250123061808.16: *3* function: c_rule15
 
 def c_rule15(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq="*")
+#@+node:ekr.20250123061808.17: *3* function: c_rule16
 
 def c_rule16(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq=">")
+#@+node:ekr.20250123061808.18: *3* function: c_rule17
 
 def c_rule17(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq="<")
+#@+node:ekr.20250123061808.19: *3* function: c_rule18
 
 def c_rule18(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq="%")
+#@+node:ekr.20250123061808.20: *3* function: c_rule19
 
 def c_rule19(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq="&")
+#@+node:ekr.20250123061808.21: *3* function: c_rule20
 
 def c_rule20(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq="|")
+#@+node:ekr.20250123061808.22: *3* function: c_rule21
 
 def c_rule21(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq="^")
+#@+node:ekr.20250123061808.23: *3* function: c_rule22
 
 def c_rule22(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq="~")
+#@+node:ekr.20250123061808.24: *3* function: c_rule23
 
 def c_rule23(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq="}")
+#@+node:ekr.20250123061808.25: *3* function: c_rule24
 
 def c_rule24(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq="{")
+#@+node:ekr.20250123061808.26: *3* function: c_rule25
 
 def c_rule25(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="label", pattern=":",
           at_whitespace_end=True,
           exclude_match=True)
+#@+node:ekr.20250123061808.27: *3* function: c_rule26
 
 def c_rule26(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="function", pattern="(",
           exclude_match=True)
+#@+node:ekr.20250123061808.28: *3* function: c_rule27
 
 def c_rule27(colorer, s, i):
     return colorer.match_keywords(s, i)
+#@+node:ekr.20250123061808.29: *3* function: c_rule28
 
 # Rules dict for c_main ruleset.
 rulesDict1 = {
@@ -316,13 +362,19 @@ rulesDict1 = {
 
 def c_rule28(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/")
+#@+node:ekr.20250123061808.30: *3* function: c_rule29
 
 def c_rule29(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="markup", seq="include",
           delegate="c::include")
+#@+node:ekr.20250123061808.31: *3* function: c_rule30
 
 def c_rule30(colorer, s, i):
     return colorer.match_keywords(s, i)
+#@-others
+#@-<< c: rules >>
+#@+<< c: rules dicts >>
+#@+node:ekr.20250123062712.1: ** << c: rules dicts >>
 
 # Rules dict for c_cpp ruleset.
 rulesDict2 = {
@@ -404,6 +456,11 @@ rulesDictDict = {
     "c_include": rulesDict3,
     "c_main": rulesDict1,
 }
+#@-<< c: rules dicts >>
 
 # Import dict for c mode.
 importDict = {}
+
+#@@language python
+#@@tabwidth -4
+#@-leo
