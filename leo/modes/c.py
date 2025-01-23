@@ -213,18 +213,23 @@ def c_rule_at_sign(colorer, s, i):  # #4283.
 def c_rule_semicolon(colorer, s, i):  # #4283.
     return colorer.match_plain_seq(s, i, kind="operator", seq=";")
 
-#@+node:ekr.20250123061808.26: *3* function: c_rule25 : label
-
-def c_rule25(colorer, s, i):
-    return colorer.match_mark_previous(s, i, kind="label", pattern=":",
-          at_whitespace_end=True, exclude_match=True)
 #@+node:ekr.20250123061808.27: *3* function: c_rule26 (
 def c_rule26(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="function", pattern="(",
           exclude_match=True)
-#@+node:ekr.20250123061808.28: *3* function: c_keyword
+#@+node:ekr.20250123061808.28: *3* function: c_keyword & label
 def c_keyword(colorer, s, i):
-    return colorer.match_keywords(s, i)
+    n = colorer.match_keywords(s, i)
+    if n >= 0:
+        return n
+    i2 = i + abs(n)
+    ch = s[i2] if i2 < len(s) else ''
+    if ch != ':':
+        return n
+
+    # color the label.
+    seq = s[i : i2 + 1]
+    return colorer.match_seq(s, i, kind="label", seq=seq)
 #@-others
 #@-<< c: rules >>
 #@+<< c: rules dict >>
@@ -244,7 +249,6 @@ rulesDict1 = {
     "+": [c_rule12],
     "-": [c_rule13],
     "/": [c_rule0, c_rule1, c_rule2, c_rule7, c_rule14],
-    ":": [c_rule25],
     "<": [c_rule11, c_rule17],
     "=": [c_rule8],
     ">": [c_rule10, c_rule16],
