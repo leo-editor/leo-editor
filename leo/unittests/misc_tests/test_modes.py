@@ -166,6 +166,39 @@ class TestModes(LeoUnitTest):
             kind, seq = rust_char(colorer, s, i=0)
             assert kind == 'literal4', kind
             assert seq == "'", repr(seq)
+    #@+node:ekr.20250123084454.1: *4* TestModes.test_c_label
+    def test_c_label(self):
+
+        from leo.modes.c import c_keyword
+
+        c = self.c
+        jedit_colorer = JEditColorizer(c=c, widget=None)
+
+        actual_seq: str
+        actual_kind: str
+
+        class TestColorizer:
+
+            def match_keywords(self, s: str, i: int):
+                return jedit_colorer.match_keywords(s, i)
+
+            def match_seq(self, s: str, i: int, kind: str, seq: str):
+                nonlocal actual_kind, actual_seq
+                actual_kind, actual_seq = kind, seq
+                return jedit_colorer.match_seq(s, i, kind=kind, seq=seq)
+
+        test_colorer = TestColorizer()
+
+        line_table = (
+            (-4, '', '', 'goto label;\n'),
+            (6, 'label', 'label:', 'label:\n'),
+        )
+        for expected_n, expected_kind, expected_seq, s in line_table:
+            actual_kind, actual_seq = '', ''
+            n = c_keyword(test_colorer, s, 0)
+            assert n == expected_n, (expected_n, n, s)
+            assert expected_kind == actual_kind, (expected_kind, actual_kind, s)
+            assert expected_seq == actual_seq, (expected_seq, actual_seq, s)
     #@-others
 #@-others
 #@-leo
