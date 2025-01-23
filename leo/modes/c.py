@@ -150,7 +150,7 @@ def c_rule5(colorer, s, i):
 #@+node:ekr.20250123061808.7: *3* function: c_rule6 #
 def c_rule6(colorer, s, i):
 
-    # #4283: Colorizer the whole line.
+    # #4283: Colorize the whole line.
     return colorer.match_eol_span(s, i, kind="keyword2")
 #@+node:ekr.20250123061808.8: *3* function: c_rule7 // comment
 def c_rule7(colorer, s, i):
@@ -259,7 +259,7 @@ rulesDict1 = {
     "~": [c_rule22],
 }
 
-# Add *all* characters that could start a Python identifier.
+# Add *all* characters that could start a c identifier.
 lead_ins = string.ascii_letters + '_'
 for lead_in in lead_ins:
     aList = rulesDict1.get(lead_in, [])
