@@ -135,12 +135,12 @@ c_cpp_keywords_dict = {
 }
 
 # Keywords dict for c_include ruleset.
-c_include_keywords_dict = {}
+### c_include_keywords_dict = {}
 
 # Dictionary of keywords dictionaries for c mode.
 keywordsDictDict = {
     "c_cpp": c_cpp_keywords_dict,
-    "c_include": c_include_keywords_dict,
+    ### "c_include": c_include_keywords_dict,
     "c_main": c_main_keywords_dict,
 }
 #@-<< c: keywords dict >>
@@ -154,122 +154,114 @@ def c_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment3", begin="/**", end="*/",
           delegate="doxygen::doxygen")
 #@+node:ekr.20250123061808.2: *3* function: c_rule1
-
 def c_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="comment3", begin="/*!", end="*/",
           delegate="doxygen::doxygen")
-#@+node:ekr.20250123061808.3: *3* function: c_rule2
-
+#@+node:ekr.20250123061808.3: *3* function: c_rule2 /* comment
 def c_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/")
-#@+node:ekr.20250123061808.4: *3* function: c_rule3
+#@+node:ekr.20250123061808.4: *3* function: c_rule3 "
 
 def c_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
           no_line_break=True)
-#@+node:ekr.20250123061808.5: *3* function: c_rule4
+#@+node:ekr.20250123061808.5: *3* function: c_rule4 '
 
 def c_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
           no_line_break=True)
-#@+node:ekr.20250123061808.6: *3* function: c_rule5
-
+#@+node:ekr.20250123061808.6: *3* function: c_rule5 ##
 def c_rule5(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="keyword2", seq="##")
-#@+node:ekr.20250123061808.7: *3* function: c_rule6
-
+#@+node:ekr.20250123061808.7: *3* function: c_rule6 #
 def c_rule6(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="keyword2", seq="#",
-          delegate="c::cpp")
-#@+node:ekr.20250123061808.8: *3* function: c_rule7
 
+    # #4283: Colorizer the whole line.
+    return colorer.match_eol_span(s, i, kind="keyword2")
+#@+node:ekr.20250123061808.8: *3* function: c_rule7 // comment
 def c_rule7(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="comment2", seq="//")
-#@+node:ekr.20250123061808.9: *3* function: c_rule8
-
+#@+node:ekr.20250123070417.1: *3* rules: operators
+#@+node:ekr.20250123061808.9: *4* function: c_rule8
 def c_rule8(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq="=")
-#@+node:ekr.20250123061808.10: *3* function: c_rule9
-
+#@+node:ekr.20250123061808.10: *4* function: c_rule9
 def c_rule9(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq="!")
-#@+node:ekr.20250123061808.11: *3* function: c_rule10
-
+#@+node:ekr.20250123061808.11: *4* function: c_rule10
 def c_rule10(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq=">=")
-#@+node:ekr.20250123061808.12: *3* function: c_rule11
-
+#@+node:ekr.20250123061808.12: *4* function: c_rule11
 def c_rule11(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq="<=")
-#@+node:ekr.20250123061808.13: *3* function: c_rule12
-
+#@+node:ekr.20250123061808.13: *4* function: c_rule12
 def c_rule12(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq="+")
-#@+node:ekr.20250123061808.14: *3* function: c_rule13
+#@+node:ekr.20250123061808.14: *4* function: c_rule13
 
 def c_rule13(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq="-")
-#@+node:ekr.20250123061808.15: *3* function: c_rule14
+#@+node:ekr.20250123061808.15: *4* function: c_rule14
 
 def c_rule14(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq="/")
-#@+node:ekr.20250123061808.16: *3* function: c_rule15
+#@+node:ekr.20250123061808.16: *4* function: c_rule15
 
 def c_rule15(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq="*")
-#@+node:ekr.20250123061808.17: *3* function: c_rule16
+#@+node:ekr.20250123061808.17: *4* function: c_rule16
 
 def c_rule16(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq=">")
-#@+node:ekr.20250123061808.18: *3* function: c_rule17
+#@+node:ekr.20250123061808.18: *4* function: c_rule17
 
 def c_rule17(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq="<")
-#@+node:ekr.20250123061808.19: *3* function: c_rule18
+#@+node:ekr.20250123061808.19: *4* function: c_rule18
 
 def c_rule18(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq="%")
-#@+node:ekr.20250123061808.20: *3* function: c_rule19
+#@+node:ekr.20250123061808.20: *4* function: c_rule19
 
 def c_rule19(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq="&")
-#@+node:ekr.20250123061808.21: *3* function: c_rule20
+#@+node:ekr.20250123061808.21: *4* function: c_rule20
 
 def c_rule20(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq="|")
-#@+node:ekr.20250123061808.22: *3* function: c_rule21
+#@+node:ekr.20250123061808.22: *4* function: c_rule21
 
 def c_rule21(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq="^")
-#@+node:ekr.20250123061808.23: *3* function: c_rule22
+#@+node:ekr.20250123061808.23: *4* function: c_rule22
 
 def c_rule22(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq="~")
-#@+node:ekr.20250123061808.24: *3* function: c_rule23
+#@+node:ekr.20250123061808.24: *4* function: c_rule23
 
 def c_rule23(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq="}")
-#@+node:ekr.20250123061808.25: *3* function: c_rule24
+#@+node:ekr.20250123061808.25: *4* function: c_rule24
 
 def c_rule24(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq="{")
-#@+node:ekr.20250123061808.26: *3* function: c_rule25
+#@+node:ekr.20250123061808.26: *3* function: c_rule25 : label
 
 def c_rule25(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="label", pattern=":",
-          at_whitespace_end=True,
-          exclude_match=True)
-#@+node:ekr.20250123061808.27: *3* function: c_rule26
-
+          at_whitespace_end=True, exclude_match=True)
+#@+node:ekr.20250123061808.27: *3* function: c_rule26 (
 def c_rule26(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="function", pattern="(",
           exclude_match=True)
-#@+node:ekr.20250123061808.28: *3* function: c_rule27
+#@+node:ekr.20250123061808.28: *3* function: c_rule27 keywords
 
 def c_rule27(colorer, s, i):
     return colorer.match_keywords(s, i)
-#@+node:ekr.20250123061808.29: *3* function: c_rule28
-
+#@-others
+#@-<< c: rules >>
+#@+<< c: rules dict >>
+#@+node:ekr.20250123062712.1: ** << c: rules dict >>
 # Rules dict for c_main ruleset.
 rulesDict1 = {
     "!": [c_rule9,],
@@ -357,106 +349,12 @@ rulesDict1 = {
     "}": [c_rule23,],
     "~": [c_rule22,],
 }
-
-# Rules for c_cpp ruleset.
-
-def c_rule28(colorer, s, i):
-    return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/")
-#@+node:ekr.20250123061808.30: *3* function: c_rule29
-
-def c_rule29(colorer, s, i):
-    return colorer.match_eol_span(s, i, kind="markup", seq="include",
-          delegate="c::include")
-#@+node:ekr.20250123061808.31: *3* function: c_rule30
-
-def c_rule30(colorer, s, i):
-    return colorer.match_keywords(s, i)
-#@-others
-#@-<< c: rules >>
-#@+<< c: rules dicts >>
-#@+node:ekr.20250123062712.1: ** << c: rules dicts >>
-
-# Rules dict for c_cpp ruleset.
-rulesDict2 = {
-    "/": [c_rule28,],
-    "0": [c_rule30,],
-    "1": [c_rule30,],
-    "2": [c_rule30,],
-    "3": [c_rule30,],
-    "4": [c_rule30,],
-    "5": [c_rule30,],
-    "6": [c_rule30,],
-    "7": [c_rule30,],
-    "8": [c_rule30,],
-    "9": [c_rule30,],
-    "@": [c_rule30,],
-    "A": [c_rule30,],
-    "B": [c_rule30,],
-    "C": [c_rule30,],
-    "D": [c_rule30,],
-    "E": [c_rule30,],
-    "F": [c_rule30,],
-    "G": [c_rule30,],
-    "H": [c_rule30,],
-    "I": [c_rule30,],
-    "J": [c_rule30,],
-    "K": [c_rule30,],
-    "L": [c_rule30,],
-    "M": [c_rule30,],
-    "N": [c_rule30,],
-    "O": [c_rule30,],
-    "P": [c_rule30,],
-    "Q": [c_rule30,],
-    "R": [c_rule30,],
-    "S": [c_rule30,],
-    "T": [c_rule30,],
-    "U": [c_rule30,],
-    "V": [c_rule30,],
-    "W": [c_rule30,],
-    "X": [c_rule30,],
-    "Y": [c_rule30,],
-    "Z": [c_rule30,],
-    "_": [c_rule30,],
-    "a": [c_rule30,],
-    "b": [c_rule30,],
-    "c": [c_rule30,],
-    "d": [c_rule30,],
-    "e": [c_rule30,],
-    "f": [c_rule30,],
-    "g": [c_rule30,],
-    "h": [c_rule30,],
-    "i": [c_rule29, c_rule30,],
-    "j": [c_rule30,],
-    "k": [c_rule30,],
-    "l": [c_rule30,],
-    "m": [c_rule30,],
-    "n": [c_rule30,],
-    "o": [c_rule30,],
-    "p": [c_rule30,],
-    "q": [c_rule30,],
-    "r": [c_rule30,],
-    "s": [c_rule30,],
-    "t": [c_rule30,],
-    "u": [c_rule30,],
-    "v": [c_rule30,],
-    "w": [c_rule30,],
-    "x": [c_rule30,],
-    "y": [c_rule30,],
-    "z": [c_rule30,],
-}
-
-# Rules for c_include ruleset.
-
-# Rules dict for c_include ruleset.
-rulesDict3 = {}
+#@-<< c: rules dict >>
 
 # x.rulesDictDict for c mode.
 rulesDictDict = {
-    "c_cpp": rulesDict2,
-    "c_include": rulesDict3,
     "c_main": rulesDict1,
 }
-#@-<< c: rules dicts >>
 
 # Import dict for c mode.
 importDict = {}
