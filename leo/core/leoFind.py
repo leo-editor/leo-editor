@@ -2587,7 +2587,30 @@ class LeoFind:
     #@+node:ekr.20210110073117.49: *4* find.replace_back_slashes
     def replace_back_slashes(self, s: str) -> str:
         """Replace backslash-n with a newline and backslash-t with a tab."""
-        return s.replace('\\n', '\n').replace('\\t', '\t')
+        # Compare: https://docs.python.org/3/library/ast.html#ast.literal_eval
+        i, result = 0, []
+        while i < len(s):
+            progress = i
+            ch = s[i]
+            i += 1
+            if ch != '\\' or i >= len(s):
+                result.append(ch)
+                continue
+            ch = s[i]
+            i += 1
+            if ch == 'n':
+                result.append('\n')
+            elif ch == 't':
+                result.append('\t')
+            elif ch == '\\':  # 4284
+                result.append(ch)
+                result.append(ch)
+            else:
+                result.append('\\')
+                i -= 1
+            assert progress < i
+        ### g.trace(f"s: {s:10} result: {''.join(result)}")
+        return ''.join(result)
     #@+node:ekr.20031218072017.3082: *3* LeoFind.Initing & finalizing
     #@+node:ekr.20031218072017.3086: *4* find.init_in_headline & helper
     def init_in_headline(self) -> None:

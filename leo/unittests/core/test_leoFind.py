@@ -389,7 +389,7 @@ class TestFind(LeoUnitTest):
         assert p
         self.assertEqual(p.h, 'child 5')
         self.assertEqual(s, 'v5 =')
-        
+
         # Annotated.
         matches = x.do_find_var('va5')
         assert len(matches) == 1
@@ -933,6 +933,8 @@ class TestFind(LeoUnitTest):
         x = leoFind.LeoFind(c)
         table = (
             # Only replace \n, \\n, \t and \\t.
+
+            # Pass
             ('\\', '\\'),
             ('\\\\', '\\\\'),
             (r'a\bc', r'a\bc'),
@@ -943,8 +945,10 @@ class TestFind(LeoUnitTest):
 
             ('\\n', '\n'),
             ('\\t', '\t'),
+
             (r'a\tc', 'a\tc'),  # Replace \t by a tab.
             (r'a\nc', 'a\nc'),  # Replace \n by a newline.
+            (r'b\\\\nd', 'b\\\\\\\\nd'),  # Allow escaped backslash: #4284.
         )
         for s, expected in table:
             got = x.replace_back_slashes(s)
