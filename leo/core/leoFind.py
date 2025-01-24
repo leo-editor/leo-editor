@@ -2609,7 +2609,6 @@ class LeoFind:
                 result.append('\\')
                 i -= 1
             assert progress < i
-        ### g.trace(f"s: {s:10} result: {''.join(result)}")
         return ''.join(result)
     #@+node:ekr.20031218072017.3082: *3* LeoFind.Initing & finalizing
     #@+node:ekr.20031218072017.3086: *4* find.init_in_headline & helper
