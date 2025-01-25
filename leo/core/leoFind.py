@@ -2602,6 +2602,8 @@ class LeoFind:
                 result.append('\n')
             elif ch == 't':
                 result.append('\t')
+            elif ch == 'f':
+                result.append('\f')
             elif ch == '\\':  # 4284
                 result.append(ch)
                 result.append(ch)

@@ -932,16 +932,14 @@ class TestFind(LeoUnitTest):
         c = self.c
         x = leoFind.LeoFind(c)
         table = (
-            # Only replace \n, \\n, \t and \\t.
-            (r'a\bc', r'a\bc'),
-            (r'a\\bc', r'a\\bc'),
-            (r'a \ b', r'a \ b'),
-            (r'a \\ b', r'a \\ b'),
-            (r'a \\\ b', r'a \\\ b'),
-            # Replace \n by newline and \t by tab.
+            # Replace \n, \t, and \f by newline, tab, and form-feed.
+            ('\\f', '\f'),
             ('\\n', '\n'),
             ('\\t', '\t'),
+            ('a\\n', 'a\n'),
+            ('\\\n', '\\\n'),  # Backslash-newline!
             ('a\\tc', 'a\tc'),
+            ('a\\t\\fc', 'a\t\fc'),
             ('a\\nc', 'a\nc'),
             # Allow escaped backslash: #4284.
             ('\\', '\\'),
@@ -949,6 +947,12 @@ class TestFind(LeoUnitTest):
             ('\\\\n', '\\\\n'),
             ('\\\\t', '\\\\t'),
             ('b\\\\nd', 'b\\\\nd'),
+            # Make no other replacements.
+            (r'a\bc', r'a\bc'),
+            (r'a\\bc', r'a\\bc'),
+            (r'a \ b', r'a \ b'),
+            (r'a \\ b', r'a \\ b'),
+            (r'a \\\ b', r'a \\\ b'),
         )
         for s, expected in table:
             got = x.replace_back_slashes(s)
