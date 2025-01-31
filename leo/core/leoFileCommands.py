@@ -1945,11 +1945,18 @@ class FileCommands:
         if sheet:
             self.put(f"<?xml-stylesheet {sheet} ?>\n")
 
-    #@+node:ekr.20031218072017.1577: *5* fc.put_t_element
+    #@+node:ekr.20031218072017.1577: *5* fc.put_t_element (changed)
     def put_t_element(self, v: VNode) -> None:
         b, gnx = v.b, v.fileIndex
         ua = self.putUnknownAttributes(v)
-        body = xml.sax.saxutils.escape(b) if b else ''
+        body = b or ''
+        # Translate invalid characters to the corresponding 4-character string.
+        body = xml.sax.saxutils.escape(body, entities={
+            '\x1a': '\\x1a',  # Sub.
+            '\x1b': '\\x1b',  # Escape.
+            '\u200B':  '\\u200B',  # Zero-width space.
+            # '\r': '\\r',  # Carriage return.
+        })
         self.put(f'<t tx="{gnx}"{ua}>{body}</t>\n')
     #@+node:ekr.20031218072017.1575: *5* fc.put_t_elements
     def put_t_elements(self) -> None:
@@ -2021,7 +2028,7 @@ class FileCommands:
             return val
         g.warning("ignoring non-dictionary unknownAttributes for", v)
         return ''
-    #@+node:ekr.20031218072017.1863: *5* fc.put_v_element & helper
+    #@+node:ekr.20031218072017.1863: *5* fc.put_v_element & helper (changed)
     def put_v_element(self, p: Position, isIgnore: bool = False) -> None:
         """Write a <v> element corresponding to a VNode."""
         fc = self
@@ -2052,7 +2059,16 @@ class FileCommands:
             fc.put(v_head + '</v>\n')
         else:
             fc.vnodesDict[gnx] = True
-            v_head += f"<vh>{xml.sax.saxutils.escape(p.v.headString() or '')}</vh>"
+            # Translate invalid characters to the corresponding 4-character string.
+            h = p.v.headString() or ''
+            h = xml.sax.saxutils.escape(h, entities={
+                '\x1a': '\\x1a',  # Sub.
+                '\x1b': '\\x1b',  # Escape.
+                '\u200B':  '\\u200B',  # Zero-width space.
+                # '\r': '\\r',  # Carriage return.
+            })
+            v_head += f"<vh>{h}</vh>"
+
             # New in 4.2: don't write child nodes of @file-thin trees
             # (except when writing to clipboard)
             if p.hasChildren() and (forceWrite or self.usingClipboard):
