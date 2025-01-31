@@ -1135,8 +1135,7 @@ class AtFile:
             return
         if files:
             n = at.unchangedFiles
-            if n > 1:
-                g.es(f"finished: {n} unchanged file{g.plural(n)}")
+            g.es(f"finished: {n} unchanged file{g.plural(n)}")
         elif all:
             g.warning("no @<file> nodes in the selected tree")
         elif dirty:
