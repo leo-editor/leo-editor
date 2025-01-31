@@ -341,6 +341,8 @@ class Tokenizer:
 
         Convert fstrings to simple strings.
         """
+        # assert line_number is not None, (repr(kind), repr(value))  ###
+        ### g.trace(kind, value, line_number)  ###
         if self.fstring_values is None:
             if kind == 'fstring_start':
                 self.fstring_line = line
@@ -1458,6 +1460,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         prev_token: Optional[InputToken] = None
         for i, token in enumerate(self.input_tokens):
             kind, value = token.kind, token.value
+            ### g.trace(getattr(token, 'line_number', '<no line number!>'), kind, value)  ###
             if kind in 'newline':
                 #@+<< pre-scan 'newline' tokens >>
                 #@+node:ekr.20240128230812.1: *6* << pre-scan 'newline' tokens >>
@@ -1467,6 +1470,8 @@ class TokenBasedOrange:  # Orange is the new Black.
                     in_import = False
                 #@-<< pre-scan 'newline' tokens >>
             elif kind == 'op':
+                if False and token.line_number == 99:  ###
+                    breakpoint()  ###
                 #@+<< pre-scan 'op' tokens >>
                 #@+node:ekr.20240128123117.1: *6* << pre-scan 'op' tokens >>
                 top_state: Optional[ScanState] = scan_stack[-1] if scan_stack else None
