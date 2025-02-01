@@ -576,6 +576,11 @@ class FastRead:
 #@+node:ekr.20160514120347.1: ** class FileCommands
 class FileCommands:
     """A class creating the FileCommands subcommander."""
+
+    # https://github.com/leo-editor/leo-editor/pull/4292
+    # Remove (almost) all invalid characters.
+    entities = {chr(z): '' for z in range(32) if chr(z) not in ('\t', '\n', '\r')}
+
     #@+others
     #@+node:ekr.20090218115025.4: *3* fc.Birth
     #@+node:ekr.20031218072017.3019: *4* fc.ctor
@@ -1945,18 +1950,11 @@ class FileCommands:
         if sheet:
             self.put(f"<?xml-stylesheet {sheet} ?>\n")
 
-    #@+node:ekr.20031218072017.1577: *5* fc.put_t_element (changed)
+    #@+node:ekr.20031218072017.1577: *5* fc.put_t_element
     def put_t_element(self, v: VNode) -> None:
         b, gnx = v.b, v.fileIndex
         ua = self.putUnknownAttributes(v)
-        body = b or ''
-        # Translate invalid characters to the corresponding 4-character string.
-        body = xml.sax.saxutils.escape(body, entities={
-            '\x1a': '\\x1a',  # Sub.
-            '\x1b': '\\x1b',  # Escape.
-            '\u200B':  '\\u200B',  # Zero-width space.
-            # '\r': '\\r',  # Carriage return.
-        })
+        body = xml.sax.saxutils.escape(b or '', entities=self.entities)
         self.put(f'<t tx="{gnx}"{ua}>{body}</t>\n')
     #@+node:ekr.20031218072017.1575: *5* fc.put_t_elements
     def put_t_elements(self) -> None:
@@ -2028,7 +2026,7 @@ class FileCommands:
             return val
         g.warning("ignoring non-dictionary unknownAttributes for", v)
         return ''
-    #@+node:ekr.20031218072017.1863: *5* fc.put_v_element & helper (changed)
+    #@+node:ekr.20031218072017.1863: *5* fc.put_v_element & helper
     def put_v_element(self, p: Position, isIgnore: bool = False) -> None:
         """Write a <v> element corresponding to a VNode."""
         fc = self
@@ -2059,14 +2057,7 @@ class FileCommands:
             fc.put(v_head + '</v>\n')
         else:
             fc.vnodesDict[gnx] = True
-            # Translate invalid characters to the corresponding 4-character string.
-            h = p.v.headString() or ''
-            h = xml.sax.saxutils.escape(h, entities={
-                '\x1a': '\\x1a',  # Sub.
-                '\x1b': '\\x1b',  # Escape.
-                '\u200B':  '\\u200B',  # Zero-width space.
-                # '\r': '\\r',  # Carriage return.
-            })
+            h = xml.sax.saxutils.escape(p.v.headString() or '', entities=self.entities)
             v_head += f"<vh>{h}</vh>"
 
             # New in 4.2: don't write child nodes of @file-thin trees
