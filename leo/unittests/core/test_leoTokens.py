@@ -655,7 +655,7 @@ class TestTokenBasedOrange(BaseTest):
     #@+node:ekr.20250202043822.1: *3* TestTBO.test_nested_fstrings
     def test_nested_fstrings(self):
 
-        # 'NoneType' object has no attribute 'line_number.
+        # https://github.com/leo-editor/leo-editor/issues/4289
         contents = """
             diff_str = f"{CMPS[cmp(old, new)]}{(diff and f'{diff:.2f}') or ''}"
         """

@@ -312,6 +312,7 @@ class Tokenizer:
 
     __slots__ = (
         'contents',
+        'fstring_level',
         'fstring_line',
         'fstring_line_number',
         'fstring_values',
@@ -329,6 +330,7 @@ class Tokenizer:
         self.token_index = 0
         self.token_list: list[InputToken] = []
         # Describing the scanned f-string...
+        self.fstring_level: int = 0
         self.fstring_line: Optional[str] = None
         self.fstring_line_number: Optional[int] = None
         self.fstring_values: Optional[list[str]] = None
@@ -339,21 +341,24 @@ class Tokenizer:
         """
         Add an InputToken to the token list.
 
-        Convert fstrings to simple strings.
+        Convert (potentially nested!) fstrings to simple strings.
         """
-        # assert line_number is not None, (repr(kind), repr(value))  ###
-        ### g.trace(kind, value, line_number)  ###
-        if self.fstring_values is None:
-            if kind == 'fstring_start':
+        if kind == 'fstring_start':
+            self.fstring_level += 1
+            if self.fstring_level == 1:
+                self.fstring_values = []
                 self.fstring_line = line
                 self.fstring_line_number = line_number
-                self.fstring_values = [value]
-                return
-        else:
+            self.fstring_values.append(value)
+            return
+        if self.fstring_level > 0:
             # Accumulating an f-string.
             self.fstring_values.append(value)
-            if kind != 'fstring_end':
+            if kind == 'fstring_end':
+                self.fstring_level -= 1
+            if self.fstring_level > 0:
                 return
+            # End of the outer f-string.
             # Create a single 'string' token from the saved values.
             kind = 'string'
             value = ''.join(self.fstring_values)
@@ -361,6 +366,7 @@ class Tokenizer:
             line = self.fstring_line or ''
             line_number = self.fstring_line_number or 0
             # Clear the saved values.
+            assert self.fstring_level == 0
             self.fstring_line = None
             self.fstring_line_number = None
             self.fstring_values = None
@@ -368,6 +374,8 @@ class Tokenizer:
         tok = InputToken(kind, value, self.token_index, line, line_number)
         self.token_index += 1
         self.token_list.append(tok)
+
+
     #@+node:ekr.20240105143214.2: *4* Tokenizer.check_results
     def check_results(self, contents: str) -> None:
 
@@ -1460,7 +1468,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         prev_token: Optional[InputToken] = None
         for i, token in enumerate(self.input_tokens):
             kind, value = token.kind, token.value
-            ### g.trace(getattr(token, 'line_number', '<no line number!>'), kind, value)  ###
             if kind in 'newline':
                 #@+<< pre-scan 'newline' tokens >>
                 #@+node:ekr.20240128230812.1: *6* << pre-scan 'newline' tokens >>
@@ -1470,8 +1477,6 @@ class TokenBasedOrange:  # Orange is the new Black.
                     in_import = False
                 #@-<< pre-scan 'newline' tokens >>
             elif kind == 'op':
-                if False and token.line_number == 99:  ###
-                    breakpoint()  ###
                 #@+<< pre-scan 'op' tokens >>
                 #@+node:ekr.20240128123117.1: *6* << pre-scan 'op' tokens >>
                 top_state: Optional[ScanState] = scan_stack[-1] if scan_stack else None
