@@ -170,7 +170,7 @@ class Optional_TestFiles(BaseTest):
 
         self.make_file_data('runLeo.py')
     #@-others
-#@+node:ekr.20240105153425.85: ** class TestTokens (BaseTest) (delete)
+#@+node:ekr.20240105153425.85: ** class TestTokens (BaseTest)
 class TestTokens(BaseTest):
     """Unit tests for tokenizing."""
 
@@ -652,6 +652,22 @@ class TestTokenBasedOrange(BaseTest):
             g.printObj(results, tag='Results')
             g.printObj(expected, tag='Expected')
         self.assertEqual(results, expected)
+    #@+node:ekr.20250202043822.1: *3* TestTBO.test_nested_fstrings
+    def test_nested_fstrings(self):
+
+        # https://github.com/leo-editor/leo-editor/issues/4289
+        contents = """
+            diff_str = f"{CMPS[cmp(old, new)]}{(diff and f'{diff:.2f}') or ''}"
+        """
+
+        contents, tokens = self.make_data(contents)
+        expected = contents.rstrip() + '\n'
+        results = self.beautify(contents, tokens)
+        # g.printObj(tokens, tag='Tokens')
+        # g.printObj(results, tag='Results')
+        self.assertEqual(results, expected)
+
+
     #@+node:ekr.20240105153425.69: *3* TestTBO.test_one_line_pet_peeves
     def test_one_line_pet_peeves(self):
 
