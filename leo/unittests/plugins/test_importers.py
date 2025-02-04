@@ -4317,7 +4317,7 @@ class TestRust(BaseTestImporter):
             /// This struct is similar to a dynamic dispatch (using `dyn Format`)
             /// because it stores a pointer to the value.
             pub struct Argument<'fmt, Context> {
-                /// The value to format stored as a raw pointer where `lifetime` stores the value's lifetime.
+                /// The value to format stored as a raw pointer...
                 value: *const c_void,
 
                 /// Stores the lifetime of the value.
@@ -4350,7 +4350,7 @@ class TestRust(BaseTestImporter):
                     '/// This struct is similar to a dynamic dispatch (using `dyn Format`)\n'
                     '/// because it stores a pointer to the value.\n'
                     "pub struct Argument<'fmt, Context> {\n"
-                    "    /// The value to format stored as a raw pointer where `lifetime` stores the value's lifetime.\n"
+                    "    /// The value to format stored as a raw pointer...\n"
                     '    value: *const c_void,\n'
                     '\n'
                     '    /// Stores the lifetime of the value.\n'

@@ -282,8 +282,8 @@ class TestTokenBasedOrange(BaseTest):
             expected = contents
             results = self.beautify(contents, tokens)
 
-            regularized_expected = tbo.regularize_nls(expected)
-            regularized_results = tbo.regularize_nls(results)
+            regularized_expected = tbo.regularize_newlines(expected)
+            regularized_results = tbo.regularize_newlines(results)
 
             if regularized_expected != regularized_results:
                 tbo.show_diffs(regularized_expected, regularized_results)
