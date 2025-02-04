@@ -15,6 +15,7 @@ class TestQt6(BaseTestImporter):
     #@+node:ekr.20220911163750.2: *3* TestQt6.test_qt6
     def test_qt6(self):
         """Test of Qt6 methods and attributes"""
+        # pylint: disable=no-name-in-module
         try:
             import leo.core.leoQt6 as Qt6
         except Exception:
