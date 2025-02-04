@@ -1,6 +1,8 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20230710105542.1: * @file ../unittests/commands/test_commanderFileCommands.py
 """Tests of leo.commands.leoConvertCommands."""
+# pylint: disable=no-member
+
 import os
 import tempfile
 import textwrap

@@ -5,6 +5,8 @@ New unit tests for Leo's outline commands.
 
 Older tests are in unittests/core/test_leoNodes.py
 """
+# pylint: disable=no-member
+
 import sys
 from leo.core.leoTest2 import LeoUnitTest
 from leo.core import leoGlobals as g

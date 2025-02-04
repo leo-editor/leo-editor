@@ -2,6 +2,8 @@
 #@+node:ekr.20210905151702.1: * @file ../unittests/core/test_leoColorizer.py
 """Tests of leoColorizer.py"""
 
+# pylint: disable=line-too-long
+
 from leo.core import leoGlobals as g
 from leo.core import leoColorizer
 from leo.core.leoQt import Qt

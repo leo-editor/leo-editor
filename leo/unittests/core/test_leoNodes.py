@@ -1,6 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20201203042030.1: * @file ../unittests/core/test_leoNodes.py
 """Tests of leoNodes.py"""
+# pylint: disable=no-member
 
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest

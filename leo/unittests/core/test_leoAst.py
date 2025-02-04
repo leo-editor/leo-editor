@@ -3,6 +3,8 @@
 """Tests of leoAst.py"""
 #@+<< test_leoAst imports >>
 #@+node:ekr.20210902074548.1: ** << test_leoAst imports >>
+# pylint: disable=reimported,wrong-import-position
+
 import ast
 from collections.abc import Callable
 import os

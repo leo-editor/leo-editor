@@ -47,12 +47,10 @@ class TestEditFileCommands(LeoUnitTest):
         c.selectPosition(root)
 
         # Run the test in the leo-editor directory (the parent of the .git directory).
+        new_dir = g.finalize_join(g.app.loadDir, '..', '..')
+        old_dir = os.getcwd()
+        os.chdir(new_dir)
         try:
-            # Change directory.
-            new_dir = g.finalize_join(g.app.loadDir, '..', '..')
-            old_dir = os.getcwd()
-            os.chdir(new_dir)
-
             # Run the command, suppressing output from git.
             expected_last_headline = 'git-diff-branches master devel'
             try:

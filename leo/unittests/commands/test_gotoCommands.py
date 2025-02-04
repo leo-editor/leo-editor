@@ -1,6 +1,8 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20230802060212.1: * @file ../unittests/commands/test_gotoCommands.py
 """Tests of leo.commands.gotoCommands."""
+# pylint: disable=no-member
+
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
 from leo.commands.gotoCommands import GoToCommands
