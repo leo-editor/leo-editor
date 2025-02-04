@@ -1,10 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20210901140718.1: * @file ../unittests/misc_tests/test_syntax.py
 """Syntax tests, including a check that Leo will continue to load!"""
-import importlib
 import glob
-import os
-from typing import Any
 
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
