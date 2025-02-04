@@ -22,7 +22,7 @@ ignore-paths=
     leo\plugins\leo_babel,
     leo\plugins\pygeotag,
     leo\scripts,
-    leo\unittests, # cyclic-import, multiple-statements
+    leo\unittests\py3_test_grammar,
 
 # Pickle collected data for later comparisons.
 persistent=no
