@@ -745,6 +745,9 @@ class StringFindTabManager:
         w = self.find_replacebox
         w.clear()
         w.insert(s)
+
+    def set_widgets_from_dict(self, d: g.Bunch) -> None:
+        pass
     #@+node:ekr.20210221130549.9: *3* sftm.toggle_checkbox
     #@@nobeautify
 

@@ -190,19 +190,6 @@ class TestChains(unittest.TestCase):
     """Ensure that only certain chains exist."""
 
     #@+others
-    #@+node:ekr.20230507170833.1: *3* function: dump_chains
-    def dump_chains(chains_list, long_chains_list):
-
-        c_pat = re.compile(r'\b(c[0-9]?|[\w_]+_c)\b')
-        p_pat = re.compile(r'\b(p[0-9]?|[\w_]+_p)\b')
-        # s_pat = re.compile(r'\b(s[0-9]?|[\w_]+_s)\b')
-        v_pat = re.compile(r'\b(v[0-9]?|[\w_]+_v)\b')
-        pats = (c_pat, p_pat, v_pat)
-
-        print(g.callers(1))
-        for s in long_chains_list:
-            if any(pat.match(s) for pat in pats):
-                print(s)
     #@+node:ekr.20230507122923.1: *3* TestChains.slow_test_all_paths
     def slow_test_all_paths(self):
 
