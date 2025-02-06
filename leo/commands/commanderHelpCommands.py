@@ -137,7 +137,7 @@ def openLeoDist(self: Self, event: LeoKeyEvent = None) -> None:
 #@+node:ekr.20151225193723.1: *3* c_help.openLeoPy
 @g.commander_command('open-leo-py-leo')
 @g.commander_command('leo-py-leo')
-def openLeoPy(self: Self, event: LeoKeyEvent = None) -> None:
+def openLeoPy(self: Self, event: LeoKeyEvent = None) -> Optional[Cmdr]:
     """Open leoPy.leo or LeoPyRef.leo in a new Leo window."""
     c = self
     names = ('leoPy.leo', 'LeoPyRef.leo',)  # Used in error message.
@@ -147,20 +147,22 @@ def openLeoPy(self: Self, event: LeoKeyEvent = None) -> None:
         if g.os_path_exists(fileName):
             c2 = g.openWithFileName(fileName, old_c=c)
             if c2:
-                return
+                return c2
     g.es('not found:', ', '.join(names))
+    return None
 #@+node:ekr.20201013105418.1: *3* c_help.openLeoPyRef
 @g.commander_command('open-leo-py-ref-leo')
 @g.commander_command('leo-py-ref-leo')
-def openLeoPyRef(self: Self, event: LeoKeyEvent = None) -> None:
+def openLeoPyRef(self: Self, event: LeoKeyEvent = None) -> Optional[Cmdr]:
     """Open leoPyRef.leo in a new Leo window."""
     c = self
     path = g.finalize_join(g.app.loadDir, "..", "core", "LeoPyRef.leo")
     if g.os_path_exists(path):
         c2 = g.openWithFileName(path, old_c=c)
         if c2:
-            return
+            return c2
     g.es('LeoPyRef.leo not found')
+    return None
 #@+node:ekr.20061018094539: *3* c_help.openLeoScripts
 @g.commander_command('open-scripts-leo')
 @g.commander_command('leo-scripts-leo')

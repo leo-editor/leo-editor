@@ -1808,6 +1808,92 @@ class LeoFind:
         if self.ignore_case:
             flags |= re.IGNORECASE
         return [m.start() for m in re.finditer(find_s, s, flags)]
+    #@+node:ekr.20250206055338.1: *4* find.find-source-for-command & helper
+    @cmd('find-source-for-command')
+    def find_source_for_command(self, event: LeoKeyEvent = None) -> None:  # pragma: no cover (interactive)
+        """
+        Create a summary node containing descriptions of all matches of the
+        search string.
+
+        Typing tab converts this to the change-all command.
+        """
+        c = self.c
+        self.ftm.clear_focus()
+        self.ftm.set_entry_focus()
+        self.ftm.set_find_text('<command-name>')
+        self.findTextList = list(c.commandsDict.keys())
+        self.start_state_machine(event, 'Command Name: ',
+            handler=self.find_source_for_command1)
+
+    def find_source_for_command1(self, event: LeoKeyEvent = None) -> None:  # pragma: no cover (interactive)
+        k = self.k
+        # Settings.
+        find_pattern = k.arg
+        self.ftm.set_find_text(find_pattern)
+        settings = self.ftm.get_settings()
+        self.find_text = find_pattern
+        self.change_text = self.ftm.get_change_text()
+        self.update_find_list(find_pattern)
+        # Execute the command.
+        self.find_source_for_command_helper(self.find_text)
+        # Gui...
+        k.clearState()
+        k.resetLabel()
+        k.showStateAndMode()
+        ### self.do_find_all(settings)
+    #@+node:ekr.20250206061239.1: *5* find.find_source_for_command_helper
+    def find_source_for_command_helper(self, target: str) -> None:
+        """Find the node containing the indicated command name."""
+        c = self.c
+        patterns = (
+            re.compile(fr"^\@g\.cmd\('{target}'\)"),
+            re.compile(fr"^\@g\.commander_command\('{target}'\)"),
+        )
+
+        def _find(c: Cmdr, target: str) -> Optional[Position]:
+            """Search c for a decorator matching the target."""
+            for p in c.all_positions():
+                if target in p.b:
+                    for line in g.splitLines(p.b):
+                        for pattern in patterns:
+                            m = pattern.match(line)
+                            if m:
+                                return p
+            return None
+
+        def _was_open(filename: str) -> bool:
+            """Return True if the given file is already open."""
+            return any(z.c.shortFileName().endswith(filename) for z in g.app.windowList)
+
+        # First, look in the local file.
+        p = _find(c, target)
+        if p:
+            c.redraw(p)
+            return
+
+        table = (
+            (c.openMyLeoSettings, 'myLeoSettings.leo'),
+            (c.openLeoPy, 'leoPy.leo'),
+            (c.openLeoPyRef, 'LeoPyRef.leo'),
+            (c.openLeoSettings, 'leoSettings.leo'),
+        )
+
+        # Look in the the usual places.
+        for _func, expected_file_name in table:
+            was_open = _was_open(expected_file_name)
+            c2 = _func()  # Open the settings file.
+            if c2:
+                # print(f"Searching {c2.shortFileName()}")
+                p = _find(c2, target)
+                if p:
+                    c2.redraw(p)
+                    return
+                if not was_open:
+                    g.app.closeLeoWindow(c2.frame)
+
+        # Not found: Restore the previously selected tab.
+        if hasattr(c.frame, 'top'):
+            c.frame.top.leo_master.select(c)
     #@+node:ekr.20131117164142.17003: *4* find.re-search
     @cmd('re-search')
     @cmd('re-search-forward')
