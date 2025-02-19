@@ -2469,7 +2469,7 @@ class LoadManager:
             filenames = g.glob_glob(pattern)
             for filename in filenames:
                 sfn = g.shortFileName(filename)
-                if sfn != '__init__.py':
+                if sfn.endswith('.py') and sfn != '__init__.py':
                     try:
                         module_name = sfn[:-3]
                         # Important: use importlib to give imported modules their fully qualified names.
