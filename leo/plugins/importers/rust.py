@@ -151,7 +151,7 @@ class Rust_Importer(Importer):
             # Note: skip *adds* newlines.
             target = '"' + '#' * j
             while i < len(s):
-                ch = s[i]
+                ### ch = s[i]
                 if g.match(s, i, target):
                     skip_n(len(target))
                     return
@@ -283,7 +283,7 @@ class Rust_Importer(Importer):
         while i < len(s):
             ch = s[i]
             if ch == '\n':
-                line_start = i + 1
+                ### line_start = i + 1
                 line_number += 1
                 add()
                 # Only newline adds to the result_list.
