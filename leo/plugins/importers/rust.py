@@ -108,7 +108,7 @@ class Rust_Importer(Importer):
         s = ''.join(lines)
         result_lines = []
         result = []
-        line_number, line_start = 1, 0  # For traces.
+        line_number = 1  # For traces.
 
         #@+others  # Define helper functions.
         #@+node:ekr.20231105043204.1: *4* rust_i function: oops
@@ -151,7 +151,6 @@ class Rust_Importer(Importer):
             # Note: skip *adds* newlines.
             target = '"' + '#' * j
             while i < len(s):
-                ### ch = s[i]
                 if g.match(s, i, target):
                     skip_n(len(target))
                     return
@@ -283,7 +282,6 @@ class Rust_Importer(Importer):
         while i < len(s):
             ch = s[i]
             if ch == '\n':
-                ### line_start = i + 1
                 line_number += 1
                 add()
                 # Only newline adds to the result_list.
