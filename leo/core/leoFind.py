@@ -771,7 +771,6 @@ class LeoFind:
         """Return a list of compiled regex patterns."""
         c = self.c
         colorer = c.frame.body.colorizer
-        p = c.p
         if not word or not colorer:
             return []
 
