@@ -952,9 +952,8 @@ class LeoQtTree(leoFrame.LeoTree):
         if e:
             e.setObjectName('headline')
         # Always do these!
-        wrapper = self.connectEditorWidget(e, item)
+        self.connectEditorWidget(e, item)
         self.sizeTreeEditor(c, e)
-
     #@+node:ekr.20110605121601.18421: *4* qtree.createTreeItem
     def createTreeItem(self, p: Position, parent_item: Item) -> Item:
 

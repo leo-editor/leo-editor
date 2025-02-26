@@ -170,7 +170,7 @@ class Python_Importer(Importer):
             """Return the length of the leading whitespace for s."""
             return len(s) - len(s.lstrip())
 
-        i0 = i - 1  # For traces.
+        # i0 = i - 1  # For traces.
         prev_line = self.guide_lines[i - 1]
         kinds = ('class', 'def', '->')  # '->' denotes a coffeescript function.
         assert any(z in prev_line for z in kinds), (i, repr(prev_line))

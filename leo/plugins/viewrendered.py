@@ -856,8 +856,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         Return a *new* QWebEngineView instance with support for pdf,
         deleting any previous instance.
         """
-        c = self.c
-
         # Create the QWebEngineView if possible and embed the widget.
         w = self.create_web_engineview()
         assert w == self.w, g.callers()
@@ -1264,7 +1262,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         The first line of `s` should be a `@pdf <path>`.
         Resolve relative paths using the outline's directory.
         """
-        p = self.c.p
         if not s.strip():
             return
 
@@ -1516,8 +1513,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     #@+node:ekr.20241231121247.1: *4* vr.update_typst
     def update_typst(self, s: str, keywords: Any) -> None:
         """Display the typest text in `s` in the VR pane."""
-        p = self.c.p
-
         # Create a new QWebEngineView.
         w = self.create_web_engineview_with_pdf()
         if not has_webengineview:
