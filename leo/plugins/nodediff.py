@@ -322,11 +322,10 @@ class NodeDiffController:
         else:
             return
 
-        cmd = subprocess.Popen(
-            cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-        data, err = cmd.communicate()
+        proc = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        data, err = proc.communicate()
 
-        aFile = StringIO(data)
+        aFile = StringIO(g.toUnicode(data))
         tree = leosax.get_leo_data(aFile)
         for node in tree.flat():
             if node.gnx == gnx:
