@@ -2840,7 +2840,6 @@ class JEditColorizer(BaseColorizer):
         """
         Return the string state corresponding to the given integer state.
         """
-        c = self.c
 
         def default_language(n: int) -> str:
             # This optimization is crucial for large text.
