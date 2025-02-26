@@ -867,8 +867,6 @@ class Commands:
             processor_map = scan_map('PROCESSORS')
             extension_map = scan_map('EXTENSIONS')
             return processor_map, extension_map, terminal
-
-        ### maps = get_external_maps()
         #@+node:tom.20241014154415.9: *4* getExeKind
         def getExeKind(ext: str) -> str:
             """
