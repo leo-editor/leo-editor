@@ -3,7 +3,7 @@
 # This file contains functions for non-interactive searching.
 # You might find these useful while running other scripts.
 
-import leo, string, re
+import re
 
 #@+others
 #@+node:EKR.20040502195118.1:changeAll
@@ -47,16 +47,16 @@ def changeNext(v, pos, findPat, changePat, bodyFlag=1):
     if v == None:
         return None, 0
     if bodyFlag:
-        s = v.bodyString()
+        s = v.b
         # s[pos:pos+n] = changePat
         s = s[:pos] + changePat + s[pos + n :]
-        v.setBodyStringOrPane(s)
+        v.b = s
     else:
-        s = v.headString()
+        s = v.h
         # s[pos:pos+n] = changePat
         s = s[:pos] + changePat + s[pos + n :]
-        v.setHeadStringOrHeadline(s)
-        print("setting head string: ", result)
+        v.h = s
+        print("setting head string: ", v.h)
     return v, pos
 #@nonl
 #@-node:EKR.20040502195118.2:changeNext

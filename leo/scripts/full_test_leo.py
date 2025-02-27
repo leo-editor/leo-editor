@@ -3,10 +3,11 @@
 """
 full_test_leo.py: Run all the following scripts:
     
-- Run beautify_leo.py.
-- Run run_test_leo.py.
-- Run mypy_leo.py.
-- Run ruff_leo.py.
+- beautify_leo.py.
+- pyflakes_leo.py
+- run_test_leo.py.
+- mypy_leo.py.
+- ruff_leo.py.
 
 Devs: *please* run this script before pushing!
 
@@ -29,10 +30,11 @@ python = 'py' if isWindows else 'python'
 
 for command in [
     fr'{python} -m "leo.scripts.beautify_all_leo',
+    fr'{python} -m "leo.scripts.pyflakes_leo',
     fr'{python} -m "leo.scripts.run_test_leo',
     fr'{python} -m "leo.scripts.mypy_leo',
     fr'{python} -m "leo.scripts.ruff_leo',
-    # fr'{python} -m "leo.scripts.pylint_leo',
+    fr'{python} -m "leo.scripts.pylint_leo',
 ]:
     subprocess.Popen(command, shell=True).communicate()
 #@-leo

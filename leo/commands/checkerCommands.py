@@ -529,7 +529,7 @@ class PyflakesCommand:
                 g.es(s)
     #@+node:ekr.20160516072613.6: *3* pyflakes.check_all
     def check_all(self, roots: list[Position]) -> int:
-        """Run pyflakes on all files in paths."""
+        """Run pyflakes on all files in roots."""
         c = self.c
         total_errors = 0
         for i, root in enumerate(roots):
