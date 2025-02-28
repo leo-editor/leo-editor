@@ -291,7 +291,6 @@ class LeoApp:
             "katex": "html",  # Leo 6.8.4
             "mathjax": "html",  # Leo 6.8.4
             "toml": "ini",
-            "typst": "rest",  # Leo 6.8.4
             # Values are existing languages in leo/modes.
         }
     #@+node:ekr.20120522160137.9911: *5* app.define_extension_dict
@@ -448,6 +447,8 @@ class LeoApp:
             "txt":      "plain",
             # "txt":      "text",
             # "txt":      "unknown", # Set when @comment is seen.
+            "typ":      "typst",
+            "typst":    "typst",
             "uc":       "uscript",
             "v":        "verilog",
             "vbs":      "vbscript",
@@ -843,6 +844,7 @@ class LeoApp:
             "tpl"           : "tpl",
             "tsql"          : "sql", # A guess.
             "typescript"    : "ts",
+            "typst"         : "typ",
             "unknown"       : "txt", # Set when @comment is seen.
             "uscript"       : "uc",
             "vbscript"      : "vbs",
