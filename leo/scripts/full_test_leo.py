@@ -29,12 +29,12 @@ isWindows = sys.platform.startswith('win')
 python = 'py' if isWindows else 'python'
 
 for command in [
-    fr'{python} -m "leo.scripts.beautify_all_leo',
-    fr'{python} -m "leo.scripts.pyflakes_leo',
-    fr'{python} -m "leo.scripts.run_test_leo',
-    fr'{python} -m "leo.scripts.mypy_leo',
-    fr'{python} -m "leo.scripts.ruff_leo',
-    fr'{python} -m "leo.scripts.pylint_leo',
+    fr'{python} -m leo.scripts.beautify_all_leo',
+    fr'{python} -m leo.scripts.pyflakes_leo',
+    fr'{python} -m leo.scripts.run_test_leo',
+    fr'{python} -m leo.scripts.mypy_leo',
+    fr'{python} -m leo.scripts.ruff_leo',
+    fr'{python} -m leo.scripts.pylint_leo',
 ]:
     subprocess.Popen(command, shell=True).communicate()
 #@-leo
