@@ -241,12 +241,6 @@ def cweb_rule17(colorer, s, i):
         return 0
     return colorer.match_plain_seq(s, i, kind="operator", seq="<")
 
-def cweb_rule18(colorer, s, i):
-    global in_doc_part
-    if in_doc_part:
-        return 0
-    return colorer.match_plain_seq(s, i, kind="operator", seq="%")
-
 def cweb_rule19(colorer, s, i):
     global in_doc_part
     if in_doc_part:
@@ -283,7 +277,7 @@ def cweb_rule24(colorer, s, i):
         return 0
     return colorer.match_plain_seq(s, i, kind="operator", seq="{")
 
-def cweb_rule_semicolon(colorer, s, i):  # #4283.
+def cweb_semicolon(colorer, s, i):  # #4283.
     global in_doc_part
     if in_doc_part:
         return 0
@@ -293,19 +287,22 @@ def cweb_rule_semicolon(colorer, s, i):  # #4283.
 def cweb_rule26(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="function", pattern="(",
           exclude_match=True)
-#@+node:ekr.20250123061808.28: *3* function: cweb_keyword & label
+#@+node:ekr.20250302120359.1: *3* function: cweb_percent
+def cweb_percent(colorer, s, i):
+    return colorer.match_line(s, i, kind="comment1")
+
+#@+node:ekr.20250123061808.28: *3* function: cweb_keyword
 def cweb_keyword(colorer, s, i):
     global in_doc_part
 
     if in_doc_part:
         return 0
 
-    # cweb_rule_at_sign handles all section references.
+    # cweb_at_sign handles all section references.
     seq = s[i : i + 2]
     if seq in ('@<', '@.'):
         return 0
     return  colorer.match_keywords(s, i)
-
 #@+node:ekr.20250302073158.1: *3* function: cweb_backslash
 def cweb_backslash(colorer, s, i):
     """Handle TeX control sequences."""
@@ -320,8 +317,8 @@ def cweb_backslash(colorer, s, i):
         i += 1
     seq = s[i1:i]
     return colorer.match_seq(s, i1, kind="keyword1", seq=seq)
-#@+node:ekr.20250302054554.1: *3* function: cweb_rule_at_sign
-def cweb_rule_at_sign(colorer, s, i):
+#@+node:ekr.20250302054554.1: *3* function: cweb_at_sign
+def cweb_at_sign(colorer, s, i):
     """
     Handle cweb directives. @ continues until the next directive.
     """
@@ -339,7 +336,7 @@ def cweb_rule_at_sign(colorer, s, i):
             seq2 = s[i + 2 : j]
             colorer.match_seq(s, i + 2, kind="label", seq=seq2)
             colorer.match_line(s, j, kind="keyword1")
-            return 0
+            return len(s)
         return colorer.match_line(s, i, kind="keyword1")
     return colorer.match_seq(s, i, kind="keyword1", seq=seq)
 #@-others
@@ -348,12 +345,12 @@ def cweb_rule_at_sign(colorer, s, i):
 #@+node:ekr.20250123062712.1: ** << cweb: rules dict >>
 # Rules dict for cweb_main ruleset.
 rulesDict1 = {
-    ";": [cweb_rule_semicolon],  # #4283.
-    "@": [cweb_rule_at_sign],
+    ";": [cweb_semicolon],  # #4283.
+    "@": [cweb_at_sign],
     "!": [cweb_rule9],
     '"': [cweb_rule3],
     "#": [cweb_rule5, cweb_rule6],
-    "%": [cweb_rule18],
+    "%": [cweb_percent],
     "&": [cweb_rule19],
     "'": [cweb_rule4],
     "(": [cweb_rule26],
