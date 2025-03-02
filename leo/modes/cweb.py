@@ -324,9 +324,9 @@ def cweb_at_sign(colorer, s, i):
     """
     global in_doc_part
 
-    seq = s[i : i + 2]
+    seq = s[i : i + 3]
     if i == 0 or not s[:i].strip():
-        in_doc_part = seq in ('@', '@ ', '@*')  # Anything else ends the doc part.
+        in_doc_part = seq.startswith(('@', '@ ', '@**',  '@*'))  # Anything else ends the doc part.
 
     if seq in ('@<', '@.'):
         # Color sections.
