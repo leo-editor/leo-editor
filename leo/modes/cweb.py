@@ -289,33 +289,6 @@ def cweb_rule_semicolon(colorer, s, i):  # #4283.
         return 0
     return colorer.match_plain_seq(s, i, kind="operator", seq=";")
 
-#@+node:ekr.20250302054554.1: *3* function: cweb_rule_at_sign
-def cweb_rule_at_sign(colorer, s, i):
-    """
-    Handle cweb directives. @ continues until the next directive.
-    """
-    global in_doc_part
-
-    seq = s[i : i + 2]
-    if i == 0 and s[i] == '@':
-        old_in_doc_part = in_doc_part
-        in_doc_part = seq in ('@', '@ ', '@*')
-        if old_in_doc_part:
-            return colorer.match_seq(s, i, kind="keyword1", seq=seq)
-        elif in_doc_part:
-                return colorer.match_seq(s, i, kind="keyword1", seq=seq)
-
-    if seq in ('@<', '@.'):
-        # Color sections.
-        j = s.find('@>', i + 2)
-        if j > -1:
-            colorer.match_seq(s, i, kind="keyword1", seq=seq)
-            seq2 = s[i + 2 : j]
-            colorer.match_seq(s, i + 2, kind="label", seq=seq2)
-            colorer.match_line(s, j, kind="keyword1")
-            return 0
-        return colorer.match_line(s, i, kind="keyword1")
-    return colorer.match_seq(s, i, kind="keyword1", seq=seq)
 #@+node:ekr.20250123061808.27: *3* function: cweb_rule26 (
 def cweb_rule26(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="function", pattern="(",
@@ -337,7 +310,6 @@ def cweb_keyword(colorer, s, i):
 def cweb_backslash(colorer, s, i):
     """Handle TeX control sequences."""
     i1 = i
-    print('bs', s)
     # Non-alphabetic.
     seq = s[i : i + 2]
     if seq == '\\' or len(seq) > 1 and not seq[1].isalpha():
@@ -348,6 +320,28 @@ def cweb_backslash(colorer, s, i):
         i += 1
     seq = s[i1: i]
     return colorer.match_seq(s, i1, kind="keyword1", seq=seq)
+#@+node:ekr.20250302054554.1: *3* function: cweb_rule_at_sign
+def cweb_rule_at_sign(colorer, s, i):
+    """
+    Handle cweb directives. @ continues until the next directive.
+    """
+    global in_doc_part
+
+    seq = s[i : i + 2]
+    if i == 0 or not s[:i].strip():
+        in_doc_part = seq in ('@', '@ ', '@*')  # Anything else ends the doc part.
+
+    if seq in ('@<', '@.'):
+        # Color sections.
+        j = s.find('@>', i + 2)
+        if j > -1:
+            colorer.match_seq(s, i, kind="keyword1", seq=seq)
+            seq2 = s[i + 2 : j]
+            colorer.match_seq(s, i + 2, kind="label", seq=seq2)
+            colorer.match_line(s, j, kind="keyword1")
+            return 0
+        return colorer.match_line(s, i, kind="keyword1")
+    return colorer.match_seq(s, i, kind="keyword1", seq=seq)
 #@-others
 #@-<< cweb: rules >>
 #@+<< cweb: rules dict >>
