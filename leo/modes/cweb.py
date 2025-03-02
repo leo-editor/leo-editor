@@ -5,6 +5,8 @@
 
 import string
 
+in_doc_part = False  # True: in @doc part. It continues until any @x directive.
+
 #@+others
 #@-others
 
@@ -38,29 +40,29 @@ cweb_main_attributes_dict = {
 }
 
 # Attributes dict for cweb_cpp ruleset.
-cweb_cpp_attributes_dict = {
-    "default": "KEYWORD2",
-    "digit_re": "(0x[[:xdigit:]]+[lL]?|[[:digit:]]+(e[[:digit:]]*)?[lLdDfF]?)",
-    "escape": "\\",
-    "highlight_digits": "true",
-    "ignore_case": "false",
-    "no_word_sep": "",
-}
+# cweb_cpp_attributes_dict = {
+    # "default": "KEYWORD2",
+    # "digit_re": "(0x[[:xdigit:]]+[lL]?|[[:digit:]]+(e[[:digit:]]*)?[lLdDfF]?)",
+    # "escape": "\\",
+    # "highlight_digits": "true",
+    # "ignore_case": "false",
+    # "no_word_sep": "",
+# }
 
 # Attributes dict for cweb_include ruleset.
-cweb_include_attributes_dict = {
-    "default": "KEYWORD2",
-    "digit_re": "(0x[[:xdigit:]]+[lL]?|[[:digit:]]+(e[[:digit:]]*)?[lLdDfF]?)",
-    "escape": "\\",
-    "highlight_digits": "true",
-    "ignore_case": "false",
-    "no_word_sep": "",
-}
+# cweb_include_attributes_dict = {
+    # "default": "KEYWORD2",
+    # "digit_re": "(0x[[:xdigit:]]+[lL]?|[[:digit:]]+(e[[:digit:]]*)?[lLdDfF]?)",
+    # "escape": "\\",
+    # "highlight_digits": "true",
+    # "ignore_case": "false",
+    # "no_word_sep": "",
+# }
 
 # Dictionary of attributes dictionaries for cweb mode.
 attributesDictDict = {
-    "cweb_cpp": cweb_cpp_attributes_dict,
-    "cweb_include": cweb_include_attributes_dict,
+    # "cweb_cpp": cweb_cpp_attributes_dict,
+    # "cweb_include": cweb_include_attributes_dict,
     "cweb_main": cweb_main_attributes_dict,
 }
 #@-<< cweb: attributes & dict >>
@@ -115,8 +117,8 @@ cweb_main_keywords_dict = {
 
 # Dictionary of keywords dictionaries for cweb mode.
 keywordsDictDict = {
-    ### "cweb_cpp": cweb_cpp_keywords_dict,
-    ### "cweb_include": cweb_include_keywords_dict,
+    # "cweb_cpp": cweb_cpp_keywords_dict,
+    # "cweb_include": cweb_include_keywords_dict,
     "cweb_main": cweb_main_keywords_dict,
 }
 #@-<< cweb: keywords dict >>
@@ -207,29 +209,47 @@ def cweb_rule23(colorer, s, i):
 def cweb_rule24(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq="{")
 
-def cweb_rule_at_sign(colorer, s, i):  # #4283.
-    return colorer.match_plain_seq(s, i, kind="operator", seq="@")
-
 def cweb_rule_semicolon(colorer, s, i):  # #4283.
     return colorer.match_plain_seq(s, i, kind="operator", seq=";")
 
+#@+node:ekr.20250302054554.1: *3* function: cweb_rule_at_sign
+def cweb_rule_at_sign(colorer, s, i):
+    """
+    Handle cweb directives. @ continues until the next directive.
+    """
+    global in_doc_part
+
+    seq = s[i : i + 2]
+    if i == 0 and s[i] == '@':
+        in_doc_part = seq in ('@', '@ ', '@*')
+        if in_doc_part:
+            colorer.match_seq(s, i, kind="keyword1", seq=seq)
+            return colorer.match_line(s, i + len(seq), kind="")
+    if in_doc_part:
+        return colorer.match_line(s, i, kind="")
+    if seq in ('@<', '@.'):
+        # Color sections.
+        j = s.find('@>', i + 2)
+        if j > -1:
+            colorer.match_seq(s, i, kind="keyword1", seq=seq)
+            seq2 = s[i + 2 : j]
+            colorer.match_seq(s, i + 2, kind="label", seq=seq2)
+            colorer.match_line(s, j, kind="keyword1")
+            return len(s)
+        return colorer.match_line(s, i, kind="keyword1")
+    return colorer.match_seq(s, i, kind="keyword1", seq=seq)
 #@+node:ekr.20250123061808.27: *3* function: cweb_rule26 (
 def cweb_rule26(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="function", pattern="(",
           exclude_match=True)
 #@+node:ekr.20250123061808.28: *3* function: cweb_keyword & label
 def cweb_keyword(colorer, s, i):
-    n = colorer.match_keywords(s, i)
-    if n >= 0:
-        return n
-    i2 = i + abs(n)
-    ch = s[i2] if i2 < len(s) else ''
-    if ch != ':':
-        return n
+    # cweb_rule_at_sign handles all section references.
+    seq = s[i : i + 2]
+    if seq in ('@<', '@.'):
+        return 0
+    return  colorer.match_keywords(s, i)
 
-    # color the label.
-    seq = s[i : i2 + 1]
-    return colorer.match_seq(s, i, kind="label", seq=seq)
 #@-others
 #@-<< cweb: rules >>
 #@+<< cweb: rules dict >>
@@ -237,7 +257,7 @@ def cweb_keyword(colorer, s, i):
 # Rules dict for cweb_main ruleset.
 rulesDict1 = {
     ";": [cweb_rule_semicolon],  # #4283.
-    "@": [cweb_rule_at_sign],  # #4283.
+    "@": [cweb_rule_at_sign],
     "!": [cweb_rule9],
     '"': [cweb_rule3],
     "#": [cweb_rule5, cweb_rule6],

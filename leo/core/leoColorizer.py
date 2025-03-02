@@ -1654,6 +1654,9 @@ class JEditColorizer(BaseColorizer):
         Colorize Leo's @ and @ doc constructs.
         Matches only at the start of the line.
         """
+        if self.language == 'cweb':
+            # Let the cweb colorizer handle everything.
+            return 0
         if i != 0:
             return 0
         if g.match_word(s, i, '@doc'):
