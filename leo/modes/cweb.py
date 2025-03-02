@@ -131,162 +131,162 @@ keywordsDictDict = {
 def cweb_rule0(colorer, s, i):
     global in_doc_part
     if in_doc_part:
-        return len(s)
+        return 0
     return colorer.match_span(s, i, kind="comment3", begin="/**", end="*/",
           delegate="doxygen::doxygen")
 #@+node:ekr.20250123061808.2: *3* function: cweb_rule1 /*!
 def cweb_rule1(colorer, s, i):
     global in_doc_part
     if in_doc_part:
-        return len(s)
+        return 0
     return colorer.match_span(s, i, kind="comment3", begin="/*!", end="*/",
           delegate="doxygen::doxygen")
 #@+node:ekr.20250123061808.3: *3* function: cweb_rule2 /*
 def cweb_rule2(colorer, s, i):
     global in_doc_part
     if in_doc_part:
-        return len(s)
+        return 0
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/")
 #@+node:ekr.20250123061808.4: *3* function: cweb_rule3 "
 def cweb_rule3(colorer, s, i):
     global in_doc_part
     if in_doc_part:
-        return len(s)
+        return 0
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
           no_line_break=True)
 #@+node:ekr.20250123061808.5: *3* function: cweb_rule4 '
 def cweb_rule4(colorer, s, i):
     global in_doc_part
     if in_doc_part:
-        return len(s)
+        return 0
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
           no_line_break=True)
 #@+node:ekr.20250123061808.6: *3* function: cweb_rule5 ##
 def cweb_rule5(colorer, s, i):
     global in_doc_part
     if in_doc_part:
-        return len(s)
+        return 0
     return colorer.match_plain_seq(s, i, kind="keyword2", seq="##")
 #@+node:ekr.20250123061808.7: *3* function: cweb_rule6 #
 def cweb_rule6(colorer, s, i):
     global in_doc_part
     if in_doc_part:
-        return len(s)
+        return 0
     # #4283: Colorize the whole line.
     return colorer.match_eol_span(s, i, kind="keyword2")
 #@+node:ekr.20250123061808.8: *3* function: cweb_rule7 // comment
 def cweb_rule7(colorer, s, i):
     global in_doc_part
     if in_doc_part:
-        return len(s)
+        return 0
     return colorer.match_eol_span(s, i, kind="comment2", seq="//")
 #@+node:ekr.20250123070417.1: *3* rules: operators
 def cweb_rule8(colorer, s, i):
     global in_doc_part
     if in_doc_part:
-        return len(s)
+        return 0
     return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
 def cweb_rule9(colorer, s, i):
     global in_doc_part
     if in_doc_part:
-        return len(s)
+        return 0
     return colorer.match_plain_seq(s, i, kind="operator", seq="!")
 
 def cweb_rule10(colorer, s, i):
     global in_doc_part
     if in_doc_part:
-        return len(s)
+        return 0
     return colorer.match_plain_seq(s, i, kind="operator", seq=">=")
 
 def cweb_rule11(colorer, s, i):
     global in_doc_part
     if in_doc_part:
-        return len(s)
+        return 0
     return colorer.match_plain_seq(s, i, kind="operator", seq="<=")
 
 def cweb_rule12(colorer, s, i):
     global in_doc_part
     if in_doc_part:
-        return len(s)
+        return 0
     return colorer.match_plain_seq(s, i, kind="operator", seq="+")
 
 def cweb_rule13(colorer, s, i):
     global in_doc_part
     if in_doc_part:
-        return len(s)
+        return 0
     return colorer.match_plain_seq(s, i, kind="operator", seq="-")
 
 def cweb_rule14(colorer, s, i):
     global in_doc_part
     if in_doc_part:
-        return len(s)
+        return 0
     return colorer.match_plain_seq(s, i, kind="operator", seq="/")
 
 def cweb_rule15(colorer, s, i):
     global in_doc_part
     if in_doc_part:
-        return len(s)
+        return 0
     return colorer.match_plain_seq(s, i, kind="operator", seq="*")
 
 def cweb_rule16(colorer, s, i):
     global in_doc_part
     if in_doc_part:
-        return len(s)
+        return 0
     return colorer.match_plain_seq(s, i, kind="operator", seq=">")
 
 def cweb_rule17(colorer, s, i):
     global in_doc_part
     if in_doc_part:
-        return len(s)
+        return 0
     return colorer.match_plain_seq(s, i, kind="operator", seq="<")
 
 def cweb_rule18(colorer, s, i):
     global in_doc_part
     if in_doc_part:
-        return len(s)
+        return 0
     return colorer.match_plain_seq(s, i, kind="operator", seq="%")
 
 def cweb_rule19(colorer, s, i):
     global in_doc_part
     if in_doc_part:
-        return len(s)
+        return 0
     return colorer.match_plain_seq(s, i, kind="operator", seq="&")
 
 def cweb_rule20(colorer, s, i):
     global in_doc_part
     if in_doc_part:
-        return len(s)
+        return 0
     return colorer.match_plain_seq(s, i, kind="operator", seq="|")
 
 def cweb_rule21(colorer, s, i):
     global in_doc_part
     if in_doc_part:
-        return len(s)
+        return 0
     return colorer.match_plain_seq(s, i, kind="operator", seq="^")
 
 def cweb_rule22(colorer, s, i):
     global in_doc_part
     if in_doc_part:
-        return len(s)
+        return 0
     return colorer.match_plain_seq(s, i, kind="operator", seq="~")
 
 def cweb_rule23(colorer, s, i):
     global in_doc_part
     if in_doc_part:
-        return len(s)
+        return 0
     return colorer.match_plain_seq(s, i, kind="operator", seq="}")
 
 def cweb_rule24(colorer, s, i):
     global in_doc_part
     if in_doc_part:
-        return len(s)
+        return 0
     return colorer.match_plain_seq(s, i, kind="operator", seq="{")
 
 def cweb_rule_semicolon(colorer, s, i):  # #4283.
     global in_doc_part
     if in_doc_part:
-        return len(s)
+        return 0
     return colorer.match_plain_seq(s, i, kind="operator", seq=";")
 
 #@+node:ekr.20250302054554.1: *3* function: cweb_rule_at_sign
@@ -298,17 +298,13 @@ def cweb_rule_at_sign(colorer, s, i):
 
     seq = s[i : i + 2]
     if i == 0 and s[i] == '@':
-        if in_doc_part:
-            colorer.match_seq(s, i, kind="keyword1", seq=seq)
-            return colorer.match_doc_part(s, i + len(seq))
-        else:
-            in_doc_part = seq in ('@', '@ ', '@*')
-            if in_doc_part:
-                colorer.match_seq(s, i, kind="keyword1", seq=seq)
-                i += len(seq)
+        old_in_doc_part = in_doc_part
+        in_doc_part = seq in ('@', '@ ', '@*')
+        if old_in_doc_part:
+            return colorer.match_seq(s, i, kind="keyword1", seq=seq)
+        elif in_doc_part:
+                return colorer.match_seq(s, i, kind="keyword1", seq=seq)
 
-    if in_doc_part:
-        return colorer.match_doc_part(s, i)
     if seq in ('@<', '@.'):
         # Color sections.
         j = s.find('@>', i + 2)
@@ -317,7 +313,7 @@ def cweb_rule_at_sign(colorer, s, i):
             seq2 = s[i + 2 : j]
             colorer.match_seq(s, i + 2, kind="label", seq=seq2)
             colorer.match_line(s, j, kind="keyword1")
-            return len(s)
+            return 0
         return colorer.match_line(s, i, kind="keyword1")
     return colorer.match_seq(s, i, kind="keyword1", seq=seq)
 #@+node:ekr.20250123061808.27: *3* function: cweb_rule26 (
@@ -340,17 +336,18 @@ def cweb_keyword(colorer, s, i):
 #@+node:ekr.20250302073158.1: *3* function: cweb_backslash
 def cweb_backslash(colorer, s, i):
     """Handle TeX control sequences."""
-
-    global in_doc_part
-    if in_doc_part:
-        return 0
-
-    seq = s[i : i + 2]
-
+    i1 = i
+    print('bs', s)
     # Non-alphabetic.
-    if seq == '@' or len(seq) > 1 and not seq[1].isalpha():
-        return colorer.match_seq(s, i, kind="keyword1", seq=seq)
-    return 0
+    seq = s[i : i + 2]
+    if seq == '\\' or len(seq) > 1 and not seq[1].isalpha():
+        return colorer.match_seq(s, i1, kind="keyword1", seq=seq)
+    # Alphabetic
+    i += 2
+    while i <len(s) and s[i].isalpha():
+        i += 1
+    seq = s[i1: i]
+    return colorer.match_seq(s, i1, kind="keyword1", seq=seq)
 #@-others
 #@-<< cweb: rules >>
 #@+<< cweb: rules dict >>
