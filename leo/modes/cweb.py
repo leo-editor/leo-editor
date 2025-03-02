@@ -316,9 +316,9 @@ def cweb_backslash(colorer, s, i):
         return colorer.match_seq(s, i1, kind="keyword1", seq=seq)
     # Alphabetic
     i += 2
-    while i <len(s) and s[i].isalpha():
+    while i < len(s) and s[i].isalpha():
         i += 1
-    seq = s[i1: i]
+    seq = s[i1:i]
     return colorer.match_seq(s, i1, kind="keyword1", seq=seq)
 #@+node:ekr.20250302054554.1: *3* function: cweb_rule_at_sign
 def cweb_rule_at_sign(colorer, s, i):
