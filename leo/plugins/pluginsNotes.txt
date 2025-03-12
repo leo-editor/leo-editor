@@ -233,7 +233,7 @@ tag argument               over-                                        keys in 
 'menu1'                     yes     before creating menus               c,p,v (note 3)
 'menu2'                     yes     before updating menus               c,p,v
 'new'                               start of New command                c,old_c,new_c (note 9)
-'open1'                     yes     before opening any file             c,old_c,new_c,fileName (note 4)
+'open1'                             before opening any file             c,old_c,new_c,fileName (note 4)
 'open2'                             after  opening any file             c,old_c,new_c,fileName (note 4)
 'openwith1'                 yes     before Open With command            c,p,v,openType,arg,ext
 'openwith2'                         after  Open With command            c,p,v,openType,arg,ext
