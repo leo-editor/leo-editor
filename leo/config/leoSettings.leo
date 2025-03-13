@@ -1437,7 +1437,8 @@
 <v t="ekr.20131213135427.22321"><vh>@item &amp;equal-sized-panes</vh></v>
 <v t="ekr.20131213135427.22342"><vh>@item &amp;minimize-all</vh></v>
 <v t="ekr.20131213135427.22340"><vh>@item &amp;resize-to-screen</vh></v>
-<v t="ekr.20131213135427.22323"><vh>@item toggle-&amp;split-direction</vh></v>
+<v t="felix.20250313152228.1"><vh>@item &amp;horizontal-window-layout</vh></v>
+<v t="felix.20250313152231.1"><vh>@item &amp;vertical-window-layout</vh></v>
 <v t="ekr.20180403154533.1"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.22236"><vh>@menu &amp;Scroll Text Areas</vh>
 <v t="ekr.20131213135427.22237"><vh>@item scroll-outline-down-&amp;line</vh></v>
@@ -5730,7 +5731,6 @@ minibuffer-find-mode    use-find-dialog     mode: Ctrl-F puts focus in
 <t tx="ekr.20131213135427.22320"></t>
 <t tx="ekr.20131213135427.22321"></t>
 <t tx="ekr.20131213135427.22322"></t>
-<t tx="ekr.20131213135427.22323"></t>
 <t tx="ekr.20131213135427.22340"></t>
 <t tx="ekr.20131213135427.22342"></t>
 <t tx="ekr.20131213135427.22343"></t>
@@ -11921,6 +11921,8 @@ False: (Recommended) The commands act as simple navigation commands, and do not 
 (In the same format as the .leojs file format)
 
 Leo accepts outline 'paste' data in both XML Leo format, or JSON format</t>
+<t tx="felix.20250313152228.1"></t>
+<t tx="felix.20250313152231.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
