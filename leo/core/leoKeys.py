@@ -2677,7 +2677,6 @@ class KeyHandlerClass:
             #@+node:ekr.20241210065335.1: *5* ShowCommands.show_results
             def show_results(self) -> None:
                 """Pretty-print self.d"""
-                c = self.c
 
                 # Compute the maximum length of all file names.
                 files = (self.leo_settings, self.user_settings, self.local_settings)

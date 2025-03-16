@@ -44,8 +44,8 @@ Usage:
 
 """
 
-import os, sys, shutil
-
+import os
+import sys
 
 
 def convert(filename, leoFolder, prefix):

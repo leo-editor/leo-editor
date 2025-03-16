@@ -343,6 +343,7 @@
 </v>
 <v t="ekr.20180225010850.1"><vh>In leo/modes</vh>
 <v t="ekr.20221129095254.1"><vh>@file ../modes/batch.py</vh></v>
+<v t="ekr.20250121105007.1"><vh>@file ../modes/cweb.py</vh></v>
 <v t="ekr.20150326145530.1"><vh>@file ../modes/forth.py</vh></v>
 <v t="ekr.20230419050031.1"><vh>@file ../modes/html.py</vh></v>
 <v t="ekr.20240227082119.1"><vh>@file ../modes/ini.py</vh></v>
@@ -354,6 +355,7 @@
 <v t="ekr.20210219115553.109"><vh>@file ../modes/python.py</vh></v>
 <v t="ekr.20231103124615.1"><vh>@file ../modes/rust.py</vh></v>
 <v t="ekr.20231012163843.1"><vh>@file ../modes/scheme.py</vh></v>
+<v t="ekr.20250302114419.1"><vh>@edit ../modes/tex.py</vh></v>
 </v>
 </v>
 <v t="ekr.20201012111545.1"><vh>Plugins</vh>
@@ -657,6 +659,7 @@
 <v t="ekr.20240323050520.1"><vh>@file ../scripts/beautify_all_leo.py</vh></v>
 <v t="ekr.20240322065528.1"><vh>@file ../scripts/beautify_leo.py</vh></v>
 <v t="ekr.20240322084902.1"><vh>@file ../scripts/flake8_leo.py</vh></v>
+<v t="ekr.20250227032644.1"><vh>@file ../scripts/pyflakes_leo.py</vh></v>
 <v t="ekr.20240323051724.1"><vh>@file ../scripts/full_test_leo.py</vh></v>
 <v t="ekr.20240321122413.8"><vh>@file ../scripts/mypy_leo.py</vh></v>
 <v t="ekr.20240321122413.9"><vh>@file ../scripts/pylint_leo.py</vh></v>
@@ -1604,7 +1607,7 @@ win = sys.platform.startswith('win')
 old_dir = os.getcwd()
 if win:
     new_dir = r'C:\Repos\leo-editor'
-    path = r'C:\Users\Edward~1\Backup'
+    path = r'C:\Backup'
 else:
     new_dir = '/home/edward/Repos/leo-editor'
     path = '/home/edward/Backup'

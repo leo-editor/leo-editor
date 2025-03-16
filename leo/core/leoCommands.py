@@ -867,8 +867,6 @@ class Commands:
             processor_map = scan_map('PROCESSORS')
             extension_map = scan_map('EXTENSIONS')
             return processor_map, extension_map, terminal
-
-        maps = get_external_maps()
         #@+node:tom.20241014154415.9: *4* getExeKind
         def getExeKind(ext: str) -> str:
             """
@@ -3177,12 +3175,13 @@ class Commands:
         # Write the file.
         try:
             # Retain old modification time to avoid pdb problems.
-            mod_time = os.path.getmtime(path)
-            with open(path, encoding='utf-8', mode='w') as f:
+            if os.path.exists(path):
+                mod_time = os.path.getmtime(path)
+                with open(path, encoding='utf-8', mode='w+') as f:
+                    f.write(script)
+                os.utime(path, (mod_time, mod_time))
+            with open(path, encoding='utf-8', mode='w+') as f:
                 f.write(script)
-            os.utime(path, (mod_time, mod_time))
-            # mod_time2 = os.path.getmtime(path)
-            # g.trace(mod_time, mod_time2)
         except Exception:
             g.es_exception()
             g.es(f"Failed to write script to {path}")
