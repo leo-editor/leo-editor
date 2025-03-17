@@ -4491,7 +4491,6 @@ class LeoServer:
 
             'find-var',
 
-            # 'join-leo-irc',
             'join-node-above',
             'join-node-below',
             'join-selection-to-node-below',

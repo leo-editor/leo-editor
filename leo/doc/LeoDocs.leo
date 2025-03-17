@@ -15885,7 +15885,6 @@ More Leo Resources
 .. _`scripting tutorial`:   http://blog.suspended-chord.info/2014/01/28/intro-to-leo-scripting/
 .. _`slashdot article`:     testimonials.html#speed-ream-s-slashdot-article
 .. _`wikipedia page`:       http://en.wikipedia.org/wiki/Leo_(editor)
-.. _`Leo's IRC channel`:    https://webchat.freenode.net/?channels=%23leo&amp;uio=d4
 
 Videos:
 
@@ -18395,7 +18394,6 @@ Leo also supports `Emacs-like abbreviation commands`_::
     at-file-to-at-auto
     clean-persistence
     cls
-    join-leo-irc
     open-python-window  
     script-button
 
@@ -21004,12 +21002,10 @@ Leo's Documentation Page
 
 .. _`Leo's forum`:          https://groups.google.com/g/leo-editor
 .. _`Leo's home page`:      https://leo-editor.github.io/leo-editor/
-.. _`Leo's IRC channel`:    https://webchat.freenode.net/?channels=%23leo&amp;uio=d4
 .. _`Leo's Wikipedia page`: https://en.wikipedia.org/wiki/Leo_(text_editor)
 
 `Leo's home page`_ |br|
 `Leo's forum`_ |br|
-`Leo's IRC channel`_ |br|
 `Leo's Wikipedia page`_
 
 .. toctree::
