@@ -728,6 +728,7 @@
 <v t="ekr.20150415111217.1"><vh>How can I use clones to reorganize an outline?</vh></v>
 <v t="ekr.20141108064630.8"><vh>How does EKR use clones?</vh></v>
 <v t="ekr.20120229094652.15152"><vh>How does Leo handle clone conflicts?</vh></v>
+<v t="ekr.20250317133518.1"><vh>Is there a way to clone only part of a tree?</vh></v>
 <v t="ekr.20060111192108"><vh>When is deleting a node dangerous?</vh></v>
 <v t="ekr.20170228103914.1"><vh>When may I delete clones safely?</vh></v>
 <v t="ekr.20110521135104.18151"><vh>Why doesn't Leo support cross-outline clones?</vh></v>
@@ -2507,6 +2508,8 @@
 </v>
 <v t="ekr.20241126091611.1"></v>
 <v t="ekr.20241126091524.1"><vh>Leo 6.8.3 release nodes</vh></v>
+<v t="ekr.20210402080752.1"></v>
+<v t="ekr.20250317133518.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -33030,6 +33033,19 @@ gnx: ekr.20240110034324.42
 unl: Notes--&gt;Scanning strings and comments
 gnx: ekr.20240110034324.43
 unl: Conclusion
+</t>
+<t tx="ekr.20250317133518.1">@language rest
+
+.. _`This post`: https://groups.google.com/g/leo-editor/c/_NOfUwJPNng/m/wkl8i-KoBgAJ
+.. _`example_rst_filter.py plugin`: unl:gnx://leoPy.leo#ekr.20210329114352.1
+
+
+Yes, there are several ways for scripts to simulate the often-requested "half-clone" features:
+
+- `This post`_ explains the general idea.
+- The `example_rst_filter.py plugin`_ contains example code. 
+
+
 </t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
