@@ -717,6 +717,18 @@ class LeoFrame:
     def updateStatusLine(self) -> None:
         if self.statusLine:
             self.statusLine.update()
+    #@+node:felix.20250313154127.1: *4* LeoFrame.Window Layouts
+    @frame_cmd('horizontal-window-layout')
+    def horizontalWindowLayout(self, event: LeoKeyEvent = None) -> None:
+        c = self.c
+        c.inCommand = False # Allow inner command
+        c.doCommandByName('layout-legacy')
+
+    @frame_cmd('vertical-window-layout')
+    def verticalWindowLayout(self, event: LeoKeyEvent = None) -> None:
+        c = self.c
+        c.inCommand = False # Allow inner command
+        c.doCommandByName('layout-vertical-thirds')
     #@+node:ekr.20070130115927.4: *4* LeoFrame.Cut/Copy/Paste
     #@+node:ekr.20070130115927.5: *5* LeoFrame.copyText
     @frame_cmd('copy-text')
