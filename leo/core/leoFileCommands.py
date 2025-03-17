@@ -660,7 +660,7 @@ class FileCommands:
         c = self.c
         leo_file = c.fileName()
         if not leo_file:
-            print('Please save this outline first')
+            g.es_print('Please save this outline first')
             return
 
         # Compute the timestamp.
@@ -672,6 +672,7 @@ class FileCommands:
         try:
             directory = os.environ['LEO_ARCHIVE'].strip()
             if not directory or not os.path.exists(directory):
+                g.es_print(f"Does not exist (LEO_ARCHIVE directory): {directory!r}")
                 raise KeyError
             archive_path = rf"{directory}{os.sep}{g.shortFileName(leo_file)}-{time_s}.zip"
         except KeyError:
@@ -681,7 +682,7 @@ class FileCommands:
         try:
             n = 1
             with zipfile.ZipFile(archive_path, 'w') as f:
-                f.write(leo_file)
+                f.write(leo_file, arcname=os.path.basename(leo_file))
                 for p in c.all_unique_positions():
                     if p.isAnyAtFileNode():
                         fn = c.fullPath(p)
@@ -692,7 +693,6 @@ class FileCommands:
         except Exception:
             g.es_print(f"Error writing {archive_path}")
             g.es_exception()
-
     #@+node:ekr.20210316034350.1: *3* fc: File Utils
     #@+node:ekr.20031218072017.3047: *4* fc.createBackupFile
     def createBackupFile(self, fileName: str) -> tuple[bool, str]:
