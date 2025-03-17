@@ -1193,7 +1193,7 @@ class Commands:
         namespace: dict = None,
         raiseFlag: bool = False,
         runPyflakes: bool = True,
-    ) -> None:
+    ) -> Any:
         """
         Execute a *Leo* script, written in python.
         Keyword args:
@@ -1227,7 +1227,7 @@ class Commands:
             if not valid:
                 message = f"Must select text to execute {language} script"
                 g.es_print(message, color='blue')
-                return
+                return None
         if runPyflakes:
             run_pyflakes = c.config.getBool('run-pyflakes-on-write', default=False)
         else:
@@ -1245,6 +1245,7 @@ class Commands:
             cc.PyflakesCommand(c).check_script(script_p, prefix + script)
         self.redirectScriptOutput()
         oldLog = g.app.log
+        callResult = None
         try:
             log = c.frame.log
             g.app.log = log
@@ -1257,7 +1258,7 @@ class Commands:
                         namespace = namespace or {}
                         namespace.update(script_gnx=script_p.gnx)
                     # We *always* execute the script with p = c.p.
-                    c.executeScriptHelper(args, define_g, define_name, namespace, script)
+                    callResult = c.executeScriptHelper(args, define_g, define_name, namespace, script)
                 except KeyboardInterrupt:
                     g.es('interrupted')
                 except Exception:
@@ -1273,6 +1274,7 @@ class Commands:
         finally:
             g.app.log = oldLog
             self.unredirectScriptOutput()
+        return callResult
     #@+node:ekr.20171123135625.5: *4* c.executeScriptHelper
     def executeScriptHelper(self,
         args: list,
@@ -1280,7 +1282,7 @@ class Commands:
         define_name: str,
         namespace: dict,
         script: str,
-    ) -> None:
+    ) -> Any:
         c = self
         if c.p:
             p = c.p.copy()  # *Always* use c.p and pass c.p to script.
@@ -1300,11 +1302,22 @@ class Commands:
         try:
             c.inCommand = False
             g.inScript = g.app.inScript = True  # g.inScript is a synonym for g.app.inScript.
+            final_script = script  # Default to straight script execution
+
+            if c.config.getBool('allow-script-return-result'):
+                # Pre-process the script to indent each line
+                indented_script = script.replace('\n', '\n    ')
+                # Use the pre-processed script in the f-string
+                final_script = f"def main():\n    {indented_script}\nresult = main()"
+
             if c.write_script_file:
-                scriptFile = self.writeScriptFile(script)
-                exec(compile(script, scriptFile, 'exec'), d)
+                scriptFile = self.writeScriptFile(final_script)
+                exec(compile(final_script, scriptFile, 'exec'), d)
             else:
-                exec(script, d)
+                exec(final_script, d)
+
+            # Return the optional value of a 'result' global, if defined, to be passed up the chain.
+            return d.get("result")
         finally:
             g.inScript = g.app.inScript = False
     #@+node:ekr.20171123135625.6: *4* c.redirectScriptOutput
@@ -2799,6 +2812,7 @@ class Commands:
         if len(c.recent_commands_list) > 99:
             c.recent_commands_list.pop()
         c.recent_commands_list.insert(0, command_name)
+        return_value = None
         if not g.doHook("command1", c=c, p=p, label=command_name):
             try:
                 c.inCommand = True
