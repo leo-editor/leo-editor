@@ -285,17 +285,18 @@ class AtButtonCallback:
             return f"AtButtonCallback: {self.gnx}"
         raise AttributeError  # Returning None is not correct.
     #@+node:ekr.20170203043042.1: *3* AtButtonCallback.execute_script & helper
-    def execute_script(self) -> None:
+    def execute_script(self) -> Any:
         """Execute the script associated with this button."""
         script = self.find_script()
         if script:
-            self.controller.executeScriptFromButton(
+            return self.controller.executeScriptFromButton(
                 b=self.b,
                 buttonText=self.buttonText,
                 p=None,
                 script_gnx=self.gnx,
                 script=script,
             )
+        return None
     #@+node:ekr.20180313171043.1: *4* AtButtonCallback.find_script
     def find_script(self) -> str:
 
@@ -619,26 +620,27 @@ class ScriptingController:
         p: Position,
         script: str,
         script_gnx: str = None,
-    ) -> None:
+    ) -> Any:
         """Execute an @button script in p.b or script."""
         c = self.c
         if c.disableCommandsMessage:
             g.blue(c.disableCommandsMessage)
-            return
+            return None
         if not p and not script:
             g.trace('can not happen: no p and no script')
-            return
+            return None
         g.app.scriptDict = {'script_gnx': script_gnx}
         args = self.getArgs(p)
         if not script:
             script = self.getScript(p)
-        c.executeScript(args=args, p=p, script=script, silent=True)
+        result = c.executeScript(args=args, p=p, script=script, silent=True)
         # Remove the button if the script asks to be removed.
         if g.app.scriptDict.get('removeMe'):
             g.es("Removing '%s' button at its request" % buttonText)
             self.deleteButton(b)
         # Do *not* set focus here: the script may have changed the focus.
             # c.bodyWantsFocus()
+        return result
     #@+node:ekr.20130912061655.11294: *3* sc.open_gnx
     def open_gnx(self, c: Cmdr, gnx: str) -> tuple[Cmdr, Position]:
         """
@@ -818,9 +820,9 @@ class ScriptingController:
             return
         args = self.getArgs(p)
 
-        def atCommandCallback(event: Event = None, args: Any = args, c: Cmdr = c, p: Position = p.copy()) -> None:
+        def atCommandCallback(event: Event = None, args: Any = args, c: Cmdr = c, p: Position = p.copy()) -> Any:
             # pylint: disable=dangerous-default-value
-            c.executeScript(args=args, p=p, silent=True)
+            return c.executeScript(args=args, p=p, silent=True)
 
         # Fix bug 1251252: https://bugs.launchpad.net/leo-editor/+bug/1251252
         # Minibuffer commands created by mod_scripting.py have no docstrings
@@ -857,9 +859,9 @@ class ScriptingController:
             return
         args = self.getArgs(p)
 
-        def atCommandCallback(event: Event = None, args: Any = args, c: Cmdr = c, p: Position = p.copy()) -> None:
+        def atCommandCallback(event: Event = None, args: Any = args, c: Cmdr = c, p: Position = p.copy()) -> Any:
             # pylint: disable=dangerous-default-value
-            c.executeScript(args=args, p=p, silent=True)
+            return c.executeScript(args=args, p=p, silent=True)
         if p.b.strip():
             self.registerAllCommands(
                 args=args,
@@ -881,7 +883,7 @@ class ScriptingController:
             handlerc(rc)
 
     #@+node:ekr.20060328125248.14: *4* sc.handleAtScriptNode @script
-    def handleAtScriptNode(self, p: Position) -> None:
+    def handleAtScriptNode(self, p: Position) -> Any:
         """Handle @script nodes."""
         c = self.c
         tag = "@script"
@@ -890,12 +892,12 @@ class ScriptingController:
         args = self.getArgs(p)
         if self.atScriptNodes:
             g.blue("executing script %s" % (name))
-            c.executeScript(args=args, p=p, useSelectedText=False, silent=True)
-        else:
-            g.warning("disabled @script: %s" % (name))
+            return c.executeScript(args=args, p=p, useSelectedText=False, silent=True)
+        g.warning("disabled @script: %s" % (name))
         if 0:
             # Do not assume the script will want to remain in this commander.
             c.bodyWantsFocus()
+        return None
     #@+node:ekr.20150401125747.1: *3* sc.Standard buttons
     #@+node:ekr.20060522105937: *4* sc.createDebugIconButton 'debug-script'
     def createDebugIconButton(self) -> None:
@@ -1081,8 +1083,8 @@ class ScriptingController:
                 commandName2 = commandName[len(prefix) :].strip()
                 # Create a *second* func, to avoid collision in c.commandsDict.
 
-                def registerAllCommandsCallback(event: Event = None, func: Callable = func) -> None:
-                    func()
+                def registerAllCommandsCallback(event: Event = None, func: Callable = func) -> Any:
+                    return func()
 
                 # Fix bug 1251252: https://bugs.launchpad.net/leo-editor/+bug/1251252
                 # Minibuffer commands created by mod_scripting.py have no docstrings.

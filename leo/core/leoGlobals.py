@@ -3231,7 +3231,7 @@ def makePathRelativeTo(fullPath: str, basePath: str) -> str:
         return s
     return fullPath
 #@+node:ekr.20090520055433.5945: *3* g.openWithFileName
-def openWithFileName(fileName: str, old_c: Cmdr = None, gui: LeoGui = None) -> Cmdr:
+def openWithFileName(fileName: str, old_c: Cmdr = None, gui: LeoGui = None) -> Optional[Cmdr]:
     """
     Load any kind of file in the appropriate way:
 
