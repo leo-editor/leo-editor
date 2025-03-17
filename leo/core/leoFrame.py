@@ -721,13 +721,13 @@ class LeoFrame:
     @frame_cmd('horizontal-window-layout')
     def horizontalWindowLayout(self, event: LeoKeyEvent = None) -> None:
         c = self.c
-        c.inCommand = False # Allow inner command
+        c.inCommand = False  # Allow inner command
         c.doCommandByName('layout-legacy')
 
     @frame_cmd('vertical-window-layout')
     def verticalWindowLayout(self, event: LeoKeyEvent = None) -> None:
         c = self.c
-        c.inCommand = False # Allow inner command
+        c.inCommand = False  # Allow inner command
         c.doCommandByName('layout-vertical-thirds')
     #@+node:ekr.20070130115927.4: *4* LeoFrame.Cut/Copy/Paste
     #@+node:ekr.20070130115927.5: *5* LeoFrame.copyText
