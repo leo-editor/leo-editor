@@ -668,22 +668,19 @@ class FileCommands:
         time = datetime.fromtimestamp(timestamp)
         time_s = time.strftime('%Y-%m-%d-%H-%M-%S')
 
-        # Compute archive_name.
-        archive_name = None
+        # Compute the path to the archive.
         try:
-            directory = os.environ['LEO_ARCHIVE']
-            if not os.path.exists(directory):
-                g.es_print(f"Not found: {directory!r}")
-                archive_name = rf"{directory}{os.sep}{g.shortFileName(leo_file)}-{time_s}.zip"
+            directory = os.environ['LEO_ARCHIVE'].strip()
+            if not directory or not os.path.exists(directory):
+                raise KeyError
+            archive_path = rf"{directory}{os.sep}{g.shortFileName(leo_file)}-{time_s}.zip"
         except KeyError:
-            pass
-        if not archive_name:
-            archive_name = rf"{leo_file}-{time_s}.zip"
+            archive_path = rf"{leo_file}-{time_s}.zip"
 
         # Write the archive.
         try:
             n = 1
-            with zipfile.ZipFile(archive_name, 'w') as f:
+            with zipfile.ZipFile(archive_path, 'w') as f:
                 f.write(leo_file)
                 for p in c.all_unique_positions():
                     if p.isAnyAtFileNode():
@@ -691,9 +688,9 @@ class FileCommands:
                         if os.path.exists(fn):
                             n += 1
                             f.write(fn)
-            g.es_print(f"Wrote {archive_name} containing {n} file{g.plural(n)}")
+            g.es_print(f"Wrote {archive_path} containing {n} file{g.plural(n)}")
         except Exception:
-            g.es_print(f"Error writing {archive_name}")
+            g.es_print(f"Error writing {archive_path}")
             g.es_exception()
 
     #@+node:ekr.20210316034350.1: *3* fc: File Utils
