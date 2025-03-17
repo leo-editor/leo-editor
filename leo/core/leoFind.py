@@ -1816,7 +1816,6 @@ class LeoFind:
 
         Typing tab converts this to the change-all command.
         """
-        c = self.c
         self.ftm.clear_focus()
         self.ftm.set_entry_focus()
         self.ftm.set_find_text('<command-name>')
@@ -1829,7 +1828,7 @@ class LeoFind:
         # Settings.
         find_pattern = k.arg
         self.ftm.set_find_text(find_pattern)
-        settings = self.ftm.get_settings()
+        self.ftm.get_settings()
         self.find_text = find_pattern
         self.change_text = self.ftm.get_change_text()
         self.update_find_list(find_pattern)
