@@ -1227,7 +1227,7 @@ class Commands:
             if not valid:
                 message = f"Must select text to execute {language} script"
                 g.es_print(message, color='blue')
-                return
+                return None
         if runPyflakes:
             run_pyflakes = c.config.getBool('run-pyflakes-on-write', default=False)
         else:
@@ -1302,7 +1302,7 @@ class Commands:
         try:
             c.inCommand = False
             g.inScript = g.app.inScript = True  # g.inScript is a synonym for g.app.inScript.
-            final_script = script # Default to straight script execution
+            final_script = script  # Default to straight script execution
 
             if c.config.getBool('allow-script-return-result'):
                 # Pre-process the script to indent each line
@@ -1315,7 +1315,7 @@ class Commands:
                 exec(compile(final_script, scriptFile, 'exec'), d)
             else:
                 exec(final_script, d)
-                
+
             # Return the optional value of a 'result' global, if defined, to be passed up the chain.
             return d.get("result")
         finally:

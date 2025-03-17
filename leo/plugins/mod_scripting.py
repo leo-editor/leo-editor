@@ -296,6 +296,7 @@ class AtButtonCallback:
                 script_gnx=self.gnx,
                 script=script,
             )
+        return None
     #@+node:ekr.20180313171043.1: *4* AtButtonCallback.find_script
     def find_script(self) -> str:
 
@@ -624,10 +625,10 @@ class ScriptingController:
         c = self.c
         if c.disableCommandsMessage:
             g.blue(c.disableCommandsMessage)
-            return
+            return None
         if not p and not script:
             g.trace('can not happen: no p and no script')
-            return
+            return None
         g.app.scriptDict = {'script_gnx': script_gnx}
         args = self.getArgs(p)
         if not script:
@@ -892,11 +893,11 @@ class ScriptingController:
         if self.atScriptNodes:
             g.blue("executing script %s" % (name))
             return c.executeScript(args=args, p=p, useSelectedText=False, silent=True)
-        else:
-            g.warning("disabled @script: %s" % (name))
+        g.warning("disabled @script: %s" % (name))
         if 0:
             # Do not assume the script will want to remain in this commander.
             c.bodyWantsFocus()
+        return None
     #@+node:ekr.20150401125747.1: *3* sc.Standard buttons
     #@+node:ekr.20060522105937: *4* sc.createDebugIconButton 'debug-script'
     def createDebugIconButton(self) -> None:
