@@ -1103,7 +1103,6 @@
 <v t="ekr.20101113063552.9794" descendentVnodeUnknownAttributes="7d710058010000003071017d710258090000007374725f6174696d657103580c000000313337363431323836312e30710473732e"><vh>plugins_menu.py</vh></v>
 <v t="ekr.20101113063552.9491"><vh>redirect_to_log.py</vh></v>
 <v t="ekr.20101113063552.9492"><vh>scripts_menu.py</vh></v>
-<v t="ekr.20101113063552.9483"><vh>UNL.py</vh></v>
 <v t="ekr.20101113063552.9493"><vh>zenity_file_dialogs.py</vh></v>
 </v>
 </v>
@@ -9483,7 +9482,7 @@ Where '%s' is replaced with the full pathname.
 
 **Note**: This plugin terminates handling of the 'icondclick1' event by returning True. If another plugin using this event (e.g. vim.py) is also enabled, the order in ``@enabled-plugins`` matters. For example: if vim.py is enabled before mime.py, double-clicking on an ``@mime`` node will both open the body text in [g]vim AND call the mime_open_cmd.
 
-This plugin is complementary to the UNL.py plugin's ``@url`` nodes. Use ``@url`` for opening either URLs or Uniform Node Locators in "\*.leo" files and use ``@mime`` nodes for opening files on the local file system. It also replaces the startfile.py plugin, where here the headline must start with ``@mime`` to activate this plugin.
+Use ``@url`` for opening either URLs or Uniform Node Locators in "\*.leo" files and use ``@mime`` nodes for opening files on the local file system.
 
 For other sys.platform's, add an elif case to the section "guess file association handler" and either define a default _mime_open_cmd string, where "%s" will be replaced with the filename, or define a function taking the filename string as its only argument and set as open_func.
 </t>
@@ -10189,42 +10188,6 @@ Settings such as outputting just the headlines (vs. headlines &amp; body text) a
 The default export path is also stored in the INI file. By default, it's set to c:\ so you may need to modify it depending on your system.
 </t>
 <t tx="ekr.20101113063552.9482"></t>
-<t tx="ekr.20101113063552.9483">Supports Uniform Node Locators (UNL's) for linking to nodes in any Leo file.
-
-UNL's specify nodes within any Leo file. You can use them to create cross-Leo-file links! UNL
-
-This plugin consists of two parts:
-
-1) Selecting a node shows the UNL in the status line at the bottom of the Leo window. You can copy from the status line and paste it into headlines, emails, whatever.
-
-2) Double-clicking ``@url`` nodes containing UNL's select the node specified in the UNL. If the UNL species in another Leo file, the other file will be opened.
-
-Format of UNL's:
-
-UNL's referring to nodes within the present outline have the form::
-
-    headline1--&gt;headline2--&gt;...--&gt;headlineN
-
-headline1 is the headline of a top-level node, and each successive headline is the headline of a child node.
-
-UNL's of the form::
-
-    file:&lt;path&gt;#headline1--&gt;...--&gt;headlineN
-
-refer to a node specified in &lt;path&gt; For example, double clicking the following headline will take you to Chapter 8 of Leo's Users Guide::
-
-    @url file:c:/prog/leoCvs/leo/doc/leoDocs.leo#Users Guide--&gt;Chapter 8: Customizing Leo
-
-For example, suppose you want to email someone with comments about a Leo file. Create a comments.leo file containing ``@url`` UNL nodes. That is, headlines are ``@url`` followed by a UNL. The body text contains your comments about the nodes in the _other_ Leo file! Send the comments.leo to your friend, who can use the comments.leo file to quickly navigate to the various nodes you are talking about. As another example, you can copy UNL's into emails. The recipient can navigate to the nodes 'by hand' by following the arrows in the UNL.
-
-**Notes**:
-
-- At present, UNL's refer to nodes by their position in the outline. Moving a node will break the link.
-
-- Don't refer to nodes that contain UNL's in the headline. Instead, refer to the parent or child of such nodes.
-
-- You don't have to replace spaces in URL's or UNL's by '%20'.
-</t>
 <t tx="ekr.20101113063552.9484">Creates hoist buttons.
 
 This plugin puts two buttons in the icon area: a button called 'Save Hoist' and a button called 'Dehoist'. The 'Save Hoist' button hoists the presently selected node and creates a button which can later rehoist the same node. The 'Dehoist' button performs one level of dehoisting
