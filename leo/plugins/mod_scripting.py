@@ -620,27 +620,27 @@ class ScriptingController:
         p: Position,
         script: str,
         script_gnx: str = None,
-    ) -> Any:
+    ) -> None:
         """Execute an @button script in p.b or script."""
         c = self.c
         if c.disableCommandsMessage:
             g.blue(c.disableCommandsMessage)
-            return None
+            return
         if not p and not script:
             g.trace('can not happen: no p and no script')
-            return None
+            return
         g.app.scriptDict = {'script_gnx': script_gnx}
-        args = self.getArgs(p)
+        self.getArgs(p)
         if not script:
             script = self.getScript(p)
-        result = c.executeScript(args=args, p=p, script=script, silent=True)
+
         # Remove the button if the script asks to be removed.
         if g.app.scriptDict.get('removeMe'):
             g.es("Removing '%s' button at its request" % buttonText)
             self.deleteButton(b)
+
         # Do *not* set focus here: the script may have changed the focus.
             # c.bodyWantsFocus()
-        return result
     #@+node:ekr.20130912061655.11294: *3* sc.open_gnx
     def open_gnx(self, c: Cmdr, gnx: str) -> tuple[Cmdr, Position]:
         """
