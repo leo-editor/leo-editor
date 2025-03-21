@@ -3784,12 +3784,6 @@ def enable_idle_time_events(event: LeoKeyEvent) -> None:
 def toggle_idle_time_events(event: LeoKeyEvent) -> None:
     """Toggle default idle-time event handling."""
     g.app.idle_time_hooks_enabled = not g.app.idle_time_hooks_enabled
-#@+node:ekr.20150514125218.4: *3* join-leo-irc
-@g.command('join-leo-irc')
-def join_leo_irc(event: LeoKeyEvent = None) -> None:
-    """Open the web page to Leo's irc channel on freenode.net."""
-    import webbrowser
-    webbrowser.open("http://webchat.freenode.net/?channels=%23leo&uio=d4")
 #@+node:ekr.20150514125218.5: *3* open-url
 @g.command('open-url')
 def openUrl(event: LeoKeyEvent = None) -> None:
