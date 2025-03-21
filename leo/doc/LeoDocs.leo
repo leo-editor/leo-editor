@@ -9482,7 +9482,7 @@ Where '%s' is replaced with the full pathname.
 
 **Note**: This plugin terminates handling of the 'icondclick1' event by returning True. If another plugin using this event (e.g. vim.py) is also enabled, the order in ``@enabled-plugins`` matters. For example: if vim.py is enabled before mime.py, double-clicking on an ``@mime`` node will both open the body text in [g]vim AND call the mime_open_cmd.
 
-Use ``@url`` for opening either URLs or Uniform Node Locators in "\*.leo" files and use ``@mime`` nodes for opening files on the local file system. It also replaces the startfile.py plugin, where here the headline must start with ``@mime`` to activate this plugin.
+Use ``@url`` for opening either URLs or Uniform Node Locators in "\*.leo" files and use ``@mime`` nodes for opening files on the local file system.
 
 For other sys.platform's, add an elif case to the section "guess file association handler" and either define a default _mime_open_cmd string, where "%s" will be replaced with the filename, or define a function taking the filename string as its only argument and set as open_func.
 </t>
