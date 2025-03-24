@@ -213,7 +213,7 @@ class JupytextManager:
             return '', ''
         if not os.path.exists(path):
             message = f"\njtm.read: File not found: {path!r}\n"
-            g.es_print_unique_message(message, color='red')
+            g.es_print_unique_message(message)
             return '', ''
 
         # Read the .ipynb file into contents.

@@ -4946,7 +4946,7 @@ def checkUnicode(s: str, encoding: str = None) -> str:
 
     # Report the unexpected conversion.
     message = f"\n{tag}: expected unicode. got: {s!r}\n{g.callers()}"
-    g.es_print_unique_message(message, color='red')
+    g.es_print_unique_message(message)
 
     # Convert to unicode, reporting all errors.
     if not encoding:
@@ -5069,8 +5069,6 @@ def toEncodedString(s: str, encoding: str = 'utf-8', reportErrors: bool = False)
     # Tracing these calls directly yields thousands of calls.
     return s  # type:ignore
 #@+node:ekr.20050208093800.1: *4* g.toUnicode
-unicode_warnings: dict[str, bool] = {}  # Keys are g.callers.
-
 def toUnicode(s: object, encoding: str = None, reportErrors: bool = False) -> str:
     """Convert bytes to unicode if necessary."""
     if isinstance(s, str):
@@ -5078,11 +5076,11 @@ def toUnicode(s: object, encoding: str = None, reportErrors: bool = False) -> st
     tag = 'g.toUnicode'
     if not isinstance(s, bytes):
         if reportErrors and not isinstance(s, (NullObject, TracingNullObject)):
-            callers = g.callers()
-            if callers not in unicode_warnings:
-                unicode_warnings[callers] = True
-                g.error(f"{tag}: unexpected argument of type {s.__class__.__name__}")
-                g.trace(callers)
+            message = (
+                f"{tag}: unexpected argument of type {s.__class__.__name__}\n"
+                f"Callers: {g.callers}"
+            )
+            g.es_print_unique_message(message)
         return ''
     if not encoding:
         encoding = 'utf-8'
@@ -5748,7 +5746,7 @@ def print_unique_message(message: str) -> None:
         g_unique_message_d[message] = True
         print(message)
 
-def es_print_unique_message(message: str, *, color: str) -> None:
+def es_print_unique_message(message: str, *, color: str = 'error') -> None:
     """Print the given message once."""
     if message not in g_unique_message_d:
         g_unique_message_d[message] = True
