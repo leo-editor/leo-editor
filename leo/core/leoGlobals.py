@@ -2250,7 +2250,7 @@ def pdb(message: str = '') -> None:
     breakpoint()  # New in Python 3.7.
 #@+node:ekr.20050819064157: *4* g.objToString & aliases
 def objToString(
-    obj: Any,
+    obj: object,
     *,
     indent: int = 0,
     tag: str = None,
