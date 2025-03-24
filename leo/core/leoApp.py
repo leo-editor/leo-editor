@@ -40,6 +40,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.plugins.qt_events import LossageData
     from leo.plugins.qt_idle_time import IdleTime
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
+    Value = Any
 #@-<< leoApp annotations >>
 #@+others
 #@+node:ekr.20150509193629.1: ** cmd (decorator)
@@ -142,14 +143,14 @@ class LeoApp:
         #@-<< LeoApp: command-line arguments >>
         #@+<< LeoApp: Debugging & statistics >>
         #@+node:ekr.20161028035835.1: *5* << LeoApp: Debugging & statistics >>
-        self.debug_dict: dict[str, Any] = {}  # For general use.
+        self.debug_dict: dict[str, Value] = {}  # For general use.
         self.disable_redraw = False  # True: disable all redraws.
         self.disableSave = False  # May be set by plugins.
         self.idle_timers: list[IdleTime] = []  # A list of IdleTime instances, so they persist.
         self.log_listener: Optional[Popen] = None  # The external process created by the 'listen-for-log' command.
         self.positions = 0  # The number of positions generated.
         self.scanErrors = 0  # The number of errors seen by g.scanError.
-        self.statsDict: dict[str, Any] = {}  # dict used by g.stat, g.clear_stats, g.print_stats.
+        self.statsDict: dict[str, Value] = {}  # dict used by g.stat, g.clear_stats, g.print_stats.
         self.statsLockout = False  # A lockout to prevent unbound recursion while gathering stats.
         self.validate_outline = False  # True: enables c.validate_outline. (slow)
         #@-<< LeoApp: Debugging & statistics >>
@@ -266,9 +267,9 @@ class LeoApp:
         #@-<< LeoApp: plugins and event handlers >>
         #@+<< LeoApp: scripting ivars >>
         #@+node:ekr.20161028040303.1: *5* << LeoApp: scripting ivars >>
-        self.scriptDict: dict[str, Any] = {}  # For use by scripts. Cleared before running each script.
-        self.scriptResult: Any = None  # For use by leoPymacs.
-        self.permanentScriptDict: dict[str, Any] = {}  # For use by scripts. Never cleared automatically.
+        self.scriptDict: dict[str, Value] = {}  # For use by scripts. Cleared before running each script.
+        self.scriptResult: Value = None  # For use by leoPymacs.
+        self.permanentScriptDict: dict[str, Value] = {}  # For use by scripts. Never cleared automatically.
         #@-<< LeoApp: scripting ivars >>
         # Define all global data.
         self.init_at_auto_names()
@@ -1600,7 +1601,7 @@ class LoadManager:
         # LoadManager ivars corresponding to user options...
 
         self.files: list[str] = []  # List of files to be loaded.
-        self.options: dict[str, Any] = {}  # Keys are option names; values are user options.
+        self.options: dict[str, Value] = {}  # Keys are option names; values are user options.
         self.old_argv: list[str] = []  # A copy of sys.argv for debugging.
 
         # True when more files remain on the command line to be loaded.
@@ -2654,7 +2655,7 @@ class LoadManager:
         # Complete the plugins class last.
         g.app.pluginsController.finishCreate()
     #@+node:ekr.20210927034148.1: *5* LM.scanOptions & helpers
-    def scanOptions(self, fileName: str, pymacs: bool) -> dict[str, Any]:
+    def scanOptions(self, fileName: str, pymacs: bool) -> dict[str, Value]:
         """Handle all options, remove them from sys.argv and set lm.options."""
         # Define helper functions.
         #@+others
