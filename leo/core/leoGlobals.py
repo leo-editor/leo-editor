@@ -1681,7 +1681,7 @@ class SettingsDict(dict):
             aList.append(val)
             self[key] = aList
     #@+node:ekr.20190903181030.1: *4* td.get_setting & get_string_setting
-    def get_setting(self, key: str) -> Any:
+    def get_setting(self, key: str) -> Optional[str]:
         """Return the canonical setting name."""
         key = key.replace('-', '').replace('_', '')
         gs = self.get(key)
