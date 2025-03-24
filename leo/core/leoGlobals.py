@@ -274,7 +274,7 @@ class CommanderCommand:
 
 commander_command = CommanderCommand
 #@+node:ekr.20150508164812.1: *3* g.ivars2instance
-def ivars2instance(c: Cmdr, g: LeoGlobals, ivars: list[str]) -> Any:
+def ivars2instance(c: Cmdr, g: LeoGlobals, ivars: list[str]) -> object:
     """
     Return the instance of c given by ivars.
     ivars is a list of strings.
@@ -2313,7 +2313,7 @@ printList = printObj
 printTuple = printObj
 #@+node:ekr.20031218072017.1588: *3* g.Garbage Collection
 #@+node:ekr.20031218072017.1589: *4* g.clearAllIvars
-def clearAllIvars(o: Any) -> None:
+def clearAllIvars(o: object) -> None:
     """Clear all ivars of o, a member of some class."""
     if o:
         o.__dict__.clear()
