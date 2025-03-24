@@ -174,6 +174,9 @@ import time
 import tokenize
 from typing import Any, Generator, Optional, Union
 
+AnyToken = Any
+Value = Any
+
 try:
     from leo.core import leoGlobals as g
 except Exception:
@@ -181,7 +184,7 @@ except Exception:
     g = None
 
 Node = ast.AST
-Settings = Optional[dict[str, Any]]
+Settings = Optional[dict[str, Value]]
 #@-<< leoAst imports & annotations >>
 
 v1, v2, junk1, junk2, junk3 = sys.version_info
@@ -547,7 +550,7 @@ if 1:  # pragma: no cover
     #@+node:ekr.20191231072039.1: *3* functions: utils...
     # General utility functions on tokens and nodes.
     #@+node:ekr.20191119085222.1: *4* function: obj_id
-    def obj_id(obj: Any) -> str:
+    def obj_id(obj: object) -> str:
         """Return the last four digits of id(obj), for dumps & traces."""
         return str(id(obj))[-4:]
     #@+node:ekr.20191231060700.1: *4* function: op_name
@@ -2084,7 +2087,7 @@ class Orange:  # Orange is the new Black.
         t.newline_kind = self.token.kind
         return t
     #@+node:ekr.20200107170523.1: *5* orange.add_token
-    def add_token(self, kind: str, value: Any) -> OutputToken:
+    def add_token(self, kind: str, value: Value) -> OutputToken:
         """Add an output token to the code list."""
         tok = OutputToken(kind, value)
         tok.index = len(self.code_list)
@@ -2687,7 +2690,7 @@ class Tokenizer:
     """Create a list of Tokens from contents."""
 
     token_kind: str
-    results: list[Any] = []  # A list of Tokens or InputTokens.
+    results: list[AnyToken] = []  # A list of Tokens or InputTokens.
 
     #@+others
     #@+node:ekr.20191110165235.2: *4* tokenizer.add_token
@@ -3836,7 +3839,7 @@ class TokenOrderGenerator:
         args = node.args or []
         keywords = node.keywords or []
 
-        def get_pos(obj: Node) -> tuple[int, int, Any]:
+        def get_pos(obj: Node) -> tuple[int, int, Node]:
             line1 = getattr(obj, 'lineno', None)
             col1 = getattr(obj, 'col_offset', None)
             return line1, col1, obj
@@ -4353,7 +4356,7 @@ def main() -> None:  # pragma: no cover
     if args.od:
         orange_diff_command(files, settings_dict)
 #@+node:ekr.20220404062739.1: *3* function: scan_ast_args
-def scan_ast_args() -> tuple[Any, dict[str, Any], list[str]]:
+def scan_ast_args() -> tuple[object, dict[str, object], list[str]]:
     description = textwrap.dedent("""\
         Execute fstringify or beautify commands contained in leoAst.py.
     """)
@@ -4396,10 +4399,10 @@ def scan_ast_args() -> tuple[Any, dict[str, Any], list[str]]:
         tab_width=4,
         verbose=False
     )
-    args: Any = parser.parse_args()
+    args: object = parser.parse_args()
     files = args.PATHS
     # Create the settings dict, ensuring proper values.
-    settings_dict: dict[str, Any] = {
+    settings_dict: dict[str, object] = {
         'allow_joined_strings': bool(args.allow_joined),
         'force': bool(args.force),
         'max_join_line_length': abs(args.max_join),
