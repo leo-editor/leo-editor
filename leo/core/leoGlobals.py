@@ -4286,7 +4286,7 @@ class GitIssueController:
         for label in label_list:
             self.get_one_issue(label, state)
     #@+node:ekr.20180126043719.3: *5* git.get_one_issue
-    def get_one_issue(self, label: str, state: Any, limit: int = 20) -> None:
+    def get_one_issue(self, label: str, state: str, limit: int = 20) -> None:
         """Create a list of issues with the given label."""
         try:
             import requests
