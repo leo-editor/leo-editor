@@ -457,7 +457,7 @@ class BindingInfo:
         return self.kind.startswith('*mode')
     #@-others
 
-def isBindingInfo(obj: Any) -> bool:
+def isBindingInfo(obj: object) -> bool:
     return isinstance(obj, BindingInfo)
 #@+node:ekr.20031218072017.3098: *3* class g.Bunch (Python Cookbook)
 class Bunch:
