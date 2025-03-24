@@ -4244,7 +4244,7 @@ class GitIssueController:
         else:
             g.es_print('state must be in (None, "open", "closed")')
     #@+node:ekr.20180325024334.1: *5* git.get_all_issues
-    def get_all_issues(self, label_list: list, root: Position, state: Any, limit: int = 100) -> None:
+    def get_all_issues(self, label_list: list, root: Position, state: str, limit: int = 100) -> None:
         """Get all issues for the base url."""
         try:
             import requests
