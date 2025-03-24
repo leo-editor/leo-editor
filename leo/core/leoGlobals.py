@@ -5652,7 +5652,7 @@ def pr(*args: Args, **kwargs: KWargs) -> None:
     except Exception:
         pass
 #@+node:ekr.20060221083356: *3* g.prettyPrintType
-def prettyPrintType(obj: Any) -> str:
+def prettyPrintType(obj: object) -> str:
     if isinstance(obj, str):
         return 'string'
     t: Any = type(obj)
