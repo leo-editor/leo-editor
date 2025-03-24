@@ -4964,25 +4964,25 @@ def checkUnicode(s: str, encoding: str = None) -> str:
         g.error(f"{tag}: unexpected error! encoding: {encoding!r}, s:\n{s!r}")
     return s
 #@+node:ekr.20100125073206.8709: *4* g.getPythonEncodingFromString
-def getPythonEncodingFromString(s: str) -> str:
+def getPythonEncodingFromString(s: object) -> str:
     """Return the encoding given by Python's encoding line.
     s is the entire file.
     """
-    encoding = None
+    encoding = 'utf-8'
     tag, tag2 = '# -*- coding:', '-*-'
     n1, n2 = len(tag), len(tag2)
     if s:
-        # For Python 3.x we must convert to unicode before calling startswith.
+        # Convert to unicode before calling startswith.
         # The encoding doesn't matter: we only look at the first line, and if
         # the first line is an encoding line, it will contain only ascii characters.
-        s = g.toUnicode(s, encoding='ascii', reportErrors=False)
+        s = g.toUnicode(s)  # Bug fix: 2025/03/24: do *not* force ascii encoding.
         lines = g.splitLines(s)
         line1 = lines[0].strip()
         if line1.startswith(tag) and line1.endswith(tag2):
             e = line1[n1:-n2].strip()
             if e and g.isValidEncoding(e):
                 encoding = e
-        elif g.match_word(line1, 0, '@first'):  # 2011/10/21.
+        elif g.match_word(line1, 0, '@first'):
             line1 = line1[len('@first') :].strip()
             if line1.startswith(tag) and line1.endswith(tag2):
                 e = line1[n1:-n2].strip()
@@ -5091,8 +5091,11 @@ def toUnicode(s: object, encoding: str = None, reportErrors: bool = False) -> st
     except(UnicodeDecodeError, UnicodeError):  # noqa
         # https://wiki.python.org/moin/UnicodeDecodeError
         s = s.decode(encoding, 'replace')
-        if reportErrors:
-            g.error(f"{tag}: unicode error. encoding: {encoding!r}, s:\n{s!r}")
+        if g.unitTesting:
+            g.trace(f"{tag} unicode error. encoding: {encoding!r} len(s): {len(s)}")
+            g.trace(g.callers())
+        elif reportErrors:
+            g.printObj(s, tag=f"{tag} unicode error. encoding: {encoding!r}")
             g.trace(g.callers())
         return s
     except Exception:
