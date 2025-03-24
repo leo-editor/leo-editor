@@ -2047,7 +2047,7 @@ class Commands:
         """Check consistency of parent and child data structures."""
         c = self
 
-        def _assert(condition: Any) -> bool:
+        def _assert(condition: bool) -> bool:
             return g._assert(condition, show_callers=False)
 
         def dump(p: Position) -> None:
@@ -2065,7 +2065,7 @@ class Commands:
                 dump(p)
                 dump(p.parent())
                 return False
-        if p.level() > 0 and not _assert(p.v.parents):
+        if p.level() > 0 and not _assert(bool(p.v.parents)):
             g.trace("no parents")
             dump(p)
             return False

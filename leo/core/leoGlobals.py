@@ -2020,7 +2020,7 @@ def assert_is(obj: object, list_or_class: Any, warn: bool = True) -> bool:
     assert ok, (obj, obj.__class__.__name__, g.callers())
     return ok
 #@+node:ekr.20180420081530.1: *4* g._assert
-def _assert(condition: Any, show_callers: bool = True) -> bool:
+def _assert(condition: bool, show_callers: bool = True) -> bool:
     """A safer alternative to a bare assert."""
     if g.unitTesting:
         assert condition
