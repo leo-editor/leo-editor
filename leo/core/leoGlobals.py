@@ -430,7 +430,7 @@ class BindingInfo:
         self.pane = pane
         self.stroke = stroke  # The *caller* must canonicalize the shortcut.
     #@+node:ekr.20120203153754.10031: *4* BindingInfo.__hash__
-    def __hash__(self) -> Any:
+    def __hash__(self) -> int:
         return self.stroke.__hash__() if self.stroke else 0
     #@+node:ekr.20120125045244.10188: *4* BindingInfo.__repr__ & ___str_& dump
     def __repr__(self) -> str:
@@ -689,7 +689,7 @@ class KeyStroke:
     #@+node:ekr.20120203053243.10118: *4* ks.__hash__
     # Allow KeyStroke objects to be keys in dictionaries.
 
-    def __hash__(self) -> Any:
+    def __hash__(self) -> int:
         return self.s.__hash__() if self.s else 0
     #@+node:ekr.20120204061120.10067: *4* ks.__repr___ & __str__
     def __repr__(self) -> str:
