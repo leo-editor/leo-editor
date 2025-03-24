@@ -5755,7 +5755,7 @@ def es_print_unique_message(message: str, *, color: str = 'error') -> None:
 # Keys are strings: g.callers. Values are lists of str(value).
 trace_unique_dict: dict[str, list[str]] = {}
 
-def traceUnique(value: Any, *, n: int = 2, pad: int = 30) -> None:
+def traceUnique(value: object, *, n: int = 2, pad: int = 30) -> None:
     """Print unique values associated with g.callers(n)."""
     if pad is None:
         pad = 30
@@ -5774,7 +5774,7 @@ trace_unique = traceUnique
 # Keys are strings: g.callers. Values are lists of obj.__class__.__name__.
 trace_unique_class_dict: dict[str, list[str]] = {}
 
-def traceUniqueClass(obj: Any, *, n: int = 2, pad: int = 30) -> None:
+def traceUniqueClass(obj: object, *, n: int = 2, pad: int = 30) -> None:
     """Print unique class names associated with g.callers(n)."""
     key = g.callers(n)
     value_s = obj.__class__.__name__
