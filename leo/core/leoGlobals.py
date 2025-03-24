@@ -1947,7 +1947,7 @@ class TracingNullObject:
         g.null_object_print(id(self), '__setitem__')
         # pylint doesn't like trailing return None.
 #@+node:ekr.20190330072832.1: *4* g.null_object_print
-def null_object_print(id_: int, kind: Any, *args: Args) -> None:
+def null_object_print(id_: int, kind: str, *args: Args) -> None:
     tag = tracing_tags.get(id_, "<NO TAG>")
     callers = g.callers(3).split(',')
     callers_s = ','.join(callers[:-1])
