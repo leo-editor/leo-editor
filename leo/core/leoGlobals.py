@@ -5525,7 +5525,7 @@ def function_name() -> str:
         name = name[:-1]
     return name
 #@+node:ekr.20230129093329.1: *3* g.get_ctor_name
-def get_ctor_name(self: Any, file_name: str, width: int = 25) -> str:
+def get_ctor_name(self: object, file_name: str, width: int = 25) -> str:
     """
     Return <module-name>.<class-name>:>width.
 
