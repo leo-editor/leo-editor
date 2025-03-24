@@ -5930,7 +5930,7 @@ def createScratchCommander(fileName: str = None) -> None:
     frame.setInitialWindowGeometry()
     frame.resizePanesToRatio(frame.compute_ratio(), frame.compute_secondary_ratio())
 #@+node:ekr.20031218072017.3126: *3* g.funcToMethod (Python Cookbook)
-def funcToMethod(f: Any, theClass: Any, name: str = None) -> None:
+def funcToMethod(f: Callable, theClass: object, name: str = None) -> None:
     """
     From the Python Cookbook...
 
