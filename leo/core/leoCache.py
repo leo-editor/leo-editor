@@ -50,10 +50,10 @@ class CommanderWrapper:
     def keys(self) -> list[str]:
         return sorted(list(self.user_keys))
 
-    def __contains__(self, key: Any) -> bool:
+    def __contains__(self, key: str) -> bool:
         return f"{self.c.mFileName}:::{key}" in self.db
 
-    def __delitem__(self, key: Any) -> None:
+    def __delitem__(self, key: str) -> None:
         if key in self.user_keys:
             self.user_keys.remove(key)
         del self.db[f"{self.c.mFileName}:::{key}"]
@@ -135,7 +135,7 @@ class SqlitePickleShare:
     """
     #@+others
     #@+node:vitalije.20170716201700.2: *3*  Birth & special methods
-    def init_dbtables(self, conn: Any) -> None:
+    def init_dbtables(self, conn: sqlite3.Connection) -> None:
         sql = 'create table if not exists cachevalues(key text primary key, data blob);'
         conn.execute(sql)
     #@+node:vitalije.20170716201700.3: *4*  SqlitePickleShare.__init__
@@ -271,7 +271,7 @@ class SqlitePickleShare:
             names = fnmatch.filter(names, pattern)
         return [join(s, child) for child in names]
     #@+node:vitalije.20170716201700.14: *4* _fn_match
-    def _fn_match(self, s: str, pattern: Any) -> bool:
+    def _fn_match(self, s: str, pattern: str) -> bool:
         """ Return True if self.name matches the given pattern.
 
         pattern - A filename pattern with wildcards, for example '*.py'.
@@ -388,7 +388,7 @@ def dump_cache(db: Any, tag: str) -> None:
         heading = f"All others ({tag})" if files else None
         dump_list(heading, d.get('None'))
 
-def dump_list(heading: Any, aList: list) -> None:
+def dump_list(heading: str, aList: list) -> None:
     if heading:
         print(f'\n{heading}...\n')
     for aTuple in aList:
