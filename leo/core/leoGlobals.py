@@ -2205,7 +2205,7 @@ def get_line_after(s: str, i: int) -> str:
 
 getLineAfter = get_line_after
 #@+node:ekr.20080729142651.1: *4* g.getIvarsDict and checkUnchangedIvars
-def getIvarsDict(obj: Any) -> dict[str, Any]:
+def getIvarsDict(obj: object) -> dict[str, Any]:
     """Return a dictionary of ivars:values for non-methods of obj."""
     d: dict[str, Any] = dict(
         [[key, getattr(obj, key)] for key in dir(obj)
@@ -2213,7 +2213,7 @@ def getIvarsDict(obj: Any) -> dict[str, Any]:
     return d
 
 def checkUnchangedIvars(
-    obj: Any,
+    obj: object,
     d: dict[str, Any],
     exceptions: Sequence[str] = None,
 ) -> bool:
