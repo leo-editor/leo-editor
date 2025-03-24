@@ -5071,7 +5071,7 @@ def toEncodedString(s: str, encoding: str = 'utf-8', reportErrors: bool = False)
 #@+node:ekr.20050208093800.1: *4* g.toUnicode
 unicode_warnings: dict[str, bool] = {}  # Keys are g.callers.
 
-def toUnicode(s: Any, encoding: str = None, reportErrors: bool = False) -> str:
+def toUnicode(s: object, encoding: str = None, reportErrors: bool = False) -> str:
     """Convert bytes to unicode if necessary."""
     if isinstance(s, str):
         return s
@@ -5087,18 +5087,19 @@ def toUnicode(s: Any, encoding: str = None, reportErrors: bool = False) -> str:
     if not encoding:
         encoding = 'utf-8'
     try:
-        s = s.decode(encoding, 'strict')
+        return s.decode(encoding, 'strict')
     except(UnicodeDecodeError, UnicodeError):  # noqa
         # https://wiki.python.org/moin/UnicodeDecodeError
         s = s.decode(encoding, 'replace')
         if reportErrors:
             g.error(f"{tag}: unicode error. encoding: {encoding!r}, s:\n{s!r}")
             g.trace(g.callers())
+        return s
     except Exception:
         g.es_exception()
         g.error(f"{tag}: unexpected error! encoding: {encoding!r}, s:\n{s!r}")
         g.trace(g.callers())
-    return s
+        return ''
 #@+node:ekr.20031218072017.3197: *3* g.Whitespace
 #@+node:ekr.20031218072017.3198: *4* g.computeLeadingWhitespace
 # Returns optimized whitespace corresponding to width with the indicated tab_width.
