@@ -305,12 +305,12 @@ class SqlitePickleShare:
         except Exception:
             pass
         return False
-    #@+node:vitalije.20170716201700.18: *3* items
+    #@+node:vitalije.20170716201700.18: *3* items  (SqlitePickleShare)
     def items(self) -> Generator:
         sql = 'select key,data from cachevalues;'
         for key, data in self.conn.execute(sql):
             yield key, data
-    #@+node:vitalije.20170716201700.19: *3* keys
+    #@+node:vitalije.20170716201700.19: *3* keys (SqlitePickleShare)
     # Called by clear, and during unit testing.
 
     def keys(self, globpat: str = None) -> Generator:
@@ -324,7 +324,7 @@ class SqlitePickleShare:
             args = tuple(globpat)
         for key in self.conn.execute(sql, args):
             yield key
-    #@+node:vitalije.20170818091008.1: *3* reset_protocol_in_values
+    #@+node:vitalije.20170818091008.1: *3* reset_protocol_in_values (SqlitePickleShare)
     def reset_protocol_in_values(self) -> None:
         PROTOCOLKEY = '__cache_pickle_protocol__'
         if self.get(PROTOCOLKEY, 3) == 2:
@@ -353,7 +353,7 @@ class SqlitePickleShare:
         self.conn.commit()
 
         self.conn.isolation_level = None
-    #@+node:vitalije.20170716201700.23: *3* uncache
+    #@+node:vitalije.20170716201700.23: *3* uncache (SqlitePickleShare)
     def uncache(self, *items: Any) -> None:
         """not used in SqlitePickleShare"""
         pass
