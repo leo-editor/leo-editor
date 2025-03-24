@@ -172,10 +172,13 @@ import sys
 import textwrap
 import time
 import tokenize
-from typing import Any, Generator, Optional, Union
+from typing import Any, Generator, Optional, Union, TYPE_CHECKING
 
-AnyToken = Any
-Value = Any
+if TYPE_CHECKING:
+    AnyToken = Any
+    Node = ast.AST
+    Value = Any
+    Settings = Optional[dict[str, Value]]
 
 try:
     from leo.core import leoGlobals as g
@@ -183,8 +186,6 @@ except Exception:
     # check_g function gives the message.
     g = None
 
-Node = ast.AST
-Settings = Optional[dict[str, Value]]
 #@-<< leoAst imports & annotations >>
 
 v1, v2, junk1, junk2, junk3 = sys.version_info
