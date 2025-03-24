@@ -2358,7 +2358,7 @@ def printGcObjects() -> int:
         count += 1
     print(f"{count:7} objects...")
     # Invert the dict.
-    d2: dict[Any, Any] = {v: k for k, v in d.items()}
+    d2: dict[Any, object] = {v: k for k, v in d.items()}
     for key in reversed(sorted(d2.keys())):
         val = d2.get(key)
         print(f"{key:7} {val}")
