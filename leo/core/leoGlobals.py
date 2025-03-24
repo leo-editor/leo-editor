@@ -4278,7 +4278,7 @@ class GitIssueController:
                 g.trace('too many pages')
                 break
     #@+node:ekr.20180126044850.1: *5* git.get_issues
-    def get_issues(self, base_url: str, label_list: list, milestone: Any, root: Position, state: Any) -> None:
+    def get_issues(self, base_url: str, label_list: list, milestone: str, root: Position, state: str) -> None:
         """Create a list of issues for each label in label_list."""
         self.base_url = base_url
         self.milestone = milestone
