@@ -8,7 +8,7 @@ import fnmatch
 import os
 import pickle
 import sqlite3
-from typing import Any, Generator, Optional, Sequence, TYPE_CHECKING, Union
+from typing import Any, Generator, Optional,  TYPE_CHECKING, Union
 import zlib
 from leo.core import leoGlobals as g
 
@@ -315,13 +315,13 @@ class SqlitePickleShare:
 
     def keys(self, globpat: str = None) -> Generator:
         """Return all keys in DB, or all keys matching a glob"""
+        args: tuple
         if globpat is None:
             sql = 'select key from cachevalues;'
-            args: Sequence[Any] = tuple()
+            args = tuple()
         else:
             sql = "select key from cachevalues where key glob ?;"
-            # pylint: disable=trailing-comma-tuple
-            args = globpat,
+            args = tuple(globpat)
         for key in self.conn.execute(sql, args):
             yield key
     #@+node:vitalije.20170818091008.1: *3* reset_protocol_in_values
