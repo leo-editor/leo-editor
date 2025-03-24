@@ -2005,7 +2005,7 @@ def isTextWrapper(w: LeoFrame) -> bool:
 #@+node:ekr.20140711071454.17649: ** g.Debugging, GC, Stats & Timing
 #@+node:ekr.20031218072017.3104: *3* g.Debugging
 #@+node:ekr.20180415144534.1: *4* g.assert_is
-def assert_is(obj: Any, list_or_class: Any, warn: bool = True) -> bool:
+def assert_is(obj: object, list_or_class: Any, warn: bool = True) -> bool:
 
     if warn:
         ok = isinstance(obj, list_or_class)
@@ -2304,7 +2304,7 @@ def sleep(n: float) -> None:
     from time import sleep  # type:ignore
     sleep(n)  # type:ignore
 #@+node:ekr.20171023140544.1: *4* g.printObj & aliases
-def printObj(obj: Any, *, tag: str = None, indent: int = 0, offset: int = 0) -> None:
+def printObj(obj: object, *, tag: str = None, indent: int = 0, offset: int = 0) -> None:
     """Pretty print any Python object using g.pr."""
     g.pr(objToString(obj, indent=indent, tag=tag, offset=offset))
 
@@ -5582,7 +5582,7 @@ def internalError(*args: Args) -> None:
 # Keys are strings: g.callers. Values are lists of obj.__class__.__name__.
 is_unique_class_dict: dict[str, list[str]] = {}
 
-def isUniqueClass(obj: Any, list_or_class: Any, *, n: int = 2) -> None:
+def isUniqueClass(obj: object, list_or_class: Any, *, n: int = 2) -> None:
     """Print a message (once) if obj is not an instance of list_or_class."""
     try:
         if isinstance(obj, list_or_class):
