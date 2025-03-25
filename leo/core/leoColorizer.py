@@ -12,7 +12,7 @@ from collections.abc import Callable
 import re
 import string
 import time
-from typing import Any, Generator, Self, Sequence, Optional, Union, TypeAlias, TYPE_CHECKING
+from typing import Any, Generator, Self, Sequence, Optional, Union, TYPE_CHECKING
 import warnings
 
 # Third-party tools.
@@ -40,9 +40,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position, VNode
     from leo.core.leoGlobals import GeneralSetting
-    Color: TypeAlias = Union[str, QtGui.QColor]
-    QColor: TypeAlias = QtGui.QColor
-    Font: TypeAlias = QtGui.QFont
     KWargs = Any
     Lexer = Callable
     Mode = g.Bunch
@@ -240,7 +237,7 @@ class BaseColorizer:
     # Keys are key::settings_names. Values are cumulative font size.
     zoom_dict: dict[str, int] = {}
 
-    def create_font(self, key: str, setting_name: str) -> Font:
+    def create_font(self, key: str, setting_name: str) -> QtGui.QFont:
         """
         Return the font for the given setting name.
 
@@ -299,7 +296,7 @@ class BaseColorizer:
             self.zoom_dict[key] = i_size
         return str(i_size)
     #@+node:ekr.20111024091133.16702: *5* BaseColorizer.configure_hard_tab_width
-    def configure_hard_tab_width(self, font: Font) -> None:
+    def configure_hard_tab_width(self, font: QtGui.QFont) -> None:
         """
         Set the width of a hard tab.
 
@@ -676,9 +673,9 @@ class BaseColorizer:
 
         default_tag = f"{tag}_font"  # See default_font_dict.
         full_tag = f"{self.language}.{tag}"
-        font: Font = None  # Set below. Define here for report().
+        font: QtGui.QFont = None  # Set below. Define here for report().
 
-        def report(color: QColor) -> None:
+        def report(color: QtGui.QColor) -> None:
             """A superb trace. Don't remove it."""
             i_j_s = f"{i:>3}:{j:<3}"
             matcher_name = g.caller(3)
@@ -718,7 +715,7 @@ class BaseColorizer:
         colorName = self.normalize(colorName)
         colorName = leo_color_database.get(colorName, colorName)
         # Get the actual color.
-        color: QColor = self.actualColorDict.get(colorName)
+        color: QtGui.QColor = self.actualColorDict.get(colorName)
         if not color:
             color = QtGui.QColor(colorName)
             if color.isValid():
@@ -763,7 +760,7 @@ class BaseColorizer:
     def init_style_ivars(self) -> None:
         """Init Style data common to JEdit and Pygments colorizers."""
         # init() properly sets these for each language.
-        self.actualColorDict: dict[str, QColor] = {}  # Used only by setTag.
+        self.actualColorDict: dict[str, QtGui.QColor] = {}  # Used only by setTag.
         self.hyperCount = 0
         # Attributes dict ivars: defaults are as shown...
         self.default = 'null'
@@ -785,7 +782,7 @@ class BaseColorizer:
         self.totalLeoKeywordsCalls = 0
         # Mode data...
         self.importedRulesets: dict[str, RuleSet] = {}
-        self.fonts: dict[str, Font] = {}  # Keys are config names.  Values are actual fonts.
+        self.fonts: dict[str, QtGui.QFont] = {}  # Keys are config names.  Values are actual fonts.
         self.keywords: dict[str, int] = {}  # Keys are keywords, values are 0..5.
         self.modes: dict[str, Mode] = {}  # Keys are languages, values are modes.
         self.mode: Mode = None  # The mode object for the present language.
@@ -3023,7 +3020,7 @@ if QtGui:
                 self._brushes[color] = result
             return result
 
-        def _get_color(self, color: str) -> Color:
+        def _get_color(self, color: str) -> QtGui.QColor:
             """ Returns a QColor built from a Pygments color string.
             """
             qcolor = QtGui.QColor()
