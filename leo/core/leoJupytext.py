@@ -25,6 +25,7 @@ from leo.core import leoGlobals as g
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position
+    Notebook = Any  # nbformat.notebooknode.NotebookNode
 #@-<< leoJupytext: imports and annotations >>
 
 #@+others
@@ -151,7 +152,7 @@ class JupytextManager:
         p.b = contents[0:end]
         return end
     #@+node:ekr.20241023162459.1: *3* jtm.dump_notebook
-    def dump_notebook(self, nb: Any) -> None:
+    def dump_notebook(self, nb: Notebook) -> None:
         """Dump a notebook (class nbformat.notebooknode.NotebookNode)"""
         g.trace(g.callers())
         # keys are 'cells', 'metadata', 'nbformat', 'nbformat_minor'.
