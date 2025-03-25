@@ -17,10 +17,10 @@ import warnings
 
 # Third-party tools.
 try:
-    import pygments  # type:ignore
+    import pygments
     from pygments.lexer import DelegatingLexer, RegexLexer, _TokenType, Text, Error
 except ImportError:
-    pygments = None  # type:ignore
+    pygments = None
 
 # Leo imports...
 from leo.core import leoGlobals as g
@@ -2873,7 +2873,7 @@ class JEditColorizer(BaseColorizer):
 if QtGui:
 
 
-    class LeoHighlighter(QtGui.QSyntaxHighlighter):  # type:ignore
+    class LeoHighlighter(QtGui.QSyntaxHighlighter):
         """
         A subclass of QSyntaxHighlighter that overrides
         the highlightBlock and rehighlight methods.
@@ -3032,7 +3032,7 @@ if QtGui:
 if Qsci:
 
 
-    class NullScintillaLexer(Qsci.QsciLexerCustom):  # type:ignore
+    class NullScintillaLexer(Qsci.QsciLexerCustom):
         """A do-nothing colorizer for Scintilla."""
 
         def __init__(self, c: Cmdr, parent: QtWidgets.QWidget = None) -> None:
@@ -3129,7 +3129,7 @@ class PygmentsColorizer(BaseColorizer):
         """
         lexer_name = 'python3' if language == 'python' else language
         try:
-            import pygments.lexers as lexers  # type: ignore
+            import pygments.lexers as lexers
             lexers.get_lexer_by_name(lexer_name)
             return True
         except Exception:
@@ -3220,7 +3220,7 @@ class PygmentsColorizer(BaseColorizer):
         self.tot_time += time.process_time() - t1
     #@+node:ekr.20190323045655.1: *4* pyg_c.at_color_callback
     def at_color_callback(self, lexer: object, match: re.Match) -> Generator:
-        from pygments.token import Name, Text  # type: ignore
+        from pygments.token import Name, Text
         kind = match.group(0)
         self.color_enabled = kind == '@color'
         if self.color_enabled:
@@ -3244,7 +3244,7 @@ class PygmentsColorizer(BaseColorizer):
 
     def get_lexer(self, language: str) -> Lexer:
         """Return the lexer for self.language, creating it if necessary."""
-        import pygments.lexers as lexers  # type: ignore
+        import pygments.lexers as lexers
         trace = 'coloring' in g.app.debug
         try:
             # #1520: always define lexer_language.
@@ -3349,16 +3349,17 @@ class QScintillaColorizer(BaseColorizer):
         self.full_recolor_count = 0  # For unit testing.
         self.language = 'python'  # set by scanLanguageDirectives.
         self.highlighter = None
-        self.lexer = None  # Set in changeLexer.
+        self.lexer: Lexer = None  # Set in changeLexer.
         widget.leo_colorizer = self
         # Define/configure various lexers.
         self.reloadSettings()
+        self.nullLexer: Union[NullScintillaLexer, g.NullObject]
         if Qsci:
             self.lexersDict = self.makeLexersDict()
             self.nullLexer = NullScintillaLexer(c)
         else:
-            self.lexersDict = {}  # type:ignore
-            self.nullLexer = g.NullObject()  # type:ignore
+            self.lexersDict = {}
+            self.nullLexer = g.NullObject()
 
     def reloadSettings(self) -> None:
         c = self.c
@@ -3384,7 +3385,7 @@ class QScintillaColorizer(BaseColorizer):
         c = self.c
         wrapper = c.frame.body.wrapper
         w = wrapper.widget  # A Qsci.QsciSintilla object.
-        self.lexer = self.lexersDict.get(language, self.nullLexer)  # type:ignore
+        self.lexer = self.lexersDict.get(language, self.nullLexer)
         w.setLexer(self.lexer)
     #@+node:ekr.20140906081909.18707: *3* qsc.colorize
     def colorize(self, p: Position, *, force: bool = False) -> None:
@@ -3565,7 +3566,7 @@ if pygments:
     # Monkeypatch!
 
     if pygments:
-        RegexLexer.get_tokens_unprocessed = get_tokens_unprocessed  # type:ignore
+        RegexLexer.get_tokens_unprocessed = get_tokens_unprocessed
     #@+node:ekr.20190320062624.3: *3* class PygmentsBlockUserData(QTextBlockUserData)
     # Copyright (c) Jupyter Development Team.
     # Distributed under the terms of the Modified BSD License.
