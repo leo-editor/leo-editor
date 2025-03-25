@@ -6,7 +6,7 @@
 from __future__ import annotations
 import random
 import textwrap
-from typing import Any, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -89,7 +89,7 @@ def make_tips(c: Cmdr) -> None:
     import requests
     url = 'https://api.github.com/repos/leo-editor/leo-editor/issues?labels=Tip&state='
 
-    def get_tips(data: Any) -> list[UserTip]:
+    def get_tips(data: dict) -> list[UserTip]:
         """get_tips - get tips from GitHub issues
         :param dict data: GitHub API issues list
         :return: list of Tips
