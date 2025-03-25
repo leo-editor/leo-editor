@@ -35,13 +35,13 @@ import re
 import textwrap
 import time
 import tokenize
-from typing import Any, Generator, Optional, Union
+from typing import Generator, Optional, Union
 
 # Leo Imports.
 from leo.core import leoGlobals as g
 assert g
 
-Settings = dict[str, Union[int, bool]]
+SettingsDict = dict[str, Union[int, bool]]
 #@-<< leoTokens.py: imports & annotations >>
 
 #@+others
@@ -98,7 +98,7 @@ def beautify_file(filename: str) -> bool:
     """
     Beautify the given file, writing it if has changed.
     """
-    settings: dict[str, Any] = {
+    settings: SettingsDict = {
         'all': False,  # Don't beautify all files.
         'beautified': True,  # Report changed files.
         'diff': False,  # Don't show diffs.
@@ -153,7 +153,7 @@ def orange_command(
     requested_files: list[str],
     dirty_files: list[str],
     to_be_checked_files: list[str],
-    settings: Optional[Settings] = None,
+    settings: Optional[SettingsDict] = None,
 ) -> None:  # pragma: no cover
     """The outer level of the 'tbo/orange' command."""
     t1 = time.process_time()
@@ -180,7 +180,7 @@ def orange_command(
             f"beautified: {n_beautified:<3} in {','.join(arg_files)}"
         )
 #@+node:ekr.20240105140814.10: *3* function: scan_args (leoTokens.py)
-def scan_args() -> tuple[Any, dict[str, Any], list[str]]:  # pragma: no cover
+def scan_args() -> tuple[argparse.Namespace, SettingsDict, list[str]]:  # pragma: no cover
     description = textwrap.dedent(
     """Beautify or diff files""")
     parser = argparse.ArgumentParser(
@@ -207,11 +207,11 @@ def scan_args() -> tuple[Any, dict[str, Any], list[str]]:  # pragma: no cover
         all=False, beautified=False, diff=False, report=False, write=False,
         tab_width=4,
     )
-    args: Any = parser.parse_args()
+    args: argparse.Namespace = parser.parse_args()
     files = args.PATHS
 
     # Create the settings dict, ensuring proper values.
-    settings_dict: dict[str, Any] = {
+    settings_dict: SettingsDict = {
         'all': bool(args.all),
         'beautified': bool(args.beautified),
         'diff': bool(args.diff),
@@ -630,7 +630,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
     #@+others
     #@+node:ekr.20240105145241.2: *4* tbo.ctor
-    def __init__(self, settings: Optional[Settings] = None):
+    def __init__(self, settings: Optional[SettingsDict] = None):
         """Ctor for Orange class."""
 
         # Set default settings.
@@ -1432,7 +1432,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         else:
             self.pending_ws = ' '
     #@+node:ekr.20240105145241.26: *5* tbo.gen_token
-    def gen_token(self, kind: str, value: Any) -> None:
+    def gen_token(self, kind: str, value: str) -> None:
         """Add an output token to the code list."""
 
         if self.pending_lws:
