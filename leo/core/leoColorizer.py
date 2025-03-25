@@ -12,7 +12,7 @@ from collections.abc import Callable
 import re
 import string
 import time
-from typing import Any, Generator, Self, Sequence, Optional, Union, TYPE_CHECKING
+from typing import Any, Generator, Self, Sequence, Optional, Union, TypeAlias, TYPE_CHECKING
 import warnings
 
 # Third-party tools.
@@ -40,8 +40,9 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position, VNode
     from leo.core.leoGlobals import GeneralSetting
-    Color = Any
-    Font = Any
+    Color: TypeAlias = Union[str, QtGui.QColor]
+    QColor: TypeAlias = QtGui.QColor
+    Font: TypeAlias = QtGui.QFont
     KWargs = Any
     Lexer = Callable
     Mode = g.Bunch
@@ -75,7 +76,7 @@ class BaseColorizer:
         if widget:  # #503: widget may be None during unit tests.
             widget.leo_colorizer = self
         # Configuration dicts...
-        self.configDict: dict[str, Color] = {}  # Keys are tags, values are colors (names or values).
+        self.configDict: dict[str, str] = {}  # Keys are tags, values are colors (names or values).
         self.configUnderlineDict: dict[str, bool] = {}  # Keys are tags, values are bools.
         # Common state ivars...
         self.enabled = False  # Per-node enable/disable flag set by updateSyntaxColorer.
@@ -668,11 +669,101 @@ class BaseColorizer:
         elif style_name != self.prev_style:
             g.es_print(f"New pygments style: {style_name}")
             self.prev_style = style_name
-    #@+node:ekr.20190324050727.1: *4* BaseColorizer.init_style_ivars
+    #@+node:ekr.20110605121601.18641: *3* BaseColorizer.setTag
+    def setTag(self, tag: str, s: str, i: int, j: int) -> None:
+        """Set the tag in the highlighter."""
+        trace = 'coloring' in g.app.debug and not g.unitTesting
+
+        default_tag = f"{tag}_font"  # See default_font_dict.
+        full_tag = f"{self.language}.{tag}"
+        font: Font = None  # Set below. Define here for report().
+
+        def report(color: QColor) -> None:
+            """A superb trace. Don't remove it."""
+            i_j_s = f"{i:>3}:{j:<3}"
+            matcher_name = g.caller(3)
+            rule_name = g.caller(4)
+            matcher_s = f"{self.rulesetName}::{rule_name}:{matcher_name}"
+            s2 = s[i:j]  # Show only the colored string.
+            print(
+                f"setTag: {self.recolorCount:4} "
+                f"{matcher_s:<50} "
+                f"color: {colorName:7} "
+                f"tag: {full_tag:<20} "
+                f"{i_j_s:7} {s2}"
+            )
+
+        self.n_setTag += 1
+        if i == j:
+            return
+        if not tag or not tag.strip():
+            return
+        tag = tag.lower().strip()
+        # A hack to allow continuation dots on any tag.
+        dots = tag.startswith('dots')
+        if dots:
+            tag = tag[len('dots') :]
+        # This color name should already be valid.
+        d = self.configDict
+        color_key = self.language.replace('_', '')
+        colorName: str = (
+            d.get(f"{self.language}.{tag}") or  # Legacy.
+            d.get(f"{color_key}.{tag}") or  # Leo 6.8.4.
+            d.get(tag)  # Legacy default.
+        )
+        if not colorName:
+            return
+        # New in Leo 5.8.1: allow symbolic color names here.
+        #                   (All keys in leo_color_database are normalized.)
+        colorName = self.normalize(colorName)
+        colorName = leo_color_database.get(colorName, colorName)
+        # Get the actual color.
+        color: QColor = self.actualColorDict.get(colorName)
+        if not color:
+            color = QtGui.QColor(colorName)
+            if color.isValid():
+                self.actualColorDict[colorName] = color
+            else:
+                # Leo 6.7.2: This should never happen: configure_colors does a pre-check.
+                message = (
+                    "jedit.setTag: can not happen: "
+                    f"full_tag: {full_tag} = {d.get(full_tag)!r} "
+                    f"tag: {tag} = {d.get(tag)!r}"
+                )
+                g.print_unique_message(message)
+                return
+        underline = self.configUnderlineDict.get(tag)
+        format = QtGui.QTextCharFormat()
+        for font_name in (full_tag, tag, default_tag):
+            font = self.fonts.get(font_name)
+            if font:
+                format.setFont(font)
+                self.configure_hard_tab_width(font)  # #1919.
+                break
+        if tag in ('blank', 'tab'):
+            if tag == 'tab' or colorName == 'black':
+                format.setFontUnderline(True)
+            if colorName != 'black':
+                format.setBackground(color)
+        elif underline:
+            format.setForeground(color)
+            format.setUnderlineStyle(UnderlineStyle.SingleUnderline)
+            format.setFontUnderline(True)
+        elif dots or tag == 'trailing_whitespace':
+            format.setForeground(color)
+            format.setUnderlineStyle(UnderlineStyle.DotLine)
+        else:
+            format.setForeground(color)
+            format.setUnderlineStyle(UnderlineStyle.NoUnderline)
+        self.tagCount += 1
+        if trace:
+            report(color)  # A superb trace.
+        self.highlighter.setFormat(i, j - i, format)
+    #@+node:ekr.20190324050727.1: *3* BaseColorizer.init_style_ivars
     def init_style_ivars(self) -> None:
         """Init Style data common to JEdit and Pygments colorizers."""
         # init() properly sets these for each language.
-        self.actualColorDict: dict[str, Color] = {}  # Used only by setTag.
+        self.actualColorDict: dict[str, QColor] = {}  # Used only by setTag.
         self.hyperCount = 0
         # Attributes dict ivars: defaults are as shown...
         self.default = 'null'
@@ -722,96 +813,6 @@ class BaseColorizer:
             'markup', 'operator',
             'trailing_whitespace',
         ]
-    #@+node:ekr.20110605121601.18641: *3* BaseColorizer.setTag
-    def setTag(self, tag: str, s: str, i: int, j: int) -> None:
-        """Set the tag in the highlighter."""
-        trace = 'coloring' in g.app.debug and not g.unitTesting
-
-        default_tag = f"{tag}_font"  # See default_font_dict.
-        full_tag = f"{self.language}.{tag}"
-        font: Font = None  # Set below. Define here for report().
-
-        def report(color: str) -> None:
-            """A superb trace. Don't remove it."""
-            i_j_s = f"{i:>3}:{j:<3}"
-            matcher_name = g.caller(3)
-            rule_name = g.caller(4)
-            matcher_s = f"{self.rulesetName}::{rule_name}:{matcher_name}"
-            s2 = s[i:j]  # Show only the colored string.
-            print(
-                f"setTag: {self.recolorCount:4} "
-                f"{matcher_s:<50} "
-                f"color: {colorName:7} "
-                f"tag: {full_tag:<20} "
-                f"{i_j_s:7} {s2}"
-            )
-
-        self.n_setTag += 1
-        if i == j:
-            return
-        if not tag or not tag.strip():
-            return
-        tag = tag.lower().strip()
-        # A hack to allow continuation dots on any tag.
-        dots = tag.startswith('dots')
-        if dots:
-            tag = tag[len('dots') :]
-        # This color name should already be valid.
-        d = self.configDict
-        color_key = self.language.replace('_', '')
-        colorName = (
-            d.get(f"{self.language}.{tag}") or  # Legacy.
-            d.get(f"{color_key}.{tag}") or  # Leo 6.8.4.
-            d.get(tag)  # Legacy default.
-        )
-        if not colorName:
-            return
-        # New in Leo 5.8.1: allow symbolic color names here.
-        #                   (All keys in leo_color_database are normalized.)
-        colorName = self.normalize(colorName)
-        colorName = leo_color_database.get(colorName, colorName)
-        # Get the actual color.
-        color = self.actualColorDict.get(colorName)
-        if not color:
-            color = QtGui.QColor(colorName)
-            if color.isValid():
-                self.actualColorDict[colorName] = color
-            else:
-                # Leo 6.7.2: This should never happen: configure_colors does a pre-check.
-                message = (
-                    "jedit.setTag: can not happen: "
-                    f"full_tag: {full_tag} = {d.get(full_tag)!r} "
-                    f"tag: {tag} = {d.get(tag)!r}"
-                )
-                g.print_unique_message(message)
-                return
-        underline = self.configUnderlineDict.get(tag)
-        format = QtGui.QTextCharFormat()
-        for font_name in (full_tag, tag, default_tag):
-            font = self.fonts.get(font_name)
-            if font:
-                format.setFont(font)
-                self.configure_hard_tab_width(font)  # #1919.
-                break
-        if tag in ('blank', 'tab'):
-            if tag == 'tab' or colorName == 'black':
-                format.setFontUnderline(True)
-            if colorName != 'black':
-                format.setBackground(color)
-        elif underline:
-            format.setForeground(color)
-            format.setUnderlineStyle(UnderlineStyle.SingleUnderline)
-            format.setFontUnderline(True)
-        elif dots or tag == 'trailing_whitespace':
-            format.setForeground(color)
-            format.setUnderlineStyle(UnderlineStyle.DotLine)
-        else:
-            format.setForeground(color)
-            format.setUnderlineStyle(UnderlineStyle.NoUnderline)
-        self.tagCount += 1
-        if trace:
-            report(color)  # A superb trace.
-        self.highlighter.setFormat(i, j - i, format)
     #@+node:ekr.20170127142001.1: *3* BaseColorizer.updateSyntaxColorer & helpers
     # Note: these are used by unit tests.
 
@@ -3012,7 +3013,7 @@ if QtGui:
             self._brushes = {}
             self._formats = {}
         #@+node:ekr.20190320154752.1: *4* leo_h._get_brush/color
-        def _get_brush(self, color: Color) -> Color:
+        def _get_brush(self, color: str) -> QtGui.QBrush:
             """ Returns a brush for the color.
             """
             result = self._brushes.get(color)
@@ -3022,7 +3023,7 @@ if QtGui:
                 self._brushes[color] = result
             return result
 
-        def _get_color(self, color: Color) -> Color:
+        def _get_color(self, color: str) -> Color:
             """ Returns a QColor built from a Pygments color string.
             """
             qcolor = QtGui.QColor()
@@ -3405,16 +3406,15 @@ class QScintillaColorizer(BaseColorizer):
     def configure_lexer(self, lexer: Lexer) -> None:
         """Configure the QScintilla lexer using @data qt-scintilla-styles."""
         c = self.c
-        qcolor, qfont = QtGui.QColor, QtGui.QFont
-        font = qfont("DejaVu Sans Mono", 14)
+        font = QtGui.QFont("DejaVu Sans Mono", 14)
         lexer.setFont(font)
         lexer.setEolFill(False, -1)
         if hasattr(lexer, 'setStringsOverNewlineAllowed'):
             lexer.setStringsOverNewlineAllowed(False)
         table: list[tuple[str, str]] = []
         aList = c.config.getData('qt-scintilla-styles')
-        color: Color
-        style: Style
+        color: str
+        style: str
         if aList:
             aList = [s.split(',') for s in aList]  # type:ignore
             for z in aList:
@@ -3449,7 +3449,7 @@ class QScintillaColorizer(BaseColorizer):
             if hasattr(lexer, style):
                 style_number = getattr(lexer, style)
                 try:
-                    lexer.setColor(qcolor(color), style_number)
+                    lexer.setColor(QtGui.QColor(color), style_number)
                 except Exception:
                     g.trace('bad color', color)
             else:
