@@ -7,14 +7,14 @@ from __future__ import annotations
 import difflib
 import filecmp
 import os
-from typing import BinaryIO, Optional, TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position, VNode
-    from io import TextIO
+    from io import FileIO, TextIO
 #@-<< leoCompare imports & annotations >>
 
 #@+others
@@ -65,7 +65,7 @@ class BaseLeoCompare:
         self.fileName1 = None
         self.fileName2 = None
         # Open files...
-        self.outputFile: BinaryIO = None
+        self.outputFile: FileIO = None
     #@+node:ekr.20031218072017.3635: *3* compare_directories (entry)
     # We ignore the filename portion of path1 and path2 if it exists.
 
