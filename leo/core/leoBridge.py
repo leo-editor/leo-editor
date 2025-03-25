@@ -56,6 +56,8 @@ from typing import Any, Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
+    Args = Any
+    KWargs = Any
 #@-<< leoBridge imports & annotations >>
 
 gBridgeController = None  # The singleton bridge controller.
@@ -69,7 +71,7 @@ def controller(
     tracePlugins: bool = False,
     useCaches: bool = True,
     verbose: bool = False,
-) -> Any:
+) -> BridgeController:
     """Create an singleton instance of a bridge controller."""
     global gBridgeController
     if not gBridgeController:
@@ -198,7 +200,7 @@ class BridgeController:
         # Kill all event handling if plugins not loaded.
         if not self.loadPlugins:
 
-            def dummyDoHook(tag: str, *args: Any, **keys: Any) -> None:
+            def dummyDoHook(tag: str, *args: Args, **keys: KWargs) -> None:
                 pass
 
             g.doHook = dummyDoHook
