@@ -511,7 +511,7 @@ class FastRead:
     def scanJsonVnodes(self,
         gnx2body: dict[str, str],
         gnx2vnode: dict[str, VNode],
-        gnx2ua: dict[str, Any],
+        gnx2ua: dict[str, Value],
         v_elements: Element,
     ) -> Optional[VNode]:
 
@@ -602,8 +602,8 @@ class FileCommands:
         self.checking = False  # True: checking only: do *not* alter the outline.
         self.descendentExpandedList: list[str] = []  # List of gnx's.
         self.descendentMarksList: list[str] = []  # List of gnx's.
-        self.descendentTnodeUaDictList: list[Any] = []
-        self.descendentVnodeUaDictList: list[Any] = []
+        self.descendentTnodeUaDictList: list[Value] = []
+        self.descendentVnodeUaDictList: list[Value] = []
         self.currentVnode: VNode = None
         # For writing...
         self.read_only = False
@@ -1187,7 +1187,7 @@ class FileCommands:
     # Pre Leo 4.5 Only @thin vnodes had the descendentTnodeUnknownAttributes field.
     # New in Leo 4.5: @thin & @shadow vnodes have descendentVnodeUnknownAttributes field.
 
-    def getDescendentUnknownAttributes(self, s: str, v: VNode = None) -> Any:
+    def getDescendentUnknownAttributes(self, s: str, v: VNode = None) -> Value:
         """Unhexlify and unpickle t/v.descendentUnknownAttribute field."""
         try:
             # Changed in version 3.2: Accept only bytestring or bytearray objects as input.
@@ -1692,7 +1692,7 @@ class FileCommands:
         if 'size' in g.app.debug:
             g.trace('set window_position:', c.db['window_position'], c.shortFileName())
     #@+node:ekr.20210316085413.2: *6* fc.leojs_vnodes
-    def leojs_vnode(self, p: Position, gnxSet: Any, isIgnore: bool = False) -> dict[str, Value]:
+    def leojs_vnode(self, p: Position, gnxSet: set[Value], isIgnore: bool = False) -> dict[str, Value]:
         """Return a jsonized vnode."""
         # c = self.c
         fc = self
