@@ -7,13 +7,14 @@ from __future__ import annotations
 import difflib
 import filecmp
 import os
-from typing import Any, BinaryIO, Optional, TYPE_CHECKING
+from typing import BinaryIO, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position, VNode
+    from io import TextIO
 #@-<< leoCompare imports & annotations >>
 
 #@+others
@@ -206,7 +207,7 @@ class BaseLeoCompare:
             s2 = ws2 + tail2
         return s1 == s2
     #@+node:ekr.20031218072017.3638: *3* compare_open_files
-    def compare_open_files(self, f1: Any, f2: Any, name1: str, name2: str) -> None:
+    def compare_open_files(self, f1: TextIO, f2: TextIO, name1: str, name2: str) -> None:
         # self.show("compare_open_files")
         lines1 = 0
         lines2 = 0
@@ -320,7 +321,7 @@ class BaseLeoCompare:
         self.show("mismatches:" + str(mismatches))
         #@-<< handle reporting after at least one eof is seen >>
     #@+node:ekr.20031218072017.3644: *3* compare.filecmp
-    def filecmp(self, f1: Any, f2: Any) -> bool:
+    def filecmp(self, f1: TextIO, f2: TextIO) -> bool:
         val = filecmp.cmp(f1, f2)
         if val:
             self.show("equal")
@@ -329,7 +330,7 @@ class BaseLeoCompare:
         return val
     #@+node:ekr.20031218072017.3645: *3* compare.utils...
     #@+node:ekr.20031218072017.3646: *4* compare.doOpen
-    def doOpen(self, name: str) -> Optional[Any]:
+    def doOpen(self, name: str) -> Optional[TextIO]:
         try:
             f = open(name, 'r')
             return f
@@ -356,7 +357,7 @@ class BaseLeoCompare:
                 out += ch
         self.show(out)
     #@+node:ekr.20031218072017.3648: *4* compare.dumpToEndOfFile
-    def dumpToEndOfFile(self, tag: str, f: Any, s: str, line: int, printTrailing: bool) -> int:
+    def dumpToEndOfFile(self, tag: str, f: TextIO, s: str, line: int, printTrailing: bool) -> int:
         trailingLines = 0
         while 1:
             if not s:
