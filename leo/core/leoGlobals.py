@@ -1027,10 +1027,10 @@ class KeyStroke:
         return s if len(s) == 1 else ''
     #@-others
 
-def isStroke(obj: Any) -> bool:
+def isStroke(obj: object) -> bool:
     return isinstance(obj, KeyStroke)
 
-def isStrokeOrNone(obj: Any) -> bool:
+def isStrokeOrNone(obj: object) -> bool:
     return obj is None or isinstance(obj, KeyStroke)
 #@+node:ekr.20160119093947.1: *3* class g.MatchBrackets
 class MatchBrackets:
