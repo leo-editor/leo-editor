@@ -12,9 +12,11 @@ from leo.core import leoGlobals as g
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-    # mypy doesn't seem to handle this.
+    Args = Any
+    KWargs = Any
     Keywords = dict[str, list[g.Bunch]]
     Tag_List = Any  # Union[str, Sequence[str]]
+    Value = Any
 #@-<< leoPlugins imports & annotations >>
 
 # Define modules that may be enabled by default
@@ -42,7 +44,7 @@ class TryNext(Exception):
     original ones.
     """
 
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
+    def __init__(self, *args: Args, **kwargs: KWargs) -> None:
         super().__init__()
         self.args = args
         self.kwargs = kwargs
@@ -55,13 +57,13 @@ class CommandChainDispatcher:
 
     """
 
-    def __init__(self, commands: list[Any] = None) -> None:
+    def __init__(self, commands: list = None) -> None:
         if commands is None:
             self.chain = []
         else:
             self.chain = commands
 
-    def __call__(self, *args: Any, **kw: Any) -> None:
+    def __call__(self, *args: Args, **kw: KWargs) -> None:
         """ Command chain is called just like normal func.
 
         This will call all funcs in chain with the same args as were given to this
@@ -138,7 +140,7 @@ class BaseLeoPlugin:
 
             def setCommand(
         self,
-        commandName: Any,
+        commandName: str,
         handler: Callable,
         shortcut: Any=None,
         pane: str='all',
@@ -147,11 +149,11 @@ class BaseLeoPlugin:
 
     - setMenuItem::
 
-            def setMenuItem(self, menu: Wrapper, commandName: Any=None, handler: Callable=None) -> None:
+            def setMenuItem(self, menu: Wrapper, commandName: str=None, handler: Callable=None) -> None:
 
     - setButton::
 
-            def setButton(self, buttonText: Any=None, commandName: Any=None, color: Any=None) -> None:
+            def setButton(self, buttonText: str=None, commandName: str=None, color: Any=None) -> None:
 
     *variables*
 
@@ -219,7 +221,7 @@ class BaseLeoPlugin:
     #@+node:ekr.20100908125007.6013: *3* setCommand
     def setCommand(
         self,
-        commandName: Any,
+        commandName: str,
         handler: Callable,
         shortcut: str = '',
         pane: str = 'all',
@@ -312,7 +314,7 @@ class LeoPluginsController:
                 # This would be a MAJOR leak of positions.
                 g.doHook("idle", c=c)
     #@+node:ekr.20100908125007.6017: *4* plugins.doHandlersForTag & helper
-    def doHandlersForTag(self, tag: str, keywords: Keywords) -> Any:
+    def doHandlersForTag(self, tag: str, keywords: Keywords) -> Value:
         """
         Execute all handlers for a given tag, in alphabetical order.
         The caller, doHook, catches all exceptions.
