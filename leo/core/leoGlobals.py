@@ -2206,16 +2206,16 @@ def get_line_after(s: str, i: int) -> str:
 
 getLineAfter = get_line_after
 #@+node:ekr.20080729142651.1: *4* g.getIvarsDict and checkUnchangedIvars
-def getIvarsDict(obj: object) -> dict[str, Any]:
+def getIvarsDict(obj: object) -> dict[str, Value]:
     """Return a dictionary of ivars:values for non-methods of obj."""
-    d: dict[str, Any] = dict(
+    d: dict[str, Value] = dict(
         [[key, getattr(obj, key)] for key in dir(obj)
             if not isinstance(getattr(obj, key), types.MethodType)])
     return d
 
 def checkUnchangedIvars(
     obj: object,
-    d: dict[str, Any],
+    d: dict[str, Value],
     exceptions: Sequence[str] = None,
 ) -> bool:
     if not exceptions:
@@ -2359,9 +2359,9 @@ def printGcObjects() -> int:
         count += 1
     print(f"{count:7} objects...")
     # Invert the dict.
-    d2: dict[Any, object] = {v: k for k, v in d.items()}
-    for key in reversed(sorted(d2.keys())):
-        val = d2.get(key)
+    d2: dict[int, str] = {v: k for k, v in d.items()}
+    for key in reversed(sorted(d2.keys())):  # type:ignore
+        val = d2.get(key)  # type:ignore
         print(f"{key:7} {val}")
     lastObjectCount = count
     return delta
@@ -3186,12 +3186,12 @@ def init_dialog_folder(c: Cmdr, p: Position, use_at_path: bool = True) -> str:
     return ''
 #@+node:ekr.20100329071036.5744: *3* g.is_binary_file/external_file/string
 def is_binary_file(f: Any) -> bool:
-    return f and isinstance(f, io.BufferedIOBase)
+    return f and isinstance(f, io.FileIO)
 
 def is_binary_external_file(fileName: str) -> bool:
     try:
         with open(fileName, 'rb') as f:
-            s = f.read(1024)  # bytes, in Python 3.
+            s = f.read(1024)
         return g.is_binary_string(s)
     except IOError:
         return False
