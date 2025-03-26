@@ -63,9 +63,9 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoNodes import Position, VNode
     from leo.core.leoQt import QMouseEvent, QWidget, QEvent
     from leo.plugins.qt_idle_time import IdleTime as QtIdleTime
-    # Mypy could do better with *args and **kwargs.
-    Args = Any  # Good enough.
-    KWargs = Any  # Good enough.
+    Args = Any
+    KWargs = Any
+    Value = Any
 #@-<< leoGlobals: annotations >>
 #@+<< leoGlobals: global constants >>
 #@+node:ekr.20240515093718.1: ** << leoGlobals: global constants >>
@@ -358,7 +358,7 @@ url_kinds = '(file|ftp|gopher|http|https|mailto|news|nntp|prospero|telnet|wais)'
 url_regex = re.compile(fr"""\b{url_kinds}://[^\s'"]+""")
 #@-<< define regexes >>
 tree_popup_handlers: list[Callable] = []  # Set later.
-user_dict: dict[str, Any] = {}  # Non-persistent dictionary for scripts and plugins.
+user_dict: dict[str, Value] = {}  # Non-persistent dictionary for scripts and plugins.
 app: LeoApp = None  # The singleton app object. Set by runLeo.py.
 # Global status vars.
 inScript = False  # A synonym for app.inScript
@@ -500,15 +500,15 @@ class Bunch:
 
     # Used by new undo code.
 
-    def __setitem__(self, key: str, value: Any) -> Any:
+    def __setitem__(self, key: str, value: Value) -> Value:
         """Support aBunch[key] = val"""
         return operator.setitem(self.__dict__, key, value)
 
-    def __getitem__(self, key: str) -> Any:
+    def __getitem__(self, key: str) -> Value:
         """Support aBunch[key]"""
         return operator.getitem(self.__dict__, key)
 
-    def get(self, key: str, theDefault: Any = None) -> Any:
+    def get(self, key: str, theDefault: Value = None) -> Value:
         return self.__dict__.get(key, theDefault)
 
     def __contains__(self, key: str) -> bool:
@@ -549,7 +549,7 @@ class EmergencyDialog:
         else:
             print(message.rstrip() + '\n')
     #@+node:ekr.20120219154958.10494: *4* emergencyDialog.createButtons
-    def createButtons(self, buttons: list[dict[str, Any]]) -> list[Any]:
+    def createButtons(self, buttons: list[dict[str, Value]]) -> list[Value]:
         """Create a row of buttons.
 
         buttons is a list of dictionaries containing
@@ -615,7 +615,7 @@ class GeneralSetting:
         encoding: str = None,
         ivar: str = None,
         source: str = None,
-        val: Any = None,
+        val: Value = None,
         path: str = None,
         tag: str = 'setting',
         unl: str = None,
@@ -661,30 +661,30 @@ class KeyStroke:
     # where the keys of d are KeyStroke objects.
     #@@c
 
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: object) -> bool:
         if not other:
             return False
         if hasattr(other, 's'):
             return self.s == other.s
         return self.s == other
 
-    def __lt__(self, other: Any) -> bool:
+    def __lt__(self, other: KeyStroke) -> bool:
         if not other:
             return False
         if hasattr(other, 's'):
             return self.s < other.s
-        return self.s < other
+        return self.s < other  # type:ignore
 
-    def __le__(self, other: Any) -> bool:
+    def __le__(self, other: KeyStroke) -> bool:
         return self.__lt__(other) or self.__eq__(other)
 
-    def __ne__(self, other: Any) -> bool:
+    def __ne__(self, other: object) -> bool:
         return not self.__eq__(other)
 
-    def __gt__(self, other: Any) -> bool:
+    def __gt__(self, other: KeyStroke) -> bool:
         return not self.__lt__(other) and not self.__eq__(other)
 
-    def __ge__(self, other: Any) -> bool:
+    def __ge__(self, other: KeyStroke) -> bool:
         return not self.__lt__(other)
     #@+node:ekr.20120203053243.10118: *4* ks.__hash__
     # Allow KeyStroke objects to be keys in dictionaries.
@@ -1666,12 +1666,12 @@ class SettingsDict(dict):
 
     #@+others
     #@+node:ekr.20120223062418.10422: *4* td.copy
-    def copy(self, name: str = None) -> Any:
+    def copy(self, name: str = None) -> Value:
         """Return a new dict with the same contents."""
         # The result is a g.SettingsDict.
         return copy.deepcopy(self)
     #@+node:ekr.20190904052828.1: *4* td.add_to_list
-    def add_to_list(self, key: str, val: Any) -> None:
+    def add_to_list(self, key: str, val: Value) -> None:
         """Update the *list*, self.d [key]"""
         if key is None:
             g.trace('TypeDict: None is not a valid key', g.callers())
@@ -1810,7 +1810,7 @@ class Tracer:
         sys.settrace(None)
         self.report()
     #@+node:ekr.20080531075119.6: *4* tracer
-    def tracer(self, frame: LeoFrame, event: QEvent, arg: Any) -> Optional[Callable]:
+    def tracer(self, frame: LeoFrame, event: QEvent, arg: object) -> Optional[Callable]:
         """A function to be passed to sys.settrace."""
         n = len(self.stack)
         if event == 'return':
@@ -1869,6 +1869,7 @@ def startTracer(limit: int = 0, trace: bool = False, verbose: bool = False) -> C
 #@@nobeautify
 
 tracing_tags: dict[int, str] = {}  # Keys are id's, values are tags.
+
 class NullObject:
     """An object that does nothing, and does it very well."""
     def __init__(self, ivars: list[str]=None, *args: Args, **kwargs: KWargs) -> None:
@@ -1882,18 +1883,18 @@ class NullObject:
     # Attribute access...
     def __delattr__(self, attr: str) -> None:
         return None
-    def __getattr__(self, attr: str) -> Any:
+    def __getattr__(self, attr: str) -> Value:
         return self # Required.
-    def __setattr__(self, attr: str, val: Any) -> None:
+    def __setattr__(self, attr: str, val: Value) -> None:
         return None
     # Container methods..
     def __bool__(self) -> bool:
         return False
-    def __contains__(self, item: Any) -> bool:
+    def __contains__(self, item: object) -> bool:
         return False
     def __getitem__(self, key: str) -> None:
         raise KeyError
-    def __setitem__(self, key: str, val: Any) -> None:
+    def __setitem__(self, key: str, val: Value) -> None:
         pass
     def __iter__(self) -> "NullObject":
         return self
@@ -1921,14 +1922,14 @@ class TracingNullObject:
     def __getattr__(self, attr: str) -> "TracingNullObject":
         g.null_object_print(id(self), f"attr: {attr}")
         return self # Required.
-    def __setattr__(self, attr: str, val: Any) -> None:
+    def __setattr__(self, attr: str, val: Value) -> None:
         g.null_object_print(id(self), f"__setattr__: {attr} {val!r}")
 
     # All other methods...
     def __bool__(self) -> bool:
         g.null_object_print(id(self), '__bool__')
         return False
-    def __contains__(self, item: Any) -> bool:
+    def __contains__(self, item: object) -> bool:
         g.null_object_print(id(self), '__contains__')
         return False
     def __getitem__(self, key: str) -> None:
@@ -1943,7 +1944,7 @@ class TracingNullObject:
     def __next__(self) -> None:
         g.null_object_print(id(self), '__next__')
         raise StopIteration
-    def __setitem__(self, key: str, val: Any) -> None:
+    def __setitem__(self, key: str, val: Value) -> None:
         g.null_object_print(id(self), '__setitem__')
         # pylint doesn't like trailing return None.
 #@+node:ekr.20190330072832.1: *4* g.null_object_print
