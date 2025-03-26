@@ -2102,7 +2102,7 @@ class ToDoImporter:
             g.es_exception()
             return []
     #@+node:ekr.20200310101028.1: *3* todo_i.import_files
-    def import_files(self, files: list[str]) -> dict[str, list[Any]]:
+    def import_files(self, files: list[str]) -> dict[str, list[ToDoTask]]:
         """
         Import all todo.txt files in the given list of file names.
 
@@ -2421,20 +2421,12 @@ class LegacyExternalFileImporter:
         self.c = c
 
     #@+others
-    #@+node:ekr.20200424093946.1: *3* class Node
-    class Node:
-
-        def __init__(self, h: str, level: int) -> None:
-            """Hold node data."""
-            self.h = h.strip()
-            self.level = level
-            self.lines: list[str] = []
     #@+node:ekr.20200424092652.1: *3* legacy.add
-    def add(self, line: str, stack: list[Any]) -> None:
+    def add(self, line: str, stack: list[LegacyImportNode]) -> None:
         """Add a line to the present node."""
         if stack:
-            node = stack[-1]
-            node.lines.append(line)
+            p = stack[-1]
+            p.lines.append(line)
         else:
             print('orphan line: ', repr(line))
     #@+node:ekr.20200424160847.1: *3* legacy.compute_delim1
@@ -2470,8 +2462,8 @@ class LegacyExternalFileImporter:
         # Compute the local ignore list for this file.
         ignore = tuple(delim1 + z for z in self.ignore)
         # Handle each line of the file.
-        nodes: list[Any] = []  # An list of Nodes, in file order.
-        stack: list[Any] = []  # A stack of Nodes.
+        nodes: list[LegacyImportNode] = []  # An list of LegacyImportNode, in file order.
+        stack: list[LegacyImportNode] = []  # A stack of LegacyImportNode.
         for line in g.splitLines(s):
             s = line.lstrip()
             lws = line[: len(line) - len(line.lstrip())]
@@ -2497,7 +2489,7 @@ class LegacyExternalFileImporter:
                 else:
                     h = root_h
                 # Create a node and push it.
-                node = self.Node(h, len(stack))
+                node = LegacyImportNode(h, len(stack))
                 nodes.append(node)
                 stack.append(node)
             elif s.startswith(delim1 + '@-node'):
@@ -2513,7 +2505,7 @@ class LegacyExternalFileImporter:
         last = c.lastTopLevel()
         root = last.insertAfter()
         root.h = f"imported file: {root_h}"
-        stack = [root]
+        position_stack: list[Position] = [root]
         for node in nodes:
             b = textwrap.dedent(''.join(node.lines))
             level = node.level
@@ -2521,13 +2513,13 @@ class LegacyExternalFileImporter:
                 root.h = root_h
                 root.b = b
             else:
-                parent = stack[level - 1]
+                parent = position_stack[level - 1]
                 p = parent.insertAsLastChild()
                 p.b = b
                 p.h = node.h
                 # Good for debugging.
                 # p.h = f"{level} {node.h}"
-                stack = stack[:level] + [p]
+                position_stack = position_stack[:level] + [p]
         c.selectPosition(root)
         root.expand()  # c.expandAllSubheads()
         c.redraw()
@@ -2557,6 +2549,14 @@ class LegacyExternalFileImporter:
             g.chdir(paths[0])
             self.import_files(paths)
     #@-others
+#@+node:ekr.20200424093946.1: ** class LegacyImportNode
+class LegacyImportNode:
+
+    def __init__(self, h: str, level: int) -> None:
+        """Hold node data."""
+        self.h = h.strip()
+        self.level = level
+        self.lines: list[str] = []
 #@+node:ekr.20101103093942.5938: ** Commands (leoImport)
 #@+node:ekr.20160504050255.1: *3* @g.command(import-free-mind-files)
 @g.command('import-free-mind-files')
