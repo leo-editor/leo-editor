@@ -39,6 +39,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position
+    Value = Any
 #@-<< leoImport annotations >>
 #@+others
 #@+node:ekr.20160503145550.1: ** class FreeMindImporter
@@ -52,7 +53,7 @@ class FreeMindImporter:
 
     #@+others
     #@+node:ekr.20170222084048.1: *3* freemind.add_children
-    def add_children(self, parent: Position, element: Any) -> None:
+    def add_children(self, parent: Position, element: Value) -> None:
         """
         parent is the parent position, element is the parent element.
         Recursively add all the child elements as descendants of parent_p.
@@ -259,7 +260,7 @@ class LeoImportCommands:
             file_name = ''
         return file_name
     #@+node:ekr.20031218072017.3296: *4* ic.convertDocPartToWeb (handle @ %def)
-    def convertDocPartToWeb(self, s: str, i: int, result: Any) -> tuple[int, str]:
+    def convertDocPartToWeb(self, s: str, i: int, result: str) -> tuple[int, str]:
         nl = self.output_newline
         if g.match_word(s, i, "@doc"):
             i = g.skip_line(s, i)
@@ -330,7 +331,7 @@ class LeoImportCommands:
     #@+node:ekr.20031218072017.3299: *4* ic.copyPart
     # Copies characters to result until the end of the present section is seen.
 
-    def copyPart(self, s: str, i: int, result: Any) -> tuple[int, str]:
+    def copyPart(self, s: str, i: int, result: str) -> tuple[int, str]:
 
         lb = "@<" if self.webType == "cweb" else "<<"
         rb = "@>" if self.webType == "cweb" else ">>"
@@ -1350,7 +1351,7 @@ class MindMapImporter:
             g.chdir(names[0])
             self.import_files(names)
     #@+node:ekr.20160503130256.1: *3* mindmap.scan & helpers
-    def scan(self, f: Any, target: Position) -> None:
+    def scan(self, f: io.TextIOBase, target: Position) -> None:
         """Create an outline from a MindMap (.csv) file."""
         reader = csv.reader(f)  # Yields list of lists.
         max_chars_in_header = 80
@@ -1383,7 +1384,7 @@ class MindMapImporter:
             else:
                 p.h = "@node_with_long_text"
     #@+node:ekr.20160503130810.4: *4* mindmap.csv_level
-    def csv_level(self, row: list[Any]) -> int:
+    def csv_level(self, row: list[str]) -> int:
         """
         Return the level of the given row, a list of fields.
         """
@@ -2085,7 +2086,7 @@ class ToDoImporter:
 
     #@+others
     #@+node:ekr.20200310103606.1: *3* todo_i.get_tasks_from_file
-    def get_tasks_from_file(self, path: str) -> list[Any]:
+    def get_tasks_from_file(self, path: str) -> list[ToDoTask]:
         """Return the tasks from the given path."""
         tag = 'import-todo-text-files'
         if not os.path.exists(path):
@@ -2127,7 +2128,7 @@ class ToDoImporter:
     line_s = fr"^{mark_s}?{priority_s}?{date_s}?{date_s}?{task_s}$"
     line_pat = re.compile(line_s)
 
-    def parse_file_contents(self, s: str) -> list[Any]:
+    def parse_file_contents(self, s: str) -> list[ToDoTask]:
         """
         Parse the contents of a file.
         Return a list of ToDoTask objects.
@@ -2166,7 +2167,7 @@ class ToDoImporter:
                 bool(completed), priority, start_date, complete_date, task_s))
         return tasks
     #@+node:ekr.20200310100919.1: *3* todo_i.prompt_for_files
-    def prompt_for_files(self) -> dict[str, Any]:
+    def prompt_for_files(self) -> dict[str, list[ToDoTask]]:
         """
         Prompt for a list of todo.text files and import them.
 
