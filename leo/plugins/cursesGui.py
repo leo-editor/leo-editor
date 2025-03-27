@@ -11,7 +11,7 @@
 #@+node:ekr.20150107090324.2: ** << cursesGui.py: imports & annotations >>
 from collections.abc import Callable
 import os
-from typing import Any, TYPE_CHECKING
+from typing import Any
 from leo.core import leoGlobals as g
 from leo.core import leoChapters
 from leo.core import leoGui
@@ -20,9 +20,6 @@ from leo.core import leoFrame
 from leo.core import leoMenu
 from leo.core import leoNodes
 get_input = input
-
-if TYPE_CHECKING:
-    Widget = Any
 #@-<< cursesGui.py: imports & annotations >>
 #@+<< TODO >>
 #@+node:ekr.20150107090324.3: ** << TODO >>
@@ -80,7 +77,7 @@ class textGui(leoGui.LeoGui):
 
         return leoKeys.KeyHandlerClass(c)
     #@+node:ekr.20150107090324.9: *3* createLeoFrame
-    def createLeoFrame(self, c, title=None) -> Widget:
+    def createLeoFrame(self, c, title=None) -> Any:
         gui = self
         ret = TextFrame(c, gui)
         self.frames.append(ret)
@@ -338,19 +335,19 @@ class textLeoMenu(leoMenu.LeoMenu):
         self._top_menu = textLeoMenu(frame)
         self.createMenusFromTables()
     #@+node:ekr.20150107090324.48: *3* new_menu
-    def new_menu(self, parent: Widget, tearoff: int = 0, labe: str = ''):
+    def new_menu(self, parent: Any, tearoff: int = 0, labe: str = ''):
         if tearoff:
             raise NotImplementedError(repr(tearoff))
         menu = textLeoMenu(parent or self.frame)
         menu.entries = []
         return menu
     #@+node:ekr.20150107090324.49: *3* add_cascade
-    def add_cascade(self, parent: Widget, label: str, menu: Widget, underline: int):
+    def add_cascade(self, parent: Any, label: str, menu: Any, underline: int):
         if parent is None:
             parent = self._top_menu
         parent.entries.append(textMenuCascade(menu, label, underline,))
     #@+node:ekr.20150107090324.50: *3* add_command (cursesGui.py)
-    def add_command(self, menu: Widget,
+    def add_command(self, menu: Any,
         accelerator: str = '',
         command: Callable = None,
         commandName: str = None,
