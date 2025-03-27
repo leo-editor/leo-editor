@@ -66,6 +66,7 @@ if TYPE_CHECKING:  # pragma: no cover
     Args = Any
     KWargs = Any
     Tags = Any  # Union[str, list[str]]
+    Request = Any  # A requests.Request object.
     Value = Any
 #@-<< leoGlobals: annotations >>
 #@+<< leoGlobals: global constants >>
@@ -4329,7 +4330,7 @@ class GitIssueController:
     def get_one_page(self,
         label: str,
         page: int,
-        r: Any,  # A requests.Request object.
+        r: Request,
         root: Position,
     ) -> tuple[bool, int]:
 
@@ -4353,7 +4354,7 @@ class GitIssueController:
         return done, len(aList)
     #@+node:ekr.20180127092201.1: *5* git.print_header
     def print_header(self,
-        r: Any,  # A requests.Request object.
+        r: Request,  # A requests.Request object.
     ) -> None:
 
         # r.headers is a CaseInsensitiveDict
@@ -4689,7 +4690,7 @@ def IdleTime(handler: Callable, delay: int = 500, tag: str = None) -> QtIdleTime
     except Exception:
         return None
 #@+node:ekr.20161027205025.1: *3* g.idleTimeHookHandler (stub)
-def idleTimeHookHandler(timer: Any) -> None:
+def idleTimeHookHandler(timer: Callable) -> None:
     """This function exists for compatibility."""
     g.es_print('Replaced by IdleTimeManager.on_idle')
     g.trace(g.callers())
@@ -5535,11 +5536,7 @@ def function_name() -> str:
     return name
 #@+node:ekr.20230129093329.1: *3* g.get_ctor_name
 def get_ctor_name(self: object, file_name: str, width: int = 25) -> str:
-    """
-    Return <module-name>.<class-name>:>width.
-
-    self: Any object.
-    """
+    """Return <module-name>.<class-name>:>width."""
     class_name = self.__class__.__name__
     module_name = shortFileName(file_name).replace(".py", "")
     combined_name = f"{module_name}.{class_name}"
@@ -5961,7 +5958,7 @@ init_zodb_import_failed = False
 init_zodb_failed: dict[str, bool] = {}  # Keys are paths, values are True.
 init_zodb_db: dict[str, Value] = {}  # Keys are paths, values are ZODB.DB instances.
 
-def init_zodb(pathToZodbStorage: str, verbose: bool = True) -> Any:
+def init_zodb(pathToZodbStorage: str, verbose: bool = True) -> Value:
     """
     Return an ZODB.DB instance from the given path.
     return None on any error.
@@ -6272,7 +6269,7 @@ def os_startfile(fname: str) -> None:
             else:
                 break
     #@+node:bob.20170516112304.1: *4* itPoll()
-    def itPoll(fname: str, ree: io.FileIO, subPopen: Any, g: LeoGlobals, ito: Any) -> None:
+    def itPoll(fname: str, ree: io.FileIO, subPopen: subprocess.Popen, g: LeoGlobals, ito: Callable) -> None:
         """ Poll for subprocess done
 
         Arguments:
@@ -6378,7 +6375,7 @@ def getDocStringForFunction(func: Callable) -> str:
     def name(func: Callable) -> str:
         return func.__name__ if hasattr(func, '__name__') else '<no __name__>'
 
-    def get_defaults(func: Callable, i: int) -> Any:
+    def get_defaults(func: Callable, i: int) -> Value:
         defaults = inspect.getfullargspec(func)[3]
         return defaults[i]
 
@@ -7245,7 +7242,7 @@ def handleUrlHelper(url: str, c: Cmdr, p: Position) -> None:  # pragma: no cover
     if url.startswith(tag) and not url.startswith(tag + '#'):
         # Finalize the path *before* parsing the url.
         url = g.computeFileUrl(url, c=c, p=p)
-    parsed = urlparse.urlparse(url)
+    parsed: tuple = urlparse.urlparse(url)
     if parsed.netloc:
         leo_path = os.path.join(parsed.netloc, parsed.path)
         # "readme.txt" gets parsed into .netloc...
@@ -7270,7 +7267,7 @@ def handleUrlHelper(url: str, c: Cmdr, p: Position) -> None:  # pragma: no cover
         except Exception:
             pass
 #@+node:ekr.20170226060816.1: *4* g.traceUrl (not used)
-def traceUrl(c: Cmdr, path: str, parsed: Any, url: str) -> None:  # pragma: no cover
+def traceUrl(c: Cmdr, path: str, parsed: tuple, url: str) -> None:  # pragma: no cover
 
     print()
     g.trace('url          ', url)
@@ -7301,7 +7298,7 @@ def isValidUrl(url: str) -> bool:
         return True
     if url.startswith('@'):
         return False
-    parsed = urlparse.urlparse(url)
+    parsed: tuple = urlparse.urlparse(url)
     scheme = parsed.scheme
     for s in table:
         if scheme.startswith(s):
