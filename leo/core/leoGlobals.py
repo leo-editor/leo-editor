@@ -65,7 +65,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.plugins.qt_idle_time import IdleTime as QtIdleTime
     Args = Any
     KWargs = Any
-    Tags = Any  # Union[str, list[str]]
+    Tags = Union[str, Sequence[str]]
     Request = Any  # A requests.Request object.
     Value = Any
 #@-<< leoGlobals: annotations >>
