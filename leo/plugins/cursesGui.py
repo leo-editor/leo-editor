@@ -7,11 +7,11 @@
 # of method.
 #@@c
 # pylint: disable=arguments-differ
-#@+<< imports >>
-#@+node:ekr.20150107090324.2: ** << imports >>
+#@+<< cursesGui.py: imports & annotations >>
+#@+node:ekr.20150107090324.2: ** << cursesGui.py: imports & annotations >>
 from collections.abc import Callable
 import os
-from typing import Any
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoChapters
 from leo.core import leoGui
@@ -21,8 +21,9 @@ from leo.core import leoMenu
 from leo.core import leoNodes
 get_input = input
 
-#@-<< imports >>
-Widget = Any
+if TYPE_CHECKING:
+    Widget = Any
+#@-<< cursesGui.py: imports & annotations >>
 #@+<< TODO >>
 #@+node:ekr.20150107090324.3: ** << TODO >>
 #@@nocolor-node
@@ -79,7 +80,7 @@ class textGui(leoGui.LeoGui):
 
         return leoKeys.KeyHandlerClass(c)
     #@+node:ekr.20150107090324.9: *3* createLeoFrame
-    def createLeoFrame(self, c, title=None) -> Any:
+    def createLeoFrame(self, c, title=None) -> Widget:
         gui = self
         ret = TextFrame(c, gui)
         self.frames.append(ret)
@@ -344,7 +345,7 @@ class textLeoMenu(leoMenu.LeoMenu):
         menu.entries = []
         return menu
     #@+node:ekr.20150107090324.49: *3* add_cascade
-    def add_cascade(self, parent: Any, label: str, menu: Any, underline: int):
+    def add_cascade(self, parent: Widget, label: str, menu: Widget, underline: int):
         if parent is None:
             parent = self._top_menu
         parent.entries.append(textMenuCascade(menu, label, underline,))
