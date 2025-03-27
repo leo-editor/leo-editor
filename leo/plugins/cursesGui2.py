@@ -781,7 +781,7 @@ def init() -> bool:
 #@+node:ekr.20170501032705.1: *3* curses2: leoGlobals replacements
 # CGui.init_logger monkey-patches leoGlobals with these functions.
 #@+node:ekr.20170430112645.1: *4* curses2: es
-def es(*args: Args, **keys: Any) -> None:
+def es(*args: Args, **keys: KWargs) -> None:
     """Monkey-patch for g.es."""
     d = {
         'color': None,
@@ -805,7 +805,7 @@ def has_logger() -> bool:
     logger = logging.getLogger()
     return any(isinstance(z, logging.handlers.SocketHandler) for z in logger.handlers or [])
 #@+node:ekr.20170501043411.1: *4* curses2: pr
-def pr(*args: Args, **keys: Any) -> None:
+def pr(*args: Args, **keys: KWargs) -> None:
     """Monkey-patch for g.pr."""
     d = {'commas': False, 'newline': True, 'spaces': True}
     d = g.doKeywordArgs(keys, d)
@@ -815,7 +815,7 @@ def pr(*args: Args, **keys: Any) -> None:
             line = '   pr: %s' % line.rstrip()
             logging.info(line)
 #@+node:ekr.20170429165242.1: *4* curses2: trace
-def trace(*args: Args, **keys: Any) -> None:
+def trace(*args: Args, **keys: KWargs) -> None:
     """Monkey-patch for g.trace."""
     d: dict[str, Any] = {
         'align': 0,
@@ -2317,7 +2317,7 @@ class CoreFrame(leoFrame.LeoFrame):
     def setWrap(self, p: Position) -> None:
         pass
 
-    def update(self, *args: Args, **keys: Any) -> None:
+    def update(self, *args: Args, **keys: KWargs) -> None:
         pass
     #@+node:ekr.20170524144717.1: *4* CFrame.get_focus
     def getFocus(self) -> None:
