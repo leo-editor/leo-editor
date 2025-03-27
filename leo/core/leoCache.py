@@ -14,6 +14,8 @@ from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
+    Args = Any
+    Value = Any
 
 #@-<< leoCache imports & annotations >>
 
@@ -221,7 +223,7 @@ class SqlitePickleShare:
             result.append(f"{key} {self.get(key)}\n")
         return ''.join(result)
     #@+node:vitalije.20170716201700.9: *4* SqlitePickleShare.__setitem__
-    def __setitem__(self, key: str, value: Any) -> None:
+    def __setitem__(self, key: str, value: Value) -> None:
         """ db['key'] = 5 """
         try:
             data = self.dumper(value)
@@ -354,7 +356,7 @@ class SqlitePickleShare:
 
         self.conn.isolation_level = None
     #@+node:vitalije.20170716201700.23: *3* uncache (SqlitePickleShare)
-    def uncache(self, *items: Any) -> None:
+    def uncache(self, *items: Args) -> None:
         """not used in SqlitePickleShare"""
         pass
     #@-others
