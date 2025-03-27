@@ -347,7 +347,7 @@ class EnchantWrapper(BaseSpellWrapper):
                 language = 'en_US'
         self.language = language
     #@+node:ekr.20180207102856.1: *3* enchant.open_dict_file
-    def open_dict_file(self, fn: str) -> Any:  # A pyenchant dict or a DefaultDict.
+    def open_dict_file(self, fn: str) -> dict:  # A pyenchant dict or a DefaultDict.
         """Open or create the dict with the given fn."""
         language = self.language
         if not fn or not language:
@@ -378,7 +378,6 @@ class EnchantWrapper(BaseSpellWrapper):
             g.es_print('Error opening dictionary')
             g.es_print('pip install pyenchant, NOT enchant')
         return d
-
     #@+node:ekr.20150514063305.517: *3* enchant.process_word
     def process_word(self, word: str) -> list[str]:
         """
