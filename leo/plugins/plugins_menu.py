@@ -61,6 +61,7 @@ from __future__ import annotations
 import configparser as ConfigParser
 import os
 from typing import Any, Sequence, TYPE_CHECKING
+from types import ModuleType
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -70,6 +71,7 @@ if TYPE_CHECKING:  # pragma: no cover
     Group = Any
     KWargs = Any
     Menu = Any
+    Value = Any
 #@-<< plugins_menu imports & annotations >>
 
 __plugin_name__ = "Plugins Menu"
@@ -193,8 +195,8 @@ class _PluginDatabase:
     #@+node:pap.20050305152751.1: *3* __init__
     def __init__(self) -> None:
         """Initialize"""
-        self.plugins_by_group: dict[Group, list[Any]] = {}
-        self.groups_by_plugin: dict[Any, list[Group]] = {}
+        self.plugins_by_group: dict[Group, list[ModuleType]] = {}
+        self.groups_by_plugin: dict[ModuleType, list[Group]] = {}
         self.menus: dict[str, Menu] = {}
     #@+node:pap.20050305152751.2: *3* addPlugin
     def addPlugin(self, item: Item, group: Group) -> None:
@@ -227,7 +229,7 @@ class PlugIn:
     """A class to hold information about one plugin"""
     #@+others
     #@+node:EKR.20040517080555.4: *3* PlugIn.__init__ & helper
-    def __init__(self, plgMod: Any, c: Cmdr = None) -> None:
+    def __init__(self, plgMod: ModuleType, c: Cmdr = None) -> None:
         """
         @param plgMod: Module object for the plugin represented by this instance.
         @param c:  Leo-editor "commander" for the current .leo file
@@ -301,7 +303,7 @@ class PlugIn:
         """Display a modal properties dialog for this plugin"""
         if self.hasapply:
 
-            def callback(name: str, data: Any) -> None:
+            def callback(name: str, data: Value) -> None:
                 self.updateConfiguration(data)
                 self.mod.applyConfiguration(self.config)
                 self.writeConfiguration()
@@ -330,7 +332,7 @@ class PlugIn:
             self.updateConfiguration(data)
             self.writeConfiguration()
     #@+node:bob.20071209102050: *3* PlugIn.updateConfiguration
-    def updateConfiguration(self, data: Any) -> None:
+    def updateConfiguration(self, data: Value) -> None:
         """Update the config object from the dialog 'data' structure"""
         # Should we clear the config object first?
         for section in data.keys():

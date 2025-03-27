@@ -480,10 +480,10 @@ if QtWidgets:
             self.tc.add_tag(p, tag)
         #@+node:peckj.20140811082039.6623: *3* tag_w:event hooks
         #@+node:peckj.20140804195456.13487: *4* tag_w.select2_hook
-        def select2_hook(self, tag: str, keywords: Any) -> None:
+        def select2_hook(self, tag: str, keywords: KWargs) -> None:
             self.update_current_tags(self.c.p)
         #@+node:peckj.20140806101020.14006: *4* tag_w.command2_hook
-        def command2_hook(self, tag: str, keywords: Any) -> None:
+        def command2_hook(self, tag: str, keywords: KWargs) -> None:
             paste_cmds = [
                 'paste-node',
                 # strange that this one isn't canonicalized
