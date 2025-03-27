@@ -236,17 +236,6 @@ class SqlitePickleShare:
     def _makedirs(self, fn: str, mode: int = 0o777) -> None:
 
         os.makedirs(fn, mode)
-    #@+node:vitalije.20170716201700.11: *3* _openFile (SqlitePickleShare)
-    def _openFile(self, fn: str, mode: str = 'r') -> Optional[Any]:
-        """ Open this file.  Return a file object.
-
-        Do not print an error message.
-        It is not an error for this to fail.
-        """
-        try:
-            return open(fn, mode)
-        except Exception:
-            return None
     #@+node:vitalije.20170716201700.12: *3* _walkfiles & helpers
     def _walkfiles(self, s: str, pattern: str = None) -> None:
         """ D.walkfiles() -> iterator over files in D, recursively.

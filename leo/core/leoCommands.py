@@ -61,6 +61,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoGui
     from leo.plugins.qt_gui import StyleSheetManager
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
+    Args = Any
     KWargs = Any
     RegexFlag = Union[int, re.RegexFlag]  # re.RegexFlag does not define 0
     Value = Any
@@ -1184,7 +1185,7 @@ class Commands:
     def executeScript(self,
         *,
         event: LeoKeyEvent = None,
-        args: Any = None,
+        args: Args = None,
         p: Position = None,
         script: str = None,
         useSelectedText: bool = True,
