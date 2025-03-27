@@ -503,7 +503,7 @@ class LeoPluginsController:
         # Define local helper functions.
         #@+others
         #@+node:ekr.20180528160855.1: *5* function:callInitFunction
-        def callInitFunction(result: Any) -> Any:
+        def callInitFunction(result: Value) -> Value:
             """True to call the top-level init function."""
             try:
                 # Indicate success only if init_result is True.
@@ -525,7 +525,7 @@ class LeoPluginsController:
                 result = None
             return result
         #@+node:ekr.20180528162604.1: *5* function:finishImport
-        def finishImport(result: Any) -> Any:
+        def finishImport(result: Value) -> Value:
             """Handle last-minute checks."""
             if tag == 'unit-test-load':
                 return result  # Keep the result, but do no more.
@@ -542,7 +542,7 @@ class LeoPluginsController:
             self.loadedModules[moduleName] = result
             return result
         #@+node:ekr.20180528160744.1: *5* function:loadOnePluginHelper
-        def loadOnePluginHelper(moduleName: str) -> Any:
+        def loadOnePluginHelper(moduleName: str) -> Value:
             result = None
             try:
                 __import__(moduleName)

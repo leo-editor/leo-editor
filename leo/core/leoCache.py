@@ -361,7 +361,7 @@ class SqlitePickleShare:
         pass
     #@-others
 #@+node:ekr.20180627050237.1: ** function: dump_cache
-def dump_cache(db: Any, tag: str) -> None:
+def dump_cache(db: Union[dict,  SqlitePickleShare], tag: str) -> None:
     """Dump the given cache."""
     print(f'\n===== {tag} =====\n')
     if db is None:
