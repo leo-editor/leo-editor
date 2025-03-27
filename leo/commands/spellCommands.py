@@ -19,6 +19,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position
+    SpellDict = dict[str, list[str]]
     KWargs = Any
 #@-<< spellCommands imports & annotations >>
 
@@ -72,14 +73,14 @@ class BaseSpellWrapper:
             g.error(f"unexpected error creating: {fn}")
             g.es_exception()
     #@+node:ekr.20180207074613.1: *3* BaseSpellWrapper.default_dict
-    def default_dict(self, language: str) -> dict[str, str]:
+    def default_dict(self, language: str) -> SpellDict:
 
         try:
             return enchant.Dict(language)
         except Exception:
             return {}
     #@+node:ekr.20180207073536.1: *3* BaseSpellWrapper.create_dict_from_file
-    def create_dict_from_file(self, fn: str, language: str) -> dict[str, str]:
+    def create_dict_from_file(self, fn: str, language: str) -> SpellDict:
 
         try:
             return enchant.DictWithPWL(language, fn)
@@ -300,7 +301,7 @@ class EnchantWrapper(BaseSpellWrapper):
         self.c = c
         self.init_language()
         fn = self.find_user_dict()
-        self.d: dict[str, str] = self.open_dict_file(fn)
+        self.d: SpellDict = self.open_dict_file(fn)
         g.app.spellDict = self.d
     #@+node:ekr.20180207071114.3: *3* enchant.add
     def add(self, word: str) -> None:
@@ -347,7 +348,7 @@ class EnchantWrapper(BaseSpellWrapper):
                 language = 'en_US'
         self.language = language
     #@+node:ekr.20180207102856.1: *3* enchant.open_dict_file
-    def open_dict_file(self, fn: str) -> dict:  # A pyenchant dict or a DefaultDict.
+    def open_dict_file(self, fn: str) -> SpellDict:  # A pyenchant dict or a DefaultDict.
         """Open or create the dict with the given fn."""
         language = self.language
         if not fn or not language:
