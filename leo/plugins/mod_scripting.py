@@ -145,7 +145,7 @@ from collections import namedtuple
 from collections.abc import Callable
 import re
 import sys
-from typing import Any, Union, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoColor
 from leo.core import leoGui
