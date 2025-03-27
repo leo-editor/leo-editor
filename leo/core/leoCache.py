@@ -154,9 +154,9 @@ class SqlitePickleShare:
         self.init_dbtables(self.conn)
         # Keys are normalized file names.
         # Values are tuples (obj, orig_mod_time)
-        self.cache: dict[str, Any] = {}
+        self.cache: dict[str, Value] = {}
 
-        def loadz(data: Any) -> Optional[Any]:
+        def loadz(data: Value) -> Optional[Value]:
             if data:
                 # Retain this code for maximum compatibility.
                 try:
@@ -167,7 +167,7 @@ class SqlitePickleShare:
                 return val
             return None
 
-        def dumpz(val: Any) -> Any:
+        def dumpz(val: Value) -> Value:
             try:
                 # Use Python 2's highest protocol, 2, if possible
                 data = pickle.dumps(val, protocol=2)
