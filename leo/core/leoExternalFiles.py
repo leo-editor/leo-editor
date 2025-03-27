@@ -14,6 +14,7 @@ from leo.core import leoGlobals as g
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position
+    Value = Any
     Widget = Any
 #@-<< leoExternalFiles imports & annotations >>
 
@@ -254,7 +255,7 @@ class ExternalFilesController:
             p.setDirty()
             c.setChanged()
     #@+node:ekr.20150404082344.1: *4* efc.open_with & helpers
-    def open_with(self, c: Cmdr, d: dict[str, Any]) -> None:
+    def open_with(self, c: Cmdr, d: dict[str, Value]) -> None:
         """
         Called by c.openWith to handle items in the Open With... menu.
 
@@ -399,7 +400,7 @@ class ExternalFilesController:
     #@+node:ekr.20031218072017.2829: *5* efc.open_file_in_external_editor
     def open_file_in_external_editor(self,
         c: Cmdr,
-        d: dict[str, Any],
+        d: dict[str, Value],
         fn: str,
         testing: bool = False,
     ) -> str:
