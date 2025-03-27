@@ -782,9 +782,9 @@ class BaseColorizer:
         self.importedRulesets: dict[str, bool] = {}
         self.fonts: dict[str, QtGui.QFont] = {}  # Keys are config names.  Values are actual fonts.
         self.keywords: dict[str, int] = {}  # Keys are keywords, values are 0..5.
-        self.modes: dict[str, g.Bunch] = {}  # Keys are languages, values are modes.
-        self.mode: g.Bunch = None  # The mode object for the present language.
-        self.modeStack: list[g.Bunch] = []
+        self.modes: dict[str, JEditModeDescriptor] = {}  # Keys are languages, values are modes.
+        self.mode: JEditModeDescriptor = None  # The mode descriptor for the present language.
+        self.modeStack: list[JEditModeDescriptor] = []
         self.rulesDict: dict[str, RuleSet] = {}
         # self.defineAndExtendForthWords()
         self.word_chars: dict[str, str] = {}  # Inited by init_keywords().
@@ -972,14 +972,14 @@ class JEditColorizer(BaseColorizer):
             self.section_delim1 = '<<'
             self.section_delim2 = '>>'
     #@+node:ekr.20110605121601.18576: *4* jedit.addImportedRules
-    def addImportedRules(self, mode: g.Bunch, rulesDict: dict[str, RuleSet], rulesetName: str) -> None:
+    def addImportedRules(self, mode: JEditModeDescriptor, rulesDict: dict[str, RuleSet], rulesetName: str) -> None:
         """Append any imported rules at the end of the rulesets specified in mode.importDict"""
         if self.importedRulesets.get(rulesetName):
             return
         self.importedRulesets[rulesetName] = True
         names = mode.importDict.get(rulesetName, []) if hasattr(mode, 'importDict') else []
         for name in names:
-            savedBunch = self.mode
+            savedModeDescriptor = self.mode
             ok = self.init_mode(name)
             if ok:
                 rulesDict2 = self.rulesDict
@@ -992,7 +992,7 @@ class JEditColorizer(BaseColorizer):
                         if rules:
                             aList.extend(rules)
                             self.rulesDict[key] = aList
-            self.initModeFromBunch(savedBunch)
+            self.initModeFromModeDescriptor(savedModeDescriptor)
     #@+node:ekr.20110605121601.18577: *4* jedit.addLeoRules
     def addLeoRules(self, theDict: dict[str, RuleSet]) -> None:
         """Put Leo-specific rules to theList."""
@@ -1045,11 +1045,11 @@ class JEditColorizer(BaseColorizer):
         if name == 'latex':
             name = 'tex'  # #1088: use tex mode for both tex and latex.
         language, rulesetName = self.nameToRulesetName(name)
-        bunch = self.modes.get(rulesetName)
-        if bunch:
-            if bunch.language == 'unknown-language':
+        mode_descriptor = self.modes.get(rulesetName)
+        if mode_descriptor:
+            if mode_descriptor.language == 'unknown-language':
                 return False
-            self.initModeFromBunch(bunch)
+            self.initModeFromModeDescriptor(mode_descriptor)
             self.language = language  # 2011/05/30
             return True
         # Don't try to import a non-existent language.
@@ -1071,8 +1071,8 @@ class JEditColorizer(BaseColorizer):
         """
         language, rulesetName = self.nameToRulesetName(name)
         if not module:
-            # Create a dummy bunch to limit recursion.
-            bunch = g.Bunch(
+            # Create a dummy mode descriptor to limit recursion.
+            mode_descriptor = JEditModeDescriptor(
                 attributesDict={},
                 defaultColor=None,
                 keywordsDict={},
@@ -1083,7 +1083,7 @@ class JEditColorizer(BaseColorizer):
                 rulesetName=rulesetName,
                 word_chars=self.word_chars,  # 2011/05/21
             )
-            self.mode = self.modes[language] = bunch
+            self.mode = self.modes[language] = mode_descriptor
             self.rulesetName = rulesetName
             self.language = 'unknown-language'
             if g.unitTesting:  # Too intrusive otherwise.
@@ -1111,7 +1111,7 @@ class JEditColorizer(BaseColorizer):
         self.rulesDict: dict[str, RuleSet] = d.get(rulesetName, {})
         self.addLeoRules(self.rulesDict)
         self.defaultColor = 'null'
-        bunch = g.Bunch(
+        mode_descriptor = JEditModeDescriptor(
             attributesDict=self.attributesDict,
             defaultColor=self.defaultColor,
             keywordsDict=self.keywordsDict,
@@ -1122,7 +1122,7 @@ class JEditColorizer(BaseColorizer):
             rulesetName=self.rulesetName,
             word_chars=self.word_chars,  # 2011/05/21
         )
-        self.mode = self.modes[rulesetName] = bunch
+        self.mode = self.modes[rulesetName] = mode_descriptor
 
         # Do this after 'officially' initing the module, to limit recursion.
         self.addImportedRules(self.mode, self.rulesDict, rulesetName)
@@ -1211,20 +1211,22 @@ class JEditColorizer(BaseColorizer):
             if val in ('false', 'False'):
                 val = False
             setattr(self, key, val)
-    #@+node:ekr.20110605121601.18585: *5* jedit.initModeFromBunch
-    def initModeFromBunch(self, bunch: g.Bunch) -> None:
+    #@+node:ekr.20110605121601.18585: *5* jedit.initModeFromModeDescriptor
+    def initModeFromModeDescriptor(self, mode_descriptor: JEditModeDescriptor) -> None:
 
-        self.mode = bunch
+        self.mode = mode_descriptor
         # Set the ivars.
-        self.attributesDict = bunch.attributesDict
+        self.attributesDict = mode_descriptor.attributesDict
         self.setModeAttributes()
-        self.defaultColor = bunch.defaultColor
-        self.keywordsDict = bunch.keywordsDict
-        self.language = bunch.language
-        self.properties = bunch.properties
-        self.rulesDict = bunch.rulesDict
-        self.rulesetName = bunch.rulesetName
-        self.word_chars = bunch.word_chars
+        self.defaultColor = mode_descriptor.defaultColor
+        self.keywordsDict = mode_descriptor.keywordsDict
+        self.language = mode_descriptor.language
+        self.properties = mode_descriptor.properties
+        self.rulesDict = mode_descriptor.rulesDict
+        self.rulesetName = mode_descriptor.rulesetName
+        self.word_chars = mode_descriptor.word_chars
+
+    initModeFromBunch = initModeFromModeDescriptor
     #@+node:ekr.20110605121601.18586: *5* jedit.updateDelimsTables
     def updateDelimsTables(self) -> None:
         """Update g.app.language_delims_dict if no entry for the language exists."""
@@ -2869,8 +2871,28 @@ class JEditColorizer(BaseColorizer):
 #@+node:ekr.20250327040215.1: ** class JEditModeDescriptor
 class JEditModeDescriptor:
 
-    def __init__(self) -> None:
-        pass  ###
+    """A class fully describing a jEdit mode file."""
+
+    def __init__(self, *,
+        attributesDict: dict,
+        defaultColor: str,
+        keywordsDict: dict,
+        language: str,
+        module: ModuleType,  # For debugging.
+        properties: dict,
+        rulesDict: dict,
+        rulesetName: str,
+        word_chars: dict[str, str],
+    ) -> None:
+        self.attributesDict = attributesDict
+        self.defaultColor = defaultColor
+        self.keywordsDict = keywordsDict
+        self.language = language
+        self.module = module
+        self.properties = properties
+        self.rulesDict = rulesDict
+        self.rulesetName = rulesetName
+        self.word_chars = word_chars
 #@+node:ekr.20110605121601.18565: ** class LeoHighlighter (QSyntaxHighlighter)
 # Careful: we may be running from the bridge.
 
