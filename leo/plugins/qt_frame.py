@@ -2792,9 +2792,6 @@ class LeoQtMenu(leoMenu.LeoMenu):
         # menubar = self.c.frame.top.leo_menubar
         # menubar.setActiveAction(None)
         # menubar.repaint()
-    #@+node:ekr.20110605121601.18362: *3* LeoQtMenu.getMacHelpMenu
-    def getMacHelpMenu(self, table: list) -> None:
-        return None
     #@-others
 #@+node:ekr.20110605121601.18363: ** class LeoQTreeWidget (QTreeWidget)
 class LeoQTreeWidget(QtWidgets.QTreeWidget):
