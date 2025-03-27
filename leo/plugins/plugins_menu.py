@@ -53,8 +53,7 @@ __plugin_priority__
 """
 #@-<< plugins_menu docstring >>
 # Written by Paul A. Paterson.  Revised by Edward K. Ream.
-# To do: add Revert button to each dialog.
-# **Important**: this plugin is gui-independent.
+# This plugin is gui-independent.
 #@+<< plugins_menu imports & annotations >>
 #@+node:ekr.20050101090207.10: ** << plugins_menu imports & annotations >>
 from __future__ import annotations
@@ -67,8 +66,8 @@ from leo.core import leoGlobals as g
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoMenu import LeoMenu
     KWargs = Any
-    Menu = Any
     Value = Any
 #@-<< plugins_menu imports & annotations >>
 
@@ -195,7 +194,7 @@ class _PluginDatabase:
         """Initialize"""
         self.plugins_by_group: dict[str, list[PlugIn]] = {}
         self.groups_by_plugin: dict[PlugIn, list[str]] = {}
-        self.menus: dict[str, Menu] = {}
+        self.menus: dict[str, LeoMenu] = {}
     #@+node:pap.20050305152751.2: *3* addPlugin
     def addPlugin(self, item: PlugIn, group: str) -> None:
         """Add a plugin"""
@@ -209,11 +208,11 @@ class _PluginDatabase:
         groups.sort()
         return groups
     #@+node:pap.20050305153716: *3* setMenu
-    def setMenu(self, name: str, menu: Menu) -> None:
+    def setMenu(self, name: str, menu: LeoMenu) -> None:
         """Store the menu for this group"""
         self.menus[name] = menu
     #@+node:pap.20050305153716.1: *3* getMenu
-    def getMenu(self, item: PlugIn) -> Menu:
+    def getMenu(self, item: PlugIn) -> LeoMenu:
         """Get the menu for a particular item"""
         try:
             return self.menus[item.group]
