@@ -387,7 +387,7 @@ class todoController:
         self.ui = todoQtUI(self)
         os.chdir(owd)
         for i in self.handlers:
-            g.registerHandler(i[0], i[1])
+            g.registerHandler(i[0], i[1])  # type:ignore
         self.loadAllIcons()
         # correct spinTime suffix:
         self.ui.UI.spinTime.setSuffix(" " + self.time_name)
@@ -450,7 +450,7 @@ class todoController:
     #@+node:tbrown.20090522142657.7894: *3* todoController.__del__
     def __del__(self) -> None:
         for i in self.handlers:
-            g.unregisterHandler(i[0], i[1])
+            g.unregisterHandler(i[0], i[1])  # type:ignore
     #@+node:tbnorth.20170925093004.1: *3* todoController._date
     def _date(self, d: str) -> Optional[datetime.date]:
         """_date - convert a string to a date
@@ -628,7 +628,7 @@ class todoController:
         if self.c != key['c']:
             return  # not our problem
         for i in self.handlers:
-            g.unregisterHandler(i[0], i[1])
+            g.unregisterHandler(i[0], i[1])  # type:ignore
     #@+node:tbrown.20090119215428.18: *3* todoController.showHelp
     def showHelp(self) -> None:
         g.es('Check the Plugins menu Todo entry')

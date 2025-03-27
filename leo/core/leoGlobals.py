@@ -65,6 +65,8 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.plugins.qt_idle_time import IdleTime as QtIdleTime
     Args = Any
     KWargs = Any
+    Module = Any
+    Tags = Any  # Union[str, list[str]]
     Value = Any
 #@-<< leoGlobals: annotations >>
 #@+<< leoGlobals: global constants >>
@@ -4351,7 +4353,9 @@ class GitIssueController:
         done = not link or link.find('rel="next"') == -1
         return done, len(aList)
     #@+node:ekr.20180127092201.1: *5* git.print_header
-    def print_header(self, r: Any) -> None:
+    def print_header(self,
+        r: Any,  # A requests.Request object.
+    ) -> None:
 
         # r.headers is a CaseInsensitiveDict
         # so g.printObj(r.headers) is just repr(r.headers)
@@ -4548,7 +4552,7 @@ act_on_node = dummy_act_on_node
 childrenModifiedSet: set[VNode] = set()
 contentModifiedSet: set[VNode] = set()
 #@+node:ekr.20031218072017.1596: *3* g.doHook
-def doHook(tag: str, *args: Args, **kwargs: KWargs) -> Any:
+def doHook(tag: str, *args: Args, **kwargs: KWargs) -> Value:
     """
     This global function calls a hook routine. Hooks are identified by the
     tag param.
@@ -4591,27 +4595,27 @@ def doHook(tag: str, *args: Args, **kwargs: KWargs) -> Any:
 #@+node:ekr.20100910075900.5950: *3* g.Wrappers for g.app.pluginController methods
 # Important: we can not define g.pc here!
 #@+node:ekr.20100910075900.5951: *4* g.Loading & registration
-def loadOnePlugin(pluginName: str, verbose: bool = False) -> Any:
+def loadOnePlugin(pluginName: str, verbose: bool = False) -> Module:
     pc = g.app.pluginsController
     return pc.loadOnePlugin(pluginName, verbose=verbose)
 
-def registerExclusiveHandler(tags: Any, fn: str) -> Any:
+def registerExclusiveHandler(tags: Tags, fn: str) -> Module:
     pc = g.app.pluginsController
     return pc.registerExclusiveHandler(tags, fn)
 
-def registerHandler(tags: Any, fn: Any) -> Any:
+def registerHandler(tags: Tags, fn: Callable) -> Module:
     pc = g.app.pluginsController
     return pc.registerHandler(tags, fn)
 
-def plugin_signon(module_name: str, verbose: bool = False) -> Any:
+def plugin_signon(module_name: str, verbose: bool = False) -> Module:
     pc = g.app.pluginsController
     return pc.plugin_signon(module_name, verbose)
 
-def unloadOnePlugin(moduleOrFileName: str, verbose: bool = False) -> Any:
+def unloadOnePlugin(moduleOrFileName: str, verbose: bool = False) -> Module:
     pc = g.app.pluginsController
     return pc.unloadOnePlugin(moduleOrFileName, verbose)
 
-def unregisterHandler(tags: Any, fn: Any) -> Any:
+def unregisterHandler(tags: Tags, fn: Callable) -> Module:
     pc = g.app.pluginsController
     return pc.unregisterHandler(tags, fn)
 #@+node:ekr.20100910075900.5952: *4* g.Information
