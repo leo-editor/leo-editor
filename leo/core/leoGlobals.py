@@ -5665,7 +5665,7 @@ def pr(*args: Args, **kwargs: KWargs) -> None:
 def prettyPrintType(obj: object) -> str:
     if isinstance(obj, str):
         return 'string'
-    t: Any = type(obj)
+    t: object = type(obj)
     if t in (types.BuiltinFunctionType, types.FunctionType):
         return 'function'
     if t == types.ModuleType:  # noqa
@@ -5800,7 +5800,7 @@ trace_unique_class = traceUniqueClass
 #@+node:ekr.20080220111323: *3* g.translateArgs
 console_encoding = None
 
-def translateArgs(args: Iterable[Any], d: dict[str, Any]) -> str:
+def translateArgs(args: Iterable, d: dict[str, Value]) -> str:
     """
     Return the concatenation of s and all args, with odd args translated.
     """
@@ -5960,7 +5960,7 @@ def funcToMethod(f: Callable, theClass: object, name: str = None) -> None:
 #@+node:ekr.20060913090832.1: *3* g.init_zodb
 init_zodb_import_failed = False
 init_zodb_failed: dict[str, bool] = {}  # Keys are paths, values are True.
-init_zodb_db: dict[str, Any] = {}  # Keys are paths, values are ZODB.DB instances.
+init_zodb_db: dict[str, Value] = {}  # Keys are paths, values are ZODB.DB instances.
 
 def init_zodb(pathToZodbStorage: str, verbose: bool = True) -> Any:
     """
@@ -6044,13 +6044,12 @@ if 0:  # Testing:
     for s in aList:
         print(pep8_class_name(s))
 #@+node:ekr.20160417174224.1: *3* g.plural
-def plural(obj: Any) -> str:
+def plural(obj: object) -> str:
     """Return "s" or "" depending on n."""
     if isinstance(obj, (list, tuple, str)):
         n = len(obj)
-    else:
-        n = obj
-    return '' if n == 1 else 's'
+        return '' if n == 1 else 's'
+    return ''
 #@+node:ekr.20160331194701.1: *3* g.truncate
 def truncate(s: str, n: int) -> str:
     """Return s truncated to n characters."""
