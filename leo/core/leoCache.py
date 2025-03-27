@@ -45,7 +45,7 @@ class CommanderWrapper:
         self.db = g.app.db
         self.user_keys: set[str] = set()
 
-    def get(self, key: str, default: Any = None) -> Any:
+    def get(self, key: str, default: Value = None) -> Value:
         value = self.db.get(f"{self.c.mFileName}:::{key}")
         return default if value is None else value
 
@@ -60,10 +60,10 @@ class CommanderWrapper:
             self.user_keys.remove(key)
         del self.db[f"{self.c.mFileName}:::{key}"]
 
-    def __getitem__(self, key: str) -> Any:
+    def __getitem__(self, key: str) -> Value:
         return self.db[f"{self.c.mFileName}:::{key}"]  # May (properly) raise KeyError
 
-    def __setitem__(self, key: str, value: Any) -> None:
+    def __setitem__(self, key: str, value: Value) -> None:
         self.user_keys.add(key)
         self.db[f"{self.c.mFileName}:::{key}"] = value
 #@+node:ekr.20180627041556.1: ** class GlobalCacher (g.app.db)
