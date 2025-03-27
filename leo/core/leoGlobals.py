@@ -6042,8 +6042,6 @@ if 0:  # Testing:
 #@+node:ekr.20160417174224.1: *3* g.plural
 def plural(obj: object) -> str:
     """Return "s" or "" depending on len(obj)."""
-    if isinstance(obj, (list, tuple, str)):
-        return '' if len(obj) == 1 else 's'
     if isinstance(obj, int):
         return '' if obj == 1 else 's'
     if hasattr(obj, 'len'):
