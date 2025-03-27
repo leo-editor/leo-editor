@@ -65,7 +65,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.plugins.qt_idle_time import IdleTime as QtIdleTime
     Args = Any
     KWargs = Any
-    Module = Any
     Tags = Any  # Union[str, list[str]]
     Value = Any
 #@-<< leoGlobals: annotations >>
@@ -6047,8 +6046,7 @@ if 0:  # Testing:
 def plural(obj: object) -> str:
     """Return "s" or "" depending on n."""
     if isinstance(obj, (list, tuple, str)):
-        n = len(obj)
-        return '' if n == 1 else 's'
+        return '' if len(obj) == 1 else 's'
     return ''
 #@+node:ekr.20160331194701.1: *3* g.truncate
 def truncate(s: str, n: int) -> str:
@@ -6374,13 +6372,13 @@ def getDocString(s: str) -> str:
         return s[i + 3 : j]
     return ''
 #@+node:ekr.20111017211256.15905: *3* g.getDocStringForFunction
-def getDocStringForFunction(func: Any) -> str:
+def getDocStringForFunction(func: Callable) -> str:
     """Return the docstring for a function that creates a Leo command."""
 
-    def name(func: Any) -> str:
+    def name(func: Callable) -> str:
         return func.__name__ if hasattr(func, '__name__') else '<no __name__>'
 
-    def get_defaults(func: str, i: int) -> Any:
+    def get_defaults(func: Callable, i: int) -> Any:
         defaults = inspect.getfullargspec(func)[3]
         return defaults[i]
 
@@ -6436,7 +6434,7 @@ def python_tokenize(s: str) -> list:
     return result
 #@+node:ekr.20040327103735.2: ** g.Scripting
 #@+node:ekr.20161223090721.1: *3* g.exec_file
-def exec_file(path: str, d: dict[str, Any], script: str = None) -> None:
+def exec_file(path: str, d: dict[str, Value], script: str = None) -> None:
     """Simulate python's execfile statement for python 3."""
     if script is None:
         with open(path) as f:
