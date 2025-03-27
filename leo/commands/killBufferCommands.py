@@ -5,7 +5,7 @@
 #@+node:ekr.20150514050411.1: ** << killBufferCommands imports & annotations >>
 from __future__ import annotations
 from collections.abc import Callable
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Optional, Self, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass
 
@@ -127,7 +127,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             self.c = c
             self.index = 0  # The index of the next item to be returned.
 
-        def __iter__(self) -> Any:
+        def __iter__(self) -> Self:
             return self
         #@+node:ekr.20150514063305.418: *4* __next__
         def __next__(self) -> str:
