@@ -112,6 +112,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
+    KWargs = Any
     QWidget = QtWidgets.QWidget
 #@-<< nodetags imports & annotations >>
 
@@ -124,7 +125,7 @@ def init() -> bool:
     g.plugin_signon(__name__)
     return True
 #@+node:peckj.20140804103733.9245: ** onCreate (nodetags.py)
-def onCreate(tag: str, keys: Any) -> None:
+def onCreate(tag: str, keys: KWargs) -> None:
 
     c = keys.get('c')
     if c:

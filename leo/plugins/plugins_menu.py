@@ -68,6 +68,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent as Event
     Item = Any
     Group = Any
+    KWargs = Any
     Menu = Any
 #@-<< plugins_menu imports & annotations >>
 
@@ -125,7 +126,7 @@ def addPluginMenuItem(plugin: PlugIn, c: Cmdr) -> None:
         table = [(plugin_name, None, plugin.about)]
         c.frame.menu.createMenuEntries(PluginDatabase.getMenu(plugin), table)
 #@+node:EKR.20040517080555.23: *3* createPluginsMenu & helper
-def createPluginsMenu(tag: str, keywords: Any) -> None:
+def createPluginsMenu(tag: str, keywords: KWargs) -> None:
     """Create the plugins menu: calld from create-optional-menus hook."""
     c = keywords.get("c")
     if not c:
@@ -202,7 +203,7 @@ class _PluginDatabase:
             self.plugins_by_group.setdefault(group, []).append(item)
             self.groups_by_plugin[item] = group
     #@+node:pap.20050305152751.3: *3* getGroups
-    def getGroups(self) -> list[Any]:
+    def getGroups(self) -> list[Group]:
         """Return a list of groups"""
         groups = list(self.plugins_by_group.keys())
         groups.sort()
