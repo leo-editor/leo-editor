@@ -14,6 +14,9 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position
     Self = Cmdr  # For arguments to @g.commander_command.
+    Value = Any
+    Widget = Any
+    Wrapper = Any
 #@-<< commanderEditCommands imports & annotations >>
 
 #@+others
@@ -393,7 +396,7 @@ def deleteComments(self: Self, event: LeoKeyEvent = None) -> None:
     u.afterChangeBody(p, 'Indent Region', bunch)
 #@+node:ekr.20171123135625.54: ** c_ec.editHeadline (edit-headline)
 @g.commander_command('edit-headline')
-def editHeadline(self: Self, event: LeoKeyEvent = None) -> tuple[Any, Any]:
+def editHeadline(self: Self, event: LeoKeyEvent = None) -> tuple[Widget, Wrapper]:
     """
     Begin editing the headline of the selected node.
 
@@ -939,9 +942,9 @@ def rp_get_leading_ws(c: Cmdr, lines: list[str], tabWidth: int) -> tuple[list[in
 def rp_reformat(
     c: Cmdr,
     head: str,
-    oldSel: Any,
-    oldYview: Any,
-    original: Any,
+    oldSel: int,  # Not used.
+    oldYview: int,  # Not used.
+    original: str,
     result: str,
     tail: str,
     undoType: str,
@@ -1103,7 +1106,7 @@ def toggleShowInvisibles(self: Self, event: LeoKeyEvent = None) -> None:
     colorizer = c.frame.body.getColorizer()
     showInvisiblesHelper(c, not colorizer.showInvisibles)
 
-def showInvisiblesHelper(c: Cmdr, val: Any) -> None:
+def showInvisiblesHelper(c: Cmdr, val: Value) -> None:
     frame = c.frame
     colorizer = frame.body.getColorizer()
     colorizer.showInvisibles = val
