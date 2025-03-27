@@ -7,7 +7,7 @@ from __future__ import annotations
 from collections.abc import Callable
 import re
 import time
-from typing import Any, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoBeautify
 from leo.commands.baseCommands import BaseEditCommandsClass
@@ -457,7 +457,7 @@ class To_Python:  # pragma: no cover
 #@+node:ekr.20210830070921.1: ** function: convert_at_test_nodes
 def convert_at_test_nodes(
     c: Cmdr,
-    converter: Any,
+    converter: Callable,
     root: Position,
     copy_tree: bool = False,
 ) -> None:  # pragma: no cover
@@ -1303,8 +1303,8 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 self.verbose = c.config.getBool('stub-verbose', default=False)
                 self.warn = c.config.getBool('stub-warn', default=False)
                 # Pattern lists & dicts, set by config sections...
-                self.patterns_dict: dict[str, Any] = {}
-                self.names_dict: dict[str, Any] = {}
+                self.patterns_dict: dict[str, re.Pattern] = {}
+                self.names_dict: dict[str, list[str]] = {}
                 self.def_patterns = self.scan_patterns('stub-def-name-patterns')
                 self.general_patterns = self.scan_patterns('stub-general-patterns')
                 self.prefix_lines = self.scan('stub-prefix-lines')
@@ -1878,7 +1878,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
             lws, tail = m.group(1), m.group(2).strip()
             tail_s = tail.strip() if tail.strip() else 'None'
-            lines[i] = f"{lws}{tail_s}\n"  # Any extra comment quickly becomes annoying.
+            lines[i] = f"{lws}{tail_s}\n"  # Extra comments quickly becomes annoying.
             return i + 1
         #@+node:ekr.20231119103026.19: *7* py2rust.do_section_ref
         section_ref_pat = re.compile(r"^([ \t]*)(\<\<.*?\>\>)\s*(.*)$")
