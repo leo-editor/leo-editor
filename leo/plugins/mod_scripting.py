@@ -154,14 +154,14 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
-    from leo.plugins.qt_text import QTextEditWrapper as Wrapper
+    from leo.plugins.qt_text import QTextEditWrapper
     from leo.leoQt import QtWidgets
     Args = Any
     KWargs = Any
     RClick = namedtuple('RClick', 'position,children')
     RClicks = list[RClick]
     Value = Any
-    Widget = Any
+
 #@-<< mod_scripting imports & annotations >>
 
 #@+others
@@ -331,7 +331,7 @@ class ScriptingController:
     """A class defining scripting commands."""
     #@+others
     #@+node:ekr.20060328125248.7: *3*  sc.ctor
-    def __init__(self, c: Cmdr, iconBar: Widget = None) -> None:
+    def __init__(self, c: Cmdr, iconBar: QtWidgets.QWidget = None) -> None:
         self.c = c
         self.gui = c.frame.gui
         getBool = c.config.getBool
@@ -508,7 +508,7 @@ class ScriptingController:
         statusLine: str,
         kind: str = 'at-button',
         verbose: bool = True,
-    ) -> Wrapper:
+    ) -> QtWidgets.QButton:
         """Create a button for a local @button node."""
         c = self.c
         buttonText = self.cleanButtonText(h, minimal=True)
@@ -564,7 +564,7 @@ class ScriptingController:
         statusLine: str,
         bg: str = None,
         kind: str = None,
-    ) -> Wrapper:
+    ) -> QtWidgets.QButton:
         """
         Create one icon button.
         This method creates all scripting icon buttons.
@@ -600,7 +600,7 @@ class ScriptingController:
                 source_c=c,
                 tag='icon button')
 
-        def deleteButtonCallback(event: Event = None, self: Any = self, b: Widget = b) -> None:
+        def deleteButtonCallback(event: Event = None, self: Any = self, b: QtWidgets.QButton = b) -> None:
             self.deleteButton(b, event=event)
 
         # Register the delete-x-button command.
@@ -621,7 +621,7 @@ class ScriptingController:
         self.seen = set()
     #@+node:ekr.20060328125248.28: *3* sc.executeScriptFromButton
     def executeScriptFromButton(self,
-        b: Wrapper,
+        b: QtWidgets.QButton,
         buttonText: str,
         p: Position,
         script: str,
@@ -964,7 +964,7 @@ class ScriptingController:
                 s = s.strip()
         return s.replace(' ', '-').strip('-')
     #@+node:ekr.20060522104419.1: *4* sc.createBalloon (gui-dependent)
-    def createBalloon(self, w: Wrapper, label: str) -> None:
+    def createBalloon(self, w: QTextEditWrapper, label: str) -> None:
         'Create a balloon for a widget.'
         if g.app.gui.guiName().startswith('qt'):
             # w is a leoIconBarButton.
@@ -1118,23 +1118,6 @@ class ScriptingController:
                         pane=pane,
                         shortcut=shortcut,
                     )
-    #@+node:ekr.20150402021505.1: *4* sc.setButtonColor
-    def setButtonColor(self, b: Wrapper, bg: str) -> None:
-        """Set the background color of Qt button b to bg."""
-        if not bg:
-            return
-        if not bg.startswith('#'):
-            bg0 = bg
-            d = leoColor.leo_color_database
-            bg = d.get(bg.lower())
-            if not bg:
-                g.trace('bad color? %s' % bg0)
-                return
-        try:
-            b.button.setStyleSheet("QPushButton{background-color: %s}" % (bg))
-        except Exception:
-            # g.es_exception()
-            pass  # Might not be a valid color.
     #@+node:ekr.20061015125212: *4* sc.truncateButtonText
     def truncateButtonText(self, s: str) -> str:
         # 2011/10/16: Remove @button here only.
@@ -1150,6 +1133,23 @@ class ScriptingController:
                 s = s[:-1]
         s = s.strip('-')
         return s.strip()
+    #@+node:ekr.20150402021505.1: *4* sc.setButtonColor
+    def setButtonColor(self, b: QTextEditWrapper, bg: str) -> None:
+        """Set the background color of Qt button b to bg."""
+        if not bg:
+            return
+        if not bg.startswith('#'):
+            bg0 = bg
+            d = leoColor.leo_color_database
+            bg = d.get(bg.lower())
+            if not bg:
+                g.trace('bad color? %s' % bg0)
+                return
+        try:
+            b.button.setStyleSheet("QPushButton{background-color: %s}" % (bg))
+        except Exception:
+            # g.es_exception()
+            pass  # Might not be a valid color.
     #@-others
 
 scriptingController = ScriptingController

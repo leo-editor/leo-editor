@@ -113,7 +113,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
     KWargs = Any
-    QWidget = QtWidgets.QWidget
+
 #@-<< nodetags imports & annotations >>
 
 #@+others
@@ -268,7 +268,7 @@ if QtWidgets:
     class LeoTagWidget(QtWidgets.QWidget):  # type:ignore
         #@+others
         #@+node:peckj.20140804114520.15200: *3* tag_w.__init__
-        def __init__(self, c: Cmdr, parent: QWidget = None) -> None:
+        def __init__(self, c: Cmdr, parent: QtWidgets.QWidget = None) -> None:
             super().__init__(parent)
             self.c = c
             self.tc = self.c.theTagController
