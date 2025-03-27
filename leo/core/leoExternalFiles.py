@@ -23,7 +23,7 @@ if TYPE_CHECKING:  # pragma: no cover
 class ExternalFile:
     """A class holding all data about an external file."""
 
-    def __init__(self, c: Cmdr, ext: str, p: Position, path: str, time: Any) -> None:
+    def __init__(self, c: Cmdr, ext: str, p: Position, path: str, time: float) -> None:
         """Ctor for ExternalFile class."""
         self.c = c
         self.ext = ext
