@@ -8,7 +8,7 @@ from collections.abc import Callable
 import functools
 import re
 import string
-from typing import Any, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 from leo.commands.baseCommands import BaseEditCommandsClass
@@ -18,7 +18,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-    Stroke = Any
 #@-<< abbrevCommands imports & abbreviations >>
 
 def cmd(name: str) -> Callable:
@@ -229,7 +228,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                     else:
                         g.trace(f"no definition for {abbrev_name}")
     #@+node:ekr.20150514043850.11: *3* abbrev.expandAbbrev & helpers (entry point)
-    def expandAbbrev(self, event: LeoKeyEvent, stroke: Stroke) -> bool:
+    def expandAbbrev(self, event: LeoKeyEvent, stroke: g.KeyStroke) -> bool:
         """
         Not a command.  Expand abbreviations in event.widget.
 
@@ -564,7 +563,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             self.save_sel = i + delta, j + delta
             self.save_ins = ins + delta
     #@+node:ekr.20161121111502.1: *4* abbrev_get_ch
-    def get_ch(self, event: LeoKeyEvent, stroke: Stroke, w: Wrapper) -> str:
+    def get_ch(self, event: LeoKeyEvent, stroke: g.KeyStroke, w: Wrapper) -> str:
         """Get the ch from the stroke."""
         ch = g.checkUnicode(event and event.char or '')
         if self.expanding:
