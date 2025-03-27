@@ -3185,8 +3185,8 @@ def init_dialog_folder(c: Cmdr, p: Position, use_at_path: bool = True) -> str:
             return dir_
     return ''
 #@+node:ekr.20100329071036.5744: *3* g.is_binary_file/external_file/string
-def is_binary_file(f: Any) -> bool:
-    return f and isinstance(f, io.FileIO)
+def is_binary_file(f: io.IOBase) -> bool:
+    return bool(f and isinstance(f, io.FileIO))
 
 def is_binary_external_file(fileName: str) -> bool:
     try:
@@ -3276,7 +3276,7 @@ def readFileIntoString(
     encoding: str = 'utf-8',  # BOM may override this.
     kind: str = None,  # @file, @edit, ...
     verbose: bool = True,
-) -> tuple[Any, Any]:  # bytes or string.
+) -> tuple[str, str]:
     """
     Return the contents of the file whose full path is fileName.
 
@@ -3303,18 +3303,18 @@ def readFileIntoString(
     try:
         e = None
         with open(fileName, 'rb') as f:
-            s = f.read()
+            bytes_s = f.read()
         # Fix #391.
-        if not s:
+        if not bytes_s:
             return '', None
         # New in Leo 4.11: check for unicode BOM first.
-        e, s = g.stripBOM(s)
+        e, bytes_s = g.stripBOM(bytes_s)
         if not e:
             # Python's encoding comments override everything else.
             junk, ext = g.os_path_splitext(fileName)
             if ext == '.py':
-                e = g.getPythonEncodingFromString(s)
-        s = g.toUnicode(s, encoding=e or encoding)
+                e = g.getPythonEncodingFromString(bytes_s)
+        s = g.toUnicode(bytes_s, encoding=e or encoding)
         return s, e
     except IOError:
         # Translate 'can not open' and kind, but not fileName.
