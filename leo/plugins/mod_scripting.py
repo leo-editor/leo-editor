@@ -157,6 +157,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
     Args = Any
     KWargs = Any
+    Value = Any
     Widget = Any
 #@-<< mod_scripting imports & annotations >>
 
@@ -281,13 +282,13 @@ class AtButtonCallback:
         n = len(self.script or '')
         return f"AtButtonCallback {c.shortFileName()} gnx: {self.gnx} len(script): {n}"
     #@+node:ekr.20150512041758.1: *3* __getattr__ (AtButtonCallback)
-    def __getattr__(self, attr: Any) -> str:
+    def __getattr__(self, attr: Value) -> str:
         """AtButtonCallback.__getattr__. Implement __name__."""
         if attr == '__name__':
             return f"AtButtonCallback: {self.gnx}"
         raise AttributeError  # Returning None is not correct.
     #@+node:ekr.20170203043042.1: *3* AtButtonCallback.execute_script & helper
-    def execute_script(self) -> Any:
+    def execute_script(self) -> Value:
         """Execute the script associated with this button."""
         script = self.find_script()
         if script:
