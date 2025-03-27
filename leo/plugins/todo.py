@@ -78,6 +78,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
+    Args = Any
     Icon = Any  # QtGui.QIcon
     Menu = Any
     Priority = Union[int, str]
@@ -535,7 +536,7 @@ class todoController:
     def redrawer(fn: Callable) -> Callable:  # type:ignore
         """decorator for methods which create the need for a redraw"""
 
-        def todo_redrawer_callback(self: Any, *args: Any, **kargs: Any) -> Any:
+        def todo_redrawer_callback(self: Any, *args: Args, **kargs: Any) -> Any:
 
             self.redrawLevels += 1
             try:
@@ -554,7 +555,7 @@ class todoController:
         """decorator for methods which change projects"""
 
         # pylint: disable=no-self-argument
-        def project_changer_callback(self, *args: Any, **kargs: Any) -> Any:  # type:ignore
+        def project_changer_callback(self, *args: Args, **kargs: Any) -> Any:  # type:ignore
             ans = fn(self, *args, **kargs)  # pylint: disable=not-callable
             self.update_project()
             return ans

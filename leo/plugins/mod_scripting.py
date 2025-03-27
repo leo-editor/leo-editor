@@ -155,6 +155,8 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
+    Args = Any
+    KWargs = Any
     Widget = Any
 #@-<< mod_scripting imports & annotations >>
 
@@ -552,7 +554,7 @@ class ScriptingController:
         return b
     #@+node:ekr.20060328125248.17: *3* sc.createIconButton (creates all buttons)
     def createIconButton(self,
-        args: Any,
+        args: Args,
         text: str,
         command: Callable,
         statusLine: str,
@@ -820,7 +822,7 @@ class ScriptingController:
             return
         args = self.getArgs(p)
 
-        def atCommandCallback(event: Event = None, args: Any = args, c: Cmdr = c, p: Position = p.copy()) -> Any:
+        def atCommandCallback(event: Event = None, args: Args = args, c: Cmdr = c, p: Position = p.copy()) -> Any:
             # pylint: disable=dangerous-default-value
             return c.executeScript(args=args, p=p, silent=True)
 
@@ -859,7 +861,7 @@ class ScriptingController:
             return
         args = self.getArgs(p)
 
-        def atCommandCallback(event: Event = None, args: Any = args, c: Cmdr = c, p: Position = p.copy()) -> Any:
+        def atCommandCallback(event: Event = None, args: Args = args, c: Cmdr = c, p: Position = p.copy()) -> Any:
             # pylint: disable=dangerous-default-value
             return c.executeScript(args=args, p=p, silent=True)
         if p.b.strip():
@@ -1053,7 +1055,7 @@ class ScriptingController:
             ))
     #@+node:ekr.20120301114648.9932: *4* sc.registerAllCommands
     def registerAllCommands(self,
-        args: Any,
+        args: Args,
         func: Callable,
         h: str,
         pane: str,
