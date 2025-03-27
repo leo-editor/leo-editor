@@ -2,7 +2,6 @@
 #@+node:ekr.20061031131434: * @file leoKeys.py
 """Gui-independent keystroke handling for Leo."""
 # pylint: disable=eval-used
-# pylint: disable=deprecated-method
 #@+<< leoKeys imports >>
 #@+node:ekr.20061031131434.1: ** << leoKeys imports >>
 from __future__ import annotations
@@ -15,6 +14,7 @@ import sys
 import textwrap
 import time
 from typing import Any, Optional, TYPE_CHECKING
+from types import ModuleType
 from leo.core import leoGlobals as g
 from leo.external import codewise
 try:
@@ -33,6 +33,7 @@ if TYPE_CHECKING:  # pragma: no cover
     Args = Any
     KWargs = Any
     Stroke = Any
+    Value = Any
     Widget = Any
 #@-<< leoKeys annotations >>
 #@+<< Key bindings, an overview >>
@@ -178,7 +179,7 @@ class AutoCompleterClass:
         # additional namespaces to search for objects, other code
         # can append namespaces to this to extend scope of search
         self.namespaces: list[dict] = []
-        self.qcompleter: Any = None
+        self.qcompleter: Callable = None
         self.qw = None  # The object that supports qcompletion methods.
         self.tabName: str = None  # The name of the main completion tab.
         self.verbose = False  # True: print all members, regardless of how many there are.
@@ -471,7 +472,7 @@ class AutoCompleterClass:
         """Evaluation of prefix failed."""
         self.insert_string('(')
     #@+node:ekr.20110512090917.14469: *5* ac.calltip_success
-    def calltip_success(self, prefix: str, obj: Any) -> None:
+    def calltip_success(self, prefix: str, obj: Callable) -> None:
 
         try:
             s = str(inspect.signature(obj))
@@ -767,7 +768,7 @@ class AutoCompleterClass:
         aList.sort()
         return aList
     #@+node:ekr.20110512090917.14466: *4* ac.get_leo_namespace
-    def get_leo_namespace(self, prefix: str) -> dict[str, Any]:
+    def get_leo_namespace(self, prefix: str) -> dict[str, ModuleType]:
         """
         Return an environment in which to evaluate prefix.
         Add some common standard library modules as needed.
@@ -781,7 +782,7 @@ class AutoCompleterClass:
                 d[name] = m
         return d
     #@+node:ekr.20110512170111.14472: *4* ac.get_object
-    def get_object(self) -> tuple[Any, str]:
+    def get_object(self) -> tuple[Value, str]:
         """Return the object corresponding to the current prefix."""
         common_prefix, prefix1, aList = self.compute_completion_list()
         if not aList:
@@ -1017,7 +1018,7 @@ class ContextSniffer:
     """
 
     def __init__(self) -> None:
-        self.vars: dict[str, list[Any]] = {}  # Keys are var names; values are list of classes
+        self.vars: dict[str, list[Value]] = {}  # Keys are var names; values are list of classes
     #@+others
     #@+node:ekr.20110312162243.14261: *3* get_classes
     def get_classes(self, s: str, varname: str) -> list[str]:
@@ -1670,7 +1671,7 @@ class KeyHandlerClass:
         self.getArgInstance: GetArg = None  # A singleton defined in k.finishCreate.
         self.inited = False  # Set at end of finishCreate.
         # A list of commands whose bindings have been set to None in the local file.
-        self.killedBindings: list[Any] = []
+        self.killedBindings: list[str] = []
         self.replace_meta_with_alt = False  # True: (Mac only) swap Meta and Alt keys.
         self.w = None  # Will be None for NullGui.
         # Generalize...
@@ -1687,7 +1688,7 @@ class KeyHandlerClass:
         self.qcompleter = None  # Set by AutoCompleter.start.
         self.setDefaultUnboundKeyAction()
         self.setDefaultEditingAction()
-        self.modeWidget: Optional[Any]
+        self.modeWidget: Optional[Widget]
     #@+node:ekr.20061031131434.78: *5* k.defineExternallyVisibleIvars
     def defineExternallyVisibleIvars(self) -> None:
 
@@ -1704,7 +1705,8 @@ class KeyHandlerClass:
         """Define internal ivars of the KeyHandlerClass class."""
         self.abbreviationsDict: dict = {}  # Abbreviations created by @alias nodes.
         # Previously defined bindings...
-        self.bindingsDict: dict[str, Any] = {}  # Keys are Tk key names, values are lists of BindingInfo objects.
+        # Keys are Tk key names, values are lists of string or BindingInfo objects.
+        self.bindingsDict: dict[str, list] = {}
         # Previously defined binding tags.
         self.bindtagsDict: dict[str, bool] = {}  # Keys are strings (the tag), values are 'True'
         self.commandHistory: list[str] = []
@@ -2544,7 +2546,7 @@ class KeyHandlerClass:
         k.showStateAndMode()
         return result  # for unit test.
     #@+node:ekr.20061031131434.120: *5* printBindingsHelper
-    def printBindingsHelper(self, result: list[str], data: list[Any], prefix: str) -> None:
+    def printBindingsHelper(self, result: list[str], data: list[tuple], prefix: str) -> None:
         """Helper for k.showBindings"""
         c, lm = self.c, g.app.loadManager
         data.sort(key=lambda x: x[1])
@@ -3162,7 +3164,7 @@ class KeyHandlerClass:
                         c.commandsDict[key] = c.commandsDict.get(commandName)
                         break
     #@+node:ekr.20061031131434.127: *4* k.simulateCommand
-    def simulateCommand(self, commandName: str, event: LeoKeyEvent = None) -> Any:
+    def simulateCommand(self, commandName: str, event: LeoKeyEvent = None) -> Value:
         """
         Execute a Leo command by name.
 
@@ -3394,7 +3396,7 @@ class KeyHandlerClass:
             g.trace(state, 'handler:', handler_name, stroke)
         return True
     #@+node:ekr.20061031131434.108: *6* k.callStateFunction
-    def callStateFunction(self, event: LeoKeyEvent) -> Any:
+    def callStateFunction(self, event: LeoKeyEvent) -> Value:
         """Call the state handler associated with this event."""
         k = self
         ch = event.char
@@ -3618,7 +3620,7 @@ class KeyHandlerClass:
             g.trace(f"{event.stroke!s}: no binding")
         return False
     #@+node:ekr.20091230094319.6240: *6* k.getPaneBinding & helper
-    def getPaneBinding(self, event: LeoKeyEvent) -> Any:
+    def getPaneBinding(self, event: LeoKeyEvent) -> g.BindingInfo:
         c, k, state = self.c, self, self.unboundKeyAction
         stroke, w = event.stroke, event.w
         if not g.assert_is(stroke, g.KeyStroke):
@@ -3651,7 +3653,7 @@ class KeyHandlerClass:
                 return bi
         return None
     #@+node:ekr.20180418105228.1: *7* getPaneBindingHelper
-    def getBindingHelper(self, key: str, name: str, stroke: Stroke, w: Wrapper) -> Any:
+    def getBindingHelper(self, key: str, name: str, stroke: Stroke, w: Wrapper) -> g.BindingInfo:
         """Find a binding for the widget with the given name."""
         c, k = self.c, self
         #
@@ -4101,21 +4103,21 @@ class KeyHandlerClass:
             k.setLabelBlue(modeName + ': ')  # ,protect=True)
     #@+node:ekr.20061031131434.181: *3* k.Shortcuts & bindings
     #@+node:ekr.20061031131434.176: *4* k.computeInverseBindingDict
-    def computeInverseBindingDict(self) -> dict[str, list[tuple[str, Any]]]:
+    def computeInverseBindingDict(self) -> dict[str, list[tuple[str, Stroke]]]:
         """
         Return a dictionary whose keys are command names,
         values are lists of tuples(pane, stroke).
         """
         k = self
         d = k.masterBindingsDict  # Dict[scope, g.BindingInfo]
-        result_d: dict[str, list[tuple[str, Any]]] = {}  # Dict[command-name, tuple[pane, stroke]]
+        result_d: dict[str, list[tuple[str, Stroke]]] = {}  # Dict[command-name, tuple[pane, stroke]]
         for scope in sorted(d):
             d2 = d.get(scope, {})  # Dict[stroke, g.BindingInfo]
             for stroke in d2:
                 assert g.isStroke(stroke), stroke
                 bi = d2.get(stroke)
                 assert isinstance(bi, g.BindingInfo), repr(bi)
-                aList: list[Any] = result_d.get(bi.commandName, [])
+                aList: list[tuple[str, Stroke]] = result_d.get(bi.commandName, [])
                 data = (bi.pane, stroke)
                 if data not in aList:
                     aList.append(data)
@@ -4298,9 +4300,9 @@ class ModeInfo:
 
         self.c = c
         # The bindings in effect for this mode.
-        # Keys are names of (valid) command names, values are BindingInfo objects.
-        self.d: dict[str, Any] = {}
-        self.entryCommands: list[Any] = []  # A list of BindingInfo objects.
+        # Keys are names of (valid) command names, values are lists of BindingInfo objects.
+        self.d: dict[str, list[g.BindingInfo]] = {}
+        self.entryCommands: list[g.BindingInfo] = []  # A list of BindingInfo objects.
         self.k = c.k
         self.name: str = self.computeModeName(name)
         self.prompt: str = self.computeModePrompt(self.name)
@@ -4378,7 +4380,7 @@ class ModeInfo:
         event = None
         k.generalModeHandler(event, modeName=self.name)
     #@+node:ekr.20120208064440.10153: *3* mode_i.init
-    def init(self, name: str, dataList: list[tuple[str, Any]]) -> None:
+    def init(self, name: str, dataList: list[tuple[str, g.BindingInfo]]) -> None:
         """aList is a list of tuples (commandName,bi)."""
         c, d, modeName = self.c, self.d, self.name
         for name, bi in dataList:
