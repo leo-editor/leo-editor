@@ -6044,9 +6044,9 @@ if 0:  # Testing:
         print(pep8_class_name(s))
 #@+node:ekr.20160417174224.1: *3* g.plural
 def plural(obj: object) -> str:
-    """Return "s" or "" depending on n."""
-    if isinstance(obj, (list, tuple, str)):
-        return '' if len(obj) == 1 else 's'
+    """Return "s" or "" depending on len(obj)."""
+    if hasattr(obj, 'len'):
+        return '' if len(obj) == 1 else 's'  # type:ignore[arg-type]
     return ''
 #@+node:ekr.20160331194701.1: *3* g.truncate
 def truncate(s: str, n: int) -> str:
