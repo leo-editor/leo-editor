@@ -145,7 +145,7 @@ from collections import namedtuple
 from collections.abc import Callable
 import re
 import sys
-from typing import Any, TYPE_CHECKING
+from typing import Any, Union, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoColor
 from leo.core import leoGui
@@ -158,7 +158,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.leoQt import QtWidgets
     Args = Any
     KWargs = Any
-    RClick = namedtuple('RClick', 'position,children')
+    RClick = tuple  # Union[tuple, namedtuple('RClick', 'position,children')]
     RClicks = list[RClick]
     Value = Any
 
@@ -167,7 +167,7 @@ if TYPE_CHECKING:  # pragma: no cover
 #@+others
 #@+node:ekr.20180328085010.1: ** Top level (mod_scripting)
 #@+node:tbrown.20140819100840.37719: *3* build_rclick_tree (mod_scripting.py)
-def build_rclick_tree(command_p: Position, rclicks: list[Value] = None, top_level: bool = False) -> list:
+def build_rclick_tree(command_p: Position, rclicks: RClicks = None, top_level: bool = False) -> list:
     """
     Return a list of top level RClicks for the button at command_p, which can be
     used later to add the rclick menus.
@@ -689,7 +689,7 @@ class ScriptingController:
                 script = self.getScript(p)
                 self.createCommonButton(p, script, rclicks)
     #@+node:ekr.20070926084600: *4* sc.createCommonButton (common @button)
-    def createCommonButton(self, p: Position, script: str, rclicks: list[RClick] = None) -> None:
+    def createCommonButton(self, p: Position, script: str, rclicks: RClicks = None) -> None:
         """
         Create a button in the icon area for a common @button node in an @setting
         tree. Binds button presses to a callback that executes the script.
@@ -888,7 +888,7 @@ class ScriptingController:
                 tag='local @rclick')
         g.app.config.atLocalCommandsList.append(p.copy())
     #@+node:vitalije.20180224113123.1: *4* sc.handleRclicks
-    def handleRclicks(self, rclicks: list) -> None:
+    def handleRclicks(self, rclicks: RClicks) -> None:
         def handlerc(rc: RClick) -> None:
             if rc.children:
                 for i in rc.children:
@@ -897,7 +897,6 @@ class ScriptingController:
                 self.handleAtRclickNode(rc.position)
         for rc in rclicks:
             handlerc(rc)
-
     #@+node:ekr.20060328125248.14: *4* sc.handleAtScriptNode @script
     def handleAtScriptNode(self, p: Position) -> Value:
         """Handle @script nodes."""
