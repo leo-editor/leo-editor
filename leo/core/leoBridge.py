@@ -53,6 +53,7 @@ import os
 import sys
 import traceback
 from typing import Any, Optional, TYPE_CHECKING
+from types import ModuleType
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
@@ -101,7 +102,7 @@ class BridgeController:
         vs_code_flag: bool = False,  # #2098.
     ) -> None:
         """Ctor for the BridgeController class."""
-        self.g: Any = None  # leo.core.leoGlobals.  Hard to annotate.
+        self.g: ModuleType = None  # leo.core.leoGlobals.
         self.guiName = guiName or 'nullGui'
         self.loadPlugins = loadPlugins
         self.readSettings = readSettings
@@ -113,9 +114,9 @@ class BridgeController:
         self.mainLoop = False  # True only if a non-null-gui mainloop is active.
         self.initLeo()
     #@+node:ekr.20070227092442.4: *3* bridge.globals
-    def globals(self) -> Any:
+    def globals(self) -> ModuleType:
         """Return a fully initialized leoGlobals module."""
-        return self.isOpen() and self.g
+        return self.g if self.isOpen() else None
     #@+node:ekr.20070227093530: *3* bridge.initLeo & helpers
     def initLeo(self) -> None:
         """
