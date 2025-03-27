@@ -7,6 +7,7 @@ from __future__ import annotations
 from collections.abc import Callable
 import sys
 from typing import Any, Iterator, Sequence, Union, TYPE_CHECKING
+from types import ModuleType
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -287,7 +288,7 @@ class LeoPluginsController:
         # containing @enabled-plugins nodes that caused the plugin to be loaded
         self.loadedModulesFilesDict: dict[str, str] = {}
         # Keys are regularized module names, values are modules.
-        self.loadedModules: dict[str, Any] = {}
+        self.loadedModules: dict[str, ModuleType] = {}
         # The stack of module names. The top is the module being loaded.
         self.loadingModuleNameStack: list[str] = []
         self.signonModule = None  # A hack for plugin_signon.
@@ -334,7 +335,7 @@ class LeoPluginsController:
                 self.callTagHandler(bunch, tag, keywords)
         return None
     #@+node:ekr.20100908125007.6016: *5* plugins.callTagHandler
-    def callTagHandler(self, bunch: Any, tag: str, keywords: Keywords) -> Any:
+    def callTagHandler(self, bunch: g.Bunch, tag: str, keywords: Keywords) -> Value:
         """Call the event handler."""
         handler, moduleName = bunch.fn, bunch.moduleName
         # Make sure the new commander exists.
@@ -356,7 +357,7 @@ class LeoPluginsController:
         self.loadingModuleNameStack.pop()
         return result
     #@+node:ekr.20100908125007.6018: *4* plugins.doPlugins (g.app.hookFunction)
-    def doPlugins(self, tag: str, keywords: Keywords) -> Any:
+    def doPlugins(self, tag: str, keywords: Keywords) -> Value:
         """The default g.app.hookFunction."""
         if g.app.killed:
             return None
@@ -365,7 +366,7 @@ class LeoPluginsController:
         return self.doHandlersForTag(tag, keywords)
     #@+node:ekr.20100909065501.5950: *3* plugins.Information
     #@+node:ekr.20100908125007.6019: *4* plugins.getHandlersForTag
-    def getHandlersForTag(self, tags: list[str]) -> list[Any]:
+    def getHandlersForTag(self, tags: list[str]) -> list[g.Bunch]:
         if isinstance(tags, (list, tuple)):
             result = []
             for tag in tags:
@@ -374,13 +375,13 @@ class LeoPluginsController:
             return result
         return self.getHandlersForOneTag(tags)
 
-    def getHandlersForOneTag(self, tag: str) -> list[Any]:
+    def getHandlersForOneTag(self, tag: str) -> list[g.Bunch]:
         return self.handlers.get(tag, [])
     #@+node:ekr.20100910075900.10204: *4* plugins.getLoadedPlugins
     def getLoadedPlugins(self) -> list[str]:
         return list(self.loadedModules.keys())
     #@+node:ekr.20100908125007.6020: *4* plugins.getPluginModule
-    def getPluginModule(self, moduleName: str) -> Any:
+    def getPluginModule(self, moduleName: str) -> ModuleType:
         return self.loadedModules.get(moduleName)
     #@+node:ekr.20100908125007.6021: *4* plugins.isLoaded
     def isLoaded(self, fn: str) -> bool:
@@ -467,7 +468,7 @@ class LeoPluginsController:
         be loaded from outside the leo/plugins directory.
         """
 
-        def pr(*args: Any, **keywords: Keywords) -> None:
+        def pr(*args: Args, **keywords: Keywords) -> None:
             if not g.unitTesting:
                 g.es_print(*args, **keywords)
 
