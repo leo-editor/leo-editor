@@ -27,7 +27,7 @@ StringIO = io.StringIO
 #@+node:ekr.20220819191617.1: ** << leoApp annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from subprocess import Popen
-    from types import Module
+    from types import ModuleType
     from leo.commands.spellCommands import SqlitePickleShare
     from leo.core.leoBackground import BackgroundProcessManager
     from leo.core.leoCommands import Commands as Cmdr
@@ -2483,7 +2483,7 @@ class LoadManager:
                         g.warning(f"can not import leo.plugins.importers.{module_name}")
                         g.printObj(filenames)
     #@+node:ekr.20140723140445.18076: *7* LM.parse_importer_dict
-    def parse_importer_dict(self, sfn: str, m: Module) -> None:
+    def parse_importer_dict(self, sfn: str, m: ModuleType) -> None:
         """
         Set entries in g.app.classDispatchDict, g.app.atAutoDict and
         g.app.atAutoNames using entries in m.importer_dict.
@@ -2543,7 +2543,7 @@ class LoadManager:
             g.trace('LM.atAutoWritersDict')
             g.printDict(g.app.atAutoWritersDict)
     #@+node:ekr.20140728040812.17991: *7* LM.parse_writer_dict
-    def parse_writer_dict(self, sfn: str, m: Module) -> None:
+    def parse_writer_dict(self, sfn: str, m: ModuleType) -> None:
         """
         Set entries in g.app.writersDispatchDict and g.app.atAutoWritersDict
         using entries in m.writers_dict.

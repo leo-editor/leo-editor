@@ -35,6 +35,7 @@ import textwrap
 import time
 import traceback
 import types
+from types import ModuleType
 from typing import Any, Generator, IO, Iterable, Optional, Sequence, Union, TYPE_CHECKING
 import unittest
 import urllib
@@ -55,7 +56,6 @@ StringIO = io.StringIO
 #@+<< leoGlobals: annotations >>
 #@+node:ekr.20220824084642.1: ** << leoGlobals: annotations >>
 if TYPE_CHECKING:  # pragma: no cover
-    from types import Module
     from leo.core import LeoGlobals
     from leo.core.leoApp import LeoApp
     from leo.core.leoCommands import Commands as Cmdr
@@ -2162,12 +2162,12 @@ def dump_encoded_string(encoding: str, s: str) -> None:
         elif ch == '\n':
             in_comment = False
 #@+node:ekr.20031218072017.1317: *4* g.file/module/plugin_date
-def module_date(mod: Module, format: str = None) -> str:
+def module_date(mod: ModuleType, format: str = None) -> str:
     theFile = g.os_path_join(app.loadDir, mod.__file__)
     root, ext = g.os_path_splitext(theFile)
     return g.file_date(root + ".py", format=format)
 
-def plugin_date(plugin_mod: Module, format: str = None) -> str:
+def plugin_date(plugin_mod: ModuleType, format: str = None) -> str:
     theFile = g.os_path_join(app.loadDir, "..", "plugins", plugin_mod.__file__)
     root, ext = g.os_path_splitext(theFile)
     return g.file_date(root + ".py", format=str)
@@ -4594,27 +4594,27 @@ def doHook(tag: str, *args: Args, **kwargs: KWargs) -> Value:
 #@+node:ekr.20100910075900.5950: *3* g.Wrappers for g.app.pluginController methods
 # Important: we can not define g.pc here!
 #@+node:ekr.20100910075900.5951: *4* g.Loading & registration
-def loadOnePlugin(pluginName: str, verbose: bool = False) -> Module:
+def loadOnePlugin(pluginName: str, verbose: bool = False) -> ModuleType:
     pc = g.app.pluginsController
     return pc.loadOnePlugin(pluginName, verbose=verbose)
 
-def registerExclusiveHandler(tags: Tags, fn: str) -> Module:
+def registerExclusiveHandler(tags: Tags, fn: str) -> ModuleType:
     pc = g.app.pluginsController
     return pc.registerExclusiveHandler(tags, fn)
 
-def registerHandler(tags: Tags, fn: Callable) -> Module:
+def registerHandler(tags: Tags, fn: Callable) -> ModuleType:
     pc = g.app.pluginsController
     return pc.registerHandler(tags, fn)
 
-def plugin_signon(module_name: str, verbose: bool = False) -> Module:
+def plugin_signon(module_name: str, verbose: bool = False) -> ModuleType:
     pc = g.app.pluginsController
     return pc.plugin_signon(module_name, verbose)
 
-def unloadOnePlugin(moduleOrFileName: str, verbose: bool = False) -> Module:
+def unloadOnePlugin(moduleOrFileName: str, verbose: bool = False) -> ModuleType:
     pc = g.app.pluginsController
     return pc.unloadOnePlugin(moduleOrFileName, verbose)
 
-def unregisterHandler(tags: Tags, fn: Callable) -> Module:
+def unregisterHandler(tags: Tags, fn: Callable) -> ModuleType:
     pc = g.app.pluginsController
     return pc.unregisterHandler(tags, fn)
 #@+node:ekr.20100910075900.5952: *4* g.Information
@@ -4626,7 +4626,7 @@ def getLoadedPlugins() -> list:
     pc = g.app.pluginsController
     return pc.getLoadedPlugins()
 
-def getPluginModule(moduleName: str) -> Optional[Module]:
+def getPluginModule(moduleName: str) -> Optional[ModuleType]:
     pc = g.app.pluginsController
     return pc.getPluginModule(moduleName)
 
@@ -4707,7 +4707,7 @@ def cantImport(moduleName: str, pluginName: str = None, verbose: bool = True) ->
     else:
         g.warning('', s)
 #@+node:ekr.20191220044128.1: *3* g.import_module
-def import_module(name: str, package: str = None) -> Optional[Module]:
+def import_module(name: str, package: str = None) -> Optional[ModuleType]:
     """
     A thin wrapper over importlib.import_module.
     """
