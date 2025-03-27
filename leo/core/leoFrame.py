@@ -32,12 +32,13 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoNodes import Position, VNode
     from leo.plugins.mod_scripting import ScriptingController
     from leo.plugins.qt_frame import DynamicWindow
-    from leo.plugins.qt_text import QTextEditWrapper as Wrapper
+    # from leo.plugins.qt_text import QTextEditWrapper
     from leo.plugins.qt_text import LeoQtBody, LeoQtLog, LeoQtMenu, LeoQtTree, QtIconBarClass
     from leo.plugins.notebook import NbController
     Args = Any
     KWargs = Any
     Widget = Any
+    Wrapper = Any  # Union[QTextEditWrapper, StringTextWrapper]
 #@-<< leoFrame annotations >>
 #@+<< leoFrame: about handling events >>
 #@+node:ekr.20031218072017.2410: ** << leoFrame: about handling events >>
@@ -123,8 +124,12 @@ class TreeAPI:
         pass
     # Must be defined in subclasses.
 
-    def editLabel(self, v: VNode, selectAll: bool = False, selection: tuple = None) -> None:
-        pass
+    def editLabel(self,
+        v: VNode,
+        selectAll: bool = False,
+        selection: tuple = None,
+    ) -> tuple[Widget, Wrapper]:
+        return None, None
 
     def edit_widget(self, p: Position) -> None:
         return None
@@ -315,14 +320,14 @@ class LeoBody:
         self.widget: Widget = None  # set in LeoQtBody.set_widget.
         self.wrapper: Wrapper = None  # set in LeoQtBody.set_widget.
         # Must be overridden in subclasses...
-        self.colorizer = None
+        self.colorizer: NullColorizer = None
         # Init user settings.
         self.use_chapters = False  # May be overridden in subclasses.
     #@+node:ekr.20031218072017.3677: *3* LeoBody.Coloring
     def forceFullRecolor(self) -> None:
         pass
 
-    def getColorizer(self) -> None:
+    def getColorizer(self) -> Any:
         return self.colorizer
 
     def updateSyntaxColorer(self, p: Position) -> None:
@@ -347,7 +352,7 @@ class LeoBody:
     def packEditorLabelWidget(self, w: Wrapper) -> None:
         raise NotImplementedError
 
-    def onFocusOut(self, obj: Any) -> None:
+    def onFocusOut(self, obj: object) -> None:
         pass
     #@+node:ekr.20060528100747: *3* LeoBody.Editors
     #@+node:ekr.20070424053629.1: *4* LeoBody.utils
@@ -1071,7 +1076,7 @@ class LeoLog:
     # This table encodes which groups extract the filename and line_number from global regex patterns.
     # This is the *only* method that should need to know this information!
 
-    link_table: list[tuple[int, int, Any]] = [
+    link_table: list[tuple[int, int, re.Pattern]] = [
         # (filename_i, line_number_i, pattern)
         (1, 2, g.flake8_pat),
         (1, 2, g.mypy_pat),
@@ -1092,7 +1097,7 @@ class LeoLog:
 
         #@+others  # Define helpers
         #@+node:ekr.20220420100806.1: *5* function: find_match
-        def find_match(line: str) -> tuple[Any, int, int]:
+        def find_match(line: str) -> tuple[re.Match, int, int]:
             """Search line for any pattern in link_table."""
             if not line.strip():
                 return None, None, None
@@ -1258,7 +1263,7 @@ class LeoTree:
         self.c = frame.c
         # New in 3.12: keys vnodes, values are edit_widgets.
         # New in 4.2: keys are vnodes, values are pairs (p,edit widgets).
-        self.edit_text_dict: dict[VNode, tuple[Position, Any]] = {}
+        self.edit_text_dict: dict[VNode, tuple[Position, Widget]] = {}
         # "public" ivars: correspond to setters & getters.
         self.drag_p = None
         self.generation = 0  # low-level vnode methods increment this count.
@@ -1278,7 +1283,7 @@ class LeoTree:
         # This interferes with the find command and interferes with focus generally!
             # c.bodyWantsFocus()
     #@+node:ekr.20031218072017.3716: *4* LeoTree.getEditTextDict
-    def getEditTextDict(self, v: VNode) -> Any:
+    def getEditTextDict(self, v: VNode) -> Widget:
         # New in 4.2: the default is an empty list.
         return self.edit_text_dict.get(v, [])
     #@+node:ekr.20040803072955.88: *4* LeoTree.onHeadlineKey
@@ -1345,7 +1350,11 @@ class LeoTree:
 
     # Headlines.
 
-    def editLabel(self, p: Position, selectAll: bool = False, selection: tuple = None) -> tuple[Any, Any]:
+    def editLabel(self,
+        p: Position,
+        selectAll: bool = False,
+        selection: tuple = None,
+    ) -> tuple[Widget, Wrapper]:
         raise NotImplementedError
 
     def edit_widget(self, p: Position) -> Wrapper:
@@ -1544,8 +1553,8 @@ class NullBody(LeoBody):
         self.selection = 0, 0
         self.s = ""  # The body text
         self.widget: Widget = None
-        self.wrapper: Any = StringTextWrapper(c=self.c, name='body')  # Hard to annotate.
-        self.colorizer: Any = NullColorizer(self.c)  # A Union.
+        self.wrapper: StringTextWrapper = StringTextWrapper(c=self.c, name='body')  # Hard to annotate.
+        self.colorizer: NullColorizer = NullColorizer(self.c)  # A Union.
     #@+node:ekr.20031218072017.2197: *3* NullBody: LeoBody interface
     # Birth, death...
     def createControl(self, parentFrame: Widget, p: Position) -> Wrapper:
@@ -1785,7 +1794,7 @@ class NullIconBarClass:
         g.app.iconImageRefs = []
     #@+node:ekr.20140904043623.18575: *3* NullIconBarClass.setCommandForButton
     def setCommandForButton(self,
-        button: Any,
+        button: Widget,
         command: str,
         command_p: Position,
         controller: ScriptingController,
@@ -1883,7 +1892,7 @@ class NullStatusLineClass:
         self.c = c
         self.enabled = False
         self.parentFrame = parentFrame
-        self.textWidget: Any = StringTextWrapper(c, name='status-line')  # Union.
+        self.textWidget: Widget = StringTextWrapper(c, name='status-line')  # Union.
         # Set the official ivars.
         c.frame.statusFrame = None
         c.frame.statusLabel = None
@@ -1950,7 +1959,11 @@ class NullTree(LeoTree):
             w.setAllText(p.h)
         return w
     #@+node:ekr.20070228164730: *3* NullTree.editLabel
-    def editLabel(self, p: Position, selectAll: bool = False, selection: tuple = None) -> tuple[Any, Any]:
+    def editLabel(self,
+        p: Position,
+        selectAll: bool = False,
+        selection: tuple = None,
+    ) -> tuple[Widget, StringTextWrapper]:
         """Start editing p's headline."""
         self.endEditLabel()
         if p:
@@ -2007,6 +2020,9 @@ class StringTextWrapper:
     def __init__(self, c: Cmdr, name: str) -> None:
         """Ctor for the StringTextWrapper class."""
         self.c = c
+        self.leo_chapter = None
+        self.leo_p = None
+        self.leo_v = None
         self.name = name
         self.ins = 0
         self.sel = 0, 0
