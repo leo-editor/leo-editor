@@ -21,7 +21,9 @@ from leo.core.leoCache import GlobalCacher
 from leo.core.leoJupytext import JupytextManager
 from leo.core.leoQt import QCloseEvent
 
-StringIO = io.StringIO
+if TYPE_CHECKING:
+    StringIO = io.StringIO
+    SpellDict = Any  # dict[str, list[str]]
 #@-<< leoApp imports >>
 #@+<< leoApp annotations >>
 #@+node:ekr.20220819191617.1: ** << leoApp annotations >>
@@ -181,7 +183,7 @@ class LeoApp:
         self.leoID: str = None  # The id part of gnx's.
         self.lossage: list[LossageData] = []  # List of last 100 keystrokes.
         self.paste_c: Cmdr = None  # The commander that pasted the last outline.
-        self.spellDict: Any = None  # A pyenchant dict or a DefaultDict.
+        self.spellDict: SpellDict = None  # A pyenchant dict or a DefaultDict.
         self.numberOfUntitledWindows = 0  # Number of opened untitled windows.
         self.windowList: list[LeoFrame] = []  # Global list of all frames.
         self.realMenuNameDict: dict[str, str] = {}  # Translations of menu names.
