@@ -155,8 +155,11 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
+    from leo.leoQt import QtWidgets
     Args = Any
     KWargs = Any
+    RClick = namedtuple('RClick', 'position,children')
+    RClicks = list[RClick]
     Value = Any
     Widget = Any
 #@-<< mod_scripting imports & annotations >>
@@ -164,7 +167,7 @@ if TYPE_CHECKING:  # pragma: no cover
 #@+others
 #@+node:ekr.20180328085010.1: ** Top level (mod_scripting)
 #@+node:tbrown.20140819100840.37719: *3* build_rclick_tree (mod_scripting.py)
-def build_rclick_tree(command_p: Position, rclicks: list[Any] = None, top_level: bool = False) -> list:
+def build_rclick_tree(command_p: Position, rclicks: list[Value] = None, top_level: bool = False) -> list:
     """
     Return a list of top level RClicks for the button at command_p, which can be
     used later to add the rclick menus.
@@ -241,7 +244,7 @@ def init() -> bool:
         g.plugin_signon(__name__)
     return ok
 #@+node:ekr.20060328125248.5: *3* onCreate
-def onCreate(tag: str, keys: Any) -> None:
+def onCreate(tag: str, keys: KWargs) -> None:
     """Handle the onCreate event in the mod_scripting plugin."""
     c = keys.get('c')
     if c:
@@ -254,8 +257,8 @@ class AtButtonCallback:
     #@+others
     #@+node:ekr.20141031053508.9: *3* __init__ (AtButtonCallback)
     def __init__(self,
-        controller: Any,
-        b: Any,
+        controller: ScriptingController,
+        b: QtWidgets.QButton,
         c: Cmdr,
         buttonText: str,
         docstring: str,
@@ -334,7 +337,7 @@ class ScriptingController:
         getBool = c.config.getBool
         self.scanned = False
         kind = c.config.getString('debugger-kind') or 'idle'
-        self.buttonsDict: dict[Any, str] = {}  # Keys are buttons, values are button names (strings).
+        self.buttonsDict: dict[QtWidgets.QButton, str] = {}  # Keys are buttons, values are button names (strings).
         self.debuggerKind = kind.lower()
         # True: adds a button for every @button node.
         self.atButtonNodes = getBool('scripting-at-button-nodes')
@@ -501,8 +504,8 @@ class ScriptingController:
     def createLocalAtButtonHelper(
         self,
         p: Position,
-        h: Any,
-        statusLine: Any,
+        h: str,
+        statusLine: str,
         kind: str = 'at-button',
         verbose: bool = True,
     ) -> Wrapper:
@@ -623,7 +626,7 @@ class ScriptingController:
         p: Position,
         script: str,
         script_gnx: str = None,
-    ) -> Any:
+    ) -> Value:
         """Execute an @button script in p.b or script."""
         c = self.c
         if c.disableCommandsMessage:
@@ -686,7 +689,7 @@ class ScriptingController:
                 script = self.getScript(p)
                 self.createCommonButton(p, script, rclicks)
     #@+node:ekr.20070926084600: *4* sc.createCommonButton (common @button)
-    def createCommonButton(self, p: Position, script: str, rclicks: list[Any] = None) -> None:
+    def createCommonButton(self, p: Position, script: str, rclicks: list[RClick] = None) -> None:
         """
         Create a button in the icon area for a common @button node in an @setting
         tree. Binds button presses to a callback that executes the script.
@@ -823,7 +826,12 @@ class ScriptingController:
             return
         args = self.getArgs(p)
 
-        def atCommandCallback(event: Event = None, args: Args = args, c: Cmdr = c, p: Position = p.copy()) -> Any:
+        def atCommandCallback(event:
+            Event = None,
+            args: Args = args,
+            c: Cmdr = c,
+            p: Position = p.copy(),
+        ) -> Value:
             # pylint: disable=dangerous-default-value
             return c.executeScript(args=args, p=p, silent=True)
 
@@ -862,7 +870,12 @@ class ScriptingController:
             return
         args = self.getArgs(p)
 
-        def atCommandCallback(event: Event = None, args: Args = args, c: Cmdr = c, p: Position = p.copy()) -> Any:
+        def atCommandCallback(
+            event: Event = None,
+            args: Args = args,
+            c: Cmdr = c,
+            p: Position = p.copy(),
+        ) -> Value:
             # pylint: disable=dangerous-default-value
             return c.executeScript(args=args, p=p, silent=True)
         if p.b.strip():
@@ -876,7 +889,7 @@ class ScriptingController:
         g.app.config.atLocalCommandsList.append(p.copy())
     #@+node:vitalije.20180224113123.1: *4* sc.handleRclicks
     def handleRclicks(self, rclicks: list) -> None:
-        def handlerc(rc: Any) -> None:
+        def handlerc(rc: RClick) -> None:
             if rc.children:
                 for i in rc.children:
                     handlerc(i)
@@ -886,7 +899,7 @@ class ScriptingController:
             handlerc(rc)
 
     #@+node:ekr.20060328125248.14: *4* sc.handleAtScriptNode @script
-    def handleAtScriptNode(self, p: Position) -> Any:
+    def handleAtScriptNode(self, p: Position) -> Value:
         """Handle @script nodes."""
         c = self.c
         tag = "@script"
@@ -951,14 +964,14 @@ class ScriptingController:
                 s = s.strip()
         return s.replace(' ', '-').strip('-')
     #@+node:ekr.20060522104419.1: *4* sc.createBalloon (gui-dependent)
-    def createBalloon(self, w: Wrapper, label: Any) -> None:
+    def createBalloon(self, w: Wrapper, label: str) -> None:
         'Create a balloon for a widget.'
         if g.app.gui.guiName().startswith('qt'):
             # w is a leoIconBarButton.
             if hasattr(w, 'button'):
                 w.button.setToolTip(label)
     #@+node:ekr.20060328125248.26: *4* sc.deleteButton
-    def deleteButton(self, button: Any, **kw: Any) -> None:
+    def deleteButton(self, button: QtWidgets.QButton, **kw: KWargs) -> None:
         """Delete the given button.
         This is called from callbacks, it is not a callback."""
         w = button
@@ -1086,7 +1099,7 @@ class ScriptingController:
                 commandName2 = commandName[len(prefix) :].strip()
                 # Create a *second* func, to avoid collision in c.commandsDict.
 
-                def registerAllCommandsCallback(event: Event = None, func: Callable = func) -> Any:
+                def registerAllCommandsCallback(event: Event = None, func: Callable = func) -> Callable:
                     return func()
 
                 # Fix bug 1251252: https://bugs.launchpad.net/leo-editor/+bug/1251252
