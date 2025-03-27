@@ -6253,13 +6253,13 @@ def os_path_splitext(path: str) -> tuple[str, str]:
 def os_startfile(fname: str) -> None:
     #@+others
     #@+node:bob.20170516112250.1: *4* stderr2log()
-    def stderr2log(g: LeoGlobals, ree: Any, fname: str) -> None:
+    def stderr2log(g: LeoGlobals, ree: io.FileIO, fname: str) -> None:
         """ Display stderr output in the Leo-Editor log pane
 
         Arguments:
-            g:  Leo-Editor globals
-            ree:  Read file descriptor for stderr
-            fname:  file pathname
+            g:  leoGlobals module.
+            ree:  Read file for stderr.
+            fname:  file pathname.
 
         Returns:
             None
@@ -6272,15 +6272,15 @@ def os_startfile(fname: str) -> None:
             else:
                 break
     #@+node:bob.20170516112304.1: *4* itPoll()
-    def itPoll(fname: str, ree: Any, subPopen: Any, g: LeoGlobals, ito: Any) -> None:
+    def itPoll(fname: str, ree: io.FileIO, subPopen: Any, g: LeoGlobals, ito: Any) -> None:
         """ Poll for subprocess done
 
         Arguments:
-            fname:  File name
-            ree:  stderr read file descriptor
-            subPopen:  URL open subprocess object
-            g: Leo-Editor globals
-            ito: Idle time object for itPoll()
+            fname:  File name.
+            ree:  Read file for stderr.
+            subPopen:  URL open subprocess object.
+            g: Leo-Editor globals.
+            ito: Idle time object for itPoll().
 
         Returns:
             None
@@ -6313,7 +6313,7 @@ def os_startfile(fname: str) -> None:
         except ImportError:
             os.system(f"open {quoted_fname}")
     else:
-        ree = None
+        ree: io.FileIO = None
         try:
             wre = tempfile.NamedTemporaryFile()
             ree = io.open(wre.name, 'rb', buffering=0)
