@@ -4325,7 +4325,12 @@ class GitIssueController:
         else:
             root.h = f"{total} {state} {label} issues"
     #@+node:ekr.20180126043719.4: *5* git.get_one_page
-    def get_one_page(self, label: str, page: int, r: Any, root: Position) -> tuple[bool, int]:
+    def get_one_page(self,
+        label: str,
+        page: int,
+        r: Any,  # A requests.Request object.
+        root: Position,
+    ) -> tuple[bool, int]:
 
         if self.milestone:
             aList = [
