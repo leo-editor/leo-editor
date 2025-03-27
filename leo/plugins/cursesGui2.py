@@ -68,6 +68,7 @@ if TYPE_CHECKING:  # pragma: no cover
     Args = Any
     Event = Any  # Not usually a LeoKeyEvent.
     KWargs = Any
+    Value = Any
     Wrapper = Any  # Everything, including widgets, is a wrapper!
 #@-<< cursesGui2 annotations >>
 # pylint: disable=arguments-differ,logging-not-lazy
@@ -415,7 +416,7 @@ class LeoTreeData(npyscreen.TreeData):
         # g.trace('LeoTreeData', len(aList))
         return aList
     #@+node:ekr.20170516085427.4: *5* LeoTreeData.new_child
-    def new_child(self, *args: Args, **keywords: Any) -> Position:
+    def new_child(self, *args: Args, **keywords: KWargs) -> Position:
 
         if self.CHILDCLASS:
             cld = self.CHILDCLASS
@@ -425,7 +426,7 @@ class LeoTreeData(npyscreen.TreeData):
         self._children.append(child)
         return child
     #@+node:ekr.20170516085742.1: *5* LeoTreeData.new_child_at
-    def new_child_at(self, index: int, *args: Args, **keywords: Any) -> Position:
+    def new_child_at(self, index: int, *args: Args, **keywords: KWargs) -> Position:
         """Same as new_child, with insert(index, c) instead of append(c)"""
         # g.trace('LeoTreeData')
         if self.CHILDCLASS:
@@ -629,7 +630,7 @@ class LeoTreeLine(npyscreen.TreeLine):
         s = content.h if native else content
         self.cursor_position = max(0, len(s) - 1)
     #@+node:ekr.20170508130328.1: *5* LeoTreeLine.h_cursor_left
-    def h_cursor_left(self, input: Any) -> None:  # input not used.
+    def h_cursor_left(self, input: Value) -> None:  # input not used.
 
         # self.value is a LeoTreeData.
         # native: content is a position.
@@ -638,7 +639,7 @@ class LeoTreeLine(npyscreen.TreeLine):
         i = min(self.cursor_position, len(s) - 1)
         self.cursor_position = max(0, i - 1)
     #@+node:ekr.20170508130339.1: *5* LeoTreeLine.h_cursor_right
-    def h_cursor_right(self, input: Any) -> None:  # input not used.
+    def h_cursor_right(self, input: Value) -> None:  # input not used.
 
         # self.value is a LeoTreeData.
         # native: content is a position.
@@ -651,7 +652,7 @@ class LeoTreeLine(npyscreen.TreeLine):
 
 
     #@+node:ekr.20170508130349.1: *5* LeoTreeLine.h_delete_left
-    def h_delete_left(self, input: Any) -> None:  # input not used.
+    def h_delete_left(self, input: Value) -> None:  # input not used.
 
         # self.value is a LeoTreeData.
         n = self.cursor_position
@@ -740,7 +741,7 @@ class QuitButton(npyscreen.MiniButtonPress):
 #@+node:ekr.20170501043944.1: **   curses2: top-level functions
 #@+node:ekr.20170603110639.1: *3* curses2: dump_handlers
 def dump_handlers(
-    obj: Any,
+    obj: object,
     dump_complex: bool = True,
     dump_handlers: bool = True,
     dump_keys: bool = True,
@@ -817,7 +818,7 @@ def pr(*args: Args, **keys: KWargs) -> None:
 #@+node:ekr.20170429165242.1: *4* curses2: trace
 def trace(*args: Args, **keys: KWargs) -> None:
     """Monkey-patch for g.trace."""
-    d: dict[str, Any] = {
+    d: dict[str, Value] = {
         'align': 0,
         'before': '',
         'newline': True,
@@ -1109,11 +1110,11 @@ class KeyEvent:
         return 'KeyEvent: stroke: %s, char: %s, w: %s' % (
             repr(self.stroke), repr(self.char), repr(self.w))
     #@+node:edward.20170428174322.4: *4* KeyEvent.get & __getitem__
-    def get(self, attr: str) -> Any:
+    def get(self, attr: str) -> Value:
         """Compatibility with g.bunch: return an attr."""
         return getattr(self, attr, None)
 
-    def __getitem__(self, attr: str) -> Any:
+    def __getitem__(self, attr: str) -> Value:
         """Compatibility with g.bunch: return an attr."""
         return getattr(self, attr, None)
     #@+node:edward.20170428174322.5: *4* KeyEvent.type
@@ -1292,7 +1293,7 @@ class LeoCursesGui(leoGui.LeoGui):
         self.log: Wrapper = None  # The present log. Used by g.es
         self.log_inited: bool = False  # True: don't use the wait_list.
         self.minibuffer_label: str = ''  # The label set by k.setLabel.
-        self.wait_list: list[tuple[str, Any]] = []  # Queued log messages.
+        self.wait_list: list[tuple[str, Value]] = []  # Queued log messages.
         # Do this as early as possible. It monkey-patches g.pr and g.trace.
         self.init_logger()
         self.top_form: Wrapper = None  # The top-level form. Set in createCursesTop.
@@ -1767,7 +1768,7 @@ class LeoCursesGui(leoGui.LeoGui):
     def runPropertiesDialog(
         self,
         title: str = 'Properties',
-        data: Any = None,
+        data: Value = None,
         callback: Callable = None,
         buttons: list[str] = None,
     ) -> None:
@@ -2684,7 +2685,7 @@ class TopFrame:
     def select(self, *args: Args, **kwargs: KWargs) -> None:
         pass
 
-    def findChild(self, *args: Args, **kwargs: KWargs) -> Any:
+    def findChild(self, *args: Args, **kwargs: KWargs) -> Value:
         # Called by nested_splitter.py.
         return g.NullObject()
 
@@ -2718,7 +2719,7 @@ class LeoBody(npyscreen.MultiLineEditable):
 
     def __init__(self, *args: Args, **kwargs: KWargs) -> None:
         super().__init__(*args, **kwargs)
-        self.values: list[Any]
+        self.values: list[Value]
         self.cursor_line: int
         self.start_display_at: int
         self.leo_box: Wrapper = None
@@ -3315,14 +3316,14 @@ class LeoMLTree(npyscreen.MLTree):
 
     def dump_values(self) -> None:
 
-        def info(z: Any) -> str:
+        def info(z: object) -> str:
             return '%15s: %s' % (z._parent.get_content(), z.get_content())
 
         g.printList([info(z) for z in self.values])
 
     def dump_widgets(self) -> None:
 
-        def info(z: Any) -> str:
+        def info(z: object) -> str:
             return '%s.%s' % (id(z), z.__class__.__name__)
 
         g.printList([info(z) for z in self._my_widgets])
@@ -4218,7 +4219,7 @@ class StatusLineWrapper(leoFrame.StringTextWrapper):
         self.widget.display()
 
     # The signature is different.
-    def get(self) -> Any:  # type:ignore
+    def get(self) -> Value:  # type:ignore
         return self.widget.value
 
     def put(self, s: str, *args: Args, **kwargs: KWargs) -> None:
