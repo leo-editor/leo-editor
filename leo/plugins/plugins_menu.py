@@ -67,8 +67,6 @@ from leo.core import leoGlobals as g
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
-    Item = Any
-    Group = Any
     KWargs = Any
     Menu = Any
     Value = Any
@@ -195,17 +193,17 @@ class _PluginDatabase:
     #@+node:pap.20050305152751.1: *3* __init__
     def __init__(self) -> None:
         """Initialize"""
-        self.plugins_by_group: dict[Group, list[ModuleType]] = {}
-        self.groups_by_plugin: dict[ModuleType, list[Group]] = {}
+        self.plugins_by_group: dict[str, list[PlugIn]] = {}
+        self.groups_by_plugin: dict[PlugIn, list[str]] = {}
         self.menus: dict[str, Menu] = {}
     #@+node:pap.20050305152751.2: *3* addPlugin
-    def addPlugin(self, item: Item, group: Group) -> None:
+    def addPlugin(self, item: PlugIn, group: str) -> None:
         """Add a plugin"""
         if group:
             self.plugins_by_group.setdefault(group, []).append(item)
-            self.groups_by_plugin[item] = group
+            self.groups_by_plugin.setdefault(item, []).append(group)
     #@+node:pap.20050305152751.3: *3* getGroups
-    def getGroups(self) -> list[Group]:
+    def getGroups(self) -> list[str]:
         """Return a list of groups"""
         groups = list(self.plugins_by_group.keys())
         groups.sort()
@@ -215,7 +213,7 @@ class _PluginDatabase:
         """Store the menu for this group"""
         self.menus[name] = menu
     #@+node:pap.20050305153716.1: *3* getMenu
-    def getMenu(self, item: Item) -> Menu:
+    def getMenu(self, item: PlugIn) -> Menu:
         """Get the menu for a particular item"""
         try:
             return self.menus[item.group]
