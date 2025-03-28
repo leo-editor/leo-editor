@@ -484,10 +484,12 @@ class LeoLineTextWidget(QtWidgets.QFrame):
         e.installEventFilter(self)
         e.viewport().installEventFilter(self)
     #@+node:ekr.20150403094706.10: *3* LeoLineTextWidget.eventFilter
-    def eventFilter(self, obj: QObject, event: QEvent) -> Any:
+    def eventFilter(self, obj: QObject, event: QEvent) -> bool:
         """
         Update the line numbers for all events on the text edit and the viewport.
         This is easier than connecting all necessary signals.
+        
+        Return True if the event filter was installed correctly.
         """
         if obj in (self.edit, self.edit.viewport()):
             self.number_bar.update()
