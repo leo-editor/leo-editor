@@ -13,13 +13,11 @@ from leo.core.leoQt import MouseButton, MoveMode, MoveOperation
 from leo.core.leoQt import Shadow, Shape, SliderAction, SolidLine, WindowType, WrapMode
 
 if TYPE_CHECKING:  # pragma: no cover
-    ### from typing import TypeAlias  # Requires Python 3.12+
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
     from leo.plugins.qt_frame import WrapperAPI
     Args = Any
     KWargs = Any
-    # QColor = QtGui.QColor
     QEvent = QtCore.QEvent
     QFrame = QtWidgets.QFrame
     QKeyEvent = QtGui.QKeyEvent
@@ -32,7 +30,7 @@ if TYPE_CHECKING:  # pragma: no cover
     QTreeWidgetItem = QtWidgets.QTreeWidgetItem
     QWheelEvent = QtGui.QWheelEvent
     QWidget = QtWidgets.QWidget
-    TODO = Any
+    Value = Any
 
 FullWidthSelection = 0x06000
 QColor = QtGui.QColor
@@ -109,7 +107,7 @@ Valid values are standard css color names like `lightgrey`, and css rgb values l
 '''
 
 @g.command('help-for-highlight-current-line')
-def helpForLineHighlight(self: Any, event: LeoKeyEvent = None) -> None:
+def helpForLineHighlight(self: Value, event: LeoKeyEvent = None) -> None:
     """Displays Settings used by current line highlighter."""
     self.c.putHelpFor(hilite_doc)
 
@@ -153,7 +151,7 @@ class QTextMixin:
         self.permanent = True  # False if selecting the minibuffer will make the widget go away.
         self.useScintilla = False  # This is used!
         self.virtualInsertPoint = None
-        self.widget: TODO = None
+        self.widget: Value = None  # A Union.
         if c:
             self.injectIvars(c)
     #@+node:ekr.20140901062324.18721: *4* qtm.injectIvars
@@ -661,7 +659,7 @@ if QtWidgets:
             def set_position(self, c: Cmdr) -> None:
                 """Set the position of the QListWidget."""
 
-                def to_global(obj: QObject, pt: QPoint) -> Any:
+                def to_global(obj: QObject, pt: QPoint) -> QPoint:
                     """Convert pt from obj's local coordinates to global coordinates."""
                     return obj.mapToGlobal(pt)
 
@@ -1095,7 +1093,7 @@ class NumberBar(QtWidgets.QFrame):
             '..', 'Icons', 'Tango', '16x16', 'actions', 'stop.png')))
         self.highest_line = 0  # The highest line that is currently visible.
         # Set the name to gutter so that the QFrame#gutter style sheet applies.
-        self.offsets: list[tuple[int, Any]] = []
+        self.offsets: list[tuple[int, int]] = []
         self.setObjectName('gutter')
         self.reloadSettings()
     #@+node:ekr.20181005093003.1: *3* NumberBar.reloadSettings
@@ -1292,7 +1290,7 @@ class QMinibufferWrapper(QLineEditWrapper):
 
         w.mouseReleaseEvent = mouseReleaseEvent
 
-    def setStyleClass(self, style_class: Any) -> None:
+    def setStyleClass(self, style_class: Value) -> None:
         self.widget.setProperty('style_class', style_class)
         #
         # to get the appearance to change because of a property
@@ -1794,7 +1792,7 @@ class QTextEditWrapper(QTextMixin):
             g.app.gui.setClipboardSelection(sel)
         self.c.frame.updateStatusLine()
     #@+node:btheado.20120129145543.8180: *5* qtew.pageUpDown
-    def pageUpDown(self, op: Any, moveMode: Any) -> None:
+    def pageUpDown(self, op: object, moveMode: object) -> None:
         """
         The QTextEdit PageUp/PageDown functionality seems to be "baked-in"
         and not externally accessible. Since Leo has its own key handling
