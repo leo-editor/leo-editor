@@ -19,7 +19,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.plugins.qt_frame import WrapperAPI
     Args = Any
     KWargs = Any
-    QColor = QtGui.QColor
+    # QColor = QtGui.QColor
     QEvent = QtCore.QEvent
     QFrame = QtWidgets.QFrame
     QKeyEvent = QtGui.QKeyEvent
@@ -35,6 +35,7 @@ if TYPE_CHECKING:  # pragma: no cover
     TODO = Any
 
 FullWidthSelection = 0x06000
+QColor = QtGui.QColor
 QFontMetrics = QtGui.QFontMetrics
 #@-<< qt_text imports & annotations>>
 
