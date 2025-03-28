@@ -42,10 +42,8 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
     Args = Any
     KWargs = Any
-    # Events.
-    QEvent: TypeAlias = QtCore.QEvent
-    # Widgets
     QDialog = QtWidgets.QDialog
+    QEvent: TypeAlias = QtCore.QEvent
     QFont = QtGui.QFont
     QFrame = QtWidgets.QFrame
     QGridLayout = QtWidgets.QGridLayout
@@ -379,7 +377,11 @@ class LeoQtGui(leoGui.LeoGui):
             for a minimum 5 minute increment on the minute field.
             """
 
-            def __init__(self, parent: QWidget = None, init: Any = None, step_min: dict = None) -> None:
+            def __init__(self,
+                parent: QWidget = None,
+                init: datetime.datetime = None,
+                step_min: dict = None,
+            ) -> None:
                 if step_min is None:
                     step_min = {}
                 self.step_min = step_min
@@ -401,7 +403,7 @@ class LeoQtGui(leoGui.LeoGui):
                 self,
                 parent: QWidget = None,
                 message: str = 'Select Date/Time',
-                init: Any = None,  # Hard to annotate.
+                init: datetime.datetime = None,
                 step_min: dict = None,
             ) -> None:
                 if step_min is None:
@@ -417,7 +419,6 @@ class LeoQtGui(leoGui.LeoGui):
                 layout.addWidget(buttonBox)
                 buttonBox.accepted.connect(self.accept)
                 buttonBox.rejected.connect(self.reject)
-
         #@-<< define date/time classes >>
         if g.unitTesting:
             return None
@@ -1678,7 +1679,7 @@ class StyleClassManager:
 
         w.setStyleSheet("/* */")  # forces visual update
     #@+node:tbrown.20150724090431.3: *3* add_sclass
-    def add_sclass(self, w: Wrapper, prop: Any) -> None:
+    def add_sclass(self, w: Wrapper, prop: str) -> None:
         """Add style class or list of classes prop to QWidget w"""
         if not prop:
             return
