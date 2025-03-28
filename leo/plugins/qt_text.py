@@ -17,7 +17,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
     from leo.plugins.qt_frame import WrapperAPI
-    ### from leo.plugins.qt_text import QTextEditWrapper
     Args = Any
     KWargs = Any
     QEvent = QtCore.QEvent
@@ -27,6 +26,8 @@ if TYPE_CHECKING:  # pragma: no cover
     QObject = QtCore.QObject
     QMouseEvent = QtGui.QMouseEvent
     QPaintEvent = QtGui.QPaintEvent
+    ### QPoint: TypeAlias = QtCore.QPoint
+    QPoint = QtCore.QPoint
     QTreeWidgetItem = QtWidgets.QTreeWidgetItem
     QWheelEvent = QtGui.QWheelEvent
     QWidget = QtWidgets.QWidget
@@ -657,7 +658,7 @@ if QtWidgets:
             def set_position(self, c: Cmdr) -> None:
                 """Set the position of the QListWidget."""
 
-                def to_global(obj: Any, pt: QtCore.QPoint) -> Any:
+                def to_global(obj: Any, pt: QPoint) -> Any:
                     """Convert pt from obj's local coordinates to global coordinates."""
                     return obj.mapToGlobal(pt)
 
