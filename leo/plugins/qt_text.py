@@ -946,7 +946,7 @@ if QtWidgets:
                 kind = f"unknown: {repr(button)}"
             return kind
         #@+node:ekr.20200304130514.1: *3* lqtb.onContextMenu
-        def onContextMenu(self, point: Any) -> None:
+        def onContextMenu(self, point: QPoint) -> None:
             """LeoQTextBrowser: Callback for customContextMenuRequested events."""
             # #1286.
             c, w = self.leo_c, self
