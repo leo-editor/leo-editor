@@ -30,7 +30,6 @@ if TYPE_CHECKING:  # pragma: no cover
     QPoint = QtCore.QPoint
     QTreeWidgetItem: TypeAlias = QtWidgets.QTreeWidgetItem
     QWidget = QtWidgets.QWidget
-    TODO = Any
     Value = Any
 #@-<< qt_tree annotations >>
 #@+others
@@ -54,7 +53,7 @@ class LeoQtTree(leoFrame.LeoTree):
         self.item2positionDict: dict[str, Position] = {}  # Keys are gnxs.
         self.item2vnodeDict: dict[str, VNode] = {}  # Keys are gnxs.
         # keys are gnxs, values are declutter generated icons
-        self.nodeIconsDict: dict[str, TODO] = {}
+        self.nodeIconsDict: dict[str, list[str]] = {}
         self.position2itemDict: dict[str, QTreeWidgetItem] = {}  # Keys are gnxs.
         self.vnode2itemsDict: dict[VNode, list[QTreeWidgetItem]] = {}  # values are lists of items.
         # keys are native QLineEdit widgets, values are wrappers.
