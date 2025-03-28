@@ -47,6 +47,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.plugins.mod_scripting import ScriptingController
     Args = Any
     KWargs = Any
+    QBoxLayout = QtWidgets.QBoxLayout
     QComboBox = QtWidgets.QComboBox
     QEvent: TypeAlias = QtCore.QEvent
     QFocusEvent: TypeAlias = QtGui.QFocusEvent
@@ -278,7 +279,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.leo_find_widget = tab_widget  # A scrollArea.
         ftm.init_widgets()
     #@+node:ekr.20131118152731.16847: *5* dw.create_find_grid
-    def create_find_grid(self, parent: QWidget) -> Any:
+    def create_find_grid(self, parent: QWidget) -> QGridLayout:
         grid = self.createGrid(parent, 'findGrid', margin=10, spacing=10)
         grid.setColumnStretch(0, 100)
         grid.setColumnStretch(1, 100)
@@ -458,7 +459,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 self.next_w = next_w
                 self.eventFilter = qt_events.LeoQtEventFilter(c, w, 'EventWrapper')
                 self.func = func
-                self.oldEvent: Any = w.event
+                self.oldEvent: Callable = w.event
                 w.event = self.wrapper  # type:ignore # cannot assign to a method.
             #@+others
             #@+node:ekr.20131120054058.16281: *7* EventWrapper.create_d
@@ -496,7 +497,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
                         d[stroke.s] = cmd_name
                 return d
             #@+node:ekr.20131118172620.16893: *7* EventWrapper.wrapper
-            def wrapper(self, event: LeoKeyEvent) -> Any:
+            def wrapper(self, event: LeoKeyEvent) -> bool:
 
                 type_ = event.type()
                 # Must intercept KeyPress for events that generate FocusOut!
@@ -506,7 +507,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
                     return self.keyRelease(event)  # type:ignore[arg-type]
                 return self.oldEvent(event)
             #@+node:ekr.20131118172620.16894: *7* EventWrapper.keyPress
-            def keyPress(self, event: LeoKeyEvent) -> Any:
+            def keyPress(self, event: LeoKeyEvent) -> bool:
 
                 s = event.text()
                 out = s and s in '\t\r\n'
@@ -535,7 +536,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 # Do the normal processing.
                 return self.oldEvent(event)
             #@+node:ekr.20131118172620.16895: *7* EventWrapper.keyRelease
-            def keyRelease(self, event: QEvent) -> Any:
+            def keyRelease(self, event: QEvent) -> bool:
                 return self.oldEvent(event)
             #@-others
         #@-others
@@ -590,14 +591,14 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.setName(w, name)
         return w
     #@+node:ekr.20110605121601.18157: *4* dw.createHLayout & createVLayout
-    def createHLayout(self, parent: QWidget, name: str, margin: int = 0, spacing: int = 0) -> Any:
+    def createHLayout(self, parent: QWidget, name: str, margin: int = 0, spacing: int = 0) -> QBoxLayout:
         hLayout = QtWidgets.QHBoxLayout(parent)
         hLayout.setSpacing(spacing)
         hLayout.setContentsMargins(QtCore.QMargins(0, 0, 0, 0))
         self.setName(hLayout, name)
         return hLayout
 
-    def createVLayout(self, parent: QWidget, name: str, margin: int = 0, spacing: int = 0) -> Any:
+    def createVLayout(self, parent: QWidget, name: str, margin: int = 0, spacing: int = 0) -> QBoxLayout:
         vLayout = QtWidgets.QVBoxLayout(parent)
         vLayout.setSpacing(spacing)
         vLayout.setContentsMargins(QtCore.QMargins(0, 0, 0, 0))
