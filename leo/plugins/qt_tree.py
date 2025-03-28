@@ -27,7 +27,9 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.plugins.qt_text import QHeadlineWrapper
     QLineEdit = QtWidgets.QLineEdit
     QIcon = QtGui.QIcon
+    QPoint = QtCore.QPoint
     QTreeWidgetItem: TypeAlias = QtWidgets.QTreeWidgetItem
+    QWidget = QtWidgets.QWidget
     TODO = Any
 #@-<< qt_tree annotations >>
 #@+others
@@ -62,8 +64,8 @@ class LeoQtTree(leoFrame.LeoTree):
         self.treeWidget: LeoQTreeWidget = frame.top.treeWidget
         w = self.treeWidget
         # Declutter data...
-        self.declutter_patterns: list[Any] = None  # list of pairs of patterns for decluttering
-        self.declutter_data: dict[Any, Any] = {}
+        self.declutter_patterns: list[TODO] = None  # list of pairs of patterns for decluttering
+        self.declutter_data: dict[TODO, TODO] = {}
         self.loaded_images: dict[str, QIcon] = {}
 
         if 0:  # None of this works.
@@ -625,7 +627,7 @@ class LeoQtTree(leoFrame.LeoTree):
         g.doHook("icondclick2", c=c, p=p, event=event)
         c.outerUpdate()
     #@+node:ekr.20110605121601.18437: *4* qtree.onContextMenu
-    def onContextMenu(self, point: Any) -> None:
+    def onContextMenu(self, point: QPoint) -> None:
         """LeoQtTree: Callback for customContextMenuRequested events."""
         # #1286.
         c, w = self.c, self.treeWidget
@@ -690,7 +692,7 @@ class LeoQtTree(leoFrame.LeoTree):
         self.select(p)
         c.outerUpdate()
     #@+node:ekr.20110605121601.17897: *4* qtree.onItemDoubleClicked
-    def onItemDoubleClicked(self, item: QTreeWidgetItem, col: Any) -> None:  # col not used.
+    def onItemDoubleClicked(self, item: QTreeWidgetItem, col: int) -> None:  # col not used.
         """Handle a double click in a BaseNativeTree widget item."""
         if self.busy:  # Required.
             return
@@ -743,7 +745,7 @@ class LeoQtTree(leoFrame.LeoTree):
         self.select(p)  # This is a call to LeoTree.select(!!)
         c.outerUpdate()
     #@+node:ekr.20110605121601.17944: *3* qtree.Focus
-    def getFocus(self) -> Any:
+    def getFocus(self) -> QWidget:
         return g.app.gui.get_focus(self.c)  # Bug fix: 2009/6/30
 
     findFocus = getFocus
