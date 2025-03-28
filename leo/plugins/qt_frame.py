@@ -40,6 +40,7 @@ from leo.plugins.qt_layout import LayoutCacheWidget
 #@+node:ekr.20220415080427.1: ** << qt_frame annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from typing import TypeAlias  # Requires Python 3.12+
+    from leo.core.leoColorizer import BaseColorizer
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoGui
     from leo.core.leoGui import LeoKeyEvent
@@ -661,7 +662,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
     ) -> QWidget:
         # Create a text widget.
         c = self.leo_c
-        w: Any
+        w: QWidget
         if name == 'richTextEdit' and self.useScintilla and Qsci:
             # Do this in finishCreate, when c.frame.body exists.
             w = Qsci.QsciScintilla(parent)
@@ -1547,7 +1548,7 @@ class LeoQtBody(leoFrame.LeoBody):
         super().__init__(frame, parentFrame)
         c = self.c
         assert c.frame == frame and frame.c == c
-        self.colorizer: Any = None  # A Union
+        self.colorizer: BaseColorizer = None  # A Union
         self.wrapper: Wrapper = None
         self.widget: QWidget = None
         self.reloadSettings()

@@ -25,6 +25,7 @@ from leo.core import leoNodes
 #@+node:ekr.20220415013957.1: ** << leoFrame annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoChapters import ChapterController
+    from leo.core.leoColorizer import BaseColorizer
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoGui import LeoGui
@@ -320,7 +321,7 @@ class LeoBody:
         self.widget: Widget = None  # set in LeoQtBody.set_widget.
         self.wrapper: Wrapper = None  # set in LeoQtBody.set_widget.
         # Must be overridden in subclasses...
-        self.colorizer: NullColorizer = None
+        self.colorizer: BaseColorizer = None
         # Init user settings.
         self.use_chapters = False  # May be overridden in subclasses.
     #@+node:ekr.20031218072017.3677: *3* LeoBody.Coloring
