@@ -1146,8 +1146,8 @@ class LeoQtTree(leoFrame.LeoTree):
         return e, wrapper
     #@+node:ekr.20110605121601.18422: *5* qtree.editLabelHelper
     def editLabelHelper(self,
-        item: Any, selectAll: bool = False, selection: tuple = None,
-    ) -> tuple[QLineEdit, Any]:
+        item: QTreeWidgetItem, selectAll: bool = False, selection: tuple = None,
+    ) -> tuple[QLineEdit, QHeadlineWrapper]:
         """Helper for qtree.editLabel."""
         c, vc = self.c, self.c.vimCommands
         w = self.treeWidget
