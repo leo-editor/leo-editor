@@ -20,7 +20,9 @@ if TYPE_CHECKING:  # pragma: no cover
     Args = Any
     KWargs = Any
     QEvent: TypeAlias = QtCore.QEvent
+    QFrame = QtWidgets.QFrame
     QKeyEvent: TypeAlias = QtGui.QKeyEvent
+    QLineEdit = QtWidgets.QLineEdit
     QMouseEvent: TypeAlias = QtGui.QMouseEvent
     QPaintEvent: TypeAlias = QtGui.QPaintEvent
     QTreeWidgetItem = QtWidgets.QTreeWidgetItem
@@ -332,7 +334,7 @@ class QLineEditWrapper(QTextMixin):
     """
     #@+others
     #@+node:ekr.20110605121601.18060: *3* qlew.Birth
-    def __init__(self, widget: QWidget, name: str, c: Cmdr = None) -> None:
+    def __init__(self, widget: QLineEdit, name: str, c: Cmdr = None) -> None:
         """Ctor for QLineEditWrapper class."""
         super().__init__(c)
         self.widget = widget
@@ -460,7 +462,7 @@ class LeoLineTextWidget(QtWidgets.QFrame):
     """
     #@+others
     #@+node:ekr.20150403094706.9: *3* LeoLineTextWidget.__init__
-    def __init__(self, c: Cmdr, e: Any, *args: Args) -> None:
+    def __init__(self, c: Cmdr, e: QWidget, *args: Args) -> None:
         """Ctor for LineTextWidget."""
         super().__init__(*args)
         self.c = c
@@ -1222,7 +1224,7 @@ class QHeadlineWrapper(QLineEditWrapper):
     """
     #@+others
     #@+node:ekr.20110605121601.18117: *3* qhw.Birth
-    def __init__(self, c: Cmdr, item: QTreeWidgetItem, name: str, widget: QWidget) -> None:
+    def __init__(self, c: Cmdr, item: QTreeWidgetItem, name: str, widget: QLineEdit) -> None:
         """The ctor for the QHeadlineWrapper class."""
         assert isinstance(widget, QtWidgets.QLineEdit), widget
         super().__init__(widget, name, c)
