@@ -34,7 +34,7 @@
 # rules.
 #@-<< about internal bindings >>
 import sys
-from typing import Any
+from typing import Any, Union
 from leo.core import leoGlobals as g
 from leo.core import leoGui
 from leo.core.leoQt import QtCore, QtGui, QtWidgets
@@ -529,13 +529,13 @@ class LeoQtEventFilter(QtCore.QObject):
             )
             g.trace(f"{eventType:>25} {self.tag:25} {tag}")
     #@+node:ekr.20131121050226.16331: *4* filter.traceWidget
-    def traceWidget(self, event):
+    def traceWidget(self, event: QtCore.QEvent) -> None:
         """Show unexpected events in unusual widgets."""
         verbose = False  # Not good for --trace-events
         e = QtCore.QEvent
+        t: Union[str, QtCore.QEvent.Type]
         assert isinstance(event, QtCore.QEvent)
         et = event.type()
-        t: Any
         # http://qt-project.org/doc/qt-4.8/qevent.html#properties
         ignore_d = {
             e.Type.ChildAdded: 'child-added',  # 68
