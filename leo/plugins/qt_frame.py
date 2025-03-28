@@ -104,7 +104,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.leo_statusBar: QtWidgets.QStatusBar = None
         self.layout_name: str = None
         self.old_layout_name: str = None
-        self.verticalLayout: Any = None
+        self.verticalLayout: QBoxLayout = None
         self.vr_parent_frame: QWidget = None
         c._style_deltas = defaultdict(lambda: 0)  # for adjusting styles dynamically
         self.layout_cache = LayoutCacheWidget(c, self)
