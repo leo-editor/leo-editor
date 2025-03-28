@@ -31,6 +31,7 @@ if TYPE_CHECKING:  # pragma: no cover
     QTreeWidgetItem: TypeAlias = QtWidgets.QTreeWidgetItem
     QWidget = QtWidgets.QWidget
     TODO = Any
+    Value = Any
 #@-<< qt_tree annotations >>
 #@+others
 #@+node:ekr.20160514120051.1: ** class LeoQtTree
@@ -53,7 +54,7 @@ class LeoQtTree(leoFrame.LeoTree):
         self.item2positionDict: dict[str, Position] = {}  # Keys are gnxs.
         self.item2vnodeDict: dict[str, VNode] = {}  # Keys are gnxs.
         # keys are gnxs, values are declutter generated icons
-        self.nodeIconsDict: dict[str, list[TODO]] = {}
+        self.nodeIconsDict: dict[str, TODO] = {}
         self.position2itemDict: dict[str, QTreeWidgetItem] = {}  # Keys are gnxs.
         self.vnode2itemsDict: dict[VNode, list[QTreeWidgetItem]] = {}  # values are lists of items.
         # keys are native QLineEdit widgets, values are wrappers.
@@ -64,8 +65,9 @@ class LeoQtTree(leoFrame.LeoTree):
         self.treeWidget: LeoQTreeWidget = frame.top.treeWidget
         w = self.treeWidget
         # Declutter data...
-        self.declutter_patterns: list[TODO] = None  # list of pairs of patterns for decluttering
-        self.declutter_data: dict[TODO, TODO] = {}
+        # list of pairs of patterns for decluttering
+        self.declutter_patterns: list[tuple[Value, Value]] = None
+        self.declutter_data: dict[Value, Value] = {}
         self.loaded_images: dict[str, QIcon] = {}
 
         if 0:  # None of this works.
@@ -332,7 +334,7 @@ class LeoQtTree(leoFrame.LeoTree):
                 modifier(item, param)
             return modifier, param
         #@+node:vitalije.20200327163522.1: *7* apply_declutter_rules
-        def apply_declutter_rules(cmds: list[tuple[Callable, str]], pattern: str) -> list[TODO]:
+        def apply_declutter_rules(cmds: list[tuple[Callable, str]], pattern: str) -> list[tuple[Value, str]]:
             """
             Applies all commands for the matched rule. Returns the list
             of the applied operations paired with their single parameter.
@@ -379,12 +381,12 @@ class LeoQtTree(leoFrame.LeoTree):
         # There is always at least a box icon.
         return icon
     #@+node:vitalije.20200327162532.1: *6* qtree.get_declutter_patterns
-    def get_declutter_patterns(self) -> list[TODO]:
+    def get_declutter_patterns(self) -> list[tuple[Value, Value]]:
         "Initializes self.declutter_patterns from configuration and returns it"
         if self.declutter_patterns is not None:
             return self.declutter_patterns
         c = self.c
-        patterns: list[TODO] = []
+        patterns: list[Value] = []
         warned = False
         lines = c.config.getData("tree-declutter-patterns")
         for line in lines:
