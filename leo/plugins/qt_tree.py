@@ -24,7 +24,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position, VNode
     from leo.plugins.qt_frame import LeoQtFrame
-    from leo.plugins.qt_text import QTextEditWrapper as Wrapper
+    from leo.plugins.qt_text import QTextEditWrapper
     QLineEdit = QtWidgets.QLineEdit
     QIcon = QtGui.QIcon
     QTreeWidgetItem: TypeAlias = QtWidgets.QTreeWidgetItem
@@ -55,7 +55,7 @@ class LeoQtTree(leoFrame.LeoTree):
         self.position2itemDict: dict[str, QTreeWidgetItem] = {}  # Keys are gnxs.
         self.vnode2itemsDict: dict[VNode, list[QTreeWidgetItem]] = {}  # values are lists of items.
         # keys are native QLineEdit widgets, values are wrappers.
-        self.editWidgetsDict: dict[QLineEdit, Wrapper] = {}
+        self.editWidgetsDict: dict[QLineEdit, QTextEditWrapper] = {}
         self.reloadSettings()
         # Components...
         self.canvas = self  # An official ivar used by Leo's core.
@@ -888,7 +888,7 @@ class LeoQtTree(leoFrame.LeoTree):
             items = [w.topLevelItem(z) for z in range(n)]
         return items
     #@+node:ekr.20110605121601.18418: *4* qtree.connectEditorWidget & callback
-    def connectEditorWidget(self, e: QLineEdit, item: QTreeWidgetItem) -> Wrapper:
+    def connectEditorWidget(self, e: QLineEdit, item: QTreeWidgetItem) -> QTextEditWrapper:
         """
         Connect QLineEdit e to QTreeItem item.
 
@@ -986,7 +986,7 @@ class LeoQtTree(leoFrame.LeoTree):
         e = w.itemWidget(item, 0)
         return e
     #@+node:ekr.20110605121601.18428: *4* qtree.getWrapper
-    def getWrapper(self, e: QLineEdit, item: QTreeWidgetItem) -> Wrapper:
+    def getWrapper(self, e: QLineEdit, item: QTreeWidgetItem) -> QTextEditWrapper:
         """Return headlineWrapper that wraps e (a QLineEdit)."""
         c = self.c
         if e:
@@ -1105,7 +1105,7 @@ class LeoQtTree(leoFrame.LeoTree):
         vScroll.setValue(vPos)
     #@+node:ekr.20110605121601.17905: *3* qtree.Selecting & editing
     #@+node:ekr.20110605121601.17908: *4* qtree.edit_widget
-    def edit_widget(self, p: Position) -> Wrapper:
+    def edit_widget(self, p: Position) -> QTextEditWrapper:
         """Returns the edit widget for position p."""
         item = self.position2item(p)
         if item:
