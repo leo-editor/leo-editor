@@ -22,6 +22,7 @@ if TYPE_CHECKING:  # pragma: no cover
     QKeyEvent: TypeAlias = QtGui.QKeyEvent
     QMouseEvent: TypeAlias = QtGui.QMouseEvent
     QPaintEvent: TypeAlias = QtGui.QPaintEvent
+    QTreeWidgetItem = QtWidgets.QTreeWidgetItem
     QWheelEvent: TypeAlias = QtGui.QWheelEvent
     QWidget = QtWidgets.QWidget
 
@@ -1219,7 +1220,7 @@ class QHeadlineWrapper(QLineEditWrapper):
     """
     #@+others
     #@+node:ekr.20110605121601.18117: *3* qhw.Birth
-    def __init__(self, c: Cmdr, item: str, name: str, widget: QWidget) -> None:
+    def __init__(self, c: Cmdr, item: QTreeWidgetItem, name: str, widget: QWidget) -> None:
         """The ctor for the QHeadlineWrapper class."""
         assert isinstance(widget, QtWidgets.QLineEdit), widget
         super().__init__(widget, name, c)
