@@ -25,7 +25,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoNodes import Position, VNode
     from leo.plugins.qt_frame import LeoQtFrame
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-    Editor = Any
+    Editor = QtWidgets.QTextBrowser
     QIcon = QtGui.QIcon
     QTreeWidgetItem: TypeAlias = QtWidgets.QTreeWidgetItem
     TODO = Any
@@ -50,10 +50,12 @@ class LeoQtTree(leoFrame.LeoTree):
         self.items: list[QTreeWidgetItem] = []
         self.item2positionDict: dict[str, Position] = {}  # Keys are gnxs.
         self.item2vnodeDict: dict[str, VNode] = {}  # Keys are gnxs.
-        self.nodeIconsDict: dict[str, list[TODO]] = {}  # keys are gnxs, values are declutter generated icons
+        # keys are gnxs, values are declutter generated icons
+        self.nodeIconsDict: dict[str, list[TODO]] = {}
         self.position2itemDict: dict[str, QTreeWidgetItem] = {}  # Keys are gnxs.
         self.vnode2itemsDict: dict[VNode, list[QTreeWidgetItem]] = {}  # values are lists of items.
-        self.editWidgetsDict: dict[Editor, Wrapper] = {}  # keys are native edit widgets, values are wrappers.
+        # keys are native edit widgets, values are wrappers.
+        self.editWidgetsDict: dict[Editor, Wrapper] = {}
         self.reloadSettings()
         # Components...
         self.canvas = self  # An official ivar used by Leo's core.
@@ -1152,7 +1154,7 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.18422: *5* qtree.editLabelHelper
     def editLabelHelper(self,
         item: Any, selectAll: bool = False, selection: tuple = None,
-    ) -> tuple[QTreeWidgetItem, Any]:
+    ) -> tuple[Editor, Any]:
         """Helper for qtree.editLabel."""
         c, vc = self.c, self.c.vimCommands
         w = self.treeWidget
