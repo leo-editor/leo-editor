@@ -16,6 +16,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from typing import TypeAlias  # Requires Python 3.12+
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
+    ### from leo.plugins.qt_text import QTextEditWrapper
     Args = Any
     KWargs = Any
     QEvent: TypeAlias = QtCore.QEvent
@@ -25,6 +26,7 @@ if TYPE_CHECKING:  # pragma: no cover
     QTreeWidgetItem = QtWidgets.QTreeWidgetItem
     QWheelEvent: TypeAlias = QtGui.QWheelEvent
     QWidget = QtWidgets.QWidget
+    TODO = Any
 
 FullWidthSelection = 0x06000
 QColor = QtGui.QColor
@@ -145,7 +147,7 @@ class QTextMixin:
         self.permanent = True  # False if selecting the minibuffer will make the widget go away.
         self.useScintilla = False  # This is used!
         self.virtualInsertPoint = None
-        self.widget: Any = None
+        self.widget: TODO = None
         if c:
             self.injectIvars(c)
     #@+node:ekr.20140901062324.18721: *4* qtm.injectIvars
