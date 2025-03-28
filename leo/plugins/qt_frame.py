@@ -32,9 +32,7 @@ from leo.plugins import qt_events
 from leo.plugins import qt_text
 from leo.plugins.qt_tree import LeoQtTree
 from leo.plugins.mod_scripting import build_rclick_tree
-
 from leo.plugins.qt_layout import LayoutCacheWidget
-
 #@-<< qt_frame imports >>
 #@+<< qt_frame annotations >>
 #@+node:ekr.20220415080427.1: ** << qt_frame annotations >>
@@ -45,12 +43,13 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoGui
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position
+    from leo.plugins.leoFrame import LeoLog
     from leo.plugins.mod_scripting import ScriptingController
-    from leo.plugins.qt_frame import LeoLog
     Args = Any
     KWargs = Any
     QBoxLayout = QtWidgets.QBoxLayout
     QComboBox = QtWidgets.QComboBox
+    QCursor = QtGui.QCursor
     QEvent: TypeAlias = QtCore.QEvent
     QFocusEvent: TypeAlias = QtGui.QFocusEvent
     QGridLayout = QtWidgets.QGridLayout
@@ -61,6 +60,8 @@ if TYPE_CHECKING:  # pragma: no cover
     QPoint = QtCore.QPoint
     QRect = QtGui.QRect
     QTabWidget = QtWidgets.QTabWidget
+    QTextBlock = QtGui.QTextBlock
+    QTextCursor = QtGui.QTextCursor
     QWidget = QtWidgets.QWidget
     RClick = tuple  # Union[tuple, namedtuple('RClick', 'position,children')]
     RClicks = list[RClick]
@@ -1436,10 +1437,10 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
         if self.factory:
             del kwargs['factory']
         super().__init__(*args, **kwargs)
-        self.detached: list[Any] = []
+        self.detached: list[tuple[str, QWidget]] = []
         self.setMovable(True)
 
-        def tabContextMenu(point: Any) -> None:
+        def tabContextMenu(point: QPoint) -> None:
             index = self.tabBar().tabAt(point)
             if index < 0:  # or (self.count() < 1 and not self.detached):
                 return
@@ -2424,7 +2425,7 @@ class LeoQtLog(leoFrame.LeoLog):
         suitable for log functionality.
         """
         c = self.c
-        contents: Any
+        contents: Any  # A union.
         if widget is None:
             # widget is subclass of QTextBrowser.
             widget = qt_text.LeoQTextBrowser(parent=None, c=c, wrapper=self)
@@ -2699,7 +2700,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
             g.trace('no action for menu', label)
         return menu
     #@+node:ekr.20110605121601.18353: *5* LeoQtMenu.new_menu
-    def new_menu(self, parent: QWidget, tearoff: int = 0, label: str = '') -> Any:  # label is for debugging.
+    def new_menu(self, parent: QWidget, tearoff: int = 0, label: str = '') -> QtMenuWrapper:  # label is for debugging.
         """Wrapper for the Tkinter new_menu menu method."""
         c, leoFrame = self.c, self.frame
         # Parent can be None, in which case it will be added to the menuBar.
@@ -2722,7 +2723,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         """
         self.createMenusFromTables()  # This is LeoMenu.createMenusFromTables.
     #@+node:ekr.20110605121601.18357: *5* LeoQtMenu.createOpenWithMenu
-    def createOpenWithMenu(self, parent: QWidget, label: str, index: int, amp_index: int) -> Any:
+    def createOpenWithMenu(self, parent: QWidget, label: str, index: int, amp_index: int) -> QtMenuWrapper:
         """
         Create the File:Open With submenu.
 
@@ -3660,7 +3661,7 @@ class QtIconBarClass:
         self.c.bodyWantsFocus()
         self.c.outerUpdate()
     #@+node:ekr.20141031053508.14: *3* QtIconBar.goto_command
-    def goto_command(self, controller: Any, gnx: str) -> None:
+    def goto_command(self, controller: ScriptingController, gnx: str) -> None:
         """
         Select the node corresponding to the given gnx.
         controller is a ScriptingController instance.
@@ -3910,7 +3911,7 @@ class QtStatusLineClass:
         self.put_helper(s, self.textWidget1, bg, fg)
     #@+node:ekr.20240505051258.1: *4* QtStatusLineClass.put_helper
     # Keys are widgets, values are stylesheets.
-    styleSheetCache: dict[Any, str] = {}
+    styleSheetCache: dict[QWidget, str] = {}
 
     def put_helper(self, s: str, w: QWidget, bg: str = None, fg: str = None) -> None:
         """Put string s in the indicated widget, with proper colors."""
@@ -3988,7 +3989,7 @@ class QtStatusLineClass:
         self.lastCol = col
         self.lastFcol = fcol
     #@+node:ekr.20190118082646.1: *4* qstatus.compute_columns
-    def compute_columns(self, block: Any, cursor: Any) -> tuple[int, int]:
+    def compute_columns(self, block: QTextBlock, cursor: QTextCursor) -> tuple[int, int]:
 
         c = self.c
         line = block.text()
