@@ -354,7 +354,7 @@ class LeoQtGui(leoGui.LeoGui):
         message: str = 'Select Date/Time',
         init: datetime.datetime = None,
         step_min: dict = None,
-    ) -> Optional[Any]:
+    ) -> Optional[datetime.datetime]:
         """Create and run a qt date/time selection dialog.
 
         init - a datetime, default now
