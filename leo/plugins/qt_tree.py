@@ -18,6 +18,7 @@ from leo.plugins import qt_text
 #@+<< qt_tree annotations >>
 #@+node:ekr.20220417193741.1: ** << qt_tree annotations >>
 if TYPE_CHECKING:  # pragma: no cover
+    from typing import TypeAlias  # Requires Python 3.12+
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoFrame import LeoQTreeWidget
     from leo.core.leoGui import LeoKeyEvent
@@ -26,7 +27,8 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
     Editor = Any
     Icon = Any
-    Item = Any
+    Item: TypeAlias = QtWidgets.QTreeWidgetItem
+    TODO = Any
     Widget = Any
 #@-<< qt_tree annotations >>
 #@+others
@@ -337,7 +339,7 @@ class LeoQtTree(leoFrame.LeoTree):
                 modifier(item, param)
             return modifier, param
         #@+node:vitalije.20200327163522.1: *7* apply_declutter_rules
-        def apply_declutter_rules(cmds: list[tuple[Callable, str]], pattern: str) -> list[Any]:
+        def apply_declutter_rules(cmds: list[tuple[Callable, str]], pattern: str) -> list[TODO]:
             """
             Applies all commands for the matched rule. Returns the list
             of the applied operations paired with their single parameter.
@@ -384,12 +386,12 @@ class LeoQtTree(leoFrame.LeoTree):
         # There is always at least a box icon.
         return icon
     #@+node:vitalije.20200327162532.1: *6* qtree.get_declutter_patterns
-    def get_declutter_patterns(self) -> list[Any]:
+    def get_declutter_patterns(self) -> list[TODO]:
         "Initializes self.declutter_patterns from configuration and returns it"
         if self.declutter_patterns is not None:
             return self.declutter_patterns
         c = self.c
-        patterns: list[Any] = []
+        patterns: list[TODO] = []
         warned = False
         lines = c.config.getData("tree-declutter-patterns")
         for line in lines:
@@ -837,7 +839,7 @@ class LeoQtTree(leoFrame.LeoTree):
             g.app.gui.iconimages[h] = icon
         return icon
     #@+node:ekr.20110605121601.17950: *4* qtree.setItemIcon
-    def setItemIcon(self, item: Item, icon: str) -> None:
+    def setItemIcon(self, item: Item, icon: Icon) -> None:
 
         valid = item and self.isValidItem(item)
         if icon and valid:
@@ -1230,7 +1232,7 @@ class LeoQtTree(leoFrame.LeoTree):
             if item:
                 self.setItemText(item, s)
     #@+node:ekr.20110605121601.17913: *4* qtree.setItemForCurrentPosition
-    def setItemForCurrentPosition(self) -> None:
+    def setItemForCurrentPosition(self) -> Item:
         """Select the item for c.p"""
         p = self.c.p
         if self.busy:
