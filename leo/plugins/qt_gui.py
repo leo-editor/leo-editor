@@ -52,6 +52,7 @@ if TYPE_CHECKING:  # pragma: no cover
     QLabel = QtWidgets.QLabel
     QLayout = QtWidgets.QLayout
     QMainWindow = QtWidgets.QMainWindow
+    QObject = QtCore.QObject
     QPixmap = QtGui.QPixmap
     QPoint = QtCore.QPoint
     QPushButton = QtWidgets.QPushButton
@@ -59,6 +60,7 @@ if TYPE_CHECKING:  # pragma: no cover
     QTabWidget = QtWidgets.QTabWidget
     QVBoxLayout = QtWidgets.QVBoxLayout
     QWidget = QtWidgets.QWidget
+    Value = Any
 #@-<< qt_gui annotations >>
 #@+others
 #@+node:ekr.20110605121601.18134: ** init (qt_gui.py)
@@ -764,7 +766,7 @@ class LeoQtGui(leoGui.LeoGui):
     def runPropertiesDialog(
         self,
         title: str = 'Properties',
-        data: Any = None,
+        data: Value = None,
         callback: Callable = None,
         buttons: list[str] = None,
     ) -> tuple[str, dict]:
@@ -902,7 +904,7 @@ class LeoQtGui(leoGui.LeoGui):
 
     deactivated_widget = None
 
-    def onDeactivateEvent(self, event: QEvent, c: Cmdr, obj: Any, tag: str) -> None:
+    def onDeactivateEvent(self, event: QEvent, c: Cmdr, obj: object, tag: str) -> None:
         """
         Gracefully deactivate the Leo window.
         Called several times for each window activation.
@@ -926,7 +928,7 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20110605121601.18480: *4* LeoQtGui.onActivateEvent
     # Called from eventFilter
 
-    def onActivateEvent(self, event: QEvent, c: Cmdr, obj: Any, tag: str) -> None:
+    def onActivateEvent(self, event: QEvent, c: Cmdr, obj: object, tag: str) -> None:
         """
         Restore the focus when the Leo window is activated.
         Called several times for each window activation.
@@ -968,7 +970,7 @@ class LeoQtGui(leoGui.LeoGui):
                     # c.bodyWantsFocusNow()
         g.doHook('activate', c=c, p=c.p, v=c.p, event=event)
     #@+node:ekr.20130921043420.21175: *4* LeoQtGui.setFilter
-    def setFilter(self, c: Cmdr, obj: Any, w: Wrapper, tag: str) -> None:
+    def setFilter(self, c: Cmdr, obj: object, w: Wrapper, tag: str) -> None:
         """
         Create an event filter in obj.
         w is a wrapper object, not necessarily a QWidget.
@@ -1213,7 +1215,7 @@ class LeoQtGui(leoGui.LeoGui):
     def makeScriptButton(
         self,
         c: Cmdr,
-        args: Any = None,
+        args: Args = None,
         p: Position = None,  # A node containing the script.
         script: str = None,  # The script itself.
         buttonText: str = None,
@@ -1512,7 +1514,7 @@ class LeoQtGui(leoGui.LeoGui):
             gui.splashScreen = None
     #@+node:ekr.20140825042850.18411: *3* LeoQtGui:Utils...
     #@+node:ekr.20240519114809.1: *4* LeoQtGui._self_and_subtree
-    def _self_and_subtree(self, qt_obj: Any) -> Generator:
+    def _self_and_subtree(self, qt_obj: QObject) -> Generator:
         """Yield w and all of w's descendants."""
         if not qt_obj:
             return
@@ -1534,7 +1536,7 @@ class LeoQtGui(leoGui.LeoGui):
         else:
             g.trace(f"Not a QSplitter: {splitter.__class__.__name__}")
     #@+node:ekr.20241027183453.1: *4* LeoQtGui.find_parent_splitter
-    def find_parent_splitter(self, widget: QWidget) -> Optional[Tuple[QSplitter, Any]]:
+    def find_parent_splitter(self, widget: QWidget) -> Optional[Tuple[QSplitter, QWidget]]:
         """
         Find the nearest parent QSplitter widget for the given widget.
         

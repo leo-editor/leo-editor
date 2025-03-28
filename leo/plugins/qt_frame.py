@@ -46,6 +46,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.plugins.leoFrame import LeoLog
     from leo.plugins.mod_scripting import ScriptingController
     Args = Any
+    ComplexUnion = Any
     KWargs = Any
     QBoxLayout = QtWidgets.QBoxLayout
     QComboBox = QtWidgets.QComboBox
@@ -1667,7 +1668,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         self.iconBarClass = QtIconBarClass
         self.iconFrame: QtIconBarClass = None
         self.log: LeoQtLog = None
-        self.statusLineClass: Any = QtStatusLineClass  # A Union. 'Any' can't easily be removed.
+        self.statusLineClass: ComplexUnion = QtStatusLineClass  # A Union. 'Any' can't easily be removed.
         self.statusFrame: LeoQtFrame = None
         self.tree: LeoQtTree = None
         self.top: DynamicWindow = None
@@ -2425,7 +2426,7 @@ class LeoQtLog(leoFrame.LeoLog):
         suitable for log functionality.
         """
         c = self.c
-        contents: Any  # A union.
+        contents: ComplexUnion
         if widget is None:
             # widget is subclass of QTextBrowser.
             widget = qt_text.LeoQTextBrowser(parent=None, c=c, wrapper=self)
