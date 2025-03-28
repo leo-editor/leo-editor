@@ -353,7 +353,7 @@ class LeoBody:
     def packEditorLabelWidget(self, w: Wrapper) -> None:
         raise NotImplementedError
 
-    def onFocusOut(self, obj: object) -> None:
+    def onFocusOut(self, obj: Any) -> None:
         pass
     #@+node:ekr.20060528100747: *3* LeoBody.Editors
     #@+node:ekr.20070424053629.1: *4* LeoBody.utils
@@ -493,8 +493,8 @@ class LeoFrame:
         self.c = c
         self.gui = gui
         # Types...
-        self.iconBarClass = NullIconBarClass
-        self.statusLineClass = NullStatusLineClass
+        self.iconBarClass: Any = NullIconBarClass
+        self.statusLineClass: Any = NullStatusLineClass
         # Objects attached to this frame...
         self.body: Union[LeoBody, NullBody, LeoQtBody] = None
         self.iconBar: Union[NullIconBarClass, QtIconBarClass] = None

@@ -1615,7 +1615,7 @@ class LeoQtBody(leoFrame.LeoBody):
         w.setWordWrapMode(wrap_setting)
     #@+node:ekr.20110605121601.18223: *3* LeoQtBody.Event handlers
     #@+node:ekr.20110930174206.15472: *4* LeoQtBody.onFocusIn
-    def onFocusIn(self, obj: Any) -> None:
+    def onFocusIn(self, obj: QObject) -> None:
         """Handle a focus-in event in the body pane."""
         if obj.objectName() == 'richTextEdit':
             self.onFocusColorHelper('focus-in', obj)
@@ -1625,7 +1625,7 @@ class LeoQtBody(leoFrame.LeoBody):
                 obj.setReadOnly(False)
             obj.setFocus()  # Weird, but apparently necessary.
     #@+node:ekr.20110930174206.15473: *4* LeoQtBody.onFocusOut
-    def onFocusOut(self, obj: Any) -> None:
+    def onFocusOut(self, obj: QObject) -> None:
         """Handle a focus-out event in the body pane."""
         # Apparently benign.
         if obj.objectName() == 'richTextEdit':
@@ -1633,7 +1633,7 @@ class LeoQtBody(leoFrame.LeoBody):
             if hasattr(obj, 'setReadOnly'):
                 obj.setReadOnly(True)
     #@+node:ekr.20110605121601.18224: *4* LeoQtBody.qtBody.onFocusColorHelper (revised)
-    def onFocusColorHelper(self, kind: str, obj: Any) -> None:
+    def onFocusColorHelper(self, kind: str, obj: QObject) -> None:
         """Handle changes of style when focus changes."""
         c, vc = self.c, self.c.vimCommands
         if vc and c.vim_mode:
@@ -1661,7 +1661,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         self.bar2: LeoQtFrame = None
         self.body: LeoQtBody = None
         self.iconBar: QtIconBarClass = None
-        self.iconBarClass: Any = QtIconBarClass
+        self.iconBarClass = QtIconBarClass
         self.iconFrame: QtIconBarClass = None
         self.log: LeoQtLog = None
         self.statusLineClass: Any = QtStatusLineClass  # A Union. 'Any' can't easily be removed.
