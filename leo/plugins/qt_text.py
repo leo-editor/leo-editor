@@ -16,6 +16,7 @@ if TYPE_CHECKING:  # pragma: no cover
     ### from typing import TypeAlias  # Requires Python 3.12+
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
+    from leo.plugins.qt_frame import WrapperAPI
     ### from leo.plugins.qt_text import QTextEditWrapper
     Args = Any
     KWargs = Any
@@ -499,8 +500,12 @@ if QtWidgets:
         """A subclass of QTextBrowser that overrides the mouse event handlers."""
         #@+others
         #@+node:ekr.20110605121601.18006: *3*  lqtb.ctor
-        def __init__(self, parent: QWidget, c: Cmdr, wrapper: Any) -> None:  # wrapper is a LeoQtBody.
-            """ctor for LeoQTextBrowser class."""
+        def __init__(self, parent: QWidget, c: Cmdr, wrapper: WrapperAPI) -> None:
+            """
+            ctor for LeoQTextBrowser class.
+            
+            wrapper is a LeoQtBody or LeoQtLog.
+            """
             for attr in ('leo_c', 'leo_wrapper',):
                 assert not hasattr(QtWidgets.QTextBrowser, attr), attr
             self.leo_c = c
