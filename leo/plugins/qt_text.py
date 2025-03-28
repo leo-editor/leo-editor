@@ -26,6 +26,7 @@ if TYPE_CHECKING:  # pragma: no cover
     QLineEdit = QtWidgets.QLineEdit
     QObject = QtCore.QObject
     QMouseEvent = QtGui.QMouseEvent
+    QPainter = QtGui.QPainter
     QPaintEvent = QtGui.QPaintEvent
     QPoint = QtCore.QPoint
     QTreeWidgetItem = QtWidgets.QTreeWidgetItem
@@ -1177,7 +1178,7 @@ class NumberBar(QtWidgets.QFrame):
         QtWidgets.QWidget.paintEvent(self, event)  # Propagate the event.
     #@+node:ekr.20150403094706.7: *3* NumberBar.paintBlock
     def paintBlock(self,
-        bold: bool, n: int, painter: Any, top_left: int, scroll_y: int,
+        bold: bool, n: int, painter: QPainter, top_left: int, scroll_y: int,
     ) -> None:
         """Paint n, right justified in the line number field."""
         c = self.c
@@ -1210,7 +1211,7 @@ class NumberBar(QtWidgets.QFrame):
             else:
                 painter.drawEllipse(target_r)
     #@+node:ekr.20150403094706.8: *3* NumberBar.setBold
-    def setBold(self, painter: Any, flag: bool) -> None:
+    def setBold(self, painter: QPainter, flag: bool) -> None:
         """Set or clear bold facing in the painter, depending on flag."""
         font = painter.font()
         font.setBold(flag)
