@@ -47,18 +47,18 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.plugins.mod_scripting import ScriptingController
     Args = Any
     KWargs = Any
-    # Events
+    QComboBox = QtWidgets.QComboBox
     QEvent: TypeAlias = QtCore.QEvent
     QFocusEvent: TypeAlias = QtGui.QFocusEvent
-    QMouseEvent: TypeAlias = QtGui.QMouseEvent
-    QWidget = QtWidgets.QWidget
-    # Widgets
-    QComboBox = QtWidgets.QComboBox
     QGridLayout = QtWidgets.QGridLayout
     QLayout = QtWidgets.QWidget
     QMenu = QtWidgets.QMenu
-    # QRect = QtCore.QRect
+    QMouseEvent: TypeAlias = QtGui.QMouseEvent
+    # QPushButton = QtWidgets.QPushButton
     QTabWidget = QtWidgets.QTabWidget
+    QWidget = QtWidgets.QWidget
+    RClick = tuple  # Union[tuple, namedtuple('RClick', 'position,children')]
+    RClicks = list[RClick]
     Wrapper = Any
 #@-<< qt_frame annotations >>
 #@+<< qt_frame decorators >>
@@ -3539,7 +3539,7 @@ class QtIconBarClass:
         self.c = c
         self.parentFrame = parentFrame
         # Status ivars.
-        self.actions: list[Any] = []
+        self.actions: list[QAction] = []
         self.chapterController = None
         self.toolbar = self
         self.w = c.frame.top.iconBar  # A QToolBar.
@@ -3714,11 +3714,11 @@ class QtIconBarClass:
     #@+node:ekr.20141031053508.15: *4* add_rclick_menu (QtIconBarClass)
     def add_rclick_menu(
         self,
-        action_container: Any,
-        rclicks: list[Any],
+        action_container: QWidget,
+        rclicks: RClicks,
         controller: ScriptingController,
         top_level: bool = True,
-        button: Wrapper = None,
+        button: QWidget = None,
         script: str = None,
     ) -> None:
         c = controller.c
