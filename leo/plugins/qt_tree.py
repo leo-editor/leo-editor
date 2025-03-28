@@ -26,7 +26,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.plugins.qt_frame import LeoQtFrame
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
     Editor = Any
-    Icon = Any
+    QIcon = QtGui.QIcon
     QTreeWidgetItem: TypeAlias = QtWidgets.QTreeWidgetItem
     TODO = Any
     Widget = Any
@@ -51,7 +51,7 @@ class LeoQtTree(leoFrame.LeoTree):
         self.items: list[QTreeWidgetItem] = []
         self.item2positionDict: dict[str, Position] = {}  # Keys are gnxs.
         self.item2vnodeDict: dict[str, VNode] = {}  # Keys are gnxs.
-        self.nodeIconsDict: dict[str, list[Icon]] = {}  # keys are gnxs, values are declutter generated icons
+        self.nodeIconsDict: dict[str, list[TODO]] = {}  # keys are gnxs, values are declutter generated icons
         self.position2itemDict: dict[str, QTreeWidgetItem] = {}  # Keys are gnxs.
         self.vnode2itemsDict: dict[VNode, list[QTreeWidgetItem]] = {}  # values are lists of items.
         self.editWidgetsDict: dict[Editor, Wrapper] = {}  # keys are native edit widgets, values are wrappers.
@@ -64,7 +64,7 @@ class LeoQtTree(leoFrame.LeoTree):
         # Declutter data...
         self.declutter_patterns: list[Any] = None  # list of pairs of patterns for decluttering
         self.declutter_data: dict[Any, Any] = {}
-        self.loaded_images: dict[str, Icon] = {}
+        self.loaded_images: dict[str, QIcon] = {}
 
         if 0:  # None of this works.
             #@+<< Drag and drop >>
@@ -196,7 +196,7 @@ class LeoQtTree(leoFrame.LeoTree):
     redraw_now = full_redraw  #type:ignore
     #@+node:vitalije.20200329160945.1: *5* tree declutter code
     #@+node:tbrown.20150807090639.1: *6* qtree.declutter_node & helpers
-    def declutter_node(self, c: Cmdr, v: VNode, item: QTreeWidgetItem) -> Icon:
+    def declutter_node(self, c: Cmdr, v: VNode, item: QTreeWidgetItem) -> QIcon:
         """declutter_node - change the appearance of a node
 
         :param commander c: commander containing node
@@ -779,7 +779,7 @@ class LeoQtTree(leoFrame.LeoTree):
                 self.contractItem(item)
     #@+node:ekr.20110605121601.18409: *3* qtree.Icons
     #@+node:ekr.20110605121601.18411: *4* qtree.getIcon & helpers
-    def getIcon(self, v: VNode) -> Icon:
+    def getIcon(self, v: VNode) -> QIcon:
         """Return the proper icon for position p."""
         if self.use_declutter:
             items = self.vnode2items(v)
@@ -808,7 +808,7 @@ class LeoQtTree(leoFrame.LeoTree):
                 loaded_images[f] = g.app.gui.getImageImage(f)
         return fnames
     #@+node:vitalije.20200329153154.1: *5* qtree.make_composite_icon
-    def make_composite_icon(self, images: list[Any]) -> Icon:
+    def make_composite_icon(self, images: list[Any]) -> QIcon:
         hsep = self.c.config.getInt('tree-icon-separation') or 0
         images = [x for x in images if x]
         height = max([i.height() for i in images])
@@ -826,7 +826,7 @@ class LeoQtTree(leoFrame.LeoTree):
             painter.end()
         return QtGui.QIcon(QtGui.QPixmap.fromImage(pix))
     #@+node:ekr.20110605121601.18412: *5* qtree.getCompositeIconImage
-    def getCompositeIconImage(self, v: VNode) -> Icon:
+    def getCompositeIconImage(self, v: VNode) -> QIcon:
         """Get the icon at v."""
         v.iconVal = v.computeIcon()
         fnames = self.icon_filenames_for_node(v)
@@ -839,7 +839,7 @@ class LeoQtTree(leoFrame.LeoTree):
             g.app.gui.iconimages[h] = icon
         return icon
     #@+node:ekr.20110605121601.17950: *4* qtree.setItemIcon
-    def setItemIcon(self, item: QTreeWidgetItem, icon: Icon) -> None:
+    def setItemIcon(self, item: QTreeWidgetItem, icon: QIcon) -> None:
 
         valid = item and self.isValidItem(item)
         if icon and valid:
