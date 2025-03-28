@@ -55,12 +55,14 @@ if TYPE_CHECKING:  # pragma: no cover
     QLayout = QtWidgets.QWidget
     QMenu = QtWidgets.QMenu
     QMouseEvent: TypeAlias = QtGui.QMouseEvent
-    # QPushButton = QtWidgets.QPushButton
+    QObject = QtCore.QObject
+    QRect = QtGui.QRect
     QTabWidget = QtWidgets.QTabWidget
     QWidget = QtWidgets.QWidget
     RClick = tuple  # Union[tuple, namedtuple('RClick', 'position,children')]
     RClicks = list[RClick]
     Wrapper = Any
+    Value = Any
 #@-<< qt_frame annotations >>
 #@+<< qt_frame decorators >>
 #@+node:ekr.20210228142208.1: ** << qt_frame decorators >>
@@ -710,7 +712,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         else:
             event.ignore()
     #@+node:ekr.20110605121601.18172: *4* dw.do_leo_spell_btn_*
-    def doSpellBtn(self, btn: Any) -> None:
+    def doSpellBtn(self, btn: str) -> None:
         """Execute btn, a button handler."""
         # Make *sure* this never crashes.
         try:
@@ -1055,7 +1057,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
     #@+node:ekr.20110605121601.18178: *4* dw.set_geometry
     # Mypy complaint because this overrides QMainWindow.setGeometry.
 
-    def setGeometry(self, rect: Any) -> None:  # type:ignore
+    def setGeometry(self, rect: QRect) -> None:  # type:ignore
         """Set the window geometry, but only once when using the qt gui."""
         m = self.leo_master
         assert self.leo_master
@@ -1081,7 +1083,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         # self.setWindowIcon(QtGui.QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
         g.app.gui.attachLeoIcon(self)
     #@+node:ekr.20110605121601.18169: *4* dw.setName
-    def setName(self, widget: Any, name: str) -> None:
+    def setName(self, widget: QObject, name: str) -> None:
         if name:
             widget.setObjectName(name)
     #@+node:ekr.20110605121601.18174: *4* dw.setSplitDirection
@@ -1171,7 +1173,7 @@ class FindTabManager:
             w = c.frame.tree.treeWidget
         self.entry_focus = w
     #@+node:ekr.20210110143917.1: *3* ftm.get_settings
-    def get_settings(self) -> Any:
+    def get_settings(self) -> g.Bunch:
         """
         Return a g.bunch representing all widget values.
 
@@ -3560,7 +3562,7 @@ class QtIconBarClass:
     def getNewFrame(self) -> None:
         return None  # To do
     #@+node:ekr.20110605121601.18265: *3* QtIconBar.add
-    def add(self, *args: Args, **keys: KWargs) -> Any:
+    def add(self, *args: Args, **keys: KWargs) -> Value:
         """Add a button to the icon bar."""
         c = self.c
         if not self.w:
@@ -3568,7 +3570,7 @@ class QtIconBarClass:
         command: Callable = keys.get('command')
         text: str = keys.get('text')
         # able to specify low-level QAction directly (QPushButton not forced)
-        qaction: Any = keys.get('qaction')
+        qaction: QAction = keys.get('qaction')
         if not text and not qaction:
             g.es('bad toolbar item')
         kind: str = keys.get('kind') or 'generic-button'
@@ -3589,7 +3591,7 @@ class QtIconBarClass:
                 self.button.setProperty('button_kind', kind)  # for styling
                 return self.button
 
-        action: Any
+        action: Value
         if qaction is None:
             action = leoIconBarButton(parent=self.w, text=text, toolbar=self)
             button_name = text
@@ -3804,20 +3806,20 @@ class QtMenuWrapper(LeoQtMenu, QtWidgets.QMenu):  # type:ignore
                 self.leo_enable_menu_item(action, commandName)
                 self.leo_update_menu_label(action, commandName)
     #@+node:ekr.20120120095156.10261: *4* leo_enable_menu_item
-    def leo_enable_menu_item(self, action: Any, commandName: str) -> None:
+    def leo_enable_menu_item(self, action: QAction, commandName: str) -> None:
         func = self.c.frame.menu.enable_dict.get(commandName)
         if action and func:
             val = func()
             action.setEnabled(bool(val))
     #@+node:ekr.20120124115444.10190: *4* leo_update_menu_label
-    def leo_update_menu_label(self, action: Any, commandName: str) -> None:
+    def leo_update_menu_label(self, action: QAction, commandName: str) -> None:
         c = self.c
         if action and commandName == 'mark':
             action.setText('UnMark' if c.p.isMarked() else 'Mark')
             # Set the proper shortcut.
             self.leo_update_shortcut(action, commandName)
     #@+node:ekr.20120120095156.10260: *4* leo_update_shortcut
-    def leo_update_shortcut(self, action: Any, commandName: str) -> None:
+    def leo_update_shortcut(self, action: QAction, commandName: str) -> None:
 
         c, k = self.c, self.c.k
         if action:
