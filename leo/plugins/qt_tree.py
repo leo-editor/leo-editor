@@ -29,7 +29,6 @@ if TYPE_CHECKING:  # pragma: no cover
     QIcon = QtGui.QIcon
     QTreeWidgetItem: TypeAlias = QtWidgets.QTreeWidgetItem
     TODO = Any
-    Widget = Any
 #@-<< qt_tree annotations >>
 #@+others
 #@+node:ekr.20160514120051.1: ** class LeoQtTree
