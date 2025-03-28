@@ -23,6 +23,7 @@ if TYPE_CHECKING:  # pragma: no cover
     QFrame = QtWidgets.QFrame
     QKeyEvent: TypeAlias = QtGui.QKeyEvent
     QLineEdit = QtWidgets.QLineEdit
+    QObject = QtCore.QObject
     QMouseEvent: TypeAlias = QtGui.QMouseEvent
     QPaintEvent: TypeAlias = QtGui.QPaintEvent
     QTreeWidgetItem = QtWidgets.QTreeWidgetItem
@@ -481,7 +482,7 @@ class LeoLineTextWidget(QtWidgets.QFrame):
         e.installEventFilter(self)
         e.viewport().installEventFilter(self)
     #@+node:ekr.20150403094706.10: *3* LeoLineTextWidget.eventFilter
-    def eventFilter(self, obj: Any, event: QEvent) -> Any:
+    def eventFilter(self, obj: QObject, event: QEvent) -> Any:
         """
         Update the line numbers for all events on the text edit and the viewport.
         This is easier than connecting all necessary signals.
