@@ -1081,11 +1081,11 @@ if QtWidgets:
 class NumberBar(QtWidgets.QFrame):
     #@+others
     #@+node:ekr.20150403094706.3: *3* NumberBar.__init__
-    def __init__(self, c: Cmdr, e: Any, *args: Args) -> None:
+    def __init__(self, c: Cmdr, e: QWidget, *args: Args) -> None:
         """Ctor for NumberBar class."""
         super().__init__(*args)
         self.c = c
-        self.edit = e  # A QTextEdit.
+        self.edit = e
         self.d = e.document()  # A QTextDocument.
         self.fm = self.fontMetrics()  # A QFontMetrics
         self.image = QtGui.QImage(g.app.gui.getImageImage(
