@@ -1680,21 +1680,19 @@ class StyleClassManager:
         w.setStyleSheet("/* */")  # forces visual update
     #@+node:tbrown.20150724090431.3: *3* add_sclass
     def add_sclass(self, w: Wrapper, prop: str) -> None:
-        """Add style class or list of classes prop to QWidget w"""
+        """Add style class to QWidget w"""
         if not prop:
             return
         props = self.sclasses(w)
-        if isinstance(prop, str):
+        if prop not in props:
             props.append(prop)
-        else:
-            props.extend(prop)
-        self.set_sclasses(w, props)
+            self.set_sclasses(w, props)
     #@+node:tbrown.20150724090431.4: *3* clear_sclasses
     def clear_sclasses(self, w: Wrapper) -> None:
         """Remove all style classes from QWidget w"""
         w.setProperty(self.style_sclass_property, '')
     #@+node:tbrown.20150724090431.5: *3* has_sclass
-    def has_sclass(self, w: Wrapper, prop: Any) -> bool:
+    def has_sclass(self, w: Wrapper, prop: str) -> bool:
         """Check for style class or list of classes prop on QWidget w"""
         if not prop:
             return None
@@ -1705,7 +1703,7 @@ class StyleClassManager:
             ans = [i in props for i in prop]
         return all(ans)
     #@+node:tbrown.20150724090431.6: *3* remove_sclass
-    def remove_sclass(self, w: Wrapper, prop: Any) -> None:
+    def remove_sclass(self, w: Wrapper, prop: str) -> None:
         """Remove style class or list of classes prop from QWidget w"""
         if not prop:
             return
@@ -1721,23 +1719,9 @@ class StyleClassManager:
         """return list of style classes for QWidget w"""
         return str(w.property(self.style_sclass_property) or '').split()
     #@+node:tbrown.20150724090431.9: *3* set_sclasses
-    def set_sclasses(self, w: Wrapper, classes: Any) -> None:
+    def set_sclasses(self, w: Wrapper, classes: list[str]) -> None:
         """Set style classes for QWidget w to list in classes"""
         w.setProperty(self.style_sclass_property, f" {' '.join(set(classes))} ")
-    #@+node:tbrown.20150724090431.10: *3* toggle_sclass
-    def toggle_sclass(self, w: Wrapper, prop: Any) -> None:
-        """Toggle style class or list of classes prop on QWidget w"""
-        if not prop:
-            return
-        props = set(self.sclasses(w))
-        if isinstance(prop, str):
-            prop = set([prop])
-        else:
-            prop = set(prop)
-        current = props.intersection(prop)
-        props.update(prop)
-        props = props.difference(current)
-        self.set_sclasses(w, props)
     #@-others
 #@+node:ekr.20140913054442.17860: ** class StyleSheetManager
 class StyleSheetManager:
