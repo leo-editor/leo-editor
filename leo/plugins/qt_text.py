@@ -19,6 +19,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.plugins.qt_frame import WrapperAPI
     Args = Any
     KWargs = Any
+    QColor = QtGui.QColor
     QEvent = QtCore.QEvent
     QFrame = QtWidgets.QFrame
     QKeyEvent = QtGui.QKeyEvent
@@ -26,7 +27,6 @@ if TYPE_CHECKING:  # pragma: no cover
     QObject = QtCore.QObject
     QMouseEvent = QtGui.QMouseEvent
     QPaintEvent = QtGui.QPaintEvent
-    ### QPoint: TypeAlias = QtCore.QPoint
     QPoint = QtCore.QPoint
     QTreeWidgetItem = QtWidgets.QTreeWidgetItem
     QWheelEvent = QtGui.QWheelEvent
@@ -34,7 +34,6 @@ if TYPE_CHECKING:  # pragma: no cover
     TODO = Any
 
 FullWidthSelection = 0x06000
-QColor = QtGui.QColor
 QFontMetrics = QtGui.QFontMetrics
 #@-<< qt_text imports & annotations>>
 
@@ -771,7 +770,7 @@ if QtWidgets:
         #@+node:tom.20210827225119.4: *4* lqtb.assign_bg
         #@@language python
         @staticmethod
-        def assign_bg(fg: str) -> Any:
+        def assign_bg(fg: str) -> QColor:
             """If fg or bg colors are missing, assign
             reasonable values.  Can happen with incorrectly
             constructed themes, or no-theme color schemes.
