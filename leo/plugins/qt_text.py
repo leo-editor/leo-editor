@@ -13,21 +13,21 @@ from leo.core.leoQt import MouseButton, MoveMode, MoveOperation
 from leo.core.leoQt import Shadow, Shape, SliderAction, SolidLine, WindowType, WrapMode
 
 if TYPE_CHECKING:  # pragma: no cover
-    from typing import TypeAlias  # Requires Python 3.12+
+    ### from typing import TypeAlias  # Requires Python 3.12+
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
     ### from leo.plugins.qt_text import QTextEditWrapper
     Args = Any
     KWargs = Any
-    QEvent: TypeAlias = QtCore.QEvent
+    QEvent = QtCore.QEvent
     QFrame = QtWidgets.QFrame
-    QKeyEvent: TypeAlias = QtGui.QKeyEvent
+    QKeyEvent = QtGui.QKeyEvent
     QLineEdit = QtWidgets.QLineEdit
     QObject = QtCore.QObject
-    QMouseEvent: TypeAlias = QtGui.QMouseEvent
-    QPaintEvent: TypeAlias = QtGui.QPaintEvent
+    QMouseEvent = QtGui.QMouseEvent
+    QPaintEvent = QtGui.QPaintEvent
     QTreeWidgetItem = QtWidgets.QTreeWidgetItem
-    QWheelEvent: TypeAlias = QtGui.QWheelEvent
+    QWheelEvent = QtGui.QWheelEvent
     QWidget = QtWidgets.QWidget
     TODO = Any
 
