@@ -25,7 +25,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoNodes import Position, VNode
     from leo.plugins.qt_frame import LeoQtFrame
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-    Editor = QtWidgets.QTextBrowser
+    QLineEdit = QtWidgets.QLineEdit
     QIcon = QtGui.QIcon
     QTreeWidgetItem: TypeAlias = QtWidgets.QTreeWidgetItem
     TODO = Any
@@ -54,8 +54,8 @@ class LeoQtTree(leoFrame.LeoTree):
         self.nodeIconsDict: dict[str, list[TODO]] = {}
         self.position2itemDict: dict[str, QTreeWidgetItem] = {}  # Keys are gnxs.
         self.vnode2itemsDict: dict[VNode, list[QTreeWidgetItem]] = {}  # values are lists of items.
-        # keys are native edit widgets, values are wrappers.
-        self.editWidgetsDict: dict[Editor, Wrapper] = {}
+        # keys are native QLineEdit widgets, values are wrappers.
+        self.editWidgetsDict: dict[QLineEdit, Wrapper] = {}
         self.reloadSettings()
         # Components...
         self.canvas = self  # An official ivar used by Leo's core.
@@ -897,7 +897,7 @@ class LeoQtTree(leoFrame.LeoTree):
             items = [w.topLevelItem(z) for z in range(n)]
         return items
     #@+node:ekr.20110605121601.18418: *4* qtree.connectEditorWidget & callback
-    def connectEditorWidget(self, e: Editor, item: QTreeWidgetItem) -> Wrapper:
+    def connectEditorWidget(self, e: QLineEdit, item: QTreeWidgetItem) -> Wrapper:
         """
         Connect QLineEdit e to QTreeItem item.
 
@@ -987,7 +987,7 @@ class LeoQtTree(leoFrame.LeoTree):
         w = self.treeWidget
         return w.selectedItems()
     #@+node:ekr.20110605121601.18427: *4* qtree.getTreeEditorForItem
-    def getTreeEditorForItem(self, item: QTreeWidgetItem) -> Editor:
+    def getTreeEditorForItem(self, item: QTreeWidgetItem) -> QLineEdit:
         """Return the edit widget if it exists.
         Do *not* create one if it does not exist.
         """
@@ -995,7 +995,7 @@ class LeoQtTree(leoFrame.LeoTree):
         e = w.itemWidget(item, 0)
         return e
     #@+node:ekr.20110605121601.18428: *4* qtree.getWrapper
-    def getWrapper(self, e: Editor, item: QTreeWidgetItem) -> Wrapper:
+    def getWrapper(self, e: QLineEdit, item: QTreeWidgetItem) -> Wrapper:
         """Return headlineWrapper that wraps e (a QLineEdit)."""
         c = self.c
         if e:
@@ -1044,7 +1044,7 @@ class LeoQtTree(leoFrame.LeoTree):
                 item._real_text = s
     #@+node:tbrown.20160406221505.1: *4* qtree.sizeTreeEditor
     @staticmethod
-    def sizeTreeEditor(c: Cmdr, editor: Editor) -> None:
+    def sizeTreeEditor(c: Cmdr, editor: QLineEdit) -> None:
         """Size a QLineEdit in a tree headline so scrolling occurs"""
         # space available in tree widget
         space = c.frame.tree.treeWidget.size().width()
@@ -1130,7 +1130,7 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.17909: *4* qtree.editLabel and helper
     def editLabel(self,
         p: Position, selectAll: bool = False, selection: tuple = None,
-    ) -> tuple[Editor, Any]:
+    ) -> tuple[QLineEdit, Any]:
         """Start editing p's headline."""
         if self.busy:
             return None
@@ -1154,7 +1154,7 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.18422: *5* qtree.editLabelHelper
     def editLabelHelper(self,
         item: Any, selectAll: bool = False, selection: tuple = None,
-    ) -> tuple[Editor, Any]:
+    ) -> tuple[QLineEdit, Any]:
         """Helper for qtree.editLabel."""
         c, vc = self.c, self.c.vimCommands
         w = self.treeWidget
