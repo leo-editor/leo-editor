@@ -660,7 +660,7 @@ if QtWidgets:
             def set_position(self, c: Cmdr) -> None:
                 """Set the position of the QListWidget."""
 
-                def to_global(obj: Any, pt: QPoint) -> Any:
+                def to_global(obj: QObject, pt: QPoint) -> Any:
                     """Convert pt from obj's local coordinates to global coordinates."""
                     return obj.mapToGlobal(pt)
 
