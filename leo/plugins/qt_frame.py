@@ -46,6 +46,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position
     from leo.plugins.mod_scripting import ScriptingController
+    from leo.plugins.qt_frame import LeoLog
     Args = Any
     KWargs = Any
     QBoxLayout = QtWidgets.QBoxLayout
@@ -57,6 +58,7 @@ if TYPE_CHECKING:  # pragma: no cover
     QMenu = QtWidgets.QMenu
     QMouseEvent: TypeAlias = QtGui.QMouseEvent
     QObject = QtCore.QObject
+    QPoint = QtCore.QPoint
     QRect = QtGui.QRect
     QTabWidget = QtWidgets.QTabWidget
     QWidget = QtWidgets.QWidget
@@ -2133,7 +2135,7 @@ class LeoQtLog(leoFrame.LeoLog):
         self.eventFilters: list = []  # Apparently needed to make filters work!
         self.logCtrl: Wrapper = None  # A union.
         self.logDict: dict[str, Wrapper] = {}  # Keys are tab names.
-        self.logWidget: Any = None  # Set in finishCreate.
+        self.logWidget: LeoLog = None  # Set in finishCreate.
         self.menu: qt_text.LeoQTextBrowser = None  # A Qt menu that pops up on right clicks in the hull or in tabs.
         self.tabWidget: QTabWidget = c.frame.top.tabWidget  # A QTabWidget that holds all the tabs.
         tw = self.tabWidget
@@ -2290,7 +2292,7 @@ class LeoQtLog(leoFrame.LeoLog):
         if wrapper and isinstance(wrapper, qt_text.QTextEditWrapper):
             self.logCtrl = wrapper
     #@+node:ekr.20200304132424.1: *3* LeoQtLog.onContextMenu
-    def onContextMenu(self, point: Any) -> None:
+    def onContextMenu(self, point: QPoint) -> None:
         """LeoQtLog: Callback for customContextMenuRequested events."""
         # #1286.
         c, w = self.c, self
@@ -2415,7 +2417,7 @@ class LeoQtLog(leoFrame.LeoLog):
     #@+node:ekr.20110605121601.18326: *4* LeoQtLog.createTab
     def createTab(self,
         tabName: str, createText: bool = True, widget: QWidget = None, wrap: str = 'none',
-    ) -> Any:  # Widget or LeoQTextBrowser.
+    ) -> QWidget:  # Widget or LeoQTextBrowser.
         """
         Create a new tab in tab widget
         if widget is None, Create a QTextBrowser,
