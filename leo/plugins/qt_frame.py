@@ -54,6 +54,7 @@ if TYPE_CHECKING:  # pragma: no cover
     QWidget = QtWidgets.QWidget
     # Widgets
     QComboBox = QtWidgets.QComboBox
+    QGridLayout = QtWidgets.QGridLayout
     QLayout = QtWidgets.QWidget
     QMenu = QtWidgets.QMenu
     # QRect = QtCore.QRect
@@ -286,7 +287,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         grid.setColumnMinimumWidth(2, 175)
         return grid
     #@+node:ekr.20131118152731.16849: *5* dw.create_find_header
-    def create_find_header(self, grid: Any, parent: QWidget, row: int) -> int:
+    def create_find_header(self, grid: QGridLayout, parent: QWidget, row: int) -> int:
         if False:
             dw = self
             lab1 = dw.createLabel(parent, 'findHeading', 'Find/Change Settings...')
@@ -294,7 +295,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             row += 1
         return row
     #@+node:ekr.20131118152731.16848: *5* dw.create_find_findbox
-    def create_find_findbox(self, grid: Any, parent: QWidget, row: int) -> int:
+    def create_find_findbox(self, grid: QGridLayout, parent: QWidget, row: int) -> int:
         """Create the Find: label and text area."""
         c, dw = self.leo_c, self
         fc = c.findCommands
@@ -308,7 +309,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         row += 1
         return row
     #@+node:ekr.20131118152731.16850: *5* dw.create_find_replacebox
-    def create_find_replacebox(self, grid: Any, parent: QWidget, row: int) -> int:
+    def create_find_replacebox(self, grid: QGridLayout, parent: QWidget, row: int) -> int:
         """Create the Replace: label and text area."""
         c, dw = self.leo_c, self
         fc = c.findCommands
@@ -322,7 +323,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         row += 1
         return row
     #@+node:ekr.20131118152731.16851: *5* dw.create_find_checkboxes
-    def create_find_checkboxes(self, grid: Any, parent: QWidget, max_row2: int, row: int) -> int:
+    def create_find_checkboxes(self, grid: QGridLayout, parent: QWidget, max_row2: int, row: int) -> int:
         """Create check boxes and radio buttons."""
         c, dw = self.leo_c, self
         fc = c.findCommands
@@ -389,7 +390,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             setattr(ftm, name, w)
         return max_row2
     #@+node:ekr.20131118152731.16853: *5* dw.create_help_row
-    def create_help_row(self, grid: Any, parent: QWidget, row: int) -> int:
+    def create_help_row(self, grid: QGridLayout, parent: QWidget, row: int) -> int:
         # Help row.
         if False:
             w = self.createLabel(parent,
@@ -398,7 +399,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             row += 1
         return row
     #@+node:ekr.20131118152731.16852: *5* dw.create_find_buttons
-    def create_find_buttons(self, grid: Any, parent: QWidget, max_row2: int, row: int) -> int:
+    def create_find_buttons(self, grid: QGridLayout, parent: QWidget, max_row2: int, row: int) -> int:
         """
         Per #1342, this method now creates labels, not real buttons.
         """
@@ -429,7 +430,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
     #@+node:ekr.20150618072619.1: *5* dw.create_find_status
     if 0:
 
-        def create_find_status(self, grid: Any, parent: QWidget, row: int) -> None:
+        def create_find_status(self, grid: QGridLayout, parent: QWidget, row: int) -> None:
             """Create the status line."""
             dw = self
             status_label = dw.createLabel(parent, 'status-label', 'Status')
