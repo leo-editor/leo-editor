@@ -18,6 +18,8 @@ if TYPE_CHECKING:
     from leo.plugins.mod_scripting import ScriptingController
     from leo.plugins.qt_text import QTextEditWrapper
     Widget = Any
+    # This creates a forward reference.
+    # Wrapper = Union[QTextEditWrapper, StringTextWrapper]
 #@-<< leoAPI.py: imports and annotations >>
 
 #@+others
