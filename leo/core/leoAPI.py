@@ -7,7 +7,7 @@ Abstract base classes and Protocol classes for Leo's gui.
 #@+node:ekr.20250329041628.1: ** << leoAPI.py: imports and annotations >>
 from __future__ import annotations
 # from collections.abc import Callable
-from typing import Any, Optional
+from typing import Any, Optional, Union
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 
@@ -16,17 +16,8 @@ if TYPE_CHECKING:
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position, VNode
     from leo.plugins.mod_scripting import ScriptingController
-
-    # from leo.core.leoGui import LeoGui
-    # from leo.core.leoMenu import LeoMenu, NullMenu
-    # from leo.plugins.qt_frame import DynamicWindow
-    # from leo.plugins.qt_frame import LeoQtBody, LeoQtLog, LeoQtMenu, LeoQtTree
-    # from leo.plugins.qt_frame import QtIconBarClass, QtStatusLineClass
-
-    # Args = Any
-    # KWargs = Any
+    from leo.plugins.qt_text import QTextEditWrapper
     Widget = Any
-    Wrapper = Any  # Union[QTextEditWrapper, StringTextWrapper]
 #@-<< leoAPI.py: imports and annotations >>
 
 #@+others
@@ -46,7 +37,7 @@ class IconBarAPI:
     def addRowIfNeeded(self) -> None:
         pass
 
-    def addWidget(self, w: Wrapper) -> None:
+    def addWidget(self, w: Union[QTextEditWrapper, StringTextWrapper]) -> None:
         pass
 
     def clear(self) -> None:
@@ -55,14 +46,14 @@ class IconBarAPI:
     def createChaptersIcon(self) -> None:
         pass
 
-    def deleteButton(self, w: Wrapper) -> None:
+    def deleteButton(self, w: Union[QTextEditWrapper, StringTextWrapper]) -> None:
         pass
 
     def getNewFrame(self) -> None:
         pass
 
     def setCommandForButton(self,
-        button: Wrapper,
+        button: Union[QTextEditWrapper, StringTextWrapper],
         command: str,
         command_p: Position,
         controller: ScriptingController,
@@ -288,7 +279,7 @@ class TreeAPI:
         v: VNode,
         selectAll: bool = False,
         selection: tuple = None,
-    ) -> tuple[Widget, Wrapper]:
+    ) -> tuple[Widget, Union[QTextEditWrapper, StringTextWrapper]]:
         return None, None
 
     def edit_widget(self, p: Position) -> None:
@@ -338,7 +329,7 @@ class TreeAPI:
     def select(self, p: Position) -> None:
         pass
 
-    def updateHead(self, event: LeoKeyEvent, w: Wrapper) -> None:
+    def updateHead(self, event: LeoKeyEvent, w: Union[QTextEditWrapper, StringTextWrapper]) -> None:
         pass
 #@+node:ekr.20250329033642.5: ** class WrapperAPI
 class WrapperAPI:
