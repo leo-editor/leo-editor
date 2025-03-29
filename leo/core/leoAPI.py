@@ -19,6 +19,93 @@ if TYPE_CHECKING:
 #@-<< leoAPI.py: imports and annotations >>
 
 #@+others
+#@+node:ekr.20250329033642.5: ** class BaseTextAPI
+class BaseTextAPI:
+    """
+    A class specifying the interface to various text widgets,
+    including Leo's headline, body pane and other widgets.
+    """
+
+    def __init__(self, c: Cmdr) -> None:
+        pass
+
+    def appendText(self, s: str) -> None:
+        pass
+
+    def clipboard_append(self, s: str) -> None:
+        pass
+
+    def clipboard_clear(self) -> None:
+        pass
+
+    def delete(self, i: int, j: int = None) -> None:
+        pass
+
+    def deleteTextSelection(self) -> None:
+        pass
+
+    def disable(self) -> None:
+        pass
+
+    def enable(self, enabled: bool = True) -> None:
+        pass
+
+    def flashCharacter(self, i: int, bg: str = 'white', fg: str = 'red', flashes: int = 3, delay: int = 75) -> None:
+        pass
+
+    def get(self, i: int, j: int) -> str:
+        return ''
+
+    def getAllText(self) -> str:
+        return ''
+
+    def getInsertPoint(self) -> int:
+        return 0
+
+    def getSelectedText(self) -> str:
+        return ''
+
+    def getSelectionRange(self) -> tuple[int, int]:
+        return (0, 0)
+
+    def getXScrollPosition(self) -> int:
+        return 0
+
+    def getYScrollPosition(self) -> int:
+        return 0
+
+    def hasSelection(self) -> bool:
+        return False
+
+    def insert(self, i: int, s: str) -> None:
+        pass
+
+    def see(self, i: int) -> None:
+        pass
+
+    def seeInsertPoint(self) -> None:
+        pass
+
+    def selectAllText(self, insert: str = None) -> None:
+        pass
+
+    def setAllText(self, s: str) -> None:
+        pass
+
+    def setFocus(self) -> None:
+        pass  # Required: sets the focus to wrapper.widget.
+
+    def setInsertPoint(self, pos: str, s: str = None) -> None:
+        pass
+
+    def setSelectionRange(self, i: int, j: int, insert: int = None) -> None:
+        pass
+
+    def setXScrollPosition(self, i: int) -> None:
+        pass
+
+    def setYScrollPosition(self, i: int) -> None:
+        pass
 #@+node:ekr.20250329033642.2: ** class IconBarAPI
 class IconBarAPI:
     """The required API for c.frame.iconBar."""
@@ -35,7 +122,7 @@ class IconBarAPI:
     def addRowIfNeeded(self) -> None:
         pass
 
-    def addWidget(self, w: TextAPI) -> None:
+    def addWidget(self, w: BaseTextAPI) -> None:
         pass
 
     def clear(self) -> None:
@@ -44,14 +131,14 @@ class IconBarAPI:
     def createChaptersIcon(self) -> None:
         pass
 
-    def deleteButton(self, w: TextAPI) -> None:
+    def deleteButton(self, w: BaseTextAPI) -> None:
         pass
 
     def getNewFrame(self) -> None:
         pass
 
     def setCommandForButton(self,
-        button: TextAPI,
+        button: BaseTextAPI,
         command: str,
         command_p: Position,
         controller: ScriptingController,
@@ -265,93 +352,6 @@ class StringTextWrapper:
         row, col = g.convertPythonIndexToRowCol(s, index)
         return row, col
     #@-others
-#@+node:ekr.20250329033642.5: ** class TextAPI
-class TextAPI:
-    """
-    A class specifying the interface to various text widgets,
-    including Leo's headline, body pane and other widgets.
-    """
-
-    def __init__(self, c: Cmdr) -> None:
-        pass
-
-    def appendText(self, s: str) -> None:
-        pass
-
-    def clipboard_append(self, s: str) -> None:
-        pass
-
-    def clipboard_clear(self) -> None:
-        pass
-
-    def delete(self, i: int, j: int = None) -> None:
-        pass
-
-    def deleteTextSelection(self) -> None:
-        pass
-
-    def disable(self) -> None:
-        pass
-
-    def enable(self, enabled: bool = True) -> None:
-        pass
-
-    def flashCharacter(self, i: int, bg: str = 'white', fg: str = 'red', flashes: int = 3, delay: int = 75) -> None:
-        pass
-
-    def get(self, i: int, j: int) -> str:
-        return ''
-
-    def getAllText(self) -> str:
-        return ''
-
-    def getInsertPoint(self) -> int:
-        return 0
-
-    def getSelectedText(self) -> str:
-        return ''
-
-    def getSelectionRange(self) -> tuple[int, int]:
-        return (0, 0)
-
-    def getXScrollPosition(self) -> int:
-        return 0
-
-    def getYScrollPosition(self) -> int:
-        return 0
-
-    def hasSelection(self) -> bool:
-        return False
-
-    def insert(self, i: int, s: str) -> None:
-        pass
-
-    def see(self, i: int) -> None:
-        pass
-
-    def seeInsertPoint(self) -> None:
-        pass
-
-    def selectAllText(self, insert: str = None) -> None:
-        pass
-
-    def setAllText(self, s: str) -> None:
-        pass
-
-    def setFocus(self) -> None:
-        pass  # Required: sets the focus to wrapper.widget.
-
-    def setInsertPoint(self, pos: str, s: str = None) -> None:
-        pass
-
-    def setSelectionRange(self, i: int, j: int, insert: int = None) -> None:
-        pass
-
-    def setXScrollPosition(self, i: int) -> None:
-        pass
-
-    def setYScrollPosition(self, i: int) -> None:
-        pass
 #@+node:ekr.20250329033642.4: ** class TreeAPI
 class TreeAPI:
     """The required API for c.frame.tree."""
@@ -364,7 +364,7 @@ class TreeAPI:
         v: VNode,
         selectAll: bool = False,
         selection: tuple = None,
-    ) -> tuple[Widget, TextAPI]:
+    ) -> tuple[Widget, BaseTextAPI]:
         return None, None
 
     def edit_widget(self, p: Position) -> None:
@@ -414,7 +414,7 @@ class TreeAPI:
     def select(self, p: Position) -> None:
         pass
 
-    def updateHead(self, event: LeoKeyEvent, w: TextAPI) -> None:
+    def updateHead(self, event: LeoKeyEvent, w: BaseTextAPI) -> None:
         pass
 #@-others
 #@-leo

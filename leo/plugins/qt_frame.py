@@ -12,7 +12,7 @@ import string
 import sys
 import time
 import urllib
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Any, Optional, Union, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoColor
 from leo.core import leoColorizer
@@ -46,6 +46,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoNodes import Position
     from leo.plugins.leoFrame import LeoLog
     from leo.plugins.mod_scripting import ScriptingController
+    from leo.plugins.qt_text import QScintillaWrapper, QTextEditWrapper  ###
     Args = Any
     ComplexUnion = Any
     KWargs = Any
@@ -58,17 +59,19 @@ if TYPE_CHECKING:  # pragma: no cover
     QGridLayout = QtWidgets.QGridLayout
     QLayout = QtWidgets.QWidget
     QMenu = QtWidgets.QMenu
+    QMenuBar = QtWidgets.QMenuBar
     QMouseEvent: TypeAlias = QtGui.QMouseEvent
     QObject = QtCore.QObject
     QPoint = QtCore.QPoint
     QRect = QtGui.QRect
+    QSplitter = QtWidgets.QSplitter
     QTabWidget = QtWidgets.QTabWidget
     QTextBlock = QtGui.QTextBlock
     QTextCursor = QtGui.QTextCursor
     QWidget = QtWidgets.QWidget
     RClick = tuple  # Union[tuple, namedtuple('RClick', 'position,children')]
     RClicks = list[RClick]
-    Wrapper = Any
+    ### Wrapper = Any
     Value = Any
 #@-<< qt_frame annotations >>
 #@+<< qt_frame decorators >>
@@ -753,7 +756,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.leo_master.select(c)
     #@+node:ekr.20110605121601.18142: *3* dw: top-level methods
     #@+node:ekr.20190118150859.10: *4* dw.addNewEditor
-    def addNewEditor(self, name: str) -> tuple[QWidget, Wrapper]:
+    def addNewEditor(self, name: str) -> tuple[QWidget, QTextEditWrapper]:
         """Create a new body editor."""
         c, p = self.leo_c, self.leo_c.p
         body = c.frame.body
@@ -1029,7 +1032,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         return panes
 
     #@+node:ekr.20110605121601.18212: *4* dw.packLabel
-    def packLabel(self, w: Wrapper, n: int = None) -> None:
+    def packLabel(self, w: QWidget, n: int = None) -> None:
         """
         Pack w into the body frame's QVGridLayout.
 
@@ -1500,7 +1503,7 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
             self.factory.leoFrames[w] = w.leo_c.frame
         self.detached = []
     #@+node:ekr.20131115120119.17394: *3* qt_base_tab.delete
-    def delete(self, w: Wrapper) -> None:
+    def delete(self, w: Any) -> None:  ###
         """called by TabbedFrameFactory to tell us a detached tab
         has been deleted"""
         self.detached = [i for i in self.detached if i[1] != w]
@@ -1555,7 +1558,7 @@ class LeoQtBody(leoFrame.LeoBody):
         c = self.c
         assert c.frame == frame and frame.c == c
         self.colorizer: BaseColorizer = None  # A Union
-        self.wrapper: Wrapper = None
+        self.wrapper: Union[QScintillaWrapper, QTextEditWrapper] = None
         self.widget: QWidget = None
         self.reloadSettings()
         self.set_widget()  # Sets self.widget and self.wrapper.
@@ -1819,7 +1822,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             return float(n1) / float(n1 + n2) if n2 > 0 else 0.5
         return 0.5
     #@+node:ekr.20110605121601.18275: *4* LeoQtFrame.configureBar
-    def configureBar(self, bar: Wrapper, verticalFlag: bool) -> None:  # pylint: disable=disallowed-name
+    def configureBar(self, bar: QMenuBar, verticalFlag: bool) -> None:  # pylint: disable=disallowed-name
         c = self.c
         # Get configuration settings.
         w = c.config.getInt("split-bar-width")
@@ -1946,7 +1949,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
     # This is the general-purpose placer for splitters.
     # It is the only general-purpose splitter code in Leo.
 
-    def divideAnySplitter(self, frac: float, splitter: Wrapper) -> None:
+    def divideAnySplitter(self, frac: float, splitter: QSplitter) -> None:
         """Set the splitter sizes."""
         sizes = splitter.sizes()
         if len(sizes) != 2:
@@ -2138,10 +2141,10 @@ class LeoQtLog(leoFrame.LeoLog):
         # logCtrl may be either a wrapper or a widget.
         assert self.logCtrl is None, self.logCtrl
         self.c = c = frame.c  # Also set in the base constructor, but we need it here.
-        self.contentsDict: dict[str, Wrapper] = {}  # Keys are tab names.
+        self.contentsDict: dict[str, QWidget] = {}  # Keys are tab names.
         self.eventFilters: list = []  # Apparently needed to make filters work!
-        self.logCtrl: Wrapper = None  # A union.
-        self.logDict: dict[str, Wrapper] = {}  # Keys are tab names.
+        self.logCtrl: QWidget = None  # A union.
+        self.logDict: dict[str, QWidget] = {}  # Keys are tab names.
         self.logWidget: LeoLog = None  # Set in finishCreate.
         self.menu: qt_text.LeoQTextBrowser = None  # A Qt menu that pops up on right clicks in the hull or in tabs.
         self.tabWidget: QTabWidget = c.frame.top.tabWidget  # A QTabWidget that holds all the tabs.
@@ -2293,7 +2296,7 @@ class LeoQtLog(leoFrame.LeoLog):
         w = tabw.widget(idx)
         #
         # #917814: Switching Log Pane tabs is done incompletely
-        wrapper: Wrapper = getattr(w, 'leo_log_wrapper', None)
+        wrapper: Any = getattr(w, 'leo_log_wrapper', None)  ###
         #
         # #1161: Don't change logs unless the wrapper is correct.
         if wrapper and isinstance(wrapper, qt_text.QTextEditWrapper):
@@ -2527,7 +2530,7 @@ class LeoQtLog(leoFrame.LeoLog):
             return
         # #1161.
         if tabName == 'Log':
-            wrapper: Wrapper = None
+            wrapper: Any = None  ###
             widget = self.contentsDict.get('Log')  # a qt_text.QTextEditWrapper
             if widget:
                 wrapper = getattr(widget, 'leo_log_wrapper', None)
@@ -2577,7 +2580,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         self.leo_menu_label = label.replace('&', '').lower()
         self.frame = frame
         self.c = c
-        self.menuBar: Wrapper = c.frame.top.menuBar()
+        self.menuBar: QMenuBar = c.frame.top.menuBar()
         assert self.menuBar is not None
         # Inject this dict into the commander.
         if not hasattr(c, 'menuAccels'):
@@ -2646,18 +2649,18 @@ class LeoQtMenu(leoMenu.LeoMenu):
             action = menu.addSeparator()
             action.leo_menu_label = '*seperator*'
     #@+node:ekr.20110605121601.18347: *5* LeoQtMenu.delete
-    def delete(self, menu: Wrapper, realItemName: str = '<no name>') -> None:
+    def delete(self, menu: QtMenuWrapper, realItemName: str = '<no name>') -> None:
         """Wrapper for the Tkinter delete menu method."""
         # if menu:
             # return menu.delete(realItemName)
     #@+node:ekr.20110605121601.18348: *5* LeoQtMenu.delete_range
-    def delete_range(self, menu: Wrapper, n1: int, n2: int) -> None:
+    def delete_range(self, menu: QtMenuWrapper, n1: int, n2: int) -> None:
         """Wrapper for the Tkinter delete menu method."""
         # Menu is a subclass of QMenu and LeoQtMenu.
         for z in menu.actions()[n1:n2]:
             menu.removeAction(z)
     #@+node:ekr.20110605121601.18349: *5* LeoQtMenu.destroy
-    def destroy(self, menu: Wrapper) -> None:
+    def destroy(self, menu: QMenu) -> None:
         """Wrapper for the Tkinter destroy menu method."""
         # Fixed bug https://bugs.launchpad.net/leo-editor/+bug/1193870
         if menu:
@@ -2745,7 +2748,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
     def disableMenu(self, menu: QMenu, name: str) -> None:
         self.enableMenu(menu, name, False)
 
-    def enableMenu(self, menu: Wrapper, name: str, val: bool) -> None:
+    def enableMenu(self, menu: QMenu, name: str, val: bool) -> None:
         """Enable or disable the item in the menu with the given name."""
         if menu and name:
             for action in menu.actions():
@@ -2786,7 +2789,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         else:
             g.trace(f"No such menu: {menuName}")
     #@+node:ekr.20120922041923.10607: *4* LeoQtMenu.activateAllParentMenus
-    def activateAllParentMenus(self, menu: Wrapper) -> None:
+    def activateAllParentMenus(self, menu: QObject) -> None:
         """menu is a QtMenuWrapper.  Activate it and all parent menus."""
         parent = menu.parent()
         action = menu.menuAction()
@@ -3696,7 +3699,7 @@ class QtIconBarClass:
     # qtFrame.QtIconBarClass.setCommandForButton
 
     def setCommandForButton(self,
-        button: Wrapper,
+        button: Any,  ###
         command: Callable,
         command_p: Position,
         controller: ScriptingController,
@@ -3751,7 +3754,7 @@ class QtIconBarClass:
                 act.setSeparator(True)
             elif rc.position.b.strip():
 
-                def cb(checked: str, p: Position = rc.position, button: Wrapper = button) -> None:
+                def cb(checked: str, p: Position = rc.position, button: QWidget = button) -> None:
                     controller.executeScriptFromButton(
                         b=button,
                         buttonText=p.h[8:].strip(),

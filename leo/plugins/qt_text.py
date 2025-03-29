@@ -15,7 +15,7 @@ from leo.core.leoQt import Shadow, Shape, SliderAction, SolidLine, WindowType, W
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
-    from leo.plugins.leoAPI import TextAPI
+    from leo.plugins.leoAPI import BaseTextAPI
     Args = Any
     KWargs = Any
     QEvent = QtCore.QEvent
@@ -502,7 +502,7 @@ if QtWidgets:
         """A subclass of QTextBrowser that overrides the mouse event handlers."""
         #@+others
         #@+node:ekr.20110605121601.18006: *3*  lqtb.ctor
-        def __init__(self, parent: QWidget, c: Cmdr, wrapper: TextAPI) -> None:
+        def __init__(self, parent: QWidget, c: Cmdr, wrapper: BaseTextAPI) -> None:
             """
             ctor for LeoQTextBrowser class.
             
@@ -1326,6 +1326,10 @@ class QScintillaWrapper(QTextMixin):
         self.name = name
         self.useScintilla = True
         self.widget = widget
+        # Injected ivars.
+        self.leo_chapter = None
+        self.leo_p = None
+        self.leo_v = None
         # Complete the init.
         self.set_config()
         # Set the signal.

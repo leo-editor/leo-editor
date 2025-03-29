@@ -35,12 +35,12 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.plugins.qt_frame import DynamicWindow
     from leo.plugins.qt_frame import LeoQtBody, LeoQtLog, LeoQtMenu, LeoQtTree
     from leo.plugins.qt_frame import QtIconBarClass, QtStatusLineClass
-    from leo.plugins.qt_text import QTextEditWrapper
+    from leo.plugins.qt_text import QScintillaWrapper, QTextEditWrapper
     from leo.plugins.notebook import NbController
     Args = Any
     KWargs = Any
     Widget = Any
-    TextAPI = Union[QTextEditWrapper, StringTextWrapper]
+    TextAPI = Union[QScintillaWrapper, QTextEditWrapper, StringTextWrapper]  ###
 #@-<< leoFrame annotations >>
 #@+<< leoFrame: about handling events >>
 #@+node:ekr.20031218072017.2410: ** << leoFrame: about handling events >>

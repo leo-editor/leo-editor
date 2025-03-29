@@ -631,7 +631,7 @@ def sortFields(self, event: LeoKeyEvent, which: str = None) -> None:
     Cycles body editor focus between editors in the body text. The editor that has focus shows the content of the selected outline node; the other body editors continue to show the node contents they last had when they had the body editor focus.
 #@+node:ekr.20240825065226.1: *4* dw: deleted
 #@+node:ekr.20190118150859.10: *5* dw.addNewEditor
-def addNewEditor(self, name: str) -> tuple[QWidget, Wrapper]:
+def addNewEditor(self, name: str) -> tuple[QWidget, QTextEditWrapper]:
     """Create a new body editor."""
     c, p = self.leo_c, self.leo_c.p
     body = c.frame.body
@@ -657,7 +657,7 @@ def addNewEditor(self, name: str) -> tuple[QWidget, Wrapper]:
         body.recolorWidget(p, wrapper)
     return parent_frame, wrapper
 #@+node:ekr.20110605121601.18212: *5* dw.packLabel
-def packLabel(self, w: Wrapper, n: int = None) -> None:
+def packLabel(self, w: QWidget, n: int = None) -> None:
     """
     Pack w into the body frame's QVGridLayout.
 
