@@ -1459,9 +1459,7 @@ class LeoCursesGui(leoGui.LeoGui):
         wrapper = StatusLineWrapper(c, 'status-line', w)
         assert wrapper.widget == w, repr(wrapper.widget)
         assert isinstance(c.frame.statusLine, g.NullObject)
-        # assert c.frame.statusLine is None
-        c.frame.statusLine = wrapper
-        c.frame.statusText = wrapper
+
         # Inject the wrapper for get_focus.
         box.leo_wrapper = wrapper
         w.leo_c = c
@@ -2668,10 +2666,6 @@ class CoreStatusLine:
         self.enabled = False
         self.parentFrame: Wrapper = parentFrame
         self.textWidget: Wrapper = None
-        # The official ivars.
-        c.frame.statusFrame = None
-        c.frame.statusLabel = None
-        c.frame.statusText = None
 
     #@+others
     #@-others

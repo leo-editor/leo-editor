@@ -59,13 +59,15 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.commands.spellCommands import SpellCommandsClass
     # Other objects...
     from leo.core.leoGui import LeoGui
+    from leo.core.leoFrame import StringTextWrapper
     from leo.plugins.qt_gui import StyleSheetManager
-    from leo.plugins.qt_text import QTextEditWrapper as Wrapper
+    from leo.plugins.qt_text import QTextEditWrapper
     Args = Any
     KWargs = Any
     RegexFlag = Union[int, re.RegexFlag]  # re.RegexFlag does not define 0
     Value = Any
     Widget = Any
+    Wrapper = Union[QTextEditWrapper, StringTextWrapper]
 #@-<< leoCommands annotations >>
 
 def cmd(name: str) -> Callable:

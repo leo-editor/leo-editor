@@ -33,8 +33,8 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoNodes import Position, VNode
     from leo.plugins.mod_scripting import ScriptingController
     from leo.plugins.qt_frame import DynamicWindow
-    # from leo.plugins.qt_text import QTextEditWrapper
-    from leo.plugins.qt_text import LeoQtBody, LeoQtLog, LeoQtMenu, LeoQtTree, QtIconBarClass
+    from leo.plugins.qt_frame import LeoQtBody, LeoQtLog, LeoQtMenu, LeoQtTree
+    from leo.plugins.qt_frame import QtIconBarClass, QtStatusLineClass
     from leo.plugins.notebook import NbController
     Args = Any
     KWargs = Any
@@ -493,14 +493,13 @@ class LeoFrame:
         self.c = c
         self.gui = gui
         # Types...
-        self.statusLineClass: Any = NullStatusLineClass
         # Objects attached to this frame...
         self.body: Union[LeoBody, NullBody, LeoQtBody] = None
         self.iconBar: Union[NullIconBarClass, QtIconBarClass] = None
         self.log: Union[LeoLog, NullLog, LeoQtLog] = None
         self.menu: Union[LeoMenu, LeoQtMenu, NullMenu] = None
         self.miniBufferWidget: Widget = None
-        self.statusLine: Union[NullStatusLineClass, g.NullObject] = g.NullObject()
+        self.statusLine: Union[NullStatusLineClass, QtStatusLineClass] = None
         self.top: DynamicWindow = None
         self.tree: Union[LeoTree, NullTree, LeoQtTree] = None
         self.useMiniBufferWidget = False
@@ -653,14 +652,6 @@ class LeoFrame:
             return self.iconBar.clear()
         return None
 
-    def createIconBar(self) -> Union[NullIconBarClass, QtIconBarClass]:
-        raise NotImplementedError('must be overridden in subclasses')
-
-    def getIconBar(self) -> Union[NullIconBarClass, QtIconBarClass]:
-        raise NotImplementedError('must be overridden in subclasses')
-
-    getIconBarObject = getIconBar
-
     def hideIconBar(self) -> None:
         if self.iconBar:
             self.iconBar.hide()
@@ -669,11 +660,6 @@ class LeoFrame:
         if self.iconBar:
             self.iconBar.show()
     #@+node:ekr.20041223105114.1: *4* LeoFrame.Status line convenience methods
-    def createStatusLine(self) -> Union[NullStatusLineClass, g.NullObject]:
-        if not self.statusLine:
-            self.statusLine = self.statusLineClass(self.c, None)
-        return self.statusLine
-
     def clearStatusLine(self) -> None:
         if self.statusLine:
             self.statusLine.clear()
@@ -691,7 +677,7 @@ class LeoFrame:
         if self.statusLine:
             self.statusLine.enable(background)
 
-    def getStatusLine(self) -> Union[NullStatusLineClass, g.NullObject]:
+    def getStatusLine(self) -> Union[NullStatusLineClass, QtStatusLineClass]:
         return self.statusLine
 
     getStatusObject = getStatusLine
@@ -1573,7 +1559,7 @@ class NullColorizer(leoColorizer.BaseColorizer):
 class NullFrame(LeoFrame):
     """A null frame class for tests and batch execution."""
     #@+others
-    #@+node:ekr.20040327105706: *3* NullFrame.ctor
+    #@+node:ekr.20040327105706: *3*  NullFrame.ctor
     def __init__(self, c: Cmdr, title: str, gui: LeoGui) -> None:
         """Ctor for the NullFrame class."""
         super().__init__(c, gui)
@@ -1582,7 +1568,7 @@ class NullFrame(LeoFrame):
         self.iconBar = NullIconBarClass(self.c, self)
         self.initComplete = True
         self.isNullFrame = True
-        self.statusLineClass = NullStatusLineClass
+        self.statusLine = NullStatusLineClass(self.c, None)
         self.title = title
         # Create the component objects.
         self.body = NullBody(frame=self, parentFrame=None)
@@ -1882,11 +1868,8 @@ class NullStatusLineClass:
         self.c = c
         self.enabled = False
         self.parentFrame = parentFrame
-        self.textWidget: Widget = StringTextWrapper(c, name='status-line')  # Union.
-        # Set the official ivars.
-        c.frame.statusFrame = None
-        c.frame.statusLabel = None
-        c.frame.statusText = self.textWidget
+        self.textWidget = StringTextWrapper(c, name='status-line')
+
     #@+others
     #@+node:ekr.20070302171917: *3* NullStatusLineClass.methods
     def computeStatusUnl(self, p: Position) -> str:

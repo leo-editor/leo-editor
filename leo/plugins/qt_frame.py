@@ -1678,8 +1678,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         self.iconBar: QtIconBarClass = None
         self.iconFrame: QtIconBarClass = None
         self.log: LeoQtLog = None
-        self.statusLineClass: ComplexUnion = QtStatusLineClass  # A Union. 'Any' can't easily be removed.
-        self.statusFrame: LeoQtFrame = None
+        self.statusLine: QtStatusLineClass = None
         self.tree: LeoQtTree = None
         self.top: DynamicWindow = None
 
@@ -1701,6 +1700,11 @@ class LeoQtFrame(leoFrame.LeoFrame):
     #@+node:ekr.20110605121601.18249: *4* LeoQtFrame.__repr__
     def __repr__(self) -> str:
         return f"<LeoQtFrame: {self.title}>"
+    #@+node:ekr.20250328195727.1: *4* LeoQtFrame.getIconBar
+    def getIconBar(self) -> QtIconBarClass:
+        return self.iconBar
+
+    getIconBarObject = getIconBar
     #@+node:ekr.20110605121601.18250: *4* LeoQtFrame.finishCreate & helpers
     def finishCreate(self) -> None:
         """Finish creating the outline's frame."""
@@ -1712,9 +1716,9 @@ class LeoQtFrame(leoFrame.LeoFrame):
         if not frameFactory.masterFrame:
             frameFactory.createMaster()
         self.top = frameFactory.createFrame(leoFrame=self)
-        self.createIconBar()  # A base class method.
+        self.iconBar = QtIconBarClass(c, None)
         self.createSplitterComponents()
-        self.createStatusLine()  # A base class method.
+        self.statusLine = QtStatusLineClass(c, None)
         self.createFirstTreeNode()  # Call the base-class method.
         self.menu = LeoQtMenu(c, self, label='top-level-menu')
         g.app.windowList.append(self)
@@ -1779,18 +1783,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
     def initCompleteHint(self) -> None:
         """A kludge: called to enable text changed events."""
         self.initComplete = True
-    #@+node:ekr.20250328195727.1: *4* LeoQtFrame: iconBar methods
-    def createIconBar(self) -> QtIconBarClass:
-        if not self.iconBar:
-            self.iconBar = QtIconBarClass(self.c, None)
-        return self.iconBar
-
-    def getIconBar(self) -> QtIconBarClass:
-        if not self.iconBar:
-            self.iconBar = QtIconBarClass(self.c, None)
-        return self.iconBar
-
-    getIconBarObject = getIconBar
     #@+node:ekr.20110605121601.18274: *3* LeoQtFrame.Configuration
     #@+node:ekr.20240510092709.1: *4* LeoQtFrame.compute_ratio & compute_secondary_ratio
     #@+node:ekr.20240510093119.1: *5* LeoQtFrame.compute_ratio
@@ -3574,10 +3566,16 @@ class QtIconBarClass:
     # These *are* called from Leo's core.
 
     def addRow(self, height: int = None) -> None:
-        pass  # To do.
+        pass
 
     def getNewFrame(self) -> None:
-        return None  # To do
+        return None
+
+    def hide(self) -> None:
+        pass
+
+    def show(self) -> None:
+        pass
     #@+node:ekr.20110605121601.18265: *3* QtIconBar.add
     def add(self, *args: Args, **keys: KWargs) -> Value:
         """Add a button to the icon bar."""
