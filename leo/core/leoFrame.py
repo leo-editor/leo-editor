@@ -39,6 +39,7 @@ if TYPE_CHECKING:  # pragma: no cover
     Args = Any
     KWargs = Any
     Widget = Any
+    # It's difficult to import these classes here.
     Wrapper = Any  # Union[QTextEditWrapper, StringTextWrapper]
 #@-<< leoFrame annotations >>
 #@+<< leoFrame: about handling events >>
@@ -632,7 +633,7 @@ class LeoFrame:
         tab_width = c.getTabWidth(p)
         c.frame.setTabWidth(tab_width)
     #@+node:ekr.20061119120006: *4* LeoFrame.Icon area convenience methods
-    def addIconButton(self, *args: str, **keys: str) -> None:
+    def addIconButton(self, *args: Args, **keys: KWargs) -> None:
         if self.iconBar:
             return self.iconBar.add(*args, **keys)
         return None
@@ -642,7 +643,7 @@ class LeoFrame:
             return self.iconBar.addRow()
         return None
 
-    def addIconWidget(self, w: Wrapper) -> None:
+    def addIconWidget(self, w: Widget) -> None:
         if self.iconBar:
             return self.iconBar.addWidget(w)
         return None
@@ -1529,8 +1530,8 @@ class NullBody(LeoBody):
         self.selection = 0, 0
         self.s = ""  # The body text
         self.widget: Widget = None
-        self.wrapper: StringTextWrapper = StringTextWrapper(c=self.c, name='body')  # Hard to annotate.
-        self.colorizer: NullColorizer = NullColorizer(self.c)  # A Union.
+        self.wrapper = StringTextWrapper(c=self.c, name='body')
+        self.colorizer = NullColorizer(self.c)
     #@+node:ekr.20031218072017.2197: *3* NullBody: LeoBody interface
     # Birth, death...
     def createControl(self, parentFrame: Widget, p: Position) -> Wrapper:
