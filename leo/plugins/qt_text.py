@@ -1548,6 +1548,10 @@ class QTextEditWrapper(QTextMixin):
         self.name = name
         self.widget = widget
         self.useScintilla = False
+        # Define injected ivars.
+        self.leo_chapter = None
+        self.leo_p = None
+        self.leo_v = None
         # Complete the init.
         if c and widget:
             self.widget.setUndoRedoEnabled(False)

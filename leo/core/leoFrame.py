@@ -20,7 +20,6 @@ from leo.core import leoColorizer
 from leo.core import leoMenu
 from leo.core import leoNodes
 from leo.core.leoAPI import StringTextWrapper
-
 #@-<< leoFrame imports >>
 #@+<< leoFrame annotations >>
 #@+node:ekr.20220415013957.1: ** << leoFrame annotations >>
@@ -36,12 +35,12 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.plugins.qt_frame import DynamicWindow
     from leo.plugins.qt_frame import LeoQtBody, LeoQtLog, LeoQtMenu, LeoQtTree
     from leo.plugins.qt_frame import QtIconBarClass, QtStatusLineClass
+    from leo.plugins.qt_text import QTextEditWrapper
     from leo.plugins.notebook import NbController
     Args = Any
     KWargs = Any
     Widget = Any
-    # It's difficult to import these classes here.
-    Wrapper = Any  # Union[QTextEditWrapper, StringTextWrapper]
+    Wrapper = Union[QTextEditWrapper, StringTextWrapper]
 #@-<< leoFrame annotations >>
 #@+<< leoFrame: about handling events >>
 #@+node:ekr.20031218072017.2410: ** << leoFrame: about handling events >>
@@ -1111,10 +1110,10 @@ class LeoTree:
         p: Position,
         selectAll: bool = False,
         selection: tuple = None,
-    ) -> tuple[Widget, Wrapper]:
+    ) -> tuple[Widget, Any]:
         raise NotImplementedError
 
-    def edit_widget(self, p: Position) -> Wrapper:
+    def edit_widget(self, p: Position) -> Any:
         raise NotImplementedError
     #@+node:ekr.20040803072955.128: *3* LeoTree.select & helpers
     tree_select_lockout = False
