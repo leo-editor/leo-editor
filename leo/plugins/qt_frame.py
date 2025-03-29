@@ -63,6 +63,7 @@ if TYPE_CHECKING:  # pragma: no cover
     QMouseEvent: TypeAlias = QtGui.QMouseEvent
     QObject = QtCore.QObject
     QPoint = QtCore.QPoint
+    QPushButton = QtWidgets.QPushButton
     QRect = QtGui.QRect
     QSplitter = QtWidgets.QSplitter
     QTabWidget = QtWidgets.QTabWidget
@@ -72,7 +73,8 @@ if TYPE_CHECKING:  # pragma: no cover
     RClick = tuple  # Union[tuple, namedtuple('RClick', 'position,children')]
     RClicks = list[RClick]
     Value = Any
-    # LeoFrame defines as follows:
+
+    # LeoFrame defines TextAPI as:
     # TextAPI = Union[QScintillaWrapper, QTextEditWrapper, StringTextWrapper]
     QtWrapper = Union[QScintillaWrapper, QTextEditWrapper]
 #@-<< qt_frame annotations >>
@@ -3583,11 +3585,11 @@ class QtIconBarClass:
     def show(self) -> None:
         pass
     #@+node:ekr.20110605121601.18265: *3* QtIconBar.add
-    def add(self, *args: Args, **keys: KWargs) -> Value:
+    def add(self, *args: Args, **keys: KWargs) -> None:
         """Add a button to the icon bar."""
         c = self.c
         if not self.w:
-            return None
+            return
         command: Callable = keys.get('command')
         text: str = keys.get('text')
         # able to specify low-level QAction directly (QPushButton not forced)
@@ -3645,7 +3647,6 @@ class QtIconBarClass:
                 return val
 
             b.clicked.connect(button_callback)
-        return action
     #@+node:ekr.20110605121601.18266: *3* QtIconBar.addRowIfNeeded (not used)
     def addRowIfNeeded(self) -> None:
         """Add a new icon row if there are too many widgets."""
@@ -3701,7 +3702,7 @@ class QtIconBarClass:
     # qtFrame.QtIconBarClass.setCommandForButton
 
     def setCommandForButton(self,
-        button: Any,  ###
+        button: QPushButton,
         command: Callable,
         command_p: Position,
         controller: ScriptingController,
