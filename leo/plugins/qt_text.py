@@ -15,7 +15,7 @@ from leo.core.leoQt import Shadow, Shape, SliderAction, SolidLine, WindowType, W
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
-    from leo.plugins.qt_frame import WrapperAPI
+    from leo.plugins.leoAPI import WrapperAPI
     Args = Any
     KWargs = Any
     QEvent = QtCore.QEvent
