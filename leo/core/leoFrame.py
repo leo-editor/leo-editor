@@ -137,15 +137,6 @@ class LeoBody:
         pass
     #@+node:ekr.20060528100747: *3* LeoBody.Editors
     #@+node:ekr.20070424053629.1: *4* LeoBody.utils
-    #@+node:ekr.20070422094710: *5* LeoBody.createChapterIvar
-    def createChapterIvar(self, w: Wrapper) -> None:
-        c = self.c
-        cc = c.chapterController
-        if not hasattr(w, 'leo_chapter') or not w.leo_chapter:
-            if cc and self.use_chapters:
-                w.leo_chapter = cc.getSelectedChapter()
-            else:
-                w.leo_chapter = None
     #@+node:ekr.20070424084651: *5* LeoBody.ensurePositionExists
     def ensurePositionExists(self, w: Wrapper) -> bool:
         """Return True if w.leo_p exists or can be reconstituted."""
@@ -177,7 +168,8 @@ class LeoBody:
         """select w.leo_chapter."""
         c = self.c
         cc = c.chapterController
-        if hasattr(w, 'leo_chapter') and w.leo_chapter:
+        chapter = getattr(w, 'leo_chapter', None)
+        if chapter:
             chapter = w.leo_chapter
             name = chapter and chapter.name
             oldChapter = cc.getSelectedChapter()
