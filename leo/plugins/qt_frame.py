@@ -46,7 +46,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoNodes import Position
     from leo.plugins.leoFrame import LeoLog
     from leo.plugins.mod_scripting import ScriptingController
-    from leo.plugins.qt_text import QScintillaWrapper, QTextEditWrapper  ###
+    from leo.plugins.qt_text import QScintillaWrapper, QTextEditWrapper
     Args = Any
     ComplexUnion = Any
     KWargs = Any
@@ -71,8 +71,10 @@ if TYPE_CHECKING:  # pragma: no cover
     QWidget = QtWidgets.QWidget
     RClick = tuple  # Union[tuple, namedtuple('RClick', 'position,children')]
     RClicks = list[RClick]
-    ### Wrapper = Any
     Value = Any
+    # LeoFrame defines as follows:
+    # TextAPI = Union[QScintillaWrapper, QTextEditWrapper, StringTextWrapper]
+    QtWrapper = Union[QScintillaWrapper, QTextEditWrapper]
 #@-<< qt_frame annotations >>
 #@+<< qt_frame decorators >>
 #@+node:ekr.20210228142208.1: ** << qt_frame decorators >>
@@ -1503,7 +1505,7 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
             self.factory.leoFrames[w] = w.leo_c.frame
         self.detached = []
     #@+node:ekr.20131115120119.17394: *3* qt_base_tab.delete
-    def delete(self, w: Any) -> None:  ###
+    def delete(self, w: QWidget) -> None:
         """called by TabbedFrameFactory to tell us a detached tab
         has been deleted"""
         self.detached = [i for i in self.detached if i[1] != w]
@@ -1557,8 +1559,8 @@ class LeoQtBody(leoFrame.LeoBody):
         super().__init__(frame, parentFrame)
         c = self.c
         assert c.frame == frame and frame.c == c
-        self.colorizer: BaseColorizer = None  # A Union
-        self.wrapper: Union[QScintillaWrapper, QTextEditWrapper] = None
+        self.colorizer: BaseColorizer = None
+        self.wrapper: QtWrapper = None
         self.widget: QWidget = None
         self.reloadSettings()
         self.set_widget()  # Sets self.widget and self.wrapper.
@@ -2294,13 +2296,13 @@ class LeoQtLog(leoFrame.LeoLog):
 
         tabw = self.tabWidget
         w = tabw.widget(idx)
-        #
+
         # #917814: Switching Log Pane tabs is done incompletely
-        wrapper: Any = getattr(w, 'leo_log_wrapper', None)  ###
-        #
+        obj = getattr(w, 'leo_log_wrapper', None)
+
         # #1161: Don't change logs unless the wrapper is correct.
-        if wrapper and isinstance(wrapper, qt_text.QTextEditWrapper):
-            self.logCtrl = wrapper
+        if obj and isinstance(obj, qt_text.QTextEditWrapper):
+            self.logCtrl = obj
     #@+node:ekr.20200304132424.1: *3* LeoQtLog.onContextMenu
     def onContextMenu(self, point: QPoint) -> None:
         """LeoQtLog: Callback for customContextMenuRequested events."""
@@ -2530,8 +2532,8 @@ class LeoQtLog(leoFrame.LeoLog):
             return
         # #1161.
         if tabName == 'Log':
-            wrapper: Any = None  ###
-            widget = self.contentsDict.get('Log')  # a qt_text.QTextEditWrapper
+            wrapper: QWidget = None
+            widget: QWidget = self.contentsDict.get('Log')
             if widget:
                 wrapper = getattr(widget, 'leo_log_wrapper', None)
                 if wrapper and isinstance(wrapper, qt_text.QTextEditWrapper):
