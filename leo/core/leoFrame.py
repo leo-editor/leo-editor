@@ -40,7 +40,7 @@ if TYPE_CHECKING:  # pragma: no cover
     Args = Any
     KWargs = Any
     Widget = Any
-    Wrapper = Union[QTextEditWrapper, StringTextWrapper]
+    TextAPI = Union[QTextEditWrapper, StringTextWrapper]
 #@-<< leoFrame annotations >>
 #@+<< leoFrame: about handling events >>
 #@+node:ekr.20031218072017.2410: ** << leoFrame: about handling events >>
@@ -99,7 +99,7 @@ class LeoBody:
         self.parentFrame: Widget = parentFrame
         # May be overridden in subclasses...
         self.widget: Widget = None  # set in LeoQtBody.set_widget.
-        self.wrapper: Wrapper = None  # set in LeoQtBody.set_widget.
+        self.wrapper: TextAPI = None  # set in LeoQtBody.set_widget.
         # Must be overridden in subclasses...
         self.colorizer: BaseColorizer = None
         # Init user settings.
@@ -124,13 +124,13 @@ class LeoBody:
     #@+node:ekr.20140903103455.18574: *3* LeoBody.Defined in subclasses
     # LeoBody methods that must be defined in subclasses.
 
-    def createEditorFrame(self, w: Wrapper) -> Wrapper:
+    def createEditorFrame(self, w: TextAPI) -> TextAPI:
         raise NotImplementedError
 
-    def createTextWidget(self, parentFrame: Widget, p: Position, name: str) -> Wrapper:
+    def createTextWidget(self, parentFrame: Widget, p: Position, name: str) -> TextAPI:
         raise NotImplementedError
 
-    def packEditorLabelWidget(self, w: Wrapper) -> None:
+    def packEditorLabelWidget(self, w: TextAPI) -> None:
         raise NotImplementedError
 
     def onFocusOut(self, obj: Any) -> None:
@@ -138,7 +138,7 @@ class LeoBody:
     #@+node:ekr.20060528100747: *3* LeoBody.Editors
     #@+node:ekr.20070424053629.1: *4* LeoBody.utils
     #@+node:ekr.20070424084651: *5* LeoBody.ensurePositionExists
-    def ensurePositionExists(self, w: Wrapper) -> bool:
+    def ensurePositionExists(self, w: TextAPI) -> bool:
         """Return True if w.leo_p exists or can be reconstituted."""
         c = self.c
         if c.positionExists(w.leo_p):
@@ -152,7 +152,7 @@ class LeoBody:
         w.leo_p = c.p
         return False
     #@+node:ekr.20060530204135: *5* LeoBody.recolorWidget (QScintilla only)
-    def recolorWidget(self, p: Position, w: Wrapper) -> None:
+    def recolorWidget(self, p: Position, w: TextAPI) -> None:
         # Support QScintillaColorizer.colorize.
         c = self.c
         colorizer = c.frame.body.colorizer
@@ -164,7 +164,7 @@ class LeoBody:
             finally:
                 c.frame.body.wrapper = old_wrapper
     #@+node:ekr.20070424084012: *5* LeoBody.switchToChapter
-    def switchToChapter(self, w: Wrapper) -> None:
+    def switchToChapter(self, w: TextAPI) -> None:
         """select w.leo_chapter."""
         c = self.c
         cc = c.chapterController
@@ -742,7 +742,7 @@ class LeoLog:
         self.logNumber = 0  # To create unique name fields for text widgets.
         self.newTabCount = 0  # Number of new tabs created.
         self.textDict: dict[str, Widget] = {}  # Keys are page names. Values are logCtrl's (text widgets).
-        self.wrapper: Wrapper = None  # For cursesGui2.py.
+        self.wrapper: TextAPI = None  # For cursesGui2.py.
     #@+node:ekr.20070302094848.1: *3* LeoLog.clearTab
     def clearTab(self, tabName: str, wrap: str = 'none') -> None:
         self.selectTab(tabName, wrap=wrap)
@@ -1049,7 +1049,7 @@ class LeoTree:
     def OnIconDoubleClick(self, p: Position) -> None:
         pass
     #@+node:ekr.20051026083544.2: *4* LeoTree.updateHead
-    def updateHead(self, event: LeoKeyEvent, w: Wrapper) -> None:
+    def updateHead(self, event: LeoKeyEvent, w: TextAPI) -> None:
         """
         Update a headline from an event.
 
@@ -1274,7 +1274,7 @@ class LeoTreeTab:
         self.nb: NbController = None  # Created in createControl.
         self.parentFrame: Widget = parentFrame
     #@+node:ekr.20070317073755: *3* LeoTreeTab: Must be defined in subclasses
-    def createControl(self) -> Wrapper:
+    def createControl(self) -> TextAPI:
         raise NotImplementedError
 
     def createTab(self, tabName: str, createText: bool = True, widget: Widget = None, select: bool = True) -> None:
@@ -1305,7 +1305,7 @@ class NullBody(LeoBody):
         self.colorizer = NullColorizer(self.c)
     #@+node:ekr.20031218072017.2197: *3* NullBody: LeoBody interface
     # Birth, death...
-    def createControl(self, parentFrame: Widget, p: Position) -> Wrapper:
+    def createControl(self, parentFrame: Widget, p: Position) -> TextAPI:
         pass
 
     # Events...
@@ -1336,7 +1336,7 @@ class NullFrame(LeoFrame):
         """Ctor for the NullFrame class."""
         super().__init__(c, gui)
         assert self.c
-        self.wrapper: Wrapper = None
+        self.wrapper: TextAPI = None
         self.iconBar = NullIconBarClass(self.c, self)
         self.initComplete = True
         self.isNullFrame = True
@@ -1487,13 +1487,13 @@ class NullIconBarClass:
     def addRowIfNeeded(self) -> None:
         pass
 
-    def addWidget(self, w: Wrapper) -> None:
+    def addWidget(self, w: TextAPI) -> None:
         pass
 
     def createChaptersIcon(self) -> None:
         pass
 
-    def deleteButton(self, w: Wrapper) -> None:
+    def deleteButton(self, w: TextAPI) -> None:
         pass
 
     def getNewFrame(self) -> None:
@@ -1571,7 +1571,7 @@ class NullLog(LeoLog):
         # self.logCtrl is now a property of the base LeoLog class.
         self.logNumber = 0
         self.widget: Widget = self.createControl(parentFrame)
-        self.wrapper: Wrapper = None  # For cursesGui2.py.
+        self.wrapper: TextAPI = None  # For cursesGui2.py.
     #@+node:ekr.20120216123546.10951: *4* NullLog.finishCreate
     def finishCreate(self) -> None:
         pass
@@ -1587,7 +1587,7 @@ class NullLog(LeoLog):
     def hasSelection(self) -> None:
         return self.widget.hasSelection()
     #@+node:ekr.20111119145033.10186: *3* NullLog.isLogWidget
-    def isLogWidget(self, w: Wrapper) -> bool:
+    def isLogWidget(self, w: TextAPI) -> bool:
         return False
     #@+node:ekr.20041012083237.3: *3* NullLog.put and putnl
     def put(self,
@@ -1692,7 +1692,7 @@ class NullTree(LeoTree):
         self.redrawCount = 0
         self.updateCount = 0
     #@+node:ekr.20070228163350.2: *3* NullTree.edit_widget
-    def edit_widget(self, p: Position) -> Wrapper:
+    def edit_widget(self, p: Position) -> TextAPI:
         d = self.editWidgetsDict
         if not p or not p.v:
             return None

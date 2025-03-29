@@ -18,8 +18,7 @@ if TYPE_CHECKING:
     from leo.plugins.mod_scripting import ScriptingController
     from leo.plugins.qt_text import QTextEditWrapper
     Widget = Any
-    # This creates a forward reference.
-    # Wrapper = Union[QTextEditWrapper, StringTextWrapper]
+    TextAPI = Union["QTextEditWrapper", "StringTextWrapper"]
 #@-<< leoAPI.py: imports and annotations >>
 
 #@+others
@@ -39,7 +38,7 @@ class IconBarAPI:
     def addRowIfNeeded(self) -> None:
         pass
 
-    def addWidget(self, w: Union[QTextEditWrapper, StringTextWrapper]) -> None:
+    def addWidget(self, w: TextAPI) -> None:
         pass
 
     def clear(self) -> None:
@@ -48,14 +47,14 @@ class IconBarAPI:
     def createChaptersIcon(self) -> None:
         pass
 
-    def deleteButton(self, w: Union[QTextEditWrapper, StringTextWrapper]) -> None:
+    def deleteButton(self, w: TextAPI) -> None:
         pass
 
     def getNewFrame(self) -> None:
         pass
 
     def setCommandForButton(self,
-        button: Union[QTextEditWrapper, StringTextWrapper],
+        button: TextAPI,
         command: str,
         command_p: Position,
         controller: ScriptingController,
@@ -281,7 +280,7 @@ class TreeAPI:
         v: VNode,
         selectAll: bool = False,
         selection: tuple = None,
-    ) -> tuple[Widget, Union[QTextEditWrapper, StringTextWrapper]]:
+    ) -> tuple[Widget, TextAPI]:
         return None, None
 
     def edit_widget(self, p: Position) -> None:
@@ -331,7 +330,7 @@ class TreeAPI:
     def select(self, p: Position) -> None:
         pass
 
-    def updateHead(self, event: LeoKeyEvent, w: Union[QTextEditWrapper, StringTextWrapper]) -> None:
+    def updateHead(self, event: LeoKeyEvent, w: TextAPI) -> None:
         pass
 #@+node:ekr.20250329033642.5: ** class WrapperAPI
 class WrapperAPI:
