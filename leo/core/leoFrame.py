@@ -40,7 +40,7 @@ if TYPE_CHECKING:  # pragma: no cover
     Args = Any
     KWargs = Any
     Widget = Any
-    TextAPI = Union[QScintillaWrapper, QTextEditWrapper, StringTextWrapper]  ###
+    TextAPI = Union[QScintillaWrapper, QTextEditWrapper, StringTextWrapper]
 #@-<< leoFrame annotations >>
 #@+<< leoFrame: about handling events >>
 #@+node:ekr.20031218072017.2410: ** << leoFrame: about handling events >>
@@ -108,7 +108,7 @@ class LeoBody:
     def forceFullRecolor(self) -> None:
         pass
 
-    def getColorizer(self) -> Any:
+    def getColorizer(self) -> BaseColorizer:
         return self.colorizer
 
     def updateSyntaxColorer(self, p: Position) -> None:
@@ -133,8 +133,8 @@ class LeoBody:
     def packEditorLabelWidget(self, w: TextAPI) -> None:
         raise NotImplementedError
 
-    def onFocusOut(self, obj: Any) -> None:
-        pass
+    def onFocusOut(self, obj: Widget) -> None:
+        raise NotImplementedError
     #@+node:ekr.20060528100747: *3* LeoBody.Editors
     #@+node:ekr.20070424053629.1: *4* LeoBody.utils
     #@+node:ekr.20070424084651: *5* LeoBody.ensurePositionExists
@@ -1102,10 +1102,10 @@ class LeoTree:
         p: Position,
         selectAll: bool = False,
         selection: tuple = None,
-    ) -> tuple[Widget, Any]:
+    ) -> tuple[Widget, Widget]:
         raise NotImplementedError
 
-    def edit_widget(self, p: Position) -> Any:
+    def edit_widget(self, p: Position) -> Widget:
         raise NotImplementedError
     #@+node:ekr.20040803072955.128: *3* LeoTree.select & helpers
     tree_select_lockout = False
