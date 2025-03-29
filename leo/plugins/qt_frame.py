@@ -48,7 +48,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.plugins.mod_scripting import ScriptingController
     from leo.plugins.qt_text import QScintillaWrapper, QTextEditWrapper
     Args = Any
-    ComplexUnion = Any
     KWargs = Any
     QBoxLayout = QtWidgets.QBoxLayout
     QComboBox = QtWidgets.QComboBox
@@ -72,7 +71,6 @@ if TYPE_CHECKING:  # pragma: no cover
     QWidget = QtWidgets.QWidget
     RClick = tuple  # Union[tuple, namedtuple('RClick', 'position,children')]
     RClicks = list[RClick]
-    Value = Any
 
     # LeoFrame defines TextAPI as:
     # TextAPI = Union[QScintillaWrapper, QTextEditWrapper, StringTextWrapper]
@@ -2438,7 +2436,7 @@ class LeoQtLog(leoFrame.LeoLog):
         suitable for log functionality.
         """
         c = self.c
-        contents: ComplexUnion
+        contents: Any
         if widget is None:
             # widget is subclass of QTextBrowser.
             widget = qt_text.LeoQTextBrowser(parent=None, c=c, wrapper=self)
@@ -3614,7 +3612,7 @@ class QtIconBarClass:
                 self.button.setProperty('button_kind', kind)  # for styling
                 return self.button
 
-        action: Value
+        action: Any
         if qaction is None:
             action = leoIconBarButton(parent=self.w, text=text, toolbar=self)
             button_name = text
