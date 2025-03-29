@@ -1102,7 +1102,7 @@ class LeoTree:
         p: Position,
         selectAll: bool = False,
         selection: tuple = None,
-    ) -> tuple[Widget, Widget]:
+    ) -> tuple[Widget, Any]:  # Any is the best possible annotation.
         raise NotImplementedError
 
     def edit_widget(self, p: Position) -> Widget:

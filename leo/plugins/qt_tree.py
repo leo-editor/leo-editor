@@ -1123,7 +1123,7 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.17909: *4* qtree.editLabel and helper
     def editLabel(self,
         p: Position, selectAll: bool = False, selection: tuple = None,
-    ) -> tuple[QLineEdit, Any]:
+    ) -> tuple[QLineEdit, QHeadlineWrapper]:
         """Start editing p's headline."""
         if self.busy:
             return None
