@@ -10,7 +10,8 @@ from leo.core.leoTest2 import LeoUnitTest, create_app
 try:
     from leo.core.leoQt import Qt, QtCore
     from leo.core.leoAPI import IconBarAPI, StatusLineAPI, TreeAPI, WrapperAPI
-    from leo.core.leoFrame import LeoTree, StringTextWrapper
+    from leo.core.leoAPI import StringTextWrapper
+    from leo.core.leoFrame import LeoTree
     from leo.core.leoFrame import NullIconBarClass, NullStatusLineClass, NullTree
     from leo.plugins.qt_frame import QtIconBarClass, QtStatusLineClass
     from leo.plugins.qt_text import QLineEditWrapper, QScintillaWrapper, QTextEditWrapper

@@ -20,6 +20,7 @@ from leo.core import leoFrame
 from leo.core import leoGui
 from leo.core import leoMenu
 from leo.commands import gotoCommands
+from leo.core.leoAPI import StringTextWrapper
 from leo.core.leoQt import QtCore, QtGui, QtWidgets
 from leo.core.leoQt import QAction, Qsci
 from leo.core.leoQt import AlignLeft
@@ -3313,7 +3314,7 @@ class LeoQtSpellTab:
         top = c.frame.top
         self.handler = handler
         # hack:
-        handler.workCtrl = leoFrame.StringTextWrapper(c, 'spell-workctrl')
+        handler.workCtrl = StringTextWrapper(c, 'spell-workctrl')
         self.tabName = tabName
         if hasattr(top, 'leo_spell_label'):
             self.wordLabel = top.leo_spell_label

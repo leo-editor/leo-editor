@@ -59,6 +59,7 @@ from leo.core import leoGlobals as g
 from leo.core import leoFrame
 from leo.core import leoGui
 from leo.core import leoMenu
+from leo.core.leoAPI import StringTextWrapper
 from leo.core.leoNodes import Position
 #@-<< cursesGui2 imports >>
 #@+<< cursesGui2 annotations >>
@@ -2332,7 +2333,7 @@ class CoreFrame(leoFrame.LeoFrame):
         trace = False and not g.unitTesting
         c, p, u = self.c, self.c.p, self.c.undoer
         w = event and event.widget
-        if not isinstance(w, leoFrame.StringTextWrapper):
+        if not isinstance(w, StringTextWrapper):
             g.trace('not a StringTextWrapper', repr(w))
             return
         bunch = u.beforeChangeBody(p)
@@ -4106,8 +4107,8 @@ class TextMixin:
         row, col = g.convertPythonIndexToRowCol(s, index)
         return row, col
     #@-others
-#@+node:ekr.20170504034655.1: *3* class BodyWrapper (leoFrame.StringTextWrapper)
-class BodyWrapper(leoFrame.StringTextWrapper):
+#@+node:ekr.20170504034655.1: *3* class BodyWrapper (StringTextWrapper)
+class BodyWrapper(StringTextWrapper):
     """
     A Wrapper class for Leo's body.
     This is c.frame.body.wrapper.
@@ -4135,8 +4136,8 @@ class BodyWrapper(leoFrame.StringTextWrapper):
         if 0:
             g.trace('=====', event)
     #@-others
-#@+node:ekr.20170522002403.1: *3* class HeadWrapper (leoFrame.StringTextWrapper)
-class HeadWrapper(leoFrame.StringTextWrapper):
+#@+node:ekr.20170522002403.1: *3* class HeadWrapper (StringTextWrapper)
+class HeadWrapper(StringTextWrapper):
     """
     A Wrapper class for headline widgets, returned by c.edit_widget(p)
     """
@@ -4159,8 +4160,8 @@ class HeadWrapper(leoFrame.StringTextWrapper):
         self.sel = i, i
         self.p.v._headString = self.s
     #@-others
-#@+node:ekr.20170525062512.1: *3* class LogWrapper (leoFrame.StringTextWrapper)
-class LogWrapper(leoFrame.StringTextWrapper):
+#@+node:ekr.20170525062512.1: *3* class LogWrapper (StringTextWrapper)
+class LogWrapper(StringTextWrapper):
     """A Wrapper class for the log pane."""
 
     def __init__(self, c: Cmdr, name: str, w: Wrapper) -> None:
@@ -4171,8 +4172,8 @@ class LogWrapper(leoFrame.StringTextWrapper):
 
     #@+others
     #@-others
-#@+node:ekr.20170525105707.1: *3* class MiniBufferWrapper (leoFrame.StringTextWrapper)
-class MiniBufferWrapper(leoFrame.StringTextWrapper):
+#@+node:ekr.20170525105707.1: *3* class MiniBufferWrapper (StringTextWrapper)
+class MiniBufferWrapper(StringTextWrapper):
     """A Wrapper class for the minibuffer."""
 
     def __init__(self, c: Cmdr, name: str, w: Wrapper) -> None:
@@ -4181,8 +4182,8 @@ class MiniBufferWrapper(leoFrame.StringTextWrapper):
         self.trace = False  # For tracing in base class.
         self.box: Wrapper = None  # Injected
         self.widget: Wrapper = w
-#@+node:ekr.20171129194610.1: *3* class StatusLineWrapper (leoFrame.StringTextWrapper)
-class StatusLineWrapper(leoFrame.StringTextWrapper):
+#@+node:ekr.20171129194610.1: *3* class StatusLineWrapper (StringTextWrapper)
+class StatusLineWrapper(StringTextWrapper):
     """A Wrapper class for the status line."""
 
     def __init__(self, c: Cmdr, name: str, w: Wrapper) -> None:

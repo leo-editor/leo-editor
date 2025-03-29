@@ -58,8 +58,8 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoRst import RstCommands
     from leo.commands.spellCommands import SpellCommandsClass
     # Other objects...
+    from leo.core.API import StringTextWrapper
     from leo.core.leoGui import LeoGui
-    from leo.core.leoFrame import StringTextWrapper
     from leo.plugins.qt_gui import StyleSheetManager
     from leo.plugins.qt_text import QTextEditWrapper
     Args = Any

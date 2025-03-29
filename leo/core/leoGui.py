@@ -770,7 +770,7 @@ class StringFindTabManager:
 class StringGui(LeoGui):
     """
     A class representing all on-screen objects using subclasses of the
-    leoFrame.StringTextWrapper class.
+    leoAPI.StringTextWrapper class.
     """
     #@+others
     #@+node:ekr.20170613114120.1: *3* StringGui.runMainLoop

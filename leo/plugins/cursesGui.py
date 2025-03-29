@@ -19,6 +19,7 @@ from leo.core import leoKeys
 from leo.core import leoFrame
 from leo.core import leoMenu
 from leo.core import leoNodes
+from leo.core.leoAPI import StringTextWrapper
 get_input = input
 #@-<< cursesGui.py: imports & annotations >>
 #@+<< TODO >>
@@ -100,7 +101,7 @@ class textGui(leoGui.LeoGui):
     #@+node:ekr.20150107090324.13: *3* isTextWidget
     def isTextWidget(self, w):
         """Return True if w is a Text widget suitable for text-oriented commands."""
-        return w and isinstance(w, leoFrame.StringTextWrapper)
+        return w and isinstance(w, StringTextWrapper)
     #@+node:ekr.20150107090324.69: *3* runAskYesNoDialog (cursesGui.py)
     def runAskYesNoDialog(self, c, title, message=None, yes_all=False, no_all=False):
         return 'yes'
@@ -284,7 +285,7 @@ class textBody(leoFrame.LeoBody):
         g.pr(w.s)
     #@-others
 #@+node:ekr.20150107090324.36: ** class textBodyCtrl (stringTextWrapper)
-class textBodyCtrl(leoFrame.StringTextWrapper):
+class textBodyCtrl(StringTextWrapper):
     pass
 #@+node:ekr.20150107090324.37: ** class textMenuCascade
 class textMenuCascade:
