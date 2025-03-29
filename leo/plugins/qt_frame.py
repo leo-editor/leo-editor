@@ -53,6 +53,7 @@ if TYPE_CHECKING:  # pragma: no cover
     QCursor = QtGui.QCursor
     QEvent: TypeAlias = QtCore.QEvent
     QFocusEvent: TypeAlias = QtGui.QFocusEvent
+    QFrame = QtWidgets.QFrame
     QGridLayout = QtWidgets.QGridLayout
     QLayout = QtWidgets.QWidget
     QMenu = QtWidgets.QMenu
@@ -1654,6 +1655,16 @@ class LeoQtFrame(leoFrame.LeoFrame):
     """A class that represents a Leo window rendered in qt."""
     #@+others
     #@+node:ekr.20110605121601.18246: *3*  LeoQtFrame.Birth & Death
+    #@+node:ekr.20110605121601.18253: *4* Destroying the LeoQtFrame
+    #@+node:ekr.20110605121601.18256: *5* LeoQtFrame.destroySelf
+    def destroySelf(self) -> None:
+        # Remember these: we are about to destroy all of our ivars!
+        c, top = self.c, self.top
+        if hasattr(g.app.gui, 'frameFactory'):
+            g.app.gui.frameFactory.deleteFrame(top)
+        # Indicate that the commander is no longer valid.
+        c.exists = False
+        top.close()
     #@+node:ekr.20110605121601.18247: *4* LeoQtFrame.__init__ & reloadSettings
     def __init__(self, c: Cmdr, title: str, gui: LeoGui) -> None:
         super().__init__(c, gui)
@@ -1665,7 +1676,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
         self.bar2: LeoQtFrame = None
         self.body: LeoQtBody = None
         self.iconBar: QtIconBarClass = None
-        self.iconBarClass = QtIconBarClass
         self.iconFrame: QtIconBarClass = None
         self.log: LeoQtLog = None
         self.statusLineClass: ComplexUnion = QtStatusLineClass  # A Union. 'Any' can't easily be removed.
@@ -1769,16 +1779,18 @@ class LeoQtFrame(leoFrame.LeoFrame):
     def initCompleteHint(self) -> None:
         """A kludge: called to enable text changed events."""
         self.initComplete = True
-    #@+node:ekr.20110605121601.18253: *4* Destroying the LeoQtFrame
-    #@+node:ekr.20110605121601.18256: *5* LeoQtFrame.destroySelf
-    def destroySelf(self) -> None:
-        # Remember these: we are about to destroy all of our ivars!
-        c, top = self.c, self.top
-        if hasattr(g.app.gui, 'frameFactory'):
-            g.app.gui.frameFactory.deleteFrame(top)
-        # Indicate that the commander is no longer valid.
-        c.exists = False
-        top.close()
+    #@+node:ekr.20250328195727.1: *4* LeoQtFrame: iconBar methods
+    def createIconBar(self) -> QtIconBarClass:
+        if not self.iconBar:
+            self.iconBar = QtIconBarClass(self.c, None)
+        return self.iconBar
+
+    def getIconBar(self) -> QtIconBarClass:
+        if not self.iconBar:
+            self.iconBar = QtIconBarClass(self.c, None)
+        return self.iconBar
+
+    getIconBarObject = getIconBar
     #@+node:ekr.20110605121601.18274: *3* LeoQtFrame.Configuration
     #@+node:ekr.20240510092709.1: *4* LeoQtFrame.compute_ratio & compute_secondary_ratio
     #@+node:ekr.20240510093119.1: *5* LeoQtFrame.compute_ratio

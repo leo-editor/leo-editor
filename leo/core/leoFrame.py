@@ -493,7 +493,6 @@ class LeoFrame:
         self.c = c
         self.gui = gui
         # Types...
-        self.iconBarClass: Any = NullIconBarClass
         self.statusLineClass: Any = NullStatusLineClass
         # Objects attached to this frame...
         self.body: Union[LeoBody, NullBody, LeoQtBody] = None
@@ -655,22 +654,12 @@ class LeoFrame:
         return None
 
     def createIconBar(self) -> Union[NullIconBarClass, QtIconBarClass]:
-        c = self.c
-        if not self.iconBar:
-            self.iconBar = self.iconBarClass(c, None)
-        return self.iconBar
+        raise NotImplementedError('must be overridden in subclasses')
 
     def getIconBar(self) -> Union[NullIconBarClass, QtIconBarClass]:
-        if not self.iconBar:
-            self.iconBar = self.iconBarClass(self.c, None)
-        return self.iconBar
+        raise NotImplementedError('must be overridden in subclasses')
 
     getIconBarObject = getIconBar
-
-    def getNewIconFrame(self) -> None:
-        if not self.iconBar:
-            self.iconBar = self.iconBarClass(self.c, None)
-        return self.iconBar.getNewFrame()
 
     def hideIconBar(self) -> None:
         if self.iconBar:
