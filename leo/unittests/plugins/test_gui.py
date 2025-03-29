@@ -9,7 +9,7 @@ from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest, create_app
 try:
     from leo.core.leoQt import Qt, QtCore
-    from leo.core.leoAPI import IconBarAPI, StatusLineAPI, TreeAPI, WrapperAPI
+    from leo.core.leoAPI import IconBarAPI, StatusLineAPI, TreeAPI, TextAPI
     from leo.core.leoAPI import StringTextWrapper
     from leo.core.leoFrame import LeoTree
     from leo.core.leoFrame import NullIconBarClass, NullStatusLineClass, NullTree
@@ -224,14 +224,14 @@ class TestAPIClasses(LeoUnitTest):
             classes.extend([LeoQtTree, LeoTree])
         for cls in classes:
             self.assertFalse(get_missing(cls), msg=f"Missing {cls.__class__.__name__} methods")
-    #@+node:ekr.20220911101330.1: *3* test_wrapper_api
-    def test_wrapper_api(self):
+    #@+node:ekr.20220911101330.1: *3* test_text_api
+    def test_text_api(self):
 
         def get_methods(cls):
             return [z for z in dir(cls) if not z.startswith('__')]
 
         def get_missing(cls):
-            return [z for z in get_methods(WrapperAPI) if z not in get_methods(cls)]
+            return [z for z in get_methods(TextAPI) if z not in get_methods(cls)]
 
         classes = [StringTextWrapper]
         if Qt:

@@ -6,8 +6,7 @@ Abstract base classes and Protocol classes for Leo's gui.
 #@+<< leoAPI.py: imports and annotations >>
 #@+node:ekr.20250329041628.1: ** << leoAPI.py: imports and annotations >>
 from __future__ import annotations
-# from collections.abc import Callable
-from typing import Any, Optional, Union
+from typing import Any, Optional
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 
@@ -16,9 +15,7 @@ if TYPE_CHECKING:
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position, VNode
     from leo.plugins.mod_scripting import ScriptingController
-    from leo.plugins.qt_text import QTextEditWrapper
     Widget = Any
-    TextAPI = Union["QTextEditWrapper", "StringTextWrapper"]
 #@-<< leoAPI.py: imports and annotations >>
 
 #@+others
@@ -268,77 +265,11 @@ class StringTextWrapper:
         row, col = g.convertPythonIndexToRowCol(s, index)
         return row, col
     #@-others
-#@+node:ekr.20250329033642.4: ** class TreeAPI
-class TreeAPI:
-    """The required API for c.frame.tree."""
-
-    def __init__(self, frame: Widget) -> None:
-        pass
-    # Must be defined in subclasses.
-
-    def editLabel(self,
-        v: VNode,
-        selectAll: bool = False,
-        selection: tuple = None,
-    ) -> tuple[Widget, TextAPI]:
-        return None, None
-
-    def edit_widget(self, p: Position) -> None:
-        return None
-
-    def redraw(self, p: Position = None) -> None:
-        pass
-    redraw_now = redraw
-
-    def scrollTo(self, p: Position) -> None:
-        pass
-    # May be defined in subclasses.
-
-    def initAfterLoad(self) -> None:
-        pass
-
-    def onHeadChanged(self, p: Position, undoType: str = 'Typing') -> None:
-        pass
-    # Hints for optimization. The proper default is c.redraw()
-
-    def redraw_after_contract(self, p: Position) -> None:
-        pass
-
-    def redraw_after_expand(self, p: Position) -> None:
-        pass
-
-    def redraw_after_head_changed(self) -> None:
-        pass
-
-    def redraw_after_select(self, p: Position = None) -> None:
-        pass
-    # Must be defined in the LeoTree class...
-    # def OnIconDoubleClick (self,p):
-
-    def OnIconCtrlClick(self, p: Position) -> None:
-        pass
-
-    def endEditLabel(self) -> None:
-        pass
-
-    def getEditTextDict(self, v: VNode) -> None:
-        return None
-
-    def onHeadlineKey(self, event: LeoKeyEvent) -> None:
-        pass
-
-    def select(self, p: Position) -> None:
-        pass
-
-    def updateHead(self, event: LeoKeyEvent, w: TextAPI) -> None:
-        pass
-#@+node:ekr.20250329033642.5: ** class WrapperAPI
-class WrapperAPI:
+#@+node:ekr.20250329033642.5: ** class TextAPI
+class TextAPI:
     """
-    A class specifying the wrapper api used throughout Leo's core.
-    
-    This class specifies the valid methods that may be used on Leo's body pane.
-    
+    A class specifying the interface to various text widgets,
+    including Leo's headline, body pane and other widgets.
     """
 
     def __init__(self, c: Cmdr) -> None:
@@ -420,6 +351,70 @@ class WrapperAPI:
         pass
 
     def setYScrollPosition(self, i: int) -> None:
+        pass
+#@+node:ekr.20250329033642.4: ** class TreeAPI
+class TreeAPI:
+    """The required API for c.frame.tree."""
+
+    def __init__(self, frame: Widget) -> None:
+        pass
+    # Must be defined in subclasses.
+
+    def editLabel(self,
+        v: VNode,
+        selectAll: bool = False,
+        selection: tuple = None,
+    ) -> tuple[Widget, TextAPI]:
+        return None, None
+
+    def edit_widget(self, p: Position) -> None:
+        return None
+
+    def redraw(self, p: Position = None) -> None:
+        pass
+    redraw_now = redraw
+
+    def scrollTo(self, p: Position) -> None:
+        pass
+    # May be defined in subclasses.
+
+    def initAfterLoad(self) -> None:
+        pass
+
+    def onHeadChanged(self, p: Position, undoType: str = 'Typing') -> None:
+        pass
+    # Hints for optimization. The proper default is c.redraw()
+
+    def redraw_after_contract(self, p: Position) -> None:
+        pass
+
+    def redraw_after_expand(self, p: Position) -> None:
+        pass
+
+    def redraw_after_head_changed(self) -> None:
+        pass
+
+    def redraw_after_select(self, p: Position = None) -> None:
+        pass
+    # Must be defined in the LeoTree class...
+    # def OnIconDoubleClick (self,p):
+
+    def OnIconCtrlClick(self, p: Position) -> None:
+        pass
+
+    def endEditLabel(self) -> None:
+        pass
+
+    def getEditTextDict(self, v: VNode) -> None:
+        return None
+
+    def onHeadlineKey(self, event: LeoKeyEvent) -> None:
+        pass
+
+    def select(self, p: Position) -> None:
+        pass
+
+    def updateHead(self, event: LeoKeyEvent, w: TextAPI) -> None:
         pass
 #@-others
 #@-leo
