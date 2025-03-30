@@ -3583,11 +3583,11 @@ class QtIconBarClass:
     def show(self) -> None:
         pass
     #@+node:ekr.20110605121601.18265: *3* QtIconBar.add
-    def add(self, *args: Args, **keys: KWargs) -> None:
+    def add(self, *args: Args, **keys: KWargs) -> QAction:
         """Add a button to the icon bar."""
         c = self.c
         if not self.w:
-            return
+            return None
         command: Callable = keys.get('command')
         text: str = keys.get('text')
         # able to specify low-level QAction directly (QPushButton not forced)
@@ -3645,6 +3645,8 @@ class QtIconBarClass:
                 return val
 
             b.clicked.connect(button_callback)
+
+        return action
     #@+node:ekr.20110605121601.18266: *3* QtIconBar.addRowIfNeeded (not used)
     def addRowIfNeeded(self) -> None:
         """Add a new icon row if there are too many widgets."""

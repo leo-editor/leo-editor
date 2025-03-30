@@ -404,7 +404,7 @@ class LeoFrame:
         tab_width = c.getTabWidth(p)
         c.frame.setTabWidth(tab_width)
     #@+node:ekr.20061119120006: *4* LeoFrame.Icon area convenience methods
-    def addIconButton(self, *args: Args, **keys: KWargs) -> None:
+    def addIconButton(self, *args: Args, **keys: KWargs) -> Any:
         if self.iconBar:
             return self.iconBar.add(*args, **keys)
         return None
