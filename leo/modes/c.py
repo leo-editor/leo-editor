@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20250121105007.1: * @file ../modes/c.py
+#@+node:ekr.20250330150257.1: * @file ../modes/c.py
 # Leo colorizer control file for c mode.
 # This file is in the public domain.
 
@@ -9,7 +9,7 @@ import string
 #@-others
 
 #@+<< c: properties >>
-#@+node:ekr.20250123062334.1: ** << c: properties >>
+#@+node:ekr.20250330150257.2: ** << c: properties >>
 
 # Properties for c mode.
 properties = {
@@ -25,7 +25,7 @@ properties = {
 }
 #@-<< c: properties >>
 #@+<< c: attributes & dict >>
-#@+node:ekr.20250123062356.1: ** << c: attributes & dict >>
+#@+node:ekr.20250330150257.3: ** << c: attributes & dict >>
 
 # Attributes dict for c_main ruleset.
 c_main_attributes_dict = {
@@ -65,7 +65,7 @@ attributesDictDict = {
 }
 #@-<< c: attributes & dict >>
 #@+<< c: keywords dict >>
-#@+node:ekr.20250123062431.1: ** << c: keywords dict >>
+#@+node:ekr.20250330150257.4: ** << c: keywords dict >>
 
 # Keywords dict for c_main ruleset.
 c_main_keywords_dict = {
@@ -121,41 +121,41 @@ keywordsDictDict = {
 }
 #@-<< c: keywords dict >>
 #@+<< c: rules >>
-#@+node:ekr.20250123062533.1: ** << c: rules >>
+#@+node:ekr.20250330150257.5: ** << c: rules >>
 # Rules for c_main ruleset.
 
 #@+others
-#@+node:ekr.20250123061808.1: *3* function: c_rule0 /**
+#@+node:ekr.20250330150257.6: *3* function: c_rule0 /**
 def c_rule0(colorer, s, i):
     return colorer.match_span(s, i, kind="comment3", begin="/**", end="*/",
           delegate="doxygen::doxygen")
-#@+node:ekr.20250123061808.2: *3* function: c_rule1 /*!
+#@+node:ekr.20250330150257.7: *3* function: c_rule1 /*!
 def c_rule1(colorer, s, i):
     return colorer.match_span(s, i, kind="comment3", begin="/*!", end="*/",
           delegate="doxygen::doxygen")
-#@+node:ekr.20250123061808.3: *3* function: c_rule2 /*
+#@+node:ekr.20250330150257.8: *3* function: c_rule2 /*
 def c_rule2(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/")
-#@+node:ekr.20250123061808.4: *3* function: c_rule3 "
+#@+node:ekr.20250330150257.9: *3* function: c_rule3 "
 def c_rule3(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="\"", end="\"",
           no_line_break=True)
-#@+node:ekr.20250123061808.5: *3* function: c_rule4 '
+#@+node:ekr.20250330150257.10: *3* function: c_rule4 '
 def c_rule4(colorer, s, i):
     return colorer.match_span(s, i, kind="literal1", begin="'", end="'",
           no_line_break=True)
-#@+node:ekr.20250123061808.6: *3* function: c_rule5 ##
+#@+node:ekr.20250330150257.11: *3* function: c_rule5 ##
 def c_rule5(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="keyword2", seq="##")
-#@+node:ekr.20250123061808.7: *3* function: c_rule6 #
+#@+node:ekr.20250330150257.12: *3* function: c_rule6 #
 def c_rule6(colorer, s, i):
 
     # #4283: Colorize the whole line.
     return colorer.match_eol_span(s, i, kind="keyword2")
-#@+node:ekr.20250123061808.8: *3* function: c_rule7 // comment
+#@+node:ekr.20250330150257.13: *3* function: c_rule7 // comment
 def c_rule7(colorer, s, i):
     return colorer.match_eol_span(s, i, kind="comment2", seq="//")
-#@+node:ekr.20250123070417.1: *3* rules: operators
+#@+node:ekr.20250330150257.14: *3* rules: operators
 def c_rule8(colorer, s, i):
     return colorer.match_plain_seq(s, i, kind="operator", seq="=")
 
@@ -213,11 +213,11 @@ def c_rule_at_sign(colorer, s, i):  # #4283.
 def c_rule_semicolon(colorer, s, i):  # #4283.
     return colorer.match_plain_seq(s, i, kind="operator", seq=";")
 
-#@+node:ekr.20250123061808.27: *3* function: c_rule26 (
+#@+node:ekr.20250330150257.15: *3* function: c_rule26 (
 def c_rule26(colorer, s, i):
     return colorer.match_mark_previous(s, i, kind="function", pattern="(",
           exclude_match=True)
-#@+node:ekr.20250123061808.28: *3* function: c_keyword & label
+#@+node:ekr.20250330150257.16: *3* function: c_keyword & label
 def c_keyword(colorer, s, i):
     n = colorer.match_keywords(s, i)
     if n >= 0:
@@ -233,7 +233,7 @@ def c_keyword(colorer, s, i):
 #@-others
 #@-<< c: rules >>
 #@+<< c: rules dict >>
-#@+node:ekr.20250123062712.1: ** << c: rules dict >>
+#@+node:ekr.20250330150257.17: ** << c: rules dict >>
 # Rules dict for c_main ruleset.
 rulesDict1 = {
     ";": [c_rule_semicolon],  # #4283.
