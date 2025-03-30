@@ -10,6 +10,8 @@ from leo.core.leoQt import QtGui, QtWidgets
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
+    Args = Any
+    KWargs = Any
     QWidget = QtWidgets.QWidget
 
 #@+others
@@ -91,7 +93,7 @@ def showColorNames(event: LeoKeyEvent) -> None:
         color_list: list[str] = []
         box = QtWidgets.QComboBox()
 
-        def onActivated(n, *args, **keys) -> None:
+        def onActivated(n: int, *args: Args, **keys: KWargs) -> None:
             color = color_list[n]
             sheet = template % (color, color)
             box.setStyleSheet(sheet)
@@ -116,7 +118,7 @@ def showColorNames(event: LeoKeyEvent) -> None:
         g.es('created color picker in icon area')
 #@+node:ekr.20170324142416.1: ** qt: show-color-wheel
 @g.command('show-color-wheel')
-def showColorWheel(self, event: LeoKeyEvent) -> None:
+def showColorWheel(self: Any, event: LeoKeyEvent) -> None:
     """Show a Qt color dialog."""
     c, p = self.c, self.c.p
     picker = QtWidgets.QColorDialog()
@@ -143,7 +145,7 @@ def showColorWheel(self, event: LeoKeyEvent) -> None:
         QtWidgets.QApplication.clipboard().setText(text)
 #@+node:ekr.20170324143944.3: ** qt: show-fonts
 @g.command('show-fonts')
-def showFonts(self, event: LeoKeyEvent) -> None:
+def showFonts(self: Any, event: LeoKeyEvent) -> None:
     """Open a tab in the log pane showing a font picker."""
     c, p = self.c, self.c.p
     picker = QtWidgets.QFontDialog()
