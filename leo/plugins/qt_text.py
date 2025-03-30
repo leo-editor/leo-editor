@@ -140,7 +140,7 @@ def helpForRMarginGuides(self, event=None):
 class QTextMixin:
     """A minimal mixin class for QTextEditWrapper and QScintillaWrapper classes."""
     #@+others
-    #@+node:ekr.20140901062324.18732: *3* qtm.ctor & helper
+    #@+node:ekr.20140901062324.18732: *3* QTextMixin.ctor & helper
     def __init__(self, c: Cmdr = None) -> None:
         """Ctor for QTextMixin class"""
         self.c = c
@@ -156,7 +156,7 @@ class QTextMixin:
         self.widget: ComplexUnion = None
         if c:
             self.injectIvars(c)
-    #@+node:ekr.20140901062324.18721: *4* qtm.injectIvars
+    #@+node:ekr.20140901062324.18721: *4* QTextMixin.injectIvars
     def injectIvars(self, c: Cmdr) -> QTextMixin:
         """Inject standard leo ivars into the QTextEdit or QsciScintilla widget."""
         w = self
@@ -168,12 +168,12 @@ class QTextMixin:
         w.leo_chapter = None
         w.leo_frame = None
         return w
-    #@+node:ekr.20140901062324.18825: *3* qtm.getName
+    #@+node:ekr.20140901062324.18825: *3* QTextMixin.getName
     def getName(self) -> str:
         return self.name  # Essential.
-    #@+node:ekr.20140901122110.18733: *3* qtm.Event handlers
+    #@+node:ekr.20140901122110.18733: *3* QTextMixin.Event handlers
     # These are independent of the kind of Qt widget.
-    #@+node:ekr.20140901062324.18716: *4* qtm.onCursorPositionChanged
+    #@+node:ekr.20140901062324.18716: *4* QTextMixin.onCursorPositionChanged
     def onCursorPositionChanged(self, event: QEvent = None) -> None:
 
         c = self.c
@@ -184,7 +184,7 @@ class QTextMixin:
             return
         if hasattr(c.frame, 'statusLine'):
             c.frame.statusLine.update()
-    #@+node:ekr.20140901062324.18714: *4* qtm.onTextChanged
+    #@+node:ekr.20140901062324.18714: *4* QTextMixin.onTextChanged
     def onTextChanged(self) -> None:
         """
         Update Leo after the body has been changed.
@@ -216,22 +216,22 @@ class QTextMixin:
         oldSel = (i, i + j)
         c.undoer.doTyping(p, 'Typing', oldText, newText,
             oldSel=oldSel, oldYview=None, newInsert=newInsert, newSel=newSel)
-    #@+node:ekr.20140901122110.18734: *3* qtm.Generic high-level interface
+    #@+node:ekr.20140901122110.18734: *3* QTextMixin.Generic high-level interface
     # These call only wrapper methods.
-    #@+node:ekr.20140902181058.18645: *4* qtm.Enable/disable
+    #@+node:ekr.20140902181058.18645: *4* QTextMixin.Enable/disable
     def disable(self) -> None:
         self.enabled = False
 
     def enable(self, enabled: bool = True) -> None:
         self.enabled = enabled
-    #@+node:ekr.20140902181058.18644: *4* qtm.Clipboard
+    #@+node:ekr.20140902181058.18644: *4* QTextMixin.Clipboard
     def clipboard_append(self, s: str) -> None:
         s1 = g.app.gui.getTextFromClipboard()
         g.app.gui.replaceClipboardWith(s1 + s)
 
     def clipboard_clear(self) -> None:
         g.app.gui.replaceClipboardWith('')
-    #@+node:ekr.20140901062324.18698: *4* qtm.setFocus
+    #@+node:ekr.20140901062324.18698: *4* QTextMixin.setFocus
     def setFocus(self) -> None:
         """QTextMixin"""
         if 'focus' in g.app.debug:
@@ -244,14 +244,14 @@ class QTextMixin:
             Qsci and Qsci.QsciScintilla,  # This line causes the mypy complaint.
         )), self.widget
         QtWidgets.QTextBrowser.setFocus(self.widget)
-    #@+node:ekr.20140901062324.18717: *4* qtm.Generic text
-    #@+node:ekr.20140901062324.18703: *5* qtm.appendText
+    #@+node:ekr.20140901062324.18717: *4* QTextMixin.Generic text
+    #@+node:ekr.20140901062324.18703: *5* QTextMixin.appendText
     def appendText(self, s: str) -> None:
         """QTextMixin"""
         s2 = self.getAllText()
         self.setAllText(s2 + s)
         self.setInsertPoint(len(s2))
-    #@+node:ekr.20140901141402.18706: *5* qtm.delete
+    #@+node:ekr.20140901141402.18706: *5* QTextMixin.delete
     def delete(self, i: int, j: int = None) -> None:
         """QTextMixin"""
         if j is None:
@@ -263,12 +263,12 @@ class QTextMixin:
         self.setAllText(s[:i] + s[j:])
         # Bug fix: Significant in external tests.
         self.setSelectionRange(i, i, insert=i)
-    #@+node:ekr.20140901062324.18827: *5* qtm.deleteTextSelection
+    #@+node:ekr.20140901062324.18827: *5* QTextMixin.deleteTextSelection
     def deleteTextSelection(self) -> None:
         """QTextMixin"""
         i, j = self.getSelectionRange()
         self.delete(i, j)
-    #@+node:ekr.20110605121601.18102: *5* qtm.get
+    #@+node:ekr.20110605121601.18102: *5* QTextMixin.get
     def get(self, i: int, j: int = None) -> str:
         """QTextMixin"""
         # 2012/04/12: fix the following two bugs by using the vanilla code:
@@ -276,7 +276,7 @@ class QTextMixin:
         # https://bugs.launchpad.net/leo-editor/+bug/971166
         s = self.getAllText()
         return s[i:j]
-    #@+node:ekr.20140901062324.18704: *5* qtm.getLastIndex & getLength
+    #@+node:ekr.20140901062324.18704: *5* QTextMixin.getLastIndex & getLength
     def getLastIndex(self, s: str = None) -> int:
         """QTextMixin"""
         return len(self.getAllText()) if s is None else len(s)
@@ -284,7 +284,7 @@ class QTextMixin:
     def getLength(self, s: str = None) -> int:
         """QTextMixin"""
         return len(self.getAllText()) if s is None else len(s)
-    #@+node:ekr.20140901062324.18705: *5* qtm.getSelectedText
+    #@+node:ekr.20140901062324.18705: *5* QTextMixin.getSelectedText
     def getSelectedText(self) -> str:
         """QTextMixin"""
         i, j = self.getSelectionRange()  # Returns (int, int)
@@ -292,29 +292,29 @@ class QTextMixin:
             return ''
         s = self.getAllText()
         return s[i:j]
-    #@+node:ekr.20140901141402.18702: *5* qtm.insert
+    #@+node:ekr.20140901141402.18702: *5* QTextMixin.insert
     def insert(self, i: int, s: str) -> int:
         """QTextMixin"""
         s2 = self.getAllText()
         self.setAllText(s2[:i] + s + s2[i:])
         self.setInsertPoint(i + len(s))
         return i
-    #@+node:ekr.20140902084950.18634: *5* qtm.seeInsertPoint
+    #@+node:ekr.20140902084950.18634: *5* QTextMixin.seeInsertPoint
     def seeInsertPoint(self) -> None:
         """Ensure the insert point is visible."""
         # getInsertPoint defined in client classes.
         self.see(self.getInsertPoint())
-    #@+node:ekr.20140902135648.18668: *5* qtm.selectAllText
+    #@+node:ekr.20140902135648.18668: *5* QTextMixin.selectAllText
     def selectAllText(self, s: str = None) -> None:
         """QTextMixin."""
         self.setSelectionRange(0, self.getLength(s))
-    #@+node:ekr.20140901141402.18704: *5* qtm.toPythonIndexRowCol
+    #@+node:ekr.20140901141402.18704: *5* QTextMixin.toPythonIndexRowCol
     def toPythonIndexRowCol(self, index: int) -> tuple[int, int]:
         """QTextMixin"""
         s = self.getAllText()
         row, col = g.convertPythonIndexToRowCol(s, index)
         return row, col
-    #@+node:ekr.20140901062324.18729: *4* qtm.rememberSelectionAndScroll
+    #@+node:ekr.20140901062324.18729: *4* QTextMixin.rememberSelectionAndScroll
     def rememberSelectionAndScroll(self) -> None:
 
         w = self
