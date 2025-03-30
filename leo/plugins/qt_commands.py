@@ -1,33 +1,32 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20110605121601.17996: * @file ../plugins/qt_commands.py
 """Leo's Qt-related commands defined by @g.command."""
-from typing import TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoColor
 from leo.core import leoConfig
+from leo.core.leoGui import LeoKeyEvent
 from leo.core.leoQt import QtGui, QtWidgets
 
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
-    ### from leo.core.leoQt import QEvent
     QWidget = QtWidgets.QWidget
 
 #@+others
 #@+node:ekr.20110605121601.18000: ** init
 def init() -> bool:
     """Top-level init function for qt_commands.py."""
-    ok = True
     g.plugin_signon(__name__)
     g.registerHandler("select2", onSelect)
-    return ok
+    return True
 #@+node:ekr.20250330060728.1: ** onSelect
-def onSelect(tag, keywords) -> None:
+def onSelect(tag: str, keywords: Any) -> None:
     c: Cmdr = keywords.get('c') or keywords.get('new_c')
     wdg: QWidget = c.frame.top.leo_body_frame
     wdg.setWindowTitle(c.p.h)
 #@+node:ekr.20110605121601.18001: ** qt: detach-editor-toggle & helpers
 @g.command('detach-editor-toggle')
-def detach_editor_toggle(event) -> None:
+def detach_editor_toggle(event: LeoKeyEvent) -> None:
     """ Detach or undetach body editor """
     c: Cmdr = event['c']
     detach = True
@@ -42,7 +41,7 @@ def detach_editor_toggle(event) -> None:
         undetach_editor(c)
 
 @g.command('detach-editor-toggle-max')
-def detach_editor_toggle_max(event) -> None:
+def detach_editor_toggle_max(event: LeoKeyEvent) -> None:
     """ Detach editor, maximize """
     c: Cmdr = event['c']
     detach_editor_toggle(event)
@@ -50,7 +49,7 @@ def detach_editor_toggle_max(event) -> None:
         wdg: QWidget = c.frame.top.leo_body_frame
         wdg.showMaximized()
 #@+node:ekr.20170324145714.1: *3* qt: detach_editor
-def detach_editor(c) -> None:
+def detach_editor(c: Cmdr) -> None:
     wdg: QWidget = c.frame.top.leo_body_frame
     parent = wdg.parent()
     if parent is None:
@@ -59,13 +58,13 @@ def detach_editor(c) -> None:
     else:
         c.frame.detached_body_info = parent, parent.sizes()
         wdg.setParent(None)
-        sheet = c.config.getData('qt-gui-plugin-style-sheet')
-        if sheet:
-            sheet = '\n'.join(sheet)
+        sheets: list[str] = c.config.getData('qt-gui-plugin-style-sheet')
+        if sheets:
+            sheet = '\n'.join(sheets)
             wdg.setStyleSheet(sheet)
         wdg.show()
 #@+node:ekr.20170324145716.1: *3* qt: undetach_editor
-def undetach_editor(c) -> None:
+def undetach_editor(c: Cmdr) -> None:
     wdg: QWidget = c.frame.top.leo_body_frame
     parent, sizes = c.frame.detached_body_info
     parent.insertWidget(0, wdg)
@@ -74,7 +73,7 @@ def undetach_editor(c) -> None:
     c.frame.detached_body_info = None
 #@+node:ekr.20170324143944.2: ** qt: show-color-names
 @g.command('show-color-names')
-def showColorNames(event=None) -> None:
+def showColorNames(event: LeoKeyEvent) -> None:
     """Put up a dialog showing color names."""
     c: Cmdr = event.get('c')
     template = '''
@@ -115,7 +114,7 @@ def showColorNames(event=None) -> None:
         g.es('created color picker in icon area')
 #@+node:ekr.20170324142416.1: ** qt: show-color-wheel
 @g.command('show-color-wheel')
-def showColorWheel(self, event=None) -> None:
+def showColorWheel(self, event: LeoKeyEvent) -> None:
     """Show a Qt color dialog."""
     c, p = self.c, self.c.p
     picker = QtWidgets.QColorDialog()
@@ -142,7 +141,7 @@ def showColorWheel(self, event=None) -> None:
         QtWidgets.QApplication.clipboard().setText(text)
 #@+node:ekr.20170324143944.3: ** qt: show-fonts
 @g.command('show-fonts')
-def showFonts(self, event=None) -> None:
+def showFonts(self, event: LeoKeyEvent) -> None:
     """Open a tab in the log pane showing a font picker."""
     c, p = self.c, self.c.p
     picker = QtWidgets.QFontDialog()
@@ -183,7 +182,7 @@ def showFonts(self, event=None) -> None:
         c.undoer.afterChangeNodeContents(p, 'change-font', udata)
 #@+node:ekr.20140918124632.17893: ** qt: show-style-sheet
 @g.command('show-style-sheet')
-def print_style_sheet(event) -> None:
+def print_style_sheet(event: LeoKeyEvent) -> None:
     """show-style-sheet command."""
     c: Cmdr = event.get('c')
     if c:
@@ -191,7 +190,7 @@ def print_style_sheet(event) -> None:
 #@+node:ekr.20140918124632.17891: ** qt: style-reload
 @g.command('style-reload')
 @g.command('reload-style-sheets')
-def style_reload(event) -> None:
+def style_reload(event: LeoKeyEvent) -> None:
     """reload-styles command.
 
     Find the appropriate style sheet and re-apply it.
@@ -204,7 +203,7 @@ def style_reload(event) -> None:
         c.reloadSettings()
 #@+node:ekr.20140918124632.17892: ** qt: style-set-selected
 @g.command('style-set-selected')
-def style_set_selected(event) -> None:
+def style_set_selected(event: LeoKeyEvent) -> None:
     """style-set-selected command. Set the global stylesheet to c.p.b. (For testing)"""
     c: Cmdr = event.get('c')
     if c:
