@@ -1,22 +1,21 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20110605121601.17996: * @file ../plugins/qt_commands.py
 """Leo's Qt-related commands defined by @g.command."""
+from __future__ import annotations
 from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoColor
 from leo.core import leoConfig
-from leo.core.leoCommands import Commands as Cmdr
-from leo.core.leoGui import LeoKeyEvent
 from leo.core.leoQt import QtGui, QtWidgets
 if TYPE_CHECKING:
+    from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoGui import LeoKeyEvent
     QWidget = QtWidgets.QWidget
 
 #@+others
 #@+node:ekr.20110605121601.18000: ** init
 def init() -> bool:
     """Top-level init function for qt_commands.py."""
-    if g.unitTesting:
-        return False
     g.plugin_signon(__name__)
     g.registerHandler("select2", onSelect)
     return True
