@@ -16,6 +16,8 @@ if TYPE_CHECKING:
 #@+node:ekr.20110605121601.18000: ** init
 def init() -> bool:
     """Top-level init function for qt_commands.py."""
+    if g.app.gui.guiName() != "qt":
+        return False
     g.plugin_signon(__name__)
     g.registerHandler("select2", onSelect)
     return True
