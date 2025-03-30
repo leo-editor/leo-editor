@@ -98,8 +98,8 @@ class LeoBody:
         self.frame = frame
         self.parentFrame: Widget = parentFrame
         # May be overridden in subclasses...
-        self.widget: Widget = None  # set in LeoQtBody.set_widget.
-        self.wrapper: TextAPI = None  # set in LeoQtBody.set_widget.
+        self.widget: Widget = None
+        self.wrapper: TextAPI = None
         # Must be overridden in subclasses...
         self.colorizer: BaseColorizer = None
         # Init user settings.

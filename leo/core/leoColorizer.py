@@ -43,11 +43,12 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGlobals import GeneralSetting
     KWargs = Any
     Lexer = Callable
+    QWidget = QtWidgets.QWidget
     RuleSet = list[Callable]
 #@-<< leoColorizer annotations >>
 #@+others
 #@+node:ekr.20190323044524.1: ** function: make_colorizer
-def make_colorizer(c: Cmdr, widget: QtWidgets.QWidget) -> Union[JEditColorizer, PygmentsColorizer]:
+def make_colorizer(c: Cmdr, widget: QWidget) -> Union[JEditColorizer, PygmentsColorizer]:
     """Return an instance of JEditColorizer or PygmentsColorizer."""
     use_pygments = pygments and c.config.getBool('use-pygments', default=False)
     if use_pygments:
@@ -63,11 +64,11 @@ class BaseColorizer:
     #@+others
     #@+node:ekr.20220317050513.1: *3*  BaseColorizer: birth
     #@+node:ekr.20190324044744.1: *4* BaseColorizer.__init__
-    def __init__(self, c: Cmdr, widget: QtWidgets.QWidget = None) -> None:
+    def __init__(self, c: Cmdr, widget: QWidget = None) -> None:
         """ctor for BaseColorizer class."""
         # Copy args...
         self.c = c
-        self.widget: QtWidgets.QWidget = widget
+        self.widget: QWidget = widget
         if widget:  # #503: widget may be None during unit tests.
             widget.leo_colorizer = self
         # Configuration dicts...
@@ -888,7 +889,7 @@ class JEditColorizer(BaseColorizer):
     #@+others
     #@+node:ekr.20220317050804.1: *3*  jedit: Birth
     #@+node:ekr.20110605121601.18572: *4* jedit.__init__ & helpers
-    def __init__(self, c: Cmdr, widget: QtWidgets.QWidget) -> None:
+    def __init__(self, c: Cmdr, widget: QWidget) -> None:
         """Ctor for JEditColorizer class."""
         super().__init__(c, widget)
 
@@ -3061,7 +3062,7 @@ if Qsci:
     class NullScintillaLexer(Qsci.QsciLexerCustom):
         """A do-nothing colorizer for Scintilla."""
 
-        def __init__(self, c: Cmdr, parent: QtWidgets.QWidget = None) -> None:
+        def __init__(self, c: Cmdr, parent: QWidget = None) -> None:
             super().__init__(parent)  # Init the pase class
             self.leo_c = c
             self.configure_lexer()
@@ -3090,7 +3091,7 @@ class PygmentsColorizer(BaseColorizer):
     #@+others
     #@+node:ekr.20220317053040.1: *3*  pyg_c: Birth
     #@+node:ekr.20190319151826.3: *4* pyg_c.__init__
-    def __init__(self, c: Cmdr, widget: QtWidgets.QWidget) -> None:
+    def __init__(self, c: Cmdr, widget: QWidget) -> None:
         """Ctor for PygmentsColorizer class."""
         super().__init__(c, widget)
         # Create the highlighter. The default is NullObject.
@@ -3365,7 +3366,7 @@ class QScintillaColorizer(BaseColorizer):
     """A colorizer for a QsciScintilla widget."""
     #@+others
     #@+node:ekr.20140906081909.18709: *3* qsc.__init__ & reloadSettings
-    def __init__(self, c: Cmdr, widget: QtWidgets.QWidget) -> None:
+    def __init__(self, c: Cmdr, widget: QWidget) -> None:
         """Ctor for QScintillaColorizer. widget is a """
         super().__init__(c)
         self.count = 0  # For unit testing.

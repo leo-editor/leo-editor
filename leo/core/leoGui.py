@@ -464,7 +464,7 @@ class NullGui(LeoGui):
     def replaceClipboardWith(self, s: str) -> None:
         self.clipboardContents = s
 
-    def set_focus(self, commander: str, widget: str) -> None:
+    def set_focus(self, commander: str, widget: Widget) -> None:
         self.focusWidget = widget
     #@+node:ekr.20230916153234.1: *3* NullGui.createSpellTab
     def createSpellTab(self, c: Cmdr, spellHandler: Any, tabName: str) -> Any:
