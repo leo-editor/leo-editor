@@ -1,28 +1,34 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20110605121601.17996: * @file ../plugins/qt_commands.py
 """Leo's Qt-related commands defined by @g.command."""
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoColor
 from leo.core import leoConfig
 from leo.core.leoQt import QtGui, QtWidgets
+
+if TYPE_CHECKING:
+    from leo.core.leoCommands import Commands as Cmdr
+    QWidget = QtWidgets.QWidget
+
 #@+others
 #@+node:ekr.20110605121601.18000: ** init
-def init():
+def init() -> bool:
     """Top-level init function for qt_commands.py."""
     ok = True
     g.plugin_signon(__name__)
     g.registerHandler("select2", onSelect)
     return ok
-
+#@+node:ekr.20250330060728.1: ** onSelect
 def onSelect(tag, keywords):
-    c = keywords.get('c') or keywords.get('new_c')
-    wdg = c.frame.top.leo_body_frame
+    c: Cmdr = keywords.get('c') or keywords.get('new_c')
+    wdg: QWidget = c.frame.top.leo_body_frame
     wdg.setWindowTitle(c.p.h)
 #@+node:ekr.20110605121601.18001: ** qt: detach-editor-toggle & helpers
 @g.command('detach-editor-toggle')
 def detach_editor_toggle(event):
     """ Detach or undetach body editor """
-    c = event['c']
+    c: Cmdr = event['c']
     detach = True
     try:
         if c.frame.detached_body_info is not None:
@@ -37,14 +43,14 @@ def detach_editor_toggle(event):
 @g.command('detach-editor-toggle-max')
 def detach_editor_toggle_max(event):
     """ Detach editor, maximize """
-    c = event['c']
+    c: Cmdr = event['c']
     detach_editor_toggle(event)
     if c.frame.detached_body_info is not None:
-        wdg = c.frame.top.leo_body_frame
+        wdg: QWidget = c.frame.top.leo_body_frame
         wdg.showMaximized()
 #@+node:ekr.20170324145714.1: *3* qt: detach_editor
 def detach_editor(c):
-    wdg = c.frame.top.leo_body_frame
+    wdg: QWidget = c.frame.top.leo_body_frame
     parent = wdg.parent()
     if parent is None:
         # just show if already detached
@@ -59,7 +65,7 @@ def detach_editor(c):
         wdg.show()
 #@+node:ekr.20170324145716.1: *3* qt: undetach_editor
 def undetach_editor(c):
-    wdg = c.frame.top.leo_body_frame
+    wdg: QWidget = c.frame.top.leo_body_frame
     parent, sizes = c.frame.detached_body_info
     parent.insertWidget(0, wdg)
     wdg.show()
@@ -69,7 +75,7 @@ def undetach_editor(c):
 @g.command('show-color-names')
 def showColorNames(event=None):
     """Put up a dialog showing color names."""
-    c = event.get('c')
+    c: Cmdr = event.get('c')
     template = '''
         QComboBox {
             background-color: %s;
@@ -178,7 +184,7 @@ def showFonts(self, event=None):
 @g.command('show-style-sheet')
 def print_style_sheet(event):
     """show-style-sheet command."""
-    c = event.get('c')
+    c: Cmdr = event.get('c')
     if c:
         c.styleSheetManager.print_style_sheet()
 #@+node:ekr.20140918124632.17891: ** qt: style-reload
@@ -191,7 +197,7 @@ def style_reload(event):
 
     This replaces execution of the `stylesheet & source` node in settings files.
     """
-    c = event.get('c')
+    c: Cmdr = event.get('c')
     if c and c.styleSheetManager:
         # Call ssm.reload_settings after reloading all settings.
         c.reloadSettings()
@@ -199,7 +205,7 @@ def style_reload(event):
 @g.command('style-set-selected')
 def style_set_selected(event):
     """style-set-selected command. Set the global stylesheet to c.p.b. (For testing)"""
-    c = event.get('c')
+    c: Cmdr = event.get('c')
     if c:
         c.styleSheetManager.set_selected_style_sheet()
 #@-others
