@@ -1057,7 +1057,7 @@ class FileNameChooser:
         self.c = c
         self.k = c.k
         assert c and c.k
-        self.log: Any = c.frame.log or g.NullObject()  # A Union.
+        self.log = c.frame.log or g.NullObject()
         self.callback: Callable = None
         self.filterExt: list[str] = None
         self.prompt: str = None
