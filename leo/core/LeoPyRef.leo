@@ -174,7 +174,6 @@
 <v t="ekr.20161026193447.1"><vh>@file leoBackground.py</vh></v>
 <v t="ekr.20150521115018.1"><vh>@file leoBeautify.py</vh></v>
 <v t="ekr.20070227091955.1"><vh>@file leoBridge.py</vh></v>
-<v t="ekr.20100208065621.5894"><vh>@file leoCache.py</vh></v>
 <v t="ekr.20070317085508.1"><vh>@file leoChapters.py</vh></v>
 <v t="ekr.20031218072017.2794"><vh>@file leoColor.py</vh></v>
 <v t="ekr.20140827092102.18574"><vh>@file leoColorizer.py</vh></v>
@@ -228,6 +227,7 @@
 </v>
 <v t="ekr.20031218072017.3625"><vh>Gui base classes</vh>
 <v t="ekr.20050721093241"><vh>&lt;&lt; about gui classes and gui plugins &gt;&gt;</vh></v>
+<v t="ekr.20250329033400.1"><vh>@file leoAPI.py</vh></v>
 <v t="ekr.20060123151617"><vh>@file leoFind.py</vh></v>
 <v t="ekr.20031218072017.3655"><vh>@file leoFrame.py</vh></v>
 <v t="ekr.20031218072017.3719"><vh>@file leoGui.py</vh></v>
@@ -343,7 +343,8 @@
 </v>
 <v t="ekr.20180225010850.1"><vh>In leo/modes</vh>
 <v t="ekr.20221129095254.1"><vh>@file ../modes/batch.py</vh></v>
-<v t="ekr.20250121105007.1"><vh>@file ../modes/cweb.py</vh></v>
+<v t="ekr.20250121105007.1"><vh>@file ../modes/c.py</vh></v>
+<v t="ekr.20250110042632.1"><vh>@file ../modes/doxygen.py</vh></v>
 <v t="ekr.20150326145530.1"><vh>@file ../modes/forth.py</vh></v>
 <v t="ekr.20230419050031.1"><vh>@file ../modes/html.py</vh></v>
 <v t="ekr.20240227082119.1"><vh>@file ../modes/ini.py</vh></v>
@@ -355,7 +356,35 @@
 <v t="ekr.20210219115553.109"><vh>@file ../modes/python.py</vh></v>
 <v t="ekr.20231103124615.1"><vh>@file ../modes/rust.py</vh></v>
 <v t="ekr.20231012163843.1"><vh>@file ../modes/scheme.py</vh></v>
-<v t="ekr.20250302114419.1"><vh>@edit ../modes/tex.py</vh></v>
+</v>
+</v>
+<v t="ekr.20110605121601.17862"><vh>Qt gui</vh>
+<v t="ekr.20161223152017.1"><vh>@edit ../plugins/qt_quicksearch.py</vh></v>
+<v t="ekr.20161223152353.1"><vh>@edit ../plugins/qt_quicksearch_sub.py</vh></v>
+<v t="ekr.20120419093256.10048"><vh>@file ../plugins/free_layout.py</vh></v>
+<v t="ekr.20110605121601.17954"><vh>@file ../plugins/nested_splitter.py</vh></v>
+<v t="ekr.20221019064053.1"><vh>@file ../plugins/pane_commands.py</vh></v>
+<v t="ekr.20110605121601.17996"><vh>@file ../plugins/qt_commands.py</vh></v>
+<v t="ekr.20140907103315.18766"><vh>@file ../plugins/qt_events.py</vh></v>
+<v t="ekr.20140907123524.18774"><vh>@file ../plugins/qt_frame.py</vh></v>
+<v t="ekr.20140907085654.18699"><vh>@file ../plugins/qt_gui.py</vh></v>
+<v t="ekr.20140907103315.18777"><vh>@file ../plugins/qt_idle_time.py</vh></v>
+<v t="tom.20240923194438.1"><vh>@file ../plugins/qt_layout.py</vh></v>
+<v t="ekr.20140907123524.18777"><vh>@file ../plugins/qt_quickheadlines.py</vh></v>
+<v t="ekr.20140831085423.18598"><vh>@file ../plugins/qt_text.py</vh></v>
+<v t="ekr.20140907131341.18707"><vh>@file ../plugins/qt_tree.py</vh></v>
+<v t="ekr.20110605121601.18002"><vh>@file ../plugins/qtGui.py</vh></v>
+<v t="ekr.20171031111403.1"><vh>Leo Edit Pane</vh>
+<v t="tbrown.20171028115144.8"><vh>@file ../plugins/editpane/__init__.py</vh></v>
+<v t="tbrown.20171029210211.1"><vh>@file ../plugins/editpane/clicky_splitter.py</vh></v>
+<v t="ekr.20211210102459.1"><vh>@file ../plugins/editpane/csvedit.py</vh></v>
+<v t="tbrown.20171028115144.6"><vh>@file ../plugins/editpane/editpane.py</vh></v>
+<v t="tbrown.20171028115144.5"><vh>@file ../plugins/editpane/leotextedit.py</vh></v>
+<v t="tbrown.20171028115144.4"><vh>@file ../plugins/editpane/markdownview.py</vh></v>
+<v t="tbrown.20171028115144.2"><vh>@file ../plugins/editpane/plaintextedit.py</vh></v>
+<v t="tbrown.20171028115144.1"><vh>@file ../plugins/editpane/plaintextview.py</vh></v>
+<v t="tbrown.20171028115143.3"><vh>@file ../plugins/editpane/vanillascintilla.py</vh></v>
+<v t="tbrown.20171028115541.1"><vh>@file signal_manager.py</vh></v>
 </v>
 </v>
 <v t="ekr.20201012111545.1"><vh>Plugins</vh>
@@ -581,7 +610,6 @@
 <v t="ville.20090815203828.5235"><vh>@file ../plugins/spydershell.py</vh></v>
 <v t="ekr.20100103093121.5329"><vh>@file ../plugins/stickynotes.py</vh></v>
 <v t="tbrown.20090119215428.2"><vh>@file ../plugins/todo.py</vh></v>
-<v t="tbrown.20100318101414.5990"><vh>@file ../plugins/viewrendered.py</vh></v>
 <v t="TomP.20191215195433.1"><vh>@file ../plugins/viewrendered3.py</vh></v>
 </v>
 <v t="ekr.20060328125925"><vh>@file ../plugins/chapter_hoist.py</vh></v>
@@ -611,35 +639,6 @@
 <v t="ekr.20180202053206.1"><vh>@file ../plugins/writers/treepad.py</vh></v>
 </v>
 </v>
-<v t="ekr.20110605121601.17862"><vh>Qt gui</vh>
-<v t="ekr.20161223152017.1"><vh>@edit ../plugins/qt_quicksearch.py</vh></v>
-<v t="ekr.20161223152353.1"><vh>@edit ../plugins/qt_quicksearch_sub.py</vh></v>
-<v t="ekr.20120419093256.10048"><vh>@file ../plugins/free_layout.py</vh></v>
-<v t="ekr.20110605121601.17954"><vh>@file ../plugins/nested_splitter.py</vh></v>
-<v t="ekr.20221019064053.1"><vh>@file ../plugins/pane_commands.py</vh></v>
-<v t="ekr.20110605121601.17996"><vh>@file ../plugins/qt_commands.py</vh></v>
-<v t="ekr.20140907103315.18766"><vh>@file ../plugins/qt_events.py</vh></v>
-<v t="ekr.20140907123524.18774"><vh>@file ../plugins/qt_frame.py</vh></v>
-<v t="ekr.20140907085654.18699"><vh>@file ../plugins/qt_gui.py</vh></v>
-<v t="ekr.20140907103315.18777"><vh>@file ../plugins/qt_idle_time.py</vh></v>
-<v t="tom.20240923194438.1"><vh>@file ../plugins/qt_layout.py</vh></v>
-<v t="ekr.20140907123524.18777"><vh>@file ../plugins/qt_quickheadlines.py</vh></v>
-<v t="ekr.20140831085423.18598"><vh>@file ../plugins/qt_text.py</vh></v>
-<v t="ekr.20140907131341.18707"><vh>@file ../plugins/qt_tree.py</vh></v>
-<v t="ekr.20110605121601.18002"><vh>@file ../plugins/qtGui.py</vh></v>
-<v t="ekr.20171031111403.1"><vh>Leo Edit Pane</vh>
-<v t="tbrown.20171028115144.8"><vh>@file ../plugins/editpane/__init__.py</vh></v>
-<v t="tbrown.20171029210211.1"><vh>@file ../plugins/editpane/clicky_splitter.py</vh></v>
-<v t="ekr.20211210102459.1"><vh>@file ../plugins/editpane/csvedit.py</vh></v>
-<v t="tbrown.20171028115144.6"><vh>@file ../plugins/editpane/editpane.py</vh></v>
-<v t="tbrown.20171028115144.5"><vh>@file ../plugins/editpane/leotextedit.py</vh></v>
-<v t="tbrown.20171028115144.4"><vh>@file ../plugins/editpane/markdownview.py</vh></v>
-<v t="tbrown.20171028115144.2"><vh>@file ../plugins/editpane/plaintextedit.py</vh></v>
-<v t="tbrown.20171028115144.1"><vh>@file ../plugins/editpane/plaintextview.py</vh></v>
-<v t="tbrown.20171028115143.3"><vh>@file ../plugins/editpane/vanillascintilla.py</vh></v>
-<v t="tbrown.20171028115541.1"><vh>@file signal_manager.py</vh></v>
-</v>
-</v>
 <v t="ekr.20221204070905.1"><vh>Script files</vh>
 <v t="ekr.20240321122705.1"><vh>--- build scripts</vh>
 <v t="ekr.20240321122822.1"><vh>@file ../scripts/build_leo.py</vh></v>
@@ -659,7 +658,6 @@
 <v t="ekr.20240323050520.1"><vh>@file ../scripts/beautify_all_leo.py</vh></v>
 <v t="ekr.20240322065528.1"><vh>@file ../scripts/beautify_leo.py</vh></v>
 <v t="ekr.20240322084902.1"><vh>@file ../scripts/flake8_leo.py</vh></v>
-<v t="ekr.20250227032644.1"><vh>@file ../scripts/pyflakes_leo.py</vh></v>
 <v t="ekr.20240323051724.1"><vh>@file ../scripts/full_test_leo.py</vh></v>
 <v t="ekr.20240321122413.8"><vh>@file ../scripts/mypy_leo.py</vh></v>
 <v t="ekr.20240321122413.9"><vh>@file ../scripts/pylint_leo.py</vh></v>
@@ -711,6 +709,8 @@
 <v t="ekr.20240204082420.1"><vh>in unittests/misc_tests</vh>
 <v t="ekr.20210926044012.1"><vh>@file ../unittests/misc_tests/test_doctests.py</vh></v>
 <v t="ekr.20210901140718.1"><vh>@file ../unittests/misc_tests/test_syntax.py</vh></v>
+<v t="ekr.20250109055422.1"><vh>@file ../unittests/misc_tests/test_modes.py</vh></v>
+<v t="ekr.20230506095312.1"><vh>@file ../unittests/misc_tests/test_design.py</vh></v>
 </v>
 <v t="ekr.20240204082924.1"><vh>in unittests/plugins</vh>
 <v t="ekr.20220812224747.1"><vh>@file ../unittests/plugins/test_writers.py</vh></v>
@@ -936,21 +936,15 @@ alternate gui's for Leo.
 
 Rule 1: Leo's core is (or should be) free of gui-specific code.
 
-Core code calls 'gui wrapper methods' defined by gui-specific classes.
-The base classes for these gui-specific classes are in the node
-Code--&gt;Gui Base classes.
+Core code calls **gui wrapper methods** defined by gui-specific classes.
 
-Rule 2: Gui-specific code should be localized.
+Rule 2: Gui-specific code should be localized to a single file.
 
-The @file nodes contained in the node 'Code--&gt;Gui Tkinter classes' in
-leoPy.leo contain all of Leo's Tkinter-specific code. Gui plugins
-would typically put all similar code in a single file.
-
-Rule 3: Gui-specific code can call gui methods directly.
+Rule 3: Gui-specific code may call gui methods directly.
 
 There are no restrictions about the code in the gui-specific classes.
 
-Rule 4: Gui-specific classes must implement the 'gui wrapper methods'
+Rule 4: Gui-specific classes must implement the gui wrapper methods
 specified in the gui base classes.
 
 This is the way that gui-specific classes provide gui-specific
@@ -974,11 +968,7 @@ Using the gui wrapper methods is a bit messy for two reasons:
    wrapper should be defined in a subclass.
 
 2. The original wrappers assumed Tkinter-like indices.  Wrappers that
-   were defined later assume Python indices (see Rule 5 below).  The
-   newer style wrappers that use Python indices have 'Python' in their
-   name.  Having two sets of wrappers is one of the ugliest features
-   of the present code.  I find it hard to remember which wrappers
-   exist and what exactly they do :-)
+   were defined later assume Python indices (see Rule 5 below).
 
 Rule 5: Leo's core should use Python indices, not gui-specific
 indices.
@@ -990,8 +980,8 @@ len(s) (end of text s).  That is, there are exactly len(s) + 1 valid
 indices.  In contrast, Tkinter indices run from "1.0" to "x.y" where
 text s has x lines and where the length of the last line is y-1.
 
-Two (recently written) functions in leoGlobals.py support conversions
-from Python indices to the row/column indices used by Tkinter.
+Two functions in leoGlobals.py support conversions from Python indices to
+the row/column indices used by Tkinter.
 
 - g.convertPythonIndexToRowCol converts a Python index to a row/column
   index used by Tkinter.
@@ -1006,7 +996,7 @@ row.  Similar remarks apply when going in the reverse direction.
 <t tx="ekr.20051031040240"></t>
 <t tx="ekr.20071113084440"># These plugins are for testing Leo's own plugin loading logic.
 # There is no reason ever to enable these plugins.</t>
-<t tx="ekr.20080412053100.5">@language rest
+<t tx="ekr.20080412053100.5">
 </t>
 <t tx="ekr.20080730161153.8"></t>
 <t tx="ekr.20090802181029.5988"></t>
@@ -1067,7 +1057,7 @@ ks:     a g.KeyStroke object
 stroke: a KeyStroke object.
 
 btw:    leoFrame.BaseTextWrapper
-stw:    leoFrame.StringTextWrapper
+stw:    leoAPI.StringTextWrapper
 
 bqtw:   qt_text.BaseQTextWrapper
 lqtb:   qt_text.LeoQTextBrowser
@@ -1095,16 +1085,20 @@ c.frame.log.logCtrl     Use c.frame.log.wrapper instead.
 </t>
 <t tx="ekr.20140831085423.18639">Here is what you *must know* to understand Leo's core:
 
-1. A **widget** is an actual Qt widget.
+1. A **widget** is an actual gui widget.
 
 Leo's core seldom accesses widgets directly.  Instead...
 
 2. A **wrapper class** defines a standard api that hides the details
    of the underlying gui **text** widgets.
 
-Leo's core uses this api almost exclusively. That is, Leo's core code treats wrappers *as if* they were only text widgets there are!
+Leo's core uses this api almost exclusively. That is, Leo's core code
+treats wrappers *as if* they were only text widgets there are!
 
-There is, however, a back door for (hopefully rare!) special cases. All wrapper classes define an official ``widget`` ivar, so core or plugin code can gain access to the real Qt widget using wrapper.widget. Searching for wrapper.widget will find all gui-dependent snippets of code in Leo's core.
+There is, however, a back door for (hopefully rare!) special cases. All
+wrapper classes define an official ``widget`` ivar, so core or plugin code
+can gain access to the real (Qt) widget using wrapper.widget. Searching for
+wrapper.widget will find all gui-dependent snippets of code in Leo's core.
 </t>
 <t tx="ekr.20140902032918.18591">@language rest
 @wrap
@@ -1580,14 +1574,15 @@ prefix_lines:
 @tabwidth -4 # For a better match.
 g.cls()
 # dir_ = g.os_path_finalize_join(g.app.loadDir, '..', 'modes')
-dir_ = g.os_path_finalize_join(g.app.loadDir, '..', '..', 'setup.py')
+# dir_ = g.os_path_finalize_join(g.app.loadDir, '..', '..', 'setup.py')
+dir_ = r'C:\Python\Python3.13\Lib\pdb.py'
 c.recursiveImport(
     dir_=dir_,
     kind = '@clean', # '@auto', '@clean', '@nosent','@file',
     recursive = True,
-    safe_at_file = False,
+    safe_at_file = True,
     theTypes = ['.py'],
-    verbose = False,
+    verbose = True,
 )
 if 1:
     last = c.lastTopLevel()
@@ -1607,7 +1602,7 @@ win = sys.platform.startswith('win')
 old_dir = os.getcwd()
 if win:
     new_dir = r'C:\Repos\leo-editor'
-    path = r'C:\Backup'
+    path = r'C:\Users\Edward~1\Backup\backup-repo'
 else:
     new_dir = '/home/edward/Repos/leo-editor'
     path = '/home/edward/Backup'
@@ -2404,7 +2399,6 @@ rust: rustc
 # Patterns must define two groups, in either order:
 # One group, containing only digits, defines the line number.
 # The other group defines the file name.
-
 
 go: ^\s*(.*):([0-9]+):([0-9]+):.+$
 python: ^\s*File "(.+)", line ([0-9]+), in .+$
