@@ -152,6 +152,7 @@ class QTextMixin:
         self.permanent = True  # False if selecting the minibuffer will make the widget go away.
         self.useScintilla = False  # This is used!
         self.virtualInsertPoint = None
+        # This default annotation may mask bugs, but it probably doesn't!
         self.widget: ComplexUnion = None
         if c:
             self.injectIvars(c)
