@@ -277,11 +277,13 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position, VNode
+    from QtMultimedia import QMediaPlayer
 
     # These need more work!
     Event = Any
+    QGraphicsScene = QtWidgets.QGraphicsScene
+    QGraphicsView = QtWidgets.QGraphicsView
     QWidget = QtWidgets.QWidget
-    Widget = Any
     Wrapper = Any
 #@-<< vr: annotations >>
 trace = False  # This global trace is convenient.
@@ -596,7 +598,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     #@-<< vr: default templates >>
     #@+others
     #@+node:ekr.20110317080650.14380: *3*  vr.ctor & helpers
-    def __init__(self, c: Cmdr, parent: Widget = None) -> None:
+    def __init__(self, c: Cmdr, parent: QWidget = None) -> None:
         """Ctor for ViewRenderedController class."""
         self.c = c
         # Create the widget.
@@ -612,11 +614,11 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.typst_template: str = None
         self.pdf_zoom: int = None
         # Widgets managed by destroy_widgets.
-        self.browser: Widget = None
-        self.gs: Widget = None  # For @graphics-script: a QGraphicsScene
-        self.gv: Widget = None  # For @graphics-script: a QGraphicsView
-        self.vp: Widget = None  # A QtMultimedia.QMediaPlayer or None.
-        self.w: Wrapper = None  # The present widget in the rendering pane.
+        self.browser: QWidget = None
+        self.gs: QGraphicsScene = None
+        self.gv: QGraphicsView = None
+        self.vp: QMediaPlayer = None
+        self.w: QWidget = None  # The present widget in the rendering pane.
         # Set the ivars.
         self.active = True
         self.gnx: str = None
@@ -692,7 +694,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.mathjax_template = get_template('mathjax')
         self.typst_template = get_template('typst')
     #@+node:ekr.20190614065659.1: *4* vr.create_pane
-    def create_pane(self, parent: Position) -> None:
+    def create_pane(self, parent: QWidget) -> None:
         """Create the VR pane."""
         if g.unitTesting:
             return
@@ -1597,7 +1599,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         w.setContextMenuPolicy(ContextMenuPolicy.CustomContextMenu)
         w.customContextMenuRequested.connect(contextMenuCallback)
 
-        def handleClick(url: str, w: Widget = w) -> None:
+        def handleClick(url: str, w: QWidget = w) -> None:
             wrapper = qt_text.QTextEditWrapper(w, name='vr-body', c=c)
             event = g.Bunch(c=c, w=wrapper)
             g.openUrlOnClick(event, url=url)
