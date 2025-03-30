@@ -97,7 +97,7 @@ class LeoFind:
         self.c = c
         self.expert_mode = False  # Set in finishCreate.
         # Created by dw.createFindTab.
-        self.ftm: FindTabManager = None  # A Union. Hard to annotate.
+        self.ftm: FindTabManager = None
         self.k: KeyHandler = c.k
         self.re_obj: re.Pattern = None
         #

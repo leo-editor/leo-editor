@@ -2148,7 +2148,7 @@ class CoreBody(leoFrame.LeoBody):
         self.c: Cmdr = c
         self.colorizer: Wrapper = leoFrame.NullColorizer(c)
         self.widget: Wrapper = None
-        self.wrapper: Wrapper = None  # Set in createCursesBody.
+        self.wrapper: Wrapper = None
 #@+node:ekr.20170419105852.1: *3* class CoreFrame (leoFrame.LeoFrame)
 class CoreFrame(leoFrame.LeoFrame):
     """The LeoFrame when --gui=curses is in effect."""
