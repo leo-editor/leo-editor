@@ -13,7 +13,6 @@ if TYPE_CHECKING:  # pragma: no cover
     Menu = Any
     Value = Any
     Widget = Any
-    Wrapper = Any
 #@-<< leoMenu imports & annotations >>
 #@+others
 #@+node:ekr.20031218072017.3750: ** class LeoMenu
@@ -23,11 +22,10 @@ class LeoMenu:
     #@+node:ekr.20120124042346.12938: *3* LeoMenu.Birth
     def __init__(self, frame: Widget) -> None:
         self.c = frame.c
-        self.enable_dict: dict[str, Callable] = {}  # Created by finishCreate.
+        self.enable_dict: dict[str, Callable] = {}
         self.frame = frame
         self.isNull = False
-        self.menus: dict[str, Menu] = {}  # Menu dictionary.
-        self.wrapper: Wrapper = None
+        self.menus: dict[str, Menu] = {}
 
     def finishCreate(self) -> None:
         self.define_enable_dict()
@@ -114,8 +112,6 @@ class LeoMenu:
         g.error('', s)
     #@+node:ekr.20031218072017.3781: *3* LeoMenu.Gui-independent menu routines
     #@+node:ekr.20060926213642: *4* LeoMenu.capitalizeMinibufferMenuName
-    #@@nobeautify
-
     def capitalizeMinibufferMenuName(self, s: str, removeHyphens: bool) -> str:
         result = []
         for i, ch in enumerate(s):
