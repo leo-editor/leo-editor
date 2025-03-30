@@ -342,8 +342,10 @@
 </v>
 </v>
 <v t="ekr.20180225010850.1"><vh>In leo/modes</vh>
+<v t="ekr.20250330145834.1"><vh>@edit ../modes/tex.py</vh></v>
 <v t="ekr.20221129095254.1"><vh>@file ../modes/batch.py</vh></v>
-<v t="ekr.20250121105007.1"><vh>@file ../modes/c.py</vh></v>
+<v t="ekr.20250330150257.1"><vh>@file ../modes/c.py</vh></v>
+<v t="ekr.20250121105007.1"><vh>@file ../modes/cweb.py</vh></v>
 <v t="ekr.20250110042632.1"><vh>@file ../modes/doxygen.py</vh></v>
 <v t="ekr.20150326145530.1"><vh>@file ../modes/forth.py</vh></v>
 <v t="ekr.20230419050031.1"><vh>@file ../modes/html.py</vh></v>
