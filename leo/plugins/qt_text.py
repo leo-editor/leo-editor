@@ -17,6 +17,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent
     from leo.plugins.leoAPI import BaseTextAPI
     Args = Any
+    ComplexUnion = Any
     KWargs = Any
     QEvent = QtCore.QEvent
     QFrame = QtWidgets.QFrame
@@ -151,7 +152,7 @@ class QTextMixin:
         self.permanent = True  # False if selecting the minibuffer will make the widget go away.
         self.useScintilla = False  # This is used!
         self.virtualInsertPoint = None
-        self.widget: Value = None  # A Union.
+        self.widget: ComplexUnion = None
         if c:
             self.injectIvars(c)
     #@+node:ekr.20140901062324.18721: *4* qtm.injectIvars
@@ -1662,7 +1663,7 @@ class QTextEditWrapper(QTextMixin):
         def after(func: Callable) -> None:
             QtCore.QTimer.singleShot(delay, func)
 
-        def addFlashCallback(self: QTextEditWrapper = self, w: str = w) -> None:
+        def addFlashCallback(self: QTextEditWrapper = self, w: QWidget = w) -> None:
             i = self.flashIndex
             cursor = w.textCursor()  # Must be the widget's cursor.
             cursor.setPosition(i)
