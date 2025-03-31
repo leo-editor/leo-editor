@@ -417,4 +417,5 @@ class TreeAPI:
     def updateHead(self, event: LeoKeyEvent, w: BaseTextAPI) -> None:
         pass
 #@-others
+#@@language python
 #@-leo
