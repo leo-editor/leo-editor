@@ -2451,6 +2451,19 @@ def createChapterIvar(self, w: Wrapper) -> None:
             w.leo_chapter = cc.getSelectedChapter()
         else:
             w.leo_chapter = None
+#@+node:ekr.20250331151305.15: *3* LeoBody.switchToChapter
+def switchToChapter(self, w: TextAPI) -> None:
+    """select w.leo_chapter."""
+    c = self.c
+    cc = c.chapterController
+    chapter = getattr(w, 'leo_chapter', None)
+    if chapter:
+        chapter = w.leo_chapter
+        name = chapter and chapter.name
+        oldChapter = cc.getSelectedChapter()
+        if chapter != oldChapter:
+            cc.selectChapterByName(name)
+            c.bodyWantsFocus()
 #@-all
 #@@nosearch
 #@-leo
