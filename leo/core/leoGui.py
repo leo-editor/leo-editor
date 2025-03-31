@@ -21,6 +21,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoNodes import Position
     from leo.plugins.qt_frame import FindTabManager
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
+    Value = Any
     Widget = Any
 #@-<< leoGui imports & annotations >>
 #@+others
@@ -218,7 +219,7 @@ class LeoGui:
     def getTextFromClipboard(self) -> str:
         raise NotImplementedError
     #@+node:ekr.20031218072017.3735: *5* LeoGui.Dialog utils
-    def attachLeoIcon(self, window: Any) -> None:
+    def attachLeoIcon(self, window: Widget) -> None:
         """Attach the Leo icon to a window."""
         raise NotImplementedError
 
@@ -345,11 +346,11 @@ class LeoKeyEvent:
             d[ivar] = getattr(self, ivar)
         return f"LeoKeyEvent:\n{g.objToString(d)}"
     #@+node:ekr.20150511181702.1: *3* LeoKeyEvent.get & __getitem__
-    def get(self, attr: str) -> Any:
+    def get(self, attr: str) -> Value:
         """Compatibility with g.bunch: return an attr."""
         return getattr(self, attr, None)
 
-    def __getitem__(self, attr: str) -> Any:
+    def __getitem__(self, attr: str) -> Value:
         """Compatibility with g.bunch: return an attr."""
         return getattr(self, attr, None)
     #@+node:ekr.20140907103315.18775: *3* LeoKeyEvent.type
@@ -463,7 +464,7 @@ class NullGui(LeoGui):
     def replaceClipboardWith(self, s: str) -> None:
         self.clipboardContents = s
 
-    def set_focus(self, commander: str, widget: str) -> None:
+    def set_focus(self, commander: str, widget: Widget) -> None:
         self.focusWidget = widget
     #@+node:ekr.20230916153234.1: *3* NullGui.createSpellTab
     def createSpellTab(self, c: Cmdr, spellHandler: Any, tabName: str) -> Any:
@@ -515,10 +516,10 @@ class NullGui(LeoGui):
     def onDeactivateEvent(self, *args: str, **keys: str) -> None:
         pass
     #@+node:ekr.20070228155807: *3* NullGui.isTextWidget & isTextWrapper
-    def isTextWidget(self, w: Any) -> bool:
+    def isTextWidget(self, w: Widget) -> bool:
         return True  # Must be True for unit tests.
 
-    def isTextWrapper(self, w: Any) -> bool:
+    def isTextWrapper(self, w: Widget) -> bool:
         """Return True if w is a Text widget suitable for text-oriented commands."""
         return w and getattr(w, 'supportsHighLevelInterface', None)
     #@+node:ekr.20070301172456: *3* NullGui.panels
@@ -619,7 +620,7 @@ class StringFindTabManager:
     #@+node:ekr.20210221130549.4: *3* sftm.get_settings
     #@@nobeautify
 
-    def get_settings(self) -> Any:
+    def get_settings(self) -> g.Bunch:
         """
         Return a g.bunch representing all widget values.
 
@@ -769,7 +770,7 @@ class StringFindTabManager:
 class StringGui(LeoGui):
     """
     A class representing all on-screen objects using subclasses of the
-    leoFrame.StringTextWrapper class.
+    leoAPI.StringTextWrapper class.
     """
     #@+others
     #@+node:ekr.20170613114120.1: *3* StringGui.runMainLoop

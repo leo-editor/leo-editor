@@ -19,7 +19,6 @@ QWidget = QtWidgets.QWidget
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
-    # from typing import TypeAlias  # Requires Python 3.12+
     Args = Any
     KWargs = Any
 #@-<< qt_layout: imports & annotations >>
@@ -540,19 +539,19 @@ class LayoutCacheWidget(QWidget):
             g.es_print('VR3 is not running', color='blue')
     #@+node:ekr.20241027162525.1: *3* LayoutCacheWidget: utils
     #@+node:ekr.20241027161121.1: *4* LCW.contract_pane
-    def contract_pane(self, widget: Any) -> None:
+    def contract_pane(self, widget: QWidget) -> None:
         """Contract the pane containing the given widget."""
         self.resize_pane(widget, delta=-40)
 
     #@+node:ekr.20241028045021.1: *4* LCW.expand_pane
-    def expand_pane(self, widget: Any) -> None:
+    def expand_pane(self, widget: QWidget) -> None:
         """Expand the pane containing the given widget."""
         self.resize_pane(widget, delta=40)
     #@+node:tom.20240923194438.5: *4* LCW.find_splitter_by_name
     def find_splitter_by_name(self, name: str) -> Optional[QSplitter]:
         """Return the splitter with the given objectName."""
 
-        def is_splitter(obj: Any) -> bool:
+        def is_splitter(obj: object) -> bool:
             return obj is not None and isinstance(obj, QSplitter)
 
         splitter = self.find_widget(name)
@@ -632,7 +631,7 @@ class LayoutCacheWidget(QWidget):
         # This is indicated by using the name VRX_PLACEHOLDER_NAME in the layout.
         # In building the SPLITTER dict we replace the placeholder
         # by VR3_OBJ_NAME if it exists, otherwise VR_OBJ_NAME.
-        SPLITTERS = dict()
+        SPLITTERS: dict[str, str] = dict()
         for k, v in layout['SPLITTERS'].items():
             if k == VRX_PLACEHOLDER_NAME:
                 k = VR3_OBJ_NAME if has_vr3 else VR_OBJ_NAME
@@ -648,12 +647,11 @@ class LayoutCacheWidget(QWidget):
                 splitter.setObjectName(name)
                 self.created_splitter_dict[name] = splitter
 
-        SPLITTER_DICT: Dict[str, Any] = OrderedDict()
+        SPLITTER_DICT: Dict[str, QSplitter] = OrderedDict()
         for name in ORIENTATIONS:
             splitter = self.find_splitter_by_name(name)
             if splitter is not None and SPLITTER_DICT.get(name, None) is None:
                 SPLITTER_DICT[name] = splitter
-
         #@-<< initialize data structures >>
         #@+<< rehome body editor >>
         #@+node:tom.20240923194438.8: *5* << rehome body editor >> restoreFromLayout

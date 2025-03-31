@@ -58,12 +58,16 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoRst import RstCommands
     from leo.commands.spellCommands import SpellCommandsClass
     # Other objects...
+    from leo.core.API import StringTextWrapper
     from leo.core.leoGui import LeoGui
     from leo.plugins.qt_gui import StyleSheetManager
-    from leo.plugins.qt_text import QTextEditWrapper as Wrapper
+    from leo.plugins.qt_text import QTextEditWrapper
+    Args = Any
     KWargs = Any
     RegexFlag = Union[int, re.RegexFlag]  # re.RegexFlag does not define 0
+    Value = Any
     Widget = Any
+    Wrapper = Union[QTextEditWrapper, StringTextWrapper]
 #@-<< leoCommands annotations >>
 
 def cmd(name: str) -> Callable:
@@ -235,7 +239,7 @@ class Commands:
         self.expansionNode = None  # The last node we expanded or contracted.
         self.nodeConflictList: list[Position] = []  # List of nodes with conflicting read-time data.
         self.nodeConflictFileName: Optional[str] = None  # The fileName for c.nodeConflictList.
-        self.user_dict: dict[str, Any] = {}  # Non-persistent dictionary for free use by scripts and plugins.
+        self.user_dict: dict[str, Value] = {}  # Non-persistent dictionary for free use by scripts and plugins.
     #@+node:ekr.20120217070122.10467: *5* c.initEventIvars
     def initEventIvars(self) -> None:
         """Init ivars relating to gui events."""
@@ -1183,7 +1187,7 @@ class Commands:
     def executeScript(self,
         *,
         event: LeoKeyEvent = None,
-        args: Any = None,
+        args: Args = None,
         p: Position = None,
         script: str = None,
         useSelectedText: bool = True,
@@ -1193,7 +1197,7 @@ class Commands:
         namespace: dict = None,
         raiseFlag: bool = False,
         runPyflakes: bool = True,
-    ) -> Any:
+    ) -> Value:
         """
         Execute a *Leo* script, written in python.
         Keyword args:
@@ -1282,7 +1286,7 @@ class Commands:
         define_name: str,
         namespace: dict,
         script: str,
-    ) -> Any:
+    ) -> Value:
         c = self
         if c.p:
             p = c.p.copy()  # *Always* use c.p and pass c.p to script.
@@ -2047,7 +2051,7 @@ class Commands:
         """Check consistency of parent and child data structures."""
         c = self
 
-        def _assert(condition: Any) -> bool:
+        def _assert(condition: bool) -> bool:
             return g._assert(condition, show_callers=False)
 
         def dump(p: Position) -> None:
@@ -2065,7 +2069,7 @@ class Commands:
                 dump(p)
                 dump(p.parent())
                 return False
-        if p.level() > 0 and not _assert(p.v.parents):
+        if p.level() > 0 and not _assert(bool(p.v.parents)):
             g.trace("no parents")
             dump(p)
             return False
@@ -2681,7 +2685,7 @@ class Commands:
     #@+node:ekr.20080827175609.39: *4* c.scanAllDirectives
     #@@nobeautify
 
-    def scanAllDirectives(self, p: Position) -> dict[str, Any]:
+    def scanAllDirectives(self, p: Position) -> dict[str, Value]:
         """
         Scan p and ancestors for directives.
 
@@ -2704,7 +2708,7 @@ class Commands:
         )
         # Set d by scanning all directives.
         aList = g.get_directives_dict_list(p)
-        d: dict[str, Any] = {}
+        d: dict[str, Value] = {}
         for key, default, func in table:
             val = func(aList)  # type:ignore
             d[key] = default if val is None else val
@@ -2784,7 +2788,7 @@ class Commands:
         if expected != got:
             g.trace(f"stroke: {stroke!r}, expected char: {expected!r}, got: {got!r}")
     #@+node:ekr.20031218072017.2817: *4* c.doCommand
-    def doCommand(self, command_func: Callable, command_name: str, event: LeoKeyEvent) -> Any:
+    def doCommand(self, command_func: Callable, command_name: str, event: LeoKeyEvent) -> Value:
         """
         Execute the given command function, invoking hooks and catching exceptions.
 
@@ -2841,7 +2845,7 @@ class Commands:
             g.doHook("command2", c=c, p=p, label=command_name)
         return return_value
     #@+node:ekr.20200522075411.1: *4* c.doCommandByName
-    def doCommandByName(self, command_name: str, event: LeoKeyEvent = None) -> Any:
+    def doCommandByName(self, command_name: str, event: LeoKeyEvent = None) -> Value:
         """
         Execute one command, given the name of the command.
 
@@ -2869,7 +2873,7 @@ class Commands:
             c.frame.updateStatusLine()
         return val
     #@+node:ekr.20200526074132.1: *4* c.executeMinibufferCommand
-    def executeMinibufferCommand(self, commandName: str) -> Any:
+    def executeMinibufferCommand(self, commandName: str) -> Value:
         """Call c.doCommandByName, creating the required event."""
         c = self
         event = g.app.gui.create_key_event(c)
@@ -3448,7 +3452,7 @@ class Commands:
         from leo.commands import editFileCommands as efc
         efc.GitDiffController(c=self).diff_two_revs(rev1=rev1, rev2=rev2)
     #@+node:ekr.20180510103923.1: *4* c.diff_two_branches
-    def diff_two_branches(self, branch1: Any, branch2: Any, fn: str) -> None:
+    def diff_two_branches(self, branch1: str, branch2: str, fn: str) -> None:
         """
         Create an outline describing the git diffs for all files changed
         between rev1 and rev2.
@@ -4090,7 +4094,7 @@ class Commands:
         if command:
             # Command is one of two callbacks defined in createMenuEntries.
 
-            def add_commandCallback(c: Commands = c, command: Callable = command) -> Any:
+            def add_commandCallback(c: Commands = c, command: Callable = command) -> Value:
                 val = command()
                 # Careful: func may destroy c.
                 if c.exists:
@@ -4514,7 +4518,7 @@ class Commands:
 
     def cloneFindByPredicate(
         self,
-        generator: Any,         # The generator used to traverse the tree.
+        generator: Callable,   # The generator used to traverse the tree.
         predicate: Callable,    # A function of one argument p, returning True
                                 # if p should be included in the results.
         failMsg: str = None,    # Failure message. Default is no message.
@@ -4693,7 +4697,7 @@ class Commands:
     #@+node:ekr.20091211111443.6266: *5* c.checkBatchOperationsList
     def checkBatchOperationsList(self, aList: list) -> tuple[bool, dict]:
         ok = True
-        d: dict[VNode, list[Any]] = {}
+        d: dict[VNode, list[Value]] = {}
         for z in aList:
             try:
                 op, p, n = z
@@ -4784,7 +4788,7 @@ class Commands:
         ))
     #@+node:ekr.20171124155725.1: *3* c.Settings
     #@+node:ekr.20171114114908.1: *4* c.registerReloadSettings
-    def registerReloadSettings(self, obj: Any) -> None:
+    def registerReloadSettings(self, obj: object) -> None:
         """Enter object into c.configurables."""
         c = self
         if obj not in c.configurables:

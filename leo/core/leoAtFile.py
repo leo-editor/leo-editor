@@ -21,6 +21,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position, VNode
     Args = Any
+    Value = Any
 #@-<< leoAtFile imports & annotations >>
 
 #@+others
@@ -3040,7 +3041,7 @@ class AtFile:
         }
         return d.get(kind) or f"<unknown AtFile class constant> {kind!r}"
     #@+node:ekr.20080923070954.4: *4* at.scanAllDirectives
-    def scanAllDirectives(self, p: Position) -> dict[str, Any]:
+    def scanAllDirectives(self, p: Position) -> dict[str, Value]:
         """
         Scan p and p's ancestors looking for directives,
         setting corresponding AtFile ivars.

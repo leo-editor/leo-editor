@@ -6,15 +6,18 @@
 from __future__ import annotations
 from collections.abc import Callable
 import sys
-from typing import Any, Iterator, TYPE_CHECKING
+from typing import Any, Iterator, Sequence, Union, TYPE_CHECKING
+from types import ModuleType
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-    # mypy doesn't seem to handle this.
+    Args = Any
+    KWargs = Any
     Keywords = dict[str, list[g.Bunch]]
-    Tag_List = Any  # Union[str, Sequence[str]]
+    Tags = Union[str, Sequence[str]]
+    Value = Any
 #@-<< leoPlugins imports & annotations >>
 
 # Define modules that may be enabled by default
@@ -29,7 +32,7 @@ def init() -> None:
     """Init g.app.pluginsController."""
     g.app.pluginsController = LeoPluginsController()
 
-def registerHandler(tags: Tag_List, fn: Callable) -> None:
+def registerHandler(tags: Tags, fn: Callable) -> None:
     """A wrapper so plugins can still call leoPlugins.registerHandler."""
     return g.app.pluginsController.registerHandler(tags, fn)
 #@+node:ville.20090222141717.2: ** TryNext (Exception)
@@ -42,7 +45,7 @@ class TryNext(Exception):
     original ones.
     """
 
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
+    def __init__(self, *args: Args, **kwargs: KWargs) -> None:
         super().__init__()
         self.args = args
         self.kwargs = kwargs
@@ -55,13 +58,13 @@ class CommandChainDispatcher:
 
     """
 
-    def __init__(self, commands: list[Any] = None) -> None:
+    def __init__(self, commands: list = None) -> None:
         if commands is None:
             self.chain = []
         else:
             self.chain = commands
 
-    def __call__(self, *args: Any, **kw: Any) -> None:
+    def __call__(self, *args: Args, **kw: KWargs) -> None:
         """ Command chain is called just like normal func.
 
         This will call all funcs in chain with the same args as were given to this
@@ -138,7 +141,7 @@ class BaseLeoPlugin:
 
             def setCommand(
         self,
-        commandName: Any,
+        commandName: str,
         handler: Callable,
         shortcut: Any=None,
         pane: str='all',
@@ -147,11 +150,11 @@ class BaseLeoPlugin:
 
     - setMenuItem::
 
-            def setMenuItem(self, menu: Wrapper, commandName: Any=None, handler: Callable=None) -> None:
+            def setMenuItem(self, menu: Wrapper, commandName: str=None, handler: Callable=None) -> None:
 
     - setButton::
 
-            def setButton(self, buttonText: Any=None, commandName: Any=None, color: Any=None) -> None:
+            def setButton(self, buttonText: str=None, commandName: str=None, color: Any=None) -> None:
 
     *variables*
 
@@ -219,7 +222,7 @@ class BaseLeoPlugin:
     #@+node:ekr.20100908125007.6013: *3* setCommand
     def setCommand(
         self,
-        commandName: Any,
+        commandName: str,
         handler: Callable,
         shortcut: str = '',
         pane: str = 'all',
@@ -285,7 +288,7 @@ class LeoPluginsController:
         # containing @enabled-plugins nodes that caused the plugin to be loaded
         self.loadedModulesFilesDict: dict[str, str] = {}
         # Keys are regularized module names, values are modules.
-        self.loadedModules: dict[str, Any] = {}
+        self.loadedModules: dict[str, ModuleType] = {}
         # The stack of module names. The top is the module being loaded.
         self.loadingModuleNameStack: list[str] = []
         self.signonModule = None  # A hack for plugin_signon.
@@ -312,7 +315,7 @@ class LeoPluginsController:
                 # This would be a MAJOR leak of positions.
                 g.doHook("idle", c=c)
     #@+node:ekr.20100908125007.6017: *4* plugins.doHandlersForTag & helper
-    def doHandlersForTag(self, tag: str, keywords: Keywords) -> Any:
+    def doHandlersForTag(self, tag: str, keywords: Keywords) -> Value:
         """
         Execute all handlers for a given tag, in alphabetical order.
         The caller, doHook, catches all exceptions.
@@ -332,7 +335,7 @@ class LeoPluginsController:
                 self.callTagHandler(bunch, tag, keywords)
         return None
     #@+node:ekr.20100908125007.6016: *5* plugins.callTagHandler
-    def callTagHandler(self, bunch: Any, tag: str, keywords: Keywords) -> Any:
+    def callTagHandler(self, bunch: g.Bunch, tag: str, keywords: Keywords) -> Value:
         """Call the event handler."""
         handler, moduleName = bunch.fn, bunch.moduleName
         # Make sure the new commander exists.
@@ -354,7 +357,7 @@ class LeoPluginsController:
         self.loadingModuleNameStack.pop()
         return result
     #@+node:ekr.20100908125007.6018: *4* plugins.doPlugins (g.app.hookFunction)
-    def doPlugins(self, tag: str, keywords: Keywords) -> Any:
+    def doPlugins(self, tag: str, keywords: Keywords) -> Value:
         """The default g.app.hookFunction."""
         if g.app.killed:
             return None
@@ -363,7 +366,7 @@ class LeoPluginsController:
         return self.doHandlersForTag(tag, keywords)
     #@+node:ekr.20100909065501.5950: *3* plugins.Information
     #@+node:ekr.20100908125007.6019: *4* plugins.getHandlersForTag
-    def getHandlersForTag(self, tags: list[str]) -> list[Any]:
+    def getHandlersForTag(self, tags: list[str]) -> list[g.Bunch]:
         if isinstance(tags, (list, tuple)):
             result = []
             for tag in tags:
@@ -372,13 +375,13 @@ class LeoPluginsController:
             return result
         return self.getHandlersForOneTag(tags)
 
-    def getHandlersForOneTag(self, tag: str) -> list[Any]:
+    def getHandlersForOneTag(self, tag: str) -> list[g.Bunch]:
         return self.handlers.get(tag, [])
     #@+node:ekr.20100910075900.10204: *4* plugins.getLoadedPlugins
     def getLoadedPlugins(self) -> list[str]:
         return list(self.loadedModules.keys())
     #@+node:ekr.20100908125007.6020: *4* plugins.getPluginModule
-    def getPluginModule(self, moduleName: str) -> Any:
+    def getPluginModule(self, moduleName: str) -> ModuleType:
         return self.loadedModules.get(moduleName)
     #@+node:ekr.20100908125007.6021: *4* plugins.isLoaded
     def isLoaded(self, fn: str) -> bool:
@@ -465,7 +468,7 @@ class LeoPluginsController:
         be loaded from outside the leo/plugins directory.
         """
 
-        def pr(*args: Any, **keywords: Keywords) -> None:
+        def pr(*args: Args, **keywords: Keywords) -> None:
             if not g.unitTesting:
                 g.es_print(*args, **keywords)
 
@@ -480,7 +483,7 @@ class LeoPluginsController:
             if plugin.strip() and not plugin.lstrip().startswith('#'):
                 self.loadOnePlugin(plugin.strip(), tag=tag)
     #@+node:ekr.20100908125007.6024: *4* plugins.loadOnePlugin & helper functions
-    def loadOnePlugin(self, moduleOrFileName: Any, tag: str = 'open0', verbose: bool = False) -> Any:
+    def loadOnePlugin(self, moduleOrFileName: str, tag: str = 'open0', verbose: bool = False) -> Any:
         """
         Load one plugin from a file name or module.
         Use extensive tracing if --trace-plugins is in effect.
@@ -500,7 +503,7 @@ class LeoPluginsController:
         # Define local helper functions.
         #@+others
         #@+node:ekr.20180528160855.1: *5* function:callInitFunction
-        def callInitFunction(result: Any) -> Any:
+        def callInitFunction(result: Value) -> Value:
             """True to call the top-level init function."""
             try:
                 # Indicate success only if init_result is True.
@@ -522,7 +525,7 @@ class LeoPluginsController:
                 result = None
             return result
         #@+node:ekr.20180528162604.1: *5* function:finishImport
-        def finishImport(result: Any) -> Any:
+        def finishImport(result: Value) -> Value:
             """Handle last-minute checks."""
             if tag == 'unit-test-load':
                 return result  # Keep the result, but do no more.
@@ -539,7 +542,7 @@ class LeoPluginsController:
             self.loadedModules[moduleName] = result
             return result
         #@+node:ekr.20180528160744.1: *5* function:loadOnePluginHelper
-        def loadOnePluginHelper(moduleName: str) -> Any:
+        def loadOnePluginHelper(moduleName: str) -> Value:
             result = None
             try:
                 __import__(moduleName)
@@ -633,13 +636,13 @@ class LeoPluginsController:
             self.handlers[tag] = bunches
     #@+node:ekr.20100909065501.5951: *3* plugins.Registration
     #@+node:ekr.20100908125007.6028: *4* plugins.registerExclusiveHandler
-    def registerExclusiveHandler(self, tags: Tag_List, fn: Callable) -> None:
+    def registerExclusiveHandler(self, tags: Tags, fn: Callable) -> None:
         """ Register one or more exclusive handlers"""
         if isinstance(tags, (list, tuple)):
             for tag in tags:
                 self.registerOneExclusiveHandler(tag, fn)
         else:
-            self.registerOneExclusiveHandler(tags, fn)
+            self.registerOneExclusiveHandler(tags, fn)  # type:ignore[arg-type]
 
     def registerOneExclusiveHandler(self, tag: str, fn: Callable) -> None:
         """Register one exclusive handler"""
@@ -658,13 +661,13 @@ class LeoPluginsController:
             aList.append(bunch)
             self.handlers[tag] = aList
     #@+node:ekr.20100908125007.6029: *4* plugins.registerHandler & registerOneHandler
-    def registerHandler(self, tags: Tag_List, fn: Callable) -> None:
+    def registerHandler(self, tags: Tags, fn: Callable) -> None:
         """ Register one or more handlers"""
         if isinstance(tags, (list, tuple)):
             for tag in tags:
                 self.registerOneHandler(tag, fn)
         else:
-            self.registerOneHandler(tags, fn)
+            self.registerOneHandler(tags, fn)  # type:ignore[arg-type]
 
     def registerOneHandler(self, tag: str, fn: Callable) -> None:
         """Register one handler"""
@@ -680,12 +683,12 @@ class LeoPluginsController:
             items.append(bunch)
         self.handlers[tag] = items
     #@+node:ekr.20100908125007.6031: *4* plugins.unregisterHandler
-    def unregisterHandler(self, tags: Tag_List, fn: Callable) -> None:
+    def unregisterHandler(self, tags: Tags, fn: Callable) -> None:
         if isinstance(tags, (list, tuple)):
             for tag in tags:
                 self.unregisterOneHandler(tag, fn)
         else:
-            self.unregisterOneHandler(tags, fn)
+            self.unregisterOneHandler(tags, fn)  # type:ignore[arg-type]
 
     def unregisterOneHandler(self, tag: str, fn: Callable) -> None:
         bunches = self.handlers.get(tag)

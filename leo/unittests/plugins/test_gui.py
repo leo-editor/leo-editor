@@ -9,9 +9,11 @@ from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest, create_app
 try:
     from leo.core.leoQt import Qt, QtCore
-    from leo.core.leoFrame import StatusLineAPI, TreeAPI, WrapperAPI
-    from leo.core.leoFrame import LeoTree, NullStatusLineClass, NullTree, StringTextWrapper
-    from leo.plugins.qt_frame import QtStatusLineClass
+    from leo.core.leoAPI import IconBarAPI, StatusLineAPI, TreeAPI
+    from leo.core.leoAPI import BaseTextAPI, StringTextWrapper
+    from leo.core.leoFrame import LeoTree
+    from leo.core.leoFrame import NullIconBarClass, NullStatusLineClass, NullTree
+    from leo.plugins.qt_frame import QtIconBarClass, QtStatusLineClass
     from leo.plugins.qt_text import QLineEditWrapper, QScintillaWrapper, QTextEditWrapper
     from leo.plugins.qt_text import LeoQTextBrowser
     from leo.plugins.qt_tree import LeoQtTree
@@ -180,6 +182,20 @@ class TestAPIClasses(LeoUnitTest):
     """Tests that gui classes are compatible with the corresponding API class."""
 
     #@+others
+    #@+node:ekr.20250329035732.1: *3* test_icon_bar_api
+    def test_icon_bar_api(self):
+
+        def get_methods(cls):
+            return [z for z in dir(cls) if not z.startswith('__')]
+
+        def get_missing(cls):
+            return [z for z in get_methods(IconBarAPI) if z not in get_methods(cls)]
+
+        classes = [NullIconBarClass]
+        if Qt:
+            classes.append(QtIconBarClass)
+        for cls in classes:
+            self.assertFalse(get_missing(cls), msg=f"Missing {cls.__class__.__name__} methods")
     #@+node:ekr.20220911101304.1: *3* test_status_line_api
     def test_status_line_api(self):
 
@@ -208,14 +224,14 @@ class TestAPIClasses(LeoUnitTest):
             classes.extend([LeoQtTree, LeoTree])
         for cls in classes:
             self.assertFalse(get_missing(cls), msg=f"Missing {cls.__class__.__name__} methods")
-    #@+node:ekr.20220911101330.1: *3* test_wrapper_api
-    def test_wrapper_api(self):
+    #@+node:ekr.20220911101330.1: *3* test_text_api
+    def test_text_api(self):
 
         def get_methods(cls):
             return [z for z in dir(cls) if not z.startswith('__')]
 
         def get_missing(cls):
-            return [z for z in get_methods(WrapperAPI) if z not in get_methods(cls)]
+            return [z for z in get_methods(BaseTextAPI) if z not in get_methods(cls)]
 
         classes = [StringTextWrapper]
         if Qt:

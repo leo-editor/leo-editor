@@ -83,6 +83,7 @@ class TestPlugins(LeoUnitTest):
             # Special cases, handling Qt imports in unusual ways.
             'backlink.py',  # Qt code is optional, disabled with module-level guard.
             'leoscreen.py',  # Qt imports are optional.
+            'mod_scripting.py',
             'nodetags.py',  # #2031: Qt imports are optional.
             'pyplot_backend.py',  # Not a real plugin.
             'qt_layout.py',  # Not a real plugin.

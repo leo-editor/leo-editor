@@ -760,7 +760,7 @@ class NestedSplitter(QtWidgets.QSplitter):
         ns.setStyleSheet('\n'.join(sheets))
         window.show()
     #@+node:tbrown.20110627201141.11744: *3* ns.register_provider
-    def register_provider(self, provider):
+    def register_provider(self, provider: object) -> None:
         """Register something which provides some of the ns_* methods.
 
         NestedSplitter tests for the presence of the following methods on

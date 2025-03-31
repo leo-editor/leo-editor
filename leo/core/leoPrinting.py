@@ -8,7 +8,7 @@ Adapted from printing plugin.
 #@+node:ekr.20220901091411.1: ** << leoPrinting imports & annotations >>
 from __future__ import annotations
 from collections.abc import Callable
-from typing import Any, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 # Qt imports. May fail from the bridge.
@@ -16,7 +16,7 @@ try:  # #1973
     from leo.core.leoQt import printsupport, QtGui
     from leo.core.leoQt import DialogCode
 except Exception:
-    printsupport = QtGui = None  # type:ignore
+    printsupport = QtGui = None
     DialogCode = None  # type:ignore
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -59,7 +59,7 @@ class PrintingController:
         return '\n'.join(table)
     #@+node:ekr.20150420072955.1: *3* pr.Doc constructors
     #@+node:ekr.20150419124739.11: *4* pr.complex document
-    def complex_document(self, nodes: list[VNode], heads: bool = False) -> Any:
+    def complex_document(self, nodes: list[VNode], heads: bool = False) -> QtGui.QTextDocument:
         """Create a complex document."""
         doc = QtGui.QTextDocument()
         doc.setDefaultStyleSheet(self.stylesheet)
@@ -71,7 +71,7 @@ class PrintingController:
         doc.setHtml(contents)
         return doc
     #@+node:ekr.20150419124739.9: *4* pr.document
-    def document(self, text: str, head: str = None) -> Any:
+    def document(self, text: str, head: str = None) -> QtGui.QTextDocument:
         """Create a Qt document."""
         doc = QtGui.QTextDocument()
         doc.setDefaultStyleSheet(self.stylesheet)
@@ -84,7 +84,7 @@ class PrintingController:
         doc.setHtml(contents)
         return doc
     #@+node:ekr.20150419124739.10: *4* pr.html_document
-    def html_document(self, text: str) -> Any:
+    def html_document(self, text: str) -> QtGui.QTextDocument:
         """Create an HTML document."""
         doc = QtGui.QTextDocument()
         doc.setDefaultStyleSheet(self.stylesheet)
@@ -281,7 +281,7 @@ class PrintingController:
         self.print_doc(doc)
     #@+node:ekr.20150419124739.7: *3* pr.Top level
     #@+node:ekr.20150419124739.12: *4* pr.print_doc
-    def print_doc(self, doc: Any) -> None:
+    def print_doc(self, doc: QtGui.QTextDocument) -> None:
         """Print the document."""
         if not printsupport:
             g.trace('Qt.printsupport not found.')
@@ -292,7 +292,7 @@ class PrintingController:
         if result == DialogCode.Accepted:
             doc.print(dialog.printer())
     #@+node:ekr.20150419124739.13: *4* pr.preview_doc
-    def preview_doc(self, doc: Any) -> None:
+    def preview_doc(self, doc: QtGui.QTextDocument) -> None:
         """Preview the document."""
         dialog = printsupport.QPrintPreviewDialog()
         dialog.setSizeGripEnabled(True)

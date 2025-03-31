@@ -21,6 +21,7 @@ except Exception:
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
+    Value = Any
 #@-<< leoNodes imports & annotations >>
 #@+others
 #@+node:ekr.20031218072017.1991: ** class NodeIndices
@@ -232,7 +233,7 @@ class Position:
     #@+others
     #@+node:ekr.20040228094013: *3*  p.ctor & other special methods...
     #@+node:ekr.20080920052058.3: *4* p.__eq__ & __ne__
-    def __eq__(self, p2: Any) -> bool:  # Use Any, not Position.
+    def __eq__(self, p2: object) -> bool:  # Use object, not Position.
         """Return True if two positions are equivalent."""
         p1 = self
         # Don't use g.trace: it might call p.__eq__ or p.__ne__.
@@ -244,7 +245,7 @@ class Position:
             p1._childIndex == p2._childIndex and
             p1.stack == p2.stack)
 
-    def __ne__(self, p2: Any) -> bool:  # Use Any, not Position.
+    def __ne__(self, p2: object) -> bool:  # Use object, not Position.
         """Return True if two positions are not equivalent."""
         return not self.__eq__(p2)
     #@+node:ekr.20080416161551.190: *4*  p.__init__
@@ -259,16 +260,16 @@ class Position:
             self.stack = []
         g.app.positions += 1
     #@+node:ekr.20091210082012.6230: *4* p.__ge__ & __le__& __lt__
-    def __ge__(self, other: Any) -> bool:
+    def __ge__(self, other: object) -> bool:
         return self.__eq__(other) or self.__gt__(other)
 
-    def __le__(self, other: Any) -> bool:
+    def __le__(self, other: object) -> bool:
         return self.__eq__(other) or self.__lt__(other)
 
-    def __lt__(self, other: Any) -> bool:
+    def __lt__(self, other: object) -> bool:
         return not self.__eq__(other) and not self.__gt__(other)
     #@+node:ekr.20091210082012.6233: *4* p.__gt__
-    def __gt__(self, other: Any) -> bool:
+    def __gt__(self, other: object) -> bool:
         """Return True if self appears after other in outline order."""
         stack1, stack2 = self.stack, other.stack
         n1, n2 = len(stack1), len(stack2)
@@ -322,7 +323,7 @@ class Position:
 
     __repr__ = __str__
     #@+node:ekr.20230726063237.1: *4* p.archive
-    def archive(self) -> dict[str, Any]:
+    def archive(self) -> dict[str, Value]:
         """Return a json-like archival dictionary for p/v.unarchive."""
         p = self
         c = p.v.context
@@ -1804,11 +1805,11 @@ class Position:
         __get_nosentinels,  # __set_nosentinels
         doc="position property returning the body text without sentinels")
     #@+node:ekr.20160129073222.1: *4* p.u Property
-    def __get_u(self) -> Any:
+    def __get_u(self) -> Value:
         p = self
         return p.v.u
 
-    def __set_u(self, val: Any) -> None:
+    def __set_u(self, val: Value) -> None:
         p = self
         p.v.u = val
 
@@ -2544,7 +2545,7 @@ class VNode:
             if v2.isAnyAtFileNode():
                 v2.setDirty()
     #@+node:ekr.20040315032144: *4* v.setBodyString & v.setHeadString
-    def setBodyString(self, s: Any) -> None:
+    def setBodyString(self, s: object) -> None:
         # pylint: disable=no-else-return
         v = self
         if isinstance(s, str):
@@ -2557,7 +2558,7 @@ class VNode:
             signal_manager.emit(self.context, 'body_changed', self)
             v.updateIcon()
 
-    def setHeadString(self, s: Any) -> None:
+    def setHeadString(self, s: object) -> None:
         # pylint: disable=no-else-return
         # Fix bug: https://bugs.launchpad.net/leo-editor/+bug/1245535
         # API allows headlines to contain newlines.
@@ -2729,7 +2730,7 @@ class VNode:
             v.unknownAttributes = {}
         return v.unknownAttributes
 
-    def __set_u(self, val: Any) -> None:
+    def __set_u(self, val: Value) -> None:
         v = self
         if val is None:
             if hasattr(v, 'unknownAttributes'):

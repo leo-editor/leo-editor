@@ -14,6 +14,7 @@ from leo.core import leoGlobals as g
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position
+    Value = Any
     Widget = Any
 #@-<< leoExternalFiles imports & annotations >>
 
@@ -22,7 +23,7 @@ if TYPE_CHECKING:  # pragma: no cover
 class ExternalFile:
     """A class holding all data about an external file."""
 
-    def __init__(self, c: Cmdr, ext: str, p: Position, path: str, time: Any) -> None:
+    def __init__(self, c: Cmdr, ext: str, p: Position, path: str, time: float) -> None:
         """Ctor for ExternalFile class."""
         self.c = c
         self.ext = ext
@@ -71,14 +72,14 @@ class ExternalFilesController:
         # Values are cached @bool check-for-changed-external-file settings.
         self.enabled_d: dict[Cmdr, bool] = {}
         # List of ExternalFile instances created by self.open_with.
-        self.files: list[Any] = []
+        self.files: list[ExternalFile] = []
         # Keys are commanders. Values are bools.
         # Used only to limit traces.
         self.has_changed_d: dict[Cmdr, bool] = {}
         # Copy of g.app.commanders()
         self.unchecked_commanders: list[Cmdr] = []
         # Copy of self file. Only one files is checked at idle time.
-        self.unchecked_files: list[Any] = []
+        self.unchecked_files: list[ExternalFile] = []
         # Keys are full paths, values are modification times.
         # DO NOT alter directly, use set_time(path) and
         # get_time(path), see set_time() for notes.
@@ -216,7 +217,7 @@ class ExternalFilesController:
             g.app.loadManager.revertCommander(c)
             g.es_print(f"reloaded {path}")
     #@+node:ekr.20150407124259.1: *5* efc.idle_check_open_with_file & helper
-    def idle_check_open_with_file(self, c: Cmdr, ef: Any) -> None:
+    def idle_check_open_with_file(self, c: Cmdr, ef: ExternalFile) -> None:
         """Update the open-with node given by ef."""
         assert isinstance(ef, ExternalFile), ef
         if not ef.path or not os.path.exists(ef.path):
@@ -239,7 +240,7 @@ class ExternalFilesController:
         elif val == 'no':
             pass
     #@+node:ekr.20150407205631.1: *6* efc.update_open_with_node
-    def update_open_with_node(self, ef: Any) -> None:
+    def update_open_with_node(self, ef: ExternalFile) -> None:
         """Update the body text of ef.p to the contents of ef.path."""
         assert isinstance(ef, ExternalFile), ef
         c, p = ef.c, ef.p.copy()
@@ -254,7 +255,7 @@ class ExternalFilesController:
             p.setDirty()
             c.setChanged()
     #@+node:ekr.20150404082344.1: *4* efc.open_with & helpers
-    def open_with(self, c: Cmdr, d: dict[str, Any]) -> None:
+    def open_with(self, c: Cmdr, d: dict[str, Value]) -> None:
         """
         Called by c.openWith to handle items in the Open With... menu.
 
@@ -397,7 +398,12 @@ class ExternalFilesController:
         self.files.append(ExternalFile(c, ext, p, path, time))
         return path
     #@+node:ekr.20031218072017.2829: *5* efc.open_file_in_external_editor
-    def open_file_in_external_editor(self, c: Cmdr, d: dict[str, Any], fn: str, testing: bool = False) -> str:
+    def open_file_in_external_editor(self,
+        c: Cmdr,
+        d: dict[str, Value],
+        fn: str,
+        testing: bool = False,
+    ) -> str:
         """
         Open a file fn in an external editor.
 
@@ -547,7 +553,7 @@ class ExternalFilesController:
             s = f.read()
         return hashlib.md5(s).hexdigest()
     #@+node:ekr.20031218072017.2614: *4* efc.destroy_temp_file
-    def destroy_temp_file(self, ef: Any) -> None:
+    def destroy_temp_file(self, ef: ExternalFile) -> None:
         """Destroy the *temp* file corresponding to ef, an ExternalFile instance."""
         # Do not use g.trace here.
         if ef.path and g.os_path_exists(ef.path):

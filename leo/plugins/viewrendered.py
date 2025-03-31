@@ -276,13 +276,15 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 #@+node:ekr.20220828161918.1: ** << vr: annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position, VNode
+    from leo.core.leoQt import QtGui
+    from QtMultimedia import QMediaPlayer
 
-    # These need more work!
-    Event = Any
+    QCloseEvent = QtGui.QCloseEvent
+    QGraphicsScene = QtWidgets.QGraphicsScene
+    QGraphicsView = QtWidgets.QGraphicsView
     QWidget = QtWidgets.QWidget
-    Widget = Any
-    Wrapper = Any
 #@-<< vr: annotations >>
 trace = False  # This global trace is convenient.
 asciidoctor_exec = shutil.which('asciidoctor')
@@ -384,12 +386,12 @@ def show_scrolled_message(tag: str, kw: Any) -> None:
 #@+node:ekr.20110320120020.14490: ** vr.Commands
 #@+node:ekr.20131213163822.16471: *3* g.command('preview')
 @g.command('preview')
-def preview(event: Event) -> None:
+def preview(event: LeoKeyEvent) -> None:
     """A synonym for the vr-toggle command."""
     toggle_rendering_pane(event)
 #@+node:tbrown.20100318101414.5998: *3* g.command('vr')
 @g.command('vr')
-def viewrendered(event: Event) -> Optional[Any]:
+def viewrendered(event: LeoKeyEvent) -> Optional[Any]:
     """Open render view for commander"""
     vr = getVr(event=event)
     if vr:
@@ -401,7 +403,7 @@ def viewrendered(event: Event) -> Optional[Any]:
     return None
 #@+node:ekr.20130413061407.10362: *3* g.command('vr-contract')
 @g.command('vr-contract')
-def contract_rendering_pane(event: Event) -> None:
+def contract_rendering_pane(event: LeoKeyEvent) -> None:
     """Contract the rendering pane."""
     vr = getVr(event=event)
     if vr:
@@ -409,7 +411,7 @@ def contract_rendering_pane(event: Event) -> None:
         vr.contract()
 #@+node:ekr.20130413061407.10361: *3* g.command('vr-expand')
 @g.command('vr-expand')
-def expand_rendering_pane(event: Event) -> None:
+def expand_rendering_pane(event: LeoKeyEvent) -> None:
     """Expand the rendering pane."""
     vr = getVr(event=event)
     if vr:
@@ -417,7 +419,7 @@ def expand_rendering_pane(event: Event) -> None:
         vr.expand()
 #@+node:ekr.20240507095853.1: *3* g.command('vr-fully-expand')
 @g.command('vr-fully-expand')
-def fully_expand_rendering_pane(event: Event) -> None:
+def fully_expand_rendering_pane(event: LeoKeyEvent) -> None:
     """Expand the rendering pane."""
     vr = getVr(event=event)
     if vr:
@@ -425,7 +427,7 @@ def fully_expand_rendering_pane(event: Event) -> None:
         vr.fully_expand()
 #@+node:ekr.20110917103917.3639: *3* g.command('vr-hide')
 @g.command('vr-hide')
-def hide_rendering_pane(event: Event) -> None:
+def hide_rendering_pane(event: LeoKeyEvent) -> None:
     """Close the rendering pane."""
     vr = getVr(event=event)
     if vr:
@@ -437,14 +439,14 @@ def hide_rendering_pane(event: Event) -> None:
 close_rendering_pane = hide_rendering_pane
 #@+node:ekr.20110321072702.14507: *3* g.command('vr-lock')
 @g.command('vr-lock')
-def lock_rendering_pane(event: Event) -> None:
+def lock_rendering_pane(event: LeoKeyEvent) -> None:
     """Lock the rendering pane."""
     vr = getVr(event=event)
     if vr and not vr.locked:
         vr.lock()
 #@+node:ekr.20110320233639.5777: *3* g.command('vr-pause-play')
 @g.command('vr-pause-play-movie')
-def pause_play_movie(event: Event) -> None:
+def pause_play_movie(event: LeoKeyEvent) -> None:
     """Pause or play a movie in the rendering pane."""
     vr = getVr(event=event)
     if vr:
@@ -455,7 +457,7 @@ def pause_play_movie(event: Event) -> None:
         f()
 #@+node:ekr.20110317080650.14386: *3* g.command('vr-show')
 @g.command('vr-show')
-def show_rendering_pane(event: Event) -> None:
+def show_rendering_pane(event: LeoKeyEvent) -> None:
     """Show the rendering pane."""
     vr = getVr(event=event)
     if vr:
@@ -466,7 +468,7 @@ def show_rendering_pane(event: Event) -> None:
 #@+node:ekr.20131001100335.16606: *3* g.command('vr-toggle-visibility')
 @g.command('vr-toggle-visibility')
 @g.command('vr-toggle')  # Legacy
-def toggle_rendering_pane(event: Event) -> None:
+def toggle_rendering_pane(event: LeoKeyEvent) -> None:
     """Toggle the visibility of the VR pane."""
     vr = getVr(event=event)
     if not vr:
@@ -482,7 +484,7 @@ def toggle_rendering_pane(event: Event) -> None:
     c.bodyWantsFocusNow()
 #@+node:ekr.20240508082844.1: *3* g.command('vr-toggle-keep-open')
 @g.command('vr-toggle-keep-open')
-def toggle_keep_open(event: Event) -> None:
+def toggle_keep_open(event: LeoKeyEvent) -> None:
     """Toggle the visibility of the VR pane."""
     vr = getVr(event=event)
     if vr:
@@ -492,14 +494,14 @@ def toggle_keep_open(event: Event) -> None:
         vr.update('keep-open', {'c': c, 'force': True})  # type:ignore
 #@+node:ekr.20130412180825.10345: *3* g.command('vr-unlock')
 @g.command('vr-unlock')
-def unlock_rendering_pane(event: Event) -> None:
+def unlock_rendering_pane(event: LeoKeyEvent) -> None:
     """Pause or play a movie in the rendering pane."""
     vr = getVr(event=event)
     if vr and vr.locked:
         vr.unlock()
 #@+node:ekr.20110321151523.14464: *3* g.command('vr-update')
 @g.command('vr-update')
-def update_rendering_pane(event: Event) -> None:
+def update_rendering_pane(event: LeoKeyEvent) -> None:
     """Update the rendering pane"""
     vr = getVr(event=event)
     if vr:
@@ -596,7 +598,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     #@-<< vr: default templates >>
     #@+others
     #@+node:ekr.20110317080650.14380: *3*  vr.ctor & helpers
-    def __init__(self, c: Cmdr, parent: Widget = None) -> None:
+    def __init__(self, c: Cmdr, parent: QWidget = None) -> None:
         """Ctor for ViewRenderedController class."""
         self.c = c
         # Create the widget.
@@ -612,11 +614,11 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.typst_template: str = None
         self.pdf_zoom: int = None
         # Widgets managed by destroy_widgets.
-        self.browser: Widget = None
-        self.gs: Widget = None  # For @graphics-script: a QGraphicsScene
-        self.gv: Widget = None  # For @graphics-script: a QGraphicsView
-        self.vp: Widget = None  # A QtMultimedia.QMediaPlayer or None.
-        self.w: Wrapper = None  # The present widget in the rendering pane.
+        self.browser: QWidget = None
+        self.gs: QGraphicsScene = None
+        self.gv: QGraphicsView = None
+        self.vp: QMediaPlayer = None
+        self.w: QWidget = None  # The present widget in the rendering pane.
         # Set the ivars.
         self.active = True
         self.gnx: str = None
@@ -692,7 +694,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.mathjax_template = get_template('mathjax')
         self.typst_template = get_template('typst')
     #@+node:ekr.20190614065659.1: *4* vr.create_pane
-    def create_pane(self, parent: Position) -> None:
+    def create_pane(self, parent: QWidget) -> None:
         """Create the VR pane."""
         if g.unitTesting:
             return
@@ -701,7 +703,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.setLayout(QtWidgets.QVBoxLayout())
         self.layout().setContentsMargins(0, 0, 0, 0)
     #@+node:tbrown.20110621120042.22676: *3* vr.closeEvent
-    def closeEvent(self, event: Event) -> None:
+    def closeEvent(self, event: QCloseEvent) -> None:
         """Deactivate callbacks when an Outline closes."""
         self.active = False
         g.unregisterHandler('select2', self.update)
@@ -756,7 +758,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             splitter.moveSplitter(int(sum(splitter.sizes()) / 2), i)
         self.show()
     #@+node:ekr.20160921071239.1: *3* vr.set_html
-    def set_html(self, s: str, w: Wrapper) -> None:
+    def set_html(self, s: str, w: QWidget) -> None:
         """Set text in w to s, preserving scroll position."""
         p = self.c.p
         sb = w.verticalScrollBar()
@@ -878,7 +880,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             setattr(self, ivar, None)
         self.w = None
     #@+node:ekr.20110320120020.14486: *5* vr.embed_widget
-    def embed_widget(self, w: Wrapper) -> None:
+    def embed_widget(self, w: QWidget) -> None:
         """Embed widget w in the layout."""
 
         assert w == self.w, g.callers()  # Invariant.
@@ -1597,7 +1599,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         w.setContextMenuPolicy(ContextMenuPolicy.CustomContextMenu)
         w.customContextMenuRequested.connect(contextMenuCallback)
 
-        def handleClick(url: str, w: Widget = w) -> None:
+        def handleClick(url: str, w: QWidget = w) -> None:
             wrapper = qt_text.QTextEditWrapper(w, name='vr-body', c=c)
             event = g.Bunch(c=c, w=wrapper)
             g.openUrlOnClick(event, url=url)

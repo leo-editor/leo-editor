@@ -31,7 +31,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import QtCore
     from leo.core.leoCommands import Commands as Cmdr
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-
+    KWargs = Any
     QEvent: TypeAlias = QtCore.QEvent
     Stroke = Any
     Widget = Any
@@ -427,7 +427,7 @@ class VimCommands:
         """Init all ivars related to command state."""
         self.ch = None  # The incoming character.
         self.command_i: int = None  # The offset into the text at the start of a command.
-        self.command_list: list[Any] = []  # The list of all characters seen in this command.
+        self.command_list: list[VimEvent] = []  # The list of all characters seen in this command.
         self.command_n: int = None  # The repeat count in effect at the start of a command.
         self.command_w: Widget = None  # The widget in effect at the start of a command.
         self.event: QEvent = None  # The event for the current key.
@@ -1943,7 +1943,7 @@ class VimCommands:
         This class supports the do_tab callback.
         """
 
-        def __init__(self, vc: Any) -> None:
+        def __init__(self, vc: VimCommands) -> None:
             """Ctor for VimCommands.LoadFileAtCursor class."""
             self.vc = vc
 
@@ -1978,7 +1978,7 @@ class VimCommands:
     class Substitution:
         """A class to handle Vim's :% command."""
 
-        def __init__(self, vc: Any, all_lines: Any) -> None:
+        def __init__(self, vc: VimCommands, all_lines: bool) -> None:
             """Ctor for VimCommands.tabnew class."""
             self.all_lines = all_lines  # True: :%s command.  False: :s command.
             self.vc = vc
@@ -2013,7 +2013,7 @@ class VimCommands:
         This class supports the do_tab callback.
         """
 
-        def __init__(self, vc: Any) -> None:
+        def __init__(self, vc: VimCommands) -> None:
             """Ctor for VimCommands.tabnew class."""
             self.vc = vc
 
@@ -2328,7 +2328,7 @@ class VimCommands:
         """Return True if w is a text widget."""
         return self.is_body(w) or self.is_head(w) or g.isTextWrapper(w)
     #@+node:ekr.20140805064952.18153: *4* vc.on_idle (no longer used)
-    def on_idle(self, tag: str, keys: Any) -> None:
+    def on_idle(self, tag: str, keys: KWargs) -> None:
         """The idle-time handler for the VimCommands class."""
         c = keys.get('c')
         if c and c.vim_mode and self == c.vimCommands:

@@ -2,6 +2,7 @@
 #@+node:ekr.20140907103315.18777: * @file ../plugins/qt_idle_time.py
 """Leo's Qt idle-time code."""
 import time
+from typing import Callable
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore
 #@+others
@@ -47,19 +48,20 @@ class IdleTime:
     """
     #@+others
     #@+node:ekr.20140825042850.18406: *3* IdleTime.__init__
-    def __init__(self, handler, delay=500, tag=None):
+    def __init__(self, handler: Callable, delay: int = 500, tag: str = None) -> None:
         """ctor for IdleTime class."""
         # For use by handlers...
         self.count = 0  # The number of times handler has been called.
-        self.starting_time = None  # Time that the timer started.
-        self.time = None  # Time that the handle is called.
-        self.tag = tag  # An arbitrary string/object for use during debugging.
-        # For use by the IdleTime class...
-        # The argument to self.timer.start: 0 for idle time, otherwise a delay in msec.
-        self.delay = delay
+        self.starting_time: float = None  # Time that the timer started.
+        self.time: float = None  # Time that the handle is called.
+        self.tag: str = tag  # For debugging.
+
+        # For the IdleTime class...
+        self.delay: int = delay  # 0 For idle time, otherwise a delay in msec.
         self.enabled = False  # True: run the timer continuously.
         self.handler = handler  # The user-provided idle-time handler.
         self.waiting_for_idle = False  # True if we have already waited for the minimum delay.
+
         # Create the timer, but do not fire it.
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.at_idle_time)
@@ -67,7 +69,7 @@ class IdleTime:
         # This reference prevents this instance from being destroyed.
         g.app.idle_timers.append(self)
     #@+node:ekr.20140825102404.18525: *3* IdleTime.__repr__
-    def __repr__(self):
+    def __repr__(self) -> str:
         """IdleTime repr."""
         tag = self.tag
         if tag:

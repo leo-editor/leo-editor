@@ -42,10 +42,8 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
     Args = Any
     KWargs = Any
-    # Events.
-    QEvent: TypeAlias = QtCore.QEvent
-    # Widgets
     QDialog = QtWidgets.QDialog
+    QEvent: TypeAlias = QtCore.QEvent
     QFont = QtGui.QFont
     QFrame = QtWidgets.QFrame
     QGridLayout = QtWidgets.QGridLayout
@@ -54,6 +52,7 @@ if TYPE_CHECKING:  # pragma: no cover
     QLabel = QtWidgets.QLabel
     QLayout = QtWidgets.QLayout
     QMainWindow = QtWidgets.QMainWindow
+    QObject = QtCore.QObject
     QPixmap = QtGui.QPixmap
     QPoint = QtCore.QPoint
     QPushButton = QtWidgets.QPushButton
@@ -61,6 +60,7 @@ if TYPE_CHECKING:  # pragma: no cover
     QTabWidget = QtWidgets.QTabWidget
     QVBoxLayout = QtWidgets.QVBoxLayout
     QWidget = QtWidgets.QWidget
+    Value = Any
 #@-<< qt_gui annotations >>
 #@+others
 #@+node:ekr.20110605121601.18134: ** init (qt_gui.py)
@@ -354,7 +354,7 @@ class LeoQtGui(leoGui.LeoGui):
         message: str = 'Select Date/Time',
         init: datetime.datetime = None,
         step_min: dict = None,
-    ) -> Optional[Any]:
+    ) -> Optional[datetime.datetime]:
         """Create and run a qt date/time selection dialog.
 
         init - a datetime, default now
@@ -379,7 +379,11 @@ class LeoQtGui(leoGui.LeoGui):
             for a minimum 5 minute increment on the minute field.
             """
 
-            def __init__(self, parent: QWidget = None, init: Any = None, step_min: dict = None) -> None:
+            def __init__(self,
+                parent: QWidget = None,
+                init: datetime.datetime = None,
+                step_min: dict = None,
+            ) -> None:
                 if step_min is None:
                     step_min = {}
                 self.step_min = step_min
@@ -401,7 +405,7 @@ class LeoQtGui(leoGui.LeoGui):
                 self,
                 parent: QWidget = None,
                 message: str = 'Select Date/Time',
-                init: Any = None,  # Hard to annotate.
+                init: datetime.datetime = None,
                 step_min: dict = None,
             ) -> None:
                 if step_min is None:
@@ -417,7 +421,6 @@ class LeoQtGui(leoGui.LeoGui):
                 layout.addWidget(buttonBox)
                 buttonBox.accepted.connect(self.accept)
                 buttonBox.rejected.connect(self.reject)
-
         #@-<< define date/time classes >>
         if g.unitTesting:
             return None
@@ -763,7 +766,7 @@ class LeoQtGui(leoGui.LeoGui):
     def runPropertiesDialog(
         self,
         title: str = 'Properties',
-        data: Any = None,
+        data: Value = None,
         callback: Callable = None,
         buttons: list[str] = None,
     ) -> tuple[str, dict]:
@@ -901,7 +904,7 @@ class LeoQtGui(leoGui.LeoGui):
 
     deactivated_widget = None
 
-    def onDeactivateEvent(self, event: QEvent, c: Cmdr, obj: Any, tag: str) -> None:
+    def onDeactivateEvent(self, event: QEvent, c: Cmdr, obj: object, tag: str) -> None:
         """
         Gracefully deactivate the Leo window.
         Called several times for each window activation.
@@ -925,7 +928,7 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20110605121601.18480: *4* LeoQtGui.onActivateEvent
     # Called from eventFilter
 
-    def onActivateEvent(self, event: QEvent, c: Cmdr, obj: Any, tag: str) -> None:
+    def onActivateEvent(self, event: QEvent, c: Cmdr, obj: object, tag: str) -> None:
         """
         Restore the focus when the Leo window is activated.
         Called several times for each window activation.
@@ -967,7 +970,7 @@ class LeoQtGui(leoGui.LeoGui):
                     # c.bodyWantsFocusNow()
         g.doHook('activate', c=c, p=c.p, v=c.p, event=event)
     #@+node:ekr.20130921043420.21175: *4* LeoQtGui.setFilter
-    def setFilter(self, c: Cmdr, obj: Any, w: Wrapper, tag: str) -> None:
+    def setFilter(self, c: Cmdr, obj: object, w: Wrapper, tag: str) -> None:
         """
         Create an event filter in obj.
         w is a wrapper object, not necessarily a QWidget.
@@ -1212,7 +1215,7 @@ class LeoQtGui(leoGui.LeoGui):
     def makeScriptButton(
         self,
         c: Cmdr,
-        args: Any = None,
+        args: Args = None,
         p: Position = None,  # A node containing the script.
         script: str = None,  # The script itself.
         buttonText: str = None,
@@ -1511,7 +1514,7 @@ class LeoQtGui(leoGui.LeoGui):
             gui.splashScreen = None
     #@+node:ekr.20140825042850.18411: *3* LeoQtGui:Utils...
     #@+node:ekr.20240519114809.1: *4* LeoQtGui._self_and_subtree
-    def _self_and_subtree(self, qt_obj: Any) -> Generator:
+    def _self_and_subtree(self, qt_obj: QObject) -> Generator:
         """Yield w and all of w's descendants."""
         if not qt_obj:
             return
@@ -1533,7 +1536,7 @@ class LeoQtGui(leoGui.LeoGui):
         else:
             g.trace(f"Not a QSplitter: {splitter.__class__.__name__}")
     #@+node:ekr.20241027183453.1: *4* LeoQtGui.find_parent_splitter
-    def find_parent_splitter(self, widget: QWidget) -> Optional[Tuple[QSplitter, Any]]:
+    def find_parent_splitter(self, widget: QWidget) -> Optional[Tuple[QSplitter, QWidget]]:
         """
         Find the nearest parent QSplitter widget for the given widget.
         
@@ -1678,22 +1681,20 @@ class StyleClassManager:
 
         w.setStyleSheet("/* */")  # forces visual update
     #@+node:tbrown.20150724090431.3: *3* add_sclass
-    def add_sclass(self, w: Wrapper, prop: Any) -> None:
-        """Add style class or list of classes prop to QWidget w"""
+    def add_sclass(self, w: Wrapper, prop: str) -> None:
+        """Add style class to QWidget w"""
         if not prop:
             return
         props = self.sclasses(w)
-        if isinstance(prop, str):
+        if prop not in props:
             props.append(prop)
-        else:
-            props.extend(prop)
-        self.set_sclasses(w, props)
+            self.set_sclasses(w, props)
     #@+node:tbrown.20150724090431.4: *3* clear_sclasses
     def clear_sclasses(self, w: Wrapper) -> None:
         """Remove all style classes from QWidget w"""
         w.setProperty(self.style_sclass_property, '')
     #@+node:tbrown.20150724090431.5: *3* has_sclass
-    def has_sclass(self, w: Wrapper, prop: Any) -> bool:
+    def has_sclass(self, w: Wrapper, prop: str) -> bool:
         """Check for style class or list of classes prop on QWidget w"""
         if not prop:
             return None
@@ -1704,7 +1705,7 @@ class StyleClassManager:
             ans = [i in props for i in prop]
         return all(ans)
     #@+node:tbrown.20150724090431.6: *3* remove_sclass
-    def remove_sclass(self, w: Wrapper, prop: Any) -> None:
+    def remove_sclass(self, w: Wrapper, prop: str) -> None:
         """Remove style class or list of classes prop from QWidget w"""
         if not prop:
             return
@@ -1720,23 +1721,9 @@ class StyleClassManager:
         """return list of style classes for QWidget w"""
         return str(w.property(self.style_sclass_property) or '').split()
     #@+node:tbrown.20150724090431.9: *3* set_sclasses
-    def set_sclasses(self, w: Wrapper, classes: Any) -> None:
+    def set_sclasses(self, w: Wrapper, classes: list[str]) -> None:
         """Set style classes for QWidget w to list in classes"""
         w.setProperty(self.style_sclass_property, f" {' '.join(set(classes))} ")
-    #@+node:tbrown.20150724090431.10: *3* toggle_sclass
-    def toggle_sclass(self, w: Wrapper, prop: Any) -> None:
-        """Toggle style class or list of classes prop on QWidget w"""
-        if not prop:
-            return
-        props = set(self.sclasses(w))
-        if isinstance(prop, str):
-            prop = set([prop])
-        else:
-            prop = set(prop)
-        current = props.intersection(prop)
-        props.update(prop)
-        props = props.difference(current)
-        self.set_sclasses(w, props)
     #@-others
 #@+node:ekr.20140913054442.17860: ** class StyleSheetManager
 class StyleSheetManager:

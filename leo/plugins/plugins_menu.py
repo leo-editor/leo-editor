@@ -53,22 +53,22 @@ __plugin_priority__
 """
 #@-<< plugins_menu docstring >>
 # Written by Paul A. Paterson.  Revised by Edward K. Ream.
-# To do: add Revert button to each dialog.
-# **Important**: this plugin is gui-independent.
+# This plugin is gui-independent.
 #@+<< plugins_menu imports & annotations >>
 #@+node:ekr.20050101090207.10: ** << plugins_menu imports & annotations >>
 from __future__ import annotations
 import configparser as ConfigParser
 import os
 from typing import Any, Sequence, TYPE_CHECKING
+from types import ModuleType
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
-    Item = Any
-    Group = Any
-    Menu = Any
+    from leo.core.leoMenu import LeoMenu
+    KWargs = Any
+    Value = Any
 #@-<< plugins_menu imports & annotations >>
 
 __plugin_name__ = "Plugins Menu"
@@ -125,7 +125,7 @@ def addPluginMenuItem(plugin: PlugIn, c: Cmdr) -> None:
         table = [(plugin_name, None, plugin.about)]
         c.frame.menu.createMenuEntries(PluginDatabase.getMenu(plugin), table)
 #@+node:EKR.20040517080555.23: *3* createPluginsMenu & helper
-def createPluginsMenu(tag: str, keywords: Any) -> None:
+def createPluginsMenu(tag: str, keywords: KWargs) -> None:
     """Create the plugins menu: calld from create-optional-menus hook."""
     c = keywords.get("c")
     if not c:
@@ -192,27 +192,27 @@ class _PluginDatabase:
     #@+node:pap.20050305152751.1: *3* __init__
     def __init__(self) -> None:
         """Initialize"""
-        self.plugins_by_group: dict[Group, list[Any]] = {}
-        self.groups_by_plugin: dict[Any, list[Group]] = {}
-        self.menus: dict[str, Menu] = {}
+        self.plugins_by_group: dict[str, list[PlugIn]] = {}
+        self.groups_by_plugin: dict[PlugIn, list[str]] = {}
+        self.menus: dict[str, LeoMenu] = {}
     #@+node:pap.20050305152751.2: *3* addPlugin
-    def addPlugin(self, item: Item, group: Group) -> None:
+    def addPlugin(self, item: PlugIn, group: str) -> None:
         """Add a plugin"""
         if group:
             self.plugins_by_group.setdefault(group, []).append(item)
-            self.groups_by_plugin[item] = group
+            self.groups_by_plugin.setdefault(item, []).append(group)
     #@+node:pap.20050305152751.3: *3* getGroups
-    def getGroups(self) -> list[Any]:
+    def getGroups(self) -> list[str]:
         """Return a list of groups"""
         groups = list(self.plugins_by_group.keys())
         groups.sort()
         return groups
     #@+node:pap.20050305153716: *3* setMenu
-    def setMenu(self, name: str, menu: Menu) -> None:
+    def setMenu(self, name: str, menu: LeoMenu) -> None:
         """Store the menu for this group"""
         self.menus[name] = menu
     #@+node:pap.20050305153716.1: *3* getMenu
-    def getMenu(self, item: Item) -> Menu:
+    def getMenu(self, item: PlugIn) -> LeoMenu:
         """Get the menu for a particular item"""
         try:
             return self.menus[item.group]
@@ -226,7 +226,7 @@ class PlugIn:
     """A class to hold information about one plugin"""
     #@+others
     #@+node:EKR.20040517080555.4: *3* PlugIn.__init__ & helper
-    def __init__(self, plgMod: Any, c: Cmdr = None) -> None:
+    def __init__(self, plgMod: ModuleType, c: Cmdr = None) -> None:
         """
         @param plgMod: Module object for the plugin represented by this instance.
         @param c:  Leo-editor "commander" for the current .leo file
@@ -300,7 +300,7 @@ class PlugIn:
         """Display a modal properties dialog for this plugin"""
         if self.hasapply:
 
-            def callback(name: str, data: Any) -> None:
+            def callback(name: str, data: Value) -> None:
                 self.updateConfiguration(data)
                 self.mod.applyConfiguration(self.config)
                 self.writeConfiguration()
@@ -329,7 +329,7 @@ class PlugIn:
             self.updateConfiguration(data)
             self.writeConfiguration()
     #@+node:bob.20071209102050: *3* PlugIn.updateConfiguration
-    def updateConfiguration(self, data: Any) -> None:
+    def updateConfiguration(self, data: Value) -> None:
         """Update the config object from the dialog 'data' structure"""
         # Should we clear the config object first?
         for section in data.keys():
