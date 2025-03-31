@@ -163,19 +163,6 @@ class LeoBody:
                 c.frame.body.colorizer.colorize(p)
             finally:
                 c.frame.body.wrapper = old_wrapper
-    #@+node:ekr.20070424084012: *5* LeoBody.switchToChapter
-    def switchToChapter(self, w: TextAPI) -> None:
-        """select w.leo_chapter."""
-        c = self.c
-        cc = c.chapterController
-        chapter = getattr(w, 'leo_chapter', None)
-        if chapter:
-            chapter = w.leo_chapter
-            name = chapter and chapter.name
-            oldChapter = cc.getSelectedChapter()
-            if chapter != oldChapter:
-                cc.selectChapterByName(name)
-                c.bodyWantsFocus()
     #@+node:ekr.20031218072017.4018: *3* LeoBody.Text
     #@+node:ekr.20031218072017.4030: *4* LeoBody.getInsertLines
     def getInsertLines(self) -> tuple[str, str, str]:
