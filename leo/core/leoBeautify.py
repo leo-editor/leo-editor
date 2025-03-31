@@ -7,12 +7,14 @@ from __future__ import annotations
 import sys
 import os
 import time
-from typing import Any, Union, TYPE_CHECKING
+from typing import Union, TYPE_CHECKING
+
 # Third-party tools.
 try:
     import black
 except Exception:
     black = None  # type:ignore
+
 # Leo imports.
 from leo.core import leoGlobals as g
 from leo.core import leoAst
@@ -228,7 +230,7 @@ def fstringify_files_silent(event: LeoKeyEvent) -> None:
         f"{n_changed} changed file{g.plural(n_changed)} "
         f"in {t2 - t1:5.2f} sec.")
 #@+node:ekr.20200108045048.1: *4* orange_settings
-def orange_settings(c: Cmdr) -> dict[str, Any]:
+def orange_settings(c: Cmdr) -> dict[str, object]:
     """Return a dictionary of settings for the leo.core.leoAst.Orange class."""
     allow_joined_strings = c.config.getBool(
         'beautify-allow-joined-strings', default=False)
@@ -248,7 +250,7 @@ def orange_settings(c: Cmdr) -> dict[str, Any]:
     }
 #@+node:ekr.20191028140926.1: *3* Beautify:test functions
 #@+node:ekr.20191029184103.1: *4* function: show
-def show(obj: Any, tag: str, dump: bool) -> None:
+def show(obj: object, tag: str, dump: bool) -> None:
     print(f"{tag}...\n")
     if dump:
         g.printObj(obj)
@@ -299,7 +301,7 @@ class CPrettyPrinter:
         self.brackets = 0  # The brackets indentation level.
         self.p: Position = None  # Set in indent.
         self.parens = 0  # The parenthesis nesting level.
-        self.result: list[Any] = []  # The list of tokens that form the final result.
+        self.result: list[str] = []  # The list of tokens that form the final result.
         self.tab_width = 4  # The number of spaces in each unit of leading indentation.
     #@+node:ekr.20191104195610.1: *3* cpp.pretty_print_tree
     def pretty_print_tree(self, p: Position) -> None:

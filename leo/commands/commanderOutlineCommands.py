@@ -156,8 +156,8 @@ def pasteOutlineRetainingClones(
 def computeCopiedBunchList(
     c: Cmdr,
     pasted: Position,
-    vnodeInfoDict: dict[VNode, Any],
-) -> list[Any]:
+    vnodeInfoDict: dict[VNode, g.Bunch],
+) -> list[g.Bunch]:
     """Create a dict containing only copied vnodes."""
     d = {}
     for p in pasted.self_and_subtree(copy=False):
@@ -169,7 +169,7 @@ def computeCopiedBunchList(
             aList.append(bunch)
     return aList
 #@+node:ekr.20050418084539: *4* def computeVnodeInfoDict
-def computeVnodeInfoDict(c: Cmdr) -> dict[VNode, Any]:
+def computeVnodeInfoDict(c: Cmdr) -> dict[VNode, g.Bunch]:
     """
     We don't know yet which nodes will be affected by the paste, so we remember
     everything. This is expensive, but foolproof.

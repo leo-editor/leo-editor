@@ -26,7 +26,7 @@ KWargs = Any
 class SignalData:
 
     def __init__(self) -> None:
-        self.listeners: dict[Any, Any] = defaultdict(list)
+        self.listeners: dict[str, object] = defaultdict(list)
         self.emitters: list[Callable] = []
         self.locked = False
 #@+node:tbrown.20171028115601.4: ** class MsgSignalHandled
@@ -36,11 +36,11 @@ class MsgSignalHandled:
     """
     pass
 #@+node:tbrown.20171028115601.5: ** _setup
-def _setup(obj: Any) -> None:
+def _setup(obj: object) -> None:
     if not hasattr(obj, '_signal_data'):
         obj._signal_data = SignalData()
 #@+node:tbrown.20171028115601.6: ** emit
-def emit(source: Any, signal_name: str, *args: Args, **kwargs: KWargs) -> None:
+def emit(source: object, signal_name: str, *args: Args, **kwargs: KWargs) -> None:
     """Emit signal to all listeners"""
     if not hasattr(source, '_signal_data'):
         return
@@ -64,7 +64,7 @@ def emit(source: Any, signal_name: str, *args: Args, **kwargs: KWargs) -> None:
     if obj_to_lock is not None:
         obj_to_lock._signal_data.locked = False
 #@+node:tbrown.20171028115601.7: ** connect
-def connect(source: Any, signal_name: str, listener: Any) -> None:
+def connect(source: object, signal_name: str, listener: object) -> None:
     """Connect to signal"""
     _setup(source)
     source._signal_data.listeners[signal_name].append(listener)
@@ -74,7 +74,7 @@ def connect(source: Any, signal_name: str, listener: Any) -> None:
         _setup(obj)
         obj._signal_data.emitters.append(source)
 #@+node:tbrown.20171028115601.8: ** disconnect_all
-def disconnect_all(listener: Any) -> None:
+def disconnect_all(listener: object) -> None:
     """Disconnect from all signals"""
     for emitter in listener._signal_data.emitters:
         for signal in emitter._signal_data.listeners:
@@ -83,14 +83,14 @@ def disconnect_all(listener: Any) -> None:
                 if getattr(i, '__self__', None) != listener
             ]
 #@+node:tbrown.20171028115601.9: ** is_locked
-def is_locked(obj: Any) -> bool:
+def is_locked(obj: object) -> bool:
     return hasattr(obj, '_signal_data') and obj._signal_data.locked
 #@+node:tbrown.20171028115601.10: ** lock
-def lock(obj: Any) -> None:
+def lock(obj: object) -> None:
     _setup(obj)
     obj._signal_data.locked = True
 #@+node:tbrown.20171028115601.11: ** unlock
-def unlock(obj: Any) -> None:
+def unlock(obj: object) -> None:
     _setup(obj)
     obj._signal_data.locked = False
 #@+node:tbrown.20171028115601.12: ** class SignalManager
@@ -102,7 +102,7 @@ class SignalManager:
         """Emit signal to all listeners"""
         emit(self, signal_name, *args, **kwargs)
     #@+node:tbrown.20171028115601.14: *3* connect
-    def connect(self, signal_name: str, listener: Any) -> None:
+    def connect(self, signal_name: str, listener: object) -> None:
         """Connect to signal"""
         connect(self, signal_name, listener)
     #@-others
@@ -118,7 +118,7 @@ def main() -> None:
         def some_emission(self) -> None:
             self.emit('the_emission', 12, [1, 2, 3])
 
-    def hear_emit(n: int, obj: Any) -> None:
+    def hear_emit(n: int, obj: object) -> None:
         print(f"Got {n} {obj}")
 
     emitter = Emitter()
@@ -130,7 +130,7 @@ def main() -> None:
 
     class Tester:
 
-        def __init__(self, name: str, relay: Any) -> None:
+        def __init__(self, name: str, relay: object) -> None:
             self.name = name
             self.relay = relay
             connect(self.relay, 'work_done', self.check_work)
@@ -138,7 +138,7 @@ def main() -> None:
         def do_work(self) -> None:
             emit(self.relay, 'work_done', 4.2, animal='otters', _sig_lock=self)
 
-        def check_work(self, num: Any, animal: str = 'eels') -> None:
+        def check_work(self, num: object, animal: str = 'eels') -> None:
             if is_locked(self):
                 return
             print(f"{self.name} heard about {num} {animal}")

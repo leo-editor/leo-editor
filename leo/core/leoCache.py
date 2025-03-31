@@ -8,12 +8,14 @@ import fnmatch
 import os
 import pickle
 import sqlite3
-from typing import Any, Generator, Optional, Sequence, TYPE_CHECKING, Union
+from typing import Any, Generator, Optional,  TYPE_CHECKING, Union
 import zlib
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
+    Args = Any
+    Value = Any
 
 #@-<< leoCache imports & annotations >>
 
@@ -43,25 +45,25 @@ class CommanderWrapper:
         self.db = g.app.db
         self.user_keys: set[str] = set()
 
-    def get(self, key: str, default: Any = None) -> Any:
+    def get(self, key: str, default: Value = None) -> Value:
         value = self.db.get(f"{self.c.mFileName}:::{key}")
         return default if value is None else value
 
     def keys(self) -> list[str]:
         return sorted(list(self.user_keys))
 
-    def __contains__(self, key: Any) -> bool:
+    def __contains__(self, key: str) -> bool:
         return f"{self.c.mFileName}:::{key}" in self.db
 
-    def __delitem__(self, key: Any) -> None:
+    def __delitem__(self, key: str) -> None:
         if key in self.user_keys:
             self.user_keys.remove(key)
         del self.db[f"{self.c.mFileName}:::{key}"]
 
-    def __getitem__(self, key: str) -> Any:
+    def __getitem__(self, key: str) -> Value:
         return self.db[f"{self.c.mFileName}:::{key}"]  # May (properly) raise KeyError
 
-    def __setitem__(self, key: str, value: Any) -> None:
+    def __setitem__(self, key: str, value: Value) -> None:
         self.user_keys.add(key)
         self.db[f"{self.c.mFileName}:::{key}"] = value
 #@+node:ekr.20180627041556.1: ** class GlobalCacher (g.app.db)
@@ -135,7 +137,7 @@ class SqlitePickleShare:
     """
     #@+others
     #@+node:vitalije.20170716201700.2: *3*  Birth & special methods
-    def init_dbtables(self, conn: Any) -> None:
+    def init_dbtables(self, conn: sqlite3.Connection) -> None:
         sql = 'create table if not exists cachevalues(key text primary key, data blob);'
         conn.execute(sql)
     #@+node:vitalije.20170716201700.3: *4*  SqlitePickleShare.__init__
@@ -152,9 +154,9 @@ class SqlitePickleShare:
         self.init_dbtables(self.conn)
         # Keys are normalized file names.
         # Values are tuples (obj, orig_mod_time)
-        self.cache: dict[str, Any] = {}
+        self.cache: dict[str, Value] = {}
 
-        def loadz(data: Any) -> Optional[Any]:
+        def loadz(data: Value) -> Optional[Value]:
             if data:
                 # Retain this code for maximum compatibility.
                 try:
@@ -165,7 +167,7 @@ class SqlitePickleShare:
                 return val
             return None
 
-        def dumpz(val: Any) -> Any:
+        def dumpz(val: Value) -> Value:
             try:
                 # Use Python 2's highest protocol, 2, if possible
                 data = pickle.dumps(val, protocol=2)
@@ -221,7 +223,7 @@ class SqlitePickleShare:
             result.append(f"{key} {self.get(key)}\n")
         return ''.join(result)
     #@+node:vitalije.20170716201700.9: *4* SqlitePickleShare.__setitem__
-    def __setitem__(self, key: str, value: Any) -> None:
+    def __setitem__(self, key: str, value: Value) -> None:
         """ db['key'] = 5 """
         try:
             data = self.dumper(value)
@@ -234,17 +236,6 @@ class SqlitePickleShare:
     def _makedirs(self, fn: str, mode: int = 0o777) -> None:
 
         os.makedirs(fn, mode)
-    #@+node:vitalije.20170716201700.11: *3* _openFile (SqlitePickleShare)
-    def _openFile(self, fn: str, mode: str = 'r') -> Optional[Any]:
-        """ Open this file.  Return a file object.
-
-        Do not print an error message.
-        It is not an error for this to fail.
-        """
-        try:
-            return open(fn, mode)
-        except Exception:
-            return None
     #@+node:vitalije.20170716201700.12: *3* _walkfiles & helpers
     def _walkfiles(self, s: str, pattern: str = None) -> None:
         """ D.walkfiles() -> iterator over files in D, recursively.
@@ -271,7 +262,7 @@ class SqlitePickleShare:
             names = fnmatch.filter(names, pattern)
         return [join(s, child) for child in names]
     #@+node:vitalije.20170716201700.14: *4* _fn_match
-    def _fn_match(self, s: str, pattern: Any) -> bool:
+    def _fn_match(self, s: str, pattern: str) -> bool:
         """ Return True if self.name matches the given pattern.
 
         pattern - A filename pattern with wildcards, for example '*.py'.
@@ -287,7 +278,7 @@ class SqlitePickleShare:
         """
         self.conn.execute('delete from cachevalues;')
     #@+node:vitalije.20170716201700.16: *3* get  (SqlitePickleShare)
-    def get(self, key: str, default: Any = None) -> Any:
+    def get(self, key: str, default: Value = None) -> Value:
 
         if not self.has_key(key):  # noqa
             return default
@@ -305,33 +296,33 @@ class SqlitePickleShare:
         except Exception:
             pass
         return False
-    #@+node:vitalije.20170716201700.18: *3* items
+    #@+node:vitalije.20170716201700.18: *3* items  (SqlitePickleShare)
     def items(self) -> Generator:
         sql = 'select key,data from cachevalues;'
         for key, data in self.conn.execute(sql):
             yield key, data
-    #@+node:vitalije.20170716201700.19: *3* keys
+    #@+node:vitalije.20170716201700.19: *3* keys (SqlitePickleShare)
     # Called by clear, and during unit testing.
 
     def keys(self, globpat: str = None) -> Generator:
         """Return all keys in DB, or all keys matching a glob"""
+        args: tuple
         if globpat is None:
             sql = 'select key from cachevalues;'
-            args: Sequence[Any] = tuple()
+            args = tuple()
         else:
             sql = "select key from cachevalues where key glob ?;"
-            # pylint: disable=trailing-comma-tuple
-            args = globpat,
+            args = tuple(globpat)
         for key in self.conn.execute(sql, args):
             yield key
-    #@+node:vitalije.20170818091008.1: *3* reset_protocol_in_values
+    #@+node:vitalije.20170818091008.1: *3* reset_protocol_in_values (SqlitePickleShare)
     def reset_protocol_in_values(self) -> None:
         PROTOCOLKEY = '__cache_pickle_protocol__'
         if self.get(PROTOCOLKEY, 3) == 2:
             return
         #@+others
         #@+node:vitalije.20170818115617.1: *4* do_block
-        def do_block(cur: Any) -> Any:
+        def do_block(cur: object) -> Value:
             itms = tuple((self.dumper(self.loader(v)), k) for k, v in cur)
             if itms:
                 self.conn.executemany('update cachevalues set data=? where key=?', itms)
@@ -353,13 +344,13 @@ class SqlitePickleShare:
         self.conn.commit()
 
         self.conn.isolation_level = None
-    #@+node:vitalije.20170716201700.23: *3* uncache
-    def uncache(self, *items: Any) -> None:
+    #@+node:vitalije.20170716201700.23: *3* uncache (SqlitePickleShare)
+    def uncache(self, *items: Args) -> None:
         """not used in SqlitePickleShare"""
         pass
     #@-others
 #@+node:ekr.20180627050237.1: ** function: dump_cache
-def dump_cache(db: Any, tag: str) -> None:
+def dump_cache(db: Union[dict,  SqlitePickleShare], tag: str) -> None:
     """Dump the given cache."""
     print(f'\n===== {tag} =====\n')
     if db is None:
@@ -388,7 +379,7 @@ def dump_cache(db: Any, tag: str) -> None:
         heading = f"All others ({tag})" if files else None
         dump_list(heading, d.get('None'))
 
-def dump_list(heading: Any, aList: list) -> None:
+def dump_list(heading: str, aList: list) -> None:
     if heading:
         print(f'\n{heading}...\n')
     for aTuple in aList:

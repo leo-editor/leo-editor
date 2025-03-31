@@ -479,7 +479,7 @@ def free_layout_zoom(event: LeoKeyEvent) -> None:
     c = event.get('c')
     c.free_layout.get_top_splitter().zoom_toggle()
 #@+node:ekr.20160327060009.1: *3* free_layout:register_provider
-def register_provider(c: Cmdr, provider_instance: Any) -> None:
+def register_provider(c: Cmdr, provider_instance: object) -> None:
     """Register the provider instance with the top splitter."""
     if getattr(c, 'free_layout', None):
         splitter = c.free_layout.get_top_splitter()

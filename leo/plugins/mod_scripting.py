@@ -154,14 +154,20 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position
-    from leo.plugins.qt_text import QTextEditWrapper as Wrapper
-    Widget = Any
+    from leo.plugins.qt_text import QTextEditWrapper
+    from leo.leoQt import QtWidgets
+    Args = Any
+    KWargs = Any
+    RClick = tuple  # Union[tuple, namedtuple('RClick', 'position,children')]
+    RClicks = list[RClick]
+    Value = Any
+
 #@-<< mod_scripting imports & annotations >>
 
 #@+others
 #@+node:ekr.20180328085010.1: ** Top level (mod_scripting)
 #@+node:tbrown.20140819100840.37719: *3* build_rclick_tree (mod_scripting.py)
-def build_rclick_tree(command_p: Position, rclicks: list[Any] = None, top_level: bool = False) -> list:
+def build_rclick_tree(command_p: Position, rclicks: RClicks = None, top_level: bool = False) -> list:
     """
     Return a list of top level RClicks for the button at command_p, which can be
     used later to add the rclick menus.
@@ -238,7 +244,7 @@ def init() -> bool:
         g.plugin_signon(__name__)
     return ok
 #@+node:ekr.20060328125248.5: *3* onCreate
-def onCreate(tag: str, keys: Any) -> None:
+def onCreate(tag: str, keys: KWargs) -> None:
     """Handle the onCreate event in the mod_scripting plugin."""
     c = keys.get('c')
     if c:
@@ -251,8 +257,8 @@ class AtButtonCallback:
     #@+others
     #@+node:ekr.20141031053508.9: *3* __init__ (AtButtonCallback)
     def __init__(self,
-        controller: Any,
-        b: Any,
+        controller: ScriptingController,
+        b: QtWidgets.QButton,
         c: Cmdr,
         buttonText: str,
         docstring: str,
@@ -279,13 +285,13 @@ class AtButtonCallback:
         n = len(self.script or '')
         return f"AtButtonCallback {c.shortFileName()} gnx: {self.gnx} len(script): {n}"
     #@+node:ekr.20150512041758.1: *3* __getattr__ (AtButtonCallback)
-    def __getattr__(self, attr: Any) -> str:
+    def __getattr__(self, attr: Value) -> str:
         """AtButtonCallback.__getattr__. Implement __name__."""
         if attr == '__name__':
             return f"AtButtonCallback: {self.gnx}"
         raise AttributeError  # Returning None is not correct.
     #@+node:ekr.20170203043042.1: *3* AtButtonCallback.execute_script & helper
-    def execute_script(self) -> Any:
+    def execute_script(self) -> Value:
         """Execute the script associated with this button."""
         script = self.find_script()
         if script:
@@ -325,13 +331,13 @@ class ScriptingController:
     """A class defining scripting commands."""
     #@+others
     #@+node:ekr.20060328125248.7: *3*  sc.ctor
-    def __init__(self, c: Cmdr, iconBar: Widget = None) -> None:
+    def __init__(self, c: Cmdr, iconBar: QtWidgets.QWidget = None) -> None:
         self.c = c
         self.gui = c.frame.gui
         getBool = c.config.getBool
         self.scanned = False
         kind = c.config.getString('debugger-kind') or 'idle'
-        self.buttonsDict: dict[Any, str] = {}  # Keys are buttons, values are button names (strings).
+        self.buttonsDict: dict[QtWidgets.QButton, str] = {}  # Keys are buttons, values are button names (strings).
         self.debuggerKind = kind.lower()
         # True: adds a button for every @button node.
         self.atButtonNodes = getBool('scripting-at-button-nodes')
@@ -498,11 +504,11 @@ class ScriptingController:
     def createLocalAtButtonHelper(
         self,
         p: Position,
-        h: Any,
-        statusLine: Any,
+        h: str,
+        statusLine: str,
         kind: str = 'at-button',
         verbose: bool = True,
-    ) -> Wrapper:
+    ) -> QtWidgets.QButton:
         """Create a button for a local @button node."""
         c = self.c
         buttonText = self.cleanButtonText(h, minimal=True)
@@ -552,13 +558,13 @@ class ScriptingController:
         return b
     #@+node:ekr.20060328125248.17: *3* sc.createIconButton (creates all buttons)
     def createIconButton(self,
-        args: Any,
+        args: Args,
         text: str,
         command: Callable,
         statusLine: str,
         bg: str = None,
         kind: str = None,
-    ) -> Wrapper:
+    ) -> QtWidgets.QButton:
         """
         Create one icon button.
         This method creates all scripting icon buttons.
@@ -594,7 +600,7 @@ class ScriptingController:
                 source_c=c,
                 tag='icon button')
 
-        def deleteButtonCallback(event: Event = None, self: Any = self, b: Widget = b) -> None:
+        def deleteButtonCallback(event: Event = None, self: Any = self, b: QtWidgets.QButton = b) -> None:
             self.deleteButton(b, event=event)
 
         # Register the delete-x-button command.
@@ -615,12 +621,12 @@ class ScriptingController:
         self.seen = set()
     #@+node:ekr.20060328125248.28: *3* sc.executeScriptFromButton
     def executeScriptFromButton(self,
-        b: Wrapper,
+        b: QtWidgets.QButton,
         buttonText: str,
         p: Position,
         script: str,
         script_gnx: str = None,
-    ) -> None:
+    ) -> Value:
         """Execute an @button script in p.b or script."""
         c = self.c
         if c.disableCommandsMessage:
@@ -683,7 +689,7 @@ class ScriptingController:
                 script = self.getScript(p)
                 self.createCommonButton(p, script, rclicks)
     #@+node:ekr.20070926084600: *4* sc.createCommonButton (common @button)
-    def createCommonButton(self, p: Position, script: str, rclicks: list[Any] = None) -> None:
+    def createCommonButton(self, p: Position, script: str, rclicks: RClicks = None) -> None:
         """
         Create a button in the icon area for a common @button node in an @setting
         tree. Binds button presses to a callback that executes the script.
@@ -820,7 +826,12 @@ class ScriptingController:
             return
         args = self.getArgs(p)
 
-        def atCommandCallback(event: Event = None, args: Any = args, c: Cmdr = c, p: Position = p.copy()) -> Any:
+        def atCommandCallback(event:
+            Event = None,
+            args: Args = args,
+            c: Cmdr = c,
+            p: Position = p.copy(),
+        ) -> Value:
             # pylint: disable=dangerous-default-value
             return c.executeScript(args=args, p=p, silent=True)
 
@@ -859,7 +870,12 @@ class ScriptingController:
             return
         args = self.getArgs(p)
 
-        def atCommandCallback(event: Event = None, args: Any = args, c: Cmdr = c, p: Position = p.copy()) -> Any:
+        def atCommandCallback(
+            event: Event = None,
+            args: Args = args,
+            c: Cmdr = c,
+            p: Position = p.copy(),
+        ) -> Value:
             # pylint: disable=dangerous-default-value
             return c.executeScript(args=args, p=p, silent=True)
         if p.b.strip():
@@ -872,8 +888,8 @@ class ScriptingController:
                 tag='local @rclick')
         g.app.config.atLocalCommandsList.append(p.copy())
     #@+node:vitalije.20180224113123.1: *4* sc.handleRclicks
-    def handleRclicks(self, rclicks: list) -> None:
-        def handlerc(rc: Any) -> None:
+    def handleRclicks(self, rclicks: RClicks) -> None:
+        def handlerc(rc: RClick) -> None:
             if rc.children:
                 for i in rc.children:
                     handlerc(i)
@@ -881,9 +897,8 @@ class ScriptingController:
                 self.handleAtRclickNode(rc.position)
         for rc in rclicks:
             handlerc(rc)
-
     #@+node:ekr.20060328125248.14: *4* sc.handleAtScriptNode @script
-    def handleAtScriptNode(self, p: Position) -> Any:
+    def handleAtScriptNode(self, p: Position) -> Value:
         """Handle @script nodes."""
         c = self.c
         tag = "@script"
@@ -948,14 +963,14 @@ class ScriptingController:
                 s = s.strip()
         return s.replace(' ', '-').strip('-')
     #@+node:ekr.20060522104419.1: *4* sc.createBalloon (gui-dependent)
-    def createBalloon(self, w: Wrapper, label: Any) -> None:
+    def createBalloon(self, w: QTextEditWrapper, label: str) -> None:
         'Create a balloon for a widget.'
         if g.app.gui.guiName().startswith('qt'):
             # w is a leoIconBarButton.
             if hasattr(w, 'button'):
                 w.button.setToolTip(label)
     #@+node:ekr.20060328125248.26: *4* sc.deleteButton
-    def deleteButton(self, button: Any, **kw: Any) -> None:
+    def deleteButton(self, button: QtWidgets.QButton, **kw: KWargs) -> None:
         """Delete the given button.
         This is called from callbacks, it is not a callback."""
         w = button
@@ -1053,7 +1068,7 @@ class ScriptingController:
             ))
     #@+node:ekr.20120301114648.9932: *4* sc.registerAllCommands
     def registerAllCommands(self,
-        args: Any,
+        args: Args,
         func: Callable,
         h: str,
         pane: str,
@@ -1083,7 +1098,7 @@ class ScriptingController:
                 commandName2 = commandName[len(prefix) :].strip()
                 # Create a *second* func, to avoid collision in c.commandsDict.
 
-                def registerAllCommandsCallback(event: Event = None, func: Callable = func) -> Any:
+                def registerAllCommandsCallback(event: Event = None, func: Callable = func) -> Callable:
                     return func()
 
                 # Fix bug 1251252: https://bugs.launchpad.net/leo-editor/+bug/1251252
@@ -1102,23 +1117,6 @@ class ScriptingController:
                         pane=pane,
                         shortcut=shortcut,
                     )
-    #@+node:ekr.20150402021505.1: *4* sc.setButtonColor
-    def setButtonColor(self, b: Wrapper, bg: str) -> None:
-        """Set the background color of Qt button b to bg."""
-        if not bg:
-            return
-        if not bg.startswith('#'):
-            bg0 = bg
-            d = leoColor.leo_color_database
-            bg = d.get(bg.lower())
-            if not bg:
-                g.trace('bad color? %s' % bg0)
-                return
-        try:
-            b.button.setStyleSheet("QPushButton{background-color: %s}" % (bg))
-        except Exception:
-            # g.es_exception()
-            pass  # Might not be a valid color.
     #@+node:ekr.20061015125212: *4* sc.truncateButtonText
     def truncateButtonText(self, s: str) -> str:
         # 2011/10/16: Remove @button here only.
@@ -1134,6 +1132,23 @@ class ScriptingController:
                 s = s[:-1]
         s = s.strip('-')
         return s.strip()
+    #@+node:ekr.20150402021505.1: *4* sc.setButtonColor
+    def setButtonColor(self, b: QTextEditWrapper, bg: str) -> None:
+        """Set the background color of Qt button b to bg."""
+        if not bg:
+            return
+        if not bg.startswith('#'):
+            bg0 = bg
+            d = leoColor.leo_color_database
+            bg = d.get(bg.lower())
+            if not bg:
+                g.trace('bad color? %s' % bg0)
+                return
+        try:
+            b.button.setStyleSheet("QPushButton{background-color: %s}" % (bg))
+        except Exception:
+            # g.es_exception()
+            pass  # Might not be a valid color.
     #@-others
 
 scriptingController = ScriptingController

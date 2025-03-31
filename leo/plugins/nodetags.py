@@ -112,7 +112,8 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
-    QWidget = QtWidgets.QWidget
+    KWargs = Any
+
 #@-<< nodetags imports & annotations >>
 
 #@+others
@@ -124,7 +125,7 @@ def init() -> bool:
     g.plugin_signon(__name__)
     return True
 #@+node:peckj.20140804103733.9245: ** onCreate (nodetags.py)
-def onCreate(tag: str, keys: Any) -> None:
+def onCreate(tag: str, keys: KWargs) -> None:
 
     c = keys.get('c')
     if c:
@@ -267,7 +268,7 @@ if QtWidgets:
     class LeoTagWidget(QtWidgets.QWidget):  # type:ignore
         #@+others
         #@+node:peckj.20140804114520.15200: *3* tag_w.__init__
-        def __init__(self, c: Cmdr, parent: QWidget = None) -> None:
+        def __init__(self, c: Cmdr, parent: QtWidgets.QWidget = None) -> None:
             super().__init__(parent)
             self.c = c
             self.tc = self.c.theTagController
@@ -479,10 +480,10 @@ if QtWidgets:
             self.tc.add_tag(p, tag)
         #@+node:peckj.20140811082039.6623: *3* tag_w:event hooks
         #@+node:peckj.20140804195456.13487: *4* tag_w.select2_hook
-        def select2_hook(self, tag: str, keywords: Any) -> None:
+        def select2_hook(self, tag: str, keywords: KWargs) -> None:
             self.update_current_tags(self.c.p)
         #@+node:peckj.20140806101020.14006: *4* tag_w.command2_hook
-        def command2_hook(self, tag: str, keywords: Any) -> None:
+        def command2_hook(self, tag: str, keywords: KWargs) -> None:
             paste_cmds = [
                 'paste-node',
                 # strange that this one isn't canonicalized

@@ -3,14 +3,21 @@
 """A plugin that adds top-of-pane and bottom-of-pane commands."""
 # https://github.com/leo-editor/leo-editor/issues/2910
 # Original code by jknGH. Plugin by EKR.
-
+from __future__ import annotations
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore
+if TYPE_CHECKING:
+    from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoGui import LeoKeyEvent
+    from leo.core.leoQt import QtWidgets
+    QWidget = QtWidgets.QWidget
+
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 
 #@+others
 #@+node:ekr.20221019064557.1: ** init (pane_commands.py)
-def init():
+def init() -> bool:
     """Return True if the plugin has loaded successfully."""
     if g.app.gui.guiName() != "qt":
         return False
@@ -18,13 +25,13 @@ def init():
     return True
 #@+node:ekr.20221020063528.1: ** bottom of-pane
 @g.command('bottom-of-pane')
-def bottomOfPane(event=None):
+def bottomOfPane(event: LeoKeyEvent = None) -> None:
     """ move the text cursor to the last character visible in the body pane
     """
-    c = event.c if event else None
+    c: Cmdr = event.c if event else None
     if not c:
         return
-    w = c.frame.body.widget
+    w: QWidget = c.frame.body.widget
     # get viewport of the body widget
     vp = w.viewport()
 
@@ -48,13 +55,13 @@ def bottomOfPane(event=None):
     c.bodyWantsFocusNow()
 #@+node:ekr.20221020063441.1: ** top-of-pane
 @g.command('top-of-pane')
-def topOfPane(event=None):
+def topOfPane(event: LeoKeyEvent = None) -> None:
     """ move the text cursor to the first character visible in the body pane
     """
-    c = event.c if event else None
+    c: Cmdr = event.c if event else None
     if not c:
         return
-    w = c.frame.body.widget
+    w: QWidget = c.frame.body.widget
 
     # create a QPoint of the top of the widget (client area)
     top_left = QtCore.QPoint(0, 0)

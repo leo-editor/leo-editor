@@ -58,6 +58,7 @@ from leo.core import leoFrame
 from leo.core import leoGui
 from leo.core import leoMenu
 from leo.core import leoNodes
+from leo.core.leoAPI import StringTextWrapper
 # Third-party imports.
 try:
     from flexx import flx
@@ -137,7 +138,7 @@ def suppress_unwanted_log_messages():
     flx.set_log_level('INFO', pattern)
 #@+node:ekr.20181115071559.1: ** Py side: App & wrapper classes
 #@+node:ekr.20181127151027.1: *3* class API_Wrapper (StringTextWrapper)
-class API_Wrapper(leoFrame.StringTextWrapper):
+class API_Wrapper(StringTextWrapper):
     """
     A wrapper class that implements the high-level interface.
     """
@@ -1160,7 +1161,7 @@ class LeoBrowserBody(leoFrame.NullBody):
         self.root = get_root()
         self.tag = 'py.body.wrap'
         # Replace the StringTextWrapper with the ace wrapper.
-        assert isinstance(self.wrapper, leoFrame.StringTextWrapper)
+        assert isinstance(self.wrapper, StringTextWrapper)
         self.wrapper = API_Wrapper(c, 'body')
 
     # The Ace Wrapper does almost everything.
@@ -1257,7 +1258,7 @@ class LeoBrowserGui(leoGui.NullGui):
             LeoBrowserStatusLine,
         )):
             return True
-        if g.unitTesting and isinstance(w, leoFrame.StringTextWrapper):
+        if g.unitTesting and isinstance(w, StringTextWrapper):
             return True
         return False
     #@+node:ekr.20181119153936.1: *4* gui.focus...
@@ -1347,7 +1348,7 @@ class LeoBrowserLog(leoFrame.NullLog):
         super().__init__(frame, parentFrame)
         self.root = get_root()
         self.tag = 'py.log.wrap'
-        assert isinstance(self.widget, leoFrame.StringTextWrapper)
+        assert isinstance(self.widget, StringTextWrapper)
         self.logCtrl = self.widget
         self.logWidget = self.widget
         self.wrapper = self.widget
@@ -1390,7 +1391,7 @@ class LeoBrowserMenu(leoMenu.NullMenu):
 #@+node:ekr.20181115120317.1: *3* class LeoBrowserMinibuffer (StringTextWrapper)
 # Leo's core doesn't define a NullMinibuffer class.
 
-class LeoBrowserMinibuffer(leoFrame.StringTextWrapper):
+class LeoBrowserMinibuffer(StringTextWrapper):
     """Browser wrapper for minibuffer."""
 
     def __init__(self, c, frame):

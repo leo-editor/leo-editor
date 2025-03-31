@@ -17,6 +17,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoNodes import Position, VNode
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
     KWargs = Any
+    Value = Any
 #@-<< editCommands imports & annotations  >>
 
 def cmd(name: str) -> Callable:
@@ -1292,14 +1293,14 @@ class EditCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.233: *5* ec.getIconList
     def getIconList(self, v: VNode) -> list[dict]:
         """Return list of icons for v."""
-        fromVnode: list[dict] = []
+        fromVnode: list[dict[str, Value]] = []
         if hasattr(v, 'unknownAttributes'):
             fromVnode = [dict(i) for i in v.u.get('icons', [])]
             for i in fromVnode:
                 i['on'] = 'VNode'
         return fromVnode
     #@+node:ekr.20150514063305.234: *5* ec.setIconList & helpers
-    def setIconList(self, p: Position, aList: list[Any]) -> None:
+    def setIconList(self, p: Position, aList: list[Value]) -> None:
         """Set list of icons for position p to aList"""
         current = self.getIconList(p.v)
         if not aList and not current:
@@ -1312,7 +1313,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         # set p.u.
         self._setIconListHelper(p, aList)
     #@+node:ekr.20150514063305.235: *6* ec._setIconListHelper
-    def _setIconListHelper(self, p: Position, aList: list[Any]) -> None:
+    def _setIconListHelper(self, p: Position, aList: list[Value]) -> None:
         """Set icon UA for p.v. to the given list of Icons."""
         v = p.v
         if aList:  # Update the uA.
@@ -1336,7 +1337,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             p.setDirty()
             c.setChanged()
     #@+node:ekr.20150514063305.237: *4* ec.deleteIconByName
-    def deleteIconByName(self, t: Any, name: str, relPath: str) -> None:  # t not used.
+    def deleteIconByName(self, t: object, name: str, relPath: str) -> None:  # t not used.
         """for use by the right-click remove icon callback"""
         c, p = self.c, self.c.p
         aList = self.getIconList(p.v)
@@ -1398,7 +1399,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         )
         if not paths:
             return
-        aList: list[Any] = []
+        aList: list[dict[str, Value]] = []
         xoffset = 2
         for path in paths:
             xoffset = self.appendImageDictToList(aList, path, xoffset)
@@ -1412,7 +1413,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         c = self.c
         if not p:
             p = c.p
-        aList: list[Any] = []
+        aList: list[Value] = []
         xoffset = 2
         xoffset = self.appendImageDictToList(aList, path, xoffset, **kargs)
         aList2 = self.getIconList(p.v)
@@ -2085,8 +2086,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         ch: str,
         event: LeoKeyEvent,
         inBrackets: bool,
-        oldSel: Any,
-        stroke: Any,
+        oldSel: tuple[int, int],
+        stroke: g.KeyStroke,
         w: Wrapper,
     ) -> None:
         c, p = self.c, self.c.p
@@ -2128,7 +2129,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         if inBrackets and self.flashMatchingBrackets:
             self.flashMatchingBracketsHelper(c, ch, i, p, w)
     #@+node:ekr.20180806045802.1: *5* ec.doSmartQuote
-    def doSmartQuote(self, action: str, ch: str, oldSel: Any, w: Wrapper) -> None:
+    def doSmartQuote(self, action: str, ch: str, oldSel: tuple[int, int], w: Wrapper) -> None:
         """Convert a straight quote to a curly quote, depending on context."""
         i, j = oldSel
         if i > j:
@@ -2186,7 +2187,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             self.openBracketsList = '([{'
             self.closeBracketsList = ')]}'
     #@+node:ekr.20150514063305.274: *5* ec.insertNewlineHelper
-    def insertNewlineHelper(self, w: Wrapper, oldSel: Any, undoType: str) -> None:
+    def insertNewlineHelper(self, w: Wrapper, oldSel: tuple[int, int], undoType: str) -> None:
 
         c, p = self.c, self.c.p
         i, j = oldSel
@@ -2244,7 +2245,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             w.setInsertPoint(i + len(ws))
             w.seeInsertPoint()  # 2011/10/02: Fix cursor-movement bug.
     #@+node:ekr.20150514063305.276: *5* ec.updateAutomatchBracket
-    def updateAutomatchBracket(self, p: Position, w: Wrapper, ch: str, oldSel: Any) -> None:
+    def updateAutomatchBracket(self, p: Position, w: Wrapper, ch: str, oldSel: tuple[int, int]) -> None:
 
         c = self.c
         d = c.scanAllDirectives(p)

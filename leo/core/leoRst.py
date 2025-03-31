@@ -19,7 +19,7 @@ import io
 import os
 import re
 import time
-from typing import Any, Generator, Optional, TYPE_CHECKING
+from typing import Generator, Optional, TYPE_CHECKING
 # Third-part imports...
 try:
     import docutils
@@ -587,7 +587,7 @@ class RstCommands:
             d[str(key)] = str(val)
         return d
     #@+node:ekr.20090512153903.5803: *4* rst.writeAtAutoFile & helpers
-    def writeAtAutoFile(self, p: Position, fileName: str, outputFile: Any) -> bool:
+    def writeAtAutoFile(self, p: Position, fileName: str, outputFile: io.TextIOBase) -> bool:
         """
         at.writeAtAutoContents calls this method to write an @auto tree
         containing imported rST code.

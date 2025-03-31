@@ -631,7 +631,7 @@ def sortFields(self, event: LeoKeyEvent, which: str = None) -> None:
     Cycles body editor focus between editors in the body text. The editor that has focus shows the content of the selected outline node; the other body editors continue to show the node contents they last had when they had the body editor focus.
 #@+node:ekr.20240825065226.1: *4* dw: deleted
 #@+node:ekr.20190118150859.10: *5* dw.addNewEditor
-def addNewEditor(self, name: str) -> tuple[QWidget, Wrapper]:
+def addNewEditor(self, name: str) -> tuple[QWidget, QTextEditWrapper]:
     """Create a new body editor."""
     c, p = self.leo_c, self.leo_c.p
     body = c.frame.body
@@ -657,7 +657,7 @@ def addNewEditor(self, name: str) -> tuple[QWidget, Wrapper]:
         body.recolorWidget(p, wrapper)
     return parent_frame, wrapper
 #@+node:ekr.20110605121601.18212: *5* dw.packLabel
-def packLabel(self, w: Wrapper, n: int = None) -> None:
+def packLabel(self, w: QWidget, n: int = None) -> None:
     """
     Pack w into the body frame's QVGridLayout.
 
@@ -2253,6 +2253,88 @@ echo $out_file_name;
 //echo "<br>Good Return<br>\n";
 /*************************************************************************/
 ?>
+#@+node:ekr.20250331063802.1: *3* retire documentation previous in LeoPyRef.leo
+#@+node:ekr.20050721093241: *4* << about gui classes and gui plugins >>
+@nocolor
+
+The following are notes for anyone who is interested in writing
+alternate gui's for Leo.
+
+Rule 1: Leo's core is (or should be) free of gui-specific code.
+
+Core code calls **gui wrapper methods** defined by gui-specific classes.
+
+Rule 2: Gui-specific code should be localized to a single file.
+
+Rule 3: Gui-specific code may call gui methods directly.
+
+There are no restrictions about the code in the gui-specific classes.
+
+Rule 4: Gui-specific classes must implement the gui wrapper methods
+specified in the gui base classes.
+
+This is the way that gui-specific classes provide gui-specific
+services to Leo's core.
+
+The alternative would be to implement all gui-specific commands
+directly in the gui-specific code.  But this would be much more work
+than needed.  For example, only a few gui-specific wrappers are needed
+to implement all commands that deal with body text.  Implementing each
+of these commands 'from scratch' would duplicate a lot of code
+unnecessarily.
+
+Using the gui wrapper methods is a bit messy for two reasons:
+
+1. It requires defining enough wrappers (both in the base gui classes
+   and subclasses) so that all gui-specific services needed by Leo's
+   core are available.  Adding a wrapper to a gui base class involves
+   adding it to all gui-specific subclasses.  It's easy to forget to
+   add a wrapper.  The gui base class defines all wrappers as a
+   function that just calls oops().  This prints a warning that the
+   wrapper should be defined in a subclass.
+
+2. The original wrappers assumed Tkinter-like indices.  Wrappers that
+   were defined later assume Python indices (see Rule 5 below).
+
+Rule 5: Leo's core should use Python indices, not gui-specific
+indices.
+
+Leo's core mostly follows this rule: there may be a few exceptions.
+
+A Python index is an int that runs from 0 (beginning of text) to
+len(s) (end of text s).  That is, there are exactly len(s) + 1 valid
+indices.  In contrast, Tkinter indices run from "1.0" to "x.y" where
+text s has x lines and where the length of the last line is y-1.
+
+Two functions in leoGlobals.py support conversions from Python indices to
+the row/column indices used by Tkinter.
+
+- g.convertPythonIndexToRowCol converts a Python index to a row/column
+  index used by Tkinter.
+
+- g.convertRowColToPythonIndex does the reverse.
+
+Important: the first Tkinter index is '1.0', not '0.0', but the row
+returned by g.convertPythonIndexToRowCol is zero based, so the code
+that actually creates Tkinter indices from row/col must add 1 to the
+row.  Similar remarks apply when going in the reverse direction.
+#@+node:ekr.20140831085423.18639: *4* About widgets and wrappers
+Here is what you *must know* to understand Leo's core:
+
+1. A **widget** is an actual gui widget.
+
+Leo's core seldom accesses widgets directly.  Instead...
+
+2. A **wrapper class** defines a standard api that hides the details
+   of the underlying gui **text** widgets.
+
+Leo's core uses this api almost exclusively. That is, Leo's core code
+treats wrappers *as if* they were only text widgets there are!
+
+There is, however, a back door for (hopefully rare!) special cases. All
+wrapper classes define an official ``widget`` ivar, so core or plugin code
+can gain access to the real (Qt) widget using wrapper.widget. Searching for
+wrapper.widget will find all gui-dependent snippets of code in Leo's core.
 #@+node:ekr.20240820045246.1: ** To be cleared later
 # Clear after 6.8.2.
 #@+node:ekr.20241125100825.1: *3* leo/scripts/sphinx_build.py (not used)
@@ -2324,6 +2406,51 @@ def change_layout(self, layout_name: str) -> None:
         print(f"Switching to {layout_name}")
         # c.frame.reloadOutline()
         c.restartLeo()
+#@+node:ekr.20250327110007.1: *3* deleted via PR #4320
+https://github.com/leo-editor/leo-editor/pull/4320
+#@+node:vitalije.20170716201700.11: *4* _openFile (SqlitePickleShare)
+def _openFile(self, fn: str, mode: str = 'r') -> Optional[Any]:
+    """ Open this file.  Return a file object.
+
+    Do not print an error message.
+    It is not an error for this to fail.
+    """
+    try:
+        return open(fn, mode)
+    except Exception:
+        return None
+#@+node:ekr.20110605121601.17940: *4* qtree.wrapQLineEdit
+def wrapQLineEdit(self, w: Wrapper) -> Wrapper:
+    """A wretched kludge for MacOs k.masterMenuHandler."""
+    c = self.c
+    if isinstance(w, QtWidgets.QLineEdit):
+        wrapper = self.edit_widget(c.p)
+    else:
+        wrapper = w
+    return wrapper
+#@+node:tbrown.20150724090431.10: *4* toggle_sclass
+def toggle_sclass(self, w: Wrapper, prop: Any) -> None:
+    """Toggle style class or list of classes prop on QWidget w"""
+    if not prop:
+        return
+    props = set(self.sclasses(w))
+    if isinstance(prop, str):
+        prop = set([prop])
+    else:
+        prop = set(prop)
+    current = props.intersection(prop)
+    props.update(prop)
+    props = props.difference(current)
+    self.set_sclasses(w, props)
+#@+node:ekr.20070422094710: *4* LeoBody.createChapterIvar
+def createChapterIvar(self, w: Wrapper) -> None:
+    c = self.c
+    cc = c.chapterController
+    if not hasattr(w, 'leo_chapter') or not w.leo_chapter:
+        if cc and self.use_chapters:
+            w.leo_chapter = cc.getSelectedChapter()
+        else:
+            w.leo_chapter = None
 #@-all
 #@@nosearch
 #@-leo

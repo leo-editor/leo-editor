@@ -1,28 +1,38 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20110605121601.17996: * @file ../plugins/qt_commands.py
 """Leo's Qt-related commands defined by @g.command."""
+from __future__ import annotations
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoColor
 from leo.core import leoConfig
 from leo.core.leoQt import QtGui, QtWidgets
+if TYPE_CHECKING:
+    from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoGui import LeoKeyEvent
+    Args = Any
+    KWargs = Any
+    QWidget = QtWidgets.QWidget
+
 #@+others
 #@+node:ekr.20110605121601.18000: ** init
-def init():
+def init() -> bool:
     """Top-level init function for qt_commands.py."""
-    ok = True
+    if g.app.gui.guiName() != "qt":
+        return False
     g.plugin_signon(__name__)
     g.registerHandler("select2", onSelect)
-    return ok
-
-def onSelect(tag, keywords):
-    c = keywords.get('c') or keywords.get('new_c')
-    wdg = c.frame.top.leo_body_frame
+    return True
+#@+node:ekr.20250330060728.1: ** onSelect
+def onSelect(tag: str, keywords: Any) -> None:
+    c: Cmdr = keywords.get('c') or keywords.get('new_c')
+    wdg: QWidget = c.frame.top.leo_body_frame
     wdg.setWindowTitle(c.p.h)
 #@+node:ekr.20110605121601.18001: ** qt: detach-editor-toggle & helpers
 @g.command('detach-editor-toggle')
-def detach_editor_toggle(event):
+def detach_editor_toggle(event: LeoKeyEvent) -> None:
     """ Detach or undetach body editor """
-    c = event['c']
+    c: Cmdr = event['c']
     detach = True
     try:
         if c.frame.detached_body_info is not None:
@@ -35,16 +45,16 @@ def detach_editor_toggle(event):
         undetach_editor(c)
 
 @g.command('detach-editor-toggle-max')
-def detach_editor_toggle_max(event):
+def detach_editor_toggle_max(event: LeoKeyEvent) -> None:
     """ Detach editor, maximize """
-    c = event['c']
+    c: Cmdr = event['c']
     detach_editor_toggle(event)
     if c.frame.detached_body_info is not None:
-        wdg = c.frame.top.leo_body_frame
+        wdg: QWidget = c.frame.top.leo_body_frame
         wdg.showMaximized()
 #@+node:ekr.20170324145714.1: *3* qt: detach_editor
-def detach_editor(c):
-    wdg = c.frame.top.leo_body_frame
+def detach_editor(c: Cmdr) -> None:
+    wdg: QWidget = c.frame.top.leo_body_frame
     parent = wdg.parent()
     if parent is None:
         # just show if already detached
@@ -52,14 +62,14 @@ def detach_editor(c):
     else:
         c.frame.detached_body_info = parent, parent.sizes()
         wdg.setParent(None)
-        sheet = c.config.getData('qt-gui-plugin-style-sheet')
-        if sheet:
-            sheet = '\n'.join(sheet)
+        sheets: list[str] = c.config.getData('qt-gui-plugin-style-sheet')
+        if sheets:
+            sheet = '\n'.join(sheets)
             wdg.setStyleSheet(sheet)
         wdg.show()
 #@+node:ekr.20170324145716.1: *3* qt: undetach_editor
-def undetach_editor(c):
-    wdg = c.frame.top.leo_body_frame
+def undetach_editor(c: Cmdr) -> None:
+    wdg: QWidget = c.frame.top.leo_body_frame
     parent, sizes = c.frame.detached_body_info
     parent.insertWidget(0, wdg)
     wdg.show()
@@ -67,9 +77,9 @@ def undetach_editor(c):
     c.frame.detached_body_info = None
 #@+node:ekr.20170324143944.2: ** qt: show-color-names
 @g.command('show-color-names')
-def showColorNames(event=None):
+def showColorNames(event: LeoKeyEvent) -> None:
     """Put up a dialog showing color names."""
-    c = event.get('c')
+    c: Cmdr = event.get('c')
     template = '''
         QComboBox {
             background-color: %s;
@@ -83,7 +93,7 @@ def showColorNames(event=None):
         color_list: list[str] = []
         box = QtWidgets.QComboBox()
 
-        def onActivated(n, *args, **keys):
+        def onActivated(n: int, *args: Args, **keys: KWargs) -> None:
             color = color_list[n]
             sheet = template % (color, color)
             box.setStyleSheet(sheet)
@@ -108,7 +118,7 @@ def showColorNames(event=None):
         g.es('created color picker in icon area')
 #@+node:ekr.20170324142416.1: ** qt: show-color-wheel
 @g.command('show-color-wheel')
-def showColorWheel(self, event=None):
+def showColorWheel(self: Any, event: LeoKeyEvent) -> None:
     """Show a Qt color dialog."""
     c, p = self.c, self.c.p
     picker = QtWidgets.QColorDialog()
@@ -135,7 +145,7 @@ def showColorWheel(self, event=None):
         QtWidgets.QApplication.clipboard().setText(text)
 #@+node:ekr.20170324143944.3: ** qt: show-fonts
 @g.command('show-fonts')
-def showFonts(self, event=None):
+def showFonts(self: Any, event: LeoKeyEvent) -> None:
     """Open a tab in the log pane showing a font picker."""
     c, p = self.c, self.c.p
     picker = QtWidgets.QFontDialog()
@@ -176,30 +186,30 @@ def showFonts(self, event=None):
         c.undoer.afterChangeNodeContents(p, 'change-font', udata)
 #@+node:ekr.20140918124632.17893: ** qt: show-style-sheet
 @g.command('show-style-sheet')
-def print_style_sheet(event):
+def print_style_sheet(event: LeoKeyEvent) -> None:
     """show-style-sheet command."""
-    c = event.get('c')
+    c: Cmdr = event.get('c')
     if c:
         c.styleSheetManager.print_style_sheet()
 #@+node:ekr.20140918124632.17891: ** qt: style-reload
 @g.command('style-reload')
 @g.command('reload-style-sheets')
-def style_reload(event):
+def style_reload(event: LeoKeyEvent) -> None:
     """reload-styles command.
 
     Find the appropriate style sheet and re-apply it.
 
     This replaces execution of the `stylesheet & source` node in settings files.
     """
-    c = event.get('c')
+    c: Cmdr = event.get('c')
     if c and c.styleSheetManager:
         # Call ssm.reload_settings after reloading all settings.
         c.reloadSettings()
 #@+node:ekr.20140918124632.17892: ** qt: style-set-selected
 @g.command('style-set-selected')
-def style_set_selected(event):
+def style_set_selected(event: LeoKeyEvent) -> None:
     """style-set-selected command. Set the global stylesheet to c.p.b. (For testing)"""
-    c = event.get('c')
+    c: Cmdr = event.get('c')
     if c:
         c.styleSheetManager.set_selected_style_sheet()
 #@-others

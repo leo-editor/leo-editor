@@ -13,6 +13,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position
+    Value = Any
 #@-<< leoPersistence imports & annotations >>
 
 #@+others
@@ -344,7 +345,7 @@ class PersistenceDataController:
         if matches:
             # Take the match with the greatest number of parents.
 
-            def key(aTuple: tuple) -> Any:
+            def key(aTuple: tuple) -> Value:
                 return aTuple[0]
 
             n, p = list(sorted(matches, key=key))[-1]
@@ -493,7 +494,7 @@ class PersistenceDataController:
             g.es_exception()
             return ''
     #@+node:ekr.20140713135856.17744: *5* pd.unpickle
-    def unpickle(self, s: str) -> Any:  # An actual uA.
+    def unpickle(self, s: str) -> Value:  # An actual uA.
         """Unhexlify and unpickle string s into p."""
         try:
             # Throws TypeError if s is not a hex string.

@@ -7,8 +7,8 @@
 # of method.
 #@@c
 # pylint: disable=arguments-differ
-#@+<< imports >>
-#@+node:ekr.20150107090324.2: ** << imports >>
+#@+<< cursesGui.py: imports & annotations >>
+#@+node:ekr.20150107090324.2: ** << cursesGui.py: imports & annotations >>
 from collections.abc import Callable
 import os
 from typing import Any
@@ -19,10 +19,9 @@ from leo.core import leoKeys
 from leo.core import leoFrame
 from leo.core import leoMenu
 from leo.core import leoNodes
+from leo.core.leoAPI import StringTextWrapper
 get_input = input
-
-#@-<< imports >>
-Widget = Any
+#@-<< cursesGui.py: imports & annotations >>
 #@+<< TODO >>
 #@+node:ekr.20150107090324.3: ** << TODO >>
 #@@nocolor-node
@@ -102,7 +101,7 @@ class textGui(leoGui.LeoGui):
     #@+node:ekr.20150107090324.13: *3* isTextWidget
     def isTextWidget(self, w):
         """Return True if w is a Text widget suitable for text-oriented commands."""
-        return w and isinstance(w, leoFrame.StringTextWrapper)
+        return w and isinstance(w, StringTextWrapper)
     #@+node:ekr.20150107090324.69: *3* runAskYesNoDialog (cursesGui.py)
     def runAskYesNoDialog(self, c, title, message=None, yes_all=False, no_all=False):
         return 'yes'
@@ -286,7 +285,7 @@ class textBody(leoFrame.LeoBody):
         g.pr(w.s)
     #@-others
 #@+node:ekr.20150107090324.36: ** class textBodyCtrl (stringTextWrapper)
-class textBodyCtrl(leoFrame.StringTextWrapper):
+class textBodyCtrl(StringTextWrapper):
     pass
 #@+node:ekr.20150107090324.37: ** class textMenuCascade
 class textMenuCascade:
@@ -337,7 +336,7 @@ class textLeoMenu(leoMenu.LeoMenu):
         self._top_menu = textLeoMenu(frame)
         self.createMenusFromTables()
     #@+node:ekr.20150107090324.48: *3* new_menu
-    def new_menu(self, parent: Widget, tearoff: int = 0, labe: str = ''):
+    def new_menu(self, parent: Any, tearoff: int = 0, labe: str = ''):
         if tearoff:
             raise NotImplementedError(repr(tearoff))
         menu = textLeoMenu(parent or self.frame)
@@ -349,7 +348,7 @@ class textLeoMenu(leoMenu.LeoMenu):
             parent = self._top_menu
         parent.entries.append(textMenuCascade(menu, label, underline,))
     #@+node:ekr.20150107090324.50: *3* add_command (cursesGui.py)
-    def add_command(self, menu: Widget,
+    def add_command(self, menu: Any,
         accelerator: str = '',
         command: Callable = None,
         commandName: str = None,
