@@ -908,6 +908,7 @@ class JEditColorizer(BaseColorizer):
         self.delegate_stack: list[str] = []
         self.initialStateNumber = -1
         self.n2languageDict: dict[int, str] = {-1: c.target_language}
+        self.mode: JEditModeDescriptor = None
         self.nested = False  # True: allow nested comments, etc.
         self.nested_level = 0  # Nesting level if self.nested is True.
         self.nextState = 1  # Don't use 0.
