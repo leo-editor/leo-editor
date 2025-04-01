@@ -2905,7 +2905,7 @@ class AtFile:
         at.remove(fileName)
         at.addToOrphanList(root)
     #@+node:ekr.20041005105605.219: *3* at.Utilities
-    #@+node:ekr.20250401113517.1: *4* at.delimsFromAtFileNodeBody (new)
+    #@+node:ekr.20250401113517.1: *4* at.delimsFromAtFileNodeBody
     def delimsFromAtFileNodeBody(self, p: Position) -> Optional[tuple[str, str, str]]:
         """
         p is an @<file> node.
@@ -2992,7 +2992,7 @@ class AtFile:
         d = p.v.tempAttributes.get('read-path', {})
         d['path'] = path
         p.v.tempAttributes['read-path'] = d
-    #@+node:ekr.20250401111942.1: *4* at.languageFromAtFileNodeBody (new)
+    #@+node:ekr.20250401111942.1: *4* at.languageFromAtFileNodeBody
     def languageFromAtFileNodeBody(self, p: Position) -> Optional[str]:
         """
         p is an @<file> node.
@@ -3011,7 +3011,7 @@ class AtFile:
         if len(languages) == 1:
             return languages[0]
         return None
-    #@+node:ekr.20250401065019.1: *4* at.languageFromAtFileNodeHeadline (new)
+    #@+node:ekr.20250401065019.1: *4* at.languageFromAtFileNodeHeadline
     def languageFromAtFileNodeHeadline(self, p: Position) -> str:
         """Return the language implied by p.h."""
         assert p.isAnyAtFileNode(), repr(p)
@@ -3087,7 +3087,7 @@ class AtFile:
             9: '@verbatim',
         }
         return d.get(kind) or f"<unknown AtFile class constant> {kind!r}"
-    #@+node:ekr.20080923070954.4: *4* at.scanAllDirectives (changed)
+    #@+node:ekr.20080923070954.4: *4* at.scanAllDirectives
     def scanAllDirectives(self, p: Position) -> dict[str, Value]:
         """
         Scan p and p's ancestors looking for directives,
@@ -3097,25 +3097,20 @@ class AtFile:
         d = c.scanAllDirectives(p)
 
         # #4323: The hard cases. Set the language and delims using only p.h and p.b.
+        delims = None
         if p.isAnyAtFileNode():  #4323: Look no further.
             language = (
                 at.languageFromAtFileNodeBody(p) or
                 at.languageFromAtFileNodeHeadline(p)
             )
-            delims = (
-                at.delimsFromAtFileNodeBody(p) or
-                g.set_delims_from_language(language)
-            )
+            delims = at.delimsFromAtFileNodeBody(p)
         elif p.h.startswith(('@button', '@command')):
             language = 'python'
-            delims = g.set_delims_from_language(language)
         else:
             language = g.getLanguageFromAncestorAtFileNode(p) or 'python'
-            delims = g.set_delims_from_language(language)
-
         at.language = language
 
-        # Last check: defensive programming.
+        # Make sure to define delims.
         if delims in (None, (None, None, None)):  # #4256
             delims = g.set_delims_from_language(language)
 

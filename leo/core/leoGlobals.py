@@ -2753,7 +2753,7 @@ def isValidLanguage(language: str) -> bool:
         or
         language in g.app.delegate_language_dict
     ))
-#@+node:ekr.20250401071751.1: *3* g.language_from_headline (New)
+#@+node:ekr.20250401071751.1: *3* g.language_from_headline
 def language_from_headline(p: Position) -> Optional[str]:
     """
     Return the language from p.h.
