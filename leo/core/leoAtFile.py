@@ -3592,18 +3592,16 @@ class FastAtRead:
             #@+<< handle @first and @last >>
             #@+node:ekr.20180606053919.1: *4* << handle @first and @last >>
             if m := self.first_pat.match(line):
-                # py--lint: disable=no-else-continue
                 if 0 <= first_i < len(first_lines):
                     body.append('@first ' + first_lines[first_i])
                     first_i += 1
-                    continue
-                # Use 'if 1' instead of 'else' to avoid a pylint complaint.
-                if 1:  # pragma: no cover
+                else:  # pragma: no cover
                     g.trace(f"\ntoo many @first lines: {path}")
                     print('@first is valid only at the start of @<file> nodes\n')
                     g.printObj(first_lines, tag='first_lines')
                     g.printObj(lines[start : i + 2], tag='lines[start:i+2]')
-                    continue
+                continue
+
             if m := self.last_pat.match(line):
                 # Just increment the count of the expected last lines.
                 # We'll fill in the @last line directives after we see the @-leo directive.
