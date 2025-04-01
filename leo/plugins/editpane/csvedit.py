@@ -114,7 +114,7 @@ class ListTable(QtCore.QAbstractTableModel):
         self.tbl = min(self.tbl, len(tables) - 1)
         lines = text.split('\n')
         if tables and tables[self.tbl]:
-            self.pretext = lines[:tables[self.tbl][0].line]
+            self.pretext = lines[: tables[self.tbl][0].line]
             self.posttext = lines[tables[self.tbl][-1].line + 1 :]
             self._data = [row.row for row in tables[self.tbl]]
         else:

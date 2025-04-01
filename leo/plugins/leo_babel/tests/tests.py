@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-#coding=utf-8
+# coding=utf-8
 #@+leo-ver=5-thin
 #@+node:bob.20180125160225.1: * @file ../plugins/leo_babel/tests/tests.py
 #@@first
