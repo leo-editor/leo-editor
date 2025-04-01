@@ -12,7 +12,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent
     Menu = Any
     Value = Any
-    Widget = Any
+    Widget = Any  # 'Any' is the correct annotation for base class widgets.
 #@-<< leoMenu imports & annotations >>
 #@+others
 #@+node:ekr.20031218072017.3750: ** class LeoMenu

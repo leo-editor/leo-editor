@@ -22,7 +22,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.plugins.qt_frame import FindTabManager
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
     Value = Any
-    Widget = Any
+    Widget = Any  # 'Any' is the correct annotation for base class widgets.
 #@-<< leoGui imports & annotations >>
 #@+others
 #@+node:ekr.20031218072017.3720: ** class LeoGui

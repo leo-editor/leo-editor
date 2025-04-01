@@ -18,7 +18,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoApp import PreviousSettings
     Setting = Any
     Value = Any
-    Widget = Any
+    Widget = Any  # 'Any' is the correct annotation for base class widgets.
 #@-<< leoConfig imports & annotations >>
 #@+<< class ParserBaseClass >>
 #@+node:ekr.20041119203941.2: ** << class ParserBaseClass >>

@@ -3992,7 +3992,6 @@ class TextMixin:
     #@+node:ekr.20170511053143.3: *5* tm.injectIvars (cursesGui2)
     def injectIvars(self, c: Cmdr) -> Wrapper:
         """Inject standard leo ivars into the QTextEdit or QsciScintilla widget."""
-        self.leo_p = c.p.copy() if c.p else None
         self.leo_active = True
         # Inject the scrollbar items into the text widget.
         self.leo_bodyBar = None
@@ -4124,12 +4123,10 @@ class BodyWrapper(StringTextWrapper):
     #@+node:ekr.20170504034655.3: *4* bw.injectIvars (cursesGui2)
     def injectIvars(self, c: Cmdr) -> None:
         """Inject standard leo ivars into the QTextEdit or QsciScintilla widget."""
-        self.leo_p = c.p.copy() if c.p else None
         self.leo_active = True
         # Inject the scrollbar items into the text widget.
         self.leo_bodyBar = None
         self.leo_bodyXBar = None
-        self.leo_chapter = None
         self.leo_frame = None
     #@+node:ekr.20170504034655.6: *4* bw.onCursorPositionChanged
     def onCursorPositionChanged(self, event: Event = None) -> None:

@@ -66,7 +66,7 @@ if TYPE_CHECKING:  # pragma: no cover
     KWargs = Any
     RegexFlag = Union[int, re.RegexFlag]  # re.RegexFlag does not define 0
     Value = Any
-    Widget = Any
+    Widget = Any  # 'Any' is the correct annotation for base class widgets.
     Wrapper = Union[QTextEditWrapper, StringTextWrapper]
 #@-<< leoCommands annotations >>
 
@@ -2605,7 +2605,9 @@ class Commands:
     #@+node:ekr.20180503111249.2: *5* c.interactive3
     def interactive3(self, callback: Callable, event: LeoKeyEvent, prompts: Sequence) -> None:
 
-        c, d, k = self, {}, self.k
+        c = self
+        d: dict[str, str] = {}
+        k = self.k
         prompt1, prompt2, prompt3 = prompts
 
         def state1(event: LeoKeyEvent) -> None:
