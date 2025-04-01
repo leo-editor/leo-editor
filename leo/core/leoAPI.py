@@ -415,4 +415,6 @@ class TreeAPI:
         pass
 #@-others
 #@@language python
+#@@tabwidth -4
+#@@pagewidth 60
 #@-leo
