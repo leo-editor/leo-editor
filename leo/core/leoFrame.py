@@ -39,7 +39,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.plugins.notebook import NbController
     Args = Any
     KWargs = Any
-    Widget = Any
+    Widget = Any  # 'Any' is the correct annotation for base class widgets.
     TextAPI = Union[QScintillaWrapper, QTextEditWrapper, StringTextWrapper]
 #@-<< leoFrame annotations >>
 #@+<< leoFrame: about handling events >>
@@ -137,20 +137,6 @@ class LeoBody:
         raise NotImplementedError
     #@+node:ekr.20060528100747: *3* LeoBody.Editors
     #@+node:ekr.20070424053629.1: *4* LeoBody.utils
-    #@+node:ekr.20070424084651: *5* LeoBody.ensurePositionExists
-    def ensurePositionExists(self, w: TextAPI) -> bool:
-        """Return True if w.leo_p exists or can be reconstituted."""
-        c = self.c
-        if c.positionExists(w.leo_p):
-            return True
-        g.trace('***** does not exist', w.leo_p)
-        for p2 in c.all_unique_positions():
-            if p2.v and p2.v == w.leo_v:
-                w.leo_p = p2.copy()
-                return True
-        # This *can* happen when selecting a deleted node.
-        w.leo_p = c.p
-        return False
     #@+node:ekr.20060530204135: *5* LeoBody.recolorWidget (QScintilla only)
     def recolorWidget(self, p: Position, w: TextAPI) -> None:
         # Support QScintillaColorizer.colorize.
@@ -163,19 +149,6 @@ class LeoBody:
                 c.frame.body.colorizer.colorize(p)
             finally:
                 c.frame.body.wrapper = old_wrapper
-    #@+node:ekr.20070424084012: *5* LeoBody.switchToChapter
-    def switchToChapter(self, w: TextAPI) -> None:
-        """select w.leo_chapter."""
-        c = self.c
-        cc = c.chapterController
-        chapter = getattr(w, 'leo_chapter', None)
-        if chapter:
-            chapter = w.leo_chapter
-            name = chapter and chapter.name
-            oldChapter = cc.getSelectedChapter()
-            if chapter != oldChapter:
-                cc.selectChapterByName(name)
-                c.bodyWantsFocus()
     #@+node:ekr.20031218072017.4018: *3* LeoBody.Text
     #@+node:ekr.20031218072017.4030: *4* LeoBody.getInsertLines
     def getInsertLines(self) -> tuple[str, str, str]:

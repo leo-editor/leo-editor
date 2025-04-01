@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position, VNode
     from leo.plugins.mod_scripting import ScriptingController
-    Widget = Any
+    Widget = Any  # 'Any' is the correct annotation for base class widgets.
 #@-<< leoAPI.py: imports and annotations >>
 
 #@+others
@@ -184,9 +184,6 @@ class StringTextWrapper:
     def __init__(self, c: Cmdr, name: str) -> None:
         """Ctor for the StringTextWrapper class."""
         self.c = c
-        self.leo_chapter = None
-        self.leo_p = None
-        self.leo_v = None
         self.name = name
         self.ins = 0
         self.sel = 0, 0
@@ -417,4 +414,7 @@ class TreeAPI:
     def updateHead(self, event: LeoKeyEvent, w: BaseTextAPI) -> None:
         pass
 #@-others
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 60
 #@-leo

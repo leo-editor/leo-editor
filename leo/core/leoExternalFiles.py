@@ -15,7 +15,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position
     Value = Any
-    Widget = Any
+    Widget = Any  # 'Any' is the correct annotation for base class widgets.
 #@-<< leoExternalFiles imports & annotations >>
 
 #@+others

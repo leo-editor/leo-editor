@@ -44,6 +44,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             r'[%s%s\-_]+' % (string.ascii_letters, string.digits))
             # Not a unicode problem.
         self.n_regex = re.compile(r'(?<!\\)\\n')  # to replace \\n but not \\\\n
+        self.enabled = False
         self.expanding = False  # True: expanding abbreviations.
         self.event = None
         self.last_hit = None  # Distinguish between text and tree abbreviations.

@@ -13,10 +13,11 @@ import string
 import sys
 import textwrap
 import time
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Any, Optional, Union, TYPE_CHECKING
 from types import ModuleType
 from leo.core import leoGlobals as g
 from leo.external import codewise
+from leo.core.leoFrame import NullLog
 try:
     import jedi
 except ImportError:
@@ -29,12 +30,13 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGlobals import BindingInfo
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position
+    from leo.plugins.qt_frame import LeoQtLog
     from leo.plugins.qt_text import QTextEditWrapper as Wrapper
     Args = Any
     KWargs = Any
     Stroke = Any
     Value = Any
-    Widget = Any
+    Widget = Any  # 'Any' is the correct annotation for base class widgets.
 #@-<< leoKeys annotations >>
 #@+<< Key bindings, an overview >>
 #@+node:ekr.20130920121326.11281: ** << Key bindings, an overview >>
@@ -1057,7 +1059,7 @@ class FileNameChooser:
         self.c = c
         self.k = c.k
         assert c and c.k
-        self.log = c.frame.log or g.NullObject()
+        self.log: Union[NullLog, LeoQtLog] = c.frame.log or NullLog(frame=c.frame, parentFrame=None)
         self.callback: Callable = None
         self.filterExt: list[str] = None
         self.prompt: str = None
@@ -1166,7 +1168,7 @@ class FileNameChooser:
         char = event.char if event else ''
         if state == 0:
             # Re-init all ivars.
-            self.log = c.frame.log or g.NullObject()
+            self.log = c.frame.log or NullLog(frame=c.frame, parentFrame=None)
             self.callback = callback
             self.filterExt = filterExt or ['.pyc', '.bin',]
             self.prompt = prompt
@@ -4271,7 +4273,7 @@ class KeyHandlerClass:
         elif c.vim_mode and c.vimCommands:
             c.vimCommands.show_status()
             return
-        else:
+        else:  # pylint: disable=no-else-return
             s = f"{state.capitalize()} State"
             if c.editCommands.extendMode:
                 s = s + ' (Extend Mode)'

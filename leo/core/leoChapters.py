@@ -14,7 +14,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent
     from leo.plugins.qt_frame import LeoQtTreeTab
     from leo.core.leoNodes import Position
-    from leo.plugins.qt_text import QTextEditWrapper as Wrapper
+
 #@-<< leoChapters imports & annotations >>
 
 #@+others
@@ -376,26 +376,27 @@ class Chapter:
             return None
         return self.cc.findChapterNode(self.name)
     #@+node:ekr.20070317131205.1: *3* chapter.select & helpers
-    def select(self, w: Wrapper = None) -> None:
+    def select(self) -> None:
         """Restore chapter information and redraw the tree when a chapter is selected."""
         if self.selectLockout:
             return
         try:
             tt = self.cc.tt
             self.selectLockout = True
-            self.chapterSelectHelper(w)
+            self.chapterSelectHelper()
             if tt:
                 # A bad kludge: update all the chapter names *after* the selection.
                 tt.setTabLabel(self.name)
         finally:
             self.selectLockout = False
     #@+node:ekr.20070423102603.1: *4* chapter.chapterSelectHelper
-    def chapterSelectHelper(self, w: Wrapper = None) -> None:
+    def chapterSelectHelper(self) -> None:
 
         c, cc, u = self.c, self.cc, self.c.undoer
         cc.selectedChapter = self
         if self.name == 'main':
-            return  # 2016/04/20
+            return
+
         # Remember the root (it may have changed) for dehoist.
         self.root = root = self.findRootNode()
         if not root:
@@ -403,17 +404,10 @@ class Chapter:
             return
         if self.p and not c.positionExists(self.p):
             self.p = p = root.copy()
-        # Next, recompute p and possibly select a new editor.
-        if w:
-            assert w == c.frame.body.wrapper
-            assert w.leo_p
-            self.p = p = self.findPositionInChapter(w.leo_p) or root.copy()
-        else:
-            # This must be done *after* switching roots.
-            self.p = p = self.findPositionInChapter(self.p) or root.copy()
-            # Careful: c.selectPosition would pop the hoist stack.
-            w = self.findEditorInChapter(p)
-            self.p = p  # 2016/04/20: Apparently essential.
+
+        # Recompute p *after* switching roots.
+        # Careful: c.selectPosition would pop the hoist stack.
+        self.p = p = self.findPositionInChapter(self.p) or root.copy()
         if g.match_word(p.h, 0, '@chapter'):
             if p.hasChildren():
                 self.p = p = p.firstChild()
@@ -451,15 +445,6 @@ class Chapter:
             if p.v == p1.v:
                 return p.copy()
         return None
-    #@+node:ekr.20070425175522: *4* chapter.findEditorInChapter
-    def findEditorInChapter(self, p: Position) -> Wrapper:
-        """return w, an editor displaying position p."""
-        chapter, c = self, self.c
-        w = c.frame.body.wrapper
-        if w:
-            w.leo_chapter = chapter
-            w.leo_p = p and p.copy()
-        return w
     #@+node:ekr.20070615065222: *4* chapter.positionIsInChapter
     def positionIsInChapter(self, p: Position) -> bool:
         p2 = self.findPositionInChapter(p, strict=True)

@@ -17,7 +17,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent
     from leo.plugins.leoAPI import BaseTextAPI
     Args = Any
-    ComplexUnion = Any
     KWargs = Any
     QEvent = QtCore.QEvent
     QFrame = QtWidgets.QFrame
@@ -152,20 +151,17 @@ class QTextMixin:
         self.permanent = True  # False if selecting the minibuffer will make the widget go away.
         self.useScintilla = False  # This is used!
         self.virtualInsertPoint = None
-        # This default annotation may mask bugs, but it probably doesn't!
-        self.widget: ComplexUnion = None
+        self.widget: Any = None  # 'Any' is correct for the QTextMixin class.
         if c:
             self.injectIvars(c)
     #@+node:ekr.20140901062324.18721: *4* QTextMixin.injectIvars
     def injectIvars(self, c: Cmdr) -> QTextMixin:
         """Inject standard leo ivars into the QTextEdit or QsciScintilla widget."""
         w = self
-        w.leo_p = c.p.copy() if c.p else None
         w.leo_active = True
         # New in Leo 4.4.4 final: inject the scrollbar items into the text widget.
         w.leo_bodyBar = None
         w.leo_bodyXBar = None
-        w.leo_chapter = None
         w.leo_frame = None
         return w
     #@+node:ekr.20140901062324.18825: *3* QTextMixin.getName
@@ -1328,10 +1324,6 @@ class QScintillaWrapper(QTextMixin):
         self.name = name
         self.useScintilla = True
         self.widget = widget
-        # Injected ivars.
-        self.leo_chapter = None
-        self.leo_p = None
-        self.leo_v = None
         # Complete the init.
         self.set_config()
         # Set the signal.
@@ -1554,10 +1546,6 @@ class QTextEditWrapper(QTextMixin):
         self.name = name
         self.widget = widget
         self.useScintilla = False
-        # Define injected ivars.
-        self.leo_chapter = None
-        self.leo_p = None
-        self.leo_v = None
         # Complete the init.
         if c and widget:
             self.widget.setUndoRedoEnabled(False)
