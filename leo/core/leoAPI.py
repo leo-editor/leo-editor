@@ -184,8 +184,6 @@ class StringTextWrapper:
     def __init__(self, c: Cmdr, name: str) -> None:
         """Ctor for the StringTextWrapper class."""
         self.c = c
-        self.leo_chapter = None
-        self.leo_p = None
         self.leo_v = None
         self.name = name
         self.ins = 0
