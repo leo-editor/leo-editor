@@ -2972,6 +2972,8 @@ class AtFile:
         d['path'] = path
         p.v.tempAttributes['read-path'] = d
     #@+node:ekr.20250401065019.1: *4* at.languageFromAtFileNode (new)
+    ### language_pat = re.compile(r'^@language\s+(\w+)')
+
     def languageFromAtFileNode(self, p: Position) -> str:
         """
         p is an @<file> node.
@@ -2980,53 +2982,23 @@ class AtFile:
         """
         assert p.isAnyAtFileNode(), repr(p)
         c = self.c
-        s = p.b
+        s = p.b  ### OOPS: p.b is empty: the file hasn't been read yet!
+        ### g.printObj(s, tag=p.h)
 
-        # First, look for @language directives.
-
-        # Like g.get_directives_dict, but
-        # 1. There is no need to check the headline.
-        # 2. we must check for ambiguous @language directives.
+        # First, look for *unambiguous* @language directives.
         languages: list[str] = []
+        tag = '@language'
         for line in g.splitLines(s):
-            m = g.g_language_pat.match(s)
-            if m:
-                word = m.group(1).strip()
-                if word not in languages:
-                    languages.append(word)
+            if line.startswith(tag):
+                language = line[len(tag) :].split()
+                languages.append(language)
+        ### g.trace(languages, p.h)
         if len(languages) == 1:
-            g.trace(f"Body language: {languages[0]!r} {p.h}")
+            g.trace(f"Body: {languages[0]!r} {p.h}")
             return languages[0]
-
-        # g.trace(f"{p.h}: no or multiple @language directives")
         language = g.language_from_position(p)
-        g.trace(f"Headline language: {language!r} {p.h}")
+        # g.trace(f"Headline: {language!r} {p.h}")
         return language or c.target_language
-
-        ###
-        # d = g.get_directives_dict(p)
-        # if 'language' in d:
-            # z = d["language"]
-            # language, delim1, delim2, delim3 = g.set_language(z, 0)
-            # return language
-
-        return
-
-        ###
-        # Language & delims: Tricky.
-        # delims, language = None, None
-        # if lang_dict:
-            # # There was an @delims or @language directive.
-            # language = lang_dict.get('language')
-            # delims = lang_dict.get('delims')
-        # if not language:
-            # # No language directive.  Look for @<file> nodes.
-            # # Do *not* use d.get('language')!
-            # language = g.getLanguageFromAncestorAtFileNode(p) or 'python'
-
-        # at.language = language
-        # if delims in (None, (None, None, None)):  # #4256
-            # delims = g.set_delims_from_language(language)
     #@+node:ekr.20090712050729.6017: *4* at.promptForDangerousWrite
     def promptForDangerousWrite(self, fileName: str, message: str = None) -> bool:  # pragma: no cover
         """Raise a dialog asking the user whether to overwrite an existing file."""
