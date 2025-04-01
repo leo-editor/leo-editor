@@ -1326,8 +1326,6 @@ class QScintillaWrapper(QTextMixin):
         self.name = name
         self.useScintilla = True
         self.widget = widget
-        # Injected ivars.
-        self.leo_v = None
         # Complete the init.
         self.set_config()
         # Set the signal.
@@ -1550,8 +1548,6 @@ class QTextEditWrapper(QTextMixin):
         self.name = name
         self.widget = widget
         self.useScintilla = False
-        # Define injected ivars.
-        self.leo_v = None
         # Complete the init.
         if c and widget:
             self.widget.setUndoRedoEnabled(False)
