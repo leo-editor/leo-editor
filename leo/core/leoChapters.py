@@ -14,7 +14,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent
     from leo.plugins.qt_frame import LeoQtTreeTab
     from leo.core.leoNodes import Position
-    from leo.plugins.qt_text import QTextEditWrapper as Wrapper
+
 #@-<< leoChapters imports & annotations >>
 
 #@+others
