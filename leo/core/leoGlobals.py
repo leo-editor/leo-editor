@@ -2753,6 +2753,18 @@ def isValidLanguage(language: str) -> bool:
         or
         language in g.app.delegate_language_dict
     ))
+#@+node:ekr.20250401071751.1: *3* g.language_from_position (New)
+def language_from_position(p: Position) -> Optional[str]:
+    """
+    Return the language from p.h.
+    """
+    name = p.anyAtFileNodeName()
+    if not name:
+        return None
+    junk, ext = g.os_path_splitext(name)
+    ext = ext[1:]  # strip the leading period.
+    language = g.app.extension_dict.get(ext)
+    return language if g.isValidLanguage(language) else None
 #@+node:ekr.20080827175609.52: *3* g.scanAtCommentAndLanguageDirectives
 def scanAtCommentAndAtLanguageDirectives(aList: list) -> Optional[dict[str, str]]:
     """

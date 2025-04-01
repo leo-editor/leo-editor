@@ -2971,6 +2971,62 @@ class AtFile:
         d = p.v.tempAttributes.get('read-path', {})
         d['path'] = path
         p.v.tempAttributes['read-path'] = d
+    #@+node:ekr.20250401065019.1: *4* at.languageFromAtFileNode (new)
+    def languageFromAtFileNode(self, p: Position) -> str:
+        """
+        p is an @<file> node.
+        
+        Return the language in effect, using the files type if necessary.
+        """
+        assert p.isAnyAtFileNode(), repr(p)
+        c = self.c
+        s = p.b
+
+        # First, look for @language directives.
+
+        # Like g.get_directives_dict, but
+        # 1. There is no need to check the headline.
+        # 2. we must check for ambiguous @language directives.
+        languages: list[str] = []
+        for line in g.splitLines(s):
+            m = g.g_language_pat.match(s)
+            if m:
+                word = m.group(1).strip()
+                if word not in languages:
+                    languages.append(word)
+        if len(languages) == 1:
+            g.trace(f"Body language: {languages[0]!r} {p.h}")
+            return languages[0]
+
+        # g.trace(f"{p.h}: no or multiple @language directives")
+        language = g.language_from_position(p)
+        g.trace(f"Headline language: {language!r} {p.h}")
+        return language or c.target_language
+
+        ###
+        # d = g.get_directives_dict(p)
+        # if 'language' in d:
+            # z = d["language"]
+            # language, delim1, delim2, delim3 = g.set_language(z, 0)
+            # return language
+
+        return
+
+        ###
+        # Language & delims: Tricky.
+        # delims, language = None, None
+        # if lang_dict:
+            # # There was an @delims or @language directive.
+            # language = lang_dict.get('language')
+            # delims = lang_dict.get('delims')
+        # if not language:
+            # # No language directive.  Look for @<file> nodes.
+            # # Do *not* use d.get('language')!
+            # language = g.getLanguageFromAncestorAtFileNode(p) or 'python'
+
+        # at.language = language
+        # if delims in (None, (None, None, None)):  # #4256
+            # delims = g.set_delims_from_language(language)
     #@+node:ekr.20090712050729.6017: *4* at.promptForDangerousWrite
     def promptForDangerousWrite(self, fileName: str, message: str = None) -> bool:  # pragma: no cover
         """Raise a dialog asking the user whether to overwrite an existing file."""
@@ -3040,7 +3096,7 @@ class AtFile:
             9: '@verbatim',
         }
         return d.get(kind) or f"<unknown AtFile class constant> {kind!r}"
-    #@+node:ekr.20080923070954.4: *4* at.scanAllDirectives
+    #@+node:ekr.20080923070954.4: *4* at.scanAllDirectives (Must change)
     def scanAllDirectives(self, p: Position) -> dict[str, Value]:
         """
         Scan p and p's ancestors looking for directives,
@@ -3048,18 +3104,21 @@ class AtFile:
         """
         at, c = self, self.c
         d = c.scanAllDirectives(p)
-
-        # Language & delims: Tricky.
-        lang_dict = d.get('lang-dict') or {}
-        delims, language = None, None
-        if lang_dict:
-            # There was an @delims or @language directive.
-            language = lang_dict.get('language')
-            delims = lang_dict.get('delims')
-        if not language:
-            # No language directive.  Look for @<file> nodes.
-            # Do *not* use d.get('language')!
-            language = g.getLanguageFromAncestorAtFileNode(p) or 'python'
+        if p.isAnyAtFileNode():  #4323: Look no further.
+            language = at.languageFromAtFileNode(p)
+            delims = g.set_delims_from_language(language)
+        else:
+            # Language & delims: Tricky.
+            lang_dict = d.get('lang-dict') or {}
+            delims, language = None, None
+            if lang_dict:
+                # There was an @delims or @language directive.
+                language = lang_dict.get('language')
+                delims = lang_dict.get('delims')
+            if not language:
+                # No language directive.  Look for @<file> nodes.
+                # Do *not* use d.get('language')!
+                language = g.getLanguageFromAncestorAtFileNode(p) or 'python'
 
         at.language = language
         if delims in (None, (None, None, None)):  # #4256
