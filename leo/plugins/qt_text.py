@@ -151,7 +151,7 @@ class QTextMixin:
         self.permanent = True  # False if selecting the minibuffer will make the widget go away.
         self.useScintilla = False  # This is used!
         self.virtualInsertPoint = None
-        self.widget: Any = None  # Any is correct.
+        self.widget: Any = None  # 'Any' is correct for the QTextMixin class.
         if c:
             self.injectIvars(c)
     #@+node:ekr.20140901062324.18721: *4* QTextMixin.injectIvars
