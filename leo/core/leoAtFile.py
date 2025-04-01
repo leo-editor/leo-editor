@@ -2906,7 +2906,7 @@ class AtFile:
         at.addToOrphanList(root)
     #@+node:ekr.20041005105605.219: *3* at.Utilities
     #@+node:ekr.20250401113517.1: *4* at.delimsFromAtFileNodeBody (new)
-    def delimsFromAtFileNodeBody(self, p: Position) -> Optional[tuple]:
+    def delimsFromAtFileNodeBody(self, p: Position) -> Optional[tuple[str, str, str]]:
         """
         p is an @<file> node.
         
@@ -2924,7 +2924,6 @@ class AtFile:
         if len(comments) == 1:
             comment = comments[0]
             delims = g.set_delims_from_string(comment)
-            ### g.trace(f"Body: comment: {comment} delims: {delims!r}")
             return delims
         return None
     #@+node:ekr.20041005105605.220: *4* at.error & printError
@@ -3010,38 +3009,15 @@ class AtFile:
                 language = line[len(tag) :].strip()
                 languages.append(language)
         if len(languages) == 1:
-            ### g.trace(f"Body: {languages[0]!r} {p.h}")
             return languages[0]
         return None
     #@+node:ekr.20250401065019.1: *4* at.languageFromAtFileNodeHeadline (new)
     def languageFromAtFileNodeHeadline(self, p: Position) -> str:
-        """
-        p is an @<file> node.
-        
-        Return the language in effect, using the files type if necessary.
-        """
+        """Return the language implied by p.h."""
         assert p.isAnyAtFileNode(), repr(p)
         c = self.c
+        return g.language_from_headline(p) or c.target_language
 
-        ###
-        # if 0:
-            # s = p.b  ### OOPS: p.b is empty: the file hasn't been read yet!
-            # ### g.printObj(s, tag=p.h)
-
-            # # First, look for *unambiguous* @language directives.
-            # languages: list[str] = []
-            # tag = '@language'
-            # for line in g.splitLines(s):
-                # if line.startswith(tag):
-                    # language = line[len(tag) :].split()
-                    # languages.append(language)
-            # ### g.trace(languages, p.h)
-            # if len(languages) == 1:
-                # g.trace(f"Body: {languages[0]!r} {p.h}")
-                # return languages[0]
-        language = g.language_from_headline(p)
-        # g.trace(f"Headline: {language!r} {p.h}")
-        return language or c.target_language
     #@+node:ekr.20090712050729.6017: *4* at.promptForDangerousWrite
     def promptForDangerousWrite(self, fileName: str, message: str = None) -> bool:  # pragma: no cover
         """Raise a dialog asking the user whether to overwrite an existing file."""
@@ -3119,6 +3095,8 @@ class AtFile:
         """
         at, c = self, self.c
         d = c.scanAllDirectives(p)
+
+        # #4323: The hard cases. Set the language and delims using only p.h and p.b.
         if p.isAnyAtFileNode():  #4323: Look no further.
             language = (
                 at.languageFromAtFileNodeBody(p) or
@@ -3131,42 +3109,13 @@ class AtFile:
         elif p.h.startswith(('@button', '@command')):
             language = 'python'
             delims = g.set_delims_from_language(language)
-            ### g.trace('Script!', language, p.h)  ###
-        ### elif not p.b.strip():
         else:
             language = g.getLanguageFromAncestorAtFileNode(p) or 'python'
             delims = g.set_delims_from_language(language)
-            ### g.trace('No body!', language, p.h)  ###
-        # else:
-            # Language & delims: Tricky.
-            # g.trace('HUH??', p.h)
-            # lang_dict = d.get('lang-dict') or {}
-            # ### delims, language = None, None
-            # if lang_dict:
-                # # There was an @delims or @language directive.
-                # language = lang_dict.get('language')
-                # delims = lang_dict.get('delims')
-            # if not language:
-                # # No language directive.  Look for @<file> nodes.
-                # # Do *not* use d.get('language')!
-                # language = g.getLanguageFromAncestorAtFileNode(p) or 'python'
-
-            # delims = g.set_delims_from_language(language)
-
-        # # # # Language & delims: Tricky.
-        # # # lang_dict = d.get('lang-dict') or {}
-        # # # delims, language = None, None
-        # # # if lang_dict:
-            # # # # There was an @delims or @language directive.
-            # # # language = lang_dict.get('language')
-            # # # delims = lang_dict.get('delims')
-        # # # if not language:
-            # # # # No language directive.  Look for @<file> nodes.
-            # # # # Do *not* use d.get('language')!
-            # # # language = g.getLanguageFromAncestorAtFileNode(p) or 'python'
-            # # # g.trace('Scanned!', language, 'len(p.b)', len(p.b), p.h)
 
         at.language = language
+
+        # Last check: defensive programming.
         if delims in (None, (None, None, None)):  # #4256
             delims = g.set_delims_from_language(language)
 
@@ -3643,12 +3592,13 @@ class FastAtRead:
             #@+<< handle @first and @last >>
             #@+node:ekr.20180606053919.1: *4* << handle @first and @last >>
             if m := self.first_pat.match(line):
-                # pylint: disable=no-else-continue
+                # py--lint: disable=no-else-continue
                 if 0 <= first_i < len(first_lines):
                     body.append('@first ' + first_lines[first_i])
                     first_i += 1
                     continue
-                else:  # pragma: no cover
+                # Use 'if 1' instead of 'else' to avoid a pylint complaint.
+                if 1:  # pragma: no cover
                     g.trace(f"\ntoo many @first lines: {path}")
                     print('@first is valid only at the start of @<file> nodes\n')
                     g.printObj(first_lines, tag='first_lines')

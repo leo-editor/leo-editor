@@ -2764,12 +2764,6 @@ def language_from_headline(p: Position) -> Optional[str]:
     junk, ext = g.os_path_splitext(name)
     ext = ext[1:]  # strip the leading period.
     language = g.app.extension_dict.get(ext)
-    if not language:
-        ### g.trace('no language:', ext, name)  ###
-        return 'plain'
-    ### g.trace('valid:', int(g.isValidLanguage(language)), ext, name)  ###
-    if not g.unitTesting and not g.isValidLanguage(language):
-        g.trace('invalid language:', language, ext, name)  ###
     return language if g.isValidLanguage(language) else 'plain'
 #@+node:ekr.20080827175609.52: *3* g.scanAtCommentAndLanguageDirectives
 def scanAtCommentAndAtLanguageDirectives(aList: list) -> Optional[dict[str, str]]:
