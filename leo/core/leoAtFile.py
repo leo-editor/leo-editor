@@ -2992,27 +2992,6 @@ class AtFile:
         d = p.v.tempAttributes.get('read-path', {})
         d['path'] = path
         p.v.tempAttributes['read-path'] = d
-    #@+node:ekr.20250401111942.1: *4* at.languageFromAtFileNodeBody
-    def languageFromAtFileNodeBody(self, p: Position) -> Optional[str]:
-        """
-        p is an @<file> node.
-        
-        Return the language from p.b, looking for *unambiguous @language directives.
-        
-        Note: p.b will be empty when *reading* any @<file> node.
-        """
-        s = p.b.strip()
-        if not s:
-            return None
-        languages: list[str] = []
-        tag = '@language'
-        for line in g.splitLines(s):
-            if line.startswith(tag):
-                language = line[len(tag) :].strip()
-                languages.append(language)
-        if len(languages) == 1:
-            return languages[0]
-        return None
     #@+node:ekr.20250401065019.1: *4* at.languageFromAtFileNodeHeadline
     def languageFromAtFileNodeHeadline(self, p: Position) -> str:
         """Return the language implied by p.h."""
@@ -3101,11 +3080,8 @@ class AtFile:
         # #4323: The hard cases. Set the language and delims using only p.h and p.b.
         delims = None
         if p.isAnyAtFileNode():  #4323: Look no further.
-            language = (
-                # Note: p.b will be empty during reads.
-                at.languageFromAtFileNodeBody(p) or
-                at.languageFromAtFileNodeHeadline(p)
-            )
+            language = at.languageFromAtFileNodeHeadline(p)
+            # We *must* calculate delims when writing.
             delims = at.delimsFromAtFileNodeBody(p)
         elif p.h.startswith(('@button', '@command')):
             language = 'python'

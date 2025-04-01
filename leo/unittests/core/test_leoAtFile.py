@@ -711,21 +711,20 @@ class TestFastAtRead(LeoUnitTest):
         contents = contents.replace('{root.gnx}', root.gnx).replace('{h}', root.h)
         #@-<< define contents >>
 
-        for blacken in (True, False):
+        blacken = False  # #4323: Ignore the @language directive in .txt files.
+        g.app.write_black_sentinels = blacken
+        test_s = contents.replace('#@', '# @') if blacken else contents
+        expected = test_s.replace("# @others doesn't", "#@others doesn't")
 
-            g.app.write_black_sentinels = blacken
-            test_s = contents.replace('#@', '# @') if blacken else contents
-            expected = test_s.replace("# @others doesn't", "#@others doesn't")
+        x.read_into_root(contents, path='test', root=root)
+        results = c.atFileCommands.atFileToString(root, sentinels=True)
 
-            x.read_into_root(contents, path='test', root=root)
-            results = c.atFileCommands.atFileToString(root, sentinels=True)
+        if results != expected:
+            g.printObj(g.splitLines(test_s), tag='test_s')
+            g.printObj(g.splitLines(results), tag='results')
+            g.printObj(g.splitLines(expected), tag='expected')
 
-            if results != expected:
-                g.printObj(g.splitLines(test_s), tag='test_s')
-                g.printObj(g.splitLines(results), tag='results')
-                g.printObj(g.splitLines(expected), tag='expected')
-
-            self.assertEqual(results, expected)
+        self.assertEqual(results, expected)
     #@+node:ekr.20211101085019.1: *3* TestFastAtRead.test_at_comment (and @first)
     def test_at_comment(self):
 
@@ -769,32 +768,31 @@ class TestFastAtRead(LeoUnitTest):
         contents = contents.replace('{root.gnx}', root.gnx).replace('{h}', root.h)
         #@-<< define contents >>
 
-        for blacken in (True, False):
+        blacken = False  # #4323: Ignore the @language directive in .txt files.
+        g.app.write_black_sentinels = blacken
+        test_s = contents
+        expected = test_s
 
-            g.app.write_black_sentinels = blacken
-            test_s = contents
-            expected = test_s
+        x.read_into_root(contents, path='test', root=root)
+        results = c.atFileCommands.atFileToString(root, sentinels=True)
 
-            x.read_into_root(contents, path='test', root=root)
-            results = c.atFileCommands.atFileToString(root, sentinels=True)
+        if results != expected:
+            g.printObj(g.splitLines(test_s), tag='test_s')
+            g.printObj(g.splitLines(results), tag='results')
+            g.printObj(g.splitLines(expected), tag='expected')
 
-            if results != expected:
-                g.printObj(g.splitLines(test_s), tag='test_s')
-                g.printObj(g.splitLines(results), tag='results')
-                g.printObj(g.splitLines(expected), tag='expected')
+        self.assertEqual(results, expected)
 
-            self.assertEqual(results, expected)
-
-            child1 = root.firstChild()
-            child2 = child1.next()
-            child3 = child2.next()
-            table = (
-                (child1, g.angleBrackets(' test ')),
-                (child2, 'spam'),
-                (child3, 'eggs'),
-            )
-            for child, h in table:
-                self.assertEqual(child.h, h)
+        child1 = root.firstChild()
+        child2 = child1.next()
+        child3 = child2.next()
+        table = (
+            (child1, g.angleBrackets(' test ')),
+            (child2, 'spam'),
+            (child3, 'eggs'),
+        )
+        for child, h in table:
+            self.assertEqual(child.h, h)
     #@+node:ekr.20211101111636.1: *3* TestFastAtRead.test_at_delims
     def test_at_delims(self):
         c, x = self.c, self.x
@@ -836,32 +834,31 @@ class TestFastAtRead(LeoUnitTest):
 
         #@-<< define contents >>
 
-        for blacken in (True, False):
+        blacken = False  # #4323: Ignore the @language directive in .txt files.
+        g.app.write_black_sentinels = blacken
+        test_s = contents.replace('#@', '# @').replace('!!@', '!! @') if blacken else contents
+        expected = test_s
 
-            g.app.write_black_sentinels = blacken
-            test_s = contents.replace('#@', '# @').replace('!!@', '!! @') if blacken else contents
-            expected = test_s
+        x.read_into_root(contents, path='test', root=root)
+        results = c.atFileCommands.atFileToString(root, sentinels=True)
 
-            x.read_into_root(contents, path='test', root=root)
-            results = c.atFileCommands.atFileToString(root, sentinels=True)
+        if results != expected:
+            g.printObj(g.splitLines(test_s), tag='test_s')
+            g.printObj(g.splitLines(results), tag='results')
+            g.printObj(g.splitLines(expected), tag='expected')
 
-            if results != expected:
-                g.printObj(g.splitLines(test_s), tag='test_s')
-                g.printObj(g.splitLines(results), tag='results')
-                g.printObj(g.splitLines(expected), tag='expected')
+        self.assertEqual(results, expected)
 
-            self.assertEqual(results, expected)
-
-            child1 = root.firstChild()
-            child2 = child1.next()
-            child3 = child2.next()
-            table = (
-                (child1, g.angleBrackets(' test ')),
-                (child2, 'spam'),
-                (child3, 'eggs'),
-            )
-            for child, h in table:
-                self.assertEqual(child.h, h)
+        child1 = root.firstChild()
+        child2 = child1.next()
+        child3 = child2.next()
+        table = (
+            (child1, g.angleBrackets(' test ')),
+            (child2, 'spam'),
+            (child3, 'eggs'),
+        )
+        for child, h in table:
+            self.assertEqual(child.h, h)
     #@+node:ekr.20211103095616.1: *3* TestFastAtRead.test_at_last
     def test_at_last(self):
 
@@ -949,21 +946,21 @@ class TestFastAtRead(LeoUnitTest):
         ''').replace('AT', '@').replace('LB', '<<')
         #@-<< define contents >>
 
-        for blacken in (True, False):
+        blacken = False  # #4323: Ignore the @language directive in .txt files.
 
-            g.app.write_black_sentinels = blacken
-            test_s = contents.replace('#@', '# @') if blacken else contents
-            expected = test_s
+        g.app.write_black_sentinels = blacken
+        test_s = contents.replace('#@', '# @') if blacken else contents
+        expected = test_s
 
-            x.read_into_root(contents, path='test', root=root)
-            results = c.atFileCommands.atFileToString(root, sentinels=True)
+        x.read_into_root(contents, path='test', root=root)
+        results = c.atFileCommands.atFileToString(root, sentinels=True)
 
-            if results != expected:
-                g.printObj(g.splitLines(test_s), tag='test_s')
-                g.printObj(g.splitLines(results), tag='results')
-                g.printObj(g.splitLines(expected), tag='expected')
+        if results != expected:
+            g.printObj(g.splitLines(test_s), tag='test_s')
+            g.printObj(g.splitLines(results), tag='results')
+            g.printObj(g.splitLines(expected), tag='expected')
 
-            self.assertEqual(results, expected)
+        self.assertEqual(results, expected)
 
     #@+node:ekr.20211031093209.1: *3* TestFastAtRead.test_at_section_delim
     def test_at_section_delim(self):
@@ -1303,7 +1300,7 @@ class TestFastAtRead(LeoUnitTest):
     def test_html_doc_part(self):
 
         c, x = self.c, self.x
-        h = '@file /test/test_html_doc_part.py'
+        h = '@file /test/test_html_doc_part.html'
         root = c.rootPosition()
         root.h = h  # To match contents.
 
@@ -1345,21 +1342,20 @@ class TestFastAtRead(LeoUnitTest):
         ''').replace('AT', '@').replace('{root.gnx}', root.gnx).replace('{h}', root.h)
         #@-<< define expected >>
 
-        for blacken in (True, False):
+        blacken = False  # #4323: Ignore the @language directive in .txt files.
+        g.app.write_black_sentinels = blacken
+        test_s = contents.replace('#@', '# @') if blacken else contents
+        expected = expected.replace('#@', '# @') if blacken else expected
 
-            g.app.write_black_sentinels = blacken
-            test_s = contents.replace('#@', '# @') if blacken else contents
-            expected = expected.replace('#@', '# @') if blacken else expected
+        x.read_into_root(contents, path='test', root=root)
+        results = c.atFileCommands.atFileToString(root, sentinels=True)
 
-            x.read_into_root(contents, path='test', root=root)
-            results = c.atFileCommands.atFileToString(root, sentinels=True)
+        if results != expected:
+            g.printObj(g.splitLines(test_s), tag='test_s')
+            g.printObj(g.splitLines(results), tag='results')
+            g.printObj(g.splitLines(expected), tag='expected')
 
-            if results != expected:
-                g.printObj(g.splitLines(test_s), tag='test_s')
-                g.printObj(g.splitLines(results), tag='results')
-                g.printObj(g.splitLines(expected), tag='expected')
-
-            self.assertEqual(results, expected)
+        self.assertEqual(results, expected)
 
         x.read_into_root(contents, path='test', root=root)
         s = c.atFileCommands.atFileToString(root, sentinels=True)
