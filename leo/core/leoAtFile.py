@@ -2998,6 +2998,8 @@ class AtFile:
         p is an @<file> node.
         
         Return the language from p.b, looking for *unambiguous @language directives.
+        
+        Note: p.b will be empty when *reading* any @<file> node.
         """
         s = p.b.strip()
         if not s:
@@ -3100,6 +3102,7 @@ class AtFile:
         delims = None
         if p.isAnyAtFileNode():  #4323: Look no further.
             language = (
+                # Note: p.b will be empty during reads.
                 at.languageFromAtFileNodeBody(p) or
                 at.languageFromAtFileNodeHeadline(p)
             )
@@ -3107,6 +3110,9 @@ class AtFile:
         elif p.h.startswith(('@button', '@command')):
             language = 'python'
         else:
+            # Reading: this will only examine headlines!
+            # 'language' will often default to `c.target_language or 'python'`
+            # Writing: this will find @language directives.
             language = g.getLanguageFromAncestorAtFileNode(p) or 'python'
         at.language = language
 
