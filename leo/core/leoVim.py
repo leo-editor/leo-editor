@@ -34,7 +34,7 @@ if TYPE_CHECKING:  # pragma: no cover
     KWargs = Any
     QEvent: TypeAlias = QtCore.QEvent
     Stroke = Any
-    Widget = Any
+    Widget = Any  # 'Any' is the correct annotation for base class widgets.
 #@-<< leoVim imports & annotations >>
 
 def cmd(name: str) -> Callable:

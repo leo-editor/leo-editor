@@ -17,7 +17,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.plugins.qt_text import QTextEditWrapper
     Self = Cmdr  # For arguments to @g.commander_command.
     Value = Any
-    Widget = Any
+    Widget = Any  # 'Any' is the correct annotation for base class widgets.
     Wrapper = Union[QTextEditWrapper, StringTextWrapper]
 #@-<< commanderEditCommands imports & annotations >>
 

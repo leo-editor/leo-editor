@@ -39,7 +39,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.plugins.notebook import NbController
     Args = Any
     KWargs = Any
-    Widget = Any
+    Widget = Any  # 'Any' is the correct annotation for base class widgets.
     TextAPI = Union[QScintillaWrapper, QTextEditWrapper, StringTextWrapper]
 #@-<< leoFrame annotations >>
 #@+<< leoFrame: about handling events >>

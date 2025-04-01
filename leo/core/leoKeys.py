@@ -36,7 +36,7 @@ if TYPE_CHECKING:  # pragma: no cover
     KWargs = Any
     Stroke = Any
     Value = Any
-    Widget = Any
+    Widget = Any  # 'Any' is the correct annotation for base class widgets.
 #@-<< leoKeys annotations >>
 #@+<< Key bindings, an overview >>
 #@+node:ekr.20130920121326.11281: ** << Key bindings, an overview >>

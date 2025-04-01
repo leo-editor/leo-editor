@@ -66,7 +66,7 @@ if TYPE_CHECKING:  # pragma: no cover
     KWargs = Any
     RegexFlag = Union[int, re.RegexFlag]  # re.RegexFlag does not define 0
     Value = Any
-    Widget = Any
+    Widget = Any  # 'Any' is the correct annotation for base class widgets.
     Wrapper = Union[QTextEditWrapper, StringTextWrapper]
 #@-<< leoCommands annotations >>
 

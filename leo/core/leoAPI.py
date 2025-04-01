@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position, VNode
     from leo.plugins.mod_scripting import ScriptingController
-    Widget = Any
+    Widget = Any  # 'Any' is the correct annotation for base class widgets.
 #@-<< leoAPI.py: imports and annotations >>
 
 #@+others
