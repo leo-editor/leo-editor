@@ -3110,10 +3110,9 @@ class AtFile:
         elif p.h.startswith(('@button', '@command')):
             language = 'python'
         else:
-            # Reading: this will only examine headlines!
-            # 'language' will often default to `c.target_language or 'python'`
-            # Writing: this will find @language directives.
-            language = g.getLanguageFromAncestorAtFileNode(p) or 'python'
+            # Language doesn't matter here.
+            # It would be unnecessary/wrong to examine ancestor nodes.
+            language = c.target_language or 'python'
         at.language = language
 
         # Make sure to define delims.
