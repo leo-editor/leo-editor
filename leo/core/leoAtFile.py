@@ -54,7 +54,7 @@ class AtFile:
 
     def __init__(self, c: Cmdr) -> None:
         """ctor for atFile class."""
-        # **Warning**: all these ivars must **also** be inited in initCommonIvars.
+        #### **Warning**: all these ivars must **also** be inited in initCommonIvars.
         self.c: Cmdr = c
         self.encoding = 'utf-8'  # 2014/08/13
         self.fileCommands = c.fileCommands
@@ -68,6 +68,20 @@ class AtFile:
         self.canCancelFlag = False
         self.cancelFlag = False
         self.yesToAll = False
+        # For initReadIvars and initWriteIvars.
+        self.at_auto_encoding = 'utf-f'  ###
+        self.explicitLineEnding: bool = None
+        self.inCode = True
+        self.indent = 0  # The unit of indentation is spaces, not tabs.
+        self.language: str = None
+        self.line_ending: str = None  ###
+        self.output_newline = g.getOutputNewline(c=c)
+        self.page_width: int = None
+        self.root: Position = None  # The root (a position) of tree being read or written.
+        self.startSentinelComment = ""
+        self.endSentinelComment = ""
+        self.tab_width: int = c.tab_width or -4
+        self.writing_to_shadow_directory = False
         # User options: set in reloadSettings.
         self.beautifyOnWrite = False
         self.checkPythonCodeOnWrite = False
@@ -90,28 +104,6 @@ class AtFile:
         self.runPylintOnWrite = c.config.getBool(
             'run-pylint-on-write', default=False)
 
-    #@+node:ekr.20041005105605.10: *4* at.initCommonIvars
-    def initCommonIvars(self) -> None:
-        """
-        Init ivars common to both reading and writing.
-
-        The defaults set here may be changed later.
-        """
-        c = self.c
-        self.at_auto_encoding = c.config.default_at_auto_file_encoding
-        self.encoding = c.config.default_derived_file_encoding
-        self.endSentinelComment = ""
-        self.errors = 0
-        self.inCode = True
-        self.indent = 0  # The unit of indentation is spaces, not tabs.
-        self.language: str = None
-        self.output_newline = g.getOutputNewline(c=c)
-        self.page_width: int = None
-        self.root: Position = None  # The root (a position) of tree being read or written.
-        self.startSentinelComment = ""
-        self.endSentinelComment = ""
-        self.tab_width: int = c.tab_width or -4
-        self.writing_to_shadow_directory = False
     #@+node:ekr.20041005105605.13: *4* at.initReadIvars
     def initReadIvars(self, root: Position, fileName: str) -> None:
 
@@ -120,7 +112,9 @@ class AtFile:
         #   at.encoding = c.config.default_derived_file_encoding
         #   at.output_newline = g.getOutputNewline(c)
         #   at.tab_width: int = c.tab_width or -4
-        self.initCommonIvars()
+        ### self.initCommonIvars()
+
+
         self.bom_encoding = None  # The encoding implied by any BOM (set by g.stripBOM)
         self.cloneSibCount = 0  # n > 1: Make sure n cloned sibs exists at next @+node sentinel
         self.correctedLines = 0  # For perfect import.
@@ -151,7 +145,23 @@ class AtFile:
             return None  # pragma: no cover
         make_dirs = c.config.getBool('create-nonexistent-directories', default=False)
         assert root
-        self.initCommonIvars()
+        ### self.initCommonIvars()
+        # Formerly in initCommon ivars.
+        self.at_auto_encoding = c.config.default_at_auto_file_encoding
+        ### self.encoding = c.config.default_derived_file_encoding
+        self.endSentinelComment = ""
+        self.errors = 0
+        self.inCode = True
+        self.indent = 0  # The unit of indentation is spaces, not tabs.
+        ### self.language: str = None
+        ### self.output_newline = g.getOutputNewline(c=c)
+        ### self.page_width: int = None
+        ### self.root: Position = None  # The root (a position) of tree being read or written.
+        self.startSentinelComment = ""
+        self.endSentinelComment = ""
+        ### self.tab_width: int = c.tab_width or -4
+        self.writing_to_shadow_directory = False
+
         assert at.checkPythonCodeOnWrite is not None
         #
         # Copy args
@@ -167,14 +177,25 @@ class AtFile:
             'force-newlines-in-at-nosent-bodies')
             # For at.putBody only.
         at.outputList = []  # For stream output.
-        # Sets the following ivars:
-        # at.encoding
-        # at.explicitLineEnding
-        # at.language
-        # at.output_newline
-        # at.page_width
-        # at.tab_width
-        at.scanAllDirectives(root)
+        ###
+        if 1:
+            at.scanAllDirectives(root)
+            ###
+                # Sets the following ivars:
+                # at.encoding
+                # at.explicitLineEnding
+                # at.language
+                # at.output_newline
+                # at.page_width
+                # at.tab_width
+        else:
+            at.encoding = c.config.default_derived_file_encoding  ### To do.
+            at.explicitLineEnding = bool(at.lineending)
+            at.output_newline = g.getOutputNewline(c=c)
+            at.lineending = None  ### To do.
+            at.page_width = None  ### To do.
+            at.language = None  ### To do.
+            at.tab_width = c.tab_width or -4  ### To do.
         #
         # Overrides of at.scanAllDirectives...
         if at.language == 'python':

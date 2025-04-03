@@ -484,8 +484,8 @@ class TestAtFile(LeoUnitTest):
 
         at, c = self.at, self.c
         # Duplicate init logic...
-        at.initCommonIvars()
-        at.scanAllDirectives(c.p)
+        ### at.initCommonIvars()
+        ### at.scanAllDirectives(c.p)
         encoding = 'utf-8'
         try:
             # https://stackoverflow.com/questions/23212435
@@ -502,8 +502,8 @@ class TestAtFile(LeoUnitTest):
 
         at, c = self.at, self.c
         # Duplicate init logic...
-        at.initCommonIvars()
-        at.scanAllDirectives(c.p)
+        ### at.initCommonIvars()
+        ### at.scanAllDirectives(c.p)
         encoding = 'utf-8'
         at.targetFileName = None  # The point of this test, but I'm not sure it matters.
         try:
@@ -521,8 +521,8 @@ class TestAtFile(LeoUnitTest):
 
         at, c = self.at, self.c
         # Duplicate init logic...
-        at.initCommonIvars()
-        at.scanAllDirectives(c.p)
+        ### at.initCommonIvars()
+        ### at.scanAllDirectives(c.p)
         encoding = 'utf-8'
         try:
             # https://stackoverflow.com/questions/23212435
