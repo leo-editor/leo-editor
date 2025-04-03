@@ -536,14 +536,7 @@ class AtFile:
         at.rememberReadPath(fileName, p)
         old_p = p.copy()
         try:
-            # at.initCommonIvars sets the following non-empty defaults:
-            #   at.at_auto_encoding = c.config.default_at_auto_file_encoding
-            #   at.encoding = c.config.default_derived_file_encoding
-            #   at.output_newline = g.getOutputNewline(c)
-            #   at.tab_width: int = c.tab_width or -4
-
-            ### at.scanAllDirectives(p)
-
+            at.initReadIvars(p, fileName)
             p.v.b = ''  # Required for @auto API checks.
             p.v._deleteAllChildren()
             p = ic.createOutline(parent=p.copy())
@@ -573,18 +566,12 @@ class AtFile:
         if not g.os_path_exists(fileName):
             g.es_print(f"not found: {fileName}", color='red', nodeLink=root.get_UNL())
             return False
+
+        # Init.
         at.rememberReadPath(fileName, root)
-        # Must be called before at.scanAllDirectives.
-        # at.initReadIvars sets at.startSentinelComment/endSentinelComment.
         at.initReadIvars(root, fileName)
-        # at.initCommonIvars sets the following non-empty defaults:
-        #   at.at_auto_encoding = c.config.default_at_auto_file_encoding
-        #   at.encoding = c.config.default_derived_file_encoding
-        #   at.output_newline = g.getOutputNewline(c)
-        #   at.tab_width: int = c.tab_width or -4
 
-        ### at.scanAllDirectives(root)
-
+        # Calculate data.
         new_public_lines = at.read_at_clean_lines(fileName)
         old_private_lines = self.write_at_clean_sentinels(root)
         marker = x.markerFromFileLines(old_private_lines, fileName)
@@ -686,6 +673,7 @@ class AtFile:
             g.internalError(f"does not exist: {fileName!r}")
             return
 
+        # Init.
         at.rememberReadPath(fileName, root)
         at.initReadIvars(root, fileName)
 
@@ -860,7 +848,6 @@ class AtFile:
         Returns the string, or None on failure.
         """
         at = self
-        ### g.trace('at.encoding:', repr(at.encoding), g.callers())  ###
         s: str
         s_bytes = at.openFileHelper(fileName)  # Catches all exceptions.
         # #1798.
