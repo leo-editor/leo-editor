@@ -2249,8 +2249,8 @@ class EditCommandsClass(BaseEditCommandsClass):
 
         c = self.c
         d = c.scanAllDirectives(p)
-        i, j = oldSel
         language = d.get('language')
+        i, j = oldSel
         s = w.getAllText()
         if ch in ('(', '[', '{',):
             automatch = language not in ('plain',)

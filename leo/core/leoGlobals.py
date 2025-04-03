@@ -2572,7 +2572,8 @@ def findReference(name: str, root: Position) -> Optional[Position]:
         if p.matchHeadline(name) and not p.isAtIgnoreNode():
             return p.copy()
     return None
-#@+node:ekr.20090214075058.9: *3* g.get_directives_dict (must be fast)
+#@+node:ekr.20250403041557.1: *3* --- deprecated helpers
+#@+node:ekr.20090214075058.9: *4* g.get_directives_dict (must be fast) (deprecate)
 def get_directives_dict(p: Position) -> dict[str, str]:
     """
     Scan p for Leo directives found in globalDirectiveList.
@@ -2602,7 +2603,7 @@ def get_directives_dict(p: Position) -> dict[str, str]:
             val = s[j:k].strip()
             d[word] = val
     return d
-#@+node:ekr.20080827175609.1: *3* g.get_directives_dict_list (must be fast)
+#@+node:ekr.20080827175609.1: *4* g.get_directives_dict_list (must be fast) (deprecate)
 def get_directives_dict_list(p: Position) -> list[dict]:
     """Scans p and all its ancestors for directives.
 
@@ -2614,7 +2615,7 @@ def get_directives_dict_list(p: Position) -> list[dict]:
         # No copy necessary: g.get_directives_dict does not change p.
         result.append(g.get_directives_dict(p))
     return result
-#@+node:ekr.20111010082822.15545: *3* g.getLanguageFromAncestorAtFileNode
+#@+node:ekr.20111010082822.15545: *3* g.getLanguageFromAncestorAtFileNode (buggy?)
 def getLanguageFromAncestorAtFileNode(p: Position) -> Optional[str]:
     """Return the language in effect at node p."""
     v0 = p.v
@@ -2682,7 +2683,7 @@ def getLanguageFromAncestorAtFileNode(p: Position) -> Optional[str]:
     # Return the default language for the commander.
     c = p.v.context
     return c.target_language or 'python'
-#@+node:ekr.20150325075144.1: *3* g.getLanguageFromPosition
+#@+node:ekr.20150325075144.1: *3* g.getLanguageFromPosition (simplify!!)
 def getLanguageAtPosition(c: Cmdr, p: Position) -> str:
     """
     Return the language in effect at position p.
@@ -2753,7 +2754,7 @@ def isValidLanguage(language: str) -> bool:
         or
         language in g.app.delegate_language_dict
     ))
-#@+node:ekr.20250401071751.1: *3* g.language_from_headline
+#@+node:ekr.20250401071751.1: *3* g.language_from_headline (new)
 def language_from_headline(p: Position) -> Optional[str]:
     """
     Return the language from p.h.
@@ -2765,7 +2766,8 @@ def language_from_headline(p: Position) -> Optional[str]:
     ext = ext[1:]  # strip the leading period.
     language = g.app.extension_dict.get(ext)
     return language if g.isValidLanguage(language) else 'plain'
-#@+node:ekr.20080827175609.52: *3* g.scanAtCommentAndLanguageDirectives
+#@+node:ekr.20250403040834.1: *3* --- to be deprecated! Using directives list
+#@+node:ekr.20080827175609.52: *4* g.scanAtCommentAndLanguageDirectives (deprecate)
 def scanAtCommentAndAtLanguageDirectives(aList: list) -> Optional[dict[str, str]]:
     """
     Scan aList for @comment and @language directives.
@@ -2786,7 +2788,7 @@ def scanAtCommentAndAtLanguageDirectives(aList: list) -> Optional[dict[str, str]
             d = {'language': lang, 'comment': comment, 'delims': delims}
             return d
     return None
-#@+node:ekr.20080827175609.32: *3* g.scanAtEncodingDirectives
+#@+node:ekr.20080827175609.32: *4* g.scanAtEncodingDirectives (deprecate)
 def scanAtEncodingDirectives(aList: list) -> Optional[str]:
     """Scan aList for @encoding directives."""
     for d in aList:
@@ -2796,13 +2798,13 @@ def scanAtEncodingDirectives(aList: list) -> Optional[str]:
         if encoding and not g.unitTesting:
             g.error("invalid @encoding:", encoding)
     return None
-#@+node:ekr.20080827175609.53: *3* g.scanAtHeaderDirectives
+#@+node:ekr.20080827175609.53: *4* g.scanAtHeaderDirectives (deprecate) (not used)
 def scanAtHeaderDirectives(aList: list) -> None:
     """scan aList for @header and @noheader directives."""
     for d in aList:
         if d.get('header') and d.get('noheader'):
             g.error("conflicting @header and @noheader directives")
-#@+node:ekr.20080827175609.33: *3* g.scanAtLineendingDirectives
+#@+node:ekr.20080827175609.33: *4* g.scanAtLineendingDirectives (deprecate)
 def scanAtLineendingDirectives(aList: list) -> Optional[str]:
     """Scan aList for @lineending directives."""
     for d in aList:
@@ -2813,7 +2815,7 @@ def scanAtLineendingDirectives(aList: list) -> Optional[str]:
         # else:
             # g.error("invalid @lineending directive:",e)
     return None
-#@+node:ekr.20080827175609.34: *3* g.scanAtPagewidthDirectives
+#@+node:ekr.20080827175609.34: *4* g.scanAtPagewidthDirectives (deprecate)
 def scanAtPagewidthDirectives(aList: list, issue_error_flag: bool = False) -> Optional[int]:
     """Scan aList for @pagewidth directives. Return the page width or None"""
     for d in aList:
@@ -2825,7 +2827,7 @@ def scanAtPagewidthDirectives(aList: list, issue_error_flag: bool = False) -> Op
             if issue_error_flag and not g.unitTesting:
                 g.error("ignoring @pagewidth", s)
     return None
-#@+node:ekr.20101022172109.6108: *3* g.scanAtPathDirectives & scanAllAtPathDirectives
+#@+node:ekr.20101022172109.6108: *4* g.scanAtPathDirectives & scanAllAtPathDirectives (deprecate)
 def scanAtPathDirectives(c: Cmdr, aList: list) -> str:
     path = c.scanAtPathDirectives(aList)
     return path
@@ -2834,7 +2836,7 @@ def scanAllAtPathDirectives(c: Cmdr, p: Position) -> str:
     aList = g.get_directives_dict_list(p)
     path = c.scanAtPathDirectives(aList)
     return path
-#@+node:ekr.20080827175609.37: *3* g.scanAtTabwidthDirectives
+#@+node:ekr.20080827175609.37: *4* g.scanAtTabwidthDirectives & scanAllAtTabWidthDirectives (deprecate)
 def scanAtTabwidthDirectives(aList: list, issue_error_flag: bool = False) -> Optional[int]:
     """Scan aList for @tabwidth directives."""
     for d in aList:
@@ -2856,7 +2858,7 @@ def scanAllAtTabWidthDirectives(c: Cmdr, p: Position) -> Optional[int]:
     else:
         ret = None
     return ret
-#@+node:ekr.20080831084419.4: *3* g.scanAtWrapDirectives
+#@+node:ekr.20080831084419.4: *4* g.scanAtWrapDirectives & scanAllAtWrapDirectives (deprecated)
 def scanAtWrapDirectives(aList: list, issue_error_flag: bool = False) -> Optional[bool]:
     """Scan aList for @wrap and @nowrap directives."""
     for d in aList:
@@ -2886,7 +2888,7 @@ def scanForAtIgnore(c: Cmdr, p: Position) -> bool:
         if 'ignore' in d:
             return True
     return False
-#@+node:ekr.20040712084911.1: *3* g.scanForAtLanguage
+#@+node:ekr.20040712084911.1: *3* g.scanForAtLanguage (buggy?)
 def scanForAtLanguage(c: Cmdr, p: Position) -> str:
     """Scan position p and p's ancestors looking only for @language and @ignore directives.
 
@@ -5947,6 +5949,25 @@ def createScratchCommander(fileName: str = None) -> None:
     assert c.rootPosition()
     frame.setInitialWindowGeometry()
     frame.resizePanesToRatio(frame.compute_ratio(), frame.compute_secondary_ratio())
+#@+node:ekr.20250403051420.1: *3* g.deprecated (new)
+def deprecated() -> None:
+    """Issue a single deprecation message for the caller of this method."""
+    # Similar to g._callerName.
+    try:
+        f1 = sys._getframe(1)  # The stack frame, n levels up.
+        code1 = f1.f_code  # The code object
+        locals_ = f1.f_locals  # The local namespace.
+        module = shortFilename(code1.co_filename)  # The module's file name.
+        obj = locals_.get('self')
+        try:
+            class_name = obj.__class__.__name__
+            context = f"{module}:{class_name}"
+        except Exception:
+            context = module
+    except Exception:
+        context = '<unknown context>:'
+    # It's not necessary to report g.callers().
+    print_unique_message(f"\nWarning: {context}.{g.caller()} is deprecated\n")
 #@+node:ekr.20031218072017.3126: *3* g.funcToMethod (Python Cookbook)
 def funcToMethod(f: Callable, theClass: object, name: str = None) -> None:
     """

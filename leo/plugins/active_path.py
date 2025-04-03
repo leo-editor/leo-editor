@@ -245,7 +245,7 @@ def onSelect(tag, keywords):
         c.redraw()
         return True
     return None
-#@+node:tbrown.20080616153649.4: ** getPath
+#@+node:tbrown.20080616153649.4: ** getPath (active_path.py)
 def getPath(c, p):
 
     for n in p.self_and_parents():

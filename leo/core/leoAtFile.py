@@ -3095,12 +3095,13 @@ class AtFile:
             9: '@verbatim',
         }
         return d.get(kind) or f"<unknown AtFile class constant> {kind!r}"
-    #@+node:ekr.20080923070954.4: *4* at.scanAllDirectives (revise & rename)
+    #@+node:ekr.20080923070954.4: *4* at.scanAllDirectives (deprecate, then remove)
     def scanAllDirectives(self, p: Position) -> dict[str, Value]:
         """
         Scan p and p's ancestors looking for directives,
         setting corresponding AtFile ivars.
         """
+        g.deprecated()  # This method is deprecated
         at, c = self, self.c
         d = c.scanAllDirectives(p)
 
