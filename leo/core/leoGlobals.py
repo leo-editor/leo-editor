@@ -5869,6 +5869,8 @@ def _context(n: int = 1) -> str:
         else:
             try:
                 class_name = obj.__class__.__name__
+                if class_name == 'Commands':
+                    class_name = 'c'
                 context = f"{module}:{class_name}"
             except Exception:
                 context = module

@@ -2684,7 +2684,7 @@ class Commands:
                 word = s[i:j]
                 languages.add(word)
         return len(list(languages)) > 1
-    #@+node:ekr.20080827175609.39: *4* c.scanAllDirectives
+    #@+node:ekr.20080827175609.39: *4* c.scanAllDirectives (deprecate)
     #@@nobeautify
 
     def scanAllDirectives(self, p: Position) -> dict[str, Value]:
@@ -2693,6 +2693,7 @@ class Commands:
 
         Returns a dict containing the results, including defaults.
         """
+        g.deprecated()
         c = self
         p = p or c.p
         # Defaults...
