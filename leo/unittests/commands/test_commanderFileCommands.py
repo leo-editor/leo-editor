@@ -22,11 +22,13 @@ class TestCommanderFileCommands(LeoUnitTest):
         at = c.atFileCommands
         p = c.p
 
-        def dummy_precheck(fileName: str, root: Any) -> bool:
-            """A version of at.precheck that always returns True."""
-            return True
+        ###
 
-        at.precheck = dummy_precheck  # Force all writes.
+            # def dummy_precheck(fileName: str, root: Any) -> bool:
+                # """A version of at.precheck that always returns True."""
+                # return True
+
+            # at.precheck = dummy_precheck  # Force all writes.
 
         # Define data.
         raw_contents = '"""Test File"""\n'

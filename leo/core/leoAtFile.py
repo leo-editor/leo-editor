@@ -32,8 +32,39 @@ def cmd(name: str) -> Callable:  # pragma: no cover
 #@+node:ekr.20160514120655.1: ** class AtFile
 class AtFile:
     """A class implementing the atFile subcommander."""
-    #@+<< define class constants >>
-    #@+node:ekr.20131224053735.16380: *3* << define class constants >>
+    #@+<< AtFile: define __slots__ >>
+    #@+node:ekr.20250403114721.1: *3* << AtFile: define __slots__ >>
+    __slots__ = (
+        # Ivars.
+        'c', 'fileCommands',
+        # Basic status vars.
+        'errors', 'indent', 'language', 'root',
+        # Dialogs.
+        'canCancelFlag', 'cancelFlag', 'yesToAll',
+        # Reading.
+        'readVersion', 'readVersion5', 'read_i', 'read_lines',
+        'importRootSeen',
+        'startSentinelComment', 'endSentinelComment',
+        # Shadow files.
+        'private_s', 'public_s',
+        # Writing.
+        'section_delim1', 'section_delim2', 'sentinels',
+        'outputFile', 'outputList',
+        'targetFileName', 'unchangedFiles',  # For messages.
+        # User settings.
+        'at_auto_encoding', 'encoding', 'explicitLineEnding',
+        'force_newlines_in_at_nosent_bodies',
+        'output_newline', 'page_width', 'tab_width',
+        # User switches.
+        'beautifyOnWrite', 'checkPythonCodeOnWrite',
+        'runFlake8OnWrite', 'runPyFlakesOnWrite', 'runPylintOnWrite',
+        # Testing hacks.
+        'at_shadow_test_hack',  # Injected by TestShadow.makePrivateLines.
+        ### 'precheck',  # Injected by TestCommanderFileCommands.test_refresh_from_disk.
+    )
+    #@-<< AtFile: define __slots__ >>
+    #@+<< AtFile: define constants >>
+    #@+node:ekr.20131224053735.16380: *3* << AtFile: define constants >>
     #@@nobeautify
 
     # directives...
@@ -46,7 +77,7 @@ class AtFile:
     othersDirective =  7  # @others
     miscDirective   =  8  # All other directives
     startVerbatim   =  9  # @verbatim  Not a real directive. Used to issue warnings.
-    #@-<< define class constants >>
+    #@-<< AtFile: define constants >>
     #@+others
     #@+node:ekr.20041005105605.7: *3* at.Birth & init
     #@+node:ekr.20041005105605.8: *4* at.ctor & helpers
@@ -70,17 +101,14 @@ class AtFile:
         # For initReadIvars and initWriteIvars.
         self.at_auto_encoding = 'utf-f'
         self.explicitLineEnding: bool = None
-        self.inCode = True
         self.indent = 0  # The unit of indentation is spaces, not tabs.
         self.language: str = None
-        self.line_ending: str = None
         self.output_newline = g.getOutputNewline(c=c)
         self.page_width: int = None
         self.root: Position = None  # The root (a position) of tree being read or written.
         self.startSentinelComment = ""
         self.endSentinelComment = ""
         self.tab_width: int = c.tab_width or -4
-        self.writing_to_shadow_directory = False
         # User options: set in reloadSettings.
         self.beautifyOnWrite = False
         self.checkPythonCodeOnWrite = False
@@ -110,33 +138,18 @@ class AtFile:
         c = at.c
 
         # Easy inits...
-        at.bom_encoding = None  # The encoding implied by any BOM (set by g.stripBOM)
-        at.cloneSibCount = 0  # n > 1: Make sure n cloned sibs exists at next @+node sentinel
-        at.correctedLines = 0  # For perfect import.
-        at.docOut = []  # The doc part being accumulated.
-        at.done = False  # True when @-leo seen.
         at.endSentinelComment = ""
         at.errors = 0
-        at.fromString = ''
         at.importRootSeen = False
-        at.inCode = True
-        at.inCode = True
         at.indent = 0  # The unit of indentation is spaces, not tabs.
         at.language = None
-        at.lastLines = []  # The lines after @-leo
-        at.leadingWs = ""
-        at.lineNumber = 0  # New in Leo 4.4.8.
-        at.readVersion = ''  # "5" for new-style thin files.
-        at.readVersion5 = False  # Synonym for at.readVersion >= '5'
-        at.read_i = 0
-        at.read_lines = []
+        at.readVersion = ''  # Set by at.parseLeoSentinel: "5" for new-style thin files.
+        at.readVersion5 = False  # at.parseLeoSentinel: Synonym for at.readVersion >= '5'
+        at.read_i = 0  # Set by at.initReadLine.
+        at.read_lines = []  # Set by at.initReadLine.
         at.root = root
-        at.rootSeen = False
         at.startSentinelComment = ""
         at.targetFileName = None  # For at.writeError only.
-        at.updateWarningGiven = False
-        at.v = None
-        at.writing_to_shadow_directory = False
 
         ### at.initCommonIvars()
             # Set the following non-empty defaults:
@@ -165,30 +178,17 @@ class AtFile:
         assert root
 
         # Easy inits.
-        at.bom_encoding = None  # The encoding implied by any BOM (set by g.stripBOM)
-        at.cloneSibCount = 0  # n > 1: Make sure n cloned sibs exists at next @+node sentinel
-        at.correctedLines = 0  # For perfect import.
-        at.docOut = []  # The doc part being accumulated.
-        at.done = False  # True when @-leo seen.
         at.endSentinelComment = ""
         at.errors = 0
-        at.fromString = ''
         at.importRootSeen = False
         at.indent = 0  # The unit of indentation is spaces, not tabs.
-        at.lastLines = []  # The lines after @-leo
-        at.leadingWs = ""
-        at.lineNumber = 0  # New in Leo 4.4.8.
         at.readVersion = ''  # "5" for new-style thin files.
         at.readVersion5 = False  # Synonym for at.readVersion >= '5'
-        at.read_i = 0
-        at.read_lines = []
+        at.read_i = 0  # Set by at.initReadLine.
+        at.read_lines = []  # Set by at.initReadLine.
         at.root = root
-        at.rootSeen = False
         at.startSentinelComment = ""
         at.targetFileName = None  # For at.writeError only.
-        at.updateWarningGiven = False
-        at.v = None
-        at.writing_to_shadow_directory = False
 
         assert at.checkPythonCodeOnWrite is not None
 
@@ -214,9 +214,8 @@ class AtFile:
                 # at.tab_width
         else:
             at.encoding = c.config.default_derived_file_encoding  ### To do.
-            at.explicitLineEnding = bool(at.lineending)
+            at.explicitLineEnding = None  ### To do.
             at.output_newline = g.getOutputNewline(c=c)
-            at.lineending = None  ### To do.
             at.page_width = c.page_width or 132  ### new
             at.language = None  ### To do.
             at.tab_width = c.tab_width or -4  ### To do.
@@ -309,12 +308,12 @@ class AtFile:
             # #1466.
             if s is None:  # pragma: no cover
                 # The error has been given.
-                at._file_bytes = g.toEncodedString('')
+                ### at._file_bytes = g.toEncodedString('')
                 return None, None
             at.warnOnReadOnlyFile(fn)
         except Exception:  # pragma: no cover
             at.error(f"unexpected exception opening: '@file {fn}'")
-            at._file_bytes = g.toEncodedString('')
+            ### at._file_bytes = g.toEncodedString('')
             fn, s = None, None
         return fn, s
     #@+node:ekr.20150204165040.4: *6* at.openAtShadowFileForReading
@@ -345,7 +344,6 @@ class AtFile:
         # Fix bug 889175: Remember the full fileName.
         at.rememberReadPath(c.fullPath(root), root)
         at.initReadIvars(root, fileName)
-        at.fromString = fromString
         if at.errors:
             return False  # pragma: no cover
         fileName, file_s = at.openFileForReading(fromString=fromString)
@@ -794,7 +792,7 @@ class AtFile:
         at = self
         at.read_i = 0
         at.read_lines = g.splitLines(s)
-        at._file_bytes = g.toEncodedString(s)
+        ### at._file_bytes = g.toEncodedString(s)
     #@+node:ekr.20041005105605.120: *5* at.parseLeoSentinel
     def parseLeoSentinel(self, s: str) -> tuple[bool, bool, str, str, bool]:
         """
@@ -2269,19 +2267,19 @@ class AtFile:
     #@+node:ekr.20041005105605.190: *5* at.putLeadInSentinel
     def putLeadInSentinel(self, s: str, i: int, j: int) -> None:
         """
-        Set at.leadingWs as needed for @+others and @+<< sentinels.
-
         i points at the start of a line.
         j points at @others or a section reference.
         """
         at = self
-        at.leadingWs = ""  # Set the default.
+        ### at.leadingWs = ""  # Set the default.
         if i == j:
             return  # The @others or ref starts a line.
         k = g.skip_ws(s, i)
         if j == k:
-            # Remember the leading whitespace, including its spelling.
-            at.leadingWs = s[i:j]
+            ###
+                # Remember the leading whitespace, including its spelling.
+                # at.leadingWs = s[i:j]
+            pass
         else:
             self.putIndent(at.indent)  # 1/29/04: fix bug reported by Dan Winkler.
             at.os(s[i:j])
@@ -2608,27 +2606,25 @@ class AtFile:
         Return True if so.  Return False *and* issue a warning otherwise.
         """
         at = self
-        #
+        if g.unitTesting:
+            return True
         # #1450: First, check that the directory exists.
         theDir = g.os_path_dirname(fileName)
         if theDir and not g.os_path_exists(theDir):
             at.error(f"Directory not found:\n{theDir}")
             return False
-        #
         # Now check the file.
         if not at.shouldPromptForDangerousWrite(fileName, root):
             # Fix bug 889175: Remember the full fileName.
             at.rememberReadPath(fileName, root)
             return True
-        #
         # Prompt if the write would overwrite the existing file.
         ok = self.promptForDangerousWrite(fileName)
         if ok:
             # Fix bug 889175: Remember the full fileName.
             at.rememberReadPath(fileName, root)
             return True
-        #
-        # Fix #1031: do not add @ignore here!
+        # #1031: do not add @ignore here!
         g.es("not written:", fileName)
         return False
     #@+node:ekr.20050506090446.1: *5* at.putAtFirstLines
