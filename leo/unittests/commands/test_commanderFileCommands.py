@@ -6,7 +6,6 @@
 import os
 import tempfile
 import textwrap
-from typing import Any
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
 assert g
