@@ -42,7 +42,7 @@ class AtFile:
         # Dialogs.
         'canCancelFlag', 'cancelFlag', 'yesToAll',
         # Reading.
-        'readVersion', 'readVersion5', 'read_i', 'read_lines',
+        'readVersion', 'read_i', 'read_lines',
         'importRootSeen',
         'startSentinelComment', 'endSentinelComment',
         # Shadow files.
@@ -115,6 +115,27 @@ class AtFile:
         self.runPyFlakesOnWrite = False
         self.runPylintOnWrite = False
         self.reloadSettings()
+    #@+node:ekr.20250403154610.1: *5* at.initAllIvars
+    def initAllIvars(self, root: Position) -> None:
+        """Init all ivars to reasonable defaults."""
+        at, c = self, self.c
+        at.at_auto_encoding = c.config.default_at_auto_file_encoding or 'utf-8'
+        at.encoding = c.config.default_derived_file_encoding or 'utf-8'
+        at.endSentinelComment = ""
+        at.errors = 0
+        at.importRootSeen = False
+        at.indent = 0
+        at.language = c.target_language or 'python'
+        at.output_newline = g.getOutputNewline(c)
+        at.page_width = c.page_width or 132
+        at.readVersion = ''
+        at.read_i = 0
+        at.read_lines = []
+        at.root = root
+        at.sentinels = None
+        at.startSentinelComment = ""
+        at.tab_width = c.tab_width or -4
+        at.targetFileName = None
     #@+node:ekr.20171113152939.1: *5* at.reloadSettings
     def reloadSettings(self) -> None:
         """AtFile.reloadSettings"""
@@ -143,7 +164,6 @@ class AtFile:
         at.indent = 0  # The unit of indentation is spaces, not tabs.
         at.language = None
         at.readVersion = ''  # Set by at.parseLeoSentinel: "5" for new-style thin files.
-        at.readVersion5 = False  # at.parseLeoSentinel: Synonym for at.readVersion >= '5'
         at.read_i = 0  # Set by at.initReadLine.
         at.read_lines = []  # Set by at.initReadLine.
         at.root = root
@@ -182,7 +202,6 @@ class AtFile:
         at.importRootSeen = False
         at.indent = 0  # The unit of indentation is spaces, not tabs.
         at.readVersion = ''  # "5" for new-style thin files.
-        at.readVersion5 = False  # Synonym for at.readVersion >= '5'
         at.read_i = 0  # Set by at.initReadLine.
         at.read_lines = []  # Set by at.initReadLine.
         at.root = root
@@ -793,12 +812,12 @@ class AtFile:
     def parseLeoSentinel(self, s: str) -> tuple[bool, bool, str, str, bool]:
         """
         Parse the sentinel line s.
-        If the sentinel is valid, set at.encoding, at.readVersion, at.readVersion5.
+        If the sentinel is valid, set at.encoding, at.readVersion
         """
         at, c = self, self.c
         # Set defaults.
         encoding = c.config.default_derived_file_encoding
-        readVersion, readVersion5 = None, None
+        readVersion = None
         new_df, start, end, isThin = False, '', '', False
         # Example: \*@+leo-ver=5-thin-encoding=utf-8,.*/
         pattern = re.compile(
@@ -823,7 +842,6 @@ class AtFile:
                 # Set the version number.
                 if m.group(3):
                     readVersion = m.group(3)
-                    readVersion5 = readVersion >= '5'
                 else:
                     valid = False  # pragma: no cover
         if valid:
@@ -843,7 +861,6 @@ class AtFile:
         if valid:
             at.encoding = encoding
             at.readVersion = readVersion
-            at.readVersion5 = readVersion5
         return valid, new_df, start, end, isThin
     #@+node:ekr.20130911110233.11284: *5* at.readFileToUnicode & helpers
     def readFileToUnicode(self, fileName: str) -> Optional[str]:  # pragma: no cover
