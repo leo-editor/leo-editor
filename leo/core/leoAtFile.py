@@ -320,7 +320,7 @@ class AtFile:
         # at.output_newline
         # at.page_width
         # at.tab_width
-        at.scanAllDirectives(root)
+        ### at.scanAllDirectives(root)
         gnx2vnode = c.fileCommands.gnxDict
         contents = fromString or file_s
         FastAtRead(c, gnx2vnode).read_into_root(contents, fileName, root)
@@ -483,7 +483,7 @@ class AtFile:
         at.rememberReadPath(fileName, p)
         old_p = p.copy()
         try:
-            at.scanAllDirectives(p)
+            ### at.scanAllDirectives(p)
             p.v.b = ''  # Required for @auto API checks.
             p.v._deleteAllChildren()
             p = ic.createOutline(parent=p.copy())
@@ -517,7 +517,7 @@ class AtFile:
         # Must be called before at.scanAllDirectives.
         at.initReadIvars(root, fileName)
         # Sets at.startSentinelComment/endSentinelComment.
-        at.scanAllDirectives(root)
+        ### at.scanAllDirectives(root)
         new_public_lines = at.read_at_clean_lines(fileName)
         old_private_lines = self.write_at_clean_sentinels(root)
         marker = x.markerFromFileLines(old_private_lines, fileName)
