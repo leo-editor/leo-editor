@@ -5852,6 +5852,29 @@ def translateString(s: str) -> str:
 
 tr = translateString
 #@+node:EKR.20040612114220: ** g.Miscellaneous
+#@+node:ekr.20250403055718.1: *3* g._context
+def _context(n: int = 1) -> str:
+    """Return the full context of the function/method n levels up the stack frame."""
+    # Similar to g._callerName.
+    try:
+        f1 = sys._getframe(n)  # The stack frame, n levels up.
+        code1 = f1.f_code  # The code object
+        locals_ = f1.f_locals  # The local namespace.
+        module = shortFilename(code1.co_filename)  # The module's file name.
+        if module == 'leoGlobals.py':
+            module = 'g'
+        obj = locals_.get('self')
+        if obj is None:
+            context = module
+        else:
+            try:
+                class_name = obj.__class__.__name__
+                context = f"{module}:{class_name}"
+            except Exception:
+                context = module
+    except Exception:
+        context = '<unknown context>:'
+    return context
 #@+node:ekr.20120928142052.10116: *3* g.actualColor
 def actualColor(color: str) -> str:
     """Return the actual color corresponding to the requested color."""
@@ -5953,27 +5976,8 @@ def createScratchCommander(fileName: str = None) -> None:
 #@+node:ekr.20250403051420.1: *3* g.deprecated
 def deprecated() -> None:
     """Issue a single deprecation message for the caller of this method."""
-    # Similar to g._callerName.
-    try:
-        f1 = sys._getframe(1)  # The stack frame, n levels up.
-        code1 = f1.f_code  # The code object
-        locals_ = f1.f_locals  # The local namespace.
-        module = shortFilename(code1.co_filename)  # The module's file name.
-        if module == 'leoGlobals.py':
-            module = 'g'
-        obj = locals_.get('self')
-        if obj is None:
-            context = module
-        else:
-            try:
-                class_name = obj.__class__.__name__
-                context = f"{module}:{class_name}"
-            except Exception:
-                context = module
-    except Exception:
-        context = '<unknown context>:'
     # It's not necessary to report g.callers().
-    message = f"Warning: {context}.{g.caller()} is deprecated\n"
+    message = f"Warning: {g._context(2)}.{g.caller()} is deprecated\n"
     if g.unitTesting:
         message = '\n' + message
     print_unique_message(message)
