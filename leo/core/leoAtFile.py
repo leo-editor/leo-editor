@@ -135,7 +135,7 @@ class AtFile:
         self.targetFileName = fileName  # For self.writeError only.
         self.v = None
         self.updateWarningGiven = False
-    #@+node:ekr.20041005105605.15: *4* at.initWriteIvars
+    #@+node:ekr.20041005105605.15: *4* at.initWriteIvars (the only remaining call to at.scanAllDirectives)
     def initWriteIvars(self, root: Position) -> Optional[str]:
         """
         Compute default values of all write-related ivars.
@@ -791,13 +791,12 @@ class AtFile:
         Sets at.encoding as follows:
         1. Use the BOM, if present. This unambiguously determines the encoding.
         2. Use the -encoding= field in the @+leo header, if present and valid.
-        3. Otherwise, uses existing value of at.encoding, which comes from:
-            A. An @encoding directive, found by at.scanAllDirectives.
-            B. The value of c.config.default_derived_file_encoding.
+        3. Otherwise, uses existing value of at.encoding.
 
         Returns the string, or None on failure.
         """
         at = self
+        ### g.trace('at.encoding:', repr(at.encoding), g.callers())  ###
         s: str
         s_bytes = at.openFileHelper(fileName)  # Catches all exceptions.
         # #1798.
@@ -3068,7 +3067,7 @@ class AtFile:
             9: '@verbatim',
         }
         return d.get(kind) or f"<unknown AtFile class constant> {kind!r}"
-    #@+node:ekr.20080923070954.4: *4* at.scanAllDirectives
+    #@+node:ekr.20080923070954.4: *4* at.scanAllDirectives (revise & rename)
     def scanAllDirectives(self, p: Position) -> dict[str, Value]:
         """
         Scan p and p's ancestors looking for directives,
@@ -3080,6 +3079,7 @@ class AtFile:
         # #4323: The hard cases. Set the language and delims using only p.h and p.b.
         delims = None
         if p.isAnyAtFileNode():  #4323: Look no further.
+            ### Warn if at.languageFromAtFileNodeBody(p) does't match.
             language = at.languageFromAtFileNodeHeadline(p)
             # We *must* calculate delims when writing.
             delims = at.delimsFromAtFileNodeBody(p)
