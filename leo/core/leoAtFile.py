@@ -54,7 +54,6 @@ class AtFile:
 
     def __init__(self, c: Cmdr) -> None:
         """ctor for atFile class."""
-        #### **Warning**: all these ivars must **also** be inited in initCommonIvars.
         self.c: Cmdr = c
         self.encoding = 'utf-8'  # 2014/08/13
         self.fileCommands = c.fileCommands
@@ -69,12 +68,12 @@ class AtFile:
         self.cancelFlag = False
         self.yesToAll = False
         # For initReadIvars and initWriteIvars.
-        self.at_auto_encoding = 'utf-f'  ###
+        self.at_auto_encoding = 'utf-f'
         self.explicitLineEnding: bool = None
         self.inCode = True
         self.indent = 0  # The unit of indentation is spaces, not tabs.
         self.language: str = None
-        self.line_ending: str = None  ###
+        self.line_ending: str = None
         self.output_newline = g.getOutputNewline(c=c)
         self.page_width: int = None
         self.root: Position = None  # The root (a position) of tree being read or written.
@@ -107,33 +106,52 @@ class AtFile:
     #@+node:ekr.20041005105605.13: *4* at.initReadIvars
     def initReadIvars(self, root: Position, fileName: str) -> None:
 
-        # Set the following non-empty defaults:
-        #   at.at_auto_encoding = c.config.default_at_auto_file_encoding
-        #   at.encoding = c.config.default_derived_file_encoding
-        #   at.output_newline = g.getOutputNewline(c)
-        #   at.tab_width: int = c.tab_width or -4
-        ### self.initCommonIvars()
+        at = self
+        c = at.c
 
+        ### at.initCommonIvars()
+            # Set the following non-empty defaults:
+            #   at.at_auto_encoding = c.config.default_at_auto_file_encoding
+            #   at.encoding = c.config.default_derived_file_encoding
+            #   at.output_newline = g.getOutputNewline(c)
+            #   at.tab_width: int = c.tab_width or -4
 
-        self.bom_encoding = None  # The encoding implied by any BOM (set by g.stripBOM)
-        self.cloneSibCount = 0  # n > 1: Make sure n cloned sibs exists at next @+node sentinel
-        self.correctedLines = 0  # For perfect import.
-        self.docOut: list[str] = []  # The doc part being accumulated.
-        self.done = False  # True when @-leo seen.
-        self.fromString = ''
-        self.importRootSeen = False
-        self.lastLines: list[str] = []  # The lines after @-leo
-        self.leadingWs = ""
-        self.lineNumber = 0  # New in Leo 4.4.8.
-        self.read_i = 0
-        self.read_lines: list[str] = []
-        self.readVersion = ''  # "5" for new-style thin files.
-        self.readVersion5 = False  # Synonym for self.readVersion >= '5'
-        self.root = root
-        self.rootSeen = False
-        self.targetFileName = fileName  # For self.writeError only.
-        self.v = None
-        self.updateWarningGiven = False
+        # Non-trivial inits. Will be set below.
+        at.at_auto_encoding = c.config.default_at_auto_file_encoding or 'utf-8'
+        at.encoding = c.config.default_derived_file_encoding or 'utf-8'
+        at.language = c.target_language or 'python'
+        at.output_newline = g.getOutputNewline(c)
+        at.page_width = c.page_width or 132
+        at.tab_width = c.tab_width or -4
+
+        # Init all other ivars...
+        at.bom_encoding = None  # The encoding implied by any BOM (set by g.stripBOM)
+        at.cloneSibCount = 0  # n > 1: Make sure n cloned sibs exists at next @+node sentinel
+        at.correctedLines = 0  # For perfect import.
+        at.docOut = []  # The doc part being accumulated.
+        at.done = False  # True when @-leo seen.
+        at.endSentinelComment = ""
+        at.errors = 0
+        at.fromString = ''
+        at.importRootSeen = False
+        at.inCode = True
+        at.inCode = True
+        at.indent = 0  # The unit of indentation is spaces, not tabs.
+        at.language = None
+        at.lastLines = []  # The lines after @-leo
+        at.leadingWs = ""
+        at.lineNumber = 0  # New in Leo 4.4.8.
+        at.readVersion = ''  # "5" for new-style thin files.
+        at.readVersion5 = False  # Synonym for at.readVersion >= '5'
+        at.read_i = 0
+        at.read_lines = []
+        at.root = root
+        at.rootSeen = False
+        at.startSentinelComment = ""
+        at.targetFileName = None  # For at.writeError only.
+        at.updateWarningGiven = False
+        at.v = None
+        at.writing_to_shadow_directory = False
     #@+node:ekr.20041005105605.15: *4* at.initWriteIvars (the only remaining call to at.scanAllDirectives)
     def initWriteIvars(self, root: Position) -> Optional[str]:
         """
@@ -145,22 +163,47 @@ class AtFile:
             return None  # pragma: no cover
         make_dirs = c.config.getBool('create-nonexistent-directories', default=False)
         assert root
+
         ### self.initCommonIvars()
-        # Formerly in initCommon ivars.
-        self.at_auto_encoding = c.config.default_at_auto_file_encoding
-        ### self.encoding = c.config.default_derived_file_encoding
-        self.endSentinelComment = ""
-        self.errors = 0
-        self.inCode = True
-        self.indent = 0  # The unit of indentation is spaces, not tabs.
-        ### self.language: str = None
-        ### self.output_newline = g.getOutputNewline(c=c)
-        ### self.page_width: int = None
-        ### self.root: Position = None  # The root (a position) of tree being read or written.
-        self.startSentinelComment = ""
-        self.endSentinelComment = ""
-        ### self.tab_width: int = c.tab_width or -4
-        self.writing_to_shadow_directory = False
+            # Set the following non-empty defaults:
+            #   at.at_auto_encoding = c.config.default_at_auto_file_encoding
+            #   at.encoding = c.config.default_derived_file_encoding
+            #   at.output_newline = g.getOutputNewline(c)
+            #   at.tab_width: int = c.tab_width or -4
+
+        # Non-trivial inits. To be set below.
+        at.at_auto_encoding = c.config.default_at_auto_file_encoding or 'utf-8'
+        at.encoding = c.config.default_derived_file_encoding or 'utf-8'
+        at.language = c.target_language or 'python'
+        at.output_newline = g.getOutputNewline(c)
+        at.page_width = c.page_width or 132
+        at.tab_width = c.tab_width or -4
+
+        # Init all other ivars.
+        at.bom_encoding = None  # The encoding implied by any BOM (set by g.stripBOM)
+        at.cloneSibCount = 0  # n > 1: Make sure n cloned sibs exists at next @+node sentinel
+        at.correctedLines = 0  # For perfect import.
+        at.docOut = []  # The doc part being accumulated.
+        at.done = False  # True when @-leo seen.
+        at.endSentinelComment = ""
+        at.errors = 0
+        at.fromString = ''
+        at.importRootSeen = False
+        at.indent = 0  # The unit of indentation is spaces, not tabs.
+        at.lastLines = []  # The lines after @-leo
+        at.leadingWs = ""
+        at.lineNumber = 0  # New in Leo 4.4.8.
+        at.readVersion = ''  # "5" for new-style thin files.
+        at.readVersion5 = False  # Synonym for at.readVersion >= '5'
+        at.read_i = 0
+        at.read_lines = []
+        at.root = root
+        at.rootSeen = False
+        at.startSentinelComment = ""
+        at.targetFileName = None  # For at.writeError only.
+        at.updateWarningGiven = False
+        at.v = None
+        at.writing_to_shadow_directory = False
 
         assert at.checkPythonCodeOnWrite is not None
         #
@@ -193,7 +236,7 @@ class AtFile:
             at.explicitLineEnding = bool(at.lineending)
             at.output_newline = g.getOutputNewline(c=c)
             at.lineending = None  ### To do.
-            at.page_width = None  ### To do.
+            at.page_width = c.page_width or 132  ### new
             at.language = None  ### To do.
             at.tab_width = c.tab_width or -4  ### To do.
         #
