@@ -2581,6 +2581,7 @@ def get_directives_dict(p: Position) -> dict[str, str]:
     Returns a dict containing the stripped remainder of the line
     following the first occurrence of each recognized directive.
     """
+    g.deprecated()
     d = {}
     # The headline has higher precedence because it is more visible.
     for kind, s in (('head', p.h), ('body', p.b)):
@@ -5949,7 +5950,7 @@ def createScratchCommander(fileName: str = None) -> None:
     assert c.rootPosition()
     frame.setInitialWindowGeometry()
     frame.resizePanesToRatio(frame.compute_ratio(), frame.compute_secondary_ratio())
-#@+node:ekr.20250403051420.1: *3* g.deprecated (new)
+#@+node:ekr.20250403051420.1: *3* g.deprecated
 def deprecated() -> None:
     """Issue a single deprecation message for the caller of this method."""
     # Similar to g._callerName.
@@ -5958,16 +5959,24 @@ def deprecated() -> None:
         code1 = f1.f_code  # The code object
         locals_ = f1.f_locals  # The local namespace.
         module = shortFilename(code1.co_filename)  # The module's file name.
+        if module == 'leoGlobals.py':
+            module = 'g'
         obj = locals_.get('self')
-        try:
-            class_name = obj.__class__.__name__
-            context = f"{module}:{class_name}"
-        except Exception:
+        if obj is None:
             context = module
+        else:
+            try:
+                class_name = obj.__class__.__name__
+                context = f"{module}:{class_name}"
+            except Exception:
+                context = module
     except Exception:
         context = '<unknown context>:'
     # It's not necessary to report g.callers().
-    print_unique_message(f"\nWarning: {context}.{g.caller()} is deprecated\n")
+    message = f"Warning: {context}.{g.caller()} is deprecated\n"
+    if g.unitTesting:
+        message = '\n' + message
+    print_unique_message(message)
 #@+node:ekr.20031218072017.3126: *3* g.funcToMethod (Python Cookbook)
 def funcToMethod(f: Callable, theClass: object, name: str = None) -> None:
     """
