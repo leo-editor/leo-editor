@@ -173,45 +173,20 @@ class AtFile:
         at.targetFileName = None
         at.unchangedFiles = 0
         # User settings.
-        ### at.at_auto_encoding = 'utf-f'
         at.at_auto_encoding = c.config.default_at_auto_file_encoding or 'utf-8'
-        ### at.encoding = 'utf-8'
         at.encoding = c.config.default_derived_file_encoding or 'utf-8'
         at.explicitLineEnding = None
         at.force_newlines_in_at_nosent_bodies = False
         at.output_newline = g.getOutputNewline(c=c)
-        ### at.page_width = None
         at.page_width = c.page_width or 132
         at.tab_width = c.tab_width or -4
 
-        # User switches: set only in reloadSettings.
-        # at.beautifyOnWrite = False
-        # at.checkPythonCodeOnWrite = False
-        # at.runFlake8OnWrite = False
-        # at.runPyFlakesOnWrite = False
-        # at.runPylintOnWrite = False
     #@+node:ekr.20041005105605.13: *4* at.initReadIvars
     def initReadIvars(self, root: Position, fileName: str) -> None:
-
-        ### at, c = self, self.c
+        """Initialize all read ivars."""
 
         # Set all ivars to reasonable defaults.
         self.initAllIvars(root)
-
-        ### at.initCommonIvars()
-            # Set the following non-empty defaults:
-            #   at.at_auto_encoding = c.config.default_at_auto_file_encoding
-            #   at.encoding = c.config.default_derived_file_encoding
-            #   at.output_newline = g.getOutputNewline(c)
-            #   at.tab_width: int = c.tab_width or -4
-
-        # Non-trivial defaults.
-        ### at.at_auto_encoding = c.config.default_at_auto_file_encoding or 'utf-8'
-        ### at.encoding = c.config.default_derived_file_encoding or 'utf-8'
-        ### at.language = c.target_language or 'python'
-        # # # at.output_newline = g.getOutputNewline(c)
-        # # # at.page_width = c.page_width or 132
-        # # # at.tab_width = c.tab_width or -4
     #@+node:ekr.20041005105605.15: *4* at.initWriteIvars (the only remaining call to at.scanAllDirectives)
     def initWriteIvars(self, root: Position) -> Optional[str]:
         """
@@ -378,40 +353,27 @@ class AtFile:
         if not fileName:  # pragma: no cover
             at.error("Missing file name. Restoring @file tree from .leo file.")
             return False
-        # Fix bug 760531: always mark the root as read, even if there was an error.
-        # Fix bug 889175: Remember the full fileName.
+
+        # #760531: always mark the root as read, even if there was an error.
+        # #889175: Remember the full fileName.
         at.rememberReadPath(c.fullPath(root), root)
         at.initReadIvars(root, fileName)
         if at.errors:
             return False  # pragma: no cover
+
+        # Open the file.
         fileName, file_s = at.openFileForReading(fromString=fromString)
-        # #1798:
-        if file_s is None:
+        if file_s is None:  # #1798:
             return False  # pragma: no cover
-        #
+
         # Set the time stamp.
         if fileName:
             c.setFileTimeStamp(fileName)
         elif not fileName and not fromString and not file_s:  # pragma: no cover
             return False
+
+        # Read the file!
         root.clearVisitedInTree()
-
-        # at.initCommonIvars sets the following non-empty defaults:
-        #   at.at_auto_encoding = c.config.default_at_auto_file_encoding
-        #   at.encoding = c.config.default_derived_file_encoding
-        #   at.output_newline = g.getOutputNewline(c)
-        #   at.tab_width: int = c.tab_width or -4
-
-        ###
-            # at.scanAllDirectives sets the following ivars:
-            # at.encoding: **changed later** by readOpenFile/at.scanHeader.
-            # at.explicitLineEnding
-            # at.language
-            # at.output_newline
-            # at.page_width
-            # at.tab_width
-
-        ### at.scanAllDirectives(root)
         gnx2vnode = c.fileCommands.gnxDict
         contents = fromString or file_s
         FastAtRead(c, gnx2vnode).read_into_root(contents, fileName, root)
