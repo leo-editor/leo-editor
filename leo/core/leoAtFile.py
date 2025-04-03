@@ -60,7 +60,6 @@ class AtFile:
         'runFlake8OnWrite', 'runPyFlakesOnWrite', 'runPylintOnWrite',
         # Testing hacks.
         'at_shadow_test_hack',  # Injected by TestShadow.makePrivateLines.
-        ### 'precheck',  # Injected by TestCommanderFileCommands.test_refresh_from_disk.
     )
     #@-<< AtFile: define __slots__ >>
     #@+<< AtFile: define constants >>
@@ -308,12 +307,10 @@ class AtFile:
             # #1466.
             if s is None:  # pragma: no cover
                 # The error has been given.
-                ### at._file_bytes = g.toEncodedString('')
                 return None, None
             at.warnOnReadOnlyFile(fn)
         except Exception:  # pragma: no cover
             at.error(f"unexpected exception opening: '@file {fn}'")
-            ### at._file_bytes = g.toEncodedString('')
             fn, s = None, None
         return fn, s
     #@+node:ekr.20150204165040.4: *6* at.openAtShadowFileForReading
@@ -792,7 +789,6 @@ class AtFile:
         at = self
         at.read_i = 0
         at.read_lines = g.splitLines(s)
-        ### at._file_bytes = g.toEncodedString(s)
     #@+node:ekr.20041005105605.120: *5* at.parseLeoSentinel
     def parseLeoSentinel(self, s: str) -> tuple[bool, bool, str, str, bool]:
         """
@@ -2271,14 +2267,10 @@ class AtFile:
         j points at @others or a section reference.
         """
         at = self
-        ### at.leadingWs = ""  # Set the default.
         if i == j:
             return  # The @others or ref starts a line.
         k = g.skip_ws(s, i)
         if j == k:
-            ###
-                # Remember the leading whitespace, including its spelling.
-                # at.leadingWs = s[i:j]
             pass
         else:
             self.putIndent(at.indent)  # 1/29/04: fix bug reported by Dan Winkler.
@@ -3145,7 +3137,7 @@ class AtFile:
         # #4323: The hard cases. Set the language and delims using only p.h and p.b.
         delims = None
         if p.isAnyAtFileNode():  #4323: Look no further.
-            ### Warn if at.languageFromAtFileNodeBody(p) does't match.
+            ### To do: Warn if at.languageFromAtFileNodeBody(p) does't match.
             language = at.languageFromAtFileNodeHeadline(p)
             # We *must* calculate delims when writing.
             delims = at.delimsFromAtFileNodeBody(p)
