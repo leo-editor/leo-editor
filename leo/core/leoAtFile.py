@@ -109,22 +109,7 @@ class AtFile:
         at = self
         c = at.c
 
-        ### at.initCommonIvars()
-            # Set the following non-empty defaults:
-            #   at.at_auto_encoding = c.config.default_at_auto_file_encoding
-            #   at.encoding = c.config.default_derived_file_encoding
-            #   at.output_newline = g.getOutputNewline(c)
-            #   at.tab_width: int = c.tab_width or -4
-
-        # Non-trivial inits. Will be set below.
-        at.at_auto_encoding = c.config.default_at_auto_file_encoding or 'utf-8'
-        at.encoding = c.config.default_derived_file_encoding or 'utf-8'
-        at.language = c.target_language or 'python'
-        at.output_newline = g.getOutputNewline(c)
-        at.page_width = c.page_width or 132
-        at.tab_width = c.tab_width or -4
-
-        # Init all other ivars...
+        # Easy inits...
         at.bom_encoding = None  # The encoding implied by any BOM (set by g.stripBOM)
         at.cloneSibCount = 0  # n > 1: Make sure n cloned sibs exists at next @+node sentinel
         at.correctedLines = 0  # For perfect import.
@@ -152,6 +137,21 @@ class AtFile:
         at.updateWarningGiven = False
         at.v = None
         at.writing_to_shadow_directory = False
+
+        ### at.initCommonIvars()
+            # Set the following non-empty defaults:
+            #   at.at_auto_encoding = c.config.default_at_auto_file_encoding
+            #   at.encoding = c.config.default_derived_file_encoding
+            #   at.output_newline = g.getOutputNewline(c)
+            #   at.tab_width: int = c.tab_width or -4
+
+        # Non-trivial defaults.
+        at.at_auto_encoding = c.config.default_at_auto_file_encoding or 'utf-8'
+        at.encoding = c.config.default_derived_file_encoding or 'utf-8'
+        at.language = c.target_language or 'python'
+        at.output_newline = g.getOutputNewline(c)
+        at.page_width = c.page_width or 132
+        at.tab_width = c.tab_width or -4
     #@+node:ekr.20041005105605.15: *4* at.initWriteIvars (the only remaining call to at.scanAllDirectives)
     def initWriteIvars(self, root: Position) -> Optional[str]:
         """
@@ -164,22 +164,7 @@ class AtFile:
         make_dirs = c.config.getBool('create-nonexistent-directories', default=False)
         assert root
 
-        ### self.initCommonIvars()
-            # Set the following non-empty defaults:
-            #   at.at_auto_encoding = c.config.default_at_auto_file_encoding
-            #   at.encoding = c.config.default_derived_file_encoding
-            #   at.output_newline = g.getOutputNewline(c)
-            #   at.tab_width: int = c.tab_width or -4
-
-        # Non-trivial inits. To be set below.
-        at.at_auto_encoding = c.config.default_at_auto_file_encoding or 'utf-8'
-        at.encoding = c.config.default_derived_file_encoding or 'utf-8'
-        at.language = c.target_language or 'python'
-        at.output_newline = g.getOutputNewline(c)
-        at.page_width = c.page_width or 132
-        at.tab_width = c.tab_width or -4
-
-        # Init all other ivars.
+        # Easy inits.
         at.bom_encoding = None  # The encoding implied by any BOM (set by g.stripBOM)
         at.cloneSibCount = 0  # n > 1: Make sure n cloned sibs exists at next @+node sentinel
         at.correctedLines = 0  # For perfect import.
@@ -206,21 +191,17 @@ class AtFile:
         at.writing_to_shadow_directory = False
 
         assert at.checkPythonCodeOnWrite is not None
-        #
+
         # Copy args
         at.root = root
         at.sentinels = True
-        #
-        # Override initCommonIvars.
-        if g.unitTesting:
-            at.output_newline = '\n'
-        #
+
         # Set other ivars.
         at.force_newlines_in_at_nosent_bodies = c.config.getBool(
             'force-newlines-in-at-nosent-bodies')
             # For at.putBody only.
+
         at.outputList = []  # For stream output.
-        ###
         if 1:
             at.scanAllDirectives(root)
             ###
@@ -239,35 +220,32 @@ class AtFile:
             at.page_width = c.page_width or 132  ### new
             at.language = None  ### To do.
             at.tab_width = c.tab_width or -4  ### To do.
-        #
+
+        if g.unitTesting:
+            at.output_newline = '\n'
+
         # Overrides of at.scanAllDirectives...
         if at.language == 'python':
             # Encoding directive overrides everything else.
             encoding = g.getPythonEncodingFromString(root.b)
             if encoding:
                 at.encoding = encoding  # pragma: no cover (python 2)
-        #
         # Clean root.v.
         if not at.errors and at.root:
             at.root.v._p_changed = True
-        #
         # #1907: Compute the file name and create directories as needed.
         targetFileName = g.os_path_realpath(c.fullPath(root))
         at.targetFileName = targetFileName  # For at.writeError only.
-        #
         # targetFileName can be empty for unit tests & @command nodes.
         if not targetFileName:  # pragma: no cover
             targetFileName = root.h if g.unitTesting else None
             at.targetFileName = targetFileName  # For at.writeError only.
             return targetFileName
-        #
         # #2276: scan for section delims
         at.scanRootForSectionDelims(root)
-        #
         # Do nothing more if the file already exists.
         if os.path.exists(targetFileName):
             return targetFileName
-        #
         # Create directories if enabled.
         root_dir = g.os_path_dirname(targetFileName)
         if make_dirs and root_dir:  # pragma: no cover
@@ -275,7 +253,6 @@ class AtFile:
             if not ok:
                 g.error(f"Error creating directories: {root_dir}")
                 return None
-        #
         # Return the target file name, regardless of future problems.
         return targetFileName
     #@+node:ekr.20041005105605.17: *3* at.Reading
