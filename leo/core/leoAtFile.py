@@ -38,7 +38,7 @@ class AtFile:
         # Ivars.
         'c', 'fileCommands',
         # Basic status vars.
-        'errors', 'indent', 'language', 'root',
+        'errors', 'language', 'root',
         # Dialogs.
         'canCancelFlag', 'cancelFlag', 'yesToAll',
         # Reading.
@@ -48,7 +48,8 @@ class AtFile:
         # Shadow files.
         'private_s', 'public_s',
         # Writing.
-        'section_delim1', 'section_delim2', 'sentinels',
+        'indent',  'sentinels',
+        'section_delim1', 'section_delim2',
         'outputFile', 'outputList',
         'targetFileName', 'unchangedFiles',  # For messages.
         # User settings.
@@ -84,58 +85,49 @@ class AtFile:
 
     def __init__(self, c: Cmdr) -> None:
         """ctor for atFile class."""
+        # Ivars.
         self.c: Cmdr = c
-        self.encoding = 'utf-8'  # 2014/08/13
         self.fileCommands = c.fileCommands
-        self.errors = 0  # Make sure at.error() works even when not inited.
-        # #2276: allow different section delims.
-        self.section_delim1 = '<<'
-        self.section_delim2 = '>>'
-        # **Only** at.writeAll manages these flags.
-        self.unchangedFiles = 0
-        # promptForDangerousWrite sets cancelFlag and yesToAll only if canCancelFlag is True.
+        # Basic status vars.
+        self.errors = 0
+        self.language: str = None
+        self.root: Position = None
+        # Dialogs
         self.canCancelFlag = False
         self.cancelFlag = False
         self.yesToAll = False
-        # For initReadIvars and initWriteIvars.
-        self.at_auto_encoding = 'utf-f'
-        self.explicitLineEnding: bool = None
-        self.indent = 0  # The unit of indentation is spaces, not tabs.
-        self.language: str = None
-        self.output_newline = g.getOutputNewline(c=c)
-        self.page_width: int = None
-        self.root: Position = None  # The root (a position) of tree being read or written.
+        # Reading
+        self.importRootSeen = False
+        self.readVersion = ''
+        self.read_i = 0
+        self.read_lines: list[str] = []
         self.startSentinelComment = ""
         self.endSentinelComment = ""
+        # Writing.
+        self.indent = 0  # write indentation, in blanks.
+        self.outputFile: io.StringIO = None
+        self.outputList: list[str] = []
+        self.sentinels = False
+        self.section_delim1 = '<<'
+        self.section_delim2 = '>>'
+        self.targetFileName: str = ''
+        self.unchangedFiles = 0
+        # User settings.
+        self.at_auto_encoding = 'utf-f'
+        self.encoding = 'utf-8'
+        self.explicitLineEnding: bool = None
+        self.force_newlines_in_at_nosent_bodies = False
+        self.output_newline = g.getOutputNewline(c=c)
+        self.page_width: int = None
         self.tab_width: int = c.tab_width or -4
-        # User options: set in reloadSettings.
+        # User switches: set in reloadSettings.
         self.beautifyOnWrite = False
         self.checkPythonCodeOnWrite = False
         self.runFlake8OnWrite = False
         self.runPyFlakesOnWrite = False
         self.runPylintOnWrite = False
+        # Initialize all user switches.
         self.reloadSettings()
-    #@+node:ekr.20250403154610.1: *5* at.initAllIvars
-    def initAllIvars(self, root: Position) -> None:
-        """Init all ivars to reasonable defaults."""
-        at, c = self, self.c
-        at.at_auto_encoding = c.config.default_at_auto_file_encoding or 'utf-8'
-        at.encoding = c.config.default_derived_file_encoding or 'utf-8'
-        at.endSentinelComment = ""
-        at.errors = 0
-        at.importRootSeen = False
-        at.indent = 0
-        at.language = c.target_language or 'python'
-        at.output_newline = g.getOutputNewline(c)
-        at.page_width = c.page_width or 132
-        at.readVersion = ''
-        at.read_i = 0
-        at.read_lines = []
-        at.root = root
-        at.sentinels = None
-        at.startSentinelComment = ""
-        at.tab_width = c.tab_width or -4
-        at.targetFileName = None
     #@+node:ekr.20171113152939.1: *5* at.reloadSettings
     def reloadSettings(self) -> None:
         """AtFile.reloadSettings"""
@@ -151,11 +143,55 @@ class AtFile:
         self.runPylintOnWrite = c.config.getBool(
             'run-pylint-on-write', default=False)
 
+    #@+node:ekr.20250403154610.1: *4* at.initAllIvars
+    def initAllIvars(self, root: Position) -> None:
+        """Init all ivars to reasonable defaults."""
+        at, c = self, self.c
+        # Basic status vars.
+        self.errors = 0
+        self.language = None
+        self.root = root
+        # Dialogs
+        self.canCancelFlag = False
+        self.cancelFlag = False
+        self.yesToAll = False
+        # Reading
+        self.importRootSeen = False
+        self.readVersion = ''
+        self.read_i = 0
+        self.read_lines = []
+        self.startSentinelComment = ""
+        self.endSentinelComment = ""
+        # Writing.
+        self.indent = 0  # write indentation, in blanks.
+        self.outputFile = None
+        self.outputList = []
+        self.sentinels = False
+        self.section_delim1 = '<<'
+        self.section_delim2 = '>>'
+        self.targetFileName = ''
+        self.unchangedFiles = 0
+        # User settings.
+        self.at_auto_encoding = 'utf-f'
+        self.encoding = 'utf-8'
+        self.explicitLineEnding = None
+        self.force_newlines_in_at_nosent_bodies = False
+        self.output_newline = g.getOutputNewline(c=c)
+        self.page_width = None
+        self.tab_width = c.tab_width or -4
+        # User switches: set only in reloadSettings.
+        # self.beautifyOnWrite = False
+        # self.checkPythonCodeOnWrite = False
+        # self.runFlake8OnWrite = False
+        # self.runPyFlakesOnWrite = False
+        # self.runPylintOnWrite = False
     #@+node:ekr.20041005105605.13: *4* at.initReadIvars
     def initReadIvars(self, root: Position, fileName: str) -> None:
 
         at = self
         c = at.c
+
+        at.initAllIvars(root)  ###
 
         # Easy inits...
         at.endSentinelComment = ""
@@ -195,6 +231,8 @@ class AtFile:
             return None  # pragma: no cover
         make_dirs = c.config.getBool('create-nonexistent-directories', default=False)
         assert root
+
+        at.initAllIvars(root)  ###
 
         # Easy inits.
         at.endSentinelComment = ""
