@@ -164,14 +164,14 @@ class AtFile:
         at.startSentinelComment = ""
         at.endSentinelComment = ""
         # Writing.
-        at.indent = 0  # write indentation, in blanks.
+        at.indent = 0  # Output indentation, in blanks.
         at.outputFile = None
         at.outputList = []
         at.sentinels = False
         at.section_delim1 = '<<'
         at.section_delim2 = '>>'
         at.targetFileName = None
-        at.unchangedFiles = 0
+        # at.unchangedFiles = 0  # Only at.writeAll should init this ivar.
         # User settings.
         at.at_auto_encoding = c.config.default_at_auto_file_encoding or 'utf-8'
         at.encoding = c.config.default_derived_file_encoding or 'utf-8'
