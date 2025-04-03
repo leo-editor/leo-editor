@@ -92,11 +92,11 @@ class AtFile:
         self.errors = 0
         self.language: str = None
         self.root: Position = None
-        # Dialogs
+        # Dialogs.
         self.canCancelFlag = False
         self.cancelFlag = False
         self.yesToAll = False
-        # Reading
+        # Reading.
         self.importRootSeen = False
         self.readVersion = ''
         self.read_i = 0
@@ -147,6 +147,7 @@ class AtFile:
     def initAllIvars(self, root: Position) -> None:
         """Init all ivars to reasonable defaults."""
         at, c = self, self.c
+        assert root, g.callers()
         # Basic status vars.
         self.errors = 0
         self.language = None
@@ -169,7 +170,7 @@ class AtFile:
         self.sentinels = False
         self.section_delim1 = '<<'
         self.section_delim2 = '>>'
-        self.targetFileName = ''
+        self.targetFileName = None
         self.unchangedFiles = 0
         # User settings.
         self.at_auto_encoding = 'utf-f'
@@ -188,23 +189,10 @@ class AtFile:
     #@+node:ekr.20041005105605.13: *4* at.initReadIvars
     def initReadIvars(self, root: Position, fileName: str) -> None:
 
-        at = self
-        c = at.c
+        at, c = self, self.c
 
-        at.initAllIvars(root)  ###
-
-        # Easy inits...
-        at.endSentinelComment = ""
-        at.errors = 0
-        at.importRootSeen = False
-        at.indent = 0  # The unit of indentation is spaces, not tabs.
-        at.language = None
-        at.readVersion = ''  # Set by at.parseLeoSentinel: "5" for new-style thin files.
-        at.read_i = 0  # Set by at.initReadLine.
-        at.read_lines = []  # Set by at.initReadLine.
-        at.root = root
-        at.startSentinelComment = ""
-        at.targetFileName = None  # For at.writeError only.
+        # Set all ivars to reasonable defaults.
+        at.initAllIvars(root)
 
         ### at.initCommonIvars()
             # Set the following non-empty defaults:
@@ -229,30 +217,15 @@ class AtFile:
         at, c = self, self.c
         if not c or not c.config:
             return None  # pragma: no cover
+
         make_dirs = c.config.getBool('create-nonexistent-directories', default=False)
-        assert root
-
-        at.initAllIvars(root)  ###
-
-        # Easy inits.
-        at.endSentinelComment = ""
-        at.errors = 0
-        at.importRootSeen = False
-        at.indent = 0  # The unit of indentation is spaces, not tabs.
-        at.readVersion = ''  # "5" for new-style thin files.
-        at.read_i = 0  # Set by at.initReadLine.
-        at.read_lines = []  # Set by at.initReadLine.
-        at.root = root
-        at.startSentinelComment = ""
-        at.targetFileName = None  # For at.writeError only.
-
         assert at.checkPythonCodeOnWrite is not None
 
-        # Copy args
-        at.root = root
-        at.sentinels = True
+        # Set all ivars to reasonable defaults.
+        at.initAllIvars(root)
 
         # Set other ivars.
+        at.sentinels = True
         at.force_newlines_in_at_nosent_bodies = c.config.getBool(
             'force-newlines-in-at-nosent-bodies')
             # For at.putBody only.
@@ -284,23 +257,29 @@ class AtFile:
             # Encoding directive overrides everything else.
             encoding = g.getPythonEncodingFromString(root.b)
             if encoding:
-                at.encoding = encoding  # pragma: no cover (python 2)
+                at.encoding = encoding
+
         # Clean root.v.
         if not at.errors and at.root:
             at.root.v._p_changed = True
+
         # #1907: Compute the file name and create directories as needed.
         targetFileName = g.os_path_realpath(c.fullPath(root))
         at.targetFileName = targetFileName  # For at.writeError only.
+
         # targetFileName can be empty for unit tests & @command nodes.
         if not targetFileName:  # pragma: no cover
             targetFileName = root.h if g.unitTesting else None
             at.targetFileName = targetFileName  # For at.writeError only.
             return targetFileName
+
         # #2276: scan for section delims
         at.scanRootForSectionDelims(root)
+
         # Do nothing more if the file already exists.
         if os.path.exists(targetFileName):
             return targetFileName
+
         # Create directories if enabled.
         root_dir = g.os_path_dirname(targetFileName)
         if make_dirs and root_dir:  # pragma: no cover
@@ -308,6 +287,7 @@ class AtFile:
             if not ok:
                 g.error(f"Error creating directories: {root_dir}")
                 return None
+
         # Return the target file name, regardless of future problems.
         return targetFileName
     #@+node:ekr.20041005105605.17: *3* at.Reading
