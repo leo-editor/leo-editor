@@ -115,6 +115,11 @@ class AtFile:
     #@+node:ekr.20041005105605.13: *4* at.initReadIvars
     def initReadIvars(self, root: Position, fileName: str) -> None:
 
+        # Set the following non-empty defaults:
+        #   at.at_auto_encoding = c.config.default_at_auto_file_encoding
+        #   at.encoding = c.config.default_derived_file_encoding
+        #   at.output_newline = g.getOutputNewline(c)
+        #   at.tab_width: int = c.tab_width or -4
         self.initCommonIvars()
         self.bom_encoding = None  # The encoding implied by any BOM (set by g.stripBOM)
         self.cloneSibCount = 0  # n > 1: Make sure n cloned sibs exists at next @+node sentinel
@@ -313,13 +318,22 @@ class AtFile:
         elif not fileName and not fromString and not file_s:  # pragma: no cover
             return False
         root.clearVisitedInTree()
-        # Sets the following ivars:
-        # at.encoding: **changed later** by readOpenFile/at.scanHeader.
-        # at.explicitLineEnding
-        # at.language
-        # at.output_newline
-        # at.page_width
-        # at.tab_width
+
+        # at.initCommonIvars sets the following non-empty defaults:
+        #   at.at_auto_encoding = c.config.default_at_auto_file_encoding
+        #   at.encoding = c.config.default_derived_file_encoding
+        #   at.output_newline = g.getOutputNewline(c)
+        #   at.tab_width: int = c.tab_width or -4
+
+        ###
+            # at.scanAllDirectives sets the following ivars:
+            # at.encoding: **changed later** by readOpenFile/at.scanHeader.
+            # at.explicitLineEnding
+            # at.language
+            # at.output_newline
+            # at.page_width
+            # at.tab_width
+
         ### at.scanAllDirectives(root)
         gnx2vnode = c.fileCommands.gnxDict
         contents = fromString or file_s
@@ -483,7 +497,14 @@ class AtFile:
         at.rememberReadPath(fileName, p)
         old_p = p.copy()
         try:
+            # at.initCommonIvars sets the following non-empty defaults:
+            #   at.at_auto_encoding = c.config.default_at_auto_file_encoding
+            #   at.encoding = c.config.default_derived_file_encoding
+            #   at.output_newline = g.getOutputNewline(c)
+            #   at.tab_width: int = c.tab_width or -4
+
             ### at.scanAllDirectives(p)
+
             p.v.b = ''  # Required for @auto API checks.
             p.v._deleteAllChildren()
             p = ic.createOutline(parent=p.copy())
@@ -515,9 +536,16 @@ class AtFile:
             return False
         at.rememberReadPath(fileName, root)
         # Must be called before at.scanAllDirectives.
+        # at.initReadIvars sets at.startSentinelComment/endSentinelComment.
         at.initReadIvars(root, fileName)
-        # Sets at.startSentinelComment/endSentinelComment.
+        # at.initCommonIvars sets the following non-empty defaults:
+        #   at.at_auto_encoding = c.config.default_at_auto_file_encoding
+        #   at.encoding = c.config.default_derived_file_encoding
+        #   at.output_newline = g.getOutputNewline(c)
+        #   at.tab_width: int = c.tab_width or -4
+
         ### at.scanAllDirectives(root)
+
         new_public_lines = at.read_at_clean_lines(fileName)
         old_private_lines = self.write_at_clean_sentinels(root)
         marker = x.markerFromFileLines(old_private_lines, fileName)
