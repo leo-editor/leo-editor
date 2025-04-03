@@ -149,50 +149,54 @@ class AtFile:
         at, c = self, self.c
         assert root, g.callers()
         # Basic status vars.
-        self.errors = 0
-        self.language = None
-        self.root = root
+        at.errors = 0
+        at.language = c.target_language or 'python'
+        at.root = root
         # Dialogs
-        self.canCancelFlag = False
-        self.cancelFlag = False
-        self.yesToAll = False
+        at.canCancelFlag = False
+        at.cancelFlag = False
+        at.yesToAll = False
         # Reading
-        self.importRootSeen = False
-        self.readVersion = ''
-        self.read_i = 0
-        self.read_lines = []
-        self.startSentinelComment = ""
-        self.endSentinelComment = ""
+        at.importRootSeen = False
+        at.readVersion = ''
+        at.read_i = 0
+        at.read_lines = []
+        at.startSentinelComment = ""
+        at.endSentinelComment = ""
         # Writing.
-        self.indent = 0  # write indentation, in blanks.
-        self.outputFile = None
-        self.outputList = []
-        self.sentinels = False
-        self.section_delim1 = '<<'
-        self.section_delim2 = '>>'
-        self.targetFileName = None
-        self.unchangedFiles = 0
+        at.indent = 0  # write indentation, in blanks.
+        at.outputFile = None
+        at.outputList = []
+        at.sentinels = False
+        at.section_delim1 = '<<'
+        at.section_delim2 = '>>'
+        at.targetFileName = None
+        at.unchangedFiles = 0
         # User settings.
-        self.at_auto_encoding = 'utf-f'
-        self.encoding = 'utf-8'
-        self.explicitLineEnding = None
-        self.force_newlines_in_at_nosent_bodies = False
-        self.output_newline = g.getOutputNewline(c=c)
-        self.page_width = None
-        self.tab_width = c.tab_width or -4
+        ### at.at_auto_encoding = 'utf-f'
+        at.at_auto_encoding = c.config.default_at_auto_file_encoding or 'utf-8'
+        ### at.encoding = 'utf-8'
+        at.encoding = c.config.default_derived_file_encoding or 'utf-8'
+        at.explicitLineEnding = None
+        at.force_newlines_in_at_nosent_bodies = False
+        at.output_newline = g.getOutputNewline(c=c)
+        ### at.page_width = None
+        at.page_width = c.page_width or 132
+        at.tab_width = c.tab_width or -4
+
         # User switches: set only in reloadSettings.
-        # self.beautifyOnWrite = False
-        # self.checkPythonCodeOnWrite = False
-        # self.runFlake8OnWrite = False
-        # self.runPyFlakesOnWrite = False
-        # self.runPylintOnWrite = False
+        # at.beautifyOnWrite = False
+        # at.checkPythonCodeOnWrite = False
+        # at.runFlake8OnWrite = False
+        # at.runPyFlakesOnWrite = False
+        # at.runPylintOnWrite = False
     #@+node:ekr.20041005105605.13: *4* at.initReadIvars
     def initReadIvars(self, root: Position, fileName: str) -> None:
 
-        at, c = self, self.c
+        ### at, c = self, self.c
 
         # Set all ivars to reasonable defaults.
-        at.initAllIvars(root)
+        self.initAllIvars(root)
 
         ### at.initCommonIvars()
             # Set the following non-empty defaults:
@@ -202,12 +206,12 @@ class AtFile:
             #   at.tab_width: int = c.tab_width or -4
 
         # Non-trivial defaults.
-        at.at_auto_encoding = c.config.default_at_auto_file_encoding or 'utf-8'
-        at.encoding = c.config.default_derived_file_encoding or 'utf-8'
-        at.language = c.target_language or 'python'
-        at.output_newline = g.getOutputNewline(c)
-        at.page_width = c.page_width or 132
-        at.tab_width = c.tab_width or -4
+        ### at.at_auto_encoding = c.config.default_at_auto_file_encoding or 'utf-8'
+        ### at.encoding = c.config.default_derived_file_encoding or 'utf-8'
+        ### at.language = c.target_language or 'python'
+        # # # at.output_newline = g.getOutputNewline(c)
+        # # # at.page_width = c.page_width or 132
+        # # # at.tab_width = c.tab_width or -4
     #@+node:ekr.20041005105605.15: *4* at.initWriteIvars (the only remaining call to at.scanAllDirectives)
     def initWriteIvars(self, root: Position) -> Optional[str]:
         """
