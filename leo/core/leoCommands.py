@@ -2684,7 +2684,8 @@ class Commands:
                 word = s[i:j]
                 languages.add(word)
         return len(list(languages)) > 1
-    #@+node:ekr.20080827175609.39: *4* c.scanAllDirectives (deprecate)
+    #@+node:ekr.20250404014922.1: *4* --- c: Legacy scanners (deprecated)
+    #@+node:ekr.20080827175609.39: *5* c.scanAllDirectives (deprecate)
     #@@nobeautify
 
     def scanAllDirectives(self, p: Position) -> dict[str, Value]:
@@ -2731,7 +2732,7 @@ class Commands:
             "wrap":         d.get('wrap'),
         }
         return d
-    #@+node:ekr.20080828103146.15: *4* c.scanAtPathDirectives (deprecate)
+    #@+node:ekr.20080828103146.15: *5* c.scanAtPathDirectives (deprecate)
     def scanAtPathDirectives(self, aList: list) -> str:
         """
         Scan aList (created by g.get_directives_dict_list) for @path directives.
@@ -2764,6 +2765,37 @@ class Commands:
         # Compute the full, effective, absolute path.
         path = g.finalize_join(*paths)
         return path
+    #@+node:ekr.20250404014903.1: *4* --- c: New scanners
+    #@+node:ekr.20250404014820.1: *5* c.scanNodeAtPathDirectives
+    # Use a regex to avoid allocating temp strings.
+    c_path_directive_regex = re.compile(r'^@path\s+([\w_/\\]+)', re.MULTILINE)
+
+    def scanNodeAtPathDirectives(self, p: Position) -> Optional[str]:
+        """
+        Scan p.h then p.b for @path directives.
+        """
+        c = self
+        c.scanAtPathDirectivesCount += 1  # An important statistic.
+
+        def get_path(m: re.Match) -> Optional[str]:
+            return g.stripPathCruft(m.group(1)) if m else None
+
+        # The headline has higher precedence because it is more visible.
+        paths: list[str] = []
+        for s in (p.h, p.b):
+            for m in c.c_path_directive_regex.finditer(s):
+                if path := get_path(m):
+                    paths.append(path)
+            if paths:
+                break
+        if len(paths) > 1:
+            message = (
+                f"Multiple @path directives in {p.h!r}\n"
+                f"Using the first path: @path {paths[0]}"
+            )
+            g.print_unique_message(message)
+        return paths[0] if paths else None
+    #@+node:ekr.20250404021710.1: *5* c.scanNearestAtPathDirectives (to do)
     #@+node:ekr.20171123201514.1: *3* c.Executing commands & scripts
     #@+node:ekr.20110605040658.17005: *4* c.check_event
     def check_event(self, event: LeoKeyEvent) -> None:
