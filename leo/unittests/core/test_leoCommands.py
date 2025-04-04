@@ -285,7 +285,7 @@ class TestCommands(LeoUnitTest):
         self.assertEqual(d.get('language'), 'python')
         self.assertEqual(d.get('tabwidth'), -4)
         self.assertEqual(d.get('pagewidth'), 132)
-    #@+node:ekr.20210906075242.18: *3* TestCommands.test_c_scanAtPathDirectives
+    #@+node:ekr.20210906075242.18: *3* TestCommands.test_c_scanAtPathDirectives (legacy)
     def test_c_scanAtPathDirectives(self):
         c, p = self.c, self.c.p
         child = p.insertAfter()
@@ -312,7 +312,7 @@ class TestCommands(LeoUnitTest):
         path = c.scanAtPathDirectives(aList)
         endpath = g.os_path_normpath('one/two')
         assert path.endswith(endpath), f"expected '{endpath}' got '{path}'"
-    #@+node:ekr.20210906075242.19: *3* TestCommands.test_c_scanAtPathDirectives_same_name_subdirs
+    #@+node:ekr.20210906075242.19: *3* TestCommands.test_c_scanAtPathDirectives_same_name_subdirs (legacy)
     def test_c_scanAtPathDirectives_same_name_subdirs(self):
         c = self.c
         # p2 = p.firstChild().firstChild().firstChild()
@@ -327,6 +327,55 @@ class TestCommands(LeoUnitTest):
         path = c.scanAtPathDirectives(aList)
         endpath = g.os_path_normpath('again/again')
         self.assertTrue(path and path.endswith(endpath))
+    #@+node:ekr.20250404075346.1: *3* TestCommands.test_c_scanNearestAtEncodingDirective
+    def test_c_scanNearestAtEncodingDirective(self):
+        c, p = self.c, self.c.p
+        self.root_p.b = ''  # To ensure default.
+        child = p.insertAfter()
+        child.h = 'child'
+        child.b = '@encoding utf-8\n'
+        grand = child.insertAsLastChild()
+        grand.h = 'grand-child'
+        grand.b = '#\n@encoding utf-16\n'
+        great = grand.insertAsLastChild()
+        great.h = 'great-grand-child'
+        great.b = ''
+        table = (
+            (great, 'utf-16'),
+            (grand, 'utf-16'),
+            (child, 'utf-8'),
+            (self.root_p, 'utf-8'),
+        )
+        for p2, expected in table:
+            encoding = c.scanNearestAtEncodingDirective(p2)
+            message = f"expected: {expected} got: {encoding} {p2.h}"
+            assert encoding == expected, message
+
+    #@+node:ekr.20250404075519.1: *3* TestCommands.test_c_scanNearestAtPathDirectives
+    def test_c_scanNearestAtPathDirectives(self):
+        c, p = self.c, self.c.p
+        child = p.insertAfter()
+        child.h = '@path one'
+        grand = child.insertAsLastChild()
+        grand.h = '@path two'
+        great = grand.insertAsLastChild()
+        great.h = 'xyz'
+        path = c.scanNearestAtPathDirectives(great)
+        endpath = g.os_path_normpath('one/two')
+        assert path.endswith(endpath), f"expected '{endpath}' got '{path}'"
+
+        # Test 2: Create a commander for an outline outside of g.app.loadDir and its parents.
+        from leo.core.leoCommands import Commands
+        c = Commands(fileName='~/LeoPyRef.leo', gui=g.app.gui)
+        child = p.insertAfter()
+        child.h = '@path one'
+        grand = child.insertAsLastChild()
+        grand.h = '@path two'
+        great = grand.insertAsLastChild()
+        great.h = 'xyz'
+        path = c.scanNearestAtPathDirectives(great)
+        endpath = g.os_path_normpath('one/two')
+        assert path.endswith(endpath), f"expected '{endpath}' got '{path}'"
     #@+node:ekr.20210901140645.17: *3* TestCommands.test_c_tabNannyNode
     def test_c_tabNannyNode(self):
         c, p = self.c, self.c.p
