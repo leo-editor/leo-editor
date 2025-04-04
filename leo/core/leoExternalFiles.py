@@ -376,10 +376,12 @@ class ExternalFilesController:
         path = self.compute_temp_file_path(c, p, ext)
         exists = g.os_path_exists(path)
         # Compute encoding and s.
-        d2 = c.scanAllDirectives(p)
-        encoding = d2.get('encoding', None)
-        if encoding is None:
-            encoding = c.config.default_derived_file_encoding
+        ### d2 = c.scanAllDirectives(p)
+        ### encoding = d2.get('encoding', None)
+        ### if encoding is None:
+        ###    encoding = c.config.default_derived_file_encoding
+        encoding = c.scanNearestAtEncodingDirective(p)
+        g.trace(encoding, p.h)
         s = g.toEncodedString(p.b, encoding, reportErrors=True)
         # Write the file *only* if it doesn't exist.
         # No need to read the file: recomputing s above suffices.
