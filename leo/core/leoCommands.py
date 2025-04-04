@@ -2795,7 +2795,27 @@ class Commands:
             )
             g.print_unique_message(message)
         return paths[0] if paths else None
-    #@+node:ekr.20250404021710.1: *5* c.scanNearestAtPathDirectives (to do)
+    #@+node:ekr.20250404021710.1: *5* c.scanNearestAtPathDirectives
+    def scanNearestAtPathDirectives(self, p: Position) -> str:
+        """
+        Scan for @path directives in p and all its direct ancestors.
+        
+        Return an absolute path or a reasonable default.
+        """
+        c = self
+        p2, paths = p.copy(), []
+        for p2 in p.self_and_parents():
+            if path := c.scanNodeAtPathDirectives(p2):
+                paths.append(path)
+
+        # Add absbase and reverse the list.
+        absbase = g.os_path_dirname(c.fileName()) if c.fileName() else os.getcwd()
+        paths.append(absbase)
+        paths.reverse()
+
+        # Compute the full, effective, absolute path.
+        path = g.finalize_join(*paths)
+        return path
     #@+node:ekr.20171123201514.1: *3* c.Executing commands & scripts
     #@+node:ekr.20110605040658.17005: *4* c.check_event
     def check_event(self, event: LeoKeyEvent) -> None:
