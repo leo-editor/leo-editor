@@ -109,8 +109,7 @@ def convertAllBlanks(self: Self, event: LeoKeyEvent = None) -> None:
     if g.app.batchMode:
         c.notValidInBatchMode(undoType)
         return
-    d = c.scanAllDirectives(c.p)
-    tabWidth = d.get("tabwidth")
+    tabWidth = c.scanNearestAtTabWidthDirective(c.p)
     count = 0
     u.beforeChangeGroup(current, undoType)
     for p in current.self_and_subtree():
@@ -151,8 +150,7 @@ def convertAllTabs(self: Self, event: LeoKeyEvent = None) -> None:
     if g.app.batchMode:
         c.notValidInBatchMode(undoType)
         return
-    theDict = c.scanAllDirectives(c.p)
-    tabWidth = theDict.get("tabwidth")
+    tabWidth = c.scanNearestAtTabWidthDirective(c.p)
     count = 0
     u.beforeChangeGroup(current, undoType)
     for p in current.self_and_subtree():
@@ -189,19 +187,13 @@ def convertBlanks(self: Self, event: LeoKeyEvent = None) -> bool:
     Return True if the the p.b was changed.
     """
     c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
-    #
     # "Before" snapshot.
     bunch = u.beforeChangeBody(p)
     oldYview = w.getYScrollPosition()
     w.selectAllText()
     head, lines, tail, oldSel, oldYview = c.getBodyLines()
-    #
     # Use the relative @tabwidth, not the global one.
-    d = c.scanAllDirectives(p)
-    tabWidth = d.get("tabwidth")
-    if not tabWidth:
-        return False
-    #
+    tabWidth = c.scanNearestAtTabWidthDirective(c.p)
     # Calculate the result.
     changed, result = False, []
     for line in lines:
@@ -211,16 +203,13 @@ def convertBlanks(self: Self, event: LeoKeyEvent = None) -> bool:
         result.append(s)
     if not changed:
         return False
-    #
     # Set p.b and w's text first.
     middle = ''.join(result)
     p.b = head + middle + tail  # Sets dirty and changed bits.
     w.setAllText(head + middle + tail)
-    #
     # Select all text and set scroll position.
     w.selectAllText()
     w.setYScrollPosition(oldYview)
-    #
     # "after" snapshot.
     u.afterChangeBody(p, 'Indent Region', bunch)
     return True
@@ -232,16 +221,11 @@ def convertTabs(self: Self, event: LeoKeyEvent = None) -> bool:
     #
     # "Before" snapshot.
     bunch = u.beforeChangeBody(p)
-    #
     # Data...
     w.selectAllText()
     head, lines, tail, oldSel, oldYview = self.getBodyLines()
     # Use the relative @tabwidth, not the global one.
-    theDict = c.scanAllDirectives(p)
-    tabWidth = theDict.get("tabwidth")
-    if not tabWidth:
-        return False
-    #
+    tabWidth = c.scanNearestAtTabWidthDirective(c.p)
     # Calculate the result.
     changed, result = False, []
     for line in lines:
@@ -919,7 +903,7 @@ def rp_get_args(c: Cmdr) -> tuple[int, int, str, int, int]:
     if c.editCommands.fillColumn > 0:
         pageWidth = c.editCommands.fillColumn
     else:
-        pageWidth = d.get("pagewidth")
+        pageWidth = c.scanNearestAtPageWidthDirective(c.p)
     tabWidth = d.get("tabwidth")
     original = w.getAllText()
     oldSel = w.getSelectionRange()

@@ -858,8 +858,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         if self.fillColumn > 0:
             fillColumn = self.fillColumn
         else:
-            d = c.scanAllDirectives(c.p)
-            fillColumn = d.get("pagewidth")
+            fillColumn = c.scanNearestAtPageWidthDirective(c.p)
         s = w.getAllText()
         i, j = g.getLine(s, w.getInsertPoint())
         line = s[i:j].strip()
@@ -908,8 +907,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         if self.fillColumn > 0:
             fillColumn = self.fillColumn
         else:
-            d = c.scanAllDirectives(c.p)
-            fillColumn = d.get("pagewidth")
+            fillColumn = c.scanNearestAtPageWidthDirective(c.p)
         self.beginCommand(w, undoType='center-region')
         inserted = 0
         while ind < end:
@@ -1588,8 +1586,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         if not s:
             return
         # Insert or delete spaces instead of tabs when negative tab width is in effect.
-        d = c.scanAllDirectives(c.p)
-        width = d.get('tabwidth')
+        width = c.scanNearestAtTabWidthDirective(c.p)
         if ch == '\t' and width < 0:
             ch = ' ' * abs(width)
         self.beginCommand(w, undoType=undoType)

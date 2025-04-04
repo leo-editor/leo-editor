@@ -2766,56 +2766,6 @@ class Commands:
         path = g.finalize_join(*paths)
         return path
     #@+node:ekr.20250404014903.1: *4* --- c: New scanners
-    #@+node:ekr.20250404014820.1: *5* c.scanNodeAtPathDirectives
-    # Use a regex to avoid allocating temp strings.
-    at_path_pattern = re.compile(r'^@path\s+([\w_:/\\]+)', re.MULTILINE)
-
-    def scanNodeAtPathDirectives(self, p: Position) -> Optional[str]:
-        """
-        Scan p.h then p.b for @path directives.
-        """
-        c = self
-        c.scanAtPathDirectivesCount += 1  # An important statistic.
-
-        def get_path(m: re.Match) -> Optional[str]:
-            return g.stripPathCruft(m.group(1)) if m else None
-
-        # The headline has higher precedence because it is more visible.
-        paths: list[str] = []
-        for s in (p.h, p.b):
-            for m in c.at_path_pattern.finditer(s):
-                if path := get_path(m):
-                    paths.append(path)
-            if paths:
-                break
-        if len(paths) > 1:
-            message = (
-                f"Multiple @path directives in {p.h!r}\n"
-                f"Using the first path: @path {paths[0]}"
-            )
-            g.print_unique_message(message)
-        return paths[0] if paths else None
-    #@+node:ekr.20250404021710.1: *5* c.scanNearestAtPathDirectives
-    def scanNearestAtPathDirectives(self, p: Position) -> str:
-        """
-        Scan for @path directives in p and all its direct ancestors.
-        
-        Return an absolute path or a reasonable default.
-        """
-        c = self
-        p2, paths = p.copy(), []
-        for p2 in p.self_and_parents():
-            if path := c.scanNodeAtPathDirectives(p2):
-                paths.append(path)
-
-        # Add absbase and reverse the list.
-        absbase = g.os_path_dirname(c.fileName()) if c.fileName() else os.getcwd()
-        paths.append(absbase)
-        paths.reverse()
-
-        # Compute the full, effective, absolute path.
-        path = g.finalize_join(*paths)
-        return path
     #@+node:ekr.20250404072805.1: *5* c.scanNearestAtEncodingDirective
     # Use a regex to avoid allocating temp strings.
     at_encoding_pattern = re.compile(r'^@encoding\s+([\w_-]+)', re.MULTILINE)
@@ -2853,6 +2803,27 @@ class Commands:
                 except ValueError:
                     g.error("ignoring m.group(0)")
         return c.page_width
+    #@+node:ekr.20250404021710.1: *5* c.scanNearestAtPathDirectives
+    def scanNearestAtPathDirectives(self, p: Position) -> str:
+        """
+        Scan for @path directives in p and all its direct ancestors.
+        
+        Return an absolute path or a reasonable default.
+        """
+        c = self
+        p2, paths = p.copy(), []
+        for p2 in p.self_and_parents():
+            if path := c.scanNodeAtPathDirectives(p2):
+                paths.append(path)
+
+        # Add absbase and reverse the list.
+        absbase = g.os_path_dirname(c.fileName()) if c.fileName() else os.getcwd()
+        paths.append(absbase)
+        paths.reverse()
+
+        # Compute the full, effective, absolute path.
+        path = g.finalize_join(*paths)
+        return path
     #@+node:ekr.20250404153250.1: *5* c.scanNearestAtTabWidthDirective
     # Use a regex to avoid allocating temp strings.
     at_tabwidth_pattern = re.compile(r'^@tabwidth\s+(-?[0-9]+)', re.MULTILINE)
@@ -2873,6 +2844,35 @@ class Commands:
                     except ValueError:
                         g.error("ignoring m.group(0)")
         return c.tab_width
+    #@+node:ekr.20250404014820.1: *5* c.scanNodeAtPathDirectives
+    # Use a regex to avoid allocating temp strings.
+    at_path_pattern = re.compile(r'^@path\s+([\w_:/\\]+)', re.MULTILINE)
+
+    def scanNodeAtPathDirectives(self, p: Position) -> Optional[str]:
+        """
+        Scan p.h then p.b for @path directives.
+        """
+        c = self
+        c.scanAtPathDirectivesCount += 1  # An important statistic.
+
+        def get_path(m: re.Match) -> Optional[str]:
+            return g.stripPathCruft(m.group(1)) if m else None
+
+        # The headline has higher precedence because it is more visible.
+        paths: list[str] = []
+        for s in (p.h, p.b):
+            for m in c.at_path_pattern.finditer(s):
+                if path := get_path(m):
+                    paths.append(path)
+            if paths:
+                break
+        if len(paths) > 1:
+            message = (
+                f"Multiple @path directives in {p.h!r}\n"
+                f"Using the first path: @path {paths[0]}"
+            )
+            g.print_unique_message(message)
+        return paths[0] if paths else None
     #@+node:ekr.20171123201514.1: *3* c.Executing commands & scripts
     #@+node:ekr.20110605040658.17005: *4* c.check_event
     def check_event(self, event: LeoKeyEvent) -> None:
