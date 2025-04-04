@@ -3125,7 +3125,6 @@ class AtFile:
         # #4323: The hard cases. Set the language and delims using only p.h and p.b.
         delims = None
         if p.isAnyAtFileNode():  #4323: Look no further.
-            ### To do: Warn if at.languageFromAtFileNodeBody(p) does't match.
             language = at.languageFromAtFileNodeHeadline(p)
             # We *must* calculate delims when writing.
             delims = at.delimsFromAtFileNodeBody(p)
