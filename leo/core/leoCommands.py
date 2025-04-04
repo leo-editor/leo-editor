@@ -2834,6 +2834,45 @@ class Commands:
                     return encoding
                 g.error("invalid @encoding:", encoding)
         return c.config.default_derived_file_encoding or 'utf-8'
+    #@+node:ekr.20250404153234.1: *5* c.scanNearestAtPageWidthDirective
+    # Use a regex to avoid allocating temp strings.
+    at_pagewidth_pattern = re.compile(r'^@pagewidth\s+(-?[0-9]+)', re.MULTILINE)
+
+    def scanNearestAtPageWidthDirective(self, p: Position) -> int:
+        """
+        Scan p.b and all ancestors for the first @pagewith direcive.
+        
+        Return c.page_width by default.
+        """
+        c = self
+        for p2 in p.self_and_parents():
+            for m in c.at_pagewidth_pattern.finditer(p2.b):
+                width = m.group(1)
+                try:
+                    return int(width)
+                except ValueError:
+                    g.error("ignoring m.group(0)")
+        return c.page_width
+    #@+node:ekr.20250404153250.1: *5* c.scanNearestAtTabWidthDirective
+    # Use a regex to avoid allocating temp strings.
+    at_tabwidth_pattern = re.compile(r'^@tabwidth\s+(-?[0-9]+)', re.MULTILINE)
+
+    def scanNearestAtTabWidthDirective(self, p: Position) -> int:
+        """
+        Scan p.b and all ancestors for the first @encoding direcive.
+        
+        Return c.tab_width by default.
+        """
+        c = self
+        for p2 in p.self_and_parents():
+            for m in c.at_encoding_pattern.finditer(p2.b):
+                for m in c.at_tabwidth_pattern.finditer(p2.b):
+                    width = m.group(1)
+                    try:
+                        return int(width)
+                    except ValueError:
+                        g.error("ignoring m.group(0)")
+        return c.tab_width
     #@+node:ekr.20171123201514.1: *3* c.Executing commands & scripts
     #@+node:ekr.20110605040658.17005: *4* c.check_event
     def check_event(self, event: LeoKeyEvent) -> None:

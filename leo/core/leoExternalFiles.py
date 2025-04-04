@@ -377,7 +377,6 @@ class ExternalFilesController:
         exists = g.os_path_exists(path)
         # Compute encoding and s.
         encoding = c.scanNearestAtEncodingDirective(p)
-        g.trace(encoding, p.h)
         s = g.toEncodedString(p.b, encoding, reportErrors=True)
         # Write the file *only* if it doesn't exist.
         # No need to read the file: recomputing s above suffices.

@@ -257,11 +257,9 @@ class RstCommands:
         """Convert p's tree to rst sources."""
         c = self.c
         self.root = p.copy()
-        #
         # Init encoding and path.
-        d = c.scanAllDirectives(p)
-        self.encoding = d.get('encoding') or 'utf-8'
-        self.path = d.get('path') or ''
+        self.encoding = c.scanNearestAtEncodingDirective(p)
+        self.path = c.scanNearestAtPathDirectives(p)
         # Write the output to self.result_list.
         self.result_list = []  # All output goes here.
         if self.generate_rst_header_comment:
@@ -286,9 +284,8 @@ class RstCommands:
         title = title.strip().capitalize()
         n_tot = p.numberOfChildren()
         n = 1
-        d = c.scanAllDirectives(p)
-        self.encoding = d.get('encoding') or 'utf-8'
-        self.path = d.get('path') or ''
+        self.encoding = c.scanNearestAtEncodingDirective(p)
+        self.path = c.scanNearestAtPathDirectives(p) or ''
         for child in p.children():
             # Compute the slide's file name.
             fn2, ext = g.os_path_splitext(fn)

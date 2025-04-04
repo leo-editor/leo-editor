@@ -100,8 +100,9 @@ def open_mimetype(tag, keywords, val=None):
 
     # honor @path
     fname = p.h[6:]
-    d = c.scanAllDirectives(p)
-    path = d.get('path')
+    ### d = c.scanAllDirectives(p)
+    ### path = d.get('path')
+    path =  c.scanNearestAtPathDirectives(p) or ''
     fpath = g.finalize_join(path, fname)
 
     # stop here if the file doesn't exist
