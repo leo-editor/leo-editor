@@ -5986,7 +5986,6 @@ def createScratchCommander(fileName: str = None) -> None:
 #@+node:ekr.20250403051420.1: *3* g.deprecated
 def deprecated() -> None:
     """Issue a single deprecation message for the caller of this method."""
-    # It's not necessary to report g.callers().
     message = f"Warning: {g._context(2)}.{g.caller()} is deprecated"
     if g.unitTesting:
         message = '\n' + message
