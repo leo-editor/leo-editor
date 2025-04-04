@@ -5761,17 +5761,25 @@ def trace(*args: Args, **kwargs: KWargs) -> None:
 #@+node:ekr.20241104143456.1: *3* g.print_unique_message & es_print_unique_message
 g_unique_message_d: dict[str, bool] = {}
 
-def print_unique_message(message: str) -> None:
-    """Print the given message once."""
+def print_unique_message(message: str) -> bool:
+    """
+    Print the given message once. Return True if the message was printed.
+    """
     if message not in g_unique_message_d:
         g_unique_message_d[message] = True
         print(message)
+        return True
+    return False
 
-def es_print_unique_message(message: str, *, color: str = 'error') -> None:
-    """Print the given message once."""
+def es_print_unique_message(message: str, *, color: str = 'error') -> bool:
+    """
+    Print the given message once. Return True if the message was printed.
+    """
     if message not in g_unique_message_d:
         g_unique_message_d[message] = True
         g.es_print(message, color=color)
+        return True
+    return False
 #@+node:ekr.20240325064618.1: *3* g.traceUnique & traceUniqueClass
 # Keys are strings: g.callers. Values are lists of str(value).
 trace_unique_dict: dict[str, list[str]] = {}
@@ -5979,10 +5987,13 @@ def createScratchCommander(fileName: str = None) -> None:
 def deprecated() -> None:
     """Issue a single deprecation message for the caller of this method."""
     # It's not necessary to report g.callers().
-    message = f"Warning: {g._context(2)}.{g.caller()} is deprecated\n"
+    message = f"Warning: {g._context(2)}.{g.caller()} is deprecated"
     if g.unitTesting:
         message = '\n' + message
-    print_unique_message(message)
+    if print_unique_message(message):
+        if g.unitTesting:
+            print(g.callers(6))
+            print('')
 #@+node:ekr.20031218072017.3126: *3* g.funcToMethod (Python Cookbook)
 def funcToMethod(f: Callable, theClass: object, name: str = None) -> None:
     """
