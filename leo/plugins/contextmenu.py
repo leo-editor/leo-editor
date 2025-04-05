@@ -341,8 +341,6 @@ def openwith_rclick(c: Cmdr, p: Position, menu: Wrapper) -> None:
     fname = p.anyAtFileNodeName()
     if not fname and head != "@path":
         return
-
-    ### path = g.scanAllAtPathDirectives(c, p)
     path = c.getPath(p)
     absp = g.finalize_join(path, fname)
     exists = os.path.exists(absp)

@@ -1618,7 +1618,6 @@ class Commands:
     #@+node:ekr.20250405141653.1: *5* c.getLanguage
     def getLanguage(self, p: Position) -> str:
         """A thin wrapper for g.getLanguageFromAncestorAtFileNode"""
-        c = self
         return g.getLanguageFromAncestorAtFileNode(p)
     #@+node:ekr.20250405053842.1: *5* c.getLineEnding(new)
     # Use a regex to avoid allocating temp strings.
@@ -1738,7 +1737,6 @@ class Commands:
         c = self
         for p2 in p.self_and_parents():
             s = p2.b
-            wrap = nowrap = False, False
             if c.at_wrap_pattern.search(s) is not None:
                 return True
             if c.at_nowrap_pattern.search(s) is not None:

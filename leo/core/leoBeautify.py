@@ -330,7 +330,6 @@ class CPrettyPrinter:
     #@+node:ekr.20110917174948.6911: *3* cpp.indent & helpers
     def indent(self, p: Position, toList: bool = False, giveWarnings: bool = True) -> Union[str, list[str]]:
         """Beautify a node with @language C in effect."""
-        c = self.c
         if not should_beautify(p):
             return [] if toList else ''  # #2271
         if not p.b:
