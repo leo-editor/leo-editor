@@ -1556,18 +1556,6 @@ class Commands:
             else:
                 break
         return p
-    #@+node:ekr.20250405080955.1: *5* c.findDirective (new)
-    at_directive_pattern = re.compile(r'@([\w]+)', re.MULTILINE)
-
-    def findDirective(self, p: Position, directive_name: str) -> bool:
-        """Return True if the given directive occurs in p or its direct ancestors"""
-        c = self
-        # The headline has higher precedence because it is more visible.
-        for kind, s in (('head', p.h), ('body', p.b)):
-            for m in c.at_directive_pattern.finditer(s):
-                if directive_name == m.group(1):
-                    return True
-        return False
     #@+node:ekr.20171123135625.29: *5* c.getBodyLines
     def getBodyLines(self) -> tuple[str, list[str], str, Optional[tuple], Optional[tuple]]:
         """
