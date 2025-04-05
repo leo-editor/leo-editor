@@ -279,48 +279,6 @@ class TestCommands(LeoUnitTest):
         p2 = c.pasteOutline()
         assert p2
         assert not p2.isCloned()
-    #@+node:ekr.20210906075242.18: *3* TestCommands.test_c_scanAtPathDirectives (legacy)
-    def test_c_scanAtPathDirectives(self):
-        c, p = self.c, self.c.p
-        child = p.insertAfter()
-        child.h = '@path one'
-        grand = child.insertAsLastChild()
-        grand.h = '@path two'
-        great = grand.insertAsLastChild()
-        great.h = 'xyz'
-        aList = g.get_directives_dict_list(great)
-        path = c.scanAtPathDirectives(aList)
-        endpath = g.os_path_normpath('one/two')
-        assert path.endswith(endpath), f"expected '{endpath}' got '{path}'"
-
-        # Test 2: Create a commander for an outline outside of g.app.loadDir and its parents.
-        from leo.core.leoCommands import Commands
-        c = Commands(fileName='~/LeoPyRef.leo', gui=g.app.gui)
-        child = p.insertAfter()
-        child.h = '@path one'
-        grand = child.insertAsLastChild()
-        grand.h = '@path two'
-        great = grand.insertAsLastChild()
-        great.h = 'xyz'
-        aList = g.get_directives_dict_list(great)
-        path = c.scanAtPathDirectives(aList)
-        endpath = g.os_path_normpath('one/two')
-        assert path.endswith(endpath), f"expected '{endpath}' got '{path}'"
-    #@+node:ekr.20210906075242.19: *3* TestCommands.test_c_scanAtPathDirectives_same_name_subdirs (legacy)
-    def test_c_scanAtPathDirectives_same_name_subdirs(self):
-        c = self.c
-        # p2 = p.firstChild().firstChild().firstChild()
-        p = c.p
-        child = p.insertAfter()
-        child.h = '@path again'
-        grand = child.insertAsLastChild()
-        grand.h = '@path again'
-        great = grand.insertAsLastChild()
-        great.h = 'xyz'
-        aList = g.get_directives_dict_list(great)
-        path = c.scanAtPathDirectives(aList)
-        endpath = g.os_path_normpath('again/again')
-        self.assertTrue(path and path.endswith(endpath))
     #@+node:ekr.20250404075519.1: *3* TestCommands.test_c_getPath
     def test_c_getPath(self):
         c, p = self.c, self.c.p

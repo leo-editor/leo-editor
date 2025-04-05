@@ -167,8 +167,9 @@ class CKEEditor(QtWidgets.QWidget):  # type:ignore
             data = data.replace('[CONFIG]', '')
 
         # try and make the path for URL evaluation relative to the node's path
-        aList = g.get_directives_dict_list(p)
-        path = c.scanAtPathDirectives(aList)
+        ### aList = g.get_directives_dict_list(p)
+        ### path = c.scanAtPathDirectives(aList)
+        path = c.getPath(p)
         if p.h.startswith('@'):  # see if it's a @<file> node of some sort
             nodepath = p.h.split(None, 1)[-1]
             nodepath = g.os_path_join(path, nodepath)

@@ -2830,10 +2830,12 @@ def scanAtPagewidthDirectives(aList: list, issue_error_flag: bool = False) -> Op
     return None
 #@+node:ekr.20101022172109.6108: *4* g.scanAtPathDirectives & scanAllAtPathDirectives (deprecate)
 def scanAtPathDirectives(c: Cmdr, aList: list) -> str:
+    g.deprecate()
     path = c.scanAtPathDirectives(aList)
     return path
 
 def scanAllAtPathDirectives(c: Cmdr, p: Position) -> str:
+    g.deprecate()
     aList = g.get_directives_dict_list(p)
     path = c.scanAtPathDirectives(aList)
     return path

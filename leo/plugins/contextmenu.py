@@ -313,8 +313,9 @@ def openwith_rclick(c: Cmdr, p: Position, menu: Wrapper) -> None:
                 return pth
             return pth[len(prefix) :]
 
-        aList = g.get_directives_dict_list(p)
-        path = c.scanAtPathDirectives(aList) + "/"
+        ### aList = g.get_directives_dict_list(p)
+        ### path = c.scanAtPathDirectives(aList) + "/"
+        path = c.getPath(p)  + '/'
         filetypes = [
             ("All files", "*"),
             ("Python files", "*.py"),

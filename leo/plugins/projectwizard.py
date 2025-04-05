@@ -104,8 +104,9 @@ def rclick_path_importfile(c, p, menu):
         return
 
     def importfiles_rclick_cb():
-        aList = g.get_directives_dict_list(p)
-        path = c.scanAtPathDirectives(aList)
+        ### aList = g.get_directives_dict_list(p)
+        ### path = c.scanAtPathDirectives(aList)
+        path = c.getPath(p)
         filetypes = [
             ("All files", "*"),
             ("Python files", "*.py"),
