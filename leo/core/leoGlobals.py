@@ -2573,7 +2573,7 @@ def findReference(name: str, root: Position) -> Optional[Position]:
             return p.copy()
     return None
 #@+node:ekr.20250403041557.1: *3* --- deprecated helpers
-#@+node:ekr.20090214075058.9: *4* g.get_directives_dict (must be fast) (deprecate)
+#@+node:ekr.20090214075058.9: *4* g.get_directives_dict (deprecated)
 def get_directives_dict(p: Position) -> dict[str, str]:
     """
     Scan p for Leo directives found in globalDirectiveList.
@@ -2610,6 +2610,7 @@ def get_directives_dict_list(p: Position) -> list[dict]:
 
     Returns a list of dicts containing pointers to
     the start of each directive"""
+    g.deprecated()
     result = []
     p1 = p.copy()
     for p in p1.self_and_parents(copy=False):

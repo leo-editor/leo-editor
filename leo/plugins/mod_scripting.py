@@ -188,8 +188,7 @@ def build_rclick_tree(command_p: Position, rclicks: RClicks = None, top_level: b
 
     def has_at_others(p: Position) -> bool:
         """Return True if p.b has a valid @others directive."""
-        # #2439: A much simplified version of g.get_directives_dict.
-        if 'others' in g.globalDirectiveList:
+        if 'others' in g.globalDirectiveList:  # #2439
             return bool(re.search(at_others_pat, p.b))
         return False
 
