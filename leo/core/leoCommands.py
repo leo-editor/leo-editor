@@ -644,6 +644,7 @@ class Commands:
         Set the cwd before calling the command.
         """
         c, p, tag = self, self.p, 'execute-general-script'
+
         def get_setting_for_language(setting: str) -> Optional[str]:
             """
             Return the setting from the given @data setting.
@@ -656,11 +657,7 @@ class Commands:
             return None
 
         # Get the language and extension.
-        d = c.scanAllDirectives(p)
-        language: str = d.get('language')
-        if not language:
-            print(f"{tag}: No language in effect at {p.h}")
-            return
+        language: str = c.scanForAtLanguage(p)
         ext = g.app.language_extension_dict.get(language)
         if not ext:
             print(f"{tag}: No extension for {language}")
@@ -2844,6 +2841,16 @@ class Commands:
                     except ValueError:
                         g.error("ignoring m.group(0)")
         return c.tab_width
+    #@+node:ekr.20250404165841.1: *5* c.scanForAtLanguage
+    def scanForAtLanguage(self, p: Position) -> str:
+        """A thin wrapper around g.scanForAtLanguage."""
+        c = self
+        ### language = g.scanForAtLanguage(c, c.p)
+        language = g.getLanguageFromAncestorAtFileNode(c.p)
+        if language:
+            assert g.isValidLanguage(language)
+            return language
+        return c.target_language or 'python'
     #@+node:ekr.20250404014820.1: *5* c.scanNodeAtPathDirectives
     # Use a regex to avoid allocating temp strings.
     at_path_pattern = re.compile(r'^@path\s+([\w_:/\\]+)', re.MULTILINE)

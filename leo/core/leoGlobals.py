@@ -2889,7 +2889,7 @@ def scanForAtIgnore(c: Cmdr, p: Position) -> bool:
         if 'ignore' in d:
             return True
     return False
-#@+node:ekr.20040712084911.1: *3* g.scanForAtLanguage (buggy?)
+#@+node:ekr.20040712084911.1: *3* g.scanForAtLanguage
 def scanForAtLanguage(c: Cmdr, p: Position) -> str:
     """Scan position p and p's ancestors looking only for @language and @ignore directives.
 
@@ -5990,9 +5990,8 @@ def deprecated() -> None:
     if g.unitTesting:
         message = '\n' + message
     if print_unique_message(message):
-        if g.unitTesting:
-            print(g.callers(6))
-            print('')
+        print(g.callers(6))
+        print('')
 #@+node:ekr.20031218072017.3126: *3* g.funcToMethod (Python Cookbook)
 def funcToMethod(f: Callable, theClass: object, name: str = None) -> None:
     """
