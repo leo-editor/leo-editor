@@ -1125,7 +1125,7 @@ class LeoImportCommands:
         if p.hasChildren():
             g.es_print('can not run parse-body: node has children:', p.h)
             return
-        language = g.scanForAtLanguage(c, p)
+        language = c.getLanguage(p)
         self.treeType = '@file'
         ext = '.' + d.get(language)
         parser = g.app.classDispatchDict.get(ext)
