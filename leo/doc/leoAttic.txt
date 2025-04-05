@@ -2490,6 +2490,27 @@ def switchToChapter(self, w: TextAPI) -> None:
             cc.selectChapterByName(name)
             c.bodyWantsFocus()
 #@+node:ekr.20250405071041.1: *3* deleted via PR #4323
+#@+node:ekr.20250401111942.1: *4* at.languageFromAtFileNodeBody (not used)
+def languageFromAtFileNodeBody(self, p: Position) -> Optional[str]:
+    """
+    p is an @<file> node.
+    
+    Return the language from p.b, looking for *unambiguous @language directives.
+    
+    Note: p.b will be empty when *reading* any @<file> node.
+    """
+    s = p.b.strip()
+    if not s:
+        return None
+    languages: list[str] = []
+    tag = '@language'
+    for line in g.splitLines(s):
+        if line.startswith(tag):
+            language = line[len(tag) :].strip()
+            languages.append(language)
+    if len(languages) == 1:
+        return languages[0]
+    return None
 #@+node:ekr.20080923070954.4: *4* at.scanAllDirectives (no longer used)
 def scanAllDirectives(self, p: Position) -> dict[str, Value]:
     """
@@ -2557,6 +2578,26 @@ else:  # pragma: no cover
         g.es_print('using Python comment delimiters')
     at.startSentinelComment = "#"  # This should never happen!
     at.endSentinelComment = ""
+#@+node:ekr.20250405064746.1: *4* c.scanForAtLanguage (never used)
+### Use a regex to avoid allocating temp strings.
+### at_language_pattern = re.compile(r'^@language\s+([\w]+)', re.MULTILINE)
+
+def scanForAtLanguage(self, p: Position) -> str:
+    """Return the language in effect for p."""
+    c = self
+    language = g.getLanguageFromAncestorAtFileNode(c.p)
+    if language:
+        assert g.isValidLanguage(language)
+        return language
+    return c.target_language or 'python'
+    ###
+        # for p2 in p.self_and_parents():
+            # for m in c.at_language_pattern.finditer(p2.b):
+                # language = m.group(1)
+                # if g.isValidLanguage(language):
+                    # return language
+                # g.trace('OOP', language)
+        # return c.target_language or 'python'
 #@+node:ekr.20210905052021.28: *4* TestAtFile.test_at_scanAllDirectives
 def test_at_scanAllDirectives(self):
     self.skipTest("at.scanAllDirectives is deprecated")

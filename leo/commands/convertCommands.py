@@ -32,8 +32,6 @@ class To_Python:  # pragma: no cover
         """Ctor for To_Python class."""
         self.c = c
         self.p = self.c.p.copy()
-        ### aList = g.get_directives_dict_list(self.p)
-        ### self.tab_width = g.scanAtTabwidthDirectives(aList) or 4
         self.tab_width = c.getTabWidth(self.p)
 
     #@+others

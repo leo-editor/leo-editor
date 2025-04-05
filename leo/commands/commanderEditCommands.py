@@ -608,7 +608,8 @@ def findMatchingBracket(self: Self, event: LeoKeyEvent = None) -> None:
     if g.app.batchMode:
         c.notValidInBatchMode("Match Brackets")
         return
-    language = g.getLanguageAtPosition(c, p)
+    language = c.getLanguage(p)
+
     if language == 'perl':
         g.es('match-brackets not supported for', language)
     else:
@@ -1230,7 +1231,7 @@ def make_toc(c: Cmdr, kind: str, root: Position) -> str:
     """Return the toc for root.b as a list of lines."""
 
     def cell_type(p: Position) -> str:
-        language = g.getLanguageAtPosition(c, p)
+        language = c.getLanguage(p)
         return 'markdown' if language in ('jupyter', 'markdown') else 'python'
 
     def clean_headline(s: str) -> str:

@@ -374,7 +374,7 @@ class GoToCommands:
         c = self.c
         old_target_language = c.target_language
         try:
-            c.target_language = g.getLanguageAtPosition(c, root)
+            c.target_language = c.getLanguage(root)
             delims = c.getDelims(root)
         finally:
             c.target_language = old_target_language
@@ -388,7 +388,7 @@ class GoToCommands:
         c = self.c
         old_target_language = c.target_language
         try:
-            c.target_language = g.getLanguageAtPosition(c, root)
+            c.target_language = c.getLanguage(root)
             delims = c.getDelims(root)
         finally:
             c.target_language = old_target_language

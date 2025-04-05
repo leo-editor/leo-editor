@@ -2169,7 +2169,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             # reverse = True # Search backward
         s = w.getAllText()
         # A partial fix for bug 127: Bracket matching is buggy.
-        language = g.getLanguageAtPosition(c, p)
+        language = c.getLanguage(p)
         if language == 'perl':
             return
         j = g.MatchBrackets(c, p, language).find_matching_bracket(ch, s, i)
