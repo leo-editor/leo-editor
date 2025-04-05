@@ -211,46 +211,16 @@ class AtFile:
         at.outputList = []  # For stream output.
         if 0:
             at.scanAllDirectives(root)
-            # Sets the following ivars:
-            # at.encoding
-            # at.explicitLineEnding
-            # at.language
-            # at.output_newline
-            # at.page_width
-            # at.tab_width
-            #### at.startSentinelComment, at.endSentinelComment
         else:
             at.encoding = c.getEncoding(root)
             lineending = c.getLineEnding(root)
             at.explicitLineEnding = bool(lineending)
-            ### at.language = c.scanForAtLanguage(root)
             at.output_newline = lineending or g.getOutputNewline(c=c)
             at.page_width = c.getPageWidth(root)
             at.tab_width = c.getTabWidth(root)
+            # More complex inits.
+            at.language = at.initLanguage(root)
             at.initSentinelComments(root)
-
-            # #4323: The hard cases. Set the language and delims using only p.h and p.b.
-            ### delims = None
-            if root.isAnyAtFileNode():  #4323: Look no further.
-                at.language = at.languageFromAtFileNodeHeadline(root)
-                # We *must* calculate delims when writing.
-                ### delims = at.delimsFromAtFileNodeBody(root)
-                if 0:  ###
-                    print('')
-                    g.trace(at.language)
-            elif root.h.startswith(('@button', '@command')):
-                at.language = 'python'
-            else:
-                # Language doesn't matter here.
-                # It would be unnecessary/wrong to examine ancestor nodes.
-                at.language = c.target_language or 'python'
-            ### at.language = language
-            ###
-                # # Make sure to define delims.
-                # if delims in (None, (None, None, None)):  # #4256
-                    # delims = g.set_delims_from_language(language)
-
-
 
         if g.unitTesting:
             at.output_newline = '\n'
@@ -295,7 +265,7 @@ class AtFile:
         return targetFileName
     #@+node:ekr.20250405052328.1: *4* at.initSentinelComments (new)
     def initSentinelComments(self, root: Position) -> None:
-        """Initialize at.startSentinelComment and at.endSentinelComment."""
+        """Init at.startSentinelComment and at.endSentinelComment."""
         at, c = self, self.c
         delim1, delim2, delim3 = c.getDelims(root)
 
@@ -319,6 +289,19 @@ class AtFile:
                 g.es_print('using Python comment delimiters')
             at.startSentinelComment = "#"  # This should never happen!
             at.endSentinelComment = ""
+    #@+node:ekr.20250405065134.1: *4* at.initLanguage (new)
+    def initLanguage(self, root: Position) -> str:
+        """Init at.language."""
+        at, c = self, self.c
+
+        if root.isAnyAtFileNode():
+            # #4323: Set at.language using only p.h and p.b.
+            return at.languageFromAtFileNodeHeadline(root)
+        if root.h.startswith(('@button', '@command')):
+            return 'python'
+        # Language doesn't matter here.
+        # It would be unnecessary/wrong to examine ancestor nodes.
+        return c.target_language or 'python'
     #@+node:ekr.20041005105605.17: *3* at.Reading
     #@+node:ekr.20041005105605.18: *4* at.Reading (top level)
     #@+node:ekr.20070919133659: *5* at.checkExternalFile

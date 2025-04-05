@@ -1828,23 +1828,13 @@ class Commands:
     rootVnode = rootPosition
     findRootPosition = rootPosition
     #@+node:ekr.20250404165841.1: *5* c.scanForAtLanguage (new)
-    # Use a regex to avoid allocating temp strings.
-    at_language_pattern = re.compile(r'^@language\s+([\w]+)', re.MULTILINE)
-
     def scanForAtLanguage(self, p: Position) -> str:
         """Return the language in effect for p."""
         c = self
-        ###
-        # language = g.getLanguageFromAncestorAtFileNode(c.p)
-        # if language:
-            # assert g.isValidLanguage(language)
-            # return language
-        for p2 in p.self_and_parents():
-            for m in c.at_language_pattern.finditer(p2.b):
-                language = m.group(1)
-                if g.isValidLanguage(language):
-                    return language
-                g.trace('OOP', language)
+        language = g.getLanguageFromAncestorAtFileNode(c.p)
+        if language:
+            assert g.isValidLanguage(language)
+            return language
         return c.target_language or 'python'
     #@+node:ekr.20131017174814.17480: *5* c.shouldBeExpanded
     def shouldBeExpanded(self, p: Position) -> bool:
