@@ -1398,7 +1398,8 @@ class GitDiffController:
         # Must be called before at.scanAllDirectives.
         at.initReadIvars(hidden_root, fn)
         # Sets at.startSentinelComment/endSentinelComment.
-        at.scanAllDirectives(hidden_root)
+        ### at.scanAllDirectives(hidden_root)
+        at.initSentinelComments(hidden_root)
         new_public_lines = g.splitLines(s)
         old_private_lines = at.write_at_clean_sentinels(hidden_root)
         marker = x.markerFromFileLines(old_private_lines, fn)

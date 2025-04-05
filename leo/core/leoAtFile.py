@@ -180,7 +180,6 @@ class AtFile:
         at.output_newline = g.getOutputNewline(c=c)
         at.page_width = c.page_width or 132
         at.tab_width = c.tab_width or -4
-
     #@+node:ekr.20041005105605.13: *4* at.initReadIvars
     def initReadIvars(self, root: Position, fileName: str) -> None:
         """Initialize all read ivars."""
@@ -269,6 +268,32 @@ class AtFile:
 
         # Return the target file name, regardless of future problems.
         return targetFileName
+    #@+node:ekr.20250405052328.1: *4* at.initSentinelComments (new)
+    def initSentinelComments(self, root: Position) -> None:
+        """Initialize at.startSentinelComment and at.endSentinelComment."""
+        at, c = self, self.c
+        delim1, delim2, delim3 = c.getDelims(root)
+
+        # Use single-line comments if we have a choice.
+        # delim1,delim2,delim3 now correspond to line,start,end
+        if delim1:
+            at.startSentinelComment = delim1
+            at.endSentinelComment = ""  # Must not be None.
+        elif delim2 and delim3:
+            at.startSentinelComment = delim2
+            at.endSentinelComment = delim3
+        else:  # pragma: no cover
+            #
+            # Emergency!
+            #
+            # Issue an error only if at.language has been set.
+            # This suppresses a message from the markdown importer.
+            if not g.unitTesting and at.language:
+                g.trace(repr(at.language), g.callers())
+                g.es_print(f"unknown language: {at.language}")
+                g.es_print('using Python comment delimiters')
+            at.startSentinelComment = "#"  # This should never happen!
+            at.endSentinelComment = ""
     #@+node:ekr.20041005105605.17: *3* at.Reading
     #@+node:ekr.20041005105605.18: *4* at.Reading (top level)
     #@+node:ekr.20070919133659: *5* at.checkExternalFile

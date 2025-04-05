@@ -100,7 +100,8 @@ def renumber(c):
         else:
             p = root = new_p
         at = c.atFileCommands
-        at.scanAllDirectives(new_p)
+        ### at.scanAllDirectives(new_p)
+        at.initSentinelComments(new_p)
         delim_st = at.startSentinelComment
         delim_en = at.endSentinelComment
         if (
