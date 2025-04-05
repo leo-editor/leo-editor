@@ -897,12 +897,10 @@ def rp_get_args(c: Cmdr) -> tuple[int, int, str, int, int]:
     """Compute and return oldSel,oldYview,original,pageWidth,tabWidth."""
     body = c.frame.body
     w = body.wrapper
-    ### d = c.scanAllDirectives(c.p)
     if c.editCommands.fillColumn > 0:
         pageWidth = c.editCommands.fillColumn
     else:
         pageWidth = c.getPageWidth(c.p)
-    ### tabWidth = d.get("tabwidth")
     tabWidth = c.getTabWidth(c.p)
     original = w.getAllText()
     oldSel = w.getSelectionRange()

@@ -1813,9 +1813,8 @@ class Commands:
     findRootPosition = rootPosition
     #@+node:ekr.20250404165841.1: *5* c.scanForAtLanguage (new)
     def scanForAtLanguage(self, p: Position) -> str:
-        """A thin wrapper around g.scanForAtLanguage."""
+        """Return the language in effect for p."""
         c = self
-        ### language = g.scanForAtLanguage(c, c.p)
         language = g.getLanguageFromAncestorAtFileNode(c.p)
         if language:
             assert g.isValidLanguage(language)
@@ -2485,7 +2484,7 @@ class Commands:
                 if count % 2000 == 0:
                     g.enl()
                 #@-<< print dots >>
-            if g.scanForAtLanguage(c, p) == "python":
+            if c.scanForAtLanguage(p) == "python":
                 if not g.scanForAtSettings(p) and (
                     not ignoreAtIgnore or not g.scanForAtIgnore(c, p)
                 ):
@@ -2524,7 +2523,7 @@ class Commands:
                 if count % 2000 == 0:
                     g.enl()
                 #@-<< print dots >>
-            if g.scanForAtLanguage(c, p) == "python":
+            if c.scanForAtLanguage(p) == "python":
                 if not ignoreAtIgnore or not g.scanForAtIgnore(c, p):
                     try:
                         c.checkPythonNode(p)

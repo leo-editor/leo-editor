@@ -6742,13 +6742,12 @@ def extractExecutableString(c: Cmdr, p: Position, s: str) -> str:
 
     Ignore all lines under control of any other @language directive.
     """
-    #
     # Rewritten to fix #1071.
     if g.unitTesting:
         return s  # Regrettable, but necessary.
-    #
+
     # Return s if no @language in effect. Should never happen.
-    language = g.scanForAtLanguage(c, p)
+    language = c.scanForAtLanguage(p)
     if not language:
         return s
     #
