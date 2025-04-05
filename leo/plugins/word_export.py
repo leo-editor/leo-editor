@@ -77,7 +77,7 @@ def writeNodeAndTree(c, word, header_style, level,
     """Write a node and its children to Word"""
     if vnode is None:
         vnode = c.currentVnode()
-    encoding = c.scanNearestAtEncodingDirective(p=vnode)
+    encoding = c.getEncoding(p=vnode)
     s = vnode.b
     s = g.toEncodedString(s, encoding, reportErrors=True)
     doPara(word, s)
