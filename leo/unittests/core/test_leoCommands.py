@@ -279,15 +279,6 @@ class TestCommands(LeoUnitTest):
         p2 = c.pasteOutline()
         assert p2
         assert not p2.isCloned()
-    #@+node:ekr.20210906075242.17: *3* TestCommands.test_c_scanAllDirectives
-    def test_c_scanAllDirectives(self):
-        self.skipTest("c.scanAllDirectives is deprecated")
-        c = self.c
-        d = c.scanAllDirectives(c.p)
-        # These are the commander defaults, without any settings.
-        self.assertEqual(d.get('language'), 'python')
-        self.assertEqual(d.get('tabwidth'), -4)
-        self.assertEqual(d.get('pagewidth'), 132)
     #@+node:ekr.20210906075242.18: *3* TestCommands.test_c_scanAtPathDirectives (legacy)
     def test_c_scanAtPathDirectives(self):
         c, p = self.c, self.c.p

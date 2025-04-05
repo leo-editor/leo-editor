@@ -1395,7 +1395,6 @@ class GitDiffController:
         root.copyTreeFromSelfTo(hidden_root, copyGnxs=True)
         hidden_root.h = fn + ':' + rev if rev else fn
         # Set at.encoding first.
-        # Must be called before at.scanAllDirectives.
         at.initReadIvars(hidden_root, fn)
         # Sets at.startSentinelComment/endSentinelComment.
         at.initSentinelComments(hidden_root)

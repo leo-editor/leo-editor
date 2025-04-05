@@ -2573,6 +2573,15 @@ def test_at_scanAllDirectives_minimal_(self):
     d = at.scanAllDirectives(c.p)
     d = c.atFileCommands.scanAllDirectives(c.p)
     assert d
+#@+node:ekr.20210906075242.17: *4* TestCommands.test_c_scanAllDirectives
+def test_c_scanAllDirectives(self):
+    self.skipTest("c.scanAllDirectives is deprecated")
+    c = self.c
+    d = c.scanAllDirectives(c.p)
+    # These are the commander defaults, without any settings.
+    self.assertEqual(d.get('language'), 'python')
+    self.assertEqual(d.get('tabwidth'), -4)
+    self.assertEqual(d.get('pagewidth'), 132)
 #@-all
 #@@nosearch
 #@-leo
