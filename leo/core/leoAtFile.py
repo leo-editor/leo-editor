@@ -211,14 +211,13 @@ class AtFile:
         at.outputList = []  # For stream output.
         if 1:
             at.scanAllDirectives(root)
-            ###
-                # Sets the following ivars:
-                # at.encoding
-                # at.explicitLineEnding
-                # at.language
-                # at.output_newline
-                # at.page_width
-                # at.tab_width
+            # Sets the following ivars:
+            # at.encoding
+            # at.explicitLineEnding
+            # at.language
+            # at.output_newline
+            # at.page_width
+            # at.tab_width
         else:
             # at.encoding = c.config.default_derived_file_encoding  ### To do.
             # at.explicitLineEnding = None  ### To do.
@@ -229,6 +228,7 @@ class AtFile:
             at.encoding = c.getEncoding(root)
             lineending = c.getLineEnding(root)
             at.explicitLineEnding = bool(lineending)
+            at.language = c.scanForAtLanguage(root)
             at.output_newline = g.getOutputNewline(c=c)
             at.page_width = c.getPageWidth(root)
             at.tab_width = c.getTabWidth(root)
