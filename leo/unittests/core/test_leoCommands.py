@@ -177,7 +177,7 @@ class TestCommands(LeoUnitTest):
             self.assertTrue(i2 < j2, msg=f"i: {i}, j: {j}")
 
     #@+node:ekr.20250404075346.1: *3* TestCommands.test_c_getEncoding
-    def test_c_scanNearestAtEncodingDirective(self):
+    def test_c_getEncoding(self):
         c, p = self.c, self.c.p
         self.root_p.b = ''  # To ensure default.
         child = p.insertAfter()

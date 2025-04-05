@@ -1500,25 +1500,6 @@ class Commands:
                 p.moveToThreadNext()
     #@+node:ekr.20060906211747: *4* c.Getters
     #@+node:ekr.20250404014903.1: *5* --- c: New scanners
-    #@+node:ekr.20250404153234.1: *6* c.scanNearestAtPageWidthDirective
-    # Use a regex to avoid allocating temp strings.
-    at_pagewidth_pattern = re.compile(r'^@pagewidth\s+(-?[0-9]+)', re.MULTILINE)
-
-    def scanNearestAtPageWidthDirective(self, p: Position) -> int:
-        """
-        Scan p.b and all ancestors for the first @pagewith direcive.
-        
-        Return c.page_width by default.
-        """
-        c = self
-        for p2 in p.self_and_parents():
-            for m in c.at_pagewidth_pattern.finditer(p2.b):
-                width = m.group(1)
-                try:
-                    return int(width)
-                except ValueError:
-                    g.error("ignoring m.group(0)")
-        return c.page_width
     #@+node:ekr.20250404021710.1: *6* c.scanNearestAtPathDirectives
     def scanNearestAtPathDirectives(self, p: Position) -> str:
         """
@@ -1540,26 +1521,6 @@ class Commands:
         # Compute the full, effective, absolute path.
         path = g.finalize_join(*paths)
         return path
-    #@+node:ekr.20250404153250.1: *6* c.scanNearestAtTabWidthDirective
-    # Use a regex to avoid allocating temp strings.
-    at_tabwidth_pattern = re.compile(r'^@tabwidth\s+(-?[0-9]+)', re.MULTILINE)
-
-    def scanNearestAtTabWidthDirective(self, p: Position) -> int:
-        """
-        Scan p.b and all ancestors for the first @encoding direcive.
-        
-        Return c.tab_width by default.
-        """
-        c = self
-        for p2 in p.self_and_parents():
-            for m in c.at_encoding_pattern.finditer(p2.b):
-                for m in c.at_tabwidth_pattern.finditer(p2.b):
-                    width = m.group(1)
-                    try:
-                        return int(width)
-                    except ValueError:
-                        g.error("ignoring m.group(0)")
-        return c.tab_width
     #@+node:ekr.20250404165841.1: *6* c.scanForAtLanguage
     def scanForAtLanguage(self, p: Position) -> str:
         """A thin wrapper around g.scanForAtLanguage."""
@@ -1701,11 +1662,45 @@ class Commands:
                     return encoding
                 g.error("invalid @encoding:", encoding)
         return c.config.default_derived_file_encoding or 'utf-8'
-    #@+node:ekr.20150417073117.1: *5* c.getTabWidth
-    def getTabWidth(self, p: Position) -> int:
-        """Return the tab width in effect at p."""
+    #@+node:ekr.20250404153234.1: *5* c.getPageWidth (new)
+    # Use a regex to avoid allocating temp strings.
+    at_pagewidth_pattern = re.compile(r'^@pagewidth\s+(-?[0-9]+)', re.MULTILINE)
+
+    def getPageWidth(self, p: Position) -> int:
+        """
+        Scan p.b and all ancestors for the first @pagewith direcive.
+        
+        Return c.page_width by default.
+        """
         c = self
-        return c.scanNearestAtTabWidthDirective(p)
+        for p2 in p.self_and_parents():
+            for m in c.at_pagewidth_pattern.finditer(p2.b):
+                width = m.group(1)
+                try:
+                    return int(width)
+                except ValueError:
+                    g.error("ignoring m.group(0)")
+        return c.page_width
+    #@+node:ekr.20250404153250.1: *5* c.getTabWidth (new)
+    # Use a regex to avoid allocating temp strings.
+    at_tabwidth_pattern = re.compile(r'^@tabwidth\s+(-?[0-9]+)', re.MULTILINE)
+
+    def getTabWidth(self, p: Position) -> int:
+        """
+        Scan p.b and all ancestors for the first @encoding direcive.
+        
+        Return c.tab_width by default.
+        """
+        c = self
+        for p2 in p.self_and_parents():
+            for m in c.at_encoding_pattern.finditer(p2.b):
+                for m in c.at_tabwidth_pattern.finditer(p2.b):
+                    width = m.group(1)
+                    try:
+                        return int(width)
+                    except ValueError:
+                        g.error("ignoring m.group(0)")
+        return c.tab_width
     #@+node:ekr.20040803112200: *5* c.is...Position
     #@+node:ekr.20040803155551: *6* c.currentPositionIsRootPosition
     def currentPositionIsRootPosition(self) -> bool:

@@ -901,7 +901,7 @@ def rp_get_args(c: Cmdr) -> tuple[int, int, str, int, int]:
     if c.editCommands.fillColumn > 0:
         pageWidth = c.editCommands.fillColumn
     else:
-        pageWidth = c.scanNearestAtPageWidthDirective(c.p)
+        pageWidth = c.getPageWidth(c.p)
     tabWidth = d.get("tabwidth")
     original = w.getAllText()
     oldSel = w.getSelectionRange()

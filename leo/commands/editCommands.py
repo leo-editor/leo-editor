@@ -858,7 +858,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         if self.fillColumn > 0:
             fillColumn = self.fillColumn
         else:
-            fillColumn = c.scanNearestAtPageWidthDirective(c.p)
+            fillColumn = c.getPageWidth(c.p)
         s = w.getAllText()
         i, j = g.getLine(s, w.getInsertPoint())
         line = s[i:j].strip()
@@ -907,7 +907,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         if self.fillColumn > 0:
             fillColumn = self.fillColumn
         else:
-            fillColumn = c.scanNearestAtPageWidthDirective(c.p)
+            fillColumn = c.getPageWidth(c.p)
         self.beginCommand(w, undoType='center-region')
         inserted = 0
         while ind < end:
