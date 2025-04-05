@@ -652,12 +652,12 @@ class Commands:
             """
             for s in c.config.getData(setting) or []:
                 key, val = s.split(':', 1)
-                if key.strip() == language:
+                if key.strip() == 'language':  # 2025/04/05.
                     return val.strip()
             return None
 
         # Get the language and extension.
-        language: str = c.scanForAtLanguage(p)
+        language =  c.scanForAtLanguage(p)
         ext = g.app.language_extension_dict.get(language)
         if not ext:
             print(f"{tag}: No extension for {language}")
