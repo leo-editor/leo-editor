@@ -1619,7 +1619,7 @@ class LeoQtBody(leoFrame.LeoBody):
             return
         c = self.c
         w = c.frame.body.wrapper.widget
-        wrap = g.scanAllAtWrapDirectives(c, p)
+        wrap = c.getWrap(p)
         policy = ScrollBarPolicy.ScrollBarAlwaysOff if wrap else ScrollBarPolicy.ScrollBarAsNeeded
         w.setHorizontalScrollBarPolicy(policy)
         wrap_setting = WrapMode.WrapAtWordBoundaryOrAnywhere if wrap else WrapMode.NoWrap

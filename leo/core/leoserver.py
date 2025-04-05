@@ -2487,8 +2487,9 @@ class LeoServer:
             language = 'plain'
 
         # Get the body wrap state
-        wrap = g.scanAllAtWrapDirectives(c, p)
-        tabWidth = g.scanAllAtTabWidthDirectives(c, p)
+        wrap = c.getWrap(p)
+        ### tabWidth = g.scanAllAtTabWidthDirectives(c, p)
+        tabWidth = c.getTabWidth(p)
         if not isinstance(tabWidth, int):
             tabWidth = False
 

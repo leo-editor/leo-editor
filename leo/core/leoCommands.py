@@ -1725,6 +1725,25 @@ class Commands:
                     except ValueError:
                         g.error("ignoring m.group(0)")
         return c.tab_width
+    #@+node:ekr.20250405143421.1: *5* c.getWrap(new)
+    # Use a regex to avoid allocating temp strings.
+    at_wrap_pattern = re.compile(r'^@wrap', re.MULTILINE)
+    at_nowrap_pattern = re.compile(r'^@nowrap', re.MULTILINE)
+
+    def getWrap(self, p: Position) -> int:
+        """
+        Scan p.b and all ancestors for @wrap and @nowrap directives.
+        Return @bool body-pane-wraps by default.
+        """
+        c = self
+        for p2 in p.self_and_parents():
+            s = p2.b
+            wrap = nowrap = False, False
+            if c.at_wrap_pattern.search(s) is not None:
+                return True
+            if c.at_nowrap_pattern.search(s) is not None:
+                return False
+        return c.config.getBool("body-pane-wraps")
     #@+node:ekr.20040803112200: *5* c.is...Position
     #@+node:ekr.20040803155551: *6* c.currentPositionIsRootPosition
     def currentPositionIsRootPosition(self) -> bool:
