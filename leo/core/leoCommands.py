@@ -1616,6 +1616,22 @@ class Commands:
                     return encoding
                 g.error("invalid @encoding:", encoding)
         return c.config.default_derived_file_encoding or 'utf-8'
+    #@+node:ekr.20250405053842.1: *5* c.getLineEnding(new)
+    # Use a regex to avoid allocating temp strings.
+    at_lineending_pattern = re.compile(r'^@lineending\s+([\w]+)', re.MULTILINE)
+
+    def getLineEnding(self, p: Position) -> str:
+        """
+        Scan p.b and all ancestors for the first @lineending direcive.
+        Return None (*not* '\n') by default.
+        """
+        c = self
+        for p2 in p.self_and_parents():
+            for m in c.at_lineending_pattern.finditer(p2.b):
+                ending = m.group(1)
+                if ending in ("cr", "crlf", "lf", "nl", "platform"):
+                    return g.getOutputNewline(name=ending)
+        return None
     #@+node:ekr.20250404153234.1: *5* c.getPageWidth (new)
     # Use a regex to avoid allocating temp strings.
     at_pagewidth_pattern = re.compile(r'^@pagewidth\s+(-?[0-9]+)', re.MULTILINE)

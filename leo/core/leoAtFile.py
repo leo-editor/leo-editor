@@ -220,12 +220,18 @@ class AtFile:
                 # at.page_width
                 # at.tab_width
         else:
-            at.encoding = c.config.default_derived_file_encoding  ### To do.
-            at.explicitLineEnding = None  ### To do.
+            # at.encoding = c.config.default_derived_file_encoding  ### To do.
+            # at.explicitLineEnding = None  ### To do.
+            # at.output_newline = g.getOutputNewline(c=c)
+            # at.page_width = c.page_width or 132  ### new
+            # at.language = None  ### To do.
+            # at.tab_width = c.tab_width or -4  ### To do.
+            at.encoding = c.getEncoding(root)
+            lineending = c.getLineEnding(root)
+            at.explicitLineEnding = bool(lineending)
             at.output_newline = g.getOutputNewline(c=c)
-            at.page_width = c.page_width or 132  ### new
-            at.language = None  ### To do.
-            at.tab_width = c.tab_width or -4  ### To do.
+            at.page_width = c.getPageWidth(root)
+            at.tab_width = c.getTabWidth(root)
 
         if g.unitTesting:
             at.output_newline = '\n'
