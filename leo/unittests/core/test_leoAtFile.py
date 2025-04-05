@@ -30,7 +30,6 @@ class TestAtFile(LeoUnitTest):
         )
     #@+node:ekr.20210905052021.28: *3* TestAtFile.test_at_scanAllDirectives
     def test_at_scanAllDirectives(self):
-
         at, c = self.at, self.c
         d = at.scanAllDirectives(c.p)
         # These are the commander defaults, without any settings.

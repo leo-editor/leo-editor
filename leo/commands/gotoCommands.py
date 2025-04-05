@@ -375,10 +375,10 @@ class GoToCommands:
         old_target_language = c.target_language
         try:
             c.target_language = g.getLanguageAtPosition(c, root)
-            d = c.scanAllDirectives(root)
+            delims = c.getDelims(root)
         finally:
             c.target_language = old_target_language
-        delims1, delims2, delims3 = d.get('delims')
+        delims1, delims2, delims3 = delims
         if delims1:
             return delims1, None
         return delims2, delims3
@@ -389,10 +389,10 @@ class GoToCommands:
         old_target_language = c.target_language
         try:
             c.target_language = g.getLanguageAtPosition(c, root)
-            d = c.scanAllDirectives(root)
+            delims = c.getDelims(root)
         finally:
             c.target_language = old_target_language
-        return d.get('delims')
+        return delims
     #@+node:ekr.20150624143903.1: *4* goto.get_external_file_with_sentinels
     def get_external_file_with_sentinels(self, root: Position) -> str:
         """

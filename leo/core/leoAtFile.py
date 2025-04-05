@@ -187,7 +187,7 @@ class AtFile:
 
         # Set all ivars to reasonable defaults.
         self.initAllIvars(root)
-    #@+node:ekr.20041005105605.15: *4* at.initWriteIvars (the only remaining call to at.scanAllDirectives)
+    #@+node:ekr.20041005105605.15: *4* at.initWriteIvars
     def initWriteIvars(self, root: Position) -> Optional[str]:
         """
         Compute default values of all write-related ivars.
@@ -3112,7 +3112,7 @@ class AtFile:
             9: '@verbatim',
         }
         return d.get(kind) or f"<unknown AtFile class constant> {kind!r}"
-    #@+node:ekr.20080923070954.4: *4* at.scanAllDirectives (deprecate, then remove)
+    #@+node:ekr.20080923070954.4: *4* at.scanAllDirectives (to be removed)
     def scanAllDirectives(self, p: Position) -> dict[str, Value]:
         """
         Scan p and p's ancestors looking for directives,

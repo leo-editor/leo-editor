@@ -2894,7 +2894,6 @@ def scanForAtLanguage(c: Cmdr, p: Position) -> str:
     """Scan position p and p's ancestors looking only for @language and @ignore directives.
 
     Returns the language found, or c.target_language."""
-    # Unlike the code in x.scanAllDirectives, this code ignores @comment directives.
     if c and p:
         for p in p.self_and_parents(copy=False):
             d = g.get_directives_dict(p)

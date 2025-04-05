@@ -2245,8 +2245,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     def updateAutomatchBracket(self, p: Position, w: Wrapper, ch: str, oldSel: tuple[int, int]) -> None:
 
         c = self.c
-        d = c.scanAllDirectives(p)
-        language = d.get('language')
+        language = c.scanForAtLanguage(p)
         i, j = oldSel
         s = w.getAllText()
         if ch in ('(', '[', '{',):
