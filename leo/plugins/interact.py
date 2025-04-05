@@ -274,10 +274,6 @@ class InteractBASH(Interact):
             return None  # must have a full fledged @path in parents
 
         return c.getPath(p)
-
-        # aList = g.get_directives_dict_list(p)
-        # path = c.scanAtPathDirectives(aList)
-        # return path
     #@-others
 #@+node:tbrown.20090603104805.4961: ** class InteractController
 class InteractController:

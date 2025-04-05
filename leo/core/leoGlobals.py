@@ -6992,7 +6992,7 @@ def computeFileUrl(fn: str, c: Cmdr = None, p: Position = None) -> str:
             path = url
         # Handle ancestor @path directives.
         if c and c.fileName():
-            base = c.getNodePath(p)
+            base = c.getPath(p)
             path = g.finalize_join(g.os_path_dirname(c.fileName()), base, path)
         else:
             path = g.finalize(path)

@@ -264,7 +264,7 @@ class MarkupCommands:
                 i_path = self.filename(p)
                 # #1398.
                 i_path = c.expand_path_expression(i_path)
-                n_path = c.getNodePath(c.p)  # node path
+                n_path = c.getPath(c.p)  # node path
                 i_path = g.finalize_join(n_path, i_path)
                 with open(i_path, 'w', encoding='utf-8', errors='replace') as self.output_file:
                     self.write_root(p)

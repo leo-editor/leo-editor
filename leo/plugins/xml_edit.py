@@ -171,7 +171,7 @@ def cd_here(c, p):
     to Leo's @path concept
     """
     try:
-        os.chdir(c.getNodePath(p))
+        os.chdir(c.getPath(p))
     except Exception:
         pass  # well, at least we tried
 #@+node:tbrown.20110428102237.20327: ** get_element

@@ -26,7 +26,7 @@ def bzr_qcommands(c, p, menu):
 
     # special case, no q* command for stat
     def bzr_stat(c=c, p=p):
-        path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
+        path = g.scanAllAtPathDirectives(c, p) or c.getPath(p)
         cmd = subprocess.Popen(['bzr', 'stat', path], stdin=subprocess.PIPE,
             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout_bytes, stderr_bytes = cmd.communicate()
@@ -44,7 +44,7 @@ def bzr_qcommands(c, p, menu):
     ).split()
     for qcom in qcoms:
         def cmd(c=c, p=p, qcom=qcom):
-            path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
+            path = g.scanAllAtPathDirectives(c, p) or c.getPath(p)
             cmd = subprocess.Popen(['bzr', qcom, path])
             cmd.communicate()
         action = menu.addAction(qcom)

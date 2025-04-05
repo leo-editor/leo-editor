@@ -1043,7 +1043,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
             else:
                 html = self.render_rst(text)
 
-            path = self.c.getNodePath(self.c.p)
+            path = self.c.getPath(self.c.p)
             url_base = QtCore.QUrl('file:///' + path + '/')
             self.browser.setContent(html.encode(ENCODING), "text/html;charset=UTF-8", url_base)
 
