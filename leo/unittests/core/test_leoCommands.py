@@ -330,8 +330,8 @@ class TestCommands(LeoUnitTest):
         path = c.scanAtPathDirectives(aList)
         endpath = g.os_path_normpath('again/again')
         self.assertTrue(path and path.endswith(endpath))
-    #@+node:ekr.20250404075519.1: *3* TestCommands.test_c_scanNearestAtPathDirectives
-    def test_c_scanNearestAtPathDirectives(self):
+    #@+node:ekr.20250404075519.1: *3* TestCommands.test_c_getPath
+    def test_c_getPath(self):
         c, p = self.c, self.c.p
         child = p.insertAfter()
         child.h = '@path one'
@@ -339,7 +339,7 @@ class TestCommands(LeoUnitTest):
         grand.h = '@path two'
         great = grand.insertAsLastChild()
         great.h = 'xyz'
-        path = c.scanNearestAtPathDirectives(great)
+        path = c.getPath(great)
         endpath = g.os_path_normpath('one/two')
         assert path.endswith(endpath), f"expected '{endpath}' got '{path}'"
 
@@ -352,7 +352,7 @@ class TestCommands(LeoUnitTest):
         grand.h = '@path two'
         great = grand.insertAsLastChild()
         great.h = 'xyz'
-        path = c.scanNearestAtPathDirectives(great)
+        path = c.getPath(great)
         endpath = g.os_path_normpath('one/two')
         assert path.endswith(endpath), f"expected '{endpath}' got '{path}'"
     #@+node:ekr.20210901140645.17: *3* TestCommands.test_c_tabNannyNode

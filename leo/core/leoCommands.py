@@ -1499,67 +1499,6 @@ class Commands:
             else:
                 p.moveToThreadNext()
     #@+node:ekr.20060906211747: *4* c.Getters
-    #@+node:ekr.20250404014903.1: *5* --- c: New scanners
-    #@+node:ekr.20250404021710.1: *6* c.scanNearestAtPathDirectives
-    def scanNearestAtPathDirectives(self, p: Position) -> str:
-        """
-        Scan for @path directives in p and all its direct ancestors.
-        
-        Return an absolute path or a reasonable default.
-        """
-        c = self
-        p2, paths = p.copy(), []
-        for p2 in p.self_and_parents():
-            if path := c.scanNodeAtPathDirectives(p2):
-                paths.append(path)
-
-        # Add absbase and reverse the list.
-        absbase = g.os_path_dirname(c.fileName()) if c.fileName() else os.getcwd()
-        paths.append(absbase)
-        paths.reverse()
-
-        # Compute the full, effective, absolute path.
-        path = g.finalize_join(*paths)
-        return path
-    #@+node:ekr.20250404165841.1: *6* c.scanForAtLanguage
-    def scanForAtLanguage(self, p: Position) -> str:
-        """A thin wrapper around g.scanForAtLanguage."""
-        c = self
-        ### language = g.scanForAtLanguage(c, c.p)
-        language = g.getLanguageFromAncestorAtFileNode(c.p)
-        if language:
-            assert g.isValidLanguage(language)
-            return language
-        return c.target_language or 'python'
-    #@+node:ekr.20250404014820.1: *6* c.scanNodeAtPathDirectives
-    # Use a regex to avoid allocating temp strings.
-    at_path_pattern = re.compile(r'^@path\s+([\w_:/\\]+)', re.MULTILINE)
-
-    def scanNodeAtPathDirectives(self, p: Position) -> Optional[str]:
-        """
-        Scan p.h then p.b for @path directives.
-        """
-        c = self
-        c.scanAtPathDirectivesCount += 1  # An important statistic.
-
-        def get_path(m: re.Match) -> Optional[str]:
-            return g.stripPathCruft(m.group(1)) if m else None
-
-        # The headline has higher precedence because it is more visible.
-        paths: list[str] = []
-        for s in (p.h, p.b):
-            for m in c.at_path_pattern.finditer(s):
-                if path := get_path(m):
-                    paths.append(path)
-            if paths:
-                break
-        if len(paths) > 1:
-            message = (
-                f"Multiple @path directives in {p.h!r}\n"
-                f"Using the first path: @path {paths[0]}"
-            )
-            g.print_unique_message(message)
-        return paths[0] if paths else None
     #@+node:ekr.20040803140033: *5* c.currentPosition
     def currentPosition(self) -> Position:
         """
@@ -1644,6 +1583,21 @@ class Commands:
         j = len(head) + len(s)
         oldSel = i, j
         return head, lines, tail, oldSel, oldYview  # string,list,string,tuple,int.
+    #@+node:ekr.20250405040620.1: *5* c.getDelims (new)
+    # Use a regex to avoid allocating temp strings.
+    at_comment_pattern = re.compile(r'^@comment\s+(.*)$', re.MULTILINE)
+
+    def getDelims(self, p: Position) -> tuple[str, str, str]:
+
+        c = self
+        for p2 in p.copy().self_and_parents():
+            for m in c.at_comment_pattern.finditer(p2.b):
+                comment = m.group(1)
+                return g.set_delims_from_string(comment)
+
+        # Return the default comment delims.
+        default_language = g.getLanguageFromAncestorAtFileNode(p) or c.target_language or 'python'
+        return g.set_delims_from_language(default_language)
     #@+node:ekr.20250404072805.1: *5* c.getEncoding (new)
     # Use a regex to avoid allocating temp strings.
     at_encoding_pattern = re.compile(r'^@encoding\s+([\w_-]+)', re.MULTILINE)
@@ -1681,6 +1635,56 @@ class Commands:
                 except ValueError:
                     g.error("ignoring m.group(0)")
         return c.page_width
+    #@+node:ekr.20250404021710.1: *5* c.getPath & helper (new)
+    def getPath(self, p: Position) -> str:
+        """
+        Scan for @path directives in p and all its direct ancestors.
+        
+        Return an absolute path or a reasonable default.
+        """
+        c = self
+        p2, paths = p.copy(), []
+        for p2 in p.self_and_parents():
+            if path := c.getPathFromNode(p2):
+                paths.append(path)
+
+        # Add absbase and reverse the list.
+        absbase = g.os_path_dirname(c.fileName()) if c.fileName() else os.getcwd()
+        paths.append(absbase)
+        paths.reverse()
+
+        # Compute the full, effective, absolute path.
+        path = g.finalize_join(*paths)
+        return path
+    #@+node:ekr.20250404014820.1: *6* c.getPathFromNode
+    # Use a regex to avoid allocating temp strings.
+    at_path_pattern = re.compile(r'^@path\s+([\w_:/\\]+)', re.MULTILINE)
+
+    def getPathFromNode(self, p: Position) -> Optional[str]:
+        """
+        Scan p.h then p.b for @path directives.
+        """
+        c = self
+        c.scanAtPathDirectivesCount += 1  # An important statistic.
+
+        def get_path(m: re.Match) -> Optional[str]:
+            return g.stripPathCruft(m.group(1)) if m else None
+
+        # The headline has higher precedence because it is more visible.
+        paths: list[str] = []
+        for s in (p.h, p.b):
+            for m in c.at_path_pattern.finditer(s):
+                if path := get_path(m):
+                    paths.append(path)
+            if paths:
+                break
+        if len(paths) > 1:
+            message = (
+                f"Multiple @path directives in {p.h!r}\n"
+                f"Using the first path: @path {paths[0]}"
+            )
+            g.print_unique_message(message)
+        return paths[0] if paths else None
     #@+node:ekr.20250404153250.1: *5* c.getTabWidth (new)
     # Use a regex to avoid allocating temp strings.
     at_tabwidth_pattern = re.compile(r'^@tabwidth\s+(-?[0-9]+)', re.MULTILINE)
@@ -1807,6 +1811,16 @@ class Commands:
 
     rootVnode = rootPosition
     findRootPosition = rootPosition
+    #@+node:ekr.20250404165841.1: *5* c.scanForAtLanguage (new)
+    def scanForAtLanguage(self, p: Position) -> str:
+        """A thin wrapper around g.scanForAtLanguage."""
+        c = self
+        ### language = g.scanForAtLanguage(c, c.p)
+        language = g.getLanguageFromAncestorAtFileNode(c.p)
+        if language:
+            assert g.isValidLanguage(language)
+            return language
+        return c.target_language or 'python'
     #@+node:ekr.20131017174814.17480: *5* c.shouldBeExpanded
     def shouldBeExpanded(self, p: Position) -> bool:
         """Return True if the node at position p should be expanded."""

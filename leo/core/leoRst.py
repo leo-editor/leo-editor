@@ -259,7 +259,7 @@ class RstCommands:
         self.root = p.copy()
         # Init encoding and path.
         self.encoding = c.getEncoding(p)
-        self.path = c.scanNearestAtPathDirectives(p)
+        self.path = c.getPath(p)
         # Write the output to self.result_list.
         self.result_list = []  # All output goes here.
         if self.generate_rst_header_comment:
@@ -285,7 +285,7 @@ class RstCommands:
         n_tot = p.numberOfChildren()
         n = 1
         self.encoding = c.getEncoding(p)
-        self.path = c.scanNearestAtPathDirectives(p) or ''
+        self.path = c.getPath(p) or ''
         for child in p.children():
             # Compute the slide's file name.
             fn2, ext = g.os_path_splitext(fn)
