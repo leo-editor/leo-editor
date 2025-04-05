@@ -1330,8 +1330,9 @@ class Commands:
     #@+node:ekr.20171123135625.7: *4* c.setCurrentDirectoryFromContext
     def setCurrentDirectoryFromContext(self, p: Position) -> None:
         c = self
-        aList = g.get_directives_dict_list(p)
-        path = c.scanAtPathDirectives(aList)
+        ### aList = g.get_directives_dict_list(p)
+        ### path = c.scanAtPathDirectives(aList)
+        path = c.getPath(p)
         curDir = g.os_path_abspath(os.getcwd())
         if path and path != curDir:
             try:
@@ -2618,8 +2619,7 @@ class Commands:
         Neither the path nor the fileName will be created if it does not exist.
         """
         c = self
-        aList = g.get_directives_dict_list(p)
-        path = c.scanAtPathDirectives(aList)
+        path = c.getPath(p)
         return g.finalize_join(path, p.anyAtFileNodeName())
     #@+node:ekr.20171123135625.39: *4* c.getTime
     def getTime(self, body: bool = True) -> str:
@@ -2794,8 +2794,9 @@ class Commands:
     def getNodePath(self, p: Position) -> str:
         """Return the path in effect at node p."""
         c = self
-        aList = g.get_directives_dict_list(p)
-        path = c.scanAtPathDirectives(aList)
+        ### aList = g.get_directives_dict_list(p)
+        ### path = c.scanAtPathDirectives(aList)
+        path = c.getPath(p)
         return path
 
     def getNodeFileName(self, p: Position) -> str:
@@ -2870,14 +2871,13 @@ class Commands:
             "wrap":         d.get('wrap'),
         }
         return d
-    #@+node:ekr.20080828103146.15: *5* c.scanAtPathDirectives (deprecate)
+    #@+node:ekr.20080828103146.15: *5* c.scanAtPathDirectives
     def scanAtPathDirectives(self, aList: list) -> str:
         """
         Scan aList (created by g.get_directives_dict_list) for @path directives.
 
         Return a reasonable default if no @path directive is found.
         """
-        g.deprecated()
         c = self
         c.scanAtPathDirectivesCount += 1  # An important statistic.
         if c.fileName():
