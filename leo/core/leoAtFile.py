@@ -186,7 +186,7 @@ class AtFile:
 
         # Set all ivars to reasonable defaults.
         self.initAllIvars(root)
-    #@+node:ekr.20041005105605.15: *4* at.initWriteIvars
+    #@+node:ekr.20041005105605.15: *4* at.initWriteIvars (the big switch)
     def initWriteIvars(self, root: Position) -> Optional[str]:
         """
         Compute default values of all write-related ivars.
@@ -219,19 +219,33 @@ class AtFile:
             # at.page_width
             # at.tab_width
         else:
-            # at.encoding = c.config.default_derived_file_encoding  ### To do.
-            # at.explicitLineEnding = None  ### To do.
-            # at.output_newline = g.getOutputNewline(c=c)
-            # at.page_width = c.page_width or 132  ### new
-            # at.language = None  ### To do.
-            # at.tab_width = c.tab_width or -4  ### To do.
             at.encoding = c.getEncoding(root)
             lineending = c.getLineEnding(root)
             at.explicitLineEnding = bool(lineending)
-            at.language = c.scanForAtLanguage(root)
+            ### at.language = c.scanForAtLanguage(root)
             at.output_newline = g.getOutputNewline(c=c)
             at.page_width = c.getPageWidth(root)
             at.tab_width = c.getTabWidth(root)
+
+            # #4323: The hard cases. Set the language and delims using only p.h and p.b.
+            ### delims = None
+            if root.isAnyAtFileNode():  #4323: Look no further.
+                at.language = at.languageFromAtFileNodeHeadline(root)
+                # We *must* calculate delims when writing.
+                ### delims = at.delimsFromAtFileNodeBody(root)
+            elif root.h.startswith(('@button', '@command')):
+                at.language = 'python'
+            else:
+                # Language doesn't matter here.
+                # It would be unnecessary/wrong to examine ancestor nodes.
+                at.language = c.target_language or 'python'
+            ### at.language = language
+            ###
+                # # Make sure to define delims.
+                # if delims in (None, (None, None, None)):  # #4256
+                    # delims = g.set_delims_from_language(language)
+
+
 
         if g.unitTesting:
             at.output_newline = '\n'
