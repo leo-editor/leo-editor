@@ -2762,13 +2762,14 @@ def language_from_headline(p: Position) -> Optional[str]:
     language = g.app.extension_dict.get(ext)
     return language if g.isValidLanguage(language) else 'plain'
 #@+node:ekr.20250403040834.1: *3* --- to be deprecated! Using directives list
-#@+node:ekr.20080827175609.52: *4* g.scanAtCommentAndLanguageDirectives (deprecate)
+#@+node:ekr.20080827175609.52: *4* g.scanAtCommentAndLanguageDirectives (deprecated)
 def scanAtCommentAndAtLanguageDirectives(aList: list) -> Optional[dict[str, str]]:
     """
     Scan aList for @comment and @language directives.
 
     @comment should follow @language if both appear in the same node.
     """
+    g.deprecated()
     lang = None
     for d in aList:
         comment = d.get('comment')
@@ -2783,9 +2784,10 @@ def scanAtCommentAndAtLanguageDirectives(aList: list) -> Optional[dict[str, str]
             d = {'language': lang, 'comment': comment, 'delims': delims}
             return d
     return None
-#@+node:ekr.20080827175609.32: *4* g.scanAtEncodingDirectives (deprecate)
+#@+node:ekr.20080827175609.32: *4* g.scanAtEncodingDirectives (deprecated)
 def scanAtEncodingDirectives(aList: list) -> Optional[str]:
     """Scan aList for @encoding directives."""
+    g.deprecated()
     for d in aList:
         encoding = d.get('encoding')
         if encoding and g.isValidEncoding(encoding):
@@ -2793,15 +2795,17 @@ def scanAtEncodingDirectives(aList: list) -> Optional[str]:
         if encoding and not g.unitTesting:
             g.error("invalid @encoding:", encoding)
     return None
-#@+node:ekr.20080827175609.53: *4* g.scanAtHeaderDirectives (deprecate) (not used)
+#@+node:ekr.20080827175609.53: *4* g.scanAtHeaderDirectives (deprecated)
 def scanAtHeaderDirectives(aList: list) -> None:
     """scan aList for @header and @noheader directives."""
+    g.deprecated()
     for d in aList:
         if d.get('header') and d.get('noheader'):
             g.error("conflicting @header and @noheader directives")
-#@+node:ekr.20080827175609.33: *4* g.scanAtLineendingDirectives (deprecate)
+#@+node:ekr.20080827175609.33: *4* g.scanAtLineendingDirectives (deprecated)
 def scanAtLineendingDirectives(aList: list) -> Optional[str]:
     """Scan aList for @lineending directives."""
+    g.deprecated()
     for d in aList:
         e = d.get('lineending')
         if e in ("cr", "crlf", "lf", "nl", "platform"):
@@ -2810,9 +2814,10 @@ def scanAtLineendingDirectives(aList: list) -> Optional[str]:
         # else:
             # g.error("invalid @lineending directive:",e)
     return None
-#@+node:ekr.20080827175609.34: *4* g.scanAtPagewidthDirectives (deprecate)
+#@+node:ekr.20080827175609.34: *4* g.scanAtPagewidthDirectives (deprecated)
 def scanAtPagewidthDirectives(aList: list, issue_error_flag: bool = False) -> Optional[int]:
     """Scan aList for @pagewidth directives. Return the page width or None"""
+    g.deprecated()
     for d in aList:
         s = d.get('pagewidth')
         if s is not None:
@@ -2824,12 +2829,12 @@ def scanAtPagewidthDirectives(aList: list, issue_error_flag: bool = False) -> Op
     return None
 #@+node:ekr.20101022172109.6108: *4* g.scanAtPathDirectives & scanAllAtPathDirectives (deprecated)
 def scanAtPathDirectives(c: Cmdr, aList: list) -> str:
-    g.deprecate()
+    g.deprecated()
     path = c.scanAtPathDirectives(aList)
     return path
 
 def scanAllAtPathDirectives(c: Cmdr, p: Position) -> str:
-    g.deprecate()
+    g.deprecated()
     aList = g.get_directives_dict_list(p)
     path = c.scanAtPathDirectives(aList)
     return path

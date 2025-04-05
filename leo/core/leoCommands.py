@@ -2845,7 +2845,7 @@ class Commands:
                 languages.add(word)
         return len(list(languages)) > 1
     #@+node:ekr.20250404014922.1: *4* --- c: Legacy scanners (deprecated)
-    #@+node:ekr.20080827175609.39: *5* c.scanAllDirectives (deprecate)
+    #@+node:ekr.20080827175609.39: *5* c.scanAllDirectives (deprecated)
     #@@nobeautify
 
     def scanAllDirectives(self, p: Position) -> dict[str, Value]:
@@ -2892,7 +2892,7 @@ class Commands:
             "wrap":         d.get('wrap'),
         }
         return d
-    #@+node:ekr.20080828103146.15: *5* c.scanAtPathDirectives (deprecate)
+    #@+node:ekr.20080828103146.15: *5* c.scanAtPathDirectives (deprecated)
     def scanAtPathDirectives(self, aList: list) -> str:
         """
         Scan aList (created by g.get_directives_dict_list) for @path directives.
