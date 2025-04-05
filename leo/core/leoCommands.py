@@ -2874,7 +2874,7 @@ class Commands:
 
         Return a reasonable default if no @path directive is found.
         """
-        g.deprecate()
+        g.deprecated()
         c = self
         c.scanAtPathDirectivesCount += 1  # An important statistic.
         if c.fileName():
