@@ -3105,8 +3105,6 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             p2 = p.insertAfter()
             parent = p.parent()
         # #60: create relative paths & urls when dragging files.
-        ### aList = g.get_directives_dict_list(parent)
-        ### path = g.scanAtPathDirectives(c, aList)
         path = c.getPath(parent)
         if path:
             fn = os.path.relpath(fn, path)

@@ -571,8 +571,6 @@ class EditCommandsClass(BaseEditCommandsClass):
                 word0.startswith('@auto-')
             )
 
-        ### aList = g.get_directives_dict_list(p)
-        ### path = c.scanAtPathDirectives(aList)
         path = c.getPath(p)
         while c.positionExists(p):
             if atfile(p):  # see if it's a @<file> node of some sort

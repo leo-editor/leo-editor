@@ -254,8 +254,6 @@ def getPath(c, p):
     else:
         return None  # must have a full fledged @path in parents
 
-    ### aList = g.get_directives_dict_list(p)
-    ### path = c.scanAtPathDirectives(aList)
     path = c.getPath(p)
     if not isDirNode(p):  # add file name
         h = p.h.split(None, 1)
@@ -742,8 +740,6 @@ def cmd_PickDir(event):
     """
     c = event.get('c')
     p = c.p
-    ### aList = g.get_directives_dict_list(p)
-    ### path = c.scanAtPathDirectives(aList)
     path = c.getPath(p)
     if p.h.startswith('@'):  # see if it's a @<file> node of some sort
         nodepath = p.h.split(None, 1)[-1]
