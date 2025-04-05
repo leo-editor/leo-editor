@@ -208,29 +208,19 @@ class AtFile:
             'force-newlines-in-at-nosent-bodies')
             # For at.putBody only.
 
-        at.outputList = []  # For stream output.
-        if 0:
-            at.scanAllDirectives(root)
-        else:
-            at.encoding = c.getEncoding(root)
-            lineending = c.getLineEnding(root)
-            at.explicitLineEnding = bool(lineending)
-            at.output_newline = lineending or g.getOutputNewline(c=c)
-            at.page_width = c.getPageWidth(root)
-            at.tab_width = c.getTabWidth(root)
-            # More complex inits.
-            at.language = at.initLanguage(root)
-            at.initSentinelComments(root)
-
+        at.encoding = c.getEncoding(root)
+        lineending = c.getLineEnding(root)
+        at.explicitLineEnding = bool(lineending)
         if g.unitTesting:
             at.output_newline = '\n'
-
-        # Overrides of at.scanAllDirectives...
-        if at.language == 'python':
-            # Encoding directive overrides everything else.
-            encoding = g.getPythonEncodingFromString(root.b)
-            if encoding:
-                at.encoding = encoding
+        else:
+            at.output_newline = lineending or g.getOutputNewline(c=c)
+        at.outputList = []  # For stream output.
+        at.page_width = c.getPageWidth(root)
+        at.tab_width = c.getTabWidth(root)
+        # More complex inits.
+        at.language = at.initLanguage(root)
+        at.initSentinelComments(root)
 
         # Clean root.v.
         if not at.errors and at.root:
@@ -296,12 +286,21 @@ class AtFile:
 
         if root.isAnyAtFileNode():
             # #4323: Set at.language using only p.h and p.b.
-            return at.languageFromAtFileNodeHeadline(root)
-        if root.h.startswith(('@button', '@command')):
-            return 'python'
-        # Language doesn't matter here.
-        # It would be unnecessary/wrong to examine ancestor nodes.
-        return c.target_language or 'python'
+            language = at.languageFromAtFileNodeHeadline(root)
+        elif root.h.startswith(('@button', '@command')):
+            language = 'python'
+        else:
+            # Language doesn't matter here.
+            # It would be unnecessary/wrong to examine ancestor nodes.
+            language = c.target_language or 'python'
+
+        # Override at.encoding.
+        if language == 'python':
+            # Encoding directive overrides everything else.
+            encoding = g.getPythonEncodingFromString(root.b)
+            if encoding:
+                at.encoding = encoding
+        return language
     #@+node:ekr.20041005105605.17: *3* at.Reading
     #@+node:ekr.20041005105605.18: *4* at.Reading (top level)
     #@+node:ekr.20070919133659: *5* at.checkExternalFile
