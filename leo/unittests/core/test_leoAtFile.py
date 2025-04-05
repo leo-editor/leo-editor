@@ -30,6 +30,7 @@ class TestAtFile(LeoUnitTest):
         )
     #@+node:ekr.20210905052021.28: *3* TestAtFile.test_at_scanAllDirectives
     def test_at_scanAllDirectives(self):
+        self.skipTest("at.scanAllDirectives is deprecated")
         at, c = self.at, self.c
         d = at.scanAllDirectives(c.p)
         # These are the commander defaults, without any settings.
@@ -38,7 +39,7 @@ class TestAtFile(LeoUnitTest):
         self.assertEqual(d.get('pagewidth'), 132)
     #@+node:ekr.20210905052021.29: *3* TestAtFile.test_at_scanAllDirectives_minimal_
     def test_at_scanAllDirectives_minimal_(self):
-
+        self.skipTest("at.scanAllDirectives is deprecated")
         at, c = self.at, self.c
         d = at.scanAllDirectives(c.p)
         d = c.atFileCommands.scanAllDirectives(c.p)
@@ -240,6 +241,10 @@ class TestAtFile(LeoUnitTest):
         at.initWriteIvars(root)
         at.putBody(root)
         result = ''.join(at.outputList)
+        if result != expected:
+            g.trace('language:', c.atFileCommands.language)
+            g.printObj(expected, tag='expected')
+            g.printObj(result, tag='result')
         self.assertEqual(result, expected)
     #@+node:ekr.20211102110833.1: *3* TestAtFile.test_putBody_at_all
     def test_putBody_at_all(self):

@@ -209,7 +209,7 @@ class AtFile:
             # For at.putBody only.
 
         at.outputList = []  # For stream output.
-        if 1:
+        if 0:
             at.scanAllDirectives(root)
             # Sets the following ivars:
             # at.encoding
@@ -218,14 +218,16 @@ class AtFile:
             # at.output_newline
             # at.page_width
             # at.tab_width
+            #### at.startSentinelComment, at.endSentinelComment
         else:
             at.encoding = c.getEncoding(root)
             lineending = c.getLineEnding(root)
             at.explicitLineEnding = bool(lineending)
             ### at.language = c.scanForAtLanguage(root)
-            at.output_newline = g.getOutputNewline(c=c)
+            at.output_newline = lineending or g.getOutputNewline(c=c)
             at.page_width = c.getPageWidth(root)
             at.tab_width = c.getTabWidth(root)
+            at.initSentinelComments(root)
 
             # #4323: The hard cases. Set the language and delims using only p.h and p.b.
             ### delims = None
@@ -233,6 +235,9 @@ class AtFile:
                 at.language = at.languageFromAtFileNodeHeadline(root)
                 # We *must* calculate delims when writing.
                 ### delims = at.delimsFromAtFileNodeBody(root)
+                if 0:  ###
+                    print('')
+                    g.trace(at.language)
             elif root.h.startswith(('@button', '@command')):
                 at.language = 'python'
             else:
