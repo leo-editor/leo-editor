@@ -2644,6 +2644,115 @@ def test_g_get_directives_dict(self):
     self.assertEqual(d.get('encoding'), 'utf-8')
     self.assertEqual(d.get('comment'), 'a b c')
     assert not d.get('path'), d.get('path')
+#@+node:ekr.20210905203541.33: *4* TestGlobals.test_g_scanAtHeaderDirectives_header
+def test_g_scanAtHeaderDirectives_header(self):
+    c = self.c
+    aList = g.get_directives_dict_list(c.p)
+    g.scanAtHeaderDirectives(aList)
+#@+node:ekr.20210905203541.35: *4* TestGlobals.test_g_scanAtHeaderDirectives_noheader
+def test_g_scanAtHeaderDirectives_noheader(self):
+    c = self.c
+    aList = g.get_directives_dict_list(c.p)
+    g.scanAtHeaderDirectives(aList)
+#@+node:ekr.20210905203541.36: *4* TestGlobals.test_g_scanAtLineendingDirectives_cr
+def test_g_scanAtLineendingDirectives_cr(self):
+    c = self.c
+    p = c.p
+    p.b = '@lineending cr\n'
+    aList = g.get_directives_dict_list(p)
+    s = g.scanAtLineendingDirectives(aList)
+    self.assertEqual(s, '\r')
+#@+node:ekr.20210905203541.37: *4* TestGlobals.test_g_scanAtLineendingDirectives_crlf
+def test_g_scanAtLineendingDirectives_crlf(self):
+    c = self.c
+    p = c.p
+    p.b = '@lineending crlf\n'
+    aList = g.get_directives_dict_list(p)
+    s = g.scanAtLineendingDirectives(aList)
+    self.assertEqual(s, '\r\n')
+#@+node:ekr.20210905203541.38: *4* TestGlobals.test_g_scanAtLineendingDirectives_lf
+def test_g_scanAtLineendingDirectives_lf(self):
+    c = self.c
+    p = c.p
+    p.b = '@lineending lf\n'
+    aList = g.get_directives_dict_list(p)
+    s = g.scanAtLineendingDirectives(aList)
+    self.assertEqual(s, '\n')
+#@+node:ekr.20210905203541.39: *4* TestGlobals.test_g_scanAtLineendingDirectives_nl
+def test_g_scanAtLineendingDirectives_nl(self):
+    c = self.c
+    p = c.p
+    p.b = '@lineending nl\n'
+    aList = g.get_directives_dict_list(p)
+    s = g.scanAtLineendingDirectives(aList)
+    self.assertEqual(s, '\n')
+#@+node:ekr.20210905203541.40: *4* TestGlobals.test_g_scanAtLineendingDirectives_platform
+def test_g_scanAtLineendingDirectives_platform(self):
+    c = self.c
+    p = c.p
+    p.b = '@lineending platform\n'
+    aList = g.get_directives_dict_list(p)
+    s = g.scanAtLineendingDirectives(aList)
+    if sys.platform.startswith('win'):
+        self.assertEqual(s, '\r\n')  # pragma: no cover
+    else:
+        self.assertEqual(s, '\n')  # pragma: no cover
+#@+node:ekr.20210905203541.42: *4* TestGlobals.test_g_scanAtPagewidthDirectives_40
+def test_g_scanAtPagewidthDirectives_40(self):
+    c = self.c
+    p = c.p
+    p.b = '@pagewidth 40\n'
+    aList = g.get_directives_dict_list(p)
+    n = g.scanAtPagewidthDirectives(aList)
+    self.assertEqual(n, 40)
+#@+node:ekr.20210905203541.41: *4* TestGlobals.test_g_scanAtPagewidthDirectives_minus_40
+def test_g_scanAtPagewidthDirectives_minus_40(self):
+    c = self.c
+    p = c.p
+    p.b = '@pagewidth -40\n'
+    aList = g.get_directives_dict_list(p)
+    n = g.scanAtPagewidthDirectives(aList)
+    # The @pagewidth directive in the parent should control.
+    # Depending on how this test is run, the result could be 80 or None.
+    assert n in (None, 80), repr(n)
+#@+node:ekr.20210905203541.43: *4* TestGlobals.test_g_scanAtTabwidthDirectives_6
+def test_g_scanAtTabwidthDirectives_6(self):
+    c = self.c
+    p = c.p
+    p.b = '@tabwidth 6\n'
+    aList = g.get_directives_dict_list(p)
+    n = g.scanAtTabwidthDirectives(aList)
+    self.assertEqual(n, 6)
+#@+node:ekr.20210905203541.44: *4* TestGlobals.test_g_scanAtTabwidthDirectives_minus_6
+def test_g_scanAtTabwidthDirectives_minus_6(self):
+    c = self.c
+    p = c.p
+    p.b = '@tabwidth -6\n'
+    aList = g.get_directives_dict_list(p)
+    n = g.scanAtTabwidthDirectives(aList)
+    self.assertEqual(n, -6)
+#@+node:ekr.20210905203541.45: *4* TestGlobals.test_g_scanAtWrapDirectives_nowrap
+def test_g_scanAtWrapDirectives_nowrap(self):
+    c = self.c
+    p = c.p
+    p.b = '@nowrap\n'
+    aList = g.get_directives_dict_list(p)
+    s = g.scanAtWrapDirectives(aList)
+    assert s is False, repr(s)
+#@+node:ekr.20210905203541.46: *4* TestGlobals.test_g_scanAtWrapDirectives_wrap_with_wrap_
+def test_g_scanAtWrapDirectives_wrap_with_wrap_(self):
+    c = self.c
+    p = c.p
+    p.b = '@wrap\n'
+    aList = g.get_directives_dict_list(p)
+    s = g.scanAtWrapDirectives(aList)
+    assert s is True, repr(s)
+#@+node:ekr.20210905203541.47: *4* TestGlobals.test_g_scanAtWrapDirectives_wrap_without_nowrap_
+def test_g_scanAtWrapDirectives_wrap_without_nowrap_(self):
+    c = self.c
+    aList = g.get_directives_dict_list(c.p)
+    s = g.scanAtWrapDirectives(aList)
+    assert s is None, repr(s)
 #@-all
 #@@nosearch
 #@-leo

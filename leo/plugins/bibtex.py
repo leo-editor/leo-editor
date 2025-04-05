@@ -174,18 +174,9 @@ def readBibTexFileIntoTree(c, fn, p):
     """Import a BibTeX file into a @bibtex tree."""
     root = p.copy()
     g.es('reading:', fn)
-    s, e = g.readFileIntoString(fn)
+    s, _e = g.readFileIntoString(fn)
     if not s.strip():
         return
-    ###
-        # # Read the encoded bytes for g.getEncodingAt()
-        # s_b = g.readFileIntoEncodedString(fn)
-        # if not s_b:
-            # return
-        # encoding: str = g.getEncodingAt(p, s_b)
-        # s = g.toUnicode(s_b, encoding=encoding)
-        # if not s.strip():
-            # return
     aList: list[tuple] = []  # A list of tuples (h, b).
     strings: list[str] = []
     entries: list[tuple] = []
@@ -225,7 +216,6 @@ def writeTreeAsBibTex(c, fn, root):
                 entries.append('%s{%s,\n%s}\n\n' % (kind, rest, p.b.rstrip()))
     if strings or entries:
         g.es('writing:', fn)
-        ### encoding = g.getEncodingAt(root)
         encoding = c.getEncoding(root)
         with open(fn, 'wb') as f:
             s = ''.join(strings + entries)

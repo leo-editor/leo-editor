@@ -1615,6 +1615,11 @@ class Commands:
                     return encoding
                 g.error("invalid @encoding:", encoding)
         return c.config.default_derived_file_encoding or 'utf-8'
+    #@+node:ekr.20250405141653.1: *5* c.getLanguage
+    def getLanguage(self, p: Position) -> str:
+        """A thin wrapper for g.getLanguageFromAncestorAtFileNode"""
+        c = self
+        return g.getLanguageFromAncestorAtFileNode(p)
     #@+node:ekr.20250405053842.1: *5* c.getLineEnding(new)
     # Use a regex to avoid allocating temp strings.
     at_lineending_pattern = re.compile(r'^@lineending\s+([\w]+)', re.MULTILINE)

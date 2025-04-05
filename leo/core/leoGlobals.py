@@ -2685,21 +2685,14 @@ def getLanguageFromAncestorAtFileNode(p: Position) -> Optional[str]:
     # Return the default language for the commander.
     c = p.v.context
     return c.target_language or 'python'
-#@+node:ekr.20150325075144.1: *3* g.getLanguageFromPosition (simplify!!)
+#@+node:ekr.20150325075144.1: *3* g.getLanguageFromPosition (deprecated)
 def getLanguageAtPosition(c: Cmdr, p: Position) -> str:
     """
     Return the language in effect at position p.
     This is always a lowercase language name, never None.
     """
-    aList = g.get_directives_dict_list(p)
-    d = g.scanAtCommentAndAtLanguageDirectives(aList)
-    language = (
-        d and d.get('language') or
-        g.getLanguageFromAncestorAtFileNode(p) or
-        c.config.getString('target-language') or
-        'python'
-    )
-    return language.lower()
+    g.deprecated()
+    return c.getLanguage(p)
 #@+node:ekr.20031218072017.1386: *3* g.getOutputNewline
 def getOutputNewline(c: Cmdr = None, name: str = None) -> str:
     """Convert the name of a line ending to the line ending itself.
@@ -2829,7 +2822,7 @@ def scanAtPagewidthDirectives(aList: list, issue_error_flag: bool = False) -> Op
             if issue_error_flag and not g.unitTesting:
                 g.error("ignoring @pagewidth", s)
     return None
-#@+node:ekr.20101022172109.6108: *4* g.scanAtPathDirectives & scanAllAtPathDirectives (deprecate)
+#@+node:ekr.20101022172109.6108: *4* g.scanAtPathDirectives & scanAllAtPathDirectives (deprecated)
 def scanAtPathDirectives(c: Cmdr, aList: list) -> str:
     g.deprecate()
     path = c.scanAtPathDirectives(aList)
@@ -2840,9 +2833,10 @@ def scanAllAtPathDirectives(c: Cmdr, p: Position) -> str:
     aList = g.get_directives_dict_list(p)
     path = c.scanAtPathDirectives(aList)
     return path
-#@+node:ekr.20080827175609.37: *4* g.scanAtTabwidthDirectives & scanAllAtTabWidthDirectives (deprecate)
+#@+node:ekr.20080827175609.37: *4* g.scanAtTabwidthDirectives & scanAllAtTabWidthDirectives (deprecated)
 def scanAtTabwidthDirectives(aList: list, issue_error_flag: bool = False) -> Optional[int]:
     """Scan aList for @tabwidth directives."""
+    g.deprecated()
     for d in aList:
         s = d.get('tabwidth')
         if s is not None:
@@ -2855,6 +2849,7 @@ def scanAtTabwidthDirectives(aList: list, issue_error_flag: bool = False) -> Opt
 
 def scanAllAtTabWidthDirectives(c: Cmdr, p: Position) -> Optional[int]:
     """Scan p and all ancestors looking for @tabwidth directives."""
+    g.deprecated()
     if c and p:
         aList = g.get_directives_dict_list(p)
         val = g.scanAtTabwidthDirectives(aList)
@@ -2865,6 +2860,7 @@ def scanAllAtTabWidthDirectives(c: Cmdr, p: Position) -> Optional[int]:
 #@+node:ekr.20080831084419.4: *4* g.scanAtWrapDirectives & scanAllAtWrapDirectives (deprecated)
 def scanAtWrapDirectives(aList: list, issue_error_flag: bool = False) -> Optional[bool]:
     """Scan aList for @wrap and @nowrap directives."""
+    g.deprecated()
     for d in aList:
         if d.get('wrap') is not None:
             return True
@@ -2874,6 +2870,7 @@ def scanAtWrapDirectives(aList: list, issue_error_flag: bool = False) -> Optiona
 
 def scanAllAtWrapDirectives(c: Cmdr, p: Position) -> Optional[bool]:
     """Scan p and all ancestors looking for @wrap/@nowrap directives."""
+    g.deprecated()
     if c and p:
         default = bool(c and c.config.getBool("body-pane-wraps"))
         aList = g.get_directives_dict_list(p)
