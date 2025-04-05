@@ -109,7 +109,7 @@ def convertAllBlanks(self: Self, event: LeoKeyEvent = None) -> None:
     if g.app.batchMode:
         c.notValidInBatchMode(undoType)
         return
-    tabWidth = c.scanNearestAtTabWidthDirective(c.p)
+    tabWidth = c.getTabWidth(c.p)
     count = 0
     u.beforeChangeGroup(current, undoType)
     for p in current.self_and_subtree():
@@ -150,7 +150,7 @@ def convertAllTabs(self: Self, event: LeoKeyEvent = None) -> None:
     if g.app.batchMode:
         c.notValidInBatchMode(undoType)
         return
-    tabWidth = c.scanNearestAtTabWidthDirective(c.p)
+    tabWidth = c.getTabWidth(c.p)
     count = 0
     u.beforeChangeGroup(current, undoType)
     for p in current.self_and_subtree():
@@ -192,8 +192,7 @@ def convertBlanks(self: Self, event: LeoKeyEvent = None) -> bool:
     oldYview = w.getYScrollPosition()
     w.selectAllText()
     head, lines, tail, oldSel, oldYview = c.getBodyLines()
-    # Use the relative @tabwidth, not the global one.
-    tabWidth = c.scanNearestAtTabWidthDirective(c.p)
+    tabWidth = c.getTabWidth(c.p)
     # Calculate the result.
     changed, result = False, []
     for line in lines:
@@ -224,8 +223,7 @@ def convertTabs(self: Self, event: LeoKeyEvent = None) -> bool:
     # Data...
     w.selectAllText()
     head, lines, tail, oldSel, oldYview = self.getBodyLines()
-    # Use the relative @tabwidth, not the global one.
-    tabWidth = c.scanNearestAtTabWidthDirective(c.p)
+    tabWidth = c.getTabWidth(c.p)
     # Calculate the result.
     changed, result = False, []
     for line in lines:

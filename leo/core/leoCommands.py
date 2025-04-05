@@ -1587,7 +1587,6 @@ class Commands:
     def getTabWidth(self, p: Position) -> int:
         """Return the tab width in effect at p."""
         c = self
-        ### return g.scanAllAtTabWidthDirectives(c, p)
         return c.scanNearestAtTabWidthDirective(p)
     #@+node:ekr.20040803112200: *5* c.is...Position
     #@+node:ekr.20040803155551: *6* c.currentPositionIsRootPosition

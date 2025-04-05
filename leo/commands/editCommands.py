@@ -1586,7 +1586,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         if not s:
             return
         # Insert or delete spaces instead of tabs when negative tab width is in effect.
-        width = c.scanNearestAtTabWidthDirective(c.p)
+        width = c.getTabWidth(c.p)
         if ch == '\t' and width < 0:
             ch = ' ' * abs(width)
         self.beginCommand(w, undoType=undoType)
