@@ -186,7 +186,7 @@ class AtFile:
 
         # Set all ivars to reasonable defaults.
         self.initAllIvars(root)
-    #@+node:ekr.20041005105605.15: *4* at.initWriteIvars (the big switch)
+    #@+node:ekr.20041005105605.15: *4* at.initWriteIvars (new)
     def initWriteIvars(self, root: Position) -> Optional[str]:
         """
         Compute default values of all write-related ivars.
@@ -3144,74 +3144,6 @@ class AtFile:
             9: '@verbatim',
         }
         return d.get(kind) or f"<unknown AtFile class constant> {kind!r}"
-    #@+node:ekr.20080923070954.4: *4* at.scanAllDirectives (to be removed)
-    def scanAllDirectives(self, p: Position) -> dict[str, Value]:
-        """
-        Scan p and p's ancestors looking for directives,
-        setting corresponding AtFile ivars.
-        """
-        g.deprecated()  # This method is deprecated
-        at, c = self, self.c
-        d = c.scanAllDirectives(p)
-
-        # #4323: The hard cases. Set the language and delims using only p.h and p.b.
-        delims = None
-        if p.isAnyAtFileNode():  #4323: Look no further.
-            language = at.languageFromAtFileNodeHeadline(p)
-            # We *must* calculate delims when writing.
-            delims = at.delimsFromAtFileNodeBody(p)
-        elif p.h.startswith(('@button', '@command')):
-            language = 'python'
-        else:
-            # Language doesn't matter here.
-            # It would be unnecessary/wrong to examine ancestor nodes.
-            language = c.target_language or 'python'
-        at.language = language
-
-        # Make sure to define delims.
-        if delims in (None, (None, None, None)):  # #4256
-            delims = g.set_delims_from_language(language)
-
-        #@+<< Set comment strings from delims >>
-        #@+node:ekr.20080923070954.13: *5* << Set comment strings from delims >> (at.scanAllDirectives)
-        delim1, delim2, delim3 = delims
-        # Use single-line comments if we have a choice.
-        # delim1,delim2,delim3 now correspond to line,start,end
-        if delim1:
-            at.startSentinelComment = delim1
-            at.endSentinelComment = ""  # Must not be None.
-        elif delim2 and delim3:
-            at.startSentinelComment = delim2
-            at.endSentinelComment = delim3
-        else:  # pragma: no cover
-            #
-            # Emergency!
-            #
-            # Issue an error only if at.language has been set.
-            # This suppresses a message from the markdown importer.
-            if not g.unitTesting and at.language:
-                g.trace(repr(at.language), g.callers())
-                g.es_print(f"unknown language: {at.language}")
-                g.es_print('using Python comment delimiters')
-            at.startSentinelComment = "#"  # This should never happen!
-            at.endSentinelComment = ""
-        #@-<< Set comment strings from delims >>
-
-        # Easy cases
-        at.encoding = d.get('encoding') or c.config.default_derived_file_encoding
-        lineending = d.get('lineending')
-        at.explicitLineEnding = bool(lineending)
-        at.output_newline = lineending or g.getOutputNewline(c=c)
-        at.page_width = d.get('pagewidth') or c.page_width
-        at.tab_width = d.get('tabwidth') or c.tab_width
-        return {
-            "encoding": at.encoding,
-            "language": at.language,
-            "lineending": at.output_newline,
-            "pagewidth": at.page_width,
-            "path": d.get('path'),
-            "tabwidth": at.tab_width,
-        }
     #@+node:ekr.20120110174009.9965: *4* at.shouldPromptForDangerousWrite
     def shouldPromptForDangerousWrite(self, fn: str, p: Position) -> bool:  # pragma: no cover
         """
