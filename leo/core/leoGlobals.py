@@ -3145,7 +3145,7 @@ def getBaseDirectory(c: Cmdr) -> str:
     @string relative-path-base-directory.
     """
     return ''
-#@+node:ekr.20170223093758.1: *3* g.getEncodingAt
+#@+node:ekr.20170223093758.1: *3* g.getEncodingAt (deprecated)
 def getEncodingAt(p: Position, b: bytes = None) -> str:
     """
     Return the encoding in effect at p and/or for string s.
@@ -3153,6 +3153,7 @@ def getEncodingAt(p: Position, b: bytes = None) -> str:
     Read logic:  s is not None.
     Write logic: s is None.
     """
+    g.deprecated()
     # A BOM overrides everything.
     if b:
         e, junk_s = g.stripBOM(b)
