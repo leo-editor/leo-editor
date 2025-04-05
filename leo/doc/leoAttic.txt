@@ -2624,6 +2624,26 @@ def test_c_scanAtPathDirectives_same_name_subdirs(self):
     path = c.scanAtPathDirectives(aList)
     endpath = g.os_path_normpath('again/again')
     self.assertTrue(path and path.endswith(endpath))
+#@+node:ekr.20210905203541.16: *4* TestGlobals.test_g_get_directives_dict
+def test_g_get_directives_dict(self):
+    c = self.c
+    p = c.p
+    # Note: @comment must follow @language.
+    p.b = self.prep(
+    """
+        ATlanguage python
+        ATcomment a b c
+        ATtabwidth -8
+        ATpagewidth 72
+        ATencoding utf-8
+    """).replace('AT', '@')
+    d = g.get_directives_dict(p)
+    self.assertEqual(d.get('language'), 'python')
+    self.assertEqual(d.get('tabwidth'), '-8')
+    self.assertEqual(d.get('pagewidth'), '72')
+    self.assertEqual(d.get('encoding'), 'utf-8')
+    self.assertEqual(d.get('comment'), 'a b c')
+    assert not d.get('path'), d.get('path')
 #@-all
 #@@nosearch
 #@-leo

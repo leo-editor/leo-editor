@@ -2888,15 +2888,17 @@ def scanForAtIgnore(c: Cmdr, p: Position) -> bool:
     if g.unitTesting:
         return False  # For unit tests.
     for p in p.self_and_parents(copy=False):
-        d = g.get_directives_dict(p)
-        if 'ignore' in d:
+        ### d = g.get_directives_dict(p)
+        ### if 'ignore' in d:
+        if p.findDirective('ignore'):
             return True
     return False
-#@+node:ekr.20040712084911.1: *3* g.scanForAtLanguage
+#@+node:ekr.20040712084911.1: *3* g.scanForAtLanguage (deprecated)
 def scanForAtLanguage(c: Cmdr, p: Position) -> str:
     """Scan position p and p's ancestors looking only for @language and @ignore directives.
 
     Returns the language found, or c.target_language."""
+    g.deprecated()
     if c and p:
         for p in p.self_and_parents(copy=False):
             d = g.get_directives_dict(p)
