@@ -2888,8 +2888,6 @@ def scanForAtIgnore(c: Cmdr, p: Position) -> bool:
     if g.unitTesting:
         return False  # For unit tests.
     for p in p.self_and_parents(copy=False):
-        ### d = g.get_directives_dict(p)
-        ### if 'ignore' in d:
         if p.findDirective('ignore'):
             return True
     return False
