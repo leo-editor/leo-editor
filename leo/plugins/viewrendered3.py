@@ -3762,7 +3762,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             vr3 = ViewRenderedController3(c)
 
         # Update the current path.
-        path = g.scanAllAtPathDirectives(c, p) or c.getPath(p)
+        path = c.getPath(p)
         if not os.path.isdir(path):
             path = os.path.dirname(path)
         if os.path.isdir(path):
@@ -3905,7 +3905,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
     def convert_to_pandoc(self, s):
         """Convert s to html using the asciidoctor or asciidoc processor."""
         c, p = self.c, self.c.p
-        path = g.scanAllAtPathDirectives(c, p) or c.getPath(p)
+        path = c.getPath(p)
         if not os.path.isdir(path):
             path = os.path.dirname(path)
         if os.path.isdir(path):
@@ -4159,7 +4159,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             vr3 = ViewRenderedController3(c)
 
         # Update the current path.
-        path = g.scanAllAtPathDirectives(c, p) or c.getPath(p)
+        path = c.getPath(p)
         if not os.path.isdir(path):
             path = os.path.dirname(path)
         if os.path.isdir(path):
