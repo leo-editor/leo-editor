@@ -314,7 +314,7 @@ class CPrettyPrinter:
         u.beforeChangeGroup(c.p, undoType)
         changed = False
         for p in c.p.self_and_subtree():
-            if c.scanForAtLanguage(p) == "c":
+            if c.getLanguage(p) == "c":
                 bunch = u.beforeChangeNodeContents(p)
                 s = self.indent(p)
                 if p.b != s:

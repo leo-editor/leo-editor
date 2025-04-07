@@ -657,7 +657,7 @@ class Commands:
             return None
 
         # Get the language and extension.
-        language =  c.scanForAtLanguage(p)
+        language =  c.getLanguage(p)
         ext = g.app.language_extension_dict.get(language)
         if not ext:
             print(f"{tag}: No extension for {language}")
@@ -1617,7 +1617,8 @@ class Commands:
         return c.config.default_derived_file_encoding or 'utf-8'
     #@+node:ekr.20250405141653.1: *5* c.getLanguage (new)
     def getLanguage(self, p: Position) -> str:
-        """Return the language in effect at node p."""
+        """
+        Return the language in effect at node p, checking that the language is valid."""
         v0 = p.v
         seen: set[VNode]
 
@@ -1912,15 +1913,6 @@ class Commands:
 
     rootVnode = rootPosition
     findRootPosition = rootPosition
-    #@+node:ekr.20250404165841.1: *5* c.scanForAtLanguage (new)
-    def scanForAtLanguage(self, p: Position) -> str:
-        """Return the language in effect for p."""
-        c = self
-        language = c.getLanguage(p)
-        if language:
-            assert g.isValidLanguage(language)
-            return language
-        return c.target_language or 'python'
     #@+node:ekr.20131017174814.17480: *5* c.shouldBeExpanded
     def shouldBeExpanded(self, p: Position) -> bool:
         """Return True if the node at position p should be expanded."""
@@ -2585,7 +2577,7 @@ class Commands:
                 if count % 2000 == 0:
                     g.enl()
                 #@-<< print dots >>
-            if c.scanForAtLanguage(p) == "python":
+            if c.getLanguage(p) == "python":
                 if not g.scanForAtSettings(p) and (
                     not ignoreAtIgnore or not g.scanForAtIgnore(c, p)
                 ):
@@ -2624,7 +2616,7 @@ class Commands:
                 if count % 2000 == 0:
                     g.enl()
                 #@-<< print dots >>
-            if c.scanForAtLanguage(p) == "python":
+            if c.getLanguage(p) == "python":
                 if not ignoreAtIgnore or not g.scanForAtIgnore(c, p):
                     try:
                         c.checkPythonNode(p)

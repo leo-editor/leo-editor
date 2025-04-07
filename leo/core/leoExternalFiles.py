@@ -304,7 +304,7 @@ class ExternalFilesController:
                     ext = g.os_path_splitext(fn)[1]
                     break
         if not ext:
-            language = c.scanForAtLanguage(p)
+            language = c.getLanguage(p)
             ext = g.app.language_extension_dict.get(language)
         if not ext:
             ext = '.txt'

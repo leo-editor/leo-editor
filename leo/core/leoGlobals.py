@@ -6691,7 +6691,7 @@ def extractExecutableString(c: Cmdr, p: Position, s: str) -> str:
         return s  # Regrettable, but necessary.
 
     # Return s if no @language in effect. Should never happen.
-    language = c.scanForAtLanguage(p)
+    language = c.getLanguage(p)
     if not language:
         return s
     #
