@@ -1590,7 +1590,7 @@ class Commands:
 
         c = self
         # The headline has higher precedence because it is more visible.
-        for p2 in p.copy().self_and_parents():
+        for p2 in p.self_and_parents():
             for s in (p.h, p.b):
                 for m in c.at_comment_pattern.finditer(p2.b):
                     comment = m.group(1)
@@ -1605,17 +1605,19 @@ class Commands:
 
     def getEncoding(self, p: Position) -> str:
         """
-        Scan p.b and all ancestors for the first @encoding direcive.
+        Scan p and all ancestors for the first @encoding direcive.
         
         Return c.config.default_derived_file_encoding or 'utf-8' by default.
         """
         c = self
+        # The headline has higher precedence because it is more visible.
         for p2 in p.self_and_parents():
-            for m in c.at_encoding_pattern.finditer(p2.b):
-                encoding = m.group(1)
-                if g.isValidEncoding(encoding):
-                    return encoding
-                g.error("invalid @encoding:", encoding)
+            for s in (p.h, p.b):
+                for m in c.at_encoding_pattern.finditer(p2.b):
+                    encoding = m.group(1)
+                    if g.isValidEncoding(encoding):
+                        return encoding
+                    g.error("invalid @encoding:", encoding)
         return c.config.default_derived_file_encoding or 'utf-8'
     #@+node:ekr.20250405141653.1: *5* c.getLanguage (new)
     def getLanguage(self, p: Position) -> str:
@@ -1729,7 +1731,7 @@ class Commands:
         Return an absolute path or a reasonable default.
         """
         c = self
-        p2, paths = p.copy(), []
+        paths = []
         for p2 in p.self_and_parents():
             if path := c.getPathFromNode(p2):
                 paths.append(path)
