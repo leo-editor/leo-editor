@@ -2871,20 +2871,6 @@ class Commands:
         c = self
         return c.getPath(p)
 
-    #@+node:ekr.20250407053738.1: *4* c.getNodeFileName (deprecated)
-    def getNodeFileName(self, p: Position) -> str:
-        """
-        Return the full file name at node p,
-        including effects of all @path directives.
-        Return '' if p is no kind of @file node.
-        """
-        g.deprecated()
-        c = self
-        for p in p.self_and_parents(copy=False):
-            name = p.anyAtFileNodeName()
-            if name:
-                return c.fullPath(p)  # #1914.
-        return ''
     #@+node:ekr.20171123135625.32: *4* c.hasAmbiguousLanguage
     def hasAmbiguousLanguage(self, p: Position) -> int:
         """Return True if p.b contains different @language directives."""
