@@ -2695,12 +2695,10 @@ class Commands:
     #@+node:ekr.20230402232100.1: *4* c.fullPath
     def fullPath(self, p: Position) -> str:
         """
-        Return the full path in effect at p.
-
-        If p is an @<file> node, return the path, including the filename.
+        Return the absolute path in effect at p.
+        
+        Return the path to an external file if p is an @<file> node.
         Otherwise the return the path to the enclosing directory.
-
-        Neither the path nor the fileName will be created if it does not exist.
         """
         c = self
         path = c.getPath(p)
