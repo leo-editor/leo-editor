@@ -3025,13 +3025,6 @@ class AtFile:
         d = p.v.tempAttributes.get('read-path', {})
         d['path'] = path
         p.v.tempAttributes['read-path'] = d
-    #@+node:ekr.20250401065019.1: *4* at.languageFromAtFileNodeHeadline
-    def languageFromAtFileNodeHeadline(self, p: Position) -> str:
-        """Return the language implied by p.h."""
-        assert p.isAnyAtFileNode(), repr(p)
-        c = self.c
-        return g.language_from_headline(p) or c.target_language
-
     #@+node:ekr.20090712050729.6017: *4* at.promptForDangerousWrite
     def promptForDangerousWrite(self, fileName: str, message: str = None) -> bool:  # pragma: no cover
         """Raise a dialog asking the user whether to overwrite an existing file."""
