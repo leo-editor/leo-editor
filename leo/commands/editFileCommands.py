@@ -1168,7 +1168,8 @@ class GitDiffController:
                 ))
                 if ''.join(body).strip():
                     body.insert(0, '@ignore\n@nosearch\n@language patch\n')
-                    language = self.find_language(c2, p_in_c)  # #4095.
+                    # #4095.
+                    language = c2.getLanguage(p_in_c) if p_in_c else c2.target_language
                     body.append(f"@language {language}\n")
                 else:
                     body = ['Only headline has changed']
@@ -1253,12 +1254,6 @@ class GitDiffController:
             if p.v.fileIndex == gnx:
                 return p
         return None
-    #@+node:ekr.20241012044745.1: *4* gdc.find_language
-    def find_language(self, c: Cmdr, p: Position) -> str:
-        """Return the @language directive in effect at p."""
-        if not p:
-            return c.target_language
-        return c.getLanguage(p)
     #@+node:ekr.20170806094321.5: *4* gdc.finish
     def finish(self) -> None:
         """Finish execution of this command."""

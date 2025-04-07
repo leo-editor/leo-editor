@@ -1615,7 +1615,7 @@ class Commands:
                     return encoding
                 g.error("invalid @encoding:", encoding)
         return c.config.default_derived_file_encoding or 'utf-8'
-    #@+node:ekr.20250405141653.1: *5* c.getLanguage (change later)
+    #@+node:ekr.20250405141653.1: *5* c.getLanguage (new)
     def getLanguage(self, p: Position) -> str:
         """Return the language in effect at node p."""
         v0 = p.v
