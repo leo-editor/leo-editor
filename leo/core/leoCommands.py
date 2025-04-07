@@ -1756,9 +1756,12 @@ class Commands:
 
         # The headline has higher precedence because it is more visible.
         paths: list[str] = []
-        for s in (p.h, p.b):
+        for kind, s in (('head', p.h), ('body', p.b)):
             for m in c.at_path_pattern.finditer(s):
-                if path := get_path(m):
+                if kind == 'body' and p.isAtFileNode():
+                    message = '@path is not allowed in the body text of @file nodes\n'
+                    g.print_unique_message(message)
+                elif path := get_path(m):
                     paths.append(path)
             if paths:
                 break
