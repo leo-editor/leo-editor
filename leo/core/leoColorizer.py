@@ -830,7 +830,7 @@ class BaseColorizer:
     def scanLanguageDirectives(self, p: Position) -> str:
         """Return language based on the directives in p's ancestors."""
         c = self.c
-        language = g.getLanguageFromAncestorAtFileNode(p)
+        language = c.getLanguage(p)
         return language or c.target_language
     #@+node:ekr.20170127142001.7: *4* BaseColorizer.useSyntaxColoring & helper
     def useSyntaxColoring(self, p: Position) -> bool:
@@ -2852,7 +2852,7 @@ class JEditColorizer(BaseColorizer):
                 return self.state_number_cache_dict.get(n)
             c = self.c
             p = c.p
-            language = g.getLanguageFromAncestorAtFileNode(p)
+            language = c.getLanguage(p)
             self.state_number_cache_dict[n] = language or c.target_language
             return language or c.target_language
 
@@ -3153,7 +3153,7 @@ class PygmentsColorizer(BaseColorizer):
         A hack: we will monkey-patch g.isValidLanguage to be this method.
 
         Without this hack this class would have to define its own copy of the
-        (complex!) g.getLanguageFromAncestorAtFileNode function.
+        (complex!) c.getLanguage function.
         """
         lexer_name = 'python3' if language == 'python' else language
         try:
@@ -3405,7 +3405,7 @@ class QScintillaColorizer(BaseColorizer):
             if language:
                 return language
         #  Get the language from the nearest ancestor @<file> node.
-        language = g.getLanguageFromAncestorAtFileNode(root) or c.target_language
+        language = c.getLanguage(root)
         return language
     #@+node:ekr.20140906081909.18718: *3* qsc.changeLexer
     def changeLexer(self, language: str) -> None:

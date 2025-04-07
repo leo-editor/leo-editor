@@ -1258,7 +1258,7 @@ class GitDiffController:
         """Return the @language directive in effect at p."""
         if not p:
             return c.target_language
-        return g.getLanguageFromAncestorAtFileNode(p) or c.target_language
+        return c.getLanguage(p)
     #@+node:ekr.20170806094321.5: *4* gdc.finish
     def finish(self) -> None:
         """Finish execution of this command."""

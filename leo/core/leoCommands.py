@@ -877,7 +877,7 @@ class Commands:
             otherwise use the file extension.
             """
             return (
-                g.getLanguageFromAncestorAtFileNode(c.p)
+                c.getLanguage(c.p)
                 or LANGUAGE_EXTENSION_MAP.get(ext, None)
             )
 
@@ -1595,7 +1595,7 @@ class Commands:
                 return g.set_delims_from_string(comment)
 
         # Return the default comment delims.
-        default_language = g.getLanguageFromAncestorAtFileNode(p) or c.target_language or 'python'
+        default_language = c.getLanguage(p) or c.target_language or 'python'
         return g.set_delims_from_language(default_language)
     #@+node:ekr.20250404072805.1: *5* c.getEncoding (new)
     # Use a regex to avoid allocating temp strings.
@@ -1615,10 +1615,74 @@ class Commands:
                     return encoding
                 g.error("invalid @encoding:", encoding)
         return c.config.default_derived_file_encoding or 'utf-8'
-    #@+node:ekr.20250405141653.1: *5* c.getLanguage
+    #@+node:ekr.20250405141653.1: *5* c.getLanguage (change later)
     def getLanguage(self, p: Position) -> str:
-        """A thin wrapper for g.getLanguageFromAncestorAtFileNode"""
-        return g.getLanguageFromAncestorAtFileNode(p)
+        """Return the language in effect at node p."""
+        v0 = p.v
+        seen: set[VNode]
+
+        # The same generator as in v.setAllAncestorAtFileNodesDirty.
+        # Original idea by Виталије Милошевић (Vitalije Milosevic).
+        # Modified by EKR.
+
+        def v_and_parents(v: VNode) -> Generator:
+            if v in seen:
+                return
+            seen.add(v)
+            yield v
+            for parent_v in v.parents:
+                if parent_v not in seen:
+                    yield from v_and_parents(parent_v)
+
+        # First, see if p contains any @language directive.
+        language = g.findFirstValidAtLanguageDirective(p.b)
+        if language:
+            return language
+
+        # Passes 1 and 2: Search body text for unambiguous @language directives.
+
+        # Pass 1: Search body text in direct parents for unambiguous @language directives.
+        for p2 in p.self_and_parents(copy=False):
+            languages = g.findAllValidLanguageDirectives(p2.v.b)
+            if len(languages) == 1:  # An unambiguous language
+                return languages[0]
+
+        # Pass 2: Search body text in extended parents for unambiguous @language directives.
+        seen = set([v0.context.hiddenRootNode])
+        for v in v_and_parents(v0):
+            languages = g.findAllValidLanguageDirectives(v.b)
+            if len(languages) == 1:  # An unambiguous language
+                return languages[0]
+
+        # Passes 3 & 4: Use the file extension in @<file> nodes.
+
+        def get_language_from_headline(v: VNode) -> Optional[str]:
+            """Return the extension for @<file> nodes."""
+            if v.isAnyAtFileNode():
+                name = v.anyAtFileNodeName()
+                junk, ext = g.os_path_splitext(name)
+                ext = ext[1:]  # strip the leading period.
+                language = g.app.extension_dict.get(ext)
+                if g.isValidLanguage(language):
+                    return language
+            return None
+
+        # Pass 3: Use file extension in headline of @<file> in direct parents.
+        for p2 in p.self_and_parents(copy=False):
+            language = get_language_from_headline(p2.v)
+            if language:
+                return language
+
+        # Pass 4: Use file extension in headline of @<file> nodes in extended parents.
+        seen = set([v0.context.hiddenRootNode])
+        for v in v_and_parents(v0):
+            language = get_language_from_headline(v)
+            if language:
+                return language
+
+        # Return the default language for the commander.
+        c = p.v.context
+        return c.target_language or 'python'
     #@+node:ekr.20250405053842.1: *5* c.getLineEnding(new)
     # Use a regex to avoid allocating temp strings.
     at_lineending_pattern = re.compile(r'^@lineending\s+([\w]+)', re.MULTILINE)
@@ -1852,7 +1916,7 @@ class Commands:
     def scanForAtLanguage(self, p: Position) -> str:
         """Return the language in effect for p."""
         c = self
-        language = g.getLanguageFromAncestorAtFileNode(c.p)
+        language = c.getLanguage(p)
         if language:
             assert g.isValidLanguage(language)
             return language
@@ -2856,7 +2920,7 @@ class Commands:
         c = self
         p = p or c.p
         # Defaults...
-        default_language = g.getLanguageFromAncestorAtFileNode(p) or c.target_language or 'python'
+        default_language = c.getLanguage(p) or c.target_language or 'python'
         default_delims = g.set_delims_from_language(default_language)
         wrap = c.config.getBool("body-pane-wraps")
         table = (  # type:ignore
