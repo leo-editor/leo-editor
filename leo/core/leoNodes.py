@@ -699,7 +699,7 @@ class Position:
     at_directive_pattern = re.compile(r'@([\w]+)', re.MULTILINE)
 
     def findDirective(self, directive_name: str) -> bool:
-        """Return True if the given directive occurs in p."""
+        """Return True if the given directive occurs in p.h or p.b."""
         p = self
         if directive_name.startswith('@'):
             directive_name = directive_name[1:]

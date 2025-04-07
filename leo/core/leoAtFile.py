@@ -215,11 +215,11 @@ class AtFile:
             at.output_newline = '\n'
         else:
             at.output_newline = lineending or g.getOutputNewline(c=c)
+        at.language = c.getLanguage(root)
         at.outputList = []  # For stream output.
         at.page_width = c.getPageWidth(root)
         at.tab_width = c.getTabWidth(root)
         # More complex inits.
-        at.language = at.initLanguage(root)
         at.initSentinelComments(root)
 
         # Clean root.v.
@@ -279,28 +279,6 @@ class AtFile:
                 g.es_print('using Python comment delimiters')
             at.startSentinelComment = "#"  # This should never happen!
             at.endSentinelComment = ""
-    #@+node:ekr.20250405065134.1: *4* at.initLanguage (new)
-    def initLanguage(self, root: Position) -> str:
-        """Init at.language."""
-        at, c = self, self.c
-
-        if root.isAnyAtFileNode():
-            # #4323: Set at.language using only p.h and p.b.
-            language = at.languageFromAtFileNodeHeadline(root)
-        elif root.h.startswith(('@button', '@command')):
-            language = 'python'
-        else:
-            # Language doesn't matter here.
-            # It would be unnecessary/wrong to examine ancestor nodes.
-            language = c.target_language or 'python'
-
-        # Override at.encoding.
-        if language == 'python':
-            # Encoding directive overrides everything else.
-            encoding = g.getPythonEncodingFromString(root.b)
-            if encoding:
-                at.encoding = encoding
-        return language
     #@+node:ekr.20041005105605.17: *3* at.Reading
     #@+node:ekr.20041005105605.18: *4* at.Reading (top level)
     #@+node:ekr.20070919133659: *5* at.checkExternalFile
@@ -2981,27 +2959,6 @@ class AtFile:
         at.remove(fileName)
         at.addToOrphanList(root)
     #@+node:ekr.20041005105605.219: *3* at.Utilities
-    #@+node:ekr.20250401113517.1: *4* at.delimsFromAtFileNodeBody
-    def delimsFromAtFileNodeBody(self, p: Position) -> Optional[tuple[str, str, str]]:
-        """
-        p is an @<file> node.
-        
-        Return the language delims from p.b, looking for *unambiguous @language directives.
-        """
-        s = p.b.strip()
-        if not s:
-            return None
-        comments: list[str] = []  # List of @comment lines.
-        tag = '@comment'
-        for line in g.splitLines(s):
-            if line.startswith(tag):
-                comment = line[len(tag) :].strip()
-                comments.append(comment)
-        if len(comments) == 1:
-            comment = comments[0]
-            delims = g.set_delims_from_string(comment)
-            return delims
-        return None
     #@+node:ekr.20041005105605.220: *4* at.error & printError
     def error(self, *args: Args) -> None:  # pragma: no cover
         at = self
