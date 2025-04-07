@@ -102,7 +102,7 @@ class AnnotationsTraverser(NodeVisitor):
     def test_annotation(self, node: ast.AST, identifier: str, annotation: ast.Expr) -> None:
         """Test the annotation of identifier."""
         exceptions = (
-            # Problem annotating Cmdr in leoCommands.py have been solved.
+            # Problems annotating Cmdr in leoCommands.py have been solved.
         )
         for pattern, expected_annotation in self.annotation_table:
             m = pattern.match(identifier)

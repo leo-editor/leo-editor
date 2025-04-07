@@ -2869,8 +2869,7 @@ class Commands:
         """Return the path in effect at node p."""
         g.deprecated()
         c = self
-        path = c.getPath(p)
-        return path
+        return c.getPath(p)
 
     #@+node:ekr.20250407053738.1: *4* c.getNodeFileName (deprecated)
     def getNodeFileName(self, p: Position) -> str:
