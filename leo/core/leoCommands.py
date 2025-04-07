@@ -1589,10 +1589,12 @@ class Commands:
     def getDelims(self, p: Position) -> tuple[str, str, str]:
 
         c = self
+        # The headline has higher precedence because it is more visible.
         for p2 in p.copy().self_and_parents():
-            for m in c.at_comment_pattern.finditer(p2.b):
-                comment = m.group(1)
-                return g.set_delims_from_string(comment)
+            for s in (p.h, p.b):
+                for m in c.at_comment_pattern.finditer(p2.b):
+                    comment = m.group(1)
+                    return g.set_delims_from_string(comment)
 
         # Return the default comment delims.
         default_language = c.getLanguage(p) or c.target_language or 'python'
