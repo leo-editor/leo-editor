@@ -2598,6 +2598,12 @@ def scanForAtLanguage(self, p: Position) -> str:
                     # return language
                 # g.trace('OOP', language)
         # return c.target_language or 'python'
+#@+node:ekr.20241012044745.1: *4* gdc.find_language
+def find_language(self, c: Cmdr, p: Position) -> str:
+    """Return the @language directive in effect at p."""
+    if not p:
+        return c.target_language
+    return c.getLanguage(p)
 #@+node:ekr.20210905052021.28: *4* TestAtFile.test_at_scanAllDirectives
 def test_at_scanAllDirectives(self):
     self.skipTest("at.scanAllDirectives is deprecated")
