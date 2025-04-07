@@ -1582,7 +1582,7 @@ class Commands:
         j = len(head) + len(s)
         oldSel = i, j
         return head, lines, tail, oldSel, oldYview  # string,list,string,tuple,int.
-    #@+node:ekr.20250405040620.1: *5* c.getDelims (new)
+    #@+node:ekr.20250405040620.1: *5* c.getDelims
     # Use a regex to avoid allocating temp strings.
     at_comment_pattern = re.compile(r'^@comment\s+(.*)$', re.MULTILINE)
 
@@ -1591,15 +1591,15 @@ class Commands:
         c = self
         # The headline has higher precedence because it is more visible.
         for p2 in p.self_and_parents():
-            for s in (p.h, p.b):
-                for m in c.at_comment_pattern.finditer(p2.b):
+            for s in (p2.h, p2.b):
+                for m in c.at_comment_pattern.finditer(s):
                     comment = m.group(1)
                     return g.set_delims_from_string(comment)
 
         # Return the default comment delims.
         default_language = c.getLanguage(p) or c.target_language or 'python'
         return g.set_delims_from_language(default_language)
-    #@+node:ekr.20250404072805.1: *5* c.getEncoding (new)
+    #@+node:ekr.20250404072805.1: *5* c.getEncoding
     # Use a regex to avoid allocating temp strings.
     at_encoding_pattern = re.compile(r'^@encoding\s+([\w_-]+)', re.MULTILINE)
 
@@ -1612,8 +1612,8 @@ class Commands:
         c = self
         # The headline has higher precedence because it is more visible.
         for p2 in p.self_and_parents():
-            for s in (p.h, p.b):
-                for m in c.at_encoding_pattern.finditer(p2.b):
+            for s in (p2.h, p2.b):
+                for m in c.at_encoding_pattern.finditer(s):
                     encoding = m.group(1)
                     if g.isValidEncoding(encoding):
                         return encoding
@@ -1688,23 +1688,25 @@ class Commands:
         # Return the default language for the commander.
         c = p.v.context
         return c.target_language or 'python'
-    #@+node:ekr.20250405053842.1: *5* c.getLineEnding(new)
+    #@+node:ekr.20250405053842.1: *5* c.getLineEnding
     # Use a regex to avoid allocating temp strings.
     at_lineending_pattern = re.compile(r'^@lineending\s+([\w]+)', re.MULTILINE)
 
     def getLineEnding(self, p: Position) -> str:
         """
-        Scan p.b and all ancestors for the first @lineending direcive.
+        Scan p and all ancestors for the first @lineending direcive.
         Return None (*not* '\n') by default.
         """
         c = self
+        # The headline has higher precedence because it is more visible.
         for p2 in p.self_and_parents():
-            for m in c.at_lineending_pattern.finditer(p2.b):
-                ending = m.group(1)
-                if ending in ("cr", "crlf", "lf", "nl", "platform"):
-                    return g.getOutputNewline(name=ending)
+            for s in (p2.h, p2.b):
+                for m in c.at_lineending_pattern.finditer(s):
+                    ending = m.group(1)
+                    if ending in ("cr", "crlf", "lf", "nl", "platform"):
+                        return g.getOutputNewline(name=ending)
         return None
-    #@+node:ekr.20250404153234.1: *5* c.getPageWidth (new)
+    #@+node:ekr.20250404153234.1: *5* c.getPageWidth
     # Use a regex to avoid allocating temp strings.
     at_pagewidth_pattern = re.compile(r'^@pagewidth\s+(-?[0-9]+)', re.MULTILINE)
 
@@ -1715,13 +1717,15 @@ class Commands:
         Return c.page_width by default.
         """
         c = self
+        # The headline has higher precedence because it is more visible.
         for p2 in p.self_and_parents():
-            for m in c.at_pagewidth_pattern.finditer(p2.b):
-                width = m.group(1)
-                try:
-                    return int(width)
-                except ValueError:
-                    g.error("ignoring m.group(0)")
+            for s in (p2.h, p2.b):
+                for m in c.at_pagewidth_pattern.finditer(s):
+                    width = m.group(1)
+                    try:
+                        return int(width)
+                    except ValueError:
+                        g.error("ignoring m.group(0)")
         return c.page_width
     #@+node:ekr.20250404021710.1: *5* c.getPath & helper (new)
     def getPath(self, p: Position) -> str:
@@ -1776,7 +1780,7 @@ class Commands:
             )
             g.print_unique_message(message)
         return paths[0] if paths else None
-    #@+node:ekr.20250404153250.1: *5* c.getTabWidth (new)
+    #@+node:ekr.20250404153250.1: *5* c.getTabWidth
     # Use a regex to avoid allocating temp strings.
     at_tabwidth_pattern = re.compile(r'^@tabwidth\s+(-?[0-9]+)', re.MULTILINE)
 
@@ -1787,16 +1791,17 @@ class Commands:
         Return c.tab_width by default.
         """
         c = self
+        # The headline has higher precedence because it is more visible.
         for p2 in p.self_and_parents():
-            for m in c.at_encoding_pattern.finditer(p2.b):
-                for m in c.at_tabwidth_pattern.finditer(p2.b):
+            for s in (p2.h, p2.b):
+                for m in c.at_tabwidth_pattern.finditer(s):
                     width = m.group(1)
                     try:
                         return int(width)
                     except ValueError:
                         g.error("ignoring m.group(0)")
         return c.tab_width
-    #@+node:ekr.20250405143421.1: *5* c.getWrap(new)
+    #@+node:ekr.20250405143421.1: *5* c.getWrap
     # Use a regex to avoid allocating temp strings.
     at_wrap_pattern = re.compile(r'^@wrap', re.MULTILINE)
     at_nowrap_pattern = re.compile(r'^@nowrap', re.MULTILINE)
@@ -1807,12 +1812,13 @@ class Commands:
         Return @bool body-pane-wraps by default.
         """
         c = self
+        # The headline has higher precedence because it is more visible.
         for p2 in p.self_and_parents():
-            s = p2.b
-            if c.at_wrap_pattern.search(s) is not None:
-                return True
-            if c.at_nowrap_pattern.search(s) is not None:
-                return False
+            for s in (p2.h, p2.b):
+                if c.at_wrap_pattern.search(s) is not None:
+                    return True
+                if c.at_nowrap_pattern.search(s) is not None:
+                    return False
         return c.config.getBool("body-pane-wraps")
     #@+node:ekr.20040803112200: *5* c.is...Position
     #@+node:ekr.20040803155551: *6* c.currentPositionIsRootPosition

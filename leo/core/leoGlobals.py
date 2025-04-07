@@ -2687,18 +2687,6 @@ def isValidLanguage(language: str) -> bool:
         or
         language in g.app.delegate_language_dict
     ))
-#@+node:ekr.20250401071751.1: *3* g.language_from_headline (new)
-def language_from_headline(p: Position) -> Optional[str]:
-    """
-    Return the language from p.h.
-    """
-    name = p.anyAtFileNodeName()
-    if not name:
-        return None
-    junk, ext = g.os_path_splitext(name)
-    ext = ext[1:]  # strip the leading period.
-    language = g.app.extension_dict.get(ext)
-    return language if g.isValidLanguage(language) else 'plain'
 #@+node:ekr.20250403040834.1: *3* --- to be deprecated! Using directives list
 #@+node:ekr.20080827175609.52: *4* g.scanAtCommentAndLanguageDirectives (deprecated)
 def scanAtCommentAndAtLanguageDirectives(aList: list) -> Optional[dict[str, str]]:
