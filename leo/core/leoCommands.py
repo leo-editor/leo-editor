@@ -2874,7 +2874,7 @@ class Commands:
             else:
                 n += len(s)
         return language
-    #@+node:ekr.20081006100835.1: *4* c.getNodePath & c.getNodeFileName
+    #@+node:ekr.20081006100835.1: *4* c.getNodePath (deprecated)
     def getNodePath(self, p: Position) -> str:
         """Return the path in effect at node p."""
         g.deprecated()
@@ -2882,12 +2882,14 @@ class Commands:
         path = c.getPath(p)
         return path
 
+    #@+node:ekr.20250407053738.1: *4* c.getNodeFileName (deprecated)
     def getNodeFileName(self, p: Position) -> str:
         """
         Return the full file name at node p,
         including effects of all @path directives.
         Return '' if p is no kind of @file node.
         """
+        g.deprecated()
         c = self
         for p in p.self_and_parents(copy=False):
             name = p.anyAtFileNodeName()
