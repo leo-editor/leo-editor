@@ -3072,7 +3072,7 @@ class AtFile:
         the full headline (@<file> type) that caused the read.
         """
         v = p.v
-        # Fix bug #50: body text lost switching @file to @auto-rst
+        # #50: body text lost switching @file to @auto-rst
         if not hasattr(v, 'at_read'):
             v.at_read = {}  # pragma: no cover
         d = v.at_read
@@ -3116,7 +3116,7 @@ class AtFile:
             return True
 
         if hasattr(p.v, 'at_read'):
-            # Fix bug #50: body text lost switching @file to @auto-rst
+            # #50: body text lost switching @file to @auto-rst
             d = p.v.at_read
             for k in d:
                 # Make sure k still exists.
