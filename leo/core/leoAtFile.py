@@ -113,7 +113,7 @@ class AtFile:
         self.targetFileName: str = ''
         self.unchangedFiles = 0
         # User settings.
-        self.at_auto_encoding = 'utf-f'
+        self.at_auto_encoding = 'utf-8'
         self.encoding = 'utf-8'
         self.explicitLineEnding: bool = None
         self.force_newlines_in_at_nosent_bodies = False
