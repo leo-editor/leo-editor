@@ -221,17 +221,18 @@ class TestCommands(LeoUnitTest):
     def test_c_getPageWidth(self):
         c = self.c
         p = c.p
-
-        # Test 1.
-        p.b = '@pagewidth -40\n'
-        n = c.getPageWidth(p)
-        assert n == -40
-
-        # Test 2.
-        p.b = '@pagewidth 40\n'
-        n = c.getPageWidth(p)
-        assert n == 40
-    #@+node:ekr.20250412054256.1: *3* TestCommands.test_c_tabWidth (TODO)
+        for w in (-40, 40):
+            p.b = f"@pagewidth {w}\n"
+            n = c.getPageWidth(p)
+            assert n == w
+    #@+node:ekr.20250412054256.1: *3* TestCommands.test_c_tabWidth
+    def test_c_getTabWidth(self):
+        c = self.c
+        p = c.p
+        for w in (-6, 6):
+            p.b = f"@tabwidth {w}\n"
+            n = c.getTabWidth(p)
+            assert n == w
     #@+node:ekr.20250412054404.1: *3* TestCommands.test_c_getWrap (TODO)
     #@+node:ekr.20210906075242.9: *3* TestCommands.test_c_hiddenRootNode_fileIndex
     def test_c_hiddenRootNode_fileIndex(self):
