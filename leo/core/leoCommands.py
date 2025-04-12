@@ -1619,7 +1619,7 @@ class Commands:
                         return encoding
                     g.error("invalid @encoding:", encoding)
         return c.config.default_derived_file_encoding or 'utf-8'
-    #@+node:ekr.20250405141653.1: *5* c.getLanguage (new)
+    #@+node:ekr.20250405141653.1: *5* c.getLanguage
     def getLanguage(self, p: Position) -> str:
         """
         Return the language in effect at node p, checking that the language is valid."""
@@ -1727,7 +1727,7 @@ class Commands:
                     except ValueError:
                         g.error("ignoring m.group(0)")
         return c.page_width
-    #@+node:ekr.20250404021710.1: *5* c.getPath & helper (new)
+    #@+node:ekr.20250404021710.1: *5* c.getPath & helper
     def getPath(self, p: Position) -> str:
         """
         Scan for @path directives in p and all its direct ancestors.

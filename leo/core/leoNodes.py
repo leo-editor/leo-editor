@@ -695,7 +695,7 @@ class Position:
     def numberOfChildren(self) -> int:
         p = self
         return len(p.v.children)
-    #@+node:ekr.20250405080955.1: *4* p.findDirective (new)
+    #@+node:ekr.20250405080955.1: *4* p.findDirective
     at_directive_pattern = re.compile(r'@([\w]+)', re.MULTILINE)
 
     def findDirective(self, directive_name: str) -> bool:

@@ -186,7 +186,7 @@ class AtFile:
 
         # Set all ivars to reasonable defaults.
         self.initAllIvars(root)
-    #@+node:ekr.20041005105605.15: *4* at.initWriteIvars (new)
+    #@+node:ekr.20041005105605.15: *4* at.initWriteIvars
     def initWriteIvars(self, root: Position) -> Optional[str]:
         """
         Compute default values of all write-related ivars.
@@ -253,7 +253,7 @@ class AtFile:
 
         # Return the target file name, regardless of future problems.
         return targetFileName
-    #@+node:ekr.20250405052328.1: *4* at.initSentinelComments (new)
+    #@+node:ekr.20250405052328.1: *4* at.initSentinelComments
     def initSentinelComments(self, root: Position) -> None:
         """Init at.startSentinelComment and at.endSentinelComment."""
         at, c = self, self.c
