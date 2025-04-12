@@ -233,7 +233,19 @@ class TestCommands(LeoUnitTest):
             p.b = f"@tabwidth {w}\n"
             n = c.getTabWidth(p)
             assert n == w
-    #@+node:ekr.20250412054404.1: *3* TestCommands.test_c_getWrap (TODO)
+    #@+node:ekr.20250412054404.1: *3* TestCommands.test_c_getWrap
+    def test_c_getWrap(self):
+        c = self.c
+        p = c.p
+        table = (
+            ('@nowrap\n', False),
+            ('@wrap\n', True),
+            (p.b, None),
+        )
+        for s, expected_val in table:
+            p.b = s
+            val = c.getWrap(p)
+            assert val == expected_val
     #@+node:ekr.20210906075242.9: *3* TestCommands.test_c_hiddenRootNode_fileIndex
     def test_c_hiddenRootNode_fileIndex(self):
         c = self.c
