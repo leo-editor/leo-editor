@@ -2,7 +2,7 @@
 #@+node:ekr.20210903162431.1: * @file ../unittests/core/test_leoCommands.py
 """Tests of leoCommands.py"""
 # pylint: disable=no-member
-
+import sys
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
 
@@ -200,6 +200,26 @@ class TestCommands(LeoUnitTest):
             message = f"expected: {expected} got: {encoding} {p2.h}"
             assert encoding == expected, message
 
+    #@+node:ekr.20250412054157.1: *3* TestCommands.test_c_getLineEnding
+    def test_c_getLineEnding(self):
+        c = self.c
+        p = c.p
+        table = (
+            ('nl', '\n'),
+            ('lf', '\n'),
+            ('cr', '\r'),
+            ('crlf', '\r\n'),
+            ('platform', '\r\n' if sys.platform.startswith('win') else '\n'),
+        )
+        for kind, expected_ending in table:
+            directive = f"@lineending {kind}\n"
+            p.b = directive
+            ending = c.getLineEnding(p)
+            message = f"{directive}: expected {expected_ending!r} got {ending!r}"
+            assert ending == expected_ending, message
+    #@+node:ekr.20250412054231.1: *3* TestCommands.test_c_pageWidth (TODO)
+    #@+node:ekr.20250412054256.1: *3* TestCommands.test_c_tabWidth (TODO)
+    #@+node:ekr.20250412054404.1: *3* TestCommands.test_c_getWrap (TODO)
     #@+node:ekr.20210906075242.9: *3* TestCommands.test_c_hiddenRootNode_fileIndex
     def test_c_hiddenRootNode_fileIndex(self):
         c = self.c
