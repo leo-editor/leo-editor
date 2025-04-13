@@ -2138,7 +2138,7 @@
 <v t="ekr.20250115101744.2"><vh>@@font rest.literal3</vh></v>
 <v t="ekr.20250115101744.3"><vh>@@font rest.literal4</vh></v>
 <v t="ekr.20250115101744.4"><vh>@@font rest.keyword5</vh></v>
-<v t="ekr.20250115101744.5"><vh>@@@font rest_comments.literal1</vh></v>
+<v t="ekr.20250115101744.5"><vh>@@font rest_comments.literal1</vh></v>
 <v t="ekr.20250115101744.6"><vh>@@color rest_comments.literal1 = #d33682</vh></v>
 <v t="ekr.20250115101744.7"><vh>@@color rest_comments.literal2 = #d33682</vh></v>
 <v t="ekr.20250115101744.8"><vh>@@color rest_comments.literal3 = #d33682</vh></v>
@@ -2148,7 +2148,7 @@
 <v t="ekr.20250115101744.12"><vh>@@color rest.literal3 = #d33682</vh></v>
 <v t="ekr.20250115101744.13"><vh>@@color rest.literal4 = #d33682</vh></v>
 <v t="ekr.20250115101744.14"><vh>@@color rest.operator = #d33682</vh></v>
-<v t="ekr.20250115101744.15"><vh>@@@@color rest.keyword1 = #d33682</vh></v>
+<v t="ekr.20250115101744.15"><vh>@@color rest.keyword1 = #d33682</vh></v>
 <v t="ekr.20250115101744.16"><vh>@@color rest.keyword2 = #d33682</vh></v>
 <v t="ekr.20250115101744.17"><vh>@@color rest.keyword3 = #d33682</vh></v>
 <v t="ekr.20250115101744.18"><vh>@@color rest.keyword4 = #d33682</vh></v>
@@ -2305,7 +2305,6 @@
 <v t="ekr.20140915194122.23428"></v>
 <v t="ekr.20181018105748.1"></v>
 <v t="ekr.20041119034357.70"></v>
-<v t="ekr.20250115101744.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
