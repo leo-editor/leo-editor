@@ -2054,7 +2054,7 @@
 <v t="ekr.20190324042831.1"><vh>@bool use-pygments-styles = True</vh></v>
 <v t="ekr.20190323043928.1"><vh>@string pygments-style-name = default</vh></v>
 <v t="ekr.20170202104705.1"><vh>@bool color-doc-parts-as-rest = True</vh></v>
-<v t="ekr.20250110165136.1"><vh>@bool color-docstrings-as-rest = True</vh></v>
+<v t="ekr.20250110165136.1"><vh>@bool color-docstrings-as-rest = False</vh></v>
 <v t="ekr.20060828110551"><vh>Default colors, used if no language-specific color are in effect</vh>
 <v t="ekr.20111024091133.16650"><vh>Colors for Leo constructs</vh>
 <v t="ekr.20111004182631.15542"><vh>@color doc-part-color = firebrick3</vh></v>
@@ -2135,24 +2135,24 @@
 <v t="ekr.20080703111151.15"><vh>@font forth.keyword5</vh></v>
 </v>
 <v t="ekr.20250115101744.1"><vh>rest_comments (Python and Rust only)</vh>
-<v t="ekr.20250115101744.2"><vh>@font rest.literal3</vh></v>
-<v t="ekr.20250115101744.3"><vh>@font rest.literal4</vh></v>
-<v t="ekr.20250115101744.4"><vh>@font rest.keyword5</vh></v>
-<v t="ekr.20250115101744.5"><vh>@@@font rest_comments.literal1</vh></v>
-<v t="ekr.20250115101744.6"><vh>@color rest_comments.literal1 = #d33682</vh></v>
-<v t="ekr.20250115101744.7"><vh>@color rest_comments.literal2 = #d33682</vh></v>
-<v t="ekr.20250115101744.8"><vh>@color rest_comments.literal3 = #d33682</vh></v>
-<v t="ekr.20250115101744.9"><vh>@color rest_comments.literal4 = #d33682</vh></v>
-<v t="ekr.20250115101744.10"><vh>@color rest.literal1 = #d33682</vh></v>
-<v t="ekr.20250115101744.11"><vh>@color rest.literal2 = #d33682</vh></v>
-<v t="ekr.20250115101744.12"><vh>@color rest.literal3 = #d33682</vh></v>
-<v t="ekr.20250115101744.13"><vh>@color rest.literal4 = #d33682</vh></v>
-<v t="ekr.20250115101744.14"><vh>@color rest.operator = #d33682</vh></v>
-<v t="ekr.20250115101744.15"><vh>@@@color rest.keyword1 = #d33682</vh></v>
-<v t="ekr.20250115101744.16"><vh>@color rest.keyword2 = #d33682</vh></v>
-<v t="ekr.20250115101744.17"><vh>@color rest.keyword3 = #d33682</vh></v>
-<v t="ekr.20250115101744.18"><vh>@color rest.keyword4 = #d33682</vh></v>
-<v t="ekr.20250115101744.19"><vh>@color rest.keyword5 = #d33682</vh></v>
+<v t="ekr.20250115101744.2"><vh>@@font rest.literal3</vh></v>
+<v t="ekr.20250115101744.3"><vh>@@font rest.literal4</vh></v>
+<v t="ekr.20250115101744.4"><vh>@@font rest.keyword5</vh></v>
+<v t="ekr.20250115101744.5"><vh>@@font rest_comments.literal1</vh></v>
+<v t="ekr.20250115101744.6"><vh>@@color rest_comments.literal1 = #d33682</vh></v>
+<v t="ekr.20250115101744.7"><vh>@@color rest_comments.literal2 = #d33682</vh></v>
+<v t="ekr.20250115101744.8"><vh>@@color rest_comments.literal3 = #d33682</vh></v>
+<v t="ekr.20250115101744.9"><vh>@@color rest_comments.literal4 = #d33682</vh></v>
+<v t="ekr.20250115101744.10"><vh>@@color rest.literal1 = #d33682</vh></v>
+<v t="ekr.20250115101744.11"><vh>@@color rest.literal2 = #d33682</vh></v>
+<v t="ekr.20250115101744.12"><vh>@@color rest.literal3 = #d33682</vh></v>
+<v t="ekr.20250115101744.13"><vh>@@color rest.literal4 = #d33682</vh></v>
+<v t="ekr.20250115101744.14"><vh>@@color rest.operator = #d33682</vh></v>
+<v t="ekr.20250115101744.15"><vh>@@color rest.keyword1 = #d33682</vh></v>
+<v t="ekr.20250115101744.16"><vh>@@color rest.keyword2 = #d33682</vh></v>
+<v t="ekr.20250115101744.17"><vh>@@color rest.keyword3 = #d33682</vh></v>
+<v t="ekr.20250115101744.18"><vh>@@color rest.keyword4 = #d33682</vh></v>
+<v t="ekr.20250115101744.19"><vh>@@color rest.keyword5 = #d33682</vh></v>
 </v>
 </v>
 <v t="ekr.20111004182631.15533"><vh>Options</vh>
@@ -2304,6 +2304,7 @@
 </v>
 <v t="ekr.20140915194122.23428"></v>
 <v t="ekr.20181018105748.1"></v>
+<v t="ekr.20041119034357.70"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -10298,8 +10299,9 @@ Put notes about each version here.
     return x.lower()
 </t>
 <t tx="ekr.20170123145248.1"></t>
-<t tx="ekr.20170202104705.1">False (legacy): color all @ and @doc parts with a uniform color.
-True: color all @ and @doc parts as reStructuredText (@language rest).</t>
+<t tx="ekr.20170202104705.1">False: color all @ and @doc parts with a uniform color.
+True: color all @ and @doc parts as reStructuredText (@language rest).
+</t>
 <t tx="ekr.20170208063901.1">'''
 A template for demonstrations based on plugins/demo.py.
 The demo;; abbreviation will create this tree.
@@ -11850,11 +11852,14 @@ See https://jupytext.readthedocs.io/en/latest/config.html
 # Blank lines and comments lines (lines starting with '#') are ignored.
 
 </t>
-<t tx="ekr.20250110165136.1">False (legacy): color all python docstring with a uniform color.
-True: color python docstrings as reStructuredText (@language rest).</t>
+<t tx="ekr.20250110165136.1">This setting is new in Leo 6.8.4.
+
+False: color all python docstrings with a uniform color.
+True: color python docstrings as reStructuredText (@language rest).
+</t>
 <t tx="ekr.20250115101744.1">Colors and fonts. Only if at least one of the following is True
 
-@bool color-doc-parts-as-rest
+@bool color-doc-parts-as-rest = True
 @bool color-docstrings-as-rest = True</t>
 <t tx="ekr.20250115101744.10"># plain word and default.</t>
 <t tx="ekr.20250115101744.11"># number</t>
@@ -11922,7 +11927,8 @@ False: (Recommended) The commands act as simple navigation commands, and do not 
 (In the same format as the .leojs file format)
 
 Leo accepts outline 'paste' data in both XML Leo format, or JSON format</t>
-
+<t tx="felix.20250313152228.1"></t>
+<t tx="felix.20250313152231.1"></t>
 <t tx="felix.20250313171245.1">True: Scripts to be executed (from @command, @button, CTRL+B from body pane, etc... ) will be wrapped in 
 
 def main():
@@ -11944,7 +11950,6 @@ print(output)
 which would print 4.
 
 Note: By default, script execution will return the value it may have set in a global variable named "result". (or None)</t>
-
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
