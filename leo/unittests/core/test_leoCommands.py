@@ -225,7 +225,7 @@ class TestCommands(LeoUnitTest):
             p.b = f"@pagewidth {w}\n"
             n = c.getPageWidth(p)
             assert n == w
-    #@+node:ekr.20250412054256.1: *3* TestCommands.test_c_tabWidth
+    #@+node:ekr.20250412054256.1: *3* TestCommands.test_c_gettabWidth
     def test_c_getTabWidth(self):
         c = self.c
         p = c.p
