@@ -2053,7 +2053,7 @@
 <v t="ekr.20190323043913.1"><vh>@bool use-pygments = False</vh></v>
 <v t="ekr.20190324042831.1"><vh>@bool use-pygments-styles = True</vh></v>
 <v t="ekr.20190323043928.1"><vh>@string pygments-style-name = default</vh></v>
-<v t="ekr.20170202104705.1"><vh>@bool color-doc-parts-as-rest = False</vh></v>
+<v t="ekr.20170202104705.1"><vh>@bool color-doc-parts-as-rest = True</vh></v>
 <v t="ekr.20250110165136.1"><vh>@bool color-docstrings-as-rest = False</vh></v>
 <v t="ekr.20060828110551"><vh>Default colors, used if no language-specific color are in effect</vh>
 <v t="ekr.20111024091133.16650"><vh>Colors for Leo constructs</vh>
@@ -2135,24 +2135,24 @@
 <v t="ekr.20080703111151.15"><vh>@font forth.keyword5</vh></v>
 </v>
 <v t="ekr.20250115101744.1"><vh>rest_comments (Python and Rust only)</vh>
-<v t="ekr.20250115101744.2"><vh>@font rest.literal3</vh></v>
-<v t="ekr.20250115101744.3"><vh>@font rest.literal4</vh></v>
-<v t="ekr.20250115101744.4"><vh>@font rest.keyword5</vh></v>
+<v t="ekr.20250115101744.2"><vh>@@font rest.literal3</vh></v>
+<v t="ekr.20250115101744.3"><vh>@@font rest.literal4</vh></v>
+<v t="ekr.20250115101744.4"><vh>@@font rest.keyword5</vh></v>
 <v t="ekr.20250115101744.5"><vh>@@@font rest_comments.literal1</vh></v>
-<v t="ekr.20250115101744.6"><vh>@color rest_comments.literal1 = #d33682</vh></v>
-<v t="ekr.20250115101744.7"><vh>@color rest_comments.literal2 = #d33682</vh></v>
-<v t="ekr.20250115101744.8"><vh>@color rest_comments.literal3 = #d33682</vh></v>
-<v t="ekr.20250115101744.9"><vh>@color rest_comments.literal4 = #d33682</vh></v>
-<v t="ekr.20250115101744.10"><vh>@color rest.literal1 = #d33682</vh></v>
-<v t="ekr.20250115101744.11"><vh>@color rest.literal2 = #d33682</vh></v>
-<v t="ekr.20250115101744.12"><vh>@color rest.literal3 = #d33682</vh></v>
-<v t="ekr.20250115101744.13"><vh>@color rest.literal4 = #d33682</vh></v>
-<v t="ekr.20250115101744.14"><vh>@color rest.operator = #d33682</vh></v>
-<v t="ekr.20250115101744.15"><vh>@@@color rest.keyword1 = #d33682</vh></v>
-<v t="ekr.20250115101744.16"><vh>@color rest.keyword2 = #d33682</vh></v>
-<v t="ekr.20250115101744.17"><vh>@color rest.keyword3 = #d33682</vh></v>
-<v t="ekr.20250115101744.18"><vh>@color rest.keyword4 = #d33682</vh></v>
-<v t="ekr.20250115101744.19"><vh>@color rest.keyword5 = #d33682</vh></v>
+<v t="ekr.20250115101744.6"><vh>@@color rest_comments.literal1 = #d33682</vh></v>
+<v t="ekr.20250115101744.7"><vh>@@color rest_comments.literal2 = #d33682</vh></v>
+<v t="ekr.20250115101744.8"><vh>@@color rest_comments.literal3 = #d33682</vh></v>
+<v t="ekr.20250115101744.9"><vh>@@color rest_comments.literal4 = #d33682</vh></v>
+<v t="ekr.20250115101744.10"><vh>@@color rest.literal1 = #d33682</vh></v>
+<v t="ekr.20250115101744.11"><vh>@@color rest.literal2 = #d33682</vh></v>
+<v t="ekr.20250115101744.12"><vh>@@color rest.literal3 = #d33682</vh></v>
+<v t="ekr.20250115101744.13"><vh>@@color rest.literal4 = #d33682</vh></v>
+<v t="ekr.20250115101744.14"><vh>@@color rest.operator = #d33682</vh></v>
+<v t="ekr.20250115101744.15"><vh>@@@@color rest.keyword1 = #d33682</vh></v>
+<v t="ekr.20250115101744.16"><vh>@@color rest.keyword2 = #d33682</vh></v>
+<v t="ekr.20250115101744.17"><vh>@@color rest.keyword3 = #d33682</vh></v>
+<v t="ekr.20250115101744.18"><vh>@@color rest.keyword4 = #d33682</vh></v>
+<v t="ekr.20250115101744.19"><vh>@@color rest.keyword5 = #d33682</vh></v>
 </v>
 </v>
 <v t="ekr.20111004182631.15533"><vh>Options</vh>
@@ -2304,6 +2304,8 @@
 </v>
 <v t="ekr.20140915194122.23428"></v>
 <v t="ekr.20181018105748.1"></v>
+<v t="ekr.20041119034357.70"></v>
+<v t="ekr.20250115101744.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -11854,7 +11856,7 @@ See https://jupytext.readthedocs.io/en/latest/config.html
 True: color python docstrings as reStructuredText (@language rest).</t>
 <t tx="ekr.20250115101744.1">Colors and fonts. Only if at least one of the following is True
 
-@bool color-doc-parts-as-rest
+@bool color-doc-parts-as-rest = True
 @bool color-docstrings-as-rest = True</t>
 <t tx="ekr.20250115101744.10"># plain word and default.</t>
 <t tx="ekr.20250115101744.11"># number</t>
