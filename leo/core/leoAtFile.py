@@ -32,8 +32,39 @@ def cmd(name: str) -> Callable:  # pragma: no cover
 #@+node:ekr.20160514120655.1: ** class AtFile
 class AtFile:
     """A class implementing the atFile subcommander."""
-    #@+<< define class constants >>
-    #@+node:ekr.20131224053735.16380: *3* << define class constants >>
+    #@+<< AtFile: define __slots__ >>
+    #@+node:ekr.20250403114721.1: *3* << AtFile: define __slots__ >>
+    __slots__ = (
+        # Ivars.
+        'c', 'fileCommands',
+        # Basic status vars.
+        'errors', 'language', 'root',
+        # Dialogs.
+        'canCancelFlag', 'cancelFlag', 'yesToAll',
+        # Reading.
+        'readVersion', 'read_i', 'read_lines',
+        'importRootSeen',
+        'startSentinelComment', 'endSentinelComment',
+        # Shadow files.
+        'private_s', 'public_s',
+        # Writing.
+        'indent',  'sentinels',
+        'section_delim1', 'section_delim2',
+        'outputFile', 'outputList',
+        'targetFileName', 'unchangedFiles',  # For messages.
+        # User settings.
+        'at_auto_encoding', 'encoding', 'explicitLineEnding',
+        'force_newlines_in_at_nosent_bodies',
+        'output_newline', 'page_width', 'tab_width',
+        # User switches.
+        'beautifyOnWrite', 'checkPythonCodeOnWrite',
+        'runFlake8OnWrite', 'runPyFlakesOnWrite', 'runPylintOnWrite',
+        # Testing hacks.
+        'at_shadow_test_hack',  # Injected by TestShadow.makePrivateLines.
+    )
+    #@-<< AtFile: define __slots__ >>
+    #@+<< AtFile: define constants >>
+    #@+node:ekr.20131224053735.16380: *3* << AtFile: define constants >>
     #@@nobeautify
 
     # directives...
@@ -46,7 +77,7 @@ class AtFile:
     othersDirective =  7  # @others
     miscDirective   =  8  # All other directives
     startVerbatim   =  9  # @verbatim  Not a real directive. Used to issue warnings.
-    #@-<< define class constants >>
+    #@-<< AtFile: define constants >>
     #@+others
     #@+node:ekr.20041005105605.7: *3* at.Birth & init
     #@+node:ekr.20041005105605.8: *4* at.ctor & helpers
@@ -54,26 +85,48 @@ class AtFile:
 
     def __init__(self, c: Cmdr) -> None:
         """ctor for atFile class."""
-        # **Warning**: all these ivars must **also** be inited in initCommonIvars.
+        # Ivars.
         self.c: Cmdr = c
-        self.encoding = 'utf-8'  # 2014/08/13
         self.fileCommands = c.fileCommands
-        self.errors = 0  # Make sure at.error() works even when not inited.
-        # #2276: allow different section delims.
-        self.section_delim1 = '<<'
-        self.section_delim2 = '>>'
-        # **Only** at.writeAll manages these flags.
-        self.unchangedFiles = 0
-        # promptForDangerousWrite sets cancelFlag and yesToAll only if canCancelFlag is True.
+        # Basic status vars.
+        self.errors = 0
+        self.language: str = None
+        self.root: Position = None
+        # Dialogs.
         self.canCancelFlag = False
         self.cancelFlag = False
         self.yesToAll = False
-        # User options: set in reloadSettings.
+        # Reading.
+        self.importRootSeen = False
+        self.readVersion = ''
+        self.read_i = 0
+        self.read_lines: list[str] = []
+        self.startSentinelComment = ""
+        self.endSentinelComment = ""
+        # Writing.
+        self.indent = 0  # write indentation, in blanks.
+        self.outputFile: io.StringIO = None
+        self.outputList: list[str] = []
+        self.sentinels = False
+        self.section_delim1 = '<<'
+        self.section_delim2 = '>>'
+        self.targetFileName: str = ''
+        self.unchangedFiles = 0
+        # User settings.
+        self.at_auto_encoding = 'utf-8'
+        self.encoding = 'utf-8'
+        self.explicitLineEnding: bool = None
+        self.force_newlines_in_at_nosent_bodies = False
+        self.output_newline = g.getOutputNewline(c=c)
+        self.page_width: int = None
+        self.tab_width: int = c.tab_width or -4
+        # User switches: set in reloadSettings.
         self.beautifyOnWrite = False
         self.checkPythonCodeOnWrite = False
         self.runFlake8OnWrite = False
         self.runPyFlakesOnWrite = False
         self.runPylintOnWrite = False
+        # Initialize all user switches.
         self.reloadSettings()
     #@+node:ekr.20171113152939.1: *5* at.reloadSettings
     def reloadSettings(self) -> None:
@@ -90,51 +143,49 @@ class AtFile:
         self.runPylintOnWrite = c.config.getBool(
             'run-pylint-on-write', default=False)
 
-    #@+node:ekr.20041005105605.10: *4* at.initCommonIvars
-    def initCommonIvars(self) -> None:
-        """
-        Init ivars common to both reading and writing.
-
-        The defaults set here may be changed later.
-        """
-        c = self.c
-        self.at_auto_encoding = c.config.default_at_auto_file_encoding
-        self.encoding = c.config.default_derived_file_encoding
-        self.endSentinelComment = ""
-        self.errors = 0
-        self.inCode = True
-        self.indent = 0  # The unit of indentation is spaces, not tabs.
-        self.language: str = None
-        self.output_newline = g.getOutputNewline(c=c)
-        self.page_width: int = None
-        self.root: Position = None  # The root (a position) of tree being read or written.
-        self.startSentinelComment = ""
-        self.endSentinelComment = ""
-        self.tab_width: int = c.tab_width or -4
-        self.writing_to_shadow_directory = False
+    #@+node:ekr.20250403154610.1: *4* at.initAllIvars
+    def initAllIvars(self, root: Position) -> None:
+        """Init all ivars to reasonable defaults."""
+        at, c = self, self.c
+        assert root, g.callers()
+        # Basic status vars.
+        at.errors = 0
+        at.language = c.target_language or 'python'
+        at.root = root
+        # Dialogs
+        at.canCancelFlag = False
+        at.cancelFlag = False
+        at.yesToAll = False
+        # Reading
+        at.importRootSeen = False
+        at.readVersion = ''
+        at.read_i = 0
+        at.read_lines = []
+        at.startSentinelComment = ""
+        at.endSentinelComment = ""
+        # Writing.
+        at.indent = 0  # Output indentation, in blanks.
+        at.outputFile = None
+        at.outputList = []
+        at.sentinels = False
+        at.section_delim1 = '<<'
+        at.section_delim2 = '>>'
+        at.targetFileName = None
+        # at.unchangedFiles = 0  # Only at.writeAll should init this ivar.
+        # User settings.
+        at.at_auto_encoding = c.config.default_at_auto_file_encoding or 'utf-8'
+        at.encoding = c.config.default_derived_file_encoding or 'utf-8'
+        at.explicitLineEnding = None
+        at.force_newlines_in_at_nosent_bodies = False
+        at.output_newline = g.getOutputNewline(c=c)
+        at.page_width = c.page_width or 132
+        at.tab_width = c.tab_width or -4
     #@+node:ekr.20041005105605.13: *4* at.initReadIvars
     def initReadIvars(self, root: Position, fileName: str) -> None:
+        """Initialize all read ivars."""
 
-        self.initCommonIvars()
-        self.bom_encoding = None  # The encoding implied by any BOM (set by g.stripBOM)
-        self.cloneSibCount = 0  # n > 1: Make sure n cloned sibs exists at next @+node sentinel
-        self.correctedLines = 0  # For perfect import.
-        self.docOut: list[str] = []  # The doc part being accumulated.
-        self.done = False  # True when @-leo seen.
-        self.fromString = ''
-        self.importRootSeen = False
-        self.lastLines: list[str] = []  # The lines after @-leo
-        self.leadingWs = ""
-        self.lineNumber = 0  # New in Leo 4.4.8.
-        self.read_i = 0
-        self.read_lines: list[str] = []
-        self.readVersion = ''  # "5" for new-style thin files.
-        self.readVersion5 = False  # Synonym for self.readVersion >= '5'
-        self.root = root
-        self.rootSeen = False
-        self.targetFileName = fileName  # For self.writeError only.
-        self.v = None
-        self.updateWarningGiven = False
+        # Set all ivars to reasonable defaults.
+        self.initAllIvars(root)
     #@+node:ekr.20041005105605.15: *4* at.initWriteIvars
     def initWriteIvars(self, root: Position) -> Optional[str]:
         """
@@ -144,61 +195,54 @@ class AtFile:
         at, c = self, self.c
         if not c or not c.config:
             return None  # pragma: no cover
+
         make_dirs = c.config.getBool('create-nonexistent-directories', default=False)
-        assert root
-        self.initCommonIvars()
         assert at.checkPythonCodeOnWrite is not None
-        #
-        # Copy args
-        at.root = root
-        at.sentinels = True
-        #
-        # Override initCommonIvars.
-        if g.unitTesting:
-            at.output_newline = '\n'
-        #
+
+        # Set all ivars to reasonable defaults.
+        at.initAllIvars(root)
+
         # Set other ivars.
+        at.sentinels = True
         at.force_newlines_in_at_nosent_bodies = c.config.getBool(
             'force-newlines-in-at-nosent-bodies')
             # For at.putBody only.
+
+        at.encoding = c.getEncoding(root)
+        lineending = c.getLineEnding(root)
+        at.explicitLineEnding = bool(lineending)
+        if g.unitTesting:
+            at.output_newline = '\n'
+        else:
+            at.output_newline = lineending or g.getOutputNewline(c=c)
+        at.language = c.getLanguage(root)
         at.outputList = []  # For stream output.
-        # Sets the following ivars:
-        # at.encoding
-        # at.explicitLineEnding
-        # at.language
-        # at.output_newline
-        # at.page_width
-        # at.tab_width
-        at.scanAllDirectives(root)
-        #
-        # Overrides of at.scanAllDirectives...
-        if at.language == 'python':
-            # Encoding directive overrides everything else.
-            encoding = g.getPythonEncodingFromString(root.b)
-            if encoding:
-                at.encoding = encoding  # pragma: no cover (python 2)
-        #
+        at.page_width = c.getPageWidth(root)
+        at.tab_width = c.getTabWidth(root)
+        # More complex inits.
+        at.initSentinelComments(root)
+
         # Clean root.v.
         if not at.errors and at.root:
             at.root.v._p_changed = True
-        #
+
         # #1907: Compute the file name and create directories as needed.
         targetFileName = g.os_path_realpath(c.fullPath(root))
         at.targetFileName = targetFileName  # For at.writeError only.
-        #
+
         # targetFileName can be empty for unit tests & @command nodes.
         if not targetFileName:  # pragma: no cover
             targetFileName = root.h if g.unitTesting else None
             at.targetFileName = targetFileName  # For at.writeError only.
             return targetFileName
-        #
+
         # #2276: scan for section delims
         at.scanRootForSectionDelims(root)
-        #
+
         # Do nothing more if the file already exists.
         if os.path.exists(targetFileName):
             return targetFileName
-        #
+
         # Create directories if enabled.
         root_dir = g.os_path_dirname(targetFileName)
         if make_dirs and root_dir:  # pragma: no cover
@@ -206,9 +250,35 @@ class AtFile:
             if not ok:
                 g.error(f"Error creating directories: {root_dir}")
                 return None
-        #
+
         # Return the target file name, regardless of future problems.
         return targetFileName
+    #@+node:ekr.20250405052328.1: *4* at.initSentinelComments
+    def initSentinelComments(self, root: Position) -> None:
+        """Init at.startSentinelComment and at.endSentinelComment."""
+        at, c = self, self.c
+        delim1, delim2, delim3 = c.getDelims(root)
+
+        # Use single-line comments if we have a choice.
+        # delim1,delim2,delim3 now correspond to line,start,end
+        if delim1:
+            at.startSentinelComment = delim1
+            at.endSentinelComment = ""  # Must not be None.
+        elif delim2 and delim3:
+            at.startSentinelComment = delim2
+            at.endSentinelComment = delim3
+        else:  # pragma: no cover
+            #
+            # Emergency!
+            #
+            # Issue an error only if at.language has been set.
+            # This suppresses a message from the markdown importer.
+            if not g.unitTesting and at.language:
+                g.trace(repr(at.language), g.callers())
+                g.es_print(f"unknown language: {at.language}")
+                g.es_print('using Python comment delimiters')
+            at.startSentinelComment = "#"  # This should never happen!
+            at.endSentinelComment = ""
     #@+node:ekr.20041005105605.17: *3* at.Reading
     #@+node:ekr.20041005105605.18: *4* at.Reading (top level)
     #@+node:ekr.20070919133659: *5* at.checkExternalFile
@@ -263,12 +333,10 @@ class AtFile:
             # #1466.
             if s is None:  # pragma: no cover
                 # The error has been given.
-                at._file_bytes = g.toEncodedString('')
                 return None, None
             at.warnOnReadOnlyFile(fn)
         except Exception:  # pragma: no cover
             at.error(f"unexpected exception opening: '@file {fn}'")
-            at._file_bytes = g.toEncodedString('')
             fn, s = None, None
         return fn, s
     #@+node:ekr.20150204165040.4: *6* at.openAtShadowFileForReading
@@ -295,32 +363,27 @@ class AtFile:
         if not fileName:  # pragma: no cover
             at.error("Missing file name. Restoring @file tree from .leo file.")
             return False
-        # Fix bug 760531: always mark the root as read, even if there was an error.
-        # Fix bug 889175: Remember the full fileName.
+
+        # #760531: always mark the root as read, even if there was an error.
+        # #889175: Remember the full fileName.
         at.rememberReadPath(c.fullPath(root), root)
         at.initReadIvars(root, fileName)
-        at.fromString = fromString
         if at.errors:
             return False  # pragma: no cover
+
+        # Open the file.
         fileName, file_s = at.openFileForReading(fromString=fromString)
-        # #1798:
-        if file_s is None:
+        if file_s is None:  # #1798:
             return False  # pragma: no cover
-        #
+
         # Set the time stamp.
         if fileName:
             c.setFileTimeStamp(fileName)
         elif not fileName and not fromString and not file_s:  # pragma: no cover
             return False
+
+        # Read the file!
         root.clearVisitedInTree()
-        # Sets the following ivars:
-        # at.encoding: **changed later** by readOpenFile/at.scanHeader.
-        # at.explicitLineEnding
-        # at.language
-        # at.output_newline
-        # at.page_width
-        # at.tab_width
-        at.scanAllDirectives(root)
         gnx2vnode = c.fileCommands.gnxDict
         contents = fromString or file_s
         FastAtRead(c, gnx2vnode).read_into_root(contents, fileName, root)
@@ -483,7 +546,7 @@ class AtFile:
         at.rememberReadPath(fileName, p)
         old_p = p.copy()
         try:
-            at.scanAllDirectives(p)
+            at.initReadIvars(p, fileName)
             p.v.b = ''  # Required for @auto API checks.
             p.v._deleteAllChildren()
             p = ic.createOutline(parent=p.copy())
@@ -513,11 +576,12 @@ class AtFile:
         if not g.os_path_exists(fileName):
             g.es_print(f"not found: {fileName}", color='red', nodeLink=root.get_UNL())
             return False
+
+        # Init.
         at.rememberReadPath(fileName, root)
-        # Must be called before at.scanAllDirectives.
         at.initReadIvars(root, fileName)
-        # Sets at.startSentinelComment/endSentinelComment.
-        at.scanAllDirectives(root)
+
+        # Calculate data.
         new_public_lines = at.read_at_clean_lines(fileName)
         old_private_lines = self.write_at_clean_sentinels(root)
         marker = x.markerFromFileLines(old_private_lines, fileName)
@@ -619,6 +683,7 @@ class AtFile:
             g.internalError(f"does not exist: {fileName!r}")
             return
 
+        # Init.
         at.rememberReadPath(fileName, root)
         at.initReadIvars(root, fileName)
 
@@ -725,17 +790,16 @@ class AtFile:
         at = self
         at.read_i = 0
         at.read_lines = g.splitLines(s)
-        at._file_bytes = g.toEncodedString(s)
     #@+node:ekr.20041005105605.120: *5* at.parseLeoSentinel
     def parseLeoSentinel(self, s: str) -> tuple[bool, bool, str, str, bool]:
         """
         Parse the sentinel line s.
-        If the sentinel is valid, set at.encoding, at.readVersion, at.readVersion5.
+        If the sentinel is valid, set at.encoding, at.readVersion
         """
         at, c = self, self.c
         # Set defaults.
         encoding = c.config.default_derived_file_encoding
-        readVersion, readVersion5 = None, None
+        readVersion = None
         new_df, start, end, isThin = False, '', '', False
         # Example: \*@+leo-ver=5-thin-encoding=utf-8,.*/
         pattern = re.compile(
@@ -760,7 +824,6 @@ class AtFile:
                 # Set the version number.
                 if m.group(3):
                     readVersion = m.group(3)
-                    readVersion5 = readVersion >= '5'
                 else:
                     valid = False  # pragma: no cover
         if valid:
@@ -780,7 +843,6 @@ class AtFile:
         if valid:
             at.encoding = encoding
             at.readVersion = readVersion
-            at.readVersion5 = readVersion5
         return valid, new_df, start, end, isThin
     #@+node:ekr.20130911110233.11284: *5* at.readFileToUnicode & helpers
     def readFileToUnicode(self, fileName: str) -> Optional[str]:  # pragma: no cover
@@ -791,9 +853,7 @@ class AtFile:
         Sets at.encoding as follows:
         1. Use the BOM, if present. This unambiguously determines the encoding.
         2. Use the -encoding= field in the @+leo header, if present and valid.
-        3. Otherwise, uses existing value of at.encoding, which comes from:
-            A. An @encoding directive, found by at.scanAllDirectives.
-            B. The value of c.config.default_derived_file_encoding.
+        3. Otherwise, uses existing value of at.encoding.
 
         Returns the string, or None on failure.
         """
@@ -2201,19 +2261,15 @@ class AtFile:
     #@+node:ekr.20041005105605.190: *5* at.putLeadInSentinel
     def putLeadInSentinel(self, s: str, i: int, j: int) -> None:
         """
-        Set at.leadingWs as needed for @+others and @+<< sentinels.
-
         i points at the start of a line.
         j points at @others or a section reference.
         """
         at = self
-        at.leadingWs = ""  # Set the default.
         if i == j:
             return  # The @others or ref starts a line.
         k = g.skip_ws(s, i)
         if j == k:
-            # Remember the leading whitespace, including its spelling.
-            at.leadingWs = s[i:j]
+            pass
         else:
             self.putIndent(at.indent)  # 1/29/04: fix bug reported by Dan Winkler.
             at.os(s[i:j])
@@ -2540,27 +2596,25 @@ class AtFile:
         Return True if so.  Return False *and* issue a warning otherwise.
         """
         at = self
-        #
+        if g.unitTesting:
+            return True
         # #1450: First, check that the directory exists.
         theDir = g.os_path_dirname(fileName)
         if theDir and not g.os_path_exists(theDir):
             at.error(f"Directory not found:\n{theDir}")
             return False
-        #
         # Now check the file.
         if not at.shouldPromptForDangerousWrite(fileName, root):
             # Fix bug 889175: Remember the full fileName.
             at.rememberReadPath(fileName, root)
             return True
-        #
         # Prompt if the write would overwrite the existing file.
         ok = self.promptForDangerousWrite(fileName)
         if ok:
             # Fix bug 889175: Remember the full fileName.
             at.rememberReadPath(fileName, root)
             return True
-        #
-        # Fix #1031: do not add @ignore here!
+        # #1031: do not add @ignore here!
         g.es("not written:", fileName)
         return False
     #@+node:ekr.20050506090446.1: *5* at.putAtFirstLines
@@ -3018,7 +3072,7 @@ class AtFile:
         the full headline (@<file> type) that caused the read.
         """
         v = p.v
-        # Fix bug #50: body text lost switching @file to @auto-rst
+        # #50: body text lost switching @file to @auto-rst
         if not hasattr(v, 'at_read'):
             v.at_read = {}  # pragma: no cover
         d = v.at_read
@@ -3040,71 +3094,6 @@ class AtFile:
             9: '@verbatim',
         }
         return d.get(kind) or f"<unknown AtFile class constant> {kind!r}"
-    #@+node:ekr.20080923070954.4: *4* at.scanAllDirectives
-    def scanAllDirectives(self, p: Position) -> dict[str, Value]:
-        """
-        Scan p and p's ancestors looking for directives,
-        setting corresponding AtFile ivars.
-        """
-        at, c = self, self.c
-        d = c.scanAllDirectives(p)
-
-        # Language & delims: Tricky.
-        lang_dict = d.get('lang-dict') or {}
-        delims, language = None, None
-        if lang_dict:
-            # There was an @delims or @language directive.
-            language = lang_dict.get('language')
-            delims = lang_dict.get('delims')
-        if not language:
-            # No language directive.  Look for @<file> nodes.
-            # Do *not* use d.get('language')!
-            language = g.getLanguageFromAncestorAtFileNode(p) or 'python'
-
-        at.language = language
-        if delims in (None, (None, None, None)):  # #4256
-            delims = g.set_delims_from_language(language)
-
-        #@+<< Set comment strings from delims >>
-        #@+node:ekr.20080923070954.13: *5* << Set comment strings from delims >> (at.scanAllDirectives)
-        delim1, delim2, delim3 = delims
-        # Use single-line comments if we have a choice.
-        # delim1,delim2,delim3 now correspond to line,start,end
-        if delim1:
-            at.startSentinelComment = delim1
-            at.endSentinelComment = ""  # Must not be None.
-        elif delim2 and delim3:
-            at.startSentinelComment = delim2
-            at.endSentinelComment = delim3
-        else:  # pragma: no cover
-            #
-            # Emergency!
-            #
-            # Issue an error only if at.language has been set.
-            # This suppresses a message from the markdown importer.
-            if not g.unitTesting and at.language:
-                g.trace(repr(at.language), g.callers())
-                g.es_print(f"unknown language: {at.language}")
-                g.es_print('using Python comment delimiters')
-            at.startSentinelComment = "#"  # This should never happen!
-            at.endSentinelComment = ""
-        #@-<< Set comment strings from delims >>
-
-        # Easy cases
-        at.encoding = d.get('encoding') or c.config.default_derived_file_encoding
-        lineending = d.get('lineending')
-        at.explicitLineEnding = bool(lineending)
-        at.output_newline = lineending or g.getOutputNewline(c=c)
-        at.page_width = d.get('pagewidth') or c.page_width
-        at.tab_width = d.get('tabwidth') or c.tab_width
-        return {
-            "encoding": at.encoding,
-            "language": at.language,
-            "lineending": at.output_newline,
-            "pagewidth": at.page_width,
-            "path": d.get('path'),
-            "tabwidth": at.tab_width,
-        }
     #@+node:ekr.20120110174009.9965: *4* at.shouldPromptForDangerousWrite
     def shouldPromptForDangerousWrite(self, fn: str, p: Position) -> bool:  # pragma: no cover
         """
@@ -3127,7 +3116,7 @@ class AtFile:
             return True
 
         if hasattr(p.v, 'at_read'):
-            # Fix bug #50: body text lost switching @file to @auto-rst
+            # #50: body text lost switching @file to @auto-rst
             d = p.v.at_read
             for k in d:
                 # Make sure k still exists.
@@ -3538,17 +3527,16 @@ class FastAtRead:
             #@+<< handle @first and @last >>
             #@+node:ekr.20180606053919.1: *4* << handle @first and @last >>
             if m := self.first_pat.match(line):
-                # pylint: disable=no-else-continue
                 if 0 <= first_i < len(first_lines):
                     body.append('@first ' + first_lines[first_i])
                     first_i += 1
-                    continue
                 else:  # pragma: no cover
                     g.trace(f"\ntoo many @first lines: {path}")
                     print('@first is valid only at the start of @<file> nodes\n')
                     g.printObj(first_lines, tag='first_lines')
                     g.printObj(lines[start : i + 2], tag='lines[start:i+2]')
-                    continue
+                continue
+
             if m := self.last_pat.match(line):
                 # Just increment the count of the expected last lines.
                 # We'll fill in the @last line directives after we see the @-leo directive.

@@ -10,7 +10,6 @@ __plugin_name__ = "Word Export"
 #@+<< imports >>
 #@+node:ekr.20040909105522: ** << imports >>
 import configparser as ConfigParser
-import sys
 from leo.core import leoGlobals as g
 try:
     # From win32 extensions: http://www.python.org/windows/win32/
@@ -78,17 +77,10 @@ def writeNodeAndTree(c, word, header_style, level,
     """Write a node and its children to Word"""
     if vnode is None:
         vnode = c.currentVnode()
-    #
-    dict = c.scanAllDirectives(p=vnode)
-    encoding = dict.get("encoding", None)
-    if encoding is None:
-        # encoding = c.config.default_derived_file_encoding
-        encoding = sys.getdefaultencoding()
-    #
+    encoding = c.getEncoding(p=vnode)
     s = vnode.b
     s = g.toEncodedString(s, encoding, reportErrors=True)
     doPara(word, s)
-    #
     for i in range(vnode.numberOfChildren()):
         if usesections:
             thishead = "%s%d." % (sectionhead, i + 1)

@@ -36,7 +36,7 @@ import time
 import traceback
 import types
 from types import ModuleType
-from typing import Any, Generator, IO, Iterable, Optional, Sequence, Union, TYPE_CHECKING
+from typing import Any, IO, Iterable, Optional, Sequence, Union, TYPE_CHECKING
 import unittest
 import urllib
 import urllib.parse as urlparse
@@ -2572,7 +2572,8 @@ def findReference(name: str, root: Position) -> Optional[Position]:
         if p.matchHeadline(name) and not p.isAtIgnoreNode():
             return p.copy()
     return None
-#@+node:ekr.20090214075058.9: *3* g.get_directives_dict (must be fast)
+#@+node:ekr.20250403041557.1: *3* --- deprecated helpers
+#@+node:ekr.20090214075058.9: *4* g.get_directives_dict (deprecated)
 def get_directives_dict(p: Position) -> dict[str, str]:
     """
     Scan p for Leo directives found in globalDirectiveList.
@@ -2580,6 +2581,7 @@ def get_directives_dict(p: Position) -> dict[str, str]:
     Returns a dict containing the stripped remainder of the line
     following the first occurrence of each recognized directive.
     """
+    g.deprecated()
     d = {}
     # The headline has higher precedence because it is more visible.
     for kind, s in (('head', p.h), ('body', p.b)):
@@ -2602,101 +2604,33 @@ def get_directives_dict(p: Position) -> dict[str, str]:
             val = s[j:k].strip()
             d[word] = val
     return d
-#@+node:ekr.20080827175609.1: *3* g.get_directives_dict_list (must be fast)
+#@+node:ekr.20080827175609.1: *4* g.get_directives_dict_list (must be fast) (deprecate)
 def get_directives_dict_list(p: Position) -> list[dict]:
     """Scans p and all its ancestors for directives.
 
     Returns a list of dicts containing pointers to
     the start of each directive"""
+    g.deprecated()
     result = []
     p1 = p.copy()
     for p in p1.self_and_parents(copy=False):
         # No copy necessary: g.get_directives_dict does not change p.
         result.append(g.get_directives_dict(p))
     return result
-#@+node:ekr.20111010082822.15545: *3* g.getLanguageFromAncestorAtFileNode
+#@+node:ekr.20111010082822.15545: *3* g.getLanguageFromAncestorAtFileNode (deprecated)
 def getLanguageFromAncestorAtFileNode(p: Position) -> Optional[str]:
     """Return the language in effect at node p."""
-    v0 = p.v
-    seen: set[VNode]
-
-    # The same generator as in v.setAllAncestorAtFileNodesDirty.
-    # Original idea by Виталије Милошевић (Vitalije Milosevic).
-    # Modified by EKR.
-
-    def v_and_parents(v: VNode) -> Generator:
-        if v in seen:
-            return
-        seen.add(v)
-        yield v
-        for parent_v in v.parents:
-            if parent_v not in seen:
-                yield from v_and_parents(parent_v)
-
-    # First, see if p contains any @language directive.
-    language = g.findFirstValidAtLanguageDirective(p.b)
-    if language:
-        return language
-
-    # Passes 1 and 2: Search body text for unambiguous @language directives.
-
-    # Pass 1: Search body text in direct parents for unambiguous @language directives.
-    for p2 in p.self_and_parents(copy=False):
-        languages = g.findAllValidLanguageDirectives(p2.v.b)
-        if len(languages) == 1:  # An unambiguous language
-            return languages[0]
-
-    # Pass 2: Search body text in extended parents for unambiguous @language directives.
-    seen = set([v0.context.hiddenRootNode])
-    for v in v_and_parents(v0):
-        languages = g.findAllValidLanguageDirectives(v.b)
-        if len(languages) == 1:  # An unambiguous language
-            return languages[0]
-
-    # Passes 3 & 4: Use the file extension in @<file> nodes.
-
-    def get_language_from_headline(v: VNode) -> Optional[str]:
-        """Return the extension for @<file> nodes."""
-        if v.isAnyAtFileNode():
-            name = v.anyAtFileNodeName()
-            junk, ext = g.os_path_splitext(name)
-            ext = ext[1:]  # strip the leading period.
-            language = g.app.extension_dict.get(ext)
-            if g.isValidLanguage(language):
-                return language
-        return None
-
-    # Pass 3: Use file extension in headline of @<file> in direct parents.
-    for p2 in p.self_and_parents(copy=False):
-        language = get_language_from_headline(p2.v)
-        if language:
-            return language
-
-    # Pass 4: Use file extension in headline of @<file> nodes in extended parents.
-    seen = set([v0.context.hiddenRootNode])
-    for v in v_and_parents(v0):
-        language = get_language_from_headline(v)
-        if language:
-            return language
-
-    # Return the default language for the commander.
+    g.deprecated()
     c = p.v.context
-    return c.target_language or 'python'
-#@+node:ekr.20150325075144.1: *3* g.getLanguageFromPosition
+    return c.getLanguage(p)
+#@+node:ekr.20150325075144.1: *3* g.getLanguageFromPosition (deprecated)
 def getLanguageAtPosition(c: Cmdr, p: Position) -> str:
     """
     Return the language in effect at position p.
     This is always a lowercase language name, never None.
     """
-    aList = g.get_directives_dict_list(p)
-    d = g.scanAtCommentAndAtLanguageDirectives(aList)
-    language = (
-        d and d.get('language') or
-        g.getLanguageFromAncestorAtFileNode(p) or
-        c.config.getString('target-language') or
-        'python'
-    )
-    return language.lower()
+    g.deprecated()
+    return c.getLanguage(p)
 #@+node:ekr.20031218072017.1386: *3* g.getOutputNewline
 def getOutputNewline(c: Cmdr = None, name: str = None) -> str:
     """Convert the name of a line ending to the line ending itself.
@@ -2753,13 +2687,15 @@ def isValidLanguage(language: str) -> bool:
         or
         language in g.app.delegate_language_dict
     ))
-#@+node:ekr.20080827175609.52: *3* g.scanAtCommentAndLanguageDirectives
+#@+node:ekr.20250403040834.1: *3* --- to be deprecated! Using directives list
+#@+node:ekr.20080827175609.52: *4* g.scanAtCommentAndLanguageDirectives (deprecated)
 def scanAtCommentAndAtLanguageDirectives(aList: list) -> Optional[dict[str, str]]:
     """
     Scan aList for @comment and @language directives.
 
     @comment should follow @language if both appear in the same node.
     """
+    g.deprecated()
     lang = None
     for d in aList:
         comment = d.get('comment')
@@ -2774,9 +2710,10 @@ def scanAtCommentAndAtLanguageDirectives(aList: list) -> Optional[dict[str, str]
             d = {'language': lang, 'comment': comment, 'delims': delims}
             return d
     return None
-#@+node:ekr.20080827175609.32: *3* g.scanAtEncodingDirectives
+#@+node:ekr.20080827175609.32: *4* g.scanAtEncodingDirectives (deprecated)
 def scanAtEncodingDirectives(aList: list) -> Optional[str]:
     """Scan aList for @encoding directives."""
+    g.deprecated()
     for d in aList:
         encoding = d.get('encoding')
         if encoding and g.isValidEncoding(encoding):
@@ -2784,15 +2721,17 @@ def scanAtEncodingDirectives(aList: list) -> Optional[str]:
         if encoding and not g.unitTesting:
             g.error("invalid @encoding:", encoding)
     return None
-#@+node:ekr.20080827175609.53: *3* g.scanAtHeaderDirectives
+#@+node:ekr.20080827175609.53: *4* g.scanAtHeaderDirectives (deprecated)
 def scanAtHeaderDirectives(aList: list) -> None:
     """scan aList for @header and @noheader directives."""
+    g.deprecated()
     for d in aList:
         if d.get('header') and d.get('noheader'):
             g.error("conflicting @header and @noheader directives")
-#@+node:ekr.20080827175609.33: *3* g.scanAtLineendingDirectives
+#@+node:ekr.20080827175609.33: *4* g.scanAtLineendingDirectives (deprecated)
 def scanAtLineendingDirectives(aList: list) -> Optional[str]:
     """Scan aList for @lineending directives."""
+    g.deprecated()
     for d in aList:
         e = d.get('lineending')
         if e in ("cr", "crlf", "lf", "nl", "platform"):
@@ -2801,9 +2740,10 @@ def scanAtLineendingDirectives(aList: list) -> Optional[str]:
         # else:
             # g.error("invalid @lineending directive:",e)
     return None
-#@+node:ekr.20080827175609.34: *3* g.scanAtPagewidthDirectives
+#@+node:ekr.20080827175609.34: *4* g.scanAtPagewidthDirectives (deprecated)
 def scanAtPagewidthDirectives(aList: list, issue_error_flag: bool = False) -> Optional[int]:
     """Scan aList for @pagewidth directives. Return the page width or None"""
+    g.deprecated()
     for d in aList:
         s = d.get('pagewidth')
         if s is not None:
@@ -2813,18 +2753,21 @@ def scanAtPagewidthDirectives(aList: list, issue_error_flag: bool = False) -> Op
             if issue_error_flag and not g.unitTesting:
                 g.error("ignoring @pagewidth", s)
     return None
-#@+node:ekr.20101022172109.6108: *3* g.scanAtPathDirectives & scanAllAtPathDirectives
+#@+node:ekr.20101022172109.6108: *4* g.scanAtPathDirectives & scanAllAtPathDirectives (deprecated)
 def scanAtPathDirectives(c: Cmdr, aList: list) -> str:
+    g.deprecated()
     path = c.scanAtPathDirectives(aList)
     return path
 
 def scanAllAtPathDirectives(c: Cmdr, p: Position) -> str:
+    g.deprecated()
     aList = g.get_directives_dict_list(p)
     path = c.scanAtPathDirectives(aList)
     return path
-#@+node:ekr.20080827175609.37: *3* g.scanAtTabwidthDirectives
+#@+node:ekr.20080827175609.37: *4* g.scanAtTabwidthDirectives & scanAllAtTabWidthDirectives (deprecated)
 def scanAtTabwidthDirectives(aList: list, issue_error_flag: bool = False) -> Optional[int]:
     """Scan aList for @tabwidth directives."""
+    g.deprecated()
     for d in aList:
         s = d.get('tabwidth')
         if s is not None:
@@ -2837,6 +2780,7 @@ def scanAtTabwidthDirectives(aList: list, issue_error_flag: bool = False) -> Opt
 
 def scanAllAtTabWidthDirectives(c: Cmdr, p: Position) -> Optional[int]:
     """Scan p and all ancestors looking for @tabwidth directives."""
+    g.deprecated()
     if c and p:
         aList = g.get_directives_dict_list(p)
         val = g.scanAtTabwidthDirectives(aList)
@@ -2844,9 +2788,10 @@ def scanAllAtTabWidthDirectives(c: Cmdr, p: Position) -> Optional[int]:
     else:
         ret = None
     return ret
-#@+node:ekr.20080831084419.4: *3* g.scanAtWrapDirectives
+#@+node:ekr.20080831084419.4: *4* g.scanAtWrapDirectives & scanAllAtWrapDirectives (deprecated)
 def scanAtWrapDirectives(aList: list, issue_error_flag: bool = False) -> Optional[bool]:
     """Scan aList for @wrap and @nowrap directives."""
+    g.deprecated()
     for d in aList:
         if d.get('wrap') is not None:
             return True
@@ -2856,6 +2801,7 @@ def scanAtWrapDirectives(aList: list, issue_error_flag: bool = False) -> Optiona
 
 def scanAllAtWrapDirectives(c: Cmdr, p: Position) -> Optional[bool]:
     """Scan p and all ancestors looking for @wrap/@nowrap directives."""
+    g.deprecated()
     if c and p:
         default = bool(c and c.config.getBool("body-pane-wraps"))
         aList = g.get_directives_dict_list(p)
@@ -2870,16 +2816,15 @@ def scanForAtIgnore(c: Cmdr, p: Position) -> bool:
     if g.unitTesting:
         return False  # For unit tests.
     for p in p.self_and_parents(copy=False):
-        d = g.get_directives_dict(p)
-        if 'ignore' in d:
+        if p.findDirective('ignore'):
             return True
     return False
-#@+node:ekr.20040712084911.1: *3* g.scanForAtLanguage
+#@+node:ekr.20040712084911.1: *3* g.scanForAtLanguage (deprecated)
 def scanForAtLanguage(c: Cmdr, p: Position) -> str:
     """Scan position p and p's ancestors looking only for @language and @ignore directives.
 
     Returns the language found, or c.target_language."""
-    # Unlike the code in x.scanAllDirectives, this code ignores @comment directives.
+    g.deprecated()
     if c and p:
         for p in p.self_and_parents(copy=False):
             d = g.get_directives_dict(p)
@@ -3128,7 +3073,7 @@ def getBaseDirectory(c: Cmdr) -> str:
     @string relative-path-base-directory.
     """
     return ''
-#@+node:ekr.20170223093758.1: *3* g.getEncodingAt
+#@+node:ekr.20170223093758.1: *3* g.getEncodingAt (deprecated)
 def getEncodingAt(p: Position, b: bytes = None) -> str:
     """
     Return the encoding in effect at p and/or for string s.
@@ -3136,6 +3081,7 @@ def getEncodingAt(p: Position, b: bytes = None) -> str:
     Read logic:  s is not None.
     Write logic: s is None.
     """
+    g.deprecated()
     # A BOM overrides everything.
     if b:
         e, junk_s = g.stripBOM(b)
@@ -5746,17 +5692,25 @@ def trace(*args: Args, **kwargs: KWargs) -> None:
 #@+node:ekr.20241104143456.1: *3* g.print_unique_message & es_print_unique_message
 g_unique_message_d: dict[str, bool] = {}
 
-def print_unique_message(message: str) -> None:
-    """Print the given message once."""
+def print_unique_message(message: str) -> bool:
+    """
+    Print the given message once. Return True if the message was printed.
+    """
     if message not in g_unique_message_d:
         g_unique_message_d[message] = True
         print(message)
+        return True
+    return False
 
-def es_print_unique_message(message: str, *, color: str = 'error') -> None:
-    """Print the given message once."""
+def es_print_unique_message(message: str, *, color: str = 'error') -> bool:
+    """
+    Print the given message once. Return True if the message was printed.
+    """
     if message not in g_unique_message_d:
         g_unique_message_d[message] = True
         g.es_print(message, color=color)
+        return True
+    return False
 #@+node:ekr.20240325064618.1: *3* g.traceUnique & traceUniqueClass
 # Keys are strings: g.callers. Values are lists of str(value).
 trace_unique_dict: dict[str, list[str]] = {}
@@ -5837,6 +5791,31 @@ def translateString(s: str) -> str:
 
 tr = translateString
 #@+node:EKR.20040612114220: ** g.Miscellaneous
+#@+node:ekr.20250403055718.1: *3* g._context
+def _context(n: int = 1) -> str:
+    """Return the full context of the function/method n levels up the stack frame."""
+    # Similar to g._callerName.
+    try:
+        f1 = sys._getframe(n)  # The stack frame, n levels up.
+        code1 = f1.f_code  # The code object
+        locals_ = f1.f_locals  # The local namespace.
+        module = shortFilename(code1.co_filename)  # The module's file name.
+        if module == 'leoGlobals.py':
+            module = 'g'
+        obj = locals_.get('self')
+        if obj is None:
+            context = module
+        else:
+            try:
+                class_name = obj.__class__.__name__
+                if class_name == 'Commands':
+                    class_name = 'c'
+                context = f"{module}:{class_name}"
+            except Exception:
+                context = module
+    except Exception:
+        context = '<unknown context>:'
+    return context
 #@+node:ekr.20120928142052.10116: *3* g.actualColor
 def actualColor(color: str) -> str:
     """Return the actual color corresponding to the requested color."""
@@ -5935,6 +5914,15 @@ def createScratchCommander(fileName: str = None) -> None:
     assert c.rootPosition()
     frame.setInitialWindowGeometry()
     frame.resizePanesToRatio(frame.compute_ratio(), frame.compute_secondary_ratio())
+#@+node:ekr.20250403051420.1: *3* g.deprecated
+def deprecated() -> None:
+    """Issue a single deprecation message for the caller of this method."""
+    message = f"Warning: {g._context(2)}.{g.caller()} is deprecated"
+    if g.unitTesting:
+        message = '\n' + message
+    if print_unique_message(message):
+        print(g.callers(6))
+        print('')
 #@+node:ekr.20031218072017.3126: *3* g.funcToMethod (Python Cookbook)
 def funcToMethod(f: Callable, theClass: object, name: str = None) -> None:
     """
@@ -6686,13 +6674,12 @@ def extractExecutableString(c: Cmdr, p: Position, s: str) -> str:
 
     Ignore all lines under control of any other @language directive.
     """
-    #
     # Rewritten to fix #1071.
     if g.unitTesting:
         return s  # Regrettable, but necessary.
-    #
+
     # Return s if no @language in effect. Should never happen.
-    language = g.scanForAtLanguage(c, p)
+    language = c.getLanguage(p)
     if not language:
         return s
     #
@@ -6935,7 +6922,7 @@ def computeFileUrl(fn: str, c: Cmdr = None, p: Position = None) -> str:
             path = url
         # Handle ancestor @path directives.
         if c and c.fileName():
-            base = c.getNodePath(p)
+            base = c.getPath(p)
             path = g.finalize_join(g.os_path_dirname(c.fileName()), base, path)
         else:
             path = g.finalize(path)

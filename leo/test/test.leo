@@ -679,6 +679,8 @@
 <v t="ekr.20241206101345.494"><vh>function: add_openai_command</vh></v>
 </v>
 </v>
+<v t="ekr.20140723122936.18139"></v>
+<v t="ekr.20230622112535.1"></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20180311131353.1" str_leo_pos="3,11"></t>

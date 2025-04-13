@@ -644,6 +644,7 @@ class Commands:
         Set the cwd before calling the command.
         """
         c, p, tag = self, self.p, 'execute-general-script'
+
         def get_setting_for_language(setting: str) -> Optional[str]:
             """
             Return the setting from the given @data setting.
@@ -651,16 +652,12 @@ class Commands:
             """
             for s in c.config.getData(setting) or []:
                 key, val = s.split(':', 1)
-                if key.strip() == language:
+                if key.strip() == 'language':  # 2025/04/05.
                     return val.strip()
             return None
 
         # Get the language and extension.
-        d = c.scanAllDirectives(p)
-        language: str = d.get('language')
-        if not language:
-            print(f"{tag}: No language in effect at {p.h}")
-            return
+        language =  c.getLanguage(p)
         ext = g.app.language_extension_dict.get(language)
         if not ext:
             print(f"{tag}: No extension for {language}")
@@ -880,7 +877,7 @@ class Commands:
             otherwise use the file extension.
             """
             return (
-                g.getLanguageFromAncestorAtFileNode(c.p)
+                c.getLanguage(c.p)
                 or LANGUAGE_EXTENSION_MAP.get(ext, None)
             )
 
@@ -1333,8 +1330,7 @@ class Commands:
     #@+node:ekr.20171123135625.7: *4* c.setCurrentDirectoryFromContext
     def setCurrentDirectoryFromContext(self, p: Position) -> None:
         c = self
-        aList = g.get_directives_dict_list(p)
-        path = c.scanAtPathDirectives(aList)
+        path = c.getPath(p)
         curDir = g.os_path_abspath(os.getcwd())
         if path and path != curDir:
             try:
@@ -1586,12 +1582,244 @@ class Commands:
         j = len(head) + len(s)
         oldSel = i, j
         return head, lines, tail, oldSel, oldYview  # string,list,string,tuple,int.
-    #@+node:ekr.20150417073117.1: *5* c.getTabWidth
-    def getTabWidth(self, p: Position) -> int:
-        """Return the tab width in effect at p."""
+    #@+node:ekr.20250405040620.1: *5* c.getDelims
+    # Use a regex to avoid allocating temp strings.
+    at_comment_pattern = re.compile(r'^@comment\s+(.*)$', re.MULTILINE)
+
+    def getDelims(self, p: Position) -> tuple[str, str, str]:
+
         c = self
-        val = g.scanAllAtTabWidthDirectives(c, p)
-        return val
+        # The headline has higher precedence because it is more visible.
+        for p2 in p.self_and_parents():
+            for s in (p2.h, p2.b):
+                for m in c.at_comment_pattern.finditer(s):
+                    comment = m.group(1)
+                    return g.set_delims_from_string(comment)
+
+        # Return the default comment delims.
+        default_language = c.getLanguage(p) or c.target_language or 'python'
+        return g.set_delims_from_language(default_language)
+    #@+node:ekr.20250404072805.1: *5* c.getEncoding
+    # Use a regex to avoid allocating temp strings.
+    at_encoding_pattern = re.compile(r'^@encoding\s+([\w_-]+)', re.MULTILINE)
+
+    def getEncoding(self, p: Position) -> str:
+        """
+        Scan p and all ancestors for the first @encoding direcive.
+        
+        Return c.config.default_derived_file_encoding or 'utf-8' by default.
+        """
+        c = self
+        # The headline has higher precedence because it is more visible.
+        for p2 in p.self_and_parents():
+            for s in (p2.h, p2.b):
+                for m in c.at_encoding_pattern.finditer(s):
+                    encoding = m.group(1)
+                    if g.isValidEncoding(encoding):
+                        return encoding
+                    g.error("invalid @encoding:", encoding)
+        return c.config.default_derived_file_encoding or 'utf-8'
+    #@+node:ekr.20250405141653.1: *5* c.getLanguage
+    def getLanguage(self, p: Position) -> str:
+        """
+        Return the language in effect at node p, checking that the language is valid."""
+        v0 = p.v
+        seen: set[VNode]
+
+        # The same generator as in v.setAllAncestorAtFileNodesDirty.
+        # Original idea by Виталије Милошевић (Vitalije Milosevic).
+        # Modified by EKR.
+
+        def v_and_parents(v: VNode) -> Generator:
+            if v in seen:
+                return
+            seen.add(v)
+            yield v
+            for parent_v in v.parents:
+                if parent_v not in seen:
+                    yield from v_and_parents(parent_v)
+
+        # First, see if p contains any @language directive.
+        language = g.findFirstValidAtLanguageDirective(p.b)
+        if language:
+            return language
+
+        # Passes 1 and 2: Search body text for unambiguous @language directives.
+
+        # Pass 1: Search body text in direct parents for unambiguous @language directives.
+        for p2 in p.self_and_parents(copy=False):
+            languages = g.findAllValidLanguageDirectives(p2.v.b)
+            if len(languages) == 1:  # An unambiguous language
+                return languages[0]
+
+        # Pass 2: Search body text in extended parents for unambiguous @language directives.
+        seen = set([v0.context.hiddenRootNode])
+        for v in v_and_parents(v0):
+            languages = g.findAllValidLanguageDirectives(v.b)
+            if len(languages) == 1:  # An unambiguous language
+                return languages[0]
+
+        # Passes 3 & 4: Use the file extension in @<file> nodes.
+
+        def get_language_from_headline(v: VNode) -> Optional[str]:
+            """Return the extension for @<file> nodes."""
+            if v.isAnyAtFileNode():
+                name = v.anyAtFileNodeName()
+                junk, ext = g.os_path_splitext(name)
+                ext = ext[1:]  # strip the leading period.
+                language = g.app.extension_dict.get(ext)
+                if g.isValidLanguage(language):
+                    return language
+            return None
+
+        # Pass 3: Use file extension in headline of @<file> in direct parents.
+        for p2 in p.self_and_parents(copy=False):
+            language = get_language_from_headline(p2.v)
+            if language:
+                return language
+
+        # Pass 4: Use file extension in headline of @<file> nodes in extended parents.
+        seen = set([v0.context.hiddenRootNode])
+        for v in v_and_parents(v0):
+            language = get_language_from_headline(v)
+            if language:
+                return language
+
+        # Return the default language for the commander.
+        c = p.v.context
+        return c.target_language or 'python'
+    #@+node:ekr.20250405053842.1: *5* c.getLineEnding
+    # Use a regex to avoid allocating temp strings.
+    at_lineending_pattern = re.compile(r'^@lineending\s+([\w]+)', re.MULTILINE)
+
+    def getLineEnding(self, p: Position) -> str:
+        """
+        Scan p and all ancestors for the first @lineending direcive.
+        Return None (*not* '\n') by default.
+        """
+        c = self
+        # The headline has higher precedence because it is more visible.
+        for p2 in p.self_and_parents():
+            for s in (p2.h, p2.b):
+                for m in c.at_lineending_pattern.finditer(s):
+                    ending = m.group(1)
+                    if ending in ("cr", "crlf", "lf", "nl", "platform"):
+                        return g.getOutputNewline(name=ending)
+        return None
+    #@+node:ekr.20250404153234.1: *5* c.getPageWidth
+    # Use a regex to avoid allocating temp strings.
+    at_pagewidth_pattern = re.compile(r'^@pagewidth\s+(-?[0-9]+)', re.MULTILINE)
+
+    def getPageWidth(self, p: Position) -> int:
+        """
+        Scan p.b and all ancestors for the first @pagewith direcive.
+        
+        Return c.page_width by default.
+        """
+        c = self
+        # The headline has higher precedence because it is more visible.
+        for p2 in p.self_and_parents():
+            for s in (p2.h, p2.b):
+                for m in c.at_pagewidth_pattern.finditer(s):
+                    width = m.group(1)
+                    try:
+                        return int(width)
+                    except ValueError:
+                        g.error("ignoring m.group(0)")
+        return c.page_width
+    #@+node:ekr.20250404021710.1: *5* c.getPath & helper
+    def getPath(self, p: Position) -> str:
+        """
+        Scan for @path directives in p and all its direct ancestors.
+        
+        Return an absolute path or a reasonable default.
+        """
+        c = self
+        paths = []
+        for p2 in p.self_and_parents():
+            if path := c.getPathFromNode(p2):
+                paths.append(path)
+
+        # Add absbase and reverse the list.
+        absbase = g.os_path_dirname(c.fileName()) if c.fileName() else os.getcwd()
+        paths.append(absbase)
+        paths.reverse()
+
+        # Compute the full, effective, absolute path.
+        path = g.finalize_join(*paths)
+        return path
+    #@+node:ekr.20250404014820.1: *6* c.getPathFromNode
+    # Use a regex to avoid allocating temp strings.
+    at_path_pattern = re.compile(r'^@path\s+([\w_:/\\]+)', re.MULTILINE)
+
+    def getPathFromNode(self, p: Position) -> Optional[str]:
+        """
+        Scan p.h then p.b for @path directives.
+        """
+        c = self
+        c.scanAtPathDirectivesCount += 1  # An important statistic.
+
+        def get_path(m: re.Match) -> Optional[str]:
+            return g.stripPathCruft(m.group(1)) if m else None
+
+        # The headline has higher precedence because it is more visible.
+        paths: list[str] = []
+        for kind, s in (('head', p.h), ('body', p.b)):
+            for m in c.at_path_pattern.finditer(s):
+                if kind == 'body' and p.isAtFileNode():
+                    message = '@path is not allowed in the body text of @file nodes\n'
+                    g.print_unique_message(message)
+                elif path := get_path(m):
+                    paths.append(path)
+            if paths:
+                break
+        if len(paths) > 1:
+            message = (
+                f"Multiple @path directives in {p.h!r}\n"
+                f"Using the first path: @path {paths[0]}"
+            )
+            g.print_unique_message(message)
+        return paths[0] if paths else None
+    #@+node:ekr.20250404153250.1: *5* c.getTabWidth
+    # Use a regex to avoid allocating temp strings.
+    at_tabwidth_pattern = re.compile(r'^@tabwidth\s+(-?[0-9]+)', re.MULTILINE)
+
+    def getTabWidth(self, p: Position) -> int:
+        """
+        Scan p.b and all ancestors for the first @encoding direcive.
+        
+        Return c.tab_width by default.
+        """
+        c = self
+        # The headline has higher precedence because it is more visible.
+        for p2 in p.self_and_parents():
+            for s in (p2.h, p2.b):
+                for m in c.at_tabwidth_pattern.finditer(s):
+                    width = m.group(1)
+                    try:
+                        return int(width)
+                    except ValueError:
+                        g.error("ignoring m.group(0)")
+        return c.tab_width
+    #@+node:ekr.20250405143421.1: *5* c.getWrap
+    # Use a regex to avoid allocating temp strings.
+    at_wrap_pattern = re.compile(r'^@wrap', re.MULTILINE)
+    at_nowrap_pattern = re.compile(r'^@nowrap', re.MULTILINE)
+
+    def getWrap(self, p: Position) -> int:
+        """
+        Scan p.b and all ancestors for @wrap and @nowrap directives.
+        Return @bool body-pane-wraps by default.
+        """
+        c = self
+        # The headline has higher precedence because it is more visible.
+        for p2 in p.self_and_parents():
+            for s in (p2.h, p2.b):
+                if c.at_wrap_pattern.search(s) is not None:
+                    return True
+                if c.at_nowrap_pattern.search(s) is not None:
+                    return False
+        return c.config.getBool("body-pane-wraps")
     #@+node:ekr.20040803112200: *5* c.is...Position
     #@+node:ekr.20040803155551: *6* c.currentPositionIsRootPosition
     def currentPositionIsRootPosition(self) -> bool:
@@ -2362,7 +2590,7 @@ class Commands:
                 if count % 2000 == 0:
                     g.enl()
                 #@-<< print dots >>
-            if g.scanForAtLanguage(c, p) == "python":
+            if c.getLanguage(p) == "python":
                 if not g.scanForAtSettings(p) and (
                     not ignoreAtIgnore or not g.scanForAtIgnore(c, p)
                 ):
@@ -2401,7 +2629,7 @@ class Commands:
                 if count % 2000 == 0:
                     g.enl()
                 #@-<< print dots >>
-            if g.scanForAtLanguage(c, p) == "python":
+            if c.getLanguage(p) == "python":
                 if not ignoreAtIgnore or not g.scanForAtIgnore(c, p):
                     try:
                         c.checkPythonNode(p)
@@ -2472,16 +2700,13 @@ class Commands:
     #@+node:ekr.20230402232100.1: *4* c.fullPath
     def fullPath(self, p: Position) -> str:
         """
-        Return the full path in effect at p.
-
-        If p is an @<file> node, return the path, including the filename.
+        Return the absolute path in effect at p.
+        
+        Return the path to an external file if p is an @<file> node.
         Otherwise the return the path to the enclosing directory.
-
-        Neither the path nor the fileName will be created if it does not exist.
         """
         c = self
-        aList = g.get_directives_dict_list(p)
-        path = c.scanAtPathDirectives(aList)
+        path = c.getPath(p)
         return g.finalize_join(path, p.anyAtFileNodeName())
     #@+node:ekr.20171123135625.39: *4* c.getTime
     def getTime(self, body: bool = True) -> str:
@@ -2652,26 +2877,13 @@ class Commands:
             else:
                 n += len(s)
         return language
-    #@+node:ekr.20081006100835.1: *4* c.getNodePath & c.getNodeFileName
+    #@+node:ekr.20081006100835.1: *4* c.getNodePath (deprecated)
     def getNodePath(self, p: Position) -> str:
         """Return the path in effect at node p."""
+        g.deprecated()
         c = self
-        aList = g.get_directives_dict_list(p)
-        path = c.scanAtPathDirectives(aList)
-        return path
+        return c.getPath(p)
 
-    def getNodeFileName(self, p: Position) -> str:
-        """
-        Return the full file name at node p,
-        including effects of all @path directives.
-        Return '' if p is no kind of @file node.
-        """
-        c = self
-        for p in p.self_and_parents(copy=False):
-            name = p.anyAtFileNodeName()
-            if name:
-                return c.fullPath(p)  # #1914.
-        return ''
     #@+node:ekr.20171123135625.32: *4* c.hasAmbiguousLanguage
     def hasAmbiguousLanguage(self, p: Position) -> int:
         """Return True if p.b contains different @language directives."""
@@ -2684,7 +2896,8 @@ class Commands:
                 word = s[i:j]
                 languages.add(word)
         return len(list(languages)) > 1
-    #@+node:ekr.20080827175609.39: *4* c.scanAllDirectives
+    #@+node:ekr.20250404014922.1: *4* --- c: Legacy scanners (deprecated)
+    #@+node:ekr.20080827175609.39: *5* c.scanAllDirectives (deprecated)
     #@@nobeautify
 
     def scanAllDirectives(self, p: Position) -> dict[str, Value]:
@@ -2693,10 +2906,11 @@ class Commands:
 
         Returns a dict containing the results, including defaults.
         """
+        g.deprecated()
         c = self
         p = p or c.p
         # Defaults...
-        default_language = g.getLanguageFromAncestorAtFileNode(p) or c.target_language or 'python'
+        default_language = c.getLanguage(p) or c.target_language or 'python'
         default_delims = g.set_delims_from_language(default_language)
         wrap = c.config.getBool("body-pane-wraps")
         table = (  # type:ignore
@@ -2730,13 +2944,14 @@ class Commands:
             "wrap":         d.get('wrap'),
         }
         return d
-    #@+node:ekr.20080828103146.15: *4* c.scanAtPathDirectives
+    #@+node:ekr.20080828103146.15: *5* c.scanAtPathDirectives (deprecated)
     def scanAtPathDirectives(self, aList: list) -> str:
         """
         Scan aList (created by g.get_directives_dict_list) for @path directives.
 
         Return a reasonable default if no @path directive is found.
         """
+        g.deprecated()
         c = self
         c.scanAtPathDirectivesCount += 1  # An important statistic.
         if c.fileName():

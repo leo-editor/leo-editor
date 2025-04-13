@@ -63,6 +63,8 @@ original_precheck = None
 #@+node:ekr.20050226115130.1: ** init & helpers (multifile.py)
 def init():
     """Return True if the plugin has loaded successfully."""
+    if g.unitTesting:
+        return False
     global original_precheck
     #
     # Append to the module list, not to the g.copy.

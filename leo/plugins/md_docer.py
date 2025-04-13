@@ -92,7 +92,7 @@ def md_write_files(event):
                 continue
             h = v.h
             if h.startswith('md:'):
-                pth = c.getNodePath(p)
+                pth = c.getPath(p)
                 fname = g.finalize_join(pth, h[3:].strip())
                 if not fname.endswith('.md'):
                     fname = fname + '.md'

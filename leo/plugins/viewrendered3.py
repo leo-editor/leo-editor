@@ -1742,7 +1742,7 @@ def export_rst_html(event):
     _html = g.toUnicode(_html)
     # Write to temp file
     c = vr3.c
-    path = c.getNodePath(c.rootPosition())
+    path = c.getPath(c.rootPosition())
     pathname = g.finalize_join(path, VR3_TEMP_FILE)
     with ioOpen(pathname, 'w', encoding='utf-8') as f:
         f.write(_html)
@@ -1786,7 +1786,7 @@ def vr3_help_for_plot_2d(event):
             output = f'<pre style="{RST_ERROR_MSG_STYLE}">RST error: {msg}\n</pre><b><b>'
             output += f'<pre style="{RST_ERROR_BODY_STYLE}">{docstr}</pre>'
 
-    path = c.getNodePath(c.rootPosition())
+    path = c.getPath(c.rootPosition())
     pathname = g.finalize_join(path, VR3_TEMP_FILE)
     with ioOpen(pathname, 'w', encoding='utf-8') as f:
         f.write(_html)
@@ -3541,7 +3541,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         c = self.c
         # Find path relative to this file.  Needed as the base of relative
         # URLs, e.g., image or included files.
-        path = c.getNodePath(c.p)
+        path = c.getPath(c.p)
         i_path = g.finalize_join(path, 'vr3_adoc.adoc')
         o_path = g.finalize_join(path, 'vr3_adoc.html')
 
@@ -3762,7 +3762,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             vr3 = ViewRenderedController3(c)
 
         # Update the current path.
-        path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
+        path = c.getPath(p)
         if not os.path.isdir(path):
             path = os.path.dirname(path)
         if os.path.isdir(path):
@@ -3905,7 +3905,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
     def convert_to_pandoc(self, s):
         """Convert s to html using the asciidoctor or asciidoc processor."""
         c, p = self.c, self.c.p
-        path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
+        path = c.getPath(p)
         if not os.path.isdir(path):
             path = os.path.dirname(path)
         if os.path.isdir(path):
@@ -4016,7 +4016,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         else:
             if c and c.fileName():
                 # Handle ancestor @path directives.
-                base = c.getNodePath(c.p)
+                base = c.getPath(c.p)
                 fn1 = g.finalize_join(base, s)
                 path = Path.resolve(Path(fn1))
                 fn = str(path)
@@ -4159,7 +4159,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             vr3 = ViewRenderedController3(c)
 
         # Update the current path.
-        path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
+        path = c.getPath(p)
         if not os.path.isdir(path):
             path = os.path.dirname(path)
         if os.path.isdir(path):
@@ -4806,7 +4806,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             else:
                 # Handle ancestor @path directives.
                 if c and c.fileName():
-                    base = c.getNodePath(c.p)
+                    base = c.getPath(c.p)
                     fn = g.finalize_join(g.os_path_dirname(c.fileName()), base, fn)
                 else:
                     fn = g.finalize(fn)
@@ -4822,7 +4822,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         return url
     #@+node:tom.20240521000648.1: *5* vr3.get_node_path
     def get_node_path(self, c, p) -> str:
-        return c.getNodePath(p)
+        return c.getPath(p)
     #@+node:TomP.20191215195433.84: *5* vr3.must_change_widget
     def must_change_widget(self, widget_class):
         return not self.w or self.w.__class__ != widget_class  # EKR.
@@ -5012,7 +5012,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         c = self.c
         # Find path relative to this file.  Needed as the base of relative
         # URLs, e.g., image or included files.
-        path = c.getNodePath(c.p)
+        path = c.getPath(c.p)
         s = g.toUnicode(s)
         url_base = QtCore.QUrl('file:///' + path + '/')
         self.capture_scroll_position()

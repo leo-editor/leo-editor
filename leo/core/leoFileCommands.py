@@ -1507,8 +1507,8 @@ class FileCommands:
             if p.isAtIgnoreNode():
                 p.moveToNodeAfterTree()
             elif p.isAtAutoNode() or p.isAtFileNode():
-                fn = c.getNodeFileName(p)
-                files.add((fn, 'md5_' + p.gnx))
+                path = c.getPath(p)
+                files.add((path, 'md5_' + p.gnx))
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()

@@ -2,7 +2,7 @@
 #@+node:ekr.20210903162431.1: * @file ../unittests/core/test_leoCommands.py
 """Tests of leoCommands.py"""
 # pylint: disable=no-member
-
+import sys
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
 
@@ -83,15 +83,15 @@ class TestCommands(LeoUnitTest):
     def test_c_alert(self):
         c = self.c
         c.alert('test of c.alert')
-    #@+node:ekr.20210906075242.3: *3* TestCommands.test_c_checkOutline
-    def test_c_checkOutline(self):
-        c = self.c
-        self.assertEqual(0, c.checkOutline())
     #@+node:ekr.20230727044355.1: *3* TestCommands.test_c_check_links
     def check_c_checkVnodeLinks(self):
         c = self.c
         self.assertEqual(c.checkVnodeLinks(), 0)  # Leo's main checker.
         self.assertEqual(c.checkLinks(), 0)  # A slow test, suitable only for unit tests.
+    #@+node:ekr.20210906075242.3: *3* TestCommands.test_c_checkOutline
+    def test_c_checkOutline(self):
+        c = self.c
+        self.assertEqual(0, c.checkOutline())
     #@+node:ekr.20210901140645.15: *3* TestCommands.test_c_checkPythonCode
     def test_c_checkPythonCode(self):
         c = self.c
@@ -159,28 +159,6 @@ class TestCommands(LeoUnitTest):
             for s, expected in table:
                 got = c.expand_path_expression(s)
                 self.assertEqual(got, expected, msg=s)
-    #@+node:ekr.20230308103855.1: *3* TestCommands.test_find_b_h
-    def test_find_b_h(self):
-
-        c, p = self.c, self.c.p
-
-        # Create two children of c.p.
-        child1 = p.insertAsLastChild()
-        child1.h = 'child1 headline'
-        child1.b = 'child1 line1\nchild2 line2\n'
-        child2 = p.insertAsLastChild()
-        child2.h = 'child2 headline'
-        child2.b = 'child2 line1\nchild2 line2\n'
-
-        # Tests.
-        list1 = c.find_h(r'^child1')
-        assert list1 == [child1], repr(list1)
-        list2 = c.find_h(r'^child1', it=[child2])
-        assert not list2, repr(list2)
-        list3 = c.find_b(r'.*\bline2\n')
-        assert list3 == [child1, child2], repr(list3)
-        list4 = c.find_b(r'.*\bline2\n', it=[child1])
-        assert list4 == [child1], repr(list3)
     #@+node:ekr.20210906075242.8: *3* TestCommands.test_c_findMatchingBracket
     def test_c_findMatchingBracket(self):
         c, w = self.c, self.c.frame.body.wrapper
@@ -198,6 +176,76 @@ class TestCommands(LeoUnitTest):
             i2, j2 = w.getSelectionRange()
             self.assertTrue(i2 < j2, msg=f"i: {i}, j: {j}")
 
+    #@+node:ekr.20250404075346.1: *3* TestCommands.test_c_getEncoding
+    def test_c_getEncoding(self):
+        c, p = self.c, self.c.p
+        self.root_p.b = ''  # To ensure default.
+        child = p.insertAfter()
+        child.h = 'child'
+        child.b = '@encoding utf-8\n'
+        grand = child.insertAsLastChild()
+        grand.h = 'grand-child'
+        grand.b = '#\n@encoding utf-16\n'
+        great = grand.insertAsLastChild()
+        great.h = 'great-grand-child'
+        great.b = ''
+        table = (
+            (great, 'utf-16'),
+            (grand, 'utf-16'),
+            (child, 'utf-8'),
+            (self.root_p, 'utf-8'),
+        )
+        for p2, expected in table:
+            encoding = c.getEncoding(p2)
+            message = f"expected: {expected} got: {encoding} {p2.h}"
+            assert encoding == expected, message
+
+    #@+node:ekr.20250412054157.1: *3* TestCommands.test_c_getLineEnding
+    def test_c_getLineEnding(self):
+        c = self.c
+        p = c.p
+        table = (
+            ('nl', '\n'),
+            ('lf', '\n'),
+            ('cr', '\r'),
+            ('crlf', '\r\n'),
+            ('platform', '\r\n' if sys.platform.startswith('win') else '\n'),
+        )
+        for kind, expected_ending in table:
+            directive = f"@lineending {kind}\n"
+            p.b = directive
+            ending = c.getLineEnding(p)
+            message = f"{directive}: expected {expected_ending!r} got {ending!r}"
+            assert ending == expected_ending, message
+    #@+node:ekr.20250412054231.1: *3* TestCommands.test_c_getPageWidth
+    def test_c_getPageWidth(self):
+        c = self.c
+        p = c.p
+        for w in (-40, 40):
+            p.b = f"@pagewidth {w}\n"
+            n = c.getPageWidth(p)
+            assert n == w
+    #@+node:ekr.20250412054256.1: *3* TestCommands.test_c_gettabWidth
+    def test_c_getTabWidth(self):
+        c = self.c
+        p = c.p
+        for w in (-6, 6):
+            p.b = f"@tabwidth {w}\n"
+            n = c.getTabWidth(p)
+            assert n == w
+    #@+node:ekr.20250412054404.1: *3* TestCommands.test_c_getWrap
+    def test_c_getWrap(self):
+        c = self.c
+        p = c.p
+        table = (
+            ('@nowrap\n', False),
+            ('@wrap\n', True),
+            (p.b, None),
+        )
+        for s, expected_val in table:
+            p.b = s
+            val = c.getWrap(p)
+            assert val == expected_val
     #@+node:ekr.20210906075242.9: *3* TestCommands.test_c_hiddenRootNode_fileIndex
     def test_c_hiddenRootNode_fileIndex(self):
         c = self.c
@@ -277,16 +325,8 @@ class TestCommands(LeoUnitTest):
         p2 = c.pasteOutline()
         assert p2
         assert not p2.isCloned()
-    #@+node:ekr.20210906075242.17: *3* TestCommands.test_c_scanAllDirectives
-    def test_c_scanAllDirectives(self):
-        c = self.c
-        d = c.scanAllDirectives(c.p)
-        # These are the commander defaults, without any settings.
-        self.assertEqual(d.get('language'), 'python')
-        self.assertEqual(d.get('tabwidth'), -4)
-        self.assertEqual(d.get('pagewidth'), 132)
-    #@+node:ekr.20210906075242.18: *3* TestCommands.test_c_scanAtPathDirectives
-    def test_c_scanAtPathDirectives(self):
+    #@+node:ekr.20250404075519.1: *3* TestCommands.test_c_getPath
+    def test_c_getPath(self):
         c, p = self.c, self.c.p
         child = p.insertAfter()
         child.h = '@path one'
@@ -294,8 +334,7 @@ class TestCommands(LeoUnitTest):
         grand.h = '@path two'
         great = grand.insertAsLastChild()
         great.h = 'xyz'
-        aList = g.get_directives_dict_list(great)
-        path = c.scanAtPathDirectives(aList)
+        path = c.getPath(great)
         endpath = g.os_path_normpath('one/two')
         assert path.endswith(endpath), f"expected '{endpath}' got '{path}'"
 
@@ -308,25 +347,9 @@ class TestCommands(LeoUnitTest):
         grand.h = '@path two'
         great = grand.insertAsLastChild()
         great.h = 'xyz'
-        aList = g.get_directives_dict_list(great)
-        path = c.scanAtPathDirectives(aList)
+        path = c.getPath(great)
         endpath = g.os_path_normpath('one/two')
         assert path.endswith(endpath), f"expected '{endpath}' got '{path}'"
-    #@+node:ekr.20210906075242.19: *3* TestCommands.test_c_scanAtPathDirectives_same_name_subdirs
-    def test_c_scanAtPathDirectives_same_name_subdirs(self):
-        c = self.c
-        # p2 = p.firstChild().firstChild().firstChild()
-        p = c.p
-        child = p.insertAfter()
-        child.h = '@path again'
-        grand = child.insertAsLastChild()
-        grand.h = '@path again'
-        great = grand.insertAsLastChild()
-        great.h = 'xyz'
-        aList = g.get_directives_dict_list(great)
-        path = c.scanAtPathDirectives(aList)
-        endpath = g.os_path_normpath('again/again')
-        self.assertTrue(path and path.endswith(endpath))
     #@+node:ekr.20210901140645.17: *3* TestCommands.test_c_tabNannyNode
     def test_c_tabNannyNode(self):
         c, p = self.c, self.c.p
@@ -433,6 +456,28 @@ class TestCommands(LeoUnitTest):
         w.setSelectionRange(i, i + 4)
         c.deleteComments()
         self.assertEqual(p.b, expected)
+    #@+node:ekr.20230308103855.1: *3* TestCommands.test_find_b_h
+    def test_find_b_h(self):
+
+        c, p = self.c, self.c.p
+
+        # Create two children of c.p.
+        child1 = p.insertAsLastChild()
+        child1.h = 'child1 headline'
+        child1.b = 'child1 line1\nchild2 line2\n'
+        child2 = p.insertAsLastChild()
+        child2.h = 'child2 headline'
+        child2.b = 'child2 line1\nchild2 line2\n'
+
+        # Tests.
+        list1 = c.find_h(r'^child1')
+        assert list1 == [child1], repr(list1)
+        list2 = c.find_h(r'^child1', it=[child2])
+        assert not list2, repr(list2)
+        list3 = c.find_b(r'.*\bline2\n')
+        assert list3 == [child1, child2], repr(list3)
+        list4 = c.find_b(r'.*\bline2\n', it=[child1])
+        assert list4 == [child1], repr(list3)
     #@+node:ekr.20210901140645.27: *3* TestCommands.test_koi8_r_encoding
     def test_koi8_r_encoding(self):
         c, p = self.c, self.c.p

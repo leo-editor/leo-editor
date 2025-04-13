@@ -374,11 +374,11 @@ class LeoImportCommands:
     #@+node:ekr.20031218072017.1462: *4* ic.exportHeadlines
     def exportHeadlines(self, fileName: str) -> None:
         """Export headlines for c.p and its subtree to the file with the given name."""
-        p = self.c.p
+        c, p = self.c, self.c.p
         nl = self.output_newline
         if not p:
             return
-        self.setEncoding()
+        self.encoding = c.getEncoding(p)
         firstLevel = p.level()
         try:
             with open(fileName, 'w') as theFile:
@@ -400,7 +400,7 @@ class LeoImportCommands:
         p = c.p
         if not p:
             return
-        self.setEncoding()
+        self.encoding = c.getEncoding(p)
         firstLevel = p.level()
         try:
             theFile = open(fileName, 'wb')  # Fix crasher: open in 'wb' mode.
@@ -423,7 +423,7 @@ class LeoImportCommands:
         current = c.p
         if not current:
             return
-        self.setEncoding()
+        self.encoding = c.getEncoding(current)
         self.webType = webType
         try:
             theFile = open(fileName, 'w')
@@ -447,7 +447,7 @@ class LeoImportCommands:
     #@+node:ekr.20031218072017.3300: *4* ic.removeSentinelsCommand
     def removeSentinelsCommand(self, paths: list[str], toString: bool = False) -> Optional[str]:
         c = self.c
-        self.setEncoding()
+        self.encoding = c.getEncoding(c.p)
         for fileName in paths:
             g.setGlobalOpenDir(fileName)
             path, self.fileName = g.os_path_split(fileName)
@@ -521,11 +521,11 @@ class LeoImportCommands:
         return ''.join(result)
     #@+node:ekr.20031218072017.1464: *4* ic.weave
     def weave(self, filename: str) -> None:
-        p = self.c.p
+        c, p = self.c, self.c.p
         nl = self.output_newline
         if not p:
             return
-        self.setEncoding()
+        self.encoding = c.getEncoding(p)
         try:
             with open(filename, 'w', encoding=self.encoding) as f:
                 for p in p.self_and_subtree():
@@ -579,10 +579,7 @@ class LeoImportCommands:
         if g.is_binary_external_file(fileName):
             return self.import_binary_file(fileName, parent)
         # Init ivars.
-        self.setEncoding(
-            p=parent,
-            default=c.config.default_at_auto_file_encoding,
-        )
+        self.encoding = c.getEncoding(parent)
         ext, s = self.init_import(ext, fileName, s)
         if s is None:
             return None
@@ -1128,7 +1125,7 @@ class LeoImportCommands:
         if p.hasChildren():
             g.es_print('can not run parse-body: node has children:', p.h)
             return
-        language = g.scanForAtLanguage(c, p)
+        language = c.getLanguage(p)
         self.treeType = '@file'
         ext = '.' + d.get(language)
         parser = g.app.classDispatchDict.get(ext)
@@ -1282,16 +1279,11 @@ class LeoImportCommands:
         #@-<< Replace abbreviated names with full names >>
         s = s.rstrip()
         return s
-    #@+node:ekr.20031218072017.1463: *4* ic.setEncoding
+    #@+node:ekr.20031218072017.1463: *4* ic.setEncoding (deprecated)
     def setEncoding(self, p: Position = None, default: str = None) -> None:
+        g.deprecated()
         c = self.c
-        encoding = g.getEncodingAt(p or c.p) or default
-        if encoding and g.isValidEncoding(encoding):
-            self.encoding = encoding
-        elif default:
-            self.encoding = default
-        else:
-            self.encoding = 'utf-8'
+        self.encoding = c.getEncoding(p)
     #@-others
 #@+node:ekr.20160503144404.1: ** class MindMapImporter
 class MindMapImporter:
@@ -1451,9 +1443,9 @@ class MORE_Importer:
         ic = c.importCommands
         if not c.p:
             return None
-        ic.setEncoding()
+        ic.encoding = c.getEncoding(c.p)
         g.setGlobalOpenDir(fileName)
-        s, e = g.readFileIntoString(fileName)
+        s, _e = g.readFileIntoString(fileName)
         if s is None:
             return None
         s = s.replace('\r', '')  # Fixes bug 626101.

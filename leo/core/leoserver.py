@@ -2481,14 +2481,14 @@ class LeoServer:
         # Handle @killcolor and @nocolor-node when looking for language
         if c.frame.body.colorizer.useSyntaxColoring(p):
             # Get the language.
-            language = g.getLanguageFromAncestorAtFileNode(p) or c.config.getLanguage('target-language')
+            language = c.getLanguage(p)
         else:
             # No coloring at all for this node.
             language = 'plain'
 
         # Get the body wrap state
-        wrap = g.scanAllAtWrapDirectives(c, p)
-        tabWidth = g.scanAllAtTabWidthDirectives(c, p)
+        wrap = c.getWrap(p)
+        tabWidth = c.getTabWidth(p)
         if not isinstance(tabWidth, int):
             tabWidth = False
 

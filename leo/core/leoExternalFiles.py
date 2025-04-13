@@ -304,8 +304,7 @@ class ExternalFilesController:
                     ext = g.os_path_splitext(fn)[1]
                     break
         if not ext:
-            theDict = c.scanAllDirectives(c.p)
-            language = theDict.get('language')
+            language = c.getLanguage(p)
             ext = g.app.language_extension_dict.get(language)
         if not ext:
             ext = '.txt'
@@ -376,10 +375,7 @@ class ExternalFilesController:
         path = self.compute_temp_file_path(c, p, ext)
         exists = g.os_path_exists(path)
         # Compute encoding and s.
-        d2 = c.scanAllDirectives(p)
-        encoding = d2.get('encoding', None)
-        if encoding is None:
-            encoding = c.config.default_derived_file_encoding
+        encoding = c.getEncoding(p)
         s = g.toEncodedString(p.b, encoding, reportErrors=True)
         # Write the file *only* if it doesn't exist.
         # No need to read the file: recomputing s above suffices.

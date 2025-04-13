@@ -265,7 +265,7 @@ class InteractBASH(Interact):
                     cnt += 1
                     yield d.replace(self.prompt, '# ')  # '%4d: %s' % (cnt,d)
 
-    #@+node:tbrown.20090603104805.4960: *3* getPath
+    #@+node:tbrown.20090603104805.4960: *3* getPath (interact.py)
     def getPath(self, c, p):
         for n in p.self_and_parents():
             if n.h.startswith('@path'):
@@ -273,9 +273,7 @@ class InteractBASH(Interact):
         else:
             return None  # must have a full fledged @path in parents
 
-        aList = g.get_directives_dict_list(p)
-        path = c.scanAtPathDirectives(aList)
-        return path
+        return c.getPath(p)
     #@-others
 #@+node:tbrown.20090603104805.4961: ** class InteractController
 class InteractController:

@@ -245,7 +245,7 @@ def onSelect(tag, keywords):
         c.redraw()
         return True
     return None
-#@+node:tbrown.20080616153649.4: ** getPath
+#@+node:tbrown.20080616153649.4: ** getPath (active_path.py)
 def getPath(c, p):
 
     for n in p.self_and_parents():
@@ -254,8 +254,7 @@ def getPath(c, p):
     else:
         return None  # must have a full fledged @path in parents
 
-    aList = g.get_directives_dict_list(p)
-    path = c.scanAtPathDirectives(aList)
+    path = c.getPath(p)
     if not isDirNode(p):  # add file name
         h = p.h.split(None, 1)
         if h[0].startswith('@') and len(h) == 2:
@@ -741,8 +740,7 @@ def cmd_PickDir(event):
     """
     c = event.get('c')
     p = c.p
-    aList = g.get_directives_dict_list(p)
-    path = c.scanAtPathDirectives(aList)
+    path = c.getPath(p)
     if p.h.startswith('@'):  # see if it's a @<file> node of some sort
         nodepath = p.h.split(None, 1)[-1]
         nodepath = g.os_path_join(path, nodepath)

@@ -7,6 +7,7 @@ from __future__ import annotations
 from collections.abc import Callable
 import copy
 import os
+import re
 import time
 import uuid
 from typing import Any, Generator, Iterable, Optional, TYPE_CHECKING
@@ -674,116 +675,6 @@ class Position:
 
     subtree_with_unique_vnodes_iter = unique_subtree
     #@+node:ekr.20040306212636: *3* p.Getters
-    #@+node:ekr.20040306210951: *4* p.VNode proxies
-    #@+node:ekr.20040306211032: *5* p.Comparisons
-    def anyAtFileNodeName(self) -> str:
-        return self.v.anyAtFileNodeName()
-
-    def atAutoNodeName(self) -> str:
-        return self.v.atAutoNodeName()
-
-    def atCleanNodeName(self) -> str:
-        return self.v.atCleanNodeName()
-
-    def atEditNodeName(self) -> str:
-        return self.v.atEditNodeName()
-
-    def atFileNodeName(self) -> str:
-        return self.v.atFileNodeName()
-
-    def atNoSentinelsFileNodeName(self) -> str:
-        return self.v.atNoSentinelsFileNodeName()
-
-    def atShadowFileNodeName(self) -> str:
-        return self.v.atShadowFileNodeName()
-
-    def atSilentFileNodeName(self) -> str:
-        return self.v.atSilentFileNodeName()
-
-    def atThinFileNodeName(self) -> str:
-        return self.v.atThinFileNodeName()
-
-    # New names, less confusing
-    atNoSentFileNodeName = atNoSentinelsFileNodeName
-    atAsisFileNodeName = atSilentFileNodeName
-
-    def isAnyAtFileNode(self) -> bool:
-        return self.v.isAnyAtFileNode()
-
-    def isAtAllNode(self) -> bool:
-        return self.v.isAtAllNode()
-
-    def isAtAutoNode(self) -> bool:
-        return self.v.isAtAutoNode()
-
-    def isAtAutoRstNode(self) -> bool:
-        return self.v.isAtAutoRstNode()
-
-    def isAtCleanNode(self) -> bool:
-        return self.v.isAtCleanNode()
-
-    def isAtEditNode(self) -> bool:
-        return self.v.isAtEditNode()
-
-    def isAtFileNode(self) -> bool:
-        return self.v.isAtFileNode()
-
-    def isAtJupytextNode(self) -> bool:
-        return self.v.isAtJupytextNode()
-
-    def isAtIgnoreNode(self) -> bool:
-        return self.v.isAtIgnoreNode()
-
-    def isAtNoSentinelsFileNode(self) -> bool:
-        return self.v.isAtNoSentinelsFileNode()
-
-    def isAtOthersNode(self) -> bool:
-        return self.v.isAtOthersNode()
-
-    def isAtRstFileNode(self) -> bool:
-        return self.v.isAtRstFileNode()
-
-    def isAtSilentFileNode(self) -> bool:
-        return self.v.isAtSilentFileNode()
-
-    def isAtShadowFileNode(self) -> bool:
-        return self.v.isAtShadowFileNode()
-
-    def isAtThinFileNode(self) -> bool:
-        return self.v.isAtThinFileNode()
-
-    # New names, less confusing:
-    isAtNoSentFileNode = isAtNoSentinelsFileNode
-    isAtAsisFileNode = isAtSilentFileNode
-
-    # Utilities.
-
-    def matchHeadline(self, pattern: str) -> bool:
-        return self.v.matchHeadline(pattern)
-    #@+node:ekr.20040306220230: *5* p.Headline & body strings
-    def bodyString(self) -> str:
-        return self.v.bodyString()
-
-    def headString(self) -> str:
-        return self.v.headString()
-    #@+node:ekr.20040306214401: *5* p.Status bits
-    def isDirty(self) -> bool:
-        return self.v.isDirty()
-
-    def isMarked(self) -> bool:
-        return self.v.isMarked()
-
-    def isOrphan(self) -> bool:
-        return self.v.isOrphan()
-
-    def isSelected(self) -> bool:
-        return self.v.isSelected()
-
-    def isVisited(self) -> bool:
-        return self.v.isVisited()
-
-    def status(self) -> int:
-        return self.v.status()
     #@+node:ekr.20040306214240.2: *4* p.children & parents
     #@+node:ekr.20040326064330: *5* p.childIndex
     # This used to be time-critical code.
@@ -804,64 +695,26 @@ class Position:
     def numberOfChildren(self) -> int:
         p = self
         return len(p.v.children)
-    #@+node:ekr.20031218072017.915: *4* p.getX & VNode compatibility traversal routines
-    # These methods are useful abbreviations.
-    # Warning: they make copies of positions, so they should be used _sparingly_
+    #@+node:ekr.20250405080955.1: *4* p.findDirective
+    at_directive_pattern = re.compile(r'@([\w]+)', re.MULTILINE)
 
-    def getBack(self) -> Position:
-        return self.copy().moveToBack()
-
-    def getFirstChild(self) -> Position:
-        return self.copy().moveToFirstChild()
-
-    def getLastChild(self) -> Position:
-        return self.copy().moveToLastChild()
-
-    def getLastNode(self) -> Position:
-        return self.copy().moveToLastNode()
-
-    def getNext(self) -> Position:
-        return self.copy().moveToNext()
-
-    def getNodeAfterTree(self) -> Position:
-        return self.copy().moveToNodeAfterTree()
-
-    def getNthChild(self, n: int) -> Position:
-        return self.copy().moveToNthChild(n)
-
-    def getParent(self) -> Position:
-        return self.copy().moveToParent()
-
-    def getThreadBack(self) -> Position:
-        return self.copy().moveToThreadBack()
-
-    def getThreadNext(self) -> Position:
-        return self.copy().moveToThreadNext()
-
-    # New in Leo 4.4.3 b2: add c args.
-
-    def getVisBack(self, c: Cmdr) -> Position:
-        return self.copy().moveToVisBack(c)
-
-    def getVisNext(self, c: Cmdr) -> Position:
-        return self.copy().moveToVisNext(c)
-    # These are efficient enough now that iterators are the normal way to traverse the tree!
-    back = getBack
-    firstChild = getFirstChild
-    lastChild = getLastChild
-    lastNode = getLastNode
-    # lastVisible   = getLastVisible # New in 4.2 (was in tk tree code).
-    next = getNext
-    nodeAfterTree = getNodeAfterTree
-    nthChild = getNthChild
-    parent = getParent
-    threadBack = getThreadBack
-    threadNext = getThreadNext
-    visBack = getVisBack
-    visNext = getVisNext
-    # New in Leo 4.4.3:
-    hasVisBack = visBack
-    hasVisNext = visNext
+    def findDirective(self, directive_name: str) -> bool:
+        """Return True if the given directive occurs in p.h or p.b."""
+        p = self
+        if directive_name.startswith('@'):
+            directive_name = directive_name[1:]
+        # The headline has higher precedence because it is more visible.
+        for kind, s in (('head', p.h), ('body', p.b)):
+            for m in p.at_directive_pattern.finditer(s):
+                if directive_name == m.group(1):
+                    return True
+        return False
+    #@+node:ekr.20060920203352: *4* p.findRootPosition
+    def findRootPosition(self) -> Position:
+        # 2011/02/25: always use c.rootPosition
+        p = self
+        c = p.v.context
+        return c.rootPosition()
     #@+node:ekr.20230628173526.1: *4* p.get_UNL and related methods
     # All unls must contain a file part: f"//{file-name}#"
     # The file-name may be empty.
@@ -941,6 +794,64 @@ class Position:
         full = c.config.getBool('full-unl-paths', default=False)
         file_part = c.fileName() if full else os.path.basename(c.fileName())
         return 'unl:gnx:' + f"//{file_part}#{self.gnx}"
+    #@+node:ekr.20031218072017.915: *4* p.getX & VNode compatibility traversal routines
+    # These methods are useful abbreviations.
+    # Warning: they make copies of positions, so they should be used _sparingly_
+
+    def getBack(self) -> Position:
+        return self.copy().moveToBack()
+
+    def getFirstChild(self) -> Position:
+        return self.copy().moveToFirstChild()
+
+    def getLastChild(self) -> Position:
+        return self.copy().moveToLastChild()
+
+    def getLastNode(self) -> Position:
+        return self.copy().moveToLastNode()
+
+    def getNext(self) -> Position:
+        return self.copy().moveToNext()
+
+    def getNodeAfterTree(self) -> Position:
+        return self.copy().moveToNodeAfterTree()
+
+    def getNthChild(self, n: int) -> Position:
+        return self.copy().moveToNthChild(n)
+
+    def getParent(self) -> Position:
+        return self.copy().moveToParent()
+
+    def getThreadBack(self) -> Position:
+        return self.copy().moveToThreadBack()
+
+    def getThreadNext(self) -> Position:
+        return self.copy().moveToThreadNext()
+
+    # New in Leo 4.4.3 b2: add c args.
+
+    def getVisBack(self, c: Cmdr) -> Position:
+        return self.copy().moveToVisBack(c)
+
+    def getVisNext(self, c: Cmdr) -> Position:
+        return self.copy().moveToVisNext(c)
+    # These are efficient enough now that iterators are the normal way to traverse the tree!
+    back = getBack
+    firstChild = getFirstChild
+    lastChild = getLastChild
+    lastNode = getLastNode
+    # lastVisible   = getLastVisible # New in 4.2 (was in tk tree code).
+    next = getNext
+    nodeAfterTree = getNodeAfterTree
+    nthChild = getNthChild
+    parent = getParent
+    threadBack = getThreadBack
+    threadNext = getThreadNext
+    visBack = getVisBack
+    visNext = getVisNext
+    # New in Leo 4.4.3:
+    hasVisBack = visBack
+    hasVisNext = visNext
     #@+node:ekr.20080416161551.192: *4* p.hasBack/Next/Parent/ThreadBack
     def hasBack(self) -> bool:
         p = self
@@ -984,12 +895,6 @@ class Position:
                 return True
             n -= 1
         return False
-    #@+node:ekr.20060920203352: *4* p.findRootPosition
-    def findRootPosition(self) -> Position:
-        # 2011/02/25: always use c.rootPosition
-        p = self
-        c = p.v.context
-        return c.rootPosition()
     #@+node:ekr.20080416161551.194: *4* p.isAncestorOf
     def isAncestorOf(self, p2: Position) -> bool:
         """Return True if p is one of the direct ancestors of p2."""
@@ -1106,6 +1011,116 @@ class Position:
                     offset += g.skip_ws(s, 0)
                     break
         return offset if found else None
+    #@+node:ekr.20040306210951: *4* p.VNode proxies
+    #@+node:ekr.20040306211032: *5* p.Comparisons
+    def anyAtFileNodeName(self) -> str:
+        return self.v.anyAtFileNodeName()
+
+    def atAutoNodeName(self) -> str:
+        return self.v.atAutoNodeName()
+
+    def atCleanNodeName(self) -> str:
+        return self.v.atCleanNodeName()
+
+    def atEditNodeName(self) -> str:
+        return self.v.atEditNodeName()
+
+    def atFileNodeName(self) -> str:
+        return self.v.atFileNodeName()
+
+    def atNoSentinelsFileNodeName(self) -> str:
+        return self.v.atNoSentinelsFileNodeName()
+
+    def atShadowFileNodeName(self) -> str:
+        return self.v.atShadowFileNodeName()
+
+    def atSilentFileNodeName(self) -> str:
+        return self.v.atSilentFileNodeName()
+
+    def atThinFileNodeName(self) -> str:
+        return self.v.atThinFileNodeName()
+
+    # New names, less confusing
+    atNoSentFileNodeName = atNoSentinelsFileNodeName
+    atAsisFileNodeName = atSilentFileNodeName
+
+    def isAnyAtFileNode(self) -> bool:
+        return self.v.isAnyAtFileNode()
+
+    def isAtAllNode(self) -> bool:
+        return self.v.isAtAllNode()
+
+    def isAtAutoNode(self) -> bool:
+        return self.v.isAtAutoNode()
+
+    def isAtAutoRstNode(self) -> bool:
+        return self.v.isAtAutoRstNode()
+
+    def isAtCleanNode(self) -> bool:
+        return self.v.isAtCleanNode()
+
+    def isAtEditNode(self) -> bool:
+        return self.v.isAtEditNode()
+
+    def isAtFileNode(self) -> bool:
+        return self.v.isAtFileNode()
+
+    def isAtJupytextNode(self) -> bool:
+        return self.v.isAtJupytextNode()
+
+    def isAtIgnoreNode(self) -> bool:
+        return self.v.isAtIgnoreNode()
+
+    def isAtNoSentinelsFileNode(self) -> bool:
+        return self.v.isAtNoSentinelsFileNode()
+
+    def isAtOthersNode(self) -> bool:
+        return self.v.isAtOthersNode()
+
+    def isAtRstFileNode(self) -> bool:
+        return self.v.isAtRstFileNode()
+
+    def isAtSilentFileNode(self) -> bool:
+        return self.v.isAtSilentFileNode()
+
+    def isAtShadowFileNode(self) -> bool:
+        return self.v.isAtShadowFileNode()
+
+    def isAtThinFileNode(self) -> bool:
+        return self.v.isAtThinFileNode()
+
+    # New names, less confusing:
+    isAtNoSentFileNode = isAtNoSentinelsFileNode
+    isAtAsisFileNode = isAtSilentFileNode
+
+    # Utilities.
+
+    def matchHeadline(self, pattern: str) -> bool:
+        return self.v.matchHeadline(pattern)
+    #@+node:ekr.20040306220230: *5* p.Headline & body strings
+    def bodyString(self) -> str:
+        return self.v.bodyString()
+
+    def headString(self) -> str:
+        return self.v.headString()
+    #@+node:ekr.20040306214401: *5* p.Status bits
+    def isDirty(self) -> bool:
+        return self.v.isDirty()
+
+    def isMarked(self) -> bool:
+        return self.v.isMarked()
+
+    def isOrphan(self) -> bool:
+        return self.v.isOrphan()
+
+    def isSelected(self) -> bool:
+        return self.v.isSelected()
+
+    def isVisited(self) -> bool:
+        return self.v.isVisited()
+
+    def status(self) -> int:
+        return self.v.status()
     #@+node:ekr.20080423062035.1: *3* p.Low level methods
     # These methods are only for the use of low-level code
     # in leoNodes.py, leoFileCommands.py and leoUndo.py.

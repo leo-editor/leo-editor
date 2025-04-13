@@ -32,8 +32,7 @@ def mail_refresh(event):
     c = event['c']
     p = c.p
     if p.h.startswith('@mbox'):
-        aList = g.get_directives_dict_list(p)
-        path = c.scanAtPathDirectives(aList)
+        path = c.getPath(p)
         h = p.h[5:].strip()
         mb = g.finalize_join(path, h)
         if g.os_path_exists(mb):

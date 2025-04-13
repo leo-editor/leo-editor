@@ -1168,7 +1168,8 @@ class GitDiffController:
                 ))
                 if ''.join(body).strip():
                     body.insert(0, '@ignore\n@nosearch\n@language patch\n')
-                    language = self.find_language(c2, p_in_c)  # #4095.
+                    # #4095.
+                    language = c2.getLanguage(p_in_c) if p_in_c else c2.target_language
                     body.append(f"@language {language}\n")
                 else:
                     body = ['Only headline has changed']
@@ -1253,12 +1254,6 @@ class GitDiffController:
             if p.v.fileIndex == gnx:
                 return p
         return None
-    #@+node:ekr.20241012044745.1: *4* gdc.find_language
-    def find_language(self, c: Cmdr, p: Position) -> str:
-        """Return the @language directive in effect at p."""
-        if not p:
-            return c.target_language
-        return g.getLanguageFromAncestorAtFileNode(p) or c.target_language
     #@+node:ekr.20170806094321.5: *4* gdc.finish
     def finish(self) -> None:
         """Finish execution of this command."""
@@ -1395,10 +1390,9 @@ class GitDiffController:
         root.copyTreeFromSelfTo(hidden_root, copyGnxs=True)
         hidden_root.h = fn + ':' + rev if rev else fn
         # Set at.encoding first.
-        # Must be called before at.scanAllDirectives.
         at.initReadIvars(hidden_root, fn)
         # Sets at.startSentinelComment/endSentinelComment.
-        at.scanAllDirectives(hidden_root)
+        at.initSentinelComments(hidden_root)
         new_public_lines = g.splitLines(s)
         old_private_lines = at.write_at_clean_sentinels(hidden_root)
         marker = x.markerFromFileLines(old_private_lines, fn)

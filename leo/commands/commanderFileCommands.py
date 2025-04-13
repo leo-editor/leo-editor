@@ -695,7 +695,7 @@ def flattenOutlineToNode(self: Self, event: LeoKeyEvent = None) -> None:
     c, root, u = self, self.p, self.undoer
     if not root.hasChildren():
         return
-    language = g.getLanguageAtPosition(c, root)
+    language = c.getLanguage(root)
     if language:
         single, start, end = g.set_delims_from_language(language)
     else:

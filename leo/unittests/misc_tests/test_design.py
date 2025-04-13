@@ -102,15 +102,7 @@ class AnnotationsTraverser(NodeVisitor):
     def test_annotation(self, node: ast.AST, identifier: str, annotation: ast.Expr) -> None:
         """Test the annotation of identifier."""
         exceptions = (
-            # Problem annotating Cmdr in leoCommands.py...
-            'add_commandCallback', 'bringToFront', 'universalCallback',
-            #
-            'find_language',  # p_or_v is a false match.
-            # These methods should always be annotated Any.
-            '__eq__', '__ne__',
-            'resolveArchivedPosition',
-            'setBodyString', 'setHeadString',
-            'to_encoded_string', 'to_unicode', 'toUnicode',
+            # Problems annotating Cmdr in leoCommands.py have been solved.
         )
         for pattern, expected_annotation in self.annotation_table:
             m = pattern.match(identifier)

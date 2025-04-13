@@ -571,8 +571,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 word0.startswith('@auto-')
             )
 
-        aList = g.get_directives_dict_list(p)
-        path = c.scanAtPathDirectives(aList)
+        path = c.getPath(p)
         while c.positionExists(p):
             if atfile(p):  # see if it's a @<file> node of some sort
                 nodepath = p.h.split(None, 1)[-1]
@@ -858,8 +857,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         if self.fillColumn > 0:
             fillColumn = self.fillColumn
         else:
-            d = c.scanAllDirectives(c.p)
-            fillColumn = d.get("pagewidth")
+            fillColumn = c.getPageWidth(c.p)
         s = w.getAllText()
         i, j = g.getLine(s, w.getInsertPoint())
         line = s[i:j].strip()
@@ -908,8 +906,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         if self.fillColumn > 0:
             fillColumn = self.fillColumn
         else:
-            d = c.scanAllDirectives(c.p)
-            fillColumn = d.get("pagewidth")
+            fillColumn = c.getPageWidth(c.p)
         self.beginCommand(w, undoType='center-region')
         inserted = 0
         while ind < end:
@@ -1588,8 +1585,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         if not s:
             return
         # Insert or delete spaces instead of tabs when negative tab width is in effect.
-        d = c.scanAllDirectives(c.p)
-        width = d.get('tabwidth')
+        width = c.getTabWidth(c.p)
         if ch == '\t' and width < 0:
             ch = ' ' * abs(width)
         self.beginCommand(w, undoType=undoType)
@@ -2173,7 +2169,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             # reverse = True # Search backward
         s = w.getAllText()
         # A partial fix for bug 127: Bracket matching is buggy.
-        language = g.getLanguageAtPosition(c, p)
+        language = c.getLanguage(p)
         if language == 'perl':
             return
         j = g.MatchBrackets(c, p, language).find_matching_bracket(ch, s, i)
@@ -2248,9 +2244,8 @@ class EditCommandsClass(BaseEditCommandsClass):
     def updateAutomatchBracket(self, p: Position, w: Wrapper, ch: str, oldSel: tuple[int, int]) -> None:
 
         c = self.c
-        d = c.scanAllDirectives(p)
+        language = c.getLanguage(p)
         i, j = oldSel
-        language = d.get('language')
         s = w.getAllText()
         if ch in ('(', '[', '{',):
             automatch = language not in ('plain',)

@@ -6,7 +6,6 @@
 import os
 import tempfile
 import textwrap
-from typing import Any
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest
 assert g
@@ -21,12 +20,6 @@ class TestCommanderFileCommands(LeoUnitTest):
         c = self.c
         at = c.atFileCommands
         p = c.p
-
-        def dummy_precheck(fileName: str, root: Any) -> bool:
-            """A version of at.precheck that always returns True."""
-            return True
-
-        at.precheck = dummy_precheck  # Force all writes.
 
         # Define data.
         raw_contents = '"""Test File"""\n'

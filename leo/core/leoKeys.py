@@ -216,7 +216,7 @@ class AutoCompleterClass:
         # Allow autocompletion only in the body pane.
         if not c.widget_name(w).lower().startswith('body'):
             return
-        self.language = g.scanForAtLanguage(c, c.p)
+        self.language = c.getLanguage(c.p)
         if w and k.enable_autocompleter:
             self.w = w
             self.start(event)
@@ -234,7 +234,7 @@ class AutoCompleterClass:
         # Allow autocompletion only in the body pane.
         if not c.widget_name(w).lower().startswith('body'):
             return
-        self.language = g.scanForAtLanguage(c, c.p)
+        self.language = c.getLanguage(c.p)
         if w:
             self.w = w
             self.start(event)

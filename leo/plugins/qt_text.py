@@ -996,10 +996,8 @@ if QtWidgets:
                 # based on https://stackoverflow.com/questions/30371613
                 # draw-vertical-lines-on-qtextedit-in-pyqt
                 # Honor @pagewidth directive if any
-                dict_list = g.get_directives_dict_list(c.p)
-                rcol = (g.scanAtPagewidthDirectives(dict_list)
-                        or c.config.getInt('rguide-col') or 80)
-
+                rcol = c.config.getInt('rguide-col')
+                rcol = c.getPageWidth(c.p) if rcol is None else rcol
                 vp = w.viewport()
                 palette = vp.palette()
                 font = w.document().defaultFont()

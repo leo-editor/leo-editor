@@ -263,10 +263,11 @@ def should_beautify(p: Position) -> bool:
     Ambiguous directives have no effect.
     """
     for p2 in p.self_and_parents(copy=False):
-        d = g.get_directives_dict(p2)
-        if 'killbeautify' in d:
+        if p.findDirective('killbeautify'):
             return False
-        if 'beautify' in d and 'nobeautify' in d:
+        beautify = p.findDirective('beautify')
+        no_beautify = p.findDirective('nobeautify')
+        if beautify and no_beautify:
             if p == p2:
                 # honor whichever comes first.
                 for line in g.splitLines(p2.b):
@@ -279,9 +280,9 @@ def should_beautify(p: Position) -> bool:
             # The ambiguous node has no effect.
             # Look up the tree.
             pass
-        elif 'beautify' in d:
+        elif beautify:
             return True
-        if 'nobeautify' in d:
+        if no_beautify:
             # This message would quickly become annoying.
             # g.warning(f"{p.h}: @nobeautify")
             return False
@@ -290,7 +291,7 @@ def should_beautify(p: Position) -> bool:
 #@+node:ekr.20150602204440.1: *3* function: should_kill_beautify
 def should_kill_beautify(p: Position) -> bool:
     """Return True if p.b contains @killbeautify"""
-    return 'killbeautify' in g.get_directives_dict(p)
+    return p.findDirective('killbeautify')
 #@+node:ekr.20110917174948.6903: ** class CPrettyPrinter
 class CPrettyPrinter:
     #@+others
@@ -313,7 +314,7 @@ class CPrettyPrinter:
         u.beforeChangeGroup(c.p, undoType)
         changed = False
         for p in c.p.self_and_subtree():
-            if g.scanForAtLanguage(c, p) == "c":
+            if c.getLanguage(p) == "c":
                 bunch = u.beforeChangeNodeContents(p)
                 s = self.indent(p)
                 if p.b != s:
