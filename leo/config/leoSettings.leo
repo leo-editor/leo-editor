@@ -10299,8 +10299,9 @@ Put notes about each version here.
     return x.lower()
 </t>
 <t tx="ekr.20170123145248.1"></t>
-<t tx="ekr.20170202104705.1">False (legacy): color all @ and @doc parts with a uniform color.
-True: color all @ and @doc parts as reStructuredText (@language rest).</t>
+<t tx="ekr.20170202104705.1">False: color all @ and @doc parts with a uniform color.
+True: color all @ and @doc parts as reStructuredText (@language rest).
+</t>
 <t tx="ekr.20170208063901.1">'''
 A template for demonstrations based on plugins/demo.py.
 The demo;; abbreviation will create this tree.
@@ -11851,8 +11852,11 @@ See https://jupytext.readthedocs.io/en/latest/config.html
 # Blank lines and comments lines (lines starting with '#') are ignored.
 
 </t>
-<t tx="ekr.20250110165136.1">False (legacy): color all python docstring with a uniform color.
-True: color python docstrings as reStructuredText (@language rest).</t>
+<t tx="ekr.20250110165136.1">This setting is new in Leo 6.8.4.
+
+False: color all python docstrings with a uniform color.
+True: color python docstrings as reStructuredText (@language rest).
+</t>
 <t tx="ekr.20250115101744.1">Colors and fonts. Only if at least one of the following is True
 
 @bool color-doc-parts-as-rest = True
