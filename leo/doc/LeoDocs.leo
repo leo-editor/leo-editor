@@ -1402,7 +1402,7 @@
 <v t="ekr.20180827104847.1"><vh>Overview</vh></v>
 <v t="ekr.20180827105047.1"><vh>Displaying images externally</vh></v>
 </v>
-<v t="ekr.20081205084002.2"><vh>Working with directives and paths</vh></v>
+<v t="ekr.20081205084002.2"><vh>Working with directives</vh></v>
 <v t="ekr.20131012060912.16788"><vh>Writing g.es output to other tabs</vh></v>
 <v t="ekr.20190608092106.1"><vh>Writing clickable links to the Log tab</vh></v>
 </v>
@@ -2510,6 +2510,7 @@
 <v t="ekr.20241126091524.1"><vh>Leo 6.8.3 release nodes</vh></v>
 <v t="ekr.20210402080752.1"></v>
 <v t="ekr.20250317133518.1"></v>
+<v t="ekr.20081205084002.2"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -6426,21 +6427,32 @@ Example 2: get two arguments from the user:
 
 - k.get1Arg contains many optional keyword arguments. See its docstring for details.
 </t>
-<t tx="ekr.20081205084002.2">Scripts can easily determine what directives are in effect at a particular position in an outline. c.scanAllDirectives(p) returns a Python dictionary whose keys are directive names and whose values are the value in effect at position p. For example:
+<t tx="ekr.20081205084002.2">@language rest
 
+New in Leo 6.8.4: Scripts can easily determine what directives are in effect at a position `p` using the following **directive getters**:
+
+@language python
 .. code-block:: python
 
-    d = c.scanAllDirectives(p) g.es(g.dictToString(d))
+    # All getters look for the given directive in p and its ancestors.
+    encoding: str = c.getEncoding(p)
+    path: str = c.getPath(p)  # A full, absolute path, using *all* ancestor @path directives.
+    language: str = c.getLanguage(p)  # The nearest *unambiguous* @language directive.
+    line_ending: str = c.getLineEnding(p)
+    tab_width: int = c.getTabWidth(p)
+    wrap_flag: bool = c.getWrap(p)
+    
+@language rest
+**Leo 6.8.4 deprecates c.scanAllDirectives(p)**
 
-In particular, d.get('path') returns the full, absolute path created by all @path directives that are in ancestors of node p. If p is any kind of @file node (including @file, @auto, @clean, etc.), the following script will print the full path to the created file:
+c.scanAllDirectives returns a Python dictionary whose keys are directive names and whose values are the value in effect at position p. For example:
 
+@language python
 .. code-block:: python
 
-    path = d.get('path')
-    name = p.anyAtFileNodeName()
-    if name:
-       name = g.os_path_finalize_join(path,name)
-       g.es(name)
+    # Same as c.getPath(p)
+    d = c.scanAllDirectives(p)
+    d.get('path')
 </t>
 <t tx="ekr.20090116094356.10">``@menuat`` modifies the menu tree created by ``@menus``. This allows settings in ``myLeoSettings.leo`` to change menus without copying the entire menu tree from ``leoSettings.leo``. This ensures you don’t miss out when new things are added in the ``@menus`` in ``leoSettings.leo``, as you would if you replaced the ``@menus`` in ``leoSettings.leo`` with one in ``myLeoSettings.leo``.
 
