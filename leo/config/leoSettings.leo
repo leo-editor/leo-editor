@@ -2080,7 +2080,7 @@
 <v t="ekr.20060504134056.1"><vh>@color literal3-color = #00aa00</vh></v>
 <v t="ekr.20060504134056.2"><vh>@color literal4-color = #00aa00</vh></v>
 <v t="ekr.20060826152759"><vh>@color markup-color = blue</vh></v>
-<v t="ekr.20060713101831"><vh>@color operator-color = None</vh></v>
+<v t="ekr.20060713101831"><vh>@color operator-color = #00aa00</vh></v>
 </v>
 <v t="ekr.20190324140542.1"><vh>Colors for pygments tags</vh>
 <v t="ekr.20190325050733.1"><vh>@color comment = solarized-orange</vh></v>
@@ -2305,6 +2305,7 @@
 <v t="ekr.20140915194122.23428"></v>
 <v t="ekr.20181018105748.1"></v>
 <v t="ekr.20041119034357.70"></v>
+<v t="ekr.20111024091133.16651"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
