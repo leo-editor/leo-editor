@@ -254,10 +254,10 @@ class CommanderCommand:
     def __call__(self, func: Callable) -> Callable:
         """Register command for all future commanders."""
 
-        def commander_command_wrapper(event: LeoKeyEvent) -> None:
+        def commander_command_wrapper(event: LeoKeyEvent) -> Any:
             c = event.get('c')
             method = getattr(c, func.__name__, None)
-            method(event=event)
+            return method(event=event)  # Return value to caller (for doCommand, doCommandByName...)
 
         # Inject ivars for plugins_menu.py.
         commander_command_wrapper.__func_name__ = func.__name__  # For leoInteg.
