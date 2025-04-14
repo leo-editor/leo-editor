@@ -2080,7 +2080,7 @@
 <v t="ekr.20060504134056.1"><vh>@color literal3-color = #00aa00</vh></v>
 <v t="ekr.20060504134056.2"><vh>@color literal4-color = #00aa00</vh></v>
 <v t="ekr.20060826152759"><vh>@color markup-color = blue</vh></v>
-<v t="ekr.20060713101831"><vh>@color operator-color = #00aa00</vh></v>
+<v t="ekr.20060713101831"><vh>@color operator-color = None</vh></v>
 </v>
 <v t="ekr.20190324140542.1"><vh>Colors for pygments tags</vh>
 <v t="ekr.20190325050733.1"><vh>@color comment = solarized-orange</vh></v>
@@ -2139,20 +2139,20 @@
 <v t="ekr.20250115101744.3"><vh>@@font rest.literal4</vh></v>
 <v t="ekr.20250115101744.4"><vh>@@font rest.keyword5</vh></v>
 <v t="ekr.20250115101744.5"><vh>@@font rest_comments.literal1</vh></v>
-<v t="ekr.20250115101744.6"><vh>@@color rest_comments.literal1 = #d33682</vh></v>
-<v t="ekr.20250115101744.7"><vh>@@color rest_comments.literal2 = #d33682</vh></v>
-<v t="ekr.20250115101744.8"><vh>@@color rest_comments.literal3 = #d33682</vh></v>
-<v t="ekr.20250115101744.9"><vh>@@color rest_comments.literal4 = #d33682</vh></v>
-<v t="ekr.20250115101744.10"><vh>@@color rest.literal1 = #d33682</vh></v>
-<v t="ekr.20250115101744.11"><vh>@@color rest.literal2 = #d33682</vh></v>
-<v t="ekr.20250115101744.12"><vh>@@color rest.literal3 = #d33682</vh></v>
-<v t="ekr.20250115101744.13"><vh>@@color rest.literal4 = #d33682</vh></v>
-<v t="ekr.20250115101744.14"><vh>@@color rest.operator = #d33682</vh></v>
-<v t="ekr.20250115101744.15"><vh>@@color rest.keyword1 = #d33682</vh></v>
-<v t="ekr.20250115101744.16"><vh>@@color rest.keyword2 = #d33682</vh></v>
-<v t="ekr.20250115101744.17"><vh>@@color rest.keyword3 = #d33682</vh></v>
-<v t="ekr.20250115101744.18"><vh>@@color rest.keyword4 = #d33682</vh></v>
-<v t="ekr.20250115101744.19"><vh>@@color rest.keyword5 = #d33682</vh></v>
+<v t="ekr.20250115101744.6"><vh>@color rest_comments.literal1 = #00aa00</vh></v>
+<v t="ekr.20250115101744.7"><vh>@color rest_comments.literal2 = #00aa00</vh></v>
+<v t="ekr.20250115101744.8"><vh>@color rest_comments.literal3 = #00aa00</vh></v>
+<v t="ekr.20250115101744.9"><vh>@color rest_comments.literal4 = #00aa00</vh></v>
+<v t="ekr.20250115101744.10"><vh>@color rest.literal1 = #00aa00</vh></v>
+<v t="ekr.20250115101744.11"><vh>@color rest.literal2 = #00aa00</vh></v>
+<v t="ekr.20250115101744.12"><vh>@color rest.literal3 = #00aa00</vh></v>
+<v t="ekr.20250115101744.13"><vh>@color rest.literal4 = #00aa00</vh></v>
+<v t="ekr.20250115101744.14"><vh>@color rest.operator = #00aa00</vh></v>
+<v t="ekr.20250115101744.15"><vh>@color rest.keyword1 = #00aa00</vh></v>
+<v t="ekr.20250115101744.16"><vh>@color rest.keyword2 = #00aa00</vh></v>
+<v t="ekr.20250115101744.17"><vh>@color rest.keyword3 = #00aa00</vh></v>
+<v t="ekr.20250115101744.18"><vh>@color rest.keyword4 = #00aa00</vh></v>
+<v t="ekr.20250115101744.19"><vh>@color rest.keyword5 = #00aa00</vh></v>
 </v>
 </v>
 <v t="ekr.20111004182631.15533"><vh>Options</vh>
@@ -2306,6 +2306,7 @@
 <v t="ekr.20181018105748.1"></v>
 <v t="ekr.20041119034357.70"></v>
 <v t="ekr.20111024091133.16651"></v>
+<v t="ekr.20250115101744.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -11861,7 +11862,9 @@ True: color python docstrings as reStructuredText (@language rest).
 <t tx="ekr.20250115101744.1">Colors and fonts. Only if at least one of the following is True
 
 @bool color-doc-parts-as-rest = True
-@bool color-docstrings-as-rest = True</t>
+@bool color-docstrings-as-rest = True
+
+The following defaults must be as shown for compatibility with Leo 6.8.3</t>
 <t tx="ekr.20250115101744.10"># plain word and default.</t>
 <t tx="ekr.20250115101744.11"># number</t>
 <t tx="ekr.20250115101744.12"># italic</t>
@@ -11869,10 +11872,10 @@ True: color python docstrings as reStructuredText (@language rest).
 <t tx="ekr.20250115101744.14"># Everything else.</t>
 <t tx="ekr.20250115101744.15"># @doc plain and default
 
-#d33682</t>
+#00aa00</t>
 <t tx="ekr.20250115101744.16"># @doc italic
 
-#d33682</t>
+#00aa00</t>
 <t tx="ekr.20250115101744.17"># @doc bold</t>
 <t tx="ekr.20250115101744.18"># @doc numbers</t>
 <t tx="ekr.20250115101744.19"># @doc words</t>
