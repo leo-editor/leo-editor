@@ -210,7 +210,7 @@ def convertBlanks(self: Self, event: LeoKeyEvent = None) -> bool:
     w.selectAllText()
     w.setYScrollPosition(oldYview)
     # "after" snapshot.
-    u.afterChangeBody(p, 'Indent Region', bunch)
+    u.afterChangeBody(p, 'Convert Blanks', bunch)
     return True
 #@+node:ekr.20171123135625.19: ** c_ec.convertTabs
 @g.commander_command('convert-tabs')
@@ -249,7 +249,7 @@ def convertTabs(self: Self, event: LeoKeyEvent = None) -> bool:
     w.setYScrollPosition(oldYview)
     #
     # "after" snapshot.
-    u.afterChangeBody(p, 'Add Comments', bunch)
+    u.afterChangeBody(p, 'Convert Tabs', bunch)
     return True
 #@+node:ekr.20171123135625.21: ** c_ec.dedentBody (unindent-region)
 @g.commander_command('unindent-region')
@@ -377,7 +377,7 @@ def deleteComments(self: Self, event: LeoKeyEvent = None) -> None:
     w.setYScrollPosition(oldYview)
     #
     # "after" snapshot.
-    u.afterChangeBody(p, 'Indent Region', bunch)
+    u.afterChangeBody(p, 'Delete Comments', bunch)
 #@+node:ekr.20171123135625.54: ** c_ec.editHeadline (edit-headline)
 @g.commander_command('edit-headline')
 def editHeadline(self: Self, event: LeoKeyEvent = None) -> tuple[Widget, Wrapper]:
