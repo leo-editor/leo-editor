@@ -133,6 +133,49 @@ class TestCommands(LeoUnitTest):
         c.demote()  # This should do nothing.
         self.assertEqual(0, c.checkOutline())
         self.assertEqual(2, p.numberOfChildren())
+    #@+node:felix.20250414224343.1: *3* TestCommands.test_c_doCommandByName_return_result
+    def test_c_doCommandByName_return_result(self):
+        c, p = self.c, self.c.p
+
+        # test an existing native Leo command such as 'convert-blanks'.
+        c.selectPosition(p)
+
+        c.insertHeadline()
+        p2 = c.p
+        p2.b = self.prep(
+        """
+            @language python
+
+            def abc():  # this contains spaces
+                pass
+        """)
+        c.selectPosition(p2)
+        # It will return True if it changed the text.
+        val = c.doCommandByName('convert-blanks')
+        assert val is True, f"expected: True got: {val}"
+
+        
+        # Call it again, it should return False.
+        val = c.doCommandByName('convert-blanks')
+        assert val is False, f"expected: False got: {val}"
+        print('test_c_doCommandByName_return_result test done')
+    #@+node:felix.20250414224344.1: *3* TestCommands.test_c_doCommandByName_return_result_from_leo_script
+    def test_c_doCommandByName_return_result_from_leo_script(self):
+        c, p = self.c, self.c.p
+        # test an existing native Leo command such as 'convert-blanks'.
+
+        c.selectPosition(p)
+        c.insertHeadline()
+        p2 = c.p
+        p2.h = "@command test"
+        p2.b = self.prep(
+        """
+            g.es('test script that sets result global')
+            global result
+            result = 42
+        """)
+        print('test_c_doCommandByName_return_result_from_leo_script test done')
+
     #@+node:ekr.20210906075242.7: *3* TestCommands.test_c_expand_path_expression
     def test_c_expand_path_expression(self):
         import os
