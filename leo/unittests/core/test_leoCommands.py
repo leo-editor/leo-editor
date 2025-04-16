@@ -4,6 +4,7 @@
 # pylint: disable=no-member
 import sys
 from leo.core import leoGlobals as g
+from leo.plugins.mod_scripting import scriptingController
 from leo.core.leoTest2 import LeoUnitTest
 
 #@+others
@@ -139,7 +140,6 @@ class TestCommands(LeoUnitTest):
 
         # test an existing native Leo command such as 'convert-blanks'.
         c.selectPosition(p)
-
         c.insertHeadline()
         p2 = c.p
         p2.b = self.prep(
@@ -150,31 +150,39 @@ class TestCommands(LeoUnitTest):
                 pass
         """)
         c.selectPosition(p2)
+
         # It will return True if it changed the text.
         val = c.doCommandByName('convert-blanks')
         assert val is True, f"expected: True got: {val}"
-
         
         # Call it again, it should return False.
         val = c.doCommandByName('convert-blanks')
         assert val is False, f"expected: False got: {val}"
-        print('test_c_doCommandByName_return_result test done')
+        
     #@+node:felix.20250414224344.1: *3* TestCommands.test_c_doCommandByName_return_result_from_leo_script
     def test_c_doCommandByName_return_result_from_leo_script(self):
         c, p = self.c, self.c.p
-        # test an existing native Leo command such as 'convert-blanks'.
 
+        # Creates a command from an @command node with mod_scripting's scriptingController.
         c.selectPosition(p)
         c.insertHeadline()
         p2 = c.p
-        p2.h = "@command test"
+        p2.h = "@command test-return-result"  # an @command node
         p2.b = self.prep(
         """
             g.es('test script that sets result global')
-            global result
+            global result  # pythonic way of outputing something from an 'exec' call.
             result = 42
         """)
-        print('test_c_doCommandByName_return_result_from_leo_script test done')
+        c.selectPosition(p2)
+
+        sc = getattr(c, "theScriptingController", None)
+        if not sc:
+            sc = scriptingController(c, True)  # Fakes the unused iconBar with 'True'.
+        sc.handleAtCommandNode(p2)
+
+        val = c.doCommandByName('test-return-result')
+        assert val is 42, f"expected: 42 got: {val}"
 
     #@+node:ekr.20210906075242.7: *3* TestCommands.test_c_expand_path_expression
     def test_c_expand_path_expression(self):
