@@ -274,7 +274,7 @@ class AtButtonCallback:
         self.source_c = c  # For GetArgs.command_source.
         self.__doc__ = docstring  # The docstring for this callback for g.getDocStringForFunction.
     #@+node:ekr.20141031053508.10: *3* __call__ (AtButtonCallback)
-    def __call__(self, event: Event = None) -> Any:
+    def __call__(self, event: Event = None) -> Value:
         """AtButtonCallbgack.__call__. The callback for @button nodes."""
         return self.execute_script()
     #@+node:ekr.20141031053508.13: *3* __repr__ (AtButtonCallback)
