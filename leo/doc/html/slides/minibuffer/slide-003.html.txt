@@ -5,13 +5,13 @@ Example
 
 Suppose you want to print out the list of Leo’s commands.
 
-You need only remember that commands start with “print”. Just type::
+You need only remember that commands start with “show”. Just type::
 
     <alt-x>pri<tab>
 
-You will see “print-” in the minibuffer.
+You will see “show-” in the minibuffer.
 
-The Completion tab in the log pane shows all the commands that start with “print-”.
+The Completion tab in the log pane shows all the commands that start with “show-”.
 
 .. image:: _images/slide-003.png
 

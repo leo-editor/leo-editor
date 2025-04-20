@@ -3,7 +3,7 @@
 Example, concluded
 ==================
 
-You will see the output of the print-commands command in the commands tab.
+You will see the output of the show-commands command in the commands tab.
 
 Focus returns to the body pane.
 

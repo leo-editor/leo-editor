@@ -926,7 +926,7 @@ babel-menu more convenient by assigning it a key binding.
 
 Your key binding(s) can be any sequence that you do not want to use for
 something else. You can see all the current key bindings by executing
-Alt-x, print-bindings. You should set your key bindings in the
+Alt-x, show-bindings. You should set your key bindings in the
 appropriate place in your leoMySettings.leo.
 
 Here is what I use:

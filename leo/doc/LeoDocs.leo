@@ -2053,7 +2053,7 @@
 <v t="ekr.20180930062351.56"><vh>Added @nosearch to results of cff</vh></v>
 <v t="ekr.20180930062351.57"><vh>Added dump-clone-parents command</vh></v>
 <v t="ekr.20180930062351.58"><vh>Added md_docer.py plugin</vh></v>
-<v t="ekr.20180930062351.59"><vh>Added print-stats command &amp; improved tracing</vh></v>
+<v t="ekr.20180930062351.59"><vh>Added show-stats command &amp; improved tracing</vh></v>
 <v t="ekr.20180930062351.60"><vh>Leo ecognizes .latex and .sty as LaTeX files</vh></v>
 <v t="ekr.20180930062351.61"><vh>Removed --no-cache &amp; --trace-cache</vh></v>
 </v>
@@ -2440,7 +2440,7 @@
 <v t="ekr.20180404020226.1"><vh>Features</vh>
 <v t="ekr.20180404015923.1"><vh>#467: Add setting for preferred directory</vh></v>
 <v t="ekr.20180404015841.2"><vh>#663: Regularize slashes and back slashes</vh></v>
-<v t="ekr.20180404015841.3"><vh>#748: Improve print-settings command</vh></v>
+<v t="ekr.20180404015841.3"><vh>#748: Improve show-settings command</vh></v>
 <v t="ekr.20180404015841.4"><vh>#763: Use html comments to support @file x.md</vh></v>
 <v t="ekr.20180404015841.5"><vh>#766: Create Theme menu, etc.</vh></v>
 <v t="ekr.20180404021847.1"><vh>#784: Warn if stylesheet substitution leaves undefined @-constants</vh></v>
@@ -5657,7 +5657,7 @@ Putting this all together, we get::
 
 - **keyboard-quit**: (default shortcut: Ctrl-g) Exits any minibuffer mode and puts the focus in the body pane.
 
-For example, to print a list of all commands type Alt-X print-commands &lt;Return&gt;.
+For example, to print a list of all commands type Alt-X show-commands &lt;Return&gt;.
 </t>
 <t tx="ekr.20070115172724">.. _`embedded winpdb`: https://www.digitalpeers.com/pythondebugger/embedded.htm
 .. _`winpdb`: https://www.digitalpeers.com/pythondebugger/
@@ -5959,8 +5959,8 @@ It also contains other information of little interest to most Leo users.</t>
     open-find-tab
     open-outline-by-name (uses filename completion)
     open-spell-tab
-    print-bindings
-    print-commands    re-search-backward
+    show-bindings
+    show-commands    re-search-backward
     re-search-forward
     remove-space-from-lines
     remove-tab-from-lines
@@ -14977,8 +14977,8 @@ Help::
     F1 (help) 
     F11 (help-for-command) 
     F12 (help-for-python)
-    print-bindings
-    print-settings
+    show-bindings
+    show-settings
     help-for-...
 
 Find/Replace::
@@ -15565,7 +15565,7 @@ these when generators are not flexible enough::
     leoscreen-jump-to-error
     normalize-whitespace
     parse-body
-    print-buttons
+    show-buttons
     vr-expand &amp; vr-contract. All viewrendered commands now start with vr
     zoom-in/out commands
 </t>
@@ -17371,8 +17371,8 @@ Importers and writers can register either @auto-names or file extensions. For ex
 
         clear-all-uas
         clear-node-uas
-        print-all-uas
-        print-node-uas
+        show-all-uas
+        show-node-uas
         set-ua
 
     Other commands:
@@ -18698,7 +18698,7 @@ Placing the cursor immediately before the first "I", holding shift and moving it
 <t tx="ekr.20150323111053.1">Just use cff (clone-find-all-flattened).  This is my workhorse command when fixing complex bugs.</t>
 <t tx="ekr.20150323154836.1">If you give no file arguments on the command line Leo will open ``~/.leo/workbook.leo``.  Initially, this file contains Leo's cheat sheet and an example from the rst3 tutorial.
 </t>
-<t tx="ekr.20150323161357.1">``print-bindings`` prints a complete list of the bindings in effect.
+<t tx="ekr.20150323161357.1">``show-bindings`` prints a complete list of the bindings in effect.
 
 .. contents:: Contents
     :depth: 2
@@ -19674,7 +19674,7 @@ Python's garbage collector::
     gc-collect-garbage
     gc-dump-all-objects
     gc-dump-objects-verbose
-    gc-print-summary
+    gc-show-summary
     gc-trace-disable
     gc-trace-enable
 
@@ -21591,9 +21591,9 @@ For example, suppose you want to show the list of Leo’s commands. You might re
 
 You will see ``show-`` in the minibuffer. This is the longest common prefix of all the command names that start with ``show``. The Completion tab in the log pane shows all the commands that start with ``show-``.
 
-Now just type ``c&lt;Tab&gt;`` You will see the ``print-commands`` command in the minibuffer.
+Now just type ``c&lt;Tab&gt;`` You will see the ``show-commands`` command in the minibuffer.
 
-Finally, ``&lt;Return&gt;`` executes the ``print-commands`` command. The output of the ``print-commands`` command appears in the commands tab, and focus returns to the body pane.
+Finally, ``&lt;Return&gt;`` executes the ``show-commands`` command. The output of the ``show-commands`` command appears in the commands tab, and focus returns to the body pane.
 </t>
 <t tx="ekr.20170312085434.1">``file-open-by-name``
     Prompts for a filename. This command completes the name of files and directories as in command completion.  As a result, this command can be very fast.  You may want to bind this command to ``Ctrl-O`` instead of the default ``open-outline`` command.
@@ -22125,7 +22125,7 @@ No real changes were made. Plugins should not create bindings by calling k.regis
 
 Note: The mod_scripting plugins creates bindings from @button and @command nodes. Again, these are "late" bindings that can not be over-ridden in settings files. I don't believe this is a big problem. The problem arises because Leo loads plugins after loading all outlines. It's not a direct consequence of using settings files.
 
-Leo now has two new command-line options. These provide more detail than the print-binding or print-settings commands, but only for a single setting or binding. Examples:
+Leo now has two new command-line options. These provide more detail than the print-binding or show-settings commands, but only for a single setting or binding. Examples:
 
     --trace-setting=http-port
         # setting name
@@ -27061,7 +27061,7 @@ Put the following snippet at the start of any function/method you wish to profil
         finally:
             g.app.statsLockout = False
 
-To see the stats, restart Leo, then do print-stats.
+To see the stats, restart Leo, then do show-stats.
 
 This pattern produces superb statistics that show how many times the *callers* of a routine called the routine.  Here are before/after statistics for g.match_word::
 
@@ -31555,13 +31555,13 @@ With tab completion *you don't have to remember the exact names of Leo’s comma
 
 Suppose you want to print out the list of Leo’s commands.
 
-You need only remember that commands start with “print”. Just type::
+You need only remember that commands start with “show”. Just type::
 
     &lt;alt-x&gt;pri&lt;tab&gt;
 
-You will see “print-” in the minibuffer.
+You will see “show-” in the minibuffer.
 
-The Completion tab in the log pane shows all the commands that start with “print-”.
+The Completion tab in the log pane shows all the commands that start with “show-”.
 
 .. image:: _images/slide-003.png</t>
 <t tx="ekr.20230122101507.1">Example, continued
@@ -31569,7 +31569,7 @@ The Completion tab in the log pane shows all the commands that start with “pri
 
 Now just type `c&lt;tab&gt;`.
 
-You will see one the single print-commands command in the minibuffer.
+You will see one the single show-commands command in the minibuffer.
 
 Finally, type &lt;return&gt; to execute the command.
 
@@ -31577,7 +31577,7 @@ Finally, type &lt;return&gt; to execute the command.
 <t tx="ekr.20230122101507.2">Example, concluded
 ==================
 
-You will see the output of the print-commands command in the commands tab.
+You will see the output of the show-commands command in the commands tab.
 
 Focus returns to the body pane.
 

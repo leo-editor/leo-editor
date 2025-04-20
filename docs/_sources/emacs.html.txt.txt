@@ -254,5 +254,5 @@ Leo's mini-buffer is a text area at the bottom of the body pane. You use Leo's m
 
 - **keyboard-quit**: (default shortcut: Ctrl-g) Exits any minibuffer mode and puts the focus in the body pane.
 
-For example, to print a list of all commands type Alt-X print-commands <Return>.
+For example, to print a list of all commands type Alt-X show-commands <Return>.
 
