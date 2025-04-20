@@ -2745,9 +2745,9 @@ class KeyHandlerClass:
                 data.append((pane_key, commandName))
         # This isn't perfect in variable-width fonts.
         lines = ['%*s %s\n' % (-n, z1, z2) for z1, z2 in data]
-        g.es_print('', ''.join(lines), tabName=tabName)
-        print('')
         g.es_print('The show-buttons command shows the source of all @button and @command nodes')
+        print('')
+        g.es_print('', ''.join(lines), tabName=tabName)
     #@+node:tom.20220320235059.1: *4* 'show-commands-with-docs'
     @cmd('show-commands-with-docs')
     def printCommandsWithDocs(self, event: LeoKeyEvent = None) -> None:
