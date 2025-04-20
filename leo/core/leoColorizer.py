@@ -12,7 +12,7 @@ from collections.abc import Callable
 import re
 import string
 import time
-from typing import Any, Generator, Self, Sequence, Optional, Union, TYPE_CHECKING
+from typing import Any, Generator, Sequence, Optional, Union, TYPE_CHECKING
 from types import ModuleType
 import warnings
 
@@ -41,6 +41,10 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position, VNode
     from leo.core.leoGlobals import GeneralSetting
+    try:
+        from typing import Self
+    except Exception:
+        Self = Any
     KWargs = Any
     Lexer = Callable
     QWidget = QtWidgets.QWidget
