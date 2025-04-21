@@ -5,11 +5,16 @@
 #@+node:ekr.20150514050411.1: ** << killBufferCommands imports & annotations >>
 from __future__ import annotations
 from collections.abc import Callable
-from typing import Optional, Self, TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass
 
 if TYPE_CHECKING:  # pragma: no cover
+    try:
+        from typing import Self
+    except Exception:
+        from typing import Any
+        Self = Any
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position
