@@ -5,7 +5,7 @@ Example, continued
 
 Now just type `c<tab>`.
 
-You will see one the single print-commands command in the minibuffer.
+You will see one the single show-commands command in the minibuffer.
 
 Finally, type <return> to execute the command.
 

@@ -69,9 +69,9 @@ For example, suppose you want to print out the list of Leo’s commands. You mig
 
 You will see ``print-`` in the minibuffer. This is the longest common prefix of all the command names that start with ``pri``. The Completion tab in the log pane shows all the commands that start with ``print-``.
 
-Now just type ``c<Tab>`` You will see the ``print-commands`` command in the minibuffer.
+Now just type ``c<Tab>`` You will see the ``show-commands`` command in the minibuffer.
 
-Finally, ``<Return>`` executes the ``print-commands`` command. The output of the print-commands command appears in the commands tab, and focus returns to the body pane.
+Finally, ``<Return>`` executes the ``show-commands`` command. The output of the show-commands command appears in the commands tab, and focus returns to the body pane.
 
 Filename completion
 *******************
@@ -239,8 +239,8 @@ Help commands
 
 These commands clarify which settings are in effect, and where they came from::
 
-    print-bindings
-    print-settings
+    show-bindings
+    show-settings
 
 These commands discuss special topics::
 
@@ -324,13 +324,13 @@ Printing settings and other data
 
 The following print information to Leo's log pane::
 
-    print-bindings
-    print-commands
-    print-focus
-    print-plugin-handlers
-    print-plugins-info
-    print-settings
-    print-style-sheet
+    show-bindings
+    show-commands
+    show-focus
+    show-plugin-handlers
+    show-plugins-info
+    show-settings
+    show-style-sheet
     show-colors
     show-find-options
 
@@ -351,7 +351,7 @@ Other debugging commands
     Enter watch escape mode.
 ``pdb``
     Drops into debugger, in the middle of the command-handling logic. Get the commander by stepping out into k.masterKeyHandler or k.masterCommandHandler. Using c, one can then get all other info.
-``print-buttons``
+``show-buttons``
     Print all @button and @command commands, their bindings and their source.
 
 Dumping Leo's internal data::
@@ -367,7 +367,7 @@ Python's garbage collector::
     gc-dump-all-objects
     gc-dump-new-objects
     gc-dump-objects-verbose
-    gc-print-summary
+    gc-show-summary
     gc-trace-disable
     gc-trace-enable
 
@@ -1106,8 +1106,8 @@ Miscellaneous commands
     # uA's.
     clear-all-uas
     clear-node-uas
-    print-all-uas
-    print-node-uas
+    show-all-uas
+    show-node-uas
     set-ua
 
 Mouseless Leo commands
@@ -2031,7 +2031,7 @@ Vim mode commands
 Key Reference
 +++++++++++++
 
-``print-bindings`` prints a complete list of the bindings in effect.
+``show-bindings`` prints a complete list of the bindings in effect.
 
 .. contents:: Contents
     :depth: 2

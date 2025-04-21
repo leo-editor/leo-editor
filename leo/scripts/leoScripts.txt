@@ -11291,7 +11291,7 @@ tracer = trace.Trace(countcallers=1)
 
 # Trace a minibuffer command.
 # Any function call will work. Leo's minibuffer commands are easily discoverable
-# via tab completion and the 'print-commands' command.
+# via tab completion and the 'show-commands' command.
 
 #tracer.runfunc(c.executeMinibufferCommand, 'goto-prev-node')
 tracer.runfunc(c.executeMinibufferCommand, 'scroll-outline-up-line')

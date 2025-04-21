@@ -118,8 +118,8 @@ Help::
     F1 (help) 
     F11 (help-for-command) 
     F12 (help-for-python)
-    print-bindings
-    print-settings
+    show-bindings
+    show-settings
     help-for-...
 
 Find/Replace::
