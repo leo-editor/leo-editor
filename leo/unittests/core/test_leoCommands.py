@@ -182,7 +182,7 @@ class TestCommands(LeoUnitTest):
         sc.handleAtCommandNode(p2)
 
         val = c.doCommandByName('test-return-result')
-        assert val is 42, f"expected: 42 got: {val}"
+        assert val == 42, f"expected: 42 got: {val}"
 
     #@+node:ekr.20210906075242.7: *3* TestCommands.test_c_expand_path_expression
     def test_c_expand_path_expression(self):
