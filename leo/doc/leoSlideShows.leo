@@ -1077,10 +1077,19 @@ You can invoke minibuffer commands by name.  For example:
 @color
 
     c.executeMinibufferCommand('open-outline')
+    # or
+    c.doCommandByName('open-outline')
 
 @nocolor
-c.keyHandler.funcReturn contains the value returned from the command.
-In many cases, as above, this value is simply 'break'.</t>
+This will return the value returned from the command.
+
+Commands created with @command and @button nodes can return values as well. 
+Since top-level return statements aren't allowed in scripts executed with exec,
+you can define a global variable named **result**, and Leo will return its value:
+@color
+
+    global result
+    result = 42</t>
 <t tx="ekr.20060902092341.18">@nocolor
 Any .leo file may contain an @settings tree, so settings may be different for each commander.
 Plugins and other scripts can get the value of settings as follows:

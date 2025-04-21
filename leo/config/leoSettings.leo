@@ -520,7 +520,6 @@
 <v t="ekr.20210506073820.1"><vh>@bool allow-text-zoom = True</vh></v>
 <v t="ekr.20241012050620.1"><vh>@bool diff-leo-files = True</vh></v>
 <v t="ekr.20131112150804.18737"><vh>@bool force-execute-entire-body = False</vh></v>
-<v t="felix.20250313171245.1"><vh>@bool allow-script-return-result = False</vh></v>
 <v t="ekr.20111115083813.12518"><vh>@bool indent-added-comments = True</vh></v>
 <v t="ekr.20150227102835.1"><vh>@bool make-node-conflicts-node = True</vh></v>
 <v t="ekr.20220624062948.1"><vh>@bool redirect-execute-script-output-to-log_pane = False</vh></v>
@@ -11933,27 +11932,6 @@ False: (Recommended) The commands act as simple navigation commands, and do not 
 Leo accepts outline 'paste' data in both XML Leo format, or JSON format</t>
 <t tx="felix.20250313152228.1"></t>
 <t tx="felix.20250313152231.1"></t>
-<t tx="felix.20250313171245.1">True: Scripts to be executed (from @command, @button, CTRL+B from body pane, etc... ) will be wrapped in 
-
-def main():
-    &lt;script&gt;
-
-result = main()
-
-to allow for return values to be captured if your script tries to 'return' a value.
-
-Example: If you have an @command my-command node that contains:
-
-return 2+2
-
-then you could run a script that contains
-
-output = c.doCommandByName('my-command')
-print(output) 
-
-which would print 4.
-
-Note: By default, script execution will return the value it may have set in a global variable named "result". (or None)</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""

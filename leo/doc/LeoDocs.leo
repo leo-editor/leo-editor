@@ -3612,8 +3612,17 @@ Three predefined symbols, **c**, **g**, and **p** give Leo scripts easy access t
 .. code-block:: python
 
     c.executeMinibufferCommand('open-outline')
+    # or
+    c.doCommandByName('open-outline')
 
-c.keyHandler.funcReturn contains the value returned from the command. In many cases, as above, this value is simply 'break'.
+This will return the value returned from the command.
+
+Commands created with @command and @button nodes can return values as well. Since top-level return statements aren't allowed in scripts executed with exec, you can define a global variable named **result**, and Leo will return its value:
+
+.. code-block:: python
+
+    global result
+    result = 42
 </t>
 <t tx="ekr.20040403173920.19" rst_http_attribute="5d71002858460000003c6120636c6173733d22746172676574222069643d22687474702d6e6f64652d6d61726b65722d323922206e616d653d22687474702d6e6f64652d6d61726b65722d3239223e710158040000003c2f613e71025d71032858390000003c64697620636c6173733d2273656374696f6e222069643d22696e766f6b696e672d636f6d6d616e64732d66726f6d2d73637269707473223e710458060000003c2f6469763e71055d710628583f0000003c64697620636c6173733d22646f63756d656e74222069643d22636861707465722d372d736372697074696e672d6c656f2d776974682d707974686f6e223e710758060000003c2f6469763e71085d71092858060000003c626f64793e710a58070000003c2f626f64793e710b5d710c2858430000003c68746d6c20786d6c6e733d22687474703a2f2f7777772e77332e6f72672f313939392f7868746d6c2220786d6c3a6c616e673d22656e22206c616e673d22656e223e710d58070000003c2f68746d6c3e710e4e6565656558070000003c2f6469763e0a710f583b0000003c64697620636c6173733d2273656374696f6e222069643d2267657474696e672d616e642d73657474696e672d707265666572656e636573223e0a711058780000003c68313e3c6120636c6173733d22746f632d6261636b7265662220687265663d22236964313522206e616d653d2267657474696e672d616e642d73657474696e672d707265666572656e636573223e47657474696e6720616e642073657474696e6720707265666572656e6365733c2f613e3c2f68313e0a7111652e">Each commander sets ivars corresponding to settings.
 
@@ -15381,6 +15390,17 @@ The Leonine World
     c.redraw(p=None)        # Redraw the screen. Select p if given.
     c.save()                # Save the present outline.
     c.selectPosition()
+
+**Using Command names**::
+
+When learning Leo's codebase, it may be easier to refer to a command by its 'command name'. You can therefore use  c.doCommandByName('command-name') instead of calling the proper method on the commander. This will return the same value as that method.
+
+**Leo Script Return Values**::
+
+Commands created with @command and @button nodes can return values as well. Since top-level return statements aren't allowed in scripts executed with exec, you can define a global variable named **result**, and Leo will return its value:
+
+    global result
+    result = 42
 
 **Official ivars** of any leoFrame f::
 
