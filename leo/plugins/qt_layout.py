@@ -584,19 +584,15 @@ class LayoutCacheWidget(QWidget):
         if not splitter:
             g.trace(f"Oops! no splitter for name: {widget.objectName()!r}")
             return
-        try:
-            index = splitter.indexOf(direct_child)
-            sizes = splitter.sizes()
-            widget_size = sizes[index]
-        except Exception:
-            g.trace(f"Oops! {widget} not in: {splitter!r}")
-            g.es_exception()
-            return
+
+        index = splitter.indexOf(direct_child)
         if index == -1:
             g.trace(f"Oops! direct child: {direct_child!r} not in {splitter}")
             return
 
         # Look for another *visible* widget.
+        sizes = splitter.sizes()
+        widget_size = sizes[index]
         if widget_size > 0:
             for other_index, size in enumerate(sizes):
                 if other_index != index and size > 0:
