@@ -595,22 +595,34 @@ class LayoutCacheWidget(QWidget):
         if index == -1:
             g.trace(f"Oops! direct child: {direct_child!r} not in {splitter}")
             return
-        if widget_size == 0:
-            # The pane is invisible.
-            return
-        if len(sizes) < 2:
-            # There are no other widgets in the splitter.
-            return
+
         # Look for another *visible* widget.
-        for other_index, size in enumerate(sizes):
-            if other_index != index and size > 0:
-                break
-        else:
-            # There is no other visible pane.
+        if widget_size > 0:
+            for other_index, size in enumerate(sizes):
+                if other_index != index and size > 0:
+                    sizes[index] += delta
+                    sizes[other_index] -= delta
+                    splitter.setSizes(sizes)
+                    return
+
+        # #4325. Try resizing a parent frame.
+        parent_splitter, _junk = g.app.gui.find_parent_splitter(splitter)
+        if not parent_splitter:
             return
-        sizes[index] += delta
-        sizes[other_index] -= delta
-        splitter.setSizes(sizes)
+        index = parent_splitter.indexOf(splitter)
+        if index == -1:
+            g.trace(f"Oops! {splitter} not in {parent_splitter}")
+            return
+
+        widget_size = sizes[index]
+        if widget_size > 0:
+            for other_index, size in enumerate(sizes):
+                if other_index != index and size > 0:
+                    sizes = parent_splitter.sizes()
+                    sizes[index] += delta
+                    sizes[other_index] -= delta
+                    parent_splitter.setSizes(sizes)
+                    return
     #@+node:tom.20240923194438.6: *4* LCW.restoreFromLayout
     def restoreFromLayout(self, layout: Dict = None) -> None:
         self.layout_dict = layout
