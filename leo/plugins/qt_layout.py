@@ -609,20 +609,20 @@ class LayoutCacheWidget(QWidget):
         parent_splitter, _junk = g.app.gui.find_parent_splitter(splitter)
         if not parent_splitter:
             return
+
         index = parent_splitter.indexOf(splitter)
         if index == -1:
             g.trace(f"Oops! {splitter} not in {parent_splitter}")
             return
 
-        widget_size = sizes[index]
-        if widget_size > 0:
-            for other_index, size in enumerate(sizes):
-                if other_index != index and size > 0:
-                    sizes = parent_splitter.sizes()
-                    sizes[index] += delta
-                    sizes[other_index] -= delta
-                    parent_splitter.setSizes(sizes)
-                    return
+        # It's valid for the splitter's size to be zero!
+        for other_index, size in enumerate(sizes):
+            if other_index != index and size > 0:
+                sizes = parent_splitter.sizes()
+                sizes[index] += delta
+                sizes[other_index] -= delta
+                parent_splitter.setSizes(sizes)
+                return
     #@+node:tom.20240923194438.6: *4* LCW.restoreFromLayout
     def restoreFromLayout(self, layout: Dict = None) -> None:
         self.layout_dict = layout
