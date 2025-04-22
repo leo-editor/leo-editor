@@ -932,7 +932,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     def convert_to_asciidoctor(self, s: str) -> str:
         """Convert s to html using the asciidoctor or asciidoc processor."""
         c, p = self.c, self.c.p
-        path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
+        path = c.getPath(p)
         if not os.path.isdir(path):
             path = os.path.dirname(path)
         if os.path.isdir(path):
@@ -1147,7 +1147,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     def convert_to_markdown(self, s: str) -> str:
         """Convert s to html using the markdown processor."""
         c, p = self.c, self.c.p
-        path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
+        path = c.getPath(p)
         if not os.path.isdir(path):
             path = os.path.dirname(path)
         if os.path.isdir(path):
@@ -1228,7 +1228,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     def convert_to_pandoc(self, s: str) -> str:
         """Convert s to html using the asciidoctor or asciidoc processor."""
         c, p = self.c, self.c.p
-        path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
+        path = c.getPath(p)
         if not os.path.isdir(path):
             path = os.path.dirname(path)
         if os.path.isdir(path):
@@ -1363,7 +1363,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         """Convert s to html using docutils."""
         c, p = self.c, self.c.p
         # Update the current path.
-        path = g.scanAllAtPathDirectives(c, p) or c.getNodePath(p)
+        path = c.getPath(p)
         if not os.path.isdir(path):
             path = os.path.dirname(path)
         if os.path.isdir(path):
