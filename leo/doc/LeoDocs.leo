@@ -33089,6 +33089,7 @@ Yes, there are several ways for scripts to simulate the often-requested "half-cl
 .. _`PR #4281`: https://github.com/leo-editor/leo-editor/pull/4281
 .. _`PR #4287`: https://github.com/leo-editor/leo-editor/pull/4287
 .. _`PR #4296`: https://github.com/leo-editor/leo-editor/pull/4296
+.. _`PR #4303`: https://github.com/leo-editor/leo-editor/pull/4303
 .. _`PR #4316`: https://github.com/leo-editor/leo-editor/pull/4316
 .. _`PR #4314`: https://github.com/leo-editor/leo-editor/pull/4314
 .. _`PR #4320`: https://github.com/leo-editor/leo-editor/pull/4320
@@ -33103,6 +33104,7 @@ Yes, there are several ways for scripts to simulate the often-requested "half-cl
 - `PR #4281`_: Allow rest comments to be colored differently from @language rest
 - `PR #4287`_: All backslashes in find strings.
 - `PR #4296`_: Add the `find-source-for-command` command.
+- `PR #4303`_: Support `@language typst`.
 - `PR #4314`_: Scripts (including `@command` and `@button` scripts) may now return a value.
 - `PR #4316`_: Remove the `join-leo-irc` command.
 
@@ -33134,6 +33136,7 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 
 - Improve the Rust importer.
 - Allow rest comments to be colored differently from @language rest.
+- Support `@language typst`.
 - Several other improvements to syntax coloring.
 - Add the `show-buttons-and-at-commands` command.
 - Add the `find-source-for-command` command.
