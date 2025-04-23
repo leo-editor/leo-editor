@@ -163,7 +163,6 @@
 </v>
 <v t="ekr.20031218072017.2406"><vh>Code</vh>
 <v t="ekr.20140902032918.18591"><vh>About this file</vh>
-<v t="ekr.20140831085423.18639"><vh>About widgets and wrappers</vh></v>
 <v t="ekr.20140831085423.18630"><vh>Terminology</vh></v>
 <v t="ekr.20140831085423.18631"><vh>Official ivars</vh></v>
 </v>
@@ -175,6 +174,7 @@
 <v t="ekr.20150521115018.1"><vh>@file leoBeautify.py</vh></v>
 <v t="ekr.20070227091955.1"><vh>@file leoBridge.py</vh></v>
 <v t="ekr.20070317085508.1"><vh>@file leoChapters.py</vh></v>
+<v t="ekr.20100208065621.5894"><vh>@file leoCache.py</vh></v>
 <v t="ekr.20031218072017.2794"><vh>@file leoColor.py</vh></v>
 <v t="ekr.20140827092102.18574"><vh>@file leoColorizer.py</vh></v>
 <v t="ekr.20031218072017.2810"><vh>@file leoCommands.py</vh></v>
@@ -226,7 +226,6 @@
 <v t="ekr.20150514040239.1"><vh>@file ../commands/spellCommands.py</vh></v>
 </v>
 <v t="ekr.20031218072017.3625"><vh>Gui base classes</vh>
-<v t="ekr.20050721093241"><vh>&lt;&lt; about gui classes and gui plugins &gt;&gt;</vh></v>
 <v t="ekr.20250329033400.1"><vh>@file leoAPI.py</vh></v>
 <v t="ekr.20060123151617"><vh>@file leoFind.py</vh></v>
 <v t="ekr.20031218072017.3655"><vh>@file leoFrame.py</vh></v>
@@ -473,7 +472,7 @@
 <v t="EKR.20040517075715.12"><vh>@file ../plugins/xemacs.py</vh></v>
 <v t="EKR.20040517075715.13"><vh>Word export</vh>
 <v t="EKR.20040517075715.14"><vh>@file ../plugins/word_export.py</vh></v>
-<v t="EKR.20040517075715.20"><vh>@file-nosent ../plugins/word_export.ini</vh></v>
+<v t="EKR.20040517075715.20"><vh>@edit ../plugins/word_export.ini</vh></v>
 </v>
 </v>
 <v t="edream.110203113231.872"><vh>Files and nodes</vh>
@@ -612,6 +611,7 @@
 <v t="ville.20090815203828.5235"><vh>@file ../plugins/spydershell.py</vh></v>
 <v t="ekr.20100103093121.5329"><vh>@file ../plugins/stickynotes.py</vh></v>
 <v t="tbrown.20090119215428.2"><vh>@file ../plugins/todo.py</vh></v>
+<v t="tbrown.20100318101414.5990"><vh>@file ../plugins/viewrendered.py</vh></v>
 <v t="TomP.20191215195433.1"><vh>@file ../plugins/viewrendered3.py</vh></v>
 </v>
 <v t="ekr.20060328125925"><vh>@file ../plugins/chapter_hoist.py</vh></v>
@@ -730,13 +730,6 @@
 <t tx="EKR.20040430162943"></t>
 <t tx="EKR.20040517075715"></t>
 <t tx="EKR.20040517075715.13"></t>
-<t tx="EKR.20040517075715.20">[Main]
-use_styles = Yes
-use_section_numbers = Yes
-use_current_document = Yes
-max_headings = 6
-header_style = Heading
-</t>
 <t tx="EKR.20040517090508">@nocolor-node
 
 Enable plugins by creating@enabled-plugins nodes in leoSettings files,
@@ -759,7 +752,9 @@ These plugins create new kinds of nodes, some of which affect the file system.</
 # See the "About this file" node for important notes.
 </t>
 <t tx="ekr.20031218072017.2604"></t>
-<t tx="ekr.20031218072017.3625">&lt;&lt; about gui classes and gui plugins &gt;&gt;
+<t tx="ekr.20031218072017.3625">See info issue #1585
+https://github.com/leo-editor/leo-editor/issues/1585
+@language python
 </t>
 <t tx="ekr.20040331071919"></t>
 <t tx="ekr.20040722141148">@nocolor-node
@@ -930,71 +925,6 @@ and how to use it.
         g.registerHandler('start2',onStart2)
     return ok</t>
 <t tx="ekr.20050306081349"></t>
-<t tx="ekr.20050721093241">@nobeautify
-@nocolor
-
-The following are notes for anyone who is interested in writing
-alternate gui's for Leo.
-
-Rule 1: Leo's core is (or should be) free of gui-specific code.
-
-Core code calls **gui wrapper methods** defined by gui-specific classes.
-
-Rule 2: Gui-specific code should be localized to a single file.
-
-Rule 3: Gui-specific code may call gui methods directly.
-
-There are no restrictions about the code in the gui-specific classes.
-
-Rule 4: Gui-specific classes must implement the gui wrapper methods
-specified in the gui base classes.
-
-This is the way that gui-specific classes provide gui-specific
-services to Leo's core.
-
-The alternative would be to implement all gui-specific commands
-directly in the gui-specific code.  But this would be much more work
-than needed.  For example, only a few gui-specific wrappers are needed
-to implement all commands that deal with body text.  Implementing each
-of these commands 'from scratch' would duplicate a lot of code
-unnecessarily.
-
-Using the gui wrapper methods is a bit messy for two reasons:
-
-1. It requires defining enough wrappers (both in the base gui classes
-   and subclasses) so that all gui-specific services needed by Leo's
-   core are available.  Adding a wrapper to a gui base class involves
-   adding it to all gui-specific subclasses.  It's easy to forget to
-   add a wrapper.  The gui base class defines all wrappers as a
-   function that just calls oops().  This prints a warning that the
-   wrapper should be defined in a subclass.
-
-2. The original wrappers assumed Tkinter-like indices.  Wrappers that
-   were defined later assume Python indices (see Rule 5 below).
-
-Rule 5: Leo's core should use Python indices, not gui-specific
-indices.
-
-Leo's core mostly follows this rule: there may be a few exceptions.
-
-A Python index is an int that runs from 0 (beginning of text) to
-len(s) (end of text s).  That is, there are exactly len(s) + 1 valid
-indices.  In contrast, Tkinter indices run from "1.0" to "x.y" where
-text s has x lines and where the length of the last line is y-1.
-
-Two functions in leoGlobals.py support conversions from Python indices to
-the row/column indices used by Tkinter.
-
-- g.convertPythonIndexToRowCol converts a Python index to a row/column
-  index used by Tkinter.
-
-- g.convertRowColToPythonIndex does the reverse.
-
-Important: the first Tkinter index is '1.0', not '0.0', but the row
-returned by g.convertPythonIndexToRowCol is zero based, so the code
-that actually creates Tkinter indices from row/col must add 1 to the
-row.  Similar remarks apply when going in the reverse direction.
-</t>
 <t tx="ekr.20051031040240"></t>
 <t tx="ekr.20071113084440"># These plugins are for testing Leo's own plugin loading logic.
 # There is no reason ever to enable these plugins.</t>
@@ -1085,23 +1015,6 @@ The following were official ivars that no longer exist:
 c.frame.body.bodyCtrl   Use c.frame.body.wrapper instead.
 c.frame.log.logCtrl     Use c.frame.log.wrapper instead.
 </t>
-<t tx="ekr.20140831085423.18639">Here is what you *must know* to understand Leo's core:
-
-1. A **widget** is an actual gui widget.
-
-Leo's core seldom accesses widgets directly.  Instead...
-
-2. A **wrapper class** defines a standard api that hides the details
-   of the underlying gui **text** widgets.
-
-Leo's core uses this api almost exclusively. That is, Leo's core code
-treats wrappers *as if* they were only text widgets there are!
-
-There is, however, a back door for (hopefully rare!) special cases. All
-wrapper classes define an official ``widget`` ivar, so core or plugin code
-can gain access to the real (Qt) widget using wrapper.widget. Searching for
-wrapper.widget will find all gui-dependent snippets of code in Leo's core.
-</t>
 <t tx="ekr.20140902032918.18591">@language rest
 @wrap
 
@@ -1114,7 +1027,6 @@ Leo uses a model/view/controller architecture.
 - View: The gui-independent base classes are in the node "Gui Base Classes". The Qt-Specific subclasses are in the node "Qt gui".
 
 **Important**: The general organization of these classes have changed hardly at all in Leo's 20+ year history.  The reason is that what each class does is fairly obvious.  How the gets the job done may have changed drastically, but *that's an internal implementation detail of the class itself*.  This is the crucial design principle that allows Leo's code to remain stable.  *Classes do not know or meddle in the internal details of other classes*.  As a result, nobody, including EKR, needs to remember internal details.
-
 </t>
 <t tx="ekr.20140902155015.18674"></t>
 <t tx="ekr.20140916101314.19538">The default language if no @language or @comment is in effect.
@@ -1769,9 +1681,9 @@ os.chdir(path)
 # See https://git-scm.com/book/en/v2/Git-Tools-Revision-Selection
 
 efc.GitDiffController(c).diff_two_branches(
-    branch1='6.7.8', # old branch/rev
-    branch2='6.8.1', # new branch/rev
-    fn='MANIFEST.in',  # Don't use back slashes.
+    branch1='master', # old branch/rev
+    branch2='ekr-rest-coloring2', # new branch/rev
+    fn='leo/config/leoSettings.leo',  # Don't use back slashes.
 )
 </t>
 <t tx="ekr.20180824065751.1">print(p.gnx)</t>
@@ -3377,7 +3289,6 @@ print('Done!')
 # 'python -m ruff check c:/test/mypy_test.py',
 # 'python -m pyflakes c:/test/mypy_test.py',
 
-### "leo.scripts.check_leo.TestCheckLeo",
 # f"{misc}.test_check_leo.TestCheckLeo",
 # f"{core}.test_leoserver.TestLeoServer.test_find_commands",
 # f"{core}.test_leoFind.TestFind.test_find_var",
