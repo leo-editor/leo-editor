@@ -2009,13 +2009,31 @@ class LeoQtFrame(leoFrame.LeoFrame):
     #@+node:ekr.20250422154709.1: *5* LeoQtFrame.contract/expandMainSplitter
     @frame_cmd('contract-main-splitter')
     def contractMainSplitter(self, event: LeoKeyEvent = None) -> None:
-        """Decrease the size of the main splitter."""
-        self.divideLeoSplitter1(self.compute_ratio() - 0.1)
+        """
+        Contract the main splitter's first widget, expanding the main splitter's second widget.
+        """
+        self.resize_main_splitter(-40)
 
     @frame_cmd('expand-main-splitter')
     def expandMainSplitter(self, event: LeoKeyEvent = None) -> None:
-        """Increase the size of the main splitter."""
-        self.divideLeoSplitter1(self.compute_ratio() + 0.1)
+        """
+        Expand the main splitter's first widget, contracting the main splitter's second widget.
+        """
+        self.resize_main_splitter(40)
+
+    def resize_main_splitter(self, delta: int) -> None:
+        """Resize the first two widgets of the main splitter."""
+        c = self.c
+        splitter = g.app.gui.find_widget_by_name(c, 'main_splitter')
+        if not splitter:
+            return
+        sizes = splitter.sizes()
+        if len(sizes) < 2:
+            return
+        sizes[0] += delta
+        sizes[1] -= delta
+        if sizes[0] >= 0 and sizes[1] >= 0:
+            splitter.setSizes(sizes)
     #@+node:ekr.20110605121601.18305: *5* LeoQtFrame.hideLogWindow
     def hideLogWindow(self, event: LeoKeyEvent = None) -> None:
         """Hide the log pane."""

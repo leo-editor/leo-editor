@@ -83,7 +83,7 @@ def big_tree(event: LeoKeyEvent) -> None:
 
         ┌──────────────────┐
         │  outline         │
-        ├─────────┬────────┤
+        ├─────────┬────────┤ <-- Main splitter
         │  body   │  log   │
         ├─────────┼────────┤
         │    VR   │  VR3   │
@@ -147,7 +147,7 @@ def quadrants(event: LeoKeyEvent) -> None:
 
         ┌───────────────┬───────────┐
         │   outline     │   log     │
-        ├───────────────┼────┬──────┤
+        ├───────────────┼────┬──────┤ <-- Main splitter
         │   body        │ VR │ VR3  │
         └───────────────┴────┴──────┘
     """
@@ -164,7 +164,7 @@ def horizontal_thirds(event: LeoKeyEvent) -> None:
 
         ┌───────────┬───────┐
         │  outline  │  log  │
-        ├───────────┴───────┤
+        ├───────────┴───────┤ <-- Main splitter
         │  body             │
         ├─────────┬─────────┤
         │   VR    │   VR3   │
@@ -188,6 +188,8 @@ def render_focused(event: LeoKeyEvent) -> None:
         ├───────────┤     │     │
         │ log       │     │     │
         └───────────┴─────┴─────┘
+        
+    Note: The expand/contract-main-splitter commands have no effect when using this layout.
     """
     c = event.get('c')
     dw = c.frame.top
@@ -220,26 +222,6 @@ def swapLogPanel(event: LeoKeyEvent) -> None:
     Move the Log frame between main and secondary splitters.
     
     **Do not use this layout as the initial layout.**
-
-    The effect of this command depends on the existing layout. For example,
-    if the legacy layout is in effect, this command changes the layout
-    from:
-
-        ┌───────────┬──────┐
-        │ outline   │ log  │
-        ├───────────┼──────┤
-        │ body      │VR/VR3│
-        └───────────┴──────┘
-
-    to:
-
-        ┌──────────────────┐
-        │  outline         │
-        ├──────────┬───────┤
-        │  body    │ VR/VR3│
-        ├──────────┴───────┤
-        │  log             │
-        └──────────────────┘
     """
     c = event.get('c')
     if not c:
@@ -280,6 +262,8 @@ def vertical_thirds(event: LeoKeyEvent) -> None:
         ├───────────┤  body  │ VR │ VR3 │
         │  log      │        │    │     │
         └───────────┴────────┴────┴─────┘
+                    |
+                    └─ Main splitter
     """
     c = event.get('c')
     dw = c.frame.top
@@ -298,6 +282,8 @@ def vertical_thirds2(event: LeoKeyEvent) -> None:
         │  outline  ├───────┤ VR │ VR3 │
         │           │  body │    │     │
         └───────────┴───────┴────┴─────┘
+                    |
+                    └─ Main splitter
     """
     c = event.get('c')
     dw = c.frame.top
@@ -600,10 +586,12 @@ class LayoutCacheWidget(QWidget):
                     sizes[other_index] -= delta
                     splitter.setSizes(sizes)
                     return
+            g.trace('Fail 1')
 
         # #4325. Try resizing a parent frame.
         parent_splitter, _junk = g.app.gui.find_parent_splitter(splitter)
         if not parent_splitter:
+            g.trace('No parent splitter')
             return
 
         index = parent_splitter.indexOf(splitter)
@@ -619,6 +607,8 @@ class LayoutCacheWidget(QWidget):
                 sizes[other_index] -= delta
                 parent_splitter.setSizes(sizes)
                 return
+
+        g.trace('Fail 2')
     #@+node:tom.20240923194438.6: *4* LCW.restoreFromLayout
     def restoreFromLayout(self, layout: Dict = None) -> None:
         self.layout_dict = layout
