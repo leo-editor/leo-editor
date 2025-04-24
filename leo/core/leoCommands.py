@@ -1742,7 +1742,7 @@ class Commands:
     #@+node:ekr.20250404014820.1: *6* c.getPathFromNode
     # Use a regex to avoid allocating temp strings.
     # https://en.wikipedia.org/wiki/Filename
-    at_path_pattern = re.compile(r'^@path\s+([\w_:/\\-]+)', re.MULTILINE)
+    at_path_pattern = re.compile(r'^@path\s+(.*+)', re.MULTILINE)
 
     def getPathFromNode(self, p: Position) -> Optional[str]:
         """
