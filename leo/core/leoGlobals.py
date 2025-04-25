@@ -2939,7 +2939,7 @@ def stripPathCruft(path: str) -> str:
     ):
         path = path[1:-1].strip()
     # We want a *relative* path, not an absolute path.
-    return path
+    return path.strip()
 #@+node:ekr.20090214075058.10: *3* g.update_directives_pat
 def update_directives_pat() -> None:
     """Init/update g.directives_pat"""
