@@ -3739,6 +3739,7 @@ class LeoServer:
 
             'contract-body-pane',
             'contract-log-pane',
+            'contract-main-splitter',
             'contract-outline-pane',
 
             'edit-pane-csv',
@@ -3746,6 +3747,7 @@ class LeoServer:
             'equal-sized-panes',
             'expand-log-pane',
             'expand-body-pane',
+            'expand-main-splitter',
             'expand-outline-pane',
 
             'free-layout-context-menu',

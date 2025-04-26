@@ -83,7 +83,7 @@ def big_tree(event: LeoKeyEvent) -> None:
 
         ┌──────────────────┐
         │  outline         │
-        ├─────────┬────────┤
+        ├─────────┬────────┤ <-- Main splitter
         │  body   │  log   │
         ├─────────┼────────┤
         │    VR   │  VR3   │
@@ -147,7 +147,7 @@ def quadrants(event: LeoKeyEvent) -> None:
 
         ┌───────────────┬───────────┐
         │   outline     │   log     │
-        ├───────────────┼────┬──────┤
+        ├───────────────┼────┬──────┤ <-- Main splitter
         │   body        │ VR │ VR3  │
         └───────────────┴────┴──────┘
     """
@@ -164,7 +164,7 @@ def horizontal_thirds(event: LeoKeyEvent) -> None:
 
         ┌───────────┬───────┐
         │  outline  │  log  │
-        ├───────────┴───────┤
+        ├───────────┴───────┤ <-- Main splitter
         │  body             │
         ├─────────┬─────────┤
         │   VR    │   VR3   │
@@ -188,6 +188,8 @@ def render_focused(event: LeoKeyEvent) -> None:
         ├───────────┤     │     │
         │ log       │     │     │
         └───────────┴─────┴─────┘
+        
+    Note: The expand/contract-main-splitter commands have no effect when using this layout.
     """
     c = event.get('c')
     dw = c.frame.top
@@ -220,26 +222,6 @@ def swapLogPanel(event: LeoKeyEvent) -> None:
     Move the Log frame between main and secondary splitters.
     
     **Do not use this layout as the initial layout.**
-
-    The effect of this command depends on the existing layout. For example,
-    if the legacy layout is in effect, this command changes the layout
-    from:
-
-        ┌───────────┬──────┐
-        │ outline   │ log  │
-        ├───────────┼──────┤
-        │ body      │VR/VR3│
-        └───────────┴──────┘
-
-    to:
-
-        ┌──────────────────┐
-        │  outline         │
-        ├──────────┬───────┤
-        │  body    │ VR/VR3│
-        ├──────────┴───────┤
-        │  log             │
-        └──────────────────┘
     """
     c = event.get('c')
     if not c:
@@ -280,6 +262,8 @@ def vertical_thirds(event: LeoKeyEvent) -> None:
         ├───────────┤  body  │ VR │ VR3 │
         │  log      │        │    │     │
         └───────────┴────────┴────┴─────┘
+                    |
+                    └─ Main splitter
     """
     c = event.get('c')
     dw = c.frame.top
@@ -298,6 +282,8 @@ def vertical_thirds2(event: LeoKeyEvent) -> None:
         │  outline  ├───────┤ VR │ VR3 │
         │           │  body │    │     │
         └───────────┴───────┴────┴─────┘
+                    |
+                    └─ Main splitter
     """
     c = event.get('c')
     dw = c.frame.top
@@ -584,33 +570,45 @@ class LayoutCacheWidget(QWidget):
         if not splitter:
             g.trace(f"Oops! no splitter for name: {widget.objectName()!r}")
             return
-        try:
-            index = splitter.indexOf(direct_child)
-            sizes = splitter.sizes()
-            widget_size = sizes[index]
-        except Exception:
-            g.trace(f"Oops! {widget} not in: {splitter!r}")
-            g.es_exception()
-            return
+
+        index = splitter.indexOf(direct_child)
         if index == -1:
             g.trace(f"Oops! direct child: {direct_child!r} not in {splitter}")
             return
-        if widget_size == 0:
-            # The pane is invisible.
-            return
-        if len(sizes) < 2:
-            # There are no other widgets in the splitter.
-            return
+
         # Look for another *visible* widget.
+        sizes = splitter.sizes()
+        widget_size = sizes[index]
+        if widget_size > 0:
+            for other_index, size in enumerate(sizes):
+                if other_index != index and size > 0:
+                    sizes[index] += delta
+                    sizes[other_index] -= delta
+                    splitter.setSizes(sizes)
+                    return
+            g.trace('Fail 1')
+
+        # #4325. Try resizing a parent frame.
+        parent_splitter, _junk = g.app.gui.find_parent_splitter(splitter)
+        if not parent_splitter:
+            g.trace('No parent splitter')
+            return
+
+        index = parent_splitter.indexOf(splitter)
+        if index == -1:
+            g.trace(f"Oops! {splitter} not in {parent_splitter}")
+            return
+
+        # It's valid for the splitter's size to be zero!
         for other_index, size in enumerate(sizes):
             if other_index != index and size > 0:
-                break
-        else:
-            # There is no other visible pane.
-            return
-        sizes[index] += delta
-        sizes[other_index] -= delta
-        splitter.setSizes(sizes)
+                sizes = parent_splitter.sizes()
+                sizes[index] += delta
+                sizes[other_index] -= delta
+                parent_splitter.setSizes(sizes)
+                return
+
+        g.trace('Fail 2')
     #@+node:tom.20240923194438.6: *4* LCW.restoreFromLayout
     def restoreFromLayout(self, layout: Dict = None) -> None:
         self.layout_dict = layout
