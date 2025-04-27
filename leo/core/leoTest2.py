@@ -5,9 +5,6 @@ Support for Leo's new unit tests, contained in leo/unittests/test_*.py.
 
 Run these tests using unittest or pytest from the command line.
 See g.run_unit_tests and g.run_coverage_tests.
-
-This file also contains classes that convert @test nodes in unitTest.leo to
-tests in leo/unittest. Eventually these classes will move to scripts.leo.
 """
 #@+<< leoTest2 imports & annotations >>
 #@+node:ekr.20220901083840.1: ** << leoTest2 imports & annotations >>
