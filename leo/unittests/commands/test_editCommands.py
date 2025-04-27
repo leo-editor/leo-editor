@@ -4298,7 +4298,7 @@ class TestEditCommands(LeoUnitTest):
     #@+node:ekr.20210905064816.25: *4* TestEditCommands.test_return_ends_editing_of_headline
     def test_return_ends_editing_of_headline(self):
         c = self.c
-        h = '@test return ends editing of headline'
+        h = 'test that return ends editing of headline'
         p = c.rootPosition().insertAfter()
         p.h = h
         c.selectPosition(p)

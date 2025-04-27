@@ -3237,7 +3237,7 @@ class KeyHandlerClass:
             event.widget = None
         assert g.isStrokeOrNone(event.stroke)
         if event:
-            # A continuous unit test, better than "@test k.isPlainKey".
+            # A continuous unit test.
             assert event.stroke.s not in g.app.gui.ignoreChars, repr(event.stroke.s)
     #@+node:ekr.20180418034305.1: *6* k.setEventWidget
     def setEventWidget(self, event: LeoKeyEvent) -> None:

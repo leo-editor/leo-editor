@@ -462,7 +462,7 @@ def convert_at_test_nodes(
 ) -> None:  # pragma: no cover
     """
     Use converter.convert() to convert all the @test nodes in the
-    root's tree to children a new last top-level node.
+    root's tree to children of a new last top-level node.
     """
     if not root:
         print('no root')
