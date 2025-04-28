@@ -152,9 +152,6 @@ class SqlitePickleShare:
         dbfile = ':memory:' if g.unitTesting else join(root, 'cache.sqlite')
         self.conn = sqlite3.connect(dbfile, isolation_level=None)
         self.init_dbtables(self.conn)
-        # Keys are normalized file names.
-        # Values are tuples (obj, orig_mod_time)
-        self.cache: dict[str, Value] = {}
 
         def loadz(data: Value) -> Optional[Value]:
             if data:
