@@ -1591,7 +1591,7 @@ python -m pip uninstall leo
 
 This checklist may seem daunting. In most cases errors are harmless, so don't despair.
 
-Step 0: Update the version numbers all build files:
+Step 0: Update the version numbers in all build files:
 
 - pyproject.toml
 - scripts/inspect_wheel.py
