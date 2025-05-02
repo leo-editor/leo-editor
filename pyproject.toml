@@ -273,7 +273,7 @@ classifiers = [
 
 description = "A PIM, IDE and Outliner"
 keywords = ["PIM", "IDE", "Outliner"]
-license = {text = "MIT License"}
+license = "MIT"
 readme = "README.md"
 #@-<< description >>
 
