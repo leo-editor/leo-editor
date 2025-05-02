@@ -15399,7 +15399,7 @@ When learning Leo's codebase, it may be easier to refer to a command by its 'com
 
 **Leo Script Return Values**
 
-Commands created with @command and @button nodes can return values as well. Since top-level return statements aren't allowed in scripts executed with exec, you can define a global variable named **result**, and Leo will return its value:
+Commands created with @command and @button nodes can return values as well. Since top-level return statements aren't allowed in scripts executed with exec, you can define a global variable named **result**, and Leo will return its value::
 
     global result
     result = 42

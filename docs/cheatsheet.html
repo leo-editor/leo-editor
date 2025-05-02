@@ -555,10 +555,10 @@ that <em>aren’t</em> section-definition nodes.</p></li>
 <p>When learning Leo’s codebase, it may be easier to refer to a command by its ‘command name’. You can therefore use  c.doCommandByName(‘command-name’) instead of calling the proper method on the commander. This will return the same value as that method.</p>
 <p><strong>Leo Script Return Values</strong></p>
 <p>Commands created with &#64;command and &#64;button nodes can return values as well. Since top-level return statements aren’t allowed in scripts executed with exec, you can define a global variable named <strong>result</strong>, and Leo will return its value:</p>
-<blockquote>
-<div><p>global result
-result = 42</p>
-</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">global</span> <span class="n">result</span>
+<span class="n">result</span> <span class="o">=</span> <span class="mi">42</span>
+</pre></div>
+</div>
 <p><strong>Official ivars</strong> of any leoFrame f:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>f.c                     is the frame’s commander.
 f.body                  is a leoBody instance.
