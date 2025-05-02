@@ -33315,7 +33315,7 @@ The Leo ``@adoc`` directive and the ``adoc`` command need either **Asciidoc3** o
     asciidoc3 --help
 
 
-If you run into difficulties see https://asciidoc3.org/pypi.html#_asciidoc3_pip_install_windows
+If you run into difficulties see https://asciidoc3.org/documentation
 </t>
 <t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_ctime="1376412039.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
