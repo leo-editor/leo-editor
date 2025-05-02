@@ -1996,6 +1996,7 @@
 <v t="ekr.20250102061341.1"><vh>@data view-rendered-latex-template</vh></v>
 <v t="ekr.20250102061341.2"><vh>@data view-rendered-mathjax-template</vh></v>
 <v t="ekr.20250102062018.1"><vh>@data view-rendered-typst-template</vh></v>
+<v t="ekr.20250502045601.1"><vh>@int view-rendered-pdf-zoom = 100</vh></v>
 <v t="ekr.20181018113446.1"><vh>@string view-rendered-default-kind = rst</vh></v>
 <v t="ekr.20181018113502.1"><vh>@string view-rendered-md-extensions = extra</vh></v>
 </v>
@@ -2302,10 +2303,6 @@
 </v>
 </v>
 <v t="ekr.20140915194122.23428"></v>
-<v t="ekr.20181018105748.1"></v>
-<v t="ekr.20041119034357.70"></v>
-<v t="ekr.20111024091133.16651"></v>
-<v t="ekr.20250115101744.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -11923,6 +11920,7 @@ rest_comments_literal1_font_weight = normal
 <t tx="ekr.20250115101744.8"># italic</t>
 <t tx="ekr.20250115101744.9"># bold
 </t>
+<t tx="ekr.20250502045601.1">Percentage zoom.</t>
 <t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 
 False: (Recommended) The commands act as simple navigation commands, and do not change the outline state.</t>
