@@ -251,7 +251,7 @@ class FTPurl:
 # disabling the body text _permanently_ stops the cursor from blinking.
 
 def enable_body(body):
-    global insertOnTime, insertOffTime
+    # global insertOnTime, insertOffTime
     if body.cget("state") == "disabled":
         try:
             g.es("enable")

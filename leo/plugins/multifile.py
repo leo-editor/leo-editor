@@ -107,12 +107,12 @@ def insertDirectoryString(c):
 #@+node:mork.20041018204908.3: ** decorated_precheck
 def decorated_precheck(self, fileName, root):
     """Call at.precheck, then add fileName to the global files list."""
-    #
+
+    # global files, original_precheck
+
     # Call the original method.
-    global files
-    global original_precheck
     val = original_precheck(self, fileName, root)
-    #
+
     # Save a pointer to the root for later.
     if val and root.isDirty():
         files[fileName] = root.copy()
@@ -145,7 +145,7 @@ def scanForMultiPath(c):
     lists of paths to which the fileName is to be written.
     New in version 0.6 of this plugin: use ';' to separate paths in @multipath statements."""
 
-    global multiprefix, multipath
+    # global multiprefix, multipath
     d: dict = {}
     sep = ';'
     for fileName in files:  # Keys are fileNames, values are root positions.

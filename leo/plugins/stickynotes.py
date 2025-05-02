@@ -109,7 +109,7 @@ def init():
 #@+node:ekr.20220310040820.1: ** onCloseFrame
 def onCloseFrame(tag, kwargs):
     """Close all stickynotes in c's outline."""
-    global outer_dict
+    # global outer_dict
     c = kwargs.get('c')
     if not c:
         return
@@ -150,7 +150,7 @@ def stickynoter_f(event):
     Launch editable 'sticky note' for the node.
     The result is saved as rich text, that is, html...
     """
-    global outer_dict
+    # global outer_dict
     c = event['c']
     p = c.p
     v = p.v
@@ -501,7 +501,7 @@ def get_workbook():
 #@+node:ville.20100703194946.5587: *3* mknote
 def mknote(c, p, parent=None, focusin=None, focusout=None):
     """ Launch editable 'sticky note' for the node """
-    global outer_dict
+    # global outer_dict
     v = p.v
     if focusin is None:
         def mknote_focusin():

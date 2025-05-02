@@ -85,7 +85,7 @@ def init():
 #@+node:ekr.20040910070811.12: *3* OnBodyKey
 def OnBodyKey(tag, keywords):
 
-    global RunNode, In
+    # global RunNode, In
 
     c = keywords.get('c')
     if not c or not c.exists:
@@ -107,7 +107,7 @@ def OnBodyKey(tag, keywords):
 #@+node:ekr.20040910070811.13: *3* OnIconDoubleClick
 def OnIconDoubleClick(tag, keywords):
 
-    global RunNode, RunList, OwnIdleHook, ExitCode
+    global ExitCode, OwnIdleHook, RunList  # RunNode
 
     c = keywords.get('c')
     if not c or not c.exists:
@@ -146,9 +146,8 @@ def OnIconDoubleClick(tag, keywords):
 #@+node:ekr.20040910070811.14: *3* OnIdle
 def OnIdle(tag, keywords):
 
-    global RunNode, RunList
-    global ErrThread, OutThread
-    global ExitCode, OwnIdleHook
+    global OwnIdleHook
+    # global ErrThread, ExitCode, OutThread, RunNode, RunList
 
     c = keywords.get('c')
     if not c or not c.exists:
@@ -171,7 +170,8 @@ def OnIdle(tag, keywords):
 #@+node:ekr.20040910070811.15: *3* OnQuit (run_nodes.py)
 def OnQuit(tag, keywords=None):
 
-    global RunNode, RunList
+    global RunList  # RunNode
+
     c = keywords.get('c')
     if c and RunList:
         RunList = None
@@ -193,7 +193,7 @@ class readingThread(threading.Thread):
 
         """Called automatically when the thread is created."""
 
-        global Encoding
+        # global Encoding
 
         if not self.File:
             return
@@ -214,7 +214,7 @@ class readingThread(threading.Thread):
 def CloseProcess(c):
 
     global RunNode, ExitCode, WorkDir
-    global In, OutThread, ErrThread
+    # global In, OutThread, ErrThread
 
     # Close file and get error code.
     In.close()
@@ -241,7 +241,7 @@ def CloseProcess(c):
 #@+node:ekr.20040910070811.9: ** FindRunChildren (no longer used)
 def FindRunChildren(p):
 
-    global RunList
+    # global RunList
 
     for child in p.children():
         if g.match_word(child.h, 0, "@run"):
@@ -251,7 +251,7 @@ def FindRunChildren(p):
 def OpenProcess(p):
 
     global RunNode, WorkDir
-    global In, OutThread, ErrThread, ExitCode
+    global In, OutThread, ErrThread  # ExitCode
 
     command = p.h[4:].strip()  # Remove @run
     if not command:
@@ -327,7 +327,7 @@ def OpenProcess(p):
 #@+node:ekr.20040910070811.11: ** UpdateText
 def UpdateText(t, wcolor="black"):
 
-    global RunNode, Encoding
+    # global RunNode, Encoding
 
     if t.TextLock.acquire(0) == 1:
         if t.Text:
