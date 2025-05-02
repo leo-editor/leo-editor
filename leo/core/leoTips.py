@@ -31,7 +31,7 @@ class TipManager:
     #@+others
     #@+node:ekr.20180121041748.1: *3* tipm.get_next_tip
     def get_next_tip(self) -> "UserTip":
-        global tips
+        # global tips
         db = g.app.db
         # Compute list of unseen tips.
         seen = db.get(self.key, [])
@@ -136,7 +136,7 @@ UserTip(
 
 def make_tip_nodes(c: Cmdr) -> None:
     """Create a list of all tips as the last top-level node."""
-    global tips
+    # global tips
     root = c.lastTopLevel().insertAfter()
     root.h = 'User Tips'
     root.b = '@language rest\n@wrap\nFrom leo.core.leoTips.py'
