@@ -15393,11 +15393,11 @@ The Leonine World
     c.save()                # Save the present outline.
     c.selectPosition()
 
-**Using Command names**::
+**Using Command names**
 
 When learning Leo's codebase, it may be easier to refer to a command by its 'command name'. You can therefore use  c.doCommandByName('command-name') instead of calling the proper method on the commander. This will return the same value as that method.
 
-**Leo Script Return Values**::
+**Leo Script Return Values**
 
 Commands created with @command and @button nodes can return values as well. Since top-level return statements aren't allowed in scripts executed with exec, you can define a global variable named **result**, and Leo will return its value:
 

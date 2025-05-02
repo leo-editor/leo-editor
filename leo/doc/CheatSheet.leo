@@ -416,7 +416,7 @@ Generators:
     
 New in Leo 5.5: All generators yield distinct positions.
     
-Most useful methods:
+Most useful methods::
 
     c.isChanged()
     c.deletePositionsInList(aList, callback=None)

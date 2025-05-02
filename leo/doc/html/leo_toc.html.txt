@@ -13,12 +13,10 @@ Leo's Documentation Page
 
 .. _`Leo's forum`:          https://groups.google.com/g/leo-editor
 .. _`Leo's home page`:      https://leo-editor.github.io/leo-editor/
-.. _`Leo's IRC channel`:    https://webchat.freenode.net/?channels=%23leo&uio=d4
 .. _`Leo's Wikipedia page`: https://en.wikipedia.org/wiki/Leo_(text_editor)
 
 `Leo's home page`_ |br|
 `Leo's forum`_ |br|
-`Leo's IRC channel`_ |br|
 `Leo's Wikipedia page`_
 
 .. toctree::

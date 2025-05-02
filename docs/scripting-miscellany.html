@@ -5,12 +5,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>A Miscellany of Leo Scripting &#8212; Leo 6.8.3 documentation</title>
+    <title>A Miscellany of Leo Scripting &#8212; Leo 6.8.4 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css?v=2bf1fcf8" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css?v=a1d61795" />
     
-    <script src="_static/documentation_options.js?v=1d255509"></script>
+    <script src="_static/documentation_options.js?v=d6acc5c4"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="console-gui.html" title="Leo’s Console Gui"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.8.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.8.4 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="intermediatetopics.html" accesskey="U">Advanced Topics</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">A Miscellany of Leo Scripting</a></li> 
       </ul>
@@ -84,7 +84,7 @@
 <li><p><a class="reference internal" href="#displaying-images-externally" id="id30">Displaying images externally</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#working-with-directives-and-paths" id="id31">Working with directives and paths</a></p></li>
+<li><p><a class="reference internal" href="#working-with-directives" id="id31">Working with directives</a></p></li>
 <li><p><a class="reference internal" href="#writing-g-es-output-to-other-tabs" id="id32">Writing g.es output to other tabs</a></p></li>
 <li><p><a class="reference internal" href="#writing-clickable-links-to-the-log-tab" id="id33">Writing clickable links to the Log tab</a></p></li>
 </ul>
@@ -338,9 +338,16 @@ conversion is undoable:</p>
 <h2><a class="toc-backref" href="#id12" role="doc-backlink">Invoking commands from scripts</a><a class="headerlink" href="#invoking-commands-from-scripts" title="Link to this heading">¶</a></h2>
 <p>You can invoke minibuffer commands by name.  For example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">c</span><span class="o">.</span><span class="n">executeMinibufferCommand</span><span class="p">(</span><span class="s1">&#39;open-outline&#39;</span><span class="p">)</span>
+<span class="c1"># or</span>
+<span class="n">c</span><span class="o">.</span><span class="n">doCommandByName</span><span class="p">(</span><span class="s1">&#39;open-outline&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>c.keyHandler.funcReturn contains the value returned from the command. In many cases, as above, this value is simply ‘break’.</p>
+<p>This will return the value returned from the command.</p>
+<p>Commands created with &#64;command and &#64;button nodes can return values as well. Since top-level return statements aren’t allowed in scripts executed with exec, you can define a global variable named <strong>result</strong>, and Leo will return its value:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">global</span> <span class="n">result</span>
+<span class="n">result</span> <span class="o">=</span> <span class="mi">42</span>
+</pre></div>
+</div>
 </section>
 <section id="making-operations-undoable">
 <h2><a class="toc-backref" href="#id13" role="doc-backlink">Making operations undoable</a><a class="headerlink" href="#making-operations-undoable" title="Link to this heading">¶</a></h2>
@@ -730,18 +737,23 @@ the callback to be called at idle time forever. This should suffice for most pur
 </ol>
 </section>
 </section>
-<section id="working-with-directives-and-paths">
-<h2><a class="toc-backref" href="#id31" role="doc-backlink">Working with directives and paths</a><a class="headerlink" href="#working-with-directives-and-paths" title="Link to this heading">¶</a></h2>
-<p>Scripts can easily determine what directives are in effect at a particular position in an outline. c.scanAllDirectives(p) returns a Python dictionary whose keys are directive names and whose values are the value in effect at position p. For example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">d</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">scanAllDirectives</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">dictToString</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>
+<section id="working-with-directives">
+<h2><a class="toc-backref" href="#id31" role="doc-backlink">Working with directives</a><a class="headerlink" href="#working-with-directives" title="Link to this heading">¶</a></h2>
+<p>New in Leo 6.8.4: Scripts can easily determine what directives are in effect at a position <cite>p</cite> using the following <strong>directive getters</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># All getters look for the given directive in p and its ancestors.</span>
+<span class="n">encoding</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">getEncoding</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+<span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">getPath</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>  <span class="c1"># A full, absolute path, using *all* ancestor @path directives.</span>
+<span class="n">language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">getLanguage</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>  <span class="c1"># The nearest *unambiguous* @language directive.</span>
+<span class="n">line_ending</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">getLineEnding</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+<span class="n">tab_width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">getTabWidth</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+<span class="n">wrap_flag</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">getWrap</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>In particular, d.get(‘path’) returns the full, absolute path created by all &#64;path directives that are in ancestors of node p. If p is any kind of &#64;file node (including &#64;file, &#64;auto, &#64;clean, etc.), the following script will print the full path to the created file:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">path</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;path&#39;</span><span class="p">)</span>
-<span class="n">name</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">anyAtFileNodeName</span><span class="p">()</span>
-<span class="k">if</span> <span class="n">name</span><span class="p">:</span>
-   <span class="n">name</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">os_path_finalize_join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="n">name</span><span class="p">)</span>
-   <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+<p><strong>Leo 6.8.4 deprecates c.scanAllDirectives(p)</strong></p>
+<p>c.scanAllDirectives returns a Python dictionary whose keys are directive names and whose values are the value in effect at position p. For example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Same as c.getPath(p)</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">scanAllDirectives</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+<span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;path&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -814,14 +826,14 @@ message to the Log pane.</p>
         <li class="right" >
           <a href="console-gui.html" title="Leo’s Console Gui"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.8.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.8.4 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="intermediatetopics.html" >Advanced Topics</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">A Miscellany of Leo Scripting</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-    &#169; Copyright 1997-2024, Edward K. Ream.
-      Last updated on December 06, 2024.
+    &#169; Copyright 1997-2025, Edward K. Ream.
+      Last updated on May 02, 2025.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
     </div>
   </body>
