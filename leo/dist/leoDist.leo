@@ -1567,7 +1567,7 @@ python -m pip uninstall leo
 
 - Create LeoPyRef.leo by copying leoPy.leo to it, then deleting unwanted nodes.
 - Open LeoPyRef.leo. Verify the diff after saving.
-</t>
+- Run the the check button.</t>
 <t tx="ekr.20230301084201.1">- Change 6.8.4 (the old version) to 6.8.5.
   Be careful about the new version in this node!
 </t>
