@@ -1438,10 +1438,11 @@ class LeoApp:
             return  # #69.
         aList = d.get(tag) or []
         fn = os.path.normpath(fn)
-        if fn in aList:
-            aList.remove(fn)
+        for fn2 in aList:  # 2025/05/02
+            if fn.lower() == fn2.lower():
+                aList.remove(fn2)
             if trace:
-                g.pr(f"forgetOpenFile: {g.shortFileName(fn)}")
+                g.pr(f"forgetOpenFile: {fn2}")
             d[tag] = aList
 
     #@+node:ekr.20120427064024.10065: *4* app.rememberOpenFile
