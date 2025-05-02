@@ -1442,8 +1442,8 @@ def configure_asciidoc():
     #@-<< asciidoc docstring >>
     """
     global AsciiDocAPI, AsciiDoc3API, ad3, ad3_file
-    global asciidoc_ok, asciidoc3_ok, asciidoc_processors
-    global asciidoc_dirs
+    global asciidoc_ok, asciidoc3_ok  # asciidoc_processors
+    # global asciidoc_dirs
     global asciidoc_has_diagram
 
     asciidoc_ok = False
@@ -1677,7 +1677,7 @@ def getVr3(event):
     RETURNS
     The active ViewRenderedController3 or None.
     """
-    global controllers
+    # global controllers
     if g.app.gui.guiName() != 'qt':
         return None
     if (c := event.get('c')):
@@ -1704,7 +1704,7 @@ def viewrendered(event):
     The VR3 instance will not become visible until the vr3-show or vr3-toggle
     commands are executed.
     """
-    global controllers
+    # global controllers
     gui = g.app.gui
     if gui.guiName() != 'qt':
         return None
@@ -3424,7 +3424,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
         the html returned by the processor, or an error message.
         #@-<< convert asciidoc docstring >>
         """
-        global AsciiDocAPI, AsciiDoc3, API, ad3_file, asciidoc_processors
+        global asciidoc_processors
+        # global AsciiDocAPI, AsciiDoc3, API, ad3_file
         h = ''
         if self.asciidoctor:
             h = self.convert_to_asciidoc_external(s)
@@ -3887,7 +3888,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         There is no such thing as @language pandoc,
         so only @pandoc nodes trigger this code.
         """
-        global pandoc_exec
+        # global pandoc_exec
         w = self.ensure_text_widget()
         assert self.w
         if s:
@@ -3922,7 +3923,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         return the contents of the html file.
         The caller handles all exceptions.
         """
-        global pandoc_exec
+        # global pandoc_exec
         assert pandoc_exec, g.callers()
         home = g.os.path.expanduser('~')
         i_path = g.finalize_join(home, 'vr3_input.pandoc')
