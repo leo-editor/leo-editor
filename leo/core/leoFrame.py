@@ -1386,6 +1386,11 @@ class NullFrame(LeoFrame):
     def fullyExpandPane(self, event: LeoKeyEvent = None) -> None:
         pass
 
+    def getIconBar(self) -> Union[NullIconBarClass, QtIconBarClass]:
+        return self.iconBar
+
+    getIconBarObject = getIconBar
+
     def get_window_info(self) -> tuple[int, int, int, int]:
         return 600, 500, 20, 20
 
