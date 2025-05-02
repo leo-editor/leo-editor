@@ -1425,6 +1425,7 @@ It's ok to merge devel into release branch
 </t>
 <t tx="ekr.20180405171433.3" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- git checkout `gh-pages`.
 - git merge 6.8.4
+- Run the `find-bad-links` script and fix any errors
 - Run the `make-sphinx` from LeoDocs.leo
   This script copies files from leo/doc/html/_build/html to leo-editor/docs
 - Commit the changes and push.
