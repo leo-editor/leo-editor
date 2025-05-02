@@ -88,7 +88,7 @@ def start(event):
     The ctags-complete command.
     Call cc.start() where cc is the CtagsController for event's commander.
     """
-    global controllers
+    # global controllers
     c = event.get('c')
     if not c:
         return
@@ -156,8 +156,8 @@ class CtagsController:
     #@+node:ville.20090321223959.2: *3* ctags.lookup
     def lookup(self, prefix):
         """Return a list of all items starting with prefix."""
-        global tagLines
-        #
+        # global tagLines
+
         # Find all lines with the given prefix.
         if not prefix:
             return []

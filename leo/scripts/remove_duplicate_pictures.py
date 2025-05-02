@@ -273,7 +273,7 @@ class RemoveDuplicates:
 
     def delete_file(self, filename):
         """Issue a prompt and delete the file if the user agrees."""
-        global gWindow
+        # global gWindow
         if not send2trash:
             if not self.send_to_trash_warning_given:
                 self.send_to_trash_warning_given = True
