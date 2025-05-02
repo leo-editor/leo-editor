@@ -27,6 +27,7 @@ directories = (
     'plugins',
 )
 suppress = (
+    'leoflexx.py',  # Can't handle the 'undefined' and 'window' JS vars.
     'qt_main.py',  # Generated automaticlly.
 )
 if api and reporter:
