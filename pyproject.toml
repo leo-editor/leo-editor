@@ -300,12 +300,13 @@ dependencies = [
   "types-requests",
   "types-six",
 
-  # General packages, including various plugins and commands...
+  # General packages, including testing, plugins and commands...
 
   "asttokens",       # For unit tests.
   "beautifulsoup4",  # For link testing.
   "black",           # For unit tests.
   "docutils",        # For Sphinx and rST plugins.
+  "flake8",          # For testing.
   "flexx",           # leoflexx.py plugin.
   "jedi",            # For autocompletion.
   "jupytext",        # For paired .ipynb/.py files.
