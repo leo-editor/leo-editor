@@ -7,6 +7,10 @@ mypy_leo.py: Run mypy on Leo's files.
 
 Info item #3867 describes all of Leo's test scripts:
 https://github.com/leo-editor/leo-editor/issues/2867
+
+EKR's mypy-leo.cmd:
+    cd {path-to-leo-editor}
+    python -m leo.scripts.mypy_leo
 """
 
 import os

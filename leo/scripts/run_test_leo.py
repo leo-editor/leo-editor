@@ -7,6 +7,11 @@ This file's name must *not* start with `test_`.
 
 Info item #3867 describes all of Leo's test scripts:
 https://github.com/leo-editor/leo-editor/issues/2867
+
+EKR's test-leo.cmd:
+    @echo off
+    cd {path to leo-editor}
+    python -m leo.scripts.run_test_leo
 """
 
 import os

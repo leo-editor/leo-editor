@@ -7,6 +7,10 @@ See leo-editor/setup.cfg for defaults.
 
 Info item #3867 describes all of Leo's test scripts:
 https://github.com/leo-editor/leo-editor/issues/2867
+
+EKR's flake8-leo.cmd:
+    cd {path-to-leo-editor}
+    python -m leo.scripts.flake8_leo.py
 """
 
 import os

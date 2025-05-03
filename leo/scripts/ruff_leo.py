@@ -7,6 +7,12 @@ leo-editor/ruff.toml contains configuration settings.
 
 Info item #3867 describes all of Leo's test scripts:
 https://github.com/leo-editor/leo-editor/issues/2867
+
+EKR's ruff-leo.cmd:
+    @echo off
+    cd {path-to-leo-editor}
+    echo python -m ruff check leo
+    python -m ruff check leo
 """
 
 import os
