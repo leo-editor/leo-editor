@@ -1341,7 +1341,7 @@ class JEditColorizer(BaseColorizer):
         QSyntaxHighligher calls this method repeatedly and automatically.
         
         Don't even *think* about changing this method unless you
-        understand *every word* of the Theory of Operation:  
+        understand *every word* of the Theory of Operation:
         https://github.com/leo-editor/leo-editor/issues/4158
         """
         trace = (False or 'coloring' in g.app.debug) and not g.unitTesting

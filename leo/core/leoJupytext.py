@@ -178,7 +178,7 @@ class JupytextManager:
         """
         if not has_jupytext:
             self.warn_no_jupytext()
-            return  ''
+            return ''
         if not p.h.startswith('@jupytext'):
             g.trace(f"Can not happen: not an @jupytext node: {p.h!r}")
             return ''
@@ -255,7 +255,7 @@ class JupytextManager:
     #@+node:ekr.20241023155519.1: *3* jtm.write
     def write(self, c: Cmdr, p: Position, contents: str) -> None:
         """
-        - Check that p is an @jupytext node. 
+        - Check that p is an @jupytext node.
         - Write the .ipynb file corresponding to p.b
         """
         path = self.full_path(c, p)
