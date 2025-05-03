@@ -8,6 +8,7 @@ full_test_leo.py: Run all the following scripts:
 - run_test_leo.py.
 - mypy_leo.py.
 - ruff_leo.py.
+- pylint_leo.py.
 
 Devs: *please* run this script before pushing!
 
