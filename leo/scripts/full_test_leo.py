@@ -4,6 +4,7 @@
 full_test_leo.py: Run all the following scripts:
     
 - beautify_leo.py.
+- flake8_leo.py.
 - pyflakes_leo.py
 - run_test_leo.py.
 - mypy_leo.py.
@@ -31,6 +32,7 @@ python = 'py' if isWindows else 'python'
 
 for command in [
     fr'{python} -m leo.scripts.beautify_all_leo',
+    fr'{python} -m leo.scripts.flake8_leo',
     fr'{python} -m leo.scripts.pyflakes_leo',
     fr'{python} -m leo.scripts.run_test_leo',
     fr'{python} -m leo.scripts.mypy_leo',

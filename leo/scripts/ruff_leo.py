@@ -16,7 +16,8 @@ import sys
 print(os.path.basename(__file__))
 
 # cd to leo-editor
-os.chdir(os.path.abspath(os.path.join(__file__, '..', '..', '..')))
+leo_editor_dir = os.path.abspath(os.path.join(__file__, '..', '..', '..'))
+os.chdir(leo_editor_dir)
 
 args = ' '.join(sys.argv[1:])
 isWindows = sys.platform.startswith('win')
