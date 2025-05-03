@@ -67,7 +67,7 @@ class TestModes(LeoUnitTest):
     #@+node:ekr.20250109055901.1: *4* TestModes.test_rules_dicts
     def test_rules_dicts(self):
 
-        tag = 'test_rules_dicts'
+        # tag = 'test_rules_dicts'
 
         #@+others  # Define test_rules_dict
         #@+node:ekr.20250109060045.1: *5* function: test_rules_dict

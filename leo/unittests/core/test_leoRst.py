@@ -7,8 +7,9 @@ try:
 except Exception:  # pragma: no cover
     docutils = None
 import leo.core.leoRst as leoRst  # Required for coverage tests.
-assert leoRst
 from leo.core.leoTest2 import LeoUnitTest
+
+assert leoRst
 
 #@+others
 #@+node:ekr.20210327072030.1: ** class TestRst (LeoUnitTest)
