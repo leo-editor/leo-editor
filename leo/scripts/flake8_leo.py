@@ -23,7 +23,7 @@ args = ' '.join(sys.argv[1:]) + leo_editor_dir
 isWindows = sys.platform.startswith('win')
 python = 'py' if isWindows else 'python'
 
-command = fr'{python} -m flake8 {args}'
+command = fr'{python} -m flake8 {args} --config={leo_editor_dir}{os.sep}setup.cfg'
 subprocess.Popen(command, shell=True).communicate()
 
 #@-leo
