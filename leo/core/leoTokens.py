@@ -1679,7 +1679,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         if prev.kind in ('number', 'string'):
             return_val = False
         elif prev.kind == 'op' and prev.value in ')]':
-             # An unnecessary test?
+            # An unnecessary test?
             return_val = False  # pragma: no cover
         elif prev.kind == 'op' and prev.value in '{([:,':
             return_val = True

@@ -671,7 +671,7 @@ class AtFile:
         """
         p must be an @jupytext node.
         - Convert the .ipynb file to a string s.
-        - Update p.b's tree using s. 
+        - Update p.b's tree using s.
         
         This code is adapted from at.readOneAtCleanNode.
         """

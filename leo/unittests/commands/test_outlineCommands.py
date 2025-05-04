@@ -551,7 +551,7 @@ class TestOutlineCommands(LeoUnitTest):
         self.assertEqual(0, c.checkOutline())
         test_tree(tag='2: after inserting cc:child3')
 
-         # Get back to the starting point.
+        # Get back to the starting point.
         for (v, s, tag) in (
             (cc.v, s2, '2: undo'),
         ):

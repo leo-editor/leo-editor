@@ -470,7 +470,7 @@ class TestAtFile(LeoUnitTest):
     #@+node:ekr.20210905052021.25: *3* TestAtFile.test_replaceFile_different_contents
     def test_replaceFile_different_contents(self):
 
-        at, c = self.at, self.c
+        at = self.at
         encoding = 'utf-8'
         try:
             # https://stackoverflow.com/questions/23212435
@@ -485,7 +485,7 @@ class TestAtFile(LeoUnitTest):
     #@+node:ekr.20210905052021.26: *3* TestAtFile.test_replaceFile_no_target_file
     def test_replaceFile_no_target_file(self):
 
-        at, c = self.at, self.c
+        at = self.at
         encoding = 'utf-8'
         at.targetFileName = None  # The point of this test, but I'm not sure it matters.
         try:
@@ -501,7 +501,7 @@ class TestAtFile(LeoUnitTest):
     #@+node:ekr.20210905052021.27: *3* TestAtFile.test_replaceFile_same_contents
     def test_replaceFile_same_contents(self):
 
-        at, c = self.at, self.c
+        at = self.at
         encoding = 'utf-8'
         try:
             # https://stackoverflow.com/questions/23212435
