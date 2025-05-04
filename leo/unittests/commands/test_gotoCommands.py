@@ -82,7 +82,7 @@ class TestGotoCommands(LeoUnitTest):
         #@+node:ekr.20230804094419.1: *4* test1
         def test1() -> None:
 
-            nonlocal clean_contents
+            nonlocal clean_contents  # noqa # pyflakes and ruff conflict.
 
             # test the helper for show-file-line
             for node_i, p in enumerate(c.all_positions()):
@@ -98,7 +98,7 @@ class TestGotoCommands(LeoUnitTest):
         #@+node:ekr.20230804094514.1: *4* test2
         def test2() -> None:
 
-            nonlocal clean_contents
+            nonlocal clean_contents  # noqa # pyflakes and ruff conflict.
 
             # test the helper for goto-global-line.
             for i, clean_line in enumerate(clean_contents):
