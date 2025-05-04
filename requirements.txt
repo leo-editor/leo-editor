@@ -13,7 +13,6 @@ build>=1.2.1
 twine>=5.1.0
 
 # For mypy.
-
 mypy
 mypy-extensions
 typing_extensions
@@ -24,11 +23,19 @@ types-PyYAML
 types-requests
 types-six
 
-# General packages, including various plugins and commands...
-
+# For testing.
 asttokens       # For unit tests.
 beautifulsoup4  # For link testing.
 black           # For unit tests.
+flake8
+pylint
+pyflakes
+pytest
+pytest-cov      # For coverage testing.
+ruff
+
+# General packages for plugins and commands...
+
 docutils        # For Sphinx and rST plugins.
 flexx           # leoflexx.py plugin.
 jedi            # For autocompletion.
@@ -38,12 +45,7 @@ matplotlib      # VR3 plugin.
 # meta          # livecode.py plugin.
 numpy           # VR3 plugin.
 pyenchant       # The spell tab.
-pyflakes
-pylint
-pytest          # For coverage testing.
-pytest-cov      # For coverage testing.
-ruff
-sphinx
+sphinx          # For documentation.
 tk              # tkinter, for emergency dialogs.
 urllib3
 
