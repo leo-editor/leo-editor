@@ -7,6 +7,10 @@ pylint_leo.py: Run pylint on Leo's core files.
 
 Info item #3867 describes all of Leo's test scripts:
 https://github.com/leo-editor/leo-editor/issues/2867
+
+EKR's pyflakes-leo.cmd:
+    cd {path-to-leo-editor}
+    python -m leo.scripts.pylint_leo
 """
 import os
 import subprocess
@@ -16,7 +20,8 @@ from leo.commands.checkerCommands import PylintCommand
 print(os.path.basename(__file__))
 
 # cd to leo-editor
-os.chdir(os.path.abspath(os.path.join(__file__, '..', '..', '..')))
+leo_editor_dir = os.path.abspath(os.path.join(__file__, '..', '..', '..'))
+os.chdir(leo_editor_dir)
 
 args = ' '.join(sys.argv[1:])
 isWindows = sys.platform.startswith('win')

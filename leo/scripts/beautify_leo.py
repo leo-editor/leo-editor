@@ -22,7 +22,8 @@ import sys
 print(os.path.basename(__file__))
 
 # cd to leo-editor
-os.chdir(os.path.abspath(os.path.join(__file__, '..', '..', '..')))
+leo_editor_dir = os.path.abspath(os.path.join(__file__, '..', '..', '..'))
+os.chdir(leo_editor_dir)
 
 # Beautify only changed files. Issue a report only if files have changed.
 args = '--beautified --write'
