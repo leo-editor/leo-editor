@@ -882,6 +882,26 @@ class TestTokenBasedOrange(BaseTest):
         expected = contents
         results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
+    #@+node:ekr.20250505152406.1: *3* TestTBO.test_trailing_ws_in_docstring
+    def test_trailing_ws_in_docstring(self):
+
+        contents = '''
+    """
+    This line contains trailing ws  
+    """
+    '''
+        expected = textwrap.dedent('''
+    """
+    This line contains trailing ws
+    """
+    ''')
+        assert contents != expected
+        contents, tokens = self.make_data(contents)
+        results = self.beautify(contents, tokens)
+        if results != expected:  # pragma: no cover
+            g.printObj(results, tag='Results')
+            g.printObj(expected, tag='Expected')
+        assert results == expected
     #@+node:ekr.20240109070553.1: *3* TestTBO.test_unary_ops
     def test_unary_ops(self):
 
