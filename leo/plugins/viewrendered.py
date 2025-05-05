@@ -1170,7 +1170,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     def update_movie(self, s: str, keywords: Any) -> None:
         """
         Show an @movie in the VR pane.
-        
+
         The first line of `s` should be the path to the movie.
         """
         ok, path = self.get_fn(s, '@movie')
@@ -1210,7 +1210,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     def update_pandoc(self, s: str, keywords: Any) -> None:
         """
         Display an @pandoc node in the VR pane.
-        
+
         This code has been disabled.
         """
         # global pandoc_exec
@@ -1471,7 +1471,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     def update_svg(self, s: str, keywords: Any) -> None:
         """
         Show an svg image in the VR pane.
-        
+
         `s` may be a path to the image or the image itself.
         """
         if 0:  # Use webengine. Works, but scaling is too big.
@@ -1659,7 +1659,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     def get_fn(self, s: str, tag: str) -> tuple[bool, str]:
         """
         Return an absolute path using s or c.p.h.
-        
+
         Resolve relative paths using the outline's directory.
         """
         c = self.c

@@ -2,7 +2,7 @@
 #@+node:ekr.20240323051724.1: * @file ../scripts/full_test_leo.py
 """
 full_test_leo.py: Run all these tests scripts in this order:
-    
+
 - beautify_leo.py.
 - run_test_leo.py.
 - flake8_leo.py.

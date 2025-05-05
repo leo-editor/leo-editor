@@ -1365,10 +1365,10 @@ def is_theme_dark(c):
 #@+node:tom.20241005134508.1: ** tinker with colors()
 def tinker_with_colors(c, kind: str = REST):
     """Use Editor's fore- and back-ground colors.
-    
+
     ARGUMENT
     html -- The HTML to be re-colored.  Must be a string, not a byte array.
-    
+
     Note that this will not change any other colors. So some of the output
     colors may not be as well coordinated as before the fg/bg colors
     were changed.
@@ -1697,7 +1697,7 @@ def getVr3(event):
 @g.command('vr3')
 def viewrendered(event):
     """Create VR3 in this commander if not already created.
-    
+
     The VR3 instance will be created as a child of the widget cache splitter
     of the Dynamic Window that represents the Entire window of this outline.
 
@@ -2188,7 +2188,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20200329223820.1: *3* vr3.ctor & helpers
     def __init__(self, c, parent=None):
         """Ctor for ViewRenderedController class.
-        
+
         ARGUMENTS
         c -- the controller for this outline
         parent -- the widget that will contain this VR3 widget.
@@ -3941,7 +3941,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:tom.20250103185205.1: *4* vr3.update_pdf
     def update_pdf(self, s, keywords):
         """Display PDF file.
-        
+
         The path to the PDF file must be either in the headline after
         the leading "@pdf " or the first line in the body. The
         path must use "/" separators and may not start with "file:".
@@ -3968,9 +3968,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:tom.20250104125231.1: *5* v3.get_file_path
     def get_file_path(self, kind=None):
         """Return an absolute file path from a node.
-        
+
         ~, .., and symbolic links resolved.
-        
+
         The file path may be absolute or relative to the path
         applicable to the selected node. If the headline starts
         with a kind, such as "@pdf", and contains a path to an
@@ -3981,7 +3981,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         ARGUMENTS
         s -- a single line of text that may contain a path to a file.
         kind -- A headline prefix starting with "@", such as "@pdf".
-        
+
         RETURNS
         A fully resolved absolute path or None.
         """
@@ -4000,12 +4000,12 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:tom.20250104130838.1: *5* v3.get_file_from_string
     def get_file_from_string(self, s):
         """Return the path to an existing file based on s.
-        
+
         s is a string whose first line may contain a path to
         a file. If it does, return the fully resolved
         path to an existing file, else an empty string. The path
         may be absolute or relative to the node's effective path.
-        
+
         For an unsaved outline, assume that relative paths are
         relative to the .leo directory.
         """

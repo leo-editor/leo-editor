@@ -182,7 +182,7 @@ def md_jupytext_comment(colorer, s, i):
     """
     Switch to python coloring if s is '# %%', provided that c.p.b contains
     @language jupytext.
-    
+
     New in Leo 6.8.3.
     """
     trace = 'coloring' in g.app.debug and not g.unitTesting

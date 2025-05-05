@@ -672,7 +672,7 @@ class AtFile:
         p must be an @jupytext node.
         - Convert the .ipynb file to a string s.
         - Update p.b's tree using s.
-        
+
         This code is adapted from at.readOneAtCleanNode.
         """
         at, c, x = self, self.c, self.c.shadowController
@@ -1590,7 +1590,7 @@ class AtFile:
         """
         p must be an @jupytext node.
         Write the corresponding .ipynb file from p and all p's descendants.
-        
+
         This code is adapted from at.writeOneAtCleanNode.
         """
         at, c, p = self, self.c, self.c.p

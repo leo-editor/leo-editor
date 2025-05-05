@@ -62,7 +62,7 @@ def make_colorizer(c: Cmdr, widget: QWidget) -> Union[JEditColorizer, PygmentsCo
 class BaseColorizer:
     """
     The base class for all Leo colorizers.
-    
+
     c.frame.body.colorizer is the actual colorizer.
     """
     #@+others
@@ -879,7 +879,7 @@ class JEditColorizer(BaseColorizer):
     """
     This class colorizes p.b using Qt's QSyntaxHighlighter (qsh) class:
     https://doc.qt.io/qt-6/qsyntaxhighlighter.html
-    
+
     Each commander creates a single instance of this class: c.frame.body.colorizer.
 
     Use Leo's `--tracing=coloring` command-line option to see this class in action.
@@ -930,7 +930,7 @@ class JEditColorizer(BaseColorizer):
     def init(self) -> None:
         """
         Init the colorizer to match self.language.
-        
+
         The caller must set or clear state after calling this method.
         """
         # Init the *per-language* initial state number.
@@ -1298,9 +1298,9 @@ class JEditColorizer(BaseColorizer):
     def mainLoop(self, state: int, s: str, i0: int, j: int) -> None:
         """
         Colorize a *single* line s[i:j] starting in state n.
-        
+
         Except for traces, do not change this method in any way!
-        
+
         Any substantial change would break all the pattern matchers!
         """
         # Do not remove this unit test!
@@ -1339,7 +1339,7 @@ class JEditColorizer(BaseColorizer):
         """
         jEdit.recolor: Recolor a *single* line, s.
         QSyntaxHighligher calls this method repeatedly and automatically.
-        
+
         Don't even *think* about changing this method unless you
         understand *every word* of the Theory of Operation:
         https://github.com/leo-editor/leo-editor/issues/4158
@@ -1475,7 +1475,7 @@ class JEditColorizer(BaseColorizer):
     ) -> None:
         """
         Pattern matchers call this helper to colorize the selected range.
-        
+
         Mode files should not call this helper directly!
         """
         # setTag does most tracing.

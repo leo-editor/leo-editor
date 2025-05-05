@@ -186,7 +186,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
     def create_layout(self) -> tuple[QWidget, QWidget]:
         """
         Create the layout given by @string qt_layout_name.
-        
+
         Return the tuple (main_splitter, Optional[secondary_splitter])
         """
         c = self.leo_c
@@ -1024,9 +1024,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
     def createVRPanes(self) -> list[QtWidgets.QFrame]:
         """
         Create the VR and/or the VR3 panes if either plugin is enabled.
-        
+
         Return a list containing the panes.
-        
+
         The caller is responsible for placing the panes in the properly place.
         """
         panes: list[QtWidgets.QFrame] = []
@@ -1106,9 +1106,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
     ) -> None:
         """
         Set the orientations of the splitters in the Leo main window.
-        
+
         Only the legacy layout should use this method!
-        
+
         """
         # c = self.leo_c
         vert = orientation and orientation.lower().startswith('v')

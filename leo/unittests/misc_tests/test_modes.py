@@ -162,7 +162,7 @@ class TestModes(LeoUnitTest):
             r"'\xff'",  # Must begin with [0-7]
             r"'\u{7fhi}'",  # Invalid hex digits.
         )
-        for s  in error_table:
+        for s in error_table:
             kind, seq = rust_char(colorer, s, i=0)
             assert kind == 'literal4', kind
             assert seq == "'", repr(seq)

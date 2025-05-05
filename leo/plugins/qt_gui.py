@@ -1539,7 +1539,7 @@ class LeoQtGui(leoGui.LeoGui):
     def find_parent_splitter(self, widget: QWidget) -> Optional[Tuple[QSplitter, QWidget]]:
         """
         Find the nearest parent QSplitter widget for the given widget.
-        
+
         Return (splitter, child) where:
         - splitter is the QSplitter containing the widget.
         - child is the *direct* child of the splitter that contains the widget.

@@ -173,7 +173,7 @@ class JupytextManager:
     def full_path(self, c: Cmdr, p: Position) -> str:
         """
         Return the full path in effect for the `@jupytext x.ipynb` node at p.
-        
+
         On errors, print an error message and return ''.
         """
         if not has_jupytext:
@@ -189,7 +189,7 @@ class JupytextManager:
         """
         Print the name and contents of the jupytext config file in effect.
         Call this method with this Leonine script:
-        
+
             g.app.jupytextManager.get_jupytext_config_file()
         """
         from jupytext.config import find_jupytext_configuration_file

@@ -70,11 +70,11 @@ This plugin defines the following commands that can be bound to keys:
 - find-quick-test-failures:
   Lists nodes in c.db.get('unittest/cur/fail')
 
-- find-quick-timeline:   
+- find-quick-timeline:
   Lists all nodes in reversed gnx order, basically newest to
   oldest, creation wise, not modification wise.
 
-- find-quick-changed:  
+- find-quick-changed:
   Lists all nodes that are changed (aka "dirty") since last save.
   Handy when you want to see why a file's marked as changed.
 

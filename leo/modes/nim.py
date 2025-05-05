@@ -665,7 +665,7 @@ word_pattern = re.compile(r'\b(\w+)')
 def nim_unusual_single_quote(colorer, s, i):
     """
     Handle unusual single quotes, including custom_numeric_literals.
-    
+
     Color all such single quotes as a keyword1.
     """
 

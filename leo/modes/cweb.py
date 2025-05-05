@@ -302,7 +302,7 @@ def cweb_keyword(colorer, s, i):
     seq = s[i : i + 2]
     if seq in ('@<', '@.'):
         return 0
-    return  colorer.match_keywords(s, i)
+    return colorer.match_keywords(s, i)
 #@+node:ekr.20250302073158.1: *3* function: cweb_backslash
 def cweb_backslash(colorer, s, i):
     """Handle TeX control sequences."""
@@ -326,7 +326,7 @@ def cweb_at_sign(colorer, s, i):
 
     seq = s[i : i + 3]
     if i == 0 or not s[:i].strip():
-        in_doc_part = seq.startswith(('@', '@ ', '@**',  '@*'))  # Anything else ends the doc part.
+        in_doc_part = seq.startswith(('@', '@ ', '@**', '@*'))  # Anything else ends the doc part.
 
     if seq in ('@<', '@.'):
         # Color sections.

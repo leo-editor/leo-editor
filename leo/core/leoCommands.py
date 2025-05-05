@@ -1597,7 +1597,7 @@ class Commands:
     def getEncoding(self, p: Position) -> str:
         """
         Scan p and all ancestors for the first @encoding direcive.
-        
+
         Return c.config.default_derived_file_encoding or 'utf-8' by default.
         """
         c = self
@@ -1704,7 +1704,7 @@ class Commands:
     def getPageWidth(self, p: Position) -> int:
         """
         Scan p.b and all ancestors for the first @pagewith direcive.
-        
+
         Return c.page_width by default.
         """
         c = self
@@ -1722,7 +1722,7 @@ class Commands:
     def getPath(self, p: Position) -> str:
         """
         Scan for @path directives in p and all its direct ancestors.
-        
+
         Return an absolute path or a reasonable default.
         """
         c = self
@@ -1779,7 +1779,7 @@ class Commands:
     def getTabWidth(self, p: Position) -> int:
         """
         Scan p.b and all ancestors for the first @encoding direcive.
-        
+
         Return c.tab_width by default.
         """
         c = self
@@ -2693,7 +2693,7 @@ class Commands:
     def fullPath(self, p: Position) -> str:
         """
         Return the absolute path in effect at p.
-        
+
         Return the path to an external file if p is an @<file> node.
         Otherwise the return the path to the enclosing directory.
         """

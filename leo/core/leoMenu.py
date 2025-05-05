@@ -115,7 +115,7 @@ class LeoMenu:
     def capitalizeMinibufferMenuName(self, s: str, removeHyphens: bool) -> str:
         result = []
         for i, ch in enumerate(s):
-            prev =     s[i - 1] if i > 0 else ''
+            prev = s[i - 1] if i > 0 else ''
             prevprev = s[i - 2] if i > 1 else ''
             if (
                 i == 0 or

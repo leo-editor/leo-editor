@@ -1359,7 +1359,7 @@ class GitDiffController:
                     '.bmp', '.db', '.exe', '.gif', '.gz',
                     '.inv',  # Sphinx inventory file.
                     '.jpg', '.mov', '.mp4', '.pdf', '.png',
-                    '.tar', '.tif',  '.tar', '.whl', '.zip',
+                    '.tar', '.tif', '.tar', '.whl', '.zip',
                 ))
         ]
     #@+node:ekr.20170821052348.1: *4* gdc.get_revno

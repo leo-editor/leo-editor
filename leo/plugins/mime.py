@@ -80,7 +80,7 @@ def init():
 #@+node:dan.20090203174248.31: ** open_mimetype
 def open_mimetype(tag, keywords, val=None):
     """Simulate double-clicking on the filename in a file manager.
-    
+
     Order of preference is:
     1) @string mime_open_cmd setting
     2) _mime_open_cmd, defined per sys.platform detection
@@ -100,7 +100,7 @@ def open_mimetype(tag, keywords, val=None):
 
     # honor @path
     fname = p.h[6:]
-    path =  c.getPath(p) or ''
+    path = c.getPath(p) or ''
     fpath = g.finalize_join(path, fname)
 
     # stop here if the file doesn't exist

@@ -194,7 +194,7 @@ class FreeLayoutController:
     def get_main_splitter(self, w: Wrapper = None) -> Optional[Wrapper]:
         """
         Return the main splitter.
-        
+
         We tacitly assume that this splitter contains the body pane.
         """
         top = self.get_top_splitter()
