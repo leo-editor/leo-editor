@@ -1371,7 +1371,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         # Careful: continued strings may contain '\r'
         val = self.regularize_newlines(self.input_token.value)
         if val.startswith(('"""', "'''")):
-            # Strip trailing ws in docstrings.
+            # #4346: Strip trailing ws in docstrings.
             while ' \n' in val:
                 val = val.replace(' \n', '\n')
         self.gen_token('string', val)
