@@ -873,6 +873,17 @@ class TestTokenBasedOrange(BaseTest):
                 g.printObj(expected, tag='Expected (Black)')
                 g.printObj(results, tag='Results')
             self.assertEqual(expected, results)
+    #@+node:ekr.20250505153051.1: *3* TestTBO.test_spaces_after_keyword
+    def test_spaces_after_keyword(self):
+
+        contents = """return  ''\n"""
+        expected = """return ''\n"""
+        contents, tokens = self.make_data(contents)
+        results = self.beautify(contents, tokens)
+        if results != expected:  # pragma: no cover
+            g.printObj(results, tag='Results')
+            g.printObj(expected, tag='Expected')
+        assert results == expected
     #@+node:ekr.20240105153425.76: *3* TestTBO.test_star_star_operator
     def test_star_star_operator(self):
 
