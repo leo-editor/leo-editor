@@ -955,7 +955,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.pending_lws = ''
         self.pending_ws = ''
         entire_line = self.input_token.line.lstrip().startswith('#')
-
         if entire_line:
             # The comment includes all ws.
             # #1496: No further munging needed.
@@ -965,6 +964,17 @@ class TokenBasedOrange:  # Orange is the new Black.
             if m := self.comment_pat.match(val):
                 i = len(m.group(1))
                 val = val[:i] + '# ' + val[i + 1 :]
+            else:
+                j = val.find('#')
+                assert j > -1
+                lws = val[:j]
+                if lws.isspace():
+                    # 4346. Trim lws so it is a multiple of four.
+                    n = len(lws)
+                    excess = n % 4
+                    if excess != 0:
+                        lws = val[: max(0, n - excess)]
+                    val = lws + '# ' + val[j + 1 :].strip()
         else:
             # Exactly two spaces before trailing comments.
             val = '  ' + val.rstrip()
@@ -1412,7 +1422,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         Change *neither* prev_output_kind *nor* pending_lws.
         """
         prev_kind = self.prev_output_kind
-        ### g.trace(prev_kind)
         if prev_kind == 'op-no-blanks':
             # A demand that no blank follows this op.
             self.pending_ws = ''
