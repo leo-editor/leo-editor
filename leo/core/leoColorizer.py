@@ -2264,7 +2264,7 @@ class JEditColorizer(BaseColorizer):
         # For pylint.
         return -1
     #@+node:ekr.20250109134131.1: *4* jedit.match_plain_eol_span
-    def match_plain_eol_span(self, s: str, i: int,  kind: str) -> int:
+    def match_plain_eol_span(self, s: str, i: int, kind: str) -> int:
         """Colorizer s[i:]"""
         j = len(s)
         self.colorRangeWithTag(s, i, j, kind)

@@ -48,7 +48,7 @@ class AtFile:
         # Shadow files.
         'private_s', 'public_s',
         # Writing.
-        'indent',  'sentinels',
+        'indent', 'sentinels',
         'section_delim1', 'section_delim2',
         'outputFile', 'outputList',
         'targetFileName', 'unchangedFiles',  # For messages.

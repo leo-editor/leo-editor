@@ -657,7 +657,7 @@ class Commands:
             return None
 
         # Get the language and extension.
-        language =  c.getLanguage(p)
+        language = c.getLanguage(p)
         ext = g.app.language_extension_dict.get(language)
         if not ext:
             print(f"{tag}: No extension for {language}")
