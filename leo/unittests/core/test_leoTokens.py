@@ -898,16 +898,13 @@ class TestTokenBasedOrange(BaseTest):
     #@+node:ekr.20250505152406.1: *3* TestTBO.test_trailing_ws_in_docstring
     def test_trailing_ws_in_docstring(self):
 
-        contents = '''
-    """
-    This line contains trailing ws  
-    """
-    '''
         expected = textwrap.dedent('''\
     """
     This line contains trailing ws
     """
     ''')
+        # Create the trailing ws by hand so flake8 doesn't complain!
+        contents = expected.replace('ws', 'ws  ')
         assert contents != expected
         contents, tokens = self.make_data(contents)
         results = self.beautify(contents, tokens)
