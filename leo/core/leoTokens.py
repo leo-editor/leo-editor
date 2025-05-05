@@ -1406,7 +1406,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240105145241.27: *5* tbo.gen_blank
     def gen_blank(self) -> None:
         """
-        Queue a *request* a blank.
+        Queue a *request* for a blank.
         Change *neither* prev_output_kind *nor* pending_lws.
         """
 
