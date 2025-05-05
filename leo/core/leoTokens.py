@@ -964,17 +964,17 @@ class TokenBasedOrange:  # Orange is the new Black.
             if m := self.comment_pat.match(val):
                 i = len(m.group(1))
                 val = val[:i] + '# ' + val[i + 1 :]
-            else:
-                j = val.find('#')
-                assert j > -1
-                lws = val[:j]
-                if lws.isspace():
-                    # 4346. Trim lws so it is a multiple of four.
-                    n = len(lws)
-                    excess = n % 4
-                    if excess != 0:
-                        lws = val[: max(0, n - excess)]
-                    val = lws + '# ' + val[j + 1 :].strip()
+            # else:
+                # j = val.find('#')
+                # assert j > -1
+                # lws = val[:j]
+                # if lws.isspace():
+                    # # 4346. Trim lws so it is a multiple of four.
+                    # n = len(lws)
+                    # excess = n % 4
+                    # if excess != 0:
+                        # lws = val[: max(0, n - excess)]
+                    # val = lws + '# ' + val[j + 1 :].strip()
         else:
             # Exactly two spaces before trailing comments.
             val = '  ' + val.rstrip()
