@@ -32,23 +32,23 @@ pymacsFile = __file__
 #@+others
 #@+node:ekr.20061024131236: ** dump (pymacs)
 def dump(anObject):
-    global g
+    # global g
     init()
     return str(g.toEncodedString(repr(anObject), encoding='ascii'))
 #@+node:ekr.20061024130957: ** getters (pymacs)
 def get_app():
     """Scripts can use g.app.scriptDict for communication with pymacs."""
-    global g
+    # global g
     init()
     return g.app
 
 def get_g():
-    global g
+    # global g
     init()
     return g
 
 def script_result():
-    global g
+    # global g
     init()
     return g.app.scriptResult
 #@+node:ekr.20061024060248.3: ** hello (pymacs)
@@ -90,7 +90,7 @@ def init():
         g.trace('gui', g.app.gui)
 #@+node:ekr.20061024075542.1: ** open (pymacs)
 def open(fileName=None):
-    global g
+    # global g
     init()
     if g.unitTesting:
         return None
@@ -106,8 +106,9 @@ def open(fileName=None):
     return c
 #@+node:ekr.20061024084200: ** run-script (pymacs)
 def run_script(c, script, p=None):
+    # global g
+
     # It is possible to use script=None, in which case p must be defined.
-    global g
     init()
     if c is None:
         c = g.app.newCommander(fileName='dummy script file')

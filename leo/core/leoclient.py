@@ -115,10 +115,8 @@ def _get_action_list():
 def _show_response(n, d):
     global n_known_response_times
     global n_unknown_response_times
-    global times_d
     global tot_response_time
-    global trace
-    global verbose
+
     # Calculate response time.
     t1 = times_d.get(n)
     t2 = time.perf_counter()

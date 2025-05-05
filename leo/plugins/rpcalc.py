@@ -210,7 +210,7 @@ def copyToClip(text):
 
 #@+node:tom.20230428180647.1: ** onCreate
 def onCreate(tag: str, keys: Any) -> None:
-    global CMDR
+    # global CMDR
     c = keys.get('c')
     if c:
         sc = scriptingController(c)

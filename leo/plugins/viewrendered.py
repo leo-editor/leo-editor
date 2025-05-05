@@ -295,7 +295,8 @@ pandoc_exec = shutil.which('pandoc')
 #@+node:tbrown.20100318101414.5995: *3* vr function: init
 def init() -> bool:
     """Return True if the plugin has loaded successfully."""
-    global got_docutils
+    # global got_docutils
+
     if not g.app.gui.guiName().startswith('qt'):
         return False
     if not got_docutils:
@@ -914,7 +915,8 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     #@+node:ekr.20191004143229.1: *4* vr.update_asciidoc & helpers
     def update_asciidoc(self, s: str, keywords: Any) -> None:
         """Update asciidoc in the VR pane."""
-        global asciidoctor_exec, asciidoc3_exec
+        # global asciidoctor_exec, asciidoc3_exec
+
         # Do this regardless of whether we show the widget or not.
         w = self.get_base_text_widget()
         assert self.w
@@ -946,7 +948,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         return the contents of the html file.
         The caller handles all exceptions.
         """
-        global asciidoctor_exec, asciidoc3_exec
+        # global asciidoctor_exec, asciidoc3_exec
         assert asciidoctor_exec or asciidoc3_exec, g.callers()
         home = g.os.path.expanduser('~')
         i_path = g.finalize_join(home, 'vr_input.adoc')
@@ -1211,7 +1213,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         
         This code has been disabled.
         """
-        global pandoc_exec
+        # global pandoc_exec
         w = self.get_base_text_widget()
         assert self.w
         if s:
@@ -1242,7 +1244,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         return the contents of the html file.
         The caller handles all exceptions.
         """
-        global pandoc_exec
+        # global pandoc_exec
         assert pandoc_exec, g.callers()
         home = g.os.path.expanduser('~')
         i_path = g.finalize_join(home, 'vr_input.pandoc')

@@ -420,7 +420,7 @@ def take_local_screenshot():
 
 def screenshot_helper(window_id):
     """Take a screenshot of the given window."""
-    global screenshot_number
+    # global screenshot_number
     app = g.app.gui.qtApp
     screen = app.primaryScreen()
     if screen is not None:

@@ -1621,35 +1621,35 @@ redirectStdOutObj = RedirectClass()
 # Redirect streams to the current log window.
 
 def redirectStderr() -> None:
-    global redirectStdErrObj
+    # global redirectStdErrObj
     redirectStdErrObj.redirect(stdout=False)
 
 def redirectStdout() -> None:
-    global redirectStdOutObj
+    # global redirectStdOutObj
     redirectStdOutObj.redirect()
 #@+node:ekr.20041012090942.1: *5* restoreStderr & restoreStdout
 # Restore standard streams.
 
 def restoreStderr() -> None:
-    global redirectStdErrObj
+    # global redirectStdErrObj
     redirectStdErrObj.undirect(stdout=False)
 
 def restoreStdout() -> None:
-    global redirectStdOutObj
+    # global redirectStdOutObj
     redirectStdOutObj.undirect()
 #@+node:ekr.20041012090942.2: *5* stdErrIsRedirected & stdOutIsRedirected
 def stdErrIsRedirected() -> bool:
-    global redirectStdErrObj
+    # global redirectStdErrObj
     return redirectStdErrObj.isRedirected()
 
 def stdOutIsRedirected() -> bool:
-    global redirectStdOutObj
+    # global redirectStdOutObj
     return redirectStdOutObj.isRedirected()
 #@+node:ekr.20041012090942.3: *5* rawPrint
 # Send output to original stdout.
 
 def rawPrint(s: str) -> None:
-    global redirectStdOutObj
+    # global redirectStdOutObj
     redirectStdOutObj.rawPrint(s)
 #@-others
 #@-<< define convenience methods for redirecting streams >>
@@ -2943,7 +2943,7 @@ def stripPathCruft(path: str) -> str:
 #@+node:ekr.20090214075058.10: *3* g.update_directives_pat
 def update_directives_pat() -> None:
     """Init/update g.directives_pat"""
-    global globalDirectiveList, directives_pat
+    global directives_pat  # globalDirectiveList
     # Use a pattern that guarantees word matches.
     aList = [
         fr"\b{z}\b" for z in globalDirectiveList if z != 'others'
@@ -5951,7 +5951,7 @@ def init_zodb(pathToZodbStorage: str, verbose: bool = True) -> Value:
     Return an ZODB.DB instance from the given path.
     return None on any error.
     """
-    global init_zodb_db, init_zodb_failed, init_zodb_import_failed
+    global init_zodb_import_failed
     db = init_zodb_db.get(pathToZodbStorage)
     if db:
         return db

@@ -45,7 +45,7 @@ def init() -> bool:
 #@+node:ville.20090518182905.5424: ** onCreate
 def onCreate(tag: str, keys: Any) -> None:
 
-    global controllers
+    # global controllers
 
     c = keys.get('c')
     if not c:
@@ -58,7 +58,7 @@ def onCreate(tag: str, keys: Any) -> None:
         controllers[h] = NavController(c)
 #@+node:vitalije.20170712192502.1: ** onClose
 def onClose(tag: str, keys: Any) -> None:
-    global controllers
+    # global controllers
     c = keys.get('c')
     h = c.hash()
     nc = controllers.get(h)

@@ -1314,7 +1314,7 @@ class Optional_TestFiles(BaseTest):
             return f"{token.index:2} {atok_name(token):12} {atok_value(token):20} {node_list}"
         #@+node:ekr.20200124024159.6: *5* function: postvisit
         def postvisit(node, par_value, value):
-            nonlocal stack
+            nonlocal stack  # noqa
             stack.pop()
             return par_value or []
         #@+node:ekr.20200124024159.7: *5* function: previsit
@@ -2652,7 +2652,7 @@ class TestTokens(BaseTest):
             return f"{token.index:2} {atok_name(token):12} {atok_value(token):20} {node_list}"
         #@+node:ekr.20200122170337.1: *5* function: postvisit
         def postvisit(node, par_value, value):
-            nonlocal stack
+            nonlocal stack  # noqa
             stack.pop()
             return par_value or []
         #@+node:ekr.20200122170101.4: *5* function: previsit
