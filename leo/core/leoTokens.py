@@ -1370,6 +1370,10 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         # Careful: continued strings may contain '\r'
         val = self.regularize_newlines(self.input_token.value)
+        if val.startswith(('"""', "'''")):
+            # Strip trailing ws in docstrings.
+            while ' \n' in val:
+                val = val.replace(' \n', '\n')
         self.gen_token('string', val)
         self.gen_blank()
     #@+node:ekr.20240105145241.22: *5* tbo.do_verbatim
@@ -1402,7 +1406,6 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         Put the whitespace only if if ends with backslash-newline.
         """
-        ### g.trace(self.input_token)  ###
         val = self.input_token.value
         last_token = self.input_tokens[self.index - 1]
 
@@ -1413,8 +1416,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.pending_lws = ''
             self.pending_ws = val
         else:
-            ### self.pending_ws = val
-            self.pending_ws = ' ' if val else ''  ###
+            self.pending_ws = ' ' if val else ''  # #4346.
     #@+node:ekr.20240105145241.27: *5* tbo.gen_blank
     def gen_blank(self) -> None:
         """
@@ -1446,7 +1448,6 @@ class TokenBasedOrange:  # Orange is the new Black.
     def gen_token(self, kind: str, value: str) -> None:
         """Add an output token to the code list."""
 
-        ### g.trace(repr(self.pending_lws), repr(self.pending_ws))
         if self.pending_lws:
             self.output_list.append(self.pending_lws)
         elif self.pending_ws:

@@ -903,7 +903,7 @@ class TestTokenBasedOrange(BaseTest):
     This line contains trailing ws  
     """
     '''
-        expected = textwrap.dedent('''
+        expected = textwrap.dedent('''\
     """
     This line contains trailing ws
     """
