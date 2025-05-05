@@ -881,6 +881,7 @@ class TestTokenBasedOrange(BaseTest):
         contents, tokens = self.make_data(contents)
         results = self.beautify(contents, tokens)
         if results != expected:  # pragma: no cover
+            g.printObj(tokens, tag='Tokens')
             g.printObj(results, tag='Results')
             g.printObj(expected, tag='Expected')
         assert results == expected

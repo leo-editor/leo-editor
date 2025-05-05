@@ -1392,6 +1392,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         Put the whitespace only if if ends with backslash-newline.
         """
+        ### g.trace(self.input_token)  ###
         val = self.input_token.value
         last_token = self.input_tokens[self.index - 1]
 
@@ -1402,15 +1403,16 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.pending_lws = ''
             self.pending_ws = val
         else:
-            self.pending_ws = val
+            ### self.pending_ws = val
+            self.pending_ws = ' ' if val else ''  ###
     #@+node:ekr.20240105145241.27: *5* tbo.gen_blank
     def gen_blank(self) -> None:
         """
         Queue a *request* for a blank.
         Change *neither* prev_output_kind *nor* pending_lws.
         """
-
         prev_kind = self.prev_output_kind
+        ### g.trace(prev_kind)
         if prev_kind == 'op-no-blanks':
             # A demand that no blank follows this op.
             self.pending_ws = ''
@@ -1435,6 +1437,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     def gen_token(self, kind: str, value: str) -> None:
         """Add an output token to the code list."""
 
+        ### g.trace(repr(self.pending_lws), repr(self.pending_ws))
         if self.pending_lws:
             self.output_list.append(self.pending_lws)
         elif self.pending_ws:
