@@ -154,11 +154,11 @@ class TestCommands(LeoUnitTest):
         # It will return True if it changed the text.
         val = c.doCommandByName('convert-blanks')
         assert val is True, f"expected: True got: {val}"
-        
+
         # Call it again, it should return False.
         val = c.doCommandByName('convert-blanks')
         assert val is False, f"expected: False got: {val}"
-        
+
     #@+node:felix.20250414224344.1: *3* TestCommands.test_c_doCommandByName_return_result_from_leo_script
     def test_c_doCommandByName_return_result_from_leo_script(self):
         c, p = self.c, self.c.p
