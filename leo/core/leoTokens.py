@@ -773,7 +773,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.verbatim = False  # True: don't beautify.
 
         # Ivars describing the present input token...
-        ### self.index = 0  # The index within the tokens array of the token being scanned.
+        self.index = 0  # The index within the tokens array of the token being scanned.
         self.lws = ''  # Leading whitespace. Required!
         #@-<< tbo.beautify: init ivars >>
 
@@ -1054,7 +1054,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
 
         # #4349: Remove trailing ws.
-        ### g.printObj(self.input_tokens)
         while self.input_tokens:
             last_token = self.input_tokens[-1]
             if last_token.kind == 'ws':
