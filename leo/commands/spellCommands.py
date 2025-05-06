@@ -117,16 +117,16 @@ class DefaultDict:
         """Add a word to the dictionary."""
         self.words.add(word)
         self.added_words.add(word)
+    #@+node:ekr.20180207075751.1: *3* DefaultDict.add_to_session
+    def add_to_session(self, word: str) -> None:
+
+        self.ignored_words.add(word)
     #@+node:ekr.20180207101513.1: *3* DefaultDict.add_words_from_dict
     def add_words_from_dict(self, kind: str, fn: str, words: list[str]) -> None:
         """For use by DefaultWrapper."""
         for word in words or []:
             self.words.add(word)
             self.words.add(word.lower())
-    #@+node:ekr.20180207075751.1: *3* DefaultDict.add_to_session
-    def add_to_session(self, word: str) -> None:
-
-        self.ignored_words.add(word)
     #@+node:ekr.20180207080007.1: *3* DefaultDict.check
     def check(self, word: str) -> bool:
         """Return True if the word is in the dict."""
@@ -134,6 +134,22 @@ class DefaultDict:
             if s in self.words or s in self.ignored_words:
                 return True
         return False
+    #@+node:ekr.20180207085717.1: *3* DefaultDict.edits1 & edits2
+    #@@nobeautify
+
+    def edits1(self, word: str) -> list[str]:
+        "All edits that are one edit away from `word`."
+        letters    = 'abcdefghijklmnopqrstuvwxyz'
+        splits     = [(word[:i], word[i:])    for i in range(len(word) + 1)]
+        deletes    = [L + R[1:]               for L, R in splits if R]
+        transposes = [L + R[1] + R[0] + R[2:] for L, R in splits if len(R) > 1]
+        replaces   = [L + c + R[1:]           for L, R in splits if R for c in letters]
+        inserts    = [L + c + R               for L, R in splits for c in letters]
+        return list(set(deletes + transposes + replaces + inserts))
+
+    def edits2(self, word: str) -> list[str]:
+        "All edits that are two edits away from `word`."
+        return [e2 for e1 in self.edits1(word) for e2 in self.edits1(e1)]
     #@+node:ekr.20180207081634.1: *3* DefaultDict.suggest & helpers
     def suggest(self, word: str) -> list[str]:
 
@@ -148,22 +164,6 @@ class DefaultDict:
             # [word] # Fall back to the unknown word itself.
         )
         return suggestions
-    #@+node:ekr.20180207085717.1: *4* dict.edits1 & edits2
-    #@@nobeautify
-
-    def edits1(self, word: str) -> list[str]:
-        "All edits that are one edit away from `word`."
-        letters    = 'abcdefghijklmnopqrstuvwxyz'
-        splits     = [(word[:i], word[i:])    for i in range(len(word) + 1)]
-        deletes    = [L + R[1:]               for L, R in splits if R]
-        transposes = [L + R[1] + R[0] + R[2:] for L, R in splits if len(R)>1]
-        replaces   = [L + c + R[1:]           for L, R in splits if R for c in letters]
-        inserts    = [L + c + R               for L, R in splits for c in letters]
-        return list(set(deletes + transposes + replaces + inserts))
-
-    def edits2(self, word: str) -> list[str]:
-        "All edits that are two edits away from `word`."
-        return [e2 for e1 in self.edits1(word) for e2 in self.edits1(e1)]
     #@-others
 #@+node:ekr.20180207071114.1: ** class DefaultWrapper (BaseSpellWrapper)
 class DefaultWrapper(BaseSpellWrapper):
