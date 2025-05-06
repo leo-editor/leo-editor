@@ -557,6 +557,8 @@ class TestTokenBasedOrange(BaseTest):
             # leoGlobals.py.
             """g.pr(f"{self.calledDict.get(key,0):d}", key)""",  # line 1805
             """tracing_tags [id(self)] = tag""",  # line 1913.
+            # make_stub_files.py.
+            """def match(self, s, trace=False):\n    pass""",
         )
         for i, contents in enumerate(black_table):
             description = f"{tag} (black) part {i}"
