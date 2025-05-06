@@ -1190,7 +1190,7 @@ class LeoGlobals:
     def shortFileName(self, fileName, n=None):
         if n is None or n < 1:
             return os.path.basename(fileName)
-        return '/'.join(fileName.replace('\\', '/').split('/')[-n:])
+        return '/'.join(fileName.replace('\\', '/').split('/')[-n :])
     #@+node:ekr.20160316091132.91: *3* g.splitLines
     def splitLines(self, s):
         '''Split s into lines, preserving trailing newlines.'''
