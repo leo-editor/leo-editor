@@ -773,7 +773,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.verbatim = False  # True: don't beautify.
 
         # Ivars describing the present input token...
-        self.index = 0  # The index within the tokens array of the token being scanned.
+        ### self.index = 0  # The index within the tokens array of the token being scanned.
         self.lws = ''  # Leading whitespace. Required!
         #@-<< tbo.beautify: init ivars >>
 
@@ -1042,7 +1042,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.gen_blank()
         self.gen_token('word-op', s)
         self.gen_blank()
-    #@+node:ekr.20240105145241.17: *5* tbo.do_newline, do_nl & generators
+    #@+node:ekr.20240105145241.17: *5* tbo.do_newline & do_nl
     #@+node:ekr.20240418043826.1: *6* tbo.do_newline
     def do_newline(self) -> None:
         """
@@ -1052,6 +1052,15 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         NEWLINE tokens end *logical* lines of Python code.
         """
+
+        # #4349: Remove trailing ws.
+        ### g.printObj(self.input_tokens)
+        while self.input_tokens:
+            last_token = self.input_tokens[-1]
+            if last_token.kind == 'ws':
+                self.input_tokens.pop()
+            else:
+                break
 
         self.output_list.append('\n')
         self.pending_lws = ''  # Set only by 'dedent', 'indent' or 'ws' tokens.
@@ -1068,7 +1077,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         NL tokens end *physical* lines. They appear when when a logical line of
         code spans multiple physical lines.
         """
-        return self.do_newline()
+        self.do_newline()
     #@+node:ekr.20240105145241.18: *5* tbo.do_number
     def do_number(self) -> None:
         """Handle a number token."""

@@ -993,6 +993,18 @@ class TestTokenBasedOrange(BaseTest):
         expected = contents
         results = self.beautify(contents, tokens)
         self.assertEqual(results, expected, msg=contents)
+    #@+node:ekr.20250505231955.1: *3* TestTBO.test_ws_in_blank_line
+    def test_ws_in_blank_line(self):
+
+        contents = 'line 1\n   \nline 2\n'
+        expected = 'line 1\n\nline 2\n'
+        contents, tokens = self.make_data(contents)
+        results = self.beautify(contents, tokens)
+        if results != expected:  # pragma: no cover
+            g.printObj(tokens, tag='Tokens')
+            g.printObj(results, tag='Results')
+            g.printObj(expected, tag='Expected')
+        assert results == expected
     #@+node:ekr.20240105153425.81: *3* TestTBO.verbatim2
     def test_verbatim2(self):
 
