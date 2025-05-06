@@ -832,6 +832,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 f"write: {int(self.write)} "
                 f"{g.shortFileName(filename)}"
             )
+        return False  ### TEMP.
         self.filename = filename
         contents, tokens = self.init_tokens_from_file(filename)
         if not (contents and tokens):
