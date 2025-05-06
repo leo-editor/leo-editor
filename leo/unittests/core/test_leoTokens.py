@@ -553,10 +553,10 @@ class TestTokenBasedOrange(BaseTest):
         # All entries are expected values...
         black_table = (
             # leoserver.py: line 1575.
-            """s = s[len('@nocolor') :]\n""",
+            ### """s = s[len('@nocolor') :]\n""",
             # leoGlobals.py.
-            """g.pr(f"{self.calledDict.get(key,0):d}", key)""",  # line 1805
-            """tracing_tags [id(self)] = tag""",  # line 1913.
+            ### """g.pr(f"{self.calledDict.get(key,0):d}", key)""",  # line 1805
+            ### """tracing_tags [id(self)] = tag""",  # line 1913.
             # make_stub_files.py.
             """def match(self, s, trace=False):\n    pass""",
         )
@@ -567,11 +567,14 @@ class TestTokenBasedOrange(BaseTest):
             results = self.beautify(contents, tokens, filename=description)
             if results != expected:  # pragma: no cover
                 print('')
-                print(
-                    f"TestTokenBasedOrange.{tag}: FAIL\n"
-                    f"  contents: {contents.rstrip()}\n"
-                    f"     black: {expected.rstrip()}\n"
-                    f"    orange: {results.rstrip() if results else 'None'}")
+                # print(
+                    # f"TestTokenBasedOrange.{tag}: FAIL\n"
+                    # f"  contents: {contents.rstrip()}\n"
+                    # f"     black: {expected.rstrip()}\n"
+                    # f"    orange: {results.rstrip() if results else 'None'}")
+                g.printObj(tokens, tag='Tokens')
+                g.printObj(expected, tag='Expected')
+                g.printObj(results, tag='Results')
             self.assertEqual(results, expected, msg=description)
     #@+node:ekr.20240105153425.65: *3* TestTBO.test_leo_sentinels
     def test_leo_sentinels_1(self):
