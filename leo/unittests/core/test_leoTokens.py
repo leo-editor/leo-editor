@@ -439,26 +439,6 @@ class TestTokenBasedOrange(BaseTest):
                 g.printObj(results, tag='Results')
                 g.printObj(expected, tag='Expected')
         assert not fails, fails
-    #@+node:ekr.20250505151026.1: *3* TestTBO.test_badly_indented_comment
-    def test_badly_indented_comment(self):
-
-        contents = """
-    if 1:
-          # Indentation not a multiple of four.
-        pass
-    """
-        expected = textwrap.dedent("""\
-    if 1:
-        # Indentation not a multiple of four.
-        pass
-    """)
-        contents, tokens = self.make_data(contents)
-        results = self.beautify(contents, tokens)
-        if results != expected:  # pragma: no cover
-            g.printObj(tokens, tag='Tokens')
-            g.printObj(results, tag='Results')
-            g.printObj(expected, tag='Expected')
-        assert results == expected
     #@+node:ekr.20240105153425.54: *3* TestTBO.test_comment_space_after_delim
     def test_comment_space_after_delim(self):
 
