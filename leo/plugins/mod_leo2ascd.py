@@ -108,7 +108,7 @@ def SectionUnderline(h, level, v):
         g.es("Section level is more than maximum Section Levels: %d\n  %s" % (
             asciiDocSectionLevels, v.headString()))
         level = asciiDocSectionLevels - 1
-    str = Conf.current["headingUnderlines"][level]  # '
+    str = Conf.current["headingUnderlines"][level]
     return str * max(len(h), 1)
 #@+node:ekr.20101110094152.5843: *3* WriteAll
 def WriteAll(c):
