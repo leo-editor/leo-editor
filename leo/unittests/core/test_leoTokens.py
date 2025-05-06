@@ -521,6 +521,42 @@ class TestTokenBasedOrange(BaseTest):
         expected = contents.rstrip() + '\n'
         results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
+    #@+node:ekr.20250506092303.1: *3* TestTBO.test_flake8_errors
+    def test_flake8_errors(self):
+
+
+        tag = 'test_flake8_errors'
+
+        # All entries are expected values...
+        table = (
+            # Errors due to @nobeautify directives leoMenu.py.
+            # """for i in range(1,9):\n    pass""",
+            # """a = range(1, 9)\n""",
+            # """d ["key"] = None\n""",
+
+            # leoserver.py: line 1575.
+            """s = s[len('@nocolor') :]\n""",
+
+            # leoGlobals.py: line 1913.
+            """tracing_tags [id(self)] = tag""",
+        )
+        for i, contents in enumerate(table):
+            description = f"{tag} part {i}"
+            contents, tokens = self.make_data(contents, description=description)
+            expected = self.blacken(contents)
+            results = self.beautify(contents, tokens, filename=description)
+            if 0:  # pragma: no cover
+                g.printObj(tokens, tag=description)
+                g.printObj(expected, tag='Expected')
+                g.printObj(results, tag='Results')
+            if results != expected:  # pragma: no cover
+                print('')
+                print(
+                    f"TestTokenBasedOrange.{tag}: FAIL\n"
+                    f"  contents: {contents.rstrip()}\n"
+                    f"     black: {expected.rstrip()}\n"
+                    f"    orange: {results.rstrip() if results else 'None'}")
+            self.assertEqual(results, expected, msg=description)
     #@+node:ekr.20240105153425.65: *3* TestTBO.test_leo_sentinels
     def test_leo_sentinels_1(self):
 

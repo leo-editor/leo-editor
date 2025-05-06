@@ -1910,7 +1910,7 @@ class NullObject:
 class TracingNullObject:
     """Tracing NullObject."""
     def __init__(self, tag: str, ivars: list[str]=None, *args: Args, **kwargs: KWargs) -> None:
-        tracing_tags [id(self)] = tag
+        tracing_tags [id(self)] = tag  # noqa  # conflict between flake8 and black.
     def __call__(self, *args: Args, **kwargs: KWargs) -> "TracingNullObject":
         return self
     def __repr__(self) -> str:
