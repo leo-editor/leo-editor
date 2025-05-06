@@ -1802,7 +1802,7 @@ class Tracer:
         g.pr('\ncallDict...')
         for key in sorted(self.callDict):
             # Print the calling function.
-            g.pr(f"{self.calledDict.get(key,0):d}", key)
+            g.pr(f"{self.calledDict.get(key,0):d}", key)  # noqa  # conflict between flake8 and black.
             # Print the called functions.
             d = self.callDict.get(key)
             for key2 in sorted(d):  # type:ignore
