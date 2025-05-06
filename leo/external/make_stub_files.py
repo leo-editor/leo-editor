@@ -1120,7 +1120,7 @@ class LeoGlobals:
         if n is None or n < 1:
             return os.path.basename(fileName)
         else:
-            return '/'.join(fileName.replace('\\', '/').split('/')[-n :])
+            return '/'.join(fileName.replace('\\', '/').split('/')[-n:])
     #@+node:ekr.20160317054700.93: *3* g.splitLines
     def splitLines(self, s):
         '''Split s into lines, preserving trailing newlines.'''
@@ -1271,7 +1271,7 @@ class Pattern:
         g.trace('unmatched %s in %s' % (delim, s), g.callers(4))
         return len(s) + 1
     #@+node:ekr.20160317054700.104: *3* pattern.match (trace-matches)
-    def match(self, s, trace=False):
+    def match(self, s, trace = False):
         '''
         Perform the match on the entire string if possible.
         Return (found, new s)
@@ -2028,7 +2028,7 @@ class StubFormatter(AstFormatter):
         caller = g.callers(2).split(',')[1].strip()  # The direct caller of match_all.
         patterns = self.patterns_dict.get(name, []) + self.regex_patterns
         for pattern in patterns:
-            found, s = pattern.match(s, trace=False)
+            found, s = pattern.match(s, trace = False)
             if found:
                 if trace:
                     aList = d.get(name, [])
