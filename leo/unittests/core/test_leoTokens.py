@@ -524,31 +524,45 @@ class TestTokenBasedOrange(BaseTest):
     #@+node:ekr.20250506092303.1: *3* TestTBO.test_flake8_errors
     def test_flake8_errors(self):
 
-
         tag = 'test_flake8_errors'
 
-        # All entries are expected values...
-        table = (
-            # Errors due to @nobeautify directives leoMenu.py.
-            # """for i in range(1,9):\n    pass""",
-            # """a = range(1, 9)\n""",
-            # """d ["key"] = None\n""",
-
-            # leoserver.py: line 1575.
-            """s = s[len('@nocolor') :]\n""",
-
-            # leoGlobals.py: line 1913.
-            """tracing_tags [id(self)] = tag""",
+        # Part 1: tests w/o black.
+        non_black_table = (
+            # leoAbbrevCommands.py: line 160.
+            """c.abbrev_subst_env = {'c': c, 'g': g, '_values': {}, }\n""",
         )
-        for i, contents in enumerate(table):
-            description = f"{tag} part {i}"
+        for i, contents in enumerate(non_black_table):
+            description = f"{tag} (w/o black) part {i}"
             contents, tokens = self.make_data(contents, description=description)
-            expected = self.blacken(contents)
+            expected = contents
             results = self.beautify(contents, tokens, filename=description)
             if 0:  # pragma: no cover
                 g.printObj(tokens, tag=description)
                 g.printObj(expected, tag='Expected')
                 g.printObj(results, tag='Results')
+            if results != expected:  # pragma: no cover
+                print('')
+                print(
+                    f"TestTokenBasedOrange.{tag}: FAIL\n"
+                    f"  contents: {contents.rstrip()}\n"
+                    f"     black: {expected.rstrip()}\n"
+                    f"    orange: {results.rstrip() if results else 'None'}")
+            self.assertEqual(results, expected, msg=description)
+
+
+        # All entries are expected values...
+        black_table = (
+            # leoserver.py: line 1575.
+            """s = s[len('@nocolor') :]\n""",
+            # leoGlobals.py.
+            """g.pr(f"{self.calledDict.get(key,0):d}", key)""",  # line 1805
+            """tracing_tags [id(self)] = tag""",  # line 1913.
+        )
+        for i, contents in enumerate(black_table):
+            description = f"{tag} (black) part {i}"
+            contents, tokens = self.make_data(contents, description=description)
+            expected = self.blacken(contents)
+            results = self.beautify(contents, tokens, filename=description)
             if results != expected:  # pragma: no cover
                 print('')
                 print(

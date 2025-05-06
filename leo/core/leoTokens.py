@@ -1322,13 +1322,20 @@ class TokenBasedOrange:  # Orange is the new Black.
         if val == ')':
             self.paren_level -= 1
             self.in_arg_list = max(0, self.in_arg_list - 1)
+            if self.prev_output_kind != 'line-indent':
+                self.pending_ws = ''
         elif val == ']':
             self.square_brackets_stack.pop()
+            if self.prev_output_kind != 'line-indent':
+                self.pending_ws = ''
         else:
             self.curly_brackets_level -= 1
-
-        if self.prev_output_kind != 'line-indent':
-            self.pending_ws = ''
+            # A hack: put a space before a comma.
+            last = self.output_list[-1]
+            if last == ',':
+                self.pending_ws = ' '
+            elif self.prev_output_kind != 'line-indent':
+                self.pending_ws = ''
         self.gen_token('rt', val)
     #@+node:ekr.20240105145241.38: *6* tbo.gen_star_op
     def gen_star_op(self) -> None:

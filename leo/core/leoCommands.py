@@ -2780,7 +2780,7 @@ class Commands:
         # This pathetic code should be generalized,
         # but it's not as easy as one might imagine.
         c = self
-        d = {1: c.interactive1, 2: c.interactive2, 3: c.interactive3,}
+        d = {1: c.interactive1, 2: c.interactive2, 3: c.interactive3, }
         f = d.get(len(prompts))
         if f:
             f(callback, event, prompts)
