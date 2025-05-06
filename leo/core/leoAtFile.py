@@ -2390,7 +2390,7 @@ class AtFile:
                 g.es_print(f"{j+1:5}: {line}")
     #@+node:ekr.20240926044644.1: *6* at.runTokenBasedBeautifier
     def runTokenBasedBeautifier(self, root: Position, filename: str) -> bool:
-        """Run Leo's token-based beautifier on the selecte position."""
+        """Run Leo's token-based beautifier on the selected position."""
         c = self.c
         p = c.p
         if not os.path.exists(filename):
