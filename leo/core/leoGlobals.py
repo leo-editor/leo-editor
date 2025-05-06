@@ -1415,7 +1415,7 @@ class MatchBrackets:
             return
 
         # Find the bracket nearest the cursor.
-        max_right = len(s) - 1 # insert point can be past last char.
+        max_right = len(s) - 1  # insert point can be past last char.
         left = right = min(max_right, w.getInsertPoint())
         left, right, ch, index = self.expand_range(s, left, right, max_right)
         if left is None:
@@ -1886,7 +1886,7 @@ class NullObject:
     def __delattr__(self, attr: str) -> None:
         return None
     def __getattr__(self, attr: str) -> Value:
-        return self # Required.
+        return self  # Required.
     def __setattr__(self, attr: str, val: Value) -> None:
         return None
     # Container methods..
@@ -1923,7 +1923,7 @@ class TracingNullObject:
         return None
     def __getattr__(self, attr: str) -> "TracingNullObject":
         g.null_object_print(id(self), f"attr: {attr}")
-        return self # Required.
+        return self  # Required.
     def __setattr__(self, attr: str, val: Value) -> None:
         g.null_object_print(id(self), f"__setattr__: {attr} {val!r}")
 

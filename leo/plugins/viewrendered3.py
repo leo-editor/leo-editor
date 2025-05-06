@@ -3646,7 +3646,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             ok = True
             path = fn
             is_url = True
-        else:  #file URL
+        else:  # file URL
             ok, path = self.get_fn(fn, '@image')
 
         if not ok:
@@ -4065,7 +4065,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             c.executeScript(
                 event=None,
                 args=None, p=None,
-                script=c.p.b,  #None,
+                script=c.p.b,  # None,
                 useSelectedText=False,
                 define_g=True,
                 define_name='__main__',

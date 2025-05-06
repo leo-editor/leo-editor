@@ -153,7 +153,7 @@ class VimCommands:
         '}': None,
         '[': None,
         ']': None,
-        ':': None, # Not a motion.
+        ':': None,  # Not a motion.
         ',': None,
         '$': self.vim_dollar,
         '>': None,
@@ -163,7 +163,7 @@ class VimCommands:
         '(': None,
         ')': None,
         '%': None,
-        '.': None, # Not a motion.
+        '.': None,  # Not a motion.
         '+': None,
         '?': self.vim_question,
         '"': None,
@@ -173,7 +173,7 @@ class VimCommands:
         '/': self.vim_slash,
         '_': None,
         # Digits.
-        '0': self.vim_0, # Only 0 starts a motion.
+        '0': self.vim_0,  # Only 0 starts a motion.
         # Uppercase letters.
         'A': None,  # vim doesn't enter insert mode.
         'B': None,
@@ -198,24 +198,24 @@ class VimCommands:
         'V': None,
         'W': None,
         'X': None,
-        'Y': self.vim_Y, # Yank Leo outline.
+        'Y': self.vim_Y,  # Yank Leo outline.
         'Z': None,
         # Lowercase letters...
-        'a': None,      # vim doesn't enter insert mode.
+        'a': None,  # vim doesn't enter insert mode.
         'b': self.vim_b,
         # 'c': self.vim_c,
-        'd': None,      # Not valid.
+        'd': None,  # Not valid.
         'e': self.vim_e,
         'f': self.vim_f,
         'g': self.vim_g,
         'h': self.vim_h,
-        'i': None,      # vim doesn't enter insert mode.
+        'i': None,  # vim doesn't enter insert mode.
         'j': self.vim_j,
         'k': self.vim_k,
         'l': self.vim_l,
         # 'm': self.vim_m,
         # 'n': self.vim_n,
-        'o': None,      # vim doesn't enter insert mode.
+        'o': None,  # vim doesn't enter insert mode.
         # 'p': self.vim_p,
         # 'q': self.vim_q,
         # 'r': self.vim_r,

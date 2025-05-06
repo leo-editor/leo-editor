@@ -1247,7 +1247,7 @@ class ScreenShotController:
            :glob:
 
            slide-*
-        ''' % (title)  #,sc.slide_base_name)
+        ''' % (title)  # ,sc.slide_base_name)
         # Indices and tables
         # ==================
         # * :ref:`genindex`

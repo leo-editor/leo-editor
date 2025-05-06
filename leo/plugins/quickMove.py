@@ -897,7 +897,7 @@ class quickMoveButton:
                     p.moveToLastChildOf(p2)
                 elif self.which in ('next sibling', 'prev sibling'):
                     if not p2.parent():
-                        raise NotImplementedError("Not implemented for top-level nodes")  #FIXME
+                        raise NotImplementedError("Not implemented for top-level nodes")  # FIXME
                     if self.which == 'next sibling':
                         p.moveToNthChildOf(p2.parent(), p2._childIndex)
                     elif self.which == 'prev sibling':

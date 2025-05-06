@@ -341,7 +341,7 @@ class To_Python:  # pragma: no cover
                     i += len(changeList)
                 else:
                     i += 1
-        else:  #use self.match
+        else:  # use self.match
             while i < len(lines):
                 if self.match(lines, i, findString):
                     lines[i : i + len(findString)] = changeList
@@ -1049,7 +1049,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             lastWord = []
             if self.class_name:
                 for item in list("self,"):
-                    result.append(item)  #can put extra comma
+                    result.append(item)  # can put extra comma
             i = 1
             while i < len(args):
                 i = self.skip_ws_and_nl(args, i)
@@ -3232,7 +3232,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 lastWord = []
                 if self.class_name:
                     for item in list("self,"):
-                        result.append(item)  #can put extra comma
+                        result.append(item)  # can put extra comma
                 i = 1
                 while i < len(args):
                     i = self.skip_ws_and_nl(args, i)

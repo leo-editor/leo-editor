@@ -497,7 +497,7 @@ class QuickSearchController:
             if hitBase:
                 # If I hit the base then revert to all positions
                 # this is basically the "main" chapter
-                hitBase = False  #reset
+                hitBase = False  # reset
                 hNodes = c.all_positions()
                 bNodes = c.all_positions()
             else:
@@ -513,7 +513,7 @@ class QuickSearchController:
             hm = self.find_h(hpat, list(hNodes), flags)  # Returns a list of positions.
             bm = self.find_b(bpat, list(bNodes), flags)  # Returns a list of positions.
             bm_keys = [match[0].key() for match in bm]
-            numOfHm = len(hm)  #do this before trim to get accurate count
+            numOfHm = len(hm)  # do this before trim to get accurate count
             hm = [match for match in hm if match[0].key() not in bm_keys]
             if self.showParents:
                 # Was: parents = OrderedDefaultDict(list)
@@ -754,7 +754,7 @@ class QuickSearchController:
                 it = {"type": "headline", "label": p.h}
                 if self.addItem(it, (p, None)):
                     return lineMatchHits
-                if m is not None:  #p might not have body matches
+                if m is not None:  # p might not have body matches
                     ms = self.matchlines(p.b, m)
                     for match_list, pos in ms:
                         lineMatchHits += 1
@@ -1324,7 +1324,7 @@ class LeoServer:
             commanders = g.app.commanders()
             for commander in commanders:
                 if str(id(commander)) == str(commanderId):
-                    self.c = commander  #  Found commander by id!
+                    self.c = commander  # Found commander by id!
                     self.c.selectPosition(self.c.p)
                     self._check_outline(self.c)
                     result = {"total": total, "filename": self.c.fileName()}
@@ -4725,7 +4725,7 @@ class LeoServer:
                 commanders = g.app.commanders()
                 for commander in commanders:
                     if str(id(commander)) == str(commanderId):
-                        c = commander  #  Found commander by id!
+                        c = commander  # Found commander by id!
                         break
         # Still not found?
         if not c:  # pragma: no cover

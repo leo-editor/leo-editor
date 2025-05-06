@@ -350,20 +350,20 @@ class BaseColorizer:
 
             # Used in Leo rules...
             # tag name      : ( option name,                   default color),
-            'blank'         : ('show_invisibles_space_color',  '#E5E5E5'), # gray90
+            'blank'         : ('show_invisibles_space_color',  '#E5E5E5'),  # gray90
             'docpart'       : ('doc_part_color',               'red'),
             'leokeyword'    : ('leo_keyword_color',            'blue'),
             'link'          : ('section_name_color',           'red'),
             'name'          : ('undefined_section_name_color', 'red'),
             'namebrackets'  : ('section_name_brackets_color',  'blue'),
-            'tab'           : ('show_invisibles_tab_color',    '#CCCCCC'), # gray80
+            'tab'           : ('show_invisibles_tab_color',    '#CCCCCC'),  # gray80
             'url'           : ('url_color',                    'purple'),
 
             # Pygments tags.  Non-default values are taken from 'default' style.
 
             # Top-level...
             # tag name          : ( option name,         default color),
-            'error'             : ('error',              '#FF0000'), # border
+            'error'             : ('error',              '#FF0000'),  # border
             'other'             : ('other',              'white'),
             'punctuation'       : ('punctuation',        'white'),
             'whitespace'        : ('whitespace',         '#bbbbbb'),
@@ -371,34 +371,34 @@ class BaseColorizer:
 
             # Comment...
             # tag name          : ( option name,         default color),
-            'comment'           : ('comment',            '#408080'), # italic
+            'comment'           : ('comment',            '#408080'),  # italic
             'comment.hashbang'  : ('comment.hashbang',   '#408080'),
             'comment.multiline' : ('comment.multiline',  '#408080'),
             'comment.special'   : ('comment.special',    '#408080'),
-            'comment.preproc'   : ('comment.preproc',    '#BC7A00'), # noitalic
-            'comment.single'    : ('comment.single',     '#BC7A00'), # italic
+            'comment.preproc'   : ('comment.preproc',    '#BC7A00'),  # noitalic
+            'comment.single'    : ('comment.single',     '#BC7A00'),  # italic
 
             # Generic...
             # tag name          : ( option name,         default color),
             'generic'           : ('generic',            '#A00000'),
             'generic.deleted'   : ('generic.deleted',    '#A00000'),
-            'generic.emph'      : ('generic.emph',       '#000080'), # italic
+            'generic.emph'      : ('generic.emph',       '#000080'),  # italic
             'generic.error'     : ('generic.error',      '#FF0000'),
-            'generic.heading'   : ('generic.heading',    '#000080'), # bold
+            'generic.heading'   : ('generic.heading',    '#000080'),  # bold
             'generic.inserted'  : ('generic.inserted',   '#00A000'),
             'generic.output'    : ('generic.output',     '#888'),
-            'generic.prompt'    : ('generic.prompt',     '#000080'), # bold
-            'generic.strong'    : ('generic.strong',     '#000080'), # bold
-            'generic.subheading': ('generic.subheading', '#800080'), # bold
+            'generic.prompt'    : ('generic.prompt',     '#000080'),  # bold
+            'generic.strong'    : ('generic.strong',     '#000080'),  # bold
+            'generic.subheading': ('generic.subheading', '#800080'),  # bold
             'generic.traceback' : ('generic.traceback',  '#04D'),
             #
             # Keyword...
             # tag name              : ( option name,             default color),
-            'keyword'               : ('keyword',                '#008000'), # bold
+            'keyword'               : ('keyword',                '#008000'),  # bold
             'keyword.constant'      : ('keyword.constant',       '#008000'),
             'keyword.declaration'   : ('keyword.declaration',    '#008000'),
             'keyword.namespace'     : ('keyword.namespace',      '#008000'),
-            'keyword.pseudo'        : ('keyword.pseudo',         '#008000'), # nobold
+            'keyword.pseudo'        : ('keyword.pseudo',         '#008000'),  # nobold
             'keyword.reserved'      : ('keyword.reserved',       '#008000'),
             'keyword.type'          : ('keyword.type',           '#B00040'),
 
@@ -410,22 +410,22 @@ class BaseColorizer:
             # Name...
             # tag name              : ( option name,          default color
             # 'name' defined below.
-            'name.attribute'        : ('name.attribute',      '#7D9029'), # bold
+            'name.attribute'        : ('name.attribute',      '#7D9029'),  # bold
             'name.builtin'          : ('name.builtin',        '#008000'),
             'name.builtin.pseudo'   : ('name.builtin.pseudo', '#008000'),
-            'name.class'            : ('name.class',          '#0000FF'), # bold
+            'name.class'            : ('name.class',          '#0000FF'),  # bold
             'name.constant'         : ('name.constant',       '#880000'),
             'name.decorator'        : ('name.decorator',      '#AA22FF'),
-            'name.entity'           : ('name.entity',         '#999999'), # bold
-            'name.exception'        : ('name.exception',      '#D2413A'), # bold
+            'name.entity'           : ('name.entity',         '#999999'),  # bold
+            'name.exception'        : ('name.exception',      '#D2413A'),  # bold
             'name.function'         : ('name.function',       '#0000FF'),
             'name.function.magic'   : ('name.function.magic', '#0000FF'),
             'name.label'            : ('name.label',          '#A0A000'),
-            'name.namespace'        : ('name.namespace',      '#0000FF'), # bold
+            'name.namespace'        : ('name.namespace',      '#0000FF'),  # bold
             'name.other'            : ('name.other',          'red'),
             # A hack: getLegacyFormat returns name.pygments instead of name.
             'name.pygments'         : ('name.pygments',          'white'),
-            'name.tag'              : ('name.tag',               '#008000'), # bold
+            'name.tag'              : ('name.tag',               '#008000'),  # bold
             'name.variable'         : ('name.variable',          '#19177C'),
             'name.variable.class'   : ('name.variable.class',    '#19177C'),
             'name.variable.global'  : ('name.variable.global',   '#19177C'),
@@ -445,7 +445,7 @@ class BaseColorizer:
             # Operator...
             # tag name          : ( option name,         default color
             # 'operator' defined below.
-            'operator.word'     : ('operator.Word',      '#AA22FF'), # bold
+            'operator.word'     : ('operator.Word',      '#AA22FF'),  # bold
 
             # String...
             # tag name          : ( option name,         default color
@@ -454,11 +454,11 @@ class BaseColorizer:
             'string.backtick'   : ('string.backtick',    '#BA2121'),
             'string.char'       : ('string.char',        '#BA2121'),
             'string.delimiter'  : ('string.delimiter',   '#BA2121'),
-            'string.doc'        : ('string.doc',         '#BA2121'), # italic
+            'string.doc'        : ('string.doc',         '#BA2121'),  # italic
             'string.double'     : ('string.double',      '#BA2121'),
-            'string.escape'     : ('string.escape',      '#BB6622'), # bold
+            'string.escape'     : ('string.escape',      '#BB6622'),  # bold
             'string.heredoc'    : ('string.heredoc',     '#BA2121'),
-            'string.interpol'   : ('string.interpol',    '#BB6688'), # bold
+            'string.interpol'   : ('string.interpol',    '#BB6688'),  # bold
             'string.other'      : ('string.other',       '#008000'),
             'string.regex'      : ('string.regex',       '#BB6688'),
             'string.single'     : ('string.single',      '#BA2121'),
@@ -495,13 +495,13 @@ class BaseColorizer:
 
             # Used in Leo rules...
             # tag name      :  option name
-            'blank'         : 'show_invisibles_space_font', # 2011/10/24.
+            'blank'         : 'show_invisibles_space_font',  # 2011/10/24.
             'docpart'       : 'doc_part_font',
             'leokeyword'    : 'leo_keyword_font',
             'link'          : 'section_name_font',
             'name'          : 'undefined_section_name_font',
             'namebrackets'  : 'section_name_brackets_font',
-            'tab'           : 'show_invisibles_tab_font', # 2011/10/24.
+            'tab'           : 'show_invisibles_tab_font',  # 2011/10/24.
             'url'           : 'url_font',
 
             # Pygments tags (lower case)...
@@ -593,7 +593,7 @@ class BaseColorizer:
         self.showInvisibles      = getBool("show-invisibles-by-default")
         self.underline_undefined = getBool("underline-undefined-section-names")
         self.use_hyperlinks      = getBool("use-hyperlinks")
-        self.use_pygments        = None # Set in report_changes.
+        self.use_pygments        = None  # Set in report_changes.
         self.use_pygments_styles = getBool('use-pygments-styles', default=True)
         #
         # Report changes to pygments settings.

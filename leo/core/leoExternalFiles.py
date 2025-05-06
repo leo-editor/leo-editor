@@ -448,7 +448,7 @@ class ExternalFilesController:
                 vtuple.append(fn)
                 command = f"os.spawnv({vtuple})"
                 if not testing:
-                    os.spawnv(os.P_NOWAIT, arg[0], vtuple)  #???
+                    os.spawnv(os.P_NOWAIT, arg[0], vtuple)  # ???
             elif kind == 'subprocess.Popen':
                 c_arg = self.join(arg, fn)
                 command = f"subprocess.Popen({c_arg})"

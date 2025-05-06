@@ -969,7 +969,9 @@ class TokenBasedOrange:  # Orange is the new Black.
                 val = val[:i] + '# ' + val[i + 1 :]
         else:
             # Exactly two spaces before trailing comments.
-            val = '  ' + val.rstrip()
+            i = val.find('#')
+            assert i >= 0, repr(val)
+            val = val[:i].rstrip() + '  # ' + val[i + 1 :].lstrip()
         self.gen_token('comment', val)
     #@+node:ekr.20240111051726.1: *5* tbo.do_dedent
     def do_dedent(self) -> None:

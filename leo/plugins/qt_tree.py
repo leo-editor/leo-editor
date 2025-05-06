@@ -187,7 +187,7 @@ class LeoQtTree(leoFrame.LeoTree):
 
     # mypy complains that there is a mismatch with the base redraw method.
     redraw = full_redraw  # type:ignore
-    redraw_now = full_redraw  #type:ignore
+    redraw_now = full_redraw  # type:ignore
     #@+node:vitalije.20200329160945.1: *5* tree declutter code
     #@+node:tbrown.20150807090639.1: *6* qtree.declutter_node & helpers
     def declutter_node(self, c: Cmdr, v: VNode, item: QTreeWidgetItem) -> QIcon:
@@ -1182,7 +1182,7 @@ class LeoQtTree(leoFrame.LeoTree):
         # e.setCursorPosition(ins) # Does not work.
         e.setFocus()
         wrapper = self.connectEditorWidget(e, item)  # Hook up the widget.
-        if vc and c.vim_mode:  #  and selectAll
+        if vc and c.vim_mode:  # and selectAll
             # For now, *always* enter insert mode.
             if vc.is_text_wrapper(wrapper):
                 vc.begin_insert_mode(w=wrapper)

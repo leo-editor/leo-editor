@@ -203,7 +203,7 @@ class LeoMenu:
                 if table:
                     self.createMenuEntries(parentMenu, table)
                 if not self.handleSpecialMenus(name, parentName,
-                    alt_name=val2,  #848.
+                    alt_name=val2,  # 848.
                     table=table,
                 ):
                     # Create submenu of parent menu.

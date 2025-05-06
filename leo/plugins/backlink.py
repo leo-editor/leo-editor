@@ -161,7 +161,7 @@ class backlinkController:
     def deleteLink(self, on, to, type_):
         """delete a link from 'on' to 'to' of type 'type_'"""
 
-        vid = on.gnx  #X unknownAttributes['_bklnk']['id']
+        vid = on.gnx  # X unknownAttributes['_bklnk']['id']
         links = on.unknownAttributes['_bklnk']['links']
 
         for n, link in enumerate(links):

@@ -263,7 +263,7 @@ class Commands:
         self.import_error_nodes: list[Position] = []  # List of nodes for c.raise_error_dialogs.
         self.last_dir: str = None  # The last used directory.
         self.mFileName: str = fileName or ''  # Do _not_ use os_path_norm: it converts an empty path to '.' (!!)
-        self.mRelativeFileName = relativeFileName or ''  #
+        self.mRelativeFileName = relativeFileName or ''
         self.orphan_at_file_nodes: list[Position] = []  # List of orphaned nodes for c.raise_error_dialogs.
     #@+node:ekr.20120217070122.10470: *5* c.initObjects
     #@@nobeautify
@@ -283,7 +283,7 @@ class Commands:
         from leo.core import leoHistory
         self.nodeHistory = leoHistory.NodeHistory(c)
         self.initConfigSettings()
-        c.setWindowPosition() # Do this after initing settings.
+        c.setWindowPosition()  # Do this after initing settings.
 
         # Break circular import dependencies by doing imports here.
         # All these imports take almost 3/4 sec in the leoBridge.
@@ -910,7 +910,7 @@ class Commands:
             cmd = f'assoc {extension}'
             # pylint: disable=subprocess-run-check
             proc = subprocess.run(cmd, shell=True, capture_output=True)
-            filetype = proc.stdout.decode('utf-8')  #e.g., ".py=Python.File"
+            filetype = proc.stdout.decode('utf-8')  # e.g., ".py=Python.File"
             filetype = filetype.split('=')[1] if filetype else ''
             return filetype
 

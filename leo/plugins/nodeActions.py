@@ -269,7 +269,7 @@ def doNodeAction(pClicked, c):
     if pNA:
         # Found "nodeActions" node
         foundPattern = False
-        passEventExternal = False  #No pass to next plugin after pattern matched
+        passEventExternal = False  # No pass to next plugin after pattern matched
         # Check entire subtree under the "nodeActions" node for pattern
         for pScript in pNA.subtree():
 
@@ -281,7 +281,7 @@ def doNodeAction(pClicked, c):
             if pClicked == pScript:
                 continue
 
-            pattern = pScript.h.strip()  #Pattern node's header
+            pattern = pScript.h.strip()  # Pattern node's header
             if messageLevel >= 4:
                 g.blue("nA: Checking pattern '" + pattern)
 
@@ -294,7 +294,7 @@ def doNodeAction(pClicked, c):
             # What directives exist?
             useRegEx = re.search("X", directives) is not None
             passEventInternal = re.search("V", directives) is not None
-            if not passEventExternal:  #don't disable once enabled.
+            if not passEventExternal:  # don't disable once enabled.
                 passEventExternal = re.search(">", directives) is not None
             # Remove the directives from the end of the pattern (if they exist)
             pattern = re.sub(r" \[.*]$", "", pattern, 1)
@@ -307,10 +307,10 @@ def doNodeAction(pClicked, c):
             # if pattern begins with "@files" and clicked node is an @file type
             # node then replace "@files" in pattern with clicked node's @file type
             patternBeginsWithAtFiles = re.search("^@files ", pattern)
-            clickedAtFileTypeNode = False  #assume @file type node not clicked
+            clickedAtFileTypeNode = False  # assume @file type node not clicked
             if patternBeginsWithAtFiles:
                 if pClicked.isAnyAtFileNode():
-                    clickedAtFileTypeNode = True  #Tell "write @file type nodes" code
+                    clickedAtFileTypeNode = True  # Tell "write @file type nodes" code
                     # Replace "@files" in pattern with clicked node's @file type
                     pattern = re.sub("^@files", hClicked.split(' ')[0], pattern)
                     if messageLevel >= 4:
@@ -352,22 +352,22 @@ def doNodeAction(pClicked, c):
             # no match to any pattern, always pass event to next plugin
             if messageLevel >= 1:
                 g.blue("nA: No patterns matched to " "" + hClicked + '"')
-            return False  #TL - Inform onIconDoubleClick that no action was taken
+            return False  # TL - Inform onIconDoubleClick that no action was taken
         if passEventExternal:
             # last matched pattern has directive to pass event to next plugin
             if messageLevel >= 2:
                 g.blue("nA: Event passed to next plugin")
-            return False  #TL - Inform onIconDoubleClick to pass double-click event
+            return False  # TL - Inform onIconDoubleClick to pass double-click event
         #
         # last matched pattern did not have directive to pass event to plugin
         if messageLevel >= 2:
             g.blue("nA: Event not passed to next plugin")
-        return True  #TL - Inform onIconDoubleClick to not pass double-click
+        return True  # TL - Inform onIconDoubleClick to not pass double-click
     #
     # nodeActions plugin enabled without a 'nodeActions' node
     if messageLevel >= 4:
         g.blue("nA: The nodeActions node does not exist")
-    return False  #TL - Inform onIconDoubleClick that no action was taken
+    return False  # TL - Inform onIconDoubleClick that no action was taken
 #@+node:TL.20080507213950.10: ** applyNodeAction
 def applyNodeAction(pScript, pClicked, c):
 

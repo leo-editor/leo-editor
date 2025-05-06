@@ -782,7 +782,7 @@ class RstCommands:
             return f"{p.h}\n{ch * n}"
         #
         # The user is responsible for top-level overlining.
-        u = self.underline_characters  #  '''#=+*^~"'`-:><_'''
+        u = self.underline_characters  # '''#=+*^~"'`-:><_'''
         level = max(0, p.level() - self.root.level())
         level = min(level + 1, len(u) - 1)  # Reserve the first character for explicit titles.
         ch = u[level]
