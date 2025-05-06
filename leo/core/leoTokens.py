@@ -817,6 +817,8 @@ class TokenBasedOrange:  # Orange is the new Black.
             print(self.internal_error_message(repr(e)))
         return contents
     #@+node:ekr.20240105145241.6: *5* tbo.beautify_file (entry) (stats & diffs)
+    nobeautify_pat = re.compile(r'^#\s*@@nobeautify\s*$', re.MULTILINE)
+
     def beautify_file(self, filename: str) -> bool:  # pragma: no cover
         """
         TokenBasedOrange: Beautify the the given external file.
@@ -832,11 +834,12 @@ class TokenBasedOrange:  # Orange is the new Black.
                 f"write: {int(self.write)} "
                 f"{g.shortFileName(filename)}"
             )
-        return False  ### TEMP.
         self.filename = filename
         contents, tokens = self.init_tokens_from_file(filename)
         if not (contents and tokens):
             return False  # Not an error.
+        if self.nobeautify_pat.find(contents):
+            return False  # Honor @nobeautify directive within the file.
         if not isinstance(tokens[0], InputToken):
             self.oops(f"Not an InputToken: {tokens[0]!r}")
 
