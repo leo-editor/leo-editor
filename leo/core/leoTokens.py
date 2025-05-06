@@ -838,7 +838,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         if not (contents and tokens):
             return False  # Not an error.
         if self.nobeautify_sentinel_pat.search(contents):
-            return False  # Honor @nobeautify directive within the file.
+            return False  # Honor @nobeautify sentinel within the file.
         if not isinstance(tokens[0], InputToken):
             self.oops(f"Not an InputToken: {tokens[0]!r}")
 
