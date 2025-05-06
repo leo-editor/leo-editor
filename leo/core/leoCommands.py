@@ -3095,8 +3095,8 @@ class Commands:
         ext: str,
         language: str,
         root: Position,
-        directory: str=None,
-        regex: str=None,
+        directory: str = None,
+        regex: str = None,
     ) -> None:
         """
         The official helper for the execute-general-script command.
