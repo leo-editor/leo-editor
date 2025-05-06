@@ -414,4 +414,5 @@ class DocWrapper(textwrap.TextWrapper):
 #@-others
 #@@language python
 #@@tabwidth -4
+#@@nobeautify
 #@-leo

@@ -58,4 +58,5 @@ class MultiSelectTree(multilinetree.SelectOneTree):
 #@-others
 #@@language python
 #@@tabwidth -4
+#@@nobeautify
 #@-leo

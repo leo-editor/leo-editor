@@ -42,4 +42,5 @@ class TextfieldUnicode(wgtextbox.Textfield):
 #@-others
 #@@language python
 #@@tabwidth -4
+#@@nobeautify
 #@-leo

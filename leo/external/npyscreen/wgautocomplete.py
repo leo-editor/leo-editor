@@ -135,4 +135,5 @@ class TitleFilename(titlefield.TitleText):
 #@-others
 #@@language python
 #@@tabwidth -4
+#@@nobeautify
 #@-leo

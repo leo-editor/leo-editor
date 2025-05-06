@@ -40,4 +40,5 @@ class TextfieldCtrlChars(textbox.Textfield):
 #@-others
 #@@language python
 #@@tabwidth -4
+#@@nobeautify
 #@-leo

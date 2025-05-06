@@ -54,4 +54,5 @@ class GridColTitles(grid.SimpleGrid):
 #@-others
 #@@language python
 #@@tabwidth -4
+#@@nobeautify
 #@-leo

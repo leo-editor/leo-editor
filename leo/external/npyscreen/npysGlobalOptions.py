@@ -7,4 +7,5 @@ ASCII_ONLY = False  # See the safe_string function in wgwidget.  At the moment t
 #@-others
 #@@language python
 #@@tabwidth -4
+#@@nobeautify
 #@-leo

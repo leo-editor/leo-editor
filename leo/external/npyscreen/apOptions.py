@@ -390,4 +390,5 @@ class OptionDate(Option):
 #@-others
 #@@language python
 #@@tabwidth -4
+#@@nobeautify
 #@-leo

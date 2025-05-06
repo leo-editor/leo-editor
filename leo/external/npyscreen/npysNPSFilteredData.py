@@ -55,4 +55,5 @@ class NPSFilteredDataList(NPSFilteredDataBase):
 #@-others
 #@@language python
 #@@tabwidth -4
+#@@nobeautify
 #@-leo

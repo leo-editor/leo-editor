@@ -137,4 +137,5 @@ class MLTreeMultiSelectAnnotated(MLTreeMultiSelect):
 #@-others
 #@@language python
 #@@tabwidth -4
+#@@nobeautify
 #@-leo

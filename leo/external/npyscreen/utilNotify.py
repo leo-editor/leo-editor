@@ -116,4 +116,5 @@ def notify_yes_no(message, title="Message", form_color='STANDOUT', wrap=True, ed
 #@-others
 #@@language python
 #@@tabwidth -4
+#@@nobeautify
 #@-leo

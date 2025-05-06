@@ -21,4 +21,5 @@ class NPSAppAdvanced(apNPSApplicationManaged.NPSAppManaged):
 #@-others
 #@@language python
 #@@tabwidth -4
+#@@nobeautify
 #@-leo

@@ -28,4 +28,5 @@ def view_help(message, title="Message", form_color="STANDOUT", scroll_exit=False
 #@-others
 #@@language python
 #@@tabwidth -4
+#@@nobeautify
 #@-leo

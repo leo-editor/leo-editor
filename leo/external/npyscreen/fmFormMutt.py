@@ -102,4 +102,5 @@ class FormMuttWithMenus(FormMutt, fmFormWithMenus.FormBaseNewWithMenus):
 #@-others
 #@@language python
 #@@tabwidth -4
+#@@nobeautify
 #@-leo

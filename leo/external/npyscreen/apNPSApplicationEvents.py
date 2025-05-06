@@ -96,4 +96,5 @@ class StandardApp(NPSAppManaged, EventHandler):
 #@-others
 #@@language python
 #@@tabwidth -4
+#@@nobeautify
 #@-leo

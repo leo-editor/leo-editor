@@ -116,4 +116,5 @@ def wrapper_no_fork(call_function, reset=False):
 #@-others
 #@@language python
 #@@tabwidth -4
+#@@nobeautify
 #@-leo

@@ -51,4 +51,5 @@ class ActionPopupWide(fmActionFormV2.ActionFormV2):
 #@-others
 #@@language python
 #@@tabwidth -4
+#@@nobeautify
 #@-leo

@@ -34,4 +34,5 @@ class TitlePassword(titlefield.TitleText):
 #@-others
 #@@language python
 #@@tabwidth -4
+#@@nobeautify
 #@-leo

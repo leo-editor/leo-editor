@@ -60,4 +60,5 @@ class TitleFilenameCombo(wgcombobox.TitleCombo):
 #@-others
 #@@language python
 #@@tabwidth -4
+#@@nobeautify
 #@-leo
