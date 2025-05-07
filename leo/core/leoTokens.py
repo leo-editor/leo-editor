@@ -970,9 +970,14 @@ class TokenBasedOrange:  # Orange is the new Black.
         else:
             # Exactly two spaces before trailing comments.
             i = val.find('#')
-            assert i >= 0, repr(val)
-            val = val[:i].rstrip() + '  # ' + val[i + 1 :].lstrip()
-        self.gen_token('comment', val)
+            if i == -1:
+                g.trace('OOPS', repr(val), g.callers())
+            # Special case for ###.
+            elif val[i:].startswith('###'):
+                val = val[:i].rstrip() + '  ### ' + val[i + 3 :].strip()
+            else:
+                val = val[:i].rstrip() + '  # ' + val[i + 1 :].strip()
+        self.gen_token('comment', val.rstrip())
     #@+node:ekr.20240111051726.1: *5* tbo.do_dedent
     def do_dedent(self) -> None:
         """Handle dedent token."""
@@ -1530,6 +1535,8 @@ class TokenBasedOrange:  # Orange is the new Black.
                     assert top_state and top_state.kind in ('(', 'arg'), repr(top_state)
                     if top_state.kind == 'arg':
                         self.finish_arg(i, top_state)
+                    else:
+                        self.finish_paren(i, top_state)
                     scan_stack.pop()
 
                 # Handle interior tokens in 'arg' and 'slice' states.
@@ -1561,7 +1568,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             print(scan_stack)
     #@+node:ekr.20240129041304.1: *6* tbo.finish_arg
     def finish_arg(self, end: int, state: Optional[ScanState]) -> None:
-        """Set context for all ':' when scanning from '(' to ')'."""
+        """Set context for '=', ':', '*', and '**' tokens when scanning from '(' to ')'."""
 
         # Sanity checks.
         if not state:
@@ -1604,6 +1611,23 @@ class TokenBasedOrange:  # Orange is the new Black.
                     elif token.value == ':':
                         self.set_context(i, 'annotation')
                 prev = token
+    #@+node:ekr.20250507041900.1: *6* tbo.finish_paren (new)
+    def finish_paren(self, end: int, state: Optional[ScanState]) -> None:
+        """Set context for '=' tokens when scanning from '(' to ')'."""
+
+        # Sanity checks.
+        if not state:
+            return
+        assert state.kind == '(', repr(state)
+        token = state.token
+        assert token.value == '(', repr(token)
+        i1 = token.index
+        assert i1 < end, (i1, end)
+
+        # Compute the context for each *separate* '=' token.
+        for token in self.input_tokens[i1:end]:
+            if token.kind == 'op' and token.value == '=':
+                self.set_context(token.index, 'initializer')
     #@+node:ekr.20240128233406.1: *6* tbo.finish_slice
     def finish_slice(self, end: int, state: ScanState) -> None:
         """Set context for all ':' when scanning from '[' to ']'."""
