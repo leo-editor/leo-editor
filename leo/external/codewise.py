@@ -333,7 +333,7 @@ def shortFileName(fileName, n=None):
         return ''
     if n is None or n < 1:
         return os.path.basename(fileName)
-    return '/'.join(fileName.replace('\\', '/').split('/')[-n :])
+    return '/'.join(fileName.replace('\\', '/').split('/')[-n:])
 #@+node:ekr.20110310093050.14268: *5* trace (codewise)
 # Convert all args to strings.
 
