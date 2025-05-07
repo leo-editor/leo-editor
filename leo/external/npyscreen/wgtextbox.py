@@ -586,4 +586,5 @@ class FixedText(TextfieldBase):
 #@-others
 #@@language python
 #@@tabwidth -4
+#@@nobeautify
 #@-leo

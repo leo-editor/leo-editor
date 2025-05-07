@@ -20,7 +20,7 @@ class TestColorizer(LeoUnitTest):
     def color(self, language_name, text):
         """
         Run the test by colorizing a node with the given text.
-        
+
         Colorize using the jEdit and pygments colorizers.
         """
         c = self.c

@@ -188,7 +188,7 @@ def render_focused(event: LeoKeyEvent) -> None:
         ├───────────┤     │     │
         │ log       │     │     │
         └───────────┴─────┴─────┘
-        
+
     Note: The expand/contract-main-splitter commands have no effect when using this layout.
     """
     c = event.get('c')
@@ -220,7 +220,7 @@ def restoreDefaultLayout(event: LeoKeyEvent) -> None:
 def swapLogPanel(event: LeoKeyEvent) -> None:
     """
     Move the Log frame between main and secondary splitters.
-    
+
     **Do not use this layout as the initial layout.**
     """
     c = event.get('c')

@@ -662,7 +662,7 @@ class LeoFind:
     def _find_all_matches(self, patterns: list[re.Pattern]) -> list[tuple[int, Position, str]]:
         """
         Search all nodes for any of the given compiled regex patterns.
-        
+
         Return a list of tuples (starting-index, p, matching-string) describing the matches.
         """
         c = self.c

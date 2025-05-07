@@ -37,7 +37,7 @@ will return None.
 # See BaseColorizer.normalize().
 leo_color_database = {
     # leo colors
-    "leoblue": "#F0F8FF",  #alice blue
+    "leoblue": "#F0F8FF",  # alice blue
     "leoyellow": "#ffffec",
     "leopink": "#FFE4E1",  # misty rose
     # Solarized colors

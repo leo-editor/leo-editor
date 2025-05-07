@@ -247,7 +247,7 @@ class TextFrame(leoFrame.LeoFrame):
         stroke = c.k.shortcutFromSetting(char)
         g.trace('char', repr(char), 'stroke', repr(stroke))
         e = leoTypingEvent(c, w, char, stroke)
-        k.masterKeyHandler(event=e)  ## ,stroke=key)
+        k.masterKeyHandler(event=e)
     #@+node:ekr.20150107090324.30: *3* update
     def update(self):
         pass

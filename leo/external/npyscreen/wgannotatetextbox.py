@@ -118,4 +118,5 @@ class AnnotateTextboxBaseRight(AnnotateTextboxBase):
 #@-others
 #@@language python
 #@@tabwidth -4
+#@@nobeautify
 #@-leo

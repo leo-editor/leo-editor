@@ -263,7 +263,7 @@ class Commands:
         self.import_error_nodes: list[Position] = []  # List of nodes for c.raise_error_dialogs.
         self.last_dir: str = None  # The last used directory.
         self.mFileName: str = fileName or ''  # Do _not_ use os_path_norm: it converts an empty path to '.' (!!)
-        self.mRelativeFileName = relativeFileName or ''  #
+        self.mRelativeFileName = relativeFileName or ''
         self.orphan_at_file_nodes: list[Position] = []  # List of orphaned nodes for c.raise_error_dialogs.
     #@+node:ekr.20120217070122.10470: *5* c.initObjects
     #@@nobeautify
@@ -283,7 +283,7 @@ class Commands:
         from leo.core import leoHistory
         self.nodeHistory = leoHistory.NodeHistory(c)
         self.initConfigSettings()
-        c.setWindowPosition() # Do this after initing settings.
+        c.setWindowPosition()  # Do this after initing settings.
 
         # Break circular import dependencies by doing imports here.
         # All these imports take almost 3/4 sec in the leoBridge.
@@ -397,7 +397,7 @@ class Commands:
         c.db = CommanderWrapper(c)
         c.free_layout = None  # Compatibility. Always None.
         c.quicksearch_controller = None  # Leo 6.8.0: Set by quicksearch plugin.
-            
+
         if hasattr(g.app.gui, 'styleSheetManagerClass'):
             self.styleSheetManager = g.app.gui.styleSheetManagerClass(c)
             self.subCommanders.append(self.styleSheetManager)
@@ -657,7 +657,7 @@ class Commands:
             return None
 
         # Get the language and extension.
-        language =  c.getLanguage(p)
+        language = c.getLanguage(p)
         ext = g.app.language_extension_dict.get(language)
         if not ext:
             print(f"{tag}: No extension for {language}")
@@ -910,7 +910,7 @@ class Commands:
             cmd = f'assoc {extension}'
             # pylint: disable=subprocess-run-check
             proc = subprocess.run(cmd, shell=True, capture_output=True)
-            filetype = proc.stdout.decode('utf-8')  #e.g., ".py=Python.File"
+            filetype = proc.stdout.decode('utf-8')  # e.g., ".py=Python.File"
             filetype = filetype.split('=')[1] if filetype else ''
             return filetype
 
@@ -1597,7 +1597,7 @@ class Commands:
     def getEncoding(self, p: Position) -> str:
         """
         Scan p and all ancestors for the first @encoding direcive.
-        
+
         Return c.config.default_derived_file_encoding or 'utf-8' by default.
         """
         c = self
@@ -1704,7 +1704,7 @@ class Commands:
     def getPageWidth(self, p: Position) -> int:
         """
         Scan p.b and all ancestors for the first @pagewith direcive.
-        
+
         Return c.page_width by default.
         """
         c = self
@@ -1722,7 +1722,7 @@ class Commands:
     def getPath(self, p: Position) -> str:
         """
         Scan for @path directives in p and all its direct ancestors.
-        
+
         Return an absolute path or a reasonable default.
         """
         c = self
@@ -1779,7 +1779,7 @@ class Commands:
     def getTabWidth(self, p: Position) -> int:
         """
         Scan p.b and all ancestors for the first @encoding direcive.
-        
+
         Return c.tab_width by default.
         """
         c = self
@@ -2693,7 +2693,7 @@ class Commands:
     def fullPath(self, p: Position) -> str:
         """
         Return the absolute path in effect at p.
-        
+
         Return the path to an external file if p is an @<file> node.
         Otherwise the return the path to the enclosing directory.
         """
@@ -2780,7 +2780,7 @@ class Commands:
         # This pathetic code should be generalized,
         # but it's not as easy as one might imagine.
         c = self
-        d = {1: c.interactive1, 2: c.interactive2, 3: c.interactive3,}
+        d = {1: c.interactive1, 2: c.interactive2, 3: c.interactive3, }
         f = d.get(len(prompts))
         if f:
             f(callback, event, prompts)
@@ -3095,8 +3095,8 @@ class Commands:
         ext: str,
         language: str,
         root: Position,
-        directory: str=None,
-        regex: str=None,
+        directory: str = None,
+        regex: str = None,
     ) -> None:
         """
         The official helper for the execute-general-script command.

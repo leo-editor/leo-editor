@@ -67,7 +67,7 @@ class TestModes(LeoUnitTest):
     #@+node:ekr.20250109055901.1: *4* TestModes.test_rules_dicts
     def test_rules_dicts(self):
 
-        tag = 'test_rules_dicts'
+        # tag = 'test_rules_dicts'
 
         #@+others  # Define test_rules_dict
         #@+node:ekr.20250109060045.1: *5* function: test_rules_dict
@@ -162,7 +162,7 @@ class TestModes(LeoUnitTest):
             r"'\xff'",  # Must begin with [0-7]
             r"'\u{7fhi}'",  # Invalid hex digits.
         )
-        for s  in error_table:
+        for s in error_table:
             kind, seq = rust_char(colorer, s, i=0)
             assert kind == 'literal4', kind
             assert seq == "'", repr(seq)

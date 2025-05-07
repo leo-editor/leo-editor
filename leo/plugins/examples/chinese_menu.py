@@ -103,7 +103,7 @@ def onMenu(tag, keywords):
                 ("Reformat Paragraph", "重新格式化段落"),
                 ("Indent", "增加缩进"),
                 ("Unindent", "减少缩进"),
-                ("Match Brackets", "括号匹配"),  #  <({["), #EKR
+                ("Match Brackets", "括号匹配"),  # <({["), #EKR
             ("Edit Headline...", "编辑标题..."),
                 ("Edit Headline", "编辑标题"),
                 ("End Edit Headline", "结束编辑标题"),

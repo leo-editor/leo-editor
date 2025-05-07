@@ -17,7 +17,7 @@ def addPluginDirectives(tag, keywords):
 
     """Add all new directives to g.globalDirectiveList"""
 
-    global directives
+    # global directives
 
     for s in directives:
         if s.startswith('@'):

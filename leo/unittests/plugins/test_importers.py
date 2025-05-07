@@ -3083,10 +3083,10 @@ class TestPython(BaseTestImporter):
         #        Designed to test find_end_of_block.
         s = '''
             class TracerCore:
-                
+
                 def start(self):
                     """Start this tracer."""
-                    
+
                 def stop(self):
                     """Stop this tracer."""
 

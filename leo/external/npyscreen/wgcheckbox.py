@@ -232,4 +232,5 @@ class RoundCheckBoxMultiline(CheckBoxMultiline):
 #@-others
 #@@language python
 #@@tabwidth -4
+#@@nobeautify
 #@-leo

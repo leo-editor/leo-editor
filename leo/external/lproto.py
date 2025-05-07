@@ -153,7 +153,7 @@ class LProtoServer:
         lsock.connect(lsock,
             QtCore.SIGNAL('readyRead()'),
             readyread_cb)
-        #self.connect(self.qsock, SIGNAL('connectionClosed()'), self.handleClosed)
+        # self.connect(self.qsock, SIGNAL('connectionClosed()'), self.handleClosed)
     #@+node:ekr.20111012091630.9385: *3* readyread
     def readyread(self):
         pass

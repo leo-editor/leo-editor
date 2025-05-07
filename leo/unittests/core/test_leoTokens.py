@@ -521,6 +521,56 @@ class TestTokenBasedOrange(BaseTest):
         expected = contents.rstrip() + '\n'
         results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
+    #@+node:ekr.20250506092303.1: *3* TestTBO.test_flake8_errors
+    def test_flake8_errors(self):
+
+        tag = 'test_flake8_errors'
+
+        # Part 1: tests w/o black.
+        non_black_table = (
+            # leoAbbrevCommands.py: line 160.
+            """c.abbrev_subst_env = {'c': c, 'g': g, '_values': {}, }\n""",
+        )
+        for i, contents in enumerate(non_black_table):
+            description = f"{tag} (w/o black) part {i}"
+            contents, tokens = self.make_data(contents, description=description)
+            expected = contents
+            results = self.beautify(contents, tokens, filename=description)
+            if 0:  # pragma: no cover
+                g.printObj(tokens, tag=description)
+                g.printObj(expected, tag='Expected')
+                g.printObj(results, tag='Results')
+            if results != expected:  # pragma: no cover
+                print('')
+                print(
+                    f"TestTokenBasedOrange.{tag}: FAIL\n"
+                    f"  contents: {contents.rstrip()}\n"
+                    f"     black: {expected.rstrip()}\n"
+                    f"    orange: {results.rstrip() if results else 'None'}")
+            self.assertEqual(results, expected, msg=description)
+
+
+        # All entries are expected values...
+        black_table = (
+            # leoserver.py: line 1575.
+            """s = s[len('@nocolor') :]\n""",
+            # leoGlobals.py.
+            """g.pr(f"{self.calledDict.get(key,0):d}", key)""",  # line 1805
+            """tracing_tags [id(self)] = tag""",  # line 1913.
+            # make_stub_files.py.
+            """def match(self, s, trace=False):\n    pass""",
+        )
+        for i, contents in enumerate(black_table):
+            description = f"{tag} (black) part {i}"
+            contents, tokens = self.make_data(contents, description=description)
+            expected = self.blacken(contents)
+            results = self.beautify(contents, tokens, filename=description)
+            if results != expected:  # pragma: no cover
+                print('')
+                # g.printObj(tokens, tag='Tokens')
+                g.printObj(expected, tag='Expected')
+                g.printObj(results, tag='Results')
+            self.assertEqual(results, expected, msg=description)
     #@+node:ekr.20240105153425.65: *3* TestTBO.test_leo_sentinels
     def test_leo_sentinels_1(self):
 
@@ -854,6 +904,18 @@ class TestTokenBasedOrange(BaseTest):
                 g.printObj(expected, tag='Expected (Black)')
                 g.printObj(results, tag='Results')
             self.assertEqual(expected, results)
+    #@+node:ekr.20250505153051.1: *3* TestTBO.test_spaces_after_keyword
+    def test_spaces_after_keyword(self):
+
+        contents = """return  ''\n"""
+        expected = """return ''\n"""
+        contents, tokens = self.make_data(contents)
+        results = self.beautify(contents, tokens)
+        if results != expected:  # pragma: no cover
+            g.printObj(tokens, tag='Tokens')
+            g.printObj(results, tag='Results')
+            g.printObj(expected, tag='Expected')
+        assert results == expected
     #@+node:ekr.20240105153425.76: *3* TestTBO.test_star_star_operator
     def test_star_star_operator(self):
 
@@ -863,6 +925,24 @@ class TestTokenBasedOrange(BaseTest):
         expected = contents
         results = self.beautify(contents, tokens)
         self.assertEqual(results, expected)
+    #@+node:ekr.20250505152406.1: *3* TestTBO.test_trailing_ws_in_docstring
+    def test_trailing_ws_in_docstring(self):
+
+        expected = textwrap.dedent('''\
+    """
+    This line contains trailing ws
+    """
+    ''')
+        # Create the trailing ws by hand so flake8 doesn't complain!
+        contents = expected.replace('ws', 'ws  ')
+        assert contents != expected
+        contents, tokens = self.make_data(contents)
+        results = self.beautify(contents, tokens)
+        if results != expected:  # pragma: no cover
+            g.printObj(tokens, tag='Tokens')
+            g.printObj(results, tag='Results')
+            g.printObj(expected, tag='Expected')
+        assert results == expected
     #@+node:ekr.20240109070553.1: *3* TestTBO.test_unary_ops
     def test_unary_ops(self):
 
@@ -963,6 +1043,18 @@ class TestTokenBasedOrange(BaseTest):
         expected = contents
         results = self.beautify(contents, tokens)
         self.assertEqual(results, expected, msg=contents)
+    #@+node:ekr.20250505231955.1: *3* TestTBO.test_ws_in_blank_line
+    def test_ws_in_blank_line(self):
+
+        contents = 'line 1\n   \nline 2\n'
+        expected = 'line 1\n\nline 2\n'
+        contents, tokens = self.make_data(contents)
+        results = self.beautify(contents, tokens)
+        if results != expected:  # pragma: no cover
+            g.printObj(tokens, tag='Tokens')
+            g.printObj(results, tag='Results')
+            g.printObj(expected, tag='Expected')
+        assert results == expected
     #@+node:ekr.20240105153425.81: *3* TestTBO.verbatim2
     def test_verbatim2(self):
 

@@ -486,4 +486,5 @@ class MLTreeAnnotatedAction(MLTree, multiline.MultiLineAction):
 #@-others
 #@@language python
 #@@tabwidth -4
+#@@nobeautify
 #@-leo

@@ -30,7 +30,7 @@ def onPreSave(tag=None, keywords=None):
 
     """Before saving an @nosent file, make sure that all nodes have a blank line at the end."""
 
-    global nosentNodes
+    # global nosentNodes
     c = keywords.get('c')
     if c:
         for p in c.all_positions():

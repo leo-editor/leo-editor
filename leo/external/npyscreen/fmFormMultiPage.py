@@ -263,4 +263,5 @@ class FormMultiPageActionWithMenus(FormMultiPageAction, wgNMenuDisplay.HasMenus)
 #@-others
 #@@language python
 #@@tabwidth -4
+#@@nobeautify
 #@-leo

@@ -117,4 +117,5 @@ class SplitFormWithMenus(fmForm.SplitForm, FormWithMenus):
 #@-others
 #@@language python
 #@@tabwidth -4
+#@@nobeautify
 #@-leo

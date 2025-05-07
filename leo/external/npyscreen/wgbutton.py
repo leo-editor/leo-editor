@@ -124,4 +124,5 @@ class MiniButtonPress(MiniButton):
 #@-others
 #@@language python
 #@@tabwidth -4
+#@@nobeautify
 #@-leo

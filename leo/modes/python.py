@@ -319,7 +319,7 @@ def python_comment(colorer, s, i):
     """
     Switch to md coloring if s is '# %% [markdown]', provided that c.p.b
     contains @language jupytext.
-    
+
     New in Leo 6.8.3.
     """
     trace = 'coloring' in g.app.debug and not g.unitTesting

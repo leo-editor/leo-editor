@@ -497,7 +497,7 @@ class QuickSearchController:
             if hitBase:
                 # If I hit the base then revert to all positions
                 # this is basically the "main" chapter
-                hitBase = False  #reset
+                hitBase = False  # reset
                 hNodes = c.all_positions()
                 bNodes = c.all_positions()
             else:
@@ -513,7 +513,7 @@ class QuickSearchController:
             hm = self.find_h(hpat, list(hNodes), flags)  # Returns a list of positions.
             bm = self.find_b(bpat, list(bNodes), flags)  # Returns a list of positions.
             bm_keys = [match[0].key() for match in bm]
-            numOfHm = len(hm)  #do this before trim to get accurate count
+            numOfHm = len(hm)  # do this before trim to get accurate count
             hm = [match for match in hm if match[0].key() not in bm_keys]
             if self.showParents:
                 # Was: parents = OrderedDefaultDict(list)
@@ -754,7 +754,7 @@ class QuickSearchController:
                 it = {"type": "headline", "label": p.h}
                 if self.addItem(it, (p, None)):
                     return lineMatchHits
-                if m is not None:  #p might not have body matches
+                if m is not None:  # p might not have body matches
                     ms = self.matchlines(p.b, m)
                     for match_list, pos in ms:
                         lineMatchHits += 1
@@ -1324,7 +1324,7 @@ class LeoServer:
             commanders = g.app.commanders()
             for commander in commanders:
                 if str(id(commander)) == str(commanderId):
-                    self.c = commander  #  Found commander by id!
+                    self.c = commander  # Found commander by id!
                     self.c.selectPosition(self.c.p)
                     self._check_outline(self.c)
                     result = {"total": total, "filename": self.c.fileName()}
@@ -4635,7 +4635,7 @@ class LeoServer:
     #@+node:felix.20210621233316.76: *5* server.init_connection
     def _init_connection(self, web_socket: Socket) -> None:  # pragma: no cover (tested in client).
         """Begin the connection."""
-        global connectionsTotal
+        # global connectionsTotal
         if connectionsTotal == 1:
             # First connection, so "Master client" setup
             self.web_socket = web_socket
@@ -4725,7 +4725,7 @@ class LeoServer:
                 commanders = g.app.commanders()
                 for commander in commanders:
                     if str(id(commander)) == str(commanderId):
-                        c = commander  #  Found commander by id!
+                        c = commander  # Found commander by id!
                         break
         # Still not found?
         if not c:  # pragma: no cover
@@ -4859,7 +4859,7 @@ class LeoServer:
         that contains at least an 'id' key.
 
         """
-        global traces
+        # global traces
         tag = '_do_message'
         trace, verbose = 'request' in traces, 'verbose' in traces
         func: Callable
@@ -5178,7 +5178,7 @@ class LeoServer:
         Finally, this method returns the json string corresponding to the
         response.
         """
-        global traces
+        # global traces
         tag = '_make_response'
         trace = self.log_flag or 'response' in traces
         verbose = 'verbose' in traces
@@ -5278,7 +5278,7 @@ class LeoServer:
         toAll: bool = False,
     ) -> None:  # pragma: no cover (tested in server)
         """Output json string to the web_socket"""
-        global connectionsTotal
+        # global connectionsTotal
         tag = '_async_output'
         outputBytes = bytes(json, 'utf-8')
         if toAll:
@@ -5316,8 +5316,7 @@ class LeoServer:
 def main() -> None:  # pragma: no cover (tested in client)
     """python script for leo integration via leoBridge"""
 
-    global websockets
-    global wsHost, wsPort, wsLimit, wsPersist, wsSkipDirty, argFile
+    # global argFile, websockets, wsHost, wsPort, wsLimit, wsPersist, wsSkipDirty,
     if not websockets:
         print('websockets not found')
         print('pip install websockets')
@@ -5506,7 +5505,7 @@ def main() -> None:  # pragma: no cover (tested in client)
         """
         Get arguments from the command line and sets them globally.
         """
-        global wsHost, wsPort, wsLimit, wsPersist, wsSkipDirty, argFile, traces
+        global wsHost, wsPort, wsLimit, wsPersist, wsSkipDirty, argFile  # traces
 
         def leo_file(s: str) -> str:
             if os.path.exists(s):
@@ -5577,7 +5576,7 @@ def main() -> None:  # pragma: no cover (tested in client)
             wsLimit = 1
     #@+node:felix.20210803174312.1: *3* function: notify_clients
     async def notify_clients(action: str, excludedConn: Any = None) -> None:
-        global connectionsTotal
+        # global connectionsTotal
         if connectionsPool:  # asyncio.wait doesn't accept an empty list
             opened = bool(controller.c)  # c can be none if no files opened
             m = json.dumps({
@@ -5595,7 +5594,7 @@ def main() -> None:  # pragma: no cover (tested in client)
                 ])
     #@+node:felix.20210803174312.2: *3* function: register_client
     async def register_client(websocket: Socket) -> None:
-        global connectionsTotal
+        # global connectionsTotal
         connectionsPool.add(websocket)
         await notify_clients("unregister", websocket)
     #@+node:felix.20210807160828.1: *3* function: save_dirty
@@ -5612,7 +5611,7 @@ def main() -> None:  # pragma: no cover (tested in client)
                 commander.close()  # Patched 'ask' methods will open dialog
     #@+node:felix.20210803174312.3: *3* function: unregister_client
     async def unregister_client(websocket: Socket) -> None:
-        global connectionsTotal
+        # global connectionsTotal
         connectionsPool.remove(websocket)
         await notify_clients("unregister")
     #@+node:felix.20210621233316.106: *3* function: ws_handler (server)
@@ -5622,7 +5621,7 @@ def main() -> None:  # pragma: no cover (tested in client)
 
         It must be a coroutine accepting two arguments: a WebSocketServerProtocol and the request URI.
         """
-        global connectionsTotal, wsLimit
+        global connectionsTotal  # wsLimit
         tag = 'server'
         trace = False
         verbose = False

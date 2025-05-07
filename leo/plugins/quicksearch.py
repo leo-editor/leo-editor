@@ -70,11 +70,11 @@ This plugin defines the following commands that can be bound to keys:
 - find-quick-test-failures:
   Lists nodes in c.db.get('unittest/cur/fail')
 
-- find-quick-timeline:   
+- find-quick-timeline:
   Lists all nodes in reversed gnx order, basically newest to
   oldest, creation wise, not modification wise.
 
-- find-quick-changed:  
+- find-quick-changed:
   Lists all nodes that are changed (aka "dirty") since last save.
   Handy when you want to see why a file's marked as changed.
 
@@ -461,7 +461,7 @@ class QuickSearchController:
                 it.setFont(f)
                 if self.addItem(it, (p[0], None)):
                     return lineMatchHits
-                if p[1] is not None:  #p might not have body matches
+                if p[1] is not None:  # p might not have body matches
                     ms = matchlines(p[0].b, p[1])
                     for ml, pos in ms:
                         lineMatchHits += 1
@@ -594,7 +594,7 @@ class QuickSearchController:
             if hitBase:
                 # If I hit the base then revert to all positions
                 # this is basically the "main" chapter
-                hitBase = False  #reset
+                hitBase = False  # reset
                 hNodes = self.c.all_positions()
                 bNodes = self.c.all_positions()
             else:
@@ -609,7 +609,7 @@ class QuickSearchController:
             hm = self.find_h(hpat, hNodes, flags)
             bm = self.find_b(bpat, bNodes, flags)
             bm_keys = [match[0].key() for match in bm]
-            numOfHm = len(hm)  #do this before trim to get accurate count
+            numOfHm = len(hm)  # do this before trim to get accurate count
             hm = [match for match in hm if match[0].key() not in bm_keys]
             if self.widgetUI.showParents.isChecked():
                 parents: dict[str, Match_List] = {}
@@ -743,7 +743,7 @@ class QuickSearchController:
             tgt()
         elif len(tgt) == 2:
             p, pos = tgt
-            if hasattr(p, 'v'):  #p might be "Root"
+            if hasattr(p, 'v'):  # p might be "Root"
                 if not c.positionExists(p):
                     g.es("Node moved or deleted.\nMaybe re-do search.",
                         color='red')

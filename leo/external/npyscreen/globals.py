@@ -9,4 +9,5 @@ DISABLE_RESIZE_SYSTEM = False
 #@-others
 #@@language python
 #@@tabwidth -4
+#@@nobeautify
 #@-leo

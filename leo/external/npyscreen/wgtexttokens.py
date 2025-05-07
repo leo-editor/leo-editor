@@ -209,4 +209,5 @@ class TitleTextTokens(wgtitlefield.TitleText):
 #@-others
 #@@language python
 #@@tabwidth -4
+#@@nobeautify
 #@-leo

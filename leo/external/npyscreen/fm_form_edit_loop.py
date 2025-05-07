@@ -143,4 +143,5 @@ class FormDefaultEditLoop:
 #@-others
 #@@language python
 #@@tabwidth -4
+#@@nobeautify
 #@-leo

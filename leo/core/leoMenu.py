@@ -30,13 +30,16 @@ class LeoMenu:
     def finishCreate(self) -> None:
         self.define_enable_dict()
     #@+node:ekr.20120124042346.12937: *4* LeoMenu.define_enable_table
-    #@@nobeautify
-
     def define_enable_dict(self) -> None:
 
         c = self.c
         if not c.commandsDict:
-            return # This is not an error: it happens during init.
+            return  # This is not an error: it happens during init.
+
+        #@+<< define self.enable_dict >>
+        #@+node:ekr.20250506093659.1: *5* << define self.enable_dict >>
+        #@@nobeautify
+
         self.enable_dict = d = {
 
             # File menu...
@@ -98,11 +101,12 @@ class LeoMenu:
             # too slow...
                 # 'mark-changed-items':   c.canMarkChangedHeadlines,
         }
+        #@-<< define self.enable_dict >>
 
-        for i in range(1,9):
-            d [f"expand-to-level-{i}"] = lambda: c.p.hasChildren()
+        for i in range(1, 9):
+            d[f"expand-to-level-{i}"] = lambda: c.p.hasChildren()
 
-        if 0: # Initial testing.
+        if 0:  # Initial testing.
             commandKeys = list(c.commandsDict.keys())
             for key in sorted(d.keys()):
                 if key not in commandKeys:
@@ -115,7 +119,7 @@ class LeoMenu:
     def capitalizeMinibufferMenuName(self, s: str, removeHyphens: bool) -> str:
         result = []
         for i, ch in enumerate(s):
-            prev =     s[i - 1] if i > 0 else ''
+            prev = s[i - 1] if i > 0 else ''
             prevprev = s[i - 2] if i > 1 else ''
             if (
                 i == 0 or
@@ -199,7 +203,7 @@ class LeoMenu:
                 if table:
                     self.createMenuEntries(parentMenu, table)
                 if not self.handleSpecialMenus(name, parentName,
-                    alt_name=val2,  #848.
+                    alt_name=val2,  # 848.
                     table=table,
                 ):
                     # Create submenu of parent menu.

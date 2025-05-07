@@ -285,4 +285,5 @@ def selectFile(starting_value=None, *args, **keywords):
 #@-others
 #@@language python
 #@@tabwidth -4
+#@@nobeautify
 #@-leo

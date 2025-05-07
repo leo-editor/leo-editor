@@ -62,7 +62,7 @@ def make_colorizer(c: Cmdr, widget: QWidget) -> Union[JEditColorizer, PygmentsCo
 class BaseColorizer:
     """
     The base class for all Leo colorizers.
-    
+
     c.frame.body.colorizer is the actual colorizer.
     """
     #@+others
@@ -347,144 +347,144 @@ class BaseColorizer:
 
         # These defaults are sure to exist.
         self.default_colors_dict = {
-            #
+
             # Used in Leo rules...
-            # tag name      :( option name,                  default color),
-            'blank'         :('show_invisibles_space_color', '#E5E5E5'), # gray90
-            'docpart'       :('doc_part_color',              'red'),
-            'leokeyword'    :('leo_keyword_color',           'blue'),
-            'link'          :('section_name_color',          'red'),
-            'name'          :('undefined_section_name_color','red'),
-            'namebrackets'  :('section_name_brackets_color', 'blue'),
-            'tab'           :('show_invisibles_tab_color',   '#CCCCCC'), # gray80
-            'url'           :('url_color',                   'purple'),
-            #
+            # tag name      : ( option name,                   default color),
+            'blank'         : ('show_invisibles_space_color',  '#E5E5E5'),  # gray90
+            'docpart'       : ('doc_part_color',               'red'),
+            'leokeyword'    : ('leo_keyword_color',            'blue'),
+            'link'          : ('section_name_color',           'red'),
+            'name'          : ('undefined_section_name_color', 'red'),
+            'namebrackets'  : ('section_name_brackets_color',  'blue'),
+            'tab'           : ('show_invisibles_tab_color',    '#CCCCCC'),  # gray80
+            'url'           : ('url_color',                    'purple'),
+
             # Pygments tags.  Non-default values are taken from 'default' style.
-            #
+
             # Top-level...
-            # tag name          :( option name,         default color),
-            'error'             :('error',              '#FF0000'), # border
-            'other'             :('other',              'white'),
-            'punctuation'       :('punctuation',        'white'),
-            'whitespace'        :('whitespace',         '#bbbbbb'),
-            'xt'                :('xt',                 '#bbbbbb'),
-            #
+            # tag name          : ( option name,         default color),
+            'error'             : ('error',              '#FF0000'),  # border
+            'other'             : ('other',              'white'),
+            'punctuation'       : ('punctuation',        'white'),
+            'whitespace'        : ('whitespace',         '#bbbbbb'),
+            'xt'                : ('xt',                 '#bbbbbb'),
+
             # Comment...
-            # tag name          :( option name,         default color),
-            'comment'           :('comment',            '#408080'), # italic
-            'comment.hashbang'  :('comment.hashbang',   '#408080'),
-            'comment.multiline' :('comment.multiline',  '#408080'),
-            'comment.special'   :('comment.special',    '#408080'),
-            'comment.preproc'   :('comment.preproc',    '#BC7A00'), # noitalic
-            'comment.single'    :('comment.single',     '#BC7A00'), # italic
-            #
+            # tag name          : ( option name,         default color),
+            'comment'           : ('comment',            '#408080'),  # italic
+            'comment.hashbang'  : ('comment.hashbang',   '#408080'),
+            'comment.multiline' : ('comment.multiline',  '#408080'),
+            'comment.special'   : ('comment.special',    '#408080'),
+            'comment.preproc'   : ('comment.preproc',    '#BC7A00'),  # noitalic
+            'comment.single'    : ('comment.single',     '#BC7A00'),  # italic
+
             # Generic...
-            # tag name          :( option name,         default color),
-            'generic'           :('generic',            '#A00000'),
-            'generic.deleted'   :('generic.deleted',    '#A00000'),
-            'generic.emph'      :('generic.emph',       '#000080'), # italic
-            'generic.error'     :('generic.error',      '#FF0000'),
-            'generic.heading'   :('generic.heading',    '#000080'), # bold
-            'generic.inserted'  :('generic.inserted',   '#00A000'),
-            'generic.output'    :('generic.output',     '#888'),
-            'generic.prompt'    :('generic.prompt',     '#000080'), # bold
-            'generic.strong'    :('generic.strong',     '#000080'), # bold
-            'generic.subheading':('generic.subheading', '#800080'), # bold
-            'generic.traceback' :('generic.traceback',  '#04D'),
+            # tag name          : ( option name,         default color),
+            'generic'           : ('generic',            '#A00000'),
+            'generic.deleted'   : ('generic.deleted',    '#A00000'),
+            'generic.emph'      : ('generic.emph',       '#000080'),  # italic
+            'generic.error'     : ('generic.error',      '#FF0000'),
+            'generic.heading'   : ('generic.heading',    '#000080'),  # bold
+            'generic.inserted'  : ('generic.inserted',   '#00A000'),
+            'generic.output'    : ('generic.output',     '#888'),
+            'generic.prompt'    : ('generic.prompt',     '#000080'),  # bold
+            'generic.strong'    : ('generic.strong',     '#000080'),  # bold
+            'generic.subheading': ('generic.subheading', '#800080'),  # bold
+            'generic.traceback' : ('generic.traceback',  '#04D'),
             #
             # Keyword...
-            # tag name              :( option name,             default color),
-            'keyword'               :('keyword',                '#008000'), # bold
-            'keyword.constant'      :('keyword.constant',       '#008000'),
-            'keyword.declaration'   :('keyword.declaration',    '#008000'),
-            'keyword.namespace'     :('keyword.namespace',      '#008000'),
-            'keyword.pseudo'        :('keyword.pseudo',         '#008000'), # nobold
-            'keyword.reserved'      :('keyword.reserved',       '#008000'),
-            'keyword.type'          :('keyword.type',           '#B00040'),
-            #
+            # tag name              : ( option name,             default color),
+            'keyword'               : ('keyword',                '#008000'),  # bold
+            'keyword.constant'      : ('keyword.constant',       '#008000'),
+            'keyword.declaration'   : ('keyword.declaration',    '#008000'),
+            'keyword.namespace'     : ('keyword.namespace',      '#008000'),
+            'keyword.pseudo'        : ('keyword.pseudo',         '#008000'),  # nobold
+            'keyword.reserved'      : ('keyword.reserved',       '#008000'),
+            'keyword.type'          : ('keyword.type',           '#B00040'),
+
             # Literal...
-            # tag name              :( option name,         default color),
-            'literal'               :('literal',            'white'),
-            'literal.date'          :('literal.date',       'white'),
-            #
+            # tag name              : ( option name,         default color),
+            'literal'               : ('literal',            'white'),
+            'literal.date'          : ('literal.date',       'white'),
+
             # Name...
-            # tag name              :( option name,         default color
+            # tag name              : ( option name,          default color
             # 'name' defined below.
-            'name.attribute'        :('name.attribute',     '#7D9029'), # bold
-            'name.builtin'          :('name.builtin',       '#008000'),
-            'name.builtin.pseudo'   :('name.builtin.pseudo','#008000'),
-            'name.class'            :('name.class',         '#0000FF'), # bold
-            'name.constant'         :('name.constant',      '#880000'),
-            'name.decorator'        :('name.decorator',     '#AA22FF'),
-            'name.entity'           :('name.entity',        '#999999'), # bold
-            'name.exception'        :('name.exception',     '#D2413A'), # bold
-            'name.function'         :('name.function',      '#0000FF'),
-            'name.function.magic'   :('name.function.magic','#0000FF'),
-            'name.label'            :('name.label',         '#A0A000'),
-            'name.namespace'        :('name.namespace',     '#0000FF'), # bold
-            'name.other'            :('name.other',         'red'),
+            'name.attribute'        : ('name.attribute',      '#7D9029'),  # bold
+            'name.builtin'          : ('name.builtin',        '#008000'),
+            'name.builtin.pseudo'   : ('name.builtin.pseudo', '#008000'),
+            'name.class'            : ('name.class',          '#0000FF'),  # bold
+            'name.constant'         : ('name.constant',       '#880000'),
+            'name.decorator'        : ('name.decorator',      '#AA22FF'),
+            'name.entity'           : ('name.entity',         '#999999'),  # bold
+            'name.exception'        : ('name.exception',      '#D2413A'),  # bold
+            'name.function'         : ('name.function',       '#0000FF'),
+            'name.function.magic'   : ('name.function.magic', '#0000FF'),
+            'name.label'            : ('name.label',          '#A0A000'),
+            'name.namespace'        : ('name.namespace',      '#0000FF'),  # bold
+            'name.other'            : ('name.other',          'red'),
             # A hack: getLegacyFormat returns name.pygments instead of name.
-            'name.pygments'         :('name.pygments',      'white'),
-            'name.tag'              :('name.tag',               '#008000'), # bold
-            'name.variable'         :('name.variable',          '#19177C'),
-            'name.variable.class'   :('name.variable.class',    '#19177C'),
-            'name.variable.global'  :('name.variable.global',   '#19177C'),
-            'name.variable.instance':('name.variable.instance', '#19177C'),
-            'name.variable.magic'   :('name.variable.magic',    '#19177C'),
-            #
+            'name.pygments'         : ('name.pygments',          'white'),
+            'name.tag'              : ('name.tag',               '#008000'),  # bold
+            'name.variable'         : ('name.variable',          '#19177C'),
+            'name.variable.class'   : ('name.variable.class',    '#19177C'),
+            'name.variable.global'  : ('name.variable.global',   '#19177C'),
+            'name.variable.instance': ('name.variable.instance', '#19177C'),
+            'name.variable.magic'   : ('name.variable.magic',    '#19177C'),
+
             # Number...
-            # tag name              :( option name,         default color
-            'number'                :('number',             '#666666'),
-            'number.bin'            :('number.bin',         '#666666'),
-            'number.float'          :('number.float',       '#666666'),
-            'number.hex'            :('number.hex',         '#666666'),
-            'number.integer'        :('number.integer',     '#666666'),
-            'number.integer.long'   :('number.integer.long','#666666'),
-            'number.oct'            :('number.oct',         '#666666'),
-            #
+            # tag name              : ( option name,          default color
+            'number'                : ('number',              '#666666'),
+            'number.bin'            : ('number.bin',          '#666666'),
+            'number.float'          : ('number.float',        '#666666'),
+            'number.hex'            : ('number.hex',          '#666666'),
+            'number.integer'        : ('number.integer',      '#666666'),
+            'number.integer.long'   : ('number.integer.long', '#666666'),
+            'number.oct'            : ('number.oct',          '#666666'),
+
             # Operator...
-            # tag name          :( option name,         default color
+            # tag name          : ( option name,         default color
             # 'operator' defined below.
-            'operator.word'     :('operator.Word',      '#AA22FF'), # bold
-            #
+            'operator.word'     : ('operator.Word',      '#AA22FF'),  # bold
+
             # String...
-            # tag name          :( option name,         default color
-            'string'            :('string',             '#BA2121'),
-            'string.affix'      :('string.affix',       '#BA2121'),
-            'string.backtick'   :('string.backtick',    '#BA2121'),
-            'string.char'       :('string.char',        '#BA2121'),
-            'string.delimiter'  :('string.delimiter',   '#BA2121'),
-            'string.doc'        :('string.doc',         '#BA2121'), # italic
-            'string.double'     :('string.double',      '#BA2121'),
-            'string.escape'     :('string.escape',      '#BB6622'), # bold
-            'string.heredoc'    :('string.heredoc',     '#BA2121'),
-            'string.interpol'   :('string.interpol',    '#BB6688'), # bold
-            'string.other'      :('string.other',       '#008000'),
-            'string.regex'      :('string.regex',       '#BB6688'),
-            'string.single'     :('string.single',      '#BA2121'),
-            'string.symbol'     :('string.symbol',      '#19177C'),
+            # tag name          : ( option name,         default color
+            'string'            : ('string',             '#BA2121'),
+            'string.affix'      : ('string.affix',       '#BA2121'),
+            'string.backtick'   : ('string.backtick',    '#BA2121'),
+            'string.char'       : ('string.char',        '#BA2121'),
+            'string.delimiter'  : ('string.delimiter',   '#BA2121'),
+            'string.doc'        : ('string.doc',         '#BA2121'),  # italic
+            'string.double'     : ('string.double',      '#BA2121'),
+            'string.escape'     : ('string.escape',      '#BB6622'),  # bold
+            'string.heredoc'    : ('string.heredoc',     '#BA2121'),
+            'string.interpol'   : ('string.interpol',    '#BB6688'),  # bold
+            'string.other'      : ('string.other',       '#008000'),
+            'string.regex'      : ('string.regex',       '#BB6688'),
+            'string.single'     : ('string.single',      '#BA2121'),
+            'string.symbol'     : ('string.symbol',      '#19177C'),
             #
             # jEdit tags.
-            # tag name  :( option name,     default color),
-            'comment1'  :('comment1_color', 'red'),
-            'comment2'  :('comment2_color', 'red'),
-            'comment3'  :('comment3_color', 'red'),
-            'comment4'  :('comment4_color', 'red'),
-            'function'  :('function_color', 'black'),
-            'keyword1'  :('keyword1_color', 'blue'),
-            'keyword2'  :('keyword2_color', 'blue'),
-            'keyword3'  :('keyword3_color', 'blue'),
-            'keyword4'  :('keyword4_color', 'blue'),
-            'keyword5'  :('keyword5_color', 'blue'),
-            'label'     :('label_color',    'black'),
-            'literal1'  :('literal1_color', '#00aa00'),
-            'literal2'  :('literal2_color', '#00aa00'),
-            'literal3'  :('literal3_color', '#00aa00'),
-            'literal4'  :('literal4_color', '#00aa00'),
-            'markup'    :('markup_color',   'red'),
-            'null'      :('null_color',     None),  # 'black'
-            'operator'  :('operator_color', 'black'),
-            'trailing_whitespace': ('trailing_whitespace_color', '#808080'),
+            # tag name  : ( option name,     default color),
+            'comment1'  : ('comment1_color', 'red'),
+            'comment2'  : ('comment2_color', 'red'),
+            'comment3'  : ('comment3_color', 'red'),
+            'comment4'  : ('comment4_color', 'red'),
+            'function'  : ('function_color', 'black'),
+            'keyword1'  : ('keyword1_color', 'blue'),
+            'keyword2'  : ('keyword2_color', 'blue'),
+            'keyword3'  : ('keyword3_color', 'blue'),
+            'keyword4'  : ('keyword4_color', 'blue'),
+            'keyword5'  : ('keyword5_color', 'blue'),
+            'label'     : ('label_color',    'black'),
+            'literal1'  : ('literal1_color', '#00aa00'),
+            'literal2'  : ('literal2_color', '#00aa00'),
+            'literal3'  : ('literal3_color', '#00aa00'),
+            'literal4'  : ('literal4_color', '#00aa00'),
+            'markup'    : ('markup_color',   'red'),
+            'null'      : ('null_color',     None),  # 'black'
+            'operator'  : ('operator_color', 'black'),
+            'trailing_whitespace':  ('trailing_whitespace_color', '#808080'),
         }
     #@+node:ekr.20110605121601.18575: *4* BaseColorizer.defineDefaultFontDict
     #@@nobeautify
@@ -492,85 +492,85 @@ class BaseColorizer:
     def defineDefaultFontDict(self) -> None:
 
         self.default_font_dict = {
-            #
+
             # Used in Leo rules...
-            # tag name      : option name
-            'blank'         :'show_invisibles_space_font', # 2011/10/24.
-            'docpart'       :'doc_part_font',
-            'leokeyword'    :'leo_keyword_font',
-            'link'          :'section_name_font',
-            'name'          :'undefined_section_name_font',
-            'namebrackets'  :'section_name_brackets_font',
-            'tab'           :'show_invisibles_tab_font', # 2011/10/24.
-            'url'           :'url_font',
-            #
+            # tag name      :  option name
+            'blank'         : 'show_invisibles_space_font',  # 2011/10/24.
+            'docpart'       : 'doc_part_font',
+            'leokeyword'    : 'leo_keyword_font',
+            'link'          : 'section_name_font',
+            'name'          : 'undefined_section_name_font',
+            'namebrackets'  : 'section_name_brackets_font',
+            'tab'           : 'show_invisibles_tab_font',  # 2011/10/24.
+            'url'           : 'url_font',
+
             # Pygments tags (lower case)...
-            # tag name          : option name
-            "comment"           :'comment1_font',
-            "comment.preproc"   :'comment2_font',
-            "comment.single"    :'comment1_font',
-            "error"             :'null_font',
-            "generic.deleted"   :'literal4_font',
-            "generic.emph"      :'literal4_font',
-            "generic.error"     :'literal4_font',
-            "generic.heading"   :'literal4_font',
-            "generic.inserted"  :'literal4_font',
-            "generic.output"    :'literal4_font',
-            "generic.prompt"    :'literal4_font',
-            "generic.strong"    :'literal4_font',
-            "generic.subheading":'literal4_font',
-            "generic.traceback" :'literal4_font',
-            "keyword"           :'keyword1_font',
-            "keyword.pseudo"    :'keyword2_font',
-            "keyword.type"      :'keyword3_font',
-            "name.attribute"    :'null_font',
-            "name.builtin"      :'null_font',
-            "name.class"        :'null_font',
-            "name.constant"     :'null_font',
-            "name.decorator"    :'null_font',
-            "name.entity"       :'null_font',
-            "name.exception"    :'null_font',
-            "name.function"     :'null_font',
-            "name.label"        :'null_font',
-            "name.namespace"    :'null_font',
-            "name.tag"          :'null_font',
-            "name.variable"     :'null_font',
-            "number"            :'null_font',
-            "operator.word"     :'keyword4_font',
-            "string"            :'literal1_font',
-            "string.doc"        :'literal1_font',
-            "string.escape"     :'literal1_font',
-            "string.interpol"   :'literal1_font',
-            "string.other"      :'literal1_font',
-            "string.regex"      :'literal1_font',
-            "string.single"     :'literal1_font',
-            "string.symbol"     :'literal1_font',
-            'xt'                :'text_font',
-            "whitespace"        :'text_font',
-            #
+            # tag name          :  option name
+            "comment"           : 'comment1_font',
+            "comment.preproc"   : 'comment2_font',
+            "comment.single"    : 'comment1_font',
+            "error"             : 'null_font',
+            "generic.deleted"   : 'literal4_font',
+            "generic.emph"      : 'literal4_font',
+            "generic.error"     : 'literal4_font',
+            "generic.heading"   : 'literal4_font',
+            "generic.inserted"  : 'literal4_font',
+            "generic.output"    : 'literal4_font',
+            "generic.prompt"    : 'literal4_font',
+            "generic.strong"    : 'literal4_font',
+            "generic.subheading": 'literal4_font',
+            "generic.traceback" : 'literal4_font',
+            "keyword"           : 'keyword1_font',
+            "keyword.pseudo"    : 'keyword2_font',
+            "keyword.type"      : 'keyword3_font',
+            "name.attribute"    : 'null_font',
+            "name.builtin"      : 'null_font',
+            "name.class"        : 'null_font',
+            "name.constant"     : 'null_font',
+            "name.decorator"    : 'null_font',
+            "name.entity"       : 'null_font',
+            "name.exception"    : 'null_font',
+            "name.function"     : 'null_font',
+            "name.label"        : 'null_font',
+            "name.namespace"    : 'null_font',
+            "name.tag"          : 'null_font',
+            "name.variable"     : 'null_font',
+            "number"            : 'null_font',
+            "operator.word"     : 'keyword4_font',
+            "string"            : 'literal1_font',
+            "string.doc"        : 'literal1_font',
+            "string.escape"     : 'literal1_font',
+            "string.interpol"   : 'literal1_font',
+            "string.other"      : 'literal1_font',
+            "string.regex"      : 'literal1_font',
+            "string.single"     : 'literal1_font',
+            "string.symbol"     : 'literal1_font',
+            'xt'                : 'text_font',
+            "whitespace"        : 'text_font',
+
             # jEdit tags.
-            # tag name     : option name
-            'comment1'      :'comment1_font',
-            'comment2'      :'comment2_font',
-            'comment3'      :'comment3_font',
-            'comment4'      :'comment4_font',
-            # 'default'     :'default_font',
-            'function'      :'function_font',
-            'keyword1'      :'keyword1_font',
-            'keyword2'      :'keyword2_font',
-            'keyword3'      :'keyword3_font',
-            'keyword4'      :'keyword4_font',
-            'keyword5'      :'keyword5_font',
-            'label'         :'label_font',
-            'literal1'      :'literal1_font',
-            'literal2'      :'literal2_font',
-            'literal3'      :'literal3_font',
-            'literal4'      :'literal4_font',
-            'markup'        :'markup_font',
+            # tag name      :  option name
+            'comment1'      : 'comment1_font',
+            'comment2'      : 'comment2_font',
+            'comment3'      : 'comment3_font',
+            'comment4'      : 'comment4_font',
+            # 'default'     : 'default_font',
+            'function'      : 'function_font',
+            'keyword1'      : 'keyword1_font',
+            'keyword2'      : 'keyword2_font',
+            'keyword3'      : 'keyword3_font',
+            'keyword4'      : 'keyword4_font',
+            'keyword5'      : 'keyword5_font',
+            'label'         : 'label_font',
+            'literal1'      : 'literal1_font',
+            'literal2'      : 'literal2_font',
+            'literal3'      : 'literal3_font',
+            'literal4'      : 'literal4_font',
+            'markup'        : 'markup_font',
             # 'nocolor' This tag is used, but never generates code.
-            'null'          :'null_font',
-            'operator'      :'operator_font',
-            'trailing_whitespace' :'trailing_whitespace_font',
+            'null'          : 'null_font',
+            'operator'      : 'operator_font',
+            'trailing_whitespace' : 'trailing_whitespace_font',
         }
     #@+node:ekr.20110605121601.18573: *4* BaseColorizer.defineLeoKeywordsDict
     def defineLeoKeywordsDict(self) -> None:
@@ -593,7 +593,7 @@ class BaseColorizer:
         self.showInvisibles      = getBool("show-invisibles-by-default")
         self.underline_undefined = getBool("underline-undefined-section-names")
         self.use_hyperlinks      = getBool("use-hyperlinks")
-        self.use_pygments        = None # Set in report_changes.
+        self.use_pygments        = None  # Set in report_changes.
         self.use_pygments_styles = getBool('use-pygments-styles', default=True)
         #
         # Report changes to pygments settings.
@@ -879,7 +879,7 @@ class JEditColorizer(BaseColorizer):
     """
     This class colorizes p.b using Qt's QSyntaxHighlighter (qsh) class:
     https://doc.qt.io/qt-6/qsyntaxhighlighter.html
-    
+
     Each commander creates a single instance of this class: c.frame.body.colorizer.
 
     Use Leo's `--tracing=coloring` command-line option to see this class in action.
@@ -930,7 +930,7 @@ class JEditColorizer(BaseColorizer):
     def init(self) -> None:
         """
         Init the colorizer to match self.language.
-        
+
         The caller must set or clear state after calling this method.
         """
         # Init the *per-language* initial state number.
@@ -1298,9 +1298,9 @@ class JEditColorizer(BaseColorizer):
     def mainLoop(self, state: int, s: str, i0: int, j: int) -> None:
         """
         Colorize a *single* line s[i:j] starting in state n.
-        
+
         Except for traces, do not change this method in any way!
-        
+
         Any substantial change would break all the pattern matchers!
         """
         # Do not remove this unit test!
@@ -1339,9 +1339,9 @@ class JEditColorizer(BaseColorizer):
         """
         jEdit.recolor: Recolor a *single* line, s.
         QSyntaxHighligher calls this method repeatedly and automatically.
-        
+
         Don't even *think* about changing this method unless you
-        understand *every word* of the Theory of Operation:  
+        understand *every word* of the Theory of Operation:
         https://github.com/leo-editor/leo-editor/issues/4158
         """
         trace = (False or 'coloring' in g.app.debug) and not g.unitTesting
@@ -1475,7 +1475,7 @@ class JEditColorizer(BaseColorizer):
     ) -> None:
         """
         Pattern matchers call this helper to colorize the selected range.
-        
+
         Mode files should not call this helper directly!
         """
         # setTag does most tracing.
@@ -2264,7 +2264,7 @@ class JEditColorizer(BaseColorizer):
         # For pylint.
         return -1
     #@+node:ekr.20250109134131.1: *4* jedit.match_plain_eol_span
-    def match_plain_eol_span(self, s: str, i: int,  kind: str) -> int:
+    def match_plain_eol_span(self, s: str, i: int, kind: str) -> int:
         """Colorizer s[i:]"""
         j = len(s)
         self.colorRangeWithTag(s, i, j, kind)

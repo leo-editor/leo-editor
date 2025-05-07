@@ -157,7 +157,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         c.abbrev_subst_end = c.config.getString('abbreviations-subst-end')
         # The environment for all substitutions.
         # May be augmented in init_env.
-        c.abbrev_subst_env = {'c': c, 'g': g, '_values': {},}
+        c.abbrev_subst_env = {'c': c, 'g': g, '_values': {}, }
         c.abbrev_subst_start = c.config.getString('abbreviations-subst-start') or ''
         # Local settings.
         self.enabled = (

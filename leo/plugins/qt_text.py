@@ -485,7 +485,7 @@ class LeoLineTextWidget(QtWidgets.QFrame):
         """
         Update the line numbers for all events on the text edit and the viewport.
         This is easier than connecting all necessary signals.
-        
+
         Return True if the event filter was installed correctly.
         """
         if obj in (self.edit, self.edit.viewport()):
@@ -503,7 +503,7 @@ if QtWidgets:
         def __init__(self, parent: QWidget, c: Cmdr, wrapper: BaseTextAPI) -> None:
             """
             ctor for LeoQTextBrowser class.
-            
+
             wrapper is a LeoQtBody or LeoQtLog.
             """
             for attr in ('leo_c', 'leo_wrapper',):

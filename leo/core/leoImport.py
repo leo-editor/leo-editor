@@ -1746,7 +1746,7 @@ class RecursiveImportController:
                 path = path[1:]
             return path
 
-         # The paths of all @<file> nodes should start with outline_dir.
+        # The paths of all @<file> nodes should start with outline_dir.
         p.h = p.h.replace('\\', '/')  # Defensive.
         outline_dir = norm(self.outline_directory.replace('\\', '/'))
         len_outline_dir = len(outline_dir)

@@ -16,8 +16,6 @@ from typing import Any
 import unittest
 import warnings
 
-warnings.simplefilter("ignore")
-
 # Third-party.
 try:
     import asttokens
@@ -37,6 +35,8 @@ from leo.core.leoAst import Fstringify, Orange
 from leo.core.leoAst import Token, TokenOrderGenerator
 from leo.core.leoAst import make_tokens, parse_ast, tokens_to_string
 from leo.core.leoAst import dump_ast, dump_contents, dump_tokens, dump_tree, _op_names
+
+warnings.simplefilter("ignore")
 #@-<< test_leoAst imports >>
 v1, v2, junk1, junk2, junk3 = sys.version_info
 py_version = (v1, v2)
@@ -1314,7 +1314,7 @@ class Optional_TestFiles(BaseTest):
             return f"{token.index:2} {atok_name(token):12} {atok_value(token):20} {node_list}"
         #@+node:ekr.20200124024159.6: *5* function: postvisit
         def postvisit(node, par_value, value):
-            nonlocal stack
+            nonlocal stack  # noqa
             stack.pop()
             return par_value or []
         #@+node:ekr.20200124024159.7: *5* function: previsit
@@ -2652,7 +2652,7 @@ class TestTokens(BaseTest):
             return f"{token.index:2} {atok_name(token):12} {atok_value(token):20} {node_list}"
         #@+node:ekr.20200122170337.1: *5* function: postvisit
         def postvisit(node, par_value, value):
-            nonlocal stack
+            nonlocal stack  # noqa
             stack.pop()
             return par_value or []
         #@+node:ekr.20200122170101.4: *5* function: previsit

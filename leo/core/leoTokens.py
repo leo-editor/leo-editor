@@ -611,7 +611,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Regular expressions.
         'at_others_pat', 'beautify_pat', 'comment_pat', 'end_doc_pat',
-        'nobeautify_pat', 'node_pat', 'start_doc_pat',
+        'nobeautify_pat', 'nobeautify_sentinel_pat', 'node_pat', 'start_doc_pat',
     ]
     #@-<< TokenBasedOrange: __slots__ >>
     #@+<< TokenBasedOrange: python-related constants >>
@@ -668,6 +668,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             r'#\s*pragma:\s*beautify\b|#\s*@@beautify|#\s*@\+node|#\s*@[+-]others|#\s*@[+-]<<')
         self.comment_pat = re.compile(r'^(\s*)#[^@!# \n]')
         self.nobeautify_pat = re.compile(r'\s*#\s*pragma:\s*no\s*beautify\b|#\s*@@nobeautify')
+        self.nobeautify_sentinel_pat = re.compile(r'^#\s*@@nobeautify\s*$', re.MULTILINE)
 
         # Patterns from FastAtRead class, specialized for python delims.
         self.node_pat = re.compile(r'^(\s*)#@\+node:([^:]+): \*(\d+)?(\*?) (.*)$')  # @node
@@ -836,6 +837,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         contents, tokens = self.init_tokens_from_file(filename)
         if not (contents and tokens):
             return False  # Not an error.
+        if self.nobeautify_sentinel_pat.search(contents):
+            return False  # Honor @nobeautify sentinel within the file.
         if not isinstance(tokens[0], InputToken):
             self.oops(f"Not an InputToken: {tokens[0]!r}")
 
@@ -955,7 +958,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.pending_lws = ''
         self.pending_ws = ''
         entire_line = self.input_token.line.lstrip().startswith('#')
-
         if entire_line:
             # The comment includes all ws.
             # #1496: No further munging needed.
@@ -967,8 +969,15 @@ class TokenBasedOrange:  # Orange is the new Black.
                 val = val[:i] + '# ' + val[i + 1 :]
         else:
             # Exactly two spaces before trailing comments.
-            val = '  ' + val.rstrip()
-        self.gen_token('comment', val)
+            i = val.find('#')
+            if i == -1:
+                g.trace('OOPS', repr(val), g.callers())
+            # Special case for ###.
+            elif val[i:].startswith('###'):
+                val = val[:i].rstrip() + '  ### ' + val[i + 3 :].strip()
+            else:
+                val = val[:i].rstrip() + '  # ' + val[i + 1 :].strip()
+        self.gen_token('comment', val.rstrip())
     #@+node:ekr.20240111051726.1: *5* tbo.do_dedent
     def do_dedent(self) -> None:
         """Handle dedent token."""
@@ -1043,7 +1052,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         self.gen_blank()
         self.gen_token('word-op', s)
         self.gen_blank()
-    #@+node:ekr.20240105145241.17: *5* tbo.do_newline, do_nl & generators
+    #@+node:ekr.20240105145241.17: *5* tbo.do_newline & do_nl
     #@+node:ekr.20240418043826.1: *6* tbo.do_newline
     def do_newline(self) -> None:
         """
@@ -1053,6 +1062,14 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         NEWLINE tokens end *logical* lines of Python code.
         """
+
+        # #4349: Remove trailing ws.
+        while self.input_tokens:
+            last_token = self.input_tokens[-1]
+            if last_token.kind == 'ws':
+                self.input_tokens.pop()
+            else:
+                break
 
         self.output_list.append('\n')
         self.pending_lws = ''  # Set only by 'dedent', 'indent' or 'ws' tokens.
@@ -1069,7 +1086,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         NL tokens end *physical* lines. They appear when when a logical line of
         code spans multiple physical lines.
         """
-        return self.do_newline()
+        self.do_newline()
     #@+node:ekr.20240105145241.18: *5* tbo.do_number
     def do_number(self) -> None:
         """Handle a number token."""
@@ -1312,13 +1329,20 @@ class TokenBasedOrange:  # Orange is the new Black.
         if val == ')':
             self.paren_level -= 1
             self.in_arg_list = max(0, self.in_arg_list - 1)
+            if self.prev_output_kind != 'line-indent':
+                self.pending_ws = ''
         elif val == ']':
             self.square_brackets_stack.pop()
+            if self.prev_output_kind != 'line-indent':
+                self.pending_ws = ''
         else:
             self.curly_brackets_level -= 1
-
-        if self.prev_output_kind != 'line-indent':
-            self.pending_ws = ''
+            # A hack: put a space before a comma.
+            last = self.output_list[-1]
+            if last == ',':
+                self.pending_ws = ' '
+            elif self.prev_output_kind != 'line-indent':
+                self.pending_ws = ''
         self.gen_token('rt', val)
     #@+node:ekr.20240105145241.38: *6* tbo.gen_star_op
     def gen_star_op(self) -> None:
@@ -1360,6 +1384,10 @@ class TokenBasedOrange:  # Orange is the new Black.
         """
         # Careful: continued strings may contain '\r'
         val = self.regularize_newlines(self.input_token.value)
+        if val.startswith(('"""', "'''")):
+            # #4346: Strip trailing ws in docstrings.
+            while ' \n' in val:
+                val = val.replace(' \n', '\n')
         self.gen_token('string', val)
         self.gen_blank()
     #@+node:ekr.20240105145241.22: *5* tbo.do_verbatim
@@ -1402,14 +1430,13 @@ class TokenBasedOrange:  # Orange is the new Black.
             self.pending_lws = ''
             self.pending_ws = val
         else:
-            self.pending_ws = val
+            self.pending_ws = ' ' if val else ''  # #4346.
     #@+node:ekr.20240105145241.27: *5* tbo.gen_blank
     def gen_blank(self) -> None:
         """
-        Queue a *request* a blank.
+        Queue a *request* for a blank.
         Change *neither* prev_output_kind *nor* pending_lws.
         """
-
         prev_kind = self.prev_output_kind
         if prev_kind == 'op-no-blanks':
             # A demand that no blank follows this op.
@@ -1508,6 +1535,8 @@ class TokenBasedOrange:  # Orange is the new Black.
                     assert top_state and top_state.kind in ('(', 'arg'), repr(top_state)
                     if top_state.kind == 'arg':
                         self.finish_arg(i, top_state)
+                    else:
+                        self.finish_paren(i, top_state)
                     scan_stack.pop()
 
                 # Handle interior tokens in 'arg' and 'slice' states.
@@ -1539,7 +1568,7 @@ class TokenBasedOrange:  # Orange is the new Black.
             print(scan_stack)
     #@+node:ekr.20240129041304.1: *6* tbo.finish_arg
     def finish_arg(self, end: int, state: Optional[ScanState]) -> None:
-        """Set context for all ':' when scanning from '(' to ')'."""
+        """Set context for '=', ':', '*', and '**' tokens when scanning from '(' to ')'."""
 
         # Sanity checks.
         if not state:
@@ -1582,6 +1611,23 @@ class TokenBasedOrange:  # Orange is the new Black.
                     elif token.value == ':':
                         self.set_context(i, 'annotation')
                 prev = token
+    #@+node:ekr.20250507041900.1: *6* tbo.finish_paren
+    def finish_paren(self, end: int, state: Optional[ScanState]) -> None:
+        """Set context for '=' tokens when scanning from '(' to ')'."""
+
+        # Sanity checks.
+        if not state:
+            return
+        assert state.kind == '(', repr(state)
+        token = state.token
+        assert token.value == '(', repr(token)
+        i1 = token.index
+        assert i1 < end, (i1, end)
+
+        # Compute the context for each *separate* '=' token.
+        for token in self.input_tokens[i1:end]:
+            if token.kind == 'op' and token.value == '=':
+                self.set_context(token.index, 'initializer')
     #@+node:ekr.20240128233406.1: *6* tbo.finish_slice
     def finish_slice(self, end: int, state: ScanState) -> None:
         """Set context for all ':' when scanning from '[' to ']'."""
@@ -1679,7 +1725,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         if prev.kind in ('number', 'string'):
             return_val = False
         elif prev.kind == 'op' and prev.value in ')]':
-             # An unnecessary test?
+            # An unnecessary test?
             return_val = False  # pragma: no cover
         elif prev.kind == 'op' and prev.value in '{([:,':
             return_val = True

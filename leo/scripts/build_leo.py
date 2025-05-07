@@ -4,7 +4,7 @@
 
 """
 build_leo.py: Build Leo as follows:
-    
+
 - Delete all files in the `leo-editor/leo/dist` directory.
 - Run `python -m build > build_log.txt`.
 

@@ -340,7 +340,7 @@ class MarkupCommands:
         """
         Process the input file given by i_path with asciidoctor or asciidoc3.
         """
-        global asciidoctor_exec, asciidoc3_exec
+        # global asciidoctor_exec, asciidoc3_exec
         assert asciidoctor_exec or asciidoc3_exec, g.callers()
         # Call the external program to write the output file.
         # The -e option deletes css.
@@ -352,7 +352,7 @@ class MarkupCommands:
         """
          Process the input file given by i_path with pandoc.
         """
-        global pandoc_exec
+        # global pandoc_exec
         assert pandoc_exec, g.callers()
         # Call pandoc to write the output file.
         # --quiet does no harm.
@@ -479,7 +479,7 @@ class MarkupCommands:
     def adoc_command(self,
         event: LeoKeyEvent = None, preview: bool = False, verbose: bool = True,
     ) -> File_List:
-        global asciidoctor_exec, asciidoc3_exec
+        # global asciidoctor_exec, asciidoc3_exec
         if asciidoctor_exec or asciidoc3_exec:
             return self.command_helper(
                 event, kind='adoc', preview=preview, verbose=verbose)
@@ -490,7 +490,7 @@ class MarkupCommands:
     def pandoc_command(self,
         event: LeoKeyEvent = None, preview: bool = False, verbose: bool = True,
     ) -> File_List:
-        global pandoc_exec
+        # global pandoc_exec
         if pandoc_exec:
             return self.command_helper(
                 event, kind='pandoc', preview=preview, verbose=verbose)
@@ -501,7 +501,7 @@ class MarkupCommands:
     def sphinx_command(self,
         event: LeoKeyEvent = None, preview: bool = False, verbose: bool = True,
     ) -> File_List:
-        global sphinx_build
+        # global sphinx_build
         if sphinx_build:
             return self.command_helper(
                 event, kind='sphinx', preview=preview, verbose=verbose)

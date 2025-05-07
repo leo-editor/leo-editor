@@ -39,7 +39,7 @@ def init():
 #@+node:edream.110203113231.726: ** onCreate (mod_autosave.py)
 def onCreate(tag, keywords):
     """Handle the per-Leo-file settings."""
-    global gDict
+    # global gDict
     c = keywords.get('c')
     if g.unitTesting or g.app.killed or not c or not c.exists:
         return
@@ -69,7 +69,7 @@ def onIdle(tag, keywords):
     Save the outline to a .bak file every "interval" seconds if it has changed.
     Make *no* changes to the UI and do *not* update c.changed.
     """
-    global gDict
+    # global gDict
     if g.app.killed or g.unitTesting:
         return
     c = keywords.get('c')

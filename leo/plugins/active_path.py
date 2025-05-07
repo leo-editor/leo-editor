@@ -455,7 +455,7 @@ def openDir(c, parent, d):
             or (excdirs and entry in dirs)
             or (excfiles and entry in files)
         ):
-            toRemove.add(p.h)  #must not strip '/', so nodes can be removed
+            toRemove.add(p.h)  # must not strip '/', so nodes can be removed
         else:
             oldlist.add(entry)
 

@@ -308,7 +308,7 @@ class notetextedit(QTextEdit):
     def make_heading(self, heading):
         # not finished
         cursor = self.textCursor()
-        cursor.select(QTextCursor.BlockUnderCursor)  #QTextCursor.LineUnderCursor
+        cursor.select(QTextCursor.BlockUnderCursor)  # QTextCursor.LineUnderCursor
 
         char_format = QTextCharFormat()
         font = QFont()
@@ -480,7 +480,7 @@ class notetextedit(QTextEdit):
         pos = event.pos()
         anch = self.anchorAt(pos)
         self.viewport().setCursor(Qt.PointingHandCursor if anch else Qt.IBeamCursor)
-        QTextEdit.mouseMoveEvent(self, event)  #? recursion
+        QTextEdit.mouseMoveEvent(self, event)  # ? recursion
 
     #@+node:ekr.20100103100944.5417: *3* mouseReleaseEvent
     def mouseReleaseEvent(self, event):
@@ -488,7 +488,7 @@ class notetextedit(QTextEdit):
         pos = event.pos()
         url = self.anchorAt(pos)
         if url:
-            if not url.startswith('http://'):  #linux seems to need this
+            if not url.startswith('http://'):  # linux seems to need this
                 url = 'http://{0}'.format(url)
             webbrowser.open(url, new=2, autoraise=True)
         else:
@@ -650,7 +650,7 @@ def stickynoteplus_f(event):
     c = event['c']
     p = c.p
     v = p.v
-    def get_markdown():  #focusin():
+    def get_markdown():  # focusin():
         print("focus in")
         if v is c.p.v:
             nf.setHtml(markdown.markdown(v.b))
@@ -658,7 +658,7 @@ def stickynoteplus_f(event):
             nf.dirty = False
 
 
-    def save():  #focusout():
+    def save():  # focusout():
         print("focus out")
         if not nf.dirty:
             return

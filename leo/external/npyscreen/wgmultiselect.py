@@ -131,4 +131,5 @@ class TitleMultiSelectFixed(multiline.TitleMultiLine):
 #@-others
 #@@language python
 #@@tabwidth -4
+#@@nobeautify
 #@-leo

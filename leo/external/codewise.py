@@ -333,7 +333,7 @@ def shortFileName(fileName, n=None):
         return ''
     if n is None or n < 1:
         return os.path.basename(fileName)
-    return '/'.join(fileName.replace('\\', '/').split('/')[-n :])
+    return '/'.join(fileName.replace('\\', '/').split('/')[-n:])
 #@+node:ekr.20110310093050.14268: *5* trace (codewise)
 # Convert all args to strings.
 
@@ -607,7 +607,7 @@ class CodeWise:
             # we are rescanning a file with old entries - nuke old entries
             c = self.cursor()
             c.execute("delete from function where file = (?)", (idd,))
-            #self.dbconn.commit()
+            # self.dbconn.commit()
             self.fileids_scanned.add(idd)
         return idd
     #@+node:ekr.20110310091639.14266: *3* feed_function

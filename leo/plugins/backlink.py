@@ -91,7 +91,7 @@ warning_given = False
 
 def init():
     """Return True if the plugin has loaded successfully."""
-    global warning_given
+    # global warning_given
     ok = QtGui and uic and g.app.gui.guiName() == 'qt'  # #2197.
     if not ok:
         return False
@@ -161,7 +161,7 @@ class backlinkController:
     def deleteLink(self, on, to, type_):
         """delete a link from 'on' to 'to' of type 'type_'"""
 
-        vid = on.gnx  #X unknownAttributes['_bklnk']['id']
+        vid = on.gnx  # X unknownAttributes['_bklnk']['id']
         links = on.unknownAttributes['_bklnk']['links']
 
         for n, link in enumerate(links):

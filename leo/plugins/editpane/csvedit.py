@@ -11,7 +11,7 @@ from collections import namedtuple
 import leo.core.leoGlobals as g
 assert g
 from leo.core.leoQt import Qt, QtCore, QtWidgets, QtGui
-from leo.core.leoQt import ItemFlag, ItemDataRole, StandardPixmap  #2347
+from leo.core.leoQt import ItemFlag, ItemDataRole, StandardPixmap  # 2347
 
 try:
     from cStringIO import StringIO

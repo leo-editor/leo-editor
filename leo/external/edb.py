@@ -836,8 +836,8 @@ class Pdb(bdb.Bdb, cmd.Cmd):
                     if hasattr(func, '__func__'):
                         func = func.__func__
                     code = func.__code__
-                    #use co_name to identify the bkpt (function names
-                    #could be aliased, but co_name is invariant)
+                    # use co_name to identify the bkpt (function names
+                    # could be aliased, but co_name is invariant)
                     funcname = code.co_name
                     lineno = code.co_firstlineno
                     filename = code.co_filename

@@ -30,7 +30,7 @@ class TestLeoServer(LeoUnitTest):
 
     @classmethod
     def tearDownClass(cls):
-        global g_leoserver, g_server
+        # global g_leoserver, g_server
         try:
             g_server.shut_down({})
             print('===== server did not terminate properly ====')  # pragma:no cover
@@ -40,7 +40,7 @@ class TestLeoServer(LeoUnitTest):
             pass
 
     def setUp(self):
-        global g_server
+        # global g_server
         self.server = g_server
         g.unitTesting = True
 

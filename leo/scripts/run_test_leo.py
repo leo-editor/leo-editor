@@ -7,6 +7,11 @@ This file's name must *not* start with `test_`.
 
 Info item #3867 describes all of Leo's test scripts:
 https://github.com/leo-editor/leo-editor/issues/2867
+
+EKR's test-leo.cmd:
+    @echo off
+    cd {path to leo-editor}
+    python -m leo.scripts.run_test_leo
 """
 
 import os
@@ -16,7 +21,8 @@ import sys
 print(os.path.basename(__file__))
 
 # cd to leo-editor
-os.chdir(os.path.abspath(os.path.join(__file__, '..', '..', '..')))
+leo_editor_dir = os.path.abspath(os.path.join(__file__, '..', '..', '..'))
+os.chdir(leo_editor_dir)
 
 args = ' '.join(sys.argv[1:])
 isWindows = sys.platform.startswith('win')

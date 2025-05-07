@@ -1415,7 +1415,7 @@ class MatchBrackets:
             return
 
         # Find the bracket nearest the cursor.
-        max_right = len(s) - 1 # insert point can be past last char.
+        max_right = len(s) - 1  # insert point can be past last char.
         left = right = min(max_right, w.getInsertPoint())
         left, right, ch, index = self.expand_range(s, left, right, max_right)
         if left is None:
@@ -1621,35 +1621,35 @@ redirectStdOutObj = RedirectClass()
 # Redirect streams to the current log window.
 
 def redirectStderr() -> None:
-    global redirectStdErrObj
+    # global redirectStdErrObj
     redirectStdErrObj.redirect(stdout=False)
 
 def redirectStdout() -> None:
-    global redirectStdOutObj
+    # global redirectStdOutObj
     redirectStdOutObj.redirect()
 #@+node:ekr.20041012090942.1: *5* restoreStderr & restoreStdout
 # Restore standard streams.
 
 def restoreStderr() -> None:
-    global redirectStdErrObj
+    # global redirectStdErrObj
     redirectStdErrObj.undirect(stdout=False)
 
 def restoreStdout() -> None:
-    global redirectStdOutObj
+    # global redirectStdOutObj
     redirectStdOutObj.undirect()
 #@+node:ekr.20041012090942.2: *5* stdErrIsRedirected & stdOutIsRedirected
 def stdErrIsRedirected() -> bool:
-    global redirectStdErrObj
+    # global redirectStdErrObj
     return redirectStdErrObj.isRedirected()
 
 def stdOutIsRedirected() -> bool:
-    global redirectStdOutObj
+    # global redirectStdOutObj
     return redirectStdOutObj.isRedirected()
 #@+node:ekr.20041012090942.3: *5* rawPrint
 # Send output to original stdout.
 
 def rawPrint(s: str) -> None:
-    global redirectStdOutObj
+    # global redirectStdOutObj
     redirectStdOutObj.rawPrint(s)
 #@-others
 #@-<< define convenience methods for redirecting streams >>
@@ -1802,7 +1802,7 @@ class Tracer:
         g.pr('\ncallDict...')
         for key in sorted(self.callDict):
             # Print the calling function.
-            g.pr(f"{self.calledDict.get(key,0):d}", key)
+            g.pr(f"{self.calledDict.get(key,0):d}", key)  # noqa  # conflict between flake8 and black.
             # Print the called functions.
             d = self.callDict.get(key)
             for key2 in sorted(d):  # type:ignore
@@ -1874,7 +1874,7 @@ tracing_tags: dict[int, str] = {}  # Keys are id's, values are tags.
 
 class NullObject:
     """An object that does nothing, and does it very well."""
-    def __init__(self, ivars: list[str]=None, *args: Args, **kwargs: KWargs) -> None:
+    def __init__(self, ivars: list[str] = None, *args: Args, **kwargs: KWargs) -> None:
         pass
     def __call__(self, *args: Args, **kwargs: KWargs) -> "NullObject":
         return self
@@ -1886,7 +1886,7 @@ class NullObject:
     def __delattr__(self, attr: str) -> None:
         return None
     def __getattr__(self, attr: str) -> Value:
-        return self # Required.
+        return self  # Required.
     def __setattr__(self, attr: str, val: Value) -> None:
         return None
     # Container methods..
@@ -1909,8 +1909,8 @@ class NullObject:
 
 class TracingNullObject:
     """Tracing NullObject."""
-    def __init__(self, tag: str, ivars: list[str]=None, *args: Args, **kwargs: KWargs) -> None:
-        tracing_tags [id(self)] = tag
+    def __init__(self, tag: str, ivars: list[str] = None, *args: Args, **kwargs: KWargs) -> None:
+        tracing_tags [id(self)] = tag  # noqa  # conflict between flake8 and black.
     def __call__(self, *args: Args, **kwargs: KWargs) -> "TracingNullObject":
         return self
     def __repr__(self) -> str:
@@ -1923,7 +1923,7 @@ class TracingNullObject:
         return None
     def __getattr__(self, attr: str) -> "TracingNullObject":
         g.null_object_print(id(self), f"attr: {attr}")
-        return self # Required.
+        return self  # Required.
     def __setattr__(self, attr: str, val: Value) -> None:
         g.null_object_print(id(self), f"__setattr__: {attr} {val!r}")
 
@@ -2943,7 +2943,7 @@ def stripPathCruft(path: str) -> str:
 #@+node:ekr.20090214075058.10: *3* g.update_directives_pat
 def update_directives_pat() -> None:
     """Init/update g.directives_pat"""
-    global globalDirectiveList, directives_pat
+    global directives_pat  # globalDirectiveList
     # Use a pattern that guarantees word matches.
     aList = [
         fr"\b{z}\b" for z in globalDirectiveList if z != 'others'
@@ -5951,7 +5951,7 @@ def init_zodb(pathToZodbStorage: str, verbose: bool = True) -> Value:
     Return an ZODB.DB instance from the given path.
     return None on any error.
     """
-    global init_zodb_db, init_zodb_failed, init_zodb_import_failed
+    global init_zodb_import_failed
     db = init_zodb_db.get(pathToZodbStorage)
     if db:
         return db

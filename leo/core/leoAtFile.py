@@ -48,7 +48,7 @@ class AtFile:
         # Shadow files.
         'private_s', 'public_s',
         # Writing.
-        'indent',  'sentinels',
+        'indent', 'sentinels',
         'section_delim1', 'section_delim2',
         'outputFile', 'outputList',
         'targetFileName', 'unchangedFiles',  # For messages.
@@ -671,8 +671,8 @@ class AtFile:
         """
         p must be an @jupytext node.
         - Convert the .ipynb file to a string s.
-        - Update p.b's tree using s. 
-        
+        - Update p.b's tree using s.
+
         This code is adapted from at.readOneAtCleanNode.
         """
         at, c, x = self, self.c, self.c.shadowController
@@ -1590,7 +1590,7 @@ class AtFile:
         """
         p must be an @jupytext node.
         Write the corresponding .ipynb file from p and all p's descendants.
-        
+
         This code is adapted from at.writeOneAtCleanNode.
         """
         at, c, p = self, self.c, self.c.p
@@ -2390,7 +2390,7 @@ class AtFile:
                 g.es_print(f"{j+1:5}: {line}")
     #@+node:ekr.20240926044644.1: *6* at.runTokenBasedBeautifier
     def runTokenBasedBeautifier(self, root: Position, filename: str) -> bool:
-        """Run Leo's token-based beautifier on the selecte position."""
+        """Run Leo's token-based beautifier on the selected position."""
         c = self.c
         p = c.p
         if not os.path.exists(filename):
@@ -3189,19 +3189,19 @@ class FastAtRead:
         # Doing so will break Leo!
         table = (
             # These patterns must be mutually exclusive.
-            ('after',       fr'^\s*{delim1}@afterref{delim2}$'),             # @afterref
-            ('all',         fr'^(\s*){delim1}@(\+|-)all\b(.*){delim2}$'),    # @all
-            ('code',        fr'^\s*{delim1}@@c(ode)?\b(.*){delim2}$'),       # @c and @code
-            ('comment',     fr'^\s*{delim1}@@comment(.*){delim2}'),          # @comment
-            ('delims',      fr'^\s*{delim1}@delims(.*){delim2}'),            # @delims
-            ('doc',         fr'^\s*{delim1}@\+(at|doc)?(\s.*?)?{delim2}\n'), # @doc or @
-            ('first',       fr'^\s*{delim1}@@first{delim2}$'),               # @first
-            ('last',        fr'^\s*{delim1}@@last{delim2}$'),                # @last
+            ('after',       fr'^\s*{delim1}@afterref{delim2}$'),              # @afterref
+            ('all',         fr'^(\s*){delim1}@(\+|-)all\b(.*){delim2}$'),     # @all
+            ('code',        fr'^\s*{delim1}@@c(ode)?\b(.*){delim2}$'),        # @c and @code
+            ('comment',     fr'^\s*{delim1}@@comment(.*){delim2}'),           # @comment
+            ('delims',      fr'^\s*{delim1}@delims(.*){delim2}'),             # @delims
+            ('doc',         fr'^\s*{delim1}@\+(at|doc)?(\s.*?)?{delim2}\n'),  # @doc or @
+            ('first',       fr'^\s*{delim1}@@first{delim2}$'),                # @first
+            ('last',        fr'^\s*{delim1}@@last{delim2}$'),                 # @last
             #@verbatim
             # @node
             ('node_start',  fr'^(\s*){delim1}@\+node:([^:]+): \*(\d+)?(\*?) (.*){delim2}$'),
-            ('others',      fr'^(\s*){delim1}@(\+|-)others\b(.*){delim2}$'), # @others
-            ('ref',         fr'^(\s*){delim1}@(\+|-){ref}\s*{delim2}$'),     # section ref
+            ('others',      fr'^(\s*){delim1}@(\+|-)others\b(.*){delim2}$'),  # @others
+            ('ref',         fr'^(\s*){delim1}@(\+|-){ref}\s*{delim2}$'),      # section ref
             #@verbatim
             # @section-delims
             ('section_delims', fr'^\s*{delim1}@@section-delims[ \t]+([^ \w\n\t]+)[ \t]+([^ \w\n\t]+)[ \t]*{delim2}$'),

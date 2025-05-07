@@ -122,7 +122,7 @@ class Rust_Importer(Importer):
         def skip_r() -> None:
             """
             Skip over a raw string literal or add a single character 'r'.
-          
+
             Raw string literals start with: 'r', 0 <= n < 256 '#' chars, and '"'.
             Raw string literals end with: '"' followed by n '#' chars.
             """

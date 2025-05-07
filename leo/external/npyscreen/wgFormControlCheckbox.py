@@ -72,4 +72,5 @@ class FormControlCheckbox(wgcheckbox.Checkbox):
 #@-others
 #@@language python
 #@@tabwidth -4
+#@@nobeautify
 #@-leo

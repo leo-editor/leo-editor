@@ -2218,7 +2218,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         s = s[i : j - 1]
         # Add the leading whitespace to the present line.
         junk, width = g.skip_leading_ws_with_indent(s, 0, tab_width)
-        if s.rstrip() and (s.rstrip()[-1] == ':' or self.trailing_colon_pat.match(s)):  #2040.
+        if s.rstrip() and (s.rstrip()[-1] == ':' or self.trailing_colon_pat.match(s)):  # 2040.
             # For Python: increase auto-indent after colons.
             if g.findLanguageDirectives(c, p) == 'python':
                 width += abs(tab_width)

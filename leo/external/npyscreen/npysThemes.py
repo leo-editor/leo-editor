@@ -172,4 +172,5 @@ class TransparentThemeLightText(TransparentThemeDarkText):
 #@-others
 #@@language python
 #@@tabwidth -4
+#@@nobeautify
 #@-leo

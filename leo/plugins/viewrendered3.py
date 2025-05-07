@@ -1365,10 +1365,10 @@ def is_theme_dark(c):
 #@+node:tom.20241005134508.1: ** tinker with colors()
 def tinker_with_colors(c, kind: str = REST):
     """Use Editor's fore- and back-ground colors.
-    
+
     ARGUMENT
     html -- The HTML to be re-colored.  Must be a string, not a byte array.
-    
+
     Note that this will not change any other colors. So some of the output
     colors may not be as well coordinated as before the fg/bg colors
     were changed.
@@ -1442,8 +1442,8 @@ def configure_asciidoc():
     #@-<< asciidoc docstring >>
     """
     global AsciiDocAPI, AsciiDoc3API, ad3, ad3_file
-    global asciidoc_ok, asciidoc3_ok, asciidoc_processors
-    global asciidoc_dirs
+    global asciidoc_ok, asciidoc3_ok  # asciidoc_processors
+    # global asciidoc_dirs
     global asciidoc_has_diagram
 
     asciidoc_ok = False
@@ -1677,7 +1677,7 @@ def getVr3(event):
     RETURNS
     The active ViewRenderedController3 or None.
     """
-    global controllers
+    # global controllers
     if g.app.gui.guiName() != 'qt':
         return None
     if (c := event.get('c')):
@@ -1697,14 +1697,14 @@ def getVr3(event):
 @g.command('vr3')
 def viewrendered(event):
     """Create VR3 in this commander if not already created.
-    
+
     The VR3 instance will be created as a child of the widget cache splitter
     of the Dynamic Window that represents the Entire window of this outline.
 
     The VR3 instance will not become visible until the vr3-show or vr3-toggle
     commands are executed.
     """
-    global controllers
+    # global controllers
     gui = g.app.gui
     if gui.guiName() != 'qt':
         return None
@@ -2188,7 +2188,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:TomP.20200329223820.1: *3* vr3.ctor & helpers
     def __init__(self, c, parent=None):
         """Ctor for ViewRenderedController class.
-        
+
         ARGUMENTS
         c -- the controller for this outline
         parent -- the widget that will contain this VR3 widget.
@@ -3424,7 +3424,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
         the html returned by the processor, or an error message.
         #@-<< convert asciidoc docstring >>
         """
-        global AsciiDocAPI, AsciiDoc3, API, ad3_file, asciidoc_processors
+        global asciidoc_processors
+        # global AsciiDocAPI, AsciiDoc3, API, ad3_file
         h = ''
         if self.asciidoctor:
             h = self.convert_to_asciidoc_external(s)
@@ -3645,7 +3646,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             ok = True
             path = fn
             is_url = True
-        else:  #file URL
+        else:  # file URL
             ok, path = self.get_fn(fn, '@image')
 
         if not ok:
@@ -3887,7 +3888,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         There is no such thing as @language pandoc,
         so only @pandoc nodes trigger this code.
         """
-        global pandoc_exec
+        # global pandoc_exec
         w = self.ensure_text_widget()
         assert self.w
         if s:
@@ -3922,7 +3923,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         return the contents of the html file.
         The caller handles all exceptions.
         """
-        global pandoc_exec
+        # global pandoc_exec
         assert pandoc_exec, g.callers()
         home = g.os.path.expanduser('~')
         i_path = g.finalize_join(home, 'vr3_input.pandoc')
@@ -3940,7 +3941,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:tom.20250103185205.1: *4* vr3.update_pdf
     def update_pdf(self, s, keywords):
         """Display PDF file.
-        
+
         The path to the PDF file must be either in the headline after
         the leading "@pdf " or the first line in the body. The
         path must use "/" separators and may not start with "file:".
@@ -3967,9 +3968,9 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:tom.20250104125231.1: *5* v3.get_file_path
     def get_file_path(self, kind=None):
         """Return an absolute file path from a node.
-        
+
         ~, .., and symbolic links resolved.
-        
+
         The file path may be absolute or relative to the path
         applicable to the selected node. If the headline starts
         with a kind, such as "@pdf", and contains a path to an
@@ -3980,7 +3981,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         ARGUMENTS
         s -- a single line of text that may contain a path to a file.
         kind -- A headline prefix starting with "@", such as "@pdf".
-        
+
         RETURNS
         A fully resolved absolute path or None.
         """
@@ -3999,12 +4000,12 @@ class ViewRenderedController3(QtWidgets.QWidget):
     #@+node:tom.20250104130838.1: *5* v3.get_file_from_string
     def get_file_from_string(self, s):
         """Return the path to an existing file based on s.
-        
+
         s is a string whose first line may contain a path to
         a file. If it does, return the fully resolved
         path to an existing file, else an empty string. The path
         may be absolute or relative to the node's effective path.
-        
+
         For an unsaved outline, assume that relative paths are
         relative to the .leo directory.
         """
@@ -4064,7 +4065,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             c.executeScript(
                 event=None,
                 args=None, p=None,
-                script=c.p.b,  #None,
+                script=c.p.b,  # None,
                 useSelectedText=False,
                 define_g=True,
                 define_name='__main__',

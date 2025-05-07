@@ -116,10 +116,10 @@ def doFileAction(filename, c):
                 break
         if not done:
             g.warning("no file action matches " + filename)
-            return False  #TL - Inform onIconDoubleClick that no action was taken
-        return True  #TL - Inform onIconDoubleClick that action was taken
+            return False  # TL - Inform onIconDoubleClick that no action was taken
+        return True  # TL - Inform onIconDoubleClick that action was taken
     g.warning("no FileActions node")
-    return False  #TL - Inform onIconDoubleClick that no action was taken
+    return False  # TL - Inform onIconDoubleClick that no action was taken
 #@+node:ekr.20040915105758.16: ** applyFileAction
 def applyFileAction(p, filename, c):
 

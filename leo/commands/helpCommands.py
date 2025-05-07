@@ -801,7 +801,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
 
             A **layout** is an arrangement of the various frames and panels of
             Leo's interface.
-            
+
             Each layout has a **name**, such as ``vertical-thirds``, and a
             **command** such as ``layout-vertical-thirds``. Such commands switch to
             the given layout.

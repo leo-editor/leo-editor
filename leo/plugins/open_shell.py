@@ -87,7 +87,7 @@ class pluginController:
     #@+node:EKR.20040517080049.9: *3* launchCmd
     def launchCmd(self, event=None):
 
-        global pathToCmd
+        # global pathToCmd
 
         d = self._getCurrentNodePath()
         myCmd = 'cd ' + d
@@ -95,7 +95,7 @@ class pluginController:
     #@+node:EKR.20040517080049.10: *3* launchExplorer
     def launchExplorer(self, event=None):
 
-        global pathToExplorer
+        # global pathToExplorer
 
         d = self._getCurrentNodePath()
         os.spawnl(os.P_NOWAIT, pathToExplorer, ' ', d)
