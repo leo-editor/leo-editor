@@ -860,7 +860,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         if self.write:  # --write.
             self.write_file(filename, results)
         return True
-    #@+node:ekr.20250507130940.1: *5* tbo.beautify_script (entry) NEW
+    #@+node:ekr.20250507130940.1: *5* tbo.beautify_script (entry)
     def beautify_script(self, contents: str) -> str:
         if not contents:
             return ''
@@ -1786,7 +1786,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@-others
 #@-others
 
-if __name__ == '__main__':  ### or 'leoTokens' in __name__:
+if __name__ == '__main__':
     main()  # pragma: no cover
 
 #@@language python
