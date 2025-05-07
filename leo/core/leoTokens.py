@@ -1611,7 +1611,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                     elif token.value == ':':
                         self.set_context(i, 'annotation')
                 prev = token
-    #@+node:ekr.20250507041900.1: *6* tbo.finish_paren (new)
+    #@+node:ekr.20250507041900.1: *6* tbo.finish_paren
     def finish_paren(self, end: int, state: Optional[ScanState]) -> None:
         """Set context for '=' tokens when scanning from '(' to ')'."""
 
