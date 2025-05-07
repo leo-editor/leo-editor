@@ -1238,7 +1238,15 @@ class Commands:
                 useSelectedText = False
             script = g.getScript(c, p, useSelectedText=useSelectedText)
         script_p = p or c.p  # Only for error reporting below.
-        # #532: check all scripts with pyflakes.
+
+        # #4350: Optionally beautify the script.
+        beautify = c.config.getBool('beautify-python-code-on-write', default=False)
+        if beautify and not g.unitTesting:
+            from leo.core.leoTokens import TokenBasedOrange
+            tbo = TokenBasedOrange()
+            script = tbo.beautify_script(script)
+
+        # #532: Optionally check all scripts with pyflakes.
         if run_pyflakes and not g.unitTesting:
             from leo.commands import checkerCommands as cc
             prefix = ('c,g,p,script_gnx=None,None,None,None;'

@@ -860,6 +860,21 @@ class TokenBasedOrange:  # Orange is the new Black.
         if self.write:  # --write.
             self.write_file(filename, results)
         return True
+    #@+node:ekr.20250507130940.1: *5* tbo.beautify_script (entry) NEW
+    def beautify_script(self, contents: str) -> str:
+        if not contents:
+            return ''
+        if self.nobeautify_sentinel_pat.search(contents):
+            return contents  # Honor @nobeautify sentinel within the file.
+        g.printObj(contents, tag='beautify_script: Contents')
+        self.indent_level = 0
+        self.filename = 'execute-script'
+        tokens = Tokenizer().make_input_tokens(contents)
+        if not tokens:
+            return contents  # Not an error.
+        results = self.beautify(contents, self.filename, tokens)
+        g.printObj(results, tag='beautify_script: Results')
+        return results
     #@+node:ekr.20240105145241.8: *5* tbo.init_tokens_from_file
     def init_tokens_from_file(self, filename: str) -> tuple[
         str, list[InputToken]
@@ -1771,7 +1786,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@-others
 #@-others
 
-if __name__ == '__main__' or 'leoTokens' in __name__:
+if __name__ == '__main__':  ### or 'leoTokens' in __name__:
     main()  # pragma: no cover
 
 #@@language python
