@@ -33095,6 +33095,7 @@ Yes, there are several ways for scripts to simulate the often-requested "half-cl
 .. _`PR #4320`: https://github.com/leo-editor/leo-editor/pull/4320
 .. _`PR #4322`: https://github.com/leo-editor/leo-editor/pull/4322
 .. _`PR #4324`: https://github.com/leo-editor/leo-editor/pull/4324
+.. _`PR #4351`: https://github.com/leo-editor/leo-editor/pull/4351
 
 - `PR #4252`_: Add the `show-buttons-and-at-commands` command.
 - `PR #4253`_: Support mathjax in VR plugin.
@@ -33118,7 +33119,7 @@ Yes, there are several ways for scripts to simulate the often-requested "half-cl
 
 **Breaking change**
 
-`PR #4281`_ and `PR #4232`_ create a subtle **breaking change** to
+`PR #4281`_ and `PR #4232`_: create a subtle **breaking change** to
 colorizing settings.
 
 To maintain compatibility with previous versions of Leo, define `#00aa00` as the color for all the following settings::
@@ -33127,6 +33128,11 @@ To maintain compatibility with previous versions of Leo, define `#00aa00` as the
     @color rest_comments.literal2: The color for numbers.
     @color rest_comments.literal3: The color for italics.
     @color rest_comments.literal4: The color for bold.
+    
+- `PR #4351`_: Add the `beautify-script` command.
+               Also, `execute-script` beautifies `c.p`'s tree if
+               `@bool beautify-python-code-on-write = True`.
+
 </t>
 <t tx="ekr.20250422050813.3">Leo https://leo-editor.github.io/leo-editor/ 6.8.4 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
 
@@ -33140,6 +33146,9 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 - Several other improvements to syntax coloring.
 - Add the `show-buttons-and-at-commands` command.
 - Add the `find-source-for-command` command.
+- Add the `beautify-script` command.
+- The `execute-script` command beautifies `c.p`'s tree if
+  `@bool beautify-python-code-on-write = True`.
 - Remove the join-leo-irc command.
 - Scripts (including `@command` and `@button` scripts) may now return a value.
 - Replace `c.scanAllDirectives` with 7 seven new Commands getters.
