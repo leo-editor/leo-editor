@@ -628,6 +628,14 @@ class Commands:
                     repr(self.fixedWindowPosition))
         else:
             c.windowPosition = 500, 700, 50, 50  # width,height,left,top.
+    #@+node:ekr.20250508044308.1: *3* @cmd beautify-tree
+    @cmd('beautify-tree')
+    def beautify_tree_command(self, event: LeoKeyEvent = None) -> None:
+        """Undoably beautify c.p."""
+        c = self
+        from leo.core.leoTokens import TokenBasedOrange
+        tbo = TokenBasedOrange()
+        tbo.beautify_script_tree(c.p)
     #@+node:ekr.20210530065748.1: *3* @cmd c.execute-general-script
     @cmd('execute-general-script')
     def execute_general_script_command(self, event: LeoKeyEvent = None) -> None:
