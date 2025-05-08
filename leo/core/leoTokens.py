@@ -889,6 +889,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         at_others_pat = re.compile(r'(\s*)\@others(.*)')
         section_ref_pat = re.compile(r'(\s*)\<\<(.+)\>\>(.*)')
         nobeautify_pat = re.compile(r'(\s*)\@nobeautify(.*)')
+        trailing_ws_pat = re.compile(r'(.*)#(.*)')
 
         # Part 1: Replace @others and section references with 'pass'
         #         This hack is valid!
@@ -915,11 +916,14 @@ class TokenBasedOrange:  # Orange is the new Black.
             return False
         results_s: str = self.beautify(contents_s, self.filename, tokens)
 
-        # Part 3: Undo replacements.
+        # Part 3: Undo replacements, regularize comments and clean trailing ws.
         body_lines: list[str] = g.splitLines(p.b)
         results: list[str] = g.splitLines(results_s)
         for i in indices:
-            results[i] = body_lines[i].rstrip() + '\n'  # Clean trailing ws.
+            old_line = body_lines[i]
+            if m := trailing_ws_pat.match(old_line):
+                old_line = f"{m.group(1).rstrip()}  #{m.group(2)}"
+            results[i] = old_line.rstrip() + '\n'
 
         # Part 4: Update the body if necessary.
         new_body = ''.join(results)
