@@ -631,7 +631,7 @@ class Commands:
     #@+node:ekr.20250508044308.1: *3* @cmd beautify-tree
     @cmd('beautify-tree')
     def beautify_tree_command(self, event: LeoKeyEvent = None) -> None:
-        """Undoably beautify c.p."""
+        """Undoably beautify c.p and its subtree."""
         c = self
         from leo.core.leoTokens import TokenBasedOrange
         tbo = TokenBasedOrange()
