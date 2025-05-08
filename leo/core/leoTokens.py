@@ -872,8 +872,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         section_ref_pat = re.compile(r'(\s*)\<\<(.+)\>\>(.*)')
         nobeautify_pat = re.compile(r'(\s*)\@nobeautify(.*)')
 
-        # g.printObj(p.b, tag=f"Body: {p.h}")
-
         # Part 1: Replace @others and section references with 'pass'
         indices: list[int] = []  # Indices of replaced lines.
         contents: list[str] = []  # Contents after replacements.
@@ -889,19 +887,14 @@ class TokenBasedOrange:  # Orange is the new Black.
             else:
                 contents.append(s)
 
-        # g.printObj(contents, tag=f"Contents: {p.h}")
-        # g.printObj(indices, tag=f"Indices: {p.h}")
-
         # Part 2: Beautify.
         self.indent_level = 0
         self.filename = 'beautify-script'
         contents_s = ''.join(contents)
         tokens = Tokenizer().make_input_tokens(contents_s)
         if not tokens:
-            return  # Not an error.
+            return
         results_s: str = self.beautify(contents_s, self.filename, tokens)
-
-        # g.printObj(results_s, tag=f"Raw results: {p.h}")
 
         # Part 2: Undo replacements.
         body_lines: list[str] = g.splitLines(p.b)
@@ -909,10 +902,11 @@ class TokenBasedOrange:  # Orange is the new Black.
         for i in indices:
             results[i] = body_lines[i]
 
+        # Update the body if necessary.
         new_body = ''.join(results)
-        if p.b != new_body:
-            # g.printObj(results, tag=f"Results: {p.h}")
-            print(f"Beautify: {p.h}")
+        if p.b.rstrip() != new_body.rstrip():
+            g.printObj(p.b, tag=f"Old body: {p.h}")
+            g.printObj(results, tag=f"New body: {p.h}")
             p.b = new_body
     #@+node:ekr.20240105145241.8: *5* tbo.init_tokens_from_file
     def init_tokens_from_file(self, filename: str) -> tuple[
