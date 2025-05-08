@@ -1195,6 +1195,8 @@ class Commands:
         raiseFlag: bool = False,
         runPyflakes: bool = True,
     ) -> Value:
+        #@+<< executeScript: docstring >>
+        #@+node:ekr.20250508025320.1: *4* << executeScript: docstring >>
         """
         Execute a *Leo* script, written in python.
         Keyword args:
@@ -1209,9 +1211,22 @@ class Commands:
         raiseFlag=False         True: reraise any exceptions.
         runPyflakes=True        True: run pyflakes if allowed by setting.
         """
+        #@-<< executeScript: docstring >>
         c = self
         p = p or c.p
         language = g.findLanguageDirectives(c, p)
+        script_p = p or c.p  # Only for error reporting below.
+
+        # Compute flags
+        beautify_flag = (
+            language == 'python'
+            and c.config.getBool('beautify-python-code-on-write', default=False)
+        )
+        pyflakes_flag = (
+            runPyflakes
+            and language == 'python'
+            and c.config.getBool('run-pyflakes-on-write', default=False)
+        )
         if not script and language not in ('jupytext', 'python'):  # #4197, #4226.
             w = c.frame.body.wrapper
             # For non-python languages...
@@ -1229,32 +1244,29 @@ class Commands:
                 message = f"Must select text to execute {language} script"
                 g.es_print(message, color='blue')
                 return None
-        if runPyflakes:
-            run_pyflakes = language == 'python' and c.config.getBool('run-pyflakes-on-write', default=False)
-        else:
-            run_pyflakes = False
+
+        # #4350: Optionally beautify each node in script_p's tree separately.
+        if beautify_flag and not script and not g.unitTesting:
+            from leo.core.leoTokens import TokenBasedOrange
+            tbo = TokenBasedOrange()
+            for p2 in script_p.self_and_subtree():
+                tbo.beautify_script_node(p2)
+            c.redraw(script_p)
+
+        # Compute the script if necessary.
         if not script:
             if c.forceExecuteEntireBody:
                 useSelectedText = False
             script = g.getScript(c, p, useSelectedText=useSelectedText)
-        script_p = p or c.p  # Only for error reporting below.
-
-        # #4350: Optionally beautify the script.
-        beautify = language == 'python' and c.config.getBool('beautify-python-code-on-write', default=False)
-        if beautify and not g.unitTesting:
-            from leo.core.leoTokens import TokenBasedOrange
-            tbo = TokenBasedOrange()
-            script2 = tbo.beautify_script(script)
-            if script2 != script:
-                tbo.propagate_script_changes(script, script2, script_p)
-                script = script2
 
         # #532: Optionally check all scripts with pyflakes.
-        if run_pyflakes and not g.unitTesting:
+        if pyflakes_flag and not g.unitTesting:
             from leo.commands import checkerCommands as cc
             prefix = ('c,g,p,script_gnx=None,None,None,None;'
                       'assert c and g and p and script_gnx;\n')
             cc.PyflakesCommand(c).check_script(script_p, prefix + script)
+
+        # Execute the script!
         self.redirectScriptOutput()
         oldLog = g.app.log
         callResult = None

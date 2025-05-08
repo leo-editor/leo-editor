@@ -863,20 +863,57 @@ class TokenBasedOrange:  # Orange is the new Black.
         if self.write:  # --write.
             self.write_file(filename, results)
         return True
-    #@+node:ekr.20250507130940.1: *5* tbo.beautify_script (entry)
-    def beautify_script(self, contents: str) -> str:
-        if not contents:
-            return ''
-        if self.nobeautify_sentinel_pat.search(contents):
-            return contents  # Honor @nobeautify sentinel within the file.
+    #@+node:ekr.20250508030747.1: *5* tbo.beautify_script_node (entry)
+    def beautify_script_node(self, p: Position) -> None:
+        """Beautify a single node"""
+
+        # Patterns for lines that must be replaced.
+        at_others_pat = re.compile(r'(\s*)\@others(.*)')
+        section_ref_pat = re.compile(r'(\s*)\<\<(.+)\>\>(.*)')
+        nobeautify_pat = re.compile(r'(\s*)\@nobeautify(.*)')
+
+        # g.printObj(p.b, tag=f"Body: {p.h}")
+
+        # Part 1: Replace @others and section references with 'pass'
+        indices: list[int] = []  # Indices of replaced lines.
+        contents: list[str] = []  # Contents after replacements.
+        for i, s in enumerate(g.splitLines(p.b)):
+            if m := section_ref_pat.match(s):
+                contents.append(f"{m.group(1)}pass\n")
+                indices.append(i)
+            elif m := at_others_pat.match(s):
+                contents.append(f"{m.group(1)}pass\n")
+                indices.append(i)
+            elif m := nobeautify_pat.match(s):
+                return
+            else:
+                contents.append(s)
+
+        # g.printObj(contents, tag=f"Contents: {p.h}")
+        # g.printObj(indices, tag=f"Indices: {p.h}")
+
+        # Part 2: Beautify.
         self.indent_level = 0
-        self.filename = 'execute-script'
-        tokens = Tokenizer().make_input_tokens(contents)
+        self.filename = 'beautify-script'
+        contents_s = ''.join(contents)
+        tokens = Tokenizer().make_input_tokens(contents_s)
         if not tokens:
-            return contents  # Not an error.
-        results = self.beautify(contents, self.filename, tokens)
-        # g.printObj(results, tag='beautify_script: Results')
-        return results
+            return  # Not an error.
+        results_s: str = self.beautify(contents_s, self.filename, tokens)
+
+        # g.printObj(results_s, tag=f"Raw results: {p.h}")
+
+        # Part 2: Undo replacements.
+        body_lines: list[str] = g.splitLines(p.b)
+        results: list[str] = g.splitLines(results_s)
+        for i in indices:
+            results[i] = body_lines[i]
+
+        new_body = ''.join(results)
+        if p.b != new_body:
+            # g.printObj(results, tag=f"Results: {p.h}")
+            print(f"Beautify: {p.h}")
+            p.b = new_body
     #@+node:ekr.20240105145241.8: *5* tbo.init_tokens_from_file
     def init_tokens_from_file(self, filename: str) -> tuple[
         str, list[InputToken]
@@ -901,76 +938,6 @@ class TokenBasedOrange:  # Orange is the new Black.
             print(f"make_tokens: {(t4-t3)/1000000:6.2f} ms")
             print(f"      total: {(t4-t1)/1000000:6.2f} ms")
         return contents, input_tokens
-    #@+node:ekr.20250507184821.1: *5* tbo.propagate_script_changes
-    def propagate_script_changes(self, script1: str, script2: str, script_p: Position) -> None:
-        """Propagatge changes back into script_p's tree."""
-        # Sanity checks.
-        assert script1 != script2
-        lines1 = g.splitLines(script1)
-        lines2 = g.splitLines(script2)
-        n1, n2 = len(lines1), len(lines2)
-        assert n1 == n2, (n1, n2)
-
-        # Sentinel patterns.
-        section_pat = re.compile(r'(\s*)#@\+\<\<(.+)\>\>(.*)')
-        at_others_pat = re.compile(r'(\s*)#@\+others(.*)')
-        directive_pat = re.compile(r'(\s*)#@@(.+)')
-        sentinel_pat = re.compile(r'(\s*)#@(.+)')
-        node_pat = re.compile(r'(\s*)#@\+node(.+)')
-
-        # The main loop.
-        p = script_p.copy()
-        c = p.v.context
-        n = len(g.splitLines(p.b))
-        i = 0  # Index into lines2
-        j = 0  # Index into p.b.splitLines()
-        result = []  # The lines of p.b.
-        first_node = True
-        while i < n2 and p:
-            progress = i
-            s = lines2[i]
-            i += 1
-            if m := section_pat.match(s):
-                rb, lb = '>>', '<<'
-                line = f"{m.group(1)}{lb}{m.group(2)}{rb}{m.group(3)}\n"
-                result.append(line)
-                j += 1
-            elif m := at_others_pat.match(s):
-                line = f"{m.group(1)}@others{m.group(2)}\n"
-                result.append(line)
-                j += 1
-            elif m := directive_pat.match(s):
-                line = f"{m.group(1)}@{m.group(2)}\n"
-                result.append(line)
-                j += 1
-            elif m := node_pat.match(s):  # Start the next node.
-                if first_node:
-                    # Don't switch nodes the first time.
-                    first_node = False
-                else:
-                    g.printObj(result, tag=p.h)
-                    # p.b = ''.join(result)
-                    p.moveToThreadNext()
-                    if not p:
-                        break
-                    # Update per-node status.
-                    n = len(g.splitLines(p.b))
-                    j, result = 0, []
-            elif m := sentinel_pat.match(s):
-                pass
-            elif j < n:
-                result.append(s)
-                j += 1
-            else:
-                g.trace('OOPS', i, j, n)
-                return
-            assert i > progress, (i, progress)
-
-        # Finish the last node.
-        if result:
-            g.printObj(result, tag=p.h)
-            # p.b = ''.join(result)
-        c.redraw(script_p)
     #@+node:ekr.20240105140814.12: *5* tbo.regularize_newlines
     def regularize_newlines(self, s: str) -> str:
         """Regularize newlines within s."""
