@@ -867,13 +867,19 @@ class TokenBasedOrange:  # Orange is the new Black.
     def beautify_script_tree(self, root: Position) -> None:
         """Undoably beautify root's entire tree."""
         c = root.v.context
-        changed = False
+        u, undoType = c.undoer, 'beautify-script'
+        u.beforeChangeGroup(c.p, undoType)
+        n_changed = 0
         for p in root.self_and_subtree():
-            changed2 = self.beautify_script_node(p)
-            if changed2:
-                changed = True
-        if changed:
+            bunch = u.beforeChangeNodeContents(p)
+            changed = self.beautify_script_node(p)
+            if changed:
+                n_changed += 1
+                u.afterChangeNodeContents(p, undoType, bunch)
+        if n_changed:
+            u.afterChangeGroup(root, undoType)
             c.redraw(root)
+            g.es_print(f"Beautified {n_changed} node{g.plural(n_changed)}")
     #@+node:ekr.20250508030747.1: *6* tbo.beautify_script_node
     def beautify_script_node(self, p: Position) -> bool:
         """Beautify a single node"""
