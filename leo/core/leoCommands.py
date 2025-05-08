@@ -1249,9 +1249,7 @@ class Commands:
         if beautify_flag and not script and not g.unitTesting:
             from leo.core.leoTokens import TokenBasedOrange
             tbo = TokenBasedOrange()
-            for p2 in script_p.self_and_subtree():
-                tbo.beautify_script_node(p2)
-            c.redraw(script_p)
+            tbo.beautify_script_tree(script_p)
 
         # Compute the script if necessary.
         if not script:

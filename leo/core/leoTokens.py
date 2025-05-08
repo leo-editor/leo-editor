@@ -863,8 +863,19 @@ class TokenBasedOrange:  # Orange is the new Black.
         if self.write:  # --write.
             self.write_file(filename, results)
         return True
-    #@+node:ekr.20250508030747.1: *5* tbo.beautify_script_node (entry)
-    def beautify_script_node(self, p: Position) -> None:
+    #@+node:ekr.20250508041634.1: *5* tbo.beautify_script (entry) and helper
+    def beautify_script_tree(self, root: Position) -> None:
+        """Undoably beautify root's entire tree."""
+        c = root.v.context
+        changed = False
+        for p in root.self_and_subtree():
+            changed2 = self.beautify_script_node(p)
+            if changed2:
+                changed = True
+        if changed:
+            c.redraw(root)
+    #@+node:ekr.20250508030747.1: *6* tbo.beautify_script_node
+    def beautify_script_node(self, p: Position) -> bool:
         """Beautify a single node"""
 
         # Patterns for lines that must be replaced.
@@ -883,7 +894,7 @@ class TokenBasedOrange:  # Orange is the new Black.
                 contents.append(f"{m.group(1)}pass\n")
                 indices.append(i)
             elif m := nobeautify_pat.match(s):
-                return
+                return False
             else:
                 contents.append(s)
 
@@ -893,7 +904,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         contents_s = ''.join(contents)
         tokens = Tokenizer().make_input_tokens(contents_s)
         if not tokens:
-            return
+            return False
         results_s: str = self.beautify(contents_s, self.filename, tokens)
 
         # Part 2: Undo replacements.
@@ -904,10 +915,12 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Update the body if necessary.
         new_body = ''.join(results)
-        if p.b.rstrip() != new_body.rstrip():
-            g.printObj(p.b, tag=f"Old body: {p.h}")
-            g.printObj(results, tag=f"New body: {p.h}")
+        changed = p.b.rstrip() != new_body.rstrip()
+        if changed:
+            # g.printObj(p.b, tag=f"Old body: {p.h}")
+            # g.printObj(new_body, tag=f"New body: {p.h}")
             p.b = new_body
+        return changed
     #@+node:ekr.20240105145241.8: *5* tbo.init_tokens_from_file
     def init_tokens_from_file(self, filename: str) -> tuple[
         str, list[InputToken]
