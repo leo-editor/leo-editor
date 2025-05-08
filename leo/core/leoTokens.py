@@ -911,36 +911,65 @@ class TokenBasedOrange:  # Orange is the new Black.
         n1, n2 = len(lines1), len(lines2)
         assert n1 == n2, (n1, n2)
 
-        # Copy lines2 into script_p's tree.
+        # Sentinel patterns.
+        section_pat = re.compile(r'(\s*)#@\+\<\<(.+)\>\>(.*)')
+        at_others_pat = re.compile(r'(\s*)#@\+others(.*)')
+        directive_pat = re.compile(r'(\s*)#@@(.+)')
+        sentinel_pat = re.compile(r'(\s*)#@(.+)')
+        node_pat = re.compile(r'(\s*)#@\+node(.+)')
+
+        # The main loop.
         p = script_p.copy()
         c = p.v.context
         n = len(g.splitLines(p.b))
         i = 0  # Index into lines2
         j = 0  # Index into p.b.splitLines()
         result = []  # The lines of p.b.
-
-        # The main loop.
+        first_node = True
         while i < n2 and p:
-            progress = (i, p)
+            progress = i
             s = lines2[i]
-            if s.strip().startswith('#@'):  # Ignore sentinel lines.
-                i += 1
+            i += 1
+            if m := section_pat.match(s):
+                rb, lb = '>>', '<<'
+                line = f"{m.group(1)}{lb}{m.group(2)}{rb}{m.group(3)}\n"
+                result.append(line)
+                j += 1
+            elif m := at_others_pat.match(s):
+                line = f"{m.group(1)}@others{m.group(2)}\n"
+                result.append(line)
+                j += 1
+            elif m := directive_pat.match(s):
+                line = f"{m.group(1)}@{m.group(2)}\n"
+                result.append(line)
+                j += 1
+            elif m := node_pat.match(s):  # Start the next node.
+                if first_node:
+                    # Don't switch nodes the first time.
+                    first_node = False
+                else:
+                    g.printObj(result, tag=p.h)
+                    # p.b = ''.join(result)
+                    p.moveToThreadNext()
+                    if not p:
+                        break
+                    # Update per-node status.
+                    n = len(g.splitLines(p.b))
+                    j, result = 0, []
+            elif m := sentinel_pat.match(s):
+                pass
             elif j < n:
                 result.append(s)
-                i += 1
                 j += 1
-            else:  # Switch nodes.
-                p.b = ''.join(result)
-                p.moveToThreadNext()
-                if not p:
-                    break
-                n = len(g.splitLines(p.b))
-                j, result = 0, []
-            assert i > progress[0] or p != progress[1]
+            else:
+                g.trace('OOPS', i, j, n)
+                return
+            assert i > progress, (i, progress)
 
         # Finish the last node.
         if result:
-            p.b = ''.join(result)
+            g.printObj(result, tag=p.h)
+            # p.b = ''.join(result)
         c.redraw(script_p)
     #@+node:ekr.20240105140814.12: *5* tbo.regularize_newlines
     def regularize_newlines(self, s: str) -> str:
