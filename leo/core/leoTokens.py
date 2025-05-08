@@ -886,7 +886,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         """Beautify a single node"""
 
         # Patterns for lines that must be replaced.
-        at_others_pat = re.compile(r'(\s*)\@others(.*)')
         section_ref_pat = re.compile(r'(\s*)\<\<(.+)\>\>(.*)')
         nobeautify_pat = re.compile(r'(\s*)\@nobeautify(.*)')
         trailing_ws_pat = re.compile(r'(.*)#(.*)')
@@ -897,9 +896,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         contents: list[str] = []  # Contents after replacements.
         for i, s in enumerate(g.splitLines(p.b)):
             if m := section_ref_pat.match(s):
-                contents.append(f"{m.group(1)}pass\n")
-                indices.append(i)
-            elif m := at_others_pat.match(s):
                 contents.append(f"{m.group(1)}pass\n")
                 indices.append(i)
             elif m := nobeautify_pat.match(s):
