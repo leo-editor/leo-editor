@@ -35,11 +35,14 @@ import re
 import textwrap
 import time
 import tokenize
-from typing import Generator, Optional, Union
+from typing import Generator, Optional, Union, TYPE_CHECKING
 
 # Leo Imports.
 from leo.core import leoGlobals as g
 assert g
+
+if TYPE_CHECKING:
+    from leo.core.leoNodes import Position
 
 SettingsDict = dict[str, Union[int, bool]]
 #@-<< leoTokens.py: imports & annotations >>
@@ -860,6 +863,70 @@ class TokenBasedOrange:  # Orange is the new Black.
         if self.write:  # --write.
             self.write_file(filename, results)
         return True
+    #@+node:ekr.20250508041634.1: *5* tbo.beautify_script_tree (entry) and helper
+    def beautify_script_tree(self, root: Position) -> None:
+        """Undoably beautify root's entire tree."""
+        c = root.v.context
+        u, undoType = c.undoer, 'beautify-script'
+        u.beforeChangeGroup(c.p, undoType)
+        n_changed = 0
+        for p in root.self_and_subtree():
+            bunch = u.beforeChangeNodeContents(p)
+            changed = self.beautify_script_node(p)
+            if changed:
+                n_changed += 1
+                u.afterChangeNodeContents(p, undoType, bunch)
+        if n_changed:
+            u.afterChangeGroup(root, undoType)
+            c.redraw(root)
+            if not g.unitTesting:
+                g.es_print(f"Beautified {n_changed} node{g.plural(n_changed)}")
+    #@+node:ekr.20250508030747.1: *6* tbo.beautify_script_node
+    def beautify_script_node(self, p: Position) -> bool:
+        """Beautify a single node"""
+
+        # Patterns for lines that must be replaced.
+        section_ref_pat = re.compile(r'(\s*)\<\<(.+)\>\>(.*)')
+        nobeautify_pat = re.compile(r'(\s*)\@nobeautify(.*)')
+        trailing_ws_pat = re.compile(r'(.*)#(.*)')
+
+        # Part 1: Replace @others and section references with 'pass'
+        #         This hack is valid!
+        indices: list[int] = []  # Indices of replaced lines.
+        contents: list[str] = []  # Contents after replacements.
+        for i, s in enumerate(g.splitLines(p.b)):
+            if m := section_ref_pat.match(s):
+                contents.append(f"{m.group(1)}pass\n")
+                indices.append(i)
+            elif m := nobeautify_pat.match(s):
+                return False
+            else:
+                contents.append(s)
+
+        # Part 2: Beautify.
+        self.indent_level = 0
+        self.filename = 'beautify-script'
+        contents_s = ''.join(contents)
+        tokens = Tokenizer().make_input_tokens(contents_s)
+        if not tokens:
+            return False
+        results_s: str = self.beautify(contents_s, self.filename, tokens)
+
+        # Part 3: Undo replacements, regularize comments and clean trailing ws.
+        body_lines: list[str] = g.splitLines(p.b)
+        results: list[str] = g.splitLines(results_s)
+        for i in indices:
+            old_line = body_lines[i]
+            if m := trailing_ws_pat.match(old_line):
+                old_line = f"{m.group(1).rstrip()}  #{m.group(2)}"
+            results[i] = old_line.rstrip() + '\n'
+
+        # Part 4: Update the body if necessary.
+        new_body = ''.join(results)
+        changed = p.b.rstrip() != new_body.rstrip()
+        if changed:
+            p.b = new_body
+        return changed
     #@+node:ekr.20240105145241.8: *5* tbo.init_tokens_from_file
     def init_tokens_from_file(self, filename: str) -> tuple[
         str, list[InputToken]
@@ -1771,7 +1838,7 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@-others
 #@-others
 
-if __name__ == '__main__' or 'leoTokens' in __name__:
+if __name__ == '__main__':
     main()  # pragma: no cover
 
 #@@language python
