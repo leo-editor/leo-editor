@@ -919,7 +919,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         body_lines: list[str] = g.splitLines(p.b)
         results: list[str] = g.splitLines(results_s)
         for i in indices:
-            results[i] = body_lines[i]
+            results[i] = body_lines[i].rstrip() + '\n'  # Clean trailing ws.
 
         # Part 4: Update the body if necessary.
         new_body = ''.join(results)
