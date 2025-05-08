@@ -35,11 +35,14 @@ import re
 import textwrap
 import time
 import tokenize
-from typing import Generator, Optional, Union
+from typing import Generator, Optional, Union, TYPE_CHECKING
 
 # Leo Imports.
 from leo.core import leoGlobals as g
 assert g
+
+if TYPE_CHECKING:
+    from leo.core.leoNodes import Position
 
 SettingsDict = dict[str, Union[int, bool]]
 #@-<< leoTokens.py: imports & annotations >>
@@ -866,14 +869,13 @@ class TokenBasedOrange:  # Orange is the new Black.
             return ''
         if self.nobeautify_sentinel_pat.search(contents):
             return contents  # Honor @nobeautify sentinel within the file.
-        g.printObj(contents, tag='beautify_script: Contents')
         self.indent_level = 0
         self.filename = 'execute-script'
         tokens = Tokenizer().make_input_tokens(contents)
         if not tokens:
             return contents  # Not an error.
         results = self.beautify(contents, self.filename, tokens)
-        g.printObj(results, tag='beautify_script: Results')
+        # g.printObj(results, tag='beautify_script: Results')
         return results
     #@+node:ekr.20240105145241.8: *5* tbo.init_tokens_from_file
     def init_tokens_from_file(self, filename: str) -> tuple[
@@ -899,6 +901,47 @@ class TokenBasedOrange:  # Orange is the new Black.
             print(f"make_tokens: {(t4-t3)/1000000:6.2f} ms")
             print(f"      total: {(t4-t1)/1000000:6.2f} ms")
         return contents, input_tokens
+    #@+node:ekr.20250507184821.1: *5* tbo.propagate_script_changes
+    def propagate_script_changes(self, script1: str, script2: str, script_p: Position) -> None:
+        """Propagatge changes back into script_p's tree."""
+        # Sanity checks.
+        assert script1 != script2
+        lines1 = g.splitLines(script1)
+        lines2 = g.splitLines(script2)
+        n1, n2 = len(lines1), len(lines2)
+        assert n1 == n2, (n1, n2)
+
+        # Copy lines2 into script_p's tree.
+        p = script_p.copy()
+        c = p.v.context
+        n = len(g.splitLines(p.b))
+        i = 0  # Index into lines2
+        j = 0  # Index into p.b.splitLines()
+        result = []  # The lines of p.b.
+
+        # The main loop.
+        while i < n2 and p:
+            progress = (i, p)
+            s = lines2[i]
+            if s.strip().startswith('#@'):  # Ignore sentinel lines.
+                i += 1
+            elif j < n:
+                result.append(s)
+                i += 1
+                j += 1
+            else:  # Switch nodes.
+                p.b = ''.join(result)
+                p.moveToThreadNext()
+                if not p:
+                    break
+                n = len(g.splitLines(p.b))
+                j, result = 0, []
+            assert i > progress[0] or p != progress[1]
+
+        # Finish the last node.
+        if result:
+            p.b = ''.join(result)
+        c.redraw(script_p)
     #@+node:ekr.20240105140814.12: *5* tbo.regularize_newlines
     def regularize_newlines(self, s: str) -> str:
         """Regularize newlines within s."""

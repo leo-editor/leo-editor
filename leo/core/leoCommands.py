@@ -1230,7 +1230,7 @@ class Commands:
                 g.es_print(message, color='blue')
                 return None
         if runPyflakes:
-            run_pyflakes = c.config.getBool('run-pyflakes-on-write', default=False)
+            run_pyflakes = language == 'python' and c.config.getBool('run-pyflakes-on-write', default=False)
         else:
             run_pyflakes = False
         if not script:
@@ -1240,11 +1240,14 @@ class Commands:
         script_p = p or c.p  # Only for error reporting below.
 
         # #4350: Optionally beautify the script.
-        beautify = c.config.getBool('beautify-python-code-on-write', default=False)
+        beautify = language == 'python' and c.config.getBool('beautify-python-code-on-write', default=False)
         if beautify and not g.unitTesting:
             from leo.core.leoTokens import TokenBasedOrange
             tbo = TokenBasedOrange()
-            script = tbo.beautify_script(script)
+            script2 = tbo.beautify_script(script)
+            if script2 != script:
+                tbo.propagate_script_changes(script, script2, script_p)
+                script = script2
 
         # #532: Optionally check all scripts with pyflakes.
         if run_pyflakes and not g.unitTesting:
