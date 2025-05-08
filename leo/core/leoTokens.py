@@ -863,7 +863,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         if self.write:  # --write.
             self.write_file(filename, results)
         return True
-    #@+node:ekr.20250508041634.1: *5* tbo.beautify_script (entry) and helper
+    #@+node:ekr.20250508041634.1: *5* tbo.beautify_script_tree (entry) and helper
     def beautify_script_tree(self, root: Position) -> None:
         """Undoably beautify root's entire tree."""
         c = root.v.context
