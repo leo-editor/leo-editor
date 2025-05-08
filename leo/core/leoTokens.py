@@ -915,13 +915,13 @@ class TokenBasedOrange:  # Orange is the new Black.
             return False
         results_s: str = self.beautify(contents_s, self.filename, tokens)
 
-        # Part 2: Undo replacements.
+        # Part 3: Undo replacements.
         body_lines: list[str] = g.splitLines(p.b)
         results: list[str] = g.splitLines(results_s)
         for i in indices:
             results[i] = body_lines[i]
 
-        # Update the body if necessary.
+        # Part 4: Update the body if necessary.
         new_body = ''.join(results)
         changed = p.b.rstrip() != new_body.rstrip()
         if changed:
