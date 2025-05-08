@@ -879,7 +879,8 @@ class TokenBasedOrange:  # Orange is the new Black.
         if n_changed:
             u.afterChangeGroup(root, undoType)
             c.redraw(root)
-            g.es_print(f"Beautified {n_changed} node{g.plural(n_changed)}")
+            if not g.unitTesting:
+                g.es_print(f"Beautified {n_changed} node{g.plural(n_changed)}")
     #@+node:ekr.20250508030747.1: *6* tbo.beautify_script_node
     def beautify_script_node(self, p: Position) -> bool:
         """Beautify a single node"""
@@ -890,6 +891,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         nobeautify_pat = re.compile(r'(\s*)\@nobeautify(.*)')
 
         # Part 1: Replace @others and section references with 'pass'
+        #         This hack is valid!
         indices: list[int] = []  # Indices of replaced lines.
         contents: list[str] = []  # Contents after replacements.
         for i, s in enumerate(g.splitLines(p.b)):
@@ -923,8 +925,6 @@ class TokenBasedOrange:  # Orange is the new Black.
         new_body = ''.join(results)
         changed = p.b.rstrip() != new_body.rstrip()
         if changed:
-            # g.printObj(p.b, tag=f"Old body: {p.h}")
-            # g.printObj(new_body, tag=f"New body: {p.h}")
             p.b = new_body
         return changed
     #@+node:ekr.20240105145241.8: *5* tbo.init_tokens_from_file
