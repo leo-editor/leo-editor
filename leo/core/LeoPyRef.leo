@@ -241,7 +241,7 @@
 <v t="ekr.20210302164046.1"><vh>@edit ../../launchLeo.py</vh></v>
 <v t="ekr.20240319094534.1"><vh>@edit ../../PKG-INFO.TXT</vh></v>
 <v t="ekr.20240206153029.1"><vh>@edit ../../README.md</vh></v>
-<v t="ekr.20240206161713.1"><vh>@edit ../../setup.cfg </vh></v>
+<v t="ekr.20240206161713.1"><vh>@clean ../../setup.cfg </vh></v>
 <v t="ekr.20150304125314.4"><vh>@file ../../leo_to_html.xsl</vh></v>
 <v t="ekr.20240227064614.1"><vh>@file ../../pyproject.toml</vh></v>
 <v t="ekr.20240406013108.1"><vh>@file ../../ruff.toml</vh></v>
@@ -357,6 +357,33 @@
 <v t="ekr.20210219115553.109"><vh>@file ../modes/python.py</vh></v>
 <v t="ekr.20231103124615.1"><vh>@file ../modes/rust.py</vh></v>
 <v t="ekr.20231012163843.1"><vh>@file ../modes/scheme.py</vh></v>
+</v>
+<v t="ekr.20221204070905.1"><vh>In leo/scripts</vh>
+<v t="ekr.20240321122705.1"><vh>--- build scripts</vh>
+<v t="ekr.20240321122822.1"><vh>@file ../scripts/build_leo.py</vh></v>
+<v t="ekr.20240321122917.1"><vh>@file ../scripts/inspect_wheel.py</vh></v>
+<v t="ekr.20240321123226.1"><vh>@file ../scripts/install_leo_from_pypi.py</vh></v>
+<v t="ekr.20240321123225.3"><vh>@file ../scripts/install_leo_from_testpypi.py</vh></v>
+<v t="ekr.20240321123214.1"><vh>@file ../scripts/install_leo_locally.py</vh></v>
+<v t="ekr.20240322173704.1"><vh>@file ../scripts/pip_install_r.py</vh></v>
+<v t="ekr.20240322173731.1"><vh>@file ../scripts/pip_uninstall_all.py</vh></v>
+<v t="ekr.20240321123224.1"><vh>@file ../scripts/run_installed_leo.py</vh></v>
+<v t="ekr.20240321123225.1"><vh>@file ../scripts/uninstall_leo.py</vh></v>
+<v t="ekr.20240321123225.4"><vh>@file ../scripts/upload_leo_to_pypi.py</vh></v>
+<v t="ekr.20240321123225.2"><vh>@file ../scripts/upload_leo_to_testpypi.py</vh></v>
+<v t="mhw.20190808083008.1"><vh>@file ../scripts/add-desktop-links.leox</vh></v>
+</v>
+<v t="ekr.20240321122614.1"><vh>--- test scripts</vh>
+<v t="ekr.20240323050520.1"><vh>@file ../scripts/beautify_all_leo.py</vh></v>
+<v t="ekr.20240322065528.1"><vh>@file ../scripts/beautify_leo.py</vh></v>
+<v t="ekr.20240322084902.1"><vh>@file ../scripts/flake8_leo.py</vh></v>
+<v t="ekr.20240323051724.1"><vh>@file ../scripts/full_test_leo.py</vh></v>
+<v t="ekr.20240321122413.8"><vh>@file ../scripts/mypy_leo.py</vh></v>
+<v t="ekr.20250227032644.1"><vh>@file ../scripts/pyflakes_leo.py</vh></v>
+<v t="ekr.20240321122413.9"><vh>@file ../scripts/pylint_leo.py</vh></v>
+<v t="ekr.20240406061929.1"><vh>@file ../scripts/ruff_leo.py</vh></v>
+<v t="ekr.20240322162616.1"><vh>@file ../scripts/run_test_leo.py</vh></v>
+</v>
 </v>
 </v>
 <v t="ekr.20110605121601.17862"><vh>Qt gui</vh>
@@ -641,32 +668,6 @@
 <v t="ekr.20180202053206.1"><vh>@file ../plugins/writers/treepad.py</vh></v>
 </v>
 </v>
-<v t="ekr.20221204070905.1"><vh>Script files</vh>
-<v t="ekr.20240321122705.1"><vh>--- build scripts</vh>
-<v t="ekr.20240321122822.1"><vh>@file ../scripts/build_leo.py</vh></v>
-<v t="ekr.20240321122917.1"><vh>@file ../scripts/inspect_wheel.py</vh></v>
-<v t="ekr.20240321123226.1"><vh>@file ../scripts/install_leo_from_pypi.py</vh></v>
-<v t="ekr.20240321123225.3"><vh>@file ../scripts/install_leo_from_testpypi.py</vh></v>
-<v t="ekr.20240321123214.1"><vh>@file ../scripts/install_leo_locally.py</vh></v>
-<v t="ekr.20240322173704.1"><vh>@file ../scripts/pip_install_r.py</vh></v>
-<v t="ekr.20240322173731.1"><vh>@file ../scripts/pip_uninstall_all.py</vh></v>
-<v t="ekr.20240321123224.1"><vh>@file ../scripts/run_installed_leo.py</vh></v>
-<v t="ekr.20240321123225.1"><vh>@file ../scripts/uninstall_leo.py</vh></v>
-<v t="ekr.20240321123225.4"><vh>@file ../scripts/upload_leo_to_pypi.py</vh></v>
-<v t="ekr.20240321123225.2"><vh>@file ../scripts/upload_leo_to_testpypi.py</vh></v>
-<v t="mhw.20190808083008.1"><vh>@file ../scripts/add-desktop-links.leox</vh></v>
-</v>
-<v t="ekr.20240321122614.1"><vh>--- test scripts</vh>
-<v t="ekr.20240323050520.1"><vh>@file ../scripts/beautify_all_leo.py</vh></v>
-<v t="ekr.20240322065528.1"><vh>@file ../scripts/beautify_leo.py</vh></v>
-<v t="ekr.20240322084902.1"><vh>@file ../scripts/flake8_leo.py</vh></v>
-<v t="ekr.20240323051724.1"><vh>@file ../scripts/full_test_leo.py</vh></v>
-<v t="ekr.20240321122413.8"><vh>@file ../scripts/mypy_leo.py</vh></v>
-<v t="ekr.20240321122413.9"><vh>@file ../scripts/pylint_leo.py</vh></v>
-<v t="ekr.20240406061929.1"><vh>@file ../scripts/ruff_leo.py</vh></v>
-<v t="ekr.20240322162616.1"><vh>@file ../scripts/run_test_leo.py</vh></v>
-</v>
-</v>
 <v t="ekr.20080730161153.8"><vh>Testing</vh>
 <v t="ekr.20201129023817.1"><vh>@file leoTest2.py</vh></v>
 </v>
@@ -748,7 +749,6 @@ in LeoDocs.leo for full details.
 
 These plugins create new kinds of nodes, some of which affect the file system.</t>
 <t tx="ekr.20031218072017.2406"># This file contains almost all of Leo's sources.
-
 # See the "About this file" node for important notes.
 </t>
 <t tx="ekr.20031218072017.2604"></t>
@@ -1505,7 +1505,7 @@ if 1:
         last.firstChild().expand()
     c.redraw(last)
 print('Done')</t>
-<t tx="ekr.20170428085201.1">### @nosearch
+<t tx="ekr.20170428085201.1">@nosearch
 @nobeautify</t>
 <t tx="ekr.20170811173924.1">@language python
 import os
@@ -3114,6 +3114,7 @@ commands_dir = join(leo_dir, 'commands')
 external_dir = join(leo_dir, 'external')
 importers_dir = join(leo_dir, 'plugins', 'importers')
 plugins_dir = join(leo_dir, 'plugins')
+scripts_dir = join(leo_dir, 'scripts')
 unittests_dir = join(leo_dir, '..', 'unittests')
 writers_dir = join(leo_dir, 'plugins', 'writers')
 
@@ -3127,6 +3128,7 @@ external_files = make_list(f"{external_dir}{sep}*.py")
 importer_files = make_list(f"{importers_dir}{sep}*.py")
 # plugin_files = make_list(f"{plugins_dir}{sep}*.py")
 qt_files = make_list(f"{plugins_dir}{sep}qt*.py")
+script_files = make_list(f"{scripts_dir}{sep}*.py")
 unittests_files = make_list(f"{unittests_dir}{sep}*.py")
 writer_files = make_list(f"{writers_dir}{sep}*.py")
 
@@ -3168,6 +3170,152 @@ print('done')</t>
 <t tx="ekr.20240107154430.1"># 79: PEP8 recommendation.</t>
 <t tx="ekr.20240204082420.1"></t>
 <t tx="ekr.20240204082924.1"></t>
+<t tx="ekr.20240206161713.1">@language ini
+
+[bdist_wheel]
+
+# Leo only supports Python 3, so universal should be zero.
+universal=0
+
+[metadata]
+
+# Becomes the home-page in `pip show leo`.
+url = https://leo-editor.github.io/leo-editor/
+
+[flake8]
+
+exclude =
+    .git,
+    __pycache__,
+    leo/build,
+    leo/dist,
+    leo/doc,
+    leo/extensions,
+    leo/external,
+    leo/modes,
+    leo/plugins,
+    leo/scripts,
+    leo/test,
+    leo/unittests/py3_test_grammar.py,
+
+extend-ignore =
+
+    # Don't check B020. It conflicts with Leo idioms like `for p in p.children():
+    # Found for loop that reassigns the iterable it is iterating with each iterable value.
+    B020
+
+    # blank line contains whitespace
+    # W293
+
+    # Comments and continuation lines...
+
+    # expected an indented block (comment)
+    E115
+
+    # unexpected indentation (comment)
+    E116
+
+    # over-indented (comment)
+    E117
+
+    # continuation line over-indented for visual indent
+    E127
+
+    # continuation line missing indentation or outdented.
+    E122
+
+    # closing bracket does not match visual indentation.
+    E124
+
+    # continuation line with same indent as next logical line
+    E125
+
+    # continuation line under-indented for visual indent.
+    E128
+
+    # visually indented line with same indent as next logical line
+    E129
+
+    # continuation line unaligned for hanging indent.
+    E131
+
+    # whitespace before ':'
+    # Conflict between black and flake8.
+    E203
+
+    # whitespace before '['
+    # E211
+
+    # multiple spaces before operator
+    # Conflicts with extra spacing in @nobeautify nodes.
+    E221
+
+    # multiple spaces after operator
+    # Conflicts with extra spacing in @nobeautify nodes.
+    E222
+
+    # missing whitespace around operator
+    # Conflicts with extra spacing in @nobeautify nodes.
+    # E225
+
+    # missing whitespace after ','
+    # E231
+
+    # unexpected spaces around keyword / parameter equals
+    # Conflicts with extra spacing in @nobeautify nodes.
+    E251
+
+    # at least two spaces before inline comment
+    # E261
+
+    # missing whitespace around parameter equals.
+    # E252
+
+    # inline comment should start with '# '
+    E262
+
+    # block comment should start with '# '.
+    E265
+
+    # too many leading '#' for block comment
+    # Prohibits ### comments.
+    E266
+
+    # multiple spaces before keyword
+    # Interferes with @nobeautify
+    E272
+
+    # missing whitespace after keyword.
+    # Interferes with @nobeautify. Also warns about assert(whatever) and except(list).
+    E275
+
+    # trailing whitespace
+    # E293
+
+    # expected 1 blank line, found 0.
+    E301
+
+    # expected 2 blank lines, found 1.
+    E302
+
+    # whitespace before ':'
+    # E203
+
+    # too many blank lines (2)
+    E303
+
+    # expected 2 blank lines after class or function definition, found 0.
+    E305
+
+    # expected 1 blank line before a nested definition, found 0.
+    E306
+
+    # Line too long.
+    E501
+
+    # global `whatever` is unused: name is never assigned in scope.
+    # F824
+</t>
 <t tx="ekr.20240317061516.1">@language python
 
 # Order matters!
