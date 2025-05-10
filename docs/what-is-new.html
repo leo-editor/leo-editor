@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>What’s New in Leo &#8212; Leo 6.8.4 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css?v=2bf1fcf8" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css?v=a1d61795" />
     
@@ -80,8 +80,7 @@ Call <cite>g.deprecated</cite> in all deprecated functions to issue a deprecatio
 </li>
 </ul>
 <p><strong>Breaking change</strong></p>
-<p><a class="reference external" href="https://github.com/leo-editor/leo-editor/pull/4281">PR #4281</a> and <a href="#id85"><span class="problematic" id="id86">`PR #4232`_</span></a> create a subtle <strong>breaking change</strong> to
-colorizing settings.</p>
+<p><a class="reference external" href="https://github.com/leo-editor/leo-editor/pull/4281">PR #4281</a>: create a subtle <strong>breaking change</strong> to colorizing settings.</p>
 <p>To maintain compatibility with previous versions of Leo, define <cite>#00aa00</cite> as the color for all the following settings:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@color</span> <span class="n">rest_comments</span><span class="o">.</span><span class="n">literal1</span><span class="p">:</span> <span class="n">The</span> <span class="n">default</span> <span class="n">color</span><span class="o">.</span>
 <span class="nd">@color</span> <span class="n">rest_comments</span><span class="o">.</span><span class="n">literal2</span><span class="p">:</span> <span class="n">The</span> <span class="n">color</span> <span class="k">for</span> <span class="n">numbers</span><span class="o">.</span>
@@ -89,6 +88,14 @@ colorizing settings.</p>
 <span class="nd">@color</span> <span class="n">rest_comments</span><span class="o">.</span><span class="n">literal4</span><span class="p">:</span> <span class="n">The</span> <span class="n">color</span> <span class="k">for</span> <span class="n">bold</span><span class="o">.</span>
 </pre></div>
 </div>
+<ul class="simple">
+<li><dl class="simple">
+<dt><a class="reference external" href="https://github.com/leo-editor/leo-editor/pull/4351">PR #4351</a>: Add the <cite>beautify-script</cite> command.</dt><dd><p>Also, <cite>execute-script</cite> beautifies <cite>c.p</cite>’s tree if
+<cite>&#64;bool beautify-python-code-on-write = True</cite>.</p>
+</dd>
+</dl>
+</li>
+</ul>
 </section>
 <section id="what-s-new-in-leo-6-8-3">
 <h2><a class="toc-backref" href="#id78" role="doc-backlink">What’s new in Leo 6.8.3</a><a class="headerlink" href="#what-s-new-in-leo-6-8-3" title="Link to this heading">¶</a></h2>
@@ -1002,7 +1009,7 @@ The old code failed to find Python installations in the 64-bit Windows registry.
     <span class="n">cfam</span> <span class="p">(</span><span class="n">clone</span><span class="o">-</span><span class="n">find</span><span class="o">-</span><span class="nb">all</span><span class="o">-</span><span class="n">marked</span><span class="p">)</span>
     <span class="n">cffm</span> <span class="p">(</span><span class="n">clone</span><span class="o">-</span><span class="n">find</span><span class="o">-</span><span class="nb">all</span><span class="o">-</span><span class="n">flattened</span><span class="o">-</span><span class="n">marked</span><span class="p">)</span>
 <span class="n">decorators</span> <span class="n">create</span> <span class="nb">all</span> <span class="n">Leo</span> <span class="n">commands</span>
-<span class="n">find</span><span class="o">-</span><span class="k">def</span> <span class="nf">and</span> <span class="n">find</span><span class="o">-</span><span class="n">var</span>
+<span class="n">find</span><span class="o">-</span><span class="k">def</span><span class="w"> </span><span class="nf">and</span> <span class="n">find</span><span class="o">-</span><span class="n">var</span>
 <span class="n">help</span><span class="o">-</span><span class="k">for</span><span class="o">-</span><span class="n">keystroke</span>
 <span class="n">Optional</span> <span class="n">line</span> <span class="n">numbers</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">left</span> <span class="n">gutter</span>
 <span class="n">show</span><span class="o">-</span><span class="n">invisibles</span> <span class="n">uses</span> <span class="n">Qt</span> <span class="n">characters</span>
@@ -1019,7 +1026,7 @@ The old code failed to find Python installations in the 64-bit Windows registry.
 <span class="n">clone</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">at</span><span class="o">-</span><span class="n">spot</span>
 <span class="n">Ctrl</span><span class="o">-</span><span class="n">x</span> <span class="o">&amp;</span> <span class="n">Ctrl</span><span class="o">-</span><span class="n">C</span> <span class="n">cut</span><span class="o">/</span><span class="n">copy</span> <span class="n">the</span> <span class="n">entire</span> <span class="n">line</span> <span class="k">if</span> <span class="n">no</span> <span class="n">text</span> <span class="ow">is</span> <span class="n">selected</span>
 <span class="n">find</span><span class="o">-</span><span class="nb">all</span> <span class="n">now</span> <span class="n">writes</span> <span class="n">to</span> <span class="n">the</span> <span class="n">body</span> <span class="n">of</span> <span class="n">a</span> <span class="n">new</span> <span class="n">top</span><span class="o">-</span><span class="n">level</span> <span class="n">node</span>
-<span class="n">find</span><span class="o">-</span><span class="k">def</span> <span class="nf">and</span> <span class="n">find</span><span class="o">-</span><span class="n">var</span>
+<span class="n">find</span><span class="o">-</span><span class="k">def</span><span class="w"> </span><span class="nf">and</span> <span class="n">find</span><span class="o">-</span><span class="n">var</span>
 <span class="n">flatten</span><span class="o">-</span><span class="n">outline</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">node</span>
 <span class="n">goto</span><span class="o">-</span><span class="nb">next</span><span class="o">-</span><span class="n">clone</span> <span class="n">falls</span> <span class="n">back</span> <span class="n">to</span> <span class="n">find</span><span class="o">-</span><span class="nb">next</span><span class="o">-</span><span class="n">clone</span>
 <span class="n">help</span><span class="o">-</span><span class="k">for</span><span class="o">-</span><span class="n">keystroke</span>
@@ -1101,7 +1108,7 @@ The old code failed to find Python installations in the 64-bit Windows registry.
 <span class="n">Up</span><span class="o">/</span><span class="n">Down</span> <span class="n">arrows</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">minibuffer</span> <span class="n">cycle</span> <span class="n">though</span> <span class="n">command</span> <span class="n">history</span><span class="o">.</span>
 <span class="n">load</span><span class="o">-</span><span class="n">leo</span><span class="o">.</span><span class="n">html</span> <span class="n">displays</span> <span class="o">.</span><span class="n">leo</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">browser</span><span class="o">.</span>
 <span class="n">Leo</span> <span class="n">now</span> <span class="n">honors</span> <span class="nd">@language</span> <span class="n">inside</span> <span class="nd">@doc</span> <span class="n">parts</span><span class="o">.</span>
-<span class="nd">@data</span> <span class="n">nodes</span> <span class="n">can</span> <span class="n">now</span> <span class="n">be</span> <span class="n">composed</span> <span class="kn">from</span> <span class="nn">a</span> <span class="n">tree</span> <span class="n">of</span> <span class="n">nodes</span><span class="o">.</span>
+<span class="nd">@data</span> <span class="n">nodes</span> <span class="n">can</span> <span class="n">now</span> <span class="n">be</span> <span class="n">composed</span> <span class="kn">from</span><span class="w"> </span><span class="nn">a</span> <span class="n">tree</span> <span class="n">of</span> <span class="n">nodes</span><span class="o">.</span>
     <span class="n">This</span> <span class="n">feature</span> <span class="n">appeared</span> <span class="ow">in</span> <span class="n">Leo</span> <span class="mf">5.0</span><span class="p">,</span> <span class="n">but</span> <span class="n">was</span> <span class="ow">not</span> <span class="n">documented</span><span class="o">.</span>
 <span class="n">Added</span> <span class="nd">@int</span> <span class="n">qt</span><span class="o">-</span><span class="n">cursor</span><span class="o">-</span><span class="n">width</span> <span class="n">setting</span><span class="o">.</span>
 <span class="n">Added</span> <span class="n">g</span><span class="o">.</span><span class="n">IdleTime</span> <span class="o">&amp;</span> <span class="n">LeoQtGui</span><span class="o">.</span><span class="n">IdleTime</span><span class="o">.</span>
@@ -1163,7 +1170,7 @@ Added g.getLanguageAtPosition. Should have been done long ago.
 
     <span class="n">File</span> <span class="n">name</span> <span class="n">completion</span>
     <span class="n">Cloned</span> <span class="n">nodes</span> <span class="n">expand</span> <span class="ow">and</span> <span class="n">contract</span> <span class="n">independently</span>
-    <span class="nd">@data</span> <span class="n">nodes</span> <span class="n">can</span> <span class="n">be</span> <span class="n">composed</span> <span class="kn">from</span> <span class="nn">descendant</span> <span class="n">nodes</span>
+    <span class="nd">@data</span> <span class="n">nodes</span> <span class="n">can</span> <span class="n">be</span> <span class="n">composed</span> <span class="kn">from</span><span class="w"> </span><span class="nn">descendant</span> <span class="n">nodes</span>
     <span class="n">Leo</span><span class="s1">&#39;s main style sheet can be customized with @color and @font settings</span>
     <span class="nd">@persistence</span> <span class="n">nodes</span> <span class="n">save</span> <span class="n">data</span> <span class="ow">in</span> <span class="nd">@auto</span> <span class="n">trees</span>
     <span class="n">Leo</span> <span class="n">now</span> <span class="n">uses</span> <span class="n">pluggable</span> <span class="n">architecture</span> <span class="k">for</span> <span class="nd">@auto</span> <span class="n">nodes</span>
@@ -1344,10 +1351,10 @@ Major additions to abbreviations, including templates
 <span class="n">By</span> <span class="n">Edward</span> <span class="n">K</span><span class="o">.</span> <span class="n">Ream</span><span class="p">:</span>
 
     <span class="n">Cleanup</span> <span class="n">imported</span> <span class="n">nodes</span>
-    <span class="n">Create</span> <span class="k">global</span> <span class="n">data</span> <span class="n">structures</span> <span class="kn">from</span> <span class="nn">in</span> <span class="n">modes</span><span class="o">/*.</span><span class="n">py</span> <span class="n">files</span>
-    <span class="n">Get</span> <span class="nb">all</span> <span class="n">comments</span> <span class="kn">from</span> <span class="nn">modes</span> <span class="p">(</span><span class="n">slow</span><span class="p">)</span>
+    <span class="n">Create</span> <span class="k">global</span> <span class="n">data</span> <span class="n">structures</span> <span class="kn">from</span><span class="w"> </span><span class="nn">in</span> <span class="n">modes</span><span class="o">/*.</span><span class="n">py</span> <span class="n">files</span>
+    <span class="n">Get</span> <span class="nb">all</span> <span class="n">comments</span> <span class="kn">from</span><span class="w"> </span><span class="nn">modes</span> <span class="p">(</span><span class="n">slow</span><span class="p">)</span>
     <span class="n">Import</span> <span class="n">org</span> <span class="n">mode</span>
-    <span class="n">Recursive</span> <span class="kn">import</span> <span class="nn">script</span>
+    <span class="n">Recursive</span> <span class="kn">import</span><span class="w"> </span><span class="nn">script</span>
 
 <span class="n">By</span> <span class="n">Brian</span> <span class="n">Theado</span><span class="p">:</span>
 
@@ -1415,7 +1422,7 @@ Major additions to abbreviations, including templates
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Leo</span> <span class="mf">4.9</span> <span class="n">final</span> <span class="n">released</span> <span class="n">June</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">2011</span>
 <span class="n">The</span> <span class="n">Qt</span> <span class="n">gui</span> <span class="n">completely</span> <span class="n">replaces</span> <span class="n">Tk</span> <span class="n">gui</span>
 <span class="n">Nodes</span> <span class="n">may</span> <span class="n">contain</span> <span class="n">multiple</span> <span class="nd">@language</span> <span class="n">directives</span>
-<span class="n">Unified</span> <span class="n">extract</span> <span class="ow">and</span> <span class="kn">import</span> <span class="nn">commands</span>
+<span class="n">Unified</span> <span class="n">extract</span> <span class="ow">and</span> <span class="kn">import</span><span class="w"> </span><span class="nn">commands</span>
 <span class="n">Greatly</span> <span class="n">improved</span> <span class="n">the</span> <span class="n">autocompleter</span>
 <span class="n">The</span> <span class="n">rendering</span> <span class="n">pane</span> <span class="n">displays</span> <span class="n">movies</span><span class="p">,</span> <span class="n">html</span><span class="p">,</span> <span class="n">svg</span> <span class="n">images</span><span class="p">,</span> <span class="n">etc</span><span class="o">.</span>
 </pre></div>
@@ -1507,7 +1514,7 @@ Major additions to abbreviations, including templates
 </section>
 <section id="id44">
 <h4>Features<a class="headerlink" href="#id44" title="Link to this heading">¶</a></h4>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Leo</span> <span class="n">can</span> <span class="nb">open</span> <span class="n">multiple</span> <span class="n">files</span> <span class="kn">from</span> <span class="nn">the</span> <span class="n">command</span> <span class="n">line</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Leo</span> <span class="n">can</span> <span class="nb">open</span> <span class="n">multiple</span> <span class="n">files</span> <span class="kn">from</span><span class="w"> </span><span class="nn">the</span> <span class="n">command</span> <span class="n">line</span>
 <span class="n">Added</span> <span class="n">an</span> <span class="o">.</span><span class="n">ini</span> <span class="n">importer</span>
 <span class="n">Added</span> <span class="n">support</span> <span class="k">for</span> <span class="o">.</span><span class="n">nsi</span> <span class="n">files</span>
 <span class="n">New</span> <span class="n">screenshots</span> <span class="n">plugin</span>
@@ -1704,7 +1711,7 @@ Major additions to abbreviations, including templates
 <section id="id61">
 <h4>Highlights<a class="headerlink" href="#id61" title="Link to this heading">¶</a></h4>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Leo</span> <span class="mf">4.4.3</span> <span class="n">final</span> <span class="n">released</span> <span class="n">June</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">2006</span>
-<span class="n">The</span> <span class="o">**</span><span class="n">big</span> <span class="n">reorg</span><span class="o">**</span> <span class="n">removed</span> <span class="nb">all</span> <span class="n">gui</span><span class="o">-</span><span class="n">dependent</span> <span class="n">code</span> <span class="kn">from</span> <span class="nn">Leo</span><span class="s1">&#39;s core</span>
+<span class="n">The</span> <span class="o">**</span><span class="n">big</span> <span class="n">reorg</span><span class="o">**</span> <span class="n">removed</span> <span class="nb">all</span> <span class="n">gui</span><span class="o">-</span><span class="n">dependent</span> <span class="n">code</span> <span class="kn">from</span><span class="w"> </span><span class="nn">Leo</span><span class="s1">&#39;s core</span>
 <span class="n">Added</span> <span class="n">chapters</span>
 <span class="n">Added</span> <span class="n">zipped</span> <span class="o">.</span><span class="n">leo</span> <span class="n">files</span>
 <span class="n">Added</span> <span class="n">leoBridge</span> <span class="n">module</span>
@@ -1814,7 +1821,7 @@ Leo is easier to use without using a mouse
 \<span class="mi">1</span><span class="p">,</span> \<span class="mi">2</span><span class="p">,</span> <span class="n">etc</span><span class="o">.</span> <span class="n">replacements</span> <span class="n">are</span> <span class="n">valid</span> <span class="ow">in</span> <span class="n">regex</span> <span class="n">searches</span>
 \<span class="n">n</span> <span class="ow">and</span> \<span class="n">t</span> <span class="n">are</span> <span class="n">valid</span> <span class="ow">in</span> <span class="n">plain</span> <span class="n">searches</span>
 <span class="n">The</span> <span class="n">shortcut</span> <span class="k">for</span> <span class="n">the</span> <span class="n">replace</span><span class="o">-</span><span class="n">string</span> <span class="n">command</span> <span class="n">changes</span>
-<span class="kn">from</span> <span class="nn">the</span> <span class="n">find</span> <span class="n">command</span> <span class="n">to</span> <span class="n">the</span> <span class="n">replace</span> <span class="n">command</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">the</span> <span class="n">find</span> <span class="n">command</span> <span class="n">to</span> <span class="n">the</span> <span class="n">replace</span> <span class="n">command</span>
 </pre></div>
 </div>
 </section>
@@ -1963,7 +1970,7 @@ Leo is easier to use without using a mouse
 </section>
 <section id="id74">
 <h4>Features<a class="headerlink" href="#id74" title="Link to this heading">¶</a></h4>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Added</span> <span class="n">script</span> <span class="n">to</span> <span class="n">update</span> <span class="n">new</span> <span class="n">copies</span> <span class="n">of</span> <span class="n">leoSetttings</span><span class="o">.</span><span class="n">leo</span> <span class="kn">from</span> <span class="nn">previous</span> <span class="n">copies</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Added</span> <span class="n">script</span> <span class="n">to</span> <span class="n">update</span> <span class="n">new</span> <span class="n">copies</span> <span class="n">of</span> <span class="n">leoSetttings</span><span class="o">.</span><span class="n">leo</span> <span class="kn">from</span><span class="w"> </span><span class="nn">previous</span> <span class="n">copies</span>
 <span class="n">Made</span> <span class="nb">all</span> <span class="n">edit</span> <span class="n">command</span> <span class="n">undoable</span>
 <span class="n">Added</span> <span class="n">colorizing</span> <span class="n">support</span> <span class="k">for</span> <span class="n">Lua</span> <span class="n">language</span>
 <span class="n">Autocompletion</span> <span class="ow">and</span> <span class="n">calltips</span>
@@ -2112,8 +2119,8 @@ New settings:
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 1997-2025, Edward K. Ream.
-      Last updated on May 02, 2025.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+      Last updated on May 10, 2025.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
     </div>
   </body>
 </html>

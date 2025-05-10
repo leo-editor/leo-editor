@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Vim Mode: Theory of Operation &#8212; Leo 6.8.4 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css?v=2bf1fcf8" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css?v=a1d61795" />
     
@@ -77,7 +77,7 @@ and to add new vim commands.</p>
 <section id="a-simple-key-handler">
 <h2><a class="toc-backref" href="#id2" role="doc-backlink">A simple key handler</a><a class="headerlink" href="#a-simple-key-handler" title="Link to this heading">¶</a></h2>
 <p>The handler for the G command moves or extends the cursor depending on vc.state:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">vim_G</span><span class="p">(</span><span class="n">vc</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">vim_G</span><span class="p">(</span><span class="n">vc</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Put the cursor on the last character of the body pane.&#39;&#39;&#39;</span>
     <span class="k">if</span> <span class="n">vc</span><span class="o">.</span><span class="n">is_text_widget</span><span class="p">(</span><span class="n">vc</span><span class="o">.</span><span class="n">w</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">vc</span><span class="o">.</span><span class="n">state</span> <span class="o">==</span> <span class="s1">&#39;visual&#39;</span><span class="p">:</span>
@@ -99,7 +99,7 @@ and to add new vim commands.</p>
 <section id="vim-d">
 <h3><a class="toc-backref" href="#id4" role="doc-backlink">vim_d</a><a class="headerlink" href="#vim-d" title="Link to this heading">¶</a></h3>
 <p>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">vim_d</span><span class="p">(</span><span class="n">vc</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">vim_d</span><span class="p">(</span><span class="n">vc</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    N dd      delete N lines</span>
 <span class="sd">    d{motion} delete the text that is moved over with {motion}</span>
@@ -121,7 +121,7 @@ command.</p>
 <section id="vim-d2">
 <h3><a class="toc-backref" href="#id5" role="doc-backlink">vim_d2</a><a class="headerlink" href="#vim-d2" title="Link to this heading">¶</a></h3>
 <p>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">vim_d2</span><span class="p">(</span><span class="n">vc</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">vim_d2</span><span class="p">(</span><span class="n">vc</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">vc</span><span class="o">.</span><span class="n">is_text_widget</span><span class="p">(</span><span class="n">vc</span><span class="o">.</span><span class="n">w</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">vc</span><span class="o">.</span><span class="n">stroke</span> <span class="o">==</span> <span class="s1">&#39;d&#39;</span><span class="p">:</span>
             <span class="n">w</span> <span class="o">=</span> <span class="n">vc</span><span class="o">.</span><span class="n">w</span>
@@ -170,7 +170,7 @@ complicated, but happily the key handlers don’t have to know about them!</p></
 <section id="vim-d3">
 <h3><a class="toc-backref" href="#id6" role="doc-backlink">vim_d3</a><a class="headerlink" href="#vim-d3" title="Link to this heading">¶</a></h3>
 <p>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">vim_d3</span><span class="p">(</span><span class="n">vc</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">vim_d3</span><span class="p">(</span><span class="n">vc</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Complete the d command after the cursor has moved.&#39;&#39;&#39;</span>
     <span class="c1"># d2w doesn&#39;t extend to line.  d2j does.</span>
     <span class="n">trace</span> <span class="o">=</span> <span class="kc">False</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">g</span><span class="o">.</span><span class="n">unitTesting</span>
@@ -215,7 +215,7 @@ The code then deletes the selected text.</p>
 <section id="vis-d">
 <h3><a class="toc-backref" href="#id7" role="doc-backlink">vis_d</a><a class="headerlink" href="#vis-d" title="Link to this heading">¶</a></h3>
 <p>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">vis_d</span><span class="p">(</span><span class="n">vc</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">vis_d</span><span class="p">(</span><span class="n">vc</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;Delete the highlighted text and terminate visual mode.&#39;&#39;&#39;</span>
     <span class="n">w</span>  <span class="o">=</span> <span class="n">vc</span><span class="o">.</span><span class="n">vis_mode_w</span>
     <span class="k">if</span> <span class="n">vc</span><span class="o">.</span><span class="n">is_text_widget</span><span class="p">(</span><span class="n">w</span><span class="p">):</span>
@@ -294,26 +294,26 @@ simply deletes the highlighted text and calls vc.done().</p>
 <h3><a class="toc-backref" href="#id13" role="doc-backlink">Handling tabs</a><a class="headerlink" href="#handling-tabs" title="Link to this heading">¶</a></h3>
 <p>Various vim commands advertise, just by having a tab_callback method, that they want to handle a tab that follows their name. ga.do_tab then defers to the vim command. Vim’s tab handler no longer knows <em>anything</em> about colon commands, or what any command intends to do with the tab. If the command handler has a tab_callback attribute, vim’s tab handler just calls it.</p>
 <p>Here is the flattened form of the class that handles the :tabnew command. Note that the __call__ and tab_callback methods are trivial:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Tabnew</span><span class="p">:</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Tabnew</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    A class to handle Vim&#39;s :tabnew command.</span>
 <span class="sd">    This class supports the do_tab callback.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vc</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vc</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;Ctor for VimCommands.tabnew class.&#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vc</span> <span class="o">=</span> <span class="n">vc</span>
     <span class="vm">__name__</span> <span class="o">=</span> <span class="s1">&#39;:tabnew&#39;</span>
         <span class="c1"># Required.</span>
 
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;Prompt for a file name, the open a new Leo tab.&#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vc</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">k</span><span class="o">.</span><span class="n">getFileName</span><span class="p">(</span><span class="n">event</span><span class="p">,</span><span class="n">callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">open_file_by_name</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">tab_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">tab_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;Called when the user types :tabnew&lt;tab&gt;&#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vc</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">k</span><span class="o">.</span><span class="n">getFileName</span><span class="p">(</span><span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">open_file_by_name</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">open_file_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fn</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">open_file_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fn</span><span class="p">):</span>
         <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vc</span><span class="o">.</span><span class="n">c</span>
         <span class="k">if</span> <span class="n">fn</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">g</span><span class="o">.</span><span class="n">os_path_isdir</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
             <span class="n">c2</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">openWithFileName</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span><span class="n">old_c</span><span class="o">=</span><span class="n">c</span><span class="p">)</span>
@@ -400,8 +400,8 @@ simply deletes the highlighted text and calls vc.done().</p>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 1997-2025, Edward K. Ream.
-      Last updated on May 02, 2025.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+      Last updated on May 10, 2025.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
     </div>
   </body>
 </html>

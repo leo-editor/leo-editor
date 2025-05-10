@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>A Miscellany of Leo Scripting &#8212; Leo 6.8.4 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css?v=2bf1fcf8" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css?v=a1d61795" />
     
@@ -176,7 +176,7 @@ conversion is undoable:</p>
 <section id="creating-qt-windows-from-leo-scripts">
 <h2><a class="toc-backref" href="#id5" role="doc-backlink">Creating Qt Windows from Leo scripts</a><a class="headerlink" href="#creating-qt-windows-from-leo-scripts" title="Link to this heading">¶</a></h2>
 <p>The following puts up a test window when run as a Leo script:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">PyQt5</span> <span class="kn">import</span> <span class="n">QtGui</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">PyQt5</span><span class="w"> </span><span class="kn">import</span> <span class="n">QtGui</span>
 <span class="n">w</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QWidget</span><span class="p">()</span>
 <span class="n">w</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="mi">250</span><span class="p">,</span> <span class="mi">150</span><span class="p">)</span>
 <span class="n">w</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">)</span>
@@ -268,13 +268,13 @@ conversion is undoable:</p>
 <p>The following examples will work in any class having a ‘c’ ivar bound to a commander.</p>
 <p>Example 1: get one argument from the user:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@cmd</span><span class="p">(</span><span class="s1">&#39;my-command&#39;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">myCommand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">myCommand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;State 0&quot;&quot;&quot;</span>
     <span class="n">k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">k</span>
     <span class="n">k</span><span class="o">.</span><span class="n">setLabelBlue</span><span class="p">(</span><span class="s1">&#39;prompt: &#39;</span><span class="p">)</span>
     <span class="n">k</span><span class="o">.</span><span class="n">get1Arg</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">handler</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">myCommand1</span><span class="p">)</span>
 
-<span class="k">def</span> <span class="nf">myCommand1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">myCommand1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;State 1&quot;&quot;&quot;</span>
     <span class="n">k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">k</span>
     <span class="c1"># ----&gt; k.arg contains the argument.</span>
@@ -288,20 +288,20 @@ conversion is undoable:</p>
 </div>
 <p>Example 2: get two arguments from the user:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@cmd</span><span class="p">(</span><span class="s1">&#39;my-command&#39;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">myCommand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">myCommand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;State 0&quot;&quot;&quot;</span>
     <span class="n">k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">k</span>
     <span class="n">k</span><span class="o">.</span><span class="n">setLabelBlue</span><span class="p">(</span><span class="s1">&#39;first prompt: &#39;</span><span class="p">)</span>
     <span class="n">k</span><span class="o">.</span><span class="n">get1Arg</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">handler</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">myCommand1</span><span class="p">)</span>
 
-<span class="k">def</span> <span class="nf">myCommand1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">myCommand1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;State 1&quot;&quot;&quot;</span>
     <span class="n">k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">k</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">arg1</span> <span class="o">=</span> <span class="n">k</span><span class="o">.</span><span class="n">arg</span>
     <span class="n">k</span><span class="o">.</span><span class="n">setLabelBlue</span><span class="p">(</span><span class="s1">&#39;second prompt: &#39;</span><span class="p">)</span>
     <span class="n">k</span><span class="o">.</span><span class="n">getNextArg</span><span class="p">(</span><span class="n">handler</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">myCommand2</span><span class="p">)</span>
 
-<span class="k">def</span> <span class="nf">myCommand2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">myCommand2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;State 2&quot;&quot;&quot;</span>
     <span class="n">k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">k</span>
     <span class="c1"># -----&gt; k.arg contains second argument.</span>
@@ -360,7 +360,7 @@ conversion is undoable:</p>
 <h2><a class="toc-backref" href="#id14" role="doc-backlink">Modifying plugins with &#64;script scripts</a><a class="headerlink" href="#modifying-plugins-with-script-scripts" title="Link to this heading">¶</a></h2>
 <p>The mod_scripting plugin runs &#64;scripts before plugin initiation is complete. Thus, such scripts can not directly modify plugins. Instead, a script can create an event handler for the after-create-leo-frame that will modify the plugin.</p>
 <p>For example, the following modifies the cleo.py plugin after Leo has completed loading it:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">prikey</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">prikey</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">pa</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getat</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="s1">&#39;priority&#39;</span><span class="p">))</span>
     <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
@@ -373,10 +373,10 @@ conversion is undoable:</p>
 
     <span class="k">return</span> <span class="n">pa</span>
 
-<span class="kn">import</span> <span class="nn">types</span>
-<span class="kn">from</span> <span class="nn">leo.core</span> <span class="kn">import</span> <span class="n">leoPlugins</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">types</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">leo.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">leoPlugins</span>
 
-<span class="k">def</span> <span class="nf">on_create</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">keywords</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_create</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">keywords</span><span class="p">):</span>
     <span class="n">c</span><span class="o">.</span><span class="n">cleo</span><span class="o">.</span><span class="n">prikey</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">MethodType</span><span class="p">(</span><span class="n">prikey</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">cleo</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">cleo</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)</span>
 
 <span class="n">leoPlugins</span><span class="o">.</span><span class="n">registerHandler</span><span class="p">(</span><span class="s2">&quot;after-create-leo-frame&quot;</span><span class="p">,</span><span class="n">on_create</span><span class="p">)</span>
@@ -461,14 +461,14 @@ w.show()</p>
 <h2><a class="toc-backref" href="#id19" role="doc-backlink">Running code at idle time</a><a class="headerlink" href="#running-code-at-idle-time" title="Link to this heading">¶</a></h2>
 <p>Scripts and plugins can call g.app.idleTimeManager.add_callback(callback) to cause
 the callback to be called at idle time forever. This should suffice for most purposes:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">print_hi</span><span class="p">():</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">print_hi</span><span class="p">():</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;hi&#39;</span><span class="p">)</span>
 
 <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">idleTimeManager</span><span class="o">.</span><span class="n">add_callback</span><span class="p">(</span><span class="n">print_hi</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>For greater control, g.IdleTime is a thin wrapper for the Leo’s IdleTime class. The IdleTime class executes a handler with a given delay at idle time. The handler takes a single argument, the IdleTime instance:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">handler</span><span class="p">(</span><span class="n">it</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">handler</span><span class="p">(</span><span class="n">it</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;IdleTime handler.  it is an IdleTime instance.&quot;&quot;&quot;</span>
     <span class="n">delta_t</span> <span class="o">=</span> <span class="n">it</span><span class="o">.</span><span class="n">time</span> <span class="o">-</span> <span class="n">it</span><span class="o">.</span><span class="n">starting_time</span>
     <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">it</span><span class="o">.</span><span class="n">count</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">c</span><span class="o">.</span><span class="n">shortFileName</span><span class="p">()</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">delta_t</span><span class="si">:</span><span class="s2">2.2</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -491,14 +491,14 @@ the callback to be called at idle time forever. This should suffice for most pur
 </pre></div>
 </div>
 <p>Timer instances are completely independent:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">handler1</span><span class="p">(</span><span class="n">it</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">handler1</span><span class="p">(</span><span class="n">it</span><span class="p">):</span>
     <span class="n">delta_t</span> <span class="o">=</span> <span class="n">it</span><span class="o">.</span><span class="n">time</span><span class="o">-</span><span class="n">it</span><span class="o">.</span><span class="n">starting_time</span>
     <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">it</span><span class="o">.</span><span class="n">count</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">c</span><span class="o">.</span><span class="n">shortFileName</span><span class="p">()</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">delta_t</span><span class="si">:</span><span class="s2">2.2</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">it</span><span class="o">.</span><span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">4</span><span class="p">:</span>
         <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;done&#39;</span><span class="p">)</span>
         <span class="n">it</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
 
-<span class="k">def</span> <span class="nf">handler2</span><span class="p">(</span><span class="n">it</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">handler2</span><span class="p">(</span><span class="n">it</span><span class="p">):</span>
     <span class="n">delta_t</span> <span class="o">=</span> <span class="n">it</span><span class="o">.</span><span class="n">time</span><span class="o">-</span><span class="n">it</span><span class="o">.</span><span class="n">starting_time</span>
     <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">it</span><span class="o">.</span><span class="n">count</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">c</span><span class="o">.</span><span class="n">shortFileName</span><span class="p">()</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">delta_t</span><span class="si">:</span><span class="s2">2.2</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">it</span><span class="o">.</span><span class="n">count</span> <span class="o">&gt;=</span> <span class="mi">6</span><span class="p">:</span>
@@ -558,7 +558,7 @@ the callback to be called at idle time forever. This should suffice for most pur
 <h4><a class="toc-backref" href="#id23" role="doc-backlink">Call g.execute_shell_commands</a><a class="headerlink" href="#call-g-execute-shell-commands" title="Link to this heading">¶</a></h4>
 <p>Use g.execute_shell_commands is a thin wrapper around subprocess.popen.  It calls subprocess.popen once for every command in a list.</p>
 <p>This function waits for each command to complete, except those commands starting with ‘&amp;’:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">execute_shell_commands</span><span class="p">(</span><span class="n">commands</span><span class="p">,</span> <span class="n">trace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">execute_shell_commands</span><span class="p">(</span><span class="n">commands</span><span class="p">,</span> <span class="n">trace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">g</span><span class="o">.</span><span class="n">isString</span><span class="p">(</span><span class="n">commands</span><span class="p">):</span> <span class="n">commands</span> <span class="o">=</span> <span class="p">[</span><span class="n">commands</span><span class="p">]</span>
     <span class="k">for</span> <span class="n">command</span> <span class="ow">in</span> <span class="n">commands</span><span class="p">:</span>
         <span class="n">wait</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">command</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;&amp;&#39;</span><span class="p">)</span>
@@ -577,7 +577,7 @@ the callback to be called at idle time forever. This should suffice for most pur
 <section id="call-g-execute-shell-commands-with-options">
 <h4><a class="toc-backref" href="#id24" role="doc-backlink">Call g.execute_shell_commands_with_options</a><a class="headerlink" href="#call-g-execute-shell-commands-with-options" title="Link to this heading">¶</a></h4>
 <p>g.execute_shell_commands_with_options is more flexible.  It allows scripts to get both the starting directory and the commands themselves from Leo’s settings. Its signature is:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">execute_shell_commands_with_options</span><span class="p">(</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">execute_shell_commands_with_options</span><span class="p">(</span>
     <span class="n">base_dir</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">c</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">command_setting</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -628,7 +628,7 @@ the callback to be called at idle time forever. This should suffice for most pur
 <p><strong>Running multiple processes simultaneously</strong></p>
 <p>Only one process at a time should be producing output. All processes that <em>do</em> produce output should be managed by the singleton BPM instance.</p>
 <p>To run processes that <em>don’t</em> produce output, just call subprocess.Popen:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">subprocess</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span>
 <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="s1">&#39;ls&#39;</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -702,10 +702,10 @@ the callback to be called at idle time forever. This should suffice for most pur
 <li><p>If the viewrendered (VR) pane is open, Leo will display the animation in the VR pane whenever the user selects the &#64;pyplot node.  This has been tested only with the viewrendered.py, not the viewrendered2.py plugin.</p></li>
 <li><p>In addition to c, g, and p, the VR code predefines several other vars.  The VR code does the following imports:</p></li>
 </ol>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">matplotlib.animation</span> <span class="k">as</span> <span class="nn">animation</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.animation</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">animation</span>
 </pre></div>
 </div>
 <p>and then predefines the animation, matplotlib, np, numpy and plt vars in the &#64;pyplot script. numpy is also predefined as an alias for np.</p>
@@ -716,9 +716,9 @@ the callback to be called at idle time forever. This should suffice for most pur
 <ol class="arabic simple">
 <li><p>Add the required imports:</p></li>
 </ol>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">matplotlib.animation</span> <span class="k">as</span> <span class="nn">animation</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.animation</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">animation</span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
@@ -768,7 +768,7 @@ the callback to be called at idle time forever. This should suffice for most pur
 </pre></div>
 </div>
 <p>Plugins and scripts may call c.frame.log.createTab to create non-text widgets in the log pane:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">leo.core.leoQt</span> <span class="kn">import</span> <span class="n">QtWidgets</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">leo.core.leoQt</span><span class="w"> </span><span class="kn">import</span> <span class="n">QtWidgets</span>
 <span class="n">log</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">log</span>
 <span class="n">w</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">createTab</span><span class="p">(</span><span class="s1">&#39;My Tab&#39;</span><span class="p">,</span> <span class="n">createText</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">widget</span><span class="o">=</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QFrame</span><span class="p">())</span>
 <span class="n">log</span><span class="o">.</span><span class="n">selectTab</span><span class="p">(</span><span class="s1">&#39;My Tab&#39;</span><span class="p">)</span>
@@ -833,8 +833,8 @@ message to the Log pane.</p>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 1997-2025, Edward K. Ream.
-      Last updated on May 02, 2025.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+      Last updated on May 10, 2025.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
     </div>
   </body>
 </html>

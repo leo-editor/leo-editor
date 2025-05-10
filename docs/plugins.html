@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Plugins &#8212; Leo 6.8.4 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css?v=2bf1fcf8" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css?v=a1d61795" />
     
@@ -754,7 +754,7 @@ directive is associated with any of the matched patterns.</p>
 </pre></div>
 </div>
 <p>Double-clicking on a node with a “https:\\www.google.com” headline will invoke the script associated with the “https:\\*” pattern.  The following script in the body of the pattern’s node displays the URL in a browser:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">webbrowser</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">webbrowser</span>
 <span class="n">hClicked</span> <span class="o">=</span> <span class="n">pClicked</span><span class="o">.</span><span class="n">h</span>     <span class="c1">#Clicked node&#39;s Headline text</span>
 <span class="n">webbrowser</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">hClicked</span><span class="p">)</span> <span class="c1">#Invoke browser</span>
 </pre></div>
@@ -1266,10 +1266,10 @@ be useful in <code class="docutils literal notranslate"><span class="pre">&#64;b
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@settings</span>
     <span class="nd">@string</span> <span class="n">leoscreen_prefix</span> <span class="o">=</span> <span class="o">--</span><span class="n">SPACE</span>
 <span class="nd">@button</span> <span class="n">rollback</span>
-    <span class="kn">import</span> <span class="nn">time</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
     <span class="n">c</span><span class="o">.</span><span class="n">leo_screen</span><span class="o">.</span><span class="n">run_text</span><span class="p">(</span><span class="s1">&#39;ROLLBACK;  -- </span><span class="si">%s</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">time</span><span class="o">.</span><span class="n">asctime</span><span class="p">())</span>
 <span class="nd">@button</span> <span class="n">commit</span>
-    <span class="kn">import</span> <span class="nn">time</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
     <span class="n">cmd</span> <span class="o">=</span> <span class="s1">&#39;COMMIT;  -- </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">time</span><span class="o">.</span><span class="n">asctime</span><span class="p">()</span>
     <span class="n">c</span><span class="o">.</span><span class="n">leo_screen</span><span class="o">.</span><span class="n">run_text</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
     <span class="n">c</span><span class="o">.</span><span class="n">leo_screen</span><span class="o">.</span><span class="n">insert_line</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
@@ -1379,8 +1379,8 @@ nodes, the name of the command is the cleaned name of the headline.</p>
 <h4><a class="toc-backref" href="#id76" role="doc-backlink">leoremote.py</a><a class="headerlink" href="#leoremote-py" title="Link to this heading">¶</a></h4>
 <p>Remote control for Leo.</p>
 <p>Example client:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">leo.external</span> <span class="kn">import</span> <span class="n">lproto</span>
-<span class="kn">import</span> <span class="nn">os</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">leo.external</span><span class="w"> </span><span class="kn">import</span> <span class="n">lproto</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
 
 <span class="n">addr</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s1">&#39;~/.leo/leoserv_sockname&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
@@ -1749,7 +1749,7 @@ Typing:</p>
 <p>From Wikipedia:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;Doctest&#39;</span> <span class="ow">is</span> <span class="n">a</span> <span class="n">module</span> <span class="n">included</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">Python</span> <span class="n">programming</span> <span class="n">language</span><span class="s1">&#39;s</span>
 <span class="n">standard</span> <span class="n">library</span> <span class="n">that</span> <span class="n">allows</span> <span class="k">for</span> <span class="n">easy</span> <span class="n">generation</span> <span class="n">of</span> <span class="n">tests</span> <span class="n">based</span> <span class="n">on</span>
-<span class="n">output</span> <span class="kn">from</span> <span class="nn">the</span> <span class="n">standard</span> <span class="n">Python</span> <span class="n">interpreter</span><span class="o">.</span>
+<span class="n">output</span> <span class="kn">from</span><span class="w"> </span><span class="nn">the</span> <span class="n">standard</span> <span class="n">Python</span> <span class="n">interpreter</span><span class="o">.</span>
 </pre></div>
 </div>
 <p><a class="reference external" href="https://tinyurl.com/cqh53">https://tinyurl.com/cqh53</a> - Python.org doctest page</p>
@@ -2033,7 +2033,7 @@ For example:</p>
 <li><p>Go to clone</p></li>
 </ul>
 <p>Here’s an example on how to implement your own context menu items in your plugins:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">nextclone_rclick</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">p</span><span class="p">,</span> <span class="n">menu</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">nextclone_rclick</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">p</span><span class="p">,</span> <span class="n">menu</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; Go to next clone &quot;&quot;&quot;</span>
 
     <span class="c1"># only show the item if you are on a clone</span>
@@ -2041,7 +2041,7 @@ For example:</p>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">p</span><span class="o">.</span><span class="n">isCloned</span><span class="p">():</span>
         <span class="k">return</span>
 
-    <span class="k">def</span> <span class="nf">nextclone_rclick_cb</span><span class="p">():</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">nextclone_rclick_cb</span><span class="p">():</span>
         <span class="n">c</span><span class="o">.</span><span class="n">goToNextClone</span><span class="p">()</span>
 
     <span class="c1"># &#39;menu&#39; is a QMenu instance that was created by Leo</span>
@@ -2341,8 +2341,8 @@ errors and warnings may be shown.  For example, both:</p>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 1997-2025, Edward K. Ream.
-      Last updated on May 02, 2025.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+      Last updated on May 10, 2025.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
     </div>
   </body>
 </html>

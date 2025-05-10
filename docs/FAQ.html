@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>FAQ &#8212; Leo 6.8.4 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css?v=2bf1fcf8" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css?v=a1d61795" />
     
@@ -306,7 +306,7 @@ Execute it outside of Leo.</p></li>
 <p>Edward Ream:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">alp</span><span class="p">;;</span><span class="o">=</span><span class="nd">@language</span> <span class="n">python</span>\<span class="n">n</span>
 <span class="n">alr</span><span class="p">;;</span><span class="o">=</span><span class="nd">@language</span> <span class="n">rest</span>\<span class="n">n</span><span class="nd">@wrap</span>\<span class="n">n</span>
-<span class="n">date</span><span class="p">;;</span><span class="o">=</span><span class="p">{</span><span class="o">|</span><span class="p">{</span><span class="kn">import</span> <span class="nn">time</span><span class="p">;</span><span class="n">x</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">asctime</span><span class="p">()}</span><span class="o">|</span><span class="p">}</span>
+<span class="n">date</span><span class="p">;;</span><span class="o">=</span><span class="p">{</span><span class="o">|</span><span class="p">{</span><span class="kn">import</span><span class="w"> </span><span class="nn">time</span><span class="p">;</span><span class="n">x</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">asctime</span><span class="p">()}</span><span class="o">|</span><span class="p">}</span>
 <span class="n">trace</span><span class="p">;;</span><span class="o">=</span><span class="n">trace</span> <span class="o">=</span> <span class="o">&lt;|</span><span class="nb">bool</span><span class="o">|&gt;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">g</span><span class="o">.</span><span class="n">unitTesting</span>
 </pre></div>
 </div>
@@ -500,23 +500,23 @@ node to the “recent code” tree.</p>
 <span class="sd">select &quot;Add matplot&quot; from the context menu.</span>
 <span class="sd">&#39;&#39;&#39;</span>
 
-<span class="kn">from</span> <span class="nn">leo.core.leoQt</span> <span class="kn">import</span> <span class="n">QtWidgets</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">leo.core.leoQt</span><span class="w"> </span><span class="kn">import</span> <span class="n">QtWidgets</span>
 
-<span class="k">class</span> <span class="nc">MatplotPaneProvider</span><span class="p">:</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MatplotPaneProvider</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="n">c</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="s1">&#39;free_layout&#39;</span><span class="p">):</span>
             <span class="n">splitter</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">free_layout</span><span class="o">.</span><span class="n">get_top_splitter</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">splitter</span><span class="p">:</span>
                 <span class="n">splitter</span><span class="o">.</span><span class="n">register_provider</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">ns_provides</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ns_provides</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span><span class="p">[(</span><span class="s1">&#39;Add matplot&#39;</span><span class="p">,</span> <span class="s1">&#39;_add_matplot_pane&#39;</span><span class="p">)]</span>
-    <span class="k">def</span> <span class="nf">ns_provide</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">id_</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ns_provide</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">id_</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">id_</span> <span class="o">==</span> <span class="s1">&#39;_add_matplot_pane&#39;</span><span class="p">:</span>
             <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span>
             <span class="n">w</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QSlider</span><span class="p">()</span> <span class="c1">### w = myMatplotWidget()</span>
             <span class="k">return</span> <span class="n">w</span>
-    <span class="k">def</span> <span class="nf">ns_provider_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ns_provider_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># used by register_provider() to unregister previously registered</span>
         <span class="c1"># providers of the same service</span>
         <span class="c1"># provider ID is not the same as the service id_ above</span>
@@ -622,13 +622,13 @@ Theme Settings in the tree.</p>
 <section id="how-can-i-run-code-at-startup">
 <h3><a class="toc-backref" href="#id26" role="doc-backlink">How can I run code at startup?</a><a class="headerlink" href="#how-can-i-run-code-at-startup" title="Link to this heading">¶</a></h3>
 <p>The following plugin, placed in ~/.leo/plugins, runs code at ‘start1’ time, that is, while other plugins are loading:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">leo.core.leoGlobals</span> <span class="k">as</span> <span class="nn">g</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">leo.core.leoGlobals</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">g</span>
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;===== local_plugin.py in ~/.leo/plugins/&#39;</span><span class="p">)</span>
 
-<span class="k">def</span> <span class="nf">hook</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">keys</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">hook</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">keys</span><span class="p">):</span>
     <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span>
 
-<span class="k">def</span> <span class="nf">init</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">init</span><span class="p">():</span>
     <span class="n">g</span><span class="o">.</span><span class="n">registerHandler</span><span class="p">(</span><span class="s1">&#39;start1&#39;</span><span class="p">,</span> <span class="n">hook</span><span class="p">)</span>
     <span class="k">return</span> <span class="kc">True</span>
 </pre></div>
@@ -697,7 +697,7 @@ Theme Settings in the tree.</p>
 <section id="how-do-i-add-a-new-menu-item-from-a-plugin">
 <h3><a class="toc-backref" href="#id30" role="doc-backlink">How do I add a new menu item from a plugin?</a><a class="headerlink" href="#how-do-i-add-a-new-menu-item-from-a-plugin" title="Link to this heading">¶</a></h3>
 <p>c.frame.menu.createMenuItemsFromTable will append items to the end of an existing menu. For example, the following script will add a new item at the end of the ‘File’ menu:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">keys</span><span class="p">):</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">callback</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">keys</span><span class="p">):</span>
     <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">()</span>
 
 <span class="n">table</span> <span class="o">=</span> <span class="p">((</span><span class="s2">&quot;Test1&quot;</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span><span class="n">callback</span><span class="p">),)</span>
@@ -706,7 +706,7 @@ Theme Settings in the tree.</p>
 </pre></div>
 </div>
 <p>Plugins can do anything with menus using c.frame.menu.getMenu. For example, here is a script that adds a Test menu item after the ‘Open With’ menu item in the File menu:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">callback</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">keys</span><span class="p">):</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">callback</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">keys</span><span class="p">):</span>
     <span class="n">g</span><span class="o">.</span><span class="n">trace</span><span class="p">()</span>
 
 <span class="n">fileMenu</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">getMenu</span><span class="p">(</span><span class="s1">&#39;File&#39;</span><span class="p">)</span>
@@ -1097,7 +1097,7 @@ say, python/Lib/site-packages.</p>
 <section id="how-can-i-import-many-files-at-once">
 <h3><a class="toc-backref" href="#id67" role="doc-backlink">How can I import many files at once?</a><a class="headerlink" href="#how-can-i-import-many-files-at-once" title="Link to this heading">¶</a></h3>
 <p>The Import Files dialog allows you to select multiple files provided you are running Python 2.3 or above. There is also an importFiles script in LeoPy.leo.  You can use that script as follows:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">leo.core.leoImport</span> <span class="k">as</span> <span class="nn">leoImport</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">leo.core.leoImport</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">leoImport</span>
 <span class="n">leoImport</span><span class="o">.</span><span class="n">importFiles</span><span class="p">(</span><span class="n">aDirectory</span><span class="p">,</span> <span class="s2">&quot;.py&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1183,9 +1183,9 @@ to be able to let Leo handle this.</p>
 </dd>
 </dl>
 <p>The compile node has something like this:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">subprocess</span>
-<span class="kn">import</span> <span class="nn">sys</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 
 <span class="n">repository_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">curdir</span><span class="p">)</span>
 
@@ -1205,7 +1205,7 @@ to be able to let Leo handle this.</p>
 <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="n">run_xelatex</span><span class="p">)</span>
 
 <span class="c1"># Platform-independent file opening</span>
-<span class="k">def</span> <span class="nf">open_file</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">open_file</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;win32&quot;</span><span class="p">:</span>
         <span class="n">os</span><span class="o">.</span><span class="n">startfile</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
@@ -1348,7 +1348,7 @@ Scripts can call this method directly if desired.</p></li>
 <p>File under things-I-didn’t-know-but-should-have:</p>
 <p>Instead of creating batch files all over the place to fire up python programs, and then having to cope with annoying “Terminate batch job (Y/N)?” with Ctrl-C/Break you can ask python setuptools to create an .exe in the PythonScripts folder.</p>
 <p>in same folder as foo.py create setup.py, populate like so:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">setuptools</span> <span class="kn">import</span> <span class="n">setup</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">setuptools</span><span class="w"> </span><span class="kn">import</span> <span class="n">setup</span>
 
 <span class="n">setup</span><span class="p">(</span>
     <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Foo for you&#39;</span><span class="p">,</span>
@@ -1463,7 +1463,7 @@ Scripts can call this method directly if desired.</p></li>
 <span class="s2">@others</span>
 <span class="s2">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">timeit</span> <span class="kn">import</span> <span class="n">Timer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">timeit</span><span class="w"> </span><span class="kn">import</span> <span class="n">Timer</span>
 <span class="n">t</span> <span class="o">=</span> <span class="n">Timer</span><span class="p">(</span><span class="s2">&quot;print my_key_generator()&quot;</span><span class="p">,</span> <span class="n">code_under_here</span><span class="p">)</span>
 <span class="nb">print</span> <span class="n">t</span><span class="o">.</span><span class="n">timeit</span><span class="p">(</span><span class="n">number</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span>
 </pre></div>
@@ -1499,7 +1499,7 @@ Scripts can call this method directly if desired.</p></li>
 <li><p>Find the method called report_Exceptions.</p></li>
 <li><p>Insert the following lines at the very start of this method:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span> <span class="s1">&#39;EKR: added traceback&#39;</span>
-<span class="kn">import</span> <span class="nn">traceback</span> <span class="p">;</span> <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">traceback</span> <span class="p">;</span> <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
 </pre></div>
 </div>
 </li>
@@ -1610,7 +1610,7 @@ This brings up the “Change Key Sequence” panel.</p>
 <span class="n">leo</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">runLeo</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 <span class="p">[</span><span class="n">Snip</span><span class="p">]</span>
 <span class="n">File</span> <span class="s2">&quot;/Users/your-name/git/leo-editor/leo/plugins/qt_text.py&quot;</span><span class="p">,</span>
-<span class="n">line</span> <span class="mi">434</span><span class="p">,</span> <span class="ow">in</span> <span class="k">class</span> <span class="nc">LeoLineTextWidget</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QFrame</span><span class="p">):</span>
+<span class="n">line</span> <span class="mi">434</span><span class="p">,</span> <span class="ow">in</span> <span class="k">class</span><span class="w"> </span><span class="nc">LeoLineTextWidget</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QFrame</span><span class="p">):</span>
 <span class="ne">AttributeError</span><span class="p">:</span> <span class="s1">&#39;NoneType&#39;</span> <span class="nb">object</span> <span class="n">has</span> <span class="n">no</span> <span class="n">attribute</span> <span class="s1">&#39;QFrame&#39;</span>
 </pre></div>
 </div>
@@ -1626,10 +1626,10 @@ This brings up the “Change Key Sequence” panel.</p>
 <h3><a class="toc-backref" href="#id98" role="doc-backlink">I can’t run the LeoBridge module outside of leo/core.  What should I do?</a><a class="headerlink" href="#i-can-t-run-the-leobridge-module-outside-of-leo-core-what-should-i-do" title="Link to this heading">¶</a></h3>
 <p>Question and answer from plumloco.</p>
 <p>Add the equivalent of:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 <span class="n">leocore</span> <span class="o">=</span> <span class="s2">&quot;path/to/leo/core&quot;</span>
 <span class="k">if</span> <span class="n">leocore</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">:</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">leocore</span><span class="p">)</span>
-<span class="kn">import</span> <span class="nn">leo.core.leoBridge</span> <span class="k">as</span> <span class="nn">leoBridge</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">leo.core.leoBridge</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">leoBridge</span>
 </pre></div>
 </div>
 <p>at the head of each file that uses leoBridge.</p>
@@ -1709,7 +1709,7 @@ This brings up the “Change Key Sequence” panel.</p>
 <p>&#64;pagewidth 75</p>
 <ol class="upperalpha" start="17">
 <li><p>When I run the following script I see a window appear and then immediately disappear:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">leo.core.leoQt</span> <span class="kn">import</span> <span class="n">QtWidgets</span><span class="p">,</span> <span class="n">QtCore</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">leo.core.leoQt</span><span class="w"> </span><span class="kn">import</span> <span class="n">QtWidgets</span><span class="p">,</span> <span class="n">QtCore</span>
 <span class="n">w</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QWidget</span><span class="p">()</span>
 <span class="n">w</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="mi">250</span><span class="p">,</span> <span class="mi">150</span><span class="p">)</span>
 <span class="n">w</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">)</span>
@@ -1804,7 +1804,7 @@ The default is UTF-8 (case not important).</p>
 <section id="python-s-print-statement-shows-byte-hash-for-unicode-characters-what-can-i-do">
 <h3><a class="toc-backref" href="#id113" role="doc-backlink">Python’s print statement shows ‘byte hash’ for unicode characters.  What can I do?</a><a class="headerlink" href="#python-s-print-statement-shows-byte-hash-for-unicode-characters-what-can-i-do" title="Link to this heading">¶</a></h3>
 <p>First, you must change Python’s default encoding to something other than ‘ascii’.  To do this, put the following in your sitecustomize.py file in Python’s Lib folder:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 <span class="n">sys</span><span class="o">.</span><span class="n">setdefaultencoding</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="c1"># &#39;iso-8859-1&#39; is another choice.</span>
 </pre></div>
 </div>
@@ -1812,7 +1812,7 @@ The default is UTF-8 (case not important).</p>
 <p>Leo’s g.es_print and g.pr functions attempts to convert incoming arguments to unicode using the default encoding. For example, the following Leo script shows various ways of printing La Peña properly:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@first</span> <span class="c1"># -*- coding: utf-8 -*-</span>
 
-<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 <span class="n">e</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">getdefaultencoding</span><span class="p">()</span>
 <span class="nb">print</span> <span class="s1">&#39;encoding&#39;</span><span class="p">,</span><span class="n">e</span>
 <span class="n">table</span> <span class="o">=</span> <span class="p">(</span>
@@ -1839,8 +1839,8 @@ The default is UTF-8 (case not important).</p>
 <section id="how-can-i-use-leo-s-bridge-in-vim">
 <h3><a class="toc-backref" href="#id115" role="doc-backlink">How can I use Leo’s bridge in vim?</a><a class="headerlink" href="#how-can-i-use-leo-s-bridge-in-vim" title="Link to this heading">¶</a></h3>
 <p>This script appends the outline headlines, indented, to the current vim buffer:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">leo.core.leoBridge</span> <span class="k">as</span> <span class="nn">leoBridge</span>
-<span class="kn">import</span> <span class="nn">vim</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">leo.core.leoBridge</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">leoBridge</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">vim</span>
 
 <span class="n">controller</span> <span class="o">=</span> <span class="n">leoBridge</span><span class="o">.</span><span class="n">controller</span><span class="p">(</span>
     <span class="n">gui</span><span class="o">=</span><span class="s1">&#39;nullGui&#39;</span><span class="p">,</span>
@@ -1852,7 +1852,7 @@ The default is UTF-8 (case not important).</p>
 <span class="n">g</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">globals</span><span class="p">()</span>
 <span class="n">c</span> <span class="o">=</span> <span class="n">controller</span><span class="o">.</span><span class="n">openLeoFile</span><span class="p">(</span><span class="s2">&quot;/home/tbrown/.leo/del.leo&quot;</span><span class="p">)</span>
 
-<span class="k">def</span> <span class="nf">dent</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">dent</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;  &#39;</span> <span class="o">*</span> <span class="n">level</span> <span class="o">+</span> <span class="n">node</span><span class="o">.</span><span class="n">h</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
         <span class="n">dent</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">level</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
@@ -1864,7 +1864,7 @@ The default is UTF-8 (case not important).</p>
 </pre></div>
 </div>
 <p>It can be invoked with:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">:</span><span class="n">py</span> <span class="kn">import</span> <span class="nn">leodent</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">:</span><span class="n">py</span> <span class="kn">import</span><span class="w"> </span><span class="nn">leodent</span>
 </pre></div>
 </div>
 <p>assuming it’s in a file leodent.py and on the Python path.</p>
@@ -1967,8 +1967,8 @@ The default is UTF-8 (case not important).</p>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 1997-2025, Edward K. Ream.
-      Last updated on May 02, 2025.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+      Last updated on May 10, 2025.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
     </div>
   </body>
 </html>
