@@ -33119,8 +33119,7 @@ Yes, there are several ways for scripts to simulate the often-requested "half-cl
 
 **Breaking change**
 
-`PR #4281`_ and `PR #4232`_: create a subtle **breaking change** to
-colorizing settings.
+`PR #4281`_: create a subtle **breaking change** to colorizing settings.
 
 To maintain compatibility with previous versions of Leo, define `#00aa00` as the color for all the following settings::
 
