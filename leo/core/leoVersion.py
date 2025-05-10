@@ -7,6 +7,8 @@ leoVersion.static_date: The date of official releases.
                         Also used when the git repo is not available.
 leoVersion.version:     Leo's version number.
 """
+# The purpose of this comment is to change the hash.
+# Build number for b1:  -16
 #@+<< version dates >>
 #@+node:ekr.20141117073519.12: ** << version dates >>
 #@@nocolor-node
