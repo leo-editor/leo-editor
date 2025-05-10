@@ -10,6 +10,9 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 - Several other improvements to syntax coloring.
 - Add the `show-buttons-and-at-commands` command.
 - Add the `find-source-for-command` command.
+- Add the `beautify-script` command.
+- The `execute-script` command beautifies `c.p`'s tree if
+  `@bool beautify-python-code-on-write = True`.
 - Remove the join-leo-irc command.
 - Scripts (including `@command` and `@button` scripts) may now return a value.
 - Replace `c.scanAllDirectives` with 7 seven new Commands getters.

@@ -195,7 +195,7 @@ Portions of Leo's pyzo interface uses code from pyzo:
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 6.8.4-b1
+Version: 6.8.4b1
 Summary: An IDE, PIM and Outliner. See http://leo-editor.github.io/leo-editor/preface.html.
 Description: See users own descriptions of Leo at leo-editor.github.io/leo-editor/testimonials.html.
 Home-page: http://leo-editor.github.io/leo-editor/
@@ -225,6 +225,9 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 - Several other improvements to syntax coloring.
 - Add the `show-buttons-and-at-commands` command.
 - Add the `find-source-for-command` command.
+- Add the `beautify-script` command.
+- The `execute-script` command beautifies `c.p`'s tree if
+  `@bool beautify-python-code-on-write = True`.
 - Remove the join-leo-irc command.
 - Scripts (including `@command` and `@button` scripts) may now return a value.
 - Replace `c.scanAllDirectives` with 7 seven new Commands getters.
