@@ -11,6 +11,7 @@
 # For build devs.
 build>=1.2.1
 twine>=5.1.0
+setuptools>=61.0
 
 # For mypy.
 mypy
