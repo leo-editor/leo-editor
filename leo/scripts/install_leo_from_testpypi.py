@@ -19,7 +19,8 @@ home_dir = os.path.expanduser("~")
 os.chdir(home_dir)
 
 # Install.
-command = 'python -m pip install -i https://test.pypi.org/simple/ leo'
+# --no-build-isolation
+command = 'python -m pip install -i https://test.pypi.org/simple/ leo==6.8.4b4'
 print(command)
 subprocess.Popen(command, shell=True).communicate()
 #@-leo

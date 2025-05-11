@@ -195,7 +195,7 @@ Portions of Leo's pyzo interface uses code from pyzo:
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 6.8.4b1
+Version: 6.8.4b2
 Summary: An IDE, PIM and Outliner. See http://leo-editor.github.io/leo-editor/preface.html.
 Description: See users own descriptions of Leo at leo-editor.github.io/leo-editor/testimonials.html.
 Home-page: http://leo-editor.github.io/leo-editor/
