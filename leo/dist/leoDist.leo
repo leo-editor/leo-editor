@@ -195,7 +195,7 @@ Portions of Leo's pyzo interface uses code from pyzo:
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 6.8.4b2
+Version: 6.8.4b1
 Summary: An IDE, PIM and Outliner. See http://leo-editor.github.io/leo-editor/preface.html.
 Description: See users own descriptions of Leo at leo-editor.github.io/leo-editor/testimonials.html.
 Home-page: http://leo-editor.github.io/leo-editor/
@@ -1599,6 +1599,7 @@ Step 0: Update the version numbers in all build files:
 - pyproject.toml
 - scripts/inspect_wheel.py
 - scripts/install_leo_locally.py
+- scripts/install_leo_from_testpypi.py
 
 Step 1: Create and test the distribution files in leo/dist:
 
