@@ -56,7 +56,7 @@ leoVersion.version:     Leo's version number.
 # 6.8.1:  July 27, 2024.
 # 6.8.2:  November 7, 2024.
 # 6.8.3:  December 5, 2024.
-# 6.8.4:  b1: May 11, 2025.
+# 6.8.4:  May 16, 2025.
 #@-<< version dates >>
 version = '6.8.4'
 static_date = 'May 16, 2025'
