@@ -1197,8 +1197,10 @@ class FileCommands:
             val = pickle.loads(bin)  # Returns a Python object.
             return val
         except Exception:
-            g.es_exception()
-            g.trace('Can not unpickle', s.__class__.__name__, v and v.h, s[:40])
+            # g.es_exception()
+            # g.trace('Can not unpickle', s.__class__.__name__, v and v.h, s[:40])
+            if v:
+                g.print_unique_message(f"Can not unpickle: {v.h}")
             return None
     #@+node:vitalije.20180304190953.1: *5* fc.getPos/VnodeFromClipboard
     def getPosFromClipboard(self, s: str) -> Position:
