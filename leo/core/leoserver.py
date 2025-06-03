@@ -1882,6 +1882,17 @@ class LeoServer:
         except Exception as e:
             raise ServerError(f"{tag}: exception getting search settings: {e}")
         return self._make_response(result)
+    #@+node:felix.20250602231345.1: *5* server.show_line_in_leo_outline
+    def show_line_in_leo_outline(self, param: Param) -> Response:
+        """
+        Tries to find the at-<file> node for the given file.
+        If found calls goto-global-line with given line number - Otherwise offers to import.
+        """
+        tag = 'show_line_in_leo_outline'
+        c = self._check_c(param)
+        # TODO 
+        #
+        return self._make_response()
     #@+node:felix.20230204161405.1: *5* server.interactive_search
     def interactive_search(self, param: Param) -> Response:
         """
