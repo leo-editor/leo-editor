@@ -1885,14 +1885,31 @@ class LeoServer:
     #@+node:felix.20250602231345.1: *5* server.show_line_in_leo_outline
     def show_line_in_leo_outline(self, param: Param) -> Response:
         """
-        Tries to find the at-<file> node for the given file.
-        If found calls goto-global-line with given line number - Otherwise offers to import.
+        Tries to find the at-<file> node for given file to show the line with given line number.
+        call goto-global-line with given line number. Return true if found, false if not.
         """
         tag = 'show_line_in_leo_outline'
         c = self._check_c(param)
-        # TODO 
-        #
-        return self._make_response()
+        result = {"found": False}
+
+        filePath = param.get("filePath", "")
+        lineNumber = param.get("lineNumber", 0)
+
+        if not filePath:
+            raise ServerError(f"{tag}: no filePath given")
+
+        for p in c.all_positions():
+            if (p.v and p.v.isAnyAtFileNode()):
+                # ok, its an @file node so check if its absolute path matches the filePath
+                w_path = c.fullPath(p)
+                if (w_path and g.finalize(w_path) == g.finalize(filePath)):
+                    # Found the node that matches the filePath
+                    c.selectPosition(p); # Select the node in Leo's model
+                    # +1 because lineNumber is 0-indexed
+                    c.editCommands.gotoGlobalLine(lineNumber + 1)
+                    result["found"] = True
+                    break
+        return self._make_response(result)
     #@+node:felix.20230204161405.1: *5* server.interactive_search
     def interactive_search(self, param: Param) -> Response:
         """
