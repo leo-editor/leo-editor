@@ -1902,11 +1902,11 @@ class LeoServer:
             if (p.v and p.v.isAnyAtFileNode()):
                 # ok, its an @file node so check if its absolute path matches the filePath
                 w_path = c.fullPath(p)
-                if (w_path and g.finalize(w_path) == g.finalize(filePath)):
+                if (w_path and g.os_path_normcase(g.finalize(w_path)) == g.os_path_normcase(g.finalize(filePath))):
                     # Found the node that matches the filePath
                     c.selectPosition(p); # Select the node in Leo's model
                     # +1 because lineNumber is 0-indexed
-                    c.editCommands.gotoGlobalLine(lineNumber + 1)
+                    c.gotoCommands.find_file_line(lineNumber + 1)
                     result["found"] = True
                     break
         return self._make_response(result)
