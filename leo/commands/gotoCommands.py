@@ -55,6 +55,9 @@ class GoToCommands:
             return self.find_script_line(n, p)
         # Step 0: goto-global-line works only for @file and @clean nodes.
         if not any((root.isAtCleanNode(), root.isAtCleanNode())):
+            # Support the special case used by g.findGnx.
+            if p and n == 0:
+                return p, 0
             # #4355: Print a warning once.
             g.es_print_unique_message('goto-global-line works only for @file and @clean')
             return None, -1
