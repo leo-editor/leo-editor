@@ -3033,12 +3033,15 @@ class LeoServer:
 
         bunch = u.beforeInsertNode(p)
 
+        newNode = None
         if (p.hasChildren() and p.isExpanded()) or (c.hoistStack and p == c.hoistStack[-1].p):
             # Make sure the new node is visible when hoisting.
             if c.config.getBool('insert-new-nodes-at-end'):
                 newNode = p.insertAsLastChild()
             else:
                 newNode = p.insertAsNthChild(0)
+        else:
+            newNode = p.insertAfter()
 
         if newNode:
             newNode.h = f"{importType} {filePath}"
