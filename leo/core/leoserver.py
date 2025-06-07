@@ -3005,6 +3005,8 @@ class LeoServer:
         pass
         c = self._check_c(param)
         p = self._get_p(param)
+        u = c.undoer
+
         filePath = param.get('filePath')
         importType = param.get('importType', '@clean')
 
@@ -3015,8 +3017,34 @@ class LeoServer:
         
         filePath = self._capitalize_drive(filePath)
         commanderFilename = self._capitalize_drive(c.fileName())
-        
+        if not commanderFilename:
+            raise ServerError("insert_file_node: No commander fileName found")
 
+        # Try to set fileName to a relative path if possible.
+        commanderDirectory = g.os_path_dirname(commanderFilename)
+        importedFileDir = g.os_path_dirname(filePath)
+
+        # If the commander directory is present in the imported file directory, use a relative path.
+        if importedFileDir.startswith(commanderDirectory):
+            commonPath = importedFileDir[len(commanderDirectory) + 1:]
+            if commonPath:
+                commonPath += '/'  # not empty so add a slash
+            filePath = commonPath + g.os_path_basename(filePath)
+
+        bunch = u.beforeInsertNode(p)
+
+        if (p.hasChildren() and p.isExpanded()) or (c.hoistStack and p == c.hoistStack[-1].p):
+            # Make sure the new node is visible when hoisting.
+            if c.config.getBool('insert-new-nodes-at-end'):
+                newNode = p.insertAsLastChild()
+            else:
+                newNode = p.insertAsNthChild(0)
+
+        if newNode:
+            newNode.h = f"{importType} {filePath}"
+
+        u.afterInsertNode(newNode, 'Insert Node', bunch)
+        c.selectPosition(newNode)
 
         return self._make_response()
 
