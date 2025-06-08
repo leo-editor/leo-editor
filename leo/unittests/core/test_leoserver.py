@@ -89,7 +89,7 @@ class TestLeoServer(LeoUnitTest):
             'goto_script',
             'tag_children',
             'insert_file_node',
-            'show_line_in_leo_outline',
+            'goto_line_in_leo_outline',
             # Other methods
             'finishCreate',
             'remove_tag', 'tag_node',

@@ -80,7 +80,7 @@ version_tuple = (1, 0, 12)
 # 1.0.9 January 2024: Added support for UNL and specific commander targeting for any command.
 # 1.0.10 Febuary 2024: Added support getting UNL for a specific node (for status bar display, etc.)
 # 1.0.11 May 2024: Added get_is_valid and current commander info to get_ui_states for detached body support.
-# 1.0.12 June 2025: Added show_line_in_leo_outline and insert_file_node commands.
+# 1.0.12 June 2025: Added goto_line_in_leo_outline and insert_file_node commands.
 v1, v2, v3 = version_tuple
 __version__ = f"leoserver.py version {v1}.{v2}.{v3}"
 #@-<< leoserver version >>
@@ -1883,13 +1883,13 @@ class LeoServer:
         except Exception as e:
             raise ServerError(f"{tag}: exception getting search settings: {e}")
         return self._make_response(result)
-    #@+node:felix.20250602231345.1: *5* server.show_line_in_leo_outline
-    def show_line_in_leo_outline(self, param: Param) -> Response:
+    #@+node:felix.20250602231345.1: *5* server.goto_line_in_leo_outline
+    def goto_line_in_leo_outline(self, param: Param) -> Response:
         """
         Tries to find the @<file> node for the given file and show the given line number.
         Calls goto-global-line with the given line number. Returns true if found, false otherwise.
         """
-        tag = 'show_line_in_leo_outline'
+        tag = 'goto_line_in_leo_outline'
         c = self._check_c(param)
         result = {"found": False}
 
