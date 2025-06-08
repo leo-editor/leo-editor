@@ -644,14 +644,22 @@ class ExternalFilesController:
             return
         path_name = g.splitLongFileName(path)
         kind = '@asis' if p.h.startswith('@asis') else '@nosent'
+        message = (
+            f"{path_name} has changed outside Leo.\n\n"
+            f"An {kind} node created this file.\n\n"
+        )
+        if kind == '@nosent':
+            message += (
+                '@nosent nodes cannot be updated from disk.\n'
+            )
+        elif kind == '@asis':
+            message += (
+                'Updating from disk would remove its outline structure.\n'
+                'Proceed with refresh-from-disk only if this is intended.\n'
+            )
         g.app.gui.runAskOkDialog(
             c=c,
-            message=(
-                f"{path_name} has changed outside Leo.\n\n"
-                f"An {kind} node created this file.\n\n"
-                'Warning: Leo can not update this node!\n'
-                'Neither refresh-from-disk nor restarting Leo will work.\n'
-            ),
+            message=message,
             title='External file changed',
         )
     #@-others
