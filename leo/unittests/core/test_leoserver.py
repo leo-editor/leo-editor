@@ -88,6 +88,8 @@ class TestLeoServer(LeoUnitTest):
             'find_all', 'find_def', 'find_next', 'find_previous', 'find_var',
             'goto_script',
             'tag_children',
+            'insert_file_node',
+            'show_line_in_leo_outline',
             # Other methods
             'finishCreate',
             'remove_tag', 'tag_node',
