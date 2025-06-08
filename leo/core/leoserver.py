@@ -67,7 +67,7 @@ Socket = Any
 #@-<< leoserver annotations >>
 #@+<< leoserver version >>
 #@+node:ekr.20220820160619.1: ** << leoserver version >>
-version_tuple = (1, 0, 11)
+version_tuple = (1, 0, 12)
 # Version History
 # 1.0.1 Initial commit.
 # 1.0.2 July 2022: Adding ui-scroll, undo/redo, chapters, ua's & node_tags info.
@@ -80,6 +80,7 @@ version_tuple = (1, 0, 11)
 # 1.0.9 January 2024: Added support for UNL and specific commander targeting for any command.
 # 1.0.10 Febuary 2024: Added support getting UNL for a specific node (for status bar display, etc.)
 # 1.0.11 May 2024: Added get_is_valid and current commander info to get_ui_states for detached body support.
+# 1.0.12 June 2025: Added show_line_in_leo_outline and insert_file_node commands.
 v1, v2, v3 = version_tuple
 __version__ = f"leoserver.py version {v1}.{v2}.{v3}"
 #@-<< leoserver version >>
