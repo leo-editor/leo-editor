@@ -56,7 +56,8 @@ class GoToCommands:
         # Step 0: goto-global-line works only for @file and @clean nodes.
         if not any((root.isAtCleanNode(), root.isAtCleanNode())):
             # #4355: Print a warning once.
-            g.es_print_unique_message('goto-global-line works only for @file and @clean')
+            if not g.unitTesting:
+                g.es_print_unique_message('goto-global-line works only for @file and @clean')
             return None, -1
         # Step 1: Get the lines of external files *with* sentinels,
         #         even if the actual external file actually contains no sentinels.
