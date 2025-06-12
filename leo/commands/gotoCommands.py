@@ -60,7 +60,9 @@ class GoToCommands:
                 return p, 0
             # #4355: Print a warning once.
             if not g.unitTesting:
-                g.es_print_unique_message('goto-global-line works only for @file and @clean')
+                g.es_print_unique_message(
+                    'goto-global-line works only for @file, @clean, @edit and single @asis nodes'
+                )
             return None, -1
         # Step 1: Get the lines of external files *with* sentinels,
         #         even if the actual external file actually contains no sentinels.
