@@ -1905,7 +1905,7 @@ class LeoServer:
                 w_path = c.fullPath(p)
                 if w_path and g.os_path_normcase(g.finalize(w_path)) == g.os_path_normcase(g.finalize(filePath)):
                     # Found the node that matches the filePath
-                    c.selectPosition(p) # Select the node in Leo's model
+                    c.selectPosition(p)  # Select the node in Leo's model
                     # +1 because lineNumber is 0-indexed
                     c.gotoCommands.find_file_line(lineNumber + 1)
                     result["found"] = True
@@ -3015,7 +3015,7 @@ class LeoServer:
             raise ServerError("insert_file_node: No filePath given")
         if not importType:
             raise ServerError("insert_file_node: No importType given")
-        
+
         filePath = self._capitalize_drive(filePath)
         commanderFilename = self._capitalize_drive(c.fileName())
         if not commanderFilename:
@@ -3027,7 +3027,7 @@ class LeoServer:
 
         # If the commander directory is present in the imported file directory, use a relative path.
         if importedFileDir.startswith(commanderDirectory):
-            commonPath = importedFileDir[len(commanderDirectory) + 1:]
+            commonPath = importedFileDir[len(commanderDirectory) + 1 :]
             if commonPath:
                 commonPath += '/'  # not empty so add a slash
             filePath = commonPath + g.os_path_basename(filePath)
@@ -5355,7 +5355,7 @@ class LeoServer:
             if 'a' <= drive[0] <= 'z':
                 drive = drive[0].upper() + drive[1:]
         return drive
-        
+
     #@+node:felix.20210622232409.1: *4* server._send_async_output & helper
     def _send_async_output(self, package: Package, toAll: bool = False) -> None:
         """
