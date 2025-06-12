@@ -67,7 +67,7 @@ Socket = Any
 #@-<< leoserver annotations >>
 #@+<< leoserver version >>
 #@+node:ekr.20220820160619.1: ** << leoserver version >>
-version_tuple = (1, 0, 11)
+version_tuple = (1, 0, 12)
 # Version History
 # 1.0.1 Initial commit.
 # 1.0.2 July 2022: Adding ui-scroll, undo/redo, chapters, ua's & node_tags info.
@@ -80,6 +80,7 @@ version_tuple = (1, 0, 11)
 # 1.0.9 January 2024: Added support for UNL and specific commander targeting for any command.
 # 1.0.10 Febuary 2024: Added support getting UNL for a specific node (for status bar display, etc.)
 # 1.0.11 May 2024: Added get_is_valid and current commander info to get_ui_states for detached body support.
+# 1.0.12 June 2025: Added goto_line_in_leo_outline and insert_file_node commands.
 v1, v2, v3 = version_tuple
 __version__ = f"leoserver.py version {v1}.{v2}.{v3}"
 #@-<< leoserver version >>
@@ -1882,6 +1883,34 @@ class LeoServer:
         except Exception as e:
             raise ServerError(f"{tag}: exception getting search settings: {e}")
         return self._make_response(result)
+    #@+node:felix.20250602231345.1: *5* server.goto_line_in_leo_outline
+    def goto_line_in_leo_outline(self, param: Param) -> Response:
+        """
+        Tries to find the @<file> node for the given file and show the given line number.
+        Calls goto-global-line with the given line number. Returns true if found, false otherwise.
+        """
+        tag = 'goto_line_in_leo_outline'
+        c = self._check_c(param)
+        result = {"found": False}
+
+        filePath = param.get("filePath", "")
+        lineNumber = param.get("lineNumber", 0)
+
+        if not filePath:
+            raise ServerError(f"{tag}: no filePath given")
+
+        for p in c.all_positions():
+            if p.v and p.v.isAnyAtFileNode():
+                # ok, its an @file node so check if its absolute path matches the filePath
+                w_path = c.fullPath(p)
+                if w_path and g.os_path_normcase(g.finalize(w_path)) == g.os_path_normcase(g.finalize(filePath)):
+                    # Found the node that matches the filePath
+                    c.selectPosition(p) # Select the node in Leo's model
+                    # +1 because lineNumber is 0-indexed
+                    c.gotoCommands.find_file_line(lineNumber + 1)
+                    result["found"] = True
+                    break
+        return self._make_response(result)
     #@+node:felix.20230204161405.1: *5* server.interactive_search
     def interactive_search(self, param: Param) -> Response:
         """
@@ -2966,6 +2995,64 @@ class LeoServer:
             newNode, 'Insert Node', bunch)
         c.selectPosition(newNode)
         return self._make_response()
+    #@+node:felix.20250606213729.1: *5* server.insert_file_node
+    def insert_file_node(self, param: Param) -> Response:
+        """
+        Inserts a node with given at-file string (@clean, @edit, etc.)
+        and a given path to a file. If the file path is at same level
+        or deeper than the current Leo file, the path is made relative.
+        If the file path is at a higher level, it is made absolute.
+        """
+        pass
+        c = self._check_c(param)
+        p = self._get_p(param)
+        u = c.undoer
+
+        filePath = param.get('filePath')
+        importType = param.get('importType', '@clean')
+
+        if not filePath:
+            raise ServerError("insert_file_node: No filePath given")
+        if not importType:
+            raise ServerError("insert_file_node: No importType given")
+        
+        filePath = self._capitalize_drive(filePath)
+        commanderFilename = self._capitalize_drive(c.fileName())
+        if not commanderFilename:
+            raise ServerError("insert_file_node: No commander fileName found")
+
+        # Try to set fileName to a relative path if possible.
+        commanderDirectory = g.os_path_dirname(commanderFilename)
+        importedFileDir = g.os_path_dirname(filePath)
+
+        # If the commander directory is present in the imported file directory, use a relative path.
+        if importedFileDir.startswith(commanderDirectory):
+            commonPath = importedFileDir[len(commanderDirectory) + 1:]
+            if commonPath:
+                commonPath += '/'  # not empty so add a slash
+            filePath = commonPath + g.os_path_basename(filePath)
+
+        bunch = u.beforeInsertNode(p)
+
+        newNode = None
+        if (p.hasChildren() and p.isExpanded()) or (c.hoistStack and p == c.hoistStack[-1].p):
+            # Make sure the new node is visible when hoisting.
+            if c.config.getBool('insert-new-nodes-at-end'):
+                newNode = p.insertAsLastChild()
+            else:
+                newNode = p.insertAsNthChild(0)
+        else:
+            newNode = p.insertAfter()
+
+        if newNode:
+            newNode.h = f"{importType} {filePath}"
+
+        u.afterInsertNode(newNode, 'Insert Node', bunch)
+        c.selectPosition(newNode)
+
+        return self._make_response()
+
+
     #@+node:felix.20220616010755.1: *5* server.scroll_top
     def scroll_top(self, param: Param) -> Response:
         """
@@ -5259,6 +5346,16 @@ class LeoServer:
             if p.v.gnx == gnx:
                 return p
         return None
+    #@+node:felix.20250606210256.1: *4* server._capitalizeDrive
+    def _capitalize_drive(self, drive: str) -> str:
+        """
+        Capitalize the drive letter in a Windows drive string.
+        """
+        if len(drive) > 1 and drive[1] == ':':
+            if 'a' <= drive[0] <= 'z':
+                drive = drive[0].upper() + drive[1:]
+        return drive
+        
     #@+node:felix.20210622232409.1: *4* server._send_async_output & helper
     def _send_async_output(self, package: Package, toAll: bool = False) -> None:
         """
