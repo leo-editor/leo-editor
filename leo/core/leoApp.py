@@ -932,6 +932,12 @@ class LeoApp:
             signon.append(', build ' + commit)
         if date:
             signon.append('\n' + date)
+        else:
+            try:
+                from leo.core.leoVersion import static_date
+                signon.append(', ' + static_date.strip())
+            except Exception:
+                pass
         app.signon = ''.join(signon)
         # Compute g.app.signon1.
         app.signon1 = f"Python {n1}.{n2}.{n3}{guiVersion}\n{sysVersion}"

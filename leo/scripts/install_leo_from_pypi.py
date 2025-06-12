@@ -19,7 +19,7 @@ home_dir = os.path.expanduser("~")
 os.chdir(home_dir)
 
 # Install.
-command = 'python -m pip install leo'
+command = 'python -m pip install leo==6.8.4'
 print(command)
 subprocess.Popen(command, shell=True).communicate()
 #@-leo
