@@ -54,11 +54,11 @@ class GoToCommands:
         if not root:
             return self.find_script_line(n, p)
         # Step 0: goto-global-line works only for @file, @edit, @clean, and 'single' @asis nodes.
-        invalid = (
+        valid = (
             root.isAtCleanNode() or root.isAtEditNode() or root.isAtFileNode()
-            or (root.isAtAsisFileNode() and len(root.v.children) > 0)
+            or (root.isAtAsisFileNode() and len(root.v.children) == 0)
         )
-        if invalid:
+        if not valid:
             # Support the special case used by g.findGnx.
             if p and n == 0:
                 return p, 0

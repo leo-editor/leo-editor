@@ -104,10 +104,9 @@ class TestGotoCommands(LeoUnitTest):
             for i, clean_line in enumerate(clean_contents):
                 p, offset = x.find_file_line(i)
                 assert offset is not None, repr(p)
-                if offset == -1:  # PR #4360.
-                    continue
-                assert offset >= 0, (offset, repr(p))
+                assert offset > 0, (offset, repr(p))
                 line = g.splitLines(p.b)[offset - 1]
+
                 # g.trace(f"{i:>2} {offset} {p.h:20} {line!r}")
                 if p.h.startswith('@clean'):
                     if offset == 1:
@@ -135,10 +134,8 @@ class TestGotoCommands(LeoUnitTest):
 
                 # Test goto-global-line.
                 goto_p, goto_offset = x.find_file_line(global_i)
-                if not goto_p:
-                    continue
                 assert p.h == goto_p.h, (p, goto_p)
-                assert goto_offset >= 0, repr(p)
+                assert goto_offset == 1, repr(p)
 
                 # Update global_i.
                 if p == root:
