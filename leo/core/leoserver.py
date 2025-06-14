@@ -386,6 +386,27 @@ class ServerExternalFilesController(ExternalFilesController):
 
         There is *no way* to update the tree automatically.
         """
+        if g.unitTesting or c not in g.app.commanders():
+            return
+        if not p:
+            g.trace('NO P')
+            return
+        path_name = g.shortFileName(path)
+        kind = '@asis' if p.h.startswith('@asis') else '@nosent'
+        message = (
+            f"{path_name} has changed outside Leo.\n\n"
+            f"An {kind} node created this file.\n\n"
+        )
+        if kind == '@nosent':
+            message += (
+                '@nosent nodes cannot be updated from disk.\n'
+            )
+        elif kind == '@asis':
+            message += (
+                'Updating from disk would remove its outline structure.\n'
+                'Proceed with refresh-from-disk only if this is intended.\n'
+            )
+
         # check with leoServer's config first
         if g.leoServer.leoServerConfig:
             check_config = g.leoServer.leoServerConfig["defaultReloadIgnore"].lower()
@@ -393,25 +414,11 @@ class ServerExternalFilesController(ExternalFilesController):
             if check_config != "none":
                 # if not 'none' then do not warn, just infoMessage 'warn' at most
                 if not self.infoMessage:
-                    self.infoMessage = "warn"
+                    self.infoMessage = message
                 return
 
-        if g.unitTesting or c not in g.app.commanders():
-            return
-        if not p:
-            g.trace('NO P')
-            return
-
-        s = '\n'.join([
-            '%s has changed outside Leo.\n' % g.splitLongFileName(
-                path),
-            'Leo can not update this file automatically.\n',
-            'This file was created from %s.\n' % p.h,
-            'Warning: refresh-from-disk will destroy all children.'
-        ])
-
         package = {"async": "warn",
-                     "warn": 'External file changed', "message": s}
+                     "warn": 'External file changed', "message": message}
 
         g.leoServer._send_async_output(package, True)
         self.waitingForAnswer = True
