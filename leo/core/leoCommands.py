@@ -2731,7 +2731,7 @@ class Commands:
         return g.finalize_join(path, p.anyAtFileNodeName())
     #@+node:ekr.20250616161500.1: *4* c.relativeDirectory
     def relativeDirectory(self, path: str) -> str:
-        """Return the path relative this outline, or the full, absolute path."""
+        """Return the path relative to this outline, or the full, absolute path."""
         c = self
         baseDir = os.path.dirname(c.fileName())
         return g.relativeDirectory(baseDir, path)
