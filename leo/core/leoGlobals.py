@@ -3319,11 +3319,8 @@ def relativeDirectory(baseDir: str, path: str) -> str:
         if rel_path:
             return rel_path
     except ValueError:
-        pass
+        pass  # Windows throws ValueError if the drives are different.
     return os.path.abspath(os.path.normpath(path))
-        
-    
-   
 #@+node:ekr.20031218072017.3124: *3* g.sanitize_filename
 def sanitize_filename(s: str) -> str:
     """
