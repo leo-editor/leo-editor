@@ -3308,6 +3308,22 @@ def readlineForceUnixNewline(f: IO, fileName: Optional[str] = None) -> str:
     if len(s) >= 2 and s[-2] == "\r" and s[-1] == "\n":
         s = s[0:-2] + "\n"
     return s
+#@+node:ekr.20250615134309.1: *3* g.relativeDirectory
+def relativeDirectory(baseDir: str, path: str) -> str:
+    """Return the path relative to the base directory, or the full, absolute path."""
+    if g.isWindows:
+        baseDir = baseDir.lower()
+        path = path.lower()
+    try:
+        rel_path = os.path.relpath(path, start=baseDir)
+        if rel_path:
+            return rel_path
+    except ValueError:
+        pass
+    return os.path.abspath(os.path.normpath(path))
+        
+    
+   
 #@+node:ekr.20031218072017.3124: *3* g.sanitize_filename
 def sanitize_filename(s: str) -> str:
     """
