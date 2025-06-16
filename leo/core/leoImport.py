@@ -769,6 +769,7 @@ class LeoImportCommands:
                 # Leo 5.6: Handle undo here, not in createOutline.
                 undoData = u.beforeInsertNode(parent)
                 p = parent.insertAsLastChild()
+                fn = c.relativeDirectory(fn)
                 p.h = f"{treeType} {fn}"
                 u.afterInsertNode(p, 'Import', undoData)
                 p = self.createOutline(parent=p)
@@ -1675,6 +1676,7 @@ class RecursiveImportController:
         self.n_files += 1
         if self.kind == '@edit':
             p = parent.insertAsLastChild()
+            path = c.relativeDirectory(path)
             p.v.h = '@edit ' + path.replace('\\', '/')
             s, e = g.readFileIntoString(path, kind=self.kind)
             p.v.b = s
