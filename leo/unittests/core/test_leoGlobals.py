@@ -703,6 +703,9 @@ class TestGlobals(LeoUnitTest):
             ('c:\\Users\\ekr', 'c:\\Users\\ekr\\test4.py', 'test4.py'),
             ('c:\\Users\\ekr', 'c:\\Users\\user2\\test5.py', '..\\user2\\test5.py'),
             ('c:\\Users\\ekr', 'd:\\Users\\ekr\\test6.py', 'd:\\users\\ekr\\test6.py'),
+            # Unsaved outlines.
+            ('', '/home/test7.py', '/home/test7.py'),
+            ('', 'c:\\Users\\ekr\\test8.py', 'c:\\Users\\ekr\\test8.py'),
         )
         for base, fn, expected in table:
             actual = g.relativeDirectory(base, fn)
