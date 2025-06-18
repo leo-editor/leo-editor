@@ -3311,11 +3311,25 @@ def readlineForceUnixNewline(f: IO, fileName: Optional[str] = None) -> str:
 #@+node:ekr.20250615134309.1: *3* g.relativeDirectory
 def relativeDirectory(baseDir: str, path: str) -> str:
     """
-    Return the path relative to the base directory.
-    Return path if baseDir is not an ancestor of path."""
+    'path' should be an absolute path.
+    Return 'path' relative to the base directory.
+    Return 'path' if 'baseDir' is not an ancestor of 'path'.
+    """
+
+    def oops(message: str) -> None:
+        if not g.unitTesting:
+            g.es_print(f"g.relativeDirectory: {message}")
+
+    if not path:
+        oops(f"{path!r} should be an absolute path")
+        return path
+
     if not baseDir:
         # Likely an unsaved outline.
+        if not g.unitTesting:
+            g.es_print_unique_message('Save this outline to use relative import paths')
         return path
+
     if g.isWindows:
         baseDir = baseDir.lower()
         path = path.lower()
@@ -3325,8 +3339,7 @@ def relativeDirectory(baseDir: str, path: str) -> str:
             return rel_path
     except ValueError:
         # Windows throws ValueError if the drives are different.
-        if not g.unitTesting:
-            g.es_print(f"{baseDir} and {path} are on different drives")
+        oops(f"{baseDir} and {path} are on different drives")
     return path
 #@+node:ekr.20031218072017.3124: *3* g.sanitize_filename
 def sanitize_filename(s: str) -> str:
