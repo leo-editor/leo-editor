@@ -1392,7 +1392,6 @@ class EditCommandsClass(BaseEditCommandsClass):
                 ('Bitmap', '*.bmp'),
                 ('Icon', '*.ico'),
             ],
-            ### defaultextension=None,
         )
         if not paths:
             return

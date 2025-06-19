@@ -321,7 +321,6 @@ def openwith_rclick(c: Cmdr, p: Position, menu: Wrapper) -> None:
         fnames = g.app.gui.runOpenFilesDialog(c,
             title="Import files",
             filetypes=filetypes,
-            ### defaultextension='.notused',
             startpath=path,
         )
         adds = [guess_file_type(pth) + " " + shorten(pth, path) for pth in fnames]

@@ -363,7 +363,6 @@ class LeoFrame:
                 title="Save",
                 filetypes=[("Leo files", "*.leo *.leojs *.db")],
             )
-                ### defaultextension=".leo")
             c.bringToFront()
         if c.mFileName:
             if g.app.gui.guiName() == 'curses':

@@ -127,7 +127,6 @@ class FreeMindImporter:
         ]
         names = g.app.gui.runOpenFilesDialog(c,
             title="Import FreeMind File", filetypes=filetypes)
-            ### defaultextension=".html")
         c.bringToFront()
         if names:
             g.chdir(names[0])
@@ -1333,7 +1332,6 @@ class MindMapImporter:
         ]
         names = g.app.gui.runOpenFilesDialog(c,
             title="Import MindJet File", filetypes=filetypes)
-            ### defaultextension=".csv")
         c.bringToFront()
         if names:
             g.chdir(names[0])
@@ -1409,7 +1407,6 @@ class MORE_Importer:
         ]
         names = g.app.gui.runOpenFilesDialog(c,
             title="Import MORE Files", filetypes=filetypes)
-            ####  defaultextension=".txt")
         c.bringToFront()
         if names:
             g.chdir(names[0])
@@ -1973,7 +1970,6 @@ class TabImporter:
         ]
         names = g.app.gui.runOpenFilesDialog(c,
             title="Import Tabbed File", filetypes=types)
-            ### defaultextension=".html")
         c.bringToFront()
         if names:
             g.chdir(names[0])
@@ -2164,7 +2160,6 @@ class ToDoImporter:
         ]
         names = g.app.gui.runOpenFilesDialog(c,
             title="Import todo.txt File", filetypes=types)
-            ###defaultextension=".txt")
         c.bringToFront()
         if not names:
             return {}
@@ -2523,7 +2518,6 @@ class LegacyExternalFileImporter:
         ]
         paths = g.app.gui.runOpenFilesDialog(c,
             title="Import Legacy External Files", filetypes=filetypes)
-            ### defaultextension=".py")
         c.bringToFront()
         if paths:
             g.chdir(paths[0])
