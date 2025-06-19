@@ -248,7 +248,7 @@ def import_txt_file(c: Cmdr, fn: str) -> None:
     g.setGlobalOpenDir(fn)
     undoData = u.beforeInsertNode(c.p)
     p = c.p.insertAfter()
-    p.h = f"@edit {fn}"
+    p.h = f"@edit {c.relativeDirectory(fn)}"
     s, e = g.readFileIntoString(fn, kind='@edit')
     p.b = s
     u.afterInsertNode(p, 'Import', undoData)
