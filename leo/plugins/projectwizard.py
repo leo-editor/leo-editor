@@ -88,7 +88,8 @@ def project_wizard(event):
         ("Python files", "*.py"),
     ]
     fname = g.app.gui.runOpenFileDialog(c,
-        title="Open", filetypes=filetypes, defaultextension=".leo")
+        title="Open", filetypes=filetypes)
+        ### defaultextension=".leo")
 
     pth = os.path.dirname(os.path.abspath(fname))  # type:ignore
 
@@ -112,7 +113,7 @@ def rclick_path_importfile(c, p, menu):
         g.app.gui.runOpenFilesDialog(c,
             title="Import files",
             filetypes=filetypes,
-            defaultextension='.notused',
+            ### defaultextension='.notused',
         )
         print("import files from", path)
 

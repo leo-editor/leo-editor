@@ -158,7 +158,7 @@ class LeoGui:
         title: str,
         *,
         filetypes: list[tuple[str, str]],
-        defaultextension: str = '',
+        defaultextension: str = '',  # Not used
         startpath: str = None,
     ) -> str:
         """Create and run an open file dialog ."""
@@ -169,7 +169,7 @@ class LeoGui:
         title: str,
         *,
         filetypes: list[tuple[str, str]],
-        defaultextension: str = '',
+        defaultextension: str = '',  # Not used
         startpath: str = None,
     ) -> list[str]:
         """Create and run an open files dialog ."""
@@ -181,7 +181,7 @@ class LeoGui:
         title: str,
         *,
         filetypes: list[tuple[str, str]],
-        defaultextension: str,
+        defaultextension: str = None,  # Not used
     ) -> str:
         """Create and run a save file dialog ."""
         raise NotImplementedError
@@ -406,7 +406,7 @@ class NullGui(LeoGui):
 
     def runOpenFileDialog(self, c: Cmdr, title: str, *,
         filetypes: list[tuple[str, str]] = None,
-        defaultextension: str = '',
+        defaultextension: str = '',  # Not used
         startpath: str = None,
     ) -> str:
         return ''
@@ -416,7 +416,7 @@ class NullGui(LeoGui):
         title: str,
         *,
         filetypes: list[tuple[str, str]] = None,
-        defaultextension: str = '',
+        defaultextension: str = None,  # Not used
     ) -> str:
         return ''
 
@@ -426,7 +426,7 @@ class NullGui(LeoGui):
         title: str,
         *,
         filetypes: list[tuple[str, str]] = None,
-        defaultextension: str = '',
+        defaultextension: str = '',  # Not used
         startpath: str = None,
     ) -> list[str]:
         return []

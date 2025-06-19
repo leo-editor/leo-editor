@@ -709,7 +709,7 @@ def diff_leo_files_helper(event: LeoKeyEvent, title: str, visible: bool) -> None
     paths = g.app.gui.runOpenFilesDialog(c,
         title=title,
         filetypes=filetypes,
-        defaultextension=".leo",
+        ### defaultextension=".leo",
     )
     if not paths:
         return
@@ -718,7 +718,7 @@ def diff_leo_files_helper(event: LeoKeyEvent, title: str, visible: bool) -> None
         paths2 = g.app.gui.runOpensFileDialog(c,
             title=title,
             filetypes=filetypes,
-            defaultextension=".leo",
+            ### defaultextension=".leo",
         )
         if not paths2:
             return

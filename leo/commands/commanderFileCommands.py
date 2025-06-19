@@ -175,10 +175,8 @@ def importAnyFile(self: Self, event: LeoKeyEvent = None) -> None:
         ("Text files", "*.txt"),
     ]
     names = g.app.gui.runOpenFilesDialog(c,
-        title="Import File",
-        filetypes=filetypes,
-        defaultextension=".py",
-    )
+        title="Import File", filetypes=filetypes)
+        ### defaultextension=".py")
     c.bringToFront()
     if names:
         g.chdir(names[0])
@@ -330,10 +328,8 @@ def open_outline(self: Self, event: LeoKeyEvent = None) -> None:
         ("All files", "*"),
     ]
     fileName = g.app.gui.runOpenFileDialog(c,
-        defaultextension=g.defaultLeoFileExtension(c),
-        filetypes=filetypes,
-        title="Open",
-    )
+        title="Open", filetypes=filetypes)
+        ### defaultextension=g.defaultLeoFileExtension(c),
     if fileName:
         g.openWithFileName(fileName, old_c=c)  # type:ignore
 #@+node:ekr.20140717074441.17772: *3* c_file.refreshFromDisk
@@ -437,9 +433,8 @@ def save(self: Self, event: LeoKeyEvent = None, fileName: str = None) -> None:
 
         # Prompt for fileName.
         new_file_name = g.app.gui.runSaveFileDialog(c,
-            title="Save",
-            filetypes=[("Leo files", "*.leo *.leojs *.db"),],
-            defaultextension=g.defaultLeoFileExtension(c))
+            title="Save", filetypes=[("Leo files", "*.leo *.leojs *.db")])
+            ### defaultextension=g.defaultLeoFileExtension(c))
 
         if new_file_name:
             final_file_name = set_name_and_title(c, new_file_name)
@@ -503,8 +498,8 @@ def saveAs(self: Self, event: LeoKeyEvent = None, fileName: str = None) -> None:
         new_file_name = g.app.gui.runSaveFileDialog(c,
             title="Save As",
             filetypes=[("Leo files", "*.leo *.leojs *.db"),],
-            defaultextension=g.defaultLeoFileExtension(c))
-
+        )
+            ### defaultextension=g.defaultLeoFileExtension(c))
         if new_file_name:
             do_save_as(c, new_file_name)
 
@@ -545,8 +540,8 @@ def saveTo(self: Self, event: LeoKeyEvent = None, fileName: str = None, silent: 
         new_file_name = g.app.gui.runSaveFileDialog(c,
             title="Save To",
             filetypes=[("Leo files", "*.leo *.leojs *.db"),],
-            defaultextension=g.defaultLeoFileExtension(c))
-
+        )
+            ### defaultextension=g.defaultLeoFileExtension(c))
         if new_file_name:
             do_save_to(c, new_file_name)
 
@@ -584,7 +579,8 @@ def save_as_leojs(self: Self, event: LeoKeyEvent = None) -> None:
     fileName = g.app.gui.runSaveFileDialog(c,
         title="Save As JSON (.leojs)",
         filetypes=[("Leo JSON files", "*.leojs")],
-        defaultextension='.leojs')
+    )
+        ### defaultextension='.leojs')
     if not fileName:
         return
     if not fileName.endswith('.leojs'):
@@ -604,7 +600,8 @@ def save_as_db(self: Self, event: LeoKeyEvent = None) -> None:
     fileName = g.app.gui.runSaveFileDialog(c,
         title="Save As DB",
         filetypes=[("Leo files", "*.db")],
-        defaultextension='.db')
+    )
+        ### defaultextension='.db')
     if not fileName:
         return
     if not fileName.endswith('.db'):
@@ -625,7 +622,8 @@ def save_as_xml(self: Self, event: LeoKeyEvent = None) -> None:
     fileName = g.app.gui.runSaveFileDialog(c,
         title="Save As XML",
         filetypes=[("Leo files", "*.leo")],
-        defaultextension=g.defaultLeoFileExtension(c))
+    )
+        ### defaultextension=g.defaultLeoFileExtension(c))
     if not fileName:
         return
     if not fileName.endswith('.leo'):
@@ -644,10 +642,10 @@ def save_node_as_xml_outline(self: Self, event: LeoKeyEvent = None) -> None:
     xml = c.fileCommands.outline_to_clipboard_string()
 
     fileName = g.app.gui.runSaveFileDialog(c,
-                title="Save To",
-                filetypes=[("Leo files", "*.leo"),],
-                defaultextension=g.defaultLeoFileExtension(c))
-
+        title="Save To",
+        filetypes=[("Leo files", "*.leo"),],
+    )
+    ### defaultextension=g.defaultLeoFileExtension(c))
     if fileName:
         with open(fileName, 'w', encoding='utf-8') as f:
             f.write(xml)
@@ -659,9 +657,8 @@ def exportHeadlines(self: Self, event: LeoKeyEvent = None) -> None:
     c = self
     filetypes = [("Text files", "*.txt"), ("All files", "*")]
     fileName = g.app.gui.runSaveFileDialog(c,
-        title="Export Headlines",
-        filetypes=filetypes,
-        defaultextension=".txt")
+        title="Export Headlines", filetypes=filetypes)
+        ### defaultextension=".txt")
     c.bringToFront()
     if fileName:
         g.setGlobalOpenDir(fileName)
@@ -677,9 +674,8 @@ def flattenOutline(self: Self, event: LeoKeyEvent = None) -> None:
     c = self
     filetypes = [("Text files", "*.txt"), ("All files", "*")]
     fileName = g.app.gui.runSaveFileDialog(c,
-        title="Flatten Selected Outline",
-        filetypes=filetypes,
-        defaultextension=".txt")
+        title="Flatten Selected Outline", filetypes=filetypes)
+        ### defaultextension=".txt")
     c.bringToFront()
     if fileName:
         g.setGlobalOpenDir(fileName)
@@ -725,9 +721,8 @@ def outlineToCWEB(self: Self, event: LeoKeyEvent = None) -> None:
         ("Text files", "*.txt"),
         ("All files", "*")]
     fileName = g.app.gui.runSaveFileDialog(c,
-        title="Outline To CWEB",
-        filetypes=filetypes,
-        defaultextension=".w")
+        title="Outline To CWEB", filetypes=filetypes)
+        ### defaultextension=".w")
     c.bringToFront()
     if fileName:
         g.setGlobalOpenDir(fileName)
@@ -746,9 +741,8 @@ def outlineToNoweb(self: Self, event: LeoKeyEvent = None) -> None:
         ("Text files", "*.txt"),
         ("All files", "*")]
     fileName = g.app.gui.runSaveFileDialog(c,
-        title="Outline To Noweb",
-        filetypes=filetypes,
-        defaultextension=".nw")
+        title="Outline To Noweb", filetypes=filetypes)
+        ### defaultextension=".nw")
     c.bringToFront()
     if fileName:
         g.setGlobalOpenDir(fileName)
@@ -775,10 +769,8 @@ def removeSentinels(self: Self, event: LeoKeyEvent = None) -> None:
         ("Python files", "*.py"),
     ]
     names = g.app.gui.runOpenFilesDialog(c,
-        title="Remove Sentinels",
-        filetypes=filetypes,
-        defaultextension=".py",
-    )
+        title="Remove Sentinels", filetypes=filetypes)
+        ### defaultextension=".py")
     c.bringToFront()
     if names:
         g.chdir(names[0])
@@ -791,7 +783,8 @@ def weave(self: Self, event: LeoKeyEvent = None) -> None:
     fileName = g.app.gui.runSaveFileDialog(c,
         title="Weave",
         filetypes=[("Text files", "*.txt"), ("All files", "*")],
-        defaultextension=".txt")
+    )
+        ###defaultextension=".txt")
     c.bringToFront()
     if fileName:
         g.setGlobalOpenDir(fileName)
@@ -859,9 +852,8 @@ def readFileIntoNode(self: Self, event: LeoKeyEvent = None) -> None:
         ("Leo files", "*.leo *.leojs"),
     ]
     fileName = g.app.gui.runOpenFileDialog(c,
-        title="Read File Into Node",
-        filetypes=filetypes,
-        defaultextension=None)
+        title="Read File Into Node", filetypes=filetypes)
+        ### defaultextension=None)
     if not fileName:
         return
     if isinstance(fileName, list):
@@ -903,7 +895,8 @@ def writeFileFromNode(self: Self, event: LeoKeyEvent = None) -> None:
                 ("Python files", "*.py"),
                 ("Leo files", "*.leo *.leojs"),
             ],
-            defaultextension=None)
+        )
+        ### defaultextension=None)
     if fileName:
         try:
             with open(fileName, 'w') as f:
@@ -942,7 +935,8 @@ def writeFileFromSubtree(self: Self, event: LeoKeyEvent = None) -> None:
                 ("Python files", "*.py"),
                 ("Leo files", "*.leo *.leojs"),
             ],
-            defaultextension=None)
+        )
+        ### defaultextension=None)
     if fileName:
         try:
             with open(fileName, 'w') as f:
@@ -1009,7 +1003,7 @@ def open_theme_file(self: Self, event: LeoKeyEvent) -> None:
             ("Leo files", "*.leo *.leojs *.db"),
             ("All files", "*"),
         ],
-        defaultextension=g.defaultLeoFileExtension(c),
+        ### defaultextension=g.defaultLeoFileExtension(c),
         startpath=themes_dir,
     )
     if not fn:

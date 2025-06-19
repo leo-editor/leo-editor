@@ -126,10 +126,8 @@ class FreeMindImporter:
             ("All files", "*"),
         ]
         names = g.app.gui.runOpenFilesDialog(c,
-            title="Import FreeMind File",
-            filetypes=filetypes,
-            defaultextension=".html",
-        )
+            title="Import FreeMind File", filetypes=filetypes)
+            ### defaultextension=".html")
         c.bringToFront()
         if names:
             g.chdir(names[0])
@@ -1334,10 +1332,8 @@ class MindMapImporter:
             ("All files", "*"),
         ]
         names = g.app.gui.runOpenFilesDialog(c,
-            title="Import MindJet File",
-            filetypes=filetypes,
-            defaultextension=".csv",
-        )
+            title="Import MindJet File", filetypes=filetypes)
+            ### defaultextension=".csv")
         c.bringToFront()
         if names:
             g.chdir(names[0])
@@ -1412,10 +1408,8 @@ class MORE_Importer:
             ("All files", "*"),
         ]
         names = g.app.gui.runOpenFilesDialog(c,
-            title="Import MORE Files",
-            filetypes=filetypes,
-            # defaultextension=".txt",
-        )
+            title="Import MORE Files", filetypes=filetypes)
+            ####  defaultextension=".txt")
         c.bringToFront()
         if names:
             g.chdir(names[0])
@@ -1978,10 +1972,8 @@ class TabImporter:
             ("All files", "*"),
         ]
         names = g.app.gui.runOpenFilesDialog(c,
-            title="Import Tabbed File",
-            filetypes=types,
-            defaultextension=".html",
-        )
+            title="Import Tabbed File", filetypes=types)
+            ### defaultextension=".html")
         c.bringToFront()
         if names:
             g.chdir(names[0])
@@ -2171,10 +2163,8 @@ class ToDoImporter:
             ("All files", "*"),
         ]
         names = g.app.gui.runOpenFilesDialog(c,
-            title="Import todo.txt File",
-            filetypes=types,
-            defaultextension=".txt",
-        )
+            title="Import todo.txt File", filetypes=types)
+            ###defaultextension=".txt")
         c.bringToFront()
         if not names:
             return {}
@@ -2532,10 +2522,8 @@ class LegacyExternalFileImporter:
             ("All files", "*"),
         ]
         paths = g.app.gui.runOpenFilesDialog(c,
-            title="Import Legacy External Files",
-            filetypes=filetypes,
-            defaultextension=".py",
-        )
+            title="Import Legacy External Files", filetypes=filetypes)
+            ### defaultextension=".py")
         c.bringToFront()
         if paths:
             g.chdir(paths[0])
