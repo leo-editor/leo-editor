@@ -181,7 +181,7 @@ class LeoGui:
         title: str,
         *,
         filetypes: list[tuple[str, str]],
-        defaultextension: str = None,  # Not used
+        defaultextension: str = '',  # Not used
     ) -> str:
         """Create and run a save file dialog ."""
         raise NotImplementedError
@@ -416,7 +416,7 @@ class NullGui(LeoGui):
         title: str,
         *,
         filetypes: list[tuple[str, str]] = None,
-        defaultextension: str = None,  # Not used
+        defaultextension: str = '',  # Not used
     ) -> str:
         return ''
 

@@ -114,7 +114,7 @@ class textGui(leoGui.LeoGui):
         title,
         *,
         filetypes: list[tuple[str, str]],
-        defaultextension,  # Not used.
+        defaultextension= '',  # Not used.
         startpath=None,
     ) -> str:
         initialdir = g.app.globalOpenDir or g.os_path_abspath(os.getcwd())

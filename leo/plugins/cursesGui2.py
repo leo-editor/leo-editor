@@ -1781,7 +1781,7 @@ class LeoCursesGui(leoGui.LeoGui):
         title: str,
         *,
         filetypes: list[tuple[str, str]],
-        defaultextension: str = None,  # Not used.
+        defaultextension: str = '',  # Not used.
     ) -> str:
         if g.unitTesting:
             return None

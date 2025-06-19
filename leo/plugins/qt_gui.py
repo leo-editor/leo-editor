@@ -780,7 +780,7 @@ class LeoQtGui(leoGui.LeoGui):
         title: str = 'Save',
         *,
         filetypes: list[tuple[str, str]] = None,
-        defaultextension: str = None,  # Not used.
+        defaultextension: str = '',  # Not used.
     ) -> str:
         """Create and run an Qt save file dialog ."""
         if g.unitTesting:
