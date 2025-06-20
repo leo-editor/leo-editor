@@ -691,6 +691,25 @@ class TestGlobals(LeoUnitTest):
         if 0:
             print(path12, g.os.path.abspath(path12))
             print(path13, g.os.path.abspath(path13))
+    #@+node:ekr.20250616080611.1: *4* TestGlobals.test_g_relativeDirectory
+    def test_g_relativeDirectory(self):
+
+        table = (
+            # Linux tests.
+            ('/home', '/home/test1.py', 'test1.py'),
+            ('/home/folder1', '/home/folder1/test2.py', 'test2.py'),
+            ('/home/folder1', '/home/folder2/test3.py', '..\\folder2\\test3.py'),
+            # Windows tests: g.relativeDirectory lowers all results.
+            ('c:\\Users\\ekr', 'c:\\Users\\ekr\\test4.py', 'test4.py'),
+            ('c:\\Users\\ekr', 'c:\\Users\\user2\\test5.py', '..\\user2\\test5.py'),
+            ('c:\\Users\\ekr', 'd:\\Users\\ekr\\test6.py', 'd:\\users\\ekr\\test6.py'),
+            # Unsaved outlines.
+            ('', '/home/test7.py', '/home/test7.py'),
+            ('', 'c:\\Users\\ekr\\test8.py', 'c:\\Users\\ekr\\test8.py'),
+        )
+        for base, fn, expected in table:
+            actual = g.relativeDirectory(base, fn)
+            self.assertEqual(actual, expected)
     #@+node:ekr.20210905203541.28: *4* TestGlobals.test_g_removeBlankLines
     def test_g_removeBlankLines(self):
         for s, expected in (
@@ -699,23 +718,6 @@ class TestGlobals(LeoUnitTest):
             (' \t \n\n  \n c\n\t\n', ' c\n'),
         ):
             result = g.removeBlankLines(s)
-            self.assertEqual(result, expected, msg=repr(s))
-    #@+node:ekr.20250113053113.1: *4* TestGlobals.test_g_splitLinesAtNewline
-    def test_g_splitLinesAtNewline(self):
-        for s, expected in (
-            (None, []),
-            ('', []),
-            (' ', [' ']),
-            ('\t', ['\t']),
-            (' a', [' a']),
-            ('\t b', ['\t b']),
-            ('a\nb', ['a\n', 'b']),
-            ('a\nb\n', ['a\n', 'b\n']),
-            ('\n  \n\nb\n', ['\n', '  \n', '\n', 'b\n']),
-            ('\fa\n', ['\fa\n']),
-            ('c\fd', ['c\fd']),
-        ):
-            result = g.splitLinesAtNewline(s)
             self.assertEqual(result, expected, msg=repr(s))
     #@+node:ekr.20210905203541.30: *4* TestGlobals.test_g_removeLeadingBlankLines
     def test_g_removeLeadingBlankLines(self):
@@ -831,6 +833,23 @@ class TestGlobals(LeoUnitTest):
             for i, result in table:
                 j = g.skip_to_start_of_line(s, i)
                 self.assertEqual(j, result, msg=i)
+    #@+node:ekr.20250113053113.1: *4* TestGlobals.test_g_splitLinesAtNewline
+    def test_g_splitLinesAtNewline(self):
+        for s, expected in (
+            (None, []),
+            ('', []),
+            (' ', [' ']),
+            ('\t', ['\t']),
+            (' a', [' a']),
+            ('\t b', ['\t b']),
+            ('a\nb', ['a\n', 'b']),
+            ('a\nb\n', ['a\n', 'b\n']),
+            ('\n  \n\nb\n', ['\n', '  \n', '\n', 'b\n']),
+            ('\fa\n', ['\fa\n']),
+            ('c\fd', ['c\fd']),
+        ):
+            result = g.splitLinesAtNewline(s)
+            self.assertEqual(result, expected, msg=repr(s))
     #@+node:ekr.20210905203541.54: *4* TestGlobals.test_g_splitLongFileName
     def test_g_splitLongFileName(self):
         table = (

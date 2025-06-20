@@ -1761,7 +1761,7 @@ class Commands:
                 paths.append(path)
 
         # Add absbase and reverse the list.
-        absbase = g.os_path_dirname(c.fileName()) if c.fileName() else os.getcwd()
+        absbase = g.os_path_dirname(c.fileName()) if c.fileName() else g.app.homeDir
         paths.append(absbase)
         paths.reverse()
 
@@ -2729,6 +2729,12 @@ class Commands:
         c = self
         path = c.getPath(p)
         return g.finalize_join(path, p.anyAtFileNodeName())
+    #@+node:ekr.20250616161500.1: *4* c.relativeDirectory
+    def relativeDirectory(self, path: str) -> str:
+        """Return the path relative to this outline, or the full, absolute path."""
+        c = self
+        baseDir = os.path.dirname(c.fileName())
+        return g.relativeDirectory(baseDir, path)
     #@+node:ekr.20171123135625.39: *4* c.getTime
     def getTime(self, body: bool = True) -> str:
         c = self
