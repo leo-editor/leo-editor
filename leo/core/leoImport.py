@@ -769,6 +769,7 @@ class LeoImportCommands:
                 # Leo 5.6: Handle undo here, not in createOutline.
                 undoData = u.beforeInsertNode(parent)
                 p = parent.insertAsLastChild()
+                fn = c.relativeDirectory(fn)
                 p.h = f"{treeType} {fn}"
                 u.afterInsertNode(p, 'Import', undoData)
                 p = self.createOutline(parent=p)
@@ -838,14 +839,14 @@ class LeoImportCommands:
             p.setDirty()
             c.setChanged()
         c.redraw(current)
-    #@+node:ekr.20031218072017.3225: *5* createOutlineFromWeb
+    #@+node:ekr.20031218072017.3225: *5* ic.createOutlineFromWeb
     def createOutlineFromWeb(self, path: str, parent: Position) -> Position:
         c = self.c
         u = c.undoer
         junk, fileName = g.os_path_split(path)
         undoData = u.beforeInsertNode(parent)
         # Create the top-level headline.
-        p = parent.insertAsLastChild()
+        p = parent.insertAfter()
         p.initHeadString(fileName)
         if self.webType == "cweb":
             self.setBodyString(p, "@ignore\n@language cweb")
@@ -853,7 +854,7 @@ class LeoImportCommands:
         self.scanWebFile(path, p)
         u.afterInsertNode(p, 'Import', undoData)
         return p
-    #@+node:ekr.20031218072017.3227: *5* findFunctionDef
+    #@+node:ekr.20031218072017.3227: *5* ic.findFunctionDef
     def findFunctionDef(self, s: str, i: int) -> Optional[str]:
         # Look at the next non-blank line for a function name.
         i = g.skip_ws_and_nl(s, i)
@@ -871,7 +872,7 @@ class LeoImportCommands:
             else:
                 i += 1
         return None
-    #@+node:ekr.20031218072017.3228: *5* scanBodyForHeadline
+    #@+node:ekr.20031218072017.3228: *5* ic.scanBodyForHeadline
     #@+at This method returns the proper headline text.
     # 1. If s contains a section def, return the section ref.
     # 2. cweb only: if s contains @c, return the function name following the @c.
@@ -932,7 +933,7 @@ class LeoImportCommands:
                 i = g.skip_line(s, i)
             #@-<< scan noweb body for headline >>
         return "@"  # default.
-    #@+node:ekr.20031218072017.3231: *5* scanWebFile (handles limbo)
+    #@+node:ekr.20031218072017.3231: *5* ic.scanWebFile (handles limbo)
     def scanWebFile(self, fileName: str, parent: Position) -> None:
         theType = self.webType
         lb = "@<" if theType == "cweb" else "<<"
@@ -1056,8 +1057,8 @@ class LeoImportCommands:
             self.createHeadline(parent, body, headline)
             #@-<< Create a node for the next module >>
             assert i > outer_progress
-    #@+node:ekr.20031218072017.3236: *5* Symbol table
-    #@+node:ekr.20031218072017.3237: *6* cstCanonicalize
+    #@+node:ekr.20031218072017.3236: *5* ic: Symbol table
+    #@+node:ekr.20031218072017.3237: *6* ic.cstCanonicalize
     # We canonicalize strings before looking them up,
     # but strings are entered in the form they are first encountered.
 
@@ -1067,13 +1068,13 @@ class LeoImportCommands:
         s = s.replace("\t", " ").replace("\r", "")
         s = s.replace("\n", " ").replace("  ", " ")
         return s.strip()
-    #@+node:ekr.20031218072017.3238: *6* cstDump
+    #@+node:ekr.20031218072017.3238: *6* ic.cstDump
     def cstDump(self) -> str:
         s = "Web Symbol Table...\n\n"
         for name in sorted(self.web_st):
             s += name + "\n"
         return s
-    #@+node:ekr.20031218072017.3239: *6* cstEnter
+    #@+node:ekr.20031218072017.3239: *6* ic.cstEnter
     # We only enter the section name into the symbol table if the ... convention is not used.
 
     def cstEnter(self, s: str) -> None:
@@ -1088,7 +1089,7 @@ class LeoImportCommands:
             if name.lower() == lower:
                 return
         self.web_st.append(upper)
-    #@+node:ekr.20031218072017.3240: *6* cstLookup
+    #@+node:ekr.20031218072017.3240: *6* ic.cstLookup
     # This method returns a string if the indicated string is a prefix of an entry in the web_st.
 
     def cstLookup(self, target: str) -> str:
@@ -1675,6 +1676,7 @@ class RecursiveImportController:
         self.n_files += 1
         if self.kind == '@edit':
             p = parent.insertAsLastChild()
+            path = c.relativeDirectory(path)
             p.v.h = '@edit ' + path.replace('\\', '/')
             s, e = g.readFileIntoString(path, kind=self.kind)
             p.v.b = s
