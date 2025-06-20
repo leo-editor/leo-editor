@@ -270,7 +270,7 @@ class Slides(QtWidgets.QWidget):  # type:ignore
     def copy(self):
         """Issue a prompt and copy the file if the user agrees."""
         file_name = self.files_list[self.slide_number]
-        path: str = QtWidgets.QFileDialog().getExistingDirectory()
+        path: str = QtWidgets.QFileDialog().getExistingDirectory(caption='Copy File')
         if not path:
             print('No path')
             return
@@ -330,7 +330,7 @@ class Slides(QtWidgets.QWidget):  # type:ignore
     def move_to(self):
         """Issue a prompt and move the file if the user agrees."""
         file_name = self.files_list[self.slide_number]
-        path: str = QtWidgets.QFileDialog().getExistingDirectory()
+        path: str = QtWidgets.QFileDialog().getExistingDirectory(caption='Move File')
         if not path:
             return
         new_path = os.path.join(path, os.path.basename(file_name))
