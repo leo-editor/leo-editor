@@ -1761,7 +1761,7 @@ class Commands:
                 paths.append(path)
 
         # Add absbase and reverse the list.
-        absbase = g.os_path_dirname(c.fileName()) if c.fileName() else os.getcwd()
+        absbase = g.os_path_dirname(c.fileName()) if c.fileName() else g.app.homeDir
         paths.append(absbase)
         paths.reverse()
 
