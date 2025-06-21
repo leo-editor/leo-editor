@@ -274,7 +274,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                 ("All files", "*"),
             ]
             fileName = g.app.gui.runOpenFileDialog(c,
-                title="Compare Leo Files", filetypes=filetypes, defaultextension='.leo')
+                title="Compare Leo Files", filetypes=filetypes)
             if not fileName:
                 return
             # Read the file into the hidden commander.
@@ -509,7 +509,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         fn = g.app.gui.runOpenFileDialog(c,
             title='Open Text File',
             filetypes=[("Text", "*.txt"), ("All files", "*")],
-            defaultextension=".txt")
+        )
         return fn
     #@+node:ekr.20170819035801.90: *3* efc.gitDiff (gd & git-diff)
     @cmd('git-diff')
@@ -593,7 +593,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         fileName = g.app.gui.runSaveFileDialog(c,
             title='save-file',
             filetypes=[("Text", "*.txt"), ("All files", "*")],
-            defaultextension=".txt")
+        )
         if fileName:
             try:
                 s = w.getAllText()

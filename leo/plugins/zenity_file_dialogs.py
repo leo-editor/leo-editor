@@ -65,7 +65,7 @@ def runOpenFileDialog(
     title,
     *,
     filetypes: list[tuple[str, str]] = None,
-    defaultextension=None,
+    defaultextension= '',  # Not used.
 ):
     """Call zenity's open file(s) dialog."""
     # initialdir = g.app.globalOpenDir or g.os_path_abspath(os.getcwd())
@@ -75,7 +75,7 @@ def runSaveFileDialog(
     title=None,
     *,
     filetypes: list[tuple[str, str]] = None,
-    defaultextension=None,
+    defaultextension= '',  # Not used.
 ) -> bytes:
     """Call zenity's save file dialog."""
     # initialdir=g.app.globalOpenDir or g.os_path_abspath(os.getcwd())

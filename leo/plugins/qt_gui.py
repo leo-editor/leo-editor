@@ -679,14 +679,14 @@ class LeoQtGui(leoGui.LeoGui):
         dialog = QtWidgets.QFileDialog()
         self.attachLeoIcon(dialog)
         return dialog.getExistingDirectory(None, title, startdir)
-    #@+node:ekr.20110605121601.18500: *4* LeoQtGui.runOpenFileDialog (changed)
+    #@+node:ekr.20110605121601.18500: *4* LeoQtGui.runOpenFileDialog
     def runOpenFileDialog(
         self,
         c: Cmdr,
         title: str,
         *,
         filetypes: list[tuple[str, str]],
-        defaultextension: str = '',
+        defaultextension: str = '',  # Not used
         startpath: str = None,
     ) -> str:
         """
@@ -720,14 +720,14 @@ class LeoQtGui(leoGui.LeoGui):
         if c and s:
             c.last_dir = g.os_path_dirname(s)
         return s
-    #@+node:ekr.20240409063707.1: *4* LeoQtGui.runOpenFilesDialog (new)
+    #@+node:ekr.20240409063707.1: *4* LeoQtGui.runOpenFilesDialog
     def runOpenFilesDialog(
         self,
         c: Cmdr,
         title: str,
         *,
         filetypes: list[tuple[str, str]],
-        defaultextension: str = '',
+        defaultextension: str = '',  # Not used.
         startpath: str = None,
     ) -> list[str]:
         """
@@ -780,7 +780,7 @@ class LeoQtGui(leoGui.LeoGui):
         title: str = 'Save',
         *,
         filetypes: list[tuple[str, str]] = None,
-        defaultextension: str = '',
+        defaultextension: str = '',  # Not used.
     ) -> str:
         """Create and run an Qt save file dialog ."""
         if g.unitTesting:

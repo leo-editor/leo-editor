@@ -238,7 +238,7 @@ def leo2xml(event):
 
     cd_here(c, p)
     file_name = g.app.gui.runSaveFileDialog(
-        c, title="Open", filetypes=filetypes, defaultextension=".xml")
+        c, title="Open", filetypes=filetypes)
     if not file_name:
         raise ImportError("No file selected")
 
@@ -292,9 +292,8 @@ def xml2leo(event, from_string=None):
     else:
         parser_func = etree.parse
         cd_here(c, p)
-        file_name = g.app.gui.runOpenFileDialog(
-                c, title="Open", filetypes=filetypes, defaultextension=".xml")
-
+        file_name = g.app.gui.runOpenFileDialog(c,
+            title="Open", filetypes=filetypes)
         if not file_name:
             raise ImportError("No file selected")
 

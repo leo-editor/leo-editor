@@ -61,17 +61,10 @@ def importCiscoConfig(c):
     current = c.p
     #@+<< open file >>
     #@+node:edream.110203113231.673: *3* << open file >>
-    # name = tkFileDialog.askopenfilename(
-        # title="Import Cisco Configuration File",
-        # filetypes=[("All files", "*")]
-        # )
-
     name = g.app.gui.runOpenFileDialog(c,
         title="Import Cisco Configuration File",
         filetypes=[("All files", "*"),],
-        defaultextension='ini',
     )
-
     if not name:
         return
 
