@@ -1745,7 +1745,7 @@ class LeoCursesGui(leoGui.LeoGui):
         title: str,
         *,
         filetypes: list[tuple[str, str]],
-        defaultextension: str = '',
+        defaultextension: str = '',  # Not used.
         startpath: str = None,
     ) -> str:
         if not g.unitTesting:
@@ -1757,7 +1757,7 @@ class LeoCursesGui(leoGui.LeoGui):
         title: str,
         *,
         filetypes: list[tuple[str, str]],
-        defaultextension: str = '',
+        defaultextension: str = '',  # Not used.
         startpath: str = None,
     ) -> list[str]:
         if not g.unitTesting:
@@ -1781,7 +1781,7 @@ class LeoCursesGui(leoGui.LeoGui):
         title: str,
         *,
         filetypes: list[tuple[str, str]],
-        defaultextension: str,
+        defaultextension: str = '',  # Not used.
     ) -> str:
         if g.unitTesting:
             return None
