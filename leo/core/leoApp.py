@@ -1533,7 +1533,7 @@ class LeoApp:
         app = self
         for c in app.commanders():
             c.k.makeAllBindings()
-    #@+node:ekr.20031218072017.2188: *3* app.newCommander
+    #@+node:ekr.20031218072017.2188: *3* app.newCommander (trace)
     def newCommander(
         self,
         fileName: str,
@@ -1547,6 +1547,11 @@ class LeoApp:
         # This takes about 3/4 sec when called by the leoBridge module.
         # Timeit reports 0.0175 sec when using a nullGui.
         from leo.core import leoCommands
+
+        if not g.unitTesting:  ###
+            sfn = g.shortFileName(fileName) if fileName else 'None'
+            g.trace(f"{sfn:>20}", previousSettings)  ###
+
         c = leoCommands.Commands(fileName,
             gui=gui,
             parentFrame=parentFrame,
@@ -3373,9 +3378,9 @@ class PreviousSettings:
 
     def __repr__(self) -> str:
         return (
-            f"<PreviousSettings\n"
-            f"{self.settingsDict}\n"
-            f"{self.shortcutsDict}\n>")
+            f"<PreviousSettings: "
+            f"settings: {len(self.settingsDict.keys())}, "
+            f"shortcuts: {len(self.shortcutsDict.keys())}>")
 
     __str__ = __repr__
 #@+node:ekr.20120225072226.10283: ** class RecentFilesManager
