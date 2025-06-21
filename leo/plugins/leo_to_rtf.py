@@ -54,7 +54,7 @@ def export_rtf(c):
     fileName = g.app.gui.runSaveFileDialog(c,
         title="Export to RTF",
         filetypes=[("RTF files", "*.rtf")],
-        defaultextension=".rtf")
+    )
     if fileName:
         f = open(fileName, 'w')
     else:

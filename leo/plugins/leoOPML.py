@@ -304,7 +304,7 @@ class OpmlController:
         fileName = g.app.gui.runOpenFileDialog(c,
             title="Read OPML",
             filetypes=[("OPML files", "*.opml"), ("All files", "*")],
-            defaultextension=".opml")
+        )
         c.bringToFront()
         if fileName:
             self.readFile(fileName)
@@ -337,7 +337,7 @@ class OpmlController:
         fileName = g.app.gui.runSaveFileDialog(c,
             title="Write OPML",
             filetypes=[("OPML files", "*.opml")],
-            defaultextension=".opml")
+        )
         c.bringToFront()
         if fileName:
             fileName = g.ensure_extension(fileName, ".opml")
