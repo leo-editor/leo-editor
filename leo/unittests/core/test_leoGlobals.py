@@ -694,18 +694,22 @@ class TestGlobals(LeoUnitTest):
     #@+node:ekr.20250616080611.1: *4* TestGlobals.test_g_relativeDirectory
     def test_g_relativeDirectory(self):
 
-        table = (
-            # Linux tests.
-            ('/home', '/home/test1.py', 'test1.py'),
-            ('/home/folder1', '/home/folder1/test2.py', 'test2.py'),
-            ('/home/folder1', '/home/folder2/test3.py', '..\\folder2\\test3.py'),
-            # Windows tests: g.relativeDirectory lowers all results.
-            ('c:\\Users\\ekr', 'c:\\Users\\ekr\\test4.py', 'test4.py'),
-            ('c:\\Users\\ekr', 'c:\\Users\\user2\\test5.py', '..\\user2\\test5.py'),
-            ('c:\\Users\\ekr', 'd:\\Users\\ekr\\test6.py', 'd:\\users\\ekr\\test6.py'),
-            # Unsaved outlines.
-            ('', '/home/test7.py', '/home/test7.py'),
-            ('', 'c:\\Users\\ekr\\test8.py', 'c:\\Users\\ekr\\test8.py'),
+        if g.isWindows:
+            table = (
+                # g.relativeDirectory lowers all results.
+                ('c:\\Users\\ekr', 'c:\\Users\\ekr\\test1.py', 'test1.py'),
+                ('c:\\Users\\ekr', 'c:\\Users\\user2\\test2.py', '..\\user2\\test2.py'),
+                ('c:\\Users\\ekr', 'd:\\Users\\ekr\\test3.py', 'd:\\users\\ekr\\test3.py'),
+                # Unsaved outlines.
+                ('', 'c:\\Users\\ekr\\test4.py', 'c:\\Users\\ekr\\test4.py'),
+            )
+        else:  # Linux/MacOS tests.
+            table = (
+                ('/home', '/home/test1.py', 'test1.py'),
+                ('/home/folder1', '/home/folder1/test2.py', 'test2.py'),
+                ('/home/folder1', '/home/folder2/test3.py', '..\\folder2\\test3.py'),
+                # Unsaved outlines.
+                ('', '/home/test4.py', '/home/test4.py'),
         )
         for base, fn, expected in table:
             actual = g.relativeDirectory(base, fn)
