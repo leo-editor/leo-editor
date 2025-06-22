@@ -707,7 +707,7 @@ class TestGlobals(LeoUnitTest):
             table = (
                 ('/home', '/home/test1.py', 'test1.py'),
                 ('/home/folder1', '/home/folder1/test2.py', 'test2.py'),
-                ('/home/folder1', '/home/folder2/test3.py', '..\\folder2\\test3.py'),
+                ('/home/folder1', '/home/folder2/test3.py', '../folder2/test3.py'),
                 # Unsaved outlines.
                 ('', '/home/test4.py', '/home/test4.py'),
         )
