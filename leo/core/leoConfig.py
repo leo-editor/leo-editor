@@ -1097,7 +1097,7 @@ class ActiveSettingsOutline:
                 continue
             if m.group(2) and m.group(1) in valid_list:
                 #@+<< handle a real setting >>
-                #@+node:ekr.20190905091614.11: *4* << handle a real setting >>
+                #@+node:ekr.20190905091614.11: *4* << handle a real setting >> (aso)
                 key = g.app.config.munge(m.group(2).strip())
                 val = d.get(key)
                 if isinstance(val, g.GeneralSetting):
@@ -1107,7 +1107,7 @@ class ActiveSettingsOutline:
                     val = c.config.settingsDict.get(key)
                     if isinstance(val, g.GeneralSetting):
                         # Use self.c, not self.commander.
-                        letter = lm.computeBindingLetter(self.c, val.path)
+                        letter = lm.computeBindingLetter(self.c, val.path, scope=None)
                         p.h = f"[{letter}] INACTIVE: {p.h}"
                         p.h = f"UNUSED: {p.h}"
                     self.add(p)
@@ -1237,7 +1237,7 @@ class GlobalConfigManager:
         for key in sorted(list(d.keys())):
             gs = d.get(key)  # gs is a GeneralSetting or None
             if gs and gs.kind:
-                letter = lm.computeBindingLetter(c, gs.path)
+                letter = lm.computeBindingLetter(c, gs.path, scope=None)
                 val = gs.val
                 if gs.kind == 'data':
                     # #748: Remove comments
