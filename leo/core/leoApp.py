@@ -1922,7 +1922,7 @@ class LoadManager:
             g.es(f"{kind:>10}:", os.path.normpath(theDir), color='blue')
     #@+node:ekr.20120215062153.10740: *3* LM.Settings
     #@+node:ekr.20120130101219.10182: *4* LM.computeBindingLetter
-    def computeBindingLetter(self, c: Cmdr, path: str, scope: str) -> str:
+    def computeBindingLetter(self, c: Cmdr, path: str) -> str:
         lm = self
         if not path:
             return 'D'
@@ -1939,7 +1939,7 @@ class LoadManager:
             return 'T'
         tag = 'register-command:'
         if path.startswith(tag):
-            return self.computeBindingLetter(c, path=path[len(tag) :], scope=scope)
+            return self.computeBindingLetter(c, path=path[len(tag) :])
         if path.endswith('-mode'):
             return '@'
         return 'D'

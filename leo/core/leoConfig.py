@@ -1107,7 +1107,7 @@ class ActiveSettingsOutline:
                     val = c.config.settingsDict.get(key)
                     if isinstance(val, g.GeneralSetting):
                         # Use self.c, not self.commander.
-                        letter = lm.computeBindingLetter(self.c, val.path, scope=None)
+                        letter = lm.computeBindingLetter(self.c, val.path)
                         p.h = f"[{letter}] INACTIVE: {p.h}"
                         p.h = f"UNUSED: {p.h}"
                     self.add(p)
@@ -1237,7 +1237,7 @@ class GlobalConfigManager:
         for key in sorted(list(d.keys())):
             gs = d.get(key)  # gs is a GeneralSetting or None
             if gs and gs.kind:
-                letter = lm.computeBindingLetter(c, gs.path, scope=None)
+                letter = lm.computeBindingLetter(c, gs.path)
                 val = gs.val
                 if gs.kind == 'data':
                     # #748: Remove comments

@@ -2498,6 +2498,7 @@ class KeyHandlerClass:
     [D] default binding
     [F] loaded .leo File
     [M] myLeoSettings.leo
+    [T] Theme file
     [@] @mode, @button, @command
 
     '''
@@ -2557,7 +2558,7 @@ class KeyHandlerClass:
             commandName = bi.commandName
             kind = bi.kind
             key = key.replace('+Key', '')
-            letter = lm.computeBindingLetter(c, kind, scope)
+            letter = lm.computeBindingLetter(c, kind)
             pane = f"{scope if scope else 'all':>7}: "
             left = pane + key  # pane and shortcut fields
             n = max(n, len(left))
