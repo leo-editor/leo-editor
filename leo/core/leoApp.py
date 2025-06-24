@@ -1548,9 +1548,9 @@ class LeoApp:
         # Timeit reports 0.0175 sec when using a nullGui.
         from leo.core import leoCommands
 
-        if not g.unitTesting:  ###
+        if False and not g.unitTesting:  ###
             sfn = g.shortFileName(fileName) if fileName else 'None'
-            g.trace(f"{sfn:>20}", previousSettings)  ###
+            g.trace(f"{sfn:>20}", previousSettings)
 
         c = leoCommands.Commands(fileName,
             gui=gui,
@@ -1948,7 +1948,7 @@ class LoadManager:
         if path.endswith('-mode'):
             return '@'
         return 'D'
-    #@+node:ekr.20120223062418.10421: *4* LM.computeLocalSettings
+    #@+node:ekr.20120223062418.10421: *4* LM.computeLocalSettings (trace)
     def computeLocalSettings(self,
         c: Cmdr,
         settings_d: g.SettingsDict,
@@ -1963,6 +1963,9 @@ class LoadManager:
         shortcuts_d2, settings_d2 = lm.createSettingsDicts(c, localFlag)
         if not bindings_d:  # #1766: unit tests.
             settings_d, bindings_d = lm.createDefaultSettingsDicts()
+
+        ### g.trace(localFlag, 'bindings_d', f"{c.shortFileName() or 'None':30}", len(bindings_d))  ###
+
         if settings_d2:
             if g.app.trace_setting:
                 key = g.app.config.munge(g.app.trace_setting)
@@ -2178,7 +2181,7 @@ class LoadManager:
             # Never put a return in a finally clause.
             g.app.unlockLog()
             g.app.gui = oldGui
-    #@+node:ekr.20120213081706.10382: *4* LM.readGlobalSettingsFiles
+    #@+node:ekr.20120213081706.10382: *4* LM.readGlobalSettingsFiles (trace)
     def readGlobalSettingsFiles(self) -> None:
         """
         Read leoSettings.leo and myLeoSettings.leo using a null gui.
@@ -2187,6 +2190,9 @@ class LoadManager:
         """
         trace = 'themes' in g.app.debug
         lm = self
+
+        ### g.trace('LoadManager', g.callers(2))  ###
+
         # Open the standard settings files with a nullGui.
         # Important: their commanders do not exist outside this method!
         old_commanders = g.app.commanders()

@@ -279,7 +279,7 @@ class LeoPluginsController:
     """The global plugins controller, g.app.pluginsController"""
     #@+others
     #@+node:ekr.20100909065501.5954: *3* plugins.Birth
-    #@+node:ekr.20100908125007.6034: *4* plugins.ctor & reloadSettings
+    #@+node:ekr.20100908125007.6034: *4* plugins.ctor
     def __init__(self) -> None:
 
         # Keys are tags, values are lists of bunches.
@@ -482,7 +482,7 @@ class LeoPluginsController:
         for plugin in s.splitlines():
             if plugin.strip() and not plugin.lstrip().startswith('#'):
                 self.loadOnePlugin(plugin.strip(), tag=tag)
-    #@+node:ekr.20100908125007.6024: *4* plugins.loadOnePlugin & helper functions
+    #@+node:ekr.20100908125007.6024: *4* plugins.loadOnePlugin & helper functions (trace)
     def loadOnePlugin(self, moduleOrFileName: str, tag: str = 'open0', verbose: bool = False) -> Any:
         """
         Load one plugin from a file name or module.

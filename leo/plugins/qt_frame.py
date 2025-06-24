@@ -1711,13 +1711,16 @@ class LeoQtFrame(leoFrame.LeoFrame):
         return self.iconBar
 
     getIconBarObject = getIconBar
-    #@+node:ekr.20110605121601.18250: *4* LeoQtFrame.finishCreate & helpers
+    #@+node:ekr.20110605121601.18250: *4* LeoQtFrame.finishCreate & helpers (trace)
     def finishCreate(self) -> None:
         """Finish creating the outline's frame."""
         # Called from app.newCommander, Commands.__init__
         t1 = time.process_time()
         c = self.c
         assert c
+
+        ### g.trace('qt_frame', c.shortFileName() or 'None')  ###
+
         frameFactory = g.app.gui.frameFactory
         if not frameFactory.masterFrame:
             frameFactory.createMaster()
@@ -2193,11 +2196,13 @@ class LeoQtLog(leoFrame.LeoLog):
     def reloadSettings(self) -> None:
         c = self.c
         self.wrap = bool(c.config.getBool('log-pane-wraps'))
-    #@+node:ekr.20110605121601.18315: *4* LeoQtLog.finishCreate
+    #@+node:ekr.20110605121601.18315: *4* LeoQtLog.finishCreate (trace)
     def finishCreate(self) -> None:
         """Finish creating the LeoQtLog class."""
         c, log, w = self.c, self, self.tabWidget
-        #
+
+        ### g.trace('LeoQtLog', c.shortFileName() or 'None')  ###
+
         # Create the log tab as the leftmost tab.
         log.createTab('Log')
         self.logWidget = self.contentsDict.get('Log')
@@ -2214,10 +2219,10 @@ class LeoQtLog(leoFrame.LeoLog):
         logWidget.setOpenLinks(False)
         logWidget.setOpenExternalLinks(False)
         logWidget.anchorClicked.connect(self.linkClicked)
-        #
+
         # Show the spell tab.
         c.spellCommands.openSpellTab()
-        #
+
         # 794: Clicking Find Tab should do exactly what pushing Ctrl-F does
 
         def tab_callback(index: int) -> None:

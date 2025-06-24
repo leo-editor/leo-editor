@@ -267,7 +267,7 @@ def import_txt_file(c: Cmdr, fn: str) -> None:
     u.afterInsertNode(p, 'Import', undoData)
     c.setChanged()
     c.redraw(p)
-#@+node:ekr.20031218072017.1623: *3* c_file.new
+#@+node:ekr.20031218072017.1623: *3* c_file.new (trace)
 @g.commander_command('file-new')
 @g.commander_command('new')
 def new(self: Self, event: LeoKeyEvent = None, gui: LeoGui = None) -> Cmdr:
@@ -287,6 +287,10 @@ def new(self: Self, event: LeoKeyEvent = None, gui: LeoGui = None) -> Cmdr:
 
     t2 = time.process_time()
     g.app.numberOfUntitledWindows += 1
+
+    if 1:  ###
+        print('')
+        g.trace('****')
 
     # Retain all previous settings. Very important for theme code.
     previousSettings = leoApp.PreviousSettings(

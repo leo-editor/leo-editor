@@ -166,7 +166,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 #@+others
 #@+node:ekr.20180328085010.1: ** Top level (mod_scripting)
-#@+node:tbrown.20140819100840.37719: *3* build_rclick_tree (mod_scripting.py)
+#@+node:tbrown.20140819100840.37719: *3* mod_scripting.build_rclick_tree (mod_scripting.py)
 def build_rclick_tree(command_p: Position, rclicks: RClicks = None, top_level: bool = False) -> list:
     """
     Return a list of top level RClicks for the button at command_p, which can be
@@ -224,7 +224,7 @@ def build_rclick_tree(command_p: Position, rclicks: RClicks = None, top_level: b
             rclicks.append(rc)
             build_rclick_tree(rc.position, rc.children, top_level=False)
     return rclicks
-#@+node:ekr.20060328125248.4: *3* init
+#@+node:ekr.20060328125248.4: *3* mod_scripting.init
 def init() -> bool:
     """Return True if the plugin has loaded successfully."""
     if g.app.gui is None:
@@ -242,11 +242,14 @@ def init() -> bool:
         g.registerHandler(('new', 'open2'), onCreate)
         g.plugin_signon(__name__)
     return ok
-#@+node:ekr.20060328125248.5: *3* onCreate
+#@+node:ekr.20060328125248.5: *3* mod_scripting.onCreate (trace)
 def onCreate(tag: str, keys: KWargs) -> None:
     """Handle the onCreate event in the mod_scripting plugin."""
     c = keys.get('c')
     if c:
+        if 1:  ###
+            print('')
+            g.trace('mod_scripting', c.shortFileName() or 'None')
         sc = g.app.gui.ScriptingControllerClass(c)
         c.theScriptingController = sc
         sc.createAllButtons()
@@ -254,7 +257,7 @@ def onCreate(tag: str, keys: KWargs) -> None:
 class AtButtonCallback:
     """A class whose __call__ method is a callback for @button nodes."""
     #@+others
-    #@+node:ekr.20141031053508.9: *3* __init__ (AtButtonCallback)
+    #@+node:ekr.20141031053508.9: *3* __init__ (AtButtonCallback) (trace)
     def __init__(self,
         controller: ScriptingController,
         b: QtWidgets.QButton,
@@ -273,6 +276,9 @@ class AtButtonCallback:
         self.script = script  # The script defined in myLeoSettings.leo or leoSettings.leo
         self.source_c = c  # For GetArgs.command_source.
         self.__doc__ = docstring  # The docstring for this callback for g.getDocStringForFunction.
+
+        if buttonText:
+            g.trace(f"{buttonText:30}", g.callers(1))
     #@+node:ekr.20141031053508.10: *3* __call__ (AtButtonCallback)
     def __call__(self, event: Event = None) -> Value:
         """AtButtonCallbgack.__call__. The callback for @button nodes."""
@@ -329,9 +335,12 @@ class AtButtonCallback:
 class ScriptingController:
     """A class defining scripting commands."""
     #@+others
-    #@+node:ekr.20060328125248.7: *3*  sc.ctor
+    #@+node:ekr.20060328125248.7: *3*  sc.ctor (trace)
     def __init__(self, c: Cmdr, iconBar: QtWidgets.QWidget = None) -> None:
         self.c = c
+
+        ### g.trace('ScriptingController', c.shortFileName() or 'None')  ###
+
         self.gui = c.frame.gui
         getBool = c.config.getBool
         self.scanned = False
@@ -451,16 +460,21 @@ class ScriptingController:
         if 0:
             # Do not assume the script will want to remain in this commander.
             c.bodyWantsFocus()
-    #@+node:ekr.20060328125248.8: *3* sc.createAllButtons
+    #@+node:ekr.20060328125248.8: *3* sc.createAllButtons (trace)
     def createAllButtons(self) -> None:
         """Scan for @button, @rclick, @command, @plugin and @script nodes."""
         c = self.c
+
+        if 0:  ###
+            print('')
+            g.trace('ScriptingController', c.shortFileName() or 'None')
+
         if g.app.reverting:
             self.deleteAllButtons()
         elif self.scanned:
             return  # Defensive.
         self.scanned = True
-        #
+
         # First, create standard buttons.
         if self.createRunScriptButton:
             self.createRunScriptIconButton()
@@ -468,11 +482,11 @@ class ScriptingController:
             self.createScriptButtonIconButton()
         if self.createDebugButton:
             self.createDebugIconButton()
-        #
+
         # Next, create common buttons and commands.
         self.createCommonButtons()
         self.createCommonCommands()
-        #
+
         # Handle all other nodes.
         d = {
             'button': self.handleAtButtonNode,
@@ -674,11 +688,14 @@ class ScriptingController:
         return None, None  # 2017/02/02.
     #@+node:ekr.20150401130207.1: *3* sc.Scripts, common
     # Important: common @button and @command nodes do **not** update dynamically!
-    #@+node:ekr.20080312071248.1: *4* sc.createCommonButtons
+    #@+node:ekr.20080312071248.1: *4* sc.createCommonButtons (trace)
     def createCommonButtons(self) -> None:
         """Handle all global @button nodes."""
         c = self.c
         buttons = c.config.getButtons() or []
+
+        g.trace('mod_scripting', c.shortFileName() or 'No c', len(buttons))  ###
+
         for z in buttons:
             # #2011
             p, script, rclicks = z
