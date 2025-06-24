@@ -247,9 +247,9 @@ def onCreate(tag: str, keys: KWargs) -> None:
     """Handle the onCreate event in the mod_scripting plugin."""
     c = keys.get('c')
     if c:
-        if 1:  ###
+        if 0:  ###
             print('')
-            g.trace('mod_scripting', c.shortFileName() or 'None')
+            g.trace(c.shortFileName() or 'None')
         sc = g.app.gui.ScriptingControllerClass(c)
         c.theScriptingController = sc
         sc.createAllButtons()
@@ -277,7 +277,7 @@ class AtButtonCallback:
         self.source_c = c  # For GetArgs.command_source.
         self.__doc__ = docstring  # The docstring for this callback for g.getDocStringForFunction.
 
-        if buttonText:
+        if False and buttonText:  ###
             g.trace(f"{buttonText:30}", g.callers(1))
     #@+node:ekr.20141031053508.10: *3* __call__ (AtButtonCallback)
     def __call__(self, event: Event = None) -> Value:
@@ -694,7 +694,7 @@ class ScriptingController:
         c = self.c
         buttons = c.config.getButtons() or []
 
-        g.trace('mod_scripting', c.shortFileName() or 'No c', len(buttons))  ###
+        g.trace(c.shortFileName() or 'No c', 'common buttons:', len(buttons))  ###
 
         for z in buttons:
             # #2011
@@ -707,8 +707,9 @@ class ScriptingController:
     #@+node:ekr.20070926084600: *4* sc.createCommonButton (common @button)
     def createCommonButton(self, p: Position, script: str, rclicks: RClicks = None) -> None:
         """
-        Create a button in the icon area for a common @button node in an @setting
-        tree. Binds button presses to a callback that executes the script.
+        Create a button in the icon area for a common @button node in an
+        @buttons node in an @setting tree. Binds button presses to a callback
+        that executes the script.
 
         Important: Common @button and @command scripts now *do* update
         dynamically provided that myLeoSettings.leo is open. Otherwise the
@@ -725,6 +726,9 @@ class ScriptingController:
         shortcut = self.getShortcut(p.h)  # Get the shortcut from the @key field in the headline.
         if shortcut:
             statusLine = '%s = %s' % (statusLine.rstrip(), shortcut)
+
+        ### g.trace(p.h, shortcut or 'No shortcut')
+
         # We must define the callback *after* defining b,
         # so set both command and shortcut to None here.
         bg = self.getColor(p.h)  # #2024
@@ -1082,7 +1086,7 @@ class ScriptingController:
                 forcePythonSentinels=True,
                 useSentinels=True,
             ))
-    #@+node:ekr.20120301114648.9932: *4* sc.registerAllCommands
+    #@+node:ekr.20120301114648.9932: *4* sc.registerAllCommands (trace)
     def registerAllCommands(self,
         args: Args,
         func: Callable,
@@ -1096,8 +1100,10 @@ class ScriptingController:
         trace = False and not g.unitTesting
         shortcut = self.getShortcut(h) or ''
         commandName = self.cleanButtonText(h)
-        if trace and not g.isascii(commandName):
-            g.trace(commandName)
+
+        if False and commandName.startswith('@button-'):
+            g.trace(commandName, repr(shortcut), h)  ###
+
         # Register the original function.
         k.registerCommand(
             allowBinding=True,

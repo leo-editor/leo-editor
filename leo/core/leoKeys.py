@@ -3121,7 +3121,7 @@ class KeyHandlerClass:
             pane=pane,
             shortcut=shortcut,
         )
-    #@+node:ekr.20171124043747.1: *4* k.registerCommandShortcut
+    #@+node:ekr.20171124043747.1: *4* k.registerCommandShortcut (trace)
     def registerCommandShortcut(self,
         commandName: str,
         func: Callable,
@@ -3154,6 +3154,10 @@ class KeyHandlerClass:
                     stroke = bi.stroke
                     pane = bi.pane  # 2015/05/11.
                     break
+
+        if commandName.startswith('@button-'):  ###
+            g.trace(commandName, repr(shortcut), '-->', repr(stroke))
+
         if stroke:
             k.bindKey(pane, stroke, func, commandName, tag=f"register-command:{c.shortFileName()}")
             k.makeMasterGuiBinding(stroke)  # Must be a stroke.
