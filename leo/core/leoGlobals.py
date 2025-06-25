@@ -410,6 +410,8 @@ class BindingInfo:
 
     This includes other information besides just the KeyStroke.
     """
+    __slots__ = ['commandName', 'func', 'kind', 'nextMode', 'pane', 'stroke']
+
     # Important: The startup code uses this class,
     # so it is convenient to define it in leoGlobals.py.
     #@+others
