@@ -211,7 +211,7 @@ class BaseLeoPlugin:
     """
     #@-<<docstring>>
     #@+others
-    #@+node:ekr.20100908125007.6012: *3* __init__ (BaseLeoPlugin)
+    #@+node:ekr.20100908125007.6012: *3* BaseLeoPlugin.__init__
     def __init__(self, tag: str, keywords: Keywords) -> None:
         """
         Ctor for the BaseLeoPlugin class.
@@ -219,7 +219,7 @@ class BaseLeoPlugin:
         # mypy can't infer the type of keywords['c'].
         self.c: Cmdr = keywords['c']  # type:ignore
         self.commandNames: list[str] = []
-    #@+node:ekr.20100908125007.6013: *3* setCommand
+    #@+node:ekr.20100908125007.6013: *3* BaseLeoPlugin.setCommand
     def setCommand(
         self,
         commandName: str,
@@ -236,9 +236,8 @@ class BaseLeoPlugin:
         self.shortcut = shortcut
         self.handler = handler
         # #4087: k.registerCommand no longer supports the 'shortcut' kwarg.
-        self.c.k.registerCommand(commandName, handler,
-            pane=pane, verbose=verbose)
-    #@+node:ekr.20100908125007.6014: *3* setMenuItem
+        self.c.k.registerCommand(commandName, handler, pane=pane, verbose=verbose)
+    #@+node:ekr.20100908125007.6014: *3* BaseLeoPlugin.setMenuItem
     def setMenuItem(self, menu: Wrapper, commandName: str = None, handler: Callable = None) -> None:
         """Create a menu item in 'menu' using text 'commandName' calling handler 'handler'
         if commandName and handler are none, use the most recently defined values
@@ -254,7 +253,7 @@ class BaseLeoPlugin:
             handler = self.handler
         table = ((commandName, None, handler),)
         self.c.frame.menu.createMenuItemsFromTable(menu, table)
-    #@+node:ekr.20100908125007.6015: *3* setButton
+    #@+node:ekr.20100908125007.6015: *3* BaseLeoPlugin.setButton
     def setButton(self, buttonText: str = None, commandName: str = None, color: str = None) -> None:
         """Associate an existing command with a 'button'
         """
