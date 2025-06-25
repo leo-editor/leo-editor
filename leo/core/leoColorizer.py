@@ -1673,10 +1673,11 @@ class JEditColorizer(BaseColorizer):
             return 0
         c = self.c
         self.colorRangeWithTag(s, 0, j, 'leokeyword')
+        # #4382: Always set after_doc_language.
+        self.after_doc_language = self.language
         # New in Leo 5.5: optionally colorize doc parts using reStructuredText
         if c.config.getBool('color-doc-parts-as-rest'):
             # Switch languages.
-            self.after_doc_language = self.language
             self.language = 'rest'
             self.init()
             self.clearState()
