@@ -372,6 +372,36 @@ class TestUndo(LeoUnitTest):
         c.undoer.undo()
         c.undoer.redo()
         self.assertEqual(original.b, original_s)
+    #@+node:ekr.20250625044932.1: *3* TestUndo.test_undo_group_after_move
+    def test_undo_group_after_move(self):
+        # Test a group of moves.
+        c, p, u = self.c, self.c.p, self.c.undoer
+        undoType = 'test-undo-group-after-move'
+        p1 = p.insertAfter()
+        p1.h = 'p1'
+        p2 = p1.insertAfter()
+        p2.h = 'p2'
+        p3 = p2.insertAfter()
+        p3.h = 'p3'
+        p4 = p3.insertAfter()
+        p4.h = 'p4'
+        u.clearUndoState()
+        # Do moves that invalidate nodes.
+        c.selectPosition(p2)
+        u.beforeChangeGroup(c.p, undoType)
+        c.moveOutlineRight()  # Invalidates p2, p3, p4
+        # Re-establish p3 and p4.
+        p3 = p1.next()
+        assert p3.h == 'p3', p3.h
+        p4 = p3.next()
+        assert p4.h == 'p4', p4.h
+        c.selectPosition(p3)
+        c.moveOutlineDown()
+        u.afterChangeGroup(c.p, undoType)
+        # Undo and redo thrice.
+        for i in range(3):
+            u.undo()
+            u.redo()
     #@-others
 #@-others
 #@-leo

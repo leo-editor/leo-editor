@@ -1529,8 +1529,8 @@ class Undoer:
         c, u = self.c, self
         # Remember these values.
         newSel = u.newSel
-        p = u.p.copy()  # Exists now, but may not exist later.
-        newP = u.newP.copy()  # May not exist now, but must exist later.
+        p = u.p.copy()  # u.p must exist now.
+        newP = u.newP.copy() if u.newP else c.p.copy()  # #4373: u.newP might not exist now.
         if g.unitTesting:
             assert c.positionExists(p), repr(p)
         u.groupCount += 1
@@ -1899,8 +1899,8 @@ class Undoer:
         c, u = self.c, self
         # Remember these values.
         oldSel = u.oldSel
-        p = u.p.copy()  # May not exist now, but must exist later.
-        newP = u.newP.copy()  # Must exist now, but may not exist later.
+        p = u.p.copy() if u.p else c.p.copy()  # #4373: u.p might not exist now.
+        newP = u.newP.copy()  # u.newP must exist now.
         if g.unitTesting:
             assert c.positionExists(newP), repr(newP)
         u.groupCount += 1
