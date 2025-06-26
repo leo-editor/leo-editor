@@ -166,7 +166,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 #@+others
 #@+node:ekr.20180328085010.1: ** Top level (mod_scripting)
-#@+node:tbrown.20140819100840.37719: *3* build_rclick_tree (mod_scripting.py)
+#@+node:tbrown.20140819100840.37719: *3* mod_scripting.build_rclick_tree
 def build_rclick_tree(command_p: Position, rclicks: RClicks = None, top_level: bool = False) -> list:
     """
     Return a list of top level RClicks for the button at command_p, which can be
@@ -224,7 +224,7 @@ def build_rclick_tree(command_p: Position, rclicks: RClicks = None, top_level: b
             rclicks.append(rc)
             build_rclick_tree(rc.position, rc.children, top_level=False)
     return rclicks
-#@+node:ekr.20060328125248.4: *3* init
+#@+node:ekr.20060328125248.4: *3* mod_scripting.init
 def init() -> bool:
     """Return True if the plugin has loaded successfully."""
     if g.app.gui is None:
@@ -242,7 +242,7 @@ def init() -> bool:
         g.registerHandler(('new', 'open2'), onCreate)
         g.plugin_signon(__name__)
     return ok
-#@+node:ekr.20060328125248.5: *3* onCreate
+#@+node:ekr.20060328125248.5: *3* mod_scripting.onCreate
 def onCreate(tag: str, keys: KWargs) -> None:
     """Handle the onCreate event in the mod_scripting plugin."""
     c = keys.get('c')
@@ -455,12 +455,13 @@ class ScriptingController:
     def createAllButtons(self) -> None:
         """Scan for @button, @rclick, @command, @plugin and @script nodes."""
         c = self.c
+
         if g.app.reverting:
             self.deleteAllButtons()
         elif self.scanned:
             return  # Defensive.
         self.scanned = True
-        #
+
         # First, create standard buttons.
         if self.createRunScriptButton:
             self.createRunScriptIconButton()
@@ -468,11 +469,11 @@ class ScriptingController:
             self.createScriptButtonIconButton()
         if self.createDebugButton:
             self.createDebugIconButton()
-        #
+
         # Next, create common buttons and commands.
         self.createCommonButtons()
         self.createCommonCommands()
-        #
+
         # Handle all other nodes.
         d = {
             'button': self.handleAtButtonNode,
@@ -690,8 +691,9 @@ class ScriptingController:
     #@+node:ekr.20070926084600: *4* sc.createCommonButton (common @button)
     def createCommonButton(self, p: Position, script: str, rclicks: RClicks = None) -> None:
         """
-        Create a button in the icon area for a common @button node in an @setting
-        tree. Binds button presses to a callback that executes the script.
+        Create a button in the icon area for a common @button node in an
+        @buttons node in an @setting tree. Binds button presses to a callback
+        that executes the script.
 
         Important: Common @button and @command scripts now *do* update
         dynamically provided that myLeoSettings.leo is open. Otherwise the
@@ -708,6 +710,7 @@ class ScriptingController:
         shortcut = self.getShortcut(p.h)  # Get the shortcut from the @key field in the headline.
         if shortcut:
             statusLine = '%s = %s' % (statusLine.rstrip(), shortcut)
+
         # We must define the callback *after* defining b,
         # so set both command and shortcut to None here.
         bg = self.getColor(p.h)  # #2024
@@ -1080,8 +1083,10 @@ class ScriptingController:
         shortcut = self.getShortcut(h) or ''
         commandName = self.cleanButtonText(h)
         fileName = source_c.fileName() if source_c else None
+
         if trace and not g.isascii(commandName):
             g.trace(commandName)
+
         # Register the original function.
         k.registerCommand(
             allowBinding=True,
