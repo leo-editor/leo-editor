@@ -166,7 +166,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 #@+others
 #@+node:ekr.20180328085010.1: ** Top level (mod_scripting)
-#@+node:tbrown.20140819100840.37719: *3* mod_scripting.build_rclick_tree (mod_scripting.py)
+#@+node:tbrown.20140819100840.37719: *3* mod_scripting.build_rclick_tree
 def build_rclick_tree(command_p: Position, rclicks: RClicks = None, top_level: bool = False) -> list:
     """
     Return a list of top level RClicks for the button at command_p, which can be
@@ -460,7 +460,7 @@ class ScriptingController:
         if 0:
             # Do not assume the script will want to remain in this commander.
             c.bodyWantsFocus()
-    #@+node:ekr.20060328125248.8: *3* sc.createAllButtons (trace)
+    #@+node:ekr.20060328125248.8: *3* sc.createAllButtons (disabled trace)
     def createAllButtons(self) -> None:
         """Scan for @button, @rclick, @command, @plugin and @script nodes."""
         c = self.c

@@ -150,7 +150,7 @@ class ParserBaseClass:
             self.set(p, kind, name, False)
         else:
             self.valueError(p, kind, name, val)
-    #@+node:ekr.20070925144337: *4* pbc.doButtons (trace)
+    #@+node:ekr.20070925144337: *4* pbc.doButtons (disabled trace)
     def doButtons(self, p: Position, kind: str, name: str, val: Value) -> None:
         """Create buttons for each @button node in an @buttons tree."""
         c, tag = self.c, '@button'
