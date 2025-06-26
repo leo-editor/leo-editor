@@ -1100,9 +1100,13 @@ class ScriptingController:
         trace = False and not g.unitTesting
         shortcut = self.getShortcut(h) or ''
         commandName = self.cleanButtonText(h)
+        fileName = source_c.fileName() if source_c else None
 
         if False and commandName.startswith('@button-'):
             g.trace(commandName, repr(shortcut), h)  ###
+
+        if trace and not g.isascii(commandName):
+            g.trace(commandName)
 
         # Register the original function.
         k.registerCommand(
@@ -1111,6 +1115,7 @@ class ScriptingController:
             func=func,
             pane=pane,
             shortcut=shortcut,
+            fileName=fileName,
         )
 
         # 2013/11/13 Jake Peck:
@@ -1135,6 +1140,7 @@ class ScriptingController:
                     k.registerCommand(
                         allowBinding=True,
                         commandName=commandName2,
+                        fileName=fileName,
                         func=registerAllCommandsCallback,
                         pane=pane,
                         shortcut=shortcut,

@@ -2484,7 +2484,7 @@ class KeyHandlerClass:
     def menuCommandKey(self, event: LeoKeyEvent = None) -> None:
         # This method must exist, but it never gets called.
         pass
-    #@+node:ekr.20061031131434.119: *4* 'show-bindings'
+    #@+node:ekr.20061031131434.119: *4* 'show-bindings' & helper
     @cmd('show-bindings')
     def showBindings(self, event: LeoKeyEvent = None) -> list[str]:
         """Print all the bindings presently in effect."""
@@ -2498,6 +2498,7 @@ class KeyHandlerClass:
     [D] default binding
     [F] loaded .leo File
     [M] myLeoSettings.leo
+    [T] Theme file
     [@] @mode, @button, @command
 
     '''
@@ -2517,7 +2518,7 @@ class KeyHandlerClass:
                 # #2899: Adjust scope for @command and @button.
                 if bi.commandName.startswith(('@button-', '@command-')):
                     scope = 'all'
-                data.append((scope, k.prettyPrintKey(stroke), bi.commandName, bi.kind))
+                data.append((scope, k.prettyPrintKey(stroke), bi))
         # Print keys by type.
         result = []
         result.append('\n' + legend)
@@ -2531,7 +2532,7 @@ class KeyHandlerClass:
         ):
             data2 = []
             for item in data:
-                scope, stroke, commandName, kind = item
+                scope, stroke, bi = item
                 if stroke.startswith(prefix):
                     data2.append(item)
             result.append(f"{prefix} keys...\n")
@@ -2553,13 +2554,15 @@ class KeyHandlerClass:
         c, lm = self.c, g.app.loadManager
         data.sort(key=lambda x: x[1])
         data2, n = [], 0
-        for scope, key, commandName, kind in data:
+        for scope, key, bi in data:
+            commandName = bi.commandName
+            kind = bi.kind
             key = key.replace('+Key', '')
             letter = lm.computeBindingLetter(c, kind)
             pane = f"{scope if scope else 'all':>7}: "
             left = pane + key  # pane and shortcut fields
             n = max(n, len(left))
-            data2.append((letter, left, commandName),)
+            data2.append((letter, left, commandName))
         for z in data2:
             letter, left, commandName = z
             result.append('%s %*s %s\n' % (letter, -n, left, commandName))
@@ -3076,11 +3079,12 @@ class KeyHandlerClass:
                     bi.func = func
                     d2[key2] = bi
     #@+node:ekr.20061031131434.131: *4* k.registerCommand
-    def registerCommand(
-        self,
+    def registerCommand(self,
         commandName: str,
         func: Callable,
+        *,
         allowBinding: bool = False,
+        fileName: str = None,
         pane: str = 'all',
         shortcut: str = None,  # Must be None unless allowBindings is True.
         **kwargs: KWargs,  # Used only to warn about deprecated kwargs.
@@ -3117,13 +3121,15 @@ class KeyHandlerClass:
         # This maintains strict compatibility with existing plugins and scripts.
         k.registerCommandShortcut(
             commandName=commandName,
+            fileName=fileName,
             func=func,
             pane=pane,
             shortcut=shortcut,
         )
     #@+node:ekr.20171124043747.1: *4* k.registerCommandShortcut (trace)
-    def registerCommandShortcut(self,
+    def registerCommandShortcut(self, *,
         commandName: str,
+        fileName: str,
         func: Callable,
         pane: str,
         shortcut: str,
@@ -3159,7 +3165,7 @@ class KeyHandlerClass:
             g.trace(commandName, repr(shortcut), '-->', repr(stroke))
 
         if stroke:
-            k.bindKey(pane, stroke, func, commandName, tag=f"register-command:{c.shortFileName()}")
+            k.bindKey(pane, stroke, func, commandName, tag=f"register-command:{fileName}")
             k.makeMasterGuiBinding(stroke)  # Must be a stroke.
         # Fixup any previous abbreviation to press-x-button commands.
         if commandName.startswith('press-') and commandName.endswith('-button'):

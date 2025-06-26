@@ -3383,10 +3383,12 @@ class PreviousSettings:
         self.shortcutsDict = shortcutsDict
 
     def __repr__(self) -> str:
+        # Returning the length of the inner dicts is usually best.
         return (
             f"<PreviousSettings: "
             f"settings: {len(self.settingsDict.keys())}, "
-            f"shortcuts: {len(self.shortcutsDict.keys())}>")
+            f"shortcuts: {len(self.shortcutsDict.keys())}>"
+        )
 
     __str__ = __repr__
 #@+node:ekr.20120225072226.10283: ** class RecentFilesManager
