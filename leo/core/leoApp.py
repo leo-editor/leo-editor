@@ -1943,7 +1943,7 @@ class LoadManager:
         if path.endswith('-mode'):
             return '@'
         return 'D'
-    #@+node:ekr.20120223062418.10421: *4* LM.computeLocalSettings (trace)
+    #@+node:ekr.20120223062418.10421: *4* LM.computeLocalSettings
     def computeLocalSettings(self,
         c: Cmdr,
         settings_d: g.SettingsDict,
@@ -1958,9 +1958,6 @@ class LoadManager:
         shortcuts_d2, settings_d2 = lm.createSettingsDicts(c, localFlag)
         if not bindings_d:  # #1766: unit tests.
             settings_d, bindings_d = lm.createDefaultSettingsDicts()
-
-        ### g.trace(localFlag, 'bindings_d', f"{c.shortFileName() or 'None':30}", len(bindings_d))  ###
-
         if settings_d2:
             if g.app.trace_setting:
                 key = g.app.config.munge(g.app.trace_setting)
@@ -2176,7 +2173,7 @@ class LoadManager:
             # Never put a return in a finally clause.
             g.app.unlockLog()
             g.app.gui = oldGui
-    #@+node:ekr.20120213081706.10382: *4* LM.readGlobalSettingsFiles (trace)
+    #@+node:ekr.20120213081706.10382: *4* LM.readGlobalSettingsFiles
     def readGlobalSettingsFiles(self) -> None:
         """
         Read leoSettings.leo and myLeoSettings.leo using a null gui.
@@ -2185,8 +2182,6 @@ class LoadManager:
         """
         trace = 'themes' in g.app.debug
         lm = self
-
-        ### g.trace('LoadManager', g.callers(2))  ###
 
         # Open the standard settings files with a nullGui.
         # Important: their commanders do not exist outside this method!
