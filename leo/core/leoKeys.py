@@ -3160,9 +3160,11 @@ class KeyHandlerClass:
                     stroke = bi.stroke
                     pane = bi.pane  # 2015/05/11.
                     break
+
         if stroke:
             k.bindKey(pane, stroke, func, commandName, tag=f"register-command:{fileName}")
             k.makeMasterGuiBinding(stroke)  # Must be a stroke.
+
         # Fixup any previous abbreviation to press-x-button commands.
         if commandName.startswith('press-') and commandName.endswith('-button'):
             d = c.config.getAbbrevDict()  # Keys are full command names, values are abbreviations.

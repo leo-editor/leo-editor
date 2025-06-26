@@ -278,7 +278,7 @@ class LeoPluginsController:
     """The global plugins controller, g.app.pluginsController"""
     #@+others
     #@+node:ekr.20100909065501.5954: *3* plugins.Birth
-    #@+node:ekr.20100908125007.6034: *4* plugins.ctor & reloadSettings
+    #@+node:ekr.20100908125007.6034: *4* plugins.ctor
     def __init__(self) -> None:
 
         # Keys are tags, values are lists of bunches.

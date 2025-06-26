@@ -293,6 +293,7 @@ def new(self: Self, event: LeoKeyEvent = None, gui: LeoGui = None) -> Cmdr:
         settingsDict=lm.globalSettingsDict,
         shortcutsDict=lm.globalBindingsDict,
     )
+
     c = g.app.newCommander(
         fileName=None,
         gui=gui,
@@ -318,6 +319,8 @@ def new(self: Self, event: LeoKeyEvent = None, gui: LeoGui = None) -> Cmdr:
     lm.finishOpen(c)
 
     g.doHook("new", old_c=old_c, c=c, new_c=c)
+
+    c.k.makeAllBindings()  # #4371.
     c.clearChanged()  # Fix #387: Clear all dirty bits.
     c.redraw()
 

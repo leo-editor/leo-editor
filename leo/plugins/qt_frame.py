@@ -2197,14 +2197,14 @@ class LeoQtLog(leoFrame.LeoLog):
     def finishCreate(self) -> None:
         """Finish creating the LeoQtLog class."""
         c, log, w = self.c, self, self.tabWidget
-        #
+
         # Create the log tab as the leftmost tab.
         log.createTab('Log')
         self.logWidget = self.contentsDict.get('Log')
         logWidget = self.logWidget
         logWidget.setWordWrapMode(WrapMode.WordWrap if self.wrap else WrapMode.NoWrap)
         w.insertTab(0, logWidget, 'Log')  # Required.
-        #
+
         # set up links in log handling
         logWidget.setTextInteractionFlags(
             TextInteractionFlag.LinksAccessibleByMouse
@@ -2214,10 +2214,10 @@ class LeoQtLog(leoFrame.LeoLog):
         logWidget.setOpenLinks(False)
         logWidget.setOpenExternalLinks(False)
         logWidget.anchorClicked.connect(self.linkClicked)
-        #
+
         # Show the spell tab.
         c.spellCommands.openSpellTab()
-        #
+
         # 794: Clicking Find Tab should do exactly what pushing Ctrl-F does
 
         def tab_callback(index: int) -> None:
