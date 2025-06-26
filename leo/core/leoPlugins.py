@@ -481,7 +481,7 @@ class LeoPluginsController:
         for plugin in s.splitlines():
             if plugin.strip() and not plugin.lstrip().startswith('#'):
                 self.loadOnePlugin(plugin.strip(), tag=tag)
-    #@+node:ekr.20100908125007.6024: *4* plugins.loadOnePlugin & helper functions (trace)
+    #@+node:ekr.20100908125007.6024: *4* plugins.loadOnePlugin & helper functions
     def loadOnePlugin(self, moduleOrFileName: str, tag: str = 'open0', verbose: bool = False) -> Any:
         """
         Load one plugin from a file name or module.

@@ -290,13 +290,16 @@ def new(self: Self, event: LeoKeyEvent = None, gui: LeoGui = None) -> Cmdr:
 
     if 1:  ###
         print('')
-        g.trace('****')
+        print('c_file.new')
 
     # Retain all previous settings. Very important for theme code.
     previousSettings = leoApp.PreviousSettings(
         settingsDict=lm.globalSettingsDict,
         shortcutsDict=lm.globalBindingsDict,
     )
+
+    g.trace(previousSettings)  ###
+
     c = g.app.newCommander(
         fileName=None,
         gui=gui,

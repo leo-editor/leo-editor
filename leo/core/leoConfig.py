@@ -1212,7 +1212,7 @@ class GlobalConfigManager:
     """A class to manage configuration settings."""
 
     #@+others
-    #@+node:ekr.20041117062717.2: *3*  gcm.ctor (trace)
+    #@+node:ekr.20041117062717.2: *3*  gcm.ctor (disabled trace)
     def __init__(self) -> None:
 
         # List of info (command_p, script, rclicks) for common @buttons nodes.

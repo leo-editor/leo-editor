@@ -434,7 +434,7 @@ class Commands:
         return f"Commander {id(self)}: {repr(self.mFileName)}"
 
     __str__ = __repr__
-    #@+node:ekr.20050920093543: *4* c.finishCreate & helpers (trace)
+    #@+node:ekr.20050920093543: *4* c.finishCreate & helpers (disabled trace)
     def finishCreate(self) -> None:
         """
         Finish creating the commander and all sub-objects.

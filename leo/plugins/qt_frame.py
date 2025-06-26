@@ -1711,7 +1711,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         return self.iconBar
 
     getIconBarObject = getIconBar
-    #@+node:ekr.20110605121601.18250: *4* LeoQtFrame.finishCreate & helpers (trace)
+    #@+node:ekr.20110605121601.18250: *4* LeoQtFrame.finishCreate & helpers (disabled trace)
     def finishCreate(self) -> None:
         """Finish creating the outline's frame."""
         # Called from app.newCommander, Commands.__init__
@@ -2196,7 +2196,7 @@ class LeoQtLog(leoFrame.LeoLog):
     def reloadSettings(self) -> None:
         c = self.c
         self.wrap = bool(c.config.getBool('log-pane-wraps'))
-    #@+node:ekr.20110605121601.18315: *4* LeoQtLog.finishCreate (trace)
+    #@+node:ekr.20110605121601.18315: *4* LeoQtLog.finishCreate (disabled trace)
     def finishCreate(self) -> None:
         """Finish creating the LeoQtLog class."""
         c, log, w = self.c, self, self.tabWidget

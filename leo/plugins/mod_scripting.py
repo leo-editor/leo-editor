@@ -242,7 +242,7 @@ def init() -> bool:
         g.registerHandler(('new', 'open2'), onCreate)
         g.plugin_signon(__name__)
     return ok
-#@+node:ekr.20060328125248.5: *3* mod_scripting.onCreate (trace)
+#@+node:ekr.20060328125248.5: *3* mod_scripting.onCreate (disabled trace)
 def onCreate(tag: str, keys: KWargs) -> None:
     """Handle the onCreate event in the mod_scripting plugin."""
     c = keys.get('c')
@@ -257,7 +257,7 @@ def onCreate(tag: str, keys: KWargs) -> None:
 class AtButtonCallback:
     """A class whose __call__ method is a callback for @button nodes."""
     #@+others
-    #@+node:ekr.20141031053508.9: *3* __init__ (AtButtonCallback) (trace)
+    #@+node:ekr.20141031053508.9: *3* __init__ (AtButtonCallback) (disabled trace)
     def __init__(self,
         controller: ScriptingController,
         b: QtWidgets.QButton,
@@ -335,7 +335,7 @@ class AtButtonCallback:
 class ScriptingController:
     """A class defining scripting commands."""
     #@+others
-    #@+node:ekr.20060328125248.7: *3*  sc.ctor (trace)
+    #@+node:ekr.20060328125248.7: *3*  sc.ctor (disabled trace)
     def __init__(self, c: Cmdr, iconBar: QtWidgets.QWidget = None) -> None:
         self.c = c
 
@@ -694,7 +694,7 @@ class ScriptingController:
         c = self.c
         buttons = c.config.getButtons() or []
 
-        g.trace(c.shortFileName() or 'No c', 'common buttons:', len(buttons))  ###
+        g.trace(c.shortFileName() or '<No c>', 'common buttons:', len(buttons))  ###
 
         for z in buttons:
             # #2011
@@ -704,7 +704,7 @@ class ScriptingController:
                 self.seen.add(gnx)
                 script = self.getScript(p)
                 self.createCommonButton(p, script, rclicks)
-    #@+node:ekr.20070926084600: *4* sc.createCommonButton (common @button)
+    #@+node:ekr.20070926084600: *4* sc.createCommonButton (common @button) (disabled trace)
     def createCommonButton(self, p: Position, script: str, rclicks: RClicks = None) -> None:
         """
         Create a button in the icon area for a common @button node in an
@@ -1086,7 +1086,7 @@ class ScriptingController:
                 forcePythonSentinels=True,
                 useSentinels=True,
             ))
-    #@+node:ekr.20120301114648.9932: *4* sc.registerAllCommands (trace)
+    #@+node:ekr.20120301114648.9932: *4* sc.registerAllCommands (disabled trace)
     def registerAllCommands(self,
         args: Args,
         func: Callable,

@@ -1533,7 +1533,7 @@ class LeoApp:
         app = self
         for c in app.commanders():
             c.k.makeAllBindings()
-    #@+node:ekr.20031218072017.2188: *3* app.newCommander (trace)
+    #@+node:ekr.20031218072017.2188: *3* app.newCommander (disabled trace)
     def newCommander(
         self,
         fileName: str,
