@@ -242,14 +242,11 @@ def init() -> bool:
         g.registerHandler(('new', 'open2'), onCreate)
         g.plugin_signon(__name__)
     return ok
-#@+node:ekr.20060328125248.5: *3* mod_scripting.onCreate (disabled trace)
+#@+node:ekr.20060328125248.5: *3* mod_scripting.onCreate
 def onCreate(tag: str, keys: KWargs) -> None:
     """Handle the onCreate event in the mod_scripting plugin."""
     c = keys.get('c')
     if c:
-        if 0:  ###
-            print('')
-            g.trace(c.shortFileName() or 'None')
         sc = g.app.gui.ScriptingControllerClass(c)
         c.theScriptingController = sc
         sc.createAllButtons()
@@ -257,7 +254,7 @@ def onCreate(tag: str, keys: KWargs) -> None:
 class AtButtonCallback:
     """A class whose __call__ method is a callback for @button nodes."""
     #@+others
-    #@+node:ekr.20141031053508.9: *3* __init__ (AtButtonCallback) (disabled trace)
+    #@+node:ekr.20141031053508.9: *3* __init__ (AtButtonCallback)
     def __init__(self,
         controller: ScriptingController,
         b: QtWidgets.QButton,
@@ -276,9 +273,6 @@ class AtButtonCallback:
         self.script = script  # The script defined in myLeoSettings.leo or leoSettings.leo
         self.source_c = c  # For GetArgs.command_source.
         self.__doc__ = docstring  # The docstring for this callback for g.getDocStringForFunction.
-
-        if False and buttonText:  ###
-            g.trace(f"{buttonText:30}", g.callers(1))
     #@+node:ekr.20141031053508.10: *3* __call__ (AtButtonCallback)
     def __call__(self, event: Event = None) -> Value:
         """AtButtonCallbgack.__call__. The callback for @button nodes."""
@@ -335,12 +329,9 @@ class AtButtonCallback:
 class ScriptingController:
     """A class defining scripting commands."""
     #@+others
-    #@+node:ekr.20060328125248.7: *3*  sc.ctor (disabled trace)
+    #@+node:ekr.20060328125248.7: *3*  sc.ctor
     def __init__(self, c: Cmdr, iconBar: QtWidgets.QWidget = None) -> None:
         self.c = c
-
-        ### g.trace('ScriptingController', c.shortFileName() or 'None')  ###
-
         self.gui = c.frame.gui
         getBool = c.config.getBool
         self.scanned = False
@@ -460,14 +451,10 @@ class ScriptingController:
         if 0:
             # Do not assume the script will want to remain in this commander.
             c.bodyWantsFocus()
-    #@+node:ekr.20060328125248.8: *3* sc.createAllButtons (disabled trace)
+    #@+node:ekr.20060328125248.8: *3* sc.createAllButtons
     def createAllButtons(self) -> None:
         """Scan for @button, @rclick, @command, @plugin and @script nodes."""
         c = self.c
-
-        if 0:  ###
-            print('')
-            g.trace('ScriptingController', c.shortFileName() or 'None')
 
         if g.app.reverting:
             self.deleteAllButtons()
@@ -688,14 +675,11 @@ class ScriptingController:
         return None, None  # 2017/02/02.
     #@+node:ekr.20150401130207.1: *3* sc.Scripts, common
     # Important: common @button and @command nodes do **not** update dynamically!
-    #@+node:ekr.20080312071248.1: *4* sc.createCommonButtons (disabled trace)
+    #@+node:ekr.20080312071248.1: *4* sc.createCommonButtons
     def createCommonButtons(self) -> None:
         """Handle all global @button nodes."""
         c = self.c
         buttons = c.config.getButtons() or []
-
-        ### g.trace(c.shortFileName() or '<No c>', 'common buttons:', len(buttons))  ###
-
         for z in buttons:
             # #2011
             p, script, rclicks = z
@@ -704,7 +688,7 @@ class ScriptingController:
                 self.seen.add(gnx)
                 script = self.getScript(p)
                 self.createCommonButton(p, script, rclicks)
-    #@+node:ekr.20070926084600: *4* sc.createCommonButton (common @button) (disabled trace)
+    #@+node:ekr.20070926084600: *4* sc.createCommonButton (common @button)
     def createCommonButton(self, p: Position, script: str, rclicks: RClicks = None) -> None:
         """
         Create a button in the icon area for a common @button node in an
@@ -726,8 +710,6 @@ class ScriptingController:
         shortcut = self.getShortcut(p.h)  # Get the shortcut from the @key field in the headline.
         if shortcut:
             statusLine = '%s = %s' % (statusLine.rstrip(), shortcut)
-
-        ### g.trace(p.h, shortcut or 'No shortcut')
 
         # We must define the callback *after* defining b,
         # so set both command and shortcut to None here.
@@ -1086,7 +1068,7 @@ class ScriptingController:
                 forcePythonSentinels=True,
                 useSentinels=True,
             ))
-    #@+node:ekr.20120301114648.9932: *4* sc.registerAllCommands (disabled trace)
+    #@+node:ekr.20120301114648.9932: *4* sc.registerAllCommands
     def registerAllCommands(self,
         args: Args,
         func: Callable,
@@ -1101,9 +1083,6 @@ class ScriptingController:
         shortcut = self.getShortcut(h) or ''
         commandName = self.cleanButtonText(h)
         fileName = source_c.fileName() if source_c else None
-
-        if False and commandName.startswith('@button-'):
-            g.trace(commandName, repr(shortcut), h)  ###
 
         if trace and not g.isascii(commandName):
             g.trace(commandName)

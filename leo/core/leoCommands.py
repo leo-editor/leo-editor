@@ -434,7 +434,7 @@ class Commands:
         return f"Commander {id(self)}: {repr(self.mFileName)}"
 
     __str__ = __repr__
-    #@+node:ekr.20050920093543: *4* c.finishCreate & helpers (disabled trace)
+    #@+node:ekr.20050920093543: *4* c.finishCreate & helpers
     def finishCreate(self) -> None:
         """
         Finish creating the commander and all sub-objects.
@@ -443,8 +443,6 @@ class Commands:
         c, k = self, self.k
         assert c.gui
         assert k
-
-        ### g.trace('Commands', c.shortFileName() or 'None')  ###
 
         t1 = time.process_time()
         c.frame.finishCreate()  # Slightly slow.

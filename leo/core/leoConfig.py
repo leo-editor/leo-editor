@@ -150,7 +150,7 @@ class ParserBaseClass:
             self.set(p, kind, name, False)
         else:
             self.valueError(p, kind, name, val)
-    #@+node:ekr.20070925144337: *4* pbc.doButtons (disabled trace)
+    #@+node:ekr.20070925144337: *4* pbc.doButtons
     def doButtons(self, p: Position, kind: str, name: str, val: Value) -> None:
         """Create buttons for each @button node in an @buttons tree."""
         c, tag = self.c, '@button'
@@ -180,21 +180,6 @@ class ParserBaseClass:
                 p.moveToThreadNext()
         # This setting is handled differently from most other settings,
         # because the last setting must be retrieved before any commander exists.
-
-        ### g.trace('*** PBC Exit', len(aList), len(g.app.config.atCommonButtonsList))  ###
-
-        if 0:  ###
-            print('')
-            fn = c.shortFileName() or 'No C'
-            g.trace(f"aList: {fn}")
-            for (command_p, script, rclicks) in aList:
-                print(f"{command_p.h:20} {len(script)}")
-            print(f"g.app.atCommonButtonsList: {fn}")
-            for (command_p, script, rclicks) in g.app.config.atCommonButtonsList:
-                print(f"{command_p.h:20} {len(script)}")
-            # g.printObj(aList, tag=f"aList: {fn}")
-            # g.printObj(g.app.config.atCommonButtonsList, tag=f"atCommonButtonsList: {fn}")
-
         if aList:
             # Bug fix: 2011/11/24: Extend the list, don't replace it.
             g.app.config.atCommonButtonsList.extend(aList)

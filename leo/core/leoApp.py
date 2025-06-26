@@ -1533,7 +1533,7 @@ class LeoApp:
         app = self
         for c in app.commanders():
             c.k.makeAllBindings()
-    #@+node:ekr.20031218072017.2188: *3* app.newCommander (disabled trace)
+    #@+node:ekr.20031218072017.2188: *3* app.newCommander
     def newCommander(
         self,
         fileName: str,
@@ -1547,11 +1547,6 @@ class LeoApp:
         # This takes about 3/4 sec when called by the leoBridge module.
         # Timeit reports 0.0175 sec when using a nullGui.
         from leo.core import leoCommands
-
-        if False and not g.unitTesting:  ###
-            sfn = g.shortFileName(fileName) if fileName else 'None'
-            g.trace(f"{sfn:>20}", previousSettings)
-
         c = leoCommands.Commands(fileName,
             gui=gui,
             parentFrame=parentFrame,

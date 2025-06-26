@@ -1711,16 +1711,13 @@ class LeoQtFrame(leoFrame.LeoFrame):
         return self.iconBar
 
     getIconBarObject = getIconBar
-    #@+node:ekr.20110605121601.18250: *4* LeoQtFrame.finishCreate & helpers (disabled trace)
+    #@+node:ekr.20110605121601.18250: *4* LeoQtFrame.finishCreate & helpers
     def finishCreate(self) -> None:
         """Finish creating the outline's frame."""
         # Called from app.newCommander, Commands.__init__
         t1 = time.process_time()
         c = self.c
         assert c
-
-        ### g.trace('qt_frame', c.shortFileName() or 'None')  ###
-
         frameFactory = g.app.gui.frameFactory
         if not frameFactory.masterFrame:
             frameFactory.createMaster()
@@ -2196,12 +2193,10 @@ class LeoQtLog(leoFrame.LeoLog):
     def reloadSettings(self) -> None:
         c = self.c
         self.wrap = bool(c.config.getBool('log-pane-wraps'))
-    #@+node:ekr.20110605121601.18315: *4* LeoQtLog.finishCreate (disabled trace)
+    #@+node:ekr.20110605121601.18315: *4* LeoQtLog.finishCreate
     def finishCreate(self) -> None:
         """Finish creating the LeoQtLog class."""
         c, log, w = self.c, self, self.tabWidget
-
-        ### g.trace('LeoQtLog', c.shortFileName() or 'None')  ###
 
         # Create the log tab as the leftmost tab.
         log.createTab('Log')
@@ -2209,7 +2204,7 @@ class LeoQtLog(leoFrame.LeoLog):
         logWidget = self.logWidget
         logWidget.setWordWrapMode(WrapMode.WordWrap if self.wrap else WrapMode.NoWrap)
         w.insertTab(0, logWidget, 'Log')  # Required.
-        #
+
         # set up links in log handling
         logWidget.setTextInteractionFlags(
             TextInteractionFlag.LinksAccessibleByMouse

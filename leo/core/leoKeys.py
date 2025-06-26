@@ -3126,7 +3126,7 @@ class KeyHandlerClass:
             pane=pane,
             shortcut=shortcut,
         )
-    #@+node:ekr.20171124043747.1: *4* k.registerCommandShortcut (disabled trace)
+    #@+node:ekr.20171124043747.1: *4* k.registerCommandShortcut
     def registerCommandShortcut(self, *,
         commandName: str,
         fileName: str,
@@ -3161,12 +3161,10 @@ class KeyHandlerClass:
                     pane = bi.pane  # 2015/05/11.
                     break
 
-        if False and commandName.startswith('@button-'):  ###
-            g.trace(commandName, repr(shortcut), '-->', repr(stroke))
-
         if stroke:
             k.bindKey(pane, stroke, func, commandName, tag=f"register-command:{fileName}")
             k.makeMasterGuiBinding(stroke)  # Must be a stroke.
+
         # Fixup any previous abbreviation to press-x-button commands.
         if commandName.startswith('press-') and commandName.endswith('-button'):
             d = c.config.getAbbrevDict()  # Keys are full command names, values are abbreviations.
