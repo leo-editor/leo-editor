@@ -323,6 +323,7 @@ def new(self: Self, event: LeoKeyEvent = None, gui: LeoGui = None) -> Cmdr:
 
     # Finish.
     lm.finishOpen(c)
+    c.k.makeAllBindings()  # #4371.
 
     g.doHook("new", old_c=old_c, c=c, new_c=c)
     c.clearChanged()  # Fix #387: Clear all dirty bits.
