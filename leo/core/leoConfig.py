@@ -184,7 +184,6 @@ class ParserBaseClass:
             # Bug fix: 2011/11/24: Extend the list, don't replace it.
             g.app.config.atCommonButtonsList.extend(aList)
             g.app.config.buttonsFileName = (c.shortFileName() if c else '<no settings file>')
-
     #@+node:ekr.20041120094940.2: *4* pbc.doColor
     def doColor(self, p: Position, kind: str, name: str, val: Value) -> None:
         # At present no checking is done.

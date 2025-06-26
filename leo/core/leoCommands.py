@@ -443,7 +443,6 @@ class Commands:
         c, k = self, self.k
         assert c.gui
         assert k
-
         t1 = time.process_time()
         c.frame.finishCreate()  # Slightly slow.
         t2 = time.process_time()
