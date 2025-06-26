@@ -688,13 +688,13 @@ class ScriptingController:
         return None, None  # 2017/02/02.
     #@+node:ekr.20150401130207.1: *3* sc.Scripts, common
     # Important: common @button and @command nodes do **not** update dynamically!
-    #@+node:ekr.20080312071248.1: *4* sc.createCommonButtons (trace)
+    #@+node:ekr.20080312071248.1: *4* sc.createCommonButtons (disabled trace)
     def createCommonButtons(self) -> None:
         """Handle all global @button nodes."""
         c = self.c
         buttons = c.config.getButtons() or []
 
-        g.trace(c.shortFileName() or '<No c>', 'common buttons:', len(buttons))  ###
+        ### g.trace(c.shortFileName() or '<No c>', 'common buttons:', len(buttons))  ###
 
         for z in buttons:
             # #2011

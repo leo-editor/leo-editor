@@ -1212,13 +1212,11 @@ class GlobalConfigManager:
     """A class to manage configuration settings."""
 
     #@+others
-    #@+node:ekr.20041117062717.2: *3*  gcm.ctor (disabled trace)
+    #@+node:ekr.20041117062717.2: *3*  gcm.ctor
     def __init__(self) -> None:
 
         # List of info (command_p, script, rclicks) for common @buttons nodes.
         # where rclicks is a namedtuple('RClick', 'position,children')
-
-        ### g.trace('GCM')  ###
 
         # List of info for common @buttons nodes.
         self.atCommonButtonsList: list[tuple[Position, str, list[Callable]]] = []

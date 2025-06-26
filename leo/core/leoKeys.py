@@ -3126,7 +3126,7 @@ class KeyHandlerClass:
             pane=pane,
             shortcut=shortcut,
         )
-    #@+node:ekr.20171124043747.1: *4* k.registerCommandShortcut (trace)
+    #@+node:ekr.20171124043747.1: *4* k.registerCommandShortcut (disabled trace)
     def registerCommandShortcut(self, *,
         commandName: str,
         fileName: str,
@@ -3161,7 +3161,7 @@ class KeyHandlerClass:
                     pane = bi.pane  # 2015/05/11.
                     break
 
-        if commandName.startswith('@button-'):  ###
+        if False and commandName.startswith('@button-'):  ###
             g.trace(commandName, repr(shortcut), '-->', repr(stroke))
 
         if stroke:

@@ -267,7 +267,7 @@ def import_txt_file(c: Cmdr, fn: str) -> None:
     u.afterInsertNode(p, 'Import', undoData)
     c.setChanged()
     c.redraw(p)
-#@+node:ekr.20031218072017.1623: *3* c_file.new (trace)
+#@+node:ekr.20031218072017.1623: *3* c_file.new (disabled trace)
 @g.commander_command('file-new')
 @g.commander_command('new')
 def new(self: Self, event: LeoKeyEvent = None, gui: LeoGui = None) -> Cmdr:
@@ -288,7 +288,7 @@ def new(self: Self, event: LeoKeyEvent = None, gui: LeoGui = None) -> Cmdr:
     t2 = time.process_time()
     g.app.numberOfUntitledWindows += 1
 
-    if 1:  ###
+    if 0:  ###
         print('')
         print('c_file.new')
 
@@ -297,8 +297,6 @@ def new(self: Self, event: LeoKeyEvent = None, gui: LeoGui = None) -> Cmdr:
         settingsDict=lm.globalSettingsDict,
         shortcutsDict=lm.globalBindingsDict,
     )
-
-    g.trace(previousSettings)  ###
 
     c = g.app.newCommander(
         fileName=None,
