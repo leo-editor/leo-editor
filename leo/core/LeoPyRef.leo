@@ -1128,11 +1128,12 @@ print('done: %s nodes, %s clones' % (nodes,clones))
 @tabwidth -4
 @language python
 </t>
-<t tx="ekr.20150425145248.1">ctrl-click-at-cursor
-pylint
+<t tx="ekr.20150425145248.1">pylint
 test-one
-restart-leo
 execute-script
+
+# restart-leo
+# ctrl-click-at-cursor
 
 # mypy-modes
 # pyflakes
