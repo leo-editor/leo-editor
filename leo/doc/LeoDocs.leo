@@ -33207,7 +33207,9 @@ For details see:
   
 - 6.8.5 Issues: https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.8.5+
 - 6.8.5 Pull Requests: https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.8.5
-</t>
+
+- The signatures of the`k.registerCommand` and `k.registerCommandShortcut` methods
+  have changed.</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have

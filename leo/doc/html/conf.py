@@ -5,8 +5,8 @@
 
 project = 'Leo'
 copyright = '1997-2025, Edward K. Ream'
-version = '6.8.4'
-release = '6.8.4'
+version = '6.8.5'
+release = '6.8.5'
 
 html_theme = 'classic'
 pygments_style = 'sphinx'
