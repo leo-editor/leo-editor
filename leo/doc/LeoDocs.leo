@@ -33201,15 +33201,16 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 - [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
 - [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)</t>
 <t tx="ekr.20250626165619.1">.. Use the link-pr abbreviation to create these links.
+.. _`6.8.5 Issues`: https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.8.5+
+.. _`6.8.5 Pull Requests`: https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.8.5
 
-This release consists entirely of code cleanups and minor bug fixes.
-For details see:
+- Change the signatures of the `k.registerCommand` and `k.registerCommandShortcut` methods.
+
+This release consists entirely of code cleanups and minor bug fixes:
   
-- 6.8.5 Issues: https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.8.5+
-- 6.8.5 Pull Requests: https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.8.5
-
-- The signatures of the`k.registerCommand` and `k.registerCommandShortcut` methods
-  have changed.</t>
+- `6.8.5 Issues`_
+- `6.8.5 Pull Requests`_
+</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
