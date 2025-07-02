@@ -1581,6 +1581,7 @@ Step 0: Update the version numbers in all build files:
 - pyproject.toml
 - scripts/inspect_wheel.py
 - scripts/install_leo_locally.py
+- scripts/install_leo_from_pypi.py
 - scripts/install_leo_from_testpypi.py
 
 Step 1: Create and test the distribution files in leo/dist:
