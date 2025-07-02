@@ -5,7 +5,7 @@
 graft leo
 
 global-exclude *.py[cod] *.__pycache__ *.so
-global-exclude *.mypy_cache, *.mypy_stubs, *.gitattributes, *.htmlcov
+global-exclude *mypy_cache *.mypy_cache, *.mypy_stubs, *.gitattributes, *.htmlcov
 
 # Add files in the top-level leo-editor folder.
 
