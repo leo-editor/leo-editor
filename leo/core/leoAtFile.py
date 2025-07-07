@@ -577,6 +577,18 @@ class AtFile:
             g.es_print(f"not found: {fileName}", color='red', nodeLink=root.get_UNL())
             return False
 
+        # #4385: Do nothing if the file has not changed.
+        try:
+            old_mod_time = root.v.u['_mod_time']  # #4385
+        except Exception:
+            old_mod_time = None
+        new_mod_time = g.os_path_getmtime(fileName)
+        ### print(f"old_mod_time: {old_mod_time} new_mod_time: {new_mod_time}")
+        ### print(f"readOneAtCleanNode: {root.h}")
+        if old_mod_time and old_mod_time >= new_mod_time:
+            ### print('SKIP read')
+            return True
+
         # Init.
         at.rememberReadPath(fileName, root)
         at.initReadIvars(root, fileName)
@@ -1518,6 +1530,7 @@ class AtFile:
             else:
                 contents = ''.join(at.outputList)
                 at.replaceFile(contents, at.encoding, fileName, root)
+                root.v.u['_mod_time'] = g.os_path_getmtime(fileName)  # #4385
         except Exception:
             at.writeException(fileName, root)
     #@+node:ekr.20090225080846.5: *6* at.writeOneAtEditNode
