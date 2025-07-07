@@ -152,10 +152,6 @@ class AtFile:
         at.errors = 0
         at.language = c.target_language or 'python'
         at.root = root
-        # Dialogs
-        at.canCancelFlag = False
-        at.cancelFlag = False
-        at.yesToAll = False
         # Reading
         at.importRootSeen = False
         at.readVersion = ''
@@ -588,7 +584,6 @@ class AtFile:
             old_mod_time = None
         new_mod_time = g.os_path_getmtime(fileName)
         if old_mod_time and old_mod_time >= new_mod_time:
-            print(f"SKIP! old: {old_mod_time} new: {new_mod_time} {root.h}")
             return True
 
         # Calculate data.
@@ -3113,7 +3108,9 @@ class AtFile:
 
         See #50: https://github.com/leo-editor/leo-editor/issues/50
         """
+        at = self
         efc = g.app.externalFilesController
+
         if p.isAtNoSentFileNode():
             # No danger of overwriting a file: It was never read.
             return False
@@ -3122,11 +3119,15 @@ class AtFile:
             # No danger of overwriting fn.
             return False
 
+        # #4385: Honor yes-to-all or no-to-all.
+        if at.cancelFlag or at.yesToAll:
+            return False
+
         # Prompt if the external file is newer.
         if efc and efc.has_changed(fn):
             return True
 
-        if hasattr(p.v, 'at_read'):
+        if p.h.startswith('@auto-rst') and hasattr(p.v, 'at_read'):
             # #50: body text lost switching @file to @auto-rst
             d = p.v.at_read
             for k in d:
