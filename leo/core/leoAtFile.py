@@ -3125,7 +3125,11 @@ class AtFile:
 
         # Prompt if the external file is newer.
         if efc and efc.has_changed(fn):
+            g.trace('Changed:', fn)
             return True
+
+        if p.isAtCleanNode():  # #4385.
+            return False
 
         if p.h.startswith('@auto-rst') and hasattr(p.v, 'at_read'):
             # #50: body text lost switching @file to @auto-rst
