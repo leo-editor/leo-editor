@@ -106,7 +106,7 @@ class BaseTestImporter(LeoUnitTest):
         p = self.run_test(s)
         self.check_round_trip(p, expected_s or s)
     #@+node:ekr.20230526124600.1: *3* BaseTestImporter.new_run_test
-    def new_run_test(self, s: str, expected_results: tuple, *, trace: bool = False) -> None:
+    def new_run_test(self, s: str, expected_results: tuple, *, trace: bool = True) -> None:
         """
         Run a unit test of an import scanner,
         i.e., create a tree from string s at location p.
@@ -4234,6 +4234,7 @@ class TestRust(BaseTestImporter):
                     '}\n'
             ),
             (1, 'fn area',
+                    '\n'  # New.
                     'fn area(width: u32, height: u32) -> u32 {\n'
                     '    width * height\n'
                     '}\n'
@@ -4286,6 +4287,7 @@ class TestRust(BaseTestImporter):
                     '}\n'
             ),
             (1, 'impl AsFormat for &T',
+                    '\n'  # New.
                     '/// Implement [`AsFormat`] for references to types that implement [`AsFormat`].\n'
                     'impl<T, C> AsFormat<C> for &T\n'
                     'where\n'
