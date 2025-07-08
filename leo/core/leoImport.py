@@ -1680,8 +1680,14 @@ class RecursiveImportController:
             treeType='@file',  # '@auto','@clean','@nosent' cause problems.
             verbose=self.verbose,  # Leo 6.6.
         )
+
         p = parent.lastChild()
         p.h = self.kind + p.h[5:]  # Honor the requested kind.
+
+        # #4385: set mod time for @clean files.
+        if self.kind == '@clean':
+            p.v.u['_mod_time'] = g.os_path_getmtime(path)
+
         if self.safe_at_file:
             p.v.h = '@' + p.v.h
     #@+node:ekr.20130823083943.12607: *3* ric.post_process

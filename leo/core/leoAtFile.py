@@ -602,6 +602,8 @@ class AtFile:
             return True
         if not g.unitTesting:
             g.es("updating:", root.h)
+            # g.printObj(new_private_lines, tag='new')
+            # g.printObj(old_private_lines, tag='old')
         root.clearVisitedInTree()
         gnx2vnode = at.fileCommands.gnxDict
         contents = ''.join(new_private_lines)
@@ -3131,7 +3133,7 @@ class AtFile:
         if p.isAtCleanNode():  # #4385.
             return False
 
-        if p.h.startswith('@auto-rst') and hasattr(p.v, 'at_read'):
+        if hasattr(p.v, 'at_read'):
             # #50: body text lost switching @file to @auto-rst
             d = p.v.at_read
             for k in d:
