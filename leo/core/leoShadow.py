@@ -30,7 +30,7 @@ Settings:
 from __future__ import annotations
 import difflib
 import os
-import pprint
+# import pprint
 from typing import Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
@@ -179,35 +179,11 @@ class ShadowController:
                 x.shadow_subdir,
                 x.shadow_prefix + g.shortFileName(filename))
     #@+node:ekr.20080708192807.1: *3* x.Propagation
-    #@+node:ekr.20080708094444.35: *4* x.check_output
-    def check_output(self) -> bool:
-        """Check that we produced a valid output."""
-        x = self
-        lines1 = x.b
-        junk, sents1 = x.separate_sentinels(x.old_sent_lines, x.marker)
-        lines2, sents2 = x.separate_sentinels(x.results, x.marker)
-        ok = lines1 == lines2 and sents1 == sents2
-        if g.unitTesting:
-            # The unit test will report the error.
-            return ok
-        if lines1 != lines2:
-            g.trace()
-            d = difflib.Differ()
-            aList = list(d.compare(lines2, x.b))
-            pprint.pprint(aList)
-        if sents1 != sents2:
-            x.show_error(
-                lines1=sents1,
-                lines2=sents2,
-                message="Sentinels not preserved!",
-                lines1_message="old sentinels",
-                lines2_message="new sentinels")
-        return ok
     #@+node:ekr.20080708094444.38: *4* x.propagate_changed_lines (main algorithm) & helpers
     def propagate_changed_lines(self,
         new_public_lines: list[str],
         old_private_lines: list[str],
-        marker: "Marker",
+        marker: Marker,
         p: Position = None,
     ) -> list[str]:
         #@+<< docstring >>
@@ -234,8 +210,6 @@ class ShadowController:
             f(tag, ai, aj, bi, bj)
         # Put the trailing sentinels & check the result.
         x.results.extend(x.trailing_sentinels)
-        # check_output is likely to be more buggy than the code under test.
-        # x.check_output()
         return x.results
     #@+node:ekr.20150207111757.180: *5* x.dump_args
     def dump_args(self) -> None:
@@ -296,7 +270,7 @@ class ShadowController:
     def init_ivars(self,
         new_public_lines: list[str],
         old_private_lines: list[str],
-        marker: "Marker",
+        marker: Marker,
     ) -> None:
         """Init all ivars used by propagate_changed_lines & its helpers."""
         x = self
@@ -453,7 +427,7 @@ class ShadowController:
         x.error('file syntax error: nothing follows verbatim sentinel')
         g.trace(g.callers())
     #@+node:ekr.20090529125512.6122: *4* x.markerFromFileLines & helper
-    def markerFromFileLines(self, lines: list[str], fn: str) -> "Marker":
+    def markerFromFileLines(self, lines: list[str], fn: str) -> Marker:
         """Return the sentinel delimiter comment to be used for filename."""
         at, x = self.c.atFileCommands, self
         s = x.findLeoLine(lines)
@@ -472,7 +446,7 @@ class ShadowController:
                 return line
         return ''
     #@+node:ekr.20080708094444.9: *4* x.markerFromFileName
-    def markerFromFileName(self, filename: str) -> "Marker":
+    def markerFromFileName(self, filename: str) -> Marker:
         """Return the sentinel delimiter comment to be used for filename."""
         x = self
         if not filename:
@@ -484,7 +458,7 @@ class ShadowController:
         marker = x.Marker(delims)
         return marker
     #@+node:ekr.20080708094444.29: *4* x.separate_sentinels
-    def separate_sentinels(self, lines: list[str], marker: "Marker") -> tuple[list[str], list[str]]:
+    def separate_sentinels(self, lines: list[str], marker: Marker) -> tuple[list[str], list[str]]:
         """
         Separates regular lines from sentinel lines.
         Do not return @verbatim sentinels.
