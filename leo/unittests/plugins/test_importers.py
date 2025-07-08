@@ -4234,7 +4234,7 @@ class TestRust(BaseTestImporter):
                     '}\n'
             ),
             (1, 'fn area',
-                    '\n'  # New.
+                    ### '\n'  # New.
                     'fn area(width: u32, height: u32) -> u32 {\n'
                     '    width * height\n'
                     '}\n'
@@ -4287,7 +4287,7 @@ class TestRust(BaseTestImporter):
                     '}\n'
             ),
             (1, 'impl AsFormat for &T',
-                    '\n'  # New.
+                    ### '\n'  # New.
                     '/// Implement [`AsFormat`] for references to types that implement [`AsFormat`].\n'
                     'impl<T, C> AsFormat<C> for &T\n'
                     'where\n'

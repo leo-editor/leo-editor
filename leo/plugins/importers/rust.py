@@ -71,7 +71,7 @@ class Rust_Importer(Importer):
         """
         return True
     #@+node:ekr.20250708055254.1: *3* rust_i.compute_body
-    def compute_body(self, lines: list[str]) -> str:
+    def xxx_compute_body(self, lines: list[str]) -> str:
         """
         Return the regularized body text from the given list of lines.
 

@@ -582,7 +582,13 @@ class AtFile:
             old_mod_time = root.v.u['_mod_time']  # #4385
         except Exception:
             old_mod_time = None
+
         new_mod_time = g.os_path_getmtime(fileName)
+
+        # Always set the mod_time.
+        root.v.u['_mod_time'] = g.os_path_getmtime(fileName)
+
+        # Don't update if the outline and file are in synch.
         if old_mod_time and old_mod_time >= new_mod_time:
             return True
 
@@ -601,9 +607,7 @@ class AtFile:
         if new_private_lines == old_private_lines:
             return True
         if not g.unitTesting:
-            g.es("updating:", root.h)
-            # g.printObj(new_private_lines, tag='new')
-            # g.printObj(old_private_lines, tag='old')
+            g.es_print("updating:", root.h)
         root.clearVisitedInTree()
         gnx2vnode = at.fileCommands.gnxDict
         contents = ''.join(new_private_lines)
@@ -1525,7 +1529,8 @@ class AtFile:
             else:
                 contents = ''.join(at.outputList)
                 at.replaceFile(contents, at.encoding, fileName, root)
-                root.v.u['_mod_time'] = g.os_path_getmtime(fileName)  # #4385
+                # #4385: Tell at.readOneAtCleanNode that the outline is in synch with the file.
+                root.v.u['_mod_time'] = g.os_path_getmtime(fileName)
         except Exception:
             at.writeException(fileName, root)
     #@+node:ekr.20090225080846.5: *6* at.writeOneAtEditNode
@@ -2776,19 +2781,19 @@ class AtFile:
         at, c = self, self.c
         if root:
             root.clearDirty()
-        #
+
         # Create the timestamp (only for messages).
         if c.config.getBool('log-show-save-time', default=False):  # pragma: no cover
             format = c.config.getString('log-timestamp-format') or "%H:%M:%S"
             timestamp = time.strftime(format) + ' '
         else:
             timestamp = ''
-        #
+
         # Adjust the contents.
         assert isinstance(contents, str), g.callers()
         if at.output_newline != '\n':  # pragma: no cover
             contents = contents.replace('\r', '').replace('\n', at.output_newline)
-        #
+
         # If file does not exist, create it from the contents.
         fileName = g.os_path_realpath(fileName)
         sfn = g.shortFileName(fileName)
@@ -2806,7 +2811,7 @@ class AtFile:
                 at.addToOrphanList(root)  # pragma: no cover
             # No original file to change. Return value tested by a unit test.
             return False  # No change to original file.
-        #
+
         # Compare the old and new contents.
         old_contents = g.readFileIntoUnicodeString(fileName,
             encoding=at.encoding, silent=True)
@@ -2833,7 +2838,7 @@ class AtFile:
                 old_contents, contents))
             if not ok:
                 g.warning("correcting line endings in:", fileName)
-        #
+
         # Write a changed file.
         ok = g.writeFile(contents, encoding, fileName)
         if ok:
