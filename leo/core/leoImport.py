@@ -1891,6 +1891,7 @@ class RecursiveImportController:
             g.app.disable_redraw = False
             for p2 in parent.self_and_subtree(copy=False):
                 p2.contract()
+            c.setChanged()  # #4385: Ensure that mod times are written.
             c.redraw(parent)
         if not g.unitTesting:
             t2 = time.time()
