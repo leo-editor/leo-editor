@@ -70,6 +70,16 @@ class Rust_Importer(Importer):
         Ruff uses intermixed blanks and tabs.
         """
         return True
+    #@+node:ekr.20250708055254.1: *3* rust_i.compute_body
+    def compute_body(self, lines: list[str]) -> str:
+        """
+        Return the regularized body text from the given list of lines.
+
+        In most contexts removing leading blank lines is appropriate.
+        If not, the caller can insert the desired blank lines.
+        """
+        # For rust: don't change any line endings!
+        return ''.join(lines)
     #@+node:ekr.20231031033255.1: *3* rust_i.compute_headline
     def compute_headline(self, block: Block) -> str:
         """
