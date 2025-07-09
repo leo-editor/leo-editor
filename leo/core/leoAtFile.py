@@ -416,7 +416,7 @@ class AtFile:
         if not g.unitTesting and files:  # pragma: no cover
             t2 = time.time()
             g.es(f"read {len(files)} files in {t2 - t1:2.2f} seconds")
-        c.changed = old_changed
+        c.changed = old_changed or c.at_clean_updated
         c.raise_error_dialogs()
     #@+node:ekr.20190108054317.1: *6* at.findFilesToRead
     def findFilesToRead(self, root: Position, all: bool) -> list[Position]:  # pragma: no cover
@@ -493,7 +493,7 @@ class AtFile:
                 g.es(f"read {len(files)} files in {t2 - t1:2.2f} seconds")
             else:
                 g.es("no @<file> nodes in the selected tree")
-        c.changed = old_changed
+        c.changed = old_changed or c.at_clean_updated
         c.raise_error_dialogs()
     #@+node:ekr.20080801071227.7: *5* at.readAtShadowNodes
     def readAtShadowNodes(self, p: Position) -> None:  # pragma: no cover

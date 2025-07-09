@@ -258,6 +258,7 @@ class Commands:
     #@+node:ekr.20120217070122.10472: *5* c.initFileIvars
     def initFileIvars(self, fileName: str, relativeFileName: str) -> None:
         """Init file-related ivars of the commander."""
+        self.at_clean_updated = False  # True: The @clean read logic has updated one or more files.
         self.changed = False  # True: the outline has changed since the last save.
         self.ignored_at_file_nodes: list[Position] = []  # List of nodes for c.raise_error_dialogs.
         self.import_error_nodes: list[Position] = []  # List of nodes for c.raise_error_dialogs.
