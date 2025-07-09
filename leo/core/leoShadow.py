@@ -42,6 +42,16 @@ if TYPE_CHECKING:  # pragma: no cover
 #@+others
 #@+node:ekr.20080708094444.80: ** class ShadowController
 class ShadowController:
+
+    __slots__ = (
+        'a', 'b', 'c', 'changed_vnodes',
+        'delim1', 'delim2', 'dispatch_dict',
+        'encoding', 'errors', 'gnxDict',
+        'marker', 'node_pat', 'old_sent_lines', 'results',
+        'sentinels', 'shadow_prefix', 'shadow_subdir', 'shadow_in_home_dir',
+        'trailing_sentinels', 'verbatim_line',
+    )
+
     """A class to manage @shadow files"""
     #@+others
     #@+node:ekr.20080708094444.79: *3*  x.ctor & x.reloadSettings

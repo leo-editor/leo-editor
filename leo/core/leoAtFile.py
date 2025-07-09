@@ -806,6 +806,7 @@ class AtFile:
         return FastAtRead(c, gnx2vnode).read_into_root(contents, path, root)
     #@+node:ekr.20250709051341.1: *4* at.post_process_at_clean_vnodes
     def post_process_at_clean_vnodes(self, changed_vnodes: list[VNode]) -> None:
+        """Analyze all changed vnodes, splitting or moving them as necessary."""
         pass  ### To do in another PR.
     #@+node:ekr.20041005105605.116: *4* at.Reading utils...
     #@+node:ekr.20041005105605.119: *5* at.createImportedNode
