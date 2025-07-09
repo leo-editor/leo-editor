@@ -51,7 +51,6 @@ try:
     websockets: types.ModuleType = ws_module
 
     # Import frames and exceptions: same for both new or old websockets versions.
-    from websockets.frames import Close, CloseCode
     from websockets.exceptions import ConnectionClosed, ConnectionClosedError
 
 except Exception as e:
@@ -5779,8 +5778,7 @@ def main() -> None:  # pragma: no cover (tested in client)
                         print(f"{tag}: got: {d}", flush=True)
                     answer = controller._do_message(d)
                 except TerminateServer as e:
-                    rcvd = Close(CloseCode.NORMAL_CLOSURE, e.__str__())
-                    raise ConnectionClosed(rcvd, None, None)
+                    await websocket.close(code=1000, reason=str(e))
                 except ServerError as e:
                     data = f"{d}" if d else f"json syntax error: {json_message!r}"
                     error = f"{tag}:  ServerError: {e}...\n{tag}:  {data}"
