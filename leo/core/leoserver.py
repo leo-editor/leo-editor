@@ -5779,6 +5779,7 @@ def main() -> None:  # pragma: no cover (tested in client)
                     answer = controller._do_message(d)
                 except TerminateServer as e:
                     await websocket.close(code=1000, reason=str(e))
+                    return
                 except ServerError as e:
                     data = f"{d}" if d else f"json syntax error: {json_message!r}"
                     error = f"{tag}:  ServerError: {e}...\n{tag}:  {data}"
