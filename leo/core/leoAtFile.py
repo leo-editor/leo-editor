@@ -405,6 +405,8 @@ class AtFile:
     def readAll(self, root: Position) -> None:
         """Scan positions, looking for @<file> nodes to read."""
         at, c = self, self.c
+        x = c.shadowController
+        x.changed_vnodes = []
         old_changed = c.changed
         t1 = time.time()
         c.init_error_dialogs()
@@ -416,7 +418,16 @@ class AtFile:
         if not g.unitTesting and files:  # pragma: no cover
             t2 = time.time()
             g.es(f"read {len(files)} files in {t2 - t1:2.2f} seconds")
-        c.changed = old_changed or c.at_clean_updated
+
+        # Carefully set c.changed.
+        c.changed = old_changed or bool(x.changed_vnodes)
+
+        # Post-process changed @clean trees.
+        if x.changed_vnodes:
+            at.post_process_at_clean_vnodes(x.changed_vnodes)
+            x.changed_vnodes = []
+
+        # Last.
         c.raise_error_dialogs()
     #@+node:ekr.20190108054317.1: *6* at.findFilesToRead
     def findFilesToRead(self, root: Position, all: bool) -> list[Position]:  # pragma: no cover
@@ -479,6 +490,8 @@ class AtFile:
     def readAllSelected(self, root: Position) -> None:  # pragma: no cover
         """Read all @<file> nodes in root's tree."""
         at, c = self, self.c
+        x = c.shadowController
+        x.changed_vnodes = []
         old_changed = c.changed
         t1 = time.time()
         c.init_error_dialogs()
@@ -493,7 +506,16 @@ class AtFile:
                 g.es(f"read {len(files)} files in {t2 - t1:2.2f} seconds")
             else:
                 g.es("no @<file> nodes in the selected tree")
-        c.changed = old_changed or c.at_clean_updated
+
+        # Carefully set c.changed.
+        c.changed = old_changed or bool(x.changed_vnodes)
+
+        # Post-process changed @clean trees.
+        if x.changed_vnodes:
+            at.post_process_at_clean_vnodes(x.changed_vnodes)
+            x.changed_vnodes = []
+
+        # Last.
         c.raise_error_dialogs()
     #@+node:ekr.20080801071227.7: *5* at.readAtShadowNodes
     def readAtShadowNodes(self, p: Position) -> None:  # pragma: no cover
@@ -613,8 +635,6 @@ class AtFile:
         contents = ''.join(new_private_lines)
         FastAtRead(c, gnx2vnode).read_into_root(contents, fileName, root)
         g.doHook('after-reading-external-file', c=c, p=root)
-        ### To do: report and possibly split changed nodes.
-        # g.printObj(x.changed_vnodes, tag=f"Changed nodes in {root.h}")
         return True  # Errors not detected.
     #@+node:ekr.20150204165040.7: *6* at.dump_lines
     def dump(self, lines: list[str], tag: str) -> None:  # pragma: no cover
@@ -784,6 +804,9 @@ class AtFile:
     ) -> bool:  # pragma: no cover
         """A convenience wrapper for FastAtRead.read_into_root()"""
         return FastAtRead(c, gnx2vnode).read_into_root(contents, path, root)
+    #@+node:ekr.20250709051341.1: *4* at.post_process_at_clean_vnodes
+    def post_process_at_clean_vnodes(self, changed_vnodes: list[VNode]) -> None:
+        pass  ### To do in another PR.
     #@+node:ekr.20041005105605.116: *4* at.Reading utils...
     #@+node:ekr.20041005105605.119: *5* at.createImportedNode
     def createImportedNode(self, root: Position, headline: str) -> Position:  # pragma: no cover
