@@ -564,7 +564,7 @@ class AtFile:
             g.doHook('after-auto', c=c, p=p)
             g.doHook('after-reading-external-file', c=c, p=p)
         return p  # For #451: return p.
-    #@+node:ekr.20150204165040.5: *5* at.readOneAtCleanNode & helpers (x.changed_nodes)
+    #@+node:ekr.20150204165040.5: *5* at.readOneAtCleanNode & helpers
     def readOneAtCleanNode(self, root: Position) -> bool:  # pragma: no cover
         """Update the @clean/@nosent node at root."""
         at, c, x = self, self.c, self.c.shadowController
@@ -613,8 +613,8 @@ class AtFile:
         contents = ''.join(new_private_lines)
         FastAtRead(c, gnx2vnode).read_into_root(contents, fileName, root)
         g.doHook('after-reading-external-file', c=c, p=root)
-        if not g.unitTesting:
-            g.printObj(x.changed_vnodes, tag=f"Changed nodes in {root.h}")  ###
+        ### To do: report and possibly split changed nodes.
+        # g.printObj(x.changed_vnodes, tag=f"Changed nodes in {root.h}")
         return True  # Errors not detected.
     #@+node:ekr.20150204165040.7: *6* at.dump_lines
     def dump(self, lines: list[str], tag: str) -> None:  # pragma: no cover

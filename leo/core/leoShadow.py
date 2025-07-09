@@ -267,7 +267,7 @@ class ShadowController:
                 new_lines.append(line)
         x.trailing_sentinels = sentinels
         return new_lines
-    #@+node:ekr.20080708094444.40: *5* x.init_ivars (changed)
+    #@+node:ekr.20080708094444.40: *5* x.init_ivars
     def init_ivars(self,
         new_public_lines: list[str],
         old_private_lines: list[str],
@@ -279,7 +279,7 @@ class ShadowController:
         x.delim1, x.delim2 = marker.getDelims()
         x.gnxDict = x.c.fileCommands.gnxDict
         x.marker = marker
-        x.node_pat = re.compile(fr"{x.delim1}@\+node:(.*?):(.*?){x.delim2}\n")  ###
+        x.node_pat = re.compile(fr"{x.delim1}@\+node:(.*?):(.*?){x.delim2}\n")
         x.old_sent_lines = old_private_lines
         x.results = []
         x.verbatim_line = f"{x.delim1}@verbatim{x.delim2}\n"
@@ -303,7 +303,7 @@ class ShadowController:
         x = self
         assert aj - ai == bj - bi and x.a[ai:aj] == x.b[bi:bj]
         for i in range(ai, aj):
-            x.put_sentinels(i, changed=True)  ###
+            x.put_sentinels(i, changed=True)
             # works because x.lines[ai:aj] == x.lines[bi:bj]
             x.put_plain_line(x.a[i])
     #@+node:ekr.20150207044400.14: *5* x.op_insert
@@ -353,14 +353,13 @@ class ShadowController:
         if x.marker.isSentinel(line):
             x.results.append(x.verbatim_line)
         x.results.append(line)
-    #@+node:ekr.20150209044257.8: *5* x.put_sentinels (changed)
+    #@+node:ekr.20150209044257.8: *5* x.put_sentinels
     def put_sentinels(self, i: int, *, changed: bool = False) -> None:
         """Put all the sentinels to the results"""
         x = self
         if 0 <= i < len(x.sentinels):
             sentinels = x.sentinels[i]
             if changed and sentinels:
-                ### g.trace(g.caller(), 'root:', at.root.h)  ###
                 for sentinel in sentinels:
                     m = x.node_pat.match(sentinel)
                     if m:
@@ -368,7 +367,6 @@ class ShadowController:
                         v = x.gnxDict.get(gnx)
                         if v:
                             x.changed_vnodes.append(v)
-                        ### g.trace('gnx:', gnx, 'v:', v and v.h or '<No VNode>')
             x.results.extend(sentinels)
     #@+node:ekr.20080708094444.36: *4* x.propagate_changes
     def propagate_changes(self, old_public_file: str, old_private_file: str) -> bool:
