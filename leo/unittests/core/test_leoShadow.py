@@ -4,6 +4,7 @@
 
 import glob
 import os
+import textwrap
 
 from leo.core import leoGlobals as g
 from leo.core.leoNodes import Position
@@ -97,6 +98,14 @@ class TestAtShadow(LeoUnitTest):
                 results.append(line)
             i += 1
         return results
+    #@+node:ekr.20250710075101.1: *4* TestAtShadow.prep
+    def prep(self, s: str) -> str:
+        """
+        TestAt.Shadow.prep: munge text.
+
+        This should eliminate the need for backslashes in tests.
+        """
+        return textwrap.dedent(s).strip().replace('AT', '@') + '\n'
     #@+node:ekr.20250710065413.1: *3*  TestAtShadow.readOneAtCleanNode
     def readOneAtCleanNode(self, root: Position, new_contents: str) -> None:
         """
@@ -107,7 +116,7 @@ class TestAtShadow(LeoUnitTest):
         It uses the `new_contents` argument instead of reading the file at c.fullPath(root).
         """
 
-        # Part one: new declarations.
+        # New declarations.
         c = self.c
         at = c.atFileCommands
         x = self.shadow_controller
@@ -115,23 +124,33 @@ class TestAtShadow(LeoUnitTest):
         from leo.core.leoAtFile import FastAtRead
         fileName = '<No file name>'
 
-        # Part two: init code from atFile.readOneAtCloneNode.
+        # Nnit code from atFile.readOneAtCloneNode.
         at.initReadIvars(root, fileName='<no file name>')
 
-        # Part three: Calculate data.
-        new_public_lines = at.read_at_clean_lines(fileName)
+        # Calculate data.
+        new_public_lines = g.splitLines(new_contents)  # at.read_at_clean_lines(fileName)
         old_private_lines = at.write_at_clean_sentinels(root)
         marker = x.markerFromFileLines(old_private_lines, fileName)
         old_public_lines, junk = x.separate_sentinels(old_private_lines, marker)
         assert old_public_lines  # New.
 
-        # Part four: call x.propagate_changed_lines.
+        # Call x.propagate_changed_lines.
         new_private_lines = x.propagate_changed_lines(
             new_public_lines, old_private_lines, marker, p=root)
+
+        # Debugging dumps.
+        if 1:
+            print('')
+            print(g.callers(1))
+            g.printObj(old_private_lines, tag='old_private_lines')
+            g.printObj(new_private_lines, tag='new_private_lines')
+            g.printObj(old_public_lines, tag='old_public_lines')
+            g.printObj(new_public_lines, tag='new_public_lines')
+
         if new_private_lines == old_private_lines:
             return
 
-        # Part five: Update the file!
+        # Update the file!
         root.clearVisitedInTree()
         gnx2vnode = at.fileCommands.gnxDict
         contents = ''.join(new_private_lines)
@@ -914,31 +933,32 @@ class TestAtShadow(LeoUnitTest):
     #@+node:ekr.20250710064702.1: *3* TestAtShadow.test_changed_vnodes
     def test_changed_vnodes(self):
         p = self.c.p
-        # Create the 'old' node.
-        old = p.insertAsLastChild()
-        old.h = 'old'
-        old.b = self.prep(
-        """
-            ATothers
-            node 1 line 1
-            node 1 line 2
-            node 2 line 1
-            node 2 line 2
-        """).replace('AT', '@')
-        # Create the 'new' node.
-        new = p.insertAsLastChild()
-        new.h = 'new'
-        new.b = self.prep(
-        """
-            ATothers
-            node 1 line 1
-            node 1 line 1 changed
-            node 2 line 1
-            node 2 line 2
-        """).replace('AT', '@')
+        x = self.shadow_controller
+
+        # Create the test node.
+        test_p = p.insertAsLastChild()
+        test_p.h = 'test'
+        test_p.b = self.prep(
+            """
+                node 1 line 1
+                node 1 line 2
+                node 2 line 1
+                node 2 line 2
+            """)
+
+        # Define the new contents.
+        new_contents = self.prep(
+            """
+                node 1 line 1
+                node 1 line 1 changed
+                node 2 line 1
+                node 2 line 2
+            """)
+
         # Run the test.
-        ### results, expected = self.make_lines(old, new)
-        ### self.assertEqual(results, expected)
+        self.readOneAtCleanNode(test_p, new_contents)
+        assert test_p.b == new_contents
+        g.printObj(x.changed_vnodes, tag='changed_vnodes')
     #@+node:ekr.20210908160020.1: *3* test utils...
     #@+node:ekr.20210902210552.2: *4* TestAtShadow.test_marker_getDelims
     def test_marker_getDelims(self):

@@ -363,16 +363,18 @@ class ShadowController:
         if x.marker.isSentinel(line):
             x.results.append(x.verbatim_line)
         x.results.append(line)
-    #@+node:ekr.20150209044257.8: *5* x.put_sentinels
+    #@+node:ekr.20150209044257.8: *5* x.put_sentinels (updated x.changed_lines)
     def put_sentinels(self, i: int, *, changed: bool = False) -> None:
         """Put all the sentinels to the results"""
         x = self
         if 0 <= i < len(x.sentinels):
             sentinels = x.sentinels[i]
+            ### g.trace(i, changed, sentinels)  ###
             if changed and sentinels:
                 for sentinel in sentinels:
                     m = x.node_pat.match(sentinel)
                     if m:
+                        ### g.trace(m.group(0))  ###
                         gnx = m.group(1)
                         v = x.gnxDict.get(gnx)
                         if v:
