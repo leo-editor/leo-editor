@@ -973,7 +973,6 @@ class TestAtShadow(LeoUnitTest):
         self.readOneAtCleanNode(test_p, new_contents)
         assert test_p.b == new_contents
         assert test_p.v in x.changed_vnodes
-        # g.printObj(x.changed_vnodes, tag='changed_vnodes')
     #@+node:ekr.20210908160020.1: *3* test utils...
     #@+node:ekr.20210902210552.2: *4* TestAtShadow.test_marker_getDelims
     def test_marker_getDelims(self):
