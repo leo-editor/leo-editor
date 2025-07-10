@@ -4,7 +4,10 @@
 
 import glob
 import os
+
 from leo.core import leoGlobals as g
+from leo.core.leoNodes import Position
+
 from leo.core.leoShadow import ShadowController
 from leo.core.leoTest2 import LeoUnitTest
 
@@ -94,6 +97,45 @@ class TestAtShadow(LeoUnitTest):
                 results.append(line)
             i += 1
         return results
+    #@+node:ekr.20250710065413.1: *3*  TestAtShadow.readOnAtCleanNode
+    def readOneAtCleanNode(self, root: Position, new_contents: str) -> None:
+        """
+        Update the @clean/@nosent node at root.
+
+        This method is a copy of atFile.readOneAtCleanNode that omits file-related code.
+
+        It uses the `new_contents` argument instead of reading the file at c.fullPath(root).
+        """
+
+        # Part one: new declarations.
+        c = self.c
+        at = c.atFileCommands
+        x = self.shadow_controller
+        assert x == self.shadow_controller
+        from leo.core.leoAtFile import FastAtRead
+        fileName = '<No file name>'
+
+        # Part two: init code from atFile.readOneAtCloneNode.
+        at.initReadIvars(root, fileName='<no file name>')
+
+        # Part three: Calculate data.
+        new_public_lines = at.read_at_clean_lines(fileName)
+        old_private_lines = at.write_at_clean_sentinels(root)
+        marker = x.markerFromFileLines(old_private_lines, fileName)
+        old_public_lines, junk = x.separate_sentinels(old_private_lines, marker)
+        assert old_public_lines  # New.
+
+        # Part four: call x.propagate_changed_lines.
+        new_private_lines = x.propagate_changed_lines(
+                new_public_lines, old_private_lines, marker, p=root)
+        if new_private_lines == old_private_lines:
+            return
+
+        # Part five: Update the file!
+        root.clearVisitedInTree()
+        gnx2vnode = at.fileCommands.gnxDict
+        contents = ''.join(new_private_lines)
+        FastAtRead(c, gnx2vnode).read_into_root(contents, fileName, root)
     #@+node:ekr.20210908160006.1: *3* test update algorithm...
     #@+node:ekr.20210908134131.16: *4* TestAtShadow.test_change_end_of_prev_node
     def test_change_end_of_prev_node(self):
