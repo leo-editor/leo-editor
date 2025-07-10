@@ -47,7 +47,7 @@ class AtFile:
         'startSentinelComment', 'endSentinelComment',
         #@verbatim
         # @shadow and @clean files.
-        'bodies_dict', 'changed_vnodes', 'private_s', 'public_s',
+        'any_changed_vnodes', 'bodies_dict', 'changed_vnodes', 'private_s', 'public_s',
         # Writing.
         'indent', 'sentinels',
         'section_delim1', 'section_delim2',
@@ -98,6 +98,7 @@ class AtFile:
         self.cancelFlag = False
         self.yesToAll = False
         # Reading.
+        self.any_changed_vnodes = False
         self.bodies_dict: dict[VNode, str] = {}
         self.changed_vnodes: list[VNode] = []
         self.importRootSeen = False
@@ -408,6 +409,7 @@ class AtFile:
     def readAll(self, root: Position) -> None:
         """Scan positions, looking for @<file> nodes to read."""
         at, c = self, self.c
+        at.any_changed_vnodes = False
         old_changed = c.changed
         t1 = time.time()
         c.init_error_dialogs()
@@ -421,11 +423,8 @@ class AtFile:
             g.es(f"read {len(files)} files in {t2 - t1:2.2f} seconds")
 
         # Carefully set c.changed.
-        c.changed = old_changed or bool(at.changed_vnodes)
-
-        # Post-process changed @clean trees.
-        if at.changed_vnodes:
-            at.post_process_at_clean_vnodes()
+        c.changed = old_changed or bool(at.any_changed_vnodes)
+        at.any_changed_vnodes = False
 
         # Last.
         c.raise_error_dialogs()
@@ -490,6 +489,7 @@ class AtFile:
     def readAllSelected(self, root: Position) -> None:  # pragma: no cover
         """Read all @<file> nodes in root's tree."""
         at, c = self, self.c
+        at.any_changed_vnodes = False
         old_changed = c.changed
         t1 = time.time()
         c.init_error_dialogs()
@@ -506,11 +506,8 @@ class AtFile:
                 g.es("no @<file> nodes in the selected tree")
 
         # Carefully set c.changed.
-        c.changed = old_changed or bool(at.changed_vnodes)
-
-        # Post-process changed @clean trees.
-        if at.changed_vnodes:
-            at.post_process_at_clean_vnodes()
+        c.changed = old_changed or bool(at.any_changed_vnodes)
+        at.any_changed_vnodes = False
 
         # Last.
         c.raise_error_dialogs()
@@ -584,17 +581,23 @@ class AtFile:
             g.doHook('after-reading-external-file', c=c, p=p)
         return p  # For #451: return p.
     #@+node:ekr.20150204165040.5: *5* at.readOneAtCleanNode & helpers
-    def readOneAtCleanNode(self, root: Position) -> bool:  # pragma: no cover
-        """Update the @clean/@nosent node at root."""
-        at, c, x = self, self.c, self.c.shadowController
-        fileName = c.fullPath(root)
-        if not g.os_path_exists(fileName):
-            g.es_print(f"not found: {fileName}", color='red', nodeLink=root.get_UNL())
-            return False
+    def readOneAtCleanNode(self, root: Position, *, new_contents: str = None) -> bool:
+        """
+        Update the @clean/@nosent node at root.
 
-        # Init: suppresses file-changed dialog.
-        at.rememberReadPath(fileName, root)
-        at.initReadIvars(root, fileName)
+        Use new_contents for
+        """
+        at, c, x = self, self.c, self.c.shadowController
+
+        if new_contents:
+            fileName = 'root.h'  # For error messages only.
+        else:
+            fileName = c.fullPath(root)
+            if not g.os_path_exists(fileName):
+                g.es_print(f"not found: {fileName}", color='red', nodeLink=root.get_UNL())
+                return False
+            # Suppresses file-changed dialog.
+            at.rememberReadPath(fileName, root)
 
         # #4385: Do nothing if the file has not changed.
         try:
@@ -606,6 +609,7 @@ class AtFile:
         root.v.u['_mod_time'] = new_mod_time = g.os_path_getmtime(fileName)
 
         # #4385: Init the per-file data.
+        at.initReadIvars(root, fileName)
         at.bodies_dict = {}
         at.changed_vnodes = []
 
@@ -618,7 +622,10 @@ class AtFile:
             at.bodies_dict[p.v] = p.b
 
         # Calculate data.
-        new_public_lines = at.read_at_clean_lines(fileName)
+        new_public_lines = (
+            g.splitLines(new_contents) if new_contents
+            else at.read_at_clean_lines(fileName)
+        )
         old_private_lines = self.write_at_clean_sentinels(root)
         marker = x.markerFromFileLines(old_private_lines, fileName)
         old_public_lines, junk = x.separate_sentinels(old_private_lines, marker)
@@ -645,6 +652,11 @@ class AtFile:
                 at.changed_vnodes.append(p.v)
             elif at.bodies_dict.get(p.v) != p.b:
                 at.changed_vnodes.append(p.v)
+
+        # #4385: Handle the changed nodes.
+        if at.changed_vnodes:
+            at.any_changed_vnodes = True  # A global switch.
+            at.post_process_at_clean_vnodes()
 
         return True  # Errors not detected.
     #@+node:ekr.20150204165040.7: *6* at.dump_lines
@@ -821,7 +833,7 @@ class AtFile:
         at, c = self, self.c
         if not at.changed_vnodes:
             return
-        if not g.unitTesting:
+        if not g.unitTesting:  ### Temporary.
             g.trace(c.p.h)
             g.printObj(at.changed_vnodes, tag='changed_vodes')
             print('at.bodies_dict...')

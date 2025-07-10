@@ -106,68 +106,6 @@ class TestAtShadow(LeoUnitTest):
         This should eliminate the need for backslashes in tests.
         """
         return textwrap.dedent(s).strip().replace('AT', '@') + '\n'
-    #@+node:ekr.20250710065413.1: *3*  TestAtShadow.readOneAtCleanNode
-    def readOneAtCleanNode(self, root: Position, new_contents: str) -> None:
-        """
-        Update the @clean/@nosent node at root.
-
-        This method is a copy of atFile.readOneAtCleanNode that omits file-related code.
-
-        It uses the `new_contents` argument instead of reading the file at c.fullPath(root).
-        """
-
-        # New declarations.
-        c = self.c
-        at = c.atFileCommands
-        x = self.shadow_controller
-        assert x == self.shadow_controller
-        from leo.core.leoAtFile import FastAtRead
-        fileName = '<No file name>'  # Used only for error messages.
-
-        # Nnit code from atFile.readOneAtCloneNode.
-        at.initReadIvars(root, fileName)
-
-        # #4385: Init the per-file data.
-        at.bodies_dict = {}
-        at.changed_vnodes = []
-        for p in root.self_and_subtree():
-            at.bodies_dict[p.v] = p.b
-
-        # Calculate data.
-        new_public_lines = g.splitLines(new_contents)
-        old_private_lines = at.write_at_clean_sentinels(root)
-        marker = x.markerFromFileLines(old_private_lines, fileName)
-        old_public_lines, junk = x.separate_sentinels(old_private_lines, marker)
-        assert old_public_lines
-
-        # Call x.propagate_changed_lines.
-        new_private_lines = x.propagate_changed_lines(
-            new_public_lines, old_private_lines, marker, p=root)
-
-        # Debugging dumps.
-        if 0:
-            print('')
-            print(g.callers(1))
-            g.printObj(old_private_lines, tag='old_private_lines')
-            g.printObj(new_private_lines, tag='new_private_lines')
-            g.printObj(old_public_lines, tag='old_public_lines')
-            g.printObj(new_public_lines, tag='new_public_lines')
-
-        if new_private_lines == old_private_lines:
-            return
-
-        # Update the file!
-        root.clearVisitedInTree()
-        gnx2vnode = at.fileCommands.gnxDict
-        contents = ''.join(new_private_lines)
-        FastAtRead(c, gnx2vnode).read_into_root(contents, fileName, root)
-
-        # #4385: Set at.changed_vnodes.
-        for p in root.self_and_subtree():
-            if p.v not in at.bodies_dict:
-                at.changed_vnodes.append(p.v)
-            elif at.bodies_dict.get(p.v) != p.b:
-                at.changed_vnodes.append(p.v)
     #@+node:ekr.20210908160006.1: *3* test update algorithm...
     #@+node:ekr.20210908134131.16: *4* TestAtShadow.test_change_end_of_prev_node
     def test_change_end_of_prev_node(self):
@@ -943,36 +881,6 @@ class TestAtShadow(LeoUnitTest):
         # Run the test.
         results, expected = self.make_lines(old, new)
         self.assertEqual(results, expected)
-    #@+node:ekr.20250710064702.1: *3* TestAtShadow.test_changed_vnodes
-    def test_changed_vnodes(self):
-        c = self.c
-        p = c.p
-        at = c.atFileCommands
-
-        # Create the test node.
-        test_p = p.insertAsLastChild()
-        test_p.h = 'test'
-        test_p.b = self.prep(
-            """
-                node 1 line 1
-                node 1 line 2
-                node 2 line 1
-                node 2 line 2
-            """)
-
-        # Define the new contents.
-        new_contents = self.prep(
-            """
-                node 1 line 1
-                node 1 line 1 changed
-                node 2 line 1
-                node 2 line 2
-            """)
-
-        # Run the test.
-        self.readOneAtCleanNode(test_p, new_contents)
-        assert test_p.b == new_contents
-        assert test_p.v in at.changed_vnodes
     #@+node:ekr.20210908160020.1: *3* test utils...
     #@+node:ekr.20210902210552.2: *4* TestAtShadow.test_marker_getDelims
     def test_marker_getDelims(self):
@@ -1159,6 +1067,102 @@ class TestAtShadow(LeoUnitTest):
         expected = g.os_path_abspath(g.os_path_join(
             g.os_path_dirname(c.fileName()), subdir, prefix + filename))
         self.assertEqual(path, expected)
+    #@+node:ekr.20250710065413.1: *3* TestAtShadow.readOneAtCleanNode
+    def readOneAtCleanNode(self, root: Position, new_contents: str) -> None:
+        """
+        Update the @clean/@nosent node at root.
+
+        This method is a copy of atFile.readOneAtCleanNode that omits file-related code.
+
+        It uses the `new_contents` argument instead of reading the file at c.fullPath(root).
+        """
+        c = self.c
+        at = c.atFileCommands
+        at.readOneAtCleanNode(root, new_contents=new_contents)
+
+        ###
+        # # New declarations.
+        # c = self.c
+        # at = c.atFileCommands
+        # x = self.shadow_controller
+        # assert x == self.shadow_controller
+        # from leo.core.leoAtFile import FastAtRead
+        # fileName = '<No file name>'  # Used only for error messages.
+
+        # # Nnit code from atFile.readOneAtCloneNode.
+        # at.initReadIvars(root, fileName)
+
+        # # #4385: Init the per-file data.
+        # at.bodies_dict = {}
+        # at.changed_vnodes = []
+        # for p in root.self_and_subtree():
+            # at.bodies_dict[p.v] = p.b
+
+        # # Calculate data.
+        # new_public_lines = g.splitLines(new_contents)
+        # old_private_lines = at.write_at_clean_sentinels(root)
+        # marker = x.markerFromFileLines(old_private_lines, fileName)
+        # old_public_lines, junk = x.separate_sentinels(old_private_lines, marker)
+        # assert old_public_lines
+
+        # # Call x.propagate_changed_lines.
+        # new_private_lines = x.propagate_changed_lines(
+            # new_public_lines, old_private_lines, marker, p=root)
+
+        # # Debugging dumps.
+        # if 0:
+            # print('')
+            # print(g.callers(1))
+            # g.printObj(old_private_lines, tag='old_private_lines')
+            # g.printObj(new_private_lines, tag='new_private_lines')
+            # g.printObj(old_public_lines, tag='old_public_lines')
+            # g.printObj(new_public_lines, tag='new_public_lines')
+
+        # if new_private_lines == old_private_lines:
+            # return
+
+        # # Update the file!
+        # root.clearVisitedInTree()
+        # gnx2vnode = at.fileCommands.gnxDict
+        # contents = ''.join(new_private_lines)
+        # FastAtRead(c, gnx2vnode).read_into_root(contents, fileName, root)
+
+        # # #4385: Set at.changed_vnodes.
+        # for p in root.self_and_subtree():
+            # if p.v not in at.bodies_dict:
+                # at.changed_vnodes.append(p.v)
+            # elif at.bodies_dict.get(p.v) != p.b:
+                # at.changed_vnodes.append(p.v)
+    #@+node:ekr.20250710064702.1: *3* TestAtShadow.test_changed_vnodes
+    def test_changed_vnodes(self):
+        c = self.c
+        p = c.p
+        at = c.atFileCommands
+
+        # Create the test node.
+        test_p = p.insertAsLastChild()
+        test_p.h = 'test'
+        test_p.b = self.prep(
+            """
+                node 1 line 1
+                node 1 line 2
+                node 2 line 1
+                node 2 line 2
+            """)
+
+        # Define the new contents.
+        new_contents = self.prep(
+            """
+                node 1 line 1
+                node 1 line 1 changed
+                node 2 line 1
+                node 2 line 2
+            """)
+
+        # Run the test.
+        self.readOneAtCleanNode(test_p, new_contents)
+        assert test_p.b == new_contents
+        assert test_p.v in at.changed_vnodes
     #@-others
 #@-others
 #@-leo
