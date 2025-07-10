@@ -122,10 +122,10 @@ class TestAtShadow(LeoUnitTest):
         x = self.shadow_controller
         assert x == self.shadow_controller
         from leo.core.leoAtFile import FastAtRead
-        fileName = '<No file name>'
+        fileName = '<No file name>'  # Used only for error messages.
 
         # Nnit code from atFile.readOneAtCloneNode.
-        at.initReadIvars(root, fileName='<no file name>')
+        at.initReadIvars(root, fileName)
 
         # #4385: Remember all old bodies.
         bodies_dict: dict[VNode, str] = {}
@@ -133,11 +133,11 @@ class TestAtShadow(LeoUnitTest):
             bodies_dict[p.v] = p.b
 
         # Calculate data.
-        new_public_lines = g.splitLines(new_contents)  # at.read_at_clean_lines(fileName)
+        new_public_lines = g.splitLines(new_contents)
         old_private_lines = at.write_at_clean_sentinels(root)
         marker = x.markerFromFileLines(old_private_lines, fileName)
         old_public_lines, junk = x.separate_sentinels(old_private_lines, marker)
-        assert old_public_lines  # New.
+        assert old_public_lines
 
         # Call x.propagate_changed_lines.
         new_private_lines = x.propagate_changed_lines(
@@ -164,10 +164,8 @@ class TestAtShadow(LeoUnitTest):
         # #4385: Set x.changed_vnodes.
         for p in root.self_and_subtree():
             if p.v not in bodies_dict:
-                # g.trace('ADD', p.h)
                 x.changed_vnodes.append(p.v)
             elif bodies_dict.get(p.v) != p.b:
-                # g.trace('CHANGE', p.h)
                 x.changed_vnodes.append(p.v)
     #@+node:ekr.20210908160006.1: *3* test update algorithm...
     #@+node:ekr.20210908134131.16: *4* TestAtShadow.test_change_end_of_prev_node
