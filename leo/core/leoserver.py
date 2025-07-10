@@ -45,7 +45,7 @@ try:
 
     # Redirect `websockets` itself
     if WEBSOCKETS_VERSION >= version.parse("14"):
-        import websockets.legacy.server as ws_module
+        import websockets.legacy.server as ws_module  # type:ignore
     else:
         ws_module = _websockets_module
     websockets: types.ModuleType = ws_module
