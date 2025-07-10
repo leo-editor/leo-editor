@@ -508,9 +508,9 @@
 </v>
 </v>
 <v t="matt.20200331213038.1"><vh>PyPi install caveat</vh></v>
-<v t="ekr.20230121110345.1"><vh>Script files</vh>
-<v t="ekr.20230121110340.1"><vh>@clean ../scripts/make-clean.cmd</vh></v>
-<v t="ekr.20230121110533.1"><vh>@clean ../scripts/make-html.cmd</vh></v>
+<v t="ekr.20230121110345.1" descendentVnodeUnknownAttributes="7d7100285803000000302e3071017d710258090000005f6d6f645f74696d6571034741d993336a2ad5e0735803000000302e3171047d710558090000005f6d6f645f74696d6571064741d993336a2adb8573752e"><vh>Script files</vh>
+<v t="ekr.20230121110340.1" descendentVnodeUnknownAttributes="7d710058010000003071017d710258090000005f6d6f645f74696d6571034741d993336a2ad5e073732e"><vh>@clean ../scripts/make-clean.cmd</vh></v>
+<v t="ekr.20230121110533.1" descendentVnodeUnknownAttributes="7d710058010000003071017d710258090000005f6d6f645f74696d6571034741d993336a2adb8573732e"><vh>@clean ../scripts/make-html.cmd</vh></v>
 </v>
 <v t="ekr.20100805171546.4412"><vh>Web pages</vh>
 <v t="ekr.20090428133936.2"><vh>@edit html/conf.py</vh></v>
@@ -4525,7 +4525,7 @@ Python can't check declarations because there aren't any. However, there is a re
 </t>
 <t tx="ekr.20050901092232.4">Before using Python I never fully realized how difficult and dangerous memory allocation is in C++. Try doing:
 
-code-block::
+.. code-block::
 
     aList[i:j] = list(aString)
 
@@ -16972,7 +16972,7 @@ The leading and trailing sentinels lines are easy special cases. This
 code, appearing before the main loop, ensures that leading lines are
 written first, and only once:
 
-code-block::
+.. code-block::
 
     x.put_sentinels(0)
     x.sentinels[0] = []
@@ -16980,7 +16980,7 @@ code-block::
 Similarly, this line, at the end of the main loop, writes trailing
 sentinels:
 
-code-block::
+.. code-block::
 
     x.results.extend(x.trailing_sentinels)
 </t>
@@ -28824,14 +28824,14 @@ which are too slow to be useful.
 </t>
 <t tx="ekr.20200107142458.1">To access the code, do one of the following:
 
-code-block::
+.. code-block::
 
     import leoAst
     import leo.core.leoAst as leoAst
 
 You can then run the fstringify commands as follows:
 
-code-block::
+.. code-block::
 
     changed = leoAst.Fstringify().fstringify_file(filename)
     changed = leoAst.Fstringify().fstringify_diff_files(filename)</t>
@@ -30745,7 +30745,7 @@ any change to one clone inevitably affects all other clones.
 <t tx="ekr.20230121061309.1"></t>
 <t tx="ekr.20230121061335.1"></t>
 <t tx="ekr.20230121061433.1"></t>
-<t tx="ekr.20230121110340.1">@language batch
+<t tx="ekr.20230121110340.1" _mod_time="4741d993336a2ad5e02e">@language batch
 echo off
 echo off
 cd C:\Repos\leo-editor\leo\doc\html
@@ -30753,7 +30753,7 @@ echo make clean
 call make clean
 </t>
 <t tx="ekr.20230121110345.1"></t>
-<t tx="ekr.20230121110533.1">@language batch
+<t tx="ekr.20230121110533.1" _mod_time="4741d993336a2adb852e">@language batch
 echo off
 echo off
 cd C:\Repos\leo-editor\leo\doc\html

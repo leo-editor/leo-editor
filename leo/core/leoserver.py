@@ -36,9 +36,27 @@ except Exception:
     Tk = None
 # #2300
 try:
-    import websockets
-except Exception:
+    from packaging import version
+    import websockets as _websockets_module
+    import types
+
+    ws_module: types.ModuleType
+    WEBSOCKETS_VERSION = version.parse(_websockets_module.__version__)
+
+    # Redirect `websockets` itself
+    if WEBSOCKETS_VERSION >= version.parse("14"):
+        import websockets.legacy.server as ws_module  # type:ignore
+    else:
+        ws_module = _websockets_module
+    websockets: types.ModuleType = ws_module
+
+    # Import frames and exceptions: same for both new or old websockets versions.
+    from websockets.exceptions import ConnectionClosed, ConnectionClosedError
+
+except Exception as e:
     websockets = None
+    print("Websockets setup failed:", e)
+
 # Make sure the parent of the leo directory is on sys.path.
 core_dir = os.path.dirname(__file__)
 leo_path = os.path.normpath(os.path.join(core_dir, '..', '..'))
@@ -67,7 +85,7 @@ Socket = Any
 #@-<< leoserver annotations >>
 #@+<< leoserver version >>
 #@+node:ekr.20220820160619.1: ** << leoserver version >>
-version_tuple = (1, 0, 12)
+version_tuple = (1, 0, 13)
 # Version History
 # 1.0.1 Initial commit.
 # 1.0.2 July 2022: Adding ui-scroll, undo/redo, chapters, ua's & node_tags info.
@@ -81,6 +99,7 @@ version_tuple = (1, 0, 12)
 # 1.0.10 Febuary 2024: Added support getting UNL for a specific node (for status bar display, etc.)
 # 1.0.11 May 2024: Added get_is_valid and current commander info to get_ui_states for detached body support.
 # 1.0.12 June 2025: Added goto_line_in_leo_outline and insert_file_node commands.
+# 1.0.13 July 2025: Added support for websockets version 14+.
 v1, v2, v3 = version_tuple
 __version__ = f"leoserver.py version {v1}.{v2}.{v3}"
 #@-<< leoserver version >>
@@ -1102,7 +1121,6 @@ class LeoServer:
             func(self)
     #@+node:felix.20210627004039.1: *4* LeoServer._idleTime
     def _idleTime(self, fn: Callable, delay: Union[int, float], tag: str) -> None:
-
         warnings.simplefilter("ignore")
 
         asyncio.get_event_loop().create_task(self._asyncIdleLoop(delay / 1000, fn))
@@ -5719,7 +5737,7 @@ def main() -> None:  # pragma: no cover (tested in client)
         connectionsPool.remove(websocket)
         await notify_clients("unregister")
     #@+node:felix.20210621233316.106: *3* function: ws_handler (server)
-    async def ws_handler(websocket: Socket, path: str) -> None:
+    async def ws_handler(websocket: Any, path: Any = None) -> None:
         """
         The web socket handler: server.ws_server.
 
@@ -5760,8 +5778,8 @@ def main() -> None:  # pragma: no cover (tested in client)
                         print(f"{tag}: got: {d}", flush=True)
                     answer = controller._do_message(d)
                 except TerminateServer as e:
-                    rcvd = websockets.frames.Close(websockets.frames.CloseCode.NORMAL_CLOSURE, e.__str__())
-                    raise websockets.exceptions.ConnectionClosed(rcvd, None, None)
+                    await websocket.close(code=1000, reason=str(e))
+                    return
                 except ServerError as e:
                     data = f"{d}" if d else f"json syntax error: {json_message!r}"
                     error = f"{tag}:  ServerError: {e}...\n{tag}:  {data}"
@@ -5789,9 +5807,9 @@ def main() -> None:  # pragma: no cover (tested in client)
                 if controller.action[0:5] != "!get_" and controller.action != "!do_nothing":
                     await notify_clients(controller.action, websocket)
 
-        except websockets.exceptions.ConnectionClosedError as e:  # pragma: no cover
+        except ConnectionClosedError as e:  # pragma: no cover
             print(f"{tag}: connection closed error: {e}")
-        except websockets.exceptions.ConnectionClosed as e:
+        except ConnectionClosed as e:
             print(f"{tag}: connection closed: {e}")
         finally:
             if connected:
@@ -5841,12 +5859,12 @@ def main() -> None:  # pragma: no cover (tested in client)
 
         signon = SERVER_STARTED_TOKEN + f" at {wsHost} on port: {wsPort}.\n"
         if wsPersist:
-            signon = signon + "Persistent server\n"
+            signon += "Persistent server\n"
         if wsSkipDirty:
-            signon = signon + "No prompt about dirty file(s) when closing server\n"
+            signon += "No prompt about dirty file(s) when closing server\n"
         if wsLimit > 1:
-            signon = signon + f"Total client limit is {wsLimit}.\n"
-        signon = signon + "Ctrl+c to break"
+            signon += f"Total client limit is {wsLimit}.\n"
+        signon += "Ctrl+c to break"
         print(signon, flush=True)
         loop.run_forever()
 
