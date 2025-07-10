@@ -36,7 +36,7 @@ from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoNodes import Position, VNode
+    from leo.core.leoNodes import Position
 #@-<< leoShadow imports & annotations >>
 
 #@+others
@@ -58,7 +58,6 @@ class ShadowController:
     def __init__(self, c: Cmdr, trace: bool = False, trace_writers: bool = False) -> None:
         """Ctor for ShadowController class."""
         self.c = c
-        self.changed_vnodes: list[VNode] = []
         # Opcode dispatch dict.
         self.dispatch_dict = {
             'delete': self.op_delete,
@@ -285,7 +284,6 @@ class ShadowController:
     ) -> None:
         """Init all ivars used by propagate_changed_lines & its helpers."""
         x = self
-        x.changed_vnodes = []
         x.delim1, x.delim2 = marker.getDelims()
         x.gnxDict = x.c.fileCommands.gnxDict
         x.marker = marker

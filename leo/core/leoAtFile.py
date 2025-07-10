@@ -45,8 +45,9 @@ class AtFile:
         'readVersion', 'read_i', 'read_lines',
         'importRootSeen',
         'startSentinelComment', 'endSentinelComment',
-        # Shadow files.
-        'private_s', 'public_s',
+        #@verbatim
+        # @shadow and @clean files.
+        'bodies_dict', 'changed_vnodes', 'private_s', 'public_s',
         # Writing.
         'indent', 'sentinels',
         'section_delim1', 'section_delim2',
@@ -97,6 +98,8 @@ class AtFile:
         self.cancelFlag = False
         self.yesToAll = False
         # Reading.
+        self.bodies_dict: dict[VNode, str] = {}
+        self.changed_vnodes: list[VNode] = []
         self.importRootSeen = False
         self.readVersion = ''
         self.read_i = 0
@@ -405,8 +408,6 @@ class AtFile:
     def readAll(self, root: Position) -> None:
         """Scan positions, looking for @<file> nodes to read."""
         at, c = self, self.c
-        x = c.shadowController
-        x.changed_vnodes = []
         old_changed = c.changed
         t1 = time.time()
         c.init_error_dialogs()
@@ -420,12 +421,11 @@ class AtFile:
             g.es(f"read {len(files)} files in {t2 - t1:2.2f} seconds")
 
         # Carefully set c.changed.
-        c.changed = old_changed or bool(x.changed_vnodes)
+        c.changed = old_changed or bool(at.changed_vnodes)
 
         # Post-process changed @clean trees.
-        if x.changed_vnodes:
-            at.post_process_at_clean_vnodes(x.changed_vnodes)
-            x.changed_vnodes = []
+        if at.changed_vnodes:
+            at.post_process_at_clean_vnodes()
 
         # Last.
         c.raise_error_dialogs()
@@ -490,8 +490,6 @@ class AtFile:
     def readAllSelected(self, root: Position) -> None:  # pragma: no cover
         """Read all @<file> nodes in root's tree."""
         at, c = self, self.c
-        x = c.shadowController
-        x.changed_vnodes = []
         old_changed = c.changed
         t1 = time.time()
         c.init_error_dialogs()
@@ -508,12 +506,11 @@ class AtFile:
                 g.es("no @<file> nodes in the selected tree")
 
         # Carefully set c.changed.
-        c.changed = old_changed or bool(x.changed_vnodes)
+        c.changed = old_changed or bool(at.changed_vnodes)
 
         # Post-process changed @clean trees.
-        if x.changed_vnodes:
-            at.post_process_at_clean_vnodes(x.changed_vnodes)
-            x.changed_vnodes = []
+        if at.changed_vnodes:
+            at.post_process_at_clean_vnodes()
 
         # Last.
         c.raise_error_dialogs()
@@ -605,19 +602,20 @@ class AtFile:
         except Exception:
             old_mod_time = None
 
-        new_mod_time = g.os_path_getmtime(fileName)
+        # #4385: Always set the mod_time.
+        root.v.u['_mod_time'] = new_mod_time = g.os_path_getmtime(fileName)
 
-        # Always set the mod_time.
-        root.v.u['_mod_time'] = g.os_path_getmtime(fileName)
+        # #4385: Init the per-file data.
+        at.bodies_dict = {}
+        at.changed_vnodes = []
 
         # Don't update if the outline and file are in synch.
         if old_mod_time and old_mod_time >= new_mod_time:
             return True
 
         # #4385: Remember all old bodies.
-        bodies_dict: dict[VNode, str] = {}
         for p in root.self_and_subtree():
-            bodies_dict[p.v] = p.b
+            at.bodies_dict[p.v] = p.b
 
         # Calculate data.
         new_public_lines = at.read_at_clean_lines(fileName)
@@ -641,12 +639,12 @@ class AtFile:
         FastAtRead(c, gnx2vnode).read_into_root(contents, fileName, root)
         g.doHook('after-reading-external-file', c=c, p=root)
 
-        # #4385: Set x.changed_vnodes.
+        # #4385: Set at.changed_vnodes.
         for p in root.self_and_subtree():
-            if p.v not in bodies_dict:
-                x.changed_vnodes.append(p.v)
-            elif bodies_dict.get(p.v) != p.b:
-                x.changed_vnodes.append(p.v)
+            if p.v not in at.bodies_dict:
+                at.changed_vnodes.append(p.v)
+            elif at.bodies_dict.get(p.v) != p.b:
+                at.changed_vnodes.append(p.v)
 
         return True  # Errors not detected.
     #@+node:ekr.20150204165040.7: *6* at.dump_lines
@@ -817,10 +815,19 @@ class AtFile:
     ) -> bool:  # pragma: no cover
         """A convenience wrapper for FastAtRead.read_into_root()"""
         return FastAtRead(c, gnx2vnode).read_into_root(contents, path, root)
-    #@+node:ekr.20250709051341.1: *4* at.post_process_at_clean_vnodes (to do)
-    def post_process_at_clean_vnodes(self, changed_vnodes: list[VNode]) -> None:
+    #@+node:ekr.20250709051341.1: *4* at.post_process_at_clean_vnodes
+    def post_process_at_clean_vnodes(self) -> None:
         """Analyze all changed vnodes, splitting or moving them as necessary."""
-        pass
+        at, c = self, self.c
+        if not at.changed_vnodes:
+            return
+        if not g.unitTesting:
+            g.trace(c.p.h)
+            g.printObj(at.changed_vnodes, tag='changed_vodes')
+            print('at.bodies_dict...')
+            for key in at.bodies_dict:
+                print(f"key: {key}")
+                g.printObj(at.bodies_dict.get(key))
     #@+node:ekr.20041005105605.116: *4* at.Reading utils...
     #@+node:ekr.20041005105605.119: *5* at.createImportedNode
     def createImportedNode(self, root: Position, headline: str) -> Position:  # pragma: no cover

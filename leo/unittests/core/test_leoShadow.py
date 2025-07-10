@@ -7,7 +7,7 @@ import os
 import textwrap
 
 from leo.core import leoGlobals as g
-from leo.core.leoNodes import Position, VNode
+from leo.core.leoNodes import Position
 
 from leo.core.leoShadow import ShadowController
 from leo.core.leoTest2 import LeoUnitTest
@@ -127,10 +127,11 @@ class TestAtShadow(LeoUnitTest):
         # Nnit code from atFile.readOneAtCloneNode.
         at.initReadIvars(root, fileName)
 
-        # #4385: Remember all old bodies.
-        bodies_dict: dict[VNode, str] = {}
+        # #4385: Init the per-file data.
+        at.bodies_dict = {}
+        at.changed_vnodes = []
         for p in root.self_and_subtree():
-            bodies_dict[p.v] = p.b
+            at.bodies_dict[p.v] = p.b
 
         # Calculate data.
         new_public_lines = g.splitLines(new_contents)
@@ -161,12 +162,12 @@ class TestAtShadow(LeoUnitTest):
         contents = ''.join(new_private_lines)
         FastAtRead(c, gnx2vnode).read_into_root(contents, fileName, root)
 
-        # #4385: Set x.changed_vnodes.
+        # #4385: Set at.changed_vnodes.
         for p in root.self_and_subtree():
-            if p.v not in bodies_dict:
-                x.changed_vnodes.append(p.v)
-            elif bodies_dict.get(p.v) != p.b:
-                x.changed_vnodes.append(p.v)
+            if p.v not in at.bodies_dict:
+                at.changed_vnodes.append(p.v)
+            elif at.bodies_dict.get(p.v) != p.b:
+                at.changed_vnodes.append(p.v)
     #@+node:ekr.20210908160006.1: *3* test update algorithm...
     #@+node:ekr.20210908134131.16: *4* TestAtShadow.test_change_end_of_prev_node
     def test_change_end_of_prev_node(self):
@@ -944,8 +945,9 @@ class TestAtShadow(LeoUnitTest):
         self.assertEqual(results, expected)
     #@+node:ekr.20250710064702.1: *3* TestAtShadow.test_changed_vnodes
     def test_changed_vnodes(self):
-        p = self.c.p
-        x = self.shadow_controller
+        c = self.c
+        p = c.p
+        at = c.atFileCommands
 
         # Create the test node.
         test_p = p.insertAsLastChild()
@@ -970,7 +972,7 @@ class TestAtShadow(LeoUnitTest):
         # Run the test.
         self.readOneAtCleanNode(test_p, new_contents)
         assert test_p.b == new_contents
-        assert test_p.v in x.changed_vnodes
+        assert test_p.v in at.changed_vnodes
     #@+node:ekr.20210908160020.1: *3* test utils...
     #@+node:ekr.20210902210552.2: *4* TestAtShadow.test_marker_getDelims
     def test_marker_getDelims(self):
