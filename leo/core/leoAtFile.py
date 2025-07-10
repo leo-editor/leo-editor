@@ -614,6 +614,11 @@ class AtFile:
         if old_mod_time and old_mod_time >= new_mod_time:
             return True
 
+        # #4385: Remember all old bodies.
+        bodies_dict: dict[VNode, str] = {}
+        for p in root.self_and_subtree():
+            bodies_dict[p.v] = p.b
+
         # Calculate data.
         new_public_lines = at.read_at_clean_lines(fileName)
         old_private_lines = self.write_at_clean_sentinels(root)
@@ -635,6 +640,14 @@ class AtFile:
         contents = ''.join(new_private_lines)
         FastAtRead(c, gnx2vnode).read_into_root(contents, fileName, root)
         g.doHook('after-reading-external-file', c=c, p=root)
+
+        # #4385: Set x.changed_vnodes.
+        for p in root.self_and_subtree():
+            if p.v not in bodies_dict:
+                x.changed_vnodes.append(p.v)
+            elif bodies_dict.get(p.v) != p.b:
+                x.changed_vnodes.append(p.v)
+
         return True  # Errors not detected.
     #@+node:ekr.20150204165040.7: *6* at.dump_lines
     def dump(self, lines: list[str], tag: str) -> None:  # pragma: no cover

@@ -313,7 +313,7 @@ class ShadowController:
         x = self
         assert aj - ai == bj - bi and x.a[ai:aj] == x.b[bi:bj]
         for i in range(ai, aj):
-            x.put_sentinels(i, changed=True)
+            x.put_sentinels(i)
             # works because x.lines[ai:aj] == x.lines[bi:bj]
             x.put_plain_line(x.a[i])
     #@+node:ekr.20150207044400.14: *5* x.op_insert
@@ -332,7 +332,7 @@ class ShadowController:
             # Intersperse sentinels and lines.
             b_lines = x.b[bi:bj]
             for i in range(ai, aj):
-                x.put_sentinels(i, changed=True)
+                x.put_sentinels(i)
                 if b_lines:
                     x.put_plain_line(b_lines.pop(0))
             # Put any trailing lines.
@@ -363,22 +363,12 @@ class ShadowController:
         if x.marker.isSentinel(line):
             x.results.append(x.verbatim_line)
         x.results.append(line)
-    #@+node:ekr.20150209044257.8: *5* x.put_sentinels (updated x.changed_lines)
-    def put_sentinels(self, i: int, *, changed: bool = False) -> None:
+    #@+node:ekr.20150209044257.8: *5* x.put_sentinels
+    def put_sentinels(self, i: int) -> None:
         """Put all the sentinels to the results"""
         x = self
         if 0 <= i < len(x.sentinels):
             sentinels = x.sentinels[i]
-            ### g.trace(i, changed, sentinels)  ###
-            if changed and sentinels:
-                for sentinel in sentinels:
-                    m = x.node_pat.match(sentinel)
-                    if m:
-                        ### g.trace(m.group(0))  ###
-                        gnx = m.group(1)
-                        v = x.gnxDict.get(gnx)
-                        if v:
-                            x.changed_vnodes.append(v)
             x.results.extend(sentinels)
     #@+node:ekr.20080708094444.36: *4* x.propagate_changes
     def propagate_changes(self, old_public_file: str, old_private_file: str) -> bool:

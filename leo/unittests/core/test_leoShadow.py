@@ -7,7 +7,7 @@ import os
 import textwrap
 
 from leo.core import leoGlobals as g
-from leo.core.leoNodes import Position
+from leo.core.leoNodes import Position, VNode
 
 from leo.core.leoShadow import ShadowController
 from leo.core.leoTest2 import LeoUnitTest
@@ -127,6 +127,11 @@ class TestAtShadow(LeoUnitTest):
         # Nnit code from atFile.readOneAtCloneNode.
         at.initReadIvars(root, fileName='<no file name>')
 
+        # #4385: Remember all old bodies.
+        bodies_dict: dict[VNode, str] = {}
+        for p in root.self_and_subtree():
+            bodies_dict[p.v] = p.b
+
         # Calculate data.
         new_public_lines = g.splitLines(new_contents)  # at.read_at_clean_lines(fileName)
         old_private_lines = at.write_at_clean_sentinels(root)
@@ -139,7 +144,7 @@ class TestAtShadow(LeoUnitTest):
             new_public_lines, old_private_lines, marker, p=root)
 
         # Debugging dumps.
-        if 1:
+        if 0:
             print('')
             print(g.callers(1))
             g.printObj(old_private_lines, tag='old_private_lines')
@@ -155,6 +160,15 @@ class TestAtShadow(LeoUnitTest):
         gnx2vnode = at.fileCommands.gnxDict
         contents = ''.join(new_private_lines)
         FastAtRead(c, gnx2vnode).read_into_root(contents, fileName, root)
+
+        # #4385: Set x.changed_vnodes.
+        for p in root.self_and_subtree():
+            if p.v not in bodies_dict:
+                # g.trace('ADD', p.h)
+                x.changed_vnodes.append(p.v)
+            elif bodies_dict.get(p.v) != p.b:
+                # g.trace('CHANGE', p.h)
+                x.changed_vnodes.append(p.v)
     #@+node:ekr.20210908160006.1: *3* test update algorithm...
     #@+node:ekr.20210908134131.16: *4* TestAtShadow.test_change_end_of_prev_node
     def test_change_end_of_prev_node(self):
@@ -958,7 +972,8 @@ class TestAtShadow(LeoUnitTest):
         # Run the test.
         self.readOneAtCleanNode(test_p, new_contents)
         assert test_p.b == new_contents
-        g.printObj(x.changed_vnodes, tag='changed_vnodes')
+        assert test_p.v in x.changed_vnodes
+        # g.printObj(x.changed_vnodes, tag='changed_vnodes')
     #@+node:ekr.20210908160020.1: *3* test utils...
     #@+node:ekr.20210902210552.2: *4* TestAtShadow.test_marker_getDelims
     def test_marker_getDelims(self):
