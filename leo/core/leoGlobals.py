@@ -2266,10 +2266,12 @@ def objToString(
     if isinstance(obj, dict):
         if obj:
             result_list = ['{\n']
-            pad = max([len(str(key)) for key in obj])
-            for key in sorted(obj):
-                pad_s = ' ' * max(0, pad - len(str(key)))
-                result_list.append(f"  {pad_s}{str(key)}: {obj.get(key)}\n")
+            try:
+                keys = sorted(obj)
+            except TypeError:  # Unsortable keys.
+                keys = obj.keys()  # type:ignore
+            for key in keys:
+                result_list.append(f"key: {str(key)}:\n{obj.get(key)}\n")
             result_list.append('}')
             result = ''.join(result_list)
         else:
