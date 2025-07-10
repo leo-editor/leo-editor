@@ -97,7 +97,7 @@ class TestAtShadow(LeoUnitTest):
                 results.append(line)
             i += 1
         return results
-    #@+node:ekr.20250710065413.1: *3*  TestAtShadow.readOnAtCleanNode
+    #@+node:ekr.20250710065413.1: *3*  TestAtShadow.readOneAtCleanNode
     def readOneAtCleanNode(self, root: Position, new_contents: str) -> None:
         """
         Update the @clean/@nosent node at root.
