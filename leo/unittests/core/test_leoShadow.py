@@ -127,7 +127,7 @@ class TestAtShadow(LeoUnitTest):
 
         # Part four: call x.propagate_changed_lines.
         new_private_lines = x.propagate_changed_lines(
-                new_public_lines, old_private_lines, marker, p=root)
+            new_public_lines, old_private_lines, marker, p=root)
         if new_private_lines == old_private_lines:
             return
 
