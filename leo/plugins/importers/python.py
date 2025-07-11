@@ -275,8 +275,6 @@ class Python_Importer(Importer):
             """
             #4385: Clean up nodes created by the at.do_changed_node.
             """
-            c = self.c
-            at = c.atFileCommands
             if g.unitTesting:  # Don't interfere with unit tests.
                 return
 
@@ -285,18 +283,15 @@ class Python_Importer(Importer):
                 parent = parent.parent()
 
             for p in parent.subtree():
+                # Clear extraneous `@others` nodes.
                 if p.b.strip() == '@others':
                     p.b = ''
-                    at.any_changed_vnodes = True
-                    p.setDirty()
-                    parent.setDirty()
-                child = p.firstChild()
-                if not p.b and p.numberOfChildren() == 1 and child.h == p.h:
-                    child.moveAfter(p)
-                    child.setDirty()
-                    p.doDelete()
-                    parent.setDirty()
-                    at.any_changed_vnodes = True
+                # Promote duplicate nodes.
+                if not p.b and p.numberOfChildren() > 0 and p.firstChild().h == p.h:
+                    while p.hasChildren():
+                        child = p.firstChild()
+                        child.moveAfter(p)
+                        p.doDelete()
         #@+node:ekr.20230825164231.1: *4* function: find_docstring
         def find_docstring(p: Position) -> Optional[str]:
             """Creating a regex that returns a docstring is too tricky."""
