@@ -280,11 +280,11 @@ class Python_Importer(Importer):
             if g.unitTesting:  # Don't interfere with unit tests.
                 return
 
+            # Handle all possible nodes.
             while parent and not parent.isAnyAtFileNode():
                 parent = parent.parent()
 
             for p in parent.subtree():
-                # g.printObj(p.b, tag=f"{g.my_name()} body: {p.h}")
                 if p.b.strip() == '@others':
                     p.b = ''
                     at.any_changed_vnodes = True
