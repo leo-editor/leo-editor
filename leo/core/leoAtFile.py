@@ -640,6 +640,7 @@ class AtFile:
         if new_private_lines == old_private_lines:
             return True
         if not g.unitTesting:
+            print('')
             g.es_print("updating:", root.h)
         root.clearVisitedInTree()
         gnx2vnode = at.fileCommands.gnxDict
@@ -849,17 +850,16 @@ class AtFile:
         Propagate the changes from the public file (without_sentinels)
         to the private file (with_sentinels)
         """
-        trace = True and not g.unitTesting  ###
         at, c = self, self.c
+        ic = c.importCommands
         x = c.shadowController
+        old_body_s = at.bodies_dict.get(v)
+        new_body_s = v.b
 
-        # Part 1: compute diffs.
-        old_body = g.splitLines(at.bodies_dict.get(v))
-        new_body = g.splitLines(v.b)
-        a = x.preprocess(old_body)
-        b = x.preprocess(new_body)
-        sm = difflib.SequenceMatcher(None, a, b)
-        if trace:
+        if 0:  # Part 1: dump diffs.
+            a = x.preprocess(g.splitLines(old_body_s))
+            b = x.preprocess(g.splitLines(new_body_s))
+            sm = difflib.SequenceMatcher(None, a, b)
             print('')
             g.trace('v:', v.h)
             g.printObj(a, tag='a')
@@ -867,7 +867,15 @@ class AtFile:
             for tag, ai, aj, bi, bj in sm.get_opcodes():
                 print(f"{tag:8} a: {ai:3} {aj:3} b: {bi:3} {bj}")
 
-        # Part 2: Run importer.  ### To do.
+        if not g.unitTesting:  # Run importer.
+            ic.treeType = '@file'  # Required.
+            _junk, ext = g.os_path_splitext(fileName)
+            func = ic.dispatch(ext.lower(), root)
+            if func:
+                if not g.unitTesting:
+                    print('\n')
+                    g.trace(fileName)
+                # func(c, root, new_body_s)
     #@+node:ekr.20041005105605.116: *4* at.Reading utils...
     #@+node:ekr.20041005105605.119: *5* at.createImportedNode
     def createImportedNode(self, root: Position, headline: str) -> Position:  # pragma: no cover
