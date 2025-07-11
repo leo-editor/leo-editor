@@ -870,11 +870,8 @@ class AtFile:
         ic.treeType = '@file'  # Required.
         _junk, ext = g.os_path_splitext(fileName)
         func = ic.dispatch(ext.lower(), root)
-        if func:
-            if False and not g.unitTesting:
-                print('\n')
-                g.trace(fileName)
-            # func(c, root, new_body_s)
+        if False and func:  ### Not ready yet.
+            func(c, root, new_body_s)
     #@+node:ekr.20041005105605.116: *4* at.Reading utils...
     #@+node:ekr.20041005105605.119: *5* at.createImportedNode
     def createImportedNode(self, root: Position, headline: str) -> Position:  # pragma: no cover
