@@ -270,6 +270,33 @@ class Python_Importer(Importer):
                     if not found:
                         # Replace 'def ' by 'function'
                         child.h = f"function: {child.h[4:].strip()}"
+        #@+node:ekr.20250711094940.1: *4* function: delete_empty_changed_organizers
+        def delete_empty_changed_organizers(parent: Position) -> None:
+            """
+            #4385: Clean up nodes created by the at.do_changed_node.
+            """
+            c = self.c
+            at = c.atFileCommands
+            if g.unitTesting:  # Don't interfere with unit tests.
+                return
+
+            while parent and not parent.isAnyAtFileNode():
+                parent = parent.parent()
+
+            for p in parent.subtree():
+                # g.printObj(p.b, tag=f"{g.my_name()} body: {p.h}")
+                if p.b.strip() == '@others':
+                    p.b = ''
+                    at.any_changed_vnodes = True
+                    p.setDirty()
+                    parent.setDirty()
+                child = p.firstChild()
+                if not p.b and p.numberOfChildren() == 1 and child.h == p.h:
+                    child.moveAfter(p)
+                    child.setDirty()
+                    p.doDelete()
+                    parent.setDirty()
+                    at.any_changed_vnodes = True
         #@+node:ekr.20230825164231.1: *4* function: find_docstring
         def find_docstring(p: Position) -> Optional[str]:
             """Creating a regex that returns a docstring is too tricky."""
@@ -332,6 +359,10 @@ class Python_Importer(Importer):
             child1 = parent.firstChild()
             if not child1:
                 return
+
+            if not g.unitTesting and not parent.isAnyAtFileNode():  # #4385.
+                return
+
             # Compute the preamble.
             preamble_start = max(0, result_blocks[1].start_body - 1)
             preamble_lines = lines[:preamble_start]
@@ -348,6 +379,7 @@ class Python_Importer(Importer):
         move_module_preamble(self.lines, parent, result_blocks)
         move_class_docstrings(parent)
         adjust_at_others(parent)
+        delete_empty_changed_organizers(parent)
     #@-others
 #@-others
 
