@@ -827,19 +827,23 @@ class AtFile:
     ) -> bool:  # pragma: no cover
         """A convenience wrapper for FastAtRead.read_into_root()"""
         return FastAtRead(c, gnx2vnode).read_into_root(contents, path, root)
-    #@+node:ekr.20250709051341.1: *4* at.post_process_at_clean_vnodes
+    #@+node:ekr.20250709051341.1: *4* at.post_process_at_clean_vnodes (to do)
     def post_process_at_clean_vnodes(self) -> None:
-        """Analyze all changed vnodes, splitting or moving them as necessary."""
+        """
+        Analyze all changed vnodes in a *single* file,
+        splitting or moving them as necessary.
+        """
         at, c = self, self.c
         if not at.changed_vnodes:
             return
-        if not g.unitTesting:  ### Temporary.
+        if False and not g.unitTesting:  ### Temporary.
             g.trace(c.p.h)
             g.printObj(at.changed_vnodes, tag='changed_vodes')
             print('at.bodies_dict...')
             for key in at.bodies_dict:
                 print(f"key: {key}")
                 g.printObj(at.bodies_dict.get(key))
+
     #@+node:ekr.20041005105605.116: *4* at.Reading utils...
     #@+node:ekr.20041005105605.119: *5* at.createImportedNode
     def createImportedNode(self, root: Position, headline: str) -> Position:  # pragma: no cover
