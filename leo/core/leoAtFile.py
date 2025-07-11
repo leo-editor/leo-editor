@@ -650,8 +650,12 @@ class AtFile:
         for p in root.self_and_subtree():
             if p.v not in at.bodies_dict:
                 at.changed_vnodes.append(p.v)
+                p.v.setDirty()
+                root.v.setDirty()
             elif at.bodies_dict.get(p.v) != p.b:
                 at.changed_vnodes.append(p.v)
+                p.v.setDirty()
+                root.v.setDirty()
 
         # #4385: Handle the changed nodes.
         if at.changed_vnodes:
