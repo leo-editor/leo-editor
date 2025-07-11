@@ -858,14 +858,12 @@ class AtFile:
         new_body = g.splitLines(v.b)
         a = x.preprocess(old_body)
         b = x.preprocess(new_body)
+        sm = difflib.SequenceMatcher(None, a, b)
         if trace:
             print('')
             g.trace('v:', v.h)
             g.printObj(a, tag='a')
             g.printObj(b, tag='b')
-
-        sm = difflib.SequenceMatcher(None, a, b)
-        if trace:
             for tag, ai, aj, bi, bj in sm.get_opcodes():
                 print(f"{tag:8} a: {ai:3} {aj:3} b: {bi:3} {bj}")
 
