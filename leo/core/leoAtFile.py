@@ -426,8 +426,12 @@ class AtFile:
         c.changed = old_changed or bool(at.all_changed_vnodes)
         update_p = at.clone_all_changed_vnodes()
         if update_p:
-            g.trace('old:', c.p.h, 'new:', update_p.h)  ###
-            c.selectPosition(update_p)
+            # Select update_p.  See fc.setPositionsFromVnodes.
+            c.db['current_position'] = ','.join([
+                str(z) for z in update_p.archivedPosition()
+            ])
+            update_p.expand()
+
         at.all_changed_vnodes = []
 
         # Last.
@@ -513,7 +517,12 @@ class AtFile:
         c.changed = old_changed or bool(at.all_changed_vnodes)
         update_p = at.clone_all_changed_vnodes()
         if update_p:
-            c.selectPosition(update_p)
+            # Select update_p.  See fc.setPositionsFromVnodes.
+            c.db['current_position'] = ','.join([
+                str(z) for z in update_p.archivedPosition()
+            ])
+            update_p.expand()
+
         at.all_changed_vnodes = []
 
         # Last.

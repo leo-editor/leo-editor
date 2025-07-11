@@ -3468,7 +3468,7 @@ class Commands:
         path = os.path.expandvars(path)
         return path
     #@+node:ekr.20171124101444.1: *3* c.File
-    #@+node:ekr.20200305104646.1: *4* c.archivedPositionToPosition (new)
+    #@+node:ekr.20200305104646.1: *4* c.archivedPositionToPosition
     def archivedPositionToPosition(self, s: str) -> Position:
         """Convert an archived position (a string) to a position."""
         c = self
