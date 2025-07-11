@@ -862,15 +862,21 @@ class AtFile:
         # Clone nodes as children of the found node.
         undoData = u.beforeInsertNode(c.p)
         for v in at.all_changed_vnodes:
-            v.cloneAsNthChild(update_v, len(update_v.children))
-            update_v.children.append(v)
-            v.parents.append(update_v)
+            g.trace('clone?', v.isCloned(), v.h, len(v.b), 'v.parents', v.parents)
+            clone = v.cloneAsNthChild(update_v, len(update_v.children))
+            g.trace('clone.parents', clone.parents)
+            # if not v.parents:
+                # clone.parents.append(update_v)  ### Experimental.
+            g.trace(id(v) == id(clone))
+            # clone.h = v.h
+            # clone.b = v.b
+            # update_v.children.append(clone)
 
-        # Sort the clones in place, without undo.
+        # Defensive programming.
         if c.checkOutline() > 0:
             return None
 
-        g.trace(g.callers(8))
+        # Sort the clones in place, without undo.
         update_p.v.children.sort(key=lambda v: v.h.lower())
         u.afterInsertNode(update_p, 'Clone Updated Nodes', undoData)
         return update_p
