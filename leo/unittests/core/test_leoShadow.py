@@ -1083,22 +1083,24 @@ class TestAtShadow(LeoUnitTest):
 
         # Create the test node.
         test_p = p.insertAsLastChild()
-        test_p.h = 'test'
+        test_p.h = 'test.py'
         test_p.b = self.prep(
             """
-                node 1 line 1
-                node 1 line 2
-                node 2 line 1
-                node 2 line 2
+                def spam():
+                    pass
+
+                def eggs():
+                    pass
             """)
 
         # Define the new contents.
         new_contents = self.prep(
             """
-                node 1 line 1
-                node 1 line 1 changed
-                node 2 line 1
-                node 2 line 2
+                def spam():
+                    pass
+
+                def eggs():
+                    pass  # Changed.
             """)
 
         # Run the test.

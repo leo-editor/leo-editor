@@ -591,7 +591,7 @@ class AtFile:
         at, c, x = self, self.c, self.c.shadowController
 
         if new_contents:
-            fileName = 'root.h'  # For error messages only.
+            fileName = root.h  # Required.
         else:
             fileName = c.fullPath(root)
             if not g.os_path_exists(fileName):
@@ -869,9 +869,13 @@ class AtFile:
         # Run importer.
         ic.treeType = '@file'  # Required.
         _junk, ext = g.os_path_splitext(fileName)
-        func = ic.dispatch(ext.lower(), root)
-        if False and func:  ### Not ready yet.
-            func(c, root, new_body_s)
+        for p in root.self_and_subtree():
+            if p.v == v:
+                func = ic.dispatch(ext.lower(), root)
+                if func:
+                    func(c, p, new_body_s)
+                return
+        g.trace('Not found:', v)  # Should never happen.
     #@+node:ekr.20041005105605.116: *4* at.Reading utils...
     #@+node:ekr.20041005105605.119: *5* at.createImportedNode
     def createImportedNode(self, root: Position, headline: str) -> Position:  # pragma: no cover
