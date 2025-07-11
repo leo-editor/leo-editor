@@ -5,7 +5,6 @@
 #@+node:ekr.20041005105605.2: ** << leoAtFile imports & annotations >>
 from __future__ import annotations
 from collections.abc import Callable
-import difflib
 import io
 import os
 import re
@@ -843,7 +842,7 @@ class AtFile:
             at.do_changed_vnode(fileName, root, v)
 
 
-    #@+node:ekr.20250711061442.1: *4* at.do_changed_vnode (to do)
+    #@+node:ekr.20250711061442.1: *4* at.do_changed_vnode
     def do_changed_vnode(self, fileName: str, root: Position, v: VNode) -> None:
         """
         Propagate the changes from the public file (without_sentinels)
@@ -851,20 +850,7 @@ class AtFile:
         """
         at, c = self, self.c
         ic = c.importCommands
-        x = c.shadowController
-        old_body_s = at.bodies_dict.get(v)
         new_body_s = v.b
-
-        if 0:  # Part 1: dump diffs.
-            a = x.preprocess(g.splitLines(old_body_s))
-            b = x.preprocess(g.splitLines(new_body_s))
-            sm = difflib.SequenceMatcher(None, a, b)
-            print('')
-            g.trace('v:', v.h)
-            g.printObj(a, tag='a')
-            g.printObj(b, tag='b')
-            for tag, ai, aj, bi, bj in sm.get_opcodes():
-                print(f"{tag:8} a: {ai:3} {aj:3} b: {bi:3} {bj}")
 
         # Run importer.
         ic.treeType = '@file'  # Required.
@@ -874,8 +860,13 @@ class AtFile:
                 func = ic.dispatch(ext.lower(), root)
                 if func:
                     func(c, p, new_body_s)
-                return
-        g.trace('Not found:', v)  # Should never happen.
+                break
+        else:
+            g.trace('Not found:', v)  # Should never happen.
+
+        # Always set the dirty bit.
+        v.setDirty()
+        at.any_changed_vnodes = True
     #@+node:ekr.20041005105605.116: *4* at.Reading utils...
     #@+node:ekr.20041005105605.119: *5* at.createImportedNode
     def createImportedNode(self, root: Position, headline: str) -> Position:  # pragma: no cover
