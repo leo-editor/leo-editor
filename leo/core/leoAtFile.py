@@ -5,6 +5,7 @@
 #@+node:ekr.20041005105605.2: ** << leoAtFile imports & annotations >>
 from __future__ import annotations
 from collections.abc import Callable
+import difflib
 import io
 import os
 import re
@@ -660,7 +661,7 @@ class AtFile:
         # #4385: Handle the changed nodes.
         if at.changed_vnodes:
             at.any_changed_vnodes = True  # A global switch.
-            at.post_process_at_clean_vnodes()
+            at.post_process_at_clean_vnodes(fileName, root)
 
         return True  # Errors not detected.
     #@+node:ekr.20150204165040.7: *6* at.dump_lines
@@ -831,23 +832,44 @@ class AtFile:
     ) -> bool:  # pragma: no cover
         """A convenience wrapper for FastAtRead.read_into_root()"""
         return FastAtRead(c, gnx2vnode).read_into_root(contents, path, root)
-    #@+node:ekr.20250709051341.1: *4* at.post_process_at_clean_vnodes (to do)
-    def post_process_at_clean_vnodes(self) -> None:
+    #@+node:ekr.20250709051341.1: *4* at.post_process_at_clean_vnodes
+    def post_process_at_clean_vnodes(self, fileName: str, root: Position) -> None:
         """
         Analyze all changed vnodes in a *single* file,
         splitting or moving them as necessary.
         """
-        at, c = self, self.c
-        if not at.changed_vnodes:
-            return
-        if False and not g.unitTesting:  ### Temporary.
-            g.trace(c.p.h)
-            g.printObj(at.changed_vnodes, tag='changed_vodes')
-            print('at.bodies_dict...')
-            for key in at.bodies_dict:
-                print(f"key: {key}")
-                g.printObj(at.bodies_dict.get(key))
+        at = self
+        for v in at.changed_vnodes:
+            at.do_changed_vnode(fileName, root, v)
 
+
+    #@+node:ekr.20250711061442.1: *4* at.do_changed_vnode (to do)
+    def do_changed_vnode(self, fileName: str, root: Position, v: VNode) -> None:
+        """
+        Propagate the changes from the public file (without_sentinels)
+        to the private file (with_sentinels)
+        """
+        trace = True and not g.unitTesting  ###
+        at, c = self, self.c
+        x = c.shadowController
+
+        # Part 1: compute diffs.
+        old_body = g.splitLines(at.bodies_dict.get(v))
+        new_body = g.splitLines(v.b)
+        a = x.preprocess(old_body)
+        b = x.preprocess(new_body)
+        if trace:
+            print('')
+            g.trace('v:', v.h)
+            g.printObj(a, tag='a')
+            g.printObj(b, tag='b')
+
+        sm = difflib.SequenceMatcher(None, a, b)
+        if trace:
+            for tag, ai, aj, bi, bj in sm.get_opcodes():
+                print(f"{tag:8} a: {ai:3} {aj:3} b: {bi:3} {bj}")
+
+        # Part 2: Run importer.  ### To do.
     #@+node:ekr.20041005105605.116: *4* at.Reading utils...
     #@+node:ekr.20041005105605.119: *5* at.createImportedNode
     def createImportedNode(self, root: Position, headline: str) -> Position:  # pragma: no cover
