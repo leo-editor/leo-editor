@@ -640,7 +640,6 @@ class AtFile:
         if new_private_lines == old_private_lines:
             return True
         if not g.unitTesting:
-            print('')
             g.es_print("updating:", root.h)
         root.clearVisitedInTree()
         gnx2vnode = at.fileCommands.gnxDict
@@ -867,15 +866,15 @@ class AtFile:
             for tag, ai, aj, bi, bj in sm.get_opcodes():
                 print(f"{tag:8} a: {ai:3} {aj:3} b: {bi:3} {bj}")
 
-        if not g.unitTesting:  # Run importer.
-            ic.treeType = '@file'  # Required.
-            _junk, ext = g.os_path_splitext(fileName)
-            func = ic.dispatch(ext.lower(), root)
-            if func:
-                if not g.unitTesting:
-                    print('\n')
-                    g.trace(fileName)
-                # func(c, root, new_body_s)
+        # Run importer.
+        ic.treeType = '@file'  # Required.
+        _junk, ext = g.os_path_splitext(fileName)
+        func = ic.dispatch(ext.lower(), root)
+        if func:
+            if False and not g.unitTesting:
+                print('\n')
+                g.trace(fileName)
+            # func(c, root, new_body_s)
     #@+node:ekr.20041005105605.116: *4* at.Reading utils...
     #@+node:ekr.20041005105605.119: *5* at.createImportedNode
     def createImportedNode(self, root: Position, headline: str) -> Position:  # pragma: no cover
