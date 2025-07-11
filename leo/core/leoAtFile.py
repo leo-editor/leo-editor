@@ -47,7 +47,7 @@ class AtFile:
         'startSentinelComment', 'endSentinelComment',
         #@verbatim
         # @shadow and @clean files.
-        'any_changed_vnodes', 'bodies_dict', 'changed_vnodes', 'private_s', 'public_s',
+        'all_changed_vnodes', 'bodies_dict', 'changed_vnodes', 'private_s', 'public_s',
         # Writing.
         'indent', 'sentinels',
         'section_delim1', 'section_delim2',
@@ -98,7 +98,7 @@ class AtFile:
         self.cancelFlag = False
         self.yesToAll = False
         # Reading.
-        self.any_changed_vnodes = False
+        self.all_changed_vnodes: list[VNode] = []
         self.bodies_dict: dict[VNode, str] = {}
         self.changed_vnodes: list[VNode] = []
         self.importRootSeen = False
@@ -409,7 +409,7 @@ class AtFile:
     def readAll(self, root: Position) -> None:
         """Scan positions, looking for @<file> nodes to read."""
         at, c = self, self.c
-        at.any_changed_vnodes = False
+        at.all_changed_vnodes = []
         old_changed = c.changed
         t1 = time.time()
         c.init_error_dialogs()
@@ -423,8 +423,12 @@ class AtFile:
             g.es(f"read {len(files)} files in {t2 - t1:2.2f} seconds")
 
         # Carefully set c.changed.
-        c.changed = old_changed or bool(at.any_changed_vnodes)
-        at.any_changed_vnodes = False
+        c.changed = old_changed or bool(at.all_changed_vnodes)
+        update_p = at.clone_all_changed_vnodes()
+        if update_p:
+            g.trace('old:', c.p.h, 'new:', update_p.h)  ###
+            c.selectPosition(update_p)
+        at.all_changed_vnodes = []
 
         # Last.
         c.raise_error_dialogs()
@@ -489,7 +493,7 @@ class AtFile:
     def readAllSelected(self, root: Position) -> None:  # pragma: no cover
         """Read all @<file> nodes in root's tree."""
         at, c = self, self.c
-        at.any_changed_vnodes = False
+        at.all_changed_vnodes = []
         old_changed = c.changed
         t1 = time.time()
         c.init_error_dialogs()
@@ -506,8 +510,11 @@ class AtFile:
                 g.es("no @<file> nodes in the selected tree")
 
         # Carefully set c.changed.
-        c.changed = old_changed or bool(at.any_changed_vnodes)
-        at.any_changed_vnodes = False
+        c.changed = old_changed or bool(at.all_changed_vnodes)
+        update_p = at.clone_all_changed_vnodes()
+        if update_p:
+            c.selectPosition(update_p)
+        at.all_changed_vnodes = []
 
         # Last.
         c.raise_error_dialogs()
@@ -659,7 +666,6 @@ class AtFile:
 
         # #4385: Handle the changed nodes.
         if at.changed_vnodes:
-            at.any_changed_vnodes = True  # A global switch.
             at.post_process_at_clean_vnodes(fileName, root)
 
         return True  # Errors not detected.
@@ -831,7 +837,35 @@ class AtFile:
     ) -> bool:  # pragma: no cover
         """A convenience wrapper for FastAtRead.read_into_root()"""
         return FastAtRead(c, gnx2vnode).read_into_root(contents, path, root)
-    #@+node:ekr.20250709051341.1: *4* at.post_process_at_clean_vnodes
+    #@+node:ekr.20250711132303.1: *4* at.Changed vnodes
+    #@+node:ekr.20250711132317.1: *5* at.clone_all_changed_vnodes
+    def clone_all_changed_vnodes(self) -> Position:
+        """Make clones of all changed VNodes."""
+        at, c, u = self, self.c, self.c.undoer
+        if g.unitTesting:
+            return None
+
+        # Create the top-level node.
+        update_p = c.lastTopLevel().insertAfter()
+        update_p.h = 'Updated @clean/@auto nodes'
+        update_v = update_p.v
+
+        # Clone nodes as children of the found node.
+        undoData = u.beforeInsertNode(c.p)
+        for v in at.all_changed_vnodes:
+            v.cloneAsNthChild(update_v, len(update_v.children))
+            update_v.children.append(v)
+            v.parents.append(update_v)
+
+        # Sort the clones in place, without undo.
+        if c.checkOutline() > 0:
+            return None
+
+        g.trace(g.callers(8))
+        update_p.v.children.sort(key=lambda v: v.h.lower())
+        u.afterInsertNode(update_p, 'Clone Updated Nodes', undoData)
+        return update_p
+    #@+node:ekr.20250709051341.1: *5* at.post_process_at_clean_vnodes
     def post_process_at_clean_vnodes(self, fileName: str, root: Position) -> None:
         """
         Analyze all changed vnodes in a *single* file,
@@ -840,15 +874,15 @@ class AtFile:
         at = self
         for v in at.changed_vnodes:
             at.do_changed_vnode(fileName, root, v)
-
-
-    #@+node:ekr.20250711061442.1: *4* at.do_changed_vnode
+            if v not in at.all_changed_vnodes:
+                at.all_changed_vnodes.append(v)
+    #@+node:ekr.20250711061442.1: *5* at.do_changed_vnode
     def do_changed_vnode(self, fileName: str, root: Position, v: VNode) -> None:
         """
         Propagate the changes from the public file (without_sentinels)
         to the private file (with_sentinels)
         """
-        at, c = self, self.c
+        c = self.c
         ic = c.importCommands
         new_body_s = v.b
 
@@ -866,7 +900,6 @@ class AtFile:
 
         # Always set the dirty bit.
         v.setDirty()
-        at.any_changed_vnodes = True
     #@+node:ekr.20041005105605.116: *4* at.Reading utils...
     #@+node:ekr.20041005105605.119: *5* at.createImportedNode
     def createImportedNode(self, root: Position, headline: str) -> Position:  # pragma: no cover
