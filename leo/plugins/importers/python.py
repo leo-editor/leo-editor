@@ -275,8 +275,6 @@ class Python_Importer(Importer):
             """
             #4385: Clean up nodes created by the at.do_changed_node.
             """
-            if g.unitTesting:  # Don't interfere with unit tests.
-                return
 
             # Handle all possible nodes.
             while parent and not parent.isAnyAtFileNode():
@@ -353,9 +351,6 @@ class Python_Importer(Importer):
             """Move the preamble lines from the parent's first child to the start of parent.b."""
             child1 = parent.firstChild()
             if not child1:
-                return
-
-            if not g.unitTesting and not parent.isAnyAtFileNode():  # #4385.
                 return
 
             # Compute the preamble.

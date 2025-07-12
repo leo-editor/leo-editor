@@ -461,15 +461,12 @@ class Rust_Importer(Importer):
             """
             #4385: Clean up nodes created by the at.do_changed_node.
             """
-            if g.unitTesting:  # Don't interfere with unit tests.
-                return
 
             # Handle all possible nodes.
             while parent and not parent.isAnyAtFileNode():
                 parent = parent.parent()
 
             for p in parent.subtree():
-                g.trace(p.level(), p.h)
                 # Clear extraneous `@others` nodes.
                 if p.b.strip() == '@others':
                     p.b = ''
