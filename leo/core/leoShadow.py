@@ -44,7 +44,8 @@ if TYPE_CHECKING:  # pragma: no cover
 class ShadowController:
 
     __slots__ = (
-        'a', 'b', 'c', 'changed_vnodes',
+        'a', 'b', 'c',
+        ### 'changed_vnodes',
         'delim1', 'delim2', 'dispatch_dict',
         'encoding', 'errors', 'gnxDict',
         'marker', 'node_pat', 'old_sent_lines', 'results',

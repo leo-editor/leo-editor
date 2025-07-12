@@ -47,7 +47,8 @@ class AtFile:
         'startSentinelComment', 'endSentinelComment',
         #@verbatim
         # @shadow and @clean files.
-        'all_changed_vnodes', 'bodies_dict', 'changed_vnodes', 'private_s', 'public_s',
+        # 'all_changed_vnodes', 'changed_vnodes',
+        'changed_roots', 'changed_vnodes_dict', 'bodies_dict', 'private_s', 'public_s',
         # Writing.
         'indent', 'sentinels',
         'section_delim1', 'section_delim2',
@@ -98,9 +99,11 @@ class AtFile:
         self.cancelFlag = False
         self.yesToAll = False
         # Reading.
-        self.all_changed_vnodes: list[VNode] = []
+        ### self.all_changed_vnodes: list[VNode] = []
+        ###self.changed_vnodes: list[VNode] = []
+        self.changed_vnodes_dict: dict[VNode, list[VNode]] = {}
+        self.changed_roots: list[Position] = []
         self.bodies_dict: dict[VNode, str] = {}
-        self.changed_vnodes: list[VNode] = []
         self.importRootSeen = False
         self.readVersion = ''
         self.read_i = 0
@@ -409,7 +412,9 @@ class AtFile:
     def readAll(self, root: Position) -> None:
         """Scan positions, looking for @<file> nodes to read."""
         at, c = self, self.c
-        at.all_changed_vnodes = []
+        ### at.all_changed_vnodes = []
+        at.changed_roots = []
+        at.changed_vnodes_dict = {}
         old_changed = c.changed
         t1 = time.time()
         c.init_error_dialogs()
@@ -423,7 +428,8 @@ class AtFile:
             g.es(f"read {len(files)} files in {t2 - t1:2.2f} seconds")
 
         # Carefully set c.changed.
-        c.changed = old_changed or bool(at.all_changed_vnodes)
+        ### c.changed = old_changed or bool(at.all_changed_vnodes)
+        c.changed = old_changed or bool(at.changed_vnodes_dict)
         update_p = at.clone_all_changed_vnodes()
         if update_p:
             # Select update_p.  See fc.setPositionsFromVnodes.
@@ -432,7 +438,9 @@ class AtFile:
             ])
             update_p.expand()
 
-        at.all_changed_vnodes = []
+        ### at.all_changed_vnodes = []
+        at.changed_roots = []
+        at.changed_vnodes_dict = {}
 
         # Last.
         c.raise_error_dialogs()
@@ -497,7 +505,9 @@ class AtFile:
     def readAllSelected(self, root: Position) -> None:  # pragma: no cover
         """Read all @<file> nodes in root's tree."""
         at, c = self, self.c
-        at.all_changed_vnodes = []
+        ### at.all_changed_vnodes = []
+        at.changed_roots = []
+        at.changed_vnodes_dict = {}
         old_changed = c.changed
         t1 = time.time()
         c.init_error_dialogs()
@@ -514,7 +524,8 @@ class AtFile:
                 g.es("no @<file> nodes in the selected tree")
 
         # Carefully set c.changed.
-        c.changed = old_changed or bool(at.all_changed_vnodes)
+        ### c.changed = old_changed or bool(at.all_changed_vnodes)
+        c.changed = old_changed or bool(at.changed_vnodes_dict)
         update_p = at.clone_all_changed_vnodes()
         if update_p:
             # Select update_p.  See fc.setPositionsFromVnodes.
@@ -523,7 +534,9 @@ class AtFile:
             ])
             update_p.expand()
 
-        at.all_changed_vnodes = []
+        ### at.all_changed_vnodes = []
+        at.changed_roots = []
+        at.changed_vnodes_dict = {}
 
         # Last.
         c.raise_error_dialogs()
@@ -627,7 +640,7 @@ class AtFile:
         # #4385: Init the per-file data.
         at.initReadIvars(root, fileName)
         at.bodies_dict = {}
-        at.changed_vnodes = []
+        ### at.changed_vnodes = []
 
         # Don't update if the outline and file are in synch.
         if old_mod_time and old_mod_time >= new_mod_time:
@@ -663,19 +676,27 @@ class AtFile:
         g.doHook('after-reading-external-file', c=c, p=root)
 
         # #4385: Set at.changed_vnodes.
+        vnode_list = []
+
         for p in root.self_and_subtree():
             if p.v not in at.bodies_dict:
-                at.changed_vnodes.append(p.v)
+                ### at.changed_vnodes.append(p.v)
+                vnode_list.append(p.v)
                 p.v.setDirty()
                 root.v.setDirty()
             elif at.bodies_dict.get(p.v) != p.b:
-                at.changed_vnodes.append(p.v)
+                ### at.changed_vnodes.append(p.v)
+                vnode_list.append(p.v)
                 p.v.setDirty()
                 root.v.setDirty()
 
         # #4385: Handle the changed nodes.
-        if at.changed_vnodes:
+        if vnode_list:
+            at.changed_roots.append(root)
+            at.changed_vnodes_dict[root.v] = vnode_list
             at.post_process_at_clean_vnodes(fileName, root)
+
+        ### if at.changed_vnodes:
 
         return True  # Errors not detected.
     #@+node:ekr.20150204165040.7: *6* at.dump_lines
@@ -853,24 +874,27 @@ class AtFile:
         at, c, u = self, self.c, self.c.undoer
         if g.unitTesting:
             return None
+        if not at.changed_roots:
+            return None
 
         # Create the top-level node.
         update_p = c.lastTopLevel().insertAfter()
         update_p.h = 'Updated @clean/@auto nodes'
-        update_v = update_p.v
 
         # Clone nodes as children of the found node.
         undoData = u.beforeInsertNode(c.p)
-        for v in at.all_changed_vnodes:
-            g.trace('clone?', v.isCloned(), v.h, len(v.b), 'v.parents', v.parents)
-            clone = v.cloneAsNthChild(update_v, len(update_v.children))
-            g.trace('clone.parents', clone.parents)
-            # if not v.parents:
-                # clone.parents.append(update_v)  ### Experimental.
-            g.trace(id(v) == id(clone))
-            # clone.h = v.h
-            # clone.b = v.b
-            # update_v.children.append(clone)
+        for root in at.changed_roots:
+            vnode_list = at.changed_vnodes_dict.get(root.v, [])
+            for v in vnode_list:
+                # Find the corresponding position.
+                for p in root.self_and_subtree():
+                    if p.v == v:
+                        clone = p.clone()
+                        clone.moveToLastChildOf(update_p)
+                        root.setDirty()
+                        break
+                else:
+                    g.trace('Not found', v.h)  # Should never happen.
 
         # Defensive programming.
         if c.checkOutline() > 0:
@@ -887,31 +911,50 @@ class AtFile:
         splitting or moving them as necessary.
         """
         at = self
-        for v in at.changed_vnodes:
+        vnode_list = at.changed_vnodes_dict.get(root.v, [])
+        assert vnode_list, root.h
+        changed_root_vnodes = [z.v for z in at.changed_roots]
+        assert root.v in changed_root_vnodes, root.v
+        for v in vnode_list:
             at.do_changed_vnode(fileName, root, v)
-            if v not in at.all_changed_vnodes:
-                at.all_changed_vnodes.append(v)
     #@+node:ekr.20250711061442.1: *5* at.do_changed_vnode
     def do_changed_vnode(self, fileName: str, root: Position, v: VNode) -> None:
         """
         Propagate the changes from the public file (without_sentinels)
         to the private file (with_sentinels)
         """
-        c = self.c
+        at, c = self, self.c
+        ### c = self.c
         ic = c.importCommands
         new_body_s = v.b
 
-        # Run importer.
-        ic.treeType = '@file'  # Required.
-        _junk, ext = g.os_path_splitext(fileName)
+        # Remember the old nodes.
+        old_nodes = [z.v for z in root.self_and_subtree()]
+        ### g.printObj(old_nodes, tag='Before')
+
+        # Find a position for v.
         for p in root.self_and_subtree():
             if p.v == v:
+                ic.treeType = '@file'  # Required.
+                _junk, ext = g.os_path_splitext(fileName)
                 func = ic.dispatch(ext.lower(), root)
                 if func:
                     func(c, p, new_body_s)
                 break
         else:
             g.trace('Not found:', v)  # Should never happen.
+
+        # Add any inserted nodes to the changed_vnodes_dict.
+        new_nodes = [z.v for z in root.self_and_subtree()]
+        ### g.printObj(new_nodes, tag='After')
+        for v2 in new_nodes:
+            if v2 not in old_nodes:
+                vnode_list = at.changed_vnodes_dict[root.v]
+                if v2 not in vnode_list:
+                    ### print('ADD', v2.h)
+                    v2.setDirty()
+                    vnode_list.append(v2)
+                    at.changed_vnodes_dict[root.v] = vnode_list
 
         # Always set the dirty bit.
         v.setDirty()

@@ -521,7 +521,8 @@ class Importer:
                 raise
 
         # Add trailing lines.
-        parent.b += f"@language {self.language}\n@tabwidth {self.tab_width}\n"
+        if g.unitTesting or self.root.isAnyAtFileNode():  # #4385.
+            parent.b += f"@language {self.language}\n@tabwidth {self.tab_width}\n"
 
     #@+node:ekr.20230529075138.37: *4* i.import_from_string (driver)
     def import_from_string(self, parent: Position, s: str) -> None:

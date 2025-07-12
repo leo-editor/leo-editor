@@ -286,12 +286,12 @@ class Python_Importer(Importer):
                 # Clear extraneous `@others` nodes.
                 if p.b.strip() == '@others':
                     p.b = ''
-                # Promote duplicate nodes.
-                if not p.b and p.numberOfChildren() > 0 and p.firstChild().h == p.h:
-                    while p.hasChildren():
-                        child = p.firstChild()
-                        child.moveAfter(p)
-                        p.doDelete()
+
+                # Delete a duplicate *child*, not the parent.
+                if not p.b and p.numberOfChildren() == 1 and p.firstChild().h == p.h:
+                    child = p.firstChild()
+                    p.b = child.b
+                    child.doDelete()
         #@+node:ekr.20230825164231.1: *4* function: find_docstring
         def find_docstring(p: Position) -> Optional[str]:
             """Creating a regex that returns a docstring is too tricky."""

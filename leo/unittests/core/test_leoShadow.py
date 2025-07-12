@@ -1106,7 +1106,8 @@ class TestAtShadow(LeoUnitTest):
         # Run the test.
         self.readOneAtCleanNode(test_p, new_contents)
         assert test_p.b == new_contents
-        assert test_p.v in at.changed_vnodes
+        ### assert test_p.v in at.changed_vnodes
+        assert test_p.v in at.changed_vnodes_dict.get(test_p.v)
         assert p.v.isDirty(), p
         assert test_p.isDirty(), test_p
     #@-others
