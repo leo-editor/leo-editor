@@ -1677,7 +1677,7 @@ class RecursiveImportController:
             files=[path],
             parent=parent,
             shortFn=True,
-            treeType='@file',  ### ???
+            treeType=self.kind,  # Leo 6.8.6.
             verbose=self.verbose,  # Leo 6.6.
         )
 
