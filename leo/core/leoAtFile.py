@@ -921,7 +921,7 @@ class AtFile:
             if p.v == v:
                 _junk, ext = g.os_path_splitext(fileName)
                 # Get the `do_import` function for the proper importer module.
-                func = ic.dispatch(ext.lower(), root, treeType='@clean')
+                func = ic.dispatch(ext.lower(), root)
                 if func:
                     func(c, p, new_body_s)
                 break
@@ -1437,7 +1437,7 @@ class AtFile:
         at, c = self, self.c
         # Dispatch the proper writer.
         junk, ext = g.os_path_splitext(fileName)
-        writer = at.dispatch(ext, root, treeType='@auto')
+        writer = at.dispatch(ext, root)
         if writer:
             at.outputList = []
             writer(root)
