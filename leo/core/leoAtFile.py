@@ -923,14 +923,9 @@ class AtFile:
         Propagate the changes from the public file (without_sentinels)
         to the private file (with_sentinels)
         """
-        at, c = self, self.c
-        ### c = self.c
+        c = self.c
         ic = c.importCommands
         new_body_s = v.b
-
-        # Remember the old nodes.
-        old_nodes = [z.v for z in root.self_and_subtree()]
-        ### g.printObj(old_nodes, tag='Before')
 
         # Find a position for v.
         for p in root.self_and_subtree():
@@ -943,18 +938,6 @@ class AtFile:
                 break
         else:
             g.trace('Not found:', v)  # Should never happen.
-
-        # Add any inserted nodes to the changed_vnodes_dict.
-        new_nodes = [z.v for z in root.self_and_subtree()]
-        ### g.printObj(new_nodes, tag='After')
-        for v2 in new_nodes:
-            if v2 not in old_nodes:
-                vnode_list = at.changed_vnodes_dict[root.v]
-                if v2 not in vnode_list:
-                    ### print('ADD', v2.h)
-                    v2.setDirty()
-                    vnode_list.append(v2)
-                    at.changed_vnodes_dict[root.v] = vnode_list
 
         # Always set the dirty bit.
         v.setDirty()
