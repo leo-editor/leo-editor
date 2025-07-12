@@ -391,7 +391,7 @@ class Rust_Importer(Importer):
             return
 
         #@+others  # Define helper functions.
-        #@+node:ekr.20231031162249.1: *4* function: convert_docstring
+        #@+node:ekr.20231031162249.1: *4* rust_i.function: convert_docstring
         def convert_docstring(p: Position) -> None:
             """Convert the leading comments of p.b to a docstring."""
             if not p.b.strip():
@@ -420,7 +420,7 @@ class Rust_Importer(Importer):
                     results.append('\n')
             results.append('@c\n')
             p.b = ''.join(results) + ''.join(tail)
-        #@+node:ekr.20231031162142.1: *4* function: move_module_preamble
+        #@+node:ekr.20231031162142.1: *4* rust_i.function: move_module_preamble
         def move_module_preamble(lines: list[str], parent: Position, result_blocks: list[Block]) -> None:
             """
             Move the preamble lines from the parent's first child to the start of parent.b.
@@ -456,12 +456,36 @@ class Rust_Importer(Importer):
             parent.b = preamble_s + parent.b
             child1.b = child1.b.replace(preamble_s, '')
             child1.b = child1.b.lstrip('\n')
+        #@+node:ekr.20250712051537.1: *4* rust_i.function: delete_empty_changed_organizers
+        def delete_empty_changed_organizers(parent: Position) -> None:
+            """
+            #4385: Clean up nodes created by the at.do_changed_node.
+            """
+            if g.unitTesting:  # Don't interfere with unit tests.
+                return
+
+            # Handle all possible nodes.
+            while parent and not parent.isAnyAtFileNode():
+                parent = parent.parent()
+
+            for p in parent.subtree():
+                g.trace(p.level(), p.h)
+                # Clear extraneous `@others` nodes.
+                if p.b.strip() == '@others':
+                    p.b = ''
+
+                # Delete a duplicate *child*, not the parent.
+                if not p.b and p.numberOfChildren() == 1 and p.firstChild().h == p.h:
+                    child = p.firstChild()
+                    p.b = child.b
+                    child.doDelete()
         #@-others
 
         move_module_preamble(self.lines, parent, result_blocks)
         if 0:
             for p in parent.self_and_subtree():
                 convert_docstring(p)
+        delete_empty_changed_organizers(parent)
     #@-others
 #@-others
 

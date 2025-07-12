@@ -230,7 +230,7 @@ class Python_Importer(Importer):
         """
 
         #@+others  # Define helper functions.
-        #@+node:ekr.20230830113521.1: *4* function: adjust_at_others
+        #@+node:ekr.20230830113521.1: *4* python_i.function: adjust_at_others
         def adjust_at_others(parent: Position) -> None:
             """
             Add a blank line before @others, and remove the leading blank line in the first child.
@@ -244,7 +244,7 @@ class Python_Importer(Importer):
                             p.b = ''.join(lines[:i]) + '\n' + ''.join(lines[i:])
                             child.b = child.b[1:]
                             break
-        #@+node:ekr.20230825100219.1: *4* function: adjust_headlines
+        #@+node:ekr.20230825100219.1: *4* python_i.function: adjust_headlines
         def adjust_headlines(parent: Position) -> None:
             """
             python_i.adjust_headlines.
@@ -253,7 +253,7 @@ class Python_Importer(Importer):
 
             Add class names for all methods.
 
-            Change 'def' to 'function:' for all non-methods.
+            Change 'def' to 'python_i.function:' for all non-methods.
             """
             for child in parent.subtree():
                 found = False
@@ -270,7 +270,7 @@ class Python_Importer(Importer):
                     if not found:
                         # Replace 'def ' by 'function'
                         child.h = f"function: {child.h[4:].strip()}"
-        #@+node:ekr.20250711094940.1: *4* function: delete_empty_changed_organizers
+        #@+node:ekr.20250711094940.1: *4* python_i.function: delete_empty_changed_organizers
         def delete_empty_changed_organizers(parent: Position) -> None:
             """
             #4385: Clean up nodes created by the at.do_changed_node.
@@ -292,7 +292,7 @@ class Python_Importer(Importer):
                     child = p.firstChild()
                     p.b = child.b
                     child.doDelete()
-        #@+node:ekr.20230825164231.1: *4* function: find_docstring
+        #@+node:ekr.20230825164231.1: *4* python_i.function: find_docstring
         def find_docstring(p: Position) -> Optional[str]:
             """Creating a regex that returns a docstring is too tricky."""
             delims = ('"""', "'''")
@@ -312,7 +312,7 @@ class Python_Importer(Importer):
                 i += 1
             return None
 
-        #@+node:ekr.20230825164234.1: *4* function: move_class_docstring
+        #@+node:ekr.20230825164234.1: *4* python_i.function: move_class_docstring
         def move_class_docstring(docstring: str, child_p: Position, class_p: Position) -> None:
             """Move the docstring from child_p to class_p."""
 
@@ -336,7 +336,7 @@ class Python_Importer(Importer):
             # This isn't perfect in some situations.
             docstring_list = [f"{' '*4}{z}" for z in g.splitLines(docstring)]
             class_p.b = ''.join(class_lines[:n] + docstring_list + class_lines[n:])
-        #@+node:ekr.20230825111112.1: *4* function: move_class_docstrings
+        #@+node:ekr.20230825111112.1: *4* python_i.function: move_class_docstrings
         def move_class_docstrings(parent: Position) -> None:
             """
             Move class docstrings from the class node's first child to the class node.
@@ -348,7 +348,7 @@ class Python_Importer(Importer):
                         docstring = find_docstring(child1)
                         if docstring:
                             move_class_docstring(docstring, child1, p)
-        #@+node:ekr.20230930181855.1: *4* function: move_module_preamble
+        #@+node:ekr.20230930181855.1: *4* python_i.function: move_module_preamble
         def move_module_preamble(lines: list[str], parent: Position, result_blocks: list[Block]) -> None:
             """Move the preamble lines from the parent's first child to the start of parent.b."""
             child1 = parent.firstChild()

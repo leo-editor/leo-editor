@@ -99,8 +99,6 @@ class AtFile:
         self.cancelFlag = False
         self.yesToAll = False
         # Reading.
-        ### self.all_changed_vnodes: list[VNode] = []
-        ###self.changed_vnodes: list[VNode] = []
         self.changed_vnodes_dict: dict[VNode, list[VNode]] = {}
         self.changed_roots: list[Position] = []
         self.bodies_dict: dict[VNode, str] = {}
@@ -412,7 +410,6 @@ class AtFile:
     def readAll(self, root: Position) -> None:
         """Scan positions, looking for @<file> nodes to read."""
         at, c = self, self.c
-        ### at.all_changed_vnodes = []
         at.changed_roots = []
         at.changed_vnodes_dict = {}
         old_changed = c.changed
@@ -428,7 +425,6 @@ class AtFile:
             g.es(f"read {len(files)} files in {t2 - t1:2.2f} seconds")
 
         # Carefully set c.changed.
-        ### c.changed = old_changed or bool(at.all_changed_vnodes)
         c.changed = old_changed or bool(at.changed_vnodes_dict)
         update_p = at.clone_all_changed_vnodes()
         if update_p:
@@ -438,7 +434,6 @@ class AtFile:
             ])
             update_p.expand()
 
-        ### at.all_changed_vnodes = []
         at.changed_roots = []
         at.changed_vnodes_dict = {}
 
@@ -505,7 +500,6 @@ class AtFile:
     def readAllSelected(self, root: Position) -> None:  # pragma: no cover
         """Read all @<file> nodes in root's tree."""
         at, c = self, self.c
-        ### at.all_changed_vnodes = []
         at.changed_roots = []
         at.changed_vnodes_dict = {}
         old_changed = c.changed
@@ -524,7 +518,6 @@ class AtFile:
                 g.es("no @<file> nodes in the selected tree")
 
         # Carefully set c.changed.
-        ### c.changed = old_changed or bool(at.all_changed_vnodes)
         c.changed = old_changed or bool(at.changed_vnodes_dict)
         update_p = at.clone_all_changed_vnodes()
         if update_p:
@@ -534,7 +527,6 @@ class AtFile:
             ])
             update_p.expand()
 
-        ### at.all_changed_vnodes = []
         at.changed_roots = []
         at.changed_vnodes_dict = {}
 
@@ -640,7 +632,6 @@ class AtFile:
         # #4385: Init the per-file data.
         at.initReadIvars(root, fileName)
         at.bodies_dict = {}
-        ### at.changed_vnodes = []
 
         # Don't update if the outline and file are in synch.
         if old_mod_time and old_mod_time >= new_mod_time:
@@ -680,12 +671,10 @@ class AtFile:
 
         for p in root.self_and_subtree():
             if p.v not in at.bodies_dict:
-                ### at.changed_vnodes.append(p.v)
                 vnode_list.append(p.v)
                 p.v.setDirty()
                 root.v.setDirty()
             elif at.bodies_dict.get(p.v) != p.b:
-                ### at.changed_vnodes.append(p.v)
                 vnode_list.append(p.v)
                 p.v.setDirty()
                 root.v.setDirty()
@@ -695,8 +684,6 @@ class AtFile:
             at.changed_roots.append(root)
             at.changed_vnodes_dict[root.v] = vnode_list
             at.post_process_at_clean_vnodes(fileName, root)
-
-        ### if at.changed_vnodes:
 
         return True  # Errors not detected.
     #@+node:ekr.20150204165040.7: *6* at.dump_lines
