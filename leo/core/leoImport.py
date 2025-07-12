@@ -552,7 +552,12 @@ class LeoImportCommands:
             g.print_exception()
     #@+node:ekr.20031218072017.3209: *3* ic.Import
     #@+node:ekr.20031218072017.3210: *4* ic.createOutline & helpers
-    def createOutline(self, parent: Position, ext: str = None, s: str = None) -> Position:
+    def createOutline(self,
+        parent: Position,
+        ext: str = None,
+        s: str = None,
+        treeType: str = '@file',
+    ) -> Position:
         """
         Create an outline by importing a file, reading the file with the
         given encoding if string s is None.
@@ -577,7 +582,8 @@ class LeoImportCommands:
         # Each importer file defines `do_import` at the top level with this signature:
         # def do_import(c: Cmdr, parent: Position, s: str, treeType: str = '@file') -> None:
 
-        func = self.dispatch(ext, p)  # The do_import callback.
+        func = self.dispatch(ext, p, treeType=treeType)  # The do_import callback.
+
         # Call the scanning function.
         if g.unitTesting:
             assert func or ext in ('.txt', '.w', '.xxx'), (repr(func), ext, p.h)
@@ -585,7 +591,7 @@ class LeoImportCommands:
             s = g.toUnicode(s, encoding=self.encoding)
             s = s.replace('\r', '')
             # func is a factory that instantiates the importer class.
-            func(c, p, s)
+            func(c, p, s, treeType=treeType)
         else:
             # Just copy the file to the parent node.
             s = g.toUnicode(s, encoding=self.encoding)
@@ -594,8 +600,7 @@ class LeoImportCommands:
         if g.unitTesting:
             return p
 
-        # #488894: unsettling dialog when saving Leo file
-        # #889175: Remember the full fileName.
+        # Remember the full fileName.
         c.atFileCommands.rememberReadPath(fileName, p)
         p.contract()
         w = c.frame.body.wrapper
@@ -1118,9 +1123,6 @@ class LeoImportCommands:
             return
         language = c.getLanguage(p)
         ext = '.' + d.get(language)
-
-        ### This can no effect on the parser!
-        ### self.treeType = '@file'
 
         # The parser is the `do_import` function for each importer class.
         parser = g.app.classDispatchDict.get(ext)
@@ -1675,7 +1677,7 @@ class RecursiveImportController:
             files=[path],
             parent=parent,
             shortFn=True,
-            treeType='@file',  ### # ? '@auto','@clean','@nosent' cause problems.
+            treeType='@file',  ### ???
             verbose=self.verbose,  # Leo 6.6.
         )
 

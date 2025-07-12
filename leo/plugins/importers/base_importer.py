@@ -110,6 +110,7 @@ class Importer:
         self.root: Position = None
         delims = g.set_delims_from_language(self.language)
         self.single_comment, self.block1, self.block2 = delims
+        self.treeType: str = None  # Set by i.import_from_string.
         self.tab_width = 0  # Must be set later.
     #@+node:ekr.20230529075640.1: *3* i: Generic methods: may be overridden
     #@+node:ekr.20230529075138.36: *4* i.check_blanks_and_tabs
