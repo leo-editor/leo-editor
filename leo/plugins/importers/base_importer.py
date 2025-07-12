@@ -155,6 +155,9 @@ class Importer:
         If not, the caller can insert the desired blank lines.
         """
         s = ''.join(lines)
+        if self.treeType in ('@auto', '@auto'):
+            return s
+        # Legacy:
         return s.lstrip('\n').rstrip() + '\n' if s.strip() else ''
     #@+node:ekr.20230529075138.13: *4* i.compute_headline
     def compute_headline(self, block: Block) -> str:
