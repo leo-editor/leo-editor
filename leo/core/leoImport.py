@@ -312,7 +312,7 @@ class LeoImportCommands:
                     docSeen = True
                     result += docstart
                 i, result = self.convertCodePartToWeb(s, i, p, result)
-            elif self.treeType == "@file" or startInCode:
+            elif startInCode:
                 if not docSeen:
                     docSeen = True
                     result += docstart
