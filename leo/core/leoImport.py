@@ -575,7 +575,7 @@ class LeoImportCommands:
             return None
 
         # Each importer file defines `do_import` at the top level with this signature:
-        # def do_import(c: Cmdr, parent: Position, s: str) -> None:
+        # def do_import(c: Cmdr, parent: Position, s: str, treeType: str = '@file') -> None:
 
         func = self.dispatch(ext, p)  # The do_import callback.
         # Call the scanning function.

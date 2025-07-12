@@ -22,7 +22,7 @@ class Coffeescript_Importer(Python_Importer):
     )
 #@-others
 
-def do_import(c: Cmdr, parent: Position, s: str) -> None:
+def do_import(c: Cmdr, parent: Position, s: str, treeType: str = '@file') -> None:
     """The importer callback for coffeescript."""
     Coffeescript_Importer(c).import_from_string(parent, s)
 

@@ -524,13 +524,19 @@ class Importer:
         if self.root.isAnyAtFileNode():  # #4385.
             parent.b += f"@language {self.language}\n@tabwidth {self.tab_width}\n"
     #@+node:ekr.20230529075138.37: *4* i.import_from_string (driver)
-    def import_from_string(self, parent: Position, s: str) -> None:
+    def import_from_string(self,
+        parent: Position,
+        s: str,
+        treeType: str = '@file',
+    ) -> None:
         """
         Importer.import_from_string.
 
         parent: An @<file> node containing the absolute path to the to-be-imported file.
 
         s: The contents of the file.
+
+        treeType: the desired @<file> node.
 
         The top-level code for almost all importers.
 
