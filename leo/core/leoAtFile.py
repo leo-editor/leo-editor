@@ -916,11 +916,14 @@ class AtFile:
         ic = c.importCommands
         new_body_s = v.b
 
+        ### This can't have any effect!
+        ### ic.treeType = '@file'
+
         # Find a position for v.
         for p in root.self_and_subtree():
             if p.v == v:
-                ic.treeType = '@file'  # Required.
                 _junk, ext = g.os_path_splitext(fileName)
+                # Get the `do_import` function for the proper importer module.
                 func = ic.dispatch(ext.lower(), root)
                 if func:
                     func(c, p, new_body_s)

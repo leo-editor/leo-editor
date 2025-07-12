@@ -276,7 +276,7 @@ class LeoImportCommands:
             # All nodes should start with '@', even if the doc part is empty.
             result += nl + "@ " if self.webType == "cweb" else nl + "@" + nl
         return i, result
-    #@+node:ekr.20031218072017.3297: *4* ic.convertVnodeToWeb
+    #@+node:ekr.20031218072017.3297: *4* ic.positionToWeb
     def positionToWeb(self, p: Position) -> str:
         """
         This code converts a VNode to noweb text as follows:
@@ -427,13 +427,6 @@ class LeoImportCommands:
         except IOError:
             g.warning("can not open", fileName)
             return
-        self.treeType = "@file"
-        # Set self.treeType to @root if p or an ancestor is an @root node.
-        for p in current.parents():
-            flag, junk = g.is_special(p.b, "@root")
-            if flag:
-                self.treeType = "@root"
-                break
         for p in current.self_and_subtree(copy=False):
             s = self.positionToWeb(p)
             if s:
@@ -747,14 +740,14 @@ class LeoImportCommands:
         files: list[str] = None,
         parent: Position = None,
         shortFn: bool = False,
-        treeType: str = None,
+        treeType: str = '@file',
         verbose: bool = True,  # Legacy value.
     ) -> None:
         # Not a command.  It must *not* have an event arg.
         c, u = self.c, self.c.undoer
         if not c or not c.p or not files:
             return
-        self.treeType = treeType or '@file'
+        self.treeType = treeType
         self.verbose = verbose
         if not parent:
             g.trace('===== no parent', g.callers())
@@ -1124,9 +1117,14 @@ class LeoImportCommands:
             g.es_print('can not run parse-body: node has children:', p.h)
             return
         language = c.getLanguage(p)
-        self.treeType = '@file'
         ext = '.' + d.get(language)
+
+        ### This can no effect on the parser!
+        ### self.treeType = '@file'
+
+        # The parser is the `do_import` function for each importer class.
         parser = g.app.classDispatchDict.get(ext)
+
         # Fix bug 151: parse-body creates "None declarations"
         if p.isAnyAtFileNode():
             fn = p.anyAtFileNodeName()
@@ -1677,7 +1675,7 @@ class RecursiveImportController:
             files=[path],
             parent=parent,
             shortFn=True,
-            treeType='@file',  # '@auto','@clean','@nosent' cause problems.
+            treeType='@file',  ### # ? '@auto','@clean','@nosent' cause problems.
             verbose=self.verbose,  # Leo 6.6.
         )
 

@@ -240,8 +240,7 @@ def importAnyFile(self: Self, event: LeoKeyEvent = None) -> None:
             ic.importFilesCommand(
                 files=[fn],
                 parent=parent,
-                # Experimental: attempt to use permissive section ref logic.
-                treeType='@auto',  # was '@clean'
+                treeType='@auto',  # Use permissive section ref logic.
             )
             c.redraw()
     c.raise_error_dialogs(kind='read')
