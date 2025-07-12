@@ -871,13 +871,15 @@ class AtFile:
         # Clone nodes as children of the found node.
         undoData = u.beforeInsertNode(c.p)
         for root in at.changed_roots:
+            parent = update_p.insertAsLastChild()
+            parent.h = f"Updated from: {g.shortFileName(c.fullPath(root))}"
             vnode_list = at.changed_vnodes_dict.get(root.v, [])
             for v in vnode_list:
                 # Find the corresponding position.
                 for p in root.self_and_subtree():
                     if p.v == v:
                         clone = p.clone()
-                        clone.moveToLastChildOf(update_p)
+                        clone.moveToLastChildOf(parent)
                         root.setDirty()
                         break
                 else:
