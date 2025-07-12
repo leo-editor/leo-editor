@@ -2991,7 +2991,10 @@ class AtFile:
         ok = g.writeFile(contents, encoding, fileName)
         if ok:
             c.setFileTimeStamp(fileName)
-            if not g.unitTesting:
+            if (
+                not g.unitTesting
+                and c.config.getBool('report-changed-files', default=True)
+            ):
                 g.es(f"{timestamp}wrote: {sfn}")  # pragma: no cover
         else:  # pragma: no cover
             g.error('error writing', sfn)
