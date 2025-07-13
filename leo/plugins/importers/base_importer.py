@@ -159,7 +159,7 @@ class Importer:
             result = s
         else:  # Legacy:
             result = s.lstrip('\n').rstrip() + '\n' if s.strip() else ''
-        if not g.unitTesting:
+        if not g.unitTesting:  ###
             if result == s:
                 g.trace('No change', parent.h)
             else:
