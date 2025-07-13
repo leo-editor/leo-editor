@@ -159,12 +159,12 @@ class Importer:
             result = s
         else:  # Legacy:
             result = s.lstrip('\n').rstrip() + '\n' if s.strip() else ''
-        if not g.unitTesting:  ###
+        if False and not g.unitTesting:  ###
             if result == s:
                 g.trace('No change', parent.h)
             else:
                 g.printObj(s, tag=f"s: {parent.h}")
-                g.printObj(result, tag=f"result: {parent.h}")
+            g.printObj(result, tag=f"result: {parent.h}")
         return result
     #@+node:ekr.20230529075138.13: *4* i.compute_headline
     def compute_headline(self, block: Block) -> str:

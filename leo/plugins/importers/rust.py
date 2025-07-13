@@ -391,7 +391,7 @@ class Rust_Importer(Importer):
             return
 
         #@+others  # Define helper functions.
-        #@+node:ekr.20231031162249.1: *4* rust_i.function: convert_docstring
+        #@+node:ekr.20231031162249.1: *4* rust_i.function: convert_docstring (not used)
         def convert_docstring(p: Position) -> None:
             """Convert the leading comments of p.b to a docstring."""
             if not p.b.strip():
@@ -452,10 +452,18 @@ class Rust_Importer(Importer):
             preamble_s = ''.join(real_preamble_lines)
             if not preamble_s.strip():
                 return
-            # Adjust the bodies.
+
+            # First, adjust the bodies.
             parent.b = preamble_s + parent.b
             child1.b = child1.b.replace(preamble_s, '')
-            child1.b = child1.b.lstrip('\n')
+
+            # Next, move leading lines to the parent, before the @others line.
+            while child1.b.startswith('\n'):
+                if '@others' in parent.b:
+                    parent.b = parent.b.replace('@others', '\n@others')
+                else:
+                    parent.b += '\n'
+                child1.b = child1.b[1:]
         #@-others
 
         move_module_preamble(self.lines, parent, result_blocks)
