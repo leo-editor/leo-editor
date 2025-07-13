@@ -24,7 +24,7 @@ class Coffeescript_Importer(Python_Importer):
 
 def do_import(c: Cmdr, parent: Position, s: str, treeType: str = '@file') -> None:
     """The importer callback for coffeescript."""
-    Coffeescript_Importer(c).import_from_string(parent, s)
+    Coffeescript_Importer(c).import_from_string(parent, s, treeType=treeType)
 
 importer_dict = {
     'extensions': ['.coffee',],
