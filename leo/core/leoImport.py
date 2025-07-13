@@ -1679,10 +1679,8 @@ class RecursiveImportController:
             verbose=self.verbose,  # Leo 6.6.
         )
 
-        p = parent.lastChild()
-        p.h = self.kind + p.h[5:]  # Honor the requested kind.
-
         # #4385: set mod time for @clean files.
+        p = parent.lastChild()
         if self.kind == '@clean':
             p.v.u['_mod_time'] = g.os_path_getmtime(path)
 
