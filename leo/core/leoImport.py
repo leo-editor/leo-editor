@@ -569,7 +569,7 @@ class LeoImportCommands:
         """
         c = self.c
         p = parent.copy()
-        self.treeType = '@file'  # Fix #352.
+        self.treeType = treeType
         fileName = c.fullPath(parent)
         if g.is_binary_external_file(fileName):
             return self.import_binary_file(fileName, parent)
@@ -579,19 +579,17 @@ class LeoImportCommands:
         if s is None:
             return None
 
-        # Each importer file defines `do_import` at the top level with this signature:
-        # def do_import(c: Cmdr, parent: Position, s: str, treeType: str = '@file') -> None:
-
-        func = self.dispatch(ext, p)  # The do_import callback.
-
-        # Call the scanning function.
+        # Each importer file defines `do_import` at the top level.
+        func = self.dispatch(ext, p)
         if g.unitTesting:
             assert func or ext in ('.txt', '.w', '.xxx'), (repr(func), ext, p.h)
+
+        # Call the scanning function.
         if func and not c.config.getBool('suppress-import-parsing', default=False):
             s = g.toUnicode(s, encoding=self.encoding)
             s = s.replace('\r', '')
             # func is a factory that instantiates the importer class.
-            func(c, p, s, treeType=treeType)
+            func(c, p, s, treeType=self.treeType)
         else:
             # Just copy the file to the parent node.
             s = g.toUnicode(s, encoding=self.encoding)
@@ -767,7 +765,7 @@ class LeoImportCommands:
                 fn = c.relativeDirectory(fn)
                 p.h = f"{treeType} {fn}"
                 u.afterInsertNode(p, 'Import', undoData)
-                p = self.createOutline(parent=p)
+                p = self.createOutline(parent=p, treeType=self.treeType)
                 if p:  # createOutline may fail.
                     p.contract()
                     p.setDirty()

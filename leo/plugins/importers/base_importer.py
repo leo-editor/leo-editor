@@ -551,7 +551,10 @@ class Importer:
         # Fix #449: Cloned @auto nodes duplicates section references.
         if parent.isCloned() and parent.hasChildren():  # pragma: no cover (missing test)
             return
+
+        # Bind ivars.
         self.root = root = parent.copy()
+        self.treeType = treeType
 
         # Check for intermixed blanks and tabs.
         self.tab_width = c.getTabWidth(p=root)

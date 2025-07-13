@@ -47,7 +47,6 @@ class AtFile:
         'startSentinelComment', 'endSentinelComment',
         #@verbatim
         # @shadow and @clean files.
-        # 'all_changed_vnodes', 'changed_vnodes',
         'changed_roots', 'changed_vnodes_dict', 'bodies_dict', 'private_s', 'public_s',
         # Writing.
         'indent', 'sentinels',
@@ -582,7 +581,7 @@ class AtFile:
             at.initReadIvars(p, fileName)
             p.v.b = ''  # Required for @auto API checks.
             p.v._deleteAllChildren()
-            p = ic.createOutline(parent=p.copy())
+            p = ic.createOutline(parent=p.copy(), treeType='@auto')
             # Do *not* call c.selectPosition(p) here.
             # That would improperly expand nodes.
         except Exception:
@@ -839,7 +838,7 @@ class AtFile:
         while p.hasChildren():
             p.firstChild().doDelete()
         # Import the outline, exactly as @auto does.
-        ic.createOutline(parent=p.copy())
+        ic.createOutline(parent=p.copy(), treeType='@auto')
         if ic.errors:
             g.error('errors inhibited read @shadow', fn)
         if ic.errors or not g.os_path_exists(fn):
