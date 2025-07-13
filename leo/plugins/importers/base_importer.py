@@ -147,7 +147,7 @@ class Importer:
                 g.es(message)
         return ok
     #@+node:ekr.20230925112827.1: *4* i.compute_body
-    def compute_body(self, lines: list[str], parent: Position) -> str:
+    def compute_body(self, lines: list[str]) -> str:
         """
         Return the regularized body text from the given list of lines.
 
@@ -401,7 +401,7 @@ class Importer:
 
             # Add the head lines to block.v.
             head_lines = self.lines[block.start:children_start]
-            block.v.b = self.compute_body(head_lines, parent)
+            block.v.b = self.compute_body(head_lines)
 
             # Add an @others directive if necessary.
             if block.v not in at_others_dict:
@@ -410,7 +410,7 @@ class Importer:
 
             # Add the tail lines to block.v
             tail_lines = self.lines[children_end:block.end]
-            tail_s = self.compute_body(tail_lines, parent)
+            tail_s = self.compute_body(tail_lines)
             if tail_s.strip():
                 block.v.b = block.v.b.rstrip() + '\n' + tail_s
 
@@ -433,7 +433,7 @@ class Importer:
         if not outer_block.child_blocks:
             # Put everything in parent.b.
             # Do *not* change parent.h!
-            parent.b = self.compute_body(outer_block.lines, parent)
+            parent.b = self.compute_body(outer_block.lines)
             return
 
         outer_block.v = parent.v
@@ -473,7 +473,7 @@ class Importer:
             if block.child_blocks:
                 handle_block_with_children(block, block_common_lws, parent)
             else:
-                block.v.b = self.compute_body(self.lines[block.start:block.end], parent)
+                block.v.b = self.compute_body(self.lines[block.start:block.end])
 
             # Add all child blocks to the to-do list.
             todo_list.extend(block.child_blocks)
