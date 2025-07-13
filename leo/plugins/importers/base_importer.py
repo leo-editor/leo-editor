@@ -147,7 +147,7 @@ class Importer:
                 g.es(message)
         return ok
     #@+node:ekr.20230925112827.1: *4* i.compute_body
-    def compute_body(self, lines: list[str]) -> str:
+    def compute_body(self, lines: list[str], parent: Position) -> str:
         """
         Return the regularized body text from the given list of lines.
 
@@ -155,6 +155,8 @@ class Importer:
         If not, the caller can insert the desired blank lines.
         """
         s = ''.join(lines)
+        if not g.unitTesting:  ###
+            g.printObj(s, tag=parent.h)
         if self.treeType in ('@auto', '@auto'):
             return s
         # Legacy:
@@ -392,7 +394,7 @@ class Importer:
                 end = max(end, child_block.end)
             return start, end
         #@+node:ekr.20230924154050.1: *6* function: handle_block_with_children
-        def handle_block_with_children(block: Block, block_common_lws: str) -> None:
+        def handle_block_with_children(block: Block, block_common_lws: str, parent: Position) -> None:
             """A block with children."""
 
             # Find all lines that will be covered by @others.
@@ -400,7 +402,7 @@ class Importer:
 
             # Add the head lines to block.v.
             head_lines = self.lines[block.start:children_start]
-            block.v.b = self.compute_body(head_lines)
+            block.v.b = self.compute_body(head_lines, parent)
 
             # Add an @others directive if necessary.
             if block.v not in at_others_dict:
@@ -409,7 +411,7 @@ class Importer:
 
             # Add the tail lines to block.v
             tail_lines = self.lines[children_end:block.end]
-            tail_s = self.compute_body(tail_lines)
+            tail_s = self.compute_body(tail_lines, parent)
             if tail_s.strip():
                 block.v.b = block.v.b.rstrip() + '\n' + tail_s
 
@@ -432,7 +434,7 @@ class Importer:
         if not outer_block.child_blocks:
             # Put everything in parent.b.
             # Do *not* change parent.h!
-            parent.b = self.compute_body(outer_block.lines)
+            parent.b = self.compute_body(outer_block.lines, parent)
             return
 
         outer_block.v = parent.v
@@ -470,9 +472,9 @@ class Importer:
                 # Do *not* change parent.h!
                 block.v.h = self.compute_headline(block)
             if block.child_blocks:
-                handle_block_with_children(block, block_common_lws)
+                handle_block_with_children(block, block_common_lws, parent)
             else:
-                block.v.b = self.compute_body(self.lines[block.start:block.end])
+                block.v.b = self.compute_body(self.lines[block.start:block.end], parent)
 
             # Add all child blocks to the to-do list.
             todo_list.extend(block.child_blocks)
@@ -488,7 +490,7 @@ class Importer:
                 assert block.v in seen_vnodes, repr(block.v)
         #@-<< i.generate_all_bodies: final checks >>
 
-        # A hook for Python_Importer.
+        # A hook for language-specific processing.
         self.postprocess(parent, result_blocks)
 
         # Note: i.gen_lines appends @language and @tabwidth directives to parent.b.

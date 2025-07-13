@@ -901,6 +901,7 @@ class AtFile:
         """
         #4385: Clean up nodes created by at.do_changed_vnode.
         """
+        g.trace(root.h)  ###
         for p in root.subtree():
             # Clear extraneous `@others` nodes.
             if p.b.strip() == '@others':
