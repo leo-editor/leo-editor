@@ -393,7 +393,7 @@ class Importer:
                 end = max(end, child_block.end)
             return start, end
         #@+node:ekr.20230924154050.1: *6* function: handle_block_with_children
-        def handle_block_with_children(block: Block, block_common_lws: str, parent: Position) -> None:
+        def handle_block_with_children(block: Block, block_common_lws: str) -> None:
             """A block with children."""
 
             # Find all lines that will be covered by @others.
@@ -471,7 +471,7 @@ class Importer:
                 # Do *not* change parent.h!
                 block.v.h = self.compute_headline(block)
             if block.child_blocks:
-                handle_block_with_children(block, block_common_lws, parent)
+                handle_block_with_children(block, block_common_lws)
             else:
                 block.v.b = self.compute_body(self.lines[block.start:block.end])
 
