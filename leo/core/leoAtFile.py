@@ -899,7 +899,7 @@ class AtFile:
         vnode_list: list[VNode]
     ) -> None:
         """
-        #4385: Clean up nodes created by the at.do_changed_vnode.
+        #4385: Clean up nodes created by at.do_changed_vnode.
         """
         for p in root.subtree():
             # Clear extraneous `@others` nodes.
