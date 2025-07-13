@@ -46,7 +46,7 @@ def onMenu(tag, keywords):
                 ("Untangle", "&Sélection"),
             ("Import...", "&Importer..."),
                 ("Import To @file", "Dans Structure @&file"),
-                ("Import To @root", "Dans Structure @&root"),
+                # ("Import To @root", "Dans Structure @&root"),
                 ("Import CWEB Files", "Fichier &CWEB"),
                 ("Import noweb Files", "Fichier &Noweb"),
                 ("Import Flattened Outline", "Fichier &MORE"),

@@ -165,7 +165,7 @@ class LeoImportCommands:
     #@+node:ekr.20031218072017.3290: *4* ic.convertCodePartToWeb & helpers
     def convertCodePartToWeb(self, s: str, i: int, p: Position, result: str) -> tuple[int, str]:
         """
-        # Headlines not containing a section reference are ignored in noweb
+        Headlines not containing a section reference are ignored in noweb
         and generate index index in cweb.
         """
         ic = self
