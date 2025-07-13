@@ -156,16 +156,8 @@ class Importer:
         """
         s = ''.join(lines)
         if self.treeType in ('@auto', '@clean'):
-            result = s
-        else:  # Legacy:
-            result = s.lstrip('\n').rstrip() + '\n' if s.strip() else ''
-        if False and not g.unitTesting:  ###
-            if result == s:
-                g.trace('No change', parent.h)
-            else:
-                g.printObj(s, tag=f"s: {parent.h}")
-            g.printObj(result, tag=f"result: {parent.h}")
-        return result
+            return s
+        return s.lstrip('\n').rstrip() + '\n' if s.strip() else ''
     #@+node:ekr.20230529075138.13: *4* i.compute_headline
     def compute_headline(self, block: Block) -> str:
         """
@@ -501,7 +493,7 @@ class Importer:
         self.postprocess(parent, result_blocks)
 
         # Leo 6.8.6:
-        at.delete_empty_changed_organizers(parent, vnode_list=None)  ### Experimental.
+        at.delete_empty_changed_organizers(parent, vnode_list=None)
 
         # Note: i.gen_lines appends @language and @tabwidth directives to parent.b.
     #@+node:ekr.20230529075138.15: *4* i.gen_lines (top level)
