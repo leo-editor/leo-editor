@@ -460,6 +460,7 @@ class Rust_Importer(Importer):
             # Next, move leading lines to the parent, before the @others line.
             while child1.b.startswith('\n'):
                 if '@others' in parent.b:
+                    # Assume the importer created the @others.
                     parent.b = parent.b.replace('@others', '\n@others')
                 else:
                     parent.b += '\n'
