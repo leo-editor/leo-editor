@@ -605,30 +605,7 @@ class Importer:
         """
 
         #@+others  # Define helper functions.
-        #@+node:ekr.20250712053348.1: *5* i.function: delete_empty_changed_organizers
-        def delete_empty_changed_organizers(parent: Position) -> None:
-            """
-            #4385: Clean up nodes created by the at.do_changed_node.
-            """
-
-            # Handle all possible nodes.
-            while parent and not parent.isAnyAtFileNode():
-                parent = parent.parent()
-
-            for p in parent.subtree():
-                # Clear extraneous `@others` nodes.
-                if p.b.strip() == '@others':
-                    p.b = ''
-
-                # Delete a duplicate *child*, not the parent.
-                if not p.b and p.numberOfChildren() == 1 and p.firstChild().h == p.h:
-                    child = p.firstChild()
-                    p.b = child.b
-                    child.doDelete()
         #@-others
-
-        # This cleanup is useful for all languages.
-        delete_empty_changed_organizers(self.root)
     #@+node:ekr.20230529075138.38: *4* i.preprocess_lines
     def preprocess_lines(self, lines: list[str]) -> list[str]:
         """

@@ -456,33 +456,12 @@ class Rust_Importer(Importer):
             parent.b = preamble_s + parent.b
             child1.b = child1.b.replace(preamble_s, '')
             child1.b = child1.b.lstrip('\n')
-        #@+node:ekr.20250712051537.1: *4* rust_i.function: delete_empty_changed_organizers
-        def delete_empty_changed_organizers(parent: Position) -> None:
-            """
-            #4385: Clean up nodes created by the at.do_changed_node.
-            """
-
-            # Handle all possible nodes.
-            while parent and not parent.isAnyAtFileNode():
-                parent = parent.parent()
-
-            for p in parent.subtree():
-                # Clear extraneous `@others` nodes.
-                if p.b.strip() == '@others':
-                    p.b = ''
-
-                # Delete a duplicate *child*, not the parent.
-                if not p.b and p.numberOfChildren() == 1 and p.firstChild().h == p.h:
-                    child = p.firstChild()
-                    p.b = child.b
-                    child.doDelete()
         #@-others
 
         move_module_preamble(self.lines, parent, result_blocks)
         if 0:
             for p in parent.self_and_subtree():
                 convert_docstring(p)
-        delete_empty_changed_organizers(parent)
     #@-others
 #@-others
 

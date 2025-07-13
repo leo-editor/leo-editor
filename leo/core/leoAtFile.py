@@ -666,7 +666,7 @@ class AtFile:
         g.doHook('after-reading-external-file', c=c, p=root)
 
         # #4385: Set at.changed_vnodes.
-        vnode_list = []
+        vnode_list: list[VNode] = []
 
         for p in root.self_and_subtree():
             if p.v not in at.bodies_dict:
@@ -682,7 +682,8 @@ class AtFile:
         if vnode_list:
             at.changed_roots.append(root)
             at.changed_vnodes_dict[root.v] = vnode_list
-            at.post_process_at_clean_vnodes(fileName, root)
+            at.post_process_at_clean_vnodes(fileName, root, vnode_list)
+            at.delete_empty_changed_organizers(root, vnode_list)
 
         return True  # Errors not detected.
     #@+node:ekr.20150204165040.7: *6* at.dump_lines
@@ -892,14 +893,35 @@ class AtFile:
         update_p.v.children.sort(key=lambda v: v.h.lower())
         u.afterInsertNode(update_p, 'Clone Updated Nodes', undoData)
         return update_p
+    #@+node:ekr.20250712215845.1: *5* at.delete_empty_changed_organizers
+    def delete_empty_changed_organizers(self,
+        root: Position,
+        vnode_list: list[VNode]
+    ) -> None:
+        """
+        #4385: Clean up nodes created by the at.do_changed_vnode.
+        """
+        for p in root.subtree():
+            # Clear extraneous `@others` nodes.
+            if p.b.strip() == '@others':
+                p.b = ''
+
+            # Delete a duplicate *child*, not the parent.
+            if not p.b and p.numberOfChildren() == 1 and p.firstChild().h == p.h:
+                child = p.firstChild()
+                p.b = child.b
+                child.doDelete()
     #@+node:ekr.20250709051341.1: *5* at.post_process_at_clean_vnodes
-    def post_process_at_clean_vnodes(self, fileName: str, root: Position) -> None:
+    def post_process_at_clean_vnodes(self,
+        fileName: str,
+        root: Position,
+        vnode_list: list[VNode],
+    ) -> None:
         """
         Analyze all changed vnodes in a *single* file,
         splitting or moving them as necessary.
         """
         at = self
-        vnode_list = at.changed_vnodes_dict.get(root.v, [])
         assert vnode_list, root.h
         changed_root_vnodes = [z.v for z in at.changed_roots]
         assert root.v in changed_root_vnodes, root.v
