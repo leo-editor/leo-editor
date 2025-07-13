@@ -4739,6 +4739,7 @@ class Commands:
         #@-<< docstring >>
         c = self
 
+        # Same test as RecursiveImportController.run.
         if kind not in ('@auto', '@clean', '@edit', '@file', '@nosent'):
             g.es_print(f"Invalid kind: {kind!r}")
             return

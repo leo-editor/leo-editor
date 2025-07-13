@@ -1605,7 +1605,7 @@ class RecursiveImportController:
         """Ctor for RecursiveImportController class."""
         self.c = c
         self.ignore_pattern = ignore_pattern or re.compile(r'\.git|node_modules')
-        self.kind = kind  # in ('@auto', '@clean', '@edit', '@file', '@nosent')
+        self.kind = kind  # ric.run checks the kind.
         self.n_files: int = 0
         self.recursive = recursive
         self.root: Position = None

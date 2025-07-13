@@ -552,6 +552,11 @@ class Importer:
         if parent.isCloned() and parent.hasChildren():  # pragma: no cover (missing test)
             return
 
+        # Check treeType.
+        if treeType not in ('@auto', '@clean', '@edit', '@file', '@nosent'):
+            g.es_print(f"Invalid treeType: {treeType!r}")
+            return
+
         # Bind ivars.
         self.root = root = parent.copy()
         self.treeType = treeType
