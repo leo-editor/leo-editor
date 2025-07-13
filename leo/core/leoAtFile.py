@@ -917,10 +917,7 @@ class AtFile:
         root: Position,
         vnode_list: list[VNode],
     ) -> None:
-        """
-        Analyze all changed vnodes in a *single* file,
-        splitting or moving them as necessary.
-        """
+        """#4385: Analyze all changed vnodes in a *single* file."""
         at = self
         assert vnode_list, root.h
         changed_root_vnodes = [z.v for z in at.changed_roots]
@@ -929,10 +926,7 @@ class AtFile:
             at.do_changed_vnode(fileName, root, v)
     #@+node:ekr.20250711061442.1: *5* at.do_changed_vnode
     def do_changed_vnode(self, fileName: str, root: Position, v: VNode) -> None:
-        """
-        Propagate the changes from the public file (without_sentinels)
-        to the private file (with_sentinels)
-        """
+        """#4385: Run the importer on a changed VNode."""
         c = self.c
         ic = c.importCommands
         new_body_s = v.b
