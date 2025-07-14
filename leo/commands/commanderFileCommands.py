@@ -357,9 +357,13 @@ def refreshFromDisk(self: Self, event: LeoKeyEvent = None) -> None:
     This command is not undoable.
     """
     c, p = self, self.p
+    at = c.atFileCommands
+
     if not p.isAnyAtFileNode():
         g.warning(f"not an @<file> node: {p.h!r}")
         return
+
+    at.changed_roots = []  # #4385.
     full_path = c.fullPath(p)
     if os.path.isdir(full_path):
         g.warning(f"not a file: {full_path!r}")
@@ -390,6 +394,17 @@ def refreshFromDisk(self: Self, event: LeoKeyEvent = None) -> None:
     else:
         g.es_print(f"refresh-from-disk: Unknown @<file> node: {p.h!r}")
         return
+
+    if at.changed_roots:  # #4385.
+        update_p = at.clone_all_changed_vnodes()
+        if update_p:
+            # Select update_p.  See fc.setPositionsFromVnodes.
+            c.db['current_position'] = ','.join([
+                str(z) for z in update_p.archivedPosition()
+            ])
+            update_p.expand()
+        at.changed_roots = []
+
     if p.v.gnx != old_gnx and not g.unitTesting:
         g.es_print(f"refresh-from-disk changed the gnx for `{p.h}`")
         g.es_print(f"from `{old_gnx}` to: `{p.v.gnx}`")

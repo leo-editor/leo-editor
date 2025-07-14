@@ -435,6 +435,45 @@ class AtFile:
 
         # Last.
         c.raise_error_dialogs()
+    #@+node:ekr.20250711132317.1: *6* at.clone_all_changed_vnodes
+    def clone_all_changed_vnodes(self) -> Position:
+        """
+        Make clones of all changed VNodes.
+
+        Called from at.readAll and at.readAllSelected.
+        """
+        ### What about refresh from disk???
+        at, c, u = self, self.c, self.c.undoer
+        if g.unitTesting:
+            return None
+        g.trace(len(at.changed_roots), g.callers(2))  ###
+        if not at.changed_roots:
+            return None
+
+        # Create the top-level node.
+        update_p = c.lastTopLevel().insertAfter()
+        update_p.h = 'Updated @clean/@auto nodes'
+
+        # Clone nodes as children of the found node.
+        undoData = u.beforeInsertNode(c.p)
+        for root in at.changed_roots:
+            parent = update_p.insertAsLastChild()
+            parent.h = f"Updated from: {g.shortFileName(c.fullPath(root))}"
+            # Clone all dirty nodes.
+            root.v.setDirty()
+            for p in root.subtree():
+                if p.isDirty():
+                    clone = p.clone()
+                    clone.moveToLastChildOf(parent)
+
+        # Defensive programming.
+        if c.checkOutline() > 0:
+            return None
+
+        # Sort the clones in place, without undo.
+        update_p.v.children.sort(key=lambda v: v.h.lower())
+        u.afterInsertNode(update_p, 'Clone Updated Nodes', undoData)
+        return update_p
     #@+node:ekr.20190108054317.1: *6* at.findFilesToRead
     def findFilesToRead(self, root: Position, all: bool) -> list[Position]:  # pragma: no cover
 
@@ -674,45 +713,12 @@ class AtFile:
 
         # #4385: Handle the changed nodes.
         if vnode_list:
-            at.changed_roots.append(root)
+            at.changed_roots.append(root.copy())
             at.post_process_at_clean_vnodes(fileName, root, vnode_list)
             at.delete_empty_changed_organizers(root, vnode_list)
             at.move_leading_blank_lines(root, vnode_list)
 
         return True  # Errors not detected.
-    #@+node:ekr.20250711132317.1: *6* at.clone_all_changed_vnodes
-    def clone_all_changed_vnodes(self) -> Position:
-        """Make clones of all changed VNodes."""
-        at, c, u = self, self.c, self.c.undoer
-        if g.unitTesting:
-            return None
-        if not at.changed_roots:
-            return None
-
-        # Create the top-level node.
-        update_p = c.lastTopLevel().insertAfter()
-        update_p.h = 'Updated @clean/@auto nodes'
-
-        # Clone nodes as children of the found node.
-        undoData = u.beforeInsertNode(c.p)
-        for root in at.changed_roots:
-            parent = update_p.insertAsLastChild()
-            parent.h = f"Updated from: {g.shortFileName(c.fullPath(root))}"
-            # Clone all dirty nodes.
-            root.v.setDirty()
-            for p in root.subtree():
-                if p.isDirty():
-                    clone = p.clone()
-                    clone.moveToLastChildOf(parent)
-
-        # Defensive programming.
-        if c.checkOutline() > 0:
-            return None
-
-        # Sort the clones in place, without undo.
-        update_p.v.children.sort(key=lambda v: v.h.lower())
-        u.afterInsertNode(update_p, 'Clone Updated Nodes', undoData)
-        return update_p
     #@+node:ekr.20250712215845.1: *6* at.delete_empty_changed_organizers
     def delete_empty_changed_organizers(self,
         root: Position,
