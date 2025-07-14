@@ -98,7 +98,6 @@ class AtFile:
         self.cancelFlag = False
         self.yesToAll = False
         # Reading.
-        ### self.changed_vnodes_dict: dict[VNode, list[VNode]] = {}
         self.changed_roots: list[Position] = []
         self.bodies_dict: dict[VNode, str] = {}
         self.importRootSeen = False
@@ -410,7 +409,6 @@ class AtFile:
         """Scan positions, looking for @<file> nodes to read."""
         at, c = self, self.c
         at.changed_roots = []
-        ### at.changed_vnodes_dict = {}
         old_changed = c.changed
         t1 = time.time()
         c.init_error_dialogs()
@@ -424,7 +422,6 @@ class AtFile:
             g.es(f"read {len(files)} files in {t2 - t1:2.2f} seconds")
 
         # Carefully set c.changed.
-        ### c.changed = old_changed or bool(at.changed_vnodes_dict)
         c.changed = old_changed or bool(at.changed_roots)
         update_p = at.clone_all_changed_vnodes()
         if update_p:
@@ -435,7 +432,6 @@ class AtFile:
             update_p.expand()
 
         at.changed_roots = []
-        ### at.changed_vnodes_dict = {}
 
         # Last.
         c.raise_error_dialogs()
@@ -501,7 +497,6 @@ class AtFile:
         """Read all @<file> nodes in root's tree."""
         at, c = self, self.c
         at.changed_roots = []
-        ### at.changed_vnodes_dict = {}
         old_changed = c.changed
         t1 = time.time()
         c.init_error_dialogs()
@@ -518,7 +513,6 @@ class AtFile:
                 g.es("no @<file> nodes in the selected tree")
 
         # Carefully set c.changed.
-        ### c.changed = old_changed or bool(at.changed_vnodes_dict)
         c.changed = old_changed or bool(at.changed_roots)
         update_p = at.clone_all_changed_vnodes()
         if update_p:
@@ -529,7 +523,6 @@ class AtFile:
             update_p.expand()
 
         at.changed_roots = []
-        ### at.changed_vnodes_dict = {}
 
         # Last.
         c.raise_error_dialogs()
@@ -683,7 +676,6 @@ class AtFile:
         # #4385: Handle the changed nodes.
         if vnode_list:
             at.changed_roots.append(root)
-            ### at.changed_vnodes_dict[root.v] = vnode_list
             at.post_process_at_clean_vnodes(fileName, root, vnode_list)
             at.delete_empty_changed_organizers(root, vnode_list)
 
@@ -881,18 +873,6 @@ class AtFile:
                 if p.isDirty():
                     clone = p.clone()
                     clone.moveToLastChildOf(parent)
-            ### Doesn't work well.
-                # vnode_list = at.changed_vnodes_dict.get(root.v, [])
-                # for v in vnode_list:
-                    # # Find the corresponding position.
-                    # for p in root.self_and_subtree():
-                        # if p.v == v:
-                            # clone = p.clone()
-                            # clone.moveToLastChildOf(parent)
-                            # root.setDirty()
-                            # break
-                    # else:
-                        # g.trace('Not found', v.h)  # Should never happen.
 
         # Defensive programming.
         if c.checkOutline() > 0:
@@ -913,7 +893,7 @@ class AtFile:
         at, c = self, self.c
         while True:
             for p in root.subtree():
-                # Handle a node containing only @others.
+                # Handle a changed node containing only @others.
                 if (
                     p.b.strip() == '@others'
                     and p.b != at.bodies_dict.get(p.v)
