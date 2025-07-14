@@ -492,9 +492,6 @@ class Importer:
         # A hook for language-specific processing.
         self.postprocess(parent, result_blocks)
 
-        # Leo 6.8.6:
-        at.delete_empty_changed_organizers(parent, vnode_list=None)
-
         # Note: i.gen_lines appends @language and @tabwidth directives to parent.b.
     #@+node:ekr.20230529075138.15: *4* i.gen_lines (top level)
     def gen_lines(self, lines: list[str], parent: Position) -> None:

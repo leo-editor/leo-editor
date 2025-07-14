@@ -47,7 +47,7 @@ class AtFile:
         'startSentinelComment', 'endSentinelComment',
         #@verbatim
         # @shadow and @clean files.
-        'changed_roots', 'changed_vnodes_dict', 'bodies_dict', 'private_s', 'public_s',
+        'bodies_dict', 'changed_roots', 'private_s', 'public_s',
         # Writing.
         'indent', 'sentinels',
         'section_delim1', 'section_delim2',
@@ -98,7 +98,7 @@ class AtFile:
         self.cancelFlag = False
         self.yesToAll = False
         # Reading.
-        self.changed_vnodes_dict: dict[VNode, list[VNode]] = {}
+        ### self.changed_vnodes_dict: dict[VNode, list[VNode]] = {}
         self.changed_roots: list[Position] = []
         self.bodies_dict: dict[VNode, str] = {}
         self.importRootSeen = False
@@ -410,7 +410,7 @@ class AtFile:
         """Scan positions, looking for @<file> nodes to read."""
         at, c = self, self.c
         at.changed_roots = []
-        at.changed_vnodes_dict = {}
+        ### at.changed_vnodes_dict = {}
         old_changed = c.changed
         t1 = time.time()
         c.init_error_dialogs()
@@ -424,7 +424,8 @@ class AtFile:
             g.es(f"read {len(files)} files in {t2 - t1:2.2f} seconds")
 
         # Carefully set c.changed.
-        c.changed = old_changed or bool(at.changed_vnodes_dict)
+        ### c.changed = old_changed or bool(at.changed_vnodes_dict)
+        c.changed = old_changed or bool(at.changed_roots)
         update_p = at.clone_all_changed_vnodes()
         if update_p:
             # Select update_p.  See fc.setPositionsFromVnodes.
@@ -434,7 +435,7 @@ class AtFile:
             update_p.expand()
 
         at.changed_roots = []
-        at.changed_vnodes_dict = {}
+        ### at.changed_vnodes_dict = {}
 
         # Last.
         c.raise_error_dialogs()
@@ -500,7 +501,7 @@ class AtFile:
         """Read all @<file> nodes in root's tree."""
         at, c = self, self.c
         at.changed_roots = []
-        at.changed_vnodes_dict = {}
+        ### at.changed_vnodes_dict = {}
         old_changed = c.changed
         t1 = time.time()
         c.init_error_dialogs()
@@ -517,7 +518,8 @@ class AtFile:
                 g.es("no @<file> nodes in the selected tree")
 
         # Carefully set c.changed.
-        c.changed = old_changed or bool(at.changed_vnodes_dict)
+        ### c.changed = old_changed or bool(at.changed_vnodes_dict)
+        c.changed = old_changed or bool(at.changed_roots)
         update_p = at.clone_all_changed_vnodes()
         if update_p:
             # Select update_p.  See fc.setPositionsFromVnodes.
@@ -527,7 +529,7 @@ class AtFile:
             update_p.expand()
 
         at.changed_roots = []
-        at.changed_vnodes_dict = {}
+        ### at.changed_vnodes_dict = {}
 
         # Last.
         c.raise_error_dialogs()
@@ -681,7 +683,7 @@ class AtFile:
         # #4385: Handle the changed nodes.
         if vnode_list:
             at.changed_roots.append(root)
-            at.changed_vnodes_dict[root.v] = vnode_list
+            ### at.changed_vnodes_dict[root.v] = vnode_list
             at.post_process_at_clean_vnodes(fileName, root, vnode_list)
             at.delete_empty_changed_organizers(root, vnode_list)
 
@@ -873,17 +875,24 @@ class AtFile:
         for root in at.changed_roots:
             parent = update_p.insertAsLastChild()
             parent.h = f"Updated from: {g.shortFileName(c.fullPath(root))}"
-            vnode_list = at.changed_vnodes_dict.get(root.v, [])
-            for v in vnode_list:
-                # Find the corresponding position.
-                for p in root.self_and_subtree():
-                    if p.v == v:
-                        clone = p.clone()
-                        clone.moveToLastChildOf(parent)
-                        root.setDirty()
-                        break
-                else:
-                    g.trace('Not found', v.h)  # Should never happen.
+            # Clone all dirty nodes.
+            root.v.setDirty()
+            for p in root.subtree():
+                if p.isDirty():
+                    clone = p.clone()
+                    clone.moveToLastChildOf(parent)
+            ### Doesn't work well.
+                # vnode_list = at.changed_vnodes_dict.get(root.v, [])
+                # for v in vnode_list:
+                    # # Find the corresponding position.
+                    # for p in root.self_and_subtree():
+                        # if p.v == v:
+                            # clone = p.clone()
+                            # clone.moveToLastChildOf(parent)
+                            # root.setDirty()
+                            # break
+                    # else:
+                        # g.trace('Not found', v.h)  # Should never happen.
 
         # Defensive programming.
         if c.checkOutline() > 0:
@@ -899,18 +908,26 @@ class AtFile:
         vnode_list: list[VNode]
     ) -> None:
         """
-        #4385: Clean up nodes created by at.do_changed_vnode or the importer.
+        #4385: Clean up nodes created by at.do_changed_vnode.
         """
-        for p in root.subtree():
-            # Clear extraneous `@others` nodes.
-            if p.b.strip() == '@others':
-                p.b = ''
-
-            # Delete a duplicate *child*, not the parent.
-            if not p.b and p.numberOfChildren() == 1 and p.firstChild().h == p.h:
-                child = p.firstChild()
-                p.b = child.b
-                child.doDelete()
+        at, c = self, self.c
+        while True:
+            for p in root.subtree():
+                # Handle a node containing only @others.
+                if (
+                    p.b.strip() == '@others'
+                    and p.b != at.bodies_dict.get(p.v)
+                    and p.hasChildren()
+                ):
+                    # We expect only one child here.
+                    for child in p.children():
+                        child.v.setDirty()
+                    p.promote()
+                    c.selectPosition(p.next())
+                    p.doDelete()
+                    break  # Rescan: root.subtree is no longer valid.
+            else:
+                break
     #@+node:ekr.20250709051341.1: *5* at.post_process_at_clean_vnodes
     def post_process_at_clean_vnodes(self,
         fileName: str,
