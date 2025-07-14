@@ -440,13 +440,11 @@ class AtFile:
         """
         Make clones of all changed VNodes.
 
-        Called from at.readAll and at.readAllSelected.
+        Called from at.readAll, at.readAllSelected and c.refreshFromDisk.
         """
-        ### What about refresh from disk???
         at, c, u = self, self.c, self.c.undoer
         if g.unitTesting:
             return None
-        g.trace(len(at.changed_roots), g.callers(2))  ###
         if not at.changed_roots:
             return None
 
