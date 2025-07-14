@@ -5,6 +5,7 @@
 #@+node:ekr.20041005105605.2: ** << leoAtFile imports & annotations >>
 from __future__ import annotations
 from collections.abc import Callable
+import difflib
 import io
 import os
 import re
@@ -443,6 +444,7 @@ class AtFile:
         Called from at.readAll, at.readAllSelected and c.refreshFromDisk.
         """
         at, c, u = self, self.c, self.c.undoer
+
         if g.unitTesting:
             return None
         if not at.changed_roots:
@@ -457,12 +459,25 @@ class AtFile:
         for root in at.changed_roots:
             parent = update_p.insertAsLastChild()
             parent.h = f"Updated from: {g.shortFileName(c.fullPath(root))}"
+            parent_body: list[str] = []
             # Clone all dirty nodes.
             root.v.setDirty()
-            for p in root.subtree():
-                if p.isDirty():
-                    clone = p.clone()
-                    clone.moveToLastChildOf(parent)
+            for p in root.self_and_subtree():
+                v = p.v
+                if not v.isDirty():
+                    continue
+                clone = p.clone()
+                clone.moveToLastChildOf(parent)
+                # Insert the diff into the parent's body.
+                a = g.splitLines(at.bodies_dict.get(p.v, ''))
+                b = g.splitLines(p.b)
+                ### g.printObj(a, tag=f"OLD {id(v)} {v.h}")
+                ### g.printObj(b, tag=f"NEW {id(v)} {v.h}")
+                parent_body.append(f"{p.h}\n")
+                parent_body.extend(difflib.unified_diff(a, b))
+                parent_body.append('\n')
+            # Put the diff.
+            parent.b = ''.join(parent_body)
 
         # Defensive programming.
         if c.checkOutline() > 0:
@@ -738,7 +753,10 @@ class AtFile:
                     for child in p.children():
                         child.v.setDirty()
                     p.promote()
-                    c.selectPosition(p.next())
+                    next = p.next()
+                    # Transfer the old value to preserve diffs.
+                    at.bodies_dict[next.v] = at.bodies_dict.get(p.v)
+                    c.selectPosition(next)
                     p.doDelete()
                     break  # Rescan: root.subtree is no longer valid.
             else:
