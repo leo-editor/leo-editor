@@ -36,15 +36,18 @@ except Exception:
     Tk = None
 # #2300
 try:
-    from packaging import version
     import websockets as _websockets_module
     import types
 
+    websockets_version = _websockets_module.__version__
+    # Parse version manually - split by dots and convert to integers
+    version_parts = [int(x) for x in websockets_version.split('.')]
+    major_version = version_parts[0] if version_parts else 0
+
     ws_module: types.ModuleType
-    WEBSOCKETS_VERSION = version.parse(_websockets_module.__version__)
 
     # Redirect `websockets` itself
-    if WEBSOCKETS_VERSION >= version.parse("14"):
+    if major_version >= 14:
         import websockets.legacy.server as ws_module  # type:ignore
     else:
         ws_module = _websockets_module

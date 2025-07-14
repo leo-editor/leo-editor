@@ -35,7 +35,7 @@ pytest
 pytest-cov      # For coverage testing.
 ruff
 
-# General packages for plugins and commands...
+# General packages for plugins, leoserver and commands...
 
 docutils        # For Sphinx and rST plugins.
 flexx           # leoflexx.py plugin.
@@ -49,6 +49,7 @@ pyenchant       # The spell tab.
 sphinx          # For documentation.
 tk              # tkinter, for emergency dialogs.
 urllib3
+websockets      # For leoserver.
 
 # Gui packages...
 
