@@ -677,14 +677,122 @@ class AtFile:
             at.changed_roots.append(root)
             at.post_process_at_clean_vnodes(fileName, root, vnode_list)
             at.delete_empty_changed_organizers(root, vnode_list)
+            at.move_leading_blank_lines(root, vnode_list)
 
         return True  # Errors not detected.
+    #@+node:ekr.20250711132317.1: *6* at.clone_all_changed_vnodes
+    def clone_all_changed_vnodes(self) -> Position:
+        """Make clones of all changed VNodes."""
+        at, c, u = self, self.c, self.c.undoer
+        if g.unitTesting:
+            return None
+        if not at.changed_roots:
+            return None
+
+        # Create the top-level node.
+        update_p = c.lastTopLevel().insertAfter()
+        update_p.h = 'Updated @clean/@auto nodes'
+
+        # Clone nodes as children of the found node.
+        undoData = u.beforeInsertNode(c.p)
+        for root in at.changed_roots:
+            parent = update_p.insertAsLastChild()
+            parent.h = f"Updated from: {g.shortFileName(c.fullPath(root))}"
+            # Clone all dirty nodes.
+            root.v.setDirty()
+            for p in root.subtree():
+                if p.isDirty():
+                    clone = p.clone()
+                    clone.moveToLastChildOf(parent)
+
+        # Defensive programming.
+        if c.checkOutline() > 0:
+            return None
+
+        # Sort the clones in place, without undo.
+        update_p.v.children.sort(key=lambda v: v.h.lower())
+        u.afterInsertNode(update_p, 'Clone Updated Nodes', undoData)
+        return update_p
+    #@+node:ekr.20250712215845.1: *6* at.delete_empty_changed_organizers
+    def delete_empty_changed_organizers(self,
+        root: Position,
+        vnode_list: list[VNode]
+    ) -> None:
+        """
+        #4385: Clean up nodes created by at.do_changed_vnode.
+        """
+        at, c = self, self.c
+        while True:
+            for p in root.subtree():
+                # Handle a changed node containing only @others.
+                if (
+                    p.b.strip() == '@others'
+                    and p.b != at.bodies_dict.get(p.v)
+                    and p.hasChildren()
+                ):
+                    # We expect only one child here.
+                    for child in p.children():
+                        child.v.setDirty()
+                    p.promote()
+                    c.selectPosition(p.next())
+                    p.doDelete()
+                    break  # Rescan: root.subtree is no longer valid.
+            else:
+                break
+    #@+node:ekr.20250711061442.1: *6* at.do_changed_vnode
+    def do_changed_vnode(self, fileName: str, root: Position, v: VNode) -> None:
+        """#4385: Run the importer on a changed VNode."""
+        c = self.c
+        ic = c.importCommands
+        new_body_s = v.b
+
+        # Find a position for v.
+        for p in root.self_and_subtree():
+            if p.v == v:
+                _junk, ext = g.os_path_splitext(fileName)
+                # Get the `do_import` function for the proper importer module.
+                func = ic.dispatch(ext.lower(), root)
+                if func:
+                    func(c, p, new_body_s, treeType='@clean')
+                break
+        else:
+            g.trace('Not found:', v)  # Should never happen.
+
+        # Always set the dirty bit.
+        v.setDirty()
     #@+node:ekr.20150204165040.7: *6* at.dump_lines
     def dump(self, lines: list[str], tag: str) -> None:  # pragma: no cover
         """Dump all lines."""
         print(f"***** {tag} lines...\n")
         for s in lines:
             print(s.rstrip())
+    #@+node:ekr.20250714115142.1: *6* at.move_leading_blank_lines
+    def move_leading_blank_lines(self, root: Position, vnode_list: list[VNode]) -> None:
+        """
+        Move leading blank lines (only in dirty nodes!) to the preceding node.
+        """
+        for p in root.subtree():
+            if p.v.isDirty():
+                lines = g.splitLines(p.b)
+                if lines and lines[0].isspace():
+                    back = p.threadBack()
+                    while lines and lines[0].isspace():
+                        back.b += lines.pop(0)
+                    p.b = ''.join(lines)
+                    back.v.setDirty()  # Include back in the update list.
+    #@+node:ekr.20250709051341.1: *6* at.post_process_at_clean_vnodes
+    def post_process_at_clean_vnodes(self,
+        fileName: str,
+        root: Position,
+        vnode_list: list[VNode],
+    ) -> None:
+        """#4385: Analyze all changed vnodes in a *single* file."""
+        at = self
+        assert vnode_list, root.h
+        changed_root_vnodes = [z.v for z in at.changed_roots]
+        assert root.v in changed_root_vnodes, root.v
+        for v in vnode_list:
+            at.do_changed_vnode(fileName, root, v)
     #@+node:ekr.20150204165040.8: *6* at.read_at_clean_lines
     def read_at_clean_lines(self, fn: str) -> list[str]:  # pragma: no cover
         """Return all lines of the @clean/@nosent file at fn."""
@@ -847,100 +955,6 @@ class AtFile:
     ) -> bool:  # pragma: no cover
         """A convenience wrapper for FastAtRead.read_into_root()"""
         return FastAtRead(c, gnx2vnode).read_into_root(contents, path, root)
-    #@+node:ekr.20250711132303.1: *4* at.Changed vnodes
-    #@+node:ekr.20250711132317.1: *5* at.clone_all_changed_vnodes
-    def clone_all_changed_vnodes(self) -> Position:
-        """Make clones of all changed VNodes."""
-        at, c, u = self, self.c, self.c.undoer
-        if g.unitTesting:
-            return None
-        if not at.changed_roots:
-            return None
-
-        # Create the top-level node.
-        update_p = c.lastTopLevel().insertAfter()
-        update_p.h = 'Updated @clean/@auto nodes'
-
-        # Clone nodes as children of the found node.
-        undoData = u.beforeInsertNode(c.p)
-        for root in at.changed_roots:
-            parent = update_p.insertAsLastChild()
-            parent.h = f"Updated from: {g.shortFileName(c.fullPath(root))}"
-            # Clone all dirty nodes.
-            root.v.setDirty()
-            for p in root.subtree():
-                if p.isDirty():
-                    clone = p.clone()
-                    clone.moveToLastChildOf(parent)
-
-        # Defensive programming.
-        if c.checkOutline() > 0:
-            return None
-
-        # Sort the clones in place, without undo.
-        update_p.v.children.sort(key=lambda v: v.h.lower())
-        u.afterInsertNode(update_p, 'Clone Updated Nodes', undoData)
-        return update_p
-    #@+node:ekr.20250712215845.1: *5* at.delete_empty_changed_organizers
-    def delete_empty_changed_organizers(self,
-        root: Position,
-        vnode_list: list[VNode]
-    ) -> None:
-        """
-        #4385: Clean up nodes created by at.do_changed_vnode.
-        """
-        at, c = self, self.c
-        while True:
-            for p in root.subtree():
-                # Handle a changed node containing only @others.
-                if (
-                    p.b.strip() == '@others'
-                    and p.b != at.bodies_dict.get(p.v)
-                    and p.hasChildren()
-                ):
-                    # We expect only one child here.
-                    for child in p.children():
-                        child.v.setDirty()
-                    p.promote()
-                    c.selectPosition(p.next())
-                    p.doDelete()
-                    break  # Rescan: root.subtree is no longer valid.
-            else:
-                break
-    #@+node:ekr.20250709051341.1: *5* at.post_process_at_clean_vnodes
-    def post_process_at_clean_vnodes(self,
-        fileName: str,
-        root: Position,
-        vnode_list: list[VNode],
-    ) -> None:
-        """#4385: Analyze all changed vnodes in a *single* file."""
-        at = self
-        assert vnode_list, root.h
-        changed_root_vnodes = [z.v for z in at.changed_roots]
-        assert root.v in changed_root_vnodes, root.v
-        for v in vnode_list:
-            at.do_changed_vnode(fileName, root, v)
-    #@+node:ekr.20250711061442.1: *5* at.do_changed_vnode
-    def do_changed_vnode(self, fileName: str, root: Position, v: VNode) -> None:
-        """#4385: Run the importer on a changed VNode."""
-        c = self.c
-        ic = c.importCommands
-        new_body_s = v.b
-
-        # Find a position for v.
-        for p in root.self_and_subtree():
-            if p.v == v:
-                _junk, ext = g.os_path_splitext(fileName)
-                # Get the `do_import` function for the proper importer module.
-                func = ic.dispatch(ext.lower(), root)
-                if func:
-                    func(c, p, new_body_s, treeType='@clean')
-                break
-        else:
-            g.trace('Not found:', v)  # Should never happen.
-
-        # Always set the dirty bit.
-        v.setDirty()
     #@+node:ekr.20041005105605.116: *4* at.Reading utils...
     #@+node:ekr.20041005105605.119: *5* at.createImportedNode
     def createImportedNode(self, root: Position, headline: str) -> Position:  # pragma: no cover
