@@ -660,9 +660,8 @@ class AtFile:
         FastAtRead(c, gnx2vnode).read_into_root(contents, fileName, root)
         g.doHook('after-reading-external-file', c=c, p=root)
 
-        # #4385: Set at.changed_vnodes.
+        # #4385: Compute the list of changed vnodes.
         vnode_list: list[VNode] = []
-
         for p in root.self_and_subtree():
             if p.v not in at.bodies_dict:
                 vnode_list.append(p.v)
@@ -935,7 +934,7 @@ class AtFile:
                 # Get the `do_import` function for the proper importer module.
                 func = ic.dispatch(ext.lower(), root)
                 if func:
-                    func(c, p, new_body_s)
+                    func(c, p, new_body_s, treeType='@clean')
                 break
         else:
             g.trace('Not found:', v)  # Should never happen.
@@ -1670,7 +1669,6 @@ class AtFile:
         try:
             c.endEditing()
             fileName = at.initWriteIvars(root)
-            at.sentinels = False
             if not fileName or not at.precheck(fileName, root):
                 return
 
@@ -1681,7 +1679,12 @@ class AtFile:
                 return
 
             at.outputList = []
-            at.putFile(root, sentinels=False)
+            try:
+                at.sentinels = False
+                at.putFile(root, sentinels=False)
+            finally:
+                at.sentinels = True
+
             at.warnAboutOrphandAndIgnoredNodes()
             if at.errors:
                 g.es("not written:", g.shortFileName(fileName))
@@ -2053,13 +2056,12 @@ class AtFile:
         Return True if the body contains an @others line.
         """
         at = self
-        #
-        # New in 4.3 b2: get s from fromString if possible.
         s = fromString if fromString else p.b
+
         # Make sure v is never expanded again.
         # Suppress orphans check.
         p.v.setVisited()
-        #
+
         # #1048 & #1037: regularize most trailing whitespace.
         if s and (at.sentinels or at.force_newlines_in_at_nosent_bodies):
             if not s.endswith('\n'):
