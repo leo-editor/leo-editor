@@ -484,6 +484,7 @@ class AtFile:
         # Sort the clones in place, without undo.
         update_p.v.children.sort(key=lambda v: v.h.lower())
         u.afterInsertNode(update_p, 'Clone Updated Nodes', undoData)
+        c.redraw_later()  # 4394.
         return update_p
     #@+node:ekr.20190108054317.1: *6* at.findFilesToRead
     def findFilesToRead(self, root: Position, all: bool) -> list[Position]:  # pragma: no cover
