@@ -165,7 +165,7 @@ class LeoImportCommands:
     #@+node:ekr.20031218072017.3290: *4* ic.convertCodePartToWeb & helpers
     def convertCodePartToWeb(self, s: str, i: int, p: Position, result: str) -> tuple[int, str]:
         """
-        # Headlines not containing a section reference are ignored in noweb
+        Headlines not containing a section reference are ignored in noweb
         and generate index index in cweb.
         """
         ic = self
@@ -276,7 +276,7 @@ class LeoImportCommands:
             # All nodes should start with '@', even if the doc part is empty.
             result += nl + "@ " if self.webType == "cweb" else nl + "@" + nl
         return i, result
-    #@+node:ekr.20031218072017.3297: *4* ic.convertVnodeToWeb
+    #@+node:ekr.20031218072017.3297: *4* ic.positionToWeb
     def positionToWeb(self, p: Position) -> str:
         """
         This code converts a VNode to noweb text as follows:
@@ -312,7 +312,7 @@ class LeoImportCommands:
                     docSeen = True
                     result += docstart
                 i, result = self.convertCodePartToWeb(s, i, p, result)
-            elif self.treeType == "@file" or startInCode:
+            elif startInCode:
                 if not docSeen:
                     docSeen = True
                     result += docstart
@@ -427,13 +427,6 @@ class LeoImportCommands:
         except IOError:
             g.warning("can not open", fileName)
             return
-        self.treeType = "@file"
-        # Set self.treeType to @root if p or an ancestor is an @root node.
-        for p in current.parents():
-            flag, junk = g.is_special(p.b, "@root")
-            if flag:
-                self.treeType = "@root"
-                break
         for p in current.self_and_subtree(copy=False):
             s = self.positionToWeb(p)
             if s:
@@ -559,7 +552,12 @@ class LeoImportCommands:
             g.print_exception()
     #@+node:ekr.20031218072017.3209: *3* ic.Import
     #@+node:ekr.20031218072017.3210: *4* ic.createOutline & helpers
-    def createOutline(self, parent: Position, ext: str = None, s: str = None) -> Position:
+    def createOutline(self,
+        parent: Position,
+        ext: str = None,
+        s: str = None,
+        treeType: str = '@file',
+    ) -> Position:
         """
         Create an outline by importing a file, reading the file with the
         given encoding if string s is None.
@@ -571,7 +569,7 @@ class LeoImportCommands:
         """
         c = self.c
         p = parent.copy()
-        self.treeType = '@file'  # Fix #352.
+        self.treeType = treeType
         fileName = c.fullPath(parent)
         if g.is_binary_external_file(fileName):
             return self.import_binary_file(fileName, parent)
@@ -581,18 +579,17 @@ class LeoImportCommands:
         if s is None:
             return None
 
-        # Each importer file defines `do_import` at the top level with this signature:
-        # def do_import(c: Cmdr, parent: Position, s: str) -> None:
-
-        func = self.dispatch(ext, p)  # The do_import callback.
-        # Call the scanning function.
+        # Each importer file defines `do_import` at the top level.
+        func = self.dispatch(ext, p)
         if g.unitTesting:
             assert func or ext in ('.txt', '.w', '.xxx'), (repr(func), ext, p.h)
+
+        # Call the scanning function.
         if func and not c.config.getBool('suppress-import-parsing', default=False):
             s = g.toUnicode(s, encoding=self.encoding)
             s = s.replace('\r', '')
             # func is a factory that instantiates the importer class.
-            func(c, p, s)
+            func(c, p, s, treeType=self.treeType)
         else:
             # Just copy the file to the parent node.
             s = g.toUnicode(s, encoding=self.encoding)
@@ -601,8 +598,7 @@ class LeoImportCommands:
         if g.unitTesting:
             return p
 
-        # #488894: unsettling dialog when saving Leo file
-        # #889175: Remember the full fileName.
+        # Remember the full fileName.
         c.atFileCommands.rememberReadPath(fileName, p)
         p.contract()
         w = c.frame.body.wrapper
@@ -747,14 +743,14 @@ class LeoImportCommands:
         files: list[str] = None,
         parent: Position = None,
         shortFn: bool = False,
-        treeType: str = None,
+        treeType: str = '@file',
         verbose: bool = True,  # Legacy value.
     ) -> None:
         # Not a command.  It must *not* have an event arg.
         c, u = self.c, self.c.undoer
         if not c or not c.p or not files:
             return
-        self.treeType = treeType or '@file'
+        self.treeType = treeType
         self.verbose = verbose
         if not parent:
             g.trace('===== no parent', g.callers())
@@ -769,7 +765,7 @@ class LeoImportCommands:
                 fn = c.relativeDirectory(fn)
                 p.h = f"{treeType} {fn}"
                 u.afterInsertNode(p, 'Import', undoData)
-                p = self.createOutline(parent=p)
+                p = self.createOutline(parent=p, treeType=self.treeType)
                 if p:  # createOutline may fail.
                     p.contract()
                     p.setDirty()
@@ -1124,9 +1120,11 @@ class LeoImportCommands:
             g.es_print('can not run parse-body: node has children:', p.h)
             return
         language = c.getLanguage(p)
-        self.treeType = '@file'
         ext = '.' + d.get(language)
+
+        # The parser is the `do_import` function for each importer class.
         parser = g.app.classDispatchDict.get(ext)
+
         # Fix bug 151: parse-body creates "None declarations"
         if p.isAnyAtFileNode():
             fn = p.anyAtFileNodeName()
@@ -1607,7 +1605,7 @@ class RecursiveImportController:
         """Ctor for RecursiveImportController class."""
         self.c = c
         self.ignore_pattern = ignore_pattern or re.compile(r'\.git|node_modules')
-        self.kind = kind  # in ('@auto', '@clean', '@edit', '@file', '@nosent')
+        self.kind = kind  # ric.run checks the kind.
         self.n_files: int = 0
         self.recursive = recursive
         self.root: Position = None
@@ -1677,11 +1675,15 @@ class RecursiveImportController:
             files=[path],
             parent=parent,
             shortFn=True,
-            treeType='@file',  # '@auto','@clean','@nosent' cause problems.
+            treeType=self.kind,  # Leo 6.8.6.
             verbose=self.verbose,  # Leo 6.6.
         )
+
+        # #4385: set mod time for @clean files.
         p = parent.lastChild()
-        p.h = self.kind + p.h[5:]  # Honor the requested kind.
+        if self.kind == '@clean':
+            p.v.u['_mod_time'] = g.os_path_getmtime(path)
+
         if self.safe_at_file:
             p.v.h = '@' + p.v.h
     #@+node:ekr.20130823083943.12607: *3* ric.post_process
@@ -1885,6 +1887,7 @@ class RecursiveImportController:
             g.app.disable_redraw = False
             for p2 in parent.self_and_subtree(copy=False):
                 p2.contract()
+            c.setChanged()  # #4385: Ensure that mod times are written.
             c.redraw(parent)
         if not g.unitTesting:
             t2 = time.time()

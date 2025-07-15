@@ -5,6 +5,7 @@
 #@+node:ekr.20041005105605.2: ** << leoAtFile imports & annotations >>
 from __future__ import annotations
 from collections.abc import Callable
+import difflib
 import io
 import os
 import re
@@ -45,8 +46,9 @@ class AtFile:
         'readVersion', 'read_i', 'read_lines',
         'importRootSeen',
         'startSentinelComment', 'endSentinelComment',
-        # Shadow files.
-        'private_s', 'public_s',
+        #@verbatim
+        # @shadow and @clean files.
+        'bodies_dict', 'changed_roots', 'private_s', 'public_s',
         # Writing.
         'indent', 'sentinels',
         'section_delim1', 'section_delim2',
@@ -97,6 +99,8 @@ class AtFile:
         self.cancelFlag = False
         self.yesToAll = False
         # Reading.
+        self.changed_roots: list[Position] = []  # Global.
+        self.bodies_dict: dict[VNode, str] = {}  # Local to at.readOneAtCleanNode.
         self.importRootSeen = False
         self.readVersion = ''
         self.read_i = 0
@@ -152,10 +156,6 @@ class AtFile:
         at.errors = 0
         at.language = c.target_language or 'python'
         at.root = root
-        # Dialogs
-        at.canCancelFlag = False
-        at.cancelFlag = False
-        at.yesToAll = False
         # Reading
         at.importRootSeen = False
         at.readVersion = ''
@@ -409,6 +409,7 @@ class AtFile:
     def readAll(self, root: Position) -> None:
         """Scan positions, looking for @<file> nodes to read."""
         at, c = self, self.c
+        at.changed_roots = []
         old_changed = c.changed
         t1 = time.time()
         c.init_error_dialogs()
@@ -420,8 +421,70 @@ class AtFile:
         if not g.unitTesting and files:  # pragma: no cover
             t2 = time.time()
             g.es(f"read {len(files)} files in {t2 - t1:2.2f} seconds")
-        c.changed = old_changed
+
+        # Carefully set c.changed.
+        c.changed = old_changed or bool(at.changed_roots)
+        update_p = at.clone_all_changed_vnodes()
+        if update_p:
+            # Select update_p.  See fc.setPositionsFromVnodes.
+            c.db['current_position'] = ','.join([
+                str(z) for z in update_p.archivedPosition()
+            ])
+            update_p.expand()
+
+        at.changed_roots = []
+
+        # Last.
         c.raise_error_dialogs()
+    #@+node:ekr.20250711132317.1: *6* at.clone_all_changed_vnodes
+    def clone_all_changed_vnodes(self) -> Position:
+        """
+        Make clones of all changed VNodes.
+
+        Called from at.readAll, at.readAllSelected and c.refreshFromDisk.
+        """
+        at, c, u = self, self.c, self.c.undoer
+
+        if g.unitTesting:
+            return None
+        if not at.changed_roots:
+            return None
+
+        # Create the top-level node.
+        update_p = c.lastTopLevel().insertAfter()
+        update_p.h = 'Updated @clean/@auto nodes'
+
+        # Clone nodes as children of the found node.
+        undoData = u.beforeInsertNode(c.p)
+        for root in at.changed_roots:
+            parent = update_p.insertAsLastChild()
+            parent.h = f"Updated from: {g.shortFileName(c.fullPath(root))}"
+            parent_body: list[str] = []
+            # Clone all dirty nodes.
+            root.v.setDirty()
+            for p in root.self_and_subtree():
+                v = p.v
+                if not v.isDirty():
+                    continue
+                clone = p.clone()
+                clone.moveToLastChildOf(parent)
+                # Insert the diff into the parent's body.
+                a = g.splitLines(at.bodies_dict.get(v, ''))
+                b = g.splitLines(p.b)
+                parent_body.append(f"{p.h}\n")
+                parent_body.extend(difflib.unified_diff(a, b))
+                parent_body.append('\n')
+            # Put the diff.
+            parent.b = ''.join(parent_body)
+
+        # Defensive programming.
+        if c.checkOutline() > 0:
+            return None
+
+        # Sort the clones in place, without undo.
+        update_p.v.children.sort(key=lambda v: v.h.lower())
+        u.afterInsertNode(update_p, 'Clone Updated Nodes', undoData)
+        return update_p
     #@+node:ekr.20190108054317.1: *6* at.findFilesToRead
     def findFilesToRead(self, root: Position, all: bool) -> list[Position]:  # pragma: no cover
 
@@ -483,6 +546,7 @@ class AtFile:
     def readAllSelected(self, root: Position) -> None:  # pragma: no cover
         """Read all @<file> nodes in root's tree."""
         at, c = self, self.c
+        at.changed_roots = []
         old_changed = c.changed
         t1 = time.time()
         c.init_error_dialogs()
@@ -497,7 +561,20 @@ class AtFile:
                 g.es(f"read {len(files)} files in {t2 - t1:2.2f} seconds")
             else:
                 g.es("no @<file> nodes in the selected tree")
-        c.changed = old_changed
+
+        # Carefully set c.changed.
+        c.changed = old_changed or bool(at.changed_roots)
+        update_p = at.clone_all_changed_vnodes()
+        if update_p:
+            # Select update_p.  See fc.setPositionsFromVnodes.
+            c.db['current_position'] = ','.join([
+                str(z) for z in update_p.archivedPosition()
+            ])
+            update_p.expand()
+
+        at.changed_roots = []
+
+        # Last.
         c.raise_error_dialogs()
     #@+node:ekr.20080801071227.7: *5* at.readAtShadowNodes
     def readAtShadowNodes(self, p: Position) -> None:  # pragma: no cover
@@ -549,7 +626,7 @@ class AtFile:
             at.initReadIvars(p, fileName)
             p.v.b = ''  # Required for @auto API checks.
             p.v._deleteAllChildren()
-            p = ic.createOutline(parent=p.copy())
+            p = ic.createOutline(parent=p.copy(), treeType='@auto')
             # Do *not* call c.selectPosition(p) here.
             # That would improperly expand nodes.
         except Exception:
@@ -569,20 +646,50 @@ class AtFile:
             g.doHook('after-reading-external-file', c=c, p=p)
         return p  # For #451: return p.
     #@+node:ekr.20150204165040.5: *5* at.readOneAtCleanNode & helpers
-    def readOneAtCleanNode(self, root: Position) -> bool:  # pragma: no cover
-        """Update the @clean/@nosent node at root."""
-        at, c, x = self, self.c, self.c.shadowController
-        fileName = c.fullPath(root)
-        if not g.os_path_exists(fileName):
-            g.es_print(f"not found: {fileName}", color='red', nodeLink=root.get_UNL())
-            return False
+    def readOneAtCleanNode(self, root: Position, *, new_contents: str = None) -> bool:
+        """
+        Update the @clean/@nosent node at root.
 
-        # Init.
-        at.rememberReadPath(fileName, root)
+        Use new_contents for
+        """
+        at, c, x = self, self.c, self.c.shadowController
+
+        if new_contents:
+            fileName = root.h  # Required.
+        else:
+            fileName = c.fullPath(root)
+            if not g.os_path_exists(fileName):
+                g.es_print(f"not found: {fileName}", color='red', nodeLink=root.get_UNL())
+                return False
+            # Suppresses file-changed dialog.
+            at.rememberReadPath(fileName, root)
+
+        # #4385: Do nothing if the file has not changed.
+        try:
+            old_mod_time = root.v.u['_mod_time']  # #4385
+        except Exception:
+            old_mod_time = None
+
+        # #4385: Always set the mod_time.
+        root.v.u['_mod_time'] = new_mod_time = g.os_path_getmtime(fileName)
+
+        # #4385: Init the per-file data.
         at.initReadIvars(root, fileName)
+        at.bodies_dict = {}
+
+        # Don't update if the outline and file are in synch.
+        if old_mod_time and old_mod_time >= new_mod_time:
+            return True
+
+        # #4385: Remember all old bodies.
+        for p in root.self_and_subtree():
+            at.bodies_dict[p.v] = p.b
 
         # Calculate data.
-        new_public_lines = at.read_at_clean_lines(fileName)
+        new_public_lines = (
+            g.splitLines(new_contents) if new_contents
+            else at.read_at_clean_lines(fileName)
+        )
         old_private_lines = self.write_at_clean_sentinels(root)
         marker = x.markerFromFileLines(old_private_lines, fileName)
         old_public_lines, junk = x.separate_sentinels(old_private_lines, marker)
@@ -596,19 +703,99 @@ class AtFile:
         if new_private_lines == old_private_lines:
             return True
         if not g.unitTesting:
-            g.es("updating:", root.h)
+            g.es_print("updating:", root.h)
         root.clearVisitedInTree()
         gnx2vnode = at.fileCommands.gnxDict
         contents = ''.join(new_private_lines)
         FastAtRead(c, gnx2vnode).read_into_root(contents, fileName, root)
         g.doHook('after-reading-external-file', c=c, p=root)
+
+        # Calculate all changed vnodes.
+        # Do not call at.do_changed_vnodes in this loop!
+        changed_vnodes: list[VNode] = []
+        for p in root.self_and_subtree():
+            v = p.v
+            if at.bodies_dict.get(v) != p.b:
+                changed_vnodes.append(v)
+                v.setDirty()
+
+        # Handle all changed vnodes.
+        if changed_vnodes:
+            root.v.setDirty()
+            at.changed_roots.append(root.copy())
+            for v in changed_vnodes:
+                at.do_changed_vnode(fileName, root, v)
+            at.delete_empty_changed_organizers(root)
+            at.move_leading_blank_lines(root)
+
         return True  # Errors not detected.
+    #@+node:ekr.20250712215845.1: *6* at.delete_empty_changed_organizers
+    def delete_empty_changed_organizers(self, root: Position) -> None:
+        """
+        #4385: Clean up nodes created by at.do_changed_vnode.
+        """
+        at, c = self, self.c
+        while True:
+            for p in root.subtree():
+                # Handle a changed node containing only @others.
+                if (
+                    p.b.strip() == '@others'
+                    and p.b != at.bodies_dict.get(p.v)
+                    and p.hasChildren()
+                ):
+                    # We expect only one child here.
+                    for child in p.children():
+                        child.v.setDirty()
+                    p.promote()
+                    next = p.next()
+                    # Transfer the old value to preserve diffs.
+                    at.bodies_dict[next.v] = at.bodies_dict.get(p.v)
+                    c.selectPosition(next)
+                    p.doDelete()
+                    break  # Rescan: root.subtree is no longer valid.
+            else:
+                break
+    #@+node:ekr.20250711061442.1: *6* at.do_changed_vnode
+    def do_changed_vnode(self, fileName: str, root: Position, v: VNode) -> None:
+        """#4385: Run the importer on a changed VNode."""
+        c = self.c
+        ic = c.importCommands
+        new_body_s = v.b
+
+        # Find a position for v.
+        for p in root.self_and_subtree():
+            if p.v == v:
+                _junk, ext = g.os_path_splitext(fileName)
+                # Get the `do_import` function for the proper importer module.
+                func = ic.dispatch(ext.lower(), root)
+                if func:
+                    func(c, p, new_body_s, treeType='@clean')
+                break
+        else:
+            g.trace('Not found:', v)  # Should never happen.
+
+        # Always set the dirty bit.
+        v.setDirty()
     #@+node:ekr.20150204165040.7: *6* at.dump_lines
     def dump(self, lines: list[str], tag: str) -> None:  # pragma: no cover
         """Dump all lines."""
         print(f"***** {tag} lines...\n")
         for s in lines:
             print(s.rstrip())
+    #@+node:ekr.20250714115142.1: *6* at.move_leading_blank_lines
+    def move_leading_blank_lines(self, root: Position) -> None:
+        """
+        Move leading blank lines (only in dirty nodes!) to the preceding node.
+        """
+        for p in root.subtree():  # back must exist below.
+            if p.v.isDirty():
+                lines = g.splitLines(p.b)
+                if lines and lines[0].isspace():
+                    back = p.threadBack()
+                    while lines and lines[0].isspace():
+                        back.b += lines.pop(0)
+                    p.b = ''.join(lines)
+                    back.v.setDirty()  # Include back in the update list.
     #@+node:ekr.20150204165040.8: *6* at.read_at_clean_lines
     def read_at_clean_lines(self, fn: str) -> list[str]:  # pragma: no cover
         """Return all lines of the @clean/@nosent file at fn."""
@@ -756,7 +943,7 @@ class AtFile:
         while p.hasChildren():
             p.firstChild().doDelete()
         # Import the outline, exactly as @auto does.
-        ic.createOutline(parent=p.copy())
+        ic.createOutline(parent=p.copy(), treeType='@auto')
         if ic.errors:
             g.error('errors inhibited read @shadow', fn)
         if ic.errors or not g.os_path_exists(fn):
@@ -1499,7 +1686,6 @@ class AtFile:
         try:
             c.endEditing()
             fileName = at.initWriteIvars(root)
-            at.sentinels = False
             if not fileName or not at.precheck(fileName, root):
                 return
 
@@ -1510,7 +1696,12 @@ class AtFile:
                 return
 
             at.outputList = []
-            at.putFile(root, sentinels=False)
+            try:
+                at.sentinels = False
+                at.putFile(root, sentinels=False)
+            finally:
+                at.sentinels = True
+
             at.warnAboutOrphandAndIgnoredNodes()
             if at.errors:
                 g.es("not written:", g.shortFileName(fileName))
@@ -1518,6 +1709,8 @@ class AtFile:
             else:
                 contents = ''.join(at.outputList)
                 at.replaceFile(contents, at.encoding, fileName, root)
+                # #4385: Tell at.readOneAtCleanNode that the outline is in synch with the file.
+                root.v.u['_mod_time'] = g.os_path_getmtime(fileName)
         except Exception:
             at.writeException(fileName, root)
     #@+node:ekr.20090225080846.5: *6* at.writeOneAtEditNode
@@ -1880,13 +2073,12 @@ class AtFile:
         Return True if the body contains an @others line.
         """
         at = self
-        #
-        # New in 4.3 b2: get s from fromString if possible.
         s = fromString if fromString else p.b
+
         # Make sure v is never expanded again.
         # Suppress orphans check.
         p.v.setVisited()
-        #
+
         # #1048 & #1037: regularize most trailing whitespace.
         if s and (at.sentinels or at.force_newlines_in_at_nosent_bodies):
             if not s.endswith('\n'):
@@ -2768,19 +2960,19 @@ class AtFile:
         at, c = self, self.c
         if root:
             root.clearDirty()
-        #
+
         # Create the timestamp (only for messages).
         if c.config.getBool('log-show-save-time', default=False):  # pragma: no cover
             format = c.config.getString('log-timestamp-format') or "%H:%M:%S"
             timestamp = time.strftime(format) + ' '
         else:
             timestamp = ''
-        #
+
         # Adjust the contents.
         assert isinstance(contents, str), g.callers()
         if at.output_newline != '\n':  # pragma: no cover
             contents = contents.replace('\r', '').replace('\n', at.output_newline)
-        #
+
         # If file does not exist, create it from the contents.
         fileName = g.os_path_realpath(fileName)
         sfn = g.shortFileName(fileName)
@@ -2798,7 +2990,7 @@ class AtFile:
                 at.addToOrphanList(root)  # pragma: no cover
             # No original file to change. Return value tested by a unit test.
             return False  # No change to original file.
-        #
+
         # Compare the old and new contents.
         old_contents = g.readFileIntoUnicodeString(fileName,
             encoding=at.encoding, silent=True)
@@ -2825,12 +3017,15 @@ class AtFile:
                 old_contents, contents))
             if not ok:
                 g.warning("correcting line endings in:", fileName)
-        #
+
         # Write a changed file.
         ok = g.writeFile(contents, encoding, fileName)
         if ok:
             c.setFileTimeStamp(fileName)
-            if not g.unitTesting:
+            if (
+                not g.unitTesting
+                and c.config.getBool('report-changed-files', default=True)
+            ):
                 g.es(f"{timestamp}wrote: {sfn}")  # pragma: no cover
         else:  # pragma: no cover
             g.error('error writing', sfn)
@@ -3102,7 +3297,9 @@ class AtFile:
 
         See #50: https://github.com/leo-editor/leo-editor/issues/50
         """
+        at = self
         efc = g.app.externalFilesController
+
         if p.isAtNoSentFileNode():
             # No danger of overwriting a file: It was never read.
             return False
@@ -3111,9 +3308,17 @@ class AtFile:
             # No danger of overwriting fn.
             return False
 
+        # #4385: Honor yes-to-all or no-to-all.
+        if at.cancelFlag or at.yesToAll:
+            return False
+
         # Prompt if the external file is newer.
         if efc and efc.has_changed(fn):
+            g.trace('Changed:', fn)
             return True
+
+        if p.isAtCleanNode():  # #4385.
+            return False
 
         if hasattr(p.v, 'at_read'):
             # #50: body text lost switching @file to @auto-rst

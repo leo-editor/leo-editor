@@ -391,7 +391,7 @@ class Rust_Importer(Importer):
             return
 
         #@+others  # Define helper functions.
-        #@+node:ekr.20231031162249.1: *4* function: convert_docstring
+        #@+node:ekr.20231031162249.1: *4* rust_i.function: convert_docstring (not used)
         def convert_docstring(p: Position) -> None:
             """Convert the leading comments of p.b to a docstring."""
             if not p.b.strip():
@@ -420,7 +420,7 @@ class Rust_Importer(Importer):
                     results.append('\n')
             results.append('@c\n')
             p.b = ''.join(results) + ''.join(tail)
-        #@+node:ekr.20231031162142.1: *4* function: move_module_preamble
+        #@+node:ekr.20231031162142.1: *4* rust_i.function: move_module_preamble
         def move_module_preamble(lines: list[str], parent: Position, result_blocks: list[Block]) -> None:
             """
             Move the preamble lines from the parent's first child to the start of parent.b.
@@ -452,10 +452,19 @@ class Rust_Importer(Importer):
             preamble_s = ''.join(real_preamble_lines)
             if not preamble_s.strip():
                 return
-            # Adjust the bodies.
+
+            # First, adjust the bodies.
             parent.b = preamble_s + parent.b
             child1.b = child1.b.replace(preamble_s, '')
-            child1.b = child1.b.lstrip('\n')
+
+            # Next, move leading lines to the parent, before the @others line.
+            while child1.b.startswith('\n'):
+                if '@others' in parent.b:
+                    # Assume the importer created the @others.
+                    parent.b = parent.b.replace('@others', '\n@others')
+                else:
+                    parent.b += '\n'
+                child1.b = child1.b[1:]
         #@-others
 
         move_module_preamble(self.lines, parent, result_blocks)
@@ -465,9 +474,9 @@ class Rust_Importer(Importer):
     #@-others
 #@-others
 
-def do_import(c: Cmdr, parent: Position, s: str) -> None:
+def do_import(c: Cmdr, parent: Position, s: str, treeType: str = '@file') -> None:
     """The importer callback for rust."""
-    Rust_Importer(c).import_from_string(parent, s)
+    Rust_Importer(c).import_from_string(parent, s, treeType=treeType)
 
 importer_dict = {
     'extensions': ['.rs',],

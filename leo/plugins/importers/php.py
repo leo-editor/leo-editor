@@ -17,9 +17,9 @@ class Php_Importer(Importer):
     language = 'php'
 #@-others
 
-def do_import(c: Cmdr, parent: Position, s: str) -> None:
+def do_import(c: Cmdr, parent: Position, s: str, treeType: str = '@file') -> None:
     """The importer callback for php."""
-    Php_Importer(c).import_from_string(parent, s)
+    Php_Importer(c).import_from_string(parent, s, treeType=treeType)
 
 importer_dict = {
     'extensions': ['.php'],

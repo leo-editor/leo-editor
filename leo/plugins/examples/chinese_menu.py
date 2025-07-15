@@ -65,7 +65,7 @@ def onMenu(tag, keywords):
             ("Import...", "导入..."),
                 ("Import Derived File", "导入生成的文件"),
                 ("Import To @file", "导入到 @file"),
-                ("Import To @root", "导入到 @root"),
+                # ("Import To @root", "导入到 @root"),
                 ("Import CWEB Files", "导入 CWEB 文件"),
                 ("Import noweb Files", "导入 noweb 文件"),
                 ("Import Flattened Outline", "导入平坦 (Flattened) 大纲文件 (MORE 格式)"),

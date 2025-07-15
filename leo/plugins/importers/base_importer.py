@@ -110,6 +110,7 @@ class Importer:
         self.root: Position = None
         delims = g.set_delims_from_language(self.language)
         self.single_comment, self.block1, self.block2 = delims
+        self.treeType: str = None  # Set by i.import_from_string.
         self.tab_width = 0  # Must be set later.
     #@+node:ekr.20230529075640.1: *3* i: Generic methods: may be overridden
     #@+node:ekr.20230529075138.36: *4* i.check_blanks_and_tabs
@@ -154,6 +155,8 @@ class Importer:
         If not, the caller can insert the desired blank lines.
         """
         s = ''.join(lines)
+        if self.treeType in ('@auto', '@clean'):
+            return s
         return s.lstrip('\n').rstrip() + '\n' if s.strip() else ''
     #@+node:ekr.20230529075138.13: *4* i.compute_headline
     def compute_headline(self, block: Block) -> str:
@@ -346,6 +349,8 @@ class Importer:
     #@+node:ekr.20230920165923.1: *5* i.generate_all_bodies
     def generate_all_bodies(self, parent: Position, outer_block: Block, result_blocks: list[Block]) -> None:
         """Carefully generate bodies from the given blocks."""
+        c = self.c
+        at = c.atFileCommands
 
         # Keys: VNodes containing @others directives.
         at_others_dict: dict[VNode, bool] = {}
@@ -484,7 +489,7 @@ class Importer:
                 assert block.v in seen_vnodes, repr(block.v)
         #@-<< i.generate_all_bodies: final checks >>
 
-        # A hook for Python_Importer.
+        # A hook for language-specific processing.
         self.postprocess(parent, result_blocks)
 
         # Note: i.gen_lines appends @language and @tabwidth directives to parent.b.
@@ -521,16 +526,22 @@ class Importer:
                 raise
 
         # Add trailing lines.
-        parent.b += f"@language {self.language}\n@tabwidth {self.tab_width}\n"
-
+        if self.root.isAnyAtFileNode():  # #4385.
+            parent.b += f"@language {self.language}\n@tabwidth {self.tab_width}\n"
     #@+node:ekr.20230529075138.37: *4* i.import_from_string (driver)
-    def import_from_string(self, parent: Position, s: str) -> None:
+    def import_from_string(self,
+        parent: Position,
+        s: str,
+        treeType: str = '@file',
+    ) -> None:
         """
         Importer.import_from_string.
 
         parent: An @<file> node containing the absolute path to the to-be-imported file.
 
         s: The contents of the file.
+
+        treeType: the desired @<file> node.
 
         The top-level code for almost all importers.
 
@@ -541,7 +552,15 @@ class Importer:
         # Fix #449: Cloned @auto nodes duplicates section references.
         if parent.isCloned() and parent.hasChildren():  # pragma: no cover (missing test)
             return
+
+        # Check treeType.
+        if treeType not in ('@auto', '@clean', '@edit', '@file', '@nosent'):
+            g.es_print(f"Invalid treeType: {treeType!r}")
+            return
+
+        # Bind ivars.
         self.root = root = parent.copy()
+        self.treeType = treeType
 
         # Check for intermixed blanks and tabs.
         self.tab_width = c.getTabWidth(p=root)
@@ -585,6 +604,7 @@ class Importer:
         **Note**: The RecursiveImportController class contains a postpass that
                   adjusts headlines of *all* imported nodes.
         """
+
     #@+node:ekr.20230529075138.38: *4* i.preprocess_lines
     def preprocess_lines(self, lines: list[str]) -> list[str]:
         """

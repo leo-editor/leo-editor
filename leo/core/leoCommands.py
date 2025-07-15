@@ -3468,7 +3468,7 @@ class Commands:
         path = os.path.expandvars(path)
         return path
     #@+node:ekr.20171124101444.1: *3* c.File
-    #@+node:ekr.20200305104646.1: *4* c.archivedPositionToPosition (new)
+    #@+node:ekr.20200305104646.1: *4* c.archivedPositionToPosition
     def archivedPositionToPosition(self, s: str) -> Position:
         """Convert an archived position (a string) to a position."""
         c = self
@@ -4708,7 +4708,7 @@ class Commands:
         *,  # All arguments are kwargs.
         dir_: str = None,  # A directory or file name.
         ignore_pattern: re.Pattern = None,  # Ignore files matching this regex pattern.
-        kind: str = None,
+        kind: str = '@file',
         recursive: bool = True,
         safe_at_file: bool = True,
         theTypes: list[str] = None,
@@ -4738,6 +4738,11 @@ class Commands:
         """
         #@-<< docstring >>
         c = self
+
+        # Same test as RecursiveImportController.run.
+        if kind not in ('@auto', '@clean', '@edit', '@file', '@nosent'):
+            g.es_print(f"Invalid kind: {kind!r}")
+            return
 
         # Import all files in dir_ after c.p.
         try:

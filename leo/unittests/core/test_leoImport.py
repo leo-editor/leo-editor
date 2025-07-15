@@ -68,8 +68,9 @@ class TestLeoImport(BaseTestImporter):
                 '\n'
                 '@others\n'
                 'return new_func\n'
-                '@language python\n'
-                '@tabwidth -4\n'
+                # #4385. This is an improvement!
+                # '@language python\n'
+                # '@tabwidth -4\n'
             ),
             (1, 'function: macro',
                 'def macro(func):\n'

@@ -20,9 +20,9 @@ class Html_Importer(Xml_Importer):
         super().__init__(c, tags_setting='import_html_tags')
 #@-others
 
-def do_import(c: Cmdr, parent: Position, s: str) -> None:
+def do_import(c: Cmdr, parent: Position, s: str, treeType: str = '@file') -> None:
     """The importer callback for html."""
-    Html_Importer(c).import_from_string(parent, s)
+    Html_Importer(c).import_from_string(parent, s, treeType=treeType)
 
 importer_dict = {
     'extensions': ['.html', '.htm',],
