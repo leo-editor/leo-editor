@@ -720,10 +720,10 @@ class AtFile:
             if at.bodies_dict.get(v) != p.b:
                 changed_vnodes.append(v)
                 v.setDirty()
-                root.v.setDirty()
 
         # Handle all changed vnodes.
         if changed_vnodes:
+            root.v.setDirty()
             at.changed_roots.append(root.copy())
             for v in changed_vnodes:
                 at.do_changed_vnode(fileName, root, v)
