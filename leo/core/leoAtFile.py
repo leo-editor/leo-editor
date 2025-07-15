@@ -99,8 +99,8 @@ class AtFile:
         self.cancelFlag = False
         self.yesToAll = False
         # Reading.
-        self.changed_roots: list[Position] = []
-        self.bodies_dict: dict[VNode, str] = {}
+        self.changed_roots: list[Position] = []  # Global.
+        self.bodies_dict: dict[VNode, str] = {}  # Local to at.readOneAtCleanNode.
         self.importRootSeen = False
         self.readVersion = ''
         self.read_i = 0
