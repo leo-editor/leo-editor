@@ -53,9 +53,9 @@ class Elisp_Importer(Importer):
     #@-others
 #@-others
 
-def do_import(c: Cmdr, parent: Position, s: str) -> None:
+def do_import(c: Cmdr, parent: Position, s: str, treeType: str = '@file') -> None:
     """The importer callback for elisp."""
-    Elisp_Importer(c).import_from_string(parent, s)
+    Elisp_Importer(c).import_from_string(parent, s, treeType=treeType)
 
 importer_dict = {
     'extensions': ['.el', '.clj', '.cljs', '.cljc'],

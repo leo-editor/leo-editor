@@ -1469,8 +1469,7 @@ class LeoServer:
                 ic.importFilesCommand(
                     files=[fn],
                     parent=parent,
-                    treeType='@auto',  # was '@clean'
-                    # Experimental: attempt to use permissive section ref logic.
+                    treeType='@auto',  # Use permissive section ref logic.
                 )
         return self._make_response()  # Just send empty as 'ok'
     #@+node:felix.20220808210033.1: *4* server.export commands
