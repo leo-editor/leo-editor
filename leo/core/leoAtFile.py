@@ -728,15 +728,12 @@ class AtFile:
         if vnode_list:
             at.changed_roots.append(root.copy())
             at.post_process_at_clean_vnodes(fileName, root, vnode_list)
-            at.delete_empty_changed_organizers(root, vnode_list)
-            at.move_leading_blank_lines(root, vnode_list)
+            at.delete_empty_changed_organizers(root)
+            at.move_leading_blank_lines(root)
 
         return True  # Errors not detected.
     #@+node:ekr.20250712215845.1: *6* at.delete_empty_changed_organizers
-    def delete_empty_changed_organizers(self,
-        root: Position,
-        vnode_list: list[VNode]
-    ) -> None:
+    def delete_empty_changed_organizers(self, root: Position) -> None:
         """
         #4385: Clean up nodes created by at.do_changed_vnode.
         """
@@ -789,7 +786,7 @@ class AtFile:
         for s in lines:
             print(s.rstrip())
     #@+node:ekr.20250714115142.1: *6* at.move_leading_blank_lines
-    def move_leading_blank_lines(self, root: Position, vnode_list: list[VNode]) -> None:
+    def move_leading_blank_lines(self, root: Position) -> None:
         """
         Move leading blank lines (only in dirty nodes!) to the preceding node.
         """
