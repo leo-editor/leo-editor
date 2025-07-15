@@ -715,11 +715,7 @@ class AtFile:
         # #4385: Compute the list of changed vnodes.
         vnode_list: list[VNode] = []
         for p in root.self_and_subtree():
-            if p.v not in at.bodies_dict:
-                vnode_list.append(p.v)
-                p.v.setDirty()
-                root.v.setDirty()
-            elif at.bodies_dict.get(p.v) != p.b:
+            if at.bodies_dict.get(p.v) != p.b:
                 vnode_list.append(p.v)
                 p.v.setDirty()
                 root.v.setDirty()
