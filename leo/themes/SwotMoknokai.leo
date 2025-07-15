@@ -97,7 +97,7 @@
 </v>
 </v>
 <v t="ekr.20180318145515.796"><vh>Fonts &amp; text sizes</vh>
-<v t="ekr.20180318145515.797"><vh>@string font-family = Monaco, JetBrains Mono, Menlo, DejaVu Sans Mono, Inconsolata, Droid Sans Mono</vh></v>
+<v t="ekr.20180318145515.797"><vh>@string font-family = JetBrains Mono, Menlo, Monaco, DejaVu Sans Mono, Inconsolata, Droid Sans Mono</vh></v>
 <v t="ekr.20180318145515.798"><vh>@string font-family-body =@font-family</vh></v>
 <v t="ekr.20180318145515.799"><vh>@string font-family-log =@font-family</vh></v>
 <v t="ekr.20180318145515.800"><vh>@string font-family-tree =@font-family</vh></v>
@@ -733,7 +733,7 @@ QTextEdit {
   color: @text-foreground;
   font-family: @font-family-body;
   font-size: @font-size-body;
-  font-weight: normal; /* normal,bold,100,..,900 */
+  font-weight: 300; /* 300 for JetBrains Mono looks more elegant */
   font-style: normal; /* normal,italic,oblique */
   padding-left: 3px;
   padding-top: 3px;
@@ -786,7 +786,7 @@ QTextEdit#log-widget {
   selection-background-color: blue;
   font-family: @font-family-log;
   font-size: @font-size-log;
-  font-weight: normal; /* normal,bold,100,..,900 */
+  font-weight: 300; /* 300 for JetBrains Mono looks more elegant */
   font-style: normal; /* normal, italic,oblique */
 }
 </t>
@@ -831,7 +831,7 @@ QLineEdit#lineEdit {
   color: #f8f8f2;
   font-family: @font-family;
   font-size: 16px;
-  font-weight: normal; /* normal,bold,100,..,900 */
+  font-weight: 300; /* 300 for JetBrains Mono looks more elegant */
   font-style: normal; /* normal,italic,oblique */
   border: 1px solid #3e3d32;
   border-radius: 3px;
@@ -943,7 +943,7 @@ QTreeView {
   color: @tree-fg;
   font-family: @font-family-tree;
   font-size: @font-size-tree;
-  font-weight: normal; /* normal,bold,100,..,900 */
+  font-weight: 300; /* 300 for JetBrains Mono looks more elegant */
   font-style: normal; /* normal, italic,oblique */
   show-decoration-selected: 1; /* Extend the selection */
 }
