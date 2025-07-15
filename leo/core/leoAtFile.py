@@ -469,10 +469,8 @@ class AtFile:
                 clone = p.clone()
                 clone.moveToLastChildOf(parent)
                 # Insert the diff into the parent's body.
-                a = g.splitLines(at.bodies_dict.get(p.v, ''))
+                a = g.splitLines(at.bodies_dict.get(v, ''))
                 b = g.splitLines(p.b)
-                ### g.printObj(a, tag=f"OLD {id(v)} {v.h}")
-                ### g.printObj(b, tag=f"NEW {id(v)} {v.h}")
                 parent_body.append(f"{p.h}\n")
                 parent_body.extend(difflib.unified_diff(a, b))
                 parent_body.append('\n')
