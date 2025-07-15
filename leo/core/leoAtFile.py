@@ -712,19 +712,21 @@ class AtFile:
         FastAtRead(c, gnx2vnode).read_into_root(contents, fileName, root)
         g.doHook('after-reading-external-file', c=c, p=root)
 
-        # #4385: Call do_changed_vnodes for all changed vnodes.
-        changed = False
+        # Calculate all changed vnodes.
+        # Do not call at.do_changed_vnodes in this loop!
+        changed_vnodes: list[VNode] = []
         for p in root.self_and_subtree():
             v = p.v
             if at.bodies_dict.get(v) != p.b:
-                changed = True
-                p.v.setDirty()
+                changed_vnodes.append(v)
+                v.setDirty()
                 root.v.setDirty()
-                at.do_changed_vnode(fileName, root, v)
 
-        # #4385: Do final optimizations.
-        if changed:
+        # Handle all changed vnodes.
+        if changed_vnodes:
             at.changed_roots.append(root.copy())
+            for v in changed_vnodes:
+                at.do_changed_vnode(fileName, root, v)
             at.delete_empty_changed_organizers(root)
             at.move_leading_blank_lines(root)
 
