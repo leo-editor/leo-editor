@@ -787,7 +787,7 @@ class AtFile:
         """
         Move leading blank lines (only in dirty nodes!) to the preceding node.
         """
-        for p in root.subtree():
+        for p in root.subtree():  # back must exist below.
             if p.v.isDirty():
                 lines = g.splitLines(p.b)
                 if lines and lines[0].isspace():
