@@ -727,7 +727,8 @@ class AtFile:
         # #4385: Handle the changed nodes.
         if vnode_list:
             at.changed_roots.append(root.copy())
-            at.post_process_at_clean_vnodes(fileName, root, vnode_list)
+            for v in vnode_list:
+                at.do_changed_vnode(fileName, root, v)
             at.delete_empty_changed_organizers(root)
             at.move_leading_blank_lines(root)
 
@@ -799,19 +800,6 @@ class AtFile:
                         back.b += lines.pop(0)
                     p.b = ''.join(lines)
                     back.v.setDirty()  # Include back in the update list.
-    #@+node:ekr.20250709051341.1: *6* at.post_process_at_clean_vnodes
-    def post_process_at_clean_vnodes(self,
-        fileName: str,
-        root: Position,
-        vnode_list: list[VNode],
-    ) -> None:
-        """#4385: Analyze all changed vnodes in a *single* file."""
-        at = self
-        assert vnode_list, root.h
-        changed_root_vnodes = [z.v for z in at.changed_roots]
-        assert root.v in changed_root_vnodes, root.v
-        for v in vnode_list:
-            at.do_changed_vnode(fileName, root, v)
     #@+node:ekr.20150204165040.8: *6* at.read_at_clean_lines
     def read_at_clean_lines(self, fn: str) -> list[str]:  # pragma: no cover
         """Return all lines of the @clean/@nosent file at fn."""
