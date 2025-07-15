@@ -372,30 +372,10 @@ def refreshFromDisk(self: Self, event: LeoKeyEvent = None) -> None:
     c.nodeConflictList = []
     c.recreateGnxDict()
     old_gnx = p.v.gnx
-    if p.isAtAutoNode() or p.isAtAutoRstNode():
-        p.v._deleteAllChildren()
-        p = at.readOneAtAutoNode(p)  # Changes p!
-    elif p.isAtFileNode():
-        p.v._deleteAllChildren()
-        at.read(p)
-    elif p.isAtCleanNode():
-        # Don't delete children!
-        at.readOneAtCleanNode(p)
-    elif p.isAtJupytextNode():
-        # Don't delete children!
-        at.readOneAtJupytextNode(p)
-    elif p.isAtShadowFileNode():
-        p.v._deleteAllChildren()
-        at.read(p)
-    elif p.isAtEditNode():
-        at.readOneAtEditNode(p)  # Always deletes children.
-    elif p.isAtAsisFileNode():
-        at.readOneAtAsisNode(p)  # Always deletes children.
-    else:
-        g.es_print(f"refresh-from-disk: Unknown @<file> node: {p.h!r}")
-        return
+    p = at.readFileAtPosition(p)  # Leo 6.8.6.
 
-    if at.changed_roots:  # #4385.
+    # #4385: Handle updated @clean nodes.
+    if at.changed_roots:
         update_p = at.clone_all_changed_vnodes()
         if update_p:
             # Select update_p.  See fc.setPositionsFromVnodes.
@@ -405,9 +385,11 @@ def refreshFromDisk(self: Self, event: LeoKeyEvent = None) -> None:
             update_p.expand()
         at.changed_roots = []
 
+    # Give a weird error.
     if p.v.gnx != old_gnx and not g.unitTesting:
         g.es_print(f"refresh-from-disk changed the gnx for `{p.h}`")
         g.es_print(f"from `{old_gnx}` to: `{p.v.gnx}`")
+
     c.selectPosition(p)
     # Create the 'Recovered Nodes' tree.
     c.fileCommands.handleNodeConflicts()

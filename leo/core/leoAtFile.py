@@ -525,23 +525,29 @@ class AtFile:
                 p.moveToThreadNext()
         return files
     #@+node:ekr.20190108054803.1: *6* at.readFileAtPosition
-    def readFileAtPosition(self, p: Position) -> None:  # pragma: no cover
-        """Read the @<file> node at p."""
-        at, c, fileName = self, self.c, p.anyAtFileNodeName()
-        if p.isAtThinFileNode() or p.isAtFileNode():
-            at.read(p)
-        elif p.isAtAutoNode():
-            at.readOneAtAutoNode(p)
-        elif p.isAtEditNode():
-            at.readOneAtEditNode(p)
-        elif p.isAtShadowFileNode():
-            at.readOneAtShadowNode(fileName, p)
-        elif p.isAtAsisFileNode() or p.isAtNoSentFileNode():
-            at.rememberReadPath(c.fullPath(p), p)
+    def readFileAtPosition(self, p: Position) -> Position:  # pragma: no cover
+        """
+        Read the @<file> node at p."""
+        at, c = self, self.c
+
+        if p.isAtAsisFileNode():
+            at.readOneAtAsisNode(p)  # Changed.
+        elif p.isAtAutoNode() or p.isAtAutoRstNode():
+            p = at.readOneAtAutoNode(p)  # Might change p!
         elif p.isAtCleanNode():
             at.readOneAtCleanNode(p)
+        elif p.isAtEditNode():
+            at.readOneAtEditNode(p)
+        elif p.isAtFileNode() or p.isAtThinFileNode():
+            at.read(p)
         elif p.isAtJupytextNode():
             at.readOneAtJupytextNode(p)
+        elif p.isAtNoSentFileNode():
+            at.rememberReadPath(c.fullPath(p), p)
+        elif p.isAtShadowFileNode():
+            fileName = p.anyAtFileNodeName()
+            at.readOneAtShadowNode(fileName, p)
+        return p
     #@+node:ekr.20220121052056.1: *5* at.readAllSelected
     def readAllSelected(self, root: Position) -> None:  # pragma: no cover
         """Read all @<file> nodes in root's tree."""
