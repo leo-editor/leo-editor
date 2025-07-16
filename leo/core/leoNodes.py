@@ -2165,7 +2165,7 @@ class VNode:
         return self.findAtFileName(names)
 
     def atLeoNodeName(self) -> str:
-        names = ("@leo")
+        names = ("@leo",)
         return self.findAtFileName(names)
 
     def atNoSentinelsFileNodeName(self) -> str:
