@@ -1028,6 +1028,9 @@ class Position:
     def atFileNodeName(self) -> str:
         return self.v.atFileNodeName()
 
+    def atLeoNodeName(self) -> str:
+        return self.v.atLeoNodeName()
+
     def atNoSentinelsFileNodeName(self) -> str:
         return self.v.atNoSentinelsFileNodeName()
 
@@ -1070,6 +1073,9 @@ class Position:
 
     def isAtIgnoreNode(self) -> bool:
         return self.v.isAtIgnoreNode()
+
+    def isAtLeoNode(self) -> bool:
+        return self.v.isAtLeoNode()
 
     def isAtNoSentinelsFileNode(self) -> bool:
         return self.v.isAtNoSentinelsFileNode()
@@ -2158,6 +2164,10 @@ class VNode:
         names = ("@jupytext",)
         return self.findAtFileName(names)
 
+    def atLeoNodeName(self) -> str:
+        names = ("@leo")
+        return self.findAtFileName(names)
+
     def atNoSentinelsFileNodeName(self) -> str:
         names = ("@nosent", "@file-nosent",)
         return self.findAtFileName(names)
@@ -2212,6 +2222,9 @@ class VNode:
 
     def isAtRstFileNode(self) -> bool:
         return bool(self.atRstFileNodeName())
+
+    def isAtLeoNode(self) -> bool:
+        return bool(self.atLeoNodeName())
 
     def isAtNoSentinelsFileNode(self) -> bool:
         return bool(self.atNoSentinelsFileNodeName())
