@@ -449,6 +449,8 @@ class AtFile:
             return None
         if not at.changed_roots:
             return None
+        if not c.config.getBool('report-changed-at-clean-nodes', default=False):
+            return None
 
         # Create the top-level node.
         update_p = c.lastTopLevel().insertAfter()
@@ -526,7 +528,7 @@ class AtFile:
                 p.moveToThreadNext()
         return files
     #@+node:ekr.20190108054803.1: *6* at.readFileAtPosition
-    def readFileAtPosition(self, p: Position) -> Position:  # pragma: no cover
+    def readFileAtPosition(self, p: Position) -> None:  # pragma: no cover
         """
         Read the @<file> node at p."""
         at, c = self, self.c
@@ -535,6 +537,11 @@ class AtFile:
             at.readOneAtAsisNode(p)  # Changed.
         elif p.isAtAutoNode() or p.isAtAutoRstNode():
             p = at.readOneAtAutoNode(p)  # Might change p!
+            # Give a weird error.
+            if p.v.gnx != old_gnx and not g.unitTesting:
+                g.es_print(f"refresh-from-disk changed the gnx for `{p.h}`")
+                g.es_print(f"from `{old_gnx}` to: `{p.v.gnx}`")
+                c.selectPosition(p)
         elif p.isAtCleanNode():
             at.readOneAtCleanNode(p)
         elif p.isAtEditNode():
