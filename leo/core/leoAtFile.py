@@ -536,10 +536,11 @@ class AtFile:
         if p.isAtAsisFileNode():
             at.readOneAtAsisNode(p)  # Changed.
         elif p.isAtAutoNode() or p.isAtAutoRstNode():
+            old_gnx = p.v.gnx
             p = at.readOneAtAutoNode(p)  # Might change p!
             # Give a weird error.
-            if p.v.gnx != old_gnx and not g.unitTesting:
-                g.es_print(f"refresh-from-disk changed the gnx for `{p.h}`")
+            if p.v.gnx != old_gnx:
+                g.es_print(f"reading @auto node changed the gnx for `{p.h}`")
                 g.es_print(f"from `{old_gnx}` to: `{p.v.gnx}`")
                 c.selectPosition(p)
         elif p.isAtCleanNode():
@@ -555,7 +556,6 @@ class AtFile:
         elif p.isAtShadowFileNode():
             fileName = p.anyAtFileNodeName()
             at.readOneAtShadowNode(fileName, p)
-        return p
     #@+node:ekr.20220121052056.1: *5* at.readAllSelected
     def readAllSelected(self, root: Position) -> None:  # pragma: no cover
         """Read all @<file> nodes in root's tree."""

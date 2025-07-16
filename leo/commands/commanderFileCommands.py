@@ -371,8 +371,7 @@ def refreshFromDisk(self: Self, event: LeoKeyEvent = None) -> None:
     at = c.atFileCommands
     c.nodeConflictList = []
     c.recreateGnxDict()
-    old_gnx = p.v.gnx
-    p = at.readFileAtPosition(p)  # Leo 6.8.6.
+    at.readFileAtPosition(p)  # Leo 6.8.6.
 
     # #4385: Handle updated @clean nodes.
     if at.changed_roots:
@@ -385,12 +384,6 @@ def refreshFromDisk(self: Self, event: LeoKeyEvent = None) -> None:
             update_p.expand()
         at.changed_roots = []
 
-    # Give a weird error.
-    if p.v.gnx != old_gnx and not g.unitTesting:
-        g.es_print(f"refresh-from-disk changed the gnx for `{p.h}`")
-        g.es_print(f"from `{old_gnx}` to: `{p.v.gnx}`")
-
-    c.selectPosition(p)
     # Create the 'Recovered Nodes' tree.
     c.fileCommands.handleNodeConflicts()
     c.redraw()
