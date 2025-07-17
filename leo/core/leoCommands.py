@@ -3622,8 +3622,6 @@ class Commands:
 
         """
         #@-<< c.makeLinkLeoFiles: docstring >>
-        c = self
-        top_links: list[str] = []
 
         # Check the top directory.
         if (
@@ -3642,8 +3640,6 @@ class Commands:
             g.es_print(f"Invalid list of extensions: {extensions!r}")
             return
 
-        g.trace(extensions)  ###
-
         # Default to all direct subdirectories of the top directories.
         if not sub_directories:
             sub_directories = [
@@ -3651,17 +3647,23 @@ class Commands:
                 if os.path.isdir(os.path.join(top_directory, z))
             ]
 
+        # The main loop.
+        top_links: list[str] = []
         for sub_directory in sub_directories[:2]:  ###
             sub_directory = os.path.join(top_directory, sub_directory)
             assert os.path.exists(sub_directory), repr(sub_directory)
             files = []
             for ext in extensions:
-                # if not ext.startswith('.'):
-                    # ext = '.' + ext
+                if not ext.startswith('.'):
+                    ext = '.' + ext
                 new_files = glob.glob(
                     f"{sub_directory}{os.sep}**{os.sep}*{ext}",
                     recursive=True,
                 )
+                if new_files:
+                    ### Not correct for non-direct directories.
+                    outline_name = f"{g.shortFileName(sub_directory)}_links.leo"
+                    top_links.append(outline_name)
                 ### g.printObj(new_files, tag=f"{sub_directory}")
                 files.extend([
                     z for z in new_files
@@ -3669,27 +3671,24 @@ class Commands:
                 ])
 
             # g.printObj(files, tag=f"{len(files)} in {sub_directory}")
+            # g.trace(f"{len(files):2} files in {g.shortFileName(sub_directory)}")
 
-            ### Use glob.glob to get the files to add to each suboutline.
-            ### path = os.path.abspath(os.path.join(root_path, name))
-            ### top_links.append(outline_name)
             self._create_link_file(
                 directory=sub_directory,
                 extensions=extensions,
-                links=[top_outline_name],  # Add one link,
+                ### Not correct if the file ia not a direct child.
+                links=[f"../{top_outline_name}"],  # Add one link to the parent.
                 outline_name=f"{g.shortFileName(sub_directory)}_links.leo",
             )
-
-            ### outline_name, path,
-            ###    link_names=['leo_links.leo'], extensions=extensions)
 
         # Create the top-level links file.
 
         ### top_outline_path = os.path.join(top_directory, top_outline_name)
+
         self._create_link_file(
             directory=top_directory,
             extensions=extensions,
-            links=['leo_links.leo'],
+            links=top_links,
             outline_name=top_outline_name,
         )
     #@+node:ekr.20250717132857.1: *5* _create_link_file
@@ -3702,7 +3701,7 @@ class Commands:
         # pylint: disable=no-member
         c = self
         assert os.path.exists(directory), directory
-        g.trace(f"{directory}{os.sep}{outline_name}")
+        ### g.trace(f"{directory}{os.sep}{outline_name}")
         h = '@settings'
         settings_p = g.findNodeAnywhere(c, h)
         assert settings_p
