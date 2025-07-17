@@ -3629,11 +3629,49 @@ class Commands:
         node in this outline.
 
         Return the list of newly-opened commanders.
+
+        Note: gui eventually defaults to g.app.gui.
         """
+        c = self
+        calls = 0  # The number of calls to g.openWithFileName.
         result: list[Commands] = []
+        scanned: list[str] = []  # List of paths already scanned.
+        todo: list[str] = []
 
+        def scan(fileName: str) -> None:
+            """
+            Add all paths not already seen to the todo list.
+            Add all newly-opened commanders to the result list.
+            """
+            nonlocal calls
+            if fileName in scanned:
+                g.trace('Skip', fileName)  ###
+                return
+            scanned.append(fileName)
+            g.trace('Scan', fileName)  ###
+            for p in c.all_unique_positions():
+                if p.isAtLeoNode():
+                    fileName = p.atLeoFileName()
+                    if fileName not in todo and fileName not in scanned:
+                        c2 = g.openWithFileName(fileName, gui=gui)
+                        calls += 1
+                        todo.append(fileName)
+                        assert c2 not in result
+                        result.append(c2)
+
+        # Create the initial to-do list.
+        scan(c.fileName())
+
+        # Rescan until the to-do list is empty.
+        while todo:
+            fileName = todo.pop()
+            scan(fileName)
+
+        if not g.unitTesting:  ### Temp.
+            g.trace('calls', calls, c.shortFileName())
+            g.printObj(scanned, tag='Scanned')
+            g.printObj(result, tag='Result')
         return result
-
     #@+node:ekr.20031218072017.2081: *4* c.openRecentFile
     def openRecentFile(self, event: LeoKeyEvent = None, fn: str = None) -> None:
         """
