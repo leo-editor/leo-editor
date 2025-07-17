@@ -3622,6 +3622,33 @@ class Commands:
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
+    #@+node:ekr.20250717080554.1: *4* c.openAllLinkedFiles
+    def openAllLinkedFiles(self, gui: LeoGui = None) -> list[Commands]:
+        """
+        Open the transitive closure of all outlines reachable from any @leo
+        node in this outline.
+
+        Return the list of newly-opened commanders.
+        """
+        result: list[Commands] = []
+
+        return result
+
+    #@+node:ekr.20031218072017.2081: *4* c.openRecentFile
+    def openRecentFile(self, event: LeoKeyEvent = None, fn: str = None) -> None:
+        """
+        c.openRecentFile: This is not a command!
+
+        This method is a helper called only from the recentFilesCallback in
+        rf.createRecentFilesMenuItems.
+        """
+        c = self
+        if g.doHook("recentfiles1", c=c, p=c.p, v=c.p, fileName=fn):
+            return
+        c2 = g.openWithFileName(fn, old_c=c)
+        if c2:
+            g.app.makeAllBindings()
+            g.doHook("recentfiles2", c=c2, p=c2.p, v=c2.p, fileName=fn)
     #@+node:ekr.20031218072017.2823: *4* c.openWith
     def openWith(self, event: LeoKeyEvent = None, d: dict[str, Position] = None) -> None:
         """
@@ -3662,21 +3689,6 @@ class Commands:
             else:
                 g.internalError(f"no gnx for vnode: {v}")
         c.fileCommands.gnxDict = d
-    #@+node:ekr.20031218072017.2081: *4* c.openRecentFile
-    def openRecentFile(self, event: LeoKeyEvent = None, fn: str = None) -> None:
-        """
-        c.openRecentFile: This is not a command!
-
-        This method is a helper called only from the recentFilesCallback in
-        rf.createRecentFilesMenuItems.
-        """
-        c = self
-        if g.doHook("recentfiles1", c=c, p=c.p, v=c.p, fileName=fn):
-            return
-        c2 = g.openWithFileName(fn, old_c=c)
-        if c2:
-            g.app.makeAllBindings()
-            g.doHook("recentfiles2", c=c2, p=c2.p, v=c2.p, fileName=fn)
     #@+node:ekr.20180508111544.1: *3* c.Git
     #@+node:ekr.20180510104805.1: *4* c.diff_file
     def diff_file(self, fn: str, rev1: str = 'HEAD', rev2: str = '') -> None:
