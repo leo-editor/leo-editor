@@ -4,6 +4,7 @@
 #@+node:ekr.20040712045933: ** << leoCommands imports >>
 from __future__ import annotations
 from collections.abc import Callable
+import glob
 import json
 import os
 import re
@@ -3593,6 +3594,149 @@ class Commands:
         except Exception:
             g.es_exception()
             return False
+    #@+node:ekr.20250717132026.1: *4* c.makeLinkLeoFiles & helper
+    def makeLinkLeoFiles(self,
+        *,
+        extensions: list[str],  # List of file extensions for generated @<file> nodes.
+        kind: str,  # One of @auto, @clean, @file, etc.
+        top_directory: str,
+        sub_directories: list[str] = None,
+        sub_outline_name: str = None,
+        top_outline_name: str = 'leo_links.leo',
+
+    ) -> None:
+        #@+<< c.makeLinkLeoFiles: docstring >>
+        #@+node:ekr.20250717132150.1: *5* << c.makeLinkLeoFiles: docstring >>
+        """
+        Create a top-level *link outline* and associated *sub-outlines.
+
+        Scripts calling this method need only specify the value of the following kwars:
+
+        - extensions:       List of file extensions for generated @<file> nodes.
+        - kind:             One of @auto, @clean, @file, etc.
+        - sub_directories:  A list of subdictories for sub-outlines.
+        - top_directory:    The top-level directory
+        - top_file_name:    The name of the top-level link outline.
+
+        All directories are full, absolute, paths.
+
+        """
+        #@-<< c.makeLinkLeoFiles: docstring >>
+        c = self
+        top_links: list[str] = []
+
+        # Check the top directory.
+        if (
+            not top_directory
+            or not os.path.isdir(top_directory)
+            or not os.path.isabs(top_directory)
+            or not os.path.exists(top_directory)
+        ):
+            g.es_print(f"Not an absolute directory: {top_directory!r}")
+            return
+
+        # Make sure all extensions begin with '.':
+        if isinstance(extensions, str):
+            extensions = [extensions]
+        if not isinstance(extensions, (list, tuple)):
+            g.es_print(f"Invalid list of extensions: {extensions!r}")
+            return
+
+        g.trace(extensions)  ###
+
+        # Default to all direct subdirectories of the top directories.
+        if not sub_directories:
+            sub_directories = [
+                z for z in os.listdir(top_directory)
+                if os.path.isdir(os.path.join(top_directory, z))
+            ]
+
+        for sub_directory in sub_directories[:2]:  ###
+            sub_directory = os.path.join(top_directory, sub_directory)
+            assert os.path.exists(sub_directory), repr(sub_directory)
+            files = []
+            for ext in extensions:
+                # if not ext.startswith('.'):
+                    # ext = '.' + ext
+                new_files = glob.glob(
+                    f"{sub_directory}{os.sep}**{os.sep}*{ext}",
+                    recursive=True,
+                )
+                ### g.printObj(new_files, tag=f"{sub_directory}")
+                files.extend([
+                    z for z in new_files
+                    if os.path.isfile(z) and z not in files
+                ])
+
+            # g.printObj(files, tag=f"{len(files)} in {sub_directory}")
+
+            ### Use glob.glob to get the files to add to each suboutline.
+            ### path = os.path.abspath(os.path.join(root_path, name))
+            ### top_links.append(outline_name)
+            self._create_link_file(
+                directory=sub_directory,
+                extensions=extensions,
+                links=[top_outline_name],  # Add one link,
+                outline_name=f"{g.shortFileName(sub_directory)}_links.leo",
+            )
+
+            ### outline_name, path,
+            ###    link_names=['leo_links.leo'], extensions=extensions)
+
+        # Create the top-level links file.
+
+        ### top_outline_path = os.path.join(top_directory, top_outline_name)
+        self._create_link_file(
+            directory=top_directory,
+            extensions=extensions,
+            links=['leo_links.leo'],
+            outline_name=top_outline_name,
+        )
+    #@+node:ekr.20250717132857.1: *5* _create_link_file
+    def _create_link_file(self,
+        directory: str,
+        extensions: list[str],
+        links: list[str],
+        outline_name: str,
+    ) -> None:
+        # pylint: disable=no-member
+        c = self
+        assert os.path.exists(directory), directory
+        g.trace(f"{directory}{os.sep}{outline_name}")
+        h = '@settings'
+        settings_p = g.findNodeAnywhere(c, h)
+        assert settings_p
+        c.selectPosition(settings_p)
+        c.copyOutline()
+        c2 = g.app.newCommander(fileName=outline_name)
+        c2.pasteOutline()
+        c2.rootPosition().doDelete()
+        c2.selectPosition(c2.rootPosition())
+        for link in links:
+            p = c2.lastTopLevel().insertAfter()
+            p.h = f"@leo {link}"
+        # Create @file nodes for the given extensions.
+        if extensions:
+            for ext in extensions:
+                files = glob.glob(f"{directory}{os.sep}*{ext}")
+                # g.printObj(files)
+                relative_files = [
+                    os.path.relpath(z, start=directory)
+                    for z in files
+                    if '__init__.py' not in z
+                ]
+                if relative_files:
+                    for external_file_name in relative_files:
+                        p = c2.lastTopLevel().insertAfter()
+                        kind = '@leo' if ext == '.leo' else '@@file'
+                        p.h = f"{kind} {external_file_name}"
+
+        outline_path = os.path.join(directory, outline_name)
+        c2.clearChanged()
+        c2.saveTo(fileName=outline_path)
+        c2.redraw()
+        # c2.close()
+
     #@+node:ekr.20031218072017.2925: *4* c.markAllAtFileNodesDirty
     def markAllAtFileNodesDirty(self, event: LeoKeyEvent = None) -> None:
         """Mark all @file nodes as changed."""
