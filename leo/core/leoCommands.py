@@ -3809,6 +3809,14 @@ class Commands:
         Note: gui eventually defaults to g.app.gui.
         """
         c = self
+
+        t1 = time.process_time()
+
+        # Using the Qt gui will likely overwhelm Leo!
+        if gui is None:
+            gui = g.app.nullGui
+
+        # The main loop.
         calls = 0  # The number of calls to g.openWithFileName.
         result: list[Commands] = []
         scanned: list[str] = []  # List of paths already scanned.
@@ -3843,7 +3851,10 @@ class Commands:
             fileName = todo.pop()
             scan(fileName)
 
-        if not g.unitTesting:  ### Temp.
+        if not g.unitTesting:
+            t2 = time.process_time()
+            kind = 'hidden ' if gui == g.app.nullGui else ''
+            g.es_print(f"Done! Opened {len(result)} {kind}outlines in {t2 - t1:3.2} sec")
             g.trace('calls', calls, c.shortFileName())
             g.printObj(scanned, tag='Scanned')
             g.printObj(result, tag='Result')
