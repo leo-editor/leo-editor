@@ -3660,21 +3660,26 @@ class Commands:
                     f"{sub_directory}{os.sep}**{os.sep}*{ext}",
                     recursive=True,
                 )
-                if new_files:
-                    ### To do: handle non-direct directories.
-                    outline_name = f"{g.shortFileName(sub_directory)}_links.leo"
-                    top_links.append(outline_name)
+
+                # _create_link_files converts these full paths to relative paths.
                 files.extend([
                     z for z in new_files
                     if os.path.isfile(z) and z not in files
                 ])
+
+            # Create one link to the sub-directory.
+            if files:
+                outline_name = f"{g.shortFileName(sub_directory)}_links.leo"
+                abs_path = f"{sub_directory}{os.sep}{outline_name}"
+                relative_link = os.path.relpath(abs_path, start=top_directory)
+                top_links.append(relative_link.replace('\\', '/'))
 
             self._create_link_file(
                 directory=sub_directory,
                 extensions=extensions,
                 files=files,
                 kind=kind,
-                ### To do: handle non-direct directories.
+                ### To do: generalize ../
                 links=[f"../{top_outline_name}"],  # Add one link to the parent.
                 outline_name=f"{g.shortFileName(sub_directory)}_links.leo",
             )
@@ -3697,6 +3702,11 @@ class Commands:
         links: list[str],
         outline_name: str,
     ) -> None:
+        """
+        The caller is responsible for making links relative to the top-level directory.
+
+        This method creates @<file> nodes whose paths are relative to *this* directory.
+        """
         # pylint: disable=no-member
         c = self
         assert os.path.exists(directory), directory
