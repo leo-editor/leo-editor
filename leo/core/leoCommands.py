@@ -3647,7 +3647,13 @@ class Commands:
                 if os.path.isdir(os.path.join(top_directory, z))
             ]
 
+        g.es_print(
+            f"Scanning {len(sub_directories)} directories. "
+            'This may take awhile'
+        )
+
         # The main loop.
+        all_files: list[str] = []
         top_links: list[str] = []
         for sub_directory in sub_directories:
             sub_directory = os.path.join(top_directory, sub_directory)
@@ -3673,6 +3679,7 @@ class Commands:
                 abs_path = f"{sub_directory}{os.sep}{outline_name}"
                 rel_link = os.path.relpath(abs_path, start=top_directory)
                 top_links.append(rel_link.replace('\\', '/'))
+                all_files.append(outline_name)
 
             # Compute the relative back link for the sub-outline.
             abs_back_link = f"{top_directory}{os.sep}{top_outline_name}"
@@ -3689,6 +3696,7 @@ class Commands:
             )
 
         # Create the top-level links file.
+        all_files.append(top_outline_name)
         self._create_link_file(
             directory=top_directory,
             extensions=extensions,
@@ -3697,6 +3705,9 @@ class Commands:
             links=top_links,
             outline_name=top_outline_name,
         )
+        all_files = sorted(list(set(all_files)))
+        if not g.unitTesting:
+            g.es_print(f"Done! Created {len(all_files)} outline files")
     #@+node:ekr.20250717132857.1: *5* c._create_link_file
     def _create_link_file(self,
         directory: str,
@@ -3722,7 +3733,7 @@ class Commands:
         assert settings_p
         c.selectPosition(settings_p)
         c.copyOutline()
-        c2 = g.app.newCommander(fileName=outline_name)
+        c2 = g.app.newCommander(fileName=outline_name, gui=g.app.nullGui)
         c2.pasteOutline()
         c2.rootPosition().doDelete()
         c2.selectPosition(c2.rootPosition())
@@ -3740,7 +3751,7 @@ class Commands:
 
         outline_path = os.path.join(directory, outline_name)
         c2.clearChanged()
-        c2.saveTo(fileName=outline_path)
+        c2.saveTo(fileName=outline_path, silent=True)
         c2.redraw()
         # c2.close()
 
