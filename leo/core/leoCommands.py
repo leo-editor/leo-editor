@@ -3603,6 +3603,7 @@ class Commands:
         sub_directories: list[str] = None,
         sub_outline_name: str = None,
         top_outline_name: str = 'leo_links.leo',
+        use_back_links: bool = False,
 
     ) -> None:
         #@+<< c.makeLinkLeoFiles: docstring >>
@@ -3622,6 +3623,7 @@ class Commands:
 
         """
         #@-<< c.makeLinkLeoFiles: docstring >>
+        c = self
 
         # Check the top directory.
         if (
@@ -3649,65 +3651,76 @@ class Commands:
 
         g.es_print(
             f"Scanning {len(sub_directories)} directories. "
-            'This may take awhile'
+            'This may take awhile.'
         )
 
         # The main loop.
-        all_files: list[str] = []
-        top_links: list[str] = []
-        for sub_directory in sub_directories:
-            sub_directory = os.path.join(top_directory, sub_directory)
-            assert os.path.exists(sub_directory), repr(sub_directory)
-            files = []
-            for ext in extensions:
-                if not ext.startswith('.'):
-                    ext = '.' + ext
-                new_files = glob.glob(
-                    f"{sub_directory}{os.sep}**{os.sep}*{ext}",
-                    recursive=True,
+        try:
+            t1 = time.process_time()
+            c.enableRedrawFlag = False
+            old_p = c.p
+            all_files: list[str] = []
+            top_links: list[str] = []
+            for sub_directory in sub_directories:
+                sub_directory = os.path.join(top_directory, sub_directory)
+                assert os.path.exists(sub_directory), repr(sub_directory)
+                files = []
+                for ext in extensions:
+                    if not ext.startswith('.'):
+                        ext = '.' + ext
+                    new_files = glob.glob(
+                        f"{sub_directory}{os.sep}**{os.sep}*{ext}",
+                        recursive=True,
+                    )
+
+                    # _create_link_files converts these full paths to relative paths.
+                    files.extend([
+                        z for z in new_files
+                        if os.path.isfile(z) and z not in files
+                    ])
+
+                # Create one link to the sub-directory.
+                if files:
+                    outline_name = f"{g.shortFileName(sub_directory)}_links.leo"
+                    abs_path = f"{sub_directory}{os.sep}{outline_name}"
+                    rel_link = os.path.relpath(abs_path, start=top_directory)
+                    top_links.append(rel_link.replace('\\', '/'))
+                    all_files.append(outline_name)
+
+                # Compute the relative back link for the sub-outline.
+                abs_back_link = f"{top_directory}{os.sep}{top_outline_name}"
+                rel_back_link = os.path.relpath(abs_back_link, start=sub_directory)
+
+                # Generate the sub-outline
+                self._create_link_file(
+                    directory=sub_directory,
+                    extensions=extensions,
+                    files=files,
+                    kind=kind,
+                    links=[rel_back_link.replace('\\', '/')],  # Add one link to the parent.
+                    outline_name=f"{g.shortFileName(sub_directory)}_links.leo",
+                    use_back_links=use_back_links,
                 )
 
-                # _create_link_files converts these full paths to relative paths.
-                files.extend([
-                    z for z in new_files
-                    if os.path.isfile(z) and z not in files
-                ])
-
-            # Create one link to the sub-directory.
-            if files:
-                outline_name = f"{g.shortFileName(sub_directory)}_links.leo"
-                abs_path = f"{sub_directory}{os.sep}{outline_name}"
-                rel_link = os.path.relpath(abs_path, start=top_directory)
-                top_links.append(rel_link.replace('\\', '/'))
-                all_files.append(outline_name)
-
-            # Compute the relative back link for the sub-outline.
-            abs_back_link = f"{top_directory}{os.sep}{top_outline_name}"
-            rel_back_link = os.path.relpath(abs_back_link, start=sub_directory)
-
-            # Generate the sub-outline
+            # Create the top-level links file.
+            all_files.append(top_outline_name)
             self._create_link_file(
-                directory=sub_directory,
+                directory=top_directory,
                 extensions=extensions,
-                files=files,
-                kind=kind,
-                links=[rel_back_link.replace('\\', '/')],  # Add one link to the parent.
-                outline_name=f"{g.shortFileName(sub_directory)}_links.leo",
+                files=None,
+                kind='@leo',
+                links=top_links,
+                outline_name=top_outline_name,
+                use_back_links=use_back_links,
             )
-
-        # Create the top-level links file.
-        all_files.append(top_outline_name)
-        self._create_link_file(
-            directory=top_directory,
-            extensions=extensions,
-            files=None,
-            kind='@leo',
-            links=top_links,
-            outline_name=top_outline_name,
-        )
-        all_files = sorted(list(set(all_files)))
-        if not g.unitTesting:
-            g.es_print(f"Done! Created {len(all_files)} outline files")
+            all_files = sorted(list(set(all_files)))
+            if not g.unitTesting:
+                t2 = time.process_time()
+                g.es_print(f"Done! Created {len(all_files)} outlines in {t2 - t1:3.2} sec")
+        finally:
+            c.selectPosition(old_p)
+            c.enableRedrawFlag = True
+            c.redraw()
     #@+node:ekr.20250717132857.1: *5* c._create_link_file
     def _create_link_file(self,
         directory: str,
@@ -3716,6 +3729,7 @@ class Commands:
         kind: str,
         links: list[str],
         outline_name: str,
+        use_back_links: bool,
     ) -> None:
         """
         The caller is responsible for making links relative to the top-level directory.
@@ -3753,7 +3767,7 @@ class Commands:
         c2.clearChanged()
         c2.saveTo(fileName=outline_path, silent=True)
         c2.redraw()
-        # c2.close()
+        c2.close()
 
     #@+node:ekr.20031218072017.2925: *4* c.markAllAtFileNodesDirty
     def markAllAtFileNodesDirty(self, event: LeoKeyEvent = None) -> None:
