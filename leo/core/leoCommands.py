@@ -3649,7 +3649,7 @@ class Commands:
 
         # The main loop.
         top_links: list[str] = []
-        for sub_directory in sub_directories[:2]:  ###
+        for sub_directory in sub_directories[:3]:  ###
             sub_directory = os.path.join(top_directory, sub_directory)
             assert os.path.exists(sub_directory), repr(sub_directory)
             files = []
@@ -3661,47 +3661,48 @@ class Commands:
                     recursive=True,
                 )
                 if new_files:
-                    ### Not correct for non-direct directories.
+                    ### To do: handle non-direct directories.
                     outline_name = f"{g.shortFileName(sub_directory)}_links.leo"
                     top_links.append(outline_name)
-                ### g.printObj(new_files, tag=f"{sub_directory}")
                 files.extend([
                     z for z in new_files
                     if os.path.isfile(z) and z not in files
                 ])
 
-            # g.printObj(files, tag=f"{len(files)} in {sub_directory}")
-            # g.trace(f"{len(files):2} files in {g.shortFileName(sub_directory)}")
-
             self._create_link_file(
                 directory=sub_directory,
                 extensions=extensions,
-                ### Not correct if the file ia not a direct child.
+                files=files,
+                kind=kind,
+                ### To do: handle non-direct directories.
                 links=[f"../{top_outline_name}"],  # Add one link to the parent.
                 outline_name=f"{g.shortFileName(sub_directory)}_links.leo",
             )
 
         # Create the top-level links file.
-
-        ### top_outline_path = os.path.join(top_directory, top_outline_name)
-
         self._create_link_file(
             directory=top_directory,
             extensions=extensions,
+            files=None,
+            kind='@leo',
             links=top_links,
             outline_name=top_outline_name,
         )
-    #@+node:ekr.20250717132857.1: *5* _create_link_file
+    #@+node:ekr.20250717132857.1: *5* c._create_link_file
     def _create_link_file(self,
         directory: str,
         extensions: list[str],
+        files: list[str],
+        kind: str,
         links: list[str],
         outline_name: str,
     ) -> None:
         # pylint: disable=no-member
         c = self
         assert os.path.exists(directory), directory
-        ### g.trace(f"{directory}{os.sep}{outline_name}")
+        # g.trace(f"{directory}{os.sep}{outline_name}")
+
+        # Create the outline and copy the settings.
         h = '@settings'
         settings_p = g.findNodeAnywhere(c, h)
         assert settings_p
@@ -3711,24 +3712,17 @@ class Commands:
         c2.pasteOutline()
         c2.rootPosition().doDelete()
         c2.selectPosition(c2.rootPosition())
+
+        # Create @leo nodes.
         for link in links:
             p = c2.lastTopLevel().insertAfter()
             p.h = f"@leo {link}"
-        # Create @file nodes for the given extensions.
-        if extensions:
-            for ext in extensions:
-                files = glob.glob(f"{directory}{os.sep}*{ext}")
-                # g.printObj(files)
-                relative_files = [
-                    os.path.relpath(z, start=directory)
-                    for z in files
-                    if '__init__.py' not in z
-                ]
-                if relative_files:
-                    for external_file_name in relative_files:
-                        p = c2.lastTopLevel().insertAfter()
-                        kind = '@leo' if ext == '.leo' else '@@file'
-                        p.h = f"{kind} {external_file_name}"
+
+        # Create @<file> nodes for each file.
+        for path in files or []:
+            relative_path = os.path.relpath(path, start=directory).replace('\\', '/')
+            p = c2.lastTopLevel().insertAfter()
+            p.h = f"{kind} {relative_path}"
 
         outline_path = os.path.join(directory, outline_name)
         c2.clearChanged()
