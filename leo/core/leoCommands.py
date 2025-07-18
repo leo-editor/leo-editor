@@ -3655,10 +3655,10 @@ class Commands:
         )
 
         # The main loop.
+        old_p = c.p
         try:
             t1 = time.process_time()
             c.enableRedrawFlag = False
-            old_p = c.p
             all_files: list[str] = []
             top_links: list[str] = []
             for sub_directory in sub_directories:
