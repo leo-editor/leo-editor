@@ -3649,7 +3649,7 @@ class Commands:
 
         # The main loop.
         top_links: list[str] = []
-        for sub_directory in sub_directories[:3]:  ###
+        for sub_directory in sub_directories:
             sub_directory = os.path.join(top_directory, sub_directory)
             assert os.path.exists(sub_directory), repr(sub_directory)
             files = []
