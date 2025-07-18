@@ -3671,16 +3671,20 @@ class Commands:
             if files:
                 outline_name = f"{g.shortFileName(sub_directory)}_links.leo"
                 abs_path = f"{sub_directory}{os.sep}{outline_name}"
-                relative_link = os.path.relpath(abs_path, start=top_directory)
-                top_links.append(relative_link.replace('\\', '/'))
+                rel_link = os.path.relpath(abs_path, start=top_directory)
+                top_links.append(rel_link.replace('\\', '/'))
 
+            # Compute the relative back link for the sub-outline.
+            abs_back_link = f"{top_directory}{os.sep}{top_outline_name}"
+            rel_back_link = os.path.relpath(abs_back_link, start=sub_directory)
+
+            # Generate the sub-outline
             self._create_link_file(
                 directory=sub_directory,
                 extensions=extensions,
                 files=files,
                 kind=kind,
-                ### To do: generalize ../
-                links=[f"../{top_outline_name}"],  # Add one link to the parent.
+                links=[rel_back_link.replace('\\', '/')],  # Add one link to the parent.
                 outline_name=f"{g.shortFileName(sub_directory)}_links.leo",
             )
 
