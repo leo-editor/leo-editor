@@ -3798,7 +3798,7 @@ class Commands:
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
-    #@+node:ekr.20250717080554.1: *4* c.openAllLinkedFiles
+    #@+node:ekr.20250717080554.1: *4* c.openAllLinkedFiles (transitive closure)
     def openAllLinkedFiles(self, gui: LeoGui = None) -> list[Commands]:
         """
         Open the transitive closure of all outlines reachable from any @leo
