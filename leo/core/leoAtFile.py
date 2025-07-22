@@ -661,11 +661,7 @@ class AtFile:
         return p  # For #451: return p.
     #@+node:ekr.20150204165040.5: *5* at.readOneAtCleanNode & helpers
     def readOneAtCleanNode(self, root: Position, *, new_contents: str = None) -> bool:
-        """
-        Update the @clean/@nosent node at root.
-
-        Use new_contents for
-        """
+        """Update the @clean/@nosent node at root."""
         at, c, x = self, self.c, self.c.shadowController
 
         if new_contents:
