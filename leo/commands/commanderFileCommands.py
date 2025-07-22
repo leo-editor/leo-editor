@@ -368,7 +368,7 @@ def refreshFromDisk(self: Self, event: LeoKeyEvent = None) -> None:
     if os.path.isdir(full_path):
         g.warning(f"not a file: {full_path!r}")
         return
-    at = c.atFileCommands
+
     c.nodeConflictList = []
     c.recreateGnxDict()
     at.readFileAtPosition(p)  # Leo 6.8.6.
