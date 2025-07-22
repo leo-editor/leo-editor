@@ -452,12 +452,12 @@ class AtFile:
         if not c.config.getBool('report-changed-at-clean-nodes', default=False):
             return None
 
-        # Create the top-level node.
+        # Undoably create the top-level node.
+        undoData = u.beforeInsertNode(c.p)
         update_p = c.lastTopLevel().insertAfter()
         update_p.h = 'Updated @clean/@auto nodes'
 
         # Clone nodes as children of the found node.
-        undoData = u.beforeInsertNode(c.p)
         for root in at.changed_roots:
             parent = update_p.insertAsLastChild()
             parent.h = f"Updated from: {g.shortFileName(c.fullPath(root))}"
