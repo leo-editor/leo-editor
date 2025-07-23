@@ -6,10 +6,12 @@
 import ast
 from ast import NodeVisitor
 import glob
+import inspect
 import os
 import re
 import unittest
 from leo.core import leoGlobals as g
+from leo.core.leoTest2 import LeoUnitTest
 #@-<< test_design imports >>
 
 # Keys are paths, values are contents of file.
@@ -227,6 +229,20 @@ class TestChains(unittest.TestCase):
         chains_list = list(traverser.chains_set)
         chain = filter_chain(chains_list[0])
         self.assertEqual(chain, 'c.frame.body.wrapper.widget')
+    #@-others
+#@+node:ekr.20250723090648.1: ** class TestCommands(LeoUnitTest)
+class TestCommands(LeoUnitTest):
+    """Global tests of commands."""
+    #@+others
+    #@+node:ekr.20250723090810.1: *3* TestCommands.test_event_kwarg
+    def test_event_kwarg(self):
+        """Global test that all commands have an 'event' kwarg."""
+        c = self.c
+        for command_name, func in c.commandsDict.items():
+            assert inspect.isfunction(func), (command_name, func.__name__)
+            sig = inspect.signature(func)
+            params = sig.parameters
+            assert 'event' in params, f"{func.__name__}{params}"
     #@-others
 #@-others
 #@-leo
