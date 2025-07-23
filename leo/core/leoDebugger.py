@@ -428,8 +428,7 @@ def make_at_file_node(line, path):
         is_derived = get_gnx_from_file(file_s, p, path)
     kind = '@file' if is_derived else '@auto'
     p.h = f"{kind} {path}"
-    c.selectPosition(p)
-    c.refreshFromDisk()
+    c.refreshFromDisk(p)
     return p
 #@+node:ekr.20180701061957.1: *3* function: show_line (leoDebugger.py)
 def show_line(line, fn) -> None:

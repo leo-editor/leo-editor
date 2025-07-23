@@ -210,8 +210,8 @@ class ServerExternalFilesController(ExternalFilesController):
             # 4- if yes: REFRESH self.lastPNode, and unblock 'ask'
             # 5- if yesAll: REFRESH self.lastPNode, set yesAll, and unblock 'ask'
             if bool(p_result and 'yes' in p_result.lower()):
-                self.lastCommander.selectPosition(self.lastPNode)
-                self.lastCommander.refreshFromDisk()
+                ### self.lastCommander.selectPosition(self.lastPNode)
+                self.lastCommander.refreshFromDisk(self.lastPNode)
         elif self.lastCommander:
             path = self.lastCommander.fileName()
             # 6- Same but for Leo file commander (close and reopen .leo file)
@@ -322,8 +322,8 @@ class ServerExternalFilesController(ExternalFilesController):
                 self.warn(c, path, p=p)
             elif self.ask(c, path, p=p):
                 old_p = c.p  # To restore selection if refresh option set to yes-all & is descendant of at-file
-                c.selectPosition(self.lastPNode)
-                c.refreshFromDisk()  # Ends with selection on new c.p which is the at-file node
+                ### c.selectPosition(self.lastPNode)
+                c.refreshFromDisk(self.lastPNode)  # Ends with selection on new c.p which is the at-file node
                 # check with leoServer's config first, and if new c.p is ancestor of old_p
                 if g.leoServer.leoServerConfig:
                     if g.leoServer.leoServerConfig["defaultReloadIgnore"].lower() == 'yes-all':

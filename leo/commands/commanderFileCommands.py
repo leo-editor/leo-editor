@@ -16,6 +16,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoGui import LeoGui
+    from leo.core.leoNodes import Position
     Self = Cmdr  # For @g.commander_command.
 #@-<< commanderFileCommands imports & annotations >>
 
@@ -350,17 +351,20 @@ def open_outline(self: Self, event: LeoKeyEvent = None) -> None:
         g.openWithFileName(fileName, old_c=c)  # type:ignore
 #@+node:ekr.20140717074441.17772: *3* c_file.refreshFromDisk
 @g.commander_command('refresh-from-disk')
-def refreshFromDisk(self: Self, event: LeoKeyEvent = None) -> None:
+def refreshFromDisk(self: Self, p: Position = None, *, event: LeoKeyEvent = None) -> None:
     """
     Refresh an @<file> node from disk.
 
     This command is not undoable.
     """
-    c, p = self, self.p
+    c = self
+    if not p:
+        p = c.p
     at = c.atFileCommands
 
     if not p.isAnyAtFileNode():
         g.warning(f"not an @<file> node: {p.h!r}")
+        g.trace(g.callers())
         return
 
     at.changed_roots = []  # #4385.
@@ -374,15 +378,19 @@ def refreshFromDisk(self: Self, event: LeoKeyEvent = None) -> None:
     at.readFileAtPosition(p)  # Leo 6.8.6.
 
     # #4385: Handle updated @clean nodes.
-    if at.changed_roots:
-        update_p = at.clone_all_changed_vnodes()
-        if update_p:
-            # Select update_p.  See fc.setPositionsFromVnodes.
-            c.db['current_position'] = ','.join([
-                str(z) for z in update_p.archivedPosition()
-            ])
-            update_p.expand()
-        at.changed_roots = []
+    update_p = at.clone_all_changed_vnodes()
+    if update_p:
+        c.db['current_position'] = ','.join([
+            str(z) for z in update_p.archivedPosition()
+        ])
+        update_p.expand()
+        c.selectPosition(update_p)
+    at.changed_roots = []
+
+    if 0:  ###
+        print('')
+        g.trace('c.p.v:', c.p.v, g.callers(6))
+        print('')
 
     # Create the 'Recovered Nodes' tree.
     c.fileCommands.handleNodeConflicts()

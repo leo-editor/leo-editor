@@ -442,6 +442,7 @@ class AtFile:
         Make clones of all changed VNodes.
 
         Called from at.readAll, at.readAllSelected and c.refreshFromDisk.
+        Callers are responsible for setting c.p and redrawing.
         """
         at, c, u = self, self.c, self.c.undoer
 
@@ -486,7 +487,10 @@ class AtFile:
         # Sort the clones in place, without undo.
         update_p.v.children.sort(key=lambda v: v.h.lower())
         u.afterInsertNode(update_p, 'Clone Updated Nodes', undoData)
-        c.redraw_later()  # 4394.
+        c.contractAllHeadlinesCommand()
+        update_p.expand()
+        ### c.selectPosition(update_p)
+        ### c.redraw(update_p)
         return update_p
     #@+node:ekr.20190108054317.1: *6* at.findFilesToRead
     def findFilesToRead(self, root: Position, all: bool) -> list[Position]:  # pragma: no cover
@@ -690,6 +694,8 @@ class AtFile:
         # Don't update if the outline and file are in synch.
         if old_mod_time and old_mod_time >= new_mod_time:
             return True
+
+        ### g.trace('Update!', root.h, g.callers())  ###
 
         # #4385: Remember all old bodies.
         for p in root.self_and_subtree():
@@ -2609,8 +2615,8 @@ class AtFile:
                 efc = g.app.externalFilesController
                 efc.set_time(filename)
                 # Reload the file immediately.
-                c.selectPosition(root)
-                c.refreshFromDisk()
+                ### c.selectPosition(root)
+                c.refreshFromDisk(root)
             return True
         except Exception:
             g.es_exception()

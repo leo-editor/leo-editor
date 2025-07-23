@@ -394,7 +394,7 @@ def openFile(c, parent, d, autoload=False):
     if atType == 'asis':
         parent.b = open(d).read()
     else:
-        c.refreshFromDisk()
+        c.refreshFromDisk(parent)
     c.bodyWantsFocus()
 #@+node:tbrown.20080613095157.10: ** openDir
 def openDir(c, parent, d):
