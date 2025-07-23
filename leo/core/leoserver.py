@@ -210,7 +210,6 @@ class ServerExternalFilesController(ExternalFilesController):
             # 4- if yes: REFRESH self.lastPNode, and unblock 'ask'
             # 5- if yesAll: REFRESH self.lastPNode, set yesAll, and unblock 'ask'
             if bool(p_result and 'yes' in p_result.lower()):
-                ### self.lastCommander.selectPosition(self.lastPNode)
                 self.lastCommander.refreshFromDisk(self.lastPNode)
         elif self.lastCommander:
             path = self.lastCommander.fileName()
@@ -310,25 +309,21 @@ class ServerExternalFilesController(ExternalFilesController):
     #@+node:felix.20210626222905.5: *5* sefc.idle_check_at_file_node
     def idle_check_at_file_node(self, c: Cmdr, p: Position) -> None:
         """Check the @<file> node at p for external changes."""
-        trace = False
         path = c.fullPath(p)
-        has_changed = self.has_changed(path)
-        if trace:
-            g.trace('changed', has_changed, p.h)
-        if has_changed:
+        if self.has_changed(path):
             self.lastPNode = p  # can be set here because its the same process for ask/warn
             if p.isAtAsisFileNode() or p.isAtNoSentFileNode():
-                # Fix #1081: issue a warning.
-                self.warn(c, path, p=p)
+                self.warn(c, path, p=p)  # Fix #1081: issue a warning.
             elif self.ask(c, path, p=p):
-                old_p = c.p  # To restore selection if refresh option set to yes-all & is descendant of at-file
-                ### c.selectPosition(self.lastPNode)
-                c.refreshFromDisk(self.lastPNode)  # Ends with selection on new c.p which is the at-file node
-                # check with leoServer's config first, and if new c.p is ancestor of old_p
-                if g.leoServer.leoServerConfig:
-                    if g.leoServer.leoServerConfig["defaultReloadIgnore"].lower() == 'yes-all':
-                        if c.positionExists(old_p) and c.p.isAncestorOf(old_p):
-                            c.selectPosition(old_p)
+                old_p = c.p
+                c.refreshFromDisk(self.lastPNode)
+                if (
+                    g.leoServer.leoServerConfig
+                    and g.leoServer.leoServerConfig["defaultReloadIgnore"].lower() == 'yes-all'
+                    and c.positionExists(old_p) and c.p.isAncestorOf(old_p)
+                ):
+                    c.selectPosition(old_p)
+
             # Always update the path & time to prevent future warnings.
             self.set_time(path)
             self.checksum_d[path] = self.checksum(path)

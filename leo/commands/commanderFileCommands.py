@@ -358,9 +358,9 @@ def refreshFromDisk(self: Self, p: Position = None, *, event: LeoKeyEvent = None
     This command is not undoable.
     """
     c = self
+    at = c.atFileCommands
     if not p:
         p = c.p
-    at = c.atFileCommands
 
     if not p.isAnyAtFileNode():
         g.warning(f"not an @<file> node: {p.h!r}")
@@ -386,11 +386,6 @@ def refreshFromDisk(self: Self, p: Position = None, *, event: LeoKeyEvent = None
         update_p.expand()
         c.selectPosition(update_p)
     at.changed_roots = []
-
-    if 0:  ###
-        print('')
-        g.trace('c.p.v:', c.p.v, g.callers(6))
-        print('')
 
     # Create the 'Recovered Nodes' tree.
     c.fileCommands.handleNodeConflicts()

@@ -196,17 +196,6 @@ class ExternalFilesController:
                 state = self.ask(c, path, p=p)
             if state in ('yes', 'yes-all'):
                 c.refreshFromDisk(p)
-                ### Let refresh from disk handle redraw and position.
-                    # old_p = c.p
-                    # c.selectPosition(p)  # Required.
-                    # # #4385: Careful: refresh-from-disk may change positions.
-                    # select_p = (
-                        # old_p if c.positionExists(old_p)
-                        # else p if c.positionExists(p)
-                        # else c.p
-                    # )
-                    # c.redraw(select_p)  # #3695: Don't change c.p!
-
     #@+node:ekr.20201207055713.1: *5* efc.idle_check_leo_file
     def idle_check_leo_file(self, c: Cmdr) -> None:
         """Check c's .leo file for external changes."""
