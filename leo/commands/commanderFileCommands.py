@@ -351,7 +351,11 @@ def open_outline(self: Self, event: LeoKeyEvent = None) -> None:
         g.openWithFileName(fileName, old_c=c)  # type:ignore
 #@+node:ekr.20140717074441.17772: *3* c_file.refreshFromDisk
 @g.commander_command('refresh-from-disk')
-def refreshFromDisk(self: Self, p: Position = None, *, event: LeoKeyEvent = None) -> None:
+def refreshFromDisk(self: Self,
+    p: Position = None,  # For compatibility with existing scripts.
+    *,
+    event: LeoKeyEvent = None,  # Required for all commands.
+) -> None:
     """
     Refresh an @<file> node from disk.
 
@@ -380,6 +384,10 @@ def refreshFromDisk(self: Self, p: Position = None, *, event: LeoKeyEvent = None
     # #4385: Handle updated @clean nodes.
     update_p = at.clone_all_changed_vnodes()
     if update_p:
+        # Clear the `_mod_time` uA.
+        p.v.u['_mod_time'] = None
+
+        # Set the current position during initial redraws.
         c.db['current_position'] = ','.join([
             str(z) for z in update_p.archivedPosition()
         ])
