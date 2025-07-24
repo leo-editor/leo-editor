@@ -390,6 +390,8 @@ def refreshFromDisk(self: Self,
         ])
         update_p.expand()
         c.selectPosition(update_p)
+    else:
+        c.selectPosition(p)
 
     # Always clear the `_mod_time` uA.
     p.v.u['_mod_time'] = None
@@ -397,6 +399,7 @@ def refreshFromDisk(self: Self,
 
     # Create the 'Recovered Nodes' tree.
     c.fileCommands.handleNodeConflicts()
+    c.setChanged()
     c.redraw()
     c.undoer.clearAndWarn('refresh-from-disk')
 #@+node:ekr.20210610083257.1: *3* c_file.pwd

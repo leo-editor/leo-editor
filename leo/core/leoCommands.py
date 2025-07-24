@@ -3997,6 +3997,10 @@ class Commands:
             p = c.p or c.rootPosition()
         if not p:
             return
+        if not c.positionExists(p):
+            g.trace(f"Invalid position: {repr(p)}")
+            g.trace(g.callers())
+            p = c.rootPosition()
         c.expandAllAncestors(p)
         if p:
             # Fix bug https://bugs.launchpad.net/leo-editor/+bug/1183855
