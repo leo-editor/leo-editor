@@ -384,15 +384,15 @@ def refreshFromDisk(self: Self,
     # #4385: Handle updated @clean nodes.
     update_p = at.clone_all_changed_vnodes()
     if update_p:
-        # Clear the `_mod_time` uA.
-        p.v.u['_mod_time'] = None
-
         # Set the current position during initial redraws.
         c.db['current_position'] = ','.join([
             str(z) for z in update_p.archivedPosition()
         ])
         update_p.expand()
         c.selectPosition(update_p)
+
+    # Always clear the `_mod_time` uA.
+    p.v.u['_mod_time'] = None
     at.changed_roots = []
 
     # Create the 'Recovered Nodes' tree.
