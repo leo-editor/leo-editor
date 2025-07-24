@@ -302,9 +302,9 @@ class AtFile:
         root_v = leoNodes.VNode(context=c)
         root = leoNodes.Position(root_v)
         FastAtRead(c, gnx2vnode={}).read_into_root(s, fn, root)
-    #@+node:ekr.20250724123631.1: *5* at.openAtLeoNode
+    #@+node:ekr.20250724123631.1: *5* at.openAtLeoFile
     @cmd('open-at-leo-file')
-    def writeAtLeoFile(self, event: LeoKeyEvent = None) -> None:  # pragma: no cover
+    def openAtLeoFile(self, event: LeoKeyEvent = None) -> None:  # pragma: no cover
         c, p = self.c, self.c.p
         if not p.isAtLeoNode():
             g.red('Please select an @leo node')
