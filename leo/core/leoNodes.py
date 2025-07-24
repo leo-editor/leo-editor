@@ -2130,9 +2130,12 @@ class VNode:
     #@+node:ekr.20031218072017.3350: *4* v.anyAtFileNodeName
     def anyAtFileNodeName(self) -> str:
         """Return the file name following an @file node or an empty string."""
+        v = self
         return (
-            self.findAtFileName(g.app.atAutoNames) or
-            self.findAtFileName(g.app.atFileNames))
+            v.findAtFileName(g.app.atAutoNames)
+            or v.findAtFileName(g.app.atFileNames)
+            or v.atLeoNodeName()
+        )
     #@+node:ekr.20031218072017.3348: *4* v.at...FileNodeName
     # These return the filename following @xxx, in v.headString.
     # Return the the empty string if v is not an @xxx node.
@@ -2200,7 +2203,7 @@ class VNode:
     #@+node:ekr.20040326031436: *4* v.isAnyAtFileNode
     def isAnyAtFileNode(self) -> bool:
         """Return True if v is any kind of @file or related node."""
-        return bool(self.anyAtFileNodeName())
+        return bool(self.anyAtFileNodeName() or self.atLeoNodeName())
     #@+node:ekr.20040325073709: *4* v.isAt...FileNode
     def isAtAutoNode(self) -> bool:
         return bool(self.atAutoNodeName())
