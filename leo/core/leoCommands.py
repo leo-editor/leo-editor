@@ -3688,8 +3688,13 @@ class Commands:
                     all_files.append(outline_name)
 
                 # Compute the relative back link for the sub-outline.
-                abs_back_link = f"{top_directory}{os.sep}{top_outline_name}"
-                rel_back_link = os.path.relpath(abs_back_link, start=sub_directory)
+                if use_back_links:
+                    # Add one link to the parent.
+                    abs_back_link = f"{top_directory}{os.sep}{top_outline_name}"
+                    rel_back_link = os.path.relpath(abs_back_link, start=sub_directory)
+                    links = [rel_back_link.replace('\\', '/')]
+                else:
+                    links = []
 
                 # Generate the sub-outline
                 self._create_link_file(
@@ -3697,9 +3702,8 @@ class Commands:
                     extensions=extensions,
                     files=files,
                     kind=kind,
-                    links=[rel_back_link.replace('\\', '/')],  # Add one link to the parent.
+                    links=links,
                     outline_name=f"{g.shortFileName(sub_directory)}_links.leo",
-                    use_back_links=use_back_links,
                 )
 
             # Create the top-level links file.
@@ -3711,7 +3715,6 @@ class Commands:
                 kind='@leo',
                 links=top_links,
                 outline_name=top_outline_name,
-                use_back_links=use_back_links,
             )
             all_files = sorted(list(set(all_files)))
             if not g.unitTesting:
@@ -3729,7 +3732,6 @@ class Commands:
         kind: str,
         links: list[str],
         outline_name: str,
-        use_back_links: bool,
     ) -> None:
         """
         The caller is responsible for making links relative to the top-level directory.
