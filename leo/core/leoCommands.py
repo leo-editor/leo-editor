@@ -3829,10 +3829,9 @@ class Commands:
             """
             nonlocal calls
             if fileName in scanned:
-                g.trace('Skip', fileName)  ###
                 return
             scanned.append(fileName)
-            g.trace('Scan', fileName)  ###
+            g.es_print('Scan', fileName)
             for p in c.all_unique_positions():
                 if p.isAtLeoNode():
                     fileName = p.atLeoFileName()
