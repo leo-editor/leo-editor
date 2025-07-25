@@ -3609,22 +3609,25 @@ class Commands:
         #@+<< c.makeLinkLeoFiles: docstring >>
         #@+node:ekr.20250717132150.1: *5* << c.makeLinkLeoFiles: docstring >>
         """
-        Create a top-level *link outline* and associated *sub-outlines.
+        Create a **top-level outline** containing @leo links to *sub-outlines*.
+        Sub-outlines contain @<file> nodes to all files in the directory (and
+        sub-directories) of the given list of extensions.
 
-        Scripts calling this method need only specify the value of the following kwars:
+        Scripts calling this method need only specify the value of the following kwargs:
 
-        - extensions:       List of file extensions for generated @<file> nodes.
-        - kind:             One of @auto, @clean, @file, etc.
-        - sub_directories:  A list of subdictories for sub-outlines.
-        - top_directory:    The top-level directory
-        - top_file_name:    The name of the top-level link outline.
-
-        All directories are full, absolute, paths.
-
+        - extensions:      List of file extensions for generated @<file> nodes.
+        - kind:            One of @auto, @clean, @file, etc.
+        - sub_directories: An optional list of sub-directories in which to create sub-outlines.
+                           Relative paths are relative to the top-level directory.
+                           If the list is empty, it defaults to all direct directories of
+                           the top-level directory.
+        - top_directory:   The full, absolute, path to the top-level directory.
+        - top_file_name:   The name of the top-level link outline.
         """
         #@-<< c.makeLinkLeoFiles: docstring >>
         c = self
-
+        #@+<< return if initial checks fail >>
+        #@+node:ekr.20250725152511.1: *5* << return if initial checks fail >>
         # Check the top directory.
         if (
             not top_directory
@@ -3641,29 +3644,33 @@ class Commands:
         if not isinstance(extensions, (list, tuple)):
             g.es_print(f"Invalid list of extensions: {extensions!r}")
             return
-
-        # Default to all direct subdirectories of the top directories.
+        #@-<< return if initial checks fail >>
+        #@+<< calculate the list of subdirectories >>
+        #@+node:ekr.20250725152709.1: *5* << calculate the list of subdirectories >>
+        # Default to all direct sub-directories of the top directory.
         if not sub_directories:
             sub_directories = [
                 z for z in os.listdir(top_directory)
                 if os.path.isdir(os.path.join(top_directory, z))
             ]
-
+        #@-<< calculate the list of subdirectories >>
         g.es_print(
-            f"Scanning {len(sub_directories)} directories. "
+            f"Scanning {len(sub_directories)} directories.\n"
             'This may take awhile.'
         )
-
         # The main loop.
         old_p = c.p
         try:
             t1 = time.process_time()
             c.enableRedrawFlag = False
-            all_files: list[str] = []
+            all_files: list[str] = [top_outline_name]  # List of paths.
             top_links: list[str] = []
             for sub_directory in sub_directories:
                 sub_directory = os.path.join(top_directory, sub_directory)
                 assert os.path.exists(sub_directory), repr(sub_directory)
+                #@+<< find files in sub_directory >>
+                #@+node:ekr.20250725163431.1: *5* << find files in sub_directory >>
+                # Set files to the list of full, absolute, files in subdirectory.
                 files = []
                 for ext in extensions:
                     if not ext.startswith('.'):
@@ -3678,36 +3685,43 @@ class Commands:
                         z for z in new_files
                         if os.path.isfile(z) and z not in files
                     ])
-
-                # Create one link to the sub-directory.
+                #@-<< find files in sub_directory >>
                 if files:
-                    outline_name = f"{g.shortFileName(sub_directory)}_links.leo"
-                    abs_path = f"{sub_directory}{os.sep}{outline_name}"
+                    #@+<< add link to the sub outline to top_links >>
+                    #@+node:ekr.20250725163807.1: *5* << add link to the sub outline to top_links>>
+                    sub_outline_name = f"{g.shortFileName(sub_directory)}_links.leo"
+                    abs_path = f"{sub_directory}{os.sep}{sub_outline_name}"
                     rel_link = os.path.relpath(abs_path, start=top_directory)
                     top_links.append(rel_link.replace('\\', '/'))
-                    all_files.append(outline_name)
 
-                # Compute the relative back link for the sub-outline.
-                if use_back_links:
-                    # Add one link to the parent.
-                    abs_back_link = f"{top_directory}{os.sep}{top_outline_name}"
-                    rel_back_link = os.path.relpath(abs_back_link, start=sub_directory)
-                    links = [rel_back_link.replace('\\', '/')]
-                else:
-                    links = []
+                    #@-<< add link to the sub outline to top_links >>
+                    #@+<< compute the sub outline's back link >>
+                    #@+node:ekr.20250725165018.1: *5* << compute the sub outline's back link >>
+                    # Compute the relative back link for the sub-outline.
+                    if use_back_links:
+                        # Add one link to the parent.
+                        abs_back_link = f"{top_directory}{os.sep}{top_outline_name}"
+                        rel_back_link = os.path.relpath(abs_back_link, start=sub_directory)
+                        back_link = [rel_back_link.replace('\\', '/')]
+                    else:
+                        back_link = []
 
-                # Generate the sub-outline
-                self._create_link_file(
-                    directory=sub_directory,
-                    extensions=extensions,
-                    files=files,
-                    kind=kind,
-                    links=links,
-                    outline_name=f"{g.shortFileName(sub_directory)}_links.leo",
-                )
-
-            # Create the top-level links file.
-            all_files.append(top_outline_name)
+                    #@-<< compute the sub outline's back link >>
+                    #@+<< create the sub outline >>
+                    #@+node:ekr.20250725152555.1: *5* << create the sub outline >>
+                    # Generate the sub-outline
+                    self._create_link_file(
+                        directory=sub_directory,
+                        extensions=extensions,
+                        files=files,
+                        kind=kind,
+                        links=back_link,
+                        outline_name=f"{g.shortFileName(sub_directory)}_links.leo",
+                    )
+                    #@-<< create the sub outline >>
+                    all_files.append(sub_outline_name)
+            #@+<< create the top-level outline >>
+            #@+node:ekr.20250725152626.1: *5* << create the top-level outline >>
             self._create_link_file(
                 directory=top_directory,
                 extensions=extensions,
@@ -3716,6 +3730,7 @@ class Commands:
                 links=top_links,
                 outline_name=top_outline_name,
             )
+            #@-<< create the top-level outline >>
             all_files = sorted(list(set(all_files)))
             if not g.unitTesting:
                 t2 = time.process_time()
@@ -3770,7 +3785,6 @@ class Commands:
         c2.saveTo(fileName=outline_path, silent=True)
         c2.redraw()
         c2.close()
-
     #@+node:ekr.20031218072017.2925: *4* c.markAllAtFileNodesDirty
     def markAllAtFileNodesDirty(self, event: LeoKeyEvent = None) -> None:
         """Mark all @file nodes as changed."""

@@ -305,6 +305,11 @@ class AtFile:
     #@+node:ekr.20250724123631.1: *5* at.openAtLeoFile
     @cmd('open-at-leo-file')
     def openAtLeoFile(self, event: LeoKeyEvent = None) -> None:  # pragma: no cover
+        """
+        Open the outline given by the @leo node at c.p.
+
+        Scripts should use c.makeLinkLeoFiles helper to make @leo files.
+        """
         c, p = self.c, self.c.p
         if not p.isAtLeoNode():
             g.red('Please select an @leo node')
