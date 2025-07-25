@@ -734,7 +734,7 @@ class AtFile:
 
         # Handle all changed vnodes.
         if changed_vnodes:
-            c.setChanged()
+            c.setChanged(force=True)
             root.v.setDirty()
             at.changed_roots.append(root.copy())
             for v in changed_vnodes:
