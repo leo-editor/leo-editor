@@ -681,17 +681,18 @@ class AtFile:
             old_mod_time = root.v.u['_mod_time']  # #4385
         except Exception:
             old_mod_time = None
+        new_mod_time = g.os_path_getmtime(fileName)
 
-        # #4385: Always set the mod_time.
-        root.v.u['_mod_time'] = new_mod_time = g.os_path_getmtime(fileName)
+        # Don't update if the outline and file are in synch.
+        if old_mod_time and old_mod_time >= new_mod_time:
+            return True
 
         # #4385: Init the per-file data.
         at.initReadIvars(root, fileName)
         at.bodies_dict = {}
 
-        # Don't update if the outline and file are in synch.
-        if old_mod_time and old_mod_time >= new_mod_time:
-            return True
+        # #4385: *Clear* the mod time until we write the file.
+        root.v.u['_mod_time'] = None
 
         # #4385: Remember all old bodies.
         for p in root.self_and_subtree():
@@ -733,6 +734,7 @@ class AtFile:
 
         # Handle all changed vnodes.
         if changed_vnodes:
+            c.setChanged()
             root.v.setDirty()
             at.changed_roots.append(root.copy())
             for v in changed_vnodes:
@@ -1721,7 +1723,8 @@ class AtFile:
             else:
                 contents = ''.join(at.outputList)
                 at.replaceFile(contents, at.encoding, fileName, root)
-                # #4385: Tell at.readOneAtCleanNode that the outline is in synch with the file.
+
+                # #4385: This is the *only* place that sets the `_mod_time` uA.
                 root.v.u['_mod_time'] = g.os_path_getmtime(fileName)
         except Exception:
             at.writeException(fileName, root)
