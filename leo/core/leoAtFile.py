@@ -692,7 +692,8 @@ class AtFile:
         at.bodies_dict = {}
 
         # #4385: *Clear* the mod time until we write the file.
-        root.v.u['_mod_time'] = None
+        if '_mod_time' in root.v.u:
+            del root.v.u['_mod_time']
 
         # #4385: Remember all old bodies.
         for p in root.self_and_subtree():

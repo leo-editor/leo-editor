@@ -394,7 +394,8 @@ def refreshFromDisk(self: Self,
         c.selectPosition(p)
 
     # Always clear the `_mod_time` uA.
-    p.v.u['_mod_time'] = None
+    if '_mod_time' in p.v.u:
+        del p.v.u['_mod_time']
     at.changed_roots = []
 
     # Create the 'Recovered Nodes' tree.
