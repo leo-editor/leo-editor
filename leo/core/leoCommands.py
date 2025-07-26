@@ -3756,18 +3756,15 @@ class Commands:
         # pylint: disable=no-member
         c = self
         assert os.path.exists(directory), directory
-        # g.trace(f"{directory}{os.sep}{outline_name}")
 
-        # Create the outline and copy the settings.
-        h = '@settings'
-        settings_p = g.findNodeAnywhere(c, h)
-        assert settings_p
-        c.selectPosition(settings_p)
-        c.copyOutline()
+        # Create an @settings tree containing one @history-list node.
         c2 = g.app.newCommander(fileName=outline_name, gui=g.app.nullGui)
-        c2.pasteOutline()
-        c2.rootPosition().doDelete()
-        c2.selectPosition(c2.rootPosition())
+        root = c2.rootPosition()
+        root.h = '@settings'
+        history_p = root.insertAsLastChild()
+        history_p.h = '@data history-list'
+        history_p.b = 'open-at-leo-file\n'
+        c2.selectPosition(root)
 
         # Create @leo nodes.
         for link in links:
