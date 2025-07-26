@@ -2973,8 +2973,8 @@ class AtFile:
         Return True if the original file was changed.
         """
         at, c = self, self.c
-        if root:
-            root.clearDirty()
+        assert root, g.callers()
+        root.clearDirty()
 
         # Create the timestamp (only for messages).
         if c.config.getBool('log-show-save-time', default=False):  # pragma: no cover

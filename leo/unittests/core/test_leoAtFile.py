@@ -477,7 +477,7 @@ class TestAtFile(LeoUnitTest):
             f = tempfile.NamedTemporaryFile(delete=False, encoding=encoding, mode='w')
             fn = f.name
             contents = 'test contents'
-            val = at.replaceFile(contents, encoding, fn, at.root)
+            val = at.replaceFile(contents, encoding, fn, root=self.root_p)
             assert val, val
         finally:
             f.close()
@@ -493,7 +493,7 @@ class TestAtFile(LeoUnitTest):
             f = tempfile.NamedTemporaryFile(delete=False, encoding=encoding, mode='w')
             fn = f.name
             contents = 'test contents'
-            val = at.replaceFile(contents, encoding, fn, at.root)
+            val = at.replaceFile(contents, encoding, fn, root=self.root_p)
             assert val, val
         finally:
             f.close()
@@ -510,7 +510,7 @@ class TestAtFile(LeoUnitTest):
             contents = 'test contents'
             f.write(contents)
             f.flush()
-            val = at.replaceFile(contents, encoding, fn, at.root)
+            val = at.replaceFile(contents, encoding, fn, root=self.root_p)
             assert not val, val
         finally:
             f.close()
