@@ -380,7 +380,7 @@ def refreshFromDisk(self: Self,
     c.nodeConflictList = []
     c.recreateGnxDict()
 
-     # Always clear the `_mod_time` uA *before* reading the file.
+    # Always clear the `_mod_time` uA *before* reading the file.
     if '_mod_time' in p.v.u:
         del p.v.u['_mod_time']
 
