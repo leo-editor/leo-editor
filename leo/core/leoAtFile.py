@@ -307,6 +307,7 @@ class AtFile:
     def openAtLeoFile(self, event: LeoKeyEvent = None) -> None:  # pragma: no cover
         """
         Open the outline given by the @leo node at c.p.
+        If the outline has already been loaded, switch to its tab.
 
         Scripts should use c.makeLinkLeoFiles helper to make @leo files.
         """
