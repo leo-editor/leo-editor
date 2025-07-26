@@ -379,6 +379,11 @@ def refreshFromDisk(self: Self,
 
     c.nodeConflictList = []
     c.recreateGnxDict()
+
+     # Always clear the `_mod_time` uA *before* reading the file.
+    if '_mod_time' in p.v.u:
+        del p.v.u['_mod_time']
+
     at.readFileAtPosition(p)  # Leo 6.8.6.
 
     # #4385: Handle updated @clean nodes.
@@ -393,9 +398,6 @@ def refreshFromDisk(self: Self,
     else:
         c.selectPosition(p)
 
-    # Always clear the `_mod_time` uA.
-    if '_mod_time' in p.v.u:
-        del p.v.u['_mod_time']
     at.changed_roots = []
 
     # Create the 'Recovered Nodes' tree.
