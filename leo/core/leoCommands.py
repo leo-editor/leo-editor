@@ -3668,10 +3668,10 @@ class Commands:
             for sub_directory in sub_directories:
                 sub_directory = os.path.join(top_directory, sub_directory)
                 assert os.path.exists(sub_directory), repr(sub_directory)
+                files = []
                 #@+<< find files in sub_directory >>
                 #@+node:ekr.20250725163431.1: *5* << find files in sub_directory >>
                 # Set files to the list of full, absolute, files in subdirectory.
-                files = []
                 for ext in extensions:
                     if not ext.startswith('.'):
                         ext = '.' + ext
@@ -3688,7 +3688,7 @@ class Commands:
                 #@-<< find files in sub_directory >>
                 if files:
                     #@+<< add link to the sub outline to top_links >>
-                    #@+node:ekr.20250725163807.1: *5* << add link to the sub outline to top_links>>
+                    #@+node:ekr.20250725163807.1: *5* << add link to the sub outline to top_links >>
                     sub_outline_name = f"{g.shortFileName(sub_directory)}_links.leo"
                     abs_path = f"{sub_directory}{os.sep}{sub_outline_name}"
                     rel_link = os.path.relpath(abs_path, start=top_directory)
