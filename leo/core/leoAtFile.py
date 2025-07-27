@@ -3010,12 +3010,13 @@ class AtFile:
             # No original file to change. Return value tested by a unit test.
             return False  # No change to original file.
 
+        old_contents = g.readFileIntoUnicodeString(fileName,
+            encoding=at.encoding, silent=True)
+        if not old_contents:
+            old_contents = ''
+
         if not root.isAtCleanNode():  # #4394: Always write @clean nodes!
             # Compare the old and new contents.
-            old_contents = g.readFileIntoUnicodeString(fileName,
-                encoding=at.encoding, silent=True)
-            if not old_contents:
-                old_contents = ''
             unchanged = (
                 contents == old_contents
                 or (not at.explicitLineEnding and at.compareIgnoringLineEndings(old_contents, contents))
