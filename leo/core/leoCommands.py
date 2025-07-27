@@ -3754,7 +3754,6 @@ class Commands:
         This method creates @<file> nodes whose paths are relative to *this* directory.
         """
         # pylint: disable=no-member
-        c = self
         assert os.path.exists(directory), directory
 
         # Create an @settings tree containing one @history-list node.
