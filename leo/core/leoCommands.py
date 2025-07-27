@@ -3603,8 +3603,6 @@ class Commands:
         sub_directories: list[str] = None,
         sub_outline_name: str = None,
         top_outline_name: str = 'leo_links.leo',
-        use_back_links: bool = False,
-
     ) -> None:
         #@+<< c.makeLinkLeoFiles: docstring >>
         #@+node:ekr.20250717132150.1: *5* << c.makeLinkLeoFiles: docstring >>
@@ -3698,14 +3696,9 @@ class Commands:
                     #@+<< compute the sub outline's back link >>
                     #@+node:ekr.20250725165018.1: *5* << compute the sub outline's back link >>
                     # Compute the relative back link for the sub-outline.
-                    if use_back_links:
-                        # Add one link to the parent.
-                        abs_back_link = f"{top_directory}{os.sep}{top_outline_name}"
-                        rel_back_link = os.path.relpath(abs_back_link, start=sub_directory)
-                        back_link = [rel_back_link.replace('\\', '/')]
-                    else:
-                        back_link = []
-
+                    abs_back_link = f"{top_directory}{os.sep}{top_outline_name}"
+                    rel_back_link = os.path.relpath(abs_back_link, start=sub_directory)
+                    back_link = [rel_back_link.replace('\\', '/')]
                     #@-<< compute the sub outline's back link >>
                     #@+<< create the sub outline >>
                     #@+node:ekr.20250725152555.1: *5* << create the sub outline >>
