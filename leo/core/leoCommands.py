@@ -3598,8 +3598,8 @@ class Commands:
     def makeLinkLeoFiles(self,
         *,
         extensions: list[str],  # List of file extensions for generated @<file> nodes.
-        kind: str,  # Any @<file> type. @clean is recommended.
         top_directory: str,
+        kind: str = '@clean',  # Any @<file> type. @clean is recommended.
         sub_directories: list[str] = None,
         sub_outline_name: str = None,
         top_outline_name: str = 'leo_links.leo',
