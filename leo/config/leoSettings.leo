@@ -637,6 +637,7 @@
 <v t="ekr.20041119041304"><vh>@bool create-nonexistent-directories = False</vh></v>
 <v t="felix.20220628162804.1"><vh>@bool json-outline-clipboard = False</vh></v>
 <v t="ekr.20170718054928.1"><vh>@bool log-show-save-time = False</vh></v>
+<v t="ekr.20250715195720.1"><vh>@bool report-changed-at-clean-nodes = False</vh></v>
 <v t="ekr.20200226102131.1"><vh>@bool report-unchanged-files = True</vh></v>
 <v t="ekr.20230113102630.1"><vh>@string gnx-kind = none</vh></v>
 <v t="ekr.20181018113812.1"><vh>@string initial-chooser-directory = None</vh></v>
@@ -2303,6 +2304,7 @@
 </v>
 </v>
 <v t="ekr.20140915194122.23428"></v>
+<v t="ekr.20250715195720.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -11921,6 +11923,7 @@ rest_comments_literal1_font_weight = normal
 <t tx="ekr.20250115101744.9"># bold
 </t>
 <t tx="ekr.20250502045601.1">Percentage zoom.</t>
+<t tx="ekr.20250715195720.1">True: Leo will create an "update review tree" when any @file node changes externally.</t>
 <t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 
 False: (Recommended) The commands act as simple navigation commands, and do not change the outline state.</t>

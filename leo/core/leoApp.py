@@ -3172,8 +3172,7 @@ class LoadManager:
             func = g.app.scanner_for_ext(ext)
             p = c.rootPosition()
             p.h = f"@auto {fn}" if func else f"@edit {fn}"
-            c.selectPosition(p)
-            c.refreshFromDisk()  # Calls c.redraw() # pylint: disable=no-member
+            c.refreshFromDisk(p)  # Calls c.redraw() # pylint: disable=no-member
 
         c.mFileName = None  # #3546: Do *not* automatically save the .leo file.
         c.frame.title = c.computeTabTitle()
@@ -3294,8 +3293,7 @@ class LoadManager:
             # Make the root node an @edit node.
             p = c.rootPosition()
             p.h = f"@edit {fn}"
-            c.selectPosition(p)
-            c.refreshFromDisk()  # Calls c.redraw()
+            c.refreshFromDisk(p)  # Calls c.redraw()
 
         c.mFileName = fn  # It *is* valid to save the file.
         title = c.computeWindowTitle()

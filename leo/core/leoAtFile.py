@@ -460,6 +460,7 @@ class AtFile:
         Make clones of all changed VNodes.
 
         Called from at.readAll, at.readAllSelected and c.refreshFromDisk.
+        Callers are responsible for setting c.p and redrawing.
         """
         at, c, u = self, self.c, self.c.undoer
 
@@ -467,13 +468,15 @@ class AtFile:
             return None
         if not at.changed_roots:
             return None
+        if not c.config.getBool('report-changed-at-clean-nodes', default=False):
+            return None
 
-        # Create the top-level node.
+        # Undoably create the top-level node.
+        undoData = u.beforeInsertNode(c.p)
         update_p = c.lastTopLevel().insertAfter()
         update_p.h = 'Updated @clean/@auto nodes'
 
         # Clone nodes as children of the found node.
-        undoData = u.beforeInsertNode(c.p)
         for root in at.changed_roots:
             parent = update_p.insertAsLastChild()
             parent.h = f"Updated from: {g.shortFileName(c.fullPath(root))}"
@@ -502,6 +505,8 @@ class AtFile:
         # Sort the clones in place, without undo.
         update_p.v.children.sort(key=lambda v: v.h.lower())
         u.afterInsertNode(update_p, 'Clone Updated Nodes', undoData)
+        c.contractAllHeadlinesCommand()
+        update_p.expand()
         return update_p
     #@+node:ekr.20190108054317.1: *6* at.findFilesToRead
     def findFilesToRead(self, root: Position, all: bool) -> list[Position]:  # pragma: no cover
@@ -544,22 +549,33 @@ class AtFile:
         return files
     #@+node:ekr.20190108054803.1: *6* at.readFileAtPosition
     def readFileAtPosition(self, p: Position) -> None:  # pragma: no cover
-        """Read the @<file> node at p."""
-        at, c, fileName = self, self.c, p.anyAtFileNodeName()
-        if p.isAtThinFileNode() or p.isAtFileNode():
-            at.read(p)
-        elif p.isAtAutoNode():
-            at.readOneAtAutoNode(p)
-        elif p.isAtEditNode():
-            at.readOneAtEditNode(p)
-        elif p.isAtShadowFileNode():
-            at.readOneAtShadowNode(fileName, p)
-        elif p.isAtAsisFileNode() or p.isAtNoSentFileNode():
-            at.rememberReadPath(c.fullPath(p), p)
+        """
+        Read the @<file> node at p."""
+        at, c = self, self.c
+
+        if p.isAtAsisFileNode():
+            at.readOneAtAsisNode(p)  # Changed.
+        elif p.isAtAutoNode() or p.isAtAutoRstNode():
+            old_gnx = p.v.gnx
+            p = at.readOneAtAutoNode(p)  # Might change p!
+            # Give a weird error.
+            if p.v.gnx != old_gnx:
+                g.es_print(f"reading @auto node changed the gnx for `{p.h}`")
+                g.es_print(f"from `{old_gnx}` to: `{p.v.gnx}`")
+                c.selectPosition(p)
         elif p.isAtCleanNode():
             at.readOneAtCleanNode(p)
+        elif p.isAtEditNode():
+            at.readOneAtEditNode(p)
+        elif p.isAtFileNode() or p.isAtThinFileNode():
+            at.read(p)
         elif p.isAtJupytextNode():
             at.readOneAtJupytextNode(p)
+        elif p.isAtNoSentFileNode():
+            at.rememberReadPath(c.fullPath(p), p)
+        elif p.isAtShadowFileNode():
+            fileName = p.anyAtFileNodeName()
+            at.readOneAtShadowNode(fileName, p)
     #@+node:ekr.20220121052056.1: *5* at.readAllSelected
     def readAllSelected(self, root: Position) -> None:  # pragma: no cover
         """Read all @<file> nodes in root's tree."""
@@ -665,11 +681,7 @@ class AtFile:
         return p  # For #451: return p.
     #@+node:ekr.20150204165040.5: *5* at.readOneAtCleanNode & helpers
     def readOneAtCleanNode(self, root: Position, *, new_contents: str = None) -> bool:
-        """
-        Update the @clean/@nosent node at root.
-
-        Use new_contents for
-        """
+        """Update the @clean/@nosent node at root."""
         at, c, x = self, self.c, self.c.shadowController
 
         if new_contents:
@@ -687,17 +699,19 @@ class AtFile:
             old_mod_time = root.v.u['_mod_time']  # #4385
         except Exception:
             old_mod_time = None
+        new_mod_time = g.os_path_getmtime(fileName)
 
-        # #4385: Always set the mod_time.
-        root.v.u['_mod_time'] = new_mod_time = g.os_path_getmtime(fileName)
+        # Don't update if the outline and file are in synch.
+        if old_mod_time and old_mod_time >= new_mod_time:
+            return True
 
         # #4385: Init the per-file data.
         at.initReadIvars(root, fileName)
         at.bodies_dict = {}
 
-        # Don't update if the outline and file are in synch.
-        if old_mod_time and old_mod_time >= new_mod_time:
-            return True
+        # #4385: *Clear* the mod time until we write the file.
+        if '_mod_time' in root.v.u:
+            del root.v.u['_mod_time']
 
         # #4385: Remember all old bodies.
         for p in root.self_and_subtree():
@@ -739,6 +753,7 @@ class AtFile:
 
         # Handle all changed vnodes.
         if changed_vnodes:
+            c.setChanged(force=True)
             root.v.setDirty()
             at.changed_roots.append(root.copy())
             for v in changed_vnodes:
@@ -1726,8 +1741,13 @@ class AtFile:
                 at.addToOrphanList(root)
             else:
                 contents = ''.join(at.outputList)
+
+                # #4385: at.replaceFile always writes @clean roots,
+                #        even if the file hasn't changed.
+                #        This forces the `_mod_time` uA to change.
                 at.replaceFile(contents, at.encoding, fileName, root)
-                # #4385: Tell at.readOneAtCleanNode that the outline is in synch with the file.
+
+                # #4385: This is the *only* place that sets the `_mod_time` uA.
                 root.v.u['_mod_time'] = g.os_path_getmtime(fileName)
         except Exception:
             at.writeException(fileName, root)
@@ -2617,8 +2637,7 @@ class AtFile:
                 efc = g.app.externalFilesController
                 efc.set_time(filename)
                 # Reload the file immediately.
-                c.selectPosition(root)
-                c.refreshFromDisk()
+                c.refreshFromDisk(root)
             return True
         except Exception:
             g.es_exception()
@@ -2976,8 +2995,8 @@ class AtFile:
         Return True if the original file was changed.
         """
         at, c = self, self.c
-        if root:
-            root.clearDirty()
+        assert root, g.callers()
+        root.clearDirty()
 
         # Create the timestamp (only for messages).
         if c.config.getBool('log-show-save-time', default=False):  # pragma: no cover
@@ -3009,24 +3028,26 @@ class AtFile:
             # No original file to change. Return value tested by a unit test.
             return False  # No change to original file.
 
-        # Compare the old and new contents.
         old_contents = g.readFileIntoUnicodeString(fileName,
             encoding=at.encoding, silent=True)
         if not old_contents:
             old_contents = ''
-        unchanged = (
-            contents == old_contents
-            or (not at.explicitLineEnding and at.compareIgnoringLineEndings(old_contents, contents))
-            or ignoreBlankLines and at.compareIgnoringBlankLines(old_contents, contents))
-        if unchanged:
-            at.unchangedFiles += 1
-            if not g.unitTesting and c.config.getBool(
-                'report-unchanged-files', default=True):
-                g.es(f"{timestamp}unchanged: {sfn}")  # pragma: no cover
-            # Check unchanged files.
-            at.checkPythonCode(contents, fileName, root)
-            return False  # No change to original file.
-        #
+
+        if not root.isAtCleanNode():  # #4394: Always write @clean nodes!
+            # Compare the old and new contents.
+            unchanged = (
+                contents == old_contents
+                or (not at.explicitLineEnding and at.compareIgnoringLineEndings(old_contents, contents))
+                or ignoreBlankLines and at.compareIgnoringBlankLines(old_contents, contents))
+            if unchanged:
+                at.unchangedFiles += 1
+                if not g.unitTesting and c.config.getBool(
+                    'report-unchanged-files', default=True):
+                    g.es(f"{timestamp}unchanged: {sfn}")  # pragma: no cover
+                # Check unchanged files.
+                at.checkPythonCode(contents, fileName, root)
+                return False  # No change to original file.
+
         # Warn if we are only adjusting the line endings.
         if at.explicitLineEnding:  # pragma: no cover
             ok = (

@@ -2117,13 +2117,13 @@ class Commands:
             if not c.isChanged():
                 c.setChanged()
     #@+node:ekr.20031218072017.2989: *5* c.setChanged
-    def setChanged(self) -> None:
+    def setChanged(self, *, force: bool = False) -> None:
         """Set the marker that indicates that the .leo file has been changed."""
         c = self
         if not c.frame:
             return
         c.changed = True
-        if c.loading:
+        if c.loading and not force:
             return  # don't update while loading.
         # Do nothing for null frames.
         assert c.gui
@@ -4246,6 +4246,10 @@ class Commands:
             p = c.p or c.rootPosition()
         if not p:
             return
+        if not c.positionExists(p):
+            g.trace(f"Invalid position: {repr(p)}")
+            g.trace(g.callers())
+            p = c.rootPosition()
         c.expandAllAncestors(p)
         if p:
             # Fix bug https://bugs.launchpad.net/leo-editor/+bug/1183855

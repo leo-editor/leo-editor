@@ -16,6 +16,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoGui import LeoGui
+    from leo.core.leoNodes import Position
     Self = Cmdr  # For @g.commander_command.
 #@-<< commanderFileCommands imports & annotations >>
 
@@ -350,17 +351,24 @@ def open_outline(self: Self, event: LeoKeyEvent = None) -> None:
         g.openWithFileName(fileName, old_c=c)  # type:ignore
 #@+node:ekr.20140717074441.17772: *3* c_file.refreshFromDisk
 @g.commander_command('refresh-from-disk')
-def refreshFromDisk(self: Self, event: LeoKeyEvent = None) -> None:
+def refreshFromDisk(self: Self,
+    p: Position = None,  # For compatibility with existing scripts.
+    *,
+    event: LeoKeyEvent = None,  # Required for all commands.
+) -> None:
     """
     Refresh an @<file> node from disk.
 
     This command is not undoable.
     """
-    c, p = self, self.p
+    c = self
     at = c.atFileCommands
+    if not p:
+        p = c.p
 
     if not p.isAnyAtFileNode():
         g.warning(f"not an @<file> node: {p.h!r}")
+        g.trace(g.callers())
         return
 
     at.changed_roots = []  # #4385.
@@ -368,49 +376,33 @@ def refreshFromDisk(self: Self, event: LeoKeyEvent = None) -> None:
     if os.path.isdir(full_path):
         g.warning(f"not a file: {full_path!r}")
         return
-    at = c.atFileCommands
+
     c.nodeConflictList = []
     c.recreateGnxDict()
-    old_gnx = p.v.gnx
-    if p.isAtAutoNode() or p.isAtAutoRstNode():
-        p.v._deleteAllChildren()
-        p = at.readOneAtAutoNode(p)  # Changes p!
-    elif p.isAtFileNode():
-        p.v._deleteAllChildren()
-        at.read(p)
-    elif p.isAtCleanNode():
-        # Don't delete children!
-        at.readOneAtCleanNode(p)
-    elif p.isAtJupytextNode():
-        # Don't delete children!
-        at.readOneAtJupytextNode(p)
-    elif p.isAtShadowFileNode():
-        p.v._deleteAllChildren()
-        at.read(p)
-    elif p.isAtEditNode():
-        at.readOneAtEditNode(p)  # Always deletes children.
-    elif p.isAtAsisFileNode():
-        at.readOneAtAsisNode(p)  # Always deletes children.
+
+    # Always clear the `_mod_time` uA *before* reading the file.
+    if '_mod_time' in p.v.u:
+        del p.v.u['_mod_time']
+
+    at.readFileAtPosition(p)  # Leo 6.8.6.
+
+    # #4385: Handle updated @clean nodes.
+    update_p = at.clone_all_changed_vnodes()
+    if update_p:
+        # Set the current position during initial redraws.
+        c.db['current_position'] = ','.join([
+            str(z) for z in update_p.archivedPosition()
+        ])
+        update_p.expand()
+        c.selectPosition(update_p)
     else:
-        g.es_print(f"refresh-from-disk: Unknown @<file> node: {p.h!r}")
-        return
+        c.selectPosition(p)
 
-    if at.changed_roots:  # #4385.
-        update_p = at.clone_all_changed_vnodes()
-        if update_p:
-            # Select update_p.  See fc.setPositionsFromVnodes.
-            c.db['current_position'] = ','.join([
-                str(z) for z in update_p.archivedPosition()
-            ])
-            update_p.expand()
-        at.changed_roots = []
+    at.changed_roots = []
 
-    if p.v.gnx != old_gnx and not g.unitTesting:
-        g.es_print(f"refresh-from-disk changed the gnx for `{p.h}`")
-        g.es_print(f"from `{old_gnx}` to: `{p.v.gnx}`")
-    c.selectPosition(p)
     # Create the 'Recovered Nodes' tree.
     c.fileCommands.handleNodeConflicts()
+    c.setChanged()
     c.redraw()
     c.undoer.clearAndWarn('refresh-from-disk')
 #@+node:ekr.20210610083257.1: *3* c_file.pwd

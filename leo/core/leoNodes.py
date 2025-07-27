@@ -2581,13 +2581,11 @@ class VNode:
         v = self
         if isinstance(s, str):
             v._bodyString = s
-            v.updateIcon()
-            return
         else:  # pragma: no cover
             v._bodyString = g.toUnicode(s, reportErrors=True)
             self.contentModified()  # #1413.
             signal_manager.emit(self.context, 'body_changed', self)
-            v.updateIcon()
+        v.updateIcon()
 
     def setHeadString(self, s: object) -> None:
         # pylint: disable=no-else-return
@@ -2596,13 +2594,15 @@ class VNode:
         v = self
         if isinstance(s, str):
             v._headString = s.replace('\n', '')
-            v.updateIcon()
-            return
         else:  # pragma: no cover
             s = g.toUnicode(s, reportErrors=True)
             v._headString = s.replace('\n', '')  # type:ignore
             self.contentModified()  # #1413.
-            v.updateIcon()
+        # #4394: Clear the the mod_time.
+        if '_mod_time' in v.u:
+            del v.u['_mod_time']
+        # Update the icon last.
+        v.updateIcon()
 
     initBodyString = setBodyString
     initHeadString = setHeadString
