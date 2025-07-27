@@ -1561,7 +1561,8 @@
 <v t="ekr.20230909073504.3"><vh>EKR: Why @clean is so important</vh></v>
 </v>
 <v t="ekr.20230908140206.569"><vh>2016-2018: 5.2 through 5.9: precursors to LeoInteg</vh></v>
-<v t="ekr.20230908152641.1"><vh>2019 onward: Leo 6.0 and beyond: supporting LeoInteg</vh></v>
+<v t="ekr.20230908152641.1"><vh>2019-2023: Leo 6.0 through 6.7: LeoInteg</vh></v>
+<v t="ekr.20250727055239.1"><vh>2024 onward: Leo 6.8: Easy layouts, @jupytext, @leo</vh></v>
 </v>
 </v>
 </v>
@@ -2515,6 +2516,9 @@
 </v>
 <v t="ekr.20250626165619.1"></v>
 <v t="ekr.20250626165415.1"></v>
+<v t="ekr.20060620094033" descendentVnodeUnknownAttributes="7d71005809000000302e302e392e302e3371017d710258090000007374725f6174696d657103580c000000313337363431323238302e30710473732e"></v>
+<v t="ekr.20230908152641.1"></v>
+<v t="ekr.20250727055239.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -30548,8 +30552,9 @@ More inspired Leo's cloned nodes.
 - Brian Harry contributed numerous plugins, including a prototype for Leo's minibuffer, and wrote jyLeo: Leo in Jython.
 - Almar Klein wrote pyzo, yoton and flexx, the basis of LeoWapp (--gui=browser).
 - Donald Knuth invented the CWEB language and literate programming.
+- The late Eric Norman was my friend and mentor.
 - The late Bernhard Mulder invented the @shadow algorithm, the foundation of @clean. |br|
-  Bernhard also inspired Leo's generators and position class.
+  Bernhard also inspired Leo's generators and Position class.
 - Joe Orr created LeoVue and XSLT stylesheets for Leo.
 - John K. Ousterhout created tcl/Tk, used in early versions of Leo.
 - Виталије Милошевић, (Vitalije Milosevic) made vital code-level contributions.
@@ -30566,9 +30571,9 @@ More inspired Leo's cloned nodes.
 - Steven P. Schaefer pointed out security problems.
 - Gil Shwartz helped with unicode support.
 - Phil Straus has been a great friend and constant support.
-- Kent Tenney contributed key insights about vnodes and lobbied to make Leo easier to use.
+- Kent Tenney contributed key insights about VNodes.
 - Ville M. Vainio contributed to the one-node world, the IPython bridge and several plugins.
-- Paul S. Wilson greatly improved Leo's Wikipedia entry.
+- Paul S. Wilson greatly improved Leo's Wikipedia entry and helped license Leo's logo.
 - Dave Winer created MORE, the foundation of Leo's visual design.
 - Dan Winkler helped support Leo on the Mac.
 
@@ -33210,6 +33215,19 @@ This release consists entirely of code cleanups and minor bug fixes:
   
 - `6.8.5 Issues`_
 - `6.8.5 Pull Requests`_
+</t>
+<t tx="ekr.20250727055239.1">Leo 6.8.0 (July 3, 2024):
+
+A new framework for layouts replaces the free_layout and nested_splitter plugins.
+The gui "Easter Egg" is no more.
+
+Leo 6.8.2 (November 8, 2024):
+
+@jupytext uses the jupytext library https://jupytext.readthedocs.io/en/latest/ to handle Jupyter Notebooks seemlessly.
+
+Leo 6.8.6: (August 1, 2035):
+
+@leo and related commands makes it easy to use Leo on huge repositories.
 </t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
