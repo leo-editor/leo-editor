@@ -49,7 +49,7 @@ class TestCommanderFileCommands(LeoUnitTest):
                 with open(file_name, 'r') as f:
                     contents2 = f.read()
                 self.assertEqual(contents2, file_contents, msg=msg)
-                c.refreshFromDisk(event=None)
+                c.refreshFromDisk(p)
                 self.assertEqual(p.b, contents, msg=msg)
             # Remove the file.
             self.assertTrue(os.path.exists(file_name), msg=file_name)

@@ -355,7 +355,7 @@ def openwith_rclick(c: Cmdr, p: Position, menu: Wrapper) -> None:
 def refresh_rclick(c: Cmdr, p: Position, menu: Wrapper) -> None:
 
     def refresh_rclick_cb() -> None:
-        c.refreshFromDisk()
+        c.refreshFromDisk(p.copy())
 
     split = p.h.split(None, 1)
     if len(split) >= 2 and p.anyAtFileNodeName():

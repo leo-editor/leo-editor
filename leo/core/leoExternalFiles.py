@@ -170,7 +170,7 @@ class ExternalFilesController:
         """
         # #1240: Check the .leo file itself.
         self.idle_check_leo_file(c)
-        #
+
         # #1100: always scan the entire file for @<file> nodes.
         # #1134: Nested @<file> nodes are no longer valid, but this will do no harm.
         state = 'no'
@@ -195,17 +195,7 @@ class ExternalFilesController:
             if state in ('yes', 'no'):
                 state = self.ask(c, path, p=p)
             if state in ('yes', 'yes-all'):
-                old_p = c.p
-                c.selectPosition(p)  # Required.
-                c.refreshFromDisk()
-                # #4385: Careful: refresh-from-disk may change positions.
-                select_p = (
-                    old_p if c.positionExists(old_p)
-                    else p if c.positionExists(p)
-                    else c.p
-                )
-                c.redraw(select_p)  # #3695: Don't change c.p!
-
+                c.refreshFromDisk(p)
     #@+node:ekr.20201207055713.1: *5* efc.idle_check_leo_file
     def idle_check_leo_file(self, c: Cmdr) -> None:
         """Check c's .leo file for external changes."""
