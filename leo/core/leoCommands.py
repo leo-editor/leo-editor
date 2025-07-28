@@ -3839,7 +3839,7 @@ class Commands:
             g.es_print('Scan', fileName)
             for p in c.all_unique_positions():
                 if p.isAtLeoNode():
-                    fileName = p.atLeoFileName()
+                    fileName = p.atLeoNodeName()
                     if fileName not in todo and fileName not in scanned:
                         c2 = g.openWithFileName(fileName, gui=gui)
                         calls += 1
