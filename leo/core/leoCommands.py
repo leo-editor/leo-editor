@@ -3627,7 +3627,6 @@ class Commands:
         c = self
         #@+<< return if initial checks fail >>
         #@+node:ekr.20250725152511.1: *5* << return if initial checks fail >>
-        # Check the top directory.
         if (
             not top_directory
             or not os.path.isdir(top_directory)
@@ -3636,10 +3635,6 @@ class Commands:
         ):
             g.es_print(f"Not an absolute directory: {top_directory!r}")
             return
-
-        # Make sure all extensions begin with '.':
-        if isinstance(extensions, str):
-            extensions = [extensions]
         if not isinstance(extensions, (list, tuple)):
             g.es_print(f"Invalid list of extensions: {extensions!r}")
             return
