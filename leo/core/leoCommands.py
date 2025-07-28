@@ -3600,6 +3600,7 @@ class Commands:
         extensions: list[str],  # List of file extensions for generated @<file> nodes.
         top_directory: str,
         kind: str = '@clean',  # Any @<file> type. @clean is recommended.
+        report_changed_at_clean_nodes: bool = True,  # Recommended.
         sub_directories: list[str] = None,
         sub_outline_name: str = None,
         top_outline_name: str = 'leo_links.leo',
@@ -3710,6 +3711,7 @@ class Commands:
                         kind=kind,
                         links=back_link,
                         outline_name=f"{g.shortFileName(sub_directory)}_links.leo",
+                        report_changed_at_clean_nodes=report_changed_at_clean_nodes,
                     )
                     #@-<< create the sub outline >>
                     all_files.append(sub_outline_name)
@@ -3722,6 +3724,7 @@ class Commands:
                 kind='@leo',
                 links=top_links,
                 outline_name=top_outline_name,
+                report_changed_at_clean_nodes=report_changed_at_clean_nodes,
             )
             #@-<< create the top-level outline >>
             all_files = sorted(list(set(all_files)))
@@ -3740,6 +3743,7 @@ class Commands:
         kind: str,
         links: list[str],
         outline_name: str,
+        report_changed_at_clean_nodes: bool,
     ) -> None:
         """
         The caller is responsible for making links relative to the top-level directory.
@@ -3751,8 +3755,13 @@ class Commands:
 
         # Create an @settings tree containing one @history-list node.
         c2 = g.app.newCommander(fileName=outline_name, gui=g.app.nullGui)
+
+        # Create the @settings tree.
         root = c2.rootPosition()
         root.h = '@settings'
+        report_p = root.insertAsLastChild()
+        report_s = 'True' if report_changed_at_clean_nodes else 'False'
+        report_p.h = f"@bool report-changed-at-clean-nodes = {report_s}"
         history_p = root.insertAsLastChild()
         history_p.h = '@data history-list'
         history_p.b = 'open-at-leo-file\n'
@@ -3769,6 +3778,7 @@ class Commands:
             p = c2.lastTopLevel().insertAfter()
             p.h = f"{kind} {relative_path}"
 
+        # Create the file!
         outline_path = os.path.join(directory, outline_name)
         c2.clearChanged()
         c2.saveTo(fileName=outline_path, silent=True)
