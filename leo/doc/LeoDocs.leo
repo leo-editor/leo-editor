@@ -2519,6 +2519,7 @@
 <v t="ekr.20060620094033" descendentVnodeUnknownAttributes="7d7100580a000000302e302e31302e302e3371017d710258090000007374725f6174696d657103580c000000313337363431323238302e30710473732e"></v>
 <v t="ekr.20250728124612.1"></v>
 <v t="ekr.20250728123954.1"></v>
+<v t="ekr.20131009065148.31758"></v>
 <v t="ekr.20250728124924.1"><vh>*** To do: document @leo</vh></v>
 </vnodes>
 <tnodes>
@@ -33237,8 +33238,8 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 
 **The highlights of Leo 6.8.6**
 
-- Read `@clean` nodes only if they haven't changed: a huge performance boost!
-- Support `@leo &amp;lt;path&amp;gt;` nodes.
+- Read only *unchanged* `@clean` nodes: a huge performance boost!
+- Support `@leo &lt;path&gt;;` nodes.
   - The `open-at-leo-file` command opens the given outline.
   - The `c.makeLinkLeoFiles` method helps scripts create a top-level
     outline containing links to sub-outlines.
@@ -33270,7 +33271,38 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 - `PR 4389`: Support websockets in Leo's server and LeoInteg.
 - `PR 4391`: Add a theme file for SwotMoknokai.
 </t>
-<t tx="ekr.20250728124924.1"></t>
+<t tx="ekr.20250728124924.1">@leo` nodes allow coordination between 
+
+ break huge Leo outlines into a top-level outline and sub-outlines. By default, there is one sub-outline for each direct subdirectory of a top-level directory.
+@leo nodes create a hierarchy of Leo outlines.
+
+@leo nodes in a top-level outline coordinate operations in linked sub-outlines. For example: rust_compiler.leo (in the rust/compiler directory) would have the following @leo nodes::
+
+  @leo rustc/rustc.leo
+  @leo rustc_abi/rustc_abi.leo
+  @leo rustc_arena/rustc_arena.leo
+  And dozens of others.
+
+So the top-level outline will be tiny and the sub-outlines will be much smaller. As discussed below, the performance might not improve enough. But let's discuss some exciting ideas first.
+
+=====
+
+The top-level outline (in the top-level directory) contains `@leo` nodes (links) to the sub- outlines. The sub-outlines contain:
+
+- One `@leo` node (the back link) pointing to the top-level outline.
+
+- One `@clean` node for each file (of given file types) in the subdirectory and all descendant directories.
+
+It's easy to move between these outlines. Just select an `@leo` node and execute the `open-at-leo-file` command!
+
+=== 
+
+Here is the script I use to create dozens of sub-outlines in my local clone of Rust's compiler.
+
+c.makeLinkLeoFiles(
+    extensions=['.rs'],
+    top_directory=r'C:\Repos\ekr-fork-rust\compiler',
+)</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
