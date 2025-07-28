@@ -3827,7 +3827,6 @@ class Commands:
             gui = g.app.nullGui
 
         # The main loop.
-        calls = 0  # The number of calls to g.openWithFileName.
         result: list[Commands] = []
         scanned: list[str] = []  # List of paths already scanned.
         todo: list[str] = []
@@ -3837,7 +3836,6 @@ class Commands:
             Add all paths not already seen to the todo list.
             Add all newly-opened commanders to the result list.
             """
-            nonlocal calls
             if fileName in scanned:
                 return
             scanned.append(fileName)
@@ -3847,7 +3845,6 @@ class Commands:
                     fileName = p.atLeoNodeName()
                     if fileName not in todo and fileName not in scanned:
                         c2 = g.openWithFileName(fileName, gui=gui)
-                        calls += 1
                         todo.append(fileName)
                         assert c2 not in result
                         result.append(c2)
@@ -3864,7 +3861,6 @@ class Commands:
             t2 = time.process_time()
             kind = 'hidden ' if gui == g.app.nullGui else ''
             g.es_print(f"Done! Opened {len(result)} {kind}outlines in {t2 - t1:3.2} sec")
-            g.trace('calls', calls, c.shortFileName())
             g.printObj(scanned, tag='Scanned')
             g.printObj(result, tag='Result')
         return result
