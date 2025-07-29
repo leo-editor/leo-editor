@@ -3775,7 +3775,7 @@ class Commands:
 
         # Create the file!
         outline_path = os.path.join(directory, outline_name)
-        c2.clearChanged()
+        c2.clearChanged()  # Essential!
         c2.saveTo(fileName=outline_path, silent=True)
         c2.redraw()
         c2.close()
