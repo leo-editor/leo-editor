@@ -1374,7 +1374,7 @@ class AtFile:
         files: list[Position] = []
         while p and p != after:
             if p.isAtLeoNode():
-                pass
+                p.moveToNodeAfterTree()
             elif p.isAtIgnoreNode() and not p.isAtAsisFileNode():
                 # Honor @ignore in *body* text, but *not* in @asis nodes.
                 if p.isAnyAtFileNode():
