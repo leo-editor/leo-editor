@@ -1252,7 +1252,7 @@
 <v t="ekr.20231013091132.1"><vh>\@path &lt;path&gt;</vh></v>
 </v>
 <v t="ekr.20100806170836.4411"><vh>\@all and \@others</vh></v>
-<v t="ekr.20250729083112.1"><vh>\@leo directives (New in Leo 6.8.6)</vh></v>
+<v t="ekr.20250729083112.1"><vh>\@leo nodes (New in Leo 6.8.6)</vh></v>
 <v t="ekr.20100806170836.4398"><vh>Syntax coloring directives</vh></v>
 <v t="ekr.20100806170836.4408"><vh>Dangerous directives</vh></v>
 <v t="ekr.20100804133903.7262"><vh>All other directives</vh></v>
@@ -33274,12 +33274,16 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 </t>
 <t tx="ekr.20250729083112.1">.. _`Rust's compiler repo`: https://github.com/rust-lang/rust/tree/master/compiler
 
-Managing `Rust's compiler repo`_ in a single (large!) outline causes performance problems.
-Managing each the 70+ sub-directories with a smaller outline alliviates these problems.
+`@leo` nodes have the form `@leo &lt;path&gt;` where `path` is a path (absolute
+or relative) to another Leo outline. To move between outlines, just select
+an `@leo` node and execute the `open-at-leo-file` command!
 
-`@leo` nodes allow Leonistas to switch easily between a single **top-level outline** and various **sub-outlines**, one for each subdirectory.
+`@leo` nodes help split a single (too large) outline in a small **top-level outline** and various **sub-outlines**.
 
-A new script helper, **c.makeLinkLeoFiles**, makes it easy to create all these outlines.
+For example, using a single outline to manage `Rust's compiler repo`_  causes performance problems.
+Managing each the 70+ sub-directories with a smaller sub-outline solves these problems.
+
+A new script helper, **c.makeLinkLeoFiles**, creates the sub-outlines automatically.
 For example, here is the script I use to create dozens of sub-outlines in my local clone of Rust's compiler.
 
 .. code-block:: python
@@ -33303,12 +33307,12 @@ The top-level outline (`compiler_links.leo`) contains `@leo` nodes to all the su
   @leo rustc_arena/rustc_arena.leo
   And dozens of others.
   
+Note that all paths above are relative to `compiler_links.leo`.
+  
 Each sub-outline contains:
 
 - One `@leo` node (the back link) pointing to the top-level outline.
 - One `@clean` node for each `.rs` file in the subdirectory and *all descendant directories*.
-
-To move between these outlines, just select an `@leo` node and execute the `open-at-leo-file` command!
 </t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
