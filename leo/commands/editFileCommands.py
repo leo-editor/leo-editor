@@ -620,51 +620,14 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         c = self.c
         # Change the headline.
         p.h = '@auto' + p.h[5:]
-        # Compute the position of the present line within the file.
-        w = c.frame.body.wrapper
-        ins = w.getInsertPoint()
-        row, col = g.convertPythonIndexToRowCol(p.b, ins)
-        # Ignore *preceding* directive lines.
-        directives = [z for z in g.splitLines(c.p.b)[:row] if g.isDirective(z)]
-        row -= len(directives)
-        row = max(0, row)
-        # Reload the file, creating new nodes.
-        c.selectPosition(p)
-        c.refreshFromDisk()
-        # Restore the line in the proper node.
-        c.gotoCommands.find_file_line(row + 1)
-        p.setDirty()
-        c.setChanged()
-        c.redraw()
+        c.refreshFromDisk(p)
         c.bodyWantsFocus()
     #@+node:ekr.20170806094319.19: *4* efc.toAtEdit
     def toAtEdit(self, p: Position) -> None:
         """Convert p from @auto to @edit."""
         c = self.c
-        w = c.frame.body.wrapper
         p.h = '@edit' + p.h[5:]
-        # Compute the position of the present line within the *selected* node c.p
-        ins = w.getInsertPoint()
-        row, col = g.convertPythonIndexToRowCol(c.p.b, ins)
-        # Ignore directive lines.
-        directives = [z for z in g.splitLines(c.p.b)[:row] if g.isDirective(z)]
-        row -= len(directives)
-        row = max(0, row)
-        # Count preceding lines from p to c.p, again ignoring directives.
-        for p2 in p.self_and_subtree(copy=False):
-            if p2 == c.p:
-                break
-            lines = [z for z in g.splitLines(p2.b) if not g.isDirective(z)]
-            row += len(lines)
-        # Reload the file into a single node.
-        c.selectPosition(p)
-        c.refreshFromDisk()
-        # Restore the line in the proper node.
-        ins = g.convertRowColToPythonIndex(p.b, row + 1, 0)
-        w.setInsertPoint(ins)
-        p.setDirty()
-        c.setChanged()
-        c.redraw()
+        c.refreshFromDisk(p)
         c.bodyWantsFocus()
     #@-others
 #@+node:ekr.20170806094320.13: ** class GitDiffController

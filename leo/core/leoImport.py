@@ -1679,10 +1679,12 @@ class RecursiveImportController:
             verbose=self.verbose,  # Leo 6.6.
         )
 
-        # #4385: set mod time for @clean files.
+        # #4385: set mod time for @clean files. Clear the mod time for all other files.
         p = parent.lastChild()
         if self.kind == '@clean':
             p.v.u['_mod_time'] = g.os_path_getmtime(path)
+        elif '_mod_time' in p.v.u:
+            del p.v.u['_mod_time']
 
         if self.safe_at_file:
             p.v.h = '@' + p.v.h

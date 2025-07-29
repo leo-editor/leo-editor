@@ -30,7 +30,6 @@ Settings:
 from __future__ import annotations
 import difflib
 import os
-import re
 from typing import Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
@@ -47,7 +46,7 @@ class ShadowController:
         'a', 'b', 'c',
         'delim1', 'delim2', 'dispatch_dict',
         'encoding', 'errors', 'gnxDict',
-        'marker', 'node_pat', 'old_sent_lines', 'results',
+        'marker', 'old_sent_lines', 'results',
         'sentinels', 'shadow_prefix', 'shadow_subdir', 'shadow_in_home_dir',
         'trailing_sentinels', 'verbatim_line',
     )
@@ -287,7 +286,6 @@ class ShadowController:
         x.delim1, x.delim2 = marker.getDelims()
         x.gnxDict = x.c.fileCommands.gnxDict
         x.marker = marker
-        x.node_pat = re.compile(fr"{x.delim1}@\+node:(.*?):(.*?){x.delim2}\n")
         x.old_sent_lines = old_private_lines
         x.results = []
         x.verbatim_line = f"{x.delim1}@verbatim{x.delim2}\n"
