@@ -43,7 +43,7 @@
 <nav class="contents local" id="contents">
 <p class="topic-title">Contents</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="#part-1-file-and-path-directives" id="id2">Part 1: &#64;&lt;file&gt; and &#64;path directives</a></p>
+<li><p><a class="reference internal" href="#file-and-path-directives" id="id2">&#64;&lt;file&gt; and &#64;path directives</a></p>
 <ul>
 <li><p><a class="reference internal" href="#asis-path" id="id3">&#64;asis &lt;path&gt;</a></p></li>
 <li><p><a class="reference internal" href="#auto-path" id="id4">&#64;auto &lt;path&gt;</a></p>
@@ -59,14 +59,15 @@
 <li><p><a class="reference internal" href="#path-path" id="id11">&#64;path &lt;path&gt;</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#part-2-all-and-others" id="id12">Part 2: &#64;all and &#64;others</a></p></li>
-<li><p><a class="reference internal" href="#part-3-syntax-coloring-directives" id="id13">Part 3: Syntax coloring directives</a></p></li>
-<li><p><a class="reference internal" href="#part-4-dangerous-directives" id="id14">Part 4: Dangerous directives</a></p></li>
-<li><p><a class="reference internal" href="#part-5-all-other-directives" id="id15">Part 5: All other directives</a></p></li>
+<li><p><a class="reference internal" href="#all-and-others" id="id12">&#64;all and &#64;others</a></p></li>
+<li><p><a class="reference internal" href="#leo-directives-new-in-leo-6-8-6" id="id13">&#64;leo directives (New in Leo 6.8.6)</a></p></li>
+<li><p><a class="reference internal" href="#syntax-coloring-directives" id="id14">Syntax coloring directives</a></p></li>
+<li><p><a class="reference internal" href="#dangerous-directives" id="id15">Dangerous directives</a></p></li>
+<li><p><a class="reference internal" href="#all-other-directives" id="id16">All other directives</a></p></li>
 </ul>
 </nav>
-<section id="part-1-file-and-path-directives">
-<h2><a class="toc-backref" href="#id2" role="doc-backlink">Part 1: &#64;&lt;file&gt; and &#64;path directives</a><a class="headerlink" href="#part-1-file-and-path-directives" title="Link to this heading">¶</a></h2>
+<section id="file-and-path-directives">
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">&#64;&lt;file&gt; and &#64;path directives</a><a class="headerlink" href="#file-and-path-directives" title="Link to this heading">¶</a></h2>
 <p id="index-0">This section discusses the &#64;&lt;file&gt; directives. These directives create or import external files.</p>
 <p><code class="docutils literal notranslate"><span class="pre">&#64;&lt;file&gt;</span></code> nodes create external files:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@asis</span> <span class="o">&lt;</span><span class="n">filename</span><span class="o">&gt;</span>        <span class="n">write</span> <span class="n">only</span><span class="p">,</span> <span class="n">no</span> <span class="n">sentinels</span><span class="p">,</span> <span class="n">exact</span> <span class="n">line</span> <span class="n">endings</span>
@@ -264,8 +265,8 @@ a problem: Leo 4.7 can read all external files written by Leo 4.6.</p>
 <p>If no <code class="docutils literal notranslate"><span class="pre">&#64;path</span></code> directives are in effect, the default path prefix is the directory containing the .leo file.</p>
 </section>
 </section>
-<section id="part-2-all-and-others">
-<h2><a class="toc-backref" href="#id12" role="doc-backlink">Part 2: &#64;all and &#64;others</a><a class="headerlink" href="#part-2-all-and-others" title="Link to this heading">¶</a></h2>
+<section id="all-and-others">
+<h2><a class="toc-backref" href="#id12" role="doc-backlink">&#64;all and &#64;others</a><a class="headerlink" href="#all-and-others" title="Link to this heading">¶</a></h2>
 <p>These control how Leo places text when writing external files. They are two of the most important directives in Leo.</p>
 <dl class="simple glossary">
 </dl>
@@ -291,8 +292,40 @@ all nodes added by the <code class="docutils literal notranslate"><span class="p
 may have other <code class="docutils literal notranslate"><span class="pre">&#64;others</span></code> directives.</p>
 </div></blockquote>
 </section>
-<section id="part-3-syntax-coloring-directives">
-<h2><a class="toc-backref" href="#id13" role="doc-backlink">Part 3: Syntax coloring directives</a><a class="headerlink" href="#part-3-syntax-coloring-directives" title="Link to this heading">¶</a></h2>
+<section id="leo-directives-new-in-leo-6-8-6">
+<h2><a class="toc-backref" href="#id13" role="doc-backlink">&#64;leo directives (New in Leo 6.8.6)</a><a class="headerlink" href="#leo-directives-new-in-leo-6-8-6" title="Link to this heading">¶</a></h2>
+<p>Managing <a class="reference external" href="https://github.com/rust-lang/rust/tree/master/compiler">Rust’s compiler repo</a> in a single (large!) outline causes performance problems.
+Managing each the 70+ sub-directories with a smaller outline alliviates these problems.</p>
+<p><cite>&#64;leo</cite> nodes allow Leonistas to switch easily between a single <strong>top-level outline</strong> and various <strong>sub-outlines</strong>, one for each subdirectory.</p>
+<p>A new script helper, <strong>c.makeLinkLeoFiles</strong>, makes it easy to create all these outlines.
+For example, here is the script I use to create dozens of sub-outlines in my local clone of Rust’s compiler.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">c</span><span class="o">.</span><span class="n">makeLinkLeoFiles</span><span class="p">(</span>
+    <span class="n">extensions</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;.rs&#39;</span><span class="p">],</span>
+    <span class="n">top_directory</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;C:\Repos\ekr-fork-rust\compiler&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>This script creates the <cite>compiler_links.leo</cite> outline in the <cite>compiler</cite>
+directory. In addition, for each direct sub-directory (say x) of the
+top-level directory, the script creates an outline called <cite>x_links.leo</cite>.</p>
+<p>The script is essential for large repos. The top-level <cite>compiler</cite> directory
+contains more than 70 sub-directories!</p>
+<p>The top-level outline (<cite>compiler_links.leo</cite>) contains <cite>&#64;leo</cite> nodes to all the sub-outline:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@leo</span> <span class="n">rustc</span><span class="o">/</span><span class="n">rustc</span><span class="o">.</span><span class="n">leo</span>
+<span class="nd">@leo</span> <span class="n">rustc_abi</span><span class="o">/</span><span class="n">rustc_abi</span><span class="o">.</span><span class="n">leo</span>
+<span class="nd">@leo</span> <span class="n">rustc_arena</span><span class="o">/</span><span class="n">rustc_arena</span><span class="o">.</span><span class="n">leo</span>
+<span class="n">And</span> <span class="n">dozens</span> <span class="n">of</span> <span class="n">others</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>Each sub-outline contains:</p>
+<ul class="simple">
+<li><p>One <cite>&#64;leo</cite> node (the back link) pointing to the top-level outline.</p></li>
+<li><p>One <cite>&#64;clean</cite> node for each <cite>.rs</cite> file in the subdirectory and <em>all descendant directories</em>.</p></li>
+</ul>
+<p>To move between these outlines, just select an <cite>&#64;leo</cite> node and execute the <cite>open-at-leo-file</cite> command!</p>
+</section>
+<section id="syntax-coloring-directives">
+<h2><a class="toc-backref" href="#id14" role="doc-backlink">Syntax coloring directives</a><a class="headerlink" href="#syntax-coloring-directives" title="Link to this heading">¶</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">&#64;color</span></code>, <code class="docutils literal notranslate"><span class="pre">&#64;killcolor</span></code>, <code class="docutils literal notranslate"><span class="pre">&#64;nocolor</span></code> and <code class="docutils literal notranslate"><span class="pre">&#64;nocolor-node</span></code> directives control how
 Leo colors text in the body pane.</p>
 <p id="index-17">These directives typically affect the node in which they appear and all descendant nodes. Exception: an <strong>ambiguous node</strong>, a node containing both <code class="docutils literal notranslate"><span class="pre">&#64;color</span></code> and <code class="docutils literal notranslate"><span class="pre">&#64;nocolor</span></code> directives, has no effect on how Leo colors text in descendant nodes.</p>
@@ -318,8 +351,8 @@ directive overrides the <code class="docutils literal notranslate"><span class="
 node.</p>
 </div></blockquote>
 </section>
-<section id="part-4-dangerous-directives">
-<h2><a class="toc-backref" href="#id14" role="doc-backlink">Part 4: Dangerous directives</a><a class="headerlink" href="#part-4-dangerous-directives" title="Link to this heading">¶</a></h2>
+<section id="dangerous-directives">
+<h2><a class="toc-backref" href="#id15" role="doc-backlink">Dangerous directives</a><a class="headerlink" href="#dangerous-directives" title="Link to this heading">¶</a></h2>
 <p>These directives alter how Leo represents data in external files. They are <strong>dangerous</strong>–mistakes in using these sentinels can make it impossible for Leo to read the resulting external file. Use them with care!</p>
 <p>Nevertheless, these sentinels can be useful in special situations.</p>
 <dl class="simple glossary">
@@ -393,8 +426,8 @@ strings at the start of the external file, that is, the comment strings for
 the <code class="docutils literal notranslate"><span class="pre">&#64;+leo</span> <span class="pre">sentinel</span></code> and the initial <code class="docutils literal notranslate"><span class="pre">&#64;+body</span></code> and <code class="docutils literal notranslate"><span class="pre">&#64;+node</span></code> sentinels.</p>
 </div></blockquote>
 </section>
-<section id="part-5-all-other-directives">
-<h2><a class="toc-backref" href="#id15" role="doc-backlink">Part 5: All other directives</a><a class="headerlink" href="#part-5-all-other-directives" title="Link to this heading">¶</a></h2>
+<section id="all-other-directives">
+<h2><a class="toc-backref" href="#id16" role="doc-backlink">All other directives</a><a class="headerlink" href="#all-other-directives" title="Link to this heading">¶</a></h2>
 <p>This section is a reference guide for all other Leo directives, organized alphabetically.</p>
 <p>Unless otherwise noted, all directives listed are valid only in body text, and they must start at the leftmost column of the node.</p>
 <dl class="simple glossary">
@@ -617,7 +650,7 @@ Negative tab widths cause Leo to convert tabs to spaces.</p>
     </div>
     <div class="footer" role="contentinfo">
     &#169; Copyright 1997-2025, Edward K. Ream.
-      Last updated on July 01, 2025.
+      Last updated on July 29, 2025.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
     </div>
   </body>
