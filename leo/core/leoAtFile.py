@@ -1373,7 +1373,9 @@ class AtFile:
         seen = set()
         files: list[Position] = []
         while p and p != after:
-            if p.isAtIgnoreNode() and not p.isAtAsisFileNode():
+            if p.isAtLeoNode():
+                pass
+            elif p.isAtIgnoreNode() and not p.isAtAsisFileNode():
                 # Honor @ignore in *body* text, but *not* in @asis nodes.
                 if p.isAnyAtFileNode():
                     c.ignored_at_file_nodes.append(p.h)
@@ -1433,7 +1435,7 @@ class AtFile:
         """
         at = self
         at.root = root
-        if p.isAtIgnoreNode():  # pragma: no cover
+        if p.isAtLeoNode() or p.isAtIgnoreNode():  # pragma: no cover
             # Should have been handled in findFilesToWrite.
             g.trace(f"Can not happen: {p.h} is an @ignore node")
             return
