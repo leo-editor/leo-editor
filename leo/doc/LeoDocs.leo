@@ -2520,6 +2520,7 @@
 <v t="ekr.20060620094033" descendentVnodeUnknownAttributes="7d7100580a000000302e302e31302e302e3371017d710258090000007374725f6174696d657103580c000000313337363431323238302e30710473732e"></v>
 <v t="ekr.20250728124612.1"></v>
 <v t="ekr.20250728123954.1"></v>
+<v t="ekr.20100806170836.4411"></v>
 <v t="ekr.20250729083112.1"></v>
 </vnodes>
 <tnodes>
@@ -33273,11 +33274,11 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 </t>
 <t tx="ekr.20250729083112.1">.. _`Rust's compiler repo`: https://github.com/rust-lang/rust/tree/master/compiler
 
-`@leo` directives have the form `@leo &lt;path&gt;` where `path` is a path (absolute
+``@leo`` directives have the form ``@leo &lt;path&gt;`` where ``path`` is a path (absolute
 or relative) to another Leo outline. To move between outlines, just select
-an `@leo` node and execute the `open-at-leo-file` command!
+an ``@leo`` node and execute the ``open-at-leo-file`` command!
 
-`@leo` directives help split a single (too large) outline in a small **top-level outline** and various **sub-outlines**.
+``@leo`` directives help split a single (too large) outline in a small **top-level outline** and various **sub-outlines**.
 
 For example, using a single outline to manage `Rust's compiler repo`_  causes performance problems.
 Managing each the 70+ sub-directories with a smaller sub-outline solves these problems.
@@ -33292,26 +33293,26 @@ For example, here is the script I use to create dozens of sub-outlines in my loc
         top_directory=r'C:\Repos\ekr-fork-rust\compiler',
     )
 
-This script creates the `compiler_links.leo` outline in the `compiler`
+This script creates the ``compiler_links.leo`` outline in the ``compiler``
 directory. In addition, for each direct sub-directory (say x) of the
-top-level directory, the script creates an outline called `x_links.leo`.
+top-level directory, the script creates an outline called ``x_links.leo``.
 
-The script is essential for large repos. The top-level `compiler` directory
+The script is essential for large repos. The top-level ``compiler`` directory
 contains more than 70 sub-directories!
 
-The top-level outline (`compiler_links.leo`) contains `@leo` directives for all the sub-outline::
+The top-level outline (``compiler_links.leo``) contains ``@leo`` directives for all the sub-outline::
 
   @leo rustc/rustc.leo
   @leo rustc_abi/rustc_abi.leo
   @leo rustc_arena/rustc_arena.leo
   And dozens of others.
   
-Note that all paths above are relative to `compiler_links.leo`.
+Note that all paths above are relative to ``compiler_links.leo``.
   
 Each sub-outline contains:
 
-- One `@leo` node (the back link) pointing to the top-level outline.
-- One `@clean` node for each `.rs` file in the subdirectory and *all descendant directories*.
+- One ``@leo`` node (the back link) pointing to the top-level outline.
+- One ``@clean`` node for each ``.rs`` file in the subdirectory and *all descendant directories*.
 </t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
