@@ -3602,7 +3602,6 @@ class Commands:
         kind: str = '@clean',  # Any @<file> type. @clean is recommended.
         report_changed_at_clean_nodes: bool = True,  # Recommended.
         sub_directories: list[str] = None,
-        sub_outline_name: str = None,
         top_outline_name: str = None,
     ) -> None:
         #@+<< c.makeLinkLeoFiles: docstring >>
@@ -3688,9 +3687,9 @@ class Commands:
                     ])
                 #@-<< find files in sub_directory >>
                 if files:
+                    sub_outline_name = f"{g.shortFileName(sub_directory)}_links.leo"
                     #@+<< add link to the sub outline to top_links >>
                     #@+node:ekr.20250725163807.1: *5* << add link to the sub outline to top_links >>
-                    sub_outline_name = f"{g.shortFileName(sub_directory)}_links.leo"
                     abs_path = f"{sub_directory}{os.sep}{sub_outline_name}"
                     rel_link = os.path.relpath(abs_path, start=top_directory)
                     top_links.append(rel_link.replace('\\', '/'))
