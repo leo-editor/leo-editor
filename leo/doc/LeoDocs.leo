@@ -1252,7 +1252,7 @@
 <v t="ekr.20231013091132.1"><vh>\@path &lt;path&gt;</vh></v>
 </v>
 <v t="ekr.20100806170836.4411"><vh>\@all and \@others</vh></v>
-<v t="ekr.20250729083112.1"><vh>\@leo nodes (New in Leo 6.8.6)</vh></v>
+<v t="ekr.20250729083112.1"><vh>\@leo directives</vh></v>
 <v t="ekr.20100806170836.4398"><vh>Syntax coloring directives</vh></v>
 <v t="ekr.20100806170836.4408"><vh>Dangerous directives</vh></v>
 <v t="ekr.20100804133903.7262"><vh>All other directives</vh></v>
@@ -33273,7 +33273,7 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 - `PR 4391`: Add a theme file for SwotMoknokai.
 </t>
 <t tx="ekr.20250729083112.1">.. _`Rust's compiler repo`: https://github.com/rust-lang/rust/tree/master/compiler
-
+**New in Leo 6.8.6**: 
 `@leo` nodes have the form `@leo &lt;path&gt;` where `path` is a path (absolute
 or relative) to another Leo outline. To move between outlines, just select
 an `@leo` node and execute the `open-at-leo-file` command!
