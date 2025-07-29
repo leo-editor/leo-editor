@@ -1239,7 +1239,7 @@
 <v t="ekr.20150323102918.1"><vh>@rst-ignore Undocumented commands</vh></v>
 </v>
 <v t="ekr.20131009065148.31758"><vh>@rst html/directives.html</vh>
-<v t="ekr.20100806170836.4392"><vh>Part 1: \@&lt;file&gt; and \@path directives</vh>
+<v t="ekr.20100806170836.4392"><vh>\@&lt;file&gt; and \@path directives</vh>
 <v t="ekr.20100806170836.4393"><vh>\@asis &lt;path&gt;</vh></v>
 <v t="ekr.20100806170836.4396"><vh>\@auto &lt;path&gt;</vh>
 <v t="ekr.20160410045234.1"><vh>\@auto sanity checks</vh></v>
@@ -1251,10 +1251,11 @@
 <v t="ekr.20100806170836.4402"><vh>\@shadow &lt;path&gt; (deprecated)</vh></v>
 <v t="ekr.20231013091132.1"><vh>\@path &lt;path&gt;</vh></v>
 </v>
-<v t="ekr.20100806170836.4411"><vh>Part 2: \@all and \@others</vh></v>
-<v t="ekr.20100806170836.4398"><vh>Part 3: Syntax coloring directives</vh></v>
-<v t="ekr.20100806170836.4408"><vh>Part 4: Dangerous directives</vh></v>
-<v t="ekr.20100804133903.7262"><vh>Part 5: All other directives</vh></v>
+<v t="ekr.20100806170836.4411"><vh>\@all and \@others</vh></v>
+<v t="ekr.20250729083112.1"><vh>\@leo directives (New in Leo 6.8.6)</vh></v>
+<v t="ekr.20100806170836.4398"><vh>Syntax coloring directives</vh></v>
+<v t="ekr.20100806170836.4408"><vh>Dangerous directives</vh></v>
+<v t="ekr.20100804133903.7262"><vh>All other directives</vh></v>
 </v>
 </v>
 <v t="ekr.20101025080245.5798"><vh>Leo and Other Programs</vh>
@@ -2520,7 +2521,7 @@
 <v t="ekr.20250728124612.1"></v>
 <v t="ekr.20250728123954.1"></v>
 <v t="ekr.20131009065148.31758"></v>
-<v t="ekr.20250728124924.1"><vh>*** To do: document @leo</vh></v>
+<v t="ekr.20250729083112.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -33271,38 +33272,44 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 - `PR 4389`: Support websockets in Leo's server and LeoInteg.
 - `PR 4391`: Add a theme file for SwotMoknokai.
 </t>
-<t tx="ekr.20250728124924.1">@leo` nodes allow coordination between 
+<t tx="ekr.20250729083112.1">.. _`Rust's compiler repo`: https://github.com/rust-lang/rust/tree/master/compiler
 
- break huge Leo outlines into a top-level outline and sub-outlines. By default, there is one sub-outline for each direct subdirectory of a top-level directory.
-@leo nodes create a hierarchy of Leo outlines.
+Managing `Rust's compiler repo`_ in a single (large!) outline causes performance problems.
+Managing each the 70+ sub-directories with a smaller outline alliviates these problems.
 
-@leo nodes in a top-level outline coordinate operations in linked sub-outlines. For example: rust_compiler.leo (in the rust/compiler directory) would have the following @leo nodes::
+`@leo` nodes allow Leonistas to switch easily between a single **top-level outline** and various **sub-outlines**, one for each subdirectory.
+
+A new script helper, **c.makeLinkLeoFiles**, makes it easy to create all these outlines.
+For example, here is the script I use to create dozens of sub-outlines in my local clone of Rust's compiler.
+
+.. code-block:: python
+
+    c.makeLinkLeoFiles(
+        extensions=['.rs'],
+        top_directory=r'C:\Repos\ekr-fork-rust\compiler',
+    )
+
+This script creates the `compiler_links.leo` outline in the `compiler`
+directory. In addition, for each direct sub-directory (say x) of the
+top-level directory, the script creates an outline called `x_links.leo`.
+
+The script is essential for large repos. The top-level `compiler` directory
+contains more than 70 sub-directories!
+
+The top-level outline (`compiler_links.leo`) contains `@leo` nodes to all the sub-outline::
 
   @leo rustc/rustc.leo
   @leo rustc_abi/rustc_abi.leo
   @leo rustc_arena/rustc_arena.leo
   And dozens of others.
-
-So the top-level outline will be tiny and the sub-outlines will be much smaller. As discussed below, the performance might not improve enough. But let's discuss some exciting ideas first.
-
-=====
-
-The top-level outline (in the top-level directory) contains `@leo` nodes (links) to the sub- outlines. The sub-outlines contain:
+  
+Each sub-outline contains:
 
 - One `@leo` node (the back link) pointing to the top-level outline.
+- One `@clean` node for each `.rs` file in the subdirectory and *all descendant directories*.
 
-- One `@clean` node for each file (of given file types) in the subdirectory and all descendant directories.
-
-It's easy to move between these outlines. Just select an `@leo` node and execute the `open-at-leo-file` command!
-
-=== 
-
-Here is the script I use to create dozens of sub-outlines in my local clone of Rust's compiler.
-
-c.makeLinkLeoFiles(
-    extensions=['.rs'],
-    top_directory=r'C:\Repos\ekr-fork-rust\compiler',
-)</t>
+To move between these outlines, just select an `@leo` node and execute the `open-at-leo-file` command!
+</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
