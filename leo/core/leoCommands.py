@@ -3613,14 +3613,17 @@ class Commands:
 
         Scripts calling this method need only specify the value of the following kwargs:
 
-        - extensions:      List of file extensions for generated @<file> nodes.
-        - kind:            One of @auto, @clean, @file, etc.
-        - sub_directories: An optional list of sub-directories in which to create sub-outlines.
-                           Relative paths are relative to the top-level directory.
-                           If the list is empty, it defaults to all direct directories of
-                           the top-level directory.
-        - top_directory:   The full, absolute, path to the top-level directory.
-        - top_file_name:   The name of the top-level link outline.
+        - extensions:       List of file extensions for generated @<file> nodes.
+        - kind:             One of @auto, @clean, @file, etc.
+        - report_changed_at_clean_nodes:
+                            The value to use for @bool report-changed-at-clean-nodes
+                            in all generated outlines.
+        - sub_directories:  An optional list of sub-directories in which to create sub-outlines.
+                            Relative paths are relative to the top-level directory.
+                            If the list is empty, it defaults to all direct directories of
+                            the top-level directory.
+        - top_directory:    The full, absolute, path to the top-level directory.
+        - top_outline_name: The name of the top-level link outline.
         """
         #@-<< c.makeLinkLeoFiles: docstring >>
         c = self
