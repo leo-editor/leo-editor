@@ -1437,7 +1437,7 @@ class AtFile:
         at.root = root
         if p.isAtLeoNode() or p.isAtIgnoreNode():  # pragma: no cover
             # Should have been handled in findFilesToWrite.
-            g.trace(f"Can not happen: {p.h} is an @ignore node")
+            g.trace(f"Can not happen: unexpected node: {p.h}")
             return
         try:
             at.writePathChanged(p)
