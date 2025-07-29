@@ -5,12 +5,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Directives Reference &#8212; Leo 6.8.5 documentation</title>
+    <title>Directives Reference &#8212; Leo 6.8.6 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css?v=2bf1fcf8" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css?v=a1d61795" />
     
-    <script src="_static/documentation_options.js?v=72d441dd"></script>
+    <script src="_static/documentation_options.js?v=452ccbb7"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     
@@ -27,7 +27,7 @@
         <li class="right" >
           <a href="commands.html" title="Leo’s Commands Reference"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.8.5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.8.6 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="usersguide.html" accesskey="U">Leo’s Users Guide</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Directives Reference</a></li> 
       </ul>
@@ -60,7 +60,7 @@
 </ul>
 </li>
 <li><p><a class="reference internal" href="#all-and-others" id="id12">&#64;all and &#64;others</a></p></li>
-<li><p><a class="reference internal" href="#leo-directives-new-in-leo-6-8-6" id="id13">&#64;leo directives (New in Leo 6.8.6)</a></p></li>
+<li><p><a class="reference internal" href="#leo-directives" id="id13">&#64;leo directives</a></p></li>
 <li><p><a class="reference internal" href="#syntax-coloring-directives" id="id14">Syntax coloring directives</a></p></li>
 <li><p><a class="reference internal" href="#dangerous-directives" id="id15">Dangerous directives</a></p></li>
 <li><p><a class="reference internal" href="#all-other-directives" id="id16">All other directives</a></p></li>
@@ -292,12 +292,15 @@ all nodes added by the <code class="docutils literal notranslate"><span class="p
 may have other <code class="docutils literal notranslate"><span class="pre">&#64;others</span></code> directives.</p>
 </div></blockquote>
 </section>
-<section id="leo-directives-new-in-leo-6-8-6">
-<h2><a class="toc-backref" href="#id13" role="doc-backlink">&#64;leo directives (New in Leo 6.8.6)</a><a class="headerlink" href="#leo-directives-new-in-leo-6-8-6" title="Link to this heading">¶</a></h2>
-<p>Managing <a class="reference external" href="https://github.com/rust-lang/rust/tree/master/compiler">Rust’s compiler repo</a> in a single (large!) outline causes performance problems.
-Managing each the 70+ sub-directories with a smaller outline alliviates these problems.</p>
-<p><cite>&#64;leo</cite> nodes allow Leonistas to switch easily between a single <strong>top-level outline</strong> and various <strong>sub-outlines</strong>, one for each subdirectory.</p>
-<p>A new script helper, <strong>c.makeLinkLeoFiles</strong>, makes it easy to create all these outlines.
+<section id="leo-directives">
+<h2><a class="toc-backref" href="#id13" role="doc-backlink">&#64;leo directives</a><a class="headerlink" href="#leo-directives" title="Link to this heading">¶</a></h2>
+<p><cite>&#64;leo</cite> directives have the form <cite>&#64;leo &lt;path&gt;</cite> where <cite>path</cite> is a path (absolute
+or relative) to another Leo outline. To move between outlines, just select
+an <cite>&#64;leo</cite> node and execute the <cite>open-at-leo-file</cite> command!</p>
+<p><cite>&#64;leo</cite> directives help split a single (too large) outline in a small <strong>top-level outline</strong> and various <strong>sub-outlines</strong>.</p>
+<p>For example, using a single outline to manage <a class="reference external" href="https://github.com/rust-lang/rust/tree/master/compiler">Rust’s compiler repo</a>  causes performance problems.
+Managing each the 70+ sub-directories with a smaller sub-outline solves these problems.</p>
+<p>A new script helper, <strong>c.makeLinkLeoFiles</strong>, creates the sub-outlines automatically.
 For example, here is the script I use to create dozens of sub-outlines in my local clone of Rust’s compiler.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">c</span><span class="o">.</span><span class="n">makeLinkLeoFiles</span><span class="p">(</span>
     <span class="n">extensions</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;.rs&#39;</span><span class="p">],</span>
@@ -310,19 +313,19 @@ directory. In addition, for each direct sub-directory (say x) of the
 top-level directory, the script creates an outline called <cite>x_links.leo</cite>.</p>
 <p>The script is essential for large repos. The top-level <cite>compiler</cite> directory
 contains more than 70 sub-directories!</p>
-<p>The top-level outline (<cite>compiler_links.leo</cite>) contains <cite>&#64;leo</cite> nodes to all the sub-outline:</p>
+<p>The top-level outline (<cite>compiler_links.leo</cite>) contains <cite>&#64;leo</cite> directives for all the sub-outline:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@leo</span> <span class="n">rustc</span><span class="o">/</span><span class="n">rustc</span><span class="o">.</span><span class="n">leo</span>
 <span class="nd">@leo</span> <span class="n">rustc_abi</span><span class="o">/</span><span class="n">rustc_abi</span><span class="o">.</span><span class="n">leo</span>
 <span class="nd">@leo</span> <span class="n">rustc_arena</span><span class="o">/</span><span class="n">rustc_arena</span><span class="o">.</span><span class="n">leo</span>
 <span class="n">And</span> <span class="n">dozens</span> <span class="n">of</span> <span class="n">others</span><span class="o">.</span>
 </pre></div>
 </div>
+<p>Note that all paths above are relative to <cite>compiler_links.leo</cite>.</p>
 <p>Each sub-outline contains:</p>
 <ul class="simple">
 <li><p>One <cite>&#64;leo</cite> node (the back link) pointing to the top-level outline.</p></li>
 <li><p>One <cite>&#64;clean</cite> node for each <cite>.rs</cite> file in the subdirectory and <em>all descendant directories</em>.</p></li>
 </ul>
-<p>To move between these outlines, just select an <cite>&#64;leo</cite> node and execute the <cite>open-at-leo-file</cite> command!</p>
 </section>
 <section id="syntax-coloring-directives">
 <h2><a class="toc-backref" href="#id14" role="doc-backlink">Syntax coloring directives</a><a class="headerlink" href="#syntax-coloring-directives" title="Link to this heading">¶</a></h2>
@@ -643,7 +646,7 @@ Negative tab widths cause Leo to convert tabs to spaces.</p>
         <li class="right" >
           <a href="commands.html" title="Leo’s Commands Reference"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.8.5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="leo_toc.html">Leo 6.8.6 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="usersguide.html" >Leo’s Users Guide</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Directives Reference</a></li> 
       </ul>
