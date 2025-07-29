@@ -3603,7 +3603,7 @@ class Commands:
         report_changed_at_clean_nodes: bool = True,  # Recommended.
         sub_directories: list[str] = None,
         sub_outline_name: str = None,
-        top_outline_name: str = 'leo_links.leo',
+        top_outline_name: str = None,
     ) -> None:
         #@+<< c.makeLinkLeoFiles: docstring >>
         #@+node:ekr.20250717132150.1: *5* << c.makeLinkLeoFiles: docstring >>
@@ -3639,6 +3639,8 @@ class Commands:
             g.es_print(f"Invalid list of extensions: {extensions!r}")
             return
         #@-<< return if initial checks fail >>
+        if not top_outline_name:
+            top_outline_name = f"{os.path.basename(top_directory)}_links.leo"
         #@+<< calculate the list of subdirectories >>
         #@+node:ekr.20250725152709.1: *5* << calculate the list of subdirectories >>
         # Default to all direct sub-directories of the top directory.
