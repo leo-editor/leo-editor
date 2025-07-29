@@ -3639,6 +3639,13 @@ class Commands:
             g.es_print(f"Invalid list of extensions: {extensions!r}")
             return
         #@-<< return if initial checks fail >>
+        #@+<< make sure that all extensions start with '.' >>
+        #@+node:ekr.20250729064219.1: *5* << make sure that all extensions start with '.' >>
+        extensions = [
+            (z if z.startswith('.') else f".{z}")
+            for z in extensions
+        ]
+        #@-<< make sure that all extensions start with '.' >>
         if not top_outline_name:
             top_outline_name = f"{os.path.basename(top_directory)}_links.leo"
         #@+<< calculate the list of subdirectories >>
@@ -3669,8 +3676,6 @@ class Commands:
                 #@+node:ekr.20250725163431.1: *5* << find files in sub_directory >>
                 # Set files to the list of full, absolute, files in subdirectory.
                 for ext in extensions:
-                    if not ext.startswith('.'):
-                        ext = '.' + ext
                     new_files = glob.glob(
                         f"{sub_directory}{os.sep}**{os.sep}*{ext}",
                         recursive=True,
