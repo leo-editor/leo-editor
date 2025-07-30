@@ -10,6 +10,7 @@
 <v t="ekr.20080412053100.5"><vh>@settings</vh>
 <v t="ekr.20221129012213.1"><vh>@bool run-flake8-on-write = False</vh></v>
 <v t="ekr.20140902155015.18674"><vh>@bool qt-use-scintilla = False</vh></v>
+<v t="ekr.20250715195948.1"><vh>@bool report-changed-at-clean-nodes = True</vh></v>
 <v t="ekr.20210530065000.2"><vh>@data exec-script-commands</vh></v>
 <v t="ekr.20210530065000.3"><vh>@data exec-script-patterns</vh></v>
 <v t="ekr.20150425145248.1"><vh>@data history-list</vh></v>
@@ -161,13 +162,13 @@
 <v t="EKR.20040430162943"><vh>The attic</vh>
 <v t="ekr.20170302123956.1"><vh>@file ../doc/leoAttic.txt</vh></v>
 </v>
-<v t="ekr.20031218072017.2406"><vh>Code</vh>
+<v t="ekr.20031218072017.2406" descendentVnodeUnknownAttributes="7d7100285805000000302e312e3071017d710258090000005f6d6f645f74696d6571034e735807000000302e342e302e3071047d710558090000005f6d6f645f74696d6571064741da19472211a386735807000000302e342e302e3671077d710858090000005f6d6f645f74696d6571094741da1010eea5f5f9735809000000302e342e322e302e30710a7d710b58090000005f6d6f645f74696d65710c4741d993336a17bbd9735809000000302e342e322e302e31710d7d710e58090000005f6d6f645f74696d65710f4741d9c2a018004dc9735809000000302e342e322e302e3271107d711158090000005f6d6f645f74696d6571124741d8ffbc7f041006735808000000302e362e31332e3071137d711458090000005f6d6f645f74696d6571154741d9fb029419413173580a000000302e362e31332e322e3071167d711758090000005f6d6f645f74696d6571184741d9587320d5fc9473752e"><vh>Code</vh>
 <v t="ekr.20140902032918.18591"><vh>About this file</vh>
 <v t="ekr.20140831085423.18630"><vh>Terminology</vh></v>
 <v t="ekr.20140831085423.18631"><vh>Official ivars</vh></v>
 </v>
-<v t="ekr.20031218072017.2604"><vh>Core classes</vh>
-<v t="ekr.20031218072017.2608"><vh>@file leoApp.py</vh></v>
+<v t="ekr.20031218072017.2604" descendentVnodeUnknownAttributes="7d71005803000000302e3071017d710258090000005f6d6f645f74696d6571034e73732e"><vh>Core classes</vh>
+<v t="ekr.20031218072017.2608" descendentVnodeUnknownAttributes="7d710058010000003071017d710258090000005f6d6f645f74696d6571034e73732e"><vh>@file leoApp.py</vh></v>
 <v t="ekr.20141012064706.18389"><vh>@file leoAst.py</vh></v>
 <v t="ekr.20150323150718.1"><vh>@file leoAtFile.py</vh></v>
 <v t="ekr.20161026193447.1"><vh>@file leoBackground.py</vh></v>
@@ -233,15 +234,15 @@
 <v t="ekr.20061031131434"><vh>@file leoKeys.py</vh></v>
 <v t="ekr.20031218072017.3749"><vh>@file leoMenu.py</vh></v>
 </v>
-<v t="ekr.20180225010644.1"><vh>Other files</vh>
-<v t="ekr.20180225010707.1"><vh>In leo-editor directory</vh>
-<v t="ekr.20240317061516.1"><vh>@clean ../../MANIFEST.in</vh></v>
+<v t="ekr.20180225010644.1" descendentVnodeUnknownAttributes="7d7100285805000000302e302e3071017d710258090000005f6d6f645f74696d6571034741da19472211a386735805000000302e302e3671047d710558090000005f6d6f645f74696d6571064741da1010eea5f5f9735807000000302e322e302e3071077d710858090000005f6d6f645f74696d6571094741d993336a17bbd9735807000000302e322e302e31710a7d710b58090000005f6d6f645f74696d65710c4741d9c2a018004dc9735807000000302e322e302e32710d7d710e58090000005f6d6f645f74696d65710f4741d8ffbc7f04100673752e"><vh>Other files</vh>
+<v t="ekr.20180225010707.1" descendentVnodeUnknownAttributes="7d7100285803000000302e3071017d710258090000005f6d6f645f74696d6571034741da19472211a386735803000000302e3671047d710558090000005f6d6f645f74696d6571064741da1010eea5f5f973752e"><vh>In leo-editor directory</vh>
+<v t="ekr.20240317061516.1" descendentVnodeUnknownAttributes="7d710058010000003071017d710258090000005f6d6f645f74696d6571034741da19472211a38673732e"><vh>@clean ../../MANIFEST.in</vh></v>
 <v t="ekr.20220222130955.1"><vh>@edit ../../.mypy.ini</vh></v>
 <v t="ekr.20231108150521.1"><vh>@edit ../../CONTRIBUTING.md</vh></v>
 <v t="ekr.20210302164046.1"><vh>@edit ../../launchLeo.py</vh></v>
 <v t="ekr.20240319094534.1"><vh>@edit ../../PKG-INFO.TXT</vh></v>
 <v t="ekr.20240206153029.1"><vh>@edit ../../README.md</vh></v>
-<v t="ekr.20240206161713.1"><vh>@clean ../../setup.cfg </vh></v>
+<v t="ekr.20240206161713.1" descendentVnodeUnknownAttributes="7d710058010000003071017d710258090000005f6d6f645f74696d6571034741da1010eea5f5f973732e"><vh>@clean ../../setup.cfg </vh></v>
 <v t="ekr.20150304125314.4"><vh>@file ../../leo_to_html.xsl</vh></v>
 <v t="ekr.20240227064614.1"><vh>@file ../../pyproject.toml</vh></v>
 <v t="ekr.20240406013108.1"><vh>@file ../../ruff.toml</vh></v>
@@ -256,11 +257,11 @@
 <v t="felix.20210621233316.1"><vh>@file leoserver.py</vh></v>
 <v t="ekr.20230203163544.1"><vh>@file tracing_utils.py</vh></v>
 </v>
-<v t="ekr.20180225010743.1"><vh>In leo/external</vh>
-<v t="ekr.20190607124533.1"><vh>@nopylint</vh>
-<v t="ekr.20220823195205.1"><vh>@clean ../external/leoftsindex.py</vh></v>
-<v t="ekr.20160123142722.1"><vh>@clean ../external/make_stub_files.cfg</vh></v>
-<v t="ekr.20180708145905.1"><vh>@clean ../external/py2cs_theory.md</vh>
+<v t="ekr.20180225010743.1" descendentVnodeUnknownAttributes="7d7100285805000000302e302e3071017d710258090000005f6d6f645f74696d6571034741d993336a17bbd9735805000000302e302e3171047d710558090000005f6d6f645f74696d6571064741d9c2a018004dc9735805000000302e302e3271077d710858090000005f6d6f645f74696d6571094741d8ffbc7f04100673752e"><vh>In leo/external</vh>
+<v t="ekr.20190607124533.1" descendentVnodeUnknownAttributes="7d7100285803000000302e3071017d710258090000005f6d6f645f74696d6571034741d993336a17bbd9735803000000302e3171047d710558090000005f6d6f645f74696d6571064741d9c2a018004dc9735803000000302e3271077d710858090000005f6d6f645f74696d6571094741d8ffbc7f04100673752e"><vh>@nopylint</vh>
+<v t="ekr.20220823195205.1" descendentVnodeUnknownAttributes="7d710058010000003071017d710258090000005f6d6f645f74696d6571034741d993336a17bbd973732e"><vh>@clean ../external/leoftsindex.py</vh></v>
+<v t="ekr.20160123142722.1" descendentVnodeUnknownAttributes="7d710058010000003071017d710258090000005f6d6f645f74696d6571034741d9c2a018004dc973732e"><vh>@clean ../external/make_stub_files.cfg</vh></v>
+<v t="ekr.20180708145905.1" descendentVnodeUnknownAttributes="7d710058010000003071017d710258090000005f6d6f645f74696d6571034741d8ffbc7f04100673732e"><vh>@clean ../external/py2cs_theory.md</vh>
 <v t="ekr.20180708152000.1"><vh>The problem</vh></v>
 <v t="ekr.20180708152018.1"><vh>Design</vh></v>
 <v t="ekr.20180708145905.6"><vh>Using TokenSync class</vh></v>
@@ -415,7 +416,7 @@
 <v t="tbrown.20171028115541.1"><vh>@file signal_manager.py</vh></v>
 </v>
 </v>
-<v t="ekr.20201012111545.1"><vh>Plugins</vh>
+<v t="ekr.20201012111545.1" descendentVnodeUnknownAttributes="7d7100285806000000302e31332e3071017d710258090000005f6d6f645f74696d6571034741d9fb0294194131735808000000302e31332e322e3071047d710558090000005f6d6f645f74696d6571064741d9587320d5fc9473752e"><vh>Plugins</vh>
 <v t="ekr.20090430075506.3"><vh>@file ../plugins/leoPluginNotes.txt</vh></v>
 <v t="EKR.20040517090508"><vh>Enable plugins using @enabled-plugins nodes</vh></v>
 <v t="ekr.20050303051035"><vh>Templates</vh>
@@ -561,14 +562,14 @@
 <v t="ekr.20140723122936.18152"><vh>@file ../plugins/importers/typescript.py</vh></v>
 <v t="ekr.20140723122936.18137"><vh>@file ../plugins/importers/xml.py</vh></v>
 </v>
-<v t="ekr.20180504192522.1"><vh>leo_babel</vh>
-<v t="ekr.20230624114517.1"><vh>@clean ../plugins/leo_babel/__init__.py</vh></v>
+<v t="ekr.20180504192522.1" descendentVnodeUnknownAttributes="7d7100285803000000302e3071017d710258090000005f6d6f645f74696d6571034741d9fb0294194131735805000000302e322e3071047d710558090000005f6d6f645f74696d6571064741d9587320d5fc9473752e"><vh>leo_babel</vh>
+<v t="ekr.20230624114517.1" descendentVnodeUnknownAttributes="7d710058010000003071017d710258090000005f6d6f645f74696d6571034741d9fb029419413173732e"><vh>@clean ../plugins/leo_babel/__init__.py</vh></v>
 <v t="ekr.20180504191650.36"><vh>examples</vh>
 <v t="bob.20170716135108.2"><vh>@file ../plugins/leo_babel/examples/slowOut.py</vh></v>
 <v t="bob.20170716135108.3"><vh>@file ../plugins/leo_babel/examples/slowOutNoFlush.py</vh></v>
 </v>
-<v t="ekr.20180504191650.42"><vh>tests</vh>
-<v t="ekr.20180504191650.68"><vh>@clean ../plugins/leo_babel/tests/__init__.py</vh></v>
+<v t="ekr.20180504191650.42" descendentVnodeUnknownAttributes="7d71005803000000302e3071017d710258090000005f6d6f645f74696d6571034741d9587320d5fc9473732e"><vh>tests</vh>
+<v t="ekr.20180504191650.68" descendentVnodeUnknownAttributes="7d710058010000003071017d710258090000005f6d6f645f74696d6571034741d9587320d5fc9473732e"><vh>@clean ../plugins/leo_babel/tests/__init__.py</vh></v>
 <v t="bob.20180206123613.1"><vh>@file ../plugins/leo_babel/tests/idle_time.py</vh></v>
 <v t="bob.20180205135005.1"><vh>@file ../plugins/leo_babel/tests/lib_test.py</vh></v>
 <v t="bob.20180125160225.1"><vh>@file ../plugins/leo_babel/tests/tests.py</vh></v>
@@ -1457,7 +1458,7 @@ c.k.simulateCommand('pylint')
 </t>
 <t tx="ekr.20160122104332.1">@language python
 </t>
-<t tx="ekr.20160123142722.1"># An example configuration file for make_stub_files.py.
+<t tx="ekr.20160123142722.1" _mod_time="4741d9c2a018004dc92e"># An example configuration file for make_stub_files.py.
 # By default, this is ~/stubs/make_stub_files.cfg.
 # Can be changed using the --config=path command-line option.
 
@@ -1555,9 +1556,9 @@ else:
 </t>
 <t tx="ekr.20180504191650.36"></t>
 <t tx="ekr.20180504191650.42"></t>
-<t tx="ekr.20180504191650.68"></t>
+<t tx="ekr.20180504191650.68" _mod_time="4741d9587320d5fc942e"></t>
 <t tx="ekr.20180504192522.1"></t>
-<t tx="ekr.20180708145905.1">@language rest
+<t tx="ekr.20180708145905.1" _mod_time="4741d8ffbc7f0410062e">@language rest
 @wrap
 
 This is the theory of operation document for py2cs.py. The most interesting aspect of this script is the TokenSync class. This class provides a reliable way of associating tokenizer tokens with ast nodes.
@@ -2923,7 +2924,7 @@ make_outline(d, top, topFlag=True)
 top.b = f"{{\n{textwrap.indent(top.b.strip(),' '*4)}\n}}\n"
 c.redraw(top)
     </t>
-<t tx="ekr.20220823195205.1">"""
+<t tx="ekr.20220823195205.1" _mod_time="4741d993336a17bbd92e">"""
 Stand alone GUI free index builder for Leo's full text search system::
 
   python leoftsindex.py &lt;file1&gt; &lt;file2&gt; &lt;file3&gt;...
@@ -3087,7 +3088,7 @@ writers = 'leo.unittests.plugins.test_writers'
 # f"{plugins}.test_plugins",
 # f"{plugins}.test_writers",
 </t>
-<t tx="ekr.20230624114517.1"></t>
+<t tx="ekr.20230624114517.1" _mod_time="4741d9fb02941941312e"></t>
 <t tx="ekr.20230720115916.1">g.cls()
 import leo.commands.editFileCommands as efc
 
@@ -3171,7 +3172,7 @@ print('done')</t>
 <t tx="ekr.20240107154430.1"># 79: PEP8 recommendation.</t>
 <t tx="ekr.20240204082420.1"></t>
 <t tx="ekr.20240204082924.1"></t>
-<t tx="ekr.20240206161713.1">@language ini
+<t tx="ekr.20240206161713.1" _mod_time="4741da1010eea5f5f92e">@language ini
 
 [bdist_wheel]
 
@@ -3317,7 +3318,7 @@ extend-ignore =
     # global `whatever` is unused: name is never assigned in scope.
     # F824
 </t>
-<t tx="ekr.20240317061516.1">@language python
+<t tx="ekr.20240317061516.1" _mod_time="4741da19472211a3862e">@language python
 
 # Order matters!
 
@@ -3325,7 +3326,7 @@ extend-ignore =
 graft leo
 
 global-exclude *.py[cod] *.__pycache__ *.so
-global-exclude *.mypy_cache, *.mypy_stubs, *.gitattributes, *.htmlcov
+global-exclude *mypy_cache *.mypy_cache, *.mypy_stubs, *.gitattributes, *.htmlcov
 
 # Add files in the top-level leo-editor folder.
 
@@ -3692,5 +3693,6 @@ if c.isChanged():
 
 os.system('mypy-modes.cmd')
 </t>
+<t tx="ekr.20250715195948.1"></t>
 </tnodes>
 </leo_file>
