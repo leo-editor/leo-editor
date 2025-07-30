@@ -133,7 +133,7 @@
 <v t="ekr.20180405171433.2" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>LeoDocs.leo</vh></v>
 <v t="ekr.20230301070404.1"><vh>LeoDist.leo</vh></v>
 <v t="ekr.20180405171433.3" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>Web docs</vh></v>
-<v t="ekr.20180828095843.1" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>Update versions.py in release branch</vh></v>
+<v t="ekr.20250730064836.1" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>Update version files in release branch</vh></v>
 <v t="ekr.20240321104936.1"><vh>Create pypi distro</vh></v>
 <v t="ekr.20190618104430.1" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>Merge release branch into master</vh></v>
 <v t="ekr.20190802115604.1" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>After-merge testing in master</vh></v>
@@ -1437,11 +1437,6 @@ git checkout master
 git tag -a v6.8.6 -m "Added v6.8.6 tag"
 git push --follow-tags
 </t>
-<t tx="ekr.20180828095843.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">leoVersion.py:
-- Update version constant.
-- Update static date.
-- Update date of the release, in &lt;&lt; version dates &gt;&gt; section.
-</t>
 <t tx="ekr.20181001112218.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- git checkout devel
 - git merge 6.8.6
 - update version in leoVersion.py.
@@ -1642,6 +1637,19 @@ Any glitch will require new filename *only* for the `.whl` file:
 - Do *not*use `.post1`: it won't work!
 - Do *not* change the filename of `.tar.gz` file.
 - Do *not* change `PKG-INFO.TXT` or Leo's version number!
+</t>
+<t tx="ekr.20250730064836.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">leoVersion.py:
+- Update version constant.
+- Update static date.
+- Update date of the release, in &lt;&lt; version dates &gt;&gt; section.
+
+Update versions in script files:
+- PKG-INFO.TXT
+- scripts/inspect_wheel.py
+- scripts/install_leo_from_pypi.py
+- scripts/install_leo_from_testpypi.py
+- scripts/install_leo_locally
+
 </t>
 <t tx="maphew.20180128212042.1">@language md
 @wrap
