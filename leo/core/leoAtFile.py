@@ -302,6 +302,24 @@ class AtFile:
         root_v = leoNodes.VNode(context=c)
         root = leoNodes.Position(root_v)
         FastAtRead(c, gnx2vnode={}).read_into_root(s, fn, root)
+    #@+node:ekr.20250724123631.1: *5* at.openAtLeoFile
+    @cmd('open-at-leo-file')
+    def openAtLeoFile(self, event: LeoKeyEvent = None) -> None:  # pragma: no cover
+        """
+        Open the outline given by the @leo node at c.p.
+        If the outline has already been loaded, switch to its tab.
+
+        Scripts should use c.makeLinkLeoFiles helper to make @leo files.
+        """
+        c, p = self.c, self.c.p
+        if not p.isAtLeoNode():
+            g.red('Please select an @leo node')
+            return
+        path = c.fullPath(p)
+        if g.os_path_exists(path):
+            g.openWithFileName(path, old_c=c)  # type:ignore
+        else:
+            g.red(f"file not found: {path}")
     #@+node:ekr.20041005105605.19: *5* at.openFileForReading & helper
     def openFileForReading(self, fromString: str = None) -> tuple[Optional[str], Optional[str]]:
         """
@@ -1355,7 +1373,9 @@ class AtFile:
         seen = set()
         files: list[Position] = []
         while p and p != after:
-            if p.isAtIgnoreNode() and not p.isAtAsisFileNode():
+            if p.isAtLeoNode():
+                p.moveToNodeAfterTree()
+            elif p.isAtIgnoreNode() and not p.isAtAsisFileNode():
                 # Honor @ignore in *body* text, but *not* in @asis nodes.
                 if p.isAnyAtFileNode():
                     c.ignored_at_file_nodes.append(p.h)
@@ -1415,9 +1435,9 @@ class AtFile:
         """
         at = self
         at.root = root
-        if p.isAtIgnoreNode():  # pragma: no cover
+        if p.isAtLeoNode() or p.isAtIgnoreNode():  # pragma: no cover
             # Should have been handled in findFilesToWrite.
-            g.trace(f"Can not happen: {p.h} is an @ignore node")
+            g.trace(f"Can not happen: unexpected node: {p.h}")
             return
         try:
             at.writePathChanged(p)

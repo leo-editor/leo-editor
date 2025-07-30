@@ -4,6 +4,7 @@
 #@+node:ekr.20040712045933: ** << leoCommands imports >>
 from __future__ import annotations
 from collections.abc import Callable
+import glob
 import json
 import os
 import re
@@ -3593,6 +3594,200 @@ class Commands:
         except Exception:
             g.es_exception()
             return False
+    #@+node:ekr.20250717132026.1: *4* c.makeLinkLeoFiles & helper
+    def makeLinkLeoFiles(self,
+        *,
+        extensions: list[str],  # List of file extensions for generated @<file> nodes.
+        top_directory: str,
+        kind: str = '@clean',  # Any @<file> type. @clean is recommended.
+        report_changed_at_clean_nodes: bool = True,  # Recommended.
+        sub_directories: list[str] = None,
+        top_outline_name: str = None,
+    ) -> None:
+        #@+<< c.makeLinkLeoFiles: docstring >>
+        #@+node:ekr.20250717132150.1: *5* << c.makeLinkLeoFiles: docstring >>
+        """
+        Create a **top-level outline** containing @leo links to *sub-outlines*.
+        Sub-outlines contain @<file> nodes to all files in the directory (and
+        sub-directories) of the given list of extensions.
+
+        Scripts calling this method need only specify the value of the following kwargs:
+
+        - extensions:       List of file extensions for generated @<file> nodes.
+        - kind:             One of @auto, @clean, @file, etc.
+        - report_changed_at_clean_nodes:
+                            The value to use for @bool report-changed-at-clean-nodes
+                            in all generated outlines.
+        - sub_directories:  An optional list of sub-directories in which to create sub-outlines.
+                            Relative paths are relative to the top-level directory.
+                            If the list is empty, it defaults to all direct directories of
+                            the top-level directory.
+        - top_directory:    The full, absolute, path to the top-level directory.
+        - top_outline_name: The name of the top-level link outline.
+        """
+        #@-<< c.makeLinkLeoFiles: docstring >>
+        c = self
+        #@+<< return if initial checks fail >>
+        #@+node:ekr.20250725152511.1: *5* << return if initial checks fail >>
+        if (
+            not top_directory
+            or not os.path.isdir(top_directory)
+            or not os.path.isabs(top_directory)
+            or not os.path.exists(top_directory)
+        ):
+            g.es_print(f"Not an absolute directory: {top_directory!r}")
+            return
+        if not isinstance(extensions, (list, tuple)):
+            g.es_print(f"Invalid list of extensions: {extensions!r}")
+            return
+        #@-<< return if initial checks fail >>
+        #@+<< make sure that all extensions start with '.' >>
+        #@+node:ekr.20250729064219.1: *5* << make sure that all extensions start with '.' >>
+        extensions = [
+            (z if z.startswith('.') else f".{z}")
+            for z in extensions
+        ]
+        #@-<< make sure that all extensions start with '.' >>
+        if not top_outline_name:
+            top_outline_name = f"{os.path.basename(top_directory)}_links.leo"
+        #@+<< calculate the list of subdirectories >>
+        #@+node:ekr.20250725152709.1: *5* << calculate the list of subdirectories >>
+        # Default to all direct sub-directories of the top directory.
+        if not sub_directories:
+            sub_directories = [
+                z for z in os.listdir(top_directory)
+                if os.path.isdir(os.path.join(top_directory, z))
+            ]
+        #@-<< calculate the list of subdirectories >>
+        g.es_print(
+            f"Scanning {len(sub_directories)} directories.\n"
+            'This may take awhile.'
+        )
+        # The main loop.
+        old_p = c.p
+        try:
+            t1 = time.process_time()
+            c.enableRedrawFlag = False
+            all_files: list[str] = [top_outline_name]  # List of paths.
+            top_links: list[str] = []
+            for sub_directory in sub_directories:
+                sub_directory = os.path.join(top_directory, sub_directory)
+                assert os.path.exists(sub_directory), repr(sub_directory)
+                files = []
+                #@+<< find files in sub_directory >>
+                #@+node:ekr.20250725163431.1: *5* << find files in sub_directory >>
+                # Set files to the list of full, absolute, files in subdirectory.
+                for ext in extensions:
+                    new_files = glob.glob(
+                        f"{sub_directory}{os.sep}**{os.sep}*{ext}",
+                        recursive=True,
+                    )
+
+                    # _create_link_files converts these full paths to relative paths.
+                    files.extend([
+                        z for z in new_files
+                        if os.path.isfile(z) and z not in files
+                    ])
+                #@-<< find files in sub_directory >>
+                if files:
+                    sub_outline_name = f"{g.shortFileName(sub_directory)}_links.leo"
+                    #@+<< add link to the sub outline to top_links >>
+                    #@+node:ekr.20250725163807.1: *5* << add link to the sub outline to top_links >>
+                    abs_path = f"{sub_directory}{os.sep}{sub_outline_name}"
+                    rel_link = os.path.relpath(abs_path, start=top_directory)
+                    top_links.append(rel_link.replace('\\', '/'))
+
+                    #@-<< add link to the sub outline to top_links >>
+                    #@+<< compute the sub outline's back link >>
+                    #@+node:ekr.20250725165018.1: *5* << compute the sub outline's back link >>
+                    # Compute the relative back link for the sub-outline.
+                    abs_back_link = f"{top_directory}{os.sep}{top_outline_name}"
+                    rel_back_link = os.path.relpath(abs_back_link, start=sub_directory)
+                    back_link = [rel_back_link.replace('\\', '/')]
+                    #@-<< compute the sub outline's back link >>
+                    #@+<< create the sub outline >>
+                    #@+node:ekr.20250725152555.1: *5* << create the sub outline >>
+                    # Generate the sub-outline
+                    self._create_link_file(
+                        directory=sub_directory,
+                        extensions=extensions,
+                        files=files,
+                        kind=kind,
+                        links=back_link,
+                        outline_name=f"{g.shortFileName(sub_directory)}_links.leo",
+                        report_changed_at_clean_nodes=report_changed_at_clean_nodes,
+                    )
+                    #@-<< create the sub outline >>
+                    all_files.append(sub_outline_name)
+            #@+<< create the top-level outline >>
+            #@+node:ekr.20250725152626.1: *5* << create the top-level outline >>
+            self._create_link_file(
+                directory=top_directory,
+                extensions=extensions,
+                files=None,
+                kind='@leo',
+                links=top_links,
+                outline_name=top_outline_name,
+                report_changed_at_clean_nodes=report_changed_at_clean_nodes,
+            )
+            #@-<< create the top-level outline >>
+            all_files = sorted(list(set(all_files)))
+            if not g.unitTesting:
+                t2 = time.process_time()
+                g.es_print(f"Done! Created {len(all_files)} outlines in {t2 - t1:3.2} sec")
+        finally:
+            c.selectPosition(old_p)
+            c.enableRedrawFlag = True
+            c.redraw()
+    #@+node:ekr.20250717132857.1: *5* c._create_link_file
+    def _create_link_file(self,
+        directory: str,
+        extensions: list[str],
+        files: list[str],
+        kind: str,
+        links: list[str],
+        outline_name: str,
+        report_changed_at_clean_nodes: bool,
+    ) -> None:
+        """
+        The caller is responsible for making links relative to the top-level directory.
+
+        This method creates @<file> nodes whose paths are relative to *this* directory.
+        """
+        # pylint: disable=no-member
+        assert os.path.exists(directory), directory
+
+        # Create an @settings tree containing one @history-list node.
+        c2 = g.app.newCommander(fileName=outline_name, gui=g.app.nullGui)
+
+        # Create the @settings tree.
+        root = c2.rootPosition()
+        root.h = '@settings'
+        report_p = root.insertAsLastChild()
+        report_s = 'True' if report_changed_at_clean_nodes else 'False'
+        report_p.h = f"@bool report-changed-at-clean-nodes = {report_s}"
+        history_p = root.insertAsLastChild()
+        history_p.h = '@data history-list'
+        history_p.b = 'open-at-leo-file\n'
+        c2.selectPosition(root)
+
+        # Create @leo nodes.
+        for link in links:
+            p = c2.lastTopLevel().insertAfter()
+            p.h = f"@leo {link}"
+
+        # Create @<file> nodes for each file.
+        for path in files or []:
+            relative_path = os.path.relpath(path, start=directory).replace('\\', '/')
+            p = c2.lastTopLevel().insertAfter()
+            p.h = f"{kind} {relative_path}"
+
+        # Create the file!
+        outline_path = os.path.join(directory, outline_name)
+        c2.clearChanged()  # Essential!
+        c2.saveTo(fileName=outline_path, silent=True)
+        c2.redraw()
+        c2.close()
     #@+node:ekr.20031218072017.2925: *4* c.markAllAtFileNodesDirty
     def markAllAtFileNodesDirty(self, event: LeoKeyEvent = None) -> None:
         """Mark all @file nodes as changed."""
@@ -3622,6 +3817,77 @@ class Commands:
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
+    #@+node:ekr.20250717080554.1: *4* c.openAllLinkedFiles (transitive closure)
+    def openAllLinkedFiles(self, gui: LeoGui = None) -> list[Commands]:
+        """
+        Open the transitive closure of all outlines reachable from any @leo
+        node in this outline.
+
+        Return the list of newly-opened commanders.
+
+        Note: gui eventually defaults to g.app.gui.
+        """
+        c = self
+
+        t1 = time.process_time()
+
+        # Using the Qt gui will likely overwhelm Leo!
+        if gui is None:
+            gui = g.app.nullGui
+
+        # The main loop.
+        result: list[Commands] = []
+        scanned: list[str] = []  # List of paths already scanned.
+        todo: list[str] = []
+
+        def scan(fileName: str) -> None:
+            """
+            Add all paths not already seen to the todo list.
+            Add all newly-opened commanders to the result list.
+            """
+            if fileName in scanned:
+                return
+            scanned.append(fileName)
+            g.es_print('Scan', fileName)
+            for p in c.all_unique_positions():
+                if p.isAtLeoNode():
+                    fileName = p.atLeoNodeName()
+                    if fileName not in todo and fileName not in scanned:
+                        c2 = g.openWithFileName(fileName, gui=gui)
+                        todo.append(fileName)
+                        assert c2 not in result
+                        result.append(c2)
+
+        # Create the initial to-do list.
+        scan(c.fileName())
+
+        # Rescan until the to-do list is empty.
+        while todo:
+            fileName = todo.pop()
+            scan(fileName)
+
+        if not g.unitTesting:
+            t2 = time.process_time()
+            kind = 'hidden ' if gui == g.app.nullGui else ''
+            g.es_print(f"Done! Opened {len(result)} {kind}outlines in {t2 - t1:3.2} sec")
+            g.printObj(scanned, tag='Scanned')
+            g.printObj(result, tag='Result')
+        return result
+    #@+node:ekr.20031218072017.2081: *4* c.openRecentFile
+    def openRecentFile(self, event: LeoKeyEvent = None, fn: str = None) -> None:
+        """
+        c.openRecentFile: This is not a command!
+
+        This method is a helper called only from the recentFilesCallback in
+        rf.createRecentFilesMenuItems.
+        """
+        c = self
+        if g.doHook("recentfiles1", c=c, p=c.p, v=c.p, fileName=fn):
+            return
+        c2 = g.openWithFileName(fn, old_c=c)
+        if c2:
+            g.app.makeAllBindings()
+            g.doHook("recentfiles2", c=c2, p=c2.p, v=c2.p, fileName=fn)
     #@+node:ekr.20031218072017.2823: *4* c.openWith
     def openWith(self, event: LeoKeyEvent = None, d: dict[str, Position] = None) -> None:
         """
@@ -3662,21 +3928,6 @@ class Commands:
             else:
                 g.internalError(f"no gnx for vnode: {v}")
         c.fileCommands.gnxDict = d
-    #@+node:ekr.20031218072017.2081: *4* c.openRecentFile
-    def openRecentFile(self, event: LeoKeyEvent = None, fn: str = None) -> None:
-        """
-        c.openRecentFile: This is not a command!
-
-        This method is a helper called only from the recentFilesCallback in
-        rf.createRecentFilesMenuItems.
-        """
-        c = self
-        if g.doHook("recentfiles1", c=c, p=c.p, v=c.p, fileName=fn):
-            return
-        c2 = g.openWithFileName(fn, old_c=c)
-        if c2:
-            g.app.makeAllBindings()
-            g.doHook("recentfiles2", c=c2, p=c2.p, v=c2.p, fileName=fn)
     #@+node:ekr.20180508111544.1: *3* c.Git
     #@+node:ekr.20180510104805.1: *4* c.diff_file
     def diff_file(self, fn: str, rev1: str = 'HEAD', rev2: str = '') -> None:

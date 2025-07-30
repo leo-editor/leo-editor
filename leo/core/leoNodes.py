@@ -1028,6 +1028,9 @@ class Position:
     def atFileNodeName(self) -> str:
         return self.v.atFileNodeName()
 
+    def atLeoNodeName(self) -> str:
+        return self.v.atLeoNodeName()
+
     def atNoSentinelsFileNodeName(self) -> str:
         return self.v.atNoSentinelsFileNodeName()
 
@@ -1070,6 +1073,9 @@ class Position:
 
     def isAtIgnoreNode(self) -> bool:
         return self.v.isAtIgnoreNode()
+
+    def isAtLeoNode(self) -> bool:
+        return self.v.isAtLeoNode()
 
     def isAtNoSentinelsFileNode(self) -> bool:
         return self.v.isAtNoSentinelsFileNode()
@@ -2124,9 +2130,12 @@ class VNode:
     #@+node:ekr.20031218072017.3350: *4* v.anyAtFileNodeName
     def anyAtFileNodeName(self) -> str:
         """Return the file name following an @file node or an empty string."""
+        v = self
         return (
-            self.findAtFileName(g.app.atAutoNames) or
-            self.findAtFileName(g.app.atFileNames))
+            v.findAtFileName(g.app.atAutoNames)
+            or v.findAtFileName(g.app.atFileNames)
+            or v.atLeoNodeName()
+        )
     #@+node:ekr.20031218072017.3348: *4* v.at...FileNodeName
     # These return the filename following @xxx, in v.headString.
     # Return the the empty string if v is not an @xxx node.
@@ -2156,6 +2165,10 @@ class VNode:
 
     def atJupytextNodeName(self) -> str:
         names = ("@jupytext",)
+        return self.findAtFileName(names)
+
+    def atLeoNodeName(self) -> str:
+        names = ("@leo",)
         return self.findAtFileName(names)
 
     def atNoSentinelsFileNodeName(self) -> str:
@@ -2190,7 +2203,7 @@ class VNode:
     #@+node:ekr.20040326031436: *4* v.isAnyAtFileNode
     def isAnyAtFileNode(self) -> bool:
         """Return True if v is any kind of @file or related node."""
-        return bool(self.anyAtFileNodeName())
+        return bool(self.anyAtFileNodeName() or self.atLeoNodeName())
     #@+node:ekr.20040325073709: *4* v.isAt...FileNode
     def isAtAutoNode(self) -> bool:
         return bool(self.atAutoNodeName())
@@ -2212,6 +2225,9 @@ class VNode:
 
     def isAtRstFileNode(self) -> bool:
         return bool(self.atRstFileNodeName())
+
+    def isAtLeoNode(self) -> bool:
+        return bool(self.atLeoNodeName())
 
     def isAtNoSentinelsFileNode(self) -> bool:
         return bool(self.atNoSentinelsFileNodeName())
