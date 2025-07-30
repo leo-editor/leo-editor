@@ -482,7 +482,7 @@ class editWatcher:
         if not self._widget:
             self._widget = w = QtWidgets.QLineEdit(str(self.value))
             w.textChanged.connect(self.updateValue)
-            self._widget.focusOutEvent = self.lostFocus
+            self._widget.focusOutEvent = self.lostFocus  # type:ignore
             # see lostFocus()
         return self._widget
 

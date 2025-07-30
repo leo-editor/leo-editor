@@ -630,7 +630,7 @@ class LayoutCacheWidget(QWidget):
         # In building the SPLITTER dict we replace the placeholder
         # by VR3_OBJ_NAME if it exists, otherwise VR_OBJ_NAME.
         SPLITTERS: dict[str, str] = dict()
-        for k, v in layout['SPLITTERS'].items():
+        for k, v in layout['SPLITTERS'].items():  # type:ignore
             if k == VRX_PLACEHOLDER_NAME:
                 k = VR3_OBJ_NAME if has_vr3 else VR_OBJ_NAME
             SPLITTERS[k] = v
@@ -646,7 +646,7 @@ class LayoutCacheWidget(QWidget):
                 self.created_splitter_dict[name] = splitter
 
         SPLITTER_DICT: Dict[str, QSplitter] = OrderedDict()
-        for name in ORIENTATIONS:
+        for name in ORIENTATIONS:  # type:ignore
             splitter = self.find_splitter_by_name(name)
             if splitter is not None and SPLITTER_DICT.get(name, None) is None:
                 SPLITTER_DICT[name] = splitter
@@ -700,7 +700,7 @@ class LayoutCacheWidget(QWidget):
         # {'main_splitter':Orientation.Horizontal...}
 
         for splitter_name, splitter in SPLITTER_DICT.items():
-            orientation = ORIENTATIONS[splitter_name]
+            orientation = ORIENTATIONS[splitter_name]  # type:ignore
             splitter.setOrientation(orientation)
         #@-<< set default orientations >>
         #@+<< move widgets to targets >>

@@ -598,7 +598,7 @@ class todoController:
                 if prog != '':
                     prog = int(prog or 0)
                     use = prog // 10 * 10
-                    use = 'prg%03d.png' % use
+                    use = 'prg%03d.png' % use  # type:ignore
                     com.appendImageDictToList(icons, g.os_path_join('cleo', use),
                         2, on='vnode', cleoIcon='1', where=self.prog_location)
             elif which == 'duedate':

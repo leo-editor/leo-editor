@@ -2772,7 +2772,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         menu = self.getMenu('openwith')
         if not menu:
             menu = self.new_menu(parent, tearoff=False, label=label)
-            menu.insert_cascade(parent, index, label, menu, underline=amp_index)
+            menu.insert_cascade(parent, index, label, menu, underline=amp_index)  # type:ignore
         return menu
     #@+node:ekr.20110605121601.18358: *5* LeoQtMenu.disable/enableMenu (not used)
     def disableMenu(self, menu: QMenu, name: str) -> None:

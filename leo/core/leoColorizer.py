@@ -42,9 +42,9 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoNodes import Position, VNode
     from leo.core.leoGlobals import GeneralSetting
     try:
-        from typing import Self
+        from typing import Self  # Introduced in Python 3.11
     except Exception:
-        Self = Any
+        Self = Any  # type:ignore
     KWargs = Any
     Lexer = Callable
     QWidget = QtWidgets.QWidget
