@@ -1576,14 +1576,6 @@ python -m pip uninstall leo
 
 This checklist may seem daunting. In most cases errors are harmless, so don't despair.
 
-Step 0: Update the version numbers in all build files:
-
-- pyproject.toml
-- scripts/inspect_wheel.py
-- scripts/install_leo_locally.py
-- scripts/install_leo_from_pypi.py
-- scripts/install_leo_from_testpypi.py
-
 Step 1: Create and test the distribution files in leo/dist:
 
 - Do *not* change `PKG-INFO.TXT` if there are problems with file name in later steps!
@@ -1645,6 +1637,7 @@ Any glitch will require new filename *only* for the `.whl` file:
 
 Update versions in script files:
 - PKG-INFO.TXT
+- pyproject.toml
 - scripts/inspect_wheel.py
 - scripts/install_leo_from_pypi.py
 - scripts/install_leo_from_testpypi.py
