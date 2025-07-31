@@ -847,8 +847,8 @@ class AstDumper:  # pragma: no cover
             fstrings, strings = 0, 0
             for z in values:
                 if g.python_version_tuple < (3, 12, 0):
-                    assert isinstance(z, (ast.FormattedValue, ast.Str))
-                    if isinstance(z, ast.Str):
+                    assert isinstance(z, (ast.FormattedValue, ast.Str))  # pylint: disable=no-member
+                    if isinstance(z, ast.Str):  # pylint: disable=no-member
                         results.append(z.s)
                         strings += 1
                     else:
@@ -864,7 +864,7 @@ class AstDumper:  # pragma: no cover
                         fstrings += 1
             val = f"{strings} str, {fstrings} f-str"
         elif class_name == 'keyword':
-            if isinstance(node.value, ast.Str):
+            if isinstance(node.value, ast.Str):  # pylint: disable=no-member
                 val = f"arg={node.arg}..Str.value.s={node.value.s}"
             elif isinstance(node.value, ast.Name):
                 val = f"arg={node.arg}..Name.value.id={node.value.id}"
@@ -877,7 +877,7 @@ class AstDumper:  # pragma: no cover
         elif class_name == 'Num':
             val = f"n={node.n}"
         elif class_name == 'Starred':
-            if isinstance(node.value, ast.Str):
+            if isinstance(node.value, ast.Str):  # pylint: disable=no-member
                 val = f"s={node.value.s}"
             elif isinstance(node.value, ast.Name):
                 val = f"id={node.value.id}"
@@ -1013,7 +1013,7 @@ class Fstringify:
         ReassignTokens().reassign(filename, tokens, tree)
 
         # Main pass.
-        string_node = ast.Str if g.python_version_tuple < (3, 12, 0) else ast.Constant
+        string_node = ast.Str if g.python_version_tuple < (3, 12, 0) else ast.Constant  # pylint: disable=no-member
         for node in ast.walk(tree):
             if (
                 isinstance(node, ast.BinOp)
@@ -1126,7 +1126,7 @@ class Fstringify:
         Replace all the relevant tokens with a single new 'string' token.
         """
         trace = False
-        string_node = ast.Str if g.python_version_tuple < (3, 12, 0) else ast.Constant
+        string_node = ast.Str if g.python_version_tuple < (3, 12, 0) else ast.Constant  # pylint: disable=no-member
         assert isinstance(node.left, string_node), (repr(node.left), g.callers())
 
         # Careful: use the tokens, not Str.s or Constant.value. This preserves spelling.
@@ -1323,7 +1323,7 @@ class Fstringify:
         """
         trace = False
         # First, Try the most common cases.
-        string_node = ast.Str if g.python_version_tuple < (3, 12, 0) else ast.Constant
+        string_node = ast.Str if g.python_version_tuple < (3, 12, 0) else ast.Constant  # pylint: disable=no-member
         if isinstance(node, string_node):
             token_list = get_node_token_list(node, self.tokens)
             return [token_list]
@@ -1430,7 +1430,7 @@ class Fstringify:
         # Replace the node.
         new_node: ast.AST
         if g.python_version_tuple < (3, 12, 0):
-            new_node = ast.Str(value=s)  # pylint: disable=deprecated-class
+            new_node = ast.Str(value=s)  # pylint: disable=deprecated-class,no-member
         else:
             new_node = ast.Constant(value=s)
         replace_node(new_node, node)
@@ -2154,7 +2154,7 @@ class Orange:  # Orange is the new Black.
             """True if node is any expression other than += number."""
             if isinstance(node, (ast.BinOp, ast.Call, ast.IfExp)):
                 return True
-            num_node = ast.Num if g.python_version_tuple < (3, 12, 0) else ast.Constant
+            num_node = ast.Num if g.python_version_tuple < (3, 12, 0) else ast.Constant  # pylint: disable=no-member
             return (
                 isinstance(node, ast.UnaryOp)
                 and not isinstance(node.operand, num_node)
@@ -3429,7 +3429,7 @@ class TokenOrderGenerator:
         self.visit(node.value)
         self.op('.')
         self.name(node.attr)  # A string.
-    #@+node:ekr.20191113063144.30: *6* tog.Bytes
+    #@+node:ekr.20191113063144.30: *6* tog.Bytes (Removed in Python 3.14)
     def do_Bytes(self, node: Node) -> None:
 
         """
@@ -3518,7 +3518,7 @@ class TokenOrderGenerator:
         for z in node.generators or []:
             self.visit(z)
             self.token('op', '}')
-    #@+node:ekr.20191113063144.37: *6* tog.Ellipsis
+    #@+node:ekr.20191113063144.37: *6* tog.Ellipsis (Removed in Python 3.14)
     def do_Ellipsis(self, node: Node) -> None:  # pragma: no cover (Does not exist for python 3.8+)
 
         self.op('...')
@@ -3551,6 +3551,15 @@ class TokenOrderGenerator:
     def do_Index(self, node: Node) -> None:  # pragma: no cover (deprecated)
 
         self.visit(node.value)
+    #@+node:ekr.20250731052836.1: *6* tog.Interpolation (New in Python 3.14)
+    # Interpolation(expr value, constant str, int conversion, expr? format_spec)
+
+    def do_Interpolation(self, node: Node) -> None:
+        ### Experimental.
+        self.visit(node.value)
+        self.visit(node.str)
+        self.visit(node.conversion)
+        self.visit(node.format_spec)
     #@+node:ekr.20191113063144.41: *6* tog.JoinedStr
     # JoinedStr(expr* values)
 
@@ -3632,7 +3641,7 @@ class TokenOrderGenerator:
         else:
             self.op(':')
             self.visit(step)
-    #@+node:ekr.20191113063144.50: *6* tog.Str (deprecated)
+    #@+node:ekr.20191113063144.50: *6* tog.Str (Removed in Python 3.14)
     # DeprecationWarning: ast.Str is deprecated and will be removed in Python 3.14;
     # use ast.Constant instead
 
@@ -3650,6 +3659,16 @@ class TokenOrderGenerator:
         self.op('[')
         self.visit(node.slice)
         self.op(']')
+    #@+node:ekr.20250731051236.1: *6* tog.TemplateStr (New in Python 3.14)
+    # TemplateStr(expr* values)
+
+    def do_TemplateStr(self, node: Node) -> None:
+
+        # Do not call tog.string_helper here.
+        # Neither implicit nor explicit contcantenation with str is allowed.
+
+        ### Experimental.
+        self.visit(node.values)
     #@+node:ekr.20191113063144.52: *6* tog.Tuple
     # Tuple(expr* elts, expr_context ctx)
 
