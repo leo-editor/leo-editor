@@ -1,6 +1,5 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20130302121602.10208: * @file leoDebugger.py
-
 # Disable all mypy errors.
 # type:ignore
 
@@ -178,8 +177,11 @@ class Xdb(pdb.Pdb, threading.Thread):
         self.saved_traceback = None
     #@+node:ekr.20181002053718.1: *3* Overrides
     #@+node:ekr.20190108040329.1: *4* xdb.checkline (overrides Pdb)
-    def checkline(self, path: str, n: int):
+    def checkline(self, path: str, n: int, module_globals=None) -> bool:
+        # pylint: disable=unexpected-keyword-arg
         try:
+            if g.python_version_tuple >= (3, 14, 0):  # Python 3.14+
+                return pdb.Pdb.checkline(self, path, n, module_globals=module_globals)
             return pdb.Pdb.checkline(self, path, n)
         except AttributeError:
             return False
