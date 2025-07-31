@@ -30,6 +30,7 @@ packages = [
     "leo.Icons.dark.Icons",
     "leo.Icons.file_icons",
     "leo.Icons.light",
+    "leo.Icons.plusminus",
     "leo.Icons.recorder",
     "leo.Icons.transparent.boxes",
     "leo.Icons.transparent.boxes.black",
@@ -235,7 +236,7 @@ packages = [
 
 [project]
 requires-python = ">= 3.9"
-version = "6.8.5"  # No space.
+version = "6.8.6"  # No space.
 name = "leo"
 
 #@+<< developer info >>

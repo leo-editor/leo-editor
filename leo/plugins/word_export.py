@@ -89,7 +89,7 @@ def writeNodeAndTree(c, word, header_style, level,
         child = vnode.nthChild(i)
         h = child.h
         h = g.toEncodedString(h, encoding, reportErrors=True)
-        doPara(word, "%s %s" % (thishead, h), "%s %d" % (header_style, min(level, maxlevel)))
+        doPara(word, "%s %s" % (thishead, h), "%s %d" % (header_style, min(level, maxlevel)))  # type:ignore
         writeNodeAndTree(c, word, header_style, level + 1, maxlevel, usesections, thishead, child)
 #@+node:EKR.20040517075715.19: ** word-export-export
 @g.command('word-export-export')

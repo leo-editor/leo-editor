@@ -120,7 +120,7 @@ class LeoReader(ContentHandler):
         """Set ivars"""
         super().__init__(*args, **kwargs)
         self.root: Any = LeoNode()
-        self.root.h = 'ROOT'
+        self.root.h = 'ROOT'  # type:ignore
         # changes type from [] to str, done by endElement() for other vnodes
 
         self.cur: Any = self.root

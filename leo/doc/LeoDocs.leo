@@ -2517,11 +2517,8 @@
 </v>
 </v>
 </v>
-<v t="ekr.20060620094033" descendentVnodeUnknownAttributes="7d7100580a000000302e302e31302e302e3371017d710258090000007374725f6174696d657103580c000000313337363431323238302e30710473732e"></v>
 <v t="ekr.20250728124612.1"></v>
 <v t="ekr.20250728123954.1"></v>
-<v t="ekr.20100806170836.4411"></v>
-<v t="ekr.20250729083112.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -33241,10 +33238,10 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 
 - Read only *unchanged* `@clean` nodes: a huge performance boost!
 - Support `@leo &lt;path&gt;;` nodes.
+  See https://leo-editor.github.io/leo-editor/directives.html#leo-directives
   - The `open-at-leo-file` command opens the given outline.
   - The `c.makeLinkLeoFiles` method helps scripts create a top-level
     outline containing links to sub-outlines.
-  See xxx for full documentation.
 - Support for virtual python environments: a long-awaited update for LeoInteg!
 - Add a theme file for SwotMoknokai.
 
