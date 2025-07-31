@@ -857,7 +857,7 @@ class AstDumper:  # pragma: no cover
                 else:
                     assert isinstance(z, (ast.FormattedValue, ast.Constant))
                     if isinstance(z, ast.Constant):
-                        results.append(z.value)
+                        results.append(z.value)  # type:ignore
                         strings += 1
                     else:
                         results.append(z.__class__.__name__)

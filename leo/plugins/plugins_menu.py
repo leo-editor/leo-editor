@@ -160,7 +160,7 @@ def add_menu_from_settings(c: Cmdr) -> None:
         if kind.startswith('@menu'):
             name = kind[len('@menu') :].strip().strip('&')
             if name.lower() == 'plugins':
-                table = []
+                table: list[Any] = []
                 for kind2, val21, val22 in val:
                     if kind2 == '@item':
                         # Similar to createMenuFromConfigList.
