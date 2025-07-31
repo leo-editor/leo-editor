@@ -11,10 +11,10 @@ from leo.commands.baseCommands import BaseEditCommandsClass
 
 if TYPE_CHECKING:  # pragma: no cover
     try:
-        from typing import Self
+        from typing import Self  # Python 3.11 introduced the Self annotation.
     except Exception:
         from typing import Any
-        Self = Any
+        Self = Any  # type:ignore
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position

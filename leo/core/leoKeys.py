@@ -2272,7 +2272,7 @@ class KeyHandlerClass:
                 tag = bi.kind
                 pane = bi.pane
                 if stroke and not pane.endswith('-mode'):
-                    k.bindKey(pane, stroke, command, commandName, tag=tag)
+                    k.bindKey(pane, stroke, command, commandName, tag=tag)  # type:ignore
     #@+node:ekr.20061031131434.103: *4* k.makeMasterGuiBinding
     def makeMasterGuiBinding(self, stroke: Stroke, w: Wrapper = None) -> None:
         """Make a master gui binding for stroke in pane w, or in all the standard widgets."""
