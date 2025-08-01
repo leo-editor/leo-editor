@@ -3569,27 +3569,25 @@ class TokenOrderGenerator:
     def do_Interpolation(self, node: Node) -> None:
 
         # value is any expression node (such as a literal, a variable, or a function call).
-        self.op('{')
         self.visit(node.value)
+
+        # Handle node.str
+        next = self.find_next_non_ws_token()
+        if (next.kind, next.value) == ('op', ':'):
+            self.op(':')
+            self.token('name', node.str)
+
+        # Handle the conversion.
+        for n, name in ((97, 'a'), (114, 'r'), (115, 's')):
+            if node.conversion == n:
+                self.op('!')
+                self.name(name)
+                break
+
+        # format_spec is a JoinedStr or None.
+        self.visit(node.format_spec)
         self.op('}')
 
-        # str is a constant containing the text of the interpolation expression.
-        # There is no do_str visitor. Do not call tog.string_helper!
-
-        # conversion is an integer:
-        #   -1: no conversion
-        #  115: !s string conversion
-        #  114: !r repr conversion
-        #   97: !a ascii conversion
-
-        ### To do.
-
-        # format_spec is a JoinedStr node representing the formatting of the value,
-        # or None if no format was specified.
-
-        # Both conversion and format_spec can be set at the same time.
-
-        self.visit(node.format_spec)
     #@+node:ekr.20191113063144.41: *6* tog.JoinedStr
     # JoinedStr(expr* values)
 
@@ -3695,23 +3693,30 @@ class TokenOrderGenerator:
 
     def do_TemplateStr(self, node: Node) -> None:
 
-        if 0:
-            print('')
-            g.printObj(node.values, tag=g.my_name())
+        def expect(kind: str, val: Any) -> str:
+            return f"Expected: {kind}, got {val!r}"
 
         # Eat the 'tstring-start' token.
         token = self.find_next_non_ws_token()
-        assert token.kind == 'tstring_start', f"Expecting tstring_start: {token!r}"
+        assert token.kind == 'tstring_start', expect('tstring_start', token)
         self.token(token.kind, token.value)
 
         for inner_node in node.values:
+
+
             if isinstance(inner_node, ast.Constant):
-                # Don't call tog.string_helper here!
+                # Don't call tog.string_helper!
                 token = self.find_next_non_ws_token()
-                assert token.kind == 'tstring_middle', f"Expecting tstring_middle: {token!r}"
+                assert token.kind == 'tstring_middle', expect('tstring_middle', token)
                 self.token(token.kind, token.value)
+
+                # Skip '{' or '}' if it's next.
+                next = self.find_next_non_ws_token()
+                for next_val in ('{', '}'):
+                    if (next.kind, next.value) == ('op', next_val):
+                        self.op(next_val)
             else:
-                assert isinstance(inner_node, ast.Interpolation), f"Expecting Interpolation: {inner_node!r}"
+                assert isinstance(inner_node, ast.Interpolation), expect('ast.Interpolation', node)
                 self.visit(inner_node)
 
         # Eat the tstring_end token.

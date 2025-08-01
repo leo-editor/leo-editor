@@ -786,8 +786,12 @@ class TestTOG(BaseTest):
     #@+node:ekr.20250801094324.1: *5* test_tstrings
     def test_tstrings(self):
 
+        # All examples are from PEP750: https://peps.python.org/pep-0750/
         table = (
-            'template: Template = t"Hello {name}"',
+            # 'template1: Template = t"Hello {name}"',  # Plain.
+            # 'template2 = t"Hello {name!r}"',  # Conversion.
+            'template3 = t"Value: {value:.2f}"',  # Format.
+            # 'template4 = t"Value: {value:.{precision}f}"',  # Format.
         )
         debug_list = [
             # 'sync',  # Trace tog.token.
