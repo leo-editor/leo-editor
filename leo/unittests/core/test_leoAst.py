@@ -782,6 +782,20 @@ class TestTOG(BaseTest):
         f"<LT>'':*^<LT>1:<LT>1<RT><RT><RT>"
         """.replace('<LT>', '{').replace('<RT>', '}')
         self.make_data(contents)
+    #@+node:ekr.20250801094256.1: *4* TestTOG.t-strings...
+    #@+node:ekr.20250801094324.1: *5* test_tstrings
+    def test_tstrings(self):
+
+        table = (
+            'template: Template = t"Hello {name}"',
+        )
+        debug_list = [
+            # 'sync',  # Trace tog.token.
+            # 'tokens',
+            # 'tree',
+        ]
+        for contents in table:
+            self.make_data(contents, debug_list=debug_list)
     #@+node:ekr.20191227052446.32: *4* TestTOG.If...
     #@+node:ekr.20191227052446.33: *5* test_from leoTips.py
     def test_if1(self):

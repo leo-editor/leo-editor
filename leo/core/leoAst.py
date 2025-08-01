@@ -437,13 +437,14 @@ if 1:  # pragma: no cover
         # Making 'endmarker' significant ensures that all tokens are synced.
         return (
             kind in ('async', 'await', 'endmarker', 'name', 'number', 'string')
-            or kind.startswith('fstring')
+            or kind.startswith(('fstring', 'tstring'))
             or kind == 'op' and value not in ',;()')
 
     def is_significant_kind(kind: str) -> bool:
+        # Used only by tog.sync_to_kind, which must not sync to 'op' tokens.
         return (
             kind in ('async', 'await', 'endmarker', 'name', 'number', 'string')
-            or kind.startswith('fstring')
+            or kind.startswith(('fstring', 'tstring'))
         )
 
     def is_significant_token(token: Token) -> bool:
@@ -3033,7 +3034,7 @@ class TokenOrderGenerator:
         token list.
         """
         self.token('op', val)
-    #@+node:ekr.20191113063144.7: *5* tog.token
+    #@+node:ekr.20191113063144.7: *5* tog.token (syncs tokens!)
     px = -1  # Index of the previously synced token.
 
     def token(self, kind: str, val: str) -> None:
@@ -3053,17 +3054,26 @@ class TokenOrderGenerator:
         node, tokens = self.node, self.tokens
         assert isinstance(node, ast.AST), repr(node)
 
-        if self.trace_token_method:  # A Superb trace.
-            g.trace(
-                f"px: {self.px:4} "
-                f"node: {node.__class__.__name__:<14} "
-                f"significant? {int(is_significant(kind, val))} "
-                f"{kind:>10}: {val!r}")
-        #
+        def trace_token(px: int, kind: str, val: str) -> None:
+            # A Superb trace.
+            if self.trace_token_method:
+                print(
+                    'tog.token: '
+                    f"px: {px:4} "
+                    f"node: {node.__class__.__name__:<14} "
+                    f"significant? {int(is_significant(kind, val))} "
+                    f"{kind:>10}: {val!r}")
+
+        if self.trace_token_method:
+            print('')
+            print(f"tog.token. Target: kind: {kind} val: {val} {g.callers(3)}")
+            print('')
+
         # Step one: Look for token T.
         old_px = px = self.px + 1
         while px < len(self.tokens):
             token = tokens[px]
+            trace_token(px, token.kind, token.value)
             if (kind, val) == (token.kind, token.value):
                 break  # Success.
             if kind == token.kind == 'number':
@@ -3073,7 +3083,7 @@ class TokenOrderGenerator:
                 line_s = f"line {token.line_number}:"
                 val = str(val)  # for g.truncate.
                 raise AssignLinksError(
-                    'tog.token\n'
+                    'tog.token: check 1\n'
                     f"       file: {self.filename}\n"
                     f"{line_s:>12} {g.truncate(token.line.strip(), 40)!r}\n"
                     f"Looking for: {kind}.{g.truncate(val, 40)!r}\n"
@@ -3085,7 +3095,7 @@ class TokenOrderGenerator:
         else:  # pragma: no cover
             val = str(val)  # for g.truncate.
             raise AssignLinksError(
-                'tog.token 2\n'
+                'tog.token: check 2\n'
                  f"       file: {self.filename}\n"
                  f"Looking for: {kind}.{g.truncate(val, 40)}\n"
                  f"      found: end of token list"
@@ -3132,7 +3142,7 @@ class TokenOrderGenerator:
     #@+node:ekr.20231213174617.1: *6* tog.sync_to_kind
     def sync_to_kind(self, kind: str) -> None:
         """Sync to the next significant token of the given kind."""
-        assert is_significant_kind(kind), repr(kind)
+        assert is_significant_kind(kind), f"Not significant: {kind!r}"
         while next_token := self.find_next_significant_token():
             self.token(next_token.kind, next_token.value)
             if next_token.kind in (kind, 'endtoken'):
@@ -3554,11 +3564,31 @@ class TokenOrderGenerator:
     #@+node:ekr.20250731052836.1: *6* tog.Interpolation (New in Python 3.14)
     # Interpolation(expr value, constant str, int conversion, expr? format_spec)
 
+    # Represents a single interpolation field in a t-string.
+
     def do_Interpolation(self, node: Node) -> None:
-        ### Experimental.
+
+        # value is any expression node (such as a literal, a variable, or a function call).
+        self.op('{')
         self.visit(node.value)
-        self.visit(node.str)
-        self.visit(node.conversion)
+        self.op('}')
+
+        # str is a constant containing the text of the interpolation expression.
+        # There is no do_str visitor. Do not call tog.string_helper!
+
+        # conversion is an integer:
+        #   -1: no conversion
+        #  115: !s string conversion
+        #  114: !r repr conversion
+        #   97: !a ascii conversion
+
+        ### To do.
+
+        # format_spec is a JoinedStr node representing the formatting of the value,
+        # or None if no format was specified.
+
+        # Both conversion and format_spec can be set at the same time.
+
         self.visit(node.format_spec)
     #@+node:ekr.20191113063144.41: *6* tog.JoinedStr
     # JoinedStr(expr* values)
@@ -3661,14 +3691,31 @@ class TokenOrderGenerator:
         self.op(']')
     #@+node:ekr.20250731051236.1: *6* tog.TemplateStr (New in Python 3.14)
     # TemplateStr(expr* values)
+    # Neither implicit nor explicit contcantenation with str is allowed.
 
     def do_TemplateStr(self, node: Node) -> None:
 
-        # Do not call tog.string_helper here.
-        # Neither implicit nor explicit contcantenation with str is allowed.
+        if 0:
+            print('')
+            g.printObj(node.values, tag=g.my_name())
 
-        ### Experimental.
-        self.visit(node.values)
+        # Eat the 'tstring-start' token.
+        token = self.find_next_non_ws_token()
+        assert token.kind == 'tstring_start', f"Expecting tstring_start: {token!r}"
+        self.token(token.kind, token.value)
+
+        for inner_node in node.values:
+            if isinstance(inner_node, ast.Constant):
+                # Don't call tog.string_helper here!
+                token = self.find_next_non_ws_token()
+                assert token.kind == 'tstring_middle', f"Expecting tstring_middle: {token!r}"
+                self.token(token.kind, token.value)
+            else:
+                assert isinstance(inner_node, ast.Interpolation), f"Expecting Interpolation: {inner_node!r}"
+                self.visit(inner_node)
+
+        # Eat the tstring_end token.
+        self.sync_to_kind('tstring_end')
     #@+node:ekr.20191113063144.52: *6* tog.Tuple
     # Tuple(expr* elts, expr_context ctx)
 
