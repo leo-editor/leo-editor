@@ -3562,20 +3562,14 @@ class TokenOrderGenerator:
 
         self.visit(node.value)
     #@+node:ekr.20250731052836.1: *6* tog.Interpolation (New in Python 3.14)
+    # New in Python 3.14:
     # Interpolation(expr value, constant str, int conversion, expr? format_spec)
-
     # Represents a single interpolation field in a t-string.
 
     def do_Interpolation(self, node: Node) -> None:
 
-        # value is any expression node (such as a literal, a variable, or a function call).
+        self.op('{')
         self.visit(node.value)
-
-        # Handle node.str
-        next = self.find_next_non_ws_token()
-        if (next.kind, next.value) == ('op', ':'):
-            self.op(':')
-            self.token('name', node.str)
 
         # Handle the conversion.
         for n, name in ((97, 'a'), (114, 'r'), (115, 's')):
@@ -3584,8 +3578,27 @@ class TokenOrderGenerator:
                 self.name(name)
                 break
 
-        # format_spec is a JoinedStr or None.
-        self.visit(node.format_spec)
+        if node.format_spec:  # a JoinedStr.
+            self.op(':')
+            # Don't visit JoinedStr: it calls tog.string_helper.
+            # Handle all tokens up to the outer '}'.
+            bracket_level = 0  # Nested interpolations are valid.
+            while True:
+                token = self.find_next_significant_token()
+                if not token:
+                    break
+                if (token.kind, token.value) == ('op', '{'):
+                    bracket_level += 1
+                    self.op('{')
+                elif (token.kind, token.value) == ('op', '}'):
+                    if bracket_level == 0:
+                        break
+                    assert bracket_level > 0, bracket_level
+                    bracket_level -= 1
+                    self.op('}')
+                else:
+                    self.token(token.kind, token.value)
+
         self.op('}')
 
     #@+node:ekr.20191113063144.41: *6* tog.JoinedStr
@@ -3687,7 +3700,8 @@ class TokenOrderGenerator:
         self.op('[')
         self.visit(node.slice)
         self.op(']')
-    #@+node:ekr.20250731051236.1: *6* tog.TemplateStr (New in Python 3.14)
+    #@+node:ekr.20250731051236.1: *6* tog.TemplateStr
+    # New in Python 3.14:
     # TemplateStr(expr* values)
     # Neither implicit nor explicit contcantenation with str is allowed.
 
@@ -3702,19 +3716,11 @@ class TokenOrderGenerator:
         self.token(token.kind, token.value)
 
         for inner_node in node.values:
-
-
             if isinstance(inner_node, ast.Constant):
                 # Don't call tog.string_helper!
                 token = self.find_next_non_ws_token()
                 assert token.kind == 'tstring_middle', expect('tstring_middle', token)
                 self.token(token.kind, token.value)
-
-                # Skip '{' or '}' if it's next.
-                next = self.find_next_non_ws_token()
-                for next_val in ('{', '}'):
-                    if (next.kind, next.value) == ('op', next_val):
-                        self.op(next_val)
             else:
                 assert isinstance(inner_node, ast.Interpolation), expect('ast.Interpolation', node)
                 self.visit(inner_node)

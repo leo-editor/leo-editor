@@ -788,12 +788,13 @@ class TestTOG(BaseTest):
 
         # All examples are from PEP750: https://peps.python.org/pep-0750/
         table = (
-            # 'template1: Template = t"Hello {name}"',  # Plain.
-            # 'template2 = t"Hello {name!r}"',  # Conversion.
+            'template1: Template = t"Hello {name}"',  # Plain.
+            'template2 = t"Hello {name!r}"',  # Conversion.
             'template3 = t"Value: {value:.2f}"',  # Format.
-            # 'template4 = t"Value: {value:.{precision}f}"',  # Format.
+            'template4 = t"Value: {value:.{precision}f}"',  # Format.
         )
         debug_list = [
+            # 'contents',
             # 'sync',  # Trace tog.token.
             # 'tokens',
             # 'tree',
