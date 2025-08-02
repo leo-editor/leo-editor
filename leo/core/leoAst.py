@@ -4,6 +4,8 @@
 # Leo's copyright notice is based on the MIT license:
 # https://leo-editor.github.io/leo-editor/license.html
 
+# **Notice**: Support for this file ends with Python 3.14.
+
 # Don't pollute searches with matches from this file!
 #@@nosearch
 
@@ -12,17 +14,19 @@
 """
 leoAst.py
 
+Are you sure you want to use this file?
+
+- asttokens will usually be a better choice:
+  https://asttokens.readthedocs.io/en/latest/user-guide.html
+- Leo does not use this module. leoTokens.py defines Leo's beautifier.
+- Support for this code ends with Python 3.14.
+  This code must be updated whenever Python adds new ast nodes.
+
 The classes in this file unify python's token-based and ast-based worlds by
 creating two-way links between tokens in the token list and ast nodes in
 the parse tree. For more details, see the "Overview" section below.
 
-See also leoTokens.py. It defines a Python beautifier that uses only
-Python's tokenize module.
-
-This commands in this file require Python 3.9 or above.
-
-Please help combat the dreaded software rot by reporting any problems to
-https://groups.google.com/g/leo-editor
+Please report any problems to https://groups.google.com/g/leo-editor
 
 **Stand-alone operation**
 
@@ -189,8 +193,11 @@ except Exception:
 #@-<< leoAst imports & annotations >>
 
 v1, v2, junk1, junk2, junk3 = sys.version_info
-if (v1, v2) < (3, 9):  # pragma: no cover
-    raise ImportError('The commands in leoAst.py require Python 3.9 or above')
+if (v1, v2) < (3, 10):  # pragma: no cover
+    raise ImportError('leoAst.py requires Python 3.10 or above')
+if (v1, v2) > (3, 14):  # pragma: no cover
+    print('Support for leoAst.py ends with Python 3.14')
+    print('Use at your own risk')
 
 #@+others
 #@+node:ekr.20200702114522.1: **  leoAst.py: top-level commands
