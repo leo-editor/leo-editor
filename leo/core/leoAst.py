@@ -3561,7 +3561,7 @@ class TokenOrderGenerator:
     def do_Index(self, node: Node) -> None:  # pragma: no cover (deprecated)
 
         self.visit(node.value)
-    #@+node:ekr.20250731052836.1: *6* tog.Interpolation (New in Python 3.14)
+    #@+node:ekr.20250731052836.1: *6* tog.Interpolation
     # New in Python 3.14:
     # Interpolation(expr value, constant str, int conversion, expr? format_spec)
     # Represents a single interpolation field in a t-string.
