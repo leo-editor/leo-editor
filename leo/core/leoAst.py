@@ -3572,8 +3572,8 @@ class TokenOrderGenerator:
         self.visit(node.value)
 
         # Handle the conversion.
-        for n, name in ((97, 'a'), (114, 'r'), (115, 's')):
-            if node.conversion == n:
+        for name in 'ars':
+            if node.conversion == ord(name):
                 self.op('!')
                 self.name(name)
                 break
@@ -3600,7 +3600,6 @@ class TokenOrderGenerator:
                     self.token(token.kind, token.value)
 
         self.op('}')
-
     #@+node:ekr.20191113063144.41: *6* tog.JoinedStr
     # JoinedStr(expr* values)
 
