@@ -29228,6 +29228,11 @@ Back to learning new leo  then :)</t>
 unify python's token-based and ast-based worlds by creating two-way links
 between tokens in the token list and ast nodes in the parse tree.
 
+Are you sure you want to use leoAst?
+
+- `asttokens &lt;https://asttokens.readthedocs.io/en/latest/user-guide.html&gt;`_will usually be a better choice:
+- Support for the leoAst module ends with Python 3.14.
+
 leoAst.py is part of `Leo &lt;https://leo-editor.github.io/leo-editor/&gt;`_, and can be used
 completely independently of Leo.
 

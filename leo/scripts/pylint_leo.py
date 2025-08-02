@@ -8,7 +8,7 @@ pylint_leo.py: Run pylint on Leo's core files.
 Info item #3867 describes all of Leo's test scripts:
 https://github.com/leo-editor/leo-editor/issues/2867
 
-EKR's pyflakes-leo.cmd:
+EKR's pylint-leo.cmd:
     cd {path-to-leo-editor}
     python -m leo.scripts.pylint_leo
 """

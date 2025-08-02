@@ -604,7 +604,7 @@ class TokenBasedOrange:  # Orange is the new Black.
 
         # Token-related data for visitors.
         'index', 'input_token', 'line_number',
-        'pending_lws', 'pending_ws', 'prev_output_kind', 'prev_output_value',  # New.
+        'pending_lws', 'pending_ws', 'prev_output_kind', 'prev_output_value',
 
         # Parsing state for visitors.
         'decorator_seen', 'in_arg_list', 'in_doc_part', 'state_stack', 'verbatim',
@@ -689,9 +689,9 @@ class TokenBasedOrange:  # Orange is the new Black.
         for token in self.input_tokens[i1 : i2 + 1]:
             print(token.dump())
     #@+node:ekr.20240112082350.1: *5* tbo.internal_error_message
-    def internal_error_message(self, message: str) -> str:  # pragma: no cover
-        """Print a message about an error in the beautifier itself."""
-        # Compute lines_s.
+    def internal_error_message(self) -> None:  # pragma: no cover
+        """Print the details of the internal error."""
+        # Compute data.
         line_number = self.input_token.line_number
         lines = g.splitLines(self.contents)
         n1 = max(0, line_number - 5)
@@ -700,18 +700,15 @@ class TokenBasedOrange:  # Orange is the new Black.
         for i in range(n1, n2):
             marker_s = '***' if i + 1 == line_number else '   '
             prev_lines.append(f"Line {i+1:5}:{marker_s}{lines[i]!r}\n")
-        context_s = ''.join(prev_lines) + '\n'
 
-        # Return the full error message.
-        return (
-            # '\n\n'
-            'Error in token-based beautifier!\n'
-            f"{message.strip()}\n"
-            '\n'
-            f"At token {self.index}, line: {line_number} file: {self.filename}\n"
-            f"{context_s}"
-            "Please report this message to Leo's developers"
-        )
+        # Print the messages.
+        print('')
+        g.es_print('Error in token-based beautifier!')
+        g.es_print(f"At token {self.index}, line: {line_number} file: {self.filename}")
+        g.es_print("Please report this message to Leo's developers")
+        print('')
+        g.es_print(g.objToString(prev_lines))
+
     #@+node:ekr.20240226131015.1: *5* tbo.user_error_message
     def user_error_message(self, message: str) -> str:  # pragma: no cover
         """Print a message about a user error."""
@@ -736,7 +733,8 @@ class TokenBasedOrange:  # Orange is the new Black.
     #@+node:ekr.20240117053310.1: *5* tbo.oops
     def oops(self, message: str) -> None:  # pragma: no cover
         """Raise InternalBeautifierError."""
-        raise InternalBeautifierError(self.internal_error_message(message))
+        self.internal_error_message()
+        raise InternalBeautifierError(message)
     #@+node:ekr.20240105145241.4: *4* tbo: Entries & helpers
     #@+node:ekr.20240105145241.5: *5* tbo.beautify (main token loop)
     def no_visitor(self) -> None:  # pragma: no cover
@@ -818,7 +816,8 @@ class TokenBasedOrange:  # Orange is the new Black.
             # oops calls self.internal_error_message to creates e.
             print(repr(e))
         except AssertionError as e:  # pragma: no cover
-            print(self.internal_error_message(repr(e)))
+            print(f"AssertionError: {e!r}")
+            self.internal_error_message()
         return contents
     #@+node:ekr.20240105145241.6: *5* tbo.beautify_file (entry) (stats & diffs)
     def beautify_file(self, filename: str) -> bool:  # pragma: no cover
@@ -1457,6 +1456,16 @@ class TokenBasedOrange:  # Orange is the new Black.
                 val = val.replace(' \n', '\n')
         self.gen_token('string', val)
         self.gen_blank()
+    #@+node:ekr.20250731204857.1: *5* tbo.do_tstring_start
+    def do_tstring_start(self) -> None:
+        """
+        Handle a tstring_start token.
+
+        do_verbatim handles tstring_middle and tstring_end tokens.
+        """
+        self.verbatim = True
+        val = self.input_token.value
+        self.gen_token('verbatim', val)
     #@+node:ekr.20240105145241.22: *5* tbo.do_verbatim
     def do_verbatim(self) -> None:
         """
@@ -1464,7 +1473,7 @@ class TokenBasedOrange:  # Orange is the new Black.
         End verbatim mode when the appropriate comment is seen.
         """
         kind = self.input_token.kind
-        #
+
         # Careful: tokens may contain '\r'
         val = self.regularize_newlines(self.input_token.value)
         if kind == 'comment':
@@ -1472,6 +1481,13 @@ class TokenBasedOrange:  # Orange is the new Black.
                 self.verbatim = False
             val = val.rstrip()
             self.gen_token('comment', val)
+            return
+        if kind == 'tstring_middle':
+            self.gen_token('verbatim', val)
+            return
+        if kind == 'tstring_end':
+            self.gen_token('tstring_middle', val)
+            self.verbatim = False
             return
         if kind == 'indent':
             self.indent_level += 1
