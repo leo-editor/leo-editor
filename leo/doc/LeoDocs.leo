@@ -33234,8 +33234,9 @@ Leo 6.8.6: (August 1, 2025):
 
 Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/preface.html).
 
-**The highlights of Leo 6.8.6**
+**The highlights of Leo 6.8.6 and Leo 6.8.6.1**
 
+- Leo 6.8.6.1 fixes a bug introduced in Leo 6.8.6 that could corrupt `@clean` nodes.
 - Read only *unchanged* `@clean` nodes: a huge performance boost!
 - Support `@leo &lt;path&gt;;` nodes.
   See https://leo-editor.github.io/leo-editor/directives.html#leo-directives
@@ -33263,12 +33264,13 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 .. _`PR #4389`: https://github.com/leo-editor/leo-editor/pull/4389
 .. _`PR #4395`: https://github.com/leo-editor/leo-editor/pull/4395
 .. _`PR #4391`: https://github.com/leo-editor/leo-editor/pull/4391
+.. _`PR #4405`: https://github.com/leo-editor/leo-editor/pull/4405
 
 - `PR #4386` and `PR #4395`: Major improvements for `@clean`.
    See xxx for full details.
 - `PR 4389`: Support websockets in Leo's server and LeoInteg.
 - `PR 4391`: Add a theme file for SwotMoknokai.
-</t>
+- `PR 4405`: Fix a critical bug present in Leo 6.8.6.</t>
 <t tx="ekr.20250729083112.1">.. _`Rust's compiler repo`: https://github.com/rust-lang/rust/tree/master/compiler
 
 ``@leo`` directives have the form ``@leo &lt;path&gt;`` where ``path`` is a path (absolute
