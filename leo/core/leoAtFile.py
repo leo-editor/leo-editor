@@ -743,7 +743,6 @@ class AtFile:
         g.doHook('after-reading-external-file', c=c, p=root)
 
         # Calculate all changed vnodes.
-        # Do not call at.do_changed_vnodes in this loop!
         changed_vnodes: list[VNode] = []
         for p in root.self_and_subtree():
             v = p.v
@@ -757,7 +756,7 @@ class AtFile:
             root.v.setDirty()
             at.changed_roots.append(root.copy())
 
-        return True  # Errors not detected.
+        return True  # No errors.
     #@+node:ekr.20150204165040.8: *6* at.read_at_clean_lines
     def read_at_clean_lines(self, fn: str) -> list[str]:  # pragma: no cover
         """Return all lines of the @clean/@nosent file at fn."""
