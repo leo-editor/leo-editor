@@ -756,79 +756,8 @@ class AtFile:
             c.setChanged(force=True)
             root.v.setDirty()
             at.changed_roots.append(root.copy())
-            for v in changed_vnodes:
-                at.do_changed_vnode(fileName, root, v)
-            at.delete_empty_changed_organizers(root)
-            at.move_leading_blank_lines(root)
 
         return True  # Errors not detected.
-    #@+node:ekr.20250712215845.1: *6* at.delete_empty_changed_organizers
-    def delete_empty_changed_organizers(self, root: Position) -> None:
-        """
-        #4385: Clean up nodes created by at.do_changed_vnode.
-        """
-        at, c = self, self.c
-        while True:
-            for p in root.subtree():
-                # Handle a changed node containing only @others.
-                if (
-                    p.b.strip() == '@others'
-                    and p.b != at.bodies_dict.get(p.v)
-                    and p.hasChildren()
-                ):
-                    # We expect only one child here.
-                    for child in p.children():
-                        child.v.setDirty()
-                    p.promote()
-                    next = p.next()
-                    # Transfer the old value to preserve diffs.
-                    at.bodies_dict[next.v] = at.bodies_dict.get(p.v)
-                    c.selectPosition(next)
-                    p.doDelete()
-                    break  # Rescan: root.subtree is no longer valid.
-            else:
-                break
-    #@+node:ekr.20250711061442.1: *6* at.do_changed_vnode
-    def do_changed_vnode(self, fileName: str, root: Position, v: VNode) -> None:
-        """#4385: Run the importer on a changed VNode."""
-        c = self.c
-        ic = c.importCommands
-        new_body_s = v.b
-
-        # Find a position for v.
-        for p in root.self_and_subtree():
-            if p.v == v:
-                _junk, ext = g.os_path_splitext(fileName)
-                # Get the `do_import` function for the proper importer module.
-                func = ic.dispatch(ext.lower(), root)
-                if func:
-                    func(c, p, new_body_s, treeType='@clean')
-                break
-        else:
-            g.trace('Not found:', v)  # Should never happen.
-
-        # Always set the dirty bit.
-        v.setDirty()
-    #@+node:ekr.20150204165040.7: *6* at.dump_lines
-    def dump(self, lines: list[str], tag: str) -> None:  # pragma: no cover
-        """Dump all lines."""
-        print(f"***** {tag} lines...\n")
-        for s in lines:
-            print(s.rstrip())
-    #@+node:ekr.20250714115142.1: *6* at.move_leading_blank_lines
-    def move_leading_blank_lines(self, root: Position) -> None:
-        """
-        Move leading blank lines (only in dirty nodes!) to the preceding node.
-        """
-        for p in root.subtree():  # back must exist below.
-            if p.v.isDirty():
-                lines = g.splitLines(p.b)
-                if lines and lines[0].isspace():
-                    back = p.threadBack()
-                    while lines and lines[0].isspace():
-                        back.b += lines.pop(0)
-                    p.b = ''.join(lines)
-                    back.v.setDirty()  # Include back in the update list.
     #@+node:ekr.20150204165040.8: *6* at.read_at_clean_lines
     def read_at_clean_lines(self, fn: str) -> list[str]:  # pragma: no cover
         """Return all lines of the @clean/@nosent file at fn."""
