@@ -33230,7 +33230,7 @@ Leo 6.8.6: (August 1, 2025):
 - @leo and related commands makes it easy to use Leo on huge repositories.
 - LeoInteg (and leoserver.py) supports websockets.
 </t>
-<t tx="ekr.20250728123954.1">Leo https://leo-editor.github.io/leo-editor/ 6.8.6 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
+<t tx="ekr.20250728123954.1">Leo https://leo-editor.github.io/leo-editor/ 6.8.6.1 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
 
 Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/preface.html).
 
@@ -33250,7 +33250,9 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 
 - [Install Leo](https://leo-editor.github.io/leo-editor/installing.html)
 - [6.8.6 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.8.6+)
+- [6.8.6.1 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.8.6.1+)
 - [6.8.6 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.8.6)
+- [6.8.6.1 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.8.6.1)
 - [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
 - [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
 - [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
@@ -33266,10 +33268,15 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 .. _`PR #4391`: https://github.com/leo-editor/leo-editor/pull/4391
 .. _`PR #4405`: https://github.com/leo-editor/leo-editor/pull/4405
 
+**Leo 6.8.6**
+
 - `PR #4386` and `PR #4395`: Major improvements for `@clean`.
    See xxx for full details.
 - `PR 4389`: Support websockets in Leo's server and LeoInteg.
 - `PR 4391`: Add a theme file for SwotMoknokai.
+
+**Leo 6.8.6.1**
+
 - `PR 4405`: Fix a critical bug present in Leo 6.8.6.</t>
 <t tx="ekr.20250729083112.1">.. _`Rust's compiler repo`: https://github.com/rust-lang/rust/tree/master/compiler
 

@@ -105,12 +105,12 @@
 <v t="EKR.20040519091259.4"><vh>October 2003</vh></v>
 </v>
 </v>
-<v t="EKR.20040519090846" descendentVnodeUnknownAttributes="7d7100285803000000302e3371017d710258090000005f6d6f645f74696d6571034741da227e048aae88735803000000302e3471047d710558090000005f6d6f645f74696d6571064741da227ded165c7b73752e"><vh>Distribution files</vh>
+<v t="EKR.20040519090846" descendentVnodeUnknownAttributes="7d7100285803000000302e3371017d710258090000005f6d6f645f74696d6571034741da2403a88830cf735803000000302e3471047d710558090000005f6d6f645f74696d6571064741da2403a889369d73752e"><vh>Distribution files</vh>
 <v t="ekr.20141016105045.2119"><vh>@clean ../../.gitattributes</vh></v>
 <v t="EKR.20040519090846.1"><vh>@clean ../../LICENSE</vh></v>
 <v t="ekr.20210814054641.1"><vh>@clean ../../MANIFEST.in</vh></v>
-<v t="EKR.20040519090846.8" descendentVnodeUnknownAttributes="7d710058010000003071017d710258090000005f6d6f645f74696d6571034741da227e048aae8873732e"><vh>@clean ../../PKG-INFO.TXT</vh></v>
-<v t="EKR.20040519090846.9" descendentVnodeUnknownAttributes="7d710058010000003071017d710258090000005f6d6f645f74696d6571034741da227ded165c7b73732e"><vh>@clean ../../README.md</vh></v>
+<v t="EKR.20040519090846.8" descendentVnodeUnknownAttributes="7d710058010000003071017d710258090000005f6d6f645f74696d6571034741da2403a88830cf73732e"><vh>@clean ../../PKG-INFO.TXT</vh></v>
+<v t="EKR.20040519090846.9" descendentVnodeUnknownAttributes="7d710058010000003071017d710258090000005f6d6f645f74696d6571034741da2403a889369d73732e"><vh>@clean ../../README.md</vh></v>
 <v t="maphew.20200424174643.1"><vh>Conda</vh>
 <v t="maphew.20200426185115.1"><vh>Outdated Preliminary build recipe</vh></v>
 <v t="maphew.20200424174722.1"><vh>@auto ../dist/conda/leo/meta.yaml</vh></v>
@@ -192,9 +192,9 @@ Portions of Leo's pyzo interface uses code from pyzo:
     The full license can be found in 'license.txt'.
 
 </t>
-<t tx="EKR.20040519090846.8" _mod_time="4741da227e048aae882e">Metadata-Version: 1.0
+<t tx="EKR.20040519090846.8" _mod_time="4741da2403a88830cf2e">Metadata-Version: 1.0
 Name: leo
-Version: 6.8.6
+Version: 6.8.6.1
 Summary: An IDE, PIM and Outliner. See http://leo-editor.github.io/leo-editor/preface.html.
 Description: See users own descriptions of Leo at leo-editor.github.io/leo-editor/testimonials.html.
 Home-page: http://leo-editor.github.io/leo-editor/
@@ -212,12 +212,13 @@ Classifier: Topic :: Software Development
 Classifier: Topic :: Text Processing
 Download-URL: https://github.com/leo-editor/leo-editor/releases
 </t>
-<t tx="EKR.20040519090846.9" _mod_time="4741da227ded165c7b2e">Leo https://leo-editor.github.io/leo-editor/ 6.8.6 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
+<t tx="EKR.20040519090846.9" _mod_time="4741da2403a889369d2e">Leo https://leo-editor.github.io/leo-editor/ 6.8.6.1 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
 
 Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/preface.html).
 
-**The highlights of Leo 6.8.6**
+**The highlights of Leo 6.8.6 and Leo 6.8.6.1**
 
+- Leo 6.8.6.1 fixes a bug introduced in Leo 6.8.6 that could corrupt `@clean` nodes.
 - Read only *unchanged* `@clean` nodes: a huge performance boost!
 - Support `@leo &lt;path&gt;;` nodes.
   See https://leo-editor.github.io/leo-editor/directives.html#leo-directives
@@ -231,7 +232,9 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 
 - [Install Leo](https://leo-editor.github.io/leo-editor/installing.html)
 - [6.8.6 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.8.6+)
+- [6.8.6.1 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.8.6.1+)
 - [6.8.6 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.8.6)
+- [6.8.6.1 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.8.6.1)
 - [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
 - [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
 - [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
