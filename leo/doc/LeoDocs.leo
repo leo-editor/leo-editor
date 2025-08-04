@@ -9896,7 +9896,7 @@ Inkscape (Required)
 
 PIL (Optional but highly recommended)
   The Python Imaging Library,
-  https://www.pythonware.com/products/pil/
+  https://pypi.org/project/pillow/
 
 Wink (Optional)
   A program that creates slideshows and slides.
