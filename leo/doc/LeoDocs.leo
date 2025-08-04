@@ -33271,7 +33271,7 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 **Leo 6.8.6**
 
 - `PR #4386` and `PR #4395`: Major improvements for `@clean`.
-   See xxx for full details.
+   See https://leo-editor.github.io/leo-editor/directives.html#leo-directives
 - `PR 4389`: Support websockets in Leo's server and LeoInteg.
 - `PR 4391`: Add a theme file for SwotMoknokai.
 
