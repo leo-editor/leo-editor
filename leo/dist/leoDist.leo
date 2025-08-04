@@ -1441,7 +1441,7 @@ git tag -a v6.8.7 -m "Added v6.8.7 tag"
 git push --follow-tags
 </t>
 <t tx="ekr.20181001112218.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- git checkout devel
-- git merge 6.8.7
+- git merge master
 - update version in leoVersion.py.
 </t>
 <t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From 6.8.7 branch:
