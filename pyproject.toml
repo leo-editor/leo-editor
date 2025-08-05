@@ -236,7 +236,7 @@ packages = [
 
 [project]
 requires-python = ">= 3.9"
-version = "6.8.6"  # No space.
+version = "6.8.6.1"  # No space.
 name = "leo"
 
 #@+<< developer info >>
