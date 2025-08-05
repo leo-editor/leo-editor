@@ -903,6 +903,7 @@ class LeoServer:
         self.dummy_c: Cmdr = None  # Set below, after we set g.
         self.action: str = None
         self.bad_commands_list: list[str] = []  # Set below.
+        self.idle_tasks: list[tuple[Callable, Union[int, float]]] = []
         #
         # Debug utilities
         self.current_id = 0  # Id of action being processed.
@@ -1120,35 +1121,44 @@ class LeoServer:
         return script
     #@+node:felix.20210627004238.1: *4* LeoServer._asyncIdleLoop
     async def _asyncIdleLoop(self, seconds: Union[int, float], func: Callable) -> None:
-        if sys.version_info >= (3, 14):
-            # For Python 3.14+
-            async def _run_loop():
-                while True:
-                    await asyncio.sleep(seconds)
-                    func(self)
+        """A background task that calls func every n seconds."""
+        while True:
+            await asyncio.sleep(seconds)
+            func(self)
+        # MAYBE NOT NEEDED FOR await asyncio.sleep
+        # if sys.version_info >= (3, 14):
+        #     # For Python 3.14+
+        #     async def _run_loop():
+        #         while True:
+        #             await asyncio.sleep(seconds)
+        #             func(self)
             
-            try:
-                loop = asyncio.get_running_loop()
-                loop.create_task(_run_loop())
-            except RuntimeError:
-                # If no running loop
-                asyncio.run(_run_loop())
-        else:
-            # For Python below 3.14
-            while True:
-                await asyncio.sleep(seconds)
-                func(self)
+        #     try:
+        #         loop = asyncio.get_running_loop()
+        #         loop.create_task(_run_loop())
+        #     except RuntimeError:
+        #         # If no running loop
+        #         asyncio.run(_run_loop())
+        # else:
+        #     # For Python below 3.14
+        #     while True:
+        #         await asyncio.sleep(seconds)
+        #         func(self)
     #@+node:felix.20210627004039.1: *4* LeoServer._idleTime
     def _idleTime(self, fn: Callable, delay: Union[int, float], tag: str) -> None:
         warnings.simplefilter("ignore")
+        # MAYBE NOT NEEDED FOR await asyncio.create_task
         if sys.version_info >= (3, 14):
             # For Python 3.14+
-            try:
-                loop = asyncio.get_running_loop()
-                loop.create_task(self._asyncIdleLoop(delay / 1000, fn))
-            except RuntimeError:
-                # No running loop
-                asyncio.create_task(self._asyncIdleLoop(delay / 1000, fn))
+            # Defer task creation until the event loop is running.
+            self.idle_tasks.append((fn, delay))
+
+            # try:
+            #     loop = asyncio.get_running_loop()
+            #     loop.create_task(self._asyncIdleLoop(delay / 1000, fn))
+            # except RuntimeError:
+            #     # No running loop
+            #     asyncio.create_task(self._asyncIdleLoop(delay / 1000, fn))
         else:
             # For Python below 3.14
             asyncio.get_event_loop().create_task(self._asyncIdleLoop(delay / 1000, fn))
@@ -4777,12 +4787,16 @@ class LeoServer:
             # First connection, so "Master client" setup
             self.web_socket = web_socket
             if sys.version_info >= (3, 14):
+                # Start any deferred idle tasks now that the loop is running.
+                self.loop = asyncio.get_running_loop()
+                for func, delay in self.idle_tasks:
+                    self.loop.create_task(self._asyncIdleLoop(delay / 1000, func))
                 # For Python 3.14+
-                try:
-                    self.loop = asyncio.get_running_loop()
-                except RuntimeError:
-                    # No running loop
-                    self.loop = None
+                # try:
+                #     self.loop = asyncio.get_running_loop()
+                # except RuntimeError:
+                #     # No running loop
+                #     self.loop = None
             else:
                 # For Python below 3.14
                 self.loop = asyncio.get_event_loop()
@@ -5424,10 +5438,15 @@ class LeoServer:
         jsonPackage = json.dumps(package, separators=(',', ':'), cls=SetEncoder)
         if "async" not in package:
             raise InternalServerError(f"\n{tag}: async member missing in package {jsonPackage} \n")
-        if self.loop:
-            self.loop.create_task(self._async_output(jsonPackage, toAll))
+        if self.loop and self.loop.is_running():
+            asyncio.create_task(self._async_output(jsonPackage, toAll))
         elif not g.unitTesting:
             raise InternalServerError(f"\n{tag}: loop not ready {jsonPackage} \n")
+        # CHECK IF LOOP IS RUNNING MAYBE NOT NEEDED ?
+        # if self.loop:
+        #     self.loop.create_task(self._async_output(jsonPackage, toAll))
+        # elif not g.unitTesting:
+        #     raise InternalServerError(f"\n{tag}: loop not ready {jsonPackage} \n")
     #@+node:felix.20210621233316.89: *5* server._async_output
     async def _async_output(self,
         json: str,
@@ -5439,15 +5458,18 @@ class LeoServer:
         outputBytes = bytes(json, 'utf-8')
         if toAll:
             if connectionsPool:  # asyncio.wait doesn't accept an empty list
-                if sys.version_info >= (3, 14):
-                    # For Python 3.14+
-                    tasks = [client.send(outputBytes) for client in connectionsPool]
-                    await asyncio.gather(*tasks)
-                else:
-                    # For Python below 3.14
-                    await asyncio.wait([
-                        asyncio.create_task(client.send(outputBytes)) for client in connectionsPool
-                    ])
+                tasks = [client.send(outputBytes) for client in connectionsPool]
+                await asyncio.gather(*tasks, return_exceptions=True)
+                # MAYBE NO NEED TO CHECK PYTHON VERSION HERE
+                # if sys.version_info >= (3, 14):
+                #     # For Python 3.14+
+                #     tasks = [client.send(outputBytes) for client in connectionsPool]
+                #     await asyncio.gather(*tasks)
+                # else:
+                #     # For Python below 3.14
+                #     await asyncio.wait([
+                #         asyncio.create_task(client.send(outputBytes)) for client in connectionsPool
+                #     ])
             else:
                 g.trace(f"{tag}: no web socket. json: {json!r}")
         else:
@@ -5751,15 +5773,18 @@ def main() -> None:  # pragma: no cover (tested in client)
                 clientSetCopy.discard(excludedConn)
             if clientSetCopy:
                 # if still at least one to notify
-                if sys.version_info >= (3, 14):
-                    # For Python 3.14+
-                    tasks = [client.send(m) for client in clientSetCopy]
-                    await asyncio.gather(*tasks)
-                else:
-                    # For Python below 3.14
-                    await asyncio.wait([
-                        asyncio.create_task(client.send(m)) for client in clientSetCopy
-                    ])
+                tasks = [client.send(m) for client in clientSetCopy]
+                await asyncio.gather(*tasks, return_exceptions=True)
+                # MAYBE NOT NEEDED TO CHECK PYTHON VERSION HERE
+                # if sys.version_info >= (3, 14):
+                #     # For Python 3.14+
+                #     tasks = [client.send(m) for client in clientSetCopy]
+                #     await asyncio.gather(*tasks)
+                # else:
+                #     # For Python below 3.14
+                #     await asyncio.wait([
+                #         asyncio.create_task(client.send(m)) for client in clientSetCopy
+                #     ])
     #@+node:felix.20210803174312.2: *3* function: register_client
     async def register_client(websocket: Socket) -> None:
         # global connectionsTotal
@@ -5892,6 +5917,7 @@ def main() -> None:  # pragma: no cover (tested in client)
     if sys.version_info >= (3, 14):
         # For Python 3.14+
         async def start_server():
+            realtime_server = None
             try:
                 try:
                     server = await websockets.serve(ws_handler, wsHost, wsPort, max_size=None)
@@ -5915,13 +5941,13 @@ def main() -> None:  # pragma: no cover (tested in client)
                 print(signon, flush=True)
                 
                 # Keep server running until interrupted
-                while True:
-                    await asyncio.sleep(1)
-                    
+                await realtime_server.wait_closed()
+                
             except KeyboardInterrupt:
                 print("Process interrupted", flush=True)
             finally:
-                realtime_server.close()
+                if realtime_server:
+                    realtime_server.close()
                 if not wsSkipDirty:
                     print("Checking for changed commanders...", flush=True)
                     save_dirty()
