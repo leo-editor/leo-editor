@@ -1161,9 +1161,32 @@ class LeoImportCommands:
     #@+node:ekr.20250805135410.1: *4* ic.split_python_vnode
     def split_python_vnode(self, v: VNode) -> None:
         """Split the given vnode if it contains multiple python functions or methods."""
-        g.trace(v)
-        from leo.plugins.importers.python import Python_Importer as importer
-        assert importer  ###
+        from leo.plugins.importers.python import Python_Importer
+        c = self.c
+        importer = Python_Importer(c)
+        importer.lines = lines = g.splitLines(v.b)
+        importer.guide_lines = importer.delete_comments_and_strings(lines)
+        ### g.printObj(importer.guide_lines, tag='Guide lines')
+        blocks = importer.find_blocks(0, len(lines))
+
+        def clean_headline(s: str) -> str:
+            """Adjust functions to match python importer."""
+            ### if s.startswith('def'):
+            return s
+
+        g.printObj(blocks, tag=v.h)  ###
+        while len(blocks) > 1:
+            block = blocks.pop(0)
+            head = lines[block.start:block.end]
+            g.printObj(head, tag=block.name)  ###
+            v.b = ''.join(head)
+            tail = lines[block.end:]
+            g.printObj(tail, tag="tail")  ###
+            v2 = v.insertAfter()
+            v2.h = clean_headline(tail[0])  ### To do.
+            v2.b = ''.join(tail)
+            v = v2
+        c.checkOutline()
     #@+node:ekr.20250805135428.1: *4* ic.split_rust_vnode
     def split_rust_vnode(self, v: VNode) -> None:
         """Split the given vnode if it contains multiple rust functions."""

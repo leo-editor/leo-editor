@@ -2620,6 +2620,16 @@ class VNode:
         v._linkAsNthChild(parent_v, n)
         return v
 
+    def insertAfter(self) -> VNode:  ###
+        v = self
+        c = v.context
+        v2 = VNode(c)
+        for parent in v.parents:
+            for i, child in enumerate(parent.children):
+                if child == v:
+                    v2._linkAsNthChild(parent, i + 1)
+        return v2
+
     def insertAsFirstChild(self) -> VNode:
         v = self
         return v.insertAsNthChild(0)
