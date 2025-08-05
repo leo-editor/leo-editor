@@ -682,7 +682,10 @@ class AtFile:
     #@+node:ekr.20150204165040.5: *5* at.readOneAtCleanNode & helpers
     def readOneAtCleanNode(self, root: Position, *, new_contents: str = None) -> bool:
         """Update the @clean/@nosent node at root."""
-        at, c, x = self, self.c, self.c.shadowController
+        at, c = self, self.c
+        ic = c.importCommands
+        x = c.shadowController
+        ic = c.importCommands
 
         if new_contents:
             fileName = root.h  # Required.
@@ -755,6 +758,10 @@ class AtFile:
             c.setChanged(force=True)
             root.v.setDirty()
             at.changed_roots.append(root.copy())
+            # Attempt to split nodes if a node splitter exists.
+            if vnode_splitter := ic.get_vnode_splitter(root):
+                for v in changed_vnodes:
+                    vnode_splitter(v)
 
         return True  # No errors.
     #@+node:ekr.20150204165040.8: *6* at.read_at_clean_lines

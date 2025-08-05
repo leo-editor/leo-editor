@@ -38,7 +38,7 @@ StringIO = io.StringIO
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
-    from leo.core.leoNodes import Position
+    from leo.core.leoNodes import Position, VNode
     Value = Any
 #@-<< leoImport annotations >>
 #@+others
@@ -1147,6 +1147,29 @@ class LeoImportCommands:
         except Exception:
             g.es_exception()
             p.b = s
+    #@+node:ekr.20250805134824.1: *3* ic.get_vnode_splitter & splitters
+    def get_vnode_splitter(self, root: Position) -> Optional[Callable]:
+        """Return the vnode splitter for the file's language."""
+        c = self.c
+        language = c.getLanguage(root)
+        d = {
+            'python': self.split_python_vnode,
+            'rust': self.split_rust_vnode,
+        }
+        return d.get(language, None)
+
+    #@+node:ekr.20250805135410.1: *4* ic.split_python_vnode
+    def split_python_vnode(self, v: VNode) -> None:
+        """Split the given vnode if it contains multiple python functions or methods."""
+        g.trace(v)
+        from leo.plugins.importers.python import Python_Importer as importer
+        assert importer  ###
+    #@+node:ekr.20250805135428.1: *4* ic.split_rust_vnode
+    def split_rust_vnode(self, v: VNode) -> None:
+        """Split the given vnode if it contains multiple rust functions."""
+        g.trace(v)
+        from leo.plugins.importers.rust import Rust_Importer as importer
+        assert importer  ###
     #@+node:ekr.20031218072017.3305: *3* ic.Utilities
     #@+node:ekr.20090122201952.4: *4* ic.appendStringToBody & setBodyString (leoImport)
     def appendStringToBody(self, p: Position, s: str) -> None:
