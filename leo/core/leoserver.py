@@ -4776,7 +4776,16 @@ class LeoServer:
         if connectionsTotal == 1:
             # First connection, so "Master client" setup
             self.web_socket = web_socket
-            self.loop = asyncio.get_event_loop()
+            if sys.version_info >= (3, 14):
+                # For Python 3.14+
+                try:
+                    self.loop = asyncio.get_running_loop()
+                except RuntimeError:
+                    # No running loop
+                    self.loop = None
+            else:
+                # For Python below 3.14
+                self.loop = asyncio.get_event_loop()
         else:
             # already exist, so "spectator-clients" setup
             pass  # nothing for now
