@@ -145,7 +145,7 @@ def showColorWheel(self: Any, event: LeoKeyEvent) -> None:
         QtWidgets.QApplication.clipboard().setText(text)
 #@+node:ekr.20170324143944.3: ** qt: show-fonts
 @g.command('show-fonts')
-def showFonts(self: Any, event: LeoKeyEvent) -> None:
+def showFonts(self: Any, event: LeoKeyEvent=None) -> None:
     """Open a tab in the log pane showing a font picker."""
     c, p = self.c, self.c.p
     picker = QtWidgets.QFontDialog()
