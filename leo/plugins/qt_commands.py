@@ -118,7 +118,7 @@ def showColorNames(event: LeoKeyEvent) -> None:
         g.es('created color picker in icon area')
 #@+node:ekr.20170324142416.1: ** qt: show-color-wheel
 @g.command('show-color-wheel')
-def showColorWheel(self: Any, event: LeoKeyEvent) -> None:
+def showColorWheel(self: Any, event: LeoKeyEvent=None) -> None:
     """Show a Qt color dialog."""
     c, p = self.c, self.c.p
     picker = QtWidgets.QColorDialog()
@@ -186,7 +186,7 @@ def showFonts(self: Any, event: LeoKeyEvent=None) -> None:
         c.undoer.afterChangeNodeContents(p, 'change-font', udata)
 #@+node:ekr.20140918124632.17893: ** qt: show-style-sheet
 @g.command('show-style-sheet')
-def print_style_sheet(event: LeoKeyEvent) -> None:
+def print_style_sheet(event: LeoKeyEvent=None) -> None:
     """show-style-sheet command."""
     c: Cmdr = event.get('c')
     if c:
