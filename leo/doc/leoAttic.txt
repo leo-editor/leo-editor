@@ -7,7 +7,7 @@
 #@@killbeautify
 #@+all
 #@+node:ekr.20240617085704.1: ** Permanent attic
-#@+node:ekr.20230913144248.1: *3* retire g.SherlockTracer
+#@+node:ekr.20230913144248.1: *3* g.SherlockTracer
 # I am going to leave this class in the attic indefinitely.
 # It might be useful as the base for other classes.
 #@+node:ekr.20121128031949.12605: *4* class g.SherlockTracer
@@ -472,6 +472,776 @@ def show(self, item: Any) -> str:
 def stop(self) -> None:
     """Stop all tracing."""
     sys.settrace(None)
+#@+node:ekr.20240820045246.1: ** To be cleared later
+# Clear after 6.8.2.
+#@+node:ekr.20241129101413.1: *3* retire leo_to_html.xsl
+#@+node:ekr.20241129101248.1: *4* leo_to_html.xsl (not used)
+@language xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet version="1.0"
+xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+<xsl:output method="html" version="1.0" encoding="UTF-8" indent="yes"/>
+
+<!-- The default setting. Not needed unless there is a strip-space element. -->
+  <!-- <xsl:preserve-space elements='leo_file nodes t'/> -->
+
+<xsl:template match ='leo_file'>
+<html>
+  <head>
+    <!--
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/highlight.min.js"></script>
+    -->
+    <style>
+        body{background-color: #505050}
+        /* pre { background:#FFE7C6; } */
+        /* Must use h1 for nodes: see below. */
+        h1 {
+          font-size: 12pt;
+          font-style: normal;
+          font-weight: normal;
+        }
+        div.outlinepane {
+          position: absolute;
+          background: #ffffec; /* Leo yellow */
+          top: 10px;
+          height: 300px;
+          width: 700px;
+          overflow-x: hidden;
+          overflow-y: scroll;
+          line-height: 0.8;
+          border: solid #bbb 1px;
+          
+        }
+        div.bodypane {
+          position: absolute;
+          background: #ffffec; /* Leo yellow */
+          top: 312px;
+          height: 300px;
+          width: 700px;
+          overflow: scroll;
+          border: solid #bbb 1px;
+        }
+        div.tnode {
+            visibility: hidden;
+            height: 0;
+        }
+        div.node {
+            position: relative;
+            left: 20px;
+        }
+        div.node[has-children] > h1 {
+            <!-- works -->
+            <!-- background: red; -->
+        }
+    </style>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script>
+
+      $(document).ready(function(){
+        if (true) {
+            // Toggle all but top-level nodes.
+            // This requires an indication
+            $(".node").toggle()
+            $(".outlinepane").children(".node").toggle()
+        } else {
+            // Toggle all second-level nodes.
+            // Safer, until we can see which nodes have children.
+            $(".outlinepane").children(".node").children(".node").toggle()
+        }
+        $("h1").click(function(){
+          $(this).parent().children("div.node").toggle();
+          // The parent div's id is v.x.
+          // Find the tnode div whose id is t.x.
+          console.clear();
+          parent_id=$(this).parent().attr("id");
+          if (parent_id) {
+            target=$(this).parent().attr("id").substring(2);
+              console.log("clicked:"+$(this).text())
+              // console.log("parent:"+$(this).parent())
+              // console.log("target:"+target)
+            $(".tnode").each(function(){
+              console.log($(this).attr("id"))
+              target2=$(this).attr("id").substring(2);
+              if (target === target2) {
+                console.log("found:"+target2)
+                // $("pre.body-text").text($(this).text());
+                $("code").text($(this).text());
+              };
+            }); // end .each.
+          };
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <xsl:apply-templates select='tnodes'/>
+    <div class="outlinepane">
+      <!-- <h4>Outline Pane</h4> -->
+      <xsl:apply-templates select='vnodes'/>
+    </div>
+    <div class="bodypane">
+      <!-- <h4>Body Pane</h4> -->
+      <pre class="body-text"><code></code></pre>
+    </div>
+  </body>
+</html>
+</xsl:template>
+
+<xsl:template match = 'tnodes'>
+<div class="tnodes">
+  <xsl:for-each select = 't'>
+    <div class="tnode">
+      <xsl:attribute name="id"><xsl:value-of select='@tx'/></xsl:attribute>
+      <xsl:value-of select='.'/>
+    </div>
+  </xsl:for-each>
+</div>
+</xsl:template>
+
+<xsl:template match = 'vnodes'>
+  <xsl:for-each select = 'v'>
+    <xsl:apply-templates select ='.'/>
+  </xsl:for-each>
+</xsl:template>
+
+<xsl:template match='v'>
+  <div class="node">
+    <xsl:attribute name="id"><xsl:value-of select='@t'/></xsl:attribute>
+    <xsl:choose>
+      <xsl:when test ='./v' >
+        <xsl:attribute name="has-children">1</xsl:attribute>
+        <h1>+ <xsl:value-of select='vh'/></h1>
+        <xsl:apply-templates select = 'v'/>
+      </xsl:when>
+      <xsl:when test ='vh' >
+        <h1>- <xsl:value-of select='vh'/></h1>
+      </xsl:when>
+      <!--
+      <xsl:otherwise>
+        <h1>- <xsl:value-of select='vh'/></h1>
+      </xsl:otherwise>
+      -->
+    </xsl:choose>
+  </div>
+</xsl:template>
+
+</xsl:stylesheet>
+#@+node:ekr.20241129101440.1: *4* do-leo.php (not used)
+@language php
+
+<?php
+$DEBUG = 0;
+/*************************************************************************/
+/*
+ * Support php script for load-leo.html
+ *
+ * Project purpose:
+ *   Allow anyone to go to http://leo-editor.com/load-leo.html and use that
+ *   html file to create a read-only version of the original leo file
+ *   displayed in a meaningfull way by the web browser.
+ *
+ * Project operational summary:
+ *   -An operator arrives at http://leo-editor.com/load-leo.html
+ *   -The operator chooses a file either on their own hard drive, or on
+ *    the Internet somewhere
+ *   -With either choice, this php script receives, from the web page,
+ *    either the name of the file to upload, or the name of a temporary
+ *    file that has already been created in the php temp directory by the
+ *    javascript in load-leo.html.
+ *   -If this script receives the name of a temp file, then the contents
+ *    of the target leo file already exist in the web server's file system
+ *    in the form of a temporary file which will be deleted as soon as this
+ *    script goes out of scope.
+ *   -If this script receives the url of a file on the Internet, the script 
+ *    knows to use that url as the source for the leo file to display.
+ *   -This scripts reads the contents of the source leo file
+ *   -This script then injects a reference to
+ *    http://www.leoeditor.com/leo_to_html.xsl into the destination file
+ *    if such a reference does not already exist in the destination file.
+ *   -This script then writes the resulting file to a temporary file in the
+ *    /tmp directory. The name format for the temporary file name is:
+ *      show-leo-<16-hex-digit-random-name>.leo
+ *   -This script then returns the file name to the calling load-leo.html
+ *    file (Or an error message).
+ *   -show-leo.html then either displays the error message, or changes
+ *    document.location to the newly created leo file.
+ *   -If show-leo.html changes its page location to the new temporary
+ *    file, the apache server renders the page as xml to the browser, using
+ *    the html-to_leo.xsl file as a stylesheet during the rendering.
+ *
+ * Notes:
+ *   -This php script has only been tested using Firefox browsers.
+ *   -The maximum file size for viewing is 10M.
+ *   -leoeditor.com is hosted on a system using an Apache server, whose
+ *    settings allow the placement of .htaccess in any root directory.
+ *   -The .htaccess file in the root of leoeditor.com has been altered to
+ *    request that apache consider all files ending in .leo to be treated
+ *    as .xml files.
+ *   -The line added to .htaccess is:
+ *
+ *       AddType application/xml leo
+ *
+ *   -Each time this script is run, the /tmp directory is scanned and any
+ *    files older than 8 hours are removed. This serves as temporary file
+ *    garbage collection.
+ *   -In addition to scanning for older files, the entire contents of the
+ *    /tmp directory are examined for total size. If the size exceeds
+ *    500M, files are deleted, oldest first until the directory contents
+ *    are less than 400M.
+ *   -The maximum size for a single leo file is set by the php and apache
+ *    setup. On this particular site, the max size is 64M. However, we
+ *    limit the size to 10M.
+ *   -Previous versions of this script placed a limit of 1000 users with
+ *    concurrent access to this service. This restriction has been removed
+ *    so there is no longer any artificial limit as to how many users may
+ *    use this service at the same time.
+ */
+/*************************************************************************/
+// Globals
+/*************************************************************************/
+$AMeg           = 1048576; // 1M
+$Error_Message  = "\n" . '<br><p style="font-weight:900;">';
+$Error_Message .= "Error uploading file</p><br>\n";
+$File_Size      = 0;
+$Is_Local       = false;
+$Max_File_Size  = $AMeg * 10;
+$Leo_Ext        = "leo";
+if (!$DEBUG)
+{
+  // If not testing
+  $Max_Storage_Size = $AMeg * 500;
+  $Shrink_Size      = $Max_Storage_Size - ($AMeg * 100);
+  $Temp_Dir         = getcwd() . "/tmp";
+}
+else
+{
+  // If testing
+  $Max_Storage_Size = 339834;
+  $Shrink_Size      = 21866;
+  $Temp_Dir         = getcwd() . "/tmp1";
+}
+/*************************************************************************/
+// Functions start here
+/*************************************************************************/
+
+// Return an error message, exit script
+function error_exit()
+{
+  global $Error_Message;
+  echo   $Error_Message;
+  exit("");
+} // error_exit
+
+/*************************************************************************/
+
+// Get the temp file name containing the data, or the remote url containing
+// the data
+function get_source_name()
+{
+  global $Is_Local;
+  $Is_Local = false;
+  foreach($_POST as $key => $value)
+  {
+    if ($key == "MAX_FILE_SIZE")
+    {
+      $name = $_FILES['Filedata']['tmp_name'];
+      if ($name == "")
+      {
+        echo "<br>" . "File is too large or file name has an error." . "<br>";
+        error_exit();
+      }
+      $Is_Local = true;
+      return $name;
+    }
+  }
+  $name     = $_POST['get_name'];
+  if ($name == "")
+  {
+    echo "<br>" . "File is too large or file name has an error." . "<br>";
+    error_exit();
+  }
+  return $name;
+} // get_source_name
+
+/*************************************************************************/
+
+// Age out one file. It can't be a directory. If it is 8 hours old, kill
+// it.
+function age_file($filename)
+{
+  $day = time() - (8 * 60 * 60);
+  if (file_exists($filename))
+  {
+    if (is_dir($filename))
+      return true;
+    $age = filemtime($filename);
+      if ($age === false)
+        return true;
+    if ($age < $day)
+      unlink($filename);
+      return true;
+  }
+  return false;
+} // age_file
+
+/*************************************************************************/
+
+// Delete files from the directory, oldest first, until the size is below
+// the target size.
+
+function size_directory()
+{
+  global $Max_Storage_Size;
+  global $Shrink_Size;
+  global $Temp_Dir;
+  // sorting routine, sort by file age, oldest will be at the top of the
+  // array
+  function cmp($a, $b)
+  {
+    if ($a == $b)
+      return 0;
+    return ($a < $b) ? -1 : 1;
+  }
+  $filelist = array();
+  $count    = 0;
+  $handle = opendir($Temp_Dir);
+  if (!$handle)
+  {
+    echo "<br>" . "File is too large or file name has an error." . "<br>";
+    error_exit();
+  }
+  while (false !== ($entry = readdir($handle)))
+  {
+    if ($entry == ".")  continue;
+    if ($entry == "..") continue;
+    $fullname = $Temp_Dir . "/" . $entry;
+    $filelist[$entry] = filemtime($fullname);
+    $size += filesize($fullname);
+    ++$count;
+    if ($count > 500)
+      break;
+  } // while
+  $keys = array_keys($filelist);
+  if ($size < $Max_Storage_Size)
+    return;
+  uasort($filelist, cmp);
+  $count = 0;
+  $keys  = array_keys($filelist);
+  foreach ($keys as $file_num => $fname)
+  {
+    $fullname = $Temp_Dir . "/" . $fname;
+    $fsize = filesize($fullname);
+    unlink($fullname);
+    $size -= $fsize;
+    if ($size < 0)
+      $size = 0;
+    if ($size < $Max_Storage_Size - $Shrink_Size)
+      break;
+    ++$count;
+    if ($count > 10000)
+      break;
+  } // foreach
+}
+/*************************************************************************/
+
+// 1. Age out any old temp files. We only age out 10000 at a time ;)
+// 2. Check total size of directory and delete files, oldest first, if our
+//    size limit has been exceeded.
+function age_directory()
+{
+  global $Max_Storage_Size;
+  global $Temp_Dir;
+  $size  = 0;
+  $count = 0;
+  // Age old files
+  $handle = opendir($Temp_Dir);
+  if (!$handle)
+  {
+    echo "<br>" . "File is too large or file name has an error." . "<br>";
+    error_exit();
+  }
+  while (false !== ($entry = readdir($handle)))
+  {
+    if ($entry == ".")  continue;
+    if ($entry == "..") continue;
+    $data = $Temp_Dir . "/" . $entry;
+    if (!age_file($data))
+      $size += filesize($data);
+    ++$count;
+    if ($count > 10000)
+      break;
+  }
+  closedir($handle);
+  if ($size >= $Max_Storage_Size)
+    return size_directory();
+} // age_directory
+
+/*************************************************************************/
+
+// Create a random hex string. Maximum length is 32.
+function get_random_hex_string($length)
+{
+   $res = "";
+   $count = 0;
+   if ($length < 1)
+     return "";
+   if ($length > 32)
+     $length = 32;
+   while (strlen($res) < $length)
+   {
+     ++$count;
+     if ($count > 33)
+     {
+       echo "<br>" . "File is too large or file name has an error." . "<br>";
+       error_exit();
+     }
+     $temp = dechex(mt_rand());
+     $res = $res . $temp;
+     if (strlen($res) == $length)
+       return $res;
+     if (strlen($res) > $length)
+       return substr($res, 0, $length);
+   }
+} // get_random_hex_string
+
+/*************************************************************************/
+
+// Create the output file object
+function create_out_file()
+{
+   global $Temp_Dir;
+   $stub = get_random_hex_string(16);
+   if ($stub == "")
+   {
+     echo "<br>" . "Cannot create the temporary file on the web site." . "<br>";
+     error_exit();
+   }
+   $name = "show-leo-" . $stub . ".leo";
+   $file_object = fopen($Temp_Dir . "/" . $name, "w");
+   if (!$file_object)
+   {
+     echo "<br>" . "Cannot create the temporary file on the web site." . "<br>";
+     error_exit();
+   }
+   return array($name, $file_object);
+} // create_out_file
+
+/*************************************************************************/
+
+// Check that this is a valid leo file name, and that the file size is
+// ok.
+
+function validate_file($name)
+{
+  global $File_Size;
+  global $Is_Local;
+  global $Leo_Ext;
+  global $Max_File_Size;
+  $File_Size = 0;
+  if ($Is_Local)
+  {
+    // Can't check the name, because it has been named by javascript
+    // using a temp file routine. Size should already be ok, but check
+    // anyway to make sure we can stat the file.
+    $File_Size = filesize($name);
+    if (($File_Size > $Max_File_Size) || $File_Size == 0)
+    {
+      echo "<br>File is too large<br>\n";
+      error_exit();
+    }
+    return;
+  }
+  // check name
+  $extension = pathinfo($name, $options = PATHINFO_EXTENSION);
+  if ($extension != $Leo_Ext)
+  {
+    echo "<br>The file must end in .leo<br>\n";
+    error_exit();
+  }
+  // check size
+  $headers = get_headers($name);
+  foreach($headers as $h)
+  {
+
+    // split is deprecated. See Leo issue #1551
+    // $chunks = split(":", $h);
+    $chunks = explode(":", $h);
+    $type   = $chunks[0];
+    if ($type == "Content-Length")
+      $File_Size = $chunks[1];
+  }
+  if ($File_Size > $Max_File_Size || $File_Size <= 0)
+  {
+    echo "<br>File is too large<br>\n";
+    error_exit();
+  }
+  //echo "<br>File Size = ". $File_Size . "<br>\n";
+}
+
+
+/*************************************************************************/
+
+// Read the source file into memory. If the file is too large to read all-
+// at-once, php will barf, which is what we want. We will also enforce our
+// own size limit
+function read_source_file($name)
+{
+  validate_file($name);
+  $lines = file($name);
+  if (!$lines)
+  {
+    echo("<br>Can't read this file.<br>");
+    error_exit();
+  }
+  return $lines;
+} // read_source_file
+
+/*************************************************************************/
+// Script execution starts here
+/*************************************************************************/
+
+// Age out any existing old tmp files
+age_directory();
+
+// Either get the source script name
+if (!$DEBUG)
+{
+  $script_name = get_source_name();
+}
+
+// Or use the following for testing
+else
+{
+  $git_root    = "https://raw.githubusercontent.com/";
+  $leo_root    = "leo-editor/leo-editor/master/";
+  $script_name = $git_root . $leo_root . "leo/doc/CheatSheet.leo";
+}
+
+// Read the file contents into memory. Make sure it exists and is not too
+// large.
+$lines = read_source_file($script_name);
+
+// Create the output file object
+list($out_file_name, $out_file) = create_out_file();
+
+/*************************************************************************/
+// Read the first 10 lines of the file to see if there is an old reference
+// to ekr_test or a new reference to leo_to_html.xsl. If there is a
+// reference to leo_to_html.xsl, do nothing about such reference. If there
+// is a reference to ekr_test, replace this reference with a reference to
+// leo_to_html.xsl. If there is no reference to leo_to_html.xsl, inject
+// a reference on line 2 of the file.
+$false_line  = '<?xml-stylesheet type="text/xsl" href="http://leoeditor.';
+$false_line .= 'com/leo_to_html.xsl"?>';
+
+$inject_line_two = true;
+$change_ekr_test = false;
+foreach ($lines as $line_num => $line)
+{
+  if(strstr($line, "?xml-stylesheet ekr_test?"))
+  {
+    $change_ekr_test = true;
+    $inject_line_two = false;
+    if ($line_num == 10)
+      break;
+  }
+} // foreach
+foreach ($lines as $line_num => $line)
+{
+  if(strstr($line, "leo_to_html.xsl"))
+  {
+    if (!strstr($line, $false_line))
+    {
+      $change_ekr_test = false;
+      $inject_line_two = false;
+      if ($line_num == 10)
+        break;
+    }
+  }
+} // foreach
+
+/*************************************************************************/
+// Write the output file one line at a time. Insert the xsl reference if
+// needed
+$insert  = '<?xml-stylesheet type="text/xsl"';
+$insert .= ' href="/leo_to_html.xsl"?>' . "\n";
+foreach ($lines as $line_num => $line)
+{
+  if ($line_num == 2)
+  {
+    if ($inject_line_two)
+      fwrite($out_file, $insert);
+  }
+  if ($line == "<?xml-stylesheet ekr_test?>\n")
+  {
+    if ($change_ekr_test)
+      $line = $insert;
+  }
+  fwrite($out_file, $line);
+} // foreach
+fclose($out_file);
+echo $out_file_name;
+// The following lines for testing only
+//echo "<br>out_file_name = " . $out_file_name . "<br>\n";
+//echo "<br>Good Return<br>\n";
+/*************************************************************************/
+?>
+#@+node:ekr.20240921134306.1: *3* retire minibuffer-based spell commands
+# These have probably never worked.
+#@+node:ekr.20150514063305.485: *4* commands...(SpellCommandsClass)
+#@+node:ekr.20171205043931.1: *5* add
+@cmd('spell-add')
+def add(self, event: LeoKeyEvent = None) -> None:
+    """
+    Simulate pressing the 'add' button in the Spell tab.
+
+    Just open the Spell tab if it has never been opened.
+    For minibuffer commands, we must also force the Spell tab to be visible.
+    """
+    # self.handler is a SpellTabHandler object (inited by openSpellTab)
+    if self.handler:
+        self.openSpellTab()
+        self.handler.add()
+    else:
+        self.openSpellTab()
+#@+node:ekr.20150514063305.486: *5* spell-find
+@cmd('spell-find')
+def find(self, event: LeoKeyEvent = None) -> None:
+    """
+    Simulate pressing the 'Find' button in the Spell tab.
+
+    Just open the Spell tab if it has never been opened.
+    For minibuffer commands, we must also force the Spell tab to be visible.
+    """
+    # self.handler is a SpellTabHandler object (inited by openSpellTab)
+    if self.handler:
+        self.openSpellTab()
+        self.handler.find()
+    else:
+        self.openSpellTab()
+#@+node:ekr.20150514063305.487: *5* change
+@cmd('spell-change')
+def change(self, event: LeoKeyEvent = None) -> None:
+    """Simulate pressing the 'Change' button in the Spell tab."""
+    if self.handler:
+        self.openSpellTab()
+        self.handler.change()
+    else:
+        self.openSpellTab()
+#@+node:ekr.20150514063305.488: *5* changeThenFind
+@cmd('spell-change-then-find')
+def changeThenFind(self, event: LeoKeyEvent = None) -> None:
+    """Simulate pressing the 'Change, Find' button in the Spell tab."""
+    if self.handler:
+        self.openSpellTab()
+        f = self.handler.changeThenFind
+        f()
+    else:
+        self.openSpellTab()
+#@+node:ekr.20150514063305.489: *5* hide
+@cmd('spell-tab-hide')
+def hide(self, event: LeoKeyEvent = None) -> None:
+    """Hide the Spell tab."""
+    if self.handler:
+        self.c.frame.log.selectTab('Log')
+        self.c.bodyWantsFocus()
+#@+node:ekr.20150514063305.490: *5* ignore
+@cmd('spell-ignore')
+def ignore(self, event: LeoKeyEvent = None) -> None:
+    """Simulate pressing the 'Ignore' button in the Spell tab."""
+    if self.handler:
+        self.openSpellTab()
+        self.handler.ignore()
+    else:
+        self.openSpellTab()
+#@+node:ekr.20150514063305.491: *5* focusToSpell
+@cmd('focus-to-spell-tab')
+def focusToSpell(self, event: LeoKeyEvent = None) -> None:
+    """Put focus in the spell tab."""
+    self.openSpellTab()  # Makes Spell tab visible.
+    # This is not a great idea. There is no indication of focus.
+        # if self.handler and self.handler.tab:
+            # self.handler.tab.setFocus()
+#@+node:ekr.20240830090655.1: *3* retire reload-outline
+#@+node:ekr.20240810080628.1: *4* LeoQtFrame.reloadOutline
+@frame_cmd('reload-outline')
+def reloadOutline(self, event: LeoKeyEvent = None) -> None:
+    """reload-outline: Close the outline and reload it."""
+    c = self.c
+
+    # Commit any open edits.
+    c.endEditing()
+
+    # Make sure the file has a name.
+    if not c.fileName():
+        c.save()
+    if not c.fileName():
+        g.es_print('Please name the outline', color='red')
+        return
+
+    # Abort the reload if the user vetos closing this outline.
+    if c.changed:
+        veto = False
+        try:
+            c.promptingForClose = True
+            veto = c.frame.promptForSave()
+        finally:
+            c.promptingForClose = False
+        if veto:
+            g.es_print('Cancelling reload-outline command')
+            return
+        # Save the file.
+        c.save()
+        g.app.recentFilesManager.writeRecentFilesFile(c)
+
+    # Remember old_index, the outline's position in the QTabbledWidget.
+    dw = c.frame.top
+    stacked_widget = dw.parent()
+    tab_widget = dw.leo_master
+    stacked_layout = None
+    for w in stacked_widget.children():
+        if isinstance(w, QtWidgets.QStackedLayout):
+            stacked_layout = w
+            break
+    else:
+        g.trace('Can not happen: no QStackedLayout')
+        return
+
+    # Remember the old values.
+    old_index = stacked_layout.indexOf(dw)
+    tab_names = [tab_widget.tabText(i) for i in range(tab_widget.count())]
+
+    # Completely close the outline.
+    g.doHook("close-frame", c=c)
+    frame = c.frame
+    if frame in g.app.windowList:
+        g.app.destroyWindow(frame)
+        g.app.windowList.remove(frame)
+    else:
+        g.app.forgetOpenFile(fn=c.fileName())  # #69.
+
+    # Open the new outline.
+    g.openWithFileName(fileName=c.fileName())
+
+    # Do nothing more if the index has not changed.
+    new_index = stacked_layout.indexOf(dw)
+    if new_index == old_index:
+        return
+
+    # Put dw in the proper place.
+    stacked_layout.removeWidget(dw)
+    stacked_layout.insertWidget(old_index, dw)
+
+    # Fix all tab names.
+    for i, name in enumerate(tab_names):
+        tab_widget.setTabText(i, name)
+
+    # Select the proper tab.
+    tab_widget.setCurrentIndex(old_index)
 #@+node:ekr.20240617085410.1: *3* retire two sort commands
 @language rest
 @
@@ -620,6 +1390,235 @@ def sortFields(self, event: LeoKeyEvent, which: str = None) -> None:
         int1 = int1 + 1
     w.setInsertPoint(ins)
     self.endCommand(changed=True, setLabel=True)
+#@+node:ekr.20241029111205.1: *3* retire old testing code
+#@+node:ekr.20241029111221.1: *4* at-command test-one
+### This code no longer works, possibly because 
+### site_customize.py *MUST NOT* add the leo-editor directory to sys.path
+
+g.cls()
+if c.isChanged():
+    print('Saved!')
+    c.save()
+<< test-one: test kind >>
+<< prefixes >>
+<< old commands >>
+assert kind in ('check-all', 'check-one', 'beautify', 'test'), repr(kind)
+if kind == 'check-all':  # Check all files.
+    command = 'python -m leo.scripts.check_leo'
+    g.execute_shell_commands(command)
+elif kind == 'check-one':
+    # path = 'plugins/qt_gui.py'
+    path = 'core/leoApp.py'
+    command = f"python -m leo.scripts.check_leo {path}"
+    g.execute_shell_commands(command)
+elif kind == 'beautify':
+    << test the beautifier >>
+elif kind == 'test':
+    commands = (
+        f"{importers}.TestJupytext.test_small_file",
+    )
+    verbose_flag = ''  # -v
+    commands_s = f"python -m unittest {verbose_flag} {' '.join(commands)}"
+    g.execute_shell_commands(commands_s, trace=True)
+else:
+    # command = 'run'  # run Nim tests.
+    script = 'build-leo.py'
+    command = fr"python C:\Repos\leo-editor\leo\scripts\{script}"
+    g.execute_shell_commands(command)
+#@+node:ekr.20241029111221.2: *5* << test-one: test kind >>
+# Last one wins.
+kind = 'beautify'
+kind = 'test'  # Run unit test.
+#@+node:ekr.20241029111221.3: *5* << test the beautifier >>
+# Can be run from the command line as follows:
+# python -c "import leo.core.leoTokens" --all --report --write leo/core/leoAst.py
+args = '--all --report --write'  # --beautified --diff --write'
+for command in (
+    # f'python -c "import leo.core.leoTokens" {args} leoAst.py',
+    f'python -c "import leo.core.leoTokens" {args} leo/core',
+    'echo done!',
+):
+    print(command)
+    g.execute_shell_commands(command)
+#@+node:ekr.20241029111221.4: *5* << old commands >>
+# 'python c:/test/mypy_test.py',
+# 'python -m mypy c:/test/mypy_test.py',
+# 'python -m ruff check c:/test/mypy_test.py',
+# 'python -m pyflakes c:/test/mypy_test.py',
+
+### "leo.scripts.check_leo.TestCheckLeo",
+# f"{misc}.test_check_leo.TestCheckLeo",
+# f"{core}.test_leoserver.TestLeoServer.test_find_commands",
+# f"{core}.test_leoFind.TestFind.test_find_var",
+# f"{core}.test_leoTokens.TestTokenBasedOrange",
+# f"{core}.test_leoTokens.TestTokens",
+# f"{core}.test_leoTokens.TestTokenBasedOrange.test_blank_lines_after_function",
+# f"{core}.test_leoAtFile.TestAtFile.test_putBody_unterminated_at_doc_part",
+#@+node:ekr.20241029111221.5: *5* << prefixes >>
+commands = 'leo.unittests.commands'
+core = 'leo.unittests.core'
+gui = 'leo.unittests.test_gui'
+importers = 'leo.unittests.plugins.test_importers'
+misc = 'leo.unittests.misc_tests'
+plugins = 'leo.unittests.plugins'
+syntax = 'leo.unittests.plugins.test_syntax'
+writers = 'leo.unittests.plugins.test_writers'
+
+# f"{core}.test_leoGlobals",
+# f"{core}.test_leoTokens",
+
+# f"{misc}.test_design",
+# f"{misc}.test_doctests",
+# f"{misc}.test_syntax",
+
+# f"{plugins}.test_gui",
+# f"{plugins}.test_importers",
+# f"{plugins}.test_plugins",
+# f"{plugins}.test_writers",
+#@+node:ekr.20210905170507.9: *4* TestColorizer.test_colorizer_CWEB
+def test_colorizer_CWEB(self):
+    text = self.prep(
+        r"""\\\
+        % This is limbo in cweb mode... It should be in \LaTeX mode, not \c mode.
+        % The following should not be colorized: class,if,else.
+
+        @* this is a _cweb_ comment.  Code is written in \c.
+        "strings" should not be colorized.
+        It should be colored in \LaTeX mode.
+        The following are not keywords in latex mode: if, else, etc.
+        Noweb section references are _valid_ in cweb comments!
+        < < section ref > >
+        < < missing ref > >
+        @c
+
+        and this is C code. // It is colored in \LaTeX mode by default.
+        /* This is a C block comment.  It may also be colored in restricted \LaTeX mode. */
+
+        // Section refs are valid in code too, of course.
+        < < section ref > >
+        < < missing ref > >
+
+        \LaTeX and \c should not be colored.
+        if else, while, do // C keywords.
+""")
+    self.color('cweb', text)
+#@+node:ekr.20210905170507.28: *4* TestColorizer.test_colorizer_rapidq
+def test_colorizer_rapidq(self):
+    text = self.prep(
+    """
+        ' New in 4.2.
+        ' a comment.
+
+        $APPTYPE,$DEFINE,$ELSE,$ENDIF,$ESCAPECHARS,$IFDEF,$IFNDEF,
+        $INCLUDE,$MACRO,$OPTIMIZE,$OPTION,$RESOURCE,$TYPECHECK,$UNDEF,
+        ABS,ACOS,ALIAS,AND,AS,ASC,ASIN,ATAN,ATN,BIN$,BIND,BYTE,
+        CALL,CALLBACK,CALLFUNC,CASE,CEIL,CHDIR,CHDRIVE,CHR$,CINT,
+        CLNG,CLS,CODEPTR,COMMAND$,COMMANDCOUNT,CONSOLE,CONST,CONSTRUCTOR,
+        CONVBASE$,COS,CREATE,CSRLIN,CURDIR$,DATA,DATE$,DEC,DECLARE,
+        DEFBYTE,DEFDBL,DEFDWORD,DEFINT,DEFLNG,DEFSHORT,DEFSNG,DEFSTR,
+        DEFWORD,DELETE$,DIM,DIR$,DIREXISTS,DO,DOEVENTS,DOUBLE,DWORD,
+        ELSE,ELSEIF,END,ENVIRON,ENVIRON$,EVENT,EXIT,EXP,EXTENDS,
+        EXTRACTRESOURCE,FIELD$,FILEEXISTS,FIX,FLOOR,FOR,FORMAT$,FRAC,
+        FUNCTION,FUNCTIONI,GET$,GOSUB,GOTO,HEX$,IF,INC,INITARRAY,
+        INKEY$,INP,INPUT,INPUT$,INPUTHANDLE,INSERT$,INSTR,INT,INTEGER,
+        INV,IS,ISCONSOLE,KILL,KILLMESSAGE,LBOUND,LCASE$,LEFT$,LEN,
+        LFLUSH,LIB,LIBRARYINST,LOCATE,LOG,LONG,LOOP,LPRINT,LTRIM$,
+        MEMCMP,MESSAGEBOX,MESSAGEDLG,MID$,MKDIR,MOD,MOUSEX,MOUSEY,
+        NEXT,NOT,OFF,ON,OR,OUT,OUTPUTHANDLE,PARAMSTR$,PARAMSTRCOUNT,
+        PARAMVAL,PARAMVALCOUNT,PCOPY,PEEK,PLAYWAV,POKE,POS,POSTMESSAGE,
+        PRINT,PROPERTY,QUICKSORT,RANDOMIZE,REDIM,RENAME,REPLACE$,
+        REPLACESUBSTR$,RESOURCE,RESOURCECOUNT,RESTORE,RESULT,RETURN,
+        REVERSE$,RGB,RIGHT$,RINSTR,RMDIR,RND,ROUND,RTRIM$,RUN,
+        SCREEN,SELECT,SENDER,SENDMESSAGE,SETCONSOLETITLE,SGN,SHELL,
+        SHL,SHORT,SHOWMESSAGE,SHR,SIN,SINGLE,SIZEOF,SLEEP,SOUND,
+        SPACE$,SQR,STACK,STATIC,STEP,STR$,STRF$,STRING,STRING$,
+        SUB,SUBI,SWAP,TALLY,TAN,THEN,TIME$,TIMER,TO,TYPE,UBOUND,
+        UCASE$,UNLOADLIBRARY,UNTIL,VAL,VARIANT,VARPTR,VARPTR$,VARTYPE,
+        WEND,WHILE,WITH,WORD,XOR
+    """)
+    self.color('rapidq', text)
+#@+node:ekr.20250331063802.1: *3* retire documentation previous in LeoPyRef.leo
+#@+node:ekr.20050721093241: *4* << about gui classes and gui plugins >>
+@nocolor
+
+The following are notes for anyone who is interested in writing
+alternate gui's for Leo.
+
+Rule 1: Leo's core is (or should be) free of gui-specific code.
+
+Core code calls **gui wrapper methods** defined by gui-specific classes.
+
+Rule 2: Gui-specific code should be localized to a single file.
+
+Rule 3: Gui-specific code may call gui methods directly.
+
+There are no restrictions about the code in the gui-specific classes.
+
+Rule 4: Gui-specific classes must implement the gui wrapper methods
+specified in the gui base classes.
+
+This is the way that gui-specific classes provide gui-specific
+services to Leo's core.
+
+The alternative would be to implement all gui-specific commands
+directly in the gui-specific code.  But this would be much more work
+than needed.  For example, only a few gui-specific wrappers are needed
+to implement all commands that deal with body text.  Implementing each
+of these commands 'from scratch' would duplicate a lot of code
+unnecessarily.
+
+Using the gui wrapper methods is a bit messy for two reasons:
+
+1. It requires defining enough wrappers (both in the base gui classes
+   and subclasses) so that all gui-specific services needed by Leo's
+   core are available.  Adding a wrapper to a gui base class involves
+   adding it to all gui-specific subclasses.  It's easy to forget to
+   add a wrapper.  The gui base class defines all wrappers as a
+   function that just calls oops().  This prints a warning that the
+   wrapper should be defined in a subclass.
+
+2. The original wrappers assumed Tkinter-like indices.  Wrappers that
+   were defined later assume Python indices (see Rule 5 below).
+
+Rule 5: Leo's core should use Python indices, not gui-specific
+indices.
+
+Leo's core mostly follows this rule: there may be a few exceptions.
+
+A Python index is an int that runs from 0 (beginning of text) to
+len(s) (end of text s).  That is, there are exactly len(s) + 1 valid
+indices.  In contrast, Tkinter indices run from "1.0" to "x.y" where
+text s has x lines and where the length of the last line is y-1.
+
+Two functions in leoGlobals.py support conversions from Python indices to
+the row/column indices used by Tkinter.
+
+- g.convertPythonIndexToRowCol converts a Python index to a row/column
+  index used by Tkinter.
+
+- g.convertRowColToPythonIndex does the reverse.
+
+Important: the first Tkinter index is '1.0', not '0.0', but the row
+returned by g.convertPythonIndexToRowCol is zero based, so the code
+that actually creates Tkinter indices from row/col must add 1 to the
+row.  Similar remarks apply when going in the reverse direction.
+#@+node:ekr.20140831085423.18639: *4* About widgets and wrappers
+Here is what you *must know* to understand Leo's core:
+
+1. A **widget** is an actual gui widget.
+
+Leo's core seldom accesses widgets directly.  Instead...
+
+2. A **wrapper class** defines a standard api that hides the details
+   of the underlying gui **text** widgets.
+
+Leo's core uses this api almost exclusively. That is, Leo's core code
+treats wrappers *as if* they were only text widgets there are!
+
+There is, however, a back door for (hopefully rare!) special cases. All
+wrapper classes define an official ``widget`` ivar, so core or plugin code
+can gain access to the real (Qt) widget using wrapper.widget. Searching for
+wrapper.widget will find all gui-dependent snippets of code in Leo's core.
 #@+node:ekr.20240825054616.1: *3* retire add-editor
 @nosearch
 #@+node:ekr.20240825123857.1: *4* Multiple body editors
@@ -1338,1604 +2337,6 @@ def updateInjectedIvars(self, w: Any, p: Position) -> None:
     else:
         w.leo_chapter = None
     w.leo_p = p.copy()
-#@+node:ekr.20240830090655.1: *3* retire reload-outline
-#@+node:ekr.20240810080628.1: *4* LeoQtFrame.reloadOutline
-@frame_cmd('reload-outline')
-def reloadOutline(self, event: LeoKeyEvent = None) -> None:
-    """reload-outline: Close the outline and reload it."""
-    c = self.c
-
-    # Commit any open edits.
-    c.endEditing()
-
-    # Make sure the file has a name.
-    if not c.fileName():
-        c.save()
-    if not c.fileName():
-        g.es_print('Please name the outline', color='red')
-        return
-
-    # Abort the reload if the user vetos closing this outline.
-    if c.changed:
-        veto = False
-        try:
-            c.promptingForClose = True
-            veto = c.frame.promptForSave()
-        finally:
-            c.promptingForClose = False
-        if veto:
-            g.es_print('Cancelling reload-outline command')
-            return
-        # Save the file.
-        c.save()
-        g.app.recentFilesManager.writeRecentFilesFile(c)
-
-    # Remember old_index, the outline's position in the QTabbledWidget.
-    dw = c.frame.top
-    stacked_widget = dw.parent()
-    tab_widget = dw.leo_master
-    stacked_layout = None
-    for w in stacked_widget.children():
-        if isinstance(w, QtWidgets.QStackedLayout):
-            stacked_layout = w
-            break
-    else:
-        g.trace('Can not happen: no QStackedLayout')
-        return
-
-    # Remember the old values.
-    old_index = stacked_layout.indexOf(dw)
-    tab_names = [tab_widget.tabText(i) for i in range(tab_widget.count())]
-
-    # Completely close the outline.
-    g.doHook("close-frame", c=c)
-    frame = c.frame
-    if frame in g.app.windowList:
-        g.app.destroyWindow(frame)
-        g.app.windowList.remove(frame)
-    else:
-        g.app.forgetOpenFile(fn=c.fileName())  # #69.
-
-    # Open the new outline.
-    g.openWithFileName(fileName=c.fileName())
-
-    # Do nothing more if the index has not changed.
-    new_index = stacked_layout.indexOf(dw)
-    if new_index == old_index:
-        return
-
-    # Put dw in the proper place.
-    stacked_layout.removeWidget(dw)
-    stacked_layout.insertWidget(old_index, dw)
-
-    # Fix all tab names.
-    for i, name in enumerate(tab_names):
-        tab_widget.setTabText(i, name)
-
-    # Select the proper tab.
-    tab_widget.setCurrentIndex(old_index)
-#@+node:ekr.20240921134306.1: *3* retire minibuffer-based spell commands
-# These have probably never worked.
-#@+node:ekr.20150514063305.485: *4* commands...(SpellCommandsClass)
-#@+node:ekr.20171205043931.1: *5* add
-@cmd('spell-add')
-def add(self, event: LeoKeyEvent = None) -> None:
-    """
-    Simulate pressing the 'add' button in the Spell tab.
-
-    Just open the Spell tab if it has never been opened.
-    For minibuffer commands, we must also force the Spell tab to be visible.
-    """
-    # self.handler is a SpellTabHandler object (inited by openSpellTab)
-    if self.handler:
-        self.openSpellTab()
-        self.handler.add()
-    else:
-        self.openSpellTab()
-#@+node:ekr.20150514063305.486: *5* spell-find
-@cmd('spell-find')
-def find(self, event: LeoKeyEvent = None) -> None:
-    """
-    Simulate pressing the 'Find' button in the Spell tab.
-
-    Just open the Spell tab if it has never been opened.
-    For minibuffer commands, we must also force the Spell tab to be visible.
-    """
-    # self.handler is a SpellTabHandler object (inited by openSpellTab)
-    if self.handler:
-        self.openSpellTab()
-        self.handler.find()
-    else:
-        self.openSpellTab()
-#@+node:ekr.20150514063305.487: *5* change
-@cmd('spell-change')
-def change(self, event: LeoKeyEvent = None) -> None:
-    """Simulate pressing the 'Change' button in the Spell tab."""
-    if self.handler:
-        self.openSpellTab()
-        self.handler.change()
-    else:
-        self.openSpellTab()
-#@+node:ekr.20150514063305.488: *5* changeThenFind
-@cmd('spell-change-then-find')
-def changeThenFind(self, event: LeoKeyEvent = None) -> None:
-    """Simulate pressing the 'Change, Find' button in the Spell tab."""
-    if self.handler:
-        self.openSpellTab()
-        f = self.handler.changeThenFind
-        f()
-    else:
-        self.openSpellTab()
-#@+node:ekr.20150514063305.489: *5* hide
-@cmd('spell-tab-hide')
-def hide(self, event: LeoKeyEvent = None) -> None:
-    """Hide the Spell tab."""
-    if self.handler:
-        self.c.frame.log.selectTab('Log')
-        self.c.bodyWantsFocus()
-#@+node:ekr.20150514063305.490: *5* ignore
-@cmd('spell-ignore')
-def ignore(self, event: LeoKeyEvent = None) -> None:
-    """Simulate pressing the 'Ignore' button in the Spell tab."""
-    if self.handler:
-        self.openSpellTab()
-        self.handler.ignore()
-    else:
-        self.openSpellTab()
-#@+node:ekr.20150514063305.491: *5* focusToSpell
-@cmd('focus-to-spell-tab')
-def focusToSpell(self, event: LeoKeyEvent = None) -> None:
-    """Put focus in the spell tab."""
-    self.openSpellTab()  # Makes Spell tab visible.
-    # This is not a great idea. There is no indication of focus.
-        # if self.handler and self.handler.tab:
-            # self.handler.tab.setFocus()
-#@+node:ekr.20241029111205.1: *3* retire old testing code
-#@+node:ekr.20241029111221.1: *4* at-command test-one
-### This code no longer works, possibly because 
-### site_customize.py *MUST NOT* add the leo-editor directory to sys.path
-
-g.cls()
-if c.isChanged():
-    print('Saved!')
-    c.save()
-<< test-one: test kind >>
-<< prefixes >>
-<< old commands >>
-assert kind in ('check-all', 'check-one', 'beautify', 'test'), repr(kind)
-if kind == 'check-all':  # Check all files.
-    command = 'python -m leo.scripts.check_leo'
-    g.execute_shell_commands(command)
-elif kind == 'check-one':
-    # path = 'plugins/qt_gui.py'
-    path = 'core/leoApp.py'
-    command = f"python -m leo.scripts.check_leo {path}"
-    g.execute_shell_commands(command)
-elif kind == 'beautify':
-    << test the beautifier >>
-elif kind == 'test':
-    commands = (
-        f"{importers}.TestJupytext.test_small_file",
-    )
-    verbose_flag = ''  # -v
-    commands_s = f"python -m unittest {verbose_flag} {' '.join(commands)}"
-    g.execute_shell_commands(commands_s, trace=True)
-else:
-    # command = 'run'  # run Nim tests.
-    script = 'build-leo.py'
-    command = fr"python C:\Repos\leo-editor\leo\scripts\{script}"
-    g.execute_shell_commands(command)
-#@+node:ekr.20241029111221.2: *5* << test-one: test kind >>
-# Last one wins.
-kind = 'beautify'
-kind = 'test'  # Run unit test.
-#@+node:ekr.20241029111221.3: *5* << test the beautifier >>
-# Can be run from the command line as follows:
-# python -c "import leo.core.leoTokens" --all --report --write leo/core/leoAst.py
-args = '--all --report --write'  # --beautified --diff --write'
-for command in (
-    # f'python -c "import leo.core.leoTokens" {args} leoAst.py',
-    f'python -c "import leo.core.leoTokens" {args} leo/core',
-    'echo done!',
-):
-    print(command)
-    g.execute_shell_commands(command)
-#@+node:ekr.20241029111221.4: *5* << old commands >>
-# 'python c:/test/mypy_test.py',
-# 'python -m mypy c:/test/mypy_test.py',
-# 'python -m ruff check c:/test/mypy_test.py',
-# 'python -m pyflakes c:/test/mypy_test.py',
-
-### "leo.scripts.check_leo.TestCheckLeo",
-# f"{misc}.test_check_leo.TestCheckLeo",
-# f"{core}.test_leoserver.TestLeoServer.test_find_commands",
-# f"{core}.test_leoFind.TestFind.test_find_var",
-# f"{core}.test_leoTokens.TestTokenBasedOrange",
-# f"{core}.test_leoTokens.TestTokens",
-# f"{core}.test_leoTokens.TestTokenBasedOrange.test_blank_lines_after_function",
-# f"{core}.test_leoAtFile.TestAtFile.test_putBody_unterminated_at_doc_part",
-#@+node:ekr.20241029111221.5: *5* << prefixes >>
-commands = 'leo.unittests.commands'
-core = 'leo.unittests.core'
-gui = 'leo.unittests.test_gui'
-importers = 'leo.unittests.plugins.test_importers'
-misc = 'leo.unittests.misc_tests'
-plugins = 'leo.unittests.plugins'
-syntax = 'leo.unittests.plugins.test_syntax'
-writers = 'leo.unittests.plugins.test_writers'
-
-# f"{core}.test_leoGlobals",
-# f"{core}.test_leoTokens",
-
-# f"{misc}.test_design",
-# f"{misc}.test_doctests",
-# f"{misc}.test_syntax",
-
-# f"{plugins}.test_gui",
-# f"{plugins}.test_importers",
-# f"{plugins}.test_plugins",
-# f"{plugins}.test_writers",
-#@+node:ekr.20210905170507.9: *4* TestColorizer.test_colorizer_CWEB
-def test_colorizer_CWEB(self):
-    text = self.prep(
-        r"""\\\
-        % This is limbo in cweb mode... It should be in \LaTeX mode, not \c mode.
-        % The following should not be colorized: class,if,else.
-
-        @* this is a _cweb_ comment.  Code is written in \c.
-        "strings" should not be colorized.
-        It should be colored in \LaTeX mode.
-        The following are not keywords in latex mode: if, else, etc.
-        Noweb section references are _valid_ in cweb comments!
-        < < section ref > >
-        < < missing ref > >
-        @c
-
-        and this is C code. // It is colored in \LaTeX mode by default.
-        /* This is a C block comment.  It may also be colored in restricted \LaTeX mode. */
-
-        // Section refs are valid in code too, of course.
-        < < section ref > >
-        < < missing ref > >
-
-        \LaTeX and \c should not be colored.
-        if else, while, do // C keywords.
-""")
-    self.color('cweb', text)
-#@+node:ekr.20210905170507.28: *4* TestColorizer.test_colorizer_rapidq
-def test_colorizer_rapidq(self):
-    text = self.prep(
-    """
-        ' New in 4.2.
-        ' a comment.
-
-        $APPTYPE,$DEFINE,$ELSE,$ENDIF,$ESCAPECHARS,$IFDEF,$IFNDEF,
-        $INCLUDE,$MACRO,$OPTIMIZE,$OPTION,$RESOURCE,$TYPECHECK,$UNDEF,
-        ABS,ACOS,ALIAS,AND,AS,ASC,ASIN,ATAN,ATN,BIN$,BIND,BYTE,
-        CALL,CALLBACK,CALLFUNC,CASE,CEIL,CHDIR,CHDRIVE,CHR$,CINT,
-        CLNG,CLS,CODEPTR,COMMAND$,COMMANDCOUNT,CONSOLE,CONST,CONSTRUCTOR,
-        CONVBASE$,COS,CREATE,CSRLIN,CURDIR$,DATA,DATE$,DEC,DECLARE,
-        DEFBYTE,DEFDBL,DEFDWORD,DEFINT,DEFLNG,DEFSHORT,DEFSNG,DEFSTR,
-        DEFWORD,DELETE$,DIM,DIR$,DIREXISTS,DO,DOEVENTS,DOUBLE,DWORD,
-        ELSE,ELSEIF,END,ENVIRON,ENVIRON$,EVENT,EXIT,EXP,EXTENDS,
-        EXTRACTRESOURCE,FIELD$,FILEEXISTS,FIX,FLOOR,FOR,FORMAT$,FRAC,
-        FUNCTION,FUNCTIONI,GET$,GOSUB,GOTO,HEX$,IF,INC,INITARRAY,
-        INKEY$,INP,INPUT,INPUT$,INPUTHANDLE,INSERT$,INSTR,INT,INTEGER,
-        INV,IS,ISCONSOLE,KILL,KILLMESSAGE,LBOUND,LCASE$,LEFT$,LEN,
-        LFLUSH,LIB,LIBRARYINST,LOCATE,LOG,LONG,LOOP,LPRINT,LTRIM$,
-        MEMCMP,MESSAGEBOX,MESSAGEDLG,MID$,MKDIR,MOD,MOUSEX,MOUSEY,
-        NEXT,NOT,OFF,ON,OR,OUT,OUTPUTHANDLE,PARAMSTR$,PARAMSTRCOUNT,
-        PARAMVAL,PARAMVALCOUNT,PCOPY,PEEK,PLAYWAV,POKE,POS,POSTMESSAGE,
-        PRINT,PROPERTY,QUICKSORT,RANDOMIZE,REDIM,RENAME,REPLACE$,
-        REPLACESUBSTR$,RESOURCE,RESOURCECOUNT,RESTORE,RESULT,RETURN,
-        REVERSE$,RGB,RIGHT$,RINSTR,RMDIR,RND,ROUND,RTRIM$,RUN,
-        SCREEN,SELECT,SENDER,SENDMESSAGE,SETCONSOLETITLE,SGN,SHELL,
-        SHL,SHORT,SHOWMESSAGE,SHR,SIN,SINGLE,SIZEOF,SLEEP,SOUND,
-        SPACE$,SQR,STACK,STATIC,STEP,STR$,STRF$,STRING,STRING$,
-        SUB,SUBI,SWAP,TALLY,TAN,THEN,TIME$,TIMER,TO,TYPE,UBOUND,
-        UCASE$,UNLOADLIBRARY,UNTIL,VAL,VARIANT,VARPTR,VARPTR$,VARTYPE,
-        WEND,WHILE,WITH,WORD,XOR
-    """)
-    self.color('rapidq', text)
-#@+node:ekr.20241129101413.1: *3* retire leo_to_html.xsl
-#@+node:ekr.20241129101248.1: *4* leo_to_html.xsl (not used)
-@language xml
-
-<?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet version="1.0"
-xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-
-<xsl:output method="html" version="1.0" encoding="UTF-8" indent="yes"/>
-
-<!-- The default setting. Not needed unless there is a strip-space element. -->
-  <!-- <xsl:preserve-space elements='leo_file nodes t'/> -->
-
-<xsl:template match ='leo_file'>
-<html>
-  <head>
-    <!--
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/default.min.css">
-    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/highlight.min.js"></script>
-    -->
-    <style>
-        body{background-color: #505050}
-        /* pre { background:#FFE7C6; } */
-        /* Must use h1 for nodes: see below. */
-        h1 {
-          font-size: 12pt;
-          font-style: normal;
-          font-weight: normal;
-        }
-        div.outlinepane {
-          position: absolute;
-          background: #ffffec; /* Leo yellow */
-          top: 10px;
-          height: 300px;
-          width: 700px;
-          overflow-x: hidden;
-          overflow-y: scroll;
-          line-height: 0.8;
-          border: solid #bbb 1px;
-          
-        }
-        div.bodypane {
-          position: absolute;
-          background: #ffffec; /* Leo yellow */
-          top: 312px;
-          height: 300px;
-          width: 700px;
-          overflow: scroll;
-          border: solid #bbb 1px;
-        }
-        div.tnode {
-            visibility: hidden;
-            height: 0;
-        }
-        div.node {
-            position: relative;
-            left: 20px;
-        }
-        div.node[has-children] > h1 {
-            <!-- works -->
-            <!-- background: red; -->
-        }
-    </style>
-
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-    <script>
-
-      $(document).ready(function(){
-        if (true) {
-            // Toggle all but top-level nodes.
-            // This requires an indication
-            $(".node").toggle()
-            $(".outlinepane").children(".node").toggle()
-        } else {
-            // Toggle all second-level nodes.
-            // Safer, until we can see which nodes have children.
-            $(".outlinepane").children(".node").children(".node").toggle()
-        }
-        $("h1").click(function(){
-          $(this).parent().children("div.node").toggle();
-          // The parent div's id is v.x.
-          // Find the tnode div whose id is t.x.
-          console.clear();
-          parent_id=$(this).parent().attr("id");
-          if (parent_id) {
-            target=$(this).parent().attr("id").substring(2);
-              console.log("clicked:"+$(this).text())
-              // console.log("parent:"+$(this).parent())
-              // console.log("target:"+target)
-            $(".tnode").each(function(){
-              console.log($(this).attr("id"))
-              target2=$(this).attr("id").substring(2);
-              if (target === target2) {
-                console.log("found:"+target2)
-                // $("pre.body-text").text($(this).text());
-                $("code").text($(this).text());
-              };
-            }); // end .each.
-          };
-        });
-      });
-    </script>
-  </head>
-  <body>
-    <xsl:apply-templates select='tnodes'/>
-    <div class="outlinepane">
-      <!-- <h4>Outline Pane</h4> -->
-      <xsl:apply-templates select='vnodes'/>
-    </div>
-    <div class="bodypane">
-      <!-- <h4>Body Pane</h4> -->
-      <pre class="body-text"><code></code></pre>
-    </div>
-  </body>
-</html>
-</xsl:template>
-
-<xsl:template match = 'tnodes'>
-<div class="tnodes">
-  <xsl:for-each select = 't'>
-    <div class="tnode">
-      <xsl:attribute name="id"><xsl:value-of select='@tx'/></xsl:attribute>
-      <xsl:value-of select='.'/>
-    </div>
-  </xsl:for-each>
-</div>
-</xsl:template>
-
-<xsl:template match = 'vnodes'>
-  <xsl:for-each select = 'v'>
-    <xsl:apply-templates select ='.'/>
-  </xsl:for-each>
-</xsl:template>
-
-<xsl:template match='v'>
-  <div class="node">
-    <xsl:attribute name="id"><xsl:value-of select='@t'/></xsl:attribute>
-    <xsl:choose>
-      <xsl:when test ='./v' >
-        <xsl:attribute name="has-children">1</xsl:attribute>
-        <h1>+ <xsl:value-of select='vh'/></h1>
-        <xsl:apply-templates select = 'v'/>
-      </xsl:when>
-      <xsl:when test ='vh' >
-        <h1>- <xsl:value-of select='vh'/></h1>
-      </xsl:when>
-      <!--
-      <xsl:otherwise>
-        <h1>- <xsl:value-of select='vh'/></h1>
-      </xsl:otherwise>
-      -->
-    </xsl:choose>
-  </div>
-</xsl:template>
-
-</xsl:stylesheet>
-#@+node:ekr.20241129101440.1: *4* do-leo.php (not used)
-@language php
-
-<?php
-$DEBUG = 0;
-/*************************************************************************/
-/*
- * Support php script for load-leo.html
- *
- * Project purpose:
- *   Allow anyone to go to http://leo-editor.com/load-leo.html and use that
- *   html file to create a read-only version of the original leo file
- *   displayed in a meaningfull way by the web browser.
- *
- * Project operational summary:
- *   -An operator arrives at http://leo-editor.com/load-leo.html
- *   -The operator chooses a file either on their own hard drive, or on
- *    the Internet somewhere
- *   -With either choice, this php script receives, from the web page,
- *    either the name of the file to upload, or the name of a temporary
- *    file that has already been created in the php temp directory by the
- *    javascript in load-leo.html.
- *   -If this script receives the name of a temp file, then the contents
- *    of the target leo file already exist in the web server's file system
- *    in the form of a temporary file which will be deleted as soon as this
- *    script goes out of scope.
- *   -If this script receives the url of a file on the Internet, the script 
- *    knows to use that url as the source for the leo file to display.
- *   -This scripts reads the contents of the source leo file
- *   -This script then injects a reference to
- *    http://www.leoeditor.com/leo_to_html.xsl into the destination file
- *    if such a reference does not already exist in the destination file.
- *   -This script then writes the resulting file to a temporary file in the
- *    /tmp directory. The name format for the temporary file name is:
- *      show-leo-<16-hex-digit-random-name>.leo
- *   -This script then returns the file name to the calling load-leo.html
- *    file (Or an error message).
- *   -show-leo.html then either displays the error message, or changes
- *    document.location to the newly created leo file.
- *   -If show-leo.html changes its page location to the new temporary
- *    file, the apache server renders the page as xml to the browser, using
- *    the html-to_leo.xsl file as a stylesheet during the rendering.
- *
- * Notes:
- *   -This php script has only been tested using Firefox browsers.
- *   -The maximum file size for viewing is 10M.
- *   -leoeditor.com is hosted on a system using an Apache server, whose
- *    settings allow the placement of .htaccess in any root directory.
- *   -The .htaccess file in the root of leoeditor.com has been altered to
- *    request that apache consider all files ending in .leo to be treated
- *    as .xml files.
- *   -The line added to .htaccess is:
- *
- *       AddType application/xml leo
- *
- *   -Each time this script is run, the /tmp directory is scanned and any
- *    files older than 8 hours are removed. This serves as temporary file
- *    garbage collection.
- *   -In addition to scanning for older files, the entire contents of the
- *    /tmp directory are examined for total size. If the size exceeds
- *    500M, files are deleted, oldest first until the directory contents
- *    are less than 400M.
- *   -The maximum size for a single leo file is set by the php and apache
- *    setup. On this particular site, the max size is 64M. However, we
- *    limit the size to 10M.
- *   -Previous versions of this script placed a limit of 1000 users with
- *    concurrent access to this service. This restriction has been removed
- *    so there is no longer any artificial limit as to how many users may
- *    use this service at the same time.
- */
-/*************************************************************************/
-// Globals
-/*************************************************************************/
-$AMeg           = 1048576; // 1M
-$Error_Message  = "\n" . '<br><p style="font-weight:900;">';
-$Error_Message .= "Error uploading file</p><br>\n";
-$File_Size      = 0;
-$Is_Local       = false;
-$Max_File_Size  = $AMeg * 10;
-$Leo_Ext        = "leo";
-if (!$DEBUG)
-{
-  // If not testing
-  $Max_Storage_Size = $AMeg * 500;
-  $Shrink_Size      = $Max_Storage_Size - ($AMeg * 100);
-  $Temp_Dir         = getcwd() . "/tmp";
-}
-else
-{
-  // If testing
-  $Max_Storage_Size = 339834;
-  $Shrink_Size      = 21866;
-  $Temp_Dir         = getcwd() . "/tmp1";
-}
-/*************************************************************************/
-// Functions start here
-/*************************************************************************/
-
-// Return an error message, exit script
-function error_exit()
-{
-  global $Error_Message;
-  echo   $Error_Message;
-  exit("");
-} // error_exit
-
-/*************************************************************************/
-
-// Get the temp file name containing the data, or the remote url containing
-// the data
-function get_source_name()
-{
-  global $Is_Local;
-  $Is_Local = false;
-  foreach($_POST as $key => $value)
-  {
-    if ($key == "MAX_FILE_SIZE")
-    {
-      $name = $_FILES['Filedata']['tmp_name'];
-      if ($name == "")
-      {
-        echo "<br>" . "File is too large or file name has an error." . "<br>";
-        error_exit();
-      }
-      $Is_Local = true;
-      return $name;
-    }
-  }
-  $name     = $_POST['get_name'];
-  if ($name == "")
-  {
-    echo "<br>" . "File is too large or file name has an error." . "<br>";
-    error_exit();
-  }
-  return $name;
-} // get_source_name
-
-/*************************************************************************/
-
-// Age out one file. It can't be a directory. If it is 8 hours old, kill
-// it.
-function age_file($filename)
-{
-  $day = time() - (8 * 60 * 60);
-  if (file_exists($filename))
-  {
-    if (is_dir($filename))
-      return true;
-    $age = filemtime($filename);
-      if ($age === false)
-        return true;
-    if ($age < $day)
-      unlink($filename);
-      return true;
-  }
-  return false;
-} // age_file
-
-/*************************************************************************/
-
-// Delete files from the directory, oldest first, until the size is below
-// the target size.
-
-function size_directory()
-{
-  global $Max_Storage_Size;
-  global $Shrink_Size;
-  global $Temp_Dir;
-  // sorting routine, sort by file age, oldest will be at the top of the
-  // array
-  function cmp($a, $b)
-  {
-    if ($a == $b)
-      return 0;
-    return ($a < $b) ? -1 : 1;
-  }
-  $filelist = array();
-  $count    = 0;
-  $handle = opendir($Temp_Dir);
-  if (!$handle)
-  {
-    echo "<br>" . "File is too large or file name has an error." . "<br>";
-    error_exit();
-  }
-  while (false !== ($entry = readdir($handle)))
-  {
-    if ($entry == ".")  continue;
-    if ($entry == "..") continue;
-    $fullname = $Temp_Dir . "/" . $entry;
-    $filelist[$entry] = filemtime($fullname);
-    $size += filesize($fullname);
-    ++$count;
-    if ($count > 500)
-      break;
-  } // while
-  $keys = array_keys($filelist);
-  if ($size < $Max_Storage_Size)
-    return;
-  uasort($filelist, cmp);
-  $count = 0;
-  $keys  = array_keys($filelist);
-  foreach ($keys as $file_num => $fname)
-  {
-    $fullname = $Temp_Dir . "/" . $fname;
-    $fsize = filesize($fullname);
-    unlink($fullname);
-    $size -= $fsize;
-    if ($size < 0)
-      $size = 0;
-    if ($size < $Max_Storage_Size - $Shrink_Size)
-      break;
-    ++$count;
-    if ($count > 10000)
-      break;
-  } // foreach
-}
-/*************************************************************************/
-
-// 1. Age out any old temp files. We only age out 10000 at a time ;)
-// 2. Check total size of directory and delete files, oldest first, if our
-//    size limit has been exceeded.
-function age_directory()
-{
-  global $Max_Storage_Size;
-  global $Temp_Dir;
-  $size  = 0;
-  $count = 0;
-  // Age old files
-  $handle = opendir($Temp_Dir);
-  if (!$handle)
-  {
-    echo "<br>" . "File is too large or file name has an error." . "<br>";
-    error_exit();
-  }
-  while (false !== ($entry = readdir($handle)))
-  {
-    if ($entry == ".")  continue;
-    if ($entry == "..") continue;
-    $data = $Temp_Dir . "/" . $entry;
-    if (!age_file($data))
-      $size += filesize($data);
-    ++$count;
-    if ($count > 10000)
-      break;
-  }
-  closedir($handle);
-  if ($size >= $Max_Storage_Size)
-    return size_directory();
-} // age_directory
-
-/*************************************************************************/
-
-// Create a random hex string. Maximum length is 32.
-function get_random_hex_string($length)
-{
-   $res = "";
-   $count = 0;
-   if ($length < 1)
-     return "";
-   if ($length > 32)
-     $length = 32;
-   while (strlen($res) < $length)
-   {
-     ++$count;
-     if ($count > 33)
-     {
-       echo "<br>" . "File is too large or file name has an error." . "<br>";
-       error_exit();
-     }
-     $temp = dechex(mt_rand());
-     $res = $res . $temp;
-     if (strlen($res) == $length)
-       return $res;
-     if (strlen($res) > $length)
-       return substr($res, 0, $length);
-   }
-} // get_random_hex_string
-
-/*************************************************************************/
-
-// Create the output file object
-function create_out_file()
-{
-   global $Temp_Dir;
-   $stub = get_random_hex_string(16);
-   if ($stub == "")
-   {
-     echo "<br>" . "Cannot create the temporary file on the web site." . "<br>";
-     error_exit();
-   }
-   $name = "show-leo-" . $stub . ".leo";
-   $file_object = fopen($Temp_Dir . "/" . $name, "w");
-   if (!$file_object)
-   {
-     echo "<br>" . "Cannot create the temporary file on the web site." . "<br>";
-     error_exit();
-   }
-   return array($name, $file_object);
-} // create_out_file
-
-/*************************************************************************/
-
-// Check that this is a valid leo file name, and that the file size is
-// ok.
-
-function validate_file($name)
-{
-  global $File_Size;
-  global $Is_Local;
-  global $Leo_Ext;
-  global $Max_File_Size;
-  $File_Size = 0;
-  if ($Is_Local)
-  {
-    // Can't check the name, because it has been named by javascript
-    // using a temp file routine. Size should already be ok, but check
-    // anyway to make sure we can stat the file.
-    $File_Size = filesize($name);
-    if (($File_Size > $Max_File_Size) || $File_Size == 0)
-    {
-      echo "<br>File is too large<br>\n";
-      error_exit();
-    }
-    return;
-  }
-  // check name
-  $extension = pathinfo($name, $options = PATHINFO_EXTENSION);
-  if ($extension != $Leo_Ext)
-  {
-    echo "<br>The file must end in .leo<br>\n";
-    error_exit();
-  }
-  // check size
-  $headers = get_headers($name);
-  foreach($headers as $h)
-  {
-
-    // split is deprecated. See Leo issue #1551
-    // $chunks = split(":", $h);
-    $chunks = explode(":", $h);
-    $type   = $chunks[0];
-    if ($type == "Content-Length")
-      $File_Size = $chunks[1];
-  }
-  if ($File_Size > $Max_File_Size || $File_Size <= 0)
-  {
-    echo "<br>File is too large<br>\n";
-    error_exit();
-  }
-  //echo "<br>File Size = ". $File_Size . "<br>\n";
-}
-
-
-/*************************************************************************/
-
-// Read the source file into memory. If the file is too large to read all-
-// at-once, php will barf, which is what we want. We will also enforce our
-// own size limit
-function read_source_file($name)
-{
-  validate_file($name);
-  $lines = file($name);
-  if (!$lines)
-  {
-    echo("<br>Can't read this file.<br>");
-    error_exit();
-  }
-  return $lines;
-} // read_source_file
-
-/*************************************************************************/
-// Script execution starts here
-/*************************************************************************/
-
-// Age out any existing old tmp files
-age_directory();
-
-// Either get the source script name
-if (!$DEBUG)
-{
-  $script_name = get_source_name();
-}
-
-// Or use the following for testing
-else
-{
-  $git_root    = "https://raw.githubusercontent.com/";
-  $leo_root    = "leo-editor/leo-editor/master/";
-  $script_name = $git_root . $leo_root . "leo/doc/CheatSheet.leo";
-}
-
-// Read the file contents into memory. Make sure it exists and is not too
-// large.
-$lines = read_source_file($script_name);
-
-// Create the output file object
-list($out_file_name, $out_file) = create_out_file();
-
-/*************************************************************************/
-// Read the first 10 lines of the file to see if there is an old reference
-// to ekr_test or a new reference to leo_to_html.xsl. If there is a
-// reference to leo_to_html.xsl, do nothing about such reference. If there
-// is a reference to ekr_test, replace this reference with a reference to
-// leo_to_html.xsl. If there is no reference to leo_to_html.xsl, inject
-// a reference on line 2 of the file.
-$false_line  = '<?xml-stylesheet type="text/xsl" href="http://leoeditor.';
-$false_line .= 'com/leo_to_html.xsl"?>';
-
-$inject_line_two = true;
-$change_ekr_test = false;
-foreach ($lines as $line_num => $line)
-{
-  if(strstr($line, "?xml-stylesheet ekr_test?"))
-  {
-    $change_ekr_test = true;
-    $inject_line_two = false;
-    if ($line_num == 10)
-      break;
-  }
-} // foreach
-foreach ($lines as $line_num => $line)
-{
-  if(strstr($line, "leo_to_html.xsl"))
-  {
-    if (!strstr($line, $false_line))
-    {
-      $change_ekr_test = false;
-      $inject_line_two = false;
-      if ($line_num == 10)
-        break;
-    }
-  }
-} // foreach
-
-/*************************************************************************/
-// Write the output file one line at a time. Insert the xsl reference if
-// needed
-$insert  = '<?xml-stylesheet type="text/xsl"';
-$insert .= ' href="/leo_to_html.xsl"?>' . "\n";
-foreach ($lines as $line_num => $line)
-{
-  if ($line_num == 2)
-  {
-    if ($inject_line_two)
-      fwrite($out_file, $insert);
-  }
-  if ($line == "<?xml-stylesheet ekr_test?>\n")
-  {
-    if ($change_ekr_test)
-      $line = $insert;
-  }
-  fwrite($out_file, $line);
-} // foreach
-fclose($out_file);
-echo $out_file_name;
-// The following lines for testing only
-//echo "<br>out_file_name = " . $out_file_name . "<br>\n";
-//echo "<br>Good Return<br>\n";
-/*************************************************************************/
-?>
-#@+node:ekr.20250331063802.1: *3* retire documentation previous in LeoPyRef.leo
-#@+node:ekr.20050721093241: *4* << about gui classes and gui plugins >>
-@nocolor
-
-The following are notes for anyone who is interested in writing
-alternate gui's for Leo.
-
-Rule 1: Leo's core is (or should be) free of gui-specific code.
-
-Core code calls **gui wrapper methods** defined by gui-specific classes.
-
-Rule 2: Gui-specific code should be localized to a single file.
-
-Rule 3: Gui-specific code may call gui methods directly.
-
-There are no restrictions about the code in the gui-specific classes.
-
-Rule 4: Gui-specific classes must implement the gui wrapper methods
-specified in the gui base classes.
-
-This is the way that gui-specific classes provide gui-specific
-services to Leo's core.
-
-The alternative would be to implement all gui-specific commands
-directly in the gui-specific code.  But this would be much more work
-than needed.  For example, only a few gui-specific wrappers are needed
-to implement all commands that deal with body text.  Implementing each
-of these commands 'from scratch' would duplicate a lot of code
-unnecessarily.
-
-Using the gui wrapper methods is a bit messy for two reasons:
-
-1. It requires defining enough wrappers (both in the base gui classes
-   and subclasses) so that all gui-specific services needed by Leo's
-   core are available.  Adding a wrapper to a gui base class involves
-   adding it to all gui-specific subclasses.  It's easy to forget to
-   add a wrapper.  The gui base class defines all wrappers as a
-   function that just calls oops().  This prints a warning that the
-   wrapper should be defined in a subclass.
-
-2. The original wrappers assumed Tkinter-like indices.  Wrappers that
-   were defined later assume Python indices (see Rule 5 below).
-
-Rule 5: Leo's core should use Python indices, not gui-specific
-indices.
-
-Leo's core mostly follows this rule: there may be a few exceptions.
-
-A Python index is an int that runs from 0 (beginning of text) to
-len(s) (end of text s).  That is, there are exactly len(s) + 1 valid
-indices.  In contrast, Tkinter indices run from "1.0" to "x.y" where
-text s has x lines and where the length of the last line is y-1.
-
-Two functions in leoGlobals.py support conversions from Python indices to
-the row/column indices used by Tkinter.
-
-- g.convertPythonIndexToRowCol converts a Python index to a row/column
-  index used by Tkinter.
-
-- g.convertRowColToPythonIndex does the reverse.
-
-Important: the first Tkinter index is '1.0', not '0.0', but the row
-returned by g.convertPythonIndexToRowCol is zero based, so the code
-that actually creates Tkinter indices from row/col must add 1 to the
-row.  Similar remarks apply when going in the reverse direction.
-#@+node:ekr.20140831085423.18639: *4* About widgets and wrappers
-Here is what you *must know* to understand Leo's core:
-
-1. A **widget** is an actual gui widget.
-
-Leo's core seldom accesses widgets directly.  Instead...
-
-2. A **wrapper class** defines a standard api that hides the details
-   of the underlying gui **text** widgets.
-
-Leo's core uses this api almost exclusively. That is, Leo's core code
-treats wrappers *as if* they were only text widgets there are!
-
-There is, however, a back door for (hopefully rare!) special cases. All
-wrapper classes define an official ``widget`` ivar, so core or plugin code
-can gain access to the real (Qt) widget using wrapper.widget. Searching for
-wrapper.widget will find all gui-dependent snippets of code in Leo's core.
-#@+node:ekr.20240820045246.1: ** To be cleared later
-# Clear after 6.8.2.
-#@+node:ekr.20250723063858.1: *3* changed via PR #4395
-#@+node:ekr.20250723063855.1: *4* efc.toAtEdit
-def toAtEdit(self, p: Position) -> None:
-    """Convert p from @auto to @edit."""
-    c = self.c
-    w = c.frame.body.wrapper
-    p.h = '@edit' + p.h[5:]
-    # Compute the position of the present line within the *selected* node c.p
-    ins = w.getInsertPoint()
-    row, col = g.convertPythonIndexToRowCol(c.p.b, ins)
-    # Ignore directive lines.
-    directives = [z for z in g.splitLines(c.p.b)[:row] if g.isDirective(z)]
-    row -= len(directives)
-    row = max(0, row)
-    # Count preceding lines from p to c.p, again ignoring directives.
-    for p2 in p.self_and_subtree(copy=False):
-        if p2 == c.p:
-            break
-        lines = [z for z in g.splitLines(p2.b) if not g.isDirective(z)]
-        row += len(lines)
-    # Reload the file into a single node.
-    c.selectPosition(p)
-    c.refreshFromDisk(p)
-    # Restore the line in the proper node.
-    ins = g.convertRowColToPythonIndex(p.b, row + 1, 0)
-    w.setInsertPoint(ins)
-    p.setDirty()
-    c.setChanged()
-    c.redraw()
-    c.bodyWantsFocus()
-#@+node:ekr.20250723064043.1: *4* efc.toAtEdit
-def toAtEdit(self, p: Position) -> None:
-    """Convert p from @auto to @edit."""
-    c = self.c
-    w = c.frame.body.wrapper
-    p.h = '@edit' + p.h[5:]
-    # Compute the position of the present line within the *selected* node c.p
-    ins = w.getInsertPoint()
-    row, col = g.convertPythonIndexToRowCol(c.p.b, ins)
-    # Ignore directive lines.
-    directives = [z for z in g.splitLines(c.p.b)[:row] if g.isDirective(z)]
-    row -= len(directives)
-    row = max(0, row)
-    # Count preceding lines from p to c.p, again ignoring directives.
-    for p2 in p.self_and_subtree(copy=False):
-        if p2 == c.p:
-            break
-        lines = [z for z in g.splitLines(p2.b) if not g.isDirective(z)]
-        row += len(lines)
-    # Reload the file into a single node.
-    c.selectPosition(p)
-    c.refreshFromDisk(p)
-    # Restore the line in the proper node.
-    ins = g.convertRowColToPythonIndex(p.b, row + 1, 0)
-    w.setInsertPoint(ins)
-    p.setDirty()
-    c.setChanged()
-    c.redraw()
-    c.bodyWantsFocus()
-#@+node:ekr.20241125100825.1: *3* leo/scripts/sphinx_build.py (not used)
-@language python
-
-"""
-leo/scripts/sphinx_build.py.
-
-Invoke python/scripts/sphinx_build.exe
-
-Note: This straightforward script works on EKR's Windows 11 machine.
-      There is *no* guarantee that it will work elsewhere.
-      
-      EKR's sphinx-build.cmd calls this script as follows:
-      python <path to>/leo-editor/leo/Scripts/sphinx_build.py %*
-"""
-
-import os
-import subprocess
-import sys
-
-# Find python/Scripts/sphinx-build.exe.
-python_folder = os.path.dirname(sys.executable)
-script = os.path.normpath(os.path.join(
-    python_folder, 'Scripts', 'sphinx-build.exe'))
-
-if os.path.exists(script):
-    # Create a command that executes python/Scripts/sphinx-build.exe.
-    args_s = ' '.join(sys.argv[1:])
-    script_s = f'"{script}" {args_s}'
-    command = fr"python {script_s}"
-    # Print and execute the command!
-    print(f"sphinx_build.py: {command}\n")
-    subprocess.Popen(command, shell=True).communicate()
-else:
-    print('')
-    print(f"Not found: {script!r}")
-    print('pip install sphinx')
-    print('')
-#@+node:ekr.20240821135031.1: *3* dw.change_layout (not used)
-def change_layout(self, layout_name: str) -> None:
-    """
-    Find and change the @string qt-layout-name setting,
-    then execute the restart-leo command.
-    """
-    c = self.leo_c
-    h = '@string qt-layout-name'
-    root = c.config.settingsRoot()
-    if not root:
-        top = c.lastTopLevel()
-        root = top.insertAfter()
-        root.h = '@settings'
-        print('Adding @settings node')
-        c.redraw()
-    p = g.findNodeInTree(c, root, h, exact=False)
-    if not p:
-        p = root.insertAsLastChild()
-        p.h = f"{h} = {layout_name}"
-        print(f"Adding {p.h}")
-        print(f"Switching to {layout_name}")
-        c.save()
-        # c.frame.reloadOutline()
-        c.restartLeo()
-    elif p.h.endswith(f" {layout_name}"):
-        g.es_print(f"Already using {layout_name}")
-    else:
-        p.h = f"{h} = {layout_name}"
-        c.save()
-        print(f"Switching to {layout_name}")
-        # c.frame.reloadOutline()
-        c.restartLeo()
-#@+node:ekr.20250327110007.1: *3* deleted via PR #4320
-https://github.com/leo-editor/leo-editor/pull/4320
-#@+node:vitalije.20170716201700.11: *4* _openFile (SqlitePickleShare)
-def _openFile(self, fn: str, mode: str = 'r') -> Optional[Any]:
-    """ Open this file.  Return a file object.
-
-    Do not print an error message.
-    It is not an error for this to fail.
-    """
-    try:
-        return open(fn, mode)
-    except Exception:
-        return None
-#@+node:ekr.20110605121601.17940: *4* qtree.wrapQLineEdit
-def wrapQLineEdit(self, w: Wrapper) -> Wrapper:
-    """A wretched kludge for MacOs k.masterMenuHandler."""
-    c = self.c
-    if isinstance(w, QtWidgets.QLineEdit):
-        wrapper = self.edit_widget(c.p)
-    else:
-        wrapper = w
-    return wrapper
-#@+node:tbrown.20150724090431.10: *4* toggle_sclass
-def toggle_sclass(self, w: Wrapper, prop: Any) -> None:
-    """Toggle style class or list of classes prop on QWidget w"""
-    if not prop:
-        return
-    props = set(self.sclasses(w))
-    if isinstance(prop, str):
-        prop = set([prop])
-    else:
-        prop = set(prop)
-    current = props.intersection(prop)
-    props.update(prop)
-    props = props.difference(current)
-    self.set_sclasses(w, props)
-#@+node:ekr.20070422094710: *4* LeoBody.createChapterIvar
-def createChapterIvar(self, w: Wrapper) -> None:
-    c = self.c
-    cc = c.chapterController
-    if not hasattr(w, 'leo_chapter') or not w.leo_chapter:
-        if cc and self.use_chapters:
-            w.leo_chapter = cc.getSelectedChapter()
-        else:
-            w.leo_chapter = None
-#@+node:ekr.20250401051638.1: *3* deleted via PR #4322
-https://github.com/leo-editor/leo-editor/pull/4322
-#@+node:ekr.20250401051709.27: *4* chapter.findEditorInChapter
-def findEditorInChapter(self, p: Position) -> Wrapper:
-    """return w, an editor displaying position p."""
-    chapter, c = self, self.c
-    w = c.frame.body.wrapper
-    if w:
-        w.leo_chapter = chapter
-        w.leo_p = p and p.copy()
-    return w
-#@+node:ekr.20250401051710.23: *4* LeoBody.ensurePositionExists
-def ensurePositionExists(self, w: TextAPI) -> bool:
-    """Return True if w.leo_p exists or can be reconstituted."""
-    c = self.c
-    if c.positionExists(w.leo_p):
-        return True
-    g.trace('***** does not exist', w.leo_p)
-    for p2 in c.all_unique_positions():
-        if p2.v and p2.v == w.leo_v:
-            w.leo_p = p2.copy()
-            return True
-    # This *can* happen when selecting a deleted node.
-    w.leo_p = c.p
-    return False
-#@+node:ekr.20250331151305.15: *4* LeoBody.switchToChapter
-def switchToChapter(self, w: TextAPI) -> None:
-    """select w.leo_chapter."""
-    c = self.c
-    cc = c.chapterController
-    chapter = getattr(w, 'leo_chapter', None)
-    if chapter:
-        chapter = w.leo_chapter
-        name = chapter and chapter.name
-        oldChapter = cc.getSelectedChapter()
-        if chapter != oldChapter:
-            cc.selectChapterByName(name)
-            c.bodyWantsFocus()
-#@+node:ekr.20250405071041.1: *3* deleted via PR #4323
-#@+node:ekr.20250401111942.1: *4* at.languageFromAtFileNodeBody (not used)
-def languageFromAtFileNodeBody(self, p: Position) -> Optional[str]:
-    """
-    p is an @<file> node.
-    
-    Return the language from p.b, looking for *unambiguous @language directives.
-    
-    Note: p.b will be empty when *reading* any @<file> node.
-    """
-    s = p.b.strip()
-    if not s:
-        return None
-    languages: list[str] = []
-    tag = '@language'
-    for line in g.splitLines(s):
-        if line.startswith(tag):
-            language = line[len(tag) :].strip()
-            languages.append(language)
-    if len(languages) == 1:
-        return languages[0]
-    return None
-#@+node:ekr.20080923070954.4: *4* at.scanAllDirectives (no longer used)
-def scanAllDirectives(self, p: Position) -> dict[str, Value]:
-    """
-    Scan p and p's ancestors looking for directives,
-    setting corresponding AtFile ivars.
-    """
-    g.deprecated()  # This method is deprecated
-    at, c = self, self.c
-    d = c.scanAllDirectives(p)
-
-    # #4323: The hard cases. Set the language and delims using only p.h and p.b.
-    delims = None
-    if p.isAnyAtFileNode():  #4323: Look no further.
-        language = at.languageFromAtFileNodeHeadline(p)
-        # We *must* calculate delims when writing.
-        delims = at.delimsFromAtFileNodeBody(p)
-    elif p.h.startswith(('@button', '@command')):
-        language = 'python'
-    else:
-        # Language doesn't matter here.
-        # It would be unnecessary/wrong to examine ancestor nodes.
-        language = c.target_language or 'python'
-    at.language = language
-
-    # Make sure to define delims.
-    if delims in (None, (None, None, None)):  # #4256
-        delims = g.set_delims_from_language(language)
-
-    << Set comment strings from delims >>
-
-    # Easy cases
-    at.encoding = d.get('encoding') or c.config.default_derived_file_encoding
-    lineending = d.get('lineending')
-    at.explicitLineEnding = bool(lineending)
-    at.output_newline = lineending or g.getOutputNewline(c=c)
-    at.page_width = d.get('pagewidth') or c.page_width
-    at.tab_width = d.get('tabwidth') or c.tab_width
-    return {
-        "encoding": at.encoding,
-        "language": at.language,
-        "lineending": at.output_newline,
-        "pagewidth": at.page_width,
-        "path": d.get('path'),
-        "tabwidth": at.tab_width,
-    }
-#@+node:ekr.20080923070954.13: *5* << Set comment strings from delims >> (at.scanAllDirectives)
-delim1, delim2, delim3 = delims
-# Use single-line comments if we have a choice.
-# delim1,delim2,delim3 now correspond to line,start,end
-if delim1:
-    at.startSentinelComment = delim1
-    at.endSentinelComment = ""  # Must not be None.
-elif delim2 and delim3:
-    at.startSentinelComment = delim2
-    at.endSentinelComment = delim3
-else:  # pragma: no cover
-    #
-    # Emergency!
-    #
-    # Issue an error only if at.language has been set.
-    # This suppresses a message from the markdown importer.
-    if not g.unitTesting and at.language:
-        g.trace(repr(at.language), g.callers())
-        g.es_print(f"unknown language: {at.language}")
-        g.es_print('using Python comment delimiters')
-    at.startSentinelComment = "#"  # This should never happen!
-    at.endSentinelComment = ""
-#@+node:ekr.20250405064746.1: *4* c.scanForAtLanguage (never used)
-### Use a regex to avoid allocating temp strings.
-### at_language_pattern = re.compile(r'^@language\s+([\w]+)', re.MULTILINE)
-
-def scanForAtLanguage(self, p: Position) -> str:
-    """Return the language in effect for p."""
-    c = self
-    language = g.getLanguageFromAncestorAtFileNode(c.p)
-    if language:
-        assert g.isValidLanguage(language)
-        return language
-    return c.target_language or 'python'
-    ###
-        # for p2 in p.self_and_parents():
-            # for m in c.at_language_pattern.finditer(p2.b):
-                # language = m.group(1)
-                # if g.isValidLanguage(language):
-                    # return language
-                # g.trace('OOP', language)
-        # return c.target_language or 'python'
-#@+node:ekr.20241012044745.1: *4* gdc.find_language
-def find_language(self, c: Cmdr, p: Position) -> str:
-    """Return the @language directive in effect at p."""
-    if not p:
-        return c.target_language
-    return c.getLanguage(p)
-#@+node:ekr.20210905052021.28: *4* TestAtFile.test_at_scanAllDirectives
-def test_at_scanAllDirectives(self):
-    self.skipTest("at.scanAllDirectives is deprecated")
-    at, c = self.at, self.c
-    d = at.scanAllDirectives(c.p)
-    # These are the commander defaults, without any settings.
-    self.assertEqual(d.get('language'), 'python')
-    self.assertEqual(d.get('tabwidth'), -4)
-    self.assertEqual(d.get('pagewidth'), 132)
-#@+node:ekr.20210905052021.29: *4* TestAtFile.test_at_scanAllDirectives_minimal_
-def test_at_scanAllDirectives_minimal_(self):
-    self.skipTest("at.scanAllDirectives is deprecated")
-    at, c = self.at, self.c
-    d = at.scanAllDirectives(c.p)
-    d = c.atFileCommands.scanAllDirectives(c.p)
-    assert d
-#@+node:ekr.20210906075242.17: *4* TestCommands.test_c_scanAllDirectives
-def test_c_scanAllDirectives(self):
-    self.skipTest("c.scanAllDirectives is deprecated")
-    c = self.c
-    d = c.scanAllDirectives(c.p)
-    # These are the commander defaults, without any settings.
-    self.assertEqual(d.get('language'), 'python')
-    self.assertEqual(d.get('tabwidth'), -4)
-    self.assertEqual(d.get('pagewidth'), 132)
-#@+node:ekr.20210906075242.18: *4* TestCommands.test_c_scanAtPathDirectives (legacy)
-def test_c_scanAtPathDirectives(self):
-    c, p = self.c, self.c.p
-    child = p.insertAfter()
-    child.h = '@path one'
-    grand = child.insertAsLastChild()
-    grand.h = '@path two'
-    great = grand.insertAsLastChild()
-    great.h = 'xyz'
-    aList = g.get_directives_dict_list(great)
-    path = c.scanAtPathDirectives(aList)
-    endpath = g.os_path_normpath('one/two')
-    assert path.endswith(endpath), f"expected '{endpath}' got '{path}'"
-
-    # Test 2: Create a commander for an outline outside of g.app.loadDir and its parents.
-    from leo.core.leoCommands import Commands
-    c = Commands(fileName='~/LeoPyRef.leo', gui=g.app.gui)
-    child = p.insertAfter()
-    child.h = '@path one'
-    grand = child.insertAsLastChild()
-    grand.h = '@path two'
-    great = grand.insertAsLastChild()
-    great.h = 'xyz'
-    aList = g.get_directives_dict_list(great)
-    path = c.scanAtPathDirectives(aList)
-    endpath = g.os_path_normpath('one/two')
-    assert path.endswith(endpath), f"expected '{endpath}' got '{path}'"
-#@+node:ekr.20210906075242.19: *4* TestCommands.test_c_scanAtPathDirectives_same_name_subdirs (legacy)
-def test_c_scanAtPathDirectives_same_name_subdirs(self):
-    c = self.c
-    # p2 = p.firstChild().firstChild().firstChild()
-    p = c.p
-    child = p.insertAfter()
-    child.h = '@path again'
-    grand = child.insertAsLastChild()
-    grand.h = '@path again'
-    great = grand.insertAsLastChild()
-    great.h = 'xyz'
-    aList = g.get_directives_dict_list(great)
-    path = c.scanAtPathDirectives(aList)
-    endpath = g.os_path_normpath('again/again')
-    self.assertTrue(path and path.endswith(endpath))
-#@+node:ekr.20210905203541.16: *4* TestGlobals.test_g_get_directives_dict
-def test_g_get_directives_dict(self):
-    c = self.c
-    p = c.p
-    # Note: @comment must follow @language.
-    p.b = self.prep(
-    """
-        ATlanguage python
-        ATcomment a b c
-        ATtabwidth -8
-        ATpagewidth 72
-        ATencoding utf-8
-    """).replace('AT', '@')
-    d = g.get_directives_dict(p)
-    self.assertEqual(d.get('language'), 'python')
-    self.assertEqual(d.get('tabwidth'), '-8')
-    self.assertEqual(d.get('pagewidth'), '72')
-    self.assertEqual(d.get('encoding'), 'utf-8')
-    self.assertEqual(d.get('comment'), 'a b c')
-    assert not d.get('path'), d.get('path')
-#@+node:ekr.20210905203541.33: *4* TestGlobals.test_g_scanAtHeaderDirectives_header
-def test_g_scanAtHeaderDirectives_header(self):
-    c = self.c
-    aList = g.get_directives_dict_list(c.p)
-    g.scanAtHeaderDirectives(aList)
-#@+node:ekr.20210905203541.35: *4* TestGlobals.test_g_scanAtHeaderDirectives_noheader
-def test_g_scanAtHeaderDirectives_noheader(self):
-    c = self.c
-    aList = g.get_directives_dict_list(c.p)
-    g.scanAtHeaderDirectives(aList)
-#@+node:ekr.20210905203541.36: *4* TestGlobals.test_g_scanAtLineendingDirectives_cr
-def test_g_scanAtLineendingDirectives_cr(self):
-    c = self.c
-    p = c.p
-    p.b = '@lineending cr\n'
-    aList = g.get_directives_dict_list(p)
-    s = g.scanAtLineendingDirectives(aList)
-    self.assertEqual(s, '\r')
-#@+node:ekr.20210905203541.37: *4* TestGlobals.test_g_scanAtLineendingDirectives_crlf
-def test_g_scanAtLineendingDirectives_crlf(self):
-    c = self.c
-    p = c.p
-    p.b = '@lineending crlf\n'
-    aList = g.get_directives_dict_list(p)
-    s = g.scanAtLineendingDirectives(aList)
-    self.assertEqual(s, '\r\n')
-#@+node:ekr.20210905203541.38: *4* TestGlobals.test_g_scanAtLineendingDirectives_lf
-def test_g_scanAtLineendingDirectives_lf(self):
-    c = self.c
-    p = c.p
-    p.b = '@lineending lf\n'
-    aList = g.get_directives_dict_list(p)
-    s = g.scanAtLineendingDirectives(aList)
-    self.assertEqual(s, '\n')
-#@+node:ekr.20210905203541.39: *4* TestGlobals.test_g_scanAtLineendingDirectives_nl
-def test_g_scanAtLineendingDirectives_nl(self):
-    c = self.c
-    p = c.p
-    p.b = '@lineending nl\n'
-    aList = g.get_directives_dict_list(p)
-    s = g.scanAtLineendingDirectives(aList)
-    self.assertEqual(s, '\n')
-#@+node:ekr.20210905203541.40: *4* TestGlobals.test_g_scanAtLineendingDirectives_platform
-def test_g_scanAtLineendingDirectives_platform(self):
-    c = self.c
-    p = c.p
-    p.b = '@lineending platform\n'
-    aList = g.get_directives_dict_list(p)
-    s = g.scanAtLineendingDirectives(aList)
-    if sys.platform.startswith('win'):
-        self.assertEqual(s, '\r\n')  # pragma: no cover
-    else:
-        self.assertEqual(s, '\n')  # pragma: no cover
-#@+node:ekr.20210905203541.42: *4* TestGlobals.test_g_scanAtPagewidthDirectives_40
-def test_g_scanAtPagewidthDirectives_40(self):
-    c = self.c
-    p = c.p
-    p.b = '@pagewidth 40\n'
-    aList = g.get_directives_dict_list(p)
-    n = g.scanAtPagewidthDirectives(aList)
-    self.assertEqual(n, 40)
-#@+node:ekr.20210905203541.41: *4* TestGlobals.test_g_scanAtPagewidthDirectives_minus_40
-def test_g_scanAtPagewidthDirectives_minus_40(self):
-    c = self.c
-    p = c.p
-    p.b = '@pagewidth -40\n'
-    aList = g.get_directives_dict_list(p)
-    n = g.scanAtPagewidthDirectives(aList)
-    # The @pagewidth directive in the parent should control.
-    # Depending on how this test is run, the result could be 80 or None.
-    assert n in (None, 80), repr(n)
-#@+node:ekr.20210905203541.43: *4* TestGlobals.test_g_scanAtTabwidthDirectives_6
-def test_g_scanAtTabwidthDirectives_6(self):
-    c = self.c
-    p = c.p
-    p.b = '@tabwidth 6\n'
-    aList = g.get_directives_dict_list(p)
-    n = g.scanAtTabwidthDirectives(aList)
-    self.assertEqual(n, 6)
-#@+node:ekr.20210905203541.44: *4* TestGlobals.test_g_scanAtTabwidthDirectives_minus_6
-def test_g_scanAtTabwidthDirectives_minus_6(self):
-    c = self.c
-    p = c.p
-    p.b = '@tabwidth -6\n'
-    aList = g.get_directives_dict_list(p)
-    n = g.scanAtTabwidthDirectives(aList)
-    self.assertEqual(n, -6)
-#@+node:ekr.20210905203541.45: *4* TestGlobals.test_g_scanAtWrapDirectives_nowrap
-def test_g_scanAtWrapDirectives_nowrap(self):
-    c = self.c
-    p = c.p
-    p.b = '@nowrap\n'
-    aList = g.get_directives_dict_list(p)
-    s = g.scanAtWrapDirectives(aList)
-    assert s is False, repr(s)
-#@+node:ekr.20210905203541.46: *4* TestGlobals.test_g_scanAtWrapDirectives_wrap_with_wrap_
-def test_g_scanAtWrapDirectives_wrap_with_wrap_(self):
-    c = self.c
-    p = c.p
-    p.b = '@wrap\n'
-    aList = g.get_directives_dict_list(p)
-    s = g.scanAtWrapDirectives(aList)
-    assert s is True, repr(s)
-#@+node:ekr.20210905203541.47: *4* TestGlobals.test_g_scanAtWrapDirectives_wrap_without_nowrap_
-def test_g_scanAtWrapDirectives_wrap_without_nowrap_(self):
-    c = self.c
-    aList = g.get_directives_dict_list(c.p)
-    s = g.scanAtWrapDirectives(aList)
-    assert s is None, repr(s)
-#@+node:ekr.20250803082508.1: *3* deleted via PR #4405
-#@+node:ekr.20250803082521.1: *4* From at.readOneAtCleanNode
-    if changed_vnodes:
-        c.setChanged(force=True)
-        root.v.setDirty()
-        at.changed_roots.append(root.copy())
-        for v in changed_vnodes:
-            at.do_changed_vnode(fileName, root, v)
-        at.delete_empty_changed_organizers(root)
-        at.move_leading_blank_lines(root)
-#@+node:ekr.20250711061442.1: *5* at.do_changed_vnode
-def do_changed_vnode(self, fileName: str, root: Position, v: VNode) -> None:
-    """#4385: Run the importer on a changed VNode."""
-    c = self.c
-    ic = c.importCommands
-    new_body_s = v.b
-
-    # Find a position for v.
-    for p in root.self_and_subtree():
-        if p.v == v:
-            _junk, ext = g.os_path_splitext(fileName)
-            # Get the `do_import` function for the proper importer module.
-            func = ic.dispatch(ext.lower(), root)
-            if func:
-                func(c, p, new_body_s, treeType='@clean')
-            break
-    else:
-        g.trace('Not found:', v)  # Should never happen.
-
-    # Always set the dirty bit.
-    v.setDirty()
-#@+node:ekr.20150204165040.7: *5* at.dump
-def dump(self, lines: list[str], tag: str) -> None:  # pragma: no cover
-    """Dump all lines."""
-    print(f"***** {tag} lines...\n")
-    for s in lines:
-        print(s.rstrip())
-#@+node:ekr.20250712215845.1: *5* at.delete_empty_changed_organizers
-def delete_empty_changed_organizers(self, root: Position) -> None:
-    """
-    #4385: Clean up nodes created by at.do_changed_vnode.
-    """
-    at, c = self, self.c
-    while True:
-        for p in root.subtree():
-            # Handle a changed node containing only @others.
-            if (
-                p.b.strip() == '@others'
-                and p.b != at.bodies_dict.get(p.v)
-                and p.hasChildren()
-            ):
-                # We expect only one child here.
-                for child in p.children():
-                    child.v.setDirty()
-                p.promote()
-                next = p.next()
-                # Transfer the old value to preserve diffs.
-                at.bodies_dict[next.v] = at.bodies_dict.get(p.v)
-                c.selectPosition(next)
-                p.doDelete()
-                break  # Rescan: root.subtree is no longer valid.
-        else:
-            break
-#@+node:ekr.20250714115142.1: *5* at.move_leading_blank_lines
-def move_leading_blank_lines(self, root: Position) -> None:
-    """
-    Move leading blank lines (only in dirty nodes!) to the preceding node.
-    """
-    for p in root.subtree():  # back must exist below.
-        if p.v.isDirty():
-            lines = g.splitLines(p.b)
-            if lines and lines[0].isspace():
-                back = p.threadBack()
-                while lines and lines[0].isspace():
-                    back.b += lines.pop(0)
-                p.b = ''.join(lines)
-                back.v.setDirty()  # Include back in the update list.
 #@-all
 #@@nosearch
 #@-leo
