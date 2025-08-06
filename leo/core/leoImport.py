@@ -38,7 +38,7 @@ StringIO = io.StringIO
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
-    from leo.core.leoNodes import Position, VNode
+    from leo.core.leoNodes import Position
     Value = Any
 #@-<< leoImport annotations >>
 #@+others
@@ -1147,24 +1147,23 @@ class LeoImportCommands:
         except Exception:
             g.es_exception()
             p.b = s
-    #@+node:ekr.20250805134824.1: *3* ic.get_vnode_splitter & splitters
-    def get_vnode_splitter(self, root: Position) -> Optional[Callable]:
+    #@+node:ekr.20250805134824.1: *3* ic.get_node_splitter & splitters
+    def get_node_splitter(self, root: Position) -> Optional[Callable]:
         """Return the vnode splitter for the file's language."""
         c = self.c
         language = c.getLanguage(root)
         d = {
-            'python': self.split_python_vnode,
-            'rust': self.split_rust_vnode,
+            'python': self.split_python_node,
+            'rust': self.split_rust_node,
         }
         return d.get(language, None)
-
-    #@+node:ekr.20250805135410.1: *4* ic.split_python_vnode
-    def split_python_vnode(self, v: VNode) -> None:
+    #@+node:ekr.20250805135410.1: *4* ic.split_python_node
+    def split_python_node(self, p: Position) -> None:
         """Split the given vnode if it contains multiple python functions or methods."""
         from leo.plugins.importers.python import Python_Importer
         c = self.c
         importer = Python_Importer(c)
-        importer.lines = lines = g.splitLines(v.b)
+        importer.lines = lines = g.splitLines(p.b)
         importer.guide_lines = importer.delete_comments_and_strings(lines)
         ### g.printObj(importer.guide_lines, tag='Guide lines')
         blocks = importer.find_blocks(0, len(lines))
@@ -1174,23 +1173,23 @@ class LeoImportCommands:
             ### if s.startswith('def'):
             return s
 
-        g.printObj(blocks, tag=v.h)  ###
+        g.printObj(blocks, tag=p.h)  ###
         while len(blocks) > 1:
             block = blocks.pop(0)
             head = lines[block.start:block.end]
             g.printObj(head, tag=block.name)  ###
-            v.b = ''.join(head)
+            p.b = ''.join(head)
             tail = lines[block.end:]
             g.printObj(tail, tag="tail")  ###
-            v2 = v.insertAfter()
-            v2.h = clean_headline(tail[0])  ### To do.
-            v2.b = ''.join(tail)
-            v = v2
+            p2 = p.insertAfter()
+            p2.h = clean_headline(tail[0])  ### To do.
+            p2.b = ''.join(tail)
+            p = p2
         c.checkOutline()
-    #@+node:ekr.20250805135428.1: *4* ic.split_rust_vnode
-    def split_rust_vnode(self, v: VNode) -> None:
+    #@+node:ekr.20250805135428.1: *4* ic.split_rust_node (to do)
+    def split_rust_vnode(self, p: Position) -> None:
         """Split the given vnode if it contains multiple rust functions."""
-        g.trace(v)
+        g.trace(p)
         from leo.plugins.importers.rust import Rust_Importer as importer
         assert importer  ###
     #@+node:ekr.20031218072017.3305: *3* ic.Utilities
