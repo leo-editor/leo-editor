@@ -1187,7 +1187,7 @@ class LeoImportCommands:
             p = p2
         c.checkOutline()
     #@+node:ekr.20250805135428.1: *4* ic.split_rust_node (to do)
-    def split_rust_vnode(self, p: Position) -> None:
+    def split_rust_node(self, p: Position) -> None:
         """Split the given vnode if it contains multiple rust functions."""
         g.trace(p)
         from leo.plugins.importers.rust import Rust_Importer as importer
