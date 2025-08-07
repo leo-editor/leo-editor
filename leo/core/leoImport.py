@@ -1145,33 +1145,16 @@ class LeoImportCommands:
                 g.es_exception()
         else:
             g.es_print(f"can not run parse-body on {language} nodes")
-    #@+node:ekr.20250805135410.1: *4* ic.parse_python_node
-    def parse_python_node(self, p: Position) -> bool:
+    #@+node:ekr.20250807093257.1: *4* ic.parse_body_helper
+    def parse_body_helper(self, p: Position, *, importer: Any, compute_headline: Callable) -> bool:
         """
-        Parse p.b int python functions, methods and classes.
-
-        Return True if there have been any changes.
+        The common code in all importers.
         """
         c = self.c
         u, undoType = c.undoer, 'parse-body'
-        importer = Python_Importer(c)
         importer.lines = lines = g.splitLines(p.b)
         importer.guide_lines = importer.delete_comments_and_strings(lines)
         blocks = importer.find_blocks(0, len(lines))
-
-        def_pat = re.compile(r'^def\s+(\w+)')
-
-        def compute_headline(lines: list[str]) -> str:
-            """Compute the headlline for the given lines."""
-            for s in lines:
-                s = s.strip()
-                if s.startswith('class'):
-                    return s.replace(':', '')
-                if s.startswith('def'):
-                    if m := def_pat.match(s):
-                        return f"def {m.group(1)}"
-                    return s.replace(':', '')
-            return 'Unknown!'
 
         # The main loop.
         changed = len(blocks) > 1
@@ -1194,6 +1177,75 @@ class LeoImportCommands:
             # Continue splitting p2.
             p = p2
         return changed
+    #@+node:ekr.20250805135410.1: *4* ic.parse_python_node
+    def parse_python_node(self, p: Position) -> bool:
+        """
+        Parse p.b int python functions, methods and classes.
+
+        Return True if there have been any changes.
+        """
+        c = self.c
+        importer = Python_Importer(c)
+        def_pat = re.compile(r'^def\s+(\w+)')
+
+        def compute_headline(lines: list[str]) -> str:
+            """Compute the headlline for the given lines."""
+            for s in lines:
+                s = s.strip()
+                if s.startswith('class'):
+                    return s.replace(':', '')
+                if s.startswith('def'):
+                    if m := def_pat.match(s):
+                        return f"def {m.group(1)}"
+                    return s.replace(':', '')
+            return 'Unknown!'
+
+        # Delegate all the work.
+        return self.parse_body_helper(p, importer=importer, compute_headline=compute_headline)
+
+
+        # c = self.c
+        # u, undoType = c.undoer, 'parse-body'
+        # importer = Python_Importer(c)
+        # importer.lines = lines = g.splitLines(p.b)
+        # importer.guide_lines = importer.delete_comments_and_strings(lines)
+        # blocks = importer.find_blocks(0, len(lines))
+
+        # def_pat = re.compile(r'^def\s+(\w+)')
+
+        # def compute_headline(lines: list[str]) -> str:
+            # """Compute the headlline for the given lines."""
+            # for s in lines:
+                # s = s.strip()
+                # if s.startswith('class'):
+                    # return s.replace(':', '')
+                # if s.startswith('def'):
+                    # if m := def_pat.match(s):
+                        # return f"def {m.group(1)}"
+                    # return s.replace(':', '')
+            # return 'Unknown!'
+
+        # # The main loop.
+        # changed = len(blocks) > 1
+        # self.preprocess_blocks(blocks)
+        # while len(blocks) > 1:
+            # # Change the node.
+            # bunch = u.beforeChangeBody(p)
+            # block = blocks.pop(0)
+            # # g.printObj(block.lines[block.start:block.end], tag=block.name)
+            # head = lines[block.start:block.end]
+            # tail = lines[block.end:]
+            # p.b = ''.join(head)
+            # u.afterChangeBody(p, undoType, bunch)
+            # # Insert another node.
+            # bunch = u.beforeInsertNode(p)
+            # p2 = p.insertAfter()
+            # p2.h = compute_headline(tail)  ### To do.
+            # p2.b = ''.join(tail)
+            # u.afterInsertNode(p2, undoType, bunch)
+            # # Continue splitting p2.
+            # p = p2
+        # return changed
     #@+node:ekr.20250807084630.1: *5* function: compute_headline
     #@+node:ekr.20250805135428.1: *4* ic.parse_rust_node (to do)
     def parse_rust_node(self, p: Position) -> None:
