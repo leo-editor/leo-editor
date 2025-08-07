@@ -363,7 +363,7 @@ class FastRead:
                     v._headString = 'PLACE HOLDER'
                     #@-<< Make a new vnode, linked to the parent >>
                     #@+<< handle all other v attributes >>
-                    #@+node:ekr.20180605075113.1: *6* << handle all other v attributes >>
+                    #@+node:ekr.20180605075113.1: *6* << handle all other v attributes >> (fast.scanVnodes)
                     # FastRead.nativeVnodeAttributes defines the native attributes of <v> elements.
                     d = e.attrib
                     s = d.get('descendentTnodeUnknownAttributes')
@@ -376,7 +376,7 @@ class FastRead:
                         aDict = fc.getDescendentUnknownAttributes(s, v=v)
                         if aDict:
                             fc.descendentVnodeUaDictList.append((v, aDict),)
-                    #
+
                     # Handle vnode uA's
                     uaDict = gnx2ua[gnx]  # A defaultdict(dict)
                     for key, val in d.items():
