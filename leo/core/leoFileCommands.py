@@ -87,7 +87,6 @@ class FastRead:
 
     #@+<< FastRead: define nativeVnodeAttributes >>
     #@+node:ekr.20250806185821.1: *3* << FastRead: define nativeVnodeAttributes >>
-    # Used to exclude attributes from being unpickeld as UAs with resolveUa.
     nativeVnodeAttributes = (
         '_mod_time',  # Leo 6.8.7.
         'a',
