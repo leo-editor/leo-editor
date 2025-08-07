@@ -76,10 +76,12 @@ class TestLeoImport(BaseTestImporter):
                 'def spam():\n'
                 '    """A docstring"""\n'
                 "    print('a string')\n"
+                '\n'
             ),
             (0, 'def eggs',
                 'def eggs():\n'
                 '    pass\n'
+                '\n'
             ),
             (0, 'class NewClass',
                 'class NewClass\n'

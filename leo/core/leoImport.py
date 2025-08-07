@@ -29,6 +29,7 @@ except ImportError:
 
 # Leo imports...
 from leo.core import leoGlobals as g
+from leo.plugins.importers.python import Python_Importer
 
 # Abbreviation.
 StringIO = io.StringIO
@@ -39,6 +40,8 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position
+    from leo.plugins.importers.base_importer import Block
+
     Value = Any
 #@-<< leoImport annotations >>
 #@+others
@@ -1149,13 +1152,11 @@ class LeoImportCommands:
 
         Return True if there have been any changes.
         """
-        from leo.plugins.importers.python import Python_Importer
         c = self.c
         u, undoType = c.undoer, 'parse-body'
         importer = Python_Importer(c)
         importer.lines = lines = g.splitLines(p.b)
         importer.guide_lines = importer.delete_comments_and_strings(lines)
-        ### g.printObj(importer.guide_lines, tag='Guide lines')
         blocks = importer.find_blocks(0, len(lines))
 
         def_pat = re.compile(r'^def\s+(\w+)')
@@ -1174,19 +1175,18 @@ class LeoImportCommands:
 
         # The main loop.
         changed = len(blocks) > 1
-        ### g.printObj(blocks, tag=p.h)  ###
+        self.preprocess_blocks(blocks)
         while len(blocks) > 1:
             # Change the node.
             bunch = u.beforeChangeBody(p)
             block = blocks.pop(0)
+            # g.printObj(block.lines[block.start:block.end], tag=block.name)
             head = lines[block.start:block.end]
-            ### g.printObj(head, tag=block.name)  ###
+            tail = lines[block.end:]
             p.b = ''.join(head)
             u.afterChangeBody(p, undoType, bunch)
             # Insert another node.
             bunch = u.beforeInsertNode(p)
-            tail = lines[block.end:]
-            ### g.printObj(tail, tag="tail")  ###
             p2 = p.insertAfter()
             p2.h = compute_headline(tail)  ### To do.
             p2.b = ''.join(tail)
@@ -1194,12 +1194,27 @@ class LeoImportCommands:
             # Continue splitting p2.
             p = p2
         return changed
+    #@+node:ekr.20250807084630.1: *5* function: compute_headline
     #@+node:ekr.20250805135428.1: *4* ic.parse_rust_node (to do)
     def parse_rust_node(self, p: Position) -> None:
         """Split the given vnode if it contains multiple rust functions."""
         g.trace(p)
         from leo.plugins.importers.rust import Rust_Importer as importer
         assert importer  ###
+    #@+node:ekr.20250807084702.1: *4* ic.preprocess_blocks
+    def preprocess_blocks(self, blocks: list[Block]) -> None:
+        """Move blank lines from the start one block to the end of the previous block."""
+        for i, block in enumerate(blocks):
+            try:
+                block2 = blocks[i + 1]
+            except IndexError:
+                break
+            for i in range(block2.start, block2.end):
+                s = block2.lines[i]
+                if s.strip():
+                    break
+                block.end += 1
+                block2.start += 1
     #@+node:ekr.20031218072017.3305: *3* ic.Utilities
     #@+node:ekr.20090122201952.4: *4* ic.appendStringToBody & setBodyString (leoImport)
     def appendStringToBody(self, p: Position, s: str) -> None:
