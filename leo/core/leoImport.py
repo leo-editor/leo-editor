@@ -33,6 +33,7 @@ from leo.plugins.importers.c import C_Importer
 from leo.plugins.importers.javascript import JS_Importer
 from leo.plugins.importers.python import Python_Importer
 from leo.plugins.importers.rust import Rust_Importer
+from leo.plugins.importers.typescript import TS_Importer
 
 # Abbreviation.
 StringIO = io.StringIO
@@ -1120,8 +1121,6 @@ class LeoImportCommands:
         """
         c = self.c
         u, undoType = c.undoer, 'parse-body'
-        if not p:
-            return
         if p.hasChildren():
             g.es_print('can not run parse-body: node has children:', p.h)
             return
@@ -1131,6 +1130,7 @@ class LeoImportCommands:
             'javascript': JS_Importer(c),
             'python': Python_Importer(c),
             'rust': Rust_Importer(c),
+            'typescript': TS_Importer(c),
         }
         if importer := d.get(language):
             u.beforeChangeGroup(p, undoType)
@@ -1165,8 +1165,15 @@ class LeoImportCommands:
                 for (kind, pattern) in importer.block_patterns:
                     if m := pattern.match(s):
                         s = m.group(0)
-                        if s.endswith('('):
-                            s = s[:-1]
+                        # Truncate at the first '(' or '{'.
+                        i1 = s.find('(')
+                        i2 = s.find('{')
+                        if i1 > -1 or i2 > -1:
+                            i = (
+                                min(i1, i2) if i1 > -1 and i2 > -1
+                                else max(i1, i2)
+                            )
+                            s = s[:i]
                         return s
             return p.h
 

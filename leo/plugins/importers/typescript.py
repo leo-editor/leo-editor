@@ -51,6 +51,7 @@ class TS_Importer(JS_Importer):
         # (1,  re.compile(r'(\w+)\s*\(.*\).*{')),
             # name (...) {
     )
+    block_patterns = function_patterns
     #@-<< define function patterns >>
 #@-others
 
