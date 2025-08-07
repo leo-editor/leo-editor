@@ -85,14 +85,18 @@ class BadLeoFile(Exception):
 #@+node:ekr.20180602062323.1: ** class FastRead
 class FastRead:
 
+    #@+<< FastRead: define nativeVnodeAttributes >>
+    #@+node:ekr.20250806185821.1: *3* << FastRead: define nativeVnodeAttributes >>
     # Used to exclude attributes from being unpickeld as UAs with resolveUa.
     nativeVnodeAttributes = (
+        '_mod_time',  # Leo 6.8.7.
         'a',
         'descendentTnodeUnknownAttributes',
         'descendentVnodeUnknownAttributes',
         'expanded', 'marks', 't',
         'tnodeList',  # Removed in Leo 4.7.
     )
+    #@-<< FastRead: define nativeVnodeAttributes >>
 
     def __init__(self, c: Cmdr, gnx2vnode: dict[str, VNode]) -> None:
         self.c = c
