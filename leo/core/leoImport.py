@@ -1125,6 +1125,7 @@ class LeoImportCommands:
             g.es_print('can not run parse-body: node has children:', p.h)
             return
         language = c.getLanguage(p)
+        # This dict should *never* include 'html' and 'xml' importers.
         d = {
             'c': C_Importer(c),
             'javascript': JS_Importer(c),
