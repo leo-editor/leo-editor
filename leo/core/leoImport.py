@@ -1128,20 +1128,27 @@ class LeoImportCommands:
         if helper:
             u.beforeChangeGroup(p, undoType)
             try:
+                old_p = p.copy()
+                c.selectPosition(p)
                 changed = helper(p)
+                c.selectPosition(old_p)
                 if c.checkOutline():
                     return  # Error!
                 if changed:
                     u.afterChangeGroup(p, undoType)
                     c.setChanged()
-                    c.redraw()
+                    c.redraw(old_p)
             except Exception:
                 g.es_exception()
         else:
             g.es_print(f"can not run parse-body on {language} nodes")
     #@+node:ekr.20250805135410.1: *4* ic.parse_python_node
-    def parse_python_node(self, p: Position) -> None:
-        """Parse p.b int python functionsmethods."""
+    def parse_python_node(self, p: Position) -> bool:
+        """
+        Parse p.b int python functions, methods and classes.
+
+        Return True if there have been any changes.
+        """
         from leo.plugins.importers.python import Python_Importer
         c = self.c
         u, undoType = c.undoer, 'parse-body'
@@ -1151,30 +1158,42 @@ class LeoImportCommands:
         ### g.printObj(importer.guide_lines, tag='Guide lines')
         blocks = importer.find_blocks(0, len(lines))
 
-        def clean_headline(s: str) -> str:
-            """Adjust functions to match python importer."""
-            ### if s.startswith('def'):
-            return s
+        def_pat = re.compile(r'^def\s+(\w+)')
 
-        g.printObj(blocks, tag=p.h)  ###
+        def compute_headline(lines: list[str]) -> str:
+            """Compute the headlline for the given lines."""
+            for s in lines:
+                s = s.strip()
+                if s.startswith('class'):
+                    return s.replace(':', '')
+                if s.startswith('def'):
+                    if m := def_pat.match(s):
+                        return f"def {m.group(1)}"
+                    return s.replace(':', '')
+            return 'Unknown!'
+
+        # The main loop.
+        changed = len(blocks) > 1
+        ### g.printObj(blocks, tag=p.h)  ###
         while len(blocks) > 1:
             # Change the node.
             bunch = u.beforeChangeBody(p)
             block = blocks.pop(0)
             head = lines[block.start:block.end]
-            g.printObj(head, tag=block.name)  ###
+            ### g.printObj(head, tag=block.name)  ###
             p.b = ''.join(head)
             u.afterChangeBody(p, undoType, bunch)
             # Insert another node.
             bunch = u.beforeInsertNode(p)
             tail = lines[block.end:]
-            g.printObj(tail, tag="tail")  ###
+            ### g.printObj(tail, tag="tail")  ###
             p2 = p.insertAfter()
-            p2.h = clean_headline(tail[0])  ### To do.
+            p2.h = compute_headline(tail)  ### To do.
             p2.b = ''.join(tail)
             u.afterInsertNode(p2, undoType, bunch)
             # Continue splitting p2.
             p = p2
+        return changed
     #@+node:ekr.20250805135428.1: *4* ic.parse_rust_node (to do)
     def parse_rust_node(self, p: Position) -> None:
         """Split the given vnode if it contains multiple rust functions."""

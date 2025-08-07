@@ -48,34 +48,43 @@ class TestLeoImport(BaseTestImporter):
         u = c.undoer
         x = c.importCommands
         target = c.p.insertAfter()
+        c.selectPosition(target)
         target.h = 'target'
 
         body_1 = self.prep(
-        """
+        '''
             import os
 
-            def macro(func):
-                def new_func(*args, **kwds):
-                    raise RuntimeError('blah blah blah')
-            return new_func
-        """)
+            def spam():
+                """A docstring"""
+                print('a string')
+
+            def eggs():
+                pass
+
+            class NewClass:
+                def f1(self):
+                    pass
+        ''')
         target.b = body_1
         x.parse_body(target)
 
         expected_results = (
-            (0, '',  # Ignore the top-level headline.
+            (0, 'def spam',
                 'import os\n'
                 '\n'
-                '@others\n'
-                'return new_func\n'
-                # #4385. This is an improvement!
-                # '@language python\n'
-                # '@tabwidth -4\n'
+                'def spam():\n'
+                '    """A docstring"""\n'
+                "    print('a string')\n"
             ),
-            (1, 'function: macro',
-                'def macro(func):\n'
-                '    def new_func(*args, **kwds):\n'
-                "        raise RuntimeError('blah blah blah')\n"
+            (0, 'def eggs',
+                'def eggs():\n'
+                '    pass\n'
+            ),
+            (0, 'class NewClass',
+                'class NewClass\n'
+                '    def f1(self):\n'
+                '        pass\n'
             ),
         )
         # Don't call run_test.

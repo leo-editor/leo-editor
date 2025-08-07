@@ -395,6 +395,8 @@ class Undoer:
             if not u.changeGroupWarning:
                 u.changeGroupWarning = True
                 g.trace("Position mismatch", g.callers())
+                print('p:', p)
+                print('c.p', c.p)
         if u.redoing or u.undoing:
             return  # pragma: no cover
         if not u.beads:  # pragma: no cover
@@ -723,6 +725,8 @@ class Undoer:
             if not u.changeGroupWarning:
                 u.changeGroupWarning = True
                 g.trace("Position mismatch", g.callers())
+                print('p:', p)
+                print('c.p', c.p)
         bunch = u.createCommonBunch(p)
         # Set types.
         bunch.kind = 'beforeGroup'
