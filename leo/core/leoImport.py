@@ -1105,14 +1105,14 @@ class LeoImportCommands:
                     result = s
                     # g.es("replacing",target,"with",s)
         return result
-    #@+node:ekr.20140531104908.18833: *3* ic.parse_body
+    #@+node:ekr.20140531104908.18833: *3* ic.parse_body & helpers
     def parse_body(self, p: Position) -> None:
         """
-        Parse p.b as source code, creating a tree of descendant nodes.
-        This is essentially an import of p.b.
+        Split p.b into functions, methods or classes in sibling nodes.
+
+        Parsing is supported only for python or rust code.
         """
         c = self.c
-        d = g.app.language_extension_dict
         u, undoType = c.undoer, 'parse-body'
         if not p:
             return
@@ -1120,48 +1120,31 @@ class LeoImportCommands:
             g.es_print('can not run parse-body: node has children:', p.h)
             return
         language = c.getLanguage(p)
-        ext = '.' + d.get(language)
-
-        # The parser is the `do_import` function for each importer class.
-        parser = g.app.classDispatchDict.get(ext)
-
-        # Fix bug 151: parse-body creates "None declarations"
-        if p.isAnyAtFileNode():
-            fn = p.anyAtFileNodeName()
-            self.methodName, self.fileType = g.os_path_splitext(fn)
-        else:
-            fileType = d.get(language, 'py')
-            self.methodName, self.fileType = p.h, fileType
-        if not parser:
-            g.es_print(f"parse-body: no parser for @language {language or 'None'}")
-            return
-        try:
-            bunch = u.beforeParseBody(p)
-            s = p.b
-            p.b = ''
-            parser(c, p, s)
-            u.afterParseBody(p, undoType, bunch)
-            p.expand()
-            c.selectPosition(p)
-            c.redraw()
-        except Exception:
-            g.es_exception()
-            p.b = s
-    #@+node:ekr.20250805134824.1: *3* ic.get_node_splitter & splitters
-    def get_node_splitter(self, root: Position) -> Optional[Callable]:
-        """Return the vnode splitter for the file's language."""
-        c = self.c
-        language = c.getLanguage(root)
         d = {
-            'python': self.split_python_node,
-            'rust': self.split_rust_node,
+            'python': self.parse_python_node,
+            'rust': self.parse_rust_node,
         }
-        return d.get(language, None)
-    #@+node:ekr.20250805135410.1: *4* ic.split_python_node
-    def split_python_node(self, p: Position) -> None:
-        """Split the given vnode if it contains multiple python functions or methods."""
+        helper = d.get(language)
+        if helper:
+            u.beforeChangeGroup(p, undoType)
+            try:
+                changed = helper(p)
+                if c.checkOutline():
+                    return  # Error!
+                if changed:
+                    u.afterChangeGroup(p, undoType)
+                    c.setChanged()
+                    c.redraw()
+            except Exception:
+                g.es_exception()
+        else:
+            g.es_print(f"can not run parse-body on {language} nodes")
+    #@+node:ekr.20250805135410.1: *4* ic.parse_python_node
+    def parse_python_node(self, p: Position) -> None:
+        """Parse p.b int python functionsmethods."""
         from leo.plugins.importers.python import Python_Importer
         c = self.c
+        u, undoType = c.undoer, 'parse-body'
         importer = Python_Importer(c)
         importer.lines = lines = g.splitLines(p.b)
         importer.guide_lines = importer.delete_comments_and_strings(lines)
@@ -1175,19 +1158,25 @@ class LeoImportCommands:
 
         g.printObj(blocks, tag=p.h)  ###
         while len(blocks) > 1:
+            # Change the node.
+            bunch = u.beforeChangeBody(p)
             block = blocks.pop(0)
             head = lines[block.start:block.end]
             g.printObj(head, tag=block.name)  ###
             p.b = ''.join(head)
+            u.afterChangeBody(p, undoType, bunch)
+            # Insert another node.
+            bunch = u.beforeInsertNode(p)
             tail = lines[block.end:]
             g.printObj(tail, tag="tail")  ###
             p2 = p.insertAfter()
             p2.h = clean_headline(tail[0])  ### To do.
             p2.b = ''.join(tail)
+            u.afterInsertNode(p2, undoType, bunch)
+            # Continue splitting p2.
             p = p2
-        c.checkOutline()
-    #@+node:ekr.20250805135428.1: *4* ic.split_rust_node (to do)
-    def split_rust_node(self, p: Position) -> None:
+    #@+node:ekr.20250805135428.1: *4* ic.parse_rust_node (to do)
+    def parse_rust_node(self, p: Position) -> None:
         """Split the given vnode if it contains multiple rust functions."""
         g.trace(p)
         from leo.plugins.importers.rust import Rust_Importer as importer

@@ -677,22 +677,6 @@ class Undoer:
         bunch.newParent_v = p._parentVnode()
         bunch.newP = p.copy()
         u.pushBead(bunch)
-    #@+node:ekr.20230713151537.1: *5* u.afterParseBody
-    def afterParseBody(self, p: Position, command: str, bunch: g.Bunch) -> None:
-        """
-        Create an undo node using d created by u.beforeParseBody
-        """
-        c = self.c
-        u, w = self, c.frame.body.wrapper
-        if u.redoing or u.undoing:
-            return  # pragma: no cover
-        # Set the type & helpers.
-        bunch.kind = 'parse-body'
-        bunch.undoType = command
-        bunch.undoHelper = u.undoParseBody
-        bunch.redoHelper = u.redoParseBody
-        u.pushBead(bunch)
-        u.updateAfterTyping(p, w)
     #@+node:ekr.20080425060424.12: *5* u.afterPromote
     def afterPromote(self, p: Position, children: list[VNode]) -> None:
         """Create an undo node for demote operations."""
@@ -858,12 +842,6 @@ class Undoer:
         bunch = u.createCommonBunch(p)
         bunch.oldN = p.childIndex()
         bunch.oldParent_v = p._parentVnode()
-        return bunch
-    #@+node:ekr.20230713145834.1: *5* u.beforeParseBody
-    def beforeParseBody(self, p: Position) -> g.Bunch:
-        u = self
-        bunch = u.createCommonBunch(p)
-        bunch.oldBody = p.b
         return bunch
     #@+node:ekr.20080425060424.3: *5* u.beforeSort
     def beforeSort(self,
