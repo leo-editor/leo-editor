@@ -1149,6 +1149,25 @@ class LeoImportCommands:
                 g.es_exception()
         else:
             g.es_print(f"can not run parse-body on {language} nodes")
+    #@+node:ekr.20250807161513.1: *4* ic.compute_imported_headline
+    def compute_imported_headline(self, importer: Any, lines: list[str]) -> str:
+        """Compute the headline for the given imported lines."""
+        for s in lines:
+            s = s.strip()
+            for (kind, pattern) in importer.block_patterns:
+                if m := pattern.match(s):
+                    s = m.group(0)
+                    # Truncate at the first '(' or '{'.
+                    i1 = s.find('(')
+                    i2 = s.find('{')
+                    if i1 > -1 or i2 > -1:
+                        i = (
+                            min(i1, i2) if i1 > -1 and i2 > -1
+                            else max(i1, i2)
+                        )
+                        s = s[:i]
+                    return s
+        return None
     #@+node:ekr.20250807093257.1: *4* ic.parse_body_helper
     def parse_body_helper(self, p: Position, *, importer: Any) -> bool:
         """The common code for the parse-body command."""
@@ -1157,25 +1176,6 @@ class LeoImportCommands:
         importer.lines = lines = g.splitLines(p.b)
         importer.guide_lines = importer.delete_comments_and_strings(lines)
         blocks = importer.find_blocks(0, len(lines))
-
-        def compute_headline(lines: list[str]) -> str:
-            """Compute the headlline for the given lines."""
-            for s in lines:
-                s = s.strip()
-                for (kind, pattern) in importer.block_patterns:
-                    if m := pattern.match(s):
-                        s = m.group(0)
-                        # Truncate at the first '(' or '{'.
-                        i1 = s.find('(')
-                        i2 = s.find('{')
-                        if i1 > -1 or i2 > -1:
-                            i = (
-                                min(i1, i2) if i1 > -1 and i2 > -1
-                                else max(i1, i2)
-                            )
-                            s = s[:i]
-                        return s
-            return p.h
 
         # The main loop.
         changed = len(blocks) > 1
@@ -1187,12 +1187,12 @@ class LeoImportCommands:
             head = lines[block.start:block.end]
             tail = lines[block.end:]
             p.b = ''.join(head)
-            p.h = compute_headline(head)
+            p.h = self.compute_imported_headline(importer, head) or p.h
             u.afterChangeBody(p, undoType, bunch)
             # Insert another node.
             bunch = u.beforeInsertNode(p)
             p2 = p.insertAfter()
-            p2.h = compute_headline(tail)
+            p2.h = self.compute_imported_headline(importer, tail) or p.h
             p2.b = ''.join(tail)
             u.afterInsertNode(p2, undoType, bunch)
             # Continue splitting p2.
