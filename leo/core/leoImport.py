@@ -29,6 +29,8 @@ except ImportError:
 
 # Leo imports...
 from leo.core import leoGlobals as g
+from leo.plugins.importers.c import C_Importer
+from leo.plugins.importers.javascript import JS_Importer
 from leo.plugins.importers.python import Python_Importer
 from leo.plugins.importers.rust import Rust_Importer
 
@@ -1125,6 +1127,8 @@ class LeoImportCommands:
             return
         language = c.getLanguage(p)
         d = {
+            'c': C_Importer(c),
+            'javascript': JS_Importer(c),
             'python': Python_Importer(c),
             'rust': Rust_Importer(c),
         }
@@ -1146,11 +1150,8 @@ class LeoImportCommands:
         else:
             g.es_print(f"can not run parse-body on {language} nodes")
     #@+node:ekr.20250807093257.1: *4* ic.parse_body_helper
-    ### def parse_body_helper(self, p: Position, *, importer: Any, compute_headline: Callable) -> bool:
     def parse_body_helper(self, p: Position, *, importer: Any) -> bool:
-        """
-        The common code in all importers.
-        """
+        """The common code for the parse-body command."""
         c = self.c
         u, undoType = c.undoer, 'parse-body'
         importer.lines = lines = g.splitLines(p.b)
@@ -1163,8 +1164,11 @@ class LeoImportCommands:
                 s = s.strip()
                 for (kind, pattern) in importer.block_patterns:
                     if m := pattern.match(s):
-                        return m.group(0)
-            return 'Unknown!'
+                        s = m.group(0)
+                        if s.endswith('('):
+                            s = s[:-1]
+                        return s
+            return p.h
 
         # The main loop.
         changed = len(blocks) > 1
@@ -1173,15 +1177,15 @@ class LeoImportCommands:
             # Change the node.
             bunch = u.beforeChangeBody(p)
             block = blocks.pop(0)
-            # g.printObj(block.lines[block.start:block.end], tag=block.name)
             head = lines[block.start:block.end]
             tail = lines[block.end:]
             p.b = ''.join(head)
+            p.h = compute_headline(head)
             u.afterChangeBody(p, undoType, bunch)
             # Insert another node.
             bunch = u.beforeInsertNode(p)
             p2 = p.insertAfter()
-            p2.h = compute_headline(tail)  ### To do.
+            p2.h = compute_headline(tail)
             p2.b = ''.join(tail)
             u.afterInsertNode(p2, undoType, bunch)
             # Continue splitting p2.
