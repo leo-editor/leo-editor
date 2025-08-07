@@ -30,6 +30,7 @@ except ImportError:
 # Leo imports...
 from leo.core import leoGlobals as g
 from leo.plugins.importers.python import Python_Importer
+from leo.plugins.importers.rust import Rust_Importer
 
 # Abbreviation.
 StringIO = io.StringIO
@@ -1202,57 +1203,28 @@ class LeoImportCommands:
 
         # Delegate all the work.
         return self.parse_body_helper(p, importer=importer, compute_headline=compute_headline)
-
-
-        # c = self.c
-        # u, undoType = c.undoer, 'parse-body'
-        # importer = Python_Importer(c)
-        # importer.lines = lines = g.splitLines(p.b)
-        # importer.guide_lines = importer.delete_comments_and_strings(lines)
-        # blocks = importer.find_blocks(0, len(lines))
-
-        # def_pat = re.compile(r'^def\s+(\w+)')
-
-        # def compute_headline(lines: list[str]) -> str:
-            # """Compute the headlline for the given lines."""
-            # for s in lines:
-                # s = s.strip()
-                # if s.startswith('class'):
-                    # return s.replace(':', '')
-                # if s.startswith('def'):
-                    # if m := def_pat.match(s):
-                        # return f"def {m.group(1)}"
-                    # return s.replace(':', '')
-            # return 'Unknown!'
-
-        # # The main loop.
-        # changed = len(blocks) > 1
-        # self.preprocess_blocks(blocks)
-        # while len(blocks) > 1:
-            # # Change the node.
-            # bunch = u.beforeChangeBody(p)
-            # block = blocks.pop(0)
-            # # g.printObj(block.lines[block.start:block.end], tag=block.name)
-            # head = lines[block.start:block.end]
-            # tail = lines[block.end:]
-            # p.b = ''.join(head)
-            # u.afterChangeBody(p, undoType, bunch)
-            # # Insert another node.
-            # bunch = u.beforeInsertNode(p)
-            # p2 = p.insertAfter()
-            # p2.h = compute_headline(tail)  ### To do.
-            # p2.b = ''.join(tail)
-            # u.afterInsertNode(p2, undoType, bunch)
-            # # Continue splitting p2.
-            # p = p2
-        # return changed
     #@+node:ekr.20250807084630.1: *5* function: compute_headline
-    #@+node:ekr.20250805135428.1: *4* ic.parse_rust_node (to do)
-    def parse_rust_node(self, p: Position) -> None:
-        """Split the given vnode if it contains multiple rust functions."""
-        g.trace(p)
-        from leo.plugins.importers.rust import Rust_Importer as importer
-        assert importer  ###
+    #@+node:ekr.20250805135428.1: *4* ic.parse_rust_node
+    def parse_rust_node(self, p: Position) -> bool:
+        """
+        Parse p.b int rust functions and classes.
+
+        Return True if there have been any changes.
+        """
+        c = self.c
+        importer = Rust_Importer(c)
+
+        def compute_headline(lines: list[str]) -> str:
+            """Compute the headlline for the given lines."""
+            for s in lines:
+                s = s.strip()
+                for (kind, pattern) in importer.block_patterns:
+                    if m := pattern.match(s):
+                        return m.group(0)
+            return 'Unknown!'
+
+        # Delegate all the work.
+        return self.parse_body_helper(p, importer=importer, compute_headline=compute_headline)
     #@+node:ekr.20250807084702.1: *4* ic.preprocess_blocks
     def preprocess_blocks(self, blocks: list[Block]) -> None:
         """Move blank lines from the start one block to the end of the previous block."""

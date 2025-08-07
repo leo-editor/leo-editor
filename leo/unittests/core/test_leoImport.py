@@ -99,6 +99,57 @@ class TestLeoImport(BaseTestImporter):
         # Test redo
         u.redo()
         self.check_outline(target, expected_results)
+    #@+node:ekr.20250807095221.1: *3* TestLeoImport.test_rust_importer_parse_body
+    def test_rust_importer_parse_body(self):
+
+        c = self.c
+        u = c.undoer
+        x = c.importCommands
+        target = c.p.insertAfter()
+        c.selectPosition(target)
+        target.h = 'target'
+
+        body_1 = self.prep(
+        '''
+            @language rust
+
+            fn spam() {
+                println!("spam");
+            }
+
+            fn eggs() {
+                println!("eggs");
+            }
+        ''')
+        target.b = body_1
+        x.parse_body(target)
+
+        expected_results = (
+            (0, 'fn spam',
+                '@language rust\n'
+                '\n'
+                'fn spam() {\n'
+                '    println!("spam");\n'
+                '}\n'
+                '\n'
+            ),
+            (0, 'fn eggs',
+                'fn eggs() {\n'
+                '    println!("eggs");\n'
+                '}\n'
+                '\n'
+            ),
+        )
+        # Don't call run_test.
+        self.check_outline(target, expected_results)
+
+        # Test undo
+        u.undo()
+        self.assertEqual(target.b, body_1, msg='undo test')
+        self.assertFalse(target.hasChildren(), msg='undo test')
+        # Test redo
+        u.redo()
+        self.check_outline(target, expected_results)
     #@+node:ekr.20230715004610.1: *3* TestLeoImport.slow_test_ric_run
     def slow_test_ric_run(self):
         c = self.c
