@@ -1365,6 +1365,7 @@ def createMoveMarkedNode(c: Cmdr) -> Position:
     return p
 #@+node:ekr.20031218072017.2923: *3* c_oc.markChangedHeadlines
 @g.commander_command('mark-changed-items')
+@g.commander_command('mark-changed-nodes')
 def markChangedHeadlines(self: Cmdr, event: LeoKeyEvent = None) -> None:
     """Mark all nodes that have been changed."""
     c, current, u = self, self.p, self.undoer
