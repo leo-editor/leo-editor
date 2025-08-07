@@ -1125,16 +1125,15 @@ class LeoImportCommands:
             return
         language = c.getLanguage(p)
         d = {
-            'python': self.parse_python_node,
-            'rust': self.parse_rust_node,
+            'python': Python_Importer(c),
+            'rust': Rust_Importer(c),
         }
-        helper = d.get(language)
-        if helper:
+        if importer := d.get(language):
             u.beforeChangeGroup(p, undoType)
             try:
                 old_p = p.copy()
                 c.selectPosition(p)
-                changed = helper(p)
+                changed = self.parse_body_helper(p, importer=importer)
                 c.selectPosition(old_p)
                 if c.checkOutline():
                     return  # Error!
@@ -1147,7 +1146,8 @@ class LeoImportCommands:
         else:
             g.es_print(f"can not run parse-body on {language} nodes")
     #@+node:ekr.20250807093257.1: *4* ic.parse_body_helper
-    def parse_body_helper(self, p: Position, *, importer: Any, compute_headline: Callable) -> bool:
+    ### def parse_body_helper(self, p: Position, *, importer: Any, compute_headline: Callable) -> bool:
+    def parse_body_helper(self, p: Position, *, importer: Any) -> bool:
         """
         The common code in all importers.
         """
@@ -1156,6 +1156,15 @@ class LeoImportCommands:
         importer.lines = lines = g.splitLines(p.b)
         importer.guide_lines = importer.delete_comments_and_strings(lines)
         blocks = importer.find_blocks(0, len(lines))
+
+        def compute_headline(lines: list[str]) -> str:
+            """Compute the headlline for the given lines."""
+            for s in lines:
+                s = s.strip()
+                for (kind, pattern) in importer.block_patterns:
+                    if m := pattern.match(s):
+                        return m.group(0)
+            return 'Unknown!'
 
         # The main loop.
         changed = len(blocks) > 1
@@ -1178,53 +1187,6 @@ class LeoImportCommands:
             # Continue splitting p2.
             p = p2
         return changed
-    #@+node:ekr.20250805135410.1: *4* ic.parse_python_node
-    def parse_python_node(self, p: Position) -> bool:
-        """
-        Parse p.b int python functions, methods and classes.
-
-        Return True if there have been any changes.
-        """
-        c = self.c
-        importer = Python_Importer(c)
-        def_pat = re.compile(r'^def\s+(\w+)')
-
-        def compute_headline(lines: list[str]) -> str:
-            """Compute the headlline for the given lines."""
-            for s in lines:
-                s = s.strip()
-                if s.startswith('class'):
-                    return s.replace(':', '')
-                if s.startswith('def'):
-                    if m := def_pat.match(s):
-                        return f"def {m.group(1)}"
-                    return s.replace(':', '')
-            return 'Unknown!'
-
-        # Delegate all the work.
-        return self.parse_body_helper(p, importer=importer, compute_headline=compute_headline)
-    #@+node:ekr.20250807084630.1: *5* function: compute_headline
-    #@+node:ekr.20250805135428.1: *4* ic.parse_rust_node
-    def parse_rust_node(self, p: Position) -> bool:
-        """
-        Parse p.b int rust functions and classes.
-
-        Return True if there have been any changes.
-        """
-        c = self.c
-        importer = Rust_Importer(c)
-
-        def compute_headline(lines: list[str]) -> str:
-            """Compute the headlline for the given lines."""
-            for s in lines:
-                s = s.strip()
-                for (kind, pattern) in importer.block_patterns:
-                    if m := pattern.match(s):
-                        return m.group(0)
-            return 'Unknown!'
-
-        # Delegate all the work.
-        return self.parse_body_helper(p, importer=importer, compute_headline=compute_headline)
     #@+node:ekr.20250807084702.1: *4* ic.preprocess_blocks
     def preprocess_blocks(self, blocks: list[Block]) -> None:
         """Move blank lines from the start one block to the end of the previous block."""
