@@ -315,8 +315,6 @@ class FastRead:
                 if key != 'tx':
                     s: Optional[str] = self.resolveUa(key, val)
                     if s:
-                        if False and key == '_mod_time':
-                            g.trace(key, val, s)  ###
                         gnx2ua[gnx][key] = s
         return gnx2body, gnx2ua
     #@+node:ekr.20180602062323.9: *4* fast.scanVnodes
@@ -1863,28 +1861,12 @@ class FileCommands:
         aList2: list[tuple[VNode, dict]] = self.createUaList(vnode_list)
         d: dict[str, dict] = {}
         for v, d2 in aList2:
-            # New in Leo 6.8.7: Don't pollute the descendentVnodeUnknownAttributes.
-            #### Should be done in createUaList.
-            if '_mod_time' in d2:
-                del d2['_mod_time']  ### Experimental
-                ### g.printObj(d2, tag=p.h)  ###
-                if not d2:  ### Experimental.
-                    continue
             aList3 = [str(z) for z in pDict.get(v)]
             key = '.'.join(aList3)
             d[key] = d2
         if not d:
             return ''
         # Pickle and hexlify d.
-        if not g.unitTesting:  ###
-            if 1:
-                g.printObj(d, tag=f"{g.my_name()} {p.h}")
-            if 1:  ###
-                for key in d:
-                    d2 = d.get(key)
-                    if '_mod_time' in d2:
-                        g.printObj(d2, tag=f"{g.my_name()} {p.h}")
-                        break
         return self.pickle(v=p.v, val=d, tag='descendentVnodeUnknownAttributes')
     #@+node:ekr.20080805085257.1: *6* fc.createUaList
     def createUaList(self, vnode_list: list[VNode]) -> list[tuple[VNode, dict]]:
@@ -1897,6 +1879,9 @@ class FileCommands:
             if isinstance(v.unknownAttributes, dict):
                 # Create a new dict containing only entries that can be pickled.
                 d = dict(v.unknownAttributes)  # Copy the dict.
+                # New in Leo 6.8.7: Remove '_mod_time' from the uA.
+                if '_mod_time' in d:
+                    del d['_mod_time']
                 for key in d:
                     # Just see if val can be pickled.  Suppress any error.
                     ok = self.pickle(v=v, val=d.get(key), tag=None)
@@ -2107,8 +2092,6 @@ class FileCommands:
             # #526: do this for @auto nodes.
             # #3990: do this for @edit nodes.
             attrs.append(self.putDescendentVnodeUas(p))
-        if False and attrs:  ###
-            g.printObj(attrs, tag=f"{g.my_name()} {p.h}")  ###
         return ''.join(attrs)
     #@+node:ekr.20031218072017.1579: *5* fc.put_v_elements & helper
     def put_v_elements(self, p: Position = None) -> None:
