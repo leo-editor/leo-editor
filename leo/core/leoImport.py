@@ -29,11 +29,6 @@ except ImportError:
 
 # Leo imports...
 from leo.core import leoGlobals as g
-from leo.plugins.importers.c import C_Importer
-from leo.plugins.importers.javascript import JS_Importer
-from leo.plugins.importers.python import Python_Importer
-from leo.plugins.importers.rust import Rust_Importer
-from leo.plugins.importers.typescript import TS_Importer
 
 # Abbreviation.
 StringIO = io.StringIO
@@ -1116,40 +1111,41 @@ class LeoImportCommands:
     def parse_body(self, p: Position) -> None:
         """
         Split p.b into functions, methods or classes in sibling nodes.
-
-        Parsing is supported only for python or rust code.
         """
         c = self.c
         u, undoType = c.undoer, 'parse-body'
+        language = c.getLanguage(p)
+
+        # Initial checks.
         if p.hasChildren():
             g.es_print('can not run parse-body: node has children:', p.h)
             return
-        language = c.getLanguage(p)
-        # This dict should *never* include 'html' and 'xml' importers.
-        d = {
-            'c': C_Importer(c),
-            'javascript': JS_Importer(c),
-            'python': Python_Importer(c),
-            'rust': Rust_Importer(c),
-            'typescript': TS_Importer(c),
-        }
-        if importer := d.get(language):
-            u.beforeChangeGroup(p, undoType)
-            try:
-                old_p = p.copy()
-                c.selectPosition(p)
-                changed = self.parse_body_helper(p, importer=importer)
-                c.selectPosition(old_p)
-                if c.checkOutline():
-                    return  # Error!
-                if changed:
-                    u.afterChangeGroup(p, undoType)
-                    c.setChanged()
-                    c.redraw(old_p)
-            except Exception:
-                g.es_exception()
-        else:
-            g.es_print(f"can not run parse-body on {language} nodes")
+        if language in ('html', 'xml'):
+            g.es_print(f"parse-body does not support @language {language}")
+            return
+
+        # Instantiate the importer.
+        importer_class = g.app.importerClassesDict.get(language)
+        if not importer_class:
+            g.es_print(f"No importer class for @language {language}")
+            return
+        importer = importer_class(c)
+
+        # Handle undo.
+        u.beforeChangeGroup(p, undoType)
+        try:
+            old_p = p.copy()
+            c.selectPosition(p)
+            changed = self.parse_body_helper(p, importer=importer)
+            c.selectPosition(old_p)
+            if c.checkOutline():
+                return  # Error!
+            if changed:
+                u.afterChangeGroup(p, undoType)
+                c.setChanged()
+                c.redraw(old_p)
+        except Exception:
+            g.es_exception()
     #@+node:ekr.20250807161513.1: *4* ic.compute_imported_headline
     def compute_imported_headline(self, importer: Any, lines: list[str], p: Position) -> str:
         """Compute the headline for the given imported lines."""
