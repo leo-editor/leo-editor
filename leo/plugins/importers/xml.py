@@ -20,7 +20,7 @@ class Xml_Importer(Importer):
     minimum_block_size = 2  # Helps handle one-line elements.
 
     # xml_i.add_tags defines all patterns.
-    block_patterns: tuple = None
+    block_patterns: tuple = tuple()
     end_patterns: tuple = None
     start_patterns: tuple = None
 

@@ -17,7 +17,7 @@ class Java_Importer(Importer):
 
     language = 'java'
 
-    block_patterns = (
+    block_patterns: tuple = (
         ('class', re.compile(r'.*?\bclass\s+(\w+)')),
         ('func', re.compile(r'.*?\b(\w+)\s*\(.*?\)\s*{')),
         ('interface', re.compile(r'.*?\binterface\s+(\w*)\s*{')),

@@ -17,7 +17,7 @@ class Perl_Importer(Importer):
 
     language = 'perl'
 
-    block_patterns = (
+    block_patterns: tuple = (
         ('sub', re.compile(r'\s*sub\s+(\w+)')),
     )
 

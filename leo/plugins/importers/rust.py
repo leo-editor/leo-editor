@@ -22,7 +22,7 @@ class Rust_Importer(Importer):
     #@+<< define rust block patterns >>
     #@+node:ekr.20231111065650.1: *3* << define rust block patterns >>
 
-    block_patterns = (
+    block_patterns: tuple = (
 
         # Patterns that *do* require '{' on the same line...
 
