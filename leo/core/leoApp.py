@@ -207,8 +207,13 @@ class LeoApp:
         self.commandName: str = None  # The name of the command being executed.
         self.commandInterruptFlag = False  # True: command within a command.
         #@-<< LeoApp: global controller/manager objects >>
-        #@+<< LeoApp: global reader/writer data >>
-        #@+node:ekr.20170302075110.1: *5* << LeoApp: global reader/writer data >>
+        #@+<< LeoApp: global importer/reader/writer data >>
+        #@+node:ekr.20170302075110.1: *5* << LeoApp: global importer/reader/writer data >>
+        # Leo 6.8.7: Keys are language names; values are importer classes.
+        self.importerClassesDict: dict[str, Any] = {}
+        # Leo 6.8.7: Keys are language names; values are importer modules.
+        self.importerModulesDict: dict[str, Any] = {}
+
         # From leoAtFile.py.
         self.atAutoWritersDict: dict[str, Callable] = {}
         self.writersDispatchDict: dict[str, Callable] = {}
@@ -225,7 +230,7 @@ class LeoApp:
         # leo 5.6: allow undefined section references in all @auto files.
         # Leo 6.6.4: Make this a permanent g.app ivar.
         self.allow_undefined_refs = False
-        #@-<< LeoApp: global reader/writer data >>
+        #@-<< LeoApp: global importer/reader/writer data >>
         #@+<< LeoApp: global status vars >>
         #@+node:ekr.20161028040054.1: *5* << LeoApp: global status vars >>
         self.already_open_files: list[str] = []  # A list of file names that *might* be open in another copy of Leo.
@@ -2485,13 +2490,27 @@ class LoadManager:
                 if sfn.endswith('.py') and sfn != '__init__.py':
                     try:
                         module_name = sfn[:-3]
+                        language_name = 'rst' if module_name == 'leo_rst' else module_name
                         # Important: use importlib to give imported modules their fully qualified names.
                         m = importlib.import_module(f"leo.plugins.importers.{module_name}")
-                        self.parse_importer_dict(sfn, m)
-                        # print('createImporterData', m.__name__)
+                        if module_name != 'base_importer':
+                            g.app.importerModulesDict[language_name] = m
+                            self.parse_importer_dict(sfn, m)
                     except Exception:
                         g.warning(f"can not import leo.plugins.importers.{module_name}")
                         g.printObj(filenames)
+
+        # Leo 6.7.8: Create g.app.importerClassesDict.
+        for language_name in g.app.importerModulesDict:
+            m = g.app.importerModulesDict.get(language_name)
+            for z in dir(m):
+                # A hack: all importer subclasses should end with '_Importer'.
+                if z.endswith('_Importer'):
+                    if importer_class := getattr(m, z, None):
+                        g.app.importerClassesDict[language_name] = importer_class
+                        break
+            else:
+                g.trace(f"No importer for {language_name}")
     #@+node:ekr.20140723140445.18076: *7* LM.parse_importer_dict
     def parse_importer_dict(self, sfn: str, m: ModuleType) -> None:
         """
@@ -3048,12 +3067,10 @@ class LoadManager:
         # Open an outline or an external file.
         exists = os.path.exists(file_name)
         is_leo = lm.isLeoFile(file_name)
-        # pylint: disable=no-else-return
         if is_leo:
             if exists:
                 return lm.openExistingLeoFile(file_name, gui, old_c)
-            else:
-                return lm.openEmptyLeoFile(file_name, gui, old_c)
+            return lm.openEmptyLeoFile(file_name, gui, old_c)
         return lm.openExternalFile(file_name, gui, old_c)
 
     loadLocalFile = openWithFileName  # Compatibility.
@@ -3172,7 +3189,7 @@ class LoadManager:
             func = g.app.scanner_for_ext(ext)
             p = c.rootPosition()
             p.h = f"@auto {fn}" if func else f"@edit {fn}"
-            c.refreshFromDisk(p)  # Calls c.redraw() # pylint: disable=no-member
+            c.refreshFromDisk(p)  # pylint: disable=no-member
 
         c.mFileName = None  # #3546: Do *not* automatically save the .leo file.
         c.frame.title = c.computeTabTitle()
