@@ -19,7 +19,7 @@ class C_Importer(Importer):
     language = 'c'
     string_list = ['"']  # Not single quotes.
 
-    block_patterns = (
+    block_patterns: tuple = (
         ('class', re.compile(r'.*?\bclass\s+(\w+)\s*\{')),
         ('func', re.compile(r'.*?\b(\w+)\s*\(.*?\)\s*(const)?\s*{')),
         ('namespace', re.compile(r'.*?\bnamespace\s+(\w+)?\s*\{')),

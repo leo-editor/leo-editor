@@ -17,7 +17,7 @@ class Dart_Importer(Importer):
 
     language = 'dart'
 
-    block_patterns = (
+    block_patterns: tuple = (
         ('function', re.compile(r'^\s*([\w\s]+)\s*\(.*?\)\s*\{')),
     )
 #@-others

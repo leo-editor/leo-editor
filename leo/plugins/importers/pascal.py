@@ -17,7 +17,7 @@ class Pascal_Importer(Importer):
 
     language = 'pascal'
 
-    block_patterns = (
+    block_patterns: tuple = (
         ('constructor', re.compile(r'^\s*\bconstructor\s+([\w_\.]+)')),
         ('destructor', re.compile(r'^\s*\bdestructor\s+([\w_\.]+)')),
         ('function', re.compile(r'^\s*\bfunction\s+([\w_\.]+)')),

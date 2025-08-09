@@ -39,6 +39,8 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position
+    from leo.plugins.importers.base_importer import Block
+
     Value = Any
 #@-<< leoImport annotations >>
 #@+others
@@ -1105,48 +1107,104 @@ class LeoImportCommands:
                     result = s
                     # g.es("replacing",target,"with",s)
         return result
-    #@+node:ekr.20140531104908.18833: *3* ic.parse_body
+    #@+node:ekr.20140531104908.18833: *3* ic.parse_body & helpers
     def parse_body(self, p: Position) -> None:
         """
-        Parse p.b as source code, creating a tree of descendant nodes.
-        This is essentially an import of p.b.
+        Split p.b into functions, methods or classes in sibling nodes.
         """
         c = self.c
-        d = g.app.language_extension_dict
         u, undoType = c.undoer, 'parse-body'
-        if not p:
-            return
+        language = c.getLanguage(p)
+
+        # Initial checks.
         if p.hasChildren():
             g.es_print('can not run parse-body: node has children:', p.h)
             return
-        language = c.getLanguage(p)
-        ext = '.' + d.get(language)
-
-        # The parser is the `do_import` function for each importer class.
-        parser = g.app.classDispatchDict.get(ext)
-
-        # Fix bug 151: parse-body creates "None declarations"
-        if p.isAnyAtFileNode():
-            fn = p.anyAtFileNodeName()
-            self.methodName, self.fileType = g.os_path_splitext(fn)
-        else:
-            fileType = d.get(language, 'py')
-            self.methodName, self.fileType = p.h, fileType
-        if not parser:
-            g.es_print(f"parse-body: no parser for @language {language or 'None'}")
+        if language in ('html', 'xml'):
+            g.es_print(f"parse-body does not support @language {language}")
             return
+
+        # Instantiate the importer.
+        importer_class = g.app.importerClassesDict.get(language)
+        if not importer_class:
+            g.es_print(f"No importer class for @language {language}")
+            return
+        importer = importer_class(c)
+
+        # Handle undo.
+        u.beforeChangeGroup(p, undoType)
         try:
-            bunch = u.beforeParseBody(p)
-            s = p.b
-            p.b = ''
-            parser(c, p, s)
-            u.afterParseBody(p, undoType, bunch)
-            p.expand()
+            old_p = p.copy()
             c.selectPosition(p)
-            c.redraw()
+            changed = self.parse_body_helper(p, importer=importer)
+            c.selectPosition(old_p)
+            if c.checkOutline():
+                return  # Error!
+            if changed:
+                u.afterChangeGroup(p, undoType)
+                c.setChanged()
+                c.redraw(old_p)
         except Exception:
             g.es_exception()
-            p.b = s
+    #@+node:ekr.20250807161513.1: *4* ic.compute_imported_headline
+    def compute_imported_headline(self, importer: Any, lines: list[str], p: Position) -> str:
+        """Compute the headline for the given imported lines."""
+        for s in lines:
+            s = s.strip()
+            for (kind, pattern) in importer.block_patterns:
+                if m := pattern.match(s):
+                    s = m.group(0)
+                    # Truncate at the first '(' or '{'.
+                    i1, i2 = s.find('('), s.find('{')
+                    i = min(i1, i2) if i1 > -1 and i2 > -1 else max(i1, i2)
+                    if i > -1:
+                        s = s[:i]
+                    return s
+        return p.h
+    #@+node:ekr.20250807093257.1: *4* ic.parse_body_helper
+    def parse_body_helper(self, p: Position, *, importer: Any) -> bool:
+        """The common code for the parse-body command."""
+        c = self.c
+        u, undoType = c.undoer, 'parse-body'
+        importer.lines = lines = g.splitLines(p.b)
+        importer.guide_lines = importer.delete_comments_and_strings(lines)
+        blocks = importer.find_blocks(0, len(lines))
+
+        # The main loop.
+        changed = len(blocks) > 1
+        self.preprocess_blocks(blocks)
+        while len(blocks) > 1:
+            # Change the node.
+            bunch = u.beforeChangeBody(p)
+            block = blocks.pop(0)
+            head = lines[block.start:block.end]
+            tail = lines[block.end:]
+            p.b = ''.join(head)
+            p.h = self.compute_imported_headline(importer, head, p)
+            u.afterChangeBody(p, undoType, bunch)
+            # Insert another node.
+            bunch = u.beforeInsertNode(p)
+            p2 = p.insertAfter()
+            p2.h = self.compute_imported_headline(importer, tail, p)
+            p2.b = ''.join(tail)
+            u.afterInsertNode(p2, undoType, bunch)
+            # Continue splitting p2.
+            p = p2
+        return changed
+    #@+node:ekr.20250807084702.1: *4* ic.preprocess_blocks
+    def preprocess_blocks(self, blocks: list[Block]) -> None:
+        """Move blank lines from the start one block to the end of the previous block."""
+        for i, block in enumerate(blocks):
+            try:
+                block2 = blocks[i + 1]
+            except IndexError:
+                break
+            for i in range(block2.start, block2.end):
+                s = block2.lines[i]
+                if s.strip():
+                    break
+                block.end += 1
+                block2.start += 1
     #@+node:ekr.20031218072017.3305: *3* ic.Utilities
     #@+node:ekr.20090122201952.4: *4* ic.appendStringToBody & setBodyString (leoImport)
     def appendStringToBody(self, p: Position, s: str) -> None:

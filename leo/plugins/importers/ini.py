@@ -17,7 +17,9 @@ class Ini_Importer(Importer):
     language = 'ini'
 
     section_pat = re.compile(r'^\s*(\[.*\])')
-    block_patterns = (('section', section_pat),)
+    block_patterns: tuple = (
+        ('section', section_pat),
+    )
 
     #@+others
     #@+node:ekr.20230516142345.1: *3* ini_i.find_end_of_block

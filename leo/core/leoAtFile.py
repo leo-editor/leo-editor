@@ -680,7 +680,7 @@ class AtFile:
             g.doHook('after-reading-external-file', c=c, p=p)
         return p  # For #451: return p.
     #@+node:ekr.20150204165040.5: *5* at.readOneAtCleanNode & helpers
-    def readOneAtCleanNode(self, root: Position, *, new_contents: str = None) -> bool:
+    def readOneAtCleanNode(self, root: Position, *, new_contents: str = None) -> None:
         """Update the @clean/@nosent node at root."""
         at, c, x = self, self.c, self.c.shadowController
 
@@ -690,7 +690,7 @@ class AtFile:
             fileName = c.fullPath(root)
             if not g.os_path_exists(fileName):
                 g.es_print(f"not found: {fileName}", color='red', nodeLink=root.get_UNL())
-                return False
+                return
             # Suppresses file-changed dialog.
             at.rememberReadPath(fileName, root)
 
@@ -703,7 +703,7 @@ class AtFile:
 
         # Don't update if the outline and file are in synch.
         if old_mod_time and old_mod_time >= new_mod_time:
-            return True
+            return
 
         # #4385: Init the per-file data.
         at.initReadIvars(root, fileName)
@@ -731,9 +731,9 @@ class AtFile:
         else:
             new_private_lines = []
             root.b = ''.join(new_public_lines)
-            return True
+            return
         if new_private_lines == old_private_lines:
-            return True
+            return
         if not g.unitTesting:
             g.es_print("updating:", root.h)
         root.clearVisitedInTree()
@@ -755,8 +755,6 @@ class AtFile:
             c.setChanged(force=True)
             root.v.setDirty()
             at.changed_roots.append(root.copy())
-
-        return True  # No errors.
     #@+node:ekr.20150204165040.8: *6* at.read_at_clean_lines
     def read_at_clean_lines(self, fn: str) -> list[str]:  # pragma: no cover
         """Return all lines of the @clean/@nosent file at fn."""

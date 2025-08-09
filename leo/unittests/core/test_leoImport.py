@@ -48,34 +48,96 @@ class TestLeoImport(BaseTestImporter):
         u = c.undoer
         x = c.importCommands
         target = c.p.insertAfter()
+        c.selectPosition(target)
         target.h = 'target'
 
         body_1 = self.prep(
-        """
+        '''
             import os
 
-            def macro(func):
-                def new_func(*args, **kwds):
-                    raise RuntimeError('blah blah blah')
-            return new_func
-        """)
+            def spam():
+                """A docstring"""
+                print('a string')
+
+            def eggs():
+                pass
+
+            class NewClass:
+                def f1(self):
+                    pass
+        ''')
         target.b = body_1
         x.parse_body(target)
 
         expected_results = (
-            (0, '',  # Ignore the top-level headline.
+            (0, 'def spam',
                 'import os\n'
                 '\n'
-                '@others\n'
-                'return new_func\n'
-                # #4385. This is an improvement!
-                # '@language python\n'
-                # '@tabwidth -4\n'
+                'def spam():\n'
+                '    """A docstring"""\n'
+                "    print('a string')\n"
+                '\n'
             ),
-            (1, 'function: macro',
-                'def macro(func):\n'
-                '    def new_func(*args, **kwds):\n'
-                "        raise RuntimeError('blah blah blah')\n"
+            (0, 'def eggs',
+                'def eggs():\n'
+                '    pass\n'
+                '\n'
+            ),
+            (0, 'class NewClass',
+                'class NewClass\n'
+                '    def f1(self):\n'
+                '        pass\n'
+            ),
+        )
+        # Don't call run_test.
+        self.check_outline(target, expected_results)
+
+        # Test undo
+        u.undo()
+        self.assertEqual(target.b, body_1, msg='undo test')
+        self.assertFalse(target.hasChildren(), msg='undo test')
+        # Test redo
+        u.redo()
+        self.check_outline(target, expected_results)
+    #@+node:ekr.20250807095221.1: *3* TestLeoImport.test_rust_importer_parse_body
+    def test_rust_importer_parse_body(self):
+
+        c = self.c
+        u = c.undoer
+        x = c.importCommands
+        target = c.p.insertAfter()
+        c.selectPosition(target)
+        target.h = 'target'
+
+        body_1 = self.prep(
+        '''
+            @language rust
+
+            fn spam() {
+                println!("spam");
+            }
+
+            fn eggs() {
+                println!("eggs");
+            }
+        ''')
+        target.b = body_1
+        x.parse_body(target)
+
+        expected_results = (
+            (0, 'fn spam',
+                '@language rust\n'
+                '\n'
+                'fn spam() {\n'
+                '    println!("spam");\n'
+                '}\n'
+                '\n'
+            ),
+            (0, 'fn eggs',
+                'fn eggs() {\n'
+                '    println!("eggs");\n'
+                '}\n'
+                '\n'
             ),
         )
         # Don't call run_test.

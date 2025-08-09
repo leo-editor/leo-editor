@@ -14,6 +14,7 @@ if TYPE_CHECKING:
 class Html_Importer(Xml_Importer):
 
     language = 'html'
+    block_patterns: tuple = tuple()
 
     def __init__(self, c: Cmdr) -> None:
         """Html_Importer.__init__"""
