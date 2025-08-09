@@ -783,8 +783,11 @@ class TestTOG(BaseTest):
         """.replace('<LT>', '{').replace('<RT>', '}')
         self.make_data(contents)
     #@+node:ekr.20250801094256.1: *4* TestTOG.t-strings...
-    #@+node:ekr.20250801094324.1: *5* test_tstrings
+    #@+node:ekr.20250801094324.1: *5* TestTOG.test_tstrings
     def test_tstrings(self):
+
+        if g.python_version_tuple < (3, 14, 0):
+            self.skipTest('Requires Python 3.14+')
 
         # All examples are from PEP750: https://peps.python.org/pep-0750/
         table = (
