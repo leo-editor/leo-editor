@@ -5857,10 +5857,10 @@ def main() -> None:  # pragma: no cover (tested in client)
                     signon += f"Total client limit is {wsLimit}.\n"
                 signon += "Ctrl+c to break"
                 print(signon, flush=True)
-                
+
                 # Keep server running until interrupted
                 await realtime_server.wait_closed()
-                
+
             except KeyboardInterrupt:
                 print("Process interrupted", flush=True)
             finally:
