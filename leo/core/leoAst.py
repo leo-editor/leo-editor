@@ -4,6 +4,8 @@
 # Leo's copyright notice is based on the MIT license:
 # https://leo-editor.github.io/leo-editor/license.html
 
+# **Notice**: Support for this file ends with Python 3.14.
+
 # Don't pollute searches with matches from this file!
 #@@nosearch
 
@@ -12,17 +14,19 @@
 """
 leoAst.py
 
+Are you sure you want to use this file?
+
+- asttokens will usually be a better choice:
+  https://asttokens.readthedocs.io/en/latest/user-guide.html
+- Leo does not use this module. leoTokens.py defines Leo's beautifier.
+- Support for this code ends with Python 3.14.
+  This code must be updated whenever Python adds new ast nodes.
+
 The classes in this file unify python's token-based and ast-based worlds by
 creating two-way links between tokens in the token list and ast nodes in
 the parse tree. For more details, see the "Overview" section below.
 
-See also leoTokens.py. It defines a Python beautifier that uses only
-Python's tokenize module.
-
-This commands in this file require Python 3.9 or above.
-
-Please help combat the dreaded software rot by reporting any problems to
-https://groups.google.com/g/leo-editor
+Please report any problems to https://groups.google.com/g/leo-editor
 
 **Stand-alone operation**
 
@@ -190,7 +194,10 @@ except Exception:
 
 v1, v2, junk1, junk2, junk3 = sys.version_info
 if (v1, v2) < (3, 9):  # pragma: no cover
-    raise ImportError('The commands in leoAst.py require Python 3.9 or above')
+    raise ImportError('leoAst.py requires Python 3.9 or above')
+if (v1, v2) > (3, 14):  # pragma: no cover
+    print('Support for leoAst.py ends with Python 3.14')
+    print('Use at your own risk')
 
 #@+others
 #@+node:ekr.20200702114522.1: **  leoAst.py: top-level commands
@@ -437,13 +444,14 @@ if 1:  # pragma: no cover
         # Making 'endmarker' significant ensures that all tokens are synced.
         return (
             kind in ('async', 'await', 'endmarker', 'name', 'number', 'string')
-            or kind.startswith('fstring')
+            or kind.startswith(('fstring', 'tstring'))
             or kind == 'op' and value not in ',;()')
 
     def is_significant_kind(kind: str) -> bool:
+        # Used only by tog.sync_to_kind, which must not sync to 'op' tokens.
         return (
             kind in ('async', 'await', 'endmarker', 'name', 'number', 'string')
-            or kind.startswith('fstring')
+            or kind.startswith(('fstring', 'tstring'))
         )
 
     def is_significant_token(token: Token) -> bool:
@@ -847,8 +855,8 @@ class AstDumper:  # pragma: no cover
             fstrings, strings = 0, 0
             for z in values:
                 if g.python_version_tuple < (3, 12, 0):
-                    assert isinstance(z, (ast.FormattedValue, ast.Str))
-                    if isinstance(z, ast.Str):
+                    assert isinstance(z, (ast.FormattedValue, ast.Str))  # pylint: disable=no-member
+                    if isinstance(z, ast.Str):  # pylint: disable=no-member
                         results.append(z.s)
                         strings += 1
                     else:
@@ -864,7 +872,7 @@ class AstDumper:  # pragma: no cover
                         fstrings += 1
             val = f"{strings} str, {fstrings} f-str"
         elif class_name == 'keyword':
-            if isinstance(node.value, ast.Str):
+            if isinstance(node.value, ast.Str):  # pylint: disable=no-member
                 val = f"arg={node.arg}..Str.value.s={node.value.s}"
             elif isinstance(node.value, ast.Name):
                 val = f"arg={node.arg}..Name.value.id={node.value.id}"
@@ -877,7 +885,7 @@ class AstDumper:  # pragma: no cover
         elif class_name == 'Num':
             val = f"n={node.n}"
         elif class_name == 'Starred':
-            if isinstance(node.value, ast.Str):
+            if isinstance(node.value, ast.Str):  # pylint: disable=no-member
                 val = f"s={node.value.s}"
             elif isinstance(node.value, ast.Name):
                 val = f"id={node.value.id}"
@@ -1013,7 +1021,7 @@ class Fstringify:
         ReassignTokens().reassign(filename, tokens, tree)
 
         # Main pass.
-        string_node = ast.Str if g.python_version_tuple < (3, 12, 0) else ast.Constant
+        string_node = ast.Str if g.python_version_tuple < (3, 12, 0) else ast.Constant  # pylint: disable=no-member
         for node in ast.walk(tree):
             if (
                 isinstance(node, ast.BinOp)
@@ -1126,7 +1134,7 @@ class Fstringify:
         Replace all the relevant tokens with a single new 'string' token.
         """
         trace = False
-        string_node = ast.Str if g.python_version_tuple < (3, 12, 0) else ast.Constant
+        string_node = ast.Str if g.python_version_tuple < (3, 12, 0) else ast.Constant  # pylint: disable=no-member
         assert isinstance(node.left, string_node), (repr(node.left), g.callers())
 
         # Careful: use the tokens, not Str.s or Constant.value. This preserves spelling.
@@ -1323,7 +1331,7 @@ class Fstringify:
         """
         trace = False
         # First, Try the most common cases.
-        string_node = ast.Str if g.python_version_tuple < (3, 12, 0) else ast.Constant
+        string_node = ast.Str if g.python_version_tuple < (3, 12, 0) else ast.Constant  # pylint: disable=no-member
         if isinstance(node, string_node):
             token_list = get_node_token_list(node, self.tokens)
             return [token_list]
@@ -1430,7 +1438,7 @@ class Fstringify:
         # Replace the node.
         new_node: ast.AST
         if g.python_version_tuple < (3, 12, 0):
-            new_node = ast.Str(value=s)  # pylint: disable=deprecated-class
+            new_node = ast.Str(value=s)  # pylint: disable=deprecated-class,no-member
         else:
             new_node = ast.Constant(value=s)
         replace_node(new_node, node)
@@ -2154,7 +2162,7 @@ class Orange:  # Orange is the new Black.
             """True if node is any expression other than += number."""
             if isinstance(node, (ast.BinOp, ast.Call, ast.IfExp)):
                 return True
-            num_node = ast.Num if g.python_version_tuple < (3, 12, 0) else ast.Constant
+            num_node = ast.Num if g.python_version_tuple < (3, 12, 0) else ast.Constant  # pylint: disable=no-member
             return (
                 isinstance(node, ast.UnaryOp)
                 and not isinstance(node.operand, num_node)
@@ -3033,7 +3041,7 @@ class TokenOrderGenerator:
         token list.
         """
         self.token('op', val)
-    #@+node:ekr.20191113063144.7: *5* tog.token
+    #@+node:ekr.20191113063144.7: *5* tog.token (syncs tokens!)
     px = -1  # Index of the previously synced token.
 
     def token(self, kind: str, val: str) -> None:
@@ -3053,17 +3061,26 @@ class TokenOrderGenerator:
         node, tokens = self.node, self.tokens
         assert isinstance(node, ast.AST), repr(node)
 
-        if self.trace_token_method:  # A Superb trace.
-            g.trace(
-                f"px: {self.px:4} "
-                f"node: {node.__class__.__name__:<14} "
-                f"significant? {int(is_significant(kind, val))} "
-                f"{kind:>10}: {val!r}")
-        #
+        def trace_token(px: int, kind: str, val: str) -> None:
+            # A Superb trace.
+            if self.trace_token_method:
+                print(
+                    'tog.token: '
+                    f"px: {px:4} "
+                    f"node: {node.__class__.__name__:<14} "
+                    f"significant? {int(is_significant(kind, val))} "
+                    f"{kind:>10}: {val!r}")
+
+        if self.trace_token_method:
+            print('')
+            print(f"tog.token. Target: kind: {kind} val: {val} {g.callers(3)}")
+            print('')
+
         # Step one: Look for token T.
         old_px = px = self.px + 1
         while px < len(self.tokens):
             token = tokens[px]
+            trace_token(px, token.kind, token.value)
             if (kind, val) == (token.kind, token.value):
                 break  # Success.
             if kind == token.kind == 'number':
@@ -3073,7 +3090,7 @@ class TokenOrderGenerator:
                 line_s = f"line {token.line_number}:"
                 val = str(val)  # for g.truncate.
                 raise AssignLinksError(
-                    'tog.token\n'
+                    'tog.token: check 1\n'
                     f"       file: {self.filename}\n"
                     f"{line_s:>12} {g.truncate(token.line.strip(), 40)!r}\n"
                     f"Looking for: {kind}.{g.truncate(val, 40)!r}\n"
@@ -3085,7 +3102,7 @@ class TokenOrderGenerator:
         else:  # pragma: no cover
             val = str(val)  # for g.truncate.
             raise AssignLinksError(
-                'tog.token 2\n'
+                'tog.token: check 2\n'
                  f"       file: {self.filename}\n"
                  f"Looking for: {kind}.{g.truncate(val, 40)}\n"
                  f"      found: end of token list"
@@ -3132,7 +3149,7 @@ class TokenOrderGenerator:
     #@+node:ekr.20231213174617.1: *6* tog.sync_to_kind
     def sync_to_kind(self, kind: str) -> None:
         """Sync to the next significant token of the given kind."""
-        assert is_significant_kind(kind), repr(kind)
+        assert is_significant_kind(kind), f"Not significant: {kind!r}"
         while next_token := self.find_next_significant_token():
             self.token(next_token.kind, next_token.value)
             if next_token.kind in (kind, 'endtoken'):
@@ -3429,7 +3446,7 @@ class TokenOrderGenerator:
         self.visit(node.value)
         self.op('.')
         self.name(node.attr)  # A string.
-    #@+node:ekr.20191113063144.30: *6* tog.Bytes
+    #@+node:ekr.20191113063144.30: *6* tog.Bytes (Removed in Python 3.14)
     def do_Bytes(self, node: Node) -> None:
 
         """
@@ -3518,7 +3535,7 @@ class TokenOrderGenerator:
         for z in node.generators or []:
             self.visit(z)
             self.token('op', '}')
-    #@+node:ekr.20191113063144.37: *6* tog.Ellipsis
+    #@+node:ekr.20191113063144.37: *6* tog.Ellipsis (Removed in Python 3.14)
     def do_Ellipsis(self, node: Node) -> None:  # pragma: no cover (Does not exist for python 3.8+)
 
         self.op('...')
@@ -3551,6 +3568,45 @@ class TokenOrderGenerator:
     def do_Index(self, node: Node) -> None:  # pragma: no cover (deprecated)
 
         self.visit(node.value)
+    #@+node:ekr.20250731052836.1: *6* tog.Interpolation
+    # New in Python 3.14:
+    # Interpolation(expr value, constant str, int conversion, expr? format_spec)
+    # Represents a single interpolation field in a t-string.
+
+    def do_Interpolation(self, node: Node) -> None:
+
+        self.op('{')
+        self.visit(node.value)
+
+        # Handle the conversion.
+        for name in 'ars':
+            if node.conversion == ord(name):
+                self.op('!')
+                self.name(name)
+                break
+
+        if node.format_spec:  # a JoinedStr.
+            self.op(':')
+            # Don't visit JoinedStr: it calls tog.string_helper.
+            # Handle all tokens up to the outer '}'.
+            bracket_level = 0  # Nested interpolations are valid.
+            while True:
+                token = self.find_next_significant_token()
+                if not token:
+                    break
+                if (token.kind, token.value) == ('op', '{'):
+                    bracket_level += 1
+                    self.op('{')
+                elif (token.kind, token.value) == ('op', '}'):
+                    if bracket_level == 0:
+                        break
+                    assert bracket_level > 0, bracket_level
+                    bracket_level -= 1
+                    self.op('}')
+                else:
+                    self.token(token.kind, token.value)
+
+        self.op('}')
     #@+node:ekr.20191113063144.41: *6* tog.JoinedStr
     # JoinedStr(expr* values)
 
@@ -3632,7 +3688,7 @@ class TokenOrderGenerator:
         else:
             self.op(':')
             self.visit(step)
-    #@+node:ekr.20191113063144.50: *6* tog.Str (deprecated)
+    #@+node:ekr.20191113063144.50: *6* tog.Str (Removed in Python 3.14)
     # DeprecationWarning: ast.Str is deprecated and will be removed in Python 3.14;
     # use ast.Constant instead
 
@@ -3650,6 +3706,33 @@ class TokenOrderGenerator:
         self.op('[')
         self.visit(node.slice)
         self.op(']')
+    #@+node:ekr.20250731051236.1: *6* tog.TemplateStr
+    # New in Python 3.14:
+    # TemplateStr(expr* values)
+    # Neither implicit nor explicit contcantenation with str is allowed.
+
+    def do_TemplateStr(self, node: Node) -> None:
+
+        def expect(kind: str, val: Any) -> str:
+            return f"Expected: {kind}, got {val!r}"
+
+        # Eat the 'tstring-start' token.
+        token = self.find_next_non_ws_token()
+        assert token.kind == 'tstring_start', expect('tstring_start', token)
+        self.token(token.kind, token.value)
+
+        for inner_node in node.values:
+            if isinstance(inner_node, ast.Constant):
+                # Don't call tog.string_helper!
+                token = self.find_next_non_ws_token()
+                assert token.kind == 'tstring_middle', expect('tstring_middle', token)
+                self.token(token.kind, token.value)
+            else:
+                assert isinstance(inner_node, ast.Interpolation), expect('ast.Interpolation', node)
+                self.visit(inner_node)
+
+        # Eat the tstring_end token.
+        self.sync_to_kind('tstring_end')
     #@+node:ekr.20191113063144.52: *6* tog.Tuple
     # Tuple(expr* elts, expr_context ctx)
 

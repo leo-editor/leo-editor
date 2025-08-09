@@ -782,6 +782,25 @@ class TestTOG(BaseTest):
         f"<LT>'':*^<LT>1:<LT>1<RT><RT><RT>"
         """.replace('<LT>', '{').replace('<RT>', '}')
         self.make_data(contents)
+    #@+node:ekr.20250801094256.1: *4* TestTOG.t-strings...
+    #@+node:ekr.20250801094324.1: *5* test_tstrings
+    def test_tstrings(self):
+
+        # All examples are from PEP750: https://peps.python.org/pep-0750/
+        table = (
+            'template1: Template = t"Hello {name}"',  # Plain.
+            'template2 = t"Hello {name!r}"',  # Conversion.
+            'template3 = t"Value: {value:.2f}"',  # Format.
+            'template4 = t"Value: {value:.{precision}f}"',  # Format.
+        )
+        debug_list = [
+            # 'contents',
+            # 'sync',  # Trace tog.token.
+            # 'tokens',
+            # 'tree',
+        ]
+        for contents in table:
+            self.make_data(contents, debug_list=debug_list)
     #@+node:ekr.20191227052446.32: *4* TestTOG.If...
     #@+node:ekr.20191227052446.33: *5* test_from leoTips.py
     def test_if1(self):
