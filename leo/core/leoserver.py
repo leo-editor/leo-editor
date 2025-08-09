@@ -88,7 +88,7 @@ Socket = Any
 #@-<< leoserver annotations >>
 #@+<< leoserver version >>
 #@+node:ekr.20220820160619.1: ** << leoserver version >>
-version_tuple = (1, 0, 13)
+version_tuple = (1, 0, 14)
 # Version History
 # 1.0.1 Initial commit.
 # 1.0.2 July 2022: Adding ui-scroll, undo/redo, chapters, ua's & node_tags info.
@@ -103,6 +103,7 @@ version_tuple = (1, 0, 13)
 # 1.0.11 May 2024: Added get_is_valid and current commander info to get_ui_states for detached body support.
 # 1.0.12 June 2025: Added goto_line_in_leo_outline and insert_file_node commands.
 # 1.0.13 July 2025: Added support for websockets version 14+.
+# 1.0.14 August 2025: Added support for Python 3.14+.
 v1, v2, v3 = version_tuple
 __version__ = f"leoserver.py version {v1}.{v2}.{v3}"
 #@-<< leoserver version >>
@@ -897,6 +898,7 @@ class LeoServer:
         self.dummy_c: Cmdr = None  # Set below, after we set g.
         self.action: str = None
         self.bad_commands_list: list[str] = []  # Set below.
+        self.idle_tasks: list[tuple[Callable, Union[int, float]]] = []
         #
         # Debug utilities
         self.current_id = 0  # Id of action being processed.
@@ -1114,14 +1116,14 @@ class LeoServer:
         return script
     #@+node:felix.20210627004238.1: *4* LeoServer._asyncIdleLoop
     async def _asyncIdleLoop(self, seconds: Union[int, float], func: Callable) -> None:
+        """A background task that calls func every n seconds."""
         while True:
             await asyncio.sleep(seconds)
             func(self)
     #@+node:felix.20210627004039.1: *4* LeoServer._idleTime
     def _idleTime(self, fn: Callable, delay: Union[int, float], tag: str) -> None:
         warnings.simplefilter("ignore")
-
-        asyncio.get_event_loop().create_task(self._asyncIdleLoop(delay / 1000, fn))
+        self.idle_tasks.append((fn, delay))
     #@+node:felix.20210626003327.1: *4* LeoServer._show_find_success
     def _show_find_success(self,
         c: Cmdr,
@@ -4307,7 +4309,6 @@ class LeoServer:
             'yank-pop',
 
             'zap-to-character',
-
         ]
         bad.extend(bad_list)
         result = list(sorted(bad))
@@ -4316,7 +4317,6 @@ class LeoServer:
     def _good_commands(self) -> list[str]:
         """Defined commands that should be available in a connected client"""
         good_list = [
-
             'contract-all',
             'contract-all-other-nodes',
             'clone-node',
@@ -4744,11 +4744,13 @@ class LeoServer:
     #@+node:felix.20210621233316.76: *5* server.init_connection
     def _init_connection(self, web_socket: Socket) -> None:  # pragma: no cover (tested in client).
         """Begin the connection."""
-        # global connectionsTotal
         if connectionsTotal == 1:
             # First connection, so "Master client" setup
             self.web_socket = web_socket
-            self.loop = asyncio.get_event_loop()
+            # Start any deferred idle tasks now that the loop is running.
+            self.loop = asyncio.get_running_loop()
+            for func, delay in self.idle_tasks:
+                self.loop.create_task(self._asyncIdleLoop(delay / 1000, func))
         else:
             # already exist, so "spectator-clients" setup
             pass  # nothing for now
@@ -4968,7 +4970,6 @@ class LeoServer:
         that contains at least an 'id' key.
 
         """
-        # global traces
         tag = '_do_message'
         trace, verbose = 'request' in traces, 'verbose' in traces
         func: Callable
@@ -5287,7 +5288,6 @@ class LeoServer:
         Finally, this method returns the json string corresponding to the
         response.
         """
-        # global traces
         tag = '_make_response'
         trace = self.log_flag or 'response' in traces
         verbose = 'verbose' in traces
@@ -5387,8 +5387,8 @@ class LeoServer:
         jsonPackage = json.dumps(package, separators=(',', ':'), cls=SetEncoder)
         if "async" not in package:
             raise InternalServerError(f"\n{tag}: async member missing in package {jsonPackage} \n")
-        if self.loop:
-            self.loop.create_task(self._async_output(jsonPackage, toAll))
+        if self.loop and self.loop.is_running():
+            asyncio.create_task(self._async_output(jsonPackage, toAll))
         elif not g.unitTesting:
             raise InternalServerError(f"\n{tag}: loop not ready {jsonPackage} \n")
     #@+node:felix.20210621233316.89: *5* server._async_output
@@ -5397,14 +5397,12 @@ class LeoServer:
         toAll: bool = False,
     ) -> None:  # pragma: no cover (tested in server)
         """Output json string to the web_socket"""
-        # global connectionsTotal
         tag = '_async_output'
         outputBytes = bytes(json, 'utf-8')
         if toAll:
             if connectionsPool:  # asyncio.wait doesn't accept an empty list
-                await asyncio.wait([
-                    asyncio.create_task(client.send(outputBytes)) for client in connectionsPool
-                ])
+                tasks = [client.send(outputBytes) for client in connectionsPool]
+                await asyncio.gather(*tasks, return_exceptions=True)
             else:
                 g.trace(f"{tag}: no web socket. json: {json!r}")
         else:
@@ -5434,8 +5432,6 @@ class LeoServer:
 #@+node:felix.20210621233316.105: ** main & helpers
 def main() -> None:  # pragma: no cover (tested in client)
     """python script for leo integration via leoBridge"""
-
-    # global argFile, websockets, wsHost, wsPort, wsLimit, wsPersist, wsSkipDirty,
     if not websockets:
         print('websockets not found')
         print('pip install websockets')
@@ -5695,7 +5691,6 @@ def main() -> None:  # pragma: no cover (tested in client)
             wsLimit = 1
     #@+node:felix.20210803174312.1: *3* function: notify_clients
     async def notify_clients(action: str, excludedConn: Any = None) -> None:
-        # global connectionsTotal
         if connectionsPool:  # asyncio.wait doesn't accept an empty list
             opened = bool(controller.c)  # c can be none if no files opened
             m = json.dumps({
@@ -5708,12 +5703,10 @@ def main() -> None:  # pragma: no cover (tested in client)
                 clientSetCopy.discard(excludedConn)
             if clientSetCopy:
                 # if still at least one to notify
-                await asyncio.wait([
-                    asyncio.create_task(client.send(m)) for client in clientSetCopy
-                ])
+                tasks = [client.send(m) for client in clientSetCopy]
+                await asyncio.gather(*tasks, return_exceptions=True)
     #@+node:felix.20210803174312.2: *3* function: register_client
     async def register_client(websocket: Socket) -> None:
-        # global connectionsTotal
         connectionsPool.add(websocket)
         await notify_clients("unregister", websocket)
     #@+node:felix.20210807160828.1: *3* function: save_dirty
@@ -5730,7 +5723,6 @@ def main() -> None:  # pragma: no cover (tested in client)
                 commander.close()  # Patched 'ask' methods will open dialog
     #@+node:felix.20210803174312.3: *3* function: unregister_client
     async def unregister_client(websocket: Socket) -> None:
-        # global connectionsTotal
         connectionsPool.remove(websocket)
         await notify_clients("unregister")
     #@+node:felix.20210621233316.106: *3* function: ws_handler (server)
@@ -5840,45 +5832,90 @@ def main() -> None:  # pragma: no cover (tested in client)
             print("Opening file failed", flush=True)
 
     # Start the server.
-    loop = asyncio.get_event_loop()
+    if sys.version_info >= (3, 14):
+        # For Python 3.14+
+        async def start_server():
+            realtime_server = None
+            try:
+                try:
+                    server = await websockets.serve(ws_handler, wsHost, wsPort, max_size=None)
+                    realtime_server = server
+                except OSError as e:
+                    print(e)
+                    print("Trying with IPv4 Family", flush=True)
+                    server = await websockets.serve(
+                        ws_handler, wsHost, wsPort,
+                        family=socket.AF_INET, max_size=None)
+                    realtime_server = server
 
-    try:
+                signon = SERVER_STARTED_TOKEN + f" at {wsHost} on port: {wsPort}.\n"
+                if wsPersist:
+                    signon += "Persistent server\n"
+                if wsSkipDirty:
+                    signon += "No prompt about dirty file(s) when closing server\n"
+                if wsLimit > 1:
+                    signon += f"Total client limit is {wsLimit}.\n"
+                signon += "Ctrl+c to break"
+                print(signon, flush=True)
+
+                # Keep server running until interrupted
+                await realtime_server.wait_closed()
+
+            except KeyboardInterrupt:
+                print("Process interrupted", flush=True)
+            finally:
+                if realtime_server:
+                    realtime_server.close()
+                if not wsSkipDirty:
+                    print("Checking for changed commanders...", flush=True)
+                    save_dirty()
+                print("Stopped leobridge server", flush=True)
+
         try:
-            server = websockets.serve(ws_handler, wsHost, wsPort, max_size=None)
-            realtime_server = loop.run_until_complete(server)
-        except OSError as e:
-            print(e)
-            print("Trying with IPv4 Family", flush=True)
-            server = websockets.serve(
-                ws_handler, wsHost, wsPort,
-                family=socket.AF_INET, max_size=None)
-            realtime_server = loop.run_until_complete(server)
+            asyncio.run(start_server())
+        except KeyboardInterrupt:
+            print("Process interrupted", flush=True)
+    else:
+        # For Python below 3.14
+        loop = asyncio.get_event_loop()
 
-        signon = SERVER_STARTED_TOKEN + f" at {wsHost} on port: {wsPort}.\n"
-        if wsPersist:
-            signon += "Persistent server\n"
-        if wsSkipDirty:
-            signon += "No prompt about dirty file(s) when closing server\n"
-        if wsLimit > 1:
-            signon += f"Total client limit is {wsLimit}.\n"
-        signon += "Ctrl+c to break"
-        print(signon, flush=True)
-        loop.run_forever()
+        try:
+            try:
+                server = websockets.serve(ws_handler, wsHost, wsPort, max_size=None)
+                realtime_server = loop.run_until_complete(server)
+            except OSError as e:
+                print(e)
+                print("Trying with IPv4 Family", flush=True)
+                server = websockets.serve(
+                    ws_handler, wsHost, wsPort,
+                    family=socket.AF_INET, max_size=None)
+                realtime_server = loop.run_until_complete(server)
 
-    except KeyboardInterrupt:
-        print("Process interrupted", flush=True)
+            signon = SERVER_STARTED_TOKEN + f" at {wsHost} on port: {wsPort}.\n"
+            if wsPersist:
+                signon += "Persistent server\n"
+            if wsSkipDirty:
+                signon += "No prompt about dirty file(s) when closing server\n"
+            if wsLimit > 1:
+                signon += f"Total client limit is {wsLimit}.\n"
+            signon += "Ctrl+c to break"
+            print(signon, flush=True)
+            loop.run_forever()
 
-    finally:
-        # Execution continues here after server is interrupted (e.g. with ctrl+c)
-        realtime_server.close()
-        if not wsSkipDirty:
-            print("Checking for changed commanders...", flush=True)
-            save_dirty()
-        cancel_tasks(asyncio.all_tasks(loop), loop)
-        loop.run_until_complete(loop.shutdown_asyncgens())
-        loop.close()
-        asyncio.set_event_loop(None)
-        print("Stopped leobridge server", flush=True)
+        except KeyboardInterrupt:
+            print("Process interrupted", flush=True)
+
+        finally:
+            # Execution continues here after server is interrupted (e.g. with ctrl+c)
+            realtime_server.close()
+            if not wsSkipDirty:
+                print("Checking for changed commanders...", flush=True)
+                save_dirty()
+            cancel_tasks(asyncio.all_tasks(loop), loop)
+            loop.run_until_complete(loop.shutdown_asyncgens())
+            loop.close()
+            asyncio.set_event_loop(None)
+            print("Stopped leobridge server", flush=True)
 #@-others
 if __name__ == '__main__':
     # pytest will *not* execute this code.
