@@ -85,14 +85,17 @@ class BadLeoFile(Exception):
 #@+node:ekr.20180602062323.1: ** class FastRead
 class FastRead:
 
-    # Used to exclude attributes from being unpickeld as UAs with resolveUa.
+    #@+<< FastRead: define nativeVnodeAttributes >>
+    #@+node:ekr.20250806185821.1: *3* << FastRead: define nativeVnodeAttributes >>
     nativeVnodeAttributes = (
+        '_mod_time',  # Leo 6.8.7.
         'a',
         'descendentTnodeUnknownAttributes',
         'descendentVnodeUnknownAttributes',
         'expanded', 'marks', 't',
         'tnodeList',  # Removed in Leo 4.7.
     )
+    #@-<< FastRead: define nativeVnodeAttributes >>
 
     def __init__(self, c: Cmdr, gnx2vnode: dict[str, VNode]) -> None:
         self.c = c
@@ -360,7 +363,7 @@ class FastRead:
                     v._headString = 'PLACE HOLDER'
                     #@-<< Make a new vnode, linked to the parent >>
                     #@+<< handle all other v attributes >>
-                    #@+node:ekr.20180605075113.1: *6* << handle all other v attributes >>
+                    #@+node:ekr.20180605075113.1: *6* << handle all other v attributes >> (fast.scanVnodes)
                     # FastRead.nativeVnodeAttributes defines the native attributes of <v> elements.
                     d = e.attrib
                     s = d.get('descendentTnodeUnknownAttributes')
@@ -373,7 +376,7 @@ class FastRead:
                         aDict = fc.getDescendentUnknownAttributes(s, v=v)
                         if aDict:
                             fc.descendentVnodeUaDictList.append((v, aDict),)
-                    #
+
                     # Handle vnode uA's
                     uaDict = gnx2ua[gnx]  # A defaultdict(dict)
                     for key, val in d.items():
@@ -1875,6 +1878,9 @@ class FileCommands:
             if isinstance(v.unknownAttributes, dict):
                 # Create a new dict containing only entries that can be pickled.
                 d = dict(v.unknownAttributes)  # Copy the dict.
+                # New in Leo 6.8.7: Remove '_mod_time' from the uA.
+                if '_mod_time' in d:
+                    del d['_mod_time']
                 for key in d:
                     # Just see if val can be pickled.  Suppress any error.
                     ok = self.pickle(v=v, val=d.get(key), tag=None)
