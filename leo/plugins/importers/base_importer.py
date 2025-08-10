@@ -42,13 +42,11 @@ class Block:
     #@+node:ekr.20230921061842.1: *3* Block.__repr__
     def __repr__(self) -> str:
         kind_name_s = f"{self.kind} {self.name}"
-        parent_v_s = self.parent_v.h if self.parent_v else '<no parent_v>'
-        v_s = self.v.h if self.v else '<no v>'
-        return (
-            f"Block: kind/name: {kind_name_s!r:20} "
-            f"{self.start:2} {self.start_body:2} {self.end:2} "
-            f"parent_v: {parent_v_s!r} v: {v_s!r}"
-        )
+        lines = self.lines[self.start : self.end]
+        result = [f"Block {self.start}:{self.end} {kind_name_s!r}\n"]
+        for i, s in enumerate(lines):
+           result.append(f"  {i:3} {s!r}\n")
+        return ''.join(result)
 
     __str__ = __repr__
     #@+node:ekr.20230921061937.1: *3* Block.dump_lines
@@ -312,9 +310,6 @@ class Importer:
         # Add all outer blocks to the to-do list.
         todo_list = self.find_blocks(0, len(self.lines))
 
-        # Leo 6.8.7: Move lines from the start of blocks to the end of previous blocks.
-        self.preprocess_blocks(todo_list)
-
         # Link the blocks to the outer block.
         for block in todo_list:
             block.parent_v = parent.v
@@ -346,6 +341,14 @@ class Importer:
                 block.child_blocks.append(inner_block)
                 inner_block.parent_v = child_v
                 todo_list.append(inner_block)
+
+        # Leo 6.8.7: Move lines from the start of blocks to the end of previous blocks.
+        self.preprocess_blocks(result_blocks)
+
+        if 0:  ### Temp.
+            g.trace(f"Blocks for {parent.h}...")
+            for block in result_blocks:
+                print(block)
 
         # Post pass: generate all bodies
         self.generate_all_bodies(parent, outer_block, result_blocks)
