@@ -36,6 +36,8 @@ for command in [
     f'{python} -m "leo.core.leoTokens" {args} leo/core',
     f'{python} -m "leo.core.leoTokens" {args} leo/external',
     f'{python} -m "leo.core.leoTokens" {args} leo/plugins',
+    f'{python} -m "leo.core.leoTokens" {args} leo/plugins/importers',
+    f'{python} -m "leo.core.leoTokens" {args} leo/plugins/writers',
     f'{python} -m "leo.core.leoTokens" {args} leo/scripts',
     f'{python} -m "leo.core.leoTokens" {args} leo/modes',
     f'{python} -m "leo.core.leoTokens" {args} leo/unittests/commands',

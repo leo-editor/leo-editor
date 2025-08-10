@@ -55,7 +55,7 @@ class Block:
     def dump_lines(self, tag: str = None) -> None:
         if not tag:
             tag = repr(self)
-        g.printObj(self.lines[self.start:self.end], tag=tag)
+        g.printObj(self.lines[self.start : self.end], tag=tag)
     #@+node:ekr.20230921061932.1: *3* Block.long_repr
     def long_repr(self) -> str:
         """A longer form of Block.__repr__"""
@@ -63,7 +63,7 @@ class Block:
         for child_block in self.child_blocks:
             child_blocks.append(f"{child_block.kind}:{child_block.name}")
         child_blocks_s = '\n'.join(child_blocks) if child_blocks else '<no children>'
-        lines_s = g.objToString(self.lines[self.start:self.end], tag='lines')
+        lines_s = g.objToString(self.lines[self.start : self.end], tag='lines')
         return f"\n{self!r} child_blocks: {child_blocks_s}\n{lines_s}"
     #@-others
 
@@ -400,7 +400,7 @@ class Importer:
             children_start, children_end = find_all_child_lines(block)
 
             # Add the head lines to block.v.
-            head_lines = self.lines[block.start:children_start]
+            head_lines = self.lines[block.start : children_start]
             block.v.b = self.compute_body(head_lines)
 
             # Add an @others directive if necessary.
@@ -409,7 +409,7 @@ class Importer:
                 block.v.b = block.v.b + f"{block_common_lws}@others\n"
 
             # Add the tail lines to block.v
-            tail_lines = self.lines[children_end:block.end]
+            tail_lines = self.lines[children_end : block.end]
             tail_s = self.compute_body(tail_lines)
             if tail_s.strip():
                 block.v.b = block.v.b.rstrip() + '\n' + tail_s
@@ -423,9 +423,9 @@ class Importer:
             """
             n = len(self.lines)
             for block in blocks:
-                lines = self.lines[block.start:block.end]
+                lines = self.lines[block.start : block.end]
                 lines2 = self.remove_common_lws(common_lws, lines)
-                self.lines[block.start:block.end] = lines2
+                self.lines[block.start : block.end] = lines2
             assert n == len(self.lines)
         #@-others
 
@@ -473,7 +473,7 @@ class Importer:
             if block.child_blocks:
                 handle_block_with_children(block, block_common_lws)
             else:
-                block.v.b = self.compute_body(self.lines[block.start:block.end])
+                block.v.b = self.compute_body(self.lines[block.start : block.end])
 
             # Add all child blocks to the to-do list.
             todo_list.extend(block.child_blocks)
@@ -661,7 +661,7 @@ class Importer:
         lws_list: list[int] = []
         for block in blocks:
             assert self.lines == block.lines
-            lines = self.lines[block.start:block.end]
+            lines = self.lines[block.start : block.end]
             for line in lines:
                 stripped_line = line.lstrip()
                 if stripped_line:  # Skip empty lines
@@ -725,7 +725,7 @@ class Importer:
     def trace_block(self, block: Block) -> None:
         """For debugging: trace one block."""
         tag = f"  {block.kind:>10} {block.name:<20} {block.start} {block.start_body} {block.end}"
-        g.printObj(block.lines[block.start:block.end], tag=tag)
+        g.printObj(block.lines[block.start : block.end], tag=tag)
     #@-others
 #@-others
 #@@language python
