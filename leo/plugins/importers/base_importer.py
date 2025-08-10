@@ -45,7 +45,7 @@ class Block:
         lines = self.lines[self.start : self.end]
         result = [f"Block {self.start}:{self.end} {kind_name_s!r}\n"]
         for i, s in enumerate(lines):
-           result.append(f"  {i:3} {s!r}\n")
+            result.append(f"  {i:3} {s!r}\n")
         return ''.join(result)
 
     __str__ = __repr__

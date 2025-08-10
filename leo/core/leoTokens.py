@@ -1078,6 +1078,8 @@ class TokenBasedOrange:  # Orange is the new Black.
             print(f"Found tab character in {self.filename}")
             print(self.consider_message)
         elif (len(self.input_token.value) % self.tab_width) != 0:  # pragma: no cover
+            # g.trace('len(input_token.value):', len(self.input_token.value),
+            # 'tab_width:', self.tab_width)
             print(f"Indentation error in {self.filename}")
             print(self.consider_message)
 
