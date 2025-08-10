@@ -312,7 +312,7 @@ class Importer:
         # Add all outer blocks to the to-do list.
         todo_list = self.find_blocks(0, len(self.lines))
 
-        # Leo 6.8.7: pre-process the blocks.
+        # Leo 6.8.7: Move lines from the start of blocks to the end of previous blocks.
         self.preprocess_blocks(todo_list)
 
         # Link the blocks to the outer block.
