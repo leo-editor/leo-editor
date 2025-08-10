@@ -312,6 +312,9 @@ class Importer:
         # Add all outer blocks to the to-do list.
         todo_list = self.find_blocks(0, len(self.lines))
 
+        # Leo 6.8.7: pre-process the blocks.
+        self.preprocess_blocks(todo_list)
+
         # Link the blocks to the outer block.
         for block in todo_list:
             block.parent_v = parent.v
@@ -605,6 +608,20 @@ class Importer:
                   adjusts headlines of *all* imported nodes.
         """
 
+    #@+node:ekr.20250810142621.1: *4* i.preprocess_blocks
+    def preprocess_blocks(self, blocks: list[Block]) -> None:
+        """Move blank lines from the start one block to the end of the previous block."""
+        for i, block in enumerate(blocks):
+            try:
+                block2 = blocks[i + 1]
+            except IndexError:
+                break
+            for i in range(block2.start, block2.end):
+                s = block2.lines[i]
+                if s.strip():
+                    break
+                block.end += 1
+                block2.start += 1
     #@+node:ekr.20230529075138.38: *4* i.preprocess_lines
     def preprocess_lines(self, lines: list[str]) -> list[str]:
         """
