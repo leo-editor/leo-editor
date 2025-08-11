@@ -105,7 +105,7 @@ class Python_Importer(Importer):
         assert len(result) == len(lines)  # A crucial invariant.
         assert textwrap.dedent(''.join(result)) == ''.join(result)  # A crucial check.
         return result
-    #@+node:ekr.20230514140918.1: *3* python_i.find_blocks
+    #@+node:ekr.20230514140918.1: *3* python_i.find_blocks (culprit)
     def find_blocks(self, i1: int, i2: int) -> list[Block]:
         """
         Python_Importer.find_blocks: override Importer.find_blocks.
@@ -116,7 +116,7 @@ class Python_Importer(Importer):
         **Important**: An @others directive will refer to the returned blocks,
                        so there must be *no gaps* between blocks!
         """
-        trace = False  # Only while debugging.
+        trace = True  ### # Only while debugging.
 
         i, prev_i, results = i1, i1, []
 
@@ -156,6 +156,8 @@ class Python_Importer(Importer):
                         i = prev_i = end
                     break
             assert i > progress, g.callers()
+        if trace:
+            g.printObj(results, tag=f"{i1}:{i2}")
         return results
     #@+node:ekr.20230514140918.4: *3* python_i.find_end_of_block
     def find_end_of_block(self, i: int, i2: int) -> int:
@@ -229,6 +231,8 @@ class Python_Importer(Importer):
         Python_Importer.postprocess.
         """
 
+        return  ###
+
         #@+others  # Define helper functions.
         #@+node:ekr.20230830113521.1: *4* python_i.function: adjust_at_others
         def adjust_at_others(parent: Position) -> None:
@@ -240,9 +244,11 @@ class Python_Importer(Importer):
                     child = p.firstChild()
                     lines = g.splitLines(p.b)
                     for i, line in enumerate(lines):
-                        if line.strip().startswith('@others') and child.b.startswith('\n'):
+                        if line.strip().startswith('@others'):  ### and child.b.startswith('\n'):
+                            g.trace(p.h)  ###
                             p.b = ''.join(lines[:i]) + '\n' + ''.join(lines[i:])
-                            child.b = child.b[1:]
+                            ### p.b = ''.join(lines[:i]) + '\n\n' + ''.join(lines[i:])
+                            ### child.b = child.b[1:]
                             break
         #@+node:ekr.20230825100219.1: *4* python_i.function: adjust_headlines
         def adjust_headlines(parent: Position) -> None:
@@ -294,6 +300,8 @@ class Python_Importer(Importer):
         def move_class_docstring(docstring: str, child_p: Position, class_p: Position) -> None:
             """Move the docstring from child_p to class_p."""
 
+            g.trace(child_p.h, '==>', class_p.h)  ###
+
             # Remove the docstring from child_p.b.
             child_p.b = child_p.b.replace(docstring, '')
             child_p.b = child_p.b.lstrip('\n')
@@ -332,6 +340,8 @@ class Python_Importer(Importer):
             child1 = parent.firstChild()
             if not child1:
                 return
+
+            g.trace(parent.h)  ###
 
             # Compute the preamble.
             preamble_start = max(0, result_blocks[1].start_body - 1)

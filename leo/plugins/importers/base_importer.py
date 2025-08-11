@@ -345,7 +345,7 @@ class Importer:
         # Leo 6.8.7: Move lines from the start of blocks to the end of previous blocks.
         self.preprocess_blocks(result_blocks)
 
-        if 0:  ### Temp.
+        if 1:  ### Temp.
             g.trace(f"Blocks for {parent.h}...")
             for block in result_blocks:
                 print(block)
