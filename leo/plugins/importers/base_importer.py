@@ -287,7 +287,7 @@ class Importer:
                     if level == 0:
                         return i
         return i2
-    #@+node:ekr.20230529075138.14: *4* i.gen_block (iterative)
+    #@+node:ekr.20230529075138.14: *4* i.gen_block (iterative) (trace)
     def gen_block(self, parent: Position) -> None:
         """
         Importer.gen_block.
@@ -345,7 +345,7 @@ class Importer:
         # Leo 6.8.7: Move lines from the start of blocks to the end of previous blocks.
         self.preprocess_blocks(result_blocks)
 
-        if 1:  ### Temp.
+        if 0:  ### Temp.
             g.trace(f"Blocks for {parent.h}...")
             for block in result_blocks:
                 print(block)
