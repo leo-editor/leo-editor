@@ -3076,6 +3076,63 @@ class TestPython(BaseTestImporter):
     ext = '.py'
 
     #@+others
+    #@+node:ekr.20250812130557.1: *3* TestPython.test_python_reference_test
+    def test_python_reference_test(self):
+
+        # A reference unit test to test experimental test.
+        # This test should most edge cases of the Python importer.
+        trace = True
+        s = '''
+            class MyClass:
+                """MyClass: docstring"""
+
+                def f1():
+                    pass
+
+                def f2(
+                    self, arg1
+                ):
+                   pass
+
+            # About main
+            def main():
+                pass
+
+            if __name__ == '__main__':
+                main()
+            '''
+
+        expected_results = (
+            (0, '',  # Ignore the first headline.
+                   '@others\n'
+                   "if __name__ == '__main__':\n"
+                    '    main()\n'
+                   '@language python\n'
+                   '@tabwidth -4\n'
+            ),
+            (1, 'class MyClass',
+                    'class MyClass:\n'
+                    '    ATothers\n'.replace('AT', '@')
+            ),
+            (2, 'MyClass.f1',
+                    'def f1(self):\n'
+                    '    pass\n'
+                    '\n'
+            ),
+            (2, 'MyClass.f2',
+                    'def f2(\n'
+                    '   self, arg1\n'
+                    '):\n'
+                    '    pass\n'
+                    '\n'
+            ),
+            (1, 'function: main',
+                    '# About main\n'
+                    'def main():\n'
+                    '    pass\n'
+            ),
+        )
+        self.new_run_test(s, expected_results, trace=trace)
     #@+node:ekr.20240219045037.1: *3* TestPython.test_almost_empty_defs
     def test_almost_empty_defs(self):
 
