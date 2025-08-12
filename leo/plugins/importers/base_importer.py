@@ -287,7 +287,7 @@ class Importer:
                     if level == 0:
                         return i
         return i2
-    #@+node:ekr.20230529075138.14: *4* i.gen_block (iterative) (trace) (to be rewritten??)
+    #@+node:ekr.20230529075138.14: *4* i.gen_block (iterative) (trace) (to be deleted??)
     def gen_block(self, parent: Position) -> None:
         """
         Importer.gen_block.

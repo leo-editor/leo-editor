@@ -178,7 +178,7 @@ class Python_Importer(Importer):
                     lines=self.lines,  ### Necessary???
                     name=name,
                     start=i,
-                    start_body=self.find_start_of_body(i),
+                    start_body=self.find_start_of_body(i, kind),
                     end=None,
                     # parent_v = parent.v,
                 )
@@ -331,9 +331,11 @@ class Python_Importer(Importer):
         # g.printObj(self.guide_lines[i0:i2], tag=f"find_end_of_block: {i0}:{i2}")
         return i2
     #@+node:ekr.20250811185435.1: *3* python_i.find_start_of_body (to do)
-    def find_start_of_body(self, i: int) -> int:
+    def find_start_of_body(self, i: int, kind: str) -> int:
         """Find the first line after the class/def line."""
-        return i + 1  ### Temp.
+        if 'def' in kind:
+            return None
+        return i + 1  ### To do: find the end of the class def.
     #@+node:ekr.20230825095926.1: *3* python_i.postprocess & helpers
     def postprocess(self, parent: Position, result_blocks: list[Block]) -> None:
         """
