@@ -28,15 +28,15 @@ class Block:
     def __init__(self,
         kind: str, name: str, start: int, start_body: int, end: int, lines: list[str],
     ) -> None:
-        self.child_blocks: list[Block] = []
+        self.child_blocks: list[Block] = []  ### To be deleted???
         self.end = end
         self.kind = kind
         self.lines = lines
         self.name = name
-        self.parent_v: VNode = None
+        self.parent_v: VNode = None  ### To be deleted???
         self.start = start
         self.start_body = start_body
-        self.v: VNode = None
+        self.v: VNode = None  ### To be deleted???
 
     #@+others
     #@+node:ekr.20230921061842.1: *3* Block.__repr__
@@ -287,7 +287,7 @@ class Importer:
                     if level == 0:
                         return i
         return i2
-    #@+node:ekr.20230529075138.14: *4* i.gen_block (iterative) (trace)
+    #@+node:ekr.20230529075138.14: *4* i.gen_block (iterative) (trace) (to be rewritten??)
     def gen_block(self, parent: Position) -> None:
         """
         Importer.gen_block.

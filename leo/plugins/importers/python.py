@@ -21,6 +21,9 @@ class Python_Importer(Importer):
     language = 'python'
     string_list = ['"""', "'''", '"', "'"]  # longest first.
 
+    #@+<< Python_i: patterns >>
+    #@+node:ekr.20250811175614.1: *3* << Python_i: patterns >>
+
     # The default patterns. Overridden in the Cython_Importer class.
     # Group 1 matches the name of the class/def.
     async_def_pat = re.compile(r'\s*async\s+def\s+(\w+)\s*\(')
@@ -32,6 +35,7 @@ class Python_Importer(Importer):
         ('async def', async_def_pat),
         ('def', def_pat),
     )
+    #@-<< Python_i: patterns >>
 
     #@+others
     #@+node:ekr.20230830051934.1: *3* python_i.delete_comments_and_strings
@@ -105,7 +109,112 @@ class Python_Importer(Importer):
         assert len(result) == len(lines)  # A crucial invariant.
         assert textwrap.dedent(''.join(result)) == ''.join(result)  # A crucial check.
         return result
-    #@+node:ekr.20230514140918.1: *3* python_i.find_blocks (culprit)
+    #@+node:ekr.20250811180656.1: *3* python_i.gen_block (NEW, Experimental)
+    def gen_block(self, root: Position) -> None:
+        """
+        Python_Importer.gen_block.
+
+        Create all blocks and their parent nodes.
+
+        Note:  i.gen_lines adds the @language and @tabwidth directives.
+        """
+        parent_stack: list[Position] = []
+        prev_block = None
+        prev_indent = 0  # The indentation of the present block.
+        result_blocks: list[Block] = []
+
+        def lws_n(s: str) -> int:
+            """Return the length of the leading whitespace for s."""
+            return len(s) - len(s.lstrip())
+
+        def match(s: str) -> tuple[str, re.Match]:
+            for kind, pattern in self.block_patterns:
+                if m := pattern.match(s):
+                    return kind, m
+            return None, None
+
+        for i, s in enumerate(self.guide_lines):
+            kind, m = match(s)
+            if m:
+                # cython may include trailing whitespace.
+                name = m.group(1).strip()
+                indent = lws_n(s)
+
+                # Looks like a new block, but don't create an inner def.
+                if (
+                    'def' in kind
+                    and prev_block
+                    and 'def' in prev_block.kind
+                    and indent > prev_indent
+                ):
+                    g.trace('Skip', name)
+                    continue
+
+                # End the previous block.
+                if prev_block:
+                    prev_block.end = i
+
+                # Calculate and create the parent.
+                if not parent:
+                    parent = root
+                elif indent < prev_indent:
+                    g.trace('Unindent')
+                    parent = root
+                    prev_parent = None
+                elif indent == prev_indent:
+                    g.trace('Same indent')
+                    parent = prev_parent or root
+                else:
+                    g.trace('Indent!')
+                    parent = prev_parent.insertAsLastChild()
+                    parent.h = '???'
+                g.trace(bool(prev_parent), prev_indent, indent, name)
+
+                # Create the new node as the last child of the parent.
+                node = parent.insertAsLastChild()
+                node.h = name
+                # Start a new block.
+                block = Block(kind,
+                    lines=self.lines,  ### Necessary???
+                    name=name,
+                    start=i,
+                    start_body=self.find_start_of_body(i),
+                    end=None,
+                    # parent_v = parent.v,
+                )
+                result_blocks.append(block)
+
+                # Adjust the status.
+                prev_block = block
+                prev_parent = parent
+                prev_indent = indent
+
+        if prev_block:
+            prev_block.end = len(self.lines)
+
+        # Leo 6.8.7: Move lines from the start of blocks to the end of previous blocks.
+        self.preprocess_blocks(result_blocks)
+
+        if 0:  ### Temp.
+            g.trace(f"Blocks for {parent.h}...")
+            for block in result_blocks:
+                print(block)
+
+        # Post pass: generate all bodies
+        ### self.generate_all_bodies(parent, outer_block, result_blocks)
+
+        if 1:
+            g.trace('Nodes...')
+        for p in root.self_and_subtree():
+            level_s = '.' * p.level()
+            print(f"{level_s} {p.h}")
+
+        # A hook for language-specific processing.
+        ### self.postprocess(parent, result_blocks)
+
+        # Note: i.gen_lines appends @language and @tabwidth directives to parent.b.
+
+    #@+node:ekr.20230514140918.1: *3* python_i.find_blocks (culprit) (to be deleted?)
     def find_blocks(self, i1: int, i2: int) -> list[Block]:
         """
         Python_Importer.find_blocks: override Importer.find_blocks.
@@ -134,10 +243,6 @@ class Python_Importer(Importer):
                 if m := pattern.match(s):
                     # cython may include trailing whitespace.
                     name = m.group(1).strip()
-                    if trace:
-                        print('')
-                        g.trace(name, m)
-                        print('')
                     end = self.find_end_of_block(i, i2)
                     assert i1 + 1 <= end <= i2, (i1, end, i2)
 
@@ -159,7 +264,7 @@ class Python_Importer(Importer):
         if trace:
             g.printObj(results, tag=f"{i1}:{i2}")
         return results
-    #@+node:ekr.20230514140918.4: *3* python_i.find_end_of_block
+    #@+node:ekr.20230514140918.4: *3* python_i.find_end_of_block (to be deleted?)
     def find_end_of_block(self, i: int, i2: int) -> int:
         """
         i is the index of the class/def line (within the *guide* lines).
@@ -225,6 +330,10 @@ class Python_Importer(Importer):
                 i += 1
         # g.printObj(self.guide_lines[i0:i2], tag=f"find_end_of_block: {i0}:{i2}")
         return i2
+    #@+node:ekr.20250811185435.1: *3* python_i.find_start_of_body (to do)
+    def find_start_of_body(self, i: int) -> int:
+        """Find the first line after the class/def line."""
+        return i + 1  ### Temp.
     #@+node:ekr.20230825095926.1: *3* python_i.postprocess & helpers
     def postprocess(self, parent: Position, result_blocks: list[Block]) -> None:
         """
