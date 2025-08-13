@@ -118,10 +118,22 @@ class Python_Importer(Importer):
 
         Note:  i.gen_lines adds the @language and @tabwidth directives.
         """
-        parent_stack: list[Position] = []
+        parents: list[Position] = [root]
+        parent_blocks: list[Block] = []
         prev_block = None
-        prev_indent = 0  # The indentation of the present block.
+        prev_indent = 0
         result_blocks: list[Block] = []
+
+        def end_block(block):  ### prev_indent, level,
+            indent = lws_n(block.lines[block.start])
+            parent = parents[-1]
+            parent_s = '<root>' if parent == root else parent.h
+            g.trace(f"{block.name}, indent: {indent}, parent: {parent_s}\n{block}")
+            if block.kind == 'class':
+                new_parent = parent.insertAsLastChild()
+                new_parent.h = block.name
+                parents.append(new_parent)
+                parent_blocks.append(block)
 
         def lws_n(s: str) -> int:
             """Return the length of the leading whitespace for s."""
@@ -140,39 +152,20 @@ class Python_Importer(Importer):
                 name = m.group(1).strip()
                 indent = lws_n(s)
 
-                # Looks like a new block, but don't create an inner def.
+                # Don't create an inner blocks (of any kind) within defs.
                 if (
-                    'def' in kind
-                    and prev_block
+                    prev_block
                     and 'def' in prev_block.kind
                     and indent > prev_indent
                 ):
-                    g.trace('Skip', name)
+                    ### g.trace('***Skip', indent, prev_indent, prev_block.kind, name)
                     continue
 
                 # End the previous block.
                 if prev_block:
                     prev_block.end = i
+                    end_block(prev_block)  ### prev_indent, indent,
 
-                # Calculate and create the parent.
-                if not parent:
-                    parent = root
-                elif indent < prev_indent:
-                    g.trace('Unindent')
-                    parent = root
-                    prev_parent = None
-                elif indent == prev_indent:
-                    g.trace('Same indent')
-                    parent = prev_parent or root
-                else:
-                    g.trace('Indent!')
-                    parent = prev_parent.insertAsLastChild()
-                    parent.h = '???'
-                g.trace(bool(prev_parent), prev_indent, indent, name)
-
-                # Create the new node as the last child of the parent.
-                node = parent.insertAsLastChild()
-                node.h = name
                 # Start a new block.
                 block = Block(kind,
                     lines=self.lines,  ### Necessary???
@@ -186,28 +179,29 @@ class Python_Importer(Importer):
 
                 # Adjust the status.
                 prev_block = block
-                prev_parent = parent
                 prev_indent = indent
 
         if prev_block:
+            g.printObj(self.lines[-3:], tag='last block')
             prev_block.end = len(self.lines)
+            end_block(prev_block)
 
         # Leo 6.8.7: Move lines from the start of blocks to the end of previous blocks.
         self.preprocess_blocks(result_blocks)
 
         if 0:  ### Temp.
-            g.trace(f"Blocks for {parent.h}...")
+            g.trace(f"Blocks for {root.h}...")
             for block in result_blocks:
                 print(block)
 
         # Post pass: generate all bodies
         ### self.generate_all_bodies(parent, outer_block, result_blocks)
 
-        if 1:
+        if 0:  ### Temp
             g.trace('Nodes...')
-        for p in root.self_and_subtree():
-            level_s = '.' * p.level()
-            print(f"{level_s} {p.h}")
+            for p in root.self_and_subtree():
+                level_s = '.' * p.level()
+                print(f"{level_s} {p.h}")
 
         # A hook for language-specific processing.
         ### self.postprocess(parent, result_blocks)

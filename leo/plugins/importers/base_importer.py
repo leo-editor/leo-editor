@@ -352,7 +352,7 @@ class Importer:
 
         # Post pass: generate all bodies
         self.generate_all_bodies(parent, outer_block, result_blocks)
-    #@+node:ekr.20230920165923.1: *5* i.generate_all_bodies
+    #@+node:ekr.20230920165923.1: *5* i.generate_all_bodies (to be deleted?)
     def generate_all_bodies(self, parent: Position, outer_block: Block, result_blocks: list[Block]) -> None:
         """Carefully generate bodies from the given blocks."""
         c = self.c

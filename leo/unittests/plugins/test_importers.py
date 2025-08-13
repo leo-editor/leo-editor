@@ -106,7 +106,12 @@ class BaseTestImporter(LeoUnitTest):
         p = self.run_test(s)
         self.check_round_trip(p, expected_s or s)
     #@+node:ekr.20230526124600.1: *3* BaseTestImporter.new_run_test
-    def new_run_test(self, s: str, expected_results: tuple, *, trace: bool = False) -> None:
+    def new_run_test(self, s: str, expected_results: tuple,
+        *,
+        check: bool = True,
+        retain_trailing_ws=False,
+        trace: bool = False,
+    ) -> None:
         """
         Run a unit test of an import scanner,
         i.e., create a tree from string s at location p.
@@ -124,12 +129,18 @@ class BaseTestImporter(LeoUnitTest):
         parent.h = f"{kind} {self.short_id}"
 
         # createOutline calls Importer.gen_lines and Importer.check.
-        test_s = textwrap.dedent(s).strip() + '\n'
+
+        if retain_trailing_ws:  # A hack for testing.
+            test_s = textwrap.dedent(s).lstrip()
+        else:
+            test_s = textwrap.dedent(s).strip() + '\n'
+        ### g.printObj(test_s)
 
         c.importCommands.createOutline(parent.copy(), ext, test_s)
 
         # Dump the actual results on failure and raise AssertionError.
-        self.check_outline(parent, expected_results, trace=trace)
+        if check:
+            self.check_outline(parent, expected_results, trace=trace)
     #@+node:ekr.20211127042843.1: *3* BaseTestImporter.run_test
     def run_test(self, s: str) -> Position:
         """
@@ -3081,7 +3092,6 @@ class TestPython(BaseTestImporter):
 
         # A reference unit test to test experimental test.
         # This test should most edge cases of the Python importer.
-        trace = True
         s = '''
             class MyClass:
                 """MyClass: docstring"""
@@ -3092,7 +3102,9 @@ class TestPython(BaseTestImporter):
                 def f2(
                     self, arg1
                 ):
-                   pass
+                   a = 1
+                   def inner_def():
+                       pass
 
             # About main
             def main():
@@ -3100,15 +3112,18 @@ class TestPython(BaseTestImporter):
 
             if __name__ == '__main__':
                 main()
+
             '''
 
         expected_results = (
             (0, '',  # Ignore the first headline.
-                   '@others\n'
-                   "if __name__ == '__main__':\n"
-                    '    main()\n'
-                   '@language python\n'
-                   '@tabwidth -4\n'
+                '@others\n'
+                '\n'
+                "if __name__ == '__main__':\n"
+                '    main()\n'
+                '\n'
+                '@language python\n'
+                '@tabwidth -4\n'
             ),
             (1, 'class MyClass',
                     'class MyClass:\n'
@@ -3123,16 +3138,20 @@ class TestPython(BaseTestImporter):
                     'def f2(\n'
                     '   self, arg1\n'
                     '):\n'
-                    '    pass\n'
+                    '    a = 1\n'
+                    '    def inner_def():\n'
+                    '        pass\n'
                     '\n'
             ),
             (1, 'function: main',
                     '# About main\n'
                     'def main():\n'
                     '    pass\n'
+                    '\n'
             ),
         )
-        self.new_run_test(s, expected_results, trace=trace)
+        self.new_run_test(s, expected_results,
+            check=False, retain_trailing_ws=True, trace=True)
     #@+node:ekr.20240219045037.1: *3* TestPython.test_almost_empty_defs
     def test_almost_empty_defs(self):
 
