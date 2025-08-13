@@ -3091,7 +3091,7 @@ class TestPython(BaseTestImporter):
     def test_python_reference_test(self):
 
         # A reference unit test to test experimental test.
-        # This test should most edge cases of the Python importer.
+        # This test should contain all edge cases of the Python importer.
         s = '''
             class MyClass:
                 """MyClass: docstring"""
