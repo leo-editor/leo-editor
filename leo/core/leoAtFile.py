@@ -1655,8 +1655,6 @@ class AtFile:
                 # The hook must print an error message.
                 return
 
-            g.trace(root.h)  ###
-
             at.outputList = []
             try:
                 at.sentinels = False
