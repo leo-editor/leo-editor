@@ -697,7 +697,6 @@ class AtFile:
         # #4385: Do nothing if the file has not changed.
         try:
             old_mod_time = root.v.u['_mod_time']  # #4385
-            g.trace(f"{old_mod_time:20} {root.h}")
         except Exception:
             old_mod_time = None
         new_mod_time = g.os_path_getmtime(fileName)
@@ -751,11 +750,10 @@ class AtFile:
                 changed_vnodes.append(v)
                 v.setDirty()
 
-        # Handle all changed vnodes.
-        if changed_vnodes:
-            c.setChanged(force=True)
-            root.v.setDirty()
-            at.changed_roots.append(root.copy())
+        # #4427: Always update the status.
+        c.setChanged(force=True)
+        root.v.setDirty()
+        at.changed_roots.append(root.copy())
     #@+node:ekr.20150204165040.8: *6* at.read_at_clean_lines
     def read_at_clean_lines(self, fn: str) -> list[str]:  # pragma: no cover
         """Return all lines of the @clean/@nosent file at fn."""
@@ -1656,6 +1654,8 @@ class AtFile:
             except Exception:
                 # The hook must print an error message.
                 return
+
+            g.trace(root.h)  ###
 
             at.outputList = []
             try:

@@ -403,6 +403,7 @@ def refreshFromDisk(self: Self,
     # Create the 'Recovered Nodes' tree.
     c.fileCommands.handleNodeConflicts()
     c.setChanged()
+    p.v.setDirty()  # #4427
     c.redraw()
     c.undoer.clearAndWarn('refresh-from-disk')
 #@+node:ekr.20210610083257.1: *3* c_file.pwd
