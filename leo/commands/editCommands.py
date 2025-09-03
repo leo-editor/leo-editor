@@ -3898,14 +3898,16 @@ class EditCommandsClass(BaseEditCommandsClass):
         c, u, undoType = self.c, self.c.undoer, 'clear-all-uas'
         # #1276.
         changed = False
-        u.beforeChangeGroup(c.p, undoType)
+        first_p = c.p
         for p in c.all_unique_positions():
             if p.v.u:
+                if not changed:  # #4443
+                    u.beforeChangeGroup(first_p, undoType)
+                    changed = True
                 bunch = u.beforeChangeUA(p)
                 p.v.u = {}
                 p.setDirty()
                 u.afterChangeUA(p, undoType, bunch)
-                changed = True
         if changed:
             c.setChanged()
             u.afterChangeGroup(c.p, undoType)

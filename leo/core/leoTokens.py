@@ -867,12 +867,14 @@ class TokenBasedOrange:  # Orange is the new Black.
         """Undoably beautify root's entire tree."""
         c = root.v.context
         u, undoType = c.undoer, 'beautify-script'
-        u.beforeChangeGroup(c.p, undoType)
+        first_p = c.p
         n_changed = 0
         for p in root.self_and_subtree():
             bunch = u.beforeChangeNodeContents(p)
             changed = self.beautify_script_node(p)
             if changed:
+                if n_changed == 0:  # #4443.
+                    u.beforeChangeGroup(first_p, undoType)
                 n_changed += 1
                 u.afterChangeNodeContents(p, undoType, bunch)
         if n_changed:

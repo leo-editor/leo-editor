@@ -1130,9 +1130,6 @@ class LeoImportCommands:
             g.es_print(f"No importer class for @language {language}")
             return
         importer = importer_class(c)
-
-        # Handle undo.
-        u.beforeChangeGroup(p, undoType)
         try:
             old_p = p.copy()
             c.selectPosition(p)
@@ -1172,6 +1169,8 @@ class LeoImportCommands:
 
         # The main loop.
         changed = len(blocks) > 1
+        if changed:
+            u.beforeChangeGroup(p, undoType)
         self.preprocess_blocks(blocks)
         while len(blocks) > 1:
             # Change the node.
