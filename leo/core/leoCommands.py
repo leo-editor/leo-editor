@@ -1518,6 +1518,16 @@ class Commands:
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
+    #@+node:felix.20250908230144.1: *5* c.all_root_children
+    def all_root_children(self, copy: bool = True) -> Generator:
+        """
+        A generator that returns all the (hidden-root's) top children Positions.
+        """
+        c = self
+        p = c.rootPosition()  # Return this first position, and its siblings
+        while p:
+            yield p.copy() if copy else p
+            p.moveToNext()
     #@+node:ekr.20060906211747: *4* c.Getters
     #@+node:ekr.20040803140033: *5* c.currentPosition
     def currentPosition(self) -> Position:
