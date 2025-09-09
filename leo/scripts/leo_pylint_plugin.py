@@ -17,28 +17,19 @@ class Leo_Checker(BaseChecker):
     name = 'leo-checker'
     #@+<< messages and options >>
     #@+node:ekr.20250902070853.1: ** << messages and options >>
-    # Somehow these are required.
-
-    msgs = {
+    msgs = {  # Required.
         "W0001": (
-            "Dummy message 1.",
+            "message",
             "dummy-leo-option",
-            "dummy message 2.",
+            "description",
         ),
     }
 
-    options = (
-        (
-            "dummy-leo-option",
-            {
-                "default": False,
-                "type": "yn",
-                "metavar": "<y or n>",
-                "help": "Allow returning non-unique integers",
-            },
-        ),
-    )
+    # options = ()
     #@-<< messages and options >>
+
+    def get_full_documentation(self, *args, **kwargs) -> str:
+        return 'leo-checker: help pylint understand c, g and p'
 
     def visit_functiondef(self, node: nodes.FunctionDef) -> None:
         print(node)
