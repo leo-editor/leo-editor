@@ -661,18 +661,16 @@ class Position:
 
     unique_vnodes_iter = unique_nodes
     #@+node:ekr.20091002083910.6103: *4* p.unique_subtree
-    def unique_subtree(self) -> Generator:
+    def unique_subtree(self, copy: bool = True) -> Generator:
         """Yield p and all other unique positions in p's subtree."""
         p = self
         seen = set()
-        for p in p.subtree():
+        for p in p.subtree(copy=copy):
             if p.v not in seen:
                 seen.add(p.v)
-                # Fixed bug 1255208: p.unique_subtree returns vnodes, not positions.
                 yield p.copy() if copy else p
 
     # Compatibility with old code...
-
     subtree_with_unique_vnodes_iter = unique_subtree
     #@+node:ekr.20040306212636: *3* p.Getters
     #@+node:ekr.20040306214240.2: *4* p.children & parents
