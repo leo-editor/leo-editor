@@ -162,7 +162,7 @@
 <v t="EKR.20040430162943"><vh>The attic</vh>
 <v t="ekr.20170302123956.1"><vh>@file ../doc/leoAttic.txt</vh></v>
 </v>
-<v t="ekr.20031218072017.2406" descendentVnodeUnknownAttributes="7d7100285807000000302e342e302e3071017d710258090000005f6d6f645f74696d6571034741da2281c15c9009735807000000302e342e302e3671047d710568034741da2281c15c9009735809000000302e342e322e302e3071067d710758090000005f6d6f645f74696d6571084741da2281c15d9474735809000000302e342e322e302e3171097d710a58090000005f6d6f645f74696d65710b4741da2281c15fcd69735809000000302e342e322e302e32710c7d710d58090000005f6d6f645f74696d65710e4741da2281c15fcd69735808000000302e362e31332e30710f7d711058090000005f6d6f645f74696d6571114741da2281c1609d8073580a000000302e362e31332e322e3071127d711358090000005f6d6f645f74696d6571144741da2281c1609d8073752e"><vh>Code</vh>
+<v t="ekr.20031218072017.2406"><vh>Code</vh>
 <v t="ekr.20140902032918.18591"><vh>About this file</vh>
 <v t="ekr.20140831085423.18630"><vh>Terminology</vh></v>
 <v t="ekr.20140831085423.18631"><vh>Official ivars</vh></v>
@@ -233,15 +233,15 @@
 <v t="ekr.20061031131434"><vh>@file leoKeys.py</vh></v>
 <v t="ekr.20031218072017.3749"><vh>@file leoMenu.py</vh></v>
 </v>
-<v t="ekr.20180225010644.1" descendentVnodeUnknownAttributes="7d7100285805000000302e302e3071017d710258090000005f6d6f645f74696d6571034741da2281c15c9009735805000000302e302e3671047d710568034741da2281c15c9009735807000000302e322e302e3071067d710758090000005f6d6f645f74696d6571084741da2281c15d9474735807000000302e322e302e3171097d710a58090000005f6d6f645f74696d65710b4741da2281c15fcd69735807000000302e322e302e32710c7d710d58090000005f6d6f645f74696d65710e4741da2281c15fcd6973752e"><vh>Other files</vh>
-<v t="ekr.20180225010707.1" descendentVnodeUnknownAttributes="7d7100285803000000302e3071017d710258090000005f6d6f645f74696d6571034741da2281c15c9009735803000000302e3671047d710568034741da2281c15c900973752e"><vh>In leo-editor directory</vh>
-<v t="ekr.20240317061516.1" descendentVnodeUnknownAttributes="7d710058010000003071017d710258090000005f6d6f645f74696d6571034741da2281c15c900973732e"><vh>@clean ../../MANIFEST.in</vh></v>
+<v t="ekr.20180225010644.1"><vh>Other files</vh>
+<v t="ekr.20180225010707.1"><vh>In leo-editor directory</vh>
+<v t="ekr.20240317061516.1"><vh>@clean ../../MANIFEST.in</vh></v>
 <v t="ekr.20220222130955.1"><vh>@edit ../../.mypy.ini</vh></v>
 <v t="ekr.20231108150521.1"><vh>@edit ../../CONTRIBUTING.md</vh></v>
 <v t="ekr.20210302164046.1"><vh>@edit ../../launchLeo.py</vh></v>
 <v t="ekr.20240319094534.1"><vh>@edit ../../PKG-INFO.TXT</vh></v>
 <v t="ekr.20240206153029.1"><vh>@edit ../../README.md</vh></v>
-<v t="ekr.20240206161713.1" descendentVnodeUnknownAttributes="7d710058010000003071017d710258090000005f6d6f645f74696d6571034741da2281c15c900973732e"><vh>@clean ../../setup.cfg </vh></v>
+<v t="ekr.20240206161713.1"><vh>@clean ../../setup.cfg </vh></v>
 <v t="ekr.20150304125314.4"><vh>@file ../../leo_to_html.xsl</vh></v>
 <v t="ekr.20240227064614.1"><vh>@file ../../pyproject.toml</vh></v>
 <v t="ekr.20240406013108.1"><vh>@file ../../ruff.toml</vh></v>
@@ -256,11 +256,11 @@
 <v t="felix.20210621233316.1"><vh>@file leoserver.py</vh></v>
 <v t="ekr.20230203163544.1"><vh>@file tracing_utils.py</vh></v>
 </v>
-<v t="ekr.20180225010743.1" descendentVnodeUnknownAttributes="7d7100285805000000302e302e3071017d710258090000005f6d6f645f74696d6571034741da2281c15d9474735805000000302e302e3171047d710558090000005f6d6f645f74696d6571064741da2281c15fcd69735805000000302e302e3271077d710858090000005f6d6f645f74696d6571094741da2281c15fcd6973752e"><vh>In leo/external</vh>
-<v t="ekr.20190607124533.1" descendentVnodeUnknownAttributes="7d7100285803000000302e3071017d710258090000005f6d6f645f74696d6571034741da2281c15d9474735803000000302e3171047d710558090000005f6d6f645f74696d6571064741da2281c15fcd69735803000000302e3271077d710858090000005f6d6f645f74696d6571094741da2281c15fcd6973752e"><vh>@nopylint</vh>
-<v t="ekr.20220823195205.1" descendentVnodeUnknownAttributes="7d710058010000003071017d710258090000005f6d6f645f74696d6571034741da2281c15d947473732e"><vh>@clean ../external/leoftsindex.py</vh></v>
-<v t="ekr.20160123142722.1" descendentVnodeUnknownAttributes="7d710058010000003071017d710258090000005f6d6f645f74696d6571034741da2281c15fcd6973732e"><vh>@clean ../external/make_stub_files.cfg</vh></v>
-<v t="ekr.20180708145905.1" descendentVnodeUnknownAttributes="7d710058010000003071017d710258090000005f6d6f645f74696d6571034741da2281c15fcd6973732e"><vh>@clean ../external/py2cs_theory.md</vh>
+<v t="ekr.20180225010743.1"><vh>In leo/external</vh>
+<v t="ekr.20190607124533.1"><vh>@nopylint</vh>
+<v t="ekr.20220823195205.1"><vh>@clean ../external/leoftsindex.py</vh></v>
+<v t="ekr.20160123142722.1"><vh>@clean ../external/make_stub_files.cfg</vh></v>
+<v t="ekr.20180708145905.1"><vh>@clean ../external/py2cs_theory.md</vh>
 <v t="ekr.20180708152000.1"><vh>The problem</vh></v>
 <v t="ekr.20180708152018.1"><vh>Design</vh></v>
 <v t="ekr.20180708145905.6"><vh>Using TokenSync class</vh></v>
@@ -415,7 +415,7 @@
 <v t="tbrown.20171028115541.1"><vh>@file signal_manager.py</vh></v>
 </v>
 </v>
-<v t="ekr.20201012111545.1" descendentVnodeUnknownAttributes="7d7100285806000000302e31332e3071017d710258090000005f6d6f645f74696d6571034741da2281c1609d80735808000000302e31332e322e3071047d710558090000005f6d6f645f74696d6571064741da2281c1609d8073752e"><vh>Plugins</vh>
+<v t="ekr.20201012111545.1"><vh>Plugins</vh>
 <v t="ekr.20090430075506.3"><vh>@file ../plugins/leoPluginNotes.txt</vh></v>
 <v t="EKR.20040517090508"><vh>Enable plugins using @enabled-plugins nodes</vh></v>
 <v t="ekr.20050303051035"><vh>Templates</vh>
@@ -561,14 +561,14 @@
 <v t="ekr.20140723122936.18152"><vh>@file ../plugins/importers/typescript.py</vh></v>
 <v t="ekr.20140723122936.18137"><vh>@file ../plugins/importers/xml.py</vh></v>
 </v>
-<v t="ekr.20180504192522.1" descendentVnodeUnknownAttributes="7d7100285803000000302e3071017d710258090000005f6d6f645f74696d6571034741da2281c1609d80735805000000302e322e3071047d710558090000005f6d6f645f74696d6571064741da2281c1609d8073752e"><vh>leo_babel</vh>
-<v t="ekr.20230624114517.1" descendentVnodeUnknownAttributes="7d710058010000003071017d710258090000005f6d6f645f74696d6571034741da2281c1609d8073732e"><vh>@clean ../plugins/leo_babel/__init__.py</vh></v>
+<v t="ekr.20180504192522.1"><vh>leo_babel</vh>
+<v t="ekr.20230624114517.1"><vh>@clean ../plugins/leo_babel/__init__.py</vh></v>
 <v t="ekr.20180504191650.36"><vh>examples</vh>
 <v t="bob.20170716135108.2"><vh>@file ../plugins/leo_babel/examples/slowOut.py</vh></v>
 <v t="bob.20170716135108.3"><vh>@file ../plugins/leo_babel/examples/slowOutNoFlush.py</vh></v>
 </v>
-<v t="ekr.20180504191650.42" descendentVnodeUnknownAttributes="7d71005803000000302e3071017d710258090000005f6d6f645f74696d6571034741da2281c1609d8073732e"><vh>tests</vh>
-<v t="ekr.20180504191650.68" descendentVnodeUnknownAttributes="7d710058010000003071017d710258090000005f6d6f645f74696d6571034741da2281c1609d8073732e"><vh>@clean ../plugins/leo_babel/tests/__init__.py</vh></v>
+<v t="ekr.20180504191650.42"><vh>tests</vh>
+<v t="ekr.20180504191650.68"><vh>@clean ../plugins/leo_babel/tests/__init__.py</vh></v>
 <v t="bob.20180206123613.1"><vh>@file ../plugins/leo_babel/tests/idle_time.py</vh></v>
 <v t="bob.20180205135005.1"><vh>@file ../plugins/leo_babel/tests/lib_test.py</vh></v>
 <v t="bob.20180125160225.1"><vh>@file ../plugins/leo_babel/tests/tests.py</vh></v>
@@ -615,6 +615,7 @@
 <v t="timo.20050213160555"><vh>@file ../plugins/bibtex.py</vh></v>
 <v t="ekr.20070119094733.1"><vh>@file ../plugins/dtest.py</vh></v>
 <v t="danr7.20060902215215.1"><vh>@file ../plugins/leo_to_html.py</vh></v>
+<v t="felix.20250921202124.1"><vh>@file ../plugins/leo_to_html_outline_viewer.py</vh></v>
 <v t="tbrown.20130930160706.23451"><vh>@file ../plugins/markup_inline.py</vh></v>
 <v t="vitalije.20180804172140.1"><vh>@file ../plugins/md_docer.py</vh></v>
 <v t="peckj.20140113150237.7083"><vh>@file ../plugins/nodediff.py</vh></v>
@@ -3317,7 +3318,7 @@ extend-ignore =
     # global `whatever` is unused: name is never assigned in scope.
     # F824
 </t>
-<t tx="ekr.20240317061516.1" _mod_time="4741da2281c15c90092e">@language python
+<t tx="ekr.20240317061516.1" _mod_time="4741da2bf1541d95cd2e">@language python
 
 # Order matters!
 

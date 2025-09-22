@@ -38,7 +38,7 @@ def createExportMenu(tag, keywords):
         return
 
     # Insert leoToRTF in #3 position of the File > Export menu.
-    c.frame.menu.insert('Export...', 3,
+    c.frame.menu.insert('Export Files', 3,
         label='Outline to Microsoft RTF',
         command=lambda c=c: export_rtf(c))
 #@+node:danr7.20060902083957.3: ** export_rtf

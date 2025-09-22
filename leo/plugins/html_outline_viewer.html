@@ -1,0 +1,3266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Leo Document Viewer</title>
+    <style>
+        :root {
+            /* light theme (default) */
+            --background-color: #ffffec;
+            --body-pane-color: #fff6f5;
+            --find-pane-color: #f9f9f9;
+            --resizer-color: #cae1ff;
+            --selected-bg: #cae1ff;
+            --ancestor-bg: #eef5ff;
+            --hover-bg: #dfecff;
+            --focus-outline: #0000ff;
+            --text-color: #000000;
+            --caret-dim-color: #888;
+            --find-text-color: #444;
+            --find-placeholder-color: #888;
+            --find-border-color: #a0a0a0;
+            --find-selection: #0078d7;
+            /* vertical layout (default) */
+            --main-direction: row;
+            --main-resizer-width: 5px;
+            --main-resizer-height: 100%;
+            --main-resizer-cursor: ew-resize;
+            --main-resizer-extension-width: 5px;
+            --main-resizer-extension-height: 100%;
+            --main-resizer-before-top: unset;
+            --main-resizer-before-left: -5px;
+            --main-resizer-after-right: -5px;
+            --main-resizer-after-bottom: unset;
+            --secondary-direction: column;
+            --secondary-height: 100%;
+            --secondary-resizer-width: 100%;
+            --secondary-resizer-height: 5px;
+            --secondary-resizer-cursor: ns-resize;
+            --secondary-resizer-extension-width: 100%;
+            --secondary-resizer-extension-height: 5px;
+            --secondary-resizer-before-top: -5px;
+            --secondary-resizer-before-left: unset;
+            --secondary-resizer-after-right: unset;
+            --secondary-resizer-after-bottom: -5px;
+            /* transitions */
+            --body-transition: unset;
+            --body-pane-transition: unset;
+            --find-pane-transition: unset;
+            /* configuration/find pane visibility */
+            --config-display: none;
+            --find-display: flex;
+        }
+
+        [data-show-config="true"] {
+            --config-display: flex;
+            --find-display: none;
+        }
+
+        [data-transition="true"] {
+            --body-transition: color 0.15s ease, background-color 0.15s ease;
+            --body-pane-transition: color 0.3s ease, background-color 0.3s ease;
+            --find-pane-transition: color 0.15s ease, background-color 0.15s ease;
+        }
+
+        [data-theme="dark"] {
+            --background-color: #1e1e2e;
+            --body-pane-color: #2a2536;
+            --find-pane-color: #23202e;
+            --resizer-color: #454a6e;
+            --selected-bg: #454a6e;
+            --ancestor-bg: #2d3250;
+            --hover-bg: #3a3f5e;
+            --focus-outline: #7aa2f7;
+            --text-color: #cdd6f4;
+            --caret-dim-color: #999;
+            --find-text-color: #aeb6d1;
+            --find-placeholder-color: #5a699e;
+            --find-border-color: #81889e;
+            --find-selection: #3c54ce;
+        }
+
+        [data-layout="horizontal"] {
+            --main-direction: column;
+            --main-resizer-width: 100%;
+            --main-resizer-height: 5px;
+            --main-resizer-cursor: ns-resize;
+            --main-resizer-extension-width: 100%;
+            --main-resizer-extension-height: 5px;
+            --main-resizer-before-top: -5px;
+            --main-resizer-before-left: unset;
+            --main-resizer-after-right: unset;
+            --main-resizer-after-bottom: -5px;
+            --secondary-direction: row;
+            --secondary-height: 100%;
+            --secondary-resizer-width: 5px;
+            --secondary-resizer-height: 100%;
+            --secondary-resizer-cursor: ew-resize;
+            --secondary-resizer-extension-width: 5px;
+            --secondary-resizer-extension-height: 100%;
+            --secondary-resizer-before-top: unset;
+            --secondary-resizer-before-left: -5px;
+            --secondary-resizer-after-right: -5px;
+            --secondary-resizer-after-bottom: unset;
+        }
+
+        /* Custom scrollbars */
+        * {
+            /* Firefox */
+            scrollbar-color: var(--resizer-color) transparent;
+        }
+
+        /* Chrome, Edge, Safari */
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: var(--resizer-color);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: var(--hover-bg);
+        }
+
+        .icon0 {
+            background-image: url('data:image/svg+xml;utf8, <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"><path d="M0 4v9h15.15V4zm1 1h13.15v7H1z" fill="%234d4d4d"/></svg>');
+        }
+
+        .icon1 {
+            background-image: url('data:image/svg+xml;utf8, <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"><path d="M0 4v9h15.15V4zm1 1h13.15v7H1z" fill="%234d4d4d"/><path d="M9.075 6v5h4.075V6zm1 1h2.076v3h-2.076z" fill="%2342a5f5"/></svg>');
+        }
+
+        .icon2 {
+            background-image: url('data:image/svg+xml;utf8, <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"><path d="M7.074 4.5v8h1v-8z" fill="%23e54a16"/><path d="M0 4v9h15.15V4zm1 1h13.15v7H1z" fill="%234d4d4d"/></svg>');
+        }
+
+        .icon3 {
+            background-image: url('data:image/svg+xml;utf8, <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none">   <path d="M7.074 4.5v8h1v-8z" fill="%23e54a16"/><path d="M0 4v9h15.15V4zm1 1h13.15v7H1z" fill="%234d4d4d"/><path d="M9.075 6v5h4.075V6zm1 1h2.076v3h-2.076z" fill="%2342a5f5"/></svg>');
+        }
+
+        .icon4 {
+            background-image: url('data:image/svg+xml;utf8, <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"><path d="M0 4v9h15.15V4zm1 1h13.15v7H1z" fill="%234d4d4d"/><path d="M3.56 5.65v2h1v-.279a1.5 1.5 0 11-2.27 1.904l-.923.395A2.5 2.5 0 006.074 8.5a2.5 2.5 0 00-.824-1.85h.31v-1z" fill="%23e54a16"/></svg>');
+        }
+
+        .icon5 {
+            background-image: url('data:image/svg+xml;utf8, <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"><path d="M0 4v9h15.15V4zm1 1h13.15v7H1z" fill="%234d4d4d"/><path d="M9.075 6v5h4.075V6zm1 1h2.076v3h-2.076z" fill="%2342a5f5"/><path d="M3.56 5.65v2h1v-.279a1.5 1.5 0 11-2.27 1.904l-.923.395A2.5 2.5 0 006.074 8.5a2.5 2.5 0 00-.824-1.85h.31v-1z" fill="%23e54a16"/></svg>');
+        }
+
+        .icon6 {
+            background-image: url('data:image/svg+xml;utf8, <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"><path d="M7.074 4.5v8h1v-8z" fill="%23e54a16"/><path d="M0 4v9h15.15V4zm1 1h13.15v7H1z" fill="%234d4d4d"/><path d="M3.56 5.65v2h1v-.279a1.5 1.5 0 11-2.27 1.904l-.923.395A2.5 2.5 0 006.074 8.5a2.5 2.5 0 00-.824-1.85h.31v-1z" fill="%23e54a16"/></svg>');
+        }
+
+        .icon7 {
+            background-image: url('data:image/svg+xml;utf8, <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"><path d="M7.074 4.5v8h1v-8z" fill="%23e54a16"/><path d="M0 4v9h15.15V4zm1 1h13.15v7H1z" fill="%234d4d4d"/><path d="M9.075 6v5h4.075V6zm1 1h2.076v3h-2.076z" fill="%2342a5f5"/><path d="M3.56 5.65v2h1v-.279a1.5 1.5 0 11-2.27 1.904l-.923.395A2.5 2.5 0 006.074 8.5a2.5 2.5 0 00-.824-1.85h.31v-1z" fill="%23e54a16"/></svg>');
+        }
+
+        .icon8 {
+            background-image: url('data:image/svg+xml;utf8, <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"><path d="M0 4v9h15.15V4zm1 1h13.15v7H1z" fill="%23a4a59e"/></svg>');
+        }
+
+        .icon9 {
+            background-image: url('data:image/svg+xml;utf8, <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"><path d="M0 4v9h15.15V4zm1 1h13.15v7H1z" fill="%23a4a59e"/><path d="M9.075 6v5h4.075V6zm1 1h2.076v3h-2.076z" fill="%2342a5f5"/></svg>');
+        }
+
+        .icon10 {
+            background-image: url('data:image/svg+xml;utf8, <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"><path d="M7.074 4.5v8h1v-8z" fill="%23e54a16"/><path d="M0 4v9h15.15V4zm1 1h13.15v7H1z" fill="%23a4a59e"/></svg>');
+        }
+
+        .icon11 {
+            background-image: url('data:image/svg+xml;utf8, <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"><path d="M7.074 4.5v8h1v-8z" fill="%23e54a16"/><path d="M0 4v9h15.15V4zm1 1h13.15v7H1z" fill="%23a4a59e"/><path d="M9.075 6v5h4.075V6zm1 1h2.076v3h-2.076z" fill="%2342a5f5"/></svg>');
+        }
+
+        .icon12 {
+            background-image: url('data:image/svg+xml;utf8, <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"><path d="M0 4v9h15.15V4zm1 1h13.15v7H1z" fill="%23a4a59e"/><path d="M3.56 5.65v2h1v-.279a1.5 1.5 0 11-2.27 1.904l-.923.395A2.5 2.5 0 006.074 8.5a2.5 2.5 0 00-.824-1.85h.31v-1z" fill="%23e54a16"/></svg>');
+        }
+
+        .icon13 {
+            background-image: url('data:image/svg+xml;utf8, <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"><path d="M0 4v9h15.15V4zm1 1h13.15v7H1z" fill="%23a4a59e"/><path d="M9.075 6v5h4.075V6zm1 1h2.076v3h-2.076z" fill="%2342a5f5"/><path d="M3.56 5.65v2h1v-.279a1.5 1.5 0 11-2.27 1.904l-.923.395A2.5 2.5 0 006.074 8.5a2.5 2.5 0 00-.824-1.85h.31v-1z" fill="%23e54a16"/></svg>');
+        }
+
+        .icon14 {
+            background-image: url('data:image/svg+xml;utf8, <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"><path d="M7.074 4.5v8h1v-8z" fill="%23e54a16"/><path d="M0 4v9h15.15V4zm1 1h13.15v7H1z" fill="%23a4a59e"/><path d="M3.56 5.65v2h1v-.279a1.5 1.5 0 11-2.27 1.904l-.923.395A2.5 2.5 0 006.074 8.5a2.5 2.5 0 00-.824-1.85h.31v-1z" fill="%23e54a16"/></svg>');
+        }
+
+        .icon15 {
+            background-image: url('data:image/svg+xml;utf8, <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"><path d="M7.074 4.5v8h1v-8z" fill="%23e54a16"/><path d="M0 4v9h15.15V4zm1 1h13.15v7H1z" fill="%23a4a59e"/><path d="M9.075 6v5h4.075V6zm1 1h2.076v3h-2.076z" fill="%2342a5f5"/><path d="M3.56 5.65v2h1v-.279a1.5 1.5 0 11-2.27 1.904l-.923.395A2.5 2.5 0 006.074 8.5a2.5 2.5 0 00-.824-1.85h.31v-1z" fill="%23e54a16"/></svg>');
+        }
+
+        body {
+            margin: 0;
+            display: flex;
+            flex-direction: var(--main-direction);
+            height: 100vh;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            transition: var(--body-transition)
+        }
+
+        body.dragging-main {
+            cursor: var(--main-resizer-cursor) !important;
+        }
+
+        body.dragging-secondary {
+            cursor: var(--secondary-resizer-cursor) !important;
+        }
+
+        #outline-pane {
+            position: relative;
+            white-space: nowrap;
+            padding-top: 6px;
+            overflow-x: hidden;
+            overflow-y: auto;
+            font-family: sans-serif;
+        }
+
+        #spacer {
+            position: relative;
+        }
+
+        #collapse-all-btn {
+            position: fixed;
+            z-index: 100;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            pointer-events: none;
+        }
+
+        #outline-pane:hover #collapse-all-btn {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .outline-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            width: 16px;
+            height: 16px;
+        }
+
+        .outline-icon:hover svg {
+            transform: scale(1.1);
+            transition: transform 0.1s ease;
+        }
+
+        #main-resizer {
+            position: relative;
+            width: var(--main-resizer-width);
+            height: var(--main-resizer-height);
+            cursor: var(--main-resizer-cursor);
+            background-color: var(--resizer-color);
+            flex-shrink: 0;
+        }
+
+        #main-resizer::before,
+        #main-resizer::after {
+            content: "";
+            position: absolute;
+            height: var(--main-resizer-extension-height);
+            width: var(--main-resizer-extension-width);
+            cursor: var(--main-resizer-cursor);
+        }
+
+        #main-resizer::before {
+            top: var(--main-resizer-before-top);
+            left: var(--main-resizer-before-left)
+        }
+
+        #main-resizer::after {
+            right: var(--main-resizer-after-right);
+            bottom: var(--main-resizer-after-bottom)
+        }
+
+        #outline-find-container {
+            display: flex;
+            flex-direction: var(--secondary-direction);
+            height: var(--secondary-height);
+            overflow: hidden;
+        }
+
+        #secondary-resizer {
+            position: relative;
+            height: var(--secondary-resizer-height);
+            width: var(--secondary-resizer-width);
+            cursor: var(--secondary-resizer-cursor);
+            background-color: var(--resizer-color);
+            flex-shrink: 0;
+        }
+
+        #secondary-resizer::before,
+        #secondary-resizer::after {
+            content: "";
+            position: absolute;
+            width: var(--secondary-resizer-extension-width);
+            height: var(--secondary-resizer-extension-height);
+            cursor: var(--secondary-resizer-cursor);
+        }
+
+        #secondary-resizer::before {
+            top: var(--secondary-resizer-before-top);
+            left: var(--secondary-resizer-before-left);
+        }
+
+        #secondary-resizer::after {
+            bottom: var(--secondary-resizer-after-bottom);
+            right: var(--secondary-resizer-after-right);
+        }
+
+        #outline-pane,
+        #find-pane {
+            overflow-y: auto;
+            flex: 1 1 0;
+        }
+
+        #body-pane {
+            flex: 1;
+            padding: 1rem 0 0 1rem;
+            background-color: var(--body-pane-color);
+            overflow-y: auto;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            white-space: pre-wrap;
+            transition: var(--body-pane-transition);
+        }
+
+        #outline-pane:focus,
+        #body-pane:focus,
+        #outline-pane:focus-visible,
+        #body-pane:focus-visible {
+            /* 
+                Note: Outline will appear under the items positioned absolutely.
+                See pseudo-elements with "z-index: -1" that appear below this outline.
+             */
+            outline: 3px solid var(--focus-outline);
+            outline-offset: -3px;
+        }
+
+        .node-text:hover::before,
+        .selected>.node-text::before,
+        .ancestor>.node-text::before,
+        .initial-find>.node-text::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -2px;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+            border-radius: 4px;
+        }
+
+        .selected>.node-text::before,
+        .selected>.node-text:hover::before {
+            background-color: var(--selected-bg);
+        }
+
+        .ancestor>.node-text::before {
+            background-color: var(--ancestor-bg);
+        }
+
+        .node-text:hover::before {
+            background-color: var(--hover-bg);
+        }
+
+        .initial-find>.node-text::before {
+            border: 1.5px solid var(--find-selection);
+            border-style: dotted;
+        }
+
+        .node {
+            position: absolute;
+            white-space: nowrap;
+            cursor: pointer;
+            display: grid;
+            grid-template-columns: 1em 1fr;
+            align-items: start;
+        }
+
+        body.dragging-main .node {
+            cursor: var(--main-resizer-cursor);
+        }
+
+        body.dragging-secondary .node {
+            cursor: var(--secondary-resizer-cursor);
+        }
+
+        .caret {
+            grid-column: 1;
+            display: inline-block;
+            width: 32px;
+            height: 26px;
+            position: relative;
+            left: -16px;
+            user-select: none;
+        }
+
+        .node-text {
+            position: relative;
+            background-repeat: no-repeat;
+            background-position-x: 2px;
+            background-position-y: 1px;
+            background-size: 19px 19px;
+            grid-column: 2;
+            display: block;
+            padding: 2px 0 2px 26px;
+            margin-right: 1.2rem;
+            border-radius: 4px;
+        }
+
+        /* Special handling for node icons */
+        [data-show-icons="false"] .node-text {
+            background-image: none !important;
+            padding-left: 4px !important;
+            /* Reduce padding when icons are hidden */
+        }
+
+        .caret::after {
+            display: inline-block;
+            position: relative;
+            left: 16px;
+            transform-origin: 50% 50%;
+            transition: transform 160ms cubic-bezier(.2, .9, .3, 1), color 120ms;
+        }
+
+        .caret[data-expanded="true"]::after {
+            content: "❯";
+            transform: rotate(90deg);
+        }
+
+        .caret[data-expanded="false"]::after {
+            content: "❯";
+            transform: rotate(0deg);
+            color: var(--caret-dim-color);
+        }
+
+        .caret.toggled[data-expanded="true"]::after {
+            content: "❯";
+            transform: rotate(90deg);
+            animation: rotateOpen 120ms ease-out;
+        }
+
+        .caret.toggled[data-expanded="false"]::after {
+            content: "❯";
+            transform: rotate(0deg);
+            color: var(--caret-dim-color);
+            animation: rotateClose 120ms ease-out;
+        }
+
+        @keyframes rotateOpen {
+            from {
+                transform: rotate(0deg);
+                color: var(--caret-dim-color);
+            }
+
+            to {
+                transform: rotate(90deg);
+                color: inherit;
+            }
+        }
+
+        @keyframes rotateClose {
+            from {
+                transform: rotate(90deg);
+                color: inherit;
+            }
+
+            to {
+                transform: rotate(0deg);
+                color: var(--caret-dim-color);
+            }
+        }
+
+        /* buttons */
+        #button-container {
+            position: fixed;
+            top: 12px;
+            right: 12px;
+            display: flex;
+            flex-direction: row-reverse;
+            gap: 8px;
+            z-index: 1000;
+        }
+
+        .action-button {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--resizer-color);
+            color: var(--text-color);
+            border: 2px solid var(--text-color);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            line-height: 1;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            overflow: hidden;
+            transition: transform 0.2s ease;
+            user-select: none;
+        }
+
+        .action-button:hover {
+            transform: scale(1.1);
+        }
+
+        .action-button:disabled {
+            opacity: 0.4;
+            cursor: default;
+            box-shadow: none;
+            border-color: var(--caret-dim-color);
+        }
+
+        .action-button:disabled:hover {
+            transform: none;
+        }
+
+        .svg-icon {
+            position: relative;
+            top: 0;
+            left: 0;
+            transition: top 0.3s ease, left 0.3s ease, transform 0.3s ease;
+        }
+
+        #dehoist-btn:active #dehoist-icon {
+            top: -10px;
+        }
+
+        #hoist-btn:active #hoist-icon {
+            top: 10px;
+        }
+
+        #prev-btn:active #prev-icon {
+            left: -10px;
+        }
+
+        #next-btn:active #next-icon {
+            left: 10px;
+        }
+
+        #toggle-icon {
+            position: relative;
+            top: 0;
+            transition: top 0.3s ease;
+        }
+
+        #theme-toggle:active #toggle-icon {
+            top: 25px;
+        }
+
+        #layout-icon {
+            position: relative;
+            top: 0;
+        }
+
+        [data-layout="horizontal"] #layout-icon {
+            transform: rotate(90deg);
+        }
+
+        [data-transition="true"] #layout-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .svg-icon svg {
+            display: block;
+            width: 20px;
+            height: 20px;
+        }
+
+        .action-button:disabled:active #toggle-icon,
+        .action-button:disabled:active #dehoist-icon,
+        .action-button:disabled:active #hoist-icon {
+            top: 0 !important;
+        }
+
+        .action-button:disabled:active #prev-icon,
+        .action-button:disabled:active #next-icon {
+            left: 0 !important;
+        }
+
+        #toggle-mark-btn:active #toggle-mark-icon {
+            transform: scale(0.7);
+        }
+
+        #prev-marked-btn:active #prev-marked-icon {
+            left: -10px;
+        }
+
+        #next-marked-btn:active #next-marked-icon {
+            left: 10px;
+        }
+
+        .hidden-button {
+            display: none !important;
+        }
+
+        /* find pane */
+        #find-pane {
+            scrollbar-gutter: stable;
+            font-family: sans-serif;
+            padding: 0.5rem 0 0 0.5rem;
+            overflow-x: hidden;
+            background-color: var(--find-pane-color);
+            position: relative;
+            transition: var(--find-pane-transition);
+            container-type: inline-size;
+            container-name: find-pane;
+        }
+
+        #find-controls,
+        #config-controls {
+            gap: 0.5rem;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+        @container find-pane (min-width: 450px) {
+            #config-controls {
+                justify-content: center;
+            }
+        }
+
+        #config-btn {
+            position: fixed;
+            z-index: 2001;
+            cursor: pointer;
+            font-size: 20px;
+            opacity: 0.6;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+            text-shadow: 0 3px 3px rgba(0, 0, 0, 0.4);
+            user-select: none;
+        }
+
+        #config-btn:hover {
+            transform: scale(1.2);
+            opacity: 1;
+        }
+
+        #find-controls {
+            padding-top: 0.5rem;
+            display: var(--find-display);
+        }
+
+        #config-controls {
+            padding-top: 0;
+            display: var(--config-display);
+        }
+
+        .config-title {
+            cursor: default;
+            user-select: none;
+            width: 100%;
+            text-align: center;
+            font-weight: bold;
+            margin: 0;
+            font-size: 1em;
+            color: var(--find-text-color);
+        }
+
+        .config-title svg {
+            vertical-align: middle;
+        }
+
+        .sub-title {
+            width: 100%;
+            text-align: center;
+            margin: 0;
+            color: var(--caret-dim-color);
+            font-style: italic;
+            font-size: 0.9em;
+            cursor: default;
+            user-select: none;
+        }
+
+        #find-pane .config-col.shortcuts {
+            list-style: none;
+            padding: 0;
+            margin: -5px 0 0 0;
+            font-size: 0.8em;
+            color: var(--find-text-color);
+            gap: 0;
+            min-width: 285px;
+            cursor: default;
+            user-select: none;
+        }
+
+        #find-pane .config-col.shortcuts li {
+            padding: 0.25rem 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        #find-pane .config-col.shortcuts kbd {
+            display: inline-block;
+            padding: 0.1rem 0.4rem;
+            margin: 0 0.2rem;
+            font-family: monospace;
+            font-size: 0.9em;
+            line-height: 1.4;
+            color: var(--text-color);
+            background-color: var(--resizer-color);
+            border: 1px solid var(--find-border-color);
+            border-radius: 3px;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+        }
+
+        .kbd-spacer {
+            display: inline-block;
+            width: 100px;
+        }
+
+        #find-pane .find-col,
+        #find-pane .config-col {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+            min-width: 110px;
+        }
+
+        #find-pane .find-col label,
+        #find-pane .config-col label {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            user-select: none;
+            font-size: 0.8em;
+            color: var(--find-text-color);
+        }
+
+        .config-col label {
+            padding-left: 0.5rem;
+        }
+
+        #find-pane input[type="checkbox"],
+        #find-pane input[type="radio"] {
+            flex-shrink: 0;
+            width: 16px;
+            height: 16px;
+            margin: 0;
+        }
+
+        #find-input {
+            width: 100%;
+            /* max-width: 260px; */
+            box-sizing: border-box;
+            padding: 0.4rem 0.5rem;
+            margin: 0;
+            border-radius: 3px;
+            border: 1px solid var(--find-border-color);
+            background: transparent;
+            color: var(--find-text-color);
+            font-family: sans-serif;
+            display: var(--find-display)
+        }
+
+        #find-input::placeholder {
+            color: var(--find-placeholder-color);
+        }
+
+        input[type="checkbox"] {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 1px solid var(--find-border-color);
+            border-radius: 3px;
+            background-color: var(--find-pane-color);
+            position: relative;
+        }
+
+        input[type="checkbox"]:checked::after {
+            content: "";
+            position: absolute;
+            left: 4px;
+            top: -2px;
+            width: 4px;
+            height: 12px;
+            border: solid var(--find-border-color);
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        input[type="radio"] {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 1px solid var(--find-border-color);
+            border-radius: 50%;
+            background-color: var(--find-pane-color);
+            position: relative;
+        }
+
+        input[type="radio"]:checked::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 8px;
+            height: 8px;
+            transform: translate(-50%, -50%);
+            background-color: var(--find-text-color);
+            border-radius: 50%;
+        }
+
+        input[type="radio"]:focus:checked::after,
+        input[type="radio"]:focus-visible:checked::after {
+            background-color: var(--find-selection);
+        }
+
+        input[type="checkbox"]:focus:checked::after,
+        input[type="checkbox"]:focus-visible:checked::after {
+            border: solid var(--find-selection);
+            border-width: 0 2px 2px 0;
+        }
+
+        #find-pane input:focus,
+        #find-pane input:focus-visible {
+            border-color: var(--find-selection);
+            outline: 2px solid var(--find-selection);
+            outline-offset: -1px;
+        }
+
+        a {
+            color: var(--caret-dim-color);
+            text-decoration: underline;
+        }
+
+        a:hover {
+            color: var(--find-text-color);
+        }
+
+        .footer {
+            margin-bottom: 1rem;
+        }
+
+        /* toast */
+        #toast {
+            position: fixed;
+            top: 16px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-10px);
+            background: var(--body-pane-color);
+            color: var(--find-text-color);
+            padding: 8px 12px;
+            border-radius: 6px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 180ms ease, transform 180ms ease;
+            z-index: 2000;
+            font-family: sans-serif;
+            font-size: 13px;
+            white-space: pre;
+        }
+
+        #toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+            pointer-events: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <!--
+        * Layout *
+        The body element is split in two (outline-find-container and body-pane) by the main-resizer.
+        The outline-find-container is split in two (outline-pane and find-pane) by the secondary-resizer.
+        So in total, there are three panes and two resizers. The rest are just floating buttons which are not part of the layout.
+    -->
+    <div id="outline-find-container">
+        <div id="outline-pane" tabindex="0">
+            <div id="spacer"></div>
+            <div id="collapse-all-btn" class="outline-icon" title="Collapse All" role="button"
+                aria-label="Collapse All">
+                <svg width="16" height="16" fill="currentColor">
+                    <path
+                        d="M 6 2 L 5 3 L 5 5 L 3 5 L 2 6 L 2 13 L 3 14 L 10 14 L 11 13 L 11 11 L 13 11 L 14 10 L 14 3 L 13 2 L 6 2 z M 6 3 L 13 3 L 13 10 L 11 10 L 11 6 L 10 5 L 6 5 L 6 3 z M 3 6 L 10 6 L 10 13 L 3 13 L 3 6 z M 4 9 L 4 10 L 9 10 L 9 9 L 4 9 z "
+                        style="fill:var(--find-border-color);" />
+                </svg>
+            </div>
+        </div>
+        <div id="secondary-resizer"></div>
+        <div id="find-pane">
+            <input id="find-input" type="text" autocomplete="off" placeholder="&lt;find pattern here&gt;"
+                title="Ctrl+F: Search | F3/F2: Next/Prev" aria-label="Find pattern">
+            <div id="find-controls" role="region" aria-label="Find options">
+                <div class="find-col" aria-label="Search options">
+                    <label for="opt-whole">
+                        <input id="opt-whole" type="checkbox" name="find-option" />
+                        Whole Word
+                    </label>
+                    <label for="opt-ignorecase">
+                        <input id="opt-ignorecase" type="checkbox" name="find-option" checked />
+                        Ignore Case
+                    </label>
+                    <label for="opt-regexp">
+                        <input id="opt-regexp" type="checkbox" name="find-option" />
+                        Regexp
+                    </label>
+                    <label for="opt-mark">
+                        <input id="opt-mark" type="checkbox" name="find-option" />
+                        Mark Finds
+                    </label>
+                </div>
+                <div class="find-col" role="radiogroup" aria-label="Search scope">
+                    <label for="scope-entire">
+                        <input id="scope-entire" type="radio" name="find-scope" value="entire" checked />
+                        Entire Outline
+                    </label>
+                    <label for="scope-suboutline">
+                        <input id="scope-suboutline" type="radio" name="find-scope" value="suboutline" />
+                        Suboutline Only
+                    </label>
+                    <label for="scope-node">
+                        <input id="scope-node" type="radio" name="find-scope" value="node" />
+                        Node Only
+                    </label>
+                    <label for="opt-headline">
+                        <input id="opt-headline" type="checkbox" name="find-target" checked />
+                        Search Headline
+                    </label>
+                    <label for="opt-body">
+                        <input id="opt-body" type="checkbox" name="find-target" checked />
+                        Search Body
+                    </label>
+                </div>
+            </div>
+            <span id="config-btn" aria-label="Configuration" title="Configuration">⚙️</span>
+            <div id="config-controls" role="region" aria-label="Configuration settings">
+                <span class="config-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" height="32" width="32" viewBox="0 0 16 16">
+                        <path d="M2.875 1.21h10.566v8.482H2.875z" fill="#7c2504" />
+                        <path
+                            d="M11.093 1.21c-1.14.782-1.827 2.105-1.828 3.523 0 1.747 1.023 3.246 2.482 3.89v6.021h1.694V1.21zm-8.218 0V14.88h1.713V9.009a4.073 4.225 0 003.167-4.115A4.073 4.225 0 005.673 1.21z"
+                            fill="#b04620" />
+                        <path
+                            d="M6.35 6.339c.12.188.21.425.174.645-.245.565-.76 1.076-1.191 1.44-.73.668-1.442.894-2.433.993V4.002C4 4.79 5.58 5.269 6.35 6.339z"
+                            fill="#c96b4b" />
+                        <path
+                            d="M4.332 8.389c-.158 0-.79.316-.79.316l-.65.561h-.07l-.034 3.3.333.28.562-.105c.37-.073.72-.394 1.106-.368 0 0-.368.375-.457.614-.177.595-.124 1.405.334 1.79.25.201.612.202.93.246 1.464-.037 4.222.01 5.74.035.626-.22.74-.879.841-1.422.07-.409.049-.903-.193-1.21-.215-.265-.877-.527-.877-.527s1.117.332 1.68.482c.2.054.601.15.601.15l.123-3.844-1.035-.298-1.176.07c-1.934.446-3.108.225-4.914.245l-1.053-.28s-.843-.035-1-.035z"
+                            fill="#e4dcc8" />
+                        <path
+                            d="M4.708 2.514c-.947.022-1.475.03-1.808 1.194-.061.43.13.923.439 1.228.415.386 1.612.462 2.264.738.249.037.546.14.755 0 .277-.202.345-.987.473-1.37.003-.511-.243-1.192-.649-1.597-.477-.294-.98-.212-1.474-.193zm7.065.1c-.2.002-.405.024-.613.036-.518-.066-.748.086-.983.526-.343.738-.604 2.514.21 2.878.915.34 1.406-.481 2.001-.824.271-.149.585-.198.878-.299.049-1.108.161-1.483-.51-2.018-.322-.249-.648-.301-.983-.298z"
+                            fill="#f9f2b3" />
+                        <path
+                            d="M2.49.713V10l-1.516.143a.334.334 0 10.063.666l1.453-.138v.59l-1.483.288a.334.334 0 10.127.656l1.356-.263v3.349H13.88v-4.025h1.032a.334.334 0 100-.67h-1.032v-.64l1.054-.108a.334.334 0 10-.067-.665l-.987.101V.713H2.49zm.905.905h9.579v2.411a1.607 1.607 0 00-.088-.224c-.315-.63-.738-.878-1.277-.857-.636.001-1.105.415-1.342 1.009-.152.398-.113.704-.09 1.082.016.24.4.593.692.537.453-.088 1.18-.482 1.757-.765.18-.088.289-.19.348-.303v4.869l-2.427.246a.334.334 0 10.067.665l2.36-.24v.549h-2.405a.334.334 0 100 .669h2.405v3.12H3.395v-.677c.117.087.348.15.436.11.33-.153.357-.46.749-.83.182-.171.323-.42.599-.562.246-.126.727-.052 1.452-.207 1.346-.232 2.858-.122 3.97.085.707.134.891.457 1.033.776.11.248.07.353.247.558.137.16.505.353.716.169.168-.147 0-.502.182-.682.204-.204.28-.442.007-.745-.902-.485-1.542-.586-2.66-.737-.199-.02-.316-.245-.461-.38-.345-.32-.675-.483-1.103-.532.016-.055.037-.204.068-.244.695-.897 1.659-1.467 2.392-1.634.273-.062.157-.392.093-.431-.145-.088-.331-.093-.5-.093-.319.001-.633.08-.95.098-.952.054-1.783.082-2.651.006-.287-.025-.576-.058-.864-.046-.463.02-.554.254-.43.598.045.128.579.135.84.272.423.22.632.51 1.103 1.097.058.071.126.137.167.218.023.046.023.1.03.15-.514.002-.712.127-1.025.46-.363.38-.283.403-1.243.553-.22.034-.458.033-.678.069-.413.067-1.056.097-1.375.472-.062.073-.1.14-.143.208v-.719l2.476-.48a.334.334 0 10-.128-.657l-2.348.456v-.5l2.445-.231a.334.334 0 10-.063-.666l-2.382.225v-5.62c.2.094.516.16.657.221.442.194.737.484 1.025.634.18.094.866.282 1.016.147.222-.2.262-1.117.074-1.538a2.12 2.12 0 00-.651-.854c-.09-.072-.43-.153-.68-.148-.25.004-.556.053-.711.091-.315.079-.473.259-.683.505-.012.012-.031.05-.047.076z"
+                            fill="#1c0e01" />
+                        <path
+                            d="M4.487 3.186c-.11.182-.05.382.062.533.094.125.222.226.36.298.222.11.36.162.484-.062.151-.264.091-.52-.112-.72-.23-.204-.581-.277-.794-.05zm7 .26c-.326.03-.478.33-.472.633a.91.91 0 00.162.385c.247-.037.604-.197.769-.36.093-.133.21-.369.149-.509-.152-.191-.403-.18-.608-.149z"
+                            fill="#fff" />
+                    </svg>
+                    Leo Outline Viewer </span>
+                <span class="sub-title">Visible Controls</span>
+                <div class="config-col" aria-label="Config options">
+                    <label for="show-prev-next-mark">
+                        <input id="show-prev-next-mark" type="checkbox" name="config-option" />
+                        Previous/Next Marked
+                    </label>
+                    <label for="show-toggle-mark">
+                        <input id="show-toggle-mark" type="checkbox" name="config-option" />
+                        Mark/Unmark
+                    </label>
+                    <label for="show-prev-next-history">
+                        <input id="show-prev-next-history" type="checkbox" name="config-option" checked />
+                        Previous/Next History
+                    </label>
+                    <label for="show-hoist-dehoist">
+                        <input id="show-hoist-dehoist" type="checkbox" name="config-option" />
+                        Hoist/De-hoist
+                    </label>
+                </div>
+                <div class="config-col" aria-label="Config options">
+                    <label for="show-layout-orientation">
+                        <input id="show-layout-orientation" type="checkbox" name="config-option" checked />
+                        Layout Orientation
+                    </label>
+                    <label for="show-theme-toggle">
+                        <input id="show-theme-toggle" type="checkbox" name="config-option" checked />
+                        Dark/Light Theme
+                    </label>
+                    <label for="show-node-icons">
+                        <input id="show-node-icons" type="checkbox" name="config-option" checked />
+                        Node Icons
+                    </label>
+                    <label for="show-collapse-all">
+                        <input id="show-collapse-all" type="checkbox" name="config-option" checked />
+                        Collapse All
+                    </label>
+                    <!-- Future possible options: -->
+                    <!-- <label for="show-chapters">
+                        <input id="show-chapters" type="checkbox" name="config-option" />
+                        Chapters
+                    </label> -->
+                </div>
+                <span class="sub-title">Keyboard Shortcuts</span>
+                <ul class="config-col shortcuts">
+                    <li><span class="kbd-spacer"><kbd>Arrows</kbd></span> — Navigate Outline</li>
+                    <li><span class="kbd-spacer"><kbd>Alt</kbd>+<kbd>Arrows</kbd></span> — Navigate from Body Pane</li>
+                    <li><span class="kbd-spacer"><kbd>Ctrl</kbd>+<kbd>F</kbd></span> — Find…</li>
+                    <li><span class="kbd-spacer"><kbd>F2</kbd>/<kbd>F3</kbd></span> — Previous/Next Match</li>
+                    <li><span class="kbd-spacer"><kbd>Ctrl</kbd>+<kbd>M</kbd></span> — Mark Node</li>
+                    <li><span class="kbd-spacer"><kbd>Alt</kbd>+<kbd>-</kbd></span> — Collapse All</li>
+                </ul>
+                <span class="sub-title footer">
+                    <a href="https://leo-editor.github.io/leo-editor/" target="_blank">Leo Editor</a>
+                    <span>Outline Viewer - 1.0.1 - Made by</span>
+                    <a href="https://github.com/boltex" target="_blank">Félix</a>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div id="main-resizer"></div>
+    <div id="body-pane" tabindex="0" contenteditable="plaintext-only" spellcheck="false"></div>
+    <div id="button-container">
+        <button tabindex="-1" id="theme-toggle" class="action-button" aria-label="Toggle dark/light mode"><span
+                id="toggle-icon">🌓</span></button>
+        <button tabindex="-1" id="layout-toggle" class="action-button" aria-label="Toggle layout orientation"><span
+                id="layout-icon">📐</span></button>
+        <button tabindex="-1" id="dehoist-btn" class="action-button" aria-label="De-hoist" title="De-hoist" disabled>
+            <span class="svg-icon" id="dehoist-icon">
+                <svg width="20" height="20" viewBox="0 0 17 17">
+                    <path
+                        d="m 9.717,5.896 0.701,1.249 h 3.238 v 6.494 H 2.344 V 9.3649687 L 1.096,10.038969 V 14.896 h 13.808 v -9 z M 3.198,0.844 1.733,8.267 4.326,6.865 6.23,10.258 9.687,8.388 7.78,4.997 10.374,3.596 Z"
+                        style="fill:var(--find-text-color);" />
+                </svg>
+            </span>
+        </button>
+        <button tabindex="-1" id="hoist-btn" class="action-button" aria-label="Hoist" title="Hoist">
+            <span class="svg-icon" id="hoist-icon">
+                <svg width="20" height="20" viewBox="0 0 17 17">
+                    <path
+                        d="M 7.907,10.33 3.089,4.496 h 2.947 l 0.062,-3.89 3.93,0.002 -0.065,3.89 2.948,-0.001 z M 1.096,5.896 v 9 h 13.808 v -9 h -0.596094 l -1.07,1.249 H 13.656 v 6.494 H 2.344 V 7.145 h 0.4117139 l -1.031,-1.249 z"
+                        style="fill:var(--find-text-color);" />
+                </svg>
+            </span>
+        </button>
+        <button tabindex="-1" id="next-btn" class="action-button" aria-label="Goto Next" title="Goto Next" disabled>
+            <span class="svg-icon" id="next-icon">
+                <svg width="20" height="20" viewBox="0 0 20 20">
+                    <polygon points="14,10 6,3 6,17" fill="#494" />
+                </svg>
+            </span>
+        </button>
+        <button tabindex="-1" id="prev-btn" class="action-button" aria-label="Goto Previous" title="Goto Previous"
+            disabled>
+            <span class="svg-icon" id="prev-icon">
+                <svg width="20" height="20" viewBox="0 0 20 20">
+                    <polygon points="6,10 14,3 14,17" fill="#494" />
+                </svg>
+            </span>
+        </button>
+        <button tabindex="-1" id="next-marked-btn" class="action-button" aria-label="Go to Next Marked Node"
+            title="Go to Next Marked Node" disabled>
+            <span class="svg-icon" id="next-marked-icon">
+                <svg width="20" height="20" viewBox="0 0 20 20">
+                    <polygon points="14,10 6,3 6,17" fill="#cb1919" />
+                </svg>
+            </span>
+        </button>
+        <button tabindex="-1" id="toggle-mark-btn" class="action-button" aria-label="Toggle Mark" title="Toggle Mark">
+            <span class="svg-icon" id="toggle-mark-icon">
+                <svg width="20" height="20" viewBox="1.5 1 13 13">
+                    <path
+                        d="m 5.0855,2.17 c -0.532,0 -0.73,0.196 -0.73,0.728 v 10.933 l 3.645,-2.253 3.644,2.253 V 2.898 c 0,-0.532 -0.197,-0.729 -0.463,-0.7285 z m 3.906,4.088 0.525,1.574 -0.146,0.124 -1.37,-0.976 -1.37,0.976 -0.146,-0.124 0.525,-1.574 -1.356,-0.991 0.066,-0.168 1.676,-0.022 0.51,-1.574 h 0.182 l 0.51,1.574 1.677,0.022 0.08813,0.129125 z"
+                        style="fill:#cb1919;" />
+                </svg>
+            </span>
+        </button>
+        <button tabindex="-1" id="prev-marked-btn" class="action-button" aria-label="Go to Previous Marked Node"
+            title="Go to Previous Marked Node" disabled>
+            <span class="svg-icon" id="prev-marked-icon">
+                <svg width="20" height="20" viewBox="0 0 20 20">
+                    <polygon points="6,10 14,3 14,17" fill="#cb1919" />
+                </svg>
+            </span>
+        </button>
+    </div>
+    <div id="toast" role="status" aria-live="polite" hidden></div>
+    <script>
+        /* Start of data */
+        const title = "Virtual Tree View Demo"; // Also used as key for localstorage save/restore of expanded and marked sets.
+        const genTimestamp = "1234567890"; // Change this to force reload of saved localstorage data.
+        const tree = {
+            "gnx": 0,
+            "children": [
+                {
+                    "gnx": 1
+                },
+                {
+                    "gnx": 2,
+                    "children": [
+                        {
+                            "gnx": 3,
+                            "children": [
+                                {
+                                    "gnx": 4,
+                                    "children": [
+                                        {
+                                            "gnx": 5
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "gnx": 3
+                        },
+                        {
+                            "gnx": 6
+                        },
+                        {
+                            "gnx": 7
+                        }
+                    ]
+                },
+                {
+                    "gnx": 8,
+                    "children": [
+                        {
+                            "gnx": 9
+                        },
+                        {
+                            "gnx": 10
+                        },
+                        {
+                            "gnx": 11
+                        }
+                    ]
+                }
+            ]
+        };
+        const data = {
+            "1": {
+                "headString": "first node no body",
+                "bodyString": ""
+            },
+            "2": {
+                "headString": "second node",
+                "bodyString": "Some body content\nmultiple lines\n\nend of first body"
+            },
+            "3": {
+                "headString": "First child clone",
+                "bodyString": "Some child content"
+            },
+            "4": {
+                "headString": "Child of clone",
+                "bodyString": "Body of the child of a clone!"
+            },
+            "5": {
+                "headString": "Also has child!",
+                "bodyString": "Yep, child of clone also has child!\n"
+            },
+            "6": {
+                "headString": "trailing newlines",
+                "bodyString": "inside other at same level\n\n"
+            },
+            "7": {
+                "headString": "last same level",
+                "bodyString": "Some body text"
+            },
+            "8": {
+                "headString": "third top node no body",
+                "bodyString": ""
+            },
+            "9": {
+                "headString": "third top node child 1",
+                "bodyString": "Some text in child 1\nblabla\n"
+            },
+            "10": {
+                "headString": "third top node child 2",
+                "bodyString": "Bla blabla bla,\nbla blablabla bla."
+            },
+            "11": {
+                "headString": "third top node child 3",
+                "bodyString": "Last node of the tree's natural tree order.\n"
+            }
+        };
+        /* End of data */
+
+        // Note: Also use buildClones and buildParentRefs
+        // to add icon member to data entries as needed:
+        // hasBody: 1, isMarked: 2, isClone: 4, isDirty: 8
+        let allNodesInOrder = []; // Store all nodes in natural tree order (initialized after tree is built)
+
+        // Build clones when repeated in the tree
+        function buildClones(node) {
+
+            const visitedNodes = {}; // Keys are gnx, values are node references
+
+            // Helper function for recursion that has access to the visitedNodes object
+            function buildClonesWithChildren(node) {
+                const gnx = node && node.gnx;
+                // Initialize data entry safely if it exists
+                if (gnx != null && data[gnx]) {
+                    if (!('icon' in data[gnx])) data[gnx].icon = 0;
+                }
+                if (gnx != null && Object.prototype.hasOwnProperty.call(visitedNodes, gnx)) {
+                    // If we've already seen this node, fill its children with JSON stringify/parse for deep copy.
+                    node.children = JSON.parse(JSON.stringify(visitedNodes[gnx].children || []));
+                    if (data[gnx]) data[gnx].icon = (data[gnx].icon || 0) | 4; // set clone bit
+                    // Do not recurse into children, they are already built
+                } else {
+                    if (gnx != null && data[gnx] && data[gnx].bodyString) {
+                        data[gnx].icon = (data[gnx].icon || 0) | 1; // set hasBody bit
+                    }
+                    visitedNodes[gnx] = node;
+                    if (node.children) {
+                        for (const child of node.children) {
+                            buildClonesWithChildren(child);
+                        }
+                    }
+                }
+            }
+            buildClonesWithChildren(node); // Start the recursive process
+        }
+
+        // Add parent references to all nodes recursively
+        function buildParentRefs(node, parent = null) {
+            node.parent = parent;
+            if (node.children) {
+                for (const child of node.children) {
+                    buildParentRefs(child, node); // recurse with current node as parent
+                }
+            }
+        }
+
+        // Helper function to get all nodes in tree order
+        function getAllNodesInTreeOrder(node) {
+            const result = [];
+            function traverse(n) {
+                if (n !== tree) { // Skip the hidden root node itself
+                    result.push(n);
+                }
+                if (n.children) {
+                    for (const child of n.children) {
+                        traverse(child);
+                    }
+                }
+            }
+            traverse(node);
+            return result;
+        }
+
+        buildClones(tree);
+        buildParentRefs(tree);
+        allNodesInOrder = getAllNodesInTreeOrder(tree); // Initialize the global array once
+
+        let flatRows = null; // Array of nodes currently visible in the outline pane, null at init time to not trigger render
+        const expanded = new Set(); // No need to add the root because 'isExpanded' will return true for it
+        const marked = new Set(); // Set of gnx (not nodes) that are marked
+        let selectedNode = null; // Track the currently selected node
+        let initialFindNode = null; // Node where to start the find (null means from the top)
+        let currentTheme = 'light'; // Default theme
+        let currentLayout = 'vertical'; // Default layout
+        let isDragging = false;
+        let mainRatio = 0.25; // Default proportion between outline-find-container and body-pane widths (defaults to 1/4)
+        let secondaryIsDragging = false;
+        let secondaryRatio = 0.75; // Default proportion between the outline-pane and the find-pane (defaults to 3/4)
+        let __toastTimer = null;
+        const navigationHistory = [];
+        let currentHistoryIndex = -1; // -1 means no history yet
+        const hoistStack = []; // Track hoisted nodes
+
+        const minWidth = 20;
+        const minHeight = 20;
+
+        const outlinePaneKeyMap = {
+            'Enter': () => BODY_PANE.focus(),
+            'Tab': () => BODY_PANE.focus(),
+            ' ': () => toggleSelected(),
+            'ArrowUp': () => selectVisBack(),
+            'ArrowDown': () => selectVisNext(),
+            'ArrowLeft': () => contractNodeOrGoToParent(),
+            'ArrowRight': () => expandNodeAndGoToFirstChild(),
+            'PageUp': () => gotoFirstSiblingOrParent(),
+            'PageDown': () => gotoLastSiblingOrVisNext(),
+            'Home': () => gotoFirstVisibleNode(),
+            'End': () => gotoLastVisibleNode()
+        };
+
+        // Elements
+        let selectedLabelElement = null; // Track the currently selected label element in the outline pane
+        const ROW_HEIGHT = 26;
+        const LEFT_OFFSET = 16; // Padding from left edge
+        const OUTLINE_FIND_CONTAINER = document.getElementById("outline-find-container");
+        const OUTLINE_PANE = document.getElementById("outline-pane");
+        const COLLAPSE_ALL_BTN = document.getElementById("collapse-all-btn");
+        const SPACER = document.getElementById("spacer");
+        const BODY_PANE = document.getElementById("body-pane");
+        const VERTICAL_RESIZER = document.getElementById('main-resizer');
+        const FIND_PANE = document.getElementById("find-pane");
+        const HORIZONTAL_RESIZER = document.getElementById('secondary-resizer');
+        const THEME_TOGGLE = document.getElementById('theme-toggle');
+        const THEME_ICON = document.getElementById('toggle-icon');
+        const LAYOUT_TOGGLE = document.getElementById('layout-toggle');
+        const LAYOUT_ICON = document.getElementById('layout-icon');
+
+        const DEHOIST_BTN = document.getElementById('dehoist-btn');
+        const HOIST_BTN = document.getElementById('hoist-btn');
+        const NEXT_BTN = document.getElementById('next-btn');
+        const PREV_BTN = document.getElementById('prev-btn');
+
+        const NEXT_MARKED_BTN = document.getElementById('next-marked-btn');
+        const TOGGLE_MARK_BTN = document.getElementById('toggle-mark-btn');
+        const PREV_MARKED_BTN = document.getElementById('prev-marked-btn');
+
+        const FIND_INPUT = document.getElementById('find-input');
+        const OPT_HEADLINE = document.getElementById('opt-headline');
+        const OPT_BODY = document.getElementById('opt-body');
+        const OPT_WHOLE = document.getElementById('opt-whole');
+        const OPT_IGNORECASE = document.getElementById('opt-ignorecase');
+        const OPT_REGEXP = document.getElementById('opt-regexp');
+        const OPT_MARK = document.getElementById('opt-mark');
+
+        const CONFIG_BTN = document.getElementById('config-btn');
+
+        const SHOW_PREV_NEXT_MARK = document.getElementById('show-prev-next-mark');
+        const SHOW_TOGGLE_MARK = document.getElementById('show-toggle-mark');
+        const SHOW_PREV_NEXT_HISTORY = document.getElementById('show-prev-next-history');
+        const SHOW_HOIST_DEHOIST = document.getElementById('show-hoist-dehoist');
+        const SHOW_LAYOUT_ORIENTATION = document.getElementById('show-layout-orientation');
+        const SHOW_THEME_TOGGLE = document.getElementById('show-theme-toggle');
+        const SHOW_NODE_ICONS = document.getElementById('show-node-icons');
+        const SHOW_COLLAPSE_ALL = document.getElementById('show-collapse-all');
+
+        const TOAST = document.getElementById('toast');
+        const HTML_ELEMENT = document.documentElement;
+
+        // * Navigation helpers
+        function children(node) {
+            // Given a node, return a shallow copy of its children array or an empty array.
+            return node && node.children ? node.children.slice() : [];
+        }
+
+        function childIndex(node) {
+            // Given a node, return its index among its siblings (0 for first, 1 for second, etc).
+            const parent = node.parent;
+            if (parent) {
+                const siblings = children(parent);
+                return siblings.indexOf(node);
+            }
+            return 0; // Should not happen for valid nodes because the top nodes are in the #outline-pane div
+        };
+
+        function parents(node) {
+            // Given a node, return an array of its ancestor nodes, closest first.
+            const ancestors = [];
+            let current = node;
+            while (current) {
+                const parent = current.parent;
+                if (parent) {
+                    ancestors.push(parent);
+                }
+                current = parent;
+            }
+            return ancestors;
+        };
+
+        function isAncestorOf(possibleAncestor, descendant) {
+            // Return true if possibleAncestor is an ancestor of descendant.
+            let current = descendant.parent;
+            while (current) {
+                if (current === possibleAncestor) {
+                    return true;
+                }
+                current = current.parent;
+            }
+            return false;
+        }
+
+        function hasChildren(node) {
+            // Given a node, return true if it has children.
+            return node.children && node.children.length > 0;
+        }
+
+        function isExpanded(node) {
+            // Given a node, return true if it is expanded.
+            if (!node.parent) return true; // The root node is always considered expanded
+            return expanded.has(node);
+        }
+
+        function isDescendantOfHoistedNode(node) {
+            if (!node || hoistStack.length === 0) return false;
+
+            const hoistedNode = hoistStack[hoistStack.length - 1];
+            return hoistedNode === node || isAncestorOf(hoistedNode, node);
+        }
+
+        function isVisible(node) {
+            // Return True if node is visible in the outline.
+            if (!node.parent) return false; // Root node is not visible
+
+            // First check if the node is descendant of the hoisted node
+            if (hoistStack.length > 0 && !isDescendantOfHoistedNode(node)) {
+                return false;
+            }
+
+            // Then check if all ancestors are expanded
+            const ancestors = parents(node);
+            for (const ancestor of ancestors) {
+                if (!isExpanded(ancestor)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function hasBack(node) {
+            // Given a node, return true if it has a previous sibling.
+            const parent = node.parent;
+            if (parent) {
+                const siblings = children(parent);
+                const index = siblings.indexOf(node);
+                return index > 0;
+            }
+            return false;
+        }
+
+        function hasNext(node) {
+            // Given a node, return true if it has a next sibling.
+            const parent = node.parent;
+            if (parent) {
+                const siblings = children(parent);
+                const index = siblings.indexOf(node);
+                return index < siblings.length - 1;
+            }
+            return false;
+        }
+
+        function hasParent(node) {
+            // Given a node, return true if it has a parent. Except if that parent is the hidden root node.
+            return !!node.parent && !!node.parent.parent;
+        }
+
+        function hasThreadBack(node) {
+            // Much cheaper than computing the actual value.
+            return hasBack(node) || hasParent(node);
+        }
+
+        function moveToBack(node) {
+            // Given a node, return its previous sibling. If first, or no parent, return null.
+            const parent = node.parent;
+            if (parent) {
+                const siblings = children(parent);
+                const index = siblings.indexOf(node);
+                return index > 0 ? siblings[index - 1] : null;
+            }
+            return null;
+        }
+
+        function moveToFirstChild(node) {
+            // Given a node, return its first child if any. Else return null.
+            return hasChildren(node) ? node.children[0] : null;
+        }
+
+        function moveToLastChild(node) {
+            // Given a node, return its last child if any. Else return null.
+            return hasChildren(node) ? node.children[node.children.length - 1] : null;
+        }
+
+        function moveToLastNode(node) {
+            // Given a node, return the last node of its tree or itself if no children.
+            while (hasChildren(node)) {
+                node = moveToLastChild(node);
+            }
+            return node;
+        }
+
+        function moveToNext(node) {
+            // Given a node, return its next sibling. If already last, return null.
+            const parent = node.parent;
+            if (parent) {
+                const siblings = children(parent);
+                const index = siblings.indexOf(node);
+                return index < siblings.length - 1 ? siblings[index + 1] : null;
+            }
+            return null;
+        }
+
+        function moveToNodeAfterTree(node) {
+            // Given a node, return the node after the position's tree.
+            while (node) {
+                if (hasNext(node)) {
+                    node = moveToNext(node);
+                    break;
+                }
+                node = moveToParent(node);
+            }
+            return node;
+        }
+
+        function moveToParent(node) {
+            // Given a node, return its parent or null if no parent.
+            const parent = node.parent;
+            if (parent) {
+                return parent;
+            }
+            return null;
+        }
+
+        function moveToThreadBack(node) {
+            // Given a node, return the previous node in the outline.
+            if (hasBack(node)) {
+                node = moveToBack(node);
+                node = moveToLastNode(node);
+            } else {
+                node = moveToParent(node);
+            }
+            return node;
+        }
+
+        function moveToThreadNext(node) {
+            // Given a node, return the next node in the outline.
+            if (hasChildren(node)) {
+                node = moveToFirstChild(node);
+            } else if (hasNext(node)) {
+                node = moveToNext(node);
+            } else {
+                node = moveToParent(node);
+                while (node) {
+                    if (node && hasNext(node)) {
+                        node = moveToNext(node);
+                        break;
+                    }
+                    node = moveToParent(node);
+                }
+            }
+            return node;
+        };
+
+        function moveToVisBack(node) {
+            // Given a node, return the previous visible node in the outline.
+            while (node) {
+                // Short-circuit if possible.
+                const back = moveToBack(node);
+                if (back && hasChildren(back) && isExpanded(back))
+                    node = moveToThreadBack(node);
+                else if (back) {
+                    node = moveToBack(node);
+                } else {
+                    node = moveToParent(node);  // Same as p.moveToThreadBack()
+                }
+                if (node && isVisible(node)) {
+                    return node;
+                }
+            }
+            return node;
+        }
+
+        function moveToVisNext(node) {
+            // Given a node, return the next visible node in the outline.
+            while (node) {
+                if (hasChildren(node)) {
+                    if (isExpanded(node)) {
+                        node = moveToFirstChild(node);
+                    } else {
+                        node = moveToNodeAfterTree(node);
+                    }
+                } else if (hasNext(node)) {
+                    node = moveToNext(node);
+                } else {
+                    node = moveToThreadNext(node);
+                }
+                if (node && isVisible(node)) {
+                    return node;
+                }
+            }
+        };
+
+        // * Navigation actions
+        function hoistNode() {
+            if (!selectedNode) return;
+
+            // If selected node is already hoisted: no-op (Even if button should be disabled in that case)
+            if (hoistStack.length > 0 && hoistStack[hoistStack.length - 1] === selectedNode) return;
+
+            if (!selectedNode.parent) return; // root node (though it should never be selected anyway)
+
+            hoistStack.push(selectedNode);
+            if (hasChildren(selectedNode) && !isExpanded(selectedNode)) {
+                expanded.add(selectedNode);
+                selectedNode.toggled = true; // Mark as toggled
+            }
+            updateHoistButtonStates();
+            flatRows = flattenTree(getCurrentRoot(), 0, false);
+            renderTree();
+        }
+
+        function dehoistNode() {
+            if (hoistStack.length === 0) return;
+            const previousHoist = hoistStack.pop();
+            selectAndOrToggleAndRedraw(previousHoist);
+            updateHoistButtonStates();
+        }
+
+        function expandNodeAndGoToFirstChild() {
+            // If the presently selected node has children, expand it if needed and go to the first child.
+            let node = selectedNode;
+            if (hasChildren(node)) {
+                if (!isExpanded(node)) {
+                    expanded.add(node);
+                    node.toggled = true; // Mark as toggled
+                }
+                node = moveToFirstChild(node);
+                selectAndOrToggleAndRedraw(node);
+            }
+        }
+
+        function contractNodeOrGoToParent() {
+            // If the presently selected node is expanded, collapse it. Otherwise go to the parent.
+            let node = selectedNode;
+            if (hasChildren(node) && isExpanded(node)) {
+                selectAndOrToggleAndRedraw(null, node);
+            } else if (hasParent(node)) {
+                const parent = moveToParent(node);
+                if (isVisible(parent)) {
+                    // Contract all children first
+                    for (const child of children(parent)) {
+                        if (isExpanded(child)) {
+                            expanded.delete(child);
+                            child.toggled = true; // Mark as toggled
+                        }
+                    }
+                    selectAndOrToggleAndRedraw(parent);
+                }
+            }
+        }
+
+        function selectVisBack() {
+            // Select the visible node preceding the presently selected node.
+            let node = selectedNode;
+            if (moveToVisBack(node)) {
+                node = moveToVisBack(node);
+                selectAndOrToggleAndRedraw(node);
+            }
+        }
+
+        function selectVisNext() {
+            // Select the visible node following the presently selected node.
+            let node = selectedNode;
+            if (moveToVisNext(node)) {
+                node = moveToVisNext(node);
+                selectAndOrToggleAndRedraw(node);
+            }
+        }
+
+        function gotoFirstSiblingOrParent() {
+            // Select the first sibling of the presently selected node, or its parent if already first.
+            let node = selectedNode;
+            const currentRoot = getCurrentRoot();
+            if (hasBack(node)) {
+                let firstVisibleSibling = null;
+                let current = node;
+                while (hasBack(current)) {
+                    let prev = moveToBack(current);
+                    if (isVisible(prev)) {
+                        firstVisibleSibling = prev;
+                        current = prev;
+                    } else {
+                        break;
+                    }
+                }
+                if (firstVisibleSibling) {
+                    node = firstVisibleSibling;
+                }
+            } else if (hasParent(node) && node !== currentRoot) {
+                const parent = moveToParent(node);
+                if (parent === currentRoot || isDescendantOfHoistedNode(parent)) {
+                    node = parent;
+                }
+            }
+            selectAndOrToggleAndRedraw(node);
+        };
+
+        function gotoLastSiblingOrVisNext() {
+            // Select the last sibling of the presently selected node, or the next visible node if already last.
+            let node = selectedNode;
+            const currentRoot = getCurrentRoot();
+            if (hasNext(node)) {
+                let lastVisibleSibling = null;
+                let current = node;
+                while (hasNext(current)) {
+                    let next = moveToNext(current);
+                    if (isVisible(next)) {
+                        lastVisibleSibling = next;
+                        current = next;
+                    } else {
+                        break;
+                    }
+                }
+                if (lastVisibleSibling) {
+                    node = lastVisibleSibling;
+                }
+            } else if (moveToVisNext(node)) {
+                node = moveToVisNext(node);
+            }
+            if (node) selectAndOrToggleAndRedraw(node);
+        };
+
+
+        function gotoFirstVisibleNode() {
+            // Get the current root (could be hoisted node or hidden root)
+            const currentRoot = getCurrentRoot();
+
+            // If we're hoisted, the first visible node could be the hoisted node itself
+            if (hoistStack.length > 0) {
+                selectAndOrToggleAndRedraw(currentRoot);
+                return;
+            }
+
+            // Otherwise, select the first child of the root node
+            const firstNode = moveToFirstChild(currentRoot);
+            if (firstNode) {
+                selectAndOrToggleAndRedraw(firstNode);
+            }
+        };
+
+        function gotoLastVisibleNode() {
+            // Select the last visible node in the outline.
+            let node = selectedNode;
+            while (node) {
+                const next = moveToVisNext(node);
+                if (next && isVisible(next)) {
+                    node = next;
+                } else {
+                    break;
+                }
+            }
+            if (node) selectAndOrToggleAndRedraw(node);
+        };
+
+        function collapseAll() {
+            // Collapse all nodes in visible outline and select the proper top-level node
+            const currentRoot = getCurrentRoot();
+            if (currentRoot === tree) {
+                expanded.clear();
+            } else {
+                const nodesToRemove = [];
+                expanded.forEach(node => {
+                    if (node === currentRoot || isAncestorOf(currentRoot, node)) {
+                        nodesToRemove.push(node);
+                    }
+                });
+                nodesToRemove.forEach(node => expanded.delete(node));
+            }
+            if (hoistStack.length > 0) {
+                selectAndOrToggleAndRedraw(currentRoot);
+            } else {
+                let node = selectedNode;
+                // If currently selected node is a descendant of a top-level node, find that top-level node
+                while (node && hasParent(node) && node.parent !== tree) {
+                    node = moveToParent(node);
+                }
+                if (node) selectAndOrToggleAndRedraw(node);
+            }
+        };
+
+        function toggleSelected() {
+            if (selectedNode && selectedNode.children && selectedNode.children.length > 0) {
+                selectAndOrToggleAndRedraw(null, selectedNode);
+            }
+        }
+
+        function toggleMark(node) {
+            if (!node) return;
+            const gnx = node.gnx;
+            if (marked.has(gnx)) {
+                marked.delete(gnx);
+                if (data[gnx]) data[gnx].icon = (data[gnx].icon || 0) & ~2; // Clear marked bit
+            } else {
+                marked.add(gnx);
+                if (data[gnx]) data[gnx].icon = (data[gnx].icon || 0) | 2; // Set marked bit
+            }
+            updateMarkedButtonStates();
+            // Only need to redraw the affected node if visible, no need to re-flatten because structure didn't change
+            if (isVisible(node)) {
+                renderTree();
+            }
+        }
+
+        function toggleMarkCurrentNode() {
+            if (selectedNode) {
+                toggleMark(selectedNode);
+            }
+        }
+
+        function gotoNextMarkedNode() {
+            if (!selectedNode || marked.size === 0) return;
+
+            const currentIndex = allNodesInOrder.findIndex(node => node === selectedNode);
+            if (currentIndex === -1) return; // Should never happen
+
+            let foundMarked = false;
+            for (let i = 1; i <= allNodesInOrder.length; i++) {
+                const nextIndex = (currentIndex + i) % allNodesInOrder.length; // Wrap around
+                const node = allNodesInOrder[nextIndex];
+
+                if (node === selectedNode) continue;
+
+                if (marked.has(node.gnx)) {
+                    selectAndOrToggleAndRedraw(node);
+                    foundMarked = true;
+                    break;
+                }
+            }
+
+            if (!foundMarked) {
+                if (marked.size === 1 && marked.has(selectedNode.gnx)) {
+                    showToast("Only one marked node.");
+                } else {
+                    showToast("No other marked nodes found.");
+                }
+            }
+        }
+
+        function gotoPrevMarkedNode() {
+            if (!selectedNode || marked.size === 0) return;
+
+            const currentIndex = allNodesInOrder.findIndex(node => node === selectedNode);
+            if (currentIndex === -1) return; // Should never happen
+
+            let foundMarked = false;
+            for (let i = 1; i <= allNodesInOrder.length; i++) {
+                const prevIndex = (currentIndex - i + allNodesInOrder.length) % allNodesInOrder.length; // Wrap around
+                const node = allNodesInOrder[prevIndex];
+
+                if (node === selectedNode) continue;
+
+                if (marked.has(node.gnx)) {
+                    selectAndOrToggleAndRedraw(node);
+                    foundMarked = true;
+                    break;
+                }
+            }
+
+            if (!foundMarked) {
+                if (marked.size === 1 && marked.has(selectedNode.gnx)) {
+                    showToast("Only one marked node.");
+                } else {
+                    showToast("No other marked nodes found.");
+                }
+            }
+        }
+
+        // * Button states
+        function updateMarkedButtonStates() {
+            const hasMarkedNodes = marked.size > 0;
+            NEXT_MARKED_BTN.disabled = !hasMarkedNodes;
+            PREV_MARKED_BTN.disabled = !hasMarkedNodes;
+        }
+
+        function updateHoistButtonStates() {
+            const isCurrentlyHoisted = hoistStack.length > 0 && hoistStack[hoistStack.length - 1] === selectedNode;
+            DEHOIST_BTN.disabled = hoistStack.length === 0;
+            HOIST_BTN.disabled = !selectedNode || !hasChildren(selectedNode) || isCurrentlyHoisted;
+        }
+
+        function updateHistoryButtonStates() {
+            PREV_BTN.disabled = currentHistoryIndex <= 0;
+            NEXT_BTN.disabled = currentHistoryIndex >= navigationHistory.length - 1 || navigationHistory.length === 0;
+        }
+
+        function toggleConfiguration() {
+            if (HTML_ELEMENT.getAttribute('data-show-config') === 'true') {
+                HTML_ELEMENT.setAttribute('data-show-config', 'false');
+                CONFIG_BTN.innerHTML = '⚙️';
+                CONFIG_BTN.setAttribute('title', 'Configuration');
+                CONFIG_BTN.setAttribute('aria-label', 'Configuration');
+            } else {
+                HTML_ELEMENT.setAttribute('data-show-config', 'true');
+                CONFIG_BTN.innerHTML = '✔️';
+                CONFIG_BTN.setAttribute('title', 'Back to Find');
+                CONFIG_BTN.setAttribute('aria-label', 'Back to Find');
+            }
+        }
+
+        // * History
+        function addToHistory(node) {
+            if (navigationHistory.length > 0 &&
+                navigationHistory[currentHistoryIndex] === node) {
+                return; // Already the current node, do nothing
+            }
+
+            // If we're not at the end, truncate the forward history
+            if (currentHistoryIndex < navigationHistory.length - 1) {
+                navigationHistory.splice(currentHistoryIndex + 1);
+            }
+
+            navigationHistory.push(node);
+            currentHistoryIndex = navigationHistory.length - 1;
+
+            updateHistoryButtonStates();
+        }
+
+        function previousHistory() {
+            if (currentHistoryIndex > 0) {
+                currentHistoryIndex--;
+                const node = navigationHistory[currentHistoryIndex];
+
+                // Navigate to the node without adding to history
+                selectAndOrToggleAndRedraw(node);
+                updateHistoryButtonStates();
+            }
+        }
+
+        function nextHistory() {
+            if (currentHistoryIndex < navigationHistory.length - 1) {
+                currentHistoryIndex++;
+                const node = navigationHistory[currentHistoryIndex];
+
+                // Navigate to the node without adding to history
+                selectAndOrToggleAndRedraw(node);
+                updateHistoryButtonStates();
+            }
+        }
+
+        // * Rendering helpers
+        function getCurrentRoot() {
+            // Return the current top of the hoist stack or the main tree root
+            return hoistStack.length > 0 ? hoistStack[hoistStack.length - 1] : tree;
+        }
+
+        function flattenTree(node, depth = 0, isRoot = true) {
+            // This only flattens the tree structure into an array of rows for rendering.
+            // It check for expansion state to include children as needed because only expanded nodes' children are visible.
+            // The isRoot parameter indicates if this node is the hidden root node (not visible).
+
+            let rows = [];
+
+            // Only add non-root nodes to the rows
+            if (!isRoot) {
+                rows.push({
+                    label: data[node.gnx].headString,
+                    depth,
+                    toggled: node.toggled || false, // Will make it render with toggled class
+                    hasChildren: !!node.children && node.children.length > 0,
+                    isExpanded: isExpanded(node),
+                    node
+                });
+            }
+            if (node.toggled) {
+                node.toggled = false; // Reset because it should not persist
+            }
+
+            if (isExpanded(node) && node.children) {
+                for (const child of node.children) {
+                    // Root node's children appear at depth 0
+                    const childDepth = isRoot ? 0 : depth + 1;
+                    rows.push(...flattenTree(child, childDepth, false));
+                }
+            }
+
+            return rows;
+        }
+
+        function selectAndOrToggleAndRedraw(newSelectedNode = null, nodeToToggle = null) {
+            // Handle toggling if requested
+            if (nodeToToggle) {
+                if (isExpanded(nodeToToggle)) {
+                    expanded.delete(nodeToToggle);
+                } else {
+                    expanded.add(nodeToToggle);
+                }
+                nodeToToggle.toggled = true; // Mark as toggled
+            }
+
+            const isNew = newSelectedNode && newSelectedNode !== selectedNode;
+
+            // Handle selection if requested
+            if (isNew) {
+                let hoistTop = getCurrentRoot();
+
+                // While the top of hoist stack is not an ancestor of the new selected node, pop it
+                while (newSelectedNode !== hoistTop && hoistStack.length > 0 && !isAncestorOf(hoistTop, newSelectedNode)) {
+                    hoistStack.pop();
+                    hoistTop = getCurrentRoot();
+                }
+
+                // Ensure all parent nodes are expanded so the selected node is visible
+                let currentNode = newSelectedNode;
+                while (currentNode && currentNode.parent && currentNode !== hoistTop) {
+                    // Skip the hidden root node since it's always expanded (When hoist is implemented, stop at hoist root)
+                    if (currentNode.parent.parent) {
+                        expanded.add(currentNode.parent);
+                    }
+                    currentNode = currentNode.parent;
+                }
+
+                selectedNode = newSelectedNode;
+                addToHistory(newSelectedNode);
+                updateHoistButtonStates();
+            }
+
+            // Only rebuild and redraw once
+            const currentRoot = getCurrentRoot();
+            const isHoisted = hoistStack.length > 0;
+
+            // If hoisted, pass isRoot=false to make the hoisted node visible
+            // If not hoisted, use the hidden root with isRoot=true
+            flatRows = flattenTree(currentRoot, 0, !isHoisted);
+            renderTree();
+
+            // Update body pane if selection changed (selectedNode cannot be null here because of isNew check)
+            if (isNew) {
+                if (newSelectedNode && data[newSelectedNode.gnx]) {
+                    BODY_PANE.textContent = data[newSelectedNode.gnx].bodyString || "";
+                } else {
+                    BODY_PANE.textContent = "";
+                }
+            }
+            scrollSelectedNodeIntoView();
+        }
+
+        function scrollSelectedNodeIntoView() {
+            if (!selectedNode || !flatRows) return; // Not initialized yet
+
+            const selectedIndex = flatRows.findIndex(row => row.node === selectedNode);
+            if (selectedIndex === -1) return; // Not found (shouldn't happen)
+            const nodePosition = selectedIndex * ROW_HEIGHT;
+
+            const scrollTop = OUTLINE_PANE.scrollTop;
+            const viewportHeight = OUTLINE_PANE.clientHeight;
+
+            if (nodePosition < scrollTop) {
+                OUTLINE_PANE.scrollTop = nodePosition;
+            } else if (nodePosition + ROW_HEIGHT > scrollTop + viewportHeight) {
+                OUTLINE_PANE.scrollTop = nodePosition - viewportHeight + ROW_HEIGHT;
+            }
+        }
+
+        function renderTree() {
+            if (!flatRows) return; // Not initialized yet
+
+            // Render visible rows only
+            const scrollTop = OUTLINE_PANE.scrollTop;
+            const viewportHeight = OUTLINE_PANE.clientHeight;
+            const viewportWidth = OUTLINE_PANE.clientWidth;
+
+            const startIndex = Math.floor(scrollTop / ROW_HEIGHT);
+            const visibleCount = Math.ceil(viewportHeight / ROW_HEIGHT) + 1;
+            const endIndex = Math.min(flatRows.length, startIndex + visibleCount);
+            let leftOffset = LEFT_OFFSET;
+
+            // If all nodes have no children, remove the left offset
+            if (flatRows.every(row => !row.hasChildren)) {
+                leftOffset = 0;
+            }
+
+            SPACER.innerHTML = "";
+            SPACER.style.height = flatRows.length * ROW_HEIGHT + "px";
+
+            let selectedRadioValue = ''; // Falsy for now
+            const selectedRadio = document.querySelector('input[name="find-scope"]:checked');
+            if (selectedRadio) {
+                selectedRadioValue = selectedRadio.value;
+            }
+
+            const searchSuboutline = selectedRadioValue === 'suboutline' && initialFindNode; // Will contain the node or null
+            const searchNodeOnly = selectedRadioValue === 'node'; // selected node only
+
+            for (let i = startIndex; i < endIndex; i++) {
+                const row = flatRows[i];
+                const div = document.createElement("div");
+                div.className = "node";
+                if (row.label) {
+                    div.title = row.label;
+                }
+
+                if (row.node === selectedNode) {
+                    div.classList.add("selected");
+                } else if (selectedNode && isAncestorOf(row.node, selectedNode)) {
+                    div.classList.add("ancestor");
+                }
+
+                if (searchNodeOnly && row.node === selectedNode) {
+                    div.classList.add("initial-find");
+                }
+
+                if (searchSuboutline && (row.node === searchSuboutline || isAncestorOf(searchSuboutline, row.node))) {
+                    div.classList.add("initial-find");
+                }
+
+                div.style.top = (i * ROW_HEIGHT) + "px";
+                div.style.height = ROW_HEIGHT + "px";
+
+                const leftPosition = (row.depth * 20) + leftOffset;
+                div.style.left = leftPosition + "px";
+                div.style.width = (viewportWidth - leftPosition) + "px";
+
+                const caret = document.createElement("span");
+                caret.className = row.toggled ? "caret toggled" : "caret";
+
+                row.toggled = false; // Reset toggled state after rendering
+
+                if (row.hasChildren) {
+                    caret.setAttribute("data-expanded", row.isExpanded ? "true" : "false");
+                }
+                div.appendChild(caret);
+
+                const labelSpan = document.createElement("span");
+                labelSpan.className = "node-text";
+
+                // If dark mode, invert the icons' 4 bit to swap dirty borders inverted
+                if (currentTheme === 'dark') {
+                    let invertedIcon = data[row.node.gnx].icon ^ 8; // Toggle the 4 bit
+                    labelSpan.classList.add("icon" + invertedIcon);
+                } else {
+                    labelSpan.classList.add("icon" + (data[row.node.gnx].icon || 0));
+                }
+
+                labelSpan.textContent = row.label;
+                if (row.node === selectedNode) {
+                    selectedLabelElement = labelSpan;
+                }
+
+                div.appendChild(labelSpan);
+                SPACER.appendChild(div);
+            }
+        }
+
+        function throttle(func, limit) {
+            let lastCall = 0;
+            let timeout;
+
+            return function (...args) {
+                const now = Date.now();
+                if (timeout) {
+                    clearTimeout(timeout);
+                }
+                if (now - lastCall >= limit) {
+                    lastCall = now;
+                    func.apply(this, args);
+                } else {
+                    timeout = setTimeout(() => {
+                        lastCall = Date.now();
+                        func.apply(this, args);
+                    }, limit - (now - lastCall));
+                }
+            };
+        }
+
+        function showToast(message, duration = 2000) {
+            if (!TOAST) return;
+            TOAST.textContent = message;
+            TOAST.hidden = false;
+            // Force reflow so the transition always runs when toggling
+            void TOAST.offsetWidth;
+            TOAST.classList.add('show');
+            if (__toastTimer) {
+                clearTimeout(__toastTimer);
+            }
+            __toastTimer = setTimeout(() => {
+                TOAST.classList.remove('show');
+                setTimeout(() => { TOAST.hidden = true; }, 220);
+                __toastTimer = null;
+            }, duration);
+        }
+
+        function safeLocalStorageGet(key) {
+            try {
+                return localStorage.getItem(key);
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function safeLocalStorageSet(key, value) {
+            try {
+                localStorage.setItem(key, value);
+            } catch (e) {
+                // ignore
+            }
+        }
+
+        function preventDefault(e) {
+            e.preventDefault(); // Utility function used in setupBodyPaneHandlers
+        }
+
+        function updateProportion() {
+            if (currentLayout === 'vertical') {
+                mainRatio = OUTLINE_FIND_CONTAINER.offsetWidth / window.innerWidth;
+            } else {
+                mainRatio = OUTLINE_FIND_CONTAINER.offsetHeight / window.innerHeight;
+            }
+        }
+
+        function updateOutlineContainerSize() {
+            if (currentLayout === 'vertical') {
+                let newWidth = window.innerWidth * mainRatio;
+                if (newWidth < minWidth) {
+                    newWidth = minWidth;
+                }
+                OUTLINE_FIND_CONTAINER.style.width = `${newWidth}px`;
+                OUTLINE_FIND_CONTAINER.style.height = '100%';
+                CONFIG_BTN.style.inset = `auto auto 7px ${newWidth - 33}px`;
+            } else {
+                let newHeight = window.innerHeight * mainRatio;
+                if (newHeight < minWidth) {
+                    newHeight = minWidth;
+                }
+                OUTLINE_FIND_CONTAINER.style.height = `${newHeight}px`;
+                OUTLINE_FIND_CONTAINER.style.width = '100%';
+                CONFIG_BTN.style.inset = `${newHeight - 33}px 7px auto auto`;
+            }
+        }
+
+        const handleDrag = throttle(function (e) {
+            if (currentLayout === 'vertical') {
+                let clientX = e.clientX;
+                if (e.touches) {
+                    clientX = e.touches[0].clientX;
+                }
+                const newWidth = clientX;
+                if (newWidth >= minWidth) {
+                    OUTLINE_FIND_CONTAINER.style.width = (newWidth - 3) + 'px';
+                } else {
+                    OUTLINE_FIND_CONTAINER.style.width = (minWidth - 3) + 'px';
+                }
+                CONFIG_BTN.style.inset = `auto auto 7px ${newWidth - 33}px`;
+            } else {
+                let clientY = e.clientY;
+                if (e.touches) {
+                    clientY = e.touches[0].clientY;
+                }
+                const newHeight = clientY;
+                if (newHeight >= minWidth) {
+                    OUTLINE_FIND_CONTAINER.style.height = (newHeight - 3) + 'px';
+                } else {
+                    OUTLINE_FIND_CONTAINER.style.height = (minWidth - 3) + 'px';
+                }
+                renderTree(); // Resizing vertically, so need to re-render tree
+                CONFIG_BTN.style.inset = `${newHeight - 33}px 7px auto auto`;
+            }
+            COLLAPSE_ALL_BTN.style.inset = `6px auto auto ${OUTLINE_PANE.clientWidth - 18}px`;
+        }, 33);
+
+        function startDrag(e) {
+            isDragging = true;
+            document.body.classList.add('dragging-main');
+            e.preventDefault();
+            document.addEventListener('mousemove', handleDrag);
+            document.addEventListener('mouseup', stopDrag);
+            document.addEventListener('touchmove', handleDrag, { passive: false });
+            document.addEventListener('touchend', stopDrag);
+        }
+
+        function stopDrag() {
+            if (isDragging) {
+                isDragging = false;
+                document.body.classList.remove('dragging-main');
+                document.removeEventListener('mousemove', handleDrag);
+                document.removeEventListener('mouseup', stopDrag);
+                document.removeEventListener('touchmove', handleDrag);
+                document.removeEventListener('touchend', stopDrag);
+                updateProportion();
+                renderTree();
+            }
+        }
+
+        function updateSecondaryProportion() {
+            if (currentLayout === 'vertical') {
+                secondaryRatio = (OUTLINE_PANE.offsetHeight - 6) / OUTLINE_FIND_CONTAINER.offsetHeight;
+            } else {
+                secondaryRatio = OUTLINE_PANE.offsetWidth / OUTLINE_FIND_CONTAINER.offsetWidth;
+            }
+        }
+
+        function updateOutlinePaneSize() {
+            if (currentLayout === 'vertical') {
+                const containerHeight = OUTLINE_FIND_CONTAINER.offsetHeight;
+                let newHeight = containerHeight * secondaryRatio;
+
+                // Respect minimum heights
+                if (newHeight < minHeight) {
+                    newHeight = minHeight;
+                } else if (newHeight > containerHeight - minHeight) {
+                    newHeight = containerHeight - minHeight;
+                }
+                // Set flex properties to control the distribution
+                OUTLINE_PANE.style.flex = `0 0 ${newHeight}px`;
+            } else {
+                const containerWidth = OUTLINE_FIND_CONTAINER.offsetWidth;
+                let newWidth = containerWidth * secondaryRatio;
+
+                // Respect minimum widths
+                if (newWidth < minHeight) {
+                    newWidth = minHeight;
+                } else if (newWidth > containerWidth - minHeight) {
+                    newWidth = containerWidth - minHeight;
+                }
+                // Set flex properties to control the distribution
+                OUTLINE_PANE.style.flex = `0 0 ${newWidth}px`;
+            }
+            FIND_PANE.style.flex = '1 1 auto'; // Let it take the remaining space
+            COLLAPSE_ALL_BTN.style.inset = `6px auto auto ${OUTLINE_PANE.clientWidth - 18}px`;
+        }
+
+        const handleSecondaryDrag = throttle(function (e) {
+            if (currentLayout === 'vertical') {
+                let clientY = e.clientY;
+                if (e.touches) {
+                    clientY = e.touches[0].clientY;
+                }
+                const containerRect = OUTLINE_FIND_CONTAINER.getBoundingClientRect();
+                const relativeY = clientY - containerRect.top;
+                const containerHeight = OUTLINE_FIND_CONTAINER.offsetHeight;
+                if (relativeY >= minHeight && relativeY <= containerHeight - minHeight) {
+                    OUTLINE_PANE.style.flex = `0 0 ${relativeY - 8}px`;
+                    FIND_PANE.style.flex = '1 1 auto'; // Let it take the remaining space
+                }
+                renderTree(); // Resizing vertically, so need to re-render tree
+            } else {
+                let clientX = e.clientX;
+                if (e.touches) {
+                    clientX = e.touches[0].clientX;
+                }
+                const containerRect = OUTLINE_FIND_CONTAINER.getBoundingClientRect();
+                const relativeX = clientX - containerRect.left;
+                const containerWidth = OUTLINE_FIND_CONTAINER.offsetWidth;
+                if (relativeX >= minHeight && relativeX <= containerWidth - minHeight) {
+                    OUTLINE_PANE.style.flex = `0 0 ${relativeX - 3}px`;
+                    FIND_PANE.style.flex = '1 1 auto'; // Let it take the remaining space
+                }
+            }
+            COLLAPSE_ALL_BTN.style.inset = `6px auto auto ${OUTLINE_PANE.clientWidth - 18}px`;
+        }, 33);
+
+        function startSecondaryDrag(e) {
+            secondaryIsDragging = true;
+            document.body.classList.add('dragging-secondary');
+            e.preventDefault();
+            document.addEventListener('mousemove', handleSecondaryDrag);
+            document.addEventListener('mouseup', stopSecondaryDrag);
+            document.addEventListener('touchmove', handleSecondaryDrag, { passive: false });
+            document.addEventListener('touchend', stopSecondaryDrag);
+        }
+
+        function stopSecondaryDrag() {
+            if (secondaryIsDragging) {
+                secondaryIsDragging = false;
+                document.body.classList.remove('dragging-secondary');
+                document.removeEventListener('mousemove', handleSecondaryDrag);
+                document.removeEventListener('mouseup', stopSecondaryDrag);
+                document.removeEventListener('touchmove', handleSecondaryDrag);
+                document.removeEventListener('touchend', stopSecondaryDrag);
+                updateSecondaryProportion();
+                renderTree();
+            }
+        }
+
+        function updatePanelSizes() {
+            updateOutlineContainerSize();
+            updateOutlinePaneSize();
+        }
+
+        function applyTheme(theme) {
+            currentTheme = theme;
+            HTML_ELEMENT.setAttribute('data-theme', theme);
+            THEME_TOGGLE.title = theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme';
+            THEME_ICON.innerHTML = theme === 'dark' ? '🌙' : '☀️';
+        };
+
+        function applyLayout(layout) {
+            currentLayout = layout;
+            LAYOUT_TOGGLE.title = layout === 'vertical' ? 'Switch to horizontal layout' : 'Switch to vertical layout';
+            if (layout === 'horizontal') {
+                HTML_ELEMENT.setAttribute('data-layout', 'horizontal');
+            } else {
+                HTML_ELEMENT.setAttribute('data-layout', 'vertical');
+            }
+            updatePanelSizes(); // Proportions will have changed so we must update sizes
+            if (flatRows) {
+                renderTree();
+            }
+        };
+
+        // Setup and organize all event handlers
+        function setupEventHandlers() {
+            setupOutlinePaneHandlers();
+            setupBodyPaneHandlers();
+            setupResizerHandlers();
+            setupWindowHandlers();
+            setupButtonHandlers();
+            setupFindPaneHandlers();
+            setupConfigCheckboxes();
+        }
+
+        function setupOutlinePaneHandlers() {
+            OUTLINE_PANE.addEventListener("mousedown", handleOutlinePaneMouseDown);
+            OUTLINE_PANE.addEventListener('click', handleOutlinePaneClick);
+            OUTLINE_PANE.addEventListener('dblclick', handleOutlinePaneDblClick);
+            OUTLINE_PANE.addEventListener('keydown', handleOutlinePaneKeyDown);
+            OUTLINE_PANE.addEventListener("scroll", throttle(renderTree, 33));
+        }
+
+        function setupBodyPaneHandlers() {
+            BODY_PANE.addEventListener('keydown', handleBodyPaneKeyDown);
+            BODY_PANE.addEventListener("beforeinput", preventDefault); // Block text changes
+            BODY_PANE.addEventListener("paste", preventDefault); // Block text changes
+        }
+
+        function setupResizerHandlers() {
+            VERTICAL_RESIZER.addEventListener('mousedown', startDrag);
+            VERTICAL_RESIZER.addEventListener('touchstart', startDrag);
+            HORIZONTAL_RESIZER.addEventListener('mousedown', startSecondaryDrag);
+            HORIZONTAL_RESIZER.addEventListener('touchstart', startSecondaryDrag);
+        }
+
+        function setupWindowHandlers() {
+            window.addEventListener('resize', throttle(handleWindowResize, 33));
+            window.addEventListener('keydown', handleGlobalKeyDown);
+            window.addEventListener('beforeunload', saveAll);
+        }
+
+        function setupButtonHandlers() {
+            COLLAPSE_ALL_BTN.addEventListener('click', collapseAll);
+            THEME_TOGGLE.addEventListener('click', handleThemeToggleClick);
+            LAYOUT_TOGGLE.addEventListener('click', handleLayoutToggleClick);
+            HOIST_BTN.addEventListener('click', hoistNode);
+            DEHOIST_BTN.addEventListener('click', dehoistNode);
+            PREV_BTN.addEventListener('click', previousHistory);
+            NEXT_BTN.addEventListener('click', nextHistory);
+            TOGGLE_MARK_BTN.addEventListener('click', toggleMarkCurrentNode);
+            NEXT_MARKED_BTN.addEventListener('click', gotoNextMarkedNode);
+            PREV_MARKED_BTN.addEventListener('click', gotoPrevMarkedNode);
+            CONFIG_BTN.addEventListener('click', toggleConfiguration);
+        }
+
+        function setupFindPaneHandlers() {
+            FIND_INPUT.addEventListener('keydown', function (e) {
+                if (e.key === 'Tab' && e.shiftKey) {
+                    e.preventDefault();
+                    OPT_BODY.focus();
+                }
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    findNext();
+                }
+            });
+            OPT_BODY.addEventListener('keydown', function (e) {
+                if (e.key === 'Tab' && !e.shiftKey) {
+                    e.preventDefault();
+                    FIND_INPUT.focus();
+                }
+            });
+            const findScopeRadios = document.querySelectorAll('input[name="find-scope"]');
+            findScopeRadios.forEach(radio => {
+                radio.addEventListener('change', function () {
+                    initialFindNode = null; // Reset initial find node when scope changes
+                    renderTree(); // Re-render to update node highlighting
+                });
+            });
+        }
+
+        function setupButtonFocusPrevention() {
+            const actionButtons = document.querySelectorAll('.action-button');
+            actionButtons.forEach(button => {
+                button.addEventListener('mousedown', (e) => {
+                    e.preventDefault();
+                });
+            });
+        }
+
+        function setupConfigCheckboxes() {
+            SHOW_PREV_NEXT_MARK.addEventListener('change', updateButtonVisibility);
+            SHOW_TOGGLE_MARK.addEventListener('change', updateButtonVisibility);
+            SHOW_PREV_NEXT_HISTORY.addEventListener('change', updateButtonVisibility);
+            SHOW_HOIST_DEHOIST.addEventListener('change', updateButtonVisibility);
+            SHOW_LAYOUT_ORIENTATION.addEventListener('change', updateButtonVisibility);
+            SHOW_THEME_TOGGLE.addEventListener('change', updateButtonVisibility);
+            SHOW_NODE_ICONS.addEventListener('change', updateNodeIcons);
+            SHOW_COLLAPSE_ALL.addEventListener('change', updateButtonVisibility);
+        }
+
+        function handleOutlinePaneMouseDown(e) {
+            if (e.detail === 2) e.preventDefault(); // Prevent text selection on double-click
+        }
+
+        function handleOutlinePaneClick(event) {
+            const nodeEl = event.target.closest('.node');
+            if (!nodeEl) return;
+
+            const rowIndex = Math.floor(parseInt(nodeEl.style.top) / ROW_HEIGHT);
+            if (rowIndex < 0 || rowIndex >= flatRows.length) return;
+
+            const row = flatRows[rowIndex];
+
+            // Handle different click targets
+            if (event.target.classList.contains('caret') && row.hasChildren) {
+                event.stopPropagation();
+                // Both toggle and select in one operation
+                selectAndOrToggleAndRedraw(
+                    row.node !== selectedNode ? row.node : null,
+                    row.node
+                );
+            } else {
+                // Rest of the node (including icon and text)
+                event.stopPropagation();
+                if (row.node !== selectedNode) {
+                    selectAndOrToggleAndRedraw(row.node); // Just selection
+                }
+            }
+        }
+
+        function handleOutlinePaneDblClick(event) {
+            if (event.target.classList.contains('node-text')) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                const nodeEl = event.target.closest('.node');
+                if (!nodeEl) return;
+
+                const rowIndex = Math.floor(parseInt(nodeEl.style.top) / ROW_HEIGHT);
+                if (rowIndex >= 0 && rowIndex < flatRows.length) {
+                    const row = flatRows[rowIndex];
+                    if (row.hasChildren) {
+                        // Handle both selection and toggle in one update
+                        selectAndOrToggleAndRedraw(
+                            row.node !== selectedNode ? row.node : null,
+                            row.node
+                        );
+                    }
+                }
+            }
+        }
+
+        function handleOutlinePaneKeyDown(e) {
+            const handler = outlinePaneKeyMap[e.key];
+            if (handler && !e.ctrlKey && !e.altKey && !e.metaKey) {
+                e.preventDefault();
+                handler();
+            }
+        }
+
+        function handleBodyPaneKeyDown(e) {
+            if (e.key === 'Tab') {
+                e.preventDefault();
+                OUTLINE_PANE.focus();
+            }
+        }
+
+        function startFind() {
+            initialFindNode = null; // If null, find next will set this, used with "Suboutline Only" find radio option (value: suboutline)
+            if (HTML_ELEMENT.getAttribute('data-show-config') === 'true') {
+                toggleConfiguration(); // // Make find input visible if in settings screen
+            }
+            FIND_INPUT.focus();
+            FIND_INPUT.select();
+            renderTree(); // To show or remove initial-find highlight
+        }
+
+        // Global key handlers (work anywhere)
+        function handleGlobalKeyDown(e) {
+            if (e.key.toLowerCase() === 'f' && e.ctrlKey && !e.altKey && !e.metaKey) {
+                e.preventDefault();
+                startFind();
+            } else if (e.key.toLowerCase() === 'm' && e.ctrlKey && !e.altKey && !e.metaKey) {
+                e.preventDefault();
+                toggleMarkCurrentNode();
+            } else if (e.key === 'F2') {
+                e.preventDefault();
+                findPrevious();
+            } else if (e.key === 'F3') {
+                e.preventDefault();
+                findNext();
+            } else if (e.key === '-' && e.altKey && !e.ctrlKey && !e.metaKey) {
+                e.preventDefault();
+                collapseAll();
+            } else if (e.altKey && !e.ctrlKey && !e.metaKey) {
+                // Handle Alt+Arrow keys globally
+                switch (e.key) {
+                    case 'ArrowUp':
+                        e.preventDefault();
+                        OUTLINE_PANE.focus();
+                        selectVisBack();
+                        break;
+                    case 'ArrowDown':
+                        e.preventDefault();
+                        OUTLINE_PANE.focus();
+                        selectVisNext();
+                        break;
+                    case 'ArrowLeft':
+                        e.preventDefault();
+                        OUTLINE_PANE.focus();
+                        contractNodeOrGoToParent();
+                        break;
+                    case 'ArrowRight':
+                        e.preventDefault();
+                        OUTLINE_PANE.focus();
+                        expandNodeAndGoToFirstChild();
+                        break;
+                }
+            }
+        }
+
+        function handleWindowResize() {
+            updatePanelSizes();
+            renderTree();
+        }
+
+        function handleDOMContentLoaded() {
+            loadConfigPreferences();
+
+            const initialSelectedNode = loadDocumentStateFromLocalStorage();
+            if (!initialSelectedNode) {
+                selectAndOrToggleAndRedraw(tree.children[0]); // sets selectedNode amd flatRows
+            } else {
+                selectAndOrToggleAndRedraw(initialSelectedNode); // sets selectedNode amd flatRows
+                if (data[selectedNode.gnx]) {
+                    BODY_PANE.textContent = data[selectedNode.gnx].bodyString || "";
+                }
+            }
+        }
+
+        function handleThemeToggleClick() {
+            // Only animate once button pressed, so page-load wont animate color changes.
+            HTML_ELEMENT.setAttribute('data-transition', 'true');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            applyTheme(newTheme);
+            renderTree(); // Re-render to update icon colors
+        }
+
+        function handleLayoutToggleClick() {
+            HTML_ELEMENT.setAttribute('data-transition', 'true');
+            const newLayout = currentLayout === 'vertical' ? 'horizontal' : 'vertical';
+            applyLayout(newLayout);
+        }
+
+        function updateButtonVisibility() {
+            toggleButtonVisibility(NEXT_MARKED_BTN, PREV_MARKED_BTN, SHOW_PREV_NEXT_MARK.checked);
+            toggleButtonVisibility(TOGGLE_MARK_BTN, null, SHOW_TOGGLE_MARK.checked);
+            toggleButtonVisibility(NEXT_BTN, PREV_BTN, SHOW_PREV_NEXT_HISTORY.checked);
+            toggleButtonVisibility(HOIST_BTN, DEHOIST_BTN, SHOW_HOIST_DEHOIST.checked);
+            toggleButtonVisibility(LAYOUT_TOGGLE, null, SHOW_LAYOUT_ORIENTATION.checked);
+            toggleButtonVisibility(THEME_TOGGLE, null, SHOW_THEME_TOGGLE.checked);
+            toggleButtonVisibility(COLLAPSE_ALL_BTN, null, SHOW_COLLAPSE_ALL.checked);
+        }
+
+        function updateNodeIcons() {
+            HTML_ELEMENT.setAttribute('data-show-icons', SHOW_NODE_ICONS.checked ? 'true' : 'false');
+            renderTree(); // Re-render to apply icon changes
+        }
+
+        function toggleButtonVisibility(button1, button2, isVisible) {
+            if (button1) {
+                button1.classList.toggle('hidden-button', !isVisible);
+            }
+            if (button2) {
+                button2.classList.toggle('hidden-button', !isVisible);
+            }
+        }
+
+        function saveAll() {
+            saveLayoutPreferences();
+            saveConfigPreferences();
+            saveDocumentStateToLocalStorage();
+        }
+
+        function saveDocumentStateToLocalStorage() {
+            // Use the allNodesInOrder tree, the full list from the top as if all nodes were expanded,
+            // to note the position of hoisted node(s), expanded node(s), and the currently selected node.
+            let hoistStackPositions = []; // empty means no hoist
+            for (const hoisted of hoistStack) {
+                const pos = allNodesInOrder.indexOf(hoisted);
+                if (pos !== -1) {
+                    hoistStackPositions.push(pos);
+                }
+            }
+            const expandedPositions = [];
+            for (const node of expanded) {
+                const pos = allNodesInOrder.indexOf(node);
+                if (pos !== -1) {
+                    expandedPositions.push(pos);
+                }
+            }
+            const selectedPosition = allNodesInOrder.indexOf(selectedNode); // -1 means no selection
+            const markedArray = Array.from(marked); // Marked are the gnx keys, not numeric positions from allNodesInOrder
+            const dataToSave = {
+                marked: markedArray,
+                hoistStack: hoistStackPositions,
+                selected: selectedPosition,
+                expanded: expandedPositions
+            };
+            safeLocalStorageSet(title + genTimestamp, JSON.stringify(dataToSave)); // Key is title + genTimestamp
+        }
+
+        function loadDocumentStateFromLocalStorage() {
+            // returns the selected node if found, otherwise null
+            let initialSelectedNode = null;
+            const savedData = safeLocalStorageGet(title + genTimestamp); // Key is title + genTimestamp
+            if (savedData) {
+                try {
+                    const parsedData = JSON.parse(savedData);
+                    // Start by rebuilding marked set and their related node icons
+                    if (parsedData && Array.isArray(parsedData.marked)) {
+                        marked.clear();
+                        parsedData.marked.forEach(gnx => {
+                            marked.add(gnx);
+                            // Update icon state to reflect marked status
+                            if (data[gnx]) {
+                                data[gnx].icon = (data[gnx].icon || 0) | 2; // Set marked bit
+                            }
+                        });
+                    }
+                    // If document stated data is found, rebuild hoist stack, expanded set, and selected node
+                    if (parsedData && Array.isArray(parsedData.expanded) && Array.isArray(parsedData.hoistStack) && typeof parsedData.selected === 'number') {
+                        const expandedPositions = parsedData.expanded;
+                        let expandedPositionsIndex = 0;
+                        const hoistPositions = parsedData.hoistStack;
+                        const selectedPosition = parsedData.selected;
+
+                        for (const hoisted of hoistPositions) {
+                            if (hoisted >= 0 && hoisted < allNodesInOrder.length) {
+                                hoistStack.push(allNodesInOrder[hoisted]);
+                            }
+                        }
+                        for (const node of expandedPositions) {
+                            if (node >= 0 && node < allNodesInOrder.length) {
+                                expanded.add(allNodesInOrder[node]);
+                            }
+                        }
+                        if (selectedPosition >= 0 && selectedPosition < allNodesInOrder.length) {
+                            initialSelectedNode = allNodesInOrder[selectedPosition];
+                        }
+
+                    }
+                    return initialSelectedNode;
+
+                } catch (e) {
+                    console.error('Error loading document state from localStorage:', e);
+                }
+            }
+        }
+
+        function saveLayoutPreferences() {
+            const layoutPreferences = {
+                mainRatio: mainRatio,
+                secondaryRatio: secondaryRatio,
+                theme: currentTheme,
+                layout: currentLayout
+            };
+            safeLocalStorageSet('layoutPreferences', JSON.stringify(layoutPreferences));
+        }
+
+        function saveConfigPreferences() {
+            const selectedFindScope = document.querySelector('input[name="find-scope"]:checked')?.value || 'entire';
+
+            const preferences = {
+                showPrevNextMark: SHOW_PREV_NEXT_MARK.checked,
+                showToggleMark: SHOW_TOGGLE_MARK.checked,
+                showPrevNextHistory: SHOW_PREV_NEXT_HISTORY.checked,
+                showHoistDehoist: SHOW_HOIST_DEHOIST.checked,
+                showLayoutOrientation: SHOW_LAYOUT_ORIENTATION.checked,
+                showThemeToggle: SHOW_THEME_TOGGLE.checked,
+                showNodeIcons: SHOW_NODE_ICONS.checked,
+                showCollapseAll: SHOW_COLLAPSE_ALL.checked,
+                // Find-pane options
+                findWholeWord: OPT_WHOLE.checked,
+                findIgnoreCase: OPT_IGNORECASE.checked,
+                findRegexp: OPT_REGEXP.checked,
+                findMark: OPT_MARK.checked,
+                findHeadline: OPT_HEADLINE.checked,
+                findBody: OPT_BODY.checked,
+                findScope: selectedFindScope
+            };
+            safeLocalStorageSet('configPreferences', JSON.stringify(preferences));
+        }
+
+        function loadThemeAndLayoutPreferences() {
+            const savedPrefs = safeLocalStorageGet('layoutPreferences');
+            if (savedPrefs) {
+                try {
+                    const prefs = JSON.parse(savedPrefs);
+                    if (typeof prefs.mainRatio === 'number') {
+                        mainRatio = prefs.mainRatio;
+                    }
+                    if (typeof prefs.secondaryRatio === 'number') {
+                        secondaryRatio = prefs.secondaryRatio;
+                    }
+                    if (prefs.theme) {
+                        applyTheme(prefs.theme);
+                    }
+                    if (prefs.layout) {
+                        applyLayout(prefs.layout);
+                    }
+                } catch (e) {
+                    console.error('Error loading layout preferences:', e);
+                }
+            } else {
+                applyTheme(currentTheme);
+                applyLayout(currentLayout);
+            }
+        }
+
+        function loadConfigPreferences() {
+            const savedPrefs = safeLocalStorageGet('configPreferences');
+            if (savedPrefs) {
+                try {
+                    const prefs = JSON.parse(savedPrefs);
+                    SHOW_PREV_NEXT_MARK.checked = prefs.showPrevNextMark ?? false;
+                    SHOW_TOGGLE_MARK.checked = prefs.showToggleMark ?? false;
+                    SHOW_PREV_NEXT_HISTORY.checked = prefs.showPrevNextHistory ?? true;
+                    SHOW_HOIST_DEHOIST.checked = prefs.showHoistDehoist ?? false;
+                    SHOW_LAYOUT_ORIENTATION.checked = prefs.showLayoutOrientation ?? true;
+                    SHOW_THEME_TOGGLE.checked = prefs.showThemeToggle ?? true;
+                    SHOW_NODE_ICONS.checked = prefs.showNodeIcons ?? true;
+                    SHOW_COLLAPSE_ALL.checked = prefs.showCollapseAll ?? true;
+
+                    // Find-pane options
+                    OPT_WHOLE.checked = prefs.findWholeWord ?? OPT_WHOLE.checked;
+                    OPT_IGNORECASE.checked = prefs.findIgnoreCase ?? OPT_IGNORECASE.checked;
+                    OPT_REGEXP.checked = prefs.findRegexp ?? OPT_REGEXP.checked;
+                    OPT_MARK.checked = prefs.findMark ?? OPT_MARK.checked;
+                    OPT_HEADLINE.checked = prefs.findHeadline ?? OPT_HEADLINE.checked;
+                    OPT_BODY.checked = prefs.findBody ?? OPT_BODY.checked;
+
+                    // Set the find scope radio
+                    if (prefs.findScope) {
+                        const scopeRadio = document.getElementById('scope-' + prefs.findScope);
+                        if (scopeRadio) scopeRadio.checked = true;
+                    }
+
+                    updateButtonVisibility();
+                    updateNodeIcons();
+                } catch (e) {
+                    console.error('Error loading config preferences:', e);
+                }
+            } else {
+                updateButtonVisibility();
+                updateNodeIcons();
+            }
+        }
+
+        // Find functionality
+        function findNext() {
+            if (!selectedNode) return; // No selection, nothing to search from
+            const searchText = FIND_INPUT.value.trim();
+            if (!searchText) {
+                showToast('Empty find pattern', 1500);
+                return; // Empty search, do nothing
+            }
+
+            const searchInBody = OPT_BODY.checked;
+            const searchInHeadlines = OPT_HEADLINE.checked;
+            const ignoreCase = OPT_IGNORECASE.checked;
+            const isRegexp = OPT_REGEXP.checked;
+            const wholeWord = OPT_WHOLE.checked;
+            const markFind = OPT_MARK.checked;
+
+            if (!searchInBody && !searchInHeadlines) {
+                showToast('not searching headline or body', 2000);
+                return; // Nothing to search in
+            }
+            if (!initialFindNode) {
+                initialFindNode = selectedNode; // Set initial find node if not already set
+            }
+
+            let selectedRadioValue = ''; // Falsy for now
+            const selectedRadio = document.querySelector('input[name="find-scope"]:checked');
+            if (selectedRadio) {
+                selectedRadioValue = selectedRadio.value;
+            }
+
+            let pattern; // Create regex pattern based on search options
+            try {
+                if (isRegexp) {
+                    pattern = searchText;
+                } else {
+                    pattern = searchText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // Escape special regex characters
+                    if (wholeWord) {
+                        pattern = '\\b' + pattern + '\\b'; // Add word boundaries if whole word option is enabled
+                    }
+                }
+                const flags = ignoreCase ? 'gi' : 'g';
+                const regex = new RegExp(pattern, flags);
+
+                const startIndex = allNodesInOrder.indexOf(selectedNode);
+                if (startIndex === -1) return;
+
+                const totalNodes = allNodesInOrder.length;
+                let currentIndex = startIndex; // start from current selection
+
+                while (currentIndex < totalNodes) {
+                    const node = allNodesInOrder[currentIndex];
+                    if (selectedRadioValue === 'suboutline' && (initialFindNode !== node && isAncestorOf(initialFindNode, node) === false)) {
+                        break; // Reached outside suboutline of initialFindNode
+                    }
+
+                    let headString = data[node.gnx]?.headString || "";
+                    let body = data[node.gnx]?.bodyString || "";
+
+                    // If searching headlines, check there first, but skip if the focus in in the body pane and its the currently selected node
+                    if (searchInHeadlines && headString && !(node === selectedNode && findFocus() === 2)) {
+                        regex.lastIndex = 0; // Reset regex state
+                        let startOffset = 0;
+                        // If this is the currently selected node, check for current selection range existing in selectedLabelElement with getSelection()
+                        // and only search after that range. Keep that offset, if any, and apply it to the match index later.
+                        if (node === selectedNode && selectedLabelElement) {
+                            const selection = window.getSelection();
+                            if (selection.rangeCount > 0) {
+                                const range = selection.getRangeAt(0);
+                                if (selectedLabelElement.contains(range.commonAncestorContainer)) {
+                                    // Selection is inside the headline span
+                                    startOffset = range.endOffset;
+                                    headString = headString.substring(startOffset);
+                                }
+                            }
+                        }
+
+                        const match = regex.exec(headString);
+
+                        if (match) {
+                            // If 'mark find' is checked, mark the found node if not already marked
+                            if (markFind) {
+                                if (!marked.has(node.gnx)) {
+                                    marked.add(node.gnx);
+                                    if (data[node.gnx]) {
+                                        data[node.gnx].icon = (data[node.gnx].icon || 0) | 2; // Set marked bit
+                                    }
+                                }
+                            }
+                            selectAndOrToggleAndRedraw(node); // This also calls scrollSelectedNodeIntoView
+
+                            // Focus outline pane and highlight match
+                            if (findFocus() !== 1) {
+                                OUTLINE_PANE.focus();
+                            }
+
+                            // Highlight the match in the headline using selectedLabelElement
+                            setTimeout(() => {
+                                highlightMatchInHeadline(match.index + startOffset, match.index + startOffset + match[0].length);
+                            });
+
+                            return;
+                        }
+                    }
+
+                    if (searchInBody && body) {
+                        regex.lastIndex = 0; // Reset regex state
+
+                        // If this is the currently selected node, check for current selection range existing in BODY_PANE with getSelection()
+                        // and only search after that range. Keep that offset, if any, and apply it to the match index later.
+                        let startOffset = 0;
+                        if (node === selectedNode && BODY_PANE) {
+                            const selection = window.getSelection();
+                            if (selection.rangeCount > 0) {
+                                const range = selection.getRangeAt(0);
+                                if (BODY_PANE.contains(range.commonAncestorContainer)) {
+                                    // Selection is inside the body pane
+                                    startOffset = range.endOffset;
+                                    body = body.substring(startOffset);
+                                }
+                            }
+                        }
+
+                        const match = regex.exec(body);
+                        if (match) {
+                            if (markFind) {
+                                if (!marked.has(node.gnx)) {
+                                    marked.add(node.gnx);
+                                    if (data[node.gnx]) {
+                                        data[node.gnx].icon = (data[node.gnx].icon || 0) | 2; // Set marked bit
+                                    }
+                                }
+                            }
+                            selectAndOrToggleAndRedraw(node); // This also calls scrollSelectedNodeIntoView
+                            if (findFocus() !== 2) {
+                                BODY_PANE.focus();
+                            }
+                            setTimeout(() => {
+                                highlightMatchInBody(match.index + startOffset, match.index + startOffset + match[0].length);
+                            });
+                            return;
+                        }
+                    }
+                    if (selectedRadioValue === 'nodeonly') {
+                        break; // Only search current node
+                    }
+                    currentIndex++;
+                }
+
+                let searchedParams = [];
+                if (searchInHeadlines) searchedParams.push('head');
+                if (searchInBody) searchedParams.push('body');
+                showToast(`Not found: (${searchedParams.join(", ")}) ${searchText}`, 1500);
+
+            } catch (e) {
+                showToast('Invalid search pattern: ' + e.message, 2000);
+            }
+
+        }
+
+        function findPrevious() {
+            if (!selectedNode) return; // No selection, nothing to search from
+            const searchText = FIND_INPUT.value.trim();
+            if (!searchText) {
+                showToast('Empty find pattern', 1500);
+                return; // Empty search, do nothing
+            }
+
+            const searchInBody = OPT_BODY.checked;
+            const searchInHeadlines = OPT_HEADLINE.checked;
+            const ignoreCase = OPT_IGNORECASE.checked;
+            const isRegexp = OPT_REGEXP.checked;
+            const wholeWord = OPT_WHOLE.checked;
+            const markFind = OPT_MARK.checked;
+
+            if (!searchInBody && !searchInHeadlines) {
+                showToast('not searching headline or body', 2000);
+                return; // Nothing to search in
+            }
+            if (!initialFindNode) {
+                initialFindNode = selectedNode; // Set initial find node if not already set
+            }
+
+            let selectedRadioValue = ''; // Falsy for now
+            const selectedRadio = document.querySelector('input[name="find-scope"]:checked');
+            if (selectedRadio) {
+                selectedRadioValue = selectedRadio.value;
+            }
+
+            let pattern; // Create regex pattern based on search options
+            try {
+                if (isRegexp) {
+                    pattern = searchText;
+                } else {
+                    pattern = searchText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // Escape special regex characters
+                    if (wholeWord) {
+                        pattern = '\\b' + pattern + '\\b'; // Add word boundaries if whole word option is enabled
+                    }
+                }
+                const flags = ignoreCase ? 'gi' : 'g';
+                const regex = new RegExp(pattern, flags);
+
+                const startIndex = allNodesInOrder.indexOf(selectedNode);
+                if (startIndex === -1) return;
+
+                // Helper function to find the last match in a string
+                function findLastMatch(str) {
+                    let lastMatchIndex = -1;
+                    let lastMatchLength = 0;
+
+                    let match;
+                    while ((match = regex.exec(str)) !== null) {
+                        lastMatchIndex = match.index;
+                        lastMatchLength = match[0].length;
+                        // Prevent infinite loop for zero-width matches
+                        if (regex.lastIndex === match.index) regex.lastIndex++;
+                    }
+
+                    return lastMatchIndex !== -1 ? { index: lastMatchIndex, length: lastMatchLength } : null;
+                }
+
+                // Flag to track if we found a match in the current node
+                let foundMatchInCurrentNode = false;
+
+                // First, check the current node with respect to the current selection
+                const node = selectedNode;
+                let headString = data[node.gnx]?.headString || "";
+                let body = data[node.gnx]?.bodyString || "";
+
+                // Get current selection info
+                const selection = window.getSelection();
+                let headlineOffset = Infinity;
+                let bodyOffset = Infinity;
+
+                if (selection.rangeCount > 0) {
+                    const range = selection.getRangeAt(0);
+                    if (selectedLabelElement && selectedLabelElement.contains(range.commonAncestorContainer)) {
+                        // Selection is in headline
+                        headlineOffset = range.startOffset;
+                    } else if (BODY_PANE.contains(range.commonAncestorContainer)) {
+                        // Selection is in body
+                        bodyOffset = range.startOffset;
+                    }
+                }
+
+                const currentFocus = findFocus();
+
+                // Check current node based on focus
+                if (currentFocus === 2 && searchInBody && body) {
+                    // If focused in body, check body first
+                    const limitedBody = body.substring(0, bodyOffset);
+                    const match = findLastMatch(limitedBody);
+
+                    if (match) {
+                        if (markFind && !marked.has(node.gnx)) {
+                            marked.add(node.gnx);
+                            if (data[node.gnx]) {
+                                data[node.gnx].icon = (data[node.gnx].icon || 0) | 2; // Set marked bit
+                            }
+                        }
+                        selectAndOrToggleAndRedraw(node);
+                        BODY_PANE.focus();
+                        setTimeout(() => {
+                            highlightMatchInBody(match.index, match.index + match.length);
+                        });
+                        return;
+                    }
+                }
+
+                // Check headline if appropriate
+                if (searchInHeadlines && headString) {
+                    const limitedHeadline = currentFocus !== 2 ? headString.substring(0, headlineOffset) : headString;
+                    const match = findLastMatch(limitedHeadline);
+
+                    if (match) {
+                        if (markFind && !marked.has(node.gnx)) {
+                            marked.add(node.gnx);
+                            if (data[node.gnx]) {
+                                data[node.gnx].icon = (data[node.gnx].icon || 0) | 2; // Set marked bit
+                            }
+                        }
+                        selectAndOrToggleAndRedraw(node);
+                        OUTLINE_PANE.focus();
+                        setTimeout(() => {
+                            highlightMatchInHeadline(match.index, match.index + match.length);
+                        });
+                        return;
+                    }
+                }
+
+                // Continue searching through previous nodes if no match was found in current node
+                let currentIndex = startIndex - 1;
+
+                while (currentIndex >= 0) {
+                    const node = allNodesInOrder[currentIndex];
+                    if (selectedRadioValue === 'nodeonly') {
+                        break; // Only search current node
+                    }
+                    if (selectedRadioValue === 'suboutline' && (initialFindNode !== node && isAncestorOf(initialFindNode, node) === false)) {
+                        break; // Reached outside suboutline of initialFindNode
+                    }
+                    let headString = data[node.gnx]?.headString || "";
+                    let body = data[node.gnx]?.bodyString || "";
+
+                    // In previous nodes, check body first (since we're going backward)
+                    if (searchInBody && body) {
+                        const match = findLastMatch(body);
+                        if (match) {
+                            if (markFind && !marked.has(node.gnx)) {
+                                marked.add(node.gnx);
+                                if (data[node.gnx]) {
+                                    data[node.gnx].icon = (data[node.gnx].icon || 0) | 2; // Set marked bit
+                                }
+                            }
+                            selectAndOrToggleAndRedraw(node);
+                            BODY_PANE.focus();
+                            setTimeout(() => {
+                                highlightMatchInBody(match.index, match.index + match.length);
+                            });
+                            return;
+                        }
+                    }
+
+                    // Then check headline
+                    if (searchInHeadlines && headString) {
+                        const match = findLastMatch(headString);
+
+                        if (match) {
+                            if (markFind && !marked.has(node.gnx)) {
+                                marked.add(node.gnx);
+                                if (data[node.gnx]) {
+                                    data[node.gnx].icon = (data[node.gnx].icon || 0) | 2; // Set marked bit
+                                }
+                            }
+
+                            selectAndOrToggleAndRedraw(node);
+                            OUTLINE_PANE.focus();
+                            setTimeout(() => {
+                                highlightMatchInHeadline(match.index, match.index + match.length);
+                            });
+                            return;
+                        }
+                    }
+                    currentIndex--;
+                }
+
+                let searchedParams = [];
+                if (searchInHeadlines) searchedParams.push('head');
+                if (searchInBody) searchedParams.push('body');
+                showToast(`Not found: (${searchedParams.join(", ")}) ${searchText}`, 1500);
+            } catch (e) {
+                showToast('Invalid search pattern: ' + e.message, 2000);
+            }
+        }
+
+        function highlightMatchInHeadline(startIndex, endIndex) {
+            // Use the global selectedLabelElement which is already set after selectAndOrToggleAndRedraw
+            if (!selectedLabelElement) return;
+            // Find the first text node in the label element
+            let textNode = null;
+            for (const node of selectedLabelElement.childNodes) {
+                if (node.nodeType === Node.TEXT_NODE) {
+                    textNode = node;
+                    break;
+                }
+            }
+            if (!textNode) return;
+            try {
+                const range = document.createRange();
+                range.setStart(textNode, startIndex);
+                range.setEnd(textNode, endIndex);
+
+                const selection = window.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(range);
+            } catch (e) {
+                console.error('Error setting headline selection:', e);
+            }
+        }
+
+        function highlightMatchInBody(startIndex, endIndex) {
+            // The body pane content is set directly as textContent, so it's a single text node
+            if (!BODY_PANE.firstChild || BODY_PANE.firstChild.nodeType !== Node.TEXT_NODE) return;
+            try {
+                const range = document.createRange();
+                range.setStart(BODY_PANE.firstChild, startIndex);
+                range.setEnd(BODY_PANE.firstChild, endIndex);
+
+                const selection = window.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(range);
+            } catch (e) {
+                console.error('Error setting body selection:', e);
+            }
+        }
+
+        function findFocus() {
+            // Returns 1 if focus in outline-pane, 2 if in body-pane, 0 otherwise
+            if (document.activeElement === OUTLINE_PANE || OUTLINE_PANE.contains(document.activeElement)) {
+                return 1;
+            } else if (document.activeElement === BODY_PANE || BODY_PANE.contains(document.activeElement)) {
+                return 2;
+            }
+            return 0;
+        }
+
+        function initializeThemeAndLayout() {
+            document.title = title; // Set the document title
+            loadThemeAndLayoutPreferences();
+            updateMarkedButtonStates();
+            updateHoistButtonStates();
+            setupEventHandlers();
+            setupButtonFocusPrevention();
+        }
+
+        // Apply theme & layout before anything else to avoid flash of unstyled content
+        initializeThemeAndLayout(); // gets ratios from localStorage and applies layout and theme
+        // Start everything once DOM is loaded
+        window.addEventListener('DOMContentLoaded', handleDOMContentLoaded);
+
+    </script>
+</body>
+
+</html>

@@ -3725,7 +3725,7 @@ nodetags.py
 quicksearch.py      # Nav pane.
 todo.py             # Task pane.
 viewrendered.py     # (Or viewrendered3.py) Plugins menu support.
-</t>
+leo_to_html_outline_viewer.py # Self-contained HTML Outline Viewer</t>
 <t tx="ekr.20070318065601">True:  Chapter commands are functional.
 False: Chapter commands do not exists.
 
