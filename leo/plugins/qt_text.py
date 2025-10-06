@@ -1721,6 +1721,7 @@ class QTextEditWrapper(QTextMixin):
     #@+node:ekr.20110605121601.18089: *4* qtew.insert (avoid call to setAllText)
     def insert(self, i: int, s: str) -> None:
         """QTextEditWrapper."""
+        g.trace(repr(s), g.callers(2))  ###
         w = self.widget
         cursor = w.textCursor()
         try:

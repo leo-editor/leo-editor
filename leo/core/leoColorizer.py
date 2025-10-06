@@ -1667,10 +1667,11 @@ class JEditColorizer(BaseColorizer):
             return 0
         if g.match_word(s, i, '@doc'):
             j = i + 4
-        elif g.match(s, i, '@') and (i + 1 >= len(s) or s[i + 1] in (' ', '\t', '\n')):
+        elif g.match(s, i, '@') and (i + 1 >= len(s) or s[i + 1] in ' \t\n'):
             j = i + 1
         else:
             return 0
+        g.trace(i, j, repr(s))  ###
         c = self.c
         self.colorRangeWithTag(s, 0, j, 'leokeyword')
         # #4382: Always set after_doc_language.
@@ -1699,6 +1700,7 @@ class JEditColorizer(BaseColorizer):
             if g.match_word(s, 0, tag):
                 if tag == '@language':
                     return self.match_at_language(s, 0)
+                g.trace('Found', tag, self.after_doc_language, repr(s))  ###
                 j = len(tag)
                 #@verbatim
                 # @c or @code.
@@ -1713,6 +1715,7 @@ class JEditColorizer(BaseColorizer):
                 # Do not change after_doc_language.
                 return j
         # Color the next line.
+        g.trace(tag, self.after_doc_language, repr(s))  ###
         self.setRestart(self.restartDocPart)
         if self.c.config.getBool('color-doc-parts-as-rest'):
             # Do *not* colorize the text here.

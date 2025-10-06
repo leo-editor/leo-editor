@@ -2085,6 +2085,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         stroke: g.KeyStroke,
         w: Wrapper,
     ) -> None:
+        g.trace(repr(ch))  ###
         c, p = self.c, self.c.p
         isPlain = stroke.find('Alt') == -1 and stroke.find('Ctrl') == -1
         i, j = oldSel
