@@ -1290,7 +1290,7 @@ class JEditColorizer(BaseColorizer):
             g.print_unique_message(message)
 
         # Tell QSyntaxHighlighter to do a full recolor.
-        g.es_print(f"recolor: `{p.h}`", color='blue')
+        g.es_print(f"recolor: `{p.h}`", color='blue')  ###
         self.highlighter.rehighlight()
     #@+node:ekr.20110605121601.18638: *3* jedit.mainLoop
     tot_time = 0.0
@@ -1671,7 +1671,7 @@ class JEditColorizer(BaseColorizer):
             j = i + 1
         else:
             return 0
-        g.trace(i, j, repr(s))  ###
+        g.trace(i, j, self.language, repr(s))  ###
         c = self.c
         self.colorRangeWithTag(s, 0, j, 'leokeyword')
         # #4382: Always set after_doc_language.
@@ -1696,14 +1696,16 @@ class JEditColorizer(BaseColorizer):
         Restarter for @ and @ constructs.
         Continue until an @c, @code or @language at the start of the line.
         """
-        for tag in ('@c', '@code', '@language'):
+        g.trace('after_doc_language', self.after_doc_language, repr(s))  ###
+        if g.match_word(s, 0, '@language'):
+            g.trace('tag', '@language', repr(s))
+            return self.match_at_language(s, 0)
+        for tag in ('@code', '@c'):
             if g.match_word(s, 0, tag):
-                if tag == '@language':
-                    return self.match_at_language(s, 0)
-                g.trace('Found', tag, self.after_doc_language, repr(s))  ###
+                g.trace('tag', tag, repr(s))
+                ### self.language = self.after_doc_language
+                ###return 0  ### Highly experimental.
                 j = len(tag)
-                #@verbatim
-                # @c or @code.
                 self.colorRangeWithTag(s, 0, j, 'leokeyword')
                 # Switch languages.
                 self.language = self.after_doc_language
@@ -1715,7 +1717,6 @@ class JEditColorizer(BaseColorizer):
                 # Do not change after_doc_language.
                 return j
         # Color the next line.
-        g.trace(tag, self.after_doc_language, repr(s))  ###
         self.setRestart(self.restartDocPart)
         if self.c.config.getBool('color-doc-parts-as-rest'):
             # Do *not* colorize the text here.
@@ -2736,6 +2737,7 @@ class JEditColorizer(BaseColorizer):
         This properly forces a full recoloring when @language changes.
         """
         n = self.initialStateNumber
+        g.trace(f"{self.currentState()} -> {n}")  ###
         self.setState(n)
         return n
     #@+node:ekr.20110605121601.18631: *4* jedit.computeState (uses self.language)
