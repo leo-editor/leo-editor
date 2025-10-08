@@ -2849,7 +2849,8 @@ class Commands:
     #@+node:ekr.20180503111249.1: *5* c.interactive2
     def interactive2(self, callback: Callable, event: LeoKeyEvent, prompts: Sequence) -> None:
 
-        c, d, k = self, {}, self.k
+        c, k = self, self.k
+        d: dict[str, str] = {}
         prompt1, prompt2 = prompts
 
         def state1(event: LeoKeyEvent) -> None:

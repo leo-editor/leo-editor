@@ -873,7 +873,7 @@ class AstDumper:  # pragma: no cover
             val = f"{strings} str, {fstrings} f-str"
         elif class_name == 'keyword':
             if isinstance(node.value, ast.Str):  # pylint: disable=no-member
-                val = f"arg={node.arg}..Str.value.s={node.value.s}"
+                val = f"arg={node.arg}..Str.value.s={node.value.s!r}"
             elif isinstance(node.value, ast.Name):
                 val = f"arg={node.arg}..Name.value.id={node.value.id}"
             else:
@@ -886,7 +886,7 @@ class AstDumper:  # pragma: no cover
             val = f"n={node.n}"
         elif class_name == 'Starred':
             if isinstance(node.value, ast.Str):  # pylint: disable=no-member
-                val = f"s={node.value.s}"
+                val = f"s={node.value.s!r}"
             elif isinstance(node.value, ast.Name):
                 val = f"id={node.value.id}"
             else:
@@ -1438,7 +1438,7 @@ class Fstringify:
         # Replace the node.
         new_node: ast.AST
         if g.python_version_tuple < (3, 12, 0):
-            new_node = ast.Str(value=s)  # pylint: disable=deprecated-class,no-member
+            new_node = ast.Str(s)  # pylint: disable=deprecated-class,no-member
         else:
             new_node = ast.Constant(value=s)
         replace_node(new_node, node)
