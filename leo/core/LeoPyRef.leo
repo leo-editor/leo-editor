@@ -615,7 +615,6 @@
 <v t="timo.20050213160555"><vh>@file ../plugins/bibtex.py</vh></v>
 <v t="ekr.20070119094733.1"><vh>@file ../plugins/dtest.py</vh></v>
 <v t="danr7.20060902215215.1"><vh>@file ../plugins/leo_to_html.py</vh></v>
-<v t="felix.20250921202124.1"><vh>@file ../plugins/leo_to_html_outline_viewer.py</vh></v>
 <v t="tbrown.20130930160706.23451"><vh>@file ../plugins/markup_inline.py</vh></v>
 <v t="vitalije.20180804172140.1"><vh>@file ../plugins/md_docer.py</vh></v>
 <v t="peckj.20140113150237.7083"><vh>@file ../plugins/nodediff.py</vh></v>
@@ -1130,6 +1129,7 @@ print('done: %s nodes, %s clones' % (nodes,clones))
 @language python
 </t>
 <t tx="ekr.20150425145248.1">pylint
+test-pylint
 test-one
 execute-script
 
@@ -1458,7 +1458,7 @@ c.k.simulateCommand('pylint')
 </t>
 <t tx="ekr.20160122104332.1">@language python
 </t>
-<t tx="ekr.20160123142722.1" _mod_time="4741da2281c15fcd692e"># An example configuration file for make_stub_files.py.
+<t tx="ekr.20160123142722.1" _mod_time="4741da24cf0b43cf212e"># An example configuration file for make_stub_files.py.
 # By default, this is ~/stubs/make_stub_files.cfg.
 # Can be changed using the --config=path command-line option.
 
@@ -1556,9 +1556,9 @@ else:
 </t>
 <t tx="ekr.20180504191650.36"></t>
 <t tx="ekr.20180504191650.42"></t>
-<t tx="ekr.20180504191650.68" _mod_time="4741da2281c1609d802e"></t>
+<t tx="ekr.20180504191650.68" _mod_time="4741da24cf053b9aa12e"></t>
 <t tx="ekr.20180504192522.1"></t>
-<t tx="ekr.20180708145905.1" _mod_time="4741da2281c15fcd692e">@language rest
+<t tx="ekr.20180708145905.1" _mod_time="4741da24cf0b43cf212e">@language rest
 @wrap
 
 This is the theory of operation document for py2cs.py. The most interesting aspect of this script is the TokenSync class. This class provides a reliable way of associating tokenizer tokens with ast nodes.
@@ -2924,7 +2924,7 @@ make_outline(d, top, topFlag=True)
 top.b = f"{{\n{textwrap.indent(top.b.strip(),' '*4)}\n}}\n"
 c.redraw(top)
     </t>
-<t tx="ekr.20220823195205.1" _mod_time="4741da2281c15d94742e">"""
+<t tx="ekr.20220823195205.1" _mod_time="4741da24cf0b43cf212e">"""
 Stand alone GUI free index builder for Leo's full text search system::
 
   python leoftsindex.py &lt;file1&gt; &lt;file2&gt; &lt;file3&gt;...
@@ -3088,7 +3088,7 @@ writers = 'leo.unittests.plugins.test_writers'
 # f"{plugins}.test_plugins",
 # f"{plugins}.test_writers",
 </t>
-<t tx="ekr.20230624114517.1" _mod_time="4741da2281c1609d802e"></t>
+<t tx="ekr.20230624114517.1" _mod_time="4741da24cf053b9aa12e"></t>
 <t tx="ekr.20230720115916.1">g.cls()
 import leo.commands.editFileCommands as efc
 
@@ -3172,7 +3172,7 @@ print('done')</t>
 <t tx="ekr.20240107154430.1"># 79: PEP8 recommendation.</t>
 <t tx="ekr.20240204082420.1"></t>
 <t tx="ekr.20240204082924.1"></t>
-<t tx="ekr.20240206161713.1" _mod_time="4741da2281c15c90092e">@language ini
+<t tx="ekr.20240206161713.1" _mod_time="4741da264b7471db2a2e">@language ini
 
 [bdist_wheel]
 
@@ -3318,7 +3318,7 @@ extend-ignore =
     # global `whatever` is unused: name is never assigned in scope.
     # F824
 </t>
-<t tx="ekr.20240317061516.1" _mod_time="4741da2bf1541d95cd2e">@language python
+<t tx="ekr.20240317061516.1" _mod_time="4741da264b746fde092e">@language python
 
 # Order matters!
 

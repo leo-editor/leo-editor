@@ -105,12 +105,12 @@
 <v t="EKR.20040519091259.4"><vh>October 2003</vh></v>
 </v>
 </v>
-<v t="EKR.20040519090846" descendentVnodeUnknownAttributes="7d7100285803000000302e3371017d710258090000005f6d6f645f74696d6571034741da2403a88830cf735803000000302e3471047d710558090000005f6d6f645f74696d6571064741da2403a889369d73752e"><vh>Distribution files</vh>
+<v t="EKR.20040519090846"><vh>Distribution files</vh>
 <v t="ekr.20141016105045.2119"><vh>@clean ../../.gitattributes</vh></v>
 <v t="EKR.20040519090846.1"><vh>@clean ../../LICENSE</vh></v>
 <v t="ekr.20210814054641.1"><vh>@clean ../../MANIFEST.in</vh></v>
-<v t="EKR.20040519090846.8" descendentVnodeUnknownAttributes="7d710058010000003071017d710258090000005f6d6f645f74696d6571034741da2403a88830cf73732e"><vh>@clean ../../PKG-INFO.TXT</vh></v>
-<v t="EKR.20040519090846.9" descendentVnodeUnknownAttributes="7d710058010000003071017d710258090000005f6d6f645f74696d6571034741da2403a889369d73732e"><vh>@clean ../../README.md</vh></v>
+<v t="EKR.20040519090846.8"><vh>@clean ../../PKG-INFO.TXT</vh></v>
+<v t="EKR.20040519090846.9"><vh>@clean ../../README.md</vh></v>
 <v t="maphew.20200424174643.1"><vh>Conda</vh>
 <v t="maphew.20200426185115.1"><vh>Outdated Preliminary build recipe</vh></v>
 <v t="maphew.20200424174722.1"><vh>@auto ../dist/conda/leo/meta.yaml</vh></v>
@@ -148,7 +148,7 @@
 <t tx="EKR.20040519090846">@language rest
 @wrap
 </t>
-<t tx="EKR.20040519090846.1">MIT License
+<t tx="EKR.20040519090846.1" _mod_time="4741da1010ee7a4fdf2e">MIT License
 
 Copyright (c) 1997-2025 by Edward K. Ream.
 
@@ -192,9 +192,9 @@ Portions of Leo's pyzo interface uses code from pyzo:
     The full license can be found in 'license.txt'.
 
 </t>
-<t tx="EKR.20040519090846.8" _mod_time="4741da2403a88830cf2e">Metadata-Version: 1.0
+<t tx="EKR.20040519090846.8" _mod_time="4741da3a9cd3a23efd2e">Metadata-Version: 1.0
 Name: leo
-Version: 6.8.6.1
+Version: 6.8.7
 Summary: An IDE, PIM and Outliner. See http://leo-editor.github.io/leo-editor/preface.html.
 Description: See users own descriptions of Leo at leo-editor.github.io/leo-editor/testimonials.html.
 Home-page: http://leo-editor.github.io/leo-editor/
@@ -212,29 +212,23 @@ Classifier: Topic :: Software Development
 Classifier: Topic :: Text Processing
 Download-URL: https://github.com/leo-editor/leo-editor/releases
 </t>
-<t tx="EKR.20040519090846.9" _mod_time="4741da2403a889369d2e">Leo https://leo-editor.github.io/leo-editor/ 6.8.6.1 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
+<t tx="EKR.20040519090846.9" _mod_time="4741da3a9cb15b9d572e">Leo https://leo-editor.github.io/leo-editor/ 6.8.7 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
 
 Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/preface.html).
 
-**The highlights of Leo 6.8.6 and Leo 6.8.6.1**
+**The highlights of Leo 6.8.7**
 
-- Leo 6.8.6.1 fixes a bug introduced in Leo 6.8.6 that could corrupt `@clean` nodes.
-- Read only *unchanged* `@clean` nodes: a huge performance boost!
-- Support `@leo &lt;path&gt;;` nodes.
-  See https://leo-editor.github.io/leo-editor/directives.html#leo-directives
-  - The `open-at-leo-file` command opens the given outline.
-  - The `c.makeLinkLeoFiles` method helps scripts create a top-level
-    outline containing links to sub-outlines.
-- Support for virtual python environments: a long-awaited update for LeoInteg!
-- Add a theme file for SwotMoknokai.
+- PR #4403: Add support for Python 3.14. Require Python 3.10 or above.
+- PR #4423: All of Leo's importers now import `@clean` files perfectly.
+- PR #4412: Greatly improve Leo's `parse-body` command.
+- PR #4418: Fix bugs involving the `_mod_time` attribute in `.leo` files.
+- Fix several other minor bugs. See the `What's new` section for details.
 
 **Links**
 
 - [Install Leo](https://leo-editor.github.io/leo-editor/installing.html)
-- [6.8.6 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.8.6+)
-- [6.8.6.1 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.8.6.1+)
-- [6.8.6 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.8.6)
-- [6.8.6.1 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.8.6.1)
+- [6.8.7 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.8.7+)
+- [6.8.7 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.8.7)
 - [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
 - [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
 - [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
@@ -354,7 +348,7 @@ This checklist is obsolete, for the following reasons:
 <t tx="ekr.20101027135430.1493">http://nsis.sourceforge.net/Docs/Chapter4.html#4.5</t>
 <t tx="ekr.20101027160251.1497">http://nsis.sourceforge.net/Docs/nsDialogs/Readme.html</t>
 <t tx="ekr.20101027160251.1500"></t>
-<t tx="ekr.20141016105045.2119"># .gitattributes file for Leo distribution
+<t tx="ekr.20141016105045.2119" _mod_time="4741d958732079955b2e"># .gitattributes file for Leo distribution
 
 # Commit this file after changing it!
 
@@ -1398,7 +1392,7 @@ g.es_print('done')
 </t>
 <t tx="ekr.20180405171433.1">Overview
 
-Create the **release branch**: 6.8.7.
+Create the **release branch**: 6.8.8.
 Change version in this checklist to match.
 
 It's ok to merge devel into release branch
@@ -1417,7 +1411,7 @@ It's ok to merge devel into release branch
 - Copy release notes to LeoReleaseNotes.leo
 </t>
 <t tx="ekr.20180405171433.3" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- git checkout `gh-pages`.
-- git merge 6.8.7
+- git merge 6.8.8
 - Run the `find-bad-links` script and fix any errors
 - Run the `make-sphinx` from LeoDocs.leo
   This script copies files from leo/doc/html/_build/html to leo-editor/docs
@@ -1428,7 +1422,7 @@ It's ok to merge devel into release branch
 </t>
 <t tx="ekr.20180405171433.4" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Make sure Leo looks good without myLeoSettings.leo.
 
-- Make sure Leo runs with Python 3.9.
+- Make sure Leo runs with Python 3.10.
 
 - Run the full-test-leo script. See #2867:
   https://github.com/leo-editor/leo-editor/issues/2867
@@ -1437,19 +1431,19 @@ It's ok to merge devel into release branch
 <t tx="ekr.20180405171433.7" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Create a git tag **last**
 
 git checkout master
-git tag -a v6.8.7 -m "Added v6.8.7 tag"
+git tag -a v6.8.8 -m "Added v6.8.8 tag"
 git push --follow-tags
 </t>
 <t tx="ekr.20181001112218.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- git checkout devel
 - git merge master
 - update version in leoVersion.py.
 </t>
-<t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From 6.8.7 branch:
+<t tx="ekr.20190618104430.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">From 6.8.8 branch:
 
 - git merge master
 - Fix any conflicts and push.
 - git checkout master
-- git merge 6.8.7</t>
+- git merge 6.8.8</t>
 <t tx="ekr.20190618104622.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">Update the *GitHub* release at https://github.com/leo-editor/leo-editor/releases
 
 This must be done *soon* after the release's actual commit.
@@ -1470,8 +1464,8 @@ Public announcements, after creating a package.
    please include 2-3 lines of HTML code at the very end of your submission,
    using the following template:
 
-    &lt;P&gt;&lt;A HREF="https://leo-editor.github.io/leo-editor/"&gt;Leo 6.8.2&lt;/A&gt;
-    Leo 6.8.2 released (11-8-2024)
+    &lt;P&gt;&lt;A HREF="https://leo-editor.github.io/leo-editor/"&gt;Leo 6.8.8&lt;/A&gt;
+    Leo 6.8.8 released (11-8-2024)
 
 
   - Check it by visiting the archive:
@@ -1483,7 +1477,7 @@ Public announcements, after creating a package.
 <t tx="ekr.20190802115604.1" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- git checkout master
 - full-test-leo
 </t>
-<t tx="ekr.20210814054641.1">@language unknown_language
+<t tx="ekr.20210814054641.1" _mod_time="4741da264b746fde092e">@language unknown_language
 
 # Order matters!
 
@@ -1552,7 +1546,7 @@ python -m pip uninstall leo
 <t tx="ekr.20230301070404.1">LeoDist.leo:
 - Make sure copyright dates are correct.
 - Update version numbers. Search for 6.8.x
-  The final version in PKG-INFO.TXT must be called 6.8.7, not 6.8.7-final.
+  The final version in PKG-INFO.TXT must be called 6.8.8, not 6.8.8-final.
   See Pep 440: https://www.python.org/dev/peps/pep-0440/
 - Update readme.md.
 - Update version in 'PKG-INFO.TXT'
@@ -1568,7 +1562,7 @@ python -m pip uninstall leo
 - Create LeoPyRef.leo by copying leoPy.leo to it, then deleting unwanted nodes.
 - Open LeoPyRef.leo. Verify the diff after saving.
 - Run the the check button.</t>
-<t tx="ekr.20230301084201.1">- Change 6.8.7 (the old version) to 6.8.8.
+<t tx="ekr.20230301084201.1">- Change 6.8.8 (the old version) to 6.8.9.
   Be careful about the new version in this node!
 </t>
 <t tx="ekr.20240206185544.1"></t>
@@ -1628,7 +1622,7 @@ Make *sure* all is well before uploading to pypi.
 
 Any glitch will require new filename *only* for the `.whl` file:
 - Use *build number* (-1, -2) for the new filename:
-  for example, leo-6.8.7-1-py3-none-any.whl.
+  for example, leo-6.8.8-py3-none-any.whl.
 - Do *not*use `.post1`: it won't work!
 - Do *not* change the filename of `.tar.gz` file.
 - Do *not* change `PKG-INFO.TXT` or Leo's version number!
@@ -1975,7 +1969,7 @@ scripts held in Scripts.leo. My current thinking is the scripts should be moved
 to or at least managed from Dist.
 
 -matt  </t>
-<t tx="mhw.20191107064521.1">@language unknown_language
+<t tx="mhw.20191107064521.1" _mod_time="4741d9587320af92dd2e">@language unknown_language
 [Desktop Entry]
 Encoding=UTF-8
 Version=master
