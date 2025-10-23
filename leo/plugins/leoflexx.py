@@ -53,7 +53,6 @@ del path
 # This is what Leo typically does.
 # JS code can *not* use g.trace, g.callers or g.pdb.
 from leo.core import leoGlobals as g
-from leo.core import leoFastRedraw
 from leo.core import leoFrame
 from leo.core import leoGui
 from leo.core import leoMenu
@@ -288,25 +287,16 @@ class LeoBrowserApp(flx.PyComponent):
         assert c
         # Init all redraw ivars
         self.create_gnx_to_vnode()
-        self.old_flattened_outline = []
-        self.old_redraw_dict = {}
-        self.redraw_generation = 0
-        self.fast_redrawer = leoFastRedraw.FastRedraw()
-        self.old_flattened_outline = self.fast_redrawer.flatten_outline(c)
-        self.old_redraw_dict = self.make_redraw_dict(c.p)
         # Select the proper position.
         c.selectPosition(c.p or c.rootPosition())
         c.contractAllHeadlines()
         c.redraw()  # 2380.
-        #
         # Monkey-patch the FindTabManager
         c.findCommands.minibuffer_mode = True
         c.findCommands.ftm = g.NullObject()
-        #
         # Monkey-patch c.request_focus
         self.old_request_focus = c.request_focus
         c.request_focus = self.request_focus
-        #
         # #1143: monkey-patch Leo's save commands.
         self.old_save_file = c.fileCommands.save
         c.fileCommands.save = self.save_file
@@ -314,12 +304,10 @@ class LeoBrowserApp(flx.PyComponent):
         c.fileCommands.saveAs = self.save_file_as
         self.old_save_file_to = c.fileCommands.saveTo
         c.fileCommands.saveTo = self.save_file_to
-        #
         # Init the log, body, status line and tree.
         g.app.gui.writeWaitingLog2()
         self.set_body_text()
         self.set_status()
-        #
         # Init the focus. It's debatable...
         if 0:
             self.gui.set_focus(c, c.frame.tree)
@@ -481,41 +469,21 @@ class LeoBrowserApp(flx.PyComponent):
         p = p or c.p
         # #1142.
         c.selectPosition(p)
-        redrawer = self.fast_redrawer
         w = self.main_window
-        #
         # Be careful: c.frame.redraw can be called before app.finish_create.
         if not w or not w.tree:
             if trace:
                 print(tag, 'no w.tree')
             return
-        #
-        # Profile times when all nodes are expanded.
-            # self.test_full_outline(p)
-        #
-        # Redraw only the visible nodes.
+        # Do a full redraw.
         t1 = time.process_time()
         ap = self.p_to_ap(p)
         w.tree.select_ap(ap)
-        # Needed to compare generations, even if there are no changes.
         redraw_dict = self.make_redraw_dict(p)
-        new_flattened_outline = redrawer.flatten_outline(c)
-        redraw_instructions = redrawer.make_redraw_list(
-            self.old_flattened_outline,
-            new_flattened_outline,
-        )
-        # At present, this does a full redraw using redraw_dict.
-        # The redraw instructions are not used.
-        w.tree.redraw_with_dict(redraw_dict, redraw_instructions)
-        #
+        w.tree.redraw_with_dict(redraw_dict)
         # Do not call c.setChanged() here.
         if trace:
             print('app.redraw: %5.3f sec.' % (time.process_time() - t1))
-        #
-        # Move to the next redraw generation.
-        self.old_flattened_outline = new_flattened_outline
-        self.old_redraw_dict = redraw_dict
-        self.redraw_generation += 1
     #@+node:ekr.20181111095640.1: *5* app.action.send_children_to_tree
     @flx.action
     def send_children_to_tree(self, parent_ap):
@@ -1117,20 +1085,11 @@ class LeoBrowserApp(flx.PyComponent):
         """Exercise the new diff-based redraw code on a fully-expanded outline."""
         c = self.c
         p = p.copy()
-        redrawer = self.fast_redrawer
         # Don't call c.expandAllHeadlines: it calls c.redraw.
         for p2 in c.all_positions(copy=False):
             p2.expand()
-        #
         # Test the code.
         self.make_redraw_dict(p)  # Call this only for timing stats.
-        new_flattened_outline = redrawer.flatten_outline(c)
-        redraw_instructions = redrawer.make_redraw_list(
-            self.old_flattened_outline,
-            new_flattened_outline,
-        )
-        assert redraw_instructions is not None  # For pyflakes.
-        #
         # Restore the tree.
         for p2 in c.all_positions(copy=False):
             p2.contract()
@@ -2279,7 +2238,7 @@ class LeoFlexxTree(flx.Widget):
             item.dispose()
     #@+node:ekr.20181113043004.1: *5* flx_tree.action.redraw_with_dict & helper
     @flx.action
-    def redraw_with_dict(self, redraw_dict, redraw_instructions):
+    def redraw_with_dict(self, redraw_dict):
         """
         Clear the present tree and redraw using the **recursive** redraw_list.
         d has the form:

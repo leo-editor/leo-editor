@@ -33289,14 +33289,14 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 
 **Leo 6.8.6**
 
-- `PR #4386` and `PR #4395`: Major improvements for `@clean`.
+- `PR #4386`_ and `PR #4395`_: Major improvements for `@clean`.
    See https://leo-editor.github.io/leo-editor/directives.html#leo-directives
-- `PR 4389`: Support websockets in Leo's server and LeoInteg.
-- `PR 4391`: Add a theme file for SwotMoknokai.
+- `PR #4389`_: Support websockets in Leo's server and LeoInteg.
+- `PR #4391`_: Add a theme file for SwotMoknokai.
 
 **Leo 6.8.6.1**
 
-- `PR 4405`: Fix a critical bug present in Leo 6.8.6.</t>
+- `PR #4405`_: Fix a critical bug present in Leo 6.8.6.</t>
 <t tx="ekr.20250729083112.1">.. _`Rust's compiler repo`: https://github.com/rust-lang/rust/tree/master/compiler
 
 ``@leo`` directives have the form ``@leo &lt;path&gt;`` where ``path`` is a path (absolute
@@ -33349,6 +33349,7 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 - PR #4423: All of Leo's importers now import `@clean` files perfectly.
 - PR #4412: Greatly improve Leo's `parse-body` command.
 - PR #4418: Fix bugs involving the `_mod_time` attribute in `.leo` files.
+- PR #4456: Added leo_to_html_outline_viewer.py plugin.
 - Fix several other minor bugs. See the `What's new` section for details.
 
 **Links**
@@ -33372,15 +33373,17 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 .. _`PR #4421`: https://github.com/leo-editor/leo-editor/pull/4421
 .. _`PR #4423`: https://github.com/leo-editor/leo-editor/pull/4423
 .. _`PR #4430`: https://github.com/leo-editor/leo-editor/pull/4430
-.. _`PR #4430`: https://github.com/leo-editor/leo-editor/pull/4444
+.. _`PR #4444`: https://github.com/leo-editor/leo-editor/pull/4444
+.. _`PR #4456`: https://github.com/leo-editor/leo-editor/pull/4456
 
-- `PR #4403`: Require python 3.10 or above. Add support for Python 3.14.
-- `PR #4412`: Greatly improve Leo's `parse-body` command.
-- `PR #4418`: Don't pollute uAs with the `_mod_time` command.
-- `PR #4421`: Fix several beautifier bugs.
-- `PR #4423`: A milestone: Leo's beautifiers import `@clean` files perfectly.
-- `PR #4430`: Fix bugs in Leo's colorizer.
-- `PR #4444`: Fix a crasher in Leo's undo logic.
+- `PR #4403`_: Require python 3.10 or above. Add support for Python 3.14.
+- `PR #4412`_: Greatly improve Leo's `parse-body` command.
+- `PR #4418`_: Don't pollute uAs with the `_mod_time` command.
+- `PR #4421`_: Fix several beautifier bugs.
+- `PR #4423`_: A milestone: Leo's beautifiers import `@clean` files perfectly.
+- `PR #4430`_: Fix bugs in Leo's colorizer.
+- `PR #4444`_: Fix a crasher in Leo's undo logic.
+- `PR #4456`_: Added leo_to_html_outline_viewer.py plugin.
 
 </t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
