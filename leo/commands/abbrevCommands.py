@@ -255,14 +255,18 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         for prefix in prefixes:
             i, tag, word, val = self.match_prefix(ch, i, j, prefix, s)
             if word:
-                # Fix another part of #438.
+                # #4462: Make only one substitution in headlines.
                 if w_name.startswith('head'):
-                    if val == '__NEXT_PLACEHOLDER':
-                        i = w.getInsertPoint()
-                        if i > 0:
-                            w.delete(i - 1)
-                            p.h = w.getAllText()
-                    # Do not call c.endEditing here.
+                    ok = self.make_script_substitutions_in_headline(i, p, val)
+                    if ok:
+                        return True
+                # Fix another part of #438.
+                if val == '__NEXT_PLACEHOLDER':
+                    i = w.getInsertPoint()
+                    if i > 0:
+                        w.delete(i - 1)
+                        p.h = w.getAllText()
+                # Do not call c.endEditing here.
                 break
         else:
             if trace and verbose:
@@ -289,13 +293,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             if self.save_ins:
                 ins = self.save_ins
                 sel1, sel2 = self.save_sel
-                if sel1 == sel2:
-                    # New in Leo 5.5
-                    self.post_pass()
-                else:
-                    # some abbreviations *set* the selection range
-                    # so only restore non-empty ranges
-                    w.setSelectionRange(sel1, sel2, insert=ins)
+                w.setSelectionRange(sel1, sel2, insert=ins)
         return True
     #@+node:ekr.20161121121636.1: *4* abbrev.exec_content
     def exec_content(self, content: str) -> None:
@@ -458,30 +456,28 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             c.p.v.b = w.getAllText()
         return val, do_placeholder
     #@+node:ekr.20161121102113.1: *4* abbrev.make_script_substitutions_in_headline
-    def make_script_substitutions_in_headline(self, p: Position) -> bool:
-        """Make scripting substitutions in p.h."""
+    def make_script_substitutions_in_headline(self, i: int, p: Position, val: str) -> bool:
+        """Make the first scripting substitution in p.h."""
         c = self.c
-        p = c.p
+        c.endEditing()
         pattern = re.compile(r'^(.*)%s(.+)%s(.*)$' % (
             re.escape(c.abbrev_subst_start),
             re.escape(c.abbrev_subst_end),
         ))
-        changed = False
-        # Perform at most one scripting substitution.
-        if m := pattern.match(p.h):
+        if m := pattern.match(val):
             content = m.group(2)
             c.abbrev_subst_env['x'] = ''
             try:
                 exec(content, c.abbrev_subst_env, c.abbrev_subst_env)
                 x = c.abbrev_subst_env.get('x')
                 if x:
-                    p.h = f"{m.group(1)}{x}{m.group(3)}"
-                    changed = True
+                    p.h = f"{p.h[:i]}{m.group(1)}{x}{m.group(3)}"
+                    return True
             except Exception:
                 # Leave p.h alone.
                 g.trace('scripting error in', p.h)
                 g.es_exception()
-        return changed
+        return False
     #@+node:ekr.20161121112837.1: *4* abbrev.match_prefix
     def match_prefix(self, ch: str, i: int, j: int, prefix: str, s: str) -> tuple[int, str, str, str]:
         """A match helper."""
@@ -531,12 +527,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         s2 = s[:start] + place_holder + s[start + len(place_holder_delim) :]
         end = start + len(place_holder)
         return s2, start, end
-    #@+node:ekr.20161121114504.1: *4* abbrev.post_pass
-    def post_pass(self) -> None:
-        """The post pass: make script substitutions in all headlines."""
-        if self.root:
-            for p in self.root.self_and_subtree():
-                self.make_script_substitutions_in_headline(p)
     #@+node:ekr.20150514043850.18: *4* abbrev.replace_selection
     def replace_selection(self, w: Wrapper, i: int, j: int, s: str) -> None:
         """Replace w[i:j] by s."""
