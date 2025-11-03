@@ -980,24 +980,6 @@ class LeoApp:
             g.es_exception()
             print('can not create curses gui.')
             sys.exit()
-    #@+node:ekr.20181031160401.1: *5* app.createBrowserGui
-    def createBrowserGui(self, fileName: str = '', verbose: bool = False) -> None:
-        app = self
-        try:
-            from flexx import flx
-            assert flx
-        except Exception:
-            g.es_exception()
-            print('can not import flexx')
-            sys.exit(1)
-        try:
-            from leo.plugins import leoflexx
-            assert leoflexx
-        except Exception:
-            g.es_exception()
-            print('can not import leo.plugins.leoflexx')
-            sys.exit(1)
-        g.app.gui = leoflexx.LeoBrowserGui(gui_name=app.guiArgName)
     #@+node:ekr.20090619065122.8593: *5* app.createDefaultGui
     def createDefaultGui(self, fileName: str = '', verbose: bool = False) -> None:
         """A convenience routines for plugins to create the default gui class."""
@@ -1011,8 +993,8 @@ class LeoApp:
             app.createQtGui(fileName, verbose=verbose)
         elif argName == 'null':
             g.app.gui = g.app.nullGui
-        elif argName.startswith('browser'):
-            app.createBrowserGui()
+        # elif argName.startswith('browser'):
+            # app.createBrowserGui()
         elif argName in ('console', 'curses'):
             app.createCursesGui()
         elif argName == 'text':
@@ -2723,7 +2705,7 @@ class LoadManager:
           --diff                use Leo as an external git diff
           --fail-fast           stop unit tests after the first failure
           --fullscreen          start fullscreen
-          --gui=GUI             specify gui: browser,console,curses,qt,text,null
+          --gui=GUI             specify gui: console,curses,qt,text,null
           --listen-to-log       start log_listener.py on startup
           --maximized           start maximized
           --minimized           start minimized
@@ -2761,7 +2743,7 @@ class LoadManager:
             gui = m.group(1).lower()
             if gui == 'qttabs':
                 gui = 'qt'  # Allow legacy qttabs gui.
-            elif not gui.startswith('browser') and gui not in valid:
+            elif gui not in valid:  # and not gui.startswith('browser')
                 arg = m.group(0)
                 valid_s = ', '.join(valid)
                 utils.option_error(arg, f"Expected one of {valid_s}")

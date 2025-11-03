@@ -1094,7 +1094,7 @@ class LeoTree:
         if trace:
             print(f"----- {tag}: {p.h}")
             # print(f"{tag:>30}: {c.frame.body.wrapper} {p.h}")
-            # Format matches traces in leoflexx.py
+            # Format matches traces in retired leoflexx.py
                 # print(f"{tag:30}: {len(p.b):4} {p.gnx} {p.h}")
         try:
             self.tree_select_lockout = True

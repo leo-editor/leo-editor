@@ -14199,7 +14199,7 @@ You will get the following::
       --diff                use Leo as an external git diff
       --fail-fast           stop unit tests after the first failure
       --fullscreen          start fullscreen
-      --gui=GUI             specify gui: browser,console,curses,qt,text,null
+      --gui=GUI             specify gui: console,curses,qt,text,null
       --listen-to-log       start log_listener.py on startup
       --maximized           start maximized
       --minimized           start minimized
@@ -14224,15 +14224,7 @@ You will get the following::
       --window-size=SIZE    initial window size: (height x width)
       --window-spot=SPOT    initial window position: (top x left)
       -v, --version         print version number and exit
-
-**Important**
-
-Use one of the following command-line arguments to start Leo in a web browser::
-
-    leo --gui=browser
-    leo --gui=browser-firefox-browser​
-
-For details, see https://github.com/leo-editor/leo-editor/issues/1005.</t>
+</t>
 <t tx="ekr.20131008041326.16178"></t>
 <t tx="ekr.20131008041326.16203">.. |---| unicode:: U+02015
    :trim:
@@ -15848,7 +15840,7 @@ myDocument.html.txt is the **input** file for sphinx.
       --diff                use Leo as an external git diff
       --fail-fast           stop unit tests after the first failure
       --fullscreen          start fullscreen
-      --gui=GUI             specify gui: browser,console,curses,qt,text,null
+      --gui=GUI             specify gui: console,curses,qt,text,null
       --listen-to-log       start log_listener.py on startup
       --maximized           start maximized
       --minimized           start minimized
@@ -27479,7 +27471,10 @@ Other features
 </t>
 <t tx="ekr.20190117143942.2">https://github.com/leo-editor/leo-editor/issues/1002
 </t>
-<t tx="ekr.20190117143942.29">https://github.com/leo-editor/leo-editor/issues/1005
+<t tx="ekr.20190117143942.29">Leo 6.8.8 removes support for LeoWapp and `--gui=browser`.
+Use LeoJS or LeoInteg instead.
+
+https://github.com/leo-editor/leo-editor/issues/1005
 
 LeoWapp (Leo as a web browser), implemented using flexx:
 https://flexx.readthedocs.io/en/stable/

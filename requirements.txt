@@ -38,7 +38,7 @@ ruff
 # General packages for plugins, leoserver and commands...
 
 docutils        # For Sphinx and rST plugins.
-flexx           # leoflexx.py plugin.
+# flexx           # leoflexx.py plugin.
 jedi            # For autocompletion.
 jupytext        # For paired .ipynb/.py files.
 markdown        # VR3 plugin.
