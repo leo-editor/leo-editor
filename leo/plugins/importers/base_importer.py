@@ -131,6 +131,9 @@ class Importer:
 
             # Add trailing lines.
             if self.root.isAnyAtFileNode():  # #4385.
+                # Make sure parent.b ends with a newline
+                if parent.b and not parent.b.endswith('\n'):  # #4473
+                    parent.b += '\n'
                 parent.b += f"@language {self.language}\n@tabwidth {self.tab_width}\n"
 
             # #1451: Importers should never dirty the outline.
