@@ -1290,7 +1290,7 @@ class JEditColorizer(BaseColorizer):
             g.print_unique_message(message)
 
         # Tell QSyntaxHighlighter to do a full recolor.
-        g.es_print(f"recolor: `{p.h}`", color='blue')  ###
+        g.es_print(f"recolor: `{p.h}`", color='blue')
         self.highlighter.rehighlight()
     #@+node:ekr.20110605121601.18638: *3* jedit.mainLoop
     tot_time = 0.0
@@ -1660,19 +1660,20 @@ class JEditColorizer(BaseColorizer):
         Colorize Leo's @ and @ doc constructs.
         Matches only at the start of the line.
         """
+        c = self.c
         if self.language == 'cweb':
             # Let the cweb colorizer handle everything.
             return 0
-        if i != 0:
+        if i != 0 or not s:
             return 0
-        if g.match_word(s, i, '@doc'):
-            j = i + 4
-        elif g.match(s, i, '@') and (i + 1 >= len(s) or s[i + 1] in ' \t\n'):
-            j = i + 1
+        # Test for @ or @doc and set j.
+        # Careful: g.match_word doesn't test for '@' correctly.
+        if s[0] == '@' and (len(s) == 1 or s[1] in ' \t\n'):  # 4476
+            j = 1
+        elif g.match_word(s, i, '@doc'):
+            j = 4
         else:
             return 0
-        g.trace(i, j, self.language, repr(s))  ###
-        c = self.c
         self.colorRangeWithTag(s, 0, j, 'leokeyword')
         # #4382: Always set after_doc_language.
         self.after_doc_language = self.language
@@ -1696,15 +1697,16 @@ class JEditColorizer(BaseColorizer):
         Restarter for @ and @ constructs.
         Continue until an @c, @code or @language at the start of the line.
         """
-        g.trace('after_doc_language', self.after_doc_language, repr(s))  ###
-        if g.match_word(s, 0, '@language'):
-            g.trace('tag', '@language', repr(s))
+        if not s:
+            return 0
+        if g.match_word(s, 0, '@language'):  # 4476
             return self.match_at_language(s, 0)
-        for tag in ('@code', '@c'):
+        # Careful: g.match_word doesn't test for '@' correctly.
+        if s[0] == '@' and (len(s) == 1 or s[1] in ' \t\n'):  # 4476
+            self.colorRangeWithTag(s, 0, 1, 'leokeyword')
+            return 1
+        for tag in ('@c', '@code'):
             if g.match_word(s, 0, tag):
-                g.trace('tag', tag, repr(s))
-                ### self.language = self.after_doc_language
-                ###return 0  ### Highly experimental.
                 j = len(tag)
                 self.colorRangeWithTag(s, 0, j, 'leokeyword')
                 # Switch languages.
@@ -2737,7 +2739,6 @@ class JEditColorizer(BaseColorizer):
         This properly forces a full recoloring when @language changes.
         """
         n = self.initialStateNumber
-        g.trace(f"{self.currentState()} -> {n}")  ###
         self.setState(n)
         return n
     #@+node:ekr.20110605121601.18631: *4* jedit.computeState (uses self.language)
