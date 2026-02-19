@@ -1,15 +1,13 @@
 #@+leo-ver=5-thin
 #@+node:swot.20250715091430.1: * @file /Users/swot/app/leo-editor/leo/plugins/body_style_hook.py
-"""
-body_style_plugin.py
-Provides consistent font, line height, and letter spacing settings for Leo's Body pane.
-Fixes issues with line height reset on node switch and supports hot reloading.
-"""
-
+#@@language python
+#@+others
+#@+node:swot.20260219114240.1: ** import
 from leo.core import leoGlobals as g
 from PyQt6.QtGui import QTextBlockFormat, QTextCursor, QFont, QTextCharFormat
 from PyQt6.QtCore import QTimer
 
+#@+node:swot.20260219114210.1: ** var
 # Eliminate Pyflakes false positives during save
 try:
     c
@@ -25,6 +23,7 @@ STYLE_CONFIG = {
     "letter_spacing": 105    # 105% letter spacing
 }
 
+#@+node:swot.20260219114140.1: ** def init
 def init():
     """Plugin entry point"""
     # 1. For newly opened windows (Ctrl+O, Ctrl+N)
@@ -42,6 +41,7 @@ def init():
     g.es("Body Style Plugin loaded (New Window Fix).")
     return True
 
+#@+node:swot.20260219114126.1: ** def on_window_init
 def on_window_init(tag, keywords):
     """Universal window initialization function, handles startup, new windows, and reloads"""
     c = keywords.get('c')
@@ -58,10 +58,13 @@ def on_window_init(tag, keywords):
     # First time mount
     c._body_styler = BodyStyleController(c)
 
+#@+node:swot.20260219114059.1: ** class BodyStyleController
 class BodyStyleController:
     """
     Independent style controller for each Commander.
     """
+    #@+others
+    #@+node:swot.20260219115900.1: *3* def __init__
     def __init__(self, c):
         self.c = c
         
@@ -71,6 +74,7 @@ class BodyStyleController:
         # Delayed application on startup
         QTimer.singleShot(100, self.apply_style)
 
+    #@+node:swot.20260219115854.1: *3* def on_select
     def on_select(self, tag, keywords):
         """Apply style when switching nodes"""
         if keywords.get('c') != self.c:
@@ -79,6 +83,7 @@ class BodyStyleController:
         # [Fix]: Use 0ms delay to ensure execution after Leo finishes loading text
         QTimer.singleShot(0, self.apply_style)
 
+    #@+node:swot.20260219115843.1: *3* def get_editor
     def get_editor(self):
         """Safely get Qt editor widget"""
         try:
@@ -86,6 +91,7 @@ class BodyStyleController:
         except AttributeError:
             return None
 
+    #@+node:swot.20260219114043.1: *3* def apply_style
     def apply_style(self):
         """Entry point: Prepare font object and apply formats"""
         editor = self.get_editor()
@@ -113,6 +119,7 @@ class BodyStyleController:
         # 2. Force apply Block and Char formats
         self._apply_formats(editor, doc)
 
+    #@+node:swot.20260219114021.1: *3* def _apply_formats
     def _apply_formats(self, editor, doc):
         """Apply paragraph (line height) and character (letter spacing) formats simultaneously"""
         cursor = QTextCursor(doc)
@@ -135,4 +142,13 @@ class BodyStyleController:
         
         # Clear selection
         cursor.clearSelection()
+
+    #@-others
+#@-others
+
+"""
+body_style_plugin.py
+Provides consistent font, line height, and letter spacing settings for Leo's Body pane.
+Fixes issues with line height reset on node switch and supports hot reloading.
+"""
 #@-leo
