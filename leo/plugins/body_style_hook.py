@@ -3,8 +3,6 @@
 #@@language python
 """
 body_style_plugin.py
-为 Leo 的 Body 区域提供一致的字体、行高和字间距设置。
-修复了切换节点时行高重置的问题。
 """
 
 from leo.core import leoGlobals as g
@@ -21,24 +19,43 @@ except NameError:
 STYLE_CONFIG = {
     "family": "JetBrains Mono",
     "size": 16,
-    "line_height": 120,      # 200% = 2.0倍行距
+    "line_height": 125,      # 125% = 1.25倍行距
     "line_height_type": 1,   # 1 = ProportionalHeight
-    "letter_spacing": 105    # 115% 字间距
+    "letter_spacing": 105    # 105% 字间距
 }
 
 def init():
     """插件入口"""
-    g.registerHandler('start2', on_start)
-    g.es("Body Style Plugin loaded (Timer fixed).")
+    # 1. 针对新打开的窗口 (Ctrl+O, Ctrl+N)
+    g.registerHandler('open2', on_window_init)
+    
+    # 2. 针对 Leo 启动时的第一个窗口
+    g.registerHandler('start2', on_window_init)
+    
+    # 3. [关键修复] 针对插件重载时，已经存在的窗口
+    # 如果你执行 reload 命令，这个循环会立即修复所有已打开的窗口
+    if g.app.commanders():
+        for existing_c in g.app.commanders():
+            on_window_init('reload', {'c': existing_c})
+
+    g.es("Body Style Plugin loaded (New Window Fix).")
     return True
 
-def on_start(tag, keywords):
-    """当新的 Commander 创建时调用"""
+def on_window_init(tag, keywords):
+    """通用的窗口初始化函数，无论是启动、新建还是重载都走这里"""
     c = keywords.get('c')
-    if c:
-        # 建议检查是否已经存在实例，防止重复绑定（虽然一般不会发生）
-        if not hasattr(c, '_body_styler'):
-            c._body_styler = BodyStyleController(c)
+    if not c:
+        return
+
+    # 防止重复挂载 (单例模式)
+    if hasattr(c, '_body_styler'):
+        # 如果是重载插件的情况，我们可能想强制刷新一下样式
+        # 但不需要重新创建 Controller，直接调用 apply 即可
+        c._body_styler.apply_style()
+        return
+
+    # 首次挂载
+    c._body_styler = BodyStyleController(c)
 
 class BodyStyleController:
     """
@@ -80,6 +97,8 @@ class BodyStyleController:
 
         # 1. 设置 Widget 级的基础字体
         current_font = editor.font()
+        # 即使字体没变，为了确保逻辑一致，也可以强制刷一次
+        # 这里保留判断是为了性能，但如果发现热重载配置不生效，可以去掉这个 if
         if (current_font.family() != STYLE_CONFIG["family"] or 
             current_font.pointSize() != STYLE_CONFIG["size"]):
             
