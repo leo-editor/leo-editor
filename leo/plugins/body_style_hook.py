@@ -104,21 +104,36 @@ class BodyStyleController:
 
     #@+node:swot.20260222110233.1: *3* def setup_qt_signals
     def setup_qt_signals(self):
-        """Bind Qt textChanged signal"""
+        """Bind Qt document contentsChange signal"""
         editor = self.get_editor()
-        if editor:
-            # confirm not bind again when reload
-            try:
-                editor.textChanged.disconnect(self.trigger_refresh)
-            except TypeError:
-                pass
-            editor.textChanged.connect(self.trigger_refresh)
+        if not editor:
+            return
+
+        doc = editor.document()
+        if not doc:
+            return
+
+        # confirm not bind again when hot reload
+        try:
+            doc.contentsChange.disconnect(self.on_contents_change)
+        except Exception:
+            pass
+
+        # Bind lower contentsChange signal
+        doc.contentsChange.connect(self.on_contents_change)
+
         self.apply_style()
 
-    #@+node:swot.20260222110737.1: *3* def trigger_refresh
-    def trigger_refresh(self):
-        """restart timer to apply debouncer"""
-        self._debounce_timer.start()
+    #@+node:swot.20260222164552.1: *3* def on_contents_change
+    def on_contents_change(self, position, charsRemoved, charsAdded):
+        """Differentiate normal typing from abbrev expansion/paste"""
+        # If chars length that removed or added is bigger than 1
+        # It is not input by hand from keyboard
+        if charsRemoved > 1 or charsAdded > 1:
+            QTimer.singleShot(0, self.apply_style)
+        else:
+            # general input from keyboard USE 50ms debounce
+            self._debounce_timer.start()
 
     #@+node:swot.20260219115843.1: *3* def get_editor
     def get_editor(self):
@@ -172,6 +187,8 @@ class BodyStyleController:
         # Disable Qt signals for now!
         # Since mergeBlockFormat changes the document, we must block signals to prevent textChanged from causing an infinite recursion.
         editor.blockSignals(True)
+        # We must block signals to prevent contentsChanges from causing an infine recursion
+        doc.blockSignals(True)
 
         try:
             # A. Set paragraph format (Line Height)
@@ -187,7 +204,9 @@ class BodyStyleController:
             char_fmt.setFontLetterSpacing(STYLE_CONFIG["letter_spacing"])
             cursor.mergeCharFormat(char_fmt)
         finally:
+            doc.blockSignals(False)
             editor.blockSignals(False)
+
             # Clear selection
             cursor.clearSelection()
 
