@@ -14,15 +14,6 @@ try:
 except NameError:
     c = None
 
-# Configuration Area
-STYLE_CONFIG = {
-    "family": "JetBrains Mono",
-    "size": 16,
-    "line_height": 125,  # 125% = 1.25x line height
-    "line_height_type": 1,  # 1 = ProportionalHeight
-    "letter_spacing": 105,  # 105% letter spacing
-}
-
 
 #@+node:swot.20260219114140.1: ** def init
 def init():
@@ -34,12 +25,11 @@ def init():
     g.registerHandler("start2", on_window_init)
 
     # 3. [Key Fix] For existing windows during plugin reload
-    # If the reload command is executed, this loop immediately fixes all open windows
     if g.app.commanders():
         for existing_c in g.app.commanders():
             on_window_init("reload", {"c": existing_c})
 
-    g.es("Body Style Plugin loaded (New Window Fix).")
+    g.es("Body Style Plugin loaded (Config Enabled).")
     return True
 
 
@@ -52,8 +42,6 @@ def on_window_init(tag, keywords):
 
     # Prevent duplicate mounting (Singleton pattern)
     if hasattr(c, "_body_styler"):
-        # In case of plugin reload, force style refresh
-        # No need to recreate Controller, just call apply
         c._body_styler.apply_style()
         return
 
@@ -87,19 +75,50 @@ class BodyStyleController:
         # Delayed application on startup
         QTimer.singleShot(100, self.setup_qt_signals)
 
+    #@+node:swot.20260222181121.1: *3* def get_config
+    def get_config(self):
+        """Load settings from Leo's @data body-style-settings node"""
+        # Default configuration fallback
+        conf = {
+            "family": "JetBrains Mono",
+            "size": 16,
+            "line_height": 125,
+            "line_height_type": 1,
+            "letter_spacing": 105,
+        }
+
+        # Fetch data from myLeoSettings.leo
+        data = self.c.config.getData("body-style-settings")
+        if data:
+            for line in data:
+                line = line.strip()
+                # Skip empty lines or comments
+                if not line or line.startswith("#"):
+                    continue
+
+                if "=" in line:
+                    key, val = [x.strip() for x in line.split("=", 1)]
+                    if key in conf:
+                        if key == "family":
+                            conf[key] = val
+                        else:
+                            try:
+                                conf[key] = int(val)
+                            except ValueError:
+                                g.es(f"BodyStyle Warning: Invalid number for {key}")
+        return conf
+
     #@+node:swot.20260219115854.1: *3* def on_select
     def on_select(self, tag, keywords):
         """Apply style when switching nodes"""
         if keywords.get("c") != self.c:
             return
-        # use 0ms delay, run before screen redraw to awoid FOUC flash
         QTimer.singleShot(0, self.apply_style)
 
     #@+node:swot.20260222110100.1: *3* def on_command
     def on_command(self, tag, keywords):
         """catch not trigger textChanged command"""
         if keywords.get("c") == self.c:
-            # 0ms delay same as above
             QTimer.singleShot(0, self.apply_style)
 
     #@+node:swot.20260222110233.1: *3* def setup_qt_signals
@@ -113,26 +132,20 @@ class BodyStyleController:
         if not doc:
             return
 
-        # confirm not bind again when hot reload
         try:
             doc.contentsChange.disconnect(self.on_contents_change)
         except Exception:
             pass
 
-        # Bind lower contentsChange signal
         doc.contentsChange.connect(self.on_contents_change)
-
         self.apply_style()
 
     #@+node:swot.20260222164552.1: *3* def on_contents_change
     def on_contents_change(self, position, charsRemoved, charsAdded):
         """Differentiate normal typing from abbrev expansion/paste"""
-        # If chars length that removed or added is bigger than 1
-        # It is not input by hand from keyboard
         if charsRemoved > 1 or charsAdded > 1:
             QTimer.singleShot(0, self.apply_style)
         else:
-            # general input from keyboard USE 50ms debounce
             self._debounce_timer.start()
 
     #@+node:swot.20260219115843.1: *3* def get_editor
@@ -154,63 +167,57 @@ class BodyStyleController:
         if not doc:
             return
 
-        # 1. Set Widget-level base font
+        config = self.get_config()
+
         current_font = editor.font()
-        # Keeping the check for performance, but if hot reload config fails
-        # (e.g. only changing line height), consider removing this if block.
         if (
-            current_font.family() != STYLE_CONFIG["family"]
-            or current_font.pointSize() != STYLE_CONFIG["size"]
+            current_font.family() != config["family"]
+            or current_font.pointSize() != config["size"]
         ):
-            font = QFont(STYLE_CONFIG["family"])
-            font.setPointSize(STYLE_CONFIG["size"])
+            font = QFont(config["family"])
+            font.setPointSize(config["size"])
             font.setLetterSpacing(
-                QFont.SpacingType.PercentageSpacing, STYLE_CONFIG["letter_spacing"]
+                QFont.SpacingType.PercentageSpacing, config["letter_spacing"]
             )
 
             editor.setFont(font)
             doc.setDefaultFont(font)
 
-        # 2. Force apply Block and Char formats
-        self._apply_formats(editor, doc)
+        self._apply_formats(editor, doc, config)
 
     #@+node:swot.20260219114021.1: *3* def _apply_formats
-    def _apply_formats(self, editor, doc):
+    def _apply_formats(self, editor, doc, config):
         """Apply paragraph (line height) and character (letter spacing) formats simultaneously"""
-        # record current scrollbar position
         v_scrollbar = editor.verticalScrollBar()
         current_scroll_value = v_scrollbar.value() if v_scrollbar else 0
 
         cursor = QTextCursor(doc)
         cursor.select(QTextCursor.SelectionType.Document)
 
-        # Disable Qt signals for now!
-        # Since mergeBlockFormat changes the document, we must block signals to prevent textChanged from causing an infinite recursion.
         editor.blockSignals(True)
-        # We must block signals to prevent contentsChanges from causing an infine recursion
         doc.blockSignals(True)
 
         try:
-            # A. Set paragraph format (Line Height)
+            # A. Set paragraph format using dynamic config
             block_fmt = QTextBlockFormat()
-            block_fmt.setLineHeight(
-                STYLE_CONFIG["line_height"], STYLE_CONFIG["line_height_type"]
-            )
+            block_fmt.setLineHeight(config["line_height"], config["line_height_type"])
             cursor.mergeBlockFormat(block_fmt)
 
-            # B. Set character format (Letter Spacing)
+            # B. Set character format using dynamic config
             char_fmt = QTextCharFormat()
+            
+            char_fmt.setFontFamily(config["family"])
+            char_fmt.setFontPointSize(config["size"])
+            
             char_fmt.setFontLetterSpacingType(QFont.SpacingType.PercentageSpacing)
-            char_fmt.setFontLetterSpacing(STYLE_CONFIG["letter_spacing"])
+            char_fmt.setFontLetterSpacing(config["letter_spacing"])
             cursor.mergeCharFormat(char_fmt)
         finally:
             doc.blockSignals(False)
             editor.blockSignals(False)
 
-            # Clear selection
             cursor.clearSelection()
 
-            # forbit to restore the origin scrollbar position
             if v_scrollbar:
                 v_scrollbar.setValue(current_scroll_value)
 
@@ -218,10 +225,4 @@ class BodyStyleController:
 
 
 #@-others
-
-"""
-body_style_plugin.py
-Provides consistent font, line height, and letter spacing settings for Leo's Body pane.
-Fixes issues with line height reset on node switch and supports hot reloading.
-"""
 #@-leo
