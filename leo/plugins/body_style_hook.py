@@ -92,13 +92,15 @@ class BodyStyleController:
         """Apply style when switching nodes"""
         if keywords.get("c") != self.c:
             return
-        self.trigger_refresh()
+        # use 0ms delay, run before screen redraw to awoid FOUC flash
+        QTimer.singleShot(0, self.apply_style)
 
     #@+node:swot.20260222110100.1: *3* def on_command
     def on_command(self, tag, keywords):
-        """catch not  trigger textChanged command"""
+        """catch not trigger textChanged command"""
         if keywords.get("c") == self.c:
-            self.trigger_refresh()
+            # 0ms delay same as above
+            QTimer.singleShot(0, self.apply_style)
 
     #@+node:swot.20260222110233.1: *3* def setup_qt_signals
     def setup_qt_signals(self):
@@ -160,6 +162,10 @@ class BodyStyleController:
     #@+node:swot.20260219114021.1: *3* def _apply_formats
     def _apply_formats(self, editor, doc):
         """Apply paragraph (line height) and character (letter spacing) formats simultaneously"""
+        # record current scrollbar position
+        v_scrollbar = editor.verticalScrollBar()
+        current_scroll_value = v_scrollbar.value() if v_scrollbar else 0
+
         cursor = QTextCursor(doc)
         cursor.select(QTextCursor.SelectionType.Document)
 
@@ -184,6 +190,10 @@ class BodyStyleController:
             editor.blockSignals(False)
             # Clear selection
             cursor.clearSelection()
+
+            # forbit to restore the origin scrollbar position
+            if v_scrollbar:
+                v_scrollbar.setValue(current_scroll_value)
 
     #@-others
 
