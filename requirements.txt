@@ -47,7 +47,6 @@ matplotlib      # VR3 plugin.
 numpy           # VR3 plugin.
 pyenchant       # The spell tab.
 sphinx          # For documentation.
-tk              # tkinter, for emergency dialogs.
 urllib3
 websockets      # For leoserver.
 
