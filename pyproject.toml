@@ -324,7 +324,6 @@ dependencies = [
   "pyenchant",       # The spell tab.
  
   "sphinx",
-  "tk",              # tkinter, for emergency dialogs.
   "urllib3",
   "websockets",      # For leoserver.
 
