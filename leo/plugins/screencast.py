@@ -502,7 +502,7 @@ class ScreenCastController:
         return w
 
     # @+node:ekr.20120921064434.10605: *4* sc.open_menu
-    def open_menu(self, menu_name):
+    def open_menu(self, menu_name: str):
         """Activate the indicated *top-level* menu."""
         m = self
         c = m.c

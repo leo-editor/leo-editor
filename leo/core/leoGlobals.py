@@ -38,7 +38,7 @@ import time
 import traceback
 import types
 from types import ModuleType
-from typing import Any, IO, Iterable, Optional, Sequence, Union, TYPE_CHECKING
+from typing import Any, IO, Iterable, Optional, Sequence, TYPE_CHECKING
 import unittest
 import urllib
 import urllib.parse as urlparse
@@ -69,7 +69,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
     Args = Any
     KWargs = Any
-    Tags = Union[str, Sequence[str]]
+    Tags = str | Sequence[str]
     Request = Any  # A requests.Request object.
     Value = Any
 # @-<< leoGlobals: annotations >>
@@ -1185,7 +1185,7 @@ class MatchBrackets:
         offset = 1 if self.forward else -1
         i1 = i
         i += offset
-        found: Union[int, bool] = False
+        found: int | bool = False
         while 0 <= i < len(s) and s[i] != '\n':
             ch = s[i]
             i2 = i - 1  # in case we have to look behind.
@@ -1259,7 +1259,7 @@ class MatchBrackets:
         Note that only one of new_left and new_right will necessarily be a
         bracket, but index_of_bracket_char will definitely be a bracket.
         """
-        expanded: Union[bool, str] = False
+        expanded: bool | str = False
         left = max(0, min(left, len(s)))  # #2240
         right = max(0, min(right, len(s)))  # #2240
         orig_left = left
@@ -2313,6 +2313,131 @@ def my_name(i: int = 1) -> str:
     return g.callers(-1).split(',')[0]
 
 
+# @+node:ekr.20260330144349.1: *4* g.checkClass/QtTextWidget/TextWidget/Widget
+
+
+# @+node:ekr.20260401135657.1: *5* g._check_class_helper
+def _check_class_helper(obj: Any, *, key: str, class_names: list[str]) -> None:
+    """
+    Check that the given object is of the expected class.
+    Give a message (unique to each caller) if the check fails.
+    """
+    if obj is None:
+        return
+    class_name = obj.__class__.__name__
+    if class_name in class_names:
+        return
+    class_names_s = (
+        ', '.join(class_names) if len(class_names) <= 3
+        else '\n  ' + '\n  '.join(class_names)
+    )  # fmt: skip
+    key_s = f"{g.caller()}.{key}"
+    message = f"{key_s:>50}: {class_name} not in: {class_names_s}"
+    g.traceUnique(message)
+
+
+# @+node:ekr.20260401135932.1: *5* g.check_class
+def checkClass(obj: Any, class_names: list[str]) -> None:
+    """
+    Check that an object has the appropriate class.
+    """
+    if obj is None:
+        return
+    if False and g.unitTesting:
+        g.traceUniqueClass(obj, n=2)
+    # g.stat()
+    g._check_class_helper(obj, key=g.caller(), class_names=class_names)
+
+
+# @+node:ekr.20260401140320.1: *5* g.checkQtTextWidget
+qt_text_classes = [
+    'LeoQTextBrowser',
+    'LeoQTreeWidget',
+    'LeoQtLog',
+    'QHeadlineWrapper',
+    'QLineEdit',
+    'QMenuWrapper',
+    'QMinibufferWrapper',
+    'QTextBrowser',
+    'QTextEditWrapper',
+    'StringTextWrapper',
+    'VisLineEdit',  # In the DynamicWindow class.
+]
+
+
+def checkQtTextWidget(obj: Any, *, other_classes: list[str] = None) -> None:
+    """
+    Check that an object has the appropriate class.
+    """
+    if obj is None:
+        return
+    if False and g.unitTesting:
+        g.traceUniqueClass(obj, n=2)
+    # g.stat()
+    all_classes = g.qt_text_classes
+    if other_classes is not None:
+        all_classes.extend(other_classes)
+    g._check_class_helper(obj, key=g.caller(), class_names=all_classes)
+
+
+# @+node:ekr.20260401140017.1: *5* g.checkTextWidget
+def checkTextWidget(obj: Any) -> None:
+    """
+    Check that an object has the appropriate class.
+    """
+    if obj is None:
+        return
+    if False and g.unitTesting:
+        g.traceUniqueClass(obj, n=2)
+    # g.stat()
+    key = f"{g.my_name()}:{g.caller()}"
+    g._check_class_helper(
+        obj,
+        key=key,
+        class_names=[
+            'QHeadlineWrapper',
+            'QMinibufferWrapper',
+            'QTextEditWrapper',
+            'StringTextWrapper',
+        ],
+    )
+
+
+# @+node:ekr.20260401140103.1: *5* g.checkWidget
+widget_classes = [
+    'BodyWrapper',  # --gui=console
+    'DynamicWindow',
+    'LeoQTextBrowser',
+    'LeoQTreeWidget',
+    'LeoQtLog',
+    'LeoQtTree',
+    'QHeadlineWrapper',
+    'QLineEdit',
+    'QMenuBar',
+    'QMenuWrapper',
+    'QMinibufferWrapper',
+    'QPushButton',
+    'QTextBrowser',
+    'QTextEditWrapper',
+    'StringTextWrapper',
+    'todoQtUI',  # todo.py, a QtWidgets.QWidget.
+    'VisLineEdit',
+]
+
+
+def checkWidget(obj: Any) -> None:
+    """
+    Check that a Widget has the appropriate class.
+    """
+    if obj is None:
+        return
+    if False and g.unitTesting:
+        g.traceUniqueClass(obj, n=2)
+    # g.stat()
+    key = f"{g.my_name()}:{g.caller()}"
+    g._check_class_helper(obj, key=key, class_names=widget_classes)
+
+
 # @+node:ekr.20031218072017.3109: *4* g.dump
 def dump(s: str) -> str:
     out = ""
@@ -2670,46 +2795,66 @@ def clearStats() -> None:
 
 # @+node:ekr.20031218072017.3135: *4* g.printStats
 @command('show-stats')
-def printStats(event: LeoKeyEvent = None, name: str = None) -> None:
+def printStats(event: LeoKeyEvent = None) -> None:
     """
-    Print all gathered statistics.
-
-    Here is the recommended code to gather stats for one method/function:
-
-        if not g.app.statsLockout:
-            g.app.statsLockout = True
-            try:
-                d = g.app.statsDict
-                key = 'g.isUnicode:' + g.callers()
-                d [key] = d.get(key, 0) + 1
-            finally:
-                g.app.statsLockout = False
+    Print all stats created by g.stat(), counts first.
     """
-    if name:
-        if not isinstance(name, str):
-            name = repr(name)
-    else:
-        # Get caller name 2 levels back.
-        name = g._callerName(n=2)
-    # Print the stats, organized by number of calls.
+
+    # Print the signon.
     d = g.app.statsDict
+    print('')
     print('g.app.statsDict...')
-    for key in reversed(sorted(d)):
-        print(f"{key:7} {d.get(key)}")
+
+    # Print the int stats: calls to g.stat()
+    for key in sorted(d.keys()):
+        if key.startswith(_int_stat_prefix):
+            key_s = key[len(_int_stat_prefix) :].strip()
+            print(f"  {d.get(key):4}: {key_s}")
+
+    # Print the other stats: calls to g.stat(whatever)
+    for key in sorted(d.keys()):
+        if not key.startswith(_int_stat_prefix):
+            inner_keys = (z if isinstance(z, str) else repr(z) for z in d.get(key))
+            print(f"{key}:")
+            for z in sorted(inner_keys):
+                print(f"    {z.strip()}")
 
 
-# @+node:ekr.20031218072017.3136: *4* g.stat
-def stat(name: str = None) -> None:
-    """Increments the statistic for name in g.app.statsDict
-    The caller's name is used by default.
+# @+node:ekr.20031218072017.3136: *4* g.stat & g.statObj
+_int_stat_prefix = 'stat_count: '
+
+
+def stat(obj: Any = None) -> None:
+    """
+    Add another count stat to g.app.statsDict.
+    g.printStats() prints all such stats.
+
+    When `obj` is given, add obj to a set associated with name.
+    Example: `g.stat(obj=w.__class__.__name__)`.
     """
     d = g.app.statsDict
-    if name:
-        if not isinstance(name, str):
-            name = repr(name)
-    else:
-        name = g._callerName(n=2)  # Get caller name 2 levels back.
-    d[name] = 1 + d.get(name, 0)
+    name = g._callerName(n=2)  # Get caller name 2 levels back.
+
+    # Always add the count stat.
+    key = f"{_int_stat_prefix}{name}"
+    d[key] = 1 + d.get(key, 0)
+
+    # Add the other stat if obj is given.
+    if obj is not None:
+        aSet = d.get(name, set())
+        aSet.add(obj)
+        d[name] = aSet
+
+
+def statObj(obj: Any) -> None:
+    """
+    Add obj to a set associated with name *without* updating count stats.
+    """
+    d = g.app.statsDict
+    name = g._callerName(n=2)  # Get caller name 2 levels back.
+    aSet = d.get(name, set())
+    aSet.add(obj)
+    d[name] = aSet
 
 
 # @+node:ekr.20031218072017.3137: *3* g.Timing
@@ -2815,7 +2960,7 @@ def findLanguageDirectives(c: Cmdr, p: Position) -> Optional[str]:
 
     v0 = p.v
 
-    def find_language(p_or_v: Union[Position, VNode]) -> Optional[str]:
+    def find_language(p_or_v: Position | VNode) -> Optional[str]:
         for s in p_or_v.h, p_or_v.b:
             for m in g_language_pat.finditer(s):
                 language = m.group(1)
@@ -3797,7 +3942,7 @@ def splitLongFileName(fn: str, limit: int = 40) -> str:
 
 
 # @+node:ekr.20190114061452.26: *3* g.writeFile
-def writeFile(contents: Union[bytes, str], encoding: str, fileName: str) -> bool:
+def writeFile(contents: bytes | str, encoding: str, fileName: str) -> bool:
     """Create a file with the given contents."""
     try:
         if isinstance(contents, str):
@@ -6509,7 +6654,7 @@ def traceUniqueClass(obj: object, *, n: int = 2, pad: int = 30) -> None:
     if value_s not in values:
         pad_s = ' ' * max(0, pad - len(key))
         key_s = pad_s + key  # Right justify.
-        print(f"{key_s} {value_s}")
+        print(f"{value_s:>20} callers: {key_s} ")
         values.append(value_s)
         trace_unique_class_dict[key] = values
 
@@ -7308,7 +7453,7 @@ def exec_file(path: str, d: dict[str, Value], script: str = None) -> None:
 
 
 # @+node:ekr.20131016032805.16721: *3* g.execute_shell_commands
-def execute_shell_commands(commands: Union[str, list[str]], trace: bool = False) -> None:
+def execute_shell_commands(commands: str | list[str], trace: bool = False) -> None:
     """
     Execute each shell command in a separate process.
     Wait for each command to complete, except those starting with '&'

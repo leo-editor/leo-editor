@@ -5,15 +5,14 @@
 # @+<< baseCommands imports & abbreviations >>
 # @+node:ekr.20220828071357.1: ** << baseCommands imports & abbreviations >>
 from __future__ import annotations
-from typing import Any, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
-    from leo.plugins.qt_text import QTextEditWrapper as Wrapper
+    from leo.plugins.qt_text import QTextMixin
 
-    Widget = Any  # 'Any' is the correct annotation for base class widgets.
 # @-<< baseCommands imports & abbreviations >>
 
 
@@ -35,7 +34,7 @@ class BaseEditCommandsClass:
 
     # @+node:ekr.20150514043714.3: *3* BaseEdit.begin/endCommand (handles undo)
     # @+node:ekr.20150514043714.4: *4* BaseEdit.beginCommand
-    def beginCommand(self, w: Wrapper, undoType: str = 'Typing') -> Wrapper:
+    def beginCommand(self, w: QTextMixin, undoType: str = 'Typing') -> QTextMixin:
         """Do the common processing at the start of each command."""
         c, p, u = self.c, self.c.p, self.c.undoer
         name = c.widget_name(w)
@@ -85,7 +84,7 @@ class BaseEditCommandsClass:
                 k.resetLabel()
 
     # @+node:ekr.20150514043714.7: *3* BaseEdit.editWidget
-    def editWidget(self, event: LeoKeyEvent, forceFocus: bool = True) -> Widget:
+    def editWidget(self, event: LeoKeyEvent, forceFocus: bool = True) -> QTextMixin:
         """Return the edit widget for the event. Also sets self.w"""
         c = self.c
         w = event and event.widget
@@ -115,7 +114,7 @@ class BaseEditCommandsClass:
         return val
 
     # @+node:ekr.20150514043714.13: *4* BaseEdit.getRectanglePoints
-    def getRectanglePoints(self, w: Wrapper) -> tuple[int, int, int, int]:
+    def getRectanglePoints(self, w: QTextMixin) -> tuple[int, int, int, int]:
         """Return the rectangle corresponding to the selection range."""
         c = self.c
         c.widgetWantsFocusNow(w)

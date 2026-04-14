@@ -12,7 +12,7 @@ from collections.abc import Callable
 import re
 import string
 import time
-from typing import Any, Generator, Sequence, Optional, Union, TYPE_CHECKING
+from typing import Any, Generator, Sequence, Optional, TYPE_CHECKING
 from types import ModuleType
 import warnings
 
@@ -56,7 +56,7 @@ if TYPE_CHECKING:  # pragma: no cover
 # @-<< leoColorizer annotations >>
 # @+others
 # @+node:ekr.20190323044524.1: ** function: make_colorizer
-def make_colorizer(c: Cmdr, widget: QWidget) -> Union[JEditColorizer, PygmentsColorizer]:
+def make_colorizer(c: Cmdr, widget: QWidget) -> JEditColorizer | PygmentsColorizer:
     """Return an instance of JEditColorizer or PygmentsColorizer."""
     use_pygments = c.config.getBool('use-pygments', default=False)
     if use_pygments:
@@ -2448,7 +2448,7 @@ class JEditColorizer(BaseColorizer):
         return j
 
     # @+node:ekr.20110605121601.18619: *4* jedit.match_regexp_helper
-    def match_regexp_helper(self, s: str, i: int, pattern: Union[str, re.Pattern]) -> int:
+    def match_regexp_helper(self, s: str, i: int, pattern: str | re.Pattern) -> int:
         """
         Return the length of the matching text if
         seq (a regular expression) matches the present position.
@@ -2761,7 +2761,7 @@ class JEditColorizer(BaseColorizer):
         i: int,
         *,
         kind: str = '',
-        begin: Union[re.Pattern, str] = '',
+        begin: re.Pattern | str = '',
         end: str = '',
         at_line_start: bool = False,
         at_whitespace_end: bool = False,
@@ -3648,7 +3648,7 @@ class QScintillaColorizer(BaseColorizer):
 
         # Define/configure various lexers.
         self.reloadSettings()
-        self.nullLexer: Union[NullScintillaLexer, g.NullObject]
+        self.nullLexer: NullScintillaLexer | g.NullObject
         if Qsci:
             self.lexersDict = self.makeLexersDict()
             self.nullLexer = NullScintillaLexer(c)

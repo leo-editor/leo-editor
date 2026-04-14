@@ -32,7 +32,7 @@ def create_app(gui_name: str = 'null') -> Cmdr:
     """
     Create the Leo application, g.app, the Gui, g.app.gui, and a commander.
 
-    This method is expensive (0.5 sec) only the first time it is called.
+    This method is expensive (0.2 sec) only the first time it is called.
 
     Thereafter, recreating g.app, g.app.gui, and new commands is fast.
     """
@@ -83,17 +83,13 @@ def create_app(gui_name: str = 'null') -> Cmdr:
     c.config.settingsDict = settings_d
     assert g.unitTesting is True  # Defensive.
     t4 = time.process_time()
-    # Trace times. This trace happens only once:
-    #     imports: 0.016
-    #         gui: 0.000
-    #   commander: 0.469
-    #       total: 0.484
     if trace and t4 - t3 > 0.1:  # pragma: no cover
+        # This trace happens only once.
         print(
             'create_app:\n'
-            f"  imports: {(t2 - t1):.3f}\n"
-            f"      gui: {(t3 - t2):.3f}\n"
-            f"commander: {(t4 - t2):.3f}\n"
+            f"  imports: {(t2 - t1):.3f}\n"  # 0.0 sec.
+            f"      gui: {(t3 - t2):.3f}\n"  # 0.0 sec.
+            f"commander: {(t4 - t2):.3f}\n"  # 0.2 sec
             f"    total: {(t4 - t1):.3f}\n"
         )
     return c

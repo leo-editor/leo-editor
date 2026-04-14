@@ -12,9 +12,13 @@ Revised by EKR February 6-7, 2017.
 # @+<< demo.py imports >>
 # @+node:ekr.20170128213103.3: **  << demo.py imports >>
 import random
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.plugins import qt_events
 from leo.core.leoQt import QtCore, QtGui, QtWidgets
+
+if TYPE_CHECKING:
+    from leo.plugins.qt_frame import QtMenuWrapper
 
 #
 # Fail fast, right after all imports.
@@ -517,8 +521,7 @@ class Demo:
     def open_menu(self, menu_name):
         """Activate the indicated *top-level* menu."""
         c = self.c
-        # Menu is a qtMenuWrapper, a subclass of both QMenu and leoQtMenu.
-        menu = c.frame.menu.getMenu(menu_name)
+        menu: QtMenuWrapper = c.frame.menu.getMenu(menu_name)
         if menu:
             c.frame.menu.activateMenu(menu_name)
         return menu

@@ -95,7 +95,7 @@ from collections.abc import Callable
 import fnmatch
 import itertools
 import re
-from typing import Any, Iterable, Iterator, Union
+from typing import Any, Iterable, Iterator
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import Qt, QtCore, QtWidgets
@@ -122,7 +122,7 @@ if TYPE_CHECKING:  # pragma: no cover
     QWidget = QtWidgets.QWidget
     QListWidget = QtWidgets.QListWidget
     QListWidgetItem = Any  # Mysterious
-    RegexFlag = Union[int, re.RegexFlag]  # re.RegexFlag does not define 0
+    RegexFlag = int | re.RegexFlag  # re.RegexFlag does not define 0
 
 
 # @-<< quicksearch annotations >>

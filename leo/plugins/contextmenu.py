@@ -17,7 +17,7 @@ tree context menu from the keyboard.
 Here's an example on how to implement your own context menu items
 in your plugins::
 
-    def nextclone_rclick(c: Cmdr, p: Position, menu: Wrapper) -> None:
+    def nextclone_rclick(c: Cmdr, p: Position, menu: LeoQtMenu) -> None:
         \""" Go to next clone\"""
 
         # only show the item if you are on a clone
@@ -55,7 +55,7 @@ from leo.core.leoGui import LeoKeyEvent
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoNodes import Position
-    from leo.plugins.qt_text import QTextEditWrapper as Wrapper
+    from leo.plugins.qt_frame import LeoQtMenu
 
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
@@ -113,7 +113,7 @@ def init() -> bool:
 # @+node:ville.20090630210947.10189: *3* install_handlers (contextmenu.py)
 def install_handlers() -> None:
     """Install all the wanted handlers (menu creators)"""
-    handlers = [
+    handlers: list[Callable] = [
         # Add user-specified items first.
         configuredcommands_rclick,
         # Add the rest...
@@ -150,7 +150,7 @@ def getEditor(c: Cmdr) -> tuple[str, str]:
 
 # @+node:ekr.20140724211116.19255: ** Handlers
 # @+node:ville.20091008192104.7691: *3* configuredcommands_rclick
-def configuredcommands_rclick(c: Cmdr, p: Position, menu: Wrapper) -> None:
+def configuredcommands_rclick(c: Cmdr, p: Position, menu: LeoQtMenu) -> None:
     """Add all items given by @data contextmenu-commands"""
     config = c.config.getData('contextmenu_commands')
     if not config:
@@ -182,9 +182,8 @@ def configuredcommands_rclick(c: Cmdr, p: Position, menu: Wrapper) -> None:
 
 
 # @+node:tbrown.20091203121808.15818: *3* deletenodes_rclick
-def deletenodes_rclick(c: Cmdr, p: Position, menu: Wrapper) -> None:
+def deletenodes_rclick(c: Cmdr, p: Position, menu: LeoQtMenu) -> None:
     """Delete selected nodes"""
-
     u = c.undoer
     pl = c.getSelectedPositions()
     undoType = 'Delete Node'
@@ -239,11 +238,11 @@ def deletenodes_rclick(c: Cmdr, p: Position, menu: Wrapper) -> None:
 
 
 # @+node:ville.20090701110830.10215: *3* editnode_rclick
-def editnode_rclick(c: Cmdr, p: Position, menu: Wrapper) -> None:
+def editnode_rclick(c: Cmdr, p: Position, menu: LeoQtMenu) -> None:
     """Provide "edit in EDITOR" context menu item.
 
-    Opens file or node in external editor."""
-
+    Opens file or node in external editor.
+    """
     editor, basename = getEditor(c)
 
     def editnode_rclick_cb() -> None:
@@ -255,7 +254,7 @@ def editnode_rclick(c: Cmdr, p: Position, menu: Wrapper) -> None:
 
 
 # @+node:ville.20090719202132.5248: *3* marknodes_rclick
-def marknodes_rclick(c: Cmdr, p: Position, menu: Wrapper) -> None:
+def marknodes_rclick(c: Cmdr, p: Position, menu: LeoQtMenu) -> None:
     """Mark selected nodes"""
     pl = c.getSelectedPositions()
     if any(not p.isMarked() for p in pl):
@@ -279,9 +278,8 @@ def marknodes_rclick(c: Cmdr, p: Position, menu: Wrapper) -> None:
 
 
 # @+node:ville.20090702171015.5480: *3* nextclone_rclick
-def nextclone_rclick(c: Cmdr, p: Position, menu: Wrapper) -> None:
+def nextclone_rclick(c: Cmdr, p: Position, menu: LeoQtMenu) -> None:
     """Go to next clone"""
-
     if p.isCloned():
 
         def nextclone_rclick_cb() -> None:
@@ -292,7 +290,7 @@ def nextclone_rclick(c: Cmdr, p: Position, menu: Wrapper) -> None:
 
 
 # @+node:ekr.20120311191905.9900: *3* openurl_rclick
-def openurl_rclick(c: Cmdr, p: Position, menu: Wrapper) -> None:
+def openurl_rclick(c: Cmdr, p: Position, menu: LeoQtMenu) -> None:
     """open an url"""
     url = g.getUrlFromNode(p)
     if url:
@@ -307,12 +305,11 @@ def openurl_rclick(c: Cmdr, p: Position, menu: Wrapper) -> None:
 
 
 # @+node:ville.20090630210947.5465: *3* openwith_rclick & callbacks
-def openwith_rclick(c: Cmdr, p: Position, menu: Wrapper) -> None:
+def openwith_rclick(c: Cmdr, p: Position, menu: LeoQtMenu) -> None:
     """
     Show "Edit with" in context menu for external file root nodes (@thin, @auto...)
 
     This looks like "Edit contextmenu.py in scite"
-
     """
 
     # define callbacks
@@ -380,7 +377,7 @@ def openwith_rclick(c: Cmdr, p: Position, menu: Wrapper) -> None:
 
 
 # @+node:ville.20090630221949.5462: *3* refresh_rclick
-def refresh_rclick(c: Cmdr, p: Position, menu: Wrapper) -> None:
+def refresh_rclick(c: Cmdr, p: Position, menu: LeoQtMenu) -> None:
     def refresh_rclick_cb() -> None:
         c.refreshFromDisk(p.copy())
 
@@ -391,7 +388,7 @@ def refresh_rclick(c: Cmdr, p: Position, menu: Wrapper) -> None:
 
 
 # @+node:felix.20250830151921.1: *3* openatleo_rclick
-def openatleo_rclick(c: Cmdr, p: Position, menu: Wrapper) -> None:
+def openatleo_rclick(c: Cmdr, p: Position, menu: LeoQtMenu) -> None:
     def openatleo_rclick_cb() -> None:
         path = c.fullPath(p)
         if g.os_path_exists(path):
@@ -406,7 +403,7 @@ def openatleo_rclick(c: Cmdr, p: Position, menu: Wrapper) -> None:
 
 
 # @+node:ekr.20140724211116.19258: *3* pylint_rclick
-def pylint_rclick(c: Cmdr, p: Position, menu: Wrapper) -> None:
+def pylint_rclick(c: Cmdr, p: Position, menu: LeoQtMenu) -> None:
     """Run pylint on the selected node."""
     action = menu.addAction("Run Pylint")
 

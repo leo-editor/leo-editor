@@ -2181,7 +2181,8 @@ class TabImporter:
         elif lws > level:
             # Create a new parent.
             level = lws
-            parent = parent.insertAsLastChild()
+            parent = parent or root  # #4562
+            parent.insertAsLastChild()
             parent.h = h
             stack.append((level, parent))
         else:

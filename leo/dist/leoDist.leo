@@ -148,7 +148,7 @@
 <t tx="EKR.20040519090846">@language rest
 @wrap
 </t>
-<t tx="EKR.20040519090846.1" _mod_time="4741da77837ad3e0d42e">MIT License
+<t tx="EKR.20040519090846.1" _mod_time="4741da778b6a1aeb4f2e">MIT License
 
 Copyright (c) 1997-2026 by Edward K. Ream.
 
@@ -181,7 +181,7 @@ These parts are are clearly marked in Leo's code as follows:
     Copyright (c) Jupyter Development Team.
     Distributed under the terms of the Modified BSD License.
 </t>
-<t tx="EKR.20040519090846.8" _mod_time="4741da77837ad3e0d42e">Metadata-Version: 1.0
+<t tx="EKR.20040519090846.8" _mod_time="4741da778b6a1aeb4f2e">Metadata-Version: 1.0
 Name: leo
 Version: 6.8.8
 Summary: An IDE, PIM and Outliner. See http://leo-editor.github.io/leo-editor/preface.html.
@@ -201,7 +201,7 @@ Classifier: Topic :: Software Development
 Classifier: Topic :: Text Processing
 Download-URL: https://github.com/leo-editor/leo-editor/releases
 </t>
-<t tx="EKR.20040519090846.9" _mod_time="4741da77837ad3e0d42e">Leo https://leo-editor.github.io/leo-editor/ 6.8.8 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
+<t tx="EKR.20040519090846.9" _mod_time="4741da778b6a1aeb4f2e">Leo https://leo-editor.github.io/leo-editor/ 6.8.8 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
 
 Leo is an [outline-oriented text editor](https://leo-editor.github.io/leo-editor/preface.html).
 
@@ -1413,7 +1413,10 @@ It's ok to merge devel into release branch
   https://github.com/leo-editor/leo-editor/actions
 - Check Leo's website.
 </t>
-<t tx="ekr.20180405171433.4" __bookmarks="7d7100580700000069735f6475706571014930300a732e">- Make sure Leo looks good without myLeoSettings.leo.
+<t tx="ekr.20180405171433.4" __bookmarks="7d7100580700000069735f6475706571014930300a732e">
+- Run The update_leo_tools.py script *first*.
+
+- Make sure Leo looks good without myLeoSettings.leo.
 
 - Make sure Leo runs with Python 3.10.
 

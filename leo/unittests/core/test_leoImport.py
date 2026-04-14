@@ -180,6 +180,55 @@ class TestLeoImport(BaseTestImporter):
             u.undo()
             self.assertEqual(c.lastTopLevel(), root)
 
+    # @+node:ekr.20260322090512.1: *3* TestLeoImport.test_tabbed_python_importer
+    def test_tabbed_python_importer(self):
+        # See #4542
+        c = self.c
+        u = c.undoer
+        x = c.importCommands
+        target = c.p.insertAfter()
+        c.selectPosition(target)
+        target.h = 'target'
+
+        body_1 = self.prep(
+            '''
+            #!/usr/bin/python3
+            # -*- coding: utf-8 -*-
+
+            def someFunction ():
+            \tif (someLongCondition) or \\
+            \t\t\t(anotherLongCondition):
+            \t\treturn
+            \tpass
+        '''
+        )
+        target.b = body_1
+        x.parse_body(target)
+
+        expected_results = (
+            (
+                0,  'def someFunction',  # Ignored
+                '#!/usr/bin/python3\n'
+                '# -*- coding: utf-8 -*-\n'
+                '\n'
+                'def someFunction ():\n'
+                '\tif (someLongCondition) or \\\n'
+                '\t\t\t(anotherLongCondition):\n'
+                '\t\treturn\n'
+                '\tpass\n'
+            ),
+        )  # fmt: skip
+        # Don't call run_test.
+        self.check_outline(target, expected_results)
+
+        # Test undo
+        u.undo()
+        self.assertEqual(target.b, body_1, msg='undo test')
+        self.assertFalse(target.hasChildren(), msg='undo test')
+        # Test redo
+        u.redo()
+        self.check_outline(target, expected_results)
+
     # @-others
 
 

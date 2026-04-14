@@ -19,9 +19,10 @@ from leo.core import leoFrame
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoFrame import NullFrame, NullIconBarClass
     from leo.core.leoNodes import Position
     from leo.plugins.qt_frame import FindTabManager
-    from leo.plugins.qt_text import QTextEditWrapper as Wrapper
+    from leo.plugins.qt_text import QTextMixin
 
     Value = Any
     Widget = Any  # 'Any' is the correct annotation for base class widgets.
@@ -305,10 +306,11 @@ class LeoGui:
     def create_key_event(
         self,
         c: Cmdr,
+        *,
         binding: str = None,
         char: str = None,
         event: LeoKeyEvent = None,
-        w: Wrapper = None,
+        w: QTextMixin = None,
         x: int = None,
         x_root: int = None,
         y: int = None,
@@ -332,7 +334,7 @@ class LeoGui:
         self.scriptFileName = scriptFileName
 
     # @+node:ekr.20110605121601.18845: *4* LeoGui.event_generate
-    def event_generate(self, c: Cmdr, char: str, shortcut: str, w: Wrapper) -> None:
+    def event_generate(self, c: Cmdr, char: str, shortcut: str, w: QTextMixin) -> None:
         event = self.create_key_event(c, binding=shortcut, char=char, w=w)
         c.k.masterKeyHandler(event)
         c.outerUpdate()
@@ -418,7 +420,6 @@ class NullGui(LeoGui):
         self.isNullGui = True
         self.idleTimeClass: Any = g.NullObject
         self.lastFrame: Widget = None  # The outer frame, to set g.app.log in runMainLoop.
-        self.plainTextWidget: Widget = g.NullObject
         self.script = None
 
     # @+node:ekr.20031218072017.3744: *3* NullGui.dialogs
@@ -590,10 +591,10 @@ class NullGui(LeoGui):
     def createComparePanel(self, c: Cmdr) -> None:
         """Create Compare panel."""
 
-    def createFindTab(self, c: Cmdr, parentFrame: Widget) -> None:
+    def createFindTab(self, c: Cmdr, parentFrame: NullFrame) -> None:
         """Create a find tab in the indicated frame."""
 
-    def createLeoFrame(self, c: Cmdr, title: str) -> Widget:
+    def createLeoFrame(self, c: Cmdr, title: str) -> NullFrame:
         """Create a null Leo Frame."""
         gui = self
         self.lastFrame = leoFrame.NullFrame(c, title, gui)
@@ -619,7 +620,7 @@ class NullScriptingControllerClass:
 
     This keeps pylint happy."""
 
-    def __init__(self, c: Cmdr, iconBar: Widget = None) -> None:
+    def __init__(self, c: Cmdr, iconBar: NullIconBarClass = None) -> None:
         self.c = c
         self.iconBar = iconBar
 
@@ -844,21 +845,6 @@ class StringFindTabManager:
         }  # fmt: skip
         w = d.get(checkbox_name)
         w.toggle()
-
-    # @-others
-
-
-# @+node:ekr.20170613095422.1: ** class StringGui (LeoGui)
-class StringGui(LeoGui):
-    """
-    A class representing all on-screen objects using subclasses of the
-    leoAPI.StringTextWrapper class.
-    """
-
-    # @+others
-    # @+node:ekr.20170613114120.1: *3* StringGui.runMainLoop
-    def runMainLoop(self) -> None:
-        raise NotImplementedError
 
     # @-others
 

@@ -35,7 +35,6 @@
 # rules.
 # @-<< about internal bindings >>
 import sys
-from typing import Union
 from leo.core import leoGlobals as g
 from leo.core import leoGui
 from leo.core.leoQt import QtCore, QtGui, QtWidgets
@@ -558,7 +557,7 @@ class LeoQtEventFilter(QtCore.QObject):
         """Show unexpected events in unusual widgets."""
         verbose = False  # Not good for --trace-events
         e = QtCore.QEvent
-        t: Union[str, QtCore.QEvent.Type]
+        t: str | QtCore.QEvent.Type
         assert isinstance(event, QtCore.QEvent)
         et = event.type()
         # http://qt-project.org/doc/qt-4.8/qevent.html#properties

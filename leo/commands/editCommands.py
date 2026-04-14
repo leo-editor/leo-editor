@@ -16,7 +16,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position, VNode
-    from leo.plugins.qt_text import QTextEditWrapper as Wrapper
+    from leo.plugins.qt_text import QTextMixin
 
     KWargs = Any
     Value = Any
@@ -499,7 +499,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         if not w:
             return
 
-        def callback(arg: str, w: Wrapper = w) -> None:
+        def callback(arg: str, w: QTextMixin = w) -> None:
             i = w.getSelectionRange()[0]
             p = c.p
             w.deleteTextSelection()
@@ -697,7 +697,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         elif which == 'up':
             word2 = word.upper()
         else:
-            g.trace(f"can not happen: which = {s(which)}")
+            g.trace(f"can not happen: which = {which}")
         changed = word != word2
         if changed:
             w.delete(i, j)
@@ -2203,7 +2203,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         inBrackets: bool,
         oldSel: tuple[int, int],
         stroke: g.KeyStroke,
-        w: Wrapper,
+        w: QTextMixin,
     ) -> None:
         c, p = self.c, self.c.p
         isPlain = stroke.find('Alt') == -1 and stroke.find('Ctrl') == -1
@@ -2245,7 +2245,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             self.flashMatchingBracketsHelper(c, ch, i, p, w)
 
     # @+node:ekr.20180806045802.1: *5* ec.doSmartQuote
-    def doSmartQuote(self, action: str, ch: str, oldSel: tuple[int, int], w: Wrapper) -> None:
+    def doSmartQuote(self, action: str, ch: str, oldSel: tuple[int, int], w: QTextMixin) -> None:
         """Convert a straight quote to a curly quote, depending on context."""
         i, j = oldSel
         if i > j:
@@ -2268,7 +2268,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         w.setInsertPoint(ins + 1)
 
     # @+node:ekr.20150514063305.271: *5* ec.flashCharacter
-    def flashCharacter(self, w: Wrapper, i: int) -> None:
+    def flashCharacter(self, w: QTextMixin, i: int) -> None:
         """Flash the character at position i of widget w."""
         bg = self.bracketsFlashBg or 'DodgerBlue1'
         fg = self.bracketsFlashFg or 'white'
@@ -2278,7 +2278,7 @@ class EditCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.272: *5* ec.flashMatchingBracketsHelper
     def flashMatchingBracketsHelper(
-        self, c: Cmdr, ch: str, i: int, p: Position, w: Wrapper
+        self, c: Cmdr, ch: str, i: int, p: Position, w: QTextMixin
     ) -> None:
         """Flash matching brackets at char ch at position i at widget w."""
         d = {}
@@ -2309,7 +2309,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             self.closeBracketsList = ')]}'
 
     # @+node:ekr.20150514063305.274: *5* ec.insertNewlineHelper
-    def insertNewlineHelper(self, w: Wrapper, oldSel: tuple[int, int], undoType: str) -> None:
+    def insertNewlineHelper(self, w: QTextMixin, oldSel: tuple[int, int], undoType: str) -> None:
         c, p = self.c, self.c.p
         i, j = oldSel
         ch = '\n'
@@ -2332,7 +2332,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     # @+node:ekr.20150514063305.275: *5* ec.updateAutoIndent
     trailing_colon_pat = re.compile(r'^.*:\s*?#.*$')  # #2230
 
-    def updateAutoIndent(self, p: Position, w: Wrapper) -> None:
+    def updateAutoIndent(self, p: Position, w: QTextMixin) -> None:
         """Handle auto indentation."""
         c = self.c
         tab_width = c.getTabWidth(p)
@@ -2369,7 +2369,7 @@ class EditCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.276: *5* ec.updateAutomatchBracket
     def updateAutomatchBracket(
-        self, p: Position, w: Wrapper, ch: str, oldSel: tuple[int, int]
+        self, p: Position, w: QTextMixin, ch: str, oldSel: tuple[int, int]
     ) -> None:
         c = self.c
         language = c.getLanguage(p)
@@ -2398,7 +2398,13 @@ class EditCommandsClass(BaseEditCommandsClass):
                 w.setInsertPoint(i + 1)
 
     # @+node:ekr.20150514063305.277: *5* ec.updateTab & helper
-    def updateTab(self, event: LeoKeyEvent, p: Position, w: Wrapper, smartTab: bool = True) -> None:
+    def updateTab(
+        self,
+        event: LeoKeyEvent,
+        p: Position,
+        w: QTextMixin,
+        smartTab: bool = True,
+    ) -> None:
         """
         A helper for selfInsertCommand.
 
@@ -2427,7 +2433,13 @@ class EditCommandsClass(BaseEditCommandsClass):
             self.doPlainTab(s, i, tab_width, w)
 
     # @+node:ekr.20150514063305.270: *6* ec.doPlainTab
-    def doPlainTab(self, s: str, i: int, tab_width: int, w: Wrapper) -> None:
+    def doPlainTab(
+        self,
+        s: str,
+        i: int,
+        tab_width: int,
+        w: QTextMixin,
+    ) -> None:
         """
         A helper for selfInsertCommand, called from updateTab.
 
@@ -2493,7 +2505,13 @@ class EditCommandsClass(BaseEditCommandsClass):
     # @+node:ekr.20150514063305.285: *3* ec: move cursor
     # @+node:ekr.20150514063305.286: *4* ec. helpers
     # @+node:ekr.20150514063305.287: *5* ec.extendHelper
-    def extendHelper(self, w: Wrapper, extend: bool, spot: int, upOrDown: bool = False) -> None:
+    def extendHelper(
+        self,
+        w: QTextMixin,
+        extend: bool,
+        spot: int,
+        upOrDown: bool = False,
+    ) -> None:
         """
         Handle the details of extending the selection.
         This method is called for all cursor moves.
@@ -2724,7 +2742,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         self.moveToHelper(event, i, extend)
 
     # @+node:ekr.20150514063305.289: *5* ec.setMoveCol
-    def setMoveCol(self, w: Wrapper, spot: int) -> None:
+    def setMoveCol(self, w: QTextMixin, spot: int) -> None:
         """Set the column to which an up or down arrow will attempt to move."""
         p = self.c.p
         row, col = w.toPythonIndexRowCol(spot)
@@ -3029,7 +3047,10 @@ class EditCommandsClass(BaseEditCommandsClass):
     # @+node:ekr.20150514063305.302: *4* ec.extend-to-word
     @cmd('extend-to-word')
     def extendToWord(
-        self, event: LeoKeyEvent, select: bool = True, w: Wrapper = None
+        self,
+        event: LeoKeyEvent,
+        select: bool = True,
+        w: QTextMixin = None,
     ) -> tuple[int, int]:
         """Compute the word at the cursor. Select it if select arg is True."""
         if not w:
@@ -3603,7 +3624,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         self.selectParagraphHelper(w, i)
 
     # @+node:ekr.20150514063305.326: *5* ec.selectParagraphHelper
-    def selectParagraphHelper(self, w: Wrapper, start: int) -> None:
+    def selectParagraphHelper(self, w: QTextMixin, start: int) -> None:
         """Select from start to the end of the paragraph."""
         s = w.getAllText()
         i1, j = g.getLine(s, start)

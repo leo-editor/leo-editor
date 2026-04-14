@@ -20,6 +20,7 @@ appear in Leo.
 # @+node:ekr.20050218024153: ** << imports >> (xemacs.py)
 import os
 import sys
+from typing import Any
 from leo.core import leoGlobals as g
 # @-<< imports >>
 
@@ -95,7 +96,7 @@ def open_in_emacs_helper(c, p):
         v.OpenWithOldBody = v.b  # Remember the old contents
         # open the node in emacs (note the space after _emacs_cmd)
         # data = "os.spawnl", emacs_cmd, None
-        d = {'kind': 'os.spawnl', 'args': [emacs_cmd], 'ext': None}
+        d: dict[str, Any] = {'kind': 'os.spawnl', 'args': [emacs_cmd], 'ext': None}
         c.openWith(d=d)
     else:
         # Reopen the old temp file.

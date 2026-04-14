@@ -12,7 +12,7 @@ from leo.core.leoTest2 import LeoUnitTest, create_app
 try:
     from leo.core.leoQt import Qt, QtCore
     from leo.core.leoAPI import IconBarAPI, StatusLineAPI, TreeAPI
-    from leo.core.leoAPI import BaseTextAPI, StringTextWrapper
+    from leo.core.leoAPI import StringTextWrapper
     from leo.core.leoFrame import LeoTree
     from leo.core.leoFrame import NullIconBarClass, NullStatusLineClass, NullTree
     from leo.plugins.qt_frame import QtIconBarClass, QtStatusLineClass
@@ -20,6 +20,7 @@ try:
         QLineEditWrapper,
         QScintillaWrapper,
         QTextEditWrapper,
+        QTextMixin,
     )
     from leo.plugins.qt_text import LeoQTextBrowser
     from leo.plugins.qt_tree import LeoQtTree
@@ -46,6 +47,42 @@ class TestNullGui(LeoUnitTest):
         gui.runAskOkCancelStringDialog(c, 'title', 'message')
         gui.runAskYesNoDialog(c, 'title', 'message')
         gui.runAskYesNoCancelDialog(c, 'title', 'message')
+
+    # @+node:ekr.20260405083949.1: *3* TestNullGui.test_annotations
+    def test_annotations(self):
+        # This test establishes Leo's null-gui annotations.
+        # @+<< TestNullGui.test_annotations: imports >>
+        # @+node:ekr.20260406021136.1: *4* << TestNullGui.test_annotations: imports >>
+        from leo.core.leoFrame import (
+            NullBody,
+            NullFrame,
+            NullIconBarClass,
+            NullLog,
+            NullStatusLineClass,
+            NullTree,
+            StringTextWrapper,
+        )
+        from leo.core.leoGlobals import NullObject
+
+        # @-<< TestNullGui.test_annotations: imports >>
+        c = self.c
+        table = (
+            # NullFrame and ivars...
+            (c.frame, NullFrame),
+            (c.frame.body, NullBody),
+            (c.frame.iconBar, NullIconBarClass),
+            (c.frame.log, NullLog),
+            (c.frame.miniBufferWidget, NullObject),
+            (c.frame.statusLine, NullStatusLineClass),
+            (c.frame.tree, NullTree),
+            # NullBody ivars...
+            (c.frame.body.wrapper, StringTextWrapper),
+            # NullLog ivars...
+            (c.frame.log.widget, StringTextWrapper),
+            # no NullTree ivars!
+        )
+        for obj, class_ in table:
+            assert isinstance(obj, class_), (repr(obj), repr(class_))
 
     # @-others
 
@@ -220,6 +257,74 @@ class TestQtGui(LeoUnitTest):
         wrapper.delete(6, 0)
         # g.trace(wrapper.getAllText())
 
+    # @+node:ekr.20260404143610.1: *3* TestQtGui.test_annotations
+    def test_annotations(self):
+        # This test establishes the basis of Leo's Qt-related annotations.
+        # @+<< TestQtGui.test_annotations: imports >>
+        # @+node:ekr.20260406021200.1: *4* << TestQtGui.test_annotations: imports >>
+        from leo.core.leoQt import QtWidgets
+        from leo.plugins.qt_frame import (
+            DynamicWindow,
+            LeoQtBody,
+            LeoQtFrame,
+            LeoQtLog,
+            LeoQtMenu,
+            LeoQtTree,
+            LeoQTreeWidget,
+            QtIconBarClass,
+            QtStatusLineClass,
+            # QTabWidget,
+        )
+        from leo.plugins.qt_text import (
+            LeoQTextBrowser,
+            QHeadlineWrapper,
+            QLineEditWrapper,
+            QMinibufferWrapper,
+            QScintillaWrapper,
+            QTextEditWrapper,
+            QTextMixin,
+        )
+
+        QTabWidget = QtWidgets.QTabWidget
+        # @-<< TestQtGui.test_annotations: imports >>
+        c = self.c
+        table = (
+            # LeoQtFrame ivars...
+            (c.frame, LeoQtFrame),
+            (c.frame.body, LeoQtBody),
+            (c.frame.iconBar, QtIconBarClass),
+            (c.frame.log, LeoQtLog),
+            (c.frame.menu, LeoQtMenu),
+            (c.frame.miniBufferWidget, QMinibufferWrapper),
+            (c.frame.statusLine, QtStatusLineClass),
+            (c.frame.tree, LeoQtTree),
+            (c.frame.top, DynamicWindow),
+            # LeoQtBody ivars...
+            (c.frame.body.wrapper, QTextEditWrapper),
+            (c.frame.body.widget, LeoQTextBrowser),
+            # LeoQtLog ivars...
+            (c.frame.log.qtLogCtrl, QTextEditWrapper),
+            (c.frame.log.logWidget, LeoQTextBrowser),
+            (c.frame.log.qtTabWidget, QTabWidget),
+            # LeoQtTree ivars...
+            (c.frame.tree.treeWidget, LeoQTreeWidget),
+        )
+        for obj, class_ in table:
+            assert isinstance(obj, class_), (repr(obj), repr(class_))
+
+        # Test the class hierarchy of text-related classes.
+        assert issubclass(LeoQTextBrowser, QtWidgets.QTextBrowser)
+
+        # Leo 6.8.9: Leo can annotate general text widgets as `QTextMixin`
+        for class_ in (
+            QHeadlineWrapper,
+            QLineEditWrapper,
+            QMinibufferWrapper,
+            QTextEditWrapper,
+            QScintillaWrapper,
+        ):
+            assert issubclass(class_, QTextMixin), repr(class_)
+
     # @-others
 
 
@@ -276,7 +381,7 @@ class TestAPIClasses(LeoUnitTest):
             return [z for z in dir(cls) if not z.startswith('__')]
 
         def get_missing(cls):
-            return [z for z in get_methods(BaseTextAPI) if z not in get_methods(cls)]
+            return [z for z in get_methods(QTextMixin) if z not in get_methods(cls)]
 
         classes = [StringTextWrapper]
         if Qt:

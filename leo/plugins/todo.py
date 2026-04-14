@@ -68,8 +68,7 @@ import os
 import re
 import datetime
 import time
-from typing import Any, Iterable, Optional, Union
-from typing import TYPE_CHECKING
+from typing import Any, Iterable, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import Qt, QtCore, QtGui, QtWidgets, uic
 from leo.core.leoQt import Checked, Unchecked
@@ -82,7 +81,7 @@ if TYPE_CHECKING:  # pragma: no cover
     Args = Any
     Icon = Any  # QtGui.QIcon
     Menu = Any
-    Priority = Union[int, str]
+    Priority = int | str
 
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.

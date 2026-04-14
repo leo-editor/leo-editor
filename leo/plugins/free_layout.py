@@ -30,7 +30,7 @@ free-layout-zoom
 # @+node:tbrown.20110203111907.5520: ** << free_layout imports >>
 from __future__ import annotations
 import json
-from typing import Any, Optional, Union, TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 #
@@ -52,11 +52,10 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position
+    from leo.plugins.qt_text import QTextMixin
 
     QSplitter = QtWidgets.QSplitter
     QWidget = QtWidgets.QWidget
-
-Wrapper = Any
 
 
 # @-<< free_layout annotations >>
@@ -199,7 +198,7 @@ class FreeLayoutController:
         c.redraw()
 
     # @+node:ekr.20160424035257.1: *3* flc.get_main_splitter
-    def get_main_splitter(self, w: Wrapper = None) -> Optional[Wrapper]:
+    def get_main_splitter(self, w: QTextMixin = None) -> Optional[NestedSplitter]:
         """
         Return the main splitter.
 
@@ -209,7 +208,7 @@ class FreeLayoutController:
         return top if top.objectName() == 'main_splitter' else None
 
     # @+node:ekr.20160424035254.1: *3* flc.get_secondary_splitter
-    def get_secondary_splitter(self) -> Optional[Wrapper]:
+    def get_secondary_splitter(self) -> Optional[NestedSplitter]:
         """
         Return the secondary splitter, that is, the splitter containing the outline pane.
         """
@@ -222,7 +221,7 @@ class FreeLayoutController:
         return None
 
     # @+node:tbrown.20110621120042.22914: *3* flc.get_top_splitter
-    def get_top_splitter(self) -> Optional[Wrapper]:
+    def get_top_splitter(self) -> Optional[NestedSplitter]:
         """Return the top splitter of c.frame.top."""
         f = self.c.frame
         if hasattr(f, 'top') and f.top:
@@ -370,7 +369,7 @@ class FreeLayoutController:
         return False
 
     # @+node:tbrown.20110628083641.11724: *3* flc.ns_provide
-    def ns_provide(self, id_: str) -> Union[str, Wrapper, None]:
+    def ns_provide(self, id_: str) -> Optional[str | QTextMixin]:
         if id_.startswith('_leo_tab:'):
             id_ = id_.split(':', 1)[1]
             top = self.get_top_splitter()
@@ -414,8 +413,8 @@ class FreeLayoutController:
     # @+node:tbnorth.20160510122413.1: *3* flc.splitter_clicked
     def splitter_clicked(
         self,
-        splitter: Wrapper,
-        handle: Wrapper,
+        splitter: QSplitter,
+        handle: QSplitter,
         event: LeoKeyEvent,
         release: str,
         double: bool,

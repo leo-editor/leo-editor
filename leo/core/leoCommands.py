@@ -15,7 +15,7 @@ import tabnanny
 import tempfile
 import time
 import tokenize
-from typing import Any, Generator, Iterable, Optional, Sequence, Union, TYPE_CHECKING
+from typing import Any, Generator, Iterable, Optional, Sequence, TYPE_CHECKING
 import xml.etree.ElementTree as ElementTree
 
 from leo.core import leoGlobals as g
@@ -64,17 +64,17 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.commands.spellCommands import SpellCommandsClass
 
     # Other objects...
-    from leo.core.API import StringTextWrapper
     from leo.core.leoGui import LeoGui
+    from leo.core.qt_frame import LeoQtMenu
     from leo.plugins.qt_gui import StyleSheetManager
-    from leo.plugins.qt_text import QTextEditWrapper
+    from leo.plugins.qt_text import QTextMixin
 
     Args = Any
     KWargs = Any
-    RegexFlag = Union[int, re.RegexFlag]  # re.RegexFlag does not define 0
+    RegexFlag = int | re.RegexFlag  # re.RegexFlag does not define 0
     Value = Any
     Widget = Any  # 'Any' is the correct annotation for base class widgets.
-    Wrapper = Union[QTextEditWrapper, StringTextWrapper]
+
 # @-<< leoCommands annotations >>
 
 
@@ -112,7 +112,7 @@ class Commands:
         self,
         fileName: str,
         gui: LeoGui = None,
-        parentFrame: Wrapper = None,
+        parentFrame: Any = None,
         previousSettings: "PreviousSettings" = None,
         relativeFileName: str = None,
     ) -> None:
@@ -127,8 +127,6 @@ class Commands:
         self.gui: LeoGui = gui or g.app.gui
         # New ivars
         self.config: LocalConfigManager = None
-        self.idle_focus_count = 0
-        self.last_unusual_focus = 0
         # Declare subcommanders (and one alias) (created later).
         self.atFileCommands: AtFile = None
         self.chapterController: ChapterController = None
@@ -226,7 +224,7 @@ class Commands:
     # @+node:ekr.20120217070122.10473: *5* c.initCommandIvars
     def initCommandIvars(self) -> None:
         """Init ivars used while executing a command."""
-        self.commandsDict: dict[str, Callable] = {}  # Keys are command names, values are functions.
+        self.commandsDict: dict[str, Any] = {}  # Keys: command names, values: various.
         self.disableCommandsMessage = ''  # The presence of this message disables all commands.
         # One of three places that g.doHook looks for hook functions.
         self.hookFunction: Optional[Callable] = None
@@ -555,29 +553,23 @@ class Commands:
             return g.finalize(c.mFileName).lower()
         return f"{id(self)!s}"
 
-    # @+node:ekr.20110509064011.14563: *4* c.idle_focus_helper & helpers
+    # @+node:ekr.20110509064011.14563: *4* c.idle_focus_helper
     def idle_focus_helper(self, tag: str, keys: dict) -> None:
         """An idle-time handler that ensures that focus is *somewhere*."""
         trace = 'focus' in g.app.debug
-        trace_inactive_focus = False  # Too disruptive for --trace-focus
-        trace_in_dialog = False  # Not useful enough for --trace-focus
         c = self
         assert tag == 'idle'
         if g.unitTesting:
             return
         if keys.get('c') != c:
-            # g.trace('no c')
             return
-        self.idle_focus_count += 1
         if c.in_qt_dialog:
-            if trace and trace_in_dialog:
-                g.trace('in_qt_dialog')
             return
         w = g.app.gui.get_focus(at_idle=True)
         if g.app.gui.active:
-            # Always call trace_idle_focus.
-            self.trace_idle_focus(w)
-            if w and self.is_unusual_focus(w):
+            from leo.plugins.qt_frame import QtTabBarWrapper
+
+            if w and isinstance(w, QtTabBarWrapper):
                 if trace:
                     w_class = w and w.__class__.__name__
                     g.trace('***** unusual focus', w_class)
@@ -588,52 +580,6 @@ class Commands:
                 c.treeWantsFocusNow()
             # elif not w and active:
             # c.bodyWantsFocusNow()
-        elif trace and trace_inactive_focus:
-            w_class = w and w.__class__.__name__
-            count = c.idle_focus_count
-            g.trace(f"{count} inactive focus: {w_class}")
-
-    # @+node:ekr.20160427062131.1: *5* c.is_unusual_focus
-    def is_unusual_focus(self, w: Wrapper) -> bool:
-        """Return True if w is not in an expected place."""
-        #
-        # #270: Leo's keyboard events doesn't work after "Insert"
-        #       on headline and Alt+Tab, Alt+Tab
-        #
-        # #276: Focus lost...in Nav text input
-        from leo.plugins import qt_frame
-
-        return isinstance(w, qt_frame.QtTabBarWrapper)
-
-    # @+node:ekr.20150403063658.1: *5* c.trace_idle_focus
-    def trace_idle_focus(self, w: Wrapper) -> None:
-        """Trace the focus for w, minimizing chatter."""
-        from leo.core.leoQt import QtWidgets
-        from leo.plugins import qt_frame
-
-        trace = 'focus' in g.app.debug
-        trace_known = False
-        c = self
-        table = (
-            QtWidgets.QWidget,
-            qt_frame.LeoQTreeWidget,
-        )
-        count = c.idle_focus_count
-        if w:
-            w_class = w and w.__class__.__name__
-            if self.is_unusual_focus(w):
-                if trace:
-                    g.trace(f"{count} unusual focus: {w_class}")
-            else:
-                c.last_unusual_focus = None
-                if isinstance(w, table):
-                    if trace and trace_known:
-                        g.trace(f"{count} known focus: {w_class}")
-                elif trace:
-                    g.trace(f"{count} unknown focus: {w_class}")
-        else:
-            if trace:
-                g.trace(f"{count:3} no focus")
 
     # @+node:ekr.20081005065934.1: *4* c.initAfterLoad
     def initAfterLoad(self) -> None:
@@ -1039,7 +985,7 @@ class Commands:
             return ''
 
         # @+node:tom.20241014154415.15: *5* getCommonTerminal
-        def getCommonTerminal(names: Union[str, Iterable[str]]) -> str:
+        def getCommonTerminal(names: str | Iterable[str]) -> str:
             """Return a terminal name given candidate names.
 
             ARGUMENT
@@ -1664,7 +1610,7 @@ class Commands:
     # @+node:ekr.20040306220230.1: *5* c.edit_widget
     def edit_widget(self, p: Position) -> Widget:
         c = self
-        return p and c.frame.tree.edit_widget(p)
+        return c.frame.tree.edit_widget(p) if p else None
 
     # @+node:ekr.20031218072017.2986: *5* c.fileName & relativeFileName & shortFileName
     # Compatibility with scripts
@@ -2107,7 +2053,7 @@ class Commands:
         return False
 
     # @+node:ekr.20070609122713: *5* c.visLimit
-    def visLimit(self) -> Union[tuple[None, None], tuple[Position, bool]]:
+    def visLimit(self) -> tuple[None, None] | tuple[Position, bool]:
         """
         Return the topmost visible node.
         This is affected by chapters and hoists.
@@ -4107,7 +4053,7 @@ class Commands:
             g.doHook("recentfiles2", c=c2, p=c2.p, v=c2.p, fileName=fn)
 
     # @+node:ekr.20031218072017.2823: *4* c.openWith
-    def openWith(self, event: LeoKeyEvent = None, d: dict[str, Position] = None) -> None:
+    def openWith(self, event: LeoKeyEvent = None, d: dict[str, Any] = None) -> None:
         """
         This is *not* a command.
 
@@ -4748,7 +4694,7 @@ class Commands:
         pass
 
     # @+node:ekr.20080514131122.16: *5* c.traceFocus (not used)
-    def traceFocus(self, w: Wrapper) -> None:
+    def traceFocus(self, w: Any) -> None:
         c = self
         if 'focus' in g.app.debug:
             c.trace_focus_count += 1
@@ -4789,7 +4735,7 @@ class Commands:
         tree = c.frame.tree
         c.request_focus(tree and tree.canvas)
 
-    def widgetWantsFocus(self, w: Wrapper) -> None:
+    def widgetWantsFocus(self, w: QTextMixin) -> None:
         c = self
         c.request_focus(w)
 
@@ -4824,7 +4770,7 @@ class Commands:
     # @+node:ekr.20080610085158.2: *5* c.add_command
     def add_command(
         self,
-        menu: Widget,
+        menu: LeoQtMenu,
         accelerator: str = '',  # Not used.
         command: Callable = None,
         commandName: str = None,  # Not used.

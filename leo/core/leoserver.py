@@ -27,7 +27,7 @@ import sys
 import socket
 import textwrap
 import time
-from typing import Any, Generator, Iterable, Iterator, Optional, Union
+from typing import Any, Generator, Iterable, Iterator, Optional
 import warnings
 
 # Third-party.
@@ -84,7 +84,7 @@ Match = re.Match
 Match_Iter = Iterator[re.Match[str]]
 Package = dict[str, Any]
 Param = dict[str, Any]
-RegexFlag = Union[int, re.RegexFlag]  # re.RegexFlag does not define 0
+RegexFlag = int | re.RegexFlag  # re.RegexFlag does not define 0
 Response = str  # See _make_response.
 Socket = Any
 
@@ -954,7 +954,7 @@ class LeoServer:
         self.dummy_c: Cmdr = None  # Set below, after we set g.
         self.action: str = None
         self.bad_commands_list: list[str] = []  # Set below.
-        self.idle_tasks: list[tuple[Callable, Union[int, float]]] = []
+        self.idle_tasks: list[tuple[Callable, int | float]] = []
         #
         # Debug utilities
         self.current_id = 0  # Id of action being processed.
@@ -1185,14 +1185,14 @@ class LeoServer:
         return script
 
     # @+node:felix.20210627004238.1: *4* LeoServer._asyncIdleLoop
-    async def _asyncIdleLoop(self, seconds: Union[int, float], func: Callable) -> None:
+    async def _asyncIdleLoop(self, seconds: int | float, func: Callable) -> None:
         """A background task that calls func every n seconds."""
         while True:
             await asyncio.sleep(seconds)
             func(self)
 
     # @+node:felix.20210627004039.1: *4* LeoServer._idleTime
-    def _idleTime(self, fn: Callable, delay: Union[int, float], tag: str) -> None:
+    def _idleTime(self, fn: Callable, delay: int | float, tag: str) -> None:
         warnings.simplefilter("ignore")
         self.idle_tasks.append((fn, delay))
 

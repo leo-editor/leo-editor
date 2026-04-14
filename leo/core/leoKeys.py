@@ -14,7 +14,7 @@ import string
 import sys
 import textwrap
 import time
-from typing import Any, Optional, Union, TYPE_CHECKING
+from typing import Any, Optional, TYPE_CHECKING
 from types import ModuleType
 from leo.core import leoGlobals as g
 from leo.external import codewise
@@ -32,11 +32,13 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGlobals import BindingInfo
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position
+    from leo.core.leoQt import QtWidgets
     from leo.plugins.qt_frame import LeoQtLog
-    from leo.plugins.qt_text import QTextEditWrapper as Wrapper
+    from leo.plugins.qt_text import QTextMixin
 
     Args = Any
     KWargs = Any
+    QWidget = QtWidgets.QWidget
     Stroke = Any
     Value = Any
     Widget = Any  # 'Any' is the correct annotation for base class widgets.
@@ -1117,7 +1119,7 @@ class FileNameChooser:
         self.c = c
         self.k = c.k
         assert c and c.k
-        self.log: Union[NullLog, LeoQtLog] = c.frame.log or NullLog(frame=c.frame, parentFrame=None)
+        self.log: NullLog | LeoQtLog = c.frame.log or NullLog(frame=c.frame)
         self.callback: Callable = None
         self.filterExt: list[str] = None
         self.prompt: str = None
@@ -1232,7 +1234,7 @@ class FileNameChooser:
         char = event.char if event else ''
         if state == 0:
             # Re-init all ivars.
-            self.log = c.frame.log or NullLog(frame=c.frame, parentFrame=None)
+            self.log = c.frame.log or NullLog(frame=c.frame)
             self.callback = callback
             self.filterExt = filterExt or ['.pyc', '.bin']
             self.prompt = prompt
@@ -1831,7 +1833,7 @@ class KeyHandlerClass:
         # Values are dicts: keys are strokes, values are BindingInfo objects.
         self.masterBindingsDict: dict = {}
         # Keys are strokes; value is list of Widgets in which the strokes are bound.
-        self.masterGuiBindingsDict: dict[Stroke, list[Wrapper]] = {}
+        self.masterGuiBindingsDict: dict[Stroke, list[QTextMixin]] = {}
         # Special bindings for k.fullCommand...
         self.mb_copyKey = None
         self.mb_pasteKey = None
@@ -2246,7 +2248,7 @@ class KeyHandlerClass:
         k.masterBindingsDict[pane] = d
 
     # @+node:ekr.20061031131434.94: *5* k.bindOpenWith
-    def bindOpenWith(self, d: dict[str, str]) -> None:
+    def bindOpenWith(self, d: dict[str, Any]) -> None:
         """Register an open-with command."""
         c, k = self.c, self
         shortcut = d.get('shortcut') or ''
@@ -2285,7 +2287,7 @@ class KeyHandlerClass:
                     g.trace(f"No shortcut for {name} = {key}")
 
     # @+node:ekr.20061031131434.97: *4* k.completeAllBindings
-    def completeAllBindings(self, w: Wrapper = None) -> None:
+    def completeAllBindings(self, w: QTextMixin = None) -> None:
         """
         Make an actual binding in *all* the standard places.
 
@@ -2298,7 +2300,7 @@ class KeyHandlerClass:
             k.makeMasterGuiBinding(stroke, w=w)
 
     # @+node:ekr.20061031131434.96: *4* k.completeAllBindingsForWidget
-    def completeAllBindingsForWidget(self, w: Wrapper) -> None:
+    def completeAllBindingsForWidget(self, w: QTextMixin) -> None:
         """Make all a master gui binding for widget w."""
         k = self
         for stroke in k.bindingsDict:
@@ -2407,7 +2409,7 @@ class KeyHandlerClass:
                     k.bindKey(pane, stroke, command, commandName, tag=tag)  # type:ignore
 
     # @+node:ekr.20061031131434.103: *4* k.makeMasterGuiBinding
-    def makeMasterGuiBinding(self, stroke: Stroke, w: Wrapper = None) -> None:
+    def makeMasterGuiBinding(self, stroke: Stroke, w: QTextMixin = None) -> None:
         """Make a master gui binding for stroke in pane w, or in all the standard widgets."""
         c, k = self.c, self
         f = c.frame
@@ -2421,7 +2423,7 @@ class KeyHandlerClass:
             wrapper = f.body and hasattr(f.body, 'wrapper') and f.body.wrapper or None
             canvas = f.tree and hasattr(f.tree, 'canvas') and f.tree.canvas or None
             widgets = [c.miniBufferWidget, wrapper, canvas, bindingWidget]
-        aList: list
+        aList: list[QTextMixin]
         for w in widgets:
             if not w:
                 continue
@@ -3228,7 +3230,7 @@ class KeyHandlerClass:
         k.resetCommandHistory()
 
     # @+node:ekr.20061031131434.126: *4* k.manufactureKeyPressForCommandName (only for unit tests!)
-    def manufactureKeyPressForCommandName(self, w: Wrapper, commandName: str) -> None:
+    def manufactureKeyPressForCommandName(self, w: QTextMixin, commandName: str) -> None:
         """
         Implement a command by passing a keypress to the gui.
 
@@ -3890,10 +3892,15 @@ class KeyHandlerClass:
         return None
 
     # @+node:ekr.20180418105228.1: *7* getPaneBindingHelper
-    def getBindingHelper(self, key: str, name: str, stroke: Stroke, w: Wrapper) -> g.BindingInfo:
+    def getBindingHelper(
+        self,
+        key: str,
+        name: str,
+        stroke: Stroke,
+        w: QWidget,
+    ) -> g.BindingInfo:
         """Find a binding for the widget with the given name."""
         c, k = self.c, self
-        #
         # Return if the pane's name doesn't match the event's widget.
         state = k.unboundKeyAction
         w_name = c.widget_name(w)
@@ -3905,7 +3912,6 @@ class KeyHandlerClass:
         )  # fmt: skip
         if not pane_matches:
             return None
-        #
         # Return if there is no binding at all.
         d = k.masterBindingsDict.get(key, {})
         if not d:
@@ -3913,11 +3919,9 @@ class KeyHandlerClass:
         bi = d.get(stroke)
         if not bi:
             return None
-        #
         # Ignore previous/next-line commands while editing headlines.
         if key == 'text' and name == 'head' and bi.commandName in ('previous-line', 'next-line'):
             return None
-        #
         # The binding has been found.
         return bi
 
@@ -4150,7 +4154,7 @@ class KeyHandlerClass:
         k.setLabelGrey(f"@mode {modeName} is not defined (or is empty)")
 
     # @+node:ekr.20061031131434.158: *4* k.createModeBindings
-    def createModeBindings(self, modeName: str, d: dict[str, list], w: Wrapper) -> None:
+    def createModeBindings(self, modeName: str, d: dict[str, list], w: QTextMixin) -> None:
         """Create mode bindings for the named mode using dictionary d for w, a text widget."""
         c, k = self.c, self
         assert d.name().endswith('-mode')
@@ -4506,7 +4510,10 @@ class KeyHandlerClass:
 
     # @+node:ekr.20061031131434.192: *4* k.showStateAndMode
     def showStateAndMode(
-        self, w: Wrapper = None, prompt: str = None, setFocus: bool = True
+        self,
+        w: QTextMixin = None,
+        prompt: str = None,
+        setFocus: bool = True,
     ) -> None:
         """Show the state and mode at the start of the minibuffer."""
         c, k = self.c, self
@@ -4521,11 +4528,12 @@ class KeyHandlerClass:
                 w = g.app.gui.get_focus(c)
                 if not w:
                     return
-        isText = g.isTextWrapper(w)
+
         # This fixes a problem with the tk gui plugin.
         if mode and mode.lower().startswith('isearch'):
             return
         wname = g.app.gui.widget_name(w).lower()
+
         # Get the wrapper for the headline widget.
         if wname.startswith('head'):
             if hasattr(c.frame.tree, 'getWrapper'):
@@ -4534,7 +4542,6 @@ class KeyHandlerClass:
                 else:
                     w2 = w
                 w = c.frame.tree.getWrapper(w2, item=None)
-                isText = bool(w)  # A benign hack.
         if mode:
             if mode in ('getArg', 'getFileName', 'full-command'):
                 s = None
@@ -4548,22 +4555,17 @@ class KeyHandlerClass:
         elif c.vim_mode and c.vimCommands:
             c.vimCommands.show_status()
             return
-        else:  # pylint: disable=no-else-return
-            s = f"{state.capitalize()} State"
-            if c.editCommands.extendMode:
-                s = s + ' (Extend Mode)'
+
+        # Set the status line
+        s = f"{state.capitalize()} State"
+        if c.editCommands.extendMode:
+            s = s + ' (Extend Mode)'
         if s:
             k.setLabelBlue(s)
-        if w and isText:
-            # k.showStateColors(inOutline,w)
-            k.showStateCursor(state, w)
-        # 2015/07/11: reset the status line.
+
+        # reset the status line.
         if hasattr(c.frame.tree, 'set_status_line'):
             c.frame.tree.set_status_line(c.p)
-
-    # @+node:ekr.20110202111105.15439: *4* k.showStateCursor
-    def showStateCursor(self, state: str, w: Wrapper) -> None:
-        pass
 
     # @-others
 
@@ -4618,7 +4620,7 @@ class ModeInfo:
         return prompt
 
     # @+node:ekr.20120208064440.10160: *3* mode_i.createModeBindings
-    def createModeBindings(self, w: Wrapper) -> None:
+    def createModeBindings(self, w: QTextMixin) -> None:
         """Create mode bindings for w, a text widget."""
         c, d, k, modeName = self.c, self.d, self.k, self.name
         for commandName in d:

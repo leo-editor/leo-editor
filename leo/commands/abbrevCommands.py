@@ -18,7 +18,8 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position
-    from leo.plugins.qt_text import QTextEditWrapper as Wrapper
+    from leo.plugins.qt_text import QTextMixin
+
 # @-<< abbrevCommands imports & abbreviations >>
 
 
@@ -321,7 +322,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     # @+node:ekr.20150514043850.12: *4* abbrev.expand_text
     def expand_text(
         self,
-        w: Wrapper,
+        w: QTextMixin,
         i: int,
         j: int,
         val: str,
@@ -347,7 +348,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             self.find_place_holder(p, do_placeholder)
 
     # @+node:ekr.20150514043850.13: *4* abbrev.expand_tree (entry) & helpers
-    def expand_tree(self, w: Wrapper, i: int, j: int, tree_s: str, word: str) -> None:
+    def expand_tree(self, w: QTextMixin, i: int, j: int, tree_s: str, word: str) -> None:
         """
         Paste tree_s as children of c.p.
         This happens *before* any substitutions are made.
@@ -565,7 +566,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         return s2, start, end
 
     # @+node:ekr.20150514043850.18: *4* abbrev.replace_selection
-    def replace_selection(self, w: Wrapper, i: int, j: int, s: str) -> None:
+    def replace_selection(self, w: QTextMixin, i: int, j: int, s: str) -> None:
         """Replace w[i:j] by s."""
         p, u = self.c.p, self.c.undoer
         w_name = g.app.gui.widget_name(w)
@@ -592,7 +593,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             self.save_ins = ins + delta
 
     # @+node:ekr.20161121111502.1: *4* abbrev_get_ch
-    def get_ch(self, event: LeoKeyEvent, stroke: g.KeyStroke, w: Wrapper) -> str:
+    def get_ch(self, event: LeoKeyEvent, stroke: g.KeyStroke, w: QTextMixin) -> str:
         """Get the ch from the stroke."""
         ch = g.checkUnicode(event and event.char or '')
         if self.expanding:
@@ -619,7 +620,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         return ch
 
     # @+node:ekr.20161121112346.1: *4* abbrev_get_prefixes
-    def get_prefixes(self, w: Wrapper) -> tuple[str, int, int, list[str]]:
+    def get_prefixes(self, w: QTextMixin) -> tuple[str, int, int, list[str]]:
         """Return the prefixes at the current insertion point of w."""
         # New code allows *any* sequence longer than 1 to be an abbreviation.
         # Any whitespace stops the search.
@@ -705,7 +706,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         event: LeoKeyEvent,
         prefix: str = None,
         aList: list[str] = None,
-        w: Wrapper = None,
+        w: QTextMixin = None,
     ) -> None:
         """State handler for dabbrev-expands command."""
         c, k = self.c, self.c.k
@@ -745,7 +746,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             c.recolor()
 
     # @+node:ekr.20150514043850.23: *4* abbrev.getDynamicList (helper)
-    def getDynamicList(self, w: Wrapper, s: str) -> list[str]:
+    def getDynamicList(self, w: QTextMixin, s: str) -> list[str]:
         """Return a list of dynamic abbreviations."""
         if self.globalDynamicAbbrevs:
             # Look in all nodes.h

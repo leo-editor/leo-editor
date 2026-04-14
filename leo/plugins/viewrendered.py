@@ -942,7 +942,6 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     # @+node:ekr.20110320120020.14486: *5* vr.embed_widget
     def embed_widget(self, w: QWidget) -> None:
         """Embed widget w in the layout."""
-
         assert w == self.w, g.callers()  # Invariant.
 
         # Delete all previous widgets.

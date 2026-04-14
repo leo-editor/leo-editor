@@ -3443,8 +3443,6 @@ class TestPython(BaseTestImporter):
     def test_long_declaration(self):
         # ekr-mypy2/mypy/applytype.py
 
-        # Note: the return type uses the python 3.11 syntax for Union.
-
         s = """
         def get_target_type(
             tvar: TypeVarLikeType,

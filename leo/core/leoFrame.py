@@ -1,10 +1,11 @@
 # @+leo-ver=5-thin
 # @+node:ekr.20031218072017.3655: * @file leoFrame.py
 """
-The base classes for all Leo Windows, their body, log and tree panes,
-key bindings and menus.
+This file contains:
 
-These classes should be overridden to create frames for a particular gui.
+- Base classes for all Leo Windows, their body, log and tree panes,
+  key bindings and menus.
+- Common annotations for these classes.
 """
 
 # @+<< leoFrame imports >>
@@ -14,36 +15,39 @@ from collections.abc import Callable
 import os
 import re
 import string
-from typing import Any, Union
-from typing import TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
-from leo.core import leoColorizer
-from leo.core import leoMenu
-from leo.core import leoNodes
+from leo.core import leoColorizer, leoMenu, leoNodes
 from leo.core.leoAPI import StringTextWrapper
 
 # @-<< leoFrame imports >>
 # @+<< leoFrame annotations >>
 # @+node:ekr.20220415013957.1: ** << leoFrame annotations >>
 if TYPE_CHECKING:  # pragma: no cover
-    from leo.core.leoChapters import ChapterController
     from leo.core.leoColorizer import BaseColorizer
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent
-    from leo.core.leoGui import LeoGui
-    from leo.core.leoMenu import LeoMenu, NullMenu
+    from leo.core.leoGui import (
+        LeoKeyEvent,
+        LeoGui,
+        LeoMenu,
+        NullMenu,
+    )
     from leo.core.leoNodes import Position, VNode
     from leo.plugins.mod_scripting import ScriptingController
-    from leo.plugins.qt_frame import DynamicWindow
-    from leo.plugins.qt_frame import LeoQtBody, LeoQtLog, LeoQtMenu, LeoQtTree
-    from leo.plugins.qt_frame import QtIconBarClass, QtStatusLineClass
-    from leo.plugins.qt_text import QScintillaWrapper, QTextEditWrapper
-    from leo.plugins.notebook import NbController
+    from leo.plugins.qt_frame import (
+        DynamicWindow,
+        LeoQtBody,
+        LeoQtFrame,
+        LeoQtLog,
+        LeoQtMenu,
+        LeoQtTree,
+        QtIconBarClass,
+        QtStatusLineClass,
+    )
+    from leo.plugins.qt_text import QMinibufferWrapper, QTextMixin
+    from leo.plugins.cursesGui2 import MiniBufferWrapper as CursesMiniBufferWrapper
 
-    Args = Any
-    KWargs = Any
     Widget = Any  # 'Any' is the correct annotation for base class widgets.
-    TextAPI = Union[QScintillaWrapper, QTextEditWrapper, StringTextWrapper]
 
 
 # @-<< leoFrame annotations >>
@@ -100,16 +104,15 @@ class LeoBody:
 
     # @+others
     # @+node:ekr.20031218072017.3657: *3* LeoBody.__init__
-    def __init__(self, frame: Widget, parentFrame: Widget) -> None:
+    def __init__(self, frame: LeoQtFrame | NullFrame) -> None:
         """Ctor for LeoBody class."""
         c = frame.c
         frame.body = self
         self.c = c
         self.frame = frame
-        self.parentFrame: Widget = parentFrame
-        # May be overridden in subclasses...
-        self.widget: Widget = None
-        self.wrapper: TextAPI = None
+        self.widget: Any = None  # cursesGui2.py: will be an npyscreen widget.
+        self.wrapper: QTextMixin = None
+
         # Must be overridden in subclasses...
         self.colorizer: BaseColorizer = None
         # Init user settings.
@@ -131,25 +134,11 @@ class LeoBody:
         self.c.recolor()
 
     recolor_now = recolor
-    # @+node:ekr.20140903103455.18574: *3* LeoBody.Defined in subclasses
-    # LeoBody methods that must be defined in subclasses.
-
-    def createEditorFrame(self, w: TextAPI) -> TextAPI:
-        raise NotImplementedError
-
-    def createTextWidget(self, parentFrame: Widget, p: Position, name: str) -> TextAPI:
-        raise NotImplementedError
-
-    def packEditorLabelWidget(self, w: TextAPI) -> None:
-        raise NotImplementedError
-
-    def onFocusOut(self, obj: Widget) -> None:
-        raise NotImplementedError
 
     # @+node:ekr.20060528100747: *3* LeoBody.Editors
     # @+node:ekr.20070424053629.1: *4* LeoBody.utils
     # @+node:ekr.20060530204135: *5* LeoBody.recolorWidget (QScintilla only)
-    def recolorWidget(self, p: Position, w: TextAPI) -> None:
+    def recolorWidget(self, p: Position, w: QTextMixin) -> None:
         # Support QScintillaColorizer.colorize.
         c = self.c
         colorizer = c.frame.body.colorizer
@@ -258,14 +247,14 @@ class LeoFrame:
         self.gui = gui
         # Types...
         # Objects attached to this frame...
-        self.body: Union[LeoBody, NullBody, LeoQtBody] = None
-        self.iconBar: Union[NullIconBarClass, QtIconBarClass] = None
-        self.log: Union[LeoLog, NullLog, LeoQtLog] = None
-        self.menu: Union[LeoMenu, LeoQtMenu, NullMenu] = None
-        self.miniBufferWidget: Widget = None
-        self.statusLine: Union[NullStatusLineClass, QtStatusLineClass] = None
+        self.body: LeoBody | NullBody | LeoQtBody = None
+        self.iconBar: NullIconBarClass | QtIconBarClass = None
+        self.log: LeoLog | NullLog | LeoQtLog = None
+        self.menu: LeoMenu | LeoQtMenu | NullMenu = None
+        self.miniBufferWidget: QMinibufferWrapper | CursesMiniBufferWrapper = None
+        self.statusLine: NullStatusLineClass | QtStatusLineClass = None
         self.top: DynamicWindow = None
-        self.tree: Union[LeoTree, NullTree, LeoQtTree] = None
+        self.tree: LeoTree | NullTree | LeoQtTree = None
         self.useMiniBufferWidget = False
         # Other ivars...
         self.cursorStay = True  # May be overridden in subclass.reloadSettings.
@@ -407,7 +396,7 @@ class LeoFrame:
         c.frame.setTabWidth(tab_width)
 
     # @+node:ekr.20061119120006: *4* LeoFrame.Icon area convenience methods
-    def addIconButton(self, *args: Args, **keys: KWargs) -> Any:
+    def addIconButton(self, *args: Any, **keys: Any) -> Any:
         if self.iconBar:
             return self.iconBar.add(*args, **keys)
         return None
@@ -453,7 +442,7 @@ class LeoFrame:
         if self.statusLine:
             self.statusLine.enable(background)
 
-    def getStatusLine(self) -> Union[NullStatusLineClass, QtStatusLineClass]:
+    def getStatusLine(self) -> NullStatusLineClass | QtStatusLineClass:
         return self.statusLine
 
     getStatusObject = getStatusLine
@@ -738,27 +727,26 @@ class LeoLog:
 
     # @+others
     # @+node:ekr.20150509054436.1: *3* LeoLog.Birth
-    # @+node:ekr.20031218072017.3695: *4* LeoLog.ctor
-    def __init__(self, frame: Widget, parentFrame: Widget) -> None:
+    # @+node:ekr.20031218072017.3695: *4* LeoLog.__init__
+    def __init__(self, frame: LeoLog | LeoQtFrame | NullFrame) -> None:
         """Ctor for LeoLog class."""
+        g._assert(frame is None or issubclass(frame.__class__, LeoFrame))
         self.frame = frame
-        self.c = frame.c if frame else None
+        self.c: Cmdr = frame.c if frame else None
         self.enabled = True
         self.newlines = 0
         self.isNull = False
         # Official ivars...
-        self.canvasCtrl: Widget = None  # Set below. Same as self.canvasDict.get(self.tabName)
-        # Important: depending on the log *tab*, logCtrl may be either a wrapper or a widget.
-        self.logCtrl: Widget = None  # Set below. Same as self.textDict.get(self.tabName)
+
+        # Depending on the log *tab*, logCtrl may be either a wrapper or a widget.
+        self.logCtrl: Widget = None
         self.tabName: str = None  # The name of the active tab.
-        self.tabFrame: Widget = None  # Same as self.frameDict.get(self.tabName)
-        self.canvasDict: dict[str, Widget] = {}  # Keys are page names.  Values are Widgets.
-        self.frameDict: dict[str, Widget] = {}  # Keys are page names. Values are Frames
+        self.tabFrame: LeoFrame | NullFrame = None
+        self.frameDict: dict[str, LeoFrame | NullFrame] = {}
         self.logNumber = 0  # To create unique name fields for text widgets.
         self.newTabCount = 0  # Number of new tabs created.
-        # Keys are page names. Values are logCtrl's (text widgets).
-        self.textDict: dict[str, Widget] = {}
-        self.wrapper: TextAPI = None  # For cursesGui2.py.
+        self.textDict: dict[str, Widget] = {}  # Keys: page names. Values: text widgets.
+        self.wrapper: StringTextWrapper = None  # To keep mypy happy.
 
     # @+node:ekr.20070302094848.1: *3* LeoLog.clearTab
     def clearTab(self, tabName: str, wrap: str = 'none') -> None:
@@ -775,19 +763,9 @@ class LeoLog:
         widget: Widget = None,
         wrap: str = 'none',
     ) -> Widget:
-        # Important: widget *is* used in subclasses. Do not change the signature above.
-        if createText:
-            w = self.createTextWidget(self.tabFrame)
-            self.canvasDict[tabName] = None
-            self.textDict[tabName] = w
-        else:
-            self.canvasDict[tabName] = None
-            self.textDict[tabName] = None
-            self.frameDict[tabName] = tabName  # tabFrame
-
-    # @+node:ekr.20140903143741.18550: *3* LeoLog.LeoLog.createTextWidget
-    def createTextWidget(self, parentFrame: Widget) -> Widget:
-        return None
+        # Do not change the signature above.
+        self.textDict[tabName] = None
+        self.frameDict[tabName] = None
 
     # @+node:ekr.20070302094848.5: *3* LeoLog.deleteTab
     def deleteTab(self, tabName: str) -> None:
@@ -797,7 +775,7 @@ class LeoLog:
         elif tabName in ('Find', 'Spell'):
             self.selectTab('Log')
         else:
-            for d in (self.canvasDict, self.textDict, self.frameDict):
+            for d in (self.textDict, self.frameDict):
                 if tabName in d:
                     del d[tabName]
             self.tabName = None
@@ -972,14 +950,12 @@ class LeoLog:
             self.createTab(tabName, createText=True)
         # Update the status vars.
         self.tabName = tabName
-        self.canvasCtrl = self.canvasDict.get(tabName)
         self.logCtrl = self.textDict.get(tabName)
         self.tabFrame = self.frameDict.get(tabName)
         if 0:
             # Absolutely do not do this here!
             # It is a cause of the 'sticky focus' problem.
             c.widgetWantsFocusNow(self.logCtrl)
-        return tabFrame
 
     # @-others
 
@@ -1054,8 +1030,6 @@ class LeoTree:
         """Ctor for the LeoTree class."""
         self.frame = frame
         self.c = frame.c
-        # New in 3.12: keys vnodes, values are edit_widgets.
-        # New in 4.2: keys are vnodes, values are pairs (p,edit widgets).
         self.edit_text_dict: dict[VNode, tuple[Position, Widget]] = {}
         # "public" ivars: correspond to setters & getters.
         self.drag_p = None
@@ -1063,7 +1037,7 @@ class LeoTree:
         self.redrawCount = 0  # For traces
         self.use_chapters = False  # May be overridden in subclasses.
         # Define these here to keep pylint happy.
-        self.canvas: Widget = None
+        self.canvas: Any = None
 
     # @+node:ekr.20061109165848: *3* LeoTree.Must be defined in base class
     # @+node:ekr.20040803072955.126: *4* LeoTree.endEditLabel
@@ -1100,7 +1074,7 @@ class LeoTree:
         pass
 
     # @+node:ekr.20051026083544.2: *4* LeoTree.updateHead
-    def updateHead(self, event: LeoKeyEvent, w: TextAPI) -> None:
+    def updateHead(self, event: LeoKeyEvent, w: QTextMixin) -> None:
         """
         Update a headline from an event.
 
@@ -1323,62 +1297,24 @@ class LeoTree:
     # @-others
 
 
-# @+node:ekr.20070317073627: ** class LeoTreeTab
-class LeoTreeTab:
-    """A class representing a tabbed outline pane."""
-
-    # @+others
-    # @+node:ekr.20070317073627.1: *3* LeoTreeTab.ctor (LeoTreeTab)
-    def __init__(self, c: Cmdr, chapterController: ChapterController, parentFrame: Widget) -> None:
-        self.c = c
-        self.cc: ChapterController
-        self.nb: NbController = None  # Created in createControl.
-        self.parentFrame: Widget = parentFrame
-
-    # @+node:ekr.20070317073755: *3* LeoTreeTab: Must be defined in subclasses
-    def createControl(self) -> TextAPI:
-        raise NotImplementedError
-
-    def createTab(
-        self,
-        tabName: str,
-        createText: bool = True,
-        widget: Widget = None,
-        select: bool = True,
-    ) -> None:
-        raise NotImplementedError
-
-    def destroyTab(self, tabName: str) -> None:
-        raise NotImplementedError
-
-    def selectTab(self, tabName: str, wrap: str = 'none') -> None:
-        raise NotImplementedError
-
-    def setTabLabel(self, tabName: str) -> None:
-        raise NotImplementedError
-
-    # @-others
-
-
 # @+node:ekr.20031218072017.2191: ** class NullBody (LeoBody)
 class NullBody(LeoBody):
     """A do-nothing body class."""
 
     # @+others
     # @+node:ekr.20031218072017.2192: *3*  NullBody.__init__
-    def __init__(self, frame: Widget = None, parentFrame: Widget = None) -> None:
+    def __init__(self, frame: NullFrame) -> None:
         """Ctor for NullBody class."""
-        super().__init__(frame, parentFrame)
+        super().__init__(frame)
         self.insertPoint = 0
         self.selection = 0, 0
         self.s = ""  # The body text
-        self.widget: Widget = None
         self.wrapper = StringTextWrapper(c=self.c, name='body')
         self.colorizer = NullColorizer(self.c)
 
     # @+node:ekr.20031218072017.2197: *3* NullBody: LeoBody interface
     # Birth, death...
-    def createControl(self, parentFrame: Widget, p: Position) -> TextAPI:
+    def createControl(self, parentFrame: NullFrame, p: Position) -> QTextMixin:
         pass
 
     # Events...
@@ -1410,21 +1346,21 @@ class NullFrame(LeoFrame):
     """A null frame class for tests and batch execution."""
 
     # @+others
-    # @+node:ekr.20040327105706: *3*  NullFrame.ctor
+    # @+node:ekr.20040327105706: *3*  NullFrame.__init__
     def __init__(self, c: Cmdr, title: str, gui: LeoGui) -> None:
         """Ctor for the NullFrame class."""
         super().__init__(c, gui)
         assert self.c
-        self.wrapper: TextAPI = None
-        self.iconBar = NullIconBarClass(self.c, self)
         self.initComplete = True
         self.isNullFrame = True
-        self.statusLine = NullStatusLineClass(self.c, None)
         self.title = title
         # Create the component objects.
-        self.body = NullBody(frame=self, parentFrame=None)
-        self.log = NullLog(frame=self, parentFrame=None)
+        self.body = NullBody(frame=self)
+        self.iconBar = NullIconBarClass(c)
+        self.log = NullLog(frame=self)
         self.menu = leoMenu.NullMenu(frame=self)
+        self.miniBufferWidget: Any = g.NullObject()
+        self.statusLine = NullStatusLineClass(c)
         self.tree = NullTree(frame=self)
         # Default window position.
         self.w = 600
@@ -1493,7 +1429,7 @@ class NullFrame(LeoFrame):
     def fullyExpandPane(self, event: LeoKeyEvent = None) -> None:
         pass
 
-    def getIconBar(self) -> Union[NullIconBarClass, QtIconBarClass]:
+    def getIconBar(self) -> NullIconBarClass | QtIconBarClass:
         return self.iconBar
 
     getIconBarObject = getIconBar
@@ -1562,13 +1498,10 @@ class NullIconBarClass:
     """A class representing the singleton Icon bar"""
 
     # @+others
-    # @+node:ekr.20070301164543.1: *3*  NullIconBarClass.ctor
-    def __init__(self, c: Cmdr, parentFrame: Widget) -> None:
+    # @+node:ekr.20070301164543.1: *3*  NullIconBarClass.__init__
+    def __init__(self, c: Cmdr) -> None:
         """Ctor for NullIconBarClass."""
         self.c = c
-        self.iconFrame = None
-        self.parentFrame: Widget = parentFrame
-        self.w: Widget = g.NullObject()
 
     # @+node:ekr.20070301165343: *3*  NullIconBarClass.Do nothing
     def addRow(self, height: str = None) -> None:
@@ -1577,13 +1510,13 @@ class NullIconBarClass:
     def addRowIfNeeded(self) -> None:
         pass
 
-    def addWidget(self, w: TextAPI) -> None:
+    def addWidget(self, w: StringTextWrapper) -> None:
         pass
 
     def createChaptersIcon(self) -> None:
         pass
 
-    def deleteButton(self, w: TextAPI) -> None:
+    def deleteButton(self, w: StringTextWrapper) -> None:
         pass
 
     def getNewFrame(self) -> None:
@@ -1596,7 +1529,7 @@ class NullIconBarClass:
         pass
 
     # @+node:ekr.20070301164543.2: *3* NullIconBarClass.add
-    def add(self, *args: Args, **keys: KWargs) -> Widget:
+    def add(self, *args: Any, **keys: Any) -> Any:
         """Add a (virtual) button to the (virtual) icon bar."""
         command: Callable = keys.get('command')
         text = keys.get('text')
@@ -1608,7 +1541,7 @@ class NullIconBarClass:
 
             command = commandCallback
 
-        class nullButtonWidget:
+        class NullButtonWidget:
             def __init__(self, c: Cmdr, command: Callable, name: str, text: str) -> None:
                 self.c = c
                 self.command = command
@@ -1618,7 +1551,7 @@ class NullIconBarClass:
             def __repr__(self) -> str:
                 return self.name
 
-        b = nullButtonWidget(self.c, command, name, text)
+        b = NullButtonWidget(self.c, command, name, text)
         return b
 
     # @+node:ekr.20140904043623.18574: *3* NullIconBarClass.clear
@@ -1652,37 +1585,23 @@ class NullIconBarClass:
 class NullLog(LeoLog):
     """A do-nothing log class."""
 
-    # @+others
-    # @+node:ekr.20070302095500: *3* NullLog.Birth
-    # @+node:ekr.20041012083237: *4* NullLog.__init__
-    def __init__(self, frame: Widget = None, parentFrame: Widget = None) -> None:
-        super().__init__(frame, parentFrame)
+    def __init__(self, *, frame: NullFrame = None) -> None:
+        super().__init__(frame)
+        c = self.c
         self.isNull = True
-        # self.logCtrl is now a property of the base LeoLog class.
-        self.logNumber = 0
-        self.widget: Widget = self.createControl(parentFrame)
-        self.wrapper: TextAPI = None  # For cursesGui2.py.
+        self.widget = StringTextWrapper(c=c, name='null-log')
 
-    # @+node:ekr.20120216123546.10951: *4* NullLog.finishCreate
+    # @+others
+    # @+node:ekr.20120216123546.10951: *3* NullLog.finishCreate
     def finishCreate(self) -> None:
         pass
 
-    # @+node:ekr.20041012083237.1: *4* NullLog.createControl
-    def createControl(self, parentFrame: Widget) -> StringTextWrapper:
-        return self.createTextWidget(parentFrame)
-
-    # @+node:ekr.20070302095121: *4* NullLog.createTextWidget
-    def createTextWidget(self, parentFrame: Widget) -> StringTextWrapper:
-        self.logNumber += 1
-        c = self.c
-        return StringTextWrapper(c=c, name=f"log-{self.logNumber}")
-
     # @+node:ekr.20181119135041.1: *3* NullLog.hasSelection
-    def hasSelection(self) -> None:
+    def hasSelection(self) -> bool:
         return self.widget.hasSelection()
 
     # @+node:ekr.20111119145033.10186: *3* NullLog.isLogWidget
-    def isLogWidget(self, w: TextAPI) -> bool:
+    def isLogWidget(self, w: Any) -> bool:
         return False
 
     # @+node:ekr.20041012083237.3: *3* NullLog.put and putnl
@@ -1746,11 +1665,10 @@ class NullLog(LeoLog):
 class NullStatusLineClass:
     """A do-nothing status line."""
 
-    def __init__(self, c: Cmdr, parentFrame: Widget) -> None:
+    def __init__(self, c: Cmdr) -> None:
         """Ctor for NullStatusLine class."""
         self.c = c
         self.enabled = False
-        self.parentFrame = parentFrame
         self.textWidget = StringTextWrapper(c, name='status-line')
 
     # @+others
@@ -1794,22 +1712,14 @@ class NullTree(LeoTree):
 
     # @+others
     # @+node:ekr.20031218072017.2234: *3*  NullTree.__init__
-    def __init__(self, frame: Widget) -> None:
+    def __init__(self, frame: NullFrame) -> None:
         """Ctor for NullTree class."""
         super().__init__(frame)
-        assert self.frame
         self.c = frame.c
-        # Keys are vnodes, values are StringTextWidgets.
-        self.editWidgetsDict: dict[VNode, Widget] = {}
-        self.font = None
-        self.fontName = None
-        self.canvas = None
-        self.treeWidget = g.NullObject()
-        self.redrawCount = 0
-        self.updateCount = 0
+        self.editWidgetsDict: dict[VNode, StringTextWrapper] = {}
 
     # @+node:ekr.20070228163350.2: *3* NullTree.edit_widget
-    def edit_widget(self, p: Position) -> TextAPI:
+    def edit_widget(self, p: Position) -> QTextMixin:
         d = self.editWidgetsDict
         if not p or not p.v:
             return None

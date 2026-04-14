@@ -638,8 +638,6 @@ class SpellTabHandler:
         self.currentWord: str = None
         self.outerScrolledFrame = None
         self.seen: set[str] = set()  # Adding a word to seen will ignore it until restart.
-        # A text widget for scanning. Must have a parent frame.
-        self.workCtrl = g.app.gui.plainTextWidget(c.frame.top)
         if enchant:
             self.spellController = EnchantWrapper(c)
             self.tab = g.app.gui.createSpellTab(c, self, tabName)

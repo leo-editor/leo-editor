@@ -6,15 +6,16 @@
 # @+node:ekr.20220414095908.1: ** << leoMenu imports & annotations >>
 from __future__ import annotations
 from collections.abc import Callable
-from typing import Any, Union, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
+    from leo.core.leoFrame import LeoQtFrame, NullFrame
     from leo.core.leoGui import LeoKeyEvent
+    from leo.plugins.qt_frame import QtMenuWrapper
 
-    Menu = Any
-    Value = Any
-    Widget = Any  # 'Any' is the correct annotation for base class widgets.
+    # 'Any' is the correct annotation for base class widgets.
+    Widget = Any
 
 
 # @-<< leoMenu imports & annotations >>
@@ -25,12 +26,12 @@ class LeoMenu:
 
     # @+others
     # @+node:ekr.20120124042346.12938: *3* LeoMenu.Birth
-    def __init__(self, frame: Widget) -> None:
+    def __init__(self, frame: LeoQtFrame | NullFrame) -> None:
         self.c = frame.c
         self.enable_dict: dict[str, Callable] = {}
         self.frame = frame
         self.isNull = False
-        self.menus: dict[str, Menu] = {}
+        self.menus: dict[str, Any] = {}
 
     def finishCreate(self) -> None:
         self.define_enable_dict()
@@ -202,7 +203,7 @@ class LeoMenu:
         if not parentMenu:
             g.trace('NO PARENT', parentName, g.callers())
             return  # #2030
-        table: list[Union[tuple, str]] = []
+        table: list[tuple | str] = []
         z: tuple[str, list, str]
         for z in aList:
             kind, val, val2 = z
@@ -287,7 +288,7 @@ class LeoMenu:
         return ''.join([ch for ch in name if ch not in '& \t\n\r'])
 
     # @+node:ekr.20031218072017.1723: *4* LeoMenu.createMenuEntries & helpers
-    def createMenuEntries(self, menu: Menu, table: list) -> None:
+    def createMenuEntries(self, menu: QtMenuWrapper, table: list) -> None:
         """
         Create a menu entry from the table.
 
@@ -383,7 +384,7 @@ class LeoMenu:
         return commandName
 
     # @+node:ekr.20111028060955.16565: *5* LeoMenu.getMenuEntryInfo
-    def getMenuEntryInfo(self, data: Value, menu: Menu) -> tuple[str, str, bool]:
+    def getMenuEntryInfo(self, data: Any, menu: QtMenuWrapper) -> tuple[str, str, bool]:
         """
         Parse a single entry in the table passed to createMenuEntries.
 
@@ -457,7 +458,9 @@ class LeoMenu:
         g.app.menuWarningsGiven = True
 
     # @+node:ekr.20031218072017.3804: *4* LeoMenu.createNewMenu
-    def createNewMenu(self, menuName: str, parentName: str = "top", before: str = None) -> Menu:
+    def createNewMenu(
+        self, menuName: str, parentName: str = "top", before: str = None
+    ) -> QtMenuWrapper:
         try:
             parent = self.getMenu(parentName)  # parent may be None.
             menu = self.getMenu(menuName)
@@ -538,7 +541,7 @@ class LeoMenu:
             k.bindOpenWith(d)
 
     # @+node:ekr.20051022043608.1: *5* LeoMenu.createOpenWithMenuItemsFromTable & callback
-    def createOpenWithMenuItemsFromTable(self, menu: Menu, table: list[dict]) -> None:
+    def createOpenWithMenuItemsFromTable(self, menu: QtMenuWrapper, table: list[dict]) -> None:
         """
         Create an entry in the Open with Menu from the table, a list of dictionaries.
 
@@ -571,21 +574,21 @@ class LeoMenu:
                 )
 
     # @+node:ekr.20031218072017.4118: *6* LeoMenu.defineOpenWithMenuCallback
-    def defineOpenWithMenuCallback(self, d: dict[str, str] = None) -> Callable:
+    def defineOpenWithMenuCallback(self, d: dict[str, Any] = None) -> Callable:
         # The first parameter must be a LeoKeyEvent, and it must default to None.
 
         def openWithMenuCallback(
             event: LeoKeyEvent = None,
             self: LeoMenu = self,
-            d: dict[str, str] = d,
-        ) -> Value:
+            d: dict[str, Any] = d,
+        ) -> Any:
             d1 = d.copy() if d else {}
             return self.c.openWith(d=d1)
 
         return openWithMenuCallback
 
     # @+node:tbrown.20080509212202.7: *4* LeoMenu.deleteRecentFilesMenuItems
-    def deleteRecentFilesMenuItems(self, menu: Menu) -> None:
+    def deleteRecentFilesMenuItems(self, menu: QtMenuWrapper) -> None:
         """Delete recent file menu entries"""
         rf = g.app.recentFilesManager
         # Why not just delete all the entries?
@@ -645,11 +648,11 @@ class LeoMenu:
             g.es_exception()
 
     # @+node:ekr.20031218072017.3807: *4* LeoMenu.getMenu, setMenu, destroyMenu
-    def getMenu(self, menuName: str) -> Menu:
+    def getMenu(self, menuName: str) -> Any:
         cmn = self.canonicalizeMenuName(menuName)
         return self.menus.get(cmn)
 
-    def setMenu(self, menuName: str, menu: Menu) -> None:
+    def setMenu(self, menuName: str, menu: QtMenuWrapper) -> None:
         cmn = self.canonicalizeMenuName(menuName)
         self.menus[cmn] = menu
 
@@ -659,12 +662,12 @@ class LeoMenu:
 
     # @+node:ekr.20031218072017.3808: *3* LeoMenu.Must be overridden in menu subclasses
     # @+node:ekr.20031218072017.3809: *4* LeoMenu.9 Routines with Tk spellings
-    def add_cascade(self, parent: Widget, label: str, menu: Menu, underline: int) -> None:
+    def add_cascade(self, parent: Widget, label: str, menu: QtMenuWrapper, underline: int) -> None:
         pass
 
     def add_command(
         self,
-        menu: Widget,
+        menu: QtMenuWrapper,
         accelerator: str = '',
         command: Callable = None,
         commandName: str = None,
@@ -673,16 +676,16 @@ class LeoMenu:
     ) -> None:
         pass
 
-    def add_separator(self, menu: Menu) -> None:
+    def add_separator(self, menu: QtMenuWrapper) -> None:
         pass
 
-    def delete(self, menu: Menu, realItemName: str) -> None:
+    def delete(self, menu: QtMenuWrapper, realItemName: str) -> None:
         pass
 
-    def delete_range(self, menu: Menu, n1: int, n2: int) -> None:
+    def delete_range(self, menu: QtMenuWrapper, n1: int, n2: int) -> None:
         pass
 
-    def destroy(self, menu: Menu) -> None:
+    def destroy(self, menu: QtMenuWrapper) -> None:
         pass
 
     def insert(
@@ -696,36 +699,38 @@ class LeoMenu:
         pass
 
     def insert_cascade(
-        self, parent: Widget, index: int, label: str, menu: Menu, underline: int
+        self, parent: Widget, index: int, label: str, menu: QtMenuWrapper, underline: int
     ) -> Widget:
         pass
 
-    def new_menu(self, parent: Widget, tearoff: int = 0, label: str = '') -> Menu:
+    def new_menu(self, parent: Widget, tearoff: int = 0, label: str = '') -> QtMenuWrapper:
         pass
 
     # @+node:ekr.20031218072017.3810: *4* LeoMenu.9 Routines with new spellings
     def activateMenu(self, menuName: str) -> None:  # New in Leo 4.4b2.
         pass
 
-    def clearAccel(self, menu: Menu, name: str) -> None:
+    def clearAccel(self, menu: QtMenuWrapper, name: str) -> None:
         pass
 
     def createMenuBar(self, frame: Widget) -> None:
         pass
 
-    def createOpenWithMenu(self, parent: Widget, label: str, index: int, amp_index: int) -> Menu:
+    def createOpenWithMenu(
+        self, parent: Widget, label: str, index: int, amp_index: int
+    ) -> QtMenuWrapper:
         pass
 
-    def disableMenu(self, menu: Menu, name: str) -> None:
+    def disableMenu(self, menu: QtMenuWrapper, name: str) -> None:
         pass
 
-    def enableMenu(self, menu: Widget, name: str, val: bool) -> None:
+    def enableMenu(self, menu: QtMenuWrapper, name: str, val: bool) -> None:
         pass
 
-    def getMenuLabel(self, menu: Menu, name: str) -> str:
+    def getMenuLabel(self, menu: QtMenuWrapper, name: str) -> str:
         return ''
 
-    def setMenuLabel(self, menu: Menu, name: str, label: str, underline: int = -1) -> None:
+    def setMenuLabel(self, menu: QtMenuWrapper, name: str, label: str, underline: int = -1) -> None:
         pass
 
     # @-others
@@ -735,7 +740,7 @@ class LeoMenu:
 class NullMenu(LeoMenu):
     """A null menu class for testing and batch execution."""
 
-    def __init__(self, frame: Widget) -> None:
+    def __init__(self, frame: NullFrame) -> None:
         super().__init__(frame)
         self.isNull = True
 

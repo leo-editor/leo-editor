@@ -12,7 +12,7 @@ import string
 import sys
 import textwrap
 import time
-from typing import Any, Optional, TYPE_CHECKING, Union
+from typing import Any, Optional, TYPE_CHECKING
 import zipfile
 import platform
 from leo.core import leoGlobals as g
@@ -41,7 +41,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoSessions import SessionManager
     from leo.plugins.qt_events import LossageData
     from leo.plugins.qt_idle_time import IdleTime
-    from leo.plugins.qt_text import QTextEditWrapper as Wrapper
 
     Value = Any
 
@@ -208,9 +207,9 @@ class LeoApp:
         self.backgroundProcessManager: BackgroundProcessManager = None
         self.config: GlobalConfigManager = None  # g.app.config.
         # A global db, managed by g.app.global_cacher.
-        self.db: Union[dict, SqlitePickleShare] = None
+        self.db: dict | SqlitePickleShare = None
         self.externalFilesController: ExternalFilesController = None
-        self.global_cacher: Union[dict, GlobalCacher] = None
+        self.global_cacher: dict | GlobalCacher = None
         self.idleTimeManager: IdleTimeManager = None
         self.jupytextManager: JupytextManager = None
         self.loadManager: LoadManager = None
@@ -1590,7 +1589,7 @@ class LeoApp:
         self,
         fileName: str,
         gui: LeoGui = None,
-        parentFrame: Wrapper = None,
+        parentFrame: Any = None,
         previousSettings: "PreviousSettings" = None,
         relativeFileName: str = None,
     ) -> Cmdr:

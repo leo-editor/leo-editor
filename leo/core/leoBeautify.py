@@ -8,7 +8,7 @@ from __future__ import annotations
 import sys
 import os
 import time
-from typing import Union, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 # Third-party tools.
 try:
@@ -272,8 +272,11 @@ class CPrettyPrinter:
 
     # @+node:ekr.20110917174948.6911: *3* cpp.indent & helpers
     def indent(
-        self, p: Position, toList: bool = False, giveWarnings: bool = True
-    ) -> Union[str, list[str]]:
+        self,
+        p: Position,
+        toList: bool = False,
+        giveWarnings: bool = True,
+    ) -> str | list[str]:
         """Beautify a node with @language C in effect."""
         if not should_beautify(p):
             return [] if toList else ''  # #2271

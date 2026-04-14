@@ -72,7 +72,7 @@ def underline(s, idx):
     return s[:idx] + '&' + s[idx:]
 
 
-# @+node:ekr.20150107090324.6: ** class textGui
+# @+node:ekr.20150107090324.6: ** class textGui: cursesGui.py
 class textGui(leoGui.LeoGui):
     # @+others
     # @+node:ekr.20150107090324.7: *3* __init__
@@ -186,7 +186,7 @@ class textGui(leoGui.LeoGui):
     # @-others
 
 
-# @+node:ekr.20150107090324.21: ** class TextFrame
+# @+node:ekr.20150107090324.21: ** class TextFrame: cursesGui.py
 class TextFrame(leoFrame.LeoFrame):
     # @+others
     # @+node:ekr.20150107090324.22: *3* __init__
@@ -228,8 +228,8 @@ class TextFrame(leoFrame.LeoFrame):
     def finishCreate(self):
         c, f = self.c, self
         f.tree = textTree(self)
-        f.body = textBody(frame=self, parentFrame=None)
-        f.log = textLog(frame=self, parentFrame=None)
+        f.body = textBody(frame=self)
+        f.log = textLog(frame=self)
         f.menu = textLeoMenu(self)
         if f.body.use_chapters:
             c.chapterController = leoChapters.ChapterController(c)
@@ -291,12 +291,12 @@ class TextFrame(leoFrame.LeoFrame):
     # @-others
 
 
-# @+node:ekr.20150107090324.31: ** class textBody
+# @+node:ekr.20150107090324.31: ** class textBody: cursesGui.py
 class textBody(leoFrame.LeoBody):
     # @+others
-    # @+node:ekr.20150107090324.32: *3* __init__
-    def __init__(self, frame, parentFrame):
-        super().__init__(frame, parentFrame)
+    # @+node:ekr.20150107090324.32: *3* textBody.__init__
+    def __init__(self, frame):
+        super().__init__(frame)
         c = frame.c
         name = 'body'
         self.bodyCtrl = textBodyCtrl(c, name)
@@ -326,20 +326,19 @@ class textBody(leoFrame.LeoBody):
     # @-others
 
 
-# @+node:ekr.20150107090324.36: ** class textBodyCtrl (stringTextWrapper)
+# @+node:ekr.20150107090324.36: ** class textBodyCtrl (StringTextWrapper) cursesGui.py
 class textBodyCtrl(StringTextWrapper):
     pass
 
 
-# @+node:ekr.20150107090324.37: ** class textMenuCascade
+# @+node:ekr.20150107090324.37: ** class textMenuCascade: cursesGui.py
 class textMenuCascade:
-    # @+others
-    # @+node:ekr.20150107090324.38: *3* __init__
     def __init__(self, menu, label, underline):
         self.menu = menu
         self.label = label
         self.underline = underline
 
+    # @+others
     # @+node:ekr.20150107090324.39: *3* display
     def display(self):
         ret = underline(self.label, self.underline)
@@ -350,7 +349,7 @@ class textMenuCascade:
     # @-others
 
 
-# @+node:ekr.20150107090324.40: ** class textMenuEntry
+# @+node:ekr.20150107090324.40: ** class textMenuEntry: cursesGui.py
 class textMenuEntry:
     # @+others
     # @+node:ekr.20150107090324.41: *3* __init__
@@ -370,7 +369,7 @@ class textMenuEntry:
     # @-others
 
 
-# @+node:ekr.20150107090324.43: ** class textMenuSep
+# @+node:ekr.20150107090324.43: ** class textMenuSep: cursesGui.py
 class textMenuSep:
     # @+others
     # @+node:ekr.20150107090324.44: *3* display
@@ -380,7 +379,7 @@ class textMenuSep:
     # @-others
 
 
-# @+node:ekr.20150107090324.45: ** class textLeoMenu (LeoMenu)
+# @+node:ekr.20150107090324.45: ** class textLeoMenu (LeoMenu) cursesGui.py
 class textLeoMenu(leoMenu.LeoMenu):
     # @+others
     # @+node:ekr.20150107090324.46: *3* ctor (textLeoMenu)
@@ -403,7 +402,7 @@ class textLeoMenu(leoMenu.LeoMenu):
         menu.entries = []
         return menu
 
-    # @+node:ekr.20150107090324.49: *3* add_cascade
+    # @+node:ekr.20150107090324.49: *3* add_cascade (cursesGui.py)
     def add_cascade(self, parent: Any, label: str, menu: Any, underline: int):
         if parent is None:
             parent = self._top_menu
@@ -489,7 +488,7 @@ class textLeoMenu(leoMenu.LeoMenu):
     # @-others
 
 
-# @+node:ekr.20150107090324.54: ** class textLog
+# @+node:ekr.20150107090324.54: ** class textLog: cursesGui.py
 class textLog(leoFrame.LeoLog):
     # @+others
     # @+node:ekr.20150107090324.58: *3* createControl
@@ -524,7 +523,7 @@ class textLog(leoFrame.LeoLog):
     # @-others
 
 
-# @+node:ekr.20150107090324.60: ** class textTree
+# @+node:ekr.20150107090324.60: ** class textTree: cursesGui.py
 class textTree(leoFrame.LeoTree):
     # @+others
     # @+node:ekr.20150107090324.61: *3* setBindings
@@ -538,11 +537,10 @@ class textTree(leoFrame.LeoTree):
     redraw_now = redraw
 
     # @+node:ekr.20150107090324.63: *3* endUpdate
-    # @+node:ekr.20150107090324.64: *3* __init__
+    # @+node:ekr.20150107090324.64: *3* textTree.__init__
     def __init__(self, frame):
         # undoc: openWithFileName -> treeWantsFocus -> c.frame.tree.canvas
         self.c = frame.c
-        self.canvas = None
         super().__init__(frame)
 
     # @+node:ekr.20150107090324.65: *3* select
@@ -556,9 +554,9 @@ class textTree(leoFrame.LeoTree):
         w.setAllText(p.b)
         # and something to do with undo?
 
-    # @+node:ekr.20150107090324.66: *3* editLabel & edit_widget
-    def editLabel(self, v, selectAll: bool = False, selection: tuple = None):
-        pass  # N/A?
+    # @+node:ekr.20150107090324.66: *3* editLabel & edit_widget (cursesGui)
+    def editLabel(self, v, selectAll: bool = False, selection: tuple = None) -> tuple[None, None]:
+        return None, None
 
     def edit_widget(self, p):
         return None
