@@ -2143,8 +2143,6 @@ class VNode:
     ]  # fmt: skip
     # @+<< VNode constants >>
     # @+node:ekr.20031218072017.951: *3* << VNode constants >>
-    # fmt: off
-
     # Define the meaning of status bits in new vnodes.
 
     # Unused bits.
@@ -2155,18 +2153,16 @@ class VNode:
     # 0x010
 
     # Archived bits...
-    expandedBit = 0x04  # True: VNode is expanded.
-    markedBit   = 0x08  # True: VNode is marked
-    selectedBit = 0x20  # True: VNode is current vnode.
+    expandedBit = 0x04  # fmt: skip  # True: VNode is expanded.
+    markedBit   = 0x08  # fmt: skip  # True: VNode is marked.
+    selectedBit = 0x20  # fmt: skip  # VNode is current vnode.
 
     # Not archived...
-    richTextBit = 0x080  # Determines whether we use <bt> or <btr> tags.
-    visitedBit  = 0x100
-    dirtyBit    = 0x200
-    writeBit    = 0x400
-    orphanBit   = 0x800  # True: error in @<file> tree prevented it from being written.
-
-    # fmt: on
+    richTextBit = 0x080  # fmt: skip  # Do we use <bt> or <btr> tags?.
+    visitedBit  = 0x100  # fmt: skip
+    dirtyBit    = 0x200  # fmt: skip
+    writeBit    = 0x400  # fmt: skip
+    orphanBit   = 0x800  # fmt: skip  # True: error in @<file> tree.
 
     # @-<< VNode constants >>
     # @+others
