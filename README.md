@@ -1,20 +1,24 @@
-Leo https://leo-editor.github.io/leo-editor/ 6.8.7 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
+Leo https://leo-editor.github.io/leo-editor/ 6.8.8 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
 
-Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/preface.html).
+Leo is an [outline-oriented text editor](https://leo-editor.github.io/leo-editor/preface.html).
 
-**The highlights of Leo 6.8.7**
+**The highlights of Leo 6.8.8**
 
-- PR #4403: Add support for Python 3.14. Require Python 3.10 or above.
-- PR #4423: All of Leo's importers now import `@clean` files perfectly.
-- PR #4412: Greatly improve Leo's `parse-body` command.
-- PR #4418: Fix bugs involving the `_mod_time` attribute in `.leo` files.
-- Fix several other minor bugs. See the `What's new` section for details.
+- Replace Leo's legacy beautifier commands by full support for
+  [ruff format](https://docs.astral.sh/ruff/formatter/).
+- Make the ``add-comments`` command compatible with ruff format.
+- Add the ``@bool raise-file-update-dialogs`` setting.
+- Add the ``dump-last-colorizer-trace`` command.
+- Remove support for leoflexx and --gui=browser.
+- Add check_leo.py script.
+- Add gdc.summary_diff_two_revs script helper.
+- Fix several minor bugs.
 
 **Links**
 
 - [Install Leo](https://leo-editor.github.io/leo-editor/installing.html)
-- [6.8.7 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.8.7+)
-- [6.8.7 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.8.7)
+- [6.8.8 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.8.8+)
+- [6.8.8 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.8.8)
 - [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
 - [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
 - [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)

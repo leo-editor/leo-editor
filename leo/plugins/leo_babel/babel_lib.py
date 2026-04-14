@@ -514,19 +514,15 @@ def babelExec(event):
 
         babelCmdr.reo = reo  # Kludge to allow itf() to determine which output it polls
         itOut = leoG.IdleTime(
-            lambda ito,
-            prefix=babelCmdr.babel_prefix_stdout,
-            color=babelCmdr.babel_color_stdout,
-            fdr=reo,
-            babelCmdr=babelCmdr: itf(prefix, color, fdr, babelCmdr),
+            lambda ito, prefix=babelCmdr.babel_prefix_stdout, color=babelCmdr.babel_color_stdout, fdr=reo, babelCmdr=babelCmdr: (
+                itf(prefix, color, fdr, babelCmdr)
+            ),
             delay=babelCmdr.babel_polling_delay,
         )
         itErr = leoG.IdleTime(
-            lambda ito,
-            prefix=babelCmdr.babel_prefix_stderr,
-            color=babelCmdr.babel_color_stderr,
-            fdr=ree,
-            babelCmdr=babelCmdr: itf(prefix, color, fdr, babelCmdr),
+            lambda ito, prefix=babelCmdr.babel_prefix_stderr, color=babelCmdr.babel_color_stderr, fdr=ree, babelCmdr=babelCmdr: (
+                itf(prefix, color, fdr, babelCmdr)
+            ),
             delay=babelCmdr.babel_polling_delay,
         )
         if (not itOut) or (not itErr):

@@ -11,7 +11,7 @@
 <v t="ekr.20220904210247.1"><vh>@@@enabled-plugins</vh></v>
 <v t="ekr.20251214042454.1"><vh>@bool body-pane-wraps = False</vh></v>
 <v t="ekr.20140902155015.18674"><vh>@bool qt-use-scintilla = False</vh></v>
-<v t="ekr.20250715195948.1"><vh>@bool report-changed-at-clean-nodes = True</vh></v>
+<v t="ekr.20250715195948.1"><vh>@bool report-changed-at-clean-nodes = False</vh></v>
 <v t="ekr.20221129012213.1"><vh>@bool run-flake8-on-write = False</vh></v>
 <v t="ekr.20210530065000.2"><vh>@data exec-script-commands</vh></v>
 <v t="ekr.20210530065000.3"><vh>@data exec-script-patterns</vh></v>
@@ -121,7 +121,6 @@
 <v t="ekr.20241022090855.1"><vh>@file leoJupytext.py</vh></v>
 <v t="ekr.20190515070742.1"><vh>@file leoMarkup.py</vh></v>
 <v t="ekr.20031218072017.3320"><vh>@file leoNodes.py</vh></v>
-<v t="ekr.20040301205720"><vh>p.__str__ and p.__repr__</vh></v>
 <v t="ekr.20140821055201.18331"><vh>@file leoPersistence.py</vh></v>
 <v t="ekr.20031218072017.3439"><vh>@file leoPlugins.py</vh></v>
 <v t="ekr.20150419124739.1"><vh>@file leoPrinting.py</vh></v>
@@ -137,6 +136,7 @@
 </v>
 <v t="ekr.20150514035207.1"><vh>Command classes</vh>
 <v t="ekr.20150514035236.1"><vh>@file ../commands/abbrevCommands.py</vh></v>
+<v t="ekr.20150514045700.1"><vh>&lt;&lt; abbrevCommands imports &amp; abbreviations &gt;&gt;</vh></v>
 <v t="ekr.20150514035943.1"><vh>@file ../commands/baseCommands.py</vh></v>
 <v t="ekr.20150514035559.1"><vh>@file ../commands/bufferCommands.py</vh></v>
 <v t="ekr.20161021090740.1"><vh>@file ../commands/checkerCommands.py</vh></v>
@@ -686,17 +686,6 @@ These plugins create new kinds of nodes, some of which affect the file system.</
 https://github.com/leo-editor/leo-editor/issues/1585
 @language python
 </t>
-<t tx="ekr.20040301205720">def __str__(self) -&gt; str:  # pragma: no cover
-    p = self
-    if p.v:
-        return (
-            f"&lt;pos {id(p)} childIndex: {p._childIndex} lvl: {p.level()} key: {p.key()} {p.h}&gt;"
-        )
-    return f"&lt;pos {id(p)} [{len(p.stack)}] None&gt;"
-
-__repr__ = __str__
-
-</t>
 <t tx="ekr.20040331071919"></t>
 <t tx="ekr.20040722141148">@nocolor-node
 @
@@ -1059,6 +1048,22 @@ os.environ['LEO_BACKUP'] must be the path to an existing (writable) directory.
 c.backup_helper(sub_dir='leoPy')
 </t>
 <t tx="ekr.20150514035207.1"></t>
+<t tx="ekr.20150514045700.1">from __future__ import annotations
+from collections.abc import Callable
+import functools
+import re
+import string
+from typing import TYPE_CHECKING
+from leo.core import leoGlobals as g
+from leo.core import leoNodes
+from leo.commands.baseCommands import BaseEditCommandsClass
+
+if TYPE_CHECKING:  # pragma: no cover
+    from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoGui import LeoKeyEvent
+    from leo.core.leoNodes import Position
+    from leo.plugins.qt_text import QTextEditWrapper as Wrapper
+</t>
 <t tx="ekr.20160122104332.1">@language python
 </t>
 <t tx="ekr.20160123142722.1" _mod_time="4741da24cf0b43cf212e"># An example configuration file for make_stub_files.py.
@@ -1274,9 +1279,9 @@ os.chdir(path)
 # See https://git-scm.com/book/en/v2/Git-Tools-Revision-Selection
 
 efc.GitDiffController(c).diff_two_branches(
-    branch1='master',  # old branch/rev
-    branch2='6.8.8',  # new branch/rev
-    fn='leo/commands/abbrevCommands.py',  # Don't use back slashes.
+    branch1='devel',  # old branch/rev
+    branch2='ekr-generalize-g.stat',  # new branch/rev
+    fn='leo/core/leoGlobals.py',  # Don't use back slashes.
 )
 </t>
 <t tx="ekr.20181030041436.1"></t>
@@ -1950,7 +1955,7 @@ assert core_p and command_p and globals_p
     # 'toString', 'toUnicode', 'trace', 'translateString',
     # 'underline', 'undoHelper', 'unl', 'values', 'visit',
     # 'warn', 'warning', 'word',</t>
-<t tx="ekr.20220823195205.1" _mod_time="4741da5f236354a72b2e">"""
+<t tx="ekr.20220823195205.1" _mod_time="4741da71df9ce7fdc62e">"""
 Stand alone GUI free index builder for Leo's full text search system::
 
   python leoftsindex.py &lt;file1&gt; &lt;file2&gt; &lt;file3&gt;...
@@ -2197,7 +2202,7 @@ print('done')</t>
 <t tx="ekr.20240107154430.1"></t>
 <t tx="ekr.20240204082420.1"></t>
 <t tx="ekr.20240204082924.1"></t>
-<t tx="ekr.20240206161713.1" _mod_time="4741da5f23637719e82e">@language ini
+<t tx="ekr.20240206161713.1" _mod_time="4741da71df9d6817102e">@language ini
 
 [bdist_wheel]
 

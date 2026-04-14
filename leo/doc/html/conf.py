@@ -4,9 +4,9 @@
 # https://www.sphinx-doc.org/en/master/usage/theming.html#builtin-themes
 
 project = 'Leo'
-copyright = '1997-2025, Edward K. Ream'
-version = '6.8.7'
-release = '6.8.7'
+copyright = '1997-2026, Edward K. Ream'
+version = '6.8.8'
+release = '6.8.8'
 
 html_theme = 'classic'
 pygments_style = 'sphinx'

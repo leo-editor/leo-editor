@@ -27,7 +27,7 @@ args = ' '.join(sys.argv[1:])
 isWindows = sys.platform.startswith('win')
 python = 'py' if isWindows else 'python'
 
-if 0:  # Quick.
+if 1:  # Quick.
     command = rf'{python} -m mypy leo'
 else:  # Safe.
     command = rf'{python} -m mypy --no-incremental leo'

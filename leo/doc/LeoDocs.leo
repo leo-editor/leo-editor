@@ -6625,7 +6625,7 @@ Leo's MIT license
 
 All parts of Leo are distributed under the following copyright. This is intended to be the same as the MIT license, namely that Leo is absolutely free, even for commercial use, including resale. There is no GNU-like "copyleft" restriction. This license is compatible with the GPL.
 
-**Copyright 1997-2025 by Edward K. Ream. All Rights Reserved.**
+**Copyright 1997-2026 by Edward K. Ream. All Rights Reserved.**
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
@@ -6646,16 +6646,6 @@ These parts are are clearly marked in Leo's code as follows:
 
     Copyright (c) Jupyter Development Team.
     Distributed under the terms of the Modified BSD License.
-
-Portions of Leo's pyzo interface uses code from pyzo:
-
-    Copyright (C) 2013-2020, the Pyzo development team
-
-    Pyzo is distributed under the terms of the (new) BSD License.
-    The full license can be found in 'license.txt'.
-
-    Yoton is distributed under the terms of the (new) BSD License.
-    The full license can be found in 'license.txt'.
 
 Leo's `Tribal Lion`_ Logo is Copyright (c) by `dreamstime.com`_ and is used by permission.</t>
 <t tx="ekr.20090223065025.3">Let:
@@ -15622,7 +15612,6 @@ p.b = s</t>
 More Leo Resources
 ##################
 
-.. _`blog post`: https://rickardlindberg.me/writing/reflections-on-programming/2013-02-24-related-things-are-not-kept-together/
 .. _`2012 PyOhio talk`:     https://www.youtube.com/watch?v=JgJ89ekGj-s
 .. _`Icons`:                icons.html
 .. _`Introduction to Leo`:  https://www.youtube.com/watch?v=Zu6J-J0qFi0
@@ -15655,7 +15644,6 @@ More resources:
 - Satish Goda's `Leo tutorial &lt;https://github.com/satishgoda/leo-editor-tutorial&gt;`_.
 - `Icons`_ telling the world that you used Leo.
 - `Leo in a nutshell`_: A summary Leo's more than one million lines of source code.
-- Rickard Lindberg's `blog post`_ about how Leo improves computer code.
 </t>
 <t tx="ekr.20131031101712.16486">Supported by Leo's core::
 
@@ -28698,7 +28686,7 @@ between tokens in the token list and ast nodes in the parse tree.
 
 Are you sure you want to use leoAst?
 
-- `asttokens &lt;https://asttokens.readthedocs.io/en/latest/user-guide.html&gt;`_will usually be a better choice:
+- `asttokens &lt;https://asttokens.readthedocs.io/en/latest/user-guide.html&gt;`_ will usually be a better choice:
 - Support for the leoAst module ends with Python 3.14.
 
 leoAst.py is part of `Leo &lt;https://leo-editor.github.io/leo-editor/&gt;`_, and can be used
@@ -31554,9 +31542,9 @@ June 21, 2021: The dawn of ``LeoInteg``: The first commit by Félix Malboeuf for
 
 6.4 (September 20, 2021): The first release supporting ``LeoInteg``: integration of Leo with VS code. ``LeoInteg`` and ``LeoJS`` are the future of Leo. All later releases contain support for ``LeoInteg`` and ``LeoJS``. This was the first release containing leoserver.py.
 
-.. _`announcement`: https://groups.google.com/g/leo-editor/c/8SPF7GFo5f4/m/GcaWR7ohBQAJ
+.. _`leo-integ-announcement`: https://groups.google.com/g/leo-editor/c/8SPF7GFo5f4/m/GcaWR7ohBQAJ
 
-Sep 24, 2021: Félix releases LeoInteg 1.0, with this `announcement`_.
+Sep 24, 2021: Félix releases LeoInteg 1.0, with this `leo-integ-announcement`_.
 
 This is one of the most important dates in Leo's history:
 
@@ -32619,8 +32607,11 @@ This release consists entirely of code cleanups and minor bug fixes:
 A new framework for layouts replaces the free_layout and nested_splitter plugins.
 The gui "Easter Egg" is no more.
 
-Jul 27, 2024: Félix releases LeoJS 1.0, with this
-`announcement &lt;https://groups.google.com/g/leo-editor/c/nNSaJTMAB3s/m/Df1roWA5AgAJ&gt;`_ along with a `scripting samples repository &lt;https://github.com/boltex/scripting-samples-leojs?tab=readme-ov-file#how-to-use-on-the-web-in-your-browser&gt;`_ and a `dedicated website &lt;https://boltex.github.io/leojs/&gt;`_.
+Jul 27, 2024: Félix releases LeoJS 1.0, with this `leo-js-announcement
+&lt;https://groups.google.com/g/leo-editor/c/nNSaJTMAB3s/m/Df1roWA5AgAJ&gt;`_
+along with a `scripting samples repository
+&lt;https://github.com/boltex/scripting-samples-leojs?tab=readme-ov-file#how-to-use-on-the-web-in-your-browser&gt;`_
+and a `dedicated website &lt;https://boltex.github.io/leojs/&gt;`_.
 
 LeoJS is a JavaScript implementation of Leo's original Python source packaged as a VSCode extension. It is also usable with VSCode for the web.
 
@@ -32785,18 +32776,24 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 .. _`PR #4498`: https://github.com/leo-editor/leo-editor/pull/4498
 .. _`PR #4502`: https://github.com/leo-editor/leo-editor/pull/4502
 .. _`PR #4503`: https://github.com/leo-editor/leo-editor/pull/4503
-.. _`PR #4551`: https://github.com/leo-editor/leo-editor/pull/4551.
+.. _`PR #4531`: https://github.com/leo-editor/leo-editor/pull/4531
+.. _`PR #4551`: https://github.com/leo-editor/leo-editor/pull/4551
+.. _`PR #4571`: https://github.com/leo-editor/leo-editor/pull/4571
+.. _`PR #4575`: https://github.com/leo-editor/leo-editor/pull/4575
 
 - `PR #4464`_ and `PR #0000`_: Fix abbreviation bugs.
 - `PR #4467`_: Remove support for leoflexx and --gui=browser.
 - `PR #4477`_: Fix colorizer bug.
 - `PR #4484`_: Add check_leo script.
 - `PR #4486`_: Improve the flatten-outline-to-node command.
-- `PR #4490`_, Add support for ruff format and retire Leo's legacy beautier.
+- `PR #4490`_, Add support for ruff format and retire Leo's legacy beautifier.
   This PR summarizes several other PRs relating to this project.
 - `PR #4498`_: Fix bug: the external files controller leaves ``c.p`` unchanged.
 - `PR #4487`_ and `PR #4551`_: Reformat Leo using ruff format.
 - `PR #4503`_ and `PR #4506`_: Add ``gdc.summary_diff_two_revs`` script helper.
+- `PR #4531`_: Add ``dump-last-colorizer-trace`` command.
+- `PR #4571`_: Add setting to bypass file-update dialogs.
+- `PR #4575`_: Preserve indentation when adding comments.
 
 **Add settings for ruff format**
 
@@ -32808,8 +32805,17 @@ The defaults are shown below:
 **Retire settings for Leo's legacy beautifier**
 
 - Retire ``@bool beautify-allow-joined-strings``
+- Retire ``@bool indent-added-comments``
 - Retire ``@int beautify-max-join-line-length``
 - Retire ``@int beautify-max-split-line-length``
+
+**New settings**
+
+- Add ``@bool raise-file-update-dialogs = False``
+
+**New commands**
+
+- Add ``dump-last-colorizer-trace`` command.
 
 **Minor breaking API change**
 
@@ -32817,7 +32823,7 @@ The defaults are shown below:
   Use ``c.goNextVisitedNode`` and ``c.goPrevVisitedNode`` instead.
 
 </t>
-<t tx="ekr.20251204122305.1">Leo https://leo-editor.github.io/leo-editor/ 6.8.7 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
+<t tx="ekr.20251204122305.1">Leo https://leo-editor.github.io/leo-editor/ 6.8.8 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
 
 Leo is an [outline-oriented text editor](https://leo-editor.github.io/leo-editor/preface.html).
 
@@ -32825,6 +32831,9 @@ Leo is an [outline-oriented text editor](https://leo-editor.github.io/leo-editor
 
 - Replace Leo's legacy beautifier commands by full support for
   [ruff format](https://docs.astral.sh/ruff/formatter/).
+- Make the ``add-comments`` command compatible with ruff format.
+- Add the ``@bool raise-file-update-dialogs`` setting.
+- Add the ``dump-last-colorizer-trace`` command.
 - Remove support for leoflexx and --gui=browser.
 - Add check_leo.py script.
 - Add gdc.summary_diff_two_revs script helper.
@@ -32972,8 +32981,6 @@ The Leo ``@adoc`` directive and the ``adoc`` command need either **Asciidoc3** o
     #now asciidoc3 is ready and Leo can use it:
     asciidoc3 --help
 
-
-If you run into difficulties see https://asciidoc3.org/documentation
 </t>
 <t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_ctime="1376412039.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 

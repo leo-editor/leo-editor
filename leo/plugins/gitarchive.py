@@ -2,7 +2,6 @@
 # @+node:ekr.20110125103904.12504: * @file ../plugins/gitarchive.py
 """Store snapshots of outline in git."""
 
-import codecs
 import hashlib
 import os
 import shutil
@@ -34,7 +33,8 @@ def git_dump_f(event):
             gnx = p.gnx
             hl.append('<a href="%s">%s%s</a><br/>' % (gnx, '-' * p.level(), p.h))
             fname = gnx
-            codecs.open(fname, 'w', encoding='utf-8').write(p.b)
+            with open(fname, 'w', encoding='utf-8') as f:
+                f.write(p.b)
             print("wrote", fname)
 
     flatroot = g.finalize('~/.leo/dump')
@@ -58,7 +58,8 @@ def git_dump_f(event):
     if pth and bname:
         dbdirname = bname + "_" + hashlib.md5(c.mFileName).hexdigest()
     titlename = dbdirname + '.html'
-    codecs.open(titlename, 'w', encoding='utf-8').write(html)
+    with open(titlename, 'w', encoding='utf-8') as f:
+        f.write(html)
     g.es("committing to " + flatroot)
     os.system('git add *')
     out = os.popen('git commit -m "%s"' % comment).read()
