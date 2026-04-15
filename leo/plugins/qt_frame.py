@@ -2611,6 +2611,7 @@ class LeoQtLog(leoFrame.LeoLog):
             self.logDict[tabName] = widget
             if tabName == 'Log':
                 self.qtLogCtrl = contents
+                self.logCtrl = contents  # PR #4601: Set the base-class ivar.
                 widget.setObjectName('log-widget')
             # Set binding on all log pane widgets.
             g.app.gui.setFilter(c, widget, self, tag='log')
@@ -2686,6 +2687,7 @@ class LeoQtLog(leoFrame.LeoLog):
         """Create the tab if necessary and make it active."""
         i = self.findTabIndex(tabName)
         if i is None:
+            # This does happen, but not often.
             self.createTab(tabName, wrap=wrap)
             self.finishCreateTab(tabName)
         self.finishSelectTab(tabName)
@@ -2708,6 +2710,7 @@ class LeoQtLog(leoFrame.LeoLog):
                 wrapper = getattr(widget, 'leo_log_wrapper', None)
                 if wrapper and isinstance(wrapper, qt_text.QTextEditWrapper):
                     self.qtLogCtrl = wrapper
+                    self.logCtrl = wrapper  # Required!
             if not wrapper:
                 g.trace('NO LOG WRAPPER')
         if tabName == 'Find':

@@ -89,6 +89,7 @@ def reloadSettings(self: Self, event: LeoKeyEvent = None) -> None:
 @g.commander_command('restart-leo')
 def restartLeo(self: Self, event: LeoKeyEvent = None) -> None:
     """Restart Leo, reloading all presently open outlines."""
+    verbose = False
     c = self
     # Write .leoRecentFiles.txt.
     g.app.recentFilesManager.writeRecentFilesFile(c)
@@ -128,9 +129,14 @@ def restartLeo(self: Self, event: LeoKeyEvent = None) -> None:
     sys.stdout.flush()
     sys.stderr.flush()
     # Restart Leo with subprocess.run.
-    print('')
+    if verbose:
+        print('')
+    else:
+        g.cls()
     print('Restarting Leo...')
-    print(f"os.chdir({g.app.initial_cwd})")
+    if verbose:
+        print(f"os.chdir({g.app.initial_cwd})")
+
     os.chdir(g.app.initial_cwd)
     if 1:  # #3916.
         if g.isWindows:
@@ -148,7 +154,8 @@ def restartLeo(self: Self, event: LeoKeyEvent = None) -> None:
         launchLeo_s = rf'{leo_editor_dir}{os.sep}launchLeo.py'
         args = [sys.executable, launchLeo_s] + restart_paths + ['--no-splash']
     args_s = 'subprocess.run([\n  ' + ',\n  '.join(args) + '\n])'
-    print(args_s)
+    if verbose:
+        print(args_s)
     print('')
     subprocess.run(args)  # pylint: disable=subprocess-run-check
 
