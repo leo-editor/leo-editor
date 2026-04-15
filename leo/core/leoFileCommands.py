@@ -1281,9 +1281,13 @@ class FileCommands:
         oldGnxDict = self.gnxDict
         self.gnxDict = {}  # Fix #943
         try:
-            # This encoding must match the encoding used in outline_to_clipboard_string.
-            s_bytes = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
-            v = FastRead(c, {}).readFileFromClipboard(s_bytes)
+            if s.lstrip().startswith("{"):
+                # Maybe JSON
+                v = FastRead(c, {}).readFileFromJsonClipboard(s)
+            else:
+                # This encoding must match the encoding used in outline_to_clipboard_string.
+                s_bytes = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
+                v = FastRead(c, {}).readFileFromClipboard(s_bytes)
             if not v:
                 g.es("the clipboard is not valid ", color="blue")
                 return None
