@@ -32778,12 +32778,14 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 .. _`PR #4498`: https://github.com/leo-editor/leo-editor/pull/4498
 .. _`PR #4502`: https://github.com/leo-editor/leo-editor/pull/4502
 .. _`PR #4503`: https://github.com/leo-editor/leo-editor/pull/4503
+.. _`PR #4506`: https://github.com/leo-editor/leo-editor/pull/4506
 .. _`PR #4531`: https://github.com/leo-editor/leo-editor/pull/4531
 .. _`PR #4551`: https://github.com/leo-editor/leo-editor/pull/4551
 .. _`PR #4571`: https://github.com/leo-editor/leo-editor/pull/4571
 .. _`PR #4575`: https://github.com/leo-editor/leo-editor/pull/4575
+.. _`PR #4588`: https://github.com/leo-editor/leo-editor/pull/4588
 
-- `PR #4464`_ and `PR #0000`_: Fix abbreviation bugs.
+- `PR #4464`_ and `PR #4588`_: Fix abbreviation bugs.
 - `PR #4467`_: Remove support for leoflexx and --gui=browser.
 - `PR #4477`_: Fix colorizer bug.
 - `PR #4484`_: Add check_leo script.
