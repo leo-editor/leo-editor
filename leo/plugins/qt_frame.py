@@ -2684,7 +2684,14 @@ class LeoQtLog(leoFrame.LeoLog):
 
     # @+node:ekr.20110605121601.18331: *4* LeoQtLog.selectTab & helpers
     def selectTab(self, tabName: str, wrap: str = 'none') -> None:
-        """Create the tab if necessary and make it active."""
+        """
+        Create the tab if necessary and make it active.
+
+        Any plugin or script can call this method to create a new tab.
+        There is no need to call c.frame.log.createTab first.
+
+        As a result, this code can *not* be moved to the startup logic.
+        """
         i = self.findTabIndex(tabName)
         if i is None:
             # This does happen, but not often.

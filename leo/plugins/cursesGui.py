@@ -101,7 +101,7 @@ class textGui(leoGui.LeoGui):
     def destroySelf(self):
         self.killed = True
 
-    # @+node:ekr.20150107090324.12: *3* finishCreate
+    # @+node:ekr.20150107090324.12: *3* finishCreate (cursesGui.py)
     def finishCreate(self):
         pass
 
@@ -500,7 +500,7 @@ class textLog(leoFrame.LeoLog):
     def setFontFromConfig(self):
         pass  # N/A
 
-    # @+node:ekr.20150107090324.68: *3* finishCreate
+    # @+node:ekr.20150107090324.68: *3* finishCreate (cursesGui.py)
     def finishCreate(self):
         pass
 
