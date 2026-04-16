@@ -311,6 +311,9 @@ class TestQtGui(LeoUnitTest):
         )
         for obj, class_ in table:
             assert isinstance(obj, class_), (repr(obj), repr(class_))
+            if issubclass(obj.__class__, QTextMixin):
+                # Every subclass of QTextMix is an instance of QTextMixin.
+                assert isinstance(obj, QTextMixin)
 
         # Test the class hierarchy of text-related classes.
         assert issubclass(LeoQTextBrowser, QtWidgets.QTextBrowser)
@@ -322,6 +325,7 @@ class TestQtGui(LeoUnitTest):
             QMinibufferWrapper,
             QTextEditWrapper,
             QScintillaWrapper,
+            QTextMixin,  # Every class is a subclass of itself.
         ):
             assert issubclass(class_, QTextMixin), repr(class_)
 

@@ -162,7 +162,6 @@ class QTextMixin:
         self.enabled = True
         self.name: str = None  # Set in subclasses.
         # A flag for k.masterKeyHandler and isTextWrapper.
-        self.supportsHighLevelInterface = True
         self.tags: dict[str, str] = {}
         self.permanent = True  # False if selecting the minibuffer will make the widget go away.
         self.useScintilla = False  # This is used!

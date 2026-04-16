@@ -26,6 +26,7 @@ from leo.core.leoQt import Shadow, Shape, StandardButton, Weight, WindowType
 from leo.plugins import qt_events
 from leo.plugins import qt_frame
 from leo.plugins import qt_idle_time
+from leo.plugins.qt_text import QTextMixin
 
 # This defines the commands defined by @g.command.
 from leo.plugins import qt_commands
@@ -41,7 +42,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position
-    from leo.plugins.qt_text import QTextMixin
 
     Args = Any
     KWargs = Any
@@ -1698,11 +1698,7 @@ class LeoQtGui(leoGui.LeoGui):
 
     def isTextWrapper(self, w: Any) -> bool:
         """Return True if w is a Text widget suitable for text-oriented commands."""
-        if w is None:
-            return False
-        if isinstance(w, (g.NullObject, g.TracingNullObject)):
-            return True
-        return bool(getattr(w, 'supportsHighLevelInterface', None))
+        return isinstance(w, (g.NullObject, g.TracingNullObject, QTextMixin))
 
     # @+node:ekr.20110605121601.18527: *4* LeoQtGui.widget_name
     def widget_name(self, w: QWidget) -> str:

@@ -16,6 +16,7 @@ from collections.abc import Callable
 from typing import Any, Optional, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoFrame
+from leo.core.leoAPI import StringTextWrapper
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
@@ -588,7 +589,7 @@ class NullGui(LeoGui):
 
     def isTextWrapper(self, w: Widget) -> bool:
         """Return True if w is a Text widget suitable for text-oriented commands."""
-        return w and getattr(w, 'supportsHighLevelInterface', None)
+        return isinstance(w, StringTextWrapper)
 
     # @+node:ekr.20070301172456: *3* NullGui.panels
     def createComparePanel(self, c: Cmdr) -> None:

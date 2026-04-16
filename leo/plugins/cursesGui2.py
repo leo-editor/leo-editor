@@ -2169,7 +2169,7 @@ class LeoCursesGui(leoGui.LeoGui):
     # @+node:ekr.20170504052119.1: *4* CGui.isTextWrapper
     def isTextWrapper(self, w: Any) -> bool:
         """Return True if w is a Text widget suitable for text-oriented commands."""
-        return bool(w and getattr(w, 'supportsHighLevelInterface', None))
+        return isinstance(w, StringTextWrapper)
 
     # @+node:ekr.20170612063102.1: *4* CGui.put_help
     def put_help(self, c: Cmdr, s: str, short_title: str) -> None:
@@ -4201,13 +4201,7 @@ class TextMixin:
     def __init__(self, c: Cmdr = None) -> None:
         """Ctor for TextMixin class"""
         self.c = c
-        # self.changingText = False  # A lockout for onTextChanged.
         self.enabled = True
-        self.supportsHighLevelInterface = True  # Flag for k.masterKeyHandler and isTextWrapper.
-        # self.tags = {}
-        # self.configDict = {}  # Keys are tags, values are colors (names or values).
-        # self.configUnderlineDict = {}  # Keys are tags, values are True
-        # self.virtualInsertPoint = None
         if c:
             self.injectIvars(c)
 

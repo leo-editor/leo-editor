@@ -112,7 +112,7 @@ class textGui(leoGui.LeoGui):
     def set_focus(self, c, w):
         pass
 
-    # @+node:ekr.20150107090324.13: *3* isTextWidget
+    # @+node:ekr.20150107090324.13: *3* isTextWidget (cursesGui.py)
     def isTextWidget(self, w):
         """Return True if w is a Text widget suitable for text-oriented commands."""
         return w and isinstance(w, StringTextWrapper)

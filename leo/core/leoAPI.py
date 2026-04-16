@@ -104,6 +104,8 @@ class StringTextWrapper(QTextMixin):
     A class that represents Leo's body pane as a Python string.
     """
 
+    # @+others
+    # @+node:ekr.20260415161218.1: *3* StringTextWrapper.__init__
     def __init__(self, c: Cmdr, name: str) -> None:
         super().__init__(c)
         self.c = c
@@ -113,7 +115,10 @@ class StringTextWrapper(QTextMixin):
         self.sel = 0, 0
         self.s = ''
 
-    # @+others
+    # @+node:ekr.20260415161250.1: *3* StringTextWrapper.__repr__
+    def __repr__(self) -> str:
+        return f"<StringTextWrapper: @ {id(self)}>"
+
     # @+node:ekr.20140903172510.18579: *3* StringTextWrapper.setFocus
     def setFocus(self) -> None:
         pass

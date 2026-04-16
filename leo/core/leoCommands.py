@@ -3438,10 +3438,7 @@ class Commands:
             g.trace('stroke', stroke, 'plain:', k.isPlainKey(stroke), 'widget', name)
         if not stroke:
             return
-        #
-        # Part 1: Very late special cases.
-        #
-        # #1448
+        # #1448: Very late special cases.
         if stroke.isNumPadKey() and k.state.kind == 'getArg':
             stroke.removeNumPadModifier()
             k.getArg(event, stroke=stroke)
@@ -3452,9 +3449,6 @@ class Commands:
             if w and g.app.gui.widget_name(w).lower().startswith('canvas'):
                 c.onCanvasKey(event)
             return
-        #
-        # Part 2: Filter out keys that should never be inserted by default.
-        #
         # Ignore unbound F-keys.
         if stroke.isFKey():
             return
@@ -3477,9 +3471,6 @@ class Commands:
         # Never insert escape or insert characters.
         if 'Escape' in stroke.s or 'Insert' in stroke.s:
             return
-        #
-        # Part 3: Handle the event depending on the pane and state.
-        #
         # Handle events in the body pane.
         if name.startswith('body'):
             action = k.unboundKeyAction
@@ -3487,12 +3478,10 @@ class Commands:
                 c.editCommands.selfInsertCommand(event, action=action)
                 c.frame.updateStatusLine()
             return
-        #
         # Handle events in headlines.
         if name.startswith('head'):
             c.frame.tree.onHeadlineKey(event)
             return
-        #
         # Handle events in the background tree (not headlines).
         if name.startswith('canvas'):
             if event.char:
@@ -3501,16 +3490,13 @@ class Commands:
             elif not stroke:
                 c.onCanvasKey(event)
             return
-        #
         # Ignore all events outside the log pane.
         if not name.startswith('log'):
             return
-        #
         # Make sure we can insert into w.
         log_w = event.widget
-        if not hasattr(log_w, 'supportsHighLevelInterface'):
+        if not g.app.gui.isTextWidget(log_w):
             return
-        #
         # Send the event to the text widget, not the LeoLog instance.
         i = log_w.getInsertPoint()
         s = stroke.toGuiChar()
