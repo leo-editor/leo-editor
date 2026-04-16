@@ -29947,18 +29947,20 @@ More inspired Leo's cloned nodes.
 - Brian Harry contributed numerous plugins, including a prototype for Leo's minibuffer, and wrote jyLeo: Leo in Jython.
 - Almar Klein wrote pyzo, yoton and flexx, the basis of LeoWapp (--gui=browser).
 - Donald Knuth invented the CWEB language and literate programming.
-- The late Eric Norman was my friend and mentor.
+- Félix Malboeuf wrote LeoInteg, LeoJS, LeoWeb, leoserver.py and leoclient.py.
+- Виталије Милошевић, (Vitalije Milosevic) made vital code-level contributions.
 - The late Bernhard Mulder invented the @shadow algorithm, the foundation of @clean. |br|
   Bernhard also inspired Leo's generators and Position class.
-- Joe Orr created LeoVue and XSLT stylesheets for Leo.
-- John K. Ousterhout created tcl/Tk, used in early versions of Leo.
-- Виталије Милошевић, (Vitalije Milosevic) made vital code-level contributions.
 - Tsuchi Noko created transparent icons.
 - Neal Norwitz wrote PyChecker.
-- Félix Malboeuf wrote LeoInteg, LeoJS, LeoWeb, leoserver.py and leoclient.py.
+- The late Eric Norman was my friend and mentor.
+- Joe Orr created LeoVue and XSLT stylesheets for Leo.
+- John K. Ousterhout created tcl/Tk, used in early versions of Leo.
 - Marc-Antoine Parent urged me to use XML for Leo's file format and helped improve it.
+- Thomas Passin is one of Leo's core devs. He revised and simplified Leo's layout code.
 - Paul Paterson created the plugin architecture, helped with spell checking and contributed many plugins.
 - François Pinard wrote pymacs, the foundation of Leo's emacs bridge.
+- Viktor Ransmayr has been a tireless tester. He has saved my blushes many times.
 - Norman Ramsey created noweb and gave permission to quote from the noweb web documentation.
 - Edward K. Ream is Leo's project leader and chief programmer.
 - Rich Ries has contributed a huge number of suggestions.
