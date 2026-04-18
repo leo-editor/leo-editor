@@ -88,6 +88,7 @@ class Importer:
     # May be overridden in subclasses.
     block_patterns: tuple = tuple()
     string_list: list[str] = ['"', "'"]
+    compound_statements: list[str] = []
 
     # @+others
     # @+node:ekr.20230529075138.5: *3* i.__init__
@@ -395,11 +396,13 @@ class Importer:
             progress = i
             s = self.guide_lines[i]
             i += 1
-            # Assume that no pattern matches a compound statement.
             for kind, pattern in self.block_patterns:
                 if m := pattern.match(s):
                     # cython may include trailing whitespace.
                     name = m.group(1).strip()
+                    # #4471: ignore compound statements.
+                    if name in self.compound_statements:
+                        continue
                     end = self.find_end_of_block(i, i2)
                     assert i1 + 1 <= end <= i2, (i1, end, i2)
                     # Don't generate small blocks.
@@ -451,7 +454,7 @@ class Importer:
         Subclasses may override this method as necessary.
         """
         name_s = block.name or f"unnamed {block.kind}"
-        return f"{block.kind} {name_s}"
+        return f"{block.kind} {name_s}" if block.kind else name_s
 
     # @+node:ekr.20230920165923.1: *5* 2D: i.generate_all_bodies & helpers
     def generate_all_bodies(
