@@ -26,6 +26,7 @@ class Java_Importer(Importer):
     # @+node:ekr.20260412045240.1: *3* << Java_Importer: block_patterns >>
     block_patterns: tuple = (
 
+        ('interface', re.compile(r'^\s*interface\s+(\w+.*?)\s*((implements|throws).*?)?{')),
         ('', re.compile(r'^\s*(.*?\bclass\s+\w+)')),
         ('', re.compile(r'^\s*(\w+.*?)\(.*?\)\s*((implements|throws).*?)?{')),
 
