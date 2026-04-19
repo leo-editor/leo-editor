@@ -441,8 +441,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         # Set by the set-fill-column command.
         self.fillColumn = 0  # For line centering. If zero, use @pagewidth value.
         self.moveSpotNode = None  # A VNode.
-        self.moveSpot = None  # For retaining preferred column when moving up or down.
-        self.moveCol = None  # For retaining preferred column when moving up or down.
+        self.moveSpot: int | None = None  # For retaining preferred column when moving up or down.
+        self.moveCol: int | None = None  # For retaining preferred column when moving up or down.
         self.sampleWidget = None  # Created later.
         self.w = None  # For use by state handlers.
         # Settings...
