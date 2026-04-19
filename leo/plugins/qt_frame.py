@@ -1847,7 +1847,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
 
     def reloadSettings(self) -> None:
         c = self.c
-        self.cursorStay = c.config.getBool("cursor-stay-on-paste", default=True)
         self.use_chapters = c.config.getBool('use-chapters')
         self.use_chapter_tabs = c.config.getBool('use-chapter-tabs')
 

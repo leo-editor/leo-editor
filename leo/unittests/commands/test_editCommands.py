@@ -4402,7 +4402,7 @@ class TestEditCommands(LeoUnitTest):
         paste = 'ABC'
         g.app.gui.replaceClipboardWith(paste)
         w.setSelectionRange(end, end)
-        c.frame.pasteText(event=g.Bunch(widget=w))
+        c.frame.pasteText(event=g.Bunch(widget=w, wrapper=w))
         g.app.gui.event_generate(c, '\n', 'Return', w)
         self.assertEqual(p.h, h + paste)
         k.manufactureKeyPressForCommandName(w, 'undo')
@@ -4421,7 +4421,7 @@ class TestEditCommands(LeoUnitTest):
         paste = 'ABC'
         g.app.gui.replaceClipboardWith(paste)
         w.setSelectionRange(1, 2)
-        c.frame.pasteText(event=g.Bunch(widget=w))
+        c.frame.pasteText(event=g.Bunch(widget=w, wrapper=w))
         g.app.gui.event_generate(c, '\n', 'Return', w)
         self.assertEqual(p.h, h[0] + paste + h[2:])
         k.manufactureKeyPressForCommandName(w, 'undo')
@@ -4443,7 +4443,7 @@ class TestEditCommands(LeoUnitTest):
         g.app.gui.replaceClipboardWith(paste)
         g.app.gui.set_focus(c, w)
         w.setSelectionRange(end, end)
-        c.frame.pasteText(event=g.Bunch(widget=w))
+        c.frame.pasteText(event=g.Bunch(widget=w, wrapper=w))
         g.app.gui.event_generate(c, '\n', 'Return', w)
         self.assertEqual(p.h, h + paste)
 
@@ -4461,8 +4461,7 @@ class TestEditCommands(LeoUnitTest):
         w.setSelectionRange(end, end, insert=end)
         paste = 'ABC'
         g.app.gui.replaceClipboardWith(paste)
-        event = g.app.gui.create_key_event(c, w=w)
-        c.frame.pasteText(event)
+        c.frame.pasteText(event=g.Bunch(widget=w, wrapper=w))
         # Move around and and make sure it doesn't change.
         try:
             # g.trace('before select',w,w.getAllText())
@@ -4504,7 +4503,7 @@ class TestEditCommands(LeoUnitTest):
 
     # @+node:ekr.20210905064816.26: *4* TestEditCommands.test_selecting_new_node_retains_paste_in_headline
     def test_selecting_new_node_retains_paste_in_headline(self):
-        c, k = self.c, self.c.k
+        c = self.c
         h = 'Test headline abc'
         p = c.rootPosition().insertAfter()
         p.h = h
@@ -4517,7 +4516,7 @@ class TestEditCommands(LeoUnitTest):
         paste = 'ABC'
         g.app.gui.replaceClipboardWith(paste)
         w.setSelectionRange(end, end)
-        k.manufactureKeyPressForCommandName(w, 'paste-text')
+        c.frame.pasteText(event=g.Bunch(widget=w, wrapper=w))
         c.selectPosition(p.visBack(c))
         self.assertEqual(p.h, h + paste)
         c.undoer.undo()

@@ -65,6 +65,11 @@ class LeoGui:
         self.FKeys: list[str] = []  # The representation of F-keys.
         self.specialChars: list[str] = []  # A list of characters/keys to be handle specially.
 
+    # @+node:ekr.20260418103905.1: *3* LeoGui.create_wrapper_for_widget
+    def create_wrapper_for_widget(self, c: Cmdr, w: Widget) -> QTextMixin:
+        """May be overridden in subclasses."""
+        return StringTextWrapper(c)
+
     # @+node:ekr.20051206103652: *3* LeoGui.widget_name
     def widget_name(self, w: Widget) -> str:
         # First try the widget's getName method.
@@ -377,6 +382,7 @@ class LeoKeyEvent:
         self.event = event  # New in Leo 4.11.
         self.stroke = stroke
         self.w = self.widget = w
+        self.wrapper = g.app.gui.create_wrapper_for_widget(c, w)  ### Experimental
         # Optional ivars
         self.x = x
         self.y = y
@@ -390,7 +396,7 @@ class LeoKeyEvent:
             'LeoKeyEvent:',
             f"  {'c':>6}: {self.c.shortFileName()}",
         ]
-        for ivar in ('char', 'event', 'stroke', 'w', 'widget'):
+        for ivar in ('char', 'event', 'stroke', 'w', 'widget', 'wrapper'):
             result.append(f"  {ivar:>6}: {getattr(self, ivar)}")
         return '\n'.join(result)
 

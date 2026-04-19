@@ -87,6 +87,9 @@
 <v t="ekr.20200226104131.1"><vh>Future settings</vh>
 <v t="ekr.20190926110217.1"><vh>@string adoc-base-directory = None</vh></v>
 </v>
+<v t="ekr.20260419074741.1"><vh>Unused settings</vh>
+<v t="jlunz.20151119171553.1"><vh>@bool cursor-stay-on-paste = True</vh></v>
+</v>
 </v>
 <v t="ekr.20041119034357.1"><vh>@settings</vh>
 <v t="ekr.20201010141557.1"><vh>@string theme-name = None</vh></v>
@@ -2252,7 +2255,6 @@
 <v t="ekr.20041213105954"><vh>Windows</vh>
 <v t="ekr.20080412115752.1"><vh>@data fixedWindowPosition</vh></v>
 <v t="ekr.20041119034357.38"><vh>Body pane options</vh>
-<v t="jlunz.20151119171553.1"><vh>@bool cursor-stay-on-paste = True</vh></v>
 <v t="ekr.20061010111324"><vh>@bool select-all-text-when-editing-headlines = False</vh></v>
 <v t="ekr.20060531094310"><vh>@bool autoindent-in-nocolor-mode = True</vh></v>
 <v t="ekr.20041119034357.43"><vh>@bool body-gmt-time = False</vh></v>
@@ -11899,6 +11901,7 @@ If not given, Leo's beautifier uses Leo's pyproject.toml file.
 
 True (Legacy):       Raise a dialog when any file changes externally.
 False (Recommended): Print a log message when any file changes externally.</t>
+<t tx="ekr.20260419074741.1"></t>
 <t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 
 False: (Recommended) The commands act as simple navigation commands, and do not change the outline state.</t>

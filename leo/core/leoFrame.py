@@ -19,6 +19,7 @@ from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoColorizer, leoMenu, leoNodes
 from leo.core.leoAPI import StringTextWrapper
+from leo.plugins.qt_text import QMinibufferWrapper
 
 # @-<< leoFrame imports >>
 # @+<< leoFrame annotations >>
@@ -44,7 +45,7 @@ if TYPE_CHECKING:  # pragma: no cover
         QtIconBarClass,
         QtStatusLineClass,
     )
-    from leo.plugins.qt_text import QMinibufferWrapper, QTextMixin
+    from leo.plugins.qt_text import QTextMixin
     from leo.plugins.cursesGui2 import MiniBufferWrapper as CursesMiniBufferWrapper
 
     Widget = Any  # 'Any' is the correct annotation for base class widgets.
@@ -257,7 +258,6 @@ class LeoFrame:
         self.tree: LeoTree | NullTree | LeoQtTree = None
         self.useMiniBufferWidget = False
         # Other ivars...
-        self.cursorStay = True  # May be overridden in subclass.reloadSettings.
         self.es_newlines = 0  # newline count for this log stream.
         self.isNullFrame = False
         self.saved = False  # True if ever saved
@@ -482,20 +482,17 @@ class LeoFrame:
     @frame_cmd('copy-text')
     def copyText(self, event: LeoKeyEvent = None) -> None:
         """Copy the selected text from the widget to the clipboard."""
-        # f = self
-        w = event and event.widget
-        # wname = c.widget_name(w)
-        if not w or not g.isTextWrapper(w):
+        w = event.wrapper if event else None
+        if not g.isTextWrapper(w):
             return
         # Set the clipboard text.
         i, j = w.getSelectionRange()
         if i == j:
             ins = w.getInsertPoint()
             i, j = g.getLine(w.getAllText(), ins)
-        # 2016/03/27: Fix a recent buglet.
-        # Don't clear the clipboard if we hit ctrl-c by mistake.
         s = w.get(i, j)
         s = s.replace('\r\n', '\n').replace('\r', '\n')  # 3759.
+        # Don't clear the clipboard if we hit ctrl-c by mistake.
         if s:
             g.app.gui.replaceClipboardWith(s)
 
@@ -506,8 +503,8 @@ class LeoFrame:
     def cutText(self, event: LeoKeyEvent = None) -> None:
         """Invoked from the mini-buffer and from shortcuts."""
         c, p, u = self.c, self.c.p, self.c.undoer
-        w = event and event.widget
-        if not w or not g.isTextWrapper(w):
+        w = event.wrapper if event else None
+        if not g.isTextWrapper(w):
             return
         bunch = u.beforeChangeBody(p)
         name = c.widget_name(w)
@@ -538,60 +535,31 @@ class LeoFrame:
         If middleButton is True, support x-windows middle-mouse-button easter-egg.
         """
         c, p, u = self.c, self.c.p, self.c.undoer
-        w = event and event.widget
-        wname = c.widget_name(w)
-        if not w or not g.isTextWrapper(w):
+        w = event.wrapper if event else None
+        if not g.isTextWrapper(w):
             return
+        wname = c.widget_name(w) or ''
         bunch = u.beforeChangeBody(p)
-        if self.cursorStay and wname.startswith('body'):
-            tCurPosition = w.getInsertPoint()
-        i, j = w.getSelectionRange()  # Returns insert point if no selection.
-
-        # 2025/12/01: c.k.previousSelection no longer exists.
-        # if middleButton and c.k.previousSelection is not None:
-        # start, end = c.k.previousSelection
-        # s = w.getAllText()
-        # s = s[start:end]
-        # c.k.previousSelection = None
-        # else:
-        # s = g.app.gui.getTextFromClipboard()
-        s = g.app.gui.getTextFromClipboard()
-        s = g.checkUnicode(s)
-        s = s.replace('\r\n', '\n').replace('\r', '\n')  # 3759.
-        singleLine = wname.startswith('head') or wname.startswith('minibuffer')
-        if singleLine:
-            # Strip trailing newlines so the truncation doesn't cause confusion.
-            while s and s[-1] in ('\n', '\r'):
-                s = s[:-1]
         # Save the horizontal scroll position.
         if hasattr(w, 'getXScrollPosition'):
             x_pos = w.getXScrollPosition()
+        s = (
+            g.checkUnicode(g.app.gui.getTextFromClipboard())
+            .replace('\r\n', '\n')
+            .replace('\r', '\n')  # 3759.
+        )
+        if wname.startswith('log'):
+            # #2593: Replace link patterns with html links.
+            c.frame.log.put_html_links(s)
         # Update the widget.
+        i, j = w.getSelectionRange()  # Returns insert point if no selection.
         if i != j:
             w.delete(i, j)
-        # #2593: Replace link patterns with html links.
-        if wname.startswith('log'):
-            if c.frame.log.put_html_links(s):
-                return  # create_html_links has done all the work.
         w.insert(i, s)
         w.see(i + len(s) + 2)
         if wname.startswith('body'):
-            if self.cursorStay:
-                if tCurPosition == j:
-                    offset = len(s) - (j - i)
-                else:
-                    offset = 0
-                newCurPosition = tCurPosition + offset
-                w.setSelectionRange(i=newCurPosition, j=newCurPosition)
             p.v.b = w.getAllText()
             u.afterChangeBody(p, 'Paste', bunch)
-        elif singleLine:
-            s = w.getAllText()
-            while s and s[-1] in ('\n', '\r'):
-                s = s[:-1]
-        else:
-            pass
-        # Never scroll horizontally.
         if hasattr(w, 'getXScrollPosition'):
             w.setXScrollPosition(x_pos)
         c.recolor()  # 4398.

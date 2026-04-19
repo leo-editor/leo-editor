@@ -339,10 +339,7 @@ class LeoMenu:
                 wname = c.widget_name(w)
                 if wname.startswith('head'):
                     w = c.frame.tree.edit_widget(c.p)
-            # Return a wrapper if possible.
-            if not g.isTextWrapper(w):
-                w = getattr(w, 'wrapper', w)
-            return w
+            return w if g.isTextWidget(w) else None
 
         if isinstance(command, str):
 

@@ -106,10 +106,10 @@ class StringTextWrapper(QTextMixin):
 
     # @+others
     # @+node:ekr.20260415161218.1: *3* StringTextWrapper.__init__
-    def __init__(self, c: Cmdr, name: str) -> None:
+    def __init__(self, c: Cmdr, name: str = None) -> None:
         super().__init__(c)
         self.c = c
-        self.name = name
+        self.name = name or '<no name>'
         # Ivars unique to StringTextWrapper.
         self.ins = 0
         self.sel = 0, 0
