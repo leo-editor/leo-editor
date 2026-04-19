@@ -317,7 +317,7 @@ def init() -> bool:
 
 # @+node:ekr.20240727091022.1: *3* vr function: getVR
 def getVr(
-    *, c: Any = None, event: Any = None, parent: QtWidgets.QWidget = None
+    *, c: Any | None = None, event: Any | None = None, parent: QtWidgets.QWidget | None = None
 ) -> Optional[QtWidgets.QWidget]:
     """Return the ViewRenderedController instance or None."""
     if g.app.gui.guiName() != 'qt':
@@ -645,7 +645,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     # @-<< vr: default templates >>
     # @+others
     # @+node:ekr.20110317080650.14380: *3*  vr.ctor & helpers
-    def __init__(self, c: Cmdr, parent: QWidget = None) -> None:
+    def __init__(self, c: Cmdr, parent: QWidget | None = None) -> None:
         """Ctor for ViewRenderedController class."""
         self.c = c
         # Create the widget.

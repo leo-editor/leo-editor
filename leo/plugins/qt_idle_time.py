@@ -52,7 +52,7 @@ class IdleTime:
 
     # @+others
     # @+node:ekr.20140825042850.18406: *3* IdleTime.__init__
-    def __init__(self, handler: Callable, delay: int = 500, tag: str = None) -> None:
+    def __init__(self, handler: Callable, delay: int = 500, tag: str | None = None) -> None:
         """ctor for IdleTime class."""
         # For use by handlers...
         self.count = 0  # The number of times handler has been called.

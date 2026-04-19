@@ -53,7 +53,7 @@ class BaseEditCommandsClass:
         return w
 
     # @+node:ekr.20150514043714.6: *4* BaseEdit.endCommand
-    def endCommand(self, label: str = None, changed: bool = True, setLabel: bool = True) -> None:
+    def endCommand(self, label: str | None = None, changed: bool = True, setLabel: bool = True) -> None:
         """
         Do the common processing at the end of each command.
         Handles undo only if we are in the body pane.
@@ -125,7 +125,7 @@ class BaseEditCommandsClass:
         return r1 + 1, r2, r3 + 1, r4
 
     # @+node:ekr.20150514043714.14: *4* BaseEdit.keyboardQuit
-    def keyboardQuit(self, event: LeoKeyEvent = None) -> None:  # pragma: no cover
+    def keyboardQuit(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
         """Clear the state and the minibuffer label."""
         self.c.k.keyboardQuit()
 

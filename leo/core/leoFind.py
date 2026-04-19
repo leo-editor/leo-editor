@@ -242,7 +242,7 @@ class LeoFind:
         self,
         root: Position,
         replacements: list[tuple[str, str]],
-        settings: Settings = None,
+        settings: Settings | None = None,
     ) -> int:
         # @+<< docstring: find.batch_change >>
         # @+node:ekr.20210925161347.1: *4* << docstring: find.batch_change >>
@@ -364,8 +364,8 @@ class LeoFind:
     # @+node:ekr.20210925161148.1: *3* find.interactive_search_helper
     def interactive_search_helper(
         self,
-        root: Position = None,
-        settings: Settings = None,
+        root: Position | None = None,
+        settings: Settings | None = None,
     ) -> None:  # pragma: no cover
         # @+<< docstring: find.interactive_search >>
         # @+node:ekr.20210925161451.1: *4* << docstring: find.interactive_search >>
@@ -423,7 +423,7 @@ class LeoFind:
     # @+node:ekr.20031218072017.3062: *4* find.change-then-find & helper
     @cmd('replace-then-find')
     @cmd('change-then-find')
-    def change_then_find(self, event: LeoKeyEvent = None) -> None:  # pragma: no cover (cmd)
+    def change_then_find(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover (cmd)
         """Handle the replace-then-find command."""
         # Settings...
         self.init_in_headline()
@@ -449,7 +449,7 @@ class LeoFind:
     # @+node:ekr.20160224175312.1: *4* find.clone-find_marked & helper
     @cmd('clone-find-all-marked')
     @cmd('cfam')
-    def cloneFindAllMarked(self, event: LeoKeyEvent = None) -> None:
+    def cloneFindAllMarked(self, event: LeoKeyEvent | None = None) -> None:
         """
         clone-find-all-marked, aka cfam.
 
@@ -461,7 +461,7 @@ class LeoFind:
 
     @cmd('clone-find-all-flattened-marked')
     @cmd('cffm')
-    def cloneFindAllFlattenedMarked(self, event: LeoKeyEvent = None) -> None:
+    def cloneFindAllFlattenedMarked(self, event: LeoKeyEvent | None = None) -> None:
         """
         clone-find-all-flattened-marked, aka cffm.
 
@@ -519,7 +519,7 @@ class LeoFind:
 
     # @+node:ekr.20140828080010.18532: *4* find.clone-find-parents
     @cmd('clone-find-parents')
-    def cloneFindParents(self, event: LeoKeyEvent = None) -> bool:
+    def cloneFindParents(self, event: LeoKeyEvent | None = None) -> bool:
         """
         Create an organizer node whose direct children are clones of all
         parents of the selected node, which must be a clone.
@@ -563,7 +563,7 @@ class LeoFind:
     # @+node:ekr.20150629084204.1: *4* find.find-def/var & helper
     @cmd('find-def')
     @cmd('find-var')
-    def find_def(self, event: LeoKeyEvent = None) -> list[tuple[int, Position, str]]:
+    def find_def(self, event: LeoKeyEvent | None = None) -> list[tuple[int, Position, str]]:
         """
         Find the class, def or assignment to var of the word under the cursor.
         """
@@ -850,7 +850,7 @@ class LeoFind:
 
     # @+node:ekr.20031218072017.3063: *4* find.find-next, find-prev & do_find_*
     @cmd('find-next')
-    def find_next(self, event: LeoKeyEvent = None) -> None:  # pragma: no cover (cmd)
+    def find_next(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover (cmd)
         """The find-next command."""
         # Settings...
         self.reverse = False
@@ -860,7 +860,7 @@ class LeoFind:
         self.do_find_next(settings)
 
     @cmd('find-prev')
-    def find_prev(self, event: LeoKeyEvent = None) -> None:  # pragma: no cover (cmd)
+    def find_prev(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover (cmd)
         """Handle F2 (find-previous)"""
         # Settings...
         self.init_in_headline()  # Do this *before* creating the settings.
@@ -965,7 +965,7 @@ class LeoFind:
 
     # @+node:ekr.20131117164142.17015: *4* find.find-tab-hide
     @cmd('find-tab-hide')
-    def hide_find_tab(self, event: LeoKeyEvent = None) -> None:  # pragma: no cover (cmd)
+    def hide_find_tab(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover (cmd)
         """Hide the Find tab."""
         c = self.c
         if self.minibuffer_mode:
@@ -976,7 +976,7 @@ class LeoFind:
     # @+node:ekr.20131117164142.16916: *4* find.find-tab-open
     @cmd('find-tab-open')
     def open_find_tab(
-        self, event: LeoKeyEvent = None, show: bool = True
+        self, event: LeoKeyEvent | None = None, show: bool = True
     ) -> None:  # pragma: no cover (cmd)
         """Open the Find tab in the log pane."""
         c = self.c
@@ -987,7 +987,7 @@ class LeoFind:
 
     # @+node:ekr.20141113094129.6: *4* find.focus-to-find
     @cmd('focus-to-find')
-    def focus_to_find(self, event: LeoKeyEvent = None) -> None:  # pragma: no cover (cmd)
+    def focus_to_find(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover (cmd)
         c = self.c
         if c.config.getBool('use-find-dialog', default=True):
             g.app.gui.openFindDialog(c)
@@ -997,7 +997,7 @@ class LeoFind:
     # @+node:ekr.20031218072017.3068: *4* find.replace (replace)
     @cmd('replace')
     @cmd('change')
-    def change(self, event: LeoKeyEvent = None) -> None:  # pragma: no cover (cmd)
+    def change(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover (cmd)
         """Replace the selected text with the replacement text."""
         p = self.c.p
         settings = self.ftm.get_settings()
@@ -1011,23 +1011,23 @@ class LeoFind:
     # @+node:ekr.20131117164142.17019: *4* find.set-find-*
     @cmd('set-find-everywhere')
     def set_find_scope_every_where(
-        self, event: LeoKeyEvent = None
+        self, event: LeoKeyEvent | None = None
     ) -> None:  # pragma: no cover (cmd)
         """Set the 'Entire Outline' radio button in the Find tab."""
         self.set_find_scope('entire-outline')
 
     @cmd('set-find-node-only')
-    def set_find_scope_node_only(self, event: LeoKeyEvent = None) -> None:  # pragma: no cover (cmd)
+    def set_find_scope_node_only(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover (cmd)
         """Set the 'Node Only' radio button in the Find tab."""
         self.set_find_scope('node-only')
 
     @cmd('set-find-file-only')
-    def set_find_scope_file_only(self, event: LeoKeyEvent = None) -> None:  # pragma: no cover (cmd)
+    def set_find_scope_file_only(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover (cmd)
         """Set the 'File Only' radio button in the Find tab."""
         self.set_find_scope('file-only')
 
     @cmd('set-find-suboutline-only')
-    def set_find_scope_suboutline_only(self, event: LeoKeyEvent = None) -> None:
+    def set_find_scope_suboutline_only(self, event: LeoKeyEvent | None = None) -> None:
         """Set the 'Suboutline Only' radio button in the Find tab."""
         self.set_find_scope('suboutline-only')
 
@@ -1040,7 +1040,7 @@ class LeoFind:
 
     # @+node:ekr.20131117164142.16989: *4* find.show-find-options
     @cmd('show-find-options')
-    def show_find_options(self, event: LeoKeyEvent = None) -> None:  # pragma: no cover (cmd)
+    def show_find_options(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover (cmd)
         """
         Show the present find options in the status line.
         This is useful for commands like search-forward that do not show the Find Panel.
@@ -1149,7 +1149,7 @@ class LeoFind:
     @cmd('change-all')
     @cmd('replace-all')
     def interactive_change_all(
-        self, event: LeoKeyEvent = None
+        self, event: LeoKeyEvent | None = None
     ) -> None:  # pragma: no cover (interactive)
         """Replace all instances of the search string with the replacement string."""
         self.ftm.clear_focus()
@@ -1400,7 +1400,7 @@ class LeoFind:
     @cmd('cfa')
     def interactive_clone_find_all(
         self,
-        event: LeoKeyEvent = None,
+        event: LeoKeyEvent | None = None,
         preloaded: bool = False,
     ) -> None:  # pragma: no cover (interactive)
         """
@@ -1463,7 +1463,7 @@ class LeoFind:
     @cmd('cff')
     def interactive_cff(
         self,
-        event: LeoKeyEvent = None,
+        event: LeoKeyEvent | None = None,
         preloaded: bool = False,
     ) -> None:  # pragma: no cover (interactive)
         """
@@ -1524,7 +1524,7 @@ class LeoFind:
     @cmd('find-clone-tag')
     @cmd('cft')
     def interactive_clone_find_tag(
-        self, event: LeoKeyEvent = None
+        self, event: LeoKeyEvent | None = None
     ) -> None:  # pragma: no cover (interactive)
         """
         clone-find-tag (aka find-clone-tag and cft).
@@ -1609,7 +1609,7 @@ class LeoFind:
     # @+node:ekr.20131117164142.16998: *4* find.find-all & helper
     @cmd('find-all')
     def interactive_find_all(
-        self, event: LeoKeyEvent = None
+        self, event: LeoKeyEvent | None = None
     ) -> None:  # pragma: no cover (interactive)
         """
         Create a summary node containing descriptions of all matches of the
@@ -1627,7 +1627,7 @@ class LeoFind:
         )
 
     def interactive_find_all1(
-        self, event: LeoKeyEvent = None
+        self, event: LeoKeyEvent | None = None
     ) -> None:  # pragma: no cover (interactive)
         k = self.k
         # Settings.
@@ -1909,7 +1909,7 @@ class LeoFind:
     # @+node:ekr.20250206055338.1: *4* find.find-source-for-command & helpers
     @cmd('find-source-for-command')
     def find_source_for_command(
-        self, event: LeoKeyEvent = None
+        self, event: LeoKeyEvent | None = None
     ) -> None:  # pragma: no cover (interactive)
         """
         Create a summary node containing descriptions of all matches of the
@@ -1924,7 +1924,7 @@ class LeoFind:
         self.start_state_machine(event, 'Command Name: ', handler=self.find_source_for_command1)
 
     def find_source_for_command1(
-        self, event: LeoKeyEvent = None
+        self, event: LeoKeyEvent | None = None
     ) -> None:  # pragma: no cover (interactive)
         k = self.k
         # Settings.
@@ -2121,7 +2121,7 @@ class LeoFind:
     startSearch = start_search  # Compatibility. Do not delete.
 
     # @+node:ekr.20210117143611.1: *5* find.start_search1
-    def start_search1(self, event: LeoKeyEvent = None) -> None:  # pragma: no cover
+    def start_search1(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
         """Common handler for use by vim commands and other find commands."""
         c, k, w = self.c, self.k, self.c.frame.body.wrapper
         # Settings...
@@ -2140,7 +2140,7 @@ class LeoFind:
         self.do_find_next(settings)  # Handles reverse.
 
     # @+node:ekr.20210117143614.1: *5* find._start_search_escape1
-    def start_search_escape1(self, event: LeoKeyEvent = None) -> None:  # pragma: no cover
+    def start_search_escape1(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
         """
         Common escape handler for use by find commands.
 
@@ -2230,7 +2230,7 @@ class LeoFind:
     # @+node:ekr.20160920164418.2: *4* find.tag-children & helper
     @cmd('tag-children')
     def interactive_tag_children(
-        self, event: LeoKeyEvent = None
+        self, event: LeoKeyEvent | None = None
     ) -> None:  # pragma: no cover (interactive)
         """Prompt for a tag and add it to all children of c.p."""
         w = self.c.frame.body.wrapper
@@ -2271,7 +2271,7 @@ class LeoFind:
     # @+node:ekr.20230124043210.1: *4* find.tag-node & helper
     @cmd('tag-node')
     def interactive_tag_node(
-        self, event: LeoKeyEvent = None
+        self, event: LeoKeyEvent | None = None
     ) -> None:  # pragma: no cover (interactive)
         """Prompt for a tag and add it to c.p."""
         w = self.c.frame.body.wrapper
@@ -3331,7 +3331,7 @@ class LeoFind:
         return f" ({', '.join(status)})" if status else ''
 
     # @+node:ekr.20131119204029.16479: *4* find.help_for_find_commands
-    def help_for_find_commands(self, event: LeoKeyEvent = None) -> None:  # pragma: no cover (cmd)
+    def help_for_find_commands(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover (cmd)
         """Called from Find panel.  Redirect."""
         self.c.helpCommands.help_for_find_commands(event)
 
@@ -3423,7 +3423,7 @@ class LeoFind:
         event: LeoKeyEvent,
         prefix: str,
         handler: Callable,
-        escape_handler: Callable = None,
+        escape_handler: Callable | None = None,
     ) -> None:  # pragma: no cover (cmd)
         """
         Initialize and start the state machine used to get user arguments.

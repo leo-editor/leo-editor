@@ -250,7 +250,7 @@ class PlugIn:
 
     # @+others
     # @+node:EKR.20040517080555.4: *3* PlugIn.__init__ & helper
-    def __init__(self, plgMod: ModuleType, c: Cmdr = None) -> None:
+    def __init__(self, plgMod: ModuleType, c: Cmdr | None = None) -> None:
         """
         @param plgMod: Module object for the plugin represented by this instance.
         @param c:  Leo-editor "commander" for the current .leo file
@@ -300,7 +300,7 @@ class PlugIn:
                 self.othercmds[func.command_name] = func
 
     # @+node:EKR.20040517080555.8: *3* PlugIn.about
-    def about(self, event: Event = None) -> None:
+    def about(self, event: Event | None = None) -> None:
         """Put information about this plugin in a scrolledMessage dialog."""
         c = self.c
         msg = self.doc.strip() + '\n' if self.doc else ''
@@ -324,7 +324,7 @@ class PlugIn:
         return name.capitalize()
 
     # @+node:EKR.20040517080555.9: *3* PlugIn.properties
-    def properties(self, event: Event = None) -> None:
+    def properties(self, event: Event | None = None) -> None:
         """Display a modal properties dialog for this plugin"""
         if self.hasapply:
 

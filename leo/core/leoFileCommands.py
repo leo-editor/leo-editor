@@ -219,7 +219,7 @@ class FastRead:
         fc.descendentMarksList = marked
 
     # @+node:ekr.20180606041211.1: *4* fast.resolveUa
-    def resolveUa(self, attr: str, val: Value, kind: str = None) -> Value:
+    def resolveUa(self, attr: str, val: Value, kind: str | None = None) -> Value:
         # Kind is for unit testing.
         """Parse an unknown attribute in a <v> or <t> element."""
         try:
@@ -657,7 +657,7 @@ class FileCommands:
     # @+node:ekr.20210316042224.1: *3* fc: Commands
     # @+node:ekr.20031218072017.2012: *4* write-at-file-nodes
     @cmd('write-at-file-nodes')
-    def writeAtFileNodes(self, event: LeoKeyEvent = None) -> None:
+    def writeAtFileNodes(self, event: LeoKeyEvent | None = None) -> None:
         """Write all @file nodes in the selected outline."""
         c = self.c
         c.endEditing()
@@ -667,7 +667,7 @@ class FileCommands:
 
     # @+node:ekr.20031218072017.1666: *4* write-dirty-at-file-nodes
     @cmd('write-dirty-at-file-nodes')
-    def writeDirtyAtFileNodes(self, event: LeoKeyEvent = None) -> None:
+    def writeDirtyAtFileNodes(self, event: LeoKeyEvent | None = None) -> None:
         """Write all changed @file Nodes."""
         c = self.c
         c.endEditing()
@@ -677,7 +677,7 @@ class FileCommands:
 
     # @+node:ekr.20031218072017.2013: *4* write-missing-at-file-nodes
     @cmd('write-missing-at-file-nodes')
-    def writeMissingAtFileNodes(self, event: LeoKeyEvent = None) -> None:
+    def writeMissingAtFileNodes(self, event: LeoKeyEvent | None = None) -> None:
         """Write all @file nodes for which the corresponding external file does not exist."""
         c = self.c
         c.endEditing()
@@ -685,7 +685,7 @@ class FileCommands:
 
     # @+node:ekr.20031218072017.3050: *4* write-outline-only
     @cmd('write-outline-only')
-    def writeOutlineOnly(self, event: LeoKeyEvent = None) -> None:
+    def writeOutlineOnly(self, event: LeoKeyEvent | None = None) -> None:
         """Write the entire outline without writing any derived files."""
         c = self.c
         c.endEditing()
@@ -693,7 +693,7 @@ class FileCommands:
 
     # @+node:ekr.20230406053535.1: *4* write-zip-archive
     @cmd('write-zip-archive')
-    def writeZipArchive(self, event: LeoKeyEvent = None) -> None:
+    def writeZipArchive(self, event: LeoKeyEvent | None = None) -> None:
         """
         Write a .zip file containing this .leo file and all external files.
 
@@ -1195,7 +1195,7 @@ class FileCommands:
         return rootChildren[0]
 
     # @+node:vitalije.20170815162307.1: *6* fc.initNewDb
-    def initNewDb(self, conn: Conn, path: str = None) -> VNode:
+    def initNewDb(self, conn: Conn, path: str | None = None) -> VNode:
         """Initializes tables and returns None"""
         c, fc = self.c, self
         v = leoNodes.VNode(context=c)
@@ -1254,7 +1254,7 @@ class FileCommands:
     # Pre Leo 4.5 Only @thin vnodes had the descendentTnodeUnknownAttributes field.
     # New in Leo 4.5: @thin & @shadow vnodes have descendentVnodeUnknownAttributes field.
 
-    def getDescendentUnknownAttributes(self, s: str, v: VNode = None) -> Value:
+    def getDescendentUnknownAttributes(self, s: str, v: VNode | None = None) -> Value:
         """Unhexlify and unpickle t/v.descendentUnknownAttribute field."""
         try:
             # Changed in version 3.2: Accept only bytestring or bytearray objects as input.
@@ -1608,7 +1608,7 @@ class FileCommands:
         )
 
     # @+node:ekr.20031218072017.1573: *5* fc.outline_to_clipboard_string
-    def outline_to_clipboard_string(self, p: Position = None) -> str:
+    def outline_to_clipboard_string(self, p: Position | None = None) -> str:
         """
         Return a string suitable for pasting to the clipboard.
         """
@@ -1640,7 +1640,7 @@ class FileCommands:
         return s
 
     # @+node:felix.20230326001957.1: *5* fc.outline_to_clipboard_json_string
-    def outline_to_clipboard_json_string(self, p: Position = None) -> str:
+    def outline_to_clipboard_json_string(self, p: Position | None = None) -> str:
         """
         Return a JSON string suitable for pasting to the clipboard.
         """
@@ -1719,7 +1719,7 @@ class FileCommands:
             return False
 
     # @+node:ekr.20210316095706.1: *6* fc.leojs_outline_dict
-    def leojs_outline_dict(self, p: Position = None) -> dict[str, Value]:
+    def leojs_outline_dict(self, p: Position | None = None) -> dict[str, Value]:
         """Return a dict representing the outline."""
         c = self.c
         uas = {}
@@ -2219,7 +2219,7 @@ class FileCommands:
         return ''.join(attrs)
 
     # @+node:ekr.20031218072017.1579: *5* fc.put_v_elements & helper
-    def put_v_elements(self, p: Position = None) -> None:
+    def put_v_elements(self, p: Position | None = None) -> None:
         """Puts all <v> elements in the order in which they appear in the outline."""
         c = self.c
         c.clearAllVisited()

@@ -172,7 +172,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     # @+others
     # @+node:ekr.20210308051724.1: *3* efc.convert-at-root
     @cmd('convert-at-root')
-    def convert_at_root(self, event: LeoKeyEvent = None) -> None:
+    def convert_at_root(self, event: LeoKeyEvent | None = None) -> None:
         # @+<< convert-at-root docstring >>
         # @+node:ekr.20210309035627.1: *4* << convert-at-root docstring >>
         # @@wrap
@@ -508,7 +508,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20170806094318.3: *3* efc.diff (file-diff-files)
     @cmd('file-diff-files')
-    def diff(self, event: LeoKeyEvent = None) -> None:
+    def diff(self, event: LeoKeyEvent | None = None) -> None:
         """Creates a node and puts the diff between 2 files into it."""
         c, u = self.c, self.c.undoer
         fn = self.getReadableTextFile()
@@ -551,14 +551,14 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     # @+node:ekr.20170819035801.90: *3* efc.gitDiff (gd & git-diff)
     @cmd('git-diff')
     @cmd('gd')
-    def gitDiff(self, event: LeoKeyEvent = None) -> None:
+    def gitDiff(self, event: LeoKeyEvent | None = None) -> None:
         """Produce a Leonine git diff."""
         GitDiffController(c=self.c).git_diff(rev1='HEAD')
 
     # @+node:ekr.20201215093414.1: *3* efc.gitDiffPR (git-diff-pr & git-diff-pull-request)
     @cmd('git-diff-pull-request')
     @cmd('git-diff-pr')
-    def gitDiffPullRequest(self, event: LeoKeyEvent = None) -> None:
+    def gitDiffPullRequest(self, event: LeoKeyEvent | None = None) -> None:
         """
         Produce a Leonine diff of pull request in the current branch.
         """
@@ -813,7 +813,7 @@ class GitDiffController:
         self.finish()
 
     # @+node:ekr.20180507212821.1: *4* gdc.diff_two_revs
-    def diff_two_revs(self, rev1: str = 'HEAD', rev2: str = '', path: str = None) -> None:
+    def diff_two_revs(self, rev1: str = 'HEAD', rev2: str = '', path: str | None = None) -> None:
         """
         Create an outline describing the git diffs for all files changed
         between rev1 and rev2.
@@ -895,7 +895,7 @@ class GitDiffController:
         return True
 
     # @+node:ekr.20230705082614.1: *4* gdc.node_history & helpers
-    def node_history(self, path: str, gnxs: list[str], limit: int = None) -> None:
+    def node_history(self, path: str, gnxs: list[str], limit: int | None = None) -> None:
         """Produce a Leonine history of the node whose file name and gnx are given."""
         c = self.c
         # The path must be absolute.
@@ -1203,7 +1203,7 @@ class GitDiffController:
             g.trace('Unknown kind', repr(b.kind))
 
     # @+node:ekr.20260112115313.1: *4* gdc.summary_diff_two_revs
-    def summary_diff_two_revs(self, rev1: str = 'HEAD', rev2: str = '', path: str = None) -> None:
+    def summary_diff_two_revs(self, rev1: str = 'HEAD', rev2: str = '', path: str | None = None) -> None:
         """
         Create an outline describing the git diffs for all files changed
         between rev1 and rev2.
@@ -1517,7 +1517,7 @@ class GitDiffController:
             return ''
 
     # @+node:ekr.20170806094320.9: *4* gdc.get_files
-    def get_files(self, rev1: str, rev2: str, path: str = None) -> list[str]:
+    def get_files(self, rev1: str, rev2: str, path: str | None = None) -> list[str]:
         """Return a list of changed files."""
         # #2143
         git_directory = self.get_parent_of_git_directory()

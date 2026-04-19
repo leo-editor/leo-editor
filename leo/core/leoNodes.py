@@ -560,7 +560,7 @@ class Position:
                 p.moveToThreadNext()
 
     # @+node:ekr.20161120163203.1: *4* p.nearest_unique_roots (aka p.nearest)
-    def nearest_unique_roots(self, copy: bool = True, predicate: Callable = None) -> Generator:
+    def nearest_unique_roots(self, copy: bool = True, predicate: Callable | None = None) -> Generator:
         """
         A generator yielding all unique root positions "near" p1 = self that
         satisfy the given predicate. p.isAnyAtFileNode is the default
@@ -2724,7 +2724,7 @@ class VNode:
             pass
 
     # @+node:ekr.20191213161023.1: *4* v.setAllAncestorAtFileNodesDirty
-    def setAllAncestorAtFileNodesDirty(self, *, to_do_set: set[VNode] = None) -> None:
+    def setAllAncestorAtFileNodesDirty(self, *, to_do_set: set[VNode] | None = None) -> None:
         """
         Original idea by Виталије Милошевић (Vitalije Milosevic).
 

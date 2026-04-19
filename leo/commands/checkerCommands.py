@@ -546,7 +546,7 @@ class PyflakesCommand:
     class LogStream:
         """A log stream for pyflakes."""
 
-        def __init__(self, fn_n: int = 0, roots: list[Position] = None) -> None:
+        def __init__(self, fn_n: int = 0, roots: list[Position] | None = None) -> None:
             self.fn_n = fn_n
             self.roots = roots
 
@@ -642,7 +642,7 @@ class PylintCommand:
 
     # @+others
     # @+node:ekr.20150514125218.11: *3* 1. pylint.run
-    def run(self, root: Position, *, last_path: str = None) -> Optional[tuple[str, Position]]:
+    def run(self, root: Position, *, last_path: str | None = None) -> Optional[tuple[str, Position]]:
         """Run Pylint on all Python @<file> nodes in root's tree."""
         c = self.c
         if not lint:

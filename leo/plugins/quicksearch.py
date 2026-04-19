@@ -312,7 +312,7 @@ class LeoQuickSearchWidget(QtWidgets.QWidget):  # type:ignore
 
     # @+others
     # @+node:ekr.20111015194452.15695: *3* quick_w.ctor
-    def __init__(self, c: Cmdr, mode: str = "nav", parent: QWidget = None) -> None:
+    def __init__(self, c: Cmdr, mode: str = "nav", parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.ui: Any = qt_quicksearch.Ui_LeoQuickSearchWidget()
         self.ui.setupUi(self)
@@ -734,7 +734,7 @@ class QuickSearchController:
 
     # @+node:ekr.20111015194452.15700: *3* Event handlers
     # @+node:ekr.20111015194452.15686: *4* onSelectItem (quicksearch.py)
-    def onSelectItem(self, it: Iterable, it_prev: Iterable = None) -> None:
+    def onSelectItem(self, it: Iterable, it_prev: Iterable | None = None) -> None:
         c = self.c
         if not it:
             return

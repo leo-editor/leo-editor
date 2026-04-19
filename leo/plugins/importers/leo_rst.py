@@ -119,7 +119,7 @@ class Rst_Importer(Importer):
         )
 
     # @+node:ekr.20230529072922.5: *4* rst_i.is_underline
-    def is_underline(self, line: str, extra: str = None) -> bool:
+    def is_underline(self, line: str, extra: str | None = None) -> bool:
         """True if the line consists of nothing but the same underlining characters."""
         if line.isspace():
             return False

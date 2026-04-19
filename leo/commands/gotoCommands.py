@@ -27,7 +27,7 @@ class GoToCommands:
 
     # @+others
     # @+node:ekr.20100216141722.5622: *3* goto.find_file_line & helper
-    def find_file_line(self, n: int, p: Position = None) -> tuple[Position, int]:
+    def find_file_line(self, n: int, p: Position | None = None) -> tuple[Position, int]:
         """
         Helper for goto-global-line command.
 
@@ -48,7 +48,7 @@ class GoToCommands:
         return p, offset
 
     # @+node:ekr.20230727074847.1: *4* goto.find_file_line_helper
-    def find_file_line_helper(self, n: int, p: Position = None) -> tuple[Position, int]:
+    def find_file_line_helper(self, n: int, p: Position | None = None) -> tuple[Position, int]:
         c = self.c
         if n < 0:
             return None, -1
@@ -97,7 +97,7 @@ class GoToCommands:
         return None, -1
 
     # @+node:ekr.20160921210529.1: *3* goto.find_node_start & helper
-    def find_node_start(self, p: Position, s: str = None) -> Optional[int]:
+    def find_node_start(self, p: Position, s: str | None = None) -> Optional[int]:
         """
         Helper for show-file-line command.
 

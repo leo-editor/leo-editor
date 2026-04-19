@@ -419,9 +419,9 @@ class textLeoMenu(leoMenu.LeoMenu):
         self,
         menu: Any,
         accelerator: str = '',
-        command: Callable = None,
-        commandName: str = None,
-        label: str = None,
+        command: Callable | None = None,
+        commandName: str | None = None,
+        label: str | None = None,
         underline: int = 0,
     ) -> None:
         # ?
@@ -555,7 +555,7 @@ class textTree(leoFrame.LeoTree):
         # and something to do with undo?
 
     # @+node:ekr.20150107090324.66: *3* editLabel & edit_widget (cursesGui)
-    def editLabel(self, v, selectAll: bool = False, selection: tuple = None) -> tuple[None, None]:
+    def editLabel(self, v, selectAll: bool = False, selection: tuple | None = None) -> tuple[None, None]:
         return None, None
 
     def edit_widget(self, p):

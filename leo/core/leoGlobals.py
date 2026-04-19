@@ -469,10 +469,10 @@ class BindingInfo:
         self,
         kind: str,
         commandName: str = '',
-        func: Callable = None,
-        nextMode: str = None,
-        pane: str = None,
-        stroke: KeyStroke = None,
+        func: Callable | None = None,
+        nextMode: str | None = None,
+        pane: str | None = None,
+        stroke: KeyStroke | None = None,
     ) -> None:
         if not g.isStrokeOrNone(stroke):
             g.trace('***** (BindingInfo) oops', repr(stroke))
@@ -574,7 +574,7 @@ class Bunch:
         """Support aBunch[key]"""
         return operator.getitem(self.__dict__, key)
 
-    def get(self, key: str, theDefault: Value = None) -> Value:
+    def get(self, key: str, theDefault: Value | None = None) -> Value:
         return self.__dict__.get(key, theDefault)
 
     def __contains__(self, key: str) -> bool:
@@ -692,13 +692,13 @@ class GeneralSetting:
     def __init__(
         self,
         kind: str,
-        encoding: str = None,
-        ivar: str = None,
-        source: str = None,
-        val: Value = None,
-        path: str = None,
+        encoding: str | None = None,
+        ivar: str | None = None,
+        source: str | None = None,
+        val: Value | None = None,
+        path: str | None = None,
         tag: str = 'setting',
-        unl: str = None,
+        unl: str | None = None,
     ) -> None:
         self.encoding = encoding
         self.ivar = ivar
@@ -1571,7 +1571,7 @@ class OptionsUtils:
     This class *calculates* valid options from the usage message.
     """
 
-    def __init__(self, usage: str, obsolete_options: list[str] = None) -> None:
+    def __init__(self, usage: str, obsolete_options: list[str] | None = None) -> None:
         # This class is essentially stateless because these ivars never change.
         self.usage = usage
         self.obsolete_options = obsolete_options
@@ -1805,7 +1805,7 @@ class SettingsDict(dict):
 
     # @+others
     # @+node:ekr.20120223062418.10422: *4* td.copy
-    def copy(self, name: str = None) -> Value:
+    def copy(self, name: str | None = None) -> Value:
         """Return a new dict with the same contents."""
         # The result is a g.SettingsDict.
         return copy.deepcopy(self)
@@ -2033,7 +2033,7 @@ tracing_tags: dict[int, str] = {}  # Keys are id's, values are tags.
 class NullObject:
     """An object that does nothing, and does it very well."""
 
-    def __init__(self, ivars: list[str] = None, *args: Args, **kwargs: KWargs) -> None:
+    def __init__(self, ivars: list[str] | None = None, *args: Args, **kwargs: KWargs) -> None:
         pass
 
     def __call__(self, *args: Args, **kwargs: KWargs) -> "NullObject":
@@ -2082,7 +2082,7 @@ class NullObject:
 class TracingNullObject:
     """Tracing NullObject."""
 
-    def __init__(self, tag: str, ivars: list[str] = None, *args: Args, **kwargs: KWargs) -> None:
+    def __init__(self, tag: str, ivars: list[str] | None = None, *args: Args, **kwargs: KWargs) -> None:
         tracing_tags[id(self)] = tag  # noqa  # conflict between flake8 and black.
 
     def __call__(self, *args: Args, **kwargs: KWargs) -> "TracingNullObject":
@@ -2365,7 +2365,7 @@ qt_text_classes = [
 ]
 
 
-def checkQtTextWidget(obj: Any, *, other_classes: list[str] = None) -> None:
+def checkQtTextWidget(obj: Any, *, other_classes: list[str] | None = None) -> None:
     """
     Check that an object has the appropriate class.
     """
@@ -2467,7 +2467,7 @@ def oldDump(s: str) -> str:
 
 
 # @+node:ekr.20210904114446.1: *4* g.dump_tree & g.tree_to_string
-def dump_tree(c: Cmdr, dump_body: bool = False, msg: str = None) -> None:
+def dump_tree(c: Cmdr, dump_body: bool = False, msg: str | None = None) -> None:
     if msg:
         print(msg.rstrip())
     else:
@@ -2479,7 +2479,7 @@ def dump_tree(c: Cmdr, dump_body: bool = False, msg: str = None) -> None:
                 print(z.rstrip())
 
 
-def tree_to_string(c: Cmdr, dump_body: bool = False, msg: str = None) -> str:
+def tree_to_string(c: Cmdr, dump_body: bool = False, msg: str | None = None) -> str:
     result = ['\n']
     if msg:
         result.append(msg)
@@ -2509,19 +2509,19 @@ def dump_encoded_string(encoding: str, s: str) -> None:
 
 
 # @+node:ekr.20031218072017.1317: *4* g.file/module/plugin_date
-def module_date(mod: ModuleType, format: str = None) -> str:
+def module_date(mod: ModuleType, format: str | None = None) -> str:
     theFile = g.os_path_join(app.loadDir, mod.__file__)
     root, ext = g.os_path_splitext(theFile)
     return g.file_date(root + ".py", format=format)
 
 
-def plugin_date(plugin_mod: ModuleType, format: str = None) -> str:
+def plugin_date(plugin_mod: ModuleType, format: str | None = None) -> str:
     theFile = g.os_path_join(app.loadDir, "..", "plugins", plugin_mod.__file__)
     root, ext = g.os_path_splitext(theFile)
     return g.file_date(root + ".py", format=str)
 
 
-def file_date(theFile: IO, format: str = None) -> str:
+def file_date(theFile: IO, format: str | None = None) -> str:
     if theFile and g.os_path_exists(theFile):
         try:
             n = g.os_path_getmtime(theFile)
@@ -2579,7 +2579,7 @@ def getIvarsDict(obj: object) -> dict[str, Value]:
 def checkUnchangedIvars(
     obj: object,
     d: dict[str, Value],
-    exceptions: Sequence[str] = None,
+    exceptions: Sequence[str] | None = None,
 ) -> bool:
     if not exceptions:
         exceptions = []
@@ -2625,7 +2625,7 @@ def objToString(
     obj: object,
     *,
     indent: int = 0,
-    tag: str = None,
+    tag: str | None = None,
     width: int = 120,
     offset: int = 0,  # Offset into array-like objects.
 ) -> str:
@@ -2682,7 +2682,7 @@ def sleep(n: float) -> None:
 
 
 # @+node:ekr.20171023140544.1: *4* g.printObj & aliases
-def printObj(obj: object, *, tag: str = None, indent: int = 0, offset: int = 0) -> None:
+def printObj(obj: object, *, tag: str | None = None, indent: int = 0, offset: int = 0) -> None:
     """Pretty print any Python object using g.pr."""
     g.pr(objToString(obj, indent=indent, tag=tag, offset=offset))
 
@@ -2795,7 +2795,7 @@ def clearStats() -> None:
 
 # @+node:ekr.20031218072017.3135: *4* g.printStats
 @command('show-stats')
-def printStats(event: LeoKeyEvent = None) -> None:
+def printStats(event: LeoKeyEvent | None = None) -> None:
     """
     Print all stats created by g.stat(), counts first.
     """
@@ -2824,7 +2824,7 @@ def printStats(event: LeoKeyEvent = None) -> None:
 _int_stat_prefix = 'stat_count: '
 
 
-def stat(obj: Any = None) -> None:
+def stat(obj: Any | None = None) -> None:
     """
     Add another count stat to g.app.statsDict.
     g.printStats() prints all such stats.
@@ -3073,7 +3073,7 @@ def getLanguageAtPosition(c: Cmdr, p: Position) -> str:
 
 
 # @+node:ekr.20031218072017.1386: *3* g.getOutputNewline
-def getOutputNewline(c: Cmdr = None, name: str = None) -> str:
+def getOutputNewline(c: Cmdr | None = None, name: str | None = None) -> str:
     """Convert the name of a line ending to the line ending itself.
 
     Priority:
@@ -3505,7 +3505,7 @@ def createHiddenCommander(fn: str) -> Cmdr:
 
 
 # @+node:vitalije.20170714085545.1: *3* g.defaultLeoFileExtension
-def defaultLeoFileExtension(c: Cmdr = None) -> str:
+def defaultLeoFileExtension(c: Cmdr | None = None) -> str:
     conf = c.config if c else g.app.config
     return conf.getString('default-leo-extension') or '.leo'
 
@@ -3536,7 +3536,7 @@ def fullPath(c: Cmdr, p: Position) -> str:
 
 
 # @+node:ekr.20190327192721.1: *3* g.get_files_in_directory
-def get_files_in_directory(directory: str, kinds: list = None, recursive: bool = True) -> list[str]:
+def get_files_in_directory(directory: str, kinds: list | None = None, recursive: bool = True) -> list[str]:
     """
     Return a list of all files of the given file extensions in the directory.
     Default kinds: ['*.py'].
@@ -3578,7 +3578,7 @@ def getBaseDirectory(c: Cmdr) -> str:
 
 
 # @+node:ekr.20170223093758.1: *3* g.getEncodingAt (deprecated)
-def getEncodingAt(p: Position, b: bytes = None) -> str:
+def getEncodingAt(p: Position, b: bytes | None = None) -> str:
     """
     Return the encoding in effect at p and/or for string s.
 
@@ -3599,7 +3599,7 @@ def getEncodingAt(p: Position, b: bytes = None) -> str:
 
 
 # @+node:ville.20090701144325.14942: *3* g.guessExternalEditor
-def guessExternalEditor(c: Cmdr = None) -> Optional[str]:
+def guessExternalEditor(c: Cmdr | None = None) -> Optional[str]:
     """Return a 'sensible' external editor"""
     editor = (
         c
@@ -3700,7 +3700,7 @@ def makePathRelativeTo(fullPath: str, basePath: str) -> str:
 
 
 # @+node:ekr.20090520055433.5945: *3* g.openWithFileName
-def openWithFileName(fileName: str, old_c: Cmdr = None, gui: LeoGui = None) -> Optional[Cmdr]:
+def openWithFileName(fileName: str, old_c: Cmdr | None = None, gui: LeoGui | None = None) -> Optional[Cmdr]:
     """
     Load any kind of file in the appropriate way:
 
@@ -3748,7 +3748,7 @@ def readFileIntoEncodedString(fn: str, silent: bool = False) -> bytes:
 def readFileIntoString(
     fileName: str,
     encoding: str = 'utf-8',  # BOM may override this.
-    kind: str = None,  # @file, @edit, ...
+    kind: str | None = None,  # @file, @edit, ...
     verbose: bool = True,
 ) -> tuple[str, str]:
     """
@@ -3914,7 +3914,7 @@ def setGlobalOpenDir(fileName: str) -> None:
 
 
 # @+node:ekr.20031218072017.3125: *3* g.shortFileName & shortFilename
-def shortFileName(fileName: str, n: int = None) -> str:
+def shortFileName(fileName: str, n: int | None = None) -> str:
     """Return the base name of a path."""
     if n is not None:
         g.trace('"n" keyword argument is no longer used')
@@ -4041,7 +4041,7 @@ def findAncestorVnodeByPredicate(p: Position, v_predicate: Optional[Callable]) -
 
 
 # @+node:ekr.20170220103251.1: *3* g.findRootsWithPredicate
-def findRootsWithPredicate(c: Cmdr, root: Position, predicate: Callable = None) -> list[Position]:
+def findRootsWithPredicate(c: Cmdr, root: Position, predicate: Callable | None = None) -> list[Position]:
     """
     Commands often want to find one or more **roots**, given a position p.
     A root is the position of any node matching a predicate.
@@ -4610,7 +4610,7 @@ def skip_c_id(s: str, i: int) -> int:
 
 
 # @+node:ekr.20040705195048: *4* g.skip_id
-def skip_id(s: str, i: int, chars: str = None) -> int:
+def skip_id(s: str, i: int, chars: str | None = None) -> int:
     chars = g.toUnicode(chars) if chars else ''
     n = len(s)
     while i < n and (g.isWordChar(s[i]) or s[i] in chars):
@@ -4771,7 +4771,7 @@ def skip_ws_and_nl(s: str, i: int) -> int:
 
 # @+node:ekr.20170414034616.1: ** g.Git
 # @+node:ekr.20180325025502.1: *3* g.backupGitIssues
-def backupGitIssues(c: Cmdr, base_url: str = None) -> None:
+def backupGitIssues(c: Cmdr, base_url: str | None = None) -> None:
     """Get a list of issues from Leo's GitHub site."""
     if base_url is None:
         base_url = 'https://api.github.com/repos/leo-editor/leo-editor/issues'
@@ -4823,9 +4823,9 @@ def execGitCommand(command: str, directory: str) -> list[str]:
 # @+node:ekr.20180126043905.1: *3* g.getGitIssues
 def getGitIssues(
     c: Cmdr,
-    base_url: str = None,
-    label_list: list = None,
-    milestone: str = None,
+    base_url: str | None = None,
+    label_list: list | None = None,
+    milestone: str | None = None,
     state: Optional[str] = None,  # in (None, 'closed', 'open')
 ) -> None:
     """Get a list of issues from Leo's GitHub site."""
@@ -4859,7 +4859,7 @@ class GitIssueController:
         c: Cmdr,
         label_list: list[str],
         root: Position,
-        state: str = None,
+        state: str | None = None,
     ) -> None:
         self.base_url = base_url
         self.root = root
@@ -5015,7 +5015,7 @@ class GitIssueController:
 
 
 # @+node:ekr.20190428173354.1: *3* g.getGitVersion
-def getGitVersion(directory: str = None) -> tuple[str, str, str]:
+def getGitVersion(directory: str | None = None) -> tuple[str, str, str]:
     """Return a tuple (author, build, date) from the git log, or None."""
     #
     # -n: Get only the last log.
@@ -5080,7 +5080,7 @@ def getModifiedFiles(repo_path: str) -> list[str]:
 
 
 # @+node:ekr.20170414034616.2: *3* g.gitBranchName
-def gitBranchName(path: str = None) -> str:
+def gitBranchName(path: str | None = None) -> str:
     """
     Return the git branch name associated with path/.git, or the empty
     string if path/.git does not exist. If path is None, use the leo-editor
@@ -5091,7 +5091,7 @@ def gitBranchName(path: str = None) -> str:
 
 
 # @+node:ekr.20170414034616.4: *3* g.gitCommitNumber
-def gitCommitNumber(path: str = None) -> str:
+def gitCommitNumber(path: str | None = None) -> str:
     """
     Return the git commit number associated with path/.git, or the empty
     string if path/.git does not exist. If path is None, use the leo-editor
@@ -5102,7 +5102,7 @@ def gitCommitNumber(path: str = None) -> str:
 
 
 # @+node:maphew.20171112205129.1: *3* g.gitDescribe
-def gitDescribe(path: str = None) -> tuple[str, str, str]:
+def gitDescribe(path: str | None = None) -> tuple[str, str, str]:
     """
     Return the Git tag, distance-from-tag, and commit hash for the
     associated path. If path is None, use the leo-editor directory.
@@ -5138,7 +5138,7 @@ def gitHeadPath(path_s: str) -> Optional[str]:
 
 
 # @+node:ekr.20170414034616.3: *3* g.gitInfo
-def gitInfo(path: str = None) -> tuple[str, str]:
+def gitInfo(path: str | None = None) -> tuple[str, str]:
     """
     Path may be a directory or file.
 
@@ -5332,7 +5332,7 @@ def enableIdleTimeHook(*args: Args, **kwargs: KWargs) -> None:
 
 
 # @+node:ekr.20140825042850.18410: *3* g.IdleTime
-def IdleTime(handler: Callable, delay: int = 500, tag: str = None) -> QtIdleTime:
+def IdleTime(handler: Callable, delay: int = 500, tag: str | None = None) -> QtIdleTime:
     """
     A thin wrapper for the LeoQtGui.IdleTime class.
 
@@ -5388,7 +5388,7 @@ def idleTimeHookHandler(timer: Callable) -> None:
 
 # @+node:ekr.20041219095213: ** g.Importing
 # @+node:ekr.20040917061619: *3* g.cantImport
-def cantImport(moduleName: str, pluginName: str = None, verbose: bool = True) -> None:
+def cantImport(moduleName: str, pluginName: str | None = None, verbose: bool = True) -> None:
     """Print a "Can't Import" message and return None."""
     s = f"Can not import {moduleName}"
     if pluginName:
@@ -5402,7 +5402,7 @@ def cantImport(moduleName: str, pluginName: str = None, verbose: bool = True) ->
 
 
 # @+node:ekr.20191220044128.1: *3* g.import_module
-def import_module(name: str, package: str = None) -> Optional[ModuleType]:
+def import_module(name: str, package: str | None = None) -> Optional[ModuleType]:
     """
     A thin wrapper over importlib.import_module.
     """
@@ -5440,7 +5440,7 @@ def convertPythonIndexToRowCol(s: str, i: int) -> tuple[int, int]:
 
 
 # @+node:ekr.20050315071727: *4* g.convertRowColToPythonIndex
-def convertRowColToPythonIndex(s: str, row: int, col: int, lines: list[str] = None) -> int:
+def convertRowColToPythonIndex(s: str, row: int, col: int, lines: list[str] | None = None) -> int:
     """Convert zero-based row/col indices into a python index into string s."""
     if row < 0:
         return 0
@@ -5666,7 +5666,7 @@ def bytesToStr(b: bytes, reportErrors: bool = False) -> str:
 
 
 # @+node:ekr.20190505052756.1: *4* g.checkUnicode
-def checkUnicode(s: str, encoding: str = None) -> str:
+def checkUnicode(s: str, encoding: str | None = None) -> str:
     """
     Warn when converting bytes. Report *all* errors.
 
@@ -5824,7 +5824,7 @@ def toEncodedString(s: str, encoding: str = 'utf-8', reportErrors: bool = False)
 
 
 # @+node:ekr.20050208093800.1: *4* g.toUnicode
-def toUnicode(s: object, encoding: str = None, reportErrors: bool = False) -> str:
+def toUnicode(s: object, encoding: str | None = None, reportErrors: bool = False) -> str:
     """Convert bytes to unicode if necessary."""
     if isinstance(s, str):
         return s
@@ -5920,7 +5920,7 @@ def computeWidth(s: str, tab_width: int) -> int:
 # @@language python
 
 
-def wrap_lines(lines: list[str], pageWidth: int, firstLineWidth: int = None) -> list[str]:
+def wrap_lines(lines: list[str], pageWidth: int, firstLineWidth: int | None = None) -> list[str]:
     """Returns a list of lines, consisting of the input lines wrapped to the given pageWidth."""
     if pageWidth < 10:
         pageWidth = 10
@@ -6136,7 +6136,7 @@ def stripBlankLines(s: str) -> str:
 # g.pr prints to the console.
 # g.es_print and related print to both the Log window and the console.
 # @+node:ekr.20080821073134.2: *3* g.doKeywordArgs
-def doKeywordArgs(keys: dict, d: dict = None) -> dict:
+def doKeywordArgs(keys: dict, d: dict | None = None) -> dict:
     """
     Return a result dict that is a copy of the keys dict
     with missing items replaced by defaults in d dict.
@@ -6254,7 +6254,7 @@ log = es
 
 
 # @+node:ekr.20060917120951: *3* g.es_dump
-def es_dump(s: str, n: int = 30, title: str = None) -> None:
+def es_dump(s: str, n: int = 30, title: str | None = None) -> None:
     if title:
         g.es_print('', title)
     i = 0
@@ -6303,7 +6303,7 @@ def es_exception(*args: Sequence, **kwargs: Sequence) -> None:
 
 
 # @+node:ekr.20061015090538: *3* g.es_exception_type
-def es_exception_type(c: Cmdr = None, color: str = "red") -> None:
+def es_exception_type(c: Cmdr | None = None, color: str = "red") -> None:
     # exctype is a Exception class object; value is the error message.
     exctype, value = sys.exc_info()[:2]
     g.es_print('', f"{exctype.__name__}, {value}", color=color)
@@ -6439,7 +6439,7 @@ is_unique_class = isUniqueClass
 
 
 # @+node:ekr.20150127060254.5: *3* g.log_to_file
-def log_to_file(s: str, fn: str = None) -> None:
+def log_to_file(s: str, fn: str | None = None) -> None:
     """Write a message to ~/test/leo_log.txt."""
     if fn is None:
         fn = g.finalize('~/test/leo_log.txt')
@@ -6515,7 +6515,7 @@ def prettyPrintType(obj: object) -> str:
 # @+node:ekr.20111107181638.9741: *3* g.print_exception
 def print_exception(
     full: bool = True,
-    c: Cmdr = None,
+    c: Cmdr | None = None,
     flush: bool = False,
     color: str = "red",
 ) -> tuple[str, int]:
@@ -6551,7 +6551,7 @@ def printEntireTree(c: Cmdr, tag: str = '') -> None:
 
 
 # @+node:ekr.20031218072017.3114: *3* g.printGlobals
-def printGlobals(message: str = None) -> None:
+def printGlobals(message: str | None = None) -> None:
     # Get the list of globals.
     globs = list(globals())
     globs.sort()
@@ -6564,7 +6564,7 @@ def printGlobals(message: str = None) -> None:
 
 
 # @+node:ekr.20031218072017.3115: *3* g.printLeoModules
-def printLeoModules(message: str = None) -> None:
+def printLeoModules(message: str | None = None) -> None:
     # Create the list.
     mods = []
     for name in sys.modules:
@@ -6776,7 +6776,7 @@ def CheckVersion(
     s1: str,
     s2: str,
     condition: str = ">=",
-    stringCompare: bool = None,
+    stringCompare: bool | None = None,
     delimiter: str = '.',
     trace: bool = False,
 ) -> bool:
@@ -6828,7 +6828,7 @@ def CheckVersionToInt(s: str) -> int:
 
 # @+node:ekr.20111103205308.9657: *3* g.cls
 @command('cls')
-def cls(event: LeoKeyEvent = None) -> None:
+def cls(event: LeoKeyEvent | None = None) -> None:
     """Clear the screen."""
     if g.isWindows:
         # Leo 6.7.5: Two calls seem to be required!
@@ -6839,7 +6839,7 @@ def cls(event: LeoKeyEvent = None) -> None:
 
 
 # @+node:ekr.20131114124839.16665: *3* g.createScratchCommander
-def createScratchCommander(fileName: str = None) -> None:
+def createScratchCommander(fileName: str | None = None) -> None:
     c = g.app.newCommander(fileName)
     frame = c.frame
     frame.createFirstTreeNode()
@@ -6860,7 +6860,7 @@ def deprecated() -> None:
 
 
 # @+node:ekr.20031218072017.3126: *3* g.funcToMethod (Python Cookbook)
-def funcToMethod(f: Callable, theClass: object, name: str = None) -> None:
+def funcToMethod(f: Callable, theClass: object, name: str | None = None) -> None:
     """
     From the Python Cookbook...
 
@@ -6920,7 +6920,7 @@ def init_zodb(pathToZodbStorage: str, verbose: bool = True) -> Value:
 
 
 # @+node:ekr.20170206080908.1: *3* g.input_
-def input_(message: str = '', c: Cmdr = None) -> str:
+def input_(message: str = '', c: Cmdr | None = None) -> str:
     """
     Safely execute python's input statement.
 
@@ -7337,7 +7337,7 @@ def os_startfile(fname: str) -> None:
 
 # @+node:ekr.20111115155710.9859: ** g.Parsing & Tokenizing
 # @+node:ekr.20031218072017.822: *3* g.createTopologyList
-def createTopologyList(c: Cmdr, root: Position = None, useHeadlines: bool = False) -> list:
+def createTopologyList(c: Cmdr, root: Position | None = None, useHeadlines: bool = False) -> list:
     """Creates a list describing a node and all its descendants"""
     if not root:
         root = c.rootPosition()
@@ -7444,7 +7444,7 @@ def python_tokenize(s: str) -> list:
 
 # @+node:ekr.20040327103735.2: ** g.Scripting
 # @+node:ekr.20161223090721.1: *3* g.exec_file
-def exec_file(path: str, d: dict[str, Value], script: str = None) -> None:
+def exec_file(path: str, d: dict[str, Value], script: str | None = None) -> None:
     """Simulate python's execfile statement for python 3."""
     if script is None:
         with open(path) as f:
@@ -7473,13 +7473,13 @@ def execute_shell_commands(commands: str | list[str], trace: bool = False) -> No
 
 # @+node:ekr.20180217113719.1: *3* g.execute_shell_commands_with_options & helpers
 def execute_shell_commands_with_options(
-    base_dir: str = None,
-    c: Cmdr = None,
-    command_setting: str = None,
-    commands: list = None,
-    path_setting: str = None,
+    base_dir: str | None = None,
+    c: Cmdr | None = None,
+    command_setting: str | None = None,
+    commands: list | None = None,
+    path_setting: str | None = None,
     trace: bool = False,
-    warning: str = None,
+    warning: str | None = None,
 ) -> None:
     """
     A helper for prototype commands or any other code that
@@ -7763,8 +7763,8 @@ def extractExecutableString(c: Cmdr, p: Position, s: str) -> str:
 def handleScriptException(
     c: Cmdr,
     p: Position,
-    script: str = None,  # No longer used.
-    script1: str = None,  # No longer used.
+    script: str | None = None,  # No longer used.
+    script1: str | None = None,  # No longer used.
 ) -> None:
     g.warning("exception executing script")
     g.es_exception()
@@ -7881,7 +7881,7 @@ def run_coverage_tests(module: str = '', filename: str = '') -> None:
 
 
 # @+node:ekr.20210901065224.1: *3* g.run_unit_tests
-def run_unit_tests(tests: str = None, verbose: bool = False) -> None:
+def run_unit_tests(tests: str | None = None, verbose: bool = False) -> None:
     """
     Run the unit tests given by the "tests" string.
 
@@ -7969,7 +7969,7 @@ def run_unit_tests(tests: str = None, verbose: bool = False) -> None:
 #    For example, Leo's forum: https://leo-editor.github.io/leo-editor/
 # @-<< About clickable links >>
 # @+node:ekr.20120320053907.9776: *3* g.computeFileUrl
-def computeFileUrl(fn: str, c: Cmdr = None, p: Position = None) -> str:
+def computeFileUrl(fn: str, c: Cmdr | None = None, p: Position | None = None) -> str:
     """
     Compute finalized url for filename fn.
     """
@@ -8285,7 +8285,7 @@ def handleUnl(unl_s: str, c: Cmdr) -> Optional[Cmdr]:
 
 
 # @+node:tbrown.20090219095555.63: *3* g.handleUrl & helpers
-def handleUrl(url: str, c: Cmdr = None, p: Position = None) -> Optional[str]:
+def handleUrl(url: str, c: Cmdr | None = None, p: Position | None = None) -> Optional[str]:
     """Open a url or a unl."""
     if c and not p:
         p = c.p
@@ -8434,7 +8434,7 @@ def openUrl(p: Position) -> None:  # pragma: no cover
 
 
 # @+node:ekr.20110605121601.18135: *3* g.openUrlOnClick (open-url-under-cursor)
-def openUrlOnClick(event: QMouseEvent, url: str = None) -> Optional[str]:  # pragma: no cover
+def openUrlOnClick(event: QMouseEvent, url: str | None = None) -> Optional[str]:  # pragma: no cover
     """Open the URL under the cursor.  Return it for unit testing."""
     # QTextEditWrapper.mouseReleaseEvent calls this outside Leo's command logic.
     # Make sure to catch all exceptions!
@@ -8446,7 +8446,7 @@ def openUrlOnClick(event: QMouseEvent, url: str = None) -> Optional[str]:  # pra
 
 
 # @+node:ekr.20170216091704.1: *4* g.openUrlHelper
-def openUrlHelper(event: LeoKeyEvent, url: str = None) -> Optional[str]:
+def openUrlHelper(event: LeoKeyEvent, url: str | None = None) -> Optional[str]:
     """Open the unl, url or gnx under the cursor.  Return it for unit testing."""
     c = getattr(event, 'c', None)
     if not c:

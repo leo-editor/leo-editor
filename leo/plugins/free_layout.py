@@ -198,7 +198,7 @@ class FreeLayoutController:
         c.redraw()
 
     # @+node:ekr.20160424035257.1: *3* flc.get_main_splitter
-    def get_main_splitter(self, w: QTextMixin = None) -> Optional[NestedSplitter]:
+    def get_main_splitter(self, w: QTextMixin | None = None) -> Optional[NestedSplitter]:
         """
         Return the main splitter.
 

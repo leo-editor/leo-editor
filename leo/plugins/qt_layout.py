@@ -664,7 +664,7 @@ class LayoutCacheWidget(QWidget):
         g.trace('Fail 2')
 
     # @+node:tom.20240923194438.6: *4* LCW.restoreFromLayout
-    def restoreFromLayout(self, layout: Dict = None) -> None:
+    def restoreFromLayout(self, layout: Dict | None = None) -> None:
         self.layout_dict = layout
         if layout is None:
             layout = FALLBACK_LAYOUT

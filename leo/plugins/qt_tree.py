@@ -166,7 +166,7 @@ class LeoQtTree(leoFrame.LeoTree):
         w.clear()
 
     # @+node:ekr.20110605121601.17873: *4* qtree.full_redraw & helpers
-    def full_redraw(self, p: Position = None) -> Position:
+    def full_redraw(self, p: Position | None = None) -> Position:
         """
         Redraw all visible nodes of the tree.
         Preserve the vertical scrolling unless scroll is True.
@@ -522,7 +522,7 @@ class LeoQtTree(leoFrame.LeoTree):
             g.trace(f"{t2 - t1:5.2f} sec.", g.callers(3))
 
     # @+node:ekr.20110605121601.17877: *5* qtree.drawTree
-    def drawTree(self, p: Position, parent_item: QTreeWidgetItem = None) -> None:
+    def drawTree(self, p: Position, parent_item: QTreeWidgetItem | None = None) -> None:
         if g.app.gui.isNullGui:
             return
         # Draw the (visible) parent node.
@@ -554,7 +554,7 @@ class LeoQtTree(leoFrame.LeoTree):
                         item.setIcon(0, icon)  # 0 is the column number.
 
     # @+node:ekr.20110605121601.17884: *4* qtree.redraw_after_select
-    def redraw_after_select(self, p: Position = None) -> None:
+    def redraw_after_select(self, p: Position | None = None) -> None:
         """Redraw the entire tree when an invisible node is selected."""
         if self.busy:
             if 'drawing' in g.app.debug:
@@ -574,7 +574,7 @@ class LeoQtTree(leoFrame.LeoTree):
     # @+node:ekr.20110605121601.17885: *3* qtree.Event handlers
     # @+node:ekr.20110605121601.17887: *4*  qtree.Click Box
     # @+node:ekr.20110605121601.17888: *5* qtree.onClickBoxClick
-    def onClickBoxClick(self, event: LeoKeyEvent, p: Position = None) -> None:
+    def onClickBoxClick(self, event: LeoKeyEvent, p: Position | None = None) -> None:
         if self.busy:
             return
         c = self.c
@@ -583,7 +583,7 @@ class LeoQtTree(leoFrame.LeoTree):
         c.outerUpdate()
 
     # @+node:ekr.20110605121601.17889: *5* qtree.onClickBoxRightClick
-    def onClickBoxRightClick(self, event: LeoKeyEvent, p: Position = None) -> None:
+    def onClickBoxRightClick(self, event: LeoKeyEvent, p: Position | None = None) -> None:
         if self.busy:
             return
         c = self.c
@@ -592,7 +592,7 @@ class LeoQtTree(leoFrame.LeoTree):
         c.outerUpdate()
 
     # @+node:ekr.20110605121601.17890: *5* qtree.onPlusBoxRightClick
-    def onPlusBoxRightClick(self, event: LeoKeyEvent, p: Position = None) -> None:
+    def onPlusBoxRightClick(self, event: LeoKeyEvent, p: Position | None = None) -> None:
         if self.busy:
             return
         c = self.c
@@ -602,7 +602,7 @@ class LeoQtTree(leoFrame.LeoTree):
     # @+node:ekr.20110605121601.17891: *4*  qtree.Icon Box
     # For Qt, there seems to be no way to trigger these events.
     # @+node:ekr.20110605121601.17892: *5* qtree.onIconBoxClick
-    def onIconBoxClick(self, event: LeoKeyEvent, p: Position = None) -> None:
+    def onIconBoxClick(self, event: LeoKeyEvent, p: Position | None = None) -> None:
         if self.busy:
             return
         c = self.c
@@ -611,7 +611,7 @@ class LeoQtTree(leoFrame.LeoTree):
         c.outerUpdate()
 
     # @+node:ekr.20110605121601.17893: *5* qtree.onIconBoxRightClick
-    def onIconBoxRightClick(self, event: LeoKeyEvent, p: Position = None) -> None:
+    def onIconBoxRightClick(self, event: LeoKeyEvent, p: Position | None = None) -> None:
         """Handle a right click in any outline widget."""
         if self.busy:
             return
@@ -621,7 +621,7 @@ class LeoQtTree(leoFrame.LeoTree):
         c.outerUpdate()
 
     # @+node:ekr.20110605121601.17894: *5* qtree.onIconBoxDoubleClick
-    def onIconBoxDoubleClick(self, event: LeoKeyEvent, p: Position = None) -> None:
+    def onIconBoxDoubleClick(self, event: LeoKeyEvent, p: Position | None = None) -> None:
         if self.busy:
             return
         c = self.c
@@ -1167,7 +1167,7 @@ class LeoQtTree(leoFrame.LeoTree):
         self,
         p: Position,
         selectAll: bool = False,
-        selection: tuple = None,
+        selection: tuple | None = None,
     ) -> tuple[QLineEdit, QHeadlineWrapper]:
         """Start editing p's headline."""
         if self.busy:
@@ -1195,7 +1195,7 @@ class LeoQtTree(leoFrame.LeoTree):
         self,
         item: QTreeWidgetItem,
         selectAll: bool = False,
-        selection: tuple = None,
+        selection: tuple | None = None,
     ) -> tuple[QLineEdit, QHeadlineWrapper]:
         """Helper for qtree.editLabel."""
         c, vc = self.c, self.c.vimCommands

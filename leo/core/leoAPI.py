@@ -33,7 +33,7 @@ class IconBarAPI:
     def add(self, *args: str, **keys: str) -> None:
         pass
 
-    def addRow(self, height: str = None) -> None:
+    def addRow(self, height: str | None = None) -> None:
         pass
 
     def addRowIfNeeded(self) -> None:
@@ -76,7 +76,7 @@ class StatusLineAPI:
     def clear(self) -> None:
         pass
 
-    def disable(self, background: str = None) -> None:
+    def disable(self, background: str | None = None) -> None:
         pass
 
     def enable(self, background: str = "white") -> None:
@@ -88,7 +88,7 @@ class StatusLineAPI:
     def isEnabled(self) -> bool:
         return False
 
-    def put(self, s: str, bg: str = None, fg: str = None) -> None:
+    def put(self, s: str, bg: str | None = None, fg: str | None = None) -> None:
         pass
 
     def setFocus(self) -> None:
@@ -158,13 +158,13 @@ class TreeAPI:
     # Must be defined in subclasses.
 
     # Leo 6.8.9: return None.
-    def editLabel(self, v: VNode, selectAll: bool = False, selection: tuple = None) -> None:
+    def editLabel(self, v: VNode, selectAll: bool = False, selection: tuple | None = None) -> None:
         pass
 
     def edit_widget(self, p: Position) -> None:
         return None
 
-    def redraw(self, p: Position = None) -> None:
+    def redraw(self, p: Position | None = None) -> None:
         pass
 
     redraw_now = redraw
@@ -185,7 +185,7 @@ class TreeAPI:
     def redraw_after_head_changed(self) -> None:
         pass
 
-    def redraw_after_select(self, p: Position = None) -> None:
+    def redraw_after_select(self, p: Position | None = None) -> None:
         pass
 
     # Must be defined in the LeoTree class...

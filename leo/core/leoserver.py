@@ -355,7 +355,7 @@ class ServerExternalFilesController(ExternalFilesController):
     # @+node:felix.20210626222905.7: *3* sefc.utilities
     # @+node:felix.20210626222905.8: *4* sefc.ask
     # The base class returns str.
-    def ask(self, c: Cmdr, path: str, p: Position = None) -> bool:  # type:ignore
+    def ask(self, c: Cmdr, path: str, p: Position | None = None) -> bool:  # type:ignore
         """
         Ask user whether to overwrite an @<file> tree.
         Return True if the user agrees by default, or skips and asks
@@ -898,7 +898,7 @@ class QuickSearchController:
 
     # @+node:felix.20220225003906.20: *4* QSC.onSelectItem (from quicksearch.py)
     def onSelectItem(
-        self, it: Any, it_prev: Any = None
+        self, it: Any, it_prev: Any | None = None
     ) -> None:  # it_prev not used. Hard to annotate.
         c = self.c
         tgt = self.its.get(it)
@@ -1060,7 +1060,7 @@ class LeoServer:
         self.c.frame.tree.onHeadChanged(self.c.p)
 
     # @+node:felix.20210711194729.1: *4* LeoServer._runAskOkDialog
-    def _runAskOkDialog(self, c: Cmdr, title: str, message: str = None, text: str = "Ok") -> None:
+    def _runAskOkDialog(self, c: Cmdr, title: str, message: str | None = None, text: str = "Ok") -> None:
         """Create and run an askOK dialog ."""
         # Called by many commands in Leo
         if message:
@@ -1075,7 +1075,7 @@ class LeoServer:
         self,
         c: Cmdr,
         title: str,
-        message: str = None,
+        message: str | None = None,
         yes_all: bool = False,
         no_all: bool = False,
     ) -> str:
@@ -1102,12 +1102,12 @@ class LeoServer:
         self,
         c: Cmdr,
         title: str,
-        message: str = None,
+        message: str | None = None,
         yesMessage: str = "Yes",
         noMessage: str = "No",
-        yesToAllMessage: str = None,
+        yesToAllMessage: str | None = None,
         defaultButton: str = "Yes",
-        cancelMessage: str = None,
+        cancelMessage: str | None = None,
     ) -> str:
         """Create and run an askYesNoCancel dialog ."""
         # used in dangerous write with title: 'Overwrite existing file?'
@@ -4883,7 +4883,7 @@ class LeoServer:
         return p
 
     # @+node:felix.20210621233316.80: *4* server._check_c
-    def _check_c(self, param: Param = None) -> Cmdr:
+    def _check_c(self, param: Param | None = None) -> Cmdr:
         """
         Return self.c, or a specific commander chosen by id,
         or raise ServerError no commander found.
@@ -5320,7 +5320,7 @@ class LeoServer:
             return False
 
     # @+node:felix.20210621233316.94: *4* server._make_minimal_response
-    def _make_minimal_response(self, package: Package = None) -> str:
+    def _make_minimal_response(self, package: Package | None = None) -> str:
         """
         Return a json string representing a response dict.
 
@@ -5347,7 +5347,7 @@ class LeoServer:
         return json.dumps(package, separators=(',', ':'), cls=SetEncoder)
 
     # @+node:felix.20210621233316.93: *4* server._make_response
-    def _make_response(self, package: Package = None) -> str:
+    def _make_response(self, package: Package | None = None) -> str:
         """
         Return a json string representing a response dict.
 
@@ -5573,12 +5573,12 @@ def main() -> None:  # pragma: no cover (tested in client)
     def general_yes_no_dialog(
         c: Cmdr,
         title: str,  # Not used.
-        message: str = None,  # Must exist.
+        message: str | None = None,  # Must exist.
         yesMessage: str = "&Yes",  # Not used.
         noMessage: str = "&No",  # Not used.
-        yesToAllMessage: str = None,  # Not used.
+        yesToAllMessage: str | None = None,  # Not used.
         defaultButton: str = "Yes",  # Not used
-        cancelMessage: str = None,  # Not used.
+        cancelMessage: str | None = None,  # Not used.
     ) -> str:
         """
         Monkey-patched implementation of LeoQtGui.runAskYesNoCancelDialog
@@ -5616,14 +5616,14 @@ def main() -> None:  # pragma: no cover (tested in client)
                 b.pack(side="left", padx=5, pady=10)
 
             # @+node:ekr.20210801180311.5: *5* function: callbacks
-            def noButton(event: Event = None) -> None:
+            def noButton(event: Event | None = None) -> None:
                 """Do default click action in ok button."""
                 nonlocal val
                 print(f"Not saved: {c.fileName()}")
                 val = "no"
                 top.destroy()
 
-            def yesButton(event: Event = None) -> None:
+            def yesButton(event: Event | None = None) -> None:
                 """Do default click action in ok button."""
                 nonlocal val
                 print(f"Saved: {c.fileName()}")
@@ -5838,7 +5838,7 @@ def main() -> None:  # pragma: no cover (tested in client)
             wsLimit = 1
 
     # @+node:felix.20210803174312.1: *3* function: notify_clients
-    async def notify_clients(action: str, excludedConn: Any = None) -> None:
+    async def notify_clients(action: str, excludedConn: Any | None = None) -> None:
         if connectionsPool:  # asyncio.wait doesn't accept an empty list
             opened = bool(controller.c)  # c can be none if no files opened
             m = json.dumps(
@@ -5882,7 +5882,7 @@ def main() -> None:  # pragma: no cover (tested in client)
         await notify_clients("unregister")
 
     # @+node:felix.20210621233316.106: *3* function: ws_handler (server)
-    async def ws_handler(websocket: Any, path: Any = None) -> None:
+    async def ws_handler(websocket: Any, path: Any | None = None) -> None:
         """
         The web socket handler: server.ws_server.
 

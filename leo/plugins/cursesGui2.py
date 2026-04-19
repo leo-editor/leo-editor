@@ -506,8 +506,8 @@ class LeoTreeData(npyscreen.TreeData):
             self,
             only_expanded: bool = True,
             ignore_root: bool = True,
-            sort: bool = None,  # not used here.
-            sort_function: Callable = None,
+            sort: bool | None = None,  # not used here.
+            sort_function: Callable | None = None,
         ) -> Generator:
             # Never change the stored position!
             # LeoTreeData(p) makes a copy of p.
@@ -1161,10 +1161,10 @@ class KeyEvent:
         event: Event,
         shortcut: str,
         w: Any,
-        x: int = None,
-        y: int = None,
-        x_root: Position = None,
-        y_root: Position = None,
+        x: int | None = None,
+        y: int | None = None,
+        x_root: Position | None = None,
+        y_root: Position | None = None,
     ) -> None:
         """Ctor for KeyEvent class."""
         assert not g.isStroke(shortcut), g.callers()
@@ -1654,7 +1654,7 @@ class LeoCursesGui(leoGui.LeoGui):
         sys.exit(0)
 
     # @+node:ekr.20220618070256.1: *5* CGui.getFullVersion
-    def getFullVersion(self, c: Cmdr = None) -> str:
+    def getFullVersion(self, c: Cmdr | None = None) -> str:
         return 'Leo Console Gui (npyscreen)'
 
     # @+node:ekr.20170501032447.1: *5* CGui.init_logger
@@ -1769,8 +1769,8 @@ class LeoCursesGui(leoGui.LeoGui):
         c: Cmdr,
         title: str,
         message: str,
-        cancelButtonText: str = None,
-        okButtonText: str = None,
+        cancelButtonText: str | None = None,
+        okButtonText: str | None = None,
     ) -> str:
         """Create and run askOkCancelNumber dialog ."""
         if g.unitTesting:
@@ -1788,8 +1788,8 @@ class LeoCursesGui(leoGui.LeoGui):
         c: Cmdr,
         title: str,
         message: str,
-        cancelButtonText: str = None,
-        okButtonText: str = None,
+        cancelButtonText: str | None = None,
+        okButtonText: str | None = None,
         default: str = "",
         wide: bool = False,
     ) -> str:
@@ -1806,7 +1806,7 @@ class LeoCursesGui(leoGui.LeoGui):
         self,
         c: Cmdr,
         title: str,
-        message: str = None,
+        message: str | None = None,
         text: str = "Ok",
     ) -> bool:
         """Create and run an askOK dialog ."""
@@ -1824,12 +1824,12 @@ class LeoCursesGui(leoGui.LeoGui):
         self,
         c: Cmdr,
         title: str,
-        message: str = None,
+        message: str | None = None,
         yesMessage: str = "Yes",
         noMessage: str = "No",
-        yesToAllMessage: str = None,
+        yesToAllMessage: str | None = None,
         defaultButton: str = "Yes",
-        cancelMessage: str = None,
+        cancelMessage: str | None = None,
     ) -> str:
         """Create and run an askYesNoCancel dialog ."""
         if g.unitTesting:
@@ -1845,7 +1845,7 @@ class LeoCursesGui(leoGui.LeoGui):
         self,
         c: Cmdr,
         title: str,
-        message: str = None,
+        message: str | None = None,
         yes_all: bool = False,
         no_all: bool = False,
     ) -> str:
@@ -1865,7 +1865,7 @@ class LeoCursesGui(leoGui.LeoGui):
         *,
         filetypes: list[tuple[str, str]],
         defaultextension: str = '',  # Not used.
-        startpath: str = None,
+        startpath: str | None = None,
     ) -> str:
         if not g.unitTesting:
             g.trace('not ready yet', title)
@@ -1878,7 +1878,7 @@ class LeoCursesGui(leoGui.LeoGui):
         *,
         filetypes: list[tuple[str, str]],
         defaultextension: str = '',  # Not used.
-        startpath: str = None,
+        startpath: str | None = None,
     ) -> list[str]:
         if not g.unitTesting:
             g.trace('not ready yet', title)
@@ -1888,9 +1888,9 @@ class LeoCursesGui(leoGui.LeoGui):
     def runPropertiesDialog(
         self,
         title: str = 'Properties',
-        data: Any = None,
-        callback: Callable = None,
-        buttons: list[str] = None,
+        data: Any | None = None,
+        callback: Callable | None = None,
+        buttons: list[str] | None = None,
     ) -> None:
         """Dispay a modal TkPropertiesDialog"""
         if not g.unitTesting:
@@ -1975,7 +1975,7 @@ class LeoCursesGui(leoGui.LeoGui):
         self.set_focus(c, c.frame.miniBufferWidget)
 
     # @+node:ekr.20170502101347.1: *5* CGui.get_focus
-    def get_focus(self, c: Cmdr = None, raw: bool = False, at_idle: bool = False) -> Optional[Any]:
+    def get_focus(self, c: Cmdr | None = None, raw: bool = False, at_idle: bool = False) -> Optional[Any]:
         """
         Return the Leo wrapper for the npyscreen widget that is being edited.
         """
@@ -2422,7 +2422,7 @@ class CoreFrame(leoFrame.LeoFrame):
     def bringToFront(self) -> None:
         pass
 
-    def contractPane(self, event: Event = None) -> None:
+    def contractPane(self, event: Event | None = None) -> None:
         pass
 
     def deiconify(self) -> None:
@@ -2450,13 +2450,13 @@ class CoreFrame(leoFrame.LeoFrame):
     def getTitle(self) -> str:
         return self.title
 
-    def minimizeAll(self, event: Event = None) -> None:
+    def minimizeAll(self, event: Event | None = None) -> None:
         pass
 
     def resizePanesToRatio(self, ratio: float, secondary_ratio: float) -> None:
         """Resize splitter1 and splitter2 using the given ratios."""
 
-    def resizeToScreen(self, event: Event = None) -> None:
+    def resizeToScreen(self, event: Event | None = None) -> None:
         pass
 
     def setInitialWindowGeometry(self) -> None:
@@ -2480,7 +2480,7 @@ class CoreFrame(leoFrame.LeoFrame):
 
     # @+node:ekr.20170522015906.1: *4* CFrame.pasteText (cursesGui2)
     @frame_cmd('paste-text')
-    def pasteText(self, event: Event = None, middleButton: bool = False) -> None:
+    def pasteText(self, event: Event | None = None, middleButton: bool = False) -> None:
         """
         Paste the clipboard into a widget.
         If middleButton is True, support x-windows middle-mouse-button easter-egg.
@@ -2541,7 +2541,7 @@ class CoreLog(leoFrame.LeoLog):
 
     # @+node:ekr.20170419143731.7: *4* CLog.clearLog
     @log_cmd('clear-log')
-    def clearLog(self, event: Event = None) -> None:
+    def clearLog(self, event: Event | None = None) -> None:
         """Clear the log pane."""
 
     # @+node:ekr.20170420035717.1: *4* CLog.enable/disable
@@ -2560,7 +2560,7 @@ class CoreLog(leoFrame.LeoLog):
         return w == self or w in list(self.contentsDict.values())
 
     # @+node:ekr.20170513184115.1: *4* CLog.orderedTabNames
-    def orderedTabNames(self, LeoLog: Any = None) -> list[str]:  # Unused: LeoLog
+    def orderedTabNames(self, LeoLog: Any | None = None) -> list[str]:  # Unused: LeoLog
         """Return a list of tab names in the order in which they appear in the QTabbedWidget."""
         return []
         # w = self.tabWidget
@@ -2571,7 +2571,7 @@ class CoreLog(leoFrame.LeoLog):
 
     # fmt: off
 
-    def put(self, s: str, color: str = None, tabName: str = 'Log', from_redirect: bool = False) -> None:  # type:ignore
+    def put(self, s: str, color: str | None = None, tabName: str = 'Log', from_redirect: bool = False) -> None:  # type:ignore
         """All output to the log stream eventually comes here."""
         c, w = self.c, self.widget
         if not c or not c.exists or not w:
@@ -2635,7 +2635,7 @@ class CoreTree(leoFrame.LeoTree):
 
     # @+node:ekr.20170511094217.1: *4* CTree.Drawing
     # @+node:ekr.20170511094217.3: *5* CTree.redraw
-    def redraw(self, p: Position = None) -> None:
+    def redraw(self, p: Position | None = None) -> None:
         """
         Redraw all visible nodes of the tree.
         Preserve the vertical scrolling unless scroll is True.
@@ -2659,7 +2659,7 @@ class CoreTree(leoFrame.LeoTree):
     def redraw_after_head_changed(self) -> None:
         self.redraw()
 
-    def redraw_after_select(self, p: Position = None) -> None:
+    def redraw_after_select(self, p: Position | None = None) -> None:
         """Redraw the entire tree when an invisible node is selected."""
         if not self.redrawing:
             self.redraw(p=p)
@@ -2673,7 +2673,7 @@ class CoreTree(leoFrame.LeoTree):
     # @+node:ekr.20170511104533.12: *5* CTree.onHeadChanged (cursesGui2)
     # Tricky code: do not change without careful thought and testing.
 
-    def onHeadChanged(self, p: Position, s: str = None, undoType: str = 'Typing') -> None:  # type:ignore
+    def onHeadChanged(self, p: Position, s: str | None = None, undoType: str = 'Typing') -> None:  # type:ignore
         """
         Officially change a headline.
         This is c.frame.tree.onHeadChanged.
@@ -2762,7 +2762,7 @@ class CoreTree(leoFrame.LeoTree):
 
     # @+node:ekr.20170511095353.1: *5* CTree.editLabel (cursesGui2) (not used)
     def editLabel(
-        self, p: Position, selectAll: bool = False, selection: tuple = None
+        self, p: Position, selectAll: bool = False, selection: tuple | None = None
     ) -> tuple[None, None]:
         """Start editing p's headline."""
         return None, None
@@ -2950,7 +2950,7 @@ class LeoBody(npyscreen.MultiLineEditable):
             self._continue_editing()
 
     # @+node:ekr.20170604185028.1: *4* LeoBody.delete_line_value
-    def delete_line_value(self, ch_i: int = None) -> None:
+    def delete_line_value(self, ch_i: int | None = None) -> None:
         c = self.leo_c
         if self.values:
             del self.values[self.cursor_line]
@@ -3088,7 +3088,7 @@ class LeoLog(npyscreen.MultiLineEditable):
 
     # @+others
     # @+node:ekr.20170604184928.2: *4* LeoLog.delete_line_value
-    def delete_line_value(self, ch_i: int = None) -> None:
+    def delete_line_value(self, ch_i: int | None = None) -> None:
         if self.values:
             del self.values[self.cursor_line]
             self.display()
@@ -4198,7 +4198,7 @@ class TextMixin:
 
     # @+others
     # @+node:ekr.20170511053143.2: *4* tm.ctor & helper
-    def __init__(self, c: Cmdr = None) -> None:
+    def __init__(self, c: Cmdr | None = None) -> None:
         """Ctor for TextMixin class"""
         self.c = c
         self.enabled = True
@@ -4238,7 +4238,7 @@ class TextMixin:
         g.app.gui.replaceClipboardWith('')
 
     # @+node:ekr.20170511053143.14: *5* tm.delete
-    def delete(self, i: int, j: int = None) -> None:
+    def delete(self, i: int, j: int | None = None) -> None:
         """TextMixin"""
         s = self.getAllText()
         if j is None:
@@ -4264,7 +4264,7 @@ class TextMixin:
         self.enabled = enabled
 
     # @+node:ekr.20170511053143.16: *5* tm.get
-    def get(self, i: int, j: int = None) -> str:
+    def get(self, i: int, j: int | None = None) -> str:
         """TextMixin"""
         # 2012/04/12: fix the following two bugs by using the vanilla code:
         # https://bugs.launchpad.net/leo-editor/+bug/979142
@@ -4362,7 +4362,7 @@ class BodyWrapper(StringTextWrapper):
         self.leo_frame = None
 
     # @+node:ekr.20170504034655.6: *4* bw.onCursorPositionChanged
-    def onCursorPositionChanged(self, event: Event = None) -> None:
+    def onCursorPositionChanged(self, event: Event | None = None) -> None:
         if 0:
             g.trace('=====', event)
 

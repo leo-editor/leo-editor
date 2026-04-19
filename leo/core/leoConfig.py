@@ -464,7 +464,7 @@ class ParserBaseClass:
             g.es_print("ERROR: @menuat found but no menu tree to patch")
 
     # @+node:tbrown.20080514180046.9: *5* pbc.getName
-    def getName(self, val: str, val2: str = None) -> str:
+    def getName(self, val: str, val2: str | None = None) -> str:
         if val2 and val2.strip():
             val = val2
         val = val.split('\n', 1)[0]
@@ -679,7 +679,7 @@ class ParserBaseClass:
 
     # @+node:ekr.20041120105609: *4* pbc.doShortcuts
     def doShortcuts(
-        self, p: Position, kind: str, junk_name: str, junk_val: Any, s: str = None
+        self, p: Position, kind: str, junk_name: str, junk_val: Any, s: str | None = None
     ) -> None:
         """Handle an @shortcut or @shortcuts node."""
         c, d = self.c, self.shortcutsDict
@@ -1196,7 +1196,7 @@ class ActiveSettingsOutline:
                 self.add(p)
 
     # @+node:ekr.20190905091614.12: *3* aso.add
-    def add(self, p: Position, h: str = None) -> None:
+    def add(self, p: Position, h: str | None = None) -> None:
         """
         Add a node for p.
 
@@ -1443,7 +1443,7 @@ class GlobalConfigManager:
         return d or {}
 
     # @+node:ekr.20041117081009.3: *4* gcm.getBool
-    def getBool(self, setting: str, default: bool = None) -> bool:
+    def getBool(self, setting: str, default: bool | None = None) -> bool:
         """Return the value of @bool setting, or the default if the setting is not found."""
         val = self.get(setting, "bool")
         if val in (True, False):
@@ -1616,7 +1616,7 @@ class LocalConfigManager:
 
     # @+others
     # @+node:ekr.20041118104831.2: *3*  c.config.ctor
-    def __init__(self, c: Cmdr, previousSettings: PreviousSettings = None) -> None:
+    def __init__(self, c: Cmdr, previousSettings: PreviousSettings | None = None) -> None:
         self.c = c
         lm = g.app.loadManager
         if previousSettings:
@@ -1811,7 +1811,7 @@ class LocalConfigManager:
         return d or {}
 
     # @+node:ekr.20120215072959.12523: *5* c.config.getBool
-    def getBool(self, setting: str, default: bool = None) -> bool:
+    def getBool(self, setting: str, default: bool | None = None) -> bool:
         """Return the value of @bool setting, or the default if the setting is not found."""
         val = self.get(setting, "bool")
         if val in (True, False):

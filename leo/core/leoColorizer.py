@@ -2016,7 +2016,7 @@ class JEditColorizer(BaseColorizer):
         s: str,
         i: int,
         *,
-        kind: str = None,
+        kind: str | None = None,
         seq: str = '',
         at_line_start: bool = False,
         at_whitespace_end: bool = False,
@@ -2239,7 +2239,7 @@ class JEditColorizer(BaseColorizer):
         return -len(word)  # An important new optimization.
 
     # @+node:ekr.20110605121601.18615: *4* jedit.match_line
-    def match_line(self, s: str, i: int, *, kind: str = None) -> int:
+    def match_line(self, s: str, i: int, *, kind: str | None = None) -> int:
         """Match the rest of the line."""
         j = g.skip_to_end_of_line(s, i)
         self.colorRangeWithTag(s, i, j, kind)
@@ -3303,7 +3303,7 @@ if Qsci:
     class NullScintillaLexer(Qsci.QsciLexerCustom):
         """A do-nothing colorizer for Scintilla."""
 
-        def __init__(self, c: Cmdr, parent: QWidget = None) -> None:
+        def __init__(self, c: Cmdr, parent: QWidget | None = None) -> None:
             super().__init__(parent)  # Init the pase class
             self.leo_c = c
             self.configure_lexer()

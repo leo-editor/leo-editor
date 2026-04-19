@@ -172,7 +172,7 @@ class LeoUnitTest(unittest.TestCase):
             print(f"{p.gnx:<28} {head_s:<20} body: {p.b!r}")
 
     # @+node:ekr.20230720210931.1: *4* LeoUnitTest.dump_clone_info
-    def dump_clone_info(self, c: Cmdr, tag: str = None) -> None:
+    def dump_clone_info(self, c: Cmdr, tag: str | None = None) -> None:
         """Dump all clone info."""
         print('')
         g.trace(f"{tag or ''} {c.fileName()}")
@@ -184,7 +184,7 @@ class LeoUnitTest(unittest.TestCase):
             )
 
     # @+node:ekr.20220805071838.1: *4* LeoUnitTest.dump_headlines
-    def dump_headlines(self, c: Cmdr, tag: str = None) -> None:  # pragma: no cover
+    def dump_headlines(self, c: Cmdr, tag: str | None = None) -> None:  # pragma: no cover
         """Dump all headlines."""
         print('')
         g.trace(f"{tag or ''} {c.fileName()}")
@@ -193,13 +193,13 @@ class LeoUnitTest(unittest.TestCase):
             print(f"{p.gnx:25}: {' ' * p.level()}{p.h}")
 
     # @+node:ekr.20220806170537.1: *4* LeoUnitTest.dump_string
-    def dump_string(self, s: str, tag: str = None) -> None:
+    def dump_string(self, s: str, tag: str | None = None) -> None:
         if tag:
             print(tag)
         g.printObj([f"{i:2} {z.rstrip()}" for i, z in enumerate(g.splitLines(s))])
 
     # @+node:ekr.20211129062220.1: *4* LeoUnitTest.dump_tree
-    def dump_tree(self, root: Position = None, tag: str = None) -> None:  # pragma: no cover
+    def dump_tree(self, root: Position | None = None, tag: str | None = None) -> None:  # pragma: no cover
         """
         Dump root's tree, or the entire tree if root is None.
         """

@@ -74,7 +74,7 @@ def callZenity(title: str, save: bool = False, test: bool = False) -> Optional[b
 def runOpenFileDialog(
     title,
     *,
-    filetypes: list[tuple[str, str]] = None,
+    filetypes: list[tuple[str, str]] | None = None,
     defaultextension='',  # Not used.
 ):
     """Call zenity's open file(s) dialog."""
@@ -86,7 +86,7 @@ def runOpenFileDialog(
 def runSaveFileDialog(
     title=None,
     *,
-    filetypes: list[tuple[str, str]] = None,
+    filetypes: list[tuple[str, str]] | None = None,
     defaultextension='',  # Not used.
 ) -> bytes:
     """Call zenity's save file dialog."""

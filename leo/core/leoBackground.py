@@ -141,7 +141,7 @@ class BackgroundProcessManager:
         self.pid = None
 
     # @+node:ekr.20161026193609.3: *3* bpm.kill
-    def kill(self, kind: str = None) -> None:
+    def kill(self, kind: str | None = None) -> None:
         """Kill the presently running process, if any."""
         if kind is None:
             kind = 'all'
@@ -240,7 +240,7 @@ class BackgroundProcessManager:
             self.timer.stop()
 
     # @+node:ekr.20161026193609.5: *3* bpm.start_process (creates callback)
-    def start_process(self, c: Cmdr, command: str, kind: str, fn: str = None) -> None:
+    def start_process(self, c: Cmdr, command: str, kind: str, fn: str | None = None) -> None:
         """
         Start or queue a process described by command and fn.
         """

@@ -434,7 +434,7 @@ class LeoFrame:
             return self.statusLine.computeStatusUnl(p)
         return ''
 
-    def disableStatusLine(self, background: str = None) -> None:
+    def disableStatusLine(self, background: str | None = None) -> None:
         if self.statusLine:
             self.statusLine.disable(background)
 
@@ -447,7 +447,7 @@ class LeoFrame:
 
     getStatusObject = getStatusLine
 
-    def putStatusLine(self, s: str, bg: str = None, fg: str = None) -> None:
+    def putStatusLine(self, s: str, bg: str | None = None, fg: str | None = None) -> None:
         if self.statusLine:
             self.statusLine.put(s, bg, fg)
 
@@ -466,13 +466,13 @@ class LeoFrame:
 
     # @+node:felix.20250313154127.1: *4* LeoFrame.Window Layouts
     @frame_cmd('horizontal-window-layout')
-    def horizontalWindowLayout(self, event: LeoKeyEvent = None) -> None:
+    def horizontalWindowLayout(self, event: LeoKeyEvent | None = None) -> None:
         c = self.c
         c.inCommand = False  # Allow inner command
         c.doCommandByName('layout-legacy')
 
     @frame_cmd('vertical-window-layout')
-    def verticalWindowLayout(self, event: LeoKeyEvent = None) -> None:
+    def verticalWindowLayout(self, event: LeoKeyEvent | None = None) -> None:
         c = self.c
         c.inCommand = False  # Allow inner command
         c.doCommandByName('layout-vertical-thirds')
@@ -480,7 +480,7 @@ class LeoFrame:
     # @+node:ekr.20070130115927.4: *4* LeoFrame.Cut/Copy/Paste
     # @+node:ekr.20070130115927.5: *5* LeoFrame.copyText
     @frame_cmd('copy-text')
-    def copyText(self, event: LeoKeyEvent = None) -> None:
+    def copyText(self, event: LeoKeyEvent | None = None) -> None:
         """Copy the selected text from the widget to the clipboard."""
         # f = self
         w = event and event.widget
@@ -503,7 +503,7 @@ class LeoFrame:
 
     # @+node:ekr.20070130115927.6: *5* LeoFrame.cutText
     @frame_cmd('cut-text')
-    def cutText(self, event: LeoKeyEvent = None) -> None:
+    def cutText(self, event: LeoKeyEvent | None = None) -> None:
         """Invoked from the mini-buffer and from shortcuts."""
         c, p, u = self.c, self.c.p, self.c.undoer
         w = event and event.widget
@@ -532,7 +532,7 @@ class LeoFrame:
 
     # @+node:ekr.20070130115927.7: *5* LeoFrame.pasteText
     @frame_cmd('paste-text')
-    def pasteText(self, event: LeoKeyEvent = None, middleButton: bool = False) -> None:
+    def pasteText(self, event: LeoKeyEvent | None = None, middleButton: bool = False) -> None:
         """
         Paste the clipboard into a widget.
         If middleButton is True, support x-windows middle-mouse-button easter-egg.
@@ -599,13 +599,13 @@ class LeoFrame:
     OnPasteFromMenu = pasteText
 
     # @+node:ekr.20061016071937: *5* LeoFrame.OnPaste (support middle-button paste)
-    def OnPaste(self, event: LeoKeyEvent = None) -> None:
+    def OnPaste(self, event: LeoKeyEvent | None = None) -> None:
         return self.pasteText(event=event, middleButton=True)
 
     # @+node:ekr.20031218072017.3980: *4* LeoFrame.Edit Menu
     # @+node:ekr.20031218072017.3982: *5* LeoFrame.endEditLabelCommand
     @frame_cmd('end-edit-headline')
-    def endEditLabelCommand(self, event: LeoKeyEvent = None, p: Position = None) -> None:
+    def endEditLabelCommand(self, event: LeoKeyEvent | None = None, p: Position | None = None) -> None:
         """End editing of a headline and move focus to the body pane."""
         frame = self
         c = frame.c
@@ -628,82 +628,82 @@ class LeoFrame:
     def bringToFront(self) -> None:
         raise NotImplementedError
 
-    def cascade(self, event: LeoKeyEvent = None) -> None:
+    def cascade(self, event: LeoKeyEvent | None = None) -> None:
         raise NotImplementedError
 
-    def contractBodyPane(self, event: LeoKeyEvent = None) -> None:
+    def contractBodyPane(self, event: LeoKeyEvent | None = None) -> None:
         raise NotImplementedError
 
-    def contractLogPane(self, event: LeoKeyEvent = None) -> None:
+    def contractLogPane(self, event: LeoKeyEvent | None = None) -> None:
         raise NotImplementedError
 
-    def contractOutlinePane(self, event: LeoKeyEvent = None) -> None:
+    def contractOutlinePane(self, event: LeoKeyEvent | None = None) -> None:
         raise NotImplementedError
 
-    def contractPane(self, event: LeoKeyEvent = None) -> None:
+    def contractPane(self, event: LeoKeyEvent | None = None) -> None:
         raise NotImplementedError
 
     def deiconify(self) -> None:
         raise NotImplementedError
 
-    def equalSizedPanes(self, event: LeoKeyEvent = None) -> None:
+    def equalSizedPanes(self, event: LeoKeyEvent | None = None) -> None:
         raise NotImplementedError
 
-    def expandBodyPane(self, event: LeoKeyEvent = None) -> None:
+    def expandBodyPane(self, event: LeoKeyEvent | None = None) -> None:
         raise NotImplementedError
 
-    def expandLogPane(self, event: LeoKeyEvent = None) -> None:
+    def expandLogPane(self, event: LeoKeyEvent | None = None) -> None:
         raise NotImplementedError
 
-    def expandOutlinePane(self, event: LeoKeyEvent = None) -> None:
+    def expandOutlinePane(self, event: LeoKeyEvent | None = None) -> None:
         raise NotImplementedError
 
-    def expandPane(self, event: LeoKeyEvent = None) -> None:
+    def expandPane(self, event: LeoKeyEvent | None = None) -> None:
         raise NotImplementedError
 
-    def fullyExpandBodyPane(self, event: LeoKeyEvent = None) -> None:
+    def fullyExpandBodyPane(self, event: LeoKeyEvent | None = None) -> None:
         raise NotImplementedError
 
-    def fullyExpandLogPane(self, event: LeoKeyEvent = None) -> None:
+    def fullyExpandLogPane(self, event: LeoKeyEvent | None = None) -> None:
         raise NotImplementedError
 
-    def fullyExpandOutlinePane(self, event: LeoKeyEvent = None) -> None:
+    def fullyExpandOutlinePane(self, event: LeoKeyEvent | None = None) -> None:
         raise NotImplementedError
 
-    def fullyExpandPane(self, event: LeoKeyEvent = None) -> None:
+    def fullyExpandPane(self, event: LeoKeyEvent | None = None) -> None:
         raise NotImplementedError
 
     def get_window_info(self) -> tuple[int, int, int, int]:
         raise NotImplementedError
 
-    def hideBodyPane(self, event: LeoKeyEvent = None) -> None:
+    def hideBodyPane(self, event: LeoKeyEvent | None = None) -> None:
         raise NotImplementedError
 
-    def hideLogPane(self, event: LeoKeyEvent = None) -> None:
+    def hideLogPane(self, event: LeoKeyEvent | None = None) -> None:
         raise NotImplementedError
 
-    def hideLogWindow(self, event: LeoKeyEvent = None) -> None:
+    def hideLogWindow(self, event: LeoKeyEvent | None = None) -> None:
         raise NotImplementedError
 
-    def hideOutlinePane(self, event: LeoKeyEvent = None) -> None:
+    def hideOutlinePane(self, event: LeoKeyEvent | None = None) -> None:
         raise NotImplementedError
 
-    def hidePane(self, event: LeoKeyEvent = None) -> None:
+    def hidePane(self, event: LeoKeyEvent | None = None) -> None:
         raise NotImplementedError
 
-    def leoHelp(self, event: LeoKeyEvent = None) -> None:
+    def leoHelp(self, event: LeoKeyEvent | None = None) -> None:
         raise NotImplementedError
 
     def lift(self) -> None:
         raise NotImplementedError
 
-    def minimizeAll(self, event: LeoKeyEvent = None) -> None:
+    def minimizeAll(self, event: LeoKeyEvent | None = None) -> None:
         raise NotImplementedError
 
     def resizePanesToRatio(self, ratio: float, secondary_ratio: float) -> None:
         raise NotImplementedError
 
-    def resizeToScreen(self, event: LeoKeyEvent = None) -> None:
+    def resizeToScreen(self, event: LeoKeyEvent | None = None) -> None:
         raise NotImplementedError
 
     def setInitialWindowGeometry(self) -> None:
@@ -712,10 +712,10 @@ class LeoFrame:
     def setTopGeometry(self, w: int, h: int, x: int, y: int) -> None:
         raise NotImplementedError
 
-    def toggleActivePane(self, event: LeoKeyEvent = None) -> None:
+    def toggleActivePane(self, event: LeoKeyEvent | None = None) -> None:
         raise NotImplementedError
 
-    def toggleSplitDirection(self, event: LeoKeyEvent = None) -> None:
+    def toggleSplitDirection(self, event: LeoKeyEvent | None = None) -> None:
         raise NotImplementedError
 
     # @-others
@@ -760,7 +760,7 @@ class LeoLog:
         self,
         tabName: str,
         createText: bool = True,
-        widget: Widget = None,
+        widget: Widget | None = None,
         wrap: str = 'none',
     ) -> Widget:
         # Do not change the signature above.
@@ -808,7 +808,7 @@ class LeoLog:
         self.c.bodyWantsFocus()
 
     # @+node:ekr.20111122080923.10184: *3* LeoLog.orderedTabNames
-    def orderedTabNames(self, LeoLog: str = None) -> list:
+    def orderedTabNames(self, LeoLog: str | None = None) -> list:
         return list(self.frameDict.values())
 
     # @+node:ekr.20070302094848.9: *3* LeoLog.numberOfVisibleTabs
@@ -821,10 +821,10 @@ class LeoLog:
     def put(
         self,
         s: str,
-        color: str = None,
+        color: str | None = None,
         tabName: str = 'Log',
         from_redirect: bool = False,
-        nodeLink: str = None,
+        nodeLink: str | None = None,
     ) -> None:
         print(s)
 
@@ -976,7 +976,7 @@ class LeoTree:
     def redraw_after_head_changed(self) -> None:
         self.c.redraw()
 
-    def redraw_after_select(self, p: Position = None) -> None:
+    def redraw_after_select(self, p: Position | None = None) -> None:
         self.c.redraw()
 
     # @+node:ekr.20040803072955.91: *4* LeoTree.onHeadChanged
@@ -1115,7 +1115,7 @@ class LeoTree:
     # @+node:ekr.20031218072017.3706: *3* LeoTree.Must be defined in subclasses
     # Drawing & scrolling.
 
-    def redraw(self, p: Position = None) -> None:
+    def redraw(self, p: Position | None = None) -> None:
         raise NotImplementedError
 
     redraw_now = redraw
@@ -1129,7 +1129,7 @@ class LeoTree:
         self,
         p: Position,
         selectAll: bool = False,
-        selection: tuple = None,
+        selection: tuple | None = None,
     ) -> tuple[Widget, Any]:  # Any is the best possible annotation.
         raise NotImplementedError
 
@@ -1372,7 +1372,7 @@ class NullFrame(LeoFrame):
     def bringToFront(self) -> None:
         pass
 
-    def cascade(self, event: LeoKeyEvent = None) -> None:
+    def cascade(self, event: LeoKeyEvent | None = None) -> None:
         pass
 
     def compute_ratio(self) -> float:
@@ -1381,16 +1381,16 @@ class NullFrame(LeoFrame):
     def compute_secondary_ratio(self) -> float:
         return 0.5
 
-    def contractBodyPane(self, event: LeoKeyEvent = None) -> None:
+    def contractBodyPane(self, event: LeoKeyEvent | None = None) -> None:
         pass
 
-    def contractLogPane(self, event: LeoKeyEvent = None) -> None:
+    def contractLogPane(self, event: LeoKeyEvent | None = None) -> None:
         pass
 
-    def contractOutlinePane(self, event: LeoKeyEvent = None) -> None:
+    def contractOutlinePane(self, event: LeoKeyEvent | None = None) -> None:
         pass
 
-    def contractPane(self, event: LeoKeyEvent = None) -> None:
+    def contractPane(self, event: LeoKeyEvent | None = None) -> None:
         pass
 
     def deiconify(self) -> None:
@@ -1399,34 +1399,34 @@ class NullFrame(LeoFrame):
     def destroySelf(self) -> None:
         pass
 
-    def equalSizedPanes(self, event: LeoKeyEvent = None) -> None:
+    def equalSizedPanes(self, event: LeoKeyEvent | None = None) -> None:
         pass
 
-    def expandBodyPane(self, event: LeoKeyEvent = None) -> None:
+    def expandBodyPane(self, event: LeoKeyEvent | None = None) -> None:
         pass
 
-    def expandLogPane(self, event: LeoKeyEvent = None) -> None:
+    def expandLogPane(self, event: LeoKeyEvent | None = None) -> None:
         pass
 
-    def expandOutlinePane(self, event: LeoKeyEvent = None) -> None:
+    def expandOutlinePane(self, event: LeoKeyEvent | None = None) -> None:
         pass
 
-    def expandPane(self, event: LeoKeyEvent = None) -> None:
+    def expandPane(self, event: LeoKeyEvent | None = None) -> None:
         pass
 
     def forceWrap(self, p: Position) -> None:
         pass
 
-    def fullyExpandBodyPane(self, event: LeoKeyEvent = None) -> None:
+    def fullyExpandBodyPane(self, event: LeoKeyEvent | None = None) -> None:
         pass
 
-    def fullyExpandLogPane(self, event: LeoKeyEvent = None) -> None:
+    def fullyExpandLogPane(self, event: LeoKeyEvent | None = None) -> None:
         pass
 
-    def fullyExpandOutlinePane(self, event: LeoKeyEvent = None) -> None:
+    def fullyExpandOutlinePane(self, event: LeoKeyEvent | None = None) -> None:
         pass
 
-    def fullyExpandPane(self, event: LeoKeyEvent = None) -> None:
+    def fullyExpandPane(self, event: LeoKeyEvent | None = None) -> None:
         pass
 
     def getIconBar(self) -> NullIconBarClass | QtIconBarClass:
@@ -1437,34 +1437,34 @@ class NullFrame(LeoFrame):
     def get_window_info(self) -> tuple[int, int, int, int]:
         return 600, 500, 20, 20
 
-    def hideBodyPane(self, event: LeoKeyEvent = None) -> None:
+    def hideBodyPane(self, event: LeoKeyEvent | None = None) -> None:
         pass
 
-    def hideLogPane(self, event: LeoKeyEvent = None) -> None:
+    def hideLogPane(self, event: LeoKeyEvent | None = None) -> None:
         pass
 
-    def hideLogWindow(self, event: LeoKeyEvent = None) -> None:
+    def hideLogWindow(self, event: LeoKeyEvent | None = None) -> None:
         pass
 
-    def hideOutlinePane(self, event: LeoKeyEvent = None) -> None:
+    def hideOutlinePane(self, event: LeoKeyEvent | None = None) -> None:
         pass
 
-    def hidePane(self, event: LeoKeyEvent = None) -> None:
+    def hidePane(self, event: LeoKeyEvent | None = None) -> None:
         pass
 
-    def leoHelp(self, event: LeoKeyEvent = None) -> None:
+    def leoHelp(self, event: LeoKeyEvent | None = None) -> None:
         pass
 
     def lift(self) -> None:
         pass
 
-    def minimizeAll(self, event: LeoKeyEvent = None) -> None:
+    def minimizeAll(self, event: LeoKeyEvent | None = None) -> None:
         pass
 
     def resizePanesToRatio(self, ratio: float, secondary_ratio: float) -> None:
         pass
 
-    def resizeToScreen(self, event: LeoKeyEvent = None) -> None:
+    def resizeToScreen(self, event: LeoKeyEvent | None = None) -> None:
         pass
 
     def setInitialWindowGeometry(self) -> None:
@@ -1476,10 +1476,10 @@ class NullFrame(LeoFrame):
     def setWrap(self, flag: str, force: bool = False) -> None:
         pass
 
-    def toggleActivePane(self, event: LeoKeyEvent = None) -> None:
+    def toggleActivePane(self, event: LeoKeyEvent | None = None) -> None:
         pass
 
-    def toggleSplitDirection(self, event: LeoKeyEvent = None) -> None:
+    def toggleSplitDirection(self, event: LeoKeyEvent | None = None) -> None:
         pass
 
     def update(self) -> None:
@@ -1504,7 +1504,7 @@ class NullIconBarClass:
         self.c = c
 
     # @+node:ekr.20070301165343: *3*  NullIconBarClass.Do nothing
-    def addRow(self, height: str = None) -> None:
+    def addRow(self, height: str | None = None) -> None:
         pass
 
     def addRowIfNeeded(self) -> None:
@@ -1585,7 +1585,7 @@ class NullIconBarClass:
 class NullLog(LeoLog):
     """A do-nothing log class."""
 
-    def __init__(self, *, frame: NullFrame = None) -> None:
+    def __init__(self, *, frame: NullFrame | None = None) -> None:
         super().__init__(frame)
         c = self.c
         self.isNull = True
@@ -1608,10 +1608,10 @@ class NullLog(LeoLog):
     def put(
         self,
         s: str,
-        color: str = None,
+        color: str | None = None,
         tabName: str = 'Log',
         from_redirect: bool = False,
-        nodeLink: str = None,
+        nodeLink: str | None = None,
     ) -> None:
         if self.enabled and not g.unitTesting:
             try:
@@ -1635,7 +1635,7 @@ class NullLog(LeoLog):
         self,
         tabName: str,
         createText: bool = True,
-        widget: Widget = None,
+        widget: Widget | None = None,
         wrap: str = 'none',
     ) -> None:
         pass
@@ -1676,7 +1676,7 @@ class NullStatusLineClass:
     def computeStatusUnl(self, p: Position) -> str:
         return ''
 
-    def disable(self, background: str = None) -> None:
+    def disable(self, background: str | None = None) -> None:
         self.enabled = False
 
     def enable(self, background: str = "white") -> None:
@@ -1693,7 +1693,7 @@ class NullStatusLineClass:
     def isEnabled(self) -> bool:
         return self.enabled
 
-    def put(self, s: str, bg: str = None, fg: str = None) -> None:
+    def put(self, s: str, bg: str | None = None, fg: str | None = None) -> None:
         w = self.textWidget
         w.insert(w.getLastIndex(), s)
 
@@ -1734,7 +1734,7 @@ class NullTree(LeoTree):
         self,
         p: Position,
         selectAll: bool = False,
-        selection: tuple = None,
+        selection: tuple | None = None,
     ) -> tuple[Widget, StringTextWrapper]:
         """Start editing p's headline."""
         self.endEditLabel()
@@ -1753,7 +1753,7 @@ class NullTree(LeoTree):
             g.pr('w', w, 'v.h:', key.headString, 's:', repr(w.s))
 
     # @+node:ekr.20070228163350.1: *3* NullTree.Drawing & scrolling
-    def redraw(self, p: Position = None) -> None:
+    def redraw(self, p: Position | None = None) -> None:
         self.redrawCount += 1
 
     redraw_after_contract = redraw

@@ -502,7 +502,7 @@ class VimCommands:
 
     # @+node:ekr.20140803220119.18097: *4* direct acceptance methods
     # @+node:ekr.20140802225657.18031: *5* vc.accept
-    def accept(self, add_to_dot: bool = True, handler: Callable = None) -> None:
+    def accept(self, add_to_dot: bool = True, handler: Callable | None = None) -> None:
         """
         Accept the present stroke.
         Optionally, this can set the dot or change self.handler.
@@ -535,7 +535,7 @@ class VimCommands:
         add_to_dot: bool = True,
         return_value: bool = True,
         set_dot: bool = True,
-        stroke: Stroke = None,
+        stroke: Stroke | None = None,
     ) -> None:
         """Complete a command, preserving text and optionally updating the dot."""
         self.do_trace()
@@ -627,7 +627,7 @@ class VimCommands:
 
     # @+node:ekr.20140802225657.18034: *4* indirect acceptance methods
     # @+node:ekr.20140222064735.16709: *5* vc.begin_insert_mode
-    def begin_insert_mode(self, i: int = None, w: QTextMixin = None) -> None:
+    def begin_insert_mode(self, i: int | None = None, w: QTextMixin | None = None) -> None:
         """Common code for beginning insert mode."""
         self.do_trace()
         # c = self.c
@@ -2043,7 +2043,7 @@ class VimCommands:
 
         # @+others
         # @+node:ekr.20140820034724.18316: *5* :r.__call__
-        def __call__(self, event: QEvent = None) -> None:
+        def __call__(self, event: QEvent | None = None) -> None:
             """Prompt for a file name, then load it at the cursor."""
             self.vc.c.k.getFileName(event, callback=self.load_file_at_cursor)
 
@@ -2083,7 +2083,7 @@ class VimCommands:
 
         # @+others
         # @+node:ekr.20140820063930.18321: *5* Substitution.__call__ (:%s & :s)
-        def __call__(self, event: QEvent = None) -> None:
+        def __call__(self, event: QEvent | None = None) -> None:
             """Handle the :s and :%s commands. Neither command affects the dot."""
             vc = self.vc
             c, w = vc.c, vc.w
@@ -2121,7 +2121,7 @@ class VimCommands:
 
         # @+others
         # @+node:ekr.20140820034724.18313: *5* :tabnew.__call__
-        def __call__(self, event: QEvent = None) -> None:
+        def __call__(self, event: QEvent | None = None) -> None:
             """Prompt for a file name, the open a new Leo tab."""
             self.vc.c.k.getFileName(event, callback=self.open_file_by_name)
 
@@ -2154,16 +2154,16 @@ class VimCommands:
 
     # @+node:ekr.20150509050905.1: *4* vc.e_command & tabnew_command
     @cmd(':e')
-    def e_command(self, event: LeoKeyEvent = None) -> None:
+    def e_command(self, event: LeoKeyEvent | None = None) -> None:
         self.Tabnew(self)
 
     @cmd(':tabnew')
-    def tabnew_command(self, event: LeoKeyEvent = None) -> None:
+    def tabnew_command(self, event: LeoKeyEvent | None = None) -> None:
         self.Tabnew(self)
 
     # @+node:ekr.20140815160132.18824: *4* vc.print_dot (:print-dot)
     @cmd(':print-dot')
-    def print_dot(self, event: LeoKeyEvent = None) -> None:
+    def print_dot(self, event: LeoKeyEvent | None = None) -> None:
         """Print the dot."""
         aList = [z.stroke if isinstance(z, VimEvent) else z for z in self.dot_list]
         aList = [show_stroke(self.c.k.stroke2char(z)) for z in aList]
@@ -2177,12 +2177,12 @@ class VimCommands:
 
     # @+node:ekr.20140815160132.18825: *4* vc.q/qa_command & quit_now (:q & q! & :qa)
     @cmd(':q')
-    def q_command(self, event: LeoKeyEvent = None) -> None:
+    def q_command(self, event: LeoKeyEvent | None = None) -> None:
         """Quit the present Leo outline, prompting for saves."""
         g.app.closeLeoWindow(self.c.frame, new_c=None)
 
     @cmd(':qa')
-    def qa_command(self, event: LeoKeyEvent = None) -> None:
+    def qa_command(self, event: LeoKeyEvent | None = None) -> None:
         """Quit only if there are no unsaved changes."""
         for c in g.app.commanders():
             if c.isChanged():
@@ -2190,33 +2190,33 @@ class VimCommands:
         g.app.onQuit(event)
 
     @cmd(':q!')
-    def quit_now(self, event: LeoKeyEvent = None) -> None:
+    def quit_now(self, event: LeoKeyEvent | None = None) -> None:
         """Quit immediately."""
         g.app.forceShutdown()
 
     # @+node:ekr.20150509050918.1: *4* vc.r_command
     @cmd(':r')
-    def r_command(self, event: LeoKeyEvent = None) -> None:
+    def r_command(self, event: LeoKeyEvent | None = None) -> None:
         self.LoadFileAtCursor(self)
 
     # @+node:ekr.20140815160132.18826: *4* vc.revert (:e!)
     @cmd(':e!')
-    def revert(self, event: LeoKeyEvent = None) -> None:
+    def revert(self, event: LeoKeyEvent | None = None) -> None:
         """Revert all changes to a .leo file, prompting if there have been changes."""
         self.c.revert()
 
     # @+node:ekr.20150509050755.1: *4* vc.s_command & percent_s_command
     @cmd(':%s')
-    def percent_s_command(self, event: LeoKeyEvent = None) -> None:
+    def percent_s_command(self, event: LeoKeyEvent | None = None) -> None:
         self.Substitution(self, all_lines=True)
 
     @cmd(':s')
-    def s_command(self, event: LeoKeyEvent = None) -> None:
+    def s_command(self, event: LeoKeyEvent | None = None) -> None:
         self.Substitution(self, all_lines=False)
 
     # @+node:ekr.20140815160132.18827: *4* vc.shell_command (:!)
     @cmd(':!')
-    def shell_command(self, event: LeoKeyEvent = None) -> None:
+    def shell_command(self, event: LeoKeyEvent | None = None) -> None:
         """Execute a shell command."""
         c, k = self.c, self.c.k
         if k.functionTail:
@@ -2229,7 +2229,7 @@ class VimCommands:
 
     # @+node:ekr.20140815160132.18830: *4* vc.toggle_vim_mode
     @cmd(':toggle-vim-mode')
-    def toggle_vim_mode(self, event: LeoKeyEvent = None) -> None:
+    def toggle_vim_mode(self, event: LeoKeyEvent | None = None) -> None:
         """toggle vim-mode."""
         c = self.c
         c.vim_mode = not c.vim_mode
@@ -2249,7 +2249,7 @@ class VimCommands:
 
     # @+node:ekr.20140909140052.18128: *4* vc.toggle_vim_trace
     @cmd(':toggle-vim-trace')
-    def toggle_vim_trace(self, event: LeoKeyEvent = None) -> None:
+    def toggle_vim_trace(self, event: LeoKeyEvent | None = None) -> None:
         """toggle vim tracing."""
         self.trace_flag = not self.trace_flag
         val = 'On' if self.trace_flag else 'Off'
@@ -2257,7 +2257,7 @@ class VimCommands:
 
     # @+node:ekr.20140815160132.18831: *4* vc.toggle_vim_trainer_mode
     @cmd(':toggle-vim-trainer-mode')
-    def toggle_vim_trainer_mode(self, event: LeoKeyEvent = None) -> None:
+    def toggle_vim_trainer_mode(self, event: LeoKeyEvent | None = None) -> None:
         """toggle vim-trainer mode."""
         self.trainer = not self.trainer
         val = 'on' if self.trainer else 'off'
@@ -2265,19 +2265,19 @@ class VimCommands:
 
     # @+node:ekr.20140815160132.18832: *4* w/xa/wq_command (:w & :xa & wq)
     @cmd(':w')
-    def w_command(self, event: LeoKeyEvent = None) -> None:
+    def w_command(self, event: LeoKeyEvent | None = None) -> None:
         """Save the .leo file."""
         self.c.save()
 
     @cmd(':xa')
-    def xa_command(self, event: LeoKeyEvent = None) -> None:  # same as :xa
+    def xa_command(self, event: LeoKeyEvent | None = None) -> None:  # same as :xa
         """Save all open files and keep working."""
         for c in g.app.commanders():
             if c.isChanged():
                 c.save()
 
     @cmd(':wq')
-    def wq_command(self, event: LeoKeyEvent = None) -> None:
+    def wq_command(self, event: LeoKeyEvent | None = None) -> None:
         """Save all open files and exit."""
         for c in g.app.commanders():
             c.save()
@@ -2390,7 +2390,7 @@ class VimCommands:
 
     # @+node:ekr.20140222064735.16682: *3* vc.Utilities
     # @+node:ekr.20140802183521.17998: *4* vc.add_to_dot
-    def add_to_dot(self, stroke: Stroke = None) -> None:
+    def add_to_dot(self, stroke: Stroke | None = None) -> None:
         """
         Add a new VimEvent to self.command_list.
         Never change self.command_list if self.in_dot is True
@@ -2412,7 +2412,7 @@ class VimCommands:
             self.dot_list = self.command_list[:]
 
     # @+node:ekr.20140810214537.18241: *4* vc.do
-    def do(self, o: Any, event: LeoKeyEvent = None) -> None:
+    def do(self, o: Any, event: LeoKeyEvent | None = None) -> None:
         """Do one or more Leo commands by name."""
         if not event:
             event = self.event
@@ -2453,7 +2453,7 @@ class VimCommands:
         """Return True if stroke is a plain key."""
         return self.k.isPlainKey(stroke)
 
-    def is_text_wrapper(self, w: QTextMixin = None) -> bool:
+    def is_text_wrapper(self, w: QTextMixin | None = None) -> bool:
         """Return True if w is a text widget."""
         return self.is_body(w) or self.is_head(w) or g.isTextWrapper(w)
 
@@ -2517,9 +2517,9 @@ class VimCommands:
     # @+node:ekr.20140804123147.18929: *4* vc.set_border & helper
     def set_border(
         self,
-        kind: str = None,
-        w: QTextMixin = None,
-        activeFlag: bool = None,
+        kind: str | None = None,
+        w: QTextMixin | None = None,
+        activeFlag: bool | None = None,
     ) -> None:
         """
         Set the border color of self.w, depending on state.

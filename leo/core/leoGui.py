@@ -109,7 +109,7 @@ class LeoGui:
         """Create and run Leo's About Leo dialog."""
         raise NotImplementedError
 
-    def runAskOkDialog(self, c: Cmdr, title: str, message: str = None, text: str = "Ok") -> Any:
+    def runAskOkDialog(self, c: Cmdr, title: str, message: str | None = None, text: str = "Ok") -> Any:
         """Create and run an askOK dialog ."""
         raise NotImplementedError
 
@@ -118,8 +118,8 @@ class LeoGui:
         c: Cmdr,
         title: str,
         message: str,
-        cancelButtonText: str = None,
-        okButtonText: str = None,
+        cancelButtonText: str | None = None,
+        okButtonText: str | None = None,
     ) -> Any:
         """Create and run askOkCancelNumber dialog ."""
         raise NotImplementedError
@@ -129,8 +129,8 @@ class LeoGui:
         c: Cmdr,
         title: str,
         message: str,
-        cancelButtonText: str = None,
-        okButtonText: str = None,
+        cancelButtonText: str | None = None,
+        okButtonText: str | None = None,
         default: str = "",
         wide: bool = False,
     ) -> Any:
@@ -141,7 +141,7 @@ class LeoGui:
         self,
         c: Cmdr,
         title: str,
-        message: str = None,
+        message: str | None = None,
         yes_all: bool = False,
         no_all: bool = False,
     ) -> Any:
@@ -152,12 +152,12 @@ class LeoGui:
         self,
         c: Cmdr,
         title: str,
-        message: str = None,
+        message: str | None = None,
         yesMessage: str = "Yes",
         noMessage: str = "No",
-        yesToAllMessage: str = None,
+        yesToAllMessage: str | None = None,
         defaultButton: str = "Yes",
-        cancelMessage: str = None,
+        cancelMessage: str | None = None,
     ) -> Any:
         """Create and run an askYesNoCancel dialog ."""
         raise NotImplementedError
@@ -165,9 +165,9 @@ class LeoGui:
     def runPropertiesDialog(
         self,
         title: str = 'Properties',
-        data: Any = None,
-        callback: Callable = None,
-        buttons: list[str] = None,
+        data: Any | None = None,
+        callback: Callable | None = None,
+        buttons: list[str] | None = None,
     ) -> Any:
         """Display a modal TkPropertiesDialog"""
         raise NotImplementedError
@@ -180,7 +180,7 @@ class LeoGui:
         *,
         filetypes: list[tuple[str, str]],
         defaultextension: str = '',  # Not used
-        startpath: str = None,
+        startpath: str | None = None,
     ) -> str:
         """Create and run an open file dialog ."""
         raise NotImplementedError
@@ -192,7 +192,7 @@ class LeoGui:
         *,
         filetypes: list[tuple[str, str]],
         defaultextension: str = '',  # Not used
-        startpath: str = None,
+        startpath: str | None = None,
     ) -> list[str]:
         """Create and run an open files dialog ."""
         raise NotImplementedError
@@ -256,7 +256,7 @@ class LeoGui:
     def create_labeled_frame(
         self,
         parent: str,
-        caption: str = None,
+        caption: str | None = None,
         relief: str = "groove",
         bd: int = 2,
         padx: int = 0,
@@ -282,19 +282,19 @@ class LeoGui:
         raise NotImplementedError
 
     # @+node:ekr.20070212145124: *5* LeoGui.getFullVersion
-    def getFullVersion(self, c: Cmdr = None) -> str:
+    def getFullVersion(self, c: Cmdr | None = None) -> str:
         return 'LeoGui: dummy version'
 
     # @+node:ekr.20070212070820: *5* LeoGui.makeScriptButton
     def makeScriptButton(
         self,
         c: Cmdr,
-        args: str = None,
-        p: Position = None,
-        script: str = None,
-        buttonText: str = None,
+        args: str | None = None,
+        p: Position | None = None,
+        script: str | None = None,
+        buttonText: str | None = None,
         balloonText: str = 'Script Button',
-        shortcut: str = None,
+        shortcut: str | None = None,
         bg: str = 'LightSteelBlue1',
         define_g: bool = True,
         define_name: str = '__main__',
@@ -308,14 +308,14 @@ class LeoGui:
         self,
         c: Cmdr,
         *,
-        binding: str = None,
-        char: str = None,
-        event: LeoKeyEvent = None,
-        w: QTextMixin = None,
-        x: int = None,
-        x_root: int = None,
-        y: int = None,
-        y_root: int = None,
+        binding: str | None = None,
+        char: str | None = None,
+        event: LeoKeyEvent | None = None,
+        w: QTextMixin | None = None,
+        x: int | None = None,
+        x_root: int | None = None,
+        y: int | None = None,
+        y_root: int | None = None,
     ) -> LeoKeyEvent:
         # Do not call strokeFromSetting here!
         # For example, this would wrongly convert Ctrl-C to Ctrl-c,
@@ -330,7 +330,7 @@ class LeoGui:
             return "invalid gui name"
 
     # @+node:ekr.20031218072017.2231: *4* LeoGui.setScript
-    def setScript(self, script: str = None, scriptFileName: str = None) -> None:
+    def setScript(self, script: str | None = None, scriptFileName: str | None = None) -> None:
         self.script = script
         self.scriptFileName = scriptFileName
 
@@ -356,10 +356,10 @@ class LeoKeyEvent:
         event: LeoKeyEvent,
         binding: Any,
         w: Any,
-        x: int = None,
-        y: int = None,
-        x_root: int = None,
-        y_root: int = None,
+        x: int | None = None,
+        y: int | None = None,
+        x_root: int | None = None,
+        y_root: int | None = None,
     ) -> None:
         """Ctor for LeoKeyEvent class."""
         stroke: Any
@@ -432,7 +432,7 @@ class NullGui(LeoGui):
     ) -> str:
         return None
 
-    def runAskOkDialog(self, c: Cmdr, title: str, message: str = None, text: str = "Ok") -> str:
+    def runAskOkDialog(self, c: Cmdr, title: str, message: str | None = None, text: str = "Ok") -> str:
         return 'Ok'
 
     def runAskOkCancelNumberDialog(
@@ -440,8 +440,8 @@ class NullGui(LeoGui):
         c: Cmdr,
         title: str,
         message: str,
-        cancelButtonText: str = None,
-        okButtonText: str = None,
+        cancelButtonText: str | None = None,
+        okButtonText: str | None = None,
     ) -> str:
         return 'no'
 
@@ -450,8 +450,8 @@ class NullGui(LeoGui):
         c: Cmdr,
         title: str,
         message: str,
-        cancelButtonText: str = None,
-        okButtonText: str = None,
+        cancelButtonText: str | None = None,
+        okButtonText: str | None = None,
         default: str = "",
         wide: bool = False,
     ) -> str:
@@ -465,9 +465,9 @@ class NullGui(LeoGui):
         c: Cmdr,
         title: str,
         *,
-        filetypes: list[tuple[str, str]] = None,
+        filetypes: list[tuple[str, str]] | None = None,
         defaultextension: str = '',  # Not used
-        startpath: str = None,
+        startpath: str | None = None,
     ) -> str:
         return ''
 
@@ -476,7 +476,7 @@ class NullGui(LeoGui):
         c: Cmdr,
         title: str,
         *,
-        filetypes: list[tuple[str, str]] = None,
+        filetypes: list[tuple[str, str]] | None = None,
         defaultextension: str = '',  # Not used
     ) -> str:
         return ''
@@ -486,9 +486,9 @@ class NullGui(LeoGui):
         c: Cmdr,
         title: str,
         *,
-        filetypes: list[tuple[str, str]] = None,
+        filetypes: list[tuple[str, str]] | None = None,
         defaultextension: str = '',  # Not used
-        startpath: str = None,
+        startpath: str | None = None,
     ) -> list[str]:
         return []
 
@@ -496,7 +496,7 @@ class NullGui(LeoGui):
         self,
         c: Cmdr,
         title: str,
-        message: str = None,
+        message: str | None = None,
         yes_all: bool = False,
         no_all: bool = False,
     ) -> str:
@@ -506,12 +506,12 @@ class NullGui(LeoGui):
         self,
         c: Cmdr,
         title: str,
-        message: str = None,
+        message: str | None = None,
         yesMessage: str = "Yes",
         noMessage: str = "No",
-        yesToAllMessage: str = None,
+        yesToAllMessage: str | None = None,
         defaultButton: str = "Yes",
-        cancelMessage: str = None,
+        cancelMessage: str | None = None,
     ) -> str:
         return 'cancel'
 
@@ -624,7 +624,7 @@ class NullScriptingControllerClass:
 
     This keeps pylint happy."""
 
-    def __init__(self, c: Cmdr, iconBar: NullIconBarClass = None) -> None:
+    def __init__(self, c: Cmdr, iconBar: NullIconBarClass | None = None) -> None:
         self.c = c
         self.iconBar = iconBar
 
@@ -636,7 +636,7 @@ class NullScriptingControllerClass:
 class StringCheckBox:
     """Simulate a QCheckBox."""
 
-    def __init__(self, name: str, label: str = None) -> None:
+    def __init__(self, name: str, label: str | None = None) -> None:
         self.label = label
         self.name = name
         self.value = True
@@ -884,7 +884,7 @@ class StringLineEdit:
 class StringRadioButton:
     """Simulate a QRadioButton."""
 
-    def __init__(self, name: str, label: str = None) -> None:
+    def __init__(self, name: str, label: str | None = None) -> None:
         self.label = label
         self.name = name
         self.value = True
@@ -906,7 +906,7 @@ class UnitTestGui(NullGui):
     # Presently used only by the import/export unit tests.
     # @+others
     # @+node:ekr.20031218072017.3743: *3* UnitTestGui.__init__
-    def __init__(self, theDict: dict = None) -> None:
+    def __init__(self, theDict: dict | None = None) -> None:
         """ctor for the UnitTestGui class."""
         self.oldGui = g.app.gui
         super().__init__("UnitTestGui")

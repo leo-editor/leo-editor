@@ -1054,7 +1054,7 @@ class LeoApp:
             sys.exit(message)
 
     # @+node:ekr.20031218072017.1938: *5* app.createNullGuiWithScript
-    def createNullGuiWithScript(self, script: str = None) -> None:
+    def createNullGuiWithScript(self, script: str | None = None) -> None:
         app = self
         app.batchMode = True
         app.gui = g.app.nullGui
@@ -1320,7 +1320,7 @@ class LeoApp:
 
     # @+node:ekr.20171127111053.1: *3* app.Closing
     # @+node:ekr.20031218072017.2609: *4* app.closeLeoWindow
-    def closeLeoWindow(self, frame: LeoFrame, new_c: Cmdr = None, finish_quit: bool = True) -> bool:
+    def closeLeoWindow(self, frame: LeoFrame, new_c: Cmdr | None = None, finish_quit: bool = True) -> bool:
         """
         Attempt to close a Leo window.
 
@@ -1438,7 +1438,7 @@ class LeoApp:
     # @+node:ekr.20031218072017.2617: *4* app.onQuit
     @cmd('exit-leo')
     @cmd('quit-leo')
-    def onQuit(self, event: LeoKeyEvent = None) -> None:
+    def onQuit(self, event: LeoKeyEvent | None = None) -> None:
         """Exit Leo, prompting to save unsaved outlines first."""
         if 'shutdown' in g.app.debug:
             g.trace()
@@ -1546,7 +1546,7 @@ class LeoApp:
     # @+node:ekr.20170429152049.1: *3* app.listenToLog
     @cmd('listen-to-log')
     @cmd('log-listen')
-    def listenToLog(self, event: LeoKeyEvent = None) -> None:
+    def listenToLog(self, event: LeoKeyEvent | None = None) -> None:
         """
         A socket listener, listening on localhost. See:
         https://docs.python.org/2/howto/logging-cookbook.html#sending-and-receiving-logging-events-across-a-network
@@ -1588,10 +1588,10 @@ class LeoApp:
     def newCommander(
         self,
         fileName: str,
-        gui: LeoGui = None,
-        parentFrame: Any = None,
-        previousSettings: "PreviousSettings" = None,
-        relativeFileName: str = None,
+        gui: LeoGui | None = None,
+        parentFrame: Any | None = None,
+        previousSettings: "PreviousSettings" | None = None,
+        relativeFileName: str | None = None,
     ) -> Cmdr:
         """Create a commander and its view frame for the Leo main window."""
         # Create the commander and its subcommanders.
@@ -2326,7 +2326,7 @@ class LoadManager:
             print(d)
 
     # @+node:ekr.20120219154958.10452: *3* LM.load & helpers
-    def load(self, fileName: str = None, pymacs: bool = None) -> None:
+    def load(self, fileName: str | None = None, pymacs: bool | None = None) -> None:
         """This is Leo's main startup method."""
         lm = self
         #
@@ -3212,7 +3212,7 @@ class LoadManager:
     loadLocalFile = openWithFileName  # Compatibility.
 
     # @+node:ekr.20120223062418.10405: *5* LM.createMenu
-    def createMenu(self, c: Cmdr, fn: str = None) -> None:
+    def createMenu(self, c: Cmdr, fn: str | None = None) -> None:
         # lm = self
         # Create the menu as late as possible so it can use user commands.
         if not g.doHook("menu1", c=c, p=c.p, v=c.p):
@@ -3669,7 +3669,7 @@ class RecentFilesManager:
                 continue  # happens with empty list/new file
 
             def recentFilesCallback(
-                event: LeoKeyEvent = None, c: Cmdr = c, name: str = name
+                event: LeoKeyEvent | None = None, c: Cmdr = c, name: str = name
             ) -> None:
                 c.openRecentFile(fn=name)
 
@@ -4006,7 +4006,7 @@ def toggle_idle_time_events(event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20150514125218.5: *3* open-url
 @g.command('open-url')
-def openUrl(event: LeoKeyEvent = None) -> None:
+def openUrl(event: LeoKeyEvent | None = None) -> None:
     """
     Open the url in the headline or body text of the selected node.
 
@@ -4020,7 +4020,7 @@ def openUrl(event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20150514125218.6: *3* open-url-under-cursor
 @g.command('open-url-under-cursor')
-def openUrlUnderCursor(event: LeoKeyEvent = None) -> Optional[str]:
+def openUrlUnderCursor(event: LeoKeyEvent | None = None) -> Optional[str]:
     """Open the url under the cursor."""
     return g.openUrlOnClick(event)
 

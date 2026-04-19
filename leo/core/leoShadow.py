@@ -211,7 +211,7 @@ class ShadowController:
         new_public_lines: list[str],
         old_private_lines: list[str],
         marker: Marker,
-        p: Position = None,
+        p: Position | None = None,
     ) -> list[str]:
         # @+<< docstring >>
         # @+node:ekr.20150207044400.9: *5*  << docstring >>

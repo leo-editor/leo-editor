@@ -116,7 +116,7 @@ class BaseSpellWrapper:
 class DefaultDict:
     """A class with the same interface as the enchant dict class."""
 
-    def __init__(self, words: list[str] = None) -> None:
+    def __init__(self, words: list[str] | None = None) -> None:
         self.added_words: set[str] = set()
         self.ignored_words: set[str] = set()
         self.words: set[str] = set() if words is None else set(words)
@@ -466,7 +466,7 @@ class SpellCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.484: *3* openSpellTab
     @cmd('spell-tab-open')
-    def openSpellTab(self, event: LeoKeyEvent = None) -> None:
+    def openSpellTab(self, event: LeoKeyEvent | None = None) -> None:
         """Open the Spell Checker tab in the log pane."""
         if g.unitTesting:
             return
@@ -655,7 +655,7 @@ class SpellTabHandler:
 
     # @+node:ekr.20150514063305.502: *3* Commands
     # @+node:ekr.20150514063305.503: *4* SpellTabHandler.add
-    def add(self, event: LeoKeyEvent = None) -> None:
+    def add(self, event: LeoKeyEvent | None = None) -> None:
         """Add the selected suggestion to the dictionary."""
         if self.loaded:
             w = self.currentWord
@@ -664,7 +664,7 @@ class SpellTabHandler:
                 self.tab.onFindButton()
 
     # @+node:ekr.20150514063305.504: *4* SpellTabHandler.change
-    def change(self, event: LeoKeyEvent = None) -> bool:
+    def change(self, event: LeoKeyEvent | None = None) -> bool:
         """Make the selected change to the text"""
         if not self.loaded:
             return False
@@ -706,7 +706,7 @@ class SpellTabHandler:
     re_part = re.compile(r'[a-zA-z]+')
     re_http = re.compile(r'.*?(http|https)://(.*?)$')
 
-    def find(self, event: LeoKeyEvent = None) -> Optional[str]:
+    def find(self, event: LeoKeyEvent | None = None) -> Optional[str]:
         """
         Find the next unknown word.
 
@@ -869,11 +869,11 @@ class SpellTabHandler:
             c.selectPosition(p)
 
     # @+node:ekr.20150514063305.508: *4* SpellTabHandler.hide
-    def hide(self, event: LeoKeyEvent = None) -> None:
+    def hide(self, event: LeoKeyEvent | None = None) -> None:
         self.c.frame.log.selectTab('Log')
 
     # @+node:ekr.20150514063305.509: *4* SpellTabHandler.ignore
-    def ignore(self, event: LeoKeyEvent = None) -> None:
+    def ignore(self, event: LeoKeyEvent | None = None) -> None:
         """Ignore the incorrect word for the duration of this spell check session."""
         if self.loaded:
             w = self.currentWord
@@ -886,7 +886,7 @@ class SpellTabHandler:
 
 # @+node:ekr.20180209141207.1: ** @g.command('show-spell-info')
 @g.command('show-spell-info')
-def show_spell_info(event: LeoKeyEvent = None) -> None:
+def show_spell_info(event: LeoKeyEvent | None = None) -> None:
     c = event.get('c')
     if c:
         c.spellCommands.handler.spellController.show_info()

@@ -61,7 +61,7 @@ class SessionManager:
         return None
 
     # @+node:ekr.20120420054855.14247: *3* SessionManager.load_session
-    def load_session(self, c: Cmdr = None, unls: list[str] = None) -> None:
+    def load_session(self, c: Cmdr | None = None, unls: list[str] | None = None) -> None:
         """
         Open a tab for each item in UNLs & select the indicated node in each.
 

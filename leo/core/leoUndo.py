@@ -867,7 +867,7 @@ class Undoer:
         self,
         p: Position,
         pasteAsClone: bool = False,
-        copiedBunchList: list[g.Bunch] = None,
+        copiedBunchList: list[g.Bunch] | None = None,
     ) -> g.Bunch:
         u = self
         if copiedBunchList is None:
@@ -978,10 +978,10 @@ class Undoer:
         undo_type: str,
         oldText: str,
         newText: str,
-        newInsert: int = None,
-        oldSel: tuple[int, int] = None,
-        newSel: tuple[int, int] = None,
-        oldYview: int = None,
+        newInsert: int | None = None,
+        oldSel: tuple[int, int] | None = None,
+        newSel: tuple[int, int] | None = None,
+        oldYview: int | None = None,
     ) -> None:
         """
         Save enough information to undo or redo a typing operation efficiently,
@@ -1400,7 +1400,7 @@ class Undoer:
 
     # @+node:ekr.20031218072017.2030: *3* u.redo
     @cmd('redo')
-    def redo(self, event: LeoKeyEvent = None) -> None:
+    def redo(self, event: LeoKeyEvent | None = None) -> None:
         """Redo the operation undone by the last undo."""
         c, u = self.c, self
         if not c.p:
@@ -1797,7 +1797,7 @@ class Undoer:
 
     # @+node:ekr.20031218072017.2039: *3* u.undo
     @cmd('undo')
-    def undo(self, event: LeoKeyEvent = None) -> None:
+    def undo(self, event: LeoKeyEvent | None = None) -> None:
         """Undo the operation described by the undo parameters."""
         c, u = self.c, self
         if not c.p:
@@ -2190,7 +2190,7 @@ class Undoer:
         oldNewlines: list[str],
         newNewlines: list[str],  # Number of trailing newlines.
         tag: str = "undo",  # "undo" or "redo"
-        undoType: str = None,
+        undoType: str | None = None,
     ) -> None:
         """Handle text undo and redo: converts _new_ text into _old_ text."""
         # newNewlines is unused, but it has symmetry.

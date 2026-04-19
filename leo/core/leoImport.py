@@ -585,8 +585,8 @@ class LeoImportCommands:
     def createOutline(
         self,
         parent: Position,
-        ext: str = None,
-        s: str = None,
+        ext: str | None = None,
+        s: str | None = None,
         treeType: str = '@file',
     ) -> Position:
         """
@@ -735,8 +735,8 @@ class LeoImportCommands:
     # @+node:ekr.20031218072017.1810: *4* ic.importDerivedFiles
     def importDerivedFiles(
         self,
-        parent: Position = None,
-        paths: list[str] = None,
+        parent: Position | None = None,
+        paths: list[str] | None = None,
         command: str = 'Import',
     ) -> Optional[Position]:
         """
@@ -779,8 +779,8 @@ class LeoImportCommands:
     # @+node:ekr.20031218072017.3212: *4* ic.importFilesCommand
     def importFilesCommand(
         self,
-        files: list[str] = None,
-        parent: Position = None,
+        files: list[str] | None = None,
+        parent: Position | None = None,
         shortFn: bool = False,
         treeType: str = '@file',
         verbose: bool = True,  # Legacy value.
@@ -824,7 +824,7 @@ class LeoImportCommands:
         FreeMindImporter(self.c).import_files(files)
 
     # @+node:ekr.20241027003435.1: *4* ic.importJupytextFiles
-    def importJupytextFiles(self, paths: list[str] = None) -> Optional[Position]:
+    def importJupytextFiles(self, paths: list[str] | None = None) -> Optional[Position]:
         """
         Import one or more .ipynb files.
         This is not a command.  It must *not* have an event arg.
@@ -1395,7 +1395,7 @@ class LeoImportCommands:
         return s
 
     # @+node:ekr.20031218072017.1463: *4* ic.setEncoding (deprecated)
-    def setEncoding(self, p: Position = None, default: str = None) -> None:
+    def setEncoding(self, p: Position | None = None, default: str | None = None) -> None:
         g.deprecated()
         c = self.c
         self.encoding = c.getEncoding(p)
@@ -1734,11 +1734,11 @@ class RecursiveImportController:
         c: Cmdr,
         *,  # All other args are kwargs.
         dir_: Optional[str],
-        ignore_pattern: re.Pattern = None,
+        ignore_pattern: re.Pattern | None = None,
         kind: str,
         recursive: bool = True,
         safe_at_file: bool = True,
-        theTypes: list[str] = None,
+        theTypes: list[str] | None = None,
         verbose: bool = True,  # legacy value.
     ) -> None:
         """Ctor for RecursiveImportController class."""
@@ -2139,7 +2139,7 @@ class TabImporter:
             self.import_files(names)
 
     # @+node:ekr.20161006071801.5: *3* tabbed.scan
-    def scan(self, s1: str, fn: str = None, root: Position = None) -> Position:
+    def scan(self, s1: str, fn: str | None = None, root: Position | None = None) -> Position:
         """Create the outline corresponding to s1."""
         c = self.c
         # self.root can be None if we are called from a script or unit test.

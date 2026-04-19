@@ -1658,7 +1658,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
         # @+others
         # @+node:ekr.20231119103026.2: *5* py2rust.ctor
-        def __init__(self, c: Cmdr, alias: str = None) -> None:
+        def __init__(self, c: Cmdr, alias: str | None = None) -> None:
             self.c = c
             self.alias = alias  # For scripts. An alias for 'self'.
             data = c.config.getData('python-to-typescript-types') or []
@@ -2388,7 +2388,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
         # @+others
         # @+node:ekr.20211020162251.1: *5* py2ts.ctor
-        def __init__(self, c: Cmdr, alias: str = None) -> None:
+        def __init__(self, c: Cmdr, alias: str | None = None) -> None:
             self.c = c
             self.alias = alias  # For scripts. An alias for 'self'.
             data = c.config.getData('python-to-typescript-types') or []

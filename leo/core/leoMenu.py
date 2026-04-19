@@ -240,7 +240,7 @@ class LeoMenu:
 
     # @+node:ekr.20070927172712: *6* LeoMenu.handleSpecialMenus
     def handleSpecialMenus(
-        self, name: str, parentName: str, alt_name: str = None, table: list = None
+        self, name: str, parentName: str, alt_name: str | None = None, table: list | None = None
     ) -> bool:
         """
         Handle a special menu if name is the name of a special menu.
@@ -355,7 +355,7 @@ class LeoMenu:
         # The command must be a callable.
         if not callable(command):
 
-            def dummy_menu_callback(event: LeoKeyEvent = None) -> None:
+            def dummy_menu_callback(event: LeoKeyEvent | None = None) -> None:
                 pass
 
             g.trace(f"bad command: {command!r}", color='red')
@@ -459,7 +459,7 @@ class LeoMenu:
 
     # @+node:ekr.20031218072017.3804: *4* LeoMenu.createNewMenu
     def createNewMenu(
-        self, menuName: str, parentName: str = "top", before: str = None
+        self, menuName: str, parentName: str = "top", before: str | None = None
     ) -> QtMenuWrapper:
         try:
             parent = self.getMenu(parentName)  # parent may be None.
@@ -574,11 +574,11 @@ class LeoMenu:
                 )
 
     # @+node:ekr.20031218072017.4118: *6* LeoMenu.defineOpenWithMenuCallback
-    def defineOpenWithMenuCallback(self, d: dict[str, Any] = None) -> Callable:
+    def defineOpenWithMenuCallback(self, d: dict[str, Any] | None = None) -> Callable:
         # The first parameter must be a LeoKeyEvent, and it must default to None.
 
         def openWithMenuCallback(
-            event: LeoKeyEvent = None,
+            event: LeoKeyEvent | None = None,
             self: LeoMenu = self,
             d: dict[str, Any] = d,
         ) -> Any:
@@ -669,9 +669,9 @@ class LeoMenu:
         self,
         menu: QtMenuWrapper,
         accelerator: str = '',
-        command: Callable = None,
-        commandName: str = None,
-        label: str = None,
+        command: Callable | None = None,
+        commandName: str | None = None,
+        label: str | None = None,
         underline: int = 0,
     ) -> None:
         pass
@@ -694,7 +694,7 @@ class LeoMenu:
         position: int,
         label: str,
         command: Callable,
-        underline: int = None,
+        underline: int | None = None,
     ) -> None:
         pass
 
