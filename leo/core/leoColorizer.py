@@ -47,9 +47,9 @@ if TYPE_CHECKING:  # pragma: no cover
         from typing import Self  # Introduced in Python 3.11
     except Exception:
         Self = Any  # type:ignore
+    from PyQt6.QtWidgets import QWidget
     KWargs = Any
     Lexer = Callable
-    QWidget = QtWidgets.QWidget
     RuleSet = list[Callable]
 
 

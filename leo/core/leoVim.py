@@ -30,10 +30,9 @@ from leo.core.leoGui import LeoKeyEvent
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import QEvent
-    from leo.core.leoQt import QtWidgets
     from leo.plugins.qt_text import QTextMixin
+    from PyQt6.QtWidgets import QWidget
 
-    QWidget = QtWidgets.QWidget
     KWargs = Any
     Stroke = Any
 # @-<< leoVim imports & annotations >>

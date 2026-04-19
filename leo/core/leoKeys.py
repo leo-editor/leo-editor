@@ -32,13 +32,12 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGlobals import BindingInfo
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position
-    from leo.core.leoQt import QtWidgets
     from leo.plugins.qt_frame import LeoQtLog
     from leo.plugins.qt_text import QTextMixin
+    from PyQt6.QtWidgets import QWidget
 
     Args = Any
     KWargs = Any
-    QWidget = QtWidgets.QWidget
     Stroke = Any
     Value = Any
     Widget = Any  # 'Any' is the correct annotation for base class widgets.

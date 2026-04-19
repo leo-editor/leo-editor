@@ -30,7 +30,7 @@ else:
     # @+node:ekr.20240528041831.1: ** << import optional Qt modules >>
     # Leo 6.8.0: do *not* assume these exist.
     try:
-        from PyQt6 import Qsci
+        from PyQt6 import Qsci  # type: ignore[no-redef]
 
         assert Qsci
     except Exception:
@@ -38,55 +38,55 @@ else:
         _missing_modules.append('Qsci')
 
     try:
-        from PyQt6 import QtDesigner
+        from PyQt6 import QtDesigner  # type: ignore[no-redef]
     except Exception:
         QtDesigner = None
         _missing_modules.append('PyQt6.QtDesigner')
 
     try:
-        from PyQt6 import QtMultimedia
+        from PyQt6 import QtMultimedia  # type: ignore[no-redef]
     except Exception:
         QtMultimedia = None
         _missing_modules.append('PyQt6.QtMultimedia')
 
     try:
-        from PyQt6 import QtNetwork
+        from PyQt6 import QtNetwork  # type: ignore[no-redef]
     except Exception:
         QtNetwork = None
         _missing_modules.append('PyQt6.QtNetwork')
 
     try:
-        from PyQt6 import QtOpenGL
+        from PyQt6 import QtOpenGL  # type: ignore[no-redef]
     except Exception:
         QtOpenGL = None
         _missing_modules.append('PyQt6.QtOpenGL')
 
     try:
-        from PyQt6 import QtPrintSupport as printsupport
+        from PyQt6 import QtPrintSupport as printsupport  # type: ignore[no-redef]
     except Exception:
         printsupport = None
         _missing_modules.append('PyQt6.QtPrintSupport')
 
     try:
-        from PyQt6 import QtWebEngineCore  # included with PyQt6-WebEngine
+        from PyQt6 import QtWebEngineCore  # type: ignore[no-redef]  # included with PyQt6-WebEngine
     except Exception:
         QtWebEngineCore = None
         _missing_modules.append('PyQt6.QtWebEngineCore')
 
     try:
-        from PyQt6 import QtWebEngineWidgets
+        from PyQt6 import QtWebEngineWidgets  # type: ignore[no-redef]
     except Exception:
         QtWebEngineWidgets = None
         _missing_modules.append('PyQt6.QtWebEngineWidgets')
 
     try:
-        import PyQt6.QtSvg as QtSvg
+        import PyQt6.QtSvg as QtSvg  # type: ignore[no-redef]
     except Exception:
         QtSvg = None
         _missing_modules.append('PyQt6.QtSvg')
 
     try:
-        from PyQt6 import uic
+        from PyQt6 import uic  # type: ignore[no-redef]
     except Exception:
         uic = None
         # On Linux, uic may be a standalone program.
