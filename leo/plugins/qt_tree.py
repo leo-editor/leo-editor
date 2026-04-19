@@ -28,11 +28,11 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.plugins.qt_frame import LeoQtFrame
     from leo.plugins.qt_text import QHeadlineWrapper
 
-    QLineEdit = QtWidgets.QLineEdit
-    QIcon = QtGui.QIcon
-    QPoint = QtCore.QPoint
+    QLineEdit: TypeAlias = QtWidgets.QLineEdit
+    QIcon: TypeAlias = QtGui.QIcon
+    QPoint: TypeAlias = QtCore.QPoint
     QTreeWidgetItem: TypeAlias = QtWidgets.QTreeWidgetItem
-    QWidget = QtWidgets.QWidget
+    QWidget: TypeAlias = QtWidgets.QWidget
     Value = Any
 
 

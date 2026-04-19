@@ -14,29 +14,29 @@ from leo.core.leoQt import MouseButton, MoveMode, MoveOperation
 from leo.core.leoQt import Shadow, Shape, SliderAction, SolidLine, WindowType, WrapMode
 
 if TYPE_CHECKING:  # pragma: no cover
+    from typing import TypeAlias
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
     from leo.plugins.qt_text import LeoQtLog  # pylint: disable=import-self
 
     Args = Any
     KWargs = Any
-    QEvent = QtCore.QEvent
-    QFrame = QtWidgets.QFrame
-    QKeyEvent = QtGui.QKeyEvent
-    QLineEdit = QtWidgets.QLineEdit
-    QObject = QtCore.QObject
-    QMouseEvent = QtGui.QMouseEvent
-    QPainter = QtGui.QPainter
-    QPaintEvent = QtGui.QPaintEvent
-    QPoint = QtCore.QPoint
-    QTreeWidgetItem = QtWidgets.QTreeWidgetItem
-    QWheelEvent = QtGui.QWheelEvent
-    QWidget = QtWidgets.QWidget
+    QEvent: TypeAlias = QtCore.QEvent
+    QFrame: TypeAlias = QtWidgets.QFrame
+    QKeyEvent: TypeAlias = QtGui.QKeyEvent
+    QLineEdit: TypeAlias = QtWidgets.QLineEdit
+    QObject: TypeAlias = QtCore.QObject
+    QMouseEvent: TypeAlias = QtGui.QMouseEvent
+    QPainter: TypeAlias = QtGui.QPainter
+    QPaintEvent: TypeAlias = QtGui.QPaintEvent
+    QPoint: TypeAlias = QtCore.QPoint
+    QTreeWidgetItem: TypeAlias = QtWidgets.QTreeWidgetItem
+    QWheelEvent: TypeAlias = QtGui.QWheelEvent
+    QWidget: TypeAlias = QtWidgets.QWidget
     Value = Any
 
 FullWidthSelection = 0x06000
-QColor = QtGui.QColor
-QFontMetrics = QtGui.QFontMetrics
+from PyQt6.QtGui import QColor, QFontMetrics  # noqa: E402
 # @-<< qt_text imports & annotations>>
 
 

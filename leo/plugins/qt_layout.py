@@ -12,9 +12,7 @@ from typing import Any, Dict, TYPE_CHECKING, Optional
 
 from leo.core.leoQt import QtWidgets, Orientation
 from leo.core import leoGlobals as g
-
-QSplitter = QtWidgets.QSplitter
-QWidget = QtWidgets.QWidget
+from PyQt6.QtWidgets import QSplitter, QWidget
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr

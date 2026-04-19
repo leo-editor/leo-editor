@@ -279,16 +279,17 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 # @+<< vr: annotations >>
 # @+node:ekr.20220828161918.1: ** << vr: annotations >>
 if TYPE_CHECKING:  # pragma: no cover
+    from typing import TypeAlias
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position, VNode
     from leo.core.leoQt import QtGui
     from QtMultimedia import QMediaPlayer
 
-    QCloseEvent = QtGui.QCloseEvent
-    QGraphicsScene = QtWidgets.QGraphicsScene
-    QGraphicsView = QtWidgets.QGraphicsView
-    QWidget = QtWidgets.QWidget
+    QCloseEvent: TypeAlias = QtGui.QCloseEvent
+    QGraphicsScene: TypeAlias = QtWidgets.QGraphicsScene
+    QGraphicsView: TypeAlias = QtWidgets.QGraphicsView
+    QWidget: TypeAlias = QtWidgets.QWidget
 # @-<< vr: annotations >>
 trace = False  # This global trace is convenient.
 asciidoctor_exec = shutil.which('asciidoctor')

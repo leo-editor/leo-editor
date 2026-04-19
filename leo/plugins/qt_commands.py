@@ -10,12 +10,13 @@ from leo.core import leoConfig
 from leo.core.leoQt import QtGui, QtWidgets
 
 if TYPE_CHECKING:
+    from typing import TypeAlias
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
 
     Args = Any
     KWargs = Any
-    QWidget = QtWidgets.QWidget
+    QWidget: TypeAlias = QtWidgets.QWidget
 
 
 # @+others
