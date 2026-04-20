@@ -76,6 +76,25 @@ def dump_colorizer_last_colorizer_traces(event: LeoKeyEvent) -> None:
     print('\n'.join(colorizer.last_trace))
 
 
+# PR #4619: Avoid str.lower in jedit.colorRangeWithTag.
+_url_leadins_set = frozenset(g.url_leadins + g.url_leadins.upper())
+
+# PR #4619: Tags whose colored ranges could contain URLs, UNLs, or GNX references.
+_url_bearing_tags = frozenset(
+    {
+        'comment1',
+        'comment2',
+        'comment3',
+        'comment4',
+        'doc',
+        'literal1',
+        'literal2',
+        'literal3',
+        'literal4',
+    }
+)
+
+
 # @+node:ekr.20170127141855.1: ** class BaseColorizer
 class BaseColorizer:
     """
@@ -344,11 +363,18 @@ class BaseColorizer:
             self.leoKeywordsDict[key] = 'leokeyword'
 
     # @+node:ekr.20230313051116.1: *3* BaseColorizer.normalize
+    # PR #4619: avoid str.lower, str.strip in jedit.setTag.
+    _normalize_cache: dict[str, str] = {}
+
     def normalize(self, s: str) -> str:
         """Return the normalized value of s."""
-        if s.startswith('@'):
-            s = s[1:]
-        return s.replace(' ', '').replace('-', '').replace('_', '').lower().strip()
+        cached = self._normalize_cache.get(s)
+        if cached is not None:
+            return cached
+        t = s[1:] if s.startswith('@') else s
+        t = t.replace(' ', '').replace('-', '').replace('_', '').lower().strip()
+        self._normalize_cache[s] = t
+        return t
 
     # @+node:ekr.20170127142001.1: *3* BaseColorizer.updateSyntaxColorer & helpers
     # Note: these are used by unit tests.
@@ -1550,7 +1576,10 @@ class JEditColorizer(BaseColorizer):
             format.setForeground(color)
             format.setUnderlineStyle(UnderlineStyle.NoUnderline)
         self.tagCount += 1
-        report(color)  # A superb trace, cached for the dump-last-colorizer-trace command.
+        if trace:
+            # PR #4618: (Ville Vainio) https://github.com/leo-editor/leo-editor/pull/4618
+            # Don't call report by default: It's setup is expensive!
+            report(color)
         self.highlighter.setFormat(i, j - i, format)
 
     # @+node:ekr.20110605121601.18589: *3* jedit:Pattern matchers
@@ -1610,22 +1639,24 @@ class JEditColorizer(BaseColorizer):
         elif not exclude_match:
             self.setTag(tag, s, i, j)
 
-        # Colorize UNL's, URL's, and GNX's *everywhere*.
-        if tag != 'url':
+        # PR #4619: Scan only tags that could contain UNL's, URL's, and GNX's.
+        if tag in _url_bearing_tags or self.language == 'md' and tag != 'url':
             j = min(j, len(s))
+            # PR #4619: Avoid str.lower.
+            url_leadins_set = _url_leadins_set
             while i < j:
-                ch = s[i].lower()
-                if ch == 'g':
+                ch = s[i]
+                if ch in 'gG':
                     n = self.match_gnx(s, i)
                     if n > 0:
                         i += n
                         continue
-                if ch == 'u':
+                if ch in 'uU':
                     n = self.match_unl(s, i)
                     if n > 0:
                         i += n
                         continue
-                if ch in g.url_leadins:
+                if ch in url_leadins_set or self.language == 'md' and ch in g.url_leadins:
                     n = self.match_any_url(s, i)
                     if n > 0:
                         i += n
