@@ -53,7 +53,7 @@ from leo.core.leoQt import (
     WrapMode,
 )
 from leo.plugins import qt_events, qt_text
-from leo.plugins.qt_text import QTextEditWrapper
+from leo.plugins.qt_text import QLineEditWrapper, QTextEditWrapper
 from leo.plugins.qt_tree import LeoQtTree
 from leo.plugins.mod_scripting import build_rclick_tree
 from leo.plugins.qt_layout import LayoutCacheWidget
@@ -842,33 +842,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.leo_master.select(c)
 
     # @+node:ekr.20110605121601.18142: *3* dw: top-level methods
-    # @+node:ekr.20190118150859.10: *4* dw.addNewEditor
-    def addNewEditor(self, name: str) -> tuple[QWidget, QTextMixin]:
-        """Create a new body editor."""
-        c, p = self.leo_c, self.leo_c.p
-        body = c.frame.body
-        assert isinstance(body, LeoQtBody), repr(body)
-        # Step 1: create the editor.
-        parent_frame = c.frame.top.leo_body_inner_frame
-        widget = qt_text.LeoQTextBrowser(parent_frame, c, self)
-        widget.setObjectName('richTextEdit')  # Will be changed later.
-        wrapper = qt_text.QTextEditWrapper(widget, name='body', c=c)
-        self.packLabel(widget)
-        # Step 2: inject ivars, set bindings, etc.
-        inner_frame = c.frame.top.leo_body_inner_frame  # Inject ivars *here*.
-        body.injectIvars(inner_frame, name, p, wrapper)
-        body.updateInjectedIvars(widget, p)
-        wrapper.setAllText(p.b)
-        wrapper.see(0)
-        c.k.completeAllBindingsForWidget(wrapper)
-        if isinstance(widget, QtWidgets.QTextEdit):
-            colorizer = leoColorizer.make_colorizer(c, widget)
-            colorizer.highlighter.setDocument(widget.document())
-        else:
-            # Scintilla only.
-            body.recolorWidget(p, wrapper)
-        return parent_frame, wrapper
-
     # @+node:ekr.20110605121601.18143: *4* dw.createBodyPane
     def createBodyPane(self, parent: QWidget) -> QWidget:
         """
@@ -1067,6 +1040,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         lineEdit = VisLineEdit(frame)
         lineEdit._sel_and_insert = (0, 0, 0)
         lineEdit.setObjectName('lineEdit')  # name important.
+        lineEdit.leo_wrapper = QLineEditWrapper(widget=lineEdit)  # #4623.
         # Pack.
         hLayout = self.createHLayout(frame, 'minibufferHLayout', spacing=4)
         hLayout.setContentsMargins(3, 2, 2, 0)
@@ -2293,6 +2267,7 @@ class LeoQtLog(leoFrame.LeoLog):
         self.logDict: dict[str, LeoQTextBrowser] = {}  # Keys: tab names.
         self.logWidget: LeoLog = None
         self.qtTabWidget: QWidget = c.frame.top.tabWidget
+        self.wrapper: QTextEditWrapper = None  # #4623.
         tw = self.qtTabWidget
 
         # Bug 917814: Switching Log Pane tabs is done incompletely.
@@ -2316,6 +2291,9 @@ class LeoQtLog(leoFrame.LeoLog):
         # Create the log tab as the leftmost tab.
         log.createTab('Log')
         self.logWidget = self.contentsDict.get('Log')
+        self.wrapper = QTextEditWrapper(c=c, widget=self.logWidget)  # #4623.
+
+        # Configure.
         logWidget = self.logWidget
         logWidget.setWordWrapMode(WrapMode.WordWrap if self.wrap else WrapMode.NoWrap)
         w.insertTab(0, logWidget, 'Log')  # Required.
@@ -4192,6 +4170,8 @@ class QtStatusLineClass:
         # Create the text widgets.
         self.textWidget1 = w1 = QtWidgets.QLineEdit(self.statusBar)
         self.textWidget2 = w2 = QtWidgets.QLineEdit(self.statusBar)
+        w1.leo_wrapper = QLineEditWrapper(c=c, widget=w1)  # #4623
+        w2.leo_wrapper = QLineEditWrapper(c=c, widget=w2)  # #4623
         w1.setObjectName('status1')
         w2.setObjectName('status2')
         w1.setReadOnly(True)

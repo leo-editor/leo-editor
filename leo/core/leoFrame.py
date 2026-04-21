@@ -589,8 +589,7 @@ class LeoFrame:
         else:
             c.bodyWantsFocus()
             k.setDefaultInputState()
-            # Recolor the *body* text, **not** the headline.
-            k.showStateAndMode(w=c.frame.body.wrapper)
+            k.showStateAndMode()
 
     # @+node:ekr.20031218072017.3680: *3* LeoFrame.Must be defined in subclasses
     def bringToFront(self) -> None:
@@ -714,7 +713,7 @@ class LeoLog:
         self.logNumber = 0  # To create unique name fields for text widgets.
         self.newTabCount = 0  # Number of new tabs created.
         self.textDict: dict[str, Widget] = {}  # Keys: page names. Values: text widgets.
-        self.wrapper: StringTextWrapper = None  # To keep mypy happy.
+        self.wrapper: QTextMixin = None
 
     # @+node:ekr.20070302094848.1: *3* LeoLog.clearTab
     def clearTab(self, tabName: str, wrap: str = 'none') -> None:
@@ -1557,7 +1556,7 @@ class NullLog(LeoLog):
         super().__init__(frame)
         c = self.c
         self.isNull = True
-        self.widget = StringTextWrapper(c=c, name='null-log')
+        self.widget = self.wrapper = StringTextWrapper(c=c, name='null-log')
 
     # @+others
     # @+node:ekr.20120216123546.10951: *3* NullLog.finishCreate
@@ -1637,7 +1636,7 @@ class NullStatusLineClass:
         """Ctor for NullStatusLine class."""
         self.c = c
         self.enabled = False
-        self.textWidget = StringTextWrapper(c, name='status-line')
+        self.textWidget = self.wrapper = StringTextWrapper(c, name='status-line')
 
     # @+others
     # @+node:ekr.20070302171917: *3* NullStatusLineClass.methods

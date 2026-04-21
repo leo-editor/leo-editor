@@ -3494,8 +3494,8 @@ class Commands:
         if not name.startswith('log'):
             return
         # Make sure we can insert into w.
-        log_w = event.widget
-        if not g.app.gui.isTextWidget(log_w):
+        log_w = event.wrapper  # #4623.
+        if not g.app.gui.isTextWrapper(log_w):
             return
         # Send the event to the text widget, not the LeoLog instance.
         i = log_w.getInsertPoint()

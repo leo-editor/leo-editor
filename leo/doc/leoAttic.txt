@@ -3603,6 +3603,34 @@ for command_or_key in [
         c.k.masterKeyHandler(event)
         g.app.gui.qtApp.processEvents()
         g.sleep(1.0)  # Testing only.
+# @+node:ekr.20260420174001.1: *3* Deleted by PR #4624
+# @+node:ekr.20260420154627.8: *4* dw.addNewEditor
+def addNewEditor(self, name: str) -> tuple[QWidget, QTextMixin]:
+    """Create a new body editor."""
+    c, p = self.leo_c, self.leo_c.p
+    body = c.frame.body
+    assert isinstance(body, LeoQtBody), repr(body)
+    # Step 1: create the editor.
+    parent_frame = c.frame.top.leo_body_inner_frame
+    widget = qt_text.LeoQTextBrowser(parent_frame, c, self)
+    widget.setObjectName('richTextEdit')  # Will be changed later.
+    wrapper = qt_text.QTextEditWrapper(widget, name='body', c=c)
+    self.packLabel(widget)
+    # Step 2: inject ivars, set bindings, etc.
+    inner_frame = c.frame.top.leo_body_inner_frame  # Inject ivars *here*.
+    body.injectIvars(inner_frame, name, p, wrapper)
+    body.updateInjectedIvars(widget, p)
+    wrapper.setAllText(p.b)
+    wrapper.see(0)
+    c.k.completeAllBindingsForWidget(wrapper)
+    if isinstance(widget, QtWidgets.QTextEdit):
+        colorizer = leoColorizer.make_colorizer(c, widget)
+        colorizer.highlighter.setDocument(widget.document())
+    else:
+        # Scintilla only.
+        body.recolorWidget(p, wrapper)
+    return parent_frame, wrapper
+
 # @-all
 # @@nosearch
 # @-leo

@@ -630,11 +630,12 @@ if QtWidgets:
 
             wrapper is a LeoQtBody or LeoQtLog.
             """
+            super().__init__(parent)
             assert not hasattr(QtWidgets.QTextBrowser, 'leo_c')
             self.leo_c = c
             self.leo_s = ''  # The cached text.
+            self.leo_wrapper = QTextEditWrapper(c=c, widget=self)  # #4623.
             self.htmlFlag = True
-            super().__init__(parent)
             self.setCursorWidth(c.config.getInt('qt-cursor-width') or 1)
 
             # Connect event handlers...

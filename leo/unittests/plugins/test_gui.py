@@ -84,6 +84,9 @@ class TestNullGui(LeoUnitTest):
         for obj, class_ in table:
             assert isinstance(obj, class_), (repr(obj), repr(class_))
 
+        for obj in (c.frame.body, c.frame.log, c.frame.statusLine):
+            assert getattr(obj, 'wrapper', None), repr(obj)
+
     # @-others
 
 
@@ -314,6 +317,14 @@ class TestQtGui(LeoUnitTest):
             if issubclass(obj.__class__, QTextMixin):
                 # Every subclass of QTextMix is an instance of QTextMixin.
                 assert isinstance(obj, QTextMixin)
+
+        for obj in (
+            c.frame.body,
+            c.frame.statusLine.textWidget1,
+            c.frame.statusLine.textWidget2,
+            c.frame.log,
+        ):
+            assert getattr(obj, 'wrapper', None) or getattr(obj, 'leo_wrapper', None), repr(obj)
 
         # Test the class hierarchy of text-related classes.
         assert issubclass(LeoQTextBrowser, QtWidgets.QTextBrowser)

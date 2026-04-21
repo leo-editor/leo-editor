@@ -4402,7 +4402,7 @@ class TestEditCommands(LeoUnitTest):
         paste = 'ABC'
         g.app.gui.replaceClipboardWith(paste)
         w.setSelectionRange(end, end)
-        c.frame.pasteText(event=g.Bunch(widget=w, wrapper=w))
+        c.frame.pasteText(event=g.app.gui.create_key_event(c, w=w))
         g.app.gui.event_generate(c, '\n', 'Return', w)
         self.assertEqual(p.h, h + paste)
         k.manufactureKeyPressForCommandName(w, 'undo')
@@ -4421,7 +4421,7 @@ class TestEditCommands(LeoUnitTest):
         paste = 'ABC'
         g.app.gui.replaceClipboardWith(paste)
         w.setSelectionRange(1, 2)
-        c.frame.pasteText(event=g.Bunch(widget=w, wrapper=w))
+        c.frame.pasteText(event=g.app.gui.create_key_event(c, w=w))
         g.app.gui.event_generate(c, '\n', 'Return', w)
         self.assertEqual(p.h, h[0] + paste + h[2:])
         k.manufactureKeyPressForCommandName(w, 'undo')
@@ -4443,7 +4443,7 @@ class TestEditCommands(LeoUnitTest):
         g.app.gui.replaceClipboardWith(paste)
         g.app.gui.set_focus(c, w)
         w.setSelectionRange(end, end)
-        c.frame.pasteText(event=g.Bunch(widget=w, wrapper=w))
+        c.frame.pasteText(event=g.app.gui.create_key_event(c, w=w))
         g.app.gui.event_generate(c, '\n', 'Return', w)
         self.assertEqual(p.h, h + paste)
 
@@ -4461,7 +4461,7 @@ class TestEditCommands(LeoUnitTest):
         w.setSelectionRange(end, end, insert=end)
         paste = 'ABC'
         g.app.gui.replaceClipboardWith(paste)
-        c.frame.pasteText(event=g.Bunch(widget=w, wrapper=w))
+        c.frame.pasteText(event=g.app.gui.create_key_event(c, w=w))
         # Move around and and make sure it doesn't change.
         try:
             # g.trace('before select',w,w.getAllText())
@@ -4516,7 +4516,7 @@ class TestEditCommands(LeoUnitTest):
         paste = 'ABC'
         g.app.gui.replaceClipboardWith(paste)
         w.setSelectionRange(end, end)
-        c.frame.pasteText(event=g.Bunch(widget=w, wrapper=w))
+        c.frame.pasteText(event=g.app.gui.create_key_event(c, w=w))
         c.selectPosition(p.visBack(c))
         self.assertEqual(p.h, h + paste)
         c.undoer.undo()

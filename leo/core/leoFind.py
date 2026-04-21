@@ -2984,7 +2984,7 @@ class LeoFind:
             c.selectPosition(p)
             c.bodyWantsFocus()
             if showState:
-                c.k.showStateAndMode(w)
+                c.k.showStateAndMode()
             c.bodyWantsFocusNow()
             w.setSelectionRange(pos, newpos, insert=insert)
             k = g.see_more_lines(w.getAllText(), insert, 4)

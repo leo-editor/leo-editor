@@ -4509,39 +4509,15 @@ class KeyHandlerClass:
         # k.showStateAndMode()
 
     # @+node:ekr.20061031131434.192: *4* k.showStateAndMode
-    def showStateAndMode(
-        self,
-        w: QTextMixin = None,
-        prompt: str = None,
-        setFocus: bool = True,
-    ) -> None:
+    def showStateAndMode(self, *, prompt: str = None, setFocus: bool = True) -> None:
         """Show the state and mode at the start of the minibuffer."""
         c, k = self.c, self
         state = k.unboundKeyAction
         mode = k.getStateKind()
         if not g.app.gui:
             return
-        if not w:
-            if hasattr(g.app.gui, 'set_minibuffer_label'):
-                pass  # we don't need w
-            else:
-                w = g.app.gui.get_focus(c)
-                if not w:
-                    return
 
-        # This fixes a problem with the tk gui plugin.
-        if mode and mode.lower().startswith('isearch'):
-            return
-        wname = g.app.gui.widget_name(w).lower()
-
-        # Get the wrapper for the headline widget.
-        if wname.startswith('head'):
-            if hasattr(c.frame.tree, 'getWrapper'):
-                if hasattr(w, 'widget'):
-                    w2 = w.widget
-                else:
-                    w2 = w
-                w = c.frame.tree.getWrapper(w2, item=None)
+        # Set the prompt.
         if mode:
             if mode in ('getArg', 'getFileName', 'full-command'):
                 s = None
