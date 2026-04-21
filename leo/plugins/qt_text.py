@@ -624,17 +624,19 @@ if QtWidgets:
 
         # @+others
         # @+node:ekr.20110605121601.18006: *3*  LeoQTextBrowser.__init__
-        def __init__(self, parent: QWidget, c: Cmdr, wrapper: LeoQtLog) -> None:
+        def __init__(self, parent: QWidget, c: Cmdr, wrapper: LeoQtLog = None) -> None:
             """
             ctor for LeoQTextBrowser class, a subclass of QtWidgets.QTextBrowser.
 
             wrapper is a LeoQtBody or LeoQtLog.
             """
             super().__init__(parent)
-            assert not hasattr(QtWidgets.QTextBrowser, 'leo_c')
+            for ivar in ('leo_c', 'leo_s', 'leo_wrapper'):
+                assert not hasattr(QtWidgets.QTextBrowser, ivar)
+            ### g.trace(wrapper.__class__.__name__, g.callers())
             self.leo_c = c
             self.leo_s = ''  # The cached text.
-            self.leo_wrapper = QTextEditWrapper(c=c, widget=self)  # #4623.
+            self.leo_wrapper = wrapper or QTextEditWrapper(c=c, widget=self)  # #4623.
             self.htmlFlag = True
             self.setCursorWidth(c.config.getInt('qt-cursor-width') or 1)
 
@@ -1717,17 +1719,18 @@ class QTextEditWrapper(QTextMixin):
     """
 
     # @+others
-    # @+node:ekr.20110605121601.18073: *3* QTextEditWrapper.ctor & helpers
-    def __init__(self, widget: QWidget, name: str = 'TestWrapper', c: Cmdr = None) -> None:
+    # @+node:ekr.20110605121601.18073: *3* QTextEditWrapper.__init__ & helpers
+    def __init__(self, widget: QWidget, name: str = None, c: Cmdr = None) -> None:
         """
         Ctor for QTextEditWrapper class.
         widget is a QTextEdit/QTextBrowser or a QLineEdit.
         """
         super().__init__(c)
+        ### g.trace(f"{repr(name):>15}", g.callers(2))  ###
         # Make sure all ivars are set.
         self.baseClassName = 'QTextEditWrapper'
         self.c = c
-        self.name = name
+        self.name = name or widget.objectName() or '<No Name>!'  ### c.widget_name(widget)  ###
         self.widget = widget
         self.useScintilla = False
         # Complete the init.

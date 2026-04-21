@@ -747,11 +747,13 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self,
         parent: QWidget,
         name: str,
+        *,
         lineWidth: int = 0,
         shadow: Shadow = None,
         shape: Shape = None,
     ) -> QWidget:
         # Create a text widget.
+        ### g.trace(repr(name), g.callers(2))  ###
         c = self.leo_c
         w: QWidget
         if name == 'richTextEdit' and self.useScintilla and Qsci:
@@ -763,7 +765,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 shadow = Shadow.Plain
             if shape is None:
                 shape = Shape.NoFrame
-            w = qt_text.LeoQTextBrowser(parent, c, None)
+            w = qt_text.LeoQTextBrowser(parent, c, wrapper=None)
             w.setFrameShape(shape)
             w.setFrameShadow(shadow)
             w.setLineWidth(lineWidth)
@@ -2290,7 +2292,7 @@ class LeoQtLog(leoFrame.LeoLog):
         # Create the log tab as the leftmost tab.
         log.createTab('Log')
         self.logWidget = self.contentsDict.get('Log')
-        self.wrapper = QTextEditWrapper(c=c, widget=self.logWidget)  # #4623.
+        self.wrapper = QTextEditWrapper(c=c, name='log-wrapper', widget=self.logWidget)  # #4623.
 
         # Configure.
         logWidget = self.logWidget
@@ -2575,11 +2577,14 @@ class LeoQtLog(leoFrame.LeoLog):
         """
         c = self.c
         contents: Any
+        ### g.trace(repr(tabName))  ###
         if widget is None:
             # widget is subclass of QTextBrowser.
             widget = qt_text.LeoQTextBrowser(parent=None, c=c, wrapper=self)
+            widget.setObjectName(tabName)  ###
             # contents is a wrapper.
-            contents = qt_text.QTextEditWrapper(widget=widget, name='log', c=c)
+            name = f"log-{tabName}" if not tabName.lower().startswith('log') else tabName
+            contents = qt_text.QTextEditWrapper(widget=widget, name=name, c=c)
             # Inject an ivar into the QTextBrowser that points to the wrapper.
             widget.leo_log_wrapper = contents
             widget.setWordWrapMode(WrapMode.WordWrap if self.wrap else WrapMode.NoWrap)
