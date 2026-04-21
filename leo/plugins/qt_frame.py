@@ -1153,6 +1153,10 @@ class DynamicWindow(QtWidgets.QMainWindow):
             self.leo_master.setGeometry(rect)
             super().setGeometry(rect)
 
+    # @+node:ekr.20110605121601.18169: *4* dw.setName
+    def setName(self, widget: QObject, name: str) -> None:
+        widget.setObjectName(name or '<no object name>')
+
     # @+node:ekr.20110605121601.18170: *4* dw.set_widget_size_policy
     def set_widget_size_policy(
         self, widget: QWidget, kind1: Policy = None, kind2: Policy = None
@@ -1172,11 +1176,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         """Set icon visible in title bar and task bar"""
         # self.setWindowIcon(QtGui.QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
         g.app.gui.attachLeoIcon(self)
-
-    # @+node:ekr.20110605121601.18169: *4* dw.setName
-    def setName(self, widget: QObject, name: str) -> None:
-        if name:
-            widget.setObjectName(name)
 
     # @+node:ekr.20110605121601.18174: *4* dw.setSplitDirection
     def setSplitDirection(
