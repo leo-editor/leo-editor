@@ -675,7 +675,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         self.locked = False
         self.pdf_qwv = None  # The singleton qwv instance, with support for pdf.
         self.qwv = None  # The singleton qwv instance.
-        self.scrollbar_pos_dict: dict[VNode, int] = {}  # Keys are vnodes, values are positions.
+        self.scrollbar_pos_dict: dict[VNode, int] = {}
         # User settings.
         self.reloadSettings()
         self.node_changed = True
