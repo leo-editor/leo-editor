@@ -2441,7 +2441,7 @@ class LeoQtLog(leoFrame.LeoLog):
         # #917814: Switching Log Pane tabs is done incompletely
         obj = getattr(w, 'leo_log_wrapper', None)
 
-        g.trace(obj.__class__.__name__, getattr(obj, 'name', 'None'), id(obj), self.wrapper)
+        ### g.trace(obj.__class__.__name__, getattr(obj, 'name', 'None'), id(obj), self.wrapper)
 
         # #1161: Don't change logs unless the wrapper is correct.
         if obj and isinstance(obj, QTextEditWrapper):
@@ -2605,7 +2605,7 @@ class LeoQtLog(leoFrame.LeoLog):
             ### name = f"log-{tabName}" if not tabName.lower().startswith('log') else tabName
             ### contents = qt_text.QTextEditWrapper(widget=widget, name=name, c=c)
             contents = qt_text.QTextEditWrapper(widget=widget, name='log', c=c)  ###
-            g.trace(f"{tabName}\n     widget: {widget!r}\n    wrapper: {contents!r}")  ###
+            ### g.trace(f"{tabName}\n     widget: {widget!r}\n    wrapper: {contents!r}")  ###
             # Inject an ivar into the QTextBrowser that points to the wrapper.
             widget.leo_log_wrapper = contents
             widget.setWordWrapMode(WrapMode.WordWrap if self.wrap else WrapMode.NoWrap)
@@ -2724,7 +2724,7 @@ class LeoQtLog(leoFrame.LeoLog):
             if widget:
                 wrapper = getattr(widget, 'leo_log_wrapper', None)
                 if wrapper and isinstance(wrapper, qt_text.QTextEditWrapper):
-                    g.trace(f"{tabName}\n     widget: {widget!r}\n    wrapper: {wrapper!r}")
+                    ### g.trace(f"{tabName}\n     widget: {widget!r}\n    wrapper: {wrapper!r}")
                     ### self.qtLogCtrl = wrapper
                     self.logCtrl = wrapper  # Required!
             if not wrapper:
