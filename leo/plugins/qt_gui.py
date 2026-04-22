@@ -252,7 +252,8 @@ class LeoQtGui(leoGui.LeoGui):
         w.leo_wrapper = (
                  QLineEditWrapper(c=c, name='dummy', widget=w) if isinstance(w, QtWidgets.QLineEdit)
             else QTextEditWrapper(c=c, name='dummy', widget=w) if isinstance(w, QtWidgets.QTextEdit)
-            else StringTextWrapper(c=c)
+            ###### else StringTextWrapper(c=c)
+            else None
         )  # fmt: skip
         g.trace(f"Allocate {w.leo_wrapper.__class__.__name__} for {w.__class__.__name__}")
         return w.leo_wrapper

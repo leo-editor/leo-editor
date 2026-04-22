@@ -306,9 +306,11 @@ class TestQtGui(LeoUnitTest):
             (c.frame.body.wrapper, QTextEditWrapper),
             (c.frame.body.widget, LeoQTextBrowser),
             # LeoQtLog ivars...
-            (c.frame.log.qtLogCtrl, QTextEditWrapper),
+            ### (c.frame.log.qtLogCtrl, QTextEditWrapper),
+            (c.frame.log.logCtrl, QTextEditWrapper),
             (c.frame.log.logWidget, LeoQTextBrowser),
-            (c.frame.log.qtTabWidget, QTabWidget),
+            ### (c.frame.log.qtTabWidget, QTabWidget),
+            (c.frame.log.tabWidget, QTabWidget),
             # LeoQtTree ivars...
             (c.frame.tree.treeWidget, LeoQTreeWidget),
         )
