@@ -1234,6 +1234,7 @@ class todoController:
         g.es('\n Current distribution:')
         self.showDist()
         dat: dict = {}
+        x0: Any
         for end in 'from', 'to':
             if Qt:
                 x0, ok = QtWidgets.QInputDialog.getText(
