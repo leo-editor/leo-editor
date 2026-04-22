@@ -2581,7 +2581,6 @@ class LeoQtLog(leoFrame.LeoLog):
         """
         c = self.c
         contents: Any
-        ### g.trace(repr(tabName))  ###
         if widget is None:
             # widget is subclass of QTextBrowser.
             widget = qt_text.LeoQTextBrowser(parent=None, c=c, wrapper=self)
@@ -2589,6 +2588,7 @@ class LeoQtLog(leoFrame.LeoLog):
             # contents is a wrapper.
             name = f"log-{tabName}" if not tabName.lower().startswith('log') else tabName
             contents = qt_text.QTextEditWrapper(widget=widget, name=name, c=c)
+            g.trace(f"{tabName}\n     widget: {widget!r}\n    wrapper: {contents!r}")  ###
             # Inject an ivar into the QTextBrowser that points to the wrapper.
             widget.leo_log_wrapper = contents
             widget.setWordWrapMode(WrapMode.WordWrap if self.wrap else WrapMode.NoWrap)
@@ -2698,10 +2698,10 @@ class LeoQtLog(leoFrame.LeoLog):
         # #1161.
         if tabName == 'Completion':
             widget = self.contentsDict.get('Completion')
-            g.trace(tabName, repr(widget))
             if widget:
                 wrapper = getattr(widget, 'leo_log_wrapper', None)
                 if wrapper and isinstance(wrapper, qt_text.QTextEditWrapper):
+                    g.trace(f"{tabName}\n     widget: {widget!r}\n    wrapper: {wrapper!r}")
                     self.qtLogCtrl = wrapper
                     self.logCtrl = wrapper  # Required!
             if not wrapper:
