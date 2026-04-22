@@ -633,7 +633,6 @@ if QtWidgets:
             super().__init__(parent)
             for ivar in ('leo_c', 'leo_s', 'leo_wrapper'):
                 assert not hasattr(QtWidgets.QTextBrowser, ivar)
-            ### g.trace(wrapper.__class__.__name__, g.callers())
             self.leo_c = c
             self.leo_s = ''  # The cached text.
             self.leo_wrapper = wrapper or QTextEditWrapper(c=c, widget=self)  # #4623.
@@ -669,7 +668,7 @@ if QtWidgets:
 
         # @+node:ekr.20110605121601.18007: *3* LeoQTextBrowser. __repr__ & __str__
         def __repr__(self) -> str:
-            return f"(LeoQTextBrowser) {id(self)}"
+            return f"<LeoQTextBrowser leo_wrapper: {self.leo_wrapper!r}>"
 
         __str__ = __repr__
 
@@ -1785,10 +1784,9 @@ class QTextEditWrapper(QTextMixin):
             # @-others
             self.widget.mouseReleaseEvent = mouseReleaseEvent
 
-    # @+node:ekr.20200312052821.1: *3* QTextEditWrapper.repr
+    # @+node:ekr.20200312052821.1: *3* QTextEditWrapper.__repr__
     def __repr__(self) -> str:
-        # Add a leading space to align with StringTextWrapper.
-        return f" <QTextEditWrapper: {id(self)} {self.name}>"
+        return f"<QTextEditWrapper: name: {self.name} at {id(self)}>"
 
     __str__ = __repr__
 

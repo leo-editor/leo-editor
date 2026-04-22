@@ -2284,6 +2284,10 @@ class LeoQtLog(leoFrame.LeoLog):
         c = self.c
         self.wrap = bool(c.config.getBool('log-pane-wraps'))
 
+    # @+node:ekr.20260421193859.1: *4* LeoQtLog.__repr__
+    def __repr__(self) -> str:
+        return f"<LeoQtLog wrapper: {self.wrapper}>"
+
     # @+node:ekr.20110605121601.18315: *4* LeoQtLog.finishCreate
     def finishCreate(self) -> None:
         """Finish creating the LeoQtLog class."""
@@ -2692,7 +2696,17 @@ class LeoQtLog(leoFrame.LeoLog):
             self.tabName: str = None
             return
         # #1161.
-        if tabName == 'Log':
+        if tabName == 'Completion':
+            widget = self.contentsDict.get('Completion')
+            g.trace(tabName, repr(widget))
+            if widget:
+                wrapper = getattr(widget, 'leo_log_wrapper', None)
+                if wrapper and isinstance(wrapper, qt_text.QTextEditWrapper):
+                    self.qtLogCtrl = wrapper
+                    self.logCtrl = wrapper  # Required!
+            if not wrapper:
+                g.trace('No completion wrapper!')
+        elif tabName == 'Log':
             widget = self.contentsDict.get('Log')
             if widget:
                 wrapper = getattr(widget, 'leo_log_wrapper', None)
@@ -2700,8 +2714,8 @@ class LeoQtLog(leoFrame.LeoLog):
                     self.qtLogCtrl = wrapper
                     self.logCtrl = wrapper  # Required!
             if not wrapper:
-                g.trace('NO LOG WRAPPER')
-        if tabName == 'Find':
+                g.trace('No log wrapper!')
+        elif tabName == 'Find':
             # Do *not* set focus here!
             # #1254861: Ctrl-f doesn't ensure find input field visible.
             if c.config.getBool('auto-scroll-find-tab', default=True):
@@ -2711,7 +2725,7 @@ class LeoQtLog(leoFrame.LeoLog):
                     widget.ensureWidgetVisible(findbox)
                 else:
                     findbox.setFocus()
-        if tabName == 'Spell':
+        elif tabName == 'Spell':
             # Set a flag for the spell system.
             self.qtFrameDict['Spell'] = self.qtTabWidget.widget(i)
 

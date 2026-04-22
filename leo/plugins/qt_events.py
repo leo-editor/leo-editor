@@ -606,6 +606,8 @@ class LeoQtEventFilter(QtCore.QObject):
             e.Type.WindowBlocked: 'window-blocked',  # 103
             e.Type.WindowUnblocked: 'window-unblocked',  # 104
             e.Type.ZOrderChange: 'z-order-change',  # 126
+            e.Type.WindowActivate: 'window-activate',  # 24
+            e.Type.WindowDeactivate: 'window-deactivate',  # 25
         }
         focus_d = {
             e.Type.DeferredDelete: 'deferred-delete',  # 52
@@ -643,6 +645,7 @@ class LeoQtEventFilter(QtCore.QObject):
             if et not in none_ignore_d:
                 t = focus_d.get(et) or et
                 g.trace(f"None {t}")
+            return
         if isinstance(w, QtWidgets.QPushButton):
             return
         if isinstance(w, QtWidgets.QLineEdit):
