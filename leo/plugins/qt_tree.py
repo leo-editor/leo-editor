@@ -66,6 +66,7 @@ class LeoQtTree(leoFrame.LeoTree):
         self.editWidgetsDict: dict[QLineEdit, QHeadlineWrapper] = {}
         self.reloadSettings()
         # Components...
+        self.canvas = self  # An official ivar used by Leo's core.  ###
         self.treeWidget: LeoQTreeWidget = frame.top.treeWidget
         w = self.treeWidget
         # Declutter data...
