@@ -767,6 +767,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             w.setFrameShape(shape)
             w.setFrameShadow(shadow)
             w.setLineWidth(lineWidth)
+            ### g.trace('NAME', repr(name), g.callers())
             self.setName(w, name)
         return w
 
@@ -2589,6 +2590,8 @@ class LeoQtLog(leoFrame.LeoLog):
             if tabName == 'Log':
                 self.logCtrl = contents  # PR #4601: Set the base-class ivar.
                 widget.setObjectName('log-widget')
+            else:
+                widget.setObjectName(tabName)  ###
             # Set binding on all log pane widgets.
             g.app.gui.setFilter(c, widget, self, tag='log')
             self.contentsDict[tabName] = widget
@@ -4168,8 +4171,8 @@ class QtStatusLineClass:
         # Create the text widgets.
         self.textWidget1 = w1 = QtWidgets.QLineEdit(self.statusBar)
         self.textWidget2 = w2 = QtWidgets.QLineEdit(self.statusBar)
-        w1.leo_wrapper = QLineEditWrapper(c=c, widget=w1)  # #4623
-        w2.leo_wrapper = QLineEditWrapper(c=c, widget=w2)  # #4623
+        ### w1.leo_wrapper = QLineEditWrapper(c=c, widget=w1)  # #4623
+        ### w2.leo_wrapper = QLineEditWrapper(c=c, widget=w2)  # #4623
         w1.setObjectName('status1')
         w2.setObjectName('status2')
         w1.setReadOnly(True)

@@ -632,9 +632,10 @@ if QtWidgets:
             """
             super().__init__(parent)
             assert not hasattr(QtWidgets.QTextBrowser, 'leo_c')
+            ### g.trace('WRAPPER', wrapper.__class__.__name__, g.callers())
             self.leo_c = c
             self.leo_s = ''  # The cached text.
-            self.leo_wrapper = QTextEditWrapper(c=c, widget=self)  # #4623.
+            ### self.leo_wrapper = QTextEditWrapper(c=c, widget=self)  # #4623.
             self.htmlFlag = True
             self.setCursorWidth(c.config.getInt('qt-cursor-width') or 1)
 
