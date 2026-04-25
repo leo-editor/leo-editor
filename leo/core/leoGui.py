@@ -382,10 +382,12 @@ class LeoKeyEvent:
         self.event = event  # New in Leo 4.11.
         self.stroke = stroke
         self.w = self.widget = w
-        self.wrapper = (
-            w if g.isTextWrapper(w)  # #4623.
-            else g.app.gui.create_wrapper_for_widget(c, w)
-        )  # fmt: skip
+        self.wrapper = w if g.isTextWrapper(w) else None  ### Experimental.
+        ###
+        # self.wrapper = (
+        #     w if g.isTextWrapper(w)  # #4623.
+        #     else g.app.gui.create_wrapper_for_widget(c, w)
+        # )  # fmt: skip
         # Optional ivars
         self.x = x
         self.y = y
