@@ -6,11 +6,13 @@ import json
 import os
 import leo.core.leoserver as leoserver
 from leo.core.leoTest2 import LeoUnitTest
+from leo.core import leoGlobals as global_g
 
 # Globals.
 g = None
 g_leoserver = None
 g_server = None
+global_g_es = global_g.es
 
 
 # @+others
@@ -48,6 +50,7 @@ class TestLeoServer(LeoUnitTest):
         g.unitTesting = True
 
     def tearDown(self):
+        global_g.es = global_g_es
         g.unitTesting = False
 
     # @+node:felix.20210621233316.100: *3* TestLeoServer._request

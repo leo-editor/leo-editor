@@ -5,27 +5,59 @@
 # @+<< test_gui imports >>
 # @+node:ekr.20220911102700.1: ** << test_gui imports >>
 import os
+import textwrap
 import time
 from leo.core import leoGlobals as g
 from leo.core.leoTest2 import LeoUnitTest, create_app
 
 try:
-    from leo.core.leoQt import Qt, QtCore
-    from leo.core.leoAPI import IconBarAPI, StatusLineAPI, TreeAPI
-    from leo.core.leoAPI import StringTextWrapper
-    from leo.core.leoFrame import LeoTree
-    from leo.core.leoFrame import NullIconBarClass, NullStatusLineClass, NullTree
-    from leo.plugins.qt_frame import QtIconBarClass, QtStatusLineClass
+    from leo.core.leoQt import (
+        Qt,
+        QtCore,
+        QtGui,
+        QtWidgets,
+    )
+    from leo.core.leoAPI import (
+        IconBarAPI,
+        StatusLineAPI,
+        StringTextWrapper,
+        TreeAPI,
+    )
+    from leo.core.leoFrame import (
+        LeoTree,
+        NullIconBarClass,
+        NullStatusLineClass,
+        NullTree,
+        # QTabWidget,
+    )
+    from leo.core.leoGui import LeoKeyEvent
+    from leo.plugins.qt_frame import (
+        DynamicWindow,
+        LeoQtBody,
+        LeoQtFrame,
+        LeoQtLog,
+        LeoQtMenu,
+        LeoQtTree,
+        LeoQTreeWidget,
+        QtIconBarClass,
+        QtStatusLineClass,
+    )
     from leo.plugins.qt_text import (
+        LeoQTextBrowser,
+        QHeadlineWrapper,
         QLineEditWrapper,
+        QMinibufferWrapper,
         QScintillaWrapper,
         QTextEditWrapper,
         QTextMixin,
     )
-    from leo.plugins.qt_text import LeoQTextBrowser
-    from leo.plugins.qt_tree import LeoQtTree
+
+    QTabWidget = QtWidgets.QTabWidget
 except Exception:
+    g.es_exception()
     Qt = QtCore = None
+    QTabWidget = None
+
 # @-<< test_gui imports >>
 
 
@@ -111,155 +143,6 @@ class TestQtGui(LeoUnitTest):
         except Exception:
             self.skipTest('Requires Qt')
 
-    # @+node:ekr.20210913120449.1: *3* TestQtGui.test_bug_2164
-    def test_bug_2164(self):
-        # show-invisibles crashes with PyQt6.
-        from leo.core.leoQt import QtGui
-
-        # Test the commands.
-        c = self.c
-        for command in ('toggle-invisibles', 'hide-invisibles', 'show-invisibles'):
-            c.doCommandByName(command)
-
-        # Test the Qt6 flag.
-        option = QtGui.QTextOption()
-        assert hasattr(option.Flag, 'ShowTabsAndSpaces')
-
-    # @+node:ekr.20210912140946.1: *3* TestQtGui.test_do_nothing1/2/3
-    # These tests exist to test the startup logic.
-    if 0:  # pragma: no cover
-
-        def test_do_nothing1(self):
-            time.sleep(0.1)
-
-        def test_do_nothing2(self):
-            time.sleep(0.1)
-
-        def test_do_nothing3(self):
-            time.sleep(0.1)
-
-    # @+node:ekr.20210912064439.2: *3* TestQtGui.test_qt_ctors_for_all_dialogs
-    def test_qt_ctors_for_all_dialogs(self):
-        # Make sure the dialogs don't crash.
-        c = self.c
-        gui = g.app.gui
-        self.assertEqual(gui.__class__.__name__, 'LeoQtGui')
-        gui.runAboutLeoDialog(c, 'version', 'copyright', 'url', 'email')
-        gui.runAskOkDialog(c, 'title', 'message')
-        gui.runAskOkCancelNumberDialog(c, 'title', 'message')
-        gui.runAskOkCancelStringDialog(c, 'title', 'message')
-        gui.runAskYesNoDialog(c, 'title', 'message')
-        gui.runAskYesNoCancelDialog(c, 'title', 'message')
-
-    # @+node:ekr.20210912133358.1: *3* TestQtGui.test_qt_enums
-    def test_qt_enums(self):
-        # https://github.com/leo-editor/leo-editor/issues/1973 list of enums
-
-        if not QtCore and QtCore.Qt:
-            self.skipTest('Requires Qt')  # pragma: no cover
-        table = (
-            'DropAction',
-            'ItemFlag',
-            'KeyboardModifier',
-            'MouseButton',
-            'Orientation',
-            'TextInteractionFlag',
-            'ToolBarArea',
-            'WindowType',
-            'WindowState',
-        )
-        for ivar in table:
-            assert hasattr(QtCore.Qt, ivar), repr(ivar)
-
-    # @+node:ekr.20220411165627.1: *3* TestQtGui.test_put_html_links
-    def test_put_html_links(self):
-        c, p = self.c, self.c.p
-        # Create a test outline.
-        assert p == self.root_p
-        assert p.h == 'root'
-        p2 = p.insertAsLastChild()
-        p2.h = '@file test_file.py'
-        # Run the tests.
-        table = (
-            # python.
-            (
-                True,
-                'File "test_file.py", line 5',
-            ),
-            # pylint.
-            (
-                True,
-                r'leo\unittest\test_file.py:1326:8: W0101: Unreachable code (unreachable)',
-            ),
-            # pyflakes.
-            (
-                True,
-                r"test_file.py:51:13 'leo.core.leoQt5.*' imported but unused",
-            ),
-            # mypy...
-            (
-                True,
-                'test_file.py:116: error: Function is missing a return type annotation  [no-untyped-def]',
-            ),
-            (
-                True,
-                r'leo\core\test_file.py:116: note: Use "-> None" if function does not return a value',
-            ),
-            (
-                False,
-                'Found 1 error in 1 file (checked 1 source file)',
-            ),
-            (
-                False,
-                'mypy: done',
-            ),
-            # Random output.
-            (
-                False,
-                'Hello world\n',
-            ),
-        )
-        for expected, s in table:
-            s = s.replace('\\', os.sep).rstrip() + '\n'
-            result = c.frame.log.put_html_links(s)
-            self.assertEqual(result, expected, msg=repr(s))
-
-    # @+node:ekr.20220912093438.1: *3* TestQtGui.test_qt_attributes
-    def test_qt_attributes(self):
-        # Various preliminary tests.
-        c = self.c
-        if 0:
-            print('')
-            for z in dir(g.app.gui):
-                if not z.startswith('__'):
-                    obj = getattr(g.app.gui, z, None)
-                    print(f"{z:>30} {g.objToString(obj)}")
-        if 0:
-            print('')
-            g.trace(g.app.gui)
-            g.trace(c.frame.body)
-        if 0:
-            g.trace(c.frame.body.wrapper)
-            for method in ('delete', 'insert', 'toPythonIndexRowCol'):
-                f = getattr(c.frame.body.wrapper, method, None)
-                print(repr(f))
-
-    # @+node:ekr.20220912140743.1: *3* TestQtGui.test_QTextEditWrapper_delete
-    def test_QTextEditWrapper_delete(self):
-        c = self.c
-        wrapper = c.frame.body.wrapper
-        widget = wrapper.widget
-        self.assertTrue(isinstance(wrapper, QTextEditWrapper))
-        self.assertTrue(isinstance(widget, LeoQTextBrowser))
-        widget.setText('line1\nline2')
-        # g.trace(wrapper.getAllText())
-        wrapper.delete(0, 6)
-        # g.trace(wrapper.getAllText())
-        widget.setText('line1\nline2')
-        # g.trace(wrapper.getAllText())
-        wrapper.delete(6, 0)
-        # g.trace(wrapper.getAllText())
-
     # @+node:ekr.20260404143610.1: *3* TestQtGui.test_annotations
     def test_annotations(self):
         # This test establishes the basis of Leo's Qt-related annotations.
@@ -339,6 +222,235 @@ class TestQtGui(LeoUnitTest):
             QTextMixin,  # Every class is a subclass of itself.
         ):
             assert issubclass(class_, QTextMixin), repr(class_)
+
+    # @+node:ekr.20210913120449.1: *3* TestQtGui.test_bug_2164
+    def test_bug_2164(self):
+        # show-invisibles crashes with PyQt6.
+        from leo.core.leoQt import QtGui
+
+        # Test the commands.
+        c = self.c
+        for command in ('toggle-invisibles', 'hide-invisibles', 'show-invisibles'):
+            c.doCommandByName(command)
+
+        # Test the Qt6 flag.
+        option = QtGui.QTextOption()
+        assert hasattr(option.Flag, 'ShowTabsAndSpaces')
+
+    # @+node:ekr.20260425100253.1: *3* TestQtGui.test_bug_4626
+    def test_bug_4626(self):
+        # https://github.com/leo-editor/leo-editor/issues/4626
+        c = self.c
+        k = c.k
+        log = c.frame.log
+        qtApp = g.app.gui.qtApp
+
+        # Part 1: Create the 'Completion' tab, and copy it's contets to the clipboard.
+        event = LeoKeyEvent(c, 'a', event=None, binding=None, w=None)
+        k.fullCommand(event=event)
+        k.extendLabel('a')
+        # Force g.es to print to the log.
+        old_log = g.app.log
+        try:
+            g.app.log = log
+            k.doTabCompletion(['a', 'ab', 'abc'])
+        finally:
+            g.app.log = old_log
+        wrapper = log.logCtrl
+        s = wrapper.getAllText()
+        dedent_s = textwrap.dedent(s)
+        assert dedent_s == 'a\nab\nabc\n', repr(s)
+        wrapper.selectAllText()
+
+        # Part 2: Test copyText.
+        event2 = LeoKeyEvent(c, char=None, binding=None, event=None, w=wrapper)
+        c.frame.copyText(event2)
+        s2 = g.app.gui.getTextFromClipboard()
+        k.keyboardQuit()
+        assert s2 == s, (repr(s), repr(s2))
+
+        # Part 3: Test Ctrl-C in all text widgets.
+        # c.k.manufactureKeyPressForCommandName(c.frame.body, 'copy-text') returns 'Ctrl+c'.
+        table = (
+            ('c.frame.body.widget', c.frame.body.widget),
+            ('c.frame.log.logCtrl.widget', c.frame.log.logCtrl.widget),
+            ('c.frame.log.logWidget', c.frame.log.logWidget),
+            ('c.frame.miniBufferWidget.widget', c.frame.miniBufferWidget.widget),
+        )
+
+        # Construct two events
+        c_key = QtCore.Qt.Key.Key_C
+        ctrl_mod = QtCore.Qt.KeyboardModifier.ControlModifier
+        key_press_t = QtCore.QEvent.Type.KeyPress
+        key_release_t = QtCore.QEvent.Type.KeyRelease
+        key_press_event = QtGui.QKeyEvent(key_press_t, c_key, ctrl_mod, '')
+        key_release_event = QtGui.QKeyEvent(key_release_t, c_key, ctrl_mod, '')
+
+        # The main loop.
+        text_widgets = (QtWidgets.QTextEdit, QtWidgets.QLineEdit)
+        # g.app.debug = ['events']
+        try:
+            for kind, w in table:
+                # is_QTextEdit = issubclass(w.__class__, QtWidgets.QTextEdit)
+                class_name = w.__class__.__name__
+                assert issubclass(w.__class__, text_widgets), w.__class__
+                # Put the class name in the widget.
+                w.setFocus()
+                qtApp.processEvents()
+                w.setReadOnly(False)
+                w.clear()
+                expected = f"{id(w)}: {class_name}"
+                w.setText(expected)
+                w.selectAll()
+                qtApp.processEvents()
+                if 1:  # works.
+                    # print('Contents:', w.toPlainText() if is_QTextEdit else w.text())
+                    g.app.gui.replaceClipboardWith(expected)
+                else:  # Fails
+                    # Execute Ctrl-c.
+                    qtApp.sendEvent(w, key_press_event)
+                    qtApp.sendEvent(w, key_release_event)
+                    qtApp.processEvents()
+                s = g.app.gui.getTextFromClipboard()
+                # Not ready yet.
+                assert s == expected, f"{kind}\nExpected: {expected!r}\n     Got: {s!r}"
+        finally:
+            g.app.debug = []
+
+    # @+node:ekr.20210912140946.1: *3* TestQtGui.test_do_nothing1/2/3
+    # These tests exist to test the startup logic.
+    if 0:  # pragma: no cover
+
+        def test_do_nothing1(self):
+            time.sleep(0.1)
+
+        def test_do_nothing2(self):
+            time.sleep(0.1)
+
+        def test_do_nothing3(self):
+            time.sleep(0.1)
+
+    # @+node:ekr.20220411165627.1: *3* TestQtGui.test_put_html_links
+    def test_put_html_links(self):
+        c, p = self.c, self.c.p
+        # Create a test outline.
+        assert p == self.root_p
+        assert p.h == 'root'
+        p2 = p.insertAsLastChild()
+        p2.h = '@file test_file.py'
+        # Run the tests.
+        table = (
+            # python.
+            (
+                True,
+                'File "test_file.py", line 5',
+            ),
+            # pylint.
+            (
+                True,
+                r'leo\unittest\test_file.py:1326:8: W0101: Unreachable code (unreachable)',
+            ),
+            # pyflakes.
+            (
+                True,
+                r"test_file.py:51:13 'leo.core.leoQt5.*' imported but unused",
+            ),
+            # mypy...
+            (
+                True,
+                'test_file.py:116: error: Function is missing a return type annotation  [no-untyped-def]',
+            ),
+            (
+                True,
+                r'leo\core\test_file.py:116: note: Use "-> None" if function does not return a value',
+            ),
+            (
+                False,
+                'Found 1 error in 1 file (checked 1 source file)',
+            ),
+            (
+                False,
+                'mypy: done',
+            ),
+            # Random output.
+            (
+                False,
+                'Hello world\n',
+            ),
+        )
+        for expected, s in table:
+            s = s.replace('\\', os.sep).rstrip() + '\n'
+            result = c.frame.log.put_html_links(s)
+            self.assertEqual(result, expected, msg=repr(s))
+
+    # @+node:ekr.20220912093438.1: *3* TestQtGui.test_qt_attributes
+    def test_qt_attributes(self):
+        # Various preliminary tests.
+        c = self.c
+        if 0:
+            print('')
+            for z in dir(g.app.gui):
+                if not z.startswith('__'):
+                    obj = getattr(g.app.gui, z, None)
+                    print(f"{z:>30} {g.objToString(obj)}")
+        if 0:
+            print('')
+            g.trace(g.app.gui)
+            g.trace(c.frame.body)
+        if 0:
+            g.trace(c.frame.body.wrapper)
+            for method in ('delete', 'insert', 'toPythonIndexRowCol'):
+                f = getattr(c.frame.body.wrapper, method, None)
+                print(repr(f))
+
+    # @+node:ekr.20210912064439.2: *3* TestQtGui.test_qt_ctors_for_all_dialogs
+    def test_qt_ctors_for_all_dialogs(self):
+        # Make sure the dialogs don't crash.
+        c = self.c
+        gui = g.app.gui
+        self.assertEqual(gui.__class__.__name__, 'LeoQtGui')
+        gui.runAboutLeoDialog(c, 'version', 'copyright', 'url', 'email')
+        gui.runAskOkDialog(c, 'title', 'message')
+        gui.runAskOkCancelNumberDialog(c, 'title', 'message')
+        gui.runAskOkCancelStringDialog(c, 'title', 'message')
+        gui.runAskYesNoDialog(c, 'title', 'message')
+        gui.runAskYesNoCancelDialog(c, 'title', 'message')
+
+    # @+node:ekr.20210912133358.1: *3* TestQtGui.test_qt_enums
+    def test_qt_enums(self):
+        # https://github.com/leo-editor/leo-editor/issues/1973 list of enums
+
+        if not QtCore and QtCore.Qt:
+            self.skipTest('Requires Qt')  # pragma: no cover
+        table = (
+            'DropAction',
+            'ItemFlag',
+            'KeyboardModifier',
+            'MouseButton',
+            'Orientation',
+            'TextInteractionFlag',
+            'ToolBarArea',
+            'WindowType',
+            'WindowState',
+        )
+        for ivar in table:
+            assert hasattr(QtCore.Qt, ivar), repr(ivar)
+
+    # @+node:ekr.20220912140743.1: *3* TestQtGui.test_QTextEditWrapper_delete
+    def test_QTextEditWrapper_delete(self):
+        c = self.c
+        wrapper = c.frame.body.wrapper
+        widget = wrapper.widget
+        self.assertTrue(isinstance(wrapper, QTextEditWrapper))
+        self.assertTrue(isinstance(widget, LeoQTextBrowser))
+        widget.setText('line1\nline2')
+        # g.trace(wrapper.getAllText())
+        wrapper.delete(0, 6)
+        # g.trace(wrapper.getAllText())
+        widget.setText('line1\nline2')
+        # g.trace(wrapper.getAllText())
+        wrapper.delete(6, 0)
+        # g.trace(wrapper.getAllText())
 
     # @-others
 
