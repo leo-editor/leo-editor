@@ -709,7 +709,7 @@ class LeoLog:
         self.logCtrl: Widget = None
         self.tabName: str = None  # The name of the active tab.
         self.tabFrame: LeoFrame | NullFrame = None
-        self.frameDict: dict[str, LeoFrame | NullFrame] = {}
+        self.frameDict: dict[str, Any] = {}
         self.logNumber = 0  # To create unique name fields for text widgets.
         self.newTabCount = 0  # Number of new tabs created.
         self.textDict: dict[str, Widget] = {}  # Keys: page names. Values: text widgets.
