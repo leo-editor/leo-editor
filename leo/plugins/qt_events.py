@@ -391,6 +391,8 @@ class LeoQtEventFilter(QtCore.QObject):
     # @+node:ekr.20140907103315.18767: *3* filter.Tracing
     # @+node:ekr.20190922075339.1: *4* filter.traceKeys
     def traceKeys(self, obj, event):
+        if 1:
+            return
         if g.unitTesting:
             return
         e = QtCore.QEvent
@@ -407,6 +409,8 @@ class LeoQtEventFilter(QtCore.QObject):
 
     # @+node:ekr.20110605121601.18548: *4* filter.traceEvent
     def traceEvent(self, obj, event):
+        if 1:
+            return
         if g.unitTesting:
             return
         # http://qt-project.org/doc/qt-4.8/qevent.html#properties
@@ -552,15 +556,16 @@ class LeoQtEventFilter(QtCore.QObject):
             )
             g.trace(f"{eventType:>25} {self.tag:25} {tag}")
 
-    # @+node:ekr.20131121050226.16331: *4* filter.traceWidget
+    # @+node:ekr.20260425111639.5: *4* filter.traceWidget
     def traceWidget(self, event: QtCore.QEvent) -> None:
-        """Show unexpected events in unusual widgets."""
-        verbose = False  # Not good for --trace-events
+        """Show events in widgets."""
         e = QtCore.QEvent
         t: str | QtCore.QEvent.Type
         assert isinstance(event, QtCore.QEvent)
         et = event.type()
         # http://qt-project.org/doc/qt-4.8/qevent.html#properties
+        # @+<< define dicts >>
+        # @+node:ekr.20260425111639.6: *5* << define dicts >>
         ignore_d = {
             e.Type.ChildAdded: 'child-added',  # 68
             e.Type.ChildPolished: 'child-polished',  # 69
@@ -627,39 +632,18 @@ class LeoQtEventFilter(QtCore.QObject):
             e.Type.FocusOut: 'focus-out',  # 9
             e.Type.WindowActivate: 'window-activate',  # 24
         }
+        # @-<< define dicts >>
         if et in ignore_d:
             return
-        w = QtWidgets.QApplication.focusWidget()
-        if verbose:  # Too verbose for --trace-events.
-            for d in (ignore_d, focus_d, line_edit_ignore_d, none_ignore_d):
-                t = d.get(et)
-                if t:
-                    break
-            else:
-                t = et
-            g.trace(f"{t:20} {w.__class__}")
-            return
-        if w is None:
-            if et not in none_ignore_d:
-                t = focus_d.get(et) or et
-                g.trace(f"None {t}")
-        if isinstance(w, QtWidgets.QPushButton):
-            return
-        if isinstance(w, QtWidgets.QLineEdit):
-            if et not in line_edit_ignore_d:
-                t = focus_d.get(et) or et
-                if hasattr(w, 'objectName'):
-                    tag = w.objectName()
-                else:
-                    tag = f"id: {id(w)}, {w.__class__.__name__}"
-                g.trace(f"{t:20} {tag}")
-            return
         t = focus_d.get(et) or et
-        if hasattr(w, 'objectName'):
-            tag = w.objectName()
-        else:
-            tag = f"id: {id(w)}, {w.__class__.__name__}"
-        g.trace(f"{t:20} {tag}")
+        if t in ignore_d:
+            return
+        w = QtWidgets.QApplication.focusWidget()
+        if w is None:
+            return
+        name = w.objectName() if hasattr(w, 'objectName') else None
+        tag = f"{t:20} {w.__class__.__name__:>20} {name or '<no name>'}"
+        g.trace(tag)
 
     # @-others
 
