@@ -49,7 +49,7 @@ def pug_rule_comment(colorer: Any, s: str, i: int) -> int:
 # @+node:ekr.20250501.5: *3* pug_rule_handlebar {{..}}
 def pug_rule_handlebar(colorer: Any, s: str, i: int) -> int:
     """Match Vue/Pug handlebar expression: {{...}}"""
-    return colorer.match_span(s, i, kind="literal3", begin="{{", end="}}")
+    return colorer.match_span(s, i, kind="keyword2", begin="{{", end="}}")
 
 
 # @+node:ekr.20250501.6: *3* pug_rule_interpolation
