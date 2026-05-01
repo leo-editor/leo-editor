@@ -23,6 +23,7 @@ Design notes on cross-line strings:
 
 from __future__ import annotations
 import re
+import string
 from typing import Any
 from leo.core import leoGlobals as g
 
@@ -45,6 +46,12 @@ def pug_rule_comment(colorer: Any, s: str, i: int) -> int:
     return colorer.match_eol_span(s, i, kind="comment1", seq="//")
 
 
+# @+node:ekr.20250501.5: *3* pug_rule_handlebar {{..}}
+def pug_rule_handlebar(colorer: Any, s: str, i: int) -> int:
+    """Match Vue/Pug handlebar expression: {{...}}"""
+    return colorer.match_span(s, i, kind="literal3", begin="{{", end="}}")
+
+
 # @+node:ekr.20250501.6: *3* pug_rule_interpolation
 def pug_rule_interpolation(colorer: Any, s: str, i: int) -> int:
     """Match Pug interpolation: #{...} or !{...}"""
@@ -52,6 +59,12 @@ def pug_rule_interpolation(colorer: Any, s: str, i: int) -> int:
     if n:
         return n
     return colorer.match_span(s, i, kind="literal3", begin="!{", end="}")
+
+
+# @+node:ekr.20250501.25: *3* pug_rule_keyword
+def pug_rule_keyword(colorer: Any, s: str, i: int) -> int:
+    """Match keywords from keywordsDict (HTML tags, Pug directives, etc.)."""
+    return colorer.match_keywords(s, i)
 
 
 # @+node:ekr.20250501.7: *3* pug_rule_css_id
@@ -121,6 +134,7 @@ def pug_rule_dq_string(colorer: Any, s: str, i: int) -> int:
                 k += 2
             elif s[k] == '"':
                 colorer.colorRangeWithTag(s, 0, k + 1, tag="literal1")
+                colorer.clearState()  # End restart – restore normal colouring.
                 return k + 1
             else:
                 k += 1
@@ -135,8 +149,41 @@ def pug_rule_dq_string(colorer: Any, s: str, i: int) -> int:
 
 # @+node:ekr.20250501.16: *3* pug_rule_sq_string
 def pug_rule_sq_string(colorer: Any, s: str, i: int) -> int:
-    """Match single-quoted string."""
-    return colorer.match_span(s, i, kind="literal1", begin="'", end="'")
+    """Match single-quoted string with backslash line continuation."""
+    if i >= len(s) or s[i] != "'":
+        return 0
+
+    j = i + 1
+    while j < len(s):
+        if s[j] == '\\' and j + 1 < len(s):
+            j += 2
+        elif s[j] == "'":
+            colorer.colorRangeWithTag(s, i, j + 1, tag="literal1")
+            return j + 1 - i
+        else:
+            j += 1
+
+    # No closing quote on this line – string continues.
+    colorer.colorRangeWithTag(s, i, len(s), tag="literal1")
+
+    def restart_sq_string(s: str) -> int:
+        k = 0
+        while k < len(s):
+            if s[k] == '\\' and k + 1 < len(s):
+                k += 2
+            elif s[k] == "'":
+                colorer.colorRangeWithTag(s, 0, k + 1, tag="literal1")
+                colorer.clearState()  # End restart – restore normal colouring.
+                return k + 1
+            else:
+                k += 1
+        # Still continuing past this line – re-arm the restart.
+        colorer.colorRangeWithTag(s, 0, len(s), tag="literal1")
+        colorer.setRestart(restart_sq_string)
+        return len(s) + 1
+
+    colorer.setRestart(restart_sq_string)
+    return len(s) - i
 
 
 # @+node:ekr.20250501.17: *3* pug_rule_equals
@@ -387,7 +434,12 @@ rulesDict1 = {
     "!": [pug_rule_interpolation],
     # script: and style: delegation (only at start of line).
     "s": [pug_rule_script_block, pug_rule_style_block],
+    # Handlebar expressions.
+    "{": [pug_rule_handlebar],
 }
+# Add keyword matcher for every possible word-start character.
+for _ch in string.ascii_letters + "_":
+    rulesDict1.setdefault(_ch, []).append(pug_rule_keyword)
 # @-others
 
 # Import dict for pug mode.
