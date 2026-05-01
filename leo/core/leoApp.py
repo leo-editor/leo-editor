@@ -441,6 +441,8 @@ class LeoApp:
             "pro":      "prolog",
             "ps":       "postscript",
             "psp":      "psp",
+            "pug":      "pug",
+            "jade":     "pug",
             "ptl":      "ptl",
             "py":       "python",
             "pyx":      "cython",  # Other extensions, .pyd,.pyi
@@ -664,6 +666,7 @@ class LeoApp:
             "ptl"                : "#",
             "pvwave"             : ";",
             "pyrex"              : "#",
+            "pug"                : "//-",
             "python"             : "#",
             "r"                  : "#",
             "rapidq"             : "'",  # fil 2004-march-11
@@ -843,6 +846,7 @@ class LeoApp:
             "psp"           : "psp",
             "ptl"           : "ptl",
             "pyrex"         : "pyx",
+            "pug"           : "pug",
             "python"        : "py",
             "r"             : "r",
             "rapidq"        : "bas",  # fil 2004-march-11
