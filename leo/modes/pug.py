@@ -49,7 +49,7 @@ def pug_rule_comment(colorer: Any, s: str, i: int) -> int:
 # @+node:ekr.20250501.5: *3* pug_rule_handlebar {{..}}
 def pug_rule_handlebar(colorer: Any, s: str, i: int) -> int:
     """Match Vue/Pug handlebar expression: {{...}}"""
-    return colorer.match_span(s, i, kind="keyword2", begin="{{", end="}}")
+    return colorer.match_span(s, i, kind="keyword3", begin="{{", end="}}")
 
 
 # @+node:ekr.20250501.6: *3* pug_rule_interpolation
@@ -63,15 +63,81 @@ def pug_rule_interpolation(colorer: Any, s: str, i: int) -> int:
 
 # @+node:ekr.20250501.25: *3* pug_rule_component
 def pug_rule_component(colorer: Any, s: str, i: int) -> int:
-    """Match Vue/Pug custom component names (PascalCase)."""
+    """Match Vue/Pug custom component names (PascalCase, no colouring)."""
     if i >= len(s) or not s[i].isupper():
         return 0
     j = i + 1
     while j < len(s) and (s[j].isalnum() or s[j] in '_-'):
         j += 1
     if j > i:
-        colorer.colorRangeWithTag(s, i, j, tag="markup")
         return j - i
+    return 0
+
+
+# @+node:ekr.20250501.27: *3* pug_rule_vue_directive
+def pug_rule_vue_directive(colorer: Any, s: str, i: int) -> int:
+    """Match Vue directives: v-if, v-else, v-for, v-model, etc."""
+    if not s.startswith("v-", i):
+        return 0
+    j = i + 2
+    while j < len(s) and (s[j].isalnum() or s[j] == "-"):
+        j += 1
+    if j > i + 2:
+        colorer.colorRangeWithTag(s, i, j, tag="keyword1")
+        return j - i
+    return 0
+
+
+# @+node:ekr.20250501.28: *3* pug_rule_vue_bind
+def pug_rule_vue_bind(colorer: Any, s: str, i: int) -> int:
+    """Match Vue bind shorthand: :class, :src, etc."""
+    if s[i] != ":":
+        return 0
+    j = i + 1
+    while j < len(s) and (s[j].isalnum() or s[j] in "-_."):
+        j += 1
+    if j > i + 1:
+        colorer.colorRangeWithTag(s, i, j, tag="keyword2")
+        return j - i
+    return 0
+
+
+# @+node:ekr.20250501.29: *3* pug_rule_vue_event
+def pug_rule_vue_event(colorer: Any, s: str, i: int) -> int:
+    """Match Vue event shorthand: @click, @submit, etc."""
+    if s[i] != "@":
+        return 0
+    j = i + 1
+    while j < len(s) and (s[j].isalnum() or s[j] in "-_."):
+        j += 1
+    if j > i + 1:
+        colorer.colorRangeWithTag(s, i, j, tag="keyword2")
+        return j - i
+    return 0
+
+
+# @+node:ekr.20250501.30: *3* pug_rule_attribute
+def pug_rule_attribute(colorer: Any, s: str, i: int) -> int:
+    """Match HTML attribute names inside attribute lists."""
+    if not s[i].isalpha():
+        return 0
+    j = i + 1
+    while j < len(s) and (s[j].isalnum() or s[j] in "-_"):
+        j += 1
+    # Must be followed by optional whitespace then = or (
+    k = j
+    while k < len(s) and s[k] in " \t":
+        k += 1
+    if k < len(s) and s[k] in "=(:":
+        # Only match if preceded by ( or , (inside attribute list)
+        prev = ""
+        for p in range(i - 1, -1, -1):
+            if s[p] not in " \t":
+                prev = s[p]
+                break
+        if prev in "(,:":
+            colorer.colorRangeWithTag(s, i, j, tag="keyword2")
+            return j - i
     return 0
 
 
@@ -83,38 +149,40 @@ def pug_rule_keyword(colorer: Any, s: str, i: int) -> int:
 
 # @+node:ekr.20250501.7: *3* pug_rule_css_id
 def pug_rule_css_id(colorer: Any, s: str, i: int) -> int:
-    """Match CSS id selector: #id"""
+    """Match CSS id selector: #id (no colouring – default white)."""
     if i > 0 and s[i - 1] not in (' ', '\t', '\n', '('):
         return 0
     m = re.match(r'#[a-zA-Z_][a-zA-Z0-9_-]*', s[i:])
     if m:
-        colorer.colorRangeWithTag(s, i, i + m.end(), tag="keyword2")
         return m.end()
     return 0
 
 
 # @+node:ekr.20250501.8: *3* pug_rule_css_class
 def pug_rule_css_class(colorer: Any, s: str, i: int) -> int:
-    """Match CSS class selector: .class"""
+    """Match CSS class selector: .class (no colouring – default white)."""
     if i > 0 and s[i - 1] not in (' ', '\t', '\n', '('):
         return 0
     m = re.match(r'\.[a-zA-Z_][a-zA-Z0-9_-]*', s[i:])
     if m:
-        colorer.colorRangeWithTag(s, i, i + m.end(), tag="keyword3")
         return m.end()
     return 0
 
 
 # @+node:ekr.20250501.9: *3* pug_rule_paren_open
 def pug_rule_paren_open(colorer: Any, s: str, i: int) -> int:
-    """Match opening parenthesis: ( - colored as markup."""
-    return colorer.match_seq(s, i, kind="markup", seq="(")
+    """Match opening parenthesis: ( (no colouring)."""
+    if i < len(s) and s[i] == "(":
+        return 1
+    return 0
 
 
 # @+node:ekr.20250501.10: *3* pug_rule_paren_close
 def pug_rule_paren_close(colorer: Any, s: str, i: int) -> int:
-    """Match closing parenthesis: ) - colored as markup."""
-    return colorer.match_seq(s, i, kind="markup", seq=")")
+    """Match closing parenthesis: ) (no colouring)."""
+    if i < len(s) and s[i] == ")":
+        return 1
+    return 0
 
 
 # @+node:ekr.20250501.15: *3* pug_rule_dq_string
@@ -276,7 +344,7 @@ pug_main_attributes_dict = {
     "escape": "\\",
     "highlight_digits": "true",
     "ignore_case": "true",
-    "no_word_sep": "",
+    "no_word_sep": "-",
 }
 
 attributesDictDict = {
@@ -284,118 +352,6 @@ attributesDictDict = {
 }
 # @+node:ekr.20250501.22: *3* pug.py: Keywords dicts
 pug_main_keywords_dict = {
-    # HTML tag keywords - colored as markup
-    "a": "markup",
-    "abbr": "markup",
-    "address": "markup",
-    "area": "markup",
-    "article": "markup",
-    "aside": "markup",
-    "audio": "markup",
-    "b": "markup",
-    "base": "markup",
-    "bdi": "markup",
-    "bdo": "markup",
-    "blockquote": "markup",
-    "body": "markup",
-    "br": "markup",
-    "button": "markup",
-    "canvas": "markup",
-    "caption": "markup",
-    "cite": "markup",
-    "code": "markup",
-    "col": "markup",
-    "colgroup": "markup",
-    "data": "markup",
-    "datalist": "markup",
-    "dd": "markup",
-    "del": "markup",
-    "details": "markup",
-    "dfn": "markup",
-    "dialog": "markup",
-    "div": "markup",
-    "dl": "markup",
-    "dt": "markup",
-    "em": "markup",
-    "embed": "markup",
-    "fieldset": "markup",
-    "figcaption": "markup",
-    "figure": "markup",
-    "footer": "markup",
-    "form": "markup",
-    "h1": "markup",
-    "h2": "markup",
-    "h3": "markup",
-    "h4": "markup",
-    "h5": "markup",
-    "h6": "markup",
-    "head": "markup",
-    "header": "markup",
-    "hgroup": "markup",
-    "hr": "markup",
-    "html": "markup",
-    "i": "markup",
-    "iframe": "markup",
-    "img": "markup",
-    "input": "markup",
-    "ins": "markup",
-    "kbd": "markup",
-    "label": "markup",
-    "legend": "markup",
-    "li": "markup",
-    "link": "markup",
-    "main": "markup",
-    "map": "markup",
-    "mark": "markup",
-    "menu": "markup",
-    "meta": "markup",
-    "meter": "markup",
-    "nav": "markup",
-    "noscript": "markup",
-    "object": "markup",
-    "ol": "markup",
-    "optgroup": "markup",
-    "option": "markup",
-    "output": "markup",
-    "p": "markup",
-    "picture": "markup",
-    "pre": "markup",
-    "progress": "markup",
-    "q": "markup",
-    "rp": "markup",
-    "rt": "markup",
-    "ruby": "markup",
-    "s": "markup",
-    "samp": "markup",
-    "script": "markup",
-    "section": "markup",
-    "select": "markup",
-    "slot": "markup",
-    "small": "markup",
-    "source": "markup",
-    "span": "markup",
-    "strong": "markup",
-    "style": "markup",
-    "sub": "markup",
-    "summary": "markup",
-    "sup": "markup",
-    "table": "markup",
-    "tbody": "markup",
-    "td": "markup",
-    "template": "markup",
-    "textarea": "markup",
-    "tfoot": "markup",
-    "th": "markup",
-    "thead": "markup",
-    "time": "markup",
-    "title": "markup",
-    "tr": "markup",
-    "track": "markup",
-    "u": "markup",
-    "ul": "markup",
-    "var": "markup",
-    "video": "markup",
-    "wbr": "markup",
     # Pug directives - colored as keyword1
     "doctype": "keyword1",
     "if": "keyword1",
@@ -424,6 +380,41 @@ pug_main_keywords_dict = {
     "and": "keyword1",
     "or": "keyword1",
     "not": "keyword1",
+    # Vue directives - colored as keyword1 (logic control)
+    "v-if": "keyword1",
+    "v-else": "keyword1",
+    "v-else-if": "keyword1",
+    "v-for": "keyword1",
+    "v-show": "keyword1",
+    "v-model": "keyword1",
+    "v-bind": "keyword1",
+    "v-on": "keyword1",
+    "v-text": "keyword1",
+    "v-html": "keyword1",
+    "v-slot": "keyword1",
+    "v-pre": "keyword1",
+    "v-cloak": "keyword1",
+    "v-once": "keyword1",
+    # HTML common attributes - colored as keyword2
+    "class": "keyword2",
+    "id": "keyword2",
+    "src": "keyword2",
+    "alt": "keyword2",
+    "href": "keyword2",
+    "title": "keyword2",
+    "type": "keyword2",
+    "name": "keyword2",
+    "value": "keyword2",
+    "placeholder": "keyword2",
+    "disabled": "keyword2",
+    "readonly": "keyword2",
+    "required": "keyword2",
+    "checked": "keyword2",
+    "selected": "keyword2",
+    "target": "keyword2",
+    "rel": "keyword2",
+    "role": "keyword2",
+    "tabindex": "keyword2",
 }
 
 keywordsDictDict = {
@@ -450,13 +441,19 @@ rulesDict1 = {
     "s": [pug_rule_script_block, pug_rule_style_block],
     # Handlebar expressions.
     "{": [pug_rule_handlebar],
+    # Vue bind/event shorthands.
+    ":": [pug_rule_vue_bind],
+    "@": [pug_rule_vue_event],
 }
-# Add keyword matcher for every possible word-start character.
+# Add keyword / component / directive / attribute matchers for every word-start character.
 for _ch in string.ascii_letters + "_":
+    if _ch == "v":
+        rulesDict1.setdefault(_ch, []).insert(0, pug_rule_vue_directive)
     if _ch.isupper():
         # PascalCase component names take precedence over keywords.
         rulesDict1.setdefault(_ch, []).insert(0, pug_rule_component)
     rulesDict1.setdefault(_ch, []).append(pug_rule_keyword)
+    rulesDict1.setdefault(_ch, []).append(pug_rule_attribute)
 # @-others
 
 # Import dict for pug mode.
