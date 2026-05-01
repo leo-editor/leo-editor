@@ -97,7 +97,7 @@ def pug_rule_vue_bind(colorer: Any, s: str, i: int) -> int:
     while j < len(s) and (s[j].isalnum() or s[j] in "-_."):
         j += 1
     if j > i + 1:
-        colorer.colorRangeWithTag(s, i, j, tag="keyword2")
+        colorer.colorRangeWithTag(s, i, j, tag="keyword1")
         return j - i
     return 0
 
@@ -111,7 +111,7 @@ def pug_rule_vue_event(colorer: Any, s: str, i: int) -> int:
     while j < len(s) and (s[j].isalnum() or s[j] in "-_."):
         j += 1
     if j > i + 1:
-        colorer.colorRangeWithTag(s, i, j, tag="keyword2")
+        colorer.colorRangeWithTag(s, i, j, tag="keyword1")
         return j - i
     return 0
 
@@ -136,7 +136,7 @@ def pug_rule_attribute(colorer: Any, s: str, i: int) -> int:
                 prev = s[p]
                 break
         if prev in "(,:":
-            colorer.colorRangeWithTag(s, i, j, tag="keyword2")
+            colorer.colorRangeWithTag(s, i, j, tag="keyword1")
             return j - i
     return 0
 
@@ -395,26 +395,26 @@ pug_main_keywords_dict = {
     "v-pre": "keyword1",
     "v-cloak": "keyword1",
     "v-once": "keyword1",
-    # HTML common attributes - colored as keyword2
-    "class": "keyword2",
-    "id": "keyword2",
-    "src": "keyword2",
-    "alt": "keyword2",
-    "href": "keyword2",
-    "title": "keyword2",
-    "type": "keyword2",
-    "name": "keyword2",
-    "value": "keyword2",
-    "placeholder": "keyword2",
-    "disabled": "keyword2",
-    "readonly": "keyword2",
-    "required": "keyword2",
-    "checked": "keyword2",
-    "selected": "keyword2",
-    "target": "keyword2",
-    "rel": "keyword2",
-    "role": "keyword2",
-    "tabindex": "keyword2",
+    # HTML common attributes - colored as keyword1 (orange)
+    "class": "keyword1",
+    "id": "keyword1",
+    "src": "keyword1",
+    "alt": "keyword1",
+    "href": "keyword1",
+    "title": "keyword1",
+    "type": "keyword1",
+    "name": "keyword1",
+    "value": "keyword1",
+    "placeholder": "keyword1",
+    "disabled": "keyword1",
+    "readonly": "keyword1",
+    "required": "keyword1",
+    "checked": "keyword1",
+    "selected": "keyword1",
+    "target": "keyword1",
+    "rel": "keyword1",
+    "role": "keyword1",
+    "tabindex": "keyword1",
 }
 
 keywordsDictDict = {
