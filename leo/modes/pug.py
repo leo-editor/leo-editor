@@ -61,7 +61,21 @@ def pug_rule_interpolation(colorer: Any, s: str, i: int) -> int:
     return colorer.match_span(s, i, kind="literal3", begin="!{", end="}")
 
 
-# @+node:ekr.20250501.25: *3* pug_rule_keyword
+# @+node:ekr.20250501.25: *3* pug_rule_component
+def pug_rule_component(colorer: Any, s: str, i: int) -> int:
+    """Match Vue/Pug custom component names (PascalCase)."""
+    if i >= len(s) or not s[i].isupper():
+        return 0
+    j = i + 1
+    while j < len(s) and (s[j].isalnum() or s[j] in '_-'):
+        j += 1
+    if j > i:
+        colorer.colorRangeWithTag(s, i, j, tag="markup")
+        return j - i
+    return 0
+
+
+# @+node:ekr.20250501.26: *3* pug_rule_keyword
 def pug_rule_keyword(colorer: Any, s: str, i: int) -> int:
     """Match keywords from keywordsDict (HTML tags, Pug directives, etc.)."""
     return colorer.match_keywords(s, i)
@@ -439,6 +453,9 @@ rulesDict1 = {
 }
 # Add keyword matcher for every possible word-start character.
 for _ch in string.ascii_letters + "_":
+    if _ch.isupper():
+        # PascalCase component names take precedence over keywords.
+        rulesDict1.setdefault(_ch, []).insert(0, pug_rule_component)
     rulesDict1.setdefault(_ch, []).append(pug_rule_keyword)
 # @-others
 
