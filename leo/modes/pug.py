@@ -1,26 +1,33 @@
 # @+leo-ver=5-thin
-# @+node:ekr.20250501.1: * @file ../modes/pug.py
-"""
-leo/modes/pug.py: Leo's mode file for @language pug.
-
-Supports:
-- Comments: //- (non-output), // (output)
-- Tag names (div, p, a, etc.)
-- CSS selectors (#id, .class)
-- HTML attributes with double/single quoted strings
-- Backslash line continuation in double-quoted strings: "foo \\n  bar \\n  baz"
-- Interpolation: #{}, !{}
-- Pug directives: doctype, if/else/each/mixin/include/block/extends/case/when/default/append/prepend
-- Embedded script: and style: blocks delegating to javascript/css
-- Keywords: true/false/and/or/not/null/undefined
-
-Design notes on cross-line strings:
-  leo's match_span uses a 'dots' hack for continued strings which
-  suppresses setRestart.  This means lines after a backslash-\n
-  lose all colouring until the closing quote.  We therefore use a
-  custom matcher for "..." that calls setRestart explicitly.
-"""
-
+# @+node:swot.20260501212006.1: * @file /Users/swot/app/leo-editor/leo/modes/pug.py
+# @@language python
+# @+<< docs >>
+# @+node:swot.20260501212107.1: ** << docs >>
+# @+doc
+# leo/modes/pug.py: Leo's mode file for @language pug.
+#
+# Supports:
+#
+# - Comments: //- (non-output), // (output)
+# - Tag names (div, p, a, etc.)
+# - CSS selectors (#id, .class)
+# - HTML attributes with double/single quoted strings
+# - Backslash line continuation in double-quoted strings: "foo \\n  bar \\n  baz"
+# - Interpolation: #{}, !{}
+# - Pug directives: doctype, if/else/each/mixin/include/block/extends/case/when/default/append/prepend
+# - Embedded script: and style: blocks delegating to javascript/css
+# - Keywords: true/false/and/or/not/null/undefined
+#
+#
+# Design notes on cross-line strings:
+#
+#   leo's match_span uses a 'dots' hack for continued strings which
+#   suppresses setRestart.  This means lines after a backslash-\n
+#   lose all colouring until the closing quote.  We therefore use a
+#   custom matcher for "..." that calls setRestart explicitly.
+# @-<< docs >>
+# @+<< import >>
+# @+node:swot.20260501213739.1: ** << import >>
 from __future__ import annotations
 import re
 import string
@@ -28,40 +35,30 @@ from typing import Any
 from leo.core import leoGlobals as g
 
 assert g
-
-
-# @+<< pug.py: rules >>
-# @+node:ekr.20250501.2: ** << pug.py: rules >>
+# @-<< import >>
 # @+others
-# @+node:ekr.20250501.3: *3* pug_rule_comment_buf //-
+# @+node:swot.20260501214155.1: ** pug_rule
+# @+node:swot.20260501212231.1: *3* pug_rule_comment_buf
 def pug_rule_comment_buf(colorer: Any, s: str, i: int) -> int:
     """Match buffer-only (non-output) Pug comment: //-"""
     return colorer.match_eol_span(s, i, kind="comment1", seq="//-")
-
-
-# @+node:ekr.20250501.4: *3* pug_rule_comment // <!-- output comment -->
+# @+node:swot.20260501212428.1: *3* pug_rule_comment
 def pug_rule_comment(colorer: Any, s: str, i: int) -> int:
     """Match output Pug comment: //"""
     # Must not match //- (handled by pug_rule_comment_buf first).
     return colorer.match_eol_span(s, i, kind="comment1", seq="//")
-
-
-# @+node:ekr.20250501.5: *3* pug_rule_handlebar {{..}}
+# @+node:swot.20260501212453.1: *3* pug_rule_handlebar
 def pug_rule_handlebar(colorer: Any, s: str, i: int) -> int:
     """Match Vue/Pug handlebar expression: {{...}}"""
     return colorer.match_span(s, i, kind="keyword3", begin="{{", end="}}")
-
-
-# @+node:ekr.20250501.6: *3* pug_rule_interpolation
+# @+node:swot.20260501212551.1: *3* pug_rule_interpolation
 def pug_rule_interpolation(colorer: Any, s: str, i: int) -> int:
     """Match Pug interpolation: #{...} or !{...}"""
     n = colorer.match_span(s, i, kind="literal3", begin="#{", end="}")
     if n:
         return n
     return colorer.match_span(s, i, kind="literal3", begin="!{", end="}")
-
-
-# @+node:ekr.20250501.25: *3* pug_rule_component
+# @+node:swot.20260501212628.1: *3* pug_rule_component
 def pug_rule_component(colorer: Any, s: str, i: int) -> int:
     """Match Vue/Pug custom component names (PascalCase, no colouring)."""
     if i >= len(s) or not s[i].isupper():
@@ -72,9 +69,7 @@ def pug_rule_component(colorer: Any, s: str, i: int) -> int:
     if j > i:
         return j - i
     return 0
-
-
-# @+node:ekr.20250501.27: *3* pug_rule_vue_directive
+# @+node:swot.20260501212654.1: *3* pug_rule_vue_directive
 def pug_rule_vue_directive(colorer: Any, s: str, i: int) -> int:
     """Match Vue directives: v-if, v-else, v-for, v-model, etc."""
     if not s.startswith("v-", i):
@@ -86,9 +81,7 @@ def pug_rule_vue_directive(colorer: Any, s: str, i: int) -> int:
         colorer.colorRangeWithTag(s, i, j, tag="keyword1")
         return j - i
     return 0
-
-
-# @+node:ekr.20250501.28: *3* pug_rule_vue_bind
+# @+node:swot.20260501212707.1: *3* pug_rule_vue_bind
 def pug_rule_vue_bind(colorer: Any, s: str, i: int) -> int:
     """Match Vue bind shorthand: :class, :src, etc."""
     if s[i] != ":":
@@ -100,9 +93,7 @@ def pug_rule_vue_bind(colorer: Any, s: str, i: int) -> int:
         colorer.colorRangeWithTag(s, i, j, tag="keyword1")
         return j - i
     return 0
-
-
-# @+node:ekr.20250501.29: *3* pug_rule_vue_event
+# @+node:swot.20260501212723.1: *3* pug_rule_vue_event
 def pug_rule_vue_event(colorer: Any, s: str, i: int) -> int:
     """Match Vue event shorthand: @click, @submit, etc."""
     if s[i] != "@":
@@ -114,9 +105,7 @@ def pug_rule_vue_event(colorer: Any, s: str, i: int) -> int:
         colorer.colorRangeWithTag(s, i, j, tag="keyword1")
         return j - i
     return 0
-
-
-# @+node:ekr.20250501.30: *3* pug_rule_attribute
+# @+node:swot.20260501212738.1: *3* pug_rule_attribute
 def pug_rule_attribute(colorer: Any, s: str, i: int) -> int:
     """Match HTML attribute names inside attribute lists."""
     if not s[i].isalpha():
@@ -139,15 +128,11 @@ def pug_rule_attribute(colorer: Any, s: str, i: int) -> int:
             colorer.colorRangeWithTag(s, i, j, tag="keyword1")
             return j - i
     return 0
-
-
-# @+node:ekr.20250501.26: *3* pug_rule_keyword
+# @+node:swot.20260501212806.1: *3* pug_rule_keyword
 def pug_rule_keyword(colorer: Any, s: str, i: int) -> int:
     """Match keywords from keywordsDict (HTML tags, Pug directives, etc.)."""
     return colorer.match_keywords(s, i)
-
-
-# @+node:ekr.20250501.7: *3* pug_rule_css_id
+# @+node:swot.20260501212819.1: *3* pug_rule_css_id
 def pug_rule_css_id(colorer: Any, s: str, i: int) -> int:
     """Match CSS id selector: #id (no colouring – default white)."""
     if i > 0 and s[i - 1] not in (' ', '\t', '\n', '('):
@@ -156,9 +141,7 @@ def pug_rule_css_id(colorer: Any, s: str, i: int) -> int:
     if m:
         return m.end()
     return 0
-
-
-# @+node:ekr.20250501.8: *3* pug_rule_css_class
+# @+node:swot.20260501213001.1: *3* pug_rule_css_class
 def pug_rule_css_class(colorer: Any, s: str, i: int) -> int:
     """Match CSS class selector: .class (no colouring – default white)."""
     if i > 0 and s[i - 1] not in (' ', '\t', '\n', '('):
@@ -167,25 +150,19 @@ def pug_rule_css_class(colorer: Any, s: str, i: int) -> int:
     if m:
         return m.end()
     return 0
-
-
-# @+node:ekr.20250501.9: *3* pug_rule_paren_open
+# @+node:swot.20260501213014.1: *3* pug_rule_paren_open
 def pug_rule_paren_open(colorer: Any, s: str, i: int) -> int:
     """Match opening parenthesis: ( (no colouring)."""
     if i < len(s) and s[i] == "(":
         return 1
     return 0
-
-
-# @+node:ekr.20250501.10: *3* pug_rule_paren_close
+# @+node:swot.20260501213024.1: *3* pug_rule_paren_close
 def pug_rule_paren_close(colorer: Any, s: str, i: int) -> int:
     """Match closing parenthesis: ) (no colouring)."""
     if i < len(s) and s[i] == ")":
         return 1
     return 0
-
-
-# @+node:ekr.20250501.15: *3* pug_rule_dq_string
+# @+node:swot.20260501213038.1: *3* pug_rule_dq_string
 def pug_rule_dq_string(colorer: Any, s: str, i: int) -> int:
     """Match double-quoted string with backslash line continuation.
 
@@ -227,9 +204,7 @@ def pug_rule_dq_string(colorer: Any, s: str, i: int) -> int:
 
     colorer.setRestart(restart_dq_string)
     return len(s) - i
-
-
-# @+node:ekr.20250501.16: *3* pug_rule_sq_string
+# @+node:swot.20260501213057.1: *3* pug_rule_sq_string
 def pug_rule_sq_string(colorer: Any, s: str, i: int) -> int:
     """Match single-quoted string with backslash line continuation."""
     if i >= len(s) or s[i] != "'":
@@ -266,21 +241,15 @@ def pug_rule_sq_string(colorer: Any, s: str, i: int) -> int:
 
     colorer.setRestart(restart_sq_string)
     return len(s) - i
-
-
-# @+node:ekr.20250501.17: *3* pug_rule_equals
+# @+node:swot.20260501213117.1: *3* pug_rule_equals
 def pug_rule_equals(colorer: Any, s: str, i: int) -> int:
     """Match = operator in attribute."""
     return colorer.match_plain_seq(s, i, kind="operator", seq="=")
-
-
-# @+node:ekr.20250501.18: *3* pug_rule_comma
+# @+node:swot.20260501213126.1: *3* pug_rule_comma
 def pug_rule_comma(colorer: Any, s: str, i: int) -> int:
     """Match comma separator in attributes."""
     return colorer.match_seq(s, i, kind="operator", seq=",")
-
-
-# @+node:ekr.20250501.10: *3* pug_rule_script_block
+# @+node:swot.20260501213136.1: *3* pug_rule_script_block
 def pug_rule_script_block(colorer: Any, s: str, i: int) -> int:
     """
     Match script: block at start of line.
@@ -291,9 +260,7 @@ def pug_rule_script_block(colorer: Any, s: str, i: int) -> int:
         colorer.push_delegate('javascript')
         return len(s)
     return 0
-
-
-# @+node:ekr.20250501.11: *3* pug_rule_style_block
+# @+node:swot.20260501213146.1: *3* pug_rule_style_block
 def pug_rule_style_block(colorer: Any, s: str, i: int) -> int:
     """
     Match style: block at start of line.
@@ -304,40 +271,28 @@ def pug_rule_style_block(colorer: Any, s: str, i: int) -> int:
         colorer.push_delegate('css')
         return len(s)
     return 0
-
-
-# @+node:ekr.20250501.12: *3* pug_rule_doctype
+# @+node:swot.20260501213204.1: *3* pug_rule_doctype
 def pug_rule_doctype(colorer: Any, s: str, i: int) -> int:
     """Match doctype declaration."""
     if i == 0 and s.startswith("doctype"):
         colorer.match_seq(s, i, kind="keyword1", seq="doctype")
         return len(s)
     return 0
-
-
-# @+node:ekr.20250501.13: *3* pug_rule_pipe
+# @+node:swot.20260501213221.1: *3* pug_rule_pipe
 def pug_rule_pipe(colorer: Any, s: str, i: int) -> int:
     """Match pipe character | for raw text."""
     if i == 0 and s.startswith("|"):
         colorer.match_seq(s, i, kind="operator", seq="|")
         return len(s)
     return 0
+# @+node:swot.20260501213659.1: ** dicts
 
-
-# @-others
-# @-<< pug.py: rules >>
-
-
-# @+<< pug.py: dictionaries >>
-# @+node:ekr.20250501.19: ** << pug.py: dictionaries >>
-# @+others
-# @+node:ekr.20250501.20: *3* pug.py: Properties dict
+# @+node:swot.20260501214636.1: *3* properties
 properties = {
     "commentEnd": "",
     "commentStart": "//-",
 }
-
-# @+node:ekr.20250501.21: *3* pug.py: Attributes dicts
+# @+node:swot.20260501214617.1: *3* attributesDictDict
 pug_main_attributes_dict = {
     "default": "null",
     "digit_re": "",
@@ -350,7 +305,7 @@ pug_main_attributes_dict = {
 attributesDictDict = {
     "pug_main": pug_main_attributes_dict,
 }
-# @+node:ekr.20250501.22: *3* pug.py: Keywords dicts
+# @+node:swot.20260501214553.1: *3* keywordsDictDict
 pug_main_keywords_dict = {
     # Pug directives - colored as keyword1
     "doctype": "keyword1",
@@ -420,7 +375,7 @@ pug_main_keywords_dict = {
 keywordsDictDict = {
     "pug_main": pug_main_keywords_dict,
 }
-# @+node:ekr.20250501.23: *3* pug.py: Rules dicts
+# @+node:swot.20260501214353.1: *3* rulesDict1
 rulesDict1 = {
     "/": [
         pug_rule_comment_buf,
@@ -445,6 +400,7 @@ rulesDict1 = {
     ":": [pug_rule_vue_bind],
     "@": [pug_rule_vue_event],
 }
+# @+node:swot.20260501214143.1: ** rulesDictDict
 # Add keyword / component / directive / attribute matchers for every word-start character.
 for _ch in string.ascii_letters + "_":
     if _ch == "v":
@@ -454,18 +410,13 @@ for _ch in string.ascii_letters + "_":
         rulesDict1.setdefault(_ch, []).insert(0, pug_rule_component)
     rulesDict1.setdefault(_ch, []).append(pug_rule_keyword)
     rulesDict1.setdefault(_ch, []).append(pug_rule_attribute)
-# @-others
 
 # Import dict for pug mode.
-importDict = {}
+# importDict = {}
 
 # x.rulesDictDict for pug mode.
 rulesDictDict = {
     "pug_main": rulesDict1,
 }
-
-# @-<< pug.py: dictionaries >>
-
-# @@language python
-# @@tabwidth -4
+# @-others
 # @-leo
