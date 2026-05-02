@@ -1582,6 +1582,47 @@ class TestColorizer(LeoUnitTest):
         )
         self.color('vbscript', text)
 
+    # @+node:ekr.20250501.40: *3* TestColorizer.test_colorizer_pug
+    def test_colorizer_pug(self):
+        text = self.prep(
+            """
+            //- This is a buffer-only comment.
+            // This is an HTML output comment.
+            doctype html
+            html
+                head
+                    title My Pug Page
+                body
+                    h1#title.main-header Hello Pug!
+                    p(class="description")
+                        | This is raw text.
+                    div(id="content")
+                        p Welcome to #{name}!
+                    mixin myMixin
+                        p Mixin content
+                    if condition
+                        p True!
+                    else
+                        p False!
+                    each item in items
+                        li= item
+
+                    // Multi-line backslash continuation in attribute value
+                    div(
+                      class="flex flex-col rounded-lg overflow-hidden \\
+                        border border-gray-200 bg-white \\
+                        transition-all duration-300 \\
+                        hover:-translate-y-1 hover:shadow-lg"
+                    )
+
+                    script:
+                        console.log("hello");
+                    style:
+                        body { color: red; }
+        """
+        )
+        self.color('pug', text)
+
     # @-others
 
 
