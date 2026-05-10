@@ -3450,7 +3450,8 @@ class KeyHandlerClass:
         assert g.isStrokeOrNone(event.stroke)
 
         # A continuous unit test.
-        assert event.stroke.s not in g.app.gui.ignoreChars, repr(event.stroke.s)
+        if event.stroke:
+            assert event.stroke.s not in g.app.gui.ignoreChars, repr(event.stroke.s)
 
     # @+node:ekr.20180418031417.1: *6* k.traceVars
     def traceVars(self, event: LeoKeyEvent) -> None:
@@ -3809,7 +3810,8 @@ class KeyHandlerClass:
         c, k = self.c, self
         stroke = event.stroke
         if (
-            stroke.s == '.'
+            stroke
+            and stroke.s == '.'
             and k.isPlainKey(stroke)
             and self.unboundKeyAction in ('insert', 'overwrite')
         ):  # fmt: skip
@@ -3838,6 +3840,8 @@ class KeyHandlerClass:
     def getPaneBinding(self, event: LeoKeyEvent) -> g.BindingInfo:
         c, k, state = self.c, self, self.unboundKeyAction
         stroke, w = event.stroke, event.w
+        if not stroke:
+            return None
         if not g.assert_is(stroke, g.KeyStroke):
             return None
         # #1757: Always insert plain keys in the body.

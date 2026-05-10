@@ -41,6 +41,7 @@ class TestPlugins(LeoUnitTest):
             'babel_kill.py',
             'babel_lib.py',
             'baseNativeTree.py',
+            'cursesGui.py',
             'leocursor.py',
             'leo_cloud_server.py',
             'leo_mypy_plugin.py',

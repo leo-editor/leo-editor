@@ -1,25 +1,29 @@
 # @+leo-ver=5-thin
 # @+node:ekr.20150107090324.1: * @file ../plugins/cursesGui.py
-"""A minimal text-oriented gui."""
+"""
+A minimal text-oriented gui.
 
-# @+at
-# Things not found in the GUI 'interface' classes (in leoFrame.py, leoGui.py, etc)
-# are labeled: # undoc: where the AttributeError comes from other implementations
-# of method.
-# @@c
-# pylint: disable=arguments-differ
+This is *not* a plugin.
+"""
+
+# py--lint: disable=arguments-differ
 # @+<< cursesGui.py: imports & annotations >>
 # @+node:ekr.20150107090324.2: ** << cursesGui.py: imports & annotations >>
-from collections.abc import Callable
+# from collections.abc import Callable
 import os
 from typing import Any
-from leo.core import leoGlobals as g
-from leo.core import leoChapters
-from leo.core import leoGui
-from leo.core import leoKeys
-from leo.core import leoFrame
-from leo.core import leoMenu
-from leo.core import leoNodes
+from leo.core import (
+    # leoApp,
+    leoBridge,
+    leoChapters,
+    leoCommands,
+    leoFrame,
+    leoGlobals as g,
+    leoGui,
+    leoKeys,
+    leoMenu,
+    leoNodes,
+)
 from leo.core.leoAPI import StringTextWrapper
 
 get_input = input
@@ -28,8 +32,11 @@ get_input = input
 # @-<< cursesGui.py: imports & annotations >>
 # @+<< TODO >>
 # @+node:ekr.20150107090324.3: ** << TODO >>
-# @@nocolor-node
 # @+at
+# Things not found in the GUI 'interface' classes (in leoFrame.py, leoGui.py, etc)
+# are labeled: # undoc: where the AttributeError comes from other implementations
+# of method.
+#
 # Body text:
 # Is the "signature" of the typing event right?
 # What does the InsertPoint do when text is inserted and deleted?
@@ -40,29 +47,38 @@ get_input = input
 # What about that minibuffer thing? (I've never used it.)
 # When should runMainLoop return?
 # What kind of newlines does the body text control get? How should it treat them?
-# Headline editing?
 # Body text selection.
-# (Strip trailing whitespace from this file. :P)
-# < < Random cruft >>
+#
+# Headline editing?
+#
+# Random cruft:
+#
 # Pay attention to being direct and code-terse.
 # Not at all user-friendly.
 # Comments in the body reflect current status only.
 # Ideally, comments in the body go away as the "leoGUI interface" improves.
-# Written on a hundred-column terminal. :S
 # @-<< TODO >>
 # @+others
-# @+node:ekr.20150107090324.4: ** init
-def init():
-    ok = not g.app.gui and not g.unitTesting  # Not Ok for unit testing!
-    if ok:
-        g.app.gui = textGui()
-        g.app.root = g.app.gui.createRootWindow()
+# @+node:ekr.20150107090324.4: ** main
+def main() -> None:
+    """cursesGui2.py: initialize and run."""
+    try:
+        # Create minimal g.app
+        x = leoBridge.BridgeController(
+            guiName='nullGui',
+            loadPlugins=False,
+            readSettings=False,
+            silent=False,
+            tracePlugins=False,
+            useCaches=False,
+            verbose=True,
+        )
+        g.app.gui = TextGui()
         g.app.gui.finishCreate()
-        g.plugin_signon(__name__)
-    elif g.app.gui and not g.unitTesting:
-        s = "Can't install text gui: previous gui installed"
-        g.es_print(s, color="red")
-    return ok
+        g.app.gui.runMainLoop()
+    except Exception:
+        g.es('Exception in cursesGui.py')
+        g.es_exception()
 
 
 # @+node:ekr.20150107090324.5: ** underline
@@ -72,15 +88,15 @@ def underline(s, idx):
     return s[:idx] + '&' + s[idx:]
 
 
-# @+node:ekr.20150107090324.6: ** class textGui: cursesGui.py
-class textGui(leoGui.LeoGui):
+# @+node:ekr.20150107090324.6: ** class TextGui(leoGui.LeoGui): cursesGui.py
+class TextGui(leoGui.LeoGui):
     # @+others
     # @+node:ekr.20150107090324.7: *3* __init__
     def __init__(self):
-        super().__init__("text")
         self.frames = []
+        super().__init__("text")
         self.killed = False
-        # TODO leoTkinterFrame finishCreate g.app.windowList.append(f) - use that?
+        self.c = leoCommands.Commands(fileName=None, gui=self)
 
     # @+node:ekr.20150107090324.8: *3* createKeyHandlerClass
     def createKeyHandlerClass(self, c):
@@ -88,22 +104,13 @@ class textGui(leoGui.LeoGui):
 
     # @+node:ekr.20150107090324.9: *3* createLeoFrame
     def createLeoFrame(self, c, title=None) -> Any:
-        gui = self
-        ret = TextFrame(c, gui)
-        self.frames.append(ret)
-        return ret
-
-    # @+node:ekr.20150107090324.10: *3* createRootWindow
-    def createRootWindow(self):
-        pass  # N/A
+        frame = TextFrame(c, gui=self)
+        self.frames.append(frame)
+        return frame
 
     # @+node:ekr.20150107090324.11: *3* destroySelf
     def destroySelf(self):
         self.killed = True
-
-    # @+node:ekr.20150107090324.12: *3* finishCreate (cursesGui.py)
-    def finishCreate(self):
-        pass
 
     # @+node:ekr.20150107090324.17: *3* get/set_focus
     def get_focus(self, c):
@@ -115,7 +122,7 @@ class textGui(leoGui.LeoGui):
     # @+node:ekr.20150107090324.13: *3* isTextWidget (cursesGui.py)
     def isTextWidget(self, w):
         """Return True if w is a Text widget suitable for text-oriented commands."""
-        return w and isinstance(w, StringTextWrapper)
+        return isinstance(w, StringTextWrapper)
 
     # @+node:ekr.20150107090324.69: *3* runAskYesNoDialog (cursesGui.py)
     def runAskYesNoDialog(self, c, title, message=None, yes_all=False, no_all=False):
@@ -139,18 +146,18 @@ class textGui(leoGui.LeoGui):
         ret = get_input("Open which %s file (from %s?) > " % (repr(filetypes), initialdir))
         return ret
 
-    # @+node:ekr.20150107090324.18: *3* text_run & helper
+    # @+node:ekr.20150107090324.18: *3* TextGui.text_run & helper
     def text_run(self):
         frame_idx = 0
         while not self.killed:
             # Frames can come and go.
             if frame_idx > len(self.frames) - 1:
                 frame_idx = 0
-            f = self.frames[frame_idx]
-            g.pr(f.getTitle())
+            frame = self.frames[frame_idx]
+            g.pr(frame.getTitle())
             s = get_input('Do what? (menu,key,body,frames,tree,quit) > ')
             try:
-                self.doChoice(f, s)
+                self.doChoice(frame, s)
             except Exception:
                 g.es_exception()
 
@@ -186,13 +193,14 @@ class textGui(leoGui.LeoGui):
     # @-others
 
 
-# @+node:ekr.20150107090324.21: ** class TextFrame: cursesGui.py
+# @+node:ekr.20150107090324.21: ** class TextFrame(leoFrame.LeoFrame) cursesGui.py
 class TextFrame(leoFrame.LeoFrame):
     # @+others
     # @+node:ekr.20150107090324.22: *3* __init__
     def __init__(self, c, gui):
         super().__init__(c, gui)
         assert self.c == c
+        self.title = c.shortFileName() or '<no file>'
         self.top = None
 
     # @+node:ekr.20150107090324.23: *3* createFirstTreeNode (cursesGui.py)
@@ -228,9 +236,9 @@ class TextFrame(leoFrame.LeoFrame):
     def finishCreate(self):
         c, f = self.c, self
         f.tree = textTree(self)
-        f.body = textBody(frame=self)
-        f.log = textLog(frame=self)
-        f.menu = textLeoMenu(self)
+        f.body = TextBody(frame=self)
+        f.log = TextLog(frame=self)
+        f.menu = TextLeoMenu(self)
         if f.body.use_chapters:
             c.chapterController = leoChapters.ChapterController(c)
         f.createFirstTreeNode()
@@ -254,28 +262,30 @@ class TextFrame(leoFrame.LeoFrame):
     def setTopGeometry(self, w, h, x, y):
         pass  # N/A
 
-    # @+node:ekr.20150107090324.29: *3* text_key
+    # @+node:ekr.20150107090324.29: *3* TextFrame.text_key
     def text_key(self):
         c = self.c
         k = c.k
         w = self.body.bodyCtrl
-        key = get_input('Keystroke > ')
-        if not key:
+        char = get_input('Keystroke > ')
+        if not char:
             return
+        g.trace(repr(char))
 
-        class leoTypingEvent:
-            def __init__(self, c, w, char, keysym):
-                self.c = c
-                self.char = char
-                self.keysym = keysym
-                self.leoWidget = w
-                self.widget = w
+        # class LeoTypingEvent:
+        #     def __init__(self, c, w, char, keysym):
+        #         self.c = c
+        #         self.char = char
+        #         self.keysym = keysym
+        #         self.leoWidget = w
+        #         self.widget = w
 
-        char = key
-        stroke = c.k.shortcutFromSetting(char)
-        g.trace('char', repr(char), 'stroke', repr(stroke))
-        e = leoTypingEvent(c, w, char, stroke)
-        k.masterKeyHandler(event=e)
+        ### char = key
+        ### stroke = c.k.shortcutFromSetting(char)
+        ### g.trace('char', repr(char), 'stroke', repr(stroke))
+        ### e = LeoTypingEvent(c, w, char, stroke)
+        event = leoGui.LeoKeyEvent(c, char=char, w=w)
+        k.masterKeyHandler(event=event)
 
     # @+node:ekr.20150107090324.30: *3* update
     def update(self):
@@ -287,10 +297,10 @@ class TextFrame(leoFrame.LeoFrame):
     # @-others
 
 
-# @+node:ekr.20150107090324.31: ** class textBody: cursesGui.py
-class textBody(leoFrame.LeoBody):
+# @+node:ekr.20150107090324.31: ** class TextBody: (leoFrame.LeoBody) cursesGui.py
+class TextBody(leoFrame.LeoBody):
     # @+others
-    # @+node:ekr.20150107090324.32: *3* textBody.__init__
+    # @+node:ekr.20150107090324.32: *3* TextBody.__init__
     def __init__(self, frame):
         super().__init__(frame)
         c = frame.c
@@ -298,21 +308,21 @@ class textBody(leoFrame.LeoBody):
         self.bodyCtrl = textBodyCtrl(c, name)
         self.colorizer = leoFrame.NullColorizer(self.c)
 
-    # @+node:ekr.20150107090324.33: *3* bind
+    # @+node:ekr.20150107090324.33: *3* TextBody.bind
     # undoc: newLeoCommanderAndFrame -> c.finishCreate -> k.finishCreate ->
     # k.completeAllBindings -> k.makeMasterGuiBinding -> 2156 w.bind ; nullBody
 
     def bind(self, bindStroke, callback):
         pass
 
-    # @+node:ekr.20150107090324.34: *3* setEditorColors
+    # @+node:ekr.20150107090324.34: *3* TextBody.setEditorColors
     def setEditorColors(self, bg, fg):
         pass  # N/A
 
     def createBindings(self, w=None):
         pass
 
-    # @+node:ekr.20150107090324.35: *3* text_show
+    # @+node:ekr.20150107090324.35: *3* TextBody.text_show
     def text_show(self):
         w = self.bodyCtrl
         g.pr('--- body ---')
@@ -375,78 +385,18 @@ class textMenuSep:
     # @-others
 
 
-# @+node:ekr.20150107090324.45: ** class textLeoMenu (LeoMenu) cursesGui.py
-class textLeoMenu(leoMenu.LeoMenu):
+# @+node:ekr.20150107090324.45: ** class TextLeoMenu (leoMenu.LeoMenu) cursesGui.py
+class TextLeoMenu(leoMenu.LeoMenu):
     # @+others
-    # @+node:ekr.20150107090324.46: *3* ctor (textLeoMenu)
+    # @+node:ekr.20150107090324.46: *3* TextLeoMenu.__init__
     def __init__(self, frame):
+        super().__init__(frame)
         self.entries = []
         self.c = frame.c
-        super().__init__(frame)
-
-    # @+node:ekr.20150107090324.47: *3* createMenuBar
-    def createMenuBar(self, frame):
-        g.trace(frame.c)
-        self._top_menu = textLeoMenu(frame)
+        self._top_menu = self
         self.createMenusFromTables()
 
-    # @+node:ekr.20150107090324.48: *3* new_menu
-    def new_menu(self, parent: Any, tearoff: int = 0, labe: str = ''):
-        if tearoff:
-            raise NotImplementedError(repr(tearoff))
-        menu = textLeoMenu(parent or self.frame)
-        menu.entries = []
-        return menu
-
-    # @+node:ekr.20150107090324.49: *3* add_cascade (cursesGui.py)
-    def add_cascade(self, parent: Any, label: str, menu: Any, underline: int):
-        if parent is None:
-            parent = self._top_menu
-        parent.entries.append(
-            textMenuCascade(
-                menu,
-                label,
-                underline,
-            )
-        )
-
-    # @+node:ekr.20150107090324.50: *3* add_command (cursesGui.py)
-    def add_command(
-        self,
-        menu: Any,
-        accelerator: str = '',
-        command: Callable = None,
-        commandName: str = None,
-        label: str = None,
-        underline: int = 0,
-    ) -> None:
-        # ?
-        # underline - Offset into label. For those who memorised Alt, F, X rather than Alt+F4.
-        # accelerator - For display only; these are implemented by Leo's key handling.
-        menu = self
-
-        def doNothingCallback():
-            pass
-
-        if not command:
-            command = doNothingCallback
-
-        # label = keys.get('label') or 'no label'
-        # underline = keys.get('underline') or 0
-        # accelerator = keys.get('accelerator') or ''
-        # command = keys.get('command') or doNothingCallback
-        entry = textMenuEntry(label, underline, accelerator, command)
-        menu.entries.append(entry)
-
-    # @+node:ekr.20150107090324.51: *3* add_separator
-    def add_separator(self, menu):
-        menu.entries.append(textMenuSep())
-
-    # @+node:ekr.20150107090324.52: *3* delete_range
-    def delete_range(self, *args, **keys):
-        pass
-
-    # @+node:ekr.20150107090324.53: *3* show_menu
+    # @+node:ekr.20150107090324.53: *3* TextLeoMenu.show_menu
     def show_menu(self):
         last_menu = self._top_menu
         while True:
@@ -484,36 +434,11 @@ class textLeoMenu(leoMenu.LeoMenu):
     # @-others
 
 
-# @+node:ekr.20150107090324.54: ** class textLog: cursesGui.py
-class textLog(leoFrame.LeoLog):
+# @+node:ekr.20150107090324.54: ** class TextLog(leoFrame.LeoLog) cursesGui.py
+class TextLog(leoFrame.LeoLog):
     # @+others
-    # @+node:ekr.20150107090324.58: *3* createControl
-    # < < HACK Quiet, oops. >>
-
-    def createControl(self, parentFrame):
-        pass
-
-    def setFontFromConfig(self):
-        pass  # N/A
-
-    # @+node:ekr.20150107090324.68: *3* finishCreate (cursesGui.py)
+    # @+node:ekr.20150107090324.68: *3* TextLog.finishCreate (cursesGui.py)
     def finishCreate(self):
-        pass
-
-    # @+node:ekr.20150107090324.56: *3* put
-    def put(self, s, color=None, tabName='Log', from_redirect=False):
-        g.pr(s, newline=False)
-
-    # @+node:ekr.20150107090324.57: *3* putnl
-    def putnl(self, tabName='log'):
-        g.pr('')
-
-    # @+node:ekr.20150107090324.59: *3* setColorFromConfig
-    def setColorFromConfig(self):
-        pass
-
-    # @+node:ekr.20150107090324.55: *3* setTabBindings
-    def setTabBindings(self, tabName):
         pass
 
     # @-others
@@ -582,6 +507,10 @@ class textTree(leoFrame.LeoTree):
 
 
 # @-others
+
+if __name__ == '__main__':
+    main()
+
 # @@language python
 # @@tabwidth -4
 # @-leo
