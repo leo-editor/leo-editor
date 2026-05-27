@@ -26,7 +26,6 @@ if TYPE_CHECKING:  # pragma: no cover
 # but that might not load because imports may fail.
 optional_modules = [
     'leo.plugins.livecode',
-    'leo.plugins.cursesGui2',
 ]
 
 

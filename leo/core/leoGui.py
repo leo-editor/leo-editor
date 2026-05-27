@@ -365,8 +365,6 @@ class LeoKeyEvent:
         This method *computes* `event.w`. When `w` is a text-related Qt *widget*,
         this method ensures that `event.w` is the correct text *wrapper*.
 
-        For the console gui (cursesGui2.py), `w` is always a StringTextWrapper.
-
         This method is the "midpoint" of Leo's key-handling code:
         - The "before" part is Qt's event handling, controlled by eventFiler methods.
         - The "after" part consists of Leo's command handlers.
