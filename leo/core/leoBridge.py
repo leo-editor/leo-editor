@@ -249,12 +249,12 @@ class BridgeController:
     # @+node:ekr.20070227095743: *4* bridge.createGui
     def createGui(self) -> None:
         g = self.g
-        if self.guiName == 'nullGui':
+        if self.guiName in ('qt', 'nullGui'):
             g.app.gui = g.app.nullGui
             g.app.log = g.app.gui.log = log = g.app.nullLog
             log.isNull = False
             log.enabled = True  # Allow prints from NullLog.
-            log.logInited = True  # Bug fix: 2012/10/17.
+            log.logInited = True
         else:
             assert False, f"leoBridge.py: unsupported gui: {self.guiName}"  # noqa
 
