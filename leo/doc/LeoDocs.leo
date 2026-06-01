@@ -2685,7 +2685,7 @@ Here are the XML elements that may appear in Leo files:
     The ``file_format`` attribute gives the 'major' format number.
     It is ``"2"`` for all newer versions of Leo.
 
-``&lt;globals&gt;``, ``&lt;preferences&gt;``, ``&lt;find_panel_settings&gt;`` and``&lt;clone_windows&gt;``
+``&lt;globals&gt;``, ``&lt;preferences&gt;``, ``&lt;find_panel_settings&gt;`` and ``&lt;clone_windows&gt;``
     These elements are vestigial. |br|
     Modern versions of Leo ignore them when reading outlines and write
     empty elements when writing outlines.
