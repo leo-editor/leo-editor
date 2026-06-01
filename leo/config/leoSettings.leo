@@ -538,7 +538,7 @@
 </v>
 <v t="ekr.20110611092035.16479"><vh>Emacs-like commands settings</vh>
 <v t="ekr.20071006153053"><vh>@bool add-ws-to-kill-ring = False</vh></v>
-<v t="ekr.20070531103454"><vh>@bool globalDynamicAbbrevs = True</vh></v>
+<v t="ekr.20070531103454"><vh>@bool global-dynamic-abbrevs = True</vh></v>
 </v>
 <v t="ekr.20110611092035.16482"><vh>Headline commands settings</vh>
 <v t="ekr.20181018105904.1"><vh>@bool headline-gmt-time = False</vh></v>
