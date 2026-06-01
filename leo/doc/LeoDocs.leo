@@ -1268,6 +1268,8 @@
 <v t="ekr.20210824081721.1"><vh>Leo's websocket server</vh>
 <v t="ekr.20210824081815.1"><vh>@rst html/leoserver.html</vh>
 <v t="ekr.20210825021830.1"><vh>The communication protocol</vh>
+<v t="felix.20260601125039.1"><vh>Authentication</vh></v>
+<v t="felix.20260601132011.1"><vh>Secure Websockets</vh></v>
 <v t="ekr.20210824083951.1"><vh>Requests</vh></v>
 <v t="ekr.20210824085857.1"><vh>Responses</vh></v>
 <v t="felix.20210825222316.1"><vh>Async messages</vh></v>
@@ -29907,7 +29909,7 @@ any change to one clone inevitably affects all other clones.
 <t tx="ekr.20230121061309.1"></t>
 <t tx="ekr.20230121061335.1"></t>
 <t tx="ekr.20230121061433.1"></t>
-<t tx="ekr.20230121110340.1" _mod_time="4741da346ccae692f52e">@language batch
+<t tx="ekr.20230121110340.1" _mod_time="4741da464e3720be372e">@language batch
 echo off
 echo off
 cd C:\Repos\leo-editor\leo\doc\html
@@ -29915,7 +29917,7 @@ echo make clean
 call make clean
 </t>
 <t tx="ekr.20230121110345.1"></t>
-<t tx="ekr.20230121110533.1" _mod_time="4741da346ccae692f52e">@language batch
+<t tx="ekr.20230121110533.1" _mod_time="4741da464e3720ce992e">@language batch
 echo off
 echo off
 cd C:\Repos\leo-editor\leo\doc\html
@@ -32782,6 +32784,56 @@ which outputs the Leo outline as a self-contained HTML interactive outline viewe
 The file is saved in the user's home/.leo folder and also opened with your default viewer.
 
 Made by Félix Malboeuf (https://github.com/boltex)</t>
+<t tx="felix.20260601125039.1">To prevent unauthorized access, the server requires a password when it is started. Clients must prove knowledge of this password before they can issue commands to the server.
+
+When a client connects, the server begins a challenge-response authentication sequence by sending a JSON message containing two members:
+
+- An action member with the value "challenge".
+- A challenge member containing a randomly generated string.
+
+The client computes an HMAC-SHA256 hash using the password as the key and the challenge string as the message, then sends the resulting hexadecimal digest back to the server in an !auth request. Because the password itself is never transmitted over the connection, authentication can be performed without exposing the password to network observers.
+
+The following example from leoclient.py demonstrates this procedure:
+
+.. code-block:: python
+
+    uri = f"ws://{wsHost}:{wsPort}"
+    async with websockets.connect(uri) as websocket:
+        # React to the server's challenge for authentication.
+        parsedData = json.loads(g.toUnicode(await websocket.recv()))
+        if parsedData.get("action") == "challenge":
+            challenge = parsedData.get("challenge")
+            expected_hash = hmac.new(
+                password.encode(), challenge.encode(), hashlib.sha256
+            ).hexdigest()
+            await websocket.send(json.dumps({"action": "!auth", "response": expected_hash}))
+        else:
+            print(f"expected challenge, got: {parsedData}")
+            return</t>
+<t tx="felix.20260601132011.1">Using TLS encryption is optional. When TLS is enabled, all communication between the client and server is encrypted and the WebSocket endpoint uses the wss:// scheme instead of ws://.
+
+To enable TLS, start the server with the --cert and --key arguments:
+
+--cert: Path to the server certificate file (PEM format).
+--key: Path to the corresponding private key file (PEM or KEY format).
+
+For example:
+
+.. code-block:: bash
+
+    python leoserver.py --port 32125 --password mypassword --cert server-cert.pem --key server-key.pem
+
+When both arguments are provided, the server automatically starts in secure mode and accepts encrypted WebSocket connections.
+
+Clients must then connect using a wss:// URL instead of ws://:
+
+.. code-block:: python
+
+    uri = f"wss://{wsHost}:{wsPort}"
+    async with websockets.connect(uri) as websocket:
+    ...
+
+If a self-signed certificate is used, client software may need additional configuration to trust the certificate.</t>
 <t tx="matt.20200331213038.1">When Leo has been installed in non-editable mode* (the above) there will be messages in the log pane window when opening certain .leo files distributed with Leo, such as LeoDocs.leo. (_File &gt;&gt; Open Leo File &gt;&gt; ..._). The warnings are not serious and may be ignored.
 
 This is a known issue with no practical solution. Files in the root folder of the leo-editor code repository is not installed when using pip. This is because they need to be relative to ``./leo-editor/leo`` folder, which make them at the top of ``PYTHONHOME/lib/site-packages``, and thus in the global namespace and not part of leo as far as python is concerned.

@@ -5808,7 +5808,7 @@ def main() -> None:  # pragma: no cover (tested in client)
             type=str,
             default=wsKey,
             metavar='PATH',
-            help='Path to the SSL private key file (.key/.pem)',
+            help='path to the SSL private key file (.key/.pem)',
         )
         add(
             '-l',
