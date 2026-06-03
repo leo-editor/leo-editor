@@ -47,5 +47,5 @@ for command in [
     rf'{python} -m leo.scripts.check_leo',
     rf'{python} -m leo.scripts.pylint_leo',
 ]:
-    subprocess.Popen(command).communicate()
+    subprocess.Popen(command, shell=True).communicate()
 # @-leo

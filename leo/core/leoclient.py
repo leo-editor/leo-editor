@@ -3,7 +3,7 @@
 """
 An example client for leoserver.py, based on work by Félix Malboeuf. Used by permission.
 
-First start the server in one console: `python -m leo.core.leoserver`.
+First start the server in one console: `python -m leo.core.leoserver --password test`.
 Then start the client in another console: `python -m leo.core.leoclient`.
 
 This client runs the commands given in the `_get_action_list` function.
@@ -13,6 +13,8 @@ The last command ends both the client and the server.
 import asyncio
 import json
 import time
+import hashlib
+import hmac
 
 # Third party.
 import websockets
@@ -21,6 +23,7 @@ from leo.core import leoserver
 
 wsHost = "localhost"
 wsPort = 32125
+password = 'test'  # Must match the server's password.
 
 tag = 'client'
 
@@ -175,9 +178,27 @@ async def client_main_loop(timeout):
     global n_async_responses
     uri = f"ws://{wsHost}:{wsPort}"
     action_list = _get_action_list()
+    print("leoserver must be started with argument --password test ", flush=True)
     async with websockets.connect(uri) as websocket:
         if trace:
             print(f"{tag}: asyncInterval.timeout: {timeout}")
+
+        # React to the server's challenge for authentication.
+        parsedData = json.loads(g.toUnicode(await websocket.recv()))
+        if trace:
+            print(f"{tag}: got: {parsedData}")
+        if parsedData.get("action") == "challenge":
+            challenge = parsedData.get("challenge")
+            expected_hash = hmac.new(
+                password.encode(), challenge.encode(), hashlib.sha256
+            ).hexdigest()
+            await websocket.send(json.dumps({"action": "!auth", "response": expected_hash}))
+            if trace:
+                print(f"{tag}: sent authentication response")
+        else:
+            print(f"{tag}: expected challenge, got: {parsedData}")
+            return
+
         # Await the startup package.
         json_s = g.toUnicode(await websocket.recv())
         d = json.loads(json_s)

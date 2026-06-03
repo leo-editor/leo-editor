@@ -30,5 +30,5 @@ for command in [
 ]:
     print('')
     print(command)
-    subprocess.Popen(command).communicate()
+    subprocess.Popen(command, shell=True).communicate()
 # @-leo

@@ -99,7 +99,7 @@ def number_bar_widget(c):
 
 
 # @+node:vitalije.20170727214320.1: ** renumber
-NUMBERINGS = {}
+NUMBERINGS: dict[str, tuple] = {}
 
 
 def renumber(c):

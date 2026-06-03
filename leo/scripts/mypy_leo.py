@@ -29,5 +29,5 @@ if 1:  # Quick.
     command = rf"{python} -m mypy leo"
 else:  # Safe.
     command = rf"{python} -m mypy --no-incremental leo"
-subprocess.Popen(command).communicate()
+subprocess.Popen(command, shell=True).communicate()
 # @-leo

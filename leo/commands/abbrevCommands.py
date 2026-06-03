@@ -527,8 +527,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             getBool('scripting-at-script-nodes') or
             getBool('scripting-abbreviations')
         )  # fmt: skip
-        self.globalDynamicAbbrevs = getBool('globalDynamicAbbrevs')
-        self.next_placeholder = getString("abbreviations-next-placeholder") or ',,'
+        self.globalDynamicAbbrevs = getBool('global-dynamic-abbrevs')
 
         # Allow @data abbreviations-subst-env *only* in leoSettings.leo or myLeoSettings.leo!
         key = 'abbreviations-subst-env'
@@ -741,12 +740,12 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         d = self.abbrevs
         if not d:
             return
-        print('')
+        g.es_print('')
         g.es_print(f"Abbreviations for {self.c.shortFileName()}...")
         for name, s in sorted(d.items()):
             s = s.replace('\n', '\\n')
             tail = s.removesuffix('\\n')
-            print(f"{name:>15} {g.truncate(tail, 90)}")
+            g.es_print(f"{name:>15} {g.truncate(tail, 90)}")
 
     # @+node:ekr.20150514043850.32: *4* abbrev.toggleAbbrevMode
     @cmd('toggle-abbrev-mode')

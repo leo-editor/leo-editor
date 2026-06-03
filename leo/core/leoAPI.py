@@ -242,6 +242,11 @@ class StringTextWrapper(QTextMixin):
     def getSelectionRange(self, sort: bool = True) -> tuple[int, int]:
         """Return the selected range of the widget."""
         sel = self.sel
+
+        # Check if sel contains None values (can be set by leoFind.py's 'save' and 'restore' methods).
+        if len(sel) == 2 and (sel[0] is None or sel[1] is None):
+            return 0, 0
+
         if len(sel) == 2 and sel[0] >= 0 and sel[1] >= 0:
             i, j = sel
             if sort and i > j:
@@ -287,6 +292,7 @@ class StringTextWrapper(QTextMixin):
     # @+node:ekr.20070228111853: *4* StringTextWrapper.setSelectionRange
     def setSelectionRange(self, i: int, j: int, insert: int = None) -> None:
         """StringTextWrapper."""
+        # Note: leoFind.py may set those to None. See its 'save' and 'restore' methods.
         self.sel = i, j
         self.ins = j if insert is None else insert
 

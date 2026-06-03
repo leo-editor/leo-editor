@@ -131,6 +131,7 @@ class TestLeoServer(LeoUnitTest):
             # "remove_tag": {"tag": "testTag"},
             # "tag_node": {"tag": "testTag"},
             # "apply_config": {"config": {"whatever": True}},
+            "do_arrow": {"char": "Up"},
             "get_focus": {"log": False},
             "set_body": {"body": "new body\n", 'gnx': "ekr.20061008140603"},
             "set_headline": {"name": "new headline"},

@@ -253,6 +253,7 @@ class BackgroundProcessManager:
                 stderr=subprocess.PIPE,
                 stdout=subprocess.PIPE,
                 universal_newlines=True,
+                shell=True,
             )
             return proc
 

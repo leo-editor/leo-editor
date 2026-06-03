@@ -1530,9 +1530,7 @@ class LeoApp:
         g.es_print('Starting log_listener.py')
         path = g.finalize_join(app.loadDir, '..', 'external', 'log_listener.py')
         app.log_listener = subprocess.Popen(
-            [sys.executable, path],
-            shell=False,
-            universal_newlines=True,
+            [sys.executable, path], shell=True, universal_newlines=True
         )
 
     # @+node:ekr.20171118024827.1: *3* app.makeAllBindings

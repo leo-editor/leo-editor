@@ -1569,6 +1569,11 @@ class GetArg:
         elif char in ('\b', 'BackSpace'):
             self.do_back_space(self.tabList, self.arg_completion)
             c.minibufferWantsFocus()
+        elif char in ('Up', 'Down'):  # 4685.
+            finder = c.findCommands
+            handler = self.after_get_arg_state[2]
+            if handler in (finder.find_state0, finder._start_search_escape2):
+                finder.do_arrow(char, in_minibuffer=True)
         elif k.isFKey(stroke):
             # Ignore only F-keys. Ignoring all except plain keys would kill unicode searches.
             pass
@@ -3555,7 +3560,7 @@ class KeyHandlerClass:
                 if trace:
                     g.trace(state, 'k.isPlain: getArg', stroke)
                 return True
-            if stroke.s in ('Escape', 'Tab', 'BackSpace'):
+            if stroke.s in ('Escape', 'Tab', 'BackSpace', 'Up', 'Down'):
                 k.getArg(event, stroke=stroke)
                 if trace:
                     g.trace(state, f"{stroke.s!r}: getArg", stroke)
@@ -3611,14 +3616,14 @@ class KeyHandlerClass:
         """Call the state handler associated with this event."""
         k = self
         ch = event.char
-        #
+
         # Defensive programming
         if not k.state.kind:
             return None
         if not k.state.handler:
             g.error('callStateFunction: no state function for', k.state.kind)
             return None
-        #
+
         # Handle auto-completion before checking for unbound keys.
         if k.state.kind == 'auto-complete':
             # k.auto_completer_state_handler returns 'do-standard-keys' for control keys.
@@ -3634,20 +3639,23 @@ class KeyHandlerClass:
             and (ord(ch) < 32 or ord(ch) > 128)
         ):
             return None
-        #
+
         # Call the state handler.
         val = k.state.handler(event)
         return val
 
     # @+node:ekr.20061031131434.152: *6* k.handleMiniBindings
     def handleMiniBindings(self, event: LeoKeyEvent, state: str, stroke: Stroke) -> bool:
-        """Find and execute commands bound to the event."""
+        """
+        Find and execute commands bound to the event.
+
+        Return True if a command was executed.
+        """
         k = self
-        #
+
         # Special case for bindings handled in k.getArg:
-        if state == 'full-command' and stroke in ('Up', 'Down'):
+        if state in ('getArg', 'full-command') and stroke in ('Up', 'Down'):
             return False
-        #
         # Ignore other special keys in the minibuffer.
         if state in ('getArg', 'full-command'):
             if stroke in (
@@ -3660,15 +3668,12 @@ class KeyHandlerClass:
                 return False
             if k.isFKey(stroke):
                 return False
-        #
         # Ignore autocompletion state.
         if state.startswith('auto-'):
             return False
-        #
         # Ignore plain key binding in the minibuffer.
         if not stroke or k.isPlainKey(stroke):
             return False
-        #
         # Get the command, based on the pane.
         for pane in ('mini', 'all', 'text'):
             result = k.handleMinibufferHelper(event, pane, state, stroke)
@@ -3678,7 +3683,6 @@ class KeyHandlerClass:
             if result == 'found':
                 # Do not call k.keyboardQuit here!
                 return True
-        #
         # No binding exists.
         return False
 

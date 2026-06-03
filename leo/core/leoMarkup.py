@@ -421,7 +421,7 @@ class MarkupCommands:
         if self.sphinx_default_command:
             if trace:
                 g.trace(f"\ncommand: {self.sphinx_default_command!r}\n")
-            g.execute_shell_commands(self.sphinx_default_command)
+            g.execute_shell_commands(self.sphinx_default_command, shell=True)
             return
         # Compute the input directory.
         input_dir = g.finalize(self.sphinx_input_dir or os.path.dirname(i_path))

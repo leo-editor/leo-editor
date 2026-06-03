@@ -33,5 +33,5 @@ extensions = 'PyQt6.QtCore,PyQt6.QtGui,PyQt6.QtWidgets,PyQt6.QtWebEngineWidgets'
 extension_pkg = f"--extension-pkg-allow-list={extensions}"
 command = rf"{python} -m pylint leo {rc_file} {extension_pkg}"
 
-subprocess.Popen(command).communicate()
+subprocess.Popen(command, shell=True).communicate()
 # @-leo

@@ -28,7 +28,7 @@ command = f"{python} -m twine upload -r pypi dist/*.* --verbose"
 # Upload.
 if 1:  # Don't do this until we are ready to release.
     print(command)
-    subprocess.Popen(command).communicate()
+    subprocess.Popen(command, shell=True).communicate()
 else:
     print(f"Skipped: {command}")
 # @-leo

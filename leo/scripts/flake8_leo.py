@@ -26,6 +26,6 @@ os.chdir(leo_editor_dir)
 args = ' '.join(sys.argv[1:]) + leo_editor_dir
 python = sys.executable
 command = rf'{python} -m flake8 {args} --show-source --config={leo_editor_dir}{os.sep}setup.cfg'
-subprocess.Popen(command).communicate()
+subprocess.Popen(command, shell=True).communicate()
 
 # @-leo

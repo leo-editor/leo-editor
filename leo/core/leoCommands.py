@@ -1086,10 +1086,9 @@ class Commands:
                 if processor:
                     if processor == 'cmd.exe':
                         cmd = ['start', processor, '/k', fullpath]
-                        subprocess.Popen(cmd, shell=True)
                     else:
                         cmd = ['start', 'cmd.exe', '/k', processor, fullpath]
-                        subprocess.Popen(cmd, shell=True)
+                    subprocess.Popen(cmd, shell=True)
                 else:
                     g.es('Unknown processor', fullpath, color='red')
             elif g.isMac:
@@ -3388,10 +3387,7 @@ class Commands:
         # Execute the final command.
         try:
             proc = subprocess.Popen(
-                final_command,
-                shell=False,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
+                final_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True
             )
             out, err = proc.communicate()
             for s in g.splitLines(g.toUnicode(out)):
@@ -5238,7 +5234,7 @@ class Commands:
 
         # Run the command.
         try:
-            subprocess.Popen(command).communicate()  # Wait for results.
+            subprocess.Popen(command, shell=True).communicate()  # Wait for results.
             results = g.readFile(filename)
             if g.isWindows:
                 results = results.replace('\r', '')

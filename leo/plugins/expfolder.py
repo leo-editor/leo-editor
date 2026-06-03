@@ -30,7 +30,7 @@ import configparser as ConfigParser
 from leo.core import leoGlobals as g
 from leo.plugins.textnode import savetextnode
 
-textexts = []
+textexts: list[str] = []
 
 
 # @+others

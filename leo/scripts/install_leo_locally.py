@@ -18,7 +18,7 @@ import os
 import subprocess
 import sys
 
-version = '6.8.8'
+version = '6.8.9'
 
 file_name = os.path.basename(__file__)
 
@@ -46,7 +46,7 @@ else:
     python = sys.executable
     command = rf"{python} -m pip install {dist_dir}{os.sep}{wheel_file}"
     print(command)
-    subprocess.Popen(command).communicate()
+    subprocess.Popen(command, shell=True).communicate()
 
     # List site-packages/leo*.
     python_dir = os.path.dirname(sys.executable)

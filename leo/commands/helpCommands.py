@@ -723,8 +723,18 @@ class HelpCommandsClass(BaseEditCommandsClass):
     @cmd('help-for-find-commands')
     def helpForFindCommands(self, event: LeoKeyEvent = None) -> None:
         """Explains Leo's find commands."""
-        # @+<< define s >>
-        # @+node:ekr.20150514063305.395: *4* << define s >> (help-for-find-commands)
+        c = self.c
+        d = c.k.computeInverseBindingDict()
+
+        def find_binding(command: str) -> str:
+            aList = d.get(command) or []
+            for pane, stroke in aList:
+                if pane == 'all':
+                    return stroke.s
+            return ''
+
+        # @+<< help-for-find-commands: define s >>
+        # @+node:ekr.20150514063305.395: *4* << help-for-find-commands: define s >>
         # @@language rest
 
         s = '''
@@ -732,9 +742,9 @@ class HelpCommandsClass(BaseEditCommandsClass):
         Finding & replacing text
         ------------------------
 
-        Alt-0 (vr-toggle) hides this help message.
+        vr-toggle (<vr-toggle>) hides this help message.
 
-        **Ctrl-F** (start-search) shows the Find pane
+        **<start-search>** (start-search) shows the Find pane
         and puts focus in the find box.
 
         Enter the find text and the replacement text if desired::
@@ -742,31 +752,37 @@ class HelpCommandsClass(BaseEditCommandsClass):
             Tab switches focus from widget to widget.
             Return executes the find-next command.
 
-        When Leo selects the found text you can do::
+        When Leo selects the found text you can do the following commands::
 
-            Ctrl-equal (replace)
-            Ctrl-minus (replace-then-find)
-            F3 (find-next)
-            F2 (find-previous)
-            Ctrl-G (keyboard-quit)
-            anything else :-)
+            find-next:          <find-next>
+            find-prev:           <find-prev>
+            replace:            <replace>
+            replace-all:        <replace-all>
+            replace-then-find:  <replace-then-find>
+            keyboard-quit:      <keyboard-quit>
 
-        You can Leo's commands toggle check boxes and radio buttons.
+        You may use Leo's find-toggle commands to toggle check boxes and radio buttons::
+
+            toggle-find-ignore-case-option:  <Alt+Ctrl+i>
+            toggle-find-in-body-option:      <Alt+Ctrl+b>
+            toggle-find-in-headline-option:  <Alt+Ctrl+h>
+            toggle-find-mark-changes-option: <Alt+Ctrl+c>
+            toggle-find-mark-finds-option:   <Alt+Ctrl+f>
+            toggle-find-regex-option:        <Alt+Ctrl+x>
+            toggle-find-word-option:         <Alt+Ctrl+w>
+
         These commands are listed in the Search menu.
-
-        You can execute these commands (and see their key bindings)
-        using the minibuffer::
-
-            <Alt-X>tog<tab>f<tab>   or
-            <Alt-X>set<tab>f<tab>
 
         Incremental searching
         ---------------------
 
         Incremental search is done only from the minibuffer::
 
-            Alt-I (isearch forward)
-            Alt-R (isearch backward)
+            isearch-forward:        <isearch-forward>
+            isearch-backward:       <isearch-backward>
+            isearch-forward-regex:  <isearch-forward-regex>
+            isearch-backward-regex: <isearch-backward-regex>
+
             BackSpace retracts the search
             All other characters extend the search
 
@@ -776,7 +792,31 @@ class HelpCommandsClass(BaseEditCommandsClass):
             Alt-S finds the search string again.
             Alt-R ditto for reverse searches.
         '''
-        # @-<< define s >>
+        # @-<< help-for-find-commands: define s >>
+
+        table = (
+            'find-next',
+            'find-prev',
+            'isearch-backward',
+            'isearch-backward-regex',
+            'isearch-forward',
+            'isearch-forward-regex',
+            'keyboard-quit',
+            'replace',
+            'replace-all',
+            'replace-then-find',
+            'start-search',
+            'toggle-find-ignore-case-option',
+            'toggle-find-in-body-option',
+            'toggle-find-in-headline-option',
+            'toggle-find-mark-changes-option',
+            'toggle-find-mark-finds-option',
+            'toggle-find-regex-option',
+            'toggle-find-word-option',
+            'vr-toggle',
+        )
+        for command in table:
+            s = s.replace(f"<{command}>", find_binding(command))
         self.c.putHelpFor(s)
 
     # @+node:ekr.20150628161341.1: *3* helpForKeystroke

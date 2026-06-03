@@ -1343,14 +1343,6 @@ class ScreenShotController:
         """Return True if p.h matches the pattern."""
         return g.match_word(p.h, 0, pattern)
 
-    # @+node:ekr.20100911044508.5636: *4* open_inkscape_with_list (not used)
-    # def open_inkscape_with_list (self,aList):
-    # """Open inkscape with a list of file."""
-    # sc = self
-    # cmd = [sc.inkscape_bin,"--with-gui"]
-    # cmd.extend(aList)
-    # proc = subprocess.Popen(cmd, stderr=subprocess.PIPE)
-    # proc.communicate() # Wait for Inkscape to terminate.
     # @+node:ekr.20101021065622.5633: *4* remove_built_slide_node
     def remove_built_slide_node(self, p):
         sc = self

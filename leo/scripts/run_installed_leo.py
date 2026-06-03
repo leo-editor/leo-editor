@@ -29,5 +29,5 @@ else:
     command = f"{python} -m leo.core.runLeo"
     print(command)
     print('')
-    subprocess.Popen(command).communicate()
+    subprocess.Popen(command, shell=True).communicate()
 # @-leo

@@ -43,7 +43,7 @@ class ControlCommandsClass(BaseEditCommandsClass):
                 shlex.split(command),
                 stdout=subprocess.PIPE,
                 stderr=subprocess.DEVNULL if trace else subprocess.PIPE,
-                shell=g.isWindows,
+                shell=True,
             )
             out, err = proc.communicate()
             for line in g.splitLines(g.toUnicode(out)):

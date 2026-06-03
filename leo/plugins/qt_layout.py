@@ -29,8 +29,7 @@ VRX_PLACEHOLDER_NAME = 'viewrenderedx_pane'
 VR_MODULE_NAME = 'viewrendered.py'
 VR3_MODULE_NAME = 'viewrendered3.py'
 
-# Will contain {layout_name: layout_docstring}
-LAYOUT_REGISTRY = {}
+LAYOUT_REGISTRY: dict[str, str] = {}  # {layout_name: layout_docstring}
 # @-<< qt_layout: declarations >>
 
 

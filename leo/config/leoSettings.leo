@@ -87,10 +87,6 @@
 <v t="ekr.20200226104131.1"><vh>Future settings</vh>
 <v t="ekr.20190926110217.1"><vh>@string adoc-base-directory = None</vh></v>
 </v>
-<v t="ekr.20260419074741.1"><vh>Unused settings</vh>
-<v t="jlunz.20151119171553.1"><vh>@bool cursor-stay-on-paste = True</vh></v>
-<v t="tbrown.20151114110207.1"><vh>@string abbreviations-next-placeholder = ,,</vh></v>
-</v>
 </v>
 <v t="ekr.20041119034357.1"><vh>@settings</vh>
 <v t="ekr.20201010141557.1"><vh>@string theme-name = None</vh></v>
@@ -542,7 +538,7 @@
 </v>
 <v t="ekr.20110611092035.16479"><vh>Emacs-like commands settings</vh>
 <v t="ekr.20071006153053"><vh>@bool add-ws-to-kill-ring = False</vh></v>
-<v t="ekr.20070531103454"><vh>@bool globalDynamicAbbrevs = True</vh></v>
+<v t="ekr.20070531103454"><vh>@bool global-dynamic-abbrevs = True</vh></v>
 </v>
 <v t="ekr.20110611092035.16482"><vh>Headline commands settings</vh>
 <v t="ekr.20181018105904.1"><vh>@bool headline-gmt-time = False</vh></v>
@@ -669,7 +665,6 @@
 </v>
 </v>
 <v t="ekr.20041119034357.20"><vh>Find/replace options</vh>
-<v t="ekr.20141024165714.1"><vh>@bool auto-scroll-find-tab = True</vh></v>
 <v t="ekr.20131119143342.20107"><vh>@bool minibuffer-find-mode = False</vh></v>
 <v t="tbrown.20151010094807.1"><vh>@bool show-find-result-in-status = True</vh></v>
 <v t="ekr.20150710065036.1"><vh>@bool preload-find-pattern = False</vh></v>
@@ -9136,8 +9131,6 @@ c.k.simulateCommand('show-color-wheel')
 <t tx="ekr.20140922124047.19516"></t>
 <t tx="ekr.20140922124047.19517"></t>
 <t tx="ekr.20140922124047.20313"></t>
-<t tx="ekr.20141024165714.1">True:  Scroll the find tab ensure find input field visible. (fixes bug 1254861)
-False: Never scroll the find tab automatically.</t>
 <t tx="ekr.20141112072219.1"></t>
 <t tx="ekr.20141204160426.5">New.</t>
 <t tx="ekr.20150216135059.1">With @clean and @file, Leo can store persistent data in nodes. This
@@ -11908,7 +11901,6 @@ If not given, Leo's beautifier uses Leo's pyproject.toml file.
 
 True (Legacy):       Raise a dialog when any file changes externally.
 False (Recommended): Print a log message when any file changes externally.</t>
-<t tx="ekr.20260419074741.1"></t>
 <t tx="felix.20220506230435.1">True: (Legacy) The goto-first-visible-node and goto-first-visible-node commands collapse all nodes that are not ancestors of the target node that is selected.
 
 False: (Recommended) The commands act as simple navigation commands, and do not change the outline state.</t>
@@ -11953,7 +11945,6 @@ Leo accepts outline 'paste' data in both XML Leo format, or JSON format</t>
         
     QtCore.QTimer.singleShot(0, later)
 </t>
-<t tx="jlunz.20151119171553.1"></t>
 <t tx="jlunz.20151120072157.1">True: Wrap body text.
 
 </t>
@@ -12503,9 +12494,6 @@ This setting must be explicitly set to `False` to suppress
 the status line output, just deleting it to get a value of `None`
 won't work - this preserves the default `True` action in the
 absence of this setting.</t>
-<t tx="tbrown.20151114110207.1">"Abbreviation" to trigger the selection of the next placeholder,
-i.e. typing ,, will select the next &lt;|placeholder|&gt; text, after
-removing the &lt;| and |&gt;</t>
 <t tx="tbrown.20160130095933.1">legacy
 ::
 

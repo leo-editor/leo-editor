@@ -8,6 +8,7 @@
 <vnodes>
 <v t="ekr.20051031040240"><vh>Startup</vh>
 <v t="ekr.20080412053100.5"><vh>@settings</vh>
+<v t="ekr.20260526171943.1"><vh>@bool minibuffer-find-mode = True</vh></v>
 <v t="ekr.20220904210247.1"><vh>@@@enabled-plugins</vh></v>
 <v t="ekr.20251214042454.1"><vh>@bool body-pane-wraps = False</vh></v>
 <v t="ekr.20140902155015.18674"><vh>@bool qt-use-scintilla = False</vh></v>
@@ -403,7 +404,6 @@
 <v t="mork.20041010095009"><vh>@file ../plugins/xsltWithNodes.py</vh></v>
 </v>
 <v t="ekr.20181030041436.1"><vh>Gui</vh>
-<v t="ekr.20170419092835.1"><vh>@file ../plugins/cursesGui2.py</vh></v>
 <v t="peckj.20150428142633.1"><vh>@file ../plugins/python_terminal.py</vh></v>
 </v>
 <v t="ekr.20140723122936.17925"><vh>Importer plugins</vh>
@@ -3296,5 +3296,6 @@ efc.GitDiffController(c).diff_two_branches(
     fn='leo/commands/abbrevCommands.py',  # Don't use back slashes.
 )
 </t>
+<t tx="ekr.20260526171943.1"></t>
 </tnodes>
 </leo_file>

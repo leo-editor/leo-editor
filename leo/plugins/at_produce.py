@@ -143,7 +143,7 @@ def runList(c, aList):
                     stdin=PIPE,
                     stdout=PIPE,
                     stderr=PIPE,
-                    # shell=True, # $4662.
+                    shell=True,
                 )
                 fi, fo, fe = p.stdin, p.stdout, p.stderr
                 while 1:

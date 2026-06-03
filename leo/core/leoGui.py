@@ -383,6 +383,9 @@ class LeoKeyEvent:
         )
         assert g.isStrokeOrNone(self.stroke), f"(LeoKeyEvent) {self.stroke!r} {g.callers()}"
 
+        def info(obj: Any) -> str:
+            return f"char: {self.char!r:>6} {id(obj)} {obj.__class__.__name__} {obj_name(obj)}"
+
         def obj_name(obj: Any) -> str:
             return g.app.gui.widget_name(obj)
 
@@ -405,23 +408,23 @@ class LeoKeyEvent:
             trace('no w --> ', w.__class__.__name__)
             if w is None:
                 return
-        # else:
-        #     trace(f" text? {isinstance(w, QTextMixin):1} w", w.__class__.__name__)
+
+        # trace(f" text? {isinstance(w, QTextMixin):1} w", info(w))
 
         # Ensure that self.w is a wrapper for all key-related Qt widgets.
         if c.widget_name(w).startswith('log'):
             self.w = c.frame.log.logCtrl
             return
         if isinstance(w, QTextMixin):
-            trace('QTextMixin', 'w.__class__.__name__')
+            trace('QTextMixin', info(w))
             self.w = w
             return
         if wrapper := getattr(w, 'wrapper', None):
-            trace('w.wrapper', wrapper.__class__.__name__)
+            trace('w.wrapper', info(wrapper))
             self.w = wrapper
             return
         if wrapper := getattr(w, 'leo_wrapper', None):
-            trace('w.leo_wrapper', wrapper.__class__.__name__)
+            trace('w.leo_wrapper', info(wrapper))
             self.w = wrapper
             return
         if isinstance(w, QtWidgets.QTextEdit):
@@ -440,12 +443,12 @@ class LeoKeyEvent:
 
         # Anything should be valid here: we don't expect the wrapper to do key handling.
         self.w = w
-        trace('unknown w', w.__class__.__name__)
-        if not isinstance(w, QtWidgets.QWidget):
-            # We expect that w is a wrapper, but we don't much care.
-            name = obj_name(w)
-            if not name.startswith(('body', 'canvas', 'head', 'mini')):
-                trace_always('unusual w', f"{w.__class__.__name__} name: {name}")
+        if c.widget_name(w).startswith(
+            ('body', 'canvas', 'head', 'mini', 'find-wrapper', 'MainWindow')
+        ):
+            trace('known w', info(w))
+        else:
+            trace('unusual w', info(w))
 
     # @+node:ekr.20140907103315.18774: *3*  LeoKeyEvent.__repr__
     def __repr__(self) -> str:
@@ -487,6 +490,9 @@ class NullGui(LeoGui):
         self.script = None
 
     # @+node:ekr.20031218072017.3744: *3* NullGui.dialogs
+    def openFindDialog(self, c: Cmdr) -> None:
+        return None
+
     def runAboutLeoDialog(
         self, c: Cmdr, version: str, theCopyright: str, url: str, email: str
     ) -> str:

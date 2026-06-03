@@ -4443,7 +4443,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         # We are not checking the return code here, so:
         # pylint: disable=subprocess-run-check
-        result = subprocess.run(cmd, shell=False, capture_output=True, text=True, encoding='utf-8')
+        result = subprocess.run(cmd, capture_output=True, text=True, encoding='utf-8', shell=True)
         return result.stdout, result.stderr
 
     # @-others

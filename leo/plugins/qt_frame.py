@@ -316,8 +316,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
         row = dw.create_find_replacebox(grid, parent, row)
         max_row2 = 1
         max_row2 = dw.create_find_checkboxes(grid, parent, max_row2, row)
-        row = dw.create_find_buttons(grid, parent, max_row2, row)
-        row = dw.create_help_row(grid, parent, row)
+        if 0:  # These buttons are non-functional reminders.
+            row = dw.create_find_buttons(grid, parent, max_row2, row)
         dw.override_events()
         # Last row: Widgets that take all additional vertical space.
         w = QtWidgets.QWidget()
@@ -446,17 +446,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
             setattr(ftm, name, w)
         return max_row2
 
-    # @+node:ekr.20131118152731.16853: *5* dw.create_help_row
-    def create_help_row(self, grid: QGridLayout, parent: QWidget, row: int) -> int:
-        # Help row.
-        if False:
-            w = self.createLabel(
-                parent, 'findHelp', 'For help: <alt-x>help-for-find-commands<return>'
-            )
-            grid.addWidget(w, row, 0, 1, 3)
-            row += 1
-        return row
-
     # @+node:ekr.20131118152731.16852: *5* dw.create_find_buttons
     def create_find_buttons(
         self, grid: QGridLayout, parent: QWidget, max_row2: int, row: int
@@ -551,6 +540,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             # @+node:ekr.20131118172620.16894: *7* EventWrapper.keyPress
             def keyPress(self, event: LeoKeyEvent) -> bool:
                 s = event.text()
+                w = self.w
                 out = s and s in '\t\r\n'
                 if out:
                     # Move focus to next widget.
@@ -563,7 +553,15 @@ class DynamicWindow(QtWidgets.QMainWindow):
                     elif self.func:
                         self.func()
                     return True
+
                 binding, ch, lossage = self.eventFilter.toBinding(event)
+
+                # #4685: A hack for Up/Down arrows in the Find Tab/Dialog
+                if c.widget_name(w) == 'findPattern':  # A Qt Widget, not a Leo Wrapper.
+                    if ch in ('Up', 'Down'):
+                        c.findCommands.do_arrow(char=ch, in_minibuffer=False)
+                        return True
+
                 # #2094: Use code similar to the end of LeoQtEventFilter.eventFilter.
                 #        The ctor converts <Alt-X> to <Alt-x> !!
                 #        That is, we must use the stroke, not the binding.
@@ -900,54 +898,43 @@ class DynamicWindow(QtWidgets.QMainWindow):
     def createLogPane(self, parent: QWidget) -> None:
         """Create all parts of Leo's log pane."""
         c = self.leo_c
-        #
+
         # Create the log frame.
         logFrame = self.createFrame(parent, 'logFrame', vPolicy=Policy.Minimum)
         innerFrame = self.createFrame(
             logFrame, 'logInnerFrame', hPolicy=Policy.Preferred, vPolicy=Policy.Expanding
         )
         tabWidget = self.createTabWidget(innerFrame, 'logTabWidget')
-        #
+
         # Pack.
         innerGrid = self.createGrid(innerFrame, 'logInnerGrid')
         innerGrid.addWidget(tabWidget, 0, 0, 1, 1)
         outerGrid = self.createGrid(logFrame, 'logGrid')
         outerGrid.addWidget(innerFrame, 0, 0, 1, 1)
-        #
+
         # Create the Find tab, embedded in a QScrollArea.
         findScrollArea = QtWidgets.QScrollArea()
         findScrollArea.setObjectName('findScrollArea')
-        # Find tab.
         findTab = QtWidgets.QWidget()
         findTab.setObjectName('findTab')
-        #
-        # #516 and #1507: Create a Find tab unless we are using a dialog.
-        #
-        # Careful: @bool minibuffer-ding-mode overrides @bool use-find-dialog.
+
+        # #516 and #1507: Create a Find tab unless we are *only* using the Find dialog.
         use_minibuffer = c.config.getBool('minibuffer-find-mode', default=False)
         use_dialog = c.config.getBool('use-find-dialog', default=False)
         if use_minibuffer or not use_dialog:
             tabWidget.addTab(findScrollArea, 'Find')
-        # Complete the Find tab in LeoFind.finishCreate.
-        self.findScrollArea = findScrollArea
-        self.findTab = findTab
-        #
+
         # Spell tab.
         spellTab = QtWidgets.QWidget()
         spellTab.setObjectName('spellTab')
         tabWidget.addTab(spellTab, 'Spell')
         self.createSpellTab(spellTab)
         tabWidget.setCurrentIndex(1)
-        #
-        # Official ivars
-        self.tabWidget = tabWidget  # Used by LeoQtLog.
 
-    # @+node:ekr.20131118172620.16858: *5* dw.finishCreateLogPane
-    def finishCreateLogPane(self) -> None:
-        """It's useful to create this late, because c.config is now valid."""
-        assert self.findTab
-        self.createFindTab(self.findTab, self.findScrollArea)
-        self.findScrollArea.setWidget(self.findTab)
+        # Official ivars
+        self.findScrollArea = findScrollArea
+        self.findTab = findTab
+        self.tabWidget = tabWidget  # Used by LeoQtLog.
 
     # @+node:ekr.20110605121601.18146: *4* dw.createMainLayout
     def createMainLayout(self, parent: QWidget) -> tuple[QWidget, QWidget]:
@@ -1075,7 +1062,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         # Official ivars.
         self.leo_statusBar = w
 
-    # @+node:ekr.20240726174902.1: *4* dw.createVRPanes (new)
+    # @+node:ekr.20240726174902.1: *4* dw.createVRPanes
     def createVRPanes(self) -> list[QtWidgets.QFrame]:
         """
         Create the VR and/or the VR3 panes if either plugin is enabled.
@@ -1087,6 +1074,13 @@ class DynamicWindow(QtWidgets.QMainWindow):
         panes: list[QtWidgets.QFrame] = []
 
         return panes
+
+    # @+node:ekr.20131118172620.16858: *4* dw.finishCreateLogPane
+    def finishCreateLogPane(self) -> None:
+        """It's useful to create this late, because c.config is now valid."""
+        assert self.findTab
+        self.createFindTab(self.findTab, self.findScrollArea)
+        self.findScrollArea.setWidget(self.findTab)
 
     # @+node:ekr.20110605121601.18212: *4* dw.packLabel
     def packLabel(self, w: QWidget, n: int = None) -> None:
@@ -1218,7 +1212,6 @@ class FindTabManager:
         self.check_box_search_body = None
         self.check_box_search_headline = None
         self.check_box_whole_word = None
-        # self.check_box_wrap_around = None
         # Radio buttons
         self.radio_button_file_only = None
         self.radio_button_entire_outline = None
@@ -1246,8 +1239,11 @@ class FindTabManager:
         w.setSelection(0, len(s))
 
     def set_entry_focus(self) -> None:
-        # Remember the widget that had focus, changing headline widgets
-        # to the tree pane widget.  Headline widgets can disappear!
+        """
+        Remember the widget that had focus, changing headline widgets to the tree pane widget.
+
+        Headline widgets can disappear!
+        """
         c = self.c
         w = g.app.gui.get_focus(raw=True)
         if w != c.frame.body.wrapper.widget:
@@ -1261,7 +1257,10 @@ class FindTabManager:
 
         Similar to LeoFind.default_settings, but only for find-tab values.
         """
-        return g.Bunch(
+        c = self.c
+        finder = c.findCommands
+
+        bunch = g.Bunch(
             # State...
             in_headline = False,
             reverse     = False,
@@ -1281,6 +1280,9 @@ class FindTabManager:
             whole_word      = self.check_box_whole_word.isChecked(),
         )  # fmt: skip
 
+        finder._remember_settings(bunch)  # #4685
+        return bunch
+
     # @+node:ekr.20131117120458.16789: *3* FindTabManager.init_widgets (creates callbacks)
     def init_widgets(self) -> None:
         """
@@ -1289,12 +1291,13 @@ class FindTabManager:
         """
         c = self.c
         find = c.findCommands
+
         # Find/change text boxes.
-        table1 = (
+        text_table = (
             ('find_findbox',    'find_text',   '<find pattern here>'),
             ('find_replacebox', 'change_text', ''),
         )  # fmt: skip
-        for ivar, setting_name, default in table1:
+        for ivar, setting_name, default in text_table:
             s = c.config.getString(setting_name) or default
             w = getattr(self, ivar)
             w.insert(s)
@@ -1302,8 +1305,9 @@ class FindTabManager:
                 w.clearFocus()
             else:
                 w.setSelection(0, len(s))
+
         # Check boxes.
-        table2 = (
+        check_box_table = (
             ('ignore_case',     self.check_box_ignore_case),
             ('mark_changes',    self.check_box_mark_changes),
             ('mark_finds',      self.check_box_mark_finds),
@@ -1311,9 +1315,8 @@ class FindTabManager:
             ('search_body',     self.check_box_search_body),
             ('search_headline', self.check_box_search_headline),
             ('whole_word',      self.check_box_whole_word),
-            # ('wrap',          self.check_box_wrap_around),
         )  # fmt: skip
-        for setting_name, w in table2:
+        for setting_name, w in check_box_table:
             val = c.config.getBool(setting_name, default=False)
             # The setting name is also the name of the LeoFind ivar.
             assert hasattr(find, setting_name), setting_name
@@ -1333,14 +1336,15 @@ class FindTabManager:
                 c.bodyWantsFocusNow()
 
             w.stateChanged.connect(check_box_callback)
+
         # Radio buttons
-        table3 = (
+        radio_buttons_table = (
             ('node_only',       'node_only',       self.radio_button_node_only),
             ('entire_outline',  None,              self.radio_button_entire_outline),
             ('suboutline_only', 'suboutline_only', self.radio_button_suboutline_only),
             ('file_only',       'file_only',       self.radio_button_file_only),
         )  # fmt: skip
-        for setting_name, ivar, w in table3:
+        for setting_name, ivar, w in radio_buttons_table:
             val = c.config.getBool(setting_name, default=False)
             # The setting name is also the name of the LeoFind ivar.
             if ivar is not None:
@@ -1365,7 +1369,7 @@ class FindTabManager:
     # @+node:ekr.20210923060904.1: *3* FindTabManager.set_widgets_from_dict
     def set_widgets_from_dict(self, d: g.Bunch) -> None:
         """Set all settings from d."""
-        # Similar to FindTabManagerinit_widgets, which has already been called.
+        # Similar to FindTabManager.init_widgets, which has already been called.
         c = self.c
         find = c.findCommands
         # Set find text.
@@ -2250,7 +2254,7 @@ class LeoQtLog(leoFrame.LeoLog):
         self.contentsDict: dict[str, LeoQTextBrowser] = {}  # Keys: tab names.
         self.eventFilters: list = []  # To make filters work!
         self.qtFrameDict: dict[str, QTabWidget] = {}
-        self.logCtrl: QWidget = None  # A union.
+        self.logCtrl: Any = None  # A Union.
         self.logDict: dict[str, LeoQTextBrowser] = {}  # Keys: tab names.
         self.logWidget: LeoLog = None
         self.menu: qt_text.LeoQTextBrowser = None
@@ -2303,8 +2307,7 @@ class LeoQtLog(leoFrame.LeoLog):
                 c.findCommands.startSearch(event=None)
 
         w.currentChanged.connect(tab_callback)
-        # #1286.
-        w.customContextMenuRequested.connect(self.onContextMenu)
+        w.customContextMenuRequested.connect(self.onContextMenu)  # #1286.
 
     # @+node:ekr.20110605121601.18316: *4* LeoQtLog.getName
     def getName(self) -> str:
@@ -2644,50 +2647,15 @@ class LeoQtLog(leoFrame.LeoLog):
     def numberOfVisibleTabs(self) -> int:
         return len([val for val in self.contentsDict.values() if val is not None])
 
-    # @+node:ekr.20110605121601.18331: *4* LeoQtLog.selectTab & helpers
+    # @+node:ekr.20110605121601.18331: *4* LeoQtLog.selectTab
     def selectTab(self, tabName: str, wrap: str = 'none') -> None:
         """Create the tab if necessary and make it active."""
         i = self.findTabIndex(tabName)
         if i is None:
             self.createTab(tabName, wrap=wrap)
-            self.finishCreateTab(tabName)
         self.finishSelectTab(tabName)
 
-    # @+node:ekr.20190603064815.1: *5* LeoQtLog.finishCreateTab
-    def finishCreateTab(self, tabName: str) -> None:
-        """Finish creating the given tab. Do not set focus!"""
-        c = self.c
-        i = self.findTabIndex(tabName)
-        widget: LeoQTextBrowser = None
-        wrapper: LeoQTextBrowser = None
-        if i is None:
-            g.trace('Can not happen', tabName)
-            self.tabName: str = None
-            return
-        # #1161.
-        if tabName == 'Log':
-            widget = self.contentsDict.get('Log')
-            if widget:
-                wrapper = getattr(widget, 'leo_log_wrapper', None)
-                if wrapper and isinstance(wrapper, qt_text.QTextEditWrapper):
-                    self.logCtrl = wrapper
-            if not wrapper:
-                g.trace('NO LOG WRAPPER')
-        if tabName == 'Find':
-            # Do *not* set focus here!
-            # #1254861: Ctrl-f doesn't ensure find input field visible.
-            if c.config.getBool('auto-scroll-find-tab', default=True):
-                # This is the cause of unwanted scrolling.
-                findbox = c.findCommands.ftm.find_findbox
-                if hasattr(widget, 'ensureWidgetVisible'):
-                    widget.ensureWidgetVisible(findbox)
-                else:
-                    findbox.setFocus()
-        if tabName == 'Spell':
-            # Set a flag for the spell system.
-            self.qtFrameDict['Spell'] = self.tabWidget.widget(i)
-
-    # @+node:ekr.20190603064816.1: *5* LeoQtLog.finishSelectTab
+    # @+node:ekr.20190603064816.1: *4* LeoQtLog.finishSelectTab
     def finishSelectTab(self, tabName: str) -> None:
         """Select the proper tab."""
         w = self.tabWidget
@@ -4109,18 +4077,6 @@ class QtMenuWrapper(LeoQtMenu, QtWidgets.QMenu):  # type:ignore
             g.trace(f"can not happen: no action for {commandName}")
 
     # @-others
-
-
-# @+node:ekr.20110605121601.18461: ** class QtSearchWidget
-class QtSearchWidget:
-    """A dummy widget class to pass to Leo's core find code."""
-
-    def __init__(self) -> None:
-        self.insertPoint = 0
-        self.selection = 0, 0
-        self.wrapper = self
-        self.body = self
-        self.text = None
 
 
 # @+node:ekr.20110605121601.18257: ** class QtStatusLineClass

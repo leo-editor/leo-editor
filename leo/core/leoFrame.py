@@ -1471,6 +1471,7 @@ class NullIconBarClass:
     def __init__(self, c: Cmdr) -> None:
         """Ctor for NullIconBarClass."""
         self.c = c
+        self.w = None
 
     # @+node:ekr.20070301164543.2: *3* NullIconBarClass.add
     def add(self, *args: Any, **keys: Any) -> Widget:
