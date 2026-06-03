@@ -21,7 +21,7 @@ os.chdir(home_dir)
 
 # Install.
 python = sys.executable
-command = f"{python} -m pip install leo==6.8.8"
+command = f"{python} -m pip install leo==6.8.9"
 print(command)
 subprocess.Popen(command, shell=True).communicate()
 # @-leo

@@ -26,7 +26,7 @@ assert os.path.isdir(leo_editor_dir), repr(leo_editor_dir)
 os.chdir(leo_editor_dir)
 
 python = sys.executable
-command = rf"{python} -m wheel_inspect dist\leo-6.8.8-py3-none-any.whl >inspect_wheel.txt"
+command = rf"{python} -m wheel_inspect dist\leo-6.8.9-py3-none-any.whl >inspect_wheel.txt"
 print(command)
 subprocess.Popen(command, shell=True).communicate()
 
