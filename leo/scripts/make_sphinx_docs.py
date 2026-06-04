@@ -33,9 +33,8 @@ g_app: Any = None  # g.app, as defined in the bridge.
 conf_version_pat = re.compile(r"^version\s*=\s*\'([0-9]+\.[0-9]+\.[0-9]+)\'")
 
 
-def get_leo_version(docs_path: str) -> str:
+def get_leo_version(conf_path: str) -> str:
     """Return the version in conf.py"""
-    conf_path = g.os_path_finalize_join(docs_path, 'html', 'conf.py')
     try:
         with open(conf_path, 'rb') as f:
             s = g.toUnicode(f.read())
@@ -52,13 +51,12 @@ def main() -> None:
     """
     Make all html files using sphinx and copy the results to leo-editor/docs.
     """
-    global g_app
-
-    # First, open LeoDocs.leo in the bridge and define g.
+    # Open LeoDocs.leo in the bridge and set g_app global.
     c = open_leo_docs()
     if not c:
         return
 
+    # Compute paths.
     finalize = g.os_path_finalize_join
     docs_path = html_path = finalize(g_app.loadDir, '..', '..', 'docs')
     if not os.path.exists(docs_path):
@@ -68,18 +66,17 @@ def main() -> None:
     if not os.path.exists(docs_static_path):
         print(f"Not found: {docs_static_path!r}")
         return
+    conf_path = finalize(docs_path, 'html', 'conf.py')
+    if not os.path.exists(conf_path):
+        print(f"Not found: {conf_path!r}")
+        return
 
-    ###
-    # build_path = finalize(doc, 'html', '_build', 'html')
-    # docs_path = finalize(docs)
-    # docs_static_path = finalize(docs, '_static')
-    # doc_static_path = finalize(doc, 'html', '_build', 'html', '_static')
-
+    # Get version from
     os.chdir(html_path)
-    if version := get_leo_version(docs_path):
+    if version := get_leo_version(conf_path):
         print(f"Found Leo version: {version}")
     else:
-        print('no version in conf.py')
+        print(f"no version in {conf_path}")
         return
     patch_home_page(c, docs_path, version)
     if 0:
@@ -195,7 +192,6 @@ def patch_home_page(c: Cmdr, docs_path: str, version: str) -> None:
 # @+node:ekr.20260604044407.4: ** print_git_status
 def print_git_status() -> None:
     """Report git status"""
-    global g_app
     leo_path = g.os_path_finalize_join(g_app.loadDir, '..', '..')
     os.chdir(leo_path)
     print('')
