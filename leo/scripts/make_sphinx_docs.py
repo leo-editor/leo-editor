@@ -56,8 +56,14 @@ def main() -> None:
     """
     Make all html files using sphinx and copy the results to leo-editor/docs.
     """
-    g = leo_g
-    finalize = g.os_path_finalize_join
+    global g
+
+    # First, open LeoDocs.leo in the bridge and define g.
+    c = open_leo_docs()
+    if not c:
+        return
+
+    finalize = leo_g.os_path_finalize_join
     join = os.path.join
 
     # Base paths. Not finalized.
@@ -82,14 +88,12 @@ def main() -> None:
     if fails:
         g.printObj(fails, tag='run: Missing paths...')
         return
-    c = open_leo_docs()
-    if not c:
-        return
-    os.chdir(html_path)
-    patch_home_page(c)
-    write_intermediate_files(c)
-    make_html(html_path)
-    print_git_status()
+    if 0:  ### Not yet.
+        os.chdir(html_path)
+        patch_home_page(c)
+        write_intermediate_files(c)
+        make_html(html_path)
+        print_git_status()
 
 
 # @+node:ekr.20260604044407.5: ** make_html
