@@ -53,10 +53,6 @@ if TYPE_CHECKING:  # pragma: no cover
         QTextEditWrapper,
         QTextMixin,
     )
-    from leo.plugins.cursesGui2 import (
-        BodyWrapper as CursesBodyWrapper,
-        MiniBufferWrapper as CursesMiniBufferWrapper,
-    )
 
     Widget = Any  # 'Any' is the correct annotation for base class widgets.
 
@@ -122,10 +118,8 @@ class LeoBody:
         self.c = c
         self.frame = frame
         # Define these here to keep mypy happy.
-        self.widget: Any = None  # cursesGui2.py: will be an npyscreen widget.
-        self.wrapper: (
-            StringTextWrapper | QScintillaWrapper | QTextEditWrapper | CursesBodyWrapper
-        ) = None
+        self.widget: Any = None
+        self.wrapper: StringTextWrapper | QScintillaWrapper | QTextEditWrapper = None
         # Must be overridden in subclasses...
         self.colorizer: BaseColorizer = None
         # Init user settings.
@@ -264,7 +258,7 @@ class LeoFrame:
         self.iconBar: NullIconBarClass | QtIconBarClass = None
         self.log: LeoLog | NullLog | LeoQtLog = None
         self.menu: LeoMenu | LeoQtMenu | NullMenu = None
-        self.miniBufferWidget: QMinibufferWrapper | CursesMiniBufferWrapper = None
+        self.miniBufferWidget: QMinibufferWrapper = None
         self.statusLine: NullStatusLineClass | QtStatusLineClass = None
         self.top: DynamicWindow = None
         self.tree: LeoTree | NullTree | LeoQtTree = None

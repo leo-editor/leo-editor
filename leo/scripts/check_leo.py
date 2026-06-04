@@ -118,7 +118,6 @@ class CheckLeo:
                 # 'colorize_headlines.py',
                 'contextmenu.py',
                 # 'ctagscompleter.py',
-                # 'cursesGui2.py',
                 # 'datenodes.py',
                 # 'debugger_pudb.py',
                 # 'demo.py',
