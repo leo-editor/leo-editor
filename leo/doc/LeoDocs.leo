@@ -2463,6 +2463,7 @@
 </v>
 <v t="ekr.20260531063902.1"></v>
 <v t="ekr.20260531063735.1"></v>
+<v t="ekr.20090428133936.2"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:

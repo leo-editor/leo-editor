@@ -29,7 +29,7 @@ g_app: Any = None  # g.app, as defined in the bridge.
 
 # @+others
 # @+node:ekr.20260604044407.3: ** get_leo_version
-conf_version_pat = re.compile(r"version\s*= '([0-9]+\.[0-9]+\.[0-9]+)'")
+conf_version_pat = re.compile(r"^version\s*=\s*\'([0-9]+\.[0-9]+\.[0-9]+)\'")
 
 
 def get_leo_version(c: Cmdr) -> str:
@@ -37,11 +37,10 @@ def get_leo_version(c: Cmdr) -> str:
     h = '@edit html/conf.py'
     p = g.findNodeAnywhere(c, h)
     assert p, h
-    for m in conf_version_pat.finditer(p.b):
-        version = m.group(1)
-        if version:
-            return version
-    assert False, 'no version in conf.py'
+    for line in g.splitLines(p.b):
+        if m := conf_version_pat.match(line):
+            return m.group(1).strip()
+    return ''
 
 
 # @+node:ekr.20260604044407.7: ** main
@@ -73,7 +72,12 @@ def main() -> None:
     # doc_static_path = finalize(doc, 'html', '_build', 'html', '_static')
 
     os.chdir(html_path)
-    patch_home_page(c)
+    version = patch_home_page(c)
+    if version:
+        print(f"Found Leo version: {version}")
+    else:
+        print('no version in conf.py')
+        return
     if 0:
         write_intermediate_files(c)
     if 0:
