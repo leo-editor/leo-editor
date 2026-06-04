@@ -208,6 +208,7 @@ def print_git_status() -> None:
     leo_path = g.os_path_finalize_join(g_app.loadDir, '..', '..')
     os.chdir(leo_path)
     print('')
+    print('git status')
     g.execute_shell_commands('git status')
 
 
