@@ -9,29 +9,22 @@ make_sphinx_docs.py:  Regenerate the leo-editor/docs folder.
 - Run make-html.
 """
 
-# @@language python
-
 # @+<< make_sphinx_docs: imports and annotations >>
 # @+node:ekr.20260604045635.1: ** << make_sphinx_docs: imports and annotations >>
 from datetime import datetime
-
-# import glob
 import os
 import re
-
-# import shutil
 from typing import Any, TYPE_CHECKING
 from sphinx import __version__ as sphinx_version
 
 import leo.core.leoBridge as leoBridge
-from leo.core import leoGlobals as g
+from leo.core import leoGlobals as g  # g.app is None!
 
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
 # @-<< make_sphinx_docs: imports and annotations >>
 
 g.cls()
-
 g_app: Any = None  # g.app, as defined in the bridge.
 
 # @+others
@@ -64,13 +57,10 @@ def main() -> None:
         return
 
     finalize = g.os_path_finalize_join
-    # join = os.path.join
-
     docs_path = html_path = finalize(g_app.loadDir, '..', '..', 'docs')
     if not os.path.exists(docs_path):
         print(f"Not found: {docs_path!r}")
         return
-
     docs_static_path = finalize(docs_path, '_static')
     if not os.path.exists(docs_static_path):
         print(f"Not found: {docs_static_path!r}")
@@ -223,4 +213,6 @@ def write_intermediate_files(c: Cmdr) -> bool:
 
 if __name__ == '__main__':
     main()
+
+# @@language python
 # @-leo
