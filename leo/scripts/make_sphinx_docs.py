@@ -49,7 +49,7 @@ def get_leo_version(conf_path: str) -> str:
 # @+node:ekr.20260604044407.7: ** main
 def main() -> None:
     """
-    Make all html files using sphinx and copy the results to leo-editor/docs.
+    Make all html files in leo-editor/docs files using sphinx.
     """
     # Open LeoDocs.leo in the bridge and set g_app global.
     c = open_leo_docs()
