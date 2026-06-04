@@ -54,11 +54,11 @@ class TestEditFileCommands(LeoUnitTest):
         os.chdir(new_dir)
         try:
             # Run the command, suppressing output from git.
-            expected_last_headline = 'git-diff-branches master devel'
+            expected_last_headline = 'git-diff-branches main devel'
             try:
                 sys.stdout = open(os.devnull, 'w')
                 x.diff_two_branches(
-                    branch1='master',
+                    branch1='main',
                     branch2='devel',
                     fn='leo/core/leoGlobals.py',  # Don't use backslashes.
                 )
