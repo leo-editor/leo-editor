@@ -5,6 +5,7 @@ make_sphinx_docs.py:  Regenerate the leo-editor/docs folder.
 
 - Open LeoDocs.leo in Leo's bridge.
 - Generate all intermediate files from @rst nodes in LeoDocs.leo.
+- Patch index.html.
 - Run make-clean.
 - Run make-html.
 """
@@ -32,15 +33,26 @@ g_app: Any = None  # g.app, as defined in the bridge.
 conf_version_pat = re.compile(r"^version\s*=\s*\'([0-9]+\.[0-9]+\.[0-9]+)\'")
 
 
-def get_leo_version(c: Cmdr) -> str:
+def get_leo_version(docs_path: str) -> str:
     """Return the version in conf.py"""
-    h = '@edit html/conf.py'
-    p = g.findNodeAnywhere(c, h)
-    assert p, h
-    for line in g.splitLines(p.b):
+    conf_path = g.os_path_finalize_join(docs_path, 'html', 'conf.py')
+    with open(conf_path, 'rb') as f:
+        s = g.toUnicode(f.read())
+    for line in g.splitLines(s):
         if m := conf_version_pat.match(line):
             return m.group(1).strip()
     return ''
+
+
+# def get_leo_version(c: Cmdr) -> str:
+#     """Return the version in conf.py"""
+#     h = '@edit html/conf.py'
+#     p = g.findNodeAnywhere(c, h)
+#     assert p, h
+#     for line in g.splitLines(p.b):
+#         if m := conf_version_pat.match(line):
+#             return m.group(1).strip()
+#     return ''
 
 
 # @+node:ekr.20260604044407.7: ** main
@@ -72,12 +84,13 @@ def main() -> None:
     # doc_static_path = finalize(doc, 'html', '_build', 'html', '_static')
 
     os.chdir(html_path)
-    version = patch_home_page(c)
-    if version:
+    if version := get_leo_version(docs_path):
         print(f"Found Leo version: {version}")
     else:
         print('no version in conf.py')
         return
+    if 0:
+        patch_home_page(c)
     if 0:
         write_intermediate_files(c)
     if 0:
