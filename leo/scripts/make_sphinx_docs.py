@@ -190,7 +190,6 @@ def patch_home_page(c: Cmdr, docs_path: str, version: str) -> None:
                 f.truncate()
     except Exception:
         g.es_exception()
-        return
 
 
 # @+node:ekr.20260604044407.4: ** print_git_status
