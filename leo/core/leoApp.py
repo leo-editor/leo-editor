@@ -1000,29 +1000,6 @@ class LeoApp:
         print(app.signon1)
 
     # @+node:ekr.20100831090251.5838: *4* app.createXGui
-    # @+node:ekr.20100831090251.5840: *5* app.createCursesGui
-    def createCursesGui(self, fileName: str = '', verbose: bool = False) -> None:
-        try:
-            import curses
-
-            assert curses
-        except Exception:
-            # g.es_exception()
-            print('can not import curses.')
-            if g.isWindows:
-                print('Windows: pip install windows-curses')
-            sys.exit()
-        try:
-            from leo.plugins import cursesGui2
-
-            ok = cursesGui2.init()
-            if ok:
-                g.app.gui = cursesGui2.LeoCursesGui()
-        except Exception:
-            g.es_exception()
-            print('can not create curses gui.')
-            sys.exit()
-
     # @+node:ekr.20090619065122.8593: *5* app.createDefaultGui
     def createDefaultGui(self, fileName: str = '', verbose: bool = False) -> None:
         """A convenience routines for plugins to create the default gui class."""
@@ -1036,10 +1013,6 @@ class LeoApp:
             app.createQtGui(fileName, verbose=verbose)
         elif argName == 'null':
             g.app.gui = g.app.nullGui
-        # elif argName.startswith('browser'):
-        #    app.createBrowserGui()
-        elif argName in ('console', 'curses'):
-            app.createCursesGui()
         if not app.gui:
             # Raise an emergency dialog.
             message = (
@@ -1088,15 +1061,6 @@ class LeoApp:
         qt_gui.init()
         if app.gui and fileName and verbose:
             print(f"Qt Gui created in {fileName}")
-
-    # @+node:ekr.20090126063121.3: *5* app.createWxGui
-    def createWxGui(self, fileName: str = '', verbose: bool = False) -> None:
-        # Do NOT omit fileName param: it is used in plugin code.
-        """A convenience routines for plugins to create the wx gui class."""
-        app = self
-        app.pluginsController.loadOnePlugin('leo.plugins.wxGui', verbose=verbose)
-        if fileName and verbose:
-            print(f"wxGui created in {fileName}")
 
     # @+node:ville.20090620122043.6275: *4* app.setGlobalDb
     def setGlobalDb(self) -> None:
@@ -1552,8 +1516,6 @@ class LeoApp:
         https://docs.python.org/2/howto/logging-cookbook.html#sending-and-receiving-logging-events-across-a-network
 
         Start this listener first, then start the broadcaster.
-
-        leo/plugins/cursesGui2.py is a typical broadcaster.
         """
         app = self
         # Kill any previous listener.
@@ -2819,7 +2781,7 @@ class LoadManager:
           --diff                use Leo as an external git diff
           --fail-fast           stop unit tests after the first failure
           --fullscreen          start fullscreen
-          --gui=GUI             specify gui: console,curses,qt,text,null
+          --gui=GUI             specify gui: qt,null
           --listen-to-log       start log_listener.py on startup
           --maximized           start maximized
           --minimized           start minimized

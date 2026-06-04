@@ -45,7 +45,6 @@ class TestGlobals(LeoUnitTest):
         ('@file', '../commands/abbrevCommands.py'),
         ('@edit', '../../launchLeo.py'),
         ('@file', '../external/log_listener.py'),
-        ('@file', '../plugins/cursesGui2.py'),
     )
     # @-<< define files data >>
     # @+<< define error_patterns >>
