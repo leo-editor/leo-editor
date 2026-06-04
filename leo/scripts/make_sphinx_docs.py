@@ -64,36 +64,31 @@ def main() -> None:
         return
 
     finalize = g.os_path_finalize_join
-    join = os.path.join
+    # join = os.path.join
 
-    # Base paths. Not finalized.
-    docs = join(g_app.loadDir, '..', '..', 'docs')
-    doc = join(g_app.loadDir, '..', 'doc')
-
-    # We will cd to the html path.
-    html_path = finalize(doc, 'html')
-
-    # We will copy all files from build_path to docs_path.
-    build_path = finalize(doc, 'html', '_build', 'html')
-    docs_path = finalize(docs)
-
-    # We will copy the static folder from doc/html/_build/html/_static to docs.
-    # We *must* use the _build-related path to update sphinx .css files.
-    docs_static_path = finalize(docs, '_static')
-    ### doc_static_path = finalize(doc, 'html', '_build', 'html', '_static')
-
-    # Step 2: Make sure all paths exist.
-    paths = (build_path, docs_path, docs_static_path, html_path)
-    fails = [z for z in paths if not g.os_path_exists(z)]
-    if fails:
-        g.printObj(fails, tag='run: Missing paths...')
+    docs_path = html_path = finalize(g_app.loadDir, '..', '..', 'docs')
+    if not os.path.exists(docs_path):
+        print(f"Not found: {docs_path!r}")
         return
-    if 0:  ### Not yet.
-        os.chdir(html_path)
-        patch_home_page(c)
+
+    docs_static_path = finalize(docs_path, '_static')
+    if not os.path.exists(docs_static_path):
+        print(f"Not found: {docs_static_path!r}")
+        return
+
+    ###
+    # build_path = finalize(doc, 'html', '_build', 'html')
+    # docs_path = finalize(docs)
+    # docs_static_path = finalize(docs, '_static')
+    # doc_static_path = finalize(doc, 'html', '_build', 'html', '_static')
+
+    os.chdir(html_path)
+    patch_home_page(c)
+    if 0:
         write_intermediate_files(c)
+    if 0:
         make_html(html_path)
-        print_git_status()
+    print_git_status()
 
 
 # @+node:ekr.20260604044407.5: ** make_html
@@ -114,7 +109,7 @@ def make_html(html_path: str) -> None:
 # @+node:ekr.20260604050039.1: ** open_leo_docs
 def open_leo_docs() -> Cmdr:
     """Open LeoDocs.leo using Leo's bridge."""
-    global g, g_app
+    global g_app
 
     path = g.os_path_finalize_join(__file__, '..', '..', 'doc', 'LeoDocs.leo')
 
@@ -125,13 +120,13 @@ def open_leo_docs() -> Cmdr:
         silent=False,
         verbose=True,
     )
-    g = controller.globals()
-    if not g:
+    controller_g = controller.globals()
+    if controller_g.app:
+        g_app = controller_g.app
+    else:
         print('Can not create Leo\'s bridge')
         return None
-    if g.app:
-        g_app = g.app
-    else:
+    if not g_app:
         print('Can not create g.app')
         return None
     c = controller.openLeoFile(path)
