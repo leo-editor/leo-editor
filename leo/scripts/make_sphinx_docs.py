@@ -11,8 +11,6 @@ make_sphinx_docs.py:  Regenerate the leo-editor/docs folder.
 
 # @@language python
 
-breakpoint()  ###
-
 # @+<< make_sphinx_docs: imports and annotations >>
 # @+node:ekr.20260604045635.1: ** << make_sphinx_docs: imports and annotations >>
 from datetime import datetime
@@ -58,7 +56,8 @@ def main() -> None:
     """
     Make all html files using sphinx and copy the results to leo-editor/docs.
     """
-    finalize = leo_g.os_path_finalize_join
+    g = leo_g
+    finalize = g.os_path_finalize_join
     join = os.path.join
 
     # Base paths. Not finalized.
@@ -81,7 +80,7 @@ def main() -> None:
     paths = (build_path, docs_path, docs_static_path, html_path)
     fails = [z for z in paths if not g.os_path_exists(z)]
     if fails:
-        leo_g.printObj(fails, tag='run: Missing paths...')
+        g.printObj(fails, tag='run: Missing paths...')
         return
     c = open_leo_docs()
     if not c:
