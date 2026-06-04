@@ -24,15 +24,15 @@ from typing import Any, TYPE_CHECKING
 from sphinx import __version__ as sphinx_version
 
 import leo.core.leoBridge as leoBridge
-from leo.core import leoGlobals as leo_g
+from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
 # @-<< make_sphinx_docs: imports and annotations >>
 
-leo_g.cls()
+g.cls()
 
-g: Any = None  # The bridge's g defines g.app.
+g_app: Any = None  # g.app, as defined in the bridge.
 
 # @+others
 # @+node:ekr.20260604044407.3: ** get_leo_version
@@ -56,19 +56,19 @@ def main() -> None:
     """
     Make all html files using sphinx and copy the results to leo-editor/docs.
     """
-    global g
+    global g_app
 
     # First, open LeoDocs.leo in the bridge and define g.
     c = open_leo_docs()
     if not c:
         return
 
-    finalize = leo_g.os_path_finalize_join
+    finalize = g.os_path_finalize_join
     join = os.path.join
 
     # Base paths. Not finalized.
-    docs = join(g.app.loadDir, '..', '..', 'docs')
-    doc = join(g.app.loadDir, '..', 'doc')
+    docs = join(g_app.loadDir, '..', '..', 'docs')
+    doc = join(g_app.loadDir, '..', 'doc')
 
     # We will cd to the html path.
     html_path = finalize(doc, 'html')
@@ -114,8 +114,9 @@ def make_html(html_path: str) -> None:
 # @+node:ekr.20260604050039.1: ** open_leo_docs
 def open_leo_docs() -> Cmdr:
     """Open LeoDocs.leo using Leo's bridge."""
-    global g
-    path = leo_g.os_path_finalize_join(__file__, '..', '..', 'doc', 'LeoDocs.leo')
+    global g, g_app
+
+    path = g.os_path_finalize_join(__file__, '..', '..', 'doc', 'LeoDocs.leo')
 
     controller = leoBridge.controller(
         gui='nullGui',
@@ -125,9 +126,17 @@ def open_leo_docs() -> Cmdr:
         verbose=True,
     )
     g = controller.globals()
+    if not g:
+        print('Can not create Leo\'s bridge')
+        return None
+    if g.app:
+        g_app = g.app
+    else:
+        print('Can not create g.app')
+        return None
     c = controller.openLeoFile(path)
     if not c:
-        print("Can not open: {path}")
+        print(f"Can not open: {path}")
     return c
 
 
@@ -193,7 +202,8 @@ def patch_home_page(c: Cmdr) -> None:
 # @+node:ekr.20260604044407.4: ** print_git_status
 def print_git_status() -> None:
     """Report git status"""
-    leo_path = g.os_path_finalize_join(g.app.loadDir, '..', '..')
+    global g_app
+    leo_path = g.os_path_finalize_join(g_app.loadDir, '..', '..')
     os.chdir(leo_path)
     print('')
     g.execute_shell_commands('git status')
@@ -202,7 +212,6 @@ def print_git_status() -> None:
 # @+node:ekr.20260604044407.8: ** write_intermediate_files
 def write_intermediate_files(c: Cmdr) -> bool:
     """Return True if the rst3 command wrote any intermediate files."""
-    g = leo_g
     h = "Leo's Documentation"
     p = g.findTopLevelNode(c, h)
     if not p:
