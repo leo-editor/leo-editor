@@ -21,8 +21,6 @@ ignore = [
 exclude = [
     # Exclude entire folders...
     "leo/external/*.py",
-    "leo/external/npyscreen/*.py",
-    "leo/external/npyscreen/compatibility_code/*.py",
     "leo/plugins/obsolete/*.py",
     "leo/plugins/leo_babel/babel*.py",
     "leo/plugins/leo_babel/tests/*.py",

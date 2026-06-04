@@ -56,10 +56,6 @@ PyQt6>= 6.6
 PyQt6-QScintilla
 PyQt6-WebEngine
 Send2Trash; platform_system=="Windows"  # For picture_viewer plugin.
-
-# cursesGui2 plugin is no longer supported.
-# The windows-curses package works with Python 3.14.
-# windows-curses[curses]; platform_system=="Windows"  # python_version < "3.15"
 # @-<< requirements.txt: dependencies >>
 
 # @@language python
