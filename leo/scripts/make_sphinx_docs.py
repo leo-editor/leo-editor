@@ -36,23 +36,15 @@ conf_version_pat = re.compile(r"^version\s*=\s*\'([0-9]+\.[0-9]+\.[0-9]+)\'")
 def get_leo_version(docs_path: str) -> str:
     """Return the version in conf.py"""
     conf_path = g.os_path_finalize_join(docs_path, 'html', 'conf.py')
-    with open(conf_path, 'rb') as f:
-        s = g.toUnicode(f.read())
-    for line in g.splitLines(s):
-        if m := conf_version_pat.match(line):
-            return m.group(1).strip()
-    return ''
-
-
-# def get_leo_version(c: Cmdr) -> str:
-#     """Return the version in conf.py"""
-#     h = '@edit html/conf.py'
-#     p = g.findNodeAnywhere(c, h)
-#     assert p, h
-#     for line in g.splitLines(p.b):
-#         if m := conf_version_pat.match(line):
-#             return m.group(1).strip()
-#     return ''
+    try:
+        with open(conf_path, 'rb') as f:
+            s = g.toUnicode(f.read())
+        for line in g.splitLines(s):
+            if m := conf_version_pat.match(line):
+                return m.group(1).strip()
+        return ''
+    except Exception:
+        return ''
 
 
 # @+node:ekr.20260604044407.7: ** main
@@ -89,8 +81,7 @@ def main() -> None:
     else:
         print('no version in conf.py')
         return
-    if 0:
-        patch_home_page(c)
+    patch_home_page(c, docs_path, version)
     if 0:
         write_intermediate_files(c)
     if 0:
@@ -148,14 +139,13 @@ leo_version_pat = re.compile(r'^(.*?)Leo\s*([0-9]+\.[0-9]+\.[0-9]+)(.*)$')
 sphinx_version_pat = re.compile(r'^(.*?)Sphinx\s*([0-9]+\.[0-9]+\.[0-9]+)(.*)$')
 
 
-def patch_home_page(c: Cmdr) -> None:
+def patch_home_page(c: Cmdr, docs_path: str, version: str) -> None:
     """
     Update (in *this*file) the "Last updated" and "Created using" fields in
     the node `@file ../../docs/index.html` or its descendants.
     """
     today = datetime.today()
     date = datetime.date(today).strftime("%B %d, %Y")  # Same as conf.py.
-    leo_version = get_leo_version(c)
 
     def date_repl(m: re.Match) -> str:
         s = m.group(0)
@@ -165,7 +155,7 @@ def patch_home_page(c: Cmdr) -> None:
     def leo_version_repl(m: re.Match) -> str:
         s = m.group(0)
         i, j = m.start(2), m.end(2)
-        return s[:i] + leo_version + s[j:]
+        return s[:i] + version + s[j:]
 
     def sphinx_version_repl(m: re.Match) -> str:
         s = m.group(0)
@@ -177,28 +167,30 @@ def patch_home_page(c: Cmdr) -> None:
         (leo_version_pat, leo_version_repl),
         (sphinx_version_pat, sphinx_version_repl),
     )
-    h = '@file ../../docs/index.html'
-    home_page = g.findNodeAnywhere(c, h)
-    if not home_page:
-        g.trace(f"Not found: {h!r}")
+
+    # Perform the substitutions directly in index.html.
+    index_path = g.os_path_finalize_join(docs_path, 'index.html')
+    try:
+        with open(index_path, 'r+') as f:
+            s = g.toUnicode(f.read())
+            old_lines = g.splitLines(s)
+            new_lines = old_lines[:]
+            for i, line in enumerate(g.splitLines(s)):
+                for pattern, repl in table:
+                    line = re.sub(pattern, repl, line)
+                    if line != old_lines[i]:
+                        print('')
+                        print(f"Changed line {i:<2} of index.html")
+                        print('old:', old_lines[i].rstrip())
+                        print('new:', line.rstrip())
+                        break
+            if False and new_lines != old_lines:  ###
+                f.seek(0)
+                f.write(''.join(new_lines))
+                f.truncate()
+    except Exception:
+        g.es_exception()
         return
-    for p in home_page.self_and_subtree():
-        old_lines = g.splitLines(p.b)
-        new_lines = old_lines[:]
-        for i, old_line in enumerate(old_lines):
-            new_line = old_line
-            for pattern, repl in table:
-                new_line = re.sub(pattern, repl, new_line)
-                if new_line != old_lines[i]:
-                    print('')
-                    print(f"Changed line {i:<2} of {p.h}")
-                    print(new_line.rstrip())
-                    new_lines[i] = old_lines[i] = new_line
-        if new_lines != g.splitLines(p.b):
-            p.b = ''.join(new_lines)
-            print('')
-            c.setChanged()
-            home_page.setDirty()
 
 
 # @+node:ekr.20260604044407.4: ** print_git_status
