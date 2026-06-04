@@ -140,7 +140,7 @@ class BridgeController:
             self.g = g
         except ImportError:
             print("Error importing leoGlobals.py")
-        #
+
         # Create the application object.
         try:
             # Tell leoApp.createDefaultGui not to create a gui.
@@ -220,7 +220,7 @@ class BridgeController:
         g.doHook("start2", c=None, p=None, v=None, fileName=None)
         t2 = time.process_time()
         if self.verbose:
-            print(f"bridge.initLeo:     {t2 - t1:.2f} sec.")
+            print(f"bridge.initLeo: {t2 - t1:.2f} sec.")
 
     # @+node:ekr.20070302061713: *4* bridge.adjustSysPath
     def adjustSysPath(self) -> None:
@@ -249,14 +249,19 @@ class BridgeController:
     # @+node:ekr.20070227095743: *4* bridge.createGui
     def createGui(self) -> None:
         g = self.g
-        if self.guiName == 'nullGui':
+        name = self.guiName
+        if name not in ('qt', 'nullGui'):
+            g.trace(f"Unknown gui: {name}. Using null gui.")
+            name = 'nullGui'
+
+        if name == 'nullGui':  # Predefined objects.
             g.app.gui = g.app.nullGui
             g.app.log = g.app.gui.log = log = g.app.nullLog
             log.isNull = False
             log.enabled = True  # Allow prints from NullLog.
-            log.logInited = True  # Bug fix: 2012/10/17.
+            log.logInited = True
         else:
-            assert False, f"leoBridge.py: unsupported gui: {self.guiName}"  # noqa
+            g.app.createQtGui(verbose=True)
 
     # @+node:ekr.20070227093629.4: *4* bridge.isValidPython
     def isValidPython(self) -> bool:
@@ -333,7 +338,7 @@ class BridgeController:
             log.enabled = True
         t2 = time.process_time()
         if self.verbose:
-            print(f"bridge.openLeoFile: {t2 - t1:.2f} sec.")
+            print(f"bridge.open:    {t2 - t1:.2f} sec. {g.shortFileName(fileName)} ")
         return c
 
     # @+node:ekr.20070227093629.5: *4* bridge.completeFileName
