@@ -1,5 +1,5 @@
 # @+leo-ver=5-thin
-# @+node:ekr.20260604043712.1: * @file make_sphinx_docs.py
+# @+node:ekr.20260604043712.1: * @file ../scripts/make_sphinx_docs.py
 """
 make_sphinx_docs.py:  Regenerate the leo-editor/docs folder.
 
@@ -10,6 +10,8 @@ make_sphinx_docs.py:  Regenerate the leo-editor/docs folder.
 """
 
 # @@language python
+
+breakpoint()  ###
 
 # @+<< make_sphinx_docs: imports and annotations >>
 # @+node:ekr.20260604045635.1: ** << make_sphinx_docs: imports and annotations >>
@@ -30,12 +32,9 @@ if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
 # @-<< make_sphinx_docs: imports and annotations >>
 
-g: Any = None  # Use the bridge's g so that g.app is defined.
-g.cls()
-trace = True
+leo_g.cls()
 
-# join = os.path.join
-# norm = os.path.normpath
+g: Any = None  # The bridge's g defines g.app.
 
 # @+others
 # @+node:ekr.20260604044407.3: ** get_leo_version
