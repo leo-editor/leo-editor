@@ -71,7 +71,7 @@ def main() -> None:
         print(f"Not found: {conf_path!r}")
         return
 
-    # Get version from
+    # Get version from conf.py.
     os.chdir(html_path)
     if version := get_leo_version(conf_path):
         print(f"Found Leo version: {version}")
