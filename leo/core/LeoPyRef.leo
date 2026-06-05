@@ -101,7 +101,7 @@
 <v t="EKR.20040430162943"><vh>The attic</vh>
 <v t="ekr.20170302123956.1"><vh>@file ../doc/leoAttic.txt</vh></v>
 </v>
-<v t="ekr.20031218072017.2406" descendentVnodeUnknownAttributes="7d71005809000000302e332e332e322e3071017d71025808000000616e6e6f7461746571037d71042858080000007072696f7269747971054d0f27580a000000707269736574646174657106580a000000323032362d30352d303171077573732e"><vh>Code</vh>
+<v t="ekr.20031218072017.2406"><vh>Code</vh>
 <v t="ekr.20140902032918.18591"><vh>About this file</vh>
 <v t="ekr.20140831085423.18630"><vh>Terminology</vh></v>
 <v t="ekr.20140831085423.18631"><vh>Official ivars</vh></v>
@@ -163,11 +163,11 @@
 <v t="ekr.20150514040146.1"><vh>@file ../commands/rectangleCommands.py</vh></v>
 <v t="ekr.20150514040239.1"><vh>@file ../commands/spellCommands.py</vh></v>
 </v>
-<v t="ekr.20031218072017.3625" descendentVnodeUnknownAttributes="7d71005807000000302e332e322e3071017d71025808000000616e6e6f7461746571037d71042858080000007072696f7269747971054d0f27580a000000707269736574646174657106580a000000323032362d30352d303171077573732e"><vh>Gui base classes</vh>
+<v t="ekr.20031218072017.3625"><vh>Gui base classes</vh>
 <v t="ekr.20250329033400.1"><vh>@file leoAPI.py</vh></v>
 <v t="ekr.20060123151617"><vh>@file leoFind.py</vh></v>
 <v t="ekr.20031218072017.3655"><vh>@file leoFrame.py</vh></v>
-<v t="ekr.20031218072017.3719" descendentVnodeUnknownAttributes="7d71005805000000302e322e3071017d71025808000000616e6e6f7461746571037d71042858080000007072696f7269747971054d0f27580a000000707269736574646174657106580a000000323032362d30352d303171077573732e"><vh>@file leoGui.py</vh></v>
+<v t="ekr.20031218072017.3719"><vh>@file leoGui.py</vh></v>
 <v t="ekr.20061031131434"><vh>@file leoKeys.py</vh></v>
 <v t="ekr.20031218072017.3749"><vh>@file leoMenu.py</vh></v>
 </v>
@@ -1215,7 +1215,7 @@ efc.GitDiffController(c).diff_two_branches(
 <t tx="ekr.20190402091335.1">from leo.commands import editFileCommands as efc
 
 efc.GitDiffController(c).diff_two_revs(
-    rev1='master',  # Old
+    rev1='main',  # Old
     rev2='6.8.8',  # New
     path='leo/core',  # Optional path, relative to the git directory.
 )
@@ -1698,7 +1698,7 @@ print(f"found {count} nodes.")
 # Monkey-patched git-diff-pr command.
 import leo.commands.editFileCommands as efc
 
-rev1 = 'master'  
+rev1 = 'main'  
 rev2 = 'ekr-walk-special-case'
 x = efc.GitDiffController(c)
 
@@ -2692,7 +2692,7 @@ from leo.commands import editFileCommands as efc
 
 # Any branch or rev is valid.
 efc.GitDiffController(c).summary_diff_two_revs(
-    rev1='master',    # Old
+    rev1='main',    # Old
     rev2='6.8.8',     # New
     path='leo/core',  # Limit diffs to this directory, relative to the nearest git repo.
 )  # fmt: skip
@@ -3254,7 +3254,7 @@ from leo.commands import editFileCommands as efc
 
 # Any branch or rev is valid.
 efc.GitDiffController(c).summary_diff_two_revs(
-    rev1='master',    # Old
+    rev1='main',    # Old
     rev2='6.8.8',     # New
     path='leo/commands',  # Limit diffs to this directory, relative to the nearest git repo.
 )  # fmt: skip
@@ -3262,7 +3262,7 @@ efc.GitDiffController(c).summary_diff_two_revs(
 <t tx="ekr.20260503052547.1">from leo.commands import editFileCommands as efc
 
 efc.GitDiffController(c).diff_two_revs(
-    rev1='master',  # Old
+    rev1='main',  # Old
     rev2='devel',  # New
     # Optional path, relative to the git directory.
     # path='leo/core',
@@ -3273,7 +3273,7 @@ efc.GitDiffController(c).diff_two_revs(
 <t tx="ekr.20260503063747.1">from leo.commands import editFileCommands as efc
 
 efc.GitDiffController(c).diff_two_revs(
-    rev1='master',  # Old
+    rev1='main',  # Old
     rev2='6.8.9',  # New
     # Optional path, relative to the git directory.
     # path='leo/core',
