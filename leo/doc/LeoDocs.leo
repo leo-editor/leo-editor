@@ -64,7 +64,8 @@
 <v t="ekr.20230110153501.1"><vh>find_broken_links</vh></v>
 </v>
 <v t="ekr.20131016083406.16724"><vh>@button make-sphinx</vh>
-<v t="ekr.20241124122954.1"><vh>copy_all_files</vh></v>
+<v t="ekr.20241124122954.1"><vh>copy_files</vh></v>
+<v t="ekr.20260605053307.1"><vh>copy_recursive</vh></v>
 <v t="ekr.20241127053544.1"><vh>get_leo_version</vh></v>
 <v t="ekr.20230303080626.1"><vh>git_status</vh></v>
 <v t="ekr.20230303064734.1"><vh>make_html</vh></v>
@@ -2463,8 +2464,9 @@
 </v>
 <v t="ekr.20260531063902.1"></v>
 <v t="ekr.20260531063735.1"></v>
-<v t="ekr.20090428133936.2"></v>
 <v t="ekr.20131016083406.16724"></v>
+<v t="ekr.20230228105847.1"></v>
+<v t="ekr.20241124122954.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -14772,7 +14774,7 @@ After running this script, copy files
 @language python
 
 g.cls()
-g.cls()
+### g.cls()
 
 from datetime import datetime
 import glob
@@ -30885,6 +30887,9 @@ def run():
     docs_static_path = finalize(join(docs, '_static'))
     doc_static_path = finalize(join(doc, 'html', '_build', 'html', '_static' ))
     
+    doc_slides_path = finalize(join(doc, 'html', '_build', 'html', 'slides'))  ### New
+    docs_slides_path = finalize(join(docs, 'slides'))  ###
+    
     # Step 2: Make sure all paths exist.
     paths = (build_path, docs_path, docs_static_path, html_path)
     fails = [z for z in paths if not g.os_path_exists(z)]
@@ -30903,8 +30908,9 @@ def run():
         write_intermediate_files()
         make_html(html_path)
         print('')
-        copy_all_files(build_path, docs_path)
-        copy_all_files(doc_static_path, docs_static_path)
+        copy_files(build_path, docs_path)
+        copy_files(doc_static_path, docs_static_path)
+        copy_recursive(doc_slides_path, docs_slides_path)
         print('')
         git_status()
     finally:
@@ -32018,9 +32024,8 @@ If a pattern matcher matches an ``@language`` or coloring directive, the matcher
 
 If a pattern matcher matches syntax that continues to the next line, the pattern matcher creates a **restarter matcher** by calling ``setRestart``. The restarter matchers are essentially closures, bindings of the pattern matcher *and all of its kwargs*. The details are hairy, but the coding pattern is the same for all cases. See the source code for details.
 </t>
-<t tx="ekr.20241124122954.1">def copy_all_files(from_directory: str, to_directory: str) -&gt; None:
+<t tx="ekr.20241124122954.1">def copy_files(from_directory: str, to_directory: str) -&gt; None:
     """Copy *all* html files from `from_directory` to `to_directory`."""
-    trace = False
     if not os.path.exists(to_directory):
         print(f"Directory not found: {to_directory!r}")
         return
@@ -32033,9 +32038,9 @@ If a pattern matcher matches syntax that continues to the next line, the pattern
             fn = finalize(f)
             shutil.copy2(fn, to_directory)
             written += 1
-        except Exception:
-            print(f"Not Copied {fn}")
-    print(f"Copied {written} files from {from_directory:55} to {to_directory}")
+        except Exception as e:
+            print(f"Not Copied {e} {fn}")
+    print(f"Copied {written:3} files from {from_directory:55} to {to_directory}")
 </t>
 <t tx="ekr.20241125122939.1">date_pat = re.compile(r'^(.*?)(Last updated on\s*)(.+)(.*)$')
 leo_version_pat = re.compile(r'^(.*?)Leo\s*([0-9]+\.[0-9]+\.[0-9]+)(.*)$')
@@ -32694,6 +32699,14 @@ Leo is an [outline-oriented text editor](https://leo-editor.github.io/leo-editor
 - PR `PR #4607`_: Improve formatting of unit tests.
 - PR `PR #4631`_, `PR #4637`_, `PR #4639`_:  Remove the confusion between wrappers and widgets.
 - PR `PR #4678`_: Remove unnecessary ``type-ignore`` suppressions.
+</t>
+<t tx="ekr.20260605053307.1">def copy_recursive(from_directory: str, to_directory: str) -&gt; None:
+
+    if os.path.exists(to_directory):
+        val = shutil.copytree(from_directory, to_directory, dirs_exist_ok=True)
+        g.trace(val)
+    else:
+        print(f"Directory not found: {to_directory!r}")
 </t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
