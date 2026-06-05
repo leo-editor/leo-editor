@@ -63,14 +63,15 @@
 <v t="ekr.20230110153129.1"><vh>find_web_links</vh></v>
 <v t="ekr.20230110153501.1"><vh>find_broken_links</vh></v>
 </v>
-<v t="ekr.20131016083406.16724"><vh>@button make-sphinx</vh>
-<v t="ekr.20241124122954.1"><vh>copy_all_files</vh></v>
-<v t="ekr.20241127053544.1"><vh>get_leo_version</vh></v>
-<v t="ekr.20230303080626.1"><vh>git_status</vh></v>
-<v t="ekr.20230303064734.1"><vh>make_html</vh></v>
-<v t="ekr.20241125122939.1"><vh>patch_home_page</vh></v>
-<v t="ekr.20230228105847.1"><vh>run</vh></v>
-<v t="ekr.20230111165336.1"><vh>write_intermediate_files</vh></v>
+<v t="ekr.20260605070320.1"><vh>@button make-sphinx</vh>
+<v t="ekr.20260605070320.2"><vh>copy_files</vh></v>
+<v t="ekr.20260605070320.3"><vh>copy_recursive</vh></v>
+<v t="ekr.20260605070320.4"><vh>get_leo_version</vh></v>
+<v t="ekr.20260605070320.5"><vh>git_status</vh></v>
+<v t="ekr.20260605070320.6"><vh>make_html</vh></v>
+<v t="ekr.20260605070320.7"><vh>patch_home_page</vh></v>
+<v t="ekr.20260605070320.8"><vh>run</vh></v>
+<v t="ekr.20260605070320.9"><vh>write_intermediate_files</vh></v>
 </v>
 <v t="ekr.20230110152349.1" descendentVnodeUnknownAttributes="7d71005807000000302e302e302e3371017d710258090000007374725f6174696d657103580c000000313337363431323930312e30710473732e"><vh>@ignore disabled buttons</vh>
 <v t="ekr.20111017085134.16158" descendentVnodeUnknownAttributes="7d71005805000000302e302e3371017d710258090000007374725f6174696d657103580c000000313337363431323930312e30710473732e"><vh> Slideshow Buttons</vh>
@@ -14755,49 +14756,6 @@ This chapter tells how to install and run Leo.
 - Generators visit all or parts of the outline, in a specified order.
 
 For more information, consult `Leo's cheat sheet &lt;cheatsheet.html&gt;`_ and `Leo's scripting miscellany &lt;scripting-miscellany.html&gt;`_</t>
-<t tx="ekr.20131016083406.16724">@language python
-"""
-Run this script from the `gh-pages` branch.
-
-1. Generate intermediate files for all headlines in the table.
-2. Run `make html` from the leo/doc/html directory.
-
-After running this script, copy files
-- from leo/doc/html/_build/html to leo-editor/docs
-- from leo/doc/html/_build/html/_static to leo/editor-docs/_static
-"""
-
-@language python
-
-g.cls()
-g.cls()
-
-from datetime import datetime
-import glob
-import os
-import re
-import shutil
-from sphinx import __version__ as sphinx_version
-
-trace = False
-headlines = [
-    "Leo's Documentation"
-]
-
-join = os.path.join
-norm = os.path.normpath
-
-def finalize(s):
-    return g.os_path_finalize(norm(s))
-
-@others  # define helpers
-
-if c.isChanged():  # Save this file initially.
-    c.save()
-run()
-if c.isChanged():  # Save this file again if we have patched the home page.
-    c.save()
-</t>
 <t tx="ekr.20131016103844.16730">See the docstring of these plugins for more details::
 
     bookmarks.py        Manages URL's used as bookmarks.
@@ -29644,21 +29602,6 @@ Bugs
 - `All noteworthy issues`_.</t>
 <t tx="ekr.20230111163935.1">c.backup_helper(sub_dir='leoDocs')
 </t>
-<t tx="ekr.20230111165336.1">def write_intermediate_files() -&gt; int:
-    """Return True if the rst3 command wrote any intermediate files."""
-    total_n = 0
-    for headline in headlines:
-        p = g.findTopLevelNode(c, headline)
-        if p:
-            c.selectPosition(p)
-            n = c.rstCommands.rst3()
-            total_n += n
-        else:
-            g.es_print(f"Not found: {headline!r}")
-            return False
-    if total_n == 0:
-        g.es_print('No intermediate files changed', color='red')
-    return total_n &gt; 0</t>
 <t tx="ekr.20230111171223.1">def find_docs_links():
     """Find all links in all .html files in the leo-editor/docs directory."""
     docs_path = g.os_path_finalize_join(g.app.loadDir,'..','..','docs')
@@ -30859,88 +30802,9 @@ Leo's ``beautify`` command differs from `Black`_ as follows:
 <t tx="ekr.20230228100301.2">When checked, the Find and Change commands ignore the case of alphabetic characters when determining matches.
 </t>
 <t tx="ekr.20230228100301.3"></t>
-<t tx="ekr.20230228105847.1">@language python
-
-def run():
-    """
-    Make all html files using sphinx and copy the results to leo-editor/docs.
-    """
-    # Step 1. Compute all paths.
-
-    # Base paths. Not finalized.
-    docs = join(g.app.loadDir, '..', '..', 'docs')
-    doc = join(g.app.loadDir, '..', 'doc')
-    
-    # We will cd to the html path.
-    html_path = finalize(join(doc, 'html'))
-
-    # We will copy all files from build_path to docs_path.
-    build_path = finalize(join(doc, 'html', '_build', 'html'))
-    docs_path = finalize(docs)
-    
-    # We will copy the static folder from doc/html/_build/html/_static to docs.
-    # We *must* use the _build-related path to update sphinx .css files.
-    docs_static_path = finalize(join(docs, '_static'))
-    doc_static_path = finalize(join(doc, 'html', '_build', 'html', '_static' ))
-    
-    # Step 2: Make sure all paths exist.
-    paths = (build_path, docs_path, docs_static_path, html_path)
-    fails = [z for z in paths if not g.os_path_exists(z)]
-    if fails:
-        g.printObj(fails, tag='run: Missing paths...')
-        return
-        
-    # Step 3: Do nothing else outside 'gh-pages' branch.
-    if not g.gitBranchName().startswith('gh-pages'):
-        g.es_print('Run `make-sphinx` from `gh-pages` branch')
-        return
-    try:
-        old_p = c.p
-        os.chdir(html_path)
-        patch_home_page()
-        write_intermediate_files()
-        make_html(html_path)
-        print('')
-        copy_all_files(build_path, docs_path)
-        copy_all_files(doc_static_path, docs_static_path)
-        print('')
-        git_status()
-    finally:
-        c.selectPosition(old_p)
-</t>
-<t tx="ekr.20230303064734.1">def make_html(html_path):
-    """
-    Run the `make html` command in the leo/doc/html directory.
-    """
-    cwd = finalize(os.getcwd())
-    assert cwd.lower() == html_path.lower(), (cwd, html_path)
-    
-    if 0:  # `make clean` is good for testing.
-        g.execute_shell_commands(['make clean'])
-        
-    if 1:  # Simplest, safest.
-        g.execute_shell_commands(['make html'])
-    elif 0:  # Works. Arguments are from the MakeFile.
-        g.execute_shell_commands([
-            'python -m sphinx -b html -d _build/doctrees . _build/html',
-        ])
-    else:  # Fastest, but depends on sphinx's API.
-        from sphinx.cmd import build
-        args = '-b html -d _build/doctrees . _build/html'
-        argv = args.split(' ')
-        build.build_main(argv)</t>
 <t tx="ekr.20230303070618.1">ctrl-click-at-cursor
 make-sphinx
 find-bad-links</t>
-<t tx="ekr.20230303080626.1">def git_status():
-    """Report git status"""
-    leo_path = finalize(join(g.app.loadDir, '..', '..'))
-    os.chdir(leo_path)
-    g.execute_shell_commands([
-        'git status',
-    ])
-
-</t>
 <t tx="ekr.20230409052507.1">Leo https://leo-editor.github.io/leo-editor/ 6.7.3 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
 
 Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/preface.html).
@@ -32016,83 +31880,6 @@ If a pattern matcher matches an ``@language`` or coloring directive, the matcher
 
 If a pattern matcher matches syntax that continues to the next line, the pattern matcher creates a **restarter matcher** by calling ``setRestart``. The restarter matchers are essentially closures, bindings of the pattern matcher *and all of its kwargs*. The details are hairy, but the coding pattern is the same for all cases. See the source code for details.
 </t>
-<t tx="ekr.20241124122954.1">def copy_all_files(from_directory: str, to_directory: str) -&gt; None:
-    """Copy *all* html files from `from_directory` to `to_directory`."""
-    trace = False
-    if not os.path.exists(to_directory):
-        print(f"Directory not found: {to_directory!r}")
-        return
-    files = glob.glob(f"{from_directory}{os.sep}*")
-    files = [z for z in files if os.path.isfile(z)]
-    # Announce.
-    written = 0
-    for f in files:
-        try:
-            fn = finalize(f)
-            shutil.copy2(fn, to_directory)
-            written += 1
-        except Exception:
-            print(f"Not Copied {fn}")
-    print(f"Copied {written} files from {from_directory:55} to {to_directory}")
-</t>
-<t tx="ekr.20241125122939.1">date_pat = re.compile(r'^(.*?)(Last updated on\s*)(.+)(.*)$')
-leo_version_pat = re.compile(r'^(.*?)Leo\s*([0-9]+\.[0-9]+\.[0-9]+)(.*)$')
-sphinx_version_pat = re.compile(r'^(.*?)Sphinx\s*([0-9]+\.[0-9]+\.[0-9]+)(.*)$')
-
-def patch_home_page():
-    """
-    Update (in *this*file) the "Last updated" and "Created using" fields in
-    the node `@file ../../docs/index.html` or its descendants.
-    """
-    today = datetime.today()
-    date = datetime.date(today).strftime("%B %d, %Y")  # Same as conf.py.
-    leo_version = get_leo_version()
-
-    def date_repl(m: re.Match) -&gt; str:
-        s = m.group(0)
-        i, j = m.start(3), m.end(3)
-        return s[:i] + date + s[j:]
-    
-    def leo_version_repl(m: re.Match) -&gt; str:
-        s = m.group(0)
-        i, j = m.start(2), m.end(2)
-        return s[:i] + leo_version + s[j:]
-
-    def sphinx_version_repl(m: re.Match) -&gt; str:
-        s = m.group(0)
-        i, j = m.start(2), m.end(2)
-        return s[:i] + sphinx_version + s[j:]
-
-    table = (
-        (date_pat, date_repl),
-        (leo_version_pat, leo_version_repl),
-        (sphinx_version_pat, sphinx_version_repl),
-    )
-    h = '@file ../../docs/index.html'
-    home_page = g.findNodeAnywhere(c, h)
-    if not home_page:
-        g.trace(f"Not found: {h!r}")
-        return
-    any_changed = False
-    for p in home_page.self_and_subtree():
-        old_lines = g.splitLines(p.b)
-        new_lines = old_lines[:]
-        for i, old_line in enumerate(old_lines):
-            new_line = old_line
-            for pattern, repl in table:
-                new_line = re.sub(pattern, repl, new_line)
-                if new_line != old_lines[i]:
-                    print('')
-                    print(f"Changed line {i:&lt;2} of {p.h}")
-                    print(new_line.rstrip())
-                    new_lines[i] = old_lines[i] = new_line
-                    changed = True
-        if new_lines != g.splitLines(p.b):
-            p.b = ''.join(new_lines)
-            print('')
-            c.setChanged()
-            home_page.setDirty()
-            any_changed = True</t>
 <t tx="ekr.20241126091524.1">Leo https://leo-editor.github.io/leo-editor/ 6.8.3 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
 
 Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/preface.html).
@@ -32150,19 +31937,6 @@ Leo is an [IDE, outliner and PIM](https://leo-editor.github.io/leo-editor/prefac
 - `PR #4203`_: Add ``@language vue``.
 - `PR #4207`_: Upgrade Leo's website using the latest version of Sphinx.
 - `PR #4209`_: Improve the ``@button sphinx-build`` script in ``LeoDocs.leo``.
-</t>
-<t tx="ekr.20241127053544.1">conf_version_pat = re.compile(r"version\s*= '([0-9]+\.[0-9]+\.[0-9]+)'")
-
-def get_leo_version():
-    """Return the version in conf.py"""    
-    h = '@edit html/conf.py'
-    p = g.findNodeAnywhere(c, h)
-    assert p, h
-    for m in conf_version_pat.finditer(p.b):
-        version = m.group(1)
-        if version:
-            return version
-    assert False, 'no version in conf.py'
 </t>
 <t tx="ekr.20241206192042.1">gnx: ekr.20240110034324.27
 unl: Table of contents
@@ -32693,6 +32467,244 @@ Leo is an [outline-oriented text editor](https://leo-editor.github.io/leo-editor
 - PR `PR #4631`_, `PR #4637`_, `PR #4639`_:  Remove the confusion between wrappers and widgets.
 - PR `PR #4678`_: Remove unnecessary ``type-ignore`` suppressions.
 </t>
+<t tx="ekr.20260605070320.1">@language python
+"""
+Run this script from the `gh-pages` branch.
+
+1. Generate intermediate files for all headlines in the table.
+2. Run `make html` from the leo/doc/html directory.
+
+After running this script, copy files
+- from leo/doc/html/_build/html to leo-editor/docs
+- from leo/doc/html/_build/html/_static to leo/editor-docs/_static
+"""
+
+@language python
+
+g.cls()
+g.cls()
+
+from datetime import datetime
+import glob
+import os
+import re
+import shutil
+from sphinx import __version__ as sphinx_version
+
+trace = False
+headlines = [
+    "Leo's Documentation"
+]
+
+join = os.path.join
+norm = os.path.normpath
+
+def finalize(s):
+    return g.os_path_finalize(norm(s))
+
+@others  # define helpers
+
+if c.isChanged():  # Save this file initially.
+    c.save()
+run()
+if c.isChanged():  # Save this file again if we have patched the home page.
+    c.save()
+</t>
+<t tx="ekr.20260605070320.2">def copy_files(from_directory: str, to_directory: str) -&gt; None:
+    """Copy *all* html files from `from_directory` to `to_directory`."""
+    if not os.path.exists(to_directory):
+        print(f"Directory not found: {to_directory!r}")
+        return
+    files = glob.glob(f"{from_directory}{os.sep}*")
+    files = [z for z in files if os.path.isfile(z)]
+    # Announce.
+    written = 0
+    for f in files:
+        try:
+            fn = finalize(f)
+            shutil.copy2(fn, to_directory)
+            written += 1
+        except Exception as e:
+            print(f"Not Copied {e} {fn}")
+    print(f"Copied {written:3} files from {from_directory:55} to {to_directory}")
+</t>
+<t tx="ekr.20260605070320.3">def copy_recursive(from_directory: str, to_directory: str) -&gt; None:
+
+    if os.path.exists(to_directory):
+        val = shutil.copytree(from_directory, to_directory, dirs_exist_ok=True)
+        g.trace(val)
+    else:
+        print(f"Directory not found: {to_directory!r}")
+</t>
+<t tx="ekr.20260605070320.4">conf_version_pat = re.compile(r"version\s*= '([0-9]+\.[0-9]+\.[0-9]+)'")
+
+def get_leo_version():
+    """Return the version in conf.py"""    
+    h = '@edit html/conf.py'
+    p = g.findNodeAnywhere(c, h)
+    assert p, h
+    for m in conf_version_pat.finditer(p.b):
+        version = m.group(1)
+        if version:
+            return version
+    assert False, 'no version in conf.py'
+</t>
+<t tx="ekr.20260605070320.5">def git_status():
+    """Report git status"""
+    leo_path = finalize(join(g.app.loadDir, '..', '..'))
+    os.chdir(leo_path)
+    g.execute_shell_commands([
+        'git status',
+    ])
+
+</t>
+<t tx="ekr.20260605070320.6">def make_html(html_path):
+    """
+    Run the `make html` command in the leo/doc/html directory.
+    """
+    cwd = finalize(os.getcwd())
+    assert cwd.lower() == html_path.lower(), (cwd, html_path)
+    
+    if 0:  # `make clean` is good for testing.
+        g.execute_shell_commands(['make clean'])
+        
+    if 1:  # Simplest, safest.
+        g.execute_shell_commands(['make html'])
+    elif 0:  # Works. Arguments are from the MakeFile.
+        g.execute_shell_commands([
+            'python -m sphinx -b html -d _build/doctrees . _build/html',
+        ])
+    else:  # Fastest, but depends on sphinx's API.
+        from sphinx.cmd import build
+        args = '-b html -d _build/doctrees . _build/html'
+        argv = args.split(' ')
+        build.build_main(argv)</t>
+<t tx="ekr.20260605070320.7">date_pat = re.compile(r'^(.*?)(Last updated on\s*)(.+)(.*)$')
+leo_version_pat = re.compile(r'^(.*?)Leo\s*([0-9]+\.[0-9]+\.[0-9]+)(.*)$')
+sphinx_version_pat = re.compile(r'^(.*?)Sphinx\s*([0-9]+\.[0-9]+\.[0-9]+)(.*)$')
+
+def patch_home_page():
+    """
+    Update (in *this*file) the "Last updated" and "Created using" fields in
+    the node `@file ../../docs/index.html` or its descendants.
+    """
+    today = datetime.today()
+    date = datetime.date(today).strftime("%B %d, %Y")  # Same as conf.py.
+    leo_version = get_leo_version()
+
+    def date_repl(m: re.Match) -&gt; str:
+        s = m.group(0)
+        i, j = m.start(3), m.end(3)
+        return s[:i] + date + s[j:]
+    
+    def leo_version_repl(m: re.Match) -&gt; str:
+        s = m.group(0)
+        i, j = m.start(2), m.end(2)
+        return s[:i] + leo_version + s[j:]
+
+    def sphinx_version_repl(m: re.Match) -&gt; str:
+        s = m.group(0)
+        i, j = m.start(2), m.end(2)
+        return s[:i] + sphinx_version + s[j:]
+
+    table = (
+        (date_pat, date_repl),
+        (leo_version_pat, leo_version_repl),
+        (sphinx_version_pat, sphinx_version_repl),
+    )
+    h = '@file ../../docs/index.html'
+    home_page = g.findNodeAnywhere(c, h)
+    if not home_page:
+        g.trace(f"Not found: {h!r}")
+        return
+    any_changed = False
+    for p in home_page.self_and_subtree():
+        old_lines = g.splitLines(p.b)
+        new_lines = old_lines[:]
+        for i, old_line in enumerate(old_lines):
+            new_line = old_line
+            for pattern, repl in table:
+                new_line = re.sub(pattern, repl, new_line)
+                if new_line != old_lines[i]:
+                    print('')
+                    print(f"Changed line {i:&lt;2} of {p.h}")
+                    print(new_line.rstrip())
+                    new_lines[i] = old_lines[i] = new_line
+                    changed = True
+        if new_lines != g.splitLines(p.b):
+            p.b = ''.join(new_lines)
+            print('')
+            c.setChanged()
+            home_page.setDirty()
+            any_changed = True</t>
+<t tx="ekr.20260605070320.8">@language python
+
+def run():
+    """
+    Make all html files using sphinx and copy the results to leo-editor/docs.
+    """
+    # Step 1. Compute all paths.
+
+    # Base paths. Not finalized.
+    docs = join(g.app.loadDir, '..', '..', 'docs')
+    doc = join(g.app.loadDir, '..', 'doc')
+    
+    # We will cd to the html path.
+    html_path = finalize(join(doc, 'html'))
+
+    # We will copy all files from build_path to docs_path.
+    build_path = finalize(join(doc, 'html', '_build', 'html'))
+    docs_path = finalize(docs)
+    
+    # We will copy the static folder from doc/html/_build/html/_static to docs.
+    # We *must* use the _build-related path to update sphinx .css files.
+    docs_static_path = finalize(join(docs, '_static'))
+    doc_static_path = finalize(join(doc, 'html', '_build', 'html', '_static' ))
+    
+    doc_slides_path = finalize(join(doc, 'html', '_build', 'html', 'slides'))  ### New
+    docs_slides_path = finalize(join(docs, 'slides'))  ###
+    
+    # Step 2: Make sure all paths exist.
+    paths = (build_path, docs_path, docs_static_path, html_path)
+    fails = [z for z in paths if not g.os_path_exists(z)]
+    if fails:
+        g.printObj(fails, tag='run: Missing paths...')
+        return
+        
+    # Step 3: Do nothing else outside 'gh-pages' branch.
+    if not g.gitBranchName().startswith('gh-pages'):
+        g.es_print('Run `make-sphinx` from `gh-pages` branch')
+        return
+    try:
+        old_p = c.p
+        os.chdir(html_path)
+        patch_home_page()
+        write_intermediate_files()
+        make_html(html_path)
+        print('')
+        copy_files(build_path, docs_path)
+        copy_files(doc_static_path, docs_static_path)
+        copy_recursive(doc_slides_path, docs_slides_path)
+        print('')
+        git_status()
+    finally:
+        c.selectPosition(old_p)
+</t>
+<t tx="ekr.20260605070320.9">def write_intermediate_files() -&gt; int:
+    """Return True if the rst3 command wrote any intermediate files."""
+    total_n = 0
+    for headline in headlines:
+        p = g.findTopLevelNode(c, headline)
+        if p:
+            c.selectPosition(p)
+            n = c.rstCommands.rst3()
+            total_n += n
+        else:
+            g.es_print(f"Not found: {headline!r}")
+            return False
+    if total_n == 0:
+        g.es_print('No intermediate files changed', color='red')
+    return total_n &gt; 0</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
