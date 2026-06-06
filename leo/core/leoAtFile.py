@@ -2905,7 +2905,7 @@ class AtFile:
         # #1450: First, check that the directory exists.
         theDir = g.os_path_dirname(fileName)
         if theDir and not g.os_path_exists(theDir):
-            at.error(f"Directory not found:\n{theDir}")
+            at.error(f"{root.h}: Directory not found:\n{theDir}")
             return False
         # Now check the file.
         if not at.shouldPromptForDangerousWrite(fileName, root):
