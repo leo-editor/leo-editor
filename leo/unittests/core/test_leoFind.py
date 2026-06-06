@@ -377,8 +377,6 @@ class TestFind(LeoUnitTest):
         settings.find_text = 'def top1'
         # Start at end, so we stay in the node.
         grand_child = g.findNodeAnywhere(c, 'child 6')
-        settings.p = grand_child
-        assert settings.p
         settings.find_text = 'def child2'
         # Set c.p in the command.
         x.c.selectPosition(grand_child)
