@@ -2905,7 +2905,7 @@ class AtFile:
         # #1450: First, check that the directory exists.
         theDir = g.os_path_dirname(fileName)
         if theDir and not g.os_path_exists(theDir):
-            at.error(f"Directory not found:\n{theDir}")
+            at.error(f"{root.h}: Directory not found:\n{theDir}")
             return False
         # Now check the file.
         if not at.shouldPromptForDangerousWrite(fileName, root):
@@ -3240,25 +3240,19 @@ class AtFile:
     def warnAboutOrphandAndIgnoredNodes(self) -> None:  # pragma: no cover
         # Always warn, even when language=="cweb"
         at, root = self, self.root
+        message = 'The node is included neither by an @others directive nor a section reference'
         if at.errors:
             return  # No need to repeat this.
-        for p in root.self_and_subtree(copy=False):
+        if root.isAtAllNode():  # #4729.
+            return
+        if root.isOrphan():  # #4729.
+            return
+        for p in root.subtree(copy=False):
             if not p.v.isVisited():
                 at.writeError("Orphan node:  " + p.h)
+                g.es_print_unique_message(message)
                 if p.hasParent():
                     g.blue("parent node:", p.parent().h)
-        p = root.copy()
-        after = p.nodeAfterTree()
-        while p and p != after:
-            if p.isAtAllNode():
-                p.moveToNodeAfterTree()
-            else:
-                # #1050: test orphan bit.
-                if p.isOrphan():
-                    at.writeError("Orphan node: " + p.h)
-                    if p.hasParent():
-                        g.blue("parent node:", p.parent().h)
-                p.moveToThreadNext()
 
     # @+node:ekr.20041005105605.217: *5* at.writeError
     def writeError(self, message: str) -> None:  # pragma: no cover
