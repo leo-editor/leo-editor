@@ -256,22 +256,8 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             return
 
         # Tell the search command to restore settings on failure.
-        ivars = (
-            'change_text',
-            'file_only',
-            'find_text',
-            'ignore_case',
-            'mark_changes',
-            'mark_finds',
-            'node_only',
-            'pattern_match',
-            'search_body',
-            'search_headline',
-            'suboutline_only',
-            'whole_word',
-        )
         bunch = g.Bunch()
-        for ivar in ivars:
+        for ivar in finder.ivars:
             bunch[ivar] = getattr(finder, ivar)
         finder.previous_settings = bunch
 
