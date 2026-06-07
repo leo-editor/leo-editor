@@ -231,7 +231,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             in_headline     = False,
             find_text       = rf"({start_pat}.*?{end_pat})",
             change_text     = '',
-            file_only       = True,
+            file_only       = False,
             mark_changes    = False,
             mark_finds      = False,
             ignore_case     = True,
@@ -239,7 +239,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             pattern_match   = True,
             search_body     = True,
             search_headline = True,
-            suboutline_only = True,
+            suboutline_only = not node_only,
             whole_word      = False,
         )  # fmt: skip
         assert settings
@@ -255,26 +255,25 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         else:
             return
 
-        if node_only:
-            # Tell the search command to restore settings on failure.
-            ivars = (
-                'change_text',
-                'file_only',
-                'find_text',
-                'ignore_case',
-                'mark_changes',
-                'mark_finds',
-                'node_only',
-                'pattern_match',
-                'search_body',
-                'search_headline',
-                'suboutline_only',
-                'whole_word',
-            )
-            bunch = g.Bunch()
-            for ivar in ivars:
-                bunch[ivar] = getattr(finder, ivar)
-            finder.previous_settings = bunch
+        # Tell the search command to restore settings on failure.
+        ivars = (
+            'change_text',
+            'file_only',
+            'find_text',
+            'ignore_case',
+            'mark_changes',
+            'mark_finds',
+            'node_only',
+            'pattern_match',
+            'search_body',
+            'search_headline',
+            'suboutline_only',
+            'whole_word',
+        )
+        bunch = g.Bunch()
+        for ivar in ivars:
+            bunch[ivar] = getattr(finder, ivar)
+        finder.previous_settings = bunch
 
         # Search!
         c.endEditing()  # No need to re-edit the headline!
@@ -352,20 +351,28 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             c.endEditing()
             try:
                 contents = p.h
+                end_text = contents[ins:]
                 new_contents = self._substitution_helper(contents)
                 if new_contents != contents:
                     p.h = new_contents
+                    if new_contents.endswith(end_text):
+                        new_ins = len(new_contents) - len(end_text)
+                    else:
+                        new_ins = min(ins, len(new_contents))
+                    w.setInsertPoint(new_ins)
             finally:
                 c.treeWantsFocusNow()
                 c.editHeadline()
-                new_ins = min(ins, len(new_contents))
-                w.setInsertPoint(new_ins)
         else:
             contents = p.b
+            end_text = contents[ins:]
             new_contents = self._substitution_helper(contents)
             if new_contents != contents:
                 p.b = new_contents
-                new_ins = min(ins, len(new_contents))
+                if new_contents.endswith(end_text):
+                    new_ins = len(new_contents) - len(end_text)
+                else:
+                    new_ins = min(ins, len(new_contents))
                 p.setSelection(new_ins, len(new_contents))
                 w.setInsertPoint(new_ins)
 
