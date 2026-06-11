@@ -80,8 +80,9 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         # Return if there is nothing to do.
         # @+<< expandAbbrev: prolog >>
         # @+node:ekr.20260516052046.1: *4* << expandAbbrev: prolog >>
+        c = self.c
         ch = self.get_ch(event, stroke)
-        w = event.w if event else None
+        w = event.w if event else c.frame.body.wrapper
         if self.expanding or not g.isTextWrapper(w) or w.hasSelection() or not ch.strip():
             return False
         w_name = g.app.gui.widget_name(w)
@@ -620,7 +621,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         This corresponds to C-M-/ in Emacs.
         """
         c, p = self.c, self.c.p
-        w = event.w if event else None
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
@@ -655,7 +656,8 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         Inserts the longest common prefix of the word at the cursor. Displays
         all possible completions if the prefix is the same as the word.
         """
-        w = event.w if event else None
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()

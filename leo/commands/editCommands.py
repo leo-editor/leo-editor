@@ -496,7 +496,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         cursor.
         """
         c, u = self.c, self.c.undoer
-        w = event.w if event else None
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
 
@@ -643,7 +643,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         self.tabifyHelper(event, which='untabify')
 
     def tabifyHelper(self, event: LeoKeyEvent, which: str) -> None:
-        w = event.w if event else None
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         self.beginCommand(w, undoType=which)
@@ -680,7 +681,8 @@ class EditCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.194: *4* ec.capitalizeHelper
     def capitalizeHelper(self, event: LeoKeyEvent, which: str, undoType: str) -> None:
-        w = event.w if event else None
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
@@ -711,7 +713,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Capitalize Entire Body Or Selection."""
         frame = self
         c, p, u = frame.c, self.c.p, self.c.undoer
-        w = event.w if event else None
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
@@ -855,7 +857,8 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('set-comment-column')
     def setCommentColumn(self, event: LeoKeyEvent) -> None:
         """Set the comment column for the indent-to-comment-column command."""
-        w = event.w if event else None
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return  # pragma: no cover (defensive)
         s = w.getAllText()
@@ -870,7 +873,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         Insert whitespace to indent the line containing the insert point to the
         comment column.
         """
-        w = event.w if event else None
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         self.beginCommand(w, undoType='indent-to-comment-column')
@@ -911,7 +915,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     def centerLine(self, event: LeoKeyEvent) -> None:
         """Centers line within current fill column"""
         c = self.c
-        w = event.w if event else None
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         if self.fillColumn > 0:
@@ -936,8 +940,8 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('set-fill-column')
     def setFillColumn(self, event: LeoKeyEvent) -> None:
         """Set the fill column used by the center-line and center-region commands."""
-        k = self.c.k
-        self.w = event.w if event else None
+        c, k = self.c, self.c.k
+        self.w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(self.w):
             return
         k.setLabelBlue('Set Fill Column: ')
@@ -959,7 +963,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     def centerRegion(self, event: LeoKeyEvent) -> None:
         """Centers the selected text within the fill column"""
         c = self.c
-        w = event.w if event else None
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
@@ -993,7 +997,8 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('set-fill-prefix')
     def setFillPrefix(self, event: LeoKeyEvent) -> None:
         """Make the selected text the fill prefix."""
-        w = event.w if event else None
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
@@ -1025,8 +1030,9 @@ class EditCommandsClass(BaseEditCommandsClass):
     # @+node:ekr.20150514063305.222: *5* ec.findCharacterHelper
     def findCharacterHelper(self, event: LeoKeyEvent, backward: bool, extend: bool) -> None:
         """Put the cursor at the next occurrence of a character on a line."""
-        k = self.c.k
-        self.w = event.w if event else None
+        c = self.c
+        k = c.k
+        self.w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(self.w):
             return
         self.event = event
@@ -1076,8 +1082,8 @@ class EditCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.224: *5* ec.findWordHelper
     def findWordHelper(self, event: LeoKeyEvent, oneLine: bool) -> None:
-        k = self.c.k
-        self.w = event.w if event else None
+        c, k = self.c, self.c.k
+        self.w = event.w if event else c.frame.body.wrapper
         if self.w:
             self.oneLineFlag = oneLine
             k.setLabelBlue(f"Find word {'in line ' if oneLine else ''}starting with: ")
@@ -1124,8 +1130,8 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('goto-char')
     def gotoCharacter(self, event: LeoKeyEvent) -> None:
         """Put the cursor at the n'th character of the buffer."""
-        k = self.c.k
-        self.w = event.w if event else None
+        c, k = self.c, self.c.k
+        self.w = event.w if event else c.frame.body.wrapper
         if self.w:
             k.setLabelBlue("Goto n'th character: ")
             k.get1Arg(event, handler=self.gotoCharacter1)
@@ -1161,8 +1167,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         """
         # Improved docstring for #253: Goto Global line (Alt-G) is inconsistent.
         # https://github.com/leo-editor/leo-editor/issues/253
-        k = self.c.k
-        self.w = event.w if event else None
+        c, k = self.c, self.c.k
+        self.w = event.w if event else c.frame.body.wrapper
         if self.w:
             k.setLabelBlue('Goto global line: ')
             k.get1Arg(event, handler=self.gotoGlobalLine1)
@@ -1180,8 +1186,8 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('goto-line')
     def gotoLine(self, event: LeoKeyEvent) -> None:
         """Put the cursor at the n'th line of the buffer."""
-        k = self.c.k
-        self.w = event.w if event else None
+        c, k = self.c, self.c.k
+        self.w = event.w if event else c.frame.body.wrapper
         if self.w:
             k.setLabelBlue('Goto line: ')
             k.get1Arg(event, handler=self.gotoLine1)
@@ -1519,7 +1525,8 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('delete-indentation')
     def deleteIndentation(self, event: LeoKeyEvent) -> None:
         """Delete indentation in the presently line."""
-        w = event.w if event else None
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
@@ -1551,9 +1558,9 @@ class EditCommandsClass(BaseEditCommandsClass):
         indentation point then applicable is used. If no indentation point is
         applicable even then whitespace equivalent to a single tab is inserted.
         """
-        p, u = self.c.p, self.c.undoer
+        c, p, u = self.c, self.c.p, self.c.undoer
         undoType = 'indent-relative'
-        w = event.w if event else None
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
@@ -1607,8 +1614,8 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('line-number')
     def lineNumber(self, event: LeoKeyEvent) -> None:
         """Print the character, line number, column number and total number of characters."""
-        k = self.c.k
-        w = event.w if event else None
+        c, k = self.c, self.c.k
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
@@ -1638,8 +1645,8 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('what-line')
     def whatLine(self, event: LeoKeyEvent) -> None:
         """Print the line number of the line containing the cursor."""
-        k = self.c.k
-        w = event.w if event else None
+        c, k = self.c, self.c.k
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
@@ -1674,7 +1681,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     # @+node:ekr.20150514063305.252: *5* ec.addRemoveHelper
     def addRemoveHelper(self, event: LeoKeyEvent, ch: str, add: bool, undoType: str) -> None:
         c = self.c
-        w = event.w if event else None
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         if w.hasSelection():
@@ -1709,7 +1716,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     def backwardDeleteCharacter(self, event: LeoKeyEvent = None) -> None:
         """Delete the character to the left of the cursor."""
         c = self.c
-        w = event.w if event else None
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         wname = c.widget_name(w)
@@ -1809,7 +1816,8 @@ class EditCommandsClass(BaseEditCommandsClass):
 
         Not recommended: reindent is better.
         """
-        w = event.w if event else None
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
@@ -1831,7 +1839,8 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('clear-selected-text')
     def clearSelectedText(self, event: LeoKeyEvent) -> None:
         """Delete the selected text."""
-        w = event.w if event else None
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         i, j = w.getSelectionRange()
@@ -1866,8 +1875,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         self.deleteWordHelper(event, forward=False, smart=True)
 
     def deleteWordHelper(self, event: LeoKeyEvent, forward: bool, smart: bool = False) -> None:
-        # c = self.c
-        w = event.w if event else None
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         self.beginCommand(w, undoType="delete-word")
@@ -1888,7 +1897,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     def deleteNextChar(self, event: LeoKeyEvent) -> None:
         """Delete the character to the right of the cursor."""
         c = self.c
-        w = event.w if event else None
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         wname = c.widget_name(w)
@@ -1922,7 +1931,8 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('delete-spaces')
     def deleteSpaces(self, event: LeoKeyEvent, insertspace: bool = False) -> None:
         """Delete all whitespace surrounding the cursor."""
-        w = event.w if event else None
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         undoType = 'insert-space' if insertspace else 'delete-spaces'
@@ -1952,7 +1962,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     def insertHardTab(self, event: LeoKeyEvent) -> None:
         """Insert one hard tab."""
         c = self.c
-        w = event.w if event else None
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         name = c.widget_name(w)
@@ -1977,7 +1987,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         """A helper that can be monkey-patched by tables.py plugin."""
         # Note: insertNewlineHelper already exists.
         c, k = self.c, self.c.k
-        w = event.w if event else None
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         name = c.widget_name(w)
@@ -1997,7 +2007,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         trace = 'keys' in g.app.debug
         c, k = self.c, self.c.k
         p = c.p
-        w = event.w if event else None
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         name = c.widget_name(w)
@@ -2017,7 +2027,8 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('insert-parentheses')
     def insertParentheses(self, event: LeoKeyEvent) -> None:
         """Insert () at the cursor."""
-        w = event.w if event else None
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         self.beginCommand(w, undoType='insert-parenthesis')
@@ -2031,7 +2042,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     def insertSoftTab(self, event: LeoKeyEvent) -> None:
         """Insert spaces equivalent to one tab."""
         c = self.c
-        w = event.w if event else None
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         name = c.widget_name(w)
@@ -2054,7 +2065,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         Select all lines if there is no existing selection.
         """
         c, p, u = self.c, self.c.p, self.c.undoer
-        w = event.w if event else None
+        w = event.w if event else c.frame.body.wrapper
         if not w:
             return
         # "Before" snapshot.
@@ -2086,8 +2097,8 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('replace-current-character')
     def replaceCurrentCharacter(self, event: LeoKeyEvent) -> None:
         """Replace the current character with the next character typed."""
-        k = self.c.k
-        self.w = event.w if event else None
+        c, k = self.c, self.c.k
+        self.w = event.w if event else c.frame.body.wrapper
         if self.w:
             k.setLabelBlue('Replace Character: ')
             k.get1Arg(event, handler=self.replaceCurrentCharacter1)
@@ -2126,7 +2137,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         trace = 'keys' in g.app.debug
         c, p, u = self.c, self.c.p, self.c.undoer
         undoType = 'Typing'
-        w = event.w if event else None
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return  # pragma: no cover (defensive)
         # @+<< set local vars >>
@@ -2466,7 +2477,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         c = self.c
         if not c.p.threadNext():
             return
-        w = event.w if event else None
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
@@ -2491,7 +2502,8 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('split-line')
     def splitLine(self, event: LeoKeyEvent) -> None:
         """Split a line at the cursor position."""
-        w = event.w if event else None
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         self.beginCommand(w, undoType='split-line')
@@ -2573,7 +2585,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         in a way that can be described by a Tk Text expression.
         """
         c, k = self.c, self.c.k
-        w = event.w if event else None
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         c.widgetWantsFocusNow(w)
@@ -2588,7 +2600,8 @@ class EditCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.305: *5* ec.moveWithinLineHelper
     def moveWithinLineHelper(self, event: LeoKeyEvent, spot: str, extend: bool) -> None:
-        w = event.w if event else None
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         # Bug fix: 2012/02/28: don't use the Qt end-line logic:
@@ -2638,7 +2651,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         The cursor is placed at the start of the word unless end=True
         """
         c = self.c
-        w = event.w if event else None
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return  # pragma: no cover (defensive)
         c.widgetWantsFocusNow(w)
@@ -2757,7 +2770,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         Position the point at the first non-blank character on the line,
         or the start of the line if already there.
         """
-        w = event.w if event else None
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
@@ -2779,7 +2793,8 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('back-to-indentation')
     def backToIndentation(self, event: LeoKeyEvent) -> None:
         """Position the point at the first non-blank character on the line."""
-        w = event.w if event else None
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return  # pragma: no cover (defensive)
         s = w.getAllText()
@@ -2848,7 +2863,8 @@ class EditCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.293: *5* ec.moveUpOrDownHelper
     def moveUpOrDownHelper(self, event: LeoKeyEvent, direction: str, extend: bool) -> None:
-        w = event.w if event else None
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return  # pragma: no cover (defensive)
         ins = w.getInsertPoint()
@@ -2894,7 +2910,8 @@ class EditCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.295: *5* ec.moveToBufferHelper
     def moveToBufferHelper(self, event: LeoKeyEvent, spot: str, extend: bool) -> None:
-        w = event.w if event else None
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return  # pragma: no cover (defensive)
         if hasattr(w, 'leoMoveCursorHelper'):
@@ -2932,7 +2949,8 @@ class EditCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.297: *5* ec.moveToCharacterHelper
     def moveToCharacterHelper(self, event: LeoKeyEvent, spot: str, extend: bool) -> None:
-        w = event.w if event else None
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         if hasattr(w, 'leoMoveCursorHelper'):
@@ -2967,7 +2985,7 @@ class EditCommandsClass(BaseEditCommandsClass):
 
     def extendModeHelper(self, event: LeoKeyEvent, val: bool) -> None:
         c = self.c
-        w = event.w if event else None
+        w = event.w if event else c.frame.body.wrapper
         if g.isTextWrapper(w):
             self.extendMode = val
             if not g.unitTesting:
@@ -2994,7 +3012,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         selected text).
         """
         c = self.c
-        w = event.w if event else None
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         if hasattr(w, 'leoMoveCursorHelper'):
@@ -3013,7 +3031,8 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('extend-to-line')
     def extendToLine(self, event: LeoKeyEvent) -> None:
         """Select the line at the cursor."""
-        w = event.w if event else None
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
@@ -3031,7 +3050,8 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('extend-to-sentence')
     def extendToSentence(self, event: LeoKeyEvent) -> None:
         """Select the line at the cursor."""
-        w = event.w if event else None
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
@@ -3052,7 +3072,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         w: QTextMixin = None,
     ) -> tuple[int, int]:
         """Compute the word at the cursor. Select it if select arg is True."""
-        w = event.w if event else None
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return 0, 0
         s = w.getAllText()
@@ -3140,7 +3161,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     # @+node:ekr.20150514063305.304: *5* ec.movePastCloseHelper
     def movePastCloseHelper(self, event: LeoKeyEvent, extend: bool) -> None:
         c = self.c
-        w = event.w if event else None
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         c.widgetWantsFocusNow(w)
@@ -3206,7 +3227,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         self, event: LeoKeyEvent, kind: str, extend: bool
     ) -> None:  # kind in back/forward.
         """Move the cursor up/down one page, possibly extending the selection."""
-        w = event.w if event else None
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         linesPerPage = 15  # To do.
