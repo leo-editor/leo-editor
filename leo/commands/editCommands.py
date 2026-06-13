@@ -1030,8 +1030,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     # @+node:ekr.20150514063305.222: *5* ec.findCharacterHelper
     def findCharacterHelper(self, event: LeoKeyEvent, backward: bool, extend: bool) -> None:
         """Put the cursor at the next occurrence of a character on a line."""
-        c = self.c
-        k = c.k
+        c, k = self.c, self.c.k
         self.w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(self.w):
             return
