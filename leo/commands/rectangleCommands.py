@@ -60,7 +60,8 @@ class RectangleCommandsClass(BaseEditCommandsClass):
     @cmd('rectangle-clear')
     def clearRectangle(self, event: LeoKeyEvent) -> None:
         """Clear the rectangle defined by the start and end of selected text."""
-        w = event.w if event else None
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         if not self._checkSelection(event):
@@ -83,7 +84,8 @@ class RectangleCommandsClass(BaseEditCommandsClass):
     @cmd('rectangle-close')
     def closeRectangle(self, event: LeoKeyEvent) -> None:
         """Delete the rectangle if it contains nothing but whitespace.."""
-        w = event.w if event else None
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         if not self._checkSelection(event):
@@ -111,7 +113,8 @@ class RectangleCommandsClass(BaseEditCommandsClass):
     @cmd('rectangle-delete')
     def deleteRectangle(self, event: LeoKeyEvent) -> None:
         """Delete the rectangle defined by the start and end of selected text."""
-        w = event.w if event else None
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         if not self._checkSelection(event):
@@ -133,7 +136,8 @@ class RectangleCommandsClass(BaseEditCommandsClass):
     @cmd('rectangle-kill')
     def killRectangle(self, event: LeoKeyEvent) -> None:
         """Kill the rectangle defined by the start and end of selected text."""
-        w = event.w if event else None
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         if not self._checkSelection(event):
@@ -162,7 +166,8 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         Insert blanks in the rectangle defined by the start and end of selected
         text. This pushes the previous contents of the rectangle rightward.
         """
-        w = event.w if event else None
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         if not self._checkSelection(event):
@@ -188,14 +193,14 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         Prompt for a string, then replace the contents of a rectangle
         with a string on each line.
         """
-        k = self.c.k
+        c, k = self.c, self.c.k
         if g.unitTesting:
             k.arg = 's...s'  # This string is known to the unit test.
-            self.w = event.w if event else None
+            self.w = event.w if event else c.frame.body.wrapper
             self.stringRect = self.getRectanglePoints(self.w)
             self.stringRectangle1(event)
             return
-        self.w = event.w if event else None
+        self.w = event.w if event else c.frame.body.wrapper
         if self.w and self._checkSelection(event):
             self.stringRect = self.getRectanglePoints(self.w)
             k.setLabelBlue('String rectangle: ')
@@ -227,9 +232,8 @@ class RectangleCommandsClass(BaseEditCommandsClass):
     @cmd('rectangle-yank')
     def yankRectangle(self, event: LeoKeyEvent) -> None:
         """Yank into the rectangle defined by the start and end of selected text."""
-        # c = self.c
-        k = self.c.k
-        w = event.w if event else None
+        c, k = self.c, self.c.k
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         killRect = self.theKillRectangle
