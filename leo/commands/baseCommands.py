@@ -88,7 +88,8 @@ class BaseEditCommandsClass:
     # @+node:ekr.20150514043714.11: *3* BaseEdit._checkSelection
     def _checkSelection(self, event: LeoKeyEvent, warning: str = 'no selection') -> bool:
         """Return True if there is a selection in the edit widget."""
-        w = event.w if event else None
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
         val = bool(w and w.hasSelection())
         if warning and not val:  # pragma: no cover
             g.es(warning, color='red')

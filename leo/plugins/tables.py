@@ -83,7 +83,8 @@ class TableController:
 
         Important: the code must use event.ch, not stroke.
         """
-        w = event.w if event else None
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
         ch = event.char
         i, s, lines = self.get_table(ch, w)
         if lines:
@@ -144,7 +145,8 @@ class TableController:
     # @+node:ekr.20170218075243.1: *3* table.insert_newline
     def insert_newline(self, event):
         """TableController: override c.editCommands.insertNewLine."""
-        w = event.w if event else None
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
         i, s, lines = self.get_table('return', w)
         if lines:
             self.put('\n', event)

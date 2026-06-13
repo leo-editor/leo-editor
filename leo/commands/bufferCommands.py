@@ -49,9 +49,10 @@ class BufferCommandsClass(BaseEditCommandsClass):
     @cmd('buffer-append-to')
     def appendToBuffer(self, event: LeoKeyEvent) -> None:
         """Add the selected body text to the end of the body text of a named buffer (node)."""
-        self.w = event.w if event else None
+        c = self.c
+        self.w = event.w if event else c.frame.body.wrapper
         if self.w:
-            self.c.k.setLabelBlue('Append to buffer: ')
+            c.k.setLabelBlue('Append to buffer: ')
             self.getBufferName(event, self.appendToBuffer1)
 
     def appendToBuffer1(self, name: str) -> None:
@@ -73,9 +74,10 @@ class BufferCommandsClass(BaseEditCommandsClass):
     @cmd('buffer-copy')
     def copyToBuffer(self, event: LeoKeyEvent) -> None:
         """Add the selected body text to the end of the body text of a named buffer (node)."""
-        self.w = event.w if event else None
+        c = self.c
+        self.w = event.w if event else c.frame.body.wrapper
         if self.w:
-            self.c.k.setLabelBlue('Copy to buffer: ')
+            c.k.setLabelBlue('Copy to buffer: ')
             self.getBufferName(event, self.copyToBuffer1)
 
     def copyToBuffer1(self, name: str) -> None:
@@ -94,9 +96,10 @@ class BufferCommandsClass(BaseEditCommandsClass):
     @cmd('buffer-insert')
     def insertToBuffer(self, event: LeoKeyEvent) -> None:
         """Add the selected body text at the insert point of the body text of a named buffer (node)."""
-        self.w = event.w if event else None
+        c = self.c
+        self.w = event.w if event else c.frame.body.wrapper
         if self.w:
-            self.c.k.setLabelBlue('Insert to buffer: ')
+            c.k.setLabelBlue('Insert to buffer: ')
             self.getBufferName(event, self.insertToBuffer1)
 
     def insertToBuffer1(self, name: str) -> None:
@@ -115,9 +118,10 @@ class BufferCommandsClass(BaseEditCommandsClass):
     @cmd('buffer-kill')
     def killBuffer(self, event: LeoKeyEvent) -> None:
         """Delete a buffer (node) and all its descendants."""
-        self.w = event.w if event else None
+        c = self.c
+        self.w = event.w if event else c.frame.body.wrapper
         if self.w:
-            self.c.k.setLabelBlue('Kill buffer: ')
+            c.k.setLabelBlue('Kill buffer: ')
             self.getBufferName(event, self.killBuffer1)
 
     def killBuffer1(self, name: str) -> None:
@@ -161,9 +165,10 @@ class BufferCommandsClass(BaseEditCommandsClass):
     @cmd('buffer-prepend-to')
     def prependToBuffer(self, event: LeoKeyEvent) -> None:
         """Add the selected body text to the start of the body text of a named buffer (node)."""
-        self.w = event.w if event else None
+        c = self.c
+        self.w = event.w if event else c.frame.body.wrapper
         if self.w:
-            self.c.k.setLabelBlue('Prepend to buffer: ')
+            c.k.setLabelBlue('Prepend to buffer: ')
             self.getBufferName(event, self.prependToBuffer1)
 
     def prependToBuffer1(self, name: str) -> None:

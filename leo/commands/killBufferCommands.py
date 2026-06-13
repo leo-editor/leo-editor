@@ -274,7 +274,8 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
     @cmd('kill-region')
     def killRegion(self, event: LeoKeyEvent) -> None:
         """Kill the text selection."""
-        w = event.w if event else None
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         i, j = w.getSelectionRange()
@@ -290,7 +291,8 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
     @cmd('kill-region-save')
     def killRegionSave(self, event: LeoKeyEvent) -> None:
         """Add the selected text to the kill ring, but do not delete it."""
-        w = event.w if event else None
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         i, j = w.getSelectionRange()
@@ -323,8 +325,8 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
     @cmd('kill-ws')
     def killWs(self, event: LeoKeyEvent, undoType: str = 'kill-ws') -> None:
         """Kill whitespace."""
-        ws = ''
-        w = event.w if event else None
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
@@ -363,7 +365,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         pop = True:  insert the next entry of the kill ring.
         """
         c = self.c
-        w = event.w if event else None
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         current = c.p
@@ -403,8 +405,8 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
     @cmd('zap-to-character')
     def zapToCharacter(self, event: LeoKeyEvent) -> None:
         """Kill characters from the insertion point to a given character."""
-        k = self.c.k
-        w = event.w if event else None
+        c, k = self.c, self.c.k
+        w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
             return
         state = k.getState('zap-to-char')

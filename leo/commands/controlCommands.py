@@ -107,8 +107,9 @@ class ControlCommandsClass(BaseEditCommandsClass):
     @cmd('shell-command-on-region')
     def shellCommandOnRegion(self, event: LeoKeyEvent) -> None:
         """Execute a command taken from the selected text in a separate process."""
-        k = self.c.k
-        w = event.w if event else None
+        c = self.c
+        k = c.k
+        w = event.w if event else c.frame.body.wrapper
         if g.isTextWrapper(w):
             if w.hasSelection():
                 command = w.getSelectedText()
