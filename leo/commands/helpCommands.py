@@ -119,9 +119,9 @@ class HelpCommandsClass(BaseEditCommandsClass):
 
             date;;={|{import time ; x=time.asctime()}|}
 
-        For example, typing ts;; gives::
+        For example, typing date;; gives::
 
-            20131009171117
+            Sun Jun 14 19:51:44 2026
 
         It's even possible to define a context in which abbreviation scripts execute.
 
