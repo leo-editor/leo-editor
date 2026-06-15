@@ -14179,7 +14179,7 @@ Abbreviations can define templates in which ``&lt;|a-field-name|&gt;`` denotes a
     \:name="&lt;|name|&gt;"
     \:value="" id="&lt;|id|&gt;"&gt;\n
 
-Typing ``,,`` after inserting a template selects the next field.
+Typing ``F3`` after inserting a template selects the next field.
 
 Abbreviations can execute **abbreviation scripts**, delimited by ``{|{`` and ``}|}``::
 
