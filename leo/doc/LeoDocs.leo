@@ -17969,7 +17969,7 @@ The following commands enable, disable or toggle various settings::
 2. Scripts may span multiple lines. Line starting with "\:" (2 characters) continue a script. This allows abbreviations to define multi-line templates.
 Helpers defined in ``@data abbreviations-subst-env`` can fill in templates with *calculated* (not predefined) data.
 
-3. Templates may contain placeholders that the user can fill in.  By default, the double comma binding selects the next placeholder.
+3. Templates may contain placeholders that the user can fill in.  By default, the F3 binding selects the next placeholder.
 
 4. Added a new setting: ``@bool scripting-abbreviations``, default False. Scripting abbreviations will be enabled if *either* of the following is True::
 
