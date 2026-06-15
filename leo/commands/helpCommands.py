@@ -114,13 +114,12 @@ class HelpCommandsClass(BaseEditCommandsClass):
             \:name="<|name|>"
             \:value="" id="<|id|>">\n
 
-        Typing ",," after inserting a template selects the next field.
+        Typing "F3" after inserting a template selects the next field.
 
         Abbreviations can execute **abbreviation scripts**, delimited by {\|{ and
         }\|}::
 
             date;;={|{import time ; x=time.asctime()}|}
-            ts;;={|{import time ; x=time.strftime("%Y%m%d%H%M%S")}|}
 
         For example, typing ts;; gives::
 
