@@ -14157,11 +14157,11 @@ The rst3 command adds the body text of this node to the previous section:
 
 Leo optionally expands abbreviations as you type. Abbreviations typically end with something like ``;;`` so they won't trigger by accident.
 
-To use abbreviations, you must enable them in myLeoSettings.leo::
+Abbreviations are enabled by default through the following setting in myLeoSettings.leo::
 
     @bool enable-abbreviations = True
 
-You define abbreviations in ``@data abbreviations`` nodes or ``@data global-abbreviations`` nodes. None come predefined, but ``leo/config/exampleSettings.leo`` contains example abbreviations in the node ``@data abbreviations examples``
+You define abbreviations in ``@data abbreviations`` nodes or ``@data global-abbreviations`` nodes. Some come predefined in ``@data global-abbreviations`` such as ``date;;`` and  ``html;;``.
 
 Abbreviations can be shortcuts::
 
@@ -14184,15 +14184,14 @@ Typing ``,,`` after inserting a template selects the next field.
 Abbreviations can execute **abbreviation scripts**, delimited by ``{|{`` and ``}|}``::
 
     date;;={|{import time ; x=time.asctime()}|}
-    ts;;={|{import time ; x=time.strftime("%Y%m%d%H%M%S")}|}
 
 To use abbreviations scripts, enable them in myLeoSettings.leo as follows::
 
     @bool scripting-abbreviations = True
 
-With abbreviation scripts enabled, typing ``ts;;`` gives::
+With abbreviation scripts enabled, typing ``date;;`` gives::
 
-    20131009171117
+    Sun Jun 14 19:51:44 2026
 
 It's even possible to define a context in which abbreviation scripts execute. See leoSettings.leo for full details.
 </t>
@@ -29852,7 +29851,7 @@ any change to one clone inevitably affects all other clones.
 <t tx="ekr.20230121061309.1"></t>
 <t tx="ekr.20230121061335.1"></t>
 <t tx="ekr.20230121061433.1"></t>
-<t tx="ekr.20230121110340.1" _mod_time="4741d993336a2ad5e02e">@language batch
+<t tx="ekr.20230121110340.1" _mod_time="4741da464e3720be372e">@language batch
 echo off
 echo off
 cd C:\Repos\leo-editor\leo\doc\html
@@ -29860,7 +29859,7 @@ echo make clean
 call make clean
 </t>
 <t tx="ekr.20230121110345.1"></t>
-<t tx="ekr.20230121110533.1" _mod_time="4741d993336a2adb852e">@language batch
+<t tx="ekr.20230121110533.1" _mod_time="4741da464e3720ce992e">@language batch
 echo off
 echo off
 cd C:\Repos\leo-editor\leo\doc\html
