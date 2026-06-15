@@ -13669,7 +13669,7 @@ Views allow multiple views of data to exist in a single outline.
 Leo expands abbreviations as you type.
 
 - Abbreviations range from simple shortcuts to multi-line templates containing fields.
-- Type ``,,`` to move to the next field.
+- Type ``F3`` to move to the next field.
 - Abbreviations can also insert the result of executing code.
 
 Ctrl-left-clicking any URL opens the URL.
