@@ -90,11 +90,9 @@ class HelpCommandsClass(BaseEditCommandsClass):
         Abbreviations typically end with something like ";;" so they won't trigger
         by accident.
 
-        You define abbreviations in @data abbreviations nodes or @data
-        global-abbreviations nodes. None come predefined, but leoSettings.leo
-        contains example abbreviations in the node::
-
-            @@data abbreviations examples
+        You define abbreviations in @data abbreviations nodes
+        or @data global-abbreviations nodes. Some come predefined
+        in @data global-abbreviations such as date;; and  html;;.
 
         Abbreviations can simply be shortcuts::
 
