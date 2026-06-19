@@ -550,8 +550,6 @@ class LeoQtTree(leoFrame.LeoTree):
     def redraw_after_select(self, p: Position) -> None:
         """Redraw the entire tree after p has been selected.."""
         if self.busy:
-            if 'drawing' in g.app.debug:
-                g.trace('busy!', g.callers(1))
             return
         self.redraw_tree(p)
 
