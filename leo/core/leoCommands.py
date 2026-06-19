@@ -4399,7 +4399,7 @@ class Commands:
         c.selectPosition(p2 or p)  # #503.
         # Clear the redraw request, again.
         c.requestLaterRedraw = False
-        c.redraw()  # Leo 6.8.10
+        c.recolor()  # Leo 6.8.10
 
     # Compatibility with old scripts.
     force_redraw = redraw
