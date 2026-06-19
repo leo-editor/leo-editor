@@ -1427,11 +1427,6 @@ class Commands:
         if c:
             p = c.p
             c.redraw()
-            # Use a trap door, not a kwarg.
-            colorizer = c.frame.body.colorizer
-            if colorizer and hasattr(colorizer, 'old_v'):
-                colorizer.old_v = None  # #4146
-            c.recolor(p)
 
     # @+node:ekr.20171124100654.1: *3* c.API
     # These methods are a fundamental, unchanging, part of Leo's API.
@@ -2210,7 +2205,7 @@ class Commands:
             w = c.frame.body.wrapper
             w.setAllText(s)
             v.setSelection(0, 0)
-            c.recolor()  ### To be removed ???
+            c.recolor()
 
         # Keep the body text in the VNode up-to-date.
         if v.b != s:
@@ -4356,10 +4351,13 @@ class Commands:
     def recolor(self, p: Position = None) -> None:
         c = self
         colorizer = c.frame.body.colorizer
-        if colorizer and hasattr(colorizer, 'colorize'):
+        try:
             # Only the QScintillaColorizer class has a colorize method.
             colorizer.colorize(p or c.p)
+        except Exception:
+            pass
 
+    # Compatibility.
     recolor_now = recolor
 
     # @+node:ekr.20080514131122.14: *5* c.redrawing...
@@ -4401,6 +4399,7 @@ class Commands:
         c.selectPosition(p2 or p)  # #503.
         # Clear the redraw request, again.
         c.requestLaterRedraw = False
+        c.redraw()  # Leo 6.8.10
 
     # Compatibility with old scripts.
     force_redraw = redraw

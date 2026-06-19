@@ -3114,7 +3114,6 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         # c.setRootPosition(c.findRootPosition(pasted))
         u.afterInsertNode(pasted, undoType, undoData)
         c.redraw(pasted)
-        c.recolor()
 
     # @+node:ekr.20110605121601.18368: *6* LeoQTreeWidget.intraFileDrop
     def intraFileDrop(self, fn: str, p1: Position, p2: Position) -> None:

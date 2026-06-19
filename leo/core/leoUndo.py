@@ -1880,6 +1880,7 @@ class Undoer:
         c, u = self.c, self
         # selectPosition causes recoloring, so don't do this unless needed.
         c.recolor(u.p)
+
         # Swap the ones from the 'bunch.headline' dict
         for gnx, oldNewTuple in u.headlines.items():
             v = c.fileCommands.gnxDict.get(gnx)
@@ -1888,7 +1889,6 @@ class Undoer:
                 u.p.setDirty()
                 # This is required.  Otherwise redraw will revert the change!
                 c.frame.tree.setHeadline(u.p, oldNewTuple[0])
-        #
         if c.p != u.p:
             c.selectPosition(u.p)
 

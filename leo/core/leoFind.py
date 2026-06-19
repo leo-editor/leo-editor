@@ -1302,7 +1302,6 @@ class LeoFind:
         t2 = time.process_time()
         if not g.unitTesting:  # pragma: no cover
             g.es_print(f"changed {count} instances{g.plural(count)} in {t2 - t1:4.2f} sec.")
-        c.recolor()
         c.redraw(new_p)
         self.restore(saveData)
         return count
