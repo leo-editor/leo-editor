@@ -4331,9 +4331,6 @@ class Commands:
         if c.requestLaterRedraw:
             if c.enableRedrawFlag:
                 c.requestLaterRedraw = False
-                if 'drawing' in g.app.debug and not g.unitTesting:
-                    g.trace('\nDELAYED REDRAW')
-                    time.sleep(1.0)
                 c.redraw()
         # Delayed focus requests will always be useful.
         if c.requestedFocusWidget:
