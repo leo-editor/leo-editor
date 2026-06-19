@@ -3212,13 +3212,12 @@ class LoadManager:
         lm = self
         k = c.k
 
-        # New in Leo 4.6: provide an official way for very late initialization.
+        # Official very late initialization.
         c.frame.tree.initAfterLoad()
         c.initAfterLoad()
         lm.createMenu(c, c.fileName())
 
-        # Leo 6.7.6: New common finishing code.
-        ### g.app.disable_redraw = False
+        # Common finishing code.
         g.app.unlockLog()
         g.app.writeWaitingLog(c)
         c.setLog()

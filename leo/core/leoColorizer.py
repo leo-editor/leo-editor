@@ -1558,7 +1558,7 @@ class JEditColorizer(BaseColorizer):
             if g.unitTesting:
                 raise
         self.tagCount += 1
-        if True:  ### trace:
+        if trace:
             # PR #4618: (Ville Vainio) https://github.com/leo-editor/leo-editor/pull/4618
             # Don't call report by default: It's setup is expensive!
             # @+<< setTag: define report >>
