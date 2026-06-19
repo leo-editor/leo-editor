@@ -4383,8 +4383,6 @@ class Commands:
         If p is given, set c.p to p.
         """
         c = self
-        # New in Leo 5.6: clear the redraw request.
-        c.requestLaterRedraw = False
         if not p:
             p = c.p or c.rootPosition()
         if not p:
@@ -4392,7 +4390,8 @@ class Commands:
         if not c.positionExists(p):
             g.trace(f"Invalid position: {repr(p)}")
             g.trace(g.callers())
-            p = c.rootPosition()
+            return
+        c.requestLaterRedraw = False
         c.expandAllAncestors(p)
         if p:
             # Fix bug https://bugs.launchpad.net/leo-editor/+bug/1183855
