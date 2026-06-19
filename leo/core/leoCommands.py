@@ -4377,7 +4377,6 @@ class Commands:
         If p is given, set c.p to p.
         """
         c = self
-        trace = 'drawing' in g.app.debug and not g.unitTesting
         if not p:
             p = c.p
         if not p:
@@ -4423,7 +4422,7 @@ class Commands:
         if c.enableRedrawFlag:
             flag = c.expandAllAncestors(p)
             if flag:
-                # This is the same as c.frame.tree.full_redraw().
+                # This is the same as c.frame.tree.redraw_tree().
                 c.frame.tree.redraw_after_select(p)
         else:
             c.requestLaterRedraw = True

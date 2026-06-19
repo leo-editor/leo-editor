@@ -548,14 +548,12 @@ class LeoQtTree(leoFrame.LeoTree):
 
     # @+node:ekr.20110605121601.17884: *4* LeoQtTree.redraw_after_select
     def redraw_after_select(self, p: Position) -> None:
-        """Redraw the entire tree when an invisible node is selected."""
+        """Redraw the entire tree after p has been selected.."""
         if self.busy:
             if 'drawing' in g.app.debug:
                 g.trace('busy!', g.callers(1))
             return
-        self.full_redraw(p)
-        # c.redraw_after_select calls tree.select indirectly.
-        # Do not call it again here.
+        self.redraw_tree(p)
 
     # @+node:ekr.20140907201613.18986: *4* LeoQtTree.repaint (not used)
     def repaint(self) -> None:
