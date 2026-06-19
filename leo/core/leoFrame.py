@@ -1169,11 +1169,6 @@ class LeoTree:
         """End editing of a headline and update p.h."""
         # Important: this will redraw if necessary.
         self.onHeadChanged(self.c.p)
-        # Do *not* call setDefaultUnboundKeyAction here: it might put us in ignore mode!
-        # k.setDefaultInputState()
-        # k.showStateAndMode()
-        # This interferes with the find command and interferes with focus generally!
-        # c.bodyWantsFocus()
 
     # @+node:ekr.20031218072017.3716: *4* LeoTree.getEditTextDict
     def getEditTextDict(self, v: VNode) -> Widget:

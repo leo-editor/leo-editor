@@ -994,8 +994,6 @@ class Undoer:
         **Important**: Code should call this method *only* when the user has
         actually typed something. Commands should use u.beforeChangeBody and
         u.afterChangeBody.
-
-        Only qtm.onTextChanged and ec.selfInsertCommand now call this method.
         """
         c, u, w = self.c, self, self.c.frame.body.wrapper
         # Leo 6.4: undo_type must be 'Typing'.
