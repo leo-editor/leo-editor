@@ -163,8 +163,8 @@ class LeoQtTree(leoFrame.LeoTree):
         w = self.treeWidget
         w.clear()
 
-    # @+node:ekr.20110605121601.17873: *4* LeoQtTree.full_redraw & helpers
-    def full_redraw(self, p: Position = None) -> Position:
+    # @+node:ekr.20110605121601.17873: *4* LeoQtTree.redraw_tree & helpers
+    def redraw_tree(self, p: Position = None) -> Position:
         """
         Redraw all visible nodes of the tree.
         Preserve the vertical scrolling unless scroll is True.
@@ -198,10 +198,9 @@ class LeoQtTree(leoFrame.LeoTree):
         return p  # Return the position, which may have changed.
 
     # Compatibility
-
-    # mypy complains that there is a mismatch with the base redraw method.
-    redraw = full_redraw  # type:ignore
-    redraw_now = full_redraw  # type:ignore
+    full_redraw = redraw_tree
+    redraw = redraw_tree
+    redraw_now = redraw_tree
 
     # @+node:tbrown.20150807090639.1: *5* LeoQtTree.declutter_node & helpers
     def declutter_node(self, c: Cmdr, v: VNode, item: QTreeWidgetItem) -> QIcon:
@@ -483,7 +482,7 @@ class LeoQtTree(leoFrame.LeoTree):
                 p.moveToNext()
         if trace:
             t2 = time.process_time()
-            g.trace(f"{t2 - t1:5.2f} sec.", g.callers(3))
+            g.trace(f"{c.shortFileName()} {t2 - t1:5.2f} sec.")
 
     # @+node:ekr.20110605121601.17877: *5* LeoQtTree.drawTree
     def drawTree(self, p: Position, parent_item: QTreeWidgetItem = None) -> None:
@@ -551,7 +550,7 @@ class LeoQtTree(leoFrame.LeoTree):
                         item.setIcon(0, icon)  # 0 is the column number.
 
     # @+node:ekr.20110605121601.17884: *4* LeoQtTree.redraw_after_select
-    def redraw_after_select(self, p: Position = None) -> None:
+    def redraw_after_select(self, p: Position) -> None:
         """Redraw the entire tree when an invisible node is selected."""
         if self.busy:
             if 'drawing' in g.app.debug:

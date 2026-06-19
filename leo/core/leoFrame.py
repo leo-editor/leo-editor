@@ -1114,7 +1114,7 @@ class LeoTree:
     def redraw_after_head_changed(self) -> None:
         self.c.redraw()
 
-    def redraw_after_select(self, p: Position = None) -> None:
+    def redraw_after_select(self, p: Position) -> None:
         self.c.redraw()
 
     # @+node:ekr.20040803072955.91: *4* LeoTree.onHeadChanged
@@ -1236,10 +1236,10 @@ class LeoTree:
     # @+node:ekr.20031218072017.3706: *3* LeoTree: Must be defined in subclasses
     # Drawing & scrolling.
 
-    def redraw(self, p: Position = None) -> None:
+    def redraw_tree(self, p: Position = None) -> Position:
         raise NotImplementedError
 
-    redraw_now = redraw
+    redraw_now = redraw_tree
 
     def scrollTo(self, p: Position) -> None:
         raise NotImplementedError
@@ -1718,15 +1718,20 @@ class NullTree(LeoTree):
             w = d.get(key)
             g.pr('w', w, 'v.h:', key.headString, 's:', repr(w.s))
 
-    # @+node:ekr.20070228163350.1: *3* NullTree.redraw and scrollTo
-    def redraw(self, p: Position = None) -> None:
+    # @+node:ekr.20070228163350.1: *3* NullTree.redraw_tree and scrollTo
+    def redraw_tree(self, p: Position = None) -> Position:
         self.redrawCount += 1
+        return p
 
-    redraw_after_contract = redraw
-    redraw_after_expand = redraw
-    redraw_after_head_changed = redraw
-    redraw_after_select = redraw
-    redraw_now = redraw
+    redraw_after_contract = redraw_tree
+    redraw_after_expand = redraw_tree
+    redraw_now = redraw_tree
+
+    def redraw_after_head_changed(self) -> None:
+        pass
+
+    def redraw_after_select(self, p: Position) -> None:
+        pass
 
     def scrollTo(self, p: Position) -> None:
         pass

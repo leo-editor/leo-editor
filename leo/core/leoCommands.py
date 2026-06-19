@@ -4383,6 +4383,7 @@ class Commands:
         If p is given, set c.p to p.
         """
         c = self
+        trace = 'drawing' in g.app.debug and not g.unitTesting
         if not p:
             p = c.p or c.rootPosition()
         if not p:
@@ -4391,25 +4392,20 @@ class Commands:
             g.trace(f"Invalid position: {repr(p)}")
             g.trace(g.callers())
             return
+        if False and trace:
+            g.trace(p.h, g.callers())
         c.requestLaterRedraw = False
         c.expandAllAncestors(p)
-        if p:
-            # Fix bug https://bugs.launchpad.net/leo-editor/+bug/1183855
-            # This looks redundant, but it is probably the only safe fix.
-            c.frame.tree.select(p)
-        # tree.redraw will change the position if p is a hoisted @chapter node.
-        p2 = c.frame.tree.redraw(p)
-        # Be careful.  NullTree.redraw returns None.
-        # #503: NullTree.redraw(p) now returns p.
-        c.selectPosition(p2 or p)
-        # Do not call treeFocusHelper here.
-        # c.treeFocusHelper()
+        # Fix bug https://bugs.launchpad.net/leo-editor/+bug/1183855
+        # This looks redundant, but it is probably the only safe fix.
+        c.frame.tree.select(p)
+        # tree.redraw_tree will change the position if p is a hoisted @chapter node.
+        p2 = c.frame.tree.redraw_tree(p)
+        c.selectPosition(p2 or p)  # #503.
         # Clear the redraw request, again.
         c.requestLaterRedraw = False
 
     # Compatibility with old scripts.
-    # Do *not* delete redraw_after_select or redraw_after_head_changed.
-
     force_redraw = redraw
     redraw_after_contract = redraw
     redraw_after_expand = redraw

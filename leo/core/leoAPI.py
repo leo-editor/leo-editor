@@ -326,10 +326,10 @@ class TreeAPI:
     def headline_wrapper(self, p: Position) -> None:
         return None
 
-    def redraw(self, p: Position = None) -> None:
+    def redraw_tree(self, p: Position = None) -> None:
         pass
 
-    redraw_now = redraw
+    redraw_now = redraw_tree
 
     def scrollTo(self, p: Position) -> None:
         pass
@@ -347,7 +347,7 @@ class TreeAPI:
     def redraw_after_head_changed(self) -> None:
         pass
 
-    def redraw_after_select(self, p: Position = None) -> None:
+    def redraw_after_select(self, p: Position) -> None:
         pass
 
     # Must be defined in the LeoTree class...
