@@ -54,27 +54,8 @@ if TYPE_CHECKING:  # pragma: no cover
 
 
 # @-<< leoColorizer annotations >>
-# @+others
-# @+node:ekr.20190323044524.1: ** function: make_colorizer
-def make_colorizer(c: Cmdr, widget: QWidget) -> JEditColorizer | PygmentsColorizer:
-    """Return an instance of JEditColorizer or PygmentsColorizer."""
-    use_pygments = c.config.getBool('use-pygments', default=False)
-    if use_pygments:
-        if pygments:
-            return PygmentsColorizer(c, widget)
-        if not g.unitTesting:
-            g.es_print('ignoring @bool use-pygments', color='red')
-            g.es_print('pip install pygments', color='red')
-    return JEditColorizer(c, widget)
-
-
-# @+node:ekr.20260215050008.1: ** command: dump-last-colorizer-trace
-@g.command('dump-last-colorizer-trace')
-def dump_colorizer_last_colorizer_traces(event: LeoKeyEvent) -> None:
-    c = event['c']
-    colorizer = c.frame.body.colorizer
-    print('\n'.join(colorizer.last_trace))
-
+# @+<< leoColorizer url sets >>
+# @+node:ekr.20260618100357.1: ** << leoColorizer url sets >>
 
 # PR #4619: Avoid str.lower in jedit.colorRangeWithTag.
 _url_leadins_set = frozenset(g.url_leadins + g.url_leadins.upper())
@@ -93,6 +74,36 @@ _url_bearing_tags = frozenset(
         'literal4',
     }
 )
+# @-<< leoColorizer url sets >>
+
+
+# @+others
+# @+node:ekr.20190323044524.1: ** function: make_colorizer
+def make_colorizer(c: Cmdr, widget: QWidget) -> JEditColorizer | PygmentsColorizer:
+    """Return an instance of JEditColorizer or PygmentsColorizer."""
+    use_pygments = c.config.getBool('use-pygments', default=False)
+    if use_pygments:
+        if pygments:
+            return PygmentsColorizer(c, widget)
+        if not g.unitTesting:
+            g.es_print('ignoring @bool use-pygments', color='red')
+            g.es_print('pip install pygments', color='red')
+    return JEditColorizer(c, widget)
+
+
+# @+node:ekr.20260215050008.1: ** command: clear/dump-last-colorizer-trace
+@g.command('clear-last-colorizer-trace')
+def clear_colorizer_last_colorizer_traces(event: LeoKeyEvent) -> None:
+    c = event['c']
+    colorizer = c.frame.body.colorizer
+    colorizer.last_trace = []
+
+
+@g.command('dump-last-colorizer-trace')
+def dump_colorizer_last_colorizer_traces(event: LeoKeyEvent) -> None:
+    c = event['c']
+    colorizer = c.frame.body.colorizer
+    print('\n'.join(colorizer.last_trace))
 
 
 # @+node:ekr.20170127141855.1: ** class BaseColorizer
@@ -1377,7 +1388,7 @@ class JEditColorizer(BaseColorizer):
         understand *every word* of the Theory of Operation:
         https://github.com/leo-editor/leo-editor/issues/4158
         """
-        trace = (False or 'coloring' in g.app.debug) and not g.unitTesting
+        trace = 'coloring' in g.app.debug and not g.unitTesting
         c = self.c
         p = self.c.p if c else None
         if not p:
@@ -1387,6 +1398,15 @@ class JEditColorizer(BaseColorizer):
         if g.callers(1) != 'highlightBlock':
             message = f"jedit.recolor: invalid caller: {g.callers()}"
             g.print_unique_message(message)
+
+        if g.app.disable_redraw:  ### Experimental.
+            return
+
+        if trace and self.prevState() == -1 and not s:  ###
+            print('')
+            g.trace(f"{self.prevState():2} {c.p.h}")  ###
+            #  print(g.callers(16).split(',')[:-8])
+            print(g.callers(12))
 
         self.recolorCount += 1
         prev_state = self.prevState()
@@ -1548,19 +1568,18 @@ class JEditColorizer(BaseColorizer):
             if g.unitTesting:
                 raise
         self.tagCount += 1
-        if trace:
+        if True:  ### trace:
             # PR #4618: (Ville Vainio) https://github.com/leo-editor/leo-editor/pull/4618
             # Don't call report by default: It's setup is expensive!
             # @+<< setTag: define report >>
             # @+node:ekr.20260528121410.1: *4* << setTag: define report >>
-
             def report(color: QtGui.QColor) -> None:
                 """A superb trace. Don't remove it."""
                 i_j_s = f"{i:>3}:{j:<3}"
                 matcher_name = g.caller(3)
                 rule_name = g.caller(4)
                 matcher_s = f"{self.rulesetName}::{rule_name}:{matcher_name}"
-                s2 = s[i:j]  # Show only the colored string.
+                s2 = g.truncate(s[i:j], 40)  # Show only the colored string.
                 state = self.currentState()
                 state_repr = self.stateNumberToStateString(state)
                 state_s = f"{self.currentState()}={state_repr}"

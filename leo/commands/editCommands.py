@@ -2176,12 +2176,11 @@ class EditCommandsClass(BaseEditCommandsClass):
         elif ch:
             # Null chars must not delete the selection.
             self.doPlainChar(action, ch, event, inBrackets, oldSel, stroke, w)
-        #
-        # Common processing.
+
         # Set the column for up and down keys.
         spot = w.getInsertPoint()
         c.editCommands.setMoveCol(w, spot)
-        #
+
         # Update the text and handle undo.
         newText = w.getAllText()
         if newText != oldText:
@@ -2189,7 +2188,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             newSel = w.getSelectionRange()
             newInsert = w.getInsertPoint()
             newSel = w.getSelectionRange()
-            newText = w.getAllText()  # Converts to unicode.
+            ### newText = w.getAllText()  # Converts to unicode.
             u.doTyping(
                 p,
                 'Typing',

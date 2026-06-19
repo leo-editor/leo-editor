@@ -1403,7 +1403,7 @@ class Commands:
             g.restoreStderr()
             g.restoreStdout()
 
-    # @+node:ekr.20080514131122.12: *3* @cmd recolor
+    # @+node:ekr.20080514131122.12: *3* @cmd recolor (c.recolorCommand)
     @cmd('recolor')
     def recolorCommand(self, event: LeoKeyEvent = None) -> None:
         """Force a full recolor."""
@@ -1418,6 +1418,19 @@ class Commands:
         ins = wrapper.getInsertPoint()
         wrapper.setAllText(c.p.b)
         wrapper.setSelectionRange(i, j, insert=ins)
+
+    # @+node:ekr.20260619021703.1: *3* @cmd redraw (c.redraw_command)
+    @cmd('redraw')
+    def redraw_command(self, event: LeoKeyEvent) -> None:
+        c = event.get('c')
+        if c:
+            p = c.p
+            c.redraw()
+            # Use a trap door, not a kwarg.
+            colorizer = c.frame.body.colorizer
+            if colorizer and hasattr(colorizer, 'old_v'):
+                colorizer.old_v = None  # #4146
+            c.recolor(p)
 
     # @+node:ekr.20171124100654.1: *3* c.API
     # These methods are a fundamental, unchanging, part of Leo's API.
@@ -4346,7 +4359,7 @@ class Commands:
                 g.doHook(kind, c=c, nodes=mods)
                 mods.clear()
 
-    # @+node:ekr.20080514131122.13: *5* c.recolor
+    # @+node:ekr.20080514131122.13: *5* c.recolor (Scintilla only!!)
     def recolor(self, p: Position = None) -> None:
         c = self
         colorizer = c.frame.body.colorizer
@@ -4367,19 +4380,7 @@ class Commands:
         c = self
         c.enableRedrawFlag = True
 
-    # @+node:ekr.20090110073010.1: *6* c.redraw ('redraw' command)
-    @cmd('redraw')
-    def redraw_command(self, event: LeoKeyEvent) -> None:
-        c = event.get('c')
-        if c:
-            p = c.p
-            c.redraw()
-            # Use a trap door, not a kwarg.
-            colorizer = c.frame.body.colorizer
-            if colorizer and hasattr(colorizer, 'old_v'):
-                colorizer.old_v = None  # #4146
-            c.recolor(p)
-
+    # @+node:ekr.20090110073010.1: *6* c.redraw
     def redraw(self, p: Position = None) -> None:
         """
         Redraw the screen immediately.

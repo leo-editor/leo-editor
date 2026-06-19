@@ -1056,17 +1056,16 @@ class LeoTree:
         c = self.c
         w = c.frame.body.wrapper
         s = p.v.b  # Guaranteed to be unicode.
+
         # Part 1: get the old text.
         old_s = w.getAllText()
         if p and p == old_p and s == old_s:
             return
+
         # Part 2: set the new text. This forces a recolor.
-        # Important: do this *before* setting text,
-        # so that the colorizer will have the proper c.p.
+        # Important: set c.p *before* setting text.
         c.setCurrentPosition(p)
         w.setAllText(s)
-        # This is now done after c.p has been changed.
-        # p.restoreCursorAndScroll()
 
     # @+node:ekr.20140829053801.18458: *5* 3. LeoTree.change_current_position
     def change_current_position(self, old_p: Position, p: Position) -> None:

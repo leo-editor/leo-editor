@@ -2287,13 +2287,15 @@ class LoadManager:
     def load(self, fileName: str = None, pymacs: bool = None) -> None:
         """This is Leo's main startup method."""
         lm = self
-        #
+
         # Phase 1: before loading plugins.
         # Scan options, set directories and read settings.
         t1 = time.process_time()
         if not lm.isValidPython():
             return
+        g.app.disable_redraw = True
         lm.doPrePluginsInit(fileName, pymacs)  # sets lm.options and lm.files
+
         # Compute the signon after initing the gui.
         g.app.computeSignon()
         g.app.printSignon()
@@ -2301,9 +2303,7 @@ class LoadManager:
             return
         if not g.app.gui:
             return
-        # Disable redraw until all files are loaded.
-        g.app.disable_redraw = True
-        #
+
         # Phase 2: load plugins: the gui has already been set.
         t2 = time.process_time()
         g.doHook("start1")
@@ -2311,15 +2311,14 @@ class LoadManager:
         if g.app.killed:
             return
         g.app.idleTimeManager.start()
-        #
+
         # Phase 3: after loading plugins. Create one or more frames.
         t4 = time.process_time()
         if lm.options.get('script') and not self.files:
             ok = True
         else:
             ok = lm.doPostPluginsInit()
-            # Fix #579: Key bindings don't take for commands defined in plugins
-            g.app.makeAllBindings()
+            g.app.makeAllBindings()  # #579.
             if ok and g.app.diff:
                 lm.doDiff()
         if not ok:
@@ -2358,9 +2357,9 @@ class LoadManager:
                 g.app.log.c.abbrevCommands.listAbbrevs()
             except Exception:
                 pass
-        g.app.gui.runMainLoop()
         # For scripts, the gui is a nullGui.
         # and the gui.setScript has already been called.
+        g.app.gui.runMainLoop()
 
     # @+node:ekr.20150225133846.7: *4* LM.doDiff
     def doDiff(self) -> None:
@@ -2413,8 +2412,6 @@ class LoadManager:
                 g.es_print('Can not load session')
                 g.es_exception()
 
-        # Enable redraws.
-        g.app.disable_redraw = False
         if not c1:
             # Open or create a workbook.
             try:
@@ -2426,18 +2423,19 @@ class LoadManager:
         if not c:
             # Leo is out of options: Force an immediate exit.
             return False
-        # #199.
-        g.app.runAlreadyOpenDialog(c1)
-        #
+        g.app.runAlreadyOpenDialog(c1)  # #199.
+
         # Final inits...
-        # For qt gui, select the first-loaded tab.
-        if hasattr(g.app.gui, 'frameFactory'):
+        try:  # qt only: select the first-loaded tab.
             factory = g.app.gui.frameFactory
-            if factory and hasattr(factory, 'setTabForCommander'):
-                factory.setTabForCommander(c)
+            factory.setTabForCommander(c)
+        except Exception:
+            pass
+        g.app.initing = False  # "idle" hooks may now call g.app.forceShutdown.
         g.app.logInited = True
         g.app.initComplete = True
         c.setLog()
+        g.app.disable_redraw = False
         c.redraw()
         g.doHook("start2", c=c, p=c.p, fileName=c.fileName())
         c.initialFocusHelper()
@@ -3220,7 +3218,7 @@ class LoadManager:
         lm.createMenu(c, c.fileName())
 
         # Leo 6.7.6: New common finishing code.
-        g.app.disable_redraw = False
+        ### g.app.disable_redraw = False
         g.app.unlockLog()
         g.app.writeWaitingLog(c)
         c.setLog()

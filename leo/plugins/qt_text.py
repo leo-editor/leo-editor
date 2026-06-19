@@ -195,7 +195,7 @@ class QTextMixin:
         if hasattr(c.frame, 'statusLine'):
             c.frame.statusLine.update()
 
-    # @+node:ekr.20140901062324.18714: *4* QTextMixin.onTextChanged
+    # @+node:ekr.20140901062324.18714: *4* QTextMixin.onTextChanged (to be deleted??)
     def onTextChanged(self) -> None:
         """
         Update Leo after the body has been changed.
@@ -2007,6 +2007,7 @@ class QTextEditWrapper(QTextMixin):
         try:
             self.changingText = True  # Disable onTextChanged.
             w.setReadOnly(False)
+            # g.trace(f"{len(s):4} {g.callers(1)}")
             w.setPlainText(s)
         finally:
             self.changingText = False
