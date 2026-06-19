@@ -450,8 +450,10 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             return
         try:
             d = self.abbrevs
-            data = s.split('=')
-            # Do *not* strip ws so the user can specify ws.
+            # crudely allow use of '=' in abbreviation definition -
+            #  substitute '\=' with Unicode FULLWIDTH EQUALS SIGN
+            data = re.sub("\\\\=", '\uff1d', s).split('=')
+            # Do *not* strip ws, so the user can specify ws. in replacement       
             name = data[0].replace('\\t', '\t').replace('\\n', '\n')
             val = '='.join(data[1:])
             if val.endswith('\n'):
@@ -460,7 +462,8 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             old = d.get(name)
             if old and old != val and not g.unitTesting:
                 g.es_print(f"redefining abbreviation {name}\nfrom {old!r} to {val!r}")
-            d[name] = val
+            # add undecorated entry into dict
+            d[re.sub('\uff1d', '=', name)] = val
         except ValueError:
             g.es_print(f"bad abbreviation: {s}")
 
