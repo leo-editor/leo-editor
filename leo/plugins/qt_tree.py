@@ -179,13 +179,10 @@ class LeoQtTree(leoFrame.LeoTree):
         if not p:
             p = c.currentPosition()
         elif c.hoistStack and p.h.startswith('@chapter') and p.hasChildren():
-            # Make sure the current position is visible.
-            # Part of fix of bug 875323: Hoist an @chapter node leaves a non-visible node selected.
+            # #875323: Make sure the current position is visible.
             p = p.firstChild()
             c.frame.tree.select(p)
-            c.setCurrentPosition(p)
-        else:
-            c.setCurrentPosition(p)
+        c.setCurrentPosition(p)
         assert not self.busy, g.callers()
         self.redrawCount += 1
         self.initData()

@@ -56,7 +56,6 @@ if TYPE_CHECKING:  # pragma: no cover
 # @-<< leoColorizer annotations >>
 # @+<< leoColorizer url sets >>
 # @+node:ekr.20260618100357.1: ** << leoColorizer url sets >>
-
 # PR #4619: Avoid str.lower in jedit.colorRangeWithTag.
 _url_leadins_set = frozenset(g.url_leadins + g.url_leadins.upper())
 
