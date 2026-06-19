@@ -1425,7 +1425,6 @@ class Commands:
     def redraw_command(self, event: LeoKeyEvent) -> None:
         c = event.get('c')
         if c:
-            p = c.p
             c.redraw()
 
     # @+node:ekr.20171124100654.1: *3* c.API
