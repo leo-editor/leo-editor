@@ -1399,15 +1399,6 @@ class JEditColorizer(BaseColorizer):
             message = f"jedit.recolor: invalid caller: {g.callers()}"
             g.print_unique_message(message)
 
-        if g.app.disable_redraw:  ### Experimental.
-            return
-
-        if trace and self.prevState() == -1 and not s:  ###
-            print('')
-            g.trace(f"{self.prevState():2} {c.p.h}")  ###
-            #  print(g.callers(16).split(',')[:-8])
-            print(g.callers(12))
-
         self.recolorCount += 1
         prev_state = self.prevState()
         if prev_state == -1:
@@ -1431,8 +1422,8 @@ class JEditColorizer(BaseColorizer):
         self.init_mode(self.language)
 
         # Do not delete these traces!
-        if prev_state == -1:
-            message = f"New node: p.h: {p.h}"
+        if prev_state == -1 and s:
+            message = f"New node: p.h: {len(s)=} {p.h}"
             # Init the queued messages for the dump-last-colorizer-trace command.
             self.last_trace = [message]
             if trace:  # Print the trace immediately.
