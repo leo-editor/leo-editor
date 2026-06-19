@@ -2188,7 +2188,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             newSel = w.getSelectionRange()
             newInsert = w.getInsertPoint()
             newSel = w.getSelectionRange()
-            ### newText = w.getAllText()  # Converts to unicode.
             u.doTyping(
                 p,
                 'Typing',
