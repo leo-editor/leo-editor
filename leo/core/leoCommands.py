@@ -4379,7 +4379,7 @@ class Commands:
         c = self
         trace = 'drawing' in g.app.debug and not g.unitTesting
         if not p:
-            p = c.p or c.rootPosition()
+            p = c.p
         if not p:
             return
         if not c.positionExists(p):
