@@ -326,7 +326,7 @@ class TreeAPI:
     def headline_wrapper(self, p: Position) -> None:
         return None
 
-    def redraw_tree(self, p: Position = None) -> None:
+    def redraw_tree(self, p: Position = None) -> Position:
         pass
 
     redraw_now = redraw_tree

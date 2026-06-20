@@ -168,6 +168,8 @@ class LeoQtTree(leoFrame.LeoTree):
         """
         Redraw all visible nodes of the tree.
         Preserve the vertical scrolling unless scroll is True.
+
+        Return a Position (which may change) unless drawing is disabled.
         """
         c = self.c
         if g.app.disable_redraw:
