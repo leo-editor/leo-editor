@@ -4347,7 +4347,7 @@ class Commands:
                 g.doHook(kind, c=c, nodes=mods)
                 mods.clear()
 
-    # @+node:ekr.20080514131122.13: *5* c.recolor (Scintilla only!!)
+    # @+node:ekr.20080514131122.13: *5* c.recolor
     def recolor(self, p: Position = None) -> None:
         """
         Force a full recolor when using the Scintilla text widget.
@@ -4359,7 +4359,8 @@ class Commands:
         c = self
         colorizer = c.frame.body.colorizer
         try:
-            # Only the QScintillaColorizer class has a colorize method.
+            # Only the QScintillaColorizer class and NullColorizer classes
+            # have colorize methods.
             colorizer.colorize(p or c.p)
         except Exception:
             pass
