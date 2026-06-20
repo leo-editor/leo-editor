@@ -3176,8 +3176,7 @@ class LeoFind:
         k.resetLabel()
         p, i, j, in_headline = self.stack[0]
         self.in_headline = in_headline
-        c.selectPosition(p)
-        c.redraw_after_select(p)
+        c.redraw(p)
         c.bodyWantsFocus()
         w.setSelectionRange(i, j)
 

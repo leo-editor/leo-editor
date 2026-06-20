@@ -347,9 +347,6 @@ class TreeAPI:
     def redraw_after_head_changed(self) -> None:
         pass
 
-    def redraw_after_select(self, p: Position) -> None:
-        pass
-
     # Must be defined in the LeoTree class...
     # def OnIconDoubleClick (self,p):
 

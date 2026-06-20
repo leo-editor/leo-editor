@@ -752,8 +752,7 @@ def findNextClone(self: Cmdr, event: LeoKeyEvent = None) -> None:
     if flag:
         if cc:
             cc.selectChapterByName('main')
-        c.selectPosition(p)
-        c.redraw_after_select(p)
+        c.redraw(p)
     else:
         g.blue('no more clones')
 

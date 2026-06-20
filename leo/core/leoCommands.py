@@ -4409,6 +4409,7 @@ class Commands:
     force_redraw = redraw
     redraw_after_contract = redraw
     redraw_after_expand = redraw
+    redraw_after_select = redraw
     redraw_now = redraw
 
     # @+node:ekr.20090110073010.2: *6* c.redraw_after_head_changed
@@ -4420,18 +4421,6 @@ class Commands:
         c = self
         if c.enableRedrawFlag:
             self.frame.tree.redraw_after_head_changed()
-        else:
-            c.requestLaterRedraw = True
-
-    # @+node:ekr.20090110073010.4: *6* c.redraw_after_select
-    def redraw_after_select(self, p: Position) -> None:
-        """Redraw the screen after node p has been selected."""
-        c = self
-        if c.enableRedrawFlag:
-            flag = c.expandAllAncestors(p)
-            if flag:
-                # This is the same as c.frame.tree.redraw_tree().
-                c.frame.tree.redraw_after_select(p)
         else:
             c.requestLaterRedraw = True
 
@@ -4490,8 +4479,7 @@ class Commands:
             if found:
                 break
         if found:
-            c.selectPosition(p)
-            c.redraw_after_select(p)
+            c.redraw(p)
             c.navTime = time.time()
             c.navPrefix = newPrefix
         else:
@@ -5129,9 +5117,7 @@ class Commands:
         if not p:
             p = c.p
         if p:
-            # Do not call expandAllAncestors here.
-            c.selectPosition(p)
-            c.redraw_after_select(p)
+            c.redraw(p)
         c.treeFocusHelper()  # This is essential.
 
     # @+node:ekr.20130823083943.12559: *3* c.recursiveImport

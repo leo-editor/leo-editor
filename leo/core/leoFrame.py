@@ -1104,17 +1104,10 @@ class LeoTree:
             c.frame.putStatusLine(s)
 
     # @+node:ekr.20081005065934.8: *3* LeoTree: May be defined in subclasses
-    # These are new in Leo 4.6.
-
     def initAfterLoad(self) -> None:
         """Do late initialization. Called in g.openWithFileName after a successful load."""
 
-    # Hints for optimization. The proper default is c.redraw()
-
     def redraw_after_head_changed(self) -> None:
-        self.c.redraw()
-
-    def redraw_after_select(self, p: Position) -> None:
         self.c.redraw()
 
     # @+node:ekr.20040803072955.91: *4* LeoTree.onHeadChanged
@@ -1726,11 +1719,9 @@ class NullTree(LeoTree):
     redraw_after_contract = redraw_tree
     redraw_after_expand = redraw_tree
     redraw_now = redraw_tree
+    redraw_after_select = redraw_tree
 
     def redraw_after_head_changed(self) -> None:
-        pass
-
-    def redraw_after_select(self, p: Position) -> None:
         pass
 
     def scrollTo(self, p: Position) -> None:
