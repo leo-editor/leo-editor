@@ -62,7 +62,6 @@ def cutOutline(self: Cmdr, event: LeoKeyEvent = None) -> None:
     if c.canDeleteHeadline():
         c.copyOutline()
         c.deleteOutline(op_name="Cut Node")
-        c.recolor()
 
 
 # @+node:ekr.20031218072017.1551: *3* c_oc.pasteOutline
@@ -113,7 +112,6 @@ def pasteOutline(
     if undoFlag:
         c.undoer.afterInsertNode(pasted, 'Paste Node', undoData)
     c.redraw(pasted)
-    c.recolor()
     return pasted
 
 
@@ -164,7 +162,6 @@ def pasteOutlineRetainingClones(
     # Finish the command.
     c.undoer.afterInsertNode(pasted, 'Paste As Clone', undoData)
     c.redraw(pasted)
-    c.recolor()
     return pasted
 
 
@@ -755,8 +752,7 @@ def findNextClone(self: Cmdr, event: LeoKeyEvent = None) -> None:
     if flag:
         if cc:
             cc.selectChapterByName('main')
-        c.selectPosition(p)
-        c.redraw_after_select(p)
+        c.redraw(p)
     else:
         g.blue('no more clones')
 
@@ -1763,7 +1759,6 @@ def moveOutlineLeft(self: Cmdr, event: LeoKeyEvent = None) -> None:
     if c.collapse_nodes_after_move and c.sparse_move:  # New in Leo 4.4.2
         parent.contract()
     c.redraw(p)
-    c.recolor()  # Moving can change syntax coloring.
 
 
 # @+node:ekr.20031218072017.1771: *3* c_oc.moveOutlineRight
@@ -1794,7 +1789,6 @@ def moveOutlineRight(self: Cmdr, event: LeoKeyEvent = None) -> None:
     c.setChanged()  # #2036.
     u.afterMoveNode(p, 'Move Right', undoData)
     c.redraw(p)
-    c.recolor()  # Moving can change syntax coloring.
 
 
 # @+node:ekr.20031218072017.1772: *3* c_oc.moveOutlineUp
@@ -1887,7 +1881,6 @@ def moveOutlineToFirstChild(self: Cmdr, event: LeoKeyEvent = None) -> None:
     c.setChanged()
     u.afterMoveNode(p, 'Move To First Child', undoData)
     c.redraw(p)
-    # c.recolor()  # Moving can *not* change syntax coloring.
 
 
 # @+node:ekr.20230902051833.1: *3* c_oc.moveOutlineToLastChild
@@ -1915,7 +1908,6 @@ def moveOutlineToLastChild(self: Cmdr, event: LeoKeyEvent = None) -> None:
     c.setChanged()
     u.afterMoveNode(p, 'Move To Last Child', undoData)
     c.redraw(p)
-    # c.recolor()  # Moving can *not* change syntax coloring.
 
 
 # @+node:ekr.20031218072017.1774: *3* c_oc.promote

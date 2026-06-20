@@ -195,8 +195,7 @@ class BufferCommandsClass(BaseEditCommandsClass):
         c = self.c
         p = self.findBuffer(name)
         if p:
-            c.selectPosition(p)
-            c.redraw_after_select(p)
+            c.redraw(p)
 
     # @+node:ekr.20150514045829.14: *3* buffer.Utils
     # @+node:ekr.20150514045829.15: *4* computeData

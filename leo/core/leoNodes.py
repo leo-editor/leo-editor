@@ -2752,7 +2752,6 @@ class VNode:
 
     # @+node:ekr.20040315032144: *4* v.setBodyString & v.setHeadString
     def setBodyString(self, s: object) -> None:
-        # pylint: disable=no-else-return
         v = self
         if isinstance(s, str):
             v._bodyString = s
@@ -2763,9 +2762,6 @@ class VNode:
         v.updateIcon()
 
     def setHeadString(self, s: object) -> None:
-        # pylint: disable=no-else-return
-        # Fix bug: https://bugs.launchpad.net/leo-editor/+bug/1245535
-        # API allows headlines to contain newlines.
         v = self
         if isinstance(s, str):
             v._headString = s.replace('\n', '')
