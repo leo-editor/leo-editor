@@ -994,8 +994,6 @@ class Undoer:
         **Important**: Code should call this method *only* when the user has
         actually typed something. Commands should use u.beforeChangeBody and
         u.afterChangeBody.
-
-        Only qtm.onTextChanged and ec.selfInsertCommand now call this method.
         """
         c, u, w = self.c, self, self.c.frame.body.wrapper
         # Leo 6.4: undo_type must be 'Typing'.
@@ -1882,6 +1880,7 @@ class Undoer:
         c, u = self.c, self
         # selectPosition causes recoloring, so don't do this unless needed.
         c.recolor(u.p)
+
         # Swap the ones from the 'bunch.headline' dict
         for gnx, oldNewTuple in u.headlines.items():
             v = c.fileCommands.gnxDict.get(gnx)
@@ -1890,7 +1889,6 @@ class Undoer:
                 u.p.setDirty()
                 # This is required.  Otherwise redraw will revert the change!
                 c.frame.tree.setHeadline(u.p, oldNewTuple[0])
-        #
         if c.p != u.p:
             c.selectPosition(u.p)
 

@@ -635,14 +635,15 @@ class Commands:
         else:
             c.windowPosition = 500, 700, 50, 50  # width,height,left,top.
 
-    # @+node:ekr.20250508044308.1: *3* @cmd beautify-tree
+    # @+node:ekr.20260619060020.1: *3* @cmd commands
+    # @+node:ekr.20250508044308.1: *4* @cmd beautify-tree
     @cmd('beautify-tree')
     def beautify_tree_command(self, event: LeoKeyEvent = None) -> None:
         """Undoably beautify c.p and its subtree."""
         c = self
         c.beautify_script_tree(c.p)
 
-    # @+node:ekr.20210530065748.1: *3* @cmd c.execute-general-script
+    # @+node:ekr.20210530065748.1: *4* @cmd c.execute-general-script
     @cmd('execute-general-script')
     def execute_general_script_command(self, event: LeoKeyEvent = None) -> None:
         """
@@ -691,13 +692,13 @@ class Commands:
             directory = None
         c.general_script_helper(command, ext, language, directory=directory, regex=regex, root=p)
 
-    # @+node:tom.20241014154415.1: *3* @cmd c.execute-external-file
+    # @+node:tom.20241014154415.1: *4* @cmd c.execute-external-file
     # @@language python
     @cmd('execute-external-file')
     def execute_external_file(self, event: LeoKeyEvent = None) -> None:
         r"""
         # @+<< docstring >>
-        # @+node:tom.20241014154415.2: *4* << docstring >>
+        # @+node:tom.20241014154415.2: *5* << docstring >>
         Run external files.
 
         If there is an @language directive in the top node of the file,
@@ -748,7 +749,7 @@ class Commands:
         c = self
         MAP_SETTING_NODE = 'run-external-processor-map'
         # @+others
-        # @+node:tom.20241014154415.3: *4* Declarations
+        # @+node:tom.20241014154415.3: *5* Declarations
         EXECUTE_ARGS = {
             'konsole': '--noclose -e ',
             'gnome-terminal': '-- ',
@@ -764,7 +765,7 @@ class Commands:
         }
 
         PREFERRED_TERMINALS = EXECUTE_ARGS.keys()
-        # @+node:tom.20241014154415.4: *4* SETTINGS_HELP
+        # @+node:tom.20241014154415.4: *5* SETTINGS_HELP
         SETTINGS_HELP = r'''The data in the @data node body must have a
         PROCESSORS and an EXTENSIONS section, plus an optional TERMINAL
         section, looking like this example:
@@ -786,7 +787,7 @@ class Commands:
 
         Blank lines and lines starting with a "#" are ignored.
         '''
-        # @+node:tom.20241014154415.5: *4* extension map
+        # @+node:tom.20241014154415.5: *5* extension map
         LANGUAGE_EXTENSION_MAP = {
             '.cmd': 'batch',
             '.bat': 'batch',  # We'll get confused if a Linux program uses a .bat extension
@@ -797,7 +798,7 @@ class Commands:
             '.pyw': 'python',
             'rb': 'ruby',
         }
-        # @+node:tom.20241014154415.6: *4* processor map
+        # @+node:tom.20241014154415.6: *5* processor map
         PROCESSORS = {
             'batch': 'cmd.exe',
             'julia': 'julia',
@@ -806,12 +807,12 @@ class Commands:
             'ruby': 'ruby',
             'shellscript': 'bash',
         }
-        # @+node:tom.20241014154415.7: *4* get_external_maps
+        # @+node:tom.20241014154415.7: *5* get_external_maps
         MAP_SETTING_NODE = "run-external-processor-map"
 
         def get_external_maps() -> tuple[dict, dict, str]:
             # @+<< get_external_maps: docstring >>
-            # @+node:tom.20241014154415.8: *5* << get_external_maps: docstring >>
+            # @+node:tom.20241014154415.8: *6* << get_external_maps: docstring >>
             r"""Return processor, extension maps for @data node.
 
             The data in the @data node body must have a PROCESSORS and an
@@ -883,7 +884,7 @@ class Commands:
             extension_map = scan_map('EXTENSIONS')
             return processor_map, extension_map, terminal
 
-        # @+node:tom.20241014154415.9: *4* getExeKind
+        # @+node:tom.20241014154415.9: *5* getExeKind
         def getExeKind(ext: str) -> str:
             """
             Return the executable kind (a language) of the external file.
@@ -893,7 +894,7 @@ class Commands:
             """
             return c.getLanguage(c.p) or LANGUAGE_EXTENSION_MAP.get(ext, None)
 
-        # @+node:tom.20241014154415.10: *4* getProcessor
+        # @+node:tom.20241014154415.10: *5* getProcessor
         def getProcessor(language: str, path: str, extension: str) -> str:
             """Return the name or path of a program able to run our external program."""
             processor = ''
@@ -914,7 +915,7 @@ class Commands:
                     processor = ''
             return processor
 
-        # @+node:tom.20241014154415.11: *4* Get Windows File Associations
+        # @+node:tom.20241014154415.11: *5* Get Windows File Associations
         def get_win_assoc(extension: str) -> str:
             """Return Windows association for given file extension, or ''.
 
@@ -949,7 +950,7 @@ class Commands:
             prog_str = ftype_str.split('=')[1]
             return prog_str.split('"')[1]
 
-        # @+node:tom.20241014154415.12: *4* getShell
+        # @+node:tom.20241014154415.12: *5* getShell
         def getShell() -> str:
             # Prefer bash unless it is not present - we know its options' names
             shell = 'bash'
@@ -959,9 +960,9 @@ class Commands:
                 shell = os.environ['SHELL'].split('/')[-1]
             return shell
 
-        # @+node:tom.20241014154415.13: *4* getTerminal
+        # @+node:tom.20241014154415.13: *5* getTerminal
         # @+others
-        # @+node:tom.20241014154415.14: *5* getTerminalFromDirectory
+        # @+node:tom.20241014154415.14: *6* getTerminalFromDirectory
         def getTerminalFromDirectory(dir: str) -> str:
             BAD_NAMES = (
                 'xdg-terminal',
@@ -982,7 +983,7 @@ class Commands:
                         return t
             return ''
 
-        # @+node:tom.20241014154415.15: *5* getCommonTerminal
+        # @+node:tom.20241014154415.15: *6* getCommonTerminal
         def getCommonTerminal(names: str | Iterable[str]) -> str:
             """Return a terminal name given candidate names.
 
@@ -1014,7 +1015,7 @@ class Commands:
                 or getTerminalFromDirectory('/bin')
             )
 
-        # @+node:tom.20241014154415.16: *4* getTermExecuteCmd
+        # @+node:tom.20241014154415.16: *5* getTermExecuteCmd
         def getTermExecuteCmd(terminal: str) -> str:
             """Given a terminal's name, find the command line arg to launch a program.
 
@@ -1029,7 +1030,7 @@ class Commands:
                 return EXECUTE_ARGS[terminal]
 
             # @+others
-            # @+node:tom.20241014154415.17: *5* get_help_message (c.execute-external-file)
+            # @+node:tom.20241014154415.17: *6* get_help_message (c.execute-external-file)
             def get_help_message(terminal: str, help_cmd: str) -> str:
                 cmd = f'{terminal} {help_cmd}'
                 proc = subprocess.run(cmd, shell=True, capture_output=True, check=False)
@@ -1039,7 +1040,7 @@ class Commands:
                     return ''
                 return msg
 
-            # @+node:tom.20241014154415.18: *5* find_ex_arg
+            # @+node:tom.20241014154415.18: *6* find_ex_arg
             def find_ex_arg(help_msg: str) -> str:
                 for line in help_msg.splitlines():
                     if '--command' in line:
@@ -1070,7 +1071,7 @@ class Commands:
                 arg = '-x '  # We can only hope
             return arg
 
-        # @+node:tom.20241014154415.19: *4* checkShebang
+        # @+node:tom.20241014154415.19: *5* checkShebang
         def checkShebang(path: str) -> bool:
             """Return True if file begins with a shebang line, else False."""
             path = g.finalize(path)
@@ -1078,7 +1079,7 @@ class Commands:
                 first_line = f.readline()
             return first_line.startswith('#!')
 
-        # @+node:tom.20241014154415.20: *4* runFile @cmd c.execute-external-file
+        # @+node:tom.20241014154415.20: *5* runFile @cmd c.execute-external-file
         def runfile(fullpath: str, processor: str, terminal: str) -> None:
             direc: str = os.path.expanduser(os.path.dirname(fullpath))
             if g.isWindows:
@@ -1151,7 +1152,7 @@ class Commands:
         else:
             g.es('Cannot find an @- file', color='red')
 
-    # @+node:vitalije.20190924191405.1: *3* @cmd execute-pytest
+    # @+node:vitalije.20190924191405.1: *4* @cmd execute-pytest
     @cmd('execute-pytest')
     def execute_pytest(self, event: LeoKeyEvent = None) -> None:
         """Using pytest, execute all @test nodes for p, p's parents and p's subtree."""
@@ -1215,7 +1216,7 @@ class Commands:
         finally:
             del sys.path[:2]
 
-    # @+node:ekr.20171123135625.4: *3* @cmd execute-script & public helpers
+    # @+node:ekr.20171123135625.4: *4* @cmd execute-script & public helpers
     @cmd('execute-script')
     def executeScript(
         self,
@@ -1233,7 +1234,7 @@ class Commands:
         runPyflakes: bool = True,
     ) -> Value:
         # @+<< executeScript: docstring >>
-        # @+node:ekr.20250508025320.1: *4* << executeScript: docstring >>
+        # @+node:ekr.20250508025320.1: *5* << executeScript: docstring >>
         """
         Execute a *Leo* script, written in python.
         Keyword args:
@@ -1340,7 +1341,7 @@ class Commands:
             self.unredirectScriptOutput()
         return callResult
 
-    # @+node:ekr.20171123135625.5: *4* c.executeScriptHelper
+    # @+node:ekr.20171123135625.5: *5* c.executeScriptHelper
     def executeScriptHelper(
         self,
         args: list,
@@ -1378,14 +1379,14 @@ class Commands:
         finally:
             g.inScript = g.app.inScript = False
 
-    # @+node:ekr.20171123135625.6: *4* c.redirectScriptOutput
+    # @+node:ekr.20171123135625.6: *5* c.redirectScriptOutput
     def redirectScriptOutput(self) -> None:
         c = self
         if c.exists and c.config.getBool('redirect-execute-script-output-to-log-pane'):
             g.redirectStdout()  # Redirect stdout
             g.redirectStderr()  # Redirect stderr
 
-    # @+node:ekr.20171123135625.7: *4* c.setCurrentDirectoryFromContext
+    # @+node:ekr.20171123135625.7: *5* c.setCurrentDirectoryFromContext
     def setCurrentDirectoryFromContext(self, p: Position) -> None:
         c = self
         path = c.getPath(p)
@@ -1396,28 +1397,36 @@ class Commands:
             except Exception:
                 pass
 
-    # @+node:ekr.20171123135625.8: *4* c.unredirectScriptOutput
+    # @+node:ekr.20171123135625.8: *5* c.unredirectScriptOutput
     def unredirectScriptOutput(self) -> None:
         c = self
         if c.exists and c.config.getBool('redirect-execute-script-output-to-log-pane'):
             g.restoreStderr()
             g.restoreStdout()
 
-    # @+node:ekr.20080514131122.12: *3* @cmd recolor
+    # @+node:ekr.20080514131122.12: *4* @cmd recolor (c.recolorCommand)
     @cmd('recolor')
     def recolorCommand(self, event: LeoKeyEvent = None) -> None:
         """Force a full recolor."""
         c = self
-        # Call colorer.force_recolor for pygments.
         colorer = c.frame.body.colorizer
         if hasattr(colorer, 'force_recolor'):
+            # For Qt (jEdit) and pygments.
             colorer.force_recolor()
-        # Setting all text appears to be the only way.
-        wrapper = c.frame.body.wrapper
-        i, j = wrapper.getSelectionRange()
-        ins = wrapper.getInsertPoint()
-        wrapper.setAllText(c.p.b)
-        wrapper.setSelectionRange(i, j, insert=ins)
+        else:
+            # Default: set all text, retaining the selection.
+            wrapper = c.frame.body.wrapper
+            i, j = wrapper.getSelectionRange()
+            ins = wrapper.getInsertPoint()
+            wrapper.setAllText(c.p.b)
+            wrapper.setSelectionRange(i, j, insert=ins)
+
+    # @+node:ekr.20260619021703.1: *4* @cmd redraw (c.redraw_command)
+    @cmd('redraw')
+    def redraw_command(self, event: LeoKeyEvent) -> None:
+        c = event.get('c')
+        if c:
+            c.redraw()
 
     # @+node:ekr.20171124100654.1: *3* c.API
     # These methods are a fundamental, unchanging, part of Leo's API.
@@ -2187,22 +2196,17 @@ class Commands:
     def setBodyString(self, p: Position, s: str) -> None:
         """
         This is equivalent to p.b = s.
-
-        Warning: This method may call c.recolor() or c.redraw().
         """
         c, v = self, p.v
         if not c or not v:
             return
         s = g.toUnicode(s)
-        current = c.p
-        # 1/22/05: Major change: the previous test was: 'if p == current:'
-        # This worked because commands work on the presently selected node.
-        # But setRecentFiles may change a _clone_ of the selected node!
-        if current and p.v == current.v:
+        if c.p and p.v == c.p.v:
             w = c.frame.body.wrapper
             w.setAllText(s)
             v.setSelection(0, 0)
             c.recolor()
+
         # Keep the body text in the VNode up-to-date.
         if v.b != s:
             v.setBodyString(s)
@@ -4322,9 +4326,6 @@ class Commands:
         if c.requestLaterRedraw:
             if c.enableRedrawFlag:
                 c.requestLaterRedraw = False
-                if 'drawing' in g.app.debug and not g.unitTesting:
-                    g.trace('\nDELAYED REDRAW')
-                    time.sleep(1.0)
                 c.redraw()
         # Delayed focus requests will always be useful.
         if c.requestedFocusWidget:
@@ -4348,12 +4349,23 @@ class Commands:
 
     # @+node:ekr.20080514131122.13: *5* c.recolor
     def recolor(self, p: Position = None) -> None:
+        """
+        Force a full recolor when using the Scintilla text widget.
+        This method has no effect when using the default Qt colorizer.
+
+        Leo 6.8.10: c.redraw calls this method, so could should call this
+                    method only if the code *doesn't* call c.redraw.
+        """
         c = self
         colorizer = c.frame.body.colorizer
-        if colorizer and hasattr(colorizer, 'colorize'):
-            # Only the QScintillaColorizer class has a colorize method.
+        try:
+            # Only the QScintillaColorizer class and NullColorizer classes
+            # have colorize methods.
             colorizer.colorize(p or c.p)
+        except Exception:
+            pass
 
+    # Compatibility.
     recolor_now = recolor
 
     # @+node:ekr.20080514131122.14: *5* c.redrawing...
@@ -4367,56 +4379,38 @@ class Commands:
         c = self
         c.enableRedrawFlag = True
 
-    # @+node:ekr.20090110073010.1: *6* c.redraw ('redraw' command)
-    @cmd('redraw')
-    def redraw_command(self, event: LeoKeyEvent) -> None:
-        c = event.get('c')
-        if c:
-            p = c.p
-            c.redraw()
-            # Use a trap door, not a kwarg.
-            colorizer = c.frame.body.colorizer
-            if colorizer and hasattr(colorizer, 'old_v'):
-                colorizer.old_v = None  # #4146
-            c.recolor(p)
-
+    # @+node:ekr.20090110073010.1: *6* c.redraw
     def redraw(self, p: Position = None) -> None:
         """
         Redraw the screen immediately.
         If p is given, set c.p to p.
         """
         c = self
-        # New in Leo 5.6: clear the redraw request.
-        c.requestLaterRedraw = False
         if not p:
-            p = c.p or c.rootPosition()
+            p = c.p
         if not p:
             return
         if not c.positionExists(p):
             g.trace(f"Invalid position: {repr(p)}")
             g.trace(g.callers())
-            p = c.rootPosition()
+            return
+        c.requestLaterRedraw = False
         c.expandAllAncestors(p)
-        if p:
-            # Fix bug https://bugs.launchpad.net/leo-editor/+bug/1183855
-            # This looks redundant, but it is probably the only safe fix.
-            c.frame.tree.select(p)
-        # tree.redraw will change the position if p is a hoisted @chapter node.
-        p2 = c.frame.tree.redraw(p)
-        # Be careful.  NullTree.redraw returns None.
-        # #503: NullTree.redraw(p) now returns p.
-        c.selectPosition(p2 or p)
-        # Do not call treeFocusHelper here.
-        # c.treeFocusHelper()
+        # Fix bug https://bugs.launchpad.net/leo-editor/+bug/1183855
+        # This looks redundant, but it is probably the only safe fix.
+        c.frame.tree.select(p)
+        # tree.redraw_tree will change the position if p is a hoisted @chapter node.
+        p2 = c.frame.tree.redraw_tree(p)
+        c.selectPosition(p2 or p)  # #503.
         # Clear the redraw request, again.
         c.requestLaterRedraw = False
+        c.recolor()  # Leo 6.8.10
 
     # Compatibility with old scripts.
-    # Do *not* delete redraw_after_select or redraw_after_head_changed.
-
     force_redraw = redraw
     redraw_after_contract = redraw
     redraw_after_expand = redraw
+    redraw_after_select = redraw
     redraw_now = redraw
 
     # @+node:ekr.20090110073010.2: *6* c.redraw_after_head_changed
@@ -4428,18 +4422,6 @@ class Commands:
         c = self
         if c.enableRedrawFlag:
             self.frame.tree.redraw_after_head_changed()
-        else:
-            c.requestLaterRedraw = True
-
-    # @+node:ekr.20090110073010.4: *6* c.redraw_after_select
-    def redraw_after_select(self, p: Position) -> None:
-        """Redraw the screen after node p has been selected."""
-        c = self
-        if c.enableRedrawFlag:
-            flag = c.expandAllAncestors(p)
-            if flag:
-                # This is the same as c.frame.tree.full_redraw().
-                c.frame.tree.redraw_after_select(p)
         else:
             c.requestLaterRedraw = True
 
@@ -4498,8 +4480,7 @@ class Commands:
             if found:
                 break
         if found:
-            c.selectPosition(p)
-            c.redraw_after_select(p)
+            c.redraw(p)
             c.navTime = time.time()
             c.navPrefix = newPrefix
         else:
@@ -5137,9 +5118,7 @@ class Commands:
         if not p:
             p = c.p
         if p:
-            # Do not call expandAllAncestors here.
-            c.selectPosition(p)
-            c.redraw_after_select(p)
+            c.redraw(p)
         c.treeFocusHelper()  # This is essential.
 
     # @+node:ekr.20130823083943.12559: *3* c.recursiveImport

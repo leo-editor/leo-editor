@@ -7307,7 +7307,7 @@ def os_startfile(fname: str) -> None:
                 ree.close()
             return
         try:
-            subPopen = subprocess.Popen(['xdg-open', fname], stderr=wre, shell=True)
+            subPopen = subprocess.Popen(['xdg-open', fname], stderr=wre, shell=False)
         except Exception:
             g.es_print(f"error opening {fname!r}")
             g.es_exception()

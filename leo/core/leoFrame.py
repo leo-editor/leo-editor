@@ -1056,17 +1056,16 @@ class LeoTree:
         c = self.c
         w = c.frame.body.wrapper
         s = p.v.b  # Guaranteed to be unicode.
+
         # Part 1: get the old text.
         old_s = w.getAllText()
         if p and p == old_p and s == old_s:
             return
+
         # Part 2: set the new text. This forces a recolor.
-        # Important: do this *before* setting text,
-        # so that the colorizer will have the proper c.p.
+        # Important: set c.p *before* setting text.
         c.setCurrentPosition(p)
         w.setAllText(s)
-        # This is now done after c.p has been changed.
-        # p.restoreCursorAndScroll()
 
     # @+node:ekr.20140829053801.18458: *5* 3. LeoTree.change_current_position
     def change_current_position(self, old_p: Position, p: Position) -> None:
@@ -1105,17 +1104,10 @@ class LeoTree:
             c.frame.putStatusLine(s)
 
     # @+node:ekr.20081005065934.8: *3* LeoTree: May be defined in subclasses
-    # These are new in Leo 4.6.
-
     def initAfterLoad(self) -> None:
         """Do late initialization. Called in g.openWithFileName after a successful load."""
 
-    # Hints for optimization. The proper default is c.redraw()
-
     def redraw_after_head_changed(self) -> None:
-        self.c.redraw()
-
-    def redraw_after_select(self, p: Position = None) -> None:
         self.c.redraw()
 
     # @+node:ekr.20040803072955.91: *4* LeoTree.onHeadChanged
@@ -1170,11 +1162,6 @@ class LeoTree:
         """End editing of a headline and update p.h."""
         # Important: this will redraw if necessary.
         self.onHeadChanged(self.c.p)
-        # Do *not* call setDefaultUnboundKeyAction here: it might put us in ignore mode!
-        # k.setDefaultInputState()
-        # k.showStateAndMode()
-        # This interferes with the find command and interferes with focus generally!
-        # c.bodyWantsFocus()
 
     # @+node:ekr.20031218072017.3716: *4* LeoTree.getEditTextDict
     def getEditTextDict(self, v: VNode) -> Widget:
@@ -1242,10 +1229,10 @@ class LeoTree:
     # @+node:ekr.20031218072017.3706: *3* LeoTree: Must be defined in subclasses
     # Drawing & scrolling.
 
-    def redraw(self, p: Position = None) -> None:
+    def redraw_tree(self, p: Position = None) -> Position:
         raise NotImplementedError
 
-    redraw_now = redraw
+    redraw_now = redraw_tree
 
     def scrollTo(self, p: Position) -> None:
         raise NotImplementedError
@@ -1724,15 +1711,18 @@ class NullTree(LeoTree):
             w = d.get(key)
             g.pr('w', w, 'v.h:', key.headString, 's:', repr(w.s))
 
-    # @+node:ekr.20070228163350.1: *3* NullTree.redraw and scrollTo
-    def redraw(self, p: Position = None) -> None:
+    # @+node:ekr.20070228163350.1: *3* NullTree.redraw_tree and scrollTo
+    def redraw_tree(self, p: Position = None) -> Position:
         self.redrawCount += 1
+        return p
 
-    redraw_after_contract = redraw
-    redraw_after_expand = redraw
-    redraw_after_head_changed = redraw
-    redraw_after_select = redraw
-    redraw_now = redraw
+    redraw_after_contract = redraw_tree
+    redraw_after_expand = redraw_tree
+    redraw_now = redraw_tree
+    redraw_after_select = redraw_tree
+
+    def redraw_after_head_changed(self) -> None:
+        pass
 
     def scrollTo(self, p: Position) -> None:
         pass

@@ -848,7 +848,6 @@ class LeoImportCommands:
         parent.expand()
         c.setChanged()
         u.afterChangeGroup(parent, command)
-        c.recolor(parent)
         c.redraw(parent)
         return parent
 

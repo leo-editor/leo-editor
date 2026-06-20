@@ -90,11 +90,9 @@ class HelpCommandsClass(BaseEditCommandsClass):
         Abbreviations typically end with something like ";;" so they won't trigger
         by accident.
 
-        You define abbreviations in @data abbreviations nodes or @data
-        global-abbreviations nodes. None come predefined, but leoSettings.leo
-        contains example abbreviations in the node::
-
-            @@data abbreviations examples
+        You define abbreviations in @data abbreviations nodes
+        or @data global-abbreviations nodes. Some come predefined
+        in @data global-abbreviations such as date;; and  html;;.
 
         Abbreviations can simply be shortcuts::
 
@@ -114,17 +112,16 @@ class HelpCommandsClass(BaseEditCommandsClass):
             \:name="<|name|>"
             \:value="" id="<|id|>">\n
 
-        Typing ",," after inserting a template selects the next field.
+        Typing "F3" after inserting a template selects the next field.
 
         Abbreviations can execute **abbreviation scripts**, delimited by {\|{ and
         }\|}::
 
             date;;={|{import time ; x=time.asctime()}|}
-            ts;;={|{import time ; x=time.strftime("%Y%m%d%H%M%S")}|}
 
-        For example, typing ts;; gives::
+        For example, typing date;; gives::
 
-            20131009171117
+            Sun Jun 14 19:51:44 2026
 
         It's even possible to define a context in which abbreviation scripts execute.
 
