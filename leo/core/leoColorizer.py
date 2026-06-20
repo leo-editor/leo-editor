@@ -3729,10 +3729,10 @@ class QScintillaColorizer(BaseColorizer):
         # Alas, a QSciDocument is not a QTextDocument.
         self.updateSyntaxColorer(p)
         self.changeLexer(self.language)
-        # if self.NEW:
-        # # Works, but QScintillaWrapper.tag_configuration is presently a do-nothing.
-        # for s in g.splitLines(p.b):
-        # self.jeditColorizer.recolor(s)
+
+        # Works, but QScintillaWrapper.tag_configuration is presently a do-nothing.
+        #   for s in g.splitLines(p.b):
+        #       self.jeditColorizer.recolor(s)
 
     # @+node:ekr.20140906095826.18721: *3* qsc.configure_lexer
     def configure_lexer(self, lexer: Lexer) -> None:

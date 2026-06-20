@@ -1409,16 +1409,17 @@ class Commands:
     def recolorCommand(self, event: LeoKeyEvent = None) -> None:
         """Force a full recolor."""
         c = self
-        # Call colorer.force_recolor for pygments.
         colorer = c.frame.body.colorizer
         if hasattr(colorer, 'force_recolor'):
+            # For Qt (jEdit) and pygments.
             colorer.force_recolor()
-        # Setting all text appears to be the only way.
-        wrapper = c.frame.body.wrapper
-        i, j = wrapper.getSelectionRange()
-        ins = wrapper.getInsertPoint()
-        wrapper.setAllText(c.p.b)
-        wrapper.setSelectionRange(i, j, insert=ins)
+        else:
+            # Default: set all text, retaining the selection.
+            wrapper = c.frame.body.wrapper
+            i, j = wrapper.getSelectionRange()
+            ins = wrapper.getInsertPoint()
+            wrapper.setAllText(c.p.b)
+            wrapper.setSelectionRange(i, j, insert=ins)
 
     # @+node:ekr.20260619021703.1: *4* @cmd redraw (c.redraw_command)
     @cmd('redraw')
@@ -4348,6 +4349,13 @@ class Commands:
 
     # @+node:ekr.20080514131122.13: *5* c.recolor (Scintilla only!!)
     def recolor(self, p: Position = None) -> None:
+        """
+        Force a full recolor when using the Scintilla text widget.
+        This method has no effect when using the default Qt colorizer.
+
+        Leo 6.8.10: c.redraw calls this method, so could should call this
+                    method only if the code *doesn't* call c.redraw.
+        """
         c = self
         colorizer = c.frame.body.colorizer
         try:
