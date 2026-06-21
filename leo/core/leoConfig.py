@@ -969,10 +969,6 @@ class ParserBaseClass:
         """Give an error: val is not valid for kind."""
         self.error(f"{val} is not a valid {kind} for {name}")
 
-    # @+node:ekr.20041119204700.3: *3* pbc.visitNode (must be overwritten in subclasses)
-    def visitNode(self, p: Position) -> str:
-        raise NotImplementedError
-
     # @-others
 
 

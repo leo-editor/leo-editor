@@ -657,79 +657,6 @@ class LeoMenu:
         cmn = self.canonicalizeMenuName(menuName)
         del self.menus[cmn]
 
-    # @+node:ekr.20031218072017.3808: *3* LeoMenu: Must be overridden in menu subclasses
-    # @+node:ekr.20031218072017.3809: *4* LeoMenu.9 Routines with Tk spellings
-    def add_cascade(self, parent: Widget, label: str, menu: QtMenuWrapper, underline: int) -> None:
-        pass
-
-    def add_command(
-        self,
-        menu: QtMenuWrapper,
-        accelerator: str = '',
-        command: Callable = None,
-        commandName: str = None,
-        label: str = None,
-        underline: int = 0,
-    ) -> None:
-        pass
-
-    def add_separator(self, menu: QtMenuWrapper) -> None:
-        pass
-
-    def delete(self, menu: QtMenuWrapper, realItemName: str) -> None:
-        pass
-
-    def delete_range(self, menu: QtMenuWrapper, n1: int, n2: int) -> None:
-        pass
-
-    def destroy(self, menu: QtMenuWrapper) -> None:
-        pass
-
-    def insert(
-        self,
-        menuName: str,
-        position: int,
-        label: str,
-        command: Callable,
-        underline: int = None,
-    ) -> None:
-        pass
-
-    def insert_cascade(
-        self, parent: Widget, index: int, label: str, menu: QtMenuWrapper, underline: int
-    ) -> Widget:
-        pass
-
-    def new_menu(self, parent: Widget, tearoff: int = 0, label: str = '') -> QtMenuWrapper:
-        pass
-
-    # @+node:ekr.20031218072017.3810: *4* LeoMenu.9 Routines with new spellings
-    def activateMenu(self, menuName: str) -> None:  # New in Leo 4.4b2.
-        pass
-
-    def clearAccel(self, menu: QtMenuWrapper, name: str) -> None:
-        pass
-
-    def createMenuBar(self, frame: Widget) -> None:
-        pass
-
-    def createOpenWithMenu(
-        self, parent: Widget, label: str, index: int, amp_index: int
-    ) -> QtMenuWrapper:
-        pass
-
-    def disableMenu(self, menu: QtMenuWrapper, name: str) -> None:
-        pass
-
-    def enableMenu(self, menu: QtMenuWrapper, name: str, val: bool) -> None:
-        pass
-
-    def getMenuLabel(self, menu: QtMenuWrapper, name: str) -> str:
-        return ''
-
-    def setMenuLabel(self, menu: QtMenuWrapper, name: str, label: str, underline: int = -1) -> None:
-        pass
-
     # @-others
 
 
@@ -740,6 +667,12 @@ class NullMenu(LeoMenu):
     def __init__(self, frame: NullFrame) -> None:
         super().__init__(frame)
         self.isNull = True
+
+    def createMenuBar(self, frame: Widget) -> None:
+        pass
+
+    def setMenuLabel(self, menu: QtMenuWrapper, name: str, label: str, underline: int = -1) -> None:
+        pass
 
 
 # @-others
