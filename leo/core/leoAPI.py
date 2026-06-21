@@ -7,15 +7,12 @@ Abstract base classes and Protocol classes for Leo's gui.
 # @+<< leoAPI.py: imports and annotations >>
 # @+node:ekr.20250329041628.1: ** << leoAPI.py: imports and annotations >>
 from __future__ import annotations
-from typing import Any, Optional
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.plugins.qt_text import QTextMixin
 
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
-
-    Widget = Any  # 'Any' is the correct annotation for base class widgets.
 # @-<< leoAPI.py: imports and annotations >>
 
 
@@ -123,7 +120,7 @@ class StringTextWrapper(QTextMixin):
         self.delete(i, j)
 
     # @+node:ekr.20140903172510.18595: *4* StringTextWrapper.get
-    def get(self, i: int, j: Optional[int] = None) -> str:
+    def get(self, i: int, j: int | None = None) -> str:
         """StringTextWrapper."""
         if j is None:
             j = i + 1
