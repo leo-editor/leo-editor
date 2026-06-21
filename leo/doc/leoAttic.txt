@@ -4792,10 +4792,6 @@ def editLabel(
 def headline_wrapper(self, p: Position) -> Widget:
     raise NotImplementedError
 
-# @+node:ekr.20041119204700.3: *4* pbc.visitNode (must be overwritten in subclasses)
-def visitNode(self, p: Position) -> str:
-    raise NotImplementedError
-
 # @-all
 # @@nosearch
 # @-leo
