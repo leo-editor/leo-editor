@@ -837,6 +837,10 @@ class LeoLog:
 class LeoTree:
     """The base class for the outline pane in Leo windows."""
 
+    # Must be defined in subclasses.
+    def headline_wrapper(self, p: Position) -> Widget:
+        raise NotImplementedError
+
     # @+others
     # @+node:ekr.20031218072017.3705: *3*  LeoTree.__init__
     def __init__(self, frame: Widget) -> None:
