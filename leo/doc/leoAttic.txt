@@ -4261,6 +4261,209 @@ def insertKeyEvent(self, event: QEvent, i: int) -> None:
             # qevent, which *presumably* is the best that can be done.
             g.app.gui.insert_char_flag = True
 
+# @+node:ekr.20260621054801.1: *3* Deleted by PR #4745
+# @+node:ekr.20250329033642.2: *4* class IconBarAPI
+class IconBarAPI:
+    """The required API for c.frame.iconBar."""
+
+    def __init__(self, c: Cmdr, parentFrame: Widget) -> None:
+        pass
+
+    def add(self, *args: str, **keys: str) -> None:
+        pass
+
+    def addRow(self, height: str = None) -> None:
+        pass
+
+    def addRowIfNeeded(self) -> None:
+        pass
+
+    def addWidget(self, w: QTextMixin) -> None:
+        pass
+
+    def clear(self) -> None:
+        pass
+
+    def createChaptersIcon(self) -> None:
+        pass
+
+    def deleteButton(self, w: QTextMixin) -> None:
+        pass
+
+    def getNewFrame(self) -> None:
+        pass
+
+    def setCommandForButton(
+        self,
+        button: QTextMixin,
+        command: str,
+        command_p: Position,
+        controller: ScriptingController,
+        gnx: str,
+        script: str,
+    ) -> None:
+        pass
+
+
+# @+node:ekr.20250329033642.3: *4* class StatusLineAPI
+class StatusLineAPI:
+    """The required API for c.frame.statusLine."""
+
+    def __init__(self, c: Cmdr, parentFrame: Widget) -> None:
+        pass
+
+    def clear(self) -> None:
+        pass
+
+    def disable(self, background: str = None) -> None:
+        pass
+
+    def enable(self, background: str = "white") -> None:
+        pass
+
+    def get(self) -> str:
+        return ''
+
+    def isEnabled(self) -> bool:
+        return False
+
+    def put(self, s: str, bg: str = None, fg: str = None) -> None:
+        pass
+
+    def setFocus(self) -> None:
+        pass
+
+    def update(self) -> None:
+        pass
+
+
+# @+node:ekr.20250329033642.4: *4* class TreeAPI
+class TreeAPI:
+    """The required API for c.frame.tree."""
+
+    def __init__(self, frame: Widget) -> None:
+        pass
+
+    # Must be defined in subclasses.
+
+    def editLabel(
+        self,
+        v: VNode,
+        selectAll: bool = False,
+        selection: tuple = None,
+    ) -> tuple[Widget, QTextMixin]:
+        return None, None
+
+    def headline_wrapper(self, p: Position) -> None:
+        return None
+
+    def redraw_tree(self, p: Position = None) -> Position:
+        pass
+
+    redraw_now = redraw_tree
+
+    def scrollTo(self, p: Position) -> None:
+        pass
+
+    # May be defined in subclasses.
+
+    def initAfterLoad(self) -> None:
+        pass
+
+    def onHeadChanged(self, p: Position, undoType: str = 'Typing') -> None:
+        pass
+
+    # Hints for optimization. The proper default is c.redraw()
+
+    def redraw_after_head_changed(self) -> None:
+        pass
+
+    # Must be defined in the LeoTree class...
+    # def OnIconDoubleClick (self,p):
+
+    def OnIconCtrlClick(self, p: Position) -> None:
+        pass
+
+    def endEditLabel(self) -> None:
+        pass
+
+    def getEditTextDict(self, v: VNode) -> None:
+        return None
+
+    def onHeadlineKey(self, event: LeoKeyEvent) -> None:
+        pass
+
+    def select(self, p: Position) -> None:
+        pass
+
+    def updateHead(self, event: LeoKeyEvent, w: QTextMixin) -> None:
+        pass
+
+
+# @+node:ekr.20260621062838.21: *4* class TestAPIClasses(LeoUnitTest)
+class TestAPIClasses(LeoUnitTest):
+    """Tests that gui classes are compatible with the corresponding API class."""
+
+    @others
+
+
+# @+node:ekr.20260621062838.22: *5* test_icon_bar_api
+def test_icon_bar_api(self):
+    def get_methods(cls):
+        return [z for z in dir(cls) if not z.startswith('__')]
+
+    def get_missing(cls):
+        return [z for z in get_methods(IconBarAPI) if z not in get_methods(cls)]
+
+    classes = [NullIconBarClass]
+    if Qt:
+        classes.append(QtIconBarClass)
+    for cls in classes:
+        self.assertFalse(get_missing(cls), msg=f"Missing {cls.__class__.__name__} methods")
+
+# @+node:ekr.20260621062838.23: *5* test_status_line_api
+def test_status_line_api(self):
+    def get_methods(cls):
+        return [z for z in dir(cls) if not z.startswith('__')]
+
+    def get_missing(cls):
+        return [z for z in get_methods(StatusLineAPI) if z not in get_methods(cls)]
+
+    classes = [NullStatusLineClass]
+    if Qt:
+        classes.append(QtStatusLineClass)
+    for cls in classes:
+        self.assertFalse(get_missing(cls), msg=f"Missing {cls.__class__.__name__} methods")
+
+# @+node:ekr.20260621062838.24: *5* test_tree_api
+def test_tree_api(self):
+    def get_methods(cls):
+        return [z for z in dir(cls) if not z.startswith('__')]
+
+    def get_missing(cls):
+        return [z for z in get_methods(TreeAPI) if z not in get_methods(cls)]
+
+    classes = [NullTree]
+    if Qt:
+        classes.extend([LeoQtTree, LeoTree])
+    for cls in classes:
+        self.assertFalse(get_missing(cls), msg=f"Missing {cls.__class__.__name__} methods")
+
+# @+node:ekr.20260621062838.25: *5* test_text_api
+def test_text_api(self):
+    def get_methods(cls):
+        return [z for z in dir(cls) if not z.startswith('__')]
+
+    def get_missing(cls):
+        return [z for z in get_methods(QTextMixin) if z not in get_methods(cls)]
+
+    classes = [StringTextWrapper]
+    if Qt:
+        classes.extend([QLineEditWrapper, QTextEditWrapper, QScintillaWrapper])
+    for cls in classes:
+        missing = get_missing(cls)
+        self.assertFalse(missing, msg=f"Missing {cls} methods: {missing}")
+
 # @-all
 # @@nosearch
 # @-leo
