@@ -375,6 +375,17 @@ def show_clone_ancestors(event: LeoKeyEvent = None) -> None:
                 c.frame.log.put(message + '\n', nodeLink=f"{unl}::1")
 
 
+# @+node:ekr.20260622102739.1: *3* @g.command('show-clone-files')
+@g.command('show-clone-files')
+def show_clone_files(event: LeoKeyEvent = None) -> None:
+    """Display the names of all external files containing this clone."""
+    c = event.get('c')
+    if c and c.p:
+        p = c.p
+        for v in p.v.findAllAncestorAtFileNodes():
+            g.es(v.h, color='blue')
+
+
 # @+node:ekr.20191007034723.1: *3* @g.command('show-clone-parents')
 @g.command('show-clone-parents')
 def show_clones(event: LeoKeyEvent = None) -> None:

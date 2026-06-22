@@ -2659,29 +2659,38 @@ class VNode:
     def setIcon(self) -> None:  # pragma: no cover
         pass  # Compatibility routine for old scripts
 
-    # @+node:ekr.20220905044353.1: *4* v.updateIcon
-    def updateIcon(self) -> None:
-        """Update any user icon."""
-        c, v = self.context, self
-        try:
-            tree = c.frame.tree  # May not exist at startup.
-            if not tree:
-                return
-            if not hasattr(tree, 'nodeIconsDict'):  # Only exists for Qt gui.
-                return
-        except AttributeError:
-            return
-
-        # #2870: Clear the icon cache (Remove v.gnx from the dict).
-        tree.nodeIconsDict.pop(v.gnx, None)
-        icon = tree.getIcon(v)
-        items = tree.vnode2items(v)
-        for item in items:
-            tree.setItemIcon(item, icon)
-
     # @+node:ville.20120502221057.7498: *4* v.contentModified
     def contentModified(self) -> None:
         g.contentModifiedSet.add(self)
+
+    # @+node:ekr.20260622103203.1: *4* v.findAllAncetorAtFileNodes
+    def findAllAncestorAtFileNodes(self, *, to_do_set: set[VNode] = None) -> list[VNode]:
+        """
+        Return a list of all external files.
+        """
+        v = self
+
+        # Init seen and to_do_list.
+        seen: set[VNode] = set([v.context.hiddenRootNode])
+        to_do_list: list[VNode] = list(to_do_set) if to_do_set else [v]
+        if to_do_set:
+            for v2 in to_do_set:
+                to_do_list.extend(v2.parents)
+        to_do_list = list(set(to_do_list))
+
+        # The main loop.
+        result: set[VNode] = set()
+        while to_do_list:
+            v2 = to_do_list.pop()
+            seen.add(v2)
+            if v2.isAnyAtFileNode():
+                result.add(v2)
+            else:
+                # Nested @<file> nodes are no longer valid.
+                for parent_v in v2.parents:
+                    if parent_v not in seen:
+                        to_do_list.append(parent_v)
+        return list(result)
 
     # @+node:ekr.20100303074003.5636: *4* v.restoreCursorAndScroll
     # Called only by LeoTree.selectHelper.
@@ -2785,6 +2794,26 @@ class VNode:
         v = self
         v.selectionStart = start
         v.selectionLength = length
+
+    # @+node:ekr.20220905044353.1: *4* v.updateIcon
+    def updateIcon(self) -> None:
+        """Update any user icon."""
+        c, v = self.context, self
+        try:
+            tree = c.frame.tree  # May not exist at startup.
+            if not tree:
+                return
+            if not hasattr(tree, 'nodeIconsDict'):  # Only exists for Qt gui.
+                return
+        except AttributeError:
+            return
+
+        # #2870: Clear the icon cache (Remove v.gnx from the dict).
+        tree.nodeIconsDict.pop(v.gnx, None)
+        icon = tree.getIcon(v)
+        items = tree.vnode2items(v)
+        for item in items:
+            tree.setItemIcon(item, icon)
 
     # @+node:ekr.20130524063409.10700: *3* v.Inserting & cloning
     def cloneAsNthChild(self, parent_v: VNode, n: int) -> VNode:
