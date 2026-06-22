@@ -1047,8 +1047,7 @@ class ActiveSettingsOutline:
             old_c.save()
         old_c.outerUpdate()
 
-        # Suppress redraws until later.
-        g.app.disable_redraw = True
+        # Disable the log.
         g.app.setLog(None)
         g.app.lockLog()
 

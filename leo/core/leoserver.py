@@ -7,7 +7,7 @@ Leo's internet server.
 
 Written by Félix Malboeuf and Edward K. Ream.
 
-To run externally, do `python -m leo.core.leoserver`.
+To run externally, do `python -m leo.core.leoserver --password <password>`.
 """
 
 # pylint: disable=line-too-long,wrong-import-position
@@ -94,7 +94,7 @@ Socket = Any
 # @-<< leoserver annotations >>
 # @+<< leoserver version >>
 # @+node:ekr.20220820160619.1: ** << leoserver version >>
-version_tuple = (1, 0, 16)
+version_tuple = (1, 0, 17)
 # Version History
 # 1.0.1 Initial commit.
 # 1.0.2 July 2022: Adding ui-scroll, undo/redo, chapters, ua's & node_tags info.
@@ -111,7 +111,8 @@ version_tuple = (1, 0, 16)
 # 1.0.13 July 2025: Added support for websockets version 14+.
 # 1.0.14 August 2025: Added support for Python 3.14+.
 # 1.0.15 September 2025: Added support for @leo <path> nodes.
-# 1.0.16 Mai 2026: Added password CLI argument and !auth command. Also added !do_arrow command for find-panel history.
+# 1.0.16 May 2026: Added password CLI argument and !auth command. Also added !do_arrow command for find-panel history.
+# 1.0.17 June 2026: Added support for 'frozen' icon in nav panel through the QuickSearchController.
 v1, v2, v3 = version_tuple
 __version__ = f"leoserver.py version {v1}.{v2}.{v3}"
 # @-<< leoserver version >>
@@ -506,6 +507,7 @@ class QuickSearchController:
             "@file",
             "@edit",
         ]
+        self.frozen = False
         self._search_patterns: list[str] = []
         self.navText = ''
         self.showParents = True
@@ -1881,14 +1883,14 @@ class LeoServer:
         try:
             scon: QuickSearchController = c.patched_quicksearch_controller
             result: dict[str, Any] = {}
-            navlist = [
+            result["frozen"] = scon.frozen
+            result["navList"] = [
                 {
                     "key": k,
                     "h": scon.its[k][0]["label"],
                     "t": scon.its[k][0]["type"],
                 } for k in scon.its.keys()
             ]  # fmt: skip
-            result["navList"] = navlist
             result["messages"] = scon.lw
             result["navText"] = scon.navText
             result["navOptions"] = {
@@ -1958,6 +1960,7 @@ class LeoServer:
             settings = c.findCommands.ftm.get_settings()
             # Use the "__dict__" of the settings, to be serializable as a json string.
             result = {"searchSettings": settings.__dict__}
+            result["searchSettings"]["frozen"] = scon.frozen
             result["searchSettings"]["nav_text"] = scon.navText
             result["searchSettings"]["show_parents"] = scon.showParents
             result["searchSettings"]["is_tag"] = scon.isTag
@@ -1982,6 +1985,10 @@ class LeoServer:
         # Try to set the search settings
         try:
             # nav settings
+            # Check if frozen is a member first. (New in leointeg 1.0.19)
+            if hasattr(scon, 'frozen'):
+                scon.frozen = searchSettings.get('frozen')
+            # Other nav settings
             scon.navText = searchSettings.get('nav_text')
             scon.showParents = searchSettings.get('show_parents')
             scon.isTag = searchSettings.get('is_tag')
