@@ -3244,8 +3244,7 @@ class LoadManager:
         """
         lm = self
 
-        # Suppress redraws until later.
-        g.app.disable_redraw = True
+        # Disable the log.
         g.app.setLog(None)
         g.app.lockLog()
 
@@ -3321,8 +3320,7 @@ class LoadManager:
         """Open an empty Leo file with the given file name."""
         lm = self
 
-        # Suppress redraws until later.
-        g.app.disable_redraw = True
+        # Disable the log.
         g.app.setLog(None)
         g.app.lockLog()
 
@@ -3362,7 +3360,6 @@ class LoadManager:
             return None  # Should not happen.
 
         # Disable the log.
-        g.app.disable_redraw = True
         g.app.setLog(None)
         g.app.lockLog()
 

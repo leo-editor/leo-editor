@@ -305,8 +305,7 @@ def new(self: Self, event: LeoKeyEvent = None, gui: LeoGui = None) -> Cmdr:
     # Clean out the update queue so it won't interfere with the new window.
     self.outerUpdate()
 
-    # Suppress redraws until later.
-    g.app.disable_redraw = True
+    # Disable the log.
     g.app.setLog(None)
     g.app.lockLog()
 
