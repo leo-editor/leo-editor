@@ -2666,7 +2666,13 @@ class VNode:
     # @+node:ekr.20260622103203.1: *4* v.findAllAncetorAtFileNodes
     def findAllAncestorAtFileNodes(self, *, to_do_set: set[VNode] = None) -> list[VNode]:
         """
-        Return a list of all external files.
+        Return a list of all @<file> nodes containing this VNode.
+
+        Original idea by Виталије Милошевић (Vitalije Milosevic).
+
+        #4565: Rewritten by EKR to use the to_do_set kwarg.
+
+        #4747: Create this helper function.
         """
         v = self
 
@@ -2732,32 +2738,10 @@ class VNode:
 
     # @+node:ekr.20191213161023.1: *4* v.setAllAncestorAtFileNodesDirty
     def setAllAncestorAtFileNodesDirty(self, *, to_do_set: set[VNode] = None) -> None:
-        """
-        Original idea by Виталије Милошевић (Vitalije Milosevic).
-
-        #4565: Rewritten by EKR to use the to_do_set kwarg.
-        """
+        """Set all ancestor @<file> nodes dirty."""
         v = self
-
-        # Init seen and to_do_list.
-        seen: set[VNode] = set([v.context.hiddenRootNode])
-        to_do_list: list[VNode] = list(to_do_set) if to_do_set else [v]
-        if to_do_set:
-            for v2 in to_do_set:
-                to_do_list.extend(v2.parents)
-        to_do_list = list(set(to_do_list))
-
-        # The main loop.
-        while to_do_list:
-            v2 = to_do_list.pop()
-            seen.add(v2)
-            if v2.isAnyAtFileNode():
-                v2.setDirty()
-            else:
-                # Nested @<file> nodes are no longer valid.
-                for parent_v in v2.parents:
-                    if parent_v not in seen:
-                        to_do_list.append(parent_v)
+        for v2 in v.findAllAncestorAtFileNodes():
+            v2.setDirty()
 
     # @+node:ekr.20040315032144: *4* v.setBodyString & v.setHeadString
     def setBodyString(self, s: object) -> None:
