@@ -2670,9 +2670,11 @@ class VNode:
 
         Original idea by Виталије Милошевић (Vitalije Milosevic).
 
-        #4565: Rewritten by EKR to use the to_do_set kwarg.
+        PR #4566: Rewritten by EKR to use the to_do_set kwarg.
+        https://github.com/leo-editor/leo-editor/pull/4566
 
         PR #4747: Create this helper function.
+        https://github.com/leo-editor/leo-editor/pull/4747
         """
         v = self
 
