@@ -2672,7 +2672,7 @@ class VNode:
 
         #4565: Rewritten by EKR to use the to_do_set kwarg.
 
-        #4747: Create this helper function.
+        PR #4747: Create this helper function.
         """
         v = self
 
