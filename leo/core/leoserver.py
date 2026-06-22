@@ -1960,6 +1960,7 @@ class LeoServer:
             settings = c.findCommands.ftm.get_settings()
             # Use the "__dict__" of the settings, to be serializable as a json string.
             result = {"searchSettings": settings.__dict__}
+            result["searchSettings"]["frozen"] = scon.frozen
             result["searchSettings"]["nav_text"] = scon.navText
             result["searchSettings"]["show_parents"] = scon.showParents
             result["searchSettings"]["is_tag"] = scon.isTag
