@@ -4394,7 +4394,6 @@ class Commands:
             g.trace(f"Invalid position: {repr(p)}")
             g.trace(g.callers())
             return
-        ### g.trace(g.app.disable_redraw, c.frame.tree.busy, p.h)  ###
         c.requestLaterRedraw = False
         c.expandAllAncestors(p)
         # Fix bug https://bugs.launchpad.net/leo-editor/+bug/1183855
