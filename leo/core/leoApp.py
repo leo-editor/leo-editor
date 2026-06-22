@@ -2795,7 +2795,7 @@ class LoadManager:
           --save-session        always save session data when Leo closes
           --script=PATH         execute a script and then exit
           --script-window       execute script using default gui
-          --select=GNX          gnx of node to select
+          --select=UNL          unl of node to select
           --silent              disable all log messages
           --theme=NAME          use the named theme file
           --trace=LIST          add one or more strings to g.app.debug
