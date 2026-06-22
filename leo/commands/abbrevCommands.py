@@ -545,6 +545,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     def init_tree_abbrev(self) -> None:
         """Init tree_abbrevs_d from @data tree-abbreviations nodes."""
         c = self.c
+        #
         # Careful. This happens early in startup.
         root = c.rootPosition()
         if not root:
@@ -560,10 +561,12 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         # #904: data may be a string or a list of two strings.
         aList = [data] if isinstance(data, str) else data
         for tree_s in aList:
+            #
             # Expand the tree so we can traverse it.
             if not c.canPasteOutline(tree_s):
                 return
             c.fileCommands.leo_file_encoding = 'utf-8'
+            #
             # As part of #427, disable all redraws.
             old_disable = g.app.disable_redraw
             try:
