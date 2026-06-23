@@ -3944,11 +3944,12 @@ def splitLongFileName(fn: str, limit: int = 40) -> str:
 def writeFile(contents: bytes | str, encoding: str, fileName: str) -> bool:
     """Create a file with the given contents."""
     try:
-        if isinstance(contents, str):
-            contents = g.toEncodedString(contents, encoding=encoding)
-        # 'wb' preserves line endings.
+        bytes_contents = (
+            contents if isinstance(contents, bytes)
+            else g.toEncodedString(contents, encoding=encoding)
+        )  # fmt: skip
         with open(fileName, 'wb') as f:
-            f.write(contents)  # type:ignore
+            f.write(bytes_contents)
         return True
     except Exception as e:
         print(f"exception writing: {fileName}:\n{e}")
