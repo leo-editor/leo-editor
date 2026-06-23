@@ -2746,7 +2746,7 @@ class VNode:
             v2.setDirty()
 
     # @+node:ekr.20040315032144: *4* v.setBodyString & v.setHeadString
-    def setBodyString(self, s: object) -> None:
+    def setBodyString(self, s: bytes | str) -> None:
         v = self
         if isinstance(s, str):
             v._bodyString = s
@@ -2756,7 +2756,7 @@ class VNode:
             signal_manager.emit(self.context, 'body_changed', self)
         v.updateIcon()
 
-    def setHeadString(self, s: object) -> None:
+    def setHeadString(self, s: bytes | str) -> None:
         v = self
         if isinstance(s, str):
             v._headString = s.replace('\n', '')

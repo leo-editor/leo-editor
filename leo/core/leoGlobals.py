@@ -5804,16 +5804,16 @@ def toEncodedString(s: bytes | str, encoding: str = 'utf-8', reportErrors: bool 
     # These are the only significant calls to s.encode in Leo.
     # Tracing these calls directly yields thousands of calls.
     try:
-        return s.encode(encoding, "strict")  # ty--pe:ignore
+        return s.encode(encoding, "strict")
     except UnicodeError:
-        s2 = s.encode(encoding, "replace")  # ty--pe:ignore
+        s2 = s.encode(encoding, "replace")
         if reportErrors:
             g.error(f"Error converting {s2!r} from unicode to {encoding} encoding")
         return s2
 
 
 # @+node:ekr.20050208093800.1: *4* g.toUnicode
-def toUnicode(s: object, encoding: str = None, reportErrors: bool = False) -> str:
+def toUnicode(s: bytes | str, encoding: str = None, reportErrors: bool = False) -> str:
     """Convert bytes to unicode if necessary."""
     if isinstance(s, str):
         return s
@@ -5830,7 +5830,7 @@ def toUnicode(s: object, encoding: str = None, reportErrors: bool = False) -> st
         encoding = 'utf-8'
     try:
         return s.decode(encoding, 'strict')
-    except (UnicodeDecodeError, UnicodeError):  # noqa
+    except (UnicodeDecodeError, UnicodeError):
         # https://wiki.python.org/moin/UnicodeDecodeError
         s = s.decode(encoding, 'replace')
         if g.unitTesting:
