@@ -3081,7 +3081,7 @@ class Commands:
         default_language = c.getLanguage(p) or c.target_language or 'python'
         default_delims = g.set_delims_from_language(default_language)
         wrap = c.config.getBool("body-pane-wraps")
-        table = (  # type:ignore
+        table: tuple = (
             ('encoding',    None,           g.scanAtEncodingDirectives),
             ('lang-dict',   {},             g.scanAtCommentAndAtLanguageDirectives),
             ('lineending',  None,           g.scanAtLineendingDirectives),
