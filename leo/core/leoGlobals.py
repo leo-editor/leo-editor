@@ -5399,19 +5399,16 @@ def import_module(name: str, package: str = None) -> Optional[ModuleType]:
     A thin wrapper over importlib.import_module.
     """
     trace = 'plugins' in g.app.debug and not g.unitTesting
-    exceptions = []
+    exceptions: list[str] = []
     try:
         m = importlib.import_module(name, package=package)
     except Exception as e:
         m = None
         if trace:
-            t, v, tb = sys.exc_info()
-            del tb  # don't need the traceback
-            # In case v is empty, we'll at least have the exception type
-            v = v or str(t)  # type:ignore
-            if v not in exceptions:
-                exceptions.append(v)
-                g.trace(f"Can not import {name}: {e}")
+            message = f"Can not import {name}: {e}"
+            if message not in exceptions:
+                exceptions.append(message)
+                g.trace(message)
     return m
 
 
