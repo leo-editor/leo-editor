@@ -1993,12 +1993,10 @@ def sortSiblings(
     newChildren = parent_v.children[:]
     if key is None:
 
-        def lowerKey(self: Cmdr) -> str:
-            return self.h.lower()
+        def key(v: VNode) -> str:
+            return v.h.lower()
 
-        key = lowerKey
-
-    newChildren.sort(key=key, reverse=reverse)  # type:ignore
+    newChildren.sort(key=key, reverse=reverse)
     if oldChildren == newChildren:
         return
     # 2010/01/20. Fix bug 510148.
