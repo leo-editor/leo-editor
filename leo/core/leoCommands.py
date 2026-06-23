@@ -277,7 +277,6 @@ class Commands:
         """Init file-related ivars of the commander."""
         self.changed = False  # True: the outline has changed since the last save.
         self.ignored_at_file_nodes: list[Position] = []  # List of nodes for c.raise_error_dialogs.
-        self.import_error_nodes: list[Position] = []  # List of nodes for c.raise_error_dialogs.
         self.last_dir: str = None  # The last used directory.
         # Do _not_ use os_path_norm: it converts an empty path to '.' (!!)
         self.mFileName: str = fileName or ''
@@ -4112,7 +4111,6 @@ class Commands:
     def init_error_dialogs(self) -> None:
         c = self
         g.app.syntax_error_files = []
-        c.import_error_nodes = []
         c.ignored_at_file_nodes = []
         c.orphan_at_file_nodes = []
 
@@ -4138,25 +4136,12 @@ class Commands:
             return
         # Issue one or two dialogs or messages.
         saved_body = c.rootPosition().b  # Save the root's body. The dialog destroys it!
-        if c.import_error_nodes or c.ignored_at_file_nodes or c.orphan_at_file_nodes:
+        if c.ignored_at_file_nodes or c.orphan_at_file_nodes:
             g.app.gui.dismiss_splash_screen()
         else:
             # #1007: Exit now, so we don't have to restore c.rootPosition().b.
             c.init_error_dialogs()
             return
-        if c.import_error_nodes:
-            files = '\n'.join(sorted(set(c.import_error_nodes)))  # type:ignore
-            if files not in self.warnings_dict:
-                self.warnings_dict[files] = True
-                import_message1 = 'The following were not imported properly.'
-                import_message2 = f"Inserted @ignore in...\n{files}"
-                g.es_print(import_message1, color='red')
-                g.es_print(import_message2)
-                if use_dialogs:
-                    import_dialog_message = f"{import_message1}\n{import_message2}"
-                    g.app.gui.runAskOkDialog(
-                        c, message=import_dialog_message, title='Import errors'
-                    )
         if c.ignored_at_file_nodes:
             files = '\n'.join(sorted(set(c.ignored_at_file_nodes)))  # type:ignore
             if files not in self.warnings_dict:
