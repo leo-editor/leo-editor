@@ -319,7 +319,7 @@ def init() -> bool:
 # @+node:ekr.20240727091022.1: *3* vr function: getVR
 def getVr(
     *, c: Any = None, event: Any = None, parent: QtWidgets.QWidget = None
-) -> Optional[QtWidgets.QWidget]:
+) -> ViewRenderedController | None:
     """Return the ViewRenderedController instance or None."""
     if g.app.gui.guiName() != 'qt':
         return None
@@ -531,7 +531,7 @@ def toggle_keep_open(event: LeoKeyEvent) -> None:
         c = vr.c
         vr.hide()  # So the toggle below will work.
         vr.keep_open = not vr.keep_open
-        vr.update('keep-open', {'c': c, 'force': True})  # type:ignore
+        vr.update('keep-open', {'c': c, 'force': True})  # ty--pe:ignore
 
 
 # @+node:ekr.20130412180825.10345: *3* g.command('vr-unlock')
