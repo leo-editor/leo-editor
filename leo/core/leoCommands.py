@@ -4362,7 +4362,7 @@ class Commands:
             # Only the QScintillaColorizer class and NullColorizer classes
             # have colorize methods.
             colorizer.colorize(p or c.p)
-        except Exception:
+        except AttributeError:
             pass
 
     # Compatibility.

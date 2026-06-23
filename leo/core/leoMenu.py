@@ -657,7 +657,7 @@ class LeoMenu:
         cmn = self.canonicalizeMenuName(menuName)
         del self.menus[cmn]
 
-    # @+node:ekr.20031218072017.3808: *3* LeoMenu: Must be overridden in menu subclasses
+    # @+node:ekr.20031218072017.3808: *3* LeoMenu: May be overridden in menu subclasses
     # @+node:ekr.20031218072017.3809: *4* LeoMenu.9 Routines with Tk spellings
     def add_cascade(self, parent: Widget, label: str, menu: QtMenuWrapper, underline: int) -> None:
         pass

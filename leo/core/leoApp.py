@@ -2431,6 +2431,11 @@ class LoadManager:
             factory.setTabForCommander(c)
         except Exception:
             pass
+
+        # #4747: honor the --select option.
+        if unl := self.options.get('select'):
+            g.findAnyUnl(unl, c)
+
         g.app.initing = False  # "idle" hooks may now call g.app.forceShutdown.
         g.app.logInited = True
         g.app.initComplete = True
@@ -2790,7 +2795,7 @@ class LoadManager:
           --save-session        always save session data when Leo closes
           --script=PATH         execute a script and then exit
           --script-window       execute script using default gui
-          --select=ID           headline or gnx of node to select
+          --select=UNL          unl of node to select
           --silent              disable all log messages
           --theme=NAME          use the named theme file
           --trace=LIST          add one or more strings to g.app.debug
@@ -3244,8 +3249,7 @@ class LoadManager:
         """
         lm = self
 
-        # Suppress redraws until later.
-        g.app.disable_redraw = True
+        # Disable the log.
         g.app.setLog(None)
         g.app.lockLog()
 
@@ -3321,8 +3325,7 @@ class LoadManager:
         """Open an empty Leo file with the given file name."""
         lm = self
 
-        # Suppress redraws until later.
-        g.app.disable_redraw = True
+        # Disable the log.
         g.app.setLog(None)
         g.app.lockLog()
 
@@ -3362,7 +3365,6 @@ class LoadManager:
             return None  # Should not happen.
 
         # Disable the log.
-        g.app.disable_redraw = True
         g.app.setLog(None)
         g.app.lockLog()
 
