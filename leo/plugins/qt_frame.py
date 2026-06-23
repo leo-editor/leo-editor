@@ -585,7 +585,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 if type_ == Type.KeyPress:
                     return self.keyPress(event)
                 if type_ == Type.KeyRelease:
-                    return self.keyRelease(event)  # type:ignore[arg-type]
+                    return self.keyRelease(event)
                 return self.oldEvent(event)
 
             # @-others
