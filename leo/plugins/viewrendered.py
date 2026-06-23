@@ -554,7 +554,7 @@ def update_rendering_pane(event: LeoKeyEvent) -> None:
 
 
 # @+node:ekr.20110317024548.14375: ** class ViewRenderedController (QWidget)
-class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
+class ViewRenderedController(QtWidgets.QWidget):
     """A class to control rendering in a rendering pane."""
 
     # @+<< vr: default templates >>
