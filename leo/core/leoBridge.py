@@ -192,7 +192,7 @@ class BridgeController:
             g.app.setGlobalDb()  # #556.
         else:
             g.app.db = g.NullObject()
-            g.app.global_cacher = g.NullObject()  # type:ignore
+            g.app.global_cacher = g.NullObject()
         if self.readSettings:
             # reads only standard settings files, using a null gui.
             # uses lm.files[0] to compute the local directory

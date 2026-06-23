@@ -211,7 +211,7 @@ class LeoApp:
         # A global db, managed by g.app.global_cacher.
         self.db: dict | SqlitePickleShare = None
         self.externalFilesController: ExternalFilesController = None
-        self.global_cacher: dict | GlobalCacher = None
+        self.global_cacher: dict | GlobalCacher | g.NullObject = None
         self.idleTimeManager: IdleTimeManager = None
         self.jupytextManager: JupytextManager = None
         self.loadManager: LoadManager = None
