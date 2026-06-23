@@ -477,10 +477,6 @@ class LeoQtGui(leoGui.LeoGui):
             self.leo_checked = True
             self.setObjectName('TipMessageBox')
             self.setIcon(Icon.Information)  # #2127.
-            # self.setMinimumSize(5000, 4000)
-            # Doesn't work.
-            # Prevent the dialog from jumping around when
-            # selecting multiple tips.
             self.setWindowTitle('Leo Tips')
             self.setText(repr(tip))
             self.next_tip_button = self.addButton('Show Next Tip', ButtonRole.ActionRole)
@@ -488,14 +484,14 @@ class LeoQtGui(leoGui.LeoGui):
             c.styleSheetManager.set_style_sheets(w=self)
             # Workaround #693.
             layout = self.layout()
-            cb = QtWidgets.QCheckBox()
-            cb.setObjectName('TipCheckbox')
-            cb.setText('Show Tip On Startup')
+            checkbox = QtWidgets.QCheckBox()
+            checkbox.setObjectName('TipCheckbox')
+            checkbox.setText('Show Tip On Startup')
             # #2383: State is a tri-state, so use the official constants.
-            state = Checked if checked else Unchecked
-            cb.setCheckState(state)  # #2127.
-            cb.stateChanged.connect(controller.onClick)
-            layout.addWidget(cb, 4, 0, -1, -1)  # type:ignore
+            checkbox.setCheckState(Checked if checked else Unchecked)  # #2127.
+            checkbox.stateChanged.connect(controller.onClick)
+            # A mypy bug? layout is a QGridLayout. mypy thinks it's a plain QLayout.
+            layout.addWidget(checkbox, 4, 0, -1, -1)  # type:ignore
             if 0:  # Does not work well.
                 sizePolicy = QtWidgets.QSizePolicy
                 vSpacer = QtWidgets.QSpacerItem(200, 200, sizePolicy.Minimum, sizePolicy.Expanding)
