@@ -730,10 +730,10 @@ class DynamicWindow(QtWidgets.QMainWindow):
         lineWidth: int = 0,
         shadow: Shadow = None,
         shape: Shape = None,
-    ) -> QWidget:
+    ) -> QWidget | Qsci.QsciScintilla:
         # Create a text widget.
         c = self.leo_c
-        w: QWidget
+        w: Any
         if name == 'richTextEdit' and self.useScintilla and Qsci:
             # Do this in finishCreate, when c.frame.body exists.
             w = Qsci.QsciScintilla(parent)
@@ -749,7 +749,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             w.setLineWidth(lineWidth)
             self.setName(w, name)
         if not hasattr(w, 'leo_wrapper'):
-            w.leo_wrapper = QTextEditWrapper(widget=w, name=name, c=c)  # type:ignore
+            w.leo_wrapper = QTextEditWrapper(widget=w, name=name, c=c)
         return w
 
     # @+node:ekr.20110605121601.18164: *4* dw.createTreeWidget
