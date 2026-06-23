@@ -3664,6 +3664,7 @@ def is_binary_string(s: str) -> bool:
     # http://stackoverflow.com/questions/898669
     # aList is a list of all non-binary characters.
     aList = [7, 8, 9, 10, 12, 13, 27] + list(range(0x20, 0x100))
+    # mypy bug?
     return bool(s.translate(None, bytes(aList)))  # type:ignore
 
 
@@ -6489,7 +6490,7 @@ def prettyPrintType(obj: object) -> str:
     if t in [types.MethodType, types.BuiltinMethodType]:
         return 'method'
     # Fall back to a hack.
-    t = str(type(obj))  # type:ignore
+    t = str(type(obj))
     if t.startswith("<type '"):
         t = t[7:]
     if t.endswith("'>"):
