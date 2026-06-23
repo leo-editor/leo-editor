@@ -90,15 +90,7 @@ def make_colorizer(c: Cmdr, widget: QWidget) -> JEditColorizer | PygmentsColoriz
     return JEditColorizer(c, widget)
 
 
-# @+node:ekr.20260215050008.1: ** command: clear/dump-last-colorizer-trace
-@g.command('clear-last-colorizer-trace')
-def clear_colorizer_last_colorizer_traces(event: LeoKeyEvent) -> None:
-    g.cls()
-    c = event['c']
-    colorizer = c.frame.body.colorizer
-    colorizer.last_trace = []
-
-
+# @+node:ekr.20260215050008.1: ** command: dump-last-colorizer-trace
 @g.command('dump-last-colorizer-trace')
 def dump_colorizer_last_colorizer_traces(event: LeoKeyEvent) -> None:
     c = event['c']
@@ -1496,10 +1488,6 @@ class JEditColorizer(BaseColorizer):
     # @+node:ekr.20110605121601.18641: *3* jedit.setTag
     def setTag(self, tag: str, s: str, i: int, j: int) -> None:
         """Set the tag in the highlighter."""
-        define_report = (
-            not g.unitTesting and
-            any(z in g.app.debug for z in ('coloring', 'verbose'))
-        )  # fmt: skip
         default_tag = f"{tag}_font"  # See default_font_dict.
         full_tag = f"{self.language}.{tag}"
         font: QtGui.QFont = None  # Set below. Define here for report().
@@ -1565,7 +1553,9 @@ class JEditColorizer(BaseColorizer):
             if g.unitTesting:
                 raise
         self.tagCount += 1
-        if define_report:
+        if True:
+            # PR #4752: *Always* define the report function, despite its cost.
+            #           Otherwise, the dump-last-colorizer-trace command is almost useless.
             # PR #4618: (Ville Vainio) https://github.com/leo-editor/leo-editor/pull/4618
             # Don't call report by default: It's setup is expensive!
             # @+<< setTag: define report >>
