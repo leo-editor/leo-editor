@@ -531,7 +531,7 @@ def toggle_keep_open(event: LeoKeyEvent) -> None:
         c = vr.c
         vr.hide()  # So the toggle below will work.
         vr.keep_open = not vr.keep_open
-        vr.update('keep-open', {'c': c, 'force': True})
+        vr.update_vr('keep-open', {'c': c, 'force': True})
 
 
 # @+node:ekr.20130412180825.10345: *3* g.command('vr-unlock')
@@ -550,7 +550,7 @@ def update_rendering_pane(event: LeoKeyEvent) -> None:
     vr = getVr(event=event)
     if vr:
         c = vr.c
-        vr.update(tag='view', keywords={'c': c, 'force': True})
+        vr.update_vr(tag='view', keywords={'c': c, 'force': True})
 
 
 # @+node:ekr.20110317024548.14375: ** class ViewRenderedController (QWidget)
@@ -757,8 +757,8 @@ class ViewRenderedController(QtWidgets.QWidget):
     def closeEvent(self, event: QCloseEvent) -> None:
         """Deactivate callbacks when an Outline closes."""
         self.active = False
-        g.unregisterHandler('select2', self.update)
-        g.unregisterHandler('idle', self.update)
+        g.unregisterHandler('select2', self.update_vr)
+        g.unregisterHandler('idle', self.update_vr)
         g.unregisterHandler('scrolledMessage', show_scrolled_message)
         self.destroy_widgets()
 
@@ -834,12 +834,12 @@ class ViewRenderedController(QtWidgets.QWidget):
             assert pos is not None
             sb.setSliderPosition(pos)
 
-    # @+node:ekr.20101112195628.5426: *3* vr.update & helpers
+    # @+node:ekr.20101112195628.5426: *3* vr.update_vr & helpers
     # Must have this signature: called by leoPlugins.callTagHandler.
 
-    def update(self, tag: str, keywords: Any) -> None:  # type:ignore
+    def update_vr(self, tag: str, keywords: Any) -> None:
         """
-        vr.update: Update the VR pane.
+        vr.update_vr: Update the VR pane.
         Called at idle time and by the vr-update command.
         """
         p = self.c.p
@@ -884,7 +884,7 @@ class ViewRenderedController(QtWidgets.QWidget):
         else:
             self.hide()
 
-    # @+node:ekr.20241227053437.1: *4* vr.update: helpers
+    # @+node:ekr.20241227053437.1: *4* vr.update_vr: helpers
     # @+node:ekr.20241224074331.1: *5* vr.create_web_engineview
     def create_web_engineview(self) -> QWidget:
         """
