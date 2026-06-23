@@ -2408,7 +2408,7 @@ class KeyHandlerClass:
                 tag = bi.kind
                 pane = bi.pane
                 if stroke and pane and not pane.endswith('-mode'):
-                    k.bindKey(pane, stroke, command, commandName, tag=tag)  # type:ignore
+                    k.bindKey(pane, stroke, command, commandName, tag=tag)
 
     # @+node:ekr.20061031131434.103: *4* k.makeMasterGuiBinding
     def makeMasterGuiBinding(self, stroke: Stroke, w: QTextMixin = None) -> None:
