@@ -1491,8 +1491,10 @@ class JEditColorizer(BaseColorizer):
     # @+node:ekr.20110605121601.18641: *3* jedit.setTag
     def setTag(self, tag: str, s: str, i: int, j: int) -> None:
         """Set the tag in the highlighter."""
-        trace = 'coloring' in g.app.debug and not g.unitTesting
-
+        define_report = (
+            not g.unitTesting and
+            any(z in g.app.debug for z in ('coloring', 'verbose'))
+        )  # fmt: skip
         default_tag = f"{tag}_font"  # See default_font_dict.
         full_tag = f"{self.language}.{tag}"
         font: QtGui.QFont = None  # Set below. Define here for report().
@@ -1558,13 +1560,14 @@ class JEditColorizer(BaseColorizer):
             if g.unitTesting:
                 raise
         self.tagCount += 1
-        if trace:
+        if define_report:
             # PR #4618: (Ville Vainio) https://github.com/leo-editor/leo-editor/pull/4618
             # Don't call report by default: It's setup is expensive!
             # @+<< setTag: define report >>
             # @+node:ekr.20260528121410.1: *4* << setTag: define report >>
             def report(color: QtGui.QColor) -> None:
                 """A superb trace. Don't remove it."""
+                trace = 'coloring' in g.app.debug and not g.unitTesting
                 i_j_s = f"{i:>3}:{j:<3}"
                 matcher_name = g.caller(3)
                 rule_name = g.caller(4)
@@ -1574,7 +1577,7 @@ class JEditColorizer(BaseColorizer):
                 state_repr = self.stateNumberToStateString(state)
                 state_s = f"{self.currentState()}={state_repr}"
                 trace_line = (
-                    f"{self.recolorCount:5} {self.currentBlockNumber():<4} {state_s:<25}"
+                    f"{self.recolorCount:5} {self.currentBlockNumber():<4} {state_s:<15}"
                     f"{matcher_s:<55} {colorName:7} {full_tag:<20} {i_j_s} {s2}"
                 )
                 if len(self.last_trace) < 2:
