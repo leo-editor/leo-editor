@@ -2748,9 +2748,9 @@ def printGcObjects() -> int:
     print(f"{count:7} objects...")
     # Invert the dict.
     d2: dict[int, str] = {v: k for k, v in d.items()}
-    for key in reversed(sorted(d2.keys())):  # type:ignore
-        val = d2.get(key)  # type:ignore
-        print(f"{key:7} {val}")
+    for key2 in reversed(sorted(d2.keys())):
+        val2 = d2.get(key2)
+        print(f"{key2:7} {val2}")
     lastObjectCount = count
     return delta
 
