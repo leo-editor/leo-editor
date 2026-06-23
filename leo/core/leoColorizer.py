@@ -93,6 +93,7 @@ def make_colorizer(c: Cmdr, widget: QWidget) -> JEditColorizer | PygmentsColoriz
 # @+node:ekr.20260215050008.1: ** command: clear/dump-last-colorizer-trace
 @g.command('clear-last-colorizer-trace')
 def clear_colorizer_last_colorizer_traces(event: LeoKeyEvent) -> None:
+    g.cls()
     c = event['c']
     colorizer = c.frame.body.colorizer
     colorizer.last_trace = []
@@ -1577,7 +1578,7 @@ class JEditColorizer(BaseColorizer):
                 state_repr = self.stateNumberToStateString(state)
                 state_s = f"{self.currentState()}={state_repr}"
                 trace_line = (
-                    f"{self.recolorCount:5} {self.currentBlockNumber():<4} {state_s:<15}"
+                    f"{self.recolorCount:5} {self.currentBlockNumber():<4} {state_s:<25}"
                     f"{matcher_s:<55} {colorName:7} {full_tag:<20} {i_j_s} {s2}"
                 )
                 if len(self.last_trace) < 2:
