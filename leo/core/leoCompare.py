@@ -15,7 +15,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position, VNode
-    from io import FileIO, TextIO
+    from io import BufferedWriter, TextIO
 # @-<< leoCompare imports & annotations >>
 
 
@@ -68,7 +68,7 @@ class BaseLeoCompare:
         self.fileName1 = None
         self.fileName2 = None
         # Open files...
-        self.outputFile: FileIO = None
+        self.outputFile: BufferedWriter = None
 
     # @+node:ekr.20031218072017.3635: *3* compare_directories (entry)
     # We ignore the filename portion of path1 and path2 if it exists.
@@ -428,10 +428,10 @@ class BaseLeoCompare:
         try:
             if self.appendOutput:
                 self.show("appending to " + self.outputFileName)
-                self.outputFile = open(self.outputFileName, "ab")  # type:ignore
+                self.outputFile = open(self.outputFileName, "ab")
             else:
                 self.show("writing to " + self.outputFileName)
-                self.outputFile = open(self.outputFileName, "wb")  # type:ignore
+                self.outputFile = open(self.outputFileName, "wb")
             return True
         except Exception:
             self.outputFile = None
