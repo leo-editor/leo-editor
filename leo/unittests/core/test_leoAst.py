@@ -1448,7 +1448,7 @@ class Optional_TestFiles(BaseTest):
             if stack:
                 parent = stack[-1]
                 children: list[ast.AST] = getattr(parent, 'children', [])
-                parent.children = children + [node]  # type:ignore
+                parent.children = children + [node]
                 node.parent = parent
             else:
                 node.parent = None
@@ -1884,7 +1884,7 @@ class TestTokens(BaseTest):
             if stack:
                 parent = stack[-1]
                 children: list[ast.AST] = getattr(parent, 'children', [])
-                parent.children = children + [node]  # type:ignore
+                parent.children = children + [node]
                 node.parent = parent
             else:
                 node.parent = None
