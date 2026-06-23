@@ -1421,7 +1421,7 @@ class Optional_TestFiles(BaseTest):
         # @+node:ekr.20200124024159.3: *5* function: atok_name
         def atok_name(token):
             """Return a good looking name for the given 5-tuple"""
-            return token_module.tok_name[token[0]].lower()  # type:ignore
+            return token_module.tok_name[token[0]].lower()
 
         # @+node:ekr.20200124024159.4: *5* function: atok_value
         def atok_value(token):
@@ -1857,7 +1857,7 @@ class TestTokens(BaseTest):
         # @+node:ekr.20200122170101.1: *5* function: atok_name
         def atok_name(token):
             """Return a good looking name for the given 5-tuple"""
-            return token_module.tok_name[token[0]].lower()  # type:ignore
+            return token_module.tok_name[token[0]].lower()
 
         # @+node:ekr.20200122170101.2: *5* function: atok_value
         def atok_value(token):
