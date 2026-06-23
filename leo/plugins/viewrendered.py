@@ -353,8 +353,8 @@ def onCreate(tag: str, keys: dict) -> None:
     if not c:
         return
     vr = getVr(c=c)
-    g.registerHandler('select2', vr.update)
-    g.registerHandler('idle', vr.update)
+    g.registerHandler('select2', vr.update_vr)
+    g.registerHandler('idle', vr.update_vr)
     vr.active = True
     vr.is_visible = False
     vr.hide()
