@@ -5795,21 +5795,21 @@ def strToBytes(s: str, reportErrors: bool = False) -> bytes:
 
 
 # @+node:ekr.20050208093800: *4* g.toEncodedString
-def toEncodedString(s: str, encoding: str = 'utf-8', reportErrors: bool = False) -> bytes:
+def toEncodedString(s: bytes | str, encoding: str = 'utf-8', reportErrors: bool = False) -> bytes:
     """Convert unicode string to an encoded string."""
     if not isinstance(s, str):
         return s
     if not encoding:
         encoding = 'utf-8'
     # These are the only significant calls to s.encode in Leo.
-    try:
-        s = s.encode(encoding, "strict")  # type:ignore
-    except UnicodeError:
-        s = s.encode(encoding, "replace")  # type:ignore
-        if reportErrors:
-            g.error(f"Error converting {s} from unicode to {encoding} encoding")
     # Tracing these calls directly yields thousands of calls.
-    return s  # type:ignore
+    try:
+        return s.encode(encoding, "strict")  # ty--pe:ignore
+    except UnicodeError:
+        s2 = s.encode(encoding, "replace")  # ty--pe:ignore
+        if reportErrors:
+            g.error(f"Error converting {s2!r} from unicode to {encoding} encoding")
+        return s2
 
 
 # @+node:ekr.20050208093800.1: *4* g.toUnicode
