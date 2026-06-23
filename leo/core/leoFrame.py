@@ -597,100 +597,6 @@ class LeoFrame:
             k.setDefaultInputState()
             k.showStateAndMode()
 
-    # @+node:ekr.20031218072017.3680: *3* LeoFrame: Must be defined in subclasses
-    def bringToFront(self) -> None:
-        raise NotImplementedError
-
-    def cascade(self, event: LeoKeyEvent = None) -> None:
-        raise NotImplementedError
-
-    def contractBodyPane(self, event: LeoKeyEvent = None) -> None:
-        raise NotImplementedError
-
-    def contractLogPane(self, event: LeoKeyEvent = None) -> None:
-        raise NotImplementedError
-
-    def contractOutlinePane(self, event: LeoKeyEvent = None) -> None:
-        raise NotImplementedError
-
-    def contractPane(self, event: LeoKeyEvent = None) -> None:
-        raise NotImplementedError
-
-    def deiconify(self) -> None:
-        raise NotImplementedError
-
-    def equalSizedPanes(self, event: LeoKeyEvent = None) -> None:
-        raise NotImplementedError
-
-    def expandBodyPane(self, event: LeoKeyEvent = None) -> None:
-        raise NotImplementedError
-
-    def expandLogPane(self, event: LeoKeyEvent = None) -> None:
-        raise NotImplementedError
-
-    def expandOutlinePane(self, event: LeoKeyEvent = None) -> None:
-        raise NotImplementedError
-
-    def expandPane(self, event: LeoKeyEvent = None) -> None:
-        raise NotImplementedError
-
-    def fullyExpandBodyPane(self, event: LeoKeyEvent = None) -> None:
-        raise NotImplementedError
-
-    def fullyExpandLogPane(self, event: LeoKeyEvent = None) -> None:
-        raise NotImplementedError
-
-    def fullyExpandOutlinePane(self, event: LeoKeyEvent = None) -> None:
-        raise NotImplementedError
-
-    def fullyExpandPane(self, event: LeoKeyEvent = None) -> None:
-        raise NotImplementedError
-
-    def get_window_info(self) -> tuple[int, int, int, int]:
-        raise NotImplementedError
-
-    def hideBodyPane(self, event: LeoKeyEvent = None) -> None:
-        raise NotImplementedError
-
-    def hideLogPane(self, event: LeoKeyEvent = None) -> None:
-        raise NotImplementedError
-
-    def hideLogWindow(self, event: LeoKeyEvent = None) -> None:
-        raise NotImplementedError
-
-    def hideOutlinePane(self, event: LeoKeyEvent = None) -> None:
-        raise NotImplementedError
-
-    def hidePane(self, event: LeoKeyEvent = None) -> None:
-        raise NotImplementedError
-
-    def leoHelp(self, event: LeoKeyEvent = None) -> None:
-        raise NotImplementedError
-
-    def lift(self) -> None:
-        raise NotImplementedError
-
-    def minimizeAll(self, event: LeoKeyEvent = None) -> None:
-        raise NotImplementedError
-
-    def resizePanesToRatio(self, ratio: float, secondary_ratio: float) -> None:
-        raise NotImplementedError
-
-    def resizeToScreen(self, event: LeoKeyEvent = None) -> None:
-        raise NotImplementedError
-
-    def setInitialWindowGeometry(self) -> None:
-        raise NotImplementedError
-
-    def setTopGeometry(self, w: int, h: int, x: int, y: int) -> None:
-        raise NotImplementedError
-
-    def toggleActivePane(self, event: LeoKeyEvent = None) -> None:
-        raise NotImplementedError
-
-    def toggleSplitDirection(self, event: LeoKeyEvent = None) -> None:
-        raise NotImplementedError
-
     # @-others
 
 
@@ -930,6 +836,10 @@ class LeoLog:
 # @+node:ekr.20031218072017.3704: ** class LeoTree
 class LeoTree:
     """The base class for the outline pane in Leo windows."""
+
+    # Must be defined in subclasses.
+    def headline_wrapper(self, p: Position) -> Widget:
+        raise NotImplementedError
 
     # @+others
     # @+node:ekr.20031218072017.3705: *3*  LeoTree.__init__
@@ -1225,30 +1135,6 @@ class LeoTree:
         # w.setWidth(self.headWidth(s=s))
         if ch in ('\n', '\r'):
             self.endEditLabel()
-
-    # @+node:ekr.20031218072017.3706: *3* LeoTree: Must be defined in subclasses
-    # Drawing & scrolling.
-
-    def redraw_tree(self, p: Position = None) -> Position:
-        raise NotImplementedError
-
-    redraw_now = redraw_tree
-
-    def scrollTo(self, p: Position) -> None:
-        raise NotImplementedError
-
-    # Headlines.
-
-    def editLabel(
-        self,
-        p: Position,
-        selectAll: bool = False,
-        selection: tuple = None,
-    ) -> tuple[Widget, Any]:  # Any is the best possible annotation.
-        raise NotImplementedError
-
-    def headline_wrapper(self, p: Position) -> Widget:
-        raise NotImplementedError
 
     # @-others
 
