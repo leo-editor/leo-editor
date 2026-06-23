@@ -1423,7 +1423,11 @@ class JEditColorizer(BaseColorizer):
 
         # Do not delete these traces!
         if prev_state == -1 and s:
-            message = f"New node: p.h: {len(s)=} {p.h}"
+            g.cls()
+            message = (
+                f"New node: {self.language=} {len(s)=} {p.h=}\n"
+                f"        Callers:  {g.callers(3)}"
+            )  # fmt: skip
             # Init the queued messages for the dump-last-colorizer-trace command.
             self.last_trace = [message]
             if trace:  # Print the trace immediately.
