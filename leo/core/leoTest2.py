@@ -65,7 +65,7 @@ def create_app(gui_name: str = 'null') -> Cmdr:
     g.app.config = leoConfig.GlobalConfigManager()
     g.app.jupytextManager = leoJupytext.JupytextManager()
     # Disable dangerous code.
-    g.app.db = g.NullObject('g.app.db')  # type:ignore
+    g.app.db = g.NullObject(ivars=['g.app.db'])
     g.app.pluginsController = g.NullObject('g.app.pluginsController')  # type:ignore
     if gui_name == 'null':
         g.app.gui = NullGui()

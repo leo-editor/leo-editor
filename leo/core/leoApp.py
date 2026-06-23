@@ -209,7 +209,7 @@ class LeoApp:
         self.backgroundProcessManager: BackgroundProcessManager = None
         self.config: GlobalConfigManager = None  # g.app.config.
         # A global db, managed by g.app.global_cacher.
-        self.db: dict | SqlitePickleShare = None
+        self.db: dict | SqlitePickleShare | g.NullObject = None
         self.externalFilesController: ExternalFilesController = None
         self.global_cacher: dict | GlobalCacher | g.NullObject = None
         self.idleTimeManager: IdleTimeManager = None

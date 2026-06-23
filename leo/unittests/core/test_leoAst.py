@@ -73,8 +73,8 @@ def _compare_asts(node1, node2):  # pragma: no cover
     # Compare the nodes themselves.
     _compare_nodes(node1, node2)
     # Get the list of fields.
-    fields1 = getattr(node1, "_fields", [])  # type:ignore
-    fields2 = getattr(node2, "_fields", [])  # type:ignore
+    fields1 = getattr(node1, "_fields", [])
+    fields2 = getattr(node2, "_fields", [])
     if fields1 != fields2:
         raise AstNotEqual(f"node1._fields: {fields1}\nnode2._fields: {fields2}")
     # Recursively compare each field.
