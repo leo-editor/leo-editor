@@ -531,7 +531,7 @@ def toggle_keep_open(event: LeoKeyEvent) -> None:
         c = vr.c
         vr.hide()  # So the toggle below will work.
         vr.keep_open = not vr.keep_open
-        vr.update('keep-open', {'c': c, 'force': True})  # ty--pe:ignore
+        vr.update('keep-open', {'c': c, 'force': True})
 
 
 # @+node:ekr.20130412180825.10345: *3* g.command('vr-unlock')
@@ -550,7 +550,7 @@ def update_rendering_pane(event: LeoKeyEvent) -> None:
     vr = getVr(event=event)
     if vr:
         c = vr.c
-        vr.update(tag='view', keywords={'c': c, 'force': True})  # type:ignore
+        vr.update(tag='view', keywords={'c': c, 'force': True})
 
 
 # @+node:ekr.20110317024548.14375: ** class ViewRenderedController (QWidget)
