@@ -276,13 +276,13 @@ class Commands:
     def initFileIvars(self, fileName: str, relativeFileName: str) -> None:
         """Init file-related ivars of the commander."""
         self.changed = False  # True: the outline has changed since the last save.
-        self.ignored_at_file_nodes: list[Position] = []  # List of nodes for c.raise_error_dialogs.
+        self.ignored_at_file_nodes: list[str] = []  # List of headlines for c.raise_error_dialogs.
         self.last_dir: str = None  # The last used directory.
         # Do _not_ use os_path_norm: it converts an empty path to '.' (!!)
         self.mFileName: str = fileName or ''
         self.mRelativeFileName = relativeFileName or ''
         # List of orphaned nodes for c.raise_error_dialogs.
-        self.orphan_at_file_nodes: list[Position] = []
+        self.orphan_at_file_nodes: list[str] = []
 
     # @+node:ekr.20120217070122.10470: *5* c.initObjects
     def initObjects(self, gui: LeoGui) -> None:
@@ -4143,7 +4143,7 @@ class Commands:
             c.init_error_dialogs()
             return
         if c.ignored_at_file_nodes:
-            files = '\n'.join(sorted(set(c.ignored_at_file_nodes)))  # type:ignore
+            files = '\n'.join(sorted(set(c.ignored_at_file_nodes)))
             if files not in self.warnings_dict:
                 self.warnings_dict[files] = True
                 kind_s = 'read' if kind == 'read' else 'written'
@@ -4163,9 +4163,10 @@ class Commands:
             message = '\n'.join(
                 [
                     'The following were not written because of errors:\n',
-                    '\n'.join(sorted(set(c.orphan_at_file_nodes))),  # type:ignore
+                    '\n'.join(sorted(set(c.orphan_at_file_nodes))),
                     '',
-                    'Warning: changes to these files will be lost\nunless you can save the files successfully.',
+                    'Warning: changes to these files will be lost',
+                    'unless you can save the files successfully.',
                 ]
             )
             g.app.gui.runAskOkDialog(c, message=message, title='Not Written')
