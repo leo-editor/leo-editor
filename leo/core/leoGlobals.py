@@ -3366,8 +3366,7 @@ def set_delims_from_string(s: str) -> tuple[str, str, str]:
                     g.warning(f"'{delims[i]}' delimiter is invalid")
                     return None, None, None
                 try:
-                    delims[i] = binascii.unhexlify(delims[i][3:])  # type:ignore
-                    delims[i] = g.toUnicode(delims[i])
+                    delims[i] = g.toUnicode(binascii.unhexlify(delims[i][3:]))
                 except Exception as e:
                     g.warning(f"'{delims[i]}' delimiter is invalid: {e}")
                     return None, None, None
