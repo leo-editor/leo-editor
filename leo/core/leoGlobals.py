@@ -739,24 +739,15 @@ class KeyStroke:
             self.s = None
 
     # @+node:ekr.20120203053243.10117: *4* ks.__eq__, etc
-    # @+at All these must be defined in order to say, for example:
-    #     for key in sorted(d)
+    # All these must be defined in order to say, for example:
+    #   for key in sorted(d)
     # where the keys of d are KeyStroke objects.
-    # @@c
 
     def __eq__(self, other: object) -> bool:
-        if not other:
-            return False
-        if hasattr(other, 's'):
-            return self.s == other.s
-        return self.s == other
+        return hasattr(other, 's') and self.s == other.s
 
     def __lt__(self, other: KeyStroke) -> bool:
-        if not other:
-            return False
-        if hasattr(other, 's'):
-            return self.s < other.s
-        return self.s < other  # type:ignore
+        return hasattr(other, 's') and self.s < other.s
 
     def __le__(self, other: KeyStroke) -> bool:
         return self.__lt__(other) or self.__eq__(other)
