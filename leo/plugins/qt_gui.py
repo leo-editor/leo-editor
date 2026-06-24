@@ -641,12 +641,13 @@ class LeoQtGui(leoGui.LeoGui):
             dialog.exec()
 
     # @+node:ekr.20150619053138.1: *5* LeoQtGui.createFindDialog
-    def createFindDialog(self, c: Cmdr) -> QDialog:
+    def createFindDialog(self, c: Cmdr) -> QDialog | None:
         """Create and init a non-modal Find dialog."""
-        if c:
-            g.app.globalFindTabManager = c.findCommands.ftm
-        top: Optional[QWidget] = c.frame.top if c else None
-        w = top.findTab  # type:ignore
+        if not c:
+            return None
+        g.app.globalFindTabManager = c.findCommands.ftm
+        top = c.frame.top
+        w = top.findTab
         dialog = QtWidgets.QDialog()
 
         # Fix #516: Hide the dialog. Never delete it.
