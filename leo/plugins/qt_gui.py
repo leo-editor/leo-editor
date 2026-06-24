@@ -1146,7 +1146,7 @@ class LeoQtGui(leoGui.LeoGui):
         filter_ = self.makeFilter(filetypes)
         dialog = QtWidgets.QFileDialog()
         self.attachLeoIcon(dialog)
-        dialog_val: tuple[list[str], Any]
+        dialog_val: Any
         val = list[str]
         if c:
             try:
@@ -1162,7 +1162,7 @@ class LeoQtGui(leoGui.LeoGui):
                 parent=None, caption=title, directory=startpath, filter=filter_
             )
         # This is a *PyQt* change, not a Qt change.
-        val, _ = dialog_val  # type:ignore
+        val, _ = dialog_val
         files = [g.os_path_normslashes(s) for s in val]
         if c and files:
             c.last_dir = g.os_path_dirname(files[-1])
