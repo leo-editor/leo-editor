@@ -2513,19 +2513,19 @@ def dump_encoded_string(encoding: str, s: str) -> None:
 
 
 # @+node:ekr.20031218072017.1317: *4* g.file/module/plugin_date
-def module_date(mod: ModuleType, format: str) -> str:
+def module_date(mod: ModuleType, format: str | None = None) -> str:
     theFile = g.os_path_join(app.loadDir, mod.__file__)
     root, ext = g.os_path_splitext(theFile)
     return g.file_date(root + ".py", format=format)
 
 
-def plugin_date(plugin_mod: ModuleType, format: str) -> str:
+def plugin_date(plugin_mod: ModuleType, format: str | None = None) -> str:
     theFile = g.os_path_join(app.loadDir, "..", "plugins", plugin_mod.__file__)
     root, ext = g.os_path_splitext(theFile)
     return g.file_date(root + ".py", format=format)
 
 
-def file_date(theFile: str, format: str) -> str:
+def file_date(theFile: str, format: str | None = None) -> str:
     if not g.os_path_exists(theFile):
         return ''
     try:
