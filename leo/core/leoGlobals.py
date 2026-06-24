@@ -743,11 +743,19 @@ class KeyStroke:
     #   for key in sorted(d)
     # where the keys of d are KeyStroke objects.
 
-    def __eq__(self, other: object) -> bool:
-        return hasattr(other, 's') and self.s == other.s
+    def __eq__(self, other: object) -> bool:  # other must be annotated as object.
+        if not other:
+            return False
+        if hasattr(other, 's'):
+            return self.s == other.s
+        return self.s == other
 
     def __lt__(self, other: KeyStroke) -> bool:
-        return hasattr(other, 's') and self.s < other.s
+        if not other:
+            return False
+        if hasattr(other, 's'):
+            return self.s < other.s
+        return self.s < other  # type:ignore  # Required.
 
     def __le__(self, other: KeyStroke) -> bool:
         return self.__lt__(other) or self.__eq__(other)
