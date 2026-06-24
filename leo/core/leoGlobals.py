@@ -6301,6 +6301,14 @@ def es_exception(*args: Sequence, **kwargs: Sequence) -> None:
         g.es_print_error(line)
 
 
+# @+node:ekr.20061015090538: *3* g.es_exception_type
+def es_exception_type(color: str = "red") -> None:
+    # exctype is a Exception class object; value is the error message.
+    exctype, value = sys.exc_info()[:2]
+    name = exctype.__name__ if exctype else ''
+    g.es_print('', f"{name}, {value}", color=color)
+
+
 # @+node:ekr.20050707064040: *3* g.es_print
 # see: http://www.diveintopython.org/xml_processing/unicode.html
 
@@ -6526,6 +6534,32 @@ def print_exception(
         return "<no file>", 0
 
 
+# @+node:ekr.20241104143456.1: *3* g.print_unique_message & es_print_unique_message
+g_unique_message_d: dict[str, bool] = {}
+
+
+def print_unique_message(message: str) -> bool:
+    """
+    Print the given message once. Return True if the message was printed.
+    """
+    if message not in g_unique_message_d:
+        g_unique_message_d[message] = True
+        print(message)
+        return True
+    return False
+
+
+def es_print_unique_message(message: str, *, color: str = 'error') -> bool:
+    """
+    Print the given message once. Return True if the message was printed.
+    """
+    if message not in g_unique_message_d:
+        g_unique_message_d[message] = True
+        g.es_print(message, color=color)
+        return True
+    return False
+
+
 # @+node:ekr.20031218072017.3113: *3* g.printBindings
 def print_bindings(name: str, window: QWidget) -> None:
     bindings = window.bind()
@@ -6584,32 +6618,6 @@ def trace(*args: Args, **kwargs: KWargs) -> None:
     if name.endswith(".pyc"):
         name = name[:-1]
     g.pr(name, *args)
-
-
-# @+node:ekr.20241104143456.1: *3* g.print_unique_message & es_print_unique_message
-g_unique_message_d: dict[str, bool] = {}
-
-
-def print_unique_message(message: str) -> bool:
-    """
-    Print the given message once. Return True if the message was printed.
-    """
-    if message not in g_unique_message_d:
-        g_unique_message_d[message] = True
-        print(message)
-        return True
-    return False
-
-
-def es_print_unique_message(message: str, *, color: str = 'error') -> bool:
-    """
-    Print the given message once. Return True if the message was printed.
-    """
-    if message not in g_unique_message_d:
-        g_unique_message_d[message] = True
-        g.es_print(message, color=color)
-        return True
-    return False
 
 
 # @+node:ekr.20240325064618.1: *3* g.traceUnique & traceUniqueClass
