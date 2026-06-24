@@ -8,7 +8,7 @@ from __future__ import annotations
 from collections.abc import Callable
 import os
 import sys
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass
 
@@ -63,7 +63,7 @@ class DebugCommandsClass(BaseEditCommandsClass):
         os.spawnv(os.P_NOWAIT, python, args)
 
     # @+node:ekr.20150514063305.105: *3* debug.findDebugger
-    def findDebugger(self) -> Optional[str]:
+    def findDebugger(self) -> str | None:
         """Find the winpdb debugger."""
         c = self.c
         pythonDir = g.os_path_dirname(sys.executable)

@@ -13,7 +13,7 @@ import string
 import sys
 import time
 import urllib
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from leo.commands import gotoCommands
 from leo.core.leoAPI import StringTextWrapper
 from leo.core import (
@@ -2610,7 +2610,7 @@ class LeoQtLog(leoFrame.LeoLog):
         c.bodyWantsFocus()
 
     # @+node:ekr.20190603062456.1: *4* LeoQtLog.findTabIndex
-    def findTabIndex(self, tabName: str) -> Optional[int]:
+    def findTabIndex(self, tabName: str) -> int | None:
         """Return the tab index for tabName, or None."""
         w = self.tabWidget
         for i in range(w.count()):
@@ -4242,7 +4242,7 @@ class QtStatusLineClass:
         return col, fcol
 
     # @+node:chris.20180320072817.2: *4* qstatus.file_line (not used)
-    def file_line(self) -> Optional[int]:
+    def file_line(self) -> int | None:
         """
         Return the line of the first line of c.p in its external file.
         Return None if c.p is not part of an external file.

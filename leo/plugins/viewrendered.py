@@ -203,7 +203,7 @@ from pathlib import Path
 import shutil
 import sys
 import textwrap
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from urllib.request import urlopen
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtWidgets
@@ -412,7 +412,7 @@ def preview(event: LeoKeyEvent) -> None:
 
 # @+node:tbrown.20100318101414.5998: *3* g.command('vr')
 @g.command('vr')
-def viewrendered(event: LeoKeyEvent) -> Optional[Any]:
+def viewrendered(event: LeoKeyEvent) -> Any | None:
     """Open render view for commander"""
     vr = getVr(event=event)
     if vr:
@@ -1488,14 +1488,14 @@ class ViewRenderedController(QtWidgets.QWidget):
         if not h.startswith('@jinja'):
             return
 
-        def find_root(p: Position) -> Optional[tuple[Position, Position]]:
+        def find_root(p: Position) -> tuple[Position, Position] | None:
             for newp in p.parents():
                 if newp.h.strip() == '@jinja':
                     oldp, p = p, newp
                     return oldp, p
             return None, None
 
-        def find_inputs(p: Position) -> Optional[tuple[Position, Position]]:
+        def find_inputs(p: Position) -> tuple[Position, Position] | None:
             for newp in p.parents():
                 if newp.h.strip() == '@jinja inputs':
                     oldp, p = p, newp
@@ -1696,7 +1696,7 @@ class ViewRenderedController(QtWidgets.QWidget):
         return w
 
     # @+node:ekr.20110320120020.14483: *4* vr.get_kind
-    def get_kind(self, p: Position) -> Optional[str]:
+    def get_kind(self, p: Position) -> str | None:
         """Return the proper rendering kind for node p."""
 
         p0 = p  # Special case selected position.

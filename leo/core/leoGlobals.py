@@ -38,7 +38,7 @@ import time
 import traceback
 import types
 from types import ModuleType
-from typing import Any, IO, Iterable, Optional, Sequence, TYPE_CHECKING
+from typing import Any, IO, Iterable, Sequence, TYPE_CHECKING
 import unittest
 import urllib
 import urllib.parse as urlparse
@@ -417,7 +417,7 @@ def standard_timestamp() -> str:
 
 
 # @+node:ekr.20201211183100.1: *3* g.get_backup_directory
-def get_backup_path(sub_directory: str) -> Optional[str]:
+def get_backup_path(sub_directory: str) -> str | None:
     """
     Return the full path to the subdirectory of the main backup directory.
 
@@ -1240,7 +1240,7 @@ class MatchBrackets:
         right: int,
         max_right: int,
         expand: bool = False,
-    ) -> tuple[Optional[int], Optional[int], Optional[str], Optional[int]]:
+    ) -> tuple[int | None, int | None, str | None, int | None]:
         """
         Find the bracket nearest the cursor searching outwards left and right.
 
@@ -1287,7 +1287,7 @@ class MatchBrackets:
         return None, None, None, None
 
     # @+node:ekr.20061113221414: *4* mb.find_matching_bracket
-    def find_matching_bracket(self, ch1: str, s: str, i: int) -> Optional[int]:
+    def find_matching_bracket(self, ch1: str, s: str, i: int) -> int | None:
         """Find the bracket matching s[i] for self.language."""
         self.forward = ch1 in self.open_brackets
         # Find the character matching the initial bracket.
@@ -1301,7 +1301,7 @@ class MatchBrackets:
         return f(ch1, target, s, i)
 
     # @+node:ekr.20160121164556.1: *4* mb.scan & helpers
-    def scan(self, ch1: str, target: str, s: str, i: int) -> Optional[int]:
+    def scan(self, ch1: str, target: str, s: str, i: int) -> int | None:
         """Scan forward for target."""
         level = 0
         while 0 <= i < len(s):
@@ -1329,7 +1329,7 @@ class MatchBrackets:
         return None
 
     # @+node:ekr.20160119090634.1: *5* mb.scan_comment
-    def scan_comment(self, s: str, i: int) -> Optional[int]:
+    def scan_comment(self, s: str, i: int) -> int | None:
         """Return the index of the character after a comment."""
         i1 = i
         start = self.start_comment if self.forward else self.end_comment
@@ -1388,7 +1388,7 @@ class MatchBrackets:
         return self.start_comment and self.end_comment and g.match(s, i, self.end_comment)
 
     # @+node:ekr.20160119230141.1: *4* mb.scan_back & helpers
-    def scan_back(self, ch1: str, target: str, s: str, i: int) -> Optional[int]:
+    def scan_back(self, ch1: str, target: str, s: str, i: int) -> int | None:
         """Scan backwards for delim."""
         level = 0
         while i >= 0:
@@ -1621,7 +1621,7 @@ class OptionsUtils:
         return sorted(list(set(valid)))
 
     # @+node:ekr.20230615084117.1: *4* OptionsUtils.find_complex_option
-    def find_complex_option(self, regex: str) -> Optional[re.Match]:
+    def find_complex_option(self, regex: str) -> re.Match | None:
         """
         Check arguments that take an argument.
 
@@ -1820,14 +1820,14 @@ class SettingsDict(dict):
             self[key] = aList
 
     # @+node:ekr.20190903181030.1: *4* SettingsDict.get_setting & get_string_setting
-    def get_setting(self, key: str) -> Optional[str]:
+    def get_setting(self, key: str) -> str | None:
         """Return the canonical setting name."""
         key = key.replace('-', '').replace('_', '')
         gs = self.get(key)
         val = gs and gs.val
         return val
 
-    def get_string_setting(self, key: str) -> Optional[str]:
+    def get_string_setting(self, key: str) -> str | None:
         val = self.get_setting(key)
         return val if val and isinstance(val, str) else None
 
@@ -1964,7 +1964,7 @@ class Tracer:
         self.report()
 
     # @+node:ekr.20080531075119.6: *4* tracer
-    def tracer(self, frame: LeoFrame, event: QEvent, arg: object) -> Optional[Callable]:
+    def tracer(self, frame: LeoFrame, event: QEvent, arg: object) -> Callable | None:
         """A function to be passed to sys.settrace."""
         n = len(self.stack)
         if event == 'return':
@@ -2912,7 +2912,7 @@ def findAllValidLanguageDirectives(s: str) -> list:
 
 
 # @+node:ekr.20090214075058.8: *3* g.findAtTabWidthDirectives (must be fast)
-def findTabWidthDirectives(c: Cmdr, p: Position) -> Optional[str]:
+def findTabWidthDirectives(c: Cmdr, p: Position) -> str | None:
     """Return the tab width in effect at position p."""
     if c is None:
         return None  # c may be None for testing.
@@ -2936,7 +2936,7 @@ def findTabWidthDirectives(c: Cmdr, p: Position) -> Optional[str]:
 
 
 # @+node:ekr.20170127142001.5: *3* g.findFirstAtLanguageDirective
-def findFirstValidAtLanguageDirective(s: str) -> Optional[str]:
+def findFirstValidAtLanguageDirective(s: str) -> str | None:
     """
     Return the first language for which there is a valid @language
     directive in s.
@@ -2951,14 +2951,14 @@ def findFirstValidAtLanguageDirective(s: str) -> Optional[str]:
 
 
 # @+node:ekr.20090214075058.6: *3* g.findLanguageDirectives (must be fast)
-def findLanguageDirectives(c: Cmdr, p: Position) -> Optional[str]:
+def findLanguageDirectives(c: Cmdr, p: Position) -> str | None:
     """Return the language in effect at position p."""
     if c is None or p is None:
         return None  # c may be None for testing.
 
     v0 = p.v
 
-    def find_language(p_or_v: Position | VNode) -> Optional[str]:
+    def find_language(p_or_v: Position | VNode) -> str | None:
         for s in p_or_v.h, p_or_v.b:
             for m in g_language_pat.finditer(s):
                 language = m.group(1)
@@ -2994,7 +2994,7 @@ def findLanguageDirectives(c: Cmdr, p: Position) -> Optional[str]:
 # Also called from write at.putRefAt.
 
 
-def findReference(name: str, root: Position) -> Optional[Position]:
+def findReference(name: str, root: Position) -> Position | None:
     """Return the position containing the section definition for name."""
     for p in root.subtree(copy=False):
         assert p != root
@@ -3053,7 +3053,7 @@ def get_directives_dict_list(p: Position) -> list[dict]:
 
 
 # @+node:ekr.20111010082822.15545: *3* g.getLanguageFromAncestorAtFileNode (deprecated)
-def getLanguageFromAncestorAtFileNode(p: Position) -> Optional[str]:
+def getLanguageFromAncestorAtFileNode(p: Position) -> str | None:
     """Return the language in effect at node p."""
     g.deprecated()
     c = p.v.context
@@ -3135,7 +3135,7 @@ def isValidLanguage(language: str) -> bool:
 
 # @+node:ekr.20250403040834.1: *3* --- to be deprecated! Using directives list
 # @+node:ekr.20080827175609.52: *4* g.scanAtCommentAndLanguageDirectives (deprecated)
-def scanAtCommentAndAtLanguageDirectives(aList: list) -> Optional[dict[str, str]]:
+def scanAtCommentAndAtLanguageDirectives(aList: list) -> dict[str, str] | None:
     """
     Scan aList for @comment and @language directives.
 
@@ -3159,7 +3159,7 @@ def scanAtCommentAndAtLanguageDirectives(aList: list) -> Optional[dict[str, str]
 
 
 # @+node:ekr.20080827175609.32: *4* g.scanAtEncodingDirectives (deprecated)
-def scanAtEncodingDirectives(aList: list) -> Optional[str]:
+def scanAtEncodingDirectives(aList: list) -> str | None:
     """Scan aList for @encoding directives."""
     g.deprecated()
     for d in aList:
@@ -3181,7 +3181,7 @@ def scanAtHeaderDirectives(aList: list) -> None:
 
 
 # @+node:ekr.20080827175609.33: *4* g.scanAtLineendingDirectives (deprecated)
-def scanAtLineendingDirectives(aList: list) -> Optional[str]:
+def scanAtLineendingDirectives(aList: list) -> str | None:
     """Scan aList for @lineending directives."""
     g.deprecated()
     for d in aList:
@@ -3195,7 +3195,7 @@ def scanAtLineendingDirectives(aList: list) -> Optional[str]:
 
 
 # @+node:ekr.20080827175609.34: *4* g.scanAtPagewidthDirectives (deprecated)
-def scanAtPagewidthDirectives(aList: list, issue_error_flag: bool = False) -> Optional[int]:
+def scanAtPagewidthDirectives(aList: list, issue_error_flag: bool = False) -> int | None:
     """Scan aList for @pagewidth directives. Return the page width or None"""
     g.deprecated()
     for d in aList:
@@ -3224,7 +3224,7 @@ def scanAllAtPathDirectives(c: Cmdr, p: Position) -> str:
 
 
 # @+node:ekr.20080827175609.37: *4* g.scanAtTabwidthDirectives & scanAllAtTabWidthDirectives (deprecated)
-def scanAtTabwidthDirectives(aList: list, issue_error_flag: bool = False) -> Optional[int]:
+def scanAtTabwidthDirectives(aList: list, issue_error_flag: bool = False) -> int | None:
     """Scan aList for @tabwidth directives."""
     g.deprecated()
     for d in aList:
@@ -3238,7 +3238,7 @@ def scanAtTabwidthDirectives(aList: list, issue_error_flag: bool = False) -> Opt
     return None
 
 
-def scanAllAtTabWidthDirectives(c: Cmdr, p: Position) -> Optional[int]:
+def scanAllAtTabWidthDirectives(c: Cmdr, p: Position) -> int | None:
     """Scan p and all ancestors looking for @tabwidth directives."""
     g.deprecated()
     if c and p:
@@ -3251,7 +3251,7 @@ def scanAllAtTabWidthDirectives(c: Cmdr, p: Position) -> Optional[int]:
 
 
 # @+node:ekr.20080831084419.4: *4* g.scanAtWrapDirectives & scanAllAtWrapDirectives (deprecated)
-def scanAtWrapDirectives(aList: list, issue_error_flag: bool = False) -> Optional[bool]:
+def scanAtWrapDirectives(aList: list, issue_error_flag: bool = False) -> bool | None:
     """Scan aList for @wrap and @nowrap directives."""
     g.deprecated()
     for d in aList:
@@ -3262,7 +3262,7 @@ def scanAtWrapDirectives(aList: list, issue_error_flag: bool = False) -> Optiona
     return None
 
 
-def scanAllAtWrapDirectives(c: Cmdr, p: Position) -> Optional[bool]:
+def scanAllAtWrapDirectives(c: Cmdr, p: Position) -> bool | None:
     """Scan p and all ancestors looking for @wrap/@nowrap directives."""
     g.deprecated()
     if c and p:
@@ -3596,7 +3596,7 @@ def getEncodingAt(p: Position, b: bytes = None) -> str:
 
 
 # @+node:ville.20090701144325.14942: *3* g.guessExternalEditor
-def guessExternalEditor(c: Cmdr = None) -> Optional[str]:
+def guessExternalEditor(c: Cmdr = None) -> str | None:
     """Return a 'sensible' external editor"""
     editor = (
         c
@@ -3667,7 +3667,7 @@ def is_binary_string(s: str) -> bool:
 
 
 # @+node:ekr.20031218072017.3119: *3* g.makeAllNonExistentDirectories
-def makeAllNonExistentDirectories(theDir: str) -> Optional[str]:
+def makeAllNonExistentDirectories(theDir: str) -> str | None:
     """
     A wrapper from os.makedirs.
     Attempt to make all non-existent directories.
@@ -3698,7 +3698,7 @@ def makePathRelativeTo(fullPath: str, basePath: str) -> str:
 
 
 # @+node:ekr.20090520055433.5945: *3* g.openWithFileName
-def openWithFileName(fileName: str, old_c: Cmdr = None, gui: LeoGui = None) -> Optional[Cmdr]:
+def openWithFileName(fileName: str, old_c: Cmdr = None, gui: LeoGui = None) -> Cmdr | None:
     """
     Load any kind of file in the appropriate way:
 
@@ -3801,9 +3801,9 @@ def readFileIntoString(
 # @+node:ekr.20160504062833.1: *3* g.readFileIntoUnicodeString
 def readFileIntoUnicodeString(
     fn: str,
-    encoding: Optional[str] = None,
+    encoding: str | None = None,
     silent: bool = False,
-) -> Optional[str]:
+) -> str | None:
     """Return the raw contents of the file whose full path is fn."""
     try:
         with open(fn, 'rb') as f:
@@ -3828,7 +3828,7 @@ def readFileIntoUnicodeString(
 # @@c
 
 
-def readlineForceUnixNewline(f: IO, fileName: Optional[str] = None) -> str:
+def readlineForceUnixNewline(f: IO, fileName: str | None = None) -> str:
     try:
         s = f.readline()
     except UnicodeDecodeError:
@@ -4007,7 +4007,7 @@ def find_word(s: str, word: str, i: int = 0) -> int:
 
 
 # @+node:ekr.20211029090118.1: *3* g.findAncestorVnodeByPredicate
-def findAncestorVnodeByPredicate(p: Position, v_predicate: Optional[Callable]) -> Optional[VNode]:
+def findAncestorVnodeByPredicate(p: Position, v_predicate: Callable | None) -> VNode | None:
     """
     Return first ancestor vnode matching the predicate.
 
@@ -4658,7 +4658,7 @@ def skip_to_start_of_line(s: str, i: int) -> int:
 
 
 # @+node:ekr.20031218072017.3188: *4* g.skip_long
-def skip_long(s: str, i: int) -> tuple[int, Optional[int]]:
+def skip_long(s: str, i: int) -> tuple[int, int | None]:
     """
     Scan s[i:] for a valid int.
     Return (i, val) or (i, None) if s[i] does not point at a number.
@@ -4819,7 +4819,7 @@ def getGitIssues(
     base_url: str = None,
     label_list: list = None,
     milestone: str = None,
-    state: Optional[str] = None,  # in (None, 'closed', 'open')
+    state: str = None,  # in (None, 'closed', 'open')
 ) -> None:
     """Get a list of issues from Leo's GitHub site."""
     if base_url is None:
@@ -5113,7 +5113,7 @@ def gitDescribe(path: str = None) -> tuple[str, str, str]:
 
 
 # @+node:ekr.20170414034616.6: *3* g.gitHeadPath
-def gitHeadPath(path_s: str) -> Optional[str]:
+def gitHeadPath(path_s: str) -> str | None:
     """
     Compute the path to .git/HEAD given the path.
     """
@@ -5300,7 +5300,7 @@ def getLoadedPlugins() -> list:
     return pc.getLoadedPlugins()
 
 
-def getPluginModule(moduleName: str) -> Optional[ModuleType]:
+def getPluginModule(moduleName: str) -> ModuleType | None:
     pc = g.app.pluginsController
     return pc.getPluginModule(moduleName)
 
@@ -5394,7 +5394,7 @@ def cantImport(moduleName: str, pluginName: str = None, verbose: bool = True) ->
 
 
 # @+node:ekr.20191220044128.1: *3* g.import_module
-def import_module(name: str, package: str = None) -> Optional[ModuleType]:
+def import_module(name: str, package: str = None) -> ModuleType | None:
     """
     A thin wrapper over importlib.import_module.
     """
@@ -6991,7 +6991,7 @@ def truncate(s: str, n: int) -> str:
 
 
 # @+node:ekr.20031218072017.3150: *3* g.windows
-def windows() -> Optional[list]:
+def windows() -> list | None:
     return app.windowList if app else None
 
 
@@ -7496,7 +7496,7 @@ def execute_shell_commands_with_options(
 
 
 # @+node:ekr.20180217152624.1: *4* g.computeBaseDir
-def computeBaseDir(c: Cmdr, base_dir: str, path_setting: str) -> Optional[str]:
+def computeBaseDir(c: Cmdr, base_dir: str, path_setting: str) -> str | None:
     """
     Compute a base_directory.
     If given, @string path_setting takes precedence.
@@ -7573,7 +7573,7 @@ def executeFile(filename: str, options: str = '') -> None:
 # @+node:ekr.20040321065415: *3* g.find*Node*
 # @+others
 # @+node:ekr.20210303123423.3: *4* g.findNodeAnywhere
-def findNodeAnywhere(c: Cmdr, headline: str, exact: bool = True) -> Optional[Position]:
+def findNodeAnywhere(c: Cmdr, headline: str, exact: bool = True) -> Position | None:
     h = headline.strip()
     for p in c.all_unique_positions(copy=False):
         if p.h.strip() == h:
@@ -7586,7 +7586,7 @@ def findNodeAnywhere(c: Cmdr, headline: str, exact: bool = True) -> Optional[Pos
 
 
 # @+node:ekr.20210303123525.1: *4* g.findNodeByPath
-def findNodeByPath(c: Cmdr, path: str) -> Optional[Position]:
+def findNodeByPath(c: Cmdr, path: str) -> Position | None:
     """Return the first @<file> node in Cmdr c whose path is given."""
     if not os.path.isabs(path):  # #2049. Only absolute paths could possibly work.
         g.trace(f"path not absolute: {repr(path)}")
@@ -7601,9 +7601,7 @@ def findNodeByPath(c: Cmdr, path: str) -> Optional[Position]:
 
 
 # @+node:ekr.20210303123423.1: *4* g.findNodeInChildren
-def findNodeInChildren(
-    c: Cmdr, p: Position, headline: str, exact: bool = True
-) -> Optional[Position]:
+def findNodeInChildren(c: Cmdr, p: Position, headline: str, exact: bool = True) -> Position | None:
     """Search for a node in v's tree matching the given headline."""
     p1 = p.copy()
     h = headline.strip()
@@ -7618,7 +7616,7 @@ def findNodeInChildren(
 
 
 # @+node:ekr.20210303123423.2: *4* g.findNodeInTree
-def findNodeInTree(c: Cmdr, p: Position, headline: str, exact: bool = True) -> Optional[Position]:
+def findNodeInTree(c: Cmdr, p: Position, headline: str, exact: bool = True) -> Position | None:
     """Search for a node in v's tree matching the given headline."""
     h = headline.strip()
     p1 = p.copy()
@@ -7633,7 +7631,7 @@ def findNodeInTree(c: Cmdr, p: Position, headline: str, exact: bool = True) -> O
 
 
 # @+node:ekr.20210303123423.4: *4* g.findTopLevelNode
-def findTopLevelNode(c: Cmdr, headline: str, exact: bool = True) -> Optional[Position]:
+def findTopLevelNode(c: Cmdr, headline: str, exact: bool = True) -> Position | None:
     h = headline.strip()
     for p in c.rootPosition().self_and_siblings(copy=False):
         if p.h.strip() == h:
@@ -8010,7 +8008,7 @@ def es_clickable_link(
 
 
 # @+node:ekr.20230628072620.1: *3* g.findAnyUnl
-def findAnyUnl(unl_s: str, c: Cmdr) -> Optional[Position]:
+def findAnyUnl(unl_s: str, c: Cmdr) -> Position | None:
     """
     Find the Position corresponding to an UNL.
 
@@ -8089,7 +8087,7 @@ def findAnyUnl(unl_s: str, c: Cmdr) -> Optional[Position]:
 find_gnx_pat = re.compile(r'^(.*)::([-\d]+)?$')
 
 
-def findGnx(gnx: str, c: Cmdr) -> Optional[Position]:
+def findGnx(gnx: str, c: Cmdr) -> Position | None:
     """
     gnx: the gnx part of a gnx-based unl.
 
@@ -8117,7 +8115,7 @@ def findGnx(gnx: str, c: Cmdr) -> Optional[Position]:
 
 
 # @+node:tbrown.20140311095634.15188: *3* g.findUnl & helpers (legacy unls)
-def findUnl(unlList1: list[str], c: Cmdr) -> Optional[Position]:
+def findUnl(unlList1: list[str], c: Cmdr) -> Position | None:
     """
     g.findUnl: support for legacy UNLs.
     unlList is a list of headlines.
@@ -8219,7 +8217,7 @@ findUNL = findUnl  # Compatibility.
 
 
 # @+node:ekr.20120311151914.9917: *3* g.getUrlFromNode
-def getUrlFromNode(p: Position) -> Optional[str]:
+def getUrlFromNode(p: Position) -> str | None:
     """
     Get an url from node p:
     1. Use the headline if it contains a valid url.
@@ -8255,7 +8253,7 @@ def getUrlFromNode(p: Position) -> Optional[str]:
 
 
 # @+node:ekr.20170221063527.1: *3* g.handleUnl
-def handleUnl(unl_s: str, c: Cmdr) -> Optional[Cmdr]:
+def handleUnl(unl_s: str, c: Cmdr) -> Cmdr | None:
     """
     Select the node given by any kind of unl.
     This must *never* open a browser.
@@ -8301,7 +8299,7 @@ def handleUnl(unl_s: str, c: Cmdr) -> Optional[Cmdr]:
 
 
 # @+node:tbrown.20090219095555.63: *3* g.handleUrl & helpers
-def handleUrl(url: str, c: Cmdr = None, p: Position = None) -> Optional[str]:
+def handleUrl(url: str, c: Cmdr = None, p: Position = None) -> str | None:
     """Open a url or a unl."""
     if c and not p:
         p = c.p
@@ -8450,7 +8448,7 @@ def openUrl(p: Position) -> None:  # pragma: no cover
 
 
 # @+node:ekr.20110605121601.18135: *3* g.openUrlOnClick (open-url-under-cursor)
-def openUrlOnClick(event: QMouseEvent, url: str = None) -> Optional[str]:  # pragma: no cover
+def openUrlOnClick(event: QMouseEvent, url: str = None) -> str | None:  # pragma: no cover
     """Open the URL under the cursor.  Return it for unit testing."""
     from leo.core.leoGui import LeoKeyEvent
     from leo.plugins.qt_text import QTextEditWrapper
@@ -8469,7 +8467,7 @@ def openUrlOnClick(event: QMouseEvent, url: str = None) -> Optional[str]:  # pra
 
 
 # @+node:ekr.20170216091704.1: *4* g.openUrlHelper
-def openUrlHelper(event: LeoKeyEvent, url: str = None) -> Optional[str]:
+def openUrlHelper(event: LeoKeyEvent, url: str = None) -> str | None:
     """Open the unl, url or gnx under the cursor.  Return it for unit testing."""
     if not event:
         return None

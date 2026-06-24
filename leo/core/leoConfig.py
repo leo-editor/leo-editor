@@ -9,7 +9,7 @@ import os
 import sys
 import re
 import textwrap
-from typing import Any, Callable, Generator, Optional, TYPE_CHECKING
+from typing import Any, Callable, Generator, TYPE_CHECKING
 from leo.plugins.mod_scripting import build_rclick_tree
 from leo.core import leoGlobals as g
 
@@ -1287,8 +1287,8 @@ class GlobalConfigManager:
         self.buttonsFileName = ''
         self.configsExist = False  # True when we successfully open a setting file.
         self.default_derived_file_encoding = 'utf-8'
-        self.enabledPluginsFileName: Optional[str] = None
-        self.enabledPluginsString: Optional[str] = ''
+        self.enabledPluginsFileName: str = None
+        self.enabledPluginsString: str = ''
         self.menusList: list[Any] = []
         self.menusFileName = ''
         self.modeCommandsDict: dict[str, g.SettingsDict] = g.SettingsDict('modeCommandsDict')
@@ -1482,7 +1482,7 @@ class GlobalConfigManager:
             data = [z.strip() for z in data if z.strip()]
         return data
 
-    def getOutlineData(self, setting: str) -> Optional[list[str]]:
+    def getOutlineData(self, setting: str) -> list[str] | None:
         """Return the pastable (xml text) of the entire @outline-data tree."""
         return self.get(setting, "outlinedata")
 
@@ -1570,7 +1570,7 @@ class GlobalConfigManager:
         return val
 
     # @+node:ekr.20041122070752: *4* gcm.getRatio
-    def getRatio(self, setting: str) -> Optional[float]:
+    def getRatio(self, setting: str) -> float | None:
         """
         Return the value of @float setting, or None if there is an error.
         """
@@ -1966,7 +1966,7 @@ class LocalConfigManager:
         return val
 
     # @+node:ekr.20120215072959.12536: *5* c.config.getRatio
-    def getRatio(self, setting: str) -> Optional[float]:
+    def getRatio(self, setting: str) -> float | None:
         """
         Return the value of @float setting, or None if there is an error.
         """

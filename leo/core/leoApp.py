@@ -12,7 +12,7 @@ import string
 import sys
 import textwrap
 import time
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 import zipfile
 import platform
 from leo.core import leoGlobals as g
@@ -148,8 +148,8 @@ class LeoApp:
         self.start_fullscreen = False  # For qt_frame plugin.
         self.start_maximized = False  # For qt_frame plugin.
         self.start_minimized = False  # For qt_frame plugin.
-        self.trace_binding: Optional[str] = None  # The name of a binding to trace, or None.
-        self.trace_setting: Optional[str] = None  # The name of a setting to trace, or None.
+        self.trace_binding: str = None  # The name of a binding to trace, or None.
+        self.trace_setting: str = None  # The name of a setting to trace, or None.
         self.translateToUpperCase = False  # Never set to True.
         self.use_splash_screen = True  # True: put up a splash screen.
 
@@ -161,7 +161,7 @@ class LeoApp:
         self.disableSave = False  # May be set by plugins.
         self.idle_timers: list[IdleTime] = []  # A list of IdleTime instances, so they persist.
         # The external process created by the 'listen-for-log' command.
-        self.log_listener: Optional[Popen] = None
+        self.log_listener: Popen = None
         self.positions = 0  # The number of positions generated.
         self.scanErrors = 0  # The number of errors seen by g.scanError.
         self.statsDict: dict[str, Value] = {}  # dict used by g.stat, g.clear_stats, g.print_stats.
@@ -1278,7 +1278,7 @@ class LeoApp:
 
     # @+node:ekr.20180924093227.1: *3* app.c property
     @property
-    def c(self) -> Optional[Cmdr]:
+    def c(self) -> Cmdr | None:
         return self.log and self.log.c
 
     # @+node:ekr.20171127111053.1: *3* app.Closing
@@ -1493,7 +1493,7 @@ class LeoApp:
 
     # @+node:ekr.20171127111141.1: *3* app.Import utils
     # @+node:ekr.20140727180847.17985: *4* app.scanner_for_at_auto
-    def scanner_for_at_auto(self, p: Position) -> Optional[Callable]:
+    def scanner_for_at_auto(self, p: Position) -> Callable | None:
         """A factory returning a scanner function for p, an @auto node."""
         d = g.app.atAutoDict
         for key in d:
@@ -1503,7 +1503,7 @@ class LeoApp:
         return None
 
     # @+node:ekr.20140130172810.15471: *4* app.scanner_for_ext
-    def scanner_for_ext(self, ext: str) -> Optional[Callable]:
+    def scanner_for_ext(self, ext: str) -> Callable | None:
         """A factory returning a scanner function for the given file extension."""
         return g.app.classDispatchDict.get(ext)
 
@@ -1652,7 +1652,7 @@ class LoadManager:
         return fileName
 
     # @+node:ekr.20120209051836.10372: *4* LM.computeLeoSettingsPath
-    def computeLeoSettingsPath(self) -> Optional[str]:
+    def computeLeoSettingsPath(self) -> str | None:
         """Return the full path to leoSettings.leo."""
         # lm = self
         join = g.finalize_join
@@ -1672,7 +1672,7 @@ class LoadManager:
         return path
 
     # @+node:ekr.20120209051836.10373: *4* LM.computeMyLeoSettingsPath
-    def computeMyLeoSettingsPath(self) -> Optional[str]:
+    def computeMyLeoSettingsPath(self) -> str | None:
         """
         Return the full path to either myLeoSettings.leo or myLeoSettings.leojs.
 
@@ -1725,7 +1725,7 @@ class LoadManager:
         g.app.testDir = join(g.app.loadDir, '..', 'test')
 
     # @+node:ekr.20120209051836.10253: *5* LM.computeGlobalConfigDir
-    def computeGlobalConfigDir(self) -> Optional[str]:
+    def computeGlobalConfigDir(self) -> str | None:
         leo_config_dir = getattr(sys, 'leo_config_directory', None)
         if leo_config_dir:
             theDir = leo_config_dir
@@ -1738,7 +1738,7 @@ class LoadManager:
         return theDir
 
     # @+node:ekr.20120209051836.10254: *5* LM.computeHomeDir
-    def computeHomeDir(self) -> Optional[str]:
+    def computeHomeDir(self) -> str | None:
         """Returns the user's home directory."""
         # Windows searches the HOME, HOMEPATH and HOMEDRIVE
         # environment vars, then gives up.
@@ -1902,7 +1902,7 @@ class LoadManager:
         return path
 
     # @+node:ekr.20180321124503.1: *5* LM.resolve_theme_path
-    def resolve_theme_path(self, fn: str, tag: str) -> Optional[str]:
+    def resolve_theme_path(self, fn: str, tag: str) -> str | None:
         """Search theme directories for the given .leo file."""
         if not fn:
             return None
@@ -1919,7 +1919,7 @@ class LoadManager:
         return None
 
     # @+node:ekr.20120211121736.10772: *4* LM.computeWorkbookFileName
-    def computeWorkbookFileName(self) -> Optional[str]:
+    def computeWorkbookFileName(self) -> str | None:
         """
         Return full path to the workbook.
 
@@ -2013,7 +2013,7 @@ class LoadManager:
     # @+node:ekr.20120214165710.10726: *4* LM.createSettingsDicts
     def createSettingsDicts(
         self, c: Cmdr, localFlag: bool
-    ) -> Optional[tuple[g.SettingsDict, g.SettingsDict]]:
+    ) -> tuple[g.SettingsDict, g.SettingsDict] | None:
         from leo.core import leoConfig
 
         if c:
@@ -2177,7 +2177,7 @@ class LoadManager:
         return result
 
     # @+node:ekr.20120222103014.10312: *4* LM.openSettingsFile
-    def openSettingsFile(self, fn: str) -> Optional[Cmdr]:
+    def openSettingsFile(self, fn: str) -> Cmdr | None:
         """
         Open a settings file with a null gui.  Return the commander.
 
@@ -2698,7 +2698,7 @@ class LoadManager:
             g.app.createDefaultGui()
 
     # @+node:ekr.20120219154958.10482: *5* LM.getDefaultFile
-    def getDefaultFile(self) -> Optional[str]:
+    def getDefaultFile(self) -> str | None:
         # Get the name of the workbook.
         fn = g.app.config.getString('default-leo-file')
         fn = g.finalize(fn)
@@ -2832,7 +2832,7 @@ class LoadManager:
             return gui
 
         # @+node:ekr.20210927034148.7: *6* function: doScriptOption
-        def doScriptOption() -> Optional[str]:
+        def doScriptOption() -> str | None:
             """Handle --script=path"""
             m = utils.find_complex_option(r'--script=(.+)')
             if not m:
@@ -2847,7 +2847,7 @@ class LoadManager:
             return script
 
         # @+node:ekr.20230615055158.1: *6* function: doSelectOption
-        def doSelectOption() -> Optional[str]:
+        def doSelectOption() -> str | None:
             """Handle --select=headline"""
             m = utils.find_complex_option(r'--select=(.+)')
             return m.group(1) if m else None
@@ -2912,7 +2912,7 @@ class LoadManager:
                     helper()
 
         # @+node:ekr.20230615060055.1: *6* function: doThemeOption
-        def doThemeOption() -> Optional[str]:
+        def doThemeOption() -> str | None:
             """Handle --theme=path"""
             m = utils.find_complex_option(r'--theme=(.+)')
             return m.group(1).replace('"', '') if m else None
@@ -2976,7 +2976,7 @@ class LoadManager:
             print(f"\nEnabling --trace={', '.join(g.app.debug)}\n")
 
         # @+node:ekr.20210927034148.10: *6* function: doWindowSizeOption
-        def doWindowSizeOption() -> Optional[tuple[int, int]]:
+        def doWindowSizeOption() -> tuple[int, int] | None:
             """Handle --window-size"""
             m = utils.find_complex_option(r'--window-size=(\d+)x(\d+)')
             if not m:
@@ -2989,7 +2989,7 @@ class LoadManager:
             return h, w
 
         # @+node:ekr.20210927034148.9: *6* function: doWindowSpotOption
-        def doWindowSpotOption() -> Optional[tuple[int, int]]:
+        def doWindowSpotOption() -> tuple[int, int] | None:
             """Handle --window-spot"""
             m = utils.find_complex_option(r'--window-spot=(\d+)x(\d+)')
             if not m:
@@ -3137,7 +3137,7 @@ class LoadManager:
             return False
 
     # @+node:ekr.20120223062418.10393: *4* LM.openWithFileName & helpers
-    def openWithFileName(self, fn: str, gui: LeoGui, old_c: Cmdr) -> Optional[Cmdr]:
+    def openWithFileName(self, fn: str, gui: LeoGui, old_c: Cmdr) -> Cmdr | None:
         """
         Completely read a file, creating the corresponding outline.
 
@@ -3192,7 +3192,7 @@ class LoadManager:
             # c.enableMenuBar()
 
     # @+node:ekr.20120223062418.10406: *5* LM.findOpenFile
-    def findOpenFile(self, fn: str) -> Optional[Cmdr]:
+    def findOpenFile(self, fn: str) -> Cmdr | None:
         def munge(name: str) -> str:
             return g.os_path_normpath(name or '').lower()
 
@@ -3241,7 +3241,7 @@ class LoadManager:
         c.initialFocusHelper()
 
     # @+node:ekr.20120223062418.10408: *5* LM.openExternalFile
-    def openExternalFile(self, fn: str, gui: Optional[LeoGui], old_c: Optional[Cmdr]) -> Cmdr:
+    def openExternalFile(self, fn: str, gui: LeoGui | None, old_c: Cmdr | None) -> Cmdr:
         """
         Create a wrapper commander (in a new tab) for the given external file.
 
@@ -3321,7 +3321,7 @@ class LoadManager:
         return bool(fn and zipfile.is_zipfile(fn))
 
     # @+node:ekr.20220318033804.1: *5* LM.openEmptyLeoFile
-    def openEmptyLeoFile(self, fn: str, gui: Optional[LeoGui], old_c: Optional[Cmdr]) -> Cmdr:
+    def openEmptyLeoFile(self, fn: str, gui: LeoGui | None, old_c: Cmdr | None) -> Cmdr:
         """Open an empty Leo file with the given file name."""
         lm = self
 
@@ -3354,7 +3354,7 @@ class LoadManager:
         return c
 
     # @+node:ekr.20231124134846.1: *5* LM.openExistingLeoFile & helper
-    def openExistingLeoFile(self, fn: str, gui: Optional[LeoGui], old_c: Optional[Cmdr]) -> Cmdr:
+    def openExistingLeoFile(self, fn: str, gui: LeoGui | None, old_c: Cmdr | None) -> Cmdr:
         """
         Create a commander for an existing .leo, .db, or .leojs file.
         """
@@ -3428,7 +3428,7 @@ class LoadManager:
         c.clearChanged()
 
     # @+node:ekr.20120223062418.10410: *5* LM.openZipFile
-    def openZipFile(self, fn: str) -> Optional[StringIO]:
+    def openZipFile(self, fn: str) -> StringIO | None:
         """
         Open a zipped file for reading.
         Return a StringIO file if successful.
@@ -3621,7 +3621,7 @@ class RecentFilesManager:
         rf_always = c.config.getBool("recent-files-group-always")
         groupedEntries = rf_group or rf_always
         if groupedEntries:  # if so, make dict of groups
-            dirCount: dict[str, dict[str, Optional[list[str]]]] = {}
+            dirCount: dict[str, dict[str, list[str]]] | None = {}
             for fileName in rf.getRecentFiles()[:n]:
                 dirName, baseName = g.os_path_split(fileName)
                 if baseName not in dirCount:
@@ -3763,7 +3763,7 @@ class RecentFilesManager:
         return True
 
     # @+node:ekr.20120225072226.10285: *3* rf.sanitize
-    def sanitize(self, name: str) -> Optional[str]:
+    def sanitize(self, name: str) -> str | None:
         """Return a sanitized file name."""
         if name is None:
             return None
@@ -3983,7 +3983,7 @@ def openUrl(event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20150514125218.6: *3* open-url-under-cursor
 @g.command('open-url-under-cursor')
-def openUrlUnderCursor(event: LeoKeyEvent = None) -> Optional[str]:
+def openUrlUnderCursor(event: LeoKeyEvent = None) -> str | None:
     """Open the url under the cursor."""
     return g.openUrlOnClick(event)
 

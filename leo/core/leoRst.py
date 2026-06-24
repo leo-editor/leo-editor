@@ -20,7 +20,7 @@ import io
 import os
 import re
 import time
-from typing import Generator, Optional, TYPE_CHECKING
+from typing import Generator, TYPE_CHECKING
 
 # Third-part imports...
 try:
@@ -477,7 +477,7 @@ class RstCommands:
         return changed
 
     # @+node:ekr.20090502071837.65: *5* rst.writeToDocutils & helper
-    def writeToDocutils(self, s: str, ext: str) -> Optional[str]:
+    def writeToDocutils(self, s: str, ext: str) -> str | None:
         """Send s to docutils using the writer implied by ext and return the result."""
         c = self.c
         if not docutils:

@@ -14,7 +14,7 @@ import string
 import sys
 import textwrap
 import time
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from types import ModuleType
 from leo.core import leoGlobals as g
 from leo.external import codewise
@@ -388,7 +388,7 @@ class AutoCompleterClass:
             log.clearTab(self.tabName)
 
     # @+node:ekr.20110509064011.14556: *4* ac.attr_matches
-    def attr_matches(self, s: str, namespace: dict) -> Optional[list[str]]:
+    def attr_matches(self, s: str, namespace: dict) -> list[str] | None:
         """Compute matches when string s is of the form name.name....name.
 
         Evaluates s using eval(s,namespace)
@@ -420,7 +420,7 @@ class AutoCompleterClass:
         return result
 
     # @+node:ekr.20061031131434.11: *4* ac.auto_completer_state_handler
-    def auto_completer_state_handler(self, event: LeoKeyEvent) -> Optional[str]:
+    def auto_completer_state_handler(self, event: LeoKeyEvent) -> str | None:
         """Handle all keys while autocompleting."""
         c, k, tag = self.c, self.k, 'auto-complete'
         state = k.getState(tag)
@@ -1806,7 +1806,7 @@ class KeyHandlerClass:
         self.qcompleter = None  # Set by AutoCompleter.start.
         self.setDefaultUnboundKeyAction()
         self.setDefaultEditingAction()
-        self.modeWidget: Optional[Widget]
+        self.modeWidget: Widget | None
 
     # @+node:ekr.20061031131434.78: *5* k.defineExternallyVisibleIvars
     def defineExternallyVisibleIvars(self) -> None:
@@ -2795,7 +2795,7 @@ class KeyHandlerClass:
                 return g.toUnicode(s.replace('-', '').replace('_', '').lower())
 
             # @+node:ekr.20241210055239.1: *5* ShowCommands.open_hidden_commander
-            def open_hidden_commander(self, path: str) -> Optional[Cmdr]:
+            def open_hidden_commander(self, path: str) -> Cmdr | None:
                 """Open a hidden commander with the given filename."""
                 c = g.openWithFileName(path, old_c=self.c, gui=g.app.nullGui)
                 if not c:
@@ -4373,7 +4373,7 @@ class KeyHandlerClass:
         return result_d
 
     # @+node:ekr.20061031131434.179: *4* k.getShortcutForCommandName
-    def getStrokeForCommandName(self, commandName: str) -> Optional[Stroke]:
+    def getStrokeForCommandName(self, commandName: str) -> Stroke | None:
         c, k = self.c, self
         command = c.commandsDict.get(commandName)
         if command:

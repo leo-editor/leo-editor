@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import textwrap
 from collections import OrderedDict
-from typing import Dict, TYPE_CHECKING, Optional
+from typing import Dict, TYPE_CHECKING
 
 from leo.core.leoQt import QtWidgets, Orientation
 from leo.core import leoGlobals as g
@@ -482,7 +482,7 @@ class LayoutCacheWidget(QWidget):
         }
     """
 
-    def __init__(self, c: Cmdr, parent: Optional[QWidget]) -> None:
+    def __init__(self, c: Cmdr, parent: QWidget | None) -> None:
         super().__init__(parent)
         self.c = c
         self.setObjectName('leo-layout-cache')
@@ -581,7 +581,7 @@ class LayoutCacheWidget(QWidget):
         self.resize_pane(widget, delta=40)
 
     # @+node:tom.20240923194438.5: *4* LCW.find_splitter_by_name
-    def find_splitter_by_name(self, name: str) -> Optional[QSplitter]:
+    def find_splitter_by_name(self, name: str) -> QSplitter | None:
         """Return the splitter with the given objectName."""
 
         def is_splitter(obj: object) -> bool:
@@ -604,7 +604,7 @@ class LayoutCacheWidget(QWidget):
         return g.app.gui.find_widget_by_name(self.c, name)
 
     # @+node:tom.20240923194438.4: *4* LCW.find_widget_in_children
-    def find_widget_in_children(self, name: str) -> Optional[QWidget]:
+    def find_widget_in_children(self, name: str) -> QWidget | None:
         """Return a child widget with the given objectName."""
         w: QWidget = None
         for kid in self.children():

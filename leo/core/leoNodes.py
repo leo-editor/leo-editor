@@ -11,7 +11,7 @@ import os
 import re
 import time
 import uuid
-from typing import Any, Generator, Iterable, Optional, TYPE_CHECKING
+from typing import Any, Generator, Iterable, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import signal_manager
 
@@ -272,7 +272,7 @@ class Position:
         return not self.__eq__(p2)
 
     # @+node:ekr.20080416161551.190: *4*  p.__init__
-    def __init__(self, v: VNode, childIndex: int = 0, stack: Optional[list] = None) -> None:
+    def __init__(self, v: VNode, childIndex: int = 0, stack: list = None) -> None:
         """Create a new position with the given childIndex and parent stack."""
         self._childIndex = childIndex
         self.v = v
@@ -356,7 +356,7 @@ class Position:
             if p.v not in all_unique_vnodes:
                 all_unique_vnodes.append(p.v)
 
-        def ref(v: VNode) -> Optional[str]:
+        def ref(v: VNode) -> str | None:
             if v == c.hiddenRootNode:
                 return None
             if v.gnx not in all_unique_vnodes:
@@ -392,7 +392,7 @@ class Position:
         }
 
     # @+node:ekr.20061006092649: *4* p.archivedPosition
-    def archivedPosition(self, root_p: Optional[Position] = None) -> list[int]:
+    def archivedPosition(self, root_p: Position | None = None) -> list[int]:
         """Return a representation of a position suitable for use in .leo files."""
         p = self
         if root_p is None:
@@ -409,7 +409,7 @@ class Position:
         return aList
 
     # @+node:ekr.20040310153624: *4* p.dump
-    def dumpLink(self, link: Optional[str]) -> str:  # pragma: no cover
+    def dumpLink(self, link: str | None) -> str:  # pragma: no cover
         return link if link else "<none>"
 
     def dump(self, label: str = "") -> None:  # pragma: no cover
@@ -525,7 +525,7 @@ class Position:
     following_siblings_iter = following_siblings
 
     # @+node:ekr.20161120105707.1: *4* p.nearest_roots
-    def nearest_roots(self, copy: bool = True, predicate: Optional[Callable] = None) -> Generator:
+    def nearest_roots(self, copy: bool = True, predicate: Callable | None = None) -> Generator:
         """
         A generator yielding all the root positions "near" p1 = self that
         satisfy the given predicate. p.isAnyAtFileNode is the default
@@ -976,7 +976,7 @@ class Position:
         """Return True if p is visible in c's outline."""
         p = self
 
-        def visible(p: Position, root: Optional[Position] = None) -> bool:
+        def visible(p: Position, root: Position | None = None) -> bool:
             for parent in p.parents(copy=False):
                 if parent and parent == root:
                     # #12.
@@ -1041,7 +1041,7 @@ class Position:
         return p.nodeAfterTree()
 
     # @+node:shadow.20080825171547.2: *4* p.textOffset
-    def textOffset(self) -> Optional[int]:
+    def textOffset(self) -> int | None:
         """
         Return the fcol offset of self.
         Return None if p is has no ancestor @<file> node.
@@ -1528,7 +1528,7 @@ class Position:
         limit: Position,
         limitIsVisible: bool,
         p: Position,
-    ) -> tuple[bool, Optional[Position]]:
+    ) -> tuple[bool, Position | None]:
         """Return done, p or None"""
         c = p.v.context
         if limit == p:
@@ -1648,7 +1648,7 @@ class Position:
             p.firstChild().doDelete()
 
     # @+node:ekr.20040303175026.2: *4* p.doDelete
-    def doDelete(self, newNode: Optional[Position] = None) -> None:
+    def doDelete(self, newNode: Position | None = None) -> None:
         """
         Deletes position p from the outline.
 
@@ -2166,7 +2166,7 @@ class VNode:
     # @+others
     # @+node:ekr.20031218072017.3342: *3* v.Birth & death
     # @+node:ekr.20031218072017.3344: *4* v.__init__
-    def __init__(self, context: Cmdr, gnx: Optional[str] = None):
+    def __init__(self, context: Cmdr, gnx: str | None = None):
         """
         Ctor for the VNode class.
         To support ZODB, the code must set v._p_changed = True whenever
@@ -2178,7 +2178,7 @@ class VNode:
         self.children: list[VNode] = []  # Ordered list of all children of this node.
         self.parents: list[VNode] = []  # Unordered list of all parents of this node.
         # The immutable fileIndex (gnx) for this node. Set below.
-        self.fileIndex: Optional[str] = None
+        self.fileIndex: str | None = None
         self.iconVal = 0  # The present value of the node's icon.
         self.statusBits = 0  # status bits
 
@@ -2189,8 +2189,8 @@ class VNode:
         # It is named .context rather than .c to emphasize its limited usage.
         self.context: Cmdr = context
         self.expandedPositions: list[Position] = []  # Positions that should be expanded.
-        self.insertSpot: Optional[int] = None  # Location of previous insert point.
-        self.scrollBarSpot: Optional[int] = None  # Previous value of scrollbar position.
+        self.insertSpot: int | None = None  # Location of previous insert point.
+        self.scrollBarSpot: int | None = None  # Previous value of scrollbar position.
         self.selectionLength = 0  # The length of the selected body text.
         self.selectionStart = 0  # The start of the selected body text.
 
@@ -2216,7 +2216,7 @@ class VNode:
     __str__ = __repr__
 
     # @+node:ekr.20040312145256: *4* v.dump
-    def dumpLink(self, link: Optional[str]) -> str:  # pragma: no cover
+    def dumpLink(self, link: str | None) -> str:  # pragma: no cover
         return link if link else "<none>"
 
     def dump(self, label: str = "") -> None:  # pragma: no cover
@@ -2236,7 +2236,7 @@ class VNode:
 
     # @+node:ekr.20031218072017.3346: *3* v.Comparisons
     # @+node:ekr.20040705201018: *4* v.findAtFileName
-    def findAtFileName(self, names: Iterable, h: Optional[str] = None) -> str:
+    def findAtFileName(self, names: Iterable, h: str | None = None) -> str:
         """Return the name following one of the names in nameList or"""
         # Allow h argument for unit testing.
         if not h:
@@ -2264,14 +2264,14 @@ class VNode:
     # These return the filename following @xxx, in v.headString.
     # Return the the empty string if v is not an @xxx node.
 
-    def atAutoNodeName(self, h: Optional[str] = None) -> str:
+    def atAutoNodeName(self, h: str | None = None) -> str:
         return self.findAtFileName(g.app.atAutoNames, h=h)
 
     # Retain this special case as part of the "escape hatch".
     # That is, we fall back on code in leoRst.py if no
     # importer or writer for reStructuredText exists.
 
-    def atAutoRstNodeName(self, h: Optional[str] = None) -> str:
+    def atAutoRstNodeName(self, h: str | None = None) -> str:
         names = ("@auto-rst",)
         return self.findAtFileName(names, h=h)
 
@@ -2448,7 +2448,7 @@ class VNode:
 
     # @+node:ekr.20031218072017.3360: *4* v.Children
     # @+node:ekr.20031218072017.3362: *5* v.firstChild
-    def firstChild(self) -> Optional[VNode]:
+    def firstChild(self) -> VNode | None:
         v = self
         return v.children[0] if v.children else None
 
@@ -2460,14 +2460,14 @@ class VNode:
     hasFirstChild = hasChildren
 
     # @+node:ekr.20031218072017.3364: *5* v.lastChild
-    def lastChild(self) -> Optional[VNode]:
+    def lastChild(self) -> VNode | None:
         v = self
         return v.children[-1] if v.children else None
 
     # @+node:ekr.20031218072017.3365: *5* v.nthChild
     # childIndex and nthChild are zero-based.
 
-    def nthChild(self, n: int) -> Optional[VNode]:
+    def nthChild(self, n: int) -> VNode | None:
         v = self
         if 0 <= n < len(v.children):
             return v.children[n]

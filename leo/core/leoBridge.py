@@ -54,7 +54,7 @@ import os
 import sys
 import time
 import traceback
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from types import ModuleType
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -310,7 +310,7 @@ class BridgeController:
         return bool(g and g.app and g.app.gui)
 
     # @+node:ekr.20070227092442.5: *3* bridge.openLeoFile & helpers
-    def openLeoFile(self, fileName: str) -> Optional[Cmdr]:
+    def openLeoFile(self, fileName: str) -> Cmdr | None:
         """Open a .leo file, or create a new Leo frame if no fileName is given."""
         g = self.g
         g.app.silentMode = self.silentMode

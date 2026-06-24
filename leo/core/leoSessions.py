@@ -3,7 +3,7 @@
 """Support for sessions in Leo."""
 
 from __future__ import annotations
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -53,7 +53,7 @@ class SessionManager:
         return result
 
     # @+node:ekr.20120420054855.14416: *3* SessionManager.get_session_path
-    def get_session_path(self) -> Optional[str]:
+    def get_session_path(self) -> str | None:
         """Return the path to the session file."""
         for path in (g.app.homeLeoDir, g.app.homeDir):
             if g.os_path_exists(path):

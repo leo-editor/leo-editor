@@ -12,7 +12,7 @@ from collections.abc import Callable
 import re
 import string
 import time
-from typing import Any, Generator, Sequence, Optional, TYPE_CHECKING
+from typing import Any, Generator, Sequence, TYPE_CHECKING
 from types import ModuleType
 import warnings
 
@@ -559,7 +559,7 @@ class JEditColorizer(BaseColorizer):
     def init_section_delims(self) -> None:
         p = self.c.p
 
-        def find_delims(v: VNode) -> Optional[re.Match]:
+        def find_delims(v: VNode) -> re.Match | None:
             for s in g.splitLines(v.b):
                 if m := g.g_section_delims_pat.match(s):
                     return m
@@ -3239,7 +3239,7 @@ if QtGui:
         # Distributed under the terms of the Modified BSD License.
         # @+others
         # @+node:ekr.20190320153605.1: *4* leo_h._get_format & helpers
-        def _get_format(self, token: object) -> Optional[object]:
+        def _get_format(self, token: object) -> object | None:
             """Returns a QTextCharFormat for token or None."""
             if token in self._formats:
                 return self._formats[token]

@@ -6,7 +6,7 @@
 # @+node:ekr.20220416085845.1: ** << qt_text imports & annotations >>
 from __future__ import annotations
 from collections.abc import Callable
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtGui, Qsci, QtWidgets
 from leo.core.leoQt import ContextMenuPolicy, Key, KeyboardModifier
@@ -429,9 +429,7 @@ class QLineEditWrapper(QTextMixin):
         w.setCursorPosition(i)
 
     # @+node:ekr.20110605121601.18130: *4* QLineEditWrapper.setSelectionRange
-    def setSelectionRange(
-        self, i: int, j: int, insert: Optional[int] = None, s: str = None
-    ) -> None:
+    def setSelectionRange(self, i: int, j: int, insert: int | None = None, s: str = None) -> None:
         """QHeadlineWrapper."""
         if not self.check():
             return

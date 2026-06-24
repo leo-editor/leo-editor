@@ -7,7 +7,7 @@
 from __future__ import annotations
 from collections.abc import Callable
 import re
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 
 # Third-party annotations
 try:
@@ -255,7 +255,7 @@ class DefaultWrapper(BaseSpellWrapper):
         self.save_user_dict()
 
     # @+node:ekr.20180207100238.1: *3* DefaultWrapper.find_main_dict
-    def find_main_dict(self) -> Optional[str]:
+    def find_main_dict(self) -> str | None:
         """Return the full path to the global dictionary."""
         c = self.c
         fn = c.config.getString('main-spelling-dictionary')
@@ -266,7 +266,7 @@ class DefaultWrapper(BaseSpellWrapper):
         return fn if g.os_path_exists(fn) else None
 
     # @+node:ekr.20230926171905.1: *3* DefaultWrapper.find_user_dict
-    def find_user_dict(self) -> Optional[str]:
+    def find_user_dict(self) -> str | None:
         """Return the full path to the global dictionary."""
         c = self.c
         fn = c.config.getString('enchant-local-dictionary')
@@ -707,7 +707,7 @@ class SpellTabHandler:
     re_part = re.compile(r'[a-zA-z]+')
     re_http = re.compile(r'.*?(http|https)://(.*?)$')
 
-    def find(self, event: LeoKeyEvent = None) -> Optional[str]:
+    def find(self, event: LeoKeyEvent = None) -> str | None:
         """
         Find the next unknown word.
 

@@ -8,7 +8,7 @@ from __future__ import annotations
 import difflib
 import filecmp
 import os
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -346,7 +346,7 @@ class BaseLeoCompare:
 
     # @+node:ekr.20031218072017.3645: *3* compare.utils...
     # @+node:ekr.20031218072017.3646: *4* compare.doOpen
-    def doOpen(self, name: str) -> Optional[TextIO]:
+    def doOpen(self, name: str) -> TextIO | None:
         try:
             f = open(name, 'r')
             return f
@@ -398,7 +398,7 @@ class BaseLeoCompare:
     # sentinel line.
     # @@c
 
-    def isLeoHeader(self, s: str) -> Optional[str]:
+    def isLeoHeader(self, s: str) -> str | None:
         tag = "@+leo"
         j = s.find(tag)
         if j > 0:

@@ -10,7 +10,7 @@ from collections.abc import Callable
 import xml.etree.ElementTree as ElementTree
 import json
 import time
-from typing import Any, Generator, Optional, TYPE_CHECKING
+from typing import Any, Generator, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 from leo.core import leoFileCommands
@@ -41,7 +41,7 @@ def copyOutline(self: Cmdr, event: LeoKeyEvent = None) -> str:
 
 # @+node:ekr.20220314071523.1: *3* c_oc.copyOutlineAsJson & helpers
 @g.commander_command('copy-node-as-json')
-def copyOutlineAsJSON(self: Cmdr, event: LeoKeyEvent = None) -> Optional[str]:
+def copyOutlineAsJSON(self: Cmdr, event: LeoKeyEvent = None) -> str | None:
     """Copy the selected outline as JSON to the clipboard"""
     # Copying an outline has no undo consequences.
     c = self
@@ -71,7 +71,7 @@ def pasteOutline(
     event: LeoKeyEvent = None,
     s: str = None,
     undoFlag: bool = True,  # A hack for abbrev.paste_tree.
-) -> Optional[Position]:
+) -> Position | None:
     """
     Paste an outline into the present outline from the clipboard.
     Nodes do *not* retain their original identify.
@@ -121,7 +121,7 @@ def pasteOutlineRetainingClones(
     self: Cmdr,
     event: LeoKeyEvent = None,
     s: str = None,
-) -> Optional[Position]:
+) -> Position | None:
     """
     Paste an outline into the present outline from the clipboard.
     Nodes *retain* their original identify.
@@ -1102,7 +1102,7 @@ def hoist(self: Cmdr, event: LeoKeyEvent = None) -> None:
 # @+node:ekr.20031218072017.1759: ** c_oc.Insert, Delete & Clone commands
 # @+node:ekr.20031218072017.1762: *3* c_oc.clone
 @g.commander_command('clone-node')
-def clone(self: Cmdr, event: LeoKeyEvent = None) -> Optional[Position]:
+def clone(self: Cmdr, event: LeoKeyEvent = None) -> Position | None:
     """Create a clone of the selected outline."""
     c, p, u = self, self.p, self.undoer
     if not p:
@@ -1248,7 +1248,7 @@ def insertHeadline(
     event: LeoKeyEvent = None,
     op_name: str = "Insert Node",
     as_child: bool = False,
-) -> Optional[Position]:
+) -> Position | None:
     """
     If c.p is expanded, insert a new node as the first or last child of c.p,
     depending on @bool insert-new-nodes-at-end.
@@ -1261,14 +1261,14 @@ def insertHeadline(
 
 
 @g.commander_command('insert-as-first-child')
-def insertNodeAsFirstChild(self: Cmdr, event: LeoKeyEvent = None) -> Optional[Position]:
+def insertNodeAsFirstChild(self: Cmdr, event: LeoKeyEvent = None) -> Position | None:
     """Insert a node as the first child of the previous node."""
     c = self
     return insertHeadlineHelper(c, event=event, as_first_child=True)
 
 
 @g.commander_command('insert-as-last-child')
-def insertNodeAsLastChild(self: Cmdr, event: LeoKeyEvent = None) -> Optional[Position]:
+def insertNodeAsLastChild(self: Cmdr, event: LeoKeyEvent = None) -> Position | None:
     """Insert a node as the last child of the previous node."""
     c = self
     return insertHeadlineHelper(c, event=event, as_last_child=True)
@@ -1282,7 +1282,7 @@ def insertHeadlineHelper(
     as_child: bool = False,
     as_first_child: bool = False,
     as_last_child: bool = False,
-) -> Optional[Position]:
+) -> Position | None:
     """Insert a node after the presently selected node."""
     u = c.undoer
     current = c.p
@@ -1316,7 +1316,7 @@ def insertHeadlineHelper(
 
 # @+node:ekr.20130922133218.11540: *3* c_oc.insertHeadlineBefore
 @g.commander_command('insert-node-before')
-def insertHeadlineBefore(self: Cmdr, event: LeoKeyEvent = None) -> Optional[Position]:
+def insertHeadlineBefore(self: Cmdr, event: LeoKeyEvent = None) -> Position | None:
     """Insert a node before the presently selected node."""
     c, current, u = self, self.p, self.undoer
     op_name = 'Insert Node Before'

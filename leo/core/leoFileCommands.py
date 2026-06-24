@@ -20,7 +20,7 @@ import shutil
 import sqlite3
 import tempfile
 import time
-from typing import Any, IO, Iterable, Optional, TYPE_CHECKING
+from typing import Any, IO, Iterable, TYPE_CHECKING
 import zipfile
 import xml.etree.ElementTree as ElementTree
 import xml.sax
@@ -135,7 +135,7 @@ class FastRead:
         return v
 
     # @+node:felix.20220618164929.1: *3* fast.readJsonFile
-    def readJsonFile(self, theFile: IO, path: str) -> Optional[VNode]:
+    def readJsonFile(self, theFile: IO, path: str) -> VNode | None:
         """Read the leojs JSON file, change splitter ratios, and return its hidden vnode."""
         s = theFile.read()
         v, g_dict = self.readWithJsonTree(path, s)
@@ -152,7 +152,7 @@ class FastRead:
         return v
 
     # @+node:ekr.20210316035646.1: *3* fast.readFileFromClipboard
-    def readFileFromClipboard(self, s_or_b: bytes | str) -> Optional[VNode]:
+    def readFileFromClipboard(self, s_or_b: bytes | str) -> VNode | None:
         """
         Recreate a file from a string s_or_b, and return its hidden vnode.
 
@@ -336,7 +336,7 @@ class FastRead:
             # Next, scan for uA's for this gnx.
             for key, val in e.attrib.items():
                 if key != 'tx':
-                    s: Optional[str] = self.resolveUa(key, val)
+                    s: str = self.resolveUa(key, val)
                     if s:
                         gnx2ua[gnx][key] = s
         return gnx2body, gnx2ua
@@ -546,7 +546,7 @@ class FastRead:
         gnx2vnode: dict[str, VNode],
         gnx2ua: dict[str, Value],
         v_elements: Element,
-    ) -> Optional[VNode]:
+    ) -> VNode | None:
         c, fc = self.c, self.c.fileCommands
 
         def v_element_visitor(parent_e: Element, parent_v: VNode) -> None:
@@ -839,7 +839,7 @@ class FileCommands:
         return True
 
     # @+node:ekr.20180709205603.1: *5* fc.getLeoOutlineFromClipBoard
-    def getLeoOutlineFromClipboard(self, s: str) -> Optional[Position]:
+    def getLeoOutlineFromClipboard(self, s: str) -> Position | None:
         """Read a Leo outline from string s in clipboard format."""
         c = self.c
         current = c.p
@@ -882,7 +882,7 @@ class FileCommands:
     getLeoOutline = getLeoOutlineFromClipboard  # for compatibility
 
     # @+node:ekr.20180709205640.1: *5* fc.getLeoOutlineFromClipBoardRetainingClones
-    def getLeoOutlineFromClipboardRetainingClones(self, s: str) -> Optional[Position]:
+    def getLeoOutlineFromClipboardRetainingClones(self, s: str) -> Position | None:
         """Read a Leo outline from string s in clipboard format."""
         c = self.c
         current = c.p
@@ -949,7 +949,7 @@ class FileCommands:
         *,
         checkOpenFiles: bool = True,
         readAtFileNodesFlag: bool = True,
-    ) -> Optional[VNode]:
+    ) -> VNode | None:
         """Open any kind of Leo file."""
         c = self.c
         fc = c.fileCommands
@@ -965,7 +965,7 @@ class FileCommands:
         return v
 
     # @+node:ekr.20230910154358.1: *6* fc._getLeoDBFileByName
-    def _getLeoDBFileByName(self, path: str, readAtFileNodesFlag: bool) -> Optional[VNode]:
+    def _getLeoDBFileByName(self, path: str, readAtFileNodesFlag: bool) -> VNode | None:
         """
         Open, read, and close a .db file.
 
@@ -1012,7 +1012,7 @@ class FileCommands:
             c.loading = False  # reenable c.changed
 
     # @+node:ekr.20230910160254.1: *6* fc._getLeoFileByName
-    def _getLeoFileByName(self, path: str, readAtFileNodesFlag: bool) -> Optional[VNode]:
+    def _getLeoFileByName(self, path: str, readAtFileNodesFlag: bool) -> VNode | None:
         """
         Open, read, and close a .leo or .leojs file.
 
@@ -1068,7 +1068,7 @@ class FileCommands:
             c.loading = False  # reenable c.changed
 
     # @+node:ekr.20120212220616.10537: *5* fc.readExternalFiles & helper
-    def readExternalFiles(self) -> Optional[Position]:
+    def readExternalFiles(self) -> Position | None:
         """Read all external files in the outline."""
         c, fc = self.c, self
         c.atFileCommands.readAll(c.rootPosition())
@@ -1082,7 +1082,7 @@ class FileCommands:
         return recoveryNode
 
     # @+node:ekr.20100205060712.8314: *6* fc.handleNodeConflicts
-    def handleNodeConflicts(self) -> Optional[Position]:
+    def handleNodeConflicts(self) -> Position | None:
         """Create a 'Recovered Nodes' node for each entry in c.nodeConflictList."""
         c = self.c
         if not c.nodeConflictList:
@@ -1273,7 +1273,7 @@ class FileCommands:
         v = self.getVnodeFromClipboard(s)
         return leoNodes.Position(v)
 
-    def getVnodeFromClipboard(self, s: str) -> Optional[VNode]:
+    def getVnodeFromClipboard(self, s: str) -> VNode | None:
         """Called only from getPosFromClipboard."""
         c = self.c
         self.initReadIvars()
@@ -1317,7 +1317,7 @@ class FileCommands:
         self,
         archivedPosition: list[str],
         root_v: VNode,
-    ) -> Optional[VNode]:
+    ) -> VNode | None:
         """
         Return a VNode corresponding to the archived position relative to root
         node root_v.
