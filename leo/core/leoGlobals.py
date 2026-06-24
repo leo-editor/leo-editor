@@ -38,7 +38,7 @@ import time
 import traceback
 import types
 from types import ModuleType
-from typing import Any, IO, Iterable, Sequence, TYPE_CHECKING
+from typing import cast, Any, IO, Iterable, Sequence, TYPE_CHECKING
 import unittest
 import urllib
 import urllib.parse as urlparse
@@ -5440,7 +5440,7 @@ def convertPythonIndexToRowCol(s: str, i: int) -> tuple[int, int]:
 
 
 # @+node:ekr.20050315071727: *4* g.convertRowColToPythonIndex
-def convertRowColToPythonIndex(s: str, row: int, col: int, lines: list[str] = None) -> int:
+def convertRowColToPythonIndex(s: str, row: int, col: int, lines: list[str] | None = None) -> int:
     """Convert zero-based row/col indices into a python index into string s."""
     if row < 0:
         return 0
@@ -5706,7 +5706,7 @@ def checkUnicode(s: str, encoding: str | None = None) -> str:
 
 
 # @+node:ekr.20100125073206.8709: *4* g.getPythonEncodingFromString
-def getPythonEncodingFromString(s: object) -> str:
+def getPythonEncodingFromString(s: bytes | str) -> str:
     """Return the encoding given by Python's encoding line.
     s is the entire file.
     """
@@ -6219,10 +6219,10 @@ def es(*args: Args, **kwargs: KWargs) -> None:
         'nodeLink': None,
     }
     d = g.doKeywordArgs(kwargs, d)
-    color = d.get('color')
+    color = cast(str, d.get('color'))
     if color == 'suppress':
         return  # New in 4.3.
-    color = g.actualColor(color)
+    actual_color = g.actualColor(color)
     tabName = d.get('tabName') or 'Log'
     newline = d.get('newline')
     s = g.translateArgs(args, d)
@@ -6233,7 +6233,7 @@ def es(*args: Args, **kwargs: KWargs) -> None:
     if log and (app.logInited or g.unitTesting):
         if newline:
             s += '\n'
-        log.put(s, color=color, tabName=tabName, nodeLink=d['nodeLink'])
+        log.put(s, color=actual_color, tabName=tabName, nodeLink=d['nodeLink'])
         # Count the number of *trailing* newlines.
         for ch in s:
             if ch == '\n':
@@ -6241,9 +6241,7 @@ def es(*args: Args, **kwargs: KWargs) -> None:
             else:
                 log.newlines = 0
     else:
-        app.logWaiting.append(
-            (s, color, newline, d),
-        )
+        app.logWaiting.append((s, actual_color, newline, d))
 
 
 log = es
@@ -6296,13 +6294,6 @@ def es_exception(*args: Sequence, **kwargs: Sequence) -> None:
     typ, val, tb = sys.exc_info()
     for line in traceback.format_exception(typ, val, tb):
         g.es_print_error(line)
-
-
-# @+node:ekr.20061015090538: *3* g.es_exception_type
-def es_exception_type(c: Cmdr | None = None, color: str = "red") -> None:
-    # exctype is a Exception class object; value is the error message.
-    exctype, value = sys.exc_info()[:2]
-    g.es_print('', f"{exctype.__name__}, {value}", color=color)
 
 
 # @+node:ekr.20050707064040: *3* g.es_print
@@ -6361,10 +6352,10 @@ def get_ctor_name(self: object, file_name: str, width: int = 25) -> str:
 # @+node:ekr.20040731204831: *3* g.getLastTracebackFileAndLineNumber
 def getLastTracebackFileAndLineNumber() -> tuple[str, int]:
     typ, val, tb = sys.exc_info()
-    if typ is SyntaxError:
+    if isinstance(type, SyntaxError):
         # IndentationError is a subclass of SyntaxError.
         return val.filename, val.lineno
-    #
+
     # Data is a list of tuples, one per stack entry.
     # Tuples have the form (filename,lineNumber,functionName,text).
     data = traceback.extract_tb(tb)
@@ -7379,25 +7370,30 @@ def getDocStringForFunction(func: Callable) -> str:
 
     def get_defaults(func: Callable, i: int) -> Value:
         defaults = inspect.getfullargspec(func)[3]
-        return defaults[i]
+        return defaults[i] if defaults else None
 
     # Fix bug 1251252: https://bugs.launchpad.net/leo-editor/+bug/1251252
     # Minibuffer commands created by mod_scripting.py have no docstrings.
     # Do special cases first.
 
     s = ''
+
     if name(func) == 'minibufferCallback':
         func = get_defaults(func, 0)
-        if hasattr(func, '__doc__') and func.__doc__.strip():
-            s = func.__doc__
-    if not s and name(func) == 'commonCommandCallback':
+        if val := getattr(func, '__doc__', None):
+            if isinstance(val, str) and val:
+                return val
+
+    if name(func) == 'commonCommandCallback':
         script = get_defaults(func, 1)
-        s = g.getDocString(script)  # Do a text scan for the function.
-    # Now the general cases.  Prefer __doc__ to docstring()
-    if not s and hasattr(func, '__doc__'):
-        s = func.__doc__
-    if not s and hasattr(func, 'docstring'):
-        s = func.docstring
+        if val := g.getDocString(script):  # Do a text scan for the function.
+            return val
+
+    # Now the general cases.  Prefer __doc__ to docstring
+    for attr in ('__doc__', '__docstring'):
+        val = getattr(func, attr, None)
+        if isinstance(val, str) and val:
+            return val
     return s
 
 
@@ -7472,89 +7468,6 @@ def execute_shell_commands(
         proc = subprocess.Popen(command, shell=shell)
         if wait:
             proc.communicate()
-
-
-# @+node:ekr.20180217113719.1: *3* g.execute_shell_commands_with_options & helpers
-def execute_shell_commands_with_options(
-    base_dir: str | None = None,
-    c: Cmdr | None = None,
-    command_setting: str | None = None,
-    commands: list | None = None,
-    path_setting: str | None = None,
-    trace: bool = False,
-    warning: str | None = None,
-) -> None:
-    """
-    A helper for prototype commands or any other code that
-    runs programs in a separate process.
-
-    base_dir:           Base directory to use if no config path given.
-    commands:           A list of commands, for g.execute_shell_commands.
-    commands_setting:   Name of @data setting for commands.
-    path_setting:       Name of @string setting for the base directory.
-    warning:            A warning to be printed before executing the commands.
-    """
-    base_dir = g.computeBaseDir(c, base_dir, path_setting)
-    if not base_dir:
-        return
-    commands = g.computeCommands(c, commands, command_setting)
-    if not commands:
-        return
-    if warning:
-        g.es_print(warning)
-    os.chdir(base_dir)  # Can't do this in the commands list.
-    g.execute_shell_commands(commands, trace=trace)
-
-
-# @+node:ekr.20180217152624.1: *4* g.computeBaseDir
-def computeBaseDir(c: Cmdr, base_dir: str | None, path_setting: str | None) -> str | None:
-    """
-    Compute a base_directory.
-    If given, @string path_setting takes precedence.
-    """
-    # Prefer the path setting to the base_dir argument.
-    if path_setting:
-        if not c:
-            g.es_print('@string path_setting requires valid c arg')
-            return None
-        # It's not an error for the setting to be empty.
-        base_dir2 = c.config.getString(path_setting)
-        if base_dir2:
-            base_dir2 = base_dir2.replace('\\', '/')
-            if g.os_path_exists(base_dir2):
-                return base_dir2
-            g.es_print(f"@string {path_setting} not found: {base_dir2!r}")
-            return None
-    # Fall back to given base_dir.
-    if base_dir:
-        base_dir = base_dir.replace('\\', '/')
-        if g.os_path_exists(base_dir):
-            return base_dir
-        g.es_print(f"base_dir not found: {base_dir!r}")
-        return None
-    g.es_print(f"Please use @string {path_setting}")
-    return None
-
-
-# @+node:ekr.20180217153459.1: *4* g.computeCommands
-def computeCommands(c: Cmdr | None, commands: list[str], command_setting: str | None) -> list[str]:
-    """
-    Get the list of commands.
-    If given, @data command_setting takes precedence.
-    """
-    if not commands and not command_setting:
-        g.es_print('Please use commands, command_setting or both')
-        return []
-    # Prefer the setting to the static commands.
-    if command_setting:
-        if c:
-            aList = c.config.getData(command_setting)
-            # It's not an error for the setting to be empty.
-            # Fall back to the commands.
-            return aList or commands
-        g.es_print('@data command_setting requires valid c arg')
-        return []
-    return commands
 
 
 # @+node:ekr.20050503112513.7: *3* g.executeFile
