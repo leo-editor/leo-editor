@@ -827,7 +827,9 @@ class KeyStroke:
         }
         if self.mods and s.lower() in shift_d:
             # Returning '' breaks existing code.
-            return shift_d.get(s.lower())  # type:ignore  # s.lower() is in shift_d!
+            val = shift_d.get(s.lower())
+            if isinstance(val, str):
+                return val
 
         # Make all other translations...
         #
@@ -923,11 +925,6 @@ class KeyStroke:
             else:
                 # 917: Ignore multi-byte alphas not in the table.
                 s = ''
-                if 0:
-                    # Make sure all special chars are in translate_d.
-                    if g.app.gui:  # It may not exist yet.
-                        if s.capitalize() in g.app.gui.specialChars:
-                            s = s.capitalize()
             return s
 
         # Translate shifted keys to their appropriate alternatives.
@@ -1502,10 +1499,10 @@ class MatchBrackets:
         With selected range: the first time, move cursor back to other end of
         range. The second time, select enclosing range.
         """
-        #
-        # A partial fix for bug 127: Bracket matching is buggy.
+
+        # #127: Bracket matching is buggy.
         w = self.c.frame.body.wrapper
-        s = w.getAllText()
+        s = cast(str, w.getAllText())
         _mb = self.c.user_dict['_match_brackets']
         sel_range = w.getSelectionRange()
         if not w.hasSelection():
@@ -1525,7 +1522,9 @@ class MatchBrackets:
         if left is None:
             g.es("Bracket not found")
             return
-        index2 = self.find_matching_bracket(ch, s, index)  # type:ignore # ch is not None!
+        ch = cast(str, ch)
+        index = cast(int, index)
+        index2 = cast(int, self.find_matching_bracket(ch, s, index))
         if index2 is None:
             g.es("No matching bracket.")  # #1447.
             return
@@ -1534,7 +1533,7 @@ class MatchBrackets:
         # nothing extra.  The second time, move cursor to other end (requires
         # no special action here), and the third time, try to expand the range
         # to any enclosing brackets
-        minmax = (min(index, index2), max(index, index2) + 1)  # type:ignore # index is not None!
+        minmax = (min(index, index2), max(index, index2) + 1)
         # the range, +1 to match w.getSelectionRange()
         if _mb['range'] == minmax:  # count how many times this has been the answer
             _mb['count'] += 1
@@ -1546,20 +1545,21 @@ class MatchBrackets:
                 s, max(minmax[0], 0), min(minmax[1], max_right), max_right, expand=True
             )
             if index3 is not None:  # found nearest bracket outside range
+                ch = cast(str, ch)
                 index4 = self.find_matching_bracket(ch, s, index3)
                 if index4 is not None:  # found matching bracket, expand range
                     index, index2 = index3, index4
                     _mb['count'] = 1
                     _mb['range'] = (min(index3, index4), max(index3, index4) + 1)
 
-        if index2 is not None:
-            if index2 < index:
-                w.setSelectionRange(index2, index + 1, insert=index2)
-            else:
-                w.setSelectionRange(index, index2 + 1, insert=min(len(s), index2 + 1))
-            w.see(index2)
-        else:
+        if index is None or index2 is None:
             g.es("unmatched", repr(ch))
+            return
+        if index2 < index:
+            w.setSelectionRange(index2, index + 1, insert=index2)
+        else:
+            w.setSelectionRange(index, index2 + 1, insert=min(len(s), index2 + 1))
+        w.see(index2)
 
     # @-others
 
@@ -1572,7 +1572,7 @@ class OptionsUtils:
     This class *calculates* valid options from the usage message.
     """
 
-    def __init__(self, usage: str, obsolete_options: list[str] = None) -> None:
+    def __init__(self, usage: str, obsolete_options: list[str]) -> None:
         # This class is essentially stateless because these ivars never change.
         self.usage = usage
         self.obsolete_options = obsolete_options
@@ -1909,7 +1909,7 @@ class Tracer:
     def __init__(self, limit: int = 0, trace: bool = False, verbose: bool = False) -> None:
         # Keys are function names.
         # Values are the number of times the function was called by the caller.
-        self.callDict: dict[str, dict] = {}
+        self.callDict: dict[str, dict[str, int]] = {}
         # Keys are function names.
         # Values are the total number of times the function was called.
         self.calledDict: dict[str, int] = {}
@@ -1955,11 +1955,12 @@ class Tracer:
         g.pr('\ncallDict...')
         for key in sorted(self.callDict):
             # Print the calling function.
-            g.pr(f"{self.calledDict.get(key, 0):d}", key)  # noqa  # conflict between flake8 and black.
+            g.pr(f"{self.calledDict.get(key, 0):d}", key)
             # Print the called functions.
             d = self.callDict.get(key)
-            for key2 in sorted(d):
-                g.pr(f"{d.get(key2):8d}", key2)
+            if isinstance(d, dict):
+                for key2 in sorted(d):
+                    g.pr(f"{d.get(key2):8d}", key2)
 
     # @+node:ekr.20080531075119.5: *4* stop
     def stop(self) -> None:
@@ -2021,10 +2022,10 @@ class Tracer:
     # @-others
 
 
-def startTracer(limit: int = 0, trace: bool = False, verbose: bool = False) -> Callable:
-    t = g.Tracer(limit=limit, trace=trace, verbose=verbose)
-    sys.settrace(t.tracer)
-    return t
+def startTracer(limit: int = 0, trace: bool = False, verbose: bool = False) -> Tracer:
+    tracer = g.Tracer(limit=limit, trace=trace, verbose=verbose)
+    sys.settrace(tracer.tracer)
+    return tracer
 
 
 # @+node:ekr.20031219074948.1: *3* class g.Tracing/NullObject & helpers
@@ -2034,7 +2035,7 @@ tracing_tags: dict[int, str] = {}  # Keys are id's, values are tags.
 class NullObject:
     """An object that does nothing, and does it very well."""
 
-    def __init__(self, ivars: list[str] = None, *args: Args, **kwargs: KWargs) -> None:
+    def __init__(self, ivars: list[str] | None = None, *args: Args, **kwargs: KWargs) -> None:
         pass
 
     def __call__(self, *args: Args, **kwargs: KWargs) -> "NullObject":
@@ -2083,7 +2084,9 @@ class NullObject:
 class TracingNullObject:
     """Tracing NullObject."""
 
-    def __init__(self, tag: str, ivars: list[str] = None, *args: Args, **kwargs: KWargs) -> None:
+    def __init__(
+        self, tag: str, ivars: list[str] | None = None, *args: Args, **kwargs: KWargs
+    ) -> None:
         tracing_tags[id(self)] = tag  # noqa  # conflict between flake8 and black.
 
     def __call__(self, *args: Args, **kwargs: KWargs) -> "TracingNullObject":
@@ -2366,7 +2369,7 @@ qt_text_classes = [
 ]
 
 
-def checkQtTextWidget(obj: Any, *, other_classes: list[str] = None) -> None:
+def checkQtTextWidget(obj: Any, *, other_classes: list[str]) -> None:
     """
     Check that an object has the appropriate class.
     """
@@ -2510,28 +2513,28 @@ def dump_encoded_string(encoding: str, s: str) -> None:
 
 
 # @+node:ekr.20031218072017.1317: *4* g.file/module/plugin_date
-def module_date(mod: ModuleType, format: str | None = None) -> str:
+def module_date(mod: ModuleType, format: str) -> str:
     theFile = g.os_path_join(app.loadDir, mod.__file__)
     root, ext = g.os_path_splitext(theFile)
     return g.file_date(root + ".py", format=format)
 
 
-def plugin_date(plugin_mod: ModuleType, format: str | None = None) -> str:
+def plugin_date(plugin_mod: ModuleType, format: str) -> str:
     theFile = g.os_path_join(app.loadDir, "..", "plugins", plugin_mod.__file__)
     root, ext = g.os_path_splitext(theFile)
-    return g.file_date(root + ".py", format=str)
+    return g.file_date(root + ".py", format=format)
 
 
-def file_date(theFile: IO, format: str | None = None) -> str:
-    if theFile and g.os_path_exists(theFile):
-        try:
-            n = g.os_path_getmtime(theFile)
-            if format is None:
-                format = "%m/%d/%y %H:%M:%S"
-            return time.strftime(format, time.gmtime(n))
-        except (ImportError, NameError):
-            pass  # Time module is platform dependent.
-    return ""
+def file_date(theFile: str, format: str) -> str:
+    if not g.os_path_exists(theFile):
+        return ''
+    try:
+        n = g.os_path_getmtime(theFile)
+        if format is None:
+            format = "%m/%d/%y %H:%M:%S"
+        return time.strftime(format, time.gmtime(n))
+    except (ImportError, NameError):
+        return ''  # Time module is platform dependent.
 
 
 # @+node:ekr.20031218072017.3127: *4* g.get_line & get_line__after
@@ -2578,9 +2581,7 @@ def getIvarsDict(obj: object) -> dict[str, Value]:
 
 
 def checkUnchangedIvars(
-    obj: object,
-    d: dict[str, Value],
-    exceptions: Sequence[str] = None,
+    obj: object, d: dict[str, Value], exceptions: Sequence[str] | None = None
 ) -> bool:
     if not exceptions:
         exceptions = []
@@ -2886,7 +2887,7 @@ def comment_delims_from_extension(filename: str) -> tuple[str, str, str]:
     Return the comment delims corresponding to the filename's extension.
     """
     if filename.startswith('.'):
-        root, ext = None, filename
+        root, ext = '', filename
     else:
         root, ext = os.path.splitext(filename)
     if ext == '.tmp':
@@ -2915,7 +2916,7 @@ def findAllValidLanguageDirectives(s: str) -> list:
 
 
 # @+node:ekr.20090214075058.8: *3* g.findAtTabWidthDirectives (must be fast)
-def findTabWidthDirectives(c: Cmdr, p: Position) -> str | None:
+def findTabWidthDirectives(c: Cmdr, p: Position) -> int | None:
     """Return the tab width in effect at position p."""
     if c is None:
         return None  # c may be None for testing.
@@ -3330,7 +3331,7 @@ def set_delims_from_language(language: str) -> tuple[str, str, str]:
 
 
 # @+node:ekr.20031218072017.1383: *3* g.set_delims_from_string
-def set_delims_from_string(s: str) -> tuple[str, str, str] | tuple[None, None, None]:
+def set_delims_from_string(s: str) -> tuple[str, str, str]:
     """
     Return (delim1, delim2, delim2), the delims following the @comment
     directive.
@@ -3366,12 +3367,12 @@ def set_delims_from_string(s: str) -> tuple[str, str, str] | tuple[None, None, N
                 # If used, whole delimiter must be encoded.
                 if len(delims[i]) == 3:
                     g.warning(f"'{delims[i]}' delimiter is invalid")
-                    return None, None, None
+                    return '', '', ''
                 try:
                     delims[i] = g.toUnicode(binascii.unhexlify(delims[i][3:]))
                 except Exception as e:
                     g.warning(f"'{delims[i]}' delimiter is invalid: {e}")
-                    return None, None, None
+                    return '', '', ''
             else:
                 # 7/8/02: The "REM hack": replace underscores by blanks.
                 # 9/25/02: The "perlpod hack": replace double underscores by newlines.
@@ -3380,9 +3381,7 @@ def set_delims_from_string(s: str) -> tuple[str, str, str] | tuple[None, None, N
 
 
 # @+node:ekr.20031218072017.1384: *3* g.set_language
-def set_language(
-    s: str, i: int, issue_errors_flag: bool = False
-) -> tuple[str, str, str, str] | tuple[None, None, None, None]:
+def set_language(s: str, i: int, issue_errors_flag: bool = False) -> tuple[str, str, str, str]:
     """Scan the @language directive that appears at s[i:].
 
     The @language may have been stripped away.
@@ -3405,7 +3404,7 @@ def set_language(
         return language, delim1, delim2, delim3
     if issue_errors_flag:
         g.es("ignoring:", g.get_line(s, i))
-    return None, None, None, None
+    return '', '', '', ''
 
 
 # @+node:ekr.20071109165315: *3* g.stripPathCruft
@@ -3478,7 +3477,7 @@ def computeStandardDirectories() -> str:
 
 
 # @+node:ekr.20031218072017.3117: *3* g.create_temp_file
-def create_temp_file(textMode: bool = False) -> tuple[IO, str]:
+def create_temp_file(textMode: bool = False) -> tuple[IO | None, str]:
     """
     Return a tuple (theFile,theFileName)
 
@@ -3582,7 +3581,7 @@ def getBaseDirectory(c: Cmdr) -> str:
 
 
 # @+node:ekr.20170223093758.1: *3* g.getEncodingAt (deprecated)
-def getEncodingAt(p: Position, b: bytes | None = None) -> str:
+def getEncodingAt(p: Position, b: bytes) -> str | None:
     """
     Return the encoding in effect at p and/or for string s.
 
@@ -3591,6 +3590,7 @@ def getEncodingAt(p: Position, b: bytes | None = None) -> str:
     """
     g.deprecated()
     # A BOM overrides everything.
+    e: bytes | str | None
     if b:
         e, junk_s = g.stripBOM(b)
         if e:
@@ -3665,7 +3665,7 @@ def is_binary_external_file(fileName: str) -> bool:
         return False
 
 
-def is_binary_string(s: str) -> bool:
+def is_binary_string(s: bytes | str) -> bool:
     # http://stackoverflow.com/questions/898669
     # aList is a list of all non-binary characters.
     aList = [7, 8, 9, 10, 12, 13, 27] + list(range(0x20, 0x100))
@@ -3736,7 +3736,7 @@ def readFile(file_name: str) -> str:
 
 
 # @+node:ekr.20150306035851.7: *3* g.readFileIntoEncodedString
-def readFileIntoEncodedString(fn: str, silent: bool = False) -> bytes:
+def readFileIntoEncodedString(fn: str, silent: bool = False) -> bytes | None:
     """Return the raw contents of the file whose full path is fn."""
     try:
         with open(fn, 'rb') as f:
@@ -3757,7 +3757,7 @@ def readFileIntoString(
     encoding: str = 'utf-8',  # BOM may override this.
     kind: str | None = None,  # @file, @edit, ...
     verbose: bool = True,
-) -> tuple[str, str] | tuple[None, None]:
+) -> tuple[str | None, str | None]:
     """
     Return the contents of the file whose full path is fileName.
 
@@ -3782,7 +3782,7 @@ def readFileIntoString(
             g.error('file not found:', fileName)
         return None, None
     try:
-        e = None
+        e: Any
         with open(fileName, 'rb') as f:
             bytes_s = f.read()
         # Fix #391.
@@ -4016,7 +4016,7 @@ def find_word(s: str, word: str, i: int = 0) -> int:
 
 
 # @+node:ekr.20211029090118.1: *3* g.findAncestorVnodeByPredicate
-def findAncestorVnodeByPredicate(p: Position, v_predicate: Callable | None) -> VNode | None:
+def findAncestorVnodeByPredicate(p: Position, v_predicate: Callable) -> VNode | None:
     """
     Return first ancestor vnode matching the predicate.
 
@@ -4818,7 +4818,11 @@ def execGitCommand(command: str, directory: str) -> list[str]:
             shlex.split(command), stdout=subprocess.PIPE, stderr=None, shell=True
         )
         out, err = proc.communicate()
-        lines = [g.toUnicode(z) for z in g.splitLines(out or '')]
+        lines: list[str]
+        if isinstance(out, str) and out:
+            lines = [g.toUnicode(z) for z in g.splitLines(out)]
+        else:
+            lines = []
     finally:
         os.chdir(old_dir)
     return lines
@@ -4867,7 +4871,7 @@ class GitIssueController:
     ) -> None:
         self.base_url = base_url
         self.root = root
-        self.milestone = None
+        self.milestone = ''
         if label_list:
             for state in ('closed', 'open'):
                 for label in label_list:
@@ -4892,7 +4896,7 @@ class GitIssueController:
         except Exception:
             g.trace('requests not found: `pip install requests`')
             return
-        label = None
+        label = ''
         assert state in ('open', 'closed')
         page_url = self.base_url + '?&state=%s&page=%s'
         page, total = 1, 0
@@ -4923,7 +4927,7 @@ class GitIssueController:
     def get_issues(
         self,
         base_url: str,
-        label_list: list,
+        label_list: list[str],
         milestone: str,
         root: Position,
         state: str,
@@ -5024,6 +5028,7 @@ def getGitVersion(directory: str | None = None) -> tuple[str, str, str]:
 
     # -n: Get only the last log.
     trace = 'git' in g.app.debug
+    s: bytes | str
     try:
         s = subprocess.check_output(
             'git log -n 1 --date=iso',
@@ -5105,7 +5110,7 @@ def gitCommitNumber(path: str | None = None) -> str:
 
 
 # @+node:maphew.20171112205129.1: *3* g.gitDescribe
-def gitDescribe(path: str | None = None) -> tuple[str, str, str]:
+def gitDescribe(path: str) -> tuple[str, str, str]:
     """
     Return the Git tag, distance-from-tag, and commit hash for the
     associated path. If path is None, use the leo-editor directory.
