@@ -1476,7 +1476,7 @@ class Optional_TestFiles(BaseTest):
         atok = asttokens.ASTTokens(contents, parse=True, filename=filename)
         t3 = get_time()
         # Create a patchable list of TestToken objects.
-        tokens = [TestToken(atok_name(z), atok_value(z)) for z in atok.tokens]  # type:ignore
+        tokens = [TestToken(atok_name(z), atok_value(z)) for z in atok.tokens]
         # Inject parent/child links into nodes.
         asttokens.util.visit_tree(atok.tree, previsit, postvisit)
         # Create token.token_list for each token.
