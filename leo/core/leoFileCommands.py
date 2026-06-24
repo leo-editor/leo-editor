@@ -592,7 +592,7 @@ class FastRead:
                     if uaDict:
                         v.unknownAttributes = uaDict
                     # Recursively create the children.
-                    v_element_visitor(v_dict.get('children', []), v)  # type:ignore
+                    v_element_visitor(v_dict.get('children', []), v)  # type:ignore # required.
 
         gnx = 'hidden-root-vnode-gnx'
         hidden_v = leoNodes.VNode(context=c, gnx=gnx)
