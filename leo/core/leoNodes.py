@@ -2026,7 +2026,7 @@ class Position:
         self.v.saveCursorAndScroll()
 
     # @+node:ekr.20040315034158: *4* p.setBodyString & setHeadString
-    def setBodyString(self, s: str) -> None:
+    def setBodyString(self, s: bytes | str) -> None:
         p = self
         return p.v.setBodyString(s)
 
@@ -2034,11 +2034,11 @@ class Position:
     setTnodeText = setBodyString
     scriptSetBodyString = setBodyString
 
-    def initHeadString(self, s: str) -> None:
+    def initHeadString(self, s: bytes | str) -> None:
         p = self
         p.v.initHeadString(s)
 
-    def setHeadString(self, s: str) -> None:
+    def setHeadString(self, s: bytes | str) -> None:
         p = self
         p.v.initHeadString(s)
         p.setDirty()
