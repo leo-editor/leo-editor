@@ -1265,7 +1265,7 @@ class LeoImportCommands:
         if s:
             p.b = p.b + g.toUnicode(s, self.encoding)
 
-    def setBodyString(self, p: Position, s: str) -> None:
+    def setBodyString(self, p: Position, s: bytes | str) -> None:
         """
         Similar to c.setBodyString, but does not recolor the text or
         redraw the screen.

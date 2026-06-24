@@ -2192,7 +2192,7 @@ class Commands:
         g.doHook("clear-mark", c=c, p=p)
 
     # @+node:ekr.20040305223522: *5* c.setBodyString
-    def setBodyString(self, p: Position, s: str) -> None:
+    def setBodyString(self, p: Position, s: bytes | str) -> None:
         """
         This is equivalent to p.b = s.
         """
