@@ -1405,17 +1405,17 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 return aList
 
             # @+node:ekr.20160213070235.4: *6* msf.scan_d
-            def scan_d(self, kind: str) -> dict[str, list[str]]:
+            def scan_d(self, kind: str) -> dict[str, str]:
                 """Return a dict created from an @data node of the given kind."""
                 c = self.c
                 aList = c.config.getData(kind, strip_comments=True, strip_data=True)
-                d: dict[str, list[str]] = {}
+                d: dict[str, str] = {}
                 if aList is None:
                     g.trace(f"warning: no @data {kind} node")
                 for s in aList or []:
                     # Split s into two strings.
                     name, value = s.split(':', 1)
-                    d[name.strip()] = value.strip()  # type:ignore
+                    d[name.strip()] = value.strip()
                 return d
 
             # @+node:ekr.20160213070235.5: *6* msf.scan_patterns
