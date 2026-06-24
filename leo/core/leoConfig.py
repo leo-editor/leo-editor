@@ -389,12 +389,11 @@ class ParserBaseClass:
             items = items_s.split(',')
             name = name[:i] + name[j + 1 :].strip()
             try:
-                items = [int(item.strip()) for item in items]  # type:ignore
+                int_items = [int(item.strip()) for item in items]
             except ValueError:
-                items = []
                 self.valueError(p, 'ints[]', name, val)
                 return
-            kind = f"ints[{','.join([str(item) for item in items])}]"
+            kind = f"ints[{','.join([str(z) for z in int_items])}]"
             try:
                 val = int(val)
             except ValueError:
