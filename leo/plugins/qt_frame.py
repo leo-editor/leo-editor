@@ -2819,7 +2819,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
     # @+node:ekr.20110605121601.18352: *5* LeoQtMenu.insert_cascade
     def insert_cascade(
         self,
-        parent: LeoQtFrame,
+        parent: QWidget,
         index: int,
         label: str,
         menu: QMenu,
@@ -2844,11 +2844,12 @@ class LeoQtMenu(leoMenu.LeoMenu):
     def new_menu(
         self, parent: QWidget, tearoff: int = 0, label: str = ''
     ) -> QtMenuWrapper:  # label is for debugging.
-        """Wrapper for the Tkinter new_menu menu method."""
-        c, leoFrame = self.c, self.frame
-        # Parent can be None, in which case it will be added to the menuBar.
-        menu = QtMenuWrapper(c, leoFrame, parent, label)
-        return menu
+        """
+        Wrapper for the Tkinter new_menu menu method.
+
+        Parent can be None, in which case it will be added to the menuBar.
+        """
+        return QtMenuWrapper(self.c, self.frame, parent, label)
 
     # @+node:ekr.20110605121601.18354: *4* LeoQtMenu.Methods with other spellings
     # @+node:ekr.20110605121601.18355: *5* LeoQtMenu.clearAccel
@@ -2881,7 +2882,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         menu = self.getMenu('openwith')
         if not menu:
             menu = self.new_menu(parent, tearoff=False, label=label)
-            menu.insert_cascade(parent, index, label, menu, underline=amp_index)  # type:ignore
+            menu.insert_cascade(parent, index, label, menu, underline=amp_index)
         return menu
 
     # @+node:ekr.20110605121601.18358: *5* LeoQtMenu.disable/enableMenu (not used)
