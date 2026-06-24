@@ -23,11 +23,14 @@ print(os.path.basename(__file__))
 leo_editor_dir = os.path.abspath(os.path.join(__file__, '..', '..', '..'))
 os.chdir(leo_editor_dir)
 
-args = ' '.join(sys.argv[1:])
+# args = ' '.join(sys.argv[1:])
 python = sys.executable
+files = 'leo/core/leoGlobals.py'
+
 if 1:  # Quick.
-    command = rf"{python} -m mypy leo"
+    args = '--follow-imports=skip'
 else:  # Safe.
-    command = rf"{python} -m mypy --no-incremental leo"
+    args = '--no-incremental'
+command = rf"{python} -m mypy {args} {files}"
 subprocess.Popen(command, shell=True).communicate()
 # @-leo
