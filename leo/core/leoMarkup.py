@@ -280,7 +280,7 @@ class MarkupCommands:
         kind: str,
         preview: bool,
         verbose: bool,
-    ) -> list[str]:
+    ) -> list[str] | None:
         def predicate(p: Position) -> str:
             return self.filename(p)
 

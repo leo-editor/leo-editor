@@ -310,7 +310,7 @@ commander_command = CommanderCommand
 
 
 # @+node:ekr.20150508164812.1: *3* g.ivars2instance
-def ivars2instance(c: Cmdr, g: LeoGlobals, ivars: list[str]) -> Any:
+def ivars2instance(c: Cmdr, g: LeoGlobals, ivars: list[str]) -> Any | None:
     """
     Return the instance of c given by ivars.
     ivars is a list of strings.
@@ -1240,7 +1240,7 @@ class MatchBrackets:
         right: int,
         max_right: int,
         expand: bool = False,
-    ) -> tuple[int | None, int | None, str | None, int | None]:
+    ) -> tuple[int, int, str, int] | tuple[None, None, None, None]:
         """
         Find the bracket nearest the cursor searching outwards left and right.
 
@@ -3327,7 +3327,7 @@ def set_delims_from_language(language: str) -> tuple[str, str, str]:
 
 
 # @+node:ekr.20031218072017.1383: *3* g.set_delims_from_string
-def set_delims_from_string(s: str) -> tuple[str, str, str]:
+def set_delims_from_string(s: str) -> tuple[str, str, str] | tuple[None, None, None]:
     """
     Return (delim1, delim2, delim2), the delims following the @comment
     directive.
@@ -3377,7 +3377,9 @@ def set_delims_from_string(s: str) -> tuple[str, str, str]:
 
 
 # @+node:ekr.20031218072017.1384: *3* g.set_language
-def set_language(s: str, i: int, issue_errors_flag: bool = False) -> tuple:
+def set_language(
+    s: str, i: int, issue_errors_flag: bool = False
+) -> tuple[str, str, str, str] | tuple[None, None, None, None]:
     """Scan the @language directive that appears at s[i:].
 
     The @language may have been stripped away.
@@ -3493,7 +3495,7 @@ def create_temp_file(textMode: bool = False) -> tuple[IO, str]:
 
 
 # @+node:ekr.20210307060731.1: *3* g.createHiddenCommander
-def createHiddenCommander(fn: str) -> Cmdr:
+def createHiddenCommander(fn: str) -> Cmdr | None:
     """Read the given outline into a hidden commander."""
     lm = g.app.loadManager
     if lm.isLeoFile(fn):
@@ -3748,7 +3750,7 @@ def readFileIntoString(
     encoding: str = 'utf-8',  # BOM may override this.
     kind: str = None,  # @file, @edit, ...
     verbose: bool = True,
-) -> tuple[str, str]:
+) -> tuple[str, str] | tuple[None, None]:
     """
     Return the contents of the file whose full path is fileName.
 
@@ -5214,7 +5216,7 @@ contentModifiedSet: set[VNode] = set()
 
 
 # @+node:ekr.20031218072017.1596: *3* g.doHook
-def doHook(tag: str, *args: Args, **kwargs: KWargs) -> Value:
+def doHook(tag: str, *args: Args, **kwargs: KWargs) -> Value | None:
     """
     This global function calls a hook routine. Hooks are identified by the
     tag param.
@@ -5324,7 +5326,7 @@ def enableIdleTimeHook(*args: Args, **kwargs: KWargs) -> None:
 
 
 # @+node:ekr.20140825042850.18410: *3* g.IdleTime
-def IdleTime(handler: Callable, delay: int = 500, tag: str = None) -> QtIdleTime:
+def IdleTime(handler: Callable, delay: int = 500, tag: str = None) -> QtIdleTime | None:
     """
     A thin wrapper for the LeoQtGui.IdleTime class.
 
@@ -5754,7 +5756,7 @@ def isWordChar1(ch: str) -> bool:
 
 
 # @+node:ekr.20130910044521.11304: *4* g.stripBOM
-def stripBOM(s_bytes: bytes) -> tuple[str, bytes]:
+def stripBOM(s_bytes: bytes) -> tuple[str | None, bytes]:
     """
     If there is a BOM, return (e,s2) where e is the encoding
     implied by the BOM and s2 is the s stripped of the BOM.
@@ -6870,7 +6872,7 @@ init_zodb_failed: dict[str, bool] = {}  # Keys are paths, values are True.
 init_zodb_db: dict[str, Value] = {}  # Keys are paths, values are ZODB.DB instances.
 
 
-def init_zodb(pathToZodbStorage: str, verbose: bool = True) -> Value:
+def init_zodb(pathToZodbStorage: str, verbose: bool = True) -> Value | None:
     """
     Return an ZODB.DB instance from the given path.
     return None on any error.
@@ -8627,7 +8629,7 @@ def getUNLFilePart(s: str) -> str:
 
 
 # @+node:ekr.20230630132340.1: *4* g.openUNLFile
-def openUNLFile(c: Cmdr, s: str) -> Cmdr:
+def openUNLFile(c: Cmdr, s: str) -> Cmdr | None:
     """
     Open the commander for filename s, the file part of an unl.
     Return None if the file can not be found.

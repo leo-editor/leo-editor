@@ -253,7 +253,7 @@ class ParserBaseClass:
         return 'skip'
 
     # @+node:ekr.20131114051702.16546: *5* pbc.getOutlineDataHelper
-    def getOutlineDataHelper(self, p: Position) -> str:
+    def getOutlineDataHelper(self, p: Position) -> str | None:
         c = self.c
         if not p:
             return None
@@ -314,7 +314,7 @@ class ParserBaseClass:
                 self.set(p, setKind, name, val)
 
     # @+node:ekr.20150426034813.1: *4* pbc.doIfEnv
-    def doIfEnv(self, p: Position, kind: str, name: str, val: Any) -> str:
+    def doIfEnv(self, p: Position, kind: str, name: str, val: Any) -> str | None:
         """
         Support @ifenv in @settings trees.
 
@@ -332,7 +332,7 @@ class ParserBaseClass:
         return 'skip'
 
     # @+node:dan.20080410121257.2: *4* pbc.doIfHostname
-    def doIfHostname(self, p: Position, kind: str, name: str, val: Any) -> str:
+    def doIfHostname(self, p: Position, kind: str, name: str, val: Any) -> str | None:
         """
         Support @ifhostname in @settings trees.
 
@@ -354,7 +354,7 @@ class ParserBaseClass:
         return None
 
     # @+node:ekr.20041120104215: *4* pbc.doIfPlatform
-    def doIfPlatform(self, p: Position, kind: str, name: str, val: Any) -> str:
+    def doIfPlatform(self, p: Position, kind: str, name: str, val: Any) -> str | None:
         """Support @ifplatform in @settings trees."""
         platform = sys.platform.lower()
         for s in name.split(','):
@@ -485,7 +485,7 @@ class ParserBaseClass:
                 self.dumpMenuTree(val, level + 1, path=path + '/' + name)
 
     # @+node:tbrown.20080514180046.8: *5* pbc.patchMenuTree
-    def patchMenuTree(self, orig: list[Any], targetPath: str, path: str = '') -> Any:
+    def patchMenuTree(self, orig: list[Any], targetPath: str, path: str = '') -> Any | None:
         kind: str
         val: Any
         val2: Any
@@ -849,7 +849,7 @@ class ParserBaseClass:
             d[tag] = val
 
     # @+node:ekr.20041120112043: *4* pbc.parseShortcutLine
-    def parseShortcutLine(self, kind: str, s: str) -> tuple[str, Any]:
+    def parseShortcutLine(self, kind: str, s: str) -> tuple[str | None, Any]:
         """Parse a shortcut line.  Valid forms:
 
         --> entry-command
@@ -1337,7 +1337,7 @@ class GlobalConfigManager:
                 yield key2, val, c, letter
 
     # @+node:ekr.20041123070429: *3* gcm.canonicalizeSettingName (munge)
-    def canonicalizeSettingName(self, name: str) -> str:
+    def canonicalizeSettingName(self, name: str) -> str | None:
         if name is None:
             return None
         name = name.lower()
@@ -1359,7 +1359,7 @@ class GlobalConfigManager:
         return False
 
     # @+node:ekr.20041117083141: *4* gcm.get & allies
-    def get(self, setting: str, kind: str) -> Any:
+    def get(self, setting: str, kind: str) -> Any | None:
         """Get the setting and make sure its type matches the expected type."""
         # It *is* valid to call this method: it returns the global settings.
         lm = g.app.loadManager
@@ -1377,7 +1377,7 @@ class GlobalConfigManager:
         setting: str,
         requestedType: str,
         warn: bool = True,
-    ) -> tuple[Any, bool]:
+    ) -> tuple[Any | None, bool]:
         """
         Look up the setting in d. If warn is True, warn if the requested type
         does not (loosely) match the actual type.
@@ -1487,7 +1487,7 @@ class GlobalConfigManager:
         return self.get(setting, "outlinedata")
 
     # @+node:ekr.20041117093009.1: *4* gcm.getDirectory
-    def getDirectory(self, setting: str) -> str:
+    def getDirectory(self, setting: str) -> str | None:
         """Return the value of @directory setting, or None if the directory does not exist."""
         # Fix https://bugs.launchpad.net/leo-editor/+bug/1173763
         theDir = self.get(setting, 'directory')
@@ -1501,7 +1501,7 @@ class GlobalConfigManager:
         return g.app.config.enabledPluginsString
 
     # @+node:ekr.20041117082135: *4* gcm.getFloat
-    def getFloat(self, setting: str) -> float:
+    def getFloat(self, setting: str) -> float | None:
         """Return the value of @float setting."""
         val = self.get(setting, "float")
         try:
@@ -1541,7 +1541,7 @@ class GlobalConfigManager:
         return g.app.gui.getFontFromParams(family, size, slant, weight)
 
     # @+node:ekr.20041117081513: *4* gcm.getInt
-    def getInt(self, setting: str) -> int:
+    def getInt(self, setting: str) -> int | None:
         """Return the value of @int setting."""
         val = self.get(setting, "int")
         try:
@@ -1594,7 +1594,7 @@ class GlobalConfigManager:
         return self.get(setting, "string")
 
     # @+node:ekr.20171115062202.1: *3* gcm.valueInMyLeoSettings
-    def valueInMyLeoSettings(self, settingName: str) -> Any:
+    def valueInMyLeoSettings(self, settingName: str) -> Any | None:
         """Return the value of the setting, if any, in myLeoSettings.leo."""
         lm = g.app.loadManager
         d = lm.globalSettingsDict
@@ -2271,7 +2271,7 @@ class SettingsTreeParser(ParserBaseClass):
     # @+others
     # @+node:ekr.20041119204103: *3* ctor (SettingsTreeParser)
     # @+node:ekr.20041119204714: *3* visitNode (SettingsTreeParser)
-    def visitNode(self, p: Position) -> str:
+    def visitNode(self, p: Position) -> str | None:
         """Init any settings found in node p."""
         p = p.copy()
         munge = g.app.config.munge

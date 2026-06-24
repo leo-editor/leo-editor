@@ -1135,7 +1135,7 @@ class FileCommands:
         return root
 
     # @+node:vitalije.20170630152841.1: *5* fc.retrieveVnodesFromDb & helpers
-    def retrieveVnodesFromDb(self, conn: Conn) -> VNode:
+    def retrieveVnodesFromDb(self, conn: Conn) -> VNode | None:
         """
         Recreates tree from the data contained in table vnodes.
 

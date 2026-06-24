@@ -333,7 +333,7 @@ class LeoPluginsController:
                 g.doHook("idle", c=c)
 
     # @+node:ekr.20100908125007.6017: *4* plugins.doHandlersForTag & helper
-    def doHandlersForTag(self, tag: str, keywords: Keywords) -> Value:
+    def doHandlersForTag(self, tag: str, keywords: Keywords) -> Value | None:
         """
         Execute all handlers for a given tag, in alphabetical order.
         The caller, doHook, catches all exceptions.
@@ -354,7 +354,7 @@ class LeoPluginsController:
         return None
 
     # @+node:ekr.20100908125007.6016: *5* plugins.callTagHandler
-    def callTagHandler(self, bunch: g.Bunch, tag: str, keywords: Keywords) -> Value:
+    def callTagHandler(self, bunch: g.Bunch, tag: str, keywords: Keywords) -> Value | None:
         """Call the event handler."""
         handler, moduleName = bunch.fn, bunch.moduleName
         # Make sure the new commander exists.
@@ -376,7 +376,7 @@ class LeoPluginsController:
         return result
 
     # @+node:ekr.20100908125007.6018: *4* plugins.doPlugins (g.app.hookFunction)
-    def doPlugins(self, tag: str, keywords: Keywords) -> Value:
+    def doPlugins(self, tag: str, keywords: Keywords) -> Value | None:
         """The default g.app.hookFunction."""
         if g.app.killed:
             return None
@@ -515,7 +515,7 @@ class LeoPluginsController:
     # @+node:ekr.20100908125007.6024: *4* plugins.loadOnePlugin & helper functions
     def loadOnePlugin(
         self, moduleOrFileName: str, tag: str = 'open0', verbose: bool = False
-    ) -> Any:
+    ) -> Any | None:
         """
         Load one plugin from a file name or module.
         Use extensive tracing if --trace-plugins is in effect.
@@ -556,7 +556,7 @@ class LeoPluginsController:
             return result
 
         # @+node:ekr.20180528162604.1: *5* function:finishImport
-        def finishImport(result: Value) -> Value:
+        def finishImport(result: Value) -> Value | None:
             """Handle last-minute checks."""
             if tag == 'unit-test-load':
                 return result  # Keep the result, but do no more.

@@ -1846,7 +1846,7 @@ class LoadManager:
         return [g.os_path_normslashes(z) for z in table if g.os_path_exists(z)]
 
     # @+node:ekr.20180318133620.1: *4* LM.computeThemeFilePath & helper
-    def computeThemeFilePath(self) -> str:
+    def computeThemeFilePath(self) -> str | None:
         """
         Return the absolute path to the theme .leo file, resolved using the search order for themes.
 
@@ -1861,7 +1861,7 @@ class LoadManager:
         trace = 'themes' in g.app.db
         lm = self
         resolve = self.resolve_theme_path
-        #
+
         # Step 1: Use the --theme command-line options if it exists
         path = resolve(lm.options.get('theme_path'), tag='--theme')
         if path:
@@ -1869,7 +1869,7 @@ class LoadManager:
             if trace:
                 g.trace('--theme:', path)
             return path
-        #
+
         # Step 2: look for the @string theme-name setting in the first loaded file.
         path = lm.files[0] if lm.files else ''
         if path and g.os_path_exists(path):
@@ -1891,7 +1891,7 @@ class LoadManager:
                         if trace:
                             g.trace("First loaded file", theme_c.shortFileName(), path)
                         return path
-        #
+
         # Step 3: use the @string theme-name setting in myLeoSettings.leo.
         # Note: the setting should *never* appear in leoSettings.leo!
         setting = lm.globalSettingsDict.get_string_setting('theme-name')
@@ -2013,7 +2013,7 @@ class LoadManager:
     # @+node:ekr.20120214165710.10726: *4* LM.createSettingsDicts
     def createSettingsDicts(
         self, c: Cmdr, localFlag: bool
-    ) -> tuple[g.SettingsDict, g.SettingsDict] | None:
+    ) -> tuple[g.SettingsDict, g.SettingsDict] | tuple[None, None]:
         from leo.core import leoConfig
 
         if c:
@@ -2447,7 +2447,7 @@ class LoadManager:
         return True
 
     # @+node:ekr.20131028155339.17098: *5* LM.openWorkBook
-    def openWorkBook(self) -> Cmdr:
+    def openWorkBook(self) -> Cmdr | None:
         """
         Open or create a new workbook.
 
@@ -3241,7 +3241,7 @@ class LoadManager:
         c.initialFocusHelper()
 
     # @+node:ekr.20120223062418.10408: *5* LM.openExternalFile
-    def openExternalFile(self, fn: str, gui: LeoGui | None, old_c: Cmdr | None) -> Cmdr:
+    def openExternalFile(self, fn: str, gui: LeoGui | None, old_c: Cmdr | None) -> Cmdr | None:
         """
         Create a wrapper commander (in a new tab) for the given external file.
 
@@ -3354,7 +3354,7 @@ class LoadManager:
         return c
 
     # @+node:ekr.20231124134846.1: *5* LM.openExistingLeoFile & helper
-    def openExistingLeoFile(self, fn: str, gui: LeoGui | None, old_c: Cmdr | None) -> Cmdr:
+    def openExistingLeoFile(self, fn: str, gui: LeoGui | None, old_c: Cmdr | None) -> Cmdr | None:
         """
         Create a commander for an existing .leo, .db, or .leojs file.
         """

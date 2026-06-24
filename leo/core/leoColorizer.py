@@ -1005,7 +1005,7 @@ class JEditColorizer(BaseColorizer):
 
         # @+<< function: resolve_color_key >>
         # @+node:ekr.20230314052558.1: *6* << function: resolve_color_key >>
-        def resolve_color_key(key: str) -> str:
+        def resolve_color_key(key: str) -> str | None:
             """
             Resolve the given color name to a *valid* color.
             """

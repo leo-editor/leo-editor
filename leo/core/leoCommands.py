@@ -809,7 +809,7 @@ class Commands:
         # @+node:tom.20241014154415.7: *5* get_external_maps
         MAP_SETTING_NODE = "run-external-processor-map"
 
-        def get_external_maps() -> tuple[dict, dict, str]:
+        def get_external_maps() -> tuple[dict, dict, str] | tuple[None, None, str]:
             # @+<< get_external_maps: docstring >>
             # @+node:tom.20241014154415.8: *6* << get_external_maps: docstring >>
             r"""Return processor, extension maps for @data node.

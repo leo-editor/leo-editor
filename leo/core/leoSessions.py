@@ -83,7 +83,7 @@ class SessionManager:
             g.openWithFileName(fn, gui=g.app.gui, old_c=c)
 
     # @+node:ekr.20120420054855.14248: *3* SessionManager.load_snapshot
-    def load_snapshot(self) -> list[str]:
+    def load_snapshot(self) -> list[str] | None:
         """
         Load a snapshot of a session from the leo.session file.
 

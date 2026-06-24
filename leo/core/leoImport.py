@@ -588,7 +588,7 @@ class LeoImportCommands:
         ext: str = None,
         s: str = None,
         treeType: str = '@file',
-    ) -> Position:
+    ) -> Position | None:
         """
         Create an outline by importing a file, reading the file with the
         given encoding if string s is None.
@@ -656,7 +656,7 @@ class LeoImportCommands:
         return p
 
     # @+node:ekr.20140724175458.18052: *5* ic.init_import
-    def init_import(self, ext: str, fileName: str, s: str) -> tuple[str, str]:
+    def init_import(self, ext: str, fileName: str, s: str) -> tuple[str, str] | tuple[None, None]:
         """
         Init ivars imports and read the file into s.
         Return ext, s.
@@ -1506,7 +1506,7 @@ class MindMapImporter:
         return -1
 
     # @+node:ekr.20160503130810.5: *4* mindmap.csv_string
-    def csv_string(self, row: list[str]) -> str:
+    def csv_string(self, row: list[str]) -> str | None:
         """Return the string for the given csv row."""
         count = 0
         while count <= len(row):
@@ -1592,7 +1592,7 @@ class MORE_Importer:
         return None
 
     # @+node:ekr.20031218072017.3215: *3* MORE.import_lines
-    def import_lines(self, strings: list[str], first_p: Position) -> Position:
+    def import_lines(self, strings: list[str], first_p: Position) -> Position | None:
         c = self.c
         if not strings:
             return None
@@ -2450,7 +2450,7 @@ class ZimImportController:
         self.zimNodeName = c.config.getString('zim-node-name') or 'Imported Zim Tree'
 
     # @+node:ekr.20141210051628.28: *3* zic.parseZimIndex
-    def parseZimIndex(self) -> list[tuple[int, str, list[str]]]:
+    def parseZimIndex(self) -> list[tuple[int, str, list[str]]] | None:
         """
         Parse Zim wiki index.rst and return a list of tuples (level, name, path) or None.
         """
@@ -2588,7 +2588,7 @@ class LegacyExternalFileImporter:
             print('orphan line: ', repr(line))
 
     # @+node:ekr.20200424160847.1: *3* legacy.compute_delim1
-    def compute_delim1(self, path: str) -> str:
+    def compute_delim1(self, path: str) -> str | None:
         """Return the opening comment delim for the given file."""
         junk, ext = os.path.splitext(path)
         if not ext:

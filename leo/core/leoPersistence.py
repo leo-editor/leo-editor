@@ -82,7 +82,7 @@ class PersistenceDataController:
             c.redraw()
 
     # @+node:ekr.20140711111623.17804: *4* pd.update_before_write_foreign_file & helpers
-    def update_before_write_foreign_file(self, root: Position) -> Position:
+    def update_before_write_foreign_file(self, root: Position) -> Position | None:
         """
         Update the @data node for root, a foreign node.
         Create @gnxs nodes and @uas trees as needed.
@@ -253,7 +253,7 @@ class PersistenceDataController:
     # @+node:ekr.20140711111623.17854: *4* pd.find...
     # The find commands create the node if not found.
     # @+node:ekr.20140711111623.17856: *5* pd.find_at_data_node & helper
-    def find_at_data_node(self, root: Position) -> Position:
+    def find_at_data_node(self, root: Position) -> Position | None:
         """
         Return the @data node for root, a foreign node.
         Create the node if it does not exist.
@@ -272,7 +272,7 @@ class PersistenceDataController:
         return p
 
     # @+node:ekr.20140711111623.17857: *5* pd.find_at_gnxs_node
-    def find_at_gnxs_node(self, root: Position) -> Position:
+    def find_at_gnxs_node(self, root: Position) -> Position | None:
         """
         Find the @gnxs node for root, a foreign node.
         Create the @gnxs node if it does not exist.
@@ -527,7 +527,7 @@ class PersistenceDataController:
             return ''
 
     # @+node:ekr.20140713135856.17744: *5* pd.unpickle
-    def unpickle(self, s: str) -> Value:  # An actual uA.
+    def unpickle(self, s: str) -> Value | None:  # An actual uA.
         """Unhexlify and unpickle string s into p."""
         try:
             # Throws TypeError if s is not a hex string.

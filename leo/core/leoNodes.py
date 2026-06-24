@@ -153,7 +153,7 @@ class NodeIndices:
             v.fileIndex = ni.getNewIndex(v)
 
     # @+node:ekr.20031218072017.1997: *3* ni.scanGnx
-    def scanGnx(self, s: str) -> tuple[str, str, str]:
+    def scanGnx(self, s: str) -> tuple[str, str, str] | tuple[None, None, None]:
         """Create a gnx from its string representation."""
         if not isinstance(s, str):  # pragma: no cover
             g.error("scanGnx: unexpected index type:", type(s), '', s)
@@ -345,7 +345,7 @@ class Position:
     __repr__ = __str__
 
     # @+node:ekr.20230726063237.1: *4* p.archive
-    def archive(self) -> dict[str, Value]:
+    def archive(self) -> dict[str, Value] | None:
         """Return a json-like archival dictionary for p/v.unarchive."""
         p = self
         c = p.v.context
@@ -914,7 +914,7 @@ class Position:
         except Exception:  # pragma: no cover
             g.trace('*** Unexpected exception')
             g.es_exception()
-            return None
+            return False
 
     def hasParent(self) -> bool:
         p = self
@@ -1286,7 +1286,7 @@ class Position:
         return p
 
     # @+node:ekr.20080416161551.212: *4* p._parentVnode
-    def _parentVnode(self) -> VNode:
+    def _parentVnode(self) -> VNode | None:
         """
         Return the parent VNode.
         Return the hiddenRootNode if there is no other parent.
@@ -1540,7 +1540,7 @@ class Position:
         return True, None
 
     # @+node:ekr.20080416161551.211: *4* p.moveToVisNext & helper
-    def moveToVisNext(self, c: Cmdr) -> Position:
+    def moveToVisNext(self, c: Cmdr) -> Position | None:
         """Move a position to the position of the next visible node."""
         p = self
         limit, limitIsVisible = c.visLimit()
