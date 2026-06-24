@@ -1357,7 +1357,7 @@ class QScintillaWrapper(QTextMixin):
     def set_config(self) -> None:
         """Set QScintillaWrapper configuration options."""
         c, w = self.c, self.widget
-        n = c.config.getInt('qt-scintilla-zoom-in')  # type:ignore
+        n = c.config.getInt('qt-scintilla-zoom-in')
         if n not in (None, 1, 0):
             w.zoomIn(n)
         w.setUtf8(True)  # Important.
