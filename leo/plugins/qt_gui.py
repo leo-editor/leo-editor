@@ -644,7 +644,7 @@ class LeoQtGui(leoGui.LeoGui):
     def createFindDialog(self, c: Cmdr) -> QDialog | None:
         """Create and init a non-modal Find dialog."""
         if not c:
-            return None
+            return None  # #4753
         g.app.globalFindTabManager = c.findCommands.ftm
         top = c.frame.top
         w = top.findTab

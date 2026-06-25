@@ -2747,7 +2747,7 @@ def printGcObjects() -> int:
     print(f"{count:7} objects...")
     # Invert the dict.
     d2: dict[int, str] = {v: k for k, v in d.items()}
-    for key2 in reversed(sorted(d2.keys())):
+    for key2 in reversed(sorted(d2.keys())):  # #4753
         val2 = d2.get(key2)
         print(f"{key2:7} {val2}")
     lastObjectCount = count
@@ -3365,7 +3365,7 @@ def set_delims_from_string(s: str) -> tuple[str, str, str] | tuple[None, None, N
                     g.warning(f"'{delims[i]}' delimiter is invalid")
                     return None, None, None
                 try:
-                    delims[i] = g.toUnicode(binascii.unhexlify(delims[i][3:]))
+                    delims[i] = g.toUnicode(binascii.unhexlify(delims[i][3:]))  # #4753
                 except Exception as e:
                     g.warning(f"'{delims[i]}' delimiter is invalid: {e}")
                     return None, None, None
@@ -3945,7 +3945,7 @@ def splitLongFileName(fn: str, limit: int = 40) -> str:
 def writeFile(contents: bytes | str, encoding: str, fileName: str) -> bool:
     """Create a file with the given contents."""
     try:
-        bytes_contents = (
+        bytes_contents = (  # #4753
             contents if isinstance(contents, bytes)
             else g.toEncodedString(contents, encoding=encoding)
         )  # fmt: skip
@@ -5808,10 +5808,9 @@ def toEncodedString(s: bytes | str, encoding: str = 'utf-8', reportErrors: bool 
     try:
         return s.encode(encoding, "strict")
     except UnicodeError:
-        s2 = s.encode(encoding, "replace")
-        if reportErrors:
-            g.error(f"Error converting {s2!r} from unicode to {encoding} encoding")
-        return s2
+        if reportErrors:  # #4753.
+            g.error(f"Error converting {s!r} from unicode to {encoding} encoding")
+        return s.encode(encoding, "replace")
 
 
 # @+node:ekr.20050208093800.1: *4* g.toUnicode

@@ -141,7 +141,7 @@ def createPluginsMenu(tag: str, keywords: KWargs) -> None:
     pc = g.app.pluginsController
     lmd = pc.loadedModules
     if not lmd:
-        return
+        return  # #4753
 
     impModSpecList = list(lmd.keys())
 
