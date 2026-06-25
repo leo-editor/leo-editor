@@ -39,10 +39,10 @@ class ChapterController:
         # Note: chapter names never change, even if their @chapter node changes.
         self.chaptersDict: dict[str, Chapter] = {}  # Keys are chapter names, values are chapters.
         self.initing = True  # #31: True: suppress undo when creating chapters.
-        self.re_chapter: re.Pattern = None  # Set where used.
-        self.selectedChapter: Chapter = None
+        self.re_chapter: re.Pattern | None = None  # Set where used.
+        self.selectedChapter: Chapter | None = None
         self.selectChapterLockout = False  # True: cc.selectChapterForPosition does nothing.
-        self.tt: LeoQtTreeTab = None  # May be set in createChaptersIcon.
+        self.tt: LeoQtTreeTab | None = None  # May be set in createChaptersIcon.
         self.reloadSettings()
 
     def reloadSettings(self) -> None:

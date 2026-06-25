@@ -3747,7 +3747,7 @@ class QScintillaColorizer(BaseColorizer):
         color: str
         style: str
         if aList:
-            for z in [s.split(',') for s in aList]:
+            for z in [s.split(',') for s in aList]:  # #4753
                 if len(z) == 2:
                     color, style = z  # type:ignore
                     table.append((color.strip(), style.strip()))

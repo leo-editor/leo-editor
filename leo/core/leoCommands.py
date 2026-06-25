@@ -4165,7 +4165,7 @@ class Commands:
                     'The following were not written because of errors:\n',
                     '\n'.join(sorted(set(c.orphan_at_file_nodes))),
                     '',
-                    'Warning: changes to these files will be lost',
+                    'Warning: changes to these files will be lost\n',
                     'unless you can save the files successfully.',
                 ]
             )

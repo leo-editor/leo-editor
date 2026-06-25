@@ -1222,7 +1222,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     if word in ivars:
                         # replace word by self.word
                         word = "self." + word
-                        body[i:j] = list(word)
+                        body[i:j] = list(word)  # #4753
                         delta = len(word) - (j - i)
                         i = j + delta
                     else:

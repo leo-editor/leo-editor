@@ -148,8 +148,8 @@ class LeoApp:
         self.start_fullscreen = False  # For qt_frame plugin.
         self.start_maximized = False  # For qt_frame plugin.
         self.start_minimized = False  # For qt_frame plugin.
-        self.trace_binding: str = None  # The name of a binding to trace, or None.
-        self.trace_setting: str = None  # The name of a setting to trace, or None.
+        self.trace_binding: str | None = None  # The name of a binding to trace, or None.
+        self.trace_setting: str | None = None  # The name of a setting to trace, or None.
         self.translateToUpperCase = False  # Never set to True.
         self.use_splash_screen = True  # True: put up a splash screen.
 
@@ -161,7 +161,7 @@ class LeoApp:
         self.disableSave = False  # May be set by plugins.
         self.idle_timers: list[IdleTime] = []  # A list of IdleTime instances, so they persist.
         # The external process created by the 'listen-for-log' command.
-        self.log_listener: Popen = None
+        self.log_listener: Popen | None = None
         self.positions = 0  # The number of positions generated.
         self.scanErrors = 0  # The number of errors seen by g.scanError.
         self.statsDict: dict[str, Value] = {}  # dict used by g.stat, g.clear_stats, g.print_stats.
@@ -210,17 +210,17 @@ class LeoApp:
         self.config: GlobalConfigManager = None  # g.app.config.
         # A global db, managed by g.app.global_cacher.
         self.db: dict | SqlitePickleShare | g.NullObject = None
-        self.externalFilesController: ExternalFilesController = None
-        self.global_cacher: dict | GlobalCacher | g.NullObject = None
-        self.idleTimeManager: IdleTimeManager = None
+        self.externalFilesController: ExternalFilesController | None = None
+        self.global_cacher: dict | GlobalCacher | g.NullObject | None = None
+        self.idleTimeManager: IdleTimeManager | None = None
         self.jupytextManager: JupytextManager = None
-        self.loadManager: LoadManager = None
-        self.nodeIndices: NodeIndices = None
-        self.pluginsController: LeoPluginsController = None
-        self.sessionManager: SessionManager = None
+        self.loadManager: LoadManager | None = None
+        self.nodeIndices: NodeIndices | None = None
+        self.pluginsController: LeoPluginsController | None = None
+        self.sessionManager: SessionManager | None = None
 
         # Global status vars for the Commands class...
-        self.commandName: str = None  # The name of the command being executed.
+        self.commandName: str | None = None  # The name of the command being executed.
         self.commandInterruptFlag = False  # True: command within a command.
         # @-<< LeoApp: global controller/manager objects >>
         # @+<< LeoApp: global importer/reader/writer data >>

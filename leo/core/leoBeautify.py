@@ -286,11 +286,11 @@ class CPrettyPrinter:
         tokens = self.tokenize(p.b)
         s = ''.join(tokens)
         assert s == p.b
-        new_tokens = self.add_statement_braces(s, tokens, giveWarnings=giveWarnings)
+        new_tokens = self.add_statement_braces(s, tokens, giveWarnings=giveWarnings)  # #4753
         self.bracketLevel = 0
         self.parens = 0
         self.result = []
-        for s in new_tokens:
+        for s in new_tokens:  # #4753
             self.put_token(s)
         return self.result if toList else ''.join(self.result)
 
@@ -308,7 +308,7 @@ class CPrettyPrinter:
 
         i = 0
         result: list[str] = []
-        for token in tokens:
+        for token in tokens:  # #4753
             progress = i
             if token in ('if', 'for', 'while'):
                 j = self.skip_ws_and_comments(s, i + 1)

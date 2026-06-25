@@ -389,7 +389,7 @@ class ParserBaseClass:
             items = items_s.split(',')
             name = name[:i] + name[j + 1 :].strip()
             try:
-                int_items = [int(item.strip()) for item in items]
+                int_items = [int(item.strip()) for item in items]  # #4753
             except ValueError:
                 self.valueError(p, 'ints[]', name, val)
                 return

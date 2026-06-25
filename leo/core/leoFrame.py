@@ -1459,7 +1459,7 @@ class NullLog(LeoLog):
         nodeLink: str = None,
     ) -> None:
         if self.enabled and not g.unitTesting:
-            g.pr(g.toUnicode(s), newline=False)
+            g.pr(g.toUnicode(s), newline=False)  # #4753
 
     def putnl(self, tabName: str = 'Log') -> None:
         if self.enabled and not g.unitTesting:
