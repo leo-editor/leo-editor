@@ -3331,7 +3331,7 @@ def set_delims_from_language(language: str) -> tuple[str, str, str]:
 
 
 # @+node:ekr.20031218072017.1383: *3* g.set_delims_from_string
-def set_delims_from_string(s: str) -> tuple[str, str, str] | tuple[None, None, None]:
+def set_delims_from_string(s: str) -> tuple[str, str, str]:
     """
     Return (delim1, delim2, delim2), the delims following the @comment
     directive.
@@ -3381,9 +3381,7 @@ def set_delims_from_string(s: str) -> tuple[str, str, str] | tuple[None, None, N
 
 
 # @+node:ekr.20031218072017.1384: *3* g.set_language
-def set_language(
-    s: str, i: int, issue_errors_flag: bool = False
-) -> tuple[str, str, str, str] | tuple[None, None, None, None]:
+def set_language(s: str, i: int, issue_errors_flag: bool = False) -> tuple[str, str, str, str]:
     """Scan the @language directive that appears at s[i:].
 
     The @language may have been stripped away.
@@ -3640,7 +3638,7 @@ def init_dialog_folder(c: Cmdr, p: Position, use_at_path: bool = True) -> str:
             dir_ = g.os_path_dirname(path)
             if dir_ and g.os_path_exists(dir_):
                 return dir_
-    table = (
+    table: tuple = (
         c.last_dir if c else None,
         g.os_path_abspath(os.curdir),
     )
@@ -4019,7 +4017,7 @@ def find_word(s: str, word: str, i: int = 0) -> int:
 
 
 # @+node:ekr.20211029090118.1: *3* g.findAncestorVnodeByPredicate
-def findAncestorVnodeByPredicate(p: Position, v_predicate: Callable | None) -> VNode | None:
+def findAncestorVnodeByPredicate(p: Position, v_predicate: Callable) -> VNode | None:
     """
     Return first ancestor vnode matching the predicate.
 
@@ -5820,9 +5818,10 @@ def toEncodedString(s: bytes | str, encoding: str = 'utf-8', reportErrors: bool 
     try:
         return s.encode(encoding, "strict")
     except UnicodeError:
-         if reportErrors:  # #4753.
+        if reportErrors:  # #4753.
             g.error(f"Error converting {s!r} from unicode to {encoding} encoding")
         return s.encode(encoding, "replace")
+
 
 # @+node:ekr.20050208093800.1: *4* g.toUnicode
 def toUnicode(s: bytes | str, encoding: str | None = None, reportErrors: bool = False) -> str:
@@ -7478,6 +7477,7 @@ def execute_shell_commands(
         proc = subprocess.Popen(command, shell=shell)
         if wait:
             proc.communicate()
+
 
 # @+node:ekr.20050503112513.7: *3* g.executeFile
 def executeFile(filename: str, options: str = '') -> None:
