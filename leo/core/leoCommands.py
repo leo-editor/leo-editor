@@ -15,7 +15,7 @@ import tabnanny
 import tempfile
 import time
 import tokenize
-from typing import Any, Generator, Iterable, Optional, Sequence, TYPE_CHECKING
+from typing import Any, Generator, Iterable, Sequence, TYPE_CHECKING
 import xml.etree.ElementTree as ElementTree
 
 from leo.core import leoGlobals as g
@@ -119,8 +119,8 @@ class Commands:
         t1 = time.process_time()
         c = self
         # Official ivars.
-        self._currentPosition: Optional[Position] = None
-        self._topPosition: Optional[Position] = None
+        self._currentPosition: Position | None = None
+        self._topPosition: Position | None = None
         self.command_count = 0
         self.frame: Widget = None
         self.parentFrame: Widget = parentFrame  # New in Leo 6.0.
@@ -227,7 +227,7 @@ class Commands:
         self.commandsDict: dict[str, Any] = {}  # Keys: command names, values: various.
         self.disableCommandsMessage = ''  # The presence of this message disables all commands.
         # One of three places that g.doHook looks for hook functions.
-        self.hookFunction: Optional[Callable] = None
+        self.hookFunction: Callable | None = None
         self.ignoreChangedPaths = False  # True: disable path changed message in at.WriteAllHelper.
         self.inCommand = False  # Interlocks to prevent premature closing of a window.
         self.outlineToNowebDefaultFileName: str = "noweb.nw"  # For Outline To Noweb dialog.
@@ -236,7 +236,7 @@ class Commands:
         self.hoistStack: list[g.Bunch] = []  # Stack of g.Bunches to be root of drawn tree.
         # For outline navigation.
         self.navPrefix: str = ''  # Must always be a string.
-        self.navTime: Optional[float] = None
+        self.navTime: float | None = None
         self.recent_commands_list: list[str] = []  # List of command names.
 
     # @+node:ekr.20120217070122.10466: *5* c.initDebugIvars
@@ -252,7 +252,7 @@ class Commands:
         self.expansionLevel = 0  # The expansion level of this outline.
         self.expansionNode = None  # The last node we expanded or contracted.
         self.nodeConflictList: list[Position] = []  # List of nodes with conflicting read-time data.
-        self.nodeConflictFileName: Optional[str] = None  # The fileName for c.nodeConflictList.
+        self.nodeConflictFileName: str = None  # The fileName for c.nodeConflictList.
         # Non-persistent dictionary for free use by scripts and plugins.
         self.user_dict: dict[str, Value] = {}
 
@@ -276,14 +276,13 @@ class Commands:
     def initFileIvars(self, fileName: str, relativeFileName: str) -> None:
         """Init file-related ivars of the commander."""
         self.changed = False  # True: the outline has changed since the last save.
-        self.ignored_at_file_nodes: list[Position] = []  # List of nodes for c.raise_error_dialogs.
-        self.import_error_nodes: list[Position] = []  # List of nodes for c.raise_error_dialogs.
+        self.ignored_at_file_nodes: list[str] = []  # List of headlines for c.raise_error_dialogs.
         self.last_dir: str = None  # The last used directory.
         # Do _not_ use os_path_norm: it converts an empty path to '.' (!!)
         self.mFileName: str = fileName or ''
         self.mRelativeFileName = relativeFileName or ''
         # List of orphaned nodes for c.raise_error_dialogs.
-        self.orphan_at_file_nodes: list[Position] = []
+        self.orphan_at_file_nodes: list[str] = []
 
     # @+node:ekr.20120217070122.10470: *5* c.initObjects
     def initObjects(self, gui: LeoGui) -> None:
@@ -660,7 +659,7 @@ class Commands:
         """
         c, p, tag = self, self.p, 'execute-general-script'
 
-        def get_setting_for_language(setting: str) -> Optional[str]:
+        def get_setting_for_language(setting: str) -> str | None:
             """
             Return the setting from the given @data setting.
             The first colon ends each key.
@@ -810,7 +809,7 @@ class Commands:
         # @+node:tom.20241014154415.7: *5* get_external_maps
         MAP_SETTING_NODE = "run-external-processor-map"
 
-        def get_external_maps() -> tuple[dict, dict, str]:
+        def get_external_maps() -> tuple[dict, dict, str] | tuple[None, None, str]:
             # @+<< get_external_maps: docstring >>
             # @+node:tom.20241014154415.8: *6* << get_external_maps: docstring >>
             r"""Return processor, extension maps for @data node.
@@ -1651,7 +1650,7 @@ class Commands:
     # @+node:ekr.20171123135625.29: *5* c.getBodyLines
     def getBodyLines(
         self,
-    ) -> tuple[str, list[str], str, Optional[tuple], Optional[tuple]]:
+    ) -> tuple[str, list[str], str, tuple | None, tuple | None]:
         """
         Return (head, lines, tail, oldSel, oldYview).
 
@@ -1757,7 +1756,7 @@ class Commands:
 
         # Passes 3 & 4: Use the file extension in @<file> nodes.
 
-        def get_language_from_headline(v: VNode) -> Optional[str]:
+        def get_language_from_headline(v: VNode) -> str | None:
             """Return the extension for @<file> nodes."""
             if v.isAnyAtFileNode():
                 name = v.anyAtFileNodeName()
@@ -1853,14 +1852,14 @@ class Commands:
     # https://en.wikipedia.org/wiki/Filename
     at_path_pattern = re.compile(r'^@path\s+(.+)$', re.MULTILINE)
 
-    def getPathFromNode(self, p: Position) -> Optional[str]:
+    def getPathFromNode(self, p: Position) -> str | None:
         """
         Scan p.h then p.b for @path directives.
         """
         c = self
         c.scanAtPathDirectivesCount += 1  # An important statistic.
 
-        def get_path(m: re.Match) -> Optional[str]:
+        def get_path(m: re.Match) -> str | None:
             return g.stripPathCruft(m.group(1)) if m else None
 
         # The headline has higher precedence because it is more visible.
@@ -2028,7 +2027,7 @@ class Commands:
     # @+node:ekr.20040803140033.2: *5* c.rootPosition
     _rootCount = 0
 
-    def rootPosition(self) -> Optional[Position]:
+    def rootPosition(self) -> Position | None:
         """Return a new *copy* of the root position or None."""
         c = self
         if c.hiddenRootNode.children:
@@ -2193,7 +2192,7 @@ class Commands:
         g.doHook("clear-mark", c=c, p=p)
 
     # @+node:ekr.20040305223522: *5* c.setBodyString
-    def setBodyString(self, p: Position, s: str) -> None:
+    def setBodyString(self, p: Position, s: bytes | str) -> None:
         """
         This is equivalent to p.b = s.
         """
@@ -2310,7 +2309,7 @@ class Commands:
         # c.setRootPosition()
 
     # @+node:ekr.20040311173238: *5* c.topPosition & c.setTopPosition
-    def topPosition(self) -> Optional[Position]:
+    def topPosition(self) -> Position | None:
         """Return the root position."""
         c = self
         if c._topPosition:
@@ -3082,7 +3081,7 @@ class Commands:
         default_language = c.getLanguage(p) or c.target_language or 'python'
         default_delims = g.set_delims_from_language(default_language)
         wrap = c.config.getBool("body-pane-wraps")
-        table = (  # type:ignore
+        table: tuple = (
             ('encoding',    None,           g.scanAtEncodingDirectives),
             ('lang-dict',   {},             g.scanAtCommentAndAtLanguageDirectives),
             ('lineending',  None,           g.scanAtLineendingDirectives),
@@ -3620,7 +3619,7 @@ class Commands:
         prefix: str = None,
         silent: bool = False,
         useTimeStamp: bool = True,
-    ) -> Optional[str]:
+    ) -> str | None:
         """
         Back up given fileName or c.fileName().
         If useTimeStamp is True, append a timestamp to the filename.
@@ -4112,7 +4111,6 @@ class Commands:
     def init_error_dialogs(self) -> None:
         c = self
         g.app.syntax_error_files = []
-        c.import_error_nodes = []
         c.ignored_at_file_nodes = []
         c.orphan_at_file_nodes = []
 
@@ -4138,27 +4136,14 @@ class Commands:
             return
         # Issue one or two dialogs or messages.
         saved_body = c.rootPosition().b  # Save the root's body. The dialog destroys it!
-        if c.import_error_nodes or c.ignored_at_file_nodes or c.orphan_at_file_nodes:
+        if c.ignored_at_file_nodes or c.orphan_at_file_nodes:
             g.app.gui.dismiss_splash_screen()
         else:
             # #1007: Exit now, so we don't have to restore c.rootPosition().b.
             c.init_error_dialogs()
             return
-        if c.import_error_nodes:
-            files = '\n'.join(sorted(set(c.import_error_nodes)))  # type:ignore
-            if files not in self.warnings_dict:
-                self.warnings_dict[files] = True
-                import_message1 = 'The following were not imported properly.'
-                import_message2 = f"Inserted @ignore in...\n{files}"
-                g.es_print(import_message1, color='red')
-                g.es_print(import_message2)
-                if use_dialogs:
-                    import_dialog_message = f"{import_message1}\n{import_message2}"
-                    g.app.gui.runAskOkDialog(
-                        c, message=import_dialog_message, title='Import errors'
-                    )
         if c.ignored_at_file_nodes:
-            files = '\n'.join(sorted(set(c.ignored_at_file_nodes)))  # type:ignore
+            files = '\n'.join(sorted(set(c.ignored_at_file_nodes)))
             if files not in self.warnings_dict:
                 self.warnings_dict[files] = True
                 kind_s = 'read' if kind == 'read' else 'written'
@@ -4178,9 +4163,10 @@ class Commands:
             message = '\n'.join(
                 [
                     'The following were not written because of errors:\n',
-                    '\n'.join(sorted(set(c.orphan_at_file_nodes))),  # type:ignore
+                    '\n'.join(sorted(set(c.orphan_at_file_nodes))),
                     '',
-                    'Warning: changes to these files will be lost\nunless you can save the files successfully.',
+                    'Warning: changes to these files will be lost\n',
+                    'unless you can save the files successfully.',
                 ]
             )
             g.app.gui.runAskOkDialog(c, message=message, title='Not Written')
@@ -4229,7 +4215,7 @@ class Commands:
         c.updateSyntaxColorer(p)  # Dragging can change syntax coloring.
 
     # @+node:ekr.20031218072017.2353: *5* c.dragAfter
-    def dragAfter(self, p: Position, after: Optional[Position]) -> None:
+    def dragAfter(self, p: Position, after: Position | None) -> None:
         c, p, u = self, self.p, self.undoer
         if not c.checkDrag(p, after):
             return

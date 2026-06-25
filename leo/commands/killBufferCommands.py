@@ -6,7 +6,7 @@
 # @+node:ekr.20150514050411.1: ** << killBufferCommands imports & annotations >>
 from __future__ import annotations
 from collections.abc import Callable
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass
 
@@ -122,7 +122,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         g.app.globalKillBuffer = []
 
     # @+node:ekr.20150514063305.415: *3* getClipboard
-    def getClipboard(self) -> Optional[str]:
+    def getClipboard(self) -> str | None:
         """Return the contents of the clipboard."""
         try:
             ctxt = g.app.gui.getTextFromClipboard()

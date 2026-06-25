@@ -6,7 +6,7 @@
 # @+node:ekr.20220827065126.1: ** << gotoCommands imports & annotations >>
 from __future__ import annotations
 import re
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -97,7 +97,7 @@ class GoToCommands:
         return None, -1
 
     # @+node:ekr.20160921210529.1: *3* goto.find_node_start & helper
-    def find_node_start(self, p: Position, s: str = None) -> Optional[int]:
+    def find_node_start(self, p: Position, s: str = None) -> int | None:
         """
         Helper for show-file-line command.
 
@@ -147,7 +147,7 @@ class GoToCommands:
         delims: tuple[str, str, str],  # The comment delims.
         contents: list[str],  # The contents of the file *including* sentinels.
         target_i: int,  # The line number of the target line.
-    ) -> Optional[int]:
+    ) -> int | None:
         """
         Return the number of hidden sentinels preceding contents[target_i].
         """
@@ -357,7 +357,7 @@ class GoToCommands:
         p = self.find_gnx2(gnx)
         return p, bool(p)
 
-    def find_gnx2(self, gnx: str) -> Optional[Position]:
+    def find_gnx2(self, gnx: str) -> Position | None:
         """
         Scan the outline for a node with the given gnx and vnodeName.
 

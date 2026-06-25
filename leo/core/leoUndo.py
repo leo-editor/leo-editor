@@ -200,7 +200,7 @@ class Undoer:
         return '<no top bead>'
 
     # @+node:EKR.20040526150818: *4* u.getBead
-    def getBead(self, n: int) -> g.Bunch:
+    def getBead(self, n: int) -> g.Bunch | None:
         """Set Undoer ivars from the bunch at the top of the undo stack."""
         u = self
         if n < 0 or n >= len(u.beads):
@@ -212,7 +212,7 @@ class Undoer:
         return bunch
 
     # @+node:EKR.20040526150818.1: *4* u.peekBead
-    def peekBead(self, n: int) -> g.Bunch:
+    def peekBead(self, n: int) -> g.Bunch | None:
         u = self
         if n < 0 or n >= len(u.beads):
             return None

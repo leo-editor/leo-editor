@@ -5,7 +5,7 @@
 from __future__ import annotations
 import re
 import textwrap
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING
 import leo.core.leoGlobals as g
 from leo.plugins.importers.base_importer import Block, Importer
 
@@ -285,7 +285,7 @@ class Python_Importer(Importer):
                     child.h = f"function: {child.h[4:].strip()}"
 
     # @+node:ekr.20230825164231.1: *4* python_i.find_docstring
-    def find_docstring(self, p: Position) -> Optional[str]:
+    def find_docstring(self, p: Position) -> str | None:
         """Creating a regex that returns a docstring is too tricky."""
         delims = ('"""', "'''")
         s_strip = p.b.strip()

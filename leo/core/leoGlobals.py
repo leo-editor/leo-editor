@@ -2751,7 +2751,7 @@ def printGcObjects() -> int:
     print(f"{count:7} objects...")
     # Invert the dict.
     d2: dict[int, str] = {v: k for k, v in d.items()}
-    for key2 in reversed(sorted(d2.keys())):
+    for key2 in reversed(sorted(d2.keys())):  # #4753
         val2 = d2.get(key2)
         print(f"{key2:7} {val2}")
     lastObjectCount = count
@@ -3331,7 +3331,7 @@ def set_delims_from_language(language: str) -> tuple[str, str, str]:
 
 
 # @+node:ekr.20031218072017.1383: *3* g.set_delims_from_string
-def set_delims_from_string(s: str) -> tuple[str, str, str]:
+def set_delims_from_string(s: str) -> tuple[str, str, str] | tuple[None, None, None]:
     """
     Return (delim1, delim2, delim2), the delims following the @comment
     directive.
@@ -3369,7 +3369,7 @@ def set_delims_from_string(s: str) -> tuple[str, str, str]:
                     g.warning(f"'{delims[i]}' delimiter is invalid")
                     return '', '', ''
                 try:
-                    delims[i] = g.toUnicode(binascii.unhexlify(delims[i][3:]))
+                    delims[i] = g.toUnicode(binascii.unhexlify(delims[i][3:]))  # #4753
                 except Exception as e:
                     g.warning(f"'{delims[i]}' delimiter is invalid: {e}")
                     return '', '', ''
@@ -3381,7 +3381,9 @@ def set_delims_from_string(s: str) -> tuple[str, str, str]:
 
 
 # @+node:ekr.20031218072017.1384: *3* g.set_language
-def set_language(s: str, i: int, issue_errors_flag: bool = False) -> tuple[str, str, str, str]:
+def set_language(
+    s: str, i: int, issue_errors_flag: bool = False
+) -> tuple[str, str, str, str] | tuple[None, None, None, None]:
     """Scan the @language directive that appears at s[i:].
 
     The @language may have been stripped away.
@@ -3758,6 +3760,7 @@ def readFileIntoString(
     kind: str | None = None,  # @file, @edit, ...
     verbose: bool = True,
 ) -> tuple[str | None, str | None]:
+    ### ) -> tuple[str, str] | tuple[None, None]:
     """
     Return the contents of the file whose full path is fileName.
 
@@ -3952,7 +3955,7 @@ def splitLongFileName(fn: str, limit: int = 40) -> str:
 def writeFile(contents: bytes | str, encoding: str, fileName: str) -> bool:
     """Create a file with the given contents."""
     try:
-        bytes_contents = (
+        bytes_contents = (  # #4753
             contents if isinstance(contents, bytes)
             else g.toEncodedString(contents, encoding=encoding)
         )  # fmt: skip
@@ -4016,7 +4019,7 @@ def find_word(s: str, word: str, i: int = 0) -> int:
 
 
 # @+node:ekr.20211029090118.1: *3* g.findAncestorVnodeByPredicate
-def findAncestorVnodeByPredicate(p: Position, v_predicate: Callable) -> VNode | None:
+def findAncestorVnodeByPredicate(p: Position, v_predicate: Callable | None) -> VNode | None:
     """
     Return first ancestor vnode matching the predicate.
 
@@ -5817,11 +5820,9 @@ def toEncodedString(s: bytes | str, encoding: str = 'utf-8', reportErrors: bool 
     try:
         return s.encode(encoding, "strict")
     except UnicodeError:
-        s2 = s.encode(encoding, "replace")
-        if reportErrors:
-            g.error(f"Error converting {s2!r} from unicode to {encoding} encoding")
-        return s2
-
+         if reportErrors:  # #4753.
+            g.error(f"Error converting {s!r} from unicode to {encoding} encoding")
+        return s.encode(encoding, "replace")
 
 # @+node:ekr.20050208093800.1: *4* g.toUnicode
 def toUnicode(s: bytes | str, encoding: str | None = None, reportErrors: bool = False) -> str:
@@ -5844,6 +5845,7 @@ def toUnicode(s: bytes | str, encoding: str | None = None, reportErrors: bool = 
     except (UnicodeDecodeError, UnicodeError):
         # https://wiki.python.org/moin/UnicodeDecodeError
         s = s.decode(encoding, 'replace')
+        ###
         if g.unitTesting:
             g.trace(f"{tag} unicode error. encoding: {encoding!r} len(s): {len(s)}")
             g.trace(g.callers())
@@ -7476,7 +7478,6 @@ def execute_shell_commands(
         proc = subprocess.Popen(command, shell=shell)
         if wait:
             proc.communicate()
-
 
 # @+node:ekr.20050503112513.7: *3* g.executeFile
 def executeFile(filename: str, options: str = '') -> None:

@@ -696,11 +696,11 @@ class LeoMenu:
         pass
 
     def insert_cascade(
-        self, parent: Widget, index: int, label: str, menu: QtMenuWrapper, underline: int
+        self, parent: Any, index: int, label: str, menu: QtMenuWrapper, underline: int
     ) -> Widget:
         pass
 
-    def new_menu(self, parent: Widget, tearoff: int = 0, label: str = '') -> QtMenuWrapper:
+    def new_menu(self, Any: Widget, tearoff: int = 0, label: str = '') -> QtMenuWrapper:
         pass
 
     # @+node:ekr.20031218072017.3810: *4* LeoMenu.9 Routines with new spellings

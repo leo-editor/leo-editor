@@ -1459,11 +1459,7 @@ class NullLog(LeoLog):
         nodeLink: str = None,
     ) -> None:
         if self.enabled and not g.unitTesting:
-            try:
-                g.pr(s, newline=False)
-            except UnicodeError:
-                s = s.encode('ascii', 'replace')  # type:ignore
-                g.pr(s, newline=False)
+            g.pr(g.toUnicode(s), newline=False)  # #4753
 
     def putnl(self, tabName: str = 'Log') -> None:
         if self.enabled and not g.unitTesting:

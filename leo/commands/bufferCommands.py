@@ -6,7 +6,7 @@
 # @+node:ekr.20150514045750.1: ** << bufferCommands imports & annotations >>
 from __future__ import annotations
 from collections.abc import Callable
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass
 
@@ -220,7 +220,7 @@ class BufferCommandsClass(BaseEditCommandsClass):
             self.names[h] = nameList
 
     # @+node:ekr.20150514045829.16: *4* findBuffer
-    def findBuffer(self, name: str) -> Optional[Position]:
+    def findBuffer(self, name: str) -> Position | None:
         v = self.vnodes.get(name)
         for p in self.c.all_unique_positions():
             if p.v == v:

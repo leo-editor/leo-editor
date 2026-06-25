@@ -10,7 +10,7 @@ import pathlib
 import re
 import sys
 import time
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 # Third-party imports.
 try:
@@ -114,7 +114,7 @@ def find_long_lines(event: LeoKeyEvent) -> None:
 
     # @+others # helper functions
     # @+node:ekr.20190609135639.1: *4* function: get_root
-    def get_root(p: Position) -> Optional[Position]:
+    def get_root(p: Position) -> Position | None:
         """Return True if p is any @<file> node."""
         for parent in p.self_and_parents():
             if parent.anyAtFileNodeName():
@@ -640,7 +640,7 @@ class PylintCommand:
 
     # @+others
     # @+node:ekr.20150514125218.11: *3* 1. pylint.run
-    def run(self, root: Position, *, last_path: str = None) -> Optional[tuple[str, Position]]:
+    def run(self, root: Position, *, last_path: str = None) -> tuple[str, Position] | None:
         """Run Pylint on all Python @<file> nodes in root's tree."""
         c = self.c
         if not lint:
@@ -686,7 +686,7 @@ class PylintCommand:
         return data[-1] if data and is_at_file else None
 
     # @+node:ekr.20150514125218.10: *3* 3. pylint.get_rc_file
-    def get_rc_file(self) -> Optional[str]:
+    def get_rc_file(self) -> str | None:
         """Return the path to the pylint configuration file."""
         c = self.c
         base1 = '.pylintrc'  # Standard name.
@@ -719,7 +719,7 @@ class PylintCommand:
         return None
 
     # @+node:ekr.20150514125218.9: *3* 4. pylint.get_fn
-    def get_fn(self, p: Position) -> Optional[str]:
+    def get_fn(self, p: Position) -> str | None:
         """
         Finalize p's file name.
         Return if p is not an @file node for a python file.

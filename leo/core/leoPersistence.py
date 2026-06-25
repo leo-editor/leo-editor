@@ -7,7 +7,7 @@
 from __future__ import annotations
 import binascii
 import pickle
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -82,7 +82,7 @@ class PersistenceDataController:
             c.redraw()
 
     # @+node:ekr.20140711111623.17804: *4* pd.update_before_write_foreign_file & helpers
-    def update_before_write_foreign_file(self, root: Position) -> Position:
+    def update_before_write_foreign_file(self, root: Position) -> Position | None:
         """
         Update the @data node for root, a foreign node.
         Create @gnxs nodes and @uas trees as needed.
@@ -253,7 +253,7 @@ class PersistenceDataController:
     # @+node:ekr.20140711111623.17854: *4* pd.find...
     # The find commands create the node if not found.
     # @+node:ekr.20140711111623.17856: *5* pd.find_at_data_node & helper
-    def find_at_data_node(self, root: Position) -> Position:
+    def find_at_data_node(self, root: Position) -> Position | None:
         """
         Return the @data node for root, a foreign node.
         Create the node if it does not exist.
@@ -272,7 +272,7 @@ class PersistenceDataController:
         return p
 
     # @+node:ekr.20140711111623.17857: *5* pd.find_at_gnxs_node
-    def find_at_gnxs_node(self, root: Position) -> Position:
+    def find_at_gnxs_node(self, root: Position) -> Position | None:
         """
         Find the @gnxs node for root, a foreign node.
         Create the @gnxs node if it does not exist.
@@ -311,7 +311,7 @@ class PersistenceDataController:
         return p
 
     # @+node:ekr.20140711111623.17891: *5* pd.find_at_uas_node
-    def find_at_uas_node(self, root: Position) -> Optional[Position]:
+    def find_at_uas_node(self, root: Position) -> Position | None:
         """
         Find the @uas node for root, a foreign node.
         Create the @uas node if it does not exist.
@@ -341,7 +341,7 @@ class PersistenceDataController:
         return self.find_exact_match(root, unl_list)
 
     # @+node:ekr.20140716021139.17764: *6* pd.find_best_match
-    def find_best_match(self, root: Position, unl_list: list[str]) -> Optional[Position]:
+    def find_best_match(self, root: Position, unl_list: list[str]) -> Position | None:
         """Find the best partial matches of the tail in root's tree."""
         tail = unl_list[-1]
         matches = []
@@ -389,7 +389,7 @@ class PersistenceDataController:
         return parent
 
     # @+node:ekr.20140711111623.17862: *5* pd.find_representative_node
-    def find_representative_node(self, root: Position, target: Position) -> Optional[Position]:
+    def find_representative_node(self, root: Position, target: Position) -> Position | None:
         """
         root is a foreign node. target is a gnxs node within root's tree.
 
@@ -425,7 +425,7 @@ class PersistenceDataController:
         return None
 
     # @+node:ekr.20140712105818.16751: *4* pd.foreign_file_name
-    def foreign_file_name(self, p: Position) -> Optional[str]:
+    def foreign_file_name(self, p: Position) -> str | None:
         """Return the file name for p, a foreign file node."""
         for tag in ('@auto', '@org-mode', '@vim-outline'):
             if g.match_word(p.h, 0, tag):
@@ -435,7 +435,7 @@ class PersistenceDataController:
     # @+node:ekr.20140711111623.17864: *4* pd.has...
     # The has commands return None if the node does not exist.
     # @+node:ekr.20140711111623.17865: *5* pd.has_at_data_node
-    def has_at_data_node(self, root: Position) -> Optional[Position]:
+    def has_at_data_node(self, root: Position) -> Position | None:
         """
         Return the @data node corresponding to root, a foreign node.
         Return None if no such node exists.
@@ -454,7 +454,7 @@ class PersistenceDataController:
         return None
 
     # @+node:ekr.20140711111623.17890: *5* pd.has_at_gnxs_node
-    def has_at_gnxs_node(self, root: Position) -> Optional[Position]:
+    def has_at_gnxs_node(self, root: Position) -> Position | None:
         """
         Find the @gnxs node for an @data node with the given unl.
         Return None if it does not exist.
@@ -465,7 +465,7 @@ class PersistenceDataController:
         return None
 
     # @+node:ekr.20140711111623.17894: *5* pd.has_at_uas_node
-    def has_at_uas_node(self, root: Position) -> Optional[Position]:
+    def has_at_uas_node(self, root: Position) -> Position | None:
         """
         Find the @uas node for an @data node with the given unl.
         Return None if it does not exist.
@@ -476,7 +476,7 @@ class PersistenceDataController:
         return None
 
     # @+node:ekr.20140711111623.17869: *5* pd.has_at_persistence_node
-    def has_at_persistence_node(self) -> Optional[Position]:
+    def has_at_persistence_node(self) -> Position | None:
         """Return the @persistence node or None if it does not exist."""
         return g.findNodeAnywhere(self.c, '@persistence')
 
@@ -527,7 +527,7 @@ class PersistenceDataController:
             return ''
 
     # @+node:ekr.20140713135856.17744: *5* pd.unpickle
-    def unpickle(self, s: str) -> Value:  # An actual uA.
+    def unpickle(self, s: str) -> Value | None:  # An actual uA.
         """Unhexlify and unpickle string s into p."""
         try:
             # Throws TypeError if s is not a hex string.

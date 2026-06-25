@@ -73,8 +73,8 @@ def _compare_asts(node1, node2):  # pragma: no cover
     # Compare the nodes themselves.
     _compare_nodes(node1, node2)
     # Get the list of fields.
-    fields1 = getattr(node1, "_fields", [])  # type:ignore
-    fields2 = getattr(node2, "_fields", [])  # type:ignore
+    fields1 = getattr(node1, "_fields", [])
+    fields2 = getattr(node2, "_fields", [])
     if fields1 != fields2:
         raise AstNotEqual(f"node1._fields: {fields1}\nnode2._fields: {fields2}")
     # Recursively compare each field.
@@ -1421,7 +1421,7 @@ class Optional_TestFiles(BaseTest):
         # @+node:ekr.20200124024159.3: *5* function: atok_name
         def atok_name(token):
             """Return a good looking name for the given 5-tuple"""
-            return token_module.tok_name[token[0]].lower()  # type:ignore
+            return token_module.tok_name[token[0]].lower()
 
         # @+node:ekr.20200124024159.4: *5* function: atok_value
         def atok_value(token):
@@ -1448,7 +1448,7 @@ class Optional_TestFiles(BaseTest):
             if stack:
                 parent = stack[-1]
                 children: list[ast.AST] = getattr(parent, 'children', [])
-                parent.children = children + [node]  # type:ignore
+                parent.children = children + [node]
                 node.parent = parent
             else:
                 node.parent = None
@@ -1476,7 +1476,7 @@ class Optional_TestFiles(BaseTest):
         atok = asttokens.ASTTokens(contents, parse=True, filename=filename)
         t3 = get_time()
         # Create a patchable list of TestToken objects.
-        tokens = [TestToken(atok_name(z), atok_value(z)) for z in atok.tokens]  # type:ignore
+        tokens = [TestToken(atok_name(z), atok_value(z)) for z in atok.tokens]
         # Inject parent/child links into nodes.
         asttokens.util.visit_tree(atok.tree, previsit, postvisit)
         # Create token.token_list for each token.
@@ -1857,7 +1857,7 @@ class TestTokens(BaseTest):
         # @+node:ekr.20200122170101.1: *5* function: atok_name
         def atok_name(token):
             """Return a good looking name for the given 5-tuple"""
-            return token_module.tok_name[token[0]].lower()  # type:ignore
+            return token_module.tok_name[token[0]].lower()
 
         # @+node:ekr.20200122170101.2: *5* function: atok_value
         def atok_value(token):
@@ -1884,7 +1884,7 @@ class TestTokens(BaseTest):
             if stack:
                 parent = stack[-1]
                 children: list[ast.AST] = getattr(parent, 'children', [])
-                parent.children = children + [node]  # type:ignore
+                parent.children = children + [node]
                 node.parent = parent
             else:
                 node.parent = None

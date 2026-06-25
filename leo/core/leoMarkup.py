@@ -11,7 +11,7 @@ from shutil import which
 import os
 import re
 import time
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING
 import leo.core.leoGlobals as g
 
 # Abbreviation.
@@ -22,7 +22,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position
 
-    File_List = Optional[list[str]]
+    File_List = list[str] | None
 # @-<< leoMarkup: imports & annotations >>
 # @+<< leoMarkup: cached functions >>
 # @+node:ekr.20260421071144.1: ** << leoMarkup: cached functions >>
@@ -30,22 +30,22 @@ if TYPE_CHECKING:  # pragma: no cover
 
 # PR #4615: Defer calls to `which` until needed.
 @functools.cache
-def _asciidoctor_exec() -> Optional[str]:
+def _asciidoctor_exec() -> str | None:
     return which('asciidoctor')
 
 
 @functools.cache
-def _asciidoc3_exec() -> Optional[str]:
+def _asciidoc3_exec() -> str | None:
     return which('asciidoc3')
 
 
 @functools.cache
-def _pandoc_exec() -> Optional[str]:
+def _pandoc_exec() -> str | None:
     return which('pandoc')
 
 
 @functools.cache
-def _sphinx_build() -> Optional[str]:
+def _sphinx_build() -> str | None:
     return which('sphinx-build')
 
 
@@ -280,7 +280,7 @@ class MarkupCommands:
         kind: str,
         preview: bool,
         verbose: bool,
-    ) -> list[str]:
+    ) -> list[str] | None:
         def predicate(p: Position) -> str:
             return self.filename(p)
 
@@ -342,7 +342,7 @@ class MarkupCommands:
     # @+node:ekr.20190515084219.1: *4* markup.filename
     adoc_pattern = re.compile(r'^@(adoc|asciidoctor)')
 
-    def filename(self, p: Position) -> Optional[str]:
+    def filename(self, p: Position) -> str | None:
         """Return the filename of the @adoc, @pandoc or @sphinx node, or None."""
         kind = self.kind
         h = p.h.rstrip()

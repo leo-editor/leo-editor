@@ -283,19 +283,21 @@ class CPrettyPrinter:
         if not p.b:
             return [] if toList else ''  # #2271
         self.p = p.copy()
-        aList = self.tokenize(p.b)
-        assert ''.join(aList) == p.b
-        ### This type mismatch looks serious. Tests needed!
-        aList = self.add_statement_braces(aList, giveWarnings=giveWarnings)  # type:ignore
+        tokens = self.tokenize(p.b)
+        s = ''.join(tokens)
+        assert s == p.b
+        new_tokens = self.add_statement_braces(s, tokens, giveWarnings=giveWarnings)  # #4753
         self.bracketLevel = 0
         self.parens = 0
         self.result = []
-        for s in aList:
+        for s in new_tokens:  # #4753
             self.put_token(s)
         return self.result if toList else ''.join(self.result)
 
     # @+node:ekr.20110918225821.6815: *4* cpp.add_statement_braces
-    def add_statement_braces(self, s: str, giveWarnings: bool = False) -> list[str]:
+    def add_statement_braces(
+        self, s: str, tokens: list[str], giveWarnings: bool = False
+    ) -> list[str]:
         p = self.p
 
         def oops(message: str, i: int, j: int) -> None:
@@ -304,10 +306,9 @@ class CPrettyPrinter:
                 g.error('** changed ', p.h)
                 g.es_print(f'{message} after\n{repr("".join(s[i:j]))}')
 
-        i, n = 0, len(s)
+        i = 0
         result: list[str] = []
-        while i < n:
-            token = s[i]
+        for token in tokens:  # #4753
             progress = i
             if token in ('if', 'for', 'while'):
                 j = self.skip_ws_and_comments(s, i + 1)

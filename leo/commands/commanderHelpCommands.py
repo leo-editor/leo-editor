@@ -8,7 +8,7 @@ from __future__ import annotations
 import os
 import sys
 import time
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -158,7 +158,7 @@ def openLeoDist(self: Self, event: LeoKeyEvent = None) -> None:
 # @+node:ekr.20151225193723.1: *3* c_help.openLeoPy
 @g.commander_command('open-leo-py-leo')
 @g.commander_command('leo-py-leo')
-def openLeoPy(self: Self, event: LeoKeyEvent = None) -> Optional[Cmdr]:
+def openLeoPy(self: Self, event: LeoKeyEvent = None) -> Cmdr | None:
     """Open leoPy.leo or LeoPyRef.leo in a new Leo window."""
     c = self
     names = (
@@ -179,7 +179,7 @@ def openLeoPy(self: Self, event: LeoKeyEvent = None) -> Optional[Cmdr]:
 # @+node:ekr.20201013105418.1: *3* c_help.openLeoPyRef
 @g.commander_command('open-leo-py-ref-leo')
 @g.commander_command('leo-py-ref-leo')
-def openLeoPyRef(self: Self, event: LeoKeyEvent = None) -> Optional[Cmdr]:
+def openLeoPyRef(self: Self, event: LeoKeyEvent = None) -> Cmdr | None:
     """Open leoPyRef.leo in a new Leo window."""
     c = self
     path = g.finalize_join(g.app.loadDir, "..", "core", "LeoPyRef.leo")
@@ -209,7 +209,7 @@ def openLeoScripts(self: Self, event: LeoKeyEvent = None) -> None:
 @g.commander_command('open-leo-settings')
 @g.commander_command('open-leo-settings-leo')  # #1343.
 @g.commander_command('leo-settings')
-def openLeoSettings(self: Self, event: LeoKeyEvent = None) -> Optional[Cmdr]:
+def openLeoSettings(self: Self, event: LeoKeyEvent = None) -> Cmdr | None:
     """Open leoSettings.leo in a new Leo window."""
     c, lm = self, g.app.loadManager
     path = lm.computeLeoSettingsPath()
@@ -234,7 +234,7 @@ def openMyLeoSettings(self: Self, event: LeoKeyEvent = None) -> Cmdr:
 
 
 # @+node:ekr.20141119161908.2: *4* function: c_help.createMyLeoSettings
-def createMyLeoSettings(c: Cmdr) -> Optional[Cmdr]:
+def createMyLeoSettings(c: Cmdr) -> Cmdr | None:
     """createMyLeoSettings - Return true if myLeoSettings.leo created ok"""
     name = "myLeoSettings.leo"
     homeLeoDir = g.app.homeLeoDir
