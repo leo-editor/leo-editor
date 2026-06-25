@@ -267,7 +267,7 @@ class Position:
         return not self.__eq__(p2)
 
     # @+node:ekr.20080416161551.190: *4*  p.__init__
-    def __init__(self, v: VNode, childIndex: int = 0, stack: list = None) -> None:
+    def __init__(self, v: VNode, childIndex: int = 0, stack: list | None = None) -> None:
         """Create a new position with the given childIndex and parent stack."""
         self._childIndex = childIndex
         self.v = v
@@ -1283,7 +1283,7 @@ class Position:
         return p
 
     # @+node:ekr.20080416161551.212: *4* p._parentVnode
-    def _parentVnode(self) -> VNode | None:
+    def _parentVnode(self) -> VNode:
         """
         Return the parent VNode.
         Return the hiddenRootNode if there is no other parent.
