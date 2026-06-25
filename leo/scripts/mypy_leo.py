@@ -25,12 +25,21 @@ os.chdir(leo_editor_dir)
 
 # args = ' '.join(sys.argv[1:])
 python = sys.executable
-files = 'leo/core/leoGlobals.py'
-
-if 1:  # Quick.
-    args = '--follow-imports=skip'
-else:  # Safe.
-    args = '--no-incremental'
+if 0:
+    # Test all files
+    args = ''
+    files = 'leo'
+else:
+    files = 'leo/core/leoAtFile.py'  # 64 errors.
+    # fail
+    # files = 'leo/core'  # 1363 errors
+    # pass
+    # 'leo/core/leoNodes.py'
+    #'leo/core/leoGlobals.py'
+    if 1:  # For testing one file.
+        args = '--follow-imports=skip'
+    else:  # Safe.
+        args = '--no-incremental'
 command = rf"{python} -m mypy {args} {files}"
 subprocess.Popen(command, shell=True).communicate()
 # @-leo
