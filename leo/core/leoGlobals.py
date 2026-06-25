@@ -4818,11 +4818,7 @@ def execGitCommand(command: str, directory: str) -> list[str]:
             shlex.split(command), stdout=subprocess.PIPE, stderr=None, shell=True
         )
         out, err = proc.communicate()
-        lines: list[str]
-        if isinstance(out, str) and out:
-            lines = [g.toUnicode(z) for z in g.splitLines(out)]
-        else:
-            lines = []
+        lines = [g.toUnicode(z) for z in g.splitLines(out or '')]
     finally:
         os.chdir(old_dir)
     return lines
