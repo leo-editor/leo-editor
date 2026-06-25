@@ -8232,7 +8232,7 @@ def handleUnl(unl_s: str, c: Cmdr) -> Cmdr | None:
 
 
 # @+node:tbrown.20090219095555.63: *3* g.handleUrl & helpers
-def handleUrl(url: str, c: Cmdr | None = None, p: Position | None = None) -> str | None:
+def handleUrl(url: str, c: Cmdr | None = None, p: Position | None = None) -> None:
     """Open a url or a unl."""
     if c and not p:
         p = c.p
@@ -8249,14 +8249,13 @@ def handleUrl(url: str, c: Cmdr | None = None, p: Position | None = None) -> str
         urll.startswith(('#', 'unl://', 'unl:gnx:')) or
         urll.startswith('file://') and '-->' in urll
     ):  # fmt: skip
-        return g.handleUnl(url, c)
+        g.handleUnl(url, c)
+        return
     try:
         g.handleUrlHelper(url, c, p)
-        return urll  # For unit tests.
     except Exception:
         g.es_print("g.handleUrl: exception opening", repr(url))
         g.es_exception()
-        return None
 
 
 # @+node:ekr.20170226054459.1: *4* g.handleUrlHelper
