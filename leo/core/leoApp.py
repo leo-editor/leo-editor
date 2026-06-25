@@ -292,7 +292,7 @@ class LeoApp:
         # @+<< LeoApp: plugins and event handlers >>
         # @+node:ekr.20161028040229.1: *5* << LeoApp: plugins and event handlers >>
         self.hookError = False  # True: suppress further calls to hooks.
-        self.hookFunction = None  # Application wide hook function.
+        self.hookFunction: Callable | None = None  # Application wide hook function.
         self.idle_time_hooks_enabled = True  # True: idle-time hooks are enabled.
         # @-<< LeoApp: plugins and event handlers >>
         # @+<< LeoApp: scripting ivars >>

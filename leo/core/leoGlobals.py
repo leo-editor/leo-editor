@@ -3472,8 +3472,8 @@ def computeMachineName() -> str:
     return g.app.loadManager.computeMachineName()
 
 
-def computeStandardDirectories() -> str:
-    return g.app.loadManager.computeStandardDirectories()
+def computeStandardDirectories() -> None:
+    g.app.loadManager.computeStandardDirectories()
 
 
 # @+node:ekr.20031218072017.3117: *3* g.create_temp_file
@@ -3639,7 +3639,7 @@ def init_dialog_folder(c: Cmdr, p: Position, use_at_path: bool = True) -> str:
             if dir_ and g.os_path_exists(dir_):
                 return dir_
     table = (
-        c and c.last_dir,
+        c.last_dir if c else None,
         g.os_path_abspath(os.curdir),
     )
     for dir_ in table:
@@ -4818,7 +4818,7 @@ def execGitCommand(command: str, directory: str) -> list[str]:
             shlex.split(command), stdout=subprocess.PIPE, stderr=None, shell=True
         )
         out, err = proc.communicate()
-        lines = [g.toUnicode(z) for z in g.splitLines(out or '')]
+        lines = [g.toUnicode(z) for z in g.splitLines(out or '')]  # type:ignore # Don't change this!
     finally:
         os.chdir(old_dir)
     return lines
@@ -5253,7 +5253,6 @@ def doHook(tag: str, *args: Args, **kwargs: KWargs) -> Value | None:
         return None
     # Get the hook handler function.  Usually this is doPlugins.
     c = kwargs.get("c")
-    # pylint: disable=consider-using-ternary
     f = (c and c.hookFunction) or g.app.hookFunction
     if not f:
         g.app.hookFunction = f = g.app.pluginsController.doPlugins
@@ -5276,29 +5275,29 @@ def loadOnePlugin(pluginName: str, verbose: bool = False) -> ModuleType:
     return pc.loadOnePlugin(pluginName, verbose=verbose)
 
 
-def registerExclusiveHandler(tags: Tags, fn: str) -> ModuleType:
+def registerExclusiveHandler(tags: Tags, fn: Callable) -> None:
     pc = g.app.pluginsController
-    return pc.registerExclusiveHandler(tags, fn)
+    pc.registerExclusiveHandler(tags, fn)
 
 
-def registerHandler(tags: Tags, fn: Callable) -> ModuleType:
+def registerHandler(tags: Tags, fn: Callable) -> None:
     pc = g.app.pluginsController
-    return pc.registerHandler(tags, fn)
+    pc.registerHandler(tags, fn)
 
 
-def plugin_signon(module_name: str, verbose: bool = False) -> ModuleType:
+def plugin_signon(module_name: str, verbose: bool = False) -> None:
     pc = g.app.pluginsController
-    return pc.plugin_signon(module_name, verbose)
+    pc.plugin_signon(module_name, verbose)
 
 
-def unloadOnePlugin(moduleOrFileName: str, verbose: bool = False) -> ModuleType:
+def unloadOnePlugin(moduleOrFileName: str, verbose: bool = False) -> None:
     pc = g.app.pluginsController
-    return pc.unloadOnePlugin(moduleOrFileName, verbose)
+    pc.unloadOnePlugin(moduleOrFileName, verbose)
 
 
-def unregisterHandler(tags: Tags, fn: Callable) -> ModuleType:
+def unregisterHandler(tags: Tags, fn: Callable) -> None:
     pc = g.app.pluginsController
-    return pc.unregisterHandler(tags, fn)
+    pc.unregisterHandler(tags, fn)
 
 
 # @+node:ekr.20100910075900.5952: *4* g.Information
