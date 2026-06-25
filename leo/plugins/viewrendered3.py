@@ -1026,7 +1026,7 @@ import string
 import subprocess
 import sys
 import textwrap
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List
 
 import webbrowser
 # from urllib.request import urlopen
@@ -3034,7 +3034,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             # @-<< is_numeric >>
             # @+<< get_data >>
             # @+node:tom.20211104105903.14: *6* << get_data >>
-            def get_data(pagelines) -> Tuple[Any, Any]:
+            def get_data(pagelines) -> tuple[Any, Any]:
                 num_cols = 0
 
                 # Skip lines starting with """ or '''

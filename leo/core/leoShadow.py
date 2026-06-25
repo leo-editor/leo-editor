@@ -31,7 +31,7 @@ Settings:
 from __future__ import annotations
 import difflib
 import os
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -97,7 +97,7 @@ class ShadowController:
 
     # @+node:ekr.20080711063656.1: *3* x.File utils
     # @+node:ekr.20080711063656.7: *4* x.baseDirName
-    def baseDirName(self) -> Optional[str]:
+    def baseDirName(self) -> str | None:
         c = self.c
         filename = c.fileName()
         if filename:
@@ -487,7 +487,7 @@ class ShadowController:
         return ''
 
     # @+node:ekr.20080708094444.9: *4* x.markerFromFileName
-    def markerFromFileName(self, filename: str) -> Marker:
+    def markerFromFileName(self, filename: str) -> Marker | None:
         """Return the sentinel delimiter comment to be used for filename."""
         x = self
         if not filename:

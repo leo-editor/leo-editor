@@ -14,7 +14,7 @@ import sys
 import tabnanny
 import time
 import tokenize
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 
@@ -215,7 +215,7 @@ class AtFile:
         self.initAllIvars(root)
 
     # @+node:ekr.20041005105605.15: *4* at.initWriteIvars
-    def initWriteIvars(self, root: Position) -> Optional[str]:
+    def initWriteIvars(self, root: Position) -> str | None:
         """
         Compute default values of all write-related ivars.
         Return the finalized name of the output file.
@@ -354,7 +354,7 @@ class AtFile:
             g.red(f"file not found: {path}")
 
     # @+node:ekr.20041005105605.19: *5* at.openFileForReading & helper
-    def openFileForReading(self, fromString: str = None) -> tuple[Optional[str], Optional[str]]:
+    def openFileForReading(self, fromString: str = None) -> tuple[str | None, str | None]:
         """
         Open the file given by at.root.
         This will be the private file for @shadow nodes.
@@ -392,7 +392,7 @@ class AtFile:
         return fn, s
 
     # @+node:ekr.20150204165040.4: *6* at.openAtShadowFileForReading
-    def openAtShadowFileForReading(self, fn: str) -> Optional[str]:  # pragma: no cover
+    def openAtShadowFileForReading(self, fn: str) -> str | None:  # pragma: no cover
         """Open an @shadow for reading and return shadow_fn."""
         at = self
         x = at.c.shadowController
@@ -1044,7 +1044,7 @@ class AtFile:
         return valid, new_df, start, end, isThin
 
     # @+node:ekr.20130911110233.11284: *5* at.readFileToUnicode & helpers
-    def readFileToUnicode(self, fileName: str) -> Optional[str]:  # pragma: no cover
+    def readFileToUnicode(self, fileName: str) -> str | None:  # pragma: no cover
         """
         Carefully sets at.encoding, then uses at.encoding to convert the file
         to a unicode string.
@@ -1672,14 +1672,14 @@ class AtFile:
             return False
 
     # @+node:ekr.20140728040812.17993: *7* at.dispatch & helpers
-    def dispatch(self, ext: str, p: Position) -> Optional[Callable]:  # pragma: no cover
+    def dispatch(self, ext: str, p: Position) -> Callable | None:  # pragma: no cover
         """Return the correct writer function for p, an @auto node."""
         at = self
         # Match @auto type before matching extension.
         return at.writer_for_at_auto(p) or at.writer_for_ext(ext)
 
     # @+node:ekr.20140728040812.17995: *8* at.writer_for_at_auto
-    def writer_for_at_auto(self, root: Position) -> Optional[Callable]:  # pragma: no cover
+    def writer_for_at_auto(self, root: Position) -> Callable | None:  # pragma: no cover
         """A factory returning a writer function for the given kind of @auto directive."""
         at = self
         d = g.app.atAutoWritersDict
@@ -1687,7 +1687,7 @@ class AtFile:
             aClass = d.get(key)
             if aClass and g.match_word(root.h, 0, key):
 
-                def writer_for_at_auto_cb(root: Position) -> Optional[str]:
+                def writer_for_at_auto_cb(root: Position) -> str | None:
                     try:
                         writer = aClass(at.c)  # noqa
                         s = writer.write(root)
@@ -1700,14 +1700,14 @@ class AtFile:
         return None
 
     # @+node:ekr.20140728040812.17997: *8* at.writer_for_ext
-    def writer_for_ext(self, ext: str) -> Optional[Callable]:  # pragma: no cover
+    def writer_for_ext(self, ext: str) -> Callable | None:  # pragma: no cover
         """A factory returning a writer function for the given file extension."""
         at = self
         d = g.app.writersDispatchDict
         aClass = d.get(ext)
         if aClass:
 
-            def writer_for_ext_cb(root: Position) -> Optional[str]:
+            def writer_for_ext_cb(root: Position) -> str | None:
                 try:
                     return aClass(at.c).write(root)
                 except Exception:
@@ -3567,7 +3567,7 @@ class FastAtRead:
         re.VERBOSE,
     )
 
-    def scan_header(self, lines: list[str]) -> Optional[tuple[tuple, list[str], int]]:
+    def scan_header(self, lines: list[str]) -> tuple[tuple, list[str], int] | None:
         """
         Scan for the header line, which follows any @first lines.
         Return (delims, first_lines, i+1) or None

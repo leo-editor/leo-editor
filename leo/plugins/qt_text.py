@@ -6,7 +6,7 @@
 # @+node:ekr.20220416085845.1: ** << qt_text imports & annotations >>
 from __future__ import annotations
 from collections.abc import Callable
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtGui, Qsci, QtWidgets
 from leo.core.leoQt import ContextMenuPolicy, Key, KeyboardModifier
@@ -224,7 +224,7 @@ class QTextMixin:
         if Qsci:
             classes.append(Qsci.QsciScintilla)
         assert isinstance(self.widget, tuple(classes)), self.widget
-        QtWidgets.QTextBrowser.setFocus(self.widget)  # type:ignore
+        QtWidgets.QTextBrowser.setFocus(self.widget)  # type:ignore # required.
 
     # @+node:ekr.20140901062324.18717: *4* QTextMixin.Generic text
     # @+node:ekr.20140901062324.18703: *5* QTextMixin.appendText
@@ -429,9 +429,7 @@ class QLineEditWrapper(QTextMixin):
         w.setCursorPosition(i)
 
     # @+node:ekr.20110605121601.18130: *4* QLineEditWrapper.setSelectionRange
-    def setSelectionRange(
-        self, i: int, j: int, insert: Optional[int] = None, s: str = None
-    ) -> None:
+    def setSelectionRange(self, i: int, j: int, insert: int | None = None, s: str = None) -> None:
         """QHeadlineWrapper."""
         if not self.check():
             return
@@ -1357,7 +1355,7 @@ class QScintillaWrapper(QTextMixin):
     def set_config(self) -> None:
         """Set QScintillaWrapper configuration options."""
         c, w = self.c, self.widget
-        n = c.config.getInt('qt-scintilla-zoom-in')  # type:ignore
+        n = c.config.getInt('qt-scintilla-zoom-in')
         if n not in (None, 1, 0):
             w.zoomIn(n)
         w.setUtf8(True)  # Important.

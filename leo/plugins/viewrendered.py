@@ -203,7 +203,7 @@ from pathlib import Path
 import shutil
 import sys
 import textwrap
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from urllib.request import urlopen
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtWidgets
@@ -319,7 +319,7 @@ def init() -> bool:
 # @+node:ekr.20240727091022.1: *3* vr function: getVR
 def getVr(
     *, c: Any = None, event: Any = None, parent: QtWidgets.QWidget = None
-) -> Optional[QtWidgets.QWidget]:
+) -> ViewRenderedController | None:
     """Return the ViewRenderedController instance or None."""
     if g.app.gui.guiName() != 'qt':
         return None
@@ -353,8 +353,8 @@ def onCreate(tag: str, keys: dict) -> None:
     if not c:
         return
     vr = getVr(c=c)
-    g.registerHandler('select2', vr.update)
-    g.registerHandler('idle', vr.update)
+    g.registerHandler('select2', vr.update_vr)
+    g.registerHandler('idle', vr.update_vr)
     vr.active = True
     vr.is_visible = False
     vr.hide()
@@ -412,7 +412,7 @@ def preview(event: LeoKeyEvent) -> None:
 
 # @+node:tbrown.20100318101414.5998: *3* g.command('vr')
 @g.command('vr')
-def viewrendered(event: LeoKeyEvent) -> Optional[Any]:
+def viewrendered(event: LeoKeyEvent) -> Any | None:
     """Open render view for commander"""
     vr = getVr(event=event)
     if vr:
@@ -531,7 +531,7 @@ def toggle_keep_open(event: LeoKeyEvent) -> None:
         c = vr.c
         vr.hide()  # So the toggle below will work.
         vr.keep_open = not vr.keep_open
-        vr.update('keep-open', {'c': c, 'force': True})  # type:ignore
+        vr.update_vr('keep-open', {'c': c, 'force': True})
 
 
 # @+node:ekr.20130412180825.10345: *3* g.command('vr-unlock')
@@ -550,11 +550,11 @@ def update_rendering_pane(event: LeoKeyEvent) -> None:
     vr = getVr(event=event)
     if vr:
         c = vr.c
-        vr.update(tag='view', keywords={'c': c, 'force': True})  # type:ignore
+        vr.update_vr(tag='view', keywords={'c': c, 'force': True})
 
 
 # @+node:ekr.20110317024548.14375: ** class ViewRenderedController (QWidget)
-class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
+class ViewRenderedController(QtWidgets.QWidget):
     """A class to control rendering in a rendering pane."""
 
     # @+<< vr: default templates >>
@@ -757,8 +757,8 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
     def closeEvent(self, event: QCloseEvent) -> None:
         """Deactivate callbacks when an Outline closes."""
         self.active = False
-        g.unregisterHandler('select2', self.update)
-        g.unregisterHandler('idle', self.update)
+        g.unregisterHandler('select2', self.update_vr)
+        g.unregisterHandler('idle', self.update_vr)
         g.unregisterHandler('scrolledMessage', show_scrolled_message)
         self.destroy_widgets()
 
@@ -834,12 +834,12 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
             assert pos is not None
             sb.setSliderPosition(pos)
 
-    # @+node:ekr.20101112195628.5426: *3* vr.update & helpers
+    # @+node:ekr.20101112195628.5426: *3* vr.update_vr & helpers
     # Must have this signature: called by leoPlugins.callTagHandler.
 
-    def update(self, tag: str, keywords: Any) -> None:  # type:ignore
+    def update_vr(self, tag: str, keywords: Any) -> None:
         """
-        vr.update: Update the VR pane.
+        vr.update_vr: Update the VR pane.
         Called at idle time and by the vr-update command.
         """
         p = self.c.p
@@ -884,7 +884,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         else:
             self.hide()
 
-    # @+node:ekr.20241227053437.1: *4* vr.update: helpers
+    # @+node:ekr.20241227053437.1: *4* vr.update_vr: helpers
     # @+node:ekr.20241224074331.1: *5* vr.create_web_engineview
     def create_web_engineview(self) -> QWidget:
         """
@@ -1488,14 +1488,14 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         if not h.startswith('@jinja'):
             return
 
-        def find_root(p: Position) -> Optional[tuple[Position, Position]]:
+        def find_root(p: Position) -> tuple[Position, Position] | None:
             for newp in p.parents():
                 if newp.h.strip() == '@jinja':
                     oldp, p = p, newp
                     return oldp, p
             return None, None
 
-        def find_inputs(p: Position) -> Optional[tuple[Position, Position]]:
+        def find_inputs(p: Position) -> tuple[Position, Position] | None:
             for newp in p.parents():
                 if newp.h.strip() == '@jinja inputs':
                     oldp, p = p, newp
@@ -1696,7 +1696,7 @@ class ViewRenderedController(QtWidgets.QWidget):  # type:ignore
         return w
 
     # @+node:ekr.20110320120020.14483: *4* vr.get_kind
-    def get_kind(self, p: Position) -> Optional[str]:
+    def get_kind(self, p: Position) -> str | None:
         """Return the proper rendering kind for node p."""
 
         p0 = p  # Special case selected position.

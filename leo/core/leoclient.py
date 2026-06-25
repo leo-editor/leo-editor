@@ -132,8 +132,8 @@ def _get_action_list():
     middle: list = [
         ("!" + z, {}) for z in test_names if z not in head_names + tail_names + exclude_names
     ]
-    middle_names = [name for (name, package) in middle]  # type:ignore
-    all_tests = head + middle + tail  # type:ignore
+    middle_names = [name for (name, package) in middle]
+    all_tests = head + middle + tail
     if 0:
         g.printObj(middle_names, tag='middle_names')
         all_names = sorted([name for (name, package) in all_tests])

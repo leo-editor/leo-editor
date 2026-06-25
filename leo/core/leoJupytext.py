@@ -12,7 +12,7 @@ from __future__ import annotations
 import io
 import os
 import textwrap
-from typing import Any, Tuple, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 # Defer importing jupytext until first use: jupytext imports pandoc at module
@@ -228,7 +228,7 @@ class JupytextManager:
         return config_file
 
     # @+node:ekr.20241023155136.1: *3* jtm.read
-    def read(self, c: Cmdr, p: Position) -> Tuple[str, str]:  # pragma: no cover
+    def read(self, c: Cmdr, p: Position) -> tuple[str, str]:  # pragma: no cover
         """
         Called from at.readOneAtJupytextNode.
         p must be an @jupytext node describing an .ipynb file.

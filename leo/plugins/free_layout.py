@@ -30,7 +30,7 @@ free-layout-zoom
 # @+node:tbrown.20110203111907.5520: ** << free_layout imports >>
 from __future__ import annotations
 import json
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 #
@@ -198,7 +198,7 @@ class FreeLayoutController:
         c.redraw()
 
     # @+node:ekr.20160424035257.1: *3* flc.get_main_splitter
-    def get_main_splitter(self, w: QTextMixin = None) -> Optional[NestedSplitter]:
+    def get_main_splitter(self, w: QTextMixin = None) -> NestedSplitter | None:
         """
         Return the main splitter.
 
@@ -208,7 +208,7 @@ class FreeLayoutController:
         return top if top.objectName() == 'main_splitter' else None
 
     # @+node:ekr.20160424035254.1: *3* flc.get_secondary_splitter
-    def get_secondary_splitter(self) -> Optional[NestedSplitter]:
+    def get_secondary_splitter(self) -> NestedSplitter | None:
         """
         Return the secondary splitter, that is, the splitter containing the outline pane.
         """
@@ -221,7 +221,7 @@ class FreeLayoutController:
         return None
 
     # @+node:tbrown.20110621120042.22914: *3* flc.get_top_splitter
-    def get_top_splitter(self) -> Optional[NestedSplitter]:
+    def get_top_splitter(self) -> NestedSplitter | None:
         """Return the top splitter of c.frame.top."""
         f = self.c.frame
         if hasattr(f, 'top') and f.top:
@@ -369,7 +369,7 @@ class FreeLayoutController:
         return False
 
     # @+node:tbrown.20110628083641.11724: *3* flc.ns_provide
-    def ns_provide(self, id_: str) -> Optional[str | QTextMixin]:
+    def ns_provide(self, id_: str) -> str | QTextMixin | None:
         if id_.startswith('_leo_tab:'):
             id_ = id_.split(':', 1)[1]
             top = self.get_top_splitter()

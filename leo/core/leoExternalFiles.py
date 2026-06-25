@@ -8,7 +8,7 @@ import getpass
 import os
 import subprocess
 import tempfile
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -122,7 +122,7 @@ class ExternalFilesController:
         self.files = [z for z in self.files if z.path not in paths]
 
     # @+node:ekr.20150407141838.1: *4* efc.find_path_for_node (called from vim.py)
-    def find_path_for_node(self, p: Position) -> Optional[str]:
+    def find_path_for_node(self, p: Position) -> str | None:
         """
         Find the path corresponding to node p.
         called from vim.py.

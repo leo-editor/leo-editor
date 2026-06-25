@@ -9,7 +9,7 @@ import fnmatch
 import os
 import pickle
 import sqlite3
-from typing import Any, Generator, Optional, TYPE_CHECKING
+from typing import Any, Generator, TYPE_CHECKING
 import zlib
 from leo.core import leoGlobals as g
 
@@ -167,7 +167,7 @@ class SqlitePickleShare:
         self.conn = sqlite3.connect(dbfile, isolation_level=None)
         self.init_dbtables(self.conn)
 
-        def loadz(data: Value) -> Optional[Value]:
+        def loadz(data: Value) -> Value | None:
             if data:
                 # Retain this code for maximum compatibility.
                 try:

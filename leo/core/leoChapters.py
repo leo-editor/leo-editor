@@ -7,7 +7,7 @@
 from __future__ import annotations
 from collections.abc import Callable
 import re
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -39,10 +39,10 @@ class ChapterController:
         # Note: chapter names never change, even if their @chapter node changes.
         self.chaptersDict: dict[str, Chapter] = {}  # Keys are chapter names, values are chapters.
         self.initing = True  # #31: True: suppress undo when creating chapters.
-        self.re_chapter: re.Pattern = None  # Set where used.
-        self.selectedChapter: Optional[Chapter] = None
+        self.re_chapter: re.Pattern | None = None  # Set where used.
+        self.selectedChapter: Chapter | None = None
         self.selectChapterLockout = False  # True: cc.selectChapterForPosition does nothing.
-        self.tt: LeoQtTreeTab = None  # May be set in createChaptersIcon.
+        self.tt: LeoQtTreeTab | None = None  # May be set in createChaptersIcon.
         self.reloadSettings()
 
     def reloadSettings(self) -> None:
@@ -247,7 +247,7 @@ class ChapterController:
         return 'main'
 
     # @+node:ekr.20070325093617: *4* cc.findChapterNode
-    def findChapterNode(self, name: str) -> Optional[Position]:
+    def findChapterNode(self, name: str) -> Position | None:
         """
         Return the position of the first @chapter node with the given name
         anywhere in the entire outline.
@@ -387,8 +387,8 @@ class Chapter:
         self.name: str = g.checkUnicode(name)
         self.selectLockout = False  # True: in chapter.select logic.
         # State variables: saved/restored when the chapter is unselected/selected.
-        self.p: Optional[Position] = c.p
-        self.root: Optional[Position] = self.findRootNode()
+        self.p: Position | None = c.p
+        self.root: Position | None = self.findRootNode()
         if cc.tt:
             cc.tt.createTab(name)
 
@@ -400,7 +400,7 @@ class Chapter:
     __repr__ = __str__
 
     # @+node:ekr.20110607182447.16464: *3* chapter.findRootNode
-    def findRootNode(self) -> Optional[Position]:
+    def findRootNode(self) -> Position | None:
         """Return the @chapter node for this chapter."""
         if self.name == 'main':
             return None
@@ -454,7 +454,7 @@ class Chapter:
         g.doHook('hoist-changed', c=c)
 
     # @+node:ekr.20070317131708: *4* chapter.findPositionInChapter
-    def findPositionInChapter(self, p1: Position, strict: bool = False) -> Optional[Position]:
+    def findPositionInChapter(self, p1: Position, strict: bool = False) -> Position | None:
         """Return a valid position p such that p.v == v."""
         c, name = self.c, self.name
         # Bug fix: 2012/05/24: Search without root arg in the main chapter.

@@ -6,7 +6,7 @@
 # @+node:ekr.20220826084013.1: ** << commanderEditCommands imports & annotations >>
 from __future__ import annotations
 import re
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -518,7 +518,7 @@ def extractDef(c: Cmdr, s: str) -> str:
 
 
 # @+node:ekr.20171123135625.26: *3* function: extractDef_find
-def extractDef_find(c: Cmdr, lines: list[str]) -> Optional[str]:
+def extractDef_find(c: Cmdr, lines: list[str]) -> str | None:
     for line in lines:
         def_h = extractDef(c, line.strip())
         if def_h:
@@ -582,7 +582,7 @@ def extractSectionNames(self: Self, event: LeoKeyEvent = None) -> None:
 
 
 # @+node:ekr.20171123135625.28: *3* function: findSectionName
-def findSectionName(self: Self, s: str) -> Optional[str]:
+def findSectionName(self: Self, s: str) -> str | None:
     head1 = s.find("<<")
     if head1 > -1:
         head2 = s.find(">>", head1)

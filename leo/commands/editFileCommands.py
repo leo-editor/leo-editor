@@ -9,7 +9,7 @@ from collections.abc import Callable
 import difflib
 import os
 import re
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoCommands
 from leo.commands.baseCommands import BaseEditCommandsClass
@@ -110,7 +110,7 @@ class ConvertAtRoot:
                 self.units.append(p.copy())
 
     # @+node:ekr.20210307082125.1: *3* atRoot.find_section
-    def find_section(self, root: Position, section_name: str) -> Optional[Position]:
+    def find_section(self, root: Position, section_name: str) -> Position | None:
         """Find the section definition node in root's subtree for the given section."""
 
         def munge(s: str) -> str:
@@ -133,7 +133,7 @@ class ConvertAtRoot:
                     self.errors += 1
 
     # @+node:ekr.20210307080500.1: *3* atRoot.make_clone
-    def make_clone(self, p: Position, section_name: str) -> Optional[Position]:
+    def make_clone(self, p: Position, section_name: str) -> Position | None:
         """Make c clone for section, if necessary."""
 
         def clone_and_move(parent: Position, section_p: Position) -> None:
@@ -930,7 +930,7 @@ class GitDiffController:
         # Patterns matching @+node sentinels for each gnx.
         node_patterns: list[tuple[str, re.Pattern]],
         revs_list: list[str],
-    ) -> Optional[g.Bunch]:
+    ) -> g.Bunch | None:
         """
         Return a g.Bunch describing the action to be taken at rev i.
         """
@@ -1017,7 +1017,7 @@ class GitDiffController:
         # For debugging only.
         gnx: str,  # gnx being matched.
         rev: str,  # Full hash.
-    ) -> Optional[tuple[int, int]]:
+    ) -> tuple[int, int] | None:
         """
         Return (i1, i2) the range of lines of the node, or None.
         i1: The index of the line matching pattern.
@@ -1077,7 +1077,7 @@ class GitDiffController:
         self,
         path: str,
         rev_list: list[str],
-        limit: Optional[int] = None,
+        limit: int | None = None,
     ) -> list[list[str]]:
         """
         Return the contents of the file as a list of lines.
@@ -1399,7 +1399,7 @@ class GitDiffController:
         return p
 
     # @+node:ekr.20170806094320.7: *4* gdc.find_file
-    def find_file(self, fn: str) -> Optional[Position]:
+    def find_file(self, fn: str) -> Position | None:
         """Return the @<file> node matching fn."""
         c = self.c
         fn = g.os_path_basename(fn)
@@ -1411,7 +1411,7 @@ class GitDiffController:
         return None
 
     # @+node:ekr.20170806094321.3: *4* gdc.find_git_working_directory
-    def find_git_working_directory(self, directory: str) -> Optional[str]:
+    def find_git_working_directory(self, directory: str) -> str | None:
         """Return the git working directory, starting at directory."""
         while directory:
             if g.os_path_exists(g.finalize_join(directory, '.git')):
@@ -1423,7 +1423,7 @@ class GitDiffController:
         return None
 
     # @+node:ekr.20170819132219.1: *4* gdc.find_gnx
-    def find_gnx(self, c: Cmdr, gnx: str) -> Optional[Position]:
+    def find_gnx(self, c: Cmdr, gnx: str) -> Position | None:
         """Return a position in c having the given gnx."""
         for p in c.all_unique_positions():
             if p.v.fileIndex == gnx:
@@ -1453,7 +1453,7 @@ class GitDiffController:
         c.treeWantsFocusNow()
 
     # @+node:ekr.20210819080657.1: *4* gdc.get_parent_of_git_directory
-    def get_parent_of_git_directory(self) -> Optional[str]:
+    def get_parent_of_git_directory(self) -> str | None:
         """
         #2143.
         Resolve filename to the nearest directory containing a .git directory.

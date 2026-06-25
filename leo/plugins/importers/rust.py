@@ -5,7 +5,7 @@
 # pylint: disable=undefined-loop-variable
 from __future__ import annotations
 import re
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from leo.plugins.importers.base_importer import Block, Importer
 from leo.core import leoGlobals as g
 
@@ -336,7 +336,7 @@ class Rust_Importer(Importer):
                        so there must be *no gaps* between blocks!
         """
 
-        def find_curly_bracket_line(i: int) -> Optional[int]:
+        def find_curly_bracket_line(i: int) -> int | None:
             """
             Scan the guide_lines from line i looking for a line ending with '{'.
             """

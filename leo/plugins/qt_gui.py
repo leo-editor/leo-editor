@@ -12,7 +12,7 @@ import re
 import sys
 import textwrap
 from time import sleep
-from typing import Any, Generator, Optional, Tuple, TYPE_CHECKING
+from typing import Any, Generator, TYPE_CHECKING
 from leo.core import (
     leoColor,
     leoGlobals as g,
@@ -245,7 +245,7 @@ class LeoQtGui(leoGui.LeoGui):
         weight: str,
         defaultSize: int = 12,
         tag='',
-    ) -> Optional[QFont]:
+    ) -> QFont | None:
         """Required to handle syntax coloring."""
         if isinstance(size, str):
             if size.endswith('pt'):
@@ -477,10 +477,6 @@ class LeoQtGui(leoGui.LeoGui):
             self.leo_checked = True
             self.setObjectName('TipMessageBox')
             self.setIcon(Icon.Information)  # #2127.
-            # self.setMinimumSize(5000, 4000)
-            # Doesn't work.
-            # Prevent the dialog from jumping around when
-            # selecting multiple tips.
             self.setWindowTitle('Leo Tips')
             self.setText(repr(tip))
             self.next_tip_button = self.addButton('Show Next Tip', ButtonRole.ActionRole)
@@ -488,14 +484,14 @@ class LeoQtGui(leoGui.LeoGui):
             c.styleSheetManager.set_style_sheets(w=self)
             # Workaround #693.
             layout = self.layout()
-            cb = QtWidgets.QCheckBox()
-            cb.setObjectName('TipCheckbox')
-            cb.setText('Show Tip On Startup')
+            checkbox = QtWidgets.QCheckBox()
+            checkbox.setObjectName('TipCheckbox')
+            checkbox.setText('Show Tip On Startup')
             # #2383: State is a tri-state, so use the official constants.
-            state = Checked if checked else Unchecked
-            cb.setCheckState(state)  # #2127.
-            cb.stateChanged.connect(controller.onClick)
-            layout.addWidget(cb, 4, 0, -1, -1)  # type:ignore
+            checkbox.setCheckState(Checked if checked else Unchecked)  # #2127.
+            checkbox.stateChanged.connect(controller.onClick)
+            # A mypy bug? layout is a QGridLayout. mypy thinks it's a plain QLayout.
+            layout.addWidget(checkbox, 4, 0, -1, -1)  # type:ignore
             if 0:  # Does not work well.
                 sizePolicy = QtWidgets.QSizePolicy
                 vSpacer = QtWidgets.QSpacerItem(200, 200, sizePolicy.Minimum, sizePolicy.Expanding)
@@ -645,12 +641,13 @@ class LeoQtGui(leoGui.LeoGui):
             dialog.exec()
 
     # @+node:ekr.20150619053138.1: *5* LeoQtGui.createFindDialog
-    def createFindDialog(self, c: Cmdr) -> QDialog:
+    def createFindDialog(self, c: Cmdr) -> QDialog | None:
         """Create and init a non-modal Find dialog."""
-        if c:
-            g.app.globalFindTabManager = c.findCommands.ftm
-        top: Optional[QWidget] = c.frame.top if c else None
-        w = top.findTab  # type:ignore
+        if not c:
+            return None  # #4753
+        g.app.globalFindTabManager = c.findCommands.ftm
+        top = c.frame.top
+        w = top.findTab
         dialog = QtWidgets.QDialog()
 
         # Fix #516: Hide the dialog. Never delete it.
@@ -705,7 +702,7 @@ class LeoQtGui(leoGui.LeoGui):
             return
 
         # Create the dialog.
-        top_frame: Optional[QWidget] = c.frame.top if c else None
+        top_frame: QWidget | None = c.frame.top if c else None
         dialog = QtWidgets.QMessageBox(top_frame)
         ssm = g.app.gui.styleSheetManagerClass(c)
         w = ssm.get_master_widget()
@@ -735,7 +732,7 @@ class LeoQtGui(leoGui.LeoGui):
         message: str = 'Select Date/Time',
         init: datetime.datetime = None,
         step_min: dict = None,
-    ) -> Optional[datetime.datetime]:
+    ) -> datetime.datetime | None:
         """Create and run a qt date/time selection dialog.
 
         init - a datetime, default now
@@ -810,7 +807,7 @@ class LeoQtGui(leoGui.LeoGui):
             step_min = {}
         if not init:
             init = datetime.datetime.now()
-        top_frame: Optional[QWidget] = c.frame.top if c else None
+        top_frame: QWidget | None = c.frame.top if c else None
         dialog = Calendar(top_frame, message=message, init=init, step_min=step_min)
         if c:
             ssm = g.app.gui.styleSheetManagerClass(c)
@@ -842,7 +839,7 @@ class LeoQtGui(leoGui.LeoGui):
         message: str,
         cancelButtonText: str = None,
         okButtonText: str = None,
-    ) -> Optional[int]:
+    ) -> int | None:
         """Create and run askOkCancelNumber dialog ."""
         if g.unitTesting:
             return None
@@ -865,7 +862,7 @@ class LeoQtGui(leoGui.LeoGui):
         if not ok:
             return None
         n = dialog.textValue()
-        int_n: Optional[int]
+        int_n: int | None
         try:
             int_n = int(n)
         except ValueError:
@@ -882,7 +879,7 @@ class LeoQtGui(leoGui.LeoGui):
         okButtonText: str = None,
         default: str = "",
         wide: bool = False,
-    ) -> Optional[str]:
+    ) -> str | None:
         """Create and run askOkCancelString dialog.
 
         wide - edit a long string
@@ -919,7 +916,7 @@ class LeoQtGui(leoGui.LeoGui):
             return
 
         # Create the dialog.
-        top_frame: Optional[QWidget] = c.frame.top if c else None
+        top_frame: QWidget | None = c.frame.top if c else None
         dialog = QtWidgets.QMessageBox(top_frame)
         dialog.setWindowTitle(title)
         if message:
@@ -960,7 +957,7 @@ class LeoQtGui(leoGui.LeoGui):
             return None
 
         # Create the dialog.
-        top_frame: Optional[QWidget] = c.frame.top if c else None
+        top_frame: QWidget | None = c.frame.top if c else None
         dialog = QtWidgets.QMessageBox(top_frame)
         if message:
             dialog.setText(message)
@@ -1023,7 +1020,7 @@ class LeoQtGui(leoGui.LeoGui):
             return None
 
         # Create the dialog.
-        top_frame: Optional[QWidget] = c.frame.top if c else None
+        top_frame: QWidget | None = c.frame.top if c else None
         dialog = QtWidgets.QMessageBox(top_frame)
 
         # #4012: set the button's name to the desired return value!
@@ -1070,7 +1067,7 @@ class LeoQtGui(leoGui.LeoGui):
         return button.objectName() or 'cancel'
 
     # @+node:ekr.20110605121601.18499: *4* LeoQtGui.runOpenDirectoryDialog
-    def runOpenDirectoryDialog(self, title: str, startdir: str) -> Optional[str]:
+    def runOpenDirectoryDialog(self, title: str, startdir: str) -> str | None:
         """Create and run an Qt open directory dialog ."""
         if g.unitTesting:
             return None
@@ -1149,7 +1146,7 @@ class LeoQtGui(leoGui.LeoGui):
         filter_ = self.makeFilter(filetypes)
         dialog = QtWidgets.QFileDialog()
         self.attachLeoIcon(dialog)
-        dialog_val: tuple[list[str], Any]
+        dialog_val: Any
         val = list[str]
         if c:
             try:
@@ -1165,7 +1162,7 @@ class LeoQtGui(leoGui.LeoGui):
                 parent=None, caption=title, directory=startpath, filter=filter_
             )
         # This is a *PyQt* change, not a Qt change.
-        val, _ = dialog_val  # type:ignore
+        val, _ = dialog_val
         files = [g.os_path_normslashes(s) for s in val]
         if c and files:
             c.last_dir = g.os_path_dirname(files[-1])
@@ -1451,7 +1448,7 @@ class LeoQtGui(leoGui.LeoGui):
             window.setWindowIcon(self.appIcon)
 
     # @+node:ekr.20110605121601.18516: *4* LeoQtGui.getIconImage
-    def getIconImage(self, name: str) -> Optional[QIcon]:
+    def getIconImage(self, name: str) -> QIcon | None:
         """Load the icon and return it."""
         # Return the image from the cache if possible.
         if name in self.iconimages:
@@ -1480,7 +1477,7 @@ class LeoQtGui(leoGui.LeoGui):
 
     # @+node:ekr.20110605121601.18517: *4* LeoQtGui.getImageImage
     @functools.lru_cache(maxsize=128)
-    def getImageImage(self, name: str) -> Optional[QPixmap]:
+    def getImageImage(self, name: str) -> QPixmap | None:
         """Load the image in file named `name` and return it."""
         fullname = self.getImageFinder(name)
         try:
@@ -1496,7 +1493,7 @@ class LeoQtGui(leoGui.LeoGui):
     dump_given = False
 
     @functools.lru_cache(maxsize=128)
-    def getImageFinder(self, name: str) -> Optional[str]:
+    def getImageFinder(self, name: str) -> str | None:
         """Theme aware image (icon) path searching."""
         trace = 'themes' in g.app.debug
         exists = g.os_path_exists
@@ -1642,7 +1639,7 @@ class LeoQtGui(leoGui.LeoGui):
             g.trace(f"Not a QSplitter: {splitter.__class__.__name__}")
 
     # @+node:ekr.20241027183453.1: *4* LeoQtGui.find_parent_splitter
-    def find_parent_splitter(self, widget: QWidget) -> Optional[Tuple[QSplitter, QWidget]]:
+    def find_parent_splitter(self, widget: QWidget) -> tuple[QSplitter, QWidget] | None:
         """
         Find the nearest parent QSplitter widget for the given widget.
 
@@ -1661,7 +1658,7 @@ class LeoQtGui(leoGui.LeoGui):
         return None
 
     # @+node:ekr.20240519115301.1: *4* LeoQtGui.find_widget_by_name
-    def find_widget_by_name(self, c: Cmdr, name: str) -> Optional[QWidget]:
+    def find_widget_by_name(self, c: Cmdr, name: str) -> QWidget | None:
         for w in self._self_and_subtree(c.frame.top):
             if w is not None and w.objectName() == name:
                 return w
@@ -1931,7 +1928,7 @@ class StyleSheetManager:
         return table
 
     # @+node:ekr.20170307083738.1: *4* StyleSheetManager.find_icon_path
-    def find_icon_path(self, setting: str) -> Optional[str]:
+    def find_icon_path(self, setting: str) -> str | None:
         """Return the path to the open/close indicator icon."""
         c = self.c
         s = c.config.getString(setting)

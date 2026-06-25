@@ -68,7 +68,7 @@ import os
 import re
 import datetime
 import time
-from typing import Any, Iterable, Optional, TYPE_CHECKING
+from typing import Any, Iterable, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import Qt, QtCore, QtGui, QtWidgets, uic
 from leo.core.leoQt import Checked, Unchecked
@@ -497,7 +497,7 @@ class todoController:
             g.unregisterHandler(i[0], i[1])  # type:ignore
 
     # @+node:tbnorth.20170925093004.1: *3* todoController._date
-    def _date(self, d: str) -> Optional[datetime.date]:
+    def _date(self, d: str) -> datetime.date | None:
         """_date - convert a string to a date
 
         :param str d: date to convert
@@ -507,7 +507,7 @@ class todoController:
             return None  # Was ''
         return datetime.datetime.strptime(d.split('T')[0], "%Y-%m-%d").date()
 
-    def _time(self, d: str) -> Optional[datetime.time]:
+    def _time(self, d: str) -> datetime.time | None:
         """_time - convert a string to a time
 
         :param str d: time to convert

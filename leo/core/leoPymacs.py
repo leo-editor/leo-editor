@@ -26,6 +26,8 @@ Notes:
 
 # As in leo.py we must be very careful about imports.
 
+from typing import Any
+
 g = None  # set by init: do *not* import it here!
 inited = False
 pymacsFile = __file__
@@ -102,7 +104,7 @@ def init():
 
 
 # @+node:ekr.20061024075542.1: ** open (pymacs)
-def open(fileName=None):
+def open(fileName=None) -> Any | None:
     # global g
     init()
     if g.unitTesting:

@@ -13,7 +13,7 @@ import string
 import sys
 import time
 import urllib
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from leo.commands import gotoCommands
 from leo.core.leoAPI import StringTextWrapper
 from leo.core import (
@@ -585,7 +585,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 if type_ == Type.KeyPress:
                     return self.keyPress(event)
                 if type_ == Type.KeyRelease:
-                    return self.keyRelease(event)  # type:ignore[arg-type]
+                    return self.keyRelease(event)
                 return self.oldEvent(event)
 
             # @-others
@@ -730,10 +730,10 @@ class DynamicWindow(QtWidgets.QMainWindow):
         lineWidth: int = 0,
         shadow: Shadow = None,
         shape: Shape = None,
-    ) -> QWidget:
+    ) -> QWidget | Qsci.QsciScintilla:
         # Create a text widget.
         c = self.leo_c
-        w: QWidget
+        w: Any
         if name == 'richTextEdit' and self.useScintilla and Qsci:
             # Do this in finishCreate, when c.frame.body exists.
             w = Qsci.QsciScintilla(parent)
@@ -749,7 +749,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             w.setLineWidth(lineWidth)
             self.setName(w, name)
         if not hasattr(w, 'leo_wrapper'):
-            w.leo_wrapper = QTextEditWrapper(widget=w, name=name, c=c)  # type:ignore
+            w.leo_wrapper = QTextEditWrapper(widget=w, name=name, c=c)
         return w
 
     # @+node:ekr.20110605121601.18164: *4* dw.createTreeWidget
@@ -2610,7 +2610,7 @@ class LeoQtLog(leoFrame.LeoLog):
         c.bodyWantsFocus()
 
     # @+node:ekr.20190603062456.1: *4* LeoQtLog.findTabIndex
-    def findTabIndex(self, tabName: str) -> Optional[int]:
+    def findTabIndex(self, tabName: str) -> int | None:
         """Return the tab index for tabName, or None."""
         w = self.tabWidget
         for i in range(w.count()):
@@ -2819,7 +2819,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
     # @+node:ekr.20110605121601.18352: *5* LeoQtMenu.insert_cascade
     def insert_cascade(
         self,
-        parent: LeoQtFrame,
+        parent: QWidget,
         index: int,
         label: str,
         menu: QMenu,
@@ -2844,11 +2844,12 @@ class LeoQtMenu(leoMenu.LeoMenu):
     def new_menu(
         self, parent: QWidget, tearoff: int = 0, label: str = ''
     ) -> QtMenuWrapper:  # label is for debugging.
-        """Wrapper for the Tkinter new_menu menu method."""
-        c, leoFrame = self.c, self.frame
-        # Parent can be None, in which case it will be added to the menuBar.
-        menu = QtMenuWrapper(c, leoFrame, parent, label)
-        return menu
+        """
+        Wrapper for the Tkinter new_menu menu method.
+
+        Parent can be None, in which case it will be added to the menuBar.
+        """
+        return QtMenuWrapper(self.c, self.frame, parent, label)
 
     # @+node:ekr.20110605121601.18354: *4* LeoQtMenu.Methods with other spellings
     # @+node:ekr.20110605121601.18355: *5* LeoQtMenu.clearAccel
@@ -2881,7 +2882,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         menu = self.getMenu('openwith')
         if not menu:
             menu = self.new_menu(parent, tearoff=False, label=label)
-            menu.insert_cascade(parent, index, label, menu, underline=amp_index)  # type:ignore
+            menu.insert_cascade(parent, index, label, menu, underline=amp_index)
         return menu
 
     # @+node:ekr.20110605121601.18358: *5* LeoQtMenu.disable/enableMenu (not used)
@@ -4241,7 +4242,7 @@ class QtStatusLineClass:
         return col, fcol
 
     # @+node:chris.20180320072817.2: *4* qstatus.file_line (not used)
-    def file_line(self) -> Optional[int]:
+    def file_line(self) -> int | None:
         """
         Return the line of the first line of c.p in its external file.
         Return None if c.p is not part of an external file.

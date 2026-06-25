@@ -9,7 +9,7 @@ from collections.abc import Callable
 import keyword
 import re
 import time
-from typing import Any, Generator, Optional, TYPE_CHECKING
+from typing import Any, Generator, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -669,7 +669,7 @@ class LeoFind:
         w.returnPressed()
 
     # @+node:ekr.20150629084611.1: *6* find._compute_find_def_word
-    def _compute_find_def_word(self, event: LeoKeyEvent) -> Optional[str]:  # pragma: no cover (cmd)
+    def _compute_find_def_word(self, event: LeoKeyEvent) -> str | None:  # pragma: no cover (cmd)
         """Init the find-def command. Return the word to find or None."""
         c = self.c
         w = c.frame.body.wrapper
@@ -828,7 +828,7 @@ class LeoFind:
         return results
 
     # @+node:ekr.20180511045458.1: *6* find._switch_style
-    def _switch_style(self, word: str) -> Optional[str]:
+    def _switch_style(self, word: str) -> str | None:
         """
         Switch between camelCase and underscore_style function definitions.
         Return None if there would be no change.
@@ -1994,7 +1994,7 @@ class LeoFind:
 
         # @+others  # Define helper functions
         # @+node:ekr.20250316070519.1: *6* function: _find_position
-        def _find_position(c: Cmdr, target: str) -> Optional[Position]:
+        def _find_position(c: Cmdr, target: str) -> Position | None:
             """Search c for a pattern matching the target."""
             for p in c.all_positions():
                 # Search headline:
@@ -2658,7 +2658,7 @@ class LeoFind:
         return None, None, None
 
     # @+node:ekr.20131123132043.16476: *5* find._fnm_next_after_fail & helper
-    def _fnm_next_after_fail(self, p: Position) -> Optional[Position]:
+    def _fnm_next_after_fail(self, p: Position) -> Position | None:
         """Return the next node after a failed search or None."""
         # Move to the next position.
         p = p.threadBack() if self.reverse else p.threadNext()

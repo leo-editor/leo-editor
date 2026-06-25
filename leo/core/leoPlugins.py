@@ -18,7 +18,6 @@ if TYPE_CHECKING:  # pragma: no cover
     Args = Any
     KWargs = Any
     Keywords = dict[str, list[g.Bunch]]
-    Tags = str | Sequence[str]
     Value = Any
 # @-<< leoPlugins imports & annotations >>
 
@@ -36,7 +35,7 @@ def init() -> None:
     g.app.pluginsController = LeoPluginsController()
 
 
-def registerHandler(tags: Tags, fn: Callable) -> None:
+def registerHandler(tags: str | Sequence[str], fn: Callable) -> None:
     """A wrapper so plugins can still call leoPlugins.registerHandler."""
     return g.app.pluginsController.registerHandler(tags, fn)
 
@@ -334,7 +333,7 @@ class LeoPluginsController:
                 g.doHook("idle", c=c)
 
     # @+node:ekr.20100908125007.6017: *4* plugins.doHandlersForTag & helper
-    def doHandlersForTag(self, tag: str, keywords: Keywords) -> Value:
+    def doHandlersForTag(self, tag: str, keywords: Keywords) -> Value | None:
         """
         Execute all handlers for a given tag, in alphabetical order.
         The caller, doHook, catches all exceptions.
@@ -355,7 +354,7 @@ class LeoPluginsController:
         return None
 
     # @+node:ekr.20100908125007.6016: *5* plugins.callTagHandler
-    def callTagHandler(self, bunch: g.Bunch, tag: str, keywords: Keywords) -> Value:
+    def callTagHandler(self, bunch: g.Bunch, tag: str, keywords: Keywords) -> Value | None:
         """Call the event handler."""
         handler, moduleName = bunch.fn, bunch.moduleName
         # Make sure the new commander exists.
@@ -377,7 +376,7 @@ class LeoPluginsController:
         return result
 
     # @+node:ekr.20100908125007.6018: *4* plugins.doPlugins (g.app.hookFunction)
-    def doPlugins(self, tag: str, keywords: Keywords) -> Value:
+    def doPlugins(self, tag: str, keywords: Keywords) -> Value | None:
         """The default g.app.hookFunction."""
         if g.app.killed:
             return None
@@ -516,7 +515,7 @@ class LeoPluginsController:
     # @+node:ekr.20100908125007.6024: *4* plugins.loadOnePlugin & helper functions
     def loadOnePlugin(
         self, moduleOrFileName: str, tag: str = 'open0', verbose: bool = False
-    ) -> Any:
+    ) -> Any | None:
         """
         Load one plugin from a file name or module.
         Use extensive tracing if --trace-plugins is in effect.
@@ -557,7 +556,7 @@ class LeoPluginsController:
             return result
 
         # @+node:ekr.20180528162604.1: *5* function:finishImport
-        def finishImport(result: Value) -> Value:
+        def finishImport(result: Value) -> Value | None:
             """Handle last-minute checks."""
             if tag == 'unit-test-load':
                 return result  # Keep the result, but do no more.
@@ -672,12 +671,13 @@ class LeoPluginsController:
 
     # @+node:ekr.20100909065501.5951: *3* plugins.Registration
     # @+node:ekr.20100908125007.6028: *4* plugins.registerExclusiveHandler
-    def registerExclusiveHandler(self, tags: Tags, fn: Callable) -> None:
+    def registerExclusiveHandler(self, tags: str | Sequence[str], fn: Callable) -> None:
         """Register one or more exclusive handlers"""
         if isinstance(tags, (list, tuple)):
             for tag in tags:
                 self.registerOneExclusiveHandler(tag, fn)
         else:
+            # We have just tested the type.
             self.registerOneExclusiveHandler(tags, fn)  # type:ignore[arg-type]
 
     def registerOneExclusiveHandler(self, tag: str, fn: Callable) -> None:
@@ -698,12 +698,13 @@ class LeoPluginsController:
             self.handlers[tag] = aList
 
     # @+node:ekr.20100908125007.6029: *4* plugins.registerHandler & registerOneHandler
-    def registerHandler(self, tags: Tags, fn: Callable) -> None:
+    def registerHandler(self, tags: str | Sequence[str], fn: Callable) -> None:
         """Register one or more handlers"""
         if isinstance(tags, (list, tuple)):
             for tag in tags:
                 self.registerOneHandler(tag, fn)
         else:
+            # We have just tested the type.
             self.registerOneHandler(tags, fn)  # type:ignore[arg-type]
 
     def registerOneHandler(self, tag: str, fn: Callable) -> None:
@@ -721,11 +722,12 @@ class LeoPluginsController:
         self.handlers[tag] = items
 
     # @+node:ekr.20100908125007.6031: *4* plugins.unregisterHandler
-    def unregisterHandler(self, tags: Tags, fn: Callable) -> None:
+    def unregisterHandler(self, tags: str | Sequence[str], fn: Callable) -> None:
         if isinstance(tags, (list, tuple)):
             for tag in tags:
                 self.unregisterOneHandler(tag, fn)
         else:
+            # We have just tested the type.
             self.unregisterOneHandler(tags, fn)  # type:ignore[arg-type]
 
     def unregisterOneHandler(self, tag: str, fn: Callable) -> None:

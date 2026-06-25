@@ -10,7 +10,7 @@ import os
 import re
 import textwrap
 import time
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 import urllib
 
 #
@@ -460,7 +460,7 @@ class LeoImportCommands:
         theFile.close()
 
     # @+node:ekr.20031218072017.3300: *4* ic.removeSentinelsCommand
-    def removeSentinelsCommand(self, paths: list[str], toString: bool = False) -> Optional[str]:
+    def removeSentinelsCommand(self, paths: list[str], toString: bool = False) -> str | None:
         c = self.c
         self.encoding = c.getEncoding(c.p)
         for fileName in paths:
@@ -588,7 +588,7 @@ class LeoImportCommands:
         ext: str = None,
         s: str = None,
         treeType: str = '@file',
-    ) -> Position:
+    ) -> Position | None:
         """
         Create an outline by importing a file, reading the file with the
         given encoding if string s is None.
@@ -638,7 +638,7 @@ class LeoImportCommands:
         return p
 
     # @+node:ekr.20140724064952.18038: *5* ic.dispatch & helpers
-    def dispatch(self, ext: str, p: Position) -> Optional[Callable]:
+    def dispatch(self, ext: str, p: Position) -> Callable | None:
         """Return the correct scanner function for p, an @auto node."""
         # Match the @auto type first, then the file extension.
         return g.app.scanner_for_at_auto(p) or g.app.scanner_for_ext(ext)
@@ -656,7 +656,7 @@ class LeoImportCommands:
         return p
 
     # @+node:ekr.20140724175458.18052: *5* ic.init_import
-    def init_import(self, ext: str, fileName: str, s: str) -> tuple[str, str]:
+    def init_import(self, ext: str, fileName: str, s: str) -> tuple[str, str] | tuple[None, None]:
         """
         Init ivars imports and read the file into s.
         Return ext, s.
@@ -738,7 +738,7 @@ class LeoImportCommands:
         parent: Position = None,
         paths: list[str] = None,
         command: str = 'Import',
-    ) -> Optional[Position]:
+    ) -> Position | None:
         """
         Import one or more external files.
         This is not a command.  It must *not* have an event arg.
@@ -824,7 +824,7 @@ class LeoImportCommands:
         FreeMindImporter(self.c).import_files(files)
 
     # @+node:ekr.20241027003435.1: *4* ic.importJupytextFiles
-    def importJupytextFiles(self, paths: list[str] = None) -> Optional[Position]:
+    def importJupytextFiles(self, paths: list[str] = None) -> Position | None:
         """
         Import one or more .ipynb files.
         This is not a command.  It must *not* have an event arg.
@@ -892,7 +892,7 @@ class LeoImportCommands:
         return p
 
     # @+node:ekr.20031218072017.3227: *5* ic.findFunctionDef
-    def findFunctionDef(self, s: str, i: int) -> Optional[str]:
+    def findFunctionDef(self, s: str, i: int) -> str | None:
         # Look at the next non-blank line for a function name.
         i = g.skip_ws_and_nl(s, i)
         k = g.skip_line(s, i)
@@ -1265,7 +1265,7 @@ class LeoImportCommands:
         if s:
             p.b = p.b + g.toUnicode(s, self.encoding)
 
-    def setBodyString(self, p: Position, s: str) -> None:
+    def setBodyString(self, p: Position, s: bytes | str) -> None:
         """
         Similar to c.setBodyString, but does not recolor the text or
         redraw the screen.
@@ -1506,7 +1506,7 @@ class MindMapImporter:
         return -1
 
     # @+node:ekr.20160503130810.5: *4* mindmap.csv_string
-    def csv_string(self, row: list[str]) -> str:
+    def csv_string(self, row: list[str]) -> str | None:
         """Return the string for the given csv row."""
         count = 0
         while count <= len(row):
@@ -1558,7 +1558,7 @@ class MORE_Importer:
                 c.redraw(p)
 
     # @+node:ekr.20161006101347.1: *3* MORE.import_file
-    def import_file(self, fileName: str) -> Optional[Position]:  # Not a command, so no event arg.
+    def import_file(self, fileName: str) -> Position | None:  # Not a command, so no event arg.
         c = self.c
         u = c.undoer
         ic = c.importCommands
@@ -1592,7 +1592,7 @@ class MORE_Importer:
         return None
 
     # @+node:ekr.20031218072017.3215: *3* MORE.import_lines
-    def import_lines(self, strings: list[str], first_p: Position) -> Position:
+    def import_lines(self, strings: list[str], first_p: Position) -> Position | None:
         c = self.c
         if not strings:
             return None
@@ -1732,7 +1732,7 @@ class RecursiveImportController:
         self,
         c: Cmdr,
         *,  # All other args are kwargs.
-        dir_: Optional[str],
+        dir_: str | None,
         ignore_pattern: re.Pattern = None,
         kind: str,
         recursive: bool = True,
@@ -1748,7 +1748,7 @@ class RecursiveImportController:
         self.recursive = recursive
         self.root: Position = None
         file_name = c.fileName()
-        self.outline_directory: Optional[str] = os.path.dirname(file_name) if file_name else None
+        self.outline_directory: str | None = os.path.dirname(file_name) if file_name else None
         self.safe_at_file = safe_at_file
         self.theTypes = theTypes
         self.verbose = verbose
@@ -1947,7 +1947,7 @@ class RecursiveImportController:
             c.deletePositionsInList(aList)  # Don't redraw.
 
     # @+node:ekr.20230829043849.1: *3* ric_resolve_dir_arg
-    def resolve_dir_arg(self, arg: str) -> Optional[str]:
+    def resolve_dir_arg(self, arg: str) -> str | None:
         """
         arg can be None or a path (relative or absolute) to a file or
         directory.
@@ -1984,7 +1984,7 @@ class RecursiveImportController:
         return arg
 
     # @+node:ekr.20130823083943.12613: *3* ric.run
-    def run(self, dir_: Optional[str]) -> None:
+    def run(self, dir_: str | None) -> None:
         """
         dir_ can be None, a directory contained in the outline's directory, or a single file.
 
@@ -2450,7 +2450,7 @@ class ZimImportController:
         self.zimNodeName = c.config.getString('zim-node-name') or 'Imported Zim Tree'
 
     # @+node:ekr.20141210051628.28: *3* zic.parseZimIndex
-    def parseZimIndex(self) -> list[tuple[int, str, list[str]]]:
+    def parseZimIndex(self) -> list[tuple[int, str, list[str]]] | None:
         """
         Parse Zim wiki index.rst and return a list of tuples (level, name, path) or None.
         """
@@ -2588,7 +2588,7 @@ class LegacyExternalFileImporter:
             print('orphan line: ', repr(line))
 
     # @+node:ekr.20200424160847.1: *3* legacy.compute_delim1
-    def compute_delim1(self, path: str) -> str:
+    def compute_delim1(self, path: str) -> str | None:
         """Return the opening comment delim for the given file."""
         junk, ext = os.path.splitext(path)
         if not ext:
