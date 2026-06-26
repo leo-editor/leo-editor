@@ -2742,7 +2742,7 @@ class VNode:
     def setAllAncestorAtFileNodesDirty(self, *, to_do_set: set[VNode] = None) -> None:
         """Set all ancestor @<file> nodes dirty."""
         v = self
-        for v2 in v.findAllAncestorAtFileNodes():
+        for v2 in v.findAllAncestorAtFileNodes(to_do_set = to_do_set):
             v2.setDirty()
 
     # @+node:ekr.20040315032144: *4* v.setBodyString & v.setHeadString
