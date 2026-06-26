@@ -150,14 +150,7 @@ class BaseLeoPlugin:
 
     - setCommand::
 
-            def setCommand(
-        self,
-        commandName: str,
-        handler: Callable,
-        shortcut: Any=None,
-        pane: str='all',
-        verbose: bool=True,
-    ) -> None:
+        def setCommand(self, commandName: str, handler: Callable, pane: str='all') -> None:
 
     - setMenuItem::
 
@@ -172,8 +165,6 @@ class BaseLeoPlugin:
     :commandName:  the string typed into minibuffer to execute the ``handler``
 
     :handler:  the method in the class which actually does the work
-
-    :shortcut:  the key combination to activate the command
 
     :menu:  a string designating on of the menus ('File', Edit', 'Outline', ...)
 
@@ -195,9 +186,6 @@ class BaseLeoPlugin:
                 self.setCommand('Hello', self.hello)
                 self.setButton()
                 self.setMenuItem('Cmds')
-
-                # create a command with a shortcut
-                self.setCommand('Hola', self.hola, 'Alt-Ctrl-H')
 
                 # create a button using different text than commandName
                 self.setButton('Hello in Spanish')
@@ -237,19 +225,16 @@ class BaseLeoPlugin:
         self,
         commandName: str,
         handler: Callable,
-        shortcut: str = '',
+        *,  # #4755
         pane: str = 'all',
-        verbose: bool = True,
+        shortcut: str = '',  # No longer used
+        verbose: bool = True,  # No longer used
     ) -> None:
-        """Associate a command name with handler code,
-        optionally defining a keystroke shortcut
-        """
+        """Associate a command name with handler code."""
         self.commandNames.append(commandName)
         self.commandName = commandName
-        self.shortcut = shortcut
         self.handler = handler
-        # #4087: k.registerCommand no longer supports the 'shortcut' kwarg.
-        self.c.k.registerCommand(commandName, handler, pane=pane, verbose=verbose)
+        self.c.k.registerCommand(commandName, handler, pane=pane)
 
     # @+node:ekr.20100908125007.6014: *3* BaseLeoPlugin.setMenuItem
     def setMenuItem(
