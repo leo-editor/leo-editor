@@ -3824,7 +3824,7 @@ class KeyHandlerClass:
         return False
 
     # @+node:ekr.20091230094319.6240: *6* k.getPaneBinding & helper
-    def getPaneBinding(self, event: LeoKeyEvent) -> g.BindingInfo:
+    def getPaneBinding(self, event: LeoKeyEvent) -> g.BindingInfo | None:
         c, k, state = self.c, self, self.unboundKeyAction
         stroke, w = event.stroke, event.w
         if not g.assert_is(stroke, g.KeyStroke):
@@ -3860,7 +3860,7 @@ class KeyHandlerClass:
         name: str,
         stroke: Stroke,
         w: QTextMixin,
-    ) -> g.BindingInfo:
+    ) -> g.BindingInfo | None:
         """Find a binding for the widget with the given name."""
         c, k = self.c, self
         trace = 'keys' in g.app.debug
