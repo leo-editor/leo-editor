@@ -518,10 +518,10 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         if not fn2:
             return
         s1, e = g.readFileIntoString(fn)
-        if s1 is None:
+        if not s1:
             return
         s2, e = g.readFileIntoString(fn2)
-        if s2 is None:
+        if not s2:
             return
         lines1, lines2 = g.splitLines(s1), g.splitLines(s2)
         aList = difflib.ndiff(lines1, lines2)

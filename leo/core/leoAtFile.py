@@ -327,7 +327,7 @@ class AtFile:
             g.red(f"file not found: {fn}")
             return
         s, e = g.readFileIntoString(fn)
-        if s is None:
+        if not s:
             g.red(f"empty file: {fn}")
             return
         #
@@ -678,7 +678,7 @@ class AtFile:
         # Remember the full fileName.
         at.rememberReadPath(fn, p)
         s, e = g.readFileIntoString(fn, kind='@edit')
-        if s is None:
+        if not s:
             return
         encoding = 'utf-8' if e is None else e
         # Delete all children.
@@ -842,7 +842,7 @@ class AtFile:
         # Fix bug 889175: Remember the full fileName.
         at.rememberReadPath(fn, p)
         s, e = g.readFileIntoString(fn, kind='@edit')
-        if s is None:
+        if not s:
             return
         encoding = 'utf-8' if e is None else e
         # Delete all children.
