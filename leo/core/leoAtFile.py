@@ -14,14 +14,16 @@ import sys
 import tabnanny
 import time
 import tokenize
-from typing import Any, TYPE_CHECKING
+import typing
+from typing import cast, Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
+from leo.core.leoNodes import Position
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
-    from leo.core.leoNodes import Position, VNode
+    from leo.core.leoNodes import VNode
 
     Args = Any
     Value = Any
@@ -122,8 +124,8 @@ class AtFile:
         self.fileCommands = c.fileCommands
         # Basic status vars.
         self.errors = 0
-        self.language: str = None
-        self.root: Position = None
+        self.language = cast(str, None)
+        self.root = cast(Position, None)
         # Dialogs.
         self.canCancelFlag = False
         self.cancelFlag = False
@@ -135,11 +137,11 @@ class AtFile:
         self.readVersion = ''
         self.read_i = 0
         self.read_lines: list[str] = []
-        self.startSentinelComment = ""
-        self.endSentinelComment = ""
+        self.startSentinelComment: str | None = ""
+        self.endSentinelComment: str | None = ""
         # Writing.
         self.indent = 0  # write indentation, in blanks.
-        self.outputFile: io.StringIO = None
+        self.outputFile: io.StringIO | None = None
         self.outputList: list[str] = []
         self.sentinels = False
         self.section_delim1 = '<<'
@@ -148,11 +150,11 @@ class AtFile:
         self.unchangedFiles = 0
         # User settings.
         self.at_auto_encoding = 'utf-8'
-        self.encoding = 'utf-8'
-        self.explicitLineEnding: bool = None
+        self.encoding: str = 'utf-8'
+        self.explicitLineEnding = False  # #4755
         self.force_newlines_in_at_nosent_bodies = False
         self.output_newline = g.getOutputNewline(c=c)
-        self.page_width: int = None
+        self.page_width = 0  # #4755
         self.tab_width: int = c.tab_width or -4
         # User switches: set in reloadSettings.
         self.beautifyOnWrite = False
@@ -196,12 +198,12 @@ class AtFile:
         at.sentinels = False
         at.section_delim1 = '<<'
         at.section_delim2 = '>>'
-        at.targetFileName = None
+        at.targetFileName = ''  # #4755
         # at.unchangedFiles = 0  # Only at.writeAll should init this ivar.
         # User settings.
         at.at_auto_encoding = c.config.default_at_auto_file_encoding or 'utf-8'
         at.encoding = c.config.default_derived_file_encoding or 'utf-8'
-        at.explicitLineEnding = None
+        at.explicitLineEnding = False  # #4755
         at.force_newlines_in_at_nosent_bodies = False
         at.output_newline = g.getOutputNewline(c=c)
         at.page_width = c.page_width or 132
@@ -261,7 +263,7 @@ class AtFile:
 
         # targetFileName can be empty for unit tests & @command nodes.
         if not targetFileName:  # pragma: no cover
-            targetFileName = root.h if g.unitTesting else None
+            targetFileName = root.h if g.unitTesting else ''  # #4755
             at.targetFileName = targetFileName  # For at.writeError only.
             return targetFileName
 
@@ -354,7 +356,7 @@ class AtFile:
             g.red(f"file not found: {path}")
 
     # @+node:ekr.20041005105605.19: *5* at.openFileForReading & helper
-    def openFileForReading(self, fromString: str = None) -> tuple[str | None, str | None]:
+    def openFileForReading(self, fromString: str | None = None) -> tuple[str | None, str | None]:
         """
         Open the file given by at.root.
         This will be the private file for @shadow nodes.
@@ -408,7 +410,7 @@ class AtFile:
         return shadow_fn
 
     # @+node:ekr.20041005105605.21: *5* at.read & helpers
-    def read(self, root: Position, fromString: str = None) -> bool:
+    def read(self, root: Position, fromString: str | None = None) -> bool:
         """Read an @thin or @file tree."""
         at, c = self, self.c
         fileName = c.fullPath(root)
@@ -435,6 +437,8 @@ class AtFile:
             return False
 
         # Read the file!
+        fileName = cast(str, fileName)
+        file_s = cast(str, file_s)
         root.clearVisitedInTree()
         gnx2vnode = c.fileCommands.gnxDict
         contents = fromString or file_s
@@ -723,7 +727,7 @@ class AtFile:
         return p  # For #451: return p.
 
     # @+node:ekr.20150204165040.5: *5* at.readOneAtCleanNode & helpers
-    def readOneAtCleanNode(self, root: Position, *, new_contents: str = None) -> None:
+    def readOneAtCleanNode(self, root: Position, *, new_contents: str | None = None) -> None:
         """Update the @clean/@nosent node at root."""
         at, c, x = self, self.c, self.c.shadowController
 
@@ -990,6 +994,7 @@ class AtFile:
         at.read_lines = g.splitLines(s)
 
     # @+node:ekr.20041005105605.120: *5* at.parseLeoSentinel
+    @typing.no_type_check
     def parseLeoSentinel(self, s: str) -> tuple[bool, bool, str, str, bool]:
         """
         Parse the sentinel line s.
@@ -1080,18 +1085,16 @@ class AtFile:
     def openFileHelper(self, fileName: str) -> bytes:  # *not* str!
         """Open a file, reporting all exceptions."""
         at = self
-        # #1798: return None as a flag on any error.
-        s = None
         try:
             with open(fileName, 'rb') as f:
-                s = f.read()
+                return f.read()
         except IOError:  # pragma: no cover
             if not g.unitTesting:
                 at.error(f"can not open {fileName}")
         except Exception:  # pragma: no cover
             at.error(f"Exception reading {fileName}")
             g.es_exception()
-        return s
+        return b''  # #4755
 
     # @+node:ekr.20130911110233.11287: *6* at.getEncodingFromHeader
     def getEncodingFromHeader(self, fileName: str, s: str) -> str:
@@ -1109,7 +1112,7 @@ class AtFile:
             at.initReadLine(s)
             old_encoding = at.encoding
             assert old_encoding
-            at.encoding = None
+            at.encoding = ''  # #4755
             # Execute scanHeader merely to set at.encoding.
             at.scanHeader(fileName, giveErrors=False)
             e = at.encoding or old_encoding
@@ -1188,7 +1191,7 @@ class AtFile:
         at.readFileToUnicode(fileName)
         # scanHeader uses at.readline instead of its args.
         # scanHeader also sets at.encoding.
-        junk1, junk2, isThin = at.scanHeader(None)
+        junk1, junk2, isThin = at.scanHeader('')  # #4755
         return isThin
 
     # @+node:ekr.20041005105605.132: *3* at.Writing
@@ -1479,7 +1482,7 @@ class AtFile:
         if not changed:
             return
         ok = at.promptForDangerousWrite(
-            fileName=None,
+            fileName='',  # #4755
             message=(
                 f"{g.tr('path changed for %s' % (p.h))}\n"
                 f"{g.tr('write this file anyway?')}"
@@ -1490,7 +1493,7 @@ class AtFile:
         at.setPathUa(p, newPath)  # Remember that we have changed paths.
 
     # @+node:ekr.20190109172025.1: *5* at.writeAtAutoContents
-    def writeAtAutoContents(self, fileName: str, root: Position) -> str:  # pragma: no cover
+    def writeAtAutoContents(self, fileName: str, root: Position) -> str | None:  # pragma: no cover
         """Common helper for atAutoToString and writeOneAtAutoNode."""
         at, c = self, self.c
         # Dispatch the proper writer.
@@ -2321,7 +2324,7 @@ class AtFile:
         return True
 
     # @+node:ekr.20041005105605.199: *6* at.findSectionName
-    def findSectionName(self, s: str, i: int, p: Position) -> tuple[str, int, int]:
+    def findSectionName(self, s: str, i: int, p: Position) -> tuple[str | None, int, int]:
         """
         Return n1, n2 representing a section name.
 
@@ -2376,7 +2379,7 @@ class AtFile:
             # Python sentinels *only* may contain a space between '#' and '@'
             if g.match(s, k, '#@') or g.match(s, k, '# @'):
                 put_verbatim_sentinel()
-        elif g.match(s, k, self.startSentinelComment + "@"):
+        elif g.match(s, k, self.startSentinelComment + "@"):  # type:ignore
             put_verbatim_sentinel()
 
         # Don't put any whitespace in otherwise blank lines.
@@ -2430,7 +2433,7 @@ class AtFile:
         at = self
         if not at.endSentinelComment:
             at.putIndent(at.indent)
-            at.os(at.startSentinelComment)
+            at.os(at.startSentinelComment)  # type:ignore
             # #1496: Retire the @doc convention.
             #        Remove the blank.
             # at.oblank()
@@ -2453,7 +2456,7 @@ class AtFile:
         # Write the line as it is.
         at.putIndent(at.indent)
         if not at.endSentinelComment:
-            at.os(at.startSentinelComment)
+            at.os(at.startSentinelComment)  # type:ignore
             # #1496: Retire the @doc convention.
             #        Leave this blank. The line is not blank.
             at.oblank()
@@ -2487,7 +2490,7 @@ class AtFile:
         # Put the opening comment if we are using block comments.
         if at.endSentinelComment:
             at.putIndent(at.indent)
-            at.os(at.startSentinelComment)
+            at.os(at.startSentinelComment)  # type:ignore
             at.onl()
 
     # @+node:ekr.20041005105605.187: *4* Writing sentinels...
@@ -2564,6 +2567,7 @@ class AtFile:
         # Leo 4.7: we never write tnodeLists.
 
     # @+node:ekr.20041005105605.194: *5* at.putSentinel (applies cweb hack) 4.x
+    @typing.no_type_check
     def putSentinel(self, s: str) -> None:
         """
         Write a sentinel whose text is s, applying the CWEB hack if needed.
@@ -2642,7 +2646,7 @@ class AtFile:
         """Report a syntax error."""
         g.error(f"Syntax error in: {p.h}")
         typ, val, tb = sys.exc_info()
-        message = hasattr(val, 'message') and val.message
+        message = getattr(val, 'message', None)  # #4755
         if message:
             g.es_print(message)
         if val is None:
@@ -3068,7 +3072,7 @@ class AtFile:
     def replaceFile(
         self,
         contents: str,
-        encoding: str,
+        encoding: str | None,
         fileName: str,
         root: Position,
         ignoreBlankLines: bool = False,
@@ -3202,6 +3206,7 @@ class AtFile:
             at.section_delim2 = '>>'
 
     # @+node:ekr.20090514111518.5665: *5* at.tabNannyNode
+    @typing.no_type_check
     def tabNannyNode(self, p: Position, body: str) -> None:
         try:
             readline = g.ReadLinesClass(body).next
@@ -3265,6 +3270,7 @@ class AtFile:
         at.addToOrphanList(at.root)
 
     # @+node:ekr.20041005105605.218: *5* at.writeException
+    @typing.no_type_check
     def writeException(self, fileName: str, root: Position) -> None:  # pragma: no cover
         at = self
         g.error("exception writing:", fileName)
@@ -3324,7 +3330,7 @@ class AtFile:
             return False
 
     # @+node:ekr.20050104132026: *5* at.stat
-    def stat(self, fileName: str) -> int:  # pragma: no cover
+    def stat(self, fileName: str) -> int | None:  # pragma: no cover
         """Return the access mode of named file, removing any setuid, setgid, and sticky bits."""
         # Do _not_ call self.error here.
         try:
@@ -3349,7 +3355,7 @@ class AtFile:
 
     # @+node:ekr.20090712050729.6017: *4* at.promptForDangerousWrite
     def promptForDangerousWrite(
-        self, fileName: str, message: str = None
+        self, fileName: str, message: str | None = None
     ) -> bool:  # pragma: no cover
         """Raise a dialog asking the user whether to overwrite an existing file."""
         at, c, root = self, self.c, self.root
@@ -3497,21 +3503,21 @@ class FastAtRead:
         assert gnx2vnode is not None
         # The global fc.gnxDict. Keys are gnx's, values are vnodes.
         self.gnx2vnode: dict[str, VNode] = gnx2vnode
-        self.path: str = None
-        self.root: Position = None
+        self.path = cast(str, None)
+        self.root = cast(Position, None)
         # compiled patterns...
-        self.after_pat: re.Pattern = None
-        self.all_pat: re.Pattern = None
-        self.code_pat: re.Pattern = None
-        self.comment_pat: re.Pattern = None
-        self.delims_pat: re.Pattern = None
-        self.doc_pat: re.Pattern = None
-        self.first_pat: re.Pattern = None
-        self.last_pat: re.Pattern = None
-        self.node_start_pat: re.Pattern = None
-        self.others_pat: re.Pattern = None
-        self.ref_pat: re.Pattern = None
-        self.section_delims_pat: re.Pattern = None
+        self.after_pat = cast(re.Pattern, None)
+        self.all_pat = cast(re.Pattern, None)
+        self.code_pat = cast(re.Pattern, None)
+        self.comment_pat = cast(re.Pattern, None)
+        self.delims_pat = cast(re.Pattern, None)
+        self.doc_pat = cast(re.Pattern, None)
+        self.first_pat = cast(re.Pattern, None)
+        self.last_pat = cast(re.Pattern, None)
+        self.node_start_pat = cast(re.Pattern, None)
+        self.others_pat = cast(re.Pattern, None)
+        self.ref_pat = cast(re.Pattern, None)
+        self.section_delims_pat = cast(re.Pattern, None)
 
     # @+node:ekr.20180602103135.3: *3* fast_at.get_patterns
     def get_patterns(self, comment_delims: tuple) -> None:
@@ -4061,8 +4067,7 @@ class FastAtRead:
         # Set the body text.
         assert root_v.gnx in gnx2vnode, root_v
         assert root_v.gnx in gnx2body, root_v
-        for key in gnx2body:
-            body = gnx2body.get(key)
+        for key, body in gnx2body.items():  # #4755
             v = gnx2vnode.get(key)
             assert v, (key, v)
             v._bodyString = g.toUnicode(''.join(body))
