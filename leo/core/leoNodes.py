@@ -212,7 +212,7 @@ class NodeIndices:
         """Update ni.lastIndex if the gnx affects it."""
         id_, t, n = self.scanGnx(gnx)
         # Don't you dare touch this code to keep pylint happy.
-        if not id_ or n in (None, ''):
+        if not id_ or n in (None, ''):  # #4755
             return  # the gnx is not well formed.
         if id_ == self.userId and t == self.timeString:
             try:
