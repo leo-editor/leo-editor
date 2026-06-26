@@ -738,11 +738,6 @@ class KeyStroke:
     # @+node:ekr.20180414195401.2: *4*  ks.__init__
     def __init__(self, binding: str) -> None:
         self.s = self.finalize_binding(binding)
-        ###
-        # if binding:
-        #     self.s = self.finalize_binding(binding)
-        # else:
-        #     self.s = None
 
     # @+node:ekr.20120203053243.10117: *4* ks.__eq__, etc
     # All these must be defined in order to say, for example:
@@ -5843,15 +5838,7 @@ def toUnicode(s: bytes | str, encoding: str | None = None, reportErrors: bool = 
         return s.decode(encoding, 'strict')
     except (UnicodeDecodeError, UnicodeError):
         # https://wiki.python.org/moin/UnicodeDecodeError
-        s = s.decode(encoding, 'replace')
-        ###
-        if g.unitTesting:
-            g.trace(f"{tag} unicode error. encoding: {encoding!r} len(s): {len(s)}")
-            g.trace(g.callers())
-        elif reportErrors:
-            g.printObj(s, tag=f"{tag} unicode error. encoding: {encoding!r}")
-            g.trace(g.callers())
-        return s
+        return s.decode(encoding, 'replace')
     except Exception:
         g.es_exception()
         g.error(f"{tag}: unexpected error! encoding: {encoding!r}, s:\n{s!r}")
