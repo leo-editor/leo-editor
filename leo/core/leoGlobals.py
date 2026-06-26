@@ -474,7 +474,7 @@ class BindingInfo:
         kind: str,
         commandName: str = '',
         func: Callable | None = None,
-        nextMode: str | None = None,
+        nextMode: str = 'none',  # #4755
         pane: str | None = None,
         stroke: KeyStroke | None = None,
     ) -> None:

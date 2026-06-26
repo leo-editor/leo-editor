@@ -859,7 +859,7 @@ class ParserBaseClass:
         command-name --> same = binding
         """
         s = s.replace('\x7f', '')  # Can happen on MacOS. Very weird.
-        name = val = nextMode = None
+        name = val = None
         nextMode = 'none'
         i = g.skip_ws(s, 0)
         if g.match(s, i, '-->'):  # New in 4.4.1: allow mode-entry commands.

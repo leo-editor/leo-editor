@@ -4205,7 +4205,7 @@ class KeyHandlerClass:
         commandName: str = None,
         func: Callable = None,
         modeName: str = None,
-        nextMode: str = None,
+        nextMode: str = 'none',  # #4755
         prompt: str = None,
     ) -> None:
         """Handle a mode defined by an @mode node in leoSettings.leo."""
@@ -4240,7 +4240,7 @@ class KeyHandlerClass:
                 func(event)
                 if g.app.quitting or not c.exists:
                     pass
-                elif nextMode in (None, 'none'):
+                elif nextMode == 'none':  # #4755
                     # Do *not* clear k.inputModeName or the focus here.
                     # func may have put us in *another* mode.
                     pass
