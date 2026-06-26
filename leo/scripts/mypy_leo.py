@@ -30,12 +30,15 @@ if 0:
     args = ''
     files = 'leo'
 else:
-    files = 'leo/core/leoAtFile.py'  # 64 errors.
+    files = 'leo/core/leoColorizer.py'
     # fail
-    # files = 'leo/core'  # 1363 errors
+    # files = 'leo/core'  # 3000 errors
+
     # pass
-    # 'leo/core/leoNodes.py'
-    #'leo/core/leoGlobals.py'
+    # files = 'leo/core/leoGlobals.py'
+    # files = 'leo/core/leoNodes.py'
+    # files = 'leo/core/leoAtFile.py'
+
     if 1:  # For testing one file.
         args = '--follow-imports=skip'
     else:  # Safe.
