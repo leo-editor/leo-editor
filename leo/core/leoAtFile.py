@@ -18,12 +18,11 @@ import typing
 from typing import cast, Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
-from leo.core.leoNodes import Position
+from leo.core.leoNodes import Position, VNode
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
-    from leo.core.leoNodes import VNode
 
     Args = Any
     Value = Any
@@ -499,7 +498,7 @@ class AtFile:
         c.raise_error_dialogs()
 
     # @+node:ekr.20250711132317.1: *6* at.clone_all_changed_vnodes
-    def clone_all_changed_vnodes(self) -> Position:
+    def clone_all_changed_vnodes(self) -> Position | None:
         """
         Make clones of all changed VNodes.
 
@@ -3602,7 +3601,7 @@ class FastAtRead:
         #
         # Simple vars...
         afterref = False  # True: the next line follows @afterref.
-        clone_v: VNode = None  # The root of the clone tree.
+        clone_v = cast(VNode, None)  # The root of the clone tree.
         # The start/end *comment* delims.
         # Important: scan_header ends comment_delim1 with a blank when using black sentinels.
         comment_delim1, comment_delim2 = comment_delims
@@ -3634,7 +3633,7 @@ class FastAtRead:
         context = self.c
         parent_v = self.root.v
         root_v = parent_v  # Does not change.
-        level_stack.append((root_v, None))
+        level_stack.append((root_v, cast(VNode, None)))
 
         # Init the gnx dict last.
         gnx2vnode = self.gnx2vnode  # Keys are gnx's, values are vnodes.
@@ -3755,7 +3754,7 @@ class FastAtRead:
                 #         #3931: Always use root_v, but use the gnx from external file!
                 if not root_seen:
                     root_seen = True
-                    clone_v = None
+                    clone_v = cast(VNode, None)
                     v = root_v
                     if root_v.gnx != gnx:
                         # Delete all traces of root_v.gnx.

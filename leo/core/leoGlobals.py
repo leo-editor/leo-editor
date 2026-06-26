@@ -700,7 +700,7 @@ class GeneralSetting:
         ivar: str = '',  # #4755
         source: str = '',  # #4755
         val: Value | None = None,
-        path: str | None = None,
+        path: str = '',  # #4755
         tag: str = 'setting',
         unl: str = '',  # #4755
     ) -> None:
@@ -3013,7 +3013,7 @@ def get_directives_dict(p: Position) -> dict[str, str]:
     d = {}
     # The headline has higher precedence because it is more visible.
     for kind, s in (('head', p.h), ('body', p.b)):
-        anIter = g.directives_pat.finditer(s)
+        anIter = g.directives_pat.finditer(s)  # type:ignore # anIter will exist
         for m in anIter:
             word = m.group(1).strip()
             i = m.start(1)
@@ -8213,10 +8213,13 @@ def handleUnl(unl_s: str, c: Cmdr) -> Cmdr | None:
 
 
 # @+node:tbrown.20090219095555.63: *3* g.handleUrl & helpers
-def handleUrl(url: str, c: Cmdr | None = None, p: Position | None = None) -> None:
+def handleUrl(url: str, c: Cmdr, p: Position | None = None) -> None:
     """Open a url or a unl."""
+    from leo.core.leoNodes import Position  # necessary for the cast.
+
     if c and not p:
         p = c.p
+    p = cast(Position, p)
     # These two special cases should match the hacks in jedit.match_any_url.
     if url.endswith('.'):
         url = url[:-1]
