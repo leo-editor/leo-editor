@@ -137,8 +137,8 @@ class AtFile:
         self.readVersion = ''
         self.read_i = 0
         self.read_lines: list[str] = []
-        self.startSentinelComment: str | None = ""
-        self.endSentinelComment: str | None = ""
+        self.startSentinelComment: str = ''
+        self.endSentinelComment: str = ''
         # Writing.
         self.indent = 0  # write indentation, in blanks.
         self.outputFile: io.StringIO | None = None
@@ -217,14 +217,14 @@ class AtFile:
         self.initAllIvars(root)
 
     # @+node:ekr.20041005105605.15: *4* at.initWriteIvars
-    def initWriteIvars(self, root: Position) -> str | None:
+    def initWriteIvars(self, root: Position) -> str:
         """
         Compute default values of all write-related ivars.
         Return the finalized name of the output file.
         """
         at, c = self, self.c
         if not c or not c.config:
-            return None  # pragma: no cover
+            return ''  # pragma: no cover
 
         make_dirs = c.config.getBool('create-nonexistent-directories', default=False)
         assert at.checkPythonCodeOnWrite is not None
@@ -280,7 +280,7 @@ class AtFile:
             ok = g.makeAllNonExistentDirectories(root_dir)
             if not ok:
                 g.error(f"Error creating directories: {root_dir}")
-                return None
+                return ''
 
         # Return the target file name, regardless of future problems.
         return targetFileName
@@ -356,7 +356,7 @@ class AtFile:
             g.red(f"file not found: {path}")
 
     # @+node:ekr.20041005105605.19: *5* at.openFileForReading & helper
-    def openFileForReading(self, fromString: str | None = None) -> tuple[str | None, str | None]:
+    def openFileForReading(self, fromString: str = '') -> tuple[str, str]:
         """
         Open the file given by at.root.
         This will be the private file for @shadow nodes.
@@ -366,9 +366,9 @@ class AtFile:
         if fromString:  # pragma: no cover
             if is_at_shadow:  # pragma: no cover
                 at.error('can not call at.read from string for @shadow files')
-                return None, None
+                return '', ''
             at.initReadLine(fromString)
-            return None, None
+            return '', ''
         #
         # Not from a string. Carefully read the file.
         # Returns full path, including file name.
@@ -378,7 +378,7 @@ class AtFile:
         if is_at_shadow:  # pragma: no cover
             fn = at.openAtShadowFileForReading(fn)
             if not fn:
-                return None, None
+                return '', ''
         assert fn
         try:
             # Sets at.encoding, regularizes whitespace and calls at.initReadLines.
@@ -386,15 +386,15 @@ class AtFile:
             # #1466.
             if s is None:  # pragma: no cover
                 # The error has been given.
-                return None, None
+                return '', ''
             at.warnOnReadOnlyFile(fn)
         except Exception:  # pragma: no cover
             at.error(f"unexpected exception opening: '@file {fn}'")
-            fn, s = None, None
+            fn, s = '', ''
         return fn, s
 
     # @+node:ekr.20150204165040.4: *6* at.openAtShadowFileForReading
-    def openAtShadowFileForReading(self, fn: str) -> str | None:  # pragma: no cover
+    def openAtShadowFileForReading(self, fn: str) -> str:  # pragma: no cover
         """Open an @shadow for reading and return shadow_fn."""
         at = self
         x = at.c.shadowController
@@ -404,13 +404,13 @@ class AtFile:
         if not shadow_exists:
             g.trace('can not happen: no private file', shadow_fn, g.callers())
             at.error(f"can not happen: private file does not exist: {shadow_fn}")
-            return None
+            return ''
         # This method is the gateway to the shadow algorithm.
         x.updatePublicAndPrivateFiles(at.root, fn, shadow_fn)
         return shadow_fn
 
     # @+node:ekr.20041005105605.21: *5* at.read & helpers
-    def read(self, root: Position, fromString: str | None = None) -> bool:
+    def read(self, root: Position, fromString: str = '') -> bool:
         """Read an @thin or @file tree."""
         at, c = self, self.c
         fileName = c.fullPath(root)
@@ -727,7 +727,7 @@ class AtFile:
         return p  # For #451: return p.
 
     # @+node:ekr.20150204165040.5: *5* at.readOneAtCleanNode & helpers
-    def readOneAtCleanNode(self, root: Position, *, new_contents: str | None = None) -> None:
+    def readOneAtCleanNode(self, root: Position, *, new_contents: str = '') -> None:
         """Update the @clean/@nosent node at root."""
         at, c, x = self, self.c, self.c.shadowController
 
@@ -1049,7 +1049,7 @@ class AtFile:
         return valid, new_df, start, end, isThin
 
     # @+node:ekr.20130911110233.11284: *5* at.readFileToUnicode & helpers
-    def readFileToUnicode(self, fileName: str) -> str | None:  # pragma: no cover
+    def readFileToUnicode(self, fileName: str) -> str:  # pragma: no cover
         """
         Carefully sets at.encoding, then uses at.encoding to convert the file
         to a unicode string.
@@ -1066,7 +1066,7 @@ class AtFile:
         s_bytes = at.openFileHelper(fileName)  # Catches all exceptions.
         # #1798.
         if not s_bytes:
-            return None  # Not ''.
+            return ''  # #4755
         e, s_bytes = g.stripBOM(s_bytes)
         if e:
             # The BOM determines the encoding unambiguously.
@@ -1493,7 +1493,7 @@ class AtFile:
         at.setPathUa(p, newPath)  # Remember that we have changed paths.
 
     # @+node:ekr.20190109172025.1: *5* at.writeAtAutoContents
-    def writeAtAutoContents(self, fileName: str, root: Position) -> str | None:  # pragma: no cover
+    def writeAtAutoContents(self, fileName: str, root: Position) -> str:  # pragma: no cover
         """Common helper for atAutoToString and writeOneAtAutoNode."""
         at, c = self, self.c
         # Dispatch the proper writer.
@@ -1520,7 +1520,7 @@ class AtFile:
             at.putFile(root, sentinels=False)
             return '' if at.errors else ''.join(at.outputList)
         except Exception:
-            return None
+            return ''
         finally:
             g.app.allow_undefined_refs = False
 
@@ -1690,14 +1690,14 @@ class AtFile:
             aClass = d.get(key)
             if aClass and g.match_word(root.h, 0, key):
 
-                def writer_for_at_auto_cb(root: Position) -> str | None:
+                def writer_for_at_auto_cb(root: Position) -> str:
                     try:
                         writer = aClass(at.c)  # noqa
                         s = writer.write(root)
                         return s
                     except Exception:
                         g.es_exception()
-                        return None
+                        return ''
 
                 return writer_for_at_auto_cb
         return None
@@ -1710,12 +1710,12 @@ class AtFile:
         aClass = d.get(ext)
         if aClass:
 
-            def writer_for_ext_cb(root: Position) -> str | None:
+            def writer_for_ext_cb(root: Position) -> str:
                 try:
                     return aClass(at.c).write(root)
                 except Exception:
                     g.es_exception()
-                    return None
+                    return ''
 
             return writer_for_ext_cb
 
@@ -1929,7 +1929,7 @@ class AtFile:
             at.initWriteIvars(root)
             # Force python sentinels to suppress an error message.
             # The actual sentinels will be set below.
-            at.endSentinelComment = None
+            at.endSentinelComment = ''
             at.startSentinelComment = "#"
             # Make sure we can compute the shadow directory.
             private_fn = x.shadowPathName(full_path)
@@ -2109,7 +2109,7 @@ class AtFile:
             c.endEditing()
             at.initWriteIvars(root)
             if forcePythonSentinels:
-                at.endSentinelComment = None
+                at.endSentinelComment = ''
                 at.startSentinelComment = "#"
                 at.language = "python"
             at.sentinels = sentinels
@@ -2324,7 +2324,7 @@ class AtFile:
         return True
 
     # @+node:ekr.20041005105605.199: *6* at.findSectionName
-    def findSectionName(self, s: str, i: int, p: Position) -> tuple[str | None, int, int]:
+    def findSectionName(self, s: str, i: int, p: Position) -> tuple[str, int, int]:
         """
         Return n1, n2 representing a section name.
 
@@ -2355,7 +2355,7 @@ class AtFile:
                 g.es_print('Ignoring apparent section reference:', color='red')
                 g.es_print('Node: ', p.h)
                 g.es_print('Line: ', s[i1:i2].rstrip())
-        return None, 0, 0
+        return '', 0, 0
 
     # @+node:ekr.20041005105605.174: *6* at.putCodeLine
     def putCodeLine(self, s: str, i: int) -> None:
@@ -3072,7 +3072,7 @@ class AtFile:
     def replaceFile(
         self,
         contents: str,
-        encoding: str | None,
+        encoding: str,
         fileName: str,
         root: Position,
         ignoreBlankLines: bool = False,
@@ -3354,9 +3354,7 @@ class AtFile:
         p.v.tempAttributes['read-path'] = d
 
     # @+node:ekr.20090712050729.6017: *4* at.promptForDangerousWrite
-    def promptForDangerousWrite(
-        self, fileName: str, message: str | None = None
-    ) -> bool:  # pragma: no cover
+    def promptForDangerousWrite(self, fileName: str, message: str = '') -> bool:
         """Raise a dialog asking the user whether to overwrite an existing file."""
         at, c, root = self, self.c, self.root
         if at.cancelFlag:

@@ -1005,7 +1005,7 @@ class JEditColorizer(BaseColorizer):
 
         # @+<< function: resolve_color_key >>
         # @+node:ekr.20230314052558.1: *6* << function: resolve_color_key >>
-        def resolve_color_key(key: str) -> str | None:
+        def resolve_color_key(key: str) -> str:
             """
             Resolve the given color name to a *valid* color.
             """
@@ -1030,7 +1030,7 @@ class JEditColorizer(BaseColorizer):
                     else:
                         g.trace('Invalid @color setting:', key, color1)
                         break
-            return None  # Reasonable default.
+            return ''
 
         # @-<< function: resolve_color_key >>
 

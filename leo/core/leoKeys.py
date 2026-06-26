@@ -421,7 +421,7 @@ class AutoCompleterClass:
         return result
 
     # @+node:ekr.20061031131434.11: *4* ac.auto_completer_state_handler
-    def auto_completer_state_handler(self, event: LeoKeyEvent) -> str | None:
+    def auto_completer_state_handler(self, event: LeoKeyEvent) -> str:
         """Handle all keys while autocompleting."""
         c, k, tag = self.c, self.k, 'auto-complete'
         state = k.getState(tag)
@@ -477,7 +477,7 @@ class AutoCompleterClass:
         else:
             self.abort()
             return 'do-standard-keys'
-        return None
+        return ''
 
     # @+node:ekr.20061031131434.20: *4* ac.calltip & helpers
     def calltip(self) -> None:

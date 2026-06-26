@@ -659,7 +659,7 @@ class Commands:
         """
         c, p, tag = self, self.p, 'execute-general-script'
 
-        def get_setting_for_language(setting: str) -> str | None:
+        def get_setting_for_language(setting: str) -> str:
             """
             Return the setting from the given @data setting.
             The first colon ends each key.
@@ -668,7 +668,7 @@ class Commands:
                 key, val = s.split(':', 1)
                 if key.strip() == 'language':  # 2025/04/05.
                     return val.strip()
-            return None
+            return ''
 
         # Get the language and extension.
         language = c.getLanguage(p)
@@ -1756,7 +1756,7 @@ class Commands:
 
         # Passes 3 & 4: Use the file extension in @<file> nodes.
 
-        def get_language_from_headline(v: VNode) -> str | None:
+        def get_language_from_headline(v: VNode) -> str:
             """Return the extension for @<file> nodes."""
             if v.isAnyAtFileNode():
                 name = v.anyAtFileNodeName()
@@ -1765,7 +1765,7 @@ class Commands:
                 language = g.app.extension_dict.get(ext)
                 if g.isValidLanguage(language):
                     return language
-            return None
+            return ''
 
         # Pass 3: Use file extension in headline of @<file> in direct parents.
         for p2 in p.self_and_parents(copy=False):
@@ -1852,15 +1852,15 @@ class Commands:
     # https://en.wikipedia.org/wiki/Filename
     at_path_pattern = re.compile(r'^@path\s+(.+)$', re.MULTILINE)
 
-    def getPathFromNode(self, p: Position) -> str | None:
+    def getPathFromNode(self, p: Position) -> str:
         """
         Scan p.h then p.b for @path directives.
         """
         c = self
         c.scanAtPathDirectivesCount += 1  # An important statistic.
 
-        def get_path(m: re.Match) -> str | None:
-            return g.stripPathCruft(m.group(1)) if m else None
+        def get_path(m: re.Match) -> str:
+            return g.stripPathCruft(m.group(1)) if m else ''
 
         # The headline has higher precedence because it is more visible.
         paths: list[str] = []
@@ -1879,7 +1879,7 @@ class Commands:
                 f"Using the first path: @path {paths[0]}"
             )  # fmt: skip
             g.print_unique_message(message)
-        return paths[0] if paths else None
+        return paths[0] if paths else ''
 
     # @+node:ekr.20250404153250.1: *5* c.getTabWidth
     # Use a regex to avoid allocating temp strings.
@@ -3619,7 +3619,7 @@ class Commands:
         prefix: str = None,
         silent: bool = False,
         useTimeStamp: bool = True,
-    ) -> str | None:
+    ) -> str:
         """
         Back up given fileName or c.fileName().
         If useTimeStamp is True, append a timestamp to the filename.
@@ -3627,7 +3627,7 @@ class Commands:
         c = self
         fn = fileName or c.fileName()
         if not fn:
-            return None
+            return ''
         theDir, base = g.os_path_split(fn)
         if useTimeStamp:
             if base.endswith('.leo'):
@@ -5427,7 +5427,7 @@ class Commands:
     undoableDeletePositions = deletePositionsInList
 
     # @+node:ekr.20091211111443.6265: *4* c.doBatchOperations & helpers
-    def doBatchOperations(self, aList: list = None) -> None:
+    def doBatchOperations(self, aList: list | None = None) -> None:
         # Validate aList and create the parents dict
         if aList is None:
             aList = []
@@ -5469,7 +5469,7 @@ class Commands:
         self,
         regex: re.Pattern,
         flags: re.RegexFlag = re.IGNORECASE,
-        it: Iterable[Position] = None,
+        it: Iterable[Position] | None = None,
     ) -> list[Position]:
         """
         Return list of all Positions whose body matches the regex at least once.
@@ -5490,7 +5490,7 @@ class Commands:
         self,
         regex: re.Pattern,
         flags: re.RegexFlag = re.IGNORECASE,
-        it: Iterable[Position] = None,
+        it: Iterable[Position] | None = None,
     ) -> list[Position]:
         """
         Return list of all Positions whose headline matches the regex.

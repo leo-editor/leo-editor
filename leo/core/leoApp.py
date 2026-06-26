@@ -148,8 +148,8 @@ class LeoApp:
         self.start_fullscreen = False  # For qt_frame plugin.
         self.start_maximized = False  # For qt_frame plugin.
         self.start_minimized = False  # For qt_frame plugin.
-        self.trace_binding: str | None = None  # The name of a binding to trace, or None.
-        self.trace_setting: str | None = None  # The name of a setting to trace, or None.
+        self.trace_binding: str = ''  # The name of a binding to trace, or None.
+        self.trace_setting: str = ''  # The name of a setting to trace, or None.
         self.translateToUpperCase = False  # Never set to True.
         self.use_splash_screen = True  # True: put up a splash screen.
 
@@ -220,7 +220,7 @@ class LeoApp:
         self.sessionManager: SessionManager | None = None
 
         # Global status vars for the Commands class...
-        self.commandName: str | None = None  # The name of the command being executed.
+        self.commandName: str = ''  # The name of the command being executed.
         self.commandInterruptFlag = False  # True: command within a command.
         # @-<< LeoApp: global controller/manager objects >>
         # @+<< LeoApp: global importer/reader/writer data >>

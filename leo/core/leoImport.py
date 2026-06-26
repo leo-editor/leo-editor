@@ -1732,7 +1732,7 @@ class RecursiveImportController:
         self,
         c: Cmdr,
         *,  # All other args are kwargs.
-        dir_: str | None,
+        dir_: str,
         ignore_pattern: re.Pattern = None,
         kind: str,
         recursive: bool = True,
@@ -1748,7 +1748,7 @@ class RecursiveImportController:
         self.recursive = recursive
         self.root: Position = None
         file_name = c.fileName()
-        self.outline_directory: str | None = os.path.dirname(file_name) if file_name else None
+        self.outline_directory: str = os.path.dirname(file_name) if file_name else ''
         self.safe_at_file = safe_at_file
         self.theTypes = theTypes
         self.verbose = verbose

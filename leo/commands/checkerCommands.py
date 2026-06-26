@@ -686,7 +686,7 @@ class PylintCommand:
         return data[-1] if data and is_at_file else None
 
     # @+node:ekr.20150514125218.10: *3* 3. pylint.get_rc_file
-    def get_rc_file(self) -> str | None:
+    def get_rc_file(self) -> str:
         """Return the path to the pylint configuration file."""
         c = self.c
         base1 = '.pylintrc'  # Standard name.
@@ -716,10 +716,10 @@ class PylintCommand:
         table_s = '\n'.join(table)
         g.es_print(f"no pylint configuration file found in\n{table_s}")
         # g.es_print('Not found: .pylintrc and pylint-leo-rc.txt')
-        return None
+        return ''
 
     # @+node:ekr.20150514125218.9: *3* 4. pylint.get_fn
-    def get_fn(self, p: Position) -> str | None:
+    def get_fn(self, p: Position) -> str:
         """
         Finalize p's file name.
         Return if p is not an @file node for a python file.
@@ -728,7 +728,7 @@ class PylintCommand:
         fn = p.isAnyAtFileNode()
         if not fn:
             g.trace(f"not an @<file> node: {p.h!r}")
-            return None
+            return ''
         return c.fullPath(p)  # #1914
 
     # @+node:ekr.20150514125218.12: *3* 5. pylint.run_pylint

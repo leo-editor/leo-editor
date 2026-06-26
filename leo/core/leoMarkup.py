@@ -30,23 +30,23 @@ if TYPE_CHECKING:  # pragma: no cover
 
 # PR #4615: Defer calls to `which` until needed.
 @functools.cache
-def _asciidoctor_exec() -> str | None:
-    return which('asciidoctor')
+def _asciidoctor_exec() -> str:
+    return which('asciidoctor') or ''
 
 
 @functools.cache
-def _asciidoc3_exec() -> str | None:
-    return which('asciidoc3')
+def _asciidoc3_exec() -> str:
+    return which('asciidoc3') or ''
 
 
 @functools.cache
-def _pandoc_exec() -> str | None:
-    return which('pandoc')
+def _pandoc_exec() -> str:
+    return which('pandoc') or ''
 
 
 @functools.cache
-def _sphinx_build() -> str | None:
-    return which('sphinx-build')
+def _sphinx_build() -> str:
+    return which('sphinx-build') or ''
 
 
 # @-<< leoMarkup: cached functions >>

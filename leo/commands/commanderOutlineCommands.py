@@ -41,7 +41,7 @@ def copyOutline(self: Cmdr, event: LeoKeyEvent = None) -> str:
 
 # @+node:ekr.20220314071523.1: *3* c_oc.copyOutlineAsJson & helpers
 @g.commander_command('copy-node-as-json')
-def copyOutlineAsJSON(self: Cmdr, event: LeoKeyEvent = None) -> str | None:
+def copyOutlineAsJSON(self: Cmdr, event: LeoKeyEvent = None) -> str:
     """Copy the selected outline as JSON to the clipboard"""
     # Copying an outline has no undo consequences.
     c = self
@@ -51,7 +51,7 @@ def copyOutlineAsJSON(self: Cmdr, event: LeoKeyEvent = None) -> str | None:
     if g.app.inBridge:
         return s
     g.app.gui.replaceClipboardWith(s)
-    return None
+    return ''
 
 
 # @+node:ekr.20031218072017.1549: *3* c_oc.cutOutline
