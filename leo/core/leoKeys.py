@@ -14,7 +14,8 @@ import string
 import sys
 import textwrap
 import time
-from typing import Any, TYPE_CHECKING
+import typing
+from typing import cast, Any, TYPE_CHECKING
 from types import ModuleType
 from leo.core import leoGlobals as g
 from leo.external import codewise
@@ -190,9 +191,9 @@ class AutoCompleterClass:
         # additional namespaces to search for objects, other code
         # can append namespaces to this to extend scope of search
         self.namespaces: list[dict] = []
-        self.qcompleter: Callable = None
+        self.qcompleter = cast(Callable, None)
         self.qw = None  # The object that supports qcompletion methods.
-        self.tabName: str = None  # The name of the main completion tab.
+        self.tabName: str = ''  # The name of the main completion tab.
         self.verbose = False  # True: print all members, regardless of how many there are.
         self.w: Widget = None  # The widget that gets focus after autocomplete is done.
         self.warnings: dict[str, str] = {}  # Keys are language names.
@@ -388,7 +389,7 @@ class AutoCompleterClass:
             log.clearTab(self.tabName)
 
     # @+node:ekr.20110509064011.14556: *4* ac.attr_matches
-    def attr_matches(self, s: str, namespace: dict) -> list[str] | None:
+    def attr_matches(self, s: str, namespace: dict) -> list[str]:
         """Compute matches when string s is of the form name.name....name.
 
         Evaluates s using eval(s,namespace)
@@ -420,7 +421,7 @@ class AutoCompleterClass:
         return result
 
     # @+node:ekr.20061031131434.11: *4* ac.auto_completer_state_handler
-    def auto_completer_state_handler(self, event: LeoKeyEvent) -> str | None:
+    def auto_completer_state_handler(self, event: LeoKeyEvent) -> str:
         """Handle all keys while autocompleting."""
         c, k, tag = self.c, self.k, 'auto-complete'
         state = k.getState(tag)
@@ -476,7 +477,7 @@ class AutoCompleterClass:
         else:
             self.abort()
             return 'do-standard-keys'
-        return None
+        return ''
 
     # @+node:ekr.20061031131434.20: *4* ac.calltip & helpers
     def calltip(self) -> None:
@@ -536,7 +537,7 @@ class AutoCompleterClass:
             options = d.get(key)
             if options:
                 return key, options
-        return None, []
+        return '', []
 
     # @+node:ekr.20061031131434.29: *4* ac.do_backspace
     def do_backspace(self) -> None:
@@ -592,7 +593,6 @@ class AutoCompleterClass:
                 )
                 d[prefix] = aList
                 return aList
-        #
         # Not jedi. Use codewise.
         # Precompute the codewise completions for '.self'.
         if not self.codewiseSelfList:
@@ -600,13 +600,10 @@ class AutoCompleterClass:
             self.codewiseSelfList = [z[5:] for z in aList]
             d['self.'] = self.codewiseSelfList
         # Use the cached list if it exists.
-        aList = d.get(prefix)
-        if aList:
+        if aList := d.get(prefix, []):
             return aList
-        aList = (
-            # Prefer the Leo completions.
-            self.get_leo_completions(prefix) or self.get_codewise_completions(prefix)
-        )
+        # Prefer the Leo completions.
+        aList = self.get_leo_completions(prefix) or self.get_codewise_completions(prefix)
         d[prefix] = aList
         return aList
 
@@ -620,7 +617,7 @@ class AutoCompleterClass:
             kind, aList = self.guess_class(c, varname)
         else:
             kind, aList = 'none', []
-            varname, ivar = None, None
+            varname, ivar = '', ''  # #4755
         if aList:
             if kind == 'class':
                 hits = self.lookup_methods(aList, ivar)
@@ -1119,10 +1116,10 @@ class FileNameChooser:
         self.k = c.k
         assert c and c.k
         self.log: NullLog | LeoQtLog = c.frame.log or NullLog(frame=c.frame)
-        self.callback: Callable = None
-        self.filterExt: list[str] = None
-        self.prompt: str = None
-        self.tabName: str = None
+        self.callback: Callable | None = None
+        self.filterExt: list[str] | None = None
+        self.prompt: str = ''
+        self.tabName: str = ''
 
     # @+node:ekr.20140813052702.18196: *3* fnc.compute_tab_list
     def compute_tab_list(self) -> tuple[str, list[str]]:
@@ -1221,8 +1218,8 @@ class FileNameChooser:
     def get_file_name(
         self,
         event: LeoKeyEvent,
-        callback: Callable,
-        filterExt: list[str],
+        callback: Callable | None,
+        filterExt: list[str] | None,
         prompt: str,
         tabName: str,
     ) -> None:
@@ -1268,7 +1265,7 @@ class FileNameChooser:
             self.log.deleteTab(self.tabName)
             path = self.get_label()
             k.keyboardQuit()
-            if self.callback:
+            if self.callback is not None:
                 self.callback(path)
             else:
                 g.trace('no callback')
@@ -1342,12 +1339,12 @@ class GetArg:
         self.functionTail: str = ''
         self.tabName = tabName
         # State vars.
-        self.after_get_arg_state: tuple[str, int, Callable] = None
+        self.after_get_arg_state: tuple[str | None, int | None, Callable | None] | None = None
         self.arg_completion = True
-        self.handler: Callable = None
+        self.handler: Callable | None = None
         self.tabList: list[str] = []
         # Tab cycling ivars...
-        self.cycling_prefix: str = None
+        self.cycling_prefix: str = ''  # #4755
         self.cycling_index = -1
         self.cycling_tabList: list[str] = []
         # The following are k globals.
@@ -1435,7 +1432,7 @@ class GetArg:
         if hasattr(handler, 'tab_callback'):
             self.reset_tab_cycling()
             k.functionTail = tail  # For k.getFileName.
-            handler.tab_callback()
+            handler.tab_callback()  # type:ignore
             return True
         return False
 
@@ -1470,7 +1467,7 @@ class GetArg:
     # @+node:ekr.20140819050118.18318: *4* ga.reset_tab_cycling
     def reset_tab_cycling(self) -> None:
         """Reset all tab cycling ivars."""
-        self.cycling_prefix = None
+        self.cycling_prefix = ''  # #4755
         self.cycling_index = -1
         self.cycling_tabList = []
 
@@ -1498,13 +1495,13 @@ class GetArg:
     def get_arg(
         self,
         event: LeoKeyEvent,
-        returnKind: str = None,
-        returnState: int = None,
-        handler: Callable = None,
-        tabList: list[str] = None,
+        returnKind: str = '',  # #4755
+        returnState: int = 0,  # #4755
+        handler: Callable | None = None,
+        tabList: list[str] | None = None,
         completion: bool = True,
         oneCharacter: bool = False,
-        stroke: Stroke = None,
+        stroke: Stroke | None = None,
         useMinibuffer: bool = True,
     ) -> None:
         # @+<< ga.get_arg docstring >>
@@ -1518,27 +1515,20 @@ class GetArg:
 
         The arguments to ga.get_arg are as follows:
 
-        event:              The event passed to the command.
+        event:          The event passed to the command.
+        returnKind='':  A string.
+        returnState=0,  An int.
+        handler=None,   A function. When the argument is complete, ga.do_end does::
 
-        returnKind=None:    A string.
-        returnState=None,   An int.
-        handler=None,       A function.
-
-            When the argument is complete, ga.do_end does::
-
-                if kind: k.setState(kind,n,handler)
+            if kind:
+                k.setState(kind,n,handler)
 
         tabList=[]:         A list of possible completions.
-
         completion=True:    True if completions are enabled.
-
         oneCharacter=False: True if k.arg should be a single character.
-
         stroke=None:        The incoming key stroke.
-
         useMinibuffer=True: True: put focus in the minibuffer while accumulating arguments.
                             False allows sort-lines, for example, to show the selection range.
-
         """
         # @-<< ga.get_arg docstring >>
         if tabList is None:
@@ -1571,7 +1561,7 @@ class GetArg:
             c.minibufferWantsFocus()
         elif char in ('Up', 'Down'):  # 4685.
             finder = c.findCommands
-            handler = self.after_get_arg_state[2]
+            handler = self.after_get_arg_state[2]  # type:ignore
             if handler in (finder.find_state0, finder._start_search_escape2):
                 finder.do_arrow(char, in_minibuffer=True)
         elif k.isFKey(stroke):
@@ -1607,12 +1597,13 @@ class GetArg:
         else:
             # A hack to support the curses gui.
             k.arg = gui_arg or self.get_label()
-        kind, n, handler = self.after_get_arg_state
+        kind, n, handler = self.after_get_arg_state  # type:ignore
+        n = cast(int, n)
         if kind:
             k.setState(kind, n, handler)
         self.log.deleteTab('Completion')
         self.reset_tab_cycling()
-        if handler:
+        if handler is not None:
             handler(event)
 
     # @+node:ekr.20140817110228.18317: *4* ga.do_state_zero
@@ -1620,7 +1611,7 @@ class GetArg:
         self,
         completion: bool,
         event: LeoKeyEvent,
-        handler: Callable,
+        handler: Callable | None,
         oneCharacter: bool,
         returnKind: str,
         returnState: int,
@@ -1629,21 +1620,17 @@ class GetArg:
     ) -> None:
         """Do state 0 processing."""
         c, k = self.c, self.k
-        #
         # Set the ga globals...
         k.getArgEscapeFlag = False
         self.after_get_arg_state = returnKind, returnState, handler
         self.arg_completion = completion
-        self.cycling_prefix = None
+        self.cycling_prefix = ''  # #4755
         self.handler = handler
         self.tabList = tabList[:] if tabList else []
-        #
         # Set the k globals...
         k.functionTail = ''
         k.oneCharacterArg = oneCharacter
-        #
-        # Do *not* change the label here!
-        # Enter the next state.
+        # Enter the next state. Do *not* change the label!
         c.widgetWantsFocus(c.frame.body.wrapper)
         k.setState('getArg', 1, k.getArg)
         if useMinibuffer:
@@ -1673,15 +1660,15 @@ class GetArg:
     ) -> None:
         """Trace the vars and ivars."""
         k = self.c.k
+        handler_name = '' if self.handler is None else self.handler.__name__
         g.trace(
             'state', state,
             'char', repr(char),
             'stroke', repr(stroke),
-            # 'isPlain', k.isPlainKey(stroke),
             '\n',
             'escapes', k.getArgEscapes,
             'completion', self.arg_completion,
-            'handler', self.handler and self.handler.__name__ or 'None',
+            'handler', handler_name or 'None',
         )  # fmt: skip
 
     # @+node:ekr.20140818074502.18222: *3* ga.get_command
@@ -1758,7 +1745,7 @@ class GetArg:
             d = c.commandsDict
             func = d.get(commandName)
             if hasattr(func, 'source_c'):
-                c2 = func.source_c
+                c2 = func.source_c  # type:ignore
                 fn2 = c2.shortFileName().lower()
                 if fn2.endswith('myleosettings.leo'):
                     return 'M'
@@ -1785,8 +1772,8 @@ class KeyHandlerClass:
         """Create a key handler for c."""
         self.c = c
         self.dispatchEvent = None
-        self.fnc: FileNameChooser = None  # A singleton defined in k.finishCreate.
-        self.getArgInstance: GetArg = None  # A singleton defined in k.finishCreate.
+        self.fnc = cast(FileNameChooser, None)  # A singleton defined in k.finishCreate.
+        self.getArgInstance = cast(GetArg, None)  # A singleton defined in k.finishCreate.
         self.inited = False  # Set at end of finishCreate.
         # A list of commands whose bindings have been set to None in the local file.
         self.killedBindings: list[str] = []
@@ -1850,7 +1837,7 @@ class KeyHandlerClass:
         self.mb_event: LeoKeyEvent = None
         self.mb_history: list[str] = []
         self.mb_help: bool = False
-        self.mb_helpHandler: Callable = None
+        self.mb_helpHandler: Callable | None = None
         # Important: these are defined in k.defineExternallyVisibleIvars...
         # self.getArgEscapes = []
         # self.getArgEscapeFlag
@@ -2126,10 +2113,10 @@ class KeyHandlerClass:
         self,
         pane: str,
         shortcut: Any,
-        callback: Callable,
+        callback: Callable | None,
         commandName: str,
         modeFlag: bool = False,
-        tag: str = None,
+        tag: str = '',
     ) -> bool:
         """
         Bind the indicated shortcut (a Tk keystroke) to the callback.
@@ -2254,7 +2241,7 @@ class KeyHandlerClass:
         """Register an open-with command."""
         c, k = self.c, self
         shortcut = d.get('shortcut') or ''
-        name = d.get('name')
+        name = d.get('name', '')
         # The first parameter must be event, and it must default to None.
 
         def openWithCallback(event: LeoKeyEvent = None, c: Cmdr = c, d: dict = d) -> None:
@@ -2310,6 +2297,7 @@ class KeyHandlerClass:
             k.makeMasterGuiBinding(stroke, w=w)
 
     # @+node:ekr.20070218130238: *4* k.dumpMasterBindingsDict
+    @typing.no_type_check
     def dumpMasterBindingsDict(self) -> None:
         """Dump k.masterBindingsDict."""
         k = self
@@ -2401,7 +2389,7 @@ class KeyHandlerClass:
                     d2.add_to_list(stroke, bi)
         # Step 2: make the bindings.
         for stroke in sorted(d2.keys()):
-            aList2 = d2.get(stroke)
+            aList2 = d2.get(stroke, [])
             for bi in aList2:
                 commandName = bi.commandName
                 command = c.commandsDict.get(commandName)
@@ -2438,7 +2426,7 @@ class KeyHandlerClass:
         if commandName in h:
             h.remove(commandName)
         h.append(commandName)
-        k.commandIndex = None
+        k.commandIndex = 0  # #4755
 
     # @+node:ekr.20150402165918.1: *4* k.commandHistoryDown
     def commandHistoryFwd(self) -> None:
@@ -2452,7 +2440,7 @@ class KeyHandlerClass:
             commandName = ''
             if i == len(h) - 1:
                 # fall off the bottom
-                i = None
+                i = None  # type:ignore
             elif i is not None:
                 # move to next down in list
                 i += 1
@@ -2490,14 +2478,14 @@ class KeyHandlerClass:
         """reset the command history index to indicate that
         we are pointing 'past' the last entry
         """
-        self.commandIndex = None
+        self.commandIndex = 0  # #4755
 
     # @+node:ekr.20150402111935.1: *4* k.sortCommandHistory
     def sortCommandHistory(self) -> None:
         """Sort the command history."""
         k = self
         k.commandHistory.sort()
-        k.commandIndex = None
+        k.commandIndex = 0  # #4755
 
     # @+node:ekr.20061031131434.104: *3* k.Dispatching
     # @+node:ekr.20061031131434.111: *4* k.fullCommand (alt-x) & helper
@@ -2505,10 +2493,10 @@ class KeyHandlerClass:
     def fullCommand(
         self,
         event: LeoKeyEvent,
-        specialStroke: Stroke = None,
-        specialFunc: Callable = None,
+        specialStroke: Stroke | None = None,
+        specialFunc: Callable | None = None,
         help: bool = False,
-        helpHandler: Callable = None,
+        helpHandler: Callable | None = None,
     ) -> None:
         """Handle 'full-command' (alt-x) mode."""
         try:
@@ -2548,7 +2536,7 @@ class KeyHandlerClass:
                     commandName = s[len(helpPrompt) :].strip()
                     k.clearState()
                     k.resetLabel()
-                    if k.mb_helpHandler:
+                    if k.mb_helpHandler is not None:
                         k.mb_helpHandler(commandName)
                 else:
                     s = k.getLabel(ignorePrompt=True)
@@ -2564,8 +2552,8 @@ class KeyHandlerClass:
                 c.minibufferWantsFocus()
             elif k.ignore_unbound_non_ascii_keys and len(ch) > 1:
                 if specialStroke:
-                    g.trace(specialStroke)
-                    specialFunc()
+                    # g.trace(specialStroke)
+                    specialFunc()  # type:ignore
                 c.minibufferWantsFocus()
             else:
                 # Clear the list, any other character besides tab indicates that a new prefix is in effect.
@@ -2584,6 +2572,7 @@ class KeyHandlerClass:
         k.mb_tabList = []
         commandName, tail = k.getMinibufferCommandName()
         k.functionTail = tail
+        func: Any
         if commandName and commandName.isdigit():
             # The line number Easter Egg.
 
@@ -2592,7 +2581,7 @@ class KeyHandlerClass:
 
         else:
             func = c.commandsDict.get(commandName)
-        if func:
+        if func is not None:
             # These must be done *after* getting the command.
             k.clearState()
             k.resetLabel()
@@ -2642,7 +2631,7 @@ class KeyHandlerClass:
     '''
         if not d:
             g.es('no bindings')
-            return None
+            return []
         legend = textwrap.dedent(legend)
         data = []
         # d: keys are scope names. values are interior masterBindingDicts
@@ -2689,7 +2678,7 @@ class KeyHandlerClass:
                 data.remove(item)
         # Print all plain bindings.
         result.append('Plain keys...\n')
-        self.printBindingsHelper(result, data, prefix=None)
+        self.printBindingsHelper(result, data, prefix='')
         if not g.unitTesting:
             g.es_print('', ''.join(result), tabName=tabName)
         k.showStateAndMode()
@@ -2812,10 +2801,12 @@ class KeyHandlerClass:
                 self.show_results()
 
             # @+node:ekr.20241210053936.12: *5* ShowCommands.scan_buttons_and_commands & helpers
-            def scan_buttons_and_commands(self, c: Cmdr) -> None:
+            def scan_buttons_and_commands(self, c: Cmdr | None) -> None:
                 '''Return a dict containing a representation
                 of all settings in leoSettings.leo or myLeoSettings.leo.
                 '''
+                if not c:
+                    return
                 sfn = c.shortFileName()
                 settings_node = g.findNodeAnywhere(c, '@settings', exact=False)
                 if not settings_node:
@@ -2851,7 +2842,7 @@ class KeyHandlerClass:
 
                 # Compute the maximum length of all file names.
                 files = (self.leo_settings, self.user_settings, self.local_settings)
-                max_fn = max(len(z.shortFileName()) for z in files)
+                max_fn = max(len(z.shortFileName()) for z in files)  # type:ignore
 
                 # Compute the maximum length of all gnxs.
                 max_gnx_len = 0
@@ -3044,8 +3035,8 @@ class KeyHandlerClass:
         self,
         event: LeoKeyEvent,
         handler: Callable,
-        prefix: str = None,
-        tabList: list[str] = None,
+        prefix: str = '',  # #4755
+        tabList: list[str] | None = None,
         completion: bool = True,
         oneCharacter: bool = False,
         stroke: Stroke = None,
@@ -3137,8 +3128,8 @@ class KeyHandlerClass:
 
         """
         # @-<< docstring for k.get1arg >>
-        returnKind, returnState = None, None
-        assert handler, g.callers()
+        returnKind, returnState = '', 0  # #4755
+        assert handler is not None, g.callers()
         self.getArgInstance.get_arg(
             event,
             returnKind,
@@ -3154,14 +3145,14 @@ class KeyHandlerClass:
     def getArg(
         self,
         event: LeoKeyEvent,
-        returnKind: str = None,
-        returnState: int = None,
-        handler: Callable = None,
-        prefix: str = None,
-        tabList: list[str] = None,
+        returnKind: str = '',  # #4755
+        returnState: int = 0,  # #4755
+        handler: Callable | None = None,
+        prefix: str = '',  # #4755
+        tabList: list[str] | None = None,
         completion: bool = True,
         oneCharacter: bool = False,
-        stroke: Stroke = None,
+        stroke: Stroke | None = None,
         useMinibuffer: bool = True,
     ) -> None:
         """Convenience method mapping k.getArg to ga.get_arg."""
@@ -3269,10 +3260,8 @@ class KeyHandlerClass:
         # Override entries in c.k.masterBindingsDict
         k = self
         d = k.masterBindingsDict
-        for key in d:
-            d2 = d.get(key)
-            for key2 in d2:
-                bi = d2.get(key2)
+        for key, d2 in d.items():  # #4755
+            for key2, bi in d2.items():  # #4755
                 if bi.commandName == commandName:
                     bi.func = func
                     d2[key2] = bi
@@ -3284,9 +3273,9 @@ class KeyHandlerClass:
         func: Callable,
         *,
         allowBinding: bool = False,
-        fileName: str = None,
+        fileName: str = '',
         pane: str = 'all',
-        shortcut: str = None,  # Must be None unless allowBindings is True.
+        shortcut: str = '',  # Must be '' unless allowBindings is True.
         **kwargs: Any,  # Used only to warn about deprecated kwargs.
     ) -> None:
         """
@@ -3301,7 +3290,7 @@ class KeyHandlerClass:
         allowBinding.
         """
         c, k = self.c, self
-        if not func:
+        if func is None:
             g.es_print('Null func passed to k.registerCommand\n', commandName)
             return
         f = c.commandsDict.get(commandName)
@@ -3312,7 +3301,7 @@ class KeyHandlerClass:
         if shortcut and not allowBinding:
             g.es_print('The "shortcut" keyword arg to k.registerCommand will be ignored')
             g.es_print('Called from', g.callers())
-            shortcut = None
+            shortcut = ''
         for arg, val in kwargs.items():
             if val is not None:
                 g.es_print(f'The "{arg}" keyword arg to k.registerCommand is deprecated')
@@ -3393,8 +3382,8 @@ class KeyHandlerClass:
     def getFileName(
         self,
         event: LeoKeyEvent,
-        callback: Callable = None,
-        filterExt: list[str] = None,
+        callback: Callable | None = None,
+        filterExt: list[str] | None = None,
         prompt: str = 'Enter File Name: ',
         tabName: str = 'Dired',
     ) -> None:
@@ -3604,11 +3593,11 @@ class KeyHandlerClass:
             return False
         # Fourth, call the state handler.
         handler = k.getStateHandler()
-        if handler:
+        if handler is not None:
             handler(event)
         if trace:
-            handler_name = handler and handler.__name__ or '<no handler>'
-            g.trace(state, 'handler:', handler_name, stroke)
+            handler_name = '' if handler is None else handler.__name__
+            g.trace(state, 'handler:', handler_name or '<no handler>', stroke)
         return True
 
     # @+node:ekr.20061031131434.108: *6* k.callStateFunction
@@ -3839,7 +3828,7 @@ class KeyHandlerClass:
         return False
 
     # @+node:ekr.20091230094319.6240: *6* k.getPaneBinding & helper
-    def getPaneBinding(self, event: LeoKeyEvent) -> g.BindingInfo:
+    def getPaneBinding(self, event: LeoKeyEvent) -> g.BindingInfo | None:
         c, k, state = self.c, self, self.unboundKeyAction
         stroke, w = event.stroke, event.w
         if not g.assert_is(stroke, g.KeyStroke):
@@ -3850,21 +3839,21 @@ class KeyHandlerClass:
             return None
         for key, name in (
             # Order here is similar to bindtags order.
-            ('command', None),
-            ('insert', None),
-            ('overwrite', None),
-            ('button', None),
+            # #4755: Use '' instead of None here.
+            ('command', ''),
+            ('insert', ''),
+            ('overwrite', ''),
+            ('button', ''),
             ('body', 'body'),
             ('text', 'head'),  # Important: text bindings in head before tree bindings.
             ('tree', 'head'),
             ('tree', 'canvas'),
             ('log', 'log'),
             ('text', 'log'),
-            ('text', None),
-            ('all', None),
+            ('text', ''),
+            ('all', ''),
         ):
-            bi = k.getBindingHelper(key, name, stroke, w)
-            if bi:
+            if bi := k.getBindingHelper(key, name, stroke, w):
                 return bi
         return None
 
@@ -3875,7 +3864,7 @@ class KeyHandlerClass:
         name: str,
         stroke: Stroke,
         w: QTextMixin,
-    ) -> g.BindingInfo:
+    ) -> g.BindingInfo | None:
         """Find a binding for the widget with the given name."""
         c, k = self.c, self
         trace = 'keys' in g.app.debug
@@ -4054,7 +4043,7 @@ class KeyHandlerClass:
                 k.setLabel(label, protect=protect)
 
     # @+node:ekr.20061031170011.11: *4* k.setLabelGrey
-    def setLabelGrey(self, label: str = None) -> None:
+    def setLabelGrey(self, label: str = '') -> None:
         k, w = self, self.w
         if not w:
             return
@@ -4065,7 +4054,7 @@ class KeyHandlerClass:
     setLabelGray = setLabelGrey
 
     # @+node:ekr.20080510153327.2: *4* k.setLabelRed
-    def setLabelRed(self, label: str = None, protect: bool = False) -> None:
+    def setLabelRed(self, label: str = '', protect: bool = False) -> None:
         k, w = self, self.w
         if not w:
             return
@@ -4175,7 +4164,7 @@ class KeyHandlerClass:
         w = g.app.gui.get_focus(c)
         if w:
             c.frame.log.deleteTab('Mode')  # Changes focus to the body pane
-        k.inputModeName = None
+        k.inputModeName = ''
         k.clearState()
         k.resetLabel()
         k.showStateAndMode()  # Restores focus.
@@ -4202,11 +4191,11 @@ class KeyHandlerClass:
     def generalModeHandler(
         self,
         event: LeoKeyEvent,
-        commandName: str = None,
-        func: Callable = None,
-        modeName: str = None,
-        nextMode: str = None,
-        prompt: str = None,
+        commandName: str = '',
+        func: Callable | None = None,
+        modeName: str = '',
+        nextMode: str = 'none',
+        prompt: str = '',
     ) -> None:
         """Handle a mode defined by an @mode node in leoSettings.leo."""
         c, k = self.c, self
@@ -4225,7 +4214,7 @@ class KeyHandlerClass:
                     k.modeHelp(event)
                 else:
                     c.frame.log.hideTab('Mode')
-        elif not func:
+        elif func is None:
             g.trace('No func: improper key binding')
         else:
             if commandName == 'mode-help':
@@ -4240,7 +4229,7 @@ class KeyHandlerClass:
                 func(event)
                 if g.app.quitting or not c.exists:
                     pass
-                elif nextMode in (None, 'none'):
+                elif nextMode == 'none':  # #4755
                     # Do *not* clear k.inputModeName or the focus here.
                     # func may have put us in *another* mode.
                     pass
@@ -4311,8 +4300,7 @@ class KeyHandlerClass:
             if key in ('*entry-commands*', '*command-prompt*'):
                 pass
             else:
-                aList = d.get(key)
-                for bi in aList:
+                for bi in d.get(key, []):
                     stroke = bi.stroke
                     if stroke not in (None, 'None'):
                         s1 = key
@@ -4455,7 +4443,7 @@ class KeyHandlerClass:
         return self.state.kind
 
     # @+node:ekr.20061031131434.198: *4* k.inState
-    def inState(self, kind: str = None) -> bool:
+    def inState(self, kind: str = '') -> bool:
         k = self
         if kind:
             return k.state.kind == kind and k.state.n is not None
@@ -4479,7 +4467,7 @@ class KeyHandlerClass:
         k.unboundKeyAction = state
 
     # @+node:ekr.20061031131434.199: *4* k.setState
-    def setState(self, kind: str, n: int, handler: Callable = None) -> None:
+    def setState(self, kind: str, n: int, handler: Callable | None = None) -> None:
         k = self
         if kind and n is not None:
             k.state.kind = kind
@@ -4491,7 +4479,7 @@ class KeyHandlerClass:
         # k.showStateAndMode()
 
     # @+node:ekr.20061031131434.192: *4* k.showStateAndMode
-    def showStateAndMode(self, *, prompt: str = None, setFocus: bool = True) -> None:
+    def showStateAndMode(self, *, prompt: str = '', setFocus: bool = True) -> None:
         """Show the state and mode at the start of the minibuffer."""
         c, k = self.c, self
         state = k.unboundKeyAction
