@@ -150,10 +150,10 @@ class AtFile:
         # User settings.
         self.at_auto_encoding = 'utf-8'
         self.encoding: str = 'utf-8'
-        self.explicitLineEnding = False  # #4755
+        self.explicitLineEnding = False  # strict_optional
         self.force_newlines_in_at_nosent_bodies = False
         self.output_newline = g.getOutputNewline(c=c)
-        self.page_width = 0  # #4755
+        self.page_width = 0  # strict_optional
         self.tab_width: int = c.tab_width or -4
         # User switches: set in reloadSettings.
         self.beautifyOnWrite = False
@@ -197,12 +197,12 @@ class AtFile:
         at.sentinels = False
         at.section_delim1 = '<<'
         at.section_delim2 = '>>'
-        at.targetFileName = ''  # #4755
+        at.targetFileName = ''  # strict_optional
         # at.unchangedFiles = 0  # Only at.writeAll should init this ivar.
         # User settings.
         at.at_auto_encoding = c.config.default_at_auto_file_encoding or 'utf-8'
         at.encoding = c.config.default_derived_file_encoding or 'utf-8'
-        at.explicitLineEnding = False  # #4755
+        at.explicitLineEnding = False  # strict_optional
         at.force_newlines_in_at_nosent_bodies = False
         at.output_newline = g.getOutputNewline(c=c)
         at.page_width = c.page_width or 132
@@ -1065,7 +1065,7 @@ class AtFile:
         s_bytes = at.openFileHelper(fileName)  # Catches all exceptions.
         # #1798.
         if not s_bytes:
-            return ''  # #4755
+            return ''  # strict_optional
         e, s_bytes = g.stripBOM(s_bytes)
         if e:
             # The BOM determines the encoding unambiguously.
@@ -1093,7 +1093,7 @@ class AtFile:
         except Exception:  # pragma: no cover
             at.error(f"Exception reading {fileName}")
             g.es_exception()
-        return b''  # #4755
+        return b''  # strict_optional
 
     # @+node:ekr.20130911110233.11287: *6* at.getEncodingFromHeader
     def getEncodingFromHeader(self, fileName: str, s: str) -> str:
@@ -1111,7 +1111,7 @@ class AtFile:
             at.initReadLine(s)
             old_encoding = at.encoding
             assert old_encoding
-            at.encoding = ''  # #4755
+            at.encoding = ''  # strict_optional
             # Execute scanHeader merely to set at.encoding.
             at.scanHeader(fileName, giveErrors=False)
             e = at.encoding or old_encoding
@@ -1190,7 +1190,7 @@ class AtFile:
         at.readFileToUnicode(fileName)
         # scanHeader uses at.readline instead of its args.
         # scanHeader also sets at.encoding.
-        junk1, junk2, isThin = at.scanHeader('')  # #4755
+        junk1, junk2, isThin = at.scanHeader('')  # strict_optional
         return isThin
 
     # @+node:ekr.20041005105605.132: *3* at.Writing
@@ -1481,7 +1481,7 @@ class AtFile:
         if not changed:
             return
         ok = at.promptForDangerousWrite(
-            fileName='',  # #4755
+            fileName='',  # strict_optional
             message=(
                 f"{g.tr('path changed for %s' % (p.h))}\n"
                 f"{g.tr('write this file anyway?')}"
@@ -2645,7 +2645,7 @@ class AtFile:
         """Report a syntax error."""
         g.error(f"Syntax error in: {p.h}")
         typ, val, tb = sys.exc_info()
-        message = getattr(val, 'message', '')  # #4755
+        message = getattr(val, 'message', '')  # strict_optional
         if message:
             g.es_print(message)
         if val is None:
@@ -4064,7 +4064,7 @@ class FastAtRead:
         # Set the body text.
         assert root_v.gnx in gnx2vnode, root_v
         assert root_v.gnx in gnx2body, root_v
-        for key, body in gnx2body.items():  # #4755
+        for key, body in gnx2body.items():  # strict_optional
             v = gnx2vnode.get(key)
             assert v, (key, v)
             v._bodyString = g.toUnicode(''.join(body))
