@@ -12,7 +12,7 @@ import string
 import sys
 import textwrap
 import time
-from typing import Any, TYPE_CHECKING
+from typing import cast, Any, Callable, TYPE_CHECKING
 import zipfile
 import platform
 from leo.core import leoGlobals as g
@@ -292,7 +292,7 @@ class LeoApp:
         # @+<< LeoApp: plugins and event handlers >>
         # @+node:ekr.20161028040229.1: *5* << LeoApp: plugins and event handlers >>
         self.hookError = False  # True: suppress further calls to hooks.
-        self.hookFunction = None  # Application wide hook function.
+        self.hookFunction = cast(Callable, None)  # Application wide hook function.
         self.idle_time_hooks_enabled = True  # True: idle-time hooks are enabled.
         # @-<< LeoApp: plugins and event handlers >>
         # @+<< LeoApp: scripting ivars >>
