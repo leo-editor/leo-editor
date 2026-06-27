@@ -32,10 +32,10 @@ passed = (
     'leoKeys.py',
     'leoNodes.py',
 )
-if 0:
+if 1:
     # Test all files
-    args = '--follow-imports=skip'
-    files = 'leo'  # 2742 errors.
+    args = '--follow-imports=skip'  # Apparently 'strict-optional' doesn't work.
+    files = 'leo/core'
 elif 1:  # Test all passed files.
     args = '--follow-imports=skip'
     files = ' '.join(f"leo/core/{z}" for z in passed)
