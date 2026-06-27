@@ -474,8 +474,8 @@ class BindingInfo:
         kind: str,
         commandName: str = '',
         func: Callable | None = None,
-        nextMode: str = 'none',  # #4755
-        pane: str = '',  # #4755
+        nextMode: str = 'none',  # strict_optional
+        pane: str = '',  # strict_optional
         stroke: KeyStroke | None = None,
     ) -> None:
         if not g.isStrokeOrNone(stroke):
@@ -1822,7 +1822,7 @@ class SettingsDict(dict):
         """Return the canonical setting name."""
         key = key.replace('-', '').replace('_', '')
         gs = self.get(key)
-        return gs.val if gs else ''  # #4755
+        return gs.val if gs else ''  # strict_optional
 
     def get_string_setting(self, key: str) -> str:
         return self.get_setting(key)
