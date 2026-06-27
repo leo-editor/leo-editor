@@ -12,7 +12,7 @@ import string
 import sys
 import textwrap
 import time
-from typing import cast, Any, Callable, TYPE_CHECKING
+from typing import cast, Any, TYPE_CHECKING
 import zipfile
 import platform
 from leo.core import leoGlobals as g
