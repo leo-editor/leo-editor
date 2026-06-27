@@ -153,7 +153,7 @@ class NodeIndices:
             v.fileIndex = ni.getNewIndex(v)
 
     # @+node:ekr.20031218072017.1997: *3* ni.scanGnx
-    def scanGnx(self, s: str) -> tuple[str, str, str] | tuple[None, None, None]:
+    def scanGnx(self, s: str) -> tuple:
         """Create a gnx from its string representation."""
         if not isinstance(s, str):  # pragma: no cover
             g.error("scanGnx: unexpected index type:", type(s), '', s)
@@ -190,11 +190,7 @@ class NodeIndices:
         theId, t, n = aTuple
         # This logic must match the existing logic so that
         # previously written gnx's can be found.
-        if n in (
-            None,
-            0,
-            '',
-        ):
+        if n in (None, 0, ''):
             s = f"{theId}.{t}"
         else:
             s = f"{theId}.{t}.{n}"
@@ -216,9 +212,8 @@ class NodeIndices:
         """Update ni.lastIndex if the gnx affects it."""
         id_, t, n = self.scanGnx(gnx)
         # Don't you dare touch this code to keep pylint happy.
-        # pylint: disable=literal-comparison
-        if not id_ or (n != 0 and not n):
-            return  # the gnx is not well formed or n in ('',None)
+        if not id_ or n in (None, ''):  # #4755
+            return  # the gnx is not well formed.
         if id_ == self.userId and t == self.timeString:
             try:
                 n2 = int(n)
@@ -272,7 +267,7 @@ class Position:
         return not self.__eq__(p2)
 
     # @+node:ekr.20080416161551.190: *4*  p.__init__
-    def __init__(self, v: VNode, childIndex: int = 0, stack: list = None) -> None:
+    def __init__(self, v: VNode, childIndex: int = 0, stack: list | None = None) -> None:
         """Create a new position with the given childIndex and parent stack."""
         self._childIndex = childIndex
         self.v = v
@@ -560,7 +555,9 @@ class Position:
                 p.moveToThreadNext()
 
     # @+node:ekr.20161120163203.1: *4* p.nearest_unique_roots (aka p.nearest)
-    def nearest_unique_roots(self, copy: bool = True, predicate: Callable = None) -> Generator:
+    def nearest_unique_roots(
+        self, copy: bool = True, predicate: Callable | None = None
+    ) -> Generator:
         """
         A generator yielding all unique root positions "near" p1 = self that
         satisfy the given predicate. p.isAnyAtFileNode is the default
@@ -578,7 +575,7 @@ class Position:
         def default_predicate(p: Position) -> bool:
             return p.isAnyAtFileNode()
 
-        the_predicate = predicate or default_predicate
+        the_predicate = predicate or default_predicate  # type:ignore # Trust the callable.
 
         # First, look up the tree.
         for p in p1.copy().self_and_parents(copy=False):
@@ -618,7 +615,7 @@ class Position:
     def parents(self, copy: bool = True) -> Generator:
         """Yield all parent positions of p."""
         p = self
-        p = p.parent()
+        p = p.parent()  # type:ignore # We are about to test p.
         while p:
             yield p.copy() if copy else p
             p.moveToParent()
@@ -860,27 +857,27 @@ class Position:
     def getNext(self) -> Position:
         return self.copy().moveToNext()
 
-    def getNodeAfterTree(self) -> Position:
+    def getNodeAfterTree(self) -> Position | None:
         return self.copy().moveToNodeAfterTree()
 
     def getNthChild(self, n: int) -> Position:
         return self.copy().moveToNthChild(n)
 
-    def getParent(self) -> Position:
+    def getParent(self) -> Position | None:
         return self.copy().moveToParent()
 
-    def getThreadBack(self) -> Position:
+    def getThreadBack(self) -> Position | None:
         return self.copy().moveToThreadBack()
 
-    def getThreadNext(self) -> Position:
+    def getThreadNext(self) -> Position | None:
         return self.copy().moveToThreadNext()
 
     # New in Leo 4.4.3 b2: add c args.
 
-    def getVisBack(self, c: Cmdr) -> Position:
+    def getVisBack(self, c: Cmdr) -> Position | None:
         return self.copy().moveToVisBack(c)
 
-    def getVisNext(self, c: Cmdr) -> Position:
+    def getVisNext(self, c: Cmdr) -> Position | None:
         return self.copy().moveToVisNext(c)
 
     # These are efficient enough now that iterators are the normal way to traverse the tree!
@@ -1005,7 +1002,7 @@ class Position:
     simpleLevel = level
 
     # @+node:ekr.20111005152227.15566: *4* p.positionAfterDeletedTree
-    def positionAfterDeletedTree(self) -> Position:  # pragma: no cover
+    def positionAfterDeletedTree(self) -> Position | None:  # pragma: no cover
         """Return the position corresponding to p.nodeAfterTree() after this node is
         deleted. This will be p.nodeAfterTree() unless p.next() exists.
 
@@ -1286,7 +1283,7 @@ class Position:
         return p
 
     # @+node:ekr.20080416161551.212: *4* p._parentVnode
-    def _parentVnode(self) -> VNode | None:
+    def _parentVnode(self) -> VNode:
         """
         Return the parent VNode.
         Return the hiddenRootNode if there is no other parent.
@@ -1298,7 +1295,7 @@ class Position:
                 v, junk = data
                 return v
             return p.v.context.hiddenRootNode
-        return None  # pragma: no cover
+        return None  # type:ignore  # mypy is not wrong to complain, but this is correct.
 
     # @+node:ekr.20131219220412.16582: *4* p._relinkAsCloneOf
     def _relinkAsCloneOf(self, p2: Position) -> None:
@@ -1381,7 +1378,7 @@ class Position:
             p._childIndex -= 1
             p.v = parent_v.children[n - 1]
         else:
-            p.v = None
+            p.v = None  # type:ignore  # mypy is not wrong to complain, but this is correct.
         return p
 
     # @+node:ekr.20080416161551.201: *4* p.moveToFirstChild
@@ -1393,7 +1390,7 @@ class Position:
             p.v = p.v.children[0]
             p._childIndex = 0
         else:
-            p.v = None
+            p.v = None  # type:ignore  # mypy is not wrong to complain, but this is correct.
         return p
 
     # @+node:ekr.20080416161551.202: *4* p.moveToLastChild
@@ -1406,7 +1403,7 @@ class Position:
             p.v = p.v.children[n - 1]
             p._childIndex = n - 1
         else:
-            p.v = None  # pragma: no cover
+            p.v = None  # type:ignore  # mypy is not wrong to complain, but this is correct.
         return p
 
     # @+node:ekr.20080416161551.203: *4* p.moveToLastNode
@@ -1432,11 +1429,11 @@ class Position:
             p._childIndex = n + 1
             p.v = parent_v.children[n + 1]
         else:
-            p.v = None
+            p.v = None  # type:ignore  # mypy is not wrong to complain, but this is correct.
         return p
 
     # @+node:ekr.20080416161551.205: *4* p.moveToNodeAfterTree
-    def moveToNodeAfterTree(self) -> Position:
+    def moveToNodeAfterTree(self) -> Position | None:
         """Move a position to the node after the position's tree."""
         p = self
         while p:
@@ -1455,7 +1452,7 @@ class Position:
             p._childIndex = n
         else:
             # Leo's code must use the test `if p:` as appropriate.
-            p.v = None
+            p.v = None  # type:ignore  # mypy is not wrong to complain, but this is correct.
         return p
 
     # @+node:ekr.20080416161551.207: *4* p.moveToParent
@@ -1466,7 +1463,7 @@ class Position:
             p.v, p._childIndex = p.stack.pop()
         else:
             # Leo's code must use the test `if p:` as appropriate.
-            p.v = None
+            p.v = None  # type:ignore  # mypy is not wrong to complain, but this is correct.
         return p
 
     # @+node:ekr.20080416161551.208: *4* p.moveToThreadBack
@@ -1500,7 +1497,7 @@ class Position:
         return p
 
     # @+node:ekr.20080416161551.210: *4* p.moveToVisBack & helper
-    def moveToVisBack(self, c: Cmdr) -> Position:
+    def moveToVisBack(self, c: Cmdr) -> Position | None:
         """Move a position to the position of the previous visible node."""
         p = self
         limit, limitIsVisible = c.visLimit()
@@ -1515,7 +1512,7 @@ class Position:
                 p.moveToParent()  # Same as p.moveToThreadBack()
             if p:
                 if limit:
-                    done, val = self.checkVisBackLimit(limit, limitIsVisible, p)
+                    done, val = self.checkVisBackLimit(limit, limitIsVisible, p)  # type:ignore
                     if done:
                         return val  # A position or None
                 if p.isVisible(c):
@@ -1900,7 +1897,7 @@ class Position:
     h = property(__get_h, __set_h, doc="position property returning the headline string")
 
     # @+node:ekr.20090215165030.3: *4* p.gnx property
-    def __get_gnx(self) -> str:
+    def __get_gnx(self) -> str | None:
         p = self
         return p.v.fileIndex
 
@@ -2663,8 +2660,8 @@ class VNode:
     def contentModified(self) -> None:
         g.contentModifiedSet.add(self)
 
-    # @+node:ekr.20260622103203.1: *4* v.findAllAncestorAtFileNodes
-    def findAllAncestorAtFileNodes(self, *, to_do_set: set[VNode] = None) -> list[VNode]:
+    # @+node:ekr.20260622103203.1: *4* v.findAllAncetorAtFileNodes
+    def findAllAncestorAtFileNodes(self, *, to_do_set: set[VNode] | None = None) -> list[VNode]:
         """
         Return a list of all @<file> nodes containing this VNode.
 
@@ -2739,7 +2736,7 @@ class VNode:
             pass
 
     # @+node:ekr.20191213161023.1: *4* v.setAllAncestorAtFileNodesDirty
-    def setAllAncestorAtFileNodesDirty(self, *, to_do_set: set[VNode] = None) -> None:
+    def setAllAncestorAtFileNodesDirty(self, *, to_do_set: set[VNode] | None = None) -> None:
         """Set all ancestor @<file> nodes dirty."""
         v = self
         for v2 in v.findAllAncestorAtFileNodes(to_do_set=to_do_set):
@@ -2966,7 +2963,7 @@ class VNode:
     u = property(__get_u, __set_u, doc="VNode u property")
 
     # @+node:ekr.20090215165030.1: *4* v.gnx Property
-    def __get_gnx(self) -> str:
+    def __get_gnx(self) -> str | None:
         v = self
         return v.fileIndex
 
