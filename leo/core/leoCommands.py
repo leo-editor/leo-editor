@@ -4030,7 +4030,9 @@ class Commands:
                 if p.isAtLeoNode():
                     fileName = p.atLeoNodeName()
                     if fileName not in todo and fileName not in scanned:
-                        if c2 := g.openWithFileName(fileName, gui=gui):  # #4755 # Bug fix!
+                        if c2 := g.openWithFileName(
+                            fileName, gui=gui
+                        ):  # strict_optional # Bug fix!
                             todo.append(fileName)
                             assert c2 not in result
                             result.append(c2)
@@ -5342,7 +5344,7 @@ class Commands:
             c.setChanged()
             c.contractAllHeadlines()
             root.expand()
-            return root  # #4755
+            return root  # strict_optional
         if failMsg:
             g.es(failMsg, color='red')
         return None
