@@ -35,43 +35,121 @@ if TYPE_CHECKING:
     from leo.core.leoConfig import LocalConfigManager
     from leo.core.leoNodes import Position, VNode
 
-    # The following imports are required, but flake8 doesn't know that.
+    # The following imports are required, but flake8 won't know that without the asserts.
 
     # 11 subcommanders...
-    from leo.core.leoAtFile import AtFile  # noqa
-    from leo.core.leoChapters import ChapterController  # noqa
-    from leo.core.leoFileCommands import FileCommands  # noqa
-    from leo.core.leoFind import LeoFind  # noqa
-    from leo.core.leoImport import LeoImportCommands  # noqa
-    from leo.core.leoKeys import KeyHandlerClass  # noqa
-    from leo.core.leoHistory import NodeHistory  # noqa
-    from leo.core.leoPersistence import PersistenceDataController  # noqa
-    from leo.core.leoPrinting import PrintingController  # noqa
-    from leo.core.leoShadow import ShadowController  # noqa
-    from leo.core.leoUndo import Undoer  # noqa
-    from leo.core.leoVim import VimCommands  # noqa
+    from leo.core.leoAtFile import AtFile
+
+    assert AtFile  # type:ignore
+
+    from leo.core.leoChapters import ChapterController
+
+    assert ChapterController
+
+    from leo.core.leoFileCommands import FileCommands
+
+    assert FileCommands
+
+    from leo.core.leoFind import LeoFind
+
+    assert LeoFind
+
+    from leo.core.leoImport import LeoImportCommands
+
+    assert LeoImportCommands
+
+    from leo.core.leoKeys import KeyHandlerClass
+
+    assert KeyHandlerClass  # type:ignore
+
+    from leo.core.leoHistory import NodeHistory
+
+    assert NodeHistory
+
+    from leo.core.leoPersistence import PersistenceDataController
+
+    assert PersistenceDataController
+
+    from leo.core.leoPrinting import PrintingController
+
+    assert PrintingController
+
+    from leo.core.leoShadow import ShadowController
+
+    assert ShadowController
+
+    from leo.core.leoUndo import Undoer
+
+    assert Undoer
+
+    from leo.core.leoVim import VimCommands
+
+    assert VimCommands
 
     # 14 command handlers...
-    from leo.commands.abbrevCommands import AbbrevCommandsClass  # noqa
-    from leo.commands.bufferCommands import BufferCommandsClass  # noqa
-    from leo.commands.controlCommands import ControlCommandsClass  # noqa
-    from leo.commands.convertCommands import ConvertCommandsClass  # noqa
-    from leo.commands.debugCommands import DebugCommandsClass  # noqa
-    from leo.commands.editCommands import EditCommandsClass  # noqa
-    from leo.commands.editFileCommands import EditFileCommandsClass  # noqa
-    from leo.commands.gotoCommands import GoToCommands  # noqa
-    from leo.commands.helpCommands import HelpCommandsClass  # noqa
-    from leo.commands.keyCommands import KeyHandlerCommandsClass  # noqa
-    from leo.commands.killBufferCommands import KillBufferCommandsClass  # noqa
-    from leo.commands.rectangleCommands import RectangleCommandsClass  # noqa
-    from leo.core.leoRst import RstCommands  # noqa
-    from leo.commands.spellCommands import SpellCommandsClass  # noqa
+    from leo.commands.abbrevCommands import AbbrevCommandsClass
+
+    assert AbbrevCommandsClass
+
+    from leo.commands.bufferCommands import BufferCommandsClass
+
+    assert BufferCommandsClass
+
+    from leo.commands.controlCommands import ControlCommandsClass
+
+    assert ControlCommandsClass
+
+    from leo.commands.convertCommands import ConvertCommandsClass
+
+    assert ConvertCommandsClass
+
+    from leo.commands.debugCommands import DebugCommandsClass
+
+    assert DebugCommandsClass
+
+    from leo.commands.editCommands import EditCommandsClass
+
+    assert EditCommandsClass
+
+    from leo.commands.editFileCommands import EditFileCommandsClass
+
+    assert EditFileCommandsClass
+
+    from leo.commands.gotoCommands import GoToCommands
+
+    assert GoToCommands
+
+    from leo.commands.helpCommands import HelpCommandsClass
+
+    assert HelpCommandsClass
+
+    from leo.commands.keyCommands import KeyHandlerCommandsClass
+
+    assert KeyHandlerCommandsClass
+
+    from leo.commands.killBufferCommands import KillBufferCommandsClass
+
+    assert KillBufferCommandsClass
+
+    from leo.commands.rectangleCommands import RectangleCommandsClass
+
+    assert RectangleCommandsClass
+
+    from leo.core.leoRst import RstCommands
+
+    assert RstCommands
+
+    from leo.commands.spellCommands import SpellCommandsClass
+
+    assert SpellCommandsClass
 
     # Other objects...
     from leo.core.leoGui import LeoGui
     from leo.core.qt_frame import LeoQtMenu
-    from leo.plugins.qt_gui import StyleSheetManager  # noqa
+    from leo.plugins.qt_gui import StyleSheetManager
     from leo.plugins.qt_text import QTextMixin
+
+    assert StyleSheetManager
 
     Args = Any
     KWargs = Any
