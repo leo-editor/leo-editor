@@ -186,6 +186,7 @@ class ExternalFilesController:
         # #1134: Nested @<file> nodes are no longer valid, but this will do no harm.
         changed = False
         state = 'no'
+        changed_roots: set[str] = set()
         for p in c.all_unique_positions():
             if not p.isAnyAtFileNode():
                 continue
@@ -215,6 +216,7 @@ class ExternalFilesController:
                         p2.v.setDirty()
                 # #4565: set all ancestor file nodes dirty and redraw.
                 p.v.setDirty()
+                changed_roots.add(p.h)
                 to_do_set: set[VNode] = set()
                 for p2 in c.all_positions():
                     if p2.v.isDirty():
@@ -224,10 +226,6 @@ class ExternalFilesController:
             return
         # #4570: Write all update messages here, and only here.
         if not g.unitTesting:
-            changed_roots: set[str] = set()
-            for p2 in c.all_positions():
-                if p2.isAnyAtFileNode() and p2.isDirty():
-                    changed_roots.add(p2.h)
             for s in sorted(list(changed_roots)):
                 g.es_print('update:', s, color='blue')
         c.redraw()
