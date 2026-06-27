@@ -429,7 +429,9 @@ def refreshFromDisk(
     at.changed_roots = []
     c.fileCommands.handleNodeConflicts()
     c.setChanged()
-    c.redraw()
+    # We may be coming from idle_check_commander and not already have p selected,
+    # if the selected position was inside the expanded & refreshed outline, it may not be valid.
+    c.redraw(update_p)  # Select a valid update_p position or p
     c.undoer.clearAndWarn('refresh-from-disk')
 
 

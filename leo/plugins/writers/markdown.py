@@ -19,9 +19,7 @@ class MarkdownWriter(basewriter.BaseWriter):
         """Write all the *descendants* of an @auto-markdown node."""
         self.root = root
         self.write_root(root)
-        count = 0
         for p in root.subtree():
-            count += 1
             if g.app.force_at_auto_sentinels:  # pragma: no cover
                 self.put_node_sentinel(p, '<!--', delim2='-->')
             if self.placeholder_regex.match(p.h):
