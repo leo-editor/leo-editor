@@ -122,7 +122,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         g.app.globalKillBuffer = []
 
     # @+node:ekr.20150514063305.415: *3* getClipboard
-    def getClipboard(self) -> str | None:
+    def getClipboard(self) -> str:
         """Return the contents of the clipboard."""
         try:
             ctxt = g.app.gui.getTextFromClipboard()
@@ -132,7 +132,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
                     return ctxt
         except Exception:
             g.es_exception()
-        return None
+        return ''
 
     # @+node:ekr.20150514063305.416: *3* class KillBufferIterClass
     class KillBufferIterClass:

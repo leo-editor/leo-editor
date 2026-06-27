@@ -1411,7 +1411,7 @@ class GitDiffController:
         return None
 
     # @+node:ekr.20170806094321.3: *4* gdc.find_git_working_directory
-    def find_git_working_directory(self, directory: str) -> str | None:
+    def find_git_working_directory(self, directory: str) -> str:
         """Return the git working directory, starting at directory."""
         while directory:
             if g.os_path_exists(g.finalize_join(directory, '.git')):
@@ -1420,7 +1420,7 @@ class GitDiffController:
             if path2 == directory:
                 break
             directory = path2
-        return None
+        return ''
 
     # @+node:ekr.20170819132219.1: *4* gdc.find_gnx
     def find_gnx(self, c: Cmdr, gnx: str) -> Position | None:
@@ -1453,7 +1453,7 @@ class GitDiffController:
         c.treeWantsFocusNow()
 
     # @+node:ekr.20210819080657.1: *4* gdc.get_parent_of_git_directory
-    def get_parent_of_git_directory(self) -> str | None:
+    def get_parent_of_git_directory(self) -> str:
         """
         #2143.
         Resolve filename to the nearest directory containing a .git directory.
@@ -1462,18 +1462,18 @@ class GitDiffController:
         filename = c.fileName()
         if not filename:
             print('git-diff: outline has no name')
-            return None
+            return str
         directory = os.path.dirname(filename)
         if directory and not os.path.isdir(directory):
             directory = os.path.dirname(directory)
         if not directory:
             print(f"git-diff: outline has no directory. filename: {filename!r}")
-            return None
+            return ''
         # Does path/../ref exist?
         base_directory = g.gitHeadPath(directory)
         if not base_directory:
             print(f"git-diff: no .git directory: {directory!r} filename: {filename!r}")
-            return None
+            return ''
         # This should guarantee that the directory contains a .git directory.
         directory = g.finalize_join(base_directory, '..', '..')
         return directory
