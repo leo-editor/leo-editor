@@ -248,11 +248,10 @@ class VimCommander:
         return contextMenu
 
     # @+node:ekr.20150326180515.1: *4* vim.find_path_for_node
-    def find_path_for_node(self, p):
+    def find_path_for_node(self, p) -> str:
         """Search the open-files list for a file corresponding to p."""
         efc = g.app.externalFilesController
-        path = efc.find_path_for_node(p)
-        return path
+        return efc.find_path_for_node(p)
 
     # @+node:ekr.20150326173414.1: *4* vim.find_root
     def find_root(self, p):

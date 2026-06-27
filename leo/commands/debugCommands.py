@@ -63,7 +63,7 @@ class DebugCommandsClass(BaseEditCommandsClass):
         os.spawnv(os.P_NOWAIT, python, args)
 
     # @+node:ekr.20150514063305.105: *3* debug.findDebugger
-    def findDebugger(self) -> str | None:
+    def findDebugger(self) -> str:
         """Find the winpdb debugger."""
         c = self.c
         pythonDir = g.os_path_dirname(sys.executable)
@@ -85,7 +85,7 @@ class DebugCommandsClass(BaseEditCommandsClass):
         g.es_print('winpdb not found in...')
         for z in debuggers:
             print(z)
-        return None
+        return ''
 
     # @+node:ekr.20170713112849.1: ** debug.dump-node
     @cmd('dump-node')

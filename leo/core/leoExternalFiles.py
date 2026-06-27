@@ -122,18 +122,12 @@ class ExternalFilesController:
         self.files = [z for z in self.files if z.path not in paths]
 
     # @+node:ekr.20150407141838.1: *4* efc.find_path_for_node (called from vim.py)
-    def find_path_for_node(self, p: Position) -> str | None:
-        """
-        Find the path corresponding to node p.
-        called from vim.py.
-        """
+    def find_path_for_node(self, p: Position) -> str:
+        """Return the path corresponding to node p."""
         for ef in self.files:
             if ef.p and ef.p.v == p.v:
-                path = ef.path
-                break
-        else:
-            path = None
-        return path
+                return ef.path
+        return ''
 
     # @+node:ekr.20150330033306.1: *4* efc.on_idle & helpers
     on_idle_count = 0

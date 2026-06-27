@@ -193,7 +193,7 @@ class AutoCompleterClass:
         self.namespaces: list[dict] = []
         self.qcompleter = cast(Callable, None)
         self.qw = None  # The object that supports qcompletion methods.
-        self.tabName: str = ''  # #4755 # The name of the main completion tab.
+        self.tabName: str = ''  # The name of the main completion tab.
         self.verbose = False  # True: print all members, regardless of how many there are.
         self.w: Widget = None  # The widget that gets focus after autocomplete is done.
         self.warnings: dict[str, str] = {}  # Keys are language names.
@@ -537,7 +537,7 @@ class AutoCompleterClass:
             options = d.get(key)
             if options:
                 return key, options
-        return '', []  # #4755
+        return '', []
 
     # @+node:ekr.20061031131434.29: *4* ac.do_backspace
     def do_backspace(self) -> None:
@@ -1118,8 +1118,8 @@ class FileNameChooser:
         self.log: NullLog | LeoQtLog = c.frame.log or NullLog(frame=c.frame)
         self.callback: Callable | None = None
         self.filterExt: list[str] | None = None
-        self.prompt: str = ''  # #4755
-        self.tabName: str = ''  # #4755
+        self.prompt: str = ''
+        self.tabName: str = ''
 
     # @+node:ekr.20140813052702.18196: *3* fnc.compute_tab_list
     def compute_tab_list(self) -> tuple[str, list[str]]:
@@ -1660,7 +1660,7 @@ class GetArg:
     ) -> None:
         """Trace the vars and ivars."""
         k = self.c.k
-        handler_name = '' if self.handler is None else self.handler.__name__  # #4755
+        handler_name = '' if self.handler is None else self.handler.__name__
         g.trace(
             'state', state,
             'char', repr(char),
@@ -2116,7 +2116,7 @@ class KeyHandlerClass:
         callback: Callable | None,
         commandName: str,
         modeFlag: bool = False,
-        tag: str = '',  # #4755
+        tag: str = '',
     ) -> bool:
         """
         Bind the indicated shortcut (a Tk keystroke) to the callback.
@@ -2678,7 +2678,7 @@ class KeyHandlerClass:
                 data.remove(item)
         # Print all plain bindings.
         result.append('Plain keys...\n')
-        self.printBindingsHelper(result, data, prefix='')  # #4755
+        self.printBindingsHelper(result, data, prefix='')
         if not g.unitTesting:
             g.es_print('', ''.join(result), tabName=tabName)
         k.showStateAndMode()
@@ -3273,7 +3273,7 @@ class KeyHandlerClass:
         func: Callable,
         *,
         allowBinding: bool = False,
-        fileName: str = '',  # #4755
+        fileName: str = '',
         pane: str = 'all',
         shortcut: str = '',  # Must be '' unless allowBindings is True.
         **kwargs: Any,  # Used only to warn about deprecated kwargs.
@@ -3301,7 +3301,7 @@ class KeyHandlerClass:
         if shortcut and not allowBinding:
             g.es_print('The "shortcut" keyword arg to k.registerCommand will be ignored')
             g.es_print('Called from', g.callers())
-            shortcut = ''  # #4755
+            shortcut = ''
         for arg, val in kwargs.items():
             if val is not None:
                 g.es_print(f'The "{arg}" keyword arg to k.registerCommand is deprecated')
@@ -3596,7 +3596,7 @@ class KeyHandlerClass:
         if handler is not None:
             handler(event)
         if trace:
-            handler_name = '' if handler is None else handler.__name__  # #4755
+            handler_name = '' if handler is None else handler.__name__
             g.trace(state, 'handler:', handler_name or '<no handler>', stroke)
         return True
 
@@ -4191,11 +4191,11 @@ class KeyHandlerClass:
     def generalModeHandler(
         self,
         event: LeoKeyEvent,
-        commandName: str = '',  # #4755
+        commandName: str = '',
         func: Callable | None = None,
-        modeName: str = '',  # #4755
-        nextMode: str = 'none',  # #4755
-        prompt: str = '',  # #4755
+        modeName: str = '',
+        nextMode: str = 'none',
+        prompt: str = '',
     ) -> None:
         """Handle a mode defined by an @mode node in leoSettings.leo."""
         c, k = self.c, self

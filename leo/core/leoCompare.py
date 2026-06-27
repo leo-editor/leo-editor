@@ -234,7 +234,6 @@ class BaseLeoCompare:
             lines1 += 1
             s2 = g.readlineForceUnixNewline(f2)
             lines2 += 1
-            # Note: isLeoHeader may return None.
             sentinelComment1 = self.isLeoHeader(s1)
             sentinelComment2 = self.isLeoHeader(s2)
             if not sentinelComment1:
@@ -398,14 +397,14 @@ class BaseLeoCompare:
     # sentinel line.
     # @@c
 
-    def isLeoHeader(self, s: str) -> str | None:
+    def isLeoHeader(self, s: str) -> str:
         tag = "@+leo"
         j = s.find(tag)
         if j > 0:
             i = g.skip_ws(s, 0)
             if i < j:
                 return s[i:j]
-        return None
+        return ''
 
     def isSentinel(self, s: str, sentinelComment: str) -> bool:
         i = g.skip_ws(s, 0)

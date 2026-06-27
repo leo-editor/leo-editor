@@ -32,6 +32,8 @@ will return None.
 """
 
 # @-<< leoColor docstring >>
+import typing
+
 # @+<< define leo_color_database >>
 # @+node:bob.20080115070511.2: ** << define leo_color_database >>
 # Names should be lower case, without spaces or special characters.
@@ -734,6 +736,7 @@ for key in leo_color_database:
 # @+others
 # @+node:bob.20080115070511.3: ** color database functions
 # @+node:bob.20071231111744.2: *3* function: leoColor.get / getColor
+@typing.no_type_check
 def getColor(name: str, default: str = None) -> str | None:
     """Translate a named color into #rrggbb' format.
 

@@ -5907,7 +5907,7 @@ def main() -> None:  # pragma: no cover (tested in client)
             wsLimit = 1
 
     # @+node:felix.20260523224253.1: *3* function: get_ssl_context
-    def get_ssl_context(cert_path: str | None, key_path: str | None) -> ssl.SSLContext | None:
+    def get_ssl_context(cert_path: str, key_path: str) -> ssl.SSLContext | None:
         """Returns an SSLContext if paths are valid, otherwise returns None."""
         # Ensure both arguments were provided
         if not cert_path or not key_path:

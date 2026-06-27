@@ -696,13 +696,13 @@ class GeneralSetting:
     def __init__(
         self,
         kind: str,
-        encoding: str = '',  # #4755
-        ivar: str = '',  # #4755
-        source: str = '',  # #4755
+        encoding: str = '',
+        ivar: str = '',
+        source: str = '',
         val: Value | None = None,
-        path: str = '',  # #4755
+        path: str = '',
         tag: str = 'setting',
-        unl: str = '',  # #4755
+        unl: str = '',
     ) -> None:
         self.encoding = encoding
         self.ivar = ivar

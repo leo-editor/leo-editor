@@ -262,7 +262,7 @@ class AtFile:
 
         # targetFileName can be empty for unit tests & @command nodes.
         if not targetFileName:  # pragma: no cover
-            targetFileName = root.h if g.unitTesting else ''  # #4755
+            targetFileName = root.h if g.unitTesting else ''
             at.targetFileName = targetFileName  # For at.writeError only.
             return targetFileName
 
@@ -2645,7 +2645,7 @@ class AtFile:
         """Report a syntax error."""
         g.error(f"Syntax error in: {p.h}")
         typ, val, tb = sys.exc_info()
-        message = getattr(val, 'message', None)  # #4755
+        message = getattr(val, 'message', '')  # #4755
         if message:
             g.es_print(message)
         if val is None:

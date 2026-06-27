@@ -1337,13 +1337,13 @@ class GlobalConfigManager:
                 yield key2, val, c, letter
 
     # @+node:ekr.20041123070429: *3* gcm.canonicalizeSettingName (munge)
-    def canonicalizeSettingName(self, name: str) -> str | None:
-        if name is None:
-            return None
+    def canonicalizeSettingName(self, name: str) -> str:
+        if not name:  # #4755
+            return ''
         name = name.lower()
         for ch in ('-', '_', ' ', '\n'):
             name = name.replace(ch, '')
-        return name if name else None
+        return name if name else ''
 
     munge = canonicalizeSettingName
 
@@ -1487,13 +1487,13 @@ class GlobalConfigManager:
         return self.get(setting, "outlinedata")
 
     # @+node:ekr.20041117093009.1: *4* gcm.getDirectory
-    def getDirectory(self, setting: str) -> str | None:
+    def getDirectory(self, setting: str) -> str:
         """Return the value of @directory setting, or None if the directory does not exist."""
         # Fix https://bugs.launchpad.net/leo-editor/+bug/1173763
         theDir = self.get(setting, 'directory')
         if g.os_path_exists(theDir) and g.os_path_isdir(theDir):
             return theDir
-        return None
+        return ''
 
     # @+node:ekr.20070224075914.1: *4* gcm.getEnabledPlugins
     def getEnabledPlugins(self) -> str:

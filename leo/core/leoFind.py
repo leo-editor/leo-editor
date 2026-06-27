@@ -669,7 +669,7 @@ class LeoFind:
         w.returnPressed()
 
     # @+node:ekr.20150629084611.1: *6* find._compute_find_def_word
-    def _compute_find_def_word(self, event: LeoKeyEvent) -> str | None:  # pragma: no cover (cmd)
+    def _compute_find_def_word(self, event: LeoKeyEvent) -> str:  # pragma: no cover (cmd)
         """Init the find-def command. Return the word to find or None."""
         c = self.c
         w = c.frame.body.wrapper
@@ -679,9 +679,9 @@ class LeoFind:
             c.editCommands.extendToWord(event, select=True)
         word = w.getSelectedText().strip()
         if not word:
-            return None
+            return ''
         if keyword.iskeyword(word):
-            return None
+            return ''
         # Return word, stripped of preceding class or def.
         for tag in ('class ', 'def '):
             found = word.startswith(tag) and len(word) > len(tag)
@@ -828,16 +828,16 @@ class LeoFind:
         return results
 
     # @+node:ekr.20180511045458.1: *6* find._switch_style
-    def _switch_style(self, word: str) -> str | None:
+    def _switch_style(self, word: str) -> str:
         """
         Switch between camelCase and underscore_style function definitions.
         Return None if there would be no change.
         """
         s = word
         if not s:
-            return None
+            return ''
         if s[0].isupper():
-            return None  # Don't convert class names.
+            return ''  # Don't convert class names.
         if s.find('_') > -1:
             # Convert to CamelCase
             s = s.lower()
@@ -854,7 +854,7 @@ class LeoFind:
                 result.append('_')
             result.append(ch.lower())
         s = ''.join(result)
-        return None if s == word else s
+        return '' if s == word else s
 
     # @+node:ekr.20031218072017.3063: *4* find.find-next, find-prev & do_find_*
     @cmd('find-next')

@@ -1019,8 +1019,8 @@ class TestFind(LeoUnitTest):
     def test_switch_style(self):
         x = self.x
         table = (
-            ('', None),
-            ('TestClass', None),
+            ('', ''),  # #4755
+            ('TestClass', ''),  # #4755
             ('camelCase', 'camel_case'),
             ('under_score', 'underScore'),
         )

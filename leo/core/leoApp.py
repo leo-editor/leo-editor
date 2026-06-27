@@ -2832,11 +2832,11 @@ class LoadManager:
             return gui
 
         # @+node:ekr.20210927034148.7: *6* function: doScriptOption
-        def doScriptOption() -> str | None:
+        def doScriptOption() -> str:
             """Handle --script=path"""
             m = utils.find_complex_option(r'--script=(.+)')
             if not m:
-                return None
+                return ''
             fn = m.group(1).replace('"', '')
             # #1090: use cwd, not g.app.loadDir, to find scripts.
             path = g.finalize_join(os.getcwd(), fn)
@@ -2847,10 +2847,10 @@ class LoadManager:
             return script
 
         # @+node:ekr.20230615055158.1: *6* function: doSelectOption
-        def doSelectOption() -> str | None:
+        def doSelectOption() -> str:
             """Handle --select=headline"""
             m = utils.find_complex_option(r'--select=(.+)')
-            return m.group(1) if m else None
+            return m.group(1) if m else ''
 
         # @+node:ekr.20230615034517.1: *6* function: doSimpleOptions
         def doSimpleOptions() -> None:
@@ -2912,7 +2912,7 @@ class LoadManager:
                     helper()
 
         # @+node:ekr.20230615060055.1: *6* function: doThemeOption
-        def doThemeOption() -> str | None:
+        def doThemeOption() -> str:
             """Handle --theme=path"""
             m = utils.find_complex_option(r'--theme=(.+)')
             return m.group(1).replace('"', '') if m else None
@@ -3030,7 +3030,7 @@ class LoadManager:
         # Set the LoadManager.files ivar.
         self.files = computeFilesList(fileName)
         # Return a dictionary of complex options.
-        script = None if pymacs else doScriptOption()  # Used twice below.
+        script = '' if pymacs else doScriptOption()  # Used twice below.
         return {
             'gui': doGuiOption(),
             'script': script,

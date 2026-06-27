@@ -255,7 +255,7 @@ class DefaultWrapper(BaseSpellWrapper):
         self.save_user_dict()
 
     # @+node:ekr.20180207100238.1: *3* DefaultWrapper.find_main_dict
-    def find_main_dict(self) -> str | None:
+    def find_main_dict(self) -> str:
         """Return the full path to the global dictionary."""
         c = self.c
         fn = c.config.getString('main-spelling-dictionary')
@@ -263,10 +263,10 @@ class DefaultWrapper(BaseSpellWrapper):
             return fn
         # Default to ~/.leo/main_spelling_dict.txt
         fn = g.finalize_join(g.app.homeDir, '.leo', 'main_spelling_dict.txt')
-        return fn if g.os_path_exists(fn) else None
+        return fn if g.os_path_exists(fn) else ''
 
     # @+node:ekr.20230926171905.1: *3* DefaultWrapper.find_user_dict
-    def find_user_dict(self) -> str | None:
+    def find_user_dict(self) -> str:
         """Return the full path to the global dictionary."""
         c = self.c
         fn = c.config.getString('enchant-local-dictionary')
@@ -274,7 +274,7 @@ class DefaultWrapper(BaseSpellWrapper):
             return fn
         # Default to ~/.leo/main_spelling_dict.txt
         fn = g.finalize_join(g.app.homeDir, '.leo', 'spellpyx.txt')
-        return fn if g.os_path_exists(fn) else None
+        return fn if g.os_path_exists(fn) else ''
 
     # @+node:ekr.20180207073815.1: *3* DefaultWrapper.read_words
     def read_words(self, kind: str, fn: str) -> set[str]:

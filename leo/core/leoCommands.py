@@ -4030,7 +4030,7 @@ class Commands:
                 if p.isAtLeoNode():
                     fileName = p.atLeoNodeName()
                     if fileName not in todo and fileName not in scanned:
-                        if c2 := g.openWithFileName(fileName, gui=gui):  # #4755
+                        if c2 := g.openWithFileName(fileName, gui=gui):  # #4755 # Bug fix!
                             todo.append(fileName)
                             assert c2 not in result
                             result.append(c2)

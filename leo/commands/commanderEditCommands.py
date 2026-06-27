@@ -518,12 +518,12 @@ def extractDef(c: Cmdr, s: str) -> str:
 
 
 # @+node:ekr.20171123135625.26: *3* function: extractDef_find
-def extractDef_find(c: Cmdr, lines: list[str]) -> str | None:
+def extractDef_find(c: Cmdr, lines: list[str]) -> str:
     for line in lines:
         def_h = extractDef(c, line.strip())
         if def_h:
             return def_h
-    return None
+    return ''
 
 
 # @+node:ekr.20171123135625.25: *3* function: extractRef
@@ -582,7 +582,7 @@ def extractSectionNames(self: Self, event: LeoKeyEvent = None) -> None:
 
 
 # @+node:ekr.20171123135625.28: *3* function: findSectionName
-def findSectionName(self: Self, s: str) -> str | None:
+def findSectionName(self: Self, s: str) -> str:
     head1 = s.find("<<")
     if head1 > -1:
         head2 = s.find(">>", head1)
@@ -591,7 +591,7 @@ def findSectionName(self: Self, s: str) -> str | None:
         if head1 > -1:
             head2 = s.find("@>", head1)
     if head1 == -1 or head2 == -1 or head1 > head2:
-        name = None
+        name = ''
     else:
         name = s[head1 : head2 + 2]
     return name
