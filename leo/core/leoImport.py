@@ -460,15 +460,15 @@ class LeoImportCommands:
         theFile.close()
 
     # @+node:ekr.20031218072017.3300: *4* ic.removeSentinelsCommand
-    def removeSentinelsCommand(self, paths: list[str], toString: bool = False) -> str | None:
+    def removeSentinelsCommand(self, paths: list[str]) -> None:  # #4755
         c = self.c
         self.encoding = c.getEncoding(c.p)
         for fileName in paths:
             g.setGlobalOpenDir(fileName)
             path, self.fileName = g.os_path_split(fileName)
             s, e = g.readFileIntoString(fileName, self.encoding)
-            if s is None:
-                return None
+            if not s:  # #4755
+                continue  # #4755: bug fix.
             if e:
                 self.encoding = e
             # @+<< set delims from the header line >>
@@ -483,13 +483,12 @@ class LeoImportCommands:
             line = s[i:j]
             valid, junk, start_delim, end_delim, junk = at.parseLeoSentinel(line)
             if not valid:
-                if not toString:
-                    g.es("invalid @+leo sentinel in", fileName)
-                return None
+                g.es("invalid @+leo sentinel in", fileName)
+                continue  # #4755
             if end_delim:
-                line_delim = None
+                line_delim = ''  # #4755
             else:
-                line_delim, start_delim = start_delim, None
+                line_delim, start_delim = start_delim, ''
             # @-<< set delims from the header line >>
             s = self.removeSentinelLines(s, line_delim, start_delim, end_delim)
             ext = c.config.getString('remove-sentinels-extension')
@@ -500,11 +499,6 @@ class LeoImportCommands:
             else:
                 head, ext2 = g.os_path_splitext(fileName)
                 newFileName = g.finalize_join(path, head + ext + ext2)  # 1341
-            if toString:
-                return s
-            # @+<< Write s into newFileName >>
-            # @+node:ekr.20031218072017.1149: *5* << Write s into newFileName >> (remove-sentinels)
-            # Remove sentinels command.
             try:
                 with open(newFileName, 'w') as theFile:
                     theFile.write(s)
@@ -513,8 +507,6 @@ class LeoImportCommands:
             except Exception:
                 g.es("exception creating:", newFileName)
                 g.print_exception()
-            # @-<< Write s into newFileName >>
-        return None
 
     # @+node:ekr.20031218072017.3303: *4* ic.removeSentinelLines
     # This does not handle @nonl properly, but that no longer matters.
@@ -892,7 +884,7 @@ class LeoImportCommands:
         return p
 
     # @+node:ekr.20031218072017.3227: *5* ic.findFunctionDef
-    def findFunctionDef(self, s: str, i: int) -> str | None:
+    def findFunctionDef(self, s: str, i: int) -> str:
         # Look at the next non-blank line for a function name.
         i = g.skip_ws_and_nl(s, i)
         k = g.skip_line(s, i)
@@ -908,7 +900,7 @@ class LeoImportCommands:
                 break
             else:
                 i += 1
-        return None
+        return ''
 
     # @+node:ekr.20031218072017.3228: *5* ic.scanBodyForHeadline
     # @+at This method returns the proper headline text.
