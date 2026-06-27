@@ -879,7 +879,7 @@ class LeoQtGui(leoGui.LeoGui):
         okButtonText: str = None,
         default: str = "",
         wide: bool = False,
-    ) -> str | None:
+    ) -> str | None:  ###
         """Create and run askOkCancelString dialog.
 
         wide - edit a long string
@@ -1067,10 +1067,10 @@ class LeoQtGui(leoGui.LeoGui):
         return button.objectName() or 'cancel'
 
     # @+node:ekr.20110605121601.18499: *4* LeoQtGui.runOpenDirectoryDialog
-    def runOpenDirectoryDialog(self, title: str, startdir: str) -> str | None:
+    def runOpenDirectoryDialog(self, title: str, startdir: str) -> str:
         """Create and run an Qt open directory dialog ."""
         if g.unitTesting:
-            return None
+            return ''
         dialog = QtWidgets.QFileDialog()
         self.attachLeoIcon(dialog)
         return dialog.getExistingDirectory(None, title, startdir)
@@ -1493,7 +1493,7 @@ class LeoQtGui(leoGui.LeoGui):
     dump_given = False
 
     @functools.lru_cache(maxsize=128)
-    def getImageFinder(self, name: str) -> str | None:
+    def getImageFinder(self, name: str) -> str:
         """Theme aware image (icon) path searching."""
         trace = 'themes' in g.app.debug
         exists = g.os_path_exists
@@ -1538,7 +1538,7 @@ class LeoQtGui(leoGui.LeoGui):
             # if trace: g.trace(name, 'not in', base_dir)
         if trace:
             g.trace('not found:', name)
-        return None
+        return ''
 
     # @+node:ekr.20110605121601.18518: *4* LeoQtGui.getTreeImage
     @functools.lru_cache(maxsize=128)

@@ -2580,14 +2580,14 @@ class LegacyExternalFileImporter:
             print('orphan line: ', repr(line))
 
     # @+node:ekr.20200424160847.1: *3* legacy.compute_delim1
-    def compute_delim1(self, path: str) -> str | None:
+    def compute_delim1(self, path: str) -> str:
         """Return the opening comment delim for the given file."""
         junk, ext = os.path.splitext(path)
         if not ext:
-            return None
+            return ''
         language = g.app.extension_dict.get(ext[1:])
         if not language:
-            return None
+            return ''
         delim1, delim2, delim3 = g.set_delims_from_language(language)
         g.trace(language, delim1 or delim2)
         return delim1 or delim2

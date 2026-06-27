@@ -1652,7 +1652,7 @@ class LoadManager:
         return fileName
 
     # @+node:ekr.20120209051836.10372: *4* LM.computeLeoSettingsPath
-    def computeLeoSettingsPath(self) -> str | None:
+    def computeLeoSettingsPath(self) -> str:
         """Return the full path to leoSettings.leo."""
         # lm = self
         join = g.finalize_join
@@ -1666,13 +1666,11 @@ class LoadManager:
         )
         for path in table:
             if g.os_path_exists(path):
-                break
-        else:
-            path = None
-        return path
+                return path
+        return ''
 
     # @+node:ekr.20120209051836.10373: *4* LM.computeMyLeoSettingsPath
-    def computeMyLeoSettingsPath(self) -> str | None:
+    def computeMyLeoSettingsPath(self) -> str:
         """
         Return the full path to either myLeoSettings.leo or myLeoSettings.leojs.
 
@@ -1704,7 +1702,7 @@ class LoadManager:
                 return path + ".leo"
             if g.os_path_exists(path + ".leojs"):
                 return path + ".leojs"
-        return None
+        return ''
 
     # @+node:ekr.20120209051836.10252: *4* LM.computeStandardDirectories & helpers
     def computeStandardDirectories(self) -> None:
@@ -1725,7 +1723,7 @@ class LoadManager:
         g.app.testDir = join(g.app.loadDir, '..', 'test')
 
     # @+node:ekr.20120209051836.10253: *5* LM.computeGlobalConfigDir
-    def computeGlobalConfigDir(self) -> str | None:
+    def computeGlobalConfigDir(self) -> str:
         leo_config_dir = getattr(sys, 'leo_config_directory', None)
         if leo_config_dir:
             theDir = leo_config_dir
@@ -1734,11 +1732,11 @@ class LoadManager:
         if theDir:
             theDir = os.path.abspath(theDir)
         if not theDir or not g.os_path_exists(theDir) or not g.os_path_isdir(theDir):
-            theDir = None
+            theDir = ''
         return theDir
 
     # @+node:ekr.20120209051836.10254: *5* LM.computeHomeDir
-    def computeHomeDir(self) -> str | None:
+    def computeHomeDir(self) -> str:
         """Returns the user's home directory."""
         # Windows searches the HOME, HOMEPATH and HOMEDRIVE
         # environment vars, then gives up.
@@ -1751,7 +1749,7 @@ class LoadManager:
             # This was the source of the 4.3 .leoID.txt problems.
             home = g.finalize(home)
             if not g.os_path_exists(home) or not g.os_path_isdir(home):
-                home = None
+                home = ''
         return home
 
     # @+node:ekr.20120209051836.10260: *5* LM.computeHomeLeoDir
@@ -1846,7 +1844,7 @@ class LoadManager:
         return [g.os_path_normslashes(z) for z in table if g.os_path_exists(z)]
 
     # @+node:ekr.20180318133620.1: *4* LM.computeThemeFilePath & helper
-    def computeThemeFilePath(self) -> str | None:
+    def computeThemeFilePath(self) -> str:
         """
         Return the absolute path to the theme .leo file, resolved using the search order for themes.
 
@@ -1902,7 +1900,7 @@ class LoadManager:
         return path
 
     # @+node:ekr.20180321124503.1: *5* LM.resolve_theme_path
-    def resolve_theme_path(self, fn: str, tag: str) -> str | None:
+    def resolve_theme_path(self, fn: str, tag: str) -> str:
         """Search theme directories for the given .leo file."""
         if not fn:
             return None
@@ -1916,10 +1914,10 @@ class LoadManager:
             if g.os_path_exists(path):
                 return path
         print(f"theme .leo file not found: {fn}")
-        return None
+        return ''
 
     # @+node:ekr.20120211121736.10772: *4* LM.computeWorkbookFileName
-    def computeWorkbookFileName(self) -> str | None:
+    def computeWorkbookFileName(self) -> str:
         """
         Return full path to the workbook.
 
@@ -1934,7 +1932,7 @@ class LoadManager:
         fn = g.finalize(fn)
         directory = g.finalize(os.path.dirname(fn))
 
-        return fn if os.path.exists(directory) else None
+        return fn if os.path.exists(directory) else ''
 
     # @+node:ekr.20120219154958.10485: *4* LM.reportDirectories
     def reportDirectories(self) -> None:
@@ -2698,12 +2696,12 @@ class LoadManager:
             g.app.createDefaultGui()
 
     # @+node:ekr.20120219154958.10482: *5* LM.getDefaultFile
-    def getDefaultFile(self) -> str | None:
+    def getDefaultFile(self) -> str:
         # Get the name of the workbook.
         fn = g.app.config.getString('default-leo-file')
         fn = g.finalize(fn)
         if not fn:
-            return None
+            return ''
         if g.os_path_exists(fn):
             return fn
         if g.os_path_isabs(fn):
@@ -2711,7 +2709,7 @@ class LoadManager:
             g.error(f"Using default leo file name:\n{fn}")
             return fn
         # It's too risky to open a default file if it is relative.
-        return None
+        return ''
 
     # @+node:ekr.20120219154958.10484: *5* LM.initApp
     def initApp(self, verbose: bool) -> None:
