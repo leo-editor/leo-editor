@@ -665,7 +665,7 @@ class ScriptingController:
         buttonText: str,
         p: Position,
         script: str,
-        script_gnx: str = None,
+        script_gnx: str = '',
     ) -> Value:
         """Execute an @button script in p.b or script."""
         c = self.c

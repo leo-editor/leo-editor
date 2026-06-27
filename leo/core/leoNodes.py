@@ -857,7 +857,7 @@ class Position:
     def getNext(self) -> Position:
         return self.copy().moveToNext()
 
-    def getNodeAfterTree(self) -> Position:
+    def getNodeAfterTree(self) -> Position | None:
         return self.copy().moveToNodeAfterTree()
 
     def getNthChild(self, n: int) -> Position:
@@ -1002,7 +1002,7 @@ class Position:
     simpleLevel = level
 
     # @+node:ekr.20111005152227.15566: *4* p.positionAfterDeletedTree
-    def positionAfterDeletedTree(self) -> Position:  # pragma: no cover
+    def positionAfterDeletedTree(self) -> Position | None:  # pragma: no cover
         """Return the position corresponding to p.nodeAfterTree() after this node is
         deleted. This will be p.nodeAfterTree() unless p.next() exists.
 
@@ -1433,7 +1433,7 @@ class Position:
         return p
 
     # @+node:ekr.20080416161551.205: *4* p.moveToNodeAfterTree
-    def moveToNodeAfterTree(self) -> Position:
+    def moveToNodeAfterTree(self) -> Position | None:
         """Move a position to the node after the position's tree."""
         p = self
         while p:
@@ -1512,7 +1512,7 @@ class Position:
                 p.moveToParent()  # Same as p.moveToThreadBack()
             if p:
                 if limit:
-                    done, val = self.checkVisBackLimit(limit, limitIsVisible, p)
+                    done, val = self.checkVisBackLimit(limit, limitIsVisible, p)  # type:ignore
                     if done:
                         return val  # A position or None
                 if p.isVisible(c):

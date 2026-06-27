@@ -302,10 +302,10 @@ class LeoQtGui(leoGui.LeoGui):
         c: Cmdr,
         args: Any = None,
         p: Position = None,  # A node containing the script.
-        script: str = None,  # The script itself.
-        buttonText: str = None,
+        script: str = '',  # The script itself.
+        buttonText: str = '',
         balloonText: str = 'Script Button',
-        shortcut: str = None,
+        shortcut: str = '',
         bg: str = 'LightSteelBlue1',
         define_g: bool = True,
         define_name: str = '__main__',

@@ -353,7 +353,7 @@ def new_cmd_decorator(name: str, ivars: list[str]) -> Callable:
                 c = event.get('c')
             else:
                 c = event.c
-            self = g.ivars2instance(c, g, ivars)
+            self = g.ivars2instance(c, g, ivars)  # type:ignore # c exists.
             try:
                 # Don't use a keyword for self.
                 # This allows the VimCommands class to use vc instead.
@@ -7898,7 +7898,7 @@ def computeFileUrl(fn: str, c: Cmdr | None = None, p: Position | None = None) ->
             path = url
         # Handle ancestor @path directives.
         if c and c.fileName():
-            base = c.getPath(p)
+            base = c.getPath(p)  # type:ignore # c.getPath(p) is not empty.
             path = g.finalize_join(g.os_path_dirname(c.fileName()), base, path)
         else:
             path = g.finalize(path)

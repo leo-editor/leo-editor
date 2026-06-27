@@ -25,20 +25,24 @@ os.chdir(leo_editor_dir)
 
 # args = ' '.join(sys.argv[1:])
 python = sys.executable
+passed = (
+    'leoAtFile.py',
+    'leoCommands.py',
+    'leoGlobals.py',
+    'leoKeys.py',
+    'leoNodes.py',
+)
 if 0:
     # Test all files
-    args = ''
-    files = 'leo'
+    args = '--follow-imports=skip'
+    files = 'leo'  # 2742 errors.
+elif 1:  # Test all passed files.
+    args = '--follow-imports=skip'
+    files = ' '.join(f"leo/core/{z}" for z in passed)
 else:
-    files = 'leo/core/leoColorizer.py'
-    # fail
-    # files = 'leo/core'  # 3000 errors
-
-    # pass
-    # files = 'leo/core/leoGlobals.py'
-    # files = 'leo/core/leoNodes.py'
-    # files = 'leo/core/leoAtFile.py'
-
+    # Fails
+    files = 'leo/core/leoCommands.py'
+    # files = 'leo/core/leoColorizer.py' # 36 errors
     if 1:  # For testing one file.
         args = '--follow-imports=skip'
     else:  # Safe.

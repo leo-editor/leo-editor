@@ -1432,7 +1432,7 @@ class GetArg:
         if hasattr(handler, 'tab_callback'):
             self.reset_tab_cycling()
             k.functionTail = tail  # For k.getFileName.
-            handler.tab_callback()
+            handler.tab_callback()  # type:ignore
             return True
         return False
 
@@ -1598,6 +1598,7 @@ class GetArg:
             # A hack to support the curses gui.
             k.arg = gui_arg or self.get_label()
         kind, n, handler = self.after_get_arg_state  # type:ignore
+        n = cast(int, n)
         if kind:
             k.setState(kind, n, handler)
         self.log.deleteTab('Completion')
@@ -1744,7 +1745,7 @@ class GetArg:
             d = c.commandsDict
             func = d.get(commandName)
             if hasattr(func, 'source_c'):
-                c2 = func.source_c
+                c2 = func.source_c  # type:ignore
                 fn2 = c2.shortFileName().lower()
                 if fn2.endswith('myleosettings.leo'):
                     return 'M'
@@ -2112,7 +2113,7 @@ class KeyHandlerClass:
         self,
         pane: str,
         shortcut: Any,
-        callback: Callable,
+        callback: Callable | None,
         commandName: str,
         modeFlag: bool = False,
         tag: str = '',  # #4755
@@ -2571,6 +2572,7 @@ class KeyHandlerClass:
         k.mb_tabList = []
         commandName, tail = k.getMinibufferCommandName()
         k.functionTail = tail
+        func: Any
         if commandName and commandName.isdigit():
             # The line number Easter Egg.
 
@@ -2799,10 +2801,12 @@ class KeyHandlerClass:
                 self.show_results()
 
             # @+node:ekr.20241210053936.12: *5* ShowCommands.scan_buttons_and_commands & helpers
-            def scan_buttons_and_commands(self, c: Cmdr) -> None:
+            def scan_buttons_and_commands(self, c: Cmdr | None) -> None:
                 '''Return a dict containing a representation
                 of all settings in leoSettings.leo or myLeoSettings.leo.
                 '''
+                if not c:
+                    return
                 sfn = c.shortFileName()
                 settings_node = g.findNodeAnywhere(c, '@settings', exact=False)
                 if not settings_node:
