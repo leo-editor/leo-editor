@@ -2951,7 +2951,7 @@ def findFirstValidAtLanguageDirective(s: str) -> str:
 def findLanguageDirectives(c: Cmdr, p: Position) -> str:
     """Return the language in effect at position p."""
     if c is None or p is None:
-        return ''  # c may be None for testing.
+        return ''
 
     v0 = p.v
 
