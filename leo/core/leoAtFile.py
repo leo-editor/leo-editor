@@ -4064,7 +4064,7 @@ class FastAtRead:
         # Set the body text.
         assert root_v.gnx in gnx2vnode, root_v
         assert root_v.gnx in gnx2body, root_v
-        for key, body in gnx2body.items():  # #4755
+        for key, body in gnx2body.items():  # strict_optional
             v = gnx2vnode.get(key)
             assert v, (key, v)
             v._bodyString = g.toUnicode(''.join(body))

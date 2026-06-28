@@ -225,7 +225,7 @@ class BaseLeoPlugin:
         self,
         commandName: str,
         handler: Callable,
-        *,  # #4755
+        *,  # strict_optional
         pane: str = 'all',
         shortcut: str = '',  # No longer used
         verbose: bool = True,  # No longer used

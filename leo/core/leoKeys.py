@@ -1344,7 +1344,7 @@ class GetArg:
         self.handler: Callable | None = None
         self.tabList: list[str] = []
         # Tab cycling ivars...
-        self.cycling_prefix: str = ''  # #4755
+        self.cycling_prefix: str = ''  # strict_optional
         self.cycling_index = -1
         self.cycling_tabList: list[str] = []
         # The following are k globals.
@@ -1495,8 +1495,8 @@ class GetArg:
     def get_arg(
         self,
         event: LeoKeyEvent,
-        returnKind: str = '',  # #4755
-        returnState: int = 0,  # #4755
+        returnKind: str = '',  # strict_optional
+        returnState: int = 0,  # strict_optional
         handler: Callable | None = None,
         tabList: list[str] | None = None,
         completion: bool = True,
@@ -1624,7 +1624,7 @@ class GetArg:
         k.getArgEscapeFlag = False
         self.after_get_arg_state = returnKind, returnState, handler
         self.arg_completion = completion
-        self.cycling_prefix = ''  # #4755
+        self.cycling_prefix = ''  # strict_optional
         self.handler = handler
         self.tabList = tabList[:] if tabList else []
         # Set the k globals...
@@ -3260,8 +3260,8 @@ class KeyHandlerClass:
         # Override entries in c.k.masterBindingsDict
         k = self
         d = k.masterBindingsDict
-        for key, d2 in d.items():  # #4755
-            for key2, bi in d2.items():  # #4755
+        for key, d2 in d.items():  # strict_optional
+            for key2, bi in d2.items():  # strict_optional
                 if bi.commandName == commandName:
                     bi.func = func
                     d2[key2] = bi
@@ -4229,7 +4229,7 @@ class KeyHandlerClass:
                 func(event)
                 if g.app.quitting or not c.exists:
                     pass
-                elif nextMode == 'none':  # #4755
+                elif nextMode == 'none':  # strict_optional
                     # Do *not* clear k.inputModeName or the focus here.
                     # func may have put us in *another* mode.
                     pass

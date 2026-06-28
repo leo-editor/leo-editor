@@ -1338,7 +1338,7 @@ class GlobalConfigManager:
 
     # @+node:ekr.20041123070429: *3* gcm.canonicalizeSettingName (munge)
     def canonicalizeSettingName(self, name: str) -> str:
-        if not name:  # #4755
+        if not name:  # strict_optional
             return ''
         name = name.lower()
         for ch in ('-', '_', ' ', '\n'):

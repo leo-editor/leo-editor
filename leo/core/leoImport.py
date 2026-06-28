@@ -460,15 +460,15 @@ class LeoImportCommands:
         theFile.close()
 
     # @+node:ekr.20031218072017.3300: *4* ic.removeSentinelsCommand
-    def removeSentinelsCommand(self, paths: list[str]) -> None:  # #4755
+    def removeSentinelsCommand(self, paths: list[str]) -> None:  # strict_optional
         c = self.c
         self.encoding = c.getEncoding(c.p)
         for fileName in paths:
             g.setGlobalOpenDir(fileName)
             path, self.fileName = g.os_path_split(fileName)
             s, e = g.readFileIntoString(fileName, self.encoding)
-            if not s:  # #4755
-                continue  # #4755: bug fix.
+            if not s:  # strict_optional
+                continue  # strict_optional: bug fix.
             if e:
                 self.encoding = e
             # @+<< set delims from the header line >>
@@ -484,9 +484,9 @@ class LeoImportCommands:
             valid, junk, start_delim, end_delim, junk = at.parseLeoSentinel(line)
             if not valid:
                 g.es("invalid @+leo sentinel in", fileName)
-                continue  # #4755
+                continue  # strict_optional
             if end_delim:
-                line_delim = ''  # #4755
+                line_delim = ''  # strict_optional
             else:
                 line_delim, start_delim = start_delim, ''
             # @-<< set delims from the header line >>
