@@ -617,7 +617,7 @@ class AutoCompleterClass:
             kind, aList = self.guess_class(c, varname)
         else:
             kind, aList = 'none', []
-            varname, ivar = '', ''  # #4755
+            varname, ivar = '', ''  # strict_optional
         if aList:
             if kind == 'class':
                 hits = self.lookup_methods(aList, ivar)
@@ -1467,7 +1467,7 @@ class GetArg:
     # @+node:ekr.20140819050118.18318: *4* ga.reset_tab_cycling
     def reset_tab_cycling(self) -> None:
         """Reset all tab cycling ivars."""
-        self.cycling_prefix = ''  # #4755
+        self.cycling_prefix = ''  # strict_optional
         self.cycling_index = -1
         self.cycling_tabList = []
 
@@ -2426,7 +2426,7 @@ class KeyHandlerClass:
         if commandName in h:
             h.remove(commandName)
         h.append(commandName)
-        k.commandIndex = 0  # #4755
+        k.commandIndex = 0  # strict_optional
 
     # @+node:ekr.20150402165918.1: *4* k.commandHistoryDown
     def commandHistoryFwd(self) -> None:
@@ -2478,14 +2478,14 @@ class KeyHandlerClass:
         """reset the command history index to indicate that
         we are pointing 'past' the last entry
         """
-        self.commandIndex = 0  # #4755
+        self.commandIndex = 0  # strict_optional
 
     # @+node:ekr.20150402111935.1: *4* k.sortCommandHistory
     def sortCommandHistory(self) -> None:
         """Sort the command history."""
         k = self
         k.commandHistory.sort()
-        k.commandIndex = 0  # #4755
+        k.commandIndex = 0  # strict_optional
 
     # @+node:ekr.20061031131434.104: *3* k.Dispatching
     # @+node:ekr.20061031131434.111: *4* k.fullCommand (alt-x) & helper
@@ -3035,7 +3035,7 @@ class KeyHandlerClass:
         self,
         event: LeoKeyEvent,
         handler: Callable,
-        prefix: str = '',  # #4755
+        prefix: str = '',  # strict_optional
         tabList: list[str] | None = None,
         completion: bool = True,
         oneCharacter: bool = False,
@@ -3128,7 +3128,7 @@ class KeyHandlerClass:
 
         """
         # @-<< docstring for k.get1arg >>
-        returnKind, returnState = '', 0  # #4755
+        returnKind, returnState = '', 0  # strict_optional
         assert handler is not None, g.callers()
         self.getArgInstance.get_arg(
             event,
@@ -3145,10 +3145,10 @@ class KeyHandlerClass:
     def getArg(
         self,
         event: LeoKeyEvent,
-        returnKind: str = '',  # #4755
-        returnState: int = 0,  # #4755
+        returnKind: str = '',  # strict_optional
+        returnState: int = 0,  # strict_optional
         handler: Callable | None = None,
-        prefix: str = '',  # #4755
+        prefix: str = '',  # strict_optional
         tabList: list[str] | None = None,
         completion: bool = True,
         oneCharacter: bool = False,
@@ -3839,7 +3839,7 @@ class KeyHandlerClass:
             return None
         for key, name in (
             # Order here is similar to bindtags order.
-            # #4755: Use '' instead of None here.
+            # strict_optional: Use '' instead of None here.
             ('command', ''),
             ('insert', ''),
             ('overwrite', ''),
