@@ -614,8 +614,7 @@ class Position:
     # @+node:ekr.20091001141621.6058: *4* p.parents
     def parents(self, copy: bool = True) -> Generator:
         """Yield all parent positions of p."""
-        p = self
-        p = p.parent()  # type:ignore # We are about to test p.
+        p = self.parent()
         while p:
             yield p.copy() if copy else p
             p.moveToParent()
@@ -2163,7 +2162,7 @@ class VNode:
     # @+others
     # @+node:ekr.20031218072017.3342: *3* v.Birth & death
     # @+node:ekr.20031218072017.3344: *4* v.__init__
-    def __init__(self, context: Cmdr, gnx: str | None = None):
+    def __init__(self, context: Cmdr, gnx: str = ''):
         """
         Ctor for the VNode class.
         To support ZODB, the code must set v._p_changed = True whenever
@@ -2417,7 +2416,7 @@ class VNode:
         """
         v = self
         # Allocate a new vnode and gnx with empty children & parents.
-        v2 = VNode(context=v.context, gnx=None)
+        v2 = VNode(context=v.context)  # strict_optional
         assert v2.parents == [], v2.parents  # pylint: disable=use-implicit-booleaness-not-comparison
         assert v2.gnx
         assert v.gnx != v2.gnx
