@@ -192,7 +192,7 @@ class LeoApp:
         self.initial_cwd: str = os.getcwd()  # For restart-leo.
         self.leoID: str = ''  # The id part of gnx's.
         self.lossage: list[LossageData] = []  # List of last 100 keystrokes.
-        self.paste_c: Cmdr = None  # The commander that pasted the last outline.
+        self.paste_c: Cmdr | None = None  # The commander that pasted the last outline.
         self.spellDict: SpellDict = None  # A pyenchant dict or a DefaultDict.
         self.numberOfUntitledWindows = 0  # Number of opened untitled windows.
         self.windowList: list[LeoFrame] = []  # Global list of all frames.
@@ -1281,7 +1281,9 @@ class LeoApp:
 
     # @+node:ekr.20171127111053.1: *3* app.Closing
     # @+node:ekr.20031218072017.2609: *4* app.closeLeoWindow
-    def closeLeoWindow(self, frame: LeoFrame, new_c: Cmdr = None, finish_quit: bool = True) -> bool:
+    def closeLeoWindow(
+        self, frame: LeoFrame, new_c: Cmdr | None = None, finish_quit: bool = True
+    ) -> bool:
         """
         Attempt to close a Leo window.
 
@@ -1634,11 +1636,11 @@ class LoadManager:
         self.more_cmdline_files = False
 
         # Themes...
-        self.leo_settings_c: Cmdr = None
+        self.leo_settings_c: Cmdr | None = None
         self.leo_settings_path: str = ''
-        self.my_settings_c: Cmdr = None
+        self.my_settings_c: Cmdr | None = None
         self.my_settings_path: str = ''
-        self.theme_c: Cmdr = None  # #1374.
+        self.theme_c: Cmdr | None = None  # #1374.
         self.theme_path: str = ''
 
     # @+node:ekr.20120211121736.10812: *3* LM.Directory & file utils
@@ -2042,7 +2044,10 @@ class LoadManager:
             # Merge the settings from c into *copies* of the global dicts.
             # d1 and d2 are copies.
             d1, d2 = lm.computeLocalSettings(
-                c, lm.globalSettingsDict, lm.globalBindingsDict, localFlag=True
+                c,  # type:ignore # c is not None.
+                lm.globalSettingsDict,
+                lm.globalBindingsDict,
+                localFlag=True,
             )
             d1.setName(settingsName)
             d2.setName(shortcutsName)
@@ -2230,7 +2235,10 @@ class LoadManager:
             # Merge the settings dicts from c's outline into
             # *new copies of* settings_d and bindings_d.
             settings_d, bindings_d = lm.computeLocalSettings(
-                c, settings_d, bindings_d, localFlag=False
+                c,  # type:ignore # c is not None.
+                settings_d,
+                bindings_d,
+                localFlag=False,
             )
         # Adjust the name.
         bindings_d.setName('lm.globalBindingsDict')
@@ -2240,7 +2248,7 @@ class LoadManager:
         # This must be done *after* reading myLeoSettings.leo.
         lm.theme_path = lm.computeThemeFilePath()
         if lm.theme_path and lm.theme_path != LoadManager.LM_NOTHEME_FLAG:
-            lm.theme_c = lm.openSettingsFile(lm.theme_path)
+            lm.theme_c = lm.openSettingsFile(lm.theme_path)  # type:ignore # theme_c is a Cmdr if used below.
             if lm.theme_c:
                 # Merge theme_c's settings into globalSettingsDict.
                 settings_d, junk_shortcuts_d = lm.computeLocalSettings(
@@ -2255,7 +2263,7 @@ class LoadManager:
         # This allows this method to be called outside the startup logic.
         for c in commanders:
             if c not in old_commanders:
-                g.app.forgetOpenFile(c.fileName())
+                g.app.forgetOpenFile(c.fileName())  # type:ignore # Not sure why mypy complains.
 
     # @+node:ekr.20120214165710.10838: *4* LM.traceSettingsDict
     def traceSettingsDict(self, d: dict[str, str], verbose: bool = False) -> None:
@@ -2417,7 +2425,7 @@ class LoadManager:
         if not c:
             # Leo is out of options: Force an immediate exit.
             return False
-        g.app.runAlreadyOpenDialog(c1)  # #199.
+        g.app.runAlreadyOpenDialog(c)  # #199. # strict_optional
 
         # Final inits...
         try:  # qt only: select the first-loaded tab.
@@ -2453,6 +2461,7 @@ class LoadManager:
         if g.unitTesting or g.app.batchMode:
             return None
         fn = self.computeWorkbookFileName()
+        c: Cmdr | None
         if not fn:
             # The usual directory does not exist. Create an empty file.
             c = self.openEmptyLeoFile(fn, gui=g.app.gui, old_c=None)
@@ -3294,7 +3303,7 @@ class LoadManager:
             p.h = f"@auto {fn}" if func else f"@edit {fn}"
             c.refreshFromDisk(p)  # pylint: disable=no-member
 
-        c.mFileName = None  # #3546: Do *not* automatically save the .leo file.
+        c.mFileName = ''  # #3546: Do *not* automatically save the .leo file.
         c.frame.title = c.computeTabTitle()
         c.frame.setTitle(c.frame.title)
 
