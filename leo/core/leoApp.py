@@ -136,7 +136,7 @@ class LeoApp:
         self.enablePlugins = True  # True: run start1 hook to load plugins. --no-plugins
         self.failFast = False  # True: Use the failfast option in unit tests.
         self.gui: LeoGui = None  # The gui class.
-        self.guiArgName: str = None  # The gui name given in --gui option.
+        self.guiArgName: str = ''  # The gui name given in --gui option.
         self.isTheme = False  # True: load files as theme files (ignore myLeoSettings.leo).
         self.listen_to_log_flag = False  # True: execute listen-to-log command.
         # Set by startup logic to True if no files specified on the command line.
@@ -2273,14 +2273,13 @@ class LoadManager:
     def traceShortcutsDict(self, d: dict[str, str], verbose: bool = True) -> None:
         print(d)
         if verbose:
-            for key in sorted(list(d.keys())):
-                val = d.get(key)
+            for key, val in sorted(list(d.items())):  # strict_optional
                 print(f"{key:35} {[z.stroke for z in val]}")
             if d:
                 print('')
 
     # @+node:ekr.20120219154958.10452: *3* LM.load & helpers
-    def load(self, fileName: str = None, pymacs: bool = None) -> None:
+    def load(self, fileName: str = '', pymacs: bool = False) -> None:
         """This is Leo's main startup method."""
         lm = self
 
@@ -2455,7 +2454,6 @@ class LoadManager:
         if g.unitTesting or g.app.batchMode:
             return None
         fn = self.computeWorkbookFileName()
-        exists = fn and os.path.exists(fn)
         if not fn:
             # The usual directory does not exist. Create an empty file.
             c = self.openEmptyLeoFile(fn, gui=g.app.gui, old_c=None)
@@ -2464,7 +2462,9 @@ class LoadManager:
         else:
             # Open the workbook or create an empty file.
             c = g.openWithFileName(fn, gui=g.app.gui, old_c=None)
-            if not exists:
+            if not c:
+                return None  # strict_optional
+            if not os.path.exists(c.fileName()):  # strict_optional
                 c.rootPosition().h = 'Workbook'
                 g.app.numberOfUntitledWindows += 1
         # Create the outline with workbook's name.
@@ -2525,6 +2525,7 @@ class LoadManager:
     def createImporterData(self) -> None:
         """Create the data structures describing importer plugins."""
         # Allow plugins to be defined in ~/.leo/plugins.
+        m: Any
         for pattern in (
             # ~/.leo/plugins.
             g.finalize_join(g.app.homeDir, '.leo', 'plugins'),
@@ -2550,6 +2551,8 @@ class LoadManager:
         # Leo 6.7.8: Create g.app.importerClassesDict.
         for language_name in g.app.importerModulesDict:
             m = g.app.importerModulesDict.get(language_name)
+            if not m:  # strict_optional
+                continue
             for z in dir(m):
                 # A hack: all importer subclasses should end with '_Importer'.
                 if z.endswith('_Importer'):
@@ -2660,8 +2663,8 @@ class LoadManager:
     def createGui(self, pymacs: bool) -> None:
         lm = self
         gui_option = lm.options.get('gui')
-        windowFlag = lm.options.get('windowFlag')
-        script = lm.options.get('script')
+        windowFlag = lm.options.get('windowFlag', False)
+        script = lm.options.get('script', '')
         if g.app.gui:
             if g.app.gui == g.app.nullGui:
                 g.app.gui = None  # Enable g.app.createDefaultGui
@@ -2682,7 +2685,7 @@ class LoadManager:
     def createSpecialGui(self, gui: str, pymacs: bool, script: str, windowFlag: bool) -> None:
         # lm = self
         if pymacs:
-            g.app.createNullGuiWithScript(script=None)
+            g.app.createNullGuiWithScript(script='')
         elif script:
             if windowFlag:
                 g.app.createDefaultGui()
@@ -2911,7 +2914,7 @@ class LoadManager:
         def doThemeOption() -> str:
             """Handle --theme=path"""
             m = utils.find_complex_option(r'--theme=(.+)')
-            return m.group(1).replace('"', '') if m else None
+            return m.group(1).replace('"', '') if m else ''
 
         # @+node:ekr.20230615075314.1: *6* function: doTraceOptions
         def doTraceOptions() -> None:
@@ -3082,7 +3085,7 @@ class LoadManager:
                 }
                 # Handle keywords for g.pr and g.es_print.
                 d = g.doKeywordArgs(keys, d)
-                color: str = d.get('color')
+                color: str = d.get('color') or ''  # strict_optional
                 if color == 'suppress':
                     return
                 if log and color is None:
@@ -3152,7 +3155,7 @@ class LoadManager:
         """
         lm = self
 
-        file_name = g.finalize(fn) if fn else None
+        file_name = g.finalize(fn) if fn else ''
 
         # #2489: If file_name is empty, open an empty, untitled .leo file.
         if not file_name:
@@ -3175,7 +3178,7 @@ class LoadManager:
     loadLocalFile = openWithFileName  # Compatibility.
 
     # @+node:ekr.20120223062418.10405: *5* LM.createMenu
-    def createMenu(self, c: Cmdr, fn: str = None) -> None:
+    def createMenu(self, c: Cmdr, fn: str = '') -> None:
         # lm = self
         # Create the menu as late as possible so it can use user commands.
         if not g.doHook("menu1", c=c, p=c.p, v=c.p):
@@ -3253,7 +3256,7 @@ class LoadManager:
         c = g.app.newCommander(
             fileName=fn,
             gui=gui,
-            previousSettings=lm.getPreviousSettings(None),
+            previousSettings=lm.getPreviousSettings(''),  # strict_optional
         )
         # Use the config params to set the size and location of the window.
         g.doHook('open0')
@@ -3617,11 +3620,11 @@ class RecentFilesManager:
         rf_always = c.config.getBool("recent-files-group-always")
         groupedEntries = rf_group or rf_always
         if groupedEntries:  # if so, make dict of groups
-            dirCount: dict[str, dict[str, list[str]]] | None = {}
+            dirCount: dict[str, dict[str, list[str]]] = {}
             for fileName in rf.getRecentFiles()[:n]:
                 dirName, baseName = g.os_path_split(fileName)
                 if baseName not in dirCount:
-                    dirCount[baseName] = {'dirs': [], 'entry': None}
+                    dirCount[baseName] = {'dirs': [], 'entry': []}  # strict_optional
                 dirCount[baseName]['dirs'].append(dirName)
         for name in rf.getRecentFiles()[:n]:
             if name.strip() == "":
@@ -3830,7 +3833,7 @@ class RecentFilesManager:
             files = [z for z in p.b.splitlines() if z and g.os_path_exists(z)]
             rf.recentFiles = files
             rf.writeRecentFilesFile(c)
-            rf.updateRecentFiles(None)
+            rf.updateRecentFiles('')
             c.selectPosition(p)
             c.deleteOutline()
         else:
