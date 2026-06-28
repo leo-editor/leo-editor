@@ -2805,9 +2805,9 @@ def printStats(event: LeoKeyEvent | None = None) -> None:
             print(f"  {d.get(key):4}: {key_s}")
 
     # Print the other stats: calls to g.stat(whatever)
-    for key in sorted(d.keys()):
+    for key, value in sorted(d.items()):  # strict_optional
         if not key.startswith(_int_stat_prefix):
-            inner_keys = (z if isinstance(z, str) else repr(z) for z in d.get(key))
+            inner_keys = (z if isinstance(z, str) else repr(z) for z in value)
             print(f"{key}:")
             for z in sorted(inner_keys):
                 print(f"    {z.strip()}")

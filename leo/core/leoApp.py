@@ -172,16 +172,16 @@ class LeoApp:
         # @-<< LeoApp: error messages >>
         # @+<< LeoApp: global directories >>
         # @+node:ekr.20161028035924.1: *5* << LeoApp: global directories >>
-        self.extensionsDir: str = None  # The leo/extensions directory
-        self.globalConfigDir: str = None  # leo/config directory
-        self.globalOpenDir: str = None  # The directory last used to open a file.
-        self.homeDir: str = None  # The user's home directory.
-        self.homeLeoDir: str = None  # The user's home/.leo directory.
-        self.leoEditorDir: str = None  # The leo-editor directory.
-        self.loadDir: str = None  # The leo/core directory.
-        self.machineDir: str = None  # The machine-specific directory.
+        self.extensionsDir: str = ''  # The leo/extensions directory
+        self.globalConfigDir: str = ''  # leo/config directory
+        self.globalOpenDir: str = ''  # The directory last used to open a file.
+        self.homeDir: str = ''  # The user's home directory.
+        self.homeLeoDir: str = ''  # The user's home/.leo directory.
+        self.leoEditorDir: str = ''  # The leo-editor directory.
+        self.loadDir: str = ''  # The leo/core directory.
+        self.machineDir: str = ''  # The machine-specific directory.
         # The directory from which the theme file was loaded, if any.
-        self.theme_directory: str = None
+        self.theme_directory: str = ''
         # @-<< LeoApp: global directories >>
         # @+<< LeoApp: global data >>
         # @+node:ekr.20161028035956.1: *5* << LeoApp: global data >>
