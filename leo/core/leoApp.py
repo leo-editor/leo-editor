@@ -202,19 +202,20 @@ class LeoApp:
         # @+node:ekr.20161028040028.1: *5* << LeoApp: global controller/manager objects >>
         # Singleton applications objects...
 
-        # A BackgroundProcessManager.
-        self.backgroundProcessManager: BackgroundProcessManager = None
+        # We can't use casts here because they would create circular imports.
+        # As a workaround, we suppress the otherwise-valid mypy complaints.
+
+        self.backgroundProcessManager: BackgroundProcessManager = None  # type:ignore
         self.config: GlobalConfigManager = None  # g.app.config.
-        # A global db, managed by g.app.global_cacher.
-        self.db: dict | SqlitePickleShare | g.NullObject = None
-        self.externalFilesController: ExternalFilesController | None = None
-        self.global_cacher: dict | GlobalCacher | g.NullObject | None = None
-        self.idleTimeManager: IdleTimeManager | None = None
-        self.jupytextManager: JupytextManager = None
-        self.loadManager: LoadManager | None = None
-        self.nodeIndices: NodeIndices | None = None
-        self.pluginsController: LeoPluginsController | None = None
-        self.sessionManager: SessionManager | None = None
+        self.db: dict | SqlitePickleShare | g.NullObject = None  # type:ignore
+        self.externalFilesController: ExternalFilesController = None  # type:ignore
+        self.global_cacher: dict | GlobalCacher | g.NullObject = None  # type:ignore
+        self.idleTimeManager: IdleTimeManager = None  # type:ignore
+        self.jupytextManager: JupytextManager = None  # type:ignore
+        self.loadManager: LoadManager = None  # type:ignore
+        self.nodeIndices: NodeIndices = None  # type:ignore
+        self.pluginsController: LeoPluginsController = None  # type:ignore
+        self.sessionManager: SessionManager = None  # type:ignore
 
         # Global status vars for the Commands class...
         self.commandName: str = ''  # The name of the command being executed.
