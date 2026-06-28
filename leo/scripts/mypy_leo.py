@@ -32,10 +32,10 @@ else:  # Test only specific files.
     files = [
         'leo/core/leoApp.py',
         'leo/core/leoGlobals.py',
-        'leo/core/leoNodes.py',
-        'leo/core/leoCommands.py',
-        'leo/core/leoAtFile.py',
-        'leo/core/leoKeys.py',
+        # 'leo/core/leoNodes.py',
+        # 'leo/core/leoCommands.py',
+        # 'leo/core/leoAtFile.py',
+        # 'leo/core/leoKeys.py',
     ]
 # Apparently 'strict-optional' doesn't work.
 incremental = False
