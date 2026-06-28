@@ -195,7 +195,7 @@ class Commands:
         fileName: str,
         gui: LeoGui = None,
         parentFrame: Any = None,
-        previousSettings: "PreviousSettings" = None,
+        previousSettings: PreviousSettings | None = None,
         relativeFileName: str = '',
     ) -> None:
         t1 = time.process_time()
@@ -518,7 +518,7 @@ class Commands:
         self.vim_mode = False
 
     # @+node:ekr.20140815160132.18837: *5* c.initSettings
-    def initSettings(self, previousSettings: "PreviousSettings") -> None:
+    def initSettings(self, previousSettings: PreviousSettings | None) -> None:
         """Instantiate c.config from previous settings."""
         c = self
         from leo.core import leoConfig
@@ -1814,7 +1814,7 @@ class Commands:
                 name = v.anyAtFileNodeName()
                 junk, ext = g.os_path_splitext(name)
                 ext = ext[1:]  # strip the leading period.
-                language = g.app.extension_dict.get(ext)
+                language = g.app.extension_dict.get(ext, '')
                 if g.isValidLanguage(language):
                     return language
             return ''
