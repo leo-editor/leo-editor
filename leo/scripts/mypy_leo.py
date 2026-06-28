@@ -25,28 +25,20 @@ os.chdir(leo_editor_dir)
 
 # args = ' '.join(sys.argv[1:])
 python = sys.executable
-passed = (
-    'leoAtFile.py',
-    'leoCommands.py',
-    'leoGlobals.py',
-    'leoKeys.py',
-    'leoNodes.py',
-)
-if 1:
-    # Test all files
-    args = '--follow-imports=skip'  # Apparently 'strict-optional' doesn't work.
-    files = 'leo/core'
-elif 1:  # Test all passed files.
-    args = '--follow-imports=skip'
-    files = ' '.join(f"leo/core/{z}" for z in passed)
-else:
-    # Fails
-    files = 'leo/core/leoCommands.py'
-    # files = 'leo/core/leoColorizer.py' # 36 errors
-    if 1:  # For testing one file.
-        args = '--follow-imports=skip'
-    else:  # Safe.
-        args = '--no-incremental'
+files = [
+    'leo/core/leoGlobals.py',
+    'leo/core/leoNodes.py',
+    'leo/core/leoCommands.py',
+    'leo/core/leoAtFile.py',
+    'leo/core/leoKeys.py',
+    'leo/core/leoApp.py',
+    # 'leo/core', # 1400+ errors.
+]
+# Apparently 'strict-optional' doesn't work.
+incremental = False
+incremental_arg = '' if incremental else '--no-incremental'
+args = f"--follow-imports=skip {incremental_arg}"
+files = ' '.join(files)
 command = rf"{python} -m mypy {args} {files}"
 subprocess.Popen(command, shell=True).communicate()
 # @-leo
