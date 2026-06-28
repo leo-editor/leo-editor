@@ -3135,7 +3135,7 @@ class LoadManager:
             return False
 
     # @+node:ekr.20120223062418.10393: *4* LM.openWithFileName & helpers
-    def openWithFileName(self, fn: str, gui: LeoGui, old_c: Cmdr) -> Cmdr | None:
+    def openWithFileName(self, fn: str, gui: LeoGui | None, old_c: Cmdr | None) -> Cmdr | None:
         """
         Completely read a file, creating the corresponding outline.
 

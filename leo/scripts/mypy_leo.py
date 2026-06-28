@@ -33,7 +33,7 @@ else:  # Test only specific files.
         'leo/core/leoApp.py',
         'leo/core/leoGlobals.py',
         'leo/core/leoNodes.py',
-        # 'leo/core/leoCommands.py',
+        'leo/core/leoCommands.py',
         # 'leo/core/leoAtFile.py',
         # 'leo/core/leoKeys.py',
     ]
