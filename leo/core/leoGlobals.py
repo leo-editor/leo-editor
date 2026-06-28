@@ -822,7 +822,7 @@ class KeyStroke:
         }
         if self.mods and s.lower() in shift_d:
             # Returning '' breaks existing code.
-            return shift_d.get(s.lower())
+            return cast(str, shift_d.get(s.lower()))
 
         # Make all other translations...
         #
