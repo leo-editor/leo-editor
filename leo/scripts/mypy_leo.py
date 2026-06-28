@@ -30,16 +30,18 @@ if 0:  # Test all files.
 else:  # Test only specific files.
     files = [
         'leo/core/leoApp.py',
+        'leo/core/leoAtFile.py',
         'leo/core/leoCommands.py',
+        'leo/core/leoKeys.py',
         'leo/core/leoGlobals.py',
         'leo/core/leoNodes.py',
-        # 'leo/core/leoAtFile.py',
-        # 'leo/core/leoKeys.py',
     ]
 # Apparently 'strict-optional' doesn't work.
 incremental = False
+follow = False
 incremental_arg = '' if incremental else '--no-incremental'
-args = f"--follow-imports=skip {incremental_arg}"
+follow_kind = 'normal' if follow else 'skip'
+args = f"--follow-imports={follow_kind} {incremental_arg}"
 files = ' '.join(files)
 command = rf"{python} -m mypy {args} {files}"
 subprocess.Popen(command, shell=True).communicate()
