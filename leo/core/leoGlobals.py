@@ -1110,7 +1110,7 @@ class KeyStroke:
             'Tab': '\t',
         }
         if s in d:
-            return d.get(s)  # type:ignore # Yes, s is in d.
+            return cast(str, d.get(s))  # The cast is valid: s is in d.
         return s if len(s) == 1 else ''
 
     # @-others
