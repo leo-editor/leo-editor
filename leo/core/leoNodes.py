@@ -2660,7 +2660,7 @@ class VNode:
     def contentModified(self) -> None:
         g.contentModifiedSet.add(self)
 
-    # @+node:ekr.20260622103203.1: *4* v.findAllAncetorAtFileNodes
+    # @+node:ekr.20260622103203.1: *4* v.findAllAncestorAtFileNodes
     def findAllAncestorAtFileNodes(self, *, to_do_set: set[VNode] | None = None) -> list[VNode]:
         """
         Return a list of all @<file> nodes containing this VNode.
