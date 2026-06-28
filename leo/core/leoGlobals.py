@@ -8381,7 +8381,7 @@ def openUrlOnClick(event: QMouseEvent, url: str = '') -> str:  # pragma: no cove
 
 
 # @+node:ekr.20170216091704.1: *4* g.openUrlHelper
-def openUrlHelper(event: LeoKeyEvent, url: str = '') -> str:
+def openUrlHelper(event: LeoKeyEvent, url: str) -> str:
     """Open the unl, url or gnx under the cursor.  Return it for unit testing."""
     if not event:
         return ''
@@ -8391,12 +8391,12 @@ def openUrlHelper(event: LeoKeyEvent, url: str = '') -> str:
     if not g.app.gui.isTextWrapper(w):
         return ''
     # Part 1: get the url.
-    if url is None:
+    if not url:  # strict_optional
         s = w.getAllText()
         ins = w.getInsertPoint()
         i, j = w.getSelectionRange()
         if i != j:
-            return None  # So find doesn't open the url.
+            return ''  # So find doesn't open the url.
         row, col = g.convertPythonIndexToRowCol(s, ins)
         i, j = g.getLine(s, ins)
         line = s[i:j]
@@ -8417,7 +8417,7 @@ def openUrlHelper(event: LeoKeyEvent, url: str = '') -> str:
                 c.redraw()
             return ''
         # @-<< look for section ref >>
-        url = unl = None
+        url = unl = ''  # strict_optional
         # @+<< look for url >>
         # @+node:tom.20220328141544.1: *5* << look for url  >>
         # Find the url on the line.
