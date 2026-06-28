@@ -25,15 +25,18 @@ os.chdir(leo_editor_dir)
 
 # args = ' '.join(sys.argv[1:])
 python = sys.executable
-files = [
-    'leo/core/leoGlobals.py',
-    'leo/core/leoNodes.py',
-    'leo/core/leoCommands.py',
-    'leo/core/leoAtFile.py',
-    'leo/core/leoKeys.py',
-    'leo/core/leoApp.py',
-    # 'leo/core', # 1400+ errors.
-]
+if 0:  # Test all files.
+    files = ['leo/core']  # 1054 errors.
+else:  # Test only specific files.
+    # 112 errors.
+    files = [
+        'leo/core/leoGlobals.py',
+        'leo/core/leoNodes.py',
+        'leo/core/leoCommands.py',
+        'leo/core/leoAtFile.py',
+        'leo/core/leoKeys.py',
+        'leo/core/leoApp.py',
+    ]
 # Apparently 'strict-optional' doesn't work.
 incremental = False
 incremental_arg = '' if incremental else '--no-incremental'
