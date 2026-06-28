@@ -407,7 +407,7 @@ url_regex = re.compile(rf"""\b{url_kinds}://[^\s'"]+""")
 # @-<< define regexes >>
 tree_popup_handlers: list[Callable] = []  # Set later.
 user_dict: dict[str, Value] = {}  # Non-persistent dictionary for scripts and plugins.
-app: LeoApp = None  # The singleton app object. Set by runLeo.py.
+app: LeoApp = None  # type:ignore #The singleton app object. Set by runLeo.py.
 # Global status vars.
 inScript = False  # A synonym for app.inScript
 unitTesting = False  # A synonym for app.unitTesting.
@@ -2163,7 +2163,7 @@ class TestLeoGlobals(unittest.TestCase):
         from leo.core import leoGlobals as leo_g  # pylint: disable=import-self,reimported
         from leo.core import leoApp
 
-        leo_g.app = leoApp.LeoApp()
+        leo_g.app = leoApp.LeoApp()  # type:ignore
         assert leo_g.comment_delims_from_extension(".py") == ('#', '', '')
         assert leo_g.comment_delims_from_extension(".c") == ('//', '/*', '*/')
         assert leo_g.comment_delims_from_extension(".html") == ('', '<!--', '-->')
@@ -2883,7 +2883,7 @@ def comment_delims_from_extension(filename: str) -> tuple[str, str, str]:
         root, ext = os.path.splitext(filename)
     if ext == '.tmp':
         root, ext = os.path.splitext(root)
-    language = g.app.extension_dict.get(ext[1:])
+    language = g.app.extension_dict.get(ext[1:]) or ''
     if ext:
         return g.set_delims_from_language(language)
     g.trace(f"unknown extension: {ext!r}, filename: {filename!r}, root: {root!r}")
