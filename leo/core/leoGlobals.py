@@ -1823,7 +1823,7 @@ class SettingsDict(dict):
         return gs.val if gs else ''  # strict_optional
 
     def get_string_setting(self, key: str) -> str:
-        return self.get_setting(key)
+        return self.get_setting(key) or ''  # strict_optional
 
     # @+node:ekr.20190904103552.1: *4* SettingsDict.name & setName
     def name(self) -> str:

@@ -152,7 +152,7 @@ class BridgeController:
             g.app = leoApp.LeoApp()
         except ImportError:
             print("Error importing leoApp.py")
-        g.app.leoID = None
+        g.app.leoID = ''
         if self.tracePlugins:
             g.app.debug.append('plugins')
         g.app.silentMode = self.silentMode

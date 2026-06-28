@@ -12,7 +12,7 @@ import string
 import sys
 import textwrap
 import time
-from typing import Any, TYPE_CHECKING
+from typing import cast, Any, TYPE_CHECKING
 import zipfile
 import platform
 from leo.core import leoGlobals as g
@@ -190,7 +190,7 @@ class LeoApp:
         self.globalKillBuffer: list[str] = []  # The global kill buffer.
         self.globalRegisters: dict[str, str] = {}  # The global register list.
         self.initial_cwd: str = os.getcwd()  # For restart-leo.
-        self.leoID: str = None  # The id part of gnx's.
+        self.leoID: str = ''  # The id part of gnx's.
         self.lossage: list[LossageData] = []  # List of last 100 keystrokes.
         self.paste_c: Cmdr = None  # The commander that pasted the last outline.
         self.spellDict: SpellDict = None  # A pyenchant dict or a DefaultDict.
@@ -1029,7 +1029,7 @@ class LeoApp:
             sys.exit(message)
 
     # @+node:ekr.20031218072017.1938: *5* app.createNullGuiWithScript
-    def createNullGuiWithScript(self, script: str = None) -> None:
+    def createNullGuiWithScript(self, script: str = '') -> None:
         app = self
         app.batchMode = True
         app.gui = g.app.nullGui
@@ -1077,7 +1077,7 @@ class LeoApp:
     # @+node:ekr.20031218072017.1978: *4* app.setLeoID & helpers
     def setLeoID(self, useDialog: bool = True, verbose: bool = True) -> str:
         """Get g.app.leoID from various sources."""
-        self.leoID = None
+        self.leoID = ''
         assert self == g.app
         verbose = verbose and not g.unitTesting and not self.silentMode
         table = (self.setIDFromSys, self.setIDFromFile, self.setIDFromEnv)
@@ -1120,7 +1120,7 @@ class LeoApp:
 
         This might be set by in Python's sitecustomize.py file.
         """
-        id_ = getattr(sys, "leoID", None)
+        id_ = getattr(sys, "leoID", '')  # strict_optional
         if id_:
             # Careful: periods in the id field of a gnx will corrupt the .leo file!
             # cleanLeoID raises a warning dialog.
@@ -1548,8 +1548,8 @@ class LeoApp:
         fileName: str,
         gui: LeoGui = None,
         parentFrame: Any = None,
-        previousSettings: "PreviousSettings" = None,
-        relativeFileName: str = None,
+        previousSettings: PreviousSettings | None = None,
+        relativeFileName: str = '',
     ) -> Cmdr:
         """Create a commander and its view frame for the Leo main window."""
         # Create the commander and its subcommanders.
@@ -1616,9 +1616,9 @@ class LoadManager:
         # The are the defaults for computing settings and shortcuts for all loaded files.
 
         # A g.SettingsDict: the join of settings in leoSettings.leo & myLeoSettings.leo
-        self.globalSettingsDict: g.SettingsDict = None
+        self.globalSettingsDict: g.SettingsDict = None  # type:ignore
         # A g.SettingsDict: the join of shortcuts in leoSettings.leo & myLeoSettings.leo.
-        self.globalBindingsDict: g.SettingsDict = None
+        self.globalBindingsDict: g.SettingsDict = None  # type:ignore
 
         # LoadManager ivars corresponding to user options...
 
@@ -1635,11 +1635,11 @@ class LoadManager:
 
         # Themes...
         self.leo_settings_c: Cmdr = None
-        self.leo_settings_path: str = None
+        self.leo_settings_path: str = ''
         self.my_settings_c: Cmdr = None
-        self.my_settings_path: str = None
+        self.my_settings_path: str = ''
         self.theme_c: Cmdr = None  # #1374.
-        self.theme_path: str = None
+        self.theme_path: str = ''
 
     # @+node:ekr.20120211121736.10812: *3* LM.Directory & file utils
     # @+node:ekr.20120219154958.10481: *4* LM.completeFileName
@@ -1741,7 +1741,7 @@ class LoadManager:
         home = os.path.expanduser("~")
         if home and len(home) > 1 and home[0] == '%' and home[-1] == '%':
             # Get the indirect reference to the true home.
-            home = os.getenv(home[1:-1], default=None)
+            home = os.getenv(home[1:-1], default='')
         if home:
             # Important: This returns the _working_ directory if home is None!
             # This was the source of the 4.3 .leoID.txt problems.
@@ -1859,7 +1859,7 @@ class LoadManager:
         resolve = self.resolve_theme_path
 
         # Step 1: Use the --theme command-line options if it exists
-        path = resolve(lm.options.get('theme_path'), tag='--theme')
+        path = resolve(lm.options.get('theme_path', ''), tag='--theme')
         if path:
             # Caller (LM.readGlobalSettingsFiles) sets lm.theme_path
             if trace:
@@ -1901,7 +1901,7 @@ class LoadManager:
     def resolve_theme_path(self, fn: str, tag: str) -> str:
         """Search theme directories for the given .leo file."""
         if not fn:
-            return None
+            return ''
         # Make --theme and theme-name setting do the same thing for "None"
         if fn.lower().strip() == 'none':
             return LoadManager.LM_NOTHEME_FLAG
@@ -1971,8 +1971,8 @@ class LoadManager:
     def computeLocalSettings(
         self,
         c: Cmdr,
-        settings_d: g.SettingsDict,
-        bindings_d: g.SettingsDict,
+        settings_d: g.SettingsDict | None,
+        bindings_d: g.SettingsDict | None,
         localFlag: bool,
     ) -> tuple[g.SettingsDict, g.SettingsDict]:
         """
@@ -1983,6 +1983,8 @@ class LoadManager:
         shortcuts_d2, settings_d2 = lm.createSettingsDicts(c, localFlag)
         if not bindings_d:  # #1766: unit tests.
             settings_d, bindings_d = lm.createDefaultSettingsDicts()
+        bindings_d = cast(g.SettingsDict, bindings_d)  # strict_optional
+        settings_d = cast(g.SettingsDict, settings_d)  # strict_optional
         if settings_d2:
             if g.app.trace_setting:
                 key = g.app.config.munge(g.app.trace_setting)
@@ -2008,15 +2010,13 @@ class LoadManager:
     # @+node:ekr.20120214165710.10726: *4* LM.createSettingsDicts
     def createSettingsDicts(
         self, c: Cmdr, localFlag: bool
-    ) -> tuple[g.SettingsDict, g.SettingsDict] | tuple[None, None]:
+    ) -> tuple[g.SettingsDict, g.SettingsDict]:
         from leo.core import leoConfig
 
-        if c:
-            # returns the *raw* shortcutsDict, not a *merged* shortcuts dict.
-            parser = leoConfig.SettingsTreeParser(c, localFlag)
-            shortcutsDict, settingsDict = parser.traverse()
-            return shortcutsDict, settingsDict
-        return None, None
+        # returns the *raw* shortcutsDict, not a *merged* shortcuts dict.
+        parser = leoConfig.SettingsTreeParser(c, localFlag)
+        shortcutsDict, settingsDict = parser.traverse()
+        return shortcutsDict, settingsDict
 
     # @+node:ekr.20120223062418.10414: *4* LM.getPreviousSettings
     def getPreviousSettings(self, fn: str) -> PreviousSettings:
@@ -2040,9 +2040,10 @@ class LoadManager:
             finally:
                 g.app.preReadFlag = False
             # Merge the settings from c into *copies* of the global dicts.
+            # d1 and d2 are copies.
             d1, d2 = lm.computeLocalSettings(
                 c, lm.globalSettingsDict, lm.globalBindingsDict, localFlag=True
-            )  # d1 and d2 are copies.
+            )
             d1.setName(settingsName)
             d2.setName(shortcutsName)
             return PreviousSettings(d1, d2)
