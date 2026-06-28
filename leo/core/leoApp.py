@@ -1922,14 +1922,13 @@ class LoadManager:
         Return None if testing, or in batch mode, or if the containing
         directory does not exist.
         """
-        # lm = self
+
         # Never create a workbook during unit tests or in batch mode.
         if g.unitTesting or g.app.batchMode:
-            return None
+            return ''
         fn = g.app.config.getString(setting='default_leo_file') or '~/.leo/workbook.leo'
         fn = g.finalize(fn)
         directory = g.finalize(os.path.dirname(fn))
-
         return fn if os.path.exists(directory) else ''
 
     # @+node:ekr.20120219154958.10485: *4* LM.reportDirectories
@@ -2020,7 +2019,7 @@ class LoadManager:
         return None, None
 
     # @+node:ekr.20120223062418.10414: *4* LM.getPreviousSettings
-    def getPreviousSettings(self, fn: str) -> "PreviousSettings":
+    def getPreviousSettings(self, fn: str) -> PreviousSettings:
         """
         Return the settings in effect for fn. Typically, this involves
         pre-reading fn.
@@ -2028,6 +2027,7 @@ class LoadManager:
         lm = self
         settingsName = f"settings dict for {g.shortFileName(fn)}"
         shortcutsName = f"shortcuts dict for {g.shortFileName(fn)}"
+
         # A special case: settings in leoSettings.leo do *not* override
         # the global settings, that is, settings in myLeoSettings.leo.
         isLeoSettings = fn and g.shortFileName(fn).lower() == 'leosettings.leo'
@@ -2046,14 +2046,14 @@ class LoadManager:
             d1.setName(settingsName)
             d2.setName(shortcutsName)
             return PreviousSettings(d1, d2)
-        #
+
         # The file does not exist, or is not valid.
         # Get the settings from the globals settings dicts.
         if lm.globalSettingsDict and lm.globalBindingsDict:  # #1766.
             d1 = lm.globalSettingsDict.copy()
             d2 = lm.globalBindingsDict.copy()
         else:
-            d1 = d2 = None
+            d1 = d2 = None  # type:ignore # strict_optional
         return PreviousSettings(d1, d2)
 
     # @+node:ekr.20120214132927.10723: *4* LM.mergeShortcutsDicts & helpers
@@ -2121,9 +2121,8 @@ class LoadManager:
         Duplicates happen only if panes conflict.
         """
         # Fix bug 951921: check for duplicate shortcuts only in the new file.
-        for ks in sorted(list(d.keys())):
+        for ks, aList in sorted(list(d.items())):  # strict_optional
             duplicates, panes = [], ['all']
-            aList = d.get(ks)  # A list of bi objects.
             aList2 = [z for z in aList if not z.pane.startswith('mode')]
             if len(aList) > 1:
                 for bi in aList2:
@@ -2261,8 +2260,7 @@ class LoadManager:
     def traceSettingsDict(self, d: dict[str, str], verbose: bool = False) -> None:
         if verbose:
             print(d)
-            for key in sorted(list(d.keys())):
-                gs = d.get(key)
+            for key, gs in sorted(list(d.items())):  # strict_optional
                 print(f"{key:35} {g.shortFileName(gs.path):17} {gs.val}")
             if d:
                 print('')
@@ -3493,7 +3491,9 @@ class PreviousSettings:
 
     __slots__ = ('settingsDict', 'shortcutsDict')
 
-    def __init__(self, settingsDict: g.SettingsDict, shortcutsDict: g.SettingsDict) -> None:
+    def __init__(
+        self, settingsDict: g.SettingsDict | None, shortcutsDict: g.SettingsDict | None
+    ) -> None:
         if not shortcutsDict or not settingsDict:  # #1766: unit tests.
             lm = g.app.loadManager
             settingsDict, shortcutsDict = lm.createDefaultSettingsDicts()
