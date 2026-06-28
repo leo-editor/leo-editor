@@ -277,7 +277,7 @@ class Commands:
         """Init file-related ivars of the commander."""
         self.changed = False  # True: the outline has changed since the last save.
         self.ignored_at_file_nodes: list[str] = []  # List of headlines for c.raise_error_dialogs.
-        self.last_dir: str = None  # The last used directory.
+        self.last_dir: str = ''  # The last used directory.
         # Do _not_ use os_path_norm: it converts an empty path to '.' (!!)
         self.mFileName: str = fileName or ''
         self.mRelativeFileName = relativeFileName or ''
