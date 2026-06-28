@@ -20,12 +20,6 @@ from leo.core import leoExternalFiles
 from leo.core.leoCache import GlobalCacher
 from leo.core.leoQt import QCloseEvent
 
-
-if TYPE_CHECKING:
-    from leo.core.leoJupytext import JupytextManager
-
-    StringIO = io.StringIO
-    SpellDict = Any  # dict[str, list[str]]
 # @-<< leoApp imports >>
 # @+<< leoApp annotations >>
 # @+node:ekr.20220819191617.1: ** << leoApp annotations >>
@@ -38,12 +32,15 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoConfig import GlobalConfigManager
     from leo.core.leoExternalFiles import ExternalFilesController
     from leo.core.leoGui import LeoKeyEvent, LeoFrame, LeoGui
+    from leo.core.leoJupytext import JupytextManager
     from leo.core.leoNodes import NodeIndices, Position
     from leo.core.leoPlugins import LeoPluginsController
     from leo.core.leoSessions import SessionManager
     from leo.plugins.qt_events import LossageData
     from leo.plugins.qt_idle_time import IdleTime
 
+    StringIO = io.StringIO
+    SpellDict = Any  # dict[str, list[str]]
     Value = Any
 
 
