@@ -963,7 +963,7 @@ class LeoServer:
         # Init ivars first.
         self.c: Cmdr = None  # Currently Selected Commander.
         self.dummy_c: Cmdr = None  # Set below, after we set g.
-        self.action: str = None
+        self.action: str = ''  # strict_optional
         self.bad_commands_list: list[str] = []  # Set below.
         self.idle_tasks: list[tuple[Callable, int | float]] = []
         #
@@ -5069,14 +5069,13 @@ class LeoServer:
         tag = '_do_message'
         trace, verbose = 'request' in traces, 'verbose' in traces
         func: Callable
-        action: str | None
 
         # Require "id" and "action" keys
         id_: int | None = d.get("id")
         if id_ is None:  # pragma: no cover
             raise ServerError(f"{tag}: no id")
-        action = d.get("action")
-        if action is None:  # pragma: no cover
+        action = d.get("action", '')  # strict_optional
+        if not action:  # pragma: no cover
             raise ServerError(f"{tag}: no action")
 
         param: dict | None = d.get('param', {})

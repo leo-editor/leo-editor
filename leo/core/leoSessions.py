@@ -52,13 +52,13 @@ class SessionManager:
                 result.append(unl)
         return result
 
-    # @+node:ekr.20120420054855.14416: *3* SessionManager.get_session_path
-    def get_session_path(self) -> str | None:
+    # @+node:ekr.20120420054855.14416: *3* SessionManager.get_session_path (not used)
+    def get_session_path(self) -> str:
         """Return the path to the session file."""
         for path in (g.app.homeLeoDir, g.app.homeDir):
             if g.os_path_exists(path):
                 return g.finalize_join(path, 'leo.session')
-        return None
+        return ''
 
     # @+node:ekr.20120420054855.14247: *3* SessionManager.load_session
     def load_session(self, c: Cmdr = None, unls: list[str] = None) -> None:
