@@ -301,7 +301,7 @@ class LeoQtGui(leoGui.LeoGui):
         self,
         c: Cmdr,
         args: Any = None,
-        p: Position = None,  # A node containing the script.
+        p: Position | None = None,  # A node containing the script.
         script: str = '',  # The script itself.
         buttonText: str = '',
         balloonText: str = 'Script Button',
@@ -730,8 +730,8 @@ class LeoQtGui(leoGui.LeoGui):
         c: Cmdr,
         title: str,
         message: str = 'Select Date/Time',
-        init: datetime.datetime = None,
-        step_min: dict = None,
+        init: datetime.datetime | None = None,
+        step_min: dict | None = None,
     ) -> datetime.datetime | None:
         """Create and run a qt date/time selection dialog.
 
@@ -760,9 +760,9 @@ class LeoQtGui(leoGui.LeoGui):
 
             def __init__(
                 self,
-                parent: QWidget = None,
-                init: datetime.datetime = None,
-                step_min: dict = None,
+                parent: QWidget | None = None,
+                init: datetime.datetime | None = None,
+                step_min: dict | None = None,
             ) -> None:
                 if step_min is None:
                     step_min = {}
@@ -781,10 +781,10 @@ class LeoQtGui(leoGui.LeoGui):
         class Calendar(QtWidgets.QDialog):
             def __init__(
                 self,
-                parent: QWidget = None,
+                parent: QWidget | None = None,
                 message: str = 'Select Date/Time',
-                init: datetime.datetime = None,
-                step_min: dict = None,
+                init: datetime.datetime | None = None,
+                step_min: dict | None = None,
             ) -> None:
                 if step_min is None:
                     step_min = {}
@@ -1173,8 +1173,8 @@ class LeoQtGui(leoGui.LeoGui):
         self,
         title: str = 'Properties',
         data: Any = None,
-        callback: Callable = None,
-        buttons: list[str] = None,
+        callback: Callable | None = None,
+        buttons: list[str] | None = None,
     ) -> tuple[str, dict]:
         """Display a modal TkPropertiesDialog"""
         if not g.unitTesting:
@@ -1187,7 +1187,7 @@ class LeoQtGui(leoGui.LeoGui):
         c: Cmdr,
         title: str = 'Save',
         *,
-        filetypes: list[tuple[str, str]] = None,
+        filetypes: list[tuple[str, str]] | None = None,
         defaultextension: str = '',  # Not used.
     ) -> str:
         """Create and run an Qt save file dialog ."""
@@ -1233,7 +1233,7 @@ class LeoQtGui(leoGui.LeoGui):
         title: str = 'Message',
         label: str = '',
         msg: str = '',
-        c: Cmdr = None,
+        c: Cmdr | None = None,
         **keys: Any,
     ) -> None:
         if g.unitTesting:
@@ -1417,7 +1417,7 @@ class LeoQtGui(leoGui.LeoGui):
                 c.bodyWantsFocusNow()
 
     # @+node:ekr.20190601054958.1: *4* LeoQtGui.get_focus
-    def get_focus(self, c: Cmdr = None, raw: bool = False, at_idle: bool = False) -> QWidget:
+    def get_focus(self, c: Cmdr | None = None, raw: bool = False, at_idle: bool = False) -> QWidget:
         """Returns the widget that has focus."""
         trace = 'focus' in g.app.debug and not at_idle
         w = QtWidgets.QApplication.focusWidget()
@@ -2033,7 +2033,7 @@ class StyleSheetManager:
     # @+node:ekr.20140915062551.19510: *4* StyleSheetManager.expand_css_constants & helpers
     css_warning_given = False  # For do_pass.
 
-    def expand_css_constants(self, sheet: str, settingsDict: g.SettingsDict = None) -> str:
+    def expand_css_constants(self, sheet: str, settingsDict: g.SettingsDict | None = None) -> str:
         """Expand @ settings into their corresponding constants."""
         c = self.c
         trace = 'zoom' in g.app.debug
