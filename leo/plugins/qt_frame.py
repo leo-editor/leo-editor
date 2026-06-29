@@ -63,7 +63,7 @@ from leo.plugins.qt_layout import LayoutCacheWidget
 # @+<< qt_frame annotations >>
 # @+node:ekr.20220415080427.1: ** << qt_frame annotations >>
 if TYPE_CHECKING:  # pragma: no cover
-    from typing import TypeAlias  # Requires Python 3.12+
+    from typing import TypeAlias  # Requires Python 3.12+, but works with Python 3.10+.
     from leo.core.leoColorizer import BaseColorizer
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoGui, LeoKeyEvent, NullFrame
