@@ -2232,7 +2232,7 @@ class VNode:
 
     # @+node:ekr.20031218072017.3346: *3* v.Comparisons
     # @+node:ekr.20040705201018: *4* v.findAtFileName
-    def findAtFileName(self, names: Iterable, h: str | None = None) -> str:
+    def findAtFileName(self, names: Iterable, h: str = '') -> str:
         """Return the name following one of the names in nameList or"""
         # Allow h argument for unit testing.
         if not h:
@@ -2260,14 +2260,14 @@ class VNode:
     # These return the filename following @xxx, in v.headString.
     # Return the the empty string if v is not an @xxx node.
 
-    def atAutoNodeName(self, h: str | None = None) -> str:
+    def atAutoNodeName(self, h: str = '') -> str:
         return self.findAtFileName(g.app.atAutoNames, h=h)
 
     # Retain this special case as part of the "escape hatch".
     # That is, we fall back on code in leoRst.py if no
     # importer or writer for reStructuredText exists.
 
-    def atAutoRstNodeName(self, h: str | None = None) -> str:
+    def atAutoRstNodeName(self, h: str = '') -> str:
         names = ("@auto-rst",)
         return self.findAtFileName(names, h=h)
 
