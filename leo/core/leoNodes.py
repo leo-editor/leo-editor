@@ -2212,10 +2212,10 @@ class VNode:
     __str__ = __repr__
 
     # @+node:ekr.20040312145256: *4* v.dump
-    def dumpLink(self, link: str | None) -> str:  # pragma: no cover
+    def dumpLink(self, link: str) -> str:  # pragma: no cover
         return link if link else "<none>"
 
-    def dump(self, label: str = "") -> None:  # pragma: no cover
+    def dump(self, label: str = '') -> None:  # pragma: no cover
         v = self
         print('')
         print(f"dump of vnode: {label} {v}")
@@ -2962,7 +2962,7 @@ class VNode:
     u = property(__get_u, __set_u, doc="VNode u property")
 
     # @+node:ekr.20090215165030.1: *4* v.gnx Property
-    def __get_gnx(self) -> str | None:
+    def __get_gnx(self) -> str:
         v = self
         return v.fileIndex
 

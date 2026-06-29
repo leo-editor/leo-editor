@@ -97,14 +97,14 @@ class ShadowController:
 
     # @+node:ekr.20080711063656.1: *3* x.File utils
     # @+node:ekr.20080711063656.7: *4* x.baseDirName
-    def baseDirName(self) -> str | None:
+    def baseDirName(self) -> str:
         c = self.c
         filename = c.fileName()
         if filename:
             return g.os_path_dirname(g.finalize(filename))
         print('')
         self.error('Can not compute shadow path: .leo file has not been saved')
-        return None
+        return ''
 
     # @+node:ekr.20080711063656.4: *4* x.dirName and pathName
     def dirName(self, filename: str) -> str:
