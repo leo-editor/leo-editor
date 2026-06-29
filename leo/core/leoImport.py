@@ -1939,7 +1939,7 @@ class RecursiveImportController:
             c.deletePositionsInList(aList)  # Don't redraw.
 
     # @+node:ekr.20230829043849.1: *3* ric_resolve_dir_arg
-    def resolve_dir_arg(self, arg: str) -> str | None:
+    def resolve_dir_arg(self, arg: str) -> str:
         """
         arg can be None or a path (relative or absolute) to a file or
         directory.
@@ -1967,7 +1967,7 @@ class RecursiveImportController:
         elif not os.path.isabs(arg):
             arg = os.path.join(outline_dir, arg)
         if not os.path.exists(arg):
-            return None
+            return ''
 
         # Final sanity checks.
         assert arg, repr(arg1)
@@ -1995,7 +1995,7 @@ class RecursiveImportController:
         # Resolve dir_ to an absolute path.
         dir_1 = dir_
         dir_ = self.resolve_dir_arg(dir_)
-        if dir_ is None:
+        if not dir_:
             self.error(f"invalid 'dir_' argument: {dir_1!r}")
             return
 
