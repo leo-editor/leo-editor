@@ -11,7 +11,7 @@ import os
 import re
 import time
 import uuid
-from typing import Any, Generator, Iterable, TYPE_CHECKING
+from typing import cast, Any, Generator, Iterable, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import signal_manager
 
@@ -351,9 +351,9 @@ class Position:
             if p.v not in all_unique_vnodes:
                 all_unique_vnodes.append(p.v)
 
-        def ref(v: VNode) -> str | None:
+        def ref(v: VNode) -> str:
             if v == c.hiddenRootNode:
-                return None
+                return ''
             if v.gnx not in all_unique_vnodes:
                 all_unique_vnodes.append(v.gnx)
             return v.gnx
@@ -404,10 +404,10 @@ class Position:
         return aList
 
     # @+node:ekr.20040310153624: *4* p.dump
-    def dumpLink(self, link: str | None) -> str:  # pragma: no cover
-        return link if link else "<none>"
+    def dumpLink(self, link: str) -> str:  # pragma: no cover
+        return link if link else '<none>'
 
-    def dump(self, label: str = "") -> None:  # pragma: no cover
+    def dump(self, label: str = '') -> None:  # pragma: no cover
         p = self
         if p.v:
             p.v.dump()  # Don't print a label
@@ -1896,7 +1896,7 @@ class Position:
     h = property(__get_h, __set_h, doc="position property returning the headline string")
 
     # @+node:ekr.20090215165030.3: *4* p.gnx property
-    def __get_gnx(self) -> str | None:
+    def __get_gnx(self) -> str:
         p = self
         return p.v.fileIndex
 
@@ -2174,7 +2174,7 @@ class VNode:
         self.children: list[VNode] = []  # Ordered list of all children of this node.
         self.parents: list[VNode] = []  # Unordered list of all parents of this node.
         # The immutable fileIndex (gnx) for this node. Set below.
-        self.fileIndex: str | None = None
+        self.fileIndex = cast(str, None)  # strict_optional
         self.iconVal = 0  # The present value of the node's icon.
         self.statusBits = 0  # status bits
 
