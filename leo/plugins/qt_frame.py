@@ -3341,6 +3341,8 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         dummy_p = p.insertAsNthChild(0)
         c.selectPosition(dummy_p)
         c2 = g.openWithFileName(fn, old_c=c, gui=g.app.nullGui)
+        if not c2:  # strict_optional # Bug fix!
+            return
         for p2 in c2.rootPosition().self_and_siblings():
             c2.selectPosition(p2)
             s = c2.fileCommands.outline_to_clipboard_string()
@@ -3768,7 +3770,7 @@ class QtIconBarClass:
     # @+node:ekr.20110605121601.18264: *3*  QtIconBar.do-nothings
     # These *are* called from Leo's core.
 
-    def addRow(self, height: int = None) -> None:
+    def addRow(self, height: int = 0) -> None:
         pass
 
     def getNewFrame(self) -> None:
@@ -3786,7 +3788,7 @@ class QtIconBarClass:
         c = self.c
         if not self.w:
             return None
-        command: Callable = keys.get('command')
+        command: Callable | None = keys.get('command')
         text: str = keys.get('text', '')
         # able to specify low-level QAction directly (QPushButton not forced)
         qaction: QAction = keys.get('qaction')
