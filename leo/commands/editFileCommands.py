@@ -1462,7 +1462,7 @@ class GitDiffController:
         filename = c.fileName()
         if not filename:
             print('git-diff: outline has no name')
-            return str
+            return ''
         directory = os.path.dirname(filename)
         if directory and not os.path.isdir(directory):
             directory = os.path.dirname(directory)
