@@ -422,7 +422,7 @@ class backlinkController:
             "Enter URL / UNL to link to from this node",
             default=g.app.gui.getTextFromClipboard(),
         )
-        if url is None or not url.strip():
+        if not url.strip():
             return
         if '://' not in url:
             url = 'unl://' + url

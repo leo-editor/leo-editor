@@ -423,7 +423,7 @@ def cmd_bookmark_find_flat(event):
     if bm is None:
         return
     ans = g.app.gui.runAskOkCancelStringDialog(c, "Search for", "Target:")
-    if ans is None or not ans.strip():
+    if not ans.strip():
         return
 
     nodes = []

@@ -397,7 +397,7 @@ class leoscreen_Controller:
             self.c, 'Prefix for text loading', 'Prefix for text loading'
         )
 
-        if x is not None:
+        if x:
             self.get_line_prefix = x
 
     # @+node:tbrown.20150805094115.1: *3* select_screen

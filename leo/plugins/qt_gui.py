@@ -879,13 +879,13 @@ class LeoQtGui(leoGui.LeoGui):
         okButtonText: str = None,
         default: str = "",
         wide: bool = False,
-    ) -> str | None:  ###
+    ) -> str:
         """Create and run askOkCancelString dialog.
 
         wide - edit a long string
         """
         if g.unitTesting:
-            return None
+            return ''
         dialog = QtWidgets.QInputDialog()
         ssm = g.app.gui.styleSheetManagerClass(c)
         w = ssm.get_master_widget()
@@ -907,7 +907,7 @@ class LeoQtGui(leoGui.LeoGui):
         self.attachLeoIcon(dialog)
         dialog.raise_()
         ok = dialog.exec()
-        return str(dialog.textValue()) if ok else None
+        return str(dialog.textValue()) if ok else ''
 
     # @+node:ekr.20110605121601.18495: *4* LeoQtGui.runAskOkDialog
     def runAskOkDialog(self, c: Cmdr, title: str, message: str = None, text: str = "Ok") -> None:
