@@ -1598,8 +1598,6 @@ class GetArg:
             # A hack to support the curses gui.
             k.arg = gui_arg or self.get_label()
         kind, n, handler = self.after_get_arg_state
-        if not kind:
-            return  # strict_optional
         if kind:
             k.setState(kind, n, handler)
         self.log.deleteTab('Completion')
