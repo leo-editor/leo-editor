@@ -39,7 +39,7 @@ else:  # Test only specific files.
         # Additional files containing complaints when following imports.
         'leo/plugins/mod_scripting.py',
         'leo/plugins/qt_commands.py',
-        # 'leo/plugins/qt_frame.py',
+        'leo/plugins/qt_frame.py',
         # 'leo/plugins/qt_gui.py',
         # 'leo/plugins/qt_idle_time.py',
         # 'leo/plugins/qt_layout.py',
