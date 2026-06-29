@@ -3255,7 +3255,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             parent = p
         else:
             p2 = p.insertAfter()
-            parent = p.parent()
+            parent = p.parent() or p  # type:ignore # Bug fix!
         # #60: create relative paths & urls when dragging files.
         path = c.getPath(parent)
         if path:
