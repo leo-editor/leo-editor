@@ -338,13 +338,13 @@ class LeoQtGui(leoGui.LeoGui):
             b: QPushButton = b,
             c: Cmdr = c,
             buttonText: str = buttonText,
-            p: Position = p and p.copy(),
+            p: Position | None = p.copy() if p else None,
             script: str = script,
         ) -> None:
             if c.disableCommandsMessage:
                 g.blue('', c.disableCommandsMessage)
             else:
-                g.app.scriptDict = {'script_gnx': p.gnx}
+                g.app.scriptDict = {'script_gnx': p.gnx if p else ''}  # strict_optional # Bug fix.
                 c.executeScript(
                     args=args,
                     p=p,
@@ -617,6 +617,8 @@ class LeoQtGui(leoGui.LeoGui):
         dialog = self.globalFindDialog
         if not dialog:
             dialog = self.createFindDialog(c)
+            if not dialog:
+                return  # strict_optional # Bug fix.
             self.globalFindDialog = dialog
             # Fix #516: Do the following only once...
             if c:
@@ -683,7 +685,7 @@ class LeoQtGui(leoGui.LeoGui):
 
     def createSpellTab(
         self, c: Cmdr, spellHandler: Callable, tabName: str
-    ) -> qt_frame.LeoQtSpellTab:
+    ) -> qt_frame.LeoQtSpellTab | None:
         if g.unitTesting:
             return None
         return qt_frame.LeoQtSpellTab(c, spellHandler, tabName)
@@ -954,7 +956,7 @@ class LeoQtGui(leoGui.LeoGui):
 
         """
         if g.unitTesting:
-            return None
+            return ''
 
         # Create the dialog.
         top_frame: QWidget | None = c.frame.top if c else None
@@ -1017,7 +1019,7 @@ class LeoQtGui(leoGui.LeoGui):
         - `no_all`: bool - show NoToAll button
         """
         if g.unitTesting:
-            return None
+            return ''
 
         # Create the dialog.
         top_frame: QWidget | None = c.frame.top if c else None
@@ -1225,80 +1227,6 @@ class LeoQtGui(leoGui.LeoGui):
         if c and s:
             c.last_dir = g.os_path_dirname(s)
         return s
-
-    # @+node:ekr.20110605121601.18503: *4* LeoQtGui.runScrolledMessageDialog
-    def runScrolledMessageDialog(
-        self,
-        short_title: str = '',
-        title: str = 'Message',
-        label: str = '',
-        msg: str = '',
-        c: Cmdr | None = None,
-        **keys: Any,
-    ) -> None:
-        if g.unitTesting:
-            return None
-
-        def send() -> Any:
-            return g.doHook(
-                'scrolledMessage',
-                short_title=short_title,
-                title=title,
-                label=label,
-                msg=msg,
-                c=c,
-                **keys,
-            )
-
-        if not c or not c.exists:
-            # @+<< no c error>>
-            # @+node:ekr.20110605121601.18504: *5* << no c error>>
-            g.es_print_error(
-                '%s\n%s\n\t%s'
-                % (
-                    "The qt plugin requires calls to g.app.gui.scrolledMessageDialog to include 'c'",
-                    "as a keyword argument",
-                    g.callers(),
-                )
-            )
-            # @-<< no c error>>
-        else:
-            retval = send()
-            if retval:
-                return retval
-            # @+<< load viewrendered plugin >>
-            # @+node:ekr.20110605121601.18505: *5* << load viewrendered plugin >>
-            pc = g.app.pluginsController
-            # Load viewrendered (and call vr.onCreate) *only* if not already loaded.
-            if not pc.isLoaded('viewrendered.py') and not pc.isLoaded('viewrendered3.py'):
-                vr = pc.loadOnePlugin('viewrendered.py')
-                if vr:
-                    g.blue('viewrendered plugin loaded.')
-                    vr.onCreate('tag', {'c': c})
-            # @-<< load viewrendered plugin >>
-            retval = send()
-            if retval:
-                return retval
-            # @+<< no dialog error >>
-            # @+node:ekr.20110605121601.18506: *5* << no dialog error >>
-            g.es_print_error(f'No handler for the "scrolledMessage" hook.\n\t{g.callers()}')
-            # @-<< no dialog error >>
-        # @+<< emergency fallback >>
-        # @+node:ekr.20110605121601.18507: *5* << emergency fallback >>
-        dialog = QtWidgets.QMessageBox(None)
-        # That is, not a fixed size dialog.
-        dialog.setWindowFlags(WindowType.Dialog)
-        dialog.setWindowTitle(title)
-        if msg:
-            dialog.setText(msg)
-        dialog.setIcon(Icon.Information)
-        dialog.addButton('Ok', ButtonRole.YesRole)
-        try:
-            c.in_qt_dialog = True
-            dialog.exec()
-        finally:
-            c.in_qt_dialog = False
-        # @-<< emergency fallback >>
 
     # @+node:ekr.20110607182447.16456: *3* LeoQtGui: Event handlers
     # @+node:ekr.20190824094650.1: *4* LeoQtGui.close_event
@@ -1542,11 +1470,11 @@ class LeoQtGui(leoGui.LeoGui):
 
     # @+node:ekr.20110605121601.18518: *4* LeoQtGui.getTreeImage
     @functools.lru_cache(maxsize=128)
-    def getTreeImage(self, c: Cmdr, path: str) -> tuple[QPixmap, int]:
+    def getTreeImage(self, c: Cmdr, path: str) -> tuple[QPixmap | None, int]:
         image = QtGui.QPixmap(path)
         if image.height() > 0 and image.width() > 0:
             return image, image.height()
-        return None, None
+        return None, 0
 
     # @+node:ekr.20111215193352.10220: *3* LeoQtGui: Splash Screen
     # @+node:ekr.20110605121601.18479: *4* LeoQtGui.createSplashScreen
@@ -1626,7 +1554,7 @@ class LeoQtGui(leoGui.LeoGui):
     import PyQt6.QtTest as QtTest
 
     QSignalSpy = QtTest.QSignalSpy
-    assert QSignalSpy
+    assert QSignalSpy is not None
 
     # @+node:ekr.20240521171848.1: *4* LeoQtGui.equalize_splitter
     def equalize_splitter(self, splitter):
@@ -1821,7 +1749,7 @@ class StyleClassManager:
     def has_sclass(self, w: QTextMixin, prop: str) -> bool:
         """Check for style class or list of classes prop on QWidget w"""
         if not prop:
-            return None
+            return False
         props = self.sclasses(w)
         if isinstance(prop, str):
             ans = [prop in props]
@@ -2297,7 +2225,7 @@ class StyleSheetManager:
                 scaled = max(float(sz) * factor, 1)
             except Exception as e:
                 g.es('ssm.rescale_fonts:', e)
-                return None
+                return ''
             return f'{prefix} {scaled:.1f}{units}'
 
         newsheet = re.sub(RE, scale, sheet)

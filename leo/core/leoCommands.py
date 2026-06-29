@@ -149,7 +149,7 @@ if TYPE_CHECKING:
     from leo.plugins.qt_gui import StyleSheetManager
     from leo.plugins.qt_text import QTextMixin
 
-    assert StyleSheetManager
+    assert StyleSheetManager is not None
 
     Args = Any
     KWargs = Any
