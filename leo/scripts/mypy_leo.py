@@ -30,15 +30,15 @@ if 0:  # Test all files.
 else:  # Test only specific files.
     files = [
         # The six files to be checked.
-        # 'leo/core/leoApp.py',
-        # 'leo/core/leoAtFile.py',
-        # 'leo/core/leoCommands.py',
-        # 'leo/core/leoKeys.py',
-        # 'leo/core/leoGlobals.py',
-        # 'leo/core/leoNodes.py',
+        'leo/core/leoApp.py',
+        'leo/core/leoAtFile.py',
+        'leo/core/leoCommands.py',
+        'leo/core/leoKeys.py',
+        'leo/core/leoGlobals.py',
+        'leo/core/leoNodes.py',
         # Additional files containing complaints when following imports.
         'leo/plugins/mod_scripting.py',
-        # 'leo/plugins/qt_commands.py',
+        'leo/plugins/qt_commands.py',
         # 'leo/plugins/qt_frame.py',
         # 'leo/plugins/qt_gui.py',
         # 'leo/plugins/qt_idle_time.py',

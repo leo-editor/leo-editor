@@ -663,7 +663,7 @@ class ScriptingController:
         self,
         b: QtWidgets.QButton,
         buttonText: str,
-        p: Position,
+        p: Position | None,
         script: str,
         script_gnx: str = '',
     ) -> Value:
@@ -689,7 +689,7 @@ class ScriptingController:
         return result
 
     # @+node:ekr.20130912061655.11294: *3* sc.open_gnx
-    def open_gnx(self, c: Cmdr, gnx: str) -> tuple[Cmdr, Position]:
+    def open_gnx(self, c: Cmdr, gnx: str) -> tuple[Cmdr | None, Position | None]:
         """
         Find the node with the given gnx in c, myLeoSettings.leo and leoSettings.leo.
         If found, open the tab/outline and return c,p of the found node.
@@ -1045,7 +1045,7 @@ class ScriptingController:
             self.c.bodyWantsFocus()
 
     # @+node:ekr.20080813064908.4: *4* sc.getArgs
-    def getArgs(self, p: Position) -> list[str]:
+    def getArgs(self, p: Position | None) -> list[str]:
         """Return the list of @args field of p.h."""
         args: list[str] = []
         if not p:
@@ -1130,7 +1130,7 @@ class ScriptingController:
         return shortcut
 
     # @+node:ekr.20150402042350.1: *4* sc.getScript
-    def getScript(self, p: Position) -> str:
+    def getScript(self, p: Position | None) -> str:
         """Return the script composed from p and its descendants."""
         return g.getScript(
             self.c,
@@ -1147,7 +1147,7 @@ class ScriptingController:
         func: Callable,
         h: str,
         pane: str,
-        source_c: Cmdr = None,
+        source_c: Cmdr | None = None,
         tag: str = '',  # Not used.
     ) -> None:
         """Register @button <name> and @rclick <name> and <name>"""
@@ -1167,7 +1167,7 @@ class ScriptingController:
             func=func,
             pane=pane,
             shortcut=shortcut,
-            fileName=fileName,
+            fileName=fileName or '',
         )
 
         # 2013/11/13 Jake Peck:
@@ -1194,7 +1194,7 @@ class ScriptingController:
                     k.registerCommand(
                         allowBinding=True,
                         commandName=commandName2,
-                        fileName=fileName,
+                        fileName=fileName or '',
                         func=registerAllCommandsCallback,
                         pane=pane,
                         shortcut=shortcut,
