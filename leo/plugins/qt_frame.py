@@ -96,7 +96,7 @@ if TYPE_CHECKING:  # pragma: no cover
     RClick = tuple
     RClicks = list[RClick]
 
-    QtWrapper = QScintillaWrapper | QTextEditWrapper
+    QtWrapper: TypeAlias = QScintillaWrapper | QTextEditWrapper
 
 
 # @-<< qt_frame annotations >>
@@ -190,7 +190,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 self.iconBar.hide()
 
     # @+node:ekr.20110605121601.18139: *3* dw.construct & helpers
-    def construct(self, master: LeoTabbedTopLevel = None) -> None:
+    def construct(self, master: LeoTabbedTopLevel) -> None:
         """Factor 'heavy duty' code out from the DynamicWindow ctor"""
         c = self.leo_c
         self.leo_master = master
@@ -492,7 +492,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         class EventWrapper:
             """A class to handle key presses in the Find tab."""
 
-            def __init__(self, c: Cmdr, w: QWidget, next_w: QWidget, func: Callable) -> None:
+            def __init__(self, c: Cmdr, w: QWidget, next_w: QWidget, func: Callable | None) -> None:
                 self.c = c
                 self.d = self.create_d()  # Keys: stroke.s; values: command-names.
                 self.w = w
@@ -551,7 +551,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
                         else:
                             # Do the normal processing.
                             return self.oldEvent(event)
-                    elif self.func:
+                    elif self.func is not None:
                         self.func()
                     return True
 
@@ -1084,7 +1084,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.findScrollArea.setWidget(self.findTab)
 
     # @+node:ekr.20110605121601.18212: *4* dw.packLabel
-    def packLabel(self, w: QWidget, n: int = None) -> None:
+    def packLabel(self, w: QWidget, n: int = 0) -> None:
         """
         Pack w into the body frame's QVGridLayout.
 
@@ -1099,7 +1099,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         label = QtWidgets.QLineEdit(None)
         label.setObjectName('editorLabel')
         label.setText(c.p.h)
-        if n is None:
+        if n == 0:  # strict_optional
             n = c.frame.body.numberOfEditors
         n = max(0, n - 1)
         # mypy error: grid is a QGridLayout, not a QLayout.
@@ -1317,18 +1317,18 @@ class FindTabManager:
             ('search_headline', self.check_box_search_headline),
             ('whole_word',      self.check_box_whole_word),
         )  # fmt: skip
-        for setting_name, w in check_box_table:
+        for setting_name, box_w in check_box_table:
             val = c.config.getBool(setting_name, default=False)
             # The setting name is also the name of the LeoFind ivar.
             assert hasattr(find, setting_name), setting_name
             setattr(find, setting_name, val)
             if val:
-                w.toggle()
+                box_w.toggle()
 
-            def check_box_callback(n: int, setting_name: str = setting_name, w: str = w) -> None:
+            def check_box_callback(n: int, setting_name: str = setting_name, w=box_w) -> None:
                 # The focus has already change when this gets called.
                 # focus_w = QtWidgets.QApplication.focusWidget()
-                val = w.isChecked()
+                val = box_w.isChecked()
                 assert hasattr(find, setting_name), setting_name
                 setattr(find, setting_name, val)
                 # Too kludgy: we must use an accurate setting.
@@ -1336,7 +1336,7 @@ class FindTabManager:
                 # Put focus in minibuffer if minibuffer find is in effect.
                 c.bodyWantsFocusNow()
 
-            w.stateChanged.connect(check_box_callback)
+            box_w.stateChanged.connect(check_box_callback)
 
         # Radio buttons
         radio_buttons_table = (
@@ -1345,27 +1345,27 @@ class FindTabManager:
             ('suboutline_only', 'suboutline_only', self.radio_button_suboutline_only),
             ('file_only',       'file_only',       self.radio_button_file_only),
         )  # fmt: skip
-        for setting_name, ivar, w in radio_buttons_table:
+        for setting_name, ivar, radio_w in radio_buttons_table:
             val = c.config.getBool(setting_name, default=False)
             # The setting name is also the name of the LeoFind ivar.
             if ivar is not None:
                 assert hasattr(find, setting_name), setting_name
                 setattr(find, setting_name, val)
-                w.toggle()
+                radio_w.toggle()
 
             def radio_button_callback(
-                n: int, ivar: str = ivar, setting_name: str = setting_name, w: str = w
+                n: int, ivar: str = ivar, setting_name: str = setting_name, w=radio_w
             ) -> None:
-                val = w.isChecked()
+                val = radio_w.isChecked()
                 if ivar:
                     assert hasattr(find, ivar), ivar
                     setattr(find, ivar, val)
 
-            w.toggled.connect(radio_button_callback)
+            radio_w.toggled.connect(radio_button_callback)
         # Ensure one radio button is set.
         if not find.node_only and not find.suboutline_only and not find.file_only:
-            w = self.radio_button_entire_outline
-            w.toggle()
+            entire_w = self.radio_button_entire_outline
+            entire_w.toggle()
 
     # @+node:ekr.20210923060904.1: *3* FindTabManager.set_widgets_from_dict
     def set_widgets_from_dict(self, d: g.Bunch) -> None:
@@ -1571,7 +1571,8 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
         w = self.widget(index)
         name = self.tabText(index)
         self.detached.append((name, w))
-        self.factory.detachTab(w)
+        if self.factory:  # strict_optional # possible bug fix.
+            self.factory.detachTab(w)
         icon = g.app.gui.getImageFinder("application-x-leo-outline.png")
         icon = QtGui.QIcon(icon)
         if icon:
@@ -1589,7 +1590,7 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
         """reattach all detached tabs"""
         for name, w in self.detached:
             self.addTab(w, name)
-            self.factory.leoFrames[w] = w.leo_c.frame
+            self.factory.leoFrames[w] = w.leo_c.frame  # type:ignore # I don't understand this.
         self.detached = []
 
     # @+node:ekr.20131115120119.17394: *3* qt_base_tab.delete
@@ -1657,9 +1658,9 @@ class LeoQtBody(leoFrame.LeoBody):
         super().__init__(frame)
         c = self.c
         assert c.frame == frame and frame.c == c
-        self.colorizer: BaseColorizer = None
-        self.wrapper: QtWrapper = None
-        self.widget: QWidget = None
+        self.colorizer: BaseColorizer | None = None
+        self.wrapper: QtWrapper | None = None
+        self.widget: QWidget | None = None
         self.reloadSettings()
         self.set_widget()  # Sets self.widget and self.wrapper.
         self.setWrap(c.p)
