@@ -30,27 +30,27 @@ if 0:  # Test all files.
 else:  # Test only specific files.
     files = [
         # The six files to be checked.
-        'leo/core/leoApp.py',
-        'leo/core/leoAtFile.py',
-        'leo/core/leoCommands.py',
-        'leo/core/leoKeys.py',  # More complaints.
-        'leo/core/leoGlobals.py',
-        'leo/core/leoNodes.py',
+        # 'leo/core/leoApp.py',
+        # 'leo/core/leoAtFile.py',
+        # 'leo/core/leoCommands.py',
+        # 'leo/core/leoKeys.py',
+        # 'leo/core/leoGlobals.py',
+        # 'leo/core/leoNodes.py',
         # Additional files containing complaints when following imports.
         'leo/plugins/mod_scripting.py',
-        'leo/plugins/qt_commands.py',
-        'leo/plugins/qt_frame.py',
-        'leo/plugins/qt_gui.py',
-        'leo/plugins/qt_idle_time.py',
-        'leo/plugins/qt_layout.py',
-        'leo/plugins/qt_text.py',
-        'leo/plugins/qt_tree.py',
-        'leo/plugins/viewrendered.py',
-        'leo/plugins/viewrendered3.py',
+        # 'leo/plugins/qt_commands.py',
+        # 'leo/plugins/qt_frame.py',
+        # 'leo/plugins/qt_gui.py',
+        # 'leo/plugins/qt_idle_time.py',
+        # 'leo/plugins/qt_layout.py',
+        # 'leo/plugins/qt_text.py',
+        # 'leo/plugins/qt_tree.py',
+        # 'leo/plugins/viewrendered.py',
+        # 'leo/plugins/viewrendered3.py',
     ]
 # Apparently 'strict-optional' doesn't work.
 incremental = True
-follow = True  # False: 436 errors. True: 443 errors.
+follow = False  # False: 436 errors. True: 443 errors.
 incremental_arg = '' if incremental else '--no-incremental'
 follow_kind = 'normal' if follow else 'skip'
 args = f"--follow-imports={follow_kind} {incremental_arg}"

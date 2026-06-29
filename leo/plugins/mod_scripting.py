@@ -170,7 +170,7 @@ if TYPE_CHECKING:  # pragma: no cover
 # @+node:ekr.20180328085010.1: ** Top level (mod_scripting)
 # @+node:tbrown.20140819100840.37719: *3* mod_scripting.build_rclick_tree
 def build_rclick_tree(
-    command_p: Position, rclicks: RClicks = None, top_level: bool = False
+    command_p: Position, rclicks: RClicks | None = None, top_level: bool = False
 ) -> list:
     """
     Return a list of top level RClicks for the button at command_p, which can be
@@ -532,8 +532,8 @@ class ScriptingController:
             else:
                 self.seen.add(gnx)
                 if m := pattern.match(p.h):
-                    func = d.get(m.group(1))
-                    func(p)
+                    if func := d.get(m.group(1)):
+                        func(p)  # strict_optional
                 p.moveToThreadNext()
 
     # @+node:ekr.20060328125248.24: *3* sc.createLocalAtButtonHelper
@@ -572,7 +572,7 @@ class ScriptingController:
             buttonText=buttonText,
             docstring=docstring,
             gnx=p.v.gnx,
-            script=None,
+            script='',
         )
         self.iconBar.setCommandForButton(
             button=b,
@@ -580,7 +580,7 @@ class ScriptingController:
             command_p=p and p.copy(),  # This does exist.
             controller=self,
             gnx=p and p.gnx,
-            script=None,
+            script='',
         )
         # At last we can define the command and use the shortcut.
         # registerAllCommands recomputes the shortcut.
@@ -599,10 +599,10 @@ class ScriptingController:
         self,
         args: Args,
         text: str,
-        command: Callable,
+        command: Callable | None,
         statusLine: str,
-        bg: str = None,
-        kind: str = None,
+        bg: str = '',
+        kind: str = '',
     ) -> QtWidgets.QButton:
         """
         Create one icon button.
@@ -732,7 +732,7 @@ class ScriptingController:
                 self.createCommonButton(p, script, rclicks)
 
     # @+node:ekr.20070926084600: *4* sc.createCommonButton (common @button)
-    def createCommonButton(self, p: Position, script: str, rclicks: RClicks = None) -> None:
+    def createCommonButton(self, p: Position, script: str, rclicks: RClicks | None = None) -> None:
         """
         Create a button in the icon area for a common @button node in an
         @buttons node in an @setting tree. Binds button presses to a callback
@@ -824,7 +824,7 @@ class ScriptingController:
         args = self.getArgs(p)
         commonCommandCallback = AtButtonCallback(
             b=None,
-            buttonText=None,
+            buttonText='',
             c=c,
             controller=self,
             docstring=g.getDocString(p.b).strip(),
@@ -939,7 +939,7 @@ class ScriptingController:
         g.app.config.atLocalCommandsList.append(p.copy())
 
     # @+node:vitalije.20180224113123.1: *4* sc.handleRclicks
-    def handleRclicks(self, rclicks: RClicks) -> None:
+    def handleRclicks(self, rclicks: RClicks | None) -> None:
         def handlerc(rc: RClick) -> None:
             if rc.children:
                 for i in rc.children:
@@ -947,7 +947,7 @@ class ScriptingController:
             else:
                 self.handleAtRclickNode(rc.position)
 
-        for rc in rclicks:
+        for rc in rclicks or []:  # strict_optional
             handlerc(rc)
 
     # @+node:ekr.20060328125248.14: *4* sc.handleAtScriptNode @script
@@ -1095,7 +1095,7 @@ class ScriptingController:
     # @+node:peckj.20140103101946.10404: *4* sc.getColor
     def getColor(self, h: str) -> str:
         """Returns the background color from the given headline string"""
-        color = None
+        color = ''
         tag = '@color'
         i = h.find(tag)
         if i > -1:
@@ -1111,7 +1111,7 @@ class ScriptingController:
     # @+node:ekr.20060328125248.16: *4* sc.getShortcut
     def getShortcut(self, h: str) -> str:
         """Return the keyboard shortcut from the given headline string"""
-        shortcut = None
+        shortcut = ''
         i = h.find('@key')
         if i > -1:
             j = g.skip_ws(h, i + len('@key'))
@@ -1148,7 +1148,7 @@ class ScriptingController:
         h: str,
         pane: str,
         source_c: Cmdr = None,
-        tag: str = None,
+        tag: str = '',  # Not used.
     ) -> None:
         """Register @button <name> and @rclick <name> and <name>"""
         c, k = self.c, self.c.k
