@@ -287,7 +287,7 @@ class LeoQtGui(leoGui.LeoGui):
             return None
 
     # @+node:ekr.20110605121601.18511: *3* LeoQtGui.getFullVersion
-    def getFullVersion(self, c: Cmdr = None) -> str:
+    def getFullVersion(self) -> str:
         """Return the PyQt version (for signon)"""
         try:
             qtLevel = f"version {QtCore.qVersion()}"
@@ -837,8 +837,8 @@ class LeoQtGui(leoGui.LeoGui):
         c: Cmdr,
         title: str,
         message: str,
-        cancelButtonText: str = None,
-        okButtonText: str = None,
+        cancelButtonText: str = '',
+        okButtonText: str = '',
     ) -> int | None:
         """Create and run askOkCancelNumber dialog ."""
         if g.unitTesting:
@@ -875,8 +875,8 @@ class LeoQtGui(leoGui.LeoGui):
         c: Cmdr,
         title: str,
         message: str,
-        cancelButtonText: str = None,
-        okButtonText: str = None,
+        cancelButtonText: str = '',
+        okButtonText: str = '',
         default: str = "",
         wide: bool = False,
     ) -> str:
@@ -910,7 +910,7 @@ class LeoQtGui(leoGui.LeoGui):
         return str(dialog.textValue()) if ok else ''
 
     # @+node:ekr.20110605121601.18495: *4* LeoQtGui.runAskOkDialog
-    def runAskOkDialog(self, c: Cmdr, title: str, message: str = None, text: str = "Ok") -> None:
+    def runAskOkDialog(self, c: Cmdr, title: str, message: str = '', text: str = "Ok") -> None:
         """Create and run a qt askOK dialog ."""
         if g.unitTesting:
             return
@@ -940,12 +940,12 @@ class LeoQtGui(leoGui.LeoGui):
         self,
         c: Cmdr,
         title: str,
-        message: str = None,
+        message: str = '',
         yesMessage: str = "&Yes",
         noMessage: str = "&No",
-        yesToAllMessage: str = None,
+        yesToAllMessage: str = '',
         defaultButton: str = "Yes",
-        cancelMessage: str = None,
+        cancelMessage: str = '',
     ) -> str:
         """
         Create and run an askYesNo dialog.
@@ -1001,7 +1001,7 @@ class LeoQtGui(leoGui.LeoGui):
         self,
         c: Cmdr,
         title: str,
-        message: str = None,
+        message: str = '',
         yes_all: bool = False,
         no_all: bool = False,
     ) -> str:
@@ -1083,7 +1083,7 @@ class LeoQtGui(leoGui.LeoGui):
         *,
         filetypes: list[tuple[str, str]],
         defaultextension: str = '',  # Not used
-        startpath: str = None,
+        startpath: str = '',
     ) -> str:
         """
         Create and run an Qt open file dialog.
@@ -1129,7 +1129,7 @@ class LeoQtGui(leoGui.LeoGui):
         *,
         filetypes: list[tuple[str, str]],
         defaultextension: str = '',  # Not used.
-        startpath: str = None,
+        startpath: str = '',
     ) -> list[str]:
         """
         Create and run an Qt open file dialog.
@@ -1874,7 +1874,7 @@ class StyleSheetManager:
         # g.es("https://leo-editor.github.io/leo-editor/tutorial-basics.html#configuring-leo")
 
     # @+node:ekr.20170222051716.1: *3*  StyleSheetManager.reload_settings
-    def reload_settings(self, sheet: str = None) -> None:
+    def reload_settings(self, sheet: str = '') -> None:
         """
         Recompute and apply the stylesheet.
         Called automatically by the reload-settings commands.

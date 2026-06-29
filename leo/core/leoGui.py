@@ -421,7 +421,7 @@ class NullGui(LeoGui):
     ) -> Any:
         return None
 
-    def getFullVersion(self, c: Cmdr = None) -> str:
+    def getFullVersion(self) -> str:
         return 'NullGui: dummy version'
 
     def getIconImage(self, name: str) -> None:
