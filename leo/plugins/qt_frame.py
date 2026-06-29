@@ -3787,7 +3787,7 @@ class QtIconBarClass:
         if not self.w:
             return None
         command: Callable = keys.get('command')
-        text: str = keys.get('text')
+        text: str = keys.get('text', '')
         # able to specify low-level QAction directly (QPushButton not forced)
         qaction: QAction = keys.get('qaction')
         if not text and not qaction:
@@ -3831,7 +3831,7 @@ class QtIconBarClass:
         b.leo_removeAction = rb = QAction('Remove Button', b)
         b.addAction(rb)
         rb.triggered.connect(delete_callback)
-        if command:
+        if command is not None:
 
             def button_callback(event: QEvent, c: Cmdr = c, command: Callable = command) -> None:
                 val = command()
@@ -3864,7 +3864,7 @@ class QtIconBarClass:
         self.actions = []
 
     # @+node:ekr.20110605121601.18269: *3* QtIconBar.createChaptersIcon
-    def createChaptersIcon(self) -> "LeoQtTreeTab":
+    def createChaptersIcon(self) -> LeoQtTreeTab | None:
         c = self.c
         f = c.frame
         if f.use_chapters and f.use_chapter_tabs:
