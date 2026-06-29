@@ -13,7 +13,7 @@ import string
 import sys
 import time
 import urllib
-from typing import Any, TYPE_CHECKING
+from typing import cast, Any, TYPE_CHECKING
 from leo.commands import gotoCommands
 from leo.core.leoAPI import StringTextWrapper
 from leo.core import (
@@ -145,8 +145,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.leo_master: LeoTabbedTopLevel = None  # Set in construct.
         self.leo_menubar: QWidget = None  # Set in createMenuBar.
         self.leo_statusBar: QtWidgets.QStatusBar = None
-        self.layout_name: str = None
-        self.old_layout_name: str = None
+        self.layout_name: str = ''
+        self.old_layout_name: str = ''
         self.verticalLayout: QBoxLayout = None
         self.vr_parent_frame: QWidget = None
         c._style_deltas = defaultdict(lambda: 0)  # for adjusting styles dynamically
@@ -1618,7 +1618,7 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
                     self.setTabText(i, title)
 
     # @+node:ekr.20131115120119.17396: *3* qt_base_tab.setTabName
-    def setTabName(self, c: Cmdr, fileName: str, tooltip: str = None) -> None:
+    def setTabName(self, c: Cmdr, fileName: str, tooltip: str = '') -> None:
         """Set the tab name and optional tooltip for c's tab to fileName."""
         # Find the tab corresponding to c.
         dw = c.frame.top  # A DynamicWindow
@@ -2431,10 +2431,10 @@ class LeoQtLog(leoFrame.LeoLog):
     def put(
         self,
         s: str,
-        color: str = None,
+        color: str = '',
         tabName: str = 'Log',
         from_redirect: bool = False,
-        nodeLink: str = None,
+        nodeLink: str = '',
     ) -> None:
         """
         Put s to the Qt Log widget, converting to html.
@@ -2624,7 +2624,7 @@ class LeoQtLog(leoFrame.LeoLog):
         self.selectTab('Log')
 
     # @+node:ekr.20111122080923.10185: *4* LeoQtLog.orderedTabNames
-    def orderedTabNames(self, LeoLog: str = None) -> list[str]:  # Unused: LeoLog
+    def orderedTabNames(self, LeoLog: str = '') -> list[str]:  # Unused: LeoLog
         """Return a list of tab names in the order in which they appear in the QTabbedWidget."""
         w = self.tabWidget
         return [w.tabText(i) for i in range(w.count())]
@@ -2737,9 +2737,9 @@ class LeoQtMenu(leoMenu.LeoMenu):
         self,
         menu: QMenu,
         accelerator: str = '',
-        command: Callable = None,
-        commandName: str = None,
-        label: str = None,
+        command: Callable | None = None,
+        commandName: str = '',
+        label: str = '',
         underline: int = 0,
     ) -> None:
         """Wrapper for the Tkinter add_command menu method."""
@@ -3557,7 +3557,7 @@ class LeoQtSpellTab:
         self.c.frame.log.selectTab('Spell')
 
     # @+node:ekr.20110605121601.18399: *4* LeoQtSpellTab.fillbox
-    def fillbox(self, alts: list[str], word: str = None) -> None:
+    def fillbox(self, alts: list[str], word: str = '') -> None:
         """Update the suggestions listBox in the Check Spelling dialog."""
         self.suggestions = alts
         if not word:
@@ -3946,8 +3946,8 @@ class QtIconBarClass:
         rclicks: RClicks,
         controller: ScriptingController,
         top_level: bool = True,
-        button: QWidget = None,
-        script: str = None,
+        button: QWidget | None = None,
+        script: str = '',
     ) -> None:
         c = controller.c
         top_offset = -2  # insert before the remove button and goto script items
@@ -4128,11 +4128,11 @@ class QtStatusLineClass:
     def get(self) -> str:
         return self.textWidget2.text()
 
-    def put(self, s: str, bg: str = None, fg: str = None) -> None:
+    def put(self, s: str, bg: str = '', fg: str = '') -> None:
         """Put the UNL area."""
         self.put_helper(s, self.textWidget2, bg, fg)
 
-    def put1(self, s: str, bg: str = None, fg: str = None) -> None:
+    def put1(self, s: str, bg: str = '', fg: str = '') -> None:
         """Put the status area"""
         self.put_helper(s, self.textWidget1, bg, fg)
 
@@ -4140,7 +4140,7 @@ class QtStatusLineClass:
     # Keys are widgets, values are stylesheets.
     styleSheetCache: dict[QWidget, str] = {}
 
-    def put_helper(self, s: str, w: QWidget, bg: str = None, fg: str = None) -> None:
+    def put_helper(self, s: str, w: QWidget, bg: str = '', fg: str = '') -> None:
         """Put string s in the indicated widget, with proper colors."""
         c = self.c
         bg = bg or c.config.getColor('status-bg') or 'white'
@@ -4226,7 +4226,7 @@ class QtStatusLineClass:
         fcol_offset = 0
         s2 = line[0:col]
         col = g.computeWidth(s2, c.tab_width)
-        #
+
         # #195: fcol when using @first directive is inaccurate
         i = line.find('<<')
         j = line.find('>>')
@@ -4237,9 +4237,9 @@ class QtStatusLineClass:
                 if line.startswith(tag):
                     fcol_offset = len(tag)
                     break
-        #
+
         # fcol is '' if there is no ancestor @<file> node.
-        fcol = None if offset is None else max(0, col + offset - fcol_offset)
+        fcol = 0 if offset is None else max(0, col + offset - fcol_offset)
         return col, fcol
 
     # @+node:chris.20180320072817.2: *4* qstatus.file_line (not used)
@@ -4267,7 +4267,7 @@ class QtStatusLineClass:
             self.put1(f"fline: {fline:2} line: {row:2d} col: {col:2} fcol: {fcol:2}")
 
     # @+node:ekr.20220911120019.1: *3* QtStatusLineClass: do-nothings
-    def disable(self, background: str = None) -> None:
+    def disable(self, background: str = '') -> None:
         pass
 
     def enable(self, background: str = "white") -> None:
@@ -4317,7 +4317,7 @@ class TabbedFrameFactory:
         # Workaround a problem setting the window title when tabs are shown.
         self.alwaysShowTabs = True
         self.leoFrames: dict[QWidget, QWidget] = {}
-        self.masterFrame: LeoTabbedTopLevel = None
+        self.masterFrame = cast(LeoTabbedTopLevel, None)
         self.createTabCommands()
 
     # @+node:ekr.20110605121601.18466: *3* TabbedFrameFactory.createFrame
