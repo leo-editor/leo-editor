@@ -2272,7 +2272,7 @@ class SettingsTreeParser(ParserBaseClass):
     # @+others
     # @+node:ekr.20041119204103: *3* ctor (SettingsTreeParser)
     # @+node:ekr.20041119204714: *3* visitNode (SettingsTreeParser)
-    def visitNode(self, p: Position) -> str | None:
+    def visitNode(self, p: Position) -> str:
         """Init any settings found in node p."""
         p = p.copy()
         munge = g.app.config.munge
@@ -2296,7 +2296,7 @@ class SettingsTreeParser(ParserBaseClass):
                     g.es_exception()
             else:
                 g.pr("*** no handler", kind)
-        return None
+        return ''
 
     # @-others
 
