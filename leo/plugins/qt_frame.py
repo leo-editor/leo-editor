@@ -3887,7 +3887,7 @@ class QtIconBarClass:
         # Fix bug 74: command_p may be in another outline.
         c = self.c
         c2, p = controller.open_gnx(c, gnx)
-        if p:
+        if c2 and p:  # strict_optional
             assert c2.positionExists(p)
             if c == c2:
                 c2.selectPosition(p)
@@ -3905,7 +3905,7 @@ class QtIconBarClass:
     def setCommandForButton(
         self,
         button: QPushButton,
-        command: Callable,
+        command: Callable | None,
         command_p: Position,
         controller: ScriptingController,
         gnx: str,
@@ -3921,7 +3921,7 @@ class QtIconBarClass:
         gnx is the gnx of the @button node.
         script is a static script for common @button nodes.
         """
-        if not command:
+        if command is None:
             return
         b = button.button
         b.clicked.connect(command)
