@@ -477,12 +477,12 @@ class RstCommands:
         return changed
 
     # @+node:ekr.20090502071837.65: *5* rst.writeToDocutils & helper
-    def writeToDocutils(self, s: str, ext: str) -> str | None:
+    def writeToDocutils(self, s: str, ext: str) -> str:
         """Send s to docutils using the writer implied by ext and return the result."""
         c = self.c
         if not docutils:
             g.error('writeToDocutils: docutils not present')
-            return None
+            return ''
         join = g.finalize_join
         openDirectory = g.os_path_dirname(c.fileName())
         overrides = {'output_encoding': self.encoding}
@@ -492,7 +492,7 @@ class RstCommands:
         if ext == '.pdf':
             module = g.import_module('leo.plugins.leo_pdf')
             if not module:
-                return None
+                return ''
             writer = module.Writer()  # Get an instance.
             writer_name = None
         else:
@@ -539,7 +539,6 @@ class RstCommands:
             if rel_stylesheet_path:
                 g.es_print('relative path:', rel_stylesheet_path)
         try:
-            result = None
             result = docutils.core.publish_string(
                 source=s,
                 reader_name='standalone',
