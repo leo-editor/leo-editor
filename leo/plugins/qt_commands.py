@@ -3,7 +3,7 @@
 """Leo's Qt-related commands defined by @g.command."""
 
 from __future__ import annotations
-from typing import Any, TYPE_CHECKING
+from typing import Any, TypeAlias, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoColor
 from leo.core import leoConfig
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
 
-    QWidget = QtWidgets.QWidget
+    QWidget: TypeAlias = QtWidgets.QWidget
 
 
 # @+others
