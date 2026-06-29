@@ -707,14 +707,14 @@ class SpellTabHandler:
     re_part = re.compile(r'[a-zA-z]+')
     re_http = re.compile(r'.*?(http|https)://(.*?)$')
 
-    def find(self, event: LeoKeyEvent = None) -> str | None:
+    def find(self, event: LeoKeyEvent = None) -> str:
         """
         Find the next unknown word.
 
         Return the word for unit tests.
         """
         if not self.loaded:
-            return None
+            return ''
         c, p = self.c, self.c.p
         sc = self.spellController
         w = c.frame.body.wrapper
@@ -837,7 +837,7 @@ class SpellTabHandler:
                 self.seen.add(word)
             # No more misspellings in p
             if g.unitTesting:
-                return None
+                return ''
             p.moveToThreadNext()
             if p:
                 ins = 0
@@ -848,7 +848,7 @@ class SpellTabHandler:
                 self.tab.fillbox([])
                 c.invalidateFocus()
                 c.bodyWantsFocus()
-                return None
+                return ''
 
     # @+node:ekr.20160415033936.1: *5* SpellTabHandler.showMisspelled
     def showMisspelled(self, p: Position) -> None:
