@@ -688,7 +688,7 @@ class ParserBaseClass:
             line = line.strip()
             if line and not g.match(line, 0, '#'):
                 commandName, bi = self.parseShortcutLine(fn, line)
-                if bi is None:  # Fix #718.
+                if not commandName or bi is None:  # Fix #718.
                     print(f"\nWarning: bad shortcut specifier: {line!r}\n")
                 else:
                     if bi and bi.stroke not in (None, 'none', 'None'):
@@ -848,7 +848,7 @@ class ParserBaseClass:
             d[tag] = val
 
     # @+node:ekr.20041120112043: *4* pbc.parseShortcutLine
-    def parseShortcutLine(self, kind: str, s: str) -> tuple[str | None, Any]:
+    def parseShortcutLine(self, kind: str, s: str) -> tuple[str, Any]:
         """Parse a shortcut line.  Valid forms:
 
         --> entry-command
