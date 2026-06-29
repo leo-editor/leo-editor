@@ -1928,18 +1928,18 @@ class StyleSheetManager:
         return table
 
     # @+node:ekr.20170307083738.1: *4* StyleSheetManager.find_icon_path
-    def find_icon_path(self, setting: str) -> str | None:
+    def find_icon_path(self, setting: str) -> str:
         """Return the path to the open/close indicator icon."""
         c = self.c
         s = c.config.getString(setting)
         if not s:
-            return None  # Not an error.
+            return ''  # Not an error.
         for directory in self.compute_icon_directories():
             path = g.finalize_join(directory, s)
             if g.os_path_exists(path):
                 return path
         g.es_print('no icon found for:', setting)
-        return None
+        return ''
 
     # @+node:ekr.20180316091920.1: *3* StyleSheetManager: Settings
     # @+node:ekr.20110605121601.18176: *4* StyleSheetManager.default_style_sheet
