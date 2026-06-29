@@ -68,7 +68,7 @@ class IdleTimeManager:
         """Ctor for IdleTimeManager class."""
         self.callback_list: list[Callable] = []
         self.on_idle_count = 0
-        self.timer: IdleTime = None
+        self.timer: IdleTime | None = None
 
     # @+others
     # @+node:ekr.20161026125611.1: *3* itm.add_callback
