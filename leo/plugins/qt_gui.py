@@ -61,24 +61,24 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position
 
-    QDialog = QtWidgets.QDialog
+    QDialog: TypeAlias = QtWidgets.QDialog
     QEvent: TypeAlias = QtCore.QEvent
-    QFont = QtGui.QFont
-    QFrame = QtWidgets.QFrame
-    QGridLayout = QtWidgets.QGridLayout
-    QHBoxLayout = QtWidgets.QHBoxLayout
-    QIcon = QtGui.QIcon
-    QLabel = QtWidgets.QLabel
-    QLayout = QtWidgets.QLayout
-    QMainWindow = QtWidgets.QMainWindow
-    QObject = QtCore.QObject
-    QPixmap = QtGui.QPixmap
-    QPoint = QtCore.QPoint
-    QPushButton = QtWidgets.QPushButton
-    QSplitter = QtWidgets.QSplitter
-    QTabWidget = QtWidgets.QTabWidget
-    QVBoxLayout = QtWidgets.QVBoxLayout
-    QWidget = QtWidgets.QWidget
+    QFont: TypeAlias = QtGui.QFont
+    QFrame: TypeAlias = QtWidgets.QFrame
+    QGridLayout: TypeAlias = QtWidgets.QGridLayout
+    QHBoxLayout: TypeAlias = QtWidgets.QHBoxLayout
+    QIcon: TypeAlias = QtGui.QIcon
+    QLabel: TypeAlias = QtWidgets.QLabel
+    QLayout: TypeAlias = QtWidgets.QLayout
+    QMainWindow: TypeAlias = QtWidgets.QMainWindow
+    QObject: TypeAlias = QtCore.QObject
+    QPixmap: TypeAlias = QtGui.QPixmap
+    QPoint: TypeAlias = QtCore.QPoint
+    QPushButton: TypeAlias = QtWidgets.QPushButton
+    QSplitter: TypeAlias = QtWidgets.QSplitter
+    QTabWidget: TypeAlias = QtWidgets.QTabWidget
+    QVBoxLayout: TypeAlias = QtWidgets.QVBoxLayout
+    QWidget: TypeAlias = QtWidgets.QWidget
 
 
 # @-<< qt_gui annotations >>
