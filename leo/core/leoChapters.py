@@ -287,14 +287,13 @@ class ChapterController:
             # @verbatim
             # @chapter (all up to @) (@key=(binding))?
             # name=group(1), binding=group(3)
+        chapterName = binding = ''  # strict_optional
         if m := self.re_chapter.search(p.h):
             chapterName, binding = m.group(1), m.group(3)
             if chapterName:
                 chapterName = self.sanitize(chapterName)
             if binding:
                 binding = binding.strip()
-        else:
-            chapterName = binding = ''  # strict_optional
         return chapterName, binding
 
     # @+node:ekr.20160414183716.1: *4* cc.sanitize
