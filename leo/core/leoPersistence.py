@@ -424,13 +424,13 @@ class PersistenceDataController:
         g.trace('no representative node for:', target, 'parent:', target.parent())
         return None
 
-    # @+node:ekr.20140712105818.16751: *4* pd.foreign_file_name
-    def foreign_file_name(self, p: Position) -> str | None:
+    # @+node:ekr.20140712105818.16751: *4* pd.foreign_file_name (not used)
+    def foreign_file_name(self, p: Position) -> str:
         """Return the file name for p, a foreign file node."""
         for tag in ('@auto', '@org-mode', '@vim-outline'):
             if g.match_word(p.h, 0, tag):
                 return p.h[len(tag) :].strip()
-        return None
+        return ''
 
     # @+node:ekr.20140711111623.17864: *4* pd.has...
     # The has commands return None if the node does not exist.

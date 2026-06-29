@@ -253,19 +253,18 @@ class ParserBaseClass:
         return 'skip'
 
     # @+node:ekr.20131114051702.16546: *5* pbc.getOutlineDataHelper
-    def getOutlineDataHelper(self, p: Position) -> str | None:
+    def getOutlineDataHelper(self, p: Position) -> str:
         c = self.c
         if not p:
-            return None
+            return ''
         try:
             # Copy the entire tree to s.
             c.fileCommands.leo_file_encoding = 'utf-8'
             s = c.fileCommands.outline_to_clipboard_string(p)
-            s = g.toUnicode(s, encoding='utf-8')
+            return g.toUnicode(s, encoding='utf-8')
         except Exception:
             g.es_exception()
-            s = None
-        return s
+            return ''
 
     # @+node:ekr.20041120094940.3: *4* pbc.doDirectory & doPath
     def doDirectory(self, p: Position, kind: str, name: str, val: Any) -> None:
@@ -314,7 +313,7 @@ class ParserBaseClass:
                 self.set(p, setKind, name, val)
 
     # @+node:ekr.20150426034813.1: *4* pbc.doIfEnv
-    def doIfEnv(self, p: Position, kind: str, name: str, val: Any) -> str | None:
+    def doIfEnv(self, p: Position, kind: str, name: str, val: Any) -> str:
         """
         Support @ifenv in @settings trees.
 
@@ -328,11 +327,11 @@ class ParserBaseClass:
         env = env.lower().strip() if env else 'none'
         for s in aList[1:]:
             if s.lower().strip() == env:
-                return None
+                return ''
         return 'skip'
 
     # @+node:dan.20080410121257.2: *4* pbc.doIfHostname
-    def doIfHostname(self, p: Position, kind: str, name: str, val: Any) -> str | None:
+    def doIfHostname(self, p: Position, kind: str, name: str, val: Any) -> str:
         """
         Support @ifhostname in @settings trees.
 
@@ -351,15 +350,15 @@ class ParserBaseClass:
                 return 'skip'
         elif h != s:
             return 'skip'
-        return None
+        return ''
 
     # @+node:ekr.20041120104215: *4* pbc.doIfPlatform
-    def doIfPlatform(self, p: Position, kind: str, name: str, val: Any) -> str | None:
+    def doIfPlatform(self, p: Position, kind: str, name: str, val: Any) -> str:
         """Support @ifplatform in @settings trees."""
         platform = sys.platform.lower()
         for s in name.split(','):
             if platform == s.lower():
-                return None
+                return ''
         return "skip"
 
     # @+node:ekr.20041120104215.1: *4* pbc.doIgnore
@@ -866,7 +865,9 @@ class ParserBaseClass:
             j = g.skip_ws(s, i + 3)
             i = g.skip_id(s, j, '-')
             entryCommandName = s[j:i]
-            return None, g.BindingInfo('*entry-command*', commandName=entryCommandName)
+            return '', g.BindingInfo(
+                '*entry-command*', commandName=entryCommandName
+            )  # strict_optional
         j = i
         i = g.skip_id(s, j, '-@')  # #718.
         name = s[j:i]
@@ -876,7 +877,7 @@ class ParserBaseClass:
                 name = name[len(tag) :]
                 break
         if not name:
-            return None, None
+            return '', None
         # New in Leo 4.4b2.
         i = g.skip_ws(s, i)
         if g.match(s, i, '->'):  # New in 4.4: allow pane-specific shortcuts.

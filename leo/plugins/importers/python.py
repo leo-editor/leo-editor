@@ -285,14 +285,14 @@ class Python_Importer(Importer):
                     child.h = f"function: {child.h[4:].strip()}"
 
     # @+node:ekr.20230825164231.1: *4* python_i.find_docstring
-    def find_docstring(self, p: Position) -> str | None:
+    def find_docstring(self, p: Position) -> str:
         """Creating a regex that returns a docstring is too tricky."""
         delims = ('"""', "'''")
         s_strip = p.b.strip()
         if not s_strip:
-            return None
+            return ''
         if not s_strip.startswith(delims):
-            return None
+            return ''
         delim = delims[0] if s_strip.startswith(delims[0]) else delims[1]
         lines = g.splitLines(p.b)
         if lines[0].count(delim) == 2:
@@ -306,7 +306,7 @@ class Python_Importer(Importer):
                     i += 1
                 return ''.join(lines[:i])
             i += 1
-        return None
+        return ''
 
     # @+node:ekr.20230825164234.1: *4* python_i.move_class_docstring
     def move_class_docstring(self, docstring: str, child_p: Position, class_p: Position) -> None:
