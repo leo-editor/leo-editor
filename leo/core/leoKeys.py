@@ -2275,7 +2275,7 @@ class KeyHandlerClass:
                     g.trace(f"No shortcut for {name} = {key}")
 
     # @+node:ekr.20061031131434.97: *4* k.completeAllBindings
-    def completeAllBindings(self, w: QTextMixin = None) -> None:
+    def completeAllBindings(self, w: QTextMixin | None = None) -> None:
         """
         Make an actual binding in *all* the standard places.
 
@@ -2288,7 +2288,7 @@ class KeyHandlerClass:
             k.makeMasterGuiBinding(stroke, w=w)
 
     # @+node:ekr.20061031131434.96: *4* k.completeAllBindingsForWidget
-    def completeAllBindingsForWidget(self, w: QTextMixin) -> None:
+    def completeAllBindingsForWidget(self, w: QTextMixin | None = None) -> None:
         """Make all a master gui binding for widget w."""
         k = self
         for stroke in k.bindingsDict:
@@ -2398,7 +2398,7 @@ class KeyHandlerClass:
                     k.bindKey(pane, stroke, command, commandName, tag=tag)
 
     # @+node:ekr.20061031131434.103: *4* k.makeMasterGuiBinding
-    def makeMasterGuiBinding(self, stroke: Stroke, w: QTextMixin = None) -> None:
+    def makeMasterGuiBinding(self, stroke: Stroke, w: QTextMixin | None = None) -> None:
         """Make a master gui binding for stroke in pane w, or in all the standard widgets."""
         c, k = self.c, self
         if not c.frame:
@@ -4124,7 +4124,7 @@ class KeyHandlerClass:
         k.setLabelGrey(f"@mode {modeName} is not defined (or is empty)")
 
     # @+node:ekr.20061031131434.158: *4* k.createModeBindings
-    def createModeBindings(self, modeName: str, d: dict[str, list], w: QTextMixin) -> None:
+    def createModeBindings(self, modeName: str, d: dict[str, list], w: QTextMixin | None) -> None:
         """Create mode bindings for the named mode using dictionary d for w, a text widget."""
         c, k = self.c, self
         assert d.name().endswith('-mode')

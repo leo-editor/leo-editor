@@ -30,7 +30,7 @@ if 0:  # Test all files.
 else:  # Test only specific files.
     files = [
         # The six files to be checked.
-        'leo/core/leoApp.py',  # More complaints.
+        'leo/core/leoApp.py',
         'leo/core/leoAtFile.py',
         'leo/core/leoCommands.py',
         'leo/core/leoKeys.py',  # More complaints.
