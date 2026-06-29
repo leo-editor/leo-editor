@@ -1293,8 +1293,7 @@ class Position:
             if data:
                 v, junk = data
                 return v
-            return p.v.context.hiddenRootNode
-        return None  # type:ignore  # mypy is not wrong to complain, but this is correct.
+        return p.v.context.hiddenRootNode  # strict_optional # Bug fix! 2026/06/29.
 
     # @+node:ekr.20131219220412.16582: *4* p._relinkAsCloneOf
     def _relinkAsCloneOf(self, p2: Position) -> None:
