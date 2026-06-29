@@ -142,7 +142,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         super().__init__(parent)
         self.leo_c = c
         self.leo_body_frame: QWidget = None
-        self.leo_master: LeoTabbedTopLevel = None  # Set in construct.
+        self.leo_master: LeoTabbedTopLevel = None  # type:ignore # cast won't work. Set in construct.
         self.leo_menubar: QWidget = None  # Set in createMenuBar.
         self.leo_statusBar: QtWidgets.QStatusBar = None
         self.layout_name: str = ''
@@ -1341,14 +1341,14 @@ class FindTabManager:
         # Radio buttons
         radio_buttons_table = (
             ('node_only',       'node_only',       self.radio_button_node_only),
-            ('entire_outline',  None,              self.radio_button_entire_outline),
+            ('entire_outline',  ''  ,              self.radio_button_entire_outline),
             ('suboutline_only', 'suboutline_only', self.radio_button_suboutline_only),
             ('file_only',       'file_only',       self.radio_button_file_only),
         )  # fmt: skip
         for setting_name, ivar, radio_w in radio_buttons_table:
             val = c.config.getBool(setting_name, default=False)
             # The setting name is also the name of the LeoFind ivar.
-            if ivar is not None:
+            if ivar:  # strict_optional
                 assert hasattr(find, setting_name), setting_name
                 setattr(find, setting_name, val)
                 radio_w.toggle()
