@@ -1338,8 +1338,8 @@ class GetArg:
         self.log = c.frame.log or g.NullObject()
         self.functionTail: str = ''
         self.tabName = tabName
-        # State vars.
-        self.after_get_arg_state: tuple[str | None, int | None, Callable | None] | None = None
+        # State vars # strict_optional
+        self.after_get_arg_state: tuple[str, int, Callable | None] = ('', 0, None)
         self.arg_completion = True
         self.handler: Callable | None = None
         self.tabList: list[str] = []
@@ -1561,7 +1561,7 @@ class GetArg:
             c.minibufferWantsFocus()
         elif char in ('Up', 'Down'):  # 4685.
             finder = c.findCommands
-            handler = self.after_get_arg_state[2]  # type:ignore
+            handler = self.after_get_arg_state[2]
             if handler in (finder.find_state0, finder._start_search_escape2):
                 finder.do_arrow(char, in_minibuffer=True)
         elif k.isFKey(stroke):
@@ -1572,7 +1572,7 @@ class GetArg:
 
     # @+node:ekr.20161019060054.1: *4* ga.cancel_after_state
     def cancel_after_state(self) -> None:
-        self.after_get_arg_state = None
+        self.after_get_arg_state = ('', 0, None)  # strict_optional
 
     # @+node:ekr.20140816165728.18955: *4* ga.do_char
     def do_char(self, event: LeoKeyEvent, char: str) -> None:
@@ -1597,8 +1597,9 @@ class GetArg:
         else:
             # A hack to support the curses gui.
             k.arg = gui_arg or self.get_label()
-        kind, n, handler = self.after_get_arg_state  # type:ignore
-        n = cast(int, n)
+        kind, n, handler = self.after_get_arg_state
+        if not kind:
+            return  # strict_optional
         if kind:
             k.setState(kind, n, handler)
         self.log.deleteTab('Completion')
