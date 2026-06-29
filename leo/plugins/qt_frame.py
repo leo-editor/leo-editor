@@ -1790,15 +1790,15 @@ class LeoQtFrame(leoFrame.LeoFrame):
         leoFrame.LeoFrame.instances += 1  # Increment the class var.
 
         # Official ivars for objects.
-        self.bar1: LeoQtFrame = None
-        self.bar2: LeoQtFrame = None
-        self.body: LeoQtBody = None
-        self.iconBar: QtIconBarClass = None
-        self.iconFrame: QtIconBarClass = None
-        self.log: LeoQtLog = None
-        self.statusLine: QtStatusLineClass = None
-        self.tree: LeoQtTree = None
-        self.top: DynamicWindow = None
+        self.bar1 = cast(LeoQtFrame, None)
+        self.bar2 = cast(LeoQtFrame, None)
+        self.body = cast(LeoQtBody, None)
+        self.iconBar = cast(QtIconBarClass, None)
+        self.iconFrame = cast(QtIconBarClass, None)
+        self.log = cast(LeoQtLog, None)
+        self.statusLine = cast(QtStatusLineClass, None)
+        self.tree = cast(LeoQtTree, None)
+        self.top = cast(DynamicWindow, None)
 
         # Status ivars...
         self.title = title
@@ -1961,10 +1961,10 @@ class LeoQtFrame(leoFrame.LeoFrame):
         pass
 
     # @+node:ekr.20110605121601.18280: *4* LeoQtFrame.forceWrap & setWrap
-    def forceWrap(self, p: Position = None) -> None:
+    def forceWrap(self, p: Position | None = None) -> None:
         self.c.frame.body.forceWrap(p)
 
-    def setWrap(self, p: Position = None) -> None:
+    def setWrap(self, p: Position | None = None) -> None:
         self.c.frame.body.setWrap(p)
 
     # @+node:ekr.20110605121601.18281: *4* LeoQtFrame.reconfigurePanes
@@ -2666,7 +2666,7 @@ class LeoQtLog(leoFrame.LeoLog):
         i = self.findTabIndex(tabName)
         if i is None:
             g.trace('can not happen', tabName)
-            self.tabName = None
+            self.tabName = ''
             return
         w.setCurrentIndex(i)
         self.tabName = tabName
@@ -2800,7 +2800,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         position: int,
         label: str,
         command: Callable,
-        underline: int = None,
+        underline: int = 0,
     ) -> None:
         menu = self.getMenu(menuName)
         if menu and label:
@@ -2808,7 +2808,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
             if -1 > n > len(label):
                 label = label[:n] + '&' + label[n:]
             action = menu.addAction(label)
-            if command:
+            if command is not None:
 
                 def insert_callback(
                     checked: str, label: str = label, command: Callable = command
@@ -3749,7 +3749,7 @@ class QtIconBarClass:
 
     # @+others
     # @+node:ekr.20110605121601.18263: *3*  QtIconBar.ctor & reloadSettings
-    def __init__(self, c: Cmdr, parentFrame: LeoQtFrame) -> None:
+    def __init__(self, c: Cmdr, parentFrame: LeoQtFrame | None) -> None:
         """Ctor for QtIconBarClass."""
         # Copy ivars
         self.c = c
@@ -4088,7 +4088,7 @@ class QtStatusLineClass:
 
     # @+others
     # @+node:ekr.20110605121601.18258: *3* QtStatusLineClass.ctor
-    def __init__(self, c: Cmdr, parentFrame: LeoQtFrame) -> None:
+    def __init__(self, c: Cmdr, parentFrame: LeoQtFrame | None) -> None:
         """Ctor for LeoQtFrame class."""
         self.c = c
         self.statusBar = c.frame.top.leo_statusBar
