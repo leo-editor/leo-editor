@@ -412,7 +412,7 @@ class BaseLeoCompare:
 
     # @+node:ekr.20031218072017.1144: *4* compare.openOutputFile
     def openOutputFile(self) -> bool:  # Bug fix: return a bool.
-        if self.outputFileName is None:
+        if not self.outputFileName:  # strict_optional
             return False
         theDir, name = g.os_path_split(self.outputFileName)
         if not theDir:

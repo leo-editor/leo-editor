@@ -2521,7 +2521,7 @@ def file_date(theFile: str, format: str = '') -> str:
         return ''
     try:
         n = g.os_path_getmtime(theFile)
-        if format is None:
+        if not format:  # strict_optional
             format = "%m/%d/%y %H:%M:%S"
         return time.strftime(format, time.gmtime(n))
     except (ImportError, NameError):
@@ -2907,7 +2907,7 @@ def findAllValidLanguageDirectives(s: str) -> list:
 
 
 # @+node:ekr.20090214075058.8: *3* g.findAtTabWidthDirectives (must be fast)
-def findTabWidthDirectives(c: Cmdr, p: Position) -> int | None:
+def findTabWidthDirectives(c: Cmdr | None, p: Position) -> int | None:
     """Return the tab width in effect at position p."""
     if c is None:
         return None  # c may be None for testing.
@@ -4769,7 +4769,7 @@ def skip_ws_and_nl(s: str, i: int) -> int:
 # @+node:ekr.20180325025502.1: *3* g.backupGitIssues
 def backupGitIssues(c: Cmdr, base_url: str = '') -> None:
     """Get a list of issues from Leo's GitHub site."""
-    if base_url is None:
+    if not base_url:  # strict_optional
         base_url = 'https://api.github.com/repos/leo-editor/leo-editor/issues'
 
     root = c.lastTopLevel().insertAfter()
@@ -6723,7 +6723,7 @@ def actualColor(color: str) -> str:
     if color and color.startswith('#'):
         return color
     # #788: Translate colors to theme-defined colors.
-    if color is None:
+    if not color:  # strict_optional
         # Prefer text_foreground_color'
         color2 = c.config.getColor('log-text-foreground-color')
         if color2:
@@ -7425,7 +7425,7 @@ def python_tokenize(s: str) -> list:
 # @+node:ekr.20161223090721.1: *3* g.exec_file
 def exec_file(path: str, d: dict[str, Value], script: str = '') -> None:
     """Simulate python's execfile statement for python 3."""
-    if script is None:
+    if not script:  # strict_optional
         with open(path) as f:
             script = f.read()
     exec(compile(script, path, 'exec'), d)
