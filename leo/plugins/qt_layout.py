@@ -107,7 +107,7 @@ def big_tree(event: LeoKeyEvent) -> None:
     ss = cache.find_widget('secondary_splitter')
     vs = cache.find_widget('vrx_splitter')
     if vs is None:
-        vs = QSplitter(cache)
+        vs = QtWidgets.QSplitter(cache)
         vs.setObjectName('vrx_splitter')
     of = cache.find_widget('outlineFrame')
     lf = cache.find_widget('logFrame')
