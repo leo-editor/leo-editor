@@ -2948,7 +2948,7 @@ def findFirstValidAtLanguageDirective(s: str) -> str:
 # @+node:ekr.20090214075058.6: *3* g.findLanguageDirectives (must be fast)
 def findLanguageDirectives(c: Cmdr, p: Position) -> str:
     """Return the language in effect at position p."""
-    if c is None or p is None:
+    if c is None or not p:  # strict_optional # Bug fix!
         return ''
 
     v0 = p.v
@@ -4821,7 +4821,7 @@ def getGitIssues(
     state: str = '',  # in ('', 'closed', 'open')
 ) -> None:
     """Get a list of issues from Leo's GitHub site."""
-    if base_url is None:
+    if not base_url:
         base_url = 'https://api.github.com/repos/leo-editor/leo-editor/issues'
     if isinstance(label_list, (list, tuple)):
         root = c.lastTopLevel().insertAfter()
@@ -4860,7 +4860,7 @@ class GitIssueController:
             for state in ('closed', 'open'):
                 for label in label_list:
                     self.get_one_issue(label, state)
-        elif state is None:
+        elif not state:  # strict_optional
             for state in ('closed', 'open'):
                 organizer = root.insertAsLastChild()
                 organizer.h = f"{state} issues..."
@@ -5137,7 +5137,7 @@ def gitInfo(path: str = '') -> tuple[str, str]:
     Return the branch and commit number or ('', '').
     """
     branch, commit = '', ''  # Set defaults.
-    if path is None:
+    if not path:  # strict_optional
         # Default to leo/core.
         path = os.path.dirname(__file__)
     if not os.path.isdir(path):
@@ -5493,7 +5493,7 @@ def toPythonIndex(s: str, index: str) -> int:
 
     index may be a Tk index (x.y) or 'end'.
     """
-    if index is None:
+    if not index:  # strict_optional
         return 0
     if isinstance(index, int):
         return index
@@ -6416,7 +6416,7 @@ is_unique_class = isUniqueClass
 # @+node:ekr.20150127060254.5: *3* g.log_to_file
 def log_to_file(s: str, fn: str = '') -> None:
     """Write a message to ~/test/leo_log.txt."""
-    if fn is None:
+    if not fn:  # strict_optional
         fn = g.finalize('~/test/leo_log.txt')
     if not s.endswith('\n'):
         s = s + '\n'
@@ -6602,7 +6602,7 @@ trace_unique_dict: dict[str, list[str]] = {}
 
 def traceUnique(value: object, *, n: int = 2, pad: int = 30) -> None:
     """Print unique values associated with g.callers(n)."""
-    if pad is None:
+    if not pad:  # strict_optional
         pad = 30
     key = g.callers(n)
     value_s = str(value)
@@ -8008,7 +8008,7 @@ def findGnx(gnx: str, c: Cmdr) -> Position | None:
     Return the first position in c with the actual gnx.
     """
     # Get the actual gnx and line number.
-    n: int = 0  # The line number.
+    n = 0  # The line number.
     if m := find_gnx_pat.match(gnx):
         # Get the actual gnx and line number.
         gnx = m.group(1)
@@ -8019,7 +8019,7 @@ def findGnx(gnx: str, c: Cmdr) -> Position | None:
     # Search forwards, setting p2.
     for p in c.all_unique_positions():
         if p.gnx == gnx:
-            if n is None:
+            if n == 0:  # strict_optional
                 return p
             p2, offset = c.gotoCommands.find_file_line(-n, p)
             return p2 or p

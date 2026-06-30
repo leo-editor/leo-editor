@@ -1310,7 +1310,7 @@ class GlobalConfigManager:
         lm = g.app.loadManager
         d = c.config.settingsDict if c else lm.globalSettingsDict
         limit = c.config.getInt('print-settings-at-data-limit')
-        if limit is None:
+        if not limit:  # strict_optional
             limit = 20  # A reasonable default.
         for key in sorted(list(d.keys())):
             gs = d.get(key)  # gs is a GeneralSetting or None
