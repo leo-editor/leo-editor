@@ -44,7 +44,7 @@ else:  # Test only specific files.
         'leo/plugins/qt_idle_time.py',
         'leo/plugins/qt_layout.py',
         'leo/plugins/qt_text.py',
-        # 'leo/plugins/qt_tree.py',
+        'leo/plugins/qt_tree.py',
         'leo/plugins/viewrendered.py',
         # 'leo/plugins/viewrendered3.py',
     ]
