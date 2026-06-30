@@ -2422,7 +2422,7 @@ class Commands:
             aList = list(vnode_d.get(gnx, []))
             ids = [id_ for (id_, v) in aList]
             if len(ids) > 1:
-                print('\nc.checkGnxs...')
+                g.es_print('\nc.checkGnxs...')
                 g.es_print(f"multiple vnodes with gnx: {gnx!r}", color='red')
                 for id_, v in aList:
                     gnx_errors += 1
