@@ -661,7 +661,7 @@ class LeoImportCommands:
         if not s:
             # Set the kind for error messages in readFileIntoString.
             s, e = g.readFileIntoString(fileName, encoding=self.encoding)
-            if s is None:
+            if not s:  # strict_optional
                 return None, None
             if e:
                 self.encoding = e
@@ -970,7 +970,7 @@ class LeoImportCommands:
         lb = "@<" if theType == "cweb" else "<<"
         rb = "@>" if theType == "cweb" else ">>"
         s, e = g.readFileIntoString(fileName)
-        if s is None:
+        if not s:  # strict_optional
             return
         # @+<< Create a symbol table of all section names >>
         # @+node:ekr.20031218072017.3232: *6* << Create a symbol table of all section names >>
@@ -1559,7 +1559,7 @@ class MORE_Importer:
         ic.encoding = c.getEncoding(c.p)
         g.setGlobalOpenDir(fileName)
         s, _e = g.readFileIntoString(fileName)
-        if s is None:
+        if not s:
             return None
         s = s.replace('\r', '')  # Fixes bug 626101.
         lines = g.splitLines(s)

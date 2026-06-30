@@ -1760,7 +1760,7 @@ class LeoServer:
                 fileName = param.get("name")
                 if fileName:
                     s, e = g.readFileIntoString(fileName)
-                    if s is None:
+                    if not s:  # strict_optional
                         return None
                     g.chdir(fileName)
                     s = '@nocolor\n' + s
