@@ -4037,10 +4037,10 @@ class Commands:
                     if fileName not in todo and fileName not in scanned:
                         if c2 := g.openWithFileName(
                             fileName, gui=gui
-                        ):  # strict_optional # Bug fix!
+                        ):  # strict_optional # bug fix!
                             todo.append(fileName)
-                            assert c2 not in result
-                            result.append(c2)
+                            if c2 not in result:  # strict_optional: bug fix!
+                                result.append(c2)
 
         # Create the initial to-do list.
         scan(c.fileName())
