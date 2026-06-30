@@ -1057,13 +1057,13 @@ class Commands:
         # @-others
 
         def getTerminal() -> str:
-            if term := os.environ.get('TERMINAL', ''):
-                return term
             return (
-                getCommonTerminal(PREFERRED_TERMINALS)
+                os.environ.get('TERMINAL', '')
+                or getCommonTerminal(PREFERRED_TERMINALS)
                 or getTerminalFromDirectory('/usr/bin')
                 or getTerminalFromDirectory('/usr/local/bin')
                 or getTerminalFromDirectory('/bin')
+                or ''
             )
 
         # @+node:tom.20241014154415.16: *5* getTermExecuteCmd
@@ -1193,7 +1193,7 @@ class Commands:
                 if not terminal:
                     g.es(f'Cannot find terminal specified in setting: {setting_terminal}')
                     g.es('Trying an alternative')
-                    terminal = getTerminal() or ''
+                    terminal = getTerminal()
                     g.es('using', terminal)
 
             path = c.fullPath(root)
