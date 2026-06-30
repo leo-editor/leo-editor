@@ -1657,7 +1657,7 @@ class AtFile:
             if c.persistenceController:
                 c.persistenceController.update_before_write_foreign_file(root)
             contents = at.writeAtAutoContents(fileName, root)
-            if contents is None:
+            if not contents:  # strict_optional
                 g.es("not written:", fileName)
                 at.addToOrphanList(root)
                 return False
@@ -2028,7 +2028,7 @@ class AtFile:
             if not fileName:
                 at.addToOrphanList(root)
                 return ''
-            return at.writeAtAutoContents(fileName, root) or ''
+            return at.writeAtAutoContents(fileName, root)
         except Exception:
             at.writeException(fileName, root)
             return ''
