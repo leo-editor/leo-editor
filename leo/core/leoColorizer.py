@@ -3243,7 +3243,7 @@ if QtGui:
             """Returns a QTextCharFormat for token or None."""
             if token in self._formats:
                 return self._formats[token]
-            if self._style is None:
+            if not self._style:
                 result = self._get_format_from_document(token, self._document)
             else:
                 result = self._get_format_from_style(token, self._style)
@@ -3312,7 +3312,7 @@ if QtGui:
         def _get_brush(self, color: str) -> QtGui.QBrush:
             """Returns a brush for the color."""
             result = self._brushes.get(color)
-            if result is None:
+            if not result:  # strict_optional
                 qcolor = self._get_color(color)
                 result = QtGui.QBrush(qcolor)
                 self._brushes[color] = result

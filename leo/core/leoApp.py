@@ -3096,7 +3096,7 @@ class LoadManager:
                 color: str = d.get('color', '')  # strict_optional
                 if color == 'suppress':
                     return
-                if log and color is None:
+                if log and not color:  # strict_optional
                     color = g.actualColor('black')
                 color = g.actualColor(color)
                 tabName = d.get('tabName') or 'Log'

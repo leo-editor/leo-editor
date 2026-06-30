@@ -599,7 +599,7 @@ class LeoImportCommands:
         # Init ivars.
         self.encoding = c.getEncoding(parent)
         ext, s = self.init_import(ext, fileName, s)
-        if s is None:
+        if not s:
             return None
 
         # Each importer file defines `do_import` at the top level.
@@ -648,7 +648,7 @@ class LeoImportCommands:
         return p
 
     # @+node:ekr.20140724175458.18052: *5* ic.init_import
-    def init_import(self, ext: str, fileName: str, s: str) -> tuple[str, str] | tuple[None, None]:
+    def init_import(self, ext: str, fileName: str, s: str) -> tuple[str, str]:
         """
         Init ivars imports and read the file into s.
         Return ext, s.
@@ -662,7 +662,7 @@ class LeoImportCommands:
             # Set the kind for error messages in readFileIntoString.
             s, e = g.readFileIntoString(fileName, encoding=self.encoding)
             if not s:  # strict_optional
-                return None, None
+                return '', ''  # strict_optional
             if e:
                 self.encoding = e
         return ext, s
