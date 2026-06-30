@@ -50,7 +50,7 @@ else:  # Test only specific files.
     ]
 # Apparently 'strict-optional' doesn't work.
 incremental = True
-follow = False  # False: 436 errors. True: 443 errors.
+follow = True
 incremental_arg = '' if incremental else '--no-incremental'
 follow_kind = 'normal' if follow else 'skip'
 args = f"--follow-imports={follow_kind} {incremental_arg}"

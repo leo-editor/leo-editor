@@ -320,7 +320,7 @@ class LeoQtEventFilter(QtCore.QObject):
             }
             if ch.lower() in mac_d:
                 # Ignore the case.
-                actual_ch = ch = g.checkUnicode(mac_d.get(ch.lower()))
+                actual_ch = ch = g.checkUnicode(mac_d.get(ch.lower()))  # type:ignore # ch is a str.
                 mods = []
         return actual_ch, ch, mods
 
