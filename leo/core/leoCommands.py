@@ -2083,7 +2083,11 @@ class Commands:
     _rootCount = 0
 
     def rootPosition(self) -> Position:
-        """Return a new *copy* of the root position or None."""
+        """
+        Return a new *copy* of the root position.
+
+        Note: the code returns None by default, but that should not happen in practice.
+        """
         c = self
         if c.hiddenRootNode.children:
             v = c.hiddenRootNode.children[0]
