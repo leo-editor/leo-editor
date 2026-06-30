@@ -203,7 +203,7 @@ from pathlib import Path
 import shutil
 import sys
 import textwrap
-from typing import Any, TYPE_CHECKING
+from typing import cast, Any, TypeAlias, TYPE_CHECKING
 from urllib.request import urlopen
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtWidgets
@@ -232,7 +232,7 @@ try:
     import docutils
     import docutils.core
 except ImportError:
-    docutils = None
+    docutils = None  # type:ignore
 if docutils:
     try:
         from docutils.core import publish_string
@@ -284,12 +284,13 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position, VNode
     from leo.core.leoQt import QtGui
+
     from QtMultimedia import QMediaPlayer
 
-    QCloseEvent = QtGui.QCloseEvent
-    QGraphicsScene = QtWidgets.QGraphicsScene
-    QGraphicsView = QtWidgets.QGraphicsView
-    QWidget = QtWidgets.QWidget
+    QCloseEvent: TypeAlias = QtGui.QCloseEvent
+    QGraphicsScene: TypeAlias = QtWidgets.QGraphicsScene
+    QGraphicsView: TypeAlias = QtWidgets.QGraphicsView
+    QWidget: TypeAlias = QtWidgets.QWidget
 # @-<< vr: annotations >>
 trace = False  # This global trace is convenient.
 asciidoctor_exec = shutil.which('asciidoctor')
@@ -352,12 +353,12 @@ def onCreate(tag: str, keys: dict) -> None:
     c = keys.get('c')
     if not c:
         return
-    vr = getVr(c=c)
-    g.registerHandler('select2', vr.update_vr)
-    g.registerHandler('idle', vr.update_vr)
-    vr.active = True
-    vr.is_visible = False
-    vr.hide()
+    if vr := getVr(c=c):
+        g.registerHandler('select2', vr.update_vr)
+        g.registerHandler('idle', vr.update_vr)
+        vr.active = True
+        vr.is_visible = False
+        vr.hide()
 
 
 # @+node:vitalije.20170712174157.1: *3* vr function: onClose
@@ -397,8 +398,8 @@ def show_scrolled_message(tag: str, kw: Any) -> None:
     vr.gnx = p.v.gnx
     vr.length = len(p.v.b)
     # Render!
-    f = vr.dispatch_dict.get('rest')
-    f(s, kw)
+    if f := vr.dispatch_dict.get('rest'):
+        f(s, kw)
     c.bodyWantsFocusNow()
 
 
@@ -653,23 +654,23 @@ class ViewRenderedController(QtWidgets.QWidget):
         super().__init__(parent)
         self.create_pane(parent)
         # Ivars set by reloadSettings.
-        self.auto_create: bool = None
-        self.background_color: str = None
-        self.keep_open: bool = None
-        self.katex_template: str = None
-        self.latex_template: str = None
-        self.mathjax_template: str = None
-        self.typst_template: str = None
-        self.pdf_zoom: int = None
+        self.auto_create: bool = False
+        self.background_color: str = ''
+        self.keep_open: bool = False
+        self.katex_template: str = ''
+        self.latex_template: str = ''
+        self.mathjax_template: str = ''
+        self.typst_template: str = ''
+        self.pdf_zoom: int = 0
         # Widgets managed by destroy_widgets.
-        self.browser: QWidget = None
-        self.gs: QGraphicsScene = None
-        self.gv: QGraphicsView = None
-        self.vp: QMediaPlayer = None
+        self.browser = cast(QtWidgets.QWidget, None)
+        self.gs = cast(QtWidgets.QGraphicsScene, None)
+        self.gv = cast(QtWidgets.QGraphicsView, None)
+        self.vp: QMediaPlayer | None = None
         self.w: QWidget = None  # The present widget in the rendering pane.
         # Set the ivars.
         self.active = True
-        self.gnx: str = None
+        self.gnx: str = ''
         self.keep_open = False  # True: keep the VR pane open even when showing text.
         self.is_visible = False
         self.length = 0  # The length of previous p.b.
@@ -860,7 +861,7 @@ class ViewRenderedController(QtWidgets.QWidget):
         if not self.must_update(keywords):
             return
         # Suppress updates until we change nodes.
-        f: Callable = None
+        f: Callable | None = None
         self.node_changed = self.gnx != p.v.gnx
         self.gnx = p.v.gnx
         self.length = len(p.b)  # not s
@@ -876,7 +877,7 @@ class ViewRenderedController(QtWidgets.QWidget):
             # Do *not* try to render plain text.
             w = self.get_base_text_widget()
             w.setPlainText(s)
-        if f:
+        if f is not None:
             f(s, keywords)
             self.show()
         elif self.keep_open:
@@ -1488,18 +1489,18 @@ class ViewRenderedController(QtWidgets.QWidget):
         if not h.startswith('@jinja'):
             return
 
-        def find_root(p: Position) -> tuple[Position, Position] | None:
+        def find_root(p: Position) -> tuple[Position | None, Position | None]:
             for newp in p.parents():
                 if newp.h.strip() == '@jinja':
                     oldp, p = p, newp
                     return oldp, p
             return None, None
 
-        def find_inputs(p: Position) -> tuple[Position, Position] | None:
+        def find_inputs(p: Position) -> tuple[Position | None, Position | None]:
             for newp in p.parents():
                 if newp.h.strip() == '@jinja inputs':
                     oldp, p = p, newp
-                    _, p = find_root(p)
+                    _, p = find_root(p)  # type:ignore
                     return oldp, p
             return None, None
 
@@ -1728,7 +1729,7 @@ class ViewRenderedController(QtWidgets.QWidget):
                 language = m.group(1)
                 if g.isValidLanguage(language):
                     return language
-            return None
+            return ''
 
         # #1287: Honor both kind of directives node by node.
         for p1 in p.self_and_parents():
