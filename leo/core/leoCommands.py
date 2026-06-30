@@ -1997,9 +1997,7 @@ class Commands:
     # @+node:ekr.20040803112450: *6* c.isCurrentPosition
     def isCurrentPosition(self, p: Position) -> bool:
         c = self
-        if p is None or c._currentPosition is None:
-            return False
-        return p == c._currentPosition
+        return bool(p and c._currentPosition and p == c._currentPosition)  # strict_optional
 
     # @+node:ekr.20040803112450.1: *6* c.isRootPosition
     def isRootPosition(self, p: Position) -> bool:
@@ -2927,7 +2925,7 @@ class Commands:
         else:
             format = c.config.getString("headline-time-format-string")
             gmt = c.config.getBool("headline-gmt-time")
-        if format is None:
+        if not format:  # strict_optional
             format = default_format
         try:
             # import time
