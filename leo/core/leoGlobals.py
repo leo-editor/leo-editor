@@ -1174,7 +1174,7 @@ class MatchBrackets:
         offset = 1 if self.forward else -1
         i1 = i
         i += offset
-        found: int | bool = False
+        found: int | None = None  # strict_optional
         while 0 <= i < len(s) and s[i] != '\n':
             ch = s[i]
             i2 = i - 1  # in case we have to look behind.
