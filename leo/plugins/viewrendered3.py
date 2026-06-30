@@ -1099,7 +1099,7 @@ try:
     import docutils
     import docutils.core
 except ImportError:
-    docutils = None
+    docutils = None  # type:ignore
 if docutils:
     try:
         from docutils.core import publish_string
@@ -1127,13 +1127,13 @@ try:
     import matplotlib.pyplot as plt
     from matplotlib import animation
 except ImportError:
-    matplotlib = None
+    matplotlib = None  # type:ignore
     print('VR3: *** No matplotlib')
 try:
     import numpy as np
 except ImportError:
     print('VR3: *** No numpy')
-    np = None
+    np = None  # type:ignore
 
 try:
     from pygments import cmdline
@@ -1528,11 +1528,11 @@ def configure_asciidoc():
     if asciidoc_ok:
         # These locations are needed by our custom config file html5.conf
         d_ = {}
-        file_ = sys.modules['asciidoc.asciidoc'].__file__
-        asciidoc_dir = os.path.dirname(file_)
-        d_['stylesheets'] = find_dir('stylesheets', asciidoc_dir)
-        d_['javascripts'] = find_dir('javascripts', asciidoc_dir)
-        asciidoc_dirs['asciidoc'] = d_
+        if file_ := sys.modules['asciidoc.asciidoc'].__file__:  # strict_optional
+            asciidoc_dir = os.path.dirname(file_)
+            d_['stylesheets'] = find_dir('stylesheets', asciidoc_dir)
+            d_['javascripts'] = find_dir('javascripts', asciidoc_dir)
+            asciidoc_dirs['asciidoc'] = d_
     # @-<< get asciidoc >>
     # @+<< get asciidoc3 >>
     # @+node:tom.20211125003406.4: *3* << get asciidoc3 >>
@@ -2803,7 +2803,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             # @+<< check existence >>
             # @+node:tom.20211117161734.1: *5* << check existence >>
             # Check for style file's existence
-            style_path = None
+            style_path = ''
             if os.path.isabs(stylefile):
                 style_path = stylefile
             else:
@@ -3312,10 +3312,10 @@ class ViewRenderedController3(QtWidgets.QWidget):
     # @+node:tom.20240724084623.1: *4* vr3.show_literal
     def show_literal(self, s):
         h = f'<pre>{s}</pre>'
-        w = self.w
-        self.set_html(h, w)
-        self.rst_html = h
-        w.show()
+        if w := self.w:  # strict_optional
+            self.set_html(h, w)
+            self.rst_html = h
+            w.show()
 
     # @+node:tom.20240724083001.1: *4* vr3.compute_kind
     def compute_kind(self, p, keywords):
@@ -3743,7 +3743,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
             def delete_callback():
                 for w in (self.gs, self.gv):
-                    w.deleteLater()
+                    if w:  # strict_optional
+                        w.deleteLater()
                 self.gs = self.gv = None
 
             self.embed_widget(w, delete_callback=delete_callback)
@@ -3970,7 +3971,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
         # @+node:TomP.20200209115750.1: *6* generate HTML
 
         try:
-            _html = self.Markdown.reset().convert(result)
+            _html = self.Markdown.reset().convert(result)  # type:ignore
             self.last_markup = result
 
         except SystemMessage as sm:
@@ -4017,8 +4018,8 @@ class ViewRenderedController3(QtWidgets.QWidget):
 
         self.embed_widget(vp, delete_callback=delete_callback)
         self.show()
-        vp = self.vp
-        vp.play()
+        if vp := self.vp:  # strict_optional
+            vp.play()
 
     # @+node:TomP.20191215195433.68: *4* vr3.update_networkx
     def update_networkx(self, s, keywords):

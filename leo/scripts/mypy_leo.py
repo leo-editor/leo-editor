@@ -46,7 +46,7 @@ else:  # Test only specific files.
         'leo/plugins/qt_text.py',
         'leo/plugins/qt_tree.py',
         'leo/plugins/viewrendered.py',
-        # 'leo/plugins/viewrendered3.py',
+        'leo/plugins/viewrendered3.py',
     ]
 # Apparently 'strict-optional' doesn't work.
 incremental = True
