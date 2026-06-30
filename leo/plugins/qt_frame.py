@@ -2259,7 +2259,7 @@ class LeoQtLog(leoFrame.LeoLog):
         self.logCtrl: Any = None  # A Union.
         self.logDict: dict[str, LeoQTextBrowser] = {}  # Keys: tab names.
         self.logWidget: LeoLog = None
-        self.menu: qt_text.LeoQTextBrowser = None
+        self.menu = cast(qt_text.LeoQTextBrowser, None)
         self.tabWidget: QWidget = c.frame.top.tabWidget
         tw = self.tabWidget
 

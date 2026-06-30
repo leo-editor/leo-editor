@@ -14,21 +14,22 @@ from leo.core.leoQt import MouseButton, MoveMode, MoveOperation
 from leo.core.leoQt import Shadow, Shape, SliderAction, SolidLine, WindowType, WrapMode
 
 if TYPE_CHECKING:  # pragma: no cover
+    from typing import TypeAlias
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
 
-    QEvent = QtCore.QEvent
-    QFrame = QtWidgets.QFrame
-    QKeyEvent = QtGui.QKeyEvent
-    QLineEdit = QtWidgets.QLineEdit
-    QObject = QtCore.QObject
-    QMouseEvent = QtGui.QMouseEvent
-    QPainter = QtGui.QPainter
-    QPaintEvent = QtGui.QPaintEvent
-    QPoint = QtCore.QPoint
-    QTreeWidgetItem = QtWidgets.QTreeWidgetItem
-    QWheelEvent = QtGui.QWheelEvent
-    QWidget = QtWidgets.QWidget
+    QEvent: TypeAlias = QtCore.QEvent
+    QFrame: TypeAlias = QtWidgets.QFrame
+    QKeyEvent: TypeAlias = QtGui.QKeyEvent
+    QLineEdit: TypeAlias = QtWidgets.QLineEdit
+    QObject: TypeAlias = QtCore.QObject
+    QMouseEvent: TypeAlias = QtGui.QMouseEvent
+    QPainter: TypeAlias = QtGui.QPainter
+    QPaintEvent: TypeAlias = QtGui.QPaintEvent
+    QPoint: TypeAlias = QtCore.QPoint
+    QTreeWidgetItem: TypeAlias = QtWidgets.QTreeWidgetItem
+    QWheelEvent: TypeAlias = QtGui.QWheelEvent
+    QWidget: TypeAlias = QtWidgets.QWidget
 
 FullWidthSelection = 0x06000
 QColor = QtGui.QColor
@@ -154,14 +155,14 @@ class QTextMixin:
 
     # @+others
     # @+node:ekr.20140901062324.18732: *3* QTextMixin.ctor & helper
-    def __init__(self, c: Cmdr = None) -> None:
+    def __init__(self, c: Cmdr) -> None:
         """Ctor for QTextMixin class"""
         self.c = c
         self.enabled = True
         self.tags: dict[str, str] = {}
         self.permanent = True  # False if selecting the minibuffer will make the widget go away.
         self.useScintilla = False  # This is used!
-        self.virtualInsertPoint: int = None
+        self.virtualInsertPoint: int | None = None
         self.widget: Any = None  # 'Any' is correct for the QTextMixin class.
         if c:
             self.injectIvars(c)
@@ -234,7 +235,7 @@ class QTextMixin:
         self.setInsertPoint(len(s2))
 
     # @+node:ekr.20140901141402.18706: *5* QTextMixin.delete
-    def delete(self, i: int, j: int = None) -> None:
+    def delete(self, i: int, j: int | None = None) -> None:
         if j is None:
             j = i + 1
         # This allows subclasses to use this base class method.
@@ -251,7 +252,7 @@ class QTextMixin:
         self.delete(i, j)
 
     # @+node:ekr.20110605121601.18102: *5* QTextMixin.get
-    def get(self, i: int, j: int = None) -> str:
+    def get(self, i: int, j: int | None = None) -> str:
         # 2012/04/12: fix the following two bugs by using the vanilla code:
         # https://bugs.launchpad.net/leo-editor/+bug/979142
         # https://bugs.launchpad.net/leo-editor/+bug/971166
@@ -323,7 +324,7 @@ class QLineEditWrapper(QTextMixin):
 
     # @+others
     # @+node:ekr.20110605121601.18060: *3* QLineEditWrapper.__init__ & __repr__
-    def __init__(self, widget: QLineEdit, name: str, c: Cmdr = None) -> None:
+    def __init__(self, widget: QLineEdit, name: str, c: Cmdr) -> None:
         """Ctor for QLineEditWrapper class."""
         super().__init__(c)
         self.widget = widget
@@ -418,7 +419,7 @@ class QLineEditWrapper(QTextMixin):
             g.app.gui.set_focus(self.c, self.widget)
 
     # @+node:ekr.20110605121601.18129: *4* QLineEditWrapper.setInsertPoint
-    def setInsertPoint(self, i: int, s: str = None) -> None:
+    def setInsertPoint(self, i: int, s: str = '') -> None:
         """QHeadlineWrapper."""
         if not self.check():
             return
@@ -429,7 +430,7 @@ class QLineEditWrapper(QTextMixin):
         w.setCursorPosition(i)
 
     # @+node:ekr.20110605121601.18130: *4* QLineEditWrapper.setSelectionRange
-    def setSelectionRange(self, i: int, j: int, insert: int | None = None, s: str = None) -> None:
+    def setSelectionRange(self, i: int, j: int, insert: int | None = None, s: str = '') -> None:
         """QHeadlineWrapper."""
         if not self.check():
             return
@@ -771,7 +772,7 @@ if QtWidgets:
         # @+node:tom.20210827225119.4: *4* LeoQTextBrowser.assign_bg
         # @@language python
         @staticmethod
-        def assign_bg(fg: str) -> QColor:
+        def assign_bg(fg: str) -> QtGui.QColor:
             """If fg or bg colors are missing, assign
             reasonable values.  Can happen with incorrectly
             constructed themes, or no-theme color schemes.
@@ -798,7 +799,7 @@ if QtWidgets:
         # @+node:tom.20210827225119.5: *4* LeoQTextBrowser.calc_hl
         # @@language python
         @staticmethod
-        def calc_hl(palette: QtGui.QPalette) -> QColor:
+        def calc_hl(palette: QtGui.QPalette) -> QtGui.QColor:
             """Return the line highlight color.
 
             ARGUMENT
@@ -975,7 +976,7 @@ if QtWidgets:
         # @+node:ekr.20201204172235.1: *3* LeoQTextBrowser.paintEvent
         leo_cursor_width = 0
 
-        leo_vim_mode: bool = None
+        leo_vim_mode: bool = False
 
         def paintEvent(self, event: QPaintEvent) -> None:
             """
@@ -1318,7 +1319,7 @@ class QMinibufferWrapper(QLineEditWrapper):
         # level sheet will get pushed down quite frequently.
         self.widget.setStyleSheet(self.c.frame.top.styleSheet())
 
-    def setSelectionRange(self, i: int, j: int, insert: int = None, s: str = None) -> None:
+    def setSelectionRange(self, i: int, j: int, insert: int | None = None, s: str = '') -> None:
         QLineEditWrapper.setSelectionRange(self, i, j, insert, s)
         insert = j if insert is None else insert
         if self.widget:
@@ -1338,7 +1339,7 @@ class QScintillaWrapper(QTextMixin):
 
     # @+others
     # @+node:ekr.20110605121601.18105: *3* QScintillaWrapper.ctor
-    def __init__(self, widget: QWidget, c: Cmdr, name: str = None) -> None:
+    def __init__(self, widget: QWidget, c: Cmdr, name: str = '') -> None:
         """Ctor for the QScintillaWrapper class."""
         super().__init__(c)
         self.baseClassName = 'QScintillaWrapper'
@@ -1369,7 +1370,7 @@ class QScintillaWrapper(QTextMixin):
 
     # @+node:ekr.20110605121601.18107: *3* QScintillaWrapper.WidgetAPI
     # @+node:ekr.20140901062324.18593: *4* QScintillaWrapper.delete
-    def delete(self, i: int, j: int = None) -> None:
+    def delete(self, i: int, j: int | None = None) -> None:
         """Delete s[i:j]"""
         w = self.widget
         if j is None:
@@ -1438,7 +1439,7 @@ class QScintillaWrapper(QTextMixin):
             addFlashCallback()
 
     # @+node:ekr.20140901062324.18595: *4* QScintillaWrapper.get
-    def get(self, i: int, j: int = None) -> str:
+    def get(self, i: int, j: int | None = None) -> str:
         # Fix the following two bugs by using vanilla code:
         # https://bugs.launchpad.net/leo-editor/+bug/979142
         # https://bugs.launchpad.net/leo-editor/+bug/971166
@@ -1551,7 +1552,7 @@ class QScintillaWrapper(QTextMixin):
         # w.update()
 
     # @+node:ekr.20110605121601.18114: *4* QScintillaWrapper.setInsertPoint
-    def setInsertPoint(self, i: int, s: str = None) -> None:
+    def setInsertPoint(self, i: int, s: str = '') -> None:
         """Set the insertion point in a QsciScintilla widget."""
         w = self.widget
         # w.SendScintilla(w.SCI_SETCURRENTPOS,i)
@@ -1559,7 +1560,7 @@ class QScintillaWrapper(QTextMixin):
         w.SendScintilla(w.SCI_SETSEL, i, i)
 
     # @+node:ekr.20110605121601.18115: *4* QScintillaWrapper.setSelectionRange
-    def setSelectionRange(self, i: int, j: int, insert: int = None, s: str = None) -> None:
+    def setSelectionRange(self, i: int, j: int, insert: int | None = None, s: str = '') -> None:
         """Set the selection range in a QsciScintilla widget."""
         w = self.widget
         if insert is None:
@@ -1655,7 +1656,7 @@ class QTextEditWrapper(QTextMixin):
     # @+node:ekr.20110605121601.18078: *3* QTextEditWrapper: High-level interface
     # These are all widget-dependent
     # @+node:ekr.20110605121601.18079: *4* QTextEditWrapper.delete (avoid call to setAllText)
-    def delete(self, i: int, j: int = None) -> None:
+    def delete(self, i: int, j: int | None = None) -> None:
         """QTextEditWrapper."""
         w = self.widget
         if j is None:
@@ -1779,13 +1780,14 @@ class QTextEditWrapper(QTextMixin):
         return self.widget.textCursor().hasSelection()
 
     # @+node:ekr.20110605121601.18089: *4* QTextEditWrapper.insert (avoid call to setAllText)
-    def insert(self, i: int, s: str) -> None:
+    def insert(self, i: int, s: str) -> int:
         """QTextEditWrapper."""
         w = self.widget
         cursor = w.textCursor()
         cursor.setPosition(i)
         cursor.insertText(s)
         w.setTextCursor(cursor)  # Bug fix: 2010/01/27
+        return i
 
     # @+node:ekr.20110605121601.18077: *4* QTextEditWrapper.leoMoveCursorHelper & helper
     def leoMoveCursorHelper(self, kind: str, extend: bool = False, linesPerPage: int = 15) -> None:
@@ -1952,7 +1954,7 @@ class QTextEditWrapper(QTextMixin):
         self.setSelectionRange(i=i, j=i, insert=i)
 
     # @+node:ekr.20110605121601.18096: *4* QTextEditWrapper.setSelectionRange
-    def setSelectionRange(self, i: int, j: int, insert: int = None) -> None:
+    def setSelectionRange(self, i: int, j: int, insert: int | None = None) -> None:
         """Set the selection range and the insert point."""
         c = self.c
         # Part 1
