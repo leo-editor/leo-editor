@@ -426,7 +426,7 @@ class AtFile:
 
         # Open the file.
         fileName, file_s = at.openFileForReading(fromString=fromString)
-        if file_s is None:  # #1798:
+        if not file_s:  # #1798: # strict_optional
             return False  # pragma: no cover
 
         # Set the time stamp.
@@ -3374,7 +3374,7 @@ class AtFile:
                     root.h = h
                     c.redraw()
                     return False
-        if message is None:
+        if not message:  # strict_optional
             message = (
                 f"{g.splitLongFileName(fileName)}\n"
                 f"{g.tr('already exists.')}\n"
