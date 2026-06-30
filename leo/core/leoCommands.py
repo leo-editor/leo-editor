@@ -1644,7 +1644,8 @@ class Commands:
         if getattr(c, '_currentPosition', None):
             # *Always* return a copy.
             return c._currentPosition.copy()  # type:ignore
-        # Returns a new copy of the root position or None
+        # Returns a new copy of the root position.
+        # In theory, c.rootPosition() could return None, but that shouldn't happen.
         return c.rootPosition()
 
     # For compatibility with old scripts...
@@ -2087,7 +2088,7 @@ class Commands:
         if c.hiddenRootNode.children:
             v = c.hiddenRootNode.children[0]
             return leoNodes.Position(v, childIndex=0, stack=None)
-        return None  # type:ignore #This should never happen.
+        return None  # type:ignore # This should never happen.
 
     # For compatibility with old scripts...
 
