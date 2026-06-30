@@ -8,17 +8,18 @@ from __future__ import annotations
 
 import textwrap
 from collections import OrderedDict
-from typing import Dict, TYPE_CHECKING
+from typing import cast, Any, Dict, TYPE_CHECKING
 
 from leo.core.leoQt import QtWidgets, Orientation
 from leo.core import leoGlobals as g
 
-QSplitter = QtWidgets.QSplitter
-QWidget = QtWidgets.QWidget
-
 if TYPE_CHECKING:  # pragma: no cover
+    from typing import TypeAlias  # Requires Python 3.12+, but works with Python 3.10+.
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
+
+    QSplitter: TypeAlias = QtWidgets.QSplitter
+    QWidget: TypeAlias = QtWidgets.QWidget
 # @-<< qt_layout: imports & annotations >>
 # @+<< qt_layout: declarations >>
 # @+node:tom.20241009141008.1: ** << qt_layout: declarations >>
@@ -464,7 +465,7 @@ VERTICAL_THIRDS_LAYOUT = {
 
 
 # @+node:tom.20240930095459.1: ** class LayoutCacheWidget
-class LayoutCacheWidget(QWidget):
+class LayoutCacheWidget(QtWidgets.QWidget):
     """
     Manage layouts, which may be defined by methods or by
     a layout data structure such as the following::
@@ -486,7 +487,7 @@ class LayoutCacheWidget(QWidget):
         super().__init__(parent)
         self.c = c
         self.setObjectName('leo-layout-cache')
-        self.layout_dict: Dict = None
+        self.layout_dict = cast(Dict, None)
 
         # maps splitter objectNames to their splitter object.
         self.created_splitter_dict: Dict[str, QWidget] = {}
@@ -584,8 +585,8 @@ class LayoutCacheWidget(QWidget):
     def find_splitter_by_name(self, name: str) -> QSplitter | None:
         """Return the splitter with the given objectName."""
 
-        def is_splitter(obj: object) -> bool:
-            return obj is not None and isinstance(obj, QSplitter)
+        def is_splitter(obj: Any) -> bool:
+            return isinstance(obj, QtWidgets.QSplitter)
 
         splitter = self.find_widget(name)
         if is_splitter(splitter):
@@ -606,11 +607,10 @@ class LayoutCacheWidget(QWidget):
     # @+node:tom.20240923194438.4: *4* LCW.find_widget_in_children
     def find_widget_in_children(self, name: str) -> QWidget | None:
         """Return a child widget with the given objectName."""
-        w: QWidget = None
         for kid in self.children():
             if kid.objectName() == name:
-                w = kid  # type: ignore [assignment]
-        return w
+                return kid  # type: ignore [assignment]
+        return None
 
     # @+node:ekr.20241027181931.1: *4* LCW.resize_pane
     def resize_pane(self, widget: QWidget, delta: int) -> None:
@@ -657,10 +657,8 @@ class LayoutCacheWidget(QWidget):
                 return
 
     # @+node:tom.20240923194438.6: *4* LCW.restoreFromLayout
-    def restoreFromLayout(self, layout: Dict = None) -> None:
-        self.layout_dict = layout
-        if layout is None:
-            layout = FALLBACK_LAYOUT
+    def restoreFromLayout(self, layout: Dict | None = None) -> None:
+        self.layout_dict = layout = layout or FALLBACK_LAYOUT  # strict_optional
         # @+<< initialize data structures >>
         # @+node:tom.20240923194438.7: *5* << initialize data structures >> restoreFromLayout
         ORIENTATIONS = layout['ORIENTATIONS']
@@ -689,7 +687,7 @@ class LayoutCacheWidget(QWidget):
         for _, name in SPLITTERS.items():
             splitter: QWidget = self.find_splitter_by_name(name)
             if splitter is None:
-                splitter = QSplitter(self)
+                splitter = QtWidgets.QSplitter(self)
                 splitter.setObjectName(name)
                 self.created_splitter_dict[name] = splitter
 
