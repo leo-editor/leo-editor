@@ -943,7 +943,7 @@ class Commands:
             If there is a language directive in effect, return it,
             otherwise use the file extension.
             """
-            return c.getLanguage(c.p) or LANGUAGE_EXTENSION_MAP.get(ext, None) or ''
+            return c.getLanguage(c.p) or LANGUAGE_EXTENSION_MAP.get(ext, '')
 
         # @+node:tom.20241014154415.10: *5* getProcessor
         def getProcessor(language: str, path: str, extension: str) -> str:
