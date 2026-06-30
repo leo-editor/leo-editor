@@ -23,7 +23,7 @@ from leo.core import leoGlobals as g
 
 # The leoCommands ctor now does most leo.core.leo* imports,
 # thereby breaking circular dependencies.
-from leo.core import leoNodes
+from leo.core.leoNodes import Position, VNode
 
 # @-<< leoCommands imports >>
 # @+<< leoCommands annotations >>
@@ -33,7 +33,6 @@ if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr  # pylint: disable=import-self
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoConfig import LocalConfigManager
-    from leo.core.leoNodes import Position, VNode
 
     # The following imports are required, but flake8 won't know that without the asserts.
 
@@ -339,7 +338,7 @@ class Commands:
     # @+node:ekr.20120217070122.10470: *5* c.initObjects
     def initObjects(self, gui: LeoGui) -> None:
         c = self
-        self.hiddenRootNode = leoNodes.VNode(context=c, gnx='hidden-root-vnode-gnx')
+        self.hiddenRootNode = VNode(context=c, gnx='hidden-root-vnode-gnx')
         self.hiddenRootNode.h = '<hidden root vnode>'
         # Create the gui frame.
         title = c.computeTabTitle()
@@ -1531,7 +1530,7 @@ class Commands:
         if stack is None:
             stack = []
 
-        if not isinstance(v, leoNodes.VNode):
+        if not isinstance(v, VNode):
             g.es_print(f"not a VNode: {v!r}")
             return  # Stop the generator.
 
@@ -1544,7 +1543,7 @@ class Commands:
         def stack2pos(stack: list[tuple]) -> Position:
             """Convert the stack to a position."""
             v, i = stack[-1]
-            return leoNodes.Position(v, i, stack[:-1])
+            return Position(v, i, stack[:-1])
 
         for v2 in set(v.parents):
             for i in allinds(v2, v):
@@ -1638,15 +1637,11 @@ class Commands:
     def currentPosition(self) -> Position:
         """
         Return a copy of the presently selected position or None.
-        So c.p.copy() is never necessary.
+        As a result, c.p.copy() is never necessary.
         """
         c = self
-        if getattr(c, '_currentPosition', None):
-            # *Always* return a copy.
-            return c._currentPosition.copy()  # type:ignore
-        # Returns a new copy of the root position.
-        # In theory, c.rootPosition() could return None, but that shouldn't happen.
-        return c.rootPosition()
+        # strict_optional
+        return c._currentPosition.copy() if c._currentPosition else c.rootPosition()
 
     # For compatibility with old scripts...
 
@@ -2083,16 +2078,11 @@ class Commands:
     _rootCount = 0
 
     def rootPosition(self) -> Position:
-        """
-        Return a new *copy* of the root position.
-
-        Note: the code returns None by default, but that should not happen in practice.
-        """
+        """Return a new *copy* of the root position."""
         c = self
-        if c.hiddenRootNode.children:
-            v = c.hiddenRootNode.children[0]
-            return leoNodes.Position(v, childIndex=0, stack=None)
-        return None  # type:ignore # This should never happen.
+        # strict_optional
+        v = c.hiddenRootNode.children[0] if c.hiddenRootNode.children else cast(VNode, None)
+        return Position(v=v, childIndex=0, stack=None)
 
     # For compatibility with old scripts...
 
@@ -2159,7 +2149,7 @@ class Commands:
                 immediate = parent
             else:
                 v, n = stack.pop()
-                p = leoNodes.Position(v, n, stack)
+                p = Position(v, n, stack)
                 positions.append(p)
         return positions
 
@@ -2185,7 +2175,7 @@ class Commands:
             # a VNode not in the tree
             return None
         v, n = stack.pop()
-        p = leoNodes.Position(v, n, stack)
+        p = Position(v, n, stack)
         return p
 
     # @+node:ekr.20090130135126.1: *4* c.Properties
@@ -5517,7 +5507,7 @@ class Commands:
                 op, p, n = z
                 ok = (
                     op in ('insert', 'delete')
-                    and isinstance(p, leoNodes.position)
+                    and isinstance(p, Position)  # strict_optional # Bug fix!
                     and isinstance(n, int)
                 )
                 if ok:
