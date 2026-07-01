@@ -1292,7 +1292,7 @@ class Position:
         """
         Return the parent VNode or p.v.hiddenRootNode.
         """
-        trace = True and not g.unitTesting
+        trace = True  ### and not g.unitTesting
         tag = 'p._parentVnode'
         p = self
         c = p.v.context
@@ -1303,9 +1303,11 @@ class Position:
                 if trace and v == p.v.context.hiddenRootNode:
                     g.print_unique_message(f"{tag} {'Hidden':9} {c.shortFileName()} {g.callers(2)}")
                 return v
+            return c.hiddenRootNode
         if trace:
             g.print_unique_message(f"{tag} {'Not found':9} {c.shortFileName()} {g.callers(2)}")
-        return c.hiddenRootNode  # PR 4767 # Bug fix! 2026/07/01
+        return None  ### Legacy.
+        # return c.hiddenRootNode  # PR 4767 #### Experimental!!!
 
     # @+node:ekr.20131219220412.16582: *4* p._relinkAsCloneOf
     def _relinkAsCloneOf(self, p2: Position) -> None:
