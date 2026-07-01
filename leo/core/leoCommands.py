@@ -5445,7 +5445,7 @@ class Commands:
                 op, p, n = z
                 ok = (
                     op in ('insert', 'delete')
-                    and isinstance(p, Position)  # #4744: bug fix.
+                    and isinstance(p, Position)  # PR #4767: bug fix.
                     and isinstance(n, int)
                 )
                 if ok:
