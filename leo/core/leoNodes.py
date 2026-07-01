@@ -11,7 +11,7 @@ import os
 import re
 import time
 import uuid
-from typing import Any, Generator, Iterable, TYPE_CHECKING
+from typing import cast, Any, Generator, Iterable, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import signal_manager
 
@@ -272,7 +272,7 @@ class Position:
         return not self.__eq__(p2)
 
     # @+node:ekr.20080416161551.190: *4*  p.__init__
-    def __init__(self, v: VNode, childIndex: int = 0, stack: list = None) -> None:
+    def __init__(self, v: VNode, childIndex: int = 0, stack: list | None = None) -> None:
         """Create a new position with the given childIndex and parent stack."""
         self._childIndex = childIndex
         self.v = v
@@ -560,7 +560,9 @@ class Position:
                 p.moveToThreadNext()
 
     # @+node:ekr.20161120163203.1: *4* p.nearest_unique_roots (aka p.nearest)
-    def nearest_unique_roots(self, copy: bool = True, predicate: Callable = None) -> Generator:
+    def nearest_unique_roots(
+        self, copy: bool = True, predicate: Callable | None = None
+    ) -> Generator:
         """
         A generator yielding all unique root positions "near" p1 = self that
         satisfy the given predicate. p.isAnyAtFileNode is the default
@@ -1286,10 +1288,9 @@ class Position:
         return p
 
     # @+node:ekr.20080416161551.212: *4* p._parentVnode
-    def _parentVnode(self) -> VNode | None:
+    def _parentVnode(self) -> VNode:
         """
-        Return the parent VNode.
-        Return the hiddenRootNode if there is no other parent.
+        Return the parent VNode or p.v.hiddenRootNode.
         """
         p = self
         if p.v:
@@ -1297,8 +1298,7 @@ class Position:
             if data:
                 v, junk = data
                 return v
-            return p.v.context.hiddenRootNode
-        return None  # pragma: no cover
+        return p.v.context.hiddenRootNode  # PR 4767 # Bug fix! 2026/07/01
 
     # @+node:ekr.20131219220412.16582: *4* p._relinkAsCloneOf
     def _relinkAsCloneOf(self, p2: Position) -> None:
@@ -2178,7 +2178,7 @@ class VNode:
         self.children: list[VNode] = []  # Ordered list of all children of this node.
         self.parents: list[VNode] = []  # Unordered list of all parents of this node.
         # The immutable fileIndex (gnx) for this node. Set below.
-        self.fileIndex: str | None = None
+        self.fileIndex = cast(str, None)
         self.iconVal = 0  # The present value of the node's icon.
         self.statusBits = 0  # status bits
 
@@ -2664,7 +2664,7 @@ class VNode:
         g.contentModifiedSet.add(self)
 
     # @+node:ekr.20260622103203.1: *4* v.findAllAncestorAtFileNodes
-    def findAllAncestorAtFileNodes(self, *, to_do_set: set[VNode] = None) -> list[VNode]:
+    def findAllAncestorAtFileNodes(self, *, to_do_set: set[VNode] | None = None) -> list[VNode]:
         """
         Return a list of all @<file> nodes containing this VNode.
 
@@ -2739,7 +2739,7 @@ class VNode:
             pass
 
     # @+node:ekr.20191213161023.1: *4* v.setAllAncestorAtFileNodesDirty
-    def setAllAncestorAtFileNodesDirty(self, *, to_do_set: set[VNode] = None) -> None:
+    def setAllAncestorAtFileNodesDirty(self, *, to_do_set: set[VNode] | None = None) -> None:
         """Set all ancestor @<file> nodes dirty."""
         v = self
         for v2 in v.findAllAncestorAtFileNodes(to_do_set=to_do_set):
