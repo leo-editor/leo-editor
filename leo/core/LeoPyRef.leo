@@ -184,6 +184,7 @@
 <v t="ekr.20240227064614.1"><vh>@file ../../pyproject.toml</vh></v>
 <v t="ekr.20240406013108.1"><vh>@file ../../ruff.toml</vh></v>
 <v t="ekr.20240201175949.1"><vh>@file ../../requirements.txt</vh></v>
+<v t="axk.20260702120000.1"><vh>@file ../../make_macos_application.py</vh></v>
 <v t="ekr.20181014073705.1"><vh>@file ../../run_pytest_tests.py</vh></v>
 <v t="ekr.20181009072707.1"><vh>@file ../../run_travis_unit_tests.py</vh></v>
 <v t="ekr.20150304130753.4"><vh>leo-viewer/leo_to_html.xsl</vh></v>
