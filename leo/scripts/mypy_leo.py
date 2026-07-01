@@ -23,11 +23,36 @@ print(os.path.basename(__file__))
 leo_editor_dir = os.path.abspath(os.path.join(__file__, '..', '..', '..'))
 os.chdir(leo_editor_dir)
 
-args = ' '.join(sys.argv[1:])
+# args = ' '.join(sys.argv[1:])
 python = sys.executable
-if 1:  # Quick.
-    command = rf"{python} -m mypy leo"
-else:  # Safe.
-    command = rf"{python} -m mypy --no-incremental leo"
+files = [
+    # PR #4766. Require strict optional only for leoNodes.py.
+    'leo/core/leoCommands.py',  # strict_optional = False
+    'leo/core/leoNodes.py',     # strict_optional = True: 25 errors.
+    # To be checked in other PRs...
+    #   'leo/core/leoApp.py',
+    #   'leo/core/leoAtFile.py',
+    #   'leo/core/leoKeys.py',
+    #   'leo/core/leoGlobals.py',
+    #   'leo/plugins/mod_scripting.py',
+    #   'leo/plugins/qt_commands.py',
+    #   'leo/plugins/qt_frame.py',
+    #   'leo/plugins/qt_gui.py',
+    #   'leo/plugins/qt_idle_time.py',
+    #   'leo/plugins/qt_layout.py',
+    #   'leo/plugins/qt_text.py',
+    #   'leo/plugins/qt_tree.py',
+    #   'leo/plugins/viewrendered.py',
+    #   'leo/plugins/viewrendered3.py',
+]  # fmt: skip
+
+# The only way to enable strict_optional is within .mypy.ini.
+incremental = False
+follow = False
+incremental_arg = '' if incremental else '--no-incremental'
+follow_kind = 'normal' if follow else 'skip'
+args = f"--follow-imports={follow_kind} {incremental_arg}"
+files = ' '.join(files)
+command = rf"{python} -m mypy {args} {files}"
 subprocess.Popen(command, shell=True).communicate()
 # @-leo
