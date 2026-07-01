@@ -1292,12 +1292,17 @@ class Position:
         """
         Return the parent VNode or p.v.hiddenRootNode.
         """
+        trace = True and not g.unitTesting
         p = self
         if p.v:
             data = p.stack and p.stack[-1]
             if data:
                 v, junk = data
+                if trace:
+                    g.print_unique_message(f"    FOUND: p._parentVnode: {g.callers(2)}")
                 return v
+        if trace:
+            g.print_unique_message(f"NOT FOUND: p._parentVnode: {g.callers(2)}")
         return p.v.context.hiddenRootNode  # PR 4767 # Bug fix! 2026/07/01
 
     # @+node:ekr.20131219220412.16582: *4* p._relinkAsCloneOf
