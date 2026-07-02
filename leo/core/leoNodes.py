@@ -953,7 +953,7 @@ class Position:
     def isAncestorOf(self, p2: Position) -> bool:
         """Return True if p is one of the direct ancestors of p2."""
         p = self
-        ### assert p.v  # Silence mypy warning that p.v may be None.
+        assert p.v  # Silence mypy warning that p.v may be None.
         c = p.v.context
         if not c.positionExists(p2):
             return False
@@ -968,6 +968,7 @@ class Position:
     # @+node:ekr.20040306215056: *4* p.isCloned
     def isCloned(self) -> bool:
         p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
         return p.v.isCloned()
 
     # @+node:ekr.20040307104131.2: *4* p.isRoot
@@ -1076,86 +1077,138 @@ class Position:
     # @+node:ekr.20040306210951: *4* p.VNode proxies
     # @+node:ekr.20040306211032: *5* p.Comparisons
     def anyAtFileNodeName(self) -> str:
-        return self.v.anyAtFileNodeName()
+        p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
+        return p.v.anyAtFileNodeName()
 
     def atAutoNodeName(self) -> str:
-        return self.v.atAutoNodeName()
+        p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
+        return p.v.atAutoNodeName()
 
     def atCleanNodeName(self) -> str:
-        return self.v.atCleanNodeName()
+        p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
+        return p.v.atCleanNodeName()
 
     def atEditNodeName(self) -> str:
-        return self.v.atEditNodeName()
+        p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
+        return p.v.atEditNodeName()
 
     def atFileNodeName(self) -> str:
-        return self.v.atFileNodeName()
+        p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
+        return p.v.atFileNodeName()
 
     def atLeoNodeName(self) -> str:
-        return self.v.atLeoNodeName()
+        p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
+        return p.v.atLeoNodeName()
 
     def atNoSentinelsFileNodeName(self) -> str:
-        return self.v.atNoSentinelsFileNodeName()
+        p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
+        return p.v.atNoSentinelsFileNodeName()
 
     def atShadowFileNodeName(self) -> str:
-        return self.v.atShadowFileNodeName()
+        p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
+        return p.v.atShadowFileNodeName()
 
     def atSilentFileNodeName(self) -> str:
-        return self.v.atSilentFileNodeName()
+        p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
+        return p.v.atSilentFileNodeName()
 
     def atThinFileNodeName(self) -> str:
-        return self.v.atThinFileNodeName()
+        p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
+        return p.v.atThinFileNodeName()
 
     # New names, less confusing
     atNoSentFileNodeName = atNoSentinelsFileNodeName
     atAsisFileNodeName = atSilentFileNodeName
 
     def isAnyAtFileNode(self) -> bool:
-        return self.v.isAnyAtFileNode()
+        p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
+        return p.v.isAnyAtFileNode()
 
     def isAtAllNode(self) -> bool:
-        return self.v.isAtAllNode()
+        p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
+        return p.v.isAtAllNode()
 
     def isAtAutoNode(self) -> bool:
-        return self.v.isAtAutoNode()
+        p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
+        return p.v.isAtAutoNode()
 
     def isAtAutoRstNode(self) -> bool:
-        return self.v.isAtAutoRstNode()
+        p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
+        return p.v.isAtAutoRstNode()
 
     def isAtCleanNode(self) -> bool:
-        return self.v.isAtCleanNode()
+        p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
+        return p.v.isAtCleanNode()
 
     def isAtEditNode(self) -> bool:
-        return self.v.isAtEditNode()
+        p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
+        return p.v.isAtEditNode()
 
     def isAtFileNode(self) -> bool:
-        return self.v.isAtFileNode()
+        p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
+        return p.v.isAtFileNode()
 
     def isAtJupytextNode(self) -> bool:
-        return self.v.isAtJupytextNode()
+        p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
+        return p.v.isAtJupytextNode()
 
     def isAtIgnoreNode(self) -> bool:
-        return self.v.isAtIgnoreNode()
+        p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
+        return p.v.isAtIgnoreNode()
 
     def isAtLeoNode(self) -> bool:
-        return self.v.isAtLeoNode()
+        p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
+        return p.v.isAtLeoNode()
 
     def isAtNoSentinelsFileNode(self) -> bool:
-        return self.v.isAtNoSentinelsFileNode()
+        p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
+        return p.v.isAtNoSentinelsFileNode()
 
     def isAtOthersNode(self) -> bool:
-        return self.v.isAtOthersNode()
+        p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
+        return p.v.isAtOthersNode()
 
     def isAtRstFileNode(self) -> bool:
-        return self.v.isAtRstFileNode()
+        p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
+        return p.v.isAtRstFileNode()
 
     def isAtSilentFileNode(self) -> bool:
-        return self.v.isAtSilentFileNode()
+        p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
+        return p.v.isAtSilentFileNode()
 
     def isAtShadowFileNode(self) -> bool:
-        return self.v.isAtShadowFileNode()
+        p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
+        return p.v.isAtShadowFileNode()
 
     def isAtThinFileNode(self) -> bool:
-        return self.v.isAtThinFileNode()
+        p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
+        return p.v.isAtThinFileNode()
 
     # New names, less confusing:
     isAtNoSentFileNode = isAtNoSentinelsFileNode
@@ -1164,7 +1217,9 @@ class Position:
     # Utilities.
 
     def matchHeadline(self, pattern: str) -> bool:
-        return self.v.matchHeadline(pattern)
+        p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
+        return p.v.matchHeadline(pattern)
 
     # @+node:ekr.20040306220230: *5* p.Headline & body strings
     def bodyString(self) -> str:
@@ -1582,8 +1637,7 @@ class Position:
     def copy(self) -> Position:
         """ "Return an independent copy of a position."""
         p = self
-        ### Something weird is happening.
-        ### assert p.v  # Silence mypy warning that p.v may be None.
+        # Don't assert p.v here.
         return Position(p.v, p._childIndex, p.stack)
 
     # @+node:ekr.20040303175026.9: *4* p.copyTreeAfter, copyTreeTo
