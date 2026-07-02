@@ -774,9 +774,11 @@ class Position:
         Not used in Leo's core or official plugins.
         """
         p = self
-        c = p.v.context
-        file_part = c.fileName()
-        return 'unl:gnx:' + f"//{file_part}#{self.gnx}"
+        if v := p.v:
+            c = v.context
+            file_part = c.fileName()
+            return 'unl:gnx:' + f"//{file_part}#{self.gnx}"
+        raise ValueError(f"findRootPosition: empty p. {g.callers()}")
 
     # @+node:tbrown.20111010104549.26758: *5* p.get_full_legacy_UNL
     def get_full_legacy_UNL(self) -> str:
@@ -786,9 +788,12 @@ class Position:
         Not used in Leo's core or official plugins.
         """
         p = self
-        c = p.v.context
-        path_part = '-->'.join(list(reversed([z.h for z in self.self_and_parents(copy=False)])))
-        return 'unl:' + f"//{c.fileName()}#{path_part}"
+        if v := p.v:
+            c = v.context
+            path_part = '-->'.join(list(reversed([z.h for z in self.self_and_parents(copy=False)])))
+            return 'unl:' + f"//{c.fileName()}#{path_part}"
+
+        raise ValueError(f"findRootPosition: empty p. {g.callers()}")
 
     # @+node:ekr.20230628173542.1: *5* p.get_legacy_UNL
     def get_legacy_UNL(self) -> str:
@@ -800,11 +805,13 @@ class Position:
         LeoTree.set_status_line will call this method if legacy unls are in effect.
         """
         p = self
-        c = p.v.context
-        path_part = '-->'.join(list(reversed([z.h for z in self.self_and_parents()])))
-        full = c.config.getBool('full-unl-paths', default=False)
-        file_part = c.fileName() if full else os.path.basename(c.fileName())
-        return 'unl:' + f"//{file_part}#{path_part}"
+        if v := p.v:
+            c = v.context
+            path_part = '-->'.join(list(reversed([z.h for z in self.self_and_parents()])))
+            full = c.config.getBool('full-unl-paths', default=False)
+            file_part = c.fileName() if full else os.path.basename(c.fileName())
+            return 'unl:' + f"//{file_part}#{path_part}"
+        raise ValueError(f"findRootPosition: empty p. {g.callers()}")
 
     # @+node:ekr.20230628175148.1: *5* p.get_short_gnx_UNL
     def get_short_gnx_UNL(self) -> str:
@@ -814,9 +821,11 @@ class Position:
         Not used in Leo's core or official plugins.
         """
         p = self
-        c = p.v.context
-        file_part = os.path.basename(c.fileName())
-        return 'unl:gnx:' + f"//{file_part}#{self.gnx}"
+        if v := p.v:
+            c = v.context
+            file_part = os.path.basename(c.fileName())
+            return 'unl:gnx:' + f"//{file_part}#{self.gnx}"
+        raise ValueError(f"findRootPosition: empty p. {g.callers()}")
 
     # @+node:ekr.20230628174804.1: *5* p.get_short_legacy_UNL
     def get_short_legacy_UNL(self) -> str:
@@ -826,10 +835,12 @@ class Position:
         Not used in Leo's core or official plugins.
         """
         p = self
-        c = p.v.context
-        file_part = os.path.basename(c.fileName())
-        path_part = '-->'.join(list(reversed([z.h for z in self.self_and_parents(copy=False)])))
-        return 'unl:' + f"//{file_part}#{path_part}"
+        if v := p.v:
+            c = v.context
+            file_part = os.path.basename(c.fileName())
+            path_part = '-->'.join(list(reversed([z.h for z in self.self_and_parents(copy=False)])))
+            return 'unl:' + f"//{file_part}#{path_part}"
+        raise ValueError(f"findRootPosition: empty p. {g.callers()}")
 
     # @+node:ekr.20230624171452.1: *5* p.get_UNL
     def get_UNL(self) -> str:
@@ -843,10 +854,12 @@ class Position:
         LeoTree.set_status_line calls this method if gnx-based unls are in effect.
         """
         p = self
-        c = p.v.context
-        full = c.config.getBool('full-unl-paths', default=False)
-        file_part = c.fileName() if full else os.path.basename(c.fileName())
-        return 'unl:gnx:' + f"//{file_part}#{self.gnx}"
+        if v := p.v:
+            c = v.context
+            full = c.config.getBool('full-unl-paths', default=False)
+            file_part = c.fileName() if full else os.path.basename(c.fileName())
+            return 'unl:gnx:' + f"//{file_part}#{self.gnx}"
+        raise ValueError(f"findRootPosition: empty p. {g.callers()}")
 
     # @+node:ekr.20031218072017.915: *4* p.getX & VNode compatibility traversal routines
     # These methods are useful abbreviations.
