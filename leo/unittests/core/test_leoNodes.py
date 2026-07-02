@@ -194,7 +194,7 @@ class TestNodes(LeoUnitTest):
             ('self_and_parents',     root.firstChild().self_and_parents),
             ('self_and_subtree',     root.self_and_subtree),
             ('following_siblings',   root.following_siblings),
-            ('parents',              root.firstChild().firstChild().parents),
+            ('parents',              root.parents),
             ('unique_subtree',       root.unique_subtree),
         )  # fmt: skip
         for kind, generator in table:

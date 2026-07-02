@@ -1668,7 +1668,7 @@ class Position:
     def copy(self) -> Position:
         """ "Return an independent copy of a position."""
         p = self
-        # Don't assert p.v here.
+        assert p.v, g.callers()  # Silence mypy warning that p.v may be None.
         return Position(p.v, p._childIndex, p.stack)
 
     # @+node:ekr.20040303175026.9: *4* p.copyTreeAfter, copyTreeTo
