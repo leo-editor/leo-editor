@@ -1223,29 +1223,45 @@ class Position:
 
     # @+node:ekr.20040306220230: *5* p.Headline & body strings
     def bodyString(self) -> str:
-        return self.v.bodyString()
+        p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
+        return p.v.bodyString()
 
     def headString(self) -> str:
-        return self.v.headString()
+        p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
+        return p.v.headString()
 
     # @+node:ekr.20040306214401: *5* p.Status bits
     def isDirty(self) -> bool:
+        p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
         return self.v.isDirty()
 
     def isMarked(self) -> bool:
-        return self.v.isMarked()
+        p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
+        return p.v.isMarked()
 
     def isOrphan(self) -> bool:
-        return self.v.isOrphan()
+        p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
+        return p.v.isOrphan()
 
     def isSelected(self) -> bool:
-        return self.v.isSelected()
+        p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
+        return p.v.isSelected()
 
     def isVisited(self) -> bool:
-        return self.v.isVisited()
+        p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
+        return p.v.isVisited()
 
     def status(self) -> int:
-        return self.v.status()
+        p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
+        return p.v.status()
 
     # @+node:ekr.20080423062035.1: *3* p.Low level methods
     # These methods are only for the use of low-level code
