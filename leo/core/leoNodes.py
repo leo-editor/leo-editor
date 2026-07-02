@@ -137,7 +137,7 @@ class NodeIndices:
         return gnx
 
     # @+node:ekr.20150322134954.1: *3* ni.new_vnode_helper
-    def new_vnode_helper(self, c: Cmdr, gnx: str, v: VNode) -> None:
+    def new_vnode_helper(self, c: Cmdr, gnx: str | None, v: VNode) -> None:
         """Handle all gnx-related tasks for VNode.__init__."""
         ni = self
         # Special case for the c.hiddenRootNode. This eliminates a hack in c.initObjects.
@@ -2341,6 +2341,7 @@ class VNode:
         #   def allocate_vnode(c,gnx):
         #       v = VNode(c)
         #       g.app.nodeIndices.new_vnode_helper(c,gnx,v)
+        assert g.app.nodeIndices  # Silence mypy warning that g.app may be None.
         g.app.nodeIndices.new_vnode_helper(context, gnx, self)
         assert self.fileIndex, g.callers()
 

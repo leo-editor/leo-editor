@@ -47,8 +47,8 @@ files = [
 ]  # fmt: skip
 
 # The only way to enable strict_optional is within .mypy.ini.
-incremental = False
-follow = False
+incremental = True
+follow = True
 incremental_arg = '' if incremental else '--no-incremental'
 follow_kind = 'normal' if follow else 'skip'
 args = f"--follow-imports={follow_kind} {incremental_arg}"
