@@ -792,7 +792,6 @@ class Position:
             c = v.context
             path_part = '-->'.join(list(reversed([z.h for z in self.self_and_parents(copy=False)])))
             return 'unl:' + f"//{c.fileName()}#{path_part}"
-
         raise ValueError(f"findRootPosition: empty p. {g.callers()}")
 
     # @+node:ekr.20230628173542.1: *5* p.get_legacy_UNL
@@ -928,13 +927,8 @@ class Position:
 
     def hasNext(self) -> bool:
         p = self
-        try:
-            parent_v = p._parentVnode()  # PR #4767 # May throw ValueError
-            return bool(p.v and parent_v and p._childIndex + 1 < len(parent_v.children))
-        except Exception:  # pragma: no cover
-            g.trace('*** Unexpected exception')
-            g.es_exception()
-            return False
+        parent_v = p._parentVnode()  # PR #4767 # May throw ValueError
+        return bool(p.v and parent_v and p._childIndex + 1 < len(parent_v.children))
 
     def hasParent(self) -> bool:
         p = self
@@ -943,7 +937,7 @@ class Position:
     def hasThreadBack(self) -> bool:
         p = self
         # Much cheaper than computing the actual value.
-        return bool(p.hasParent() or p.hasBack())
+        return p.hasParent() or p.hasBack()
 
     # @+node:ekr.20080416161551.193: *5* p.hasThreadNext (the only complex hasX method)
     def hasThreadNext(self) -> bool:
@@ -1336,16 +1330,8 @@ class Position:
         if parent_v.children[p._childIndex] == v:
             parent_v.children[p._childIndex] = v2
             v2.parents.append(parent_v)
-            # p.v no longer truly exists.
-            # p.v = p2.v
-        else:  # pragma: no cover
-            g.internalError(
-                'parent_v.children[childIndex] != v',
-                p,
-                parent_v.children,
-                p._childIndex,
-                v,
-            )
+            return
+        raise ValueError(f"_relinkAsCloneOf parent_v: {parent_v!r} callers: {g.callers()}")
 
     # @+node:ekr.20080416161551.217: *4* p._unlink
     def _unlink(self) -> None:
@@ -2052,7 +2038,10 @@ class Position:
     # @+node:ekr.20040315034158: *4* p.setBodyString & setHeadString
     def setBodyString(self, s: bytes | str) -> None:
         p = self
-        return p.v.setBodyString(s)
+        if v := p.v:
+            v.setBodyString(s)
+            return
+        raise ValueError(f"p.setBodyString: empty p. {g.callers()}")
 
     initBodyString = setBodyString
     setTnodeText = setBodyString
