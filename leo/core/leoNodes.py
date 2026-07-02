@@ -1412,8 +1412,10 @@ class Position:
         n = p._childIndex
         parent_v = p._parentVnode()  # PR #4767 # May throw ValueError
         child = p.v
+        # Silence mypy warnings...
         assert p.v
         assert parent_v
+        assert child
         # Delete the child.
         if 0 <= n < len(parent_v.children) and parent_v.children[n] == child:
             # This is the only call to v._cutlink.
@@ -1597,6 +1599,7 @@ class Position:
             else:
                 p.moveToParent()  # Same as p.moveToThreadBack()
             if p:
+                assert p  # Silence mypy warning that p.v may be None.
                 if limit:
                     done, val = self.checkVisBackLimit(limit, limitIsVisible, p)
                     if done:
@@ -1613,6 +1616,7 @@ class Position:
         p: Position,
     ) -> tuple[bool, Position | None]:
         """Return done, p or None"""
+        assert p.v  # Silence mypy warning that p.v may be None.
         c = p.v.context
         if limit == p:
             if limitIsVisible and p.isVisible(c):

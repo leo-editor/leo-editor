@@ -2055,7 +2055,7 @@ class Commands:
         return False
 
     # @+node:ekr.20070609122713: *5* c.visLimit
-    def visLimit(self) -> tuple[None, None] | tuple[Position, bool]:
+    def visLimit(self) -> tuple[Position | None, bool]:
         """
         Return the topmost visible node.
         This is affected by chapters and hoists.
@@ -2067,7 +2067,7 @@ class Commands:
             p = bunch.p
             limitIsVisible = not cc or not p.h.startswith('@chapter')
             return p, limitIsVisible
-        return None, None
+        return None, False
 
     # @+node:tbrown.20091206142842.10296: *5* c.vnode2allPositions
     def vnode2allPositions(self, v: VNode) -> list[Position]:
