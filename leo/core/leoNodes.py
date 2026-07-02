@@ -1836,6 +1836,7 @@ class Position:
     # @+node:ekr.20040310062332.1: *4* p.invalidOutline
     def invalidOutline(self, message: str) -> None:  # pragma: no cover
         p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
         if p.hasParent():
             node = p.parent()
         else:
@@ -1888,6 +1889,7 @@ class Position:
     def promote(self) -> None:
         """A low-level promote helper."""
         p = self  # Do NOT copy the position.
+        assert p.v  # Silence mypy warning that p.v may be None.
         parent_v = p._parentVnode()  # PR #4767 # May throw ValueError
         children = p.v.children
         # Add the children to parent_v's children.
