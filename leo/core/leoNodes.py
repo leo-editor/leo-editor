@@ -159,7 +159,7 @@ class NodeIndices:
             g.error("scanGnx: unexpected index type:", type(s), '', s)
             return None, None, None
         s = s.strip()
-        theId, t, n = None, None, None
+        theId, t, n = '', '', ''  # PR #4767
         i, theId = g.skip_to_char(s, 0, '.')
         if g.match(s, i, '.'):
             i, t = g.skip_to_char(s, i + 1, '.')
@@ -221,7 +221,7 @@ class NodeIndices:
             return  # the gnx is not well formed or n in ('',None)
         if id_ == self.userId and t == self.timeString:
             try:
-                n2 = int(n)
+                n2 = int(n)  # type:ignore
                 if n2 > self.lastIndex:
                     self.lastIndex = n2
                     if not g.unitTesting:
@@ -348,6 +348,8 @@ class Position:
     def archive(self) -> dict[str, Value] | None:
         """Return a json-like archival dictionary for p/v.unarchive."""
         p = self
+        if not p.v:
+            return None  # PR #4767
         c = p.v.context
 
         # Create an *initial* list of all vnodes in p.self_and_subtree.
@@ -723,7 +725,8 @@ class Position:
 
     # @+node:ekr.20040323160302: *5* p.directParents
     def directParents(self) -> list[VNode]:
-        return self.v.directParents()
+        p = self
+        return p.v.directParents() if p.v else []
 
     # @+node:ekr.20040306214240.3: *5* p.hasChildren & p.numberOfChildren
     def hasChildren(self) -> bool:

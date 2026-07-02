@@ -1140,9 +1140,9 @@ class TestNodeIndices(LeoUnitTest):
     def test_scanGnx(self):
         ni = g.app.nodeIndices
         for s, id1, t1, n1 in (
-            ('ekr.123', 'ekr', '123', None),
+            ('ekr.123', 'ekr', '123', ''),
             ('ekr.456.2', 'ekr', '456', '2'),
-            ('', g.app.leoID, None, None),
+            ('', g.app.leoID, '', ''),
         ):
             id2, t2, n2 = ni.scanGnx(s)
             self.assertEqual(id1, id2)
