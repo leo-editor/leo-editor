@@ -758,8 +758,10 @@ class Position:
     def findRootPosition(self) -> Position:
         # 2011/02/25: always use c.rootPosition
         p = self
-        c = p.v.context
-        return c.rootPosition()
+        if v := p.v:
+            c = v.context
+            return c.rootPosition()
+        raise ValueError(f"findRootPosition: empty p. {g.callers()}")
 
     # @+node:ekr.20230628173526.1: *4* p.get_UNL and related methods
     # All unls must contain a file part: f"//{file-name}#"
