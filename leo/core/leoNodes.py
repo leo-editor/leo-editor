@@ -635,6 +635,8 @@ class Position:
     def self_and_parents(self, copy: bool = True) -> Generator:
         """Yield p and all parent positions of p."""
         p = self
+        if not p:  # PR #4767 # p.v may be None.
+            return
         p = p.copy()
         while p:
             yield p.copy() if copy else p
@@ -756,12 +758,10 @@ class Position:
 
     # @+node:ekr.20060920203352: *4* p.findRootPosition
     def findRootPosition(self) -> Position:
-        # 2011/02/25: always use c.rootPosition
         p = self
-        if v := p.v:
-            c = v.context
-            return c.rootPosition()
-        raise ValueError(f"findRootPosition: empty p. {g.callers()}")
+        assert p.v  # Silence mypy warning that p.v may be None.
+        c = p.v.context
+        return c.rootPosition()
 
     # @+node:ekr.20230628173526.1: *4* p.get_UNL and related methods
     # All unls must contain a file part: f"//{file-name}#"
@@ -774,11 +774,10 @@ class Position:
         Not used in Leo's core or official plugins.
         """
         p = self
-        if v := p.v:
-            c = v.context
-            file_part = c.fileName()
-            return 'unl:gnx:' + f"//{file_part}#{self.gnx}"
-        raise ValueError(f"findRootPosition: empty p. {g.callers()}")
+        assert p.v  # Silence mypy warning that p.v may be None.
+        c = p.v.context
+        file_part = c.fileName()
+        return 'unl:gnx:' + f"//{file_part}#{self.gnx}"
 
     # @+node:tbrown.20111010104549.26758: *5* p.get_full_legacy_UNL
     def get_full_legacy_UNL(self) -> str:
@@ -788,11 +787,10 @@ class Position:
         Not used in Leo's core or official plugins.
         """
         p = self
-        if v := p.v:
-            c = v.context
-            path_part = '-->'.join(list(reversed([z.h for z in self.self_and_parents(copy=False)])))
-            return 'unl:' + f"//{c.fileName()}#{path_part}"
-        raise ValueError(f"findRootPosition: empty p. {g.callers()}")
+        assert p.v  # Silence mypy warning that p.v may be None.
+        c = p.v.context
+        path_part = '-->'.join(list(reversed([z.h for z in self.self_and_parents(copy=False)])))
+        return 'unl:' + f"//{c.fileName()}#{path_part}"
 
     # @+node:ekr.20230628173542.1: *5* p.get_legacy_UNL
     def get_legacy_UNL(self) -> str:
@@ -804,13 +802,12 @@ class Position:
         LeoTree.set_status_line will call this method if legacy unls are in effect.
         """
         p = self
-        if v := p.v:
-            c = v.context
-            path_part = '-->'.join(list(reversed([z.h for z in self.self_and_parents()])))
-            full = c.config.getBool('full-unl-paths', default=False)
-            file_part = c.fileName() if full else os.path.basename(c.fileName())
-            return 'unl:' + f"//{file_part}#{path_part}"
-        raise ValueError(f"findRootPosition: empty p. {g.callers()}")
+        assert p.v  # Silence mypy warning that p.v may be None.
+        c = p.v.context
+        path_part = '-->'.join(list(reversed([z.h for z in self.self_and_parents()])))
+        full = c.config.getBool('full-unl-paths', default=False)
+        file_part = c.fileName() if full else os.path.basename(c.fileName())
+        return 'unl:' + f"//{file_part}#{path_part}"
 
     # @+node:ekr.20230628175148.1: *5* p.get_short_gnx_UNL
     def get_short_gnx_UNL(self) -> str:
@@ -820,11 +817,10 @@ class Position:
         Not used in Leo's core or official plugins.
         """
         p = self
-        if v := p.v:
-            c = v.context
-            file_part = os.path.basename(c.fileName())
-            return 'unl:gnx:' + f"//{file_part}#{self.gnx}"
-        raise ValueError(f"findRootPosition: empty p. {g.callers()}")
+        assert p.v  # Silence mypy warning that p.v may be None.
+        c = p.v.context
+        file_part = os.path.basename(c.fileName())
+        return 'unl:gnx:' + f"//{file_part}#{self.gnx}"
 
     # @+node:ekr.20230628174804.1: *5* p.get_short_legacy_UNL
     def get_short_legacy_UNL(self) -> str:
@@ -834,12 +830,11 @@ class Position:
         Not used in Leo's core or official plugins.
         """
         p = self
-        if v := p.v:
-            c = v.context
-            file_part = os.path.basename(c.fileName())
-            path_part = '-->'.join(list(reversed([z.h for z in self.self_and_parents(copy=False)])))
-            return 'unl:' + f"//{file_part}#{path_part}"
-        raise ValueError(f"findRootPosition: empty p. {g.callers()}")
+        assert p.v  # Silence mypy warning that p.v may be None.
+        c = p.v.context
+        file_part = os.path.basename(c.fileName())
+        path_part = '-->'.join(list(reversed([z.h for z in self.self_and_parents(copy=False)])))
+        return 'unl:' + f"//{file_part}#{path_part}"
 
     # @+node:ekr.20230624171452.1: *5* p.get_UNL
     def get_UNL(self) -> str:
@@ -853,12 +848,11 @@ class Position:
         LeoTree.set_status_line calls this method if gnx-based unls are in effect.
         """
         p = self
-        if v := p.v:
-            c = v.context
-            full = c.config.getBool('full-unl-paths', default=False)
-            file_part = c.fileName() if full else os.path.basename(c.fileName())
-            return 'unl:gnx:' + f"//{file_part}#{self.gnx}"
-        raise ValueError(f"findRootPosition: empty p. {g.callers()}")
+        assert p.v  # Silence mypy warning that p.v may be None.
+        c = p.v.context
+        full = c.config.getBool('full-unl-paths', default=False)
+        file_part = c.fileName() if full else os.path.basename(c.fileName())
+        return 'unl:gnx:' + f"//{file_part}#{self.gnx}"
 
     # @+node:ekr.20031218072017.915: *4* p.getX & VNode compatibility traversal routines
     # These methods are useful abbreviations.
@@ -964,6 +958,7 @@ class Position:
     def isAncestorOf(self, p2: Position) -> bool:
         """Return True if p is one of the direct ancestors of p2."""
         p = self
+        ### assert p.v  # Silence mypy warning that p.v may be None.
         c = p.v.context
         if not c.positionExists(p2):
             return False
@@ -1386,6 +1381,7 @@ class Position:
         p = self
         n = p._childIndex
         parent_v = p._parentVnode()  # PR #4767 # May throw ValueError
+
         # Do not assume n is in range: this is used by positionExists.
         if parent_v and p.v and 0 < n <= len(parent_v.children):
             p._childIndex -= 1
@@ -1590,7 +1586,10 @@ class Position:
     # @+node:ekr.20040117171654: *4* p.copy
     def copy(self) -> Position:
         """ "Return an independent copy of a position."""
-        return Position(self.v, self._childIndex, self.stack)
+        p = self
+        ### Something weird is happening.
+        ### assert p.v  # Silence mypy warning that p.v may be None.
+        return Position(p.v, p._childIndex, p.stack)
 
     # @+node:ekr.20040303175026.9: *4* p.copyTreeAfter, copyTreeTo
     # These used by unit tests, by the group_operations plugin,
@@ -2038,10 +2037,8 @@ class Position:
     # @+node:ekr.20040315034158: *4* p.setBodyString & setHeadString
     def setBodyString(self, s: bytes | str) -> None:
         p = self
-        if v := p.v:
-            v.setBodyString(s)
-            return
-        raise ValueError(f"p.setBodyString: empty p. {g.callers()}")
+        assert p.v  # Silence mypy warning that p.v may be None.
+        p.v.setBodyString(s)
 
     initBodyString = setBodyString
     setTnodeText = setBodyString
