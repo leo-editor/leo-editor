@@ -275,7 +275,7 @@ class Position:
     def __init__(self, v: VNode, childIndex: int = 0, stack: list | None = None) -> None:
         """Create a new position with the given childIndex and parent stack."""
         self._childIndex = childIndex
-        self.v = v
+        self.v: VNode | None = v  # PR #4767: Yes, p.v may be None.
         # Stack entries are tuples (v, childIndex).
         if stack:
             self.stack = stack[:]  # Creating a copy here is safest and best.
@@ -911,7 +911,7 @@ class Position:
     def hasNext(self) -> bool:
         p = self
         try:
-            parent_v = p._parentVnode()  # Returns None if p.v is None.
+            parent_v = p._parentVnode()  # PR #4767 # May throw ValueError
             return bool(p.v and parent_v and p._childIndex + 1 < len(parent_v.children))
         except Exception:  # pragma: no cover
             g.trace('*** Unexpected exception')
@@ -1314,10 +1314,7 @@ class Position:
         """A low-level method to replace p.v by a p2.v."""
         p = self
         v, v2 = p.v, p2.v
-        parent_v = p._parentVnode()
-        if not parent_v:  # pragma: no cover
-            g.internalError('no parent_v', p)
-            return
+        parent_v = p._parentVnode()  # PR #4767 # May throw ValueError
         if parent_v.children[p._childIndex] == v:
             parent_v.children[p._childIndex] = v2
             v2.parents.append(parent_v)
@@ -1337,7 +1334,7 @@ class Position:
         """Unlink the receiver p from the tree."""
         p = self
         n = p._childIndex
-        parent_v = p._parentVnode()  # returns None if p.v is None
+        parent_v = p._parentVnode()  # PR #4767 # May throw ValueError
         child = p.v
         assert p.v
         assert parent_v
@@ -1384,7 +1381,7 @@ class Position:
         """Move self to its previous sibling."""
         p = self
         n = p._childIndex
-        parent_v = p._parentVnode()  # Returns None if p.v is None.
+        parent_v = p._parentVnode()  # PR #4767 # May throw ValueError
         # Do not assume n is in range: this is used by positionExists.
         if parent_v and p.v and 0 < n <= len(parent_v.children):
             p._childIndex -= 1
@@ -1434,7 +1431,7 @@ class Position:
         """Move a position to its next sibling."""
         p = self
         n = p._childIndex
-        parent_v = p._parentVnode()  # Returns None if p.v is None.
+        parent_v = p._parentVnode()  # PR #4767 # May throw ValueError
         if p and not p.v:
             g.trace('no p.v:', p, g.callers())  # pragma: no cover
         if p.v and parent_v and len(parent_v.children) > n + 1:
@@ -1802,7 +1799,7 @@ class Position:
     def promote(self) -> None:
         """A low-level promote helper."""
         p = self  # Do NOT copy the position.
-        parent_v = p._parentVnode()
+        parent_v = p._parentVnode()  # PR #4767 # May throw ValueError
         children = p.v.children
         # Add the children to parent_v's children.
         n = p.childIndex() + 1
