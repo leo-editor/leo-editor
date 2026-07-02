@@ -1991,6 +1991,7 @@ class Position:
     # @+node:ekr.20090215165030.3: *4* p.gnx property
     def __get_gnx(self) -> str:
         p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
         return p.v.fileIndex
 
     gnx = property(
@@ -2001,6 +2002,7 @@ class Position:
     # @+node:ekr.20140203082618.15486: *4* p.script property
     def __get_script(self) -> str:
         p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
         return g.getScript(
             p.v.context,
             p,
@@ -2027,10 +2029,12 @@ class Position:
     # @+node:ekr.20160129073222.1: *4* p.u Property
     def __get_u(self) -> Value:
         p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
         return p.v.u
 
     def __set_u(self, val: Value) -> None:
         p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
         p.v.u = val
 
     u = property(__get_u, __set_u, doc="p.u property")
@@ -2041,12 +2045,14 @@ class Position:
     def contract(self) -> None:
         """Contract p.v and clear p.v.expandedPositions list."""
         p, v = self, self.v
+        assert v  # Silence mypy warning that p.v may be None.
         v.expandedPositions = [z for z in v.expandedPositions if z != p]
         v.contract()
 
     def expand(self) -> None:
         p = self
         v = self.v
+        assert v  # Silence mypy warning that p.v may be None.
         v.expandedPositions = [z for z in v.expandedPositions if z != p]
         for p2 in v.expandedPositions:
             if p == p2:
@@ -2057,6 +2063,7 @@ class Position:
 
     def isExpanded(self) -> bool:
         p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
         if p.isCloned():
             c = p.v.context
             return c.shouldBeExpanded(p)
@@ -2067,52 +2074,80 @@ class Position:
     # Dirty bits are handled carefully by the position class.
 
     def clearMarked(self) -> None:
-        self.v.clearMarked()
+        p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
+        p.v.clearMarked()
 
     def clearOrphan(self) -> None:
-        self.v.clearOrphan()
+        p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
+        p.v.clearOrphan()
 
     def clearVisited(self) -> None:
-        self.v.clearVisited()
+        p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
+        p.v.clearVisited()
 
     def initExpandedBit(self) -> None:
-        self.v.initExpandedBit()
+        p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
+        p.v.initExpandedBit()
 
     def initMarkedBit(self) -> None:
-        self.v.initMarkedBit()
+        p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
+        p.v.initMarkedBit()
 
     def initStatus(self, status: int) -> None:
-        self.v.initStatus(status)
+        p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
+        p.v.initStatus(status)
 
     def setMarked(self) -> None:
-        self.v.setMarked()
+        p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
+        p.v.setMarked()
 
     def setOrphan(self) -> None:
-        self.v.setOrphan()
+        p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
+        p.v.setOrphan()
 
     def setSelected(self) -> None:
-        self.v.setSelected()
+        p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
+        p.v.setSelected()
 
     def setVisited(self) -> None:
-        self.v.setVisited()
+        p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
+        p.v.setVisited()
 
     # @+node:ekr.20040306220634.8: *5* p.computeIcon & p.setIcon
     def computeIcon(self) -> int:
-        return self.v.computeIcon()
+        p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
+        return p.v.computeIcon()
 
     def setIcon(self) -> None:
         pass  # Compatibility routine for old scripts
 
     # @+node:ekr.20040306220634.29: *5* p.setSelection
     def setSelection(self, start: int, length: int) -> None:
-        self.v.setSelection(start, length)
+        p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
+        p.v.setSelection(start, length)
 
     # @+node:ekr.20100303074003.5637: *5* p.restore/saveCursorAndScroll
     def restoreCursorAndScroll(self) -> None:
-        self.v.restoreCursorAndScroll()
+        p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
+        p.v.restoreCursorAndScroll()
 
     def saveCursorAndScroll(self) -> None:
-        self.v.saveCursorAndScroll()
+        p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
+        p.v.saveCursorAndScroll()
 
     # @+node:ekr.20040315034158: *4* p.setBodyString & setHeadString
     def setBodyString(self, s: bytes | str) -> None:
@@ -2126,10 +2161,12 @@ class Position:
 
     def initHeadString(self, s: bytes | str) -> None:
         p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
         p.v.initHeadString(s)
 
     def setHeadString(self, s: bytes | str) -> None:
         p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
         p.v.initHeadString(s)
         p.setDirty()
 
@@ -2152,6 +2189,7 @@ class Position:
     def clearDirty(self) -> None:
         """(p) Set p.v dirty."""
         p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
         p.v.clearDirty()
 
     # @+node:ekr.20040702104823: *5* p.inAtIgnoreRange
@@ -2169,8 +2207,8 @@ class Position:
         Set all ancestor @<file> nodes dirty, including ancestors of all clones of p.
         """
         p = self
-        if v := p.v:
-            v.setAllAncestorAtFileNodesDirty()
+        assert p.v  # Silence mypy warning that p.v may be None.
+        p.v.setAllAncestorAtFileNodesDirty()
 
     # @+node:ekr.20040303163330: *5* p.setDirty
     def setDirty(self) -> None:
