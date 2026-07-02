@@ -1290,24 +1290,24 @@ class Position:
     # @+node:ekr.20080416161551.212: *4* p._parentVnode
     def _parentVnode(self) -> VNode:
         """
-        Return the parent VNode or p.v.hiddenRootNode.
+        Return the parent VNode or the hidden root VNode.
+
+        Raise ValueError if p is empty or already refers to the hidden root VNode.
         """
-        trace = True  ### and not g.unitTesting
-        tag = 'p._parentVnode'
         p = self
+        tag = 'p._parentVnode'
+        if not p:
+            raise ValueError(f"{tag} Empty p: {p!r} callers: {g.callers()}")
         c = p.v.context
-        if p.v:
-            data = p.stack and p.stack[-1]
-            if data:
-                v, junk = data
-                if trace and v == p.v.context.hiddenRootNode:
-                    g.print_unique_message(f"{tag} {'Hidden':9} {c.shortFileName()} {g.callers(2)}")
-                return v
-            return c.hiddenRootNode
-        if trace:
-            g.print_unique_message(f"{tag} {'Not found':9} {c.shortFileName()} {g.callers(2)}")
-        return None  ### Legacy.
-        # return c.hiddenRootNode  # PR 4767 #### Experimental!!!
+        if not c:
+            raise ValueError(f"{tag} Empty context: {p!r} callers: {g.callers()}")
+        if p.v == c.hiddenRootNode:
+            raise ValueError(f"{tag} hiddenRootNode has no parent: {p!r} callers: {g.callers()}")
+        data = p.stack and p.stack[-1]
+        if data:
+            v, junk = data
+            return v
+        return c.hiddenRootNode
 
     # @+node:ekr.20131219220412.16582: *4* p._relinkAsCloneOf
     def _relinkAsCloneOf(self, p2: Position) -> None:
