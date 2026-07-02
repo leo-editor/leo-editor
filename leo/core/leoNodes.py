@@ -856,7 +856,7 @@ class Position:
 
     # @+node:ekr.20031218072017.915: *4* p.getX & VNode compatibility traversal routines
     # These methods are useful abbreviations.
-    # Warning: they make copies of positions, so they should be used _sparingly_
+    # They are efficient enough now that iterators are the normal way to traverse the tree!
 
     def getBack(self) -> Position:
         return self.copy().moveToBack()
@@ -888,20 +888,17 @@ class Position:
     def getThreadNext(self) -> Position:
         return self.copy().moveToThreadNext()
 
-    # New in Leo 4.4.3 b2: add c args.
-
-    def getVisBack(self, c: Cmdr) -> Position:
+    def getVisBack(self, c: Cmdr) -> Position | None:  # PR #4767
         return self.copy().moveToVisBack(c)
 
-    def getVisNext(self, c: Cmdr) -> Position:
+    def getVisNext(self, c: Cmdr) -> Position | None:  # PR #4767
         return self.copy().moveToVisNext(c)
 
-    # These are efficient enough now that iterators are the normal way to traverse the tree!
     back = getBack
     firstChild = getFirstChild
+    hasVisBack = getVisBack
     lastChild = getLastChild
     lastNode = getLastNode
-    # lastVisible   = getLastVisible # New in 4.2 (was in tk tree code).
     next = getNext
     nodeAfterTree = getNodeAfterTree
     nthChild = getNthChild
@@ -910,8 +907,6 @@ class Position:
     threadNext = getThreadNext
     visBack = getVisBack
     visNext = getVisNext
-    # New in Leo 4.4.3:
-    hasVisBack = visBack
     hasVisNext = visNext
 
     # @+node:ekr.20080416161551.192: *4* p.hasBack/Next/Parent/ThreadBack
@@ -1506,7 +1501,7 @@ class Position:
         return p
 
     # @+node:ekr.20080416161551.210: *4* p.moveToVisBack & helper
-    def moveToVisBack(self, c: Cmdr) -> Position:
+    def moveToVisBack(self, c: Cmdr) -> Position | None:  # PR #4767
         """Move a position to the position of the previous visible node."""
         p = self
         limit, limitIsVisible = c.visLimit()
