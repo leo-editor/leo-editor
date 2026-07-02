@@ -2103,7 +2103,8 @@ class Position:
         Set all ancestor @<file> nodes dirty, including ancestors of all clones of p.
         """
         p = self
-        p.v.setAllAncestorAtFileNodesDirty()
+        if v := p.v:
+            v.setAllAncestorAtFileNodesDirty()
 
     # @+node:ekr.20040303163330: *5* p.setDirty
     def setDirty(self) -> None:
@@ -2113,8 +2114,9 @@ class Position:
         p.setDirty() is no longer expensive.
         """
         p = self
-        p.v.setAllAncestorAtFileNodesDirty()
-        p.v.setDirty()
+        if v := p.v:
+            v.setAllAncestorAtFileNodesDirty()
+            v.setDirty()
 
     # @+node:ekr.20160225153333.1: *3* p.Predicates
     # @+node:ekr.20160225153414.1: *4* p.is_at_all & is_at_all_tree
