@@ -1139,7 +1139,7 @@ class TestNodeIndices(LeoUnitTest):
     # @+node:ekr.20220306055506.1: *3* TestNodeIndices.test_scanGnx
     def test_scanGnx(self):
         ni = g.app.nodeIndices
-        for s, id1, t1, n1 in (
+        for s, id1, t1, n1 in (  # PR #4767
             ('ekr.123', 'ekr', '123', ''),
             ('ekr.456.2', 'ekr', '456', '2'),
             ('', g.app.leoID, '', ''),
