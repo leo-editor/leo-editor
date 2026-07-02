@@ -1236,7 +1236,7 @@ class Position:
     def isDirty(self) -> bool:
         p = self
         assert p.v  # Silence mypy warning that p.v may be None.
-        return self.v.isDirty()
+        return p.v.isDirty()
 
     def isMarked(self) -> bool:
         p = self
@@ -1308,6 +1308,7 @@ class Position:
         p.stack = p_after.stack[:]
         p._childIndex = p_after._childIndex + 1
         child = p.v
+        assert child  # Silence mypy warning that p.v may be None.
         n = p_after._childIndex + 1
         child._addLink(n, parent_v)
 
@@ -1319,6 +1320,7 @@ class Position:
         p.stack = p_after.stack[:]
         p._childIndex = p_after._childIndex + 1
         child = p.v
+        assert child  # Silence mypy warning that p.v may be None.
         n = p_after._childIndex + 1
         child._addCopiedLink(n, parent_v)
 
@@ -1327,10 +1329,12 @@ class Position:
         """Link self as the n'th child of the parent."""
         p = self
         parent_v = parent.v
+        assert parent_v  # Silence mypy warning that parent_v may be None.
         p.stack = parent.stack[:]
         p.stack.append((parent_v, parent._childIndex))
         p._childIndex = n
         child = p.v
+        assert child  # Silence mypy warning that p.v may be None.
         child._addLink(n, parent_v)
 
     # @+node:ekr.20180709180140.1: *4* p._linkCopiedAsNthChild
@@ -1338,10 +1342,12 @@ class Position:
         """Link a copied self as the n'th child of the parent."""
         p = self
         parent_v = parent.v
+        assert parent_v  # Silence mypy warning that parent_v may be None.
         p.stack = parent.stack[:]
         p.stack.append((parent_v, parent._childIndex))
         p._childIndex = n
         child = p.v
+        assert child  # Silence mypy warning that p.v may be None.
         child._addCopiedLink(n, parent_v)
 
     # @+node:ekr.20080416161551.216: *4* p._linkAsRoot
@@ -1371,6 +1377,8 @@ class Position:
         tag = 'p._parentVnode'
         if not p:
             raise ValueError(f"{tag} Empty p: {p!r} callers: {g.callers()}")
+        if not p.v:
+            raise ValueError(f"{tag} Empty p: {p!r} callers: {g.callers()}")
         c = p.v.context
         if not c:
             raise ValueError(f"{tag} Empty context: {p!r} callers: {g.callers()}")
@@ -1387,12 +1395,15 @@ class Position:
         """A low-level method to replace p.v by a p2.v."""
         p = self
         v, v2 = p.v, p2.v
-        parent_v = p._parentVnode()  # PR #4767 # May throw ValueError
+        tag = 'p._relinkAsCloneOf'
+        parent_v = p._parentVnode()
+        # Silence mypy warnings...
+        assert v2, f"{tag} no v2: {p2!r} callers: {g.callers()}"
+        assert parent_v, f"{tag} no parent_v: {parent_v!r} callers: {g.callers()}"
+        assert parent_v.children, f"{tag} no children: {parent_v!r} callers: {g.callers()}"
         if parent_v.children[p._childIndex] == v:
             parent_v.children[p._childIndex] = v2
             v2.parents.append(parent_v)
-            return
-        raise ValueError(f"_relinkAsCloneOf parent_v: {parent_v!r} callers: {g.callers()}")
 
     # @+node:ekr.20080416161551.217: *4* p._unlink
     def _unlink(self) -> None:
