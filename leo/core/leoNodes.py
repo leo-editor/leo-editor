@@ -1686,9 +1686,10 @@ class Position:
 
     def copyTreeFromSelfTo(self, p2: Position, copyGnxs: bool = False) -> None:
         p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
+        assert p2.v  # Silence mypy warning that p2.v may be None.
         p2.v._headString = g.toUnicode(p.h, reportErrors=True)  # 2017/01/24
         p2.v._bodyString = g.toUnicode(p.b, reportErrors=True)  # 2017/01/24
-        #
         # #1019794: p.copyTreeFromSelfTo, should deepcopy p.v.u.
         p2.v.u = copy.deepcopy(p.v.u)
         if copyGnxs:
@@ -1705,6 +1706,7 @@ class Position:
         The new vnode is complete copy of v and all its descendants.
         """
         p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
         return Position(v=p.v.copyTree(copyMarked))
 
     # @+node:peckj.20131023115434.10115: *4* p.createNodeHierarchy
@@ -1723,7 +1725,9 @@ class Position:
                       If True, will create nodes regardless of existing nodes
         returns the final position ('baz' in the above example)
         """
-        c = self.v.context
+        p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
+        c = p.v.context
         return c.createNodeHierarchy(heads, parent=self, forcecreate=forcecreate)
 
     # @+node:ekr.20131230090121.16552: *4* p.deleteAllChildren
@@ -1764,6 +1768,7 @@ class Position:
         Returns the newly created position.
         """
         p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
         context = p.v.context
         p2 = self.copy()
         p2.v = VNode(context=context)
@@ -1801,6 +1806,7 @@ class Position:
         Returns the newly created position.
         """
         p = self
+        assert p.v  # Silence mypy warning that p.v may be None.
         context = p.v.context
         p2 = self.copy()
         p2.v = VNode(context=context)
