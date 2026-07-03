@@ -2510,28 +2510,28 @@ def dump_encoded_string(encoding: str, s: str) -> None:
 
 
 # @+node:ekr.20031218072017.1317: *4* g.file/module/plugin_date
-def module_date(mod: ModuleType, format: str | None = None) -> str:
+def module_date(mod: ModuleType, format: str = '') -> str:
     theFile = g.os_path_join(app.loadDir, mod.__file__)
     root, ext = g.os_path_splitext(theFile)
     return g.file_date(root + ".py", format=format)
 
 
-def plugin_date(plugin_mod: ModuleType, format: str | None = None) -> str:
+def plugin_date(plugin_mod: ModuleType, format: str = '') -> str:
     theFile = g.os_path_join(app.loadDir, "..", "plugins", plugin_mod.__file__)
     root, ext = g.os_path_splitext(theFile)
-    return g.file_date(root + ".py", format=str)
+    return g.file_date(root + ".py", format=format)
 
 
-def file_date(theFile: IO, format: str | None = None) -> str:
+def file_date(theFile: str, format: str = '') -> str:
     if theFile and g.os_path_exists(theFile):
         try:
             n = g.os_path_getmtime(theFile)
-            if format is None:
+            if not format:
                 format = "%m/%d/%y %H:%M:%S"
             return time.strftime(format, time.gmtime(n))
         except (ImportError, NameError):
-            pass  # Time module is platform dependent.
-    return ""
+            pass
+    return ''  # Time module is platform dependent.
 
 
 # @+node:ekr.20031218072017.3127: *4* g.get_line & get_line__after
