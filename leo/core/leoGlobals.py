@@ -3748,16 +3748,16 @@ def readFileIntoEncodedString(fn: str, silent: bool = False) -> bytes:
         if not silent:
             g.error(f"readFileIntoEncodedString: exception reading {fn}")
             g.es_exception()
-    return None
+    return b''
 
 
 # @+node:ekr.20100125073206.8710: *3* g.readFileIntoString
 def readFileIntoString(
     fileName: str,
     encoding: str = 'utf-8',  # BOM may override this.
-    kind: str | None = None,  # @file, @edit, ...
+    kind: str = '',  # @file, @edit, ...
     verbose: bool = True,
-) -> tuple[str, str] | tuple[None, None]:
+) -> tuple[str, str]:
     """
     Return the contents of the file whose full path is fileName.
 
@@ -3769,25 +3769,26 @@ def readFileIntoString(
     - The encoding given by the 'encoding' keyword arg.
     - None, which typically means 'utf-8'.
     """
+    fail = '', ''
     if not fileName:
         if verbose:
             g.trace('no fileName arg given')
-        return None, None
+        return fail
     if g.os_path_isdir(fileName):
         if verbose:
             g.trace('not a file:', fileName)
-        return None, None
+        return fail
     if not g.os_path_exists(fileName):
         if verbose:
             g.error('file not found:', fileName)
-        return None, None
+        return fail
     try:
-        e = None
+        e = ''
         with open(fileName, 'rb') as f:
             bytes_s = f.read()
         # Fix #391.
         if not bytes_s:
-            return '', None
+            return fail
         # New in Leo 4.11: check for unicode BOM first.
         e, bytes_s = g.stripBOM(bytes_s)
         if not e:
@@ -3802,17 +3803,13 @@ def readFileIntoString(
         if verbose:
             g.error('can not open', '', (kind or ''), fileName)
     except Exception:
-        g.error(f"readFileIntoString: unexpected exception reading {fileName}")
+        g.error(f"readFileIntoString: exception reading {fileName}")
         g.es_exception()
-    return None, None
+    return fail
 
 
 # @+node:ekr.20160504062833.1: *3* g.readFileIntoUnicodeString
-def readFileIntoUnicodeString(
-    fn: str,
-    encoding: str | None = None,
-    silent: bool = False,
-) -> str | None:
+def readFileIntoUnicodeString(fn: str, encoding: str = '', silent: bool = False) -> str:
     """Return the raw contents of the file whose full path is fn."""
     try:
         with open(fn, 'rb') as f:
@@ -3824,7 +3821,7 @@ def readFileIntoUnicodeString(
     except Exception:
         g.error(f"readFileIntoUnicodeString: unexpected exception reading {fn}")
         g.es_exception()
-    return None
+    return ''
 
 
 # @+node:ekr.20031218072017.3120: *3* g.readlineForceUnixNewline
@@ -4016,7 +4013,7 @@ def find_word(s: str, word: str, i: int = 0) -> int:
 
 
 # @+node:ekr.20211029090118.1: *3* g.findAncestorVnodeByPredicate
-def findAncestorVnodeByPredicate(p: Position, v_predicate: Callable | None) -> VNode | None:
+def findAncestorVnodeByPredicate(p: Position, v_predicate: Callable) -> VNode | None:
     """
     Return first ancestor vnode matching the predicate.
 
@@ -4032,6 +4029,7 @@ def findAncestorVnodeByPredicate(p: Position, v_predicate: Callable | None) -> V
     if not p.isCloned():
         return None
     seen = []  # vnodes that have already been searched.
+    assert p.v
     parents = p.v.parents[:]  # vnodes to be searched.
     while parents:
         parent_v = parents.pop()
@@ -4779,7 +4777,7 @@ def skip_ws_and_nl(s: str, i: int) -> int:
 
 # @+node:ekr.20170414034616.1: ** g.Git
 # @+node:ekr.20180325025502.1: *3* g.backupGitIssues
-def backupGitIssues(c: Cmdr, base_url: str | None = None) -> None:
+def backupGitIssues(c: Cmdr, base_url: str = '') -> None:
     """Get a list of issues from Leo's GitHub site."""
     if base_url is None:
         base_url = 'https://api.github.com/repos/leo-editor/leo-editor/issues'
@@ -4818,7 +4816,7 @@ def execGitCommand(command: str, directory: str) -> list[str]:
             shlex.split(command), stdout=subprocess.PIPE, stderr=None, shell=True
         )
         out, err = proc.communicate()
-        lines = [g.toUnicode(z) for z in g.splitLines(out or '')]
+        lines = [g.toUnicode(z) for z in g.splitLines(out or '')]  # type:ignore # Don't change this!
     finally:
         os.chdir(old_dir)
     return lines
@@ -4827,10 +4825,10 @@ def execGitCommand(command: str, directory: str) -> list[str]:
 # @+node:ekr.20180126043905.1: *3* g.getGitIssues
 def getGitIssues(
     c: Cmdr,
-    base_url: str | None = None,
+    base_url: str = '',
     label_list: list | None = None,
-    milestone: str | None = None,
-    state: str | None = None,  # in (None, 'closed', 'open')
+    milestone: str = '',
+    state: str = '',  # in (None, 'closed', 'open')
 ) -> None:
     """Get a list of issues from Leo's GitHub site."""
     if base_url is None:
@@ -4892,7 +4890,7 @@ class GitIssueController:
         except Exception:
             g.trace('requests not found: `pip install requests`')
             return
-        label = None
+        label = ''
         assert state in ('open', 'closed')
         page_url = self.base_url + '?&state=%s&page=%s'
         page, total = 1, 0
@@ -5019,11 +5017,13 @@ class GitIssueController:
 
 
 # @+node:ekr.20190428173354.1: *3* g.getGitVersion
-def getGitVersion(directory: str | None = None) -> tuple[str, str, str]:
+def getGitVersion(directory: str = '') -> tuple[str, str, str]:
     """Return a tuple (author, build, date) from the git log, or None."""
 
     # -n: Get only the last log.
     trace = 'git' in g.app.debug
+    fail = '', '', ''
+    s: bytes | str
     try:
         s = subprocess.check_output(
             'git log -n 1 --date=iso',
@@ -5040,12 +5040,12 @@ def getGitVersion(directory: str | None = None) -> tuple[str, str, str]:
             g.es_exception()
         s = g.toUnicode(s)
         if not isinstance(s, str):
-            return '', '', ''
+            return fail
     except Exception:
         if trace:
             g.es_print('Exception in g.getGitVersion')
             g.es_exception()
-        return '', '', ''
+        return fail
 
     info = [g.toUnicode(z) for z in s.splitlines()]
 
@@ -5083,7 +5083,7 @@ def getModifiedFiles(repo_path: str) -> list[str]:
 
 
 # @+node:ekr.20170414034616.2: *3* g.gitBranchName
-def gitBranchName(path: str | None = None) -> str:
+def gitBranchName(path: str = '') -> str:
     """
     Return the git branch name associated with path/.git, or the empty
     string if path/.git does not exist. If path is None, use the leo-editor
@@ -5094,7 +5094,7 @@ def gitBranchName(path: str | None = None) -> str:
 
 
 # @+node:ekr.20170414034616.4: *3* g.gitCommitNumber
-def gitCommitNumber(path: str | None = None) -> str:
+def gitCommitNumber(path: str = '') -> str:
     """
     Return the git commit number associated with path/.git, or the empty
     string if path/.git does not exist. If path is None, use the leo-editor
@@ -5105,7 +5105,7 @@ def gitCommitNumber(path: str | None = None) -> str:
 
 
 # @+node:maphew.20171112205129.1: *3* g.gitDescribe
-def gitDescribe(path: str | None = None) -> tuple[str, str, str]:
+def gitDescribe(path: str = '') -> tuple[str, str, str]:
     """
     Return the Git tag, distance-from-tag, and commit hash for the
     associated path. If path is None, use the leo-editor directory.
@@ -5765,7 +5765,7 @@ def isWordChar1(ch: str) -> bool:
 
 
 # @+node:ekr.20130910044521.11304: *4* g.stripBOM
-def stripBOM(s_bytes: bytes) -> tuple[str | None, bytes]:
+def stripBOM(s_bytes: bytes) -> tuple[str, bytes]:
     """
     If there is a BOM, return (e,s2) where e is the encoding
     implied by the BOM and s2 is the s stripped of the BOM.
@@ -5787,7 +5787,7 @@ def stripBOM(s_bytes: bytes) -> tuple[str | None, bytes]:
             assert len(bom) == n
             if bom == s_bytes[: len(bom)]:
                 return e, s_bytes[len(bom) :]
-    return None, s_bytes
+    return '', s_bytes
 
 
 # @+node:ekr.20240325175449.1: *4* g.strToBytes
