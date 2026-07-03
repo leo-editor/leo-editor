@@ -6298,10 +6298,11 @@ def es_exception(*args: Sequence, **kwargs: Sequence) -> None:
 
 
 # @+node:ekr.20061015090538: *3* g.es_exception_type
-def es_exception_type(c: Cmdr | None = None, color: str = "red") -> None:
+def es_exception_type(color: str = "red") -> None:  # PR #4772: remove unused c arg.
     # exctype is a Exception class object; value is the error message.
     exctype, value = sys.exc_info()[:2]
-    g.es_print('', f"{exctype.__name__}, {value}", color=color)
+    if exctype:
+        g.es_print('', f"{exctype.__name__}, {value}", color=color)
 
 
 # @+node:ekr.20050707064040: *3* g.es_print
@@ -6362,8 +6363,7 @@ def getLastTracebackFileAndLineNumber() -> tuple[str, int]:
     typ, val, tb = sys.exc_info()
     if typ is SyntaxError:
         # IndentationError is a subclass of SyntaxError.
-        return val.filename, val.lineno
-    #
+        return val.filename, val.lineno  # type:ignore
     # Data is a list of tuples, one per stack entry.
     # Tuples have the form (filename,lineNumber,functionName,text).
     data = traceback.extract_tb(tb)
