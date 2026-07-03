@@ -3162,7 +3162,7 @@ def scanAtCommentAndAtLanguageDirectives(aList: list) -> dict[str, str] | None:
 
 
 # @+node:ekr.20080827175609.32: *4* g.scanAtEncodingDirectives (deprecated)
-def scanAtEncodingDirectives(aList: list) -> str | None:
+def scanAtEncodingDirectives(aList: list) -> str:
     """Scan aList for @encoding directives."""
     g.deprecated()
     for d in aList:
@@ -3171,7 +3171,7 @@ def scanAtEncodingDirectives(aList: list) -> str | None:
             return encoding
         if encoding and not g.unitTesting:
             g.error("invalid @encoding:", encoding)
-    return None
+    return ''
 
 
 # @+node:ekr.20080827175609.53: *4* g.scanAtHeaderDirectives (deprecated)
@@ -3582,7 +3582,7 @@ def getBaseDirectory(c: Cmdr) -> str:
 
 
 # @+node:ekr.20170223093758.1: *3* g.getEncodingAt (deprecated)
-def getEncodingAt(p: Position, b: bytes | None = None) -> str:
+def getEncodingAt(p: Position, b: bytes) -> str:
     """
     Return the encoding in effect at p and/or for string s.
 
@@ -3638,8 +3638,8 @@ def init_dialog_folder(c: Cmdr, p: Position, use_at_path: bool = True) -> str:
             dir_ = g.os_path_dirname(path)
             if dir_ and g.os_path_exists(dir_):
                 return dir_
-    table = (
-        c and c.last_dir,
+    table: tuple = (
+        c.last_dir if c else None,
         g.os_path_abspath(os.curdir),
     )
     for dir_ in table:
@@ -3657,7 +3657,7 @@ def is_binary_external_file(fileName: str) -> bool:
     try:
         with open(fileName, 'rb') as f:
             s = f.read(1024)
-        return g.is_binary_string(s)
+        return g.is_binary_string(g.toUnicode(s))
     except IOError:
         return False
     except Exception:
