@@ -2886,7 +2886,7 @@ def comment_delims_from_extension(filename: str) -> tuple[str, str, str]:
     Return the comment delims corresponding to the filename's extension.
     """
     if filename.startswith('.'):
-        root, ext = None, filename
+        root, ext = '', filename
     else:
         root, ext = os.path.splitext(filename)
     if ext == '.tmp':
@@ -2914,8 +2914,8 @@ def findAllValidLanguageDirectives(s: str) -> list:
     return list(sorted(languages))
 
 
-# @+node:ekr.20090214075058.8: *3* g.findAtTabWidthDirectives (must be fast)
-def findTabWidthDirectives(c: Cmdr, p: Position) -> str | None:
+# @+node:ekr.20090214075058.8: *3* g.findAtTabWidthDirectives (not used)
+def findTabWidthDirectives(c: Cmdr, p: Position) -> int | None:
     """Return the tab width in effect at position p."""
     if c is None:
         return None  # c may be None for testing.
@@ -2954,12 +2954,13 @@ def findFirstValidAtLanguageDirective(s: str) -> str | None:
 
 
 # @+node:ekr.20090214075058.6: *3* g.findLanguageDirectives (must be fast)
-def findLanguageDirectives(c: Cmdr, p: Position) -> str | None:
+def findLanguageDirectives(c: Cmdr, p: Position) -> str:
     """Return the language in effect at position p."""
     if c is None or p is None:
         return None  # c may be None for testing.
 
     v0 = p.v
+    assert v0
 
     def find_language(p_or_v: Position | VNode) -> str | None:
         for s in p_or_v.h, p_or_v.b:
@@ -2967,7 +2968,7 @@ def findLanguageDirectives(c: Cmdr, p: Position) -> str | None:
                 language = m.group(1)
                 if g.isValidLanguage(language):
                     return language
-        return None
+        return ''
 
     # First, search up the tree.
     for p in p.self_and_parents(copy=False):
@@ -3019,7 +3020,7 @@ def get_directives_dict(p: Position) -> dict[str, str]:
     d = {}
     # The headline has higher precedence because it is more visible.
     for kind, s in (('head', p.h), ('body', p.b)):
-        anIter = g.directives_pat.finditer(s)
+        anIter = g.directives_pat.finditer(s)  # type:ignore # anIter will exist
         for m in anIter:
             word = m.group(1).strip()
             i = m.start(1)
@@ -3059,6 +3060,7 @@ def get_directives_dict_list(p: Position) -> list[dict]:
 def getLanguageFromAncestorAtFileNode(p: Position) -> str | None:
     """Return the language in effect at node p."""
     g.deprecated()
+    assert p.v
     c = p.v.context
     return c.getLanguage(p)
 
@@ -3330,7 +3332,7 @@ def set_delims_from_language(language: str) -> tuple[str, str, str]:
 
 
 # @+node:ekr.20031218072017.1383: *3* g.set_delims_from_string
-def set_delims_from_string(s: str) -> tuple[str, str, str] | tuple[None, None, None]:
+def set_delims_from_string(s: str) -> tuple[str, str, str]:
     """
     Return (delim1, delim2, delim2), the delims following the @comment
     directive.
@@ -3340,6 +3342,7 @@ def set_delims_from_string(s: str) -> tuple[str, str, str] | tuple[None, None, N
     """
     # Skip an optional @comment
     tag = "@comment"
+    fail = '', '', ''
     i = 0
     if g.match_word(s, i, tag):
         i += len(tag)
@@ -3366,12 +3369,12 @@ def set_delims_from_string(s: str) -> tuple[str, str, str] | tuple[None, None, N
                 # If used, whole delimiter must be encoded.
                 if len(delims[i]) == 3:
                     g.warning(f"'{delims[i]}' delimiter is invalid")
-                    return None, None, None
+                    return fail
                 try:
                     delims[i] = g.toUnicode(binascii.unhexlify(delims[i][3:]))  # #4753
                 except Exception as e:
                     g.warning(f"'{delims[i]}' delimiter is invalid: {e}")
-                    return None, None, None
+                    return fail
             else:
                 # 7/8/02: The "REM hack": replace underscores by blanks.
                 # 9/25/02: The "perlpod hack": replace double underscores by newlines.
@@ -3380,9 +3383,7 @@ def set_delims_from_string(s: str) -> tuple[str, str, str] | tuple[None, None, N
 
 
 # @+node:ekr.20031218072017.1384: *3* g.set_language
-def set_language(
-    s: str, i: int, issue_errors_flag: bool = False
-) -> tuple[str, str, str, str] | tuple[None, None, None, None]:
+def set_language(s: str, i: int, issue_errors_flag: bool = False) -> tuple[str, str, str, str]:
     """Scan the @language directive that appears at s[i:].
 
     The @language may have been stripped away.
@@ -3405,7 +3406,7 @@ def set_language(
         return language, delim1, delim2, delim3
     if issue_errors_flag:
         g.es("ignoring:", g.get_line(s, i))
-    return None, None, None, None
+    return '', '', '', ''
 
 
 # @+node:ekr.20071109165315: *3* g.stripPathCruft
@@ -3478,7 +3479,7 @@ def computeStandardDirectories() -> str:
 
 
 # @+node:ekr.20031218072017.3117: *3* g.create_temp_file
-def create_temp_file(textMode: bool = False) -> tuple[IO, str]:
+def create_temp_file(textMode: bool = False) -> tuple[IO | None, str]:
     """
     Return a tuple (theFile,theFileName)
 
