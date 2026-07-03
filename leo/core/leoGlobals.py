@@ -8309,10 +8309,11 @@ def handleUnl(unl_s: str, c: Cmdr) -> Cmdr | None:
 
 
 # @+node:tbrown.20090219095555.63: *3* g.handleUrl & helpers
-def handleUrl(url: str, c: Cmdr | None = None, p: Position | None = None) -> str | None:
+def handleUrl(url: str, c: Cmdr, p: Position | None = None) -> None:  ### str | None:
     """Open a url or a unl."""
     if c and not p:
         p = c.p
+    assert p  # PR #4772: suppress mypy warning.
     # These two special cases should match the hacks in jedit.match_any_url.
     if url.endswith('.'):
         url = url[:-1]
@@ -8326,14 +8327,15 @@ def handleUrl(url: str, c: Cmdr | None = None, p: Position | None = None) -> str
         urll.startswith(('#', 'unl://', 'unl:gnx:')) or
         urll.startswith('file://') and '-->' in urll
     ):  # fmt: skip
-        return g.handleUnl(url, c)
+        g.handleUnl(url, c)
+        return
     try:
         g.handleUrlHelper(url, c, p)
-        return urll  # For unit tests.
+        ### return urll  # For unit tests.
     except Exception:
         g.es_print("g.handleUrl: exception opening", repr(url))
         g.es_exception()
-        return None
+        ### return None
 
 
 # @+node:ekr.20170226054459.1: *4* g.handleUrlHelper
@@ -8448,13 +8450,15 @@ def openUrl(p: Position) -> None:  # pragma: no cover
     Use the headline if it contains a valid url.
     Otherwise, look *only* at the first line of the body.
     """
-    if p:
-        url = g.getUrlFromNode(p)
-        if url:
-            c = p.v.context
-            if not g.doHook("@url1", c=c, p=p, url=url):
-                g.handleUrl(url, c=c, p=p)
-            g.doHook("@url2", c=c, p=p, url=url)
+    if not p:
+        return
+    if url := g.getUrlFromNode(p):
+        assert p.v  # PR #4772
+        c = p.v.context
+        assert c  # PR #4772
+        if not g.doHook("@url1", c=c, p=p, url=url):
+            g.handleUrl(url, c=c, p=p)
+        g.doHook("@url2", c=c, p=p, url=url)
 
 
 # @+node:ekr.20110605121601.18135: *3* g.openUrlOnClick (open-url-under-cursor)
