@@ -1386,7 +1386,7 @@ class MatchBrackets:
                         return True
                     i -= 1
             return False
-        return self.start_comment and self.end_comment and g.match(s, i, self.end_comment)
+        return bool(self.start_comment and self.end_comment and g.match(s, i, self.end_comment))
 
     # @+node:ekr.20160119230141.1: *4* mb.scan_back & helpers
     def scan_back(self, ch1: str, target: str, s: str, i: int) -> int | None:
@@ -7378,26 +7378,26 @@ def getDocStringForFunction(func: Callable) -> str:
 
     def get_defaults(func: Callable, i: int) -> Value:
         defaults = inspect.getfullargspec(func)[3]
-        return defaults[i]
+        return defaults[i] if defaults else None
 
     # Fix bug 1251252: https://bugs.launchpad.net/leo-editor/+bug/1251252
     # Minibuffer commands created by mod_scripting.py have no docstrings.
     # Do special cases first.
 
-    s = ''
     if name(func) == 'minibufferCallback':
         func = get_defaults(func, 0)
-        if hasattr(func, '__doc__') and func.__doc__.strip():
-            s = func.__doc__
-    if not s and name(func) == 'commonCommandCallback':
+        if s := getattr(func, '__doc__', '').strip():
+            return s
+    if name(func) == 'commonCommandCallback':
         script = get_defaults(func, 1)
-        s = g.getDocString(script)  # Do a text scan for the function.
+        if s := g.getDocString(script):  # Do a text scan for the function.
+            return s
     # Now the general cases.  Prefer __doc__ to docstring()
-    if not s and hasattr(func, '__doc__'):
-        s = func.__doc__
-    if not s and hasattr(func, 'docstring'):
-        s = func.docstring
-    return s
+    if s := getattr(func, '__doc__', '').strip():
+        return s
+    if s := getattr(func, 'docstring', '').strip():
+        return s
+    return ''
 
 
 # @+node:ekr.20111115155710.9814: *3* g.python_tokenize (not used)
@@ -7471,89 +7471,6 @@ def execute_shell_commands(
         proc = subprocess.Popen(command, shell=shell)
         if wait:
             proc.communicate()
-
-
-# @+node:ekr.20180217113719.1: *3* g.execute_shell_commands_with_options & helpers
-def execute_shell_commands_with_options(
-    base_dir: str | None = None,
-    c: Cmdr | None = None,
-    command_setting: str | None = None,
-    commands: list | None = None,
-    path_setting: str | None = None,
-    trace: bool = False,
-    warning: str | None = None,
-) -> None:
-    """
-    A helper for prototype commands or any other code that
-    runs programs in a separate process.
-
-    base_dir:           Base directory to use if no config path given.
-    commands:           A list of commands, for g.execute_shell_commands.
-    commands_setting:   Name of @data setting for commands.
-    path_setting:       Name of @string setting for the base directory.
-    warning:            A warning to be printed before executing the commands.
-    """
-    base_dir = g.computeBaseDir(c, base_dir, path_setting)
-    if not base_dir:
-        return
-    commands = g.computeCommands(c, commands, command_setting)
-    if not commands:
-        return
-    if warning:
-        g.es_print(warning)
-    os.chdir(base_dir)  # Can't do this in the commands list.
-    g.execute_shell_commands(commands, trace=trace)
-
-
-# @+node:ekr.20180217152624.1: *4* g.computeBaseDir
-def computeBaseDir(c: Cmdr, base_dir: str, path_setting: str) -> str | None:
-    """
-    Compute a base_directory.
-    If given, @string path_setting takes precedence.
-    """
-    # Prefer the path setting to the base_dir argument.
-    if path_setting:
-        if not c:
-            g.es_print('@string path_setting requires valid c arg')
-            return None
-        # It's not an error for the setting to be empty.
-        base_dir2 = c.config.getString(path_setting)
-        if base_dir2:
-            base_dir2 = base_dir2.replace('\\', '/')
-            if g.os_path_exists(base_dir2):
-                return base_dir2
-            g.es_print(f"@string {path_setting} not found: {base_dir2!r}")
-            return None
-    # Fall back to given base_dir.
-    if base_dir:
-        base_dir = base_dir.replace('\\', '/')
-        if g.os_path_exists(base_dir):
-            return base_dir
-        g.es_print(f"base_dir not found: {base_dir!r}")
-        return None
-    g.es_print(f"Please use @string {path_setting}")
-    return None
-
-
-# @+node:ekr.20180217153459.1: *4* g.computeCommands
-def computeCommands(c: Cmdr, commands: list[str], command_setting: str) -> list[str]:
-    """
-    Get the list of commands.
-    If given, @data command_setting takes precedence.
-    """
-    if not commands and not command_setting:
-        g.es_print('Please use commands, command_setting or both')
-        return []
-    # Prefer the setting to the static commands.
-    if command_setting:
-        if c:
-            aList = c.config.getData(command_setting)
-            # It's not an error for the setting to be empty.
-            # Fall back to the commands.
-            return aList or commands
-        g.es_print('@data command_setting requires valid c arg')
-        return []
-    return commands
 
 
 # @+node:ekr.20050503112513.7: *3* g.executeFile
@@ -7760,16 +7677,13 @@ def extractExecutableString(c: Cmdr, p: Position, s: str) -> str:
 
 
 # @+node:ekr.20060624085200: *3* g.handleScriptException
-def handleScriptException(
-    c: Cmdr,
-    p: Position,
-    script: str | None = None,  # No longer used.
-    script1: str | None = None,  # No longer used.
-) -> None:
+def handleScriptException(c: Cmdr, p: Position, script: str = '') -> None:
+    # PR #4772 Minor change to signature.
     g.warning("exception executing script")
     g.es_exception()
 
     # Careful: this test is no longer guaranteed.
+    assert p.v
     if p.v.context != c:
         return
     fileName, n = g.getLastTracebackFileAndLineNumber()
@@ -7970,7 +7884,7 @@ def run_unit_tests(tests: str | None = None, verbose: bool = False) -> None:
 #    For example, Leo's forum: https://leo-editor.github.io/leo-editor/
 # @-<< About clickable links >>
 # @+node:ekr.20120320053907.9776: *3* g.computeFileUrl
-def computeFileUrl(fn: str, c: Cmdr | None = None, p: Position | None = None) -> str:
+def computeFileUrl(fn: str, c: Cmdr, p: Position) -> str:
     """
     Compute finalized url for filename fn.
     """
@@ -8235,6 +8149,7 @@ def getUrlFromNode(p: Position) -> str | None:
     """
     if not p:
         return None
+    assert p.v
     c = p.v.context
     assert c
     table = [p.h, g.splitLines(p.b)[0] if p.b else '']
@@ -8279,6 +8194,7 @@ def handleUnl(unl_s: str, c: Cmdr) -> Cmdr | None:
         print(f"Not found: {unl!r}")
         return None
     # Do not assume that p is in c.
+    assert p.v
     c2 = p.v.context
     if c2 != c:
         g.app.selectLeoWindow(c2)  # Switch outlines.
@@ -8331,11 +8247,9 @@ def handleUrl(url: str, c: Cmdr, p: Position | None = None) -> None:  ### str | 
         return
     try:
         g.handleUrlHelper(url, c, p)
-        ### return urll  # For unit tests.
     except Exception:
         g.es_print("g.handleUrl: exception opening", repr(url))
         g.es_exception()
-        ### return None
 
 
 # @+node:ekr.20170226054459.1: *4* g.handleUrlHelper
