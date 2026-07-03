@@ -5706,7 +5706,7 @@ def checkUnicode(s: str, encoding: str | None = None) -> str:
 
 
 # @+node:ekr.20100125073206.8709: *4* g.getPythonEncodingFromString
-def getPythonEncodingFromString(s: object) -> str:
+def getPythonEncodingFromString(s: bytes | str) -> str:
     """Return the encoding given by Python's encoding line.
     s is the entire file.
     """
@@ -5806,7 +5806,7 @@ def strToBytes(s: str, reportErrors: bool = False) -> bytes:
 
 
 # @+node:ekr.20050208093800: *4* g.toEncodedString
-def toEncodedString(s: bytes | str, encoding: str = 'utf-8', reportErrors: bool = False) -> bytes:
+def toEncodedString(s: bytes | str, encoding: str = '', reportErrors: bool = False) -> bytes:
     """Convert unicode string to an encoded string."""
     if not isinstance(s, str):
         return s
@@ -5823,33 +5823,21 @@ def toEncodedString(s: bytes | str, encoding: str = 'utf-8', reportErrors: bool 
 
 
 # @+node:ekr.20050208093800.1: *4* g.toUnicode
-def toUnicode(s: bytes | str, encoding: str | None = None, reportErrors: bool = False) -> str:
+def toUnicode(s: bytes | str, encoding: str = '', reportErrors: bool = False) -> str:
     """Convert bytes to unicode if necessary."""
     if isinstance(s, str):
         return s
     tag = 'g.toUnicode'
-    if not isinstance(s, bytes):
-        if reportErrors and not isinstance(s, (NullObject, TracingNullObject)):
-            message = (
-                f"{tag}: unexpected argument of type {s.__class__.__name__}\n"
-                f"Callers: {g.callers}"
-            )  # fmt: skip
-            g.es_print_unique_message(message)
-        return ''
     if not encoding:
         encoding = 'utf-8'
     try:
         return s.decode(encoding, 'strict')
     except (UnicodeDecodeError, UnicodeError):
         # https://wiki.python.org/moin/UnicodeDecodeError
-        s = s.decode(encoding, 'replace')
-        if g.unitTesting:
-            g.trace(f"{tag} unicode error. encoding: {encoding!r} len(s): {len(s)}")
-            g.trace(g.callers())
-        elif reportErrors:
+        if reportErrors:
             g.printObj(s, tag=f"{tag} unicode error. encoding: {encoding!r}")
             g.trace(g.callers())
-        return s
+        return s.decode(encoding, 'replace')
     except Exception:
         g.es_exception()
         g.error(f"{tag}: unexpected error! encoding: {encoding!r}, s:\n{s!r}")
@@ -6209,19 +6197,19 @@ def es(*args: Args, **kwargs: KWargs) -> None:
         return
     log = app.log
     # Compute the effective args.
-    d = {
-        'color': None,
+    d: dict[str, bool | str] = {
+        'color': '',
         'commas': False,
         'newline': True,
         'spaces': True,
         'tabName': 'Log',
-        'nodeLink': None,
+        'nodeLink': '',
     }
     d = g.doKeywordArgs(kwargs, d)
-    color = d.get('color')
+    color = d.get('color', '')
     if color == 'suppress':
         return  # New in 4.3.
-    color = g.actualColor(color)
+    color = g.actualColor(color)  # type:ignore
     tabName = d.get('tabName') or 'Log'
     newline = d.get('newline')
     s = g.translateArgs(args, d)
