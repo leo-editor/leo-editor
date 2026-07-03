@@ -53,7 +53,7 @@ follow_kind = 'normal' if follow else 'skip'
 args = f"--follow-imports={follow_kind} {incremental_arg}"
 files = ' '.join(files)
 command = rf"{python} -m mypy {args} {files}"
-print(f"{command=}")
+# print(f"{command=}")
 subprocess.Popen(command, shell=True).communicate()
 
 # @@language python
