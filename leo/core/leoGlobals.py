@@ -38,24 +38,23 @@ import time
 import traceback
 import types
 from types import ModuleType
-from typing import Any, IO, Iterable, Sequence, TYPE_CHECKING
+from typing import cast, Any, IO, Iterable, Sequence, TYPE_CHECKING
 import unittest
 import urllib
 import urllib.parse as urlparse
 
-# Leo never imports any other Leo module.
-
 # Third-party tools.
 import webbrowser
 
-# PR #4772
+# Leo never imports any other Leo module.
+# PR #4772: add this import statement.
 from leo.core import leoGlobals as g  # pylint: disable=import-self
 
 try:
     import tkinter as Tk
 except Exception:
-    Tk = None
-#
+    Tk = None  # type:ignore
+
 # Abbreviations...
 StringIO = io.StringIO
 # @-<< leoGlobals: imports >>
@@ -153,7 +152,7 @@ directives_pat = None  # Set below.
 
 global_commands_dict: dict[str, Callable] = {}
 
-cmd_instance_dict = {
+cmd_instance_dict: dict[str, list[str]] = {
     # Keys are class names, values are attribute chains.
     'AbbrevCommandsClass':      ['c', 'abbrevCommands'],
     'AtFile':                   ['c', 'atFileCommands'],
@@ -290,7 +289,8 @@ class CommanderCommand:
         def commander_command_wrapper(event: LeoKeyEvent) -> Any:
             c = event.get('c')
             method = getattr(c, func.__name__, None)
-            return method(event=event)  # Return value to caller (for doCommand, doCommandByName...)
+            # Return value to caller (for doCommand, doCommandByName...)
+            return method(event=event) if method else None
 
         # Inject ivars for plugins_menu.py.
         commander_command_wrapper.__func_name__ = func.__name__  # For leoInteg.
@@ -313,7 +313,7 @@ commander_command = CommanderCommand
 
 
 # @+node:ekr.20150508164812.1: *3* g.ivars2instance
-def ivars2instance(c: Cmdr, g: LeoGlobals, ivars: list[str]) -> Any | None:
+def ivars2instance(c: Cmdr, g: LeoGlobals, ivars: list[str] | None) -> Any | None:
     """
     Return the instance of c given by ivars.
     ivars is a list of strings.
@@ -346,12 +346,13 @@ def new_cmd_decorator(name: str, ivars: list[str]) -> Callable:
     """
 
     def _decorator(func: Callable) -> Callable:
+
         def new_cmd_wrapper(event: LeoKeyEvent) -> None:
             if isinstance(event, dict):
                 c = event.get('c')
             else:
                 c = event.c
-            self = g.ivars2instance(c, g, ivars)
+            self = g.ivars2instance(c, g, ivars)  # type:ignore
             try:
                 # Don't use a keyword for self.
                 # This allows the VimCommands class to use vc instead.
@@ -735,11 +736,8 @@ class KeyStroke:
     # @+others
     # @+node:ekr.20180414195401.2: *4*  ks.__init__
     def __init__(self, binding: str) -> None:
-        self.s: str
-        if binding:
-            self.s = self.finalize_binding(binding)
-        else:
-            self.s = None
+
+        self.s = self.finalize_binding(binding)  # PR #4772: self.s is always a string.
 
     # @+node:ekr.20120203053243.10117: *4* ks.__eq__, etc
     # All these must be defined in order to say, for example:
