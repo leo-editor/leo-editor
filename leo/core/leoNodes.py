@@ -1375,9 +1375,7 @@ class Position:
         """
         p = self
         tag = 'p._parentVnode'
-        if not p:
-            raise ValueError(f"{tag} Empty p: {p!r} callers: {g.callers()}")
-        if not p.v:
+        if not p or not p.v:
             raise ValueError(f"{tag} Empty p: {p!r} callers: {g.callers()}")
         c = p.v.context
         if not c:
