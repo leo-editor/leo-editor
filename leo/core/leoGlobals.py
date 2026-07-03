@@ -38,7 +38,7 @@ import time
 import traceback
 import types
 from types import ModuleType
-from typing import cast, Any, IO, Iterable, Sequence, TYPE_CHECKING
+from typing import Any, IO, Iterable, Sequence, TYPE_CHECKING
 import unittest
 import urllib
 import urllib.parse as urlparse
@@ -207,7 +207,7 @@ def check_cmd_instance_dict(c: Cmdr, g: LeoGlobals) -> None:
     """
     d = cmd_instance_dict
     for key in d:
-        ivars = d.get(key)
+        ivars = d.get(key, [])
         # Produces warnings.
         obj = ivars2instance(c, g, ivars)
         if obj:
@@ -313,7 +313,7 @@ commander_command = CommanderCommand
 
 
 # @+node:ekr.20150508164812.1: *3* g.ivars2instance
-def ivars2instance(c: Cmdr, g: LeoGlobals, ivars: list[str] | None) -> Any | None:
+def ivars2instance(c: Cmdr, g: LeoGlobals, ivars: list[str]) -> Any:
     """
     Return the instance of c given by ivars.
     ivars is a list of strings.
@@ -406,7 +406,7 @@ url_regex = re.compile(rf"""\b{url_kinds}://[^\s'"]+""")
 # @-<< define regexes >>
 tree_popup_handlers: list[Callable] = []  # Set later.
 user_dict: dict[str, Value] = {}  # Non-persistent dictionary for scripts and plugins.
-app: LeoApp | None = None  # The singleton app object. Set by runLeo.py.
+app: LeoApp = None  # The singleton app object. Set by runLeo.py.
 # Global status vars.
 inScript = False  # A synonym for app.inScript
 unitTesting = False  # A synonym for app.unitTesting.
@@ -823,7 +823,7 @@ class KeyStroke:
         }
         if self.mods and s.lower() in shift_d:
             # Returning '' breaks existing code.
-            return shift_d.get(s.lower())
+            return shift_d.get(s.lower(), '')  # PR #4772
         #
         # Make all other translations...
         #
@@ -905,7 +905,7 @@ class KeyStroke:
         if s in (None, 'none', 'None'):
             return 'None'
         if s.lower() in translate_d:
-            s = translate_d.get(s.lower())
+            s = translate_d.get(s.lower(), '')
             return self.strip_shift(s)
         if len(s) > 1 and s.find(' ') > -1:
             # #917: not a pure, but should be ignored.
@@ -974,7 +974,7 @@ class KeyStroke:
         }  # fmt: skip
         if 'shift' in self.mods and s in shift_d:
             self.mods.remove('shift')
-            s = shift_d.get(s)
+            s = shift_d.get(s, '')  # PR #4772
         return s
 
     # @+node:ekr.20120203053243.10124: *4* ks.find, lower & startswith
@@ -1120,7 +1120,7 @@ class KeyStroke:
             'Tab': '\t',
         }
         if s in d:
-            return d.get(s)
+            return d.get(s, '')  # PR #4772
         return s if len(s) == 1 else ''
 
     # @-others
