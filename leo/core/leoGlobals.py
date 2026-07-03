@@ -48,6 +48,9 @@ import urllib.parse as urlparse
 # Third-party tools.
 import webbrowser
 
+# PR #4772
+from leo.core import leoGlobals as g  # pylint: disable=import-self
+
 try:
     import tkinter as Tk
 except Exception:
@@ -2165,7 +2168,7 @@ class TestLeoGlobals(unittest.TestCase):
     # @+others
     # @+node:ekr.20200219071958.1: *4* TestLeoGlobals.test_comment_delims_from_extension
     def test_comment_delims_from_extension(self) -> None:
-        from leo.core import leoGlobals as leo_g  # pylint: disable=import-self
+        from leo.core import leoGlobals as leo_g  # pylint: disable=import-self,reimported
         from leo.core import leoApp
 
         leo_g.app = leoApp.LeoApp()
@@ -2175,7 +2178,7 @@ class TestLeoGlobals(unittest.TestCase):
 
     # @+node:ekr.20200219072957.1: *4* TestLeoGlobals.test_is_sentinel
     def test_is_sentinel(self) -> None:
-        from leo.core import leoGlobals as leo_g  # pylint: disable=import-self
+        from leo.core import leoGlobals as leo_g  # pylint: disable=import-self,reimported
 
         # Python. Test regular and blackened sentinels.
         py_delims = leo_g.comment_delims_from_extension('.py')
@@ -8732,9 +8735,7 @@ def parsePathData(c: Cmdr) -> dict[str, str]:
 
 
 # @-others
-# set g when the import is about to complete.
-g = sys.modules.get('leo.core.leoGlobals')
-assert g, sorted(sys.modules.keys())
+
 if __name__ == '__main__':
     unittest.main()  # pragma: no cover
 
