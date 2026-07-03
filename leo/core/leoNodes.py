@@ -2339,9 +2339,11 @@ class VNode:
         #   def allocate_vnode(c,gnx):
         #       v = VNode(c)
         #       g.app.nodeIndices.new_vnode_helper(c,gnx,v)
-        assert g.app.nodeIndices  # Silence mypy warning that g.app may be None.
-        g.app.nodeIndices.new_vnode_helper(context, gnx, self)
-        assert self.fileIndex, g.callers()
+        if g.app and g.app.nodeIndices:
+            g.app.nodeIndices.new_vnode_helper(context, gnx, self)
+            assert self.fileIndex, g.callers()
+            return
+        raise ValueError(f"VNode.__init__: not initialized: {g.callers()}")
 
     # @+node:ekr.20031218072017.3345: *4* v.__repr__ & v.__str__
     def __repr__(self) -> str:  # pragma: no cover
