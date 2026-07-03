@@ -26,9 +26,9 @@ os.chdir(leo_editor_dir)
 # args = ' '.join(sys.argv[1:])
 python = sys.executable
 files = [
-    # PR #4766. Require strict optional only for leoNodes.py.
-    'leo/core/leoCommands.py',  # strict_optional = False
-    'leo/core/leoNodes.py',     # strict_optional = True: 25 errors.
+    # PR #4766. Require strict optional for leoNodes.py.
+    'leo/core/leoCommands.py',
+    'leo/core/leoNodes.py',
     # To be checked in other PRs...
     #   'leo/core/leoApp.py',
     #   'leo/core/leoAtFile.py',
