@@ -1589,7 +1589,6 @@ class Commands:
         As a result, c.p.copy() is never necessary.
         """
         c = self
-        # strict_optional
         return c._currentPosition.copy() if c._currentPosition else c.rootPosition()
 
     # For compatibility with old scripts...
@@ -2025,9 +2024,12 @@ class Commands:
     _rootCount = 0
 
     def rootPosition(self) -> Position:
-        """Return a new *copy* of the root position."""
+        """
+        Return a new *copy* of the root position.
+
+        This may return an empty Position (with p.v == None) during startup.
+        """
         c = self
-        # strict_optional
         v = c.hiddenRootNode.children[0] if c.hiddenRootNode.children else cast(VNode, None)
         return Position(v=v, childIndex=0, stack=None)
 
