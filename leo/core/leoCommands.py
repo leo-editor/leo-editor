@@ -2027,7 +2027,12 @@ class Commands:
         """
         Return a new *copy* of the root position.
 
-        This may return an empty Position (with p.v == None) during startup.
+        New in Leo 6.8.10: Return an empty Position (p.v == None) instead of None.
+
+        No valid existing code will break because the only valid tests for Positions are:
+
+            if p:
+            if not p:
         """
         c = self
         v = c.hiddenRootNode.children[0] if c.hiddenRootNode.children else cast(VNode, None)
