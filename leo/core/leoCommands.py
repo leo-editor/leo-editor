@@ -199,7 +199,7 @@ class Commands:
 
         # Official ivars.
         self._currentPosition = cast(Position, None)
-        self._topPosition = cast(Position, None)
+        self._topPosition: Position | None = None
         self.command_count = 0
         self.frame: Any = None  # This saves a lot of asserts.
         self.parentFrame: Widget = parentFrame  # New in Leo 6.0.
@@ -1850,7 +1850,7 @@ class Commands:
                     ending = m.group(1)
                     if ending in ("cr", "crlf", "lf", "nl", "platform"):
                         return g.getOutputNewline(name=ending)
-        return None
+        return ''
 
     # @+node:ekr.20250404153234.1: *5* c.getPageWidth
     # Use a regex to avoid allocating temp strings.
@@ -2105,6 +2105,8 @@ class Commands:
         if not p.hasChildren():
             return False
         # Always clear non-existent positions.
+        assert p.v
+        assert v
         v.expandedPositions = [z for z in v.expandedPositions if c.positionExists(z)]
         if not p.isCloned():
             # Do not call p.isExpanded here! It calls this method.
@@ -2163,7 +2165,7 @@ class Commands:
         return positions
 
     # @+node:ekr.20090107113956.1: *5* c.vnode2position
-    def vnode2position(self, v: VNode) -> Position:
+    def vnode2position(self, v: VNode) -> Position | None:
         """
         Given a VNode v, construct a valid position p such that p.v = v.
         """
@@ -2246,6 +2248,7 @@ class Commands:
     # @+node:ekr.20060906211138: *5* c.clearMarked
     def clearMarked(self, p: Position) -> None:
         c = self
+        assert p.v
         p.v.clearMarked()
         g.doHook("clear-mark", c=c, p=p)
 
@@ -2418,7 +2421,7 @@ class Commands:
                 new_gnx(v)
                 g.es_print(f"empty v.fileIndex: {v} new: {p.v.gnx!r}", color='red')
         for gnx in sorted(vnode_d.keys()):
-            aList = list(vnode_d.get(gnx))
+            aList = list(vnode_d.get(gnx) or [])
             ids = [id_ for (id_, v) in aList]
             if len(ids) > 1:
                 print('\nc.checkGnxs...')
@@ -2463,6 +2466,8 @@ class Commands:
     def checkParentAndChildren(self, p: Position) -> bool:
         """Check consistency of parent and child data structures."""
         c = self
+
+        assert p.v
 
         def _assert(condition: bool) -> bool:
             return g._assert(condition, show_callers=False)
@@ -2894,6 +2899,7 @@ class Commands:
             if g.unitTesting:
                 raise
             junk1, nag, junk2 = sys.exc_info()
+            assert nag
             badline = nag.get_lineno()
             line = nag.get_line()
             message = nag.get_msg()
@@ -3142,13 +3148,13 @@ class Commands:
         default_delims = g.set_delims_from_language(default_language)
         wrap = c.config.getBool("body-pane-wraps")
         table: tuple = (
-            ('encoding',    None,           g.scanAtEncodingDirectives),
-            ('lang-dict',   {},             g.scanAtCommentAndAtLanguageDirectives),
-            ('lineending',  None,           g.scanAtLineendingDirectives),
-            ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
-            ('path',        None,           c.scanAtPathDirectives),
-            ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
-            ('wrap',        wrap,           g.scanAtWrapDirectives),
+            ('encoding',    '',           g.scanAtEncodingDirectives),
+            ('lang-dict',   {},           g.scanAtCommentAndAtLanguageDirectives),
+            ('lineending',  '',           g.scanAtLineendingDirectives),
+            ('pagewidth',   c.page_width, g.scanAtPagewidthDirectives),
+            ('path',        '',           c.scanAtPathDirectives),
+            ('tabwidth',    c.tab_width,  g.scanAtTabwidthDirectives),
+            ('wrap',        wrap,         g.scanAtWrapDirectives),
         )  # fmt: skip
 
         # Set d by scanning all directives.
@@ -3160,6 +3166,7 @@ class Commands:
 
         # Post process: do *not* set commander ivars.
         lang_dict = d.get('lang-dict')
+        assert lang_dict
         d = {
             "delims":       lang_dict.get('delims') or default_delims,
             "comment":      lang_dict.get('comment'),  # Leo 6.4: New.
@@ -3729,12 +3736,12 @@ class Commands:
                     base_dir = os.environ[env_key]
                 except KeyError:
                     print(f"No environment var: {env_key}")
-                    base_dir = None
+                    base_dir = ''
         if base_dir and g.os_path_exists(base_dir):
             if use_git_prefix:
                 git_branch, junk = g.gitInfo()
             else:
-                git_branch = None
+                git_branch = ''
             theDir, fn = g.os_path_split(c.fileName())
             backup_dir = join(base_dir, sub_dir) if sub_dir else base_dir
             path = join(backup_dir, fn)
@@ -3923,7 +3930,7 @@ class Commands:
         self,
         directory: str,
         extensions: list[str],
-        files: list[str],
+        files: list[str] | None,
         kind: str,
         links: list[str],
         outline_name: str,
@@ -4038,6 +4045,7 @@ class Commands:
                     if fileName not in todo and fileName not in scanned:
                         c2 = g.openWithFileName(fileName, gui=gui)
                         todo.append(fileName)
+                        assert c2
                         assert c2 not in result
                         result.append(c2)
 
@@ -4244,7 +4252,9 @@ class Commands:
             c.setChanged()
             c.redraw()
         # Restore the root position's body.
-        c.rootPosition().v.b = saved_body  # #1007: just set v.b.
+        p = c.rootPosition()
+        assert p.v
+        p.v.b = saved_body  # #1007: just set v.b.
         c.init_error_dialogs()
 
     # @+node:ekr.20150710083827.1: *5* c.syntaxErrorDialog
@@ -4280,13 +4290,14 @@ class Commands:
         c.redraw(p)
         c.updateSyntaxColorer(p)  # Dragging can change syntax coloring.
 
-    # @+node:ekr.20031218072017.2353: *5* c.dragAfter
-    def dragAfter(self, p: Position, after: Position | None) -> None:
+    # @+node:ekr.20031218072017.2353: *5* c.dragAfter (not used)
+    def dragAfter(self, p: Position, after: Position) -> None:
         c, p, u = self, self.p, self.undoer
         if not c.checkDrag(p, after):
             return
         if not c.checkMoveWithParentWithWarning(p, after.parent(), True):
             return
+        assert p.v
         c.endEditing()
         undoData = u.beforeMoveNode(p)
         p.setDirty()
@@ -4325,6 +4336,7 @@ class Commands:
         undoType = 'Clone Drag'
         current = c.p
         clone = p.clone()  # Creates clone.  Does not set undo.
+        assert clone.v
         if c.checkDrag(p, after) and c.checkMoveWithParentWithWarning(clone, after.parent(), True):
             c.endEditing()
             undoData = u.beforeInsertNode(current)
@@ -4357,6 +4369,7 @@ class Commands:
         # c = self
         redraw_flag = False
         for p in p.parents():
+            assert p.v
             if not p.v.isExpanded():
                 p.v.expand()
                 p.expand()
@@ -4950,7 +4963,7 @@ class Commands:
             return p and p.hasBack() and p != bunch.p
         return p and p.hasBack()
 
-    # @+node:ekr.20031218072017.2973: *6* c.canMoveOutlineUp
+    # @+node:ekr.20031218072017.2973: *6* c.canMoveOutlineUp Bug!
     def canMoveOutlineUp(self) -> bool:
         c, current = self, self.p
         visBack = current and current.visBack(c)
@@ -4960,10 +4973,13 @@ class Commands:
             return True
         if c.hoistStack:
             limit, limitIsVisible = c.visLimit()
+            ### g.trace(limitIsVisible, limit.h if limit else '<no limit>')  ###
             if limitIsVisible:  # A hoist
+                assert limit
                 return current != limit
             # A chapter.
-            return current != limit.firstChild()
+            assert not limit  ### Bug???
+            return current != limit.firstChild()  # type:ignore # Bug???
         return current != c.rootPosition()
 
     # @+node:ekr.20031218072017.2974: *6* c.canPasteOutline
