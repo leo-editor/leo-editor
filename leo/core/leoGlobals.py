@@ -3546,7 +3546,9 @@ def fullPath(c: Cmdr, p: Position) -> str:
 
 # @+node:ekr.20190327192721.1: *3* g.get_files_in_directory
 def get_files_in_directory(
-    directory: str, kinds: list | None = None, recursive: bool = True
+    directory: str,
+    kinds: list | None = None,
+    recursive: bool = True,
 ) -> list[str]:
     """
     Return a list of all files of the given file extensions in the directory.
@@ -3713,7 +3715,9 @@ def makePathRelativeTo(fullPath: str, basePath: str) -> str:
 
 # @+node:ekr.20090520055433.5945: *3* g.openWithFileName
 def openWithFileName(
-    fileName: str, old_c: Cmdr | None = None, gui: LeoGui | None = None
+    fileName: str,
+    old_c: Cmdr | None = None,
+    gui: LeoGui | None = None,
 ) -> Cmdr | None:
     """
     Load any kind of file in the appropriate way:
