@@ -8371,7 +8371,10 @@ def openUrl(p: Position) -> None:  # pragma: no cover
 
 
 # @+node:ekr.20110605121601.18135: *3* g.openUrlOnClick (open-url-under-cursor)
-def openUrlOnClick(event: QMouseEvent, url: str = '') -> None:  # pragma: no cover
+def openUrlOnClick(
+    event: QMouseEvent,
+    url: str | None = None,  # Don't change this.
+) -> None:
     """Open the URL under the cursor.  Return it for unit testing."""
     from leo.core.leoGui import LeoKeyEvent
     from leo.plugins.qt_text import QTextEditWrapper
@@ -8389,7 +8392,10 @@ def openUrlOnClick(event: QMouseEvent, url: str = '') -> None:  # pragma: no cov
 
 
 # @+node:ekr.20170216091704.1: *4* g.openUrlHelper
-def openUrlHelper(event: LeoKeyEvent, url: str = '') -> str | None:
+def openUrlHelper(
+    event: LeoKeyEvent,
+    url: str | None = None,  # Don't change this.
+) -> str | None:  # Don't change this.
     """Open the unl, url or gnx under the cursor.  Return it for unit testing."""
     if not event:
         return None
