@@ -4053,7 +4053,9 @@ def findAncestorVnodeByPredicate(p: Position, v_predicate: Callable) -> VNode | 
 
 # @+node:ekr.20170220103251.1: *3* g.findRootsWithPredicate
 def findRootsWithPredicate(
-    c: Cmdr, root: Position, predicate: Callable | None = None
+    c: Cmdr,
+    root: Position,
+    predicate: Callable | None = None,
 ) -> list[Position]:
     """
     Commands often want to find one or more **roots**, given a position p.
@@ -5714,23 +5716,27 @@ def getPythonEncodingFromString(s: bytes | str) -> str:
     encoding = 'utf-8'
     tag, tag2 = '# -*- coding:', '-*-'
     n1, n2 = len(tag), len(tag2)
-    if s:
-        # Convert to unicode before calling startswith.
-        # The encoding doesn't matter: we only look at the first line, and if
-        # the first line is an encoding line, it will contain only ascii characters.
-        s = g.toUnicode(s)  # Bug fix: 2025/03/24: do *not* force ascii encoding.
-        lines = g.splitLines(s)
-        line1 = lines[0].strip()
+    if not isinstance(s, (bytes, str)):
+        raise ValueError(f"{tag}: {s=}\n{g.callers()=}")
+    if not s:
+        return encoding
+
+    # Convert to unicode before calling startswith.
+    # The encoding doesn't matter: we only look at the first line, and if
+    # the first line is an encoding line, it will contain only ascii characters.
+    s = g.toUnicode(s)  # Bug fix: 2025/03/24: do *not* force ascii encoding.
+    lines = g.splitLines(s)
+    line1 = lines[0].strip()
+    if line1.startswith(tag) and line1.endswith(tag2):
+        e = line1[n1:-n2].strip()
+        if e and g.isValidEncoding(e):
+            encoding = e
+    elif g.match_word(line1, 0, '@first'):
+        line1 = line1[len('@first') :].strip()
         if line1.startswith(tag) and line1.endswith(tag2):
             e = line1[n1:-n2].strip()
             if e and g.isValidEncoding(e):
                 encoding = e
-        elif g.match_word(line1, 0, '@first'):
-            line1 = line1[len('@first') :].strip()
-            if line1.startswith(tag) and line1.endswith(tag2):
-                e = line1[n1:-n2].strip()
-                if e and g.isValidEncoding(e):
-                    encoding = e
     return encoding
 
 
