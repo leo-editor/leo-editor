@@ -515,7 +515,7 @@ class Commands:
             self.spellCommands,
             self.vimCommands,
             self.undoer,
-        ]  # fmt: skip
+        ]
 
         # Other objects
         # A list of other classes that have a reloadSettings method
