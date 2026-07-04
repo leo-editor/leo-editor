@@ -5658,13 +5658,12 @@ def bytesToStr(b: bytes, reportErrors: bool = False) -> str:
     if isinstance(b, bytes):
         try:
             return b.decode('utf-8', 'strict')
-        except (UnicodeDecodeError, UnicodeError):  # noqa
+        except (UnicodeDecodeError, UnicodeError) as e:
             # https://wiki.python.org/moin/UnicodeDecodeError
             if reportErrors:
-                g.error(f"{tag}: unicode error. {b!r}")
-                g.trace(g.callers())
+                g.error(f"{tag}: {e}! {b=}\n{g.callers()=}")
             return b.decode('utf-8', 'replace')
-    raise ValueError(f"g.byteToStr: {b!r} {g.callers()}")
+    raise ValueError(f"{tag}: {b=}\n{g.callers()=}")
 
 
 # @+node:ekr.20190505052756.1: *4* g.checkUnicode
@@ -5810,41 +5809,37 @@ def strToBytes(s: str, reportErrors: bool = False) -> bytes:
 # @+node:ekr.20050208093800: *4* g.toEncodedString
 def toEncodedString(s: bytes | str, encoding: str = '', reportErrors: bool = False) -> bytes:
     """Convert unicode string to an encoded string."""
-    if not isinstance(s, str):
+    tag = 'g.toEncodedString'
+    if isinstance(s, bytes):
         return s
-    if not encoding:
-        encoding = 'utf-8'
-    # These are the only significant calls to s.encode in Leo.
-    # Tracing these calls directly yields thousands of calls.
-    try:
-        return s.encode(encoding, "strict")
-    except UnicodeError:
-        if reportErrors:  # #4753.
-            g.error(f"Error converting {s!r} from unicode to {encoding} encoding")
-        return s.encode(encoding, "replace")
+    if isinstance(s, str):
+        if not encoding:
+            encoding = 'utf-8'
+        try:
+            return s.encode(encoding, "strict")
+        except UnicodeError as e:
+            if reportErrors:
+                g.error(f"{tag} {e}! {encoding=} {s=}\n{g.callers()=}")
+            return s.encode(encoding, "replace")
+    raise ValueError(f"{tag}: {s=} {g.callers()=}")
 
 
 # @+node:ekr.20050208093800.1: *4* g.toUnicode
 def toUnicode(s: bytes | str, encoding: str = '', reportErrors: bool = False) -> str:
     """Convert bytes to unicode if necessary."""
+    tag = 'g.toUnicode'
     if isinstance(s, str):
         return s
-    tag = 'g.toUnicode'
-    if not encoding:
-        encoding = 'utf-8'
-    try:
-        return s.decode(encoding, 'strict')
-    except (UnicodeDecodeError, UnicodeError):
-        # https://wiki.python.org/moin/UnicodeDecodeError
-        if reportErrors:
-            g.printObj(s, tag=f"{tag} unicode error. encoding: {encoding!r}")
-            g.trace(g.callers())
-        return s.decode(encoding, 'replace')
-    except Exception:
-        g.es_exception()
-        g.error(f"{tag}: unexpected error! encoding: {encoding!r}, s:\n{s!r}")
-        g.trace(g.callers())
-        return ''
+    if isinstance(s, bytes):
+        if not encoding:
+            encoding = 'utf-8'
+        try:
+            return s.decode(encoding, 'strict')
+        except (UnicodeDecodeError, UnicodeError) as e:
+            if reportErrors:
+                g.trace(f"{tag} {e}! {encoding=} {s=}\n{g.callers()=}")
+            return s.decode(encoding, 'replace')
+    raise ValueError(f"{tag}: {s=}\n{g.callers()=}")
 
 
 # @+node:ekr.20031218072017.3197: *3* g.Whitespace
