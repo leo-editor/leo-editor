@@ -5654,22 +5654,17 @@ def unCamel(s: str) -> list[str]:
 # @+node:ekr.20240325175438.1: *4* g.bytesToStr
 def bytesToStr(b: bytes, reportErrors: bool = False) -> str:
     """Convert bytes to unicode."""
-    assert isinstance(b, bytes), g.callers()
     tag = 'g.bytesToStr'
-    encoding = 'utf-8'
-    try:
-        s = b.decode(encoding, 'strict')
-    except (UnicodeDecodeError, UnicodeError):  # noqa
-        # https://wiki.python.org/moin/UnicodeDecodeError
-        s = b.decode(encoding, 'replace')
-        if reportErrors:
-            g.error(f"{tag}: unicode error. encoding: {encoding!r}, s:\n{s!r}")
-            g.trace(g.callers())
-    except Exception:
-        g.es_exception()
-        g.error(f"{tag}: unexpected error! encoding: {encoding!r}, s:\n{s!r}")
-        g.trace(g.callers())
-    return s
+    if isinstance(b, bytes):
+        try:
+            return b.decode('utf-8', 'strict')
+        except (UnicodeDecodeError, UnicodeError):  # noqa
+            # https://wiki.python.org/moin/UnicodeDecodeError
+            if reportErrors:
+                g.error(f"{tag}: unicode error. {b!r}")
+                g.trace(g.callers())
+            return b.decode('utf-8', 'replace')
+    raise ValueError(f"g.byteToStr: {b!r} {g.callers()}")
 
 
 # @+node:ekr.20190505052756.1: *4* g.checkUnicode
