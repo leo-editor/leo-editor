@@ -1314,7 +1314,7 @@ class Commands:
         define_g: bool = True,
         define_name: str = '__main__',
         silent: bool = False,
-        namespace: dict = None,
+        namespace: dict | None = None,
         raiseFlag: bool = False,
         runPyflakes: bool = True,
     ) -> Value:
@@ -1491,7 +1491,7 @@ class Commands:
 
     # @+node:ekr.20080514131122.12: *4* @cmd recolor (c.recolorCommand)
     @cmd('recolor')
-    def recolorCommand(self, event: LeoKeyEvent = None) -> None:
+    def recolorCommand(self, event: LeoKeyEvent | None = None) -> None:
         """Force a full recolor."""
         c = self
         colorer = c.frame.body.colorizer
@@ -1590,7 +1590,7 @@ class Commands:
                 stack.pop(0)
 
     # @+node:ekr.20161120121226.1: *5* c.all_roots
-    def all_roots(self, copy: bool = True, predicate: Callable = None) -> Generator:
+    def all_roots(self, copy: bool = True, predicate: Callable | None = None) -> Generator:
         """
         A generator yielding *all* the root positions in the outline that
         satisfy the given predicate. p.isAnyAtFileNode is the default
@@ -1633,7 +1633,7 @@ class Commands:
     all_positions_with_unique_vnodes_iter = all_unique_positions
 
     # @+node:ekr.20161120125322.1: *5* c.all_unique_roots
-    def all_unique_roots(self, copy: bool = True, predicate: Callable = None) -> Generator:
+    def all_unique_roots(self, copy: bool = True, predicate: Callable | None = None) -> Generator:
         """
         A generator yielding all unique root positions in the outline that
         satisfy the given predicate. p.isAnyAtFileNode is the default
@@ -2077,7 +2077,9 @@ class Commands:
         return p
 
     # @+node:ekr.20040307104131.3: *5* c.positionExists
-    def positionExists(self, p: Position, root: Position = None, trace: bool = False) -> bool:
+    def positionExists(
+        self, p: Position, root: Position | None = None, trace: bool = False
+    ) -> bool:
         """Return True if a position exists in c's tree"""
         if not p or not p.v:
             return False
@@ -2386,7 +2388,7 @@ class Commands:
         g.doHook("set-mark", c=c, p=p)
 
     # @+node:ekr.20040803140033.3: *5* c.setRootPosition (A do-nothing)
-    def setRootPosition(self, unused_p: Position = None) -> None:
+    def setRootPosition(self, unused_p: Position | None = None) -> None:
         """Set c._rootPosition."""
         # 2011/03/03: No longer used.
 
@@ -2764,7 +2766,7 @@ class Commands:
     # @+node:ekr.20031218072017.1765: *4* c.validateOutline (compatibility only)
     # Makes sure all nodes are valid.
 
-    def validateOutline(self, event: LeoKeyEvent = None) -> bool:
+    def validateOutline(self, event: LeoKeyEvent | None = None) -> bool:
         """
         A legacy outline checker, retained only for compatibility.
 
@@ -2810,7 +2812,9 @@ class Commands:
     # This code is no longer used by any Leo command,
     # but it will be retained for use of scripts.
     # @+node:ekr.20040723094220.1: *4* c.checkAllPythonCode
-    def checkAllPythonCode(self, event: LeoKeyEvent = None, ignoreAtIgnore: bool = True) -> str:
+    def checkAllPythonCode(
+        self, event: LeoKeyEvent | None = None, ignoreAtIgnore: bool = True
+    ) -> str:
         """Check all nodes in the selected tree for syntax and tab errors."""
         c = self
         count = 0
@@ -2845,7 +2849,7 @@ class Commands:
     # @+node:ekr.20040723094220.3: *4* c.checkPythonCode
     def checkPythonCode(
         self,
-        event: LeoKeyEvent = None,
+        event: LeoKeyEvent | None = None,
         ignoreAtIgnore: bool = True,
         checkOnSave: bool = False,
     ) -> str:
@@ -3309,7 +3313,7 @@ class Commands:
         return return_value
 
     # @+node:ekr.20200522075411.1: *4* c.doCommandByName
-    def doCommandByName(self, command_name: str, event: LeoKeyEvent = None) -> Value:
+    def doCommandByName(self, command_name: str, event: LeoKeyEvent | None = None) -> Value:
         """
         Execute one command, given the name of the command.
 
@@ -3999,7 +4003,7 @@ class Commands:
         c2.close()
 
     # @+node:ekr.20031218072017.2925: *4* c.markAllAtFileNodesDirty
-    def markAllAtFileNodesDirty(self, event: LeoKeyEvent = None) -> None:
+    def markAllAtFileNodesDirty(self, event: LeoKeyEvent | None = None) -> None:
         """Mark all @file nodes as changed."""
         c = self
         c.endEditing()
@@ -4013,7 +4017,7 @@ class Commands:
                 p.moveToThreadNext()
 
     # @+node:ekr.20031218072017.2926: *4* c.markAtFileNodesDirty
-    def markAtFileNodesDirty(self, event: LeoKeyEvent = None) -> None:
+    def markAtFileNodesDirty(self, event: LeoKeyEvent | None = None) -> None:
         """Mark all @file nodes in the selected tree as changed."""
         c = self
         p = c.p
@@ -4030,7 +4034,7 @@ class Commands:
                 p.moveToThreadNext()
 
     # @+node:ekr.20250717080554.1: *4* c.openAllLinkedFiles (transitive closure)
-    def openAllLinkedFiles(self, gui: LeoGui = None) -> list[Commands]:
+    def openAllLinkedFiles(self, gui: LeoGui | None = None) -> list[Commands]:
         """
         Open the transitive closure of all outlines reachable from any @leo
         node in this outline.
@@ -4087,7 +4091,7 @@ class Commands:
         return result
 
     # @+node:ekr.20031218072017.2081: *4* c.openRecentFile
-    def openRecentFile(self, event: LeoKeyEvent = None, fn: str = '') -> None:
+    def openRecentFile(self, event: LeoKeyEvent | None = None, fn: str = '') -> None:
         """
         c.openRecentFile: This is not a command!
 
@@ -4103,7 +4107,7 @@ class Commands:
             g.doHook("recentfiles2", c=c2, p=c2.p, v=c2.p, fileName=fn)
 
     # @+node:ekr.20031218072017.2823: *4* c.openWith
-    def openWith(self, event: LeoKeyEvent = None, d: dict[str, Any] = None) -> None:
+    def openWith(self, event: LeoKeyEvent | None = None, d: dict[str, Any] = None) -> None:
         """
         This is *not* a command.
 
@@ -4425,7 +4429,7 @@ class Commands:
                 mods.clear()
 
     # @+node:ekr.20080514131122.13: *5* c.recolor
-    def recolor(self, p: Position = None) -> None:
+    def recolor(self, p: Position | None = None) -> None:
         """
         Force a full recolor when using the Scintilla text widget.
         This method has no effect when using the default Qt colorizer.
@@ -4457,7 +4461,7 @@ class Commands:
         c.enableRedrawFlag = True
 
     # @+node:ekr.20090110073010.1: *6* c.redraw
-    def redraw(self, p: Position = None) -> None:
+    def redraw(self, p: LeoKeyEvent | None = None) -> None:
         """
         Redraw the screen immediately.
         If p is given, set c.p to p.
@@ -4615,7 +4619,7 @@ class Commands:
 
     # @+node:ekr.20031218072017.2909: *4* c.Expand/contract
     # @+node:ekr.20171124091426.1: *5* c.contractAllHeadlines
-    def contractAllHeadlines(self, event: LeoKeyEvent = None) -> None:
+    def contractAllHeadlines(self, event: LeoKeyEvent | None = None) -> None:
         """Contract all nodes in the outline."""
         c = self
         for v in c.all_nodes():
@@ -4788,7 +4792,7 @@ class Commands:
         self,
         menu: LeoQtMenu,
         accelerator: str = '',  # Not used.
-        command: Callable = None,
+        command: Callable | None = None,
         commandName: str = '',  # Not used.
         label: str = '',  # Not used.
         underline: int = 0,
@@ -5121,7 +5125,7 @@ class Commands:
         self,
         p: Position,
         selectAll: bool = False,
-        selection: tuple = None,
+        selection: tuple | None = None,
         keepMinibuffer: bool = False,
     ) -> None:
         """Redraw the screen and edit p's headline."""
@@ -5415,7 +5419,7 @@ class Commands:
     def createNodeHierarchy(
         self,
         heads: list[str],
-        parent: Position = None,
+        parent: Position | None = None,
         forcecreate: bool = False,
     ) -> Position:
         """
@@ -5518,7 +5522,7 @@ class Commands:
     undoableDeletePositions = deletePositionsInList
 
     # @+node:ekr.20091211111443.6265: *4* c.doBatchOperations & helpers
-    def doBatchOperations(self, aList: list = None) -> None:
+    def doBatchOperations(self, aList: list | None = None) -> None:
         # Validate aList and create the parents dict
         if aList is None:
             aList = []
