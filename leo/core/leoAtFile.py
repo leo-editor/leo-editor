@@ -3112,8 +3112,6 @@ class AtFile:
             return False  # No change to original file.
 
         old_contents = g.readFileIntoUnicodeString(fileName, encoding=at.encoding, silent=True)
-        if not old_contents:
-            old_contents = ''
 
         unchanged = (
             contents == old_contents
