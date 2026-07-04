@@ -1696,7 +1696,7 @@ class ViewRenderedController(QtWidgets.QWidget):
         return w
 
     # @+node:ekr.20110320120020.14483: *4* vr.get_kind
-    def get_kind(self, p: Position) -> str | None:
+    def get_kind(self, p: Position) -> str:
         """Return the proper rendering kind for node p."""
 
         p0 = p  # Special case selected position.
@@ -1728,19 +1728,19 @@ class ViewRenderedController(QtWidgets.QWidget):
                 language = m.group(1)
                 if g.isValidLanguage(language):
                     return language
-            return None
+            return ''
 
         # #1287: Honor both kind of directives node by node.
         for p1 in p.self_and_parents():
             language = get_language(p1)
             if language:
                 if language in ('md', 'markdown'):
-                    return language if got_markdown else None
+                    return language if got_markdown else ''
                 if language in ('rest', 'rst'):
-                    return language if got_docutils else None
+                    return language if got_docutils else ''
                 if language in self.dispatch_dict:
                     return language
-        return None
+        return ''
 
     # @+node:ekr.20110320233639.5776: *4* vr.get_fn
     def get_fn(self, s: str, tag: str) -> tuple[bool, str]:

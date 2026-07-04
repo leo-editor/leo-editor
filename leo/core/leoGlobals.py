@@ -2945,18 +2945,18 @@ def findTabWidthDirectives(c: Cmdr, p: Position) -> int | None:
 
 
 # @+node:ekr.20170127142001.5: *3* g.findFirstAtLanguageDirective
-def findFirstValidAtLanguageDirective(s: str) -> str | None:
+def findFirstValidAtLanguageDirective(s: str) -> str:
     """
     Return the first language for which there is a valid @language
     directive in s.
     """
     if not s.strip():
-        return None
+        return ''
     for m in g.g_language_pat.finditer(s):
         language = m.group(1)
         if g.isValidLanguage(language):
             return language
-    return None
+    return ''
 
 
 # @+node:ekr.20090214075058.6: *3* g.findLanguageDirectives (must be fast)
