@@ -125,40 +125,46 @@ class Commands:
         self.frame: Widget = None
         self.parentFrame: Widget = parentFrame  # New in Leo 6.0.
         self.gui: LeoGui = gui or g.app.gui
-        # New ivars
-        self.config: LocalConfigManager = None
+
+        ###
         # Declare subcommanders (and one alias) (created later).
-        self.atFileCommands: AtFile = None
-        self.chapterController: ChapterController = None
-        self.fileCommands: FileCommands = None
-        self.findCommands: LeoFind = None
-        self.importCommands: LeoImportCommands = None
-        self.keyHandler: KeyHandlerClass = None
-        self.nodeHistory: NodeHistory = None
-        self.persistenceController: PersistenceDataController = None
-        self.printingController: PrintingController = None
-        self.shadowController: ShadowController = None
-        self.undoer: Undoer = None
-        self.vimCommands: VimCommands = None
+        # self.config: LocalConfigManager = None
+        # self.atFileCommands: AtFile = None
+        # self.chapterController: ChapterController = None
+        # self.fileCommands: FileCommands = None
+        # self.findCommands: LeoFind = None
+        # self.importCommands: LeoImportCommands = None
+        # self.keyHandler: KeyHandlerClass = None
+        # self.nodeHistory: NodeHistory = None
+        # self.persistenceController: PersistenceDataController = None
+        # self.printingController: PrintingController = None
+        # self.shadowController: ShadowController = None
+        # self.undoer: Undoer = None
+        # self.vimCommands: VimCommands = None
+
+        ###
         # Declare command handlers (created later).
-        self.abbrevCommands: AbbrevCommandsClass = None
-        self.bufferCommands: BufferCommandsClass = None
-        self.controlCommands: ControlCommandsClass = None
-        self.convertCommands: ConvertCommandsClass = None
-        self.debugCommands: DebugCommandsClass = None
-        self.editCommands: EditCommandsClass = None
-        self.editFileCommands: EditFileCommandsClass = None
-        self.gotoCommands: GoToCommands = None
-        self.helpCommands: HelpCommandsClass = None
-        self.keyHandlerCommands: KeyHandlerCommandsClass = None
-        self.killBufferCommands: KillBufferCommandsClass = None
-        self.rectangleCommands: RectangleCommandsClass = None
-        self.rstCommands: RstCommands = None
-        self.spellCommands: SpellCommandsClass = None
+        # self.abbrevCommands: AbbrevCommandsClass = None
+        # self.bufferCommands: BufferCommandsClass = None
+        # self.controlCommands: ControlCommandsClass = None
+        # self.convertCommands: ConvertCommandsClass = None
+        # self.debugCommands: DebugCommandsClass = None
+        # self.editCommands: EditCommandsClass = None
+        # self.editFileCommands: EditFileCommandsClass = None
+        # self.gotoCommands: GoToCommands = None
+        # self.helpCommands: HelpCommandsClass = None
+        # self.keyHandlerCommands: KeyHandlerCommandsClass = None
+        # self.killBufferCommands: KillBufferCommandsClass = None
+        # self.rectangleCommands: RectangleCommandsClass = None
+        # self.rstCommands: RstCommands = None
+        # self.spellCommands: SpellCommandsClass = None
+
         # Declare alias for self.keyHandler.
         self.k: KeyHandlerClass = None
+
         # The stylesheet manager does not exist in all guis.
-        self.styleSheetManager: StyleSheetManager = None
+        self.styleSheetManager: StyleSheetManager | None = None
+
         # The order of these calls does not matter.
         c.initCommandIvars()
         c.initDebugIvars()
@@ -315,11 +321,10 @@ class Commands:
         # User commands...
         from leo.commands import abbrevCommands
         from leo.commands import bufferCommands
-        from leo.commands import (
-            checkerCommands,
-        )  # The import *is* required to define commands.
+        from leo.commands import checkerCommands  # Required.
 
         assert checkerCommands  # To suppress a pyflakes warning.
+
         from leo.commands import controlCommands
         from leo.commands import convertCommands
         from leo.commands import debugCommands
