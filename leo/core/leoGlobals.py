@@ -1503,10 +1503,10 @@ class MatchBrackets:
         With selected range: the first time, move cursor back to other end of
         range. The second time, select enclosing range.
         """
-        #
+
         # A partial fix for bug 127: Bracket matching is buggy.
         w = self.c.frame.body.wrapper
-        s = cast(str, w.getAllText())
+        s = w.getAllText() or ''
         _mb = self.c.user_dict['_match_brackets']
         sel_range = w.getSelectionRange()
         if not w.hasSelection():
@@ -7869,7 +7869,7 @@ def run_unit_tests(tests: str = '', verbose: bool = False) -> None:
 #    For example, Leo's forum: https://leo-editor.github.io/leo-editor/
 # @-<< About clickable links >>
 # @+node:ekr.20120320053907.9776: *3* g.computeFileUrl
-def computeFileUrl(fn: str, c: Cmdr, p: Position) -> str:
+def computeFileUrl(fn: str, c: Cmdr | None = None, p: Position | None = None) -> str:
     """
     Compute finalized url for filename fn.
     """
@@ -7892,7 +7892,7 @@ def computeFileUrl(fn: str, c: Cmdr, p: Position) -> str:
         else:
             path = url
         # Handle ancestor @path directives.
-        if c and c.fileName():
+        if c and p and c.fileName():
             base = c.getPath(p)
             path = g.finalize_join(g.os_path_dirname(c.fileName()), base, path)
         else:
