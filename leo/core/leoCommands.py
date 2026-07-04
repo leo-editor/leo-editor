@@ -735,13 +735,13 @@ class Commands:
             print(f"{tag}: No command for {language} in @data exec-script-commands")
             return
         # Get the optional pattern.
-        regex = get_setting_for_language('exec-script-patterns')
+        regex = get_setting_for_language('exec-script-patterns') or ''
         # Set the directory, if possible.
         if p.isAnyAtFileNode():
             path = c.fullPath(p)
             directory = os.path.dirname(path)
         else:
-            directory = None
+            directory = ''
         c.general_script_helper(command, ext, language, directory=directory, regex=regex, root=p)
 
     # @+node:tom.20241014154415.1: *4* @cmd c.execute-external-file
@@ -944,7 +944,7 @@ class Commands:
             If there is a language directive in effect, return it,
             otherwise use the file extension.
             """
-            return c.getLanguage(c.p) or LANGUAGE_EXTENSION_MAP.get(ext, None)
+            return c.getLanguage(c.p) or LANGUAGE_EXTENSION_MAP.get(ext, '')
 
         # @+node:tom.20241014154415.10: *5* getProcessor
         def getProcessor(language: str, path: str, extension: str) -> str:
@@ -1050,7 +1050,7 @@ class Commands:
                 names = (names,)
             term = ''
             for name in names:
-                term = which(name)
+                term = which(name) or ''
                 if term:
                     break
             return term
@@ -1065,6 +1065,7 @@ class Commands:
                 or getTerminalFromDirectory('/usr/bin')
                 or getTerminalFromDirectory('/usr/local/bin')
                 or getTerminalFromDirectory('/bin')
+                or ''
             )
 
         # @+node:tom.20241014154415.16: *5* getTermExecuteCmd
@@ -1188,13 +1189,13 @@ class Commands:
             _, ext = os.path.splitext(path)
 
             # Check terminal from MAP_SETTING_NODE setting
-            setting_terminal = terminal
+            setting_terminal = terminal or ''
             if setting_terminal:
-                terminal = which(terminal)
+                terminal = which(terminal) or ''
                 if not terminal:
                     g.es(f'Cannot find terminal specified in setting: {setting_terminal}')
                     g.es('Trying an alternative')
-                    terminal = getTerminal()
+                    terminal = getTerminal() or ''
                     g.es('using', terminal)
 
             path = c.fullPath(root)
@@ -1374,7 +1375,7 @@ class Commands:
                         namespace.update(script_gnx=script_p.gnx)
                     # We *always* execute the script with p = c.p.
                     callResult = c.executeScriptHelper(
-                        args, define_g, define_name, namespace, script
+                        args or [], define_g, define_name, namespace, script
                     )
                 except KeyboardInterrupt:
                     g.es('interrupted')
@@ -1768,6 +1769,8 @@ class Commands:
         """
         Return the language in effect at node p, checking that the language is valid."""
         v0 = p.v
+        assert v0
+        assert p.v
         seen: set[VNode]
 
         # The same generator as in v.setAllAncestorAtFileNodesDirty.
@@ -1805,7 +1808,7 @@ class Commands:
 
         # Passes 3 & 4: Use the file extension in @<file> nodes.
 
-        def get_language_from_headline(v: VNode) -> str | None:
+        def get_language_from_headline(v: VNode) -> str:
             """Return the extension for @<file> nodes."""
             if v.isAnyAtFileNode():
                 name = v.anyAtFileNodeName()
@@ -1814,7 +1817,7 @@ class Commands:
                 language = g.app.extension_dict.get(ext)
                 if g.isValidLanguage(language):
                     return language
-            return None
+            return ''
 
         # Pass 3: Use file extension in headline of @<file> in direct parents.
         for p2 in p.self_and_parents(copy=False):
@@ -1825,6 +1828,7 @@ class Commands:
         # Pass 4: Use file extension in headline of @<file> nodes in extended parents.
         seen = set([v0.context.hiddenRootNode])
         for v in v_and_parents(v0):
+            assert v
             language = get_language_from_headline(v)
             if language:
                 return language
