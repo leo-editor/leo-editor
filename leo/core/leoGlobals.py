@@ -38,7 +38,7 @@ import time
 import traceback
 import types
 from types import ModuleType
-from typing import Any, IO, Iterable, Sequence, TYPE_CHECKING
+from typing import cast, Any, IO, Iterable, Sequence, TYPE_CHECKING
 import unittest
 import urllib
 import urllib.parse as urlparse
@@ -1312,7 +1312,7 @@ class MatchBrackets:
                 # Scan to the end/beginning of the string.
                 i = self.scan_string(s, i)
             elif self.starts_comment(s, i):
-                i = self.scan_comment(s, i)
+                i = self.scan_comment(s, i)  # type:ignore # i can't be None.
             elif ch == '/' and self.is_regex(s, i):
                 i = self.scan_regex(s, i)
             elif ch == ch1:
@@ -1376,7 +1376,9 @@ class MatchBrackets:
         if self.forward:
             if self.single_comment and g.match(s, i, self.single_comment):
                 return True
-            return self.start_comment and self.end_comment and g.match(s, i, self.start_comment)
+            return bool(
+                self.start_comment and self.end_comment and g.match(s, i, self.start_comment)
+            )
         if s[i] == '\n':
             if self.single_comment:
                 # Scan backward for any single-comment delim.
@@ -1483,7 +1485,7 @@ class MatchBrackets:
                         i -= 1
                     assert progress > i
             return False
-        return self.start_comment and self.end_comment and g.match(s, i, self.end_comment)
+        return bool(self.start_comment and self.end_comment and g.match(s, i, self.end_comment))
 
     # @+node:ekr.20160119104148.1: *4* mb.oops
     def oops(self, s: str) -> None:
@@ -1503,7 +1505,7 @@ class MatchBrackets:
         #
         # A partial fix for bug 127: Bracket matching is buggy.
         w = self.c.frame.body.wrapper
-        s = w.getAllText()
+        s = cast(str, w.getAllText())
         _mb = self.c.user_dict['_match_brackets']
         sel_range = w.getSelectionRange()
         if not w.hasSelection():
@@ -1523,7 +1525,9 @@ class MatchBrackets:
         if left is None:
             g.es("Bracket not found")
             return
-        index2 = self.find_matching_bracket(ch, s, index)
+        ch = cast(str, ch)
+        index = cast(int, index)
+        index2 = cast(int, self.find_matching_bracket(ch, s, index))
         if index2 is None:
             g.es("No matching bracket.")  # #1447.
             return
@@ -1544,6 +1548,7 @@ class MatchBrackets:
                 s, max(minmax[0], 0), min(minmax[1], max_right), max_right, expand=True
             )
             if index3 is not None:  # found nearest bracket outside range
+                ch = cast(str, ch)
                 index4 = self.find_matching_bracket(ch, s, index3)
                 if index4 is not None:  # found matching bracket, expand range
                     index, index2 = index3, index4
@@ -1570,7 +1575,7 @@ class OptionsUtils:
     This class *calculates* valid options from the usage message.
     """
 
-    def __init__(self, usage: str, obsolete_options: list[str] | None = None) -> None:
+    def __init__(self, usage: str, obsolete_options: list[str]) -> None:
         # This class is essentially stateless because these ivars never change.
         self.usage = usage
         self.obsolete_options = obsolete_options
@@ -1953,11 +1958,12 @@ class Tracer:
         g.pr('\ncallDict...')
         for key in sorted(self.callDict):
             # Print the calling function.
-            g.pr(f"{self.calledDict.get(key, 0):d}", key)  # noqa  # conflict between flake8 and black.
+            g.pr(f"{self.calledDict.get(key, 0):d}", key)
             # Print the called functions.
             d = self.callDict.get(key)
-            for key2 in sorted(d):
-                g.pr(f"{d.get(key2):8d}", key2)
+            if isinstance(d, dict):
+                for key2 in sorted(d):
+                    g.pr(f"{d.get(key2):8d} {key2}")
 
     # @+node:ekr.20080531075119.5: *4* stop
     def stop(self) -> None:
@@ -2019,7 +2025,7 @@ class Tracer:
     # @-others
 
 
-def startTracer(limit: int = 0, trace: bool = False, verbose: bool = False) -> Callable:
+def startTracer(limit: int = 0, trace: bool = False, verbose: bool = False) -> g.Tracer:
     t = g.Tracer(limit=limit, trace=trace, verbose=verbose)
     sys.settrace(t.tracer)
     return t
