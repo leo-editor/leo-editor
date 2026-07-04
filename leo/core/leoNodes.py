@@ -2231,9 +2231,9 @@ class Position:
         p.setDirty() is no longer expensive.
         """
         p = self
-        if v := p.v:
-            v.setAllAncestorAtFileNodesDirty()
-            v.setDirty()
+        assert p.v
+        p.v.setAllAncestorAtFileNodesDirty()
+        p.v.setDirty()
 
     # @+node:ekr.20160225153333.1: *3* p.Predicates
     # @+node:ekr.20160225153414.1: *4* p.is_at_all & is_at_all_tree
