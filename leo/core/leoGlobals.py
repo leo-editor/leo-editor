@@ -824,7 +824,7 @@ class KeyStroke:
         }
         if self.mods and s.lower() in shift_d:
             # Returning '' breaks existing code.
-            return shift_d.get(s.lower(), '')  # PR #4772
+            return shift_d.get(s.lower(), '')
         #
         # Make all other translations...
         #
@@ -975,7 +975,7 @@ class KeyStroke:
         }  # fmt: skip
         if 'shift' in self.mods and s in shift_d:
             self.mods.remove('shift')
-            s = shift_d.get(s, '')  # PR #4772
+            s = shift_d.get(s, '')
         return s
 
     # @+node:ekr.20120203053243.10124: *4* ks.find, lower & startswith
@@ -1121,7 +1121,7 @@ class KeyStroke:
             'Tab': '\t',
         }
         if s in d:
-            return d.get(s, '')  # PR #4772
+            return d.get(s, '')
         return s if len(s) == 1 else ''
 
     # @-others
@@ -8228,7 +8228,7 @@ def handleUrl(url: str, c: Cmdr, p: Position | None = None) -> None:
     """Open a url or a unl."""
     if c and not p:
         p = c.p
-    assert p  # PR #4772: suppress mypy warning.
+    assert p  # PR #4772
     # These two special cases should match the hacks in jedit.match_any_url.
     if url.endswith('.'):
         url = url[:-1]
@@ -8366,9 +8366,9 @@ def openUrl(p: Position) -> None:  # pragma: no cover
     if not p:
         return
     if url := g.getUrlFromNode(p):
-        assert p.v  # PR #4772
+        assert p.v
         c = p.v.context
-        assert c  # PR #4772
+        assert c
         if not g.doHook("@url1", c=c, p=p, url=url):
             g.handleUrl(url, c=c, p=p)
         g.doHook("@url2", c=c, p=p, url=url)
