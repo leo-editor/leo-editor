@@ -371,8 +371,11 @@ class Commands:
     # @+node:ekr.20120217070122.10470: *5* c.initObjects
     def initObjects(self, gui: LeoGui) -> None:
         c = self
+
+        # Create the hidden root VNode.
         self.hiddenRootNode = VNode(context=c, gnx='hidden-root-vnode-gnx')
         self.hiddenRootNode.h = '<hidden root vnode>'
+
         # Create the gui frame.
         title = c.computeTabTitle()
         if not g.app.initing:
