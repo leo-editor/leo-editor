@@ -635,7 +635,7 @@ class Position:
     def self_and_parents(self, copy: bool = True) -> Generator:
         """Yield p and all parent positions of p."""
         p = self
-        if not p:  # PR #4767 # p.v may be None.
+        if not p:  # Don't use assert p here.
             return
         p = p.copy()
         while p:
@@ -728,7 +728,8 @@ class Position:
     # @+node:ekr.20040323160302: *5* p.directParents
     def directParents(self) -> list[VNode]:
         p = self
-        return p.v.directParents() if p.v else []
+        assert p.v
+        return p.v.directParents()
 
     # @+node:ekr.20040306214240.3: *5* p.hasChildren & p.numberOfChildren
     def hasChildren(self) -> bool:
@@ -2569,9 +2570,9 @@ class VNode:
         v = self
         # Allocate a new vnode and gnx with empty children & parents.
         v2 = VNode(context=v.context, gnx=None)
-        assert v2.parents == [], v2.parents  # pylint: disable=use-implicit-booleaness-not-comparison
-        assert v2.gnx
-        assert v.gnx != v2.gnx
+        assert v2.parents, v2
+        assert v2.gnx, v2
+        assert v.gnx != v2.gnx, v2
         # Copy vnode fields. Do **not** set v2.parents.
         v2._headString = g.toUnicode(v._headString, reportErrors=True)
         v2._bodyString = g.toUnicode(v._bodyString, reportErrors=True)
