@@ -189,7 +189,7 @@ class Commands:
     def __init__(
         self,
         fileName: str,
-        gui: LeoGui = None,
+        gui: LeoGui | None = None,
         parentFrame: Any = None,
         previousSettings: "PreviousSettings" = None,
         relativeFileName: str = '',
@@ -200,45 +200,12 @@ class Commands:
         self._currentPosition = cast(Position, None)
         self._topPosition = cast(Position, None)
         self.command_count = 0
-        self.frame: Widget = None
+        self.frame: Widget | None = None
         self.parentFrame: Widget = parentFrame  # New in Leo 6.0.
         self.gui: LeoGui = gui or g.app.gui
 
-        ###
-        # Declare subcommanders (and one alias) (created later).
-        # self.config: LocalConfigManager = None
-        # self.atFileCommands: AtFile = None
-        # self.chapterController: ChapterController = None
-        # self.fileCommands: FileCommands = None
-        # self.findCommands: LeoFind = None
-        # self.importCommands: LeoImportCommands = None
-        # self.keyHandler: KeyHandlerClass = None
-        # self.nodeHistory: NodeHistory = None
-        # self.persistenceController: PersistenceDataController = None
-        # self.printingController: PrintingController = None
-        # self.shadowController: ShadowController = None
-        # self.undoer: Undoer = None
-        # self.vimCommands: VimCommands = None
-
-        ###
-        # Declare command handlers (created later).
-        # self.abbrevCommands: AbbrevCommandsClass = None
-        # self.bufferCommands: BufferCommandsClass = None
-        # self.controlCommands: ControlCommandsClass = None
-        # self.convertCommands: ConvertCommandsClass = None
-        # self.debugCommands: DebugCommandsClass = None
-        # self.editCommands: EditCommandsClass = None
-        # self.editFileCommands: EditFileCommandsClass = None
-        # self.gotoCommands: GoToCommands = None
-        # self.helpCommands: HelpCommandsClass = None
-        # self.keyHandlerCommands: KeyHandlerCommandsClass = None
-        # self.killBufferCommands: KillBufferCommandsClass = None
-        # self.rectangleCommands: RectangleCommandsClass = None
-        # self.rstCommands: RstCommands = None
-        # self.spellCommands: SpellCommandsClass = None
-
         # Declare alias for self.keyHandler.
-        self.k: KeyHandlerClass = None
+        self.k: KeyHandlerClass | None = None
 
         # The stylesheet manager does not exist in all guis.
         self.styleSheetManager: StyleSheetManager | None = None
@@ -353,7 +320,7 @@ class Commands:
         # Flags for c.outerUpdate...
         self.enableRedrawFlag = True
         self.requestCloseWindow = False
-        self.requestedFocusWidget: Widget = None
+        self.requestedFocusWidget: Widget | None = None
         self.requestLaterRedraw = False
 
     # @+node:ekr.20120217070122.10472: *5* c.initFileIvars
@@ -723,14 +690,14 @@ class Commands:
     # @+node:ekr.20260619060020.1: *3* @cmd commands
     # @+node:ekr.20250508044308.1: *4* @cmd beautify-tree
     @cmd('beautify-tree')
-    def beautify_tree_command(self, event: LeoKeyEvent = None) -> None:
+    def beautify_tree_command(self, event: LeoKeyEvent | None = None) -> None:
         """Undoably beautify c.p and its subtree."""
         c = self
         c.beautify_script_tree(c.p)
 
     # @+node:ekr.20210530065748.1: *4* @cmd c.execute-general-script
     @cmd('execute-general-script')
-    def execute_general_script_command(self, event: LeoKeyEvent = None) -> None:
+    def execute_general_script_command(self, event: LeoKeyEvent | None = None) -> None:
         """
         Execute c.p and all its descendants as a script.
 
@@ -780,7 +747,7 @@ class Commands:
     # @+node:tom.20241014154415.1: *4* @cmd c.execute-external-file
     # @@language python
     @cmd('execute-external-file')
-    def execute_external_file(self, event: LeoKeyEvent = None) -> None:
+    def execute_external_file(self, event: LeoKeyEvent | None = None) -> None:
         r"""
         # @+<< docstring >>
         # @+node:tom.20241014154415.2: *5* << docstring >>
@@ -1239,7 +1206,7 @@ class Commands:
 
     # @+node:vitalije.20190924191405.1: *4* @cmd execute-pytest
     @cmd('execute-pytest')
-    def execute_pytest(self, event: LeoKeyEvent = None) -> None:
+    def execute_pytest(self, event: LeoKeyEvent | None = None) -> None:
         """Using pytest, execute all @test nodes for p, p's parents and p's subtree."""
         c = self
 
@@ -1306,9 +1273,9 @@ class Commands:
     def executeScript(
         self,
         *,
-        event: LeoKeyEvent = None,
-        args: Args = None,
-        p: Position = None,
+        event: LeoKeyEvent | None = None,
+        args: Args | None = None,
+        p: Position | None = None,
         script: str = '',
         useSelectedText: bool = True,
         define_g: bool = True,
@@ -1550,7 +1517,7 @@ class Commands:
     safe_all_positions = all_positions
 
     # @+node:ekr.20191014093239.1: *5* c.all_positions_for_v
-    def all_positions_for_v(self, v: VNode, stack: list[tuple] = None) -> Generator:
+    def all_positions_for_v(self, v: VNode, stack: list[tuple] | None = None) -> Generator:
         """
         Generates all positions p in this outline where p.v is v.
 
@@ -3820,7 +3787,7 @@ class Commands:
         top_directory: str,
         kind: str = '@clean',  # Any @<file> type. @clean is recommended.
         report_changed_at_clean_nodes: bool = True,  # Recommended.
-        sub_directories: list[str] = None,
+        sub_directories: list[str] | None = None,
         top_outline_name: str = '',
     ) -> None:
         # @+<< c.makeLinkLeoFiles: docstring >>
@@ -4107,7 +4074,11 @@ class Commands:
             g.doHook("recentfiles2", c=c2, p=c2.p, v=c2.p, fileName=fn)
 
     # @+node:ekr.20031218072017.2823: *4* c.openWith
-    def openWith(self, event: LeoKeyEvent | None = None, d: dict[str, Any] = None) -> None:
+    def openWith(
+        self,
+        event: LeoKeyEvent | None = None,
+        d: dict[str, Any] | None = None,
+    ) -> None:
         """
         This is *not* a command.
 
@@ -4370,7 +4341,7 @@ class Commands:
 
     # @+node:ekr.20031218072017.2949: *4* c.Drawing
     # @+node:ekr.20080514131122.8: *5* c.bringToFront
-    def bringToFront(self, c2: "Commands" = None) -> None:
+    def bringToFront(self, c2: Commands | None = None) -> None:
         c = self
         c2 = c2 or c
         g.app.gui.ensure_commander_visible(c2)
@@ -5207,11 +5178,11 @@ class Commands:
         self,
         *,  # All arguments are kwargs.
         dir_: str = '',  # A directory or file name.
-        ignore_pattern: re.Pattern = None,  # Ignore files matching this regex pattern.
+        ignore_pattern: re.Pattern | None = None,  # Ignore files matching this regex pattern.
         kind: str = '@file',
         recursive: bool = True,
         safe_at_file: bool = True,
-        theTypes: list[str] = None,
+        theTypes: list[str] | None = None,
         verbose: bool = True,
     ) -> None:
         # @+<< docstring >>
@@ -5564,7 +5535,7 @@ class Commands:
         self,
         regex: re.Pattern,
         flags: re.RegexFlag = re.IGNORECASE,
-        it: Iterable[Position] = None,
+        it: Iterable[Position] | None = None,
     ) -> list[Position]:
         """
         Return list of all Positions whose body matches the regex at least once.
@@ -5585,7 +5556,7 @@ class Commands:
         self,
         regex: re.Pattern,
         flags: re.RegexFlag = re.IGNORECASE,
-        it: Iterable[Position] = None,
+        it: Iterable[Position] | None = None,
     ) -> list[Position]:
         """
         Return list of all Positions whose headline matches the regex.
