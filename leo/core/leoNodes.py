@@ -733,13 +733,15 @@ class Position:
     # @+node:ekr.20040306214240.3: *5* p.hasChildren & p.numberOfChildren
     def hasChildren(self) -> bool:
         p = self
-        return bool(p.v and len(p.v.children) > 0)
+        assert p.v
+        return len(p.v.children) > 0
 
     hasFirstChild = hasChildren
 
     def numberOfChildren(self) -> int:
         p = self
-        return len(p.v.children) if p.v else 0  # PR #4767
+        assert p.v
+        return len(p.v.children)  # PR #4767
 
     # @+node:ekr.20250405080955.1: *4* p.findDirective
     at_directive_pattern = re.compile(r'@([\w]+)', re.MULTILINE)
