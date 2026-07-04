@@ -577,7 +577,7 @@ class Bunch:
         """Support aBunch[key]"""
         return operator.getitem(self.__dict__, key)
 
-    def get(self, key: str, theDefault: Value | None = None) -> Value:
+    def get(self, key: str, theDefault: Value = None) -> Value:
         return self.__dict__.get(key, theDefault)
 
     def __contains__(self, key: str) -> bool:
@@ -695,13 +695,13 @@ class GeneralSetting:
     def __init__(
         self,
         kind: str,
-        encoding: str | None = None,
-        ivar: str | None = None,
-        source: str | None = None,
-        val: Value | None = None,
-        path: str | None = None,
+        encoding: str = '',
+        ivar: str = '',
+        source: str = '',
+        val: Value = None,
+        path: str = '',
         tag: str = 'setting',
-        unl: str | None = None,
+        unl: str = '',
     ) -> None:
         self.encoding = encoding
         self.ivar = ivar
