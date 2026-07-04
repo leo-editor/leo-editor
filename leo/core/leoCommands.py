@@ -31,37 +31,115 @@ from leo.core.leoNodes import Position, VNode
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoApp import PreviousSettings
     from leo.core.leoGui import LeoKeyEvent
-    from leo.core.leoConfig import LocalConfigManager
+
+    # The following imports *are* required, but flake8 won't know that without the asserts.
 
     # 11 subcommanders...
+
     from leo.core.leoAtFile import AtFile
+
+    assert AtFile
+
     from leo.core.leoChapters import ChapterController
+
+    assert ChapterController
+
     from leo.core.leoFileCommands import FileCommands
+
+    assert FileCommands
+
     from leo.core.leoFind import LeoFind
+
+    assert LeoFind
+
     from leo.core.leoImport import LeoImportCommands
+
+    assert LeoImportCommands
+
     from leo.core.leoKeys import KeyHandlerClass
+
+    assert KeyHandlerClass  # type:ignore
+
     from leo.core.leoHistory import NodeHistory
+
+    assert NodeHistory
+
     from leo.core.leoPersistence import PersistenceDataController
+
+    assert PersistenceDataController
+
     from leo.core.leoPrinting import PrintingController
+
+    assert PrintingController
+
     from leo.core.leoShadow import ShadowController
+
+    assert ShadowController
+
     from leo.core.leoUndo import Undoer
+
+    assert Undoer
+
     from leo.core.leoVim import VimCommands
+
+    assert VimCommands
 
     # 14 command handlers...
     from leo.commands.abbrevCommands import AbbrevCommandsClass
+
+    assert AbbrevCommandsClass
+
     from leo.commands.bufferCommands import BufferCommandsClass
+
+    assert BufferCommandsClass
+
     from leo.commands.controlCommands import ControlCommandsClass
+
+    assert ControlCommandsClass
+
     from leo.commands.convertCommands import ConvertCommandsClass
+
+    assert ConvertCommandsClass
+
     from leo.commands.debugCommands import DebugCommandsClass
+
+    assert DebugCommandsClass
+
     from leo.commands.editCommands import EditCommandsClass
+
+    assert EditCommandsClass
+
     from leo.commands.editFileCommands import EditFileCommandsClass
+
+    assert EditFileCommandsClass
+
     from leo.commands.gotoCommands import GoToCommands
+
+    assert GoToCommands
+
     from leo.commands.helpCommands import HelpCommandsClass
+
+    assert HelpCommandsClass
+
     from leo.commands.keyCommands import KeyHandlerCommandsClass
+
+    assert KeyHandlerCommandsClass
+
     from leo.commands.killBufferCommands import KillBufferCommandsClass
+
+    assert KillBufferCommandsClass
+
     from leo.commands.rectangleCommands import RectangleCommandsClass
+
+    assert RectangleCommandsClass
+
     from leo.core.leoRst import RstCommands
+
+    assert RstCommands
+
     from leo.commands.spellCommands import SpellCommandsClass
+
+    assert SpellCommandsClass
 
     # Other objects...
     from leo.core.leoGui import LeoGui
