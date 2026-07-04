@@ -119,8 +119,8 @@ class Commands:
         t1 = time.process_time()
         c = self
         # Official ivars.
-        self._currentPosition: Position | None = None
-        self._topPosition: Position | None = None
+        self._currentPosition = cast(Position, None)
+        self._topPosition = cast(Position, None)
         self.command_count = 0
         self.frame: Widget = None
         self.parentFrame: Widget = parentFrame  # New in Leo 6.0.
