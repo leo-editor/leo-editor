@@ -2968,7 +2968,7 @@ def findLanguageDirectives(c: Cmdr, p: Position) -> str:
     v0 = p.v
     assert v0
 
-    def find_language(p_or_v: Position | VNode) -> str | None:
+    def find_language(p_or_v: Position | VNode) -> str:
         for s in p_or_v.h, p_or_v.b:
             for m in g_language_pat.finditer(s):
                 language = m.group(1)
@@ -3063,7 +3063,7 @@ def get_directives_dict_list(p: Position) -> list[dict]:
 
 
 # @+node:ekr.20111010082822.15545: *3* g.getLanguageFromAncestorAtFileNode (deprecated)
-def getLanguageFromAncestorAtFileNode(p: Position) -> str | None:
+def getLanguageFromAncestorAtFileNode(p: Position) -> str:
     """Return the language in effect at node p."""
     g.deprecated()
     assert p.v
@@ -3192,7 +3192,7 @@ def scanAtHeaderDirectives(aList: list) -> None:
 
 
 # @+node:ekr.20080827175609.33: *4* g.scanAtLineendingDirectives (deprecated)
-def scanAtLineendingDirectives(aList: list) -> str | None:
+def scanAtLineendingDirectives(aList: list) -> str:
     """Scan aList for @lineending directives."""
     g.deprecated()
     for d in aList:
@@ -3202,7 +3202,7 @@ def scanAtLineendingDirectives(aList: list) -> str | None:
             return lineending
         # else:
         # g.error("invalid @lineending directive:",e)
-    return None
+    return ''
 
 
 # @+node:ekr.20080827175609.34: *4* g.scanAtPagewidthDirectives (deprecated)
@@ -3610,7 +3610,7 @@ def getEncodingAt(p: Position, b: bytes) -> str:
 
 
 # @+node:ville.20090701144325.14942: *3* g.guessExternalEditor
-def guessExternalEditor(c: Cmdr | None = None) -> str | None:
+def guessExternalEditor(c: Cmdr | None = None) -> str:
     """Return a 'sensible' external editor"""
     editor = (
         c
@@ -3633,7 +3633,7 @@ def guessExternalEditor(c: Cmdr | None = None) -> str | None:
 Please set LEO_EDITOR or EDITOR environment variable,
 or do g.app.db['LEO_EDITOR'] = "gvim"''',
     )
-    return None
+    return ''
 
 
 # @+node:ekr.20160330204014.1: *3* g.init_dialog_folder
@@ -3681,7 +3681,7 @@ def is_binary_string(s: str) -> bool:
 
 
 # @+node:ekr.20031218072017.3119: *3* g.makeAllNonExistentDirectories
-def makeAllNonExistentDirectories(theDir: str) -> str | None:
+def makeAllNonExistentDirectories(theDir: str) -> str:
     """
     A wrapper from os.makedirs.
     Attempt to make all non-existent directories.
@@ -3698,7 +3698,7 @@ def makeAllNonExistentDirectories(theDir: str) -> str | None:
         os.makedirs(theDir, mode=0o777, exist_ok=False)
         return theDir
     except Exception:
-        return None
+        return ''
 
 
 # @+node:ekr.20071114113736: *3* g.makePathRelativeTo
@@ -8136,14 +8136,14 @@ findUNL = findUnl  # Compatibility.
 
 
 # @+node:ekr.20120311151914.9917: *3* g.getUrlFromNode
-def getUrlFromNode(p: Position) -> str | None:
+def getUrlFromNode(p: Position) -> str:
     """
     Get an url from node p:
     1. Use the headline if it contains a valid url.
     2. Otherwise, look *only* at the first line of the body.
     """
     if not p:
-        return None
+        return ''
     assert p.v
     c = p.v.context
     assert c
@@ -8169,7 +8169,7 @@ def getUrlFromNode(p: Position) -> str | None:
     for s in table:
         if s.startswith("#"):
             return s
-    return None
+    return ''
 
 
 # @+node:ekr.20170221063527.1: *3* g.handleUnl
@@ -8220,7 +8220,7 @@ def handleUnl(unl_s: str, c: Cmdr) -> Cmdr | None:
 
 
 # @+node:tbrown.20090219095555.63: *3* g.handleUrl & helpers
-def handleUrl(url: str, c: Cmdr, p: Position | None = None) -> None:  ### str | None:
+def handleUrl(url: str, c: Cmdr, p: Position | None = None) -> None:
     """Open a url or a unl."""
     if c and not p:
         p = c.p
@@ -8371,7 +8371,7 @@ def openUrl(p: Position) -> None:  # pragma: no cover
 
 
 # @+node:ekr.20110605121601.18135: *3* g.openUrlOnClick (open-url-under-cursor)
-def openUrlOnClick(event: QMouseEvent, url: str = '') -> str | None:  # pragma: no cover
+def openUrlOnClick(event: QMouseEvent, url: str = '') -> None:  # pragma: no cover
     """Open the URL under the cursor.  Return it for unit testing."""
     from leo.core.leoGui import LeoKeyEvent
     from leo.plugins.qt_text import QTextEditWrapper
@@ -8383,10 +8383,9 @@ def openUrlOnClick(event: QMouseEvent, url: str = '') -> str | None:  # pragma: 
         widget = c.frame.body.widget  # Another hack.
         wrapper = QTextEditWrapper(widget=widget, name='QMouseEvent-wrapper', c=c)
         leo_event = LeoKeyEvent(c, w=wrapper)
-        return openUrlHelper(leo_event, url)
+        openUrlHelper(leo_event, url)
     except Exception:
         g.es_exception()
-        return None
 
 
 # @+node:ekr.20170216091704.1: *4* g.openUrlHelper
