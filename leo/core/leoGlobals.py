@@ -7662,8 +7662,12 @@ def extractExecutableString(c: Cmdr, p: Position, s: str) -> str:
 
 
 # @+node:ekr.20060624085200: *3* g.handleScriptException
-def handleScriptException(c: Cmdr, p: Position, script: str = '') -> None:
-    # PR #4772 Minor change to signature.
+def handleScriptException(
+    c: Cmdr,
+    p: Position,
+    script: str = '',
+    script1: Any = None,  # No longer used.
+) -> None:
     g.warning("exception executing script")
     g.es_exception()
 
