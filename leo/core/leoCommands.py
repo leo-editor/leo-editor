@@ -3588,9 +3588,11 @@ class Commands:
 
     # @+node:ekr.20171124101444.1: *3* c.File
     # @+node:ekr.20200305104646.1: *4* c.archivedPositionToPosition
-    def archivedPositionToPosition(self, s: str) -> Position:
+    def archivedPositionToPosition(self, s: str) -> Position | None:
         """Convert an archived position (a string) to a position."""
         c = self
+        if not s:  # PR #4772
+            return None
         s = g.toUnicode(s)
         aList: list[int]
         aList_s = s.split(',')
