@@ -421,7 +421,7 @@ def standard_timestamp() -> str:
 
 
 # @+node:ekr.20201211183100.1: *3* g.get_backup_directory
-def get_backup_path(sub_directory: str) -> str | None:
+def get_backup_path(sub_directory: str) -> str:
     """
     Return the full path to the subdirectory of the main backup directory.
 
@@ -436,7 +436,7 @@ def get_backup_path(sub_directory: str) -> str | None:
     try:
         backup = os.environ['LEO_BACKUP']
         if not os.path.exists(backup):
-            backup = None
+            backup = ''
     except KeyError:
         pass
     except Exception:
@@ -445,12 +445,12 @@ def get_backup_path(sub_directory: str) -> str | None:
     if not backup:
         backup = os.path.join(str(Path.home()), 'Backup')
         if not os.path.exists(backup):
-            backup = None
+            backup = ''
     if not backup:
-        return None
+        return ''
     # Compute the path to backup/sub_directory
     directory = os.path.join(backup, sub_directory)
-    return directory if os.path.exists(directory) else None
+    return directory if os.path.exists(directory) else ''
 
 
 # @+node:ekr.20140711071454.17644: ** g.Classes & class accessors
@@ -1827,16 +1827,15 @@ class SettingsDict(dict):
             self[key] = aList
 
     # @+node:ekr.20190903181030.1: *4* SettingsDict.get_setting & get_string_setting
-    def get_setting(self, key: str) -> str | None:
+    def get_setting(self, key: str) -> str:
         """Return the canonical setting name."""
         key = key.replace('-', '').replace('_', '')
         gs = self.get(key)
-        val = gs and gs.val
-        return val
+        return gs.val if gs else ''
 
-    def get_string_setting(self, key: str) -> str | None:
+    def get_string_setting(self, key: str) -> str:
         val = self.get_setting(key)
-        return val if val and isinstance(val, str) else None
+        return val if isinstance(val, str) else ''
 
     # @+node:ekr.20190904103552.1: *4* SettingsDict.name & setName
     def name(self) -> str:
