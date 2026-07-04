@@ -4977,13 +4977,11 @@ class Commands:
             return True
         if c.hoistStack:
             limit, limitIsVisible = c.visLimit()
-            ### g.trace(limitIsVisible, limit.h if limit else '<no limit>')  ###
             if limitIsVisible:  # A hoist
                 assert limit
                 return current != limit
             # A chapter.
-            assert not limit  ### Bug???
-            return current != limit.firstChild()  # type:ignore # Bug???
+            return current != limit.firstChild()  # type:ignore # Bug!?!
         return current != c.rootPosition()
 
     # @+node:ekr.20031218072017.2974: *6* c.canPasteOutline
