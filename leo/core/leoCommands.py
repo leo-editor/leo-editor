@@ -196,16 +196,14 @@ class Commands:
     ) -> None:
         t1 = time.process_time()
         c = self
+
         # Official ivars.
         self._currentPosition = cast(Position, None)
         self._topPosition = cast(Position, None)
         self.command_count = 0
-        self.frame: Widget | None = None
+        self.frame: Any = None  # This saves a lot of asserts.
         self.parentFrame: Widget = parentFrame  # New in Leo 6.0.
         self.gui: LeoGui = gui or g.app.gui
-
-        # Declare alias for self.keyHandler.
-        self.k: KeyHandlerClass | None = None
 
         # The stylesheet manager does not exist in all guis.
         self.styleSheetManager: StyleSheetManager | None = None
@@ -220,10 +218,12 @@ class Commands:
         # Instantiate c.config *before* initing objects.
         self.config = None
         c.initSettings(previousSettings)
+
         # Initialize all subsidiary objects, including subcommanders.
         c.initObjects(self.gui)
         assert c.frame
         assert c.frame.c
+
         # Complete the init!
         t2 = time.process_time()
         c.finishCreate()  # Slightly slow.

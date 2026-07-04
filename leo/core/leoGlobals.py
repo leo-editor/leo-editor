@@ -1505,7 +1505,8 @@ class MatchBrackets:
         """
 
         # A partial fix for bug 127: Bracket matching is buggy.
-        w = self.c.frame.body.wrapper
+        c = self.c
+        w = c.frame.body.wrapper
         s = w.getAllText() or ''
         _mb = self.c.user_dict['_match_brackets']
         sel_range = w.getSelectionRange()
@@ -3515,8 +3516,9 @@ def createHiddenCommander(fn: str) -> Cmdr | None:
 
 # @+node:vitalije.20170714085545.1: *3* g.defaultLeoFileExtension
 def defaultLeoFileExtension(c: Cmdr | None = None) -> str:
-    conf = c.config if c else g.app.config
-    return conf.getString('default-leo-extension') or '.leo'
+    config = c.config if c else g.app.config
+    assert config
+    return config.getString('default-leo-extension') or '.leo'
 
 
 # @+node:ekr.20031218072017.3118: *3* g.ensure_extension
