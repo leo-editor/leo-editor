@@ -1505,8 +1505,7 @@ class MatchBrackets:
         """
 
         # A partial fix for bug 127: Bracket matching is buggy.
-        c = self.c
-        w = c.frame.body.wrapper
+        w = self.c.frame.body.wrapper
         s = w.getAllText() or ''
         _mb = self.c.user_dict['_match_brackets']
         sel_range = w.getSelectionRange()
