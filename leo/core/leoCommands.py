@@ -5277,6 +5277,7 @@ class Commands:
     # @+node:ekr.20260110083713.1: *4* c.beautify_script_tree
     def beautify_script_tree(self, root: Position) -> None:
         """beautify root's entire tree. This code is not yet undoable."""
+        assert root.v
         c = root.v.context
         at = c.atFileCommands
         p = c.p
@@ -5301,7 +5302,7 @@ class Commands:
         else:
             g.trace('at.fast_read_into_root failed')  # Should not happen.
 
-    # @+node:ekr.20160201072634.1: *4* c.cloneFindByPredicate
+    # @+node:ekr.20160201072634.1: *4* c.cloneFindByPredicate & helpers
     def cloneFindByPredicate(
         self,
         generator: Callable,
@@ -5310,7 +5311,7 @@ class Commands:
         flatten: bool = False,
         iconPath: str = '',
         undoType: str = '',
-    ) -> Position:
+    ) -> Position | None:  # PR #4773
         """
         Traverse the tree given using the generator, cloning all positions for
         which predicate(p) is True. Undoably move all clones to a new node, created
@@ -5356,6 +5357,7 @@ class Commands:
     # @+node:ekr.20160304054950.1: *5* c.setCloneFindByPredicateIcon
     def setCloneFindByPredicateIcon(self, iconPath: str, p: Position) -> None:
         """Attach an icon to p.v.u."""
+        assert p.v
         if iconPath and g.os_path_exists(iconPath) and not g.os_path_isdir(iconPath):
             aList = p.v.u.get('icons', [])
             for d in aList:
@@ -5390,7 +5392,7 @@ class Commands:
     def createNodeHierarchy(
         self,
         heads: list[str],
-        parent: Position | None = None,
+        parent: Position,  # PR #4773
         forcecreate: bool = False,
     ) -> Position:
         """
