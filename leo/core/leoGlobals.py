@@ -1809,7 +1809,7 @@ class SettingsDict(dict):
 
     # @+others
     # @+node:ekr.20120223062418.10422: *4* SettingsDict.copy
-    def copy(self, name: str | None = None) -> Value:
+    def copy(self, name: str = '') -> Value:
         """Return a new dict with the same contents."""
         # The result is a g.SettingsDict.
         return copy.deepcopy(self)
@@ -2474,7 +2474,7 @@ def oldDump(s: str) -> str:
 
 
 # @+node:ekr.20210904114446.1: *4* g.dump_tree & g.tree_to_string
-def dump_tree(c: Cmdr, dump_body: bool = False, msg: str | None = None) -> None:
+def dump_tree(c: Cmdr, dump_body: bool = False, msg: str = '') -> None:
     if msg:
         print(msg.rstrip())
     else:
@@ -2486,7 +2486,7 @@ def dump_tree(c: Cmdr, dump_body: bool = False, msg: str | None = None) -> None:
                 print(z.rstrip())
 
 
-def tree_to_string(c: Cmdr, dump_body: bool = False, msg: str | None = None) -> str:
+def tree_to_string(c: Cmdr, dump_body: bool = False, msg: str = '') -> str:
     result = ['\n']
     if msg:
         result.append(msg)
@@ -2632,7 +2632,7 @@ def objToString(
     obj: object,
     *,
     indent: int = 0,
-    tag: str | None = None,
+    tag: str = '',
     width: int = 120,
     offset: int = 0,  # Offset into array-like objects.
 ) -> str:
@@ -2689,7 +2689,7 @@ def sleep(n: float) -> None:
 
 
 # @+node:ekr.20171023140544.1: *4* g.printObj & aliases
-def printObj(obj: object, *, tag: str | None = None, indent: int = 0, offset: int = 0) -> None:
+def printObj(obj: object, *, tag: str = '', indent: int = 0, offset: int = 0) -> None:
     """Pretty print any Python object using g.pr."""
     g.pr(objToString(obj, indent=indent, tag=tag, offset=offset))
 
@@ -3082,7 +3082,7 @@ def getLanguageAtPosition(c: Cmdr, p: Position) -> str:
 
 
 # @+node:ekr.20031218072017.1386: *3* g.getOutputNewline
-def getOutputNewline(c: Cmdr | None = None, name: str | None = None) -> str:
+def getOutputNewline(c: Cmdr | None = None, name: str = '') -> str:
     """Convert the name of a line ending to the line ending itself.
 
     Priority:
@@ -3841,7 +3841,7 @@ def readFileIntoUnicodeString(fn: str, encoding: str = '', silent: bool = False)
 # @@c
 
 
-def readlineForceUnixNewline(f: IO, fileName: str | None = None) -> str:
+def readlineForceUnixNewline(f: IO, fileName: str = '') -> str:
     try:
         s = f.readline()
     except UnicodeDecodeError:
@@ -4623,7 +4623,7 @@ def skip_c_id(s: str, i: int) -> int:
 
 
 # @+node:ekr.20040705195048: *4* g.skip_id
-def skip_id(s: str, i: int, chars: str | None = None) -> int:
+def skip_id(s: str, i: int, chars: str = '') -> int:
     chars = g.toUnicode(chars) if chars else ''
     n = len(s)
     while i < n and (g.isWordChar(s[i]) or s[i] in chars):
@@ -4868,11 +4868,11 @@ class GitIssueController:
         c: Cmdr,
         label_list: list[str],
         root: Position,
-        state: str | None = None,
+        state: str = '',
     ) -> None:
         self.base_url = base_url
         self.root = root
-        self.milestone = None
+        self.milestone = ''
         if label_list:
             for state in ('closed', 'open'):
                 for label in label_list:
@@ -5131,7 +5131,7 @@ def gitDescribe(path: str = '') -> tuple[str, str, str]:
 
 
 # @+node:ekr.20170414034616.6: *3* g.gitHeadPath
-def gitHeadPath(path_s: str) -> str | None:
+def gitHeadPath(path_s: str) -> str:
     """
     Compute the path to .git/HEAD given the path.
     """
@@ -5144,11 +5144,11 @@ def gitHeadPath(path_s: str) -> str | None:
         if path == path.parent:
             break
         path = path.parent
-    return None
+    return ''
 
 
 # @+node:ekr.20170414034616.3: *3* g.gitInfo
-def gitInfo(path: str | None = None) -> tuple[str, str]:
+def gitInfo(path: str = '') -> tuple[str, str]:
     """
     Path may be a directory or file.
 
@@ -5342,7 +5342,7 @@ def enableIdleTimeHook(*args: Args, **kwargs: KWargs) -> None:
 
 
 # @+node:ekr.20140825042850.18410: *3* g.IdleTime
-def IdleTime(handler: Callable, delay: int = 500, tag: str | None = None) -> QtIdleTime | None:
+def IdleTime(handler: Callable, delay: int = 500, tag: str = '') -> QtIdleTime | None:
     """
     A thin wrapper for the LeoQtGui.IdleTime class.
 
@@ -5398,7 +5398,7 @@ def idleTimeHookHandler(timer: Callable) -> None:
 
 # @+node:ekr.20041219095213: ** g.Importing
 # @+node:ekr.20040917061619: *3* g.cantImport
-def cantImport(moduleName: str, pluginName: str | None = None, verbose: bool = True) -> None:
+def cantImport(moduleName: str, pluginName: str = '', verbose: bool = True) -> None:
     """Print a "Can't Import" message and return None."""
     s = f"Can not import {moduleName}"
     if pluginName:
@@ -5412,7 +5412,7 @@ def cantImport(moduleName: str, pluginName: str | None = None, verbose: bool = T
 
 
 # @+node:ekr.20191220044128.1: *3* g.import_module
-def import_module(name: str, package: str | None = None) -> ModuleType | None:
+def import_module(name: str, package: str = '') -> ModuleType | None:
     """
     A thin wrapper over importlib.import_module.
     """
@@ -5673,7 +5673,7 @@ def bytesToStr(b: bytes, reportErrors: bool = False) -> str:
 
 
 # @+node:ekr.20190505052756.1: *4* g.checkUnicode
-def checkUnicode(s: str, encoding: str | None = None) -> str:
+def checkUnicode(s: str, encoding: str = '') -> str:
     """
     Warn when converting bytes. Report *all* errors.
 
@@ -6244,7 +6244,7 @@ log = es
 
 
 # @+node:ekr.20060917120951: *3* g.es_dump
-def es_dump(s: str, n: int = 30, title: str | None = None) -> None:
+def es_dump(s: str, n: int = 30, title: str = '') -> None:
     if title:
         g.es_print('', title)
     i = 0
@@ -6429,7 +6429,7 @@ is_unique_class = isUniqueClass
 
 
 # @+node:ekr.20150127060254.5: *3* g.log_to_file
-def log_to_file(s: str, fn: str | None = None) -> None:
+def log_to_file(s: str, fn: str = '') -> None:
     """Write a message to ~/test/leo_log.txt."""
     if fn is None:
         fn = g.finalize('~/test/leo_log.txt')
@@ -6541,7 +6541,7 @@ def printEntireTree(c: Cmdr, tag: str = '') -> None:
 
 
 # @+node:ekr.20031218072017.3114: *3* g.printGlobals
-def printGlobals(message: str | None = None) -> None:
+def printGlobals(message: str = '') -> None:
     # Get the list of globals.
     globs = list(globals())
     globs.sort()
@@ -6554,7 +6554,7 @@ def printGlobals(message: str | None = None) -> None:
 
 
 # @+node:ekr.20031218072017.3115: *3* g.printLeoModules
-def printLeoModules(message: str | None = None) -> None:
+def printLeoModules(message: str = '') -> None:
     # Create the list.
     mods = []
     for name in sys.modules:
@@ -6829,7 +6829,7 @@ def cls(event: LeoKeyEvent | None = None) -> None:
 
 
 # @+node:ekr.20131114124839.16665: *3* g.createScratchCommander
-def createScratchCommander(fileName: str | None = None) -> None:
+def createScratchCommander(fileName: str = '') -> None:
     c = g.app.newCommander(fileName)
     frame = c.frame
     frame.createFirstTreeNode()
@@ -6850,7 +6850,7 @@ def deprecated() -> None:
 
 
 # @+node:ekr.20031218072017.3126: *3* g.funcToMethod (Python Cookbook)
-def funcToMethod(f: Callable, theClass: object, name: str | None = None) -> None:
+def funcToMethod(f: Callable, theClass: object, name: str = '') -> None:
     """
     From the Python Cookbook...
 
@@ -7433,7 +7433,7 @@ def python_tokenize(s: str) -> list:
 
 # @+node:ekr.20040327103735.2: ** g.Scripting
 # @+node:ekr.20161223090721.1: *3* g.exec_file
-def exec_file(path: str, d: dict[str, Value], script: str | None = None) -> None:
+def exec_file(path: str, d: dict[str, Value], script: str = '') -> None:
     """Simulate python's execfile statement for python 3."""
     if script is None:
         with open(path) as f:
@@ -7791,7 +7791,7 @@ def run_coverage_tests(module: str = '', filename: str = '') -> None:
 
 
 # @+node:ekr.20210901065224.1: *3* g.run_unit_tests
-def run_unit_tests(tests: str | None = None, verbose: bool = False) -> None:
+def run_unit_tests(tests: str = '', verbose: bool = False) -> None:
     """
     Run the unit tests given by the "tests" string.
 
@@ -8371,7 +8371,7 @@ def openUrl(p: Position) -> None:  # pragma: no cover
 
 
 # @+node:ekr.20110605121601.18135: *3* g.openUrlOnClick (open-url-under-cursor)
-def openUrlOnClick(event: QMouseEvent, url: str | None = None) -> str | None:  # pragma: no cover
+def openUrlOnClick(event: QMouseEvent, url: str = '') -> str | None:  # pragma: no cover
     """Open the URL under the cursor.  Return it for unit testing."""
     from leo.core.leoGui import LeoKeyEvent
     from leo.plugins.qt_text import QTextEditWrapper
@@ -8390,7 +8390,7 @@ def openUrlOnClick(event: QMouseEvent, url: str | None = None) -> str | None:  #
 
 
 # @+node:ekr.20170216091704.1: *4* g.openUrlHelper
-def openUrlHelper(event: LeoKeyEvent, url: str | None = None) -> str | None:
+def openUrlHelper(event: LeoKeyEvent, url: str = '') -> str | None:
     """Open the unl, url or gnx under the cursor.  Return it for unit testing."""
     if not event:
         return None
