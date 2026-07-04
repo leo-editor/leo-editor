@@ -15,14 +15,15 @@ import tabnanny
 import tempfile
 import time
 import tokenize
-from typing import Any, Generator, Iterable, Sequence, TYPE_CHECKING
+from typing import cast, Any, Generator, Iterable, Sequence, TYPE_CHECKING
 import xml.etree.ElementTree as ElementTree
 
 from leo.core import leoGlobals as g
 
 # The leoCommands ctor now does most leo.core.leo* imports,
 # thereby breaking circular dependencies.
-from leo.core import leoNodes
+### from leo.core import leoNodes
+from leo.core.leoNodes import Position, VNode
 
 # @-<< leoCommands imports >>
 # @+<< leoCommands annotations >>
@@ -31,7 +32,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoApp import PreviousSettings
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoConfig import LocalConfigManager
-    from leo.core.leoNodes import Position, VNode
 
     # 11 subcommanders...
     from leo.core.leoAtFile import AtFile
@@ -287,7 +287,7 @@ class Commands:
     # @+node:ekr.20120217070122.10470: *5* c.initObjects
     def initObjects(self, gui: LeoGui) -> None:
         c = self
-        self.hiddenRootNode = leoNodes.VNode(context=c, gnx='hidden-root-vnode-gnx')
+        self.hiddenRootNode = VNode(context=c, gnx='hidden-root-vnode-gnx')
         self.hiddenRootNode.h = '<hidden root vnode>'
         # Create the gui frame.
         title = c.computeTabTitle()
@@ -1479,7 +1479,7 @@ class Commands:
         if stack is None:
             stack = []
 
-        if not isinstance(v, leoNodes.VNode):
+        if not isinstance(v, VNode):
             g.es_print(f"not a VNode: {v!r}")
             return  # Stop the generator.
 
@@ -1492,7 +1492,7 @@ class Commands:
         def stack2pos(stack: list[tuple]) -> Position:
             """Convert the stack to a position."""
             v, i = stack[-1]
-            return leoNodes.Position(v, i, stack[:-1])
+            return Position(v, i, stack[:-1])
 
         for v2 in set(v.parents):
             for i in allinds(v2, v):
@@ -1586,14 +1586,10 @@ class Commands:
     def currentPosition(self) -> Position:
         """
         Return a copy of the presently selected position or None.
-        So c.p.copy() is never necessary.
+        As a result, c.p.copy() is never necessary.
         """
         c = self
-        if getattr(c, '_currentPosition', None):
-            # *Always* return a copy.
-            return c._currentPosition.copy()
-        # Returns a new copy of the root position or None
-        return c.rootPosition()
+        return c._currentPosition.copy() if c._currentPosition else c.rootPosition()
 
     # For compatibility with old scripts...
 
@@ -2027,13 +2023,20 @@ class Commands:
     # @+node:ekr.20040803140033.2: *5* c.rootPosition
     _rootCount = 0
 
-    def rootPosition(self) -> Position | None:
-        """Return a new *copy* of the root position or None."""
+    def rootPosition(self) -> Position:
+        """
+        Return a new *copy* of the root position.
+
+        New in Leo 6.8.10: Return an empty Position (p.v == None) instead of None.
+
+        No valid existing code will break because the only valid tests for Positions are:
+
+            if p:
+            if not p:
+        """
         c = self
-        if c.hiddenRootNode.children:
-            v = c.hiddenRootNode.children[0]
-            return leoNodes.Position(v, childIndex=0, stack=None)
-        return None
+        v = c.hiddenRootNode.children[0] if c.hiddenRootNode.children else cast(VNode, None)
+        return Position(v=v, childIndex=0, stack=None)
 
     # For compatibility with old scripts...
 
@@ -2059,7 +2062,7 @@ class Commands:
         return False
 
     # @+node:ekr.20070609122713: *5* c.visLimit
-    def visLimit(self) -> tuple[None, None] | tuple[Position, bool]:
+    def visLimit(self) -> tuple[Position | None, bool]:
         """
         Return the topmost visible node.
         This is affected by chapters and hoists.
@@ -2071,7 +2074,7 @@ class Commands:
             p = bunch.p
             limitIsVisible = not cc or not p.h.startswith('@chapter')
             return p, limitIsVisible
-        return None, None
+        return None, False
 
     # @+node:tbrown.20091206142842.10296: *5* c.vnode2allPositions
     def vnode2allPositions(self, v: VNode) -> list[Position]:
@@ -2100,7 +2103,7 @@ class Commands:
                 immediate = parent
             else:
                 v, n = stack.pop()
-                p = leoNodes.Position(v, n, stack)
+                p = Position(v, n, stack)
                 positions.append(p)
         return positions
 
@@ -2126,7 +2129,7 @@ class Commands:
             # a VNode not in the tree
             return None
         v, n = stack.pop()
-        p = leoNodes.Position(v, n, stack)
+        p = Position(v, n, stack)
         return p
 
     # @+node:ekr.20090130135126.1: *4* c.Properties
@@ -5449,7 +5452,7 @@ class Commands:
                 op, p, n = z
                 ok = (
                     op in ('insert', 'delete')
-                    and isinstance(p, leoNodes.position)
+                    and isinstance(p, Position)  # PR #4767: bug fix.
                     and isinstance(n, int)
                 )
                 if ok:

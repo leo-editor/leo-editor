@@ -194,7 +194,7 @@ class TestNodes(LeoUnitTest):
             ('self_and_parents',     root.firstChild().self_and_parents),
             ('self_and_subtree',     root.self_and_subtree),
             ('following_siblings',   root.following_siblings),
-            ('parents',              root.firstChild().firstChild().parents),
+            ('parents',              root.parents),
             ('unique_subtree',       root.unique_subtree),
         )  # fmt: skip
         for kind, generator in table:
@@ -1139,10 +1139,10 @@ class TestNodeIndices(LeoUnitTest):
     # @+node:ekr.20220306055506.1: *3* TestNodeIndices.test_scanGnx
     def test_scanGnx(self):
         ni = g.app.nodeIndices
-        for s, id1, t1, n1 in (
-            ('ekr.123', 'ekr', '123', None),
+        for s, id1, t1, n1 in (  # PR #4767
+            ('ekr.123', 'ekr', '123', ''),
             ('ekr.456.2', 'ekr', '456', '2'),
-            ('', g.app.leoID, None, None),
+            ('', g.app.leoID, '', ''),
         ):
             id2, t2, n2 = ni.scanGnx(s)
             self.assertEqual(id1, id2)
