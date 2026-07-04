@@ -563,7 +563,9 @@ class Position:
 
     # @+node:ekr.20161120163203.1: *4* p.nearest_unique_roots (aka p.nearest)
     def nearest_unique_roots(
-        self, copy: bool = True, predicate: Callable | None = None
+        self,
+        copy: bool = True,
+        predicate: Callable | None = None,
     ) -> Generator:
         """
         A generator yielding all unique root positions "near" p1 = self that
