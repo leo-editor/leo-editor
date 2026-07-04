@@ -472,9 +472,10 @@ class BindingInfo:
         self,
         kind: str,
         commandName: str = '',
+        *,
         func: Callable | None = None,
-        nextMode: str | None = None,
-        pane: str | None = None,
+        nextMode: str = '',
+        pane: str = '',
         stroke: KeyStroke | None = None,
     ) -> None:
         if not g.isStrokeOrNone(stroke):
