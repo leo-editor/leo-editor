@@ -114,7 +114,7 @@ class Commands:
         gui: LeoGui = None,
         parentFrame: Any = None,
         previousSettings: "PreviousSettings" = None,
-        relativeFileName: str = None,
+        relativeFileName: str = '',
     ) -> None:
         t1 = time.process_time()
         c = self
@@ -201,7 +201,7 @@ class Commands:
         return title
 
     # @+node:ekr.20120217070122.10475: *5* c.computeWindowTitle
-    def computeWindowTitle(self, fileName: str = None) -> str:
+    def computeWindowTitle(self, fileName: str = '') -> str:
         """
         Return the title for the top-level window.
         """
@@ -252,7 +252,7 @@ class Commands:
         self.expansionLevel = 0  # The expansion level of this outline.
         self.expansionNode = None  # The last node we expanded or contracted.
         self.nodeConflictList: list[Position] = []  # List of nodes with conflicting read-time data.
-        self.nodeConflictFileName: str = None  # The fileName for c.nodeConflictList.
+        self.nodeConflictFileName: str = ''  # The fileName for c.nodeConflictList.
         # Non-persistent dictionary for free use by scripts and plugins.
         self.user_dict: dict[str, Value] = {}
 
@@ -277,7 +277,7 @@ class Commands:
         """Init file-related ivars of the commander."""
         self.changed = False  # True: the outline has changed since the last save.
         self.ignored_at_file_nodes: list[str] = []  # List of headlines for c.raise_error_dialogs.
-        self.last_dir: str = None  # The last used directory.
+        self.last_dir: str = ''  # The last used directory.
         # Do _not_ use os_path_norm: it converts an empty path to '.' (!!)
         self.mFileName: str = fileName or ''
         self.mRelativeFileName = relativeFileName or ''
@@ -1223,7 +1223,7 @@ class Commands:
         event: LeoKeyEvent = None,
         args: Args = None,
         p: Position = None,
-        script: str = None,
+        script: str = '',
         useSelectedText: bool = True,
         define_g: bool = True,
         define_name: str = '__main__',
@@ -3265,8 +3265,8 @@ class Commands:
         ext: str,
         language: str,
         root: Position,
-        directory: str = None,
-        regex: str = None,
+        directory: str = '',
+        regex: str = '',
     ) -> None:
         """
         The official helper for the execute-general-script command.
@@ -3620,8 +3620,8 @@ class Commands:
     # @+node:ekr.20150422080541.1: *4* c.backup
     def backup(
         self,
-        fileName: str = None,
-        prefix: str = None,
+        fileName: str = '',
+        prefix: str = '',
         silent: bool = False,
         useTimeStamp: bool = True,
     ) -> str | None:
@@ -3653,9 +3653,9 @@ class Commands:
     # @+node:ekr.20180210092235.1: *4* c.backup_helper
     def backup_helper(
         self,
-        base_dir: str = None,
+        base_dir: str = '',
         env_key: str = 'LEO_BACKUP',
-        sub_dir: str = None,
+        sub_dir: str = '',
         use_git_prefix: bool = True,
     ) -> None:
         """
@@ -3731,7 +3731,7 @@ class Commands:
         kind: str = '@clean',  # Any @<file> type. @clean is recommended.
         report_changed_at_clean_nodes: bool = True,  # Recommended.
         sub_directories: list[str] = None,
-        top_outline_name: str = None,
+        top_outline_name: str = '',
     ) -> None:
         # @+<< c.makeLinkLeoFiles: docstring >>
         # @+node:ekr.20250717132150.1: *5* << c.makeLinkLeoFiles: docstring >>
@@ -4001,7 +4001,7 @@ class Commands:
         return result
 
     # @+node:ekr.20031218072017.2081: *4* c.openRecentFile
-    def openRecentFile(self, event: LeoKeyEvent = None, fn: str = None) -> None:
+    def openRecentFile(self, event: LeoKeyEvent = None, fn: str = '') -> None:
         """
         c.openRecentFile: This is not a command!
 
@@ -4071,7 +4071,7 @@ class Commands:
         x.diff_file(fn=fn, rev1=rev1, rev2=rev2)
 
     # @+node:ekr.20180508110755.1: *4* c.diff_two_revs
-    def diff_two_revs(self, directory: str = None, rev1: str = '', rev2: str = '') -> None:
+    def diff_two_revs(self, directory: str = '', rev1: str = '', rev2: str = '') -> None:
         """
         Create an outline describing the git diffs for all files changed
         between rev1 and rev2.
@@ -4703,8 +4703,8 @@ class Commands:
         menu: LeoQtMenu,
         accelerator: str = '',  # Not used.
         command: Callable = None,
-        commandName: str = None,  # Not used.
-        label: str = None,  # Not used.
+        commandName: str = '',  # Not used.
+        label: str = '',  # Not used.
         underline: int = 0,
     ) -> None:
         c = self
@@ -4906,7 +4906,7 @@ class Commands:
         return current != c.rootPosition()
 
     # @+node:ekr.20031218072017.2974: *6* c.canPasteOutline
-    def canPasteOutline(self, s: str = None) -> bool:
+    def canPasteOutline(self, s: str = '') -> bool:
         # c = self
         if not s:
             s = g.app.gui.getTextFromClipboard()
@@ -5116,7 +5116,7 @@ class Commands:
     def recursiveImport(
         self,
         *,  # All arguments are kwargs.
-        dir_: str = None,  # A directory or file name.
+        dir_: str = '',  # A directory or file name.
         ignore_pattern: re.Pattern = None,  # Ignore files matching this regex pattern.
         kind: str = '@file',
         recursive: bool = True,
@@ -5245,10 +5245,10 @@ class Commands:
         self,
         generator: Callable,
         predicate: Callable,
-        failMsg: str = None,
+        failMsg: str = '',
         flatten: bool = False,
-        iconPath: str = None,
-        undoType: str = None,
+        iconPath: str = '',
+        undoType: str = '',
     ) -> Position:
         """
         Traverse the tree given using the generator, cloning all positions for
