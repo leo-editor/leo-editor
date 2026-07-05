@@ -119,7 +119,7 @@ class NodeIndices:
         #    parse all forms of gnx properly.
         # 2. NodeIndicds.compute_last_index ignores UUIDs and KSUIDs,
         #    so it will allocate a new legacy gnx properly.
-        gnx = None
+        gnx = ''  # PR #4773
         try:
             if uuid_kind == 'uuid':
                 gnx = str(uuid.uuid4())

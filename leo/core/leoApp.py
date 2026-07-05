@@ -1550,7 +1550,7 @@ class LeoApp:
         fileName: str,
         gui: LeoGui = None,
         parentFrame: Any = None,
-        previousSettings: "PreviousSettings" = None,
+        previousSettings: PreviousSettings | None = None,
         relativeFileName: str = None,
     ) -> Cmdr:
         """Create a commander and its view frame for the Leo main window."""
@@ -2024,7 +2024,7 @@ class LoadManager:
         return None, None
 
     # @+node:ekr.20120223062418.10414: *4* LM.getPreviousSettings
-    def getPreviousSettings(self, fn: str) -> "PreviousSettings":
+    def getPreviousSettings(self, fn: str) -> PreviousSettings:
         """
         Return the settings in effect for fn. Typically, this involves
         pre-reading fn.

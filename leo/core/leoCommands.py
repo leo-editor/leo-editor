@@ -191,7 +191,7 @@ class Commands:
         fileName: str,
         gui: LeoGui | None = None,
         parentFrame: Any = None,
-        previousSettings: "PreviousSettings" = None,
+        previousSettings: PreviousSettings | None = None,
         relativeFileName: str = '',
     ) -> None:
         t1 = time.process_time()
@@ -519,12 +519,12 @@ class Commands:
         self.vim_mode = False
 
     # @+node:ekr.20140815160132.18837: *5* c.initSettings
-    def initSettings(self, previousSettings: "PreviousSettings") -> None:
+    def initSettings(self, previousSettings: PreviousSettings | None = None) -> None:
         """Instantiate c.config from previous settings."""
         c = self
         from leo.core import leoConfig
 
-        c.config = leoConfig.LocalConfigManager(c, previousSettings)
+        c.config = leoConfig.LocalConfigManager(c, previousSettings)  # type:ignore
 
     # @+node:ekr.20031218072017.2814: *4* c.__repr__ & __str__
     def __repr__(self) -> str:
@@ -553,6 +553,7 @@ class Commands:
         c.findCommands.finishCreate()
         if not c.gui.isNullGui:
             # #2485: register idle_focus_helper in the proper context.
+            assert g.app.pluginsController
             try:
                 g.app.pluginsController.loadingModuleNameStack.append('leo.core.leoCommands')
                 g.registerHandler('idle', c.idle_focus_helper)
@@ -1814,7 +1815,7 @@ class Commands:
                 name = v.anyAtFileNodeName()
                 junk, ext = g.os_path_splitext(name)
                 ext = ext[1:]  # strip the leading period.
-                language = g.app.extension_dict.get(ext)
+                language = g.app.extension_dict.get(ext, '')
                 if g.isValidLanguage(language):
                     return language
             return ''
@@ -2406,6 +2407,7 @@ class Commands:
         # Keys are gnx's; values are lists of (id(v), v).
         vnode_d: dict[str, list[tuple[int, VNode]]] = {}
         ni = g.app.nodeIndices
+        assert ni
         t1 = time.time()
 
         def new_gnx(v: VNode) -> None:

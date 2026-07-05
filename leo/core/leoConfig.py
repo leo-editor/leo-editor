@@ -1614,7 +1614,7 @@ class LocalConfigManager:
 
     # @+others
     # @+node:ekr.20041118104831.2: *3*  c.config.ctor
-    def __init__(self, c: Cmdr, previousSettings: PreviousSettings = None) -> None:
+    def __init__(self, c: Cmdr, previousSettings: PreviousSettings | None = None) -> None:
         self.c = c
         lm = g.app.loadManager
         if previousSettings:
