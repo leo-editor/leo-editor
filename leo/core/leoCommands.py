@@ -5313,7 +5313,7 @@ class Commands:
 
         # Update root's tree.
         d: dict[str, VNode] = {p.v.gnx: p.v for p in root.self_and_subtree()}
-        ok = at.fast_read_into_root(c, results, gnx2vnode=d, path=None, root=root)
+        ok = at.fast_read_into_root(c, results, gnx2vnode=d, path='', root=root)
         if ok:
             c.redraw()
             g.es_print(f"beautified: {root.h}", color='blue')

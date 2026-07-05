@@ -1733,7 +1733,7 @@ class RecursiveImportController:
         c: Cmdr,
         *,  # All other args are kwargs.
         dir_: str | None,
-        ignore_pattern: re.Pattern = None,
+        ignore_pattern: re.Pattern | None = None,
         kind: str,
         recursive: bool = True,
         safe_at_file: bool = True,
