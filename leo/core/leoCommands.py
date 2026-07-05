@@ -38,108 +38,108 @@ if TYPE_CHECKING:  # pragma: no cover
 
     from leo.core.leoAtFile import AtFile
 
-    assert AtFile
+    assert AtFile is not None
 
     from leo.core.leoChapters import ChapterController
 
-    assert ChapterController
+    assert ChapterController is not None
 
     from leo.core.leoFileCommands import FileCommands
 
-    assert FileCommands
+    assert FileCommands is not None
 
     from leo.core.leoFind import LeoFind
 
-    assert LeoFind
+    assert LeoFind is not None
 
     from leo.core.leoImport import LeoImportCommands
 
-    assert LeoImportCommands
+    assert LeoImportCommands is not None
 
     from leo.core.leoKeys import KeyHandlerClass
 
-    assert KeyHandlerClass  # type:ignore
+    assert KeyHandlerClass is not None
 
     from leo.core.leoHistory import NodeHistory
 
-    assert NodeHistory
+    assert NodeHistory is not None
 
     from leo.core.leoPersistence import PersistenceDataController
 
-    assert PersistenceDataController
+    assert PersistenceDataController is not None
 
     from leo.core.leoPrinting import PrintingController
 
-    assert PrintingController
+    assert PrintingController is not None
 
     from leo.core.leoShadow import ShadowController
 
-    assert ShadowController
+    assert ShadowController is not None
 
     from leo.core.leoUndo import Undoer
 
-    assert Undoer
+    assert Undoer is not None
 
     from leo.core.leoVim import VimCommands
 
-    assert VimCommands
+    assert VimCommands is not None
 
     # 14 command handlers...
     from leo.commands.abbrevCommands import AbbrevCommandsClass
 
-    assert AbbrevCommandsClass  # type:ignore  # Strange warning.
+    assert AbbrevCommandsClass is not None
 
     from leo.commands.bufferCommands import BufferCommandsClass
 
-    assert BufferCommandsClass
+    assert BufferCommandsClass is not None
 
     from leo.commands.controlCommands import ControlCommandsClass
 
-    assert ControlCommandsClass
+    assert ControlCommandsClass is not None
 
     from leo.commands.convertCommands import ConvertCommandsClass
 
-    assert ConvertCommandsClass
+    assert ConvertCommandsClass is not None
 
     from leo.commands.debugCommands import DebugCommandsClass
 
-    assert DebugCommandsClass
+    assert DebugCommandsClass is not None
 
     from leo.commands.editCommands import EditCommandsClass
 
-    assert EditCommandsClass
+    assert EditCommandsClass is not None
 
     from leo.commands.editFileCommands import EditFileCommandsClass
 
-    assert EditFileCommandsClass
+    assert EditFileCommandsClass is not None
 
     from leo.commands.gotoCommands import GoToCommands
 
-    assert GoToCommands
+    assert GoToCommands is not None
 
     from leo.commands.helpCommands import HelpCommandsClass
 
-    assert HelpCommandsClass
+    assert HelpCommandsClass is not None
 
     from leo.commands.keyCommands import KeyHandlerCommandsClass
 
-    assert KeyHandlerCommandsClass
+    assert KeyHandlerCommandsClass is not None
 
     from leo.commands.killBufferCommands import KillBufferCommandsClass
 
-    assert KillBufferCommandsClass
+    assert KillBufferCommandsClass is not None
 
     from leo.commands.rectangleCommands import RectangleCommandsClass
 
-    assert RectangleCommandsClass
+    assert RectangleCommandsClass is not None
 
     from leo.core.leoRst import RstCommands
 
-    assert RstCommands
+    assert RstCommands is not None
 
     from leo.commands.spellCommands import SpellCommandsClass
 
-    assert SpellCommandsClass
+    assert SpellCommandsClass is not None
 
     # Other objects...
     from leo.core.leoGui import LeoGui
@@ -551,10 +551,10 @@ class Commands:
         c.createCommandNames()
         k.finishCreate()
         c.findCommands.finishCreate()
-        if not c.gui.isNullGui:
+        if not c.gui.isNullGui and not g.unitTesting:
             # #2485: register idle_focus_helper in the proper context.
             assert g.app.pluginsController
-            try:
+            try:  # type:ignore
                 g.app.pluginsController.loadingModuleNameStack.append('leo.core.leoCommands')
                 g.registerHandler('idle', c.idle_focus_helper)
             finally:
