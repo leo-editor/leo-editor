@@ -32,6 +32,10 @@ files = [
     'leo/core/leoGlobals.py',
     'leo/core/leoCommands.py',
     'leo/core/leoNodes.py',
+    
+    # Follow-on files, checked by checking leoCommands.py.
+    'leo/core/leoExternalFiles.py',
+    'leo/core/leoserver.py',
 
     # To be checked in other PRs...
     #   'leo/core/leoApp.py',
