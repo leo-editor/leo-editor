@@ -23,12 +23,12 @@ print(os.path.basename(__file__))
 leo_editor_dir = os.path.abspath(os.path.join(__file__, '..', '..', '..'))
 os.chdir(leo_editor_dir)
 # @-<< mypy_leo.py: imports & startup >>
-incremental = False
+incremental = True
 follow = False
-if 0:
+if 1:  # Test all files.
     files = [
         'leo',
-    ]  # Test all files.
+    ]
 else:
     files = [
         # Files to check with strict_optional in .mypy.ini.

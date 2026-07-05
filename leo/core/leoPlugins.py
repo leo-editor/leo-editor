@@ -515,7 +515,7 @@ class LeoPluginsController:
     # @+node:ekr.20100908125007.6024: *4* plugins.loadOnePlugin & helper functions
     def loadOnePlugin(
         self, moduleOrFileName: str, tag: str = 'open0', verbose: bool = False
-    ) -> Any | None:
+    ) -> Any:
         """
         Load one plugin from a file name or module.
         Use extensive tracing if --trace-plugins is in effect.

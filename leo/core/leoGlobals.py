@@ -239,9 +239,15 @@ class Command:
     def __call__(self, func: Callable) -> Callable:
         """Register command for all future commanders."""
         global_commands_dict[self.name] = func
-        if app:
-            for c in app.commanders():
-                c.k.registerCommand(self.name, func)
+        if not g.app:  # PR #4773
+            # This module has not been fully imported.
+            if False:
+                print(f"@g.command.__call__: {self.name:>35}")
+            return func
+
+        for c in app.commanders():
+            c.k.registerCommand(self.name, func)
+
         # Inject ivars for plugins_menu.py.
         func.__func_name__ = func.__name__  # For leoInteg.
         func.is_command = True
@@ -406,7 +412,10 @@ url_regex = re.compile(rf"""\b{url_kinds}://[^\s'"]+""")
 # @-<< define regexes >>
 tree_popup_handlers: list[Callable] = []  # Set later.
 user_dict: dict[str, Value] = {}  # Non-persistent dictionary for scripts and plugins.
-app: LeoApp = None  # The singleton app object. Set by runLeo.py.
+
+# The singleton app object. Set by runLeo.py.
+app: LeoApp = None  # type:ignore # There seems to be no way to init g.app here.
+
 # Global status vars.
 inScript = False  # A synonym for app.inScript
 unitTesting = False  # A synonym for app.unitTesting.
@@ -2819,9 +2828,9 @@ def printStats(event: LeoKeyEvent | None = None) -> None:
             print(f"  {d.get(key):4}: {key_s}")
 
     # Print the other stats: calls to g.stat(whatever)
-    for key in sorted(d.keys()):
+    for key, value in sorted(d.items()):  # PR #4773
         if not key.startswith(_int_stat_prefix):
-            inner_keys = (z if isinstance(z, str) else repr(z) for z in d.get(key))
+            inner_keys = (z if isinstance(z, str) else repr(z) for z in value)  # PR #4773
             print(f"{key}:")
             for z in sorted(inner_keys):
                 print(f"    {z.strip()}")
@@ -2897,7 +2906,7 @@ def comment_delims_from_extension(filename: str) -> tuple[str, str, str]:
         root, ext = os.path.splitext(filename)
     if ext == '.tmp':
         root, ext = os.path.splitext(root)
-    language = g.app.extension_dict.get(ext[1:])
+    language = g.app.extension_dict.get(ext[1:], '')
     if ext:
         return g.set_delims_from_language(language)
     g.trace(f"unknown extension: {ext!r}, filename: {filename!r}, root: {root!r}")
@@ -3316,6 +3325,7 @@ def scanForAtLanguage(c: Cmdr, p: Position) -> str:
 # @+node:ekr.20041123094807: *3* g.scanForAtSettings
 def scanForAtSettings(p: Position) -> bool:
     """Scan position p and its ancestors looking for @settings nodes."""
+    assert g.app.config
     for p in p.self_and_parents(copy=False):
         h = p.h
         h = g.app.config.canonicalizeSettingName(h)
@@ -3461,27 +3471,33 @@ def chdir(path: str) -> None:
 
 
 def computeGlobalConfigDir() -> str:
+    assert g.app.loadManager
     return g.app.loadManager.computeGlobalConfigDir()
 
 
 def computeHomeDir() -> str:
+    assert g.app.loadManager
     return g.app.loadManager.computeHomeDir()
 
 
 def computeLeoDir() -> str:
+    assert g.app.loadManager
     return g.app.loadManager.computeLeoDir()
 
 
 def computeLoadDir() -> str:
+    assert g.app.loadManager
     return g.app.loadManager.computeLoadDir()
 
 
 def computeMachineName() -> str:
+    assert g.app.loadManager
     return g.app.loadManager.computeMachineName()
 
 
-def computeStandardDirectories() -> str:
-    return g.app.loadManager.computeStandardDirectories()
+def computeStandardDirectories() -> None:
+    assert g.app.loadManager
+    g.app.loadManager.computeStandardDirectories()
 
 
 # @+node:ekr.20031218072017.3117: *3* g.create_temp_file
@@ -3508,6 +3524,7 @@ def create_temp_file(textMode: bool = False) -> tuple[IO | None, str]:
 def createHiddenCommander(fn: str) -> Cmdr | None:
     """Read the given outline into a hidden commander."""
     lm = g.app.loadManager
+    assert lm
     if lm.isLeoFile(fn):
         return g.openWithFileName(fn, gui=g.app.nullGui)
     return None
@@ -3725,6 +3742,7 @@ def openWithFileName(
 
     Return the commander of the newly-opened file, which may be old_c or another commander.
     """
+    assert g.app.loadManager
     return g.app.loadManager.openWithFileName(fileName, gui, old_c)
 
 
@@ -5257,6 +5275,8 @@ def doHook(tag: str, *args: Args, **kwargs: KWargs) -> Value | None:
     """
     if g.app.killed or g.app.hookError:
         return None
+    if g.unitTesting:
+        return None  # PR #4773
     if args:
         # A minor error in Leo's core.
         g.pr(f"***ignoring args param.  tag = {tag}")
@@ -5269,6 +5289,7 @@ def doHook(tag: str, *args: Args, **kwargs: KWargs) -> Value | None:
     # pylint: disable=consider-using-ternary
     f = (c and c.hookFunction) or g.app.hookFunction
     if not f:
+        assert g.app.pluginsController
         g.app.hookFunction = f = g.app.pluginsController.doPlugins
     try:
         # Pass the hook to the hook handler.
@@ -5284,54 +5305,72 @@ def doHook(tag: str, *args: Args, **kwargs: KWargs) -> Value | None:
 # @+node:ekr.20100910075900.5950: *3* g.Wrappers for g.app.pluginController methods
 # Important: we can not define g.pc here!
 # @+node:ekr.20100910075900.5951: *4* g.Loading & registration
-def loadOnePlugin(pluginName: str, verbose: bool = False) -> ModuleType:
+def loadOnePlugin(pluginName: str, verbose: bool = False) -> Any:
+    if g.unitTesting:
+        return None
     pc = g.app.pluginsController
+    assert pc
     return pc.loadOnePlugin(pluginName, verbose=verbose)
 
 
-def registerExclusiveHandler(tags: Tags, fn: str) -> ModuleType:
+def registerExclusiveHandler(tags: Tags, fn: Callable) -> None:
+    if g.unitTesting:
+        return
     pc = g.app.pluginsController
-    return pc.registerExclusiveHandler(tags, fn)
+    assert pc
+    pc.registerExclusiveHandler(tags, fn)
 
 
-def registerHandler(tags: Tags, fn: Callable) -> ModuleType:
+def registerHandler(tags: Tags, fn: Callable) -> None:
+    if g.unitTesting:
+        return
     pc = g.app.pluginsController
-    return pc.registerHandler(tags, fn)
+    assert pc
+    pc.registerHandler(tags, fn)
 
 
-def plugin_signon(module_name: str, verbose: bool = False) -> ModuleType:
+def plugin_signon(module_name: str, verbose: bool = False) -> None:
+    if g.unitTesting:
+        return
     pc = g.app.pluginsController
-    return pc.plugin_signon(module_name, verbose)
+    assert pc
+    pc.plugin_signon(module_name, verbose)
 
 
-def unloadOnePlugin(moduleOrFileName: str, verbose: bool = False) -> ModuleType:
+def unloadOnePlugin(moduleOrFileName: str, verbose: bool = False) -> None:
     pc = g.app.pluginsController
-    return pc.unloadOnePlugin(moduleOrFileName, verbose)
+    assert pc
+    pc.unloadOnePlugin(moduleOrFileName, verbose)
 
 
-def unregisterHandler(tags: Tags, fn: Callable) -> ModuleType:
+def unregisterHandler(tags: Tags, fn: Callable) -> None:
     pc = g.app.pluginsController
-    return pc.unregisterHandler(tags, fn)
+    assert pc
+    pc.unregisterHandler(tags, fn)
 
 
 # @+node:ekr.20100910075900.5952: *4* g.Information
 def getHandlersForTag(tags: list[str]) -> list:
     pc = g.app.pluginsController
+    assert pc
     return pc.getHandlersForTag(tags)
 
 
 def getLoadedPlugins() -> list:
     pc = g.app.pluginsController
+    assert pc
     return pc.getLoadedPlugins()
 
 
 def getPluginModule(moduleName: str) -> ModuleType | None:
     pc = g.app.pluginsController
+    assert pc
     return pc.getPluginModule(moduleName)
 
 
 def pluginIsLoaded(fn: str) -> bool:
     pc = g.app.pluginsController
+    assert pc
     return pc.isLoaded(fn)
 
 
