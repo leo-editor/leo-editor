@@ -4811,9 +4811,8 @@ def skip_ws_and_nl(s: str, i: int) -> int:
 # @+node:ekr.20180325025502.1: *3* g.backupGitIssues
 def backupGitIssues(c: Cmdr, base_url: str = '') -> None:
     """Get a list of issues from Leo's GitHub site."""
-    if base_url is None:
+    if not base_url:
         base_url = 'https://api.github.com/repos/leo-editor/leo-editor/issues'
-
     root = c.lastTopLevel().insertAfter()
     root.h = f'Backup of issues: {time.strftime("%Y/%m/%d")}'
     label_list: list[str] = []
@@ -4863,7 +4862,7 @@ def getGitIssues(
     state: str = '',  # in (None, 'closed', 'open')
 ) -> None:
     """Get a list of issues from Leo's GitHub site."""
-    if base_url is None:
+    if not base_url:
         base_url = 'https://api.github.com/repos/leo-editor/leo-editor/issues'
     if isinstance(label_list, (list, tuple)):
         root = c.lastTopLevel().insertAfter()
@@ -4902,7 +4901,7 @@ class GitIssueController:
             for state in ('closed', 'open'):
                 for label in label_list:
                     self.get_one_issue(label, state)
-        elif state is None:
+        elif not state:
             for state in ('closed', 'open'):
                 organizer = root.insertAsLastChild()
                 organizer.h = f"{state} issues..."
@@ -4910,7 +4909,7 @@ class GitIssueController:
         elif state in ('closed', 'open'):
             self.get_all_issues(label_list, root, state)
         else:
-            g.es_print('state must be in (None, "open", "closed")')
+            g.es_print('state must be in ("", "open", "closed")')
 
     # @+node:ekr.20180325024334.1: *5* git.get_all_issues
     def get_all_issues(
@@ -5014,11 +5013,10 @@ class GitIssueController:
     ) -> tuple[bool, int]:
         if self.milestone:
             aList = [
-                z
-                for z in r.json()
-                if z.get('milestone') is not None
-                and self.milestone == z.get('milestone').get('title')
-            ]
+                z for z in r.json()
+                if z.get('milestone', '') and
+                self.milestone == z.get('milestone').get('title')
+            ]  # fmt: skip
         else:
             aList = [z for z in r.json()]
         for d in aList:
@@ -5050,7 +5048,7 @@ class GitIssueController:
 
 # @+node:ekr.20190428173354.1: *3* g.getGitVersion
 def getGitVersion(directory: str = '') -> tuple[str, str, str]:
-    """Return a tuple (author, build, date) from the git log, or None."""
+    """Return a tuple (author, build, date) from the git log, where all may be empty."""
 
     # -n: Get only the last log.
     trace = 'git' in g.app.debug
@@ -5118,7 +5116,7 @@ def getModifiedFiles(repo_path: str) -> list[str]:
 def gitBranchName(path: str = '') -> str:
     """
     Return the git branch name associated with path/.git, or the empty
-    string if path/.git does not exist. If path is None, use the leo-editor
+    string if path/.git does not exist. If path is empty, use the leo-editor
     directory.
     """
     branch, commit = g.gitInfo(path)
@@ -5129,7 +5127,7 @@ def gitBranchName(path: str = '') -> str:
 def gitCommitNumber(path: str = '') -> str:
     """
     Return the git commit number associated with path/.git, or the empty
-    string if path/.git does not exist. If path is None, use the leo-editor
+    string if path/.git does not exist. If path is empty, use the leo-editor
     directory.
     """
     branch, commit = g.gitInfo(path)
@@ -5140,7 +5138,7 @@ def gitCommitNumber(path: str = '') -> str:
 def gitDescribe(path: str = '') -> tuple[str, str, str]:
     """
     Return the Git tag, distance-from-tag, and commit hash for the
-    associated path. If path is None, use the leo-editor directory.
+    associated path. If path is empty, use the leo-editor directory.
 
     Given `git describe` cmd line output: `x-leo-v5.6-55-ge1129da\n`
     This function returns ('x-leo-v5.6', '55', 'e1129da')
@@ -5180,7 +5178,7 @@ def gitInfo(path: str = '') -> tuple[str, str]:
     Return the branch and commit number or ('', '').
     """
     branch, commit = '', ''  # Set defaults.
-    if path is None:
+    if not path:
         # Default to leo/core.
         path = os.path.dirname(__file__)
     if not os.path.isdir(path):
