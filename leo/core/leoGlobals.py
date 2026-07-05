@@ -441,7 +441,7 @@ def get_backup_path(sub_directory: str) -> str:
     """
     # Compute the main backup directory.
     # First, try the LEO_BACKUP directory.
-    backup = None
+    backup = ''
     try:
         backup = os.environ['LEO_BACKUP']
         if not os.path.exists(backup):
@@ -2391,7 +2391,7 @@ def checkQtTextWidget(obj: Any, *, other_classes: list[str] | None = None) -> No
         g.traceUniqueClass(obj, n=2)
     # g.stat()
     all_classes = g.qt_text_classes
-    if other_classes is not None:
+    if other_classes:
         all_classes.extend(other_classes)
     g._check_class_helper(obj, key=g.caller(), class_names=all_classes)
 
@@ -5255,7 +5255,7 @@ contentModifiedSet: set[VNode] = set()
 
 
 # @+node:ekr.20031218072017.1596: *3* g.doHook
-def doHook(tag: str, *args: Args, **kwargs: KWargs) -> Value | None:
+def doHook(tag: str, *args: Args, **kwargs: KWargs) -> Any:
     """
     This global function calls a hook routine. Hooks are identified by the
     tag param.
@@ -5360,7 +5360,7 @@ def getLoadedPlugins() -> list:
     return pc.getLoadedPlugins()
 
 
-def getPluginModule(moduleName: str) -> ModuleType | None:
+def getPluginModule(moduleName: str) -> ModuleType:
     pc = g.app.pluginsController
     assert pc
     return pc.getPluginModule(moduleName)
@@ -5720,7 +5720,7 @@ def checkUnicode(s: str, encoding: str = '') -> str:
     user-defined plugins or scripts.
     """
     tag = 'g.checkUnicode'
-    if s is None and g.unitTesting:
+    if not s and g.unitTesting:
         return ''
     if isinstance(s, str):
         return s
@@ -6295,14 +6295,14 @@ def es_dump(s: str, n: int = 30, title: str = '') -> None:
 # @+node:ekr.20031218072017.3110: *3* g.es_error & es_print_error
 def es_error(*args: Args, **kwargs: KWargs) -> None:
     color = kwargs.get('color')
-    if color is None and g.app.config:
+    if not color and g.app.config:
         kwargs['color'] = g.app.config.getColor("log-error-color") or 'red'
     g.es(*args, **kwargs)
 
 
 def es_print_error(*args: Args, **kwargs: KWargs) -> None:
     color = kwargs.get('color')
-    if color is None and g.app and g.app.config:
+    if not color and g.app and g.app.config:
         kwargs['color'] = g.app.config.getColor("log-error-color") or 'red'
     g.es_print(*args, **kwargs)
 
@@ -6776,7 +6776,7 @@ def actualColor(color: str) -> str:
     if color and color.startswith('#'):
         return color
     # #788: Translate colors to theme-defined colors.
-    if color is None:
+    if not color:
         # Prefer text_foreground_color'
         color2 = c.config.getColor('log-text-foreground-color')
         if color2:
@@ -6804,7 +6804,6 @@ def CheckVersion(
     s1: str,
     s2: str,
     condition: str = ">=",
-    stringCompare: bool | None = None,
     delimiter: str = '.',
     trace: bool = False,
 ) -> bool:
@@ -7411,7 +7410,7 @@ def getDocStringForFunction(func: Callable) -> str:
 
     def get_defaults(func: Callable, i: int) -> Value:
         defaults = inspect.getfullargspec(func)[3]
-        return defaults[i] if defaults else None
+        return defaults[i] if defaults else ''
 
     # Fix bug 1251252: https://bugs.launchpad.net/leo-editor/+bug/1251252
     # Minibuffer commands created by mod_scripting.py have no docstrings.
@@ -7473,7 +7472,7 @@ def python_tokenize(s: str) -> list:
 # @+node:ekr.20161223090721.1: *3* g.exec_file
 def exec_file(path: str, d: dict[str, Value], script: str = '') -> None:
     """Simulate python's execfile statement for python 3."""
-    if script is None:
+    if not script:
         with open(path) as f:
             script = f.read()
     exec(compile(script, path, 'exec'), d)
