@@ -87,7 +87,7 @@ if TYPE_CHECKING:  # pragma: no cover
     # 14 command handlers...
     from leo.commands.abbrevCommands import AbbrevCommandsClass
 
-    assert AbbrevCommandsClass
+    assert AbbrevCommandsClass  # type:ignore  # Strange warning.
 
     from leo.commands.bufferCommands import BufferCommandsClass
 
