@@ -26,10 +26,13 @@ os.chdir(leo_editor_dir)
 incremental = False
 follow = False
 files = [
+    # 'leo',
+
     # Files to check with strict_optional in .mypy.ini.
     'leo/core/leoGlobals.py',
     'leo/core/leoCommands.py',
     'leo/core/leoNodes.py',
+
     # To be checked in other PRs...
     #   'leo/core/leoApp.py',
     #   'leo/core/leoAtFile.py',

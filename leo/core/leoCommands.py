@@ -4449,7 +4449,7 @@ class Commands:
         c.enableRedrawFlag = True
 
     # @+node:ekr.20090110073010.1: *6* c.redraw
-    def redraw(self, p: LeoKeyEvent | None = None) -> None:
+    def redraw(self, p: Position | None = None) -> None:
         """
         Redraw the screen immediately.
         If p is given, set c.p to p.
