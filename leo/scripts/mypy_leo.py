@@ -33,7 +33,7 @@ files = [
     'leo/core/leoCommands.py',
     'leo/core/leoNodes.py',
     
-    # Follow-on files, checked by checking leoCommands.py.
+    # Follow-on files, with errors uncovered by checking leoCommands.py.
     'leo/core/leoExternalFiles.py',
     'leo/core/leoserver.py',
 
