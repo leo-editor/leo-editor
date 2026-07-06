@@ -12,7 +12,7 @@ import string
 import sys
 import textwrap
 import time
-from typing import Any, TYPE_CHECKING
+from typing import cast, Any, TYPE_CHECKING
 import zipfile
 import platform
 from leo.core import leoGlobals as g
@@ -20,31 +20,31 @@ from leo.core import leoExternalFiles
 from leo.core.leoCache import GlobalCacher
 from leo.core.leoQt import QCloseEvent
 
+# For casts
+from leo.core.leoBackground import BackgroundProcessManager
+from leo.core.leoCommands import Commands as Cmdr
+from leo.core.leoExternalFiles import ExternalFilesController
+from leo.core.leoNodes import NodeIndices, Position
+from leo.core.leoPlugins import LeoPluginsController
+from leo.core.leoSessions import SessionManager
+from leo.plugins.qt_events import LossageData
+from leo.plugins.qt_idle_time import IdleTime
 
-if TYPE_CHECKING:
-    from leo.core.leoJupytext import JupytextManager
-
-    StringIO = io.StringIO
-    SpellDict = Any  # dict[str, list[str]]
 # @-<< leoApp imports >>
 # @+<< leoApp annotations >>
 # @+node:ekr.20220819191617.1: ** << leoApp annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from subprocess import Popen
     from types import ModuleType
-    from leo.commands.spellCommands import SqlitePickleShare
-    from leo.core.leoBackground import BackgroundProcessManager
-    from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoConfig import GlobalConfigManager
-    from leo.core.leoExternalFiles import ExternalFilesController
-    from leo.core.leoGui import LeoKeyEvent, LeoFrame, LeoGui
-    from leo.core.leoNodes import NodeIndices, Position
-    from leo.core.leoPlugins import LeoPluginsController
-    from leo.core.leoSessions import SessionManager
-    from leo.plugins.qt_events import LossageData
-    from leo.plugins.qt_idle_time import IdleTime
 
-    Value = Any
+    # Do not import these at the top level: they would cause circular imports.
+    from leo.core.leoConfig import GlobalConfigManager
+    from leo.core.leoGui import LeoKeyEvent, LeoFrame, LeoGui
+    from leo.core.leoJupytext import JupytextManager
+    from leo.commands.spellCommands import SqlitePickleShare
+
+    StringIO = io.StringIO
+    SpellDict = Any  # dict[str, list[str]]
 
 
 # @-<< leoApp annotations >>
@@ -206,21 +206,21 @@ class LeoApp:
         # Singleton applications objects...
 
         # A BackgroundProcessManager.
-        self.backgroundProcessManager: BackgroundProcessManager = None
-        self.config: GlobalConfigManager = None  # g.app.config.
+        self.backgroundProcessManager = cast(BackgroundProcessManager, None)
+        self.config: GlobalConfigManager | None = None  # g.app.config. Can't use a cast.
         # A global db, managed by g.app.global_cacher.
-        self.db: dict | SqlitePickleShare | g.NullObject = None
-        self.externalFilesController: ExternalFilesController | None = None
-        self.global_cacher: dict | GlobalCacher | g.NullObject | None = None
-        self.idleTimeManager: IdleTimeManager | None = None
-        self.jupytextManager: JupytextManager = None
-        self.loadManager: LoadManager | None = None
-        self.nodeIndices: NodeIndices | None = None
-        self.pluginsController: LeoPluginsController | None = None
-        self.sessionManager: SessionManager | None = None
+        self.db: dict | SqlitePickleShare | g.NullObject = {}
+        self.externalFilesController = cast(ExternalFilesController, None)
+        self.global_cacher: dict | GlobalCacher | g.NullObject = {}
+        self.idleTimeManager = cast(IdleTimeManager, None)
+        self.jupytextManager: JupytextManager | None = None  # Can't use a cast.
+        self.loadManager = cast(LoadManager, None)
+        self.nodeIndices = cast(NodeIndices, None)
+        self.pluginsController = cast(LeoPluginsController, None)
+        self.sessionManager = cast(SessionManager, None)
 
         # Global status vars for the Commands class...
-        self.commandName: str | None = None  # The name of the command being executed.
+        self.commandName = ''  # The name of the command being executed.
         self.commandInterruptFlag = False  # True: command within a command.
         # @-<< LeoApp: global controller/manager objects >>
         # @+<< LeoApp: global importer/reader/writer data >>
@@ -297,13 +297,11 @@ class LeoApp:
         # @-<< LeoApp: plugins and event handlers >>
         # @+<< LeoApp: scripting ivars >>
         # @+node:ekr.20161028040303.1: *5* << LeoApp: scripting ivars >>
-        self.scriptDict: dict[
-            str, Value
-        ] = {}  # For use by scripts. Cleared before running each script.
-        self.scriptResult: Value = None  # For use by leoPymacs.
-        self.permanentScriptDict: dict[
-            str, Value
-        ] = {}  # For use by scripts. Never cleared automatically.
+        # For use by scripts. Cleared before running each script.
+        self.scriptDict: dict[str, Any] = {}
+        self.scriptResult: Any = None  # For use by leoPymacs.
+        # For use by scripts. Never cleared automatically.
+        self.permanentScriptDict: dict[str, Any] = {}
         # @-<< LeoApp: scripting ivars >>
         # Define all global data.
         self.init_at_auto_names()
@@ -1630,7 +1628,7 @@ class LoadManager:
         # LoadManager ivars corresponding to user options...
 
         self.files: list[str] = []  # List of files to be loaded.
-        self.options: dict[str, Value] = {}  # Keys are option names; values are user options.
+        self.options: dict[str, Any] = {}  # Keys are option names; values are user options.
         self.old_argv: list[str] = []  # A copy of sys.argv for debugging.
 
         # True when more files remain on the command line to be loaded.
@@ -2748,7 +2746,7 @@ class LoadManager:
         g.app.pluginsController.finishCreate()
 
     # @+node:ekr.20210927034148.1: *5* LM.scanOptions & helpers
-    def scanOptions(self, fileName: str, pymacs: bool) -> dict[str, Value]:
+    def scanOptions(self, fileName: str, pymacs: bool) -> dict[str, Any]:
         """Handle all options, remove them from sys.argv and set lm.options."""
 
         # Define helper functions.
