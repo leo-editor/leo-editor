@@ -463,7 +463,7 @@ class ParserBaseClass:
             g.es_print("ERROR: @menuat found but no menu tree to patch")
 
     # @+node:tbrown.20080514180046.9: *5* pbc.getName
-    def getName(self, val: str, val2: str = None) -> str:
+    def getName(self, val: str, val2: str = '') -> str:
         if val2 and val2.strip():
             val = val2
         val = val.split('\n', 1)[0]
@@ -678,7 +678,12 @@ class ParserBaseClass:
 
     # @+node:ekr.20041120105609: *4* pbc.doShortcuts
     def doShortcuts(
-        self, p: Position, kind: str, junk_name: str, junk_val: Any, s: str = None
+        self,
+        p: Position,
+        kind: str,
+        junk_name: str,
+        junk_val: Any,
+        s: str = None,  # Don't change this.
     ) -> None:
         """Handle an @shortcut or @shortcuts node."""
         c, d = self.c, self.shortcutsDict
@@ -1194,7 +1199,11 @@ class ActiveSettingsOutline:
                 self.add(p)
 
     # @+node:ekr.20190905091614.12: *3* aso.add
-    def add(self, p: Position, h: str = None) -> None:
+    def add(
+        self,
+        p: Position,
+        h: str = None,  # Don't change this.
+    ) -> None:
         """
         Add a node for p.
 
@@ -1287,7 +1296,7 @@ class GlobalConfigManager:
         self.buttonsFileName = ''
         self.configsExist = False  # True when we successfully open a setting file.
         self.default_derived_file_encoding = 'utf-8'
-        self.enabledPluginsFileName: str = None
+        self.enabledPluginsFileName: str = ''
         self.enabledPluginsString: str = ''
         self.menusList: list[Any] = []
         self.menusFileName = ''
