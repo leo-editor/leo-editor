@@ -3181,7 +3181,10 @@ class LoadManager:
             if exists:
                 return lm.openExistingLeoFile(file_name, gui, old_c)
             return lm.openEmptyLeoFile(file_name, gui, old_c)
-        return lm.openExternalFile(file_name, gui, old_c)
+        c = lm.openExternalFile(file_name, gui, old_c)
+        if c:
+            return c
+        return lm.openEmptyLeoFile(file_name, gui, old_c)  # PR #4773
 
     loadLocalFile = openWithFileName  # Compatibility.
 
@@ -3248,7 +3251,7 @@ class LoadManager:
         c.initialFocusHelper()
 
     # @+node:ekr.20120223062418.10408: *5* LM.openExternalFile
-    def openExternalFile(self, fn: str, gui: LeoGui | None, old_c: Cmdr | None) -> Cmdr:
+    def openExternalFile(self, fn: str, gui: LeoGui | None, old_c: Cmdr | None) -> Cmdr | None:
         """
         Create a wrapper commander (in a new tab) for the given external file.
 
@@ -3264,7 +3267,7 @@ class LoadManager:
         c = g.app.newCommander(
             fileName=fn,
             gui=gui,
-            previousSettings=lm.getPreviousSettings(None),
+            previousSettings=lm.getPreviousSettings(''),
         )
         # Use the config params to set the size and location of the window.
         g.doHook('open0')
@@ -3285,8 +3288,10 @@ class LoadManager:
             c.redraw()
         elif c.looksLikeDerivedFile(fn):
             # Create an @file node. Not undoable!
-            p = c.importCommands.importDerivedFiles(
-                parent=c.rootPosition(), paths=[fn], command=None
+            p = c.importCommands.importDerivedFiles(  # type:ignore  # We will test p next.
+                parent=c.rootPosition(),
+                paths=[fn],
+                command='',
             )
             if not p:
                 return None
