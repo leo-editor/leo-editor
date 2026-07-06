@@ -12,6 +12,7 @@ import string
 import sys
 import textwrap
 import time
+import typing
 from typing import cast, Any, TYPE_CHECKING
 import zipfile
 import platform
@@ -1337,7 +1338,8 @@ class LeoApp:
             g.pr('destroyAllOpenWithFiles')
         if g.app.externalFilesController:
             g.app.externalFilesController.shut_down()
-            g.app.externalFilesController = None
+            # Disable further processing. Disable the otherwise valid mypy complaint.
+            g.app.externalFilesController = None  # type:ignore
 
     # @+node:ekr.20031218072017.2615: *4* app.destroyWindow
     def destroyWindow(self, frame: LeoFrame) -> None:
@@ -1643,7 +1645,7 @@ class LoadManager:
         self.leo_settings_c: Cmdr | None = None
         self.leo_settings_path = ''
         self.my_settings_c: Cmdr | None = None
-        self.my_settings_path = None
+        self.my_settings_path = ''
         self.theme_c: Cmdr | None = None  # #1374.
         self.theme_path = ''
 
@@ -1656,7 +1658,7 @@ class LoadManager:
         return fileName
 
     # @+node:ekr.20120209051836.10372: *4* LM.computeLeoSettingsPath
-    def computeLeoSettingsPath(self) -> str | None:
+    def computeLeoSettingsPath(self) -> str:
         """Return the full path to leoSettings.leo."""
         # lm = self
         join = g.finalize_join
@@ -1670,13 +1672,11 @@ class LoadManager:
         )
         for path in table:
             if g.os_path_exists(path):
-                break
-        else:
-            path = None
-        return path
+                return path
+        return ''
 
     # @+node:ekr.20120209051836.10373: *4* LM.computeMyLeoSettingsPath
-    def computeMyLeoSettingsPath(self) -> str | None:
+    def computeMyLeoSettingsPath(self) -> str:
         """
         Return the full path to either myLeoSettings.leo or myLeoSettings.leojs.
 
@@ -1708,7 +1708,7 @@ class LoadManager:
                 return path + ".leo"
             if g.os_path_exists(path + ".leojs"):
                 return path + ".leojs"
-        return None
+        return ''
 
     # @+node:ekr.20120209051836.10252: *4* LM.computeStandardDirectories & helpers
     def computeStandardDirectories(self) -> None:
@@ -1979,7 +1979,7 @@ class LoadManager:
     # @+node:ekr.20120223062418.10421: *4* LM.computeLocalSettings
     def computeLocalSettings(
         self,
-        c: Cmdr,
+        c: Cmdr | None,
         settings_d: g.SettingsDict,
         bindings_d: g.SettingsDict,
         localFlag: bool,
@@ -2016,7 +2016,9 @@ class LoadManager:
 
     # @+node:ekr.20120214165710.10726: *4* LM.createSettingsDicts
     def createSettingsDicts(
-        self, c: Cmdr, localFlag: bool
+        self,
+        c: Cmdr | None,
+        localFlag: bool,
     ) -> tuple[g.SettingsDict, g.SettingsDict] | tuple[None, None]:
         from leo.core import leoConfig
 
@@ -2061,13 +2063,13 @@ class LoadManager:
             d1 = lm.globalSettingsDict.copy()
             d2 = lm.globalBindingsDict.copy()
         else:
-            d1 = d2 = None
+            d1 = d2 = None  # type:ignore
         return PreviousSettings(d1, d2)
 
     # @+node:ekr.20120214132927.10723: *4* LM.mergeShortcutsDicts & helpers
     def mergeShortcutsDicts(
         self,
-        c: Cmdr,
+        c: Cmdr | None,
         old_d: g.SettingsDict,
         new_d: g.SettingsDict,
         localFlag: bool,
@@ -2085,42 +2087,44 @@ class LoadManager:
         inverted_old_d = lm.invert(old_d)
         inverted_new_d = lm.invert(new_d)
         # #510 & #327: always honor --trace-binding here.
-        if g.app.trace_binding:
-            # @+<< trace the binding >>
-            # @+node:ekr.20220820162604.1: *5* << trace the binding >>
-            binding = g.app.trace_binding
-            # First, see if the binding is for a command. (Doesn't work for plugin commands).
-            if localFlag and binding in c.k.killedBindings:
-                g.es_print(f"--trace-binding: {c.shortFileName()} sets {binding} to None")
-            elif localFlag and binding in c.commandsDict:
-                d = c.k.computeInverseBindingDict()
-                g.trace(
-                    f"--trace-binding: {c.shortFileName():20} binds {binding} to {d.get(binding) or []}"
-                )
-            else:
-                stroke = g.KeyStroke(binding)
-                bi_list = inverted_new_d.get(stroke)
-                if bi_list:
-                    print('')
-                    for bi in bi_list:
-                        fn = bi.kind.split(' ')[-1]  # bi.kind #
-                        stroke2 = c.k.prettyPrintKey(stroke)
-                        if bi.pane and bi.pane != 'all':
-                            pane = f" in {bi.pane} panes"
-                        else:
-                            pane = ''
-                        g.es_print(
-                            f"--trace-binding: {fn:20} binds {stroke2} to {bi.commandName:>20}{pane}"
-                        )
-                    print('')
-            # @-<< trace the binding >>
         # Check for duplicate shortcuts only in the new file.
-        lm.checkForDuplicateShortcuts(c, inverted_new_d)
+        if c:  # PR #4779
+            if g.app.trace_binding:
+                # @+<< trace the binding >>
+                # @+node:ekr.20220820162604.1: *5* << trace the binding >>
+                binding = g.app.trace_binding
+                # First, see if the binding is for a command. (Doesn't work for plugin commands).
+                if localFlag and binding in c.k.killedBindings:
+                    g.es_print(f"--trace-binding: {c.shortFileName()} sets {binding} to None")
+                elif localFlag and binding in c.commandsDict:
+                    d = c.k.computeInverseBindingDict()
+                    g.trace(
+                        f"--trace-binding: {c.shortFileName():20} binds {binding} to {d.get(binding) or []}"
+                    )
+                else:
+                    stroke = g.KeyStroke(binding)
+                    bi_list = inverted_new_d.get(stroke)
+                    if bi_list:
+                        print('')
+                        for bi in bi_list:
+                            fn = bi.kind.split(' ')[-1]  # bi.kind #
+                            stroke2 = c.k.prettyPrintKey(stroke)
+                            if bi.pane and bi.pane != 'all':
+                                pane = f" in {bi.pane} panes"
+                            else:
+                                pane = ''
+                            g.es_print(
+                                f"--trace-binding: {fn:20} binds {stroke2} to {bi.commandName:>20}{pane}"
+                            )
+                        print('')
+                # @-<< trace the binding >>
+            lm.checkForDuplicateShortcuts(c, inverted_new_d)
         inverted_old_d.update(inverted_new_d)  # Updates inverted_old_d in place.
         result = lm.uninvert(inverted_old_d)
         return result
 
     # @+node:ekr.20120311070142.9904: *5* LM.checkForDuplicateShortcuts
+    @typing.no_type_check
     def checkForDuplicateShortcuts(self, c: Cmdr, d: dict[str, str]) -> None:
         """
         Check for duplicates in an "inverted" dictionary d
@@ -2128,10 +2132,10 @@ class LoadManager:
 
         Duplicates happen only if panes conflict.
         """
-        # Fix bug 951921: check for duplicate shortcuts only in the new file.
+        # Check for duplicate shortcuts only in the new file.
         for ks in sorted(list(d.keys())):
             duplicates, panes = [], ['all']
-            aList = d.get(ks)  # A list of bi objects.
+            aList: list[g.BindingInfo] = d.get(ks, [])
             aList2 = [z for z in aList if z and not z.pane.startswith('mode')]
             if len(aList) > 1:
                 for bi in aList2:
@@ -3502,8 +3506,8 @@ class PreviousSettings:
         if not shortcutsDict or not settingsDict:  # #1766: unit tests.
             lm = g.app.loadManager
             settingsDict, shortcutsDict = lm.createDefaultSettingsDicts()
-        self.settingsDict = settingsDict
-        self.shortcutsDict = shortcutsDict
+        self.settingsDict: g.SettingsDict = settingsDict
+        self.shortcutsDict: g.SettingsDict = shortcutsDict
 
     def __repr__(self) -> str:
         # Returning the length of the inner dicts is usually best.
