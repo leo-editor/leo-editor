@@ -2429,7 +2429,7 @@ class LoadManager:
         if not c:
             # Leo is out of options: Force an immediate exit.
             return False
-        g.app.runAlreadyOpenDialog(c1)  # #199.
+        g.app.runAlreadyOpenDialog(c)  # #199.
 
         # Final inits...
         try:  # qt only: select the first-loaded tab.
