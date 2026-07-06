@@ -1274,7 +1274,7 @@ class Commands:
     def executeScript(
         self,
         *,
-        event: LeoKeyEvent | None = None,
+        event: LeoKeyEvent | None = None,  # not used.
         args: Args | None = None,
         p: Position | None = None,
         script: str = '',
