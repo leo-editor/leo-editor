@@ -2744,7 +2744,10 @@ class Commands:
     # @+node:ekr.20031218072017.1765: *4* c.validateOutline (compatibility only)
     # Makes sure all nodes are valid.
 
-    def validateOutline(self, event: LeoKeyEvent | None = None) -> bool:
+    def validateOutline(
+        self,
+        event: Any = None,  # not used.
+    ) -> bool:
         """
         A legacy outline checker, retained only for compatibility.
 
@@ -2791,7 +2794,9 @@ class Commands:
     # but it will be retained for use of scripts.
     # @+node:ekr.20040723094220.1: *4* c.checkAllPythonCode
     def checkAllPythonCode(
-        self, event: LeoKeyEvent | None = None, ignoreAtIgnore: bool = True
+        self,
+        event: LeoKeyEvent | None = None,  # Not used.
+        ignoreAtIgnore: bool = True,
     ) -> str:
         """Check all nodes in the selected tree for syntax and tab errors."""
         c = self
@@ -2827,7 +2832,7 @@ class Commands:
     # @+node:ekr.20040723094220.3: *4* c.checkPythonCode
     def checkPythonCode(
         self,
-        event: LeoKeyEvent | None = None,
+        event: Any = None,  # not used.
         ignoreAtIgnore: bool = True,
         checkOnSave: bool = False,
     ) -> str:
@@ -3293,7 +3298,11 @@ class Commands:
         return return_value
 
     # @+node:ekr.20200522075411.1: *4* c.doCommandByName
-    def doCommandByName(self, command_name: str, event: LeoKeyEvent | None = None) -> Value:
+    def doCommandByName(
+        self,
+        command_name: str,
+        event: LeoKeyEvent | None = None,  # This is used.
+    ) -> Value:
         """
         Execute one command, given the name of the command.
 
@@ -3983,7 +3992,10 @@ class Commands:
         c2.close()
 
     # @+node:ekr.20031218072017.2925: *4* c.markAllAtFileNodesDirty
-    def markAllAtFileNodesDirty(self, event: LeoKeyEvent | None = None) -> None:
+    def markAllAtFileNodesDirty(
+        self,
+        event: Any = None,  # not used.
+    ) -> None:
         """Mark all @file nodes as changed."""
         c = self
         c.endEditing()
@@ -3997,7 +4009,10 @@ class Commands:
                 p.moveToThreadNext()
 
     # @+node:ekr.20031218072017.2926: *4* c.markAtFileNodesDirty
-    def markAtFileNodesDirty(self, event: LeoKeyEvent | None = None) -> None:
+    def markAtFileNodesDirty(
+        self,
+        event: Any = None,  # not used.
+    ) -> None:
         """Mark all @file nodes in the selected tree as changed."""
         c = self
         p = c.p
@@ -4072,7 +4087,11 @@ class Commands:
         return result
 
     # @+node:ekr.20031218072017.2081: *4* c.openRecentFile
-    def openRecentFile(self, event: LeoKeyEvent | None = None, fn: str = '') -> None:
+    def openRecentFile(
+        self,
+        event: Any = None,  # not used.
+        fn: str = '',
+    ) -> None:
         """
         c.openRecentFile: This is not a command!
 
@@ -4090,7 +4109,7 @@ class Commands:
     # @+node:ekr.20031218072017.2823: *4* c.openWith
     def openWith(
         self,
-        event: LeoKeyEvent | None = None,
+        event: Any = None,  # not used.
         d: dict[str, Any] | None = None,
     ) -> None:
         """
@@ -4609,7 +4628,10 @@ class Commands:
 
     # @+node:ekr.20031218072017.2909: *4* c.Expand/contract
     # @+node:ekr.20171124091426.1: *5* c.contractAllHeadlines
-    def contractAllHeadlines(self, event: LeoKeyEvent | None = None) -> None:
+    def contractAllHeadlines(
+        self,
+        event: Any = None,  # not used.
+    ) -> None:
         """Contract all nodes in the outline."""
         c = self
         for v in c.all_nodes():
