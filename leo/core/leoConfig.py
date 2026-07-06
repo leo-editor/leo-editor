@@ -163,6 +163,7 @@ class ParserBaseClass:
         seen: list[VNode] = []
         after = p.nodeAfterTree()
         while p and p != after:
+            assert p.v
             if p.v in seen:
                 p.moveToNodeAfterTree()
             elif p.isAtIgnoreNode():
@@ -592,7 +593,7 @@ class ParserBaseClass:
         for line in lines:
             line = line.strip()
             if line and not g.match(line, 0, '#'):
-                name, bi = self.parseShortcutLine('*mode-setting*', line)
+                name, bi = self.parseShortcutLine('*mode-setting*', line)  # type:ignore
                 if not name:
                     # An entry command: put it in the special *entry-commands* key.
                     d.add_to_list('*entry-commands*', bi)
@@ -698,11 +699,11 @@ class ParserBaseClass:
                     print(f"\nWarning: bad shortcut specifier: {line!r}\n")
                 else:
                     if bi and bi.stroke not in (None, 'none', 'None'):
-                        self.doOneShortcut(bi, commandName, p)
+                        self.doOneShortcut(bi, commandName or '', p)
                     else:
                         # New in Leo 5.7: Add local assignments to None to c.k.killedBindings.
                         if c.config.isLocalSettingsFile():
-                            c.k.killedBindings.append(commandName)
+                            c.k.killedBindings.append(commandName or '')
 
     # @+node:ekr.20111020144401.9585: *5* pbc.doOneShortcut
     def doOneShortcut(self, bi: g.BindingInfo, commandName: str, p: Position) -> None:
@@ -754,7 +755,7 @@ class ParserBaseClass:
         lines = g.splitLines(s)
         for line in lines:
             self.parseFontLine(line, d)
-        comments = d.get('comments')
+        comments = d.get('comments', '')
         d['comments'] = '\n'.join(comments)
         return d
 
@@ -769,7 +770,7 @@ class ParserBaseClass:
             pass
         if g.match(s, 0, '#'):
             s = s[1:].strip()
-            comments = d.get('comments')
+            comments = d.get('comments', '')
             comments.append(s)
             d['comments'] = comments
             return
@@ -794,7 +795,7 @@ class ParserBaseClass:
         Return (kind,name,val).
         Leo 4.11.1: Ignore everything after @data name.
         """
-        kind = name = val = None
+        kind = name = val = ''
         if g.match(s, 0, '@'):
             i = g.skip_id(s, 1, chars='-')
             i = g.skip_ws(s, i)
