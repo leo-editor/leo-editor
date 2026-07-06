@@ -2273,7 +2273,7 @@ class LoadManager:
     def traceSettingsDict(self, d: dict[str, str], verbose: bool = False) -> None:
         if verbose:
             print(d)
-            for key, gs in sorted(list(d.items())):  # PR #4773
+            for key, gs in sorted(list(d.items())):  # PR #4779
                 print(f"{key:35} {g.shortFileName(gs.path):17} {gs.val}")
             if d:
                 print('')
@@ -2284,7 +2284,7 @@ class LoadManager:
     def traceShortcutsDict(self, d: dict[str, str], verbose: bool = True) -> None:
         print(d)
         if verbose:
-            for key, val in sorted(list(d.items())):  # PR #4773
+            for key, val in sorted(list(d.items())):  # PR #4779
                 print(f"{key:35} {[z.stroke for z in val]}")
             if d:
                 print('')
@@ -2468,7 +2468,7 @@ class LoadManager:
         exists = fn and os.path.exists(fn)
         if not fn:
             # The usual directory does not exist. Create an empty file.
-            fn = ''  # PR #4773
+            fn = ''  # PR #4779
             c = self.openEmptyLeoFile(fn, gui=g.app.gui, old_c=None)
             c.rootPosition().h = 'Workbook'
             g.app.numberOfUntitledWindows += 1
@@ -3184,7 +3184,7 @@ class LoadManager:
         c = lm.openExternalFile(file_name, gui, old_c)
         if c:
             return c
-        return lm.openEmptyLeoFile(file_name, gui, old_c)  # PR #4773
+        return lm.openEmptyLeoFile(file_name, gui, old_c)  # PR #4779
 
     loadLocalFile = openWithFileName  # Compatibility.
 
