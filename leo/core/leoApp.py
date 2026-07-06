@@ -1406,7 +1406,7 @@ class LeoApp:
     # @+node:ekr.20031218072017.2617: *4* app.onQuit
     @cmd('exit-leo')
     @cmd('quit-leo')
-    def onQuit(self, event: LeoKeyEvent | None = None) -> None:
+    def onQuit(self, event: LeoKeyEvent) -> None:
         """Exit Leo, prompting to save unsaved outlines first."""
         if 'shutdown' in g.app.debug:
             g.trace()
@@ -1515,7 +1515,7 @@ class LeoApp:
     # @+node:ekr.20170429152049.1: *3* app.listenToLog
     @cmd('listen-to-log')
     @cmd('log-listen')
-    def listenToLog(self, event: LeoKeyEvent | None = None) -> None:
+    def listenToLog(self, event: LeoKeyEvent) -> None:
         """
         A socket listener, listening on localhost. See:
         https://docs.python.org/2/howto/logging-cookbook.html#sending-and-receiving-logging-events-across-a-network
@@ -3636,9 +3636,7 @@ class RecentFilesManager:
             if name.strip() == "":
                 continue  # happens with empty list/new file
 
-            def recentFilesCallback(
-                event: LeoKeyEvent | None = None, c: Cmdr = c, name: str = name
-            ) -> None:
+            def recentFilesCallback(event: LeoKeyEvent, c: Cmdr = c, name: str = name) -> None:
                 c.openRecentFile(fn=name)
 
             if groupedEntries:
@@ -3974,7 +3972,7 @@ def toggle_idle_time_events(event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20150514125218.5: *3* open-url
 @g.command('open-url')
-def openUrl(event: LeoKeyEvent | None = None) -> None:
+def openUrl(event: LeoKeyEvent) -> None:
     """
     Open the url in the headline or body text of the selected node.
 
@@ -3988,7 +3986,7 @@ def openUrl(event: LeoKeyEvent | None = None) -> None:
 
 # @+node:ekr.20150514125218.6: *3* open-url-under-cursor
 @g.command('open-url-under-cursor')
-def openUrlUnderCursor(event: LeoKeyEvent | None = None) -> None:
+def openUrlUnderCursor(event: LeoKeyEvent) -> None:
     """Open the url under the cursor."""
     g.openUrlOnClick(event)
 
