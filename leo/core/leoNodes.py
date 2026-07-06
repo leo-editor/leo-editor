@@ -11,7 +11,7 @@ import os
 import re
 import time
 import uuid
-from typing import cast, Any, Generator, Iterable, TYPE_CHECKING
+from typing import Any, Generator, Iterable, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import signal_manager
 
