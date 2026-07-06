@@ -195,8 +195,8 @@ class LeoApp:
         self.initial_cwd: str = os.getcwd()  # For restart-leo.
         self.leoID = ''  # The id part of gnx's.
         self.lossage: list[LossageData] = []  # List of last 100 keystrokes.
-        self.paste_c: Cmdr = None  # The commander that pasted the last outline.
-        self.spellDict: SpellDict = None  # A pyenchant dict or a DefaultDict.
+        self.paste_c: Cmdr | None = None  # The commander that pasted the last outline.
+        self.spellDict: Any = None  # A pyenchant dict or a DefaultDict.
         self.numberOfUntitledWindows = 0  # Number of opened untitled windows.
         self.windowList: list[LeoFrame] = []  # Global list of all frames.
         self.realMenuNameDict: dict[str, str] = {}  # Translations of menu names.
@@ -210,7 +210,7 @@ class LeoApp:
         self.config: GlobalConfigManager | None = None  # g.app.config. Can't use a cast.
         # A global db, managed by g.app.global_cacher.
         self.db: dict | SqlitePickleShare | g.NullObject = {}
-        self.externalFilesController = cast(ExternalFilesController, None)
+        self.externalFilesController: ExternalFilesController | None = None  # May be None.
         self.global_cacher: dict | GlobalCacher | g.NullObject = {}
         self.idleTimeManager = cast(IdleTimeManager, None)
         self.jupytextManager: JupytextManager | None = None  # Can't use a cast.
@@ -1045,7 +1045,7 @@ class LeoApp:
             from leo.core.leoQt import Qt
             from leo.plugins import qt_gui
 
-            assert Qt
+            assert Qt is not None
         except Exception:
             return  # Other methods will report startup problems.
         try:
@@ -1621,9 +1621,9 @@ class LoadManager:
         # The are the defaults for computing settings and shortcuts for all loaded files.
 
         # A g.SettingsDict: the join of settings in leoSettings.leo & myLeoSettings.leo
-        self.globalSettingsDict: g.SettingsDict = None
+        self.globalSettingsDict = cast(g.SettingsDict, None)
         # A g.SettingsDict: the join of shortcuts in leoSettings.leo & myLeoSettings.leo.
-        self.globalBindingsDict: g.SettingsDict = None
+        self.globalBindingsDict = cast(g.SettingsDict, None)
 
         # LoadManager ivars corresponding to user options...
 
@@ -1639,12 +1639,12 @@ class LoadManager:
         self.more_cmdline_files = False
 
         # Themes...
-        self.leo_settings_c: Cmdr = None
-        self.leo_settings_path: str = None
-        self.my_settings_c: Cmdr = None
-        self.my_settings_path: str = None
-        self.theme_c: Cmdr = None  # #1374.
-        self.theme_path: str = None
+        self.leo_settings_c: Cmdr | None = None
+        self.leo_settings_path = ''
+        self.my_settings_c: Cmdr | None = None
+        self.my_settings_path = None
+        self.theme_c: Cmdr | None = None  # #1374.
+        self.theme_path = ''
 
     # @+node:ekr.20120211121736.10812: *3* LM.Directory & file utils
     # @+node:ekr.20120219154958.10481: *4* LM.completeFileName
@@ -1748,7 +1748,7 @@ class LoadManager:
         home = os.path.expanduser("~")
         if home and len(home) > 1 and home[0] == '%' and home[-1] == '%':
             # Get the indirect reference to the true home.
-            home = os.getenv(home[1:-1], default=None)
+            home = os.getenv(home[1:-1], default='')
         if home:
             # Important: This returns the _working_ directory if home is None!
             # This was the source of the 4.3 .leoID.txt problems.
@@ -1905,7 +1905,7 @@ class LoadManager:
         return path
 
     # @+node:ekr.20180321124503.1: *5* LM.resolve_theme_path
-    def resolve_theme_path(self, fn: str, tag: str) -> str | None:
+    def resolve_theme_path(self, fn: str, tag: str) -> str:
         """Search theme directories for the given .leo file."""
         if not fn:
             return None
@@ -1919,7 +1919,7 @@ class LoadManager:
             if g.os_path_exists(path):
                 return path
         print(f"theme .leo file not found: {fn}")
-        return None
+        return ''
 
     # @+node:ekr.20120211121736.10772: *4* LM.computeWorkbookFileName
     def computeWorkbookFileName(self) -> str | None:
@@ -2131,7 +2131,7 @@ class LoadManager:
         for ks in sorted(list(d.keys())):
             duplicates, panes = [], ['all']
             aList = d.get(ks)  # A list of bi objects.
-            aList2 = [z for z in aList if not z.pane.startswith('mode')]
+            aList2 = [z for z in aList if z and not z.pane.startswith('mode')]
             if len(aList) > 1:
                 for bi in aList2:
                     if bi.pane in panes:
