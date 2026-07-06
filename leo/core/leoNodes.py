@@ -2326,7 +2326,7 @@ class VNode:
         self.children: list[VNode] = []  # Ordered list of all children of this node.
         self.parents: list[VNode] = []  # Unordered list of all parents of this node.
         # The immutable fileIndex (gnx) for this node. Set below.
-        self.fileIndex = cast(str, None)
+        self.fileIndex: str = ''  # PR #4773
         self.iconVal = 0  # The present value of the node's icon.
         self.statusBits = 0  # status bits
 

@@ -2418,6 +2418,7 @@ class Commands:
             count += 1
             v = p.v
             gnx = v.fileIndex
+            assert isinstance(gnx, str)  # PR #4773
             if gnx:  # gnx must be a string.
                 aList = vnode_d.get(gnx, [])
                 aList.append((id(v), v))
