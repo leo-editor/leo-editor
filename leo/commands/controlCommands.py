@@ -142,7 +142,7 @@ class ControlCommandsClass(BaseEditCommandsClass):
     @cmd('save-buffers-kill-leo')
     def shutdown(self, event: LeoKeyEvent) -> None:
         """Quit Leo, prompting to save any unsaved files first."""
-        g.app.onQuit()
+        g.app.onQuit(event)  # PR #4773: Bug fix.
 
     saveBuffersKillLeo = shutdown
 

@@ -3308,7 +3308,7 @@ class LoadManager:
             p.h = f"@auto {fn}" if func else f"@edit {fn}"
             c.refreshFromDisk(p)  # pylint: disable=no-member
 
-        c.mFileName = None  # #3546: Do *not* automatically save the .leo file.
+        c.mFileName = ''  # #3546: Do *not* automatically save the .leo file.
         c.frame.title = c.computeTabTitle()
         c.frame.setTitle(c.frame.title)
 
@@ -3413,9 +3413,7 @@ class LoadManager:
 
         if c.looksLikeDerivedFile(fn):
             # Create an @file node. Not undoable!
-            p = c.importCommands.importDerivedFiles(
-                parent=c.rootPosition(), paths=[fn], command=None
-            )
+            p = c.importCommands.importDerivedFiles(parent=c.rootPosition(), paths=[fn], command='')
             if not p:
                 return
             if p.hasBack():
