@@ -3626,11 +3626,11 @@ class RecentFilesManager:
         rf_always = c.config.getBool("recent-files-group-always")
         groupedEntries = rf_group or rf_always
         if groupedEntries:  # if so, make dict of groups
-            dirCount: dict[str, dict[str, list[str]]] | None = {}
+            dirCount: dict[str, dict[str, Any]] = {}
             for fileName in rf.getRecentFiles()[:n]:
                 dirName, baseName = g.os_path_split(fileName)
                 if baseName not in dirCount:
-                    dirCount[baseName] = {'dirs': [], 'entry': None}
+                    dirCount[baseName] = {'dirs': [], 'entry': ''}
                 dirCount[baseName]['dirs'].append(dirName)
         for name in rf.getRecentFiles()[:n]:
             if name.strip() == "":
@@ -3672,7 +3672,7 @@ class RecentFilesManager:
                 )
             i += 1
         if groupedEntries:  # store so we can delete them later
-            rf.groupedMenus = [z for z in dirCount if dirCount[z]['entry'] is not None]
+            rf.groupedMenus = [z for z in dirCount if dirCount[z]['entry']]
 
     # @+node:vitalije.20170703115609.1: *3* rf.editRecentFiles
     def editRecentFiles(self, c: Cmdr) -> None:
@@ -3837,7 +3837,7 @@ class RecentFilesManager:
             files = [z for z in p.b.splitlines() if z and g.os_path_exists(z)]
             rf.recentFiles = files
             rf.writeRecentFilesFile(c)
-            rf.updateRecentFiles(None)
+            rf.updateRecentFiles('')
             c.selectPosition(p)
             c.deleteOutline()
         else:
