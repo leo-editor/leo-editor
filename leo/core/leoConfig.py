@@ -976,7 +976,7 @@ class ParserBaseClass:
         self.error(f"{val} is not a valid {kind} for {name}")
 
     # @+node:ekr.20041119204700.3: *3* pbc.visitNode (must be overwritten in subclasses)
-    def visitNode(self, p: Position) -> str:
+    def visitNode(self, p: Position) -> str | None:
         raise NotImplementedError
 
     # @-others
@@ -1604,7 +1604,7 @@ class GlobalConfigManager:
     # @+node:ekr.20041117081009.4: *4* gcm.getString
     def getString(self, setting: str) -> str:
         """Return the value of @string setting."""
-        return self.get(setting, "string")
+        return self.get(setting, "string") or ''
 
     # @+node:ekr.20171115062202.1: *3* gcm.valueInMyLeoSettings
     def valueInMyLeoSettings(self, settingName: str) -> Any | None:
@@ -1694,7 +1694,7 @@ class LocalConfigManager:
     # @+node:ekr.20041123092357: *4* c.config.findSettingsPosition & helper
     # This was not used prior to Leo 4.5.
 
-    def findSettingsPosition(self, setting: Any) -> Position:
+    def findSettingsPosition(self, setting: Any) -> Position | None:
         """Return the position for the setting in the @settings tree for c."""
         munge = g.app.config.munge
         root = self.settingsRoot()
@@ -1709,7 +1709,7 @@ class LocalConfigManager:
         return None
 
     # @+node:ekr.20041120074536: *5* c.config.settingsRoot
-    def settingsRoot(self) -> Position:
+    def settingsRoot(self) -> Position | None:
         """Return the position of the @settings tree."""
         c = self.c
         for p in c.all_unique_positions():
@@ -1895,12 +1895,11 @@ class LocalConfigManager:
         return ''
 
     # @+node:ekr.20120215072959.12530: *5* c.config.getFloat
-    def getFloat(self, setting: str) -> float:
+    def getFloat(self, setting: str) -> float | None:
         """Return the value of @float setting."""
         val = self.get(setting, "float")
         try:
-            val = float(val)
-            return val
+            return float(val)  # type:ignore
         except TypeError:
             return None
 
@@ -1936,12 +1935,11 @@ class LocalConfigManager:
         return g.app.gui.getFontFromParams(family, size, slant, weight)
 
     # @+node:ekr.20120215072959.12532: *5* c.config.getInt
-    def getInt(self, setting: str) -> int:
+    def getInt(self, setting: str) -> int | None:
         """Return the value of @int setting."""
         val = self.get(setting, "int")
         try:
-            val = int(val)
-            return val
+            return int(val)  # type:ignore
         except TypeError:
             return None
 
@@ -1967,7 +1965,7 @@ class LocalConfigManager:
         if self.c.menulist_pass == 2:
             lm = g.app.loadManager
             lm.globalSettingsDict['menus'] = None
-            self.set(None, 'menus', 'menus', None)
+            self.set(None, 'menus', 'menus', None)  # type:ignore
             self.c.menulist_pass = 0
 
         return aList or g.app.config.menusList
@@ -2008,7 +2006,7 @@ class LocalConfigManager:
         return None
 
     # @+node:ekr.20120215072959.12539: *5* c.config.getShortcut
-    def getShortcut(self, commandName: str) -> tuple[str, list]:
+    def getShortcut(self, commandName: str) -> tuple[str | None, list]:
         """Return rawKey,accel for shortcutName"""
         c = self.c
         d = self.shortcutsDict
@@ -2314,11 +2312,11 @@ class SettingsTreeParser(ParserBaseClass):
 
 # @+node:ekr.20171229131953.1: ** parseFont (leoConfig.py)
 def parseFont(b: str) -> tuple[str, str, bool, bool, float]:
-    family = None
-    weight = None
-    slant = None
-    size = None
-    settings_name = None
+    family = ''
+    weight = ''
+    slant = ''
+    size = 0.0
+    settings_name = ''
     for line in g.splitLines(b):
         line = line.strip()
         if line.startswith('#'):
