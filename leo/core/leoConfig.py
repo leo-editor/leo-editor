@@ -1087,6 +1087,7 @@ class ActiveSettingsOutline:
         #
         # Create all the inner settings outlines.
         for kind, commander in self.commanders:
+            assert commander
             p = root.insertAfter()
             p.h = g.shortFileName(commander.fileName())
             p.b = '@language rest\n@wrap\n'
@@ -1216,6 +1217,7 @@ class ActiveSettingsOutline:
             print(pad, p.h)
         p_level = p.level()
         if p_level > self.level + 1:
+            assert p.v
             g.trace('OOPS', p.v.context.shortFileName(), self.level, p_level, p.h)
             return
         while p_level < self.level + 1 and len(self.parents) > 1:
@@ -1466,10 +1468,10 @@ class GlobalConfigManager:
     # @+node:ekr.20041122070339: *4* gcm.getColor
     def getColor(self, setting: str) -> str:
         """Return the value of @color setting."""
-        col = self.get(setting, "color")
-        while col and col.startswith('@'):
-            col = self.get(col[1:], "color")
-        return col
+        color = self.get(setting, 'color') or ''
+        while color and color.startswith('@'):
+            color = self.get(color[1:], "color")
+        return color
 
     # @+node:ekr.20080312071248.7: *4* gcm.getCommonCommands
     def getCommonAtCommands(self) -> list[tuple[Position, str]]:
@@ -1497,13 +1499,15 @@ class GlobalConfigManager:
         return self.get(setting, "outlinedata")
 
     # @+node:ekr.20041117093009.1: *4* gcm.getDirectory
-    def getDirectory(self, setting: str) -> str | None:
-        """Return the value of @directory setting, or None if the directory does not exist."""
+    def getDirectory(self, setting: str) -> str:
+        """
+        Return the value of @directory setting, or the empty string if the directory does not exist.
+        """
         # Fix https://bugs.launchpad.net/leo-editor/+bug/1173763
         theDir = self.get(setting, 'directory')
         if g.os_path_exists(theDir) and g.os_path_isdir(theDir):
             return theDir
-        return None
+        return ''
 
     # @+node:ekr.20070224075914.1: *4* gcm.getEnabledPlugins
     def getEnabledPlugins(self) -> str:
@@ -1889,7 +1893,7 @@ class LocalConfigManager:
         theDir = self.get(setting, 'directory')
         if g.os_path_exists(theDir) and g.os_path_isdir(theDir):
             return theDir
-        return None
+        return ''
 
     # @+node:ekr.20120215072959.12530: *5* c.config.getFloat
     def getFloat(self, setting: str) -> float:
