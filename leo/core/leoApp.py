@@ -2671,8 +2671,8 @@ class LoadManager:
     def createGui(self, pymacs: bool) -> None:
         lm = self
         gui_option = lm.options.get('gui')
-        windowFlag = lm.options.get('windowFlag')
-        script = lm.options.get('script')
+        windowFlag = lm.options.get('windowFlag', False)
+        script = lm.options.get('script', '')
         if g.app.gui:
             if g.app.gui == g.app.nullGui:
                 g.app.gui = None  # Enable g.app.createDefaultGui
@@ -2693,7 +2693,7 @@ class LoadManager:
     def createSpecialGui(self, gui: str, pymacs: bool, script: str, windowFlag: bool) -> None:
         # lm = self
         if pymacs:
-            g.app.createNullGuiWithScript(script=None)
+            g.app.createNullGuiWithScript(script=script)
         elif script:
             if windowFlag:
                 g.app.createDefaultGui()
@@ -3093,7 +3093,7 @@ class LoadManager:
                 }
                 # Handle keywords for g.pr and g.es_print.
                 d = g.doKeywordArgs(keys, d)
-                color: str = d.get('color')
+                color: str = d.get('color', '')
                 if color == 'suppress':
                     return
                 if log and color is None:
@@ -3163,7 +3163,7 @@ class LoadManager:
         """
         lm = self
 
-        file_name = g.finalize(fn) if fn else None
+        file_name = g.finalize(fn) if fn else ''
 
         # #2489: If file_name is empty, open an empty, untitled .leo file.
         if not file_name:
@@ -3248,7 +3248,7 @@ class LoadManager:
         c.initialFocusHelper()
 
     # @+node:ekr.20120223062418.10408: *5* LM.openExternalFile
-    def openExternalFile(self, fn: str, gui: LeoGui | None, old_c: Cmdr | None) -> Cmdr | None:
+    def openExternalFile(self, fn: str, gui: LeoGui | None, old_c: Cmdr | None) -> Cmdr:
         """
         Create a wrapper commander (in a new tab) for the given external file.
 
@@ -3361,15 +3361,11 @@ class LoadManager:
         return c
 
     # @+node:ekr.20231124134846.1: *5* LM.openExistingLeoFile & helper
-    def openExistingLeoFile(self, fn: str, gui: LeoGui | None, old_c: Cmdr | None) -> Cmdr | None:
+    def openExistingLeoFile(self, fn: str, gui: LeoGui | None, old_c: Cmdr | None) -> Cmdr:
         """
         Create a commander for an existing .leo, .db, or .leojs file.
         """
         lm = self
-        if not fn:
-            return None  # Should not happen.
-        if not os.path.exists(fn):
-            return None  # Should not happen.
 
         # Disable the log.
         g.app.setLog(None)
