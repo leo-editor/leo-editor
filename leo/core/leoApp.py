@@ -71,7 +71,7 @@ class IdleTimeManager:
         """Ctor for IdleTimeManager class."""
         self.callback_list: list[Callable] = []
         self.on_idle_count = 0
-        self.timer: IdleTime = None
+        self.timer: IdleTime | None = None  # May not exist.
 
     # @+others
     # @+node:ekr.20161026125611.1: *3* itm.add_callback
@@ -138,8 +138,8 @@ class LeoApp:
         self.diff = False  # True: run Leo in diff mode.
         self.enablePlugins = True  # True: run start1 hook to load plugins. --no-plugins
         self.failFast = False  # True: Use the failfast option in unit tests.
-        self.gui: LeoGui = None  # The gui class.
-        self.guiArgName: str = None  # The gui name given in --gui option.
+        self.gui: Any = None  # The gui class. Really LeoGui, but we can't use casts.
+        self.guiArgName: str = ''  # The gui name given in --gui option.
         self.isTheme = False  # True: load files as theme files (ignore myLeoSettings.leo).
         self.listen_to_log_flag = False  # True: execute listen-to-log command.
         # Set by startup logic to True if no files specified on the command line.
@@ -148,8 +148,8 @@ class LeoApp:
         self.start_fullscreen = False  # For qt_frame plugin.
         self.start_maximized = False  # For qt_frame plugin.
         self.start_minimized = False  # For qt_frame plugin.
-        self.trace_binding: str | None = None  # The name of a binding to trace, or None.
-        self.trace_setting: str | None = None  # The name of a setting to trace, or None.
+        self.trace_binding = ''  # The name of a binding to trace, or None.
+        self.trace_setting = ''  # The name of a setting to trace, or None.
         self.translateToUpperCase = False  # Never set to True.
         self.use_splash_screen = True  # True: put up a splash screen.
 
@@ -175,16 +175,16 @@ class LeoApp:
         # @-<< LeoApp: error messages >>
         # @+<< LeoApp: global directories >>
         # @+node:ekr.20161028035924.1: *5* << LeoApp: global directories >>
-        self.extensionsDir: str = None  # The leo/extensions directory
-        self.globalConfigDir: str = None  # leo/config directory
-        self.globalOpenDir: str = None  # The directory last used to open a file.
-        self.homeDir: str = None  # The user's home directory.
-        self.homeLeoDir: str = None  # The user's home/.leo directory.
-        self.leoEditorDir: str = None  # The leo-editor directory.
-        self.loadDir: str = None  # The leo/core directory.
-        self.machineDir: str = None  # The machine-specific directory.
+        self.extensionsDir = ''  # The leo/extensions directory
+        self.globalConfigDir = ''  # leo/config directory
+        self.globalOpenDir = ''  # The directory last used to open a file.
+        self.homeDir = ''  # The user's home directory.
+        self.homeLeoDir = ''  # The user's home/.leo directory.
+        self.leoEditorDir = ''  # The leo-editor directory.
+        self.loadDir = ''  # The leo/core directory.
+        self.machineDir = ''  # The machine-specific directory.
         # The directory from which the theme file was loaded, if any.
-        self.theme_directory: str = None
+        self.theme_directory = ''
         # @-<< LeoApp: global directories >>
         # @+<< LeoApp: global data >>
         # @+node:ekr.20161028035956.1: *5* << LeoApp: global data >>
@@ -193,7 +193,7 @@ class LeoApp:
         self.globalKillBuffer: list[str] = []  # The global kill buffer.
         self.globalRegisters: dict[str, str] = {}  # The global register list.
         self.initial_cwd: str = os.getcwd()  # For restart-leo.
-        self.leoID: str = None  # The id part of gnx's.
+        self.leoID = ''  # The id part of gnx's.
         self.lossage: list[LossageData] = []  # List of last 100 keystrokes.
         self.paste_c: Cmdr = None  # The commander that pasted the last outline.
         self.spellDict: SpellDict = None  # A pyenchant dict or a DefaultDict.
@@ -1077,7 +1077,7 @@ class LeoApp:
     # @+node:ekr.20031218072017.1978: *4* app.setLeoID & helpers
     def setLeoID(self, useDialog: bool = True, verbose: bool = True) -> str:
         """Get g.app.leoID from various sources."""
-        self.leoID = None
+        self.leoID = ''
         assert self == g.app
         verbose = verbose and not g.unitTesting and not self.silentMode
         table = (self.setIDFromSys, self.setIDFromFile, self.setIDFromEnv)
@@ -1513,7 +1513,7 @@ class LeoApp:
     # @+node:ekr.20170429152049.1: *3* app.listenToLog
     @cmd('listen-to-log')
     @cmd('log-listen')
-    def listenToLog(self, event: LeoKeyEvent) -> None:
+    def listenToLog(self) -> None:
         """
         A socket listener, listening on localhost. See:
         https://docs.python.org/2/howto/logging-cookbook.html#sending-and-receiving-logging-events-across-a-network
