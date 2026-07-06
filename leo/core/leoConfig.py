@@ -683,7 +683,7 @@ class ParserBaseClass:
         kind: str,
         junk_name: str,
         junk_val: Any,
-        s: str = None,  # Don't change this.
+        s: str | None = None,  # Don't change this.
     ) -> None:
         """Handle an @shortcut or @shortcuts node."""
         c, d = self.c, self.shortcutsDict
@@ -1202,7 +1202,7 @@ class ActiveSettingsOutline:
     def add(
         self,
         p: Position,
-        h: str = None,  # Don't change this.
+        h: str | None = None,  # Don't change this.
     ) -> None:
         """
         Add a node for p.
@@ -1450,7 +1450,7 @@ class GlobalConfigManager:
         return d or {}
 
     # @+node:ekr.20041117081009.3: *4* gcm.getBool
-    def getBool(self, setting: str, default: bool = None) -> bool:
+    def getBool(self, setting: str, default: bool = False) -> bool:
         """Return the value of @bool setting, or the default if the setting is not found."""
         val = self.get(setting, "bool")
         if val in (True, False):
@@ -1818,7 +1818,7 @@ class LocalConfigManager:
         return d or {}
 
     # @+node:ekr.20120215072959.12523: *5* c.config.getBool
-    def getBool(self, setting: str, default: bool = None) -> bool:
+    def getBool(self, setting: str, default: bool = False) -> bool:
         """Return the value of @bool setting, or the default if the setting is not found."""
         val = self.get(setting, "bool")
         if val in (True, False):

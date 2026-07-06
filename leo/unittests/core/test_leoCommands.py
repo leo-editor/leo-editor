@@ -317,7 +317,7 @@ class TestCommands(LeoUnitTest):
         table = (
             ('@nowrap\n', False),
             ('@wrap\n', True),
-            (p.b, None),
+            (p.b, False),
         )
         for s, expected_val in table:
             p.b = s
