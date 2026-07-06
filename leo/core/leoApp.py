@@ -203,17 +203,18 @@ class LeoApp:
         # @-<< LeoApp: global data >>
         # @+<< LeoApp: global controller/manager objects >>
         # @+node:ekr.20161028040028.1: *5* << LeoApp: global controller/manager objects >>
-        # Singleton applications objects...
+        # Singleton applications objects which all exist.
 
-        # A BackgroundProcessManager.
+        # We can't always use a cast here because doing so would create circular imports.
+        # In those two places we suppress the otherwise valid mypy complaints.
+
         self.backgroundProcessManager = cast(BackgroundProcessManager, None)
-        self.config: GlobalConfigManager | None = None  # g.app.config. Can't use a cast.
-        # A global db, managed by g.app.global_cacher.
-        self.db: dict | SqlitePickleShare | g.NullObject = {}
-        self.externalFilesController: ExternalFilesController | None = None  # May be None.
+        self.config: GlobalConfigManager = None  # type:ignore  # g.app.config
+        self.externalFilesController = cast(ExternalFilesController, None)
+        self.db: dict | SqlitePickleShare | g.NullObject = {}  # g.app.global_cacher.
         self.global_cacher: dict | GlobalCacher | g.NullObject = {}
         self.idleTimeManager = cast(IdleTimeManager, None)
-        self.jupytextManager: JupytextManager | None = None  # Can't use a cast.
+        self.jupytextManager: JupytextManager = None  # type:ignore
         self.loadManager = cast(LoadManager, None)
         self.nodeIndices = cast(NodeIndices, None)
         self.pluginsController = cast(LeoPluginsController, None)
@@ -1866,7 +1867,7 @@ class LoadManager:
         resolve = self.resolve_theme_path
 
         # Step 1: Use the --theme command-line options if it exists
-        path = resolve(lm.options.get('theme_path'), tag='--theme')
+        path = resolve(lm.options.get('theme_path', ''), tag='--theme')
         if path:
             # Caller (LM.readGlobalSettingsFiles) sets lm.theme_path
             if trace:
@@ -1908,7 +1909,7 @@ class LoadManager:
     def resolve_theme_path(self, fn: str, tag: str) -> str:
         """Search theme directories for the given .leo file."""
         if not fn:
-            return None
+            return ''
         # Make --theme and theme-name setting do the same thing for "None"
         if fn.lower().strip() == 'none':
             return LoadManager.LM_NOTHEME_FLAG
