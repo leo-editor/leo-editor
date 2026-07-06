@@ -1850,7 +1850,7 @@ class LoadManager:
         return [g.os_path_normslashes(z) for z in table if g.os_path_exists(z)]
 
     # @+node:ekr.20180318133620.1: *4* LM.computeThemeFilePath & helper
-    def computeThemeFilePath(self) -> str | None:
+    def computeThemeFilePath(self) -> str:
         """
         Return the absolute path to the theme .leo file, resolved using the search order for themes.
 
@@ -2266,15 +2266,14 @@ class LoadManager:
         # Clear the cache entries for the commanders.
         # This allows this method to be called outside the startup logic.
         for c in commanders:
-            if c not in old_commanders:
+            if c and c not in old_commanders:
                 g.app.forgetOpenFile(c.fileName())
 
     # @+node:ekr.20120214165710.10838: *4* LM.traceSettingsDict
     def traceSettingsDict(self, d: dict[str, str], verbose: bool = False) -> None:
         if verbose:
             print(d)
-            for key in sorted(list(d.keys())):
-                gs = d.get(key)
+            for key, gs in sorted(list(d.items())):  # PR #4773
                 print(f"{key:35} {g.shortFileName(gs.path):17} {gs.val}")
             if d:
                 print('')
@@ -2285,8 +2284,7 @@ class LoadManager:
     def traceShortcutsDict(self, d: dict[str, str], verbose: bool = True) -> None:
         print(d)
         if verbose:
-            for key in sorted(list(d.keys())):
-                val = d.get(key)
+            for key, val in sorted(list(d.items())):  # PR #4773
                 print(f"{key:35} {[z.stroke for z in val]}")
             if d:
                 print('')
