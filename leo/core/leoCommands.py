@@ -22,7 +22,6 @@ from leo.core import leoGlobals as g
 
 # The leoCommands ctor now does most leo.core.leo* imports,
 # thereby breaking circular dependencies.
-### from leo.core import leoNodes
 from leo.core.leoNodes import Position, VNode
 
 # @-<< leoCommands imports >>
