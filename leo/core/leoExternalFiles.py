@@ -489,7 +489,11 @@ class ExternalFilesController:
                 if not testing:
                     os.spawnv(os.P_NOWAIT, arg[0], vtuple)  # ???
             elif kind == 'subprocess.Popen':
-                c_arg = self.join(arg, fn)
+                c_arg = (
+                    self.join(arg, fn)
+                    if os.name == 'nt' else
+                    self.make_popen_args(arg_tuple, fn)
+                )
                 command = f"subprocess.Popen({c_arg})"
                 if not testing:
                     try:
@@ -676,6 +680,18 @@ class ExternalFilesController:
     def join(self, s1: str, s2: str) -> str:
         """Return s1 + ' ' + s2"""
         return f"{s1} {s2}"
+
+    # @+node:axk.20260706115344.1: *4* efc.make_popen_args
+    def make_popen_args(self, args: list[str], fn: str) -> list[str]:
+        """Return argv suitable for subprocess.Popen on posix platforms."""
+        return [self.unquote_arg(z) for z in args] + [fn]
+
+    # @+node:axk.20260706115344.2: *4* efc.unquote_arg
+    def unquote_arg(self, s: str) -> str:
+        """Strip matching quotes surrounding an @openwith arg."""
+        if len(s) >= 2 and s[0] == s[-1] and s[0] in '"\'':
+            return s[1:-1]
+        return s
 
     # @+node:tbrown.20150904102518.1: *4* efc.set_time
     def set_time(self, path: str, new_time: float = None) -> None:
