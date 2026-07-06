@@ -690,14 +690,14 @@ class Commands:
     # @+node:ekr.20260619060020.1: *3* @cmd commands
     # @+node:ekr.20250508044308.1: *4* @cmd beautify-tree
     @cmd('beautify-tree')
-    def beautify_tree_command(self, event: LeoKeyEvent | None = None) -> None:
+    def beautify_tree_command(self, event: LeoKeyEvent) -> None:
         """Undoably beautify c.p and its subtree."""
         c = self
         c.beautify_script_tree(c.p)
 
     # @+node:ekr.20210530065748.1: *4* @cmd c.execute-general-script
     @cmd('execute-general-script')
-    def execute_general_script_command(self, event: LeoKeyEvent | None = None) -> None:
+    def execute_general_script_command(self, event: LeoKeyEvent) -> None:
         """
         Execute c.p and all its descendants as a script.
 
@@ -747,7 +747,7 @@ class Commands:
     # @+node:tom.20241014154415.1: *4* @cmd c.execute-external-file
     # @@language python
     @cmd('execute-external-file')
-    def execute_external_file(self, event: LeoKeyEvent | None = None) -> None:
+    def execute_external_file(self, event: LeoKeyEvent) -> None:
         r"""
         # @+<< docstring >>
         # @+node:tom.20241014154415.2: *5* << docstring >>
@@ -1207,7 +1207,7 @@ class Commands:
 
     # @+node:vitalije.20190924191405.1: *4* @cmd execute-pytest
     @cmd('execute-pytest')
-    def execute_pytest(self, event: LeoKeyEvent | None = None) -> None:
+    def execute_pytest(self, event: LeoKeyEvent) -> None:
         """Using pytest, execute all @test nodes for p, p's parents and p's subtree."""
         c = self
 
@@ -1459,7 +1459,7 @@ class Commands:
 
     # @+node:ekr.20080514131122.12: *4* @cmd recolor (c.recolorCommand)
     @cmd('recolor')
-    def recolorCommand(self, event: LeoKeyEvent | None = None) -> None:
+    def recolorCommand(self, event: LeoKeyEvent) -> None:
         """Force a full recolor."""
         c = self
         colorer = c.frame.body.colorizer
