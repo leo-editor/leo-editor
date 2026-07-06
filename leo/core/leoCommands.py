@@ -22,7 +22,6 @@ from leo.core import leoGlobals as g
 
 # The leoCommands ctor now does most leo.core.leo* imports,
 # thereby breaking circular dependencies.
-### from leo.core import leoNodes
 from leo.core.leoNodes import Position, VNode
 
 # @-<< leoCommands imports >>
@@ -31,37 +30,115 @@ from leo.core.leoNodes import Position, VNode
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoApp import PreviousSettings
     from leo.core.leoGui import LeoKeyEvent
-    from leo.core.leoConfig import LocalConfigManager
+
+    # The following imports *are* required, but flake8 won't know that without the asserts.
 
     # 11 subcommanders...
+
     from leo.core.leoAtFile import AtFile
+
+    assert AtFile is not None
+
     from leo.core.leoChapters import ChapterController
+
+    assert ChapterController is not None
+
     from leo.core.leoFileCommands import FileCommands
+
+    assert FileCommands is not None
+
     from leo.core.leoFind import LeoFind
+
+    assert LeoFind is not None
+
     from leo.core.leoImport import LeoImportCommands
+
+    assert LeoImportCommands is not None
+
     from leo.core.leoKeys import KeyHandlerClass
+
+    assert KeyHandlerClass is not None
+
     from leo.core.leoHistory import NodeHistory
+
+    assert NodeHistory is not None
+
     from leo.core.leoPersistence import PersistenceDataController
+
+    assert PersistenceDataController is not None
+
     from leo.core.leoPrinting import PrintingController
+
+    assert PrintingController is not None
+
     from leo.core.leoShadow import ShadowController
+
+    assert ShadowController is not None
+
     from leo.core.leoUndo import Undoer
+
+    assert Undoer is not None
+
     from leo.core.leoVim import VimCommands
+
+    assert VimCommands is not None
 
     # 14 command handlers...
     from leo.commands.abbrevCommands import AbbrevCommandsClass
+
+    assert AbbrevCommandsClass is not None
+
     from leo.commands.bufferCommands import BufferCommandsClass
+
+    assert BufferCommandsClass is not None
+
     from leo.commands.controlCommands import ControlCommandsClass
+
+    assert ControlCommandsClass is not None
+
     from leo.commands.convertCommands import ConvertCommandsClass
+
+    assert ConvertCommandsClass is not None
+
     from leo.commands.debugCommands import DebugCommandsClass
+
+    assert DebugCommandsClass is not None
+
     from leo.commands.editCommands import EditCommandsClass
+
+    assert EditCommandsClass is not None
+
     from leo.commands.editFileCommands import EditFileCommandsClass
+
+    assert EditFileCommandsClass is not None
+
     from leo.commands.gotoCommands import GoToCommands
+
+    assert GoToCommands is not None
+
     from leo.commands.helpCommands import HelpCommandsClass
+
+    assert HelpCommandsClass is not None
+
     from leo.commands.keyCommands import KeyHandlerCommandsClass
+
+    assert KeyHandlerCommandsClass is not None
+
     from leo.commands.killBufferCommands import KillBufferCommandsClass
+
+    assert KillBufferCommandsClass is not None
+
     from leo.commands.rectangleCommands import RectangleCommandsClass
+
+    assert RectangleCommandsClass is not None
+
     from leo.core.leoRst import RstCommands
+
+    assert RstCommands is not None
+
     from leo.commands.spellCommands import SpellCommandsClass
+
+    assert SpellCommandsClass is not None
 
     # Other objects...
     from leo.core.leoGui import LeoGui
@@ -111,54 +188,25 @@ class Commands:
     def __init__(
         self,
         fileName: str,
-        gui: LeoGui = None,
+        gui: LeoGui | None = None,
         parentFrame: Any = None,
-        previousSettings: "PreviousSettings" = None,
-        relativeFileName: str = None,
+        previousSettings: PreviousSettings | None = None,
+        relativeFileName: str = '',
     ) -> None:
         t1 = time.process_time()
         c = self
+
         # Official ivars.
-        self._currentPosition: Position | None = None
+        self._currentPosition = cast(Position, None)
         self._topPosition: Position | None = None
         self.command_count = 0
-        self.frame: Widget = None
+        self.frame: Any = None  # This saves a lot of asserts.
         self.parentFrame: Widget = parentFrame  # New in Leo 6.0.
         self.gui: LeoGui = gui or g.app.gui
-        # New ivars
-        self.config: LocalConfigManager = None
-        # Declare subcommanders (and one alias) (created later).
-        self.atFileCommands: AtFile = None
-        self.chapterController: ChapterController = None
-        self.fileCommands: FileCommands = None
-        self.findCommands: LeoFind = None
-        self.importCommands: LeoImportCommands = None
-        self.keyHandler: KeyHandlerClass = None
-        self.nodeHistory: NodeHistory = None
-        self.persistenceController: PersistenceDataController = None
-        self.printingController: PrintingController = None
-        self.shadowController: ShadowController = None
-        self.undoer: Undoer = None
-        self.vimCommands: VimCommands = None
-        # Declare command handlers (created later).
-        self.abbrevCommands: AbbrevCommandsClass = None
-        self.bufferCommands: BufferCommandsClass = None
-        self.controlCommands: ControlCommandsClass = None
-        self.convertCommands: ConvertCommandsClass = None
-        self.debugCommands: DebugCommandsClass = None
-        self.editCommands: EditCommandsClass = None
-        self.editFileCommands: EditFileCommandsClass = None
-        self.gotoCommands: GoToCommands = None
-        self.helpCommands: HelpCommandsClass = None
-        self.keyHandlerCommands: KeyHandlerCommandsClass = None
-        self.killBufferCommands: KillBufferCommandsClass = None
-        self.rectangleCommands: RectangleCommandsClass = None
-        self.rstCommands: RstCommands = None
-        self.spellCommands: SpellCommandsClass = None
-        # Declare alias for self.keyHandler.
-        self.k: KeyHandlerClass = None
+
         # The stylesheet manager does not exist in all guis.
-        self.styleSheetManager: StyleSheetManager = None
+        self.styleSheetManager: StyleSheetManager | None = None
+
         # The order of these calls does not matter.
         c.initCommandIvars()
         c.initDebugIvars()
@@ -169,10 +217,12 @@ class Commands:
         # Instantiate c.config *before* initing objects.
         self.config = None
         c.initSettings(previousSettings)
+
         # Initialize all subsidiary objects, including subcommanders.
         c.initObjects(self.gui)
         assert c.frame
         assert c.frame.c
+
         # Complete the init!
         t2 = time.process_time()
         c.finishCreate()  # Slightly slow.
@@ -201,7 +251,7 @@ class Commands:
         return title
 
     # @+node:ekr.20120217070122.10475: *5* c.computeWindowTitle
-    def computeWindowTitle(self, fileName: str = None) -> str:
+    def computeWindowTitle(self, fileName: str = '') -> str:
         """
         Return the title for the top-level window.
         """
@@ -252,7 +302,7 @@ class Commands:
         self.expansionLevel = 0  # The expansion level of this outline.
         self.expansionNode = None  # The last node we expanded or contracted.
         self.nodeConflictList: list[Position] = []  # List of nodes with conflicting read-time data.
-        self.nodeConflictFileName: str = None  # The fileName for c.nodeConflictList.
+        self.nodeConflictFileName: str = ''  # The fileName for c.nodeConflictList.
         # Non-persistent dictionary for free use by scripts and plugins.
         self.user_dict: dict[str, Value] = {}
 
@@ -269,7 +319,7 @@ class Commands:
         # Flags for c.outerUpdate...
         self.enableRedrawFlag = True
         self.requestCloseWindow = False
-        self.requestedFocusWidget: Widget = None
+        self.requestedFocusWidget: Widget | None = None
         self.requestLaterRedraw = False
 
     # @+node:ekr.20120217070122.10472: *5* c.initFileIvars
@@ -277,7 +327,7 @@ class Commands:
         """Init file-related ivars of the commander."""
         self.changed = False  # True: the outline has changed since the last save.
         self.ignored_at_file_nodes: list[str] = []  # List of headlines for c.raise_error_dialogs.
-        self.last_dir: str = None  # The last used directory.
+        self.last_dir: str = ''  # The last used directory.
         # Do _not_ use os_path_norm: it converts an empty path to '.' (!!)
         self.mFileName: str = fileName or ''
         self.mRelativeFileName = relativeFileName or ''
@@ -287,8 +337,11 @@ class Commands:
     # @+node:ekr.20120217070122.10470: *5* c.initObjects
     def initObjects(self, gui: LeoGui) -> None:
         c = self
+
+        # Create the hidden root VNode.
         self.hiddenRootNode = VNode(context=c, gnx='hidden-root-vnode-gnx')
         self.hiddenRootNode.h = '<hidden root vnode>'
+
         # Create the gui frame.
         title = c.computeTabTitle()
         if not g.app.initing:
@@ -315,11 +368,10 @@ class Commands:
         # User commands...
         from leo.commands import abbrevCommands
         from leo.commands import bufferCommands
-        from leo.commands import (
-            checkerCommands,
-        )  # The import *is* required to define commands.
+        from leo.commands import checkerCommands  # Required.
 
         assert checkerCommands  # To suppress a pyflakes warning.
+
         from leo.commands import controlCommands
         from leo.commands import convertCommands
         from leo.commands import debugCommands
@@ -429,7 +481,7 @@ class Commands:
             self.spellCommands,
             self.vimCommands,
             self.undoer,
-        ]  # fmt: skip
+        ]
 
         # Other objects
         # A list of other classes that have a reloadSettings method
@@ -466,12 +518,12 @@ class Commands:
         self.vim_mode = False
 
     # @+node:ekr.20140815160132.18837: *5* c.initSettings
-    def initSettings(self, previousSettings: "PreviousSettings") -> None:
+    def initSettings(self, previousSettings: PreviousSettings | None = None) -> None:
         """Instantiate c.config from previous settings."""
         c = self
         from leo.core import leoConfig
 
-        c.config = leoConfig.LocalConfigManager(c, previousSettings)
+        c.config = leoConfig.LocalConfigManager(c, previousSettings)  # type:ignore
 
     # @+node:ekr.20031218072017.2814: *4* c.__repr__ & __str__
     def __repr__(self) -> str:
@@ -498,9 +550,10 @@ class Commands:
         c.createCommandNames()
         k.finishCreate()
         c.findCommands.finishCreate()
-        if not c.gui.isNullGui:
+        if not c.gui.isNullGui and not g.unitTesting:
             # #2485: register idle_focus_helper in the proper context.
-            try:
+            assert g.app.pluginsController
+            try:  # type:ignore
                 g.app.pluginsController.loadingModuleNameStack.append('leo.core.leoCommands')
                 g.registerHandler('idle', c.idle_focus_helper)
             finally:
@@ -637,14 +690,14 @@ class Commands:
     # @+node:ekr.20260619060020.1: *3* @cmd commands
     # @+node:ekr.20250508044308.1: *4* @cmd beautify-tree
     @cmd('beautify-tree')
-    def beautify_tree_command(self, event: LeoKeyEvent = None) -> None:
+    def beautify_tree_command(self, event: LeoKeyEvent | None = None) -> None:
         """Undoably beautify c.p and its subtree."""
         c = self
         c.beautify_script_tree(c.p)
 
     # @+node:ekr.20210530065748.1: *4* @cmd c.execute-general-script
     @cmd('execute-general-script')
-    def execute_general_script_command(self, event: LeoKeyEvent = None) -> None:
+    def execute_general_script_command(self, event: LeoKeyEvent | None = None) -> None:
         """
         Execute c.p and all its descendants as a script.
 
@@ -682,19 +735,19 @@ class Commands:
             print(f"{tag}: No command for {language} in @data exec-script-commands")
             return
         # Get the optional pattern.
-        regex = get_setting_for_language('exec-script-patterns')
+        regex = get_setting_for_language('exec-script-patterns') or ''
         # Set the directory, if possible.
         if p.isAnyAtFileNode():
             path = c.fullPath(p)
             directory = os.path.dirname(path)
         else:
-            directory = None
+            directory = ''
         c.general_script_helper(command, ext, language, directory=directory, regex=regex, root=p)
 
     # @+node:tom.20241014154415.1: *4* @cmd c.execute-external-file
     # @@language python
     @cmd('execute-external-file')
-    def execute_external_file(self, event: LeoKeyEvent = None) -> None:
+    def execute_external_file(self, event: LeoKeyEvent | None = None) -> None:
         r"""
         # @+<< docstring >>
         # @+node:tom.20241014154415.2: *5* << docstring >>
@@ -891,7 +944,7 @@ class Commands:
             If there is a language directive in effect, return it,
             otherwise use the file extension.
             """
-            return c.getLanguage(c.p) or LANGUAGE_EXTENSION_MAP.get(ext, None)
+            return c.getLanguage(c.p) or LANGUAGE_EXTENSION_MAP.get(ext, '')
 
         # @+node:tom.20241014154415.10: *5* getProcessor
         def getProcessor(language: str, path: str, extension: str) -> str:
@@ -997,7 +1050,7 @@ class Commands:
                 names = (names,)
             term = ''
             for name in names:
-                term = which(name)
+                term = which(name) or ''
                 if term:
                     break
             return term
@@ -1012,6 +1065,7 @@ class Commands:
                 or getTerminalFromDirectory('/usr/bin')
                 or getTerminalFromDirectory('/usr/local/bin')
                 or getTerminalFromDirectory('/bin')
+                or ''
             )
 
         # @+node:tom.20241014154415.16: *5* getTermExecuteCmd
@@ -1135,13 +1189,13 @@ class Commands:
             _, ext = os.path.splitext(path)
 
             # Check terminal from MAP_SETTING_NODE setting
-            setting_terminal = terminal
+            setting_terminal = terminal or ''
             if setting_terminal:
-                terminal = which(terminal)
+                terminal = which(terminal) or ''
                 if not terminal:
                     g.es(f'Cannot find terminal specified in setting: {setting_terminal}')
                     g.es('Trying an alternative')
-                    terminal = getTerminal()
+                    terminal = getTerminal() or ''
                     g.es('using', terminal)
 
             path = c.fullPath(root)
@@ -1153,7 +1207,7 @@ class Commands:
 
     # @+node:vitalije.20190924191405.1: *4* @cmd execute-pytest
     @cmd('execute-pytest')
-    def execute_pytest(self, event: LeoKeyEvent = None) -> None:
+    def execute_pytest(self, event: LeoKeyEvent | None = None) -> None:
         """Using pytest, execute all @test nodes for p, p's parents and p's subtree."""
         c = self
 
@@ -1220,15 +1274,15 @@ class Commands:
     def executeScript(
         self,
         *,
-        event: LeoKeyEvent = None,
-        args: Args = None,
-        p: Position = None,
-        script: str = None,
+        event: LeoKeyEvent | None = None,
+        args: Args | None = None,
+        p: Position | None = None,
+        script: str = '',
         useSelectedText: bool = True,
         define_g: bool = True,
         define_name: str = '__main__',
         silent: bool = False,
-        namespace: dict = None,
+        namespace: dict | None = None,
         raiseFlag: bool = False,
         runPyflakes: bool = True,
     ) -> Value:
@@ -1321,7 +1375,7 @@ class Commands:
                         namespace.update(script_gnx=script_p.gnx)
                     # We *always* execute the script with p = c.p.
                     callResult = c.executeScriptHelper(
-                        args, define_g, define_name, namespace, script
+                        args or [], define_g, define_name, namespace, script
                     )
                 except KeyboardInterrupt:
                     g.es('interrupted')
@@ -1405,7 +1459,7 @@ class Commands:
 
     # @+node:ekr.20080514131122.12: *4* @cmd recolor (c.recolorCommand)
     @cmd('recolor')
-    def recolorCommand(self, event: LeoKeyEvent = None) -> None:
+    def recolorCommand(self, event: LeoKeyEvent | None = None) -> None:
         """Force a full recolor."""
         c = self
         colorer = c.frame.body.colorizer
@@ -1464,7 +1518,7 @@ class Commands:
     safe_all_positions = all_positions
 
     # @+node:ekr.20191014093239.1: *5* c.all_positions_for_v
-    def all_positions_for_v(self, v: VNode, stack: list[tuple] = None) -> Generator:
+    def all_positions_for_v(self, v: VNode, stack: list[tuple] | None = None) -> Generator:
         """
         Generates all positions p in this outline where p.v is v.
 
@@ -1504,7 +1558,7 @@ class Commands:
                 stack.pop(0)
 
     # @+node:ekr.20161120121226.1: *5* c.all_roots
-    def all_roots(self, copy: bool = True, predicate: Callable = None) -> Generator:
+    def all_roots(self, copy: bool = True, predicate: Callable | None = None) -> Generator:
         """
         A generator yielding *all* the root positions in the outline that
         satisfy the given predicate. p.isAnyAtFileNode is the default
@@ -1547,7 +1601,7 @@ class Commands:
     all_positions_with_unique_vnodes_iter = all_unique_positions
 
     # @+node:ekr.20161120125322.1: *5* c.all_unique_roots
-    def all_unique_roots(self, copy: bool = True, predicate: Callable = None) -> Generator:
+    def all_unique_roots(self, copy: bool = True, predicate: Callable | None = None) -> Generator:
         """
         A generator yielding all unique root positions in the outline that
         satisfy the given predicate. p.isAnyAtFileNode is the default
@@ -1715,6 +1769,8 @@ class Commands:
         """
         Return the language in effect at node p, checking that the language is valid."""
         v0 = p.v
+        assert v0
+        assert p.v
         seen: set[VNode]
 
         # The same generator as in v.setAllAncestorAtFileNodesDirty.
@@ -1752,16 +1808,16 @@ class Commands:
 
         # Passes 3 & 4: Use the file extension in @<file> nodes.
 
-        def get_language_from_headline(v: VNode) -> str | None:
+        def get_language_from_headline(v: VNode) -> str:
             """Return the extension for @<file> nodes."""
             if v.isAnyAtFileNode():
                 name = v.anyAtFileNodeName()
                 junk, ext = g.os_path_splitext(name)
                 ext = ext[1:]  # strip the leading period.
-                language = g.app.extension_dict.get(ext)
+                language = g.app.extension_dict.get(ext, '')
                 if g.isValidLanguage(language):
                     return language
-            return None
+            return ''
 
         # Pass 3: Use file extension in headline of @<file> in direct parents.
         for p2 in p.self_and_parents(copy=False):
@@ -1772,6 +1828,7 @@ class Commands:
         # Pass 4: Use file extension in headline of @<file> nodes in extended parents.
         seen = set([v0.context.hiddenRootNode])
         for v in v_and_parents(v0):
+            assert v
             language = get_language_from_headline(v)
             if language:
                 return language
@@ -1797,7 +1854,7 @@ class Commands:
                     ending = m.group(1)
                     if ending in ("cr", "crlf", "lf", "nl", "platform"):
                         return g.getOutputNewline(name=ending)
-        return None
+        return ''
 
     # @+node:ekr.20250404153234.1: *5* c.getPageWidth
     # Use a regex to avoid allocating temp strings.
@@ -1991,7 +2048,9 @@ class Commands:
         return p
 
     # @+node:ekr.20040307104131.3: *5* c.positionExists
-    def positionExists(self, p: Position, root: Position = None, trace: bool = False) -> bool:
+    def positionExists(
+        self, p: Position, root: Position | None = None, trace: bool = False
+    ) -> bool:
         """Return True if a position exists in c's tree"""
         if not p or not p.v:
             return False
@@ -2050,6 +2109,8 @@ class Commands:
         if not p.hasChildren():
             return False
         # Always clear non-existent positions.
+        assert p.v
+        assert v
         v.expandedPositions = [z for z in v.expandedPositions if c.positionExists(z)]
         if not p.isCloned():
             # Do not call p.isExpanded here! It calls this method.
@@ -2108,7 +2169,7 @@ class Commands:
         return positions
 
     # @+node:ekr.20090107113956.1: *5* c.vnode2position
-    def vnode2position(self, v: VNode) -> Position:
+    def vnode2position(self, v: VNode) -> Position | None:
         """
         Given a VNode v, construct a valid position p such that p.v = v.
         """
@@ -2191,6 +2252,7 @@ class Commands:
     # @+node:ekr.20060906211138: *5* c.clearMarked
     def clearMarked(self, p: Position) -> None:
         c = self
+        assert p.v
         p.v.clearMarked()
         g.doHook("clear-mark", c=c, p=p)
 
@@ -2300,7 +2362,7 @@ class Commands:
         g.doHook("set-mark", c=c, p=p)
 
     # @+node:ekr.20040803140033.3: *5* c.setRootPosition (A do-nothing)
-    def setRootPosition(self, unused_p: Position = None) -> None:
+    def setRootPosition(self, unused_p: Position | None = None) -> None:
         """Set c._rootPosition."""
         # 2011/03/03: No longer used.
 
@@ -2344,6 +2406,7 @@ class Commands:
         # Keys are gnx's; values are lists of (id(v), v).
         vnode_d: dict[str, list[tuple[int, VNode]]] = {}
         ni = g.app.nodeIndices
+        assert ni
         t1 = time.time()
 
         def new_gnx(v: VNode) -> None:
@@ -2355,6 +2418,7 @@ class Commands:
             count += 1
             v = p.v
             gnx = v.fileIndex
+            assert isinstance(gnx, str)  # PR #4773
             if gnx:  # gnx must be a string.
                 aList = vnode_d.get(gnx, [])
                 aList.append((id(v), v))
@@ -2363,7 +2427,7 @@ class Commands:
                 new_gnx(v)
                 g.es_print(f"empty v.fileIndex: {v} new: {p.v.gnx!r}", color='red')
         for gnx in sorted(vnode_d.keys()):
-            aList = list(vnode_d.get(gnx))
+            aList = list(vnode_d.get(gnx) or [])
             ids = [id_ for (id_, v) in aList]
             if len(ids) > 1:
                 print('\nc.checkGnxs...')
@@ -2408,6 +2472,8 @@ class Commands:
     def checkParentAndChildren(self, p: Position) -> bool:
         """Check consistency of parent and child data structures."""
         c = self
+
+        assert p.v
 
         def _assert(condition: bool) -> bool:
             return g._assert(condition, show_callers=False)
@@ -2678,7 +2744,7 @@ class Commands:
     # @+node:ekr.20031218072017.1765: *4* c.validateOutline (compatibility only)
     # Makes sure all nodes are valid.
 
-    def validateOutline(self, event: LeoKeyEvent = None) -> bool:
+    def validateOutline(self, event: LeoKeyEvent | None = None) -> bool:
         """
         A legacy outline checker, retained only for compatibility.
 
@@ -2724,7 +2790,9 @@ class Commands:
     # This code is no longer used by any Leo command,
     # but it will be retained for use of scripts.
     # @+node:ekr.20040723094220.1: *4* c.checkAllPythonCode
-    def checkAllPythonCode(self, event: LeoKeyEvent = None, ignoreAtIgnore: bool = True) -> str:
+    def checkAllPythonCode(
+        self, event: LeoKeyEvent | None = None, ignoreAtIgnore: bool = True
+    ) -> str:
         """Check all nodes in the selected tree for syntax and tab errors."""
         c = self
         count = 0
@@ -2759,7 +2827,7 @@ class Commands:
     # @+node:ekr.20040723094220.3: *4* c.checkPythonCode
     def checkPythonCode(
         self,
-        event: LeoKeyEvent = None,
+        event: LeoKeyEvent | None = None,
         ignoreAtIgnore: bool = True,
         checkOnSave: bool = False,
     ) -> str:
@@ -2837,6 +2905,7 @@ class Commands:
             if g.unitTesting:
                 raise
             junk1, nag, junk2 = sys.exc_info()
+            assert nag
             badline = nag.get_lineno()
             line = nag.get_line()
             message = nag.get_msg()
@@ -3085,13 +3154,13 @@ class Commands:
         default_delims = g.set_delims_from_language(default_language)
         wrap = c.config.getBool("body-pane-wraps")
         table: tuple = (
-            ('encoding',    None,           g.scanAtEncodingDirectives),
-            ('lang-dict',   {},             g.scanAtCommentAndAtLanguageDirectives),
-            ('lineending',  None,           g.scanAtLineendingDirectives),
-            ('pagewidth',   c.page_width,   g.scanAtPagewidthDirectives),
-            ('path',        None,           c.scanAtPathDirectives),
-            ('tabwidth',    c.tab_width,    g.scanAtTabwidthDirectives),
-            ('wrap',        wrap,           g.scanAtWrapDirectives),
+            ('encoding',    '',           g.scanAtEncodingDirectives),
+            ('lang-dict',   {},           g.scanAtCommentAndAtLanguageDirectives),
+            ('lineending',  '',           g.scanAtLineendingDirectives),
+            ('pagewidth',   c.page_width, g.scanAtPagewidthDirectives),
+            ('path',        '',           c.scanAtPathDirectives),
+            ('tabwidth',    c.tab_width,  g.scanAtTabwidthDirectives),
+            ('wrap',        wrap,         g.scanAtWrapDirectives),
         )  # fmt: skip
 
         # Set d by scanning all directives.
@@ -3103,6 +3172,7 @@ class Commands:
 
         # Post process: do *not* set commander ivars.
         lang_dict = d.get('lang-dict')
+        assert lang_dict
         d = {
             "delims":       lang_dict.get('delims') or default_delims,
             "comment":      lang_dict.get('comment'),  # Leo 6.4: New.
@@ -3223,7 +3293,7 @@ class Commands:
         return return_value
 
     # @+node:ekr.20200522075411.1: *4* c.doCommandByName
-    def doCommandByName(self, command_name: str, event: LeoKeyEvent = None) -> Value:
+    def doCommandByName(self, command_name: str, event: LeoKeyEvent | None = None) -> Value:
         """
         Execute one command, given the name of the command.
 
@@ -3265,8 +3335,8 @@ class Commands:
         ext: str,
         language: str,
         root: Position,
-        directory: str = None,
-        regex: str = None,
+        directory: str = '',
+        regex: str = '',
     ) -> None:
         """
         The official helper for the execute-general-script command.
@@ -3620,8 +3690,8 @@ class Commands:
     # @+node:ekr.20150422080541.1: *4* c.backup
     def backup(
         self,
-        fileName: str = None,
-        prefix: str = None,
+        fileName: str = '',
+        prefix: str = '',
         silent: bool = False,
         useTimeStamp: bool = True,
     ) -> str | None:
@@ -3653,9 +3723,9 @@ class Commands:
     # @+node:ekr.20180210092235.1: *4* c.backup_helper
     def backup_helper(
         self,
-        base_dir: str = None,
+        base_dir: str = '',
         env_key: str = 'LEO_BACKUP',
-        sub_dir: str = None,
+        sub_dir: str = '',
         use_git_prefix: bool = True,
     ) -> None:
         """
@@ -3672,12 +3742,12 @@ class Commands:
                     base_dir = os.environ[env_key]
                 except KeyError:
                     print(f"No environment var: {env_key}")
-                    base_dir = None
+                    base_dir = ''
         if base_dir and g.os_path_exists(base_dir):
             if use_git_prefix:
                 git_branch, junk = g.gitInfo()
             else:
-                git_branch = None
+                git_branch = ''
             theDir, fn = g.os_path_split(c.fileName())
             backup_dir = join(base_dir, sub_dir) if sub_dir else base_dir
             path = join(backup_dir, fn)
@@ -3730,8 +3800,8 @@ class Commands:
         top_directory: str,
         kind: str = '@clean',  # Any @<file> type. @clean is recommended.
         report_changed_at_clean_nodes: bool = True,  # Recommended.
-        sub_directories: list[str] = None,
-        top_outline_name: str = None,
+        sub_directories: list[str] | None = None,
+        top_outline_name: str = '',
     ) -> None:
         # @+<< c.makeLinkLeoFiles: docstring >>
         # @+node:ekr.20250717132150.1: *5* << c.makeLinkLeoFiles: docstring >>
@@ -3866,7 +3936,7 @@ class Commands:
         self,
         directory: str,
         extensions: list[str],
-        files: list[str],
+        files: list[str] | None,
         kind: str,
         links: list[str],
         outline_name: str,
@@ -3913,7 +3983,7 @@ class Commands:
         c2.close()
 
     # @+node:ekr.20031218072017.2925: *4* c.markAllAtFileNodesDirty
-    def markAllAtFileNodesDirty(self, event: LeoKeyEvent = None) -> None:
+    def markAllAtFileNodesDirty(self, event: LeoKeyEvent | None = None) -> None:
         """Mark all @file nodes as changed."""
         c = self
         c.endEditing()
@@ -3927,7 +3997,7 @@ class Commands:
                 p.moveToThreadNext()
 
     # @+node:ekr.20031218072017.2926: *4* c.markAtFileNodesDirty
-    def markAtFileNodesDirty(self, event: LeoKeyEvent = None) -> None:
+    def markAtFileNodesDirty(self, event: LeoKeyEvent | None = None) -> None:
         """Mark all @file nodes in the selected tree as changed."""
         c = self
         p = c.p
@@ -3944,7 +4014,7 @@ class Commands:
                 p.moveToThreadNext()
 
     # @+node:ekr.20250717080554.1: *4* c.openAllLinkedFiles (transitive closure)
-    def openAllLinkedFiles(self, gui: LeoGui = None) -> list[Commands]:
+    def openAllLinkedFiles(self, gui: LeoGui | None = None) -> list[Commands]:
         """
         Open the transitive closure of all outlines reachable from any @leo
         node in this outline.
@@ -3981,6 +4051,7 @@ class Commands:
                     if fileName not in todo and fileName not in scanned:
                         c2 = g.openWithFileName(fileName, gui=gui)
                         todo.append(fileName)
+                        assert c2
                         assert c2 not in result
                         result.append(c2)
 
@@ -4001,7 +4072,7 @@ class Commands:
         return result
 
     # @+node:ekr.20031218072017.2081: *4* c.openRecentFile
-    def openRecentFile(self, event: LeoKeyEvent = None, fn: str = None) -> None:
+    def openRecentFile(self, event: LeoKeyEvent | None = None, fn: str = '') -> None:
         """
         c.openRecentFile: This is not a command!
 
@@ -4017,7 +4088,11 @@ class Commands:
             g.doHook("recentfiles2", c=c2, p=c2.p, v=c2.p, fileName=fn)
 
     # @+node:ekr.20031218072017.2823: *4* c.openWith
-    def openWith(self, event: LeoKeyEvent = None, d: dict[str, Any] = None) -> None:
+    def openWith(
+        self,
+        event: LeoKeyEvent | None = None,
+        d: dict[str, Any] | None = None,
+    ) -> None:
         """
         This is *not* a command.
 
@@ -4071,7 +4146,7 @@ class Commands:
         x.diff_file(fn=fn, rev1=rev1, rev2=rev2)
 
     # @+node:ekr.20180508110755.1: *4* c.diff_two_revs
-    def diff_two_revs(self, directory: str = None, rev1: str = '', rev2: str = '') -> None:
+    def diff_two_revs(self, directory: str = '', rev1: str = '', rev2: str = '') -> None:
         """
         Create an outline describing the git diffs for all files changed
         between rev1 and rev2.
@@ -4183,7 +4258,9 @@ class Commands:
             c.setChanged()
             c.redraw()
         # Restore the root position's body.
-        c.rootPosition().v.b = saved_body  # #1007: just set v.b.
+        p = c.rootPosition()
+        assert p.v
+        p.v.b = saved_body  # #1007: just set v.b.
         c.init_error_dialogs()
 
     # @+node:ekr.20150710083827.1: *5* c.syntaxErrorDialog
@@ -4219,13 +4296,14 @@ class Commands:
         c.redraw(p)
         c.updateSyntaxColorer(p)  # Dragging can change syntax coloring.
 
-    # @+node:ekr.20031218072017.2353: *5* c.dragAfter
-    def dragAfter(self, p: Position, after: Position | None) -> None:
+    # @+node:ekr.20031218072017.2353: *5* c.dragAfter (not used)
+    def dragAfter(self, p: Position, after: Position) -> None:
         c, p, u = self, self.p, self.undoer
         if not c.checkDrag(p, after):
             return
         if not c.checkMoveWithParentWithWarning(p, after.parent(), True):
             return
+        assert p.v
         c.endEditing()
         undoData = u.beforeMoveNode(p)
         p.setDirty()
@@ -4264,6 +4342,7 @@ class Commands:
         undoType = 'Clone Drag'
         current = c.p
         clone = p.clone()  # Creates clone.  Does not set undo.
+        assert clone.v
         if c.checkDrag(p, after) and c.checkMoveWithParentWithWarning(clone, after.parent(), True):
             c.endEditing()
             undoData = u.beforeInsertNode(current)
@@ -4280,7 +4359,7 @@ class Commands:
 
     # @+node:ekr.20031218072017.2949: *4* c.Drawing
     # @+node:ekr.20080514131122.8: *5* c.bringToFront
-    def bringToFront(self, c2: "Commands" = None) -> None:
+    def bringToFront(self, c2: Commands | None = None) -> None:
         c = self
         c2 = c2 or c
         g.app.gui.ensure_commander_visible(c2)
@@ -4296,6 +4375,7 @@ class Commands:
         # c = self
         redraw_flag = False
         for p in p.parents():
+            assert p.v
             if not p.v.isExpanded():
                 p.v.expand()
                 p.expand()
@@ -4339,7 +4419,7 @@ class Commands:
                 mods.clear()
 
     # @+node:ekr.20080514131122.13: *5* c.recolor
-    def recolor(self, p: Position = None) -> None:
+    def recolor(self, p: Position | None = None) -> None:
         """
         Force a full recolor when using the Scintilla text widget.
         This method has no effect when using the default Qt colorizer.
@@ -4371,7 +4451,7 @@ class Commands:
         c.enableRedrawFlag = True
 
     # @+node:ekr.20090110073010.1: *6* c.redraw
-    def redraw(self, p: Position = None) -> None:
+    def redraw(self, p: Position | None = None) -> None:
         """
         Redraw the screen immediately.
         If p is given, set c.p to p.
@@ -4529,7 +4609,7 @@ class Commands:
 
     # @+node:ekr.20031218072017.2909: *4* c.Expand/contract
     # @+node:ekr.20171124091426.1: *5* c.contractAllHeadlines
-    def contractAllHeadlines(self, event: LeoKeyEvent = None) -> None:
+    def contractAllHeadlines(self, event: LeoKeyEvent | None = None) -> None:
         """Contract all nodes in the outline."""
         c = self
         for v in c.all_nodes():
@@ -4702,9 +4782,9 @@ class Commands:
         self,
         menu: LeoQtMenu,
         accelerator: str = '',  # Not used.
-        command: Callable = None,
-        commandName: str = None,  # Not used.
-        label: str = None,  # Not used.
+        command: Callable | None = None,
+        commandName: str = '',  # Not used.
+        label: str = '',  # Not used.
         underline: int = 0,
     ) -> None:
         c = self
@@ -4889,7 +4969,7 @@ class Commands:
             return p and p.hasBack() and p != bunch.p
         return p and p.hasBack()
 
-    # @+node:ekr.20031218072017.2973: *6* c.canMoveOutlineUp
+    # @+node:ekr.20031218072017.2973: *6* c.canMoveOutlineUp Bug!
     def canMoveOutlineUp(self) -> bool:
         c, current = self, self.p
         visBack = current and current.visBack(c)
@@ -4900,13 +4980,14 @@ class Commands:
         if c.hoistStack:
             limit, limitIsVisible = c.visLimit()
             if limitIsVisible:  # A hoist
+                assert limit
                 return current != limit
             # A chapter.
-            return current != limit.firstChild()
+            return current != limit.firstChild()  # type:ignore # Bug!?!
         return current != c.rootPosition()
 
     # @+node:ekr.20031218072017.2974: *6* c.canPasteOutline
-    def canPasteOutline(self, s: str = None) -> bool:
+    def canPasteOutline(self, s: str = '') -> bool:
         # c = self
         if not s:
             s = g.app.gui.getTextFromClipboard()
@@ -5035,7 +5116,7 @@ class Commands:
         self,
         p: Position,
         selectAll: bool = False,
-        selection: tuple = None,
+        selection: tuple | None = None,
         keepMinibuffer: bool = False,
     ) -> None:
         """Redraw the screen and edit p's headline."""
@@ -5116,12 +5197,12 @@ class Commands:
     def recursiveImport(
         self,
         *,  # All arguments are kwargs.
-        dir_: str = None,  # A directory or file name.
-        ignore_pattern: re.Pattern = None,  # Ignore files matching this regex pattern.
+        dir_: str = '',  # A directory or file name.
+        ignore_pattern: re.Pattern | None = None,  # Ignore files matching this regex pattern.
         kind: str = '@file',
         recursive: bool = True,
         safe_at_file: bool = True,
-        theTypes: list[str] = None,
+        theTypes: list[str] | None = None,
         verbose: bool = True,
     ) -> None:
         # @+<< docstring >>
@@ -5216,6 +5297,7 @@ class Commands:
     # @+node:ekr.20260110083713.1: *4* c.beautify_script_tree
     def beautify_script_tree(self, root: Position) -> None:
         """beautify root's entire tree. This code is not yet undoable."""
+        assert root.v
         c = root.v.context
         at = c.atFileCommands
         p = c.p
@@ -5233,23 +5315,23 @@ class Commands:
 
         # Update root's tree.
         d: dict[str, VNode] = {p.v.gnx: p.v for p in root.self_and_subtree()}
-        ok = at.fast_read_into_root(c, results, gnx2vnode=d, path=None, root=root)
+        ok = at.fast_read_into_root(c, results, gnx2vnode=d, path='', root=root)
         if ok:
             c.redraw()
             g.es_print(f"beautified: {root.h}", color='blue')
         else:
             g.trace('at.fast_read_into_root failed')  # Should not happen.
 
-    # @+node:ekr.20160201072634.1: *4* c.cloneFindByPredicate
+    # @+node:ekr.20160201072634.1: *4* c.cloneFindByPredicate & helpers
     def cloneFindByPredicate(
         self,
         generator: Callable,
         predicate: Callable,
-        failMsg: str = None,
+        failMsg: str = '',
         flatten: bool = False,
-        iconPath: str = None,
-        undoType: str = None,
-    ) -> Position:
+        iconPath: str = '',
+        undoType: str = '',
+    ) -> Position | None:  # PR #4773
         """
         Traverse the tree given using the generator, cloning all positions for
         which predicate(p) is True. Undoably move all clones to a new node, created
@@ -5295,6 +5377,7 @@ class Commands:
     # @+node:ekr.20160304054950.1: *5* c.setCloneFindByPredicateIcon
     def setCloneFindByPredicateIcon(self, iconPath: str, p: Position) -> None:
         """Attach an icon to p.v.u."""
+        assert p.v
         if iconPath and g.os_path_exists(iconPath) and not g.os_path_isdir(iconPath):
             aList = p.v.u.get('icons', [])
             for d in aList:
@@ -5329,7 +5412,7 @@ class Commands:
     def createNodeHierarchy(
         self,
         heads: list[str],
-        parent: Position = None,
+        parent: Position,  # PR #4773
         forcecreate: bool = False,
     ) -> Position:
         """
@@ -5432,7 +5515,7 @@ class Commands:
     undoableDeletePositions = deletePositionsInList
 
     # @+node:ekr.20091211111443.6265: *4* c.doBatchOperations & helpers
-    def doBatchOperations(self, aList: list = None) -> None:
+    def doBatchOperations(self, aList: list | None = None) -> None:
         # Validate aList and create the parents dict
         if aList is None:
             aList = []
@@ -5474,7 +5557,7 @@ class Commands:
         self,
         regex: re.Pattern,
         flags: re.RegexFlag = re.IGNORECASE,
-        it: Iterable[Position] = None,
+        it: Iterable[Position] | None = None,
     ) -> list[Position]:
         """
         Return list of all Positions whose body matches the regex at least once.
@@ -5495,7 +5578,7 @@ class Commands:
         self,
         regex: re.Pattern,
         flags: re.RegexFlag = re.IGNORECASE,
-        it: Iterable[Position] = None,
+        it: Iterable[Position] | None = None,
     ) -> list[Position]:
         """
         Return list of all Positions whose headline matches the regex.

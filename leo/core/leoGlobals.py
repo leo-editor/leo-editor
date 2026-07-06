@@ -239,9 +239,15 @@ class Command:
     def __call__(self, func: Callable) -> Callable:
         """Register command for all future commanders."""
         global_commands_dict[self.name] = func
-        if app:
-            for c in app.commanders():
-                c.k.registerCommand(self.name, func)
+        if not g.app:  # PR #4773
+            # This module has not been fully imported.
+            if False:
+                print(f"@g.command.__call__: {self.name:>35}")
+            return func
+
+        for c in app.commanders():
+            c.k.registerCommand(self.name, func)
+
         # Inject ivars for plugins_menu.py.
         func.__func_name__ = func.__name__  # For leoInteg.
         func.is_command = True
@@ -406,7 +412,10 @@ url_regex = re.compile(rf"""\b{url_kinds}://[^\s'"]+""")
 # @-<< define regexes >>
 tree_popup_handlers: list[Callable] = []  # Set later.
 user_dict: dict[str, Value] = {}  # Non-persistent dictionary for scripts and plugins.
-app: LeoApp = None  # The singleton app object. Set by runLeo.py.
+
+# The singleton app object. Set by runLeo.py.
+app: LeoApp = None  # type:ignore # There seems to be no way to init g.app here.
+
 # Global status vars.
 inScript = False  # A synonym for app.inScript
 unitTesting = False  # A synonym for app.unitTesting.
@@ -432,7 +441,7 @@ def get_backup_path(sub_directory: str) -> str:
     """
     # Compute the main backup directory.
     # First, try the LEO_BACKUP directory.
-    backup = None
+    backup = ''
     try:
         backup = os.environ['LEO_BACKUP']
         if not os.path.exists(backup):
@@ -2382,7 +2391,7 @@ def checkQtTextWidget(obj: Any, *, other_classes: list[str] | None = None) -> No
         g.traceUniqueClass(obj, n=2)
     # g.stat()
     all_classes = g.qt_text_classes
-    if other_classes is not None:
+    if other_classes:
         all_classes.extend(other_classes)
     g._check_class_helper(obj, key=g.caller(), class_names=all_classes)
 
@@ -2819,9 +2828,9 @@ def printStats(event: LeoKeyEvent | None = None) -> None:
             print(f"  {d.get(key):4}: {key_s}")
 
     # Print the other stats: calls to g.stat(whatever)
-    for key in sorted(d.keys()):
+    for key, value in sorted(d.items()):  # PR #4773
         if not key.startswith(_int_stat_prefix):
-            inner_keys = (z if isinstance(z, str) else repr(z) for z in d.get(key))
+            inner_keys = (z if isinstance(z, str) else repr(z) for z in value)  # PR #4773
             print(f"{key}:")
             for z in sorted(inner_keys):
                 print(f"    {z.strip()}")
@@ -2897,7 +2906,7 @@ def comment_delims_from_extension(filename: str) -> tuple[str, str, str]:
         root, ext = os.path.splitext(filename)
     if ext == '.tmp':
         root, ext = os.path.splitext(root)
-    language = g.app.extension_dict.get(ext[1:])
+    language = g.app.extension_dict.get(ext[1:], '')
     if ext:
         return g.set_delims_from_language(language)
     g.trace(f"unknown extension: {ext!r}, filename: {filename!r}, root: {root!r}")
@@ -3316,6 +3325,7 @@ def scanForAtLanguage(c: Cmdr, p: Position) -> str:
 # @+node:ekr.20041123094807: *3* g.scanForAtSettings
 def scanForAtSettings(p: Position) -> bool:
     """Scan position p and its ancestors looking for @settings nodes."""
+    assert g.app.config
     for p in p.self_and_parents(copy=False):
         h = p.h
         h = g.app.config.canonicalizeSettingName(h)
@@ -3461,27 +3471,33 @@ def chdir(path: str) -> None:
 
 
 def computeGlobalConfigDir() -> str:
+    assert g.app.loadManager
     return g.app.loadManager.computeGlobalConfigDir()
 
 
 def computeHomeDir() -> str:
+    assert g.app.loadManager
     return g.app.loadManager.computeHomeDir()
 
 
 def computeLeoDir() -> str:
+    assert g.app.loadManager
     return g.app.loadManager.computeLeoDir()
 
 
 def computeLoadDir() -> str:
+    assert g.app.loadManager
     return g.app.loadManager.computeLoadDir()
 
 
 def computeMachineName() -> str:
+    assert g.app.loadManager
     return g.app.loadManager.computeMachineName()
 
 
-def computeStandardDirectories() -> str:
-    return g.app.loadManager.computeStandardDirectories()
+def computeStandardDirectories() -> None:
+    assert g.app.loadManager
+    g.app.loadManager.computeStandardDirectories()
 
 
 # @+node:ekr.20031218072017.3117: *3* g.create_temp_file
@@ -3508,6 +3524,7 @@ def create_temp_file(textMode: bool = False) -> tuple[IO | None, str]:
 def createHiddenCommander(fn: str) -> Cmdr | None:
     """Read the given outline into a hidden commander."""
     lm = g.app.loadManager
+    assert lm
     if lm.isLeoFile(fn):
         return g.openWithFileName(fn, gui=g.app.nullGui)
     return None
@@ -3515,8 +3532,9 @@ def createHiddenCommander(fn: str) -> Cmdr | None:
 
 # @+node:vitalije.20170714085545.1: *3* g.defaultLeoFileExtension
 def defaultLeoFileExtension(c: Cmdr | None = None) -> str:
-    conf = c.config if c else g.app.config
-    return conf.getString('default-leo-extension') or '.leo'
+    config = c.config if c else g.app.config
+    assert config
+    return config.getString('default-leo-extension') or '.leo'
 
 
 # @+node:ekr.20031218072017.3118: *3* g.ensure_extension
@@ -3724,6 +3742,7 @@ def openWithFileName(
 
     Return the commander of the newly-opened file, which may be old_c or another commander.
     """
+    assert g.app.loadManager
     return g.app.loadManager.openWithFileName(fileName, gui, old_c)
 
 
@@ -4792,9 +4811,8 @@ def skip_ws_and_nl(s: str, i: int) -> int:
 # @+node:ekr.20180325025502.1: *3* g.backupGitIssues
 def backupGitIssues(c: Cmdr, base_url: str = '') -> None:
     """Get a list of issues from Leo's GitHub site."""
-    if base_url is None:
+    if not base_url:
         base_url = 'https://api.github.com/repos/leo-editor/leo-editor/issues'
-
     root = c.lastTopLevel().insertAfter()
     root.h = f'Backup of issues: {time.strftime("%Y/%m/%d")}'
     label_list: list[str] = []
@@ -4844,7 +4862,7 @@ def getGitIssues(
     state: str = '',  # in (None, 'closed', 'open')
 ) -> None:
     """Get a list of issues from Leo's GitHub site."""
-    if base_url is None:
+    if not base_url:
         base_url = 'https://api.github.com/repos/leo-editor/leo-editor/issues'
     if isinstance(label_list, (list, tuple)):
         root = c.lastTopLevel().insertAfter()
@@ -4883,7 +4901,7 @@ class GitIssueController:
             for state in ('closed', 'open'):
                 for label in label_list:
                     self.get_one_issue(label, state)
-        elif state is None:
+        elif not state:
             for state in ('closed', 'open'):
                 organizer = root.insertAsLastChild()
                 organizer.h = f"{state} issues..."
@@ -4891,7 +4909,7 @@ class GitIssueController:
         elif state in ('closed', 'open'):
             self.get_all_issues(label_list, root, state)
         else:
-            g.es_print('state must be in (None, "open", "closed")')
+            g.es_print('state must be in ("", "open", "closed")')
 
     # @+node:ekr.20180325024334.1: *5* git.get_all_issues
     def get_all_issues(
@@ -4995,11 +5013,10 @@ class GitIssueController:
     ) -> tuple[bool, int]:
         if self.milestone:
             aList = [
-                z
-                for z in r.json()
-                if z.get('milestone') is not None
-                and self.milestone == z.get('milestone').get('title')
-            ]
+                z for z in r.json()
+                if z.get('milestone', '') and
+                self.milestone == z.get('milestone').get('title')
+            ]  # fmt: skip
         else:
             aList = [z for z in r.json()]
         for d in aList:
@@ -5031,7 +5048,7 @@ class GitIssueController:
 
 # @+node:ekr.20190428173354.1: *3* g.getGitVersion
 def getGitVersion(directory: str = '') -> tuple[str, str, str]:
-    """Return a tuple (author, build, date) from the git log, or None."""
+    """Return a tuple (author, build, date) from the git log, where all may be empty."""
 
     # -n: Get only the last log.
     trace = 'git' in g.app.debug
@@ -5099,7 +5116,7 @@ def getModifiedFiles(repo_path: str) -> list[str]:
 def gitBranchName(path: str = '') -> str:
     """
     Return the git branch name associated with path/.git, or the empty
-    string if path/.git does not exist. If path is None, use the leo-editor
+    string if path/.git does not exist. If path is empty, use the leo-editor
     directory.
     """
     branch, commit = g.gitInfo(path)
@@ -5110,7 +5127,7 @@ def gitBranchName(path: str = '') -> str:
 def gitCommitNumber(path: str = '') -> str:
     """
     Return the git commit number associated with path/.git, or the empty
-    string if path/.git does not exist. If path is None, use the leo-editor
+    string if path/.git does not exist. If path is empty, use the leo-editor
     directory.
     """
     branch, commit = g.gitInfo(path)
@@ -5121,7 +5138,7 @@ def gitCommitNumber(path: str = '') -> str:
 def gitDescribe(path: str = '') -> tuple[str, str, str]:
     """
     Return the Git tag, distance-from-tag, and commit hash for the
-    associated path. If path is None, use the leo-editor directory.
+    associated path. If path is empty, use the leo-editor directory.
 
     Given `git describe` cmd line output: `x-leo-v5.6-55-ge1129da\n`
     This function returns ('x-leo-v5.6', '55', 'e1129da')
@@ -5161,7 +5178,7 @@ def gitInfo(path: str = '') -> tuple[str, str]:
     Return the branch and commit number or ('', '').
     """
     branch, commit = '', ''  # Set defaults.
-    if path is None:
+    if not path:
         # Default to leo/core.
         path = os.path.dirname(__file__)
     if not os.path.isdir(path):
@@ -5238,7 +5255,7 @@ contentModifiedSet: set[VNode] = set()
 
 
 # @+node:ekr.20031218072017.1596: *3* g.doHook
-def doHook(tag: str, *args: Args, **kwargs: KWargs) -> Value | None:
+def doHook(tag: str, *args: Args, **kwargs: KWargs) -> Any:
     """
     This global function calls a hook routine. Hooks are identified by the
     tag param.
@@ -5256,6 +5273,8 @@ def doHook(tag: str, *args: Args, **kwargs: KWargs) -> Value | None:
     """
     if g.app.killed or g.app.hookError:
         return None
+    if g.unitTesting:
+        return None  # PR #4773
     if args:
         # A minor error in Leo's core.
         g.pr(f"***ignoring args param.  tag = {tag}")
@@ -5268,6 +5287,7 @@ def doHook(tag: str, *args: Args, **kwargs: KWargs) -> Value | None:
     # pylint: disable=consider-using-ternary
     f = (c and c.hookFunction) or g.app.hookFunction
     if not f:
+        assert g.app.pluginsController
         g.app.hookFunction = f = g.app.pluginsController.doPlugins
     try:
         # Pass the hook to the hook handler.
@@ -5283,54 +5303,72 @@ def doHook(tag: str, *args: Args, **kwargs: KWargs) -> Value | None:
 # @+node:ekr.20100910075900.5950: *3* g.Wrappers for g.app.pluginController methods
 # Important: we can not define g.pc here!
 # @+node:ekr.20100910075900.5951: *4* g.Loading & registration
-def loadOnePlugin(pluginName: str, verbose: bool = False) -> ModuleType:
+def loadOnePlugin(pluginName: str, verbose: bool = False) -> Any:
+    if g.unitTesting:
+        return None
     pc = g.app.pluginsController
+    assert pc
     return pc.loadOnePlugin(pluginName, verbose=verbose)
 
 
-def registerExclusiveHandler(tags: Tags, fn: str) -> ModuleType:
+def registerExclusiveHandler(tags: Tags, fn: Callable) -> None:
+    if g.unitTesting:
+        return
     pc = g.app.pluginsController
-    return pc.registerExclusiveHandler(tags, fn)
+    assert pc
+    pc.registerExclusiveHandler(tags, fn)
 
 
-def registerHandler(tags: Tags, fn: Callable) -> ModuleType:
+def registerHandler(tags: Tags, fn: Callable) -> None:
+    if g.unitTesting:
+        return
     pc = g.app.pluginsController
-    return pc.registerHandler(tags, fn)
+    assert pc
+    pc.registerHandler(tags, fn)
 
 
-def plugin_signon(module_name: str, verbose: bool = False) -> ModuleType:
+def plugin_signon(module_name: str, verbose: bool = False) -> None:
+    if g.unitTesting:
+        return
     pc = g.app.pluginsController
-    return pc.plugin_signon(module_name, verbose)
+    assert pc
+    pc.plugin_signon(module_name, verbose)
 
 
-def unloadOnePlugin(moduleOrFileName: str, verbose: bool = False) -> ModuleType:
+def unloadOnePlugin(moduleOrFileName: str, verbose: bool = False) -> None:
     pc = g.app.pluginsController
-    return pc.unloadOnePlugin(moduleOrFileName, verbose)
+    assert pc
+    pc.unloadOnePlugin(moduleOrFileName, verbose)
 
 
-def unregisterHandler(tags: Tags, fn: Callable) -> ModuleType:
+def unregisterHandler(tags: Tags, fn: Callable) -> None:
     pc = g.app.pluginsController
-    return pc.unregisterHandler(tags, fn)
+    assert pc
+    pc.unregisterHandler(tags, fn)
 
 
 # @+node:ekr.20100910075900.5952: *4* g.Information
 def getHandlersForTag(tags: list[str]) -> list:
     pc = g.app.pluginsController
+    assert pc
     return pc.getHandlersForTag(tags)
 
 
 def getLoadedPlugins() -> list:
     pc = g.app.pluginsController
+    assert pc
     return pc.getLoadedPlugins()
 
 
-def getPluginModule(moduleName: str) -> ModuleType | None:
+def getPluginModule(moduleName: str) -> ModuleType:
     pc = g.app.pluginsController
+    assert pc
     return pc.getPluginModule(moduleName)
 
 
 def pluginIsLoaded(fn: str) -> bool:
     pc = g.app.pluginsController
+    assert pc
     return pc.isLoaded(fn)
 
 
@@ -5682,7 +5720,7 @@ def checkUnicode(s: str, encoding: str = '') -> str:
     user-defined plugins or scripts.
     """
     tag = 'g.checkUnicode'
-    if s is None and g.unitTesting:
+    if not s and g.unitTesting:
         return ''
     if isinstance(s, str):
         return s
@@ -6257,14 +6295,14 @@ def es_dump(s: str, n: int = 30, title: str = '') -> None:
 # @+node:ekr.20031218072017.3110: *3* g.es_error & es_print_error
 def es_error(*args: Args, **kwargs: KWargs) -> None:
     color = kwargs.get('color')
-    if color is None and g.app.config:
+    if not color and g.app.config:
         kwargs['color'] = g.app.config.getColor("log-error-color") or 'red'
     g.es(*args, **kwargs)
 
 
 def es_print_error(*args: Args, **kwargs: KWargs) -> None:
     color = kwargs.get('color')
-    if color is None and g.app and g.app.config:
+    if not color and g.app and g.app.config:
         kwargs['color'] = g.app.config.getColor("log-error-color") or 'red'
     g.es_print(*args, **kwargs)
 
@@ -6738,7 +6776,7 @@ def actualColor(color: str) -> str:
     if color and color.startswith('#'):
         return color
     # #788: Translate colors to theme-defined colors.
-    if color is None:
+    if not color:
         # Prefer text_foreground_color'
         color2 = c.config.getColor('log-text-foreground-color')
         if color2:
@@ -6766,7 +6804,6 @@ def CheckVersion(
     s1: str,
     s2: str,
     condition: str = ">=",
-    stringCompare: bool | None = None,
     delimiter: str = '.',
     trace: bool = False,
 ) -> bool:
@@ -7373,7 +7410,7 @@ def getDocStringForFunction(func: Callable) -> str:
 
     def get_defaults(func: Callable, i: int) -> Value:
         defaults = inspect.getfullargspec(func)[3]
-        return defaults[i] if defaults else None
+        return defaults[i] if defaults else ''
 
     # Fix bug 1251252: https://bugs.launchpad.net/leo-editor/+bug/1251252
     # Minibuffer commands created by mod_scripting.py have no docstrings.
@@ -7435,7 +7472,7 @@ def python_tokenize(s: str) -> list:
 # @+node:ekr.20161223090721.1: *3* g.exec_file
 def exec_file(path: str, d: dict[str, Value], script: str = '') -> None:
     """Simulate python's execfile statement for python 3."""
-    if script is None:
+    if not script:
         with open(path) as f:
             script = f.read()
     exec(compile(script, path, 'exec'), d)

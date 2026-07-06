@@ -30,7 +30,7 @@ import textwrap
 import time
 import hmac
 import ssl
-from typing import Any, Generator, Iterable, Iterator
+from typing import Any, Generator, Iterable, Iterator, TYPE_CHECKING
 import warnings
 
 # Third-party.
@@ -71,6 +71,7 @@ assert os.path.exists(leo_path), repr(leo_path)
 if leo_path not in sys.path:
     sys.path.insert(0, leo_path)
 del core_dir, leo_path
+
 # Leo: suppress pyflakes warnings about imports not at top of file.
 from leo.core import leoImport  # noqa
 from leo.core.leoCommands import Commands as Cmdr  # noqa
@@ -81,16 +82,16 @@ from leo.core.leoExternalFiles import ExternalFilesController  # noqa
 # @-<< leoserver imports >>
 # @+<< leoserver annotations >>
 # @+node:ekr.20220820155747.1: ** << leoserver annotations >>
-Event = Any  # More than one kind of Event!
-Loop = Any
-Match = re.Match
-Match_Iter = Iterator[re.Match[str]]
-Package = dict[str, Any]
-Param = dict[str, Any]
-RegexFlag = int | re.RegexFlag  # re.RegexFlag does not define 0
-Response = str  # See _make_response.
-Socket = Any
-
+if TYPE_CHECKING:
+    Event = Any  # More than one kind of Event!
+    Loop = Any
+    Match = re.Match
+    Match_Iter = Iterator[re.Match[str]]
+    Package = dict[str, Any]
+    Param = dict[str, Any]
+    RegexFlag = int | re.RegexFlag  # re.RegexFlag does not define 0
+    Response = str  # See _make_response.
+    Socket = Any
 # @-<< leoserver annotations >>
 # @+<< leoserver version >>
 # @+node:ekr.20220820160619.1: ** << leoserver version >>
@@ -196,7 +197,7 @@ class ServerExternalFilesController(ExternalFilesController):
         # DO NOT alter directly, use set_time(path) and
         # get_time(path), see set_time() for notes.
         self.yesno_all_time: float = 0.0  # time of answer (previous yes/no to all answer)
-        self.yesno_all_answer = None  # answer, 'yes-all', or 'no-all'
+        self.yesno_all_answer = ''  # answer, 'yes-all', or 'no-all'
 
         # if yesAll/noAll forced, then just show info message after idle_check_commander
         self.infoMessage: str = None  # False or "detected", "refreshed" or "ignored"
@@ -207,6 +208,7 @@ class ServerExternalFilesController(ExternalFilesController):
         # last p node that was asked for if not set to "AllYes\AllNo"
         self.lastPNode: Position = None
         self.lastCommander: Cmdr = None
+        self.unchecked_commanders: list[Cmdr] = []
 
     # @+node:felix.20210626222905.6: *3* sefc.clientResult
     def clientResult(self, p_result: Response) -> None:
@@ -6149,7 +6151,7 @@ def main() -> None:  # pragma: no cover (tested in client)
     # Start the server.
     if sys.version_info >= (3, 14):
         # For Python 3.14+
-        async def start_server():
+        async def start_server() -> None:
             realtime_server = None
             try:
                 try:

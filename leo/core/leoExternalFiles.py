@@ -92,7 +92,7 @@ class ExternalFilesController:
         # DO NOT alter directly, use set_time(path) and
         # get_time(path), see set_time() for notes.
         self._time_d: dict[str, float] = {}
-        self.yesno_all_answer: str = None  # answer, 'yes-all', or 'no-all'
+        self.yesno_all_answer: str = ''  # answer, 'yes-all', or 'no-all'
         g.app.idleTimeManager.add_callback(self.on_idle)
 
     # @+node:ekr.20150405105938.1: *3* efc.entries

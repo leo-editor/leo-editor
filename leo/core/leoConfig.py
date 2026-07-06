@@ -1337,13 +1337,13 @@ class GlobalConfigManager:
                 yield key2, val, c, letter
 
     # @+node:ekr.20041123070429: *3* gcm.canonicalizeSettingName (munge)
-    def canonicalizeSettingName(self, name: str) -> str | None:
-        if name is None:
-            return None
+    def canonicalizeSettingName(self, name: str) -> str:
+        if not name:
+            return ''  # PR #4773
         name = name.lower()
         for ch in ('-', '_', ' ', '\n'):
             name = name.replace(ch, '')
-        return name if name else None
+        return name
 
     munge = canonicalizeSettingName
 
@@ -1614,7 +1614,7 @@ class LocalConfigManager:
 
     # @+others
     # @+node:ekr.20041118104831.2: *3*  c.config.ctor
-    def __init__(self, c: Cmdr, previousSettings: PreviousSettings = None) -> None:
+    def __init__(self, c: Cmdr, previousSettings: PreviousSettings | None = None) -> None:
         self.c = c
         lm = g.app.loadManager
         if previousSettings:

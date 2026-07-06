@@ -23,29 +23,40 @@ print(os.path.basename(__file__))
 leo_editor_dir = os.path.abspath(os.path.join(__file__, '..', '..', '..'))
 os.chdir(leo_editor_dir)
 # @-<< mypy_leo.py: imports & startup >>
-incremental = False
+incremental = True
 follow = False
-files = [
-    # PR #47??. Require strict optional for leoGlobals.py.
-    'leo/core/leoGlobals.py',
-    # PR #4766. Require strict optional for leoNodes.py.
-    'leo/core/leoCommands.py',
-    'leo/core/leoNodes.py',
-    # To be checked in other PRs...
-    #   'leo/core/leoApp.py',
-    #   'leo/core/leoAtFile.py',
-    #   'leo/core/leoKeys.py',
-    #   'leo/plugins/mod_scripting.py',
-    #   'leo/plugins/qt_commands.py',
-    #   'leo/plugins/qt_frame.py',
-    #   'leo/plugins/qt_gui.py',
-    #   'leo/plugins/qt_idle_time.py',
-    #   'leo/plugins/qt_layout.py',
-    #   'leo/plugins/qt_text.py',
-    #   'leo/plugins/qt_tree.py',
-    # 'leo/plugins/viewrendered.py',
-    #   'leo/plugins/viewrendered3.py',
-]  # fmt: skip
+if 1:  # Test all files.
+    files = [
+        'leo',
+    ]
+else:
+    files = [
+        # Files to check with strict_optional in .mypy.ini.
+        'leo/core/leoGlobals.py',
+        'leo/core/leoCommands.py',
+        'leo/core/leoNodes.py',
+
+        # Follow-on files, with errors uncovered by checking leoCommands.py.
+        'leo/commands/abbrevCommands.py',
+        'leo/core/leoExternalFiles.py',
+        'leo/core/leoserver.py',
+
+        # To be checked in other PRs...
+        #   'leo/core/leoApp.py',
+        #   'leo/core/leoAtFile.py',
+        #   'leo/core/leoKeys.py',
+        #   'leo/plugins/mod_scripting.py',
+        #   'leo/plugins/qt_commands.py',
+        #   'leo/plugins/qt_frame.py',
+        #   'leo/plugins/qt_gui.py',
+        #   'leo/plugins/qt_idle_time.py',
+        #   'leo/plugins/qt_layout.py',
+        #   'leo/plugins/qt_text.py',
+        #   'leo/plugins/qt_tree.py',
+        # 'leo/plugins/viewrendered.py',
+        #   'leo/plugins/viewrendered3.py',
+    ]  # fmt: skip
+
 python = sys.executable
 incremental_arg = '' if incremental else '--no-incremental'
 follow_kind = 'normal' if follow else 'skip'

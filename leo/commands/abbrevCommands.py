@@ -45,6 +45,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         'scripting_enabled',
         'expanding',
         'number_regex',
+        'subst_env',
         'tree_abbrevs_d',
         'w',
     )
@@ -521,7 +522,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             getBool('scripting-at-script-nodes') or
             getBool('scripting-abbreviations')
         )  # fmt: skip
-        self.globalDynamicAbbrevs = getBool('global-dynamic-abbrevs')
+        self.globalDynamicAbbrevs: bool = getBool('global-dynamic-abbrevs')
 
         # Allow @data abbreviations-subst-env *only* in leoSettings.leo or myLeoSettings.leo!
         key = 'abbreviations-subst-env'

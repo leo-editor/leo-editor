@@ -156,7 +156,7 @@ class LeoApp:
         # @-<< LeoApp: command-line arguments >>
         # @+<< LeoApp: Debugging & statistics >>
         # @+node:ekr.20161028035835.1: *5* << LeoApp: Debugging & statistics >>
-        self.debug_dict: dict[str, Value] = {}  # For general use.
+        self.debug_dict: dict[str, Any] = {}  # For general use.
         self.disable_redraw = False  # True: disable all redraws.
         self.disableSave = False  # May be set by plugins.
         self.idle_timers: list[IdleTime] = []  # A list of IdleTime instances, so they persist.
@@ -164,7 +164,7 @@ class LeoApp:
         self.log_listener: Popen | None = None
         self.positions = 0  # The number of positions generated.
         self.scanErrors = 0  # The number of errors seen by g.scanError.
-        self.statsDict: dict[str, Value] = {}  # dict used by g.stat, g.clear_stats, g.print_stats.
+        self.statsDict: dict[str, Any] = {}  # dict used by g.stat, g.clear_stats, g.print_stats.
         self.statsLockout = False  # A lockout to prevent unbound recursion while gathering stats.
         self.validate_outline = False  # True: enables c.validate_outline. (slow)
         # @-<< LeoApp: Debugging & statistics >>
@@ -292,7 +292,7 @@ class LeoApp:
         # @+<< LeoApp: plugins and event handlers >>
         # @+node:ekr.20161028040229.1: *5* << LeoApp: plugins and event handlers >>
         self.hookError = False  # True: suppress further calls to hooks.
-        self.hookFunction = None  # Application wide hook function.
+        self.hookFunction: Callable | None = None  # Application wide hook function.
         self.idle_time_hooks_enabled = True  # True: idle-time hooks are enabled.
         # @-<< LeoApp: plugins and event handlers >>
         # @+<< LeoApp: scripting ivars >>
@@ -1550,7 +1550,7 @@ class LeoApp:
         fileName: str,
         gui: LeoGui = None,
         parentFrame: Any = None,
-        previousSettings: "PreviousSettings" = None,
+        previousSettings: PreviousSettings | None = None,
         relativeFileName: str = None,
     ) -> Cmdr:
         """Create a commander and its view frame for the Leo main window."""
@@ -1725,7 +1725,7 @@ class LoadManager:
         g.app.testDir = join(g.app.loadDir, '..', 'test')
 
     # @+node:ekr.20120209051836.10253: *5* LM.computeGlobalConfigDir
-    def computeGlobalConfigDir(self) -> str | None:
+    def computeGlobalConfigDir(self) -> str:
         leo_config_dir = getattr(sys, 'leo_config_directory', None)
         if leo_config_dir:
             theDir = leo_config_dir
@@ -1734,11 +1734,11 @@ class LoadManager:
         if theDir:
             theDir = os.path.abspath(theDir)
         if not theDir or not g.os_path_exists(theDir) or not g.os_path_isdir(theDir):
-            theDir = None
+            theDir = ''
         return theDir
 
     # @+node:ekr.20120209051836.10254: *5* LM.computeHomeDir
-    def computeHomeDir(self) -> str | None:
+    def computeHomeDir(self) -> str:
         """Returns the user's home directory."""
         # Windows searches the HOME, HOMEPATH and HOMEDRIVE
         # environment vars, then gives up.
@@ -1751,7 +1751,7 @@ class LoadManager:
             # This was the source of the 4.3 .leoID.txt problems.
             home = g.finalize(home)
             if not g.os_path_exists(home) or not g.os_path_isdir(home):
-                home = None
+                home = ''
         return home
 
     # @+node:ekr.20120209051836.10260: *5* LM.computeHomeLeoDir
@@ -2024,7 +2024,7 @@ class LoadManager:
         return None, None
 
     # @+node:ekr.20120223062418.10414: *4* LM.getPreviousSettings
-    def getPreviousSettings(self, fn: str) -> "PreviousSettings":
+    def getPreviousSettings(self, fn: str) -> PreviousSettings:
         """
         Return the settings in effect for fn. Typically, this involves
         pre-reading fn.
@@ -3137,7 +3137,7 @@ class LoadManager:
             return False
 
     # @+node:ekr.20120223062418.10393: *4* LM.openWithFileName & helpers
-    def openWithFileName(self, fn: str, gui: LeoGui, old_c: Cmdr) -> Cmdr | None:
+    def openWithFileName(self, fn: str, gui: LeoGui | None, old_c: Cmdr | None) -> Cmdr | None:
         """
         Completely read a file, creating the corresponding outline.
 

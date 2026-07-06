@@ -11,7 +11,7 @@ import os
 import re
 import time
 import uuid
-from typing import cast, Any, Generator, Iterable, TYPE_CHECKING
+from typing import Any, Generator, Iterable, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import signal_manager
 
@@ -119,7 +119,7 @@ class NodeIndices:
         #    parse all forms of gnx properly.
         # 2. NodeIndicds.compute_last_index ignores UUIDs and KSUIDs,
         #    so it will allocate a new legacy gnx properly.
-        gnx = None
+        gnx = ''  # PR #4773
         try:
             if uuid_kind == 'uuid':
                 gnx = str(uuid.uuid4())
@@ -2326,7 +2326,7 @@ class VNode:
         self.children: list[VNode] = []  # Ordered list of all children of this node.
         self.parents: list[VNode] = []  # Unordered list of all parents of this node.
         # The immutable fileIndex (gnx) for this node. Set below.
-        self.fileIndex = cast(str, None)
+        self.fileIndex: str = ''  # PR #4773
         self.iconVal = 0  # The present value of the node's icon.
         self.statusBits = 0  # status bits
 
