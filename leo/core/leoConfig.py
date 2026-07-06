@@ -9,6 +9,7 @@ import os
 import sys
 import re
 import textwrap
+import typing
 from typing import Any, Callable, Generator, TYPE_CHECKING
 from leo.plugins.mod_scripting import build_rclick_tree
 from leo.core import leoGlobals as g
@@ -1504,7 +1505,7 @@ class GlobalConfigManager:
         Return the value of @directory setting, or the empty string if the directory does not exist.
         """
         # Fix https://bugs.launchpad.net/leo-editor/+bug/1173763
-        theDir = self.get(setting, 'directory')
+        theDir = self.get(setting, 'directory') or ''
         if g.os_path_exists(theDir) and g.os_path_isdir(theDir):
             return theDir
         return ''
@@ -1519,12 +1520,12 @@ class GlobalConfigManager:
         """Return the value of @float setting."""
         val = self.get(setting, "float")
         try:
-            val = float(val)
-            return val
+            return float(val)  # type:ignore
         except TypeError:
             return None
 
     # @+node:ekr.20041117062717.13: *4* gcm.getFontFromParams
+    @typing.no_type_check
     def getFontFromParams(
         self,
         family: str,
@@ -1559,8 +1560,7 @@ class GlobalConfigManager:
         """Return the value of @int setting."""
         val = self.get(setting, "int")
         try:
-            val = int(val)
-            return val
+            return int(val)  # type:ignore
         except TypeError:
             return None
 
@@ -1580,8 +1580,7 @@ class GlobalConfigManager:
     # @+node:ekr.20070411101643: *4* gcm.getOpenWith
     def getOpenWith(self) -> list[dict[str, Any]]:
         """Return a list of dictionaries corresponding to @openwith nodes."""
-        val = self.get('openwithtable', 'openwithtable')
-        return val
+        return self.get('openwithtable', 'openwithtable') or []  # PR #4779
 
     # @+node:ekr.20041122070752: *4* gcm.getRatio
     def getRatio(self, setting: str) -> float | None:
@@ -1590,9 +1589,9 @@ class GlobalConfigManager:
         """
         val = self.get(setting, "ratio")
         try:
-            val = float(val)
-            if 0.0 <= val <= 1.0:
-                return val
+            val_f = float(val)  # type:ignore
+            if 0.0 <= val_f <= 1.0:
+                return val_f
         except TypeError:
             pass
         return None
@@ -1976,8 +1975,7 @@ class LocalConfigManager:
     # @+node:ekr.20120215072959.12535: *5* c.config.getOpenWith
     def getOpenWith(self) -> list[dict[str, Any]]:
         """Return a list of dictionaries corresponding to @openwith nodes."""
-        val = self.get('openwithtable', 'openwithtable')
-        return val
+        return self.get('openwithtable', 'openwithtable') or []  # PR #4779
 
     # @+node:ekr.20120215072959.12536: *5* c.config.getRatio
     def getRatio(self, setting: str) -> float | None:
