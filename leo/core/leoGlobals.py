@@ -3736,7 +3736,7 @@ def openWithFileName(
     fileName: str,
     old_c: Cmdr | None = None,
     gui: LeoGui | None = None,
-) -> Cmdr | None:
+) -> Cmdr:
     """
     Load any kind of file in the appropriate way:
 

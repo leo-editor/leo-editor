@@ -2468,6 +2468,7 @@ class LoadManager:
         exists = fn and os.path.exists(fn)
         if not fn:
             # The usual directory does not exist. Create an empty file.
+            fn = ''  # PR #4773
             c = self.openEmptyLeoFile(fn, gui=g.app.gui, old_c=None)
             c.rootPosition().h = 'Workbook'
             g.app.numberOfUntitledWindows += 1
@@ -2559,7 +2560,7 @@ class LoadManager:
 
         # Leo 6.7.8: Create g.app.importerClassesDict.
         for language_name in g.app.importerModulesDict:
-            m = g.app.importerModulesDict.get(language_name)
+            m = g.app.importerModulesDict.get(language_name, '')
             for z in dir(m):
                 # A hack: all importer subclasses should end with '_Importer'.
                 if z.endswith('_Importer'):
@@ -3143,7 +3144,7 @@ class LoadManager:
             return False
 
     # @+node:ekr.20120223062418.10393: *4* LM.openWithFileName & helpers
-    def openWithFileName(self, fn: str, gui: LeoGui | None, old_c: Cmdr | None) -> Cmdr | None:
+    def openWithFileName(self, fn: str, gui: LeoGui | None, old_c: Cmdr | None) -> Cmdr:
         """
         Completely read a file, creating the corresponding outline.
 
