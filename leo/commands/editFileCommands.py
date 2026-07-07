@@ -564,6 +564,14 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         """
         GitDiffController(c=self.c).diff_pull_request()
 
+    # @+node:ekr.20260707054655.1: *3* efc.gitDiffPRClone (clone-diff-pr)
+    @cmd('clone-diff-pr')
+    def gitDiffPRCloneChanged(self, event: LeoKeyEvent = None) -> None:
+        """
+        Produce a Leonine diff of pull request in the current branch.
+        """
+        GitDiffController(c=self.c).clone_diff_pr()
+
     # @+node:ekr.20170806094318.7: *3* efc.insertFile
     @cmd('file-insert')
     def insertFile(self, event: LeoKeyEvent) -> None:
@@ -699,6 +707,65 @@ class GitDiffController:
 
     # @+others
     # @+node:ekr.20180510095544.1: *3* gdc.Entries...
+    # @+node:ekr.20260707060104.1: *4* gdc.clone_diff_file (test)
+    def clone_diff_file(self, fn: str, rev1: str = 'HEAD', rev2: str = '') -> None:
+        """
+        Create an outline for the git-diff-pr-clone-changed command.
+        """
+        c = self.c
+        directory = self.get_parent_of_git_directory()
+        if not directory:
+            return
+        # #4095: honor @bool diff-leo-files.
+        if fn.endswith(('.leo', '.leojs')) and not self.diff_leo_files:
+            return
+        s1 = self.get_file_from_rev(rev1, fn)
+        s2 = self.get_file_from_rev(rev2, fn)
+
+        # lines1 = g.splitLines(s1)
+        # lines2 = g.splitLines(s2)
+
+        # diff_list = list(
+        #     difflib.unified_diff(
+        #         lines1,
+        #         lines2,
+        #         rev1 or 'uncommitted',
+        #         rev2 or 'uncommitted',
+        #     )
+        # )
+
+        ### diff_list.insert(0, '@ignore\n@nosearch\n@language patch\n')
+        ### self.file_node = self.create_file_node(diff_list, fn)  ###
+
+        # #1777: The file node will contain the entire added/deleted file.
+        if not s1:
+            ### self.file_node.h = f"Added: {self.file_node.h}"
+            return
+        if not s2:
+            ### self.file_node.h = f"Deleted: {self.file_node.h}"
+            return
+        ###
+        self.file_node = self.root.insertAsLastChild()
+        self.file_node.h = fn.strip()
+
+        # Finish.
+        path = g.finalize_join(directory, fn)  # #1781: bug fix.
+        c1 = c2 = None
+        if fn.endswith(('.leo', '.leojs')):
+            c1 = self.make_leo_outline(fn, path, s1, rev1)
+            c2 = self.make_leo_outline(fn, path, s2, rev2)
+        else:
+            root = self.find_file(fn)
+            if c.looksLikeDerivedFile(path):
+                c1 = self.make_at_file_outline(fn, s1, rev1)
+                c2 = self.make_at_file_outline(fn, s2, rev2)
+            elif root:
+                c1 = self.make_at_clean_outline(fn, root, s1, rev1)
+                c2 = self.make_at_clean_outline(fn, root, s2, rev2)
+        if c1 and c2:
+            self.make_clone_diff_outlines(c1, c2, fn, rev1, rev2)  ###
+            self.file_node.b = f"{self.file_node.b.rstrip()}\n@language {c2.target_language}\n"
+
     # @+node:ekr.20170806094320.6: *4* gdc.diff_file
     def diff_file(self, fn: str, rev1: str = 'HEAD', rev2: str = '') -> None:
         """
@@ -749,6 +816,28 @@ class GitDiffController:
         if c1 and c2:
             self.make_diff_outlines(c1, c2, fn, rev1, rev2)
             self.file_node.b = f"{self.file_node.b.rstrip()}\n@language {c2.target_language}\n"
+
+    # @+node:ekr.20260707054941.1: *4* gdc.clone_diff_pr (done)
+    def clone_diff_pr(self) -> None:
+        """
+        Like git-diff-pr, showing only clones of changed nodes, organized by file:
+        - Omit the diffs.
+        - Don't show added or deleted nodes.
+        """
+        directory = self.get_parent_of_git_directory()
+        if not directory:
+            return
+        aList = g.execGitCommand("git rev-parse devel", directory)
+        if aList:
+            devel_rev = aList[0]
+            devel_rev = devel_rev[:8]
+            g.trace('devel_rev', devel_rev)
+            self.clone_diff_two_revs(
+                rev1=devel_rev,  # Before: Latest devel commit.
+                rev2='HEAD',  # After: Latest branch commit
+            )
+        else:
+            g.es_print('FAIL: git rev-parse devel')
 
     # @+node:ekr.20201208115447.1: *4* gdc.diff_pull_request
     def diff_pull_request(self) -> None:
@@ -1301,6 +1390,72 @@ class GitDiffController:
         return results3
 
     # @+node:ekr.20180510095801.1: *3* gdc.Utils
+    # @+node:ekr.20260707062134.1: *4* gdc.create_clone_diff_node (to do)
+    def create_clone_diff_node(
+        self,
+        branch: str,
+        c1: Cmdr,
+        c2: Cmdr,
+        d: dict[str, tuple[VNode, VNode]],
+        rev1: str,
+        rev2: str,
+    ) -> None:
+        """Create clones of all changed nodes"""
+        if not d:
+            return
+        branches_match = (
+            branch == rev2 or
+            rev2 == 'HEAD' or
+            rev1 == 'HEAD' and rev2 == ''  # diffing the latest changes.
+        )  # fmt: skip
+
+        ### parent = self.file_node.insertAsLastChild()
+        ### parent.setHeadString(f"diff: {kind}")
+
+        for key in d:
+            v1, v2 = d.get(key)
+            organizer = self.file_node.insertAsLastChild()  ###
+            organizer.h = f"{v2.h}"  ###
+
+            ###
+            # Organizer node: contains diff
+            # organizer = parent.insertAsLastChild()
+            # organizer.h = f"diff: {v2.h}"
+            # p_in_c = self.find_gnx(self.c, v1.fileIndex)
+            # body = list(
+            #     difflib.unified_diff(
+            #         g.splitLines(v1.b),
+            #         g.splitLines(v2.b),
+            #         rev1 or 'uncommitted',
+            #         rev2 or 'uncommitted',
+            #     )
+            # )
+            # if ''.join(body).strip():
+            #     body.insert(0, '@ignore\n@nosearch\n@language patch\n')
+            #     # #4095.
+            #     language = c2.getLanguage(p_in_c) if p_in_c else c2.target_language
+            #     body.append(f"@language {language}\n")
+            # else:
+            #     body = ['Only headline has changed']
+            # organizer.b = ''.join(body)
+
+            ###
+            # # Node 2: Old node
+            # p2 = organizer.insertAsLastChild()
+            # p2.h = 'Old:' + v1.h
+            # p2.b = v1.b
+
+            # Make a clone, if possible.
+            assert v1.fileIndex == v2.fileIndex
+            p_in_c = self.find_gnx(self.c, v1.fileIndex)
+            if p_in_c and branches_match:  # #4645.
+                p3 = p_in_c.clone()
+                p3.moveToLastChildOf(organizer)
+            else:
+                p3 = organizer.insertAsLastChild()
+                p3.h = 'New:' + v2.h
+                p3.b = v2.b
+
     # @+node:ekr.20170806191942.2: *4* gdc.create_compare_node
     def create_compare_node(
         self,
@@ -1692,6 +1847,31 @@ class GitDiffController:
                     changed[key] = (v1, v2)
         return added, deleted, changed
 
+    # @+node:ekr.20260707060459.1: *4* gdc.make_clone_diff_outlines (to do)
+    def make_clone_diff_outlines(
+        self,
+        c1: Cmdr,
+        c2: Cmdr,
+        fn: str,
+        rev1: str = '',
+        rev2: str = '',
+    ) -> None:
+        """
+        Create an outline for the git-diff-pr-clone-changed command from
+        *hidden* outlines c1 and c2.
+        """
+        branch, _commit = g.gitInfo()
+        added, deleted, changed = self.compute_dicts(c1, c2)
+        self.create_clone_diff_node(branch, c1, c2, changed, rev1, rev2)
+
+        # table = (
+        #     (added,   'Added'),
+        #     (deleted, 'Deleted'),
+        #     (changed, 'Changed'),
+        # )  # fmt: skip
+        # for d, kind in table:
+        #     self.create_compare_node(branch, c1, c2, d, kind, rev1, rev2)
+
     # @+node:ekr.20201215050832.1: *4* gdc.make_leo_outline
     def make_leo_outline(self, fn: str, path: str, s: str, rev: str) -> Cmdr:
         """Create a hidden temp outline for the .leo file in s."""
@@ -1702,6 +1882,47 @@ class GitDiffController:
         fc = hidden_c.fileCommands
         fc.getAnyLeoFileByName(path, checkOpenFiles=False, readAtFileNodesFlag=False)
         return hidden_c
+
+    # @+node:ekr.20260707055326.1: *4* gdc.clone_diff_two_revs (test)
+    def clone_diff_two_revs(self, rev1: str = 'HEAD', rev2: str = '', path: str = None) -> None:
+        """
+        Like diff_two_revs showing only clones of changed nodes, organized by file:
+        - Omit the diffs.
+        - Don't show added or deleted nodes.
+        """
+        c, u = self.c, self.c.undoer
+
+        breakpoint()  ###
+
+        if not self.get_parent_of_git_directory():
+            return
+        # Get list of changed files.
+        files = self.get_files(rev1, rev2, path=path)
+        n = len(files)
+        if not g.unitTesting:
+            g.es_print(f"diffing {n} file{g.plural(n)}")
+            if n > 5:
+                g.es_print('This may take a while...')
+        c.selectPosition(c.lastTopLevel())  # pre-select to help undo-insert
+
+        # Create the root node.
+        undoData = u.beforeInsertNode(c.p)  # c.p is subject of 'insertAfter'
+        self.root = c.lastTopLevel().insertAfter()
+        root_h = f"clone-diff-pr revs: {rev1} {rev2}"  ###
+        if path and path.strip():
+            root_h += f" ({path})"
+        self.root.h = root_h
+        self.root.b = '@ignore\n@nosearch\n'
+
+        # Create diffs of all files.
+        for i, fn in enumerate(files):
+            self.clone_diff_file(fn=fn, rev1=rev1, rev2=rev2)  ###
+            if (i % 10) == 0:
+                g.es_print(f"diff: {i} files", color='blue')
+
+        u.afterInsertNode(self.root, 'clone-diff-pr', undoData)
+        self.finish()
+        g.es_print(f"done! diffed: {n} files")
 
     # @-others
 
