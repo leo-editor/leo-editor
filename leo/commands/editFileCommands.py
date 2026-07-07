@@ -1396,7 +1396,7 @@ class GitDiffController:
         )  # fmt: skip
 
         # A useful hack: don't create an organizer node for changed nodes.
-        if kind == 'changed':
+        if kind.lower() == 'changed':
             parent = self.file_node
         else:
             parent = self.file_node.insertAsLastChild()
