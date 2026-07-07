@@ -1401,6 +1401,7 @@ class GitDiffController:
         rev2: str,
     ) -> None:
         """Create clones of all changed nodes"""
+        g.trace(repr(d))
         if not d:
             return
         branches_match = (
@@ -1414,6 +1415,7 @@ class GitDiffController:
 
         for key in d:
             v1, v2 = d.get(key)
+            g.trace(key, v1, v2)  ###
             organizer = self.file_node.insertAsLastChild()  ###
             organizer.h = f"{v2.h}"  ###
 
@@ -1847,7 +1849,7 @@ class GitDiffController:
                     changed[key] = (v1, v2)
         return added, deleted, changed
 
-    # @+node:ekr.20260707060459.1: *4* gdc.make_clone_diff_outlines (to do)
+    # @+node:ekr.20260707060459.1: *4* gdc.make_clone_diff_outlines (done)
     def make_clone_diff_outlines(
         self,
         c1: Cmdr,
@@ -1862,6 +1864,7 @@ class GitDiffController:
         """
         branch, _commit = g.gitInfo()
         added, deleted, changed = self.compute_dicts(c1, c2)
+        g.trace(added, deleted, changed)
         self.create_clone_diff_node(branch, c1, c2, changed, rev1, rev2)
 
         # table = (
@@ -1891,8 +1894,6 @@ class GitDiffController:
         - Don't show added or deleted nodes.
         """
         c, u = self.c, self.c.undoer
-
-        breakpoint()  ###
 
         if not self.get_parent_of_git_directory():
             return
