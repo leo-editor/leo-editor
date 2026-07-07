@@ -1394,8 +1394,13 @@ class GitDiffController:
             rev2 == 'HEAD' or
             rev1 == 'HEAD' and rev2 == ''  # diffing the latest changes.
         )  # fmt: skip
-        parent = self.file_node.insertAsLastChild()
-        parent.h = kind
+
+        # A useful hack: don't create an organizer node for changed nodes.
+        if kind == 'changed':
+            parent = self.file_node
+        else:
+            parent = self.file_node.insertAsLastChild()
+            parent.h = kind
         for key in d:
             if kind.lower() == 'changed':
                 v1, v2 = d.get(key)
