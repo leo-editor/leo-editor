@@ -1399,17 +1399,14 @@ class GitDiffController:
         for key in d:
             if kind.lower() == 'changed':
                 v1, v2 = d.get(key)
-                # Organizer node: empty bodyh
-                organizer = parent.insertAsLastChild()
-                organizer.h = v2.h.strip()
                 # Make a clone, if possible.
                 assert v1.fileIndex == v2.fileIndex
                 p_in_c = self.find_gnx(self.c, v1.fileIndex)
                 if p_in_c and branches_match:  # #4645.
                     p3 = p_in_c.clone()
-                    p3.moveToLastChildOf(organizer)
+                    p3.moveToLastChildOf(parent)
                 else:
-                    p3 = organizer.insertAsLastChild()
+                    p3 = parent.insertAsLastChild()
                     p3.h = 'New:' + v2.h
                     p3.b = v2.b
             elif kind.lower() == 'added':
