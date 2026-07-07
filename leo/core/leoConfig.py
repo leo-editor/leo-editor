@@ -598,7 +598,7 @@ class ParserBaseClass:
                 if not name:
                     # An entry command: put it in the special *entry-commands* key.
                     d.add_to_list('*entry-commands*', bi)
-                elif bi is not None:
+                elif bi:  # PR #4779
                     # A regular shortcut.
                     bi.pane = modeName
                     aList: list[g.BindingInfo] = d.get(name, [])
@@ -680,23 +680,18 @@ class ParserBaseClass:
 
     # @+node:ekr.20041120105609: *4* pbc.doShortcuts
     def doShortcuts(
-        self,
-        p: Position,
-        kind: str,
-        junk_name: str,
-        junk_val: Any,
-        s: str | None = None,  # Don't change this.
+        self, p: Position, kind: str, junk_name: str, junk_val: Any, s: str = ''
     ) -> None:
         """Handle an @shortcut or @shortcuts node."""
         c, d = self.c, self.shortcutsDict
-        if s is None:
+        if not s:
             s = p.b
         fn = d.name()
         for line in g.splitLines(s):
             line = line.strip()
             if line and not g.match(line, 0, '#'):
                 commandName, bi = self.parseShortcutLine(fn, line)
-                if bi is None:  # Fix #718.
+                if not bi:  # Fix #718. # PR #4779
                     print(f"\nWarning: bad shortcut specifier: {line!r}\n")
                 else:
                     if bi and bi.stroke not in (None, 'none', 'None'):

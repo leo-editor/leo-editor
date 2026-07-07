@@ -2159,7 +2159,7 @@ class LoadManager:
         Invert a shortcut dict whose keys are command names,
         returning a dict whose keys are strokes.
         """
-        if d is None:
+        if not d:
             d = {}
         result = g.SettingsDict(f"inverted {d.name()}")
         for commandName in d.keys():
@@ -2670,7 +2670,7 @@ class LoadManager:
     # @+node:ekr.20120219154958.10478: *5* LM.createGui
     def createGui(self, pymacs: bool) -> None:
         lm = self
-        gui_option = lm.options.get('gui')
+        gui_option = lm.options.get('gui', '')
         windowFlag = lm.options.get('windowFlag', False)
         script = lm.options.get('script', '')
         if g.app.gui:
@@ -2680,7 +2680,7 @@ class LoadManager:
             else:
                 # This can also happen when leoID does not exist.
                 pass
-        elif gui_option is None:
+        elif not gui_option:  # PR #4779
             if script and not windowFlag:
                 # Always use null gui for scripts.
                 g.app.createNullGuiWithScript(script)
@@ -3096,7 +3096,7 @@ class LoadManager:
                 color: str = d.get('color', '')
                 if color == 'suppress':
                     return
-                if log and color is None:
+                if log and not color:  # PR #4779
                     color = g.actualColor('black')
                 color = g.actualColor(color)
                 tabName = d.get('tabName') or 'Log'
@@ -3644,7 +3644,7 @@ class RecentFilesManager:
                 dirName, baseName = g.os_path_split(name)
                 entry = dirCount[baseName]
                 if len(entry['dirs']) > 1 or rf_always:  # sub menus
-                    if entry['entry'] is None:
+                    if not entry['entry']:
                         entry['entry'] = menu.createNewMenu(baseName, "Recent Files...")
                         # acts as a flag for the need to create the menu
                     c.add_command(

@@ -1370,7 +1370,7 @@ class Commands:
                 sys.path.insert(0, g.os_path_dirname(c.fileName()))  # per SegundoBob
                 script += '\n'  # Make sure we end the script properly.
                 try:
-                    if not namespace or namespace.get('script_gnx') is None:
+                    if not namespace or not namespace.get('script_gnx'):
                         namespace = namespace or {}
                         namespace.update(script_gnx=script_p.gnx)
                     # We *always* execute the script with p = c.p.
