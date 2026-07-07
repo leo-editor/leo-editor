@@ -564,11 +564,11 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         """
         GitDiffController(c=self.c).diff_pull_request()
 
-    # @+node:ekr.20260707054655.1: *3* efc.gitDiffPRClone (clone-diff-pr)
+    # @+node:ekr.20260707054655.1: *3* efc.cloneDiffPR (clone-diff-pr)
     @cmd('clone-diff-pr')
-    def gitDiffPRCloneChanged(self, event: LeoKeyEvent = None) -> None:
+    def cloneDiffPR(self, event: LeoKeyEvent = None) -> None:
         """
-        Produce a Leonine diff of pull request in the current branch.
+        Show the added, deleted and changed nodes (without diffs) of the given PR.
         """
         GitDiffController(c=self.c).clone_diff_pr()
 
@@ -1841,7 +1841,7 @@ class GitDiffController:
             (changed, 'Changed'),
         )  # fmt: skip
         for d, kind in table:
-            self.create_clone_diff_node(branch, c1, c2, d, kind, rev1, rev2)  ###
+            self.create_clone_diff_node(branch, c1, c2, d, kind, rev1, rev2)
 
     # @+node:ekr.20201215050832.1: *4* gdc.make_leo_outline
     def make_leo_outline(self, fn: str, path: str, s: str, rev: str) -> Cmdr:
