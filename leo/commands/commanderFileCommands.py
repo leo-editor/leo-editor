@@ -165,6 +165,7 @@ def restartLeo(self: Self, event: LeoKeyEvent) -> None:
 @g.commander_command('close-window')
 def close(
     self: Self,
+    *,
     event: LeoKeyEvent | None = None,  # Not used.
     new_c: Cmdr | None = None,
 ) -> None:
@@ -384,10 +385,10 @@ def open_outline(self: Self, event: LeoKeyEvent) -> None:
 @g.commander_command('refresh-from-disk')
 def refreshFromDisk(
     self: Self,
-    p: Position | None = None,  # For compatibility with existing scripts.
+    p: Position | None = None,
     *,
-    event: LeoKeyEvent | None = None,  # No longer used.
-    silent: bool = True,  # No longer used.
+    event: LeoKeyEvent | None = None,  # Not used.
+    silent: bool = True,  # Not used.
 ) -> None:
     """
     Refresh an @<file> node from disk.
@@ -452,7 +453,7 @@ def pwd_command(self: Self, event: LeoKeyEvent) -> None:
 @g.commander_command('save-file')
 def save(
     self: Self,
-    *,  ###
+    *,
     event: LeoKeyEvent | None = None,  # Not used.
     fileName: str | None = None,
 ) -> None:
@@ -585,7 +586,11 @@ def saveAs(self: Self, event: LeoKeyEvent, fileName: str | None = None) -> None:
 @g.commander_command('file-save-to')
 @g.commander_command('save-file-to')
 def saveTo(
-    self: Self, event: LeoKeyEvent, fileName: str | None = None, silent: bool = False
+    self: Self,
+    event: LeoKeyEvent,
+    *,
+    fileName: str | None = None,
+    silent: bool = False,
 ) -> None:
     """
     Save a copy of the Leo outline to a file, prompting for a new file name.

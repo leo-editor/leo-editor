@@ -293,7 +293,7 @@ def dedentBody(
 @g.commander_command('delete-comments')
 def deleteComments(
     self: Self,
-    ### event: LeoKeyEvent,
+    event: LeoKeyEvent | None = None,  # Not used.
 ) -> None:
     # @+<< deleteComments docstring >>
     # @+node:ekr.20171123135625.37: *3* << deleteComments docstring >>
@@ -1234,6 +1234,7 @@ def toggleAngleBrackets(
 @g.commander_command('unformat-paragraph')
 def unformatParagraph(
     self: Self,
+    *,
     event: LeoKeyEvent | None = None,  # Not used.
     undoType: str = 'Unformat Paragraph',
 ) -> None:
