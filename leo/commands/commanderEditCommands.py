@@ -24,7 +24,7 @@ if TYPE_CHECKING:  # pragma: no cover
 @g.commander_command('add-comments')
 def addComments(
     self: Self,
-    event: LeoKeyEvent | None = None,  # Unused: retained for compatibility
+    event: LeoKeyEvent | None = None,  # Not used.
 ) -> None:
     """Undoably add comments to the selected text."""
     c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
@@ -74,7 +74,7 @@ def addComments(
 @g.commander_command('convert-all-blanks')
 def convertAllBlanks(
     self: Self,
-    event: LeoKeyEvent | None = None,  # Unused: retained for compatibility
+    event: LeoKeyEvent | None = None,  # Not used.
 ) -> None:
     """Convert all blanks to tabs in the selected outline."""
     c, u = self, self.undoer
@@ -118,7 +118,7 @@ def convertAllBlanks(
 @g.commander_command('convert-all-tabs')
 def convertAllTabs(
     self: Self,
-    event: LeoKeyEvent | None = None,  # Unused: retained for compatibility
+    event: LeoKeyEvent | None = None,  # Not used.
 ) -> None:
     """Convert all tabs to blanks in the selected outline."""
     c = self
@@ -162,7 +162,7 @@ def convertAllTabs(
 @g.commander_command('convert-blanks')
 def convertBlanks(
     self: Self,
-    event: LeoKeyEvent | None = None,  # Unused: retained for compatibility
+    event: LeoKeyEvent | None = None,  # Not used.
 ) -> bool:
     """
     Convert *all* blanks to tabs in the selected node.
@@ -200,7 +200,7 @@ def convertBlanks(
 @g.commander_command('convert-tabs')
 def convertTabs(
     self: Self,
-    event: LeoKeyEvent | None = None,  # Unused: retained for compatibility
+    event: LeoKeyEvent | None = None,  # Not used.
 ) -> bool:
     """Convert all tabs to blanks in the selected node."""
     c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
@@ -244,7 +244,7 @@ def convertTabs(
 @g.commander_command('unindent-region')
 def dedentBody(
     self: Self,
-    event: LeoKeyEvent | None = None,  # Unused: retained for compatibility
+    event: LeoKeyEvent | None = None,  # Not used.
 ) -> None:
     """Remove one tab's worth of indentation from all presently selected lines."""
     c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
@@ -381,7 +381,7 @@ def deleteComments(
 @g.commander_command('edit-headline')
 def editHeadline(
     self: Self,
-    event: LeoKeyEvent | None = None,  # Unused: retained for compatibility
+    event: LeoKeyEvent | None = None,  # Not used.
 ) -> None:
     """
     Begin editing the headline of the selected node.
@@ -402,7 +402,7 @@ def editHeadline(
 @g.commander_command('extract')
 def extract(
     self: Self,
-    event: LeoKeyEvent | None = None,  # Unused: retained for compatibility
+    event: LeoKeyEvent | None = None,  # Not used.
 ) -> None:
     # @+<< docstring for extract command >>
     # @+node:ekr.20201113130021.1: *3* << docstring for extract command >>
@@ -571,7 +571,7 @@ def extractRef(c: Cmdr, s: str) -> str:
 @g.commander_command('extract-names')
 def extractSectionNames(
     self: Self,
-    event: LeoKeyEvent | None = None,  # Unused: retained for compatibility
+    event: LeoKeyEvent | None = None,  # Not used.
 ) -> None:
     """
     Create child nodes for every section reference in the selected text.
@@ -632,7 +632,7 @@ def findSectionName(self: Self, s: str) -> str | None:
 @g.commander_command('select-to-matching-bracket')
 def findMatchingBracket(
     self: Self,
-    event: LeoKeyEvent | None = None,  # Unused: retained for compatibility
+    event: LeoKeyEvent | None = None,  # Not used.
 ) -> None:
     """Select the text between matching brackets."""
     c, p = self, self.p
@@ -651,7 +651,7 @@ def findMatchingBracket(
 @g.commander_command('always-indent-region')
 def alwaysIndentBody(
     self: Self,
-    event: LeoKeyEvent | None = None,  # Unused: retained for compatibility
+    event: LeoKeyEvent | None = None,  # Not used.
 ) -> None:
     """
     The always-indent-region command indents each line of the selected body
@@ -717,7 +717,7 @@ def alwaysIndentBody(
 @g.commander_command('indent-region')
 def indentBody(
     self: Self,
-    event: LeoKeyEvent | None = None,  # Unused: retained for compatibility
+    event: LeoKeyEvent | None = None,  # Not used.
 ) -> None:
     """
     The indent-region command indents each line of the selected body text.
@@ -746,7 +746,7 @@ def indentBody(
 @g.commander_command('insert-body-time')
 def insertBodyTime(
     self: Self,
-    event: LeoKeyEvent | None = None,  # Unused: retained for compatibility
+    event: LeoKeyEvent | None = None,  # Not used.
 ) -> None:
     """Insert a time/date stamp at the cursor."""
     c, p, u = self, self.p, self.undoer
@@ -768,7 +768,7 @@ def insertBodyTime(
 @g.commander_command("justify-toggle-auto")
 def justify_toggle_auto(
     self: Self,
-    event: LeoKeyEvent | None = None,  # Unused: retained for compatibility,
+    event: LeoKeyEvent | None = None,  # Not used.,
 ) -> None:
     c = self
     if c.editCommands.autojustify == 0:
@@ -786,7 +786,7 @@ def justify_toggle_auto(
 @g.commander_command('line-to-headline')
 def line_to_headline(
     self: Self,
-    event: LeoKeyEvent | None = None,  # Unused: retained for compatibility,
+    event: LeoKeyEvent | None = None,  # Not used.,
 ) -> None:
     """
     Create child node from the selected line.
@@ -830,7 +830,7 @@ def line_to_headline(
 @g.commander_command('settings')
 def preferences(
     self: Self,
-    event: LeoKeyEvent | None = None,  # Unused: retained for compatibility,
+    event: LeoKeyEvent | None = None,  # Not used.,
 ) -> None:
     """Handle the preferences command."""
     c = self
@@ -841,7 +841,7 @@ def preferences(
 @g.commander_command('reformat-body')
 def reformatBody(
     self: Self,
-    event: LeoKeyEvent | None = None,  # Unused: retained for compatibility,
+    event: LeoKeyEvent | None = None,  # Not used.
 ) -> None:
     """Reformat all paragraphs in the body."""
     c, p = self, self.p
@@ -864,7 +864,7 @@ def reformatBody(
 @g.commander_command('reformat-paragraph')
 def reformatParagraph(
     self: Self,
-    event: LeoKeyEvent | None = None,  # Unused: retained for compatibility,
+    event: LeoKeyEvent | None = None,  # Not used.
     undoType: str = 'Reformat Paragraph',
 ) -> None:
     """
@@ -1110,7 +1110,7 @@ def startsParagraph(s: str) -> bool:
 @g.commander_command('reformat-selection')
 def reformatSelection(
     self: Self,
-    event: LeoKeyEvent | None = None,  # Unused: retained for compatibility,
+    event: LeoKeyEvent | None = None,  # Not used.
     undoType: str = 'Reformat Selection',
 ) -> None:
     """
@@ -1151,7 +1151,7 @@ def reformatSelection(
 @g.commander_command('hide-invisibles')
 def hideInvisibles(
     self: Self,
-    event: LeoKeyEvent | None = None,  # Unused: retained for compatibility,
+    event: LeoKeyEvent | None = None,  # Not used.
 ) -> None:
     """Hide invisible (whitespace) characters."""
     c = self
@@ -1161,7 +1161,7 @@ def hideInvisibles(
 @g.commander_command('show-invisibles')
 def showInvisibles(
     self: Self,
-    event: LeoKeyEvent | None = None,  # Unused: retained for compatibility,
+    event: LeoKeyEvent | None = None,  # Not used.
 ) -> None:
     """Show invisible (whitespace) characters."""
     c = self
@@ -1171,7 +1171,7 @@ def showInvisibles(
 @g.commander_command('toggle-invisibles')
 def toggleShowInvisibles(
     self: Self,
-    event: LeoKeyEvent | None = None,  # Unused: retained for compatibility,
+    event: LeoKeyEvent | None = None,  # Not used.
 ) -> None:
     """Toggle showing of invisible (whitespace) characters."""
     c = self
@@ -1202,7 +1202,7 @@ def showInvisiblesHelper(c: Cmdr, val: Value) -> None:
 @g.commander_command('toggle-angle-brackets')
 def toggleAngleBrackets(
     self: Self,
-    event: LeoKeyEvent | None = None,  # Unused: retained for compatibility,
+    event: LeoKeyEvent | None = None,  # Not used.
 ) -> None:
     """Add or remove double angle brackets from the headline of the selected node."""
     c, p, u = self, self.p, self.undoer
@@ -1234,7 +1234,7 @@ def toggleAngleBrackets(
 @g.commander_command('unformat-paragraph')
 def unformatParagraph(
     self: Self,
-    event: LeoKeyEvent | None = None,  # Unused: retained for compatibility,
+    event: LeoKeyEvent | None = None,  # Not used.
     undoType: str = 'Unformat Paragraph',
 ) -> None:
     """
@@ -1302,7 +1302,7 @@ def unreformat(
 @g.commander_command('insert-jupyter-toc')
 def insertJupyterTOC(
     self: Self,
-    event: LeoKeyEvent | None = None,  # Unused: retained for compatibility,
+    event: LeoKeyEvent | None = None,  # Not used.
 ) -> None:
     """
     Insert a Jupyter table of contents at the cursor,
@@ -1314,7 +1314,7 @@ def insertJupyterTOC(
 @g.commander_command('insert-markdown-toc')
 def insertMarkdownTOC(
     self: Self,
-    event: LeoKeyEvent | None = None,  # Unused: retained for compatibility,
+    event: LeoKeyEvent | None = None,  # Not used.
 ) -> None:
     """
     Insert a Markdown table of contents at the cursor,
