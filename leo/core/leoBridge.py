@@ -105,7 +105,7 @@ class BridgeController:
         vs_code_flag: bool = False,  # #2098.
     ) -> None:
         """Ctor for the BridgeController class."""
-        self.g: ModuleType = None  # leo.core.leoGlobals.
+        self.g: ModuleType | None = None  # leo.core.leoGlobals.
         self.guiName = guiName or 'nullGui'
         self.loadPlugins = loadPlugins
         self.readSettings = readSettings

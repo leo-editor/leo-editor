@@ -77,7 +77,7 @@ class Undoer:
     # @+node:ekr.20031218072017.3606: *4* u.__init__
     def __init__(self, c: Cmdr) -> None:
         self.c = c
-        self.p: Position = None  # The position/node being operated upon for undo and redo.
+        self.p: Position | None = None  # The position/node being operated upon for undo and redo.
         self.granularity = None  # Set in reloadSettings.
         self.max_undo_stack_size = c.config.getInt('max-undo-stack-size') or 0
         # State ivars...
@@ -100,11 +100,11 @@ class Undoer:
         self.afterTree = None
         self.beforeTree = None
         self.children = None
-        self.deleteMarkedNodesData: g.Bunch = None
+        self.deleteMarkedNodesData: g.Bunch | None = None
         self.followingSibs: list[VNode] = None
         self.headlines: dict[str, tuple[str, str]]
-        self.inHead: bool = None
-        self.kind: str = None
+        self.inHead: bool | None = None
+        self.kind: str | None = None
         self.newBack = None
         self.newBody = None
         self.newChildren = None
@@ -979,10 +979,10 @@ class Undoer:
         undo_type: str,
         oldText: str,
         newText: str,
-        newInsert: int = None,
+        newInsert: int | None = None,
         oldSel: tuple[int, int] = None,
         newSel: tuple[int, int] = None,
-        oldYview: int = None,
+        oldYview: int | None = None,
     ) -> None:
         """
         Save enough information to undo or redo a typing operation efficiently,
@@ -1399,7 +1399,7 @@ class Undoer:
 
     # @+node:ekr.20031218072017.2030: *3* u.redo
     @cmd('redo')
-    def redo(self, event: LeoKeyEvent = None) -> None:
+    def redo(self, event: LeoKeyEvent | None = None) -> None:
         """Redo the operation undone by the last undo."""
         c, u = self.c, self
         if not c.p:
@@ -1796,7 +1796,7 @@ class Undoer:
 
     # @+node:ekr.20031218072017.2039: *3* u.undo
     @cmd('undo')
-    def undo(self, event: LeoKeyEvent = None) -> None:
+    def undo(self, event: LeoKeyEvent | None = None) -> None:
         """Undo the operation described by the undo parameters."""
         c, u = self.c, self
         if not c.p:
@@ -2189,7 +2189,7 @@ class Undoer:
         oldNewlines: list[str],
         newNewlines: list[str],  # Number of trailing newlines.
         tag: str = "undo",  # "undo" or "redo"
-        undoType: str = None,
+        undoType: str | None = None,
     ) -> None:
         """Handle text undo and redo: converts _new_ text into _old_ text."""
         # newNewlines is unused, but it has symmetry.

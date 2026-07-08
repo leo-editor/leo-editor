@@ -88,13 +88,13 @@ class RstCommands:
         self.encoding = 'utf-8'  # From any @encoding directive.
         self.path = ''  # The path from any @path directive.
         self.result_list: list[str] = []  # The intermediate results.
-        self.root: Position = None  # The @rst node being processed.
+        self.root: Position | None = None  # The @rst node being processed.
 
         # Default settings.
         self.default_underline_characters = '#=+*^~-:><'
         self.remove_leo_directives = False  # For compatibility with legacy operation.
-        self.user_filter_b: Callable = None
-        self.user_filter_h: Callable = None
+        self.user_filter_b: Callable | None = None
+        self.user_filter_h: Callable | None = None
 
         # Complete the init.
         self.reloadSettings()
@@ -140,7 +140,7 @@ class RstCommands:
     # @+node:ekr.20210403150303.1: *4* rst.rst-convert-legacy-outline
     @cmd('rst-convert-legacy-outline')
     @cmd('convert-legacy-rst-outline')
-    def convert_legacy_outline(self, event: LeoKeyEvent = None) -> None:
+    def convert_legacy_outline(self, event: LeoKeyEvent | None = None) -> None:
         """
         Convert @rst-preformat nodes and `@ @rst-options` doc parts.
         """
@@ -179,7 +179,7 @@ class RstCommands:
 
     # @+node:ekr.20090511055302.5793: *4* rst.rst3 command & helpers
     @cmd('rst3')
-    def rst3(self, event: LeoKeyEvent = None) -> int:
+    def rst3(self, event: LeoKeyEvent | None = None) -> int:
         """Write all @rst nodes."""
         t1 = time.time()
         self.n_intermediate = self.n_docutils = 0
@@ -559,7 +559,7 @@ class RstCommands:
         return result
 
     # @+node:ekr.20090502071837.66: *6* rst.handleMissingStyleSheetArgs
-    def handleMissingStyleSheetArgs(self, s: str = None) -> dict[str, str]:
+    def handleMissingStyleSheetArgs(self, s: str | None = None) -> dict[str, str]:
         """
         Parse the publish_argv_for_missing_stylesheets option,
         returning a dict containing the parsed args.

@@ -65,7 +65,7 @@ class CommandChainDispatcher:
 
     """
 
-    def __init__(self, commands: list = None) -> None:
+    def __init__(self, commands: list | None = None) -> None:
         if commands is None:
             self.chain = []
         else:
@@ -253,7 +253,7 @@ class BaseLeoPlugin:
 
     # @+node:ekr.20100908125007.6014: *3* BaseLeoPlugin.setMenuItem
     def setMenuItem(
-        self, menu: LeoQtMenu, commandName: str = None, handler: Callable = None
+        self, menu: LeoQtMenu, commandName: str | None = None, handler: Callable | None = None
     ) -> None:
         """Create a menu item in 'menu' using text 'commandName' calling handler 'handler'
         if commandName and handler are none, use the most recently defined values
@@ -271,7 +271,12 @@ class BaseLeoPlugin:
         self.c.frame.menu.createMenuItemsFromTable(menu, table)
 
     # @+node:ekr.20100908125007.6015: *3* BaseLeoPlugin.setButton
-    def setButton(self, buttonText: str = None, commandName: str = None, color: str = None) -> None:
+    def setButton(
+        self,
+        buttonText: str | None = None,
+        commandName: str | None = None,
+        color: str | None = None,
+    ) -> None:
         """Associate an existing command with a 'button'"""
         if buttonText is None:
             buttonText = self.commandName

@@ -75,7 +75,7 @@ class ChapterController:
         c.redraw()
 
     # @+node:ekr.20160411145155.1: *4* cc.makeCommand
-    def makeCommand(self, chapterName: str, binding: str = None) -> None:
+    def makeCommand(self, chapterName: str, binding: str | None = None) -> None:
         """Make chapter-select-<chapterName> command."""
         c, cc = self.c, self
         commandName = f"chapter-select-{chapterName}"
@@ -122,7 +122,7 @@ class ChapterController:
 
     # @+node:ekr.20070604165126: *3* cc: chapter-select
     @cmd('chapter-select')
-    def selectChapter(self, event: LeoKeyEvent = None) -> None:
+    def selectChapter(self, event: LeoKeyEvent | None = None) -> None:
         """Prompt for a chapter name and select the given chapter."""
         cc, k = self, self.c.k
         names = cc.setAllChapterNames()
@@ -139,7 +139,7 @@ class ChapterController:
 
     # @+node:ekr.20170202061705.1: *3* cc: chapter-back/next
     @cmd('chapter-back')
-    def backChapter(self, event: LeoKeyEvent = None) -> None:
+    def backChapter(self, event: LeoKeyEvent | None = None) -> None:
         """Select the previous chapter."""
         cc = self
         names = cc.setAllChapterNames()
@@ -149,7 +149,7 @@ class ChapterController:
         cc.selectChapterByName(new_name)
 
     @cmd('chapter-next')
-    def nextChapter(self, event: LeoKeyEvent = None) -> None:
+    def nextChapter(self, event: LeoKeyEvent | None = None) -> None:
         """Select the next chapter."""
         cc = self
         names = cc.setAllChapterNames()

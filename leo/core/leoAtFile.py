@@ -122,8 +122,8 @@ class AtFile:
         self.fileCommands = c.fileCommands
         # Basic status vars.
         self.errors = 0
-        self.language: str = None
-        self.root: Position = None
+        self.language: str | None = None
+        self.root: Position | None = None
         # Dialogs.
         self.canCancelFlag = False
         self.cancelFlag = False
@@ -139,7 +139,7 @@ class AtFile:
         self.endSentinelComment = ""
         # Writing.
         self.indent = 0  # write indentation, in blanks.
-        self.outputFile: io.StringIO = None
+        self.outputFile: io.StringIO | None = None
         self.outputList: list[str] = []
         self.sentinels = False
         self.section_delim1 = '<<'
@@ -314,7 +314,7 @@ class AtFile:
     # @+node:ekr.20041005105605.18: *4* at.Reading (top level)
     # @+node:ekr.20070919133659: *5* at.checkExternalFile
     @cmd('check-external-file')
-    def checkExternalFile(self, event: LeoKeyEvent = None) -> None:  # pragma: no cover
+    def checkExternalFile(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
         """Make sure an external file written by Leo may be read properly."""
         c, p = self.c, self.c.p
         if not p.isAtFileNode() and not p.isAtThinFileNode():
@@ -336,7 +336,7 @@ class AtFile:
 
     # @+node:ekr.20250724123631.1: *5* at.openAtLeoFile
     @cmd('open-at-leo-file')
-    def openAtLeoFile(self, event: LeoKeyEvent = None) -> None:  # pragma: no cover
+    def openAtLeoFile(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
         """
         Open the outline given by the @leo node at c.p.
         If the outline has already been loaded, switch to its tab.
@@ -354,7 +354,7 @@ class AtFile:
             g.red(f"file not found: {path}")
 
     # @+node:ekr.20041005105605.19: *5* at.openFileForReading & helper
-    def openFileForReading(self, fromString: str = None) -> tuple[str | None, str | None]:
+    def openFileForReading(self, fromString: str | None = None) -> tuple[str | None, str | None]:
         """
         Open the file given by at.root.
         This will be the private file for @shadow nodes.
@@ -408,7 +408,7 @@ class AtFile:
         return shadow_fn
 
     # @+node:ekr.20041005105605.21: *5* at.read & helpers
-    def read(self, root: Position, fromString: str = None) -> bool:
+    def read(self, root: Position, fromString: str | None = None) -> bool:
         """Read an @thin or @file tree."""
         at, c = self, self.c
         fileName = c.fullPath(root)
@@ -723,7 +723,7 @@ class AtFile:
         return p  # For #451: return p.
 
     # @+node:ekr.20150204165040.5: *5* at.readOneAtCleanNode & helpers
-    def readOneAtCleanNode(self, root: Position, *, new_contents: str = None) -> None:
+    def readOneAtCleanNode(self, root: Position, *, new_contents: str | None = None) -> None:
         """Update the @clean/@nosent node at root."""
         at, c, x = self, self.c, self.c.shadowController
 
@@ -1196,7 +1196,7 @@ class AtFile:
     # @+node:ekr.20190111153551.1: *5* at.commands
     # @+node:ekr.20070806105859: *6* at.writeAtAutoNodes
     @cmd('write-at-auto-nodes')
-    def writeAtAutoNodes(self, event: LeoKeyEvent = None) -> None:  # pragma: no cover
+    def writeAtAutoNodes(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
         """Write all @auto nodes in the selected outline."""
         at, c, p = self, self.c, self.c.p
         c.init_error_dialogs()
@@ -1221,7 +1221,7 @@ class AtFile:
 
     # @+node:ekr.20220120072251.1: *6* at.writeDirtyAtAutoNodes
     @cmd('write-dirty-at-auto-nodes')  # pragma: no cover
-    def writeDirtyAtAutoNodes(self, event: LeoKeyEvent = None) -> None:
+    def writeDirtyAtAutoNodes(self, event: LeoKeyEvent | None = None) -> None:
         """Write all dirty @auto nodes in the selected outline."""
         at, c, p = self, self.c, self.c.p
         c.init_error_dialogs()
@@ -1246,7 +1246,7 @@ class AtFile:
 
     # @+node:ekr.20080711093251.3: *6* at.writeAtShadowNodes
     @cmd('write-at-shadow-nodes')
-    def writeAtShadowNodes(self, event: LeoKeyEvent = None) -> bool:  # pragma: no cover
+    def writeAtShadowNodes(self, event: LeoKeyEvent | None = None) -> bool:  # pragma: no cover
         """Write all @shadow nodes in the selected outline."""
         at, c, p = self, self.c, self.c.p
         c.init_error_dialogs()
@@ -1273,7 +1273,7 @@ class AtFile:
 
     # @+node:ekr.20220120072917.1: *6* at.writeDirtyAtShadowNodes
     @cmd('write-dirty-at-shadow-nodes')
-    def writeDirtyAtShadowNodes(self, event: LeoKeyEvent = None) -> bool:  # pragma: no cover
+    def writeDirtyAtShadowNodes(self, event: LeoKeyEvent | None = None) -> bool:  # pragma: no cover
         """Write all @shadow nodes in the selected outline."""
         at, c, p = self, self.c, self.c.p
         c.init_error_dialogs()
@@ -3347,7 +3347,7 @@ class AtFile:
 
     # @+node:ekr.20090712050729.6017: *4* at.promptForDangerousWrite
     def promptForDangerousWrite(
-        self, fileName: str, message: str = None
+        self, fileName: str, message: str | None = None
     ) -> bool:  # pragma: no cover
         """Raise a dialog asking the user whether to overwrite an existing file."""
         at, c, root = self, self.c, self.root
@@ -3495,21 +3495,21 @@ class FastAtRead:
         assert gnx2vnode is not None
         # The global fc.gnxDict. Keys are gnx's, values are vnodes.
         self.gnx2vnode: dict[str, VNode] = gnx2vnode
-        self.path: str = None
-        self.root: Position = None
+        self.path: str | None = None
+        self.root: Position | None = None
         # compiled patterns...
-        self.after_pat: re.Pattern = None
-        self.all_pat: re.Pattern = None
-        self.code_pat: re.Pattern = None
-        self.comment_pat: re.Pattern = None
-        self.delims_pat: re.Pattern = None
-        self.doc_pat: re.Pattern = None
-        self.first_pat: re.Pattern = None
-        self.last_pat: re.Pattern = None
-        self.node_start_pat: re.Pattern = None
-        self.others_pat: re.Pattern = None
-        self.ref_pat: re.Pattern = None
-        self.section_delims_pat: re.Pattern = None
+        self.after_pat: re.Pattern | None = None
+        self.all_pat: re.Pattern | None = None
+        self.code_pat: re.Pattern | None = None
+        self.comment_pat: re.Pattern | None = None
+        self.delims_pat: re.Pattern | None = None
+        self.doc_pat: re.Pattern | None = None
+        self.first_pat: re.Pattern | None = None
+        self.last_pat: re.Pattern | None = None
+        self.node_start_pat: re.Pattern | None = None
+        self.others_pat: re.Pattern | None = None
+        self.ref_pat: re.Pattern | None = None
+        self.section_delims_pat: re.Pattern | None = None
 
     # @+node:ekr.20180602103135.3: *3* fast_at.get_patterns
     def get_patterns(self, comment_delims: tuple) -> None:
@@ -3596,7 +3596,7 @@ class FastAtRead:
         #
         # Simple vars...
         afterref = False  # True: the next line follows @afterref.
-        clone_v: VNode = None  # The root of the clone tree.
+        clone_v: VNode | None = None  # The root of the clone tree.
         # The start/end *comment* delims.
         # Important: scan_header ends comment_delim1 with a blank when using black sentinels.
         comment_delim1, comment_delim2 = comment_delims

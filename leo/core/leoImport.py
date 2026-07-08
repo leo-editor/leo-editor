@@ -160,9 +160,9 @@ class LeoImportCommands:
         self.c = c
         self.encoding = 'utf-8'
         self.errors = 0
-        self.fileName: str = None  # The original file name, say x.cpp
-        self.fileType: str = None  # ".py", ".c", etc.
-        self.methodName: str = None  # x, as in < < x methods > > =
+        self.fileName: str | None = None  # The original file name, say x.cpp
+        self.fileType: str | None = None  # ".py", ".c", etc.
+        self.methodName: str | None = None  # x, as in < < x methods > > =
         self.output_newline: str = g.getOutputNewline(c=c)  # Value of @bool output_newline
         self.treeType = "@file"  # None or "@file"
         self.verbose = True  # Leo 6.6
@@ -585,8 +585,8 @@ class LeoImportCommands:
     def createOutline(
         self,
         parent: Position,
-        ext: str = None,
-        s: str = None,
+        ext: str | None = None,
+        s: str | None = None,
         treeType: str = '@file',
     ) -> Position | None:
         """
@@ -735,7 +735,7 @@ class LeoImportCommands:
     # @+node:ekr.20031218072017.1810: *4* ic.importDerivedFiles
     def importDerivedFiles(
         self,
-        parent: Position = None,
+        parent: Position | None = None,
         paths: list[str] = None,
         command: str = 'Import',
     ) -> Position | None:
@@ -780,7 +780,7 @@ class LeoImportCommands:
     def importFilesCommand(
         self,
         files: list[str] = None,
-        parent: Position = None,
+        parent: Position | None = None,
         shortFn: bool = False,
         treeType: str = '@file',
         verbose: bool = True,  # Legacy value.
@@ -1394,7 +1394,7 @@ class LeoImportCommands:
         return s
 
     # @+node:ekr.20031218072017.1463: *4* ic.setEncoding (deprecated)
-    def setEncoding(self, p: Position = None, default: str = None) -> None:
+    def setEncoding(self, p: Position | None = None, default: str | None = None) -> None:
         g.deprecated()
         c = self.c
         self.encoding = c.getEncoding(p)
@@ -2061,7 +2061,7 @@ class TabImporter:
     def __init__(self, c: Cmdr, separate: bool = True) -> None:
         """Ctor for the TabImporter class."""
         self.c = c
-        self.root: Position = None
+        self.root: Position | None = None
         self.separate = separate
         self.stack: list[tuple[int, Position]] = []
 
@@ -2138,7 +2138,7 @@ class TabImporter:
             self.import_files(names)
 
     # @+node:ekr.20161006071801.5: *3* tabbed.scan
-    def scan(self, s1: str, fn: str = None, root: Position = None) -> Position:
+    def scan(self, s1: str, fn: str | None = None, root: Position | None = None) -> Position:
         """Create the outline corresponding to s1."""
         c = self.c
         # self.root can be None if we are called from a script or unit test.

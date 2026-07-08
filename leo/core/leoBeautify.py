@@ -242,7 +242,7 @@ class CPrettyPrinter:
         """Ctor for CPrettyPrinter class."""
         self.c = c
         self.brackets = 0  # The brackets indentation level.
-        self.p: Position = None  # Set in indent.
+        self.p: Position | None = None  # Set in indent.
         self.parens = 0  # The parenthesis nesting level.
         self.result: list[str] = []  # The list of tokens that form the final result.
         self.tab_width = 4  # The number of spaces in each unit of leading indentation.

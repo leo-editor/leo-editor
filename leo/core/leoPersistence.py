@@ -55,7 +55,7 @@ class PersistenceDataController:
     def __init__(self, c: Cmdr) -> None:
         """Ctor for persistenceController class."""
         self.c = c
-        self.at_persistence: Position = None  # The position of the @position node.
+        self.at_persistence: Position | None = None  # The position of the @position node.
 
     # @+node:ekr.20140711111623.17793: *3* pd.Entry points
     # @+node:ekr.20140718153519.17731: *4* pd.clean
