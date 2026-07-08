@@ -587,7 +587,7 @@ def saveAs(self: Self, event: LeoKeyEvent, fileName: str | None = None) -> None:
 @g.commander_command('save-file-to')
 def saveTo(
     self: Self,
-    event: LeoKeyEvent,
+    event: LeoKeyEvent | None = None,  # Not used.
     *,
     fileName: str | None = None,
     silent: bool = False,
