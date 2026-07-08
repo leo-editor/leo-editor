@@ -324,7 +324,7 @@ def pyflakes_command(event: LeoKeyEvent) -> None:
 
 
 # @+node:ekr.20150514125218.7: *3* pylint command
-last_pylint_path: str = None
+last_pylint_path: str | None = None
 
 
 @g.command('pylint')
@@ -636,11 +636,16 @@ class PylintCommand:
 
     def __init__(self, c: Cmdr) -> None:
         self.c = c
-        self.rc_fn: str = None  # Name of the rc file.
+        self.rc_fn: str | None = None  # Name of the rc file.
 
     # @+others
     # @+node:ekr.20150514125218.11: *3* 1. pylint.run
-    def run(self, root: Position, *, last_path: str = None) -> tuple[str, Position] | None:
+    def run(
+        self,
+        root: Position,
+        *,
+        last_path: str | None = None,
+    ) -> tuple[str, Position] | None:
         """Run Pylint on all Python @<file> nodes in root's tree."""
         c = self.c
         if not lint:

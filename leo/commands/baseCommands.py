@@ -52,7 +52,12 @@ class BaseEditCommandsClass:
         return w
 
     # @+node:ekr.20150514043714.6: *3* BaseEdit.endCommand
-    def endCommand(self, label: str = None, changed: bool = True, setLabel: bool = True) -> None:
+    def endCommand(
+        self,
+        label: str | None = None,
+        changed: bool = True,
+        setLabel: bool = True,
+    ) -> None:
         """
         Do the common processing at the end of each command.
         Handles undo only if we are in the body pane.
