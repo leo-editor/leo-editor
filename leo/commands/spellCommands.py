@@ -659,7 +659,10 @@ class SpellTabHandler:
 
     # @+node:ekr.20150514063305.502: *3* Commands
     # @+node:ekr.20150514063305.503: *4* SpellTabHandler.add
-    def add(self, event: LeoKeyEvent) -> None:
+    def add(
+        self,
+        event: LeoKeyEvent,  # Not used.
+    ) -> None:
         """Add the selected suggestion to the dictionary."""
         if self.loaded:
             w = self.currentWord
@@ -668,7 +671,10 @@ class SpellTabHandler:
                 self.tab.onFindButton()
 
     # @+node:ekr.20150514063305.504: *4* SpellTabHandler.change
-    def change(self, event: LeoKeyEvent) -> bool:
+    def change(
+        self,
+        event: LeoKeyEvent,  # Not used.
+    ) -> bool:
         """Make the selected change to the text"""
         if not self.loaded:
             return False
@@ -876,11 +882,17 @@ class SpellTabHandler:
             c.selectPosition(p)
 
     # @+node:ekr.20150514063305.508: *4* SpellTabHandler.hide
-    def hide(self, event: LeoKeyEvent) -> None:
+    def hide(
+        self,
+        event: LeoKeyEvent,  # Not used.
+    ) -> None:
         self.c.frame.log.selectTab('Log')
 
     # @+node:ekr.20150514063305.509: *4* SpellTabHandler.ignore
-    def ignore(self, event: LeoKeyEvent) -> None:
+    def ignore(
+        self,
+        event: LeoKeyEvent,  # Not used.
+    ) -> None:
         """Ignore the incorrect word for the duration of this spell check session."""
         if self.loaded:
             w = self.currentWord

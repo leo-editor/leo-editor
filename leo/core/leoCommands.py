@@ -3039,7 +3039,12 @@ class Commands:
             g.trace('At most 3 arguments are supported.')
 
     # @+node:ekr.20180503111213.1: *5* c.interactive1
-    def interactive1(self, callback: Callable, event: LeoKeyEvent, prompts: Sequence) -> None:
+    def interactive1(
+        self,
+        callback: Callable,
+        event: LeoKeyEvent,  # Used in the callback.
+        prompts: Sequence,
+    ) -> None:
         c, k = self, self.k
         prompt = prompts[0]
 
@@ -3053,7 +3058,12 @@ class Commands:
         k.get1Arg(event, handler=state1)
 
     # @+node:ekr.20180503111249.1: *5* c.interactive2
-    def interactive2(self, callback: Callable, event: LeoKeyEvent, prompts: Sequence) -> None:
+    def interactive2(
+        self,
+        callback: Callable,  # Used in the callback.
+        event: LeoKeyEvent,
+        prompts: Sequence,
+    ) -> None:
         c, k = self, self.k
         d: dict[str, str] = {}
         prompt1, prompt2 = prompts
@@ -3073,7 +3083,12 @@ class Commands:
         k.get1Arg(event, handler=state1)
 
     # @+node:ekr.20180503111249.2: *5* c.interactive3
-    def interactive3(self, callback: Callable, event: LeoKeyEvent, prompts: Sequence) -> None:
+    def interactive3(
+        self,
+        callback: Callable,
+        event: LeoKeyEvent,  # Used in the callback.
+        prompts: Sequence,
+    ) -> None:
         c = self
         d: dict[str, str] = {}
         k = self.k

@@ -358,7 +358,10 @@ class CheckNodes:
 
     # @+others
     # @+node:ekr.20230221110024.1: *3* CheckNodes.check
-    def check(self, event: LeoKeyEvent) -> None:
+    def check(
+        self,
+        event: LeoKeyEvent,  # Not used.
+    ) -> None:
         c = self.c
         self.get_data()
         self.clones = [z.copy() for z in c.all_unique_positions() if self.is_dubious_node(z)]
