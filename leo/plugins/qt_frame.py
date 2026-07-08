@@ -2055,7 +2055,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
     # @+node:ekr.20110605121601.18301: *4* LeoQtFrame.Window Menu...
     # @+node:ekr.20110605121601.18302: *5* LeoQtFrame.toggleActivePane
     @frame_cmd('toggle-active-pane')
-    def toggleActivePane(self, event: LeoKeyEvent | None = None) -> None:
+    def toggleActivePane(self, event: LeoKeyEvent) -> None:
         """Toggle the focus between the outline and body panes."""
         frame = self
         c = frame.c
@@ -2069,20 +2069,20 @@ class LeoQtFrame(leoFrame.LeoFrame):
 
     # @+node:ekr.20110605121601.18304: *5* LeoQtFrame.equalSizedPanes
     @frame_cmd('equal-sized-panes')
-    def equalSizedPanes(self, event: LeoKeyEvent | None = None) -> None:
+    def equalSizedPanes(self, event: LeoKeyEvent) -> None:
         """Make the outline and body panes have the same size."""
         self.resizePanesToRatio(0.5, self.compute_secondary_ratio())
 
     # @+node:ekr.20250422154709.1: *5* LeoQtFrame.contract/expandMainSplitter
     @frame_cmd('contract-main-splitter')
-    def contractMainSplitter(self, event: LeoKeyEvent | None = None) -> None:
+    def contractMainSplitter(self, event: LeoKeyEvent) -> None:
         """
         Contract the main splitter's first widget, expanding the main splitter's second widget.
         """
         self.resize_main_splitter(-40)
 
     @frame_cmd('expand-main-splitter')
-    def expandMainSplitter(self, event: LeoKeyEvent | None = None) -> None:
+    def expandMainSplitter(self, event: LeoKeyEvent) -> None:
         """
         Expand the main splitter's first widget, contracting the main splitter's second widget.
         """
@@ -2103,13 +2103,13 @@ class LeoQtFrame(leoFrame.LeoFrame):
             splitter.setSizes(sizes)
 
     # @+node:ekr.20110605121601.18305: *5* LeoQtFrame.hideLogWindow
-    def hideLogWindow(self, event: LeoKeyEvent | None = None) -> None:
+    def hideLogWindow(self, event: LeoKeyEvent) -> None:
         """Hide the log pane."""
         self.divideLeoSplitter2(0.99)
 
     # @+node:ekr.20110605121601.18306: *5* LeoQtFrame.minimizeAll
     @frame_cmd('minimize-all')
-    def minimizeAll(self, event: LeoKeyEvent | None = None) -> None:
+    def minimizeAll(self, event: LeoKeyEvent) -> None:
         """Minimize all Leo's windows."""
         for frame in g.app.windowList:
             self.minimize(frame)
@@ -2125,7 +2125,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
 
     # @+node:ekr.20110605121601.18307: *5* LeoQtFrame.toggleSplitDirection
     @frame_cmd('toggle-split-direction')
-    def toggleSplitDirection(self, event: LeoKeyEvent | None = None) -> None:
+    def toggleSplitDirection(self, event: LeoKeyEvent) -> None:
         """
         Toggle the split direction in the present Leo window.
         """
@@ -2141,7 +2141,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
 
     # @+node:ekr.20110605121601.18308: *5* LeoQtFrame.resizeToScreen
     @frame_cmd('resize-to-screen')
-    def resizeToScreen(self, event: LeoKeyEvent | None = None) -> None:
+    def resizeToScreen(self, event: LeoKeyEvent) -> None:
         """Resize the Leo window so it fill the entire screen."""
         frame = self
         # This unit test will fail when run externally.
@@ -2316,7 +2316,7 @@ class LeoQtLog(leoFrame.LeoLog):
     # @+node:ekr.20150717102728.1: *3* LeoQtLog.clear-log & dump-log
     @log_cmd('clear-log')
     @log_cmd('log-clear')
-    def clearLog(self, event: LeoKeyEvent | None = None) -> None:
+    def clearLog(self, event: LeoKeyEvent) -> None:
         """Clear the log pane."""
         # self.logCtrl may be either a wrapper or a widget.
         w = self.logCtrl.widget
@@ -2325,7 +2325,7 @@ class LeoQtLog(leoFrame.LeoLog):
 
     @log_cmd('dump-log')
     @log_cmd('log-dump')
-    def dumpLog(self, event: LeoKeyEvent | None = None) -> None:
+    def dumpLog(self, event: LeoKeyEvent) -> None:
         """Clear the log pane."""
         # self.logCtrl may be either a wrapper or a widget.
         w = self.logCtrl.widget
@@ -2386,7 +2386,7 @@ class LeoQtLog(leoFrame.LeoLog):
                 g.es(key3, val3, tabName='Fonts')
 
     # @+node:ekr.20110605121601.18339: *3* LeoQtLog.hideFontTab
-    def hideFontTab(self, event: LeoKeyEvent | None = None) -> None:
+    def hideFontTab(self, event: LeoKeyEvent) -> None:
         c = self.c
         c.frame.log.selectTab('Log')
         c.bodyWantsFocus()

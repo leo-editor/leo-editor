@@ -3469,7 +3469,7 @@ class KeyHandlerClass:
         g.trace(f"stroke: {stroke!r}, char: {char!r}, state: {state}, state2: {k.unboundKeyAction}")
 
     # @+node:ekr.20180418031118.1: *5* 1. k.isSpecialKey
-    def isSpecialKey(self, event: LeoKeyEvent) -> bool:
+    def isSpecialKey(self, event: LeoKeyEvent | None = None) -> bool:
         """Return True if char is a special key."""
         if not event:
             # An empty event is not an error.

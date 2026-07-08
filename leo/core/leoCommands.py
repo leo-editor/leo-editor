@@ -2795,7 +2795,7 @@ class Commands:
     # @+node:ekr.20040723094220.1: *4* c.checkAllPythonCode
     def checkAllPythonCode(
         self,
-        event: LeoKeyEvent | None = None,  # Not used.
+        event: LeoKeyEvent,  # Not used.
         ignoreAtIgnore: bool = True,
     ) -> str:
         """Check all nodes in the selected tree for syntax and tab errors."""
@@ -3301,7 +3301,7 @@ class Commands:
     def doCommandByName(
         self,
         command_name: str,
-        event: LeoKeyEvent | None = None,  # This is used.
+        event: LeoKeyEvent | None = None,  # This *is* used.
     ) -> Value:
         """
         Execute one command, given the name of the command.

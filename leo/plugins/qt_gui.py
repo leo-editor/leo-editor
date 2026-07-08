@@ -326,15 +326,13 @@ class LeoQtGui(leoGui.LeoGui):
 
         # @+<< define the callbacks for b >>
         # @+node:ekr.20110605121601.18530: *4* << define the callbacks for b >>
-        def deleteButtonCallback(
-            event: LeoKeyEvent | None = None, b: QPushButton = b, c: Cmdr = c
-        ) -> None:
+        def deleteButtonCallback(event: LeoKeyEvent, b: QPushButton = b, c: Cmdr = c) -> None:
             if b:
                 b.pack_forget()
             c.bodyWantsFocus()
 
         def executeScriptCallback(
-            event: LeoKeyEvent | None = None,
+            event: LeoKeyEvent,
             b: QPushButton = b,
             c: Cmdr = c,
             buttonText: str = buttonText,
@@ -463,7 +461,7 @@ class LeoQtGui(leoGui.LeoGui):
 
     # @+node:ekr.20180117053546.1: *3* LeoQtGui.show_tips & helpers
     @g.command('show-tips')
-    def show_next_tip(self, event: LeoKeyEvent | None = None) -> None:
+    def show_next_tip(self, event: LeoKeyEvent) -> None:
         c = g.app.log and g.app.log.c
         if c:
             g.app.gui.show_tips(c)

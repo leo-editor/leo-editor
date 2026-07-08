@@ -117,7 +117,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.414: *3* clearKillRing
     @cmd('clear-kill-ring')
-    def clearKillRing(self, event: LeoKeyEvent | None = None) -> None:
+    def clearKillRing(self, event: LeoKeyEvent) -> None:
         """Clear the kill ring."""
         g.app.globalKillBuffer = []
 
@@ -349,12 +349,12 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.425: *3* yank & yankPop
     @cmd('yank')
-    def yank(self, event: LeoKeyEvent | None = None) -> None:
+    def yank(self, event: LeoKeyEvent) -> None:
         """Insert the next entry of the kill ring."""
         self.yankHelper(event, pop=False)
 
     @cmd('yank-pop')
-    def yankPop(self, event: LeoKeyEvent | None = None) -> None:
+    def yankPop(self, event: LeoKeyEvent) -> None:
         """Insert the first entry of the kill ring."""
         self.yankHelper(event, pop=True)
 

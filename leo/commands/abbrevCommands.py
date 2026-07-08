@@ -615,7 +615,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514043850.20: *4* abbrev.dynamicCompletion C-M-/
     @cmd('dabbrev-completion')
-    def dynamicCompletion(self, event: LeoKeyEvent | None = None) -> None:
+    def dynamicCompletion(self, event: LeoKeyEvent) -> None:
         """
         dabbrev-completion
         Insert the common prefix of all dynamic abbrev's matching the present word.
@@ -650,7 +650,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514043850.21: *4* abbrev.dynamicExpansion M-/ & helper
     @cmd('dabbrev-expands')
-    def dynamicExpansion(self, event: LeoKeyEvent | None = None) -> None:
+    def dynamicExpansion(self, event: LeoKeyEvent) -> None:
         """
         dabbrev-expands (M-/ in Emacs).
 
@@ -731,7 +731,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514043850.29: *4* abbrev.listAbbrevs
     @cmd('abbrev-list')
-    def listAbbrevs(self, event: LeoKeyEvent | None = None) -> None:
+    def listAbbrevs(self, event: LeoKeyEvent) -> None:
         """List all abbreviations."""
         d = self.abbrevs
         if not d:
@@ -745,7 +745,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514043850.32: *4* abbrev.toggleAbbrevMode
     @cmd('toggle-abbrev-mode')
-    def toggleAbbrevMode(self, event: LeoKeyEvent | None = None) -> None:
+    def toggleAbbrevMode(self, event: LeoKeyEvent) -> None:
         """Toggle abbreviation mode."""
         k = self.c.k
         k.abbrevOn = not k.abbrevOn

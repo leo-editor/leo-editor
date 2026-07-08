@@ -1399,7 +1399,10 @@ class Undoer:
 
     # @+node:ekr.20031218072017.2030: *3* u.redo
     @cmd('redo')
-    def redo(self, event: LeoKeyEvent | None = None) -> None:
+    def redo(
+        self,
+        event: LeoKeyEvent | None = None,  # Not used. Retained for compatibility.
+    ) -> None:
         """Redo the operation undone by the last undo."""
         c, u = self.c, self
         if not c.p:
@@ -1796,7 +1799,10 @@ class Undoer:
 
     # @+node:ekr.20031218072017.2039: *3* u.undo
     @cmd('undo')
-    def undo(self, event: LeoKeyEvent | None = None) -> None:
+    def undo(
+        self,
+        event: LeoKeyEvent | None = None,  # Not used. Retained for compatibility.
+    ) -> None:
         """Undo the operation described by the undo parameters."""
         c, u = self.c, self
         if not c.p:

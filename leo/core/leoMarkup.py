@@ -56,7 +56,7 @@ def _sphinx_build() -> str | None:
 # @+node:ekr.20191006153522.1: ** adoc, pandoc & sphinx commands
 # @+node:ekr.20190515070742.22: *3* @g.command: 'adoc' & 'adoc-with-preview')
 @g.command('adoc')
-def adoc_command(event: LeoKeyEvent | None = None, verbose: bool = True) -> File_List:
+def adoc_command(event: LeoKeyEvent, verbose: bool = True) -> File_List:
     # @+<< adoc command docstring >>
     # @+node:ekr.20190515115100.1: *4* << adoc command docstring >>
     """
@@ -117,7 +117,7 @@ def adoc_command(event: LeoKeyEvent | None = None, verbose: bool = True) -> File
 
 
 @g.command('adoc-with-preview')
-def adoc_with_preview_command(event: LeoKeyEvent | None = None, verbose: bool = True) -> File_List:
+def adoc_with_preview_command(event: LeoKeyEvent, verbose: bool = True) -> File_List:
     """Run the adoc command, then show the result in the browser."""
     c = event and event.get('c')
     if not c:
@@ -179,7 +179,7 @@ def pandoc_command(event: LeoKeyEvent, verbose: bool = True) -> File_List:
 
 @g.command('pandoc-with-preview')
 def pandoc_with_preview_command(
-    event: LeoKeyEvent | None = None,
+    event: LeoKeyEvent,
     verbose: bool = True,
 ) -> File_List:
     """Run the pandoc command, then show the result in the browser."""
@@ -243,7 +243,7 @@ def sphinx_command(event: LeoKeyEvent, verbose: bool = True) -> File_List:
 
 @g.command('sphinx-with-preview')
 def sphinx_with_preview_command(
-    event: LeoKeyEvent | None = None,
+    event: LeoKeyEvent,
     verbose: bool = True,
 ) -> File_List:
     """Run the sphinx command, then show the result in the browser."""
@@ -556,7 +556,7 @@ class MarkupCommands:
     # @+node:ekr.20191006155051.1: *3* markup.commands
     def adoc_command(
         self,
-        event: LeoKeyEvent | None = None,
+        event: LeoKeyEvent,
         preview: bool = False,
         verbose: bool = True,
     ) -> File_List:
@@ -568,7 +568,7 @@ class MarkupCommands:
 
     def pandoc_command(
         self,
-        event: LeoKeyEvent | None = None,
+        event: LeoKeyEvent,
         preview: bool = False,
         verbose: bool = True,
     ) -> File_List:
@@ -580,7 +580,7 @@ class MarkupCommands:
 
     def sphinx_command(
         self,
-        event: LeoKeyEvent | None = None,
+        event: LeoKeyEvent,
         preview: bool = False,
         verbose: bool = True,
     ) -> File_List:

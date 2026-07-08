@@ -172,7 +172,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     # @+others
     # @+node:ekr.20210308051724.1: *3* efc.convert-at-root
     @cmd('convert-at-root')
-    def convert_at_root(self, event: LeoKeyEvent | None = None) -> None:
+    def convert_at_root(self, event: LeoKeyEvent) -> None:
         # @+<< convert-at-root docstring >>
         # @+node:ekr.20210309035627.1: *4* << convert-at-root docstring >>
         # @@wrap
@@ -508,7 +508,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20170806094318.3: *3* efc.diff (file-diff-files)
     @cmd('file-diff-files')
-    def diff(self, event: LeoKeyEvent | None = None) -> None:
+    def diff(self, event: LeoKeyEvent) -> None:
         """Creates a node and puts the diff between 2 files into it."""
         c, u = self.c, self.c.undoer
         fn = self.getReadableTextFile()
@@ -551,14 +551,14 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     # @+node:ekr.20170819035801.90: *3* efc.gitDiff (gd & git-diff)
     @cmd('git-diff')
     @cmd('gd')
-    def gitDiff(self, event: LeoKeyEvent | None = None) -> None:
+    def gitDiff(self, event: LeoKeyEvent) -> None:
         """Produce a Leonine git diff."""
         GitDiffController(c=self.c).git_diff(rev1='HEAD')
 
     # @+node:ekr.20201215093414.1: *3* efc.gitDiffPR (git-diff-pr & git-diff-pull-request)
     @cmd('git-diff-pull-request')
     @cmd('git-diff-pr')
-    def gitDiffPullRequest(self, event: LeoKeyEvent | None = None) -> None:
+    def gitDiffPullRequest(self, event: LeoKeyEvent) -> None:
         """
         Produce a Leonine diff of pull request in the current branch.
         """
@@ -566,7 +566,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20260707054655.1: *3* efc.cloneDiffPR (clone-diff-pr)
     @cmd('clone-diff-pr')
-    def cloneDiffPR(self, event: LeoKeyEvent | None = None) -> None:
+    def cloneDiffPR(self, event: LeoKeyEvent) -> None:
         """
         Show the added, deleted and changed nodes (without diffs) of the given PR.
         """

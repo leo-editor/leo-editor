@@ -93,7 +93,7 @@ def lineScrollHelper(c: Cmdr, prefix1: str, prefix2: str, suffix: str) -> None:
 # @+node:ekr.20201129164455.1: **  Top-level commands
 # @+node:ekr.20180504180134.1: *3* @g.command('delete-trace-statements')
 @g.command('delete-trace-statements')
-def delete_trace_statements(event: LeoKeyEvent | None = None) -> None:
+def delete_trace_statements(event: LeoKeyEvent) -> None:
     """
     Delete all trace statements/blocks from c.p to the end of the outline.
 
@@ -203,7 +203,7 @@ def promote_section_definition(event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20220515193048.1: *3* @g.command('merge-node-with-next-node')
 @g.command('merge-node-with-next-node')
-def merge_node_with_next_node(event: LeoKeyEvent | None = None) -> None:
+def merge_node_with_next_node(event: LeoKeyEvent) -> None:
     """
     Merge p.b into p.next().b and delete p, *provided* that p has no children.
     """
@@ -235,7 +235,7 @@ def merge_node_with_next_node(event: LeoKeyEvent | None = None) -> None:
 
 # @+node:ekr.20220515193124.1: *3* @g.command('merge-node-with-prev-node')
 @g.command('merge-node-with-prev-node')
-def merge_node_with_prev_node(event: LeoKeyEvent | None = None) -> None:
+def merge_node_with_prev_node(event: LeoKeyEvent) -> None:
     """
     Merge p.b into p.back().b and delete p, *provided* that p has no children.
     """
@@ -332,7 +332,7 @@ def promoteHeadlines(event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20180504180647.1: *3* @g.command('select-next-trace-statement')
 @g.command('select-next-trace-statement')
-def select_next_trace_statement(event: LeoKeyEvent | None = None) -> None:
+def select_next_trace_statement(event: LeoKeyEvent) -> None:
     """Select the next statement/block enabled by `if trace...:`"""
     c = event.get('c')
     if not c:
@@ -351,7 +351,7 @@ def select_next_trace_statement(event: LeoKeyEvent | None = None) -> None:
 
 # @+node:ekr.20191010112910.1: *3* @g.command('show-clone-ancestors')
 @g.command('show-clone-ancestors')
-def show_clone_ancestors(event: LeoKeyEvent | None = None) -> None:
+def show_clone_ancestors(event: LeoKeyEvent) -> None:
     """Display links to all ancestor nodes of the node c.p."""
     c = event.get('c')
     if not c:
@@ -377,7 +377,7 @@ def show_clone_ancestors(event: LeoKeyEvent | None = None) -> None:
 
 # @+node:ekr.20260622102739.1: *3* @g.command('show-node-files')
 @g.command('show-node-files')
-def show_node_files(event: LeoKeyEvent | None = None) -> None:
+def show_node_files(event: LeoKeyEvent) -> None:
     """Display the headlines of all @<file> nodes containing this node."""
     c = event.get('c')
     if c and c.p:
@@ -388,7 +388,7 @@ def show_node_files(event: LeoKeyEvent | None = None) -> None:
 
 # @+node:ekr.20191007034723.1: *3* @g.command('show-clone-parents')
 @g.command('show-clone-parents')
-def show_clones(event: LeoKeyEvent | None = None) -> None:
+def show_clones(event: LeoKeyEvent) -> None:
     """Display links to all parent nodes of the node c.p."""
     c = event.get('c')
     if not c:
@@ -410,7 +410,7 @@ def show_clones(event: LeoKeyEvent | None = None) -> None:
 
 # @+node:ekr.20180210161001.1: *3* @g.command('unmark-node-and-parents')
 @g.command('unmark-node-and-parents')
-def unmark_node_and_parents(event: LeoKeyEvent | None = None) -> list[Position]:
+def unmark_node_and_parents(event: LeoKeyEvent) -> list[Position]:
     """Unmark the node and all its parents."""
     c = event.get('c')
     changed: list[Position] = []
@@ -477,12 +477,12 @@ class EditCommandsClass(BaseEditCommandsClass):
     # @+node:ekr.20150514063305.190: *3* ec.cache
     @cmd('clear-all-caches')
     @cmd('clear-cache')
-    def clearAllCaches(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
+    def clearAllCaches(self, event: LeoKeyEvent) -> None:  # pragma: no cover
         """Clear all of Leo's file caches."""
         g.app.global_cacher.clear()
 
     @cmd('dump-caches')
-    def dumpCaches(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
+    def dumpCaches(self, event: LeoKeyEvent) -> None:  # pragma: no cover
         """Dump, all of Leo's file caches."""
         if hasattr(g.app.global_cacher, 'dump'):
             g.app.global_cacher.dump()
@@ -497,7 +497,7 @@ class EditCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.278: *3* ec.insertFileName
     @cmd('insert-file-name')
-    def insertFileName(self, event: LeoKeyEvent | None = None) -> None:
+    def insertFileName(self, event: LeoKeyEvent) -> None:
         """
         Prompt for a file name, then insert it at the cursor position.
         This operation is undoable if done in the body pane.
@@ -544,7 +544,7 @@ class EditCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.279: *3* ec.insertHeadlineTime
     @cmd('insert-headline-time')
-    def insertHeadlineTime(self, event: LeoKeyEvent | None = None) -> None:
+    def insertHeadlineTime(self, event: LeoKeyEvent) -> None:
         """Insert a date/time stamp in the headline of the selected node."""
         frame = self
         c, p = frame.c, self.c.p
@@ -585,7 +585,7 @@ class EditCommandsClass(BaseEditCommandsClass):
 
     # @+node:tom.20210922140250.1: *3* ec.capitalizeHeadline
     @cmd('capitalize-headline')
-    def capitalizeHeadline(self, event: LeoKeyEvent | None = None) -> None:
+    def capitalizeHeadline(self, event: LeoKeyEvent) -> None:
         """Capitalize all words in the headline of the selected node."""
         frame = self
         c, p, u = frame.c, self.c.p, self.c.undoer
@@ -720,7 +720,7 @@ class EditCommandsClass(BaseEditCommandsClass):
 
     # @+node:tom.20210922171731.1: *4* ec.capitalizeWords & selection
     @cmd('capitalize-words-or-selection')
-    def capitalizeWords(self, event: LeoKeyEvent | None = None) -> None:
+    def capitalizeWords(self, event: LeoKeyEvent) -> None:
         """Capitalize Entire Body Or Selection."""
         frame = self
         c, p, u = frame.c, self.c.p, self.c.undoer
@@ -762,37 +762,37 @@ class EditCommandsClass(BaseEditCommandsClass):
     # @+node:ekr.20150514063305.195: *3* ec: clicks and focus
     # @+node:ekr.20150514063305.196: *4* ec.activate-x-menu & activateMenu
     @cmd('activate-cmds-menu')
-    def activateCmdsMenu(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
+    def activateCmdsMenu(self, event: LeoKeyEvent) -> None:  # pragma: no cover
         """Activate Leo's Cmnds menu."""
         self.activateMenu('Cmds')
 
     @cmd('activate-edit-menu')
-    def activateEditMenu(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
+    def activateEditMenu(self, event: LeoKeyEvent) -> None:  # pragma: no cover
         """Activate Leo's Edit menu."""
         self.activateMenu('Edit')
 
     @cmd('activate-file-menu')
-    def activateFileMenu(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
+    def activateFileMenu(self, event: LeoKeyEvent) -> None:  # pragma: no cover
         """Activate Leo's File menu."""
         self.activateMenu('File')
 
     @cmd('activate-help-menu')
-    def activateHelpMenu(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
+    def activateHelpMenu(self, event: LeoKeyEvent) -> None:  # pragma: no cover
         """Activate Leo's Help menu."""
         self.activateMenu('Help')
 
     @cmd('activate-outline-menu')
-    def activateOutlineMenu(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
+    def activateOutlineMenu(self, event: LeoKeyEvent) -> None:  # pragma: no cover
         """Activate Leo's Outline menu."""
         self.activateMenu('Outline')
 
     @cmd('activate-plugins-menu')
-    def activatePluginsMenu(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
+    def activatePluginsMenu(self, event: LeoKeyEvent) -> None:  # pragma: no cover
         """Activate Leo's Plugins menu."""
         self.activateMenu('Plugins')
 
     @cmd('activate-window-menu')
-    def activateWindowMenu(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
+    def activateWindowMenu(self, event: LeoKeyEvent) -> None:  # pragma: no cover
         """Activate Leo's Window menu."""
         self.activateMenu('Window')
 
@@ -802,7 +802,7 @@ class EditCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.199: *4* ec.focusTo...
     @cmd('focus-to-body')
-    def focusToBody(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
+    def focusToBody(self, event: LeoKeyEvent) -> None:  # pragma: no cover
         """Put the keyboard focus in Leo's body pane."""
         c, k = self.c, self.c.k
         c.bodyWantsFocus()
@@ -811,17 +811,17 @@ class EditCommandsClass(BaseEditCommandsClass):
             k.showStateAndMode()
 
     @cmd('focus-to-log')
-    def focusToLog(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
+    def focusToLog(self, event: LeoKeyEvent) -> None:  # pragma: no cover
         """Put the keyboard focus in Leo's log pane."""
         self.c.logWantsFocusNow()
 
     @cmd('focus-to-minibuffer')
-    def focusToMinibuffer(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
+    def focusToMinibuffer(self, event: LeoKeyEvent) -> None:  # pragma: no cover
         """Put the keyboard focus in Leo's minibuffer."""
         self.c.minibufferWantsFocusNow()
 
     @cmd('focus-to-tree')
-    def focusToTree(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
+    def focusToTree(self, event: LeoKeyEvent) -> None:  # pragma: no cover
         """Put the keyboard focus in Leo's outline pane."""
         self.c.treeWantsFocusNow()
 
@@ -829,32 +829,32 @@ class EditCommandsClass(BaseEditCommandsClass):
     # These call the actual event handlers so as to trigger hooks.
 
     @cmd('ctrl-click-icon')
-    def ctrlClickIconBox(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
+    def ctrlClickIconBox(self, event: LeoKeyEvent) -> None:  # pragma: no cover
         """Simulate a ctrl-click in the icon box of the presently selected node."""
         c = self.c
         c.frame.tree.OnIconCtrlClick(c.p)  # Calls the base LeoTree method.
 
     @cmd('click-icon-box')
-    def clickIconBox(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
+    def clickIconBox(self, event: LeoKeyEvent) -> None:  # pragma: no cover
         """Simulate a click in the icon box of the presently selected node."""
         c = self.c
         c.frame.tree.onIconBoxClick(event, p=c.p)
 
     @cmd('double-click-icon-box')
-    def doubleClickIconBox(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
+    def doubleClickIconBox(self, event: LeoKeyEvent) -> None:  # pragma: no cover
         """Simulate a double-click in the icon box of the presently selected node."""
         c = self.c
         c.frame.tree.onIconBoxDoubleClick(event, p=c.p)
 
     @cmd('right-click-icon')
-    def rightClickIconBox(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
+    def rightClickIconBox(self, event: LeoKeyEvent) -> None:  # pragma: no cover
         """Simulate a right click in the icon box of the presently selected node."""
         c = self.c
         c.frame.tree.onIconBoxRightClick(event, p=c.p)
 
     # @+node:ekr.20150514063305.202: *4* ec.clickClickBox
     @cmd('click-click-box')
-    def clickClickBox(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
+    def clickClickBox(self, event: LeoKeyEvent) -> None:  # pragma: no cover
         """
         Simulate a click in the click box (+- box) of the presently selected node.
 
@@ -1125,7 +1125,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     # @+node:ekr.20150514063305.225: *3* ec: goto node
     # @+node:ekr.20170411065920.1: *4* goto-any-clone
     @cmd('goto-any-clone')
-    def gotoAnyClone(self, event: LeoKeyEvent | None = None) -> None:
+    def gotoAnyClone(self, event: LeoKeyEvent) -> None:
         """Select then next cloned node, regardless of whether c.p is a clone."""
         c = self.c
         p = c.p.threadNext()
@@ -1220,7 +1220,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('hn-add-all')
     @cmd('headline-number-add-all')
     @cmd('add-all-headline-numbers')
-    def hn_add_all(self, event: LeoKeyEvent | None = None) -> None:
+    def hn_add_all(self, event: LeoKeyEvent) -> None:
         """
         Add headline numbers to all nodes of the outline *except*:
         -  @<file> nodes and their descendants.
@@ -1267,7 +1267,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('hn-add-subtree')
     @cmd('headline-number-add-subtree')
     @cmd('add-subtree-headline-numbers')
-    def hn_add_children(self, event: LeoKeyEvent | None = None) -> None:
+    def hn_add_children(self, event: LeoKeyEvent) -> None:
         """
         Add headline numbers to *all* children of c.p, *including*:
         -  @<file> nodes and their descendants.
@@ -1307,7 +1307,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('hn-delete-all')
     @cmd('headline-number-delete-all')
     @cmd('delete-all-headline-numbers')
-    def hn_delete_all(self, event: LeoKeyEvent | None = None) -> None:
+    def hn_delete_all(self, event: LeoKeyEvent) -> None:
         """Delete all headline numbers in the entire outline."""
         c, command = self.c, 'delete-all-headline-numbers'
         u = c.undoer
@@ -1322,7 +1322,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('hn-delete-subtree')
     @cmd('headline-number-delete-subtree')
     @cmd('delete-subtree-headline-numbers')
-    def hn_delete_tree(self, event: LeoKeyEvent | None = None) -> None:
+    def hn_delete_tree(self, event: LeoKeyEvent) -> None:
         """Delete all headline numbers in c.p's subtree."""
         c, command = self.c, 'delete-subtree-headline-numbers'
         u = c.undoer
@@ -1427,7 +1427,7 @@ class EditCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.236: *4* ec.deleteFirstIcon
     @cmd('delete-first-icon')
-    def deleteFirstIcon(self, event: LeoKeyEvent | None = None) -> None:
+    def deleteFirstIcon(self, event: LeoKeyEvent) -> None:
         """Delete the first icon in the selected node's icon list."""
         c, p = self.c, self.c.p
         aList = self.getIconList(c.p.v)
@@ -1462,7 +1462,7 @@ class EditCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.238: *4* ec.deleteLastIcon
     @cmd('delete-last-icon')
-    def deleteLastIcon(self, event: LeoKeyEvent | None = None) -> None:
+    def deleteLastIcon(self, event: LeoKeyEvent) -> None:
         """Delete the first icon in the selected node's icon list."""
         c, p = self.c, self.c.p
         aList = self.getIconList(p.v)
@@ -1473,7 +1473,7 @@ class EditCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.239: *4* ec.deleteNodeIcons
     @cmd('delete-node-icons')
-    def deleteNodeIcons(self, event: LeoKeyEvent | None = None, p: Position | None = None) -> None:
+    def deleteNodeIcons(self, event: LeoKeyEvent, p: Position | None = None) -> None:
         """Delete all of the selected node's icons."""
         c = self.c
         p = p or c.p
@@ -1485,7 +1485,7 @@ class EditCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.240: *4* ec.insertIcon
     @cmd('insert-icon')
-    def insertIcon(self, event: LeoKeyEvent | None = None) -> None:
+    def insertIcon(self, event: LeoKeyEvent) -> None:
         """Prompt for an icon, and insert it into the node's icon list."""
         c, p = self.c, self.c.p
         iconDir = g.finalize_join(g.app.loadDir, "..", "Icons")
@@ -1723,7 +1723,7 @@ class EditCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.253: *4* ec.backwardDeleteCharacter
     @cmd('backward-delete-char')
-    def backwardDeleteCharacter(self, event: LeoKeyEvent | None = None) -> None:
+    def backwardDeleteCharacter(self, event: LeoKeyEvent) -> None:
         """Delete the character to the left of the cursor."""
         c = self.c
         w = event.w if event else c.frame.body.wrapper
@@ -1863,24 +1863,24 @@ class EditCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.258: *4* ec.delete-word & backward-delete-word
     @cmd('delete-word')
-    def deleteWord(self, event: LeoKeyEvent | None = None) -> None:
+    def deleteWord(self, event: LeoKeyEvent) -> None:
         """Delete the word at the cursor."""
         self.deleteWordHelper(event, forward=True)
 
     @cmd('backward-delete-word')
-    def backwardDeleteWord(self, event: LeoKeyEvent | None = None) -> None:
+    def backwardDeleteWord(self, event: LeoKeyEvent) -> None:
         """Delete the word in front of the cursor."""
         self.deleteWordHelper(event, forward=False)
 
     # Patch by NH2.
 
     @cmd('delete-word-smart')
-    def deleteWordSmart(self, event: LeoKeyEvent | None = None) -> None:
+    def deleteWordSmart(self, event: LeoKeyEvent) -> None:
         """Delete the word at the cursor, treating whitespace and symbols smartly."""
         self.deleteWordHelper(event, forward=True, smart=True)
 
     @cmd('backward-delete-word-smart')
-    def backwardDeleteWordSmart(self, event: LeoKeyEvent | None = None) -> None:
+    def backwardDeleteWordSmart(self, event: LeoKeyEvent) -> None:
         """Delete the word in front of the cursor, treating whitespace and symbols smartly."""
         self.deleteWordHelper(event, forward=False, smart=True)
 
@@ -3336,7 +3336,7 @@ class EditCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20170707093335.1: *4* ec.pushCursor and popCursor
     @cmd('pop-cursor')
-    def popCursor(self, event: LeoKeyEvent | None = None) -> None:
+    def popCursor(self, event: LeoKeyEvent) -> None:
         """Restore the node, selection range and insert point from the stack."""
         c = self.c
         w = event.w if event else None
@@ -3353,7 +3353,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             g.es('no stacked cursor', color='blue')
 
     @cmd('push-cursor')
-    def pushCursor(self, event: LeoKeyEvent | None = None) -> None:
+    def pushCursor(self, event: LeoKeyEvent) -> None:
         """Push the selection range and insert point on the stack."""
         c = self.c
         w = event.w if event else None
@@ -3900,7 +3900,7 @@ class EditCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.337: *4* ec.scrollOutlineUp/Down/Line/Page
     @cmd('scroll-outline-down-line')
-    def scrollOutlineDownLine(self, event: LeoKeyEvent | None = None) -> None:
+    def scrollOutlineDownLine(self, event: LeoKeyEvent) -> None:
         """Scroll the outline pane down one line."""
         tree = self.c.frame.tree
         if hasattr(tree, 'scrollDelegate'):
@@ -3911,7 +3911,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 tree.canvas.yview_scroll(1, "unit")
 
     @cmd('scroll-outline-down-page')
-    def scrollOutlineDownPage(self, event: LeoKeyEvent | None = None) -> None:
+    def scrollOutlineDownPage(self, event: LeoKeyEvent) -> None:
         """Scroll the outline pane down one page."""
         tree = self.c.frame.tree
         if hasattr(tree, 'scrollDelegate'):
@@ -3922,7 +3922,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 tree.canvas.yview_scroll(1, "page")
 
     @cmd('scroll-outline-up-line')
-    def scrollOutlineUpLine(self, event: LeoKeyEvent | None = None) -> None:
+    def scrollOutlineUpLine(self, event: LeoKeyEvent) -> None:
         """Scroll the outline pane up one line."""
         tree = self.c.frame.tree
         if hasattr(tree, 'scrollDelegate'):
@@ -3933,7 +3933,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 tree.canvas.yview_scroll(-1, "unit")
 
     @cmd('scroll-outline-up-page')
-    def scrollOutlineUpPage(self, event: LeoKeyEvent | None = None) -> None:
+    def scrollOutlineUpPage(self, event: LeoKeyEvent) -> None:
         """Scroll the outline pane up one page."""
         tree = self.c.frame.tree
         if hasattr(tree, 'scrollDelegate'):
@@ -3945,7 +3945,7 @@ class EditCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.338: *4* ec.scrollOutlineLeftRight
     @cmd('scroll-outline-left')
-    def scrollOutlineLeft(self, event: LeoKeyEvent | None = None) -> None:
+    def scrollOutlineLeft(self, event: LeoKeyEvent) -> None:
         """Scroll the outline left."""
         tree = self.c.frame.tree
         if hasattr(tree, 'scrollDelegate'):
@@ -3954,7 +3954,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             tree.canvas.xview_scroll(1, "unit")
 
     @cmd('scroll-outline-right')
-    def scrollOutlineRight(self, event: LeoKeyEvent | None = None) -> None:
+    def scrollOutlineRight(self, event: LeoKeyEvent) -> None:
         """Scroll the outline left."""
         tree = self.c.frame.tree
         if hasattr(tree, 'scrollDelegate'):
@@ -4140,7 +4140,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     # @+node:ekr.20150514063305.348: *3* ec: uA's
     # @+node:ekr.20150514063305.349: *4* ec.clearNodeUas & clearAllUas
     @cmd('clear-node-uas')
-    def clearNodeUas(self, event: LeoKeyEvent | None = None) -> None:
+    def clearNodeUas(self, event: LeoKeyEvent) -> None:
         """Clear the uA's in the selected VNode."""
         c = self.c
         p = c and c.p
@@ -4155,7 +4155,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             c.redraw()
 
     @cmd('clear-all-uas')
-    def clearAllUas(self, event: LeoKeyEvent | None = None) -> None:
+    def clearAllUas(self, event: LeoKeyEvent) -> None:
         """Clear all uAs in the entire outline."""
         c, u, undoType = self.c, self.c.undoer, 'clear-all-uas'
         # #1276.
@@ -4177,7 +4177,7 @@ class EditCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.350: *4* ec.showUas & showAllUas
     @cmd('show-all-uas')
-    def showAllUas(self, event: LeoKeyEvent | None = None) -> None:
+    def showAllUas(self, event: LeoKeyEvent) -> None:
         """Print all uA's in the outline."""
         g.es_print('Dump of uAs...')
         for v in self.c.all_unique_nodes():
@@ -4185,7 +4185,11 @@ class EditCommandsClass(BaseEditCommandsClass):
                 self.showNodeUas(v=v)
 
     @cmd('show-node-uas')
-    def showNodeUas(self, event: LeoKeyEvent | None = None, v: VNode | None = None) -> None:
+    def showNodeUas(
+        self,
+        event: LeoKeyEvent | None = None,  # Unused.
+        v: VNode | None = None,
+    ) -> None:
         """Print the uA's in the selected node."""
         c = self.c
         if v:
@@ -4205,14 +4209,14 @@ class EditCommandsClass(BaseEditCommandsClass):
             k.setLabelBlue('Set uA: ')
             k.get1Arg(event, handler=self.setUa1)
 
-    def setUa1(self, event: LeoKeyEvent) -> None:
+    def setUa1(self) -> None:
         k = self.c.k
         self.uaName = k.arg
         s = f"Set uA: {self.uaName} To: "
         k.setLabelBlue(s)
         k.getNextArg(self.setUa2)
 
-    def setUa2(self, event: LeoKeyEvent) -> None:
+    def setUa2(self) -> None:
         c, k, u = self.c, self.c.k, self.c.undoer
         p = c.p
         val = k.arg
