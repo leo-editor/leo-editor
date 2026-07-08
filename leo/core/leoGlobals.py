@@ -2811,7 +2811,9 @@ def clearStats() -> None:
 
 # @+node:ekr.20031218072017.3135: *4* g.printStats
 @command('show-stats')
-def printStats(event: LeoKeyEvent | None = None) -> None:
+def printStats(
+    event: Any = None,  # not used.
+) -> None:
     """
     Print all stats created by g.stat(), counts first.
     """
@@ -3736,7 +3738,7 @@ def openWithFileName(
     fileName: str,
     old_c: Cmdr | None = None,
     gui: LeoGui | None = None,
-) -> Cmdr | None:
+) -> Cmdr:
     """
     Load any kind of file in the appropriate way:
 
@@ -6855,7 +6857,9 @@ def CheckVersionToInt(s: str) -> int:
 
 # @+node:ekr.20111103205308.9657: *3* g.cls
 @command('cls')
-def cls(event: LeoKeyEvent | None = None) -> None:
+def cls(
+    event: Any = None,  # not used.
+) -> None:
     """Clear the screen."""
     if g.isWindows:
         # Leo 6.7.5: Two calls seem to be required!

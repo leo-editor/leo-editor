@@ -32,6 +32,7 @@ if 1:  # Test all files.
 else:
     files = [
         # Files to check with strict_optional in .mypy.ini.
+        'leo/core/leoApp.py',
         'leo/core/leoGlobals.py',
         'leo/core/leoCommands.py',
         'leo/core/leoNodes.py',
