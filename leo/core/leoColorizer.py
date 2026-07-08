@@ -495,14 +495,14 @@ class JEditColorizer(BaseColorizer):
             )
 
         # *Global* state data. This is not entirely correct, but it's not worth fixing.
-        self.after_doc_language: str = None
+        self.after_doc_language: str | None = None
         self.in_killcolor: bool = False
 
         # *Local* state data. Such state is harmless.
         self.delegate_stack: list[str] = []
         self.initialStateNumber = -1
         self.n2languageDict: dict[int, str] = {-1: c.target_language}
-        self.mode: JEditModeDescriptor = None
+        self.mode: JEditModeDescriptor | None = None
         self.nested = False  # True: allow nested comments, etc.
         self.nested_level = 0  # Nesting level if self.nested is True.
         self.nextState = 1  # Don't use 0.
@@ -917,9 +917,9 @@ class JEditColorizer(BaseColorizer):
         self.init()
 
     # @+node:ekr.20190327053604.1: *4* jedit.report_changes
-    prev_use_pygments: bool = None
-    prev_use_styles: bool = None
-    prev_style: str = None
+    prev_use_pygments: bool | None = None
+    prev_use_styles: bool | None = None
+    prev_style: str | None = None
 
     def report_changes(self) -> None:
         """Report changes to pygments settings"""
@@ -1491,7 +1491,7 @@ class JEditColorizer(BaseColorizer):
         """Set the tag in the highlighter."""
         default_tag = f"{tag}_font"  # See default_font_dict.
         full_tag = f"{self.language}.{tag}"
-        font: QtGui.QFont = None  # Set below. Define here for report().
+        font: QtGui.QFont | None = None  # Set below. Define here for report().
         self.n_setTag += 1
         if i == j:
             return
@@ -2051,7 +2051,7 @@ class JEditColorizer(BaseColorizer):
         s: str,
         i: int,
         *,
-        kind: str = None,
+        kind: str | None = None,
         seq: str = '',
         at_line_start: bool = False,
         at_whitespace_end: bool = False,
@@ -2274,7 +2274,7 @@ class JEditColorizer(BaseColorizer):
         return -len(word)  # An important new optimization.
 
     # @+node:ekr.20110605121601.18615: *4* jedit.match_line
-    def match_line(self, s: str, i: int, *, kind: str = None) -> int:
+    def match_line(self, s: str, i: int, *, kind: str | None = None) -> int:
         """Match the rest of the line."""
         j = g.skip_to_end_of_line(s, i)
         self.colorRangeWithTag(s, i, j, kind)
@@ -3338,7 +3338,7 @@ if Qsci:
     class NullScintillaLexer(Qsci.QsciLexerCustom):
         """A do-nothing colorizer for Scintilla."""
 
-        def __init__(self, c: Cmdr, parent: QWidget = None) -> None:
+        def __init__(self, c: Cmdr, parent: QWidget | None = None) -> None:
             super().__init__(parent)  # Init the pase class
             self.leo_c = c
             self.configure_lexer()
@@ -3384,7 +3384,7 @@ class PygmentsColorizer(JEditColorizer):
         # State unique to this class...
         self.color_enabled = self.enabled
         self.getDefaultFormat: Callable
-        self.old_v: VNode = None
+        self.old_v: VNode | None = None
         # Monkey-patch g.isValidLanguage.
         g.isValidLanguage = self.pygments_isValidLanguage
         # Init common data...
@@ -3678,7 +3678,7 @@ class QScintillaColorizer(BaseColorizer):
         self.error = False  # Set if there is an error in jeditColorizer.recolor
         self.flag = True  # Per-node enable/disable flag.
         self.highlighter = None
-        self.lexer: Lexer = None  # Set in changeLexer.
+        self.lexer: Lexer | None = None  # Set in changeLexer.
         widget.leo_colorizer = self
 
         # Define/configure various lexers.

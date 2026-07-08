@@ -1369,7 +1369,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 self.output_directory = self.finalize(
                     c.config.getString('stub-output-directory') or '.'
                 )
-                self.output_fn: str = None
+                self.output_fn: str | None = None
                 self.overwrite = c.config.getBool('stub-overwrite', default=False)
                 self.trace_matches = c.config.getBool('stub-trace-matches', default=False)
                 self.trace_patterns = c.config.getBool('stub-trace-patterns', default=False)
@@ -1657,7 +1657,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
         # @+others
         # @+node:ekr.20231119103026.2: *5* py2rust.ctor
-        def __init__(self, c: Cmdr, alias: str = None) -> None:
+        def __init__(self, c: Cmdr, alias: str | None = None) -> None:
             self.c = c
             self.alias = alias  # For scripts. An alias for 'self'.
             data = c.config.getData('python-to-typescript-types') or []
@@ -2387,7 +2387,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
         # @+others
         # @+node:ekr.20211020162251.1: *5* py2ts.ctor
-        def __init__(self, c: Cmdr, alias: str = None) -> None:
+        def __init__(self, c: Cmdr, alias: str | None = None) -> None:
             self.c = c
             self.alias = alias  # For scripts. An alias for 'self'.
             data = c.config.getData('python-to-typescript-types') or []

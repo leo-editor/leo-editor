@@ -81,9 +81,9 @@ class ShadowController:
         self.encoding: str = c.config.default_derived_file_encoding
         self.errors = 0
         self.results: list[str] = []
-        self.shadow_subdir: str = None
-        self.shadow_prefix: str = None
-        self.shadow_in_home_dir: bool = None
+        self.shadow_subdir: str | None = None
+        self.shadow_prefix: str | None = None
+        self.shadow_in_home_dir: bool | None = None
         # Support for goto-line.
         self.reloadSettings()
 
@@ -211,7 +211,7 @@ class ShadowController:
         new_public_lines: list[str],
         old_private_lines: list[str],
         marker: Marker,
-        p: Position = None,
+        p: Position | None = None,
     ) -> list[str]:
         # @+<< docstring >>
         # @+node:ekr.20150207044400.9: *5*  << docstring >>

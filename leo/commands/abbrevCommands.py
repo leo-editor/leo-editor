@@ -9,15 +9,15 @@ from collections.abc import Callable
 import functools
 import re
 import string
-from typing import TYPE_CHECKING
+from typing import cast, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 from leo.commands.baseCommands import BaseEditCommandsClass
+from leo.plugins.qt_text import QTextMixin
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
-    from leo.plugins.qt_text import QTextMixin
 
 # @-<< abbrevCommands imports & abbreviations >>
 
@@ -68,7 +68,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         self.expanding = False  # True: expanding abbreviations.
         self.subst_env: list[str] = []  # The scripting environment.
         self.tree_abbrevs_d: dict[str, str] = {}  # Keys are names, values are (tree,tag).
-        self.w: QTextMixin = None
+        self.w = cast(QTextMixin, None)
 
     # @+node:ekr.20150514043850.11: *3* abbrev.expandAbbrev & helpers (entry point)
     def expandAbbrev(self, event: LeoKeyEvent, stroke: g.KeyStroke) -> bool:
@@ -615,7 +615,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514043850.20: *4* abbrev.dynamicCompletion C-M-/
     @cmd('dabbrev-completion')
-    def dynamicCompletion(self, event: LeoKeyEvent = None) -> None:
+    def dynamicCompletion(self, event: LeoKeyEvent | None = None) -> None:
         """
         dabbrev-completion
         Insert the common prefix of all dynamic abbrev's matching the present word.
@@ -650,7 +650,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514043850.21: *4* abbrev.dynamicExpansion M-/ & helper
     @cmd('dabbrev-expands')
-    def dynamicExpansion(self, event: LeoKeyEvent = None) -> None:
+    def dynamicExpansion(self, event: LeoKeyEvent | None = None) -> None:
         """
         dabbrev-expands (M-/ in Emacs).
 
@@ -682,9 +682,9 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     def dynamicExpandHelper(
         self,
         event: LeoKeyEvent,
-        prefix: str = None,
+        prefix: str | None = None,
         aList: list[str] = None,
-        w: QTextMixin = None,
+        w: QTextMixin | None = None,
     ) -> None:
         """State handler for dabbrev-expands command."""
         c, k = self.c, self.c.k
@@ -731,7 +731,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514043850.29: *4* abbrev.listAbbrevs
     @cmd('abbrev-list')
-    def listAbbrevs(self, event: LeoKeyEvent = None) -> None:
+    def listAbbrevs(self, event: LeoKeyEvent | None = None) -> None:
         """List all abbreviations."""
         d = self.abbrevs
         if not d:
@@ -745,7 +745,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514043850.32: *4* abbrev.toggleAbbrevMode
     @cmd('toggle-abbrev-mode')
-    def toggleAbbrevMode(self, event: LeoKeyEvent = None) -> None:
+    def toggleAbbrevMode(self, event: LeoKeyEvent | None = None) -> None:
         """Toggle abbreviation mode."""
         k = self.c.k
         k.abbrevOn = not k.abbrevOn

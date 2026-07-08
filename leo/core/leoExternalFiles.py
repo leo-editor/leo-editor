@@ -72,7 +72,7 @@ class ExternalFilesController:
 
     # @+others
     # @+node:ekr.20150404083533.1: *3* efc.ctor
-    def __init__(self, c: Cmdr = None) -> None:
+    def __init__(self, c: Cmdr | None = None) -> None:
         """Ctor for ExternalFiles class."""
         self.checksum_d: dict[str, str] = {}  # Keys are full paths, values are file checksums.
         # For efc.on_idle.
@@ -546,7 +546,7 @@ class ExternalFilesController:
     # @+node:ekr.20150405110219.1: *3* efc.utilities
 
     # @+node:ekr.20150405200212.1: *4* efc.ask
-    def ask(self, c: Cmdr, path: str, p: Position = None) -> str:
+    def ask(self, c: Cmdr, path: str, p: Position | None = None) -> str:
         """
         Ask user whether to overwrite an @<file> tree.
 
@@ -678,7 +678,7 @@ class ExternalFilesController:
         return f"{s1} {s2}"
 
     # @+node:tbrown.20150904102518.1: *4* efc.set_time
-    def set_time(self, path: str, new_time: float = None) -> None:
+    def set_time(self, path: str, new_time: float | None = None) -> None:
         """
         Implements c.setTimeStamp.
 

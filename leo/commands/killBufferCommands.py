@@ -44,12 +44,12 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         self.c = c
         self.kbiterator = self.iterateKillBuffer()  # An instance of KillBufferIterClass.
         # For interacting with system clipboard.
-        self.last_clipboard: str = None
+        self.last_clipboard: str | None = None
         # Position of the last item returned by iterateKillBuffer.
-        self.lastYankP: Position = None
+        self.lastYankP: Position | None = None
         # The index of the next item to be returned in
         # g.app.globalKillBuffer by iterateKillBuffer.
-        self.reset: int = None
+        self.reset: int | None = None
         self.reloadSettings()
 
     def reloadSettings(self) -> None:
@@ -117,7 +117,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.414: *3* clearKillRing
     @cmd('clear-kill-ring')
-    def clearKillRing(self, event: LeoKeyEvent = None) -> None:
+    def clearKillRing(self, event: LeoKeyEvent | None = None) -> None:
         """Clear the kill ring."""
         g.app.globalKillBuffer = []
 
@@ -178,7 +178,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         frm: int,
         to: int,
         w: QTextMixin,
-        undoType: str = None,
+        undoType: str | None = None,
     ) -> None:
         """
         A helper method for all kill commands except kill-paragraph commands.
@@ -209,7 +209,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         event: LeoKeyEvent,
         frm: int,
         to: int,
-        undoType: str = None,
+        undoType: str | None = None,
     ) -> None:
         """A helper method for kill-paragraph commands."""
         w = event.w if event else None
@@ -349,12 +349,12 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.425: *3* yank & yankPop
     @cmd('yank')
-    def yank(self, event: LeoKeyEvent = None) -> None:
+    def yank(self, event: LeoKeyEvent | None = None) -> None:
         """Insert the next entry of the kill ring."""
         self.yankHelper(event, pop=False)
 
     @cmd('yank-pop')
-    def yankPop(self, event: LeoKeyEvent = None) -> None:
+    def yankPop(self, event: LeoKeyEvent | None = None) -> None:
         """Insert the first entry of the kill ring."""
         self.yankHelper(event, pop=True)
 

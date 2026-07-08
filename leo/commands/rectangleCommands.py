@@ -6,14 +6,14 @@
 # @+node:ekr.20150514050446.1: ** << rectangleCommands imports & annotations >>
 from __future__ import annotations
 from collections.abc import Callable
-from typing import TYPE_CHECKING
+from typing import cast, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass
+from leo.plugins.qt_text import QTextMixin
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
-    from leo.plugins.qt_text import QTextMixin
 # @-<< rectangleCommands imports & annotations >>
 
 
@@ -42,7 +42,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
             't': ('string-rectangle', self.stringRectangle),
             'y': ('yank-rectangle', self.yankRectangle),
         }
-        self.w: QTextMixin = None
+        self.w = cast(QTextMixin, None)
 
     # @+node:ekr.20150514043714.13: *3* RectangleCommandsClass.getRectanglePoints
     def getRectanglePoints(self, w: QTextMixin) -> tuple[int, int, int, int]:

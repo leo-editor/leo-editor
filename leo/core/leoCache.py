@@ -49,7 +49,7 @@ class CommanderWrapper:
         self.db = g.app.db
         self.user_keys: set[str] = set()
 
-    def get(self, key: str, default: Value = None) -> Value:
+    def get(self, key: str, default: Value | None = None) -> Value:
         value = self.db.get(f"{self.c.mFileName}:::{key}")
         return default if value is None else value
 
@@ -255,7 +255,7 @@ class SqlitePickleShare:
         os.makedirs(fn, mode)
 
     # @+node:vitalije.20170716201700.12: *3* _walkfiles & helpers
-    def _walkfiles(self, s: str, pattern: str = None) -> None:
+    def _walkfiles(self, s: str, pattern: str | None = None) -> None:
         """D.walkfiles() -> iterator over files in D, recursively.
 
         The optional argument, pattern, limits the results to files
@@ -265,7 +265,7 @@ class SqlitePickleShare:
         """
 
     # @+node:vitalije.20170716201700.13: *4* _listdir
-    def _listdir(self, s: str, pattern: str = None) -> list[str]:
+    def _listdir(self, s: str, pattern: str | None = None) -> list[str]:
         """D.listdir() -> List of items in this directory.
 
         Use D.files() or D.dirs() instead if you want a listing
@@ -300,7 +300,7 @@ class SqlitePickleShare:
         self.conn.execute('delete from cachevalues;')
 
     # @+node:vitalije.20170716201700.16: *3* get  (SqlitePickleShare)
-    def get(self, key: str, default: Value = None) -> Value:
+    def get(self, key: str, default: Value | None = None) -> Value:
         if not self.has_key(key):  # noqa
             return default
         try:
@@ -328,7 +328,7 @@ class SqlitePickleShare:
     # @+node:vitalije.20170716201700.19: *3* keys (SqlitePickleShare)
     # Called by clear, and during unit testing.
 
-    def keys(self, globpat: str = None) -> Generator:
+    def keys(self, globpat: str | None = None) -> Generator:
         """Return all keys in DB, or all keys matching a glob"""
         args: tuple
         if globpat is None:

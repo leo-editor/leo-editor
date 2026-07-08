@@ -30,7 +30,7 @@ class BaseLeoCompare:
 
     def __init__(
         self,  # Keyword arguments are much convenient and more clear for scripts.
-        commands: Cmdr = None,
+        commands: Cmdr | None = None,
         appendOutput: bool = False,
         ignoreBlankLines: bool = True,
         ignoreFirstLine1: bool = False,
@@ -45,7 +45,7 @@ class BaseLeoCompare:
         printMatches: bool = False,
         printMismatches: bool = True,
         printTrailingMismatches: bool = False,
-        outputFileName: str = None,
+        outputFileName: str | None = None,
     ) -> None:
         # It is more convenient for the LeoComparePanel to set these directly.
         self.c = commands
@@ -68,7 +68,7 @@ class BaseLeoCompare:
         self.fileName1 = None
         self.fileName2 = None
         # Open files...
-        self.outputFile: BufferedWriter = None
+        self.outputFile: BufferedWriter | None = None
 
     # @+node:ekr.20031218072017.3635: *3* compare_directories (entry)
     # We ignore the filename portion of path1 and path2 if it exists.
@@ -493,10 +493,10 @@ class CompareLeoOutlines:
     def __init__(self, c: Cmdr) -> None:
         """Ctor for the LeoOutlineCompare class."""
         self.c = c
-        self.file_node: Position = None
-        self.root: Position = None
-        self.path1: str = None
-        self.path2: str = None
+        self.file_node: Position | None = None
+        self.root: Position | None = None
+        self.path1: str | None = None
+        self.path2: str | None = None
 
     # @+others
     # @+node:ekr.20180211170333.2: *3* loc.diff_list_of_files (entry)

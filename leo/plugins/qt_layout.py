@@ -486,7 +486,7 @@ class LayoutCacheWidget(QWidget):
         super().__init__(parent)
         self.c = c
         self.setObjectName('leo-layout-cache')
-        self.layout_dict: Dict = None
+        self.layout_dict: Dict | None = None
 
         # maps splitter objectNames to their splitter object.
         self.created_splitter_dict: Dict[str, QWidget] = {}
@@ -606,7 +606,7 @@ class LayoutCacheWidget(QWidget):
     # @+node:tom.20240923194438.4: *4* LCW.find_widget_in_children
     def find_widget_in_children(self, name: str) -> QWidget | None:
         """Return a child widget with the given objectName."""
-        w: QWidget = None
+        w: QWidget | None = None
         for kid in self.children():
             if kid.objectName() == name:
                 w = kid  # type: ignore [assignment]
@@ -657,7 +657,7 @@ class LayoutCacheWidget(QWidget):
                 return
 
     # @+node:tom.20240923194438.6: *4* LCW.restoreFromLayout
-    def restoreFromLayout(self, layout: Dict = None) -> None:
+    def restoreFromLayout(self, layout: Dict | None = None) -> None:
         self.layout_dict = layout
         if layout is None:
             layout = FALLBACK_LAYOUT

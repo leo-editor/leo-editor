@@ -99,9 +99,9 @@ class BackgroundProcessManager:
     # @+node:ekr.20180522085807.1: *3* bpm.__init__
     def __init__(self) -> None:
         """Ctor for the base BackgroundProcessManager class."""
-        self.data: ProcessData = None  # a ProcessData instance.
+        self.data: ProcessData | None = None  # a ProcessData instance.
         self.process_queue: list = []  # List of g.Bunches.
-        self.pid: Popen = None  # The process id of the running process.
+        self.pid: Popen | None = None  # The process id of the running process.
         self.lock = thread.allocate_lock()
         self.process_return_data: list[str] = None
         # #2528: A timer that runs independently of idle time.
@@ -141,7 +141,7 @@ class BackgroundProcessManager:
         self.pid = None
 
     # @+node:ekr.20161026193609.3: *3* bpm.kill
-    def kill(self, kind: str = None) -> None:
+    def kill(self, kind: str | None = None) -> None:
         """Kill the presently running process, if any."""
         if kind is None:
             kind = 'all'
@@ -240,7 +240,7 @@ class BackgroundProcessManager:
             self.timer.stop()
 
     # @+node:ekr.20161026193609.5: *3* bpm.start_process (creates callback)
-    def start_process(self, c: Cmdr, command: str, kind: str, fn: str = None) -> None:
+    def start_process(self, c: Cmdr, command: str, kind: str, fn: str | None = None) -> None:
         """
         Start or queue a process described by command and fn.
         """

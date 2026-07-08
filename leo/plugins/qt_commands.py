@@ -133,7 +133,7 @@ def showColorNames(event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20170324142416.1: ** qt: show-color-wheel
 @g.command('show-color-wheel')
-def showColorWheel(self: Any, event: LeoKeyEvent = None) -> None:
+def showColorWheel(self: Any, event: LeoKeyEvent | None = None) -> None:
     """Show a Qt color dialog."""
     c, p = self.c, self.c.p
     picker = QtWidgets.QColorDialog()
@@ -162,7 +162,7 @@ def showColorWheel(self: Any, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20170324143944.3: ** qt: show-fonts
 @g.command('show-fonts')
-def showFonts(self: Any, event: LeoKeyEvent = None) -> None:
+def showFonts(self: Any, event: LeoKeyEvent | None = None) -> None:
     """Open a tab in the log pane showing a font picker."""
     c, p = self.c, self.c.p
     picker = QtWidgets.QFontDialog()
@@ -205,7 +205,7 @@ def showFonts(self: Any, event: LeoKeyEvent = None) -> None:
 
 # @+node:ekr.20140918124632.17893: ** qt: show-style-sheet
 @g.command('show-style-sheet')
-def print_style_sheet(event: LeoKeyEvent = None) -> None:
+def print_style_sheet(event: LeoKeyEvent | None = None) -> None:
     """show-style-sheet command."""
     c: Cmdr = event.get('c')
     if c:

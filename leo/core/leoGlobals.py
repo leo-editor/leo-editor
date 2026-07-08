@@ -7340,7 +7340,7 @@ def os_startfile(fname: str) -> None:
         except ImportError:
             os.system(f"open {quoted_fname}")
     else:
-        ree: io.FileIO = None
+        ree: io.FileIO | None = None
         try:
             wre = tempfile.NamedTemporaryFile()
             ree = io.open(wre.name, 'rb', buffering=0)
