@@ -452,12 +452,14 @@ class FreeLayoutController:
 # @+node:ekr.20160416065221.1: ** commands: free_layout.py
 # @+node:tbrown.20140524112944.32658: *3* @g.command free-layout-context-menu
 @g.command('free-layout-context-menu')
-def free_layout_context_menu(event: LeoKeyEvent) -> None:
+def free_layout_context_menu(event: LeoKeyEvent | None = None) -> None:
     """
     Open free layout's context menu, using the first divider of the top
     splitter for context.
     """
-    c = event.get('c')
+    c = event.get('c') if event else None
+    if not c:
+        return
     splitter = c.free_layout.get_top_splitter()
     handle = splitter.handle(1)
     handle.splitter_menu(handle.rect().topLeft())
@@ -465,19 +467,20 @@ def free_layout_context_menu(event: LeoKeyEvent) -> None:
 
 # @+node:tbrown.20130403081644.25265: *3* @g.command free-layout-restore
 @g.command('free-layout-restore')
-def free_layout_restore(event: LeoKeyEvent) -> None:
+def free_layout_restore(event: LeoKeyEvent | None = None) -> None:
     """
     Restore layout outline had when it was loaded.
     """
-    c = event.get('c')
-    c.free_layout.loadLayouts('reload', {'c': c}, reloading=True)
+    c = event.get('c') if event else None
+    if c:
+        c.free_layout.loadLayouts('reload', {'c': c}, reloading=True)
 
 
 # @+node:tbrown.20131111194858.29876: *3* @g.command free-layout-load
 @g.command('free-layout-load')
-def free_layout_load(event: LeoKeyEvent) -> None:
+def free_layout_load(event: LeoKeyEvent | None = None) -> None:
     """Load layout from menu."""
-    c = event.get('c')
+    c = event.get('c') if event else None
     if not c:
         return
     d = g.app.db.get('ns_layouts', {})
@@ -499,10 +502,11 @@ def free_layout_load(event: LeoKeyEvent) -> None:
 
 # @+node:tbrown.20140522153032.32658: *3* @g.command free-layout-zoom
 @g.command('free-layout-zoom')
-def free_layout_zoom(event: LeoKeyEvent) -> None:
+def free_layout_zoom(event: LeoKeyEvent | None = None) -> None:
     """(un)zoom the current pane."""
-    c = event.get('c')
-    c.free_layout.get_top_splitter().zoom_toggle()
+    c = event.get('c') if event else None
+    if c:
+        c.free_layout.get_top_splitter().zoom_toggle()
 
 
 # @+node:ekr.20160327060009.1: *3* free_layout:register_provider

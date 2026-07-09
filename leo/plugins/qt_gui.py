@@ -326,15 +326,13 @@ class LeoQtGui(leoGui.LeoGui):
 
         # @+<< define the callbacks for b >>
         # @+node:ekr.20110605121601.18530: *4* << define the callbacks for b >>
-        def deleteButtonCallback(
-            event: LeoKeyEvent | None = None, b: QPushButton = b, c: Cmdr = c
-        ) -> None:
+        def deleteButtonCallback(event: LeoKeyEvent, b: QPushButton = b, c: Cmdr = c) -> None:
             if b:
                 b.pack_forget()
             c.bodyWantsFocus()
 
         def executeScriptCallback(
-            event: LeoKeyEvent | None = None,
+            event: LeoKeyEvent,
             b: QPushButton = b,
             c: Cmdr = c,
             buttonText: str = buttonText,

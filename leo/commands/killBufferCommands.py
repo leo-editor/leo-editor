@@ -69,7 +69,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.412: *3* backwardKillSentence
     @cmd('backward-kill-sentence')
-    def backwardKillSentence(self, event: LeoKeyEvent) -> None:
+    def backwardKillSentence(self, event: LeoKeyEvent | None = None) -> None:
         """Kill the previous sentence."""
         w = event.w if event else None
         if not g.isTextWrapper(w):
@@ -88,7 +88,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.413: *3* backwardKillWord & killWord
     @cmd('backward-kill-word')
-    def backwardKillWord(self, event: LeoKeyEvent) -> None:
+    def backwardKillWord(self, event: LeoKeyEvent | None = None) -> None:
         """Kill the previous word."""
         c = self.c
         w = event.w if event else None
@@ -98,14 +98,14 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             self.killWordHelper(event)
 
     @cmd('kill-word')
-    def killWord(self, event: LeoKeyEvent) -> None:
+    def killWord(self, event: LeoKeyEvent | None = None) -> None:
         """Kill the word containing the cursor."""
         w = event.w if event else None
         if g.isTextWrapper(w):
             self.beginCommand(w, undoType='kill-word')
             self.killWordHelper(event)
 
-    def killWordHelper(self, event: LeoKeyEvent) -> None:
+    def killWordHelper(self, event: LeoKeyEvent | None = None) -> None:
         c = self.c
         w = event.w if event else None
         if g.isTextWrapper(w):
@@ -227,7 +227,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.420: *3* ec.killToEndOfLine
     @cmd('kill-to-end-of-line')
-    def killToEndOfLine(self, event: LeoKeyEvent) -> None:
+    def killToEndOfLine(self, event: LeoKeyEvent | None = None) -> None:
         """Kill from the cursor to end of the line."""
         w = event.w if event else None
         if not g.isTextWrapper(w):
@@ -251,7 +251,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.421: *3* ec.killLine
     @cmd('kill-line')
-    def killLine(self, event: LeoKeyEvent) -> None:
+    def killLine(self, event: LeoKeyEvent | None = None) -> None:
         """Kill the line containing the cursor."""
         w = event.w if event else None
         if not g.isTextWrapper(w):
@@ -272,7 +272,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.422: *3* killRegion & killRegionSave
     @cmd('kill-region')
-    def killRegion(self, event: LeoKeyEvent) -> None:
+    def killRegion(self, event: LeoKeyEvent | None = None) -> None:
         """Kill the text selection."""
         c = self.c
         w = event.w if event else c.frame.body.wrapper
@@ -289,7 +289,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         g.app.gui.replaceClipboardWith(s)
 
     @cmd('kill-region-save')
-    def killRegionSave(self, event: LeoKeyEvent) -> None:
+    def killRegionSave(self, event: LeoKeyEvent | None = None) -> None:
         """Add the selected text to the kill ring, but do not delete it."""
         c = self.c
         w = event.w if event else c.frame.body.wrapper
@@ -304,7 +304,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.423: *3* ec.killSentence
     @cmd('kill-sentence')
-    def killSentence(self, event: LeoKeyEvent) -> None:
+    def killSentence(self, event: LeoKeyEvent | None = None) -> None:
         """Kill the sentence containing the cursor."""
         w = event.w if event else None
         if not g.isTextWrapper(w):
@@ -323,7 +323,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.424: *3* killWs
     @cmd('kill-ws')
-    def killWs(self, event: LeoKeyEvent, undoType: str = 'kill-ws') -> None:
+    def killWs(self, event: LeoKeyEvent | None = None, undoType: str = 'kill-ws') -> None:
         """Kill whitespace."""
         c = self.c
         w = event.w if event else c.frame.body.wrapper
@@ -403,7 +403,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.427: *3* zapToCharacter
     @cmd('zap-to-character')
-    def zapToCharacter(self, event: LeoKeyEvent) -> None:
+    def zapToCharacter(self, event: LeoKeyEvent | None = None) -> None:
         """Kill characters from the insertion point to a given character."""
         c, k = self.c, self.c.k
         w = event.w if event else c.frame.body.wrapper

@@ -572,10 +572,9 @@ class LeoMenu:
 
     # @+node:ekr.20031218072017.4118: *6* LeoMenu.defineOpenWithMenuCallback
     def defineOpenWithMenuCallback(self, d: dict[str, Any] = None) -> Callable:
-        # The first parameter must be a LeoKeyEvent, and it must default to None.
 
         def openWithMenuCallback(
-            event: LeoKeyEvent = None,
+            event: LeoKeyEvent | None = None,
             self: LeoMenu = self,
             d: dict[str, Any] = d,
         ) -> Any:

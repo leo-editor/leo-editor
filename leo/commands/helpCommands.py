@@ -338,7 +338,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.381: *3* helpForCommand & helpers
     @cmd('help-for-command')
-    def helpForCommand(self, event: LeoKeyEvent) -> None:
+    def helpForCommand(self, event: LeoKeyEvent | None = None) -> None:
         """Prompts for a command name and prints the help message for that command."""
         c, k = self.c, self.c.k
         s = '''\
@@ -818,7 +818,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150628161341.1: *3* helpForKeystroke
     @cmd('help-for-keystroke')
-    def helpForKeystroke(self, event: LeoKeyEvent) -> None:
+    def helpForKeystroke(self, event: LeoKeyEvent | None = None) -> None:
         """Prompts for any key and prints the bindings for that key."""
         c, k = self.c, self.c.k
         state_name = 'help-for-keystroke'
@@ -1327,7 +1327,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
         k.setLabelBlue('Python help: ')
         k.get1Arg(event, handler=self.pythonHelp1)
 
-    def pythonHelp1(self, event: LeoKeyEvent) -> str:
+    def pythonHelp1(self, event: LeoKeyEvent | None = None) -> str:
         c, k = self.c, self.c.k
         k.clearState()
         k.resetLabel()

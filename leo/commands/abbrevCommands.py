@@ -681,7 +681,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     # @+node:ekr.20150514043850.22: *5* abbrev.dynamicExpandHelper
     def dynamicExpandHelper(
         self,
-        event: LeoKeyEvent,
+        event: LeoKeyEvent | None = None,
         prefix: str | None = None,
         aList: list[str] = None,
         w: QTextMixin | None = None,
@@ -699,7 +699,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         k.setLabelBlue(prefix2 + prefix, protect=False)
         k.get1Arg(event, handler=self.dynamicExpandHelper1, tabList=aList, prefix=prefix)
 
-    def dynamicExpandHelper1(self, event: LeoKeyEvent) -> None:
+    def dynamicExpandHelper1(self, event: LeoKeyEvent | None = None) -> None:
         """Finisher for dabbrev-expands."""
         c, k = self.c, self.c.k
         p = c.p
@@ -725,7 +725,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514043850.28: *4* abbrev.killAllAbbrevs
     @cmd('abbrev-kill-all')
-    def killAllAbbrevs(self, event: LeoKeyEvent) -> None:
+    def killAllAbbrevs(self, event: LeoKeyEvent | None = None) -> None:
         """Delete all abbreviations."""
         self.abbrevs = {}
 

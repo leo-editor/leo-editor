@@ -401,7 +401,7 @@ class Undoer:
         self,
         p: Position,
         undoType: str,
-        reportFlag: bool = False,  # unused: retained for compatibility with existing scripts.
+        reportFlag: bool = False,
     ) -> None:
         """
         Create an undo node for general tree operations using d created by

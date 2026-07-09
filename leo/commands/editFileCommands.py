@@ -206,7 +206,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     # @+node:ekr.20170806094319.11: *3* efc.clean-at-clean commands
     # @+node:ekr.20170806094319.5: *4* efc.cleanAtCleanFiles
     @cmd('clean-at-clean-files')
-    def cleanAtCleanFiles(self, event: LeoKeyEvent) -> None:
+    def cleanAtCleanFiles(self, event: LeoKeyEvent | None = None) -> None:
         """Adjust whitespace in all @clean files."""
         c = self.c
         undoType = 'clean-at-clean-files'
@@ -244,7 +244,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20170806094319.10: *4* efc.cleanAtCleanTree
     @cmd('clean-at-clean-tree')
-    def cleanAtCleanTree(self, event: LeoKeyEvent) -> None:
+    def cleanAtCleanTree(self, event: LeoKeyEvent | None = None) -> None:
         """
         Clean whitespace in the nearest @clean tree.
 
@@ -270,7 +270,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     # @+node:ekr.20170806094317.6: *3* efc.compareAnyTwoFiles & helpers
     @cmd('file-compare-two-leo-files')
     @cmd('compare-two-leo-files')
-    def compareAnyTwoFiles(self, event: LeoKeyEvent) -> None:
+    def compareAnyTwoFiles(self, event: LeoKeyEvent | None = None) -> None:
         """Compare two files."""
         c = c1 = self.c
         w = c.frame.body.wrapper
@@ -489,14 +489,14 @@ class EditFileCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20170806094318.1: *3* efc.deleteFile
     @cmd('file-delete')
-    def deleteFile(self, event: LeoKeyEvent) -> None:
+    def deleteFile(self, event: LeoKeyEvent | None = None) -> None:
         """Prompt for the name of a file and delete it."""
         k = self.c.k
         k.setLabelBlue('Delete File: ')
         k.extendLabel(os.getcwd() + os.sep)
         k.get1Arg(event, handler=self.deleteFile1)
 
-    def deleteFile1(self, event: LeoKeyEvent) -> None:
+    def deleteFile1(self, event: LeoKeyEvent | None = None) -> None:
         k = self.c.k
         k.keyboardQuit()
         k.clearState()
@@ -574,7 +574,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20170806094318.7: *3* efc.insertFile
     @cmd('file-insert')
-    def insertFile(self, event: LeoKeyEvent) -> None:
+    def insertFile(self, event: LeoKeyEvent | None = None) -> None:
         """
         Prompt for the name of a file.
         Insert the file's contents in the body at the insertion point.
@@ -595,14 +595,14 @@ class EditFileCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20170806094318.9: *3* efc.makeDirectory
     @cmd('directory-make')
-    def makeDirectory(self, event: LeoKeyEvent) -> None:
+    def makeDirectory(self, event: LeoKeyEvent | None = None) -> None:
         """Prompt for the name of a directory and create it."""
         k = self.c.k
         k.setLabelBlue('Make Directory: ')
         k.extendLabel(os.getcwd() + os.sep)
         k.get1Arg(event, handler=self.makeDirectory1)
 
-    def makeDirectory1(self, event: LeoKeyEvent) -> None:
+    def makeDirectory1(self, event: LeoKeyEvent | None = None) -> None:
         k = self.c.k
         k.keyboardQuit()
         k.clearState()
@@ -614,14 +614,14 @@ class EditFileCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20170806094318.14: *3* efc.removeDirectory
     @cmd('directory-remove')
-    def removeDirectory(self, event: LeoKeyEvent) -> None:
+    def removeDirectory(self, event: LeoKeyEvent | None = None) -> None:
         """Prompt for the name of a directory and delete it."""
         k = self.c.k
         k.setLabelBlue('Remove Directory: ')
         k.extendLabel(os.getcwd() + os.sep)
         k.get1Arg(event, handler=self.removeDirectory1)
 
-    def removeDirectory1(self, event: LeoKeyEvent) -> None:
+    def removeDirectory1(self, event: LeoKeyEvent | None = None) -> None:
         k = self.c.k
         k.keyboardQuit()
         k.clearState()
@@ -634,7 +634,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     # @+node:ekr.20170806094318.15: *3* efc.saveFile (save-file-by-name)
     @cmd('file-save-by-name')
     @cmd('save-file-by-name')
-    def saveFile(self, event: LeoKeyEvent) -> None:
+    def saveFile(self, event: LeoKeyEvent | None = None) -> None:
         """Prompt for the name of a file and put the body text of the selected node into it.."""
         c = self.c
         w = event.w if event else None
@@ -658,7 +658,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20170806094319.15: *3* efc.toggleAtAutoAtEdit & helpers
     @cmd('toggle-at-auto-at-edit')
-    def toggleAtAutoAtEdit(self, event: LeoKeyEvent) -> None:
+    def toggleAtAutoAtEdit(self, event: LeoKeyEvent | None = None) -> None:
         """Toggle between @auto and @edit, preserving insert point, etc."""
         p = self.c.p
         if p.isAtEditNode():

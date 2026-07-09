@@ -1079,7 +1079,7 @@ class LeoTree:
         return self.edit_text_dict.get(v, [])
 
     # @+node:ekr.20040803072955.88: *4* LeoTree.onHeadlineKey
-    def onHeadlineKey(self, event: LeoKeyEvent) -> None:
+    def onHeadlineKey(self, event: LeoKeyEvent | None = None) -> None:
         """Handle a key event in a headline."""
         if not event:
             return

@@ -86,7 +86,7 @@ class ChapterController:
             return
 
         def select_chapter_callback(
-            event: LeoKeyEvent,
+            event: LeoKeyEvent | None = None,
             cc: ChapterController = cc,
             name: str = chapterName,
         ) -> None:
@@ -130,7 +130,7 @@ class ChapterController:
         k.setLabelBlue('Select chapter: ')
         k.get1Arg(event, handler=self.selectChapter1, tabList=names)
 
-    def selectChapter1(self, event: LeoKeyEvent) -> None:
+    def selectChapter1(self, event: LeoKeyEvent | None = None) -> None:
         cc, k = self, self.c.k
         k.clearState()
         k.resetLabel()

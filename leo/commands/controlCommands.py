@@ -91,13 +91,13 @@ class ControlCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.94: *3* shellCommand (improved)
     @cmd('shell-command')
-    def shellCommand(self, event: LeoKeyEvent) -> None:
+    def shellCommand(self, event: LeoKeyEvent | None = None) -> None:
         """Execute a shell command."""
         k = self.c.k
         k.setLabelBlue('shell-command: ')
         k.get1Arg(event, self.shellCommand1)
 
-    def shellCommand1(self, event: LeoKeyEvent) -> None:
+    def shellCommand1(self, event: LeoKeyEvent | None = None) -> None:
         k = self.c.k
         command = g.toUnicode(k.arg)
         if command:
@@ -105,7 +105,7 @@ class ControlCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.95: *3* shellCommandOnRegion
     @cmd('shell-command-on-region')
-    def shellCommandOnRegion(self, event: LeoKeyEvent) -> None:
+    def shellCommandOnRegion(self, event: LeoKeyEvent | None = None) -> None:
         """Execute a command taken from the selected text in a separate process."""
         c = self.c
         k = c.k
@@ -120,14 +120,14 @@ class ControlCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.96: *3* actOnNode
     @cmd('act-on-node')
-    def actOnNode(self, event: LeoKeyEvent) -> None:
+    def actOnNode(self, event: LeoKeyEvent | None = None) -> None:
         """
         Executes node-specific action, typically defined in a plugins as
         follows::
 
             import leo.core.leoPlugins
 
-            def act_print_upcase(c: Cmdr, p: Position, event: LeoKeyEvent) -> None:
+            def act_print_upcase(c: Cmdr, p: Position, event: LeoKeyEvent | None = None) -> None:
                 if not p.h.startswith('@up'):
                     raise leo.core.leoPlugins.TryNext
                 p.h = p.h.upper()
@@ -140,7 +140,7 @@ class ControlCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.97: *3* shutdown, saveBuffersKillEmacs & setShutdownHook
     @cmd('save-buffers-kill-leo')
-    def shutdown(self, event: LeoKeyEvent) -> None:
+    def shutdown(self, event: LeoKeyEvent | None = None) -> None:
         """Quit Leo, prompting to save any unsaved files first."""
         g.app.onQuit(event)  # PR #4773: Bug fix.
 
@@ -148,12 +148,12 @@ class ControlCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.98: *3* suspend & iconifyFrame
     @cmd('suspend')
-    def suspend(self, event: LeoKeyEvent) -> None:
+    def suspend(self, event: LeoKeyEvent | None = None) -> None:
         """Minimize the present Leo window."""
         self.c.frame.top.iconify()
 
     @cmd('iconify-frame')
-    def iconifyFrame(self, event: LeoKeyEvent) -> None:
+    def iconifyFrame(self, event: LeoKeyEvent | None = None) -> None:
         """Minimize the present Leo window."""
         self.suspend(event)
 

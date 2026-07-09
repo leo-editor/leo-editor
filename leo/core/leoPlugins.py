@@ -208,13 +208,13 @@ class BaseLeoPlugin:
                 # define a command using setMenuItem
                 self.setMenuItem('Cmds', 'Ciao baby', self.ciao)
 
-            def hello(self, event: LeoKeyEvent) -> None:
+            def hello(self, event: LeoKeyEvent | None = None) -> None:
                 g.pr(f"hello from node {self.c.p.h}")
 
-            def hola(self, event: LeoKeyEvent) -> None:
+            def hola(self, event: LeoKeyEvent | None = None) -> None:
                 g.pr(f"hola from node {self.c.p.h}")
 
-            def ciao(self, event: LeoKeyEvent) -> None:
+            def ciao(self, event: LeoKeyEvent | None = None) -> None:
                 g.pr(f"ciao baby {self.c.p.h}")
 
         leoPlugins.registerHandler("after-create-leo-frame", Hello)

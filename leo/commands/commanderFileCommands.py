@@ -163,7 +163,11 @@ def restartLeo(self: Self, event: LeoKeyEvent | None = None) -> None:
 # @+node:ekr.20031218072017.2820: ** c_file.top level
 # @+node:ekr.20031218072017.2833: *3* c_file.close
 @g.commander_command('close-window')
-def close(self: Self, event: LeoKeyEvent | None = None, new_c: Cmdr | None = None) -> None:
+def close(
+    self: Self,
+    event: LeoKeyEvent | None = None,
+    new_c: Cmdr | None = None,
+) -> None:
     """Close the Leo window, prompting to save it if it has been changed."""
     g.app.closeLeoWindow(self.frame, new_c=new_c)
 
@@ -380,10 +384,9 @@ def open_outline(self: Self, event: LeoKeyEvent | None = None) -> None:
 @g.commander_command('refresh-from-disk')
 def refreshFromDisk(
     self: Self,
-    p: Position | None = None,  # For compatibility with existing scripts.
-    *,
-    event: LeoKeyEvent | None = None,  # Required for all commands.
-    silent: bool = True,  # No longer used.
+    p: Position | None = None,
+    event: LeoKeyEvent | None = None,
+    silent: bool = True,  # Not used.
 ) -> None:
     """
     Refresh an @<file> node from disk.
@@ -446,7 +449,11 @@ def pwd_command(self: Self, event: LeoKeyEvent | None = None) -> None:
 @g.commander_command('save')
 @g.commander_command('file-save')
 @g.commander_command('save-file')
-def save(self: Self, event: LeoKeyEvent | None = None, fileName: str | None = None) -> None:
+def save(
+    self: Self,
+    event: LeoKeyEvent | None = None,
+    fileName: str | None = None,
+) -> None:
     """
     Save a Leo outline to a file, using the existing file name unless
     the fileName kwarg is given.
@@ -576,7 +583,10 @@ def saveAs(self: Self, event: LeoKeyEvent | None = None, fileName: str | None = 
 @g.commander_command('file-save-to')
 @g.commander_command('save-file-to')
 def saveTo(
-    self: Self, event: LeoKeyEvent | None = None, fileName: str | None = None, silent: bool = False
+    self: Self,
+    event: LeoKeyEvent | None = None,
+    fileName: str | None = None,
+    silent: bool = False,
 ) -> None:
     """
     Save a copy of the Leo outline to a file, prompting for a new file name.
@@ -1109,9 +1119,9 @@ def writeEditedRecentFiles(self: Self, event: LeoKeyEvent | None = None) -> None
 # @+node:ekr.20180312043352.1: ** Themes
 # @+node:ekr.20180312043352.2: *3* c_file.open_theme_file
 @g.commander_command('open-theme-file')
-def open_theme_file(self: Self, event: LeoKeyEvent) -> None:
+def open_theme_file(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Open a theme file in a new session and apply the theme."""
-    c = event and event.get('c')
+    c = event.get('c') if event else None
     if not c:
         return
     # Get the file name.

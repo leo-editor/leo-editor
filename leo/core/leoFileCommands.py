@@ -52,9 +52,9 @@ def cmd(name: str) -> Callable:
 # @+node:ekr.20210316035506.1: **  commands (leoFileCommands.py)
 # @+node:ekr.20180708114847.1: *3* dump-clone-parents
 @g.command('dump-clone-parents')
-def dump_clone_parents(event: LeoKeyEvent) -> None:
+def dump_clone_parents(event: LeoKeyEvent | None = None) -> None:
     """Print the parent vnodes of all cloned vnodes."""
-    c = event.get('c')
+    c = event.get('c') if event else None
     if not c:
         return
     print('dump-clone-parents...')
@@ -68,9 +68,9 @@ def dump_clone_parents(event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20210309114903.1: *3* dump-gnx-dict
 @g.command('dump-gnx-dict')
-def dump_gnx_dict(event: LeoKeyEvent) -> None:
+def dump_gnx_dict(event: LeoKeyEvent | None = None) -> None:
     """Dump c.fileCommands.gnxDict."""
-    c = event.get('c')
+    c = event.get('c') if event else None
     if not c:
         return
     d = c.fileCommands.gnxDict

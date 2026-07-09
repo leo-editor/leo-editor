@@ -420,7 +420,7 @@ class AutoCompleterClass:
         return result
 
     # @+node:ekr.20061031131434.11: *4* ac.auto_completer_state_handler
-    def auto_completer_state_handler(self, event: LeoKeyEvent) -> str | None:
+    def auto_completer_state_handler(self, event: LeoKeyEvent | None = None) -> str | None:
         """Handle all keys while autocompleting."""
         c, k, tag = self.c, self.k, 'auto-complete'
         state = k.getState(tag)
@@ -1040,7 +1040,7 @@ class AutoCompleterClass:
         return tabList
 
     # @+node:ekr.20061031131434.46: *4* ac.start
-    def start(self, event: LeoKeyEvent) -> None:
+    def start(self, event: LeoKeyEvent | None = None) -> None:
         """Init the completer and start the state handler."""
         # We don't need to clear this now that we don't use ContextSniffer.
         c = self.c
@@ -1497,7 +1497,7 @@ class GetArg:
     # @+node:ekr.20140816165728.18941: *3* ga.get_arg (entry) & helpers
     def get_arg(
         self,
-        event: LeoKeyEvent,
+        event: LeoKeyEvent | None = None,
         returnKind: str = None,
         returnState: int = None,
         handler: Callable = None,
@@ -2504,7 +2504,7 @@ class KeyHandlerClass:
     @cmd('full-command')
     def fullCommand(
         self,
-        event: LeoKeyEvent,
+        event: LeoKeyEvent | None = None,
         specialStroke: Stroke = None,
         specialFunc: Callable = None,
         help: bool = False,
@@ -2578,7 +2578,7 @@ class KeyHandlerClass:
             self.keyboardQuit()
 
     # @+node:ekr.20061031131434.112: *5* k.callAltXFunction
-    def callAltXFunction(self, event: LeoKeyEvent) -> bool:
+    def callAltXFunction(self, event: LeoKeyEvent | None = None) -> bool:
         """Call the function whose name is in the minibuffer."""
         c, k = self.c, self
         k.mb_tabList = []
@@ -2967,7 +2967,7 @@ class KeyHandlerClass:
 
     # @+node:ekr.20061031131434.122: *4* 'repeat-complex-command'
     @cmd('repeat-complex-command')
-    def repeatComplexCommand(self, event: LeoKeyEvent) -> None:
+    def repeatComplexCommand(self, event: LeoKeyEvent | None = None) -> None:
         """Repeat the previously executed minibuffer command."""
         k = self
         # #2286: Always call k.fullCommand.
@@ -2981,7 +2981,7 @@ class KeyHandlerClass:
 
     # @+node:ekr.20061031131434.123: *4* 'set-command-state'
     @cmd('set-command-state')
-    def setCommandState(self, event: LeoKeyEvent) -> None:
+    def setCommandState(self, event: LeoKeyEvent | None = None) -> None:
         """Enter the 'command' editing state."""
         k = self
         k.setInputState('command', set_border=True)
@@ -2991,7 +2991,7 @@ class KeyHandlerClass:
 
     # @+node:ekr.20241211005855.1: *4* 'set-insert-state'
     @cmd('set-insert-state')
-    def setInsertState(self, event: LeoKeyEvent) -> None:
+    def setInsertState(self, event: LeoKeyEvent | None = None) -> None:
         """Enter the 'insert' editing state."""
         k = self
         k.setInputState('insert', set_border=True)
@@ -3001,7 +3001,7 @@ class KeyHandlerClass:
 
     # @+node:ekr.20241211005856.1: *4* 'set-overwrite-state'
     @cmd('set-overwrite-state')
-    def setOverwriteState(self, event: LeoKeyEvent) -> None:
+    def setOverwriteState(self, event: LeoKeyEvent | None = None) -> None:
         """Enter the 'overwrite' editing state."""
         k = self
         k.setInputState('overwrite', set_border=True)
@@ -3067,12 +3067,12 @@ class KeyHandlerClass:
         Example 1: get one argument from the user:
 
             @g.command('my-command')
-            def myCommand(self, event: LeoKeyEvent) -> None:
+            def myCommand(self, event: LeoKeyEvent | None = None) -> None:
                 k = self.c.k
                 k.setLabelBlue('prompt: ')
                 k.get1Arg(event, handler=self.myCommand1)
 
-            def myCommand1(self, event: LeoKeyEvent) -> None:
+            def myCommand1(self, event: LeoKeyEvent | None = None) -> None:
                 k = self.c.k
                 # k.arg contains the argument.
                 # Finish the command.
@@ -3085,18 +3085,18 @@ class KeyHandlerClass:
         Example 2: get two arguments from the user:
 
             @g.command('my-command')
-            def myCommand(self, event: LeoKeyEvent) -> None:
+            def myCommand(self, event: LeoKeyEvent | None = None) -> None:
                 k = self.c.k
                 k.setLabelBlue('first prompt: ')
                 k.get1Arg(event, handler=self.myCommand1)
 
-            def myCommand1(self, event: LeoKeyEvent) -> None:
+            def myCommand1(self, event: LeoKeyEvent | None = None) -> None:
                 k = self.c.k
                 self.arg1 = k.arg
                 k.extendLabel(' second prompt: ', select=False, protect=True)
                 k.getNextArg(handler=self.myCommand2)
 
-            def myCommand2(self, event: LeoKeyEvent) -> None:
+            def myCommand2(self, event: LeoKeyEvent | None = None) -> None:
                 k = self.c.k
                 # k.arg contains second argument.
                 # Finish the command, using self.arg1 and k.arg.
@@ -3153,7 +3153,7 @@ class KeyHandlerClass:
 
     def getArg(
         self,
-        event: LeoKeyEvent,
+        event: LeoKeyEvent | None = None,
         returnKind: str = None,
         returnState: int = None,
         handler: Callable = None,
@@ -3392,7 +3392,7 @@ class KeyHandlerClass:
     # @+node:ekr.20140813052702.18203: *4* k.getFileName
     def getFileName(
         self,
-        event: LeoKeyEvent,
+        event: LeoKeyEvent | None = None,
         callback: Callable = None,
         filterExt: list[str] = None,
         prompt: str = 'Enter File Name: ',
@@ -3404,7 +3404,7 @@ class KeyHandlerClass:
 
     # @+node:ekr.20061031131434.145: *3* k.Master event handlers
     # @+node:ekr.20061031131434.146: *4* k.masterKeyHandler & helpers
-    def masterKeyHandler(self, event: LeoKeyEvent) -> None:
+    def masterKeyHandler(self, event: LeoKeyEvent | None = None) -> None:
         """The master key handler for almost all key bindings."""
         trace = 'keys' in g.app.debug
         c, k = self.c, self
@@ -3442,7 +3442,7 @@ class KeyHandlerClass:
 
     # @+node:ekr.20200524151214.1: *5* Setup...
     # @+node:ekr.20180418040158.1: *6* k.checkKeyEvent
-    def checkKeyEvent(self, event: LeoKeyEvent) -> None:
+    def checkKeyEvent(self, event: LeoKeyEvent | None = None) -> None:
         """Perform sanity checks on the incoming event."""
         # These assert's should be safe, because eventFilter
         # calls k.masterKeyHandler inside a try/except block.
@@ -3458,7 +3458,7 @@ class KeyHandlerClass:
         assert event.stroke.s not in g.app.gui.ignoreChars, repr(event.stroke.s)
 
     # @+node:ekr.20180418031417.1: *6* k.traceVars
-    def traceVars(self, event: LeoKeyEvent) -> None:
+    def traceVars(self, event: LeoKeyEvent | None = None) -> None:
         trace = False and not g.unitTesting
         if not trace:
             return
@@ -3469,7 +3469,7 @@ class KeyHandlerClass:
         g.trace(f"stroke: {stroke!r}, char: {char!r}, state: {state}, state2: {k.unboundKeyAction}")
 
     # @+node:ekr.20180418031118.1: *5* 1. k.isSpecialKey
-    def isSpecialKey(self, event: LeoKeyEvent) -> bool:
+    def isSpecialKey(self, event: LeoKeyEvent | None = None) -> bool:
         """Return True if char is a special key."""
         if not event:
             # An empty event is not an error.
@@ -3481,7 +3481,7 @@ class KeyHandlerClass:
         return event.char in g.app.gui.ignoreChars
 
     # @+node:ekr.20180418024449.1: *5* 2. k.doKeyboardQuit
-    def doKeyboardQuit(self, event: LeoKeyEvent) -> bool:
+    def doKeyboardQuit(self, event: LeoKeyEvent | None = None) -> bool:
         """
         A helper for k.masterKeyHandler: Handle keyboard-quit logic.
 
@@ -3497,7 +3497,7 @@ class KeyHandlerClass:
         return False
 
     # @+node:ekr.20180418023827.1: *5* 3. k.doDemo
-    def doDemo(self, event: LeoKeyEvent) -> bool:
+    def doDemo(self, event: LeoKeyEvent | None = None) -> bool:
         """
         Support the demo.py plugin.
         Return True if k.masterKeyHandler should return.
@@ -3522,7 +3522,7 @@ class KeyHandlerClass:
         return False
 
     # @+node:ekr.20091230094319.6244: *5* 4. k.doMode & helpers
-    def doMode(self, event: LeoKeyEvent) -> bool:
+    def doMode(self, event: LeoKeyEvent | None = None) -> bool:
         """
         Handle mode bindings.
         Return True if k.masterKeyHandler should return.
@@ -3612,7 +3612,7 @@ class KeyHandlerClass:
         return True
 
     # @+node:ekr.20061031131434.108: *6* k.callStateFunction
-    def callStateFunction(self, event: LeoKeyEvent) -> Any:
+    def callStateFunction(self, event: LeoKeyEvent | None = None) -> Any:
         """Call the state handler associated with this event."""
         k = self
         ch = event.char
@@ -3785,7 +3785,7 @@ class KeyHandlerClass:
             g.es('bound', stroke, 'to command', cmdname)
 
     # @+node:ekr.20180418025241.1: *5* 5. k.doVim
-    def doVim(self, event: LeoKeyEvent) -> bool:
+    def doVim(self, event: LeoKeyEvent | None = None) -> bool:
         """
         Handle vim mode.
         Return True if k.masterKeyHandler should return.
@@ -3803,7 +3803,7 @@ class KeyHandlerClass:
         return False
 
     # @+node:ekr.20180418033838.1: *5* 6. k.doBinding & helpers
-    def doBinding(self, event: LeoKeyEvent) -> bool:
+    def doBinding(self, event: LeoKeyEvent | None = None) -> bool:
         """
         Attempt to find a binding for the event's stroke.
         If found, execute the command and return True
@@ -3839,7 +3839,7 @@ class KeyHandlerClass:
         return False
 
     # @+node:ekr.20091230094319.6240: *6* k.getPaneBinding & helper
-    def getPaneBinding(self, event: LeoKeyEvent) -> g.BindingInfo:
+    def getPaneBinding(self, event: LeoKeyEvent | None = None) -> g.BindingInfo:
         c, k, state = self.c, self, self.unboundKeyAction
         stroke, w = event.stroke, event.w
         if not g.assert_is(stroke, g.KeyStroke):
@@ -4086,7 +4086,7 @@ class KeyHandlerClass:
         k.setLabel(s, protect=False)
 
     # @+node:ekr.20061031170011.12: *4* k.updateLabel
-    def updateLabel(self, event: LeoKeyEvent) -> None:
+    def updateLabel(self, event: LeoKeyEvent | None = None) -> None:
         """
         Mimic what would happen with the keyboard and a Text editor
         instead of plain accumulation.
@@ -4201,7 +4201,7 @@ class KeyHandlerClass:
     # @+node:ekr.20120208064440.10199: *4* k.generalModeHandler
     def generalModeHandler(
         self,
-        event: LeoKeyEvent,
+        event: LeoKeyEvent | None = None,
         commandName: str = None,
         func: Callable = None,
         modeName: str = None,
@@ -4286,7 +4286,7 @@ class KeyHandlerClass:
 
     # @+node:ekr.20061031131434.165: *4* k.modeHelp & helper
     @cmd('mode-help')
-    def modeHelp(self, event: LeoKeyEvent) -> None:
+    def modeHelp(self, event: LeoKeyEvent | None = None) -> None:
         """
         The mode-help command.
 

@@ -47,7 +47,7 @@ class BufferCommandsClass(BaseEditCommandsClass):
     # @+node:ekr.20150514045829.5: *3* buffer.Entry points
     # @+node:ekr.20150514045829.6: *4* appendToBuffer
     @cmd('buffer-append-to')
-    def appendToBuffer(self, event: LeoKeyEvent) -> None:
+    def appendToBuffer(self, event: LeoKeyEvent | None = None) -> None:
         """Add the selected body text to the end of the body text of a named buffer (node)."""
         c = self.c
         self.w = event.w if event else c.frame.body.wrapper
@@ -72,7 +72,7 @@ class BufferCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514045829.7: *4* copyToBuffer
     @cmd('buffer-copy')
-    def copyToBuffer(self, event: LeoKeyEvent) -> None:
+    def copyToBuffer(self, event: LeoKeyEvent | None = None) -> None:
         """Add the selected body text to the end of the body text of a named buffer (node)."""
         c = self.c
         self.w = event.w if event else c.frame.body.wrapper
@@ -94,7 +94,7 @@ class BufferCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514045829.8: *4* insertToBuffer
     @cmd('buffer-insert')
-    def insertToBuffer(self, event: LeoKeyEvent) -> None:
+    def insertToBuffer(self, event: LeoKeyEvent | None = None) -> None:
         """Add the selected body text at the insert point of the body text of a named buffer (node)."""
         c = self.c
         self.w = event.w if event else c.frame.body.wrapper
@@ -116,7 +116,7 @@ class BufferCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514045829.9: *4* killBuffer
     @cmd('buffer-kill')
-    def killBuffer(self, event: LeoKeyEvent) -> None:
+    def killBuffer(self, event: LeoKeyEvent | None = None) -> None:
         """Delete a buffer (node) and all its descendants."""
         c = self.c
         self.w = event.w if event else c.frame.body.wrapper
@@ -138,7 +138,7 @@ class BufferCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514045829.10: *4* listBuffers & listBuffersAlphabetically
     @cmd('buffers-list')
-    def listBuffers(self, event: LeoKeyEvent) -> None:
+    def listBuffers(self, event: LeoKeyEvent | None = None) -> None:
         """
         List all buffers (node headlines), in outline order. Nodes with the
         same headline are disambiguated by giving their parent or child index.
@@ -149,7 +149,7 @@ class BufferCommandsClass(BaseEditCommandsClass):
             g.es('', name)
 
     @cmd('buffers-list-alphabetically')
-    def listBuffersAlphabetically(self, event: LeoKeyEvent) -> None:
+    def listBuffersAlphabetically(self, event: LeoKeyEvent | None = None) -> None:
         """
         List all buffers (node headlines), in alphabetical order. Nodes with
         the same headline are disambiguated by giving their parent or child
@@ -163,7 +163,7 @@ class BufferCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514045829.11: *4* prependToBuffer
     @cmd('buffer-prepend-to')
-    def prependToBuffer(self, event: LeoKeyEvent) -> None:
+    def prependToBuffer(self, event: LeoKeyEvent | None = None) -> None:
         """Add the selected body text to the start of the body text of a named buffer (node)."""
         c = self.c
         self.w = event.w if event else c.frame.body.wrapper
@@ -186,7 +186,7 @@ class BufferCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514045829.13: *4* switchToBuffer
     @cmd('buffer-switch-to')
-    def switchToBuffer(self, event: LeoKeyEvent) -> None:
+    def switchToBuffer(self, event: LeoKeyEvent | None = None) -> None:
         """Select a buffer (node) by its name (headline)."""
         self.c.k.setLabelBlue('Switch to buffer: ')
         self.getBufferName(event, self.switchToBuffer1)
@@ -237,7 +237,7 @@ class BufferCommandsClass(BaseEditCommandsClass):
         prefix = k.getLabel()
         k.get1Arg(event, handler=self.getBufferName1, prefix=prefix, tabList=self.nameList)
 
-    def getBufferName1(self, event: LeoKeyEvent) -> None:
+    def getBufferName1(self, event: LeoKeyEvent | None = None) -> None:
         k = self.c.k
         k.resetLabel()
         k.clearState()

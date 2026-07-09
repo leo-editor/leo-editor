@@ -36,9 +36,11 @@ def onSelect(tag: str, keywords: Any) -> None:
 
 # @+node:ekr.20110605121601.18001: ** qt: detach-editor-toggle & helpers
 @g.command('detach-editor-toggle')
-def detach_editor_toggle(event: LeoKeyEvent) -> None:
+def detach_editor_toggle(event: LeoKeyEvent | None = None) -> None:
     """Detach or undetach body editor"""
-    c: Cmdr = event['c']
+    c = event.get('c') if event else None
+    if not c:
+        return
     detach = True
     try:
         if c.frame.detached_body_info is not None:
@@ -52,9 +54,11 @@ def detach_editor_toggle(event: LeoKeyEvent) -> None:
 
 
 @g.command('detach-editor-toggle-max')
-def detach_editor_toggle_max(event: LeoKeyEvent) -> None:
+def detach_editor_toggle_max(event: LeoKeyEvent | None = None) -> None:
     """Detach editor, maximize"""
-    c: Cmdr = event['c']
+    c = event.get('c') if event else None
+    if not c:
+        return
     detach_editor_toggle(event)
     if c.frame.detached_body_info is not None:
         wdg: QWidget = c.frame.top.leo_body_frame
@@ -90,9 +94,11 @@ def undetach_editor(c: Cmdr) -> None:
 
 # @+node:ekr.20170324143944.2: ** qt: show-color-names
 @g.command('show-color-names')
-def showColorNames(event: LeoKeyEvent) -> None:
+def showColorNames(event: LeoKeyEvent | None = None) -> None:
     """Put up a dialog showing color names."""
-    c: Cmdr = event.get('c')
+    c = event.get('c') if event else None
+    if not c:
+        return
     template = '''
         QComboBox {
             background-color: %s;
@@ -207,7 +213,7 @@ def showFonts(self: Any, event: LeoKeyEvent | None = None) -> None:
 @g.command('show-style-sheet')
 def print_style_sheet(event: LeoKeyEvent | None = None) -> None:
     """show-style-sheet command."""
-    c: Cmdr = event.get('c')
+    c = event.get('c') if event else None
     if c:
         c.styleSheetManager.print_style_sheet()
 
@@ -215,14 +221,14 @@ def print_style_sheet(event: LeoKeyEvent | None = None) -> None:
 # @+node:ekr.20140918124632.17891: ** qt: style-reload
 @g.command('style-reload')
 @g.command('reload-style-sheets')
-def style_reload(event: LeoKeyEvent) -> None:
+def style_reload(event: LeoKeyEvent | None = None) -> None:
     """reload-styles command.
 
     Find the appropriate style sheet and re-apply it.
 
     This replaces execution of the `stylesheet & source` node in settings files.
     """
-    c: Cmdr = event.get('c')
+    c = event.get('c') if event else None
     if c and c.styleSheetManager:
         # Call ssm.reload_settings after reloading all settings.
         c.reloadSettings()
@@ -230,9 +236,9 @@ def style_reload(event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20140918124632.17892: ** qt: style-set-selected
 @g.command('style-set-selected')
-def style_set_selected(event: LeoKeyEvent) -> None:
+def style_set_selected(event: LeoKeyEvent | None = None) -> None:
     """style-set-selected command. Set the global stylesheet to c.p.b. (For testing)"""
-    c: Cmdr = event.get('c')
+    c = event.get('c') if event else None
     if c:
         c.styleSheetManager.set_selected_style_sheet()
 

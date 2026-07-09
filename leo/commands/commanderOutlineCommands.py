@@ -1202,7 +1202,9 @@ def cloneToLastNode(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 # @+node:ekr.20031218072017.1193: *3* c_oc.deleteOutline
 @g.commander_command('delete-node')
 def deleteOutline(
-    self: Cmdr, event: LeoKeyEvent | None = None, op_name: str = "Delete Node"
+    self: Cmdr,
+    event: LeoKeyEvent | None = None,
+    op_name: str = "Delete Node",
 ) -> None:
     """Deletes the selected outline."""
     c, u = self, self.undoer
@@ -1914,7 +1916,11 @@ def moveOutlineToLastChild(self: Cmdr, event: LeoKeyEvent | None = None) -> None
 
 # @+node:ekr.20031218072017.1774: *3* c_oc.promote
 @g.commander_command('promote')
-def promote(self: Cmdr, event: LeoKeyEvent | None = None, undoFlag: bool = True) -> None:
+def promote(
+    self: Cmdr,
+    event: LeoKeyEvent | None = None,
+    undoFlag: bool = True,
+) -> None:
     """Make all children of the selected nodes siblings of the selected node."""
     c, p, u = self, self.p, self.undoer
     if not p or not p.hasChildren():
@@ -1945,7 +1951,9 @@ def toggleSparseMove(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 # @+node:felix.20230318172503.1: *3* c_oc.reverseSortChildren
 @g.commander_command('reverse-sort-children')
 def reverseSortChildren(
-    self: Cmdr, event: LeoKeyEvent | None = None, key: str | None = None
+    self: Cmdr,
+    event: LeoKeyEvent | None = None,
+    key: str | None = None,
 ) -> None:
     """Sort the children of a node in reverse order."""
     self.sortChildren(key=key, reverse=True)  # as reverse, Fixes #3188
@@ -1954,7 +1962,9 @@ def reverseSortChildren(
 # @+node:felix.20230318172511.1: *3* c_oc.reverseSortSiblings
 @g.commander_command('reverse-sort-siblings')
 def reverseSortSiblings(
-    self: Cmdr, event: LeoKeyEvent | None = None, key: str | None = None
+    self: Cmdr,
+    event: LeoKeyEvent | None = None,
+    key: str | None = None,
 ) -> None:
     """Sort the siblings of a node in reverse order."""
     self.sortSiblings(key=key, reverse=True)  # as reverse, Fixes #3188
@@ -1963,7 +1973,10 @@ def reverseSortSiblings(
 # @+node:ekr.20050415134809: *3* c_oc.sortChildren
 @g.commander_command('sort-children')
 def sortChildren(
-    self: Cmdr, event: LeoKeyEvent | None = None, key: Callable | None = None, reverse: bool = False
+    self: Cmdr,
+    event: LeoKeyEvent | None = None,
+    key: Callable | None = None,
+    reverse: bool = False,
 ) -> None:
     """Sort the children of a node."""
     # This method no longer supports the 'cmp' keyword arg.
@@ -1976,7 +1989,7 @@ def sortChildren(
 @g.commander_command('sort-siblings')
 def sortSiblings(
     self: Cmdr,
-    event: LeoKeyEvent | None = None,  # cmp keyword is no longer supported.
+    event: LeoKeyEvent | None = None,
     key: Callable | None = None,
     p: Position | None = None,
     sortChildren: bool = False,

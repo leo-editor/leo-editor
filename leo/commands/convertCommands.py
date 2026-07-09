@@ -533,7 +533,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
     # @+others
     # @+node:ekr.20220105151235.1: *3* ccc.add-mypy-annotations
     @cmd('add-mypy-annotations')
-    def add_mypy_annotations(self, event: LeoKeyEvent) -> None:  # pragma: no cover
+    def add_mypy_annotations(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
         """
         The add-mypy-annotations command adds mypy annotations to function and
         method definitions based on naming conventions.
@@ -796,7 +796,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20160316091843.1: *3* ccc.c-to-python
     @cmd('c-to-python')
-    def c_to_python(self, event: LeoKeyEvent) -> None:  # pragma: no cover
+    def c_to_python(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
         """
         The c-to-python command converts c or c++ text to python text.
         The conversion is not perfect, but it eliminates a lot of tedious
@@ -1292,7 +1292,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
     old_unl_pat2 = re.compile(r"(.*?)unl\://(.*)$")  # Second, assume no '#'.
 
     @cmd('convert-unls')
-    def convert_unls(self, event: LeoKeyEvent) -> None:  # pragma: no cover
+    def convert_unls(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
         """
         Convert all legacy (headline-based) unls to gnx-based unls.
         """
@@ -1340,7 +1340,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20160111190632.1: *3* ccc.make-stub_files
     @cmd('make-stub-files')
-    def make_stub_files(self, event: LeoKeyEvent) -> None:  # pragma: no cover
+    def make_stub_files(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
         """
         Make stub files for all nearby @<file> nodes.
         Take configuration settings from @x stub-y nodes.
@@ -1506,7 +1506,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20160316091923.1: *3* ccc.python-to-coffeescript
     @cmd('python-to-coffeescript')
-    def python2coffeescript(self, event: LeoKeyEvent) -> None:  # pragma: no cover
+    def python2coffeescript(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
         """
         Converts python text to coffeescript text. The conversion is not
         perfect, but it eliminates a lot of tedious text manipulation.
@@ -1621,7 +1621,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20231119103003.1: *3* ccc.python-to-rust
     @cmd('python-to-rust')
-    def python2rust(self, event: LeoKeyEvent) -> None:  # pragma: no cover
+    def python2rust(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
         """
         Converts Python text to Rust text. The conversion is not
         perfect, but it eliminates a lot of tedious text manipulation.
@@ -2354,7 +2354,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20211013080132.1: *3* ccc.python-to-typescript
     @cmd('python-to-typescript')
-    def python_to_typescript(self, event: LeoKeyEvent) -> None:  # pragma: no cover
+    def python_to_typescript(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
         """
         The python-to-typescript command converts python to typescript text.
         The conversion is not perfect, but it eliminates a lot of tedious text
@@ -3135,7 +3135,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20160316091843.2: *3* ccc.typescript-to-py
     @cmd('typescript-to-py')
-    def typescript_to_py(self, event: LeoKeyEvent) -> None:  # pragma: no cover
+    def typescript_to_py(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
         """
         The typescript-to-python command converts typescript text to python
         text. The conversion is not perfect, but it eliminates a lot of tedious

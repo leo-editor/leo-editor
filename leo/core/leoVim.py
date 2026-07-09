@@ -2251,7 +2251,7 @@ class VimCommands:
 
     # @+node:ekr.20140815160132.18831: *4* vc.toggle_vim_trainer_mode
     @cmd(':toggle-vim-trainer-mode')
-    def toggle_vim_trainer_mode(self, event: LeoKeyEvent | None = None) -> None:
+    def toggle_vim_trainer_mode(self) -> None:
         """toggle vim-trainer mode."""
         self.trainer = not self.trainer
         val = 'on' if self.trainer else 'off'

@@ -127,7 +127,7 @@ def adoc_with_preview_command(event: LeoKeyEvent | None = None, verbose: bool = 
 
 # @+node:ekr.20191006153411.1: *3* @g.command: 'pandoc' & 'pandoc-with-preview'
 @g.command('pandoc')
-def pandoc_command(event: LeoKeyEvent, verbose: bool = True) -> File_List:
+def pandoc_command(event: LeoKeyEvent | None = None, verbose: bool = True) -> File_List:
     # @+<< pandoc command docstring >>
     # @+node:ekr.20191006153547.1: *4* << pandoc command docstring >>
     """
@@ -191,7 +191,7 @@ def pandoc_with_preview_command(
 
 # @+node:ekr.20191017163422.1: *3* @g.command: 'sphinx' & 'sphinx-with-preview'
 @g.command('sphinx')
-def sphinx_command(event: LeoKeyEvent, verbose: bool = True) -> File_List:
+def sphinx_command(event: LeoKeyEvent | None = None, verbose: bool = True) -> File_List:
     # @+<< sphinx command docstring >>
     # @+node:ekr.20191017163422.2: *4* << sphinx command docstring >>
     """

@@ -226,7 +226,7 @@ class Command:
 
         @g.command('command-name')
         def A_Command(event):
-            c = event.get('c')
+            c = event.get('c') if event else None
             ...
 
     g can *not* be used anywhere in this class!
@@ -3696,10 +3696,13 @@ def is_binary_external_file(fileName: str) -> bool:
 
 def is_binary_string(s: str) -> bool:
     # http://stackoverflow.com/questions/898669
-    # aList is a list of all non-binary characters.
-    aList = [7, 8, 9, 10, 12, 13, 27] + list(range(0x20, 0x100))
-    # mypy bug?
-    return bool(s.translate(None, bytes(aList)))  # type:ignore
+    # A list of all non-binary characters.
+    if 1:
+        return False
+    non_binary = [7, 8, 9, 10, 12, 13, 27] + list(range(0x20, 0x100))
+    delete_s = ''.join(chr(i) for i in range(255) if i not in non_binary)
+    trans_table = str.maketrans('', '', delete_s)
+    return bool(s.translate(trans_table))
 
 
 # @+node:ekr.20031218072017.3119: *3* g.makeAllNonExistentDirectories
@@ -8438,7 +8441,7 @@ def openUrlOnClick(
 
 # @+node:ekr.20170216091704.1: *4* g.openUrlHelper
 def openUrlHelper(
-    event: LeoKeyEvent,
+    event: LeoKeyEvent | None = None,
     url: str | None = None,  # Don't change this.
 ) -> str | None:  # Don't change this.
     """Open the unl, url or gnx under the cursor.  Return it for unit testing."""
