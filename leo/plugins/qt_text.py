@@ -60,11 +60,11 @@ def zoom_out(event: LeoKeyEvent | None = None) -> None:
 
 
 # @+node:ekr.20191001084612.1: *3* zoom_helper
-def zoom_helper(event: LeoKeyEvent, delta: int) -> None:
+def zoom_helper(event: LeoKeyEvent | None, delta: int) -> None:
     """
     Common helper for zoom commands.
     """
-    c = event.get('c')
+    c = event.get('c') if event else None
     if not c:
         return
     if not c.config.getBool('allow-text-zoom', default=True):
@@ -936,7 +936,9 @@ if QtWidgets:
             sb.setSliderPosition(pos)
 
         # @+node:ekr.20110605121601.18019: *3* LeoQTextBrowser.leo_dumpButton
-        def leo_dumpButton(self, event: LeoKeyEvent, tag: str) -> str:
+        def leo_dumpButton(self, event: LeoKeyEvent | None, tag: str) -> str:
+            if not event:
+                return ''
             button = event.button()
             table = (
                 (MouseButton.NoButton,     'no button'),

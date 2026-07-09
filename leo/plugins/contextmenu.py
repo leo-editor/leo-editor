@@ -70,7 +70,7 @@ inited = False
 # @+node:ville.20090701224704.9805: *3* 'cm-external-editor'
 # cm is 'contextmenu' prefix
 @g.command('cm-external-editor')
-def cm_external_editor(event: LeoKeyEvent) -> None:
+def cm_external_editor(event: LeoKeyEvent | None = None) -> None:
     """Open node in external editor
 
     Set LEO_EDITOR/EDITOR environment variable to get the editor you want.
@@ -90,7 +90,7 @@ def cm_external_editor(event: LeoKeyEvent) -> None:
 
 # @+node:tbrown.20121123075838.19937: *3* 'context_menu_open'
 @g.command('context-menu-open')
-def context_menu_open(event: LeoKeyEvent) -> None:
+def context_menu_open(event: LeoKeyEvent | None = None) -> None:
     """Provide a command for key binding to open the context menu"""
     event.c.frame.tree.onContextMenu(QtCore.QPoint(0, 0))
 

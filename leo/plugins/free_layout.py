@@ -415,7 +415,7 @@ class FreeLayoutController:
         self,
         splitter: QSplitter,
         handle: QSplitter,
-        event: LeoKeyEvent,
+        event: LeoKeyEvent | None,
         release: str,
         double: bool,
     ) -> None:
@@ -429,6 +429,8 @@ class FreeLayoutController:
         :param bool release: was it a Press or Release event
         :param bool double: was it a double click event
         """
+        if not event:
+            return
         if not release or event.button() != MouseButton.MiddleButton:
             return
         if splitter.root.zoomed:  # unzoom if *any* handle clicked

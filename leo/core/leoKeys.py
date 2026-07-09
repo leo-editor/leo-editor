@@ -1220,7 +1220,7 @@ class FileNameChooser:
     # @+node:ekr.20140813052702.18200: *3* fnc.get_file_name (entry)
     def get_file_name(
         self,
-        event: LeoKeyEvent,
+        event: LeoKeyEvent | None,
         callback: Callable,
         filterExt: list[str],
         prompt: str,
@@ -1585,7 +1585,7 @@ class GetArg:
         self.after_get_arg_state = None
 
     # @+node:ekr.20140816165728.18955: *4* ga.do_char
-    def do_char(self, event: LeoKeyEvent, char: str) -> None:
+    def do_char(self, event: LeoKeyEvent | None, char: str) -> None:
         """Handle a non-special character."""
         k = self.k
         k.updateLabel(event)
@@ -1593,7 +1593,7 @@ class GetArg:
         self.reset_tab_cycling()
 
     # @+node:ekr.20140817110228.18316: *4* ga.do_end
-    def do_end(self, event: LeoKeyEvent, char: str, stroke: Stroke) -> None:
+    def do_end(self, event: LeoKeyEvent | None, char: str, stroke: Stroke) -> None:
         """A return or escape has been seen."""
         k = self.k
         if char == '\t' and char in k.getArgEscapes:
@@ -1619,7 +1619,7 @@ class GetArg:
     def do_state_zero(
         self,
         completion: bool,
-        event: LeoKeyEvent,
+        event: LeoKeyEvent | None,
         handler: Callable,
         oneCharacter: bool,
         returnKind: str,
@@ -3042,7 +3042,7 @@ class KeyHandlerClass:
 
     def get1Arg(
         self,
-        event: LeoKeyEvent,
+        event: LeoKeyEvent | None,
         handler: Callable,
         prefix: str = None,
         tabList: list[str] = None,
@@ -3645,7 +3645,7 @@ class KeyHandlerClass:
         return val
 
     # @+node:ekr.20061031131434.152: *6* k.handleMiniBindings
-    def handleMiniBindings(self, event: LeoKeyEvent, state: str, stroke: Stroke) -> bool:
+    def handleMiniBindings(self, event: LeoKeyEvent | None, state: str, stroke: Stroke) -> bool:
         """
         Find and execute commands bound to the event.
 
@@ -3688,7 +3688,7 @@ class KeyHandlerClass:
 
     # @+node:ekr.20180418114300.1: *7* k.handleMinibufferHelper
     def handleMinibufferHelper(
-        self, event: LeoKeyEvent, pane: str, state: str, stroke: Stroke
+        self, event: LeoKeyEvent | None, pane: str, state: str, stroke: Stroke
     ) -> str:
         """
         Execute a pane binding in the minibuffer.
@@ -3721,7 +3721,7 @@ class KeyHandlerClass:
         return 'found'
 
     # @+node:vitalije.20170708161511.1: *6* k.handleInputShortcut
-    def handleInputShortcut(self, event: LeoKeyEvent, stroke: Stroke) -> None:
+    def handleInputShortcut(self, event: LeoKeyEvent | None, stroke: Stroke) -> None:
         c, k, p, u = self.c, self, self.c.p, self.c.undoer
         k.clearState()
         if p.h.startswith(('@shortcuts', '@mode')):
@@ -4183,7 +4183,7 @@ class KeyHandlerClass:
             c.widgetWantsFocusNow(w)
 
     # @+node:ekr.20061031131434.160: *4* k.enterNamedMode
-    def enterNamedMode(self, event: LeoKeyEvent, commandName: str) -> None:
+    def enterNamedMode(self, event: LeoKeyEvent | None, commandName: str) -> None:
         c, k = self.c, self
         modeName = commandName[6:]
         c.inCommand = False  # Allow inner commands in the mode.
@@ -4254,7 +4254,7 @@ class KeyHandlerClass:
                     self.initMode(event, nextMode)  # Enter another mode.
 
     # @+node:ekr.20061031131434.163: *4* k.initMode
-    def initMode(self, event: LeoKeyEvent, modeName: str) -> None:
+    def initMode(self, event: LeoKeyEvent | None, modeName: str) -> None:
         c, k = self.c, self
         if not modeName:
             g.trace('oops: no modeName')

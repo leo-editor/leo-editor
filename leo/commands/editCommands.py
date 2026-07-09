@@ -653,7 +653,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Convert tabs to 4 spaces in the selected text."""
         self.tabifyHelper(event, which='untabify')
 
-    def tabifyHelper(self, event: LeoKeyEvent, which: str) -> None:
+    def tabifyHelper(self, event: LeoKeyEvent | None, which: str) -> None:
         c = self.c
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
@@ -691,7 +691,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         self.capitalizeHelper(event, 'up', 'upcase-word')
 
     # @+node:ekr.20150514063305.194: *4* ec.capitalizeHelper
-    def capitalizeHelper(self, event: LeoKeyEvent, which: str, undoType: str) -> None:
+    def capitalizeHelper(self, event: LeoKeyEvent | None, which: str, undoType: str) -> None:
         c = self.c
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
@@ -1039,7 +1039,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         self.findCharacterHelper(event, backward=False, extend=True)
 
     # @+node:ekr.20150514063305.222: *5* ec.findCharacterHelper
-    def findCharacterHelper(self, event: LeoKeyEvent, backward: bool, extend: bool) -> None:
+    def findCharacterHelper(self, event: LeoKeyEvent | None, backward: bool, extend: bool) -> None:
         """Put the cursor at the next occurrence of a character on a line."""
         c, k = self.c, self.c.k
         self.w = event.w if event else c.frame.body.wrapper
@@ -1091,7 +1091,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         self.findWordHelper(event, oneLine=True)
 
     # @+node:ekr.20150514063305.224: *5* ec.findWordHelper
-    def findWordHelper(self, event: LeoKeyEvent, oneLine: bool) -> None:
+    def findWordHelper(self, event: LeoKeyEvent | None, oneLine: bool) -> None:
         c, k = self.c, self.c.k
         self.w = event.w if event else c.frame.body.wrapper
         if self.w:
@@ -1689,7 +1689,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         self.addRemoveHelper(event, ch='\t', add=False, undoType='remove-tab-from-lines')
 
     # @+node:ekr.20150514063305.252: *5* ec.addRemoveHelper
-    def addRemoveHelper(self, event: LeoKeyEvent, ch: str, add: bool, undoType: str) -> None:
+    def addRemoveHelper(self, event: LeoKeyEvent | None, ch: str, add: bool, undoType: str) -> None:
         c = self.c
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
@@ -1884,7 +1884,9 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Delete the word in front of the cursor, treating whitespace and symbols smartly."""
         self.deleteWordHelper(event, forward=False, smart=True)
 
-    def deleteWordHelper(self, event: LeoKeyEvent, forward: bool, smart: bool = False) -> None:
+    def deleteWordHelper(
+        self, event: LeoKeyEvent | None, forward: bool, smart: bool = False
+    ) -> None:
         c = self.c
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
@@ -2216,7 +2218,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         self,
         action: str,
         ch: str,
-        event: LeoKeyEvent,
+        event: LeoKeyEvent | None,
         inBrackets: bool,
         oldSel: tuple[int, int],
         stroke: g.KeyStroke,
@@ -2417,7 +2419,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     # @+node:ekr.20150514063305.277: *5* ec.updateTab & helper
     def updateTab(
         self,
-        event: LeoKeyEvent,
+        event: LeoKeyEvent | None,
         p: Position,
         w: QTextMixin,
         smartTab: bool = True,
@@ -2587,7 +2589,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         c.frame.updateStatusLine()
 
     # @+node:ekr.20150514063305.288: *5* ec.moveToHelper
-    def moveToHelper(self, event: LeoKeyEvent, spot: int, extend: bool) -> None:
+    def moveToHelper(self, event: LeoKeyEvent | None, spot: int, extend: bool) -> None:
         """
         Common helper method for commands the move the cursor
         in a way that can be described by a Tk Text expression.
@@ -2607,7 +2609,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         self.extendHelper(w, extend, spot, upOrDown=False)
 
     # @+node:ekr.20150514063305.305: *5* ec.moveWithinLineHelper
-    def moveWithinLineHelper(self, event: LeoKeyEvent, spot: str, extend: bool) -> None:
+    def moveWithinLineHelper(self, event: LeoKeyEvent | None, spot: str, extend: bool) -> None:
         c = self.c
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
@@ -2648,7 +2650,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     # @+node:ekr.20150514063305.317: *5* ec.moveWordHelper
     def moveWordHelper(
         self,
-        event: LeoKeyEvent,
+        event: LeoKeyEvent | None,
         extend: bool,
         forward: bool,
         end: bool = False,
@@ -2870,7 +2872,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         self.moveUpOrDownHelper(event, 'up', extend=True)
 
     # @+node:ekr.20150514063305.293: *5* ec.moveUpOrDownHelper
-    def moveUpOrDownHelper(self, event: LeoKeyEvent, direction: str, extend: bool) -> None:
+    def moveUpOrDownHelper(self, event: LeoKeyEvent | None, direction: str, extend: bool) -> None:
         c = self.c
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
@@ -2917,7 +2919,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         self.moveToBufferHelper(event, 'end', extend=True)
 
     # @+node:ekr.20150514063305.295: *5* ec.moveToBufferHelper
-    def moveToBufferHelper(self, event: LeoKeyEvent, spot: str, extend: bool) -> None:
+    def moveToBufferHelper(self, event: LeoKeyEvent | None, spot: str, extend: bool) -> None:
         c = self.c
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
@@ -2956,7 +2958,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         self.moveToCharacterHelper(event, 'right', extend=True)
 
     # @+node:ekr.20150514063305.297: *5* ec.moveToCharacterHelper
-    def moveToCharacterHelper(self, event: LeoKeyEvent, spot: str, extend: bool) -> None:
+    def moveToCharacterHelper(self, event: LeoKeyEvent | None, spot: str, extend: bool) -> None:
         c = self.c
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
@@ -2991,7 +2993,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Toggle extend mode, i.e., toggle whether cursor movement commands extend the selections."""
         self.extendModeHelper(event, not self.extendMode)
 
-    def extendModeHelper(self, event: LeoKeyEvent, val: bool) -> None:
+    def extendModeHelper(self, event: LeoKeyEvent | None, val: bool) -> None:
         c = self.c
         w = event.w if event else c.frame.body.wrapper
         if g.isTextWrapper(w):
@@ -3170,7 +3172,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         self.movePastCloseHelper(event, extend=True)
 
     # @+node:ekr.20150514063305.304: *5* ec.movePastCloseHelper
-    def movePastCloseHelper(self, event: LeoKeyEvent, extend: bool) -> None:
+    def movePastCloseHelper(self, event: LeoKeyEvent | None, extend: bool) -> None:
         c = self.c
         w = event.w if event else c.frame.body.wrapper
         if not g.isTextWrapper(w):
@@ -3235,7 +3237,7 @@ class EditCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.307: *5* ec.movePageHelper
     def movePageHelper(
-        self, event: LeoKeyEvent, kind: str, extend: bool
+        self, event: LeoKeyEvent | None, kind: str, extend: bool
     ) -> None:  # kind in back/forward.
         """Move the cursor up/down one page, possibly extending the selection."""
         c = self.c
@@ -3289,7 +3291,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         self.forwardParagraphHelper(event, extend=True)
 
     # @+node:ekr.20150514063305.309: *5* ec.backwardParagraphHelper
-    def backwardParagraphHelper(self, event: LeoKeyEvent, extend: bool) -> None:
+    def backwardParagraphHelper(self, event: LeoKeyEvent | None, extend: bool) -> None:
         w = event.w if event else None
         if not g.isTextWrapper(w):
             return
@@ -3314,7 +3316,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         self.moveToHelper(event, i, extend)
 
     # @+node:ekr.20150514063305.310: *5* ec.forwardParagraphHelper
-    def forwardParagraphHelper(self, event: LeoKeyEvent, extend: bool) -> None:
+    def forwardParagraphHelper(self, event: LeoKeyEvent | None, extend: bool) -> None:
         w = event.w if event else None
         if not g.isTextWrapper(w):
             return
@@ -3402,7 +3404,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         self.forwardSentenceHelper(event, extend=True)
 
     # @+node:ekr.20150514063305.313: *5* ec.backSentenceHelper
-    def backSentenceHelper(self, event: LeoKeyEvent, extend: bool) -> None:
+    def backSentenceHelper(self, event: LeoKeyEvent | None, extend: bool) -> None:
         c = self.c
         w = event.w if event else None
         if not g.isTextWrapper(w):
@@ -3468,7 +3470,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             self.moveToHelper(event, i, extend)
 
     # @+node:ekr.20150514063305.314: *5* ec.forwardSentenceHelper
-    def forwardSentenceHelper(self, event: LeoKeyEvent, extend: bool) -> None:
+    def forwardSentenceHelper(self, event: LeoKeyEvent | None, extend: bool) -> None:
         c = self.c
         w = event.w if event else None
         if not g.isTextWrapper(w):
@@ -3890,7 +3892,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         self.scrollHelper(event, 'up', 'page')
 
     # @+node:ekr.20150514063305.336: *5* ec.scrollHelper
-    def scrollHelper(self, event: LeoKeyEvent, direction: str, distance: str) -> None:
+    def scrollHelper(self, event: LeoKeyEvent | None, direction: str, distance: str) -> None:
         """
         Scroll the present pane up or down one page
         kind is in ('up/down-half-page/line/page)

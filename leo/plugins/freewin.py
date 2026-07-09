@@ -536,7 +536,7 @@ def init() -> bool:
 
 # @+node:tom.20210527153848.1: ** z-commands
 @g.command('z-open-freewin')
-def open_z_window(event: LeoKeyEvent) -> None:
+def open_z_window(event: LeoKeyEvent | None = None) -> None:
     """Open or show editing window for the selected node."""
     if g.app.gui.guiName() != 'qt':
         return
