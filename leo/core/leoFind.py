@@ -2238,7 +2238,7 @@ class LeoFind:
     # @+node:ekr.20210117143615.1: *5* find._start_search_escape2
     def _start_search_escape2(
         self,
-        event: LeoKeyEvent,  # Not used.
+        event: LeoKeyEvent | None = None,  # Not used.
     ) -> None:  # pragma: no cover
         c, k, w = self.c, self.k, self.c.frame.body.wrapper
         # Compute settings...

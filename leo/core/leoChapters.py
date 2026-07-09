@@ -86,7 +86,7 @@ class ChapterController:
             return
 
         def select_chapter_callback(
-            event: LeoKeyEvent,
+            event: LeoKeyEvent | None = None,
             cc: ChapterController = cc,
             name: str = chapterName,
         ) -> None:

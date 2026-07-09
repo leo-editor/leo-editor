@@ -681,7 +681,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     # @+node:ekr.20150514043850.22: *5* abbrev.dynamicExpandHelper
     def dynamicExpandHelper(
         self,
-        event: LeoKeyEvent,
+        event: LeoKeyEvent | None = None,
         prefix: str | None = None,
         aList: list[str] = None,
         w: QTextMixin | None = None,

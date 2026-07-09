@@ -1497,7 +1497,7 @@ class GetArg:
     # @+node:ekr.20140816165728.18941: *3* ga.get_arg (entry) & helpers
     def get_arg(
         self,
-        event: LeoKeyEvent,
+        event: LeoKeyEvent | None = None,
         returnKind: str = None,
         returnState: int = None,
         handler: Callable = None,
@@ -2504,7 +2504,7 @@ class KeyHandlerClass:
     @cmd('full-command')
     def fullCommand(
         self,
-        event: LeoKeyEvent,
+        event: LeoKeyEvent | None = None,
         specialStroke: Stroke = None,
         specialFunc: Callable = None,
         help: bool = False,
@@ -3153,7 +3153,7 @@ class KeyHandlerClass:
 
     def getArg(
         self,
-        event: LeoKeyEvent,
+        event: LeoKeyEvent | None = None,
         returnKind: str = None,
         returnState: int = None,
         handler: Callable = None,
@@ -3392,7 +3392,7 @@ class KeyHandlerClass:
     # @+node:ekr.20140813052702.18203: *4* k.getFileName
     def getFileName(
         self,
-        event: LeoKeyEvent,
+        event: LeoKeyEvent | None = None,
         callback: Callable = None,
         filterExt: list[str] = None,
         prompt: str = 'Enter File Name: ',
@@ -4201,7 +4201,7 @@ class KeyHandlerClass:
     # @+node:ekr.20120208064440.10199: *4* k.generalModeHandler
     def generalModeHandler(
         self,
-        event: LeoKeyEvent,
+        event: LeoKeyEvent | None = None,
         commandName: str = None,
         func: Callable = None,
         modeName: str = None,

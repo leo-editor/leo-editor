@@ -2105,7 +2105,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
     # @+node:ekr.20110605121601.18305: *5* LeoQtFrame.hideLogWindow
     def hideLogWindow(
         self,
-        event: LeoKeyEvent,  # Not used.
+        event: LeoKeyEvent | None = None,  # Not used.
     ) -> None:
         """Hide the log pane."""
         self.divideLeoSplitter2(0.99)
@@ -2391,7 +2391,7 @@ class LeoQtLog(leoFrame.LeoLog):
     # @+node:ekr.20110605121601.18339: *3* LeoQtLog.hideFontTab
     def hideFontTab(
         self,
-        event: LeoKeyEvent,  # Not used.
+        event: LeoKeyEvent | None = None,  # Not used.
     ) -> None:
         c = self.c
         c.frame.log.selectTab('Log')

@@ -8441,7 +8441,7 @@ def openUrlOnClick(
 
 # @+node:ekr.20170216091704.1: *4* g.openUrlHelper
 def openUrlHelper(
-    event: LeoKeyEvent,
+    event: LeoKeyEvent | None = None,
     url: str | None = None,  # Don't change this.
 ) -> str | None:  # Don't change this.
     """Open the unl, url or gnx under the cursor.  Return it for unit testing."""

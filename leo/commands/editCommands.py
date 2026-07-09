@@ -1473,7 +1473,7 @@ class EditCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.239: *4* ec.deleteNodeIcons
     @cmd('delete-node-icons')
-    def deleteNodeIcons(self, event: LeoKeyEvent, p: Position | None = None) -> None:
+    def deleteNodeIcons(self, event: LeoKeyEvent | None = None, p: Position | None = None) -> None:
         """Delete all of the selected node's icons."""
         c = self.c
         p = p or c.p
@@ -1939,7 +1939,7 @@ class EditCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.260: *4* ec.deleteSpaces
     @cmd('delete-spaces')
-    def deleteSpaces(self, event: LeoKeyEvent, insertspace: bool = False) -> None:
+    def deleteSpaces(self, event: LeoKeyEvent | None = None, insertspace: bool = False) -> None:
         """Delete all whitespace surrounding the cursor."""
         c = self.c
         w = event.w if event else c.frame.body.wrapper
@@ -2137,7 +2137,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     # @verbatim
     # @cmd('self-insert-command')
 
-    def selfInsertCommand(self, event: LeoKeyEvent, action: str = 'insert') -> None:
+    def selfInsertCommand(self, event: LeoKeyEvent | None = None, action: str = 'insert') -> None:
         """
         Insert a character in the body pane.
 
@@ -2772,7 +2772,7 @@ class EditCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.290: *4* ec.backToHome/ExtendSelection
     @cmd('back-to-home')
-    def backToHome(self, event: LeoKeyEvent, extend: bool = False) -> None:
+    def backToHome(self, event: LeoKeyEvent | None = None, extend: bool = False) -> None:
         """
         Smart home:
         Position the point at the first non-blank character on the line,
@@ -3075,7 +3075,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('extend-to-word')
     def extendToWord(
         self,
-        event: LeoKeyEvent,
+        event: LeoKeyEvent | None = None,
         select: bool = True,
         w: QTextMixin | None = None,
     ) -> tuple[int, int]:
@@ -4027,7 +4027,7 @@ class EditCommandsClass(BaseEditCommandsClass):
 
     @cmd('sort-lines')
     def sortLines(
-        self, event: LeoKeyEvent, ignoreCase: bool = False, reverse: bool = False
+        self, event: LeoKeyEvent | None = None, ignoreCase: bool = False, reverse: bool = False
     ) -> None:
         """Sort the selected lines."""
         w = event.w if event else None

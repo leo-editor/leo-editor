@@ -2795,7 +2795,7 @@ class Commands:
     # @+node:ekr.20040723094220.1: *4* c.checkAllPythonCode
     def checkAllPythonCode(
         self,
-        event: LeoKeyEvent,  # Not used.
+        event: LeoKeyEvent | None = None,  # Not used.
         ignoreAtIgnore: bool = True,
     ) -> str:
         """Check all nodes in the selected tree for syntax and tab errors."""
@@ -3597,7 +3597,9 @@ class Commands:
         if rclick is not installed.
         """
 
-        def minibufferCallback(event: LeoKeyEvent, function: Callable = function) -> None:
+        def minibufferCallback(
+            event: LeoKeyEvent | None = None, function: Callable = function
+        ) -> None:
             # Avoid a pylint complaint.
             if hasattr(self, 'theContextMenuController'):
                 cm = self.theContextMenuController

@@ -360,7 +360,7 @@ class CheckNodes:
     # @+node:ekr.20230221110024.1: *3* CheckNodes.check
     def check(
         self,
-        event: LeoKeyEvent,  # Not used.
+        event: LeoKeyEvent | None = None,  # Not used.
     ) -> None:
         c = self.c
         self.get_data()

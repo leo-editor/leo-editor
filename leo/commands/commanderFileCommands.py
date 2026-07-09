@@ -299,7 +299,7 @@ def import_txt_file(self: Self, fn: str) -> None:
 # @+node:ekr.20031218072017.1623: *3* c_file.new
 @g.commander_command('file-new')
 @g.commander_command('new')
-def new(self: Self, event: LeoKeyEvent, gui: LeoGui | None = None) -> Cmdr:
+def new(self: Self, event: LeoKeyEvent | None = None, gui: LeoGui | None = None) -> Cmdr:
     """Create a new Leo window."""
     t1 = time.process_time()
     from leo.core import leoApp
@@ -531,7 +531,7 @@ def saveAll(self: Self, event: LeoKeyEvent | None = None) -> None:
 @g.commander_command('save-as')
 @g.commander_command('file-save-as')
 @g.commander_command('save-file-as')
-def saveAs(self: Self, event: LeoKeyEvent, fileName: str | None = None) -> None:
+def saveAs(self: Self, event: LeoKeyEvent | None = None, fileName: str | None = None) -> None:
     """
     Save a Leo outline to a file, prompting for a new filename unless the
     fileName kwarg is given.

@@ -323,7 +323,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.424: *3* killWs
     @cmd('kill-ws')
-    def killWs(self, event: LeoKeyEvent, undoType: str = 'kill-ws') -> None:
+    def killWs(self, event: LeoKeyEvent | None = None, undoType: str = 'kill-ws') -> None:
         """Kill whitespace."""
         c = self.c
         w = event.w if event else c.frame.body.wrapper
