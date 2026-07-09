@@ -1168,7 +1168,6 @@ def toggleAngleBrackets(self: Self, event: LeoKeyEvent | None = None) -> None:
 @g.commander_command('unformat-paragraph')
 def unformatParagraph(
     self: Self,
-    *,
     event: LeoKeyEvent | None = None,
     undoType: str = 'Unformat Paragraph',
 ) -> None:

@@ -4187,11 +4187,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 self.showNodeUas(v=v)
 
     @cmd('show-node-uas')
-    def showNodeUas(
-        self,
-        event: LeoKeyEvent | None = None,  # Unused.
-        v: VNode | None = None,
-    ) -> None:
+    def showNodeUas(self, event: LeoKeyEvent | None = None, v: VNode | None = None) -> None:
         """Print the uA's in the selected node."""
         c = self.c
         if v:

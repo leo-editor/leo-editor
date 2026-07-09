@@ -1102,10 +1102,7 @@ def hoist(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 # @+node:ekr.20031218072017.1759: ** c_oc.Insert, Delete & Clone commands
 # @+node:ekr.20031218072017.1762: *3* c_oc.clone
 @g.commander_command('clone-node')
-def clone(
-    self: Cmdr,
-    event: LeoKeyEvent | None = None,  # Unused.
-) -> Position | None:
+def clone(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None:
     """Create a clone of the selected outline."""
     c, p, u = self, self.p, self.undoer
     if not p:
@@ -1206,7 +1203,7 @@ def cloneToLastNode(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 @g.commander_command('delete-node')
 def deleteOutline(
     self: Cmdr,
-    event: LeoKeyEvent | None = None,  # Unused.
+    event: LeoKeyEvent | None = None,
     op_name: str = "Delete Node",
 ) -> None:
     """Deletes the selected outline."""
@@ -1645,10 +1642,7 @@ def unmarkAll(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 # @+node:ekr.20031218072017.1766: ** c_oc.Move commands
 # @+node:ekr.20031218072017.1767: *3* c_oc.demote
 @g.commander_command('demote')
-def demote(
-    self: Cmdr,
-    event: LeoKeyEvent | None = None,  # Unused.
-) -> None:
+def demote(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Make all following siblings children of the selected node."""
     c, p, u = self, self.p, self.undoer
     if not p or not p.hasNext():
@@ -1684,10 +1678,7 @@ def demote(
 
 # @+node:ekr.20031218072017.1768: *3* c_oc.moveOutlineDown
 @g.commander_command('move-outline-down')
-def moveOutlineDown(
-    self: Cmdr,
-    event: LeoKeyEvent | None = None,  # Unused.
-) -> None:
+def moveOutlineDown(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Move the selected node down."""
     # Moving down is more tricky than moving up because we can't
     # move p to be a child of itself.
@@ -1747,10 +1738,7 @@ def moveOutlineDown(
 
 # @+node:ekr.20031218072017.1770: *3* c_oc.moveOutlineLeft
 @g.commander_command('move-outline-left')
-def moveOutlineLeft(
-    self: Cmdr,
-    event: LeoKeyEvent | None = None,  # Unused.
-) -> None:
+def moveOutlineLeft(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Move the selected node left if possible."""
     c, p, u = self, self.p, self.undoer
     if not p:
@@ -1779,10 +1767,7 @@ def moveOutlineLeft(
 
 # @+node:ekr.20031218072017.1771: *3* c_oc.moveOutlineRight
 @g.commander_command('move-outline-right')
-def moveOutlineRight(
-    self: Cmdr,
-    event: LeoKeyEvent | None = None,  # Unused.
-) -> None:
+def moveOutlineRight(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Move the selected node right if possible."""
     c, p, u = self, self.p, self.undoer
     if not p:
@@ -1812,10 +1797,7 @@ def moveOutlineRight(
 
 # @+node:ekr.20031218072017.1772: *3* c_oc.moveOutlineUp
 @g.commander_command('move-outline-up')
-def moveOutlineUp(
-    self: Cmdr,
-    event: LeoKeyEvent | None = None,  # Unused.
-) -> None:
+def moveOutlineUp(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Move the selected node up if possible."""
     c, p, u = self, self.p, self.undoer
     if not p:
@@ -1880,10 +1862,7 @@ def moveOutlineUp(
 
 # @+node:ekr.20230902051130.1: *3* c_oc.moveOutlineToFirstChild
 @g.commander_command('move-outline-to-first-child')
-def moveOutlineToFirstChild(
-    self: Cmdr,
-    event: LeoKeyEvent | None = None,  # Unused.
-) -> None:
+def moveOutlineToFirstChild(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """
     Move the selected node so that it is the first child of its parent.
 
@@ -1910,10 +1889,7 @@ def moveOutlineToFirstChild(
 
 # @+node:ekr.20230902051833.1: *3* c_oc.moveOutlineToLastChild
 @g.commander_command('move-outline-to-last-child')
-def moveOutlineToLastChild(
-    self: Cmdr,
-    event: LeoKeyEvent | None = None,  # Unused.
-) -> None:
+def moveOutlineToLastChild(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """
     Move the selected node so that it is the last child of its parent.
 
