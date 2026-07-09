@@ -2794,9 +2794,7 @@ class Commands:
     # but it will be retained for use of scripts.
     # @+node:ekr.20040723094220.1: *4* c.checkAllPythonCode
     def checkAllPythonCode(
-        self,
-        event: LeoKeyEvent | None = None,  # Not used.
-        ignoreAtIgnore: bool = True,
+        self, event: LeoKeyEvent | None = None, ignoreAtIgnore: bool = True
     ) -> str:
         """Check all nodes in the selected tree for syntax and tab errors."""
         c = self

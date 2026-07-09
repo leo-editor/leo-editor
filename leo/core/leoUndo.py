@@ -401,7 +401,7 @@ class Undoer:
         self,
         p: Position,
         undoType: str,
-        reportFlag: bool = False,  # Not used.
+        reportFlag: bool = False,
     ) -> None:
         """
         Create an undo node for general tree operations using d created by
@@ -1399,10 +1399,7 @@ class Undoer:
 
     # @+node:ekr.20031218072017.2030: *3* u.redo
     @cmd('redo')
-    def redo(
-        self,
-        event: LeoKeyEvent | None = None,  # Not used. Retained for compatibility.
-    ) -> None:
+    def redo(self, event: LeoKeyEvent | None = None) -> None:
         """Redo the operation undone by the last undo."""
         c, u = self.c, self
         if not c.p:
@@ -1799,10 +1796,7 @@ class Undoer:
 
     # @+node:ekr.20031218072017.2039: *3* u.undo
     @cmd('undo')
-    def undo(
-        self,
-        event: LeoKeyEvent | None = None,  # Not used. Retained for compatibility.
-    ) -> None:
+    def undo(self, event: LeoKeyEvent | None = None) -> None:
         """Undo the operation described by the undo parameters."""
         c, u = self.c, self
         if not c.p:

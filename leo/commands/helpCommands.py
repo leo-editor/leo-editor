@@ -898,10 +898,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.396: *3* helpForMinibuffer
     @cmd('help-for-minibuffer')
-    def helpForMinibuffer(
-        self,
-        event: LeoKeyEvent | None = None,  # Not used.
-    ) -> None:
+    def helpForMinibuffer(self, event: LeoKeyEvent | None = None) -> None:
         """Print a messages telling you how to get started with Leo."""
         # A bug in Leo: triple quotes puts indentation before each line.
         c = self.c

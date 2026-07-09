@@ -165,8 +165,7 @@ def restartLeo(self: Self, event: LeoKeyEvent | None = None) -> None:
 @g.commander_command('close-window')
 def close(
     self: Self,
-    *,
-    event: LeoKeyEvent | None = None,  # Not used.
+    event: LeoKeyEvent | None = None,
     new_c: Cmdr | None = None,
 ) -> None:
     """Close the Leo window, prompting to save it if it has been changed."""
@@ -386,8 +385,7 @@ def open_outline(self: Self, event: LeoKeyEvent | None = None) -> None:
 def refreshFromDisk(
     self: Self,
     p: Position | None = None,
-    *,
-    event: LeoKeyEvent | None = None,  # Not used.
+    event: LeoKeyEvent | None = None,
     silent: bool = True,  # Not used.
 ) -> None:
     """
@@ -453,8 +451,7 @@ def pwd_command(self: Self, event: LeoKeyEvent | None = None) -> None:
 @g.commander_command('save-file')
 def save(
     self: Self,
-    *,
-    event: LeoKeyEvent | None = None,  # Not used.
+    event: LeoKeyEvent | None = None,
     fileName: str | None = None,
 ) -> None:
     """
@@ -587,8 +584,7 @@ def saveAs(self: Self, event: LeoKeyEvent | None = None, fileName: str | None = 
 @g.commander_command('save-file-to')
 def saveTo(
     self: Self,
-    event: LeoKeyEvent | None = None,  # Not used.
-    *,
+    event: LeoKeyEvent | None = None,
     fileName: str | None = None,
     silent: bool = False,
 ) -> None:

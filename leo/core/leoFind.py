@@ -2236,10 +2236,7 @@ class LeoFind:
         k.getNextArg(self._start_search_escape2)
 
     # @+node:ekr.20210117143615.1: *5* find._start_search_escape2
-    def _start_search_escape2(
-        self,
-        event: LeoKeyEvent | None = None,  # Not used.
-    ) -> None:  # pragma: no cover
+    def _start_search_escape2(self, event: LeoKeyEvent | None = None) -> None:
         c, k, w = self.c, self.k, self.c.frame.body.wrapper
         # Compute settings...
         find_pattern = self._sString
