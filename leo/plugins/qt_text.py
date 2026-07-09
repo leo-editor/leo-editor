@@ -157,6 +157,7 @@ class QTextMixin:
     def __init__(self, c: Cmdr | None = None) -> None:
         """Ctor for QTextMixin class"""
         self.c = c
+        self.changingText = False  # A lockout for onTextChanged.
         self.enabled = True
         self.tags: dict[str, str] = {}
         self.permanent = True  # False if selecting the minibuffer will make the widget go away.
@@ -193,6 +194,46 @@ class QTextMixin:
             return
         if hasattr(c.frame, 'statusLine'):
             c.frame.statusLine.update()
+
+    # @+node:ekr.20260619094233.22: *4* QTextMixin.onTextChanged
+    def onTextChanged(self) -> None:
+        """
+        Update Leo after the body has been changed.
+
+        tree.tree_select_lockout is True during the entire selection process.
+        """
+        # #4785: Do not delete this method. It is essential!
+        w = self
+        c, p = self.c, self.c.p
+        tree = c.frame.tree
+        if w.changingText:
+            return
+        if tree.tree_select_lockout:
+            # g.trace('*** LOCKOUT', g.callers())
+            return
+        if not p:
+            return
+        newInsert = w.getInsertPoint()
+        newSel = w.getSelectionRange()
+        newText = w.getAllText()  # Converts to unicode.
+        # Get the previous values from the VNode.
+        oldText = p.b
+        if oldText == newText:
+            # This can happen as the result of undo.
+            # g.error('*** unexpected non-change')
+            return
+        i, j = p.v.selectionStart, p.v.selectionLength
+        oldSel = (i, i + j)
+        c.undoer.doTyping(
+            p,
+            'Typing',
+            oldText,
+            newText,
+            oldSel=oldSel,
+            oldYview=None,
+            newInsert=newInsert,
+            newSel=newSel,
+        )
 
     # @+node:ekr.20140901122110.18734: *3* QTextMixin.Generic high-level interface
     # These call only wrapper methods.
@@ -1375,13 +1416,17 @@ class QScintillaWrapper(QTextMixin):
 
     # @+node:ekr.20110605121601.18107: *3* QScintillaWrapper.WidgetAPI
     # @+node:ekr.20140901062324.18593: *4* QScintillaWrapper.delete
-    def delete(self, i: int, j: int | None = None) -> None:
+    def delete(self, i: int, j: int = None) -> None:
         """Delete s[i:j]"""
         w = self.widget
         if j is None:
             j = i + 1
         self.setSelectionRange(i, j)
-        w.replaceSelectedText('')
+        try:
+            self.changingText = True  # Disable onTextChanged
+            w.replaceSelectedText('')
+        finally:
+            self.changingText = False
 
     # @+node:ekr.20140901062324.18594: *4* QScintillaWrapper.flashCharacter (disabled)
     def flashCharacter(
@@ -1625,6 +1670,7 @@ class QTextEditWrapper(QTextMixin):
             g.app.gui.setFilter(c, self.widget, self, tag=name)
         if name == 'body':
             w = self.widget
+            w.textChanged.connect(self.onTextChanged)
             w.cursorPositionChanged.connect(self.onCursorPositionChanged)
         if name in ('body', 'log'):
             # Monkey patch the event handler.
@@ -1673,18 +1719,22 @@ class QTextEditWrapper(QTextMixin):
         sb = w.verticalScrollBar()
         pos = sb.sliderPosition()
         cursor = w.textCursor()
-        old_i, old_j = self.getSelectionRange()
-        if i == old_i and j == old_j:
-            # Work around an apparent bug in cursor.movePosition.
-            cursor.removeSelectedText()
-        elif i == j:
-            pass
-        else:
-            cursor.setPosition(i)
-            moveCount = abs(j - i)
-            cursor.movePosition(MoveOperation.Right, MoveMode.KeepAnchor, moveCount)
-            w.setTextCursor(cursor)  # Bug fix: 2010/01/27
-            cursor.removeSelectedText()
+        try:
+            self.changingText = True  # Disable onTextChanged
+            old_i, old_j = self.getSelectionRange()
+            if i == old_i and j == old_j:
+                # Work around an apparent bug in cursor.movePosition.
+                cursor.removeSelectedText()
+            elif i == j:
+                pass
+            else:
+                cursor.setPosition(i)
+                moveCount = abs(j - i)
+                cursor.movePosition(MoveOperation.Right, MoveMode.KeepAnchor, moveCount)
+                w.setTextCursor(cursor)  # Bug fix: 2010/01/27
+                cursor.removeSelectedText()
+        finally:
+            self.changingText = False
         sb.setSliderPosition(pos)
 
     # @+node:ekr.20110605121601.18080: *4* QTextEditWrapper.flashCharacter
@@ -1791,9 +1841,13 @@ class QTextEditWrapper(QTextMixin):
         """QTextEditWrapper."""
         w = self.widget
         cursor = w.textCursor()
-        cursor.setPosition(i)
-        cursor.insertText(s)
-        w.setTextCursor(cursor)  # Bug fix: 2010/01/27
+        try:
+            self.changingText = True  # Disable onTextChanged.
+            cursor.setPosition(i)
+            cursor.insertText(s)
+            w.setTextCursor(cursor)  # Bug fix: 2010/01/27
+        finally:
+            self.changingText = False
 
     # @+node:ekr.20110605121601.18077: *4* QTextEditWrapper.leoMoveCursorHelper & helper
     def leoMoveCursorHelper(self, kind: str, extend: bool = False, linesPerPage: int = 15) -> None:
@@ -1952,8 +2006,12 @@ class QTextEditWrapper(QTextMixin):
     def setAllText(self, s: str) -> None:
         """Set the text of body pane."""
         w = self.widget
-        w.setReadOnly(False)
-        w.setPlainText(s)
+        try:
+            self.changingText = True  # Disable onTextChanged.
+            w.setReadOnly(False)
+            w.setPlainText(s)
+        finally:
+            self.changingText = False
 
     # @+node:ekr.20110605121601.18095: *4* QTextEditWrapper.setInsertPoint
     def setInsertPoint(self, i: int) -> None:
