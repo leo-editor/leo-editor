@@ -405,14 +405,14 @@ def show_scrolled_message(tag: str, kw: Any) -> None:
 # @+node:ekr.20110320120020.14490: ** vr.Commands
 # @+node:ekr.20131213163822.16471: *3* g.command('preview')
 @g.command('preview')
-def preview(event: LeoKeyEvent) -> None:
+def preview(event: LeoKeyEvent | None = None) -> None:
     """A synonym for the vr-toggle command."""
     toggle_rendering_pane(event)
 
 
 # @+node:tbrown.20100318101414.5998: *3* g.command('vr')
 @g.command('vr')
-def viewrendered(event: LeoKeyEvent) -> Any | None:
+def viewrendered(event: LeoKeyEvent | None = None) -> Any | None:
     """Open render view for commander"""
     vr = getVr(event=event)
     if vr:
@@ -426,7 +426,7 @@ def viewrendered(event: LeoKeyEvent) -> Any | None:
 
 # @+node:ekr.20130413061407.10362: *3* g.command('vr-contract')
 @g.command('vr-contract')
-def contract_rendering_pane(event: LeoKeyEvent) -> None:
+def contract_rendering_pane(event: LeoKeyEvent | None = None) -> None:
     """Contract the rendering pane."""
     vr = getVr(event=event)
     if vr:
@@ -436,7 +436,7 @@ def contract_rendering_pane(event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20130413061407.10361: *3* g.command('vr-expand')
 @g.command('vr-expand')
-def expand_rendering_pane(event: LeoKeyEvent) -> None:
+def expand_rendering_pane(event: LeoKeyEvent | None = None) -> None:
     """Expand the rendering pane."""
     vr = getVr(event=event)
     if vr:
@@ -446,7 +446,7 @@ def expand_rendering_pane(event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20240507095853.1: *3* g.command('vr-fully-expand')
 @g.command('vr-fully-expand')
-def fully_expand_rendering_pane(event: LeoKeyEvent) -> None:
+def fully_expand_rendering_pane(event: LeoKeyEvent | None = None) -> None:
     """Expand the rendering pane."""
     vr = getVr(event=event)
     if vr:
@@ -456,7 +456,7 @@ def fully_expand_rendering_pane(event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20110917103917.3639: *3* g.command('vr-hide')
 @g.command('vr-hide')
-def hide_rendering_pane(event: LeoKeyEvent) -> None:
+def hide_rendering_pane(event: LeoKeyEvent | None = None) -> None:
     """Close the rendering pane."""
     vr = getVr(event=event)
     if vr:
@@ -471,7 +471,7 @@ close_rendering_pane = hide_rendering_pane
 
 # @+node:ekr.20110321072702.14507: *3* g.command('vr-lock')
 @g.command('vr-lock')
-def lock_rendering_pane(event: LeoKeyEvent) -> None:
+def lock_rendering_pane(event: LeoKeyEvent | None = None) -> None:
     """Lock the rendering pane."""
     vr = getVr(event=event)
     if vr and not vr.locked:
@@ -480,7 +480,7 @@ def lock_rendering_pane(event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20110320233639.5777: *3* g.command('vr-pause-play')
 @g.command('vr-pause-play-movie')
-def pause_play_movie(event: LeoKeyEvent) -> None:
+def pause_play_movie(event: LeoKeyEvent | None = None) -> None:
     """Pause or play a movie in the rendering pane."""
     vr = getVr(event=event)
     if vr:
@@ -493,7 +493,7 @@ def pause_play_movie(event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20110317080650.14386: *3* g.command('vr-show')
 @g.command('vr-show')
-def show_rendering_pane(event: LeoKeyEvent) -> None:
+def show_rendering_pane(event: LeoKeyEvent | None = None) -> None:
     """Show the rendering pane."""
     vr = getVr(event=event)
     if vr:
@@ -506,7 +506,7 @@ def show_rendering_pane(event: LeoKeyEvent) -> None:
 # @+node:ekr.20131001100335.16606: *3* g.command('vr-toggle-visibility')
 @g.command('vr-toggle-visibility')
 @g.command('vr-toggle')  # Legacy
-def toggle_rendering_pane(event: LeoKeyEvent) -> None:
+def toggle_rendering_pane(event: LeoKeyEvent | None = None) -> None:
     """Toggle the visibility of the VR pane."""
     vr = getVr(event=event)
     if not vr:
@@ -524,7 +524,7 @@ def toggle_rendering_pane(event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20240508082844.1: *3* g.command('vr-toggle-keep-open')
 @g.command('vr-toggle-keep-open')
-def toggle_keep_open(event: LeoKeyEvent) -> None:
+def toggle_keep_open(event: LeoKeyEvent | None = None) -> None:
     """Toggle the visibility of the VR pane."""
     vr = getVr(event=event)
     if vr:
@@ -536,7 +536,7 @@ def toggle_keep_open(event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20130412180825.10345: *3* g.command('vr-unlock')
 @g.command('vr-unlock')
-def unlock_rendering_pane(event: LeoKeyEvent) -> None:
+def unlock_rendering_pane(event: LeoKeyEvent | None = None) -> None:
     """Pause or play a movie in the rendering pane."""
     vr = getVr(event=event)
     if vr and vr.locked:
@@ -545,7 +545,7 @@ def unlock_rendering_pane(event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20110321151523.14464: *3* g.command('vr-update')
 @g.command('vr-update')
-def update_rendering_pane(event: LeoKeyEvent) -> None:
+def update_rendering_pane(event: LeoKeyEvent | None = None) -> None:
     """Update the rendering pane"""
     vr = getVr(event=event)
     if vr:
