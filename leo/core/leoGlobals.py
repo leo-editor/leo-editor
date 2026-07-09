@@ -90,7 +90,7 @@ isWindows = sys.platform.startswith('win')
 # @+<< define g.binary_file_extensions >>
 # @+node:ekr.20260709184046.1: ** << define g.binary_file_extensions >>
 # https://github.com/sindresorhus/binary-extensions/blob/main/binary-extensions.json
-binary_file_extentions = [
+binary_file_extensions = [
     "3dm",
     "3ds",
     "3g2",
@@ -3955,7 +3955,7 @@ def is_binary_external_file(fileName: str) -> bool:
     if not fileName:
         return False
     _root, ext = os.path.splitext(fileName)
-    return ext in g.binary_file_extentions
+    return ext in g.binary_file_extensions
 
 
 def is_binary_string(s: str) -> bool:
