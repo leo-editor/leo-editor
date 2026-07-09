@@ -461,7 +461,7 @@ class LeoQtGui(leoGui.LeoGui):
 
     # @+node:ekr.20180117053546.1: *3* LeoQtGui.show_tips & helpers
     @g.command('show-tips')
-    def show_next_tip(self, event: LeoKeyEvent) -> None:
+    def show_next_tip(self, event: LeoKeyEvent | None = None) -> None:
         c = g.app.log and g.app.log.c
         if c:
             g.app.gui.show_tips(c)

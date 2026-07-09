@@ -2055,7 +2055,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
     # @+node:ekr.20110605121601.18301: *4* LeoQtFrame.Window Menu...
     # @+node:ekr.20110605121601.18302: *5* LeoQtFrame.toggleActivePane
     @frame_cmd('toggle-active-pane')
-    def toggleActivePane(self, event: LeoKeyEvent) -> None:
+    def toggleActivePane(self, event: LeoKeyEvent | None = None) -> None:
         """Toggle the focus between the outline and body panes."""
         frame = self
         c = frame.c
@@ -2069,20 +2069,20 @@ class LeoQtFrame(leoFrame.LeoFrame):
 
     # @+node:ekr.20110605121601.18304: *5* LeoQtFrame.equalSizedPanes
     @frame_cmd('equal-sized-panes')
-    def equalSizedPanes(self, event: LeoKeyEvent) -> None:
+    def equalSizedPanes(self, event: LeoKeyEvent | None = None) -> None:
         """Make the outline and body panes have the same size."""
         self.resizePanesToRatio(0.5, self.compute_secondary_ratio())
 
     # @+node:ekr.20250422154709.1: *5* LeoQtFrame.contract/expandMainSplitter
     @frame_cmd('contract-main-splitter')
-    def contractMainSplitter(self, event: LeoKeyEvent) -> None:
+    def contractMainSplitter(self, event: LeoKeyEvent | None = None) -> None:
         """
         Contract the main splitter's first widget, expanding the main splitter's second widget.
         """
         self.resize_main_splitter(-40)
 
     @frame_cmd('expand-main-splitter')
-    def expandMainSplitter(self, event: LeoKeyEvent) -> None:
+    def expandMainSplitter(self, event: LeoKeyEvent | None = None) -> None:
         """
         Expand the main splitter's first widget, contracting the main splitter's second widget.
         """
@@ -2109,7 +2109,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
 
     # @+node:ekr.20110605121601.18306: *5* LeoQtFrame.minimizeAll
     @frame_cmd('minimize-all')
-    def minimizeAll(self, event: LeoKeyEvent) -> None:
+    def minimizeAll(self, event: LeoKeyEvent | None = None) -> None:
         """Minimize all Leo's windows."""
         for frame in g.app.windowList:
             self.minimize(frame)
@@ -2125,7 +2125,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
 
     # @+node:ekr.20110605121601.18307: *5* LeoQtFrame.toggleSplitDirection
     @frame_cmd('toggle-split-direction')
-    def toggleSplitDirection(self, event: LeoKeyEvent) -> None:
+    def toggleSplitDirection(self, event: LeoKeyEvent | None = None) -> None:
         """
         Toggle the split direction in the present Leo window.
         """
@@ -2141,7 +2141,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
 
     # @+node:ekr.20110605121601.18308: *5* LeoQtFrame.resizeToScreen
     @frame_cmd('resize-to-screen')
-    def resizeToScreen(self, event: LeoKeyEvent) -> None:
+    def resizeToScreen(self, event: LeoKeyEvent | None = None) -> None:
         """Resize the Leo window so it fill the entire screen."""
         frame = self
         # This unit test will fail when run externally.
@@ -2316,7 +2316,7 @@ class LeoQtLog(leoFrame.LeoLog):
     # @+node:ekr.20150717102728.1: *3* LeoQtLog.clear-log & dump-log
     @log_cmd('clear-log')
     @log_cmd('log-clear')
-    def clearLog(self, event: LeoKeyEvent) -> None:
+    def clearLog(self, event: LeoKeyEvent | None = None) -> None:
         """Clear the log pane."""
         # self.logCtrl may be either a wrapper or a widget.
         w = self.logCtrl.widget
@@ -2325,7 +2325,7 @@ class LeoQtLog(leoFrame.LeoLog):
 
     @log_cmd('dump-log')
     @log_cmd('log-dump')
-    def dumpLog(self, event: LeoKeyEvent) -> None:
+    def dumpLog(self, event: LeoKeyEvent | None = None) -> None:
         """Clear the log pane."""
         # self.logCtrl may be either a wrapper or a widget.
         w = self.logCtrl.widget
@@ -4380,7 +4380,7 @@ class TabbedFrameFactory:
         # @+<< Commands for tabs >>
         # @+node:ekr.20110605121601.18473: *4* << Commands for tabs >>
         @g.command('tab-detach')
-        def tab_detach(event: LeoKeyEvent) -> None:
+        def tab_detach(event: LeoKeyEvent | None = None) -> None:
             """Detach current tab from tab bar"""
             if len(self.leoFrames) < 2:
                 g.es_print_error("Can't detach last tab")
@@ -4394,7 +4394,7 @@ class TabbedFrameFactory:
         # this is actually not tab-specific, move elsewhere?
 
         @g.command('close-others')
-        def close_others(event: LeoKeyEvent) -> None:
+        def close_others(event: LeoKeyEvent | None = None) -> None:
             """Close all windows except the present window."""
             myc = event['c']
             for c in g.app.commanders():
@@ -4415,12 +4415,12 @@ class TabbedFrameFactory:
             self.focusCurrentBody()
 
         @g.command('tab-cycle-next')
-        def tab_cycle_next(event: LeoKeyEvent) -> None:
+        def tab_cycle_next(event: LeoKeyEvent | None = None) -> None:
             """Cycle to next tab"""
             tab_cycle(1)
 
         @g.command('tab-cycle-previous')
-        def tab_cycle_previous(event: LeoKeyEvent) -> None:
+        def tab_cycle_previous(event: LeoKeyEvent | None = None) -> None:
             """Cycle to next tab"""
             tab_cycle(-1)
 
@@ -4504,7 +4504,7 @@ class TabbedFrameFactory:
 # @+node:ekr.20241027140721.1: *3* contract-*-pane commands
 # @+node:ekr.20200303082511.6: *4* 'contract-body-pane'
 @g.command('contract-body-pane')
-def contractBodyPane(event: LeoKeyEvent) -> None:
+def contractBodyPane(event: LeoKeyEvent | None = None) -> None:
     """Contract the body pane. Expand the outline/log splitter."""
     c = event.get('c') if event else None
     if c:
@@ -4513,7 +4513,7 @@ def contractBodyPane(event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20200303084048.1: *4* 'contract-log-pane'
 @g.command('contract-log-pane')
-def contractLogPane(event: LeoKeyEvent) -> None:
+def contractLogPane(event: LeoKeyEvent | None = None) -> None:
     """Contract the log pane. Expand the outline pane."""
     c = event.get('c') if event else None
     if c:
@@ -4522,7 +4522,7 @@ def contractLogPane(event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20200303084225.1: *4* 'contract-outline-pane'
 @g.command('contract-outline-pane')
-def contractOutlinePane(event: LeoKeyEvent) -> None:
+def contractOutlinePane(event: LeoKeyEvent | None = None) -> None:
     """Contract the outline pane. Expand the body pane."""
     c = event.get('c') if event else None
     if c:
@@ -4531,18 +4531,18 @@ def contractOutlinePane(event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20241027140603.1: *4* 'contract-vr-pane'
 @g.command('contract-vr-pane')
-def contractVRPane(event: LeoKeyEvent) -> None:
+def contractVRPane(event: LeoKeyEvent | None = None) -> None:
     """Contract the outline pane. Expand the body pane."""
-    c = event.get('c')
+    c = event.get('c') if event else None
     if c:
         c.frame.top.layout_cache.contract_vr()
 
 
 # @+node:ekr.20241027140620.1: *4* 'contract-vr3-pane'
 @g.command('contract-vr3-pane')
-def contractVR3Pane(event: LeoKeyEvent) -> None:
+def contractVR3Pane(event: LeoKeyEvent | None = None) -> None:
     """Contract the outline pane. Expand the body pane."""
-    c = event.get('c')
+    c = event.get('c') if event else None
     if c:
         c.frame.top.layout_cache.contract_vr3()
 
@@ -4550,45 +4550,45 @@ def contractVR3Pane(event: LeoKeyEvent) -> None:
 # @+node:ekr.20241027140739.1: *3* expand-*-pane commands
 # @+node:ekr.20241027124820.1: *4* 'expand-body-pane
 @g.command('expand-body-pane')
-def expandBodyPane(event: LeoKeyEvent) -> None:
+def expandBodyPane(event: LeoKeyEvent | None = None) -> None:
     """Expand the log pane. Contract the outline pane."""
-    c = event.get('c')
+    c = event.get('c') if event else None
     if c:
         c.frame.top.layout_cache.expand_body()
 
 
 # @+node:ekr.20200303084226.1: *4* 'expand-log-pane'
 @g.command('expand-log-pane')
-def expandLogPane(event: LeoKeyEvent) -> None:
+def expandLogPane(event: LeoKeyEvent | None = None) -> None:
     """Expand the log pane. Contract the outline pane."""
-    c = event.get('c')
+    c = event.get('c') if event else None
     if c:
         c.frame.top.layout_cache.expand_log()
 
 
 # @+node:ekr.20241027124753.1: *4* 'expand-outline-pane'
 @g.command('expand-outline-pane')
-def expandOutlinePane(event: LeoKeyEvent) -> None:
+def expandOutlinePane(event: LeoKeyEvent | None = None) -> None:
     """Expand the log pane. Contract the outline pane."""
-    c = event.get('c')
+    c = event.get('c') if event else None
     if c:
         c.frame.top.layout_cache.expand_outline()
 
 
 # @+node:ekr.20241027140647.1: *4* 'expand-vr-pane'
 @g.command('expand-vr-pane')
-def expandVRPane(event: LeoKeyEvent) -> None:
+def expandVRPane(event: LeoKeyEvent | None = None) -> None:
     """Expand the log pane. Contract the outline pane."""
-    c = event.get('c')
+    c = event.get('c') if event else None
     if c:
         c.frame.top.layout_cache.expand_vr()
 
 
 # @+node:ekr.20241027140706.1: *4* 'expand-vr3-pane'
 @g.command('expand-vr3-pane')
-def expandVR3Pane(event: LeoKeyEvent) -> None:
+def expandVR3Pane(event: LeoKeyEvent | None = None) -> None:
     """Expand the log pane. Contract the outline pane."""
-    c = event.get('c')
+    c = event.get('c') if event else None
     if c:
         c.frame.top.layout_cache.expand_vr3()
 
@@ -4596,9 +4596,9 @@ def expandVR3Pane(event: LeoKeyEvent) -> None:
 # @+node:ekr.20241027140819.1: *3* hide-* commands
 # @+node:ekr.20200303084610.1: *4* 'hide-body-pane'
 @g.command('hide-body-pane')
-def hideBodyPane(event: LeoKeyEvent) -> None:
+def hideBodyPane(event: LeoKeyEvent | None = None) -> None:
     """Hide the body pane. Fully expand the outline/log splitter."""
-    c = event.get('c')
+    c = event.get('c') if event else None
     if not c:
         return
     c.frame.divideLeoSplitter1(1.0)
@@ -4606,8 +4606,8 @@ def hideBodyPane(event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20231102130853.1: *4* 'hide-icon-bar'
 @g.command('hide-icon-bar')
-def hideIconBar(event: LeoKeyEvent) -> None:
-    c = event.get('c')
+def hideIconBar(event: LeoKeyEvent | None = None) -> None:
+    c = event.get('c') if event else None
     if c:
         dw = c.frame.top
         dw.iconBar.hide()
@@ -4615,9 +4615,9 @@ def hideIconBar(event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20200303084625.1: *4* 'hide-log-pane'
 @g.command('hide-log-pane')
-def hideLogPane(event: LeoKeyEvent) -> None:
+def hideLogPane(event: LeoKeyEvent | None = None) -> None:
     """Hide the log pane. Fully expand the outline pane."""
-    c = event.get('c')
+    c = event.get('c') if event else None
     if not c:
         return
     c.frame.divideLeoSplitter2(1.0)
@@ -4625,8 +4625,8 @@ def hideLogPane(event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20231102131048.1: *4* 'hide-minibuffer'
 @g.command('hide-minibuffer')
-def hideMinibuffer(event: LeoKeyEvent) -> None:
-    c = event.get('c')
+def hideMinibuffer(event: LeoKeyEvent | None = None) -> None:
+    c = event.get('c') if event else None
     if c:
         dw = c.frame.top
         dw.leo_minibuffer_frame.hide()
@@ -4634,9 +4634,9 @@ def hideMinibuffer(event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20200303082511.7: *4* 'hide-outline-pane'
 @g.command('hide-outline-pane')
-def hideOutlinePane(event: LeoKeyEvent) -> None:
+def hideOutlinePane(event: LeoKeyEvent | None = None) -> None:
     """Hide the outline/log splitter. Fully expand the body pane."""
-    c = event.get('c')
+    c = event.get('c') if event else None
     if not c:
         return
     c.frame.divideLeoSplitter1(0.0)
@@ -4644,8 +4644,8 @@ def hideOutlinePane(event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20231102130902.1: *4* 'hide-status-bar'
 @g.command('hide-status-bar')
-def hideStatusBar(event: LeoKeyEvent) -> None:
-    c = event.get('c')
+def hideStatusBar(event: LeoKeyEvent | None = None) -> None:
+    c = event.get('c') if event else None
     if c:
         dw = c.frame.top
         dw.statusBar.hide()
@@ -4654,8 +4654,8 @@ def hideStatusBar(event: LeoKeyEvent) -> None:
 # @+node:ekr.20241027140853.1: *3* show-* commands
 # @+node:ekr.20241027140945.1: *4* 'show-icon-bar'
 @g.command('show-icon-bar')
-def showIconBar(event: LeoKeyEvent) -> None:
-    c = event.get('c')
+def showIconBar(event: LeoKeyEvent | None = None) -> None:
+    c = event.get('c') if event else None
     if c:
         dw = c.frame.top
         dw.iconBar.show()
@@ -4663,8 +4663,8 @@ def showIconBar(event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20241027141052.1: *4* 'show-minibuffer'
 @g.command('show-minibuffer')
-def showMinibuffer(event: LeoKeyEvent) -> None:
-    c = event.get('c')
+def showMinibuffer(event: LeoKeyEvent | None = None) -> None:
+    c = event.get('c') if event else None
     if c:
         dw = c.frame.top
         dw.leo_minibuffer_frame.show()
@@ -4673,9 +4673,9 @@ def showMinibuffer(event: LeoKeyEvent) -> None:
 # @+node:ekr.20240518150051.1: *4* 'show-qt-widgets'
 @g.command('print-qt-widgets')
 @g.command('show-qt-widgets')
-def showQtWidgets(event: LeoKeyEvent) -> None:
+def showQtWidgets(event: LeoKeyEvent | None = None) -> None:
     """Print the hierarchy of qt widgets."""
-    c = event.get('c')
+    c = event.get('c') if event else None
     total = 0
     if not c:
         return
@@ -4726,8 +4726,8 @@ def showQtWidgets(event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20241027141138.1: *4* 'show-status-bar'
 @g.command('show-status-bar')
-def showStatusBar(event: LeoKeyEvent) -> None:
-    c = event.get('c')
+def showStatusBar(event: LeoKeyEvent | None = None) -> None:
+    c = event.get('c') if event else None
     if c:
         dw = c.frame.top
         dw.statusBar.show()
@@ -4736,8 +4736,8 @@ def showStatusBar(event: LeoKeyEvent) -> None:
 # @+node:ekr.20241027140920.1: *3* toggle-* commands
 # @+node:ekr.20241027141012.1: *4* 'toggle-icon-bar'
 @g.command('toggle-icon-bar')
-def toggleIconBar(event: LeoKeyEvent) -> None:
-    c = event.get('c')
+def toggleIconBar(event: LeoKeyEvent | None = None) -> None:
+    c = event.get('c') if event else None
     if c:
         dw = c.frame.top
         w = dw.iconBar
@@ -4749,8 +4749,8 @@ def toggleIconBar(event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20241027141108.1: *4* 'toggle-minibuffer'
 @g.command('toggle-minibuffer')
-def toggleMinibuffer(event: LeoKeyEvent) -> None:
-    c = event.get('c')
+def toggleMinibuffer(event: LeoKeyEvent | None = None) -> None:
+    c = event.get('c') if event else None
     if c:
         dw = c.frame.top
         w = dw.leo_minibuffer_frame
@@ -4762,8 +4762,8 @@ def toggleMinibuffer(event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20241027141155.1: *4* 'toggle-status-bar'
 @g.command('toggle-status-bar')
-def toggleStatusBar(event: LeoKeyEvent) -> None:
-    c = event.get('c')
+def toggleStatusBar(event: LeoKeyEvent | None = None) -> None:
+    c = event.get('c') if event else None
     if c:
         dw = c.frame.top
         w = dw.statusBar
@@ -4775,8 +4775,8 @@ def toggleStatusBar(event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20240505045118.1: *4* 'toggle-unl-view'
 @g.command('toggle-unl-view')
-def toggleUnlView(event: LeoKeyEvent) -> None:
-    c = event.get('c')
+def toggleUnlView(event: LeoKeyEvent | None = None) -> None:
+    c = event.get('c') if event else None
     if c and c.frame.statusLine:
         # This is not a convenience method.
         c.frame.statusLine.toggleUnlView()

@@ -50,7 +50,7 @@ def zoom_in(event: LeoKeyEvent | None = None, delta: int = 1) -> None:
 
 # @+node:ekr.20191001084646.1: *3* @g.command('zoom-out')
 @g.command("zoom-out")
-def zoom_out(event: LeoKeyEvent) -> None:
+def zoom_out(event: LeoKeyEvent | None = None) -> None:
     """decrease body font size by one
 
     @font-size-body must be present in the stylesheet
@@ -113,7 +113,7 @@ Valid values are standard css color names like `lightgrey`, and css rgb values l
 
 
 @g.command('help-for-highlight-current-line')
-def helpForLineHighlight(self: Any, event: LeoKeyEvent) -> None:
+def helpForLineHighlight(self: Any, event: LeoKeyEvent | None = None) -> None:
     """Displays Settings used by current line highlighter."""
     self.c.putHelpFor(hilite_doc)
 
