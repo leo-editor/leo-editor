@@ -38,7 +38,9 @@ def onSelect(tag: str, keywords: Any) -> None:
 @g.command('detach-editor-toggle')
 def detach_editor_toggle(event: LeoKeyEvent | None = None) -> None:
     """Detach or undetach body editor"""
-    c: Cmdr = event['c']
+    c = event.get('c') if event else None
+    if not c:
+        return
     detach = True
     try:
         if c.frame.detached_body_info is not None:
@@ -54,7 +56,9 @@ def detach_editor_toggle(event: LeoKeyEvent | None = None) -> None:
 @g.command('detach-editor-toggle-max')
 def detach_editor_toggle_max(event: LeoKeyEvent | None = None) -> None:
     """Detach editor, maximize"""
-    c: Cmdr = event['c']
+    c = event.get('c') if event else None
+    if not c:
+        return
     detach_editor_toggle(event)
     if c.frame.detached_body_info is not None:
         wdg: QWidget = c.frame.top.leo_body_frame
