@@ -2998,7 +2998,7 @@ class Commands:
 
     # @+node:ekr.20180503110307.1: *4* c.interactive*
     # @+node:ekr.20180504075937.1: *5* c.interactive
-    def interactive(self, callback: Callable, event: LeoKeyEvent, prompts: Sequence) -> None:
+    def interactive(self, callback: Callable, event: LeoKeyEvent | None, prompts: Sequence) -> None:
         # @+<< c.interactive docstring >>
         # @+node:ekr.20180503131222.1: *6* << c.interactive docstring >>
         """
@@ -3040,7 +3040,7 @@ class Commands:
     def interactive1(
         self,
         callback: Callable,
-        event: LeoKeyEvent,  # Used in the callback.
+        event: LeoKeyEvent | None,  # Used in the callback.
         prompts: Sequence,
     ) -> None:
         c, k = self, self.k
@@ -3059,7 +3059,7 @@ class Commands:
     def interactive2(
         self,
         callback: Callable,  # Used in the callback.
-        event: LeoKeyEvent,
+        event: LeoKeyEvent | None,
         prompts: Sequence,
     ) -> None:
         c, k = self, self.k
@@ -3084,7 +3084,7 @@ class Commands:
     def interactive3(
         self,
         callback: Callable,
-        event: LeoKeyEvent,  # Used in the callback.
+        event: LeoKeyEvent | None,  # Used in the callback.
         prompts: Sequence,
     ) -> None:
         c = self
@@ -3092,17 +3092,17 @@ class Commands:
         k = self.k
         prompt1, prompt2, prompt3 = prompts
 
-        def state1(event: LeoKeyEvent) -> None:
+        def state1(event: LeoKeyEvent | None = None) -> None:
             d['arg1'] = k.arg
             k.extendLabel(prompt2, select=False, protect=True)
             k.getNextArg(handler=state2)
 
-        def state2(event: LeoKeyEvent) -> None:
+        def state2(event: LeoKeyEvent | None = None) -> None:
             d['arg2'] = k.arg
             k.extendLabel(prompt3, select=False, protect=True)
             k.get1Arg(event, handler=state3)  # Restart.
 
-        def state3(event: LeoKeyEvent) -> None:
+        def state3(event: LeoKeyEvent | None = None) -> None:
             args = [d.get('arg1'), d.get('arg2'), k.arg]
             callback(args=args, c=c, event=event)
             k.clearState()

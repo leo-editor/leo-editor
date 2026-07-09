@@ -1098,7 +1098,7 @@ class LeoTree:
         pass
 
     # @+node:ekr.20051026083544.2: *4* LeoTree.updateHead
-    def updateHead(self, event: LeoKeyEvent, w: QTextMixin) -> None:
+    def updateHead(self, event: LeoKeyEvent | None, w: QTextMixin) -> None:
         """
         Update a headline from an event.
 

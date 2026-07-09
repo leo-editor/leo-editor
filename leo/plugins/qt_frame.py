@@ -3457,7 +3457,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
 
     # @+node:ekr.20110605121601.18381: *3* LeoQTreeWidget: utils
     # @+node:ekr.20110605121601.18382: *4* LeoQTreeWidget.dump
-    def dump(self, ev: LeoKeyEvent, p: Position, tag: str) -> None:
+    def dump(self, ev: LeoKeyEvent | None, p: Position, tag: str) -> None:
         if ev:
             md = ev.mimeData()
             s = g.checkUnicode(md.text(), encoding='utf-8')

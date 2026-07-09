@@ -276,7 +276,7 @@ class MarkupCommands:
     # @+node:ekr.20191006153233.1: *3* markup.command_helper & helpers
     def command_helper(
         self,
-        event: LeoKeyEvent,
+        event: LeoKeyEvent | None,
         kind: str,
         preview: bool,
         verbose: bool,

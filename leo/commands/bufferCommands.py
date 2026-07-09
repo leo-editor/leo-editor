@@ -229,7 +229,7 @@ class BufferCommandsClass(BaseEditCommandsClass):
         return None
 
     # @+node:ekr.20150514045829.17: *4* getBufferName
-    def getBufferName(self, event: LeoKeyEvent, finisher: Callable) -> None:
+    def getBufferName(self, event: LeoKeyEvent | None, finisher: Callable) -> None:
         """Get a buffer name into k.arg and call k.setState(kind,n,handler)."""
         k = self.c.k
         self.computeData()

@@ -71,7 +71,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         self.w = cast(QTextMixin, None)
 
     # @+node:ekr.20150514043850.11: *3* abbrev.expandAbbrev & helpers (entry point)
-    def expandAbbrev(self, event: LeoKeyEvent, stroke: g.KeyStroke) -> bool:
+    def expandAbbrev(self, event: LeoKeyEvent | None, stroke: g.KeyStroke) -> bool:
         """
         Not a command.  Expand abbreviations..
 
@@ -119,7 +119,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20260516063712.1: *4* abbrev: startup
     # @+node:ekr.20161121111502.1: *5* abbrev.get_ch
-    def get_ch(self, event: LeoKeyEvent, stroke: g.KeyStroke) -> str:
+    def get_ch(self, event: LeoKeyEvent | None, stroke: g.KeyStroke) -> str:
         """Return the ch from the stroke or event."""
         event_ch = event.char or '' if event else ''
         assert g.isStrokeOrNone(stroke), stroke

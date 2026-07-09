@@ -34,7 +34,7 @@ class ControlCommandsClass(BaseEditCommandsClass):
 
     # @+others
     # @+node:ekr.20150514063305.91: *3* executeSubprocess
-    def executeSubprocess(self, event: LeoKeyEvent, command: str) -> None:
+    def executeSubprocess(self, event: LeoKeyEvent | None, command: str) -> None:
         """Execute a command in a separate process."""
         trace = False
         k = self.c.k

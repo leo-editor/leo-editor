@@ -1141,7 +1141,7 @@ class LeoFind:
         """Toggle the 'Whole Word' checkbox in the Find tab."""
         self.toggle_option(event, 'whole_word')
 
-    def toggle_option(self, event: LeoKeyEvent, checkbox_name: str) -> None:
+    def toggle_option(self, event: LeoKeyEvent | None, checkbox_name: str) -> None:
         c, finder = self.c, self.c.findCommands
         self.ftm.toggle_checkbox(checkbox_name)
         if self.minibuffer_mode:
@@ -3354,7 +3354,7 @@ class LeoFind:
     # @+node:ekr.20131117164142.16955: *5* find.start_incremental
     def start_incremental(
         self,
-        event: LeoKeyEvent,
+        event: LeoKeyEvent | None,
         commandName: str,
         forward: bool,
         ignoreCase: bool,
@@ -3513,7 +3513,7 @@ class LeoFind:
     # @+node:ekr.20131117164142.17007: *4* find.start_state_machine & helpers
     def start_state_machine(
         self,
-        event: LeoKeyEvent,
+        event: LeoKeyEvent | None,
         prefix: str,
         handler: Callable,
         escape_handler: Callable = None,

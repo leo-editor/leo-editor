@@ -174,7 +174,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
     # @+node:ekr.20150514063305.419: *3* ec.killHelper
     def killHelper(
         self,
-        event: LeoKeyEvent,
+        event: LeoKeyEvent | None,
         frm: int,
         to: int,
         w: QTextMixin,
@@ -206,7 +206,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
     # @+node:ekr.20220121073752.1: *3* ec.killParagraphHelper
     def killParagraphHelper(
         self,
-        event: LeoKeyEvent,
+        event: LeoKeyEvent | None,
         frm: int,
         to: int,
         undoType: str | None = None,
@@ -358,7 +358,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         """Insert the first entry of the kill ring."""
         self.yankHelper(event, pop=True)
 
-    def yankHelper(self, event: LeoKeyEvent, pop: bool) -> None:
+    def yankHelper(self, event: LeoKeyEvent | None, pop: bool) -> None:
         """
         Helper for yank and yank-pop:
         pop = False: insert the first entry of the kill ring.
