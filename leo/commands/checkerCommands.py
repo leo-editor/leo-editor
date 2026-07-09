@@ -53,7 +53,7 @@ if TYPE_CHECKING:  # pragma: no cover
 # @+node:ekr.20161021091557.1: **  Commands
 # @+node:ekr.20230104132446.1: *3* check-nodes
 @g.command('check-nodes')
-def check_nodes(event: LeoKeyEvent) -> None:
+def check_nodes(event: LeoKeyEvent | None = None) -> None:
     """
     Find **dubious* nodes, that is, nodes that:
 
@@ -103,7 +103,7 @@ def check_nodes(event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20190608084751.1: *3* find-long-lines
 @g.command('find-long-lines')
-def find_long_lines(event: LeoKeyEvent) -> None:
+def find_long_lines(event: LeoKeyEvent | None = None) -> None:
     """
     Report long lines in c.p's tree.
     Generate clickable links in the log.
@@ -166,7 +166,7 @@ def find_long_lines(event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20190615180048.1: *3* find-missing-docstrings
 @g.command('find-missing-docstrings')
-def find_missing_docstrings(event: LeoKeyEvent) -> None:
+def find_missing_docstrings(event: LeoKeyEvent | None = None) -> None:
     """Report missing docstrings in the log, with clickable links."""
     c = event and event.get('c')
     if not c:
@@ -237,7 +237,7 @@ def find_missing_docstrings(event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20160517133001.1: *3* flake8-files command
 @g.command('flake8-files')
-def flake8_command(event: LeoKeyEvent) -> None:
+def flake8_command(event: LeoKeyEvent | None = None) -> None:
     """
     Run flake8 on all nodes of the selected tree,
     or the first @<file> node in an ancestor.
@@ -262,14 +262,14 @@ def flake8_command(event: LeoKeyEvent) -> None:
 # @+node:ekr.20161026092059.1: *3* kill-pylint
 @g.command('kill-pylint')
 @g.command('pylint-kill')
-def kill_pylint(event: LeoKeyEvent) -> None:
+def kill_pylint(event: LeoKeyEvent | None = None) -> None:
     """Kill any running pylint processes and clear the queue."""
     g.app.backgroundProcessManager.kill('pylint')
 
 
 # @+node:ekr.20210302111730.1: *3* mypy command
 @g.command('mypy')
-def mypy_command(event: LeoKeyEvent) -> None:
+def mypy_command(event: LeoKeyEvent | None = None) -> None:
     """
     Run mypy on all @<file> nodes of the selected tree, or the first
     @<file> node in an ancestor. Running mypy on a single file usually
@@ -305,7 +305,7 @@ def mypy_command(event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20160516072613.1: *3* pyflakes command
 @g.command('pyflakes')
-def pyflakes_command(event: LeoKeyEvent) -> None:
+def pyflakes_command(event: LeoKeyEvent | None = None) -> None:
     """
     Run pyflakes on all nodes of the selected tree,
     or the first @<file> node in an ancestor.
@@ -328,7 +328,7 @@ last_pylint_path: str | None = None
 
 
 @g.command('pylint')
-def pylint_command(event: LeoKeyEvent) -> None:
+def pylint_command(event: LeoKeyEvent | None = None) -> None:
     """
     Run pylint on all nodes of the selected tree,
     or the first @<file> node in an ancestor,

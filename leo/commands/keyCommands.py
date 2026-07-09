@@ -23,7 +23,7 @@ class KeyHandlerCommandsClass(BaseEditCommandsClass):
     # @+others
     # @+node:ekr.20150514063305.406: *3* menuShortcutPlaceHolder
     @g.command('menu-shortcut')
-    def menuShortcutPlaceHolder(self, event: LeoKeyEvent) -> None:
+    def menuShortcutPlaceHolder(self, event: LeoKeyEvent | None = None) -> None:
         """
         This will never be called.
         A placeholder for the show-bindings command.

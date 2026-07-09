@@ -519,7 +519,7 @@ class GoToCommands:
 
 # @+node:ekr.20180517041303.1: ** show-file-line
 @g.command('show-file-line')
-def show_file_line(event: LeoKeyEvent) -> None:
+def show_file_line(event: LeoKeyEvent | None = None) -> None:
     """
     Print the external file line number that corresponds to the line
     containing the cursor.

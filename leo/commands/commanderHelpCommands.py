@@ -22,7 +22,7 @@ if TYPE_CHECKING:  # pragma: no cover
 # @+others
 # @+node:ekr.20031218072017.2939: ** c_help.about (version number & date)
 @g.commander_command('about-leo')
-def about(self: Self, event: LeoKeyEvent) -> None:
+def about(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Bring up an About Leo Dialog."""
     c = self
     import datetime
@@ -42,7 +42,7 @@ def about(self: Self, event: LeoKeyEvent) -> None:
 
 # @+node:vitalije.20170713174950.1: ** c_help.editOneSetting
 @g.commander_command('edit-setting')
-def editOneSetting(self: Self, event: LeoKeyEvent) -> None:
+def editOneSetting(self: Self, event: LeoKeyEvent | None = None) -> None:
     """
     Opens dialog for editing @button, @command, @color, @font, or @shortcuts nodes.
     """
@@ -65,7 +65,7 @@ def editOneSetting(self: Self, event: LeoKeyEvent) -> None:
 
 # @+node:vitalije.20170708172746.1: ** c_help.editShortcut
 @g.commander_command('edit-shortcut')
-def editShortcut(self: Self, event: LeoKeyEvent) -> None:
+def editShortcut(self: Self, event: LeoKeyEvent | None = None) -> None:
     k = self.k
     if k.isEditShortcutSensible():
         # k.setState('input-shortcut', 'input-shortcut')
@@ -80,7 +80,7 @@ def editShortcut(self: Self, event: LeoKeyEvent) -> None:
 # @+node:ekr.20031218072017.2940: *3* c_help.leoDocumentation
 @g.commander_command('open-leo-docs-leo')
 @g.commander_command('leo-docs-leo')
-def leoDocumentation(self: Self, event: LeoKeyEvent) -> None:
+def leoDocumentation(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Open LeoDocs.leo in a new Leo window."""
     c = self
     name = "LeoDocs.leo"
@@ -95,7 +95,7 @@ def leoDocumentation(self: Self, event: LeoKeyEvent) -> None:
 # @+node:ekr.20090628075121.5994: *3* c_help.leoQuickStart
 @g.commander_command('open-quickstart-leo')
 @g.commander_command('leo-quickstart-leo')
-def leoQuickStart(self: Self, event: LeoKeyEvent) -> None:
+def leoQuickStart(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Open quickstart.leo in a new Leo window."""
     c = self
     name = "quickstart.leo"
@@ -111,7 +111,7 @@ def leoQuickStart(self: Self, event: LeoKeyEvent) -> None:
 @g.commander_command('open-cheat-sheet-leo')
 @g.commander_command('leo-cheat-sheet')
 @g.commander_command('cheat-sheet')
-def openCheatSheet(self: Self, event: LeoKeyEvent) -> None:
+def openCheatSheet(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Open leo/doc/cheatSheet.leo"""
     c = self
     fn = g.finalize_join(g.app.loadDir, '..', 'doc', 'CheatSheet.leo')
@@ -129,7 +129,7 @@ def openCheatSheet(self: Self, event: LeoKeyEvent) -> None:
 # @+node:lkj.20190714022527.1: *3* c_help.openDesktopIntegration
 @g.commander_command('open-desktop-integration-leo')
 @g.commander_command('desktop-integration-leo')
-def openDesktopIntegration(self: Self, event: LeoKeyEvent) -> None:
+def openDesktopIntegration(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Open Desktop-integration.leo."""
     c = self
     fileName = g.finalize_join(g.app.loadDir, '..', 'scripts', 'desktop-integration.leo')
@@ -143,7 +143,7 @@ def openDesktopIntegration(self: Self, event: LeoKeyEvent) -> None:
 # @+node:ekr.20161025090405.1: *3* c_help.openLeoDist
 @g.commander_command('open-leo-dist-leo')
 @g.commander_command('leo-dist-leo')
-def openLeoDist(self: Self, event: LeoKeyEvent) -> None:
+def openLeoDist(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Open leoDist.leo in a new Leo window."""
     c = self
     name = "leoDist.leo"
@@ -158,7 +158,7 @@ def openLeoDist(self: Self, event: LeoKeyEvent) -> None:
 # @+node:ekr.20151225193723.1: *3* c_help.openLeoPy
 @g.commander_command('open-leo-py-leo')
 @g.commander_command('leo-py-leo')
-def openLeoPy(self: Self, event: LeoKeyEvent) -> Cmdr | None:
+def openLeoPy(self: Self, event: LeoKeyEvent | None = None) -> Cmdr | None:
     """Open leoPy.leo or LeoPyRef.leo in a new Leo window."""
     c = self
     names = (
@@ -179,7 +179,7 @@ def openLeoPy(self: Self, event: LeoKeyEvent) -> Cmdr | None:
 # @+node:ekr.20201013105418.1: *3* c_help.openLeoPyRef
 @g.commander_command('open-leo-py-ref-leo')
 @g.commander_command('leo-py-ref-leo')
-def openLeoPyRef(self: Self, event: LeoKeyEvent) -> Cmdr | None:
+def openLeoPyRef(self: Self, event: LeoKeyEvent | None = None) -> Cmdr | None:
     """Open leoPyRef.leo in a new Leo window."""
     c = self
     path = g.finalize_join(g.app.loadDir, "..", "core", "LeoPyRef.leo")
@@ -194,7 +194,7 @@ def openLeoPyRef(self: Self, event: LeoKeyEvent) -> Cmdr | None:
 # @+node:ekr.20061018094539: *3* c_help.openLeoScripts
 @g.commander_command('open-scripts-leo')
 @g.commander_command('leo-scripts-leo')
-def openLeoScripts(self: Self, event: LeoKeyEvent) -> None:
+def openLeoScripts(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Open scripts.leo."""
     c = self
     fileName = g.finalize_join(g.app.loadDir, '..', 'scripts', 'scripts.leo')
@@ -209,7 +209,7 @@ def openLeoScripts(self: Self, event: LeoKeyEvent) -> None:
 @g.commander_command('open-leo-settings')
 @g.commander_command('open-leo-settings-leo')  # #1343.
 @g.commander_command('leo-settings')
-def openLeoSettings(self: Self, event: LeoKeyEvent) -> Cmdr | None:
+def openLeoSettings(self: Self, event: LeoKeyEvent | None = None) -> Cmdr | None:
     """Open leoSettings.leo in a new Leo window."""
     c, lm = self, g.app.loadManager
     path = lm.computeLeoSettingsPath()
@@ -223,7 +223,7 @@ def openLeoSettings(self: Self, event: LeoKeyEvent) -> Cmdr | None:
 @g.commander_command('open-my-leo-settings')
 @g.commander_command('open-my-leo-settings-leo')  # #1343.
 @g.commander_command('my-leo-settings')
-def openMyLeoSettings(self: Self, event: LeoKeyEvent) -> Cmdr:
+def openMyLeoSettings(self: Self, event: LeoKeyEvent | None = None) -> Cmdr:
     """Open myLeoSettings.leo in a new Leo window."""
     c, lm = self, g.app.loadManager
     path = lm.computeMyLeoSettingsPath()
@@ -298,7 +298,7 @@ def createMyLeoSettings(c: Cmdr) -> Cmdr | None:
 # @+node:ekr.20171124093507.1: ** c_help.Open Leo web pages
 # @+node:ekr.20031218072017.2941: *3* c_help.leoHome
 @g.commander_command('open-online-home')
-def leoHome(self: Self, event: LeoKeyEvent) -> None:
+def leoHome(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Open Leo's Home page in a web browser."""
     import webbrowser
 
@@ -311,7 +311,7 @@ def leoHome(self: Self, event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20131213072223.19441: *3* c_help.openLeoTOC
 @g.commander_command('open-online-toc')
-def openLeoTOC(self: Self, event: LeoKeyEvent) -> None:
+def openLeoTOC(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Open Leo's tutorials page in a web browser."""
     import webbrowser
 
@@ -324,7 +324,7 @@ def openLeoTOC(self: Self, event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20230104130712.1: *3* c_help.openLeoScriptingMiscellany
 @g.commander_command('open-online-scripting-miscellany')
-def openLeoScriptingMiscellany(self: Self, event: LeoKeyEvent) -> None:
+def openLeoScriptingMiscellany(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Open Leo's scripting miscellany page in a web browser."""
     import webbrowser
 
@@ -337,7 +337,7 @@ def openLeoScriptingMiscellany(self: Self, event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20131213072223.19435: *3* c_help.openLeoTutorials
 @g.commander_command('open-online-tutorials')
-def openLeoTutorials(self: Self, event: LeoKeyEvent) -> None:
+def openLeoTutorials(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Open Leo's tutorials page in a web browser."""
     import webbrowser
 
@@ -350,7 +350,7 @@ def openLeoTutorials(self: Self, event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20060613082924: *3* c_help.openLeoUsersGuide
 @g.commander_command('open-users-guide')
-def openLeoUsersGuide(self: Self, event: LeoKeyEvent) -> None:
+def openLeoUsersGuide(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Open Leo's users guide in a web browser."""
     import webbrowser
 
@@ -363,7 +363,7 @@ def openLeoUsersGuide(self: Self, event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20131213072223.19437: *3* c_help.openLeoVideos
 @g.commander_command('open-online-videos')
-def openLeoVideos(self: Self, event: LeoKeyEvent) -> None:
+def openLeoVideos(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Open Leo's videos page in a web browser."""
     import webbrowser
 
@@ -376,7 +376,7 @@ def openLeoVideos(self: Self, event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20031218072017.2932: ** c_help.openPythonWindow
 @g.commander_command('open-python-window')
-def openPythonWindow(self: Self, event: LeoKeyEvent) -> None:
+def openPythonWindow(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Open Python's Idle debugger in a separate process."""
     m = g.import_module('idlelib')
     if not m:
@@ -393,7 +393,7 @@ def openPythonWindow(self: Self, event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20131213072223.19532: ** c_help.selectAtSettingsNode
 @g.commander_command('open-local-settings')
-def selectAtSettingsNode(self: Self, event: LeoKeyEvent) -> None:
+def selectAtSettingsNode(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Select the @settings node, if there is one."""
     c = self
     p = c.config.settingsRoot()

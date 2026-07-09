@@ -494,7 +494,7 @@ class SpellCommandsClass(BaseEditCommandsClass):
     # @+node:ekr.20150514063305.492: *3* as_you_type_* commands
     # @+node:ekr.20150514063305.493: *4* as_you_type_toggle
     @cmd('spell-as-you-type-toggle')
-    def as_you_type_toggle(self, event: LeoKeyEvent) -> None:
+    def as_you_type_toggle(self, event: LeoKeyEvent | None = None) -> None:
         """as_you_type_toggle - toggle spell as you type."""
         if self.spell_as_you_type:
             self.spell_as_you_type = False
@@ -509,7 +509,7 @@ class SpellCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.494: *4* as_you_type_wrap
     @cmd('spell-as-you-type-wrap')
-    def as_you_type_wrap(self, event: LeoKeyEvent) -> None:
+    def as_you_type_wrap(self, event: LeoKeyEvent | None = None) -> None:
         """as_you_type_wrap - toggle wrap as you type."""
         if self.wrap_as_you_type:
             self.wrap_as_you_type = False
@@ -524,7 +524,7 @@ class SpellCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.495: *4* as_you_type_next
     @cmd('spell-as-you-type-next')
-    def as_you_type_next(self, event: LeoKeyEvent) -> None:
+    def as_you_type_next(self, event: LeoKeyEvent | None = None) -> None:
         """as_you_type_next - cycle word behind cursor to next suggestion."""
         if not self.suggestions:
             g.es('[no suggestions]')
@@ -535,7 +535,7 @@ class SpellCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.496: *4* as_you_type_undo
     @cmd('spell-as-you-type-undo')
-    def as_you_type_undo(self, event: LeoKeyEvent) -> None:
+    def as_you_type_undo(self, event: LeoKeyEvent | None = None) -> None:
         """as_you_type_undo - replace word behind cursor with word
         user typed before it started cycling suggestions.
         """
@@ -905,36 +905,36 @@ class SpellTabHandler:
 
 # @+node:ekr.20180209141207.1: ** @g.command('show-spell-info')
 @g.command('show-spell-info')
-def show_spell_info(event: LeoKeyEvent) -> None:
-    c = event.get('c')
+def show_spell_info(event: LeoKeyEvent | None = None) -> None:
+    c = event.get('c') if event else None
     if c:
         c.spellCommands.handler.spellController.show_info()
 
 
 # @+node:ekr.20180211104019.1: ** @g.command('clean-main-spell-dict')
 @g.command('clean-main-spell-dict')
-def clean_main_spell_dict(event: LeoKeyEvent) -> None:
+def clean_main_spell_dict(event: LeoKeyEvent | None = None) -> None:
     """
     Clean the main spelling dictionary used *only* by the default spell
     checker.
 
     This command works regardless of the spell checker being used.
     """
-    c = event and event.get('c')
+    c = event.get('c') if event else None
     if c:
         DefaultWrapper(c).save_main_dict(trace=True)
 
 
 # @+node:ekr.20180211105748.1: ** @g.command('clean-user-spell-dict')
 @g.command('clean-user-spell-dict')
-def clean_user_spell_dict(event: LeoKeyEvent) -> None:
+def clean_user_spell_dict(event: LeoKeyEvent | None = None) -> None:
     """
     Clean the user spelling dictionary used *only* by the default spell
     checker. Mostly for debugging, because this happens automatically.
 
     This command works regardless of the spell checker being used.
     """
-    c = event and event.get('c')
+    c = event.get('c') if event else None
     if c:
         DefaultWrapper(c).save_user_dict(trace=True)
 
