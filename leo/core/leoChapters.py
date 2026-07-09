@@ -122,7 +122,7 @@ class ChapterController:
 
     # @+node:ekr.20070604165126: *3* cc: chapter-select
     @cmd('chapter-select')
-    def selectChapter(self, event: LeoKeyEvent) -> None:
+    def selectChapter(self, event: LeoKeyEvent | None = None) -> None:
         """Prompt for a chapter name and select the given chapter."""
         cc, k = self, self.c.k
         names = cc.setAllChapterNames()
@@ -130,7 +130,7 @@ class ChapterController:
         k.setLabelBlue('Select chapter: ')
         k.get1Arg(event, handler=self.selectChapter1, tabList=names)
 
-    def selectChapter1(self, event: LeoKeyEvent) -> None:
+    def selectChapter1(self, event: LeoKeyEvent | None = None) -> None:
         cc, k = self, self.c.k
         k.clearState()
         k.resetLabel()
@@ -139,7 +139,7 @@ class ChapterController:
 
     # @+node:ekr.20170202061705.1: *3* cc: chapter-back/next
     @cmd('chapter-back')
-    def backChapter(self, event: LeoKeyEvent) -> None:
+    def backChapter(self, event: LeoKeyEvent | None = None) -> None:
         """Select the previous chapter."""
         cc = self
         names = cc.setAllChapterNames()
@@ -149,7 +149,7 @@ class ChapterController:
         cc.selectChapterByName(new_name)
 
     @cmd('chapter-next')
-    def nextChapter(self, event: LeoKeyEvent) -> None:
+    def nextChapter(self, event: LeoKeyEvent | None = None) -> None:
         """Select the next chapter."""
         cc = self
         names = cc.setAllChapterNames()

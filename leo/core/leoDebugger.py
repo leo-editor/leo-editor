@@ -498,9 +498,9 @@ def xdb_again(event):
 
 # @+node:ekr.20181003054157.1: *3* db-b
 @g.command('db-b')
-def xdb_breakpoint(event):
+def xdb_breakpoint(event=None):
     """Set the breakpoint at the presently select line in Leo."""
-    c = event.get('c')
+    c = event.get('c') if event else None
     if not c:
         return
     p = c.p
@@ -581,9 +581,9 @@ def xdb_w(event):
 
 # @+node:ekr.20180701050839.2: *3* db-input
 @g.command('db-input')
-def xdb_input(event):
+def xdb_input(event=None):
     """Prompt the user for a pdb command and execute it."""
-    c = event.get('c')
+    c = event.get('c') if event else None
     if not c:
         g.trace('no c')
         return
@@ -624,9 +624,9 @@ def db_command(event, command):
 
 # @+node:ekr.20180701050839.1: *3* xdb
 @g.command('xdb')
-def xdb_command(event):
+def xdb_command(event=None):
     """Start the external debugger on a toy test program."""
-    c = event.get('c')
+    c = event.get('c') if event else None
     if not c:
         return
     path = g.fullPath(c, c.p)

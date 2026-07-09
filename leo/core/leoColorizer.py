@@ -92,7 +92,7 @@ def make_colorizer(c: Cmdr, widget: QWidget) -> JEditColorizer | PygmentsColoriz
 
 # @+node:ekr.20260215050008.1: ** command: dump-last-colorizer-trace
 @g.command('dump-last-colorizer-trace')
-def dump_colorizer_last_colorizer_traces(event: LeoKeyEvent) -> None:
+def dump_colorizer_last_colorizer_traces(event: LeoKeyEvent | None = None) -> None:
     c = event['c']
     colorizer = c.frame.body.colorizer
     g.cls()

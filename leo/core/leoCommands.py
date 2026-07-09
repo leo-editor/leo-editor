@@ -690,14 +690,14 @@ class Commands:
     # @+node:ekr.20260619060020.1: *3* @cmd commands
     # @+node:ekr.20250508044308.1: *4* @cmd beautify-tree
     @cmd('beautify-tree')
-    def beautify_tree_command(self, event: LeoKeyEvent) -> None:
+    def beautify_tree_command(self, event: LeoKeyEvent | None = None) -> None:
         """Undoably beautify c.p and its subtree."""
         c = self
         c.beautify_script_tree(c.p)
 
     # @+node:ekr.20210530065748.1: *4* @cmd c.execute-general-script
     @cmd('execute-general-script')
-    def execute_general_script_command(self, event: LeoKeyEvent) -> None:
+    def execute_general_script_command(self, event: LeoKeyEvent | None = None) -> None:
         """
         Execute c.p and all its descendants as a script.
 
@@ -747,7 +747,7 @@ class Commands:
     # @+node:tom.20241014154415.1: *4* @cmd c.execute-external-file
     # @@language python
     @cmd('execute-external-file')
-    def execute_external_file(self, event: LeoKeyEvent) -> None:
+    def execute_external_file(self, event: LeoKeyEvent | None = None) -> None:
         r"""
         # @+<< docstring >>
         # @+node:tom.20241014154415.2: *5* << docstring >>
@@ -1207,7 +1207,7 @@ class Commands:
 
     # @+node:vitalije.20190924191405.1: *4* @cmd execute-pytest
     @cmd('execute-pytest')
-    def execute_pytest(self, event: LeoKeyEvent) -> None:
+    def execute_pytest(self, event: LeoKeyEvent | None = None) -> None:
         """Using pytest, execute all @test nodes for p, p's parents and p's subtree."""
         c = self
 
@@ -1459,7 +1459,7 @@ class Commands:
 
     # @+node:ekr.20080514131122.12: *4* @cmd recolor (c.recolorCommand)
     @cmd('recolor')
-    def recolorCommand(self, event: LeoKeyEvent) -> None:
+    def recolorCommand(self, event: LeoKeyEvent | None = None) -> None:
         """Force a full recolor."""
         c = self
         colorer = c.frame.body.colorizer
@@ -1476,8 +1476,8 @@ class Commands:
 
     # @+node:ekr.20260619021703.1: *4* @cmd redraw (c.redraw_command)
     @cmd('redraw')
-    def redraw_command(self, event: LeoKeyEvent) -> None:
-        c = event.get('c')
+    def redraw_command(self, event: LeoKeyEvent | None = None) -> None:
+        c = event.get('c') if event else None
         if c:
             c.redraw()
 
@@ -1651,9 +1651,9 @@ class Commands:
 
     # @+node:ekr.20190506060937.1: *5* c.dumpExpanded
     @cmd('dump-expanded')
-    def dump_expanded(self, event: LeoKeyEvent) -> None:
+    def dump_expanded(self, event: LeoKeyEvent | None = None) -> None:
         """Print all non-empty v.expandedPositions lists."""
-        c = event.get('c')
+        c = event.get('c') if event else None
         if not c:
             return
         g.es_print('dump-expanded...')
@@ -3009,11 +3009,11 @@ class Commands:
         Use the @command decorator to define commands.  Examples:
 
             @g.command('i3')
-            def i3_command(event: LeoKeyEvent) -> None:
-                c = event.get('c')
+            def i3_command(event: LeoKeyEvent | None = None) -> None:
+                c = event.get('c') if event else None
                 if not c: return
 
-                def callback(args: Any, c: Cmdr, event: LeoKeyEvent) -> None:
+                def callback(args: Any, c: Cmdr, event: LeoKeyEvent | None = None) -> None:
                     g.trace(args)
                     c.bodyWantsFocus()
 
@@ -3046,7 +3046,7 @@ class Commands:
         c, k = self, self.k
         prompt = prompts[0]
 
-        def state1(event: LeoKeyEvent) -> None:
+        def state1(event: LeoKeyEvent | None = None) -> None:
             callback(args=[k.arg], c=c, event=event)
             k.clearState()
             k.resetLabel()
@@ -3066,12 +3066,12 @@ class Commands:
         d: dict[str, str] = {}
         prompt1, prompt2 = prompts
 
-        def state1(event: LeoKeyEvent) -> None:
+        def state1(event: LeoKeyEvent | None = None) -> None:
             d['arg1'] = k.arg
             k.extendLabel(prompt2, select=False, protect=True)
             k.getNextArg(handler=state2)
 
-        def state2(event: LeoKeyEvent) -> None:
+        def state2(event: LeoKeyEvent | None = None) -> None:
             callback(args=[d.get('arg1'), k.arg], c=c, event=event)
             k.clearState()
             k.resetLabel()
@@ -3242,7 +3242,7 @@ class Commands:
 
     # @+node:ekr.20171123201514.1: *3* c.Executing commands & scripts
     # @+node:ekr.20110605040658.17005: *4* c.check_event
-    def check_event(self, event: LeoKeyEvent) -> None:
+    def check_event(self, event: LeoKeyEvent | None = None) -> None:
         """Check an event object."""
         from leo.core import leoGui
 
@@ -3253,7 +3253,12 @@ class Commands:
                 g.trace(f"not leo event: {event!r}, callers: {g.callers(8)}")
 
     # @+node:ekr.20031218072017.2817: *4* c.doCommand
-    def doCommand(self, command_func: Callable, command_name: str, event: LeoKeyEvent) -> Value:
+    def doCommand(
+        self,
+        command_func: Callable,
+        command_name: str,
+        event: LeoKeyEvent | None = None,
+    ) -> Value:
         """
         Execute the given command function, invoking hooks and catching exceptions.
 
@@ -3311,11 +3316,7 @@ class Commands:
         return return_value
 
     # @+node:ekr.20200522075411.1: *4* c.doCommandByName
-    def doCommandByName(
-        self,
-        command_name: str,
-        event: LeoKeyEvent | None = None,  # This *is* used.
-    ) -> Value:
+    def doCommandByName(self, command_name: str, event: LeoKeyEvent | None = None) -> Value:
         """
         Execute one command, given the name of the command.
 
@@ -4548,7 +4549,7 @@ class Commands:
 
     # @+node:ekr.20171124101045.1: *4* c.Events
     # @+node:ekr.20060923202156: *5* c.onCanvasKey
-    def onCanvasKey(self, event: LeoKeyEvent) -> None:
+    def onCanvasKey(self, event: LeoKeyEvent | None = None) -> None:
         """
         Navigate to the next headline starting with ch = event.char.
         If ch is uppercase, search all headlines; otherwise search only visible headlines.

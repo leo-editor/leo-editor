@@ -33,22 +33,22 @@ if TYPE_CHECKING:  # pragma: no cover
 # @+node:ekr.20150528131012.3: *4* beautify-c
 @g.command('beautify-c')
 @g.command('pretty-print-c')
-def beautifyCCode(event: LeoKeyEvent) -> None:
+def beautifyCCode(event: LeoKeyEvent | None = None) -> None:
     """Beautify all C code in the selected tree."""
-    c = event.get('c')
+    c = event.get('c') if event else None
     if c:
         CPrettyPrinter(c).pretty_print_tree(c.p)
 
 
 # @+node:ekr.20200103055814.1: *4* blacken-files
 @g.command('blacken-files')
-def blacken_files(event: LeoKeyEvent) -> None:
+def blacken_files(event: LeoKeyEvent | None = None) -> None:
     """Run black on one or more files at c.p."""
     tag = 'blacken-files'
     if not black:
         g.es_print(f"{tag} can not import black")
         return
-    c = event.get('c')
+    c = event.get('c') if event else None
     if not c or not c.p:
         return
     python = sys.executable
@@ -64,7 +64,7 @@ def blacken_files(event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20200103060057.1: *4* blacken-files-diff
 @g.command('blacken-files-diff')
-def blacken_files_diff(event: LeoKeyEvent) -> None:
+def blacken_files_diff(event: LeoKeyEvent | None = None) -> None:
     """
     Show the diffs that would result from blacking the external files at
     c.p.
@@ -73,7 +73,7 @@ def blacken_files_diff(event: LeoKeyEvent) -> None:
     if not black:
         g.es_print(f"{tag} can not import black")
         return
-    c = event.get('c')
+    c = event.get('c') if event else None
     if not c or not c.p:
         return
     python = sys.executable
@@ -91,9 +91,9 @@ def blacken_files_diff(event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20191025072511.1: *4* fstringify-files
 @g.command('fstringify-files')
-def fstringify_files(event: LeoKeyEvent) -> None:
+def fstringify_files(event: LeoKeyEvent | None = None) -> None:
     """fstringify one or more files at c.p."""
-    c = event.get('c')
+    c = event.get('c') if event else None
     if not c or not c.p:
         return
     t1 = time.process_time()
@@ -123,12 +123,12 @@ def fstringify_files(event: LeoKeyEvent) -> None:
 # @+node:ekr.20200103055858.1: *4* fstringify-files-diff
 @g.command('diff-fstringify-files')
 @g.command('fstringify-files-diff')
-def fstringify_diff_files(event: LeoKeyEvent) -> None:
+def fstringify_diff_files(event: LeoKeyEvent | None = None) -> None:
     """
     Show the diffs that would result from fstringifying the external files at
     c.p.
     """
-    c = event.get('c')
+    c = event.get('c') if event else None
     if not c or not c.p:
         return
     t1 = time.process_time()
@@ -155,9 +155,9 @@ def fstringify_diff_files(event: LeoKeyEvent) -> None:
 # @+node:ekr.20200112060001.1: *4* fstringify-files-silent
 @g.command('silent-fstringify-files')
 @g.command('fstringify-files-silent')
-def fstringify_files_silent(event: LeoKeyEvent) -> None:
+def fstringify_files_silent(event: LeoKeyEvent | None = None) -> None:
     """Silently fstringifying the external files at c.p."""
-    c = event.get('c')
+    c = event.get('c') if event else None
     if not c or not c.p:
         return
     t1 = time.process_time()

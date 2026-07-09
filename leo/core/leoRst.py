@@ -140,7 +140,7 @@ class RstCommands:
     # @+node:ekr.20210403150303.1: *4* rst.rst-convert-legacy-outline
     @cmd('rst-convert-legacy-outline')
     @cmd('convert-legacy-rst-outline')
-    def convert_legacy_outline(self, event: LeoKeyEvent) -> None:
+    def convert_legacy_outline(self, event: LeoKeyEvent | None = None) -> None:
         """
         Convert @rst-preformat nodes and `@ @rst-options` doc parts.
         """
@@ -179,7 +179,7 @@ class RstCommands:
 
     # @+node:ekr.20090511055302.5793: *4* rst.rst3 command & helpers
     @cmd('rst3')
-    def rst3(self, event: LeoKeyEvent) -> int:
+    def rst3(self, event: LeoKeyEvent | None = None) -> int:
         """Write all @rst nodes."""
         t1 = time.time()
         self.n_intermediate = self.n_docutils = 0

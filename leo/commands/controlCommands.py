@@ -127,7 +127,7 @@ class ControlCommandsClass(BaseEditCommandsClass):
 
             import leo.core.leoPlugins
 
-            def act_print_upcase(c: Cmdr, p: Position, event: LeoKeyEvent) -> None:
+            def act_print_upcase(c: Cmdr, p: Position, event: LeoKeyEvent | None = None) -> None:
                 if not p.h.startswith('@up'):
                     raise leo.core.leoPlugins.TryNext
                 p.h = p.h.upper()

@@ -226,7 +226,7 @@ class Command:
 
         @g.command('command-name')
         def A_Command(event):
-            c = event.get('c')
+            c = event.get('c') if event else None
             ...
 
     g can *not* be used anywhere in this class!

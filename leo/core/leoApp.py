@@ -1407,7 +1407,7 @@ class LeoApp:
     # @+node:ekr.20031218072017.2617: *4* app.onQuit
     @cmd('exit-leo')
     @cmd('quit-leo')
-    def onQuit(self, event: LeoKeyEvent) -> None:
+    def onQuit(self, event: LeoKeyEvent | None = None) -> None:
         """Exit Leo, prompting to save unsaved outlines first."""
         if 'shutdown' in g.app.debug:
             g.trace()
@@ -3925,16 +3925,16 @@ class RecentFilesManager:
 # @+node:ekr.20150514125218.1: ** Top-level-commands
 # @+node:ekr.20150514125218.2: *3* ctrl-click-at-cursor
 @g.command('ctrl-click-at-cursor')
-def ctrlClickAtCursor(event: LeoKeyEvent) -> None:
+def ctrlClickAtCursor(event: LeoKeyEvent | None = None) -> None:
     """Simulate a control-click at the cursor."""
-    c = event.get('c')
+    c = event.get('c') if event else None
     if c:
         g.openUrlOnClick(event)
 
 
 # @+node:ekr.20180213045148.1: *3* demangle-recent-files
 @g.command('demangle-recent-files')
-def demangle_recent_files_command(event: LeoKeyEvent) -> None:
+def demangle_recent_files_command(event: LeoKeyEvent | None = None) -> None:
     """
     Path demangling potentially alters the paths in the recent files list
     according to find/replace patterns in the @data path-demangle setting.
@@ -3956,40 +3956,40 @@ def demangle_recent_files_command(event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20150514125218.3: *3* enable/disable/toggle-idle-time-events
 @g.command('disable-idle-time-events')
-def disable_idle_time_events(event: LeoKeyEvent) -> None:
+def disable_idle_time_events(event: LeoKeyEvent | None = None) -> None:
     """Disable default idle-time event handling."""
     g.app.idle_time_hooks_enabled = False
 
 
 @g.command('enable-idle-time-events')
-def enable_idle_time_events(event: LeoKeyEvent) -> None:
+def enable_idle_time_events(event: LeoKeyEvent | None = None) -> None:
     """Enable default idle-time event handling."""
     g.app.idle_time_hooks_enabled = True
 
 
 @g.command('toggle-idle-time-events')
-def toggle_idle_time_events(event: LeoKeyEvent) -> None:
+def toggle_idle_time_events(event: LeoKeyEvent | None = None) -> None:
     """Toggle default idle-time event handling."""
     g.app.idle_time_hooks_enabled = not g.app.idle_time_hooks_enabled
 
 
 # @+node:ekr.20150514125218.5: *3* open-url
 @g.command('open-url')
-def openUrl(event: LeoKeyEvent) -> None:
+def openUrl(event: LeoKeyEvent | None = None) -> None:
     """
     Open the url in the headline or body text of the selected node.
 
     Use the headline if it contains a valid url.
     Otherwise, look *only* at the first line of the body.
     """
-    c = event.get('c')
+    c = event.get('c') if event else None
     if c:
         g.openUrl(c.p)
 
 
 # @+node:ekr.20150514125218.6: *3* open-url-under-cursor
 @g.command('open-url-under-cursor')
-def openUrlUnderCursor(event: LeoKeyEvent) -> None:
+def openUrlUnderCursor(event: LeoKeyEvent | None = None) -> None:
     """Open the url under the cursor."""
     g.openUrlOnClick(event)
 

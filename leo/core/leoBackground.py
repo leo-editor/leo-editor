@@ -23,7 +23,7 @@ if TYPE_CHECKING:  # pragma: no cover
 # @+others
 # @+node:ekr.20220415160700.1: ** bpm-status
 @g.command('bpm-status')
-def bpm_status(event: LeoKeyEvent) -> None:
+def bpm_status(event: LeoKeyEvent | None = None) -> None:
     bpm = g.app.backgroundProcessManager
     bpm.show_status()
 

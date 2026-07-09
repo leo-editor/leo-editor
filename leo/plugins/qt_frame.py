@@ -4506,7 +4506,7 @@ class TabbedFrameFactory:
 @g.command('contract-body-pane')
 def contractBodyPane(event: LeoKeyEvent) -> None:
     """Contract the body pane. Expand the outline/log splitter."""
-    c = event.get('c')
+    c = event.get('c') if event else None
     if c:
         c.frame.top.layout_cache.contract_body()
 
@@ -4515,7 +4515,7 @@ def contractBodyPane(event: LeoKeyEvent) -> None:
 @g.command('contract-log-pane')
 def contractLogPane(event: LeoKeyEvent) -> None:
     """Contract the log pane. Expand the outline pane."""
-    c = event.get('c')
+    c = event.get('c') if event else None
     if c:
         c.frame.top.layout_cache.contract_log()
 
@@ -4524,7 +4524,7 @@ def contractLogPane(event: LeoKeyEvent) -> None:
 @g.command('contract-outline-pane')
 def contractOutlinePane(event: LeoKeyEvent) -> None:
     """Contract the outline pane. Expand the body pane."""
-    c = event.get('c')
+    c = event.get('c') if event else None
     if c:
         c.frame.top.layout_cache.contract_outline()
 

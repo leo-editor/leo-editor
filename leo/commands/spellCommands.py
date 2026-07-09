@@ -466,10 +466,7 @@ class SpellCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.484: *3* openSpellTab
     @cmd('spell-tab-open')
-    def openSpellTab(
-        self,
-        ### event: LeoKeyEvent | None = None,  # Not used, retained for compatibility.
-    ) -> None:
+    def openSpellTab(self, event: LeoKeyEvent | None = None) -> None:
         """Open the Spell Checker tab in the log pane."""
         if g.unitTesting:
             return

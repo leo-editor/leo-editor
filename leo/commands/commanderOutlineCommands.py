@@ -1989,7 +1989,7 @@ def sortChildren(
 @g.commander_command('sort-siblings')
 def sortSiblings(
     self: Cmdr,
-    event: LeoKeyEvent | None = None,  # Not used
+    event: LeoKeyEvent | None = None,
     key: Callable | None = None,
     p: Position | None = None,
     sortChildren: bool = False,

@@ -18,14 +18,13 @@ if TYPE_CHECKING:  # pragma: no cover
     Value = Any
 # @-<< leoPersistence imports & annotations >>
 
+
 # @+others
 # @+node:ekr.20140711111623.17886: ** Commands (leoPersistence.py)
-
-
 @g.command('clean-persistence')
-def view_pack_command(event: LeoKeyEvent) -> None:
+def view_pack_command(event: LeoKeyEvent | None = None) -> None:
     """Remove all @data nodes that do not correspond to an existing foreign file."""
-    c = event.get('c')
+    c = event.get('c') if event else None
     if c and c.persistenceController:
         c.persistenceController.clean()
 

@@ -314,7 +314,7 @@ class AtFile:
     # @+node:ekr.20041005105605.18: *4* at.Reading (top level)
     # @+node:ekr.20070919133659: *5* at.checkExternalFile
     @cmd('check-external-file')
-    def checkExternalFile(self, event: LeoKeyEvent) -> None:  # pragma: no cover
+    def checkExternalFile(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
         """Make sure an external file written by Leo may be read properly."""
         c, p = self.c, self.c.p
         if not p.isAtFileNode() and not p.isAtThinFileNode():
@@ -336,7 +336,7 @@ class AtFile:
 
     # @+node:ekr.20250724123631.1: *5* at.openAtLeoFile
     @cmd('open-at-leo-file')
-    def openAtLeoFile(self, event: LeoKeyEvent) -> None:  # pragma: no cover
+    def openAtLeoFile(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
         """
         Open the outline given by the @leo node at c.p.
         If the outline has already been loaded, switch to its tab.
@@ -1196,7 +1196,7 @@ class AtFile:
     # @+node:ekr.20190111153551.1: *5* at.commands
     # @+node:ekr.20070806105859: *6* at.writeAtAutoNodes
     @cmd('write-at-auto-nodes')
-    def writeAtAutoNodes(self, event: LeoKeyEvent) -> None:  # pragma: no cover
+    def writeAtAutoNodes(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
         """Write all @auto nodes in the selected outline."""
         at, c, p = self, self.c, self.c.p
         c.init_error_dialogs()
@@ -1221,7 +1221,7 @@ class AtFile:
 
     # @+node:ekr.20220120072251.1: *6* at.writeDirtyAtAutoNodes
     @cmd('write-dirty-at-auto-nodes')  # pragma: no cover
-    def writeDirtyAtAutoNodes(self, event: LeoKeyEvent) -> None:
+    def writeDirtyAtAutoNodes(self, event: LeoKeyEvent | None = None) -> None:
         """Write all dirty @auto nodes in the selected outline."""
         at, c, p = self, self.c, self.c.p
         c.init_error_dialogs()
@@ -1246,7 +1246,7 @@ class AtFile:
 
     # @+node:ekr.20080711093251.3: *6* at.writeAtShadowNodes
     @cmd('write-at-shadow-nodes')
-    def writeAtShadowNodes(self, event: LeoKeyEvent) -> bool:  # pragma: no cover
+    def writeAtShadowNodes(self, event: LeoKeyEvent | None = None) -> bool:  # pragma: no cover
         """Write all @shadow nodes in the selected outline."""
         at, c, p = self, self.c, self.c.p
         c.init_error_dialogs()
@@ -1273,7 +1273,7 @@ class AtFile:
 
     # @+node:ekr.20220120072917.1: *6* at.writeDirtyAtShadowNodes
     @cmd('write-dirty-at-shadow-nodes')
-    def writeDirtyAtShadowNodes(self, event: LeoKeyEvent) -> bool:  # pragma: no cover
+    def writeDirtyAtShadowNodes(self, event: LeoKeyEvent | None = None) -> bool:  # pragma: no cover
         """Write all @shadow nodes in the selected outline."""
         at, c, p = self, self.c, self.c.p
         c.init_error_dialogs()

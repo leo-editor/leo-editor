@@ -52,9 +52,9 @@ def cmd(name: str) -> Callable:
 # @+node:ekr.20210316035506.1: **  commands (leoFileCommands.py)
 # @+node:ekr.20180708114847.1: *3* dump-clone-parents
 @g.command('dump-clone-parents')
-def dump_clone_parents(event: LeoKeyEvent) -> None:
+def dump_clone_parents(event: LeoKeyEvent | None = None) -> None:
     """Print the parent vnodes of all cloned vnodes."""
-    c = event.get('c')
+    c = event.get('c') if event else None
     if not c:
         return
     print('dump-clone-parents...')
@@ -68,9 +68,9 @@ def dump_clone_parents(event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20210309114903.1: *3* dump-gnx-dict
 @g.command('dump-gnx-dict')
-def dump_gnx_dict(event: LeoKeyEvent) -> None:
+def dump_gnx_dict(event: LeoKeyEvent | None = None) -> None:
     """Dump c.fileCommands.gnxDict."""
-    c = event.get('c')
+    c = event.get('c') if event else None
     if not c:
         return
     d = c.fileCommands.gnxDict
@@ -656,7 +656,7 @@ class FileCommands:
     # @+node:ekr.20210316042224.1: *3* fc: Commands
     # @+node:ekr.20031218072017.2012: *4* write-at-file-nodes
     @cmd('write-at-file-nodes')
-    def writeAtFileNodes(self, event: LeoKeyEvent) -> None:
+    def writeAtFileNodes(self, event: LeoKeyEvent | None = None) -> None:
         """Write all @file nodes in the selected outline."""
         c = self.c
         c.endEditing()
@@ -666,7 +666,7 @@ class FileCommands:
 
     # @+node:ekr.20031218072017.1666: *4* write-dirty-at-file-nodes
     @cmd('write-dirty-at-file-nodes')
-    def writeDirtyAtFileNodes(self, event: LeoKeyEvent) -> None:
+    def writeDirtyAtFileNodes(self, event: LeoKeyEvent | None = None) -> None:
         """Write all changed @file Nodes."""
         c = self.c
         c.endEditing()
@@ -676,7 +676,7 @@ class FileCommands:
 
     # @+node:ekr.20031218072017.2013: *4* write-missing-at-file-nodes
     @cmd('write-missing-at-file-nodes')
-    def writeMissingAtFileNodes(self, event: LeoKeyEvent) -> None:
+    def writeMissingAtFileNodes(self, event: LeoKeyEvent | None = None) -> None:
         """Write all @file nodes for which the corresponding external file does not exist."""
         c = self.c
         c.endEditing()
@@ -684,7 +684,7 @@ class FileCommands:
 
     # @+node:ekr.20031218072017.3050: *4* write-outline-only
     @cmd('write-outline-only')
-    def writeOutlineOnly(self, event: LeoKeyEvent) -> None:
+    def writeOutlineOnly(self, event: LeoKeyEvent | None = None) -> None:
         """Write the entire outline without writing any derived files."""
         c = self.c
         c.endEditing()
@@ -692,7 +692,7 @@ class FileCommands:
 
     # @+node:ekr.20230406053535.1: *4* write-zip-archive
     @cmd('write-zip-archive')
-    def writeZipArchive(self, event: LeoKeyEvent) -> None:
+    def writeZipArchive(self, event: LeoKeyEvent | None = None) -> None:
         """
         Write a .zip file containing this .leo file and all external files.
 

@@ -670,7 +670,7 @@ class CompareLeoOutlines:
 # @+node:ekr.20180214041049.1: ** Top-level commands and helpers
 # @+node:ekr.20180213104556.1: *3* @g.command(diff-and-open-leo-files)
 @g.command('diff-and-open-leo-files')
-def diff_and_open_leo_files(event: LeoKeyEvent) -> None:
+def diff_and_open_leo_files(event: LeoKeyEvent | None = None) -> None:
     """
     Open a dialog prompting for two or more .leo files.
 
@@ -686,7 +686,7 @@ def diff_and_open_leo_files(event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20180213040339.1: *3* @g.command(diff-leo-files)
 @g.command('diff-leo-files')
-def diff_leo_files(event: LeoKeyEvent) -> None:
+def diff_leo_files(event: LeoKeyEvent | None = None) -> None:
     """
     Open a dialog prompting for two or more .leo files.
 
@@ -701,7 +701,7 @@ def diff_leo_files(event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20160331191740.1: *3* @g.command(diff-marked-nodes)
 @g.command('diff-marked-nodes')
-def diffMarkedNodes(event: LeoKeyEvent) -> None:
+def diffMarkedNodes(event: LeoKeyEvent | None = None) -> None:
     """
     When two or more nodes are marked, this command creates a
     "diff marked node" as the last top-level node. The body of
