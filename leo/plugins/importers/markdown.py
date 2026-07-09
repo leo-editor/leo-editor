@@ -5,6 +5,7 @@
 from __future__ import annotations
 import re
 from typing import TYPE_CHECKING
+from urllib.parse import unquote
 from leo.core import leoGlobals as g
 from leo.plugins.importers.base_importer import Importer
 
@@ -42,6 +43,9 @@ class Markdown_Importer(Importer):
             level, name = self.is_hash(line)
             if skip > 0:
                 skip -= 1
+            elif not in_code and (marker := self.is_noheader_marker(line)) is not None:
+                marker_level, marker_name = marker
+                self.make_noheader_node(marker_level, marker_name)
             elif not in_code and self.lookahead_underline(i):
                 level = 1 if lines[i + 1].startswith('=') else 2
                 self.make_markdown_node(level, line)
@@ -81,6 +85,19 @@ class Markdown_Importer(Importer):
                 return level, name
         return None, None
 
+    # @+node:axk.20260709133000.2: *4* md_i.is_noheader_marker
+    md_noheader_pattern = re.compile(
+        r'^\s*<!--\s*leo-noheader level=(\d+)\s+headline=(.*?)\s*-->\s*\n?$'
+    )
+
+    def is_noheader_marker(self, line: str) -> tuple[int, str] | None:
+        """Return level, name if line is a Leo noheader marker."""
+        if m := self.md_noheader_pattern.match(line):
+            level = int(m.group(1))
+            name = unquote(m.group(2))
+            return level, name
+        return None
+
     # @+node:ekr.20230528170618.3: *4* md_i.is_underline
     md_pattern_table = (
         re.compile(r'^(=+)\n'),
@@ -116,6 +133,13 @@ class Markdown_Importer(Importer):
         child.h = '!Declarations'
         lines_dict[child.v] = [line]
         self.stack.append(child)
+
+    # @+node:axk.20260709133000.3: *4* md_i.make_noheader_node
+    def make_noheader_node(self, level: int, name: str) -> Position:
+        """Create a node represented by a Leo noheader HTML comment."""
+        child = self.make_markdown_node(level, name)
+        self.lines_dict[child.v].append('@noheader\n')
+        return child
 
     # @+node:ekr.20230528170618.6: *4* md_i.make_markdown_node
     def make_markdown_node(self, level: int, name: str) -> Position:
