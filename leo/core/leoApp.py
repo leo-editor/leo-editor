@@ -3637,7 +3637,9 @@ class RecentFilesManager:
             if name.strip() == "":
                 continue  # happens with empty list/new file
 
-            def recentFilesCallback(event: LeoKeyEvent, c: Cmdr = c, name: str = name) -> None:
+            def recentFilesCallback(
+                event: LeoKeyEvent | None = None, c: Cmdr = c, name: str = name
+            ) -> None:
                 c.openRecentFile(fn=name)
 
             if groupedEntries:

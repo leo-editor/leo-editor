@@ -91,7 +91,9 @@ class BaseEditCommandsClass:
                 k.resetLabel()
 
     # @+node:ekr.20150514043714.11: *3* BaseEdit._checkSelection
-    def _checkSelection(self, event: LeoKeyEvent, warning: str = 'no selection') -> bool:
+    def _checkSelection(
+        self, event: LeoKeyEvent | None = None, warning: str = 'no selection'
+    ) -> bool:
         """Return True if there is a selection in the edit widget."""
         c = self.c
         w = event.w if event else c.frame.body.wrapper
