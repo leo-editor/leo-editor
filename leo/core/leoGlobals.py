@@ -3696,10 +3696,13 @@ def is_binary_external_file(fileName: str) -> bool:
 
 def is_binary_string(s: str) -> bool:
     # http://stackoverflow.com/questions/898669
-    # aList is a list of all non-binary characters.
-    aList = [7, 8, 9, 10, 12, 13, 27] + list(range(0x20, 0x100))
-    # mypy bug?
-    return bool(s.translate(None, bytes(aList)))  # type:ignore
+    # A list of all non-binary characters.
+    if 1:
+        return False
+    non_binary = [7, 8, 9, 10, 12, 13, 27] + list(range(0x20, 0x100))
+    delete_s = ''.join(chr(i) for i in range(255) if i not in non_binary)
+    trans_table = str.maketrans('', '', delete_s)
+    return bool(s.translate(trans_table))
 
 
 # @+node:ekr.20031218072017.3119: *3* g.makeAllNonExistentDirectories
