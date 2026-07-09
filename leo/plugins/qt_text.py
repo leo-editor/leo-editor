@@ -1416,7 +1416,7 @@ class QScintillaWrapper(QTextMixin):
 
     # @+node:ekr.20110605121601.18107: *3* QScintillaWrapper.WidgetAPI
     # @+node:ekr.20140901062324.18593: *4* QScintillaWrapper.delete
-    def delete(self, i: int, j: int = None) -> None:
+    def delete(self, i: int, j: int | None = None) -> None:
         """Delete s[i:j]"""
         w = self.widget
         if j is None:
