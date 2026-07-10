@@ -410,29 +410,16 @@ def dump_cache(db: dict | SqlitePickleShare, tag: str) -> None:
     if d.get('None'):
         heading = f"All others ({tag})" if files else None
         dump_list(heading, d.get('None'))
+    print('')
 
 
 def dump_list(heading: str, aList: list) -> None:
     if heading:
         print(f'\n{heading}...\n')
-    for aTuple in aList:
-        key, val = aTuple
-        if isinstance(val, str):
-            if key.startswith('windowState'):
-                print(key)
-            elif key.endswith(('leo_expanded', 'leo_marked')):
-                if val:
-                    print(f"{key:30}:")
-                    g.printObj(val.split(','))
-                else:
-                    print(f"{key:30}: []")
-            else:
-                print(f"{key:30}: {val}")
-        elif isinstance(val, (int, float)):
-            print(f"{key:30}: {val}")
-        else:
-            print(f"{key:30}:")
-            g.printObj(val)
+    for z in aList:
+        key, val = z
+        val_s = val if isinstance(val, (tuple, list)) else str(val)
+        print(f"{key:>30}: {val_s}")
 
 
 # @-others
