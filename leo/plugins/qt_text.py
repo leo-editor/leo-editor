@@ -202,15 +202,13 @@ class QTextMixin:
 
         tree.tree_select_lockout is True during the entire selection process.
         """
-        # Important: usually w.changingText is True.
-        # This method very seldom does anything.
+        # #4785: Do not delete this method. It is essential!
         w = self
         c, p = self.c, self.c.p
         tree = c.frame.tree
         if w.changingText:
             return
         if tree.tree_select_lockout:
-            # g.trace('*** LOCKOUT', g.callers())
             return
         if not p:
             return
@@ -220,7 +218,6 @@ class QTextMixin:
         # Get the previous values from the VNode.
         oldText = p.b
         if oldText == newText:
-            # #4785: Do not delete this method. It is essential!
             return
         i, j = p.v.selectionStart, p.v.selectionLength
         oldSel = (i, i + j)
