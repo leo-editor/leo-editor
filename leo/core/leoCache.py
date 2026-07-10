@@ -388,7 +388,7 @@ def dump_cache(db: dict | SqlitePickleShare, tag: str) -> None:
         return
     # Create a dict, sorted by file prefixes.
     d: dict[str, Any] = {}
-    for key in db.keys():
+    for key in db.keys():  # Don't use d.items().
         key = key[0]
         val = db.get(key)
         data = key.split(':::')
@@ -401,9 +401,9 @@ def dump_cache(db: dict | SqlitePickleShare, tag: str) -> None:
         d[fn] = aList
     # Print the dict.
     files = 0
-    for key in sorted(d.keys()):
+    for key, val in sorted(d.items()):
         if key != 'None':
-            dump_list('File: ' + key, d.get(key))
+            dump_list(f"File: {key}", val)
             files += 1
     if d.get('None'):
         heading = f"All others ({tag})" if files else None
