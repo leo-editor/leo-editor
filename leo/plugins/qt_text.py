@@ -195,7 +195,7 @@ class QTextMixin:
         if hasattr(c.frame, 'statusLine'):
             c.frame.statusLine.update()
 
-    # @+node:ekr.20140901062324.18714: *4* QTextMixin.onTextChanged (to be deleted??)
+    # @+node:ekr.20140901062324.18714: *4* QTextMixin.onTextChanged
     def onTextChanged(self) -> None:
         """
         Update Leo after the body has been changed.
@@ -220,8 +220,7 @@ class QTextMixin:
         # Get the previous values from the VNode.
         oldText = p.b
         if oldText == newText:
-            # This can happen as the result of undo.
-            # g.error('*** unexpected non-change')
+            # #4785: Do not delete this method. It is essential!
             return
         i, j = p.v.selectionStart, p.v.selectionLength
         oldSel = (i, i + j)
