@@ -397,9 +397,7 @@ def dump_cache(db: dict | SqlitePickleShare, tag: str) -> None:
         else:
             fn, key2 = 'None', key
         aList = d.get(fn, [])
-        aList.append(
-            (key2, val),
-        )
+        aList.append((key2, val))
         d[fn] = aList
     # Print the dict.
     files = 0
@@ -416,8 +414,7 @@ def dump_cache(db: dict | SqlitePickleShare, tag: str) -> None:
 def dump_list(heading: str, aList: list) -> None:
     if heading:
         print(f'\n{heading}...\n')
-    for z in aList:
-        key, val = z
+    for key, val in aList:
         val_s = val if isinstance(val, (tuple, list)) else str(val)
         print(f"{key:>30}: {val_s}")
 
