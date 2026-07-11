@@ -2319,12 +2319,11 @@ class Commands:
             else:  # Make a copy _now_
                 c._currentPosition = p.copy()
         else:
+            message = f"Invalid position: {p!r} in {c.shortFileName()}\n{g.callers(10)=}"
             if g.unitTesting:
-                # New in Leo 6.7.4: *Do* raise an exception.
-                raise ValueError(f"Invalid position: {p!r}")
+                raise ValueError(message)
+            g.trace(message)
             c._currentPosition = c.rootPosition()
-            g.trace('Invalid position', repr(p), repr(c))
-            g.printObj(g.callers(20).split(','), tag='Callers')
 
     # For compatibility with old scripts.
 
@@ -4497,8 +4496,8 @@ class Commands:
         if not p:
             return
         if not c.positionExists(p):
-            g.trace(f"Invalid position: {repr(p)}")
-            g.trace(g.callers())
+            g.trace(f"Invalid position: {p!r} in {c.shortFileName()}\n{g.callers(10)=}")
+            c.setCurrentPosition(c.rootPosition())
             return
         c.requestLaterRedraw = False
         c.expandAllAncestors(p)

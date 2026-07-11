@@ -1399,7 +1399,9 @@ class FileCommands:
                 str_pos = d.get('str_leo_pos')
         if str_pos is not None:
             current = self.archivedPositionToPosition(str_pos)
-        c.setCurrentPosition(current or c.rootPosition())
+        if not c.positionExists(current):  # #4789.
+            current = c.rootPosition()
+        c.setCurrentPosition(current)
 
     # @+node:ekr.20031218072017.3032: *3* fc: Writing
     # @+node:ekr.20070413045221.2: *4* fc: Writing save*
