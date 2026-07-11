@@ -1680,7 +1680,7 @@ class LoadManager:
         """
         Return the full path to either myLeoSettings.leo or myLeoSettings.leojs.
 
-        The "footnote": Get the local directory from LM.files[0]
+        The "footnote": Get the local directory from lm.files[0]
         """
         lm = self
         join = g.finalize_join
@@ -2396,7 +2396,7 @@ class LoadManager:
                 for n, fn in enumerate(lm.files):
                     lm.more_cmdline_files = n < len(lm.files) - 1
                     # Returns None if the file is open in another instance of Leo.
-                    c = lm.openWithFileName(fn, gui=g.app.gui, old_c=None)
+                    c = g.openWithFileName(fn, gui=g.app.gui, old_c=None)
                     if c and not c1:
                         c1 = c
             except Exception:
@@ -3157,26 +3157,41 @@ class LoadManager:
            - Create an *unnamed* outline containing an @file or @edit node.
            - Refresh the @file or @edit node from disk
 
-        3. Open an empty Leo outline if fn is empty or does not exist.
+        3. If fn is empty or does not exist.
+           - Get settings from the leoSettings.leo and myLeoSetting.leo.
+           - Open an empty outline.
         """
-        # PR #4795: Make *sure* this code never crashes and that c.p. is valid.
-        try:
-            file_name = g.finalize(fn) if fn else ''
-            if c := self.openWithFileNameHelper(file_name, gui, old_c):
-                if not c.positionExists(c.p):
-                    c.p = c.rootPosition()
-                return c
-        except Exception as e:
-            g.trace(f"Unexpected exception: {e} opening {file_name!r}")
+        lm = self
 
-        # The default: open an empty Leo file.
-        return self.openEmptyLeoFile(file_name, gui, old_c)
+        file_name = g.finalize(fn) if fn else ''
+
+        # #2489: If file_name is empty, open an empty, untitled .leo file.
+        if not file_name:
+            return lm.openEmptyLeoFile(file_name, gui, old_c)
+
+        # Return the commander if the file is an already open outline.
+        c = lm.findOpenFile(file_name)
+        if c:
+            return c
+
+        # Open an outline or an external file.
+        exists = os.path.exists(file_name)
+        is_leo = lm.isLeoFile(file_name)
+        if is_leo:
+            if exists:
+                return lm.openExistingLeoFile(file_name, gui, old_c)
+            return lm.openEmptyLeoFile(file_name, gui, old_c)
+        c = lm.openExternalFile(file_name, gui, old_c)
+        if c:
+            return c
+        return lm.openEmptyLeoFile(file_name, gui, old_c)  # PR #4779
 
     loadLocalFile = openWithFileName  # Compatibility.
 
     # @+node:ekr.20120223062418.10405: *5* LM.createMenu
     def createMenu(self, c: Cmdr, fn: str = '') -> None:
-        """Create the menu as late as possible so it can use user commands."""
+        # lm = self
+        # Create the menu as late as possible so it can use user commands.
         if not g.doHook("menu1", c=c, p=c.p, v=c.p):
             c.frame.menu.createMenuBar(c.frame)
             g.app.recentFilesManager.updateRecentFiles(fn)
@@ -3188,8 +3203,6 @@ class LoadManager:
 
     # @+node:ekr.20120223062418.10406: *5* LM.findOpenFile
     def findOpenFile(self, fn: str) -> Cmdr | None:
-        """Return fn's commander if fn is already open."""
-
         def munge(name: str) -> str:
             return g.os_path_normpath(name or '').lower()
 
@@ -3390,7 +3403,7 @@ class LoadManager:
     # @+node:ekr.20231128064705.1: *6* LM.openBadLeoFile
     def openBadLeoFile(self, c: Cmdr, fn: str) -> None:
         """
-        Open a bad Leo file using some of the logic of LM.openExternalFile.
+        Open a bad Leo file using some of the logic of lm.openExternalFile.
         """
         # lm = self
         if not fn:
@@ -3443,32 +3456,6 @@ class LoadManager:
             if not g.unitTesting:
                 g.error("can not open:", fn)
             return None
-
-    # @+node:ekr.20260711055732.1: *5* LM.openWithFileNameHelper
-    def openWithFileNameHelper(
-        self,
-        file_name: str,
-        gui: LeoGui | None,
-        old_c: Cmdr | None,
-    ) -> Cmdr | None:
-        """Open the file with the given name or and empty Leo outline."""
-        if not file_name:
-            return None
-
-        # Return the commander if the file is an already open outline.
-        if c := self.findOpenFile(file_name):
-            return c
-
-        # Open a Leo outline or an external file if possible.
-        exists = os.path.exists(file_name)
-        is_leo = self.isLeoFile(file_name)
-        if is_leo and exists:
-            if c := self.openExistingLeoFile(file_name, gui, old_c):
-                return c
-        if not is_leo:
-            if c := self.openExternalFile(file_name, gui, old_c):
-                return c
-        return None
 
     # @+node:ekr.20160430063406.1: *3* LM.revertCommander
     def revertCommander(self, c: Cmdr) -> None:
