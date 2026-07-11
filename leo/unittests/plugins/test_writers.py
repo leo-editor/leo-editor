@@ -69,6 +69,12 @@ class TestMDWriter(BaseTestWriter):
     """Test Cases for the markdown writer plugin."""
 
     # @+others
+    # @+node:axk.20260709120000.2: *3* TestMDWriter.render_markdown
+    def render_markdown(self, root):
+        writer = MarkdownWriter(self.c)
+        writer.write(root)
+        return ''.join(self.c.atFileCommands.outputList)
+
     # @+node:ekr.20231219151402.1: *3* TestMDWriter.test_markdown_sections
     def test_markdown_sections(self):
         c, root = self.c, self.c.p
@@ -148,6 +154,52 @@ class TestMDWriter(BaseTestWriter):
             g.printObj(contents, tag='contents')
             g.printObj(results_s, tag='results_s')
         self.assertEqual(results_s, contents)
+
+    # @+node:axk.20260709120000.3: *3* TestMDWriter.test_markdown_noheader_leaf
+    def test_markdown_noheader_leaf(self):
+        root = self.c.p
+        hidden = root.insertAsLastChild()
+        hidden.h = 'Hidden leaf'
+        hidden.b = '@noheader\nLeaf body\n'
+        visible = root.insertAsLastChild()
+        visible.h = 'Visible sibling'
+        visible.b = 'Visible body\n'
+
+        results_s = self.render_markdown(root)
+        self.assertEqual(
+            results_s,
+            '<!-- leo-noheader level=1 headline=Hidden%20leaf -->\n'
+            'Leaf body\n'
+            '# Visible sibling\n'
+            'Visible body\n',
+        )
+        self.assertNotIn('@noheader', results_s)
+
+    # @+node:axk.20260709120000.4: *3* TestMDWriter.test_markdown_noheader_intermediate
+    def test_markdown_noheader_intermediate(self):
+        root = self.c.p
+        hidden = root.insertAsLastChild()
+        hidden.h = 'Hidden parent'
+        hidden.b = '@noheader\nParent body\n'
+        child = hidden.insertAsLastChild()
+        child.h = 'Visible child'
+        child.b = 'Child body\n'
+        sibling = root.insertAsLastChild()
+        sibling.h = 'Visible sibling'
+        sibling.b = 'Sibling body\n'
+
+        results_s = self.render_markdown(root)
+        self.assertEqual(
+            results_s,
+            '<!-- leo-noheader level=1 headline=Hidden%20parent -->\n'
+            'Parent body\n'
+            '## Visible child\n'
+            'Child body\n'
+            '# Visible sibling\n'
+            'Sibling body\n',
+        )
+        self.assertNotIn('# Hidden parent\n', results_s)
+        self.assertNotIn('@noheader', results_s)
 
     # @+node:ekr.20231227225308.1: *3* TestMDWriter.test_placeholders
     def test_markdown_placeholders(self):
