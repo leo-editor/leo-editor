@@ -157,7 +157,7 @@ class TestMDWriter(BaseTestWriter):
 
     # @+node:axk.20260709120000.3: *3* TestMDWriter.test_markdown_noheader_leaf
     def test_markdown_noheader_leaf(self):
-        c, root = self.c, self.c.p
+        root = self.c.p
         hidden = root.insertAsLastChild()
         hidden.h = 'Hidden leaf'
         hidden.b = '@noheader\nLeaf body\n'
@@ -177,7 +177,7 @@ class TestMDWriter(BaseTestWriter):
 
     # @+node:axk.20260709120000.4: *3* TestMDWriter.test_markdown_noheader_intermediate
     def test_markdown_noheader_intermediate(self):
-        c, root = self.c, self.c.p
+        root = self.c.p
         hidden = root.insertAsLastChild()
         hidden.h = 'Hidden parent'
         hidden.b = '@noheader\nParent body\n'
