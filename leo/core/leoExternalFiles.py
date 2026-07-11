@@ -490,10 +490,9 @@ class ExternalFilesController:
                     os.spawnv(os.P_NOWAIT, arg[0], vtuple)  # ???
             elif kind == 'subprocess.Popen':
                 c_arg = (
-                    self.join(arg, fn)
-                    if os.name == 'nt' else
+                    self.join(arg, fn) if os.name == 'nt' else
                     self.make_popen_args(arg_tuple, fn)
-                )
+                )  # fmt: skip
                 command = f"subprocess.Popen({c_arg})"
                 if not testing:
                     try:
