@@ -424,7 +424,7 @@ class ParserBaseClass:
                 targetPath = '/' + targetPath
             is_local = 'leosettings' not in self.c.mFileName.lower()
             if is_local:
-                mlist = self.c.config.getMenusList() # returns local menu if it exist, otherwise global.
+                mlist = self.c.config.getMenusList(True) # returns local menu if it exist, otherwise global.
                 # if is global, (first @menuat found), start fresh with a copy of the global menu list.
                 if mlist is g.app.config.menusList:  
                     mlist = g.app.config.menusList[:]
@@ -1948,11 +1948,14 @@ class LocalConfigManager:
         return language
 
     # @+node:ekr.20120215072959.12534: *5* c.config.getMenusList
-    def getMenusList(self) -> list:
+    def getMenusList(self, skip_menulist_pass: bool = False) -> list:
         """Return the list of entries for the @menus tree."""
 
         # Typically empty, unless there is an @menuat setting.
         aList = self.get('menus', 'menus')
+        if skip_menulist_pass:
+            print(f"getMenusList: skip_menulist_pass")
+            return aList or g.app.config.menusList
 
         # Leo calls this method twice when loading an outline.
         if not hasattr(self.c, 'menulist_pass'):
@@ -1961,10 +1964,13 @@ class LocalConfigManager:
 
         # Remove this outline's "doMenuat" settings so later outlines won't use them.
         if self.c.menulist_pass == 2:
+            print("deleting this outline's doMenuat settings")
             lm = g.app.loadManager
             lm.globalSettingsDict['menus'] = None
             self.set(None, 'menus', 'menus', None)  # type:ignore
             self.c.menulist_pass = 0
+        else:
+            print(f"getMenusList: menulist_pass: {self.c.menulist_pass}")
 
         return aList or g.app.config.menusList
 
