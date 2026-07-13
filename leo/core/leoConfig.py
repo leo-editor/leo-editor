@@ -426,7 +426,7 @@ class ParserBaseClass:
             is_local = 'leosettings' not in self.c.mFileName.lower()
             if is_local:
                 # getMenusList returns local menu if it exist, otherwise the global menu.
-                mlist = self.c.config.getMenusList(True)
+                mlist = self.c.config.getMenusList()
                 # if global, it's the first @menuat found, so start with copy of global menu.
                 if mlist is g.app.config.menusList:  
                     # deepcopy so sub menus are not shared instances.
