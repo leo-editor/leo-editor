@@ -5,6 +5,7 @@
 # @+<< leoConfig imports & annotations >>
 # @+node:ekr.20041227063801: ** << leoConfig imports & annotations >>
 from __future__ import annotations
+import copy
 import os
 import sys
 import re
@@ -427,7 +428,8 @@ class ParserBaseClass:
                 mlist = self.c.config.getMenusList(True) # returns local menu if it exist, otherwise global.
                 # if is global, (first @menuat found), start fresh with a copy of the global menu list.
                 if mlist is g.app.config.menusList:  
-                    mlist = g.app.config.menusList[:]
+                    # mlist = g.app.config.menusList[:] 
+                    mlist = copy.deepcopy(g.app.config.menusList)  # Deepcopy, so sub menus are not shared instances.
                 self.c.config.set(None, 'menus', 'menus', mlist)
             else:
                 mlist = g.app.config.menusList
@@ -1948,30 +1950,10 @@ class LocalConfigManager:
         return language
 
     # @+node:ekr.20120215072959.12534: *5* c.config.getMenusList
-    def getMenusList(self, skip_menulist_pass: bool = False) -> list:
+    def getMenusList(self) -> list:
         """Return the list of entries for the @menus tree."""
-
         # Typically empty, unless there is an @menuat setting.
         aList = self.get('menus', 'menus')
-        if skip_menulist_pass:
-            print(f"getMenusList: skip_menulist_pass")
-            return aList or g.app.config.menusList
-
-        # Leo calls this method twice when loading an outline.
-        if not hasattr(self.c, 'menulist_pass'):
-            self.c.menulist_pass = 0
-        self.c.menulist_pass += 1
-
-        # Remove this outline's "doMenuat" settings so later outlines won't use them.
-        if self.c.menulist_pass == 2:
-            print("deleting this outline's doMenuat settings")
-            lm = g.app.loadManager
-            lm.globalSettingsDict['menus'] = None
-            self.set(None, 'menus', 'menus', None)  # type:ignore
-            self.c.menulist_pass = 0
-        else:
-            print(f"getMenusList: menulist_pass: {self.c.menulist_pass}")
-
         return aList or g.app.config.menusList
 
     # @+node:ekr.20120215072959.12535: *5* c.config.getOpenWith

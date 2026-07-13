@@ -3230,7 +3230,11 @@ class LoadManager:
         # Official very late initialization.
         c.frame.tree.initAfterLoad()
         c.initAfterLoad()
-        lm.createMenu(c, c.fileName())
+        lm.createMenu(c, c.fileName())  # This will fetch c.config.getMenusList()
+
+        # Remove this outline's "doMenuat" settings so later outlines won't use them.
+        lm.globalSettingsDict['menus'] = None
+        c.config.settingsDict['menus'] = None
 
         # Common finishing code.
         g.app.unlockLog()

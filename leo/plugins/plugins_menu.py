@@ -164,7 +164,6 @@ def createPluginsMenu(tag: str, keywords: KWargs) -> None:
 # @+node:ekr.20131213072223.19531: *4* add_menu_from_settings
 def add_menu_from_settings(c: Cmdr) -> None:
     # Add any items in @menu plugins
-    print('Adding @menu plugins')
     aList = c.config.getMenusList()
     for z in aList:
         kind, val, val2 = z
