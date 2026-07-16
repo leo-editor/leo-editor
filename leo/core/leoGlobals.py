@@ -8701,22 +8701,22 @@ def openUrlOnClick(
 def openUrlHelper(
     event: LeoKeyEvent | None = None,
     url: str | None = None,  # Don't change this.
-) -> str | None:  # Don't change this.
+) -> None:
     """Open the unl, url or gnx under the cursor.  Return it for unit testing."""
     if not event:
-        return None
+        return
     c, w = event.c, event.w
     if not c:
-        return None
+        return
     if not g.app.gui.isTextWrapper(w):
-        return None
+        return
     # Part 1: get the url.
     if url is None:
         s = w.getAllText()
         ins = w.getInsertPoint()
         i, j = w.getSelectionRange()
         if i != j:
-            return None  # So find doesn't open the url.
+            return  # So find doesn't open the url.
         row, col = g.convertPythonIndexToRowCol(s, ins)
         i, j = g.getLine(s, ins)
         line = s[i:j]
@@ -8735,7 +8735,7 @@ def openUrlHelper(
             if px:
                 c.selectPosition(px)
                 c.redraw()
-            return None
+            return
         # @-<< look for section ref >>
         url = unl = None
         # @+<< look for url >>
@@ -8756,7 +8756,7 @@ def openUrlHelper(
                 if match.start() <= col < match.end():
                     unl = match.group()
                     g.handleUnl(unl, c)
-                    return None
+                    return
             # @-<< look for unl >>
             if not unl:
                 # @+<< look for gnx >>
@@ -8770,13 +8770,13 @@ def openUrlHelper(
 
                 if target:
                     if c.p.gnx == target:
-                        return target
+                        return
                     for p in c.all_unique_positions():
                         if p.v.gnx == target:
                             c.selectPosition(p)
                             c.redraw()
-                            return target
-                    return None
+                            break
+                    return
                 # @-<< look for gnx >>
     elif not isinstance(url, str):
         url = url.toString()
@@ -8787,16 +8787,16 @@ def openUrlHelper(
         if not g.doHook("@url1", c=c, p=p, url=url):
             g.handleUrl(url, c=c, p=p)
         g.doHook("@url2", c=c, p=p)
-        return url
+        return
     # Part 3: call find-def.
     if not w.hasSelection():
         c.editCommands.extendToWord(event, select=True)
     word = w.getSelectedText().strip()
     if not word:
-        return None
+        return
     matches = c.findCommands.find_def(event)
     if matches:
-        return None
+        return
     # @+<< look for filename or import>>
     # @+node:tom.20230130102836.1: *5* << look for filename or import >>
     # Part 4: #2546: look for a file name.
@@ -8834,7 +8834,7 @@ def openUrlHelper(
                 c.redraw(p)
                 break
     # @-<< look for filename or import>>
-    return None
+    return
 
 
 # @+node:ekr.20170226093349.1: *3* g.unquoteUrl

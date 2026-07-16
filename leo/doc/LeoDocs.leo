@@ -2464,6 +2464,8 @@
 </v>
 <v t="ekr.20260531063902.1"></v>
 <v t="ekr.20260531063735.1"></v>
+<v t="ekr.20260716061125.1"><vh>Leo 6.8.10 release notes</vh></v>
+<v t="ekr.20260716061137.1"><vh>Breaking changes to Leo's API</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -32704,6 +32706,55 @@ def run():
     if total_n == 0:
         g.es_print('No intermediate files changed', color='red')
     return total_n &gt; 0</t>
+<t tx="ekr.20260716061125.1"></t>
+<t tx="ekr.20260716061137.1">Leo 6.8.10 changes the values *returned* by several methods. As described below, in some cases these changes might break existing scripts or plugins.
+
+### Changed string functions
+
+The functions listed below now return an empty string instead of None. Tests against None will no longer work as expected--the pythonic tests below must be used instead::
+
+
+    if s:
+    if not s:
+
+- g.findAtTabWidthDirectives.
+- g.findFirstAtLanguageDirective.
+- g.findLanguageDirectives.
+- g.get_backup_directory.
+- g.gitHeadPath.
+- g.getUrlFromNode.
+- g.guessExternalEditor.
+- g.makeAllNonExistentDirectories.
+- g.stripBOM.
+- g.readFileIntoEncodedString.
+
+### Changed commander functions
+
+The functions below may return None instead of a commander:
+
+- g.openUNLFile and g.openUrlHelper.
+- g.handleUnl.
+
+*Note* g.openWithFileName now *always* returns a valid commander. This is *not* a breaking change.
+
+### Changed position functions
+
+The functions below may return None instead of a position:
+
+- g.findUnl, g.findGnx, and g.findAnyUnl.
+
+### Changed string methods
+
+The following methods now return an empty string instead of None:
+
+- SettingsDict.get_setting and SettingsDict.get_string_setting.
+
+### Deleted global functions
+
+- g.execute_shell_commands_with_options: mypy revealed that its options were impossibly complex.
+- g.computeBaseDir: not used, and can't be fixed.
+- g.computeCommands: not used, and can't be fixed.
+</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
