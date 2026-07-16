@@ -428,7 +428,7 @@ class ParserBaseClass:
                 # getMenusList returns local menu if it exist, otherwise the global menu.
                 mlist = self.c.config.getMenusList()
                 # if global, it's the first @menuat found, so start with copy of global menu.
-                if mlist is g.app.config.menusList:  
+                if mlist is g.app.config.menusList:
                     # deepcopy so sub menus are not shared instances.
                     mlist = copy.deepcopy(g.app.config.menusList)
                 self.c.config.set(None, 'menus', 'menus', mlist)
