@@ -5,6 +5,7 @@
 # @+<< leoConfig imports & annotations >>
 # @+node:ekr.20041227063801: ** << leoConfig imports & annotations >>
 from __future__ import annotations
+import copy
 import os
 import sys
 import re
@@ -424,7 +425,12 @@ class ParserBaseClass:
                 targetPath = '/' + targetPath
             is_local = 'leosettings' not in self.c.mFileName.lower()
             if is_local:
-                mlist = g.app.config.menusList[:]
+                # getMenusList returns local menu if it exist, otherwise the global menu.
+                mlist = self.c.config.getMenusList()
+                # if global, it's the first @menuat found, so start with copy of global menu.
+                if mlist is g.app.config.menusList:  
+                    # deepcopy so sub menus are not shared instances.
+                    mlist = copy.deepcopy(g.app.config.menusList)
                 self.c.config.set(None, 'menus', 'menus', mlist)
             else:
                 mlist = g.app.config.menusList
@@ -1947,22 +1953,8 @@ class LocalConfigManager:
     # @+node:ekr.20120215072959.12534: *5* c.config.getMenusList
     def getMenusList(self) -> list:
         """Return the list of entries for the @menus tree."""
-
         # Typically empty, unless there is an @menuat setting.
         aList = self.get('menus', 'menus')
-
-        # Leo calls this method twice when loading an outline.
-        if not hasattr(self.c, 'menulist_pass'):
-            self.c.menulist_pass = 0
-        self.c.menulist_pass += 1
-
-        # Remove this outline's "doMenuat" settings so later outlines won't use them.
-        if self.c.menulist_pass == 2:
-            lm = g.app.loadManager
-            lm.globalSettingsDict['menus'] = None
-            self.set(None, 'menus', 'menus', None)  # type:ignore
-            self.c.menulist_pass = 0
-
         return aList or g.app.config.menusList
 
     # @+node:ekr.20120215072959.12535: *5* c.config.getOpenWith
