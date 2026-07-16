@@ -8834,7 +8834,6 @@ def openUrlHelper(
                 c.redraw(p)
                 break
     # @-<< look for filename or import>>
-    return
 
 
 # @+node:ekr.20170226093349.1: *3* g.unquoteUrl
