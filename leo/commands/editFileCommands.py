@@ -9,7 +9,7 @@ from collections.abc import Callable
 import difflib
 import os
 import re
-from typing import TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoCommands
 from leo.commands.baseCommands import BaseEditCommandsClass
@@ -1383,7 +1383,7 @@ class GitDiffController:
         branch: str,
         c1: Cmdr,
         c2: Cmdr,
-        d: dict[str, tuple[VNode, VNode]],
+        d: dict[str, Any],  # Values: tuple[VNode, VNode] for 'changed' kind, otherwise VNode.
         kind: str,
         rev1: str,
         rev2: str,
