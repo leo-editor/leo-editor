@@ -325,10 +325,10 @@ class AtFile:
             g.red(f"file not found: {fn}")
             return
         s, e = g.readFileIntoString(fn)
-        if s is None:
+        if not s:
             g.red(f"empty file: {fn}")
             return
-        #
+
         # Create a dummy, unconnected, VNode as the root.
         root_v = leoNodes.VNode(context=c)
         root = leoNodes.Position(root_v)
