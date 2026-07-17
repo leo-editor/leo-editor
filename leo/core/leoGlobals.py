@@ -7546,8 +7546,7 @@ def os_startfile(fname: str) -> None:
         """
 
         while True:
-            emsg = ree.read().decode('utf-8')
-            if emsg:
+            if emsg := ree.read().decode('utf-8'):
                 g.es_print_error(f"xdg-open {fname} caused output to stderr:\n{emsg}")
             else:
                 break
@@ -8677,10 +8676,7 @@ def openUrl(p: Position) -> None:  # pragma: no cover
 
 
 # @+node:ekr.20110605121601.18135: *3* g.openUrlOnClick (open-url-under-cursor)
-def openUrlOnClick(
-    event: QMouseEvent,
-    url: str | None = None,  # Don't change this.
-) -> None:
+def openUrlOnClick(event: QMouseEvent, url: str = '') -> None:
     """Open the URL under the cursor.  Return it for unit testing."""
     from leo.core.leoGui import LeoKeyEvent
     from leo.plugins.qt_text import QTextEditWrapper
@@ -8698,10 +8694,7 @@ def openUrlOnClick(
 
 
 # @+node:ekr.20170216091704.1: *4* g.openUrlHelper
-def openUrlHelper(
-    event: LeoKeyEvent | None = None,
-    url: str | None = None,  # Don't change this.
-) -> None:
+def openUrlHelper(event: LeoKeyEvent | None = None, url: str = '') -> None:
     """Open the unl, url or gnx under the cursor.  Return it for unit testing."""
     if not event:
         return
@@ -8711,7 +8704,7 @@ def openUrlHelper(
     if not g.app.gui.isTextWrapper(w):
         return
     # Part 1: get the url.
-    if url is None:
+    if not url:
         s = w.getAllText()
         ins = w.getInsertPoint()
         i, j = w.getSelectionRange()
@@ -8737,7 +8730,7 @@ def openUrlHelper(
                 c.redraw()
             return
         # @-<< look for section ref >>
-        url = unl = None
+        url = unl = ''
         # @+<< look for url >>
         # @+node:tom.20220328141544.1: *5* << look for url  >>
         # Find the url on the line.
