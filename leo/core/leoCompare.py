@@ -242,21 +242,21 @@ class BaseLeoCompare:
             if not sentinelComment2:
                 self.show("no @+leo line for " + name2)
         if self.ignoreFirstLine1:
-            if s1 is None:
+            if not s1:
                 g.readlineForceUnixNewline(f1)
                 lines1 += 1
             s1 = None
         if self.ignoreFirstLine2:
-            if s2 is None:
+            if not s2:
                 g.readlineForceUnixNewline(f2)
                 lines2 += 1
             s2 = None
         # @-<< handle opening lines >>
         while 1:
-            if s1 is None:
+            if not s1:
                 s1 = g.readlineForceUnixNewline(f1)
                 lines1 += 1
-            if s2 is None:
+            if not s2:
                 s2 = g.readlineForceUnixNewline(f2)
                 lines2 += 1
             # @+<< ignore blank lines and/or sentinels >>
@@ -413,7 +413,7 @@ class BaseLeoCompare:
 
     # @+node:ekr.20031218072017.1144: *4* compare.openOutputFile
     def openOutputFile(self) -> bool:  # Bug fix: return a bool.
-        if self.outputFileName is None:
+        if not self.outputFileName:
             return False
         theDir, name = g.os_path_split(self.outputFileName)
         if not theDir:
