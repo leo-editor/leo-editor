@@ -330,7 +330,7 @@ class LeoPluginsController:
                 g.doHook("idle", c=c)
 
     # @+node:ekr.20100908125007.6017: *4* plugins.doHandlersForTag & helper
-    def doHandlersForTag(self, tag: str, keywords: Keywords) -> Value | None:
+    def doHandlersForTag(self, tag: str, keywords: Keywords) -> Value:
         """
         Execute all handlers for a given tag, in alphabetical order.
         The caller, doHook, catches all exceptions.
@@ -351,7 +351,7 @@ class LeoPluginsController:
         return None
 
     # @+node:ekr.20100908125007.6016: *5* plugins.callTagHandler
-    def callTagHandler(self, bunch: g.Bunch, tag: str, keywords: Keywords) -> Value | None:
+    def callTagHandler(self, bunch: g.Bunch, tag: str, keywords: Keywords) -> Value:
         """Call the event handler."""
         handler, moduleName = bunch.fn, bunch.moduleName
         # Make sure the new commander exists.
@@ -373,7 +373,7 @@ class LeoPluginsController:
         return result
 
     # @+node:ekr.20100908125007.6018: *4* plugins.doPlugins (g.app.hookFunction)
-    def doPlugins(self, tag: str, keywords: Keywords) -> Value | None:
+    def doPlugins(self, tag: str, keywords: Keywords) -> Value:
         """The default g.app.hookFunction."""
         if g.app.killed:
             return None
@@ -553,7 +553,7 @@ class LeoPluginsController:
             return result
 
         # @+node:ekr.20180528162604.1: *5* function:finishImport
-        def finishImport(result: Value) -> Value | None:
+        def finishImport(result: Value) -> Value:
             """Handle last-minute checks."""
             if tag == 'unit-test-load':
                 return result  # Keep the result, but do no more.

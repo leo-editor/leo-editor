@@ -104,7 +104,7 @@ def init():
 
 
 # @+node:ekr.20061024075542.1: ** open (pymacs)
-def open(fileName=None) -> Any | None:
+def open(fileName=None) -> Any:
     # global g
     init()
     if g.unitTesting:
