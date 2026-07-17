@@ -66,10 +66,7 @@ class CommandChainDispatcher:
     """
 
     def __init__(self, commands: list | None = None) -> None:
-        if commands is None:
-            self.chain = []
-        else:
-            self.chain = commands
+        self.chain = commands or []
 
     def __call__(self, *args: Args, **kw: KWargs) -> None:
         """Command chain is called just like normal func.
@@ -253,39 +250,34 @@ class BaseLeoPlugin:
 
     # @+node:ekr.20100908125007.6014: *3* BaseLeoPlugin.setMenuItem
     def setMenuItem(
-        self, menu: LeoQtMenu, commandName: str | None = None, handler: Callable | None = None
+        self, menu: LeoQtMenu, commandName: str = '', handler: Callable | None = None
     ) -> None:
         """Create a menu item in 'menu' using text 'commandName' calling handler 'handler'
         if commandName and handler are none, use the most recently defined values
         """
         # setMenuItem can create a command, or use a previously defined one.
-        if commandName is None:
+        if not commandName:
             commandName = self.commandName
         # make sure commandName is in the list of commandNames
         else:
             if commandName not in self.commandNames:
                 self.commandNames.append(commandName)
-        if handler is None:
+        if not handler:
             handler = self.handler
         table = ((commandName, None, handler),)
         self.c.frame.menu.createMenuItemsFromTable(menu, table)
 
     # @+node:ekr.20100908125007.6015: *3* BaseLeoPlugin.setButton
-    def setButton(
-        self,
-        buttonText: str | None = None,
-        commandName: str | None = None,
-        color: str | None = None,
-    ) -> None:
+    def setButton(self, buttonText: str = '', commandName: str = '', color: str = '') -> None:
         """Associate an existing command with a 'button'"""
-        if buttonText is None:
+        if not buttonText:
             buttonText = self.commandName
-        if commandName is None:
+        if not commandName:
             commandName = self.commandName
         else:
             if commandName not in self.commandNames:
                 raise NameError(f"setButton error, {commandName} is not a commandName")
-        if color is None:
+        if not color:
             color = 'grey'
         script = f"c.doCommandByName('{self.commandName}')"
         g.app.gui.makeScriptButton(
