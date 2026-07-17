@@ -8787,8 +8787,7 @@ def openUrlHelper(event: LeoKeyEvent | None = None, url: str = '') -> None:
     word = w.getSelectedText().strip()
     if not word:
         return
-    matches = c.findCommands.find_def(event)
-    if matches:
+    if c.findCommands.find_def(event):
         return
     # @+<< look for filename or import>>
     # @+node:tom.20230130102836.1: *5* << look for filename or import >>
@@ -8806,8 +8805,7 @@ def openUrlHelper(event: LeoKeyEvent | None = None, url: str = '') -> None:
         IMPORTSre = FROMre + '|' + IMPORTre
 
         m = re.match(IMPORTSre, s[i:], re.MULTILINE)
-        module = m and (m[2] or m[1])
-        if module:
+        if module := m and (m[2] or m[1]):
             filename = module + '.py'
             filename_w = module + '.pyw'
 
