@@ -2952,7 +2952,7 @@ class Commands:
         else:
             format = c.config.getString("headline-time-format-string")
             gmt = c.config.getBool("headline-gmt-time")
-        if format is None:
+        if not format:
             format = default_format
         try:
             # import time
@@ -3226,7 +3226,7 @@ class Commands:
         for d in aList:
             # Look for @path directives.
             path = d.get('path')
-            if path is not None:  # retain empty paths for warnings.
+            if path:  # retain empty paths for warnings.
                 # Convert "path" or <path> to path.
                 path = g.stripPathCruft(path)
                 if path:
@@ -4059,7 +4059,7 @@ class Commands:
         t1 = time.process_time()
 
         # Using the Qt gui will likely overwhelm Leo!
-        if gui is None:
+        if not gui:
             gui = g.app.nullGui
 
         # The main loop.
@@ -4606,7 +4606,7 @@ class Commands:
         deltaTime = c.config.getFloat('outline-nav-extend-delay')
         if deltaTime in (None, 0.0):
             return False
-        if c.navTime is None:
+        if not c.navTime:
             return False  # mypy.
         return time.time() - c.navTime < deltaTime
 
