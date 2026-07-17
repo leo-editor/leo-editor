@@ -141,9 +141,9 @@ class BackgroundProcessManager:
         self.pid = None
 
     # @+node:ekr.20161026193609.3: *3* bpm.kill
-    def kill(self, kind: str | None = None) -> None:
+    def kill(self, kind: str = '') -> None:
         """Kill the presently running process, if any."""
-        if kind is None:
+        if not kind:
             kind = 'all'
         if kind == 'all':
             self.process_queue = []
