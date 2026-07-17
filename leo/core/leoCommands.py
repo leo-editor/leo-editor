@@ -3225,11 +3225,9 @@ class Commands:
         paths = []
         for d in aList:
             # Look for @path directives.
-            path = d.get('path')
-            if path:  # retain empty paths for warnings.
+            if path := d.get('path'):
                 # Convert "path" or <path> to path.
-                path = g.stripPathCruft(path)
-                if path:
+                if path := g.stripPathCruft(path):
                     paths.append(path)
 
         # Add absbase and reverse the list.
