@@ -382,7 +382,7 @@ class AtFile:
             # Sets at.encoding, regularizes whitespace and calls at.initReadLines.
             s = at.readFileToUnicode(fn)
             # #1466.
-            if s is None:  # pragma: no cover
+            if not s:  # pragma: no cover
                 # The error has been given.
                 return None, None
             at.warnOnReadOnlyFile(fn)
@@ -1044,7 +1044,7 @@ class AtFile:
         return valid, new_df, start, end, isThin
 
     # @+node:ekr.20130911110233.11284: *5* at.readFileToUnicode & helpers
-    def readFileToUnicode(self, fileName: str) -> str | None:  # pragma: no cover
+    def readFileToUnicode(self, fileName: str) -> str:  # pragma: no cover
         """
         Carefully sets at.encoding, then uses at.encoding to convert the file
         to a unicode string.
@@ -1057,11 +1057,10 @@ class AtFile:
         Returns the string, or None on failure.
         """
         at = self
-        s: str
         s_bytes = at.openFileHelper(fileName)  # Catches all exceptions.
         # #1798.
         if not s_bytes:
-            return None  # Not ''.
+            return ''
         e, s_bytes = g.stripBOM(s_bytes)
         if e:
             # The BOM determines the encoding unambiguously.
