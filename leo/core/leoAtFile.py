@@ -3334,9 +3334,7 @@ class AtFile:
         p.v.tempAttributes['read-path'] = d
 
     # @+node:ekr.20090712050729.6017: *4* at.promptForDangerousWrite
-    def promptForDangerousWrite(
-        self, fileName: str, message: str | None = None
-    ) -> bool:  # pragma: no cover
+    def promptForDangerousWrite(self, fileName: str, message: str = '') -> bool:
         """Raise a dialog asking the user whether to overwrite an existing file."""
         at, c, root = self, self.c, self.root
         if at.cancelFlag:
@@ -3357,7 +3355,7 @@ class AtFile:
                     root.h = h
                     c.redraw()
                     return False
-        if message is None:
+        if not message:
             message = (
                 f"{g.splitLongFileName(fileName)}\n"
                 f"{g.tr('already exists.')}\n"
