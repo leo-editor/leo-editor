@@ -675,8 +675,7 @@ class LeoImportCommands:
         elif ext in ('.txt', '.text'):
             body += '@nocolor\n'
         else:
-            language = self.languageForExtension(ext)
-            if language:
+            if language := self.languageForExtension(ext):
                 body += f"@language {language}\n"
         self.setBodyString(p, body + s)
         for p in p.self_and_subtree():
@@ -1568,8 +1567,7 @@ class MORE_Importer:
             undoData = u.beforeInsertNode(c.p)
             root = last.insertAfter()
             root.h = fileName
-            p = self.import_lines(lines, root)
-            if p:
+            if p := self.import_lines(lines, root):
                 c.endEditing()
                 c.checkOutline()
                 p.setDirty()
