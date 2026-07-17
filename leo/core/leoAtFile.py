@@ -453,8 +453,7 @@ class AtFile:
         """
         at, c = self, self.c
         # Find the unvisited nodes.
-        aList = [z for z in root.subtree() if not z.isVisited()]
-        if aList:
+        if aList := [z for z in root.subtree() if not z.isVisited()]:
             at.c.deletePositionsInList(aList)
             c.redraw()
 
@@ -1703,8 +1702,7 @@ class AtFile:
         """A factory returning a writer function for the given file extension."""
         at = self
         d = g.app.writersDispatchDict
-        aClass = d.get(ext)
-        if aClass:
+        if aClass := d.get(ext):
 
             def writer_for_ext_cb(root: Position) -> str | None:
                 try:
