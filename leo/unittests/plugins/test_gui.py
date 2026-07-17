@@ -188,15 +188,12 @@ class TestQtGui(LeoUnitTest):
     # @+node:ekr.20260423040149.1: *3* TestQtGui.test_bug_4626
     def test_bug_4626(self):
         # https://github.com/leo-editor/leo-editor/issues/4626
+        self.skipTest('Can hang depending clipboard contents')
+
         c, gui = self.c, g.app.gui
         k, log, qtApp = c.k, c.frame.log, gui.qtApp
         old_log = g.app.log
         old_clipboard_contents = gui.getTextFromClipboard()
-
-        # Leo sometimes hangs in this test depending on the contents of the clipboard.
-        if len(old_clipboard_contents) > 1000 or '\n' in old_clipboard_contents:
-            self.skipTest('Complex clipboard contents')
-
         try:
             # Part 1: Create the 'Completion' tab, and copy it's contents to the clipboard.
             # Force g.es to print to the log.
