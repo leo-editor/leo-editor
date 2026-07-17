@@ -5758,7 +5758,7 @@ def convertRowColToPythonIndex(s: str, row: int, col: int, lines: list[str] | No
     """Convert zero-based row/col indices into a python index into string s."""
     if row < 0:
         return 0
-    if lines is None:
+    if not lines:
         lines = g.splitLines(s)
     if row >= len(lines):
         return len(s)
@@ -6732,7 +6732,7 @@ is_unique_class = isUniqueClass
 # @+node:ekr.20150127060254.5: *3* g.log_to_file
 def log_to_file(s: str, fn: str = '') -> None:
     """Write a message to ~/test/leo_log.txt."""
-    if fn is None:
+    if not fn:
         fn = g.finalize('~/test/leo_log.txt')
     if not s.endswith('\n'):
         s = s + '\n'
