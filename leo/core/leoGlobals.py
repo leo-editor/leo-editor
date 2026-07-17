@@ -7177,7 +7177,7 @@ init_zodb_failed: dict[str, bool] = {}  # Keys are paths, values are True.
 init_zodb_db: dict[str, Value] = {}  # Keys are paths, values are ZODB.DB instances.
 
 
-def init_zodb(pathToZodbStorage: str, verbose: bool = True) -> Value | None:
+def init_zodb(pathToZodbStorage: str, verbose: bool = True) -> Value:
     """
     Return an ZODB.DB instance from the given path.
     return None on any error.
