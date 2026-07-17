@@ -3296,17 +3296,6 @@ class AtFile:
 
     # @+node:ekr.20050104131929: *4* at.file operations...
     # Error checking versions of corresponding functions in Python's os module.
-    # @+node:ekr.20050104131820: *5* at.chmod
-    def chmod(self, fileName: str, mode: int) -> None:  # pragma: no cover
-        # Do _not_ call self.error here.
-        if mode is None:
-            return
-        try:
-            os.chmod(fileName, mode)
-        except Exception:
-            g.es("exception in os.chmod", fileName)
-            g.es_exception()
-
     # @+node:ekr.20050104132018: *5* at.remove
     def remove(self, fileName: str) -> bool:  # pragma: no cover
         if not fileName:
