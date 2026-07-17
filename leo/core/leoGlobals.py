@@ -5813,7 +5813,7 @@ def getLine(s: str, i: int) -> tuple[int, int]:
 
 
 # @+node:ekr.20111114151846.9847: *4* g.toPythonIndex
-def toPythonIndex(s: str, index: str) -> int:
+def toPythonIndex(s: str, index: str | None) -> int:
     """
     Convert index to a Python int.
 
@@ -6916,7 +6916,7 @@ def es_print_unique_message(message: str, *, color: str = 'error') -> bool:
 trace_unique_dict: dict[str, list[str]] = {}
 
 
-def traceUnique(value: object, *, n: int = 2, pad: int = 30) -> None:
+def traceUnique(value: object, *, n: int = 2, pad: int | None = None) -> None:
     """Print unique values associated with g.callers(n)."""
     if pad is None:
         pad = 30
@@ -7532,7 +7532,7 @@ def os_path_splitext(path: str) -> tuple[str, str]:
 # @+node:ekr.20090829140232.6036: *3* g.os_startfile
 def os_startfile(fname: str) -> None:
     # @+others
-    # @+node:bob.20170516112250.1: *4* stderr2log()
+    # @+node:bob.20170516112250.1: *4* g.stderr2log()
     def stderr2log(g: LeoGlobals, ree: io.FileIO, fname: str) -> None:
         """Display stderr output in the Leo-Editor log pane
 
@@ -7552,7 +7552,7 @@ def os_startfile(fname: str) -> None:
             else:
                 break
 
-    # @+node:bob.20170516112304.1: *4* itPoll()
+    # @+node:bob.20170516112304.1: *4* g.itPoll()
     def itPoll(
         fname: str,
         ree: io.FileIO,

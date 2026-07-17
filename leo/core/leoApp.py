@@ -3773,14 +3773,14 @@ class RecentFilesManager:
         return True
 
     # @+node:ekr.20120225072226.10285: *3* rf.sanitize
-    def sanitize(self, name: str) -> str | None:
+    def sanitize(self, name: str) -> str:
         """Return a sanitized file name."""
         if name is None:
             return None
         name = name.lower()
         for ch in ('-', '_', ' ', '\n'):
             name = name.replace(ch, '')
-        return name or None
+        return name or ''
 
     # @+node:ekr.20120215072959.12478: *3* rf.setRecentFiles
     def setRecentFiles(self, files: list[str]) -> None:
