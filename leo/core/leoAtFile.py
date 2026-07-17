@@ -674,9 +674,9 @@ class AtFile:
         # Remember the full fileName.
         at.rememberReadPath(fn, p)
         s, e = g.readFileIntoString(fn, kind='@edit')
-        if s is None:
+        if not s:
             return
-        encoding = 'utf-8' if e is None else e
+        encoding = e or 'utf-8'
         # Delete all children.
         while p.hasChildren():
             p.firstChild().doDelete()
@@ -838,9 +838,9 @@ class AtFile:
         # Fix bug 889175: Remember the full fileName.
         at.rememberReadPath(fn, p)
         s, e = g.readFileIntoString(fn, kind='@edit')
-        if s is None:
+        if not s:
             return
-        encoding = 'utf-8' if e is None else e
+        encoding = e or 'utf-8'
         # Delete all children.
         while p.hasChildren():
             p.firstChild().doDelete()
@@ -1654,7 +1654,7 @@ class AtFile:
             if c.persistenceController:
                 c.persistenceController.update_before_write_foreign_file(root)
             contents = at.writeAtAutoContents(fileName, root)
-            if contents is None:
+            if not contents:
                 g.es("not written:", fileName)
                 at.addToOrphanList(root)
                 return False
