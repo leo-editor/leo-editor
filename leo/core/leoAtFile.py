@@ -408,7 +408,7 @@ class AtFile:
         return shadow_fn
 
     # @+node:ekr.20041005105605.21: *5* at.read & helpers
-    def read(self, root: Position, fromString: str | None = None) -> bool:
+    def read(self, root: Position, fromString: str = '') -> bool:
         """Read an @thin or @file tree."""
         at, c = self, self.c
         fileName = c.fullPath(root)
@@ -425,7 +425,7 @@ class AtFile:
 
         # Open the file.
         fileName, file_s = at.openFileForReading(fromString=fromString)
-        if file_s is None:  # #1798:
+        if not file_s:  # #1798:
             return False  # pragma: no cover
 
         # Set the time stamp.
