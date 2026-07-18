@@ -32711,12 +32711,13 @@ def run():
 
 ### Changed string functions
 
-The functions listed below now return an empty string instead of None. Tests against None will no longer work as expected--the pythonic tests below must be used instead::
-
+The functions and methods listed below now return an empty string instead of None. Tests against None will no longer work as expected--the "truthy" tests below must be used instead::
 
     if s:
     if not s:
 
+
+- AtFile.readFileToUnicode.
 - g.findAtTabWidthDirectives.
 - g.findFirstAtLanguageDirective.
 - g.findLanguageDirectives.
@@ -32727,6 +32728,12 @@ The functions listed below now return an empty string instead of None. Tests aga
 - g.makeAllNonExistentDirectories.
 - g.stripBOM.
 - g.readFileIntoEncodedString.
+- RecentFilesManager.sanitize.
+- RecursiveImportController.resolve_dir_arg.
+
+The following methods now return an empty string instead of None:
+
+- SettingsDict.get_setting and SettingsDict.get_string_setting.
 
 ### Changed commander functions
 
@@ -32743,18 +32750,19 @@ The functions below may return None instead of a position:
 
 - g.findUnl, g.findGnx, and g.findAnyUnl.
 
-### Changed string methods
+### Deleted global functions and methods
 
-The following methods now return an empty string instead of None:
+- AtFile.chmod.
 
-- SettingsDict.get_setting and SettingsDict.get_string_setting.
+mypy revealed that the following functions  were impossible to use.
 
-### Deleted global functions
+- g.execute_shell_commands_with_options.
+- g.computeBaseDir.
+- g.computeCommands.
 
-- g.execute_shell_commands_with_options: mypy revealed that its options were impossibly complex.
-- g.computeBaseDir: not used, and can't be fixed.
-- g.computeCommands: not used, and can't be fixed.
-</t>
+### Other breaking changes
+
+- LeoImportCommands.removeSentinelsCommand: Remove unused ``toString`` kwarg.</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
