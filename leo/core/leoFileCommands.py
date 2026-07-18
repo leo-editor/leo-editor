@@ -1233,11 +1233,6 @@ class FileCommands:
 
     # @+node:ekr.20060919133249: *4* fc: Read Utils
     # Methods common to both the sax and non-sax code.
-    # @+node:ekr.20061006104837.1: *5* fc.archivedPositionToPosition
-    def archivedPositionToPosition(self, s: str) -> Position | None:
-        """Convert an archived position (a string) to a position."""
-        return self.c.archivedPositionToPosition(s)
-
     # @+node:ekr.20040701065235.1: *5* fc.getDescendentAttributes
     def getDescendentAttributes(self, s: str, tag: str = "") -> list[str]:
         """s is a list of gnx's, separated by commas from a <v> or <t> element.
@@ -1398,7 +1393,7 @@ class FileCommands:
             if d:
                 str_pos = d.get('str_leo_pos')
         if str_pos is not None:
-            current = self.archivedPositionToPosition(str_pos)
+            current = c.archivedPositionToPosition(str_pos)
         if not c.positionExists(current):  # #4789.
             current = c.rootPosition()
         c.setCurrentPosition(current)
