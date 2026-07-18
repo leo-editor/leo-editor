@@ -1122,8 +1122,7 @@ class LeoApp:
 
         This might be set by in Python's sitecustomize.py file.
         """
-        id_ = getattr(sys, "leoID", None)
-        if id_:
+        if id_ := getattr(sys, "leoID", None):
             # Careful: periods in the id field of a gnx will corrupt the .leo file!
             # cleanLeoID raises a warning dialog.
             id_ = self.cleanLeoID(id_, 'sys.leoID')
@@ -1161,8 +1160,7 @@ class LeoApp:
     def setIDFromEnv(self, verbose: bool) -> None:
         """Set leoID from environment vars."""
         try:
-            id_ = os.getenv('USER')
-            if id_:
+            if id_ := os.getenv('USER'):
                 if verbose:
                     g.blue("setting leoID from os.getenv('USER'):", repr(id_))
                 # Careful: periods in the gnx would corrupt the .leo file!
@@ -1580,8 +1578,7 @@ class LeoApp:
         frame.deiconify()
         frame.lift()
         c.setLog()
-        master = getattr(frame.top, 'leo_master', None)
-        if master:
+        if master := getattr(frame.top, 'leo_master', None):
             # master is a TabbedTopLevel.
             # Selecting the new tab ensures focus is set.
             master.select(c)
@@ -1730,8 +1727,7 @@ class LoadManager:
 
     # @+node:ekr.20120209051836.10253: *5* LM.computeGlobalConfigDir
     def computeGlobalConfigDir(self) -> str:
-        leo_config_dir = getattr(sys, 'leo_config_directory', None)
-        if leo_config_dir:
+        if leo_config_dir := getattr(sys, 'leo_config_directory', None):
             theDir = leo_config_dir
         else:
             theDir = os.path.join(g.app.loadDir, "..", "config")
@@ -1778,13 +1774,7 @@ class LoadManager:
     def computeLoadDir(self) -> str:
         """Returns the directory containing leo.py."""
         try:
-            # Fix a hangnail: on Windows the drive letter returned by
-            # __file__ is randomly upper or lower case!
-            # The made for an ugly recent files list.
-            path = g.__file__  # was leo.__file__
-            if path:
-                # Possible fix for bug 735938:
-                # Do the following only if path exists.
+            if path := g.__file__:
                 # @+<< resolve symlinks >>
                 # @+node:ekr.20120209051836.10257: *6* << resolve symlinks >>
                 if path.endswith('pyc'):
@@ -1793,6 +1783,9 @@ class LoadManager:
                         path = os.path.realpath(srcfile)
                 # @-<< resolve symlinks >>
                 if g.isWindows:
+                    # Fix a hangnail: on Windows the drive letter returned by
+                    # __file__ is randomly upper or lower case!
+                    # The made for an ugly recent files list.
                     if len(path) > 2 and path[1] == ':':
                         # Convert the drive name to upper case.
                         path = path[0].upper() + path[1:]
@@ -1867,8 +1860,7 @@ class LoadManager:
         resolve = self.resolve_theme_path
 
         # Step 1: Use the --theme command-line options if it exists
-        path = resolve(lm.options.get('theme_path', ''), tag='--theme')
-        if path:
+        if path := resolve(lm.options.get('theme_path', ''), tag='--theme'):
             # Caller (LM.readGlobalSettingsFiles) sets lm.theme_path
             if trace:
                 g.trace('--theme:', path)
@@ -1878,19 +1870,16 @@ class LoadManager:
         path = lm.files[0] if lm.files else ''
         if path and g.os_path_exists(path):
             # Tricky: we must call lm.computeLocalSettings *here*.
-            theme_c = lm.openSettingsFile(path)
-            if theme_c:
+            if theme_c := lm.openSettingsFile(path):
                 settings_d, junk_shortcuts_d = lm.computeLocalSettings(
                     c=theme_c,
                     settings_d=lm.globalSettingsDict,
                     bindings_d=lm.globalBindingsDict,
                     localFlag=False,
                 )
-                setting = settings_d.get_string_setting('theme-name')
-                if setting:
+                if setting := settings_d.get_string_setting('theme-name'):
                     tag = theme_c.shortFileName()
-                    path = resolve(setting, tag=tag)
-                    if path:
+                    if path := resolve(setting, tag=tag):
                         # Caller (LM.readGlobalSettingsFiles) sets lm.theme_path
                         if trace:
                             g.trace("First loaded file", theme_c.shortFileName(), path)
@@ -1995,8 +1984,7 @@ class LoadManager:
         if settings_d2:
             if g.app.trace_setting:
                 key = g.app.config.munge(g.app.trace_setting)
-                val = settings_d2.get(key)
-                if val:
+                if val := settings_d2.get(key):
                     fn = g.shortFileName(val.path)
                     g.es_print(
                         f"--trace-setting: in {fn:20}: @{val.kind} {g.app.trace_setting}={val.val}"
@@ -2103,8 +2091,7 @@ class LoadManager:
                     )
                 else:
                     stroke = g.KeyStroke(binding)
-                    bi_list = inverted_new_d.get(stroke)
-                    if bi_list:
+                    if bi_list := inverted_new_d.get(stroke):
                         print('')
                         for bi in bi_list:
                             fn = bi.kind.split(' ')[-1]  # bi.kind #
@@ -2407,8 +2394,7 @@ class LoadManager:
         # Load a session if the command line contains no files.
         if g.app.sessionManager and not lm.files:
             try:
-                aList = g.app.sessionManager.load_snapshot()
-                if aList:
+                if aList := g.app.sessionManager.load_snapshot():
                     g.app.sessionManager.load_session(c1, aList)
                     if g.app.windowList:
                         c = c1 = g.app.windowList[0].c
@@ -2576,8 +2562,7 @@ class LoadManager:
         Set entries in g.app.classDispatchDict, g.app.atAutoDict and
         g.app.atAutoNames using entries in m.importer_dict.
         """
-        importer_d = getattr(m, 'importer_dict', None)
-        if importer_d:
+        if importer_d := getattr(m, 'importer_dict', None):
             at_auto = importer_d.get('@auto', [])
             scanner_func = importer_d.get('func', None)
             # scanner_name = scanner_class.__name__
@@ -2640,8 +2625,7 @@ class LoadManager:
         Set entries in g.app.writersDispatchDict and g.app.atAutoWritersDict
         using entries in m.writers_dict.
         """
-        writer_d = getattr(m, 'writer_dict', None)
-        if writer_d:
+        if writer_d := getattr(m, 'writer_dict', None):
             at_auto = writer_d.get('@auto', [])
             scanner_class = writer_d.get('class', None)
             extensions = writer_d.get('extensions', [])
@@ -2767,8 +2751,7 @@ class LoadManager:
                     files.append(arg)
             result = []
             for z in files:
-                aList = g.glob_glob(lm.completeFileName(z))
-                if aList:
+                if aList := g.glob_glob(lm.completeFileName(z)):
                     result.extend(aList)
                 else:
                     result.append(z)
@@ -3170,19 +3153,16 @@ class LoadManager:
             return lm.openEmptyLeoFile(file_name, gui, old_c)
 
         # Return the commander if the file is an already open outline.
-        c = lm.findOpenFile(file_name)
-        if c:
+        if c := lm.findOpenFile(file_name):
             return c
 
         # Open an outline or an external file.
         exists = os.path.exists(file_name)
-        is_leo = lm.isLeoFile(file_name)
-        if is_leo:
+        if lm.isLeoFile(file_name):
             if exists:
                 return lm.openExistingLeoFile(file_name, gui, old_c)
             return lm.openEmptyLeoFile(file_name, gui, old_c)
-        c = lm.openExternalFile(file_name, gui, old_c)
-        if c:
+        if c := lm.openExternalFile(file_name, gui, old_c):
             return c
         return lm.openEmptyLeoFile(file_name, gui, old_c)  # PR #4779
 
@@ -3483,8 +3463,7 @@ class LoadManager:
                 g.error(f"Revert failed: {fn!r}")
                 return
             # #3596: Redo all buttons.
-            sc = getattr(c, 'theScriptingController', None)
-            if sc:
+            if sc := getattr(c, 'theScriptingController', None):
                 sc.createAllButtons()
             if not g.unitTesting:
                 g.es_print(f"Reverted {c.fileName()}")
@@ -3727,8 +3706,7 @@ class RecentFilesManager:
             if path:
                 path = g.os_path_realpath(g.finalize(path))
             if path and path not in seen:
-                ok = rf.readRecentFilesFile(path)
-                if ok:
+                if rf.readRecentFilesFile(path):
                     seen.append(path)
         if not seen and rf.write_recent_files_as_needed:
             rf.createRecentFiles()
@@ -3838,9 +3816,8 @@ class RecentFilesManager:
         Write content of "edit_headline" node as recentFiles and recreates
         menus.
         """
-        p, rf = c.p, self
-        p = g.findNodeAnywhere(c, self.edit_headline)
-        if p:
+        rf = self
+        if p := g.findNodeAnywhere(c, self.edit_headline):
             files = [z for z in p.b.splitlines() if z and g.os_path_exists(z)]
             rf.recentFiles = files
             rf.writeRecentFilesFile(c)
@@ -3858,8 +3835,7 @@ class RecentFilesManager:
         # tag:#661. Do nothing if in leoBride.
         if g.unitTesting or g.app.inBridge:
             return
-        localFileName = c.fileName()
-        if localFileName:
+        if localFileName := c.fileName():
             localPath, junk = g.os_path_split(localFileName)
         else:
             localPath = None
@@ -3870,8 +3846,7 @@ class RecentFilesManager:
                 fileName = g.os_path_join(path, tag)
                 if g.os_path_exists(fileName) and fileName.lower() not in seen:
                     seen.append(fileName.lower())
-                    ok = rf.writeRecentFilesFileHelper(fileName)
-                    if ok:
+                    if ok := rf.writeRecentFilesFileHelper(fileName):
                         written = True
                     if (
                         not rf.recentFileMessageWritten
@@ -3951,8 +3926,7 @@ def demangle_recent_files_command(event: LeoKeyEvent | None = None) -> None:
     """
     c = event and event.get('c')
     if c:
-        data = c.config.getData('path-demangle')
-        if data:
+        if data := c.config.getData('path-demangle'):
             g.app.recentFilesManager.demangleRecentFiles(c, data)
         else:
             g.es_print('No patterns in @data path-demangle')
