@@ -1203,11 +1203,7 @@ class ActiveSettingsOutline:
                 self.add(p)
 
     # @+node:ekr.20190905091614.12: *3* aso.add
-    def add(
-        self,
-        p: Position,
-        h: str | None = None,  # Don't change this.
-    ) -> None:
+    def add(self, p: Position, h: str = '') -> None:
         """
         Add a node for p.
 
