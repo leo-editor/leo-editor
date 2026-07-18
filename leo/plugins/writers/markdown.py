@@ -3,6 +3,7 @@
 """The @auto write code for markdown."""
 
 import re
+from urllib.parse import quote
 from leo.core import leoGlobals as g
 from leo.core.leoNodes import Position
 import leo.plugins.writers.basewriter as basewriter
@@ -14,6 +15,23 @@ class MarkdownWriter(basewriter.BaseWriter):
     """The writer class for markdown files."""
 
     # @+others
+    # @+node:axk.20260709120000.1: *3* mdw.has_noheader
+    def has_noheader(self, p: Position) -> bool:
+        """Return True if p contains a local @noheader directive."""
+        for line in [p.h, *g.splitLines(p.b)]:
+            if g.isDirective(line):
+                if m := g.g_is_directive_pattern.match(line):
+                    if m.group(1) == 'noheader':
+                        return True
+        return False
+
+    # @+node:axk.20260709133000.1: *3* mdw.noheader_marker
+    def noheader_marker(self, p: Position) -> str:
+        """Return the HTML comment marker for a hidden markdown node."""
+        level = p.level() - self.root.level()
+        headline = quote(p.h, safe='')
+        return f"<!-- leo-noheader level={level} headline={headline} -->"
+
     # @+node:ekr.20140726091031.18076: *3* mdw.write
     def write(self, root: Position) -> None:
         """Write all the *descendants* of an @auto-markdown node."""
@@ -26,6 +44,8 @@ class MarkdownWriter(basewriter.BaseWriter):
                 # skip this 'placeholder level X' node
                 pass
             else:
+                if self.has_noheader(p):
+                    self.put(self.noheader_marker(p))
                 self.write_headline(p)
                 lines = p.b.splitlines(False)
                 for s in lines:
@@ -51,7 +71,7 @@ class MarkdownWriter(basewriter.BaseWriter):
         """
         level = p.level() - self.root.level()
         assert level > 0, p.h
-        if p.h == '!Declarations' or self.placeholder_regex.match(p.h):
+        if p.h == '!Declarations' or self.placeholder_regex.match(p.h) or self.has_noheader(p):
             pass
         else:
             # Leo 6.6.4: preserve spacing.

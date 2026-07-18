@@ -98,7 +98,7 @@ class FreeMindImporter:
             htmltree = lxml.html.parse(path)
             root = htmltree.getroot()
             body = root.findall('body')[0]
-            if body is None:
+            if not body:
                 g.error(f"no body in: {sfn}")
             else:
                 root_p = c.lastTopLevel().insertAfter()
@@ -460,15 +460,15 @@ class LeoImportCommands:
         theFile.close()
 
     # @+node:ekr.20031218072017.3300: *4* ic.removeSentinelsCommand
-    def removeSentinelsCommand(self, paths: list[str], toString: bool = False) -> str | None:
+    def removeSentinelsCommand(self, paths: list[str]) -> None:
         c = self.c
         self.encoding = c.getEncoding(c.p)
         for fileName in paths:
             g.setGlobalOpenDir(fileName)
             path, self.fileName = g.os_path_split(fileName)
             s, e = g.readFileIntoString(fileName, self.encoding)
-            if s is None:
-                return None
+            if not s:
+                continue  # PR #4801.
             if e:
                 self.encoding = e
             # @+<< set delims from the header line >>
@@ -483,9 +483,8 @@ class LeoImportCommands:
             line = s[i:j]
             valid, junk, start_delim, end_delim, junk = at.parseLeoSentinel(line)
             if not valid:
-                if not toString:
-                    g.es("invalid @+leo sentinel in", fileName)
-                return None
+                g.es("invalid @+leo sentinel in", fileName)
+                return
             if end_delim:
                 line_delim = None
             else:
@@ -500,8 +499,6 @@ class LeoImportCommands:
             else:
                 head, ext2 = g.os_path_splitext(fileName)
                 newFileName = g.finalize_join(path, head + ext + ext2)  # 1341
-            if toString:
-                return s
             # @+<< Write s into newFileName >>
             # @+node:ekr.20031218072017.1149: *5* << Write s into newFileName >> (remove-sentinels)
             # Remove sentinels command.
@@ -514,7 +511,6 @@ class LeoImportCommands:
                 g.es("exception creating:", newFileName)
                 g.print_exception()
             # @-<< Write s into newFileName >>
-        return None
 
     # @+node:ekr.20031218072017.3303: *4* ic.removeSentinelLines
     # This does not handle @nonl properly, but that no longer matters.
@@ -583,15 +579,10 @@ class LeoImportCommands:
     # @+node:ekr.20031218072017.3209: *3* ic.Import
     # @+node:ekr.20031218072017.3210: *4* ic.createOutline & helpers
     def createOutline(
-        self,
-        parent: Position,
-        ext: str | None = None,
-        s: str | None = None,
-        treeType: str = '@file',
+        self, parent: Position, ext: str = '', s: str = '', treeType: str = '@file'
     ) -> Position | None:
         """
-        Create an outline by importing a file, reading the file with the
-        given encoding if string s is None.
+        Create an outline by importing a file.
 
         ext,        The file extension to be used, or None.
         fileName:   A string or None. The name of the file to be read.
@@ -607,7 +598,7 @@ class LeoImportCommands:
         # Init ivars.
         self.encoding = c.getEncoding(parent)
         ext, s = self.init_import(ext, fileName, s)
-        if s is None:
+        if not s:
             return None
 
         # Each importer file defines `do_import` at the top level.
@@ -669,7 +660,7 @@ class LeoImportCommands:
         if not s:
             # Set the kind for error messages in readFileIntoString.
             s, e = g.readFileIntoString(fileName, encoding=self.encoding)
-            if s is None:
+            if not s:
                 return None, None
             if e:
                 self.encoding = e
@@ -684,8 +675,7 @@ class LeoImportCommands:
         elif ext in ('.txt', '.text'):
             body += '@nocolor\n'
         else:
-            language = self.languageForExtension(ext)
-            if language:
+            if language := self.languageForExtension(ext):
                 body += f"@language {language}\n"
         self.setBodyString(p, body + s)
         for p in p.self_and_subtree():
@@ -862,7 +852,7 @@ class LeoImportCommands:
     # @+node:ekr.20031218072017.3224: *4* ic.importWebCommand & helpers
     def importWebCommand(self, files: list[str], webType: str) -> None:
         c, current = self.c, self.c.p
-        if current is None:
+        if not current:
             return
         if not files:
             return
@@ -978,7 +968,7 @@ class LeoImportCommands:
         lb = "@<" if theType == "cweb" else "<<"
         rb = "@>" if theType == "cweb" else ">>"
         s, e = g.readFileIntoString(fileName)
-        if s is None:
+        if not s:
             return
         # @+<< Create a symbol table of all section names >>
         # @+node:ekr.20031218072017.3232: *6* << Create a symbol table of all section names >>
@@ -1567,7 +1557,7 @@ class MORE_Importer:
         ic.encoding = c.getEncoding(c.p)
         g.setGlobalOpenDir(fileName)
         s, _e = g.readFileIntoString(fileName)
-        if s is None:
+        if not s:
             return None
         s = s.replace('\r', '')  # Fixes bug 626101.
         lines = g.splitLines(s)
@@ -1577,8 +1567,7 @@ class MORE_Importer:
             undoData = u.beforeInsertNode(c.p)
             root = last.insertAfter()
             root.h = fileName
-            p = self.import_lines(lines, root)
-            if p:
+            if p := self.import_lines(lines, root):
                 c.endEditing()
                 c.checkOutline()
                 p.setDirty()
@@ -1947,7 +1936,7 @@ class RecursiveImportController:
             c.deletePositionsInList(aList)  # Don't redraw.
 
     # @+node:ekr.20230829043849.1: *3* ric_resolve_dir_arg
-    def resolve_dir_arg(self, arg: str) -> str | None:
+    def resolve_dir_arg(self, arg: str) -> str:
         """
         arg can be None or a path (relative or absolute) to a file or
         directory.
@@ -1975,7 +1964,7 @@ class RecursiveImportController:
         elif not os.path.isabs(arg):
             arg = os.path.join(outline_dir, arg)
         if not os.path.exists(arg):
-            return None
+            return ''
 
         # Final sanity checks.
         assert arg, repr(arg1)
@@ -1984,11 +1973,11 @@ class RecursiveImportController:
         return arg
 
     # @+node:ekr.20130823083943.12613: *3* ric.run
-    def run(self, dir_: str | None) -> None:
+    def run(self, dir_: str) -> None:
         """
         dir_ can be None, a directory contained in the outline's directory, or a single file.
 
-        Import all files in the dir_ directory, or the outline's directory if dir_ is None.
+        Import all files in the dir_ directory, or the outline's directory if dir_ is empty.
 
         Import all files whose extension matches self.theTypes in dir_.
         In fact, dir_ can be a path to a single file.
@@ -2003,7 +1992,7 @@ class RecursiveImportController:
         # Resolve dir_ to an absolute path.
         dir_1 = dir_
         dir_ = self.resolve_dir_arg(dir_)
-        if dir_ is None:
+        if not dir_:
             self.error(f"invalid 'dir_' argument: {dir_1!r}")
             return
 

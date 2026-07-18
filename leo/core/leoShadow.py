@@ -144,11 +144,10 @@ class ShadowController:
         Return True if theFile was changed.
         """
         x, c = self, self.c
-        exists = g.os_path_exists(fileName)
-        if exists:
+        if exists := g.os_path_exists(fileName):
             # Read the file.  Return if it is the same.
             s2, e = g.readFileIntoString(fileName)
-            if s2 is None:
+            if not s2:
                 return False
             if s == s2:
                 report = c.config.getBool('report-unchanged-files', default=True)

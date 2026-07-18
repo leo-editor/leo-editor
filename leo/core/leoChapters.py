@@ -294,7 +294,7 @@ class ChapterController:
             if binding:
                 binding = binding.strip()
         else:
-            chapterName = binding = None
+            chapterName = binding = ''
         return chapterName, binding
 
     # @+node:ekr.20160414183716.1: *4* cc.sanitize

@@ -3215,7 +3215,11 @@ class LoadManager:
         # Official very late initialization.
         c.frame.tree.initAfterLoad()
         c.initAfterLoad()
-        lm.createMenu(c, c.fileName())
+        lm.createMenu(c, c.fileName())  # This will fetch c.config.getMenusList()
+
+        # Remove this outline's "doMenuat" settings so later outlines won't use them.
+        lm.globalSettingsDict['menus'] = None
+        c.config.settingsDict['menus'] = None
 
         # Common finishing code.
         g.app.unlockLog()
@@ -3783,14 +3787,14 @@ class RecentFilesManager:
         return True
 
     # @+node:ekr.20120225072226.10285: *3* rf.sanitize
-    def sanitize(self, name: str) -> str | None:
+    def sanitize(self, name: str) -> str:
         """Return a sanitized file name."""
         if name is None:
             return None
         name = name.lower()
         for ch in ('-', '_', ' ', '\n'):
             name = name.replace(ch, '')
-        return name or None
+        return name or ''
 
     # @+node:ekr.20120215072959.12478: *3* rf.setRecentFiles
     def setRecentFiles(self, files: list[str]) -> None:

@@ -9,7 +9,7 @@ from collections.abc import Callable
 import difflib
 import os
 import re
-from typing import TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoCommands
 from leo.commands.baseCommands import BaseEditCommandsClass
@@ -518,10 +518,10 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         if not fn2:
             return
         s1, e = g.readFileIntoString(fn)
-        if s1 is None:
+        if not s1:
             return
         s2, e = g.readFileIntoString(fn2)
-        if s2 is None:
+        if not s2:
             return
         lines1, lines2 = g.splitLines(s1), g.splitLines(s2)
         aList = difflib.ndiff(lines1, lines2)
@@ -1383,7 +1383,7 @@ class GitDiffController:
         branch: str,
         c1: Cmdr,
         c2: Cmdr,
-        d: dict[str, tuple[VNode, VNode]],
+        d: dict[str, Any],  # Values: tuple[VNode, VNode] for 'changed' kind, otherwise VNode.
         kind: str,
         rev1: str,
         rev2: str,

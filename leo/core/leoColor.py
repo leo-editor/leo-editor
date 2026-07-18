@@ -761,7 +761,7 @@ get = getColor
 
 
 # @+node:bob.20080115070511.4: *3* function: leoColor.getRGB / getColorRGB
-def getColorRGB(name: str, default: str | None = None) -> tuple[int, int, int]:
+def getColorRGB(name: str, default: str | None = None) -> tuple[int, int, int] | None:
     """Convert a named color into an (r, g, b) tuple."""
     s = getColor(name, default)
     try:
@@ -775,10 +775,10 @@ getRGB = getColorRGB
 
 
 # @+node:bob.20080115072302: *3* function: leoColor.getCairo / getColorCairo
-def getColorCairo(name: str, default: str | None = None) -> tuple[float, float, float] | None:
+def getColorCairo(name: str, default: str = '') -> tuple[float, float, float] | None:
     """Convert a named color into a cairo color tuple."""
     color = getColorRGB(name, default)
-    if color is None:
+    if not color:
         return None
     try:
         r, g, b = color

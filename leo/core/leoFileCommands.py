@@ -1234,7 +1234,7 @@ class FileCommands:
     # @+node:ekr.20060919133249: *4* fc: Read Utils
     # Methods common to both the sax and non-sax code.
     # @+node:ekr.20061006104837.1: *5* fc.archivedPositionToPosition
-    def archivedPositionToPosition(self, s: str) -> Position:
+    def archivedPositionToPosition(self, s: str) -> Position | None:
         """Convert an archived position (a string) to a position."""
         return self.c.archivedPositionToPosition(s)
 

@@ -5,6 +5,7 @@
 # @+<< leoConfig imports & annotations >>
 # @+node:ekr.20041227063801: ** << leoConfig imports & annotations >>
 from __future__ import annotations
+import copy
 import os
 import sys
 import re
@@ -424,7 +425,12 @@ class ParserBaseClass:
                 targetPath = '/' + targetPath
             is_local = 'leosettings' not in self.c.mFileName.lower()
             if is_local:
-                mlist = g.app.config.menusList[:]
+                # getMenusList returns local menu if it exist, otherwise the global menu.
+                mlist = self.c.config.getMenusList()
+                # if global, it's the first @menuat found, so start with copy of global menu.
+                if mlist is g.app.config.menusList:
+                    # deepcopy so sub menus are not shared instances.
+                    mlist = copy.deepcopy(g.app.config.menusList)
                 self.c.config.set(None, 'menus', 'menus', mlist)
             else:
                 mlist = g.app.config.menusList
@@ -487,7 +493,7 @@ class ParserBaseClass:
                 self.dumpMenuTree(val, level + 1, path=path + '/' + name)
 
     # @+node:tbrown.20080514180046.8: *5* pbc.patchMenuTree
-    def patchMenuTree(self, orig: list[Any], targetPath: str, path: str = '') -> Any | None:
+    def patchMenuTree(self, orig: list[Any], targetPath: str, path: str = '') -> Any:
         kind: str
         val: Any
         val2: Any
@@ -850,7 +856,7 @@ class ParserBaseClass:
         else:
             d[tag] = val
 
-    # @+node:ekr.20041120112043: *4* pbc.parseShortcutLine
+    # @+node:ekr.20041120112043: *4* pbc.parseShortcutLine (change?)
     def parseShortcutLine(self, kind: str, s: str) -> tuple[str | None, Any]:
         """Parse a shortcut line.  Valid forms:
 
@@ -1197,11 +1203,7 @@ class ActiveSettingsOutline:
                 self.add(p)
 
     # @+node:ekr.20190905091614.12: *3* aso.add
-    def add(
-        self,
-        p: Position,
-        h: str | None = None,  # Don't change this.
-    ) -> None:
+    def add(self, p: Position, h: str = '') -> None:
         """
         Add a node for p.
 
@@ -1367,7 +1369,7 @@ class GlobalConfigManager:
         return False
 
     # @+node:ekr.20041117083141: *4* gcm.get & allies
-    def get(self, setting: str, kind: str) -> Any | None:
+    def get(self, setting: str, kind: str) -> Any:
         """Get the setting and make sure its type matches the expected type."""
         # It *is* valid to call this method: it returns the global settings.
         lm = g.app.loadManager
@@ -1385,7 +1387,7 @@ class GlobalConfigManager:
         setting: str,
         requestedType: str,
         warn: bool = True,
-    ) -> tuple[Any | None, bool]:
+    ) -> tuple[Any, bool]:
         """
         Look up the setting in d. If warn is True, warn if the requested type
         does not (loosely) match the actual type.
@@ -1602,7 +1604,7 @@ class GlobalConfigManager:
         return self.get(setting, "string") or ''
 
     # @+node:ekr.20171115062202.1: *3* gcm.valueInMyLeoSettings
-    def valueInMyLeoSettings(self, settingName: str) -> Any | None:
+    def valueInMyLeoSettings(self, settingName: str) -> Any:
         """Return the value of the setting, if any, in myLeoSettings.leo."""
         lm = g.app.loadManager
         d = lm.globalSettingsDict
@@ -1947,22 +1949,8 @@ class LocalConfigManager:
     # @+node:ekr.20120215072959.12534: *5* c.config.getMenusList
     def getMenusList(self) -> list:
         """Return the list of entries for the @menus tree."""
-
         # Typically empty, unless there is an @menuat setting.
         aList = self.get('menus', 'menus')
-
-        # Leo calls this method twice when loading an outline.
-        if not hasattr(self.c, 'menulist_pass'):
-            self.c.menulist_pass = 0
-        self.c.menulist_pass += 1
-
-        # Remove this outline's "doMenuat" settings so later outlines won't use them.
-        if self.c.menulist_pass == 2:
-            lm = g.app.loadManager
-            lm.globalSettingsDict['menus'] = None
-            self.set(None, 'menus', 'menus', None)  # type:ignore
-            self.c.menulist_pass = 0
-
         return aList or g.app.config.menusList
 
     # @+node:ekr.20120215072959.12535: *5* c.config.getOpenWith

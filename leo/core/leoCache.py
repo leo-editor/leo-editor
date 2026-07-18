@@ -92,7 +92,7 @@ class GlobalCacher:
             if trace:
                 print('path for g.app.db:', repr(path))
             self.db = SqlitePickleShare(path)
-            if trace and self.db is not None:
+            if trace and self.db:
                 self.dump(tag='Startup')
         except Exception:
             if trace:
@@ -265,7 +265,7 @@ class SqlitePickleShare:
         """
 
     # @+node:vitalije.20170716201700.13: *4* _listdir
-    def _listdir(self, s: str, pattern: str | None = None) -> list[str]:
+    def _listdir(self, s: str, pattern: str = '') -> list[str]:
         """D.listdir() -> List of items in this directory.
 
         Use D.files() or D.dirs() instead if you want a listing
@@ -277,7 +277,7 @@ class SqlitePickleShare:
         items whose names match the given pattern.
         """
         names = os.listdir(s)
-        if pattern is not None:
+        if pattern:
             names = fnmatch.filter(names, pattern)
         return [join(s, child) for child in names]
 
@@ -328,10 +328,10 @@ class SqlitePickleShare:
     # @+node:vitalije.20170716201700.19: *3* keys (SqlitePickleShare)
     # Called by clear, and during unit testing.
 
-    def keys(self, globpat: str | None = None) -> Generator:
+    def keys(self, globpat: str = '') -> Generator:
         """Return all keys in DB, or all keys matching a glob"""
         args: tuple
-        if globpat is None:
+        if not globpat:
             sql = 'select key from cachevalues;'
             args = tuple()
         else:
@@ -383,8 +383,8 @@ class SqlitePickleShare:
 def dump_cache(db: dict | SqlitePickleShare, tag: str) -> None:
     """Dump the given cache."""
     print(f'\n===== {tag} =====\n')
-    if db is None:
-        print('db is None!')
+    if not db:
+        print('No db!')
         return
     # Create a dict, sorted by file prefixes.
     d: dict[str, Any] = {}
