@@ -493,7 +493,7 @@ class ParserBaseClass:
                 self.dumpMenuTree(val, level + 1, path=path + '/' + name)
 
     # @+node:tbrown.20080514180046.8: *5* pbc.patchMenuTree
-    def patchMenuTree(self, orig: list[Any], targetPath: str, path: str = '') -> Any | None:
+    def patchMenuTree(self, orig: list[Any], targetPath: str, path: str = '') -> Any:
         kind: str
         val: Any
         val2: Any
@@ -856,7 +856,7 @@ class ParserBaseClass:
         else:
             d[tag] = val
 
-    # @+node:ekr.20041120112043: *4* pbc.parseShortcutLine
+    # @+node:ekr.20041120112043: *4* pbc.parseShortcutLine (change?)
     def parseShortcutLine(self, kind: str, s: str) -> tuple[str | None, Any]:
         """Parse a shortcut line.  Valid forms:
 
@@ -1203,11 +1203,7 @@ class ActiveSettingsOutline:
                 self.add(p)
 
     # @+node:ekr.20190905091614.12: *3* aso.add
-    def add(
-        self,
-        p: Position,
-        h: str | None = None,  # Don't change this.
-    ) -> None:
+    def add(self, p: Position, h: str = '') -> None:
         """
         Add a node for p.
 
@@ -1373,7 +1369,7 @@ class GlobalConfigManager:
         return False
 
     # @+node:ekr.20041117083141: *4* gcm.get & allies
-    def get(self, setting: str, kind: str) -> Any | None:
+    def get(self, setting: str, kind: str) -> Any:
         """Get the setting and make sure its type matches the expected type."""
         # It *is* valid to call this method: it returns the global settings.
         lm = g.app.loadManager
@@ -1391,7 +1387,7 @@ class GlobalConfigManager:
         setting: str,
         requestedType: str,
         warn: bool = True,
-    ) -> tuple[Any | None, bool]:
+    ) -> tuple[Any, bool]:
         """
         Look up the setting in d. If warn is True, warn if the requested type
         does not (loosely) match the actual type.
@@ -1608,7 +1604,7 @@ class GlobalConfigManager:
         return self.get(setting, "string") or ''
 
     # @+node:ekr.20171115062202.1: *3* gcm.valueInMyLeoSettings
-    def valueInMyLeoSettings(self, settingName: str) -> Any | None:
+    def valueInMyLeoSettings(self, settingName: str) -> Any:
         """Return the value of the setting, if any, in myLeoSettings.leo."""
         lm = g.app.loadManager
         d = lm.globalSettingsDict

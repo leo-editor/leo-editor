@@ -372,8 +372,7 @@ class BaseColorizer:
 
     def normalize(self, s: str) -> str:
         """Return the normalized value of s."""
-        cached = self._normalize_cache.get(s)
-        if cached is not None:
+        if cached := self._normalize_cache.get(s):
             return cached
         t = s[1:] if s.startswith('@') else s
         t = t.replace(' ', '').replace('-', '').replace('_', '').lower().strip()
@@ -3653,7 +3652,7 @@ class PygmentsColorizer(JEditColorizer):
             self.old_v = p.v  # Fix a major performance bug.
             self.init()
             assert self.language
-        if s is not None:
+        if s:
             # For pygments, we *must* call for all lines.
             self.pygmentsMainLoop(s)
 

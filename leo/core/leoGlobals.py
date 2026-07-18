@@ -5758,7 +5758,7 @@ def convertRowColToPythonIndex(s: str, row: int, col: int, lines: list[str] | No
     """Convert zero-based row/col indices into a python index into string s."""
     if row < 0:
         return 0
-    if lines is None:
+    if not lines:
         lines = g.splitLines(s)
     if row >= len(lines):
         return len(s)
@@ -5813,7 +5813,7 @@ def getLine(s: str, i: int) -> tuple[int, int]:
 
 
 # @+node:ekr.20111114151846.9847: *4* g.toPythonIndex
-def toPythonIndex(s: str, index: str) -> int:
+def toPythonIndex(s: str, index: str | None) -> int:
     """
     Convert index to a Python int.
 
@@ -6732,7 +6732,7 @@ is_unique_class = isUniqueClass
 # @+node:ekr.20150127060254.5: *3* g.log_to_file
 def log_to_file(s: str, fn: str = '') -> None:
     """Write a message to ~/test/leo_log.txt."""
-    if fn is None:
+    if not fn:
         fn = g.finalize('~/test/leo_log.txt')
     if not s.endswith('\n'):
         s = s + '\n'
@@ -6916,7 +6916,7 @@ def es_print_unique_message(message: str, *, color: str = 'error') -> bool:
 trace_unique_dict: dict[str, list[str]] = {}
 
 
-def traceUnique(value: object, *, n: int = 2, pad: int = 30) -> None:
+def traceUnique(value: object, *, n: int = 2, pad: int | None = None) -> None:
     """Print unique values associated with g.callers(n)."""
     if pad is None:
         pad = 30
@@ -7177,7 +7177,7 @@ init_zodb_failed: dict[str, bool] = {}  # Keys are paths, values are True.
 init_zodb_db: dict[str, Value] = {}  # Keys are paths, values are ZODB.DB instances.
 
 
-def init_zodb(pathToZodbStorage: str, verbose: bool = True) -> Value | None:
+def init_zodb(pathToZodbStorage: str, verbose: bool = True) -> Value:
     """
     Return an ZODB.DB instance from the given path.
     return None on any error.
@@ -7532,7 +7532,7 @@ def os_path_splitext(path: str) -> tuple[str, str]:
 # @+node:ekr.20090829140232.6036: *3* g.os_startfile
 def os_startfile(fname: str) -> None:
     # @+others
-    # @+node:bob.20170516112250.1: *4* stderr2log()
+    # @+node:bob.20170516112250.1: *4* g.stderr2log()
     def stderr2log(g: LeoGlobals, ree: io.FileIO, fname: str) -> None:
         """Display stderr output in the Leo-Editor log pane
 
@@ -7546,13 +7546,12 @@ def os_startfile(fname: str) -> None:
         """
 
         while True:
-            emsg = ree.read().decode('utf-8')
-            if emsg:
+            if emsg := ree.read().decode('utf-8'):
                 g.es_print_error(f"xdg-open {fname} caused output to stderr:\n{emsg}")
             else:
                 break
 
-    # @+node:bob.20170516112304.1: *4* itPoll()
+    # @+node:bob.20170516112304.1: *4* g.itPoll()
     def itPoll(
         fname: str,
         ree: io.FileIO,
@@ -8677,10 +8676,7 @@ def openUrl(p: Position) -> None:  # pragma: no cover
 
 
 # @+node:ekr.20110605121601.18135: *3* g.openUrlOnClick (open-url-under-cursor)
-def openUrlOnClick(
-    event: QMouseEvent,
-    url: str | None = None,  # Don't change this.
-) -> None:
+def openUrlOnClick(event: QMouseEvent, url: str = '') -> None:
     """Open the URL under the cursor.  Return it for unit testing."""
     from leo.core.leoGui import LeoKeyEvent
     from leo.plugins.qt_text import QTextEditWrapper
@@ -8698,25 +8694,22 @@ def openUrlOnClick(
 
 
 # @+node:ekr.20170216091704.1: *4* g.openUrlHelper
-def openUrlHelper(
-    event: LeoKeyEvent | None = None,
-    url: str | None = None,  # Don't change this.
-) -> str | None:  # Don't change this.
+def openUrlHelper(event: LeoKeyEvent | None = None, url: str = '') -> None:
     """Open the unl, url or gnx under the cursor.  Return it for unit testing."""
     if not event:
-        return None
+        return
     c, w = event.c, event.w
     if not c:
-        return None
+        return
     if not g.app.gui.isTextWrapper(w):
-        return None
+        return
     # Part 1: get the url.
-    if url is None:
+    if not url:
         s = w.getAllText()
         ins = w.getInsertPoint()
         i, j = w.getSelectionRange()
         if i != j:
-            return None  # So find doesn't open the url.
+            return  # So find doesn't open the url.
         row, col = g.convertPythonIndexToRowCol(s, ins)
         i, j = g.getLine(s, ins)
         line = s[i:j]
@@ -8735,9 +8728,9 @@ def openUrlHelper(
             if px:
                 c.selectPosition(px)
                 c.redraw()
-            return None
+            return
         # @-<< look for section ref >>
-        url = unl = None
+        url = unl = ''
         # @+<< look for url >>
         # @+node:tom.20220328141544.1: *5* << look for url  >>
         # Find the url on the line.
@@ -8756,7 +8749,7 @@ def openUrlHelper(
                 if match.start() <= col < match.end():
                     unl = match.group()
                     g.handleUnl(unl, c)
-                    return None
+                    return
             # @-<< look for unl >>
             if not unl:
                 # @+<< look for gnx >>
@@ -8770,13 +8763,13 @@ def openUrlHelper(
 
                 if target:
                     if c.p.gnx == target:
-                        return target
+                        return
                     for p in c.all_unique_positions():
                         if p.v.gnx == target:
                             c.selectPosition(p)
                             c.redraw()
-                            return target
-                    return None
+                            break
+                    return
                 # @-<< look for gnx >>
     elif not isinstance(url, str):
         url = url.toString()
@@ -8787,16 +8780,15 @@ def openUrlHelper(
         if not g.doHook("@url1", c=c, p=p, url=url):
             g.handleUrl(url, c=c, p=p)
         g.doHook("@url2", c=c, p=p)
-        return url
+        return
     # Part 3: call find-def.
     if not w.hasSelection():
         c.editCommands.extendToWord(event, select=True)
     word = w.getSelectedText().strip()
     if not word:
-        return None
-    matches = c.findCommands.find_def(event)
-    if matches:
-        return None
+        return
+    if c.findCommands.find_def(event):
+        return
     # @+<< look for filename or import>>
     # @+node:tom.20230130102836.1: *5* << look for filename or import >>
     # Part 4: #2546: look for a file name.
@@ -8813,8 +8805,7 @@ def openUrlHelper(
         IMPORTSre = FROMre + '|' + IMPORTre
 
         m = re.match(IMPORTSre, s[i:], re.MULTILINE)
-        module = m and (m[2] or m[1])
-        if module:
+        if module := m and (m[2] or m[1]):
             filename = module + '.py'
             filename_w = module + '.pyw'
 
@@ -8834,7 +8825,6 @@ def openUrlHelper(
                 c.redraw(p)
                 break
     # @-<< look for filename or import>>
-    return None
 
 
 # @+node:ekr.20170226093349.1: *3* g.unquoteUrl

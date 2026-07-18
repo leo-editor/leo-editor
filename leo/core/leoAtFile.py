@@ -325,10 +325,10 @@ class AtFile:
             g.red(f"file not found: {fn}")
             return
         s, e = g.readFileIntoString(fn)
-        if s is None:
+        if not s:
             g.red(f"empty file: {fn}")
             return
-        #
+
         # Create a dummy, unconnected, VNode as the root.
         root_v = leoNodes.VNode(context=c)
         root = leoNodes.Position(root_v)
@@ -382,7 +382,7 @@ class AtFile:
             # Sets at.encoding, regularizes whitespace and calls at.initReadLines.
             s = at.readFileToUnicode(fn)
             # #1466.
-            if s is None:  # pragma: no cover
+            if not s:  # pragma: no cover
                 # The error has been given.
                 return None, None
             at.warnOnReadOnlyFile(fn)
@@ -408,7 +408,7 @@ class AtFile:
         return shadow_fn
 
     # @+node:ekr.20041005105605.21: *5* at.read & helpers
-    def read(self, root: Position, fromString: str | None = None) -> bool:
+    def read(self, root: Position, fromString: str = '') -> bool:
         """Read an @thin or @file tree."""
         at, c = self, self.c
         fileName = c.fullPath(root)
@@ -425,7 +425,7 @@ class AtFile:
 
         # Open the file.
         fileName, file_s = at.openFileForReading(fromString=fromString)
-        if file_s is None:  # #1798:
+        if not file_s:  # #1798:
             return False  # pragma: no cover
 
         # Set the time stamp.
@@ -453,8 +453,7 @@ class AtFile:
         """
         at, c = self, self.c
         # Find the unvisited nodes.
-        aList = [z for z in root.subtree() if not z.isVisited()]
-        if aList:
+        if aList := [z for z in root.subtree() if not z.isVisited()]:
             at.c.deletePositionsInList(aList)
             c.redraw()
 
@@ -674,9 +673,9 @@ class AtFile:
         # Remember the full fileName.
         at.rememberReadPath(fn, p)
         s, e = g.readFileIntoString(fn, kind='@edit')
-        if s is None:
+        if not s:
             return
-        encoding = 'utf-8' if e is None else e
+        encoding = e or 'utf-8'
         # Delete all children.
         while p.hasChildren():
             p.firstChild().doDelete()
@@ -838,9 +837,9 @@ class AtFile:
         # Fix bug 889175: Remember the full fileName.
         at.rememberReadPath(fn, p)
         s, e = g.readFileIntoString(fn, kind='@edit')
-        if s is None:
+        if not s:
             return
-        encoding = 'utf-8' if e is None else e
+        encoding = e or 'utf-8'
         # Delete all children.
         while p.hasChildren():
             p.firstChild().doDelete()
@@ -1044,7 +1043,7 @@ class AtFile:
         return valid, new_df, start, end, isThin
 
     # @+node:ekr.20130911110233.11284: *5* at.readFileToUnicode & helpers
-    def readFileToUnicode(self, fileName: str) -> str | None:  # pragma: no cover
+    def readFileToUnicode(self, fileName: str) -> str:  # pragma: no cover
         """
         Carefully sets at.encoding, then uses at.encoding to convert the file
         to a unicode string.
@@ -1057,11 +1056,10 @@ class AtFile:
         Returns the string, or None on failure.
         """
         at = self
-        s: str
         s_bytes = at.openFileHelper(fileName)  # Catches all exceptions.
         # #1798.
         if not s_bytes:
-            return None  # Not ''.
+            return ''
         e, s_bytes = g.stripBOM(s_bytes)
         if e:
             # The BOM determines the encoding unambiguously.
@@ -1655,7 +1653,7 @@ class AtFile:
             if c.persistenceController:
                 c.persistenceController.update_before_write_foreign_file(root)
             contents = at.writeAtAutoContents(fileName, root)
-            if contents is None:
+            if not contents:
                 g.es("not written:", fileName)
                 at.addToOrphanList(root)
                 return False
@@ -1704,8 +1702,7 @@ class AtFile:
         """A factory returning a writer function for the given file extension."""
         at = self
         d = g.app.writersDispatchDict
-        aClass = d.get(ext)
-        if aClass:
+        if aClass := d.get(ext):
 
             def writer_for_ext_cb(root: Position) -> str | None:
                 try:
@@ -3296,17 +3293,6 @@ class AtFile:
 
     # @+node:ekr.20050104131929: *4* at.file operations...
     # Error checking versions of corresponding functions in Python's os module.
-    # @+node:ekr.20050104131820: *5* at.chmod
-    def chmod(self, fileName: str, mode: int) -> None:  # pragma: no cover
-        # Do _not_ call self.error here.
-        if mode is None:
-            return
-        try:
-            os.chmod(fileName, mode)
-        except Exception:
-            g.es("exception in os.chmod", fileName)
-            g.es_exception()
-
     # @+node:ekr.20050104132018: *5* at.remove
     def remove(self, fileName: str) -> bool:  # pragma: no cover
         if not fileName:
@@ -3346,9 +3332,7 @@ class AtFile:
         p.v.tempAttributes['read-path'] = d
 
     # @+node:ekr.20090712050729.6017: *4* at.promptForDangerousWrite
-    def promptForDangerousWrite(
-        self, fileName: str, message: str | None = None
-    ) -> bool:  # pragma: no cover
+    def promptForDangerousWrite(self, fileName: str, message: str = '') -> bool:
         """Raise a dialog asking the user whether to overwrite an existing file."""
         at, c, root = self, self.c, self.root
         if at.cancelFlag:
@@ -3369,7 +3353,7 @@ class AtFile:
                     root.h = h
                     c.redraw()
                     return False
-        if message is None:
+        if not message:
             message = (
                 f"{g.splitLongFileName(fileName)}\n"
                 f"{g.tr('already exists.')}\n"

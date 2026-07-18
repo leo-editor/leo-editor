@@ -526,7 +526,7 @@ class PersistenceDataController:
             return ''
 
     # @+node:ekr.20140713135856.17744: *5* pd.unpickle
-    def unpickle(self, s: str) -> Value | None:  # An actual uA.
+    def unpickle(self, s: str) -> Value:  # An actual uA.
         """Unhexlify and unpickle string s into p."""
         try:
             # Throws TypeError if s is not a hex string.

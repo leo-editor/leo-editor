@@ -448,7 +448,7 @@ class RstCommands:
             return True
         if c and c.config and c.config.getBool('create-nonexistent-directories', default=False):
             theDir = c.expand_path_expression(theDir)
-            ok: str = g.makeAllNonExistentDirectories(theDir)
+            ok = g.makeAllNonExistentDirectories(theDir)
             if not ok:
                 g.error('did not create:', theDir)
             return bool(ok)

@@ -972,7 +972,7 @@ def readFileIntoNode(self: Self, event: LeoKeyEvent | None = None) -> None:
     if isinstance(fileName, list):
         fileName = fileName[0]
     s, e = g.readFileIntoString(fileName)
-    if s is None:
+    if not s:
         return
     g.chdir(fileName)
     s = '@nocolor\n' + s
