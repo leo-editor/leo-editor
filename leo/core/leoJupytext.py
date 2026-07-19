@@ -109,15 +109,13 @@ class JupytextManager:
 
         # Case 1: the first line is a non-trivial comment.
         if line1.startswith('#'):
-            comment = line1[1:].strip()
-            if comment:
+            if comment := line1[1:].strip():
                 return shorten(comment)
 
         # Case 2: The first line contains a non-trivial comment.
         i = line1.find('#')
         if i > -1:
-            comment = line1[i + 1 :].strip()
-            if comment:
+            if comment := line1[i + 1 :].strip():
                 return shorten(comment)
 
         # Case 3: Return the entire shortened python line.
@@ -220,8 +218,7 @@ class JupytextManager:
         from jupytext.config import find_jupytext_configuration_file
         import tomllib
 
-        config_file = find_jupytext_configuration_file(os.getcwd())
-        if config_file:
+        if config_file := find_jupytext_configuration_file(os.getcwd()):
             with open(config_file, 'rb') as f:
                 data = tomllib.load(f)
                 g.printObj(data, tag=f"jupytext: contents of {config_file!r}")
