@@ -105,8 +105,7 @@ class PersistenceDataController:
         at_gnxs = self.find_at_gnxs_node(root)
         at_gnxs.b = ''.join([f"gnx: {p.v.gnx}\nunl: {self.relative_unl(p, root)}\n" for p in aList])
         # Create the @uas tree.
-        uas = [p for p in aList if p.v.u]
-        if uas:
+        if uas := [p for p in aList if p.v.u]:
             at_uas = self.find_at_uas_node(root)
             if at_uas.hasChildren():
                 at_uas.v._deleteAllChildren()
@@ -136,12 +135,10 @@ class PersistenceDataController:
         if not self.is_foreign_file(root):
             return
         # Create clone links from @gnxs node
-        at_gnxs = self.has_at_gnxs_node(root)
-        if at_gnxs:
+        if at_gnxs := self.has_at_gnxs_node(root):
             self.restore_gnxs(at_gnxs, root)
         # Create uas from @uas tree.
-        at_uas = self.has_at_uas_node(root)
-        if at_uas:
+        if at_uas := self.has_at_uas_node(root):
             self.create_uas(at_uas, root)
 
     # @+node:ekr.20140711111623.17810: *5* pd.restore_gnxs & helpers
@@ -192,8 +189,7 @@ class PersistenceDataController:
         p1 = self.find_position_for_relative_unl(root, unl)
         if not p1:
             return
-        p2 = d.get(gnx)
-        if p2:
+        if p2 := d.get(gnx):
             if p1.h == p2.h and p1.b == p2.b:
                 p1._relinkAsCloneOf(p2)
                 # Warning: p1 *no longer exists* here.
@@ -218,8 +214,7 @@ class PersistenceDataController:
             h, b = at_ua.h, at_ua.b
             gnx = h[4:].strip()
             if b and gnx and g.match_word(h, 0, '@ua'):
-                p = d.get(gnx)
-                if p:
+                if p := d.get(gnx):
                     # Handle all recent variants of the node.
                     lines = g.splitLines(b)
                     if b.startswith('unl:') and len(lines) == 2:
@@ -296,8 +291,7 @@ class PersistenceDataController:
         so that no existing positions become invalid.
         """
         c, h = self.c, '@persistence'
-        p = g.findNodeAnywhere(c, h)
-        if p:
+        if p := g.findNodeAnywhere(c, h):
             return p
         if c.config.getBool('create-at-persistence-nodes-automatically'):
             last = c.rootPosition()
@@ -319,8 +313,7 @@ class PersistenceDataController:
         if not self.at_persistence:
             return None
         auto_view = self.find_at_data_node(root)
-        p = g.findNodeInTree(self.c, auto_view, h)
-        if p:
+        if p := g.findNodeInTree(self.c, auto_view, h):
             return p
         p = auto_view.insertAsLastChild()
         if p:  # #2103
