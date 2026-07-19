@@ -80,8 +80,7 @@ _url_bearing_tags = frozenset(
 # @+node:ekr.20190323044524.1: ** function: make_colorizer
 def make_colorizer(c: Cmdr, widget: QWidget) -> JEditColorizer | PygmentsColorizer:
     """Return an instance of JEditColorizer or PygmentsColorizer."""
-    use_pygments = c.config.getBool('use-pygments', default=False)
-    if use_pygments:
+    if c.config.getBool('use-pygments', default=False):
         if pygments:
             return PygmentsColorizer(c, widget)
         if not g.unitTesting:
@@ -564,8 +563,7 @@ class JEditColorizer(BaseColorizer):
                     return m
             return None
 
-        v = g.findAncestorVnodeByPredicate(p, v_predicate=find_delims)
-        if v:
+        if v := g.findAncestorVnodeByPredicate(p, v_predicate=find_delims):
             m = find_delims(v)
             self.section_delim1 = m.group(1)
             self.section_delim2 = m.group(2)
@@ -584,16 +582,13 @@ class JEditColorizer(BaseColorizer):
         names = mode.importDict.get(rulesetName, []) if hasattr(mode, 'importDict') else []
         for name in names:
             savedModeDescriptor = self.mode
-            ok = self.init_mode(name)
-            if ok:
+            if self.init_mode(name):
                 rulesDict2 = self.rulesDict
                 for key in rulesDict2.keys():
                     aList = self.rulesDict.get(key, [])
-                    aList2 = rulesDict2.get(key)
-                    if aList2:
+                    if aList2 := rulesDict2.get(key):
                         # Don't add the standard rules again.
-                        rules = [z for z in aList2 if z not in aList]
-                        if rules:
+                        if rules := [z for z in aList2 if z not in aList]:
                             aList.extend(rules)
                             self.rulesDict[key] = aList
             self.initModeFromModeDescriptor(savedModeDescriptor)
@@ -655,8 +650,7 @@ class JEditColorizer(BaseColorizer):
         if name == 'latex':
             name = 'tex'  # #1088: use tex mode for both tex and latex.
         language, rulesetName = self.nameToRulesetName(name)
-        mode_descriptor = self.modes.get(rulesetName)
-        if mode_descriptor:
+        if mode_descriptor := self.modes.get(rulesetName):
             if mode_descriptor.language == 'unknown-language':
                 return False
             self.initModeFromModeDescriptor(mode_descriptor)
@@ -737,8 +731,7 @@ class JEditColorizer(BaseColorizer):
         # Do this after 'officially' initing the module, to limit recursion.
         self.addImportedRules(self.mode, self.rulesDict, rulesetName)
         self.updateDelimsTables()
-        initialDelegate = self.properties.get('initialModeDelegate')
-        if initialDelegate:
+        if initialDelegate := self.properties.get('initialModeDelegate'):
             # Replace the original mode by the delegate mode.
             self.init_mode(initialDelegate)
             language2, rulesetName2 = self.nameToRulesetName(initialDelegate)
@@ -1107,11 +1100,9 @@ class JEditColorizer(BaseColorizer):
                 f"{self.language}_{option_name}",
                 option_name,
             ):
-                font = self.fonts.get(name)
-                if font:
+                if font := self.fonts.get(name):
                     break
-                font = self.create_font(key, name)
-                if font:
+                if font := self.create_font(key, name):
                     self.fonts[name] = font
                     if key == 'url':
                         try:  # Special case for Qt.
@@ -1158,8 +1149,9 @@ class JEditColorizer(BaseColorizer):
                 slant = slant or 'roman'
                 weight = weight or 'normal'
                 size = self.zoomed_size(f"{key}::{setting_name}", size)
-                font = g.app.gui.getFontFromParams(family, size, slant, weight, tag=setting_name)
-                if font:
+                if font := g.app.gui.getFontFromParams(
+                    family, size, slant, weight, tag=setting_name
+                ):
                     if trace:
                         # A good trace: the key shows what is happening.
                         g.trace(
@@ -1498,8 +1490,7 @@ class JEditColorizer(BaseColorizer):
             return
         tag = tag.lower().strip()
         # A hack to allow continuation dots on any tag.
-        dots = tag.startswith('dots')
-        if dots:
+        if dots := tag.startswith('dots'):
             tag = tag[len('dots') :]
         # This color name should already be valid.
         d = self.configDict
@@ -1529,8 +1520,7 @@ class JEditColorizer(BaseColorizer):
         format = QtGui.QTextCharFormat()
         try:  # #4694: Make *sure* we never crash.
             for font_name in (full_tag, tag, default_tag):
-                font = self.fonts.get(font_name)
-                if font:
+                if font := self.fonts.get(font_name):
                     format.setFont(font)
                     self.configure_hard_tab_width(font)  # #1919.
                     break
@@ -1744,8 +1734,7 @@ class JEditColorizer(BaseColorizer):
         j = g.skip_ws(s, i + len('@language'))
         k = g.skip_c_id(s, j)
         name = s[j:k]
-        ok = self.init_mode(name)
-        if ok:
+        if self.init_mode(name):
             self.language = name
             self.colorRangeWithTag(s, i, k, 'leokeyword')
             if name != old_name:
@@ -1943,8 +1932,7 @@ class JEditColorizer(BaseColorizer):
         # This will not slow down Leo, because it is called
         # for things that look like Leo directives.
         word = '@' + word
-        kind = self.keywordsDict.get(word)
-        if kind:
+        if kind := self.keywordsDict.get(word):
             self.colorRangeWithTag(s, i, j, kind)
             return j - i
         # Bug fix: allow rescan.  Affects @language patch.
@@ -1972,8 +1960,7 @@ class JEditColorizer(BaseColorizer):
             return j - i
         # An actual section reference.
         self.colorRangeWithTag(s, i, i + n1, 'namebrackets')
-        ref = g.findReference(s[i:j], p)
-        if ref:
+        if ref := g.findReference(s[i:j], p):
             if self.use_hyperlinks:
                 # @+<< set the hyperlink >>
                 # @+node:ekr.20110605121601.18606: *6* << set the hyperlink >> (jedit)
@@ -2265,8 +2252,7 @@ class JEditColorizer(BaseColorizer):
             return 0
         if self.ignore_case:
             word = word.lower()
-        kind = self.keywordsDict.get(word)
-        if kind:
+        if kind := self.keywordsDict.get(word):
             self.colorRangeWithTag(s, i, j, kind)
             result = j - i
             return result
@@ -2620,8 +2606,7 @@ class JEditColorizer(BaseColorizer):
         dots = j > len(s) and begin in "'\"" and end in "'\"" and kind.startswith('literal')
 
         # These language can continue strings over multiple lines.
-        dots = dots and self.language not in ('lisp', 'elisp', 'rust', 'scheme')
-        if dots:
+        if dots := dots and self.language not in ('lisp', 'elisp', 'rust', 'scheme'):
             kind = 'dots' + kind
         # A match
         i2 = i + len(begin)
@@ -3515,8 +3500,7 @@ class PygmentsColorizer(JEditColorizer):
         #
         # Save the state.
         # Based on Jupyter code: (c) Jupyter Development Team.
-        stack = getattr(lexer, stack_ivar, None)
-        if stack:
+        if stack := getattr(lexer, stack_ivar, None):
             data = PygmentsBlockUserData(syntax_stack=stack, leo_language=self.language)
             highlighter.currentBlock().setUserData(data)
             # Clean up for the next go-round.
@@ -3704,8 +3688,7 @@ class QScintillaColorizer(BaseColorizer):
         c = self.c
         root = p.copy()
         for p in root.self_and_parents(copy=False):
-            language = g.findFirstValidAtLanguageDirective(p.b)
-            if language:
+            if language := g.findFirstValidAtLanguageDirective(p.b):
                 return language
         #  Get the language from the nearest ancestor @<file> node.
         language = c.getLanguage(root)
@@ -3832,8 +3815,7 @@ class QScintillaColorizer(BaseColorizer):
         d: dict[str, Lexer] = {}
         for language_name in table:
             class_name = 'QsciLexer' + language_name
-            lexer_class = getattr(Qsci, class_name, None)
-            if lexer_class:
+            if lexer_class := getattr(Qsci, class_name, None):
                 lexer = lexer_class(parent=parent)  # pylint: disable=not-callable
                 self.configure_lexer(lexer)
                 d[language_name.lower()] = lexer
