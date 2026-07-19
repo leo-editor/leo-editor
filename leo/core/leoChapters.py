@@ -94,8 +94,7 @@ class ChapterController:
             Select specific chapter.
             """
             # docstring will be replaced below with specific chapterName string
-            chapter = cc.chaptersDict.get(name)
-            if chapter:
+            if chapter := cc.chaptersDict.get(name):
                 try:
                     cc.selectChapterLockout = True
                     cc.selectChapterByNameHelper(chapter, collapse=True)
@@ -191,8 +190,7 @@ class ChapterController:
         if cc.selectedChapter:
             cc.selectedChapter.unselect()
         else:
-            main_chapter = cc.getChapter('main')
-            if main_chapter:
+            if main_chapter := cc.getChapter('main'):
                 main_chapter.unselect()
         if chapter.p and c.positionExists(chapter.p):
             pass
