@@ -161,8 +161,7 @@ class RstCommands:
         m1 = self.options_pat.search(p.b)
         m2 = self.default_pat.search(p.b)
         if m1 and m2 and m2.start() > m1.start():
-            fn = m2.group(1).strip()
-            if fn:
+            if fn := m2.group(1).strip():
                 old_h = p.h
                 p.h = f"@path {fn}"
                 print(f"{old_h} => {p.h}")
@@ -244,8 +243,7 @@ class RstCommands:
 
         self.changed_positions = []
         self.changed_vnodes = set()
-        roots = g.findRootsWithPredicate(self.c, p, predicate=predicate)
-        if roots:
+        if roots := g.findRootsWithPredicate(self.c, p, predicate=predicate):
             for p in roots:
                 self.processTree(p)
             self.do_actions()
@@ -261,8 +259,7 @@ class RstCommands:
                     g.trace(f"ignoring nested @rst node: {p.h}")
                 else:
                     h = p.h.strip()
-                    fn = h[4:].strip()
-                    if fn:
+                    if fn := h[4:].strip():
                         source = self.write_rst_tree(p, fn)
                         self.write_docutils_files(fn, p, source)
             elif g.match_word(p.h, 0, "@slides"):
@@ -392,8 +389,7 @@ class RstCommands:
             s = self.addTitleToHtml(s)
         if not s:
             return
-        changed = g.write_file_if_changed(fn, s, encoding='utf-8')
-        if changed:
+        if g.write_file_if_changed(fn, s, encoding='utf-8'):
             self.n_docutils += 1
             self.report(fn)
             if self.root.v not in self.changed_vnodes:
@@ -467,8 +463,7 @@ class RstCommands:
         if not ext.startswith('.'):
             ext = '.' + ext
         fn = fn + ext
-        changed = g.write_file_if_changed(fn, s, encoding=self.encoding)
-        if changed:
+        if changed := g.write_file_if_changed(fn, s, encoding=self.encoding):
             self.n_intermediate += 1
             self.report(fn)
             if self.root.v not in self.changed_vnodes:

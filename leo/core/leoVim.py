@@ -1110,8 +1110,7 @@ class VimCommands:
         """Handle F <stroke>"""
         if self.is_text_wrapper(self.w):
             w = self.w
-            s = w.getAllText()
-            if s:
+            if s := w.getAllText():
                 i = i1 = w.getInsertPoint()
                 match_i, n = None, self.n1 * self.n
                 i -= 1  # Ensure progress
@@ -1146,8 +1145,7 @@ class VimCommands:
         if self.is_text_wrapper(self.w):
             # ec = self.c.editCommands
             w = self.w
-            s = w.getAllText()
-            if s:
+            if s := w.getAllText():
                 i = i1 = w.getInsertPoint()
                 match_i, n = None, self.n1 * self.n
                 while i < len(s):
@@ -1566,8 +1564,7 @@ class VimCommands:
         if self.is_text_wrapper(self.w):
             # ec = self.c.editCommands
             w = self.w
-            s = w.getAllText()
-            if s:
+            if s := w.getAllText():
                 i = i1 = w.getInsertPoint()
                 # ensure progress:
                 if i < len(s) and s[i] == self.ch:
@@ -1604,8 +1601,7 @@ class VimCommands:
         if self.is_text_wrapper(self.w):
             # ec = self.c.editCommands
             w = self.w
-            s = w.getAllText()
-            if s:
+            if s := w.getAllText():
                 i = i1 = w.getInsertPoint()
                 match_i, n = None, self.n1 * self.n
                 i -= 1
@@ -2286,8 +2282,7 @@ class VimCommands:
             assert self.in_motion
             if restart:
                 self.next_func = None
-            func = self.next_func or self.motion_dispatch_d.get(self.stroke)
-            if func:
+            if func := self.next_func or self.motion_dispatch_d.get(self.stroke):
                 func()
                 if self.motion_func:
                     self.motion_func()
@@ -2354,8 +2349,7 @@ class VimCommands:
     def do_state(self, d: dict[str, Callable], mode_name: str) -> None:
         """General dispatcher code. d is a dispatch dict."""
         try:
-            func = d.get(self.stroke)
-            if func:
+            if func := d.get(self.stroke):
                 func()
             elif self.is_plain_key(self.stroke):
                 self.ignore()
