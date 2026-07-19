@@ -187,6 +187,35 @@ class TestKeys(LeoUnitTest):
         k.simulateCommand(commandName)
         assert self.callback_was_called, commandName
 
+    # @+node:axk.20260705193730.1: *3* TestKeys.test_k_makeAllBindings_rebuilds_from_raw_shortcuts
+    def test_k_makeAllBindings_rebuilds_from_raw_shortcuts(self):
+        c = self.c
+        raw_shortcuts = g.SettingsDict('raw shortcuts')
+        raw_shortcuts['find-next'] = [
+            g.BindingInfo(kind='unit-test', pane='all', stroke=g.KeyStroke('F3')),
+            g.BindingInfo(kind='unit-test', pane='all', stroke=g.KeyStroke('Meta+g')),
+            g.BindingInfo(kind='unit-test', pane='all', stroke=g.KeyStroke('Meta+g')),
+        ]
+        c.config.shortcutsDict = raw_shortcuts.copy()
+        c.config.shortcutsDictRaw = raw_shortcuts.copy()
+        stroke = g.KeyStroke('Meta+g')
+
+        c.k.makeAllBindings()
+        bi = c.k.masterBindingsDict.get('all', {}).get(stroke)
+        self.assertEqual(bi.commandName if bi else None, 'find-next')
+
+        # The first rebuild trims the duplicate override from shortcutsDict.
+        self.assertEqual(
+            [z.stroke.s for z in c.config.getShortcut('find-next')[1]],
+            ['F3'],
+        )
+
+        # A second rebuild must start from the original raw shortcuts, not the
+        # already-trimmed shortcutsDict.
+        c.k.makeAllBindings()
+        bi = c.k.masterBindingsDict.get('all', {}).get(stroke)
+        self.assertEqual(bi.commandName if bi else None, 'find-next')
+
     # @+node:ekr.20210901140645.8: *3* TestKeys.test_k_settings_ivars_match_settings
     def test_k_settings_ivars_match_settings(self):
         c = self.c

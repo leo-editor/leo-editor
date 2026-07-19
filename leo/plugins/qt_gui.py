@@ -114,6 +114,10 @@ class LeoQtGui(leoGui.LeoGui):
         self.mGuiName = 'qt'
         self.show_tips_flag = False  # #2390: Can't be inited in reload_settings.
         self.styleSheetManagerClass = StyleSheetManager
+        if g.isMac and g.app.config.getBool('qt-mac-dont-swap-ctrl-and-meta', default=False):
+            attr = getattr(Qt.ApplicationAttribute, 'AA_MacDontSwapCtrlAndMeta', None)
+            if attr is not None:
+                QtWidgets.QApplication.setAttribute(attr, True)
         # Be aware of the systems native colors, fonts, etc.
         QtWidgets.QApplication.setDesktopSettingsAware(True)
         # Create objects...

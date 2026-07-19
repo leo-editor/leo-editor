@@ -2373,6 +2373,12 @@ class KeyHandlerClass:
     def makeAllBindings(self) -> None:
         """Make all key bindings in all of Leo's panes."""
         k = self
+        # Rebuild from the original shortcut settings each pass. The binding
+        # resolver mutates c.config.shortcutsDict while handling duplicate
+        # strokes, so repeated startup-wide rebuilds must not reuse that
+        # already-trimmed dict as input.
+        raw_shortcuts = k.c.config.shortcutsDictRaw
+        k.c.config.shortcutsDict = raw_shortcuts.copy() if raw_shortcuts else None
         k.bindingsDict = {}
         k.addModeCommands()
         k.makeBindingsFromCommandsDict()
