@@ -122,8 +122,7 @@ class BaseLeoCompare:
                 try:
                     name1 = g.os_path_join(dir1, f1)
                     name2 = g.os_path_join(dir2, f2)
-                    val = filecmp.cmp(name1, name2, 0)
-                    if val:
+                    if filecmp.cmp(name1, name2, 0):
                         yes.append(f1)
                     else:
                         no.append(f1)
@@ -337,8 +336,7 @@ class BaseLeoCompare:
 
     # @+node:ekr.20031218072017.3644: *3* compare.filecmp
     def filecmp(self, f1: TextIO, f2: TextIO) -> bool:
-        val = filecmp.cmp(f1, f2)
-        if val:
+        if val := filecmp.cmp(f1, f2):
             self.show("equal")
         else:
             self.show("*** not equal")
