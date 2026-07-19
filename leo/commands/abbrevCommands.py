@@ -200,8 +200,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                 c.selectVisNext()
 
         # Replace the container node with its first child.
-        child = c.p.copy().moveToFirstChild()
-        if child:
+        if child := c.p.copy().moveToFirstChild():
             c.selectPosition(child)
             c.moveOutlineLeft()
             c.goToPrevSibling()
@@ -488,8 +487,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         script = ''.join(script_list)
         # Allow Leo directives in @data abbreviations-subst-env trees.
         # #1674: Avoid unnecessary entries in c.fileCommands.gnxDict.
-        root = c.rootPosition()
-        if root:
+        if root := c.rootPosition():
             v = root.v
         else:
             # Defensive programming. Probably will never happen.

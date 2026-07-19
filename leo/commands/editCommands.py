@@ -269,8 +269,7 @@ def merge_node_with_prev_node(event: LeoKeyEvent | None = None) -> None:
 @g.command('next-or-end-of-line')
 def nextOrEndOfLine(event: LeoKeyEvent | None = None) -> None:
     # by Brian Theado.
-    c = event.get('c') if event else None
-    if c:
+    if c := event.get('c') if event else None:
         lineScrollHelper(c, 'next-', 'end-', '')
 
 
@@ -278,8 +277,7 @@ def nextOrEndOfLine(event: LeoKeyEvent | None = None) -> None:
 @g.command('next-or-end-of-line-extend-selection')
 def nextOrEndOfLineExtendSelection(event: LeoKeyEvent | None = None) -> None:
     # by Brian Theado.
-    c = event.get('c') if event else None
-    if c:
+    if c := event.get('c') if event else None:
         lineScrollHelper(c, 'next-', 'end-', '-extend-selection')
 
 
@@ -287,8 +285,7 @@ def nextOrEndOfLineExtendSelection(event: LeoKeyEvent | None = None) -> None:
 @g.command('previous-or-beginning-of-line')
 def previousOrBeginningOfLine(event: LeoKeyEvent | None = None) -> None:
     # by Brian Theado.
-    c = event.get('c') if event else None
-    if c:
+    if c := event.get('c') if event else None:
         lineScrollHelper(c, 'previous-', 'beginning-', '')
 
 
@@ -296,8 +293,7 @@ def previousOrBeginningOfLine(event: LeoKeyEvent | None = None) -> None:
 @g.command('previous-or-beginning-of-line-extend-selection')
 def previousOrBeginningOfLineExtendSelection(event: LeoKeyEvent | None = None) -> None:
     # by Brian Theado.
-    c = event.get('c') if event else None
-    if c:
+    if c := event.get('c') if event else None:
         lineScrollHelper(c, 'previous-', 'beginning-', '-extend-selection')
 
 
@@ -324,8 +320,7 @@ def promoteHeadlines(event: LeoKeyEvent | None = None) -> None:
         return
     p = c.p
     b = c.undoer.beforeChangeNodeContents(p)
-    result = '\n'.join([p.h.rstrip() for p in p.subtree()])
-    if result:
+    if result := '\n'.join([p.h.rstrip() for p in p.subtree()]):
         p.b = p.b.lstrip() + '\n' + result
         c.undoer.afterChangeNodeContents(p, 'promote-headlines', b)
 
@@ -379,8 +374,7 @@ def show_clone_ancestors(event: LeoKeyEvent | None = None) -> None:
 @g.command('show-node-files')
 def show_node_files(event: LeoKeyEvent | None = None) -> None:
     """Display the headlines of all @<file> nodes containing this node."""
-    c = event.get('c') if event else None
-    if c:
+    if c := event.get('c') if event else None:
         p = c.p
         for v in p.v.findAllAncestorAtFileNodes():
             g.es(v.h, color='blue')
@@ -396,8 +390,7 @@ def show_clones(event: LeoKeyEvent | None = None) -> None:
     seen: set[str] = set()
     g.es(f"Parents of {c.p.h}...")
     for clone in c.vnode2allPositions(c.p.v):
-        parent = clone.parent()
-        if parent:
+        if parent := clone.parent():
             unl = message = parent.get_legacy_UNL()
             # Drop the file part.
             i = unl.find('#')
@@ -526,8 +519,7 @@ class EditCommandsClass(BaseEditCommandsClass):
 
         start_text = w.getSelectedText()
         if not start_text:  # look at text preceding insert point
-            start_text = w.getAllText()[: w.getInsertPoint()]
-            if start_text:
+            if start_text := w.getAllText()[: w.getInsertPoint()]:
                 # make non-path characters whitespace
                 start_text = ''.join(
                     i if i not in '\'"`()[]{}<>!|*,@#$&' else ' ' for i in start_text
@@ -568,8 +560,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             undoType = 'insert-headline-time'
             undoData = u.beforeChangeNodeContents(p)
 
-            s = p.h.rstrip()
-            if s:
+            if s := p.h.rstrip():
                 p.h = ' '.join([s, time])
             else:
                 p.h = time
@@ -600,8 +591,7 @@ class EditCommandsClass(BaseEditCommandsClass):
 
         words = [w.capitalize() for w in h.split()]
         capitalized = ' '.join(words)
-        changed = capitalized != h
-        if changed:
+        if capitalized != h:
             p.h = capitalized
             c.setChanged()
             p.setDirty()
@@ -711,8 +701,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             word2 = word.upper()
         else:
             g.trace(f"can not happen: which = {which}")
-        changed = word != word2
-        if changed:
+        if changed := word != word2:
             w.delete(i, j)
             w.insert(i, word2)
             w.setSelectionRange(ins, ins, insert=ins)
@@ -1430,8 +1419,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     def deleteFirstIcon(self, event: LeoKeyEvent | None = None) -> None:
         """Delete the first icon in the selected node's icon list."""
         c, p = self.c, self.c.p
-        aList = self.getIconList(c.p.v)
-        if aList:
+        if aList := self.getIconList(c.p.v):
             self.setIconList(p, aList[1:])
             p.setDirty()
             c.setChanged()
@@ -1465,8 +1453,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     def deleteLastIcon(self, event: LeoKeyEvent | None = None) -> None:
         """Delete the first icon in the selected node's icon list."""
         c, p = self.c, self.c.p
-        aList = self.getIconList(p.v)
-        if aList:
+        if aList := self.getIconList(p.v):
             self.setIconList(c.p, aList[:-1])
             p.setDirty()
             c.setChanged()
@@ -1544,8 +1531,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         i, j = g.getLine(s, ins)
         line = s[i:j]
         line2 = s[i:j].lstrip()
-        delta = len(line) - len(line2)
-        if delta:
+        if delta := len(line) - len(line2):
             self.beginCommand(w, undoType='delete-indentation')
             w.delete(i, j)
             w.insert(i, line2)
@@ -1616,8 +1602,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         url = p.get_UNL()
         g.app.gui.replaceClipboardWith(c.p.gnx)
         print('gnx:', url)
-        status_line = getattr(c.frame, "statusLine", None)
-        if status_line:
+        if status_line := getattr(c.frame, "statusLine", None):
             status_line.put(url)
 
     # @+node:ekr.20150514063305.247: *4* ec.lineNumber
@@ -1958,8 +1943,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         w2 = ins
         while w2 <= j and s[w2].isspace():
             w2 += 1
-        spaces = s[w1:w2]
-        if spaces:
+        if s[w1:w2]:  # spaces.
             self.beginCommand(w, undoType=undoType)
             if insertspace:
                 s = s[:w1] + ' ' + s[w2:]
@@ -2117,8 +2101,7 @@ class EditCommandsClass(BaseEditCommandsClass):
 
     def replaceCurrentCharacter1(self, event: LeoKeyEvent | None = None) -> None:
         c, k, w = self.c, self.c.k, self.w
-        ch = k.arg
-        if ch:
+        if ch := k.arg:
             i, j = w.getSelectionRange()
             if i > j:
                 i, j = j, i
@@ -2278,8 +2261,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         # Pick the correct curly quote.
         s = w.getAllText() or ""
         i2 = g.skip_to_start_of_line(s, max(0, ins - 1))
-        open_curly = ins == i2 or ins > i2 and s[ins - 1] in ' \t'  # not s[ins-1].isalnum()
-        if open_curly:
+        if ins == i2 or ins > i2 and s[ins - 1] in ' \t':  # not s[ins-1].isalnum()
+            # An open curly bracket.
             ch = '‘' if ch == "'" else "“"
         else:
             ch = '’' if ch == "'" else "”"
@@ -2379,8 +2362,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 elif ch in '}])' and len(bracketWidths) > 1:
                     bracketWidths.pop()
             width = bracketWidths.pop()
-        ws = g.computeLeadingWhitespace(width, tab_width)
-        if ws:
+        if ws := g.computeLeadingWhitespace(width, tab_width):
             i = w.getInsertPoint()
             w.insert(i, ws)
             w.setInsertPoint(i + len(ws))
@@ -2395,8 +2377,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         i, j = oldSel
         s = w.getAllText()
         if ch in ('([{'):
-            automatch = language not in ('plain',)
-            if automatch:
+            if automatch := language not in ('plain',):
                 ch = ch + {'(': ')', '[': ']', '{': '}'}.get(ch)
             if i != j:
                 w.delete(i, j)
@@ -2442,8 +2423,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         if after.endswith('\n'):
             after = after[:-1]
         # Only do smart tab at the start of a blank line.
-        doSmartTab = smartTab and c.smart_tab and i == start
-        if doSmartTab:
+        if smartTab and c.smart_tab and i == start:
             self.updateAutoIndent(p, w)
             # Add a tab if otherwise nothing would happen.
             if s == w.getAllText():
@@ -3853,8 +3833,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             assert way == 'toggle'
             sel = s2.swapcase()
         s2 = s[:i] + sel + s[j:]
-        changed = s2 != s
-        if changed:
+        if changed := s2 != s:
             w.setAllText(s2)
             w.setSelectionRange(i, j, insert=ins)
         self.endCommand(changed=changed, setLabel=True)
@@ -4113,8 +4092,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         k = j1 + 1
         while k < len(s) and s[k] != '\n' and not g.isWordChar1(s[k]):
             k += 1
-        changed = k < len(s)
-        if changed:
+        if changed := k < len(s):
             ws = s[j1:k]
             w.setInsertPoint(k + 1)
             i2, j2 = self.extendToWord(event, select=False)

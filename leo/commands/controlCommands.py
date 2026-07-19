@@ -99,8 +99,7 @@ class ControlCommandsClass(BaseEditCommandsClass):
 
     def shellCommand1(self, event: LeoKeyEvent | None = None) -> None:
         k = self.c.k
-        command = g.toUnicode(k.arg)
-        if command:
+        if command := g.toUnicode(k.arg):
             self.executeSubprocess(event, command)
 
     # @+node:ekr.20150514063305.95: *3* shellCommandOnRegion

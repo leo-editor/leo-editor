@@ -383,8 +383,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
             if commandName:
                 bindings = self.getBindingsForCommand(commandName)
                 func = c.commandsDict.get(commandName)
-                s = g.getDocStringForFunction(func)
-                if s:
+                if s := g.getDocStringForFunction(func):
                     s = self.replaceBindingPatterns(s)
                 else:
                     s = 'no docstring available'

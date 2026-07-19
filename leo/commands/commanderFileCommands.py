@@ -375,8 +375,7 @@ def open_outline(self: Self, event: LeoKeyEvent | None = None) -> None:
         ("Python files", "*.py"),
         ("All files", "*"),
     ]
-    fileName = g.app.gui.runOpenFileDialog(c, title="Open", filetypes=filetypes)
-    if fileName:
+    if fileName := g.app.gui.runOpenFileDialog(c, title="Open", filetypes=filetypes):
         g.openWithFileName(fileName, old_c=c)
 
 
@@ -419,8 +418,7 @@ def refreshFromDisk(
     at.readFileAtPosition(p)  # Leo 6.8.6.
 
     # #4385: Handle updated @clean nodes.
-    update_p = at.clone_all_changed_vnodes()
-    if update_p:
+    if update_p := at.clone_all_changed_vnodes():
         # Set the current position during initial redraws.
         c.db['current_position'] = ','.join([str(z) for z in update_p.archivedPosition()])
         update_p.expand()
@@ -476,8 +474,7 @@ def save(
         c.init_error_dialogs()
 
         # Don't prompt if the file name is known.
-        given_file_name = fileName or c.mFileName
-        if given_file_name:
+        if given_file_name := fileName or c.mFileName:
             final_file_name = set_name_and_title(c, given_file_name)
             do_save(c, final_file_name)
             return

@@ -89,8 +89,7 @@ class GoToCommands:
             # Not all sentinels count as real lines.
             gnx, h, offset = self.scan_nonsentinel_lines(lines, n, root)
         if gnx:
-            p = self.find_gnx2(gnx)
-            if p:
+            if p := self.find_gnx2(gnx):
                 self.success(n, offset, p)
                 return p, offset
         self.fail(lines, n, root)
@@ -174,8 +173,7 @@ class GoToCommands:
         # Script lines now *do* have gnx's.
         gnx, h, offset = self.scan_sentinel_lines(lines, n, root)
         if gnx:
-            p = self.find_gnx2(gnx)
-            if p:
+            if p := self.find_gnx2(gnx):
                 self.success(n, offset, p)
                 return p, offset
         self.fail(lines, n, root)
@@ -374,8 +372,7 @@ class GoToCommands:
 
         # Search the entire outline.
         positions: list[Position]
-        backwards = c.config.getBool('search-links-backwards', default=True)
-        if backwards:
+        if c.config.getBool('search-links-backwards', default=True):
             positions = list(reversed(list(c.all_positions())))
         else:
             positions = list(c.all_positions())
@@ -395,8 +392,7 @@ class GoToCommands:
         # Look up the tree for the first @file node.
         for p in p.self_and_parents(copy=False):
             if not p.isAtAllNode():
-                fileName = p.anyAtFileNodeName()
-                if fileName:
+                if fileName := p.anyAtFileNodeName():
                     return p.copy(), fileName
         # Search the entire tree for cloned nodes.
         for p in c.all_positions():
@@ -404,8 +400,7 @@ class GoToCommands:
                 # Found a cloned position.
                 for p2 in p.self_and_parents():
                     if not p2.isAtAllNode():
-                        fileName = p2.anyAtFileNodeName()
-                        if fileName:
+                        if fileName := p2.anyAtFileNodeName():
                             return p2.copy(), fileName
         return None, None
 

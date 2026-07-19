@@ -318,8 +318,7 @@ def pyflakes_command(event: LeoKeyEvent | None = None) -> None:
     if not pyflakes:
         g.es_print('can not import pyflakes')
         return
-    ok = PyflakesCommand(c).run(c.p)
-    if ok:
+    if PyflakesCommand(c).run(c.p):
         g.es('OK: pyflakes')
 
 
@@ -335,12 +334,10 @@ def pylint_command(event: LeoKeyEvent | None = None) -> None:
     or the last checked @<file> node.
     """
     global last_pylint_path
-    c = event and event.get('c')
-    if c:
+    if c := event and event.get('c'):
         if c.isChanged():
             c.save()
-        data = PylintCommand(c).run(c.p, last_path=last_pylint_path)
-        if data:
+        if data := PylintCommand(c).run(c.p, last_path=last_pylint_path):
             path, p = data  # pylint: disable=unpacking-non-sequence
             last_pylint_path = path
 
@@ -523,8 +520,7 @@ class Flake8Command:
         path = os.path.normpath(os.path.join(g.app.loadDir, '..', '..'))
         if path not in sys.path:
             sys.path.insert(0, path)
-        roots = g.findRootsWithPredicate(c, root, predicate=None)
-        if roots:
+        if roots := g.findRootsWithPredicate(c, root, predicate=None):
             self.check_all(roots)
 
     # @-others
@@ -668,8 +664,7 @@ class PylintCommand:
 
         data: list[tuple[str, Position]] = []
         is_at_file = False
-        roots = g.findRootsWithPredicate(c, root, predicate=predicate)
-        if roots:
+        if roots := g.findRootsWithPredicate(c, root, predicate=predicate):
             roots = g.findRootsWithPredicate(c, root, predicate=predicate)
             data = [(self.get_fn(p), p.copy()) for p in roots]
             data = [z for z in data if z[0] is not None]

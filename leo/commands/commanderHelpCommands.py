@@ -86,8 +86,7 @@ def leoDocumentation(self: Self, event: LeoKeyEvent | None = None) -> None:
     name = "LeoDocs.leo"
     fileName = g.finalize_join(g.app.loadDir, "..", "doc", name)
     if g.os_path_exists(fileName):
-        c2 = g.openWithFileName(fileName, old_c=c)
-        if c2:
+        if g.openWithFileName(fileName, old_c=c):
             return
     g.es("not found:", name)
 
@@ -101,8 +100,7 @@ def leoQuickStart(self: Self, event: LeoKeyEvent | None = None) -> None:
     name = "quickstart.leo"
     fileName = g.finalize_join(g.app.loadDir, "..", "doc", name)
     if g.os_path_exists(fileName):
-        c2 = g.openWithFileName(fileName, old_c=c)
-        if c2:
+        if g.openWithFileName(fileName, old_c=c):
             return
     g.es("not found:", name)
 
@@ -119,8 +117,7 @@ def openCheatSheet(self: Self, event: LeoKeyEvent | None = None) -> None:
         g.es(f"file not found: {fn}")
         return
     c2 = g.openWithFileName(fn, old_c=c)
-    p = g.findNodeAnywhere(c2, "Leo's cheat sheet")
-    if p:
+    if p := g.findNodeAnywhere(c2, "Leo's cheat sheet"):
         c2.selectPosition(p)
         p.expand()
     c2.redraw()
@@ -134,8 +131,7 @@ def openDesktopIntegration(self: Self, event: LeoKeyEvent | None = None) -> None
     c = self
     fileName = g.finalize_join(g.app.loadDir, '..', 'scripts', 'desktop-integration.leo')
     if g.os_path_exists(fileName):
-        c2 = g.openWithFileName(fileName, old_c=c)
-        if c2:
+        if g.openWithFileName(fileName, old_c=c):
             return
     g.es('not found:', fileName)
 
@@ -149,8 +145,7 @@ def openLeoDist(self: Self, event: LeoKeyEvent | None = None) -> None:
     name = "leoDist.leo"
     fileName = g.finalize_join(g.app.loadDir, "..", "dist", name)
     if g.os_path_exists(fileName):
-        c2 = g.openWithFileName(fileName, old_c=c)
-        if c2:
+        if g.openWithFileName(fileName, old_c=c):
             return
     g.es("not found:", name)
 
@@ -169,8 +164,7 @@ def openLeoPy(self: Self, event: LeoKeyEvent | None = None) -> Cmdr | None:
         fileName = g.finalize_join(g.app.loadDir, "..", "core", name)
         # Only call g.openWithFileName if the file exists.
         if g.os_path_exists(fileName):
-            c2 = g.openWithFileName(fileName, old_c=c)
-            if c2:
+            if c2 := g.openWithFileName(fileName, old_c=c):
                 return c2
     g.es('not found:', ', '.join(names))
     return None
@@ -184,8 +178,7 @@ def openLeoPyRef(self: Self, event: LeoKeyEvent | None = None) -> Cmdr | None:
     c = self
     path = g.finalize_join(g.app.loadDir, "..", "core", "LeoPyRef.leo")
     if g.os_path_exists(path):
-        c2 = g.openWithFileName(path, old_c=c)
-        if c2:
+        if c2 := g.openWithFileName(path, old_c=c):
             return c2
     g.es('LeoPyRef.leo not found')
     return None
@@ -199,8 +192,7 @@ def openLeoScripts(self: Self, event: LeoKeyEvent | None = None) -> None:
     c = self
     fileName = g.finalize_join(g.app.loadDir, '..', 'scripts', 'scripts.leo')
     if g.os_path_exists(fileName):
-        c2 = g.openWithFileName(fileName, old_c=c)
-        if c2:
+        if g.openWithFileName(fileName, old_c=c):
             return
     g.es('not found:', fileName)
 
@@ -212,8 +204,7 @@ def openLeoScripts(self: Self, event: LeoKeyEvent | None = None) -> None:
 def openLeoSettings(self: Self, event: LeoKeyEvent | None = None) -> Cmdr | None:
     """Open leoSettings.leo in a new Leo window."""
     c, lm = self, g.app.loadManager
-    path = lm.computeLeoSettingsPath()
-    if path:
+    if path := lm.computeLeoSettingsPath():
         return g.openWithFileName(path, old_c=c)
     g.es('not found: leoSettings.leo')
     return None
@@ -226,8 +217,7 @@ def openLeoSettings(self: Self, event: LeoKeyEvent | None = None) -> Cmdr | None
 def openMyLeoSettings(self: Self, event: LeoKeyEvent | None = None) -> Cmdr:
     """Open myLeoSettings.leo in a new Leo window."""
     c, lm = self, g.app.loadManager
-    path = lm.computeMyLeoSettingsPath()
-    if path:
+    if path := lm.computeMyLeoSettingsPath():
         return g.openWithFileName(path, old_c=c)
     g.es('not found: myLeoSettings.leo')
     return createMyLeoSettings(c)
@@ -396,8 +386,7 @@ def openPythonWindow(self: Self, event: LeoKeyEvent | None = None) -> None:
 def selectAtSettingsNode(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Select the @settings node, if there is one."""
     c = self
-    p = c.config.settingsRoot()
-    if p:
+    if p := c.config.settingsRoot():
         c.selectPosition(p)
         c.redraw()
     else:
