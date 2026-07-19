@@ -3392,7 +3392,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
     # @+node:ekr.20141007223054.18003: *9* LeoQTreeWidget.isLeoFile
     def isLeoFile(self, fn: str, s: str) -> bool:
         """Return true if fn (a file name) represents an entire .leo file."""
-        return fn.endswith('.leo') and s.startswith(g.app.prolog_prefix_string)
+        return fn.endswith(('.leo', '.leojs')) and s.startswith(g.app.prolog_prefix_string)
 
     # @+node:ekr.20110605121601.18376: *9* LeoQTreeWidget.isThinFile
     def isThinFile(self, fn: str, s: str) -> bool:
