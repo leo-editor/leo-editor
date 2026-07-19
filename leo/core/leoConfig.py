@@ -1641,6 +1641,9 @@ class LocalConfigManager:
             self.shortcutsDict = d2 = lm.globalBindingsDict
             assert d1 is None or isinstance(d1, g.SettingsDict), d1.__class__.__name__
             assert d2 is None or isinstance(d2, g.SettingsDict), d2.__class__.__name__
+        # Preserve the raw shortcut settings so repeated binding rebuilds do not
+        # depend on mutations made while resolving duplicate strokes.
+        self.shortcutsDictRaw = self.shortcutsDict.copy() if self.shortcutsDict else None
         # Default encodings.
         self.default_at_auto_file_encoding = 'utf-8'
         self.default_derived_file_encoding = 'utf-8'
