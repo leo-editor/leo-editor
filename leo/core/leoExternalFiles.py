@@ -462,17 +462,14 @@ class ExternalFilesController:
         try:
             # All of these must be supported because they
             # could exist in @open-with nodes.
-            command = '<no command>'
             if kind in ('os.system', 'os.startfile'):
                 c_arg = self.join(arg, fn)
+                command = f"{kind} {c_arg}"
                 if not testing:
-                    try:
-                        subprocess.Popen(c_arg)
-                    except OSError:
-                        g.es_print('c_arg', repr(c_arg))
-                        g.es_exception()
+                    subprocess.Popen(c_arg)
             elif kind == 'exec':
-                g.es_print('open-with exec no longer valid.')
+                command = 'open-with exec no longer valid.'
+                g.es_print(command)
             elif kind == 'os.spawnl':
                 filename = g.os_path_basename(arg)
                 command = f"os.spawnl({arg},{filename},{fn})"
@@ -487,19 +484,15 @@ class ExternalFilesController:
                 vtuple.append(fn)
                 command = f"os.spawnv({vtuple})"
                 if not testing:
-                    os.spawnv(os.P_NOWAIT, arg[0], vtuple)  # ???
+                    os.spawnv(os.P_NOWAIT, arg[0], vtuple)
             elif kind == 'subprocess.Popen':
-                c_arg = (
+                popen_arg: list | str = (
                     self.join(arg, fn) if os.name == 'nt' else
                     self.make_popen_args(arg_tuple, fn)
                 )  # fmt: skip
-                command = f"subprocess.Popen({c_arg})"
+                command = f"subprocess.Popen({popen_arg})"
                 if not testing:
-                    try:
-                        subprocess.Popen(c_arg)
-                    except OSError:
-                        g.es_print('c_arg', repr(c_arg))
-                        g.es_exception()
+                    subprocess.Popen(popen_arg)
             elif callable(kind):
                 # Invoke openWith like this:
                 # c.openWith(data=[func,None,None])
@@ -508,14 +501,13 @@ class ExternalFilesController:
                 if not testing:
                     kind(fn)
             else:
-                command = 'bad command:' + str(kind)
+                command = f"bad command: {kind}"
                 if not testing:
                     g.trace(command)
-            return command  # for unit testing.
         except Exception:
-            g.es('exception executing open-with command:', command)
+            g.es(f"exception executing open-with command: {command=}")
             g.es_exception()
-            return f"oops: {command}"
+        return command  # for unit testing.
 
     # @+node:ekr.20190123051253.1: *5* efc.remove_temp_file
     def remove_temp_file(self, p: Position, path: str) -> None:
