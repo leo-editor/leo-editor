@@ -124,7 +124,7 @@ def save_snapshot(c):
 
 # @+node:vitalije.20190928160538.1: ** snap
 def snap(c):
-    dt = datetime.datetime.utcnow()
+    dt = datetime.datetime.now(datetime.timezone.utc)
     buf = [c.mFileName, '\n', dt.strftime('%Y-%m-%dT%H:%M:%S.000000'), '\n']
     nbuf = {}
 
