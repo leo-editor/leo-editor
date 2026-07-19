@@ -356,8 +356,7 @@ class LeoPluginsController:
         handler, moduleName = bunch.fn, bunch.moduleName
         # Make sure the new commander exists.
         for key in ('c', 'new_c'):
-            c = keywords.get(key)
-            if c:
+            if c := keywords.get(key):
                 # Make sure c exists and has a frame.
                 if not c.exists or not hasattr(c, 'frame'):
                     return None
