@@ -2395,8 +2395,7 @@ class LoadManager:
             try:
                 for n, fn in enumerate(lm.files):
                     lm.more_cmdline_files = n < len(lm.files) - 1
-                    # Returns None if the file is open in another instance of Leo.
-                    c = g.openWithFileName(fn, gui=g.app.gui, old_c=None)
+                    c = lm.openWithFileName(fn, gui=g.app.gui, old_c=None)
                     if c and not c1:
                         c1 = c
             except Exception:
@@ -3157,34 +3156,20 @@ class LoadManager:
            - Create an *unnamed* outline containing an @file or @edit node.
            - Refresh the @file or @edit node from disk
 
-        3. If fn is empty or does not exist.
-           - Get settings from the leoSettings.leo and myLeoSetting.leo.
-           - Open an empty outline.
+        3. Open an empty Leo outline if fn is empty or does not exist.
         """
-        lm = self
+        # PR #4795: Make *sure* this code never crashes and that c.p. is valid.
+        try:
+            file_name = g.finalize(fn) if fn else ''
+            if c := self.openWithFileNameHelper(file_name, gui, old_c):
+                if not c.positionExists(c.p):
+                    c.p = c.rootPosition()
+                return c
+        except Exception as e:
+            g.trace(f"Unexpected exception: {e} opening {file_name!r}")
 
-        file_name = g.finalize(fn) if fn else ''
-
-        # #2489: If file_name is empty, open an empty, untitled .leo file.
-        if not file_name:
-            return lm.openEmptyLeoFile(file_name, gui, old_c)
-
-        # Return the commander if the file is an already open outline.
-        c = lm.findOpenFile(file_name)
-        if c:
-            return c
-
-        # Open an outline or an external file.
-        exists = os.path.exists(file_name)
-        is_leo = lm.isLeoFile(file_name)
-        if is_leo:
-            if exists:
-                return lm.openExistingLeoFile(file_name, gui, old_c)
-            return lm.openEmptyLeoFile(file_name, gui, old_c)
-        c = lm.openExternalFile(file_name, gui, old_c)
-        if c:
-            return c
-        return lm.openEmptyLeoFile(file_name, gui, old_c)  # PR #4779
+        # The default: open an empty Leo file.
+        return self.openEmptyLeoFile(file_name, gui, old_c)
 
     loadLocalFile = openWithFileName  # Compatibility.
 
@@ -3253,74 +3238,6 @@ class LoadManager:
         c.frame.initCompleteHint()
         c.outerUpdate()  # #181: Honor focus requests.
         c.initialFocusHelper()
-
-    # @+node:ekr.20120223062418.10408: *5* LM.openExternalFile
-    def openExternalFile(self, fn: str, gui: LeoGui | None, old_c: Cmdr | None) -> Cmdr | None:
-        """
-        Create a wrapper commander (in a new tab) for the given external file.
-
-        The commander's outline contains an @edit or @file node for the external file.
-        """
-        lm = self
-
-        # Disable the log.
-        g.app.setLog(None)
-        g.app.lockLog()
-
-        # Create the commander.
-        c = g.app.newCommander(
-            fileName=fn,
-            gui=gui,
-            previousSettings=lm.getPreviousSettings(''),
-        )
-        # Use the config params to set the size and location of the window.
-        g.doHook('open0')
-        g.doHook("open1", old_c=old_c, c=c, new_c=c, fileName=None)
-        frame = c.frame
-        frame.setInitialWindowGeometry()
-        frame.deiconify()
-        frame.lift()
-        # #1570: Resize the _new_ frame.
-        frame.splitVerticalFlag, r1, r2 = frame.initialRatios()
-        frame.resizePanesToRatio(r1, r2)
-        if not g.os_path_exists(fn):
-            p = c.rootPosition()
-            # Create an empty @edit node unless fn is an .leo file.
-            # Fix #1070: Use "newHeadline", not fn.
-            p.h = "newHeadline" if fn.endswith('.leo') else f"@edit {fn}"
-            c.selectPosition(p)
-            c.redraw()
-        elif c.looksLikeDerivedFile(fn):
-            # Create an @file node. Not undoable!
-            p = c.importCommands.importDerivedFiles(  # type:ignore  # We will test p next.
-                parent=c.rootPosition(),
-                paths=[fn],
-                command='',
-            )
-            if not p:
-                return None
-            if p.hasBack():
-                p.back().doDelete()
-                p = c.rootPosition()
-            c.selectPosition(p)
-            c.redraw()
-        else:
-            # Make the root node an @auto node if an importer exists. @edit otherwise.
-            unused, ext = os.path.splitext(fn)
-            func = g.app.scanner_for_ext(ext)
-            p = c.rootPosition()
-            p.h = f"@auto {fn}" if func else f"@edit {fn}"
-            c.refreshFromDisk(p)  # pylint: disable=no-member
-
-        c.mFileName = ''  # #3546: Do *not* automatically save the .leo file.
-        c.frame.title = c.computeTabTitle()
-        c.frame.setTitle(c.frame.title)
-
-        g.doHook("open2", old_c=old_c, c=c, new_c=c, fileName=fn)
-        # Finish.
-        frame.c.clearChanged()
-        lm.finishOpen(c)
-        return c
 
     # @+node:ekr.20120223062418.10419: *5* LM.isLeoFile & LM.isZippedFile
     def isLeoFile(self, fn: str) -> bool:
@@ -3392,7 +3309,10 @@ class LoadManager:
 
         # Read the outline.
         g.doHook('open0')
-        v = c.fileCommands.getAnyLeoFileByName(fn, readAtFileNodesFlag=bool(previousSettings))
+        v = c.fileCommands.getAnyLeoFileByName(
+            fn,
+            readAtFileNodesFlag=bool(previousSettings),
+        )
         if not v:
             # #3656: Recover gracefully.
             lm.openBadLeoFile(c, fn)
@@ -3436,6 +3356,100 @@ class LoadManager:
         c.frame.title = title
         c.frame.setTitle(title)
         c.clearChanged()
+
+    # @+node:ekr.20120223062418.10408: *5* LM.openExternalFile
+    def openExternalFile(self, fn: str, gui: LeoGui | None, old_c: Cmdr | None) -> Cmdr | None:
+        """
+        Create a wrapper commander (in a new tab) for the given external file.
+
+        The commander's outline contains an @edit or @file node for the external file.
+        """
+        lm = self
+
+        # Disable the log.
+        g.app.setLog(None)
+        g.app.lockLog()
+
+        # Create the commander.
+        c = g.app.newCommander(
+            fileName=fn,
+            gui=gui,
+            previousSettings=lm.getPreviousSettings(''),
+        )
+        # Use the config params to set the size and location of the window.
+        g.doHook('open0')
+        g.doHook("open1", old_c=old_c, c=c, new_c=c, fileName=None)
+        frame = c.frame
+        frame.setInitialWindowGeometry()
+        frame.deiconify()
+        frame.lift()
+        # #1570: Resize the _new_ frame.
+        frame.splitVerticalFlag, r1, r2 = frame.initialRatios()
+        frame.resizePanesToRatio(r1, r2)
+        if not g.os_path_exists(fn):
+            p = c.rootPosition()
+            # Create an empty @edit node unless fn is an .leo file.
+            # Fix #1070: Use "newHeadline", not fn.
+            p.h = "newHeadline" if fn.endswith('.leo') else f"@edit {fn}"
+            c.selectPosition(p)
+            c.redraw()
+        elif c.looksLikeDerivedFile(fn):
+            # Create an @file node. Not undoable!
+            p = c.importCommands.importDerivedFiles(  # type:ignore  # We will test p next.
+                parent=c.rootPosition(),
+                paths=[fn],
+                command='',
+            )
+            if not p:
+                return None
+            if p.hasBack():
+                p.back().doDelete()
+                p = c.rootPosition()
+            c.selectPosition(p)
+            c.redraw()
+        else:
+            # Make the root node an @auto node if an importer exists. @edit otherwise.
+            unused, ext = os.path.splitext(fn)
+            func = g.app.scanner_for_ext(ext)
+            p = c.rootPosition()
+            p.h = f"@auto {fn}" if func else f"@edit {fn}"
+            c.refreshFromDisk(p)  # pylint: disable=no-member
+
+        c.mFileName = ''  # #3546: Do *not* automatically save the .leo file.
+        c.frame.title = c.computeTabTitle()
+        c.frame.setTitle(c.frame.title)
+
+        g.doHook("open2", old_c=old_c, c=c, new_c=c, fileName=fn)
+        # Finish.
+        frame.c.clearChanged()
+        lm.finishOpen(c)
+        return c
+
+    # @+node:ekr.20260711055732.1: *5* LM.openWithFileNameHelper
+    def openWithFileNameHelper(
+        self,
+        file_name: str,
+        gui: LeoGui | None,
+        old_c: Cmdr | None,
+    ) -> Cmdr | None:
+        """Open the file with the given name or and empty Leo outline."""
+        if not file_name:
+            return None
+
+        # Return the commander if the file is an already open outline.
+        if c := self.findOpenFile(file_name):
+            return c
+
+        # Open a Leo outline or an external file if possible.
+        exists = os.path.exists(file_name)
+        is_leo = self.isLeoFile(file_name)
+        if is_leo and exists:
+            if c := self.openExistingLeoFile(file_name, gui, old_c):
+                return c
+        if not is_leo:
+            if c := self.openExternalFile(file_name, gui, old_c):
+                return c
+        return None
 
     # @+node:ekr.20120223062418.10410: *5* LM.openZipFile
     def openZipFile(self, fn: str) -> StringIO | None:

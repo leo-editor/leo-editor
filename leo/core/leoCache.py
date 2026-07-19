@@ -388,7 +388,7 @@ def dump_cache(db: dict | SqlitePickleShare, tag: str) -> None:
         return
     # Create a dict, sorted by file prefixes.
     d: dict[str, Any] = {}
-    for key in db.keys():
+    for key in db.keys():  # Don't use d.items().
         key = key[0]
         val = db.get(key)
         data = key.split(':::')
@@ -397,42 +397,25 @@ def dump_cache(db: dict | SqlitePickleShare, tag: str) -> None:
         else:
             fn, key2 = 'None', key
         aList = d.get(fn, [])
-        aList.append(
-            (key2, val),
-        )
+        aList.append((key2, val))
         d[fn] = aList
     # Print the dict.
     files = 0
-    for key in sorted(d.keys()):
+    for key, val in sorted(d.items()):
         if key != 'None':
-            dump_list('File: ' + key, d.get(key))
+            dump_list(f"File: {key}", val)
             files += 1
     if d.get('None'):
         heading = f"All others ({tag})" if files else None
         dump_list(heading, d.get('None'))
+    print('')
 
 
 def dump_list(heading: str, aList: list) -> None:
     if heading:
         print(f'\n{heading}...\n')
-    for aTuple in aList:
-        key, val = aTuple
-        if isinstance(val, str):
-            if key.startswith('windowState'):
-                print(key)
-            elif key.endswith(('leo_expanded', 'leo_marked')):
-                if val:
-                    print(f"{key:30}:")
-                    g.printObj(val.split(','))
-                else:
-                    print(f"{key:30}: []")
-            else:
-                print(f"{key:30}: {val}")
-        elif isinstance(val, (int, float)):
-            print(f"{key:30}: {val}")
-        else:
-            print(f"{key:30}:")
-            g.printObj(val)
+    for key, val in aList:
+        print(f"{key:>30}: {val}")
 
 
 # @-others

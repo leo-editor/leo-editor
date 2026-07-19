@@ -921,7 +921,7 @@ class Position:
 
     def hasNext(self) -> bool:
         p = self
-        parent_v = p._parentVnode()  # PR #4767 # May throw ValueError
+        parent_v = p._parentVnode()
         return bool(p.v and parent_v and p._childIndex + 1 < len(parent_v.children))
 
     def hasParent(self) -> bool:
@@ -1377,22 +1377,12 @@ class Position:
 
     # @+node:ekr.20080416161551.212: *4* p._parentVnode
     def _parentVnode(self) -> VNode:
-        """
-        Return the parent VNode or the hidden root VNode.
-
-        Raise ValueError if p is empty or already refers to the hidden root VNode.
-        """
+        """Return the parent VNode or the hidden root VNode."""
         p = self
-        tag = 'p._parentVnode'
-        if not p or not p.v:
-            raise ValueError(f"{tag} Empty p: {p!r} callers: {g.callers()}")
-        c = p.v.context
-        if not c:
-            raise ValueError(f"{tag} Empty context: {p!r} callers: {g.callers()}")
-        if p.v == c.hiddenRootNode:
-            raise ValueError(f"{tag} hiddenRootNode has no parent: {p!r} callers: {g.callers()}")
-        data = p.stack and p.stack[-1]
-        if data:
+        c = p.v.context if p.v else g.app.log.c  # PR #4795
+        if not p.v or p.v == c.hiddenRootNode:
+            return c.hiddenRootNode
+        if data := p.stack and p.stack[-1]:
             v, junk = data
             return v
         return c.hiddenRootNode
@@ -1417,7 +1407,7 @@ class Position:
         """Unlink the receiver p from the tree."""
         p = self
         n = p._childIndex
-        parent_v = p._parentVnode()  # PR #4767 # May throw ValueError
+        parent_v = p._parentVnode()
         child = p.v
         # PR #4767: suppress mypy warnings...
         assert p.v
@@ -1466,7 +1456,7 @@ class Position:
         """Move self to its previous sibling."""
         p = self
         n = p._childIndex
-        parent_v = p._parentVnode()  # PR #4767 # May throw ValueError
+        parent_v = p._parentVnode()
 
         # Do not assume n is in range: this is used by positionExists.
         if parent_v and p.v and 0 < n <= len(parent_v.children):
@@ -1517,7 +1507,7 @@ class Position:
         """Move a position to its next sibling."""
         p = self
         n = p._childIndex
-        parent_v = p._parentVnode()  # PR #4767 # May throw ValueError
+        parent_v = p._parentVnode()
         if p and not p.v:
             g.trace('no p.v:', p, g.callers())  # pragma: no cover
         if p.v and parent_v and len(parent_v.children) > n + 1:
@@ -1898,7 +1888,7 @@ class Position:
         """A low-level promote helper."""
         p = self  # Do NOT copy the position.
         assert p.v  # PR #4767: suppress mypy warning.
-        parent_v = p._parentVnode()  # PR #4767 # May throw ValueError
+        parent_v = p._parentVnode()
         children = p.v.children
         # Add the children to parent_v's children.
         n = p.childIndex() + 1
