@@ -467,7 +467,7 @@ class LeoImportCommands:
             g.setGlobalOpenDir(fileName)
             path, self.fileName = g.os_path_split(fileName)
             s, e = g.readFileIntoString(fileName, self.encoding)
-            if not s:
+            if s is None:
                 continue  # PR #4801.
             if e:
                 self.encoding = e
@@ -660,7 +660,7 @@ class LeoImportCommands:
         if not s:
             # Set the kind for error messages in readFileIntoString.
             s, e = g.readFileIntoString(fileName, encoding=self.encoding)
-            if not s:
+            if s is None:
                 return None, None
             if e:
                 self.encoding = e
@@ -968,7 +968,7 @@ class LeoImportCommands:
         lb = "@<" if theType == "cweb" else "<<"
         rb = "@>" if theType == "cweb" else ">>"
         s, e = g.readFileIntoString(fileName)
-        if not s:
+        if s is None:
             return
         # @+<< Create a symbol table of all section names >>
         # @+node:ekr.20031218072017.3232: *6* << Create a symbol table of all section names >>
@@ -1557,7 +1557,7 @@ class MORE_Importer:
         ic.encoding = c.getEncoding(c.p)
         g.setGlobalOpenDir(fileName)
         s, _e = g.readFileIntoString(fileName)
-        if not s:
+        if s is None:
             return None
         s = s.replace('\r', '')  # Fixes bug 626101.
         lines = g.splitLines(s)
@@ -1798,7 +1798,7 @@ class RecursiveImportController:
             path = c.relativeDirectory(path)
             p.v.h = '@edit ' + path.replace('\\', '/')
             s, e = g.readFileIntoString(path, kind=self.kind)
-            p.v.b = s
+            p.v.b = s or ''
             return
         # #1484: Use this for @auto as well.
         c.importCommands.importFilesCommand(
