@@ -134,7 +134,7 @@ class ParamClass:
                 break
         else:
             return
-        c.setCurrentPosition(node)
+        c.p = node
         for i, section in enumerate(sections):
             p = c.p.insertAsNthChild(i)
             p.b = section

@@ -974,7 +974,7 @@ class LeoTree:
 
         # Part 2: set the new text. This forces a recolor.
         # Important: set c.p *before* setting text.
-        c.setCurrentPosition(p)
+        c.p = p
         w.setAllText(s)
 
     # @+node:ekr.20140829053801.18458: *5* 3. LeoTree.change_current_position
