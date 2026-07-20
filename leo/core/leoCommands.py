@@ -2198,8 +2198,13 @@ class Commands:
         c = self
         return c.currentPosition()
 
+    def __set_p(self, p: Position) -> None:
+        c = self
+        c.setCurrentPosition(p)
+
     p = property(
-        __get_p,  # No setter.
+        __get_p,
+        __set_p,
         doc="commander current position property",
     )
 
