@@ -665,7 +665,6 @@ class PylintCommand:
         data: list[tuple[str, Position]] = []
         is_at_file = False
         if roots := g.findRootsWithPredicate(c, root, predicate=predicate):
-            roots = g.findRootsWithPredicate(c, root, predicate=predicate)
             data = [(self.get_fn(p), p.copy()) for p in roots]
             data = [z for z in data if z[0] is not None]
             is_at_file = True
