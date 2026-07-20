@@ -465,7 +465,7 @@ class TestNodes(LeoUnitTest):
         p5 = p.insertAsNthChild(3)
         p5.setHeadString('D')
         p.expand()
-        c.setCurrentPosition(p3)
+        c.p = p3
         c.demote()
         p = c.p
         self.assertEqual(p, p3)
@@ -504,7 +504,7 @@ class TestNodes(LeoUnitTest):
         p3 = p.insertAsNthChild(1)
         p3.setHeadString('B')
         p.expand()
-        c.setCurrentPosition(p2)
+        c.p = p2
         p4 = c.insertHeadline()
         self.assertEqual(p4, c.p)
         p = c.p
@@ -547,7 +547,7 @@ class TestNodes(LeoUnitTest):
         p5 = p.insertAsNthChild(3)
         p5.setHeadString('D')
         p.expand()
-        c.setCurrentPosition(p3)
+        c.p = p3
         c.moveOutlineDown()
         moved = c.p
         self.assertEqual(moved.h, 'B')
@@ -579,7 +579,7 @@ class TestNodes(LeoUnitTest):
         p2 = p.insertAsNthChild(0)
         p2.setHeadString('A')
         p.expand()
-        c.setCurrentPosition(p2)
+        c.p = p2
         c.moveOutlineLeft()
         moved = c.p
         self.assertEqual(moved.h, 'A')
@@ -600,7 +600,7 @@ class TestNodes(LeoUnitTest):
         p4 = p.insertAsNthChild(2)
         p4.setHeadString('C')
         p.expand()
-        c.setCurrentPosition(p3)
+        c.p = p3
         c.moveOutlineRight()
         moved = c.p
         self.assertEqual(moved.h, 'B')
@@ -622,7 +622,7 @@ class TestNodes(LeoUnitTest):
         p5 = p.insertAsNthChild(3)
         p5.setHeadString('D')
         p.expand()
-        c.setCurrentPosition(p4)
+        c.p = p4
         c.moveOutlineUp()
         moved = c.p
         self.assertEqual(moved.h, 'C')
@@ -678,7 +678,7 @@ class TestNodes(LeoUnitTest):
         p.expand()
         p6 = p.insertAsNthChild(2)
         p6.setHeadString('C')
-        c.setCurrentPosition(p3)
+        c.p = p3
         c.promote()
         p = c.p
         self.assertEqual(p, p3)

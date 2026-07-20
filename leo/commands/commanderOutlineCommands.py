@@ -1057,8 +1057,7 @@ def dehoist(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
         p.expand()
     else:
         p.contract()
-    c.setCurrentPosition(p)
-    c.redraw()
+    c.redraw(p)
     c.frame.clearStatusLine()
     c.frame.putStatusLine("De-Hoist: " + p.h)
     g.doHook('hoist-changed', c=c)
@@ -1115,7 +1114,7 @@ def clone(self: Cmdr, event: LeoKeyEvent | None = None) -> Position | None:
         c.treeWantsFocus()
         return clone  # For mod_labels and chapters plugins.
     clone.doDelete()
-    c.setCurrentPosition(p)
+    c.p = p
     return None
 
 
@@ -1168,7 +1167,7 @@ def cloneToAtSpot(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
         clone.doDelete()
         if created_last_spot:
             last_spot.doDelete()
-        c.setCurrentPosition(p)  # This method does not change p.
+        c.p = p
 
 
 # @+node:ekr.20141023154408.5: *3* c_oc.cloneToLastNode

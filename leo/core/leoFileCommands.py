@@ -1184,7 +1184,7 @@ class FileCommands:
         c.frame.setTopGeometry(w, h, x, y)
         c.frame.resizePanesToRatio(r1, r2)
         p = fc.decodePosition(encp)
-        c.setCurrentPosition(p)
+        c.p = p
         return rootChildren[0]
 
     # @+node:vitalije.20170815162307.1: *6* fc.initNewDb
@@ -1389,7 +1389,7 @@ class FileCommands:
             current = c.archivedPositionToPosition(str_pos)
         if not c.positionExists(current):  # #4789.
             current = c.rootPosition()
-        c.setCurrentPosition(current)
+        c.p = current
 
     # @+node:ekr.20031218072017.3032: *3* fc: Writing
     # @+node:ekr.20070413045221.2: *4* fc: Writing save*
