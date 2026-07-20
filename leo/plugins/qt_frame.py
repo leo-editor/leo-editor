@@ -539,7 +539,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             def keyPress(self, event: LeoKeyEvent) -> bool:
                 s = event.text()
                 w = self.w
-                if out := s and s in '\t\r\n':
+                if s and s in '\t\r\n':
                     # Move focus to next widget.
                     if s == '\t':
                         if self.next_w:
@@ -3483,13 +3483,13 @@ class LeoQtSpellTab:
     # @+node:ekr.20110605121601.18391: *4* LeoQtSpellTab.onChangeButton & onChangeThenFindButton
     def onChangeButton(self, event: QEvent | None = None) -> None:
         """Handle a click in the Change button in the Spell tab."""
-        if state := self.updateButtons():
+        if self.updateButtons():
             self.handler.change()
         self.updateButtons()
 
     def onChangeThenFindButton(self, event: QEvent | None = None) -> None:
         """Handle a click in the "Change, Find" button in the Spell tab."""
-        if state := self.updateButtons():
+        if self.updateButtons():
             self.handler.change()
             if self.handler.change():
                 self.handler.find()

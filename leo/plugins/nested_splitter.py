@@ -634,7 +634,7 @@ class NestedSplitter(QtWidgets.QSplitter):
         """find a provider to provide a context menu service, and do it"""
         for provider in self.root.providers:
             if hasattr(provider, 'ns_do_context'):
-                if provided := provider.ns_do_context(id_, self, index):
+                if provider.ns_do_context(id_, self, index):
                     break
 
     # @+node:ekr.20110605121601.17973: *3* ns.contains
