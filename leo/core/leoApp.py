@@ -3163,7 +3163,7 @@ class LoadManager:
             file_name = g.finalize(fn) if fn else ''
             if c := self.openWithFileNameHelper(file_name, gui, old_c):
                 if not c.positionExists(c.p):
-                    c.p = c.rootPosition()
+                    c.setCurrentPosition(c.rootPosition())
                 return c
         except Exception as e:
             g.trace(f"Unexpected exception: {e} opening {file_name!r}")
