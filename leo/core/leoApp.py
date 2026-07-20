@@ -1913,7 +1913,7 @@ class LoadManager:
         # Make --theme and theme-name setting do the same thing for "None"
         if fn.lower().strip() == 'none':
             return LoadManager.LM_NOTHEME_FLAG
-        if not fn.endswith('.leo'):
+        if not fn.endswith(('.leo', '.leojs')):
             fn += '.leo'
         for directory in self.computeThemeDirectories():
             path = g.os_path_join(directory, fn)  # Normalizes slashes, etc.
@@ -3247,7 +3247,7 @@ class LoadManager:
         """
         if not fn:
             return False
-        return zipfile.is_zipfile(fn) or fn.endswith(('.leo', 'db', '.leojs'))
+        return zipfile.is_zipfile(fn) or fn.endswith(('.leo', '.db', '.leojs'))
 
     def isZippedFile(self, fn: str) -> bool:
         """Return True if fn is a zipped file."""
@@ -3390,7 +3390,7 @@ class LoadManager:
             p = c.rootPosition()
             # Create an empty @edit node unless fn is an .leo file.
             # Fix #1070: Use "newHeadline", not fn.
-            p.h = "newHeadline" if fn.endswith('.leo') else f"@edit {fn}"
+            p.h = "newHeadline" if fn.endswith(('.leo', '.leojs')) else f"@edit {fn}"
             c.selectPosition(p)
             c.redraw()
         elif c.looksLikeDerivedFile(fn):
