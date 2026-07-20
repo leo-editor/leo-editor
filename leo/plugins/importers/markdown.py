@@ -80,8 +80,7 @@ class Markdown_Importer(Importer):
         """
         if m := self.md_hash_pattern.match(line):
             level = len(m.group(1))
-            name = m.group(2).strip()
-            if name:
+            if name := m.group(2).strip():
                 return level, name
         return None, None
 
