@@ -364,8 +364,7 @@ class LeoQtGui(leoGui.LeoGui):
         # @-<< define the callbacks for b >>
         b.configure(command=executeScriptCallback)
         if shortcut:
-            ok = k.bindKey('button', shortcut, executeScriptCallback, buttonText)
-            if ok:
+            if k.bindKey('button', shortcut, executeScriptCallback, buttonText):
                 g.blue(f"bound @button {buttonText} to: {shortcut}")
 
         # #1121: create press-buttonText-button command
@@ -452,8 +451,7 @@ class LeoQtGui(leoGui.LeoGui):
         except Exception:
             g.es_exception()
         if self.script:
-            log = g.app.log
-            if log:
+            if log := g.app.log:
                 g.pr('Start of batch script...\n')
                 log.c.executeScript(script=self.script)
                 g.pr('End of batch script')
@@ -466,8 +464,7 @@ class LeoQtGui(leoGui.LeoGui):
     # @+node:ekr.20180117053546.1: *3* LeoQtGui.show_tips & helpers
     @g.command('show-tips')
     def show_next_tip(self, event: LeoKeyEvent | None = None) -> None:
-        c = g.app.log and g.app.log.c
-        if c:
+        if c := g.app.log and g.app.log.c:
             g.app.gui.show_tips(c)
 
     # @+<< define DialogWithCheckBox >>
@@ -541,8 +538,7 @@ class LeoQtGui(leoGui.LeoGui):
     # @+node:ekr.20160917125946.1: *4* LeoQtGui.replaceClipboardWith
     def replaceClipboardWith(self, s: str) -> None:
         """Replace the clipboard with the string s."""
-        cb = self.qtApp.clipboard()
-        if cb:
+        if cb := self.qtApp.clipboard():
             # cb.clear()  # unnecessary, breaks on some Qt versions
             s = g.toUnicode(s)
             QtWidgets.QApplication.processEvents()
@@ -555,8 +551,7 @@ class LeoQtGui(leoGui.LeoGui):
     # @+node:ekr.20160917125948.1: *4* LeoQtGui.getTextFromClipboard
     def getTextFromClipboard(self) -> str:
         """Get a unicode string from the clipboard."""
-        cb = self.qtApp.clipboard()
-        if cb:
+        if cb := self.qtApp.clipboard():
             QtWidgets.QApplication.processEvents()
             return cb.text()
         g.trace('no clipboard!')
@@ -708,8 +703,7 @@ class LeoQtGui(leoGui.LeoGui):
         dialog = QtWidgets.QMessageBox(top_frame)
         ssm = g.app.gui.styleSheetManagerClass(c)
         w = ssm.get_master_widget()
-        sheet = w.styleSheet()
-        if sheet:
+        if sheet := w.styleSheet():
             dialog.setStyleSheet(sheet)
         dialog.setText(f"{version}\n{theCopyright}\n{url}\n{email}")
         dialog.setIcon(Icon.Information)
@@ -814,8 +808,7 @@ class LeoQtGui(leoGui.LeoGui):
         if c:
             ssm = g.app.gui.styleSheetManagerClass(c)
             w = ssm.get_master_widget()
-            sheet = w.styleSheet()
-            if sheet:
+            if sheet := w.styleSheet():
                 dialog.setStyleSheet(sheet)
             dialog.setStyleSheet(c.active_stylesheet)
             dialog.setWindowTitle(title)
@@ -849,8 +842,7 @@ class LeoQtGui(leoGui.LeoGui):
         dialog = QtWidgets.QInputDialog()
         ssm = g.app.gui.styleSheetManagerClass(c)
         w = ssm.get_master_widget()
-        sheet = w.styleSheet()
-        if sheet:
+        if sheet := w.styleSheet():
             dialog.setStyleSheet(sheet)
         dialog.setWindowTitle(title)
         dialog.setLabelText(message)
@@ -891,8 +883,7 @@ class LeoQtGui(leoGui.LeoGui):
         dialog = QtWidgets.QInputDialog()
         ssm = g.app.gui.styleSheetManagerClass(c)
         w = ssm.get_master_widget()
-        sheet = w.styleSheet()
-        if sheet:
+        if sheet := w.styleSheet():
             dialog.setStyleSheet(sheet)
         dialog.setWindowTitle(title)
         dialog.setLabelText(message)
@@ -1267,21 +1258,18 @@ class LeoQtGui(leoGui.LeoGui):
             )
             # @-<< no c error>>
         else:
-            retval = send()
-            if retval:
+            if retval := send():
                 return retval
             # @+<< load viewrendered plugin >>
             # @+node:ekr.20110605121601.18505: *5* << load viewrendered plugin >>
             pc = g.app.pluginsController
             # Load viewrendered (and call vr.onCreate) *only* if not already loaded.
             if not pc.isLoaded('viewrendered.py') and not pc.isLoaded('viewrendered3.py'):
-                vr = pc.loadOnePlugin('viewrendered.py')
-                if vr:
+                if vr := pc.loadOnePlugin('viewrendered.py'):
                     g.blue('viewrendered plugin loaded.')
                     vr.onCreate('tag', {'c': c})
             # @-<< load viewrendered plugin >>
-            retval = send()
-            if retval:
+            if retval := send():
                 return retval
             # @+<< no dialog error >>
             # @+node:ekr.20110605121601.18506: *5* << no dialog error >>
@@ -2015,8 +2003,7 @@ class StyleSheetManager:
         sheet = ""
         for name in selectors:
             # don't strip `#selector_name { ...` type syntax
-            sheet_data = c.config.getData(name, strip_comments=False)
-            if sheet_data:
+            if sheet_data := c.config.getData(name, strip_comments=False):
                 if '\n' in sheet_data[0]:
                     sheet = ''.join(sheet_data)
                 else:
@@ -2083,8 +2070,7 @@ class StyleSheetManager:
             passes = 10
             while passes and val and val.startswith('@'):
                 key = g.app.config.canonicalizeSettingName(val[1:])
-                val = settingsDict.get(key)
-                if val:
+                if val := settingsDict.get(key):
                     val = val.val
                 passes -= 1
             if deltas[delta] and (val is not None):

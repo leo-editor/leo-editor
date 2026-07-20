@@ -853,8 +853,7 @@ if QtWidgets:
             hsv_bg = bg.getHsv()
             v_fg = hsv_fg[2]
             v_bg = hsv_bg[2]
-            is_dark_on_light = v_fg < v_bg
-            if is_dark_on_light:
+            if is_dark_on_light := v_fg < v_bg:
                 hl = bg.darker(110)
             else:
                 if v_bg < 20:
@@ -1063,8 +1062,7 @@ if QtWidgets:
                     bg = palette.window().color()
                     hsv_fg = fg.getHsv()[2]
                     hsv_bg = bg.getHsv()[2]
-                    is_dark_on_light = hsv_fg < hsv_bg
-                    if is_dark_on_light:
+                    if is_dark_on_light := hsv_fg < hsv_bg:
                         fg = fg.lighter()
                     else:
                         fg = fg.darker()

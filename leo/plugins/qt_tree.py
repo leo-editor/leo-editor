@@ -444,13 +444,11 @@ class LeoQtTree(leoFrame.LeoTree):
         # #1310: Add a tool tip.
         item.setToolTip(0, p.h)
         if self.use_declutter:
-            icon = self.declutter_node(c, p.v, item)
-            if icon:
+            if icon := self.declutter_node(c, p.v, item):
                 item.setIcon(0, icon)
             return item
         # Draw the icon: **Slow**, but allows per-vnode icons.
-        icon = self.getCompositeIconImage(p.v)
-        if icon:
+        if icon := self.getCompositeIconImage(p.v):
             item.setIcon(0, icon)
         return item
 
@@ -641,8 +639,7 @@ class LeoQtTree(leoFrame.LeoTree):
         c = self.c
         try:
             self.busy = True
-            p = self.item2position(item)
-            if p:
+            if p := self.item2position(item):
                 auto_edit = self.prev_v == p.v  # #1049.
                 self.prev_v = p.v
                 event = None
@@ -784,8 +781,7 @@ class LeoQtTree(leoFrame.LeoTree):
     def getIcon(self, v: VNode) -> QIcon:
         """Return the proper icon for position p."""
         if self.use_declutter:
-            items = self.vnode2items(v)
-            if items:
+            if items := self.vnode2items(v):
                 return self.declutter_node(self.c, v, items[0])
         return self.getCompositeIconImage(v)
 
@@ -880,8 +876,7 @@ class LeoQtTree(leoFrame.LeoTree):
 
     # @+node:ekr.20110605121601.18415: *4* LeoQtTree.childIndexOfItem
     def childIndexOfItem(self, item: QTreeWidgetItem) -> int:
-        parent = item and item.parent()
-        if parent:
+        if parent := item and item.parent():
             n = parent.indexOfChild(item)
         else:
             w = self.treeWidget
@@ -961,8 +956,7 @@ class LeoQtTree(leoFrame.LeoTree):
         if self.use_declutter:
             item.setText(0, item._real_text)
         w.editItem(item)
-        e = w.itemWidget(item, 0)  # e is a QLineEdit
-        if e:
+        if e := w.itemWidget(item, 0):  # e is a QLineEdit
             e.setObjectName('headline')
         # Always do these!
         self.connectEditorWidget(e, item)
@@ -1138,10 +1132,8 @@ class LeoQtTree(leoFrame.LeoTree):
     # @+node:ekr.20110605121601.17908: *4* LeoQtTree.headline_wrapper
     def headline_wrapper(self, p: Position) -> QHeadlineWrapper:
         """Returns the edit widget (A QLineEdit) for position p."""
-        item = self.position2item(p)
-        if item:
-            e = self.getTreeEditorForItem(item)
-            if e:
+        if item := self.position2item(p):
+            if e := self.getTreeEditorForItem(item):
                 # Create a wrapper widget for Leo's core.
                 w = self.getWrapper(e, item)
                 return w
@@ -1166,8 +1158,7 @@ class LeoQtTree(leoFrame.LeoTree):
         # Do any scheduled redraw.
         # This won't do anything in the new redraw scheme.
         c.outerUpdate()
-        item = self.position2item(p)
-        if item:
+        if item := self.position2item(p):
             if self.use_declutter:
                 item.setText(0, item._real_text)
             e, wrapper = self.editLabelHelper(item, selectAll, selection)
@@ -1260,12 +1251,10 @@ class LeoQtTree(leoFrame.LeoTree):
             return
         # Don't do this here: the caller should do it.
         # p.setHeadString(s)
-        w = self.headline_wrapper(p)
-        if w:
+        if w := self.headline_wrapper(p):
             w.setAllText(s)
         else:
-            item = self.position2item(p)
-            if item:
+            if item := self.position2item(p):
                 self.setItemText(item, s)
 
     # @+node:ekr.20110605121601.17913: *4* LeoQtTree.setItemForCurrentPosition
@@ -1294,8 +1283,7 @@ class LeoQtTree(leoFrame.LeoTree):
 
     # @+node:ekr.20190613080606.1: *4* LeoQtTree.unselectItem
     def unselectItem(self, p: Position) -> None:
-        item = self.position2item(p)
-        if item:
+        if item := self.position2item(p):
             item.setSelected(False)
 
     # @-others

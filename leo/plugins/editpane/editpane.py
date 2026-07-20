@@ -358,8 +358,7 @@ class LeoEditPane(QtWidgets.QWidget):
     # @+node:tbrown.20171028115438.22: *3* close
     def close(self):
         """close - clean up"""
-        do_close = QtWidgets.QWidget.close(self)
-        if do_close:
+        if do_close := QtWidgets.QWidget.close(self):
             signal_manager.disconnect_all(self)
             for hook, handler in self.handlers:
                 g.unregisterHandler(hook, handler)
