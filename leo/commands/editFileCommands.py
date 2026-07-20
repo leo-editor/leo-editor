@@ -147,7 +147,6 @@ class ConvertAtRoot:
 
         # First, look in p's subtree.
         if section_p := self.find_section(p, section_name):
-            # Already defined in a good place.
             return section_p
 
         # Finally, look in the @unit tree.
