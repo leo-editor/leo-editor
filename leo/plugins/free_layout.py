@@ -254,11 +254,9 @@ class FreeLayoutController:
         if trace:
             g.trace(tag)
             g.printObj(keys, tag="keys")
-        layout = c.config.getData("free-layout-layout")
-        if layout:
+        if layout := c.config.getData("free-layout-layout"):
             layout = json.loads('\n'.join(layout))
-        name = c.db.get('_ns_layout')
-        if name:
+        if name := c.db.get('_ns_layout'):
             if reloading:
                 name = c.free_layout.original_layout
                 c.db['_ns_layout'] = name
@@ -276,8 +274,7 @@ class FreeLayoutController:
             for name in sorted(d.keys()):
 
                 def func(event: LeoKeyEvent) -> None:
-                    layout = d.get(name)
-                    if layout:
+                    if layout := d.get(name):
                         c.free_layout.get_top_splitter().load_layout(c, layout)
                     else:
                         g.trace('no layout', name)
@@ -287,8 +284,7 @@ class FreeLayoutController:
                 c.k.registerCommand(commandName, func)
         # Careful: we could be unit testing or in the Leo bridge.
         if layout:
-            splitter = c.free_layout.get_top_splitter()
-            if splitter:
+            if splitter := c.free_layout.get_top_splitter():
                 splitter.load_layout(c, layout)
 
     # @+node:tbrown.20110628083641.11730: *3* flc.ns_context
@@ -297,8 +293,7 @@ class FreeLayoutController:
             ('Embed layout', '_fl_embed_layout'),
             ('Save layout', '_fl_save_layout'),
         ]
-        d = g.app.db.get('ns_layouts', {})
-        if d:
+        if d := g.app.db.get('ns_layouts', {}):
             ans.append({'Load layout': [(k, '_fl_load_layout:' + k) for k in d]})
             ans.append({'Delete layout': [(k, '_fl_delete_layout:' + k) for k in d]})
             ans.append(('Forget layout', '_fl_forget_layout:'))
@@ -385,8 +380,7 @@ class FreeLayoutController:
             return 'USE_EXISTING'
         if id_.startswith('_leo_pane:'):
             id_ = id_.split(':', 1)[1]
-            w = self.get_top_splitter().find_child(QtWidgets.QWidget, id_)
-            if w:
+            if w := self.get_top_splitter().find_child(QtWidgets.QWidget, id_):
                 w.setHidden(False)  # may be from Tab holder
                 w.setMinimumSize(20, 20)
             return w
@@ -473,8 +467,7 @@ def free_layout_restore(event: LeoKeyEvent | None = None) -> None:
     """
     Restore layout outline had when it was loaded.
     """
-    c = event.get('c') if event else None
-    if c:
+    if c := event.get('c') if event else None:
         c.free_layout.loadLayouts('reload', {'c': c}, reloading=True)
 
 
@@ -497,8 +490,7 @@ def free_layout_load(event: LeoKeyEvent | None = None) -> None:
     c.db['_ns_layout'] = name
     # layout = g.app.db['ns_layouts'][name]
     layouts = g.app.db.get('ns_layouts', {})
-    layout = layouts.get(name)
-    if layout:
+    if layout := layouts.get(name):
         c.free_layout.get_top_splitter().load_layout(c, layout)
 
 
@@ -506,8 +498,7 @@ def free_layout_load(event: LeoKeyEvent | None = None) -> None:
 @g.command('free-layout-zoom')
 def free_layout_zoom(event: LeoKeyEvent | None = None) -> None:
     """(un)zoom the current pane."""
-    c = event.get('c') if event else None
-    if c:
+    if c := event.get('c') if event else None:
         c.free_layout.get_top_splitter().zoom_toggle()
 
 
@@ -515,8 +506,7 @@ def free_layout_zoom(event: LeoKeyEvent | None = None) -> None:
 def register_provider(c: Cmdr, provider_instance: object) -> None:
     """Register the provider instance with the top splitter."""
     if getattr(c, 'free_layout', None):
-        splitter = c.free_layout.get_top_splitter()
-        if splitter:
+        if splitter := c.free_layout.get_top_splitter():
             splitter.register_provider(provider_instance)
 
 

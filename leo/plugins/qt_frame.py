@@ -465,8 +465,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             (5, 2, 'replace-all'),        # 'changeAllButton',
         )  # fmt: skip
         for row2, col, cmd_name in table:
-            stroke = k.getStrokeForCommandName(cmd_name)
-            if stroke:
+            if stroke := k.getStrokeForCommandName(cmd_name):
                 label = f"{cmd_name}:  {k.prettyPrintKey(stroke)}"
             else:
                 label = cmd_name
@@ -532,8 +531,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
                     'keyboard-quit',  # Might as well :-)
                 )
                 for cmd_name in table:
-                    stroke = c.k.getStrokeForCommandName(cmd_name)
-                    if stroke:
+                    if stroke := c.k.getStrokeForCommandName(cmd_name):
                         d[stroke.s] = cmd_name
                 return d
 
@@ -541,8 +539,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             def keyPress(self, event: LeoKeyEvent) -> bool:
                 s = event.text()
                 w = self.w
-                out = s and s in '\t\r\n'
-                if out:
+                if out := s and s in '\t\r\n':
                     # Move focus to next widget.
                     if s == '\t':
                         if self.next_w:
@@ -757,9 +754,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         c = self.leo_c
         w = LeoQTreeWidget(c, parent)
         self.set_widget_size_policy(w)
-        # 12/01/07: add new config setting.
-        multiple_selection = c.config.getBool('qt-tree-multiple-selection', default=True)
-        if multiple_selection:
+        if c.config.getBool('qt-tree-multiple-selection', default=True):
             w.setSelectionMode(SelectionMode.ExtendedSelection)
             w.setSelectionBehavior(SelectionBehavior.SelectRows)
         else:
@@ -782,8 +777,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         if c.inCommand:
             c.requestCloseWindow = True
             return
-        ok = g.app.closeLeoWindow(c.frame)
-        if ok:
+        if g.app.closeLeoWindow(c.frame):
             event.accept()
         else:
             event.ignore()
@@ -842,8 +836,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         # Pack.
         vLayout = self.createVLayout(page2, 'bodyVLayout', spacing=0)
         grid = self.createGrid(bodyFrame, 'bodyGrid')
-        innerGrid = self.createGrid(innerFrame, 'bodyInnerGrid')
-        if self.use_gutter:
+        if innerGrid := self.createGrid(innerFrame, 'bodyInnerGrid'):
             lineWidget = qt_text.LeoLineTextWidget(c, body)
             vLayout.addWidget(lineWidget)
         else:
@@ -890,8 +883,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         where_s = self.toolbar_orientation
         if not where_s:
             where_s = 'top'
-        where = d.get(where_s.lower())
-        if where:
+        if where := d.get(where_s.lower()):
             self.addToolBar(where, self.iconBar)
 
     # @+node:ekr.20110605121601.18145: *4* dw.createLogPane & helpers
@@ -1572,8 +1564,7 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
         self.detached.append((name, w))
         self.factory.detachTab(w)
         icon = g.app.gui.getImageFinder("application-x-leo-outline.png")
-        icon = QtGui.QIcon(icon)
-        if icon:
+        if icon := QtGui.QIcon(icon):
             w.window().setWindowIcon(icon)
         c = w.leo_c
         if c.styleSheetManager:
@@ -1688,8 +1679,7 @@ class LeoQtBody(leoFrame.LeoBody):
         """Set the actual gui widget."""
         c = self.c
         top = c.frame.top
-        sw = getattr(top, 'stackedWidget', None)
-        if sw:
+        if sw := getattr(top, 'stackedWidget', None):
             sw.setCurrentIndex(1)
         if self.useScintilla and not Qsci:
             g.trace('Can not import Qsci: ignoring @bool qt-use-scintilla')
@@ -1996,16 +1986,14 @@ class LeoQtFrame(leoFrame.LeoFrame):
         """Divide the main splitter."""
         gui = g.app.gui
         c = self.c
-        w = gui.find_widget_by_name(c, 'main_splitter')
-        if w:
+        if w := gui.find_widget_by_name(c, 'main_splitter'):
             self.divideAnySplitter(frac, w)
 
     def divideLeoSplitter2(self, frac: float) -> None:
         """Divide the secondary splitter."""
         gui = g.app.gui
         c = self.c
-        w = gui.find_widget_by_name(c, 'secondary_splitter')
-        if w:
+        if w := gui.find_widget_by_name(c, 'secondary_splitter'):
             self.divideAnySplitter(frac, w)
 
     # @+node:ekr.20110605121601.18284: *4* LeoQtFrame.divideAnySplitter
@@ -2033,8 +2021,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
     # Returns True if the close happened.
 
     def OnCloseLeoEvent(self) -> None:
-        f = self
-        c = f.c
+        c = self.c
         if c.inCommand:
             c.requestCloseWindow = True
         else:
@@ -2319,8 +2306,7 @@ class LeoQtLog(leoFrame.LeoLog):
     def clearLog(self, event: LeoKeyEvent | None = None) -> None:
         """Clear the log pane."""
         # self.logCtrl may be either a wrapper or a widget.
-        w = self.logCtrl.widget
-        if w:
+        if w := self.logCtrl.widget:
             w.clear()
 
     @log_cmd('dump-log')
@@ -2545,8 +2531,7 @@ class LeoQtLog(leoFrame.LeoLog):
     # @+node:ekr.20110605121601.18324: *3* LeoQtLog: Tab
     # @+node:ekr.20110605121601.18325: *4* LeoQtLog.clearTab
     def clearTab(self, tabName: str, wrap: str = 'none') -> None:
-        w = self.logDict.get(tabName)
-        if w:
+        if w := self.logDict.get(tabName):
             w.clear()  # w is a QTextBrowser.
 
     # @+node:ekr.20110605121601.18326: *4* LeoQtLog.createTab
@@ -2833,8 +2818,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
             parent.addMenu(menu)
         else:
             self.menuBar.addMenu(menu)
-        action = menu.menuAction()
-        if action:
+        if action := menu.menuAction():
             action.leo_menu_label = label
         else:
             g.trace('no action for menu', label)
@@ -2926,8 +2910,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
     def activateMenu(self, menuName: str) -> None:
         """Activate the menu with the given name"""
         # Menu is a QtMenuWrapper, a subclass of both QMenu and LeoQtMenu.
-        menu = self.getMenu(menuName)
-        if menu:
+        if menu := self.getMenu(menuName):
             self.activateAllParentMenus(menu)
         else:
             g.trace(f"No such menu: {menuName}")
@@ -2936,8 +2919,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
     def activateAllParentMenus(self, menu: QObject) -> None:
         """menu is a QtMenuWrapper.  Activate it and all parent menus."""
         parent = menu.parent()
-        action = menu.menuAction()
-        if action:
+        if action := menu.menuAction():
             if parent and isinstance(parent, QtWidgets.QMenuBar):
                 parent.setActiveAction(action)
             elif parent:
@@ -3033,8 +3015,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         c, tree = self.c, self.c.frame.tree
         p = None
         point = ev.position().toPoint()
-        item = self.itemAt(point)
-        if item:
+        if item := self.itemAt(point):
             itemHash = tree.itemHash(item)
             p = tree.item2positionDict.get(itemHash)
         if not p:
@@ -3045,8 +3026,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         formats = set(str(f) for f in md.formats())
         ev.setDropAction(DropAction.IgnoreAction)
         ev.accept()
-        hookres = g.doHook("outlinedrop", c=c, p=p, dropevent=ev, formats=formats)
-        if hookres:
+        if g.doHook("outlinedrop", c=c, p=p, dropevent=ev, formats=formats):
             # A plugin handled the drop.
             pass
         else:
