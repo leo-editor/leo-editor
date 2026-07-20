@@ -502,8 +502,8 @@ class Chapter:
             p = c.hoistStack[-1].p
             # Careful: c.selectPosition would pop the hoist stack.
             c.p = p
-        else:
-            c.p = root or c.p
+        elif root:
+            c.p = root
 
     # @-others
 
