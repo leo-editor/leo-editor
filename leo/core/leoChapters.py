@@ -450,7 +450,7 @@ class Chapter:
                 u.afterInsertNode(self.p, 'Insert Node', bunch)
         c.hoistStack.append(g.Bunch(p=root.copy(), expanded=True))
         # Careful: c.selectPosition would pop the hoist stack.
-        c.setCurrentPosition(p)
+        c.p = p
         g.doHook('hoist-changed', c=c)
 
     # @+node:ekr.20070317131708: *4* chapter.findPositionInChapter
@@ -501,10 +501,9 @@ class Chapter:
         if c.hoistStack:
             p = c.hoistStack[-1].p
             # Careful: c.selectPosition would pop the hoist stack.
-            c.setCurrentPosition(p)
-        else:
-            p = root or c.p
-            c.setCurrentPosition(p)
+            c.p = p
+        elif root:
+            c.p = root
 
     # @-others
 
