@@ -2193,7 +2193,7 @@ class Commands:
         p = Position(v, n, stack)
         return p
 
-    # @+node:ekr.20090130135126.1: *4* c.Properties
+    # @+node:ekr.20090130135126.1: *4* c.p property
     def __get_p(self) -> Position:
         c = self
         return c.currentPosition()
@@ -4502,7 +4502,7 @@ class Commands:
             return
         if not c.positionExists(p):
             g.trace(f"Invalid position: {p!r} in {c.shortFileName()}\n{g.callers(10)=}")
-            c.setCurrentPosition(c.rootPosition())
+            c.p = c.rootPosition()
             return
         c.requestLaterRedraw = False
         c.expandAllAncestors(p)
@@ -5220,7 +5220,7 @@ class Commands:
         c.frame.tree.select(p)
         # Do *not* test whether the position exists!
         # We may be in the midst of an undo.
-        c.setCurrentPosition(p)
+        c.p = p
 
     # Compatibility, but confusing.
 

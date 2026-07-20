@@ -1580,7 +1580,7 @@ class Undoer:
             v.parents.remove(parent_v)
             v.parents.append(u.p.v)
         u.p.setDirty()
-        c.setCurrentPosition(u.p)
+        c.p = u.p
 
     # @+node:ekr.20050318085432.6: *4* u.redoGroup
     def redoGroup(self) -> None:
@@ -1746,7 +1746,7 @@ class Undoer:
             child.parents.remove(u.p.v)
             child.parents.append(parent_v)
         u.p.setDirty()
-        c.setCurrentPosition(u.p)
+        c.p = u.p
 
     # @+node:ekr.20080425060424.4: *4* u.redoSort
     def redoSort(self) -> None:
@@ -1763,7 +1763,7 @@ class Undoer:
                     p._childIndex = i
                     break
         p.setAllAncestorAtFileNodesDirty()
-        c.setCurrentPosition(p)
+        c.p = p
 
     # @+node:EKR.20040526075238.5: *4* u.redoTyping
     def redoTyping(self) -> None:
@@ -1979,7 +1979,7 @@ class Undoer:
             sib.parents.remove(u.p.v)
             sib.parents.append(parent_v)
         u.p.setAllAncestorAtFileNodesDirty()
-        c.setCurrentPosition(u.p)
+        c.p = u.p
 
     # @+node:ekr.20050318085713: *4* u.undoGroup
     def undoGroup(self) -> None:
@@ -2176,7 +2176,7 @@ class Undoer:
             child.parents.remove(parent_v)
             child.parents.append(u.p.v)
         u.p.setAllAncestorAtFileNodesDirty()
-        c.setCurrentPosition(u.p)
+        c.p = u.p
 
     # @+node:ekr.20031218072017.1493: *4* u.undoRedoText
     def undoRedoText(
@@ -2242,7 +2242,7 @@ class Undoer:
                     p._childIndex = i
                     break
         p.setAllAncestorAtFileNodesDirty()
-        c.setCurrentPosition(p)
+        c.p = p
 
     # @+node:EKR.20040526090701.4: *4* u.undoTyping
     def undoTyping(self) -> None:
@@ -2280,12 +2280,7 @@ class Undoer:
         c, u = self.c, self
         w = c.frame.body.wrapper
 
-        # Set the new position.
-        if 0:  # Don't do this: it interferes with selection ranges.
-            # This strange code forces a recomputation of the root position.
-            c.selectPosition(c.p)
-        else:
-            c.setCurrentPosition(c.p)
+        # PR #4809. c.p has already been set.
 
         # # 1451. *Always* set the changed bit.
         # Redrawing *must* be done here before setting u.undoing to False.

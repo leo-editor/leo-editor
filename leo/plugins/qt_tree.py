@@ -184,7 +184,7 @@ class LeoQtTree(leoFrame.LeoTree):
             # #875323: Make sure the current position is visible.
             p = p.firstChild()
             c.frame.tree.select(p)
-        c.setCurrentPosition(p)
+        c.p = p
         assert not self.busy, g.callers()
         self.redrawCount += 1
         self.initData()
