@@ -1956,8 +1956,7 @@ class Position:
         use p.v.b instead of p.b.
         """
         p = self
-        c = p.v and p.v.context
-        if c:
+        if c := p.v and p.v.context:
             c.setBodyString(p, val)
             # Warning: c.setBodyString is *expensive*.
 
@@ -1984,8 +1983,7 @@ class Position:
         use p.v.h instead of p.h.
         """
         p = self
-        c = p.v and p.v.context
-        if c:
+        if c := p.v and p.v.context:
             c.setHeadString(p, val)
             # Warning: c.setHeadString is *expensive*.
 

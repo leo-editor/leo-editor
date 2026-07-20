@@ -255,8 +255,7 @@ class PersistenceDataController:
         self.at_persistence = self.find_at_persistence_node()
         if not self.at_persistence:
             return None
-        p = self.has_at_data_node(root)
-        if p:
+        if p := self.has_at_data_node(root):
             return p
         p = self.at_persistence.insertAsLastChild()
         if not p:  # #2103
@@ -275,8 +274,7 @@ class PersistenceDataController:
         if not self.at_persistence:
             return None
         data = self.find_at_data_node(root)
-        p = g.findNodeInTree(self.c, data, h)
-        if p:
+        if p := g.findNodeInTree(self.c, data, h):
             return p
         p = data.insertAsLastChild()
         if p:  # #2103

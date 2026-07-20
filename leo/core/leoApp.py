@@ -3923,8 +3923,7 @@ class RecentFilesManager:
 @g.command('ctrl-click-at-cursor')
 def ctrlClickAtCursor(event: LeoKeyEvent | None = None) -> None:
     """Simulate a control-click at the cursor."""
-    c = event.get('c') if event else None
-    if c:
+    if event and event.get('c'):
         g.openUrlOnClick(event)
 
 
@@ -3941,8 +3940,7 @@ def demangle_recent_files_command(event: LeoKeyEvent | None = None) -> None:
 
     The default setting specifies no patterns.
     """
-    c = event and event.get('c')
-    if c:
+    if c := event and event.get('c'):
         if data := c.config.getData('path-demangle'):
             g.app.recentFilesManager.demangleRecentFiles(c, data)
         else:
@@ -3977,8 +3975,7 @@ def openUrl(event: LeoKeyEvent | None = None) -> None:
     Use the headline if it contains a valid url.
     Otherwise, look *only* at the first line of the body.
     """
-    c = event.get('c') if event else None
-    if c:
+    if c := event.get('c') if event else None:
         g.openUrl(c.p)
 
 

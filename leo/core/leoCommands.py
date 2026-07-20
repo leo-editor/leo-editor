@@ -1472,8 +1472,7 @@ class Commands:
     # @+node:ekr.20260619021703.1: *4* @cmd redraw (c.redraw_command)
     @cmd('redraw')
     def redraw_command(self, event: LeoKeyEvent | None = None) -> None:
-        c = event.get('c') if event else None
-        if c:
+        if c := event.get('c') if event else None:
             c.redraw()
 
     # @+node:ekr.20171124100654.1: *3* c.API
@@ -5119,8 +5118,7 @@ class Commands:
     def endEditing(self) -> None:
         """End the editing of a headline."""
         c = self
-        p = c.p
-        if p:
+        if c.p:
             c.frame.tree.endEditLabel()
 
     # @+node:ville.20090525205736.12325: *5* c.getSelectedPositions

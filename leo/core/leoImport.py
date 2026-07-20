@@ -2702,8 +2702,7 @@ class LegacyImportNode:
 @g.command('import-free-mind-files')
 def import_free_mind_files(event: LeoKeyEvent | None = None) -> None:
     """Prompt for free-mind files and import them."""
-    c = event.get('c') if event else None
-    if c:
+    if c := event.get('c') if event else None:
         FreeMindImporter(c).prompt_for_files()
 
 
@@ -2711,8 +2710,7 @@ def import_free_mind_files(event: LeoKeyEvent | None = None) -> None:
 @g.command('import-legacy-external-files')
 def import_legacy_external_files(event: LeoKeyEvent | None = None) -> None:
     """Prompt for legacy external files and import them."""
-    c = event.get('c') if event else None
-    if c:
+    if c := event.get('c') if event else None:
         LegacyExternalFileImporter(c).prompt_for_files()
 
 
@@ -2720,8 +2718,7 @@ def import_legacy_external_files(event: LeoKeyEvent | None = None) -> None:
 @g.command('import-mind-jet-files')
 def import_mind_jet_files(event: LeoKeyEvent | None = None) -> None:
     """Prompt for mind-jet files and import them."""
-    c = event.get('c') if event else None
-    if c:
+    if c := event.get('c') if event else None:
         MindMapImporter(c).prompt_for_files()
 
 
@@ -2729,8 +2726,7 @@ def import_mind_jet_files(event: LeoKeyEvent | None = None) -> None:
 @g.command('import-MORE-files')
 def import_MORE_files_command(event: LeoKeyEvent | None = None) -> None:
     """Prompt for MORE files and import them."""
-    c = event.get('c') if event else None
-    if c:
+    if c := event.get('c') if event else None:
         MORE_Importer(c).prompt_for_files()
 
 
@@ -2738,8 +2734,7 @@ def import_MORE_files_command(event: LeoKeyEvent | None = None) -> None:
 @g.command('import-tabbed-files')
 def import_tabbed_files_command(event: LeoKeyEvent | None = None) -> None:
     """Prompt for tabbed files and import them."""
-    c = event.get('c') if event else None
-    if c:
+    if c := event.get('c') if event else None:
         TabImporter(c).prompt_for_files()
 
 
@@ -2747,8 +2742,7 @@ def import_tabbed_files_command(event: LeoKeyEvent | None = None) -> None:
 @g.command('import-todo-text-files')
 def import_todo_text_files(event: LeoKeyEvent | None = None) -> None:
     """Prompt for free-mind files and import them."""
-    c = event.get('c') if event else None
-    if c:
+    if c := event.get('c') if event else None:
         ToDoImporter(c).prompt_for_files()
 
 
@@ -2767,8 +2761,7 @@ def import_zim_command(event: LeoKeyEvent | None = None) -> None:
         @string zim_node_name
         @string path_to_zim
     """
-    c = event.get('c') if event else None
-    if c:
+    if c := event.get('c') if event else None:
         ZimImportController(c).run()
 
 

@@ -35,8 +35,7 @@ if TYPE_CHECKING:  # pragma: no cover
 @g.command('pretty-print-c')
 def beautifyCCode(event: LeoKeyEvent | None = None) -> None:
     """Beautify all C code in the selected tree."""
-    c = event.get('c') if event else None
-    if c:
+    if c := event.get('c') if event else None:
         CPrettyPrinter(c).pretty_print_tree(c.p)
 
 
