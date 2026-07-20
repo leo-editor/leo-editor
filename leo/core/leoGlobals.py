@@ -8553,7 +8553,7 @@ def handleUrlHelper(url: str, c: Cmdr, p: Position) -> None:  # pragma: no cover
         leo_path = leo_path[:-1]
     if leo_path.endswith('/'):
         leo_path = leo_path[:-1]
-    if parsed.scheme == 'file' and leo_path.endswith('.leo'):
+    if parsed.scheme == 'file' and leo_path.endswith(('.leo', '.leojs')):
         g.handleUnl(original_url, c)
     elif parsed.scheme in ('', 'file'):
         unquote_path = g.unquoteUrl(leo_path)

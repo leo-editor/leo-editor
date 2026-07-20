@@ -3715,6 +3715,8 @@ class Commands:
         if useTimeStamp:
             if base.endswith('.leo'):
                 base = base[:-4]
+            if base.endswith('.leojs'):
+                base = base[:-6]
             stamp = time.strftime("%Y%m%d-%H%M%S")
             branch = prefix + '-' if prefix else ''
             fn = f"{branch}{base}-{stamp}.leo"
