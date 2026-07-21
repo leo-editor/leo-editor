@@ -833,8 +833,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 "double",
                 "float",
             ]
-            aList = c.config.getData('c-to-python-ivars-dict')
-            if aList:
+            if aList := c.config.getData('c-to-python-ivars-dict'):
                 self.ivars_dict = self.parse_ivars_data(aList)
             else:
                 self.ivars_dict = {}

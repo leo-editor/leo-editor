@@ -60,8 +60,7 @@ class BaseSpellWrapper:
         # Make the directories as needed.
         if not fn:
             return
-        theDir = g.os_path_dirname(fn)
-        if theDir:
+        if theDir := g.os_path_dirname(fn):
             ok = g.makeAllNonExistentDirectories(theDir)
             # #1453: Don't assume the directory exists.
             if not ok:
@@ -119,8 +118,7 @@ class BaseSpellWrapper:
                 if not d.check(word2) and not d.check(word2.lower()):
                     return d.suggest(word)
             return None
-        words = g.unCamel(word)
-        if words:
+        if words := g.unCamel(word):
             for word2 in words:
                 if not d.check(word2) and not d.check(word2.lower()):
                     return d.suggest(word)
@@ -388,8 +386,7 @@ class EnchantWrapper(BaseSpellWrapper):
     def init_language(self) -> None:
         """Init self.language."""
         c = self.c
-        language = g.checkUnicode(c.config.getString('enchant-language'))
-        if language:
+        if language := g.checkUnicode(c.config.getString('enchant-language')):
             try:
                 enchant.dict_exists(language)
             except AttributeError:
@@ -561,12 +558,10 @@ class SpellCommandsClass(BaseEditCommandsClass):
             txt = w.getAllText()
             i = w.getInsertPoint()
             word = txt[:i].rsplit(None, 1)[-1]
-            word = ''.join(i if i.isalpha() else ' ' for i in word).split()
-            if word:
+            if word := ''.join(i if i.isalpha() else ' ' for i in word).split():
                 word = word[-1]
                 ec = c.spellCommands.handler.spellController
-                suggests = ec.process_word(word)
-                if suggests:
+                if suggests := ec.process_word(word):
                     spell_ok = False
                     g.es(
                         ' '.join(suggests[:5]) + ('...' if len(suggests) > 5 else ''),
@@ -659,8 +654,7 @@ class SpellTabHandler:
     def add(self, event: LeoKeyEvent | None = None) -> None:
         """Add the selected suggestion to the dictionary."""
         if self.loaded:
-            w = self.currentWord
-            if w:
+            if w := self.currentWord:
                 self.spellController.add(w)
                 self.tab.onFindButton()
 
@@ -671,8 +665,7 @@ class SpellTabHandler:
             return False
         c, p, u = self.c, self.c.p, self.c.undoer
         w = c.frame.body.wrapper
-        selection = self.tab.getSuggestion()
-        if selection:
+        if selection := self.tab.getSuggestion():
             bunch = u.beforeChangeBody(p)
             # Use getattr to keep pylint happy.
             i = getattr(self.tab, 'change_i', None)
@@ -806,8 +799,7 @@ class SpellTabHandler:
 
                     # Look up the alternate word if the word was not found.
                     if alts and alt_word:
-                        alts2 = sc.process_word(alt_word)
-                        if alts2:
+                        if alts2 := sc.process_word(alt_word):
                             # Add the top three *new* suggestions to the top of alts.
                             new_alts = [
                                 alts2[i]
@@ -877,8 +869,7 @@ class SpellTabHandler:
     def ignore(self, event: LeoKeyEvent | None = None) -> None:
         """Ignore the incorrect word for the duration of this spell check session."""
         if self.loaded:
-            w = self.currentWord
-            if w:
+            if w := self.currentWord:
                 self.spellController.ignore(w)
                 self.tab.onFindButton()
 
@@ -888,8 +879,7 @@ class SpellTabHandler:
 # @+node:ekr.20180209141207.1: ** @g.command('show-spell-info')
 @g.command('show-spell-info')
 def show_spell_info(event: LeoKeyEvent | None = None) -> None:
-    c = event.get('c') if event else None
-    if c:
+    if c := event.get('c') if event else None:
         c.spellCommands.handler.spellController.show_info()
 
 
@@ -902,8 +892,7 @@ def clean_main_spell_dict(event: LeoKeyEvent | None = None) -> None:
 
     This command works regardless of the spell checker being used.
     """
-    c = event.get('c') if event else None
-    if c:
+    if c := event.get('c') if event else None:
         DefaultWrapper(c).save_main_dict(trace=True)
 
 
@@ -916,8 +905,7 @@ def clean_user_spell_dict(event: LeoKeyEvent | None = None) -> None:
 
     This command works regardless of the spell checker being used.
     """
-    c = event.get('c') if event else None
-    if c:
+    if c := event.get('c') if event else None:
         DefaultWrapper(c).save_user_dict(trace=True)
 
 

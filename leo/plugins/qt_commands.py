@@ -213,8 +213,7 @@ def showFonts(self: Any, event: LeoKeyEvent | None = None) -> None:
 @g.command('show-style-sheet')
 def print_style_sheet(event: LeoKeyEvent | None = None) -> None:
     """show-style-sheet command."""
-    c = event.get('c') if event else None
-    if c:
+    if c := event.get('c') if event else None:
         c.styleSheetManager.print_style_sheet()
 
 
@@ -238,8 +237,7 @@ def style_reload(event: LeoKeyEvent | None = None) -> None:
 @g.command('style-set-selected')
 def style_set_selected(event: LeoKeyEvent | None = None) -> None:
     """style-set-selected command. Set the global stylesheet to c.p.b. (For testing)"""
-    c = event.get('c') if event else None
-    if c:
+    if c := event.get('c') if event else None:
         c.styleSheetManager.set_selected_style_sheet()
 
 

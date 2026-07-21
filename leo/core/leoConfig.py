@@ -423,8 +423,8 @@ class ParserBaseClass:
             targetPath, mode, source = parts
             if not targetPath.startswith('/'):
                 targetPath = '/' + targetPath
-            is_local = 'leosettings' not in self.c.mFileName.lower()
-            if is_local:
+            if 'leosettings' not in self.c.mFileName.lower():
+                # A local settings file.
                 # getMenusList returns local menu if it exist, otherwise the global menu.
                 mlist = self.c.config.getMenusList()
                 # if global, it's the first @menuat found, so start with copy of global menu.
@@ -434,8 +434,7 @@ class ParserBaseClass:
                 self.c.config.set(None, 'menus', 'menus', mlist)
             else:
                 mlist = g.app.config.menusList
-            ans = self.patchMenuTree(mlist, targetPath)
-            if ans:
+            if ans := self.patchMenuTree(mlist, targetPath):
                 list_, idx = ans
                 if mode not in ('copy', 'cut'):
                     if source != 'clipboard':
@@ -509,8 +508,7 @@ class ParserBaseClass:
                 curPath = path + '/' + name
                 if curPath == targetPath:
                     return orig, n
-                ans = self.patchMenuTree(val, targetPath, path=path + '/' + name)
-                if ans:
+                if ans := self.patchMenuTree(val, targetPath, path=path + '/' + name):
                     return ans
         return None
 
@@ -524,8 +522,7 @@ class ParserBaseClass:
             self.debug_count += 1
             h = p.h
             if g.match_word(h, 0, '@menu'):
-                name = h[len('@menu') :].strip()
-                if name:
+                if name := h[len('@menu') :].strip():
                     for z in aList:
                         name2, junk, junk = z
                         if name2 == name:
@@ -559,8 +556,7 @@ class ParserBaseClass:
             h = p.h
             for tag in ('@menu', '@item', '@ifplatform'):
                 if g.match_word(h, 0, tag):
-                    itemName = h[len(tag) :].strip()
-                    if itemName:
+                    if itemName := h[len(tag) :].strip():
                         lines = [
                             z
                             for z in g.splitLines(p.b)
@@ -610,8 +606,7 @@ class ParserBaseClass:
                     aList: list[g.BindingInfo] = d.get(name, [])
                     # Important: use previous bindings if possible.
                     key2, aList2 = c.config.getShortcut(name)
-                    aList3 = [z for z in aList2 if z.pane != modeName]
-                    if aList3:
+                    if aList3 := [z for z in aList2 if z.pane != modeName]:
                         aList.extend(aList3)
                     aList.append(bi)
                     d[name] = aList
@@ -651,8 +646,7 @@ class ParserBaseClass:
             h = p.h
             for tag in ('@menu', '@item'):
                 if g.match_word(h, 0, tag):
-                    itemName = h[len(tag) :].strip()
-                    if itemName:
+                    if itemName := h[len(tag) :].strip():
                         if tag == '@menu':
                             aList2: list[Any] = []
                             kind = f"{itemName}"
@@ -801,8 +795,7 @@ class ParserBaseClass:
         if g.match(s, 0, '@'):
             i = g.skip_id(s, 1, chars='-')
             i = g.skip_ws(s, i)
-            kind = s[1:i].strip()
-            if kind:
+            if kind := s[1:i].strip():
                 # name is everything up to '='
                 if kind == 'data':
                     # i = g.skip_ws(s,i)
@@ -930,8 +923,7 @@ class ParserBaseClass:
                 parent.moveToParent()
             return
         d = self.settingsDict
-        gs = d.get(key)
-        if gs:
+        if gs := d.get(key):
             assert isinstance(gs, g.GeneralSetting), gs
             path = gs.path
             if g.finalize(c.mFileName) != g.finalize(path):
@@ -1039,8 +1031,7 @@ class ActiveSettingsOutline:
         lm.readGlobalSettingsFiles()
         # Make sure to reload the local file.
         c = g.app.commanders()[0]
-        fn = c.fileName()
-        if fn:
+        if fn := c.fileName():
             self.local_c = lm.openSettingsFile(fn)
 
     # @+node:ekr.20190905091614.5: *4* aso.new_commander
@@ -1362,8 +1353,7 @@ class GlobalConfigManager:
     def exists(self, setting: str, kind: str) -> bool:
         """Return true if a setting of the given kind exists, even if it is None."""
         lm = g.app.loadManager
-        d = lm.globalSettingsDict
-        if d:
+        if d := lm.globalSettingsDict:
             junk, found = self.getValFromDict(d, setting, kind)
             return found
         return False
@@ -1373,8 +1363,7 @@ class GlobalConfigManager:
         """Get the setting and make sure its type matches the expected type."""
         # It *is* valid to call this method: it returns the global settings.
         lm = g.app.loadManager
-        d = lm.globalSettingsDict
-        if d:
+        if d := lm.globalSettingsDict:
             assert isinstance(d, g.SettingsDict), d.__class__.__name__
             val, junk = self.getValFromDict(d, setting, kind)
             return val
@@ -1608,8 +1597,7 @@ class GlobalConfigManager:
         """Return the value of the setting, if any, in myLeoSettings.leo."""
         lm = g.app.loadManager
         d = lm.globalSettingsDict
-        gs = d.get(self.munge(settingName))  # A GeneralSetting.
-        if gs:
+        if gs := d.get(self.munge(settingName)):  # A GeneralSetting.
             path = gs.path
             if path.find('myLeoSettings.leo') > -1:
                 return gs.val
@@ -1741,8 +1729,7 @@ class LocalConfigManager:
     # @+node:ekr.20120215072959.12519: *5* c.config.get & allies
     def get(self, setting: Any, kind: str) -> Any:
         """Get the setting and make sure its type matches the expected type."""
-        d = self.settingsDict
-        if d:
+        if d := self.settingsDict:
             assert isinstance(d, g.SettingsDict), repr(d)
             val, junk = self.getValFromDict(d, setting, kind)
             return val
@@ -1847,8 +1834,7 @@ class LocalConfigManager:
     ) -> list[str]:
         """Return a list of non-comment strings in the body text of @data setting."""
         # 904: Add local abbreviations to global settings.
-        append = setting == 'global-abbreviations'
-        if append:
+        if append := setting == 'global-abbreviations':
             data0 = g.app.config.getData(
                 setting,
                 strip_comments=strip_comments,
@@ -1978,8 +1964,7 @@ class LocalConfigManager:
     # @+node:ekr.20120215072959.12538: *5* c.config.getSettingSource
     def getSettingSource(self, setting: str) -> tuple[str, Any]:
         """return the name of the file responsible for setting."""
-        d = self.settingsDict
-        if d:
+        if d := self.settingsDict:
             assert isinstance(d, g.SettingsDict), repr(d)
             bi = d.get(setting)
             if bi is None:
@@ -2069,8 +2054,7 @@ class LocalConfigManager:
     # @+node:ekr.20120224140548.10528: *4* c.config.exists
     def exists(self, setting: str, kind: str) -> bool:
         """Return true if a setting of the given kind exists, even if it is None."""
-        d = self.settingsDict
-        if d:
+        if d := self.settingsDict:
             junk, found = self.getValFromDict(d, setting, kind)
             if found:
                 return True
@@ -2198,8 +2182,7 @@ class LocalConfigManager:
         key = g.app.config.munge(name)
         d = self.settingsDict
         assert isinstance(d, g.SettingsDict), repr(d)
-        gs = d.get(key)
-        if gs:
+        if gs := d.get(key):
             assert isinstance(gs, g.GeneralSetting), repr(gs)
             path = gs.path
             if warn and g.finalize(c.mFileName) != g.finalize(path):
@@ -2282,8 +2265,7 @@ class SettingsTreeParser(ParserBaseClass):
             # None is valid for all basic types.
             self.set(p, kind, name, None)
         elif kind in self.control_types or kind in self.basic_types:
-            f = self.dispatchDict.get(kind)
-            if f:
+            if f := self.dispatchDict.get(kind):
                 try:
                     # mypy: can not call function of unknown type.
                     return f(p, kind, name, val)  # type:ignore

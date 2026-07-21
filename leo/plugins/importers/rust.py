@@ -176,13 +176,11 @@ class Rust_Importer(Importer):
             nonlocal i
             assert s[i] == "'", repr(s[i])
             for pattern in quote_patterns:
-                m = pattern.match(s, i)
-                if m:
+                if m := pattern.match(s, i):
                     # Match the whole pattern.
                     skip_n(len(m.group(0)))
                     return
-            m = lifetime_pat.match(s, i)
-            if m:
+            if m := lifetime_pat.match(s, i):
                 # Don't match whatever follows.
                 skip_n(len(m.group(1)))
                 return

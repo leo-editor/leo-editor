@@ -314,8 +314,7 @@ def pasteAsTemplate(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
             if isNew:
                 v.h = h
                 v.b = b
-                ua = uas.get(gnx)
-                if ua:
+                if ua := uas.get(gnx):
                     v.unknownAttributes = ua
             # get parent node `vpar`
             vpar = getv(pgnx)[0]
@@ -804,8 +803,7 @@ def goToFirstSibling(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 def goToFirstVisibleNode(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Select the first visible node of the selected chapter or hoist."""
     c = self
-    p = c.firstVisible()
-    if p:
+    if p := c.firstVisible():
         if c.sparse_goto_visible:
             c.expandOnlyAncestorsOfNode(p=p)
         else:
@@ -841,8 +839,7 @@ def goToLastSibling(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 def goToLastVisibleNode(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Select the last visible node of selected chapter or hoist."""
     c = self
-    p = c.lastVisible()
-    if p:
+    if p := c.lastVisible():
         if c.sparse_goto_visible:
             c.expandOnlyAncestorsOfNode(p=p)
         else:
@@ -1708,14 +1705,12 @@ def moveOutlineDown(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     # @+node:ekr.20031218072017.1769: *4* << Move p down & set moved if successful >>
     if next.hasChildren() and next.isExpanded():
         # Attempt to move p to the first child of next.
-        moved = c.checkMoveWithParentWithWarning(p, next, True)
-        if moved:
+        if moved := c.checkMoveWithParentWithWarning(p, next, True):
             p.setDirty()
             p.moveToNthChildOf(next, 0)
     else:
         # Attempt to move p after next.
-        moved = c.checkMoveWithParentWithWarning(p, next.parent(), True)
-        if moved:
+        if moved := c.checkMoveWithParentWithWarning(p, next.parent(), True):
             p.setDirty()
             p.moveAfter(next)
     # Patch by nh2: 0004-Add-bool-collapse_nodes_after_move-option.patch
@@ -2050,8 +2045,7 @@ def cantMoveMessage(c: Cmdr) -> None:
 @g.command('count-children')
 def count_children(event: LeoKeyEvent | None = None) -> None:
     """Print out the number of children for the currently selected node"""
-    c = event and event.get('c')
-    if c:
+    if c := event and event.get('c'):
         g.es_print(f"{c.p.numberOfChildren()} children")
 
 

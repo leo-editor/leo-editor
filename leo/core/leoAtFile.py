@@ -482,8 +482,7 @@ class AtFile:
 
         # Carefully set c.changed.
         c.changed = old_changed or bool(at.changed_roots)
-        update_p = at.clone_all_changed_vnodes()
-        if update_p:
+        if update_p := at.clone_all_changed_vnodes():
             # Select update_p.  See fc.setPositionsFromVnodes.
             c.db['current_position'] = ','.join([str(z) for z in update_p.archivedPosition()])
             update_p.expand()
@@ -639,8 +638,7 @@ class AtFile:
 
         # Carefully set c.changed.
         c.changed = old_changed or bool(at.changed_roots)
-        update_p = at.clone_all_changed_vnodes()
-        if update_p:
+        if update_p := at.clone_all_changed_vnodes():
             # Select update_p.  See fc.setPositionsFromVnodes.
             c.db['current_position'] = ','.join([str(z) for z in update_p.archivedPosition()])
             update_p.expand()
@@ -930,12 +928,10 @@ class AtFile:
             p.firstChild().doDelete()
         if shadow_exists:
             at.read(p)
-        else:
-            ok = at.importAtShadowNode(p)
-            if ok:
-                # Create the private file automatically.
-                at.writeOneAtShadowNode(p)
-                g.doHook('after-reading-external-file', c=c, p=p)
+        elif at.importAtShadowNode(p):
+            # Create the private file automatically.
+            at.writeOneAtShadowNode(p)
+            g.doHook('after-reading-external-file', c=c, p=p)
 
     # @+node:ekr.20080712080505.1: *6* at.importAtShadowNode
     def importAtShadowNode(self, p: Position) -> bool:  # pragma: no cover
@@ -1011,13 +1007,11 @@ class AtFile:
         # group(7): .
         # group(8): closing delim.
         m = pattern.match(s)
-        valid = bool(m)
-        if valid:
+        if valid := bool(m):
             start = m.group(1)  # start delim
             valid = bool(start)
         if valid:
-            new_df = bool(m.group(2))  # -ver=
-            if new_df:
+            if new_df := bool(m.group(2)):  # -ver=
                 # Set the version number.
                 if m.group(3):
                     readVersion = m.group(3)
@@ -1146,8 +1140,7 @@ class AtFile:
         new_df, isThinDerivedFile = False, False
         firstLines: list[str] = []  # The lines before @+leo.
         s = self.scanFirstLines(firstLines)
-        valid = len(s) > 0
-        if valid:
+        if valid := len(s) > 0:
             valid, new_df, start, end, isThinDerivedFile = at.parseLeoSentinel(s)
         if valid:
             at.startSentinelComment = start
@@ -1201,8 +1194,7 @@ class AtFile:
         after, found = p.nodeAfterTree(), False
         while p and p != after:
             if p.isAtAutoNode() and not p.isAtIgnoreNode():
-                ok = at.writeOneAtAutoNode(p)
-                if ok:
+                if at.writeOneAtAutoNode(p):
                     found = True
                     p.moveToNodeAfterTree()
                 else:
@@ -1226,8 +1218,7 @@ class AtFile:
         after, found = p.nodeAfterTree(), False
         while p and p != after:
             if p.isAtAutoNode() and not p.isAtIgnoreNode() and p.isDirty():
-                ok = at.writeOneAtAutoNode(p)
-                if ok:
+                if at.writeOneAtAutoNode(p):
                     found = True
                     p.moveToNodeAfterTree()
                 else:
@@ -1251,8 +1242,7 @@ class AtFile:
         after, found = p.nodeAfterTree(), False
         while p and p != after:
             if p.atShadowFileNodeName() and not p.isAtIgnoreNode():
-                ok = at.writeOneAtShadowNode(p)
-                if ok:
+                if at.writeOneAtShadowNode(p):
                     found = True
                     g.blue(f"wrote {p.atShadowFileNodeName()}")
                     p.moveToNodeAfterTree()
@@ -1278,8 +1268,7 @@ class AtFile:
         after, found = p.nodeAfterTree(), False
         while p and p != after:
             if p.atShadowFileNodeName() and not p.isAtIgnoreNode() and p.isDirty():
-                ok = at.writeOneAtShadowNode(p)
-                if ok:
+                if at.writeOneAtShadowNode(p):
                     found = True
                     g.blue(f"wrote {p.atShadowFileNodeName()}")
                     p.moveToNodeAfterTree()
@@ -1493,8 +1482,7 @@ class AtFile:
         at, c = self, self.c
         # Dispatch the proper writer.
         junk, ext = g.os_path_splitext(fileName)
-        writer = at.dispatch(ext, root)
-        if writer:
+        if writer := at.dispatch(ext, root):
             at.outputList = []
             writer(root)
             return '' if at.errors else ''.join(at.outputList)
@@ -1564,14 +1552,12 @@ class AtFile:
 
         s = p.h
         if g.match(s, 0, "@@"):
-            s = s[2:]
-            if s:
+            if s := s[2:]:
                 put('\n')  # Experimental.
                 put(s)
                 put('\n')
         # Write the body.
-        s = p.b
-        if s:
+        if s := p.b:
             put(s)
 
     # @+node:ekr.20041005105605.151: *6* at.writeMissing & helper
@@ -1585,8 +1571,7 @@ class AtFile:
         after = p.nodeAfterTree()
         while p and p != after:  # Don't use iterator.
             if p.isAtAsisFileNode() or (p.isAnyAtFileNode() and not p.isAtIgnoreNode()):
-                fileName = p.anyAtFileNodeName()
-                if fileName:
+                if fileName := p.anyAtFileNodeName():
                     fileName = c.fullPath(p)  # #1914.
                     if at.precheck(fileName, p):
                         at.writeMissingNode(p)
@@ -1987,8 +1972,7 @@ class AtFile:
         if ext:
             if ext.startswith('.'):
                 ext = ext[1:]
-            language = g.app.extension_dict.get(ext)
-            if language:
+            if language := g.app.extension_dict.get(ext):
                 c.target_language = language
             else:
                 # An unknown language.
@@ -2286,8 +2270,7 @@ class AtFile:
             while p and p != after:
                 if at.validInAtOthers(p):
                     at.putOpenNodeSentinel(p)
-                    at_others_flag = at.putBody(p)
-                    if at_others_flag:
+                    if at.putBody(p):
                         p.moveToNodeAfterTree()
                     else:
                         p.moveToThreadNext()
@@ -2399,8 +2382,7 @@ class AtFile:
         Important: the so-called name *must* include brackets.
         """
         at = self
-        ref = g.findReference(name, p)
-        if ref:
+        if ref := g.findReference(name, p):
             junk, delta = g.skip_leading_ws_with_indent(s, i, at.tab_width)
             at.putLeadInSentinel(s, i, n1)
             at.indent += delta
@@ -2639,8 +2621,7 @@ class AtFile:
         """Report a syntax error."""
         g.error(f"Syntax error in: {p.h}")
         typ, val, tb = sys.exc_info()
-        message = hasattr(val, 'message') and val.message
-        if message:
+        if message := hasattr(val, 'message') and val.message:
             g.es_print(message)
         if val is None:
             return
@@ -2910,8 +2891,7 @@ class AtFile:
             at.rememberReadPath(fileName, root)
             return True
         # Prompt if the write would overwrite the existing file.
-        ok = self.promptForDangerousWrite(fileName)
-        if ok:
+        if self.promptForDangerousWrite(fileName):
             # Fix bug 889175: Remember the full fileName.
             at.rememberReadPath(fileName, root)
             return True
@@ -3057,8 +3037,7 @@ class AtFile:
         if s2.strip():
             lines = s2.split("\\n")
             for line in lines:
-                line = line.replace("@date", time.asctime())
-                if line:
+                if line := line.replace("@date", time.asctime()):
                     self.putSentinel("@comment " + line)
 
     # @+node:ekr.20190111172114.1: *5* at.replaceFile & helpers
@@ -3094,8 +3073,7 @@ class AtFile:
         fileName = g.os_path_realpath(fileName)
         sfn = g.shortFileName(fileName)
         if not g.os_path_exists(fileName):
-            ok = g.writeFile(contents, encoding, fileName)
-            if ok:
+            if g.writeFile(contents, encoding, fileName):
                 c.setFileTimeStamp(fileName)
                 if not g.unitTesting:
                     g.es(f"{timestamp}created: {fileName}")  # pragma: no cover
@@ -3137,8 +3115,7 @@ class AtFile:
                 g.warning("correcting line endings in:", fileName)
 
         # Write a changed file.
-        ok = g.writeFile(contents, encoding, fileName)
-        if ok:
+        if ok := g.writeFile(contents, encoding, fileName):
             c.setFileTimeStamp(fileName)
             if not g.unitTesting and c.config.getBool('report-changed-files', default=True):
                 g.es(f"{timestamp}wrote: {sfn}")  # pragma: no cover
@@ -3816,8 +3793,7 @@ class FastAtRead:
                     # @verbatim
                     # @+at or @+doc?
                     doc = '@doc' if m.group(1) == 'doc' else '@'
-                    doc2 = m.group(2) or ''  # Trailing text.
-                    if doc2:
+                    if doc2 := m.group(2) or '':  # Trailing text.
                         body.append(f"{doc}{doc2}\n")
                     else:
                         body.append(doc + '\n')
@@ -4026,8 +4002,7 @@ class FastAtRead:
         # @-<< final checks >>
         # @+<< insert @last lines >>
         # @+node:ekr.20211103101453.1: *4* << insert @last lines >>
-        tail_lines = lines[start + i :]
-        if tail_lines:
+        if tail_lines := lines[start + i :]:
             # Convert the trailing lines to @last directives.
             last_lines = [f"@last {z.rstrip()}\n" for z in tail_lines]
             # Add the lines to the dictionary of lines.

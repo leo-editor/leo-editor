@@ -341,8 +341,7 @@ class LeoImportCommands:
                 i, result = self.convertDocPartToWeb(s, i, result)
                 docSeen = True
             assert progress < i
-        result = result.strip()
-        if result:
+        if result := result.strip():
             result += nl
         return result
 
@@ -452,8 +451,7 @@ class LeoImportCommands:
             g.warning("can not open", fileName)
             return
         for p in current.self_and_subtree(copy=False):
-            s = self.positionToWeb(p)
-            if s:
+            if s := self.positionToWeb(p):
                 theFile.write(s)
                 if s[-1] != '\n':
                     theFile.write(nl)
@@ -545,8 +543,7 @@ class LeoImportCommands:
             with open(filename, 'w', encoding=self.encoding) as f:
                 for p in p.self_and_subtree():
                     s = p.b
-                    s2 = s.strip()
-                    if s2:
+                    if s.strip():
                         f.write("-" * 60)
                         f.write(nl)
                         # @+<< write the context of p to f >>
@@ -955,8 +952,7 @@ class LeoImportCommands:
                         if name != "@others":
                             return ref
                 else:
-                    name = self.findFunctionDef(s, i)
-                    if name:
+                    if name := self.findFunctionDef(s, i):
                         return name
                 i = g.skip_line(s, i)
             # @-<< scan noweb body for headline >>
@@ -1209,8 +1205,7 @@ class LeoImportCommands:
         blocks = importer.find_blocks(0, len(lines))
 
         # The main loop.
-        changed = len(blocks) > 1
-        if changed:
+        if changed := len(blocks) > 1:
             u.beforeChangeGroup(p, undoType)
         self.preprocess_blocks(blocks)
         while len(blocks) > 1:
@@ -1349,8 +1344,7 @@ class LeoImportCommands:
                 doc = s[start:end]
                 doc = doc.replace("\n", " ")
                 doc = doc.replace("\r", "")
-                doc = doc.strip()
-                if doc:
+                if doc := doc.strip():
                     if doc == "@":
                         doc = "@ " if self.webType == "cweb" else "@\n"
                     else:
@@ -1538,8 +1532,7 @@ class MORE_Importer:
             changed = False
             for fileName in files:
                 g.setGlobalOpenDir(fileName)
-                p = self.import_file(fileName)
-                if p:
+                if p := self.import_file(fileName):
                     p.contract()
                     p.setDirty()
                     c.setChanged()
@@ -1898,8 +1891,7 @@ class RecursiveImportController:
 
         # Handle everything else.
         if norm(p.h).startswith(outline_dir):
-            r_path = rel_path(p.h)
-            if r_path:
+            if r_path := rel_path(p.h):
                 p.h = f"path: {r_path}"
 
     # @+node:ekr.20230831011155.1: *4* ric.move_leading_blank_lines
@@ -1931,8 +1923,9 @@ class RecursiveImportController:
             return False
 
         # Never remove p itself!
-        aList = [p2 for p2 in p.subtree() if not p2.b.strip() and not has_significant_children(p2)]
-        if aList:
+        if aList := [
+            p2 for p2 in p.subtree() if not p2.b.strip() and not has_significant_children(p2)
+        ]:
             c.deletePositionsInList(aList)  # Don't redraw.
 
     # @+node:ekr.20230829043849.1: *3* ric_resolve_dir_arg
@@ -2368,8 +2361,7 @@ class ToDoTask:
             f"Task: {mark_s} {self.priority:1} start: {start_s:10} end: {end_s:10} {self.task_s}"
         ]
         for ivar in ('contexts', 'projects', 'key_vals'):
-            aList = getattr(self, ivar, None)
-            if aList:
+            if aList := getattr(self, ivar, None):
                 result.append(f"{' ' * 13}{ivar}: {aList}")
         return '\n'.join(result)
 
@@ -2534,8 +2526,7 @@ class ZimImportController:
         zimNode = root.insertAfter()
         zimNode.h = self.zimNodeName
         # Parse the index file
-        files = self.parseZimIndex()
-        if files:
+        if files := self.parseZimIndex():
             # Do the import
             rstNodes: dict[str, Position] = {'0': zimNode}
             for level, name, rst in files:
@@ -2711,8 +2702,7 @@ class LegacyImportNode:
 @g.command('import-free-mind-files')
 def import_free_mind_files(event: LeoKeyEvent | None = None) -> None:
     """Prompt for free-mind files and import them."""
-    c = event.get('c') if event else None
-    if c:
+    if c := event.get('c') if event else None:
         FreeMindImporter(c).prompt_for_files()
 
 
@@ -2720,8 +2710,7 @@ def import_free_mind_files(event: LeoKeyEvent | None = None) -> None:
 @g.command('import-legacy-external-files')
 def import_legacy_external_files(event: LeoKeyEvent | None = None) -> None:
     """Prompt for legacy external files and import them."""
-    c = event.get('c') if event else None
-    if c:
+    if c := event.get('c') if event else None:
         LegacyExternalFileImporter(c).prompt_for_files()
 
 
@@ -2729,8 +2718,7 @@ def import_legacy_external_files(event: LeoKeyEvent | None = None) -> None:
 @g.command('import-mind-jet-files')
 def import_mind_jet_files(event: LeoKeyEvent | None = None) -> None:
     """Prompt for mind-jet files and import them."""
-    c = event.get('c') if event else None
-    if c:
+    if c := event.get('c') if event else None:
         MindMapImporter(c).prompt_for_files()
 
 
@@ -2738,8 +2726,7 @@ def import_mind_jet_files(event: LeoKeyEvent | None = None) -> None:
 @g.command('import-MORE-files')
 def import_MORE_files_command(event: LeoKeyEvent | None = None) -> None:
     """Prompt for MORE files and import them."""
-    c = event.get('c') if event else None
-    if c:
+    if c := event.get('c') if event else None:
         MORE_Importer(c).prompt_for_files()
 
 
@@ -2747,8 +2734,7 @@ def import_MORE_files_command(event: LeoKeyEvent | None = None) -> None:
 @g.command('import-tabbed-files')
 def import_tabbed_files_command(event: LeoKeyEvent | None = None) -> None:
     """Prompt for tabbed files and import them."""
-    c = event.get('c') if event else None
-    if c:
+    if c := event.get('c') if event else None:
         TabImporter(c).prompt_for_files()
 
 
@@ -2756,8 +2742,7 @@ def import_tabbed_files_command(event: LeoKeyEvent | None = None) -> None:
 @g.command('import-todo-text-files')
 def import_todo_text_files(event: LeoKeyEvent | None = None) -> None:
     """Prompt for free-mind files and import them."""
-    c = event.get('c') if event else None
-    if c:
+    if c := event.get('c') if event else None:
         ToDoImporter(c).prompt_for_files()
 
 
@@ -2776,8 +2761,7 @@ def import_zim_command(event: LeoKeyEvent | None = None) -> None:
         @string zim_node_name
         @string path_to_zim
     """
-    c = event.get('c') if event else None
-    if c:
+    if c := event.get('c') if event else None:
         ZimImportController(c).run()
 
 

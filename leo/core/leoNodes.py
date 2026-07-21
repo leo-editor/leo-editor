@@ -71,8 +71,7 @@ class NodeIndices:
         # Do not change self.lastIndex here!
         # self.lastIndex = 0
         for v in c.all_unique_nodes():
-            gnx = v.fileIndex
-            if gnx:
+            if gnx := v.fileIndex:
                 id_, t, n = self.scanGnx(gnx)
                 if t == ni.timeString and n is not None:
                     try:
@@ -457,8 +456,7 @@ class Position:
         array = []
         for p in p.self_and_subtree(copy=False):
             array.append(p.moreHead(level1) + '\n')
-            body = p.moreBody()
-            if body:
+            if body := p.moreBody():
                 array.append(body + '\n')
         return ''.join(array)
 
@@ -1042,8 +1040,7 @@ class Position:
         nodes, but the pattern above handles this complication cleanly.
         """
         p = self
-        next = p.next()  # pylint: disable=not-callable
-        if next:
+        if next := p.next():
             # The new position will be the same as p, except for p.v.
             p = p.copy()
             p.v = next.v
@@ -1959,8 +1956,7 @@ class Position:
         use p.v.b instead of p.b.
         """
         p = self
-        c = p.v and p.v.context
-        if c:
+        if c := p.v and p.v.context:
             c.setBodyString(p, val)
             # Warning: c.setBodyString is *expensive*.
 
@@ -1987,8 +1983,7 @@ class Position:
         use p.v.h instead of p.h.
         """
         p = self
-        c = p.v and p.v.context
-        if c:
+        if c := p.v and p.v.context:
             c.setHeadString(p, val)
             # Warning: c.setHeadString is *expensive*.
 

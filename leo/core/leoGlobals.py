@@ -478,8 +478,7 @@ def check_cmd_instance_dict(c: Cmdr, g: LeoGlobals) -> None:
     for key in d:
         ivars = d.get(key, [])
         # Produces warnings.
-        obj = ivars2instance(c, g, ivars)
-        if obj:
+        if obj := ivars2instance(c, g, ivars):
             name = obj.__class__.__name__
             if name != key:
                 g.trace('class mismatch', key, name)
@@ -2207,8 +2206,7 @@ class Tracer:
             return ''
         code = frame.f_code
         result = []
-        module = inspect.getmodule(code)
-        if module:
+        if module := inspect.getmodule(code):
             module_name = module.__name__
             if module_name == 'leo.core.leoGlobals':
                 result.append('g')
@@ -2219,8 +2217,7 @@ class Tracer:
                 result.append(module_name)
         try:
             # This can fail during startup.
-            self_obj = frame.f_locals.get('self')
-            if self_obj:
+            if self_obj := frame.f_locals.get('self'):
                 result.append(self_obj.__class__.__name__)
         except Exception:
             pass
@@ -2509,13 +2506,12 @@ def assert_is(obj: object, list_or_class: Any, warn: bool = True) -> bool:
 
 
 # @+node:ekr.20180420081530.1: *4* g._assert
-def _assert(condition: bool, show_callers: bool = True) -> bool:
+def _assert(condition: Any, show_callers: bool = True) -> bool:
     """A safer alternative to a bare assert."""
     if g.unitTesting:
         assert condition
         return True
-    ok = bool(condition)
-    if ok:
+    if bool(condition):
         return True
     g.es_print('\n===== g._assert failed =====\n')
     if show_callers:
@@ -2534,8 +2530,7 @@ def callers(n: int = 4) -> str:
     # sys._getframe throws ValueError if there are less than i entries.
     i, result = 3, []
     while 1:
-        s = _callerName(n=i)
-        if s:
+        if s := _callerName(n=i):
             result.append(s)
         if not s or len(result) >= n:
             break
@@ -2553,8 +2548,7 @@ def callers_list(n: int = 4) -> list[str]:
     # sys._getframe throws ValueError if there are less than i entries.
     i, result = 3, []
     while 1:
-        s = _callerName(n=i)
-        if s:
+        if s := _callerName(n=i):
             result.append(s)
         if not s or len(result) >= n:
             break
@@ -3258,8 +3252,7 @@ def findLanguageDirectives(c: Cmdr, p: Position) -> str:
 
     # First, search up the tree.
     for p in p.self_and_parents(copy=False):
-        language = find_language(p)
-        if language:
+        if language := find_language(p):
             return language
     # #1625: Second, expand the search for cloned nodes.
     seen = []  # vnodes that have already been searched.
@@ -3269,8 +3262,7 @@ def findLanguageDirectives(c: Cmdr, p: Position) -> str:
         if parent_v in seen:
             continue
         seen.append(parent_v)
-        language = find_language(parent_v)
-        if language:
+        if language := find_language(parent_v):
             return language
         for grand_parent_v in parent_v.parents:
             if grand_parent_v not in seen:
@@ -3608,8 +3600,7 @@ def scanForAtSettings(p: Position) -> bool:
 # @+node:ekr.20031218072017.1382: *3* g.set_delims_from_language
 def set_delims_from_language(language: str) -> tuple[str, str, str]:
     """Return a tuple (single,start,end) of comment delims."""
-    val = g.app.language_delims_dict.get(language)
-    if val:
+    if val := g.app.language_delims_dict.get(language):
         delim1, delim2, delim3 = g.set_delims_from_string(val)
         if delim2 and not delim3:
             return '', delim1, delim2
@@ -3931,8 +3922,7 @@ or do g.app.db['LEO_EDITOR'] = "gvim"''',
 def init_dialog_folder(c: Cmdr, p: Position, use_at_path: bool = True) -> str:
     """Return the most convenient folder to open or save a file."""
     if c and p and use_at_path:
-        path = c.fullPath(p)
-        if path:
+        if path := c.fullPath(p):
             dir_ = g.os_path_dirname(path)
             if dir_ and g.os_path_exists(dir_):
                 return dir_
@@ -3973,8 +3963,7 @@ def makeAllNonExistentDirectories(theDir: str) -> str:
     """
     # Return True if the directory already exists.
     theDir = g.os_path_normpath(theDir)
-    ok = g.os_path_isdir(theDir) and g.os_path_exists(theDir)
-    if ok:
+    if g.os_path_isdir(theDir) and g.os_path_exists(theDir):
         return theDir
     # #1450: Create the directory with os.makedirs.
     try:
@@ -4164,8 +4153,7 @@ def relativeDirectory(baseDir: str, path: str) -> str:
         baseDir = baseDir.lower()
         path = path.lower()
     try:
-        rel_path = os.path.relpath(path, start=baseDir)
-        if rel_path:
+        if rel_path := os.path.relpath(path, start=baseDir):
             return rel_path
     except ValueError:
         # Windows throws ValueError if the drives are different.
@@ -6662,8 +6650,7 @@ def getLastTracebackFileAndLineNumber() -> tuple[str, int]:
         return val.filename, val.lineno  # type:ignore
     # Data is a list of tuples, one per stack entry.
     # Tuples have the form (filename,lineNumber,functionName,text).
-    data = traceback.extract_tb(tb)
-    if data:
+    if data := traceback.extract_tb(tb):
         item = data[-1]  # Get the item at the top of the stack.
         filename, n, functionName, text = item
         return filename, n
@@ -7041,16 +7028,14 @@ def actualColor(color: str) -> str:
     # #788: Translate colors to theme-defined colors.
     if not color:
         # Prefer text_foreground_color'
-        color2 = c.config.getColor('log-text-foreground-color')
-        if color2:
+        if color2 := c.config.getColor('log-text-foreground-color'):
             return color2
         # Fall back to log_black_color.
         color2 = c.config.getColor('log-black-color')
         return color2 or 'black'
     if color == 'black':
         # Prefer log_black_color.
-        color2 = c.config.getColor('log-black-color')
-        if color2:
+        if color2 := c.config.getColor('log-black-color'):
             return color2
         # Fall back to log_text_foreground_color.
         color2 = c.config.getColor('log-text-foreground-color')
@@ -7183,13 +7168,11 @@ def init_zodb(pathToZodbStorage: str, verbose: bool = True) -> Value:
     return None on any error.
     """
     global init_zodb_import_failed
-    db = init_zodb_db.get(pathToZodbStorage)
-    if db:
+    if db := init_zodb_db.get(pathToZodbStorage):
         return db
     if init_zodb_import_failed:
         return None
-    failed = init_zodb_failed.get(pathToZodbStorage)
-    if failed:
+    if init_zodb_failed.get(pathToZodbStorage):
         return None
     try:
         import ZODB  # type:ignore
@@ -8254,20 +8237,16 @@ def findAnyUnl(unl_s: str, c: Cmdr) -> Position | None:
         # First, search the open commander.
         # #3811: Do *not* fail if this search fails.
         if file_part:
-            c2 = g.openUNLFile(c, file_part)
-            if c2:
-                p = g.findGnx(tail, c2)
-                if p:
+            if c2 := g.openUNLFile(c, file_part):
+                if p := g.findGnx(tail, c2):
                     return p
 
         # Search all open commanders, starting with c.
-        p = g.findGnx(tail, c)
-        if p:
+        if p := g.findGnx(tail, c):
             return p
         for c2 in g.app.commanders():
             if c2 != c:
-                p = g.findGnx(tail, c2)
-                if p:
+                if p := g.findGnx(tail, c2):
                     return p
         return None
 
@@ -8296,13 +8275,11 @@ def findAnyUnl(unl_s: str, c: Cmdr) -> Position | None:
 
     # New in Leo 6.7.7:
     # There is no file part, so search all open commanders, starting with c.
-    p = g.findUnl(unlList, c)
-    if p:
+    if p := g.findUnl(unlList, c):
         return p
     for c2 in g.app.commanders():
         if c2 != c:
-            p = g.findUnl(unlList, c2)
-            if p:
+            if p := g.findUnl(unlList, c2):
                 return p
     return None
 
@@ -8894,8 +8871,7 @@ def openUNLFile(c: Cmdr, s: str) -> Cmdr | None:
 
     if g.isWindows:
         s = s.replace('/', '\\')
-    is_relative = os.sep in s
-    if is_relative:
+    if os.sep in s:
         # #3816: Resolve relative paths via c's directory.
         path = standard(abspath(join(c_dir, s)))  # Not base_s.
     else:
@@ -8903,8 +8879,7 @@ def openUNLFile(c: Cmdr, s: str) -> Cmdr | None:
         #        Such paths must match exactly.
         base_s = base(s)
         d = g.parsePathData(c)
-        directory = d.get(base_s)
-        if directory:
+        if directory := d.get(base_s):
             path = standard(join(directory, base_s))
             if not exists(path):
                 return None

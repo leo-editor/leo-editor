@@ -68,8 +68,7 @@ class RopeController:
     # @+node:ekr.20140525065558.15810: *3* run
     def run(self):
         """run the refactorings."""
-        proj = self.proj
-        if proj:
+        if proj := self.proj:
             proj.validate(proj.root)
             self.refactor()
             proj.close()

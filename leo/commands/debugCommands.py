@@ -91,8 +91,7 @@ class DebugCommandsClass(BaseEditCommandsClass):
     @cmd('dump-node')
     def dumpNode(self, event: LeoKeyEvent | None = None) -> None:
         """Dump c.p.v, including gnx, uA's, etc."""
-        p = self.c.p
-        if p:
+        if p := self.c.p:
             g.es_print(f"gnx: {p.v.gnx} {p.v.h}")
             if p.v.u:
                 g.es_print('uAs')

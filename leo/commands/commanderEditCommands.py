@@ -83,8 +83,7 @@ def convertAllBlanks(self: Self, event: LeoKeyEvent | None = None) -> None:
     for p in current.self_and_subtree():
         innerUndoData = u.beforeChangeNodeContents(p)
         if p == current:
-            changed = c.convertBlanks()
-            if changed:
+            if changed := c.convertBlanks():
                 count += 1
         else:
             changed = False
@@ -125,8 +124,7 @@ def convertAllTabs(self: Self, event: LeoKeyEvent | None = None) -> None:
     for p in current.self_and_subtree():
         undoData = u.beforeChangeNodeContents(p)
         if p == current:
-            changed = self.convertTabs(event)
-            if changed:
+            if changed := self.convertTabs(event):
                 count += 1
         else:
             result = []
@@ -520,8 +518,7 @@ def extractDef(c: Cmdr, s: str) -> str:
 # @+node:ekr.20171123135625.26: *3* function: extractDef_find
 def extractDef_find(c: Cmdr, lines: list[str]) -> str | None:
     for line in lines:
-        def_h = extractDef(c, line.strip())
-        if def_h:
+        if def_h := extractDef(c, line.strip()):
             return def_h
     return None
 
@@ -559,8 +556,7 @@ def extractSectionNames(self: Self, event: LeoKeyEvent | None = None) -> None:
         return
     found = False
     for s in lines:
-        name = findSectionName(c, s)
-        if name:
+        if name := findSectionName(c, s):
             if not found:
                 u.beforeChangeGroup(current, undoType)  # first one!
             undoData = u.beforeInsertNode(current)
@@ -575,8 +571,7 @@ def extractSectionNames(self: Self, event: LeoKeyEvent | None = None) -> None:
         g.warning("selected text should contain section names")
     # Restore the selection.
     i, j = oldSel
-    w = body.wrapper
-    if w:
+    if w := body.wrapper:
         w.setSelectionRange(i, j)
         w.setFocus()
 
@@ -1210,8 +1205,7 @@ def unreformat(
     ins = max(len(head), len(head) + len(result) - 1)
     bunch = u.beforeChangeBody(p)
     w.setAllText(s)  # Destroys coloring.
-    changed = original != s
-    if changed:
+    if original != s:
         p.v.b = w.getAllText()
         u.afterChangeBody(p, undoType, bunch)
     # Advance to the next paragraph.

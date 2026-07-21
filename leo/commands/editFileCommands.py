@@ -69,8 +69,7 @@ class ConvertAtRoot:
         self.find_all_units(c)
         for p in c.all_positions():
             m = self.root_pat.search(p.b)
-            path = m and m.group(1)
-            if path:
+            if path := m and m.group(1):
                 # Weird special case. Don't change section definition!
                 if self.section_pat.match(p.h):
                     print(f"\nCan not create @clean node: {p.h}\n")
@@ -146,18 +145,13 @@ class ConvertAtRoot:
                 clone.doDelete()
                 self.errors += 1
 
-        #
         # First, look in p's subtree.
-        section_p = self.find_section(p, section_name)
-        if section_p:
-            # g.trace('FOUND', section_name)
-            # Already defined in a good place.
+        if section_p := self.find_section(p, section_name):
             return section_p
-        #
+
         # Finally, look in the @unit tree.
         for unit_p in self.units:
-            section_p = self.find_section(unit_p, section_name)
-            if section_p:
+            if section_p := self.find_section(unit_p, section_name):
                 clone_and_move(p, section_p)
                 return section_p
         return None
@@ -236,8 +230,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             return False
         ws = '\n\n' if g.match_word(s, 0, 'class') else '\n'
         s2 = ws + s + ws
-        changed = s2 != p.b
-        if changed:
+        if changed := s2 != p.b:
             p.b = s2
             p.setDirty()
         return changed
@@ -429,8 +422,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                     p1, p2 = d1.get(h), d2.get(h)
                     if h in d2:
                         lines1, lines2 = g.splitLines(p1.b), g.splitLines(p2.b)
-                        aList = list(difflib.unified_diff(lines1, lines2, 'vr1', 'vr2'))
-                        if aList:
+                        if aList := list(difflib.unified_diff(lines1, lines2, 'vr1', 'vr2')):
                             p = root.insertAsLastChild()
                             p.h = h
                             p.b = ''.join(aList)
@@ -812,8 +804,7 @@ class GitDiffController:
         directory = self.get_parent_of_git_directory()
         if not directory:
             return
-        aList = g.execGitCommand("git rev-parse devel", directory)
-        if aList:
+        if aList := g.execGitCommand("git rev-parse devel", directory):
             devel_rev = aList[0]
             devel_rev = devel_rev[:8]
             g.trace('devel_rev', devel_rev)
@@ -833,8 +824,7 @@ class GitDiffController:
         directory = self.get_parent_of_git_directory()
         if not directory:
             return
-        aList = g.execGitCommand("git rev-parse devel", directory)
-        if aList:
+        if aList := g.execGitCommand("git rev-parse devel", directory):
             devel_rev = aList[0]
             devel_rev = devel_rev[:8]
             g.trace('devel_rev', devel_rev)
@@ -874,8 +864,7 @@ class GitDiffController:
             c1 = self.make_at_file_outline(fn, s1, branch1)
             c2 = self.make_at_file_outline(fn, s2, branch2)
         else:
-            root = self.find_file(fn)
-            if root:
+            if root := self.find_file(fn):
                 c1 = self.make_at_clean_outline(fn, root, s1, branch1)
                 c2 = self.make_at_clean_outline(fn, root, s2, branch2)
             else:
@@ -930,8 +919,7 @@ class GitDiffController:
         if not self.get_parent_of_git_directory():
             return
         # Diff the given revs.
-        ok = self.diff_revs(rev1, rev2)
-        if ok:
+        if self.diff_revs(rev1, rev2):
             return
         # Go back at most 5 revs...
         n1, n2 = 1, 0
@@ -1020,8 +1008,9 @@ class GitDiffController:
         for index in (0, 1):
             rev_i = i + index
             for gnx, pattern in node_patterns:
-                node_info = self._find_node(contents_list[rev_i], pattern, gnx, revs_list[rev_i])
-                if node_info:
+                if node_info := self._find_node(
+                    contents_list[rev_i], pattern, gnx, revs_list[rev_i]
+                ):
                     nodes[index].append((rev_i, gnx, node_info))
 
         # Quick test: are both sets of lines the same?
@@ -1199,8 +1188,7 @@ class GitDiffController:
         # Create the list of g.Bunches.
         node_data_list = []
         for i in range(len(contents_list)):
-            bunch = self._get_action(i, path, contents_list, node_patterns, revs_list)
-            if bunch:
+            if bunch := self._get_action(i, path, contents_list, node_patterns, revs_list):
                 node_data_list.append(bunch)
         return node_data_list
 
@@ -1419,8 +1407,7 @@ class GitDiffController:
             elif kind.lower() == 'added':
                 # Make a clone, if possible.
                 v = d.get(key)
-                new_p = self.find_gnx(self.c, v.fileIndex)
-                if new_p:
+                if new_p := self.find_gnx(self.c, v.fileIndex):
                     p = new_p.clone()
                     p.moveToLastChildOf(parent)
                 else:

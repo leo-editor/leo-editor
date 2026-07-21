@@ -313,8 +313,7 @@ class Undoer:
     def setUndoTypes(self) -> None:
         u = self
         # Set the undo type and undo menu label.
-        bunch = u.peekBead(u.bead)
-        if bunch:
+        if bunch := u.peekBead(u.bead):
             u.setUndoType(bunch.undoType)
         else:
             if u.last_undoable_command_name:
@@ -323,8 +322,7 @@ class Undoer:
                 undoType = "Can't Undo"
             u.setUndoType(undoType)
         # Set only the redo menu label.
-        bunch = u.peekBead(u.bead + 1)
-        if bunch:
+        if bunch := u.peekBead(u.bead + 1):
             u.setRedoType(bunch.undoType)
         else:
             u.setRedoType("Can't Redo")
@@ -1266,8 +1264,7 @@ class Undoer:
     def enableMenuItems(self) -> None:
         u = self
         frame = u.c.frame
-        menu = frame.menu.getMenu("Edit")
-        if menu:
+        if menu := frame.menu.getMenu("Edit"):
             frame.menu.enableMenu(menu, u.redoMenuLabel, u.canRedo())
             frame.menu.enableMenu(menu, u.undoMenuLabel, u.canUndo())
 
@@ -1540,8 +1537,7 @@ class Undoer:
     # @+node:ekr.20050412083057: *4* u.redoCloneNode
     def redoCloneNode(self) -> None:
         c, u = self.c, self
-        cc = c.chapterController
-        if cc:
+        if cc := c.chapterController:
             cc.selectChapterByName('main')
         if u.newBack:
             u.newP._linkAfter(u.newBack)
@@ -1636,8 +1632,7 @@ class Undoer:
     # @+node:ekr.20050412084532: *4* u.redoInsertNode
     def redoInsertNode(self) -> None:
         c, u = self.c, self
-        cc = c.chapterController
-        if cc:
+        if cc := c.chapterController:
             cc.selectChapterByName('main')
         if u.newBack:
             u.newP._linkAfter(u.newBack)
@@ -1918,8 +1913,7 @@ class Undoer:
     # @+node:ekr.20050412083057.1: *4* u.undoCloneNode
     def undoCloneNode(self) -> None:
         c, u = self.c, self
-        cc = c.chapterController
-        if cc:
+        if cc := c.chapterController:
             cc.selectChapterByName('main')
         c.selectPosition(u.newP)
         c.deleteOutline()
@@ -2033,8 +2027,7 @@ class Undoer:
     # @+node:ekr.20050412085112: *4* u.undoInsertNode
     def undoInsertNode(self) -> None:
         c, u = self.c, self
-        cc = c.chapterController
-        if cc:
+        if cc := c.chapterController:
             cc.selectChapterByName('main')
         u.newP.setAllAncestorAtFileNodesDirty()
         c.selectPosition(u.newP)
@@ -2063,8 +2056,7 @@ class Undoer:
     # @+node:ekr.20050411112033: *4* u.undoMove
     def undoMove(self) -> None:
         c, u = self.c, self
-        cc = c.chapterController
-        if cc:
+        if cc := c.chapterController:
             cc.selectChapterByName('main')
         v = u.p.v
         assert u.oldParent_v
@@ -2220,8 +2212,7 @@ class Undoer:
         p.setBodyString(result)
         p.setDirty()
         w.setAllText(result)
-        sel = u.oldSel if tag == 'undo' else u.newSel
-        if sel:
+        if sel := u.oldSel if tag == 'undo' else u.newSel:
             i, j = sel
             w.setSelectionRange(i, j, insert=j)
         c.recolor(u.p)

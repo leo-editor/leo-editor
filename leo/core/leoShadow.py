@@ -99,8 +99,7 @@ class ShadowController:
     # @+node:ekr.20080711063656.7: *4* x.baseDirName
     def baseDirName(self) -> str | None:
         c = self.c
-        filename = c.fileName()
-        if filename:
+        if filename := c.fileName():
             return g.os_path_dirname(g.finalize(filename))
         print('')
         self.error('Can not compute shadow path: .leo file has not been saved')
@@ -431,6 +430,7 @@ class ShadowController:
         if copy and x.errors == 0 and at.errors == 0:
             s = ''.join(new_private_lines)
             x.replaceFileWithString(at.encoding, fn, s)
+            x.message(f"updated private {fn} from public {old_public_file}")
         return copy
 
     # @+node:bwmulder.20041231170726: *4* x.updatePublicAndPrivateFiles
@@ -441,11 +441,7 @@ class ShadowController:
         x = self
         if x.isSignificantPublicFile(fn):
             # Update the private shadow file from the public file.
-            written = x.propagate_changes(fn, shadow_fn)
-            if written:
-                x.message(f"updated private {shadow_fn} from public {fn}")
-        else:
-            pass  # Don't write *anything*.
+            x.propagate_changes(fn, shadow_fn)
 
     # @+node:ekr.20080708094444.89: *3* x.Utils...
     # @+node:ekr.20080708094444.85: *4* x.error & message & verbatim_error

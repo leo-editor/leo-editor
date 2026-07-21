@@ -679,8 +679,7 @@ class LayoutCacheWidget(QWidget):
         # @+node:tom.20240923194438.7: *5* << initialize data structures >> restoreFromLayout
         ORIENTATIONS = layout['ORIENTATIONS']
 
-        has_vr3 = is_module_loaded(VR3_MODULE_NAME)
-        if has_vr3:
+        if has_vr3 := is_module_loaded(VR3_MODULE_NAME):
             if (vr3 := self.find_widget('viewrendered3_pane')) is None:
                 import leo.plugins.viewrendered3 as vr3_mod
 

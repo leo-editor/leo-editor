@@ -208,8 +208,7 @@ class LeoQtEventFilter(QtCore.QObject):
         """
         c = self.c
         t = event.type()
-        isEditWidget = obj == c.frame.tree.headline_wrapper(c.p)
-        if isEditWidget:
+        if obj == c.frame.tree.headline_wrapper(c.p):
             # QLineEdit: ignore all key events except keyRelease events.
             return t != Type.KeyRelease
         if t == Type.KeyPress:
@@ -421,8 +420,7 @@ class LeoQtEventFilter(QtCore.QObject):
             e.Type.Shortcut: 'shortcut',  # 117
             e.Type.ShortcutOverride: 'shortcut-override',  # 51
         }
-        kind = key_events.get(event.type())
-        if kind:
+        if kind := key_events.get(event.type()):
             mods = ','.join(self.qtMods(event))
             g.trace(f"{kind:>20}: {mods:>7} {event.text()!r}")
 

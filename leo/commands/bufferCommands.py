@@ -126,8 +126,7 @@ class BufferCommandsClass(BaseEditCommandsClass):
 
     def killBuffer1(self, name: str) -> None:
         c = self.c
-        p = self.findBuffer(name)
-        if p:
+        if p := self.findBuffer(name):
             h = p.h
             current = c.p
             c.selectPosition(p)
@@ -193,8 +192,7 @@ class BufferCommandsClass(BaseEditCommandsClass):
 
     def switchToBuffer1(self, name: str) -> None:
         c = self.c
-        p = self.findBuffer(name)
-        if p:
+        if p := self.findBuffer(name):
             c.redraw(p)
 
     # @+node:ekr.20150514045829.14: *3* buffer.Utils
@@ -206,8 +204,7 @@ class BufferCommandsClass(BaseEditCommandsClass):
         for p in self.c.all_unique_positions():
             h = p.h.strip()
             v = p.v
-            nameList = self.names.get(h, [])
-            if nameList:
+            if nameList := self.names.get(h, []):
                 if p.parent():
                     key = f"{h}, parent: {p.parent().h}"
                 else:

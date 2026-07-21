@@ -35,8 +35,7 @@ class SessionManager:
         # Fix #1118, part 2.
         if not getattr(g.app.gui, 'frameFactory', None):
             return result
-        mf = getattr(g.app.gui.frameFactory, 'masterFrame', None)
-        if mf:
+        if mf := getattr(g.app.gui.frameFactory, 'masterFrame', None):
             outlines = [mf.widget(i).leo_c for i in range(mf.count())]
         else:
             outlines = [i.c for i in g.app.windowList]

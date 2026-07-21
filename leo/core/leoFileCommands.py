@@ -392,18 +392,13 @@ class FastRead:
                     # @+node:ekr.20180605075113.1: *6* << handle all other v attributes >> (fast.scanVnodes)
                     # FastRead.nativeVnodeAttributes defines the native attributes of <v> elements.
                     d = e.attrib
-                    s = d.get('descendentTnodeUnknownAttributes')
-                    if s:
-                        aDict = fc.getDescendentUnknownAttributes(s, v=v)
-                        if aDict:
+                    if s := d.get('descendentTnodeUnknownAttributes'):
+                        if aDict := fc.getDescendentUnknownAttributes(s, v=v):
                             fc.descendentTnodeUaDictList.append(aDict)
-                    s = d.get('descendentVnodeUnknownAttributes')
-                    if s:
-                        aDict = fc.getDescendentUnknownAttributes(s, v=v)
-                        if aDict:
-                            fc.descendentVnodeUaDictList.append(
-                                (v, aDict),
-                            )
+
+                    if s := d.get('descendentVnodeUnknownAttributes'):
+                        if aDict := fc.getDescendentUnknownAttributes(s, v=v):
+                            fc.descendentVnodeUaDictList.append((v, aDict))
 
                     # Handle vnode uA's
                     uaDict = gnx2ua[gnx]  # A defaultdict(dict)
@@ -588,8 +583,7 @@ class FastRead:
                     if v.isMarked():
                         fc.descendentMarksList.append(gnx)
                     # Handle vnode uA's
-                    uaDict = gnx2ua[gnx]  # A defaultdict(dict)
-                    if uaDict:
+                    if uaDict := gnx2ua[gnx]:  # A defaultdict(dict)
                         v.unknownAttributes = uaDict
                     # Recursively create the children.
                     v_element_visitor(v_dict.get('children', []), v)  # type:ignore # required.
@@ -1353,26 +1347,26 @@ class FileCommands:
         c = self.c
         for resultDict in self.descendentTnodeUaDictList:
             for gnx in resultDict:
-                v = self.gnxDict.get(gnx)
-                if v:
+                if v := self.gnxDict.get(gnx):
                     v.unknownAttributes = resultDict[gnx]
                     v._p_changed = True
+
         # New in Leo 4.5: keys are archivedPositions, values are attributes.
         for root_v, resultDict in self.descendentVnodeUaDictList:
             for key in resultDict:
-                v = self.resolveArchivedPosition(key, root_v)
-                if v:
+                if v := self.resolveArchivedPosition(key, root_v):
                     v.unknownAttributes = resultDict[key]
                     v._p_changed = True
+
         expanded, marks = {}, {}
         for gnx in self.descendentExpandedList:
-            v = self.gnxDict.get(gnx)
-            if v:
+            if v := self.gnxDict.get(gnx):
                 expanded[v] = v
+
         for gnx in self.descendentMarksList:
-            v = self.gnxDict.get(gnx)
-            if v:
+            if v := self.gnxDict.get(gnx):
                 marks[v] = v
+
         if marks or expanded:
             for p in c.all_unique_positions():
                 if marks.get(p.v):
@@ -1389,8 +1383,7 @@ class FileCommands:
         if c.mFileName:
             str_pos = c.db.get('current_position')
         if str_pos is None:
-            d = root.v.u
-            if d:
+            if d := root.v.u:
                 str_pos = d.get('str_leo_pos')
         if str_pos is not None:
             current = c.archivedPositionToPosition(str_pos)
@@ -1409,8 +1402,7 @@ class FileCommands:
         ok = g.doHook("save1", c=c, p=p, fileName=fileName)
         if ok is None:
             c.endEditing()  # Set the current headline text.
-            ok = c.checkFileTimeStamp(fileName)
-            if ok:
+            if ok := c.checkFileTimeStamp(fileName):
                 ok = self.write_Leo_file(fileName)
             if ok:
                 if not silent:
@@ -1895,8 +1887,7 @@ class FileCommands:
     # @+node:ekr.20210316041806.1: *5* fc.writeOutline (write switch)
     def writeOutline(self, fileName: str) -> bool:
         c = self.c
-        errors = c.checkOutline()
-        if errors:
+        if c.checkOutline():
             g.error('Structure errors in outline! outline not written')
             return False
         if self.isReadOnly(fileName):
@@ -2096,8 +2087,7 @@ class FileCommands:
             vnodes[index] = p.v
         # Put all vnodes in index order.
         for index in sorted(vnodes):
-            v = vnodes.get(index)
-            if v:
+            if v := vnodes.get(index):
                 # Write <t> elements only for vnodes that will be written.
                 # For example, vnodes in external files will be written
                 #              only if the vnodes are cloned outside the file.

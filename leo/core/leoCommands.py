@@ -241,8 +241,7 @@ class Commands:
         Return the tab title for this commander.
         """
         c = self
-        file_name = c.fileName()
-        if file_name:
+        if file_name := c.fileName():
             return file_name
         # Return 'untitled' or 'untitled{n}
         n = g.app.numberOfUntitledWindows
@@ -925,8 +924,7 @@ class Commands:
             found_terminal = False
             for line in lines:
                 if found_terminal:
-                    terminal = line.strip()
-                    if terminal:
+                    if terminal := line.strip():
                         break
                 elif 'TERMINAL' in line:
                     found_terminal = True
@@ -1050,8 +1048,7 @@ class Commands:
                 names = (names,)
             term = ''
             for name in names:
-                term = which(name) or ''
-                if term:
+                if term := which(name) or '':
                     break
             return term
 
@@ -1113,8 +1110,7 @@ class Commands:
 
             for cmd in HELP_CMDS:
                 msg = get_help_message(terminal, cmd)
-                arg = find_ex_arg(msg)
-                if arg:
+                if arg := find_ex_arg(msg):
                     if arg.startswith('--'):
                         arg += '='
                     else:
@@ -1189,8 +1185,7 @@ class Commands:
             _, ext = os.path.splitext(path)
 
             # Check terminal from MAP_SETTING_NODE setting
-            setting_terminal = terminal or ''
-            if setting_terminal:
+            if setting_terminal := terminal or '':
                 terminal = which(terminal) or ''
                 if not terminal:
                     g.es(f'Cannot find terminal specified in setting: {setting_terminal}')
@@ -1477,8 +1472,7 @@ class Commands:
     # @+node:ekr.20260619021703.1: *4* @cmd redraw (c.redraw_command)
     @cmd('redraw')
     def redraw_command(self, event: LeoKeyEvent | None = None) -> None:
-        c = event.get('c') if event else None
-        if c:
+        if c := event.get('c') if event else None:
             c.redraw()
 
     # @+node:ekr.20171124100654.1: *3* c.API
@@ -1787,8 +1781,7 @@ class Commands:
                     yield from v_and_parents(parent_v)
 
         # First, see if p contains any @language directive.
-        language = g.findFirstValidAtLanguageDirective(p.b)
-        if language:
+        if language := g.findFirstValidAtLanguageDirective(p.b):
             return language
 
         # Passes 1 and 2: Search body text for unambiguous @language directives.
@@ -1821,16 +1814,14 @@ class Commands:
 
         # Pass 3: Use file extension in headline of @<file> in direct parents.
         for p2 in p.self_and_parents(copy=False):
-            language = get_language_from_headline(p2.v)
-            if language:
+            if language := get_language_from_headline(p2.v):
                 return language
 
         # Pass 4: Use file extension in headline of @<file> nodes in extended parents.
         seen = set([v0.context.hiddenRootNode])
         for v in v_and_parents(v0):
             assert v
-            language = get_language_from_headline(v)
-            if language:
+            if language := get_language_from_headline(v):
                 return language
 
         # Return the default language for the commander.
@@ -2247,8 +2238,7 @@ class Commands:
             return
         if not c.frame.top:
             return
-        master = getattr(c.frame.top, 'leo_master', None)
-        if master:
+        if master := getattr(c.frame.top, 'leo_master', None):
             master.setChanged(c, changed=False)  # LeoTabbedTopLevel.setChanged.
         s = c.frame.getTitle()
         if len(s) > 2 and s[0:2] == "* ":
@@ -2299,8 +2289,7 @@ class Commands:
             return
         if not c.frame.top:
             return
-        master = getattr(c.frame.top, 'leo_master', None)
-        if master:
+        if master := getattr(c.frame.top, 'leo_master', None):
             master.setChanged(c, changed=True)  # LeoTabbedTopLevel.setChanged.
         s = c.frame.getTitle()
         if len(s) > 2 and s[0] != '*':
@@ -3034,8 +3023,7 @@ class Commands:
             2: c.interactive2,
             3: c.interactive3,
         }
-        f = d.get(len(prompts))
-        if f:
+        if f := d.get(len(prompts)):
             f(callback, event, prompts)
         else:
             g.trace('At most 3 arguments are supported.')
@@ -3425,8 +3413,7 @@ class Commands:
             # Find the node and offset corresponding to line n.
             p, n2 = find_line(fn, n)
             # Create the link.
-            unl = p.get_UNL()
-            if unl:
+            if unl := p.get_UNL():
                 log.put(s + '\n', nodeLink=f"{unl}::{n2}")  # local line.
             else:
                 log.put(s + '\n')
@@ -3466,8 +3453,7 @@ class Commands:
             useSentinels=True,
         )
         # Create a temp file if root is not an @<file> node.
-        use_temp = not root.isAnyAtFileNode()
-        if use_temp:
+        if use_temp := not root.isAnyAtFileNode():
             fd, root_path = tempfile.mkstemp(suffix=ext, prefix="")
             with os.fdopen(fd, 'w', encoding='utf-8') as f:
                 f.write(script)
@@ -3635,8 +3621,7 @@ class Commands:
     def writeScriptFile(self, script: str) -> str:
         # Get the path to the file.
         c = self
-        path = c.config.getString('script-file-path')
-        if path:
+        if path := c.config.getString('script-file-path'):
             isAbsPath = os.path.isabs(path)
             driveSpec, path = os.path.splitdrive(path)
             parts = path.split('/')
@@ -4121,8 +4106,7 @@ class Commands:
         c = self
         if g.doHook("recentfiles1", c=c, p=c.p, v=c.p, fileName=fn):
             return
-        c2 = g.openWithFileName(fn, old_c=c)
-        if c2:
+        if c2 := g.openWithFileName(fn, old_c=c):
             g.app.makeAllBindings()
             g.doHook("recentfiles2", c=c2, p=c2.p, v=c2.p, fileName=fn)
 
@@ -4583,8 +4567,7 @@ class Commands:
                 if p == p1:  # Never try to match the same position.
                     found = False
                     break
-                newPrefix = c.navHelper(p, ch, extend2)
-                if newPrefix:
+                if newPrefix := c.navHelper(p, ch, extend2):
                     found = True
                     break
             if found:
@@ -5140,8 +5123,7 @@ class Commands:
     def endEditing(self) -> None:
         """End the editing of a headline."""
         c = self
-        p = c.p
-        if p:
+        if c.p:
             c.frame.tree.endEditLabel()
 
     # @+node:ville.20090525205736.12325: *5* c.getSelectedPositions
@@ -5357,8 +5339,7 @@ class Commands:
 
         # Update root's tree.
         d: dict[str, VNode] = {p.v.gnx: p.v for p in root.self_and_subtree()}
-        ok = at.fast_read_into_root(c, results, gnx2vnode=d, path='', root=root)
-        if ok:
+        if at.fast_read_into_root(c, results, gnx2vnode=d, path='', root=root):
             c.redraw()
             g.es_print(f"beautified: {root.h}", color='blue')
         else:
@@ -5566,8 +5547,7 @@ class Commands:
             g.error('do-batch-operations: invalid list argument')
             return
         for v in list(d.keys()):
-            aList2 = d.get(v, [])
-            if aList2:
+            if d.get(v, []):
                 aList.sort()
 
     # @+node:ekr.20091211111443.6266: *5* c.checkBatchOperationsList
@@ -5671,8 +5651,10 @@ class Commands:
         c.configurables.sort(key=lambda obj: obj.__class__.__name__.lower())
         for obj in c.configurables:
             # An official alias.
-            func = getattr(obj, 'reloadSettings', None) or getattr(obj, 'reload_settings', None)
-            if func:
+            if func := (
+                getattr(obj, 'reloadSettings', None) or
+                getattr(obj, 'reload_settings', None)
+            ):  # fmt: skip
                 try:
                     func()  # pylint: disable=not-callable
                     g.doHook("after-reload-settings", c=c)

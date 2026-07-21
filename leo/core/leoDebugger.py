@@ -131,8 +131,7 @@ class Xdb(pdb.Pdb, threading.Thread):
                 print(s.rstrip())
             else:
                 # Use the output area.
-                xdb = getattr(g.app, 'xdb', None)
-                if xdb:
+                if xdb := getattr(g.app, 'xdb', None):
                     xdb.write(s)
                 else:
                     print(s)
@@ -161,8 +160,7 @@ class Xdb(pdb.Pdb, threading.Thread):
         stdin_q = self.QueueStdin(qc=self.qc)
         stdout_q = self.QueueStdout(qr=self.qr)
         # Start the singleton listener, in the main Leo thread.
-        timer = getattr(g.app, 'xdb_timer', None)
-        if timer:
+        if timer := getattr(g.app, 'xdb_timer', None):
             self.timer = timer
         else:
             self.timer = g.IdleTime(listener, delay=0)
@@ -226,8 +224,7 @@ class Xdb(pdb.Pdb, threading.Thread):
         """
         # Same as pdb.do_clear except uses self.stdin.readline (as it should).
         if not arg:
-            bplist = [bp for bp in bdb.Breakpoint.bpbynumber if bp]
-            if bplist:
+            if bplist := [bp for bp in bdb.Breakpoint.bpbynumber if bp]:
                 print('Clear all breakpoints?')
                 reply = self.stdin.readline().strip().lower()
                 if reply in ('y', 'yes'):
@@ -489,8 +486,7 @@ def show_line(line, fn) -> None:
 @g.command('db-again')
 def xdb_again(event):
     """Repeat the previous xdb command."""
-    xdb = getattr(g.app, 'xdb', None)
-    if xdb:
+    if xdb := getattr(g.app, 'xdb', None):
         xdb.qc.put(xdb.lastcmd)
     else:
         print('xdb not active')
@@ -593,8 +589,7 @@ def xdb_input(event=None):
         return
 
     def callback(args, c, event):
-        xdb = getattr(g.app, 'xdb', None)
-        if xdb:
+        if xdb := getattr(g.app, 'xdb', None):
             command = args[0].strip()
             if not command:
                 command = xdb.lastcmd
@@ -615,8 +610,7 @@ def xdb_status(event):
 
 # @+node:ekr.20181006163454.1: *3* do_command
 def db_command(event, command):
-    xdb = getattr(g.app, 'xdb', None)
-    if xdb:
+    if xdb := getattr(g.app, 'xdb', None):
         xdb.qc.put(command)
     else:
         print('xdb not active')
@@ -637,8 +631,7 @@ def xdb_command(event=None):
         g.trace('not found', path)
         return
     os.chdir(g.os_path_dirname(path))
-    xdb = getattr(g.app, 'xdb', None)
-    if xdb:
+    if xdb := getattr(g.app, 'xdb', None):
         # Just issue a message.
         xdb.write('xdb active: use Quit button or db-q to terminate')
         # Killing the previous debugger works,

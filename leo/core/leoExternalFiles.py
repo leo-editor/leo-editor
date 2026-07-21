@@ -151,8 +151,7 @@ class ExternalFilesController:
         self.on_idle_count += 1
         # New in Leo 5.7: always handle delayed requests.
         if g.app.windowList:
-            c = g.app.log and g.app.log.c
-            if c:
+            if c := g.app.log and g.app.log.c:
                 c.outerUpdate()
         # Fix #262: Improve performance when @bool check-for-changed-external-files is True.
         if self.unchecked_files:
@@ -314,8 +313,7 @@ class ExternalFilesController:
                     # Open a temp file containing just the node.
                     p = c.p
                     ext = self.compute_ext(c, p, ext)
-                    path = self.compute_temp_file_path(c, p, ext)
-                    if path:
+                    if path := self.compute_temp_file_path(c, p, ext):
                         self.remove_temp_file(p, path)
                         self.create_temp_file(c, ext, p)
                         self.open_file_in_external_editor(c, d, path)

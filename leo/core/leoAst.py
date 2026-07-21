@@ -377,8 +377,7 @@ if 1:  # pragma: no cover
         )
         while node:
             # First, try the node itself.
-            token = anchor_token(node)
-            if token:
+            if token := anchor_token(node):
                 return token
             # Second, try the most common nodes w/o token_lists:
             if isinstance(node, ast.Call):
@@ -389,10 +388,8 @@ if 1:  # pragma: no cover
             else:
                 # This will be used rarely.
                 for field in fields:
-                    node = getattr(node, field, None)
-                    if node:
-                        token = anchor_token(node)
-                        if token:
+                    if node := getattr(node, field, None):
+                        if token := anchor_token(node):
                             return token
                 else:
                     break
@@ -800,8 +797,7 @@ if 1:  # pragma: no cover
         children = parent.children
         i = children.index(old_node)
         children[i] = new_node
-        fields = getattr(old_node, '_fields', None)
-        if fields:
+        if fields := getattr(old_node, '_fields', None):
             for field in fields:
                 field = getattr(old_node, field)
                 if field == old_node:
@@ -1125,8 +1121,7 @@ class Fstringify:
             print(e)
             return False
         # Something besides newlines must change.
-        changed = regularize_nls(contents) != regularize_nls(results)
-        if changed:
+        if changed := regularize_nls(contents) != regularize_nls(results):
             show_diffs(contents, results, filename=filename)
         else:
             print(f"{tag}: Unchanged: {filename}")
@@ -1419,8 +1414,7 @@ class Fstringify:
             results.append(Token('op', '}'))
             i = end
         # Add the tail.
-        tail = lt_s[i:]
-        if tail:
+        if tail := lt_s[i:]:
             tail = tail.replace('{', '{{').replace('}', '}}')
             results.append(Token('string', tail[:-1]))
             results.append(Token('string', tail[-1]))
@@ -1850,8 +1844,7 @@ class Tokenizer:
         # tok_s is corresponding string in the line.
         tok_s = contents[s_offset:e_offset]
         # Add any preceding between-token whitespace.
-        ws = contents[self.prev_offset : s_offset]
-        if ws:
+        if ws := contents[self.prev_offset : s_offset]:
             # No need for a hook.
             self.add_token('ws', five_tuple, line, s_row, ws)
         # Always add token, even if it contributes no text!
@@ -2043,8 +2036,7 @@ class TokenOrderGenerator:
         if token.kind == 'op' and token.value in ',()':
             return
         # *Always* remember the last statement.
-        statement = find_statement_node(node)
-        if statement:
+        if statement := find_statement_node(node):
             self.last_statement_node = statement
             assert not isinstance(self.last_statement_node, ast.Module)
         if token.node is not None:  # pragma: no cover

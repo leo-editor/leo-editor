@@ -35,8 +35,7 @@ if TYPE_CHECKING:  # pragma: no cover
 @g.command('pretty-print-c')
 def beautifyCCode(event: LeoKeyEvent | None = None) -> None:
     """Beautify all C code in the selected tree."""
-    c = event.get('c') if event else None
-    if c:
+    if c := event.get('c') if event else None:
         CPrettyPrinter(c).pretty_print_tree(c.p)
 
 
@@ -107,8 +106,7 @@ def fstringify_files(event: LeoKeyEvent | None = None) -> None:
             print('')
             print(g.shortFileName(filename))
             changed = leoAst.Fstringify().fstringify_file(filename)
-            changed_s = 'changed' if changed else 'unchanged'
-            if changed:
+            if changed_s := 'changed' if changed else 'unchanged':
                 n_changed += 1
             g.es_print(f"{changed_s:>9}: {g.shortFileName(filename)}")
         else:
@@ -168,8 +166,7 @@ def fstringify_files_silent(event: LeoKeyEvent | None = None) -> None:
     for root in roots:
         filename = c.fullPath(root)
         if os.path.exists(filename):
-            changed = leoAst.Fstringify().fstringify_file_silent(filename)
-            if changed:
+            if leoAst.Fstringify().fstringify_file_silent(filename):
                 n_changed += 1
         else:
             print('')
