@@ -4039,7 +4039,7 @@ def readFileIntoString(
     encoding: str = 'utf-8',  # BOM may override this.
     kind: str = '',  # @file, @edit, ...
     verbose: bool = True,
-) -> tuple[str, str]:
+) -> tuple[str | None, str]:
     """
     Return the contents of the file whose full path is fileName.
 
@@ -4051,7 +4051,7 @@ def readFileIntoString(
     - The encoding given by the 'encoding' keyword arg.
     - None, which typically means 'utf-8'.
     """
-    fail = '', ''
+    fail = None, ''
     if not fileName:
         if verbose:
             g.trace('no fileName arg given')

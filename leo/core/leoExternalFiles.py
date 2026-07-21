@@ -278,7 +278,7 @@ class ExternalFilesController:
         c, p = ef.c, ef.p.copy()
         g.blue(f"updated {p.h}")
         s, e = g.readFileIntoString(ef.path)
-        p.b = s
+        p.b = s or ''
         if c.config.getBool('open-with-goto-node-on-update'):
             c.selectPosition(p)
         if c.config.getBool('open-with-save-on-update'):
