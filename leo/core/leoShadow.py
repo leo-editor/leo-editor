@@ -147,7 +147,7 @@ class ShadowController:
         if exists := g.os_path_exists(fileName):
             # Read the file.  Return if it is the same.
             s2, e = g.readFileIntoString(fileName)
-            if not s2:
+            if s2 is None:
                 return False
             if s == s2:
                 report = c.config.getBool('report-unchanged-files', default=True)

@@ -2847,7 +2847,7 @@ class LoadManager:
             # #1090: use cwd, not g.app.loadDir, to find scripts.
             path = g.finalize_join(os.getcwd(), fn)
             script, e = g.readFileIntoString(path, kind='script:', verbose=False)
-            if not script:
+            if script is None:
                 arg = m.group(0)
                 utils.option_error(arg, f"Script not found: {m.group(1)!r}")
             return script

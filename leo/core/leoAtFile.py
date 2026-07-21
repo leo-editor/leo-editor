@@ -326,7 +326,7 @@ class AtFile:
             return
         s, e = g.readFileIntoString(fn)
         if not s:
-            g.red(f"empty file: {fn}")
+            # g.red(f"empty file: {fn}")
             return
 
         # Create a dummy, unconnected, VNode as the root.
@@ -673,7 +673,7 @@ class AtFile:
         # Remember the full fileName.
         at.rememberReadPath(fn, p)
         s, e = g.readFileIntoString(fn, kind='@edit')
-        if not s:
+        if s is None:
             return
         encoding = e or 'utf-8'
         # Delete all children.
@@ -837,7 +837,7 @@ class AtFile:
         # Fix bug 889175: Remember the full fileName.
         at.rememberReadPath(fn, p)
         s, e = g.readFileIntoString(fn, kind='@edit')
-        if not s:
+        if s is None:
             return
         encoding = e or 'utf-8'
         # Delete all children.

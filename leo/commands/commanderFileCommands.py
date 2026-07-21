@@ -289,7 +289,7 @@ def import_txt_file(self: Self, fn: str) -> None:
     p = c.p.insertAfter()
     p.h = f"@edit {c.relativeDirectory(fn)}"
     s, e = g.readFileIntoString(fn, kind='@edit')
-    p.b = s
+    p.b = s or ''
     u.afterInsertNode(p, 'Import', undoData)
     c.setChanged()
     c.redraw(p)
@@ -972,7 +972,7 @@ def readFileIntoNode(self: Self, event: LeoKeyEvent | None = None) -> None:
     if isinstance(fileName, list):
         fileName = fileName[0]
     s, e = g.readFileIntoString(fileName)
-    if not s:
+    if s is None:
         return
     g.chdir(fileName)
     s = '@nocolor\n' + s

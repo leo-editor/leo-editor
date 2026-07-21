@@ -518,10 +518,10 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         if not fn2:
             return
         s1, e = g.readFileIntoString(fn)
-        if not s1:
+        if s1 is None:
             return
         s2, e = g.readFileIntoString(fn2)
-        if not s2:
+        if s2 is None:
             return
         lines1, lines2 = g.splitLines(s1), g.splitLines(s2)
         aList = difflib.ndiff(lines1, lines2)
@@ -586,7 +586,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         if not fn:
             return
         s, e = g.readFileIntoString(fn)
-        if s:
+        if s is not None:
             self.beginCommand(w, undoType='insert-file')
             i = w.getInsertPoint()
             w.insert(i, s)
