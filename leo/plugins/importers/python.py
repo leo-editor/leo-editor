@@ -5,7 +5,7 @@
 from __future__ import annotations
 import re
 import textwrap
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING
 import leo.core.leoGlobals as g
 from leo.plugins.importers.base_importer import Block, Importer
 
@@ -81,8 +81,7 @@ class Python_Importer(Importer):
                 ch = line[i]
                 if ch in '#\n':
                     break
-                m = self.string_pat1.match(line, i) or self.string_pat2.match(line, i)
-                if m:
+                if m := self.string_pat1.match(line, i) or self.string_pat2.match(line, i):
                     # Start skipping the string.
                     prefix, delim = m.group(1), m.group(2)
                     i += len(prefix)
@@ -285,7 +284,7 @@ class Python_Importer(Importer):
                     child.h = f"function: {child.h[4:].strip()}"
 
     # @+node:ekr.20230825164231.1: *4* python_i.find_docstring
-    def find_docstring(self, p: Position) -> Optional[str]:
+    def find_docstring(self, p: Position) -> str | None:
         """Creating a regex that returns a docstring is too tricky."""
         delims = ('"""', "'''")
         s_strip = p.b.strip()
@@ -353,10 +352,8 @@ class Python_Importer(Importer):
         """
         for p in parent.subtree():
             if p.h.startswith('class '):
-                child1 = p.firstChild()
-                if child1:
-                    docstring = self.find_docstring(child1)
-                    if docstring:
+                if child1 := p.firstChild():
+                    if docstring := self.find_docstring(child1):
                         self.move_class_docstring(docstring, child1, p)
 
     # @+node:ekr.20230930181855.1: *4* python_i.move_module_preamble

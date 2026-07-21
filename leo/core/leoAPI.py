@@ -101,7 +101,7 @@ class StringTextWrapper(QTextMixin):
         self.sel = self.ins, self.ins
 
     # @+node:ekr.20140903172510.18593: *4* StringTextWrapper.delete
-    def delete(self, i: int, j: int = None) -> None:
+    def delete(self, i: int, j: int | None = None) -> None:
         """StringTextWrapper."""
         if j is None:
             j = i + 1
@@ -189,7 +189,7 @@ class StringTextWrapper(QTextMixin):
         self.sel = i, i
 
     # @+node:ekr.20140903172510.18589: *4* StringTextWrapper.selectAllText
-    def selectAllText(self, insert: int = None) -> None:
+    def selectAllText(self, insert: int | None = None) -> None:
         """StringTextWrapper."""
         self.setSelectionRange(0, len(self.s), insert=insert)
 
@@ -202,14 +202,14 @@ class StringTextWrapper(QTextMixin):
         self.sel = i, i
 
     # @+node:ekr.20140903172510.18587: *4* StringTextWrapper.setInsertPoint
-    def setInsertPoint(self, i: int, s: str = None) -> None:
+    def setInsertPoint(self, i: int, s: str | None = None) -> None:
         """StringTextWrapper."""
         self.virtualInsertPoint = i
         self.ins = i
         self.sel = i, i
 
     # @+node:ekr.20070228111853: *4* StringTextWrapper.setSelectionRange
-    def setSelectionRange(self, i: int, j: int, insert: int = None) -> None:
+    def setSelectionRange(self, i: int, j: int, insert: int | None = None) -> None:
         """StringTextWrapper."""
         # Note: leoFind.py may set those to None. See its 'save' and 'restore' methods.
         self.sel = i, j

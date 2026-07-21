@@ -6,7 +6,7 @@
 # @+node:ekr.20220827065126.1: ** << gotoCommands imports & annotations >>
 from __future__ import annotations
 import re
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -27,7 +27,7 @@ class GoToCommands:
 
     # @+others
     # @+node:ekr.20100216141722.5622: *3* goto.find_file_line & helper
-    def find_file_line(self, n: int, p: Position = None) -> tuple[Position, int]:
+    def find_file_line(self, n: int, p: Position | None = None) -> tuple[Position, int]:
         """
         Helper for goto-global-line command.
 
@@ -48,7 +48,7 @@ class GoToCommands:
         return p, offset
 
     # @+node:ekr.20230727074847.1: *4* goto.find_file_line_helper
-    def find_file_line_helper(self, n: int, p: Position = None) -> tuple[Position, int]:
+    def find_file_line_helper(self, n: int, p: Position | None = None) -> tuple[Position, int]:
         c = self.c
         if n < 0:
             return None, -1
@@ -89,15 +89,14 @@ class GoToCommands:
             # Not all sentinels count as real lines.
             gnx, h, offset = self.scan_nonsentinel_lines(lines, n, root)
         if gnx:
-            p = self.find_gnx2(gnx)
-            if p:
+            if p := self.find_gnx2(gnx):
                 self.success(n, offset, p)
                 return p, offset
         self.fail(lines, n, root)
         return None, -1
 
     # @+node:ekr.20160921210529.1: *3* goto.find_node_start & helper
-    def find_node_start(self, p: Position, s: str = None) -> Optional[int]:
+    def find_node_start(self, p: Position, s: str | None = None) -> int | None:
         """
         Helper for show-file-line command.
 
@@ -147,7 +146,7 @@ class GoToCommands:
         delims: tuple[str, str, str],  # The comment delims.
         contents: list[str],  # The contents of the file *including* sentinels.
         target_i: int,  # The line number of the target line.
-    ) -> Optional[int]:
+    ) -> int | None:
         """
         Return the number of hidden sentinels preceding contents[target_i].
         """
@@ -174,8 +173,7 @@ class GoToCommands:
         # Script lines now *do* have gnx's.
         gnx, h, offset = self.scan_sentinel_lines(lines, n, root)
         if gnx:
-            p = self.find_gnx2(gnx)
-            if p:
+            if p := self.find_gnx2(gnx):
                 self.success(n, offset, p)
                 return p, offset
         self.fail(lines, n, root)
@@ -357,7 +355,7 @@ class GoToCommands:
         p = self.find_gnx2(gnx)
         return p, bool(p)
 
-    def find_gnx2(self, gnx: str) -> Optional[Position]:
+    def find_gnx2(self, gnx: str) -> Position | None:
         """
         Scan the outline for a node with the given gnx and vnodeName.
 
@@ -374,8 +372,7 @@ class GoToCommands:
 
         # Search the entire outline.
         positions: list[Position]
-        backwards = c.config.getBool('search-links-backwards', default=True)
-        if backwards:
+        if c.config.getBool('search-links-backwards', default=True):
             positions = list(reversed(list(c.all_positions())))
         else:
             positions = list(c.all_positions())
@@ -395,8 +392,7 @@ class GoToCommands:
         # Look up the tree for the first @file node.
         for p in p.self_and_parents(copy=False):
             if not p.isAtAllNode():
-                fileName = p.anyAtFileNodeName()
-                if fileName:
+                if fileName := p.anyAtFileNodeName():
                     return p.copy(), fileName
         # Search the entire tree for cloned nodes.
         for p in c.all_positions():
@@ -404,8 +400,7 @@ class GoToCommands:
                 # Found a cloned position.
                 for p2 in p.self_and_parents():
                     if not p2.isAtAllNode():
-                        fileName = p2.anyAtFileNodeName()
-                        if fileName:
+                        if fileName := p2.anyAtFileNodeName():
                             return p2.copy(), fileName
         return None, None
 
@@ -519,7 +514,7 @@ class GoToCommands:
 
 # @+node:ekr.20180517041303.1: ** show-file-line
 @g.command('show-file-line')
-def show_file_line(event: LeoKeyEvent) -> None:
+def show_file_line(event: LeoKeyEvent | None = None) -> None:
     """
     Print the external file line number that corresponds to the line
     containing the cursor.

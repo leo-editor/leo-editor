@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import textwrap
 from collections import OrderedDict
-from typing import Dict, TYPE_CHECKING, Optional
+from typing import Dict, TYPE_CHECKING
 
 from leo.core.leoQt import QtWidgets, Orientation
 from leo.core import leoGlobals as g
@@ -83,7 +83,7 @@ def register_layout(name: str):  # type: ignore
 # @+node:tom.20240928171510.1: *3* command: 'layout-big-tree'
 @g.command('layout-big-tree')
 @register_layout('layout-big-tree')
-def big_tree(event: LeoKeyEvent) -> None:
+def big_tree(event: LeoKeyEvent | None = None) -> None:
     """
     Create Leo's big-tree layout:
 
@@ -95,7 +95,9 @@ def big_tree(event: LeoKeyEvent) -> None:
         │    VR   │  VR3   │
         └─────────┴────────┘
     """
-    c = event.get('c')
+    c = event.get('c') if event else None
+    if not c:
+        return
     cache = c.frame.top.layout_cache
     cache.restoreFromLayout()
     cache.layout_dict = {'name': 'big-tree'}
@@ -150,7 +152,7 @@ def big_tree(event: LeoKeyEvent) -> None:
 # @+node:ekr.20241008180407.1: *3* command: 'layout-legacy'
 @g.command('layout-legacy')
 @register_layout('layout-legacy')
-def quadrants(event: LeoKeyEvent) -> None:
+def quadrants(event: LeoKeyEvent | None = None) -> None:
     """
     Create Leo's legacy layout:
 
@@ -160,7 +162,9 @@ def quadrants(event: LeoKeyEvent) -> None:
         │   body        │ VR │ VR3  │
         └───────────────┴────┴──────┘
     """
-    c = event.get('c')
+    c = event.get('c') if event else None
+    if not c:
+        return
     dw = c.frame.top
     cache = dw.layout_cache
     cache.restoreFromLayout(LEGACY_LAYOUT)
@@ -169,7 +173,7 @@ def quadrants(event: LeoKeyEvent) -> None:
 # @+node:ekr.20241008174427.1: *3* command: 'layout-horizontal-thirds'
 @g.command('layout-horizontal-thirds')
 @register_layout('layout-horizontal-thirds')
-def horizontal_thirds(event: LeoKeyEvent) -> None:
+def horizontal_thirds(event: LeoKeyEvent | None = None) -> None:
     """
     Create Leo's horizontal-thirds layout:
 
@@ -181,7 +185,9 @@ def horizontal_thirds(event: LeoKeyEvent) -> None:
         │   VR    │   VR3   │
         └─────────┴─────────┘
     """
-    c = event.get('c')
+    c = event.get('c') if event else None
+    if not c:
+        return
     dw = c.frame.top
     cache = dw.layout_cache
     cache.restoreFromLayout(HORIZONTAL_THIRDS_LAYOUT)
@@ -190,7 +196,7 @@ def horizontal_thirds(event: LeoKeyEvent) -> None:
 # @+node:ekr.20241008174427.2: *3* command: 'layout-render-focused'
 @g.command('layout-render-focused')
 @register_layout('layout-render-focused')
-def render_focused(event: LeoKeyEvent) -> None:
+def render_focused(event: LeoKeyEvent | None = None) -> None:
     """
     Create Leo's render-focused layout:
 
@@ -204,7 +210,9 @@ def render_focused(event: LeoKeyEvent) -> None:
 
     Note: The expand/contract-main-splitter commands have no effect when using this layout.
     """
-    c = event.get('c')
+    c = event.get('c') if event else None
+    if not c:
+        return
     dw = c.frame.top
     cache = dw.layout_cache
     cache.restoreFromLayout(RENDERED_FOCUSED_LAYOUT)
@@ -213,12 +221,12 @@ def render_focused(event: LeoKeyEvent) -> None:
 # @+node:tom.20240930101515.1: *3* command: 'layout-restore-to-setting'
 @g.command('layout-restore-to-setting')
 @register_layout('layout-restore-to-setting')
-def restoreDefaultLayout(event: LeoKeyEvent) -> None:
+def restoreDefaultLayout(event: LeoKeyEvent | None = None) -> None:
     """
     Select the layout specified by the `@string qt-layout-name` setting in effect
     for this outline. Use the **legacy** layout if the user's setting is erroneous.
     """
-    c = event.get('c')
+    c = event.get('c') if event else None
     if not c:
         return
     event = g.app.gui.create_key_event(c)
@@ -234,13 +242,13 @@ def restoreDefaultLayout(event: LeoKeyEvent) -> None:
 # @+node:tom.20241005163724.1: *3* command: 'layout-swap-log-panel'
 @g.command('layout-swap-log-panel')
 @register_layout('layout-swap-log-panel')
-def swapLogPanel(event: LeoKeyEvent) -> None:
+def swapLogPanel(event: LeoKeyEvent | None = None) -> None:
     """
     Move the Log frame between main and secondary splitters.
 
     **Do not use this layout as the initial layout.**
     """
-    c = event.get('c')
+    c = event.get('c') if event else None
     if not c:
         return
     gui = g.app.gui
@@ -272,7 +280,7 @@ def swapLogPanel(event: LeoKeyEvent) -> None:
 # @+node:ekr.20241008175137.1: *3* command: 'layout-vertical-thirds'
 @g.command('layout-vertical-thirds')
 @register_layout('layout-vertical-thirds')
-def vertical_thirds(event: LeoKeyEvent) -> None:
+def vertical_thirds(event: LeoKeyEvent | None = None) -> None:
     """
     Create Leo's vertical-thirds layout:
 
@@ -284,7 +292,9 @@ def vertical_thirds(event: LeoKeyEvent) -> None:
                     |
                     └─ Main splitter
     """
-    c = event.get('c')
+    c = event.get('c') if event else None
+    if not c:
+        return
     dw = c.frame.top
     cache = dw.layout_cache
     cache.restoreFromLayout(VERTICAL_THIRDS_LAYOUT)
@@ -293,7 +303,7 @@ def vertical_thirds(event: LeoKeyEvent) -> None:
 # @+node:ekr.20241008175303.1: *3* command: 'layout-vertical-thirds2'
 @g.command('layout-vertical-thirds2')
 @register_layout('layout-vertical-thirds2')
-def vertical_thirds2(event: LeoKeyEvent) -> None:
+def vertical_thirds2(event: LeoKeyEvent | None = None) -> None:
     """
     Create Leo's vertical-thirds2 layout:
 
@@ -305,7 +315,9 @@ def vertical_thirds2(event: LeoKeyEvent) -> None:
                     |
                     └─ Main splitter
     """
-    c = event.get('c')
+    c = event.get('c') if event else None
+    if not c:
+        return
     dw = c.frame.top
     cache = dw.layout_cache
     cache.restoreFromLayout(VERTICAL_THIRDS2_LAYOUT)
@@ -334,8 +346,10 @@ def showLayouts(event) -> None:
 
 # @+node:tom.20250106123058.1: *3* command: show_layout_name
 @g.command('show-current-layout')
-def show_layout_name(event: LeoKeyEvent) -> None:
-    c = event.get('c')
+def show_layout_name(event: LeoKeyEvent | None = None) -> None:
+    c = event.get('c') if event else None
+    if not c:
+        return
     cache = c.frame.top.layout_cache
     if cache.layout_dict:
         name = cache.layout_dict.get('name', 'unnamed layout')
@@ -482,11 +496,11 @@ class LayoutCacheWidget(QWidget):
         }
     """
 
-    def __init__(self, c: Cmdr, parent: Optional[QWidget]) -> None:
+    def __init__(self, c: Cmdr, parent: QWidget | None) -> None:
         super().__init__(parent)
         self.c = c
         self.setObjectName('leo-layout-cache')
-        self.layout_dict: Dict = None
+        self.layout_dict: Dict | None = None
 
         # maps splitter objectNames to their splitter object.
         self.created_splitter_dict: Dict[str, QWidget] = {}
@@ -581,7 +595,7 @@ class LayoutCacheWidget(QWidget):
         self.resize_pane(widget, delta=40)
 
     # @+node:tom.20240923194438.5: *4* LCW.find_splitter_by_name
-    def find_splitter_by_name(self, name: str) -> Optional[QSplitter]:
+    def find_splitter_by_name(self, name: str) -> QSplitter | None:
         """Return the splitter with the given objectName."""
 
         def is_splitter(obj: object) -> bool:
@@ -604,9 +618,9 @@ class LayoutCacheWidget(QWidget):
         return g.app.gui.find_widget_by_name(self.c, name)
 
     # @+node:tom.20240923194438.4: *4* LCW.find_widget_in_children
-    def find_widget_in_children(self, name: str) -> Optional[QWidget]:
+    def find_widget_in_children(self, name: str) -> QWidget | None:
         """Return a child widget with the given objectName."""
-        w: QWidget = None
+        w: QWidget | None = None
         for kid in self.children():
             if kid.objectName() == name:
                 w = kid  # type: ignore [assignment]
@@ -657,7 +671,7 @@ class LayoutCacheWidget(QWidget):
                 return
 
     # @+node:tom.20240923194438.6: *4* LCW.restoreFromLayout
-    def restoreFromLayout(self, layout: Dict = None) -> None:
+    def restoreFromLayout(self, layout: Dict | None = None) -> None:
         self.layout_dict = layout
         if layout is None:
             layout = FALLBACK_LAYOUT
@@ -665,8 +679,7 @@ class LayoutCacheWidget(QWidget):
         # @+node:tom.20240923194438.7: *5* << initialize data structures >> restoreFromLayout
         ORIENTATIONS = layout['ORIENTATIONS']
 
-        has_vr3 = is_module_loaded(VR3_MODULE_NAME)
-        if has_vr3:
+        if has_vr3 := is_module_loaded(VR3_MODULE_NAME):
             if (vr3 := self.find_widget('viewrendered3_pane')) is None:
                 import leo.plugins.viewrendered3 as vr3_mod
 

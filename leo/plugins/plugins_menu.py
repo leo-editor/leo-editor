@@ -140,23 +140,25 @@ def createPluginsMenu(tag: str, keywords: KWargs) -> None:
     menu_name = keywords.get('menu_name', '&Plugins')
     pc = g.app.pluginsController
     lmd = pc.loadedModules
-    if lmd:
-        impModSpecList = list(lmd.keys())
+    if not lmd:
+        return  # #4753
 
-        def key(aList: list) -> str:
-            return aList.split('.')[-1].lower()
+    impModSpecList = list(lmd.keys())
 
-        impModSpecList.sort(key=key)  # type:ignore
-        plgObList: list[PlugIn] = [PlugIn(lmd[impModSpec], c) for impModSpec in impModSpecList]
-        c.pluginsMenu = pluginMenu = c.frame.menu.createNewMenu(menu_name)
-        # 2013/12/13: Add any items in @menu plugins
-        add_menu_from_settings(c)
-        PluginDatabase.setMenu("Default", pluginMenu)
-        # Add group menus
-        for group_name in PluginDatabase.getGroups():
-            PluginDatabase.setMenu(group_name, c.frame.menu.createNewMenu(group_name, menu_name))
-        for plgObj in plgObList:
-            addPluginMenuItem(plgObj, c)
+    def key(s: str) -> str:
+        return s.split('.')[-1].lower()
+
+    impModSpecList.sort(key=key)
+    plgObList: list[PlugIn] = [PlugIn(lmd[impModSpec], c) for impModSpec in impModSpecList]
+    c.pluginsMenu = pluginMenu = c.frame.menu.createNewMenu(menu_name)
+    # 2013/12/13: Add any items in @menu plugins
+    add_menu_from_settings(c)
+    PluginDatabase.setMenu("Default", pluginMenu)
+    # Add group menus
+    for group_name in PluginDatabase.getGroups():
+        PluginDatabase.setMenu(group_name, c.frame.menu.createNewMenu(group_name, menu_name))
+    for plgObj in plgObList:
+        addPluginMenuItem(plgObj, c)
 
 
 # @+node:ekr.20131213072223.19531: *4* add_menu_from_settings
@@ -192,8 +194,7 @@ def init() -> bool:
         return False
     if not g.app.gui:
         g.app.createDefaultGui()
-    ok = g.app.gui.guiName() == 'qt'
-    if ok:
+    if ok := g.app.gui.guiName() == 'qt':
         g.registerHandler("create-optional-menus", createPluginsMenu)
         g.plugin_signon(__name__)
     return ok

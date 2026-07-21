@@ -52,12 +52,12 @@ class IdleTime:
 
     # @+others
     # @+node:ekr.20140825042850.18406: *3* IdleTime.__init__
-    def __init__(self, handler: Callable, delay: int = 500, tag: str = None) -> None:
+    def __init__(self, handler: Callable, delay: int = 500, tag: str | None = None) -> None:
         """ctor for IdleTime class."""
         # For use by handlers...
         self.count = 0  # The number of times handler has been called.
-        self.starting_time: float = None  # Time that the timer started.
-        self.time: float = None  # Time that the handle is called.
+        self.starting_time: float | None = None  # Time that the timer started.
+        self.time: float | None = None  # Time that the handle is called.
         self.tag: str = tag  # For debugging.
 
         # For the IdleTime class...
@@ -76,8 +76,7 @@ class IdleTime:
     # @+node:ekr.20140825102404.18525: *3* IdleTime.__repr__
     def __repr__(self) -> str:
         """IdleTime repr."""
-        tag = self.tag
-        if tag:
+        if tag := self.tag:
             return f"<IdleTime: {tag if isinstance(tag, str) else repr(tag)}>"
         return f"<IdleTime: id: {id(self)}>"
 

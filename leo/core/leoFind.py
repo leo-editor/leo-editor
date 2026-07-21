@@ -9,7 +9,7 @@ from collections.abc import Callable
 import keyword
 import re
 import time
-from typing import Any, Generator, Optional, TYPE_CHECKING
+from typing import Any, Generator, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -669,7 +669,7 @@ class LeoFind:
         w.returnPressed()
 
     # @+node:ekr.20150629084611.1: *6* find._compute_find_def_word
-    def _compute_find_def_word(self, event: LeoKeyEvent) -> Optional[str]:  # pragma: no cover (cmd)
+    def _compute_find_def_word(self, event: LeoKeyEvent | None = None) -> str | None:
         """Init the find-def command. Return the word to find or None."""
         c = self.c
         w = c.frame.body.wrapper
@@ -828,7 +828,7 @@ class LeoFind:
         return results
 
     # @+node:ekr.20180511045458.1: *6* find._switch_style
-    def _switch_style(self, word: str) -> Optional[str]:
+    def _switch_style(self, word: str) -> str | None:
         """
         Switch between camelCase and underscore_style function definitions.
         Return None if there would be no change.
@@ -1099,7 +1099,7 @@ class LeoFind:
 
     # @+node:ekr.20131117164142.16919: *4* find.toggle-find-*
     @cmd('toggle-find-collapses-nodes')
-    def toggle_find_collapses_nodes(self, event: LeoKeyEvent) -> None:
+    def toggle_find_collapses_nodes(self, event: LeoKeyEvent | None = None) -> None:
         """Toggle the 'Collapse Nodes' checkbox in the find tab."""
         c = self.c
         c.sparse_find = not c.sparse_find
@@ -1107,41 +1107,41 @@ class LeoFind:
             g.es('sparse_find', c.sparse_find)
 
     @cmd('toggle-find-ignore-case-option')
-    def toggle_ignore_case_option(self, event: LeoKeyEvent) -> None:
+    def toggle_ignore_case_option(self, event: LeoKeyEvent | None = None) -> None:
         """Toggle the 'Ignore Case' checkbox in the Find tab."""
         self.toggle_option(event, 'ignore_case')
 
     @cmd('toggle-find-mark-changes-option')
-    def toggle_mark_changes_option(self, event: LeoKeyEvent) -> None:
+    def toggle_mark_changes_option(self, event: LeoKeyEvent | None = None) -> None:
         """Toggle the 'Mark Changes' checkbox in the Find tab."""
         self.toggle_option(event, 'mark_changes')
 
     @cmd('toggle-find-mark-finds-option')
-    def toggle_mark_finds_option(self, event: LeoKeyEvent) -> None:
+    def toggle_mark_finds_option(self, event: LeoKeyEvent | None = None) -> None:
         """Toggle the 'Mark Finds' checkbox in the Find tab."""
         self.toggle_option(event, 'mark_finds')
 
     @cmd('toggle-find-regex-option')
-    def toggle_regex_option(self, event: LeoKeyEvent) -> None:
+    def toggle_regex_option(self, event: LeoKeyEvent | None = None) -> None:
         """Toggle the 'Regexp' checkbox in the Find tab."""
         self.toggle_option(event, 'pattern_match')
 
     @cmd('toggle-find-in-body-option')
-    def toggle_search_body_option(self, event: LeoKeyEvent) -> None:
+    def toggle_search_body_option(self, event: LeoKeyEvent | None = None) -> None:
         """Set the 'Search Body' checkbox in the Find tab."""
         self.toggle_option(event, 'search_body')
 
     @cmd('toggle-find-in-headline-option')
-    def toggle_search_headline_option(self, event: LeoKeyEvent) -> None:
+    def toggle_search_headline_option(self, event: LeoKeyEvent | None = None) -> None:
         """Toggle the 'Search Headline' checkbox in the Find tab."""
         self.toggle_option(event, 'search_headline')
 
     @cmd('toggle-find-word-option')
-    def toggle_whole_word_option(self, event: LeoKeyEvent) -> None:
+    def toggle_whole_word_option(self, event: LeoKeyEvent | None = None) -> None:
         """Toggle the 'Whole Word' checkbox in the Find tab."""
         self.toggle_option(event, 'whole_word')
 
-    def toggle_option(self, event: LeoKeyEvent, checkbox_name: str) -> None:
+    def toggle_option(self, event: LeoKeyEvent | None, checkbox_name: str) -> None:
         c, finder = self.c, self.c.findCommands
         self.ftm.toggle_checkbox(checkbox_name)
         if self.minibuffer_mode:
@@ -1524,7 +1524,9 @@ class LeoFind:
             event, prefix='Clone Find All Flattened: ', handler=self.interactive_cff1
         )
 
-    def interactive_cff1(self, event: LeoKeyEvent) -> int:  # pragma: no cover (interactive)
+    def interactive_cff1(
+        self, event: LeoKeyEvent | None = None
+    ) -> int:  # pragma: no cover (interactive)
         c, k, w = self.c, self.k, self.c.frame.body.wrapper
         # Settings...
         pattern = k.arg
@@ -1682,7 +1684,9 @@ class LeoFind:
         k.showStateAndMode()
         self.do_find_all(settings)
 
-    def find_all_escape_handler(self, event: LeoKeyEvent) -> None:  # pragma: no cover (interactive)
+    def find_all_escape_handler(
+        self, event: LeoKeyEvent | None = None
+    ) -> None:  # pragma: no cover (interactive)
         k = self.k
         prompt = 'Replace ' + ('Regex' if self.pattern_match else 'String')
         find_pattern = k.arg
@@ -1994,7 +1998,7 @@ class LeoFind:
 
         # @+others  # Define helper functions
         # @+node:ekr.20250316070519.1: *6* function: _find_position
-        def _find_position(c: Cmdr, target: str) -> Optional[Position]:
+        def _find_position(c: Cmdr, target: str) -> Position | None:
             """Search c for a pattern matching the target."""
             for p in c.all_positions():
                 # Search headline:
@@ -2133,7 +2137,9 @@ class LeoFind:
     # @+node:ekr.20131119060731.22452: *4* find.start-search (Ctrl-F) & common states
     @cmd('start-search')
     @cmd('search-forward')  # Compatibility.
-    def start_search(self, event: LeoKeyEvent) -> None:  # pragma: no cover (interactive)
+    def start_search(
+        self, event: LeoKeyEvent | None = None
+    ) -> None:  # pragma: no cover (interactive)
         """
         The default binding of Ctrl-F.
 
@@ -2236,7 +2242,7 @@ class LeoFind:
         k.getNextArg(self._start_search_escape2)
 
     # @+node:ekr.20210117143615.1: *5* find._start_search_escape2
-    def _start_search_escape2(self, event: LeoKeyEvent) -> None:  # pragma: no cover
+    def _start_search_escape2(self, event: LeoKeyEvent | None = None) -> None:
         c, k, w = self.c, self.k, self.c.frame.body.wrapper
         # Compute settings...
         find_pattern = self._sString
@@ -2256,7 +2262,9 @@ class LeoFind:
 
     # @+node:ekr.20231127044802.1: *4* find.summarize
     @cmd('summarize')
-    def summarize_command(self, event: LeoKeyEvent) -> None:  # pragma: no cover (interactive)
+    def summarize_command(
+        self, event: LeoKeyEvent | None = None
+    ) -> None:  # pragma: no cover (interactive)
         """
         The summarize command. Prompt for a regex and list all matches in a new
         top-level node.
@@ -2352,7 +2360,9 @@ class LeoFind:
             return
         self.start_state_machine(event, prefix='Tag Node: ', handler=self.interactive_tag_node1)
 
-    def interactive_tag_node1(self, event: LeoKeyEvent) -> None:  # pragma: no cover (interactive)
+    def interactive_tag_node1(
+        self, event: LeoKeyEvent | None = None
+    ) -> None:  # pragma: no cover (interactive)
         c, k, p = self.c, self.k, self.c.p
         # Settings...
         tag = k.arg
@@ -2379,7 +2389,9 @@ class LeoFind:
     # @+node:ekr.20210112050845.1: *4* find.word-search
     @cmd('word-search')
     @cmd('word-search-forward')
-    def word_search_forward(self, event: LeoKeyEvent) -> None:  # pragma: no cover (interactive)
+    def word_search_forward(
+        self, event: LeoKeyEvent | None = None
+    ) -> None:  # pragma: no cover (interactive)
         """Same as start-search, with whole_word setting."""
         # Set flag for show_find_options.
         self.whole_word = True
@@ -2396,7 +2408,9 @@ class LeoFind:
 
     # @+node:ekr.20131117164142.17009: *4* find.word-search-backward
     @cmd('word-search-backward')
-    def word_search_backward(self, event: LeoKeyEvent) -> None:  # pragma: no cover (interactive)
+    def word_search_backward(
+        self, event: LeoKeyEvent | None = None
+    ) -> None:  # pragma: no cover (interactive)
         """Same as word-search, but in reverse."""
         # Set flags for show_find_options.
         self.reverse = True
@@ -2658,7 +2672,7 @@ class LeoFind:
         return None, None, None
 
     # @+node:ekr.20131123132043.16476: *5* find._fnm_next_after_fail & helper
-    def _fnm_next_after_fail(self, p: Position) -> Optional[Position]:
+    def _fnm_next_after_fail(self, p: Position) -> Position | None:
         """Return the next node after a failed search or None."""
         # Move to the next position.
         p = p.threadBack() if self.reverse else p.threadNext()
@@ -3075,7 +3089,7 @@ class LeoFind:
     # @+node:ekr.20210112192011.1: *4* LeoFind.Isearch commands
     # @+node:ekr.20131117164142.16941: *5* find.isearch_forward
     @cmd('isearch-forward')
-    def isearch_forward(self, event: LeoKeyEvent) -> None:  # pragma: no cover (cmd)
+    def isearch_forward(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover (cmd)
         """
         Begin a forward incremental search.
 
@@ -3092,7 +3106,7 @@ class LeoFind:
 
     # @+node:ekr.20131117164142.16942: *5* find.isearch_backward
     @cmd('isearch-backward')
-    def isearch_backward(self, event: LeoKeyEvent) -> None:  # pragma: no cover (cmd)
+    def isearch_backward(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover (cmd)
         """
         Begin a backward incremental search.
 
@@ -3109,7 +3123,9 @@ class LeoFind:
 
     # @+node:ekr.20131117164142.16943: *5* find.isearch_forward_regexp
     @cmd('isearch-forward-regexp')
-    def isearch_forward_regexp(self, event: LeoKeyEvent) -> None:  # pragma: no cover (cmd)
+    def isearch_forward_regexp(
+        self, event: LeoKeyEvent | None = None
+    ) -> None:  # pragma: no cover (cmd)
         """
         Begin a forward incremental regexp search.
 
@@ -3126,7 +3142,9 @@ class LeoFind:
 
     # @+node:ekr.20131117164142.16944: *5* find.isearch_backward_regexp
     @cmd('isearch-backward-regexp')
-    def isearch_backward_regexp(self, event: LeoKeyEvent) -> None:  # pragma: no cover (cmd)
+    def isearch_backward_regexp(
+        self, event: LeoKeyEvent | None = None
+    ) -> None:  # pragma: no cover (cmd)
         """
         Begin a backward incremental regexp search.
 
@@ -3147,7 +3165,9 @@ class LeoFind:
 
     # @+node:ekr.20131117164142.16945: *5* find.isearch_with_present_options
     @cmd('isearch-with-present-options')
-    def isearch_with_present_options(self, event: LeoKeyEvent) -> None:  # pragma: no cover (cmd)
+    def isearch_with_present_options(
+        self, event: LeoKeyEvent | None = None
+    ) -> None:  # pragma: no cover (cmd)
         """
         Begin an incremental search using find panel options.
 
@@ -3242,7 +3262,9 @@ class LeoFind:
                 k.updateLabel(event)
 
     # @+node:ekr.20131117164142.16950: *5* find.isearch_state_handler
-    def isearch_state_handler(self, event: LeoKeyEvent) -> None:  # pragma: no cover (cmd)
+    def isearch_state_handler(
+        self, event: LeoKeyEvent | None = None
+    ) -> None:  # pragma: no cover (cmd)
         """The state manager when the state is 'isearch"""
         # c = self.c
         k = self.k
@@ -3332,7 +3354,7 @@ class LeoFind:
     # @+node:ekr.20131117164142.16955: *5* find.start_incremental
     def start_incremental(
         self,
-        event: LeoKeyEvent,
+        event: LeoKeyEvent | None,
         commandName: str,
         forward: bool,
         ignoreCase: bool,
@@ -3491,7 +3513,7 @@ class LeoFind:
     # @+node:ekr.20131117164142.17007: *4* find.start_state_machine & helpers
     def start_state_machine(
         self,
-        event: LeoKeyEvent,
+        event: LeoKeyEvent | None,
         prefix: str,
         handler: Callable,
         escape_handler: Callable = None,
@@ -3521,7 +3543,7 @@ class LeoFind:
         k.get1Arg(event, handler=self.find_state0, tabList=self.findTextList, completion=True)
 
     # @+node:ekr.20260521123442.1: *5* find.find_state0
-    def find_state0(self, event: LeoKeyEvent) -> None:  # pragma: no cover (cmd)
+    def find_state0(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover (cmd)
         """Dispatch the next handler."""
         k = self.k
         if k.getArgEscapeFlag:

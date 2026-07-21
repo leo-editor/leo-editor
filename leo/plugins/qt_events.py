@@ -2,6 +2,8 @@
 # @+node:ekr.20140907103315.18766: * @file ../plugins/qt_events.py
 """Leo's Qt event handling code."""
 
+from __future__ import annotations
+
 # @+<< about internal bindings >>
 # @+node:ekr.20110605121601.18538: ** << about internal bindings >>
 # @@language rest
@@ -35,10 +37,14 @@
 # rules.
 # @-<< about internal bindings >>
 import sys
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoGui
 from leo.core.leoQt import QtCore, QtGui, QtWidgets
 from leo.core.leoQt import Key, KeyboardModifier, Type
+
+if TYPE_CHECKING:
+    from leo.core.leoCommands import Commands as Cmdr
 
 
 # @+others
@@ -98,7 +104,7 @@ class LeoQtEventFilter(QtCore.QObject):
     # @+node:ekr.20110605121601.18540: *3* LeoQtEventFilter.eventFilter & helpers
     def eventFilter(self, obj, event):
         """Return False if Qt should handle the event."""
-        c, k = self.c, self.c.k
+        c = self.c
         # Handle non-key events first.
         if not g.app:
             return False  # For unit tests, but g.unitTesting may be False!
@@ -127,6 +133,8 @@ class LeoQtEventFilter(QtCore.QObject):
             binding, ch, lossage = self.toBinding(event)
             if not binding:
                 return False  # Let Qt handle the key.
+            c = self.currentCommander()
+            k = c.k
             # Pass the KeyStroke to masterKeyHandler.
             key_event = self.createKeyEvent(event, c, self.w, ch, binding)
             # #1933: Update the g.app.lossage
@@ -142,9 +150,11 @@ class LeoQtEventFilter(QtCore.QObject):
         return True  # Whatever happens, suppress all other Qt key handling.
 
     # @+node:ekr.20110605195119.16937: *4* LeoQtEventFilter.createKeyEvent
-    def createKeyEvent(self, event, c, w, ch, binding):
+    def createKeyEvent(
+        self, event: Any, c: Cmdr, w: Any, ch: str, binding: str
+    ) -> leoGui.LeoKeyEvent:
         return leoGui.LeoKeyEvent(
-            c=self.c,
+            c=c,
             # char = None doesn't work at present.
             # But really, the binding should suffice.
             char=ch,
@@ -155,6 +165,18 @@ class LeoQtEventFilter(QtCore.QObject):
             x_root=getattr(event, 'x_root', None) or 0,
             y_root=getattr(event, 'y_root', None) or 0,
         )
+
+    def currentCommander(self) -> Cmdr:
+        """Return the current tab's commander on macOS."""
+        c = self.c
+        if sys.platform != 'darwin':
+            return c
+        try:
+            master = getattr(c.frame.top, 'leo_master', None)
+            current = master.currentWidget()
+            return getattr(current, 'leo_c', None) or c
+        except Exception:
+            return c
 
     # @+node:ekr.20180413180751.2: *4* LeoQtEventFilter.doNonKeyEvent
     def doNonKeyEvent(self, event, obj):
@@ -186,8 +208,7 @@ class LeoQtEventFilter(QtCore.QObject):
         """
         c = self.c
         t = event.type()
-        isEditWidget = obj == c.frame.tree.headline_wrapper(c.p)
-        if isEditWidget:
+        if obj == c.frame.tree.headline_wrapper(c.p):
             # QLineEdit: ignore all key events except keyRelease events.
             return t != Type.KeyRelease
         if t == Type.KeyPress:
@@ -399,8 +420,7 @@ class LeoQtEventFilter(QtCore.QObject):
             e.Type.Shortcut: 'shortcut',  # 117
             e.Type.ShortcutOverride: 'shortcut-override',  # 51
         }
-        kind = key_events.get(event.type())
-        if kind:
+        if kind := key_events.get(event.type()):
             mods = ','.join(self.qtMods(event))
             g.trace(f"{kind:>20}: {mods:>7} {event.text()!r}")
 

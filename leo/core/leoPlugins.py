@@ -18,7 +18,6 @@ if TYPE_CHECKING:  # pragma: no cover
     Args = Any
     KWargs = Any
     Keywords = dict[str, list[g.Bunch]]
-    Tags = str | Sequence[str]
     Value = Any
 # @-<< leoPlugins imports & annotations >>
 
@@ -36,7 +35,7 @@ def init() -> None:
     g.app.pluginsController = LeoPluginsController()
 
 
-def registerHandler(tags: Tags, fn: Callable) -> None:
+def registerHandler(tags: str | Sequence[str], fn: Callable) -> None:
     """A wrapper so plugins can still call leoPlugins.registerHandler."""
     return g.app.pluginsController.registerHandler(tags, fn)
 
@@ -66,11 +65,8 @@ class CommandChainDispatcher:
 
     """
 
-    def __init__(self, commands: list = None) -> None:
-        if commands is None:
-            self.chain = []
-        else:
-            self.chain = commands
+    def __init__(self, commands: list | None = None) -> None:
+        self.chain = commands or []
 
     def __call__(self, *args: Args, **kw: KWargs) -> None:
         """Command chain is called just like normal func.
@@ -209,13 +205,13 @@ class BaseLeoPlugin:
                 # define a command using setMenuItem
                 self.setMenuItem('Cmds', 'Ciao baby', self.ciao)
 
-            def hello(self, event: LeoKeyEvent) -> None:
+            def hello(self, event: LeoKeyEvent | None = None) -> None:
                 g.pr(f"hello from node {self.c.p.h}")
 
-            def hola(self, event: LeoKeyEvent) -> None:
+            def hola(self, event: LeoKeyEvent | None = None) -> None:
                 g.pr(f"hola from node {self.c.p.h}")
 
-            def ciao(self, event: LeoKeyEvent) -> None:
+            def ciao(self, event: LeoKeyEvent | None = None) -> None:
                 g.pr(f"ciao baby {self.c.p.h}")
 
         leoPlugins.registerHandler("after-create-leo-frame", Hello)
@@ -254,34 +250,34 @@ class BaseLeoPlugin:
 
     # @+node:ekr.20100908125007.6014: *3* BaseLeoPlugin.setMenuItem
     def setMenuItem(
-        self, menu: LeoQtMenu, commandName: str = None, handler: Callable = None
+        self, menu: LeoQtMenu, commandName: str = '', handler: Callable | None = None
     ) -> None:
         """Create a menu item in 'menu' using text 'commandName' calling handler 'handler'
         if commandName and handler are none, use the most recently defined values
         """
         # setMenuItem can create a command, or use a previously defined one.
-        if commandName is None:
+        if not commandName:
             commandName = self.commandName
         # make sure commandName is in the list of commandNames
         else:
             if commandName not in self.commandNames:
                 self.commandNames.append(commandName)
-        if handler is None:
+        if not handler:
             handler = self.handler
         table = ((commandName, None, handler),)
         self.c.frame.menu.createMenuItemsFromTable(menu, table)
 
     # @+node:ekr.20100908125007.6015: *3* BaseLeoPlugin.setButton
-    def setButton(self, buttonText: str = None, commandName: str = None, color: str = None) -> None:
+    def setButton(self, buttonText: str = '', commandName: str = '', color: str = '') -> None:
         """Associate an existing command with a 'button'"""
-        if buttonText is None:
+        if not buttonText:
             buttonText = self.commandName
-        if commandName is None:
+        if not commandName:
             commandName = self.commandName
         else:
             if commandName not in self.commandNames:
                 raise NameError(f"setButton error, {commandName} is not a commandName")
-        if color is None:
+        if not color:
             color = 'grey'
         script = f"c.doCommandByName('{self.commandName}')"
         g.app.gui.makeScriptButton(
@@ -360,8 +356,7 @@ class LeoPluginsController:
         handler, moduleName = bunch.fn, bunch.moduleName
         # Make sure the new commander exists.
         for key in ('c', 'new_c'):
-            c = keywords.get(key)
-            if c:
+            if c := keywords.get(key):
                 # Make sure c exists and has a frame.
                 if not c.exists or not hasattr(c, 'frame'):
                     return None
@@ -672,12 +667,13 @@ class LeoPluginsController:
 
     # @+node:ekr.20100909065501.5951: *3* plugins.Registration
     # @+node:ekr.20100908125007.6028: *4* plugins.registerExclusiveHandler
-    def registerExclusiveHandler(self, tags: Tags, fn: Callable) -> None:
+    def registerExclusiveHandler(self, tags: str | Sequence[str], fn: Callable) -> None:
         """Register one or more exclusive handlers"""
         if isinstance(tags, (list, tuple)):
             for tag in tags:
                 self.registerOneExclusiveHandler(tag, fn)
         else:
+            # We have just tested the type.
             self.registerOneExclusiveHandler(tags, fn)  # type:ignore[arg-type]
 
     def registerOneExclusiveHandler(self, tag: str, fn: Callable) -> None:
@@ -698,12 +694,13 @@ class LeoPluginsController:
             self.handlers[tag] = aList
 
     # @+node:ekr.20100908125007.6029: *4* plugins.registerHandler & registerOneHandler
-    def registerHandler(self, tags: Tags, fn: Callable) -> None:
+    def registerHandler(self, tags: str | Sequence[str], fn: Callable) -> None:
         """Register one or more handlers"""
         if isinstance(tags, (list, tuple)):
             for tag in tags:
                 self.registerOneHandler(tag, fn)
         else:
+            # We have just tested the type.
             self.registerOneHandler(tags, fn)  # type:ignore[arg-type]
 
     def registerOneHandler(self, tag: str, fn: Callable) -> None:
@@ -721,11 +718,12 @@ class LeoPluginsController:
         self.handlers[tag] = items
 
     # @+node:ekr.20100908125007.6031: *4* plugins.unregisterHandler
-    def unregisterHandler(self, tags: Tags, fn: Callable) -> None:
+    def unregisterHandler(self, tags: str | Sequence[str], fn: Callable) -> None:
         if isinstance(tags, (list, tuple)):
             for tag in tags:
                 self.unregisterOneHandler(tag, fn)
         else:
+            # We have just tested the type.
             self.unregisterOneHandler(tags, fn)  # type:ignore[arg-type]
 
     def unregisterOneHandler(self, tag: str, fn: Callable) -> None:

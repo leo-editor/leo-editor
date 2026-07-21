@@ -52,7 +52,12 @@ class BaseEditCommandsClass:
         return w
 
     # @+node:ekr.20150514043714.6: *3* BaseEdit.endCommand
-    def endCommand(self, label: str = None, changed: bool = True, setLabel: bool = True) -> None:
+    def endCommand(
+        self,
+        label: str | None = None,
+        changed: bool = True,
+        setLabel: bool = True,
+    ) -> None:
         """
         Do the common processing at the end of each command.
         Handles undo only if we are in the body pane.
@@ -86,7 +91,9 @@ class BaseEditCommandsClass:
                 k.resetLabel()
 
     # @+node:ekr.20150514043714.11: *3* BaseEdit._checkSelection
-    def _checkSelection(self, event: LeoKeyEvent, warning: str = 'no selection') -> bool:
+    def _checkSelection(
+        self, event: LeoKeyEvent | None = None, warning: str = 'no selection'
+    ) -> bool:
         """Return True if there is a selection in the edit widget."""
         c = self.c
         w = event.w if event else c.frame.body.wrapper

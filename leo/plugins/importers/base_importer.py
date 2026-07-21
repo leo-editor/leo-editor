@@ -549,8 +549,7 @@ class Importer:
 
         # Add the tail lines to block.v
         tail_lines = self.lines[children_end : block.end]
-        tail_s = ''.join(tail_lines)
-        if tail_s:
+        if tail_s := ''.join(tail_lines):
             block.v.b = block.v.b + tail_s
 
         # Alter block.end.
@@ -668,8 +667,7 @@ class Importer:
         n = len(lws)
         result: list[str] = []
         for line in lines:
-            stripped_line = line.strip()
-            if stripped_line:
+            if line.strip():
                 assert line[:n].isspace(), repr(line)
                 result.append(line[n:])
             else:

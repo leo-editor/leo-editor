@@ -8,14 +8,14 @@ from __future__ import annotations
 import difflib
 import filecmp
 import os
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position, VNode
-    from io import FileIO, TextIO
+    from io import BufferedWriter, TextIO
 # @-<< leoCompare imports & annotations >>
 
 
@@ -30,7 +30,7 @@ class BaseLeoCompare:
 
     def __init__(
         self,  # Keyword arguments are much convenient and more clear for scripts.
-        commands: Cmdr = None,
+        commands: Cmdr | None = None,
         appendOutput: bool = False,
         ignoreBlankLines: bool = True,
         ignoreFirstLine1: bool = False,
@@ -45,7 +45,7 @@ class BaseLeoCompare:
         printMatches: bool = False,
         printMismatches: bool = True,
         printTrailingMismatches: bool = False,
-        outputFileName: str = None,
+        outputFileName: str | None = None,
     ) -> None:
         # It is more convenient for the LeoComparePanel to set these directly.
         self.c = commands
@@ -68,7 +68,7 @@ class BaseLeoCompare:
         self.fileName1 = None
         self.fileName2 = None
         # Open files...
-        self.outputFile: FileIO = None
+        self.outputFile: BufferedWriter | None = None
 
     # @+node:ekr.20031218072017.3635: *3* compare_directories (entry)
     # We ignore the filename portion of path1 and path2 if it exists.
@@ -122,8 +122,7 @@ class BaseLeoCompare:
                 try:
                     name1 = g.os_path_join(dir1, f1)
                     name2 = g.os_path_join(dir2, f2)
-                    val = filecmp.cmp(name1, name2, 0)
-                    if val:
+                    if filecmp.cmp(name1, name2, 0):
                         yes.append(f1)
                     else:
                         no.append(f1)
@@ -242,21 +241,21 @@ class BaseLeoCompare:
             if not sentinelComment2:
                 self.show("no @+leo line for " + name2)
         if self.ignoreFirstLine1:
-            if s1 is None:
+            if not s1:
                 g.readlineForceUnixNewline(f1)
                 lines1 += 1
             s1 = None
         if self.ignoreFirstLine2:
-            if s2 is None:
+            if not s2:
                 g.readlineForceUnixNewline(f2)
                 lines2 += 1
             s2 = None
         # @-<< handle opening lines >>
         while 1:
-            if s1 is None:
+            if not s1:
                 s1 = g.readlineForceUnixNewline(f1)
                 lines1 += 1
-            if s2 is None:
+            if not s2:
                 s2 = g.readlineForceUnixNewline(f2)
                 lines2 += 1
             # @+<< ignore blank lines and/or sentinels >>
@@ -337,8 +336,7 @@ class BaseLeoCompare:
 
     # @+node:ekr.20031218072017.3644: *3* compare.filecmp
     def filecmp(self, f1: TextIO, f2: TextIO) -> bool:
-        val = filecmp.cmp(f1, f2)
-        if val:
+        if val := filecmp.cmp(f1, f2):
             self.show("equal")
         else:
             self.show("*** not equal")
@@ -346,7 +344,7 @@ class BaseLeoCompare:
 
     # @+node:ekr.20031218072017.3645: *3* compare.utils...
     # @+node:ekr.20031218072017.3646: *4* compare.doOpen
-    def doOpen(self, name: str) -> Optional[TextIO]:
+    def doOpen(self, name: str) -> TextIO | None:
         try:
             f = open(name, 'r')
             return f
@@ -398,7 +396,7 @@ class BaseLeoCompare:
     # sentinel line.
     # @@c
 
-    def isLeoHeader(self, s: str) -> Optional[str]:
+    def isLeoHeader(self, s: str) -> str | None:
         tag = "@+leo"
         j = s.find(tag)
         if j > 0:
@@ -413,7 +411,7 @@ class BaseLeoCompare:
 
     # @+node:ekr.20031218072017.1144: *4* compare.openOutputFile
     def openOutputFile(self) -> bool:  # Bug fix: return a bool.
-        if self.outputFileName is None:
+        if not self.outputFileName:
             return False
         theDir, name = g.os_path_split(self.outputFileName)
         if not theDir:
@@ -428,10 +426,10 @@ class BaseLeoCompare:
         try:
             if self.appendOutput:
                 self.show("appending to " + self.outputFileName)
-                self.outputFile = open(self.outputFileName, "ab")  # type:ignore
+                self.outputFile = open(self.outputFileName, "ab")
             else:
                 self.show("writing to " + self.outputFileName)
-                self.outputFile = open(self.outputFileName, "wb")  # type:ignore
+                self.outputFile = open(self.outputFileName, "wb")
             return True
         except Exception:
             self.outputFile = None
@@ -493,10 +491,10 @@ class CompareLeoOutlines:
     def __init__(self, c: Cmdr) -> None:
         """Ctor for the LeoOutlineCompare class."""
         self.c = c
-        self.file_node: Position = None
-        self.root: Position = None
-        self.path1: str = None
-        self.path2: str = None
+        self.file_node: Position | None = None
+        self.root: Position | None = None
+        self.path1: str | None = None
+        self.path2: str | None = None
 
     # @+others
     # @+node:ekr.20180211170333.2: *3* loc.diff_list_of_files (entry)
@@ -670,7 +668,7 @@ class CompareLeoOutlines:
 # @+node:ekr.20180214041049.1: ** Top-level commands and helpers
 # @+node:ekr.20180213104556.1: *3* @g.command(diff-and-open-leo-files)
 @g.command('diff-and-open-leo-files')
-def diff_and_open_leo_files(event: LeoKeyEvent) -> None:
+def diff_and_open_leo_files(event: LeoKeyEvent | None = None) -> None:
     """
     Open a dialog prompting for two or more .leo files.
 
@@ -686,7 +684,7 @@ def diff_and_open_leo_files(event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20180213040339.1: *3* @g.command(diff-leo-files)
 @g.command('diff-leo-files')
-def diff_leo_files(event: LeoKeyEvent) -> None:
+def diff_leo_files(event: LeoKeyEvent | None = None) -> None:
     """
     Open a dialog prompting for two or more .leo files.
 
@@ -701,7 +699,7 @@ def diff_leo_files(event: LeoKeyEvent) -> None:
 
 # @+node:ekr.20160331191740.1: *3* @g.command(diff-marked-nodes)
 @g.command('diff-marked-nodes')
-def diffMarkedNodes(event: LeoKeyEvent) -> None:
+def diffMarkedNodes(event: LeoKeyEvent | None = None) -> None:
     """
     When two or more nodes are marked, this command creates a
     "diff marked node" as the last top-level node. The body of
@@ -749,7 +747,7 @@ def diffMarkedNodes(event: LeoKeyEvent) -> None:
 
 
 # @+node:ekr.20180213104627.1: *3* diff_leo_files_helper
-def diff_leo_files_helper(event: LeoKeyEvent, title: str, visible: bool) -> None:
+def diff_leo_files_helper(event: LeoKeyEvent | None, title: str, visible: bool) -> None:
     """Prompt for a list of Leo files to open."""
     c = event and event.get('c')
     if not c:

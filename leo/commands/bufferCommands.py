@@ -6,15 +6,15 @@
 # @+node:ekr.20150514045750.1: ** << bufferCommands imports & annotations >>
 from __future__ import annotations
 from collections.abc import Callable
-from typing import Optional, TYPE_CHECKING
+from typing import cast, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass
+from leo.plugins.qt_text import QTextMixin
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position, VNode
-    from leo.plugins.qt_text import QTextMixin
 # @-<< bufferCommands imports & annotations >>
 
 
@@ -42,12 +42,12 @@ class BufferCommandsClass(BaseEditCommandsClass):
         self.nameList: list[str] = []  # [n: <headline>]
         self.names: dict[str, list[str]] = {}
         self.vnodes: dict[str, VNode] = {}  # Keys are n: <headline>, values are vnodes.
-        self.w: QTextMixin = None
+        self.w = cast(QTextMixin, None)
 
     # @+node:ekr.20150514045829.5: *3* buffer.Entry points
     # @+node:ekr.20150514045829.6: *4* appendToBuffer
     @cmd('buffer-append-to')
-    def appendToBuffer(self, event: LeoKeyEvent) -> None:
+    def appendToBuffer(self, event: LeoKeyEvent | None = None) -> None:
         """Add the selected body text to the end of the body text of a named buffer (node)."""
         c = self.c
         self.w = event.w if event else c.frame.body.wrapper
@@ -72,7 +72,7 @@ class BufferCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514045829.7: *4* copyToBuffer
     @cmd('buffer-copy')
-    def copyToBuffer(self, event: LeoKeyEvent) -> None:
+    def copyToBuffer(self, event: LeoKeyEvent | None = None) -> None:
         """Add the selected body text to the end of the body text of a named buffer (node)."""
         c = self.c
         self.w = event.w if event else c.frame.body.wrapper
@@ -94,7 +94,7 @@ class BufferCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514045829.8: *4* insertToBuffer
     @cmd('buffer-insert')
-    def insertToBuffer(self, event: LeoKeyEvent) -> None:
+    def insertToBuffer(self, event: LeoKeyEvent | None = None) -> None:
         """Add the selected body text at the insert point of the body text of a named buffer (node)."""
         c = self.c
         self.w = event.w if event else c.frame.body.wrapper
@@ -116,7 +116,7 @@ class BufferCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514045829.9: *4* killBuffer
     @cmd('buffer-kill')
-    def killBuffer(self, event: LeoKeyEvent) -> None:
+    def killBuffer(self, event: LeoKeyEvent | None = None) -> None:
         """Delete a buffer (node) and all its descendants."""
         c = self.c
         self.w = event.w if event else c.frame.body.wrapper
@@ -126,8 +126,7 @@ class BufferCommandsClass(BaseEditCommandsClass):
 
     def killBuffer1(self, name: str) -> None:
         c = self.c
-        p = self.findBuffer(name)
-        if p:
+        if p := self.findBuffer(name):
             h = p.h
             current = c.p
             c.selectPosition(p)
@@ -138,7 +137,7 @@ class BufferCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514045829.10: *4* listBuffers & listBuffersAlphabetically
     @cmd('buffers-list')
-    def listBuffers(self, event: LeoKeyEvent) -> None:
+    def listBuffers(self, event: LeoKeyEvent | None = None) -> None:
         """
         List all buffers (node headlines), in outline order. Nodes with the
         same headline are disambiguated by giving their parent or child index.
@@ -149,7 +148,7 @@ class BufferCommandsClass(BaseEditCommandsClass):
             g.es('', name)
 
     @cmd('buffers-list-alphabetically')
-    def listBuffersAlphabetically(self, event: LeoKeyEvent) -> None:
+    def listBuffersAlphabetically(self, event: LeoKeyEvent | None = None) -> None:
         """
         List all buffers (node headlines), in alphabetical order. Nodes with
         the same headline are disambiguated by giving their parent or child
@@ -163,7 +162,7 @@ class BufferCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514045829.11: *4* prependToBuffer
     @cmd('buffer-prepend-to')
-    def prependToBuffer(self, event: LeoKeyEvent) -> None:
+    def prependToBuffer(self, event: LeoKeyEvent | None = None) -> None:
         """Add the selected body text to the start of the body text of a named buffer (node)."""
         c = self.c
         self.w = event.w if event else c.frame.body.wrapper
@@ -186,15 +185,14 @@ class BufferCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514045829.13: *4* switchToBuffer
     @cmd('buffer-switch-to')
-    def switchToBuffer(self, event: LeoKeyEvent) -> None:
+    def switchToBuffer(self, event: LeoKeyEvent | None = None) -> None:
         """Select a buffer (node) by its name (headline)."""
         self.c.k.setLabelBlue('Switch to buffer: ')
         self.getBufferName(event, self.switchToBuffer1)
 
     def switchToBuffer1(self, name: str) -> None:
         c = self.c
-        p = self.findBuffer(name)
-        if p:
+        if p := self.findBuffer(name):
             c.redraw(p)
 
     # @+node:ekr.20150514045829.14: *3* buffer.Utils
@@ -206,8 +204,7 @@ class BufferCommandsClass(BaseEditCommandsClass):
         for p in self.c.all_unique_positions():
             h = p.h.strip()
             v = p.v
-            nameList = self.names.get(h, [])
-            if nameList:
+            if nameList := self.names.get(h, []):
                 if p.parent():
                     key = f"{h}, parent: {p.parent().h}"
                 else:
@@ -220,7 +217,7 @@ class BufferCommandsClass(BaseEditCommandsClass):
             self.names[h] = nameList
 
     # @+node:ekr.20150514045829.16: *4* findBuffer
-    def findBuffer(self, name: str) -> Optional[Position]:
+    def findBuffer(self, name: str) -> Position | None:
         v = self.vnodes.get(name)
         for p in self.c.all_unique_positions():
             if p.v == v:
@@ -229,7 +226,7 @@ class BufferCommandsClass(BaseEditCommandsClass):
         return None
 
     # @+node:ekr.20150514045829.17: *4* getBufferName
-    def getBufferName(self, event: LeoKeyEvent, finisher: Callable) -> None:
+    def getBufferName(self, event: LeoKeyEvent | None, finisher: Callable) -> None:
         """Get a buffer name into k.arg and call k.setState(kind,n,handler)."""
         k = self.c.k
         self.computeData()
@@ -237,7 +234,7 @@ class BufferCommandsClass(BaseEditCommandsClass):
         prefix = k.getLabel()
         k.get1Arg(event, handler=self.getBufferName1, prefix=prefix, tabList=self.nameList)
 
-    def getBufferName1(self, event: LeoKeyEvent) -> None:
+    def getBufferName1(self, event: LeoKeyEvent | None = None) -> None:
         k = self.c.k
         k.resetLabel()
         k.clearState()

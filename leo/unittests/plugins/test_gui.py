@@ -188,6 +188,8 @@ class TestQtGui(LeoUnitTest):
     # @+node:ekr.20260423040149.1: *3* TestQtGui.test_bug_4626
     def test_bug_4626(self):
         # https://github.com/leo-editor/leo-editor/issues/4626
+        self.skipTest('Can hang depending clipboard contents')
+
         c, gui = self.c, g.app.gui
         k, log, qtApp = c.k, c.frame.log, gui.qtApp
         old_log = g.app.log

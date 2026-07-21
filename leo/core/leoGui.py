@@ -13,7 +13,7 @@ Plugins may define their own gui classes by setting g.app.gui.
 # @+node:ekr.20220414080546.1: ** << leoGui imports & annotations >>
 from __future__ import annotations
 from collections.abc import Callable
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoFrame
 from leo.core.leoAPI import StringTextWrapper
@@ -53,7 +53,7 @@ class LeoGui:
         self.mGuiName = guiName
         self.mainLoop = None
         self.root: Position = None
-        self.script: Optional[str] = None
+        self.script: str = None
         self.splashScreen: Widget = None
         self.utils = None
         # To keep pylint happy.

@@ -572,10 +572,9 @@ class LeoMenu:
 
     # @+node:ekr.20031218072017.4118: *6* LeoMenu.defineOpenWithMenuCallback
     def defineOpenWithMenuCallback(self, d: dict[str, Any] = None) -> Callable:
-        # The first parameter must be a LeoKeyEvent, and it must default to None.
 
         def openWithMenuCallback(
-            event: LeoKeyEvent = None,
+            event: LeoKeyEvent | None = None,
             self: LeoMenu = self,
             d: dict[str, Any] = d,
         ) -> Any:
@@ -696,11 +695,11 @@ class LeoMenu:
         pass
 
     def insert_cascade(
-        self, parent: Widget, index: int, label: str, menu: QtMenuWrapper, underline: int
+        self, parent: Any, index: int, label: str, menu: QtMenuWrapper, underline: int
     ) -> Widget:
         pass
 
-    def new_menu(self, parent: Widget, tearoff: int = 0, label: str = '') -> QtMenuWrapper:
+    def new_menu(self, Any: Widget, tearoff: int = 0, label: str = '') -> QtMenuWrapper:
         pass
 
     # @+node:ekr.20031218072017.3810: *4* LeoMenu.9 Routines with new spellings

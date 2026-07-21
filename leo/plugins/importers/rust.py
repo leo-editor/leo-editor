@@ -5,7 +5,7 @@
 # pylint: disable=undefined-loop-variable
 from __future__ import annotations
 import re
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from leo.plugins.importers.base_importer import Block, Importer
 from leo.core import leoGlobals as g
 
@@ -176,13 +176,11 @@ class Rust_Importer(Importer):
             nonlocal i
             assert s[i] == "'", repr(s[i])
             for pattern in quote_patterns:
-                m = pattern.match(s, i)
-                if m:
+                if m := pattern.match(s, i):
                     # Match the whole pattern.
                     skip_n(len(m.group(0)))
                     return
-            m = lifetime_pat.match(s, i)
-            if m:
+            if m := lifetime_pat.match(s, i):
                 # Don't match whatever follows.
                 skip_n(len(m.group(1)))
                 return
@@ -336,7 +334,7 @@ class Rust_Importer(Importer):
                        so there must be *no gaps* between blocks!
         """
 
-        def find_curly_bracket_line(i: int) -> Optional[int]:
+        def find_curly_bracket_line(i: int) -> int | None:
             """
             Scan the guide_lines from line i looking for a line ending with '{'.
             """

@@ -4792,6 +4792,80 @@ def editLabel(
 def headline_wrapper(self, p: Position) -> Widget:
     raise NotImplementedError
 
+# @+node:ekr.20260707105715.1: *3* @@@button clone-callers (abandoned)
+g.cls()
+
+import re
+
+h = '--- signatures return str'
+p = g.findNodeAnywhere(c, h)
+u = c.undoer
+assert p, h
+
+@others  # Define helpers
+
+# Make root node
+undoData = u.beforeInsertNode(c.p)  # c.p is subject of 'insertAfter'
+root = c.lastTopLevel().insertAfter()
+root.h = 'Callers'
+# Discover all names.
+names = set()
+for p in p.children():
+    if p.h.startswith('class '):
+        continue
+    s = g.splitLines(p.b)[0]
+    if m := re.match(r'^def ([_\w]+)', s):
+        names.add(m.group(1))
+        # find_clones(c, m.group(1))
+    else:
+        print(f"Skip: {p.h}")
+# Do cff for all names:
+for name in sorted(names):
+    find_clones(c, name)
+    
+# Finish
+c.selectPosition(root)
+c.demote()
+u.afterInsertNode(root, 'clone-callers', undoData)
+c.redraw(root)
+# @+node:ekr.20260707111229.1: *4* function: find_clones
+def find_clones(c, name):
+    """
+    do clone-find-all for name(...)
+    """
+    finder = c.findCommands
+    # find_text = rf'\.{name}\(.*?\)'
+    find_text = f"[ .]{name}\(.*?\)"
+    print(f"cff: {name}")
+    settings = g.Bunch(
+        # State...
+        in_headline     = False,
+        reverse         = False,
+        # Find/change strings...
+        find_text       = find_text,
+        change_text     = '',
+        # Find options...
+        file_only       = False,
+        ignore_case     = False,
+        mark_changes    = False,
+        mark_finds      = False,
+        node_only       = False,
+        pattern_match   = True,
+        search_body     = True,
+        search_headline = False,
+        suboutline_only = False,
+        whole_word      = False
+    )  # fmt: skip
+    finder.do_clone_find_all_flattened(settings)
+    # for p in c.all_unique_positions():
+    #     for s in g.splitLines(p.b):
+    #         if m := re.match(rf'^.*?\b{name}\(', s):
+    #             if s.strip().startswith('def'):
+    #                 continue
+    #             else:
+    #                 where_s = f"{g.truncate(p.h, 30):>40} {name:>30}"
+    #                 print(f"{where_s:<70} {g.truncate(s.strip(), 80)}")
+    #                 break
 # @-all
 # @@nosearch
 # @-leo

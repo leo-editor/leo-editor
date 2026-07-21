@@ -30,7 +30,7 @@ import textwrap
 import time
 import hmac
 import ssl
-from typing import Any, Generator, Iterable, Iterator, Optional
+from typing import Any, Generator, Iterable, Iterator, TYPE_CHECKING
 import warnings
 
 # Third-party.
@@ -71,6 +71,7 @@ assert os.path.exists(leo_path), repr(leo_path)
 if leo_path not in sys.path:
     sys.path.insert(0, leo_path)
 del core_dir, leo_path
+
 # Leo: suppress pyflakes warnings about imports not at top of file.
 from leo.core import leoImport  # noqa
 from leo.core.leoCommands import Commands as Cmdr  # noqa
@@ -81,16 +82,16 @@ from leo.core.leoExternalFiles import ExternalFilesController  # noqa
 # @-<< leoserver imports >>
 # @+<< leoserver annotations >>
 # @+node:ekr.20220820155747.1: ** << leoserver annotations >>
-Event = Any  # More than one kind of Event!
-Loop = Any
-Match = re.Match
-Match_Iter = Iterator[re.Match[str]]
-Package = dict[str, Any]
-Param = dict[str, Any]
-RegexFlag = int | re.RegexFlag  # re.RegexFlag does not define 0
-Response = str  # See _make_response.
-Socket = Any
-
+if TYPE_CHECKING:
+    Event = Any  # More than one kind of Event!
+    Loop = Any
+    Match = re.Match
+    Match_Iter = Iterator[re.Match[str]]
+    Package = dict[str, Any]
+    Param = dict[str, Any]
+    RegexFlag = int | re.RegexFlag  # re.RegexFlag does not define 0
+    Response = str  # See _make_response.
+    Socket = Any
 # @-<< leoserver annotations >>
 # @+<< leoserver version >>
 # @+node:ekr.20220820160619.1: ** << leoserver version >>
@@ -196,7 +197,7 @@ class ServerExternalFilesController(ExternalFilesController):
         # DO NOT alter directly, use set_time(path) and
         # get_time(path), see set_time() for notes.
         self.yesno_all_time: float = 0.0  # time of answer (previous yes/no to all answer)
-        self.yesno_all_answer = None  # answer, 'yes-all', or 'no-all'
+        self.yesno_all_answer = ''  # answer, 'yes-all', or 'no-all'
 
         # if yesAll/noAll forced, then just show info message after idle_check_commander
         self.infoMessage: str = None  # False or "detected", "refreshed" or "ignored"
@@ -207,6 +208,7 @@ class ServerExternalFilesController(ExternalFilesController):
         # last p node that was asked for if not set to "AllYes\AllNo"
         self.lastPNode: Position = None
         self.lastCommander: Cmdr = None
+        self.unchecked_commanders: list[Cmdr] = []
 
     # @+node:felix.20210626222905.6: *3* sefc.clientResult
     def clientResult(self, p_result: Response) -> None:
@@ -2847,7 +2849,7 @@ class LeoServer:
         """
         c = self._check_c(param)
         p = self._get_p(param)
-        parent: Optional[Position] = p.parent()
+        parent: Position | None = p.parent()
         if c.hoistStack:
             topHoistPos = c.hoistStack[-1].p
             if parent == topHoistPos:
@@ -3199,7 +3201,7 @@ class LeoServer:
         """
         c = self._check_c(param)
         p = self._get_p(param)
-        oldPosition: Optional[Position] = None if p == c.p else c.p
+        oldPosition: Position | None = None if p == c.p else c.p
 
         newHeadline = param.get('name')
         bunch = c.undoer.beforeInsertNode(p)
@@ -4852,7 +4854,7 @@ class LeoServer:
 
     # @+node:felix.20210621233316.78: *3* server.server utils
     # @+node:felix.20210621233316.79: *4* server._ap_to_p
-    def _ap_to_p(self, ap: dict[str, Any], c: Cmdr) -> Optional[Position]:
+    def _ap_to_p(self, ap: dict[str, Any], c: Cmdr) -> Position | None:
         """
         Convert ap (archived position, a dict) to a valid Leo position.
 
@@ -5069,17 +5071,17 @@ class LeoServer:
         tag = '_do_message'
         trace, verbose = 'request' in traces, 'verbose' in traces
         func: Callable
-        action: Optional[str]
+        action: str | None
 
         # Require "id" and "action" keys
-        id_: Optional[int] = d.get("id")
+        id_: int | None = d.get("id")
         if id_ is None:  # pragma: no cover
             raise ServerError(f"{tag}: no id")
         action = d.get("action")
         if action is None:  # pragma: no cover
             raise ServerError(f"{tag}: no action")
 
-        param: Optional[dict] = d.get('param', {})
+        param: dict | None = d.get('param', {})
         # Set log flag.
         if param:
             self.log_flag = param.get("log")
@@ -5212,7 +5214,7 @@ class LeoServer:
         return focus
 
     # @+node:ekr.20220817091731.1: *4* server._get_optional_p
-    def _get_optional_p(self, param: dict) -> Optional[Position]:
+    def _get_optional_p(self, param: dict) -> Position | None:
         """
         Return _ap_to_p(param["ap"]) or None.
         """
@@ -5473,7 +5475,7 @@ class LeoServer:
         }
 
     # @+node:felix.20210621233316.96: *4* server._positionFromGnx
-    def _positionFromGnx(self, gnx: str, c: Cmdr) -> Optional[Position]:
+    def _positionFromGnx(self, gnx: str, c: Cmdr) -> Position | None:
         """Return first p node with this gnx or false"""
         for p in c.all_unique_positions():
             if p.v.gnx == gnx:
@@ -5907,9 +5909,7 @@ def main() -> None:  # pragma: no cover (tested in client)
             wsLimit = 1
 
     # @+node:felix.20260523224253.1: *3* function: get_ssl_context
-    def get_ssl_context(
-        cert_path: Optional[str], key_path: Optional[str]
-    ) -> Optional[ssl.SSLContext]:
+    def get_ssl_context(cert_path: str | None, key_path: str | None) -> ssl.SSLContext | None:
         """Returns an SSLContext if paths are valid, otherwise returns None."""
         # Ensure both arguments were provided
         if not cert_path or not key_path:
@@ -6151,7 +6151,7 @@ def main() -> None:  # pragma: no cover (tested in client)
     # Start the server.
     if sys.version_info >= (3, 14):
         # For Python 3.14+
-        async def start_server():
+        async def start_server() -> None:
             realtime_server = None
             try:
                 try:

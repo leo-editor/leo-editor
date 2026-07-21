@@ -533,7 +533,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
     # @+others
     # @+node:ekr.20220105151235.1: *3* ccc.add-mypy-annotations
     @cmd('add-mypy-annotations')
-    def add_mypy_annotations(self, event: LeoKeyEvent) -> None:  # pragma: no cover
+    def add_mypy_annotations(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
         """
         The add-mypy-annotations command adds mypy annotations to function and
         method definitions based on naming conventions.
@@ -796,7 +796,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20160316091843.1: *3* ccc.c-to-python
     @cmd('c-to-python')
-    def c_to_python(self, event: LeoKeyEvent) -> None:  # pragma: no cover
+    def c_to_python(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
         """
         The c-to-python command converts c or c++ text to python text.
         The conversion is not perfect, but it eliminates a lot of tedious
@@ -833,8 +833,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 "double",
                 "float",
             ]
-            aList = c.config.getData('c-to-python-ivars-dict')
-            if aList:
+            if aList := c.config.getData('c-to-python-ivars-dict'):
                 self.ivars_dict = self.parse_ivars_data(aList)
             else:
                 self.ivars_dict = {}
@@ -1222,8 +1221,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     if word in ivars:
                         # replace word by self.word
                         word = "self." + word
-                        word = list(word)  # type:ignore
-                        body[i:j] = word
+                        body[i:j] = list(word)  # #4753
                         delta = len(word) - (j - i)
                         i = j + delta
                     else:
@@ -1293,7 +1291,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
     old_unl_pat2 = re.compile(r"(.*?)unl\://(.*)$")  # Second, assume no '#'.
 
     @cmd('convert-unls')
-    def convert_unls(self, event: LeoKeyEvent) -> None:  # pragma: no cover
+    def convert_unls(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
         """
         Convert all legacy (headline-based) unls to gnx-based unls.
         """
@@ -1341,7 +1339,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20160111190632.1: *3* ccc.make-stub_files
     @cmd('make-stub-files')
-    def make_stub_files(self, event: LeoKeyEvent) -> None:  # pragma: no cover
+    def make_stub_files(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
         """
         Make stub files for all nearby @<file> nodes.
         Take configuration settings from @x stub-y nodes.
@@ -1370,7 +1368,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 self.output_directory = self.finalize(
                     c.config.getString('stub-output-directory') or '.'
                 )
-                self.output_fn: str = None
+                self.output_fn: str | None = None
                 self.overwrite = c.config.getBool('stub-overwrite', default=False)
                 self.trace_matches = c.config.getBool('stub-trace-matches', default=False)
                 self.trace_patterns = c.config.getBool('stub-trace-patterns', default=False)
@@ -1406,17 +1404,17 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 return aList
 
             # @+node:ekr.20160213070235.4: *6* msf.scan_d
-            def scan_d(self, kind: str) -> dict[str, list[str]]:
+            def scan_d(self, kind: str) -> dict[str, str]:
                 """Return a dict created from an @data node of the given kind."""
                 c = self.c
                 aList = c.config.getData(kind, strip_comments=True, strip_data=True)
-                d: dict[str, list[str]] = {}
+                d: dict[str, str] = {}
                 if aList is None:
                     g.trace(f"warning: no @data {kind} node")
                 for s in aList or []:
                     # Split s into two strings.
                     name, value = s.split(':', 1)
-                    d[name.strip()] = value.strip()  # type:ignore
+                    d[name.strip()] = value.strip()
                 return d
 
             # @+node:ekr.20160213070235.5: *6* msf.scan_patterns
@@ -1507,7 +1505,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20160316091923.1: *3* ccc.python-to-coffeescript
     @cmd('python-to-coffeescript')
-    def python2coffeescript(self, event: LeoKeyEvent) -> None:  # pragma: no cover
+    def python2coffeescript(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
         """
         Converts python text to coffeescript text. The conversion is not
         perfect, but it eliminates a lot of tedious text manipulation.
@@ -1622,7 +1620,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20231119103003.1: *3* ccc.python-to-rust
     @cmd('python-to-rust')
-    def python2rust(self, event: LeoKeyEvent) -> None:  # pragma: no cover
+    def python2rust(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
         """
         Converts Python text to Rust text. The conversion is not
         perfect, but it eliminates a lot of tedious text manipulation.
@@ -1658,7 +1656,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
         # @+others
         # @+node:ekr.20231119103026.2: *5* py2rust.ctor
-        def __init__(self, c: Cmdr, alias: str = None) -> None:
+        def __init__(self, c: Cmdr, alias: str | None = None) -> None:
             self.c = c
             self.alias = alias  # For scripts. An alias for 'self'.
             data = c.config.getData('python-to-typescript-types') or []
@@ -2355,7 +2353,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20211013080132.1: *3* ccc.python-to-typescript
     @cmd('python-to-typescript')
-    def python_to_typescript(self, event: LeoKeyEvent) -> None:  # pragma: no cover
+    def python_to_typescript(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
         """
         The python-to-typescript command converts python to typescript text.
         The conversion is not perfect, but it eliminates a lot of tedious text
@@ -2388,7 +2386,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
         # @+others
         # @+node:ekr.20211020162251.1: *5* py2ts.ctor
-        def __init__(self, c: Cmdr, alias: str = None) -> None:
+        def __init__(self, c: Cmdr, alias: str | None = None) -> None:
             self.c = c
             self.alias = alias  # For scripts. An alias for 'self'.
             data = c.config.getData('python-to-typescript-types') or []
@@ -3136,7 +3134,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20160316091843.2: *3* ccc.typescript-to-py
     @cmd('typescript-to-py')
-    def typescript_to_py(self, event: LeoKeyEvent) -> None:  # pragma: no cover
+    def typescript_to_py(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
         """
         The typescript-to-python command converts typescript text to python
         text. The conversion is not perfect, but it eliminates a lot of tedious

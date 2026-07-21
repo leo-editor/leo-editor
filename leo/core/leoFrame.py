@@ -974,7 +974,7 @@ class LeoTree:
 
         # Part 2: set the new text. This forces a recolor.
         # Important: set c.p *before* setting text.
-        c.setCurrentPosition(p)
+        c.p = p
         w.setAllText(s)
 
     # @+node:ekr.20140829053801.18458: *5* 3. LeoTree.change_current_position
@@ -1079,7 +1079,7 @@ class LeoTree:
         return self.edit_text_dict.get(v, [])
 
     # @+node:ekr.20040803072955.88: *4* LeoTree.onHeadlineKey
-    def onHeadlineKey(self, event: LeoKeyEvent) -> None:
+    def onHeadlineKey(self, event: LeoKeyEvent | None = None) -> None:
         """Handle a key event in a headline."""
         if not event:
             return
@@ -1098,7 +1098,7 @@ class LeoTree:
         pass
 
     # @+node:ekr.20051026083544.2: *4* LeoTree.updateHead
-    def updateHead(self, event: LeoKeyEvent, w: QTextMixin) -> None:
+    def updateHead(self, event: LeoKeyEvent | None, w: QTextMixin) -> None:
         """
         Update a headline from an event.
 
@@ -1459,11 +1459,7 @@ class NullLog(LeoLog):
         nodeLink: str = None,
     ) -> None:
         if self.enabled and not g.unitTesting:
-            try:
-                g.pr(s, newline=False)
-            except UnicodeError:
-                s = s.encode('ascii', 'replace')  # type:ignore
-                g.pr(s, newline=False)
+            g.pr(g.toUnicode(s), newline=False)  # #4753
 
     def putnl(self, tabName: str = 'Log') -> None:
         if self.enabled and not g.unitTesting:

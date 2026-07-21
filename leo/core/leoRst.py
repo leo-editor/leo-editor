@@ -20,7 +20,7 @@ import io
 import os
 import re
 import time
-from typing import Generator, Optional, TYPE_CHECKING
+from typing import Generator, TYPE_CHECKING
 
 # Third-part imports...
 try:
@@ -88,13 +88,13 @@ class RstCommands:
         self.encoding = 'utf-8'  # From any @encoding directive.
         self.path = ''  # The path from any @path directive.
         self.result_list: list[str] = []  # The intermediate results.
-        self.root: Position = None  # The @rst node being processed.
+        self.root: Position | None = None  # The @rst node being processed.
 
         # Default settings.
         self.default_underline_characters = '#=+*^~-:><'
         self.remove_leo_directives = False  # For compatibility with legacy operation.
-        self.user_filter_b: Callable = None
-        self.user_filter_h: Callable = None
+        self.user_filter_b: Callable | None = None
+        self.user_filter_h: Callable | None = None
 
         # Complete the init.
         self.reloadSettings()
@@ -140,7 +140,7 @@ class RstCommands:
     # @+node:ekr.20210403150303.1: *4* rst.rst-convert-legacy-outline
     @cmd('rst-convert-legacy-outline')
     @cmd('convert-legacy-rst-outline')
-    def convert_legacy_outline(self, event: LeoKeyEvent = None) -> None:
+    def convert_legacy_outline(self, event: LeoKeyEvent | None = None) -> None:
         """
         Convert @rst-preformat nodes and `@ @rst-options` doc parts.
         """
@@ -161,8 +161,7 @@ class RstCommands:
         m1 = self.options_pat.search(p.b)
         m2 = self.default_pat.search(p.b)
         if m1 and m2 and m2.start() > m1.start():
-            fn = m2.group(1).strip()
-            if fn:
+            if fn := m2.group(1).strip():
                 old_h = p.h
                 p.h = f"@path {fn}"
                 print(f"{old_h} => {p.h}")
@@ -179,7 +178,7 @@ class RstCommands:
 
     # @+node:ekr.20090511055302.5793: *4* rst.rst3 command & helpers
     @cmd('rst3')
-    def rst3(self, event: LeoKeyEvent = None) -> int:
+    def rst3(self, event: LeoKeyEvent | None = None) -> int:
         """Write all @rst nodes."""
         t1 = time.time()
         self.n_intermediate = self.n_docutils = 0
@@ -244,8 +243,7 @@ class RstCommands:
 
         self.changed_positions = []
         self.changed_vnodes = set()
-        roots = g.findRootsWithPredicate(self.c, p, predicate=predicate)
-        if roots:
+        if roots := g.findRootsWithPredicate(self.c, p, predicate=predicate):
             for p in roots:
                 self.processTree(p)
             self.do_actions()
@@ -261,8 +259,7 @@ class RstCommands:
                     g.trace(f"ignoring nested @rst node: {p.h}")
                 else:
                     h = p.h.strip()
-                    fn = h[4:].strip()
-                    if fn:
+                    if fn := h[4:].strip():
                         source = self.write_rst_tree(p, fn)
                         self.write_docutils_files(fn, p, source)
             elif g.match_word(p.h, 0, "@slides"):
@@ -392,8 +389,7 @@ class RstCommands:
             s = self.addTitleToHtml(s)
         if not s:
             return
-        changed = g.write_file_if_changed(fn, s, encoding='utf-8')
-        if changed:
+        if g.write_file_if_changed(fn, s, encoding='utf-8'):
             self.n_docutils += 1
             self.report(fn)
             if self.root.v not in self.changed_vnodes:
@@ -448,7 +444,7 @@ class RstCommands:
             return True
         if c and c.config and c.config.getBool('create-nonexistent-directories', default=False):
             theDir = c.expand_path_expression(theDir)
-            ok: str = g.makeAllNonExistentDirectories(theDir)
+            ok = g.makeAllNonExistentDirectories(theDir)
             if not ok:
                 g.error('did not create:', theDir)
             return bool(ok)
@@ -467,8 +463,7 @@ class RstCommands:
         if not ext.startswith('.'):
             ext = '.' + ext
         fn = fn + ext
-        changed = g.write_file_if_changed(fn, s, encoding=self.encoding)
-        if changed:
+        if changed := g.write_file_if_changed(fn, s, encoding=self.encoding):
             self.n_intermediate += 1
             self.report(fn)
             if self.root.v not in self.changed_vnodes:
@@ -477,7 +472,7 @@ class RstCommands:
         return changed
 
     # @+node:ekr.20090502071837.65: *5* rst.writeToDocutils & helper
-    def writeToDocutils(self, s: str, ext: str) -> Optional[str]:
+    def writeToDocutils(self, s: str, ext: str) -> str | None:
         """Send s to docutils using the writer implied by ext and return the result."""
         c = self.c
         if not docutils:
@@ -559,7 +554,7 @@ class RstCommands:
         return result
 
     # @+node:ekr.20090502071837.66: *6* rst.handleMissingStyleSheetArgs
-    def handleMissingStyleSheetArgs(self, s: str = None) -> dict[str, str]:
+    def handleMissingStyleSheetArgs(self, s: str | None = None) -> dict[str, str]:
         """
         Parse the publish_argv_for_missing_stylesheets option,
         returning a dict containing the parsed args.

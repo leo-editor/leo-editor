@@ -184,7 +184,7 @@ def readBibTexFileIntoTree(c, fn, p):
     root = p.copy()
     g.es('reading:', fn)
     s, _e = g.readFileIntoString(fn)
-    if not s.strip():
+    if s is None:
         return
     aList: list[tuple] = []  # A list of tuples (h, b).
     strings: list[str] = []
