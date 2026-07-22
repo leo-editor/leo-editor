@@ -304,7 +304,7 @@ class LeoPluginsController:
         self.loadedModules: dict[str, ModuleType] = {}
         # The stack of module names. The top is the module being loaded.
         self.loadingModuleNameStack: list[str] = []
-        self.signonModule: Any  # A hack for plugin_signon.
+        self.signonModule: Any = None  # A hack for plugin_signon.
         # Settings.  Set these here in case finishCreate is never called.
         self.warn_on_failure = True
         g.act_on_node = CommandChainDispatcher()
