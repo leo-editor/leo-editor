@@ -158,12 +158,12 @@ class LeoFind:
         # Internal state...
         self.changeAllFlag = False
         self.in_headline = False
-        self.match_obj: re.Match = None
+        self.match_obj = cast(re.Match, None)
         self.previous_settings = cast(g.Bunch, None)
         self.prev_searches = cast(list[g.Bunch], [])  # #4685
         self.prev_searches_i = 0  # #4685
         self.reverse = False
-        self.root = cast(Position, None)  # The start of the search. For suboutline-only.
+        self.root: Position | None = None  # The start of the search. For suboutline-only.
 
         # User settings.
         self.minibuffer_mode: bool = False
@@ -674,7 +674,7 @@ class LeoFind:
         w.returnPressed()
 
     # @+node:ekr.20150629084611.1: *6* find._compute_find_def_word
-    def _compute_find_def_word(self, event: LeoKeyEvent | None = None) -> str | None:
+    def _compute_find_def_word(self, event: LeoKeyEvent | None = None) -> str:
         """Init the find-def command. Return the word to find or None."""
         c = self.c
         w = c.frame.body.wrapper
@@ -684,9 +684,9 @@ class LeoFind:
             c.editCommands.extendToWord(event, select=True)
         word = w.getSelectedText().strip()
         if not word:
-            return None
+            return ''
         if keyword.iskeyword(word):
-            return None
+            return ''
         # Return word, stripped of preceding class or def.
         for tag in ('class ', 'def '):
             found = word.startswith(tag) and len(word) > len(tag)
@@ -748,6 +748,7 @@ class LeoFind:
 
         # Create the found node.
         found = c.lastTopLevel().insertAfter()
+        assert found.v
         found.h = f"Found {len(matches)}: {word}"
         found.b = f"@nosearch\n\n# found {len(matches)} nodes"
         # Clone nodes as children of the found node.
@@ -833,16 +834,16 @@ class LeoFind:
         return results
 
     # @+node:ekr.20180511045458.1: *6* find._switch_style
-    def _switch_style(self, word: str) -> str | None:
+    def _switch_style(self, word: str) -> str:
         """
         Switch between camelCase and underscore_style function definitions.
         Return None if there would be no change.
         """
         s = word
         if not s:
-            return None
+            return ''
         if s[0].isupper():
-            return None  # Don't convert class names.
+            return ''  # Don't convert class names.
         if s.find('_') > -1:
             # Convert to CamelCase
             s = s.lower()
@@ -859,7 +860,7 @@ class LeoFind:
                 result.append('_')
             result.append(ch.lower())
         s = ''.join(result)
-        return None if s == word else s
+        return '' if s == word else s
 
     # @+node:ekr.20031218072017.3063: *4* find.find-next, find-prev & do_find_*
     @cmd('find-next')
@@ -882,12 +883,12 @@ class LeoFind:
         self.do_find_prev(settings)
 
     # @+node:ekr.20031218072017.3074: *5* find.do_find_next & do_find_prev
-    def do_find_prev(self, settings: g.Bunch) -> tuple[Position, int, int]:
+    def do_find_prev(self, settings: g.Bunch) -> tuple[Position, int, int] | None:
         """Find the previous instance of self.find_text."""
         self.request_reverse = True
         return self.do_find_next(settings)
 
-    def do_find_next(self, settings: g.Bunch) -> tuple[Position, int, int]:
+    def do_find_next(self, settings: g.Bunch) -> tuple[Position, int, int] | None:
         """
         Find the next instance of self.find_text.
 
@@ -964,7 +965,7 @@ class LeoFind:
         # Now check the args.
         tag = 'find-prev' if self.reverse else 'find-next'
         if not self.check_args(tag):  # Issues error message.
-            return None, None, None
+            return None  # PR #4812
         data = self.save()
         p, pos, newpos = self.find_next_match(p)
         found = pos is not None
@@ -1337,7 +1338,7 @@ class LeoFind:
             # Fixes this bug: https://groups.google.com/forum/#!topic/leo-editor/yR8eL5cZpi4
             s = s.replace('\r', '')
         if not s:
-            return False, None
+            return 0, ''
         # Order matters: regex matches ignore whole-word.
         if self.pattern_match:
             return self._change_all_regex(s)

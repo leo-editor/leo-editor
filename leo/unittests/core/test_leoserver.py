@@ -100,6 +100,7 @@ class TestLeoServer(LeoUnitTest):
             'goto_script',
             'tag_children',
             'insert_file_node',
+            'interactive_search',
             'goto_line_in_leo_outline',
             # Other methods
             'finishCreate',
