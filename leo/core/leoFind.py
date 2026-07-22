@@ -9,16 +9,18 @@ from collections.abc import Callable
 import keyword
 import re
 import time
-from typing import Any, Generator, TYPE_CHECKING
+from typing import cast, Any, Generator, TYPE_CHECKING
 from leo.core import leoGlobals as g
+
+from leo.plugins.qt_frame import FindTabManager
+from leo.core.leoNodes import Position
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGlobals import KeyStroke as Stroke
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoKeys import KeyHandlerClass as KeyHandler
-    from leo.core.leoNodes import Position, VNode
-    from leo.plugins.qt_frame import FindTabManager
+    from leo.core.leoNodes import VNode
     from leo.plugins.qt_text import QTextMixin
 # @-<< leoFind imports & annotations >>
 # @+<< Theory of operation of find/change >>
@@ -92,13 +94,15 @@ class LeoFind:
     def __init__(self, c: Cmdr) -> None:
         """Ctor for LeoFind class."""
         self.c = c
-        # Created by dw.createFindTab.
-        self.ftm: FindTabManager = None
         self.k: KeyHandler = c.k
-        self.re_obj: re.Pattern = None
+
+        # Created by dw.createFindTab.
+        self.ftm = cast(FindTabManager, None)
+        self.re_obj = cast(re.Pattern, None)
+
         # The work "widget".
         self.work_s = ''  # p.b or p.c.
-        self.work_sel: tuple[int, int, int] = None  # pos, newpos, insert.
+        self.work_sel = cast(tuple[int, int, int], None)  # pos, newpos, insert.
 
         # Options ivars: set by FindTabManager.init: must be None, not False.
         self.ivars = (
@@ -115,16 +119,18 @@ class LeoFind:
             'suboutline_only',
             'whole_word',
         )
-        self.ignore_case: bool = None
-        self.node_only: bool = None
-        self.file_only: bool = None
-        self.pattern_match: bool = None
-        self.search_headline: bool = None
-        self.search_body: bool = None
-        self.suboutline_only: bool = None
-        self.mark_changes: bool = None
-        self.mark_finds: bool = None
-        self.whole_word: bool = None
+
+        # None is a flag to various methods.
+        self.ignore_case = cast(bool, None)
+        self.node_only = cast(bool, None)
+        self.file_only = cast(bool, None)
+        self.pattern_match = cast(bool, None)
+        self.search_headline = cast(bool, None)
+        self.search_body = cast(bool, None)
+        self.suboutline_only = cast(bool, None)
+        self.mark_changes = cast(bool, None)
+        self.mark_finds = cast(bool, None)
+        self.whole_word = cast(bool, None)
 
         # For isearch commands...
         self.stack: list[tuple[Position, int, int, bool]] = []
@@ -141,8 +147,8 @@ class LeoFind:
         self.change_text = ""
 
         # State machine...
-        self.escape_handler: Callable = None
-        self.handler: Callable = None
+        self.escape_handler: Callable | None = None
+        self.handler: Callable | None = None
 
         # "Delayed" requests for do_find_next.
         self.request_reverse = False
@@ -151,19 +157,18 @@ class LeoFind:
 
         # Internal state...
         self.changeAllFlag = False
-        self.find_def_data: g.Bunch = None
         self.in_headline = False
         self.match_obj: re.Match = None
-        self.previous_settings: g.Bunch = None
-        self.prev_searches: list[g.Bunch] = []  # #4685
+        self.previous_settings = cast(g.Bunch, None)
+        self.prev_searches = cast(list[g.Bunch], [])  # #4685
         self.prev_searches_i = 0  # #4685
         self.reverse = False
-        self.root: Position = None  # The start of the search. For suboutline-only.
+        self.root = cast(Position, None)  # The start of the search. For suboutline-only.
 
         # User settings.
-        self.minibuffer_mode: bool = None
-        self.reverse_find_defs: bool = None
-        self.prefer_nav_pane: bool = None
+        self.minibuffer_mode: bool = False
+        self.reverse_find_defs: bool = False
+        self.prefer_nav_pane: bool = False
         self.reload_settings()
 
     # @+node:ekr.20210110073117.6: *4* find.default_settings
@@ -2830,7 +2835,11 @@ class LeoFind:
     # @+node:ekr.20210110073117.45: *5* find._inner_search_match_word
     def _inner_search_match_word(self, s: str, i: int, pattern: str) -> bool:
         """Do a whole-word search."""
-        return bool(s and pattern and g.match_word(s, i, pattern, ignore_case=self.ignore_case))
+        return bool(
+            s
+            and pattern
+            and g.match_word(s, i, pattern, ignore_case=self.ignore_case)
+        )  # fmt: skip
 
     # @+node:ekr.20210110073117.46: *5* find._inner_search_plain
     def _inner_search_plain(
@@ -3342,9 +3351,9 @@ class LeoFind:
         self,
         event: LeoKeyEvent | None,
         commandName: str,
-        forward: bool,
-        ignoreCase: bool,
-        regexp: bool,
+        forward: bool | None,
+        ignoreCase: bool | None,
+        regexp: bool | None,
     ) -> None:
         c, k = self.c, self.k
         # None is a signal to get the option from the find tab.
