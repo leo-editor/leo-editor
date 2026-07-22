@@ -385,7 +385,7 @@ class BaseLeoCompare:
                 z = tag + str(line)
                 tag2 = z.rjust(6) + "+:"
                 self.dump(tag2, s)
-            s = None
+            s = ''
         self.show(tag + str(trailingLines) + " trailing lines")
         return trailingLines
 
@@ -491,10 +491,10 @@ class CompareLeoOutlines:
     def __init__(self, c: Cmdr) -> None:
         """Ctor for the LeoOutlineCompare class."""
         self.c = c
-        self.file_node: Position | None = None
-        self.root: Position | None = None
-        self.path1: str | None = None
-        self.path2: str | None = None
+        self.file_node: Position
+        self.root: Position
+        self.path1: str
+        self.path2: str
 
     # @+others
     # @+node:ekr.20180211170333.2: *3* loc.diff_list_of_files (entry)
@@ -568,7 +568,7 @@ class CompareLeoOutlines:
         parent.setHeadString(kind)
         for key in d:
             if kind.lower() == 'changed':
-                v1, v2 = d.get(key)
+                v1, v2 = d.get(key)  # type:ignore
                 # Organizer node: contains diff
                 organizer = parent.insertAsLastChild()
                 organizer.h = v2.h
@@ -597,6 +597,7 @@ class CompareLeoOutlines:
                 p2.b = v2.b
             else:
                 v = d.get(key)
+                assert v
                 p = parent.insertAsLastChild()
                 p.h = v.h
                 p.b = v.b
