@@ -2040,7 +2040,7 @@ class Commands:
 
     # @+node:ekr.20040307104131.3: *5* c.positionExists
     def positionExists(
-        self, p: Position, root: Position | None = None, trace: bool = False
+        self, p: Position | None, root: Position | None = None, trace: bool = False
     ) -> bool:
         """Return True if a position exists in c's tree"""
         if not p or not p.v:
