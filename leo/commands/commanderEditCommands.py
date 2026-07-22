@@ -577,7 +577,7 @@ def extractSectionNames(self: Self, event: LeoKeyEvent | None = None) -> None:
 
 
 # @+node:ekr.20171123135625.28: *3* function: findSectionName
-def findSectionName(self: Self, s: str) -> str | None:
+def findSectionName(self: Self, s: str) -> str:
     head1 = s.find("<<")
     if head1 > -1:
         head2 = s.find(">>", head1)
@@ -586,7 +586,7 @@ def findSectionName(self: Self, s: str) -> str | None:
         if head1 > -1:
             head2 = s.find("@>", head1)
     if head1 == -1 or head2 == -1 or head1 > head2:
-        name = None
+        name = ''
     else:
         name = s[head1 : head2 + 2]
     return name

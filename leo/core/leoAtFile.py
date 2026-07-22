@@ -122,8 +122,9 @@ class AtFile:
         self.fileCommands = c.fileCommands
         # Basic status vars.
         self.errors = 0
-        self.language: str | None = None
-        self.root: Position | None = None
+        self.language: str = ''
+        self.root: Position
+        self.root = None  # type:ignore # Avoid a cast here.
         # Dialogs.
         self.canCancelFlag = False
         self.cancelFlag = False
@@ -2332,7 +2333,7 @@ class AtFile:
                 g.es_print('Ignoring apparent section reference:', color='red')
                 g.es_print('Node: ', p.h)
                 g.es_print('Line: ', s[i1:i2].rstrip())
-        return None, 0, 0
+        return '', 0, 0
 
     # @+node:ekr.20041005105605.174: *6* at.putCodeLine
     def putCodeLine(self, s: str, i: int) -> None:
@@ -2392,11 +2393,12 @@ class AtFile:
             at.putSentinel("@-" + name)
             at.indent -= delta
             return
-        if g.app.allow_undefined_refs:  # pragma: no cover
+        if g.app.allow_undefined_refs:
+            assert p.v
             p.v.setVisited()  # #2311
             # Allow apparent section reference: just write the line.
             at.putCodeLine(s, i)
-        else:  # pragma: no cover
+        else:
             # Do give this error even if unit testing.
             at.writeError(
                 f"undefined section: {g.truncate(name, 60)}\n"
@@ -2479,6 +2481,7 @@ class AtFile:
             # A hack for @shadow unit testing.
             # see AtShadowTestCase.makePrivateLines.
             return h
+        assert p.v
         gnx = p.v.fileIndex
         level = 1 + p.level() - self.root.level()
         if level > 2:
@@ -2621,7 +2624,7 @@ class AtFile:
         """Report a syntax error."""
         g.error(f"Syntax error in: {p.h}")
         typ, val, tb = sys.exc_info()
-        if message := hasattr(val, 'message') and val.message:
+        if message := hasattr(val, 'message') and val.message:  # type:ignore
             g.es_print(message)
         if val is None:
             return
@@ -3190,18 +3193,18 @@ class AtFile:
             junk3, msg, junk = sys.exc_info()
             g.error("TokenError in", p.h)
             g.es('', str(msg))
-        except tabnanny.NannyNag:  # pragma: no cover
+        except tabnanny.NannyNag:
             if g.unitTesting:
                 raise
             junk4, nag, junk = sys.exc_info()
-            badline = nag.get_lineno()
-            line = nag.get_line()
-            message = nag.get_msg()
+            badline = nag.get_lineno()  # type:ignore
+            line = nag.get_line()  # type:ignore
+            message = nag.get_msg()  # type:ignore
             g.error("indentation error in", p.h, "line", badline)
             g.es(message)
             line2 = repr(str(line))[1:-1]
             g.es("offending line:\n", line2)
-        except Exception:  # pragma: no cover
+        except Exception:
             g.trace("unexpected exception")
             g.es_exception()
             raise
@@ -3242,6 +3245,7 @@ class AtFile:
         g.error("exception writing:", fileName)
         g.es_exception()
         if getattr(at, 'outputFile', None):
+            assert at.outputFile
             at.outputFile.flush()
             at.outputFile.close()
             at.outputFile = None
@@ -3284,24 +3288,16 @@ class AtFile:
                 g.es_exception()
             return False
 
-    # @+node:ekr.20050104132026: *5* at.stat
-    def stat(self, fileName: str) -> int:  # pragma: no cover
-        """Return the access mode of named file, removing any setuid, setgid, and sticky bits."""
-        # Do _not_ call self.error here.
-        try:
-            mode = (os.stat(fileName))[0] & (7 * 8 * 8 + 7 * 8 + 7)  # 0777
-        except Exception:
-            mode = None
-        return mode
-
     # @+node:ekr.20090530055015.6023: *4* at.get/setPathUa
     def getPathUa(self, p: Position) -> str:
+        assert p.v
         if hasattr(p.v, 'tempAttributes'):
             d = p.v.tempAttributes.get('read-path', {})
             return d.get('path')
         return ''
 
     def setPathUa(self, p: Position, path: str) -> None:
+        assert p.v
         if not hasattr(p.v, 'tempAttributes'):
             p.v.tempAttributes = {}
         d = p.v.tempAttributes.get('read-path', {})
@@ -3321,6 +3317,7 @@ class AtFile:
         if root and root.h.startswith('@auto-rst'):
             # Fix bug 50: body text lost switching @file to @auto-rst
             # Refuse to convert any @<file> node to @auto-rst.
+            assert root.v
             d = root.v.at_read if hasattr(root.v, 'at_read') else {}
             aList = sorted(d.get(fileName, []))
             for h in aList:
@@ -3358,6 +3355,7 @@ class AtFile:
         the full headline (@<file> type) that caused the read.
         """
         v = p.v
+        assert v
         # #50: body text lost switching @file to @auto-rst
         if not hasattr(v, 'at_read'):
             v.at_read = {}  # pragma: no cover
@@ -3415,6 +3413,7 @@ class AtFile:
 
         if hasattr(p.v, 'at_read'):
             # #50: body text lost switching @file to @auto-rst
+            assert p.v
             d = p.v.at_read
             for k in d:
                 # Make sure k still exists.
@@ -3457,7 +3456,8 @@ class FastAtRead:
         # The global fc.gnxDict. Keys are gnx's, values are vnodes.
         self.gnx2vnode: dict[str, VNode] = gnx2vnode
         self.path: str = ''
-        self.root: Position = None  # type:ignore  # cast doesn't work here!
+        self.root: Position
+        self.root = None  # type:ignore  # cast doesn't work here!
 
         # compiled patterns...
         self.after_pat = cast(re.Pattern, None)
@@ -3570,7 +3570,7 @@ class FastAtRead:
         in_doc = False  # True: in @doc parts.
         is_cweb = comment_delim1 == '@q@' and comment_delim2 == '@>'  # True: cweb hack in effect.
         indent = 0  # The current indentation.
-        level_stack: list[tuple[VNode, VNode]] = []
+        level_stack: list[tuple[VNode | None, VNode | None]] = []
         n_last_lines = 0  # The number of @@last directives seen.
 
         # #1065 so reads will not create spurious child nodes.
@@ -3595,6 +3595,7 @@ class FastAtRead:
         # Init the gnx dict last.
         gnx2vnode = self.gnx2vnode  # Keys are gnx's, values are vnodes.
         gnx2body: dict[str, list[str]] = {}  # Keys are gnxs, values are list of body lines.
+        assert parent_v
         gnx2vnode[gnx] = parent_v  # Add gnx to the keys
 
         # Add gnx to the keys.
@@ -3739,6 +3740,7 @@ class FastAtRead:
                     level_stack.append((v, clone_v))
                     # Always clear the children!
                     v.children = []
+                    assert parent_v
                     parent_v.children.append(v)
                     continue  # End of case 2.
 
@@ -3758,6 +3760,7 @@ class FastAtRead:
                 level_stack = level_stack[: level - 1]
                 level_stack.append((v, clone_v))
                 # Update the links.
+                assert parent_v
                 assert v != root_v
                 parent_v.children.append(v)
                 v.parents.append(parent_v)
