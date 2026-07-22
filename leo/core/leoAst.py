@@ -1,5 +1,7 @@
 # @+leo-ver=5-thin
 # @+node:ekr.20141012064706.18389: * @file leoAst.py
+# type:ignore
+
 # This file is part of Leo: https://leo-editor.github.io/leo-editor
 # Leo's copyright notice is based on the MIT license:
 # https://leo-editor.github.io/leo-editor/license.html
