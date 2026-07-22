@@ -231,11 +231,10 @@ async def client_main_loop(timeout):
                     inner_n += 1
                     assert inner_n < 50  # Arbitrary.
                     try:
-                        json_s = None
                         json_s = g.toUnicode(await websocket.recv())
                         d = json.loads(json_s)
                     except Exception:
-                        if json_s is not None:
+                        if json_s:
                             g.trace('json_s', json_s)
                             g.print_exception()
                         break
