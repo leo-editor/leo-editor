@@ -113,17 +113,17 @@ class LeoBody:
     # @+node:ekr.20031218072017.3657: *3* LeoBody.__init__
     def __init__(self, frame: LeoQtFrame | NullFrame) -> None:
         """Ctor for LeoBody class."""
-        c = frame.c
-        frame.body = self
-        self.c = c
+        self.c = frame.c
         self.frame = frame
-        # Define these here to keep mypy happy.
+        self.use_chapters = False
         self.widget: Any = None
-        self.wrapper: StringTextWrapper | QScintillaWrapper | QTextEditWrapper
-        # Must be overridden in subclasses...
+
+        # Inject an ivar.
+        frame.body = self
+
+        # Just declare these vars: subclass must override them.
         self.colorizer: BaseColorizer
-        # Init user settings.
-        self.use_chapters = False  # May be overridden in subclasses.
+        self.wrapper: StringTextWrapper | QScintillaWrapper | QTextEditWrapper
 
     # @+node:ekr.20031218072017.3677: *3* LeoBody: Coloring
     def forceFullRecolor(self) -> None:
