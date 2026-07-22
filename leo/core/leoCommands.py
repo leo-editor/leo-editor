@@ -1656,7 +1656,7 @@ class Commands:
                 g.printObj(p.v.expandedPositions, indent=p.level(), tag=p.h)
 
     # @+node:ekr.20040306220230.1: *5* c.headline_wrapper
-    def headline_wrapper(self, p: Position) -> Widget:
+    def headline_wrapper(self, p: Position) -> Widget | None:
         c = self
         return c.frame.tree.headline_wrapper(p) if p else None
 

@@ -164,7 +164,7 @@ class LeoQtTree(leoFrame.LeoTree):
         w.clear()
 
     # @+node:ekr.20110605121601.17873: *4* LeoQtTree.redraw_tree & helpers
-    def redraw_tree(self, p: Position | None = None) -> Position:
+    def redraw_tree(self, p: Position | None = None) -> Position | None:
         """
         Redraw all visible nodes of the tree.
         Preserve the vertical scrolling unless scroll is True.
@@ -1130,7 +1130,7 @@ class LeoQtTree(leoFrame.LeoTree):
 
     # @+node:ekr.20110605121601.17905: *3* LeoQtTree: Selecting & editing
     # @+node:ekr.20110605121601.17908: *4* LeoQtTree.headline_wrapper
-    def headline_wrapper(self, p: Position) -> QHeadlineWrapper:
+    def headline_wrapper(self, p: Position) -> QHeadlineWrapper | None:
         """Returns the edit widget (A QLineEdit) for position p."""
         if item := self.position2item(p):
             if e := self.getTreeEditorForItem(item):
@@ -1150,7 +1150,7 @@ class LeoQtTree(leoFrame.LeoTree):
         p: Position,
         selectAll: bool = False,
         selection: tuple | None = None,
-    ) -> tuple[QLineEdit, QHeadlineWrapper]:
+    ) -> tuple[QLineEdit, QHeadlineWrapper] | None:
         """Start editing p's headline."""
         if self.busy:
             return None

@@ -23,7 +23,7 @@ class StringTextWrapper(QTextMixin):
 
     # @+others
     # @+node:ekr.20070228074228.2: *3* StringTextWrapper.__init__, __repr__ & getName
-    def __init__(self, c: Cmdr, name: str) -> None:
+    def __init__(self, c: Cmdr | None, name: str) -> None:
         """Ctor for the StringTextWrapper class."""
         super().__init__(c)
         self.c = c
@@ -181,12 +181,13 @@ class StringTextWrapper(QTextMixin):
         return i != j
 
     # @+node:ekr.20140903172510.18598: *4* StringTextWrapper.insert
-    def insert(self, i: int, s: str) -> None:
+    def insert(self, i: int, s: str) -> int:
         """StringTextWrapper."""
         self.s = self.s[:i] + s + self.s[i:]
         i += len(s)
         self.ins = i
         self.sel = i, i
+        return i  # PR #4812
 
     # @+node:ekr.20140903172510.18589: *4* StringTextWrapper.selectAllText
     def selectAllText(self, insert: int | None = None) -> None:

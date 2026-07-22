@@ -119,9 +119,9 @@ class LeoBody:
         self.frame = frame
         # Define these here to keep mypy happy.
         self.widget: Any = None
-        self.wrapper: StringTextWrapper | QScintillaWrapper | QTextEditWrapper = None
+        self.wrapper: StringTextWrapper | QScintillaWrapper | QTextEditWrapper
         # Must be overridden in subclasses...
-        self.colorizer: BaseColorizer = None
+        self.colorizer: BaseColorizer
         # Init user settings.
         self.use_chapters = False  # May be overridden in subclasses.
 
@@ -252,25 +252,32 @@ class LeoFrame:
     def __init__(self, c: Cmdr, gui: LeoGui) -> None:
         self.c = c
         self.gui = gui
-        # Types...
+
         # Objects attached to this frame...
-        self.body: LeoBody | NullBody | LeoQtBody = None
-        self.iconBar: NullIconBarClass | QtIconBarClass = None
-        self.log: LeoLog | NullLog | LeoQtLog = None
-        self.menu: LeoMenu | LeoQtMenu | NullMenu = None
-        self.miniBufferWidget: QMinibufferWrapper = None
-        self.statusLine: NullStatusLineClass | QtStatusLineClass = None
-        self.top: DynamicWindow = None
-        self.tree: LeoTree | NullTree | LeoQtTree = None
-        self.useMiniBufferWidget = False
+        # It's not easy to use casts here because they affect imports, so just *declare* their types.
+        self.body: LeoBody | NullBody | LeoQtBody
+        self.iconBar: NullIconBarClass | QtIconBarClass
+        self.log: LeoLog | NullLog | LeoQtLog
+        self.menu: LeoMenu | LeoQtMenu | NullMenu
+        self.miniBufferWidget: QMinibufferWrapper
+        self.statusLine: NullStatusLineClass | QtStatusLineClass
+        self.top: DynamicWindow
+        self.tree: LeoTree | NullTree | LeoQtTree
+
+        # Add required inits.
+        self.menu = None  # type:ignore
+        self.miniBufferWidget = None  # type:ignore
+        self.top = None  # type:ignore
+
         # Other ivars...
         self.es_newlines = 0  # newline count for this log stream.
         self.isNullFrame = False
         self.saved = False  # True if ever saved
         self.splitVerticalFlag = True  # Set by initialRatios later.
-        self.stylesheet: str = None  # The contents of <?xml-stylesheet...?> line.
+        self.stylesheet: str = ''  # The contents of <?xml-stylesheet...?> line.
         self.tab_width = 0  # The tab width in effect in this pane.
-        self.title: str = None  # Must be created by subclasses.
+        self.title: str = ''  # Must be created by subclasses.
+        self.useMiniBufferWidget = False
 
     # @+node:ekr.20051009045404: *4* frame.createFirstTreeNode
     def createFirstTreeNode(self) -> VNode:
@@ -323,7 +330,7 @@ class LeoFrame:
     def initialRatios(self) -> tuple[bool, float, float]:
         c = self.c
         s = c.config.getString("initial_split_orientation")
-        verticalFlag = s is None or (s != "h" and s != "horizontal")
+        verticalFlag = not s or (s != "h" and s != "horizontal")
         if verticalFlag:
             r = c.config.getRatio("initial-vertical-ratio")
             if r is None or r < 0.0 or r > 1.0:
@@ -440,7 +447,7 @@ class LeoFrame:
             return self.statusLine.computeStatusUnl(p)
         return ''
 
-    def disableStatusLine(self, background: str = None) -> None:
+    def disableStatusLine(self, background: str = '') -> None:
         if self.statusLine:
             self.statusLine.disable(background)
 
@@ -453,7 +460,7 @@ class LeoFrame:
 
     getStatusObject = getStatusLine
 
-    def putStatusLine(self, s: str, bg: str = None, fg: str = None) -> None:
+    def putStatusLine(self, s: str, bg: str = '', fg: str = '') -> None:
         if self.statusLine:
             self.statusLine.put(s, bg, fg)
 
@@ -472,13 +479,13 @@ class LeoFrame:
 
     # @+node:felix.20250313154127.1: *4* LeoFrame.Window Layouts
     @frame_cmd('horizontal-window-layout')
-    def horizontalWindowLayout(self, event: LeoKeyEvent = None) -> None:
+    def horizontalWindowLayout(self, event: LeoKeyEvent | None = None) -> None:
         c = self.c
         c.inCommand = False  # Allow inner command
         c.doCommandByName('layout-legacy')
 
     @frame_cmd('vertical-window-layout')
-    def verticalWindowLayout(self, event: LeoKeyEvent = None) -> None:
+    def verticalWindowLayout(self, event: LeoKeyEvent | None = None) -> None:
         c = self.c
         c.inCommand = False  # Allow inner command
         c.doCommandByName('layout-vertical-thirds')
@@ -486,8 +493,11 @@ class LeoFrame:
     # @+node:ekr.20070130115927.4: *4* LeoFrame.Cut/Copy/Paste
     # @+node:ekr.20070130115927.5: *5* LeoFrame.copyText
     @frame_cmd('copy-text')
-    def copyText(self, event: LeoKeyEvent = None) -> None:
+    def copyText(self, event: LeoKeyEvent | None = None) -> None:
         """Copy the selected text from the widget to the clipboard."""
+        if not event:
+            return  # PR #4812
+        assert event
         w = event.w
         if not g.isTextWrapper(w):
             return
@@ -507,9 +517,12 @@ class LeoFrame:
 
     # @+node:ekr.20070130115927.6: *5* LeoFrame.cutText
     @frame_cmd('cut-text')
-    def cutText(self, event: LeoKeyEvent = None) -> None:
+    def cutText(self, event: LeoKeyEvent | None = None) -> None:
         """Invoked from the mini-buffer and from shortcuts."""
         c, p, u = self.c, self.c.p, self.c.undoer
+        if not event:
+            return  # PR #4812
+        assert event
         w = event.w
         if not g.isTextWrapper(w):
             return
@@ -536,12 +549,15 @@ class LeoFrame:
 
     # @+node:ekr.20070130115927.7: *5* LeoFrame.pasteText
     @frame_cmd('paste-text')
-    def pasteText(self, event: LeoKeyEvent = None, middleButton: bool = False) -> None:
+    def pasteText(self, event: LeoKeyEvent | None = None, middleButton: bool = False) -> None:
         """
         Paste the clipboard into a widget.
         If middleButton is True, support x-windows middle-mouse-button easter-egg.
         """
         c, p, u = self.c, self.c.p, self.c.undoer
+        if not event:
+            return  # PR #4812
+        assert event
         w = event.w
         if not g.isTextWrapper(w):
             return
@@ -573,13 +589,15 @@ class LeoFrame:
     OnPasteFromMenu = pasteText
 
     # @+node:ekr.20061016071937: *5* LeoFrame.OnPaste (support middle-button paste)
-    def OnPaste(self, event: LeoKeyEvent = None) -> None:
+    def OnPaste(self, event: LeoKeyEvent | None = None) -> None:
         return self.pasteText(event=event, middleButton=True)
 
     # @+node:ekr.20031218072017.3980: *4* LeoFrame.Edit Menu
     # @+node:ekr.20031218072017.3982: *5* LeoFrame.endEditLabelCommand
     @frame_cmd('end-edit-headline')
-    def endEditLabelCommand(self, event: LeoKeyEvent = None, p: Position = None) -> None:
+    def endEditLabelCommand(
+        self, event: LeoKeyEvent | None = None, p: Position | None = None
+    ) -> None:
         """End editing of a headline and move focus to the body pane."""
         frame = self
         c = frame.c
@@ -606,11 +624,11 @@ class LeoLog:
 
     # @+others
     # @+node:ekr.20031218072017.3695: *3*  LeoLog.__init__
-    def __init__(self, frame: LeoLog | LeoQtFrame | NullFrame) -> None:
+    def __init__(self, frame: LeoLog | LeoQtFrame | NullFrame | None) -> None:
         """Ctor for LeoLog class."""
         g._assert(frame is None or issubclass(frame.__class__, LeoFrame))
         self.frame = frame
-        self.c: Cmdr = frame.c if frame else None
+        self.c: Cmdr | None = frame.c if frame else None
         self.enabled = True
         self.newlines = 0
         self.isNull = False
@@ -618,13 +636,13 @@ class LeoLog:
 
         # Depending on the log *tab*, logCtrl may be either a wrapper or a widget.
         self.logCtrl: Widget = None
-        self.tabName: str = None  # The name of the active tab.
-        self.tabFrame: str = None
+        self.tabName: str = ''  # The name of the active tab.
+        self.tabFrame: str = ''
         self.frameDict: dict[str, str] = {}
         self.logNumber = 0  # To create unique name fields for text widgets.
         self.newTabCount = 0  # Number of new tabs created.
         self.textDict: dict[str, Widget] = {}  # Keys: page names. Values: text widgets.
-        self.wrapper: QTextMixin = None  # To keep mypy happy.
+        self.wrapper: QTextMixin | None = None
 
     # @+node:ekr.20070302094848.1: *3* LeoLog.clearTab
     def clearTab(self, tabName: str, wrap: str = 'none') -> None:
@@ -643,7 +661,6 @@ class LeoLog:
 
     # @+node:ekr.20070302094848.5: *3* LeoLog.deleteTab
     def deleteTab(self, tabName: str) -> None:
-        c = self.c
         if tabName == 'Log':
             pass
         elif tabName in ('Find', 'Spell'):
@@ -652,10 +669,11 @@ class LeoLog:
             for d in (self.textDict, self.frameDict):
                 if tabName in d:
                     del d[tabName]
-            self.tabName = None
+            self.tabName = ''
             self.selectTab('Log')
-        c.invalidateFocus()
-        c.bodyWantsFocus()
+        if c := self.c:
+            c.invalidateFocus()
+            c.bodyWantsFocus()
 
     # @+node:ekr.20140903143741.18549: *3* LeoLog.enable/disable
     def disable(self) -> None:
@@ -674,15 +692,17 @@ class LeoLog:
 
     # @+node:ekr.20070302094848.8: *3* LeoLog.lower/raiseTab
     def lowerTab(self, tabName: str) -> None:
-        self.c.invalidateFocus()
-        self.c.bodyWantsFocus()
+        if c := self.c:
+            c.invalidateFocus()
+            c.bodyWantsFocus()
 
     def raiseTab(self, tabName: str) -> None:
-        self.c.invalidateFocus()
-        self.c.bodyWantsFocus()
+        if c := self.c:
+            c.invalidateFocus()
+            c.bodyWantsFocus()
 
     # @+node:ekr.20111122080923.10184: *3* LeoLog.orderedTabNames
-    def orderedTabNames(self, LeoLog: str = None) -> list:
+    def orderedTabNames(self, LeoLog: str = '') -> list:
         return list(self.frameDict.values())
 
     # @+node:ekr.20070302094848.9: *3* LeoLog.numberOfVisibleTabs
@@ -695,10 +715,10 @@ class LeoLog:
     def put(
         self,
         s: str,
-        color: str = None,
+        color: str = '',
         tabName: str = 'Log',
         from_redirect: bool = False,
-        nodeLink: str = None,
+        nodeLink: str = '',
     ) -> None:
         print(s)
 
@@ -735,10 +755,13 @@ class LeoLog:
         """
         c = self.c
         trace = False and not g.unitTesting
+        if not c:
+            return False  # PR #4812
+        assert c
 
         # @+others  # Define helpers
         # @+node:ekr.20220420100806.1: *5* function: find_match
-        def find_match(line: str) -> tuple[re.Match, int, int]:
+        def find_match(line: str) -> tuple[re.Match, int, int] | tuple[None, None, None]:
             """Search line for any pattern in link_table."""
             if not line.strip():
                 return None, None, None
@@ -748,7 +771,7 @@ class LeoLog:
             return None, None, None
 
         # @+node:ekr.20220412084258.1: *5* function: find_at_file_node
-        def find_at_file_node(filename: str) -> Position:
+        def find_at_file_node(filename: str) -> Position | None:
             """Find a position corresponding to filename s"""
             target = os.path.normpath(filename)
             parts = target.split(os.sep)
@@ -791,8 +814,8 @@ class LeoLog:
         for i, line in enumerate(lines):
             m, filename_i, line_number_i = find_match(line)
             if m:
-                filename = m.group(filename_i)
-                line_number = m.group(line_number_i)
+                filename = m.group(filename_i)  # type:ignore
+                line_number = m.group(line_number_i)  # type:ignore
                 p = find_at_file_node(filename)
                 if p:
                     unl = p.get_UNL()
@@ -824,7 +847,7 @@ class LeoLog:
         # Update the status vars.
         self.tabName = tabName
         self.logCtrl = self.textDict.get(tabName)
-        self.tabFrame = self.frameDict.get(tabName)
+        self.tabFrame = self.frameDict.get(tabName, '')
         if 0:
             # Absolutely do not do this here!
             # It is a cause of the 'sticky focus' problem.
@@ -838,7 +861,7 @@ class LeoTree:
     """The base class for the outline pane in Leo windows."""
 
     # Must be defined in subclasses.
-    def headline_wrapper(self, p: Position) -> Widget:
+    def headline_wrapper(self, p: Position) -> Widget | None:
         raise NotImplementedError
 
     # @+others
@@ -904,6 +927,7 @@ class LeoTree:
         c = self.c
         if not c.frame.body.wrapper:
             return  # Defensive.
+        assert p.v
         if p.v.context != c:
             # Selecting a foreign position will not be pretty.
             g.trace(f"Wrong context: {p.v.context!r} != {c!r}")
@@ -965,6 +989,7 @@ class LeoTree:
         """Set the text after selecting a node."""
         c = self.c
         w = c.frame.body.wrapper
+        assert p.v
         s = p.v.b  # Guaranteed to be unicode.
 
         # Part 1: get the old text.
@@ -1156,7 +1181,7 @@ class NullBody(LeoBody):
 
     # @+node:ekr.20031218072017.2197: *3* NullBody: LeoBody interface
     # Birth, death...
-    def createControl(self, parentFrame: Widget, p: Position) -> QTextMixin:
+    def createControl(self, parentFrame: Widget, p: Position) -> QTextMixin | None:
         pass
 
     # Events...
@@ -1193,7 +1218,7 @@ class NullFrame(LeoFrame):
         """Ctor for the NullFrame class."""
         super().__init__(c, gui)
         assert self.c
-        self.wrapper: QTextMixin = None
+        self.wrapper: QTextMixin | None = None
         self.iconBar = NullIconBarClass(self.c)
         self.initComplete = True
         self.isNullFrame = True
@@ -1219,7 +1244,7 @@ class NullFrame(LeoFrame):
     def bringToFront(self) -> None:
         pass
 
-    def cascade(self, event: LeoKeyEvent = None) -> None:
+    def cascade(self, event: LeoKeyEvent | None = None) -> None:
         pass
 
     def compute_ratio(self) -> float:
@@ -1228,16 +1253,16 @@ class NullFrame(LeoFrame):
     def compute_secondary_ratio(self) -> float:
         return 0.5
 
-    def contractBodyPane(self, event: LeoKeyEvent = None) -> None:
+    def contractBodyPane(self, event: LeoKeyEvent | None = None) -> None:
         pass
 
-    def contractLogPane(self, event: LeoKeyEvent = None) -> None:
+    def contractLogPane(self, event: LeoKeyEvent | None = None) -> None:
         pass
 
-    def contractOutlinePane(self, event: LeoKeyEvent = None) -> None:
+    def contractOutlinePane(self, event: LeoKeyEvent | None = None) -> None:
         pass
 
-    def contractPane(self, event: LeoKeyEvent = None) -> None:
+    def contractPane(self, event: LeoKeyEvent | None = None) -> None:
         pass
 
     def deiconify(self) -> None:
@@ -1246,34 +1271,34 @@ class NullFrame(LeoFrame):
     def destroySelf(self) -> None:
         pass
 
-    def equalSizedPanes(self, event: LeoKeyEvent = None) -> None:
+    def equalSizedPanes(self, event: LeoKeyEvent | None = None) -> None:
         pass
 
-    def expandBodyPane(self, event: LeoKeyEvent = None) -> None:
+    def expandBodyPane(self, event: LeoKeyEvent | None = None) -> None:
         pass
 
-    def expandLogPane(self, event: LeoKeyEvent = None) -> None:
+    def expandLogPane(self, event: LeoKeyEvent | None = None) -> None:
         pass
 
-    def expandOutlinePane(self, event: LeoKeyEvent = None) -> None:
+    def expandOutlinePane(self, event: LeoKeyEvent | None = None) -> None:
         pass
 
-    def expandPane(self, event: LeoKeyEvent = None) -> None:
+    def expandPane(self, event: LeoKeyEvent | None = None) -> None:
         pass
 
     def forceWrap(self, p: Position) -> None:
         pass
 
-    def fullyExpandBodyPane(self, event: LeoKeyEvent = None) -> None:
+    def fullyExpandBodyPane(self, event: LeoKeyEvent | None = None) -> None:
         pass
 
-    def fullyExpandLogPane(self, event: LeoKeyEvent = None) -> None:
+    def fullyExpandLogPane(self, event: LeoKeyEvent | None = None) -> None:
         pass
 
-    def fullyExpandOutlinePane(self, event: LeoKeyEvent = None) -> None:
+    def fullyExpandOutlinePane(self, event: LeoKeyEvent | None = None) -> None:
         pass
 
-    def fullyExpandPane(self, event: LeoKeyEvent = None) -> None:
+    def fullyExpandPane(self, event: LeoKeyEvent | None = None) -> None:
         pass
 
     def getIconBar(self) -> NullIconBarClass | QtIconBarClass:
@@ -1284,34 +1309,34 @@ class NullFrame(LeoFrame):
     def get_window_info(self) -> tuple[int, int, int, int]:
         return 600, 500, 20, 20
 
-    def hideBodyPane(self, event: LeoKeyEvent = None) -> None:
+    def hideBodyPane(self, event: LeoKeyEvent | None = None) -> None:
         pass
 
-    def hideLogPane(self, event: LeoKeyEvent = None) -> None:
+    def hideLogPane(self, event: LeoKeyEvent | None = None) -> None:
         pass
 
-    def hideLogWindow(self, event: LeoKeyEvent = None) -> None:
+    def hideLogWindow(self, event: LeoKeyEvent | None = None) -> None:
         pass
 
-    def hideOutlinePane(self, event: LeoKeyEvent = None) -> None:
+    def hideOutlinePane(self, event: LeoKeyEvent | None = None) -> None:
         pass
 
-    def hidePane(self, event: LeoKeyEvent = None) -> None:
+    def hidePane(self, event: LeoKeyEvent | None = None) -> None:
         pass
 
-    def leoHelp(self, event: LeoKeyEvent = None) -> None:
+    def leoHelp(self, event: LeoKeyEvent | None = None) -> None:
         pass
 
     def lift(self) -> None:
         pass
 
-    def minimizeAll(self, event: LeoKeyEvent = None) -> None:
+    def minimizeAll(self, event: LeoKeyEvent | None = None) -> None:
         pass
 
     def resizePanesToRatio(self, ratio: float, secondary_ratio: float) -> None:
         pass
 
-    def resizeToScreen(self, event: LeoKeyEvent = None) -> None:
+    def resizeToScreen(self, event: LeoKeyEvent | None = None) -> None:
         pass
 
     def setInitialWindowGeometry(self) -> None:
@@ -1323,10 +1348,10 @@ class NullFrame(LeoFrame):
     def setWrap(self, flag: str, force: bool = False) -> None:
         pass
 
-    def toggleActivePane(self, event: LeoKeyEvent = None) -> None:
+    def toggleActivePane(self, event: LeoKeyEvent | None = None) -> None:
         pass
 
-    def toggleSplitDirection(self, event: LeoKeyEvent = None) -> None:
+    def toggleSplitDirection(self, event: LeoKeyEvent | None = None) -> None:
         pass
 
     def update(self) -> None:
@@ -1349,10 +1374,10 @@ class NullIconBarClass:
     # @+node:ekr.20070301164543.2: *3* NullIconBarClass.add
     def add(self, *args: Any, **keys: Any) -> Widget:
         """Add a (virtual) button to the (virtual) icon bar."""
-        command: Callable = keys.get('command')
-        text = keys.get('text')
+        command: Callable | None = keys.get('command')
+        text = keys.get('text', '')
         name = 'nullButtonWidget'
-        if not command:
+        if command is None:
 
             def commandCallback(name: str = name) -> None:
                 g.pr(f"command for {name}")
@@ -1397,7 +1422,7 @@ class NullIconBarClass:
             pass
 
     # @+node:ekr.20070301165343: *3* NullIconBarClass: Do nothing
-    def addRow(self, height: str = None) -> None:
+    def addRow(self, height: str = '') -> None:
         pass
 
     def addRowIfNeeded(self) -> None:
@@ -1430,7 +1455,7 @@ class NullLog(LeoLog):
 
     # @+others
     # @+node:ekr.20041012083237: *3*  NullLog.__init__
-    def __init__(self, *, frame: NullFrame = None) -> None:
+    def __init__(self, frame: NullFrame | None = None) -> None:
         super().__init__(frame)
         c = self.c
         self.isNull = True
@@ -1453,10 +1478,10 @@ class NullLog(LeoLog):
     def put(
         self,
         s: str,
-        color: str = None,
+        color: str = '',
         tabName: str = 'Log',
         from_redirect: bool = False,
-        nodeLink: str = None,
+        nodeLink: str = '',
     ) -> None:
         if self.enabled and not g.unitTesting:
             g.pr(g.toUnicode(s), newline=False)  # #4753
@@ -1484,8 +1509,8 @@ class NullLog(LeoLog):
     def deleteTab(self, tabName: str) -> None:
         pass
 
-    def getSelectedTab(self) -> None:
-        return None
+    def getSelectedTab(self) -> str:
+        return ''
 
     def lowerTab(self, tabName: str) -> None:
         pass
@@ -1517,7 +1542,7 @@ class NullStatusLineClass:
     def computeStatusUnl(self, p: Position) -> str:
         return ''
 
-    def disable(self, background: str = None) -> None:
+    def disable(self, background: str = '') -> None:
         self.enabled = False
 
     def enable(self, background: str = "white") -> None:
@@ -1534,7 +1559,7 @@ class NullStatusLineClass:
     def isEnabled(self) -> bool:
         return self.enabled
 
-    def put(self, s: str, bg: str = None, fg: str = None) -> None:
+    def put(self, s: str, bg: str = '', fg: str = '') -> None:
         w = self.textWidget
         w.insert(w.getLastIndex(), s)
 
@@ -1560,7 +1585,7 @@ class NullTree(LeoTree):
         self.editWidgetsDict: dict[VNode, StringTextWrapper] = {}
 
     # @+node:ekr.20070228163350.2: *3* NullTree.headline_wrapper
-    def headline_wrapper(self, p: Position) -> QTextMixin:
+    def headline_wrapper(self, p: Position) -> QTextMixin | None:
         d = self.editWidgetsDict
         if not p or not p.v:
             return None
@@ -1575,26 +1600,26 @@ class NullTree(LeoTree):
         self,
         p: Position,
         selectAll: bool = False,
-        selection: tuple = None,
-    ) -> tuple[Widget, StringTextWrapper]:
+        selection: tuple | None = None,
+    ) -> tuple[Widget, StringTextWrapper] | None:
         """Start editing p's headline."""
         self.endEditLabel()
         if p:
             wrapper = StringTextWrapper(c=self.c, name='head-wrapper')
             e = None
             return e, wrapper
-        return None, None
+        return None
 
     # @+node:ekr.20070228173611: *3* NullTree.printWidgets
     def printWidgets(self) -> None:
         d = self.editWidgetsDict
         for key in d:
             # keys are vnodes, values are StringTextWidgets.
-            w = d.get(key)
-            g.pr('w', w, 'v.h:', key.headString, 's:', repr(w.s))
+            if w := d.get(key):
+                g.pr('w', w, 'v.h:', key.headString, 's:', repr(w.s))
 
     # @+node:ekr.20070228163350.1: *3* NullTree.redraw_tree and scrollTo
-    def redraw_tree(self, p: Position = None) -> Position:
+    def redraw_tree(self, p: Position | None = None) -> Position | None:
         self.redrawCount += 1
         return p
 
