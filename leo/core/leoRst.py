@@ -88,7 +88,7 @@ class RstCommands:
         self.encoding = 'utf-8'  # From any @encoding directive.
         self.path = ''  # The path from any @path directive.
         self.result_list: list[str] = []  # The intermediate results.
-        self.root: Position | None = None  # The @rst node being processed.
+        self.root: Position  # The @rst node being processed.
 
         # Default settings.
         self.default_underline_characters = '#=+*^~-:><'
@@ -393,6 +393,7 @@ class RstCommands:
             self.n_docutils += 1
             self.report(fn)
             if self.root.v not in self.changed_vnodes:
+                assert self.root.v
                 self.changed_positions.append(self.root.copy())
                 self.changed_vnodes.add(self.root.v)
 
@@ -466,6 +467,7 @@ class RstCommands:
         if changed := g.write_file_if_changed(fn, s, encoding=self.encoding):
             self.n_intermediate += 1
             self.report(fn)
+            assert self.root.v
             if self.root.v not in self.changed_vnodes:
                 self.changed_positions.append(self.root.copy())
                 self.changed_vnodes.add(self.root.v)
@@ -515,12 +517,12 @@ class RstCommands:
             rel_path = join(rel_stylesheet_path, self.stylesheet_name)
             rel_path = rel_path.replace('\\', '/')
             overrides['stylesheet'] = rel_path
-            overrides['stylesheet_path'] = None
-            overrides['embed_stylesheet'] = None
+            overrides['stylesheet_path'] = ''
+            overrides['embed_stylesheet'] = ''
         elif os.path.exists(path):
             if ext != '.pdf':
                 overrides['stylesheet'] = path
-                overrides['stylesheet_path'] = None
+                overrides['stylesheet_path'] = ''
         elif styleSheetArgsDict:
             g.es_print('using publish_argv_for_missing_stylesheets', styleSheetArgsDict)
             overrides.update(styleSheetArgsDict)  # MWC add args to settings
@@ -647,6 +649,7 @@ class RstCommands:
     def initAtAutoWrite(self, p: Position) -> None:
         """Init underlining for for an @auto write."""
         # User-defined underlining characters make no sense in @auto-rst.
+        assert p.v
         d = p.v.u.get('rst-import', {})
         underlines2 = d.get('underlines2', '')
         #
