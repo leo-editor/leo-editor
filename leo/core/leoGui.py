@@ -44,7 +44,7 @@ class LeoGui:
         """Ctor for the LeoGui class."""
         self.active = False  # Used only by qt_gui.
         self.consoleOnly = True  # True if g.es goes to console.
-        self.globalFindTabManager: FindTabManager = None
+        self.globalFindTabManager: FindTabManager | None = None
         self.globalFindTab: Widget = None
         self.idleTimeClass: Any = None  # Hard to annotate.
         self.isNullGui = False
@@ -52,8 +52,8 @@ class LeoGui:
         self.leoIcon = None
         self.mGuiName = guiName
         self.mainLoop = None
-        self.root: Position = None
-        self.script: str = None
+        self.root: Position | None = None
+        self.script: str = ''
         self.splashScreen: Widget = None
         self.utils = None
         # To keep pylint happy.
@@ -90,13 +90,13 @@ class LeoGui:
         self,
         c: Cmdr,
         *,
-        binding: str = None,
-        char: str = None,
-        w: QTextMixin = None,
-        x: int = None,
-        x_root: int = None,
-        y: int = None,
-        y_root: int = None,
+        binding: str = '',
+        char: str = '',
+        w: QTextMixin | None = None,
+        x: int | None = None,
+        x_root: int | None = None,
+        y: int | None = None,
+        y_root: int | None = None,
     ) -> LeoKeyEvent:
         # Do not call strokeFromSetting here!
         # For example, this would wrongly convert Ctrl-C to Ctrl-c,
@@ -113,7 +113,7 @@ class LeoGui:
             return "invalid gui name"
 
     # @+node:ekr.20031218072017.2231: *4* LeoGui.setScript
-    def setScript(self, script: str = None, scriptFileName: str = None) -> None:
+    def setScript(self, script: str = '', scriptFileName: str = '') -> None:
         self.script = script
         self.scriptFileName = scriptFileName
 
@@ -139,12 +139,12 @@ class LeoKeyEvent:
         c: Cmdr,
         *,
         binding: Any = None,
-        char: str = None,
+        char: str = '',
         w: Any = None,  # w can be either a Qt widget or one of Leo's wrappers.
-        x: int = None,
-        y: int = None,
-        x_root: int = None,
-        y_root: int = None,
+        x: int | None = None,
+        y: int | None = None,
+        x_root: int | None = None,
+        y_root: int | None = None,
     ) -> None:
         """
         Ctor for LeoKeyEvent class.
@@ -277,7 +277,7 @@ class NullGui(LeoGui):
         self.isNullGui = True
         self.idleTimeClass: Any = g.NullObject
         self.lastFrame: Widget = None  # The outer frame, to set g.app.log in runMainLoop.
-        self.script = None
+        self.script = ''
 
     # @+node:ekr.20031218072017.3744: *3* NullGui.dialogs
     def openFindDialog(self, c: Cmdr) -> None:
@@ -285,10 +285,10 @@ class NullGui(LeoGui):
 
     def runAboutLeoDialog(
         self, c: Cmdr, version: str, theCopyright: str, url: str, email: str
-    ) -> str:
+    ) -> None:
         return None
 
-    def runAskOkDialog(self, c: Cmdr, title: str, message: str = None, text: str = "Ok") -> str:
+    def runAskOkDialog(self, c: Cmdr, title: str, message: str = '', text: str = "Ok") -> str:
         return 'Ok'
 
     def runAskOkCancelNumberDialog(
@@ -296,8 +296,8 @@ class NullGui(LeoGui):
         c: Cmdr,
         title: str,
         message: str,
-        cancelButtonText: str = None,
-        okButtonText: str = None,
+        cancelButtonText: str = '',
+        okButtonText: str = '',
     ) -> str:
         return 'no'
 
@@ -306,8 +306,8 @@ class NullGui(LeoGui):
         c: Cmdr,
         title: str,
         message: str,
-        cancelButtonText: str = None,
-        okButtonText: str = None,
+        cancelButtonText: str = '',
+        okButtonText: str = '',
         default: str = "",
         wide: bool = False,
     ) -> str:
@@ -321,9 +321,9 @@ class NullGui(LeoGui):
         c: Cmdr,
         title: str,
         *,
-        filetypes: list[tuple[str, str]] = None,
+        filetypes: list[tuple[str, str]] | None = None,
         defaultextension: str = '',  # Not used
-        startpath: str = None,
+        startpath: str = '',
     ) -> str:
         return ''
 
@@ -332,7 +332,7 @@ class NullGui(LeoGui):
         c: Cmdr,
         title: str,
         *,
-        filetypes: list[tuple[str, str]] = None,
+        filetypes: list[tuple[str, str]] | None = None,
         defaultextension: str = '',  # Not used
     ) -> str:
         return ''
@@ -342,9 +342,9 @@ class NullGui(LeoGui):
         c: Cmdr,
         title: str,
         *,
-        filetypes: list[tuple[str, str]] = None,
+        filetypes: list[tuple[str, str]] | None = None,
         defaultextension: str = '',  # Not used
-        startpath: str = None,
+        startpath: str = '',
     ) -> list[str]:
         return []
 
@@ -352,7 +352,7 @@ class NullGui(LeoGui):
         self,
         c: Cmdr,
         title: str,
-        message: str = None,
+        message: str = '',
         yes_all: bool = False,
         no_all: bool = False,
     ) -> str:
@@ -362,12 +362,12 @@ class NullGui(LeoGui):
         self,
         c: Cmdr,
         title: str,
-        message: str = None,
+        message: str = '',
         yesMessage: str = "Yes",
         noMessage: str = "No",
-        yesToAllMessage: str = None,
+        yesToAllMessage: str = '',
         defaultButton: str = "Yes",
-        cancelMessage: str = None,
+        cancelMessage: str = '',
     ) -> str:
         return 'cancel'
 
@@ -421,7 +421,7 @@ class NullGui(LeoGui):
     ) -> Any:
         return None
 
-    def getFullVersion(self, c: Cmdr = None) -> str:
+    def getFullVersion(self, c: Cmdr | None = None) -> str:
         return 'NullGui: dummy version'
 
     def getIconImage(self, name: str) -> None:
@@ -495,7 +495,7 @@ class NullScriptingControllerClass:
 class StringCheckBox:
     """Simulate a QCheckBox."""
 
-    def __init__(self, name: str, label: str = None) -> None:
+    def __init__(self, name: str, label: str = '') -> None:
         self.label = label
         self.name = name
         self.value = True
@@ -667,9 +667,9 @@ class StringFindTabManager:
             'entire-outline':  self.radio_button_entire_outline,
             'suboutline-only': self.radio_button_suboutline_only,
         }  # fmt: skip
-        w = d.get(name)
-        if not w.isChecked():
-            w.toggle()
+        if w := d.get(name):
+            if not w.isChecked():
+                w.toggle()
 
     # @+node:ekr.20210221130549.3: *3* sftm: getters/setters
     def get_find_text(self) -> str:
@@ -709,8 +709,8 @@ class StringFindTabManager:
             'search_headline': self.check_box_search_headline,
             'whole_word':      self.check_box_whole_word,
         }  # fmt: skip
-        w = d.get(checkbox_name)
-        w.toggle()
+        if w := d.get(checkbox_name):
+            w.toggle()
 
     # @-others
 
@@ -746,7 +746,7 @@ class StringLineEdit:
 class StringRadioButton:
     """Simulate a QRadioButton."""
 
-    def __init__(self, name: str, label: str = None) -> None:
+    def __init__(self, name: str, label: str = '') -> None:
         self.label = label
         self.name = name
         self.value = True
@@ -768,7 +768,7 @@ class UnitTestGui(NullGui):
     # Presently used only by the import/export unit tests.
     # @+others
     # @+node:ekr.20031218072017.3743: *3* UnitTestGui.__init__
-    def __init__(self, theDict: dict = None) -> None:
+    def __init__(self, theDict: dict | None = None) -> None:
         """ctor for the UnitTestGui class."""
         self.oldGui = g.app.gui
         super().__init__("UnitTestGui")
