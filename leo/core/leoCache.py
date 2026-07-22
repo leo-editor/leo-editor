@@ -208,7 +208,7 @@ class SqlitePickleShare:
             pass
 
     # @+node:vitalije.20170716201700.6: *4* SqlitePickleShare.__getitem__
-    def __getitem__(self, key: str) -> None:
+    def __getitem__(self, key: str) -> Any:
         """db['key'] reading"""
         try:
             obj = None
@@ -405,8 +405,8 @@ def dump_cache(db: dict | SqlitePickleShare, tag: str) -> None:
             dump_list(f"File: {key}", val)
             files += 1
     if d.get('None'):
-        heading = f"All others ({tag})" if files else None
-        dump_list(heading, d.get('None'))
+        heading = f"All others ({tag})" if files else ''
+        dump_list(heading, d.get('None', []))
     print('')
 
 
