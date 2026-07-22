@@ -32,8 +32,8 @@ try:  # #1973
     from leo.core.leoQt import Qsci, QtGui, QtWidgets
     from leo.core.leoQt import UnderlineStyle, Weight  # #2330
 except Exception:
-    Qsci = QtGui = QtWidgets = None
-    UnderlineStyle = Weight = None
+    Qsci = QtGui = QtWidgets = None  # type:ignore
+    UnderlineStyle = Weight = None  # type:ignore
 # @-<< leoColorizer imports >>
 # @+<< leoColorizer annotations >>
 # @+node:ekr.20220901164936.1: ** << leoColorizer annotations >>
@@ -92,7 +92,9 @@ def make_colorizer(c: Cmdr, widget: QWidget) -> JEditColorizer | PygmentsColoriz
 # @+node:ekr.20260215050008.1: ** command: dump-last-colorizer-trace
 @g.command('dump-last-colorizer-trace')
 def dump_colorizer_last_colorizer_traces(event: LeoKeyEvent | None = None) -> None:
-    c = event['c']
+    c = event['c'] if event else None
+    if not c:
+        return
     colorizer = c.frame.body.colorizer
     g.cls()
     print('\n'.join(colorizer.last_trace))
@@ -270,7 +272,7 @@ class BaseColorizer:
             'literal3'  : ('literal3_color', '#00aa00'),
             'literal4'  : ('literal4_color', '#00aa00'),
             'markup'    : ('markup_color',   'red'),
-            'null'      : ('null_color',     None),  # 'black'
+            'null'      : ('null_color',     ''),  # 'black'
             'operator'  : ('operator_color', 'black'),
             'trailing_whitespace':  ('trailing_whitespace_color', '#808080'),
         }  # fmt: skip
@@ -489,11 +491,11 @@ class JEditColorizer(BaseColorizer):
             self.highlighter = LeoHighlighter(
                 c,
                 colorizer=self,
-                document=widget.document(),
+                document=widget.document(),  # type:ignore
             )
 
         # *Global* state data. This is not entirely correct, but it's not worth fixing.
-        self.after_doc_language: str | None = None
+        self.after_doc_language: str = ''
         self.in_killcolor: bool = False
 
         # *Local* state data. Such state is harmless.
@@ -506,7 +508,7 @@ class JEditColorizer(BaseColorizer):
         self.nextState = 1  # Don't use 0.
 
         # Keys are state numbers, values are restart functions.
-        self.restartDict: dict[int, Callable] = {}
+        self.restartDict: dict[int, Callable | None] = {}
         # Keys are state numbers, values state names.
         self.stateDict: dict[int, str] = {}
         # Keys are state names, values are state numbers.
@@ -564,12 +566,13 @@ class JEditColorizer(BaseColorizer):
             return None
 
         if v := g.findAncestorVnodeByPredicate(p, v_predicate=find_delims):
-            m = find_delims(v)
-            self.section_delim1 = m.group(1)
-            self.section_delim2 = m.group(2)
-        else:
-            self.section_delim1 = '<<'
-            self.section_delim2 = '>>'
+            if m := find_delims(v):
+                self.section_delim1 = m.group(1)
+                self.section_delim2 = m.group(2)
+                return  # PR #4812
+
+        self.section_delim1 = '<<'
+        self.section_delim2 = '>>'
 
     # @+node:ekr.20110605121601.18576: *4* jedit.addImportedRules
     def addImportedRules(
@@ -591,7 +594,7 @@ class JEditColorizer(BaseColorizer):
                         if rules := [z for z in aList2 if z not in aList]:
                             aList.extend(rules)
                             self.rulesDict[key] = aList
-            self.initModeFromModeDescriptor(savedModeDescriptor)
+            self.initModeFromModeDescriptor(savedModeDescriptor)  # type:ignore
 
     # @+node:ekr.20110605121601.18577: *4* jedit.addLeoRules
     def addLeoRules(self, theDict: dict[str, RuleSet]) -> None:
@@ -668,7 +671,7 @@ class JEditColorizer(BaseColorizer):
         return self.init_mode_from_module(name, module)
 
     # @+node:btheado.20131124162237.16303: *5* jedit.init_mode_from_module
-    def init_mode_from_module(self, name: str, module: ModuleType) -> bool:
+    def init_mode_from_module(self, name: str, module: ModuleType | None) -> bool:
         """
         Name may be a language name or a delegate name.
         The mode file is a python module containing all
@@ -679,7 +682,7 @@ class JEditColorizer(BaseColorizer):
             # Create a dummy mode descriptor to limit recursion.
             mode_descriptor = JEditModeDescriptor(
                 attributesDict={},
-                defaultColor=None,
+                defaultColor='',
                 keywordsDict={},
                 language='unknown-language',
                 module=module,
@@ -748,7 +751,7 @@ class JEditColorizer(BaseColorizer):
         name or a delegate name.
         """
         if not name:
-            return 'unknown-language', None
+            return 'unknown-language', ''
         # #1334. Lower-case the name, regardless of the spelling in @language.
         name = name.lower()
         i = name.find('::')
@@ -997,7 +1000,7 @@ class JEditColorizer(BaseColorizer):
 
         # @+<< function: resolve_color_key >>
         # @+node:ekr.20230314052558.1: *6* << function: resolve_color_key >>
-        def resolve_color_key(key: str) -> str | None:
+        def resolve_color_key(key: str) -> str:
             """
             Resolve the given color name to a *valid* color.
             """
@@ -1006,14 +1009,14 @@ class JEditColorizer(BaseColorizer):
                 c.config.getColor(f"{self.language}.{option_name}"),  # Preferred.
                 c.config.getColor(f"{self.language}{option_name}"),  # Legacy.
                 c.config.getColor(option_name),
-                default_color,
+                default_color or '',
             )
             for color in colors:
                 color1 = color
                 while color:
                     color = self.normalize(color)
                     if color in leo_color_database:
-                        color = leo_color_database.get(color)
+                        color = leo_color_database.get(color, '')
                     qt_color = QtGui.QColor(color)
                     if qt_color.isValid():
                         return color
@@ -1022,7 +1025,7 @@ class JEditColorizer(BaseColorizer):
                     else:
                         g.trace('Invalid @color setting:', key, color1)
                         break
-            return None  # Reasonable default.
+            return ''
 
         # @-<< function: resolve_color_key >>
 
@@ -1083,7 +1086,7 @@ class JEditColorizer(BaseColorizer):
             d = self.new_fonts[font_name]
             font = g.app.gui.getFontFromParams(
                 family=d.get('family'),
-                size=self.zoomed_size(font_name, d.get('size')),
+                size=self.zoomed_size(font_name, d.get('size', 0)),
                 slant=d.get('slant'),
                 weight=d.get('weight'),
                 tag=font_name,
@@ -1131,7 +1134,7 @@ class JEditColorizer(BaseColorizer):
     # Keys are key::settings_names. Values are cumulative font size.
     zoom_dict: dict[str, int] = {}
 
-    def create_font(self, key: str, setting_name: str) -> QtGui.QFont:
+    def create_font(self, key: str, setting_name: str) -> QtGui.QFont | None:
         """
         Return the font for the given setting name.
 
@@ -1175,7 +1178,7 @@ class JEditColorizer(BaseColorizer):
         # Compute i_size.
         i_size: int
         if key in self.zoom_dict:
-            i_size = self.zoom_dict.get(key)
+            i_size = self.zoom_dict.get(key, 0)
         else:
             s_size: str = size or default_size
             if s_size.endswith(('pt', 'px')):
@@ -1228,12 +1231,12 @@ class JEditColorizer(BaseColorizer):
         for name, option_name, default_color in (
             # ("blank", "show_invisibles_space_background_color", "Gray90"),
             # ("tab", "show_invisibles_tab_background_color", "Gray80"),
-            ("elide", None, "yellow"),
+            ("elide", "", "yellow"),
         ):
             if self.showInvisibles:
                 color = c.config.getColor(option_name) if option_name else default_color
             else:
-                option_name, default_color = self.default_colors_dict.get(name, (None, None))
+                option_name, default_color = self.default_colors_dict.get(name, ('', ''))
                 color = c.config.getColor(option_name) if option_name else ''
             self.configDict[name] = color  # 2022/05/20: Discovered by pyflakes.
 
@@ -1263,9 +1266,12 @@ class JEditColorizer(BaseColorizer):
         self.totalLeoKeywordsCalls = 0
         # Mode data...
         self.importedRulesets: dict[str, bool] = {}
-        self.fonts: dict[str, QtGui.QFont] = {}  # Keys are config names.  Values are actual fonts.
-        self.keywords: dict[str, int] = {}  # Keys are keywords, values are 0..5.
-        self.modes: dict[str, JEditModeDescriptor] = {}  # Keys are languages, values are modes.
+        # Keys are config names.  Values are actual fonts.
+        self.fonts: dict[str, QtGui.QFont | None] = {}
+        # Keys are keywords, values are 0..5.
+        self.keywords: dict[str, int] = {}
+        # Keys are languages, values are modes.
+        self.modes: dict[str, JEditModeDescriptor | None] = {}
         self.mode = None  # The mode descriptor for the present language.
         self.modeStack: list[JEditModeDescriptor] = []
         self.rulesDict = {}
@@ -1496,9 +1502,9 @@ class JEditColorizer(BaseColorizer):
         d = self.configDict
         color_key = self.language.replace('_', '')
         colorName: str = (
-            d.get(f"{self.language}.{tag}")  # Legacy.
-            or d.get(f"{color_key}.{tag}")  # Leo 6.8.4.
-            or d.get(tag)  # Legacy default.
+            d.get(f"{self.language}.{tag}", '')  # Legacy.
+            or d.get(f"{color_key}.{tag}", '')  # Leo 6.8.4.
+            or d.get(tag, '')  # Legacy default.
         )
         if not colorName:
             return
@@ -1507,7 +1513,7 @@ class JEditColorizer(BaseColorizer):
         colorName = self.normalize(colorName)
         colorName = leo_color_database.get(colorName, colorName)
         # Get the actual color.
-        color: QtGui.QColor = self.actualColorDict.get(colorName)
+        color: QtGui.QColor | None = self.actualColorDict.get(colorName)
         if not color:
             color = QtGui.QColor(colorName)
             if color.isValid():
@@ -1932,7 +1938,7 @@ class JEditColorizer(BaseColorizer):
         # This will not slow down Leo, because it is called
         # for things that look like Leo directives.
         word = '@' + word
-        if kind := self.keywordsDict.get(word):
+        if kind := self.keywordsDict.get(word, ''):
             self.colorRangeWithTag(s, i, j, kind)
             return j - i
         # Bug fix: allow rescan.  Affects @language patch.
@@ -2037,7 +2043,7 @@ class JEditColorizer(BaseColorizer):
         s: str,
         i: int,
         *,
-        kind: str | None = None,
+        kind: str = '',
         seq: str = '',
         at_line_start: bool = False,
         at_whitespace_end: bool = False,
@@ -2259,7 +2265,7 @@ class JEditColorizer(BaseColorizer):
         return -len(word)  # An important new optimization.
 
     # @+node:ekr.20110605121601.18615: *4* jedit.match_line
-    def match_line(self, s: str, i: int, *, kind: str | None = None) -> int:
+    def match_line(self, s: str, i: int, *, kind: str = '') -> int:
         """Match the rest of the line."""
         j = g.skip_to_end_of_line(s, i)
         self.colorRangeWithTag(s, i, j, kind)
@@ -2612,11 +2618,11 @@ class JEditColorizer(BaseColorizer):
         i2 = i + len(begin)
         j2 = j + len(end)
         if delegate:
-            self.colorRangeWithTag(s, i, i2, kind, delegate=None, exclude_match=exclude_match)
+            self.colorRangeWithTag(s, i, i2, kind, delegate='', exclude_match=exclude_match)
             self.colorRangeWithTag(s, i2, j, kind, delegate=delegate, exclude_match=exclude_match)
-            self.colorRangeWithTag(s, j, j2, kind, delegate=None, exclude_match=exclude_match)
+            self.colorRangeWithTag(s, j, j2, kind, delegate='', exclude_match=exclude_match)
         else:
-            self.colorRangeWithTag(s, i, j2, kind, delegate=None, exclude_match=exclude_match)
+            self.colorRangeWithTag(s, i, j2, kind, delegate='', exclude_match=exclude_match)
         j = j2
         # New in Leo 5.5: don't recolor everything after continued strings.
         if j > len(s) and not dots:
@@ -2739,9 +2745,9 @@ class JEditColorizer(BaseColorizer):
             j2 = j + len(end)
         if delegate:
             self.colorRangeWithTag(s, i, j, kind, delegate=delegate, exclude_match=exclude_match)
-            self.colorRangeWithTag(s, j, j2, kind, delegate=None, exclude_match=exclude_match)
+            self.colorRangeWithTag(s, j, j2, kind, delegate='', exclude_match=exclude_match)
         else:  # avoid having to merge ranges in addTagsToList.
-            self.colorRangeWithTag(s, i, j2, kind, delegate=None, exclude_match=exclude_match)
+            self.colorRangeWithTag(s, i, j2, kind, delegate='', exclude_match=exclude_match)
         j = j2
         if j > len(s):
 
@@ -2990,7 +2996,7 @@ class JEditColorizer(BaseColorizer):
         result = [self.languageToMode(self.language)]
         if not self.rulesetName.endswith('_main'):
             result.append(self.rulesetName)
-        if f:
+        if f is not None:
             result.append(f.__name__)
         for key in sorted(keys):
             keyVal = keys.get(key)
@@ -3061,7 +3067,7 @@ class JEditColorizer(BaseColorizer):
         return self.showState(n)
 
     # @+node:ekr.20110605121601.18636: *4* jedit.stateNameToStateNumber
-    def stateNameToStateNumber(self, f: Callable, stateName: str) -> int:
+    def stateNameToStateNumber(self, f: Callable | None, stateName: str) -> int:
         """
         Update the following ivars when seeing stateName for the first time:
 
@@ -3095,7 +3101,7 @@ class JEditColorizer(BaseColorizer):
         def default_language(n: int) -> str:
             # This optimization is crucial for large text.
             if n in self.state_number_cache_dict:
-                return self.state_number_cache_dict.get(n)
+                return self.state_number_cache_dict.get(n, '')
             c = self.c
             p = c.p
             language = c.getLanguage(p)
@@ -3131,7 +3137,7 @@ class JEditModeDescriptor:
         defaultColor: str,
         keywordsDict: dict,
         language: str,
-        module: ModuleType,  # For debugging.
+        module: ModuleType | None,  # For debugging.
         properties: dict,
         rulesDict: dict,
         rulesetName: str,
@@ -3180,7 +3186,7 @@ if QtGui:
             self.reloadSettings()
 
         # @+node:ekr.20110605121601.18567: *3* leo_h.highlightBlock
-        def highlightBlock(self, s: str) -> None:
+        def highlightBlock(self, s: str) -> None:  # type:ignore
             """Called by QSyntaxHighlighter"""
             self.n_calls += 1
             s = g.toUnicode(s)
@@ -3363,7 +3369,7 @@ class PygmentsColorizer(JEditColorizer):
             self.highlighter = LeoHighlighter(
                 c,
                 colorizer=self,
-                document=widget.document(),
+                document=widget.document(),  # type:ignore
             )
         # State unique to this class...
         self.color_enabled = self.enabled
