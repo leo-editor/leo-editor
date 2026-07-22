@@ -482,11 +482,10 @@ class ShadowController:
         return ''
 
     # @+node:ekr.20080708094444.9: *4* x.markerFromFileName
-    def markerFromFileName(self, filename: str) -> Marker | None:
+    def markerFromFileName(self, filename: str) -> Marker:
         """Return the sentinel delimiter comment to be used for filename."""
         x = self
-        if not filename:
-            return None
+        assert filename
         root, ext = g.os_path_splitext(filename)
         if ext == '.tmp':
             root, ext = os.path.splitext(root)

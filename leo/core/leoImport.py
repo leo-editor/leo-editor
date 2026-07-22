@@ -577,7 +577,7 @@ class LeoImportCommands:
     # @+node:ekr.20031218072017.3210: *4* ic.createOutline & helpers
     def createOutline(
         self, parent: Position, ext: str = '', s: str = '', treeType: str = '@file'
-    ) -> Position | None:
+    ) -> Position:
         """
         Create an outline by importing a file.
 
