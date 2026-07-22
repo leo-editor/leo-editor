@@ -14,7 +14,7 @@ import sys
 import tabnanny
 import time
 import tokenize
-from typing import Any, TYPE_CHECKING
+from typing import cast, Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 
@@ -3456,21 +3456,22 @@ class FastAtRead:
         assert gnx2vnode is not None
         # The global fc.gnxDict. Keys are gnx's, values are vnodes.
         self.gnx2vnode: dict[str, VNode] = gnx2vnode
-        self.path: str | None = None
-        self.root: Position | None = None
+        self.path: str = ''
+        self.root: Position = None  # type:ignore  # cast doesn't work here!
+
         # compiled patterns...
-        self.after_pat: re.Pattern | None = None
-        self.all_pat: re.Pattern | None = None
-        self.code_pat: re.Pattern | None = None
-        self.comment_pat: re.Pattern | None = None
-        self.delims_pat: re.Pattern | None = None
-        self.doc_pat: re.Pattern | None = None
-        self.first_pat: re.Pattern | None = None
-        self.last_pat: re.Pattern | None = None
-        self.node_start_pat: re.Pattern | None = None
-        self.others_pat: re.Pattern | None = None
-        self.ref_pat: re.Pattern | None = None
-        self.section_delims_pat: re.Pattern | None = None
+        self.after_pat = cast(re.Pattern, None)
+        self.all_pat = cast(re.Pattern, None)
+        self.code_pat = cast(re.Pattern, None)
+        self.comment_pat = cast(re.Pattern, None)
+        self.delims_pat = cast(re.Pattern, None)
+        self.doc_pat = cast(re.Pattern, None)
+        self.first_pat = cast(re.Pattern, None)
+        self.last_pat = cast(re.Pattern, None)
+        self.node_start_pat = cast(re.Pattern, None)
+        self.others_pat = cast(re.Pattern, None)
+        self.ref_pat = cast(re.Pattern, None)
+        self.section_delims_pat = cast(re.Pattern, None)
 
     # @+node:ekr.20180602103135.3: *3* fast_at.get_patterns
     def get_patterns(self, comment_delims: tuple) -> None:
@@ -3711,6 +3712,7 @@ class FastAtRead:
                 if not root_seen:
                     root_seen = True
                     clone_v = None
+                    assert root_v
                     v = root_v
                     if root_v.gnx != gnx:
                         # Delete all traces of root_v.gnx.
@@ -4016,10 +4018,11 @@ class FastAtRead:
         # @+<< post pass: set all body text>>
         # @+node:ekr.20211104054426.1: *4* << post pass: set all body text>>
         # Set the body text.
+        assert root_v
         assert root_v.gnx in gnx2vnode, root_v
         assert root_v.gnx in gnx2body, root_v
         for key in gnx2body:
-            body = gnx2body.get(key)
+            body = gnx2body.get(key, [])
             v = gnx2vnode.get(key)
             assert v, (key, v)
             v._bodyString = g.toUnicode(''.join(body))
@@ -4041,6 +4044,7 @@ class FastAtRead:
             return False
         # Clear all children.
         # Previously, this had been done in readOpenFile.
+        assert root.v
         root.v._deleteAllChildren()
         comment_delims, first_lines, start_i = data
         self.scan_lines(comment_delims, first_lines, lines, path, start_i)
