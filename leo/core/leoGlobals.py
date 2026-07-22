@@ -5611,7 +5611,7 @@ def getLoadedPlugins() -> list:
     return pc.getLoadedPlugins()
 
 
-def getPluginModule(moduleName: str) -> ModuleType:
+def getPluginModule(moduleName: str) -> ModuleType | None:
     pc = g.app.pluginsController
     assert pc
     return pc.getPluginModule(moduleName)
