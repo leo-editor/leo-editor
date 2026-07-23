@@ -709,7 +709,7 @@ class AtFile:
             at.initReadIvars(p, fileName)
             p.v.b = ''  # Required for @auto API checks.
             p.v._deleteAllChildren()
-            p = ic.createOutline(parent=p.copy(), treeType='@auto')
+            p = ic.createOutline(parent=p.copy(), treeType='@auto')  # type:ignore
             # Do *not* call c.selectPosition(p) here.
             # That would improperly expand nodes.
         except Exception:
