@@ -158,8 +158,8 @@ class LeoFind:
         # Internal state...
         self.changeAllFlag = False
         self.in_headline = False
-        self.match_obj = cast(re.Match, None)
-        self.previous_settings = cast(g.Bunch, None)
+        self.match_obj: re.Match | None = None
+        self.previous_settings: g.Bunch | None = None
         self.prev_searches = cast(list[g.Bunch], [])  # #4685
         self.prev_searches_i = 0  # #4685
         self.reverse = False
@@ -883,12 +883,12 @@ class LeoFind:
         self.do_find_prev(settings)
 
     # @+node:ekr.20031218072017.3074: *5* find.do_find_next & do_find_prev
-    def do_find_prev(self, settings: g.Bunch) -> tuple[Position, int, int] | None:
+    def do_find_prev(self, settings: g.Bunch) -> tuple[Position | None, int | None, int | None]:
         """Find the previous instance of self.find_text."""
         self.request_reverse = True
         return self.do_find_next(settings)
 
-    def do_find_next(self, settings: g.Bunch) -> tuple[Position, int, int] | None:
+    def do_find_next(self, settings: g.Bunch) -> tuple[Position | None, int | None, int | None]:
         """
         Find the next instance of self.find_text.
 
@@ -965,11 +965,13 @@ class LeoFind:
         # Now check the args.
         tag = 'find-prev' if self.reverse else 'find-next'
         if not self.check_args(tag):  # Issues error message.
-            return None  # PR #4812
+            return None, None, None
         data = self.save()
         p, pos, newpos = self.find_next_match(p)
-        found = pos is not None
-        if found:
+        if found := pos is not None:
+            assert p is not None
+            assert pos is not None
+            assert newpos is not None
             self.show_success(p, pos, newpos)
         else:
             # Restore previous position.
@@ -1811,13 +1813,13 @@ class LeoFind:
 
         if self.mark_finds:
             for match in matches_dict:
-                p = c.vnode2position(match['v'])
-                if not p.isMarked():
-                    markUndoType = 'Mark Finds'
-                    bunch = u.beforeMark(p, markUndoType)
-                    p.setMarked()
-                    p.setDirty()
-                    u.afterMark(p, markUndoType, bunch)
+                if p := c.vnode2position(match['v']):
+                    if not p.isMarked():
+                        markUndoType = 'Mark Finds'
+                        bunch = u.beforeMark(p, markUndoType)
+                        p.setMarked()
+                        p.setDirty()
+                        u.afterMark(p, markUndoType, bunch)
             # Finish undo group only if mark_finds is true
             u.afterChangeGroup(found_p, undoType)
 
@@ -2497,6 +2499,7 @@ class LeoFind:
         assert c.positionExists(c.lastTopLevel()), c.lastTopLevel()
         found = c.lastTopLevel().insertAfter()
         assert found
+        assert found.v
         assert c.positionExists(found), found
         found.h = f"Found:{self.find_text}"
         status = self.compute_result_status(find_all_flag=True)
@@ -2542,6 +2545,8 @@ class LeoFind:
             w = wrapper
         if not w:  # pragma: no cover
             return False
+        assert w
+        assert p.v
         oldSel = sel = w.getSelectionRange()
         start, end = sel
         if start > end:  # pragma: no cover
@@ -2577,6 +2582,7 @@ class LeoFind:
             w = c.headline_wrapper(p)
             if g.isTextWrapper(w):
                 # find-next and find-prev work regardless of insert point.
+                assert w
                 w.setSelectionRange(start, start + len(change_text))
         else:
             p.v.b = w.getAllText()
@@ -2626,22 +2632,23 @@ class LeoFind:
             return False
 
     # @+node:ekr.20031218072017.3075: *4* find.find_next_match & helpers
-    def find_next_match(self, p: Position) -> tuple[Position, int, int]:
+    def find_next_match(self, p: Position) -> tuple[Position | None, int | None, int | None]:
         """
         Resume the search where it left off.
 
         Return (p, pos, newpos).
         """
+        fail = None, None, None
         if not self.search_headline and not self.search_body:  # pragma: no cover
-            return None, None, None
+            return fail
         if not self.find_text:  # pragma: no cover
-            return None, None, None
+            return fail
         attempts = 0
         u = self.c.undoer
         if self.pattern_match:
             ok = self.compile_pattern()
             if not ok:
-                return None, None, None
+                return fail
         while p:
             pos, newpos = self._fnm_search(p)
             if pos is not None:
@@ -2664,14 +2671,14 @@ class LeoFind:
             else:
                 # Switch to the next/prev node, if possible.
                 attempts += 1
-                p = self._fnm_next_after_fail(p)
-                if p:  # Found another node: select the proper pane.
+                if p := self._fnm_next_after_fail(p):  # type:ignore
+                    # Found another node: select the proper pane.
                     self.in_headline = self._fnm_first_search_pane()
                     s = p.h if self.in_headline else p.b
                     ins = len(s) if self.reverse else 0
                     self.work_s = s
                     self.work_sel = (ins, ins, ins)
-        return None, None, None
+        return fail
 
     # @+node:ekr.20131123132043.16476: *5* find._fnm_next_after_fail & helper
     def _fnm_next_after_fail(self, p: Position) -> Position | None:
@@ -2725,7 +2732,7 @@ class LeoFind:
         return False  # pragma: no cover
 
     # @+node:ekr.20031218072017.3077: *5* find._fnm_search
-    def _fnm_search(self, p: Position) -> tuple[int, int]:
+    def _fnm_search(self, p: Position) -> tuple[int | None, int | None]:
         """
         Search self.work_s for self.find_text with present options.
         Returns (pos, newpos) or (None, dNone).
@@ -3068,6 +3075,7 @@ class LeoFind:
             c.frame.tree.editLabel(p)
             w = c.headline_wrapper(p)  # #2220
             if g.isTextWrapper(w):
+                assert w
                 w.setSelectionRange(pos, newpos, insert)  # #2220
         else:
             # Tricky code.  Do not change without careful thought.
@@ -3089,6 +3097,7 @@ class LeoFind:
         if hasattr(g.app.gui, 'show_find_success'):  # pragma: no cover
             g.app.gui.show_find_success(c, self.in_headline, insert, p)
         c.frame.bringToFront()
+        assert w
         return w  # Support for isearch.
 
     # @+node:ekr.20131117164142.16939: *3* LeoFind.ISearch
@@ -3250,6 +3259,8 @@ class LeoFind:
         self.whole_word = oldWord
         # Handle the results of the search.
         if pos is not None:  # success.
+            assert p is not None
+            assert newpos is not None
             w = self.show_success(p, pos, newpos, showState=False)
             if w:
                 i, j = w.getSelectionRange(sort=False)
@@ -3431,8 +3442,9 @@ class LeoFind:
         c = self.c
         if c.vim_mode and c.vimCommands:
             c.vimCommands.update_dot_before_search(
-                find_pattern=pattern, change_pattern=None
-            )  # A flag.
+                find_pattern=pattern,
+                change_pattern='',
+            )
 
     # @+node:ekr.20150629072547.1: *4* find.preload_find_pattern
     def preload_find_pattern(self, w: QTextMixin) -> None:
@@ -3544,8 +3556,10 @@ class LeoFind:
         k = self.k
         if k.getArgEscapeFlag:
             k.getArgEscapeFlag = False
+            assert self.escape_handler
             self.escape_handler(event)
         else:
+            assert self.handler
             self.handler(event)
 
     # @+node:ekr.20260521170130.1: *5* find.do_arrow
@@ -3570,7 +3584,7 @@ class LeoFind:
         find_s, change_s = bunch.find_text, bunch.change_text
 
         # Show the options in the status area. Like compute_find_options_in_status_area.
-        options = []
+        options: list[str] = []
         d = {
             'whole_word':       'Word',
             'ignore_case':      'Ig-case',
@@ -3588,7 +3602,7 @@ class LeoFind:
             if key in self.ivars:
                 setattr(self, key, val)
             if val and key in d:
-                options.append(d.get(key))
+                options.append(d.get(key, ''))
 
         # Update the gui.
         self.ftm.set_widgets_from_dict(bunch)
