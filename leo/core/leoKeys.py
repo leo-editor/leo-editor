@@ -1220,11 +1220,11 @@ class FileNameChooser:
     # @+node:ekr.20140813052702.18200: *3* fnc.get_file_name (entry)
     def get_file_name(
         self,
-        event: LeoKeyEvent | None,
-        callback: Callable,
-        filterExt: list[str],
-        prompt: str,
-        tabName: str,
+        event: LeoKeyEvent,
+        callback: Callable | None = None,
+        filterExt: list[str] | None = None,
+        prompt: str = '',
+        tabName: str = '',
     ) -> None:
         """Get a file name, supporting file completion."""
         c, k = self.c, self.c.k
@@ -3398,7 +3398,7 @@ class KeyHandlerClass:
     # @+node:ekr.20140813052702.18203: *4* k.getFileName
     def getFileName(
         self,
-        event: LeoKeyEvent | None = None,
+        event: LeoKeyEvent,
         callback: Callable | None = None,
         filterExt: list[str] | None = None,
         prompt: str = 'Enter File Name: ',
@@ -3406,7 +3406,7 @@ class KeyHandlerClass:
     ) -> None:
         """Get a file name from the minibuffer."""
         k = self
-        k.fnc.get_file_name(event, callback, filterExt, prompt, tabName)
+        k.fnc.get_file_name(event, callback, filterExt or [], prompt, tabName)
 
     # @+node:ekr.20061031131434.145: *3* k.Master event handlers
     # @+node:ekr.20061031131434.146: *4* k.masterKeyHandler & helpers

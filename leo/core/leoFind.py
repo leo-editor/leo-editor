@@ -3272,7 +3272,7 @@ class LeoFind:
                 k.updateLabel(event)
 
     # @+node:ekr.20131117164142.16950: *5* find.isearch_state_handler
-    def isearch_state_handler(self, event: LeoKeyEvent | None = None) -> None:
+    def isearch_state_handler(self, event: LeoKeyEvent) -> None:
         """The state manager when the state is 'isearch"""
         # c = self.c
         k = self.k
