@@ -2546,7 +2546,6 @@ class LeoFind:
         if not w:  # pragma: no cover
             return False
         assert w
-        assert p.v
         oldSel = sel = w.getSelectionRange()
         start, end = sel
         if start > end:  # pragma: no cover

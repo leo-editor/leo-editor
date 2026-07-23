@@ -927,7 +927,6 @@ class LeoTree:
         c = self.c
         if not c.frame.body.wrapper:
             return  # Defensive.
-        assert p.v
         if p.v.context != c:
             # Selecting a foreign position will not be pretty.
             g.trace(f"Wrong context: {p.v.context!r} != {c!r}")
@@ -989,7 +988,6 @@ class LeoTree:
         """Set the text after selecting a node."""
         c = self.c
         w = c.frame.body.wrapper
-        assert p.v
         s = p.v.b  # Guaranteed to be unicode.
 
         # Part 1: get the old text.

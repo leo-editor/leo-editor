@@ -478,7 +478,6 @@ class AtFile:
             if efc:
                 efc.set_time(c.fullPath(p))  # #4426 Same effect as leaving efc's _time_d empty.
         for p in files:
-            assert p.v
             p.v.clearDirty()
         if not g.unitTesting and files:  # pragma: no cover
             t2 = time.time()
@@ -601,11 +600,9 @@ class AtFile:
         if p.isAtAsisFileNode():
             at.readOneAtAsisNode(p)  # Changed.
         elif p.isAtAutoNode() or p.isAtAutoRstNode():
-            assert p.v
             old_gnx = p.v.gnx
             p = at.readOneAtAutoNode(p)  # Might change p!
             # Give a weird error.
-            assert p.v
             if p.v.gnx != old_gnx:
                 g.es_print(f"reading @auto node changed the gnx for `{p.h}`")
                 g.es_print(f"from `{old_gnx}` to: `{p.v.gnx}`")
@@ -636,7 +633,6 @@ class AtFile:
         for p in files:
             at.readFileAtPosition(p)
         for p in files:
-            assert p.v
             p.v.clearDirty()
         if not g.unitTesting:  # pragma: no cover
             if files:
@@ -696,7 +692,6 @@ class AtFile:
     def readOneAtAutoNode(self, p: Position) -> Position:  # pragma: no cover
         """Read an @auto file into p. Return the *new* position."""
         at, c, ic = self, self.c, self.c.importCommands
-        assert p.v
         fileName = c.fullPath(p)
         if not g.os_path_exists(fileName):
             g.error(f"not found: {p.h!r}", nodeLink=p.get_UNL())
@@ -987,7 +982,6 @@ class AtFile:
             # Put the text into the already-existing root node.
             p = root
             at.importRootSeen = True
-        assert p.v
         p.v.setVisited()  # Suppress warning about unvisited node.
         return p
 
@@ -2132,7 +2126,6 @@ class AtFile:
 
         # Make sure v is never expanded again.
         # Suppress orphans check.
-        assert p.v
         p.v.setVisited()
 
         # #1048 & #1037: regularize most trailing whitespace.
@@ -2241,7 +2234,6 @@ class AtFile:
         s = p.b
         # Make sure v is never expanded again.
         # Suppress orphans check.
-        assert p.v
         p.v.setVisited()
         if at.sentinels and s and s[-1] != '\n':
             s = s + '\n'
@@ -2306,7 +2298,6 @@ class AtFile:
         directive in the body text of p's parent.
         """
         at = self
-        assert p.v
         i = g.skip_ws(p.h, 0)
         isSection, junk = at.isSectionName(p.h, i)
         if isSection:
@@ -2413,7 +2404,6 @@ class AtFile:
             at.indent -= delta
             return
         if g.app.allow_undefined_refs:
-            assert p.v
             p.v.setVisited()  # #2311
             # Allow apparent section reference: just write the line.
             at.putCodeLine(s, i)
@@ -2500,7 +2490,6 @@ class AtFile:
             # A hack for @shadow unit testing.
             # see AtShadowTestCase.makePrivateLines.
             return h
-        assert p.v
         gnx = p.v.fileIndex
         level = 1 + p.level() - self.root.level()
         if level > 2:
@@ -3310,14 +3299,12 @@ class AtFile:
 
     # @+node:ekr.20090530055015.6023: *4* at.get/setPathUa
     def getPathUa(self, p: Position) -> str:
-        assert p.v
         if hasattr(p.v, 'tempAttributes'):
             d = p.v.tempAttributes.get('read-path', {})
             return d.get('path')
         return ''
 
     def setPathUa(self, p: Position, path: str) -> None:
-        assert p.v
         if not hasattr(p.v, 'tempAttributes'):
             p.v.tempAttributes = {}
         d = p.v.tempAttributes.get('read-path', {})
@@ -3375,7 +3362,6 @@ class AtFile:
         the full headline (@<file> type) that caused the read.
         """
         v = p.v
-        assert v
         # #50: body text lost switching @file to @auto-rst
         if not hasattr(v, 'at_read'):
             v.at_read = {}  # pragma: no cover
@@ -3433,7 +3419,6 @@ class AtFile:
 
         if hasattr(p.v, 'at_read'):
             # #50: body text lost switching @file to @auto-rst
-            assert p.v
             d = p.v.at_read
             for k in d:
                 # Make sure k still exists.

@@ -1258,7 +1258,6 @@ class LeoImportCommands:
         c, v = self.c, p.v
         if not c or not p:
             return
-        assert v
         s = g.toUnicode(s, self.encoding)
         if c.p and p.v == c.p.v:
             w = c.frame.body.wrapper
@@ -1790,7 +1789,6 @@ class RecursiveImportController:
         self.n_files += 1
         if self.kind == '@edit':
             p = parent.insertAsLastChild()
-            assert p.v
             path = c.relativeDirectory(path)
             p.v.h = '@edit ' + path.replace('\\', '/')
             s, e = g.readFileIntoString(path, kind=self.kind)
@@ -1807,7 +1805,6 @@ class RecursiveImportController:
 
         # #4385: set mod time for @clean files. Clear the mod time for all other files.
         p = parent.lastChild()
-        assert p.v
         if self.kind == '@clean':
             p.v.u['_mod_time'] = g.os_path_getmtime(path)
         elif '_mod_time' in p.v.u:
@@ -1848,7 +1845,6 @@ class RecursiveImportController:
     def fix_back_slashes(self, p: Position) -> None:
         """Convert backslash to slash in all headlines."""
         for p in p.self_and_subtree(copy=False):
-            assert p.v
             s = p.h.replace('\\', '/')
             if s != p.h:
                 p.v.h = s

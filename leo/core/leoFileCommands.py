@@ -868,7 +868,6 @@ class FileCommands:
             p._linkCopiedAsNthChild(current, 0)
         else:
             p._linkCopiedAfter(current)
-        assert p.v
         assert not p.isCloned(), g.objToString(p.v.parents)
         self.gnxDict = oldGnxDict
         self.reassignAllIndices(p)
@@ -1727,7 +1726,6 @@ class FileCommands:
             assert sp
             # build uas dict
             for p in sp.self_and_subtree():
-                assert p.v
                 if hasattr(p.v, 'unknownAttributes') and len(p.v.unknownAttributes.keys()):
                     try:
                         json.dumps(
@@ -1804,7 +1802,6 @@ class FileCommands:
         # c = self.c
         fc = self
         v = p.v
-        assert v
         # Precompute constants.
         # Write the entire @edit tree if it has children.
         isAuto = p.isAtAutoNode() and p.atAutoNodeName().strip()
@@ -1966,7 +1963,6 @@ class FileCommands:
         if not d:
             return ''
         # Pickle and hexlify d.
-        assert p.v
         return self.pickle(v=p.v, val=d, tag='descendentVnodeUnknownAttributes')
 
     # @+node:ekr.20080805085257.1: *6* fc.createUaList
@@ -2152,7 +2148,6 @@ class FileCommands:
         """Write a <v> element corresponding to a VNode."""
         fc = self
         v = p.v
-        assert v
         # Precompute constants.
         # Write the entire @edit tree if it has children.
         isAuto = p.isAtAutoNode() and p.atAutoNodeName().strip()
@@ -2179,7 +2174,6 @@ class FileCommands:
             fc.put(v_head + '</v>\n')
         else:
             fc.vnodesDict[gnx] = True
-            assert p.v
             h = xml.sax.saxutils.escape(p.v.headString() or '', entities=self.entities)
             v_head += f"<vh>{h}</vh>"
 

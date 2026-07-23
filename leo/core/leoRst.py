@@ -649,7 +649,6 @@ class RstCommands:
     def initAtAutoWrite(self, p: Position) -> None:
         """Init underlining for for an @auto write."""
         # User-defined underlining characters make no sense in @auto-rst.
-        assert p.v
         d = p.v.u.get('rst-import', {})
         underlines2 = d.get('underlines2', '')
         #

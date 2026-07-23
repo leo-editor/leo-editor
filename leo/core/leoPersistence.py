@@ -177,7 +177,6 @@ class PersistenceDataController:
         d: dict[str, Position] = {}
         p = c.rootPosition()
         while p:
-            assert p.v
             if p.v == root.v:
                 p.moveToNodeAfterTree()
             else:
@@ -247,7 +246,6 @@ class PersistenceDataController:
 
     def at_data_body(self, p: Position) -> str:
         """Return the body text for p's @data node."""
-        assert p.v
         return f"gnx: {p.v.gnx}\n"
 
     # @+node:ekr.20140712105644.16744: *4* pd.expected_headline
@@ -502,7 +500,6 @@ class PersistenceDataController:
     # @+node:ekr.20140711111623.17872: *5* pd.is_cloned_outside_parent_tree
     def is_cloned_outside_parent_tree(self, p: Position) -> bool:
         """Return True if a clone of p exists outside the tree of p.parent()."""
-        assert p.v
         return len(list(set(p.v.parents))) > 1
 
     # @+node:ekr.20140712105644.16745: *5* pd.is_foreign_file
@@ -518,7 +515,6 @@ class PersistenceDataController:
     def pickle(self, p: Position) -> str:
         """Pickle val and return the hexlified result."""
         try:
-            assert p.v
             ua = p.v.u
             s = pickle.dumps(ua, protocol=1)
             s2 = binascii.hexlify(s)
