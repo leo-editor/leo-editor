@@ -3410,7 +3410,7 @@ class KeyHandlerClass:
 
     # @+node:ekr.20061031131434.145: *3* k.Master event handlers
     # @+node:ekr.20061031131434.146: *4* k.masterKeyHandler & helpers
-    def masterKeyHandler(self, event: LeoKeyEvent | None = None) -> None:
+    def masterKeyHandler(self, event: LeoKeyEvent) -> None:
         """The master key handler for almost all key bindings."""
         trace = 'keys' in g.app.debug
         c, k = self.c, self
@@ -3448,7 +3448,7 @@ class KeyHandlerClass:
 
     # @+node:ekr.20200524151214.1: *5* Setup...
     # @+node:ekr.20180418040158.1: *6* k.checkKeyEvent
-    def checkKeyEvent(self, event: LeoKeyEvent | None = None) -> None:
+    def checkKeyEvent(self, event: LeoKeyEvent) -> None:
         """Perform sanity checks on the incoming event."""
         # These assert's should be safe, because eventFilter
         # calls k.masterKeyHandler inside a try/except block.
@@ -3464,7 +3464,7 @@ class KeyHandlerClass:
         assert event.stroke.s not in g.app.gui.ignoreChars, repr(event.stroke.s)
 
     # @+node:ekr.20180418031417.1: *6* k.traceVars
-    def traceVars(self, event: LeoKeyEvent | None = None) -> None:
+    def traceVars(self, event: LeoKeyEvent) -> None:
         trace = False and not g.unitTesting
         if not trace:
             return
@@ -3475,7 +3475,7 @@ class KeyHandlerClass:
         g.trace(f"stroke: {stroke!r}, char: {char!r}, state: {state}, state2: {k.unboundKeyAction}")
 
     # @+node:ekr.20180418031118.1: *5* 1. k.isSpecialKey
-    def isSpecialKey(self, event: LeoKeyEvent | None = None) -> bool:
+    def isSpecialKey(self, event: LeoKeyEvent) -> bool:
         """Return True if char is a special key."""
         if not event:
             # An empty event is not an error.
@@ -3487,7 +3487,7 @@ class KeyHandlerClass:
         return event.char in g.app.gui.ignoreChars
 
     # @+node:ekr.20180418024449.1: *5* 2. k.doKeyboardQuit
-    def doKeyboardQuit(self, event: LeoKeyEvent | None = None) -> bool:
+    def doKeyboardQuit(self, event: LeoKeyEvent) -> bool:
         """
         A helper for k.masterKeyHandler: Handle keyboard-quit logic.
 
@@ -3503,7 +3503,7 @@ class KeyHandlerClass:
         return False
 
     # @+node:ekr.20180418023827.1: *5* 3. k.doDemo
-    def doDemo(self, event: LeoKeyEvent | None = None) -> bool:
+    def doDemo(self, event: LeoKeyEvent) -> bool:
         """
         Support the demo.py plugin.
         Return True if k.masterKeyHandler should return.
@@ -3527,7 +3527,7 @@ class KeyHandlerClass:
         return False
 
     # @+node:ekr.20091230094319.6244: *5* 4. k.doMode & helpers
-    def doMode(self, event: LeoKeyEvent | None = None) -> bool:
+    def doMode(self, event: LeoKeyEvent) -> bool:
         """
         Handle mode bindings.
         Return True if k.masterKeyHandler should return.
@@ -3617,7 +3617,7 @@ class KeyHandlerClass:
         return True
 
     # @+node:ekr.20061031131434.108: *6* k.callStateFunction
-    def callStateFunction(self, event: LeoKeyEvent | None = None) -> Any:
+    def callStateFunction(self, event: LeoKeyEvent) -> Any:
         """Call the state handler associated with this event."""
         k = self
         ch = event.char
@@ -3790,7 +3790,7 @@ class KeyHandlerClass:
             g.es('bound', stroke, 'to command', cmdname)
 
     # @+node:ekr.20180418025241.1: *5* 5. k.doVim
-    def doVim(self, event: LeoKeyEvent | None = None) -> bool:
+    def doVim(self, event: LeoKeyEvent) -> bool:
         """
         Handle vim mode.
         Return True if k.masterKeyHandler should return.
@@ -3808,7 +3808,7 @@ class KeyHandlerClass:
         return False
 
     # @+node:ekr.20180418033838.1: *5* 6. k.doBinding & helpers
-    def doBinding(self, event: LeoKeyEvent | None = None) -> bool:
+    def doBinding(self, event: LeoKeyEvent) -> bool:
         """
         Attempt to find a binding for the event's stroke.
         If found, execute the command and return True
@@ -3845,7 +3845,7 @@ class KeyHandlerClass:
         return False
 
     # @+node:ekr.20091230094319.6240: *6* k.getPaneBinding & helper
-    def getPaneBinding(self, event: LeoKeyEvent | None = None) -> g.BindingInfo | None:
+    def getPaneBinding(self, event: LeoKeyEvent) -> g.BindingInfo | None:
         c, k, state = self.c, self, self.unboundKeyAction
         w = event.w
         stroke = event.stroke if event else None
