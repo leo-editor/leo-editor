@@ -245,6 +245,7 @@ class JupytextManager:
         # jupytext.read can crash, so be safe.
         fmt = c.config.getString('jupytext-fmt') or 'py:percent'
         try:
+            assert jupytext
             notebook = jupytext.read(path, fmt=fmt)
             with io.StringIO() as f:
                 # Use jupytext.write, *not* jupytext.writes.
@@ -293,6 +294,7 @@ class JupytextManager:
         # Write the .ipynb file.
         # Write the paired .py file, only if fmt specifies pairing.
         # See https://jupytext.readthedocs.io/en/latest/config.html
+        assert jupytext
         fmt = c.config.getString('jupytext-fmt') or 'py:percent'
         notebook = jupytext.reads(contents, fmt=fmt)
         jupytext.write(notebook, path, fmt=fmt)
