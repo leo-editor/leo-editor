@@ -3750,7 +3750,7 @@ class FastAtRead:
                     continue  # End of case 1.
 
                 # Case 2: We are scanning the descendants of a clone.
-                parent_v, clone_v = level_stack[level - 2]
+                parent_v, clone_v = level_stack[level - 2]  # type:ignore # The big little lie.
                 if v and clone_v:
                     # The last version of the body and headline wins..
                     gnx2body[gnx] = body = []
