@@ -1785,8 +1785,8 @@ class KeyHandlerClass:
         """Create a key handler for c."""
         self.c = c
         self.dispatchEvent = None
-        self.fnc: FileNameChooser | None = None  # A singleton defined in k.finishCreate.
-        self.getArgInstance: GetArg | None = None  # A singleton defined in k.finishCreate.
+        self.fnc: FileNameChooser  # A singleton defined in k.finishCreate.
+        self.getArgInstance: GetArg  # A singleton defined in k.finishCreate.
         self.inited = False  # Set at end of finishCreate.
         # A list of commands whose bindings have been set to None in the local file.
         self.killedBindings: list[str] = []
