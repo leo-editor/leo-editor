@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
-<leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
+<!-- Created by Leo: https://leo-editor.github.io/leo-editor/leo_toc.html -->
+<leo_file xmlns:leo="https://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2"/>
 <globals/>
 <preferences/>
@@ -15,13 +15,13 @@
 <v t="chris.20180314054143.5"><vh>g.error/note/warning test</vh></v>
 </v>
 <v t="chris.20180313181652.3"><vh>Notes</vh></v>
-<v t="chris.20180313181652.1"><vh>@settings</vh>
+<v t="chris.20180313181652.1" descendentVnodeUnknownAttributes="7d7100285803000000302e3171017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a73735803000000302e3271067d7107580b0000005f5f626f6f6b6d61726b7371087d7109580700000069735f64757065710a4930300a73735803000000302e33710b7d710c580b0000005f5f626f6f6b6d61726b73710d7d710e580700000069735f64757065710f4930300a7373752e"><vh>@settings</vh>
 <v t="chris.20180313181652.115"><vh>Appearance (miscellaneous)</vh>
 <v t="chris.20180313181652.117"><vh>@string color_theme = dark</vh></v>
 <v t="chris.20180313181652.113"><vh>@string tree-image-closed = dark/branch_closed.svg</vh></v>
 <v t="chris.20180313181652.114"><vh>@string tree-image-open = dark/branch_open.svg</vh></v>
 </v>
-<v t="chris.20180322072943.1"><vh>Colors</vh>
+<v t="chris.20180322072943.1" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>Colors</vh>
 <v t="chris.20180313181652.4"><vh>Breeze Dark Color definitions</vh>
 <v t="chris.20180313181652.5"><vh>@color dark-base0 = #eff0f1</vh></v>
 <v t="chris.20180313181652.6"><vh>@color dark-base1 = #909396</vh></v>
@@ -95,7 +95,7 @@
 <v t="chris.20180313181652.67"><vh>@color button-hover-fg = @dark-base7</vh></v>
 </v>
 </v>
-<v t="chris.20180313181652.68"><vh>Fonts &amp; text sizes</vh>
+<v t="chris.20180313181652.68" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>Fonts &amp; text sizes</vh>
 <v t="chris.20180313181652.69"><vh>@string font-family = DejaVu Sans Mono, Inconsolata, Droid Sans Mono</vh></v>
 <v t="chris.20180313181652.70"><vh>@string font-family-body =@font-family</vh></v>
 <v t="chris.20180313181652.71"><vh>@string font-family-log =@font-family</vh></v>
@@ -107,7 +107,7 @@
 <v t="chris.20180315130317.1"><vh>@string font-size-menu = 12pt</vh></v>
 <v t="chris.20180315130516.1"><vh>@string font-size-tabs = 12pt</vh></v>
 </v>
-<v t="chris.20180313181652.79"><vh>Plugins settings</vh>
+<v t="chris.20180313181652.79" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>Plugins settings</vh>
 <v t="chris.20180313181652.116"><vh>@bool color_theme_is_dark = True</vh></v>
 <v t="chris.20180313181652.80"><vh>bookmarks</vh>
 <v t="chris.20180313181652.81"><vh>@color bookmarks_current_color = @solarized-orange</vh></v>
@@ -154,10 +154,12 @@
 <v t="chris.20180313181652.125"><vh>Minibuffer &amp; label</vh></v>
 <v t="chris.20180313181652.121"><vh>Borders</vh></v>
 <v t="chris.20180313181652.122"><vh>Buttons</vh></v>
+<v t="tom.20260722185118.1"><vh>Checkboxes</vh></v>
 <v t="ekr.20190531135641.1"><vh>Dock</vh></v>
 <v t="chris.20180313181652.123"><vh>Log, Find, Spell, Tag</vh></v>
 <v t="chris.20180313181652.124"><vh>Menus</vh></v>
 <v t="chris.20180313181652.126"><vh>Plugins</vh></v>
+<v t="tom.20260722150822.1"><vh>Radio Buttons</vh></v>
 <v t="chris.20180313181652.127"><vh>Scroll bars</vh></v>
 <v t="chris.20180313181652.128"><vh>Splitters</vh></v>
 <v t="chris.20180313181652.129"><vh>Tab bar</vh></v>
@@ -166,7 +168,7 @@
 </v>
 </v>
 </v>
-<v t="chris.20180313181652.68"></v>
+<v t="chris.20180313181652.68" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"></v>
 </vnodes>
 <tnodes>
 <t tx="chris.20180313181652.1">@language rest
@@ -195,9 +197,9 @@ Notes:
 </t>
 <t tx="chris.20180313181652.114"></t>
 <t tx="chris.20180313181652.115"></t>
-<t tx="chris.20180313181652.116" lineYOffset="4b002e">Set to true for dark themes, so bookmarks.py can generate
+<t tx="chris.20180313181652.116">Set to true for dark themes, so bookmarks.py can generate
 random background colors which are appropriate etc.</t>
-<t tx="chris.20180313181652.117" lineYOffset="4b002e">Name of the theme,
+<t tx="chris.20180313181652.117">Name of the theme,
 used to find icon files</t>
 <t tx="chris.20180313181652.118">/*
 
@@ -2413,7 +2415,7 @@ QDoubleSpinBox::down-arrow:off
 {
    border-image: url(:/dark/down_arrow_disabled.svg);
 }</t>
-<t tx="chris.20180313181652.30" lineYOffset="4b002e">These settings must exist because they are *not* used in the css.</t>
+<t tx="chris.20180313181652.30">These settings must exist because they are *not* used in the css.</t>
 <t tx="chris.20180313181652.31">Maroon #9b0000
 Brown #a26b22
 Olive #808100
@@ -2659,5 +2661,36 @@ QLineEdit#editorLabel {
 }
 </t>
 <t tx="ekr.20201221104051.1"></t>
+<t tx="tom.20260722150822.1">QRadioButton::indicator {
+    width: 14px;
+    height: 14px;
+    border-radius: 7px;
+    background-color: @text-background;
+    border: 1px solid @text_foreground;
+}
+
+QRadioButton::indicator:checked {
+    background-color: @text_foreground;
+    image: none;
+}
+
+QRadioButton::indicator:unchecked {
+    background-color: @text-background;
+}</t>
+<t tx="tom.20260722185118.1">QCheckBox::indicator {
+    width: 14px;
+    height: 14px;
+    background-color: @text-background;
+    border: 1px solid @text_foreground;
+}
+
+QCheckBox::indicator:checked {
+    background-color: @text_foreground;
+    image: none;
+}
+
+QCheckBox::indicator:unchecked {
+    background-color: @text-background;
+}</t>
 </tnodes>
 </leo_file>

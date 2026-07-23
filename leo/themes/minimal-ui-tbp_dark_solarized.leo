@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: https://leo-editor.github.io/leo-editor/leo_toc.html -->
-<leo_file xmlns:leo="http://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1" >
+<leo_file xmlns:leo="https://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2"/>
 <globals/>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20180312111155.1"><vh>Read me</vh></v>
+<v t="ekr.20180312111155.1" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000007374725f6c656f5f706f7371035805000000322c302c33710473732e"><vh>Read me</vh></v>
 <v t="ekr.20180312110809.1"><vh>Theme Tests</vh>
 <v t="ekr.20180314052441.1"><vh>Syntax coloring template</vh>
 <v t="ekr.20180314052441.2"><vh>&lt;&lt; defined section &gt;&gt;</vh></v>
@@ -14,8 +14,8 @@
 <v t="ekr.20180312110809.4"><vh>Test g.es(color=*)</vh></v>
 <v t="ekr.20180312110809.5"><vh>g.error/note/warning test</vh></v>
 </v>
-<v t="ekr.20180318145515.1"><vh>@settings</vh>
-<v t="ekr.20180318145515.704"><vh>@theme minimal-ui-tbp_dark_solarized</vh>
+<v t="ekr.20180318145515.1" descendentVnodeUnknownAttributes="7d71005803000000302e3071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>@settings</vh>
+<v t="ekr.20180318145515.704" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>@theme minimal-ui-tbp_dark_solarized</vh>
 <v t="ekr.20180318145515.810"><vh>Theme description settings</vh>
 <v t="ekr.20180318145515.811"><vh>@bool color_theme_is_dark = True</vh></v>
 <v t="ekr.20180318145515.812"><vh>@string color_theme = dark</vh></v>
@@ -24,7 +24,8 @@
 <v t="ekr.20180318145515.710"><vh> Theme Settings</vh>
 <v t="ekr.20180318145515.711"><vh>Colors...</vh>
 <v t="ekr.20180318145515.712"><vh>Base colors: most are solarized colors</vh>
-<v t="ekr.20180318145515.713"><vh>@color dark-base0 = #839496</vh></v>
+<v t="ekr.20180318145515.713"><vh>@@color dark-base0 = #839496</vh></v>
+<v t="tom.20260328094341.1"><vh>@color dark-base0 = #94a5a7</vh></v>
 <v t="ekr.20180318145515.714"><vh>@color dark-base00 = #657b83</vh></v>
 <v t="ekr.20180318145515.715"><vh>@color dark-base01 = #586e75</vh></v>
 <v t="ekr.20180318145515.716"><vh>@color dark-base02 = #073642</vh></v>
@@ -35,6 +36,7 @@
 <v t="ekr.20180318145515.721"><vh>@color dark-base1 = #93a1a1</vh></v>
 <v t="ekr.20180318145515.722"><vh>@color dark-base2 = #eee8d5</vh></v>
 <v t="ekr.20180318145515.723"><vh>@color dark-base3 = #fdf6e3</vh></v>
+<v t="tom.20260722143414.1"><vh>@color dark-base-0-darker = #4a5253</vh></v>
 <v t="tom.20210611204854.1"><vh>@color solarized-black = #202020</vh></v>
 <v t="ekr.20180318145515.725"><vh>@@color solarized-blue = #268bd2</vh></v>
 <v t="tom.20210611205908.1"><vh>@color solarized-blue = #36abf2</vh></v>
@@ -46,6 +48,7 @@
 <v t="ekr.20180318145515.731"><vh>@color solarized-violet = #6c71c4</vh></v>
 <v t="ekr.20180318145515.732"><vh>@color solarized-white = #fdf6e3 </vh></v>
 <v t="ekr.20180318145515.733"><vh>@color solarized-yellow = #b58900</vh></v>
+<v t="tom.20230405194811.1"><vh>@color solarized-purple = purple</vh></v>
 </v>
 <v t="ekr.20180318145515.734"><vh>Colors: Logical colors</vh>
 <v t="ekr.20180318145515.735"><vh>@color LeoBlue = @LightSteelBlue1</vh></v>
@@ -119,19 +122,20 @@
 <v t="ekr.20180318145515.795"><vh>@color button-hover-fg =@dark-base03</vh></v>
 </v>
 </v>
-<v t="tom.20220329091429.1"><vh>Fonts &amp; text sizes</vh>
-<v t="tom.20220329091429.2"><vh>@string font-family = Cousine, Consolas, "Droid Sans Mono", "DejaVu Sans Mono"</vh></v>
-<v t="tom.20220329091429.3"><vh>@string font-family-ui = "Open Sans", "Segoe UI", Verdana, sans-serif</vh></v>
-<v t="tom.20220329091429.4"><vh>@string font-size-text = 10.5pt</vh></v>
-<v t="tom.20220329091429.5"><vh>@string font-size-ui = 9.5pt</vh></v>
-<v t="tom.20220329091429.6"><vh>@string font-size-gutter = 9pt</vh></v>
-<v t="tom.20220329091429.7"><vh>@string font-size-button = @font-size-ui</vh></v>
-<v t="tom.20220329091429.8"><vh>@string font-family-body = @font-family</vh></v>
-<v t="tom.20220329091429.9"><vh>@string font-family-log = @font-family</vh></v>
-<v t="tom.20220329091429.10"><vh>@string font-family-tree = @font-family-ui</vh></v>
-<v t="tom.20220329091429.11"><vh>@string font-size-body = @font-size-text</vh></v>
-<v t="tom.20220329091429.12"><vh>@string font-size-log = @font-size-text</vh></v>
-<v t="tom.20220329091429.13"><vh>@string font-size-tree = @font-size-ui</vh></v>
+<v t="tom.20240813125525.1"><vh>Fonts &amp; text sizes</vh>
+<v t="tom.20240813125525.2"><vh>@string font-family = "Intel One Mono", Cousine, Consolas, "Droid Sans Mono", "DejaVu Sans Mono"</vh></v>
+<v t="tom.20240813125525.3"><vh>@string font-family-ui = "Open Sans", "Segoe UI", Verdana, sans-serif</vh></v>
+<v t="tom.20240813125525.4"><vh>@string font-size-text = 10pt</vh></v>
+<v t="tom.20240813125525.5"><vh>@string font-size-ui = 10.5pt</vh></v>
+<v t="tom.20240813125525.8"><vh>@string font-size-button = 9pt</vh></v>
+<v t="tom.20240813125525.6"><vh>@string font-size-gutter = 8.5pt</vh></v>
+<v t="tom.20240813125525.7"><vh>@int gutter-y-adjust = 5</vh></v>
+<v t="tom.20240813125525.9"><vh>@string font-family-body = @font-family</vh></v>
+<v t="tom.20240813125525.10"><vh>@string font-family-log = @font-family</vh></v>
+<v t="tom.20240813125525.11"><vh>@string font-family-tree = @font-family-ui</vh></v>
+<v t="tom.20240813125525.12"><vh>@string font-size-body = @font-size-text</vh></v>
+<v t="tom.20240813125525.13"><vh>@string font-size-log = @font-size-text</vh></v>
+<v t="tom.20240813125525.14"><vh>@string font-size-tree = @font-size-ui</vh></v>
 </v>
 <v t="ekr.20180318145515.804"><vh>Gradients</vh>
 <v t="ekr.20180318145515.805"><vh>@string bg-gradient =qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1@text-background-bright, stop:0.4 @text-background, stop:0.6@text-background, stop:0.9 @text-background-bright)</vh></v>
@@ -142,20 +146,24 @@
 <v t="ekr.20180318145515.809"><vh>@string tree-image-open = nodes-dark/triangles/open.png</vh></v>
 </v>
 </v>
-<v t="tom.20220329091500.1"><vh>@data qt-gui-plugin-style-sheet</vh>
-<v t="tom.20220329091500.2"><vh>Global</vh></v>
-<v t="tom.20220329091500.3"><vh>Widgets: general</vh></v>
-<v t="tom.20220329091500.4"><vh>Body &amp; other text</vh></v>
-<v t="tom.20220329091500.5"><vh>Borders</vh></v>
-<v t="tom.20220329091500.6"><vh>Buttons</vh></v>
-<v t="tom.20220329091500.7"><vh>Gutter</vh></v>
-<v t="tom.20220329091500.8"><vh>Menus</vh></v>
-<v t="tom.20220329091500.9"><vh>Minibuffer &amp; label</vh></v>
-<v t="tom.20220329091500.10"><vh>Scroll bars</vh></v>
-<v t="tom.20220329091500.11"><vh>Status area</vh></v>
-<v t="tom.20220329091500.12"><vh>Splitters</vh></v>
-<v t="tom.20220329091500.13"><vh>Tab bar</vh></v>
-<v t="tom.20220329091500.14"><vh>Tree</vh></v>
+<v t="tom.20240813125547.1"><vh>@data qt-gui-plugin-style-sheet</vh>
+<v t="tom.20240813125547.2"><vh>Global</vh></v>
+<v t="tom.20240813125547.3"><vh>Widgets: general</vh></v>
+<v t="tom.20240813125547.4"><vh>Body &amp; other text</vh></v>
+<v t="tom.20240813125547.5"><vh>Borders</vh></v>
+<v t="tom.20240813125547.6"><vh>Buttons</vh></v>
+<v t="tom.20260722163155.1"><vh>Checkboxes</vh></v>
+<v t="tom.20240813125547.7"><vh>Gutter</vh></v>
+<v t="tom.20240813125547.8"><vh>Menus</vh></v>
+<v t="tom.20240813125547.9"><vh>Minibuffer &amp; label</vh></v>
+<v t="tom.20260722143307.1"><vh>Radio Buttons</vh></v>
+<v t="tom.20240813125547.10"><vh>Scroll bars</vh></v>
+<v t="tom.20240813125547.11"><vh>Status area</vh></v>
+<v t="tom.20240813125547.12"><vh>Splitters</vh></v>
+<v t="tom.20240813125547.13"><vh>Tab bar</vh></v>
+<v t="tom.20240813125547.14"><vh>Toolbar</vh></v>
+<v t="tom.20240813125547.15"><vh>Tooltips</vh></v>
+<v t="tom.20240813125547.16"><vh>Tree</vh></v>
 </v>
 </v>
 </v>
@@ -677,254 +685,6 @@ div#bg {background:#ffffff}
 &lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
 &lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
 </t>
-<t tx="tom.20220329091429.1">Change these settings to change font sizes.</t>
-<t tx="tom.20220329091429.10"></t>
-<t tx="tom.20220329091429.11">(some body text here so there's
-something to see)</t>
-<t tx="tom.20220329091429.12"></t>
-<t tx="tom.20220329091429.13"></t>
-<t tx="tom.20220329091429.2"></t>
-<t tx="tom.20220329091429.3"></t>
-<t tx="tom.20220329091429.4"></t>
-<t tx="tom.20220329091429.5"></t>
-<t tx="tom.20220329091429.6"></t>
-<t tx="tom.20220329091429.7"></t>
-<t tx="tom.20220329091429.8"></t>
-<t tx="tom.20220329091429.9"></t>
-<t tx="tom.20220329091500.1">/*
-@language css
-
-  minimal-ui-tbp_dark_solarized.leo: @data qt-gui-plugin-style-sheet
-  at-theme TBP Dark Solarized UI.
-  at-tabwidth -2 causes a crash in parse-template!
-
-*/
-</t>
-<t tx="tom.20220329091500.10">QScrollBar::horizontal {
-   height: 15px;
-}
-QScrollBar::vertical {
-   width: 15px;
-}
-QScrollBar::add-page, QScrollBar::sub-page {
-   background: @dark-base02;
-}
-
-</t>
-<t tx="tom.20220329091500.11">/* The status area */
-
-QLineEdit#status1 {
-  /* at-color status-bg overrides this! */
-  /* background: @dark-base03; */
-  border-color: @dark-base02;
-  border-width: 1px;
-  border-style: solid;
-}
-QLineEdit#status2 {
-    /* at-color status-bg overrides this! */
-  /* background: @dark-base03; */
-  border-color: @dark-base02;
-  border-width: 1px;
-  border-style: solid;
-}
-</t>
-<t tx="tom.20220329091500.12">QSplitter::handle {
-  background: @dark-base01;
-}
-QSplitter::handle:hover {
-  background: @solarized-violet;
-}
-</t>
-<t tx="tom.20220329091500.13">QTabBar::tab {
-  /* color: @text-foreground; */
-  color: @solarized-green;
-    /* EKR: Use *lower* visibility for inactive tabs. */
-  background: @bg-gradient;
-  margin-right: 5px;
-  padding: 2px;
-  margin-top: 3px;
-  margin-bottom: 3px;
-  margin-left: 5px;
-}
-QTabBar::tab:selected {
-  color: @text-foreground;
-    /* EKR: Use *higher* visibility for active tab. */
-    /* color: @solarized-green; */
-}
-QTabBar::tab:hover {
-  background: @bg-gradient-hover;
-  color: @button-hover-fg;
-}
-
-</t>
-<t tx="tom.20220329091500.14">/* ----- QTreeView: base class for QTreeWidget ----- */
-
-QTreeView {
-  /* These apply to the selected item, but not to editing items.*/
-/*  color: @text-foreground;
-  font-family: @font-family-tree;
-  font-size: @font-size-tree;*/
-  font-weight: normal; /* normal,bold,100,..,900 */
-  font-style: normal; /* normal, italic,oblique */
-  show-decoration-selected: 1; /* Extend the selection */
-}
-QTreeView::item:selected, QTreeView::item:active:selected {
-  background: @solarized-blue;
-  color: @dark-base03;
-}
-QTreeView::branch:closed:has-children{
-    image: @tree-image-closed;
-}
-QTreeView::branch:open:has-children{
-    image: @tree-image-open;
-}
-
-/* ----- Headline edit widgets ----- */
-QTreeView QLineEdit {
-/*  font-size: @font-size-tree;*/
-  background: @LeoYellow;
-  color: black;
-  padding: 0px;
-}
-</t>
-<t tx="tom.20220329091500.2">* {
-  font-family: @font-family-ui;
-  font-size: @font-size-ui;
-  color: @text-foreground;
-  background: @dark-base03;
-}</t>
-<t tx="tom.20220329091500.3">/* More general css should precede more specific. */
-
-QWidget {
-  /* Not for text widgets */
-  background:  @dark-base03;
-  color: @dark-base1;
-  border-color: @dark-base1;
-}
-
-QDockWidget {
- border: 5px solid red;
-}
-QDoubleSpinBox, QSpinBox, QDateEdit, QTimeEdit {
-  border: none;
-  padding: 3px;
-  margin-right: 5px;
-}
-QLabel {
-  color: @dark-base1;
-}
-QLineEdit {
-  border: none;
-  padding: 3px;
-}</t>
-<t tx="tom.20220329091500.4">/* The body pane */
-LeoQTextBrowser {
-  font-family: @font-family-body;
-  font-size: @font-size-body;
-  font-weight: normal; /* normal,bold,100,..,900 */
-  font-style: normal; /* normal,italic,oblique */
-  padding-left: 3px;
-  padding-top: 3px;
-  padding-bottom: 3px;
-  padding-right: 3px;
-  height: 200%;
-}
-
-QWidget#richTextEdit {
-  font-family: @font-family-body;
-  font-size: @font-size-body;
-}
-</t>
-<t tx="tom.20220329091500.5">/* active pane highlighting */
-QTextEdit#log-widget, LeoQTreeWidget#treeWidget, QTextEdit#richTextEdit {
-  border-style: solid;
-  border-width: 3px;
-}
-QTextEdit#log-widget {
-  border-color: @log_text_background_color;
-}
-LeoQTreeWidget#treeWidget {
-  border-color: @dark-base03;
-}
-QTextEdit#richTextEdit {
-  border-color: @text-background;
-
-}
-QTextEdit:focus#log-widget,LeoQTreeWidget:focus#treeWidget, QTextEdit:focus#richTextEdit {
-  border-color: @solarized-blue;
-}
-</t>
-<t tx="tom.20220329091500.6">QPushButton {
-  color: @text-foreground;
-  background: @bg-gradient;
-  border: none;
-  padding: 3px;
-  margin-right: 5px;
-  font-size:@font-size-button;
-}
-QPushButton:hover {
-  color: @button-hover-fg;
-  background: @bg-gradient-hover;
-}
-</t>
-<t tx="tom.20220329091500.7">QFrame#gutter {
-  font-size: @font-size-gutter;
-  background: @dark-base02;
-}</t>
-<t tx="tom.20220329091500.8">/* Warning: do not change the order of these items! */
-QMenu {
-  color: @text-foreground-bright;
-}
-QMenuBar {
-  margin-left: 5px;
-  margin-right: 5px;
-  margin-top: 3px;
-  margin-bottom: 3px;
-}
-QMenuBar::item:selected {
-  color: @button-hover-fg;
-  background: @bg-gradient-hover;
-}
-QMenu::item:selected {
-  color: @button-hover-fg;
-  background: @bg-gradient-hover;
-}
-QMenuBar::item {
-  color: @text-foreground;
-  background: @bg-gradient;
-}
-QMenuBar::item:pressed {
-  color: @text-foreground-bright;
-  background: @bg-gradient;
-}
-/* From KDE Dark Theme */
-QMenu::separator
-{
-    height: 0.2ex;
-    background: lightblue;
-    margin-left: 1ex;
-    margin-right: 0.5ex;
-}
-
-QMenu::item {
-  font-family: @font-family-ui;
-  font-size: @font-size-ui;
-  padding:2px;
-  margin: 2px;
-}
-</t>
-<t tx="tom.20220329091500.9">/* The mini-buffer */
-QLabel#minibufferLabel {
-  color: @solarized-violet;
-}
-
-QLineEdit#lineEdit {
-  color: @solarized-blue;
-  font-weight: normal; /* normal,bold,100,..,900 */
-  font-style: normal; /* normal,italic,oblique */
-  border: 1px solid @solarized-blue;
-}
-</t>
 <t tx="tom.20220329091512.1"></t>
 <t tx="tom.20220329091512.2">/* The log pane */
 QTextEdit#log-widget {
@@ -966,5 +726,302 @@ QTextEdit#log-widget {
   font-weight: @bookmarks_current_weight;
 }
 </t>
+<t tx="tom.20230405194811.1"></t>
+<t tx="tom.20240813125525.1">Change these settings to change font sizes.</t>
+<t tx="tom.20240813125525.10"></t>
+<t tx="tom.20240813125525.11"></t>
+<t tx="tom.20240813125525.12">(some body text here so there's
+something to see)</t>
+<t tx="tom.20240813125525.13"></t>
+<t tx="tom.20240813125525.14"></t>
+<t tx="tom.20240813125525.2"></t>
+<t tx="tom.20240813125525.3"></t>
+<t tx="tom.20240813125525.4"></t>
+<t tx="tom.20240813125525.5"></t>
+<t tx="tom.20240813125525.6"></t>
+<t tx="tom.20240813125525.7"></t>
+<t tx="tom.20240813125525.8"></t>
+<t tx="tom.20240813125525.9"></t>
+<t tx="tom.20240813125547.1">/*
+@language css
+
+  minimal-ui-tbp_dark_solarized.leo: @data qt-gui-plugin-style-sheet
+  at-theme TBP Dark Solarized UI.
+  at-tabwidth -2 causes a crash in parse-template!
+
+*/
+</t>
+<t tx="tom.20240813125547.10">QScrollBar::horizontal {
+   height: 15px;
+}
+QScrollBar::vertical {
+   width: 15px;
+}
+QScrollBar::add-page, QScrollBar::sub-page {
+   background: @dark-base02;
+}
+
+</t>
+<t tx="tom.20240813125547.11">/* The status area */
+
+QLineEdit#status1 {
+  /* at-color status-bg overrides this! */
+  /* background: @dark-base03; */
+  border-color: @dark-base02;
+  border-width: 1px;
+  border-style: solid;
+}
+QLineEdit#status2 {
+    /* at-color status-bg overrides this! */
+  /* background: @dark-base03; */
+  border-color: @dark-base02;
+  border-width: 1px;
+  border-style: solid;
+}
+</t>
+<t tx="tom.20240813125547.12">QSplitter::handle {
+  background: @dark-base01;
+}
+QSplitter::handle:hover {
+  background: @solarized-violet;
+}
+</t>
+<t tx="tom.20240813125547.13">QTabBar::tab {
+  /* color: @text-foreground; */
+  color: @solarized-green;
+    /* EKR: Use *lower* visibility for inactive tabs. */
+  background: @bg-gradient;
+  margin-right: 5px;
+  padding: 2px;
+  margin-top: 3px;
+  margin-bottom: 3px;
+  margin-left: 5px;
+}
+QTabBar::tab:selected {
+  color: @text-foreground;
+    /* EKR: Use *higher* visibility for active tab. */
+    /* color: @solarized-green; */
+}
+QTabBar::tab:hover {
+  background: @bg-gradient-hover;
+  color: @button-hover-fg;
+}
+
+</t>
+<t tx="tom.20240813125547.14">/*QToolButton#qt_toolbar_ext_button*/
+QToolButton
+{
+    background-color: @text-foreground;
+    color: @text-foreground;
+    border: none;
+}
+
+</t>
+<t tx="tom.20240813125547.15">QToolTip {
+  background: @text-foreground;
+  color: @text-background;}</t>
+<t tx="tom.20240813125547.16">/* ----- QTreeView: base class for QTreeWidget ----- */
+
+QTreeView {
+  /* These apply to the selected item, but not to editing items.*/
+/*  color: @text-foreground;
+  font-family: @font-family-tree;
+  font-size: @font-size-tree;*/
+  font-weight: normal; /* normal,bold,100,..,900 */
+  font-style: normal; /* normal, italic,oblique */
+  show-decoration-selected: 1; /* Extend the selection */
+}
+QTreeView::item:selected, QTreeView::item:active:selected {
+  background: @solarized-blue;
+  color: @dark-base03;
+}
+QTreeView::branch:closed:has-children{
+    image: @tree-image-closed;
+}
+QTreeView::branch:open:has-children{
+    image: @tree-image-open;
+}
+
+/* ----- Headline edit widgets ----- */
+QTreeView QLineEdit {
+/*  font-size: @font-size-tree;*/
+  background: @LeoYellow;
+  color: black;
+  padding: 0px;
+}
+</t>
+<t tx="tom.20240813125547.2">* {
+  font-family: @font-family-ui;
+  font-size: @font-size-ui;
+  color: @text-foreground;
+  background: @text-background;
+}</t>
+<t tx="tom.20240813125547.3">/* More general css should precede more specific. */
+
+QWidget {
+  /* Not for text widgets */
+  background:  @dark-base03;
+  color: @dark-base0;
+  border-color: @dark-base1;
+}
+
+QDockWidget {
+ border: 5px solid red;
+}
+QDoubleSpinBox, QSpinBox, QDateEdit, QTimeEdit {
+  border: none;
+  padding: 3px;
+  margin-right: 5px;
+}
+QLabel {
+  color: @dark-base1;
+}
+QLineEdit {
+  border: none;
+  padding: 3px;
+}
+</t>
+<t tx="tom.20240813125547.4">/* The body pane */
+LeoQTextBrowser {
+  font-family: @font-family-body;
+  font-size: @font-size-body;
+  color: @text-foreground;
+  background: @text-background;
+  font-weight: normal; /* normal,bold,100,..,900 */
+  font-style: normal; /* normal,italic,oblique */
+  padding-left: 3px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  padding-right: 3px;
+}
+
+QWidget#richTextEdit {
+  font-family: @font-family-body;
+  font-size: @font-size-body;
+}
+</t>
+<t tx="tom.20240813125547.5">/* active pane highlighting */
+QTextEdit#log-widget, LeoQTreeWidget#treeWidget, QTextEdit#richTextEdit {
+  border-style: solid;
+  border-width: 3px;
+}
+QTextEdit#log-widget {
+  border-color: @log_text_background_color;
+}
+LeoQTreeWidget#treeWidget {
+  border-color: @dark-base03;
+}
+QTextEdit#richTextEdit {
+  border-color: @text-background;
+
+}
+QTextEdit:focus#log-widget,LeoQTreeWidget:focus#treeWidget, QTextEdit:focus#richTextEdit {
+  border-color: @solarized-blue;
+}
+</t>
+<t tx="tom.20240813125547.6">QPushButton {
+  color: @text-foreground;
+  background: @bg-gradient;
+  border: none;
+  padding: 3px;
+  margin-right: 5px;
+  font-size: @font-size-button;
+}
+QPushButton:hover {
+  color: @button-hover-fg;
+  background: @bg-gradient-hover;
+}
+</t>
+<t tx="tom.20240813125547.7">QFrame#gutter {
+  font-size: @font-size-gutter;
+  background: @dark-base02;
+}</t>
+<t tx="tom.20240813125547.8">/* Warning: do not change the order of these items! */
+QMenu {
+  color: @text-foreground-bright;
+}
+QMenuBar {
+  margin-left: 5px;
+  margin-right: 5px;
+  margin-top: 3px;
+  margin-bottom: 3px;
+}
+QMenuBar::item:selected {
+  color: @button-hover-fg;
+  background: @bg-gradient-hover;
+}
+QMenu::item:selected {
+  color: @button-hover-fg;
+  background: @bg-gradient-hover;
+}
+QMenuBar::item {
+  color: @text-foreground;
+  background: @bg-gradient;
+}
+QMenuBar::item:pressed {
+  color: @text-foreground-bright;
+  background: @bg-gradient;
+}
+/* From KDE Dark Theme */
+QMenu::separator
+{
+    height: 0.2ex;
+    background: lightblue;
+    margin-left: 1ex;
+    margin-right: 0.5ex;
+}
+
+QMenu::item {
+  font-family: @font-family-ui;
+  font-size: @font-size-ui;
+  padding:2px;
+  margin: 2px;
+}
+</t>
+<t tx="tom.20240813125547.9">/* The mini-buffer */
+QLabel#minibufferLabel {
+  color: @solarized-violet;
+}
+
+QLineEdit#lineEdit {
+  color: @solarized-blue;
+  font-weight: normal; /* normal,bold,100,..,900 */
+  font-style: normal; /* normal,italic,oblique */
+  border: 1px solid @solarized-blue;
+}
+</t>
+<t tx="tom.20260328094341.1">Original solarized base0: #839496</t>
+<t tx="tom.20260722143307.1">QRadioButton::indicator {
+    width: 14px;
+    height: 14px;
+    border-radius: 7px;
+    background-color: @text-background;
+    border: 1px solid @text_foreground;
+}
+
+QRadioButton::indicator:checked {
+    background-color: @dark-base-0-darker;
+    image: none;
+}
+
+QRadioButton::indicator:unchecked {
+    background-color: @text-background;
+}</t>
+<t tx="tom.20260722143414.1"></t>
+<t tx="tom.20260722163155.1">QCheckBox::indicator {
+    width: 14px;
+    height: 14px;
+    background-color: @text-background;
+    border: 1px solid @text_foreground;
+}
+
+QCheckBox::indicator:checked {
+    background-color: @dark-base-0-darker;
+    image: none;
+}
+
+QCheckBox::indicator:unchecked {
+    background-color: @text-background;
+}</t>
 </tnodes>
 </leo_file>
