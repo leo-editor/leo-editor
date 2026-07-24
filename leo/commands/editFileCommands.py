@@ -1402,7 +1402,7 @@ class GitDiffController:
             parent.h = kind
         for key in d:
             if kind.lower() == 'changed':
-                v1, v2 = d.get(key)
+                v1, v2 = d.get(key, (None, None))
                 # Make a clone, if possible.
                 assert v1.fileIndex == v2.fileIndex
                 p_in_c = self.find_gnx(self.c, v1.fileIndex)
@@ -1415,19 +1415,19 @@ class GitDiffController:
                     p3.b = v2.b
             elif kind.lower() == 'added':
                 # Make a clone, if possible.
-                v = d.get(key)
-                if new_p := self.find_gnx(self.c, v.fileIndex):
-                    p = new_p.clone()
-                    p.moveToLastChildOf(parent)
-                else:
+                if v := d.get(key):
+                    if new_p := self.find_gnx(self.c, v.fileIndex):
+                        p = new_p.clone()
+                        p.moveToLastChildOf(parent)
+                    else:
+                        p = parent.insertAsLastChild()
+                        p.h = v.h
+                        p.b = v.b
+            else:
+                if v := d.get(key):
                     p = parent.insertAsLastChild()
                     p.h = v.h
                     p.b = v.b
-            else:
-                v = d.get(key)
-                p = parent.insertAsLastChild()
-                p.h = v.h
-                p.b = v.b
 
     # @+node:ekr.20170806191942.2: *4* gdc.create_compare_node
     def create_compare_node(
@@ -1452,57 +1452,58 @@ class GitDiffController:
         parent.setHeadString(f"diff: {kind}")
         for key in d:
             if kind.lower() == 'changed':
-                v1, v2 = d.get(key)
-                # Organizer node: contains diff
-                organizer = parent.insertAsLastChild()
-                organizer.h = f"diff: {v2.h}"
-                p_in_c = self.find_gnx(self.c, v1.fileIndex)
-                body = list(
-                    difflib.unified_diff(
-                        g.splitLines(v1.b),
-                        g.splitLines(v2.b),
-                        rev1 or 'uncommitted',
-                        rev2 or 'uncommitted',
+                v1, v2 = d.get(key, (None, None))
+                if v1 and v2:
+                    # Organizer node: contains diff
+                    organizer = parent.insertAsLastChild()
+                    organizer.h = f"diff: {v2.h}"
+                    p_in_c = self.find_gnx(self.c, v1.fileIndex)
+                    body = list(
+                        difflib.unified_diff(
+                            g.splitLines(v1.b),
+                            g.splitLines(v2.b),
+                            rev1 or 'uncommitted',
+                            rev2 or 'uncommitted',
+                        )
                     )
-                )
-                if ''.join(body).strip():
-                    body.insert(0, '@ignore\n@nosearch\n@language patch\n')
-                    # #4095.
-                    language = c2.getLanguage(p_in_c) if p_in_c else c2.target_language
-                    body.append(f"@language {language}\n")
-                else:
-                    body = ['Only headline has changed']
-                organizer.b = ''.join(body)
-                # Node 2: Old node
-                p2 = organizer.insertAsLastChild()
-                p2.h = 'Old:' + v1.h
-                p2.b = v1.b
-                # Node 3: New node
-                assert v1.fileIndex == v2.fileIndex
-                # Make a clone, if possible.
-                if p_in_c and branches_match:  # #4645.
-                    p3 = p_in_c.clone()
-                    p3.moveToLastChildOf(organizer)
-                else:
-                    p3 = organizer.insertAsLastChild()
-                    p3.h = 'New:' + v2.h
-                    p3.b = v2.b
+                    if ''.join(body).strip():
+                        body.insert(0, '@ignore\n@nosearch\n@language patch\n')
+                        # #4095.
+                        language = c2.getLanguage(p_in_c) if p_in_c else c2.target_language
+                        body.append(f"@language {language}\n")
+                    else:
+                        body = ['Only headline has changed']
+                    organizer.b = ''.join(body)
+                    # Node 2: Old node
+                    p2 = organizer.insertAsLastChild()
+                    p2.h = 'Old:' + v1.h
+                    p2.b = v1.b
+                    # Node 3: New node
+                    assert v1.fileIndex == v2.fileIndex
+                    # Make a clone, if possible.
+                    if p_in_c and branches_match:  # #4645.
+                        p3 = p_in_c.clone()
+                        p3.moveToLastChildOf(organizer)
+                    else:
+                        p3 = organizer.insertAsLastChild()
+                        p3.h = 'New:' + v2.h
+                        p3.b = v2.b
             elif kind.lower() == 'added':
-                v = d.get(key)
-                new_p = self.find_gnx(self.c, v.fileIndex)
-                if new_p:  # Make a clone, if possible.
-                    p = new_p.clone()
-                    p.moveToLastChildOf(parent)
-                    # #2950: do not change p.b.
-                else:
+                if v := d.get(key):
+                    new_p = self.find_gnx(self.c, v.fileIndex)
+                    if new_p:  # Make a clone, if possible.
+                        p = new_p.clone()
+                        p.moveToLastChildOf(parent)
+                        # #2950: do not change p.b.
+                    else:
+                        p = parent.insertAsLastChild()
+                        p.h = v.h
+                        p.b = v.b
+            else:
+                if v := d.get(key):
                     p = parent.insertAsLastChild()
                     p.h = v.h
                     p.b = v.b
-            else:
-                v = d.get(key)
-                p = parent.insertAsLastChild()
-                p.h = v.h
-                p.b = v.b
 
     # @+node:ekr.20170806094321.1: *4* gdc.create_file_node
     def create_file_node(self, diff_list: list[str], fn: str) -> Position:
@@ -1746,7 +1747,7 @@ class GitDiffController:
         return hidden_c
 
     # @+node:ekr.20170806094321.7: *4* gdc.make_at_file_outline
-    def make_at_file_outline(self, fn: str, s: str, rev: str) -> Cmdr:
+    def make_at_file_outline(self, fn: str, s: str, rev: str) -> Cmdr | None:
         """Create a hidden temp outline from lines."""
         # A specialized version of atFileCommands.read.
         hidden_c = leoCommands.Commands(fn, gui=g.app.nullGui)
