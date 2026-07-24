@@ -390,7 +390,7 @@ class AutoCompleterClass:
             log.clearTab(self.tabName)
 
     # @+node:ekr.20110509064011.14556: *4* ac.attr_matches
-    def attr_matches(self, s: str, namespace: dict) -> list[str] | None:
+    def attr_matches(self, s: str, namespace: dict) -> list[str]:
         """Compute matches when string s is of the form name.name....name.
 
         Evaluates s using eval(s,namespace)
@@ -621,7 +621,7 @@ class AutoCompleterClass:
             kind, aList = self.guess_class(c, varname)
         else:
             kind, aList = 'none', []
-            varname, ivar = None, None
+            varname, ivar = '', ''
         if aList:
             if kind == 'class':
                 hits = self.lookup_methods(aList, ivar)
@@ -1436,7 +1436,7 @@ class GetArg:
         if hasattr(handler, 'tab_callback'):
             self.reset_tab_cycling()
             k.functionTail = tail  # For k.getFileName.
-            handler.tab_callback()
+            handler.tab_callback()  # type:ignore
             return True
         return False
 
