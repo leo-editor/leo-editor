@@ -3584,9 +3584,7 @@ class Commands:
         if rclick is not installed.
         """
 
-        def minibufferCallback(
-            event: LeoKeyEvent | None = None, function: Callable = function
-        ) -> None:
+        def minibufferCallback(event: LeoKeyEvent, function: Callable = function) -> None:
             # Avoid a pylint complaint.
             if hasattr(self, 'theContextMenuController'):
                 cm = self.theContextMenuController

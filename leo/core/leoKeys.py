@@ -2556,11 +2556,10 @@ class KeyHandlerClass:
                     k.resetLabel()
                     if k.mb_helpHandler:
                         k.mb_helpHandler(commandName)
-                else:
+                elif k.mb_event:  # PR #4812 # Bug fix.
                     s = k.getLabel(ignorePrompt=True)
                     commandName = s.strip()
-                    ok = k.callAltXFunction(k.mb_event)
-                    if ok:
+                    if k.callAltXFunction(k.mb_event):
                         k.addToCommandHistory(commandName)
             elif char in ('\t', 'Tab'):
                 k.doTabCompletion(list(c.commandsDict.keys()))
@@ -2571,7 +2570,7 @@ class KeyHandlerClass:
             elif k.ignore_unbound_non_ascii_keys and len(ch) > 1:
                 if specialStroke:
                     g.trace(specialStroke)
-                    specialFunc()
+                    specialFunc()  # type:ignore
                 c.minibufferWantsFocus()
             else:
                 # Clear the list, any other character besides tab indicates that a new prefix is in effect.
@@ -2584,7 +2583,7 @@ class KeyHandlerClass:
             self.keyboardQuit()
 
     # @+node:ekr.20061031131434.112: *5* k.callAltXFunction
-    def callAltXFunction(self, event: LeoKeyEvent | None = None) -> bool:
+    def callAltXFunction(self, event: LeoKeyEvent) -> bool:
         """Call the function whose name is in the minibuffer."""
         c, k = self.c, self
         k.mb_tabList = []
@@ -2593,19 +2592,19 @@ class KeyHandlerClass:
         if commandName and commandName.isdigit():
             # The line number Easter Egg.
 
-            def func(event: LeoKeyEvent | None = None) -> None:
+            def func(event: LeoKeyEvent) -> None:
                 c.gotoCommands.find_file_line(n=int(commandName))
 
         else:
-            func = c.commandsDict.get(commandName)
-        if func:
+            func = c.commandsDict.get(commandName)  # type:ignore
+        if func is not None:
             # These must be done *after* getting the command.
             k.clearState()
             k.resetLabel()
             if commandName != 'repeat-complex-command':
                 k.mb_history.insert(0, commandName)
             w = event.w if event else None
-            if hasattr(w, 'permanent') and not w.permanent:
+            if hasattr(w, 'permanent') and not w.permanent:  # type:ignore
                 # In a headline that is being edited.
                 c.endEditing()
                 c.bodyWantsFocusNow()
@@ -2648,7 +2647,7 @@ class KeyHandlerClass:
     '''
         if not d:
             g.es('no bindings')
-            return None
+            return []
         legend = textwrap.dedent(legend)
         data = []
         # d: keys are scope names. values are interior masterBindingDicts
@@ -2695,7 +2694,7 @@ class KeyHandlerClass:
                 data.remove(item)
         # Print all plain bindings.
         result.append('Plain keys...\n')
-        self.printBindingsHelper(result, data, prefix=None)
+        self.printBindingsHelper(result, data, prefix='')
         if not g.unitTesting:
             g.es_print('', ''.join(result), tabName=tabName)
         k.showStateAndMode()
@@ -2811,8 +2810,10 @@ class KeyHandlerClass:
             # @+node:ekr.20241210053936.16: *5* ShowCommands.run
             def run(self) -> None:
                 """Driver for show-buttons-and-at-commands"""
-                self.scan_buttons_and_commands(self.leo_settings)
-                self.scan_buttons_and_commands(self.user_settings)
+                if self.leo_settings:
+                    self.scan_buttons_and_commands(self.leo_settings)
+                if self.user_settings:
+                    self.scan_buttons_and_commands(self.user_settings)
                 if self.local_settings:
                     self.scan_buttons_and_commands(self.local_settings)
                 self.show_results()
