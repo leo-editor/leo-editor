@@ -1833,7 +1833,7 @@ class KeyHandlerClass:
         self.commandIndex = 0  # List/stack of previously executed commands.
         # Keys are scope names: 'all','text',etc. or mode names.
         # Values are dicts: keys are strokes, values are BindingInfo objects.
-        self.masterBindingsDict: dict = {}
+        self.masterBindingsDict: dict[Stroke, dict[Stroke, g.BindingInfo]] = {}
         # Keys are strokes; value is list of Widgets in which the strokes are bound.
         self.masterGuiBindingsDict: dict[Stroke, list[QTextMixin]] = {}
         # Special bindings for k.fullCommand...
@@ -2857,7 +2857,7 @@ class KeyHandlerClass:
 
                 # Compute the maximum length of all file names.
                 files = (self.leo_settings, self.user_settings, self.local_settings)
-                max_fn = max(len(z.shortFileName()) for z in files)
+                max_fn = max(len(z.shortFileName()) for z in files if z)
 
                 # Compute the maximum length of all gnxs.
                 max_gnx_len = 0
@@ -3144,7 +3144,7 @@ class KeyHandlerClass:
         """
         # @-<< docstring for k.get1arg >>
         returnKind, returnState = None, None
-        assert handler, g.callers()
+        assert handler is not None, g.callers()
         self.getArgInstance.get_arg(
             event,
             returnKind,
@@ -3276,9 +3276,10 @@ class KeyHandlerClass:
         k = self
         d = k.masterBindingsDict
         for key in d:
-            d2 = d.get(key)
+            # PR #4812: disable all type checking here.
+            d2: Any = d.get(key)
             for key2 in d2:
-                bi = d2.get(key2)
+                bi: Any = d2.get(key2)
                 if bi.commandName == commandName:
                     bi.func = func
                     d2[key2] = bi
@@ -3307,7 +3308,7 @@ class KeyHandlerClass:
         allowBinding.
         """
         c, k = self.c, self
-        if not func:
+        if func is None:
             g.es_print('Null func passed to k.registerCommand\n', commandName)
             return
         f = c.commandsDict.get(commandName)
@@ -3318,7 +3319,7 @@ class KeyHandlerClass:
         if shortcut and not allowBinding:
             g.es_print('The "shortcut" keyword arg to k.registerCommand will be ignored')
             g.es_print('Called from', g.callers())
-            shortcut = None
+            shortcut = ''
         for arg, val in kwargs.items():
             if val is not None:
                 g.es_print(f'The "{arg}" keyword arg to k.registerCommand is deprecated')
