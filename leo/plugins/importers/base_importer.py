@@ -40,10 +40,10 @@ class Block:
         self.kind = kind
         self.lines = lines
         self.name = name
-        self.parent_v: VNode = None
+        self.parent_v: VNode
         self.start = start
         self.start_body = start_body
-        self.v: VNode = None
+        self.v: VNode
 
     def __repr__(self) -> str:
         kind_name_s = f"{self.kind} {self.name}"
@@ -83,7 +83,7 @@ class Importer:
     minimum_block_size = 0  # 0: create all blocks.
 
     # Must be overridden in subclasses.
-    language: str = None
+    language: str = ''
 
     # May be overridden in subclasses.
     block_patterns: tuple = tuple()
@@ -96,7 +96,7 @@ class Importer:
         """Importer.__init__"""
         assert self.language, g.callers()  # Do not remove.
         self.c = c  # May be None.
-        self.root: Position = None
+        self.root: Position
         delims = g.set_delims_from_language(self.language)
         self.single_comment, self.block1, self.block2 = delims
         self.tab_width = 0  # Must be set later.
