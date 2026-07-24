@@ -14,7 +14,7 @@ import string
 import sys
 import textwrap
 import time
-from typing import cast, Any, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from types import ModuleType
 from leo.core import leoGlobals as g
 from leo.external import codewise
@@ -186,20 +186,21 @@ class AutoCompleterClass:
         # Ivars...
         self.c = k.c
         self.k = k
+
+        # Declare ivars.
+        self.qcompleter: Callable
+        self.qw: Any  # The object that supports qcompletion methods.
+        self.w: Widget  # The widget that gets focus after autocomplete is done.
+
+        # Init ivars.
         self.language: str = ''
-        # additional namespaces to search for objects, other code
-        # can append namespaces to this to extend scope of search
-        self.namespaces: list[dict] = []
-        self.qcompleter = cast(Callable, None)
-        self.qw = None  # The object that supports qcompletion methods.
+        self.namespaces: list[dict] = []  # Namespaces for searches.
         self.tabName: str = ''  # The name of the main completion tab.
         self.verbose = False  # True: print all members, regardless of how many there are.
-        self.w: cast(Widget, None)  # The widget that gets focus after autocomplete is done.
         self.warnings: dict[str, str] = {}  # Keys are language names.
         # Codewise pre-computes...
         self.codewiseSelfList: list[str] = []  # The (global) completions for "self."
-        # Keys are prefixes, values are completion lists.
-        self.completionsDict: dict[str, list[str]] = {}
+        self.completionsDict: dict[str, list[str]] = {}  # keys: prefixes. values: completion lists.
         self.reloadSettings()
 
     def reloadSettings(self) -> None:
