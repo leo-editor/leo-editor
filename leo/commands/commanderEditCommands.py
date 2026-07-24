@@ -560,7 +560,7 @@ def extractSectionNames(self: Self, event: LeoKeyEvent | None = None) -> None:
             if not found:
                 u.beforeChangeGroup(current, undoType)  # first one!
             undoData = u.beforeInsertNode(current)
-            p = createFirstChildNode(c, current, name, None)
+            p = createFirstChildNode(c, current, name, '')
             u.afterInsertNode(p, undoType, undoData)
             found = True
     c.checkOutline()
@@ -570,6 +570,8 @@ def extractSectionNames(self: Self, event: LeoKeyEvent | None = None) -> None:
     else:
         g.warning("selected text should contain section names")
     # Restore the selection.
+    if not oldSel:
+        return  # PR #4812
     i, j = oldSel
     if w := body.wrapper:
         w.setSelectionRange(i, j)
@@ -618,7 +620,9 @@ def alwaysIndentBody(self: Self, event: LeoKeyEvent | None = None) -> None:
     indentation.
     """
     c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
-    #
+    if not event:
+        return
+
     # #1801: Don't rely on bindings to ensure that we are editing the body.
     event_w = event and event.w
     if event_w != w:
@@ -682,7 +686,12 @@ def indentBody(self: Self, event: LeoKeyEvent | None = None) -> None:
 
     The @tabwidth directive in effect determines amount of indentation.
     """
-    c, event_w, w = self, event and event.w, self.frame.body.wrapper
+    if not event:
+        return
+    c = self
+    event_w = event.w
+    w = self.frame.body.wrapper
+
     # #1801: Don't rely on bindings to ensure that we are editing the body.
     if event_w != w:
         c.insertCharFromEvent(event)
@@ -896,7 +905,7 @@ def find_bound_paragraph(c: Cmdr) -> tuple[str, list[str], str]:
         tail_lines = para_lines[i:] if ended else []  # pylint: disable=undefined-loop-variable
         tail = ''.join(tail_lines)
         return head, result, tail  # string, list, string
-    return None, None, None
+    return '', [], ''
 
 
 # @+node:ekr.20171123135625.45: *3* function: rp_get_args
