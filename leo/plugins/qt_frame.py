@@ -836,7 +836,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
         # Pack.
         vLayout = self.createVLayout(page2, 'bodyVLayout', spacing=0)
         grid = self.createGrid(bodyFrame, 'bodyGrid')
-        if innerGrid := self.createGrid(innerFrame, 'bodyInnerGrid'):
+        innerGrid = self.createGrid(innerFrame, 'bodyInnerGrid')
+        if self.use_gutter:
             lineWidget = qt_text.LeoLineTextWidget(c, body)
             vLayout.addWidget(lineWidget)
         else:
