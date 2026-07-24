@@ -82,7 +82,7 @@ class Markdown_Importer(Importer):
             level = len(m.group(1))
             if name := m.group(2).strip():
                 return level, name
-        return None, None
+        return 0, ''  # PR #4812
 
     # @+node:axk.20260709133000.2: *4* md_i.is_noheader_marker
     md_noheader_pattern = re.compile(

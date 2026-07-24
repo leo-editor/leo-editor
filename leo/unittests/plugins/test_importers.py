@@ -2103,8 +2103,8 @@ class TestMarkdown(BaseTestImporter):
             self.assertEqual(level, level2)
             self.assertEqual(name, name2)
         level3, name = x.is_hash('Not a hash')
-        assert level3 is None
-        assert name is None
+        assert level3 == 0
+        assert name == ''
 
     # @+node:ekr.20210904065459.129: *3* TestMarkdown.test_is_underline
     def test_is_underline(self):
