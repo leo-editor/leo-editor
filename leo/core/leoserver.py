@@ -238,7 +238,8 @@ class ServerExternalFilesController(ExternalFilesController):
             # 4- if yes: REFRESH self.lastPNode, and unblock 'ask'
             # 5- if yesAll: REFRESH self.lastPNode, set yesAll, and unblock 'ask'
             if bool(p_result and 'yes' in p_result.lower()):
-                self.lastCommander.refreshFromDisk(self.lastPNode)
+                if self.lastCommander:  # PR #4812
+                    self.lastCommander.refreshFromDisk(self.lastPNode)
         elif self.lastCommander:
             path = self.lastCommander.fileName()
             # 6- Same but for Leo file commander (close and reopen .leo file)
@@ -333,7 +334,8 @@ class ServerExternalFilesController(ExternalFilesController):
         if self.ask(c, path):
             # reload Commander
             # self.lastCommander.close() Stops too much if last file closed
-            g.app.closeLeoWindow(self.lastCommander.frame, finish_quit=False)
+            if self.lastCommander:  # PR #4812
+                g.app.closeLeoWindow(self.lastCommander.frame, finish_quit=False)
             g.leoServer.open_file({"filename": path})  # ignore returned value
 
     # @+node:felix.20210626222905.5: *5* sefc.idle_check_at_file_node
