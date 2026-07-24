@@ -669,9 +669,7 @@ class QuickSearchController:
     def qsc_sort_by_gnx(self) -> None:
         """Return positions by gnx."""
         c = self.c
-        timeline: list[tuple[Position, Match_Iter]] = [
-            (p.copy(), None) for p in c.all_unique_positions()
-        ]
+        timeline = [(p.copy(), None) for p in c.all_unique_positions()]
         timeline.sort(key=lambda x: x[0].gnx, reverse=True)
         self.clear()
         self.addHeadlineMatches(timeline)
@@ -705,9 +703,7 @@ class QuickSearchController:
     # @+node:felix.20220225003906.13: *4* QSC.qsc_find_changed
     def qsc_find_changed(self) -> None:
         c = self.c
-        changed: list[tuple[Position, Match_Iter]] = [
-            (p.copy(), None) for p in c.all_unique_positions() if p.isDirty()
-        ]
+        changed = [(p.copy(), None) for p in c.all_unique_positions() if p.isDirty()]
         self.clear()
         self.addHeadlineMatches(changed)
 
@@ -747,7 +743,7 @@ class QuickSearchController:
         return it
 
     # @+node:felix.20220313185430.1: *5* QSC.find_tag
-    def find_tag(self, pat: str) -> list[tuple[Position, Match_Iter]]:
+    def find_tag(self, pat: str) -> list[tuple[Position, Any]]:
         """
         Return list of all positions that have matching tags
         """
@@ -787,7 +783,7 @@ class QuickSearchController:
                 resultset -= nodes
             elif op == '^':
                 resultset ^= nodes
-        aList: list[tuple[Position, Match_Iter]] = []
+        aList: list[tuple[Position, Any]] = []
         for gnx in resultset:
             n = gnxDict.get(gnx)
             if n is not None:
@@ -797,7 +793,7 @@ class QuickSearchController:
 
     # @+node:felix.20220225003906.10: *4* QSC.qsc_get_history
     def qsc_get_history(self) -> None:
-        headlines: list[tuple[Position, Match_Iter]] = [
+        headlines: list[tuple[Position, Any]] = [
             (po[0].copy(), None) for po in self.c.nodeHistory.beadList
         ]
         headlines.reverse()
@@ -812,7 +808,7 @@ class QuickSearchController:
 
     # @+node:ekr.20220818083228.1: *3* QSC: helpers
     # @+node:felix.20220225003906.8: *4* QSC.addHeadlineMatches
-    def addHeadlineMatches(self, position_list: list[tuple[Position, Match_Iter]]) -> None:
+    def addHeadlineMatches(self, position_list: list[tuple[Position, Any]]) -> None:
         for p in position_list:
             it = {"type": "headline", "label": p[0].h}
             if self.addItem(it, (p[0], None)):
@@ -892,7 +888,7 @@ class QuickSearchController:
         regex: str,
         positions: list[Position],
         flags: RegexFlag = re.IGNORECASE,
-    ) -> list[tuple[Position, Match_Iter]]:
+    ) -> list[tuple[Position, Any]]:
         """
         Return the list of all tuple (Position, matchiter/None) whose headline matches the given pattern.
         """
