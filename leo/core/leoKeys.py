@@ -1343,7 +1343,7 @@ class GetArg:
         self.functionTail: str = ''
         self.tabName = tabName
         # State vars.
-        self.after_get_arg_state: tuple[str, int, Callable] = None
+        self.after_get_arg_state: tuple[str, int, Callable] | None = None
         self.arg_completion = True
         self.handler: Callable | None = None
         self.tabList: list[str] = []
@@ -1471,7 +1471,7 @@ class GetArg:
     # @+node:ekr.20140819050118.18318: *4* ga.reset_tab_cycling
     def reset_tab_cycling(self) -> None:
         """Reset all tab cycling ivars."""
-        self.cycling_prefix = None
+        self.cycling_prefix = ''
         self.cycling_index = -1
         self.cycling_tabList = []
 
@@ -1499,8 +1499,8 @@ class GetArg:
     def get_arg(
         self,
         event: LeoKeyEvent | None = None,
-        returnKind='',
-        returnState: int | None = None,
+        returnKind: str = '',
+        returnState: int = 0,
         handler: Callable | None = None,
         tabList: list[str] | None = None,
         completion: bool = True,
@@ -1521,9 +1521,9 @@ class GetArg:
 
         event:              The event passed to the command.
 
-        returnKind=None:    A string.
-        returnState=None,   An int.
-        handler=None,       A function.
+        returnKind = '':    A string.
+        returnState = 0,    An int.
+        handler = None,     A function.
 
             When the argument is complete, ga.do_end does::
 
@@ -1553,7 +1553,7 @@ class GetArg:
             self.do_state_zero(
                 completion,
                 event,
-                handler,
+                handler,  # type:ignore
                 oneCharacter,
                 returnKind,
                 returnState,
@@ -1572,9 +1572,10 @@ class GetArg:
             c.minibufferWantsFocus()
         elif char in ('Up', 'Down'):  # 4685.
             finder = c.findCommands
-            handler = self.after_get_arg_state[2]
-            if handler in (finder.find_state0, finder._start_search_escape2):
-                finder.do_arrow(char, in_minibuffer=True)
+            if self.after_get_arg_state is not None:  # PR #4812
+                handler = self.after_get_arg_state[2]
+                if handler in (finder.find_state0, finder._start_search_escape2):
+                    finder.do_arrow(char, in_minibuffer=True)
         elif k.isFKey(stroke):
             # Ignore only F-keys. Ignoring all except plain keys would kill unicode searches.
             pass
@@ -1608,12 +1609,13 @@ class GetArg:
         else:
             # A hack to support the curses gui.
             k.arg = gui_arg or self.get_label()
-        kind, n, handler = self.after_get_arg_state
-        if kind:
-            k.setState(kind, n, handler)
+        if self.after_get_arg_state is not None:  # PR #4812
+            kind, n, handler = self.after_get_arg_state
+            if kind:
+                k.setState(kind, n, handler)
         self.log.deleteTab('Completion')
         self.reset_tab_cycling()
-        if handler:
+        if handler is not None:
             handler(event)
 
     # @+node:ekr.20140817110228.18317: *4* ga.do_state_zero
@@ -1635,7 +1637,7 @@ class GetArg:
         k.getArgEscapeFlag = False
         self.after_get_arg_state = returnKind, returnState, handler
         self.arg_completion = completion
-        self.cycling_prefix = None
+        self.cycling_prefix = ''
         self.handler = handler
         self.tabList = tabList[:] if tabList else []
         #
@@ -1757,16 +1759,15 @@ class GetArg:
         c = self.c
         if commandName.startswith('@'):
             d = c.commandsDict
-            func = d.get(commandName)
-            if hasattr(func, 'source_c'):
-                c2 = func.source_c
-                fn2 = c2.shortFileName().lower()
-                if fn2.endswith('myleosettings.leo'):
-                    return 'M'
-                if fn2.endswith('leosettings.leo'):
-                    return 'G'
-                return 'L'
-            return '?'
+            if func := d.get(commandName):  # PR #4812
+                if c2 := getattr(func, 'source_c', None):
+                    fn2 = c2.shortFileName().lower()
+                    if fn2.endswith('myleosettings.leo'):
+                        return 'M'
+                    if fn2.endswith('leosettings.leo'):
+                        return 'G'
+                    return 'L'
+                return '?'
         return ' '
 
     # @-others
@@ -1831,7 +1832,7 @@ class KeyHandlerClass:
         self.bindtagsDict: dict[str, bool] = {}  # Keys are strings (the tag), values are 'True'
         self.commandHistory: list[str] = []
         # Up arrow will select commandHistory[commandIndex]
-        self.commandIndex = 0  # List/stack of previously executed commands.
+        self.commandIndex: int | None = 0  # List/stack of previously executed commands.
         # Keys are scope names: 'all','text',etc. or mode names.
         # Values are dicts: keys are strokes, values are BindingInfo objects.
         self.masterBindingsDict: dict[Stroke, dict[Stroke, g.BindingInfo]] = {}
@@ -2255,10 +2256,10 @@ class KeyHandlerClass:
         """Register an open-with command."""
         c, k = self.c, self
         shortcut = d.get('shortcut') or ''
-        name = d.get('name')
+        name = d.get('name', '')
         # The first parameter must be event, and it must default to None.
 
-        def openWithCallback(event: LeoKeyEvent | None = None, c: Cmdr = c, d: dict = d) -> None:
+        def openWithCallback(event: LeoKeyEvent, c: Cmdr = c, d: dict = d) -> None:
             return c.openWith(d=d)
 
         # Use k.registerCommand to set the shortcuts in the various binding dicts.
@@ -2316,11 +2317,9 @@ class KeyHandlerClass:
         k = self
         d = k.masterBindingsDict
         g.pr('\nk.masterBindingsDict...\n')
-        for key in sorted(d):
+        for key, d2 in sorted(d.items()):
             g.pr(key, '-' * 40)
-            d2 = d.get(key)
-            for key2 in sorted(d2):
-                bi = d2.get(key2)
+            for key2, bi in sorted(d2.items()):
                 g.pr(f"{key2:20} {bi.commandName}")
 
     # @+node:ekr.20061031131434.99: *4* k.initAbbrev & helper
@@ -2387,35 +2386,6 @@ class KeyHandlerClass:
         k.initAbbrev()
         k.completeAllBindings()
         k.checkBindings()
-
-    # @+node:ekr.20061031131434.102: *4* k.makeBindingsFromCommandsDict
-    def makeBindingsFromCommandsDict(self) -> None:
-        """Add bindings for all entries in c.commandsDict."""
-        c, k = self.c, self
-        d = c.commandsDict
-        # Step 1: Create d2.
-        # Keys are strokes. Values are lists of bi with bi.stroke == stroke.
-        d2: dict[g.KeyStroke, list[g.BindingInfo]] = g.SettingsDict('binding helper dict')
-        for commandName in sorted(d):
-            command = d.get(commandName)
-            key, aList = c.config.getShortcut(commandName)
-            for bi in aList:
-                # Important: bi.stroke is already canonicalized.
-                stroke = bi.stroke
-                bi.commandName = commandName
-                if stroke:
-                    assert g.isStroke(stroke)
-                    d2.add_to_list(stroke, bi)
-        # Step 2: make the bindings.
-        for stroke in sorted(d2.keys()):
-            aList2 = d2.get(stroke)
-            for bi in aList2:
-                commandName = bi.commandName
-                command = c.commandsDict.get(commandName)
-                tag = bi.kind
-                pane = bi.pane
-                if stroke and pane and not pane.endswith('-mode'):
-                    k.bindKey(pane, stroke, command, commandName, tag=tag)
 
     # @+node:ekr.20061031131434.103: *4* k.makeMasterGuiBinding
     def makeMasterGuiBinding(self, stroke: Stroke, w: QTextMixin | None = None) -> None:
@@ -2505,6 +2475,35 @@ class KeyHandlerClass:
         k = self
         k.commandHistory.sort()
         k.commandIndex = None
+
+    # @+node:ekr.20061031131434.102: *3* k.makeBindingsFromCommandsDict
+    def makeBindingsFromCommandsDict(self) -> None:
+        """Add bindings for all entries in c.commandsDict."""
+        c, k = self.c, self
+        d = c.commandsDict
+        # Step 1: Create d2.
+        # Keys are strokes. Values are lists of bi with bi.stroke == stroke.
+        d2: dict[Stroke, list[g.BindingInfo]] = g.SettingsDict('binding helper dict')
+        for commandName in sorted(d):
+            command = d.get(commandName)
+            key, aList = c.config.getShortcut(commandName)
+            for bi in aList:
+                # Important: bi.stroke is already canonicalized.
+                stroke = bi.stroke
+                bi.commandName = commandName
+                if stroke:
+                    assert g.isStroke(stroke)
+                    d2.add_to_list(stroke, bi)
+        # Step 2: make the bindings.
+        for stroke in sorted(d2.keys()):
+            aList2 = d2.get(stroke, [])
+            for bi in aList2:
+                commandName = bi.commandName
+                command = c.commandsDict.get(commandName)
+                tag = bi.kind
+                pane = bi.pane
+                if stroke and pane and not pane.endswith('-mode'):
+                    k.bindKey(pane, stroke, command, commandName, tag=tag)  # type:ignore
 
     # @+node:ekr.20061031131434.104: *3* k.Dispatching
     # @+node:ekr.20061031131434.111: *4* k.fullCommand (alt-x) & helper
@@ -3145,7 +3144,7 @@ class KeyHandlerClass:
 
         """
         # @-<< docstring for k.get1arg >>
-        returnKind, returnState = None, None
+        returnKind, returnState = '', 0
         assert handler is not None, g.callers()
         self.getArgInstance.get_arg(
             event,
@@ -3163,7 +3162,7 @@ class KeyHandlerClass:
         self,
         event: LeoKeyEvent | None = None,
         returnKind: str = '',
-        returnState: int | None = None,
+        returnState: int = 0,
         handler: Callable | None = None,
         prefix: str = '',
         tabList: list[str] | None = None,
