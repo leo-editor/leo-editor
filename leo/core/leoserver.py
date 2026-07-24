@@ -4913,7 +4913,7 @@ class LeoServer:
         return p
 
     # @+node:felix.20210621233316.80: *4* server._check_c
-    def _check_c(self, param: Param = None) -> Cmdr:
+    def _check_c(self, param: Param | None = None) -> Cmdr:
         """
         Return self.c, or a specific commander chosen by id,
         or raise ServerError no commander found.
@@ -5421,7 +5421,7 @@ class LeoServer:
             raise InternalServerError(f"{tag}: bad p kwarg: {p!r}")
         if p and not c:  # pragma: no cover
             raise InternalServerError(f"{tag}: p but not c")
-        if p and not c.positionExists(p):  # pragma: no cover
+        if c and p and not c.positionExists(p):  # pragma: no cover
             raise InternalServerError(f"{tag}: p does not exist: {p!r}")
         if c and not c.p:  # pragma: no cover
             raise InternalServerError(f"{tag}: empty c.p")
