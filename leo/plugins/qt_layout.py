@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import textwrap
 from collections import OrderedDict
-from typing import Dict, TYPE_CHECKING
+from typing import Any, Callable, Dict, TYPE_CHECKING
 
 from leo.core.leoQt import QtWidgets, Orientation
 from leo.core import leoGlobals as g
@@ -57,10 +57,11 @@ def is_module_loaded(module_name: str) -> bool:
 
 
 # @+node:tom.20241015161609.1: *3* decorator:  register_layout (qt_layout.py)
-def register_layout(name: str):  # type: ignore
-    def decorator(func):
+def register_layout(name: str) -> Callable:
+
+    def decorator(func: Callable) -> Callable:
         # Register the function's name and docstring in the dictionary
-        LAYOUT_REGISTRY[name] = func.__doc__
+        LAYOUT_REGISTRY[name] = func.__doc__ or ''
         return func  # Ensure the original function is returned
 
     return decorator
@@ -326,8 +327,10 @@ def vertical_thirds2(event: LeoKeyEvent | None = None) -> None:
 # @+node:tom.20241022170042.1: *3* command: 'show-layouts'
 @g.command('layout-show-layouts')
 @g.command('show-layouts')
-def showLayouts(event) -> None:
+def showLayouts(event: LeoKeyEvent | None) -> None:
     """Show all layout diagrams in the Log Frame's `layouts` tab."""
+    if not event:
+        return
     c = event.get('c')
     if not c:
         return
@@ -509,32 +512,32 @@ class LayoutCacheWidget(QWidget):
     # @+others
     # @+node:ekr.20241027142532.1: *3* LayoutCasheWidget: contract_*
     # @+node:ekr.20241027124630.1: *4* LCW.contract_body
-    def contract_body(self):
+    def contract_body(self) -> None:
         """Contract the body pane"""
         self.contract_pane(self.c.frame.body.widget)
 
     # @+node:ekr.20241027125414.1: *4* LCW.contract_log
-    def contract_log(self):
+    def contract_log(self) -> None:
         """Contract the log pane"""
         self.contract_pane(self.c.frame.log.logWidget)
 
     # @+node:ekr.20241027125415.1: *4* LCW.contract_outline
-    def contract_outline(self):
+    def contract_outline(self) -> None:
         """Contract the outline pane"""
         self.contract_pane(self.c.frame.tree.treeWidget)
 
     # @+node:ekr.20241027141341.1: *4* LCW.contract_vr
-    def contract_vr(self):
+    def contract_vr(self) -> None:
         """Contract the VR pane if VR is running"""
         c = self.c
         if is_module_loaded(VR_MODULE_NAME):
-            vr = getattr(c, 'vr', None)
-            self.expand_pane(vr)
-        else:
-            g.es_print('VR is not running', color='blue')
+            if vr := getattr(c, 'vr', None):
+                self.expand_pane(vr)
+                return
+        g.es_print('VR is not running', color='blue')
 
     # @+node:ekr.20241027141411.1: *4* LCW.contract_vr3
-    def contract_vr3(self):
+    def contract_vr3(self) -> None:
         """Contract the VR3 pane if VR3 is running"""
         c = self.c
         if is_module_loaded(VR3_MODULE_NAME):
@@ -547,41 +550,41 @@ class LayoutCacheWidget(QWidget):
 
     # @+node:ekr.20241027142605.1: *3* LayoutCacheWidget: expand_*
     # @+node:ekr.20241027124500.1: *4* LCW.expand_body
-    def expand_body(self):
+    def expand_body(self) -> None:
         """Expand the body pane"""
         self.expand_pane(self.c.frame.body.widget)
 
     # @+node:ekr.20241027125500.1: *4* LCW.expand_log
-    def expand_log(self):
+    def expand_log(self) -> None:
         """Expand the log pane"""
         self.expand_pane(self.c.frame.log.logWidget)
 
     # @+node:ekr.20241027124703.1: *4* LCW.expand_outline
-    def expand_outline(self):
+    def expand_outline(self) -> None:
         """Expand the outline pane."""
         self.expand_pane(self.c.frame.tree.treeWidget)
 
     # @+node:ekr.20241027141425.1: *4* LCW.expand_vr
-    def expand_vr(self):
+    def expand_vr(self) -> None:
         """Expand the VR pane if VR is running"""
         c = self.c
         if is_module_loaded(VR_MODULE_NAME):
-            vr = getattr(c, 'vr', None)
-            self.expand_pane(vr)
-        else:
-            g.es_print('VR is not running', color='blue')
+            if vr := getattr(c, 'vr', None):
+                self.expand_pane(vr)
+                return
+        g.es_print('VR is not running', color='blue')
 
     # @+node:ekr.20241027141446.1: *4* LCW.expand_vr3
-    def expand_vr3(self):
+    def expand_vr3(self) -> None:
         """Expand the VR3 pane if VR3 is running"""
         c = self.c
         if is_module_loaded(VR3_MODULE_NAME):
             from leo.plugins.viewrendered3 import controllers
 
-            vr3 = controllers.get(c.hash())
-            self.expand_pane(vr3)
-        else:
-            g.es_print('VR3 is not running', color='blue')
+            if vr3 := controllers.get(c.hash()):
+                self.expand_pane(vr3)
+                return
+        g.es_print('VR3 is not running', color='blue')
 
     # @+node:ekr.20241027162525.1: *3* LayoutCacheWidget: utils
     # @+node:ekr.20241027161121.1: *4* LCW.contract_pane
@@ -601,6 +604,7 @@ class LayoutCacheWidget(QWidget):
         def is_splitter(obj: object) -> bool:
             return obj is not None and isinstance(obj, QSplitter)
 
+        splitter: Any
         splitter = self.find_widget(name)
         if is_splitter(splitter):
             return splitter  # type:ignore  # We've just checked the type.
@@ -699,8 +703,9 @@ class LayoutCacheWidget(QWidget):
         # Make unknown splitters.
         # If a splitter name is not known or does not exist, create one
         # and add it to self.created_splitter_dict.
+        splitter: Any
         for _, name in SPLITTERS.items():
-            splitter: QWidget = self.find_splitter_by_name(name)
+            splitter = self.find_splitter_by_name(name)  # type:ignore
             if splitter is None:
                 splitter = QSplitter(self)
                 splitter.setObjectName(name)
