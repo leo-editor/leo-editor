@@ -54,7 +54,7 @@ def find_next_trace(ins: int, p: Position) -> tuple[int, int, Position]:
                 return i, k, p
         p.moveToThreadNext()
         ins = 0
-    return None, None, p
+    return 0, 0, p
 
 
 # @+node:ekr.20180504180247.3: *3* function: find_trace_block
@@ -531,8 +531,9 @@ class EditCommandsClass(BaseEditCommandsClass):
                     # set selection range so w.deleteTextSelection() works in the callback
                     w.setSelectionRange(w.getInsertPoint() - len(start_text), w.getInsertPoint())
 
-        c.k.functionTail = g.finalize_join(self.path_for_p(c, c.p), start_text or '')
-        c.k.getFileName(event, callback=callback)
+        if event:
+            c.k.functionTail = g.finalize_join(self.path_for_p(c, c.p), start_text or '')
+            c.k.getFileName(event, callback=callback)
 
     # @+node:ekr.20150514063305.279: *3* ec.insertHeadlineTime
     @cmd('insert-headline-time')
@@ -1436,7 +1437,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         name = g.finalize(name)
         newList = []
         for d in aList:
-            name2 = d.get('file')
+            name2 = d.get('file') or ''
             name2 = g.finalize(name2)
             name2rel = d.get('relPath')
             if not (name == name2 or absRelPath == name2 or relPath == name2rel):
@@ -1991,7 +1992,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             return
         oldSel = w.getSelectionRange()
         self.beginCommand(w, undoType='newline')
-        self.insertNewlineHelper(w=w, oldSel=oldSel, undoType=None)
+        self.insertNewlineHelper(w=w, oldSel=oldSel, undoType='')
         k.setInputState('insert')
         k.showStateAndMode()
         self.endCommand()
@@ -2013,7 +2014,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             g.trace('(newline-and-indent)')
         self.beginCommand(w, undoType='insert-newline-and-indent')
         oldSel = w.getSelectionRange()
-        self.insertNewlineHelper(w=w, oldSel=oldSel, undoType=None)
+        self.insertNewlineHelper(w=w, oldSel=oldSel, undoType='')
         self.updateTab(event, p, w, smartTab=False)
         k.setInputState('insert')
         k.showStateAndMode()
@@ -2122,7 +2123,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     # @verbatim
     # @cmd('self-insert-command')
 
-    def selfInsertCommand(self, event: LeoKeyEvent | None = None, action: str = 'insert') -> None:
+    def selfInsertCommand(self, event: LeoKeyEvent, action: str = 'insert') -> None:
         """
         Insert a character in the body pane.
 
@@ -2132,19 +2133,24 @@ class EditCommandsClass(BaseEditCommandsClass):
         trace = 'keys' in g.app.debug
         c, p, u = self.c, self.c.p, self.c.undoer
         undoType = 'Typing'
-        w = event.w if event else c.frame.body.wrapper
+        if not event:
+            return  # PR #4812
+        w = event.w
+        if not w:
+            return  # PR #4812
         if not g.isTextWrapper(w):
             return  # pragma: no cover (defensive)
         # @+<< set local vars >>
         # @+node:ekr.20150514063305.269: *5* << set local vars >> (selfInsertCommand)
-        stroke = event.stroke if event else None
-        ch = event.char if event else ''
+        stroke = event.stroke
+        ch = event.char
         if ch == 'Return':
             ch = '\n'  # This fixes the MacOS return bug.
         if ch == 'Tab':
             ch = '\t'
         name = c.widget_name(w)
-        oldSel = w.getSelectionRange() if name.startswith('body') else (None, None)
+        oldIns = w.getInsertPoint() if name.startswith('body') else 0  # PR #4812
+        oldSel = w.getSelectionRange() if name.startswith('body') else (oldIns, oldIns)  # PR #4812
         oldText = p.b if name.startswith('body') else ''
         oldYview = w.getYScrollPosition()
         brackets = self.openBracketsList + self.closeBracketsList
@@ -2238,7 +2244,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 while sins > 0 and s[sins - 1] in ' \t':
                     sins -= 1
                 oldSel = (sins, ins)
-                self.insertNewlineHelper(w, oldSel, undoType=None)
+                self.insertNewlineHelper(w, oldSel, undoType='')
                 ins = w.getInsertPoint()
                 ins += n + 1
         w.insert(ins, ch)
@@ -2378,7 +2384,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         s = w.getAllText()
         if ch in ('([{'):
             if automatch := language not in ('plain',):
-                ch = ch + {'(': ')', '[': ']', '{': '}'}.get(ch)
+                ch = ch + {'(': ')', '[': ']', '{': '}'}.get(ch, '')
             if i != j:
                 w.delete(i, j)
             w.insert(i, ch)
@@ -2559,7 +2565,9 @@ class EditCommandsClass(BaseEditCommandsClass):
             else:  # Plain move forward or back.
                 self.setMoveCol(w, spot)  # sets self.moveSpot.
         if extend:
-            if spot < self.moveSpot:
+            if self.moveSpot is None:
+                pass  # PR #4812
+            elif spot < self.moveSpot:
                 w.setSelectionRange(spot, self.moveSpot, insert=spot)
             else:
                 w.setSelectionRange(self.moveSpot, spot, insert=spot)

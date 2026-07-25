@@ -2767,7 +2767,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
 
         def do_while(self, i: int, lines: list[str], m: Match, p: Position) -> int:
             line = lines[i]
-            if m1 := self.while1_pat.match(line):
+            if self.while1_pat.match(line):
                 j = self.find_indented_block(i, lines, m, p)
                 lws, cond, tail = m.group(1), m.group(2).strip(), m.group(3).strip()
                 cond_s = cond if cond.startswith('(') else f"({cond})"
