@@ -445,8 +445,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         # Set by the set-fill-column command.
         self.fillColumn = 0  # For line centering. If zero, use @pagewidth value.
         self.moveSpotNode = None  # A VNode.
-        self.moveSpot: int | None = None  # For retaining preferred column when moving up or down.
-        self.moveCol: int | None = None  # For retaining preferred column when moving up or down.
+        self.moveSpot: int  # For retaining preferred column when moving up or down.
+        self.moveCol: int  # For retaining preferred column when moving up or down.
         self.sampleWidget = None  # Created later.
         self.w = cast(QTextMixin, None)  # For use by state handlers.
         # Settings...
@@ -2531,7 +2531,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         ins = w.getInsertPoint()
         i, j = w.getSelectionRange()
         # Reset the move spot if needed.
-        if self.moveSpot is None or p.v != self.moveSpotNode:
+        if p.v != self.moveSpotNode:  # PR #4812
             self.setMoveCol(w, ins if extend else spot)  # sets self.moveSpot.
         elif extend:
             # 2011/05/20: Fix bug 622819
@@ -2561,13 +2561,11 @@ class EditCommandsClass(BaseEditCommandsClass):
                     n = min(self.moveCol, max(0, len(line) - 1))
                 else:
                     n = min(self.moveCol, max(0, len(line)))  # A tricky boundary.
-                spot = g.convertRowColToPythonIndex(s, row, n)
+                spot = g.convertRowColToPythonIndex(s, row, n)  # type:ignore
             else:  # Plain move forward or back.
                 self.setMoveCol(w, spot)  # sets self.moveSpot.
         if extend:
-            if self.moveSpot is None:
-                pass  # PR #4812
-            elif spot < self.moveSpot:
+            if spot < self.moveSpot:
                 w.setSelectionRange(spot, self.moveSpot, insert=spot)
             else:
                 w.setSelectionRange(self.moveSpot, spot, insert=spot)
@@ -3280,7 +3278,10 @@ class EditCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.309: *5* ec.backwardParagraphHelper
     def backwardParagraphHelper(self, event: LeoKeyEvent | None, extend: bool) -> None:
-        w = event.w if event else None
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
+        if not w:
+            return
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
@@ -3305,7 +3306,10 @@ class EditCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.310: *5* ec.forwardParagraphHelper
     def forwardParagraphHelper(self, event: LeoKeyEvent | None, extend: bool) -> None:
-        w = event.w if event else None
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
+        if not w:
+            return
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
@@ -3331,7 +3335,11 @@ class EditCommandsClass(BaseEditCommandsClass):
     def popCursor(self, event: LeoKeyEvent | None = None) -> None:
         """Restore the node, selection range and insert point from the stack."""
         c = self.c
-        w = event.w if event else None
+        w = event.w if event else c.frame.body.wrapper
+        if not w:
+            return
+        if not w.isTextWrapper(w):
+            return
         if w and self.cursorStack:
             p, i, j, ins = self.cursorStack.pop()
             if c.positionExists(p):
@@ -3348,7 +3356,9 @@ class EditCommandsClass(BaseEditCommandsClass):
     def pushCursor(self, event: LeoKeyEvent | None = None) -> None:
         """Push the selection range and insert point on the stack."""
         c = self.c
-        w = event.w if event else None
+        w = event.w if event else c.frame.body.wrapper
+        if not w:
+            return
         if not w.isTextWrapper(w):
             return
         p = c.p.copy()
@@ -3394,7 +3404,9 @@ class EditCommandsClass(BaseEditCommandsClass):
     # @+node:ekr.20150514063305.313: *5* ec.backSentenceHelper
     def backSentenceHelper(self, event: LeoKeyEvent | None, extend: bool) -> None:
         c = self.c
-        w = event.w if event else None
+        w = event.w if event else c.frame.body.wrapper
+        if not w:
+            return
         if not g.isTextWrapper(w):
             return  # pragma: no cover (defensive)
         c.widgetWantsFocusNow(w)
@@ -3460,7 +3472,9 @@ class EditCommandsClass(BaseEditCommandsClass):
     # @+node:ekr.20150514063305.314: *5* ec.forwardSentenceHelper
     def forwardSentenceHelper(self, event: LeoKeyEvent | None, extend: bool) -> None:
         c = self.c
-        w = event.w if event else None
+        w = event.w if event else c.frame.body.wrapper
+        if not w:
+            return
         if not g.isTextWrapper(w):
             return
         c.widgetWantsFocusNow(w)
@@ -3538,7 +3552,9 @@ class EditCommandsClass(BaseEditCommandsClass):
     def backwardKillParagraph(self, event: LeoKeyEvent | None = None) -> None:
         """Kill the previous paragraph."""
         c = self.c
-        w = event.w if event else None
+        w = event.w if event else c.frame.body.wrapper
+        if not w:
+            return
         if not g.isTextWrapper(w):
             return
         self.beginCommand(w, undoType='backward-kill-paragraph')
@@ -3558,7 +3574,9 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Fill all paragraphs in the selected text."""
         c, p = self.c, self.c.p
         undoType = 'fill-region'
-        w = event.w if event else None
+        w = event.w if event else c.frame.body.wrapper
+        if not w:
+            return
         if not g.isTextWrapper(w):
             return
         i, j = w.getSelectionRange()
@@ -3577,8 +3595,13 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('fill-region-as-paragraph')
     def fillRegionAsParagraph(self, event: LeoKeyEvent | None = None) -> None:
         """Fill the selected text."""
-        w = event.w if event else None
-        if not w or not self._checkSelection(event):
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
+        if not w:
+            return
+        if not g.isTextWrapper(w):
+            return
+        if not self._checkSelection(event):
             return
         self.beginCommand(w, undoType='fill-region-as-paragraph')
         self.endCommand(changed=True, setLabel=True)
@@ -3587,7 +3610,10 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('fill-paragraph')
     def fillParagraph(self, event: LeoKeyEvent | None = None) -> None:
         """Fill the selected paragraph"""
-        w = event.w if event else None
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
+        if not w:
+            return
         if not g.isTextWrapper(w):
             return
         # Clear the selection range.
@@ -3600,7 +3626,9 @@ class EditCommandsClass(BaseEditCommandsClass):
     def killParagraph(self, event: LeoKeyEvent | None = None) -> None:
         """Kill the present paragraph."""
         c = self.c
-        w = event.w if event else None
+        w = event.w if event else c.frame.body.wrapper
+        if not w:
+            return
         if not g.isTextWrapper(w):
             return
         self.beginCommand(w, undoType='kill-paragraph')
@@ -3616,7 +3644,10 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('extend-to-paragraph')
     def extendToParagraph(self, event: LeoKeyEvent | None = None) -> None:
         """Select the paragraph surrounding the cursor."""
-        w = event.w if event else None
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
+        if not w:
+            return
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
@@ -3663,7 +3694,10 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('indent-rigidly')
     def tabIndentRegion(self, event: LeoKeyEvent | None = None) -> None:
         """Insert a hard tab at the start of each line of the selected text."""
-        w = event.w if event else None
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
+        if not w:
+            return
         if not g.isTextWrapper(w):
             return
         if not self._checkSelection(event):
@@ -3686,8 +3720,11 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('count-region')
     def countRegion(self, event: LeoKeyEvent | None = None) -> None:
         """Print the number of lines and characters in the selected text."""
-        k = self.c.k
-        w = event.w if event else None
+        c = self.c
+        k = c.k
+        w = event.w if event else c.frame.body.wrapper
+        if not w:
+            return
         if not g.isTextWrapper(w):
             return
         txt = w.getSelectedText()
