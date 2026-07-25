@@ -3707,7 +3707,9 @@ class EditCommandsClass(BaseEditCommandsClass):
         Move all lines containing any selected text down one line.
         """
         c = self.c
-        w = event.w if event else None
+        w = event.w if event else c.frame.body.wrapper
+        if not w:
+            return
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
@@ -3751,7 +3753,9 @@ class EditCommandsClass(BaseEditCommandsClass):
         Move all lines containing any selected text up one line.
         """
         c = self.c
-        w = event.w if event else None
+        w = event.w if event else c.frame.body.wrapper
+        if not w:
+            return
         if not g.isTextWrapper(w):
             return  # pragma: no cover (defensive)
         s = w.getAllText()
@@ -3822,8 +3826,11 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Convert all characters in the selected text to UPPER CASE."""
         self.caseHelper(event, 'up', 'upcase-region')
 
-    def caseHelper(self, event: LeoKeyEvent, way: str, undoType: str) -> None:
-        w = event.w if event else None
+    def caseHelper(self, event: LeoKeyEvent | None, way: str, undoType: str) -> None:
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
+        if not w:
+            return
         if not g.isTextWrapper(w):
             return
         if not w.hasSelection():
@@ -3961,7 +3968,10 @@ class EditCommandsClass(BaseEditCommandsClass):
         Sort lines of selected text using the selected columns to do the
         comparison.
         """
-        w = event.w if event else None
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
+        if not w:
+            return
         if not g.isTextWrapper(w):
             return
         if not self._checkSelection(event):
@@ -4019,7 +4029,10 @@ class EditCommandsClass(BaseEditCommandsClass):
         self, event: LeoKeyEvent | None = None, ignoreCase: bool = False, reverse: bool = False
     ) -> None:
         """Sort the selected lines."""
-        w = event.w if event else None
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
+        if not c:
+            return
         if not g.isTextWrapper(w):
             return
         if not self._checkSelection(event):
@@ -4055,7 +4068,10 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('transpose-lines')
     def transposeLines(self, event: LeoKeyEvent | None = None) -> None:
         """Transpose the line containing the cursor with the preceding line."""
-        w = event.w if event else None
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
+        if not w:
+            return
         if not g.isTextWrapper(w):
             return
         ins = w.getInsertPoint()
@@ -4087,7 +4103,10 @@ class EditCommandsClass(BaseEditCommandsClass):
         Punctuation between words does not move. For example, ‘FOO, BAR’
         transposes into ‘BAR, FOO’.
         """
-        w = event.w if event else None
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
+        if not w:
+            return
         if not g.isTextWrapper(w):
             return
         self.beginCommand(w, undoType='transpose-words')
@@ -4114,7 +4133,10 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('transpose-chars')
     def transposeCharacters(self, event: LeoKeyEvent | None = None) -> None:
         """Swap the characters at the cursor."""
-        w = event.w if event else None
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
+        if w is None:
+            return
         if not g.isTextWrapper(w):
             return
         self.beginCommand(w, undoType='swap-characters')
@@ -4189,8 +4211,9 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('set-ua')
     def setUa(self, event: LeoKeyEvent | None = None) -> None:
         """Prompt for the name and value of a uA, then set the uA in the present node."""
-        k = self.c.k
-        self.w = event.w if event else None
+        c = self.c
+        k = c.k
+        self.w = event.w if event else c.frame.body.wrapper
         if self.w:
             k.setLabelBlue('Set uA: ')
             k.get1Arg(event, handler=self.setUa1)
