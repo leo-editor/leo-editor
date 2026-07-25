@@ -210,6 +210,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             # #266 A setting to hide the icon bar.
             self.iconBar.hide()
         if hasattr(c, 'styleSheetManager'):
+            assert c.styleSheetManager
             c.styleSheetManager.set_style_sheets(top=self, all=True)
         # Connect signals last.
         QtCore.QMetaObject.connectSlotsByName(self)
@@ -1112,7 +1113,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
     # @+node:ekr.20110605121601.18178: *4* dw.set_geometry
     # Mypy complaint because this overrides QMainWindow.setGeometry.
 
-    def setGeometry(self, rect: QRect) -> None:  # type:ignore[override]
+    def setGeometry(self, rect: QRect) -> None:  # type:ignore[override,valid-type]
         """Set the window geometry, but only once when using the qt gui."""
         m = self.leo_master
         assert self.leo_master
@@ -3982,7 +3983,7 @@ class QtIconBarClass:
 # mypy complains about the font ivar and incompatible destroy methods(!)
 
 
-class QtMenuWrapper(LeoQtMenu, QtWidgets.QMenu):  # type:ignore[override]
+class QtMenuWrapper(LeoQtMenu, QtWidgets.QMenu):  # type:ignore[misc,override]
     # @+others
     # @+node:ekr.20110605121601.18459: *3* QtMenuWrapper.__init__ and __repr__
     def __init__(
