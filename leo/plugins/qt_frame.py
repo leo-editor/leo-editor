@@ -1084,7 +1084,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         QTextBrowser possibly packed inside a LeoLineTextWidget.
         """
         c = self.leo_c
-        #
         # Reuse the grid layout in the body frame.
         grid = self.leo_body_frame.layout()
         # Pack the label and the text widget.
@@ -4381,13 +4380,19 @@ class TabbedFrameFactory:
         @g.command('close-others')
         def close_others(event: LeoKeyEvent | None = None) -> None:
             """Close all windows except the present window."""
+            if not event:
+                return
             myc = event['c']
+            if not myc:
+                return
             for c in g.app.commanders():
                 if c is not myc:
                     c.close()
 
         def tab_cycle(offset: int) -> None:
             tabw = self.masterFrame
+            if not tabw:
+                return
             cur = tabw.currentIndex()
             count = tabw.count()
             # g.es("cur: %s, count: %s, offset: %s" % (cur,count,offset))
