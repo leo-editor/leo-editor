@@ -154,13 +154,13 @@ class DynamicWindow(QtWidgets.QMainWindow):
 
         # Delay until DW initialization has ended and c.commandsDict
         # has been populated
-        def run_layout():
+        def run_layout() -> None:
             c.doCommandByName('layout-restore-to-setting')
 
         QtCore.QTimer.singleShot(300, run_layout)
 
     # @+node:ekr.20240726074809.1: *4* dw.recreateMainWindow
-    def recreateMainWindow(self):
+    def recreateMainWindow(self) -> None:
         """
         Recreate the main window by reloading the outline.
         """
@@ -767,7 +767,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
 
     # @+node:ekr.20240730053128.1: *3* dw: events
     # @+node:ekr.20110605121601.18140: *4* dw.closeEvent
-    def closeEvent(self, event: QEvent) -> None:
+    def closeEvent(self, event: QEvent) -> None:  # type:ignore[override]
         """Handle a close event in the Leo window."""
         c = self.leo_c
         if not c.exists:
@@ -788,8 +788,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
         # Make *sure* this never crashes.
         try:
             tab = self.leo_c.spellCommands.handler.tab
-            button = getattr(tab, btn)
-            button()
+            if button := getattr(tab, btn, None):
+                button()
         except Exception:
             g.es_exception()
 
@@ -968,11 +968,11 @@ class DynamicWindow(QtWidgets.QMainWindow):
         class VisLineEdit(QtWidgets.QLineEdit):
             """In case user has hidden minibuffer with gui-minibuffer-hide"""
 
-            def focusInEvent(self, event: QFocusEvent) -> None:
+            def focusInEvent(self, event: QFocusEvent) -> None:  # type:ignore[override]
                 self.parent().show()
                 super().focusInEvent(event)  # Call the base class method.
 
-            def focusOutEvent(self, event: QFocusEvent) -> None:
+            def focusOutEvent(self, event: QFocusEvent) -> None:  # type:ignore[override]
                 self.store_selection()
                 super().focusOutEvent(event)
 
@@ -1112,7 +1112,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
     # @+node:ekr.20110605121601.18178: *4* dw.set_geometry
     # Mypy complaint because this overrides QMainWindow.setGeometry.
 
-    def setGeometry(self, rect: QRect) -> None:  # type:ignore
+    def setGeometry(self, rect: QRect) -> None:  # type:ignore[override]
         """Set the window geometry, but only once when using the qt gui."""
         m = self.leo_master
         assert self.leo_master
@@ -1608,7 +1608,7 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
                     self.setTabText(i, title)
 
     # @+node:ekr.20131115120119.17396: *3* qt_base_tab.setTabName
-    def setTabName(self, c: Cmdr, fileName: str, tooltip: str | None = None) -> None:
+    def setTabName(self, c: Cmdr, fileName: str, tooltip: str = '') -> None:
         """Set the tab name and optional tooltip for c's tab to fileName."""
         # Find the tab corresponding to c.
         dw = c.frame.top  # A DynamicWindow
@@ -1619,7 +1619,7 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
                 self.setTabToolTip(i, tooltip)  # #4558 also update tooltip if given.
 
     # @+node:ekr.20131115120119.17397: *3* qt_base_tab.closeEvent
-    def closeEvent(self, event: QEvent) -> None:
+    def closeEvent(self, event: QEvent) -> None:  # type:ignore[override]
         """Handle a close event."""
         g.app.gui.close_event(event)
 
@@ -1951,10 +1951,14 @@ class LeoQtFrame(leoFrame.LeoFrame):
 
     # @+node:ekr.20110605121601.18280: *4* LeoQtFrame.forceWrap & setWrap
     def forceWrap(self, p: Position | None = None) -> None:
-        self.c.frame.body.forceWrap(p)
+        c = self.c
+        if p:
+            c.frame.body.forceWrap(p)
 
     def setWrap(self, p: Position | None = None) -> None:
-        self.c.frame.body.setWrap(p)
+        c = self.c
+        if p:
+            c.frame.body.setWrap(p)
 
     # @+node:ekr.20110605121601.18281: *4* LeoQtFrame.reconfigurePanes
     def reconfigurePanes(self) -> None:
@@ -2416,10 +2420,10 @@ class LeoQtLog(leoFrame.LeoLog):
     def put(
         self,
         s: str,
-        color: str | None = None,
+        color: str = '',
         tabName: str = 'Log',
         from_redirect: bool = False,
-        nodeLink: str | None = None,
+        nodeLink: str = '',
     ) -> None:
         """
         Put s to the Qt Log widget, converting to html.
@@ -2608,7 +2612,7 @@ class LeoQtLog(leoFrame.LeoLog):
         self.selectTab('Log')
 
     # @+node:ekr.20111122080923.10185: *4* LeoQtLog.orderedTabNames
-    def orderedTabNames(self, LeoLog: str | None = None) -> list[str]:  # Unused: LeoLog
+    def orderedTabNames(self, LeoLog: str = '') -> list[str]:  # Unused: LeoLog
         """Return a list of tab names in the order in which they appear in the QTabbedWidget."""
         w = self.tabWidget
         return [w.tabText(i) for i in range(w.count())]
@@ -2722,8 +2726,8 @@ class LeoQtMenu(leoMenu.LeoMenu):
         menu: QMenu,
         accelerator: str = '',
         command: Callable | None = None,
-        commandName: str | None = None,
-        label: str | None = None,
+        commandName: str = '',
+        label: str = '',
         underline: int = 0,
     ) -> None:
         """Wrapper for the Tkinter add_command menu method."""
@@ -2784,7 +2788,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         position: int,
         label: str,
         command: Callable,
-        underline: int | None = None,
+        underline: int = 0,
     ) -> None:
         menu = self.getMenu(menuName)
         if menu and label:
@@ -2889,7 +2893,14 @@ class LeoQtMenu(leoMenu.LeoMenu):
         # At present, it is valid to always return None.
 
     # @+node:ekr.20110605121601.18360: *5* LeoQtMenu.setMenuLabel
-    def setMenuLabel(self, menu: QMenu, name: str, label: str, underline: int = -1) -> None:
+    def setMenuLabel(
+        self,
+        menu: QMenu,
+        name: str,
+        label: str,
+        underline: int = 0,  # Not used.
+    ) -> None:
+
         def munge(s: str) -> str:
             return (s or '').replace('&', '')
 
@@ -2959,13 +2970,13 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
 
     __str__ = __repr__
 
-    def dragMoveEvent(self, ev: QEvent) -> None:  # Called during drags.
-        pass
+    def dragMoveEvent(self, ev: QEvent) -> None:  # type:ignore[override]
+        pass  # Called during drags.
 
     # @+others
     # @+node:ekr.20111022222228.16980: *3* LeoQTreeWidget: Event handlers
     # @+node:ekr.20110605121601.18364: *4* LeoQTreeWidget.dragEnterEvent & helper
-    def dragEnterEvent(self, ev: QEvent) -> None:
+    def dragEnterEvent(self, ev: QEvent) -> None:  # type:ignore[override]
         """Export c.p's tree as a Leo mime-data."""
         c = self.c
         if not ev:
@@ -2996,7 +3007,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         md.setText(f"{fn},{s}")
 
     # @+node:ekr.20110605121601.18365: *4* LeoQTreeWidget.dropEvent & helpers
-    def dropEvent(self, ev: QEvent) -> None:
+    def dropEvent(self, ev: QEvent) -> None:  # type:ignore[override]
         """Handle a drop event in the QTreeWidget."""
         if not ev:
             return
@@ -3618,7 +3629,7 @@ class LeoQtTreeTab:
                 # Fix #458: Chapters drop-down list is not automatically resized.
                 self.setSizeAdjustPolicy(SizeAdjustPolicy.AdjustToContents)
 
-            def focusInEvent(self, event: QFocusEvent) -> None:
+            def focusInEvent(self, event: QFocusEvent) -> None:  # type:ignore[override]
                 self.leo_tt.setNames()
                 QtWidgets.QComboBox.focusInEvent(self, event)  # Call the base class
 
@@ -3777,7 +3788,7 @@ class QtIconBarClass:
                 self.text_val = text  # self.text is a method!
                 self.toolbar = toolbar
 
-            def createWidget(self, parent: QWidget) -> QtWidgets.QPushButton:
+            def createWidget(self, parent: QWidget) -> QtWidgets.QPushButton:  # type:ignore[override]
                 self.button = QtWidgets.QPushButton(self.text_val, parent)
                 self.button.setProperty('button_kind', kind)  # for styling
                 return self.button
@@ -3971,7 +3982,7 @@ class QtIconBarClass:
 # mypy complains about the font ivar and incompatible destroy methods(!)
 
 
-class QtMenuWrapper(LeoQtMenu, QtWidgets.QMenu):  # type:ignore
+class QtMenuWrapper(LeoQtMenu, QtWidgets.QMenu):  # type:ignore[override]
     # @+others
     # @+node:ekr.20110605121601.18459: *3* QtMenuWrapper.__init__ and __repr__
     def __init__(
@@ -4159,7 +4170,7 @@ class QtStatusLineClass:
         return s
 
     # @+node:ekr.20240505050902.1: *3* QtStatsuLineClass.toggleUnlView
-    def toggleUnlView(self):
+    def toggleUnlView(self) -> None:
         """Toggle view of UNLs."""
         c = self.c
         # Toggle the switch.
@@ -4263,7 +4274,7 @@ class QtTabBarWrapper(QtWidgets.QTabBar):
         self.setMovable(True)
 
     # @+node:peckj.20140516114832.10109: *3* QtTabBarWrapper.mouseReleaseEvent
-    def mouseReleaseEvent(self, event: QMouseEvent) -> None:
+    def mouseReleaseEvent(self, event: QMouseEvent) -> None:  # type:ignore[override]
         # middle click close on tabs -- JMP 20140505
         # closes Launchpad bug: https://bugs.launchpad.net/leo-editor/+bug/1183528
         if event.button() == MouseButton.MiddleButton:
@@ -4636,17 +4647,17 @@ def showQtWidgets(event: LeoKeyEvent | None = None) -> None:
     if not c:
         return
 
-    def w_name(w):
+    def w_name(w: Any) -> str:
         name = w.objectName() or 'no name'
         return f"{w.__class__.__name__}({name})"
 
-    def dump(w, level=0):
+    def dump(w: Any, level: int = 0) -> None:
         nonlocal total
         total += 1
         ws = level * '.'
         print(f"{total:3} {level:3}: {ws}{w_name(w)}")
 
-    def dump_children(w, level=0):
+    def dump_children(w: Any, level: int = 0) -> None:
         if 1:  # Specify wanted classes...
             wanted = (
                 'DynamicWindow',
@@ -4670,7 +4681,7 @@ def showQtWidgets(event: LeoKeyEvent | None = None) -> None:
                 dump(child, level + 1)
                 dump_children(child, level + 1)
 
-    def full_dump(w, level=0):
+    def full_dump(w: Any, level: int = 0) -> None:
         print('')
         print('Full dump of c.frame.top:\n')
         print('  i   level')
@@ -4708,7 +4719,7 @@ def toggleMinibuffer(event: LeoKeyEvent | None = None) -> None:
         dw = c.frame.top
         w = dw.leo_minibuffer_frame
         if w.isVisible():
-            w.hide()
+            w.hide()  # type:ignore
         else:
             w.show()
 
