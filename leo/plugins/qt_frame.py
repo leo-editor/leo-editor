@@ -13,7 +13,7 @@ import string
 import sys
 import time
 import urllib
-from typing import Any, TYPE_CHECKING
+from typing import cast, Any, TYPE_CHECKING
 from leo.commands import gotoCommands
 from leo.core.leoAPI import StringTextWrapper
 from leo.core import (
@@ -2962,6 +2962,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         self.was_control_drag = False
         # #2463.
         header = self.header()
+        assert header is not None
         header.setStretchLastSection(False)
         header.setSectionResizeMode(header.ResizeMode.ResizeToContents)
 
@@ -4300,13 +4301,15 @@ class TabbedFrameFactory:
         # Workaround a problem setting the window title when tabs are shown.
         self.alwaysShowTabs = True
         self.leoFrames: dict[QWidget, QWidget] = {}
-        self.masterFrame: LeoTabbedTopLevel | None = None
+        self.masterFrame = cast(LeoTabbedTopLevel, None)
         self.createTabCommands()
 
     # @+node:ekr.20110605121601.18466: *3* TabbedFrameFactory.createFrame
     def createFrame(self, leoFrame: QWidget) -> QWidget:
         c = leoFrame.c
         tabw = self.masterFrame
+        if tabw is None:
+            return
         dw = DynamicWindow(c, tabw)
         self.leoFrames[dw] = leoFrame
         # Shorten the title.
@@ -4319,14 +4322,12 @@ class TabbedFrameFactory:
         dw.construct(master=tabw)
         tabw.setCurrentIndex(idx)
         g.app.gui.setFilter(c, dw, dw, tag='tabbed-frame')
-        #
+
         # Work around the problem with missing dirty indicator
         # by always showing the tab.
         tabw.tabBar().setVisible(self.alwaysShowTabs or tabw.count() > 1)
         tabw.setTabsClosable(c.config.getBool('outline-tabs-show-close', True))
         if not g.unitTesting:
-            # #1327: Must always do this.
-            # 2021/09/12: but not for new unit tests!
             dw.show()
             tabw.show()
         return dw
@@ -4335,6 +4336,7 @@ class TabbedFrameFactory:
     def createMaster(self) -> None:
         window = self.masterFrame = LeoTabbedTopLevel(factory=self)
         tabbar = window.tabBar()
+        assert tabbar is not None
         g.app.gui.attachLeoIcon(window)
         try:
             tabbar.setTabsClosable(True)
@@ -4425,18 +4427,22 @@ class TabbedFrameFactory:
             self.masterFrame.delete(wdg)
             return
         tabw = self.masterFrame
+        if tabw is None:
+            return
         idx = tabw.indexOf(wdg)
         tabw.removeTab(idx)
         del self.leoFrames[wdg]
         if wdg2 := tabw.currentWidget():
             g.app.selectLeoWindow(wdg2.leo_c)
-        tabw.tabBar().setVisible(self.alwaysShowTabs or tabw.count() > 1)
+        tabw.tabBar().setVisible(self.alwaysShowTabs or tabw.count() > 1)  # type:ignore
 
     # @+node:ekr.20110605121601.18471: *3* TabbedFrameFactory.focusCurrentBody
     def focusCurrentBody(self) -> None:
         """Focus body control of current tab"""
         tabw = self.masterFrame
         w = tabw.currentWidget()
+        if w is None:
+            return
         w.setFocus()
         f = self.leoFrames[w]
         c = f.c
@@ -4459,7 +4465,7 @@ class TabbedFrameFactory:
     def slotCloseRequest(self, idx: int) -> None:
         tabw = self.masterFrame
         w = tabw.widget(idx)
-        f = self.leoFrames[w]
+        f = self.leoFrames[w]  # type:ignore[index]
         c = f.c
         # 2012/03/04: Don't set the frame here.
         # Wait until the next slotCurrentChanged event.
@@ -4471,8 +4477,10 @@ class TabbedFrameFactory:
         # and another event for the tab gaining focus.
         tabw = self.masterFrame
         w = tabw.widget(idx)
+        if w is None:
+            return
         f = self.leoFrames.get(w)
-        if not f:
+        if f is None:
             return
         c = f.c
         title = c.computeWindowTitle()
