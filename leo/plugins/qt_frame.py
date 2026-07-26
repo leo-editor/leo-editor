@@ -3900,8 +3900,7 @@ class QtIconBarClass:
     # @+node:ekr.20110605121601.18270: *3* QtIconBar.deleteButton
     def deleteButton(self, w: LeoQtFrame) -> None:
         """w is button"""
-        if self.w is None:
-            return
+        assert self.w is not None
         self.w.removeAction(w)
         self.c.bodyWantsFocus()
         self.c.outerUpdate()
