@@ -2788,9 +2788,11 @@ class LeoQtMenu(leoMenu.LeoMenu):
     # @+node:ekr.20110605121601.18346: *5* LeoQtMenu.add_separator
     def add_separator(self, menu: QMenu) -> None:
         """Wrapper for the Tkinter add_separator menu method."""
-        if menu:
-            if action := menu.addSeparator():
-                action.leo_menu_label = '*seperator*'
+        if menu is None:
+            return
+        action = menu.addSeparator()
+        assert action
+        action.leo_menu_label = '*seperator*'
 
     # @+node:ekr.20110605121601.18347: *5* LeoQtMenu.delete
     def delete(self, menu: QtMenuWrapper, realItemName: str = '<no name>') -> None:
@@ -2924,7 +2926,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
 
     # @+node:ekr.20110605121601.18359: *5* LeoQtMenu.getMenuLabel
     def getMenuLabel(self, menu: QMenu, name: str) -> str:
-        """Return the index of the menu item whose name is given."""
+        """Return the label of the menu item whose name is given."""
         return ''
 
     # @+node:ekr.20110605121601.18360: *5* LeoQtMenu.setMenuLabel
