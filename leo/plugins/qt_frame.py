@@ -1779,15 +1779,15 @@ class LeoQtFrame(leoFrame.LeoFrame):
         leoFrame.LeoFrame.instances += 1  # Increment the class var.
 
         # Official ivars for objects.
-        self.bar1: LeoQtFrame | None = None
-        self.bar2: LeoQtFrame | None = None
-        self.body: LeoQtBody | None = None
-        self.iconBar: QtIconBarClass | None = None
-        self.iconFrame: QtIconBarClass | None = None
-        self.log: LeoQtLog | None = None
-        self.statusLine: QtStatusLineClass | None = None
-        self.tree: LeoQtTree | None = None
-        self.top: DynamicWindow | None = None
+        self.bar1 = cast(LeoQtFrame, None)
+        self.bar2 = cast(LeoQtFrame, None)
+        self.body = cast(LeoQtBody, None)
+        self.iconBar = cast(QtIconBarClass, None)
+        self.iconFrame = cast(QtIconBarClass, None)
+        self.log = cast(LeoQtLog, None)
+        self.statusLine = cast(QtStatusLineClass, None)
+        self.tree = cast(LeoQtTree, None)
+        self.top = cast(DynamicWindow, None)
 
         # Status ivars...
         self.title = title
@@ -1809,7 +1809,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
         return f"<LeoQtFrame: {self.title}>"
 
     # @+node:ekr.20250328195727.1: *4* LeoQtFrame.getIconBar
-    def getIconBar(self) -> QtIconBarClass:
+    def getIconBar(self) -> QtIconBarClass | None:
         return self.iconBar
 
     getIconBarObject = getIconBar
@@ -3751,7 +3751,7 @@ class QtIconBarClass:
 
     # @+others
     # @+node:ekr.20110605121601.18263: *3*  QtIconBar.ctor & reloadSettings
-    def __init__(self, c: Cmdr, parentFrame: LeoQtFrame) -> None:
+    def __init__(self, c: Cmdr, parentFrame: LeoQtFrame | None) -> None:
         """Ctor for QtIconBarClass."""
         # Copy ivars
         self.c = c
@@ -4096,7 +4096,7 @@ class QtStatusLineClass:
 
     # @+others
     # @+node:ekr.20110605121601.18258: *3* QtStatusLineClass.ctor
-    def __init__(self, c: Cmdr, parentFrame: LeoQtFrame) -> None:
+    def __init__(self, c: Cmdr, parentFrame: LeoQtFrame | None) -> None:
         """Ctor for LeoQtFrame class."""
         self.c = c
         self.statusBar = c.frame.top.leo_statusBar
