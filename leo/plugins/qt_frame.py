@@ -4486,12 +4486,11 @@ class TabbedFrameFactory:
         tabw = self.masterFrame
         w = tabw.currentWidget()
         if w is None:
-            return
+            return  # PR #4812
         w.setFocus()
         f = self.leoFrames[w]
         c = f.c
         c.bodyWantsFocusNow()
-        # Fix bug 690260: correct the log.
         g.app.log = f.log
 
     # @+node:ekr.20110605121601.18469: *3* TabbedFrameFactory.setTabForCommander
@@ -4527,9 +4526,11 @@ class TabbedFrameFactory:
         if not tabw:
             return  # PR #4812
         w = tabw.widget(idx)
-        assert w
+        if w is None:
+            return  # PR #4812
         f = self.leoFrames.get(w)
-        assert f
+        if f is None:
+            return  # PR #4812
         c = f.c
         title = c.computeWindowTitle()
         tabw.setWindowTitle(title)
