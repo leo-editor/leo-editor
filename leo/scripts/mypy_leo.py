@@ -23,7 +23,7 @@ print(os.path.basename(__file__))
 leo_editor_dir = os.path.abspath(os.path.join(__file__, '..', '..', '..'))
 os.chdir(leo_editor_dir)
 # @-<< mypy_leo.py: imports & startup >>
-incremental = True
+incremental = False
 follow = False
 if 1:  # Test all files.
     files = [
@@ -59,10 +59,11 @@ else:
     ]  # fmt: skip
 
 python = sys.executable
-incremental_arg = '' if incremental else '--no-incremental'
-follow_kind = 'normal' if follow else 'skip'
+### incremental_arg = '' if incremental else '--no-incremental'
+### follow_kind = 'normal' if follow else 'skip'
 # args = ' '.join(sys.argv[1:])
-args = f"--follow-imports={follow_kind} {incremental_arg}"
+# args = f"--follow-imports={follow_kind} {incremental_arg}"
+args = ''
 files = ' '.join(files)
 command = rf"{python} -m mypy {args} {files}"
 # print(f"{command=}")
