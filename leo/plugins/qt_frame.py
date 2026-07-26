@@ -4508,10 +4508,14 @@ class TabbedFrameFactory:
     # @+node:ekr.20110605121601.18470: *3* TabbedFrameFactory.signal handlers
     def slotCloseRequest(self, idx: int) -> None:
         tabw = self.masterFrame
+        if tabw is None:
+            return  # PR #4812
         w = tabw.widget(idx)
-        f = self.leoFrames[w]  # type:ignore[index]
+        assert w
+        f = self.leoFrames[w]
+        assert f
         c = f.c
-        # 2012/03/04: Don't set the frame here.
+        # Don't set the frame here!
         # Wait until the next slotCurrentChanged event.
         # This keeps the log and the QTabbedWidget in sync.
         c.close(new_c=None)
@@ -4520,22 +4524,19 @@ class TabbedFrameFactory:
         # Two events are generated, one for the tab losing focus,
         # and another event for the tab gaining focus.
         tabw = self.masterFrame
+        if not tabw:
+            return  # PR #4812
         w = tabw.widget(idx)
-        if w is None:
-            return
+        assert w
         f = self.leoFrames.get(w)
-        if f is None:
-            return
+        assert f
         c = f.c
         title = c.computeWindowTitle()
         tabw.setWindowTitle(title)
         # Don't do this: it would break --minimize.
         # g.app.selectLeoWindow(f.c)
-        # Fix bug 690260: correct the log.
         g.app.log = f.log
-        # Redraw the tab.
-        if c := f.c:
-            c.redraw()
+        c.redraw()
 
     # @-others
 
