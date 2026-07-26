@@ -788,9 +788,12 @@ class DynamicWindow(QtWidgets.QMainWindow):
     def doSpellBtn(self, btn: str) -> None:
         """Execute btn, a button handler."""
         # Make *sure* this never crashes.
+        c = self.leo_c
+        assert c
+        handler = c.spellCommands.handler
+        assert handler
         try:
-            tab = self.leo_c.spellCommands.handler.tab  # type:ignore
-            if button := getattr(tab, btn, None):
+            if button := getattr(handler.tab, btn, None):
                 button()
         except Exception:
             g.es_exception()
@@ -1467,34 +1470,36 @@ class FindTabManager:
 
     # @+node:ekr.20131117164142.16853: *3* FindTabManager.text getters/setters
     def get_find_text(self) -> str:
-        if w := self.find_findbox:
-            s = w.text()
-            if s and s[-1] in ('\r', '\n'):
-                s = s[:-1]
-            return s
-        return ''
+        w = self.find_findbox
+        assert w
+        s = w.text()
+        if s and s[-1] in ('\r', '\n'):
+            s = s[:-1]
+        return s
 
     def get_change_text(self) -> str:
-        if w := self.find_replacebox:
-            s = w.text()
-            if s and s[-1] in ('\r', '\n'):
-                s = s[:-1]
-            return s
-        return ''
+        w = self.find_replacebox
+        assert w
+        s = w.text()
+        if s and s[-1] in ('\r', '\n'):
+            s = s[:-1]
+        return s
 
     getChangeText = get_change_text
 
     def set_find_text(self, s: str) -> None:
-        if w := self.find_findbox:
-            s = g.checkUnicode(s or '')
-            w.clear()
-            w.insert(s)
+        w = self.find_findbox
+        assert w
+        s = g.checkUnicode(s or '')
+        w.clear()
+        w.insert(s)
 
     def set_change_text(self, s: str) -> None:
-        if w := self.find_replacebox:
-            s = g.checkUnicode(s or '')
-            w.clear()
-            w.insert(s)
+        w = self.find_replacebox
+        assert w
+        s = g.checkUnicode(s or '')
+        w.clear()
+        w.insert(s)
 
     # @+node:ekr.20131117120458.16791: *3* FindTabManager.toggle_checkbox
     def toggle_checkbox(self, checkbox_name: str) -> None:
