@@ -1828,7 +1828,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
 
     # @+node:ekr.20250328195727.1: *4* LeoQtFrame.getIconBar
     def getIconBar(self) -> QtIconBarClass:
-        return self.iconBar  # type:ignore
+        return self.iconBar  # type:ignore # Doesn't return a Null icon bar.
 
     getIconBarObject = getIconBar
 
@@ -2181,11 +2181,9 @@ class LeoQtFrame(leoFrame.LeoFrame):
     # @+node:ekr.20190611053431.4: *4* LeoQtFrame.get_window_info
     def get_window_info(self) -> tuple[int, int, int, int]:
         """Return the geometry of the top window."""
-        f: Any
-        if getattr(self.top, 'leo_master', None):  # type:ignore
-            f = self.top.leo_master if self.top else self.top
-        else:
-            f = self.top
+        assert self.top
+        f = self.top.leo_master
+        assert f
         rect = f.geometry()
         topLeft = rect.topLeft()
         x, y = topLeft.x(), topLeft.y()
@@ -2200,10 +2198,10 @@ class LeoQtFrame(leoFrame.LeoFrame):
 
     # @+node:ekr.20190611053431.7: *4* LeoQtFrame.getTitle
     def getTitle(self) -> str:
-        # Fix https://bugs.launchpad.net/leo-editor/+bug/1194209
-        # For qt, leo_master (a LeoTabbedTopLevel) contains the QMainWindow.
-        w = self.top.leo_master if self.top else None
-        return w.windowTitle() if w else ''
+        assert self.top
+        w = self.top.leo_master
+        assert w
+        return w.windowTitle()
 
     # @+node:ekr.20190611053431.5: *4* LeoQtFrame.iconify
     def iconify(self) -> None:
@@ -2225,11 +2223,10 @@ class LeoQtFrame(leoFrame.LeoFrame):
 
     # @+node:ekr.20190611053431.8: *4* LeoQtFrame.setTitle
     def setTitle(self, s: str) -> None:
-        if self.top:
-            # Fix https://bugs.launchpad.net/leo-editor/+bug/1194209
-            # When using tabs, leo_master (a LeoTabbedTopLevel) contains the QMainWindow.
-            if w := self.top.leo_master:
-                w.setWindowTitle(s)
+        assert self.top
+        w = self.top.leo_master
+        assert w
+        w.setWindowTitle(s)
 
     # @+node:ekr.20190611053431.9: *4* LeoQtFrame.setTopGeometry
     def setTopGeometry(self, w: int, h: int, x: int, y: int) -> None:
