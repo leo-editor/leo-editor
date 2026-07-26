@@ -2479,14 +2479,14 @@ class LeoQtLog(leoFrame.LeoLog):
             g.trace('BAD widget', w.__class__.__name__)
             return
         sb = w.horizontalScrollBar()
+        assert sb is not None
         s = self.to_html(color, s)
         if nodeLink:
             link = urllib.parse.quote(nodeLink)
             s = f'<a href="{link}" title="{link}">{s}</a>'
         w.moveCursor(MoveOperation.End)
         w.insertHtml(s)
-        if sb is not None:
-            sb.setSliderPosition(0)  # Force the slider to the initial position.
+        sb.setSliderPosition(0)  # Force the slider to the initial position.
         w.repaint()  # Slow, but essential.
 
     # @+node:ekr.20220411085334.1: *5* LeoQtLog.to_html
@@ -2522,8 +2522,7 @@ class LeoQtLog(leoFrame.LeoLog):
             g.trace('BAD widget', w.__class__.__name__)
             return
         sb = w.horizontalScrollBar()
-        if sb is None:
-            return
+        assert sb is not None
         pos = sb.sliderPosition()
         # Not needed!
         # contents = w.toHtml()
