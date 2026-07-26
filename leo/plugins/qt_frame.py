@@ -2243,8 +2243,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
     def update(self, *args: Any, **keys: Any) -> None:
         if 'size' in g.app.debug:
             g.trace(bool(self.top))
-        if self.top:
-            self.top.update()
+        assert self.top
+        self.top.update()
 
     # @-others
 
