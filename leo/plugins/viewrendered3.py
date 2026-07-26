@@ -1026,7 +1026,7 @@ import string
 import subprocess
 import sys
 import textwrap
-from typing import Any, Dict, List
+from typing import Any
 
 import webbrowser
 # from urllib.request import urlopen
@@ -1292,8 +1292,8 @@ asciidoc = None
 asciidoctor = None
 asciidoc_ok = False
 asciidoc3_ok = False
-asciidoc_dirs: Dict[str, Dict] = {'asciidoc': {}, 'asciidoc3': {}}
-asciidoc_processors: List[Any] = []
+asciidoc_dirs: dict[str, dict] = {'asciidoc': {}, 'asciidoc3': {}}
+asciidoc_processors: list[Any] = []
 asciidoc_has_diagram = False
 # @-<< Misc Globals >>
 # @+<< define html templates >>
@@ -1326,8 +1326,8 @@ latex_template = f'''\
 trace = False  # This global trace is convenient.
 
 # keys are c.hash().
-controllers: Dict[str, Any] = {}  # values: VR3 widgets
-positions: Dict[int, Any] = {}  # values: OPENED_IN_TAB, OPENED_IN_SPLITTER, OPENED_SHARING_BODY
+controllers: dict[str, Any] = {}  # values: VR3 widgets
+positions: dict[int, Any] = {}  # values: OPENED_IN_TAB, OPENED_IN_SPLITTER, OPENED_SHARING_BODY
 
 
 # @+others
@@ -1841,7 +1841,7 @@ def vr3_help_for_plot_2d(event):
     docstr = cleandoc(doc)
     docstr = 'Help For VR3 Plot 2D\n=====================\n' + docstr
 
-    args: Dict[str, Any] = {'output_encoding': 'utf-8'}
+    args: dict[str, Any] = {'output_encoding': 'utf-8'}
     if vr3.rst_stylesheet and os.path.exists(vr3.rst_stylesheet):
         args['stylesheet_path'] = f'{vr3.rst_stylesheet}'
         args['embed_stylesheet'] = True
@@ -4371,7 +4371,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 result += f'\n::\n\n{indented_err_result}\n'
         # @+node:TomP.20200105214743.1: *6* vr3.get html from docutils
         # @@language python
-        args: Dict[str, Any] = {'output_encoding': 'utf-8'}
+        args: dict[str, Any] = {'output_encoding': 'utf-8'}
         if self.rst_stylesheet and os.path.exists(self.rst_stylesheet):
             args['stylesheet_path'] = f'{self.rst_stylesheet}'
             args['embed_stylesheet'] = True
