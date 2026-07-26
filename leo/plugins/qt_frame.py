@@ -4463,21 +4463,21 @@ class TabbedFrameFactory:
         # @-<< Commands for tabs >>
 
     # @+node:ekr.20110605121601.18467: *3* TabbedFrameFactory.deleteFrame
-    def deleteFrame(self, wdg: DynamicWindow) -> None:
-        if wdg is None:
-            return
-        if wdg not in self.leoFrames:
+    def deleteFrame(self, dw: DynamicWindow | None) -> None:
+        if dw is None:
+            return  # PR #4812
+        if dw not in self.leoFrames:
             # probably detached tab
-            self.masterFrame.delete(wdg)
+            self.masterFrame.delete(dw)
             return
         tabw = self.masterFrame
         if tabw is None:
-            return
-        idx = tabw.indexOf(wdg)
+            return  # PR #4812
+        idx = tabw.indexOf(dw)
         tabw.removeTab(idx)
-        del self.leoFrames[wdg]
-        if wdg2 := tabw.currentWidget():
-            g.app.selectLeoWindow(wdg2.leo_c)
+        del self.leoFrames[dw]
+        if dw2 := tabw.currentWidget():
+            g.app.selectLeoWindow(dw2.leo_c)
         tabw.tabBar().setVisible(self.alwaysShowTabs or tabw.count() > 1)  # type:ignore
 
     # @+node:ekr.20110605121601.18471: *3* TabbedFrameFactory.focusCurrentBody
