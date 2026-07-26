@@ -1529,9 +1529,7 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
     # @+others
     # @+node:ekr.20131115120119.17390: *3* qt_base_tab.__init__
     def __init__(self, *args: Any, **kwargs: Any) -> None:
-        #
         # Called from frameFactory.createMaster.
-        #
         self.factory = kwargs.get('factory')
         if self.factory:
             del kwargs['factory']
@@ -1540,20 +1538,26 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
         self.setMovable(True)
 
         def tabContextMenu(point: QPoint) -> None:
-            if tabBar := self.tabBar():
-                if index := tabBar.tabAt(point):
-                    if index < 0:  # or (self.count() < 1 and not self.detached):
-                        return
+            tabBar = self.tabBar()
+            assert tabBar
+            index = tabBar.tabAt(point)
+            assert index is not None
+            if index < 0:  # or (self.count() < 1 and not self.detached):
+                return
             menu = QtWidgets.QMenu()
+            assert menu
             # #310: Create new file on right-click in file tab in UI.
-            if a := menu.addAction("New Outline"):
-                a.triggered.connect(lambda checked: self.new_outline(index))
+            a = menu.addAction("New Outline")
+            assert a
+            a.triggered.connect(lambda checked: self.new_outline(index))
             if self.count() > 1:
-                if a := menu.addAction("Detach"):
-                    a.triggered.connect(lambda checked: self.detach(index))
+                a = menu.addAction("Detach")
+                assert a
+                a.triggered.connect(lambda checked: self.detach(index))
             if self.detached:
-                if a := menu.addAction("Re-attach All"):
-                    a.triggered.connect(lambda checked: self.reattach_all())
+                a = menu.addAction("Re-attach All")
+                assert a
+                a.triggered.connect(lambda checked: self.reattach_all())
 
             global_point = self.mapToGlobal(point)
             menu.exec(global_point)
@@ -1564,9 +1568,11 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
     # @+node:ekr.20180123082452.1: *3* qt_base_tab.new_outline
     def new_outline(self, index: int) -> None:
         """Open a new outline tab."""
-        if w := self.widget(index):
-            if c := w.leo_c:
-                c.new()
+        w = self.widget(index)
+        assert w
+        c = w.leo_c
+        assert c
+        c.new()
 
     # @+node:ekr.20131115120119.17391: *3* qt_base_tab.detach
     def detach(self, index: int) -> QWidget | None:  # A QIcon.
@@ -1594,10 +1600,10 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
     # @+node:ekr.20131115120119.17393: *3* qt_base_tab.reattach_all
     def reattach_all(self) -> None:
         """reattach all detached tabs"""
-        if self.factory:
-            for name, w in self.detached:
-                self.addTab(w, name)
-                self.factory.leoFrames[w] = w.leo_c.frame
+        assert self.factory
+        for name, w in self.detached:
+            self.addTab(w, name)
+            self.factory.leoFrames[w] = w.leo_c.frame
         self.detached = []
 
     # @+node:ekr.20131115120119.17394: *3* qt_base_tab.delete
