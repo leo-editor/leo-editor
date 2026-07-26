@@ -549,7 +549,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
                         else:
                             # Do the normal processing.
                             return self.oldEvent(event)
-                    elif self.func:
+                    elif self.func is not None:
                         self.func()
                     return True
 
@@ -593,7 +593,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         EventWrapper(c, w=ftm.find_findbox, next_w=ftm.find_replacebox, func=fc.find_next)
         EventWrapper(c, w=ftm.find_replacebox, next_w=ftm.find_next_button, func=fc.find_next)
         # Finally, checkBoxMarkChanges goes back to ftm.find_findBox.
-        EventWrapper(c, w=ftm.check_box_mark_changes, next_w=ftm.find_findbox, func=None)
+        EventWrapper(c, w=ftm.check_box_mark_changes, next_w=ftm.find_findbox, func=None)  # type:ignore
 
     # @+node:ekr.20110605121601.18152: *3* dw: create widgets
     # @+node:ekr.20110605121601.18153: *4* dw.createButton
@@ -789,7 +789,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         """Execute btn, a button handler."""
         # Make *sure* this never crashes.
         try:
-            tab = self.leo_c.spellCommands.handler.tab
+            tab = self.leo_c.spellCommands.handler.tab  # type:ignore
             if button := getattr(tab, btn, None):
                 button()
         except Exception:
@@ -817,6 +817,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
     def select(self, c: Cmdr) -> None:
         """Select the window or tab for c."""
         # Called from the save commands.
+        assert self.leo_master
         self.leo_master.select(c)
 
     # @+node:ekr.20110605121601.18142: *3* dw: top-level methods
@@ -869,7 +870,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
     def createIconBar(self) -> None:
         """Create the icon bar."""
         c = self.leo_c
-        self.iconBar: QtWidgets.QToolBar = self.addToolBar("IconBar")
+        self.iconBar = cast(QtWidgets.QToolBar, self.addToolBar("IconBar"))
         self.iconBar.setObjectName('icon-bar')  # Required for QMainWindow.saveState().
         self.set_icon_bar_orientation(c)
 
@@ -971,8 +972,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
             """In case user has hidden minibuffer with gui-minibuffer-hide"""
 
             def focusInEvent(self, event: QFocusEvent) -> None:  # type:ignore[override]
-                self.parent().show()
-                super().focusInEvent(event)  # Call the base class method.
+                self.parent().show()  # type:ignore
+                # Call the base class method.
+                super().focusInEvent(event)  # type:ignore
 
             def focusOutEvent(self, event: QFocusEvent) -> None:  # type:ignore[override]
                 self.store_selection()
@@ -1010,6 +1012,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         hLayout.setContentsMargins(3, 2, 2, 0)
         hLayout.addWidget(label)
         hLayout.addWidget(lineEdit)
+        assert self.verticalLayout
         self.verticalLayout.addWidget(frame)
         # Transfers focus request from label to lineEdit.
         label.setBuddy(lineEdit)
@@ -1086,7 +1089,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
         """
         c = self.leo_c
         # Reuse the grid layout in the body frame.
-        grid = self.leo_body_frame.layout()
+        assert self.leo_body_frame
+        grid: Any = self.leo_body_frame.layout()
         # Pack the label and the text widget.
         label = QtWidgets.QLineEdit(None)
         label.setObjectName('editorLabel')
@@ -1195,29 +1199,29 @@ class FindTabManager:
         self.c = c
         self.entry_focus = None  # The widget that had focus before find-pane entered.
         # Find/change text boxes.
-        self.find_findbox: QWidget | None = None
-        self.find_replacebox: QWidget | None = None
+        self.find_findbox = cast(QWidget, None)
+        self.find_replacebox = cast(QWidget, None)
         # Check boxes.
-        self.check_box_ignore_case = None
-        self.check_box_mark_changes = None
-        self.check_box_mark_finds = None
-        self.check_box_regexp = None
-        self.check_box_search_body = None
-        self.check_box_search_headline = None
-        self.check_box_whole_word = None
+        self.check_box_ignore_case = cast(QWidget, None)
+        self.check_box_mark_changes = cast(QWidget, None)
+        self.check_box_mark_finds = cast(QWidget, None)
+        self.check_box_regexp = cast(QWidget, None)
+        self.check_box_search_body = cast(QWidget, None)
+        self.check_box_search_headline = cast(QWidget, None)
+        self.check_box_whole_word = cast(QWidget, None)
         # Radio buttons
-        self.radio_button_file_only = None
-        self.radio_button_entire_outline = None
-        self.radio_button_node_only = None
-        self.radio_button_suboutline_only = None
+        self.radio_button_file_only = cast(QWidget, None)
+        self.radio_button_entire_outline = cast(QWidget, None)
+        self.radio_button_node_only = cast(QWidget, None)
+        self.radio_button_suboutline_only = cast(QWidget, None)
         # Push buttons
-        self.find_next_button = None
-        self.find_prev_button = None
-        self.find_all_button = None
-        self.help_for_find_commands_button = None
-        self.replace_button = None
-        self.replace_then_find_button = None
-        self.replace_all_button = None
+        self.find_next_button = cast(QWidget, None)
+        self.find_prev_button = cast(QWidget, None)
+        self.find_all_button = cast(QWidget, None)
+        self.help_for_find_commands_button = cast(QWidget, None)
+        self.replace_button = cast(QWidget, None)
+        self.replace_then_find_button = cast(QWidget, None)
+        self.replace_all_button = cast(QWidget, None)
 
     # @+node:ekr.20131119185305.16478: *3* FindTabManager.clear_focus & init_focus & set_entry_focus
     def clear_focus(self) -> None:
@@ -1317,7 +1321,9 @@ class FindTabManager:
             if val:
                 w.toggle()
 
-            def check_box_callback(n: int, setting_name: str = setting_name, w: str = w) -> None:
+            def check_box_callback(
+                n: int, setting_name: str = setting_name, w: QWidget = w
+            ) -> None:
                 # The focus has already change when this gets called.
                 # focus_w = QtWidgets.QApplication.focusWidget()
                 val = w.isChecked()
@@ -1337,23 +1343,26 @@ class FindTabManager:
             ('suboutline_only', 'suboutline_only', self.radio_button_suboutline_only),
             ('file_only',       'file_only',       self.radio_button_file_only),
         )  # fmt: skip
-        for setting_name, ivar, w in radio_buttons_table:
+        for setting_name, ivar, w in radio_buttons_table:  # type:ignore
             val = c.config.getBool(setting_name, default=False)
             # The setting name is also the name of the LeoFind ivar.
             if ivar is not None:
                 assert hasattr(find, setting_name), setting_name
                 setattr(find, setting_name, val)
-                w.toggle()
+                w.toggle()  # type:ignore
 
             def radio_button_callback(
-                n: int, ivar: str = ivar, setting_name: str = setting_name, w: str = w
+                n: int,
+                ivar: str = ivar,
+                setting_name: str = setting_name,
+                w: QWidget = w,  # type:ignore
             ) -> None:
                 val = w.isChecked()
                 if ivar:
                     assert hasattr(find, ivar), ivar
                     setattr(find, ivar, val)
 
-            w.toggled.connect(radio_button_callback)
+            w.toggled.connect(radio_button_callback)  # type:ignore
         # Ensure one radio button is set.
         if not find.node_only and not find.suboutline_only and not find.file_only:
             w = self.radio_button_entire_outline
@@ -1374,6 +1383,7 @@ class FindTabManager:
         self.set_change_text(change_text)
         find.change_text = change_text
         # Check boxes...
+        val: Any
         table1 = (
             ('ignore_case',     self.check_box_ignore_case),
             ('mark_changes',    self.check_box_mark_changes),
@@ -1448,6 +1458,7 @@ class FindTabManager:
             'suboutline-only': self.radio_button_suboutline_only,
         }
         w = d.get(name)
+        assert w
         # Most of the work will be done in the radio button callback.
         if not w.isChecked():
             w.toggle()
@@ -1456,30 +1467,34 @@ class FindTabManager:
 
     # @+node:ekr.20131117164142.16853: *3* FindTabManager.text getters/setters
     def get_find_text(self) -> str:
-        s = self.find_findbox.text()
-        if s and s[-1] in ('\r', '\n'):
-            s = s[:-1]
-        return s
+        if w := self.find_findbox:
+            s = w.text()
+            if s and s[-1] in ('\r', '\n'):
+                s = s[:-1]
+            return s
+        return ''
 
     def get_change_text(self) -> str:
-        s = self.find_replacebox.text()
-        if s and s[-1] in ('\r', '\n'):
-            s = s[:-1]
-        return s
+        if w := self.find_replacebox:
+            s = w.text()
+            if s and s[-1] in ('\r', '\n'):
+                s = s[:-1]
+            return s
+        return ''
 
     getChangeText = get_change_text
 
     def set_find_text(self, s: str) -> None:
-        w = self.find_findbox
-        s = g.checkUnicode(s or '')
-        w.clear()
-        w.insert(s)
+        if w := self.find_findbox:
+            s = g.checkUnicode(s or '')
+            w.clear()
+            w.insert(s)
 
     def set_change_text(self, s: str) -> None:
-        w = self.find_replacebox
-        s = g.checkUnicode(s or '')
-        w.clear()
-        w.insert(s)
+        if w := self.find_replacebox:
+            s = g.checkUnicode(s or '')
+            w.clear()
+            w.insert(s)
 
     # @+node:ekr.20131117120458.16791: *3* FindTabManager.toggle_checkbox
     def toggle_checkbox(self, checkbox_name: str) -> None:
