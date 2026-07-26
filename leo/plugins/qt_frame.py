@@ -492,7 +492,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         class EventWrapper:
             """A class to handle key presses in the Find tab."""
 
-            def __init__(self, c: Cmdr, w: QWidget, next_w: QWidget, func: Callable) -> None:
+            def __init__(self, c: Cmdr, w: QWidget, next_w: QWidget, func: Callable | None) -> None:
                 self.c = c
                 self.d = self.create_d()  # Keys: stroke.s; values: command-names.
                 self.w = w
@@ -593,7 +593,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         EventWrapper(c, w=ftm.find_findbox, next_w=ftm.find_replacebox, func=fc.find_next)
         EventWrapper(c, w=ftm.find_replacebox, next_w=ftm.find_next_button, func=fc.find_next)
         # Finally, checkBoxMarkChanges goes back to ftm.find_findBox.
-        EventWrapper(c, w=ftm.check_box_mark_changes, next_w=ftm.find_findbox, func=None)  # type:ignore
+        EventWrapper(c, w=ftm.check_box_mark_changes, next_w=ftm.find_findbox, func=None)
 
     # @+node:ekr.20110605121601.18152: *3* dw: create widgets
     # @+node:ekr.20110605121601.18153: *4* dw.createButton
