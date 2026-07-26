@@ -1525,24 +1525,20 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
         self.setMovable(True)
 
         def tabContextMenu(point: QPoint) -> None:
-            index = self.tabBar().tabAt(point)
-            if index < 0:  # or (self.count() < 1 and not self.detached):
-                return
+            if tabBar := self.tabBar():
+                if index := tabBar.tabAt(point):
+                    if index < 0:  # or (self.count() < 1 and not self.detached):
+                        return
             menu = QtWidgets.QMenu()
             # #310: Create new file on right-click in file tab in UI.
-            a = menu.addAction("New Outline")
-            a.triggered.connect(lambda checked: self.new_outline(index))
+            if a := menu.addAction("New Outline"):
+                a.triggered.connect(lambda checked: self.new_outline(index))
             if self.count() > 1:
-                a = menu.addAction("Detach")
-                a.triggered.connect(lambda checked: self.detach(index))
-                # #2914: These no longer make sense.
-                # a = menu.addAction("Horizontal tile")
-                # a.triggered.connect(lambda checked: self.tile(index, orientation='H'))
-                # a = menu.addAction("Vertical tile")
-                # a.triggered.connect(lambda checked: self.tile(index, orientation='V'))
+                if a := menu.addAction("Detach"):
+                    a.triggered.connect(lambda checked: self.detach(index))
             if self.detached:
-                a = menu.addAction("Re-attach All")
-                a.triggered.connect(lambda checked: self.reattach_all())
+                if a := menu.addAction("Re-attach All"):
+                    a.triggered.connect(lambda checked: self.reattach_all())
 
             global_point = self.mapToGlobal(point)
             menu.exec(global_point)
@@ -1553,19 +1549,20 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
     # @+node:ekr.20180123082452.1: *3* qt_base_tab.new_outline
     def new_outline(self, index: int) -> None:
         """Open a new outline tab."""
-        w = self.widget(index)
-        c = w.leo_c
-        c.new()
+        if w := self.widget(index):
+            if c := w.leo_c:
+                c.new()
 
     # @+node:ekr.20131115120119.17391: *3* qt_base_tab.detach
     def detach(self, index: int) -> QWidget | None:  # A QIcon.
         """detach tab (from tab's context menu)"""
         w = self.widget(index)
         if w is None:
-            return
+            return None
         name = self.tabText(index)
         self.detached.append((name, w))
-        self.factory.detachTab(w)
+        if self.factory:
+            self.factory.detachTab(w)
         icon = g.app.gui.getImageFinder("application-x-leo-outline.png")
         if icon := QtGui.QIcon(icon):
             if window := w.window():
