@@ -2556,8 +2556,7 @@ class LeoQtLog(leoFrame.LeoLog):
         if tabName:
             self.selectTab(tabName)
         w = self.logCtrl.widget if self.logCtrl else None
-        if w is None:
-            return
+        assert w
         sb = w.horizontalScrollBar()
         pos = sb.sliderPosition()
         w.moveCursor(MoveOperation.End)
@@ -2772,8 +2771,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         if accelerator:
             label = f"{label}\t{accelerator}"
         action = menu.addAction(label)
-        if action is None:
-            return
+        assert action
         # Inject the command name into the action so that it can be enabled/disabled dynamically.
         action.leo_command_name = commandName or ''
         if command:
