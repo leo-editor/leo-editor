@@ -3806,8 +3806,7 @@ class QtIconBarClass:
     def add(self, *args: Any, **keys: Any) -> QAction | None:
         """Add a button to the icon bar."""
         c = self.c
-        if not self.w:
-            return None
+        assert self.w is not None
         command = keys.get('command')
         text = keys.get('text', '')
         # able to specify low-level QAction directly (QPushButton not forced)
@@ -3877,8 +3876,7 @@ class QtIconBarClass:
 
     # @+node:ekr.20110605121601.18267: *3* QtIconBar.addWidget
     def addWidget(self, w: LeoQtFrame) -> None:
-        if self.w is None:
-            return
+        assert self.w is not None
         self.w.addWidget(w)
 
     # @+node:ekr.20110605121601.18268: *3* QtIconBar.clear
