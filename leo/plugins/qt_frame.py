@@ -3884,8 +3884,7 @@ class QtIconBarClass:
     # @+node:ekr.20110605121601.18268: *3* QtIconBar.clear
     def clear(self) -> None:
         """Destroy all the widgets in the icon bar"""
-        if self.w is None:
-            return
+        assert self.w is not None
         self.w.clear()
         self.actions = []
 
