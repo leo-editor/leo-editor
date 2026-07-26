@@ -2488,7 +2488,7 @@ class LeoQtLog(leoFrame.LeoLog):
             g.trace('BAD widget', w.__class__.__name__)
             return
         sb = w.horizontalScrollBar()
-        assert sb is not None
+        assert sb
         s = self.to_html(color, s)
         if nodeLink:
             link = urllib.parse.quote(nodeLink)
@@ -2531,7 +2531,7 @@ class LeoQtLog(leoFrame.LeoLog):
             g.trace('BAD widget', w.__class__.__name__)
             return
         sb = w.horizontalScrollBar()
-        assert sb is not None
+        assert sb
         pos = sb.sliderPosition()
         # Not needed!
         # contents = w.toHtml()
@@ -2716,7 +2716,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         self.frame = frame
         self.c = c
         self.menuBar: QMenuBar = c.frame.top.menuBar()
-        assert self.menuBar is not None
+        assert self.menuBar
         # Inject this dict into the commander.
         if not hasattr(c, 'menuAccels'):
             setattr(c, 'menuAccels', {})
@@ -3005,7 +3005,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         self.was_control_drag = False
         # #2463.
         header = self.header()
-        assert header is not None
+        assert header
         header.setStretchLastSection(False)
         header.setSectionResizeMode(header.ResizeMode.ResizeToContents)
 
@@ -3814,7 +3814,7 @@ class QtIconBarClass:
     def add(self, *args: Any, **keys: Any) -> QAction | None:
         """Add a button to the icon bar."""
         c = self.c
-        assert self.w is not None
+        assert self.w
         command = keys.get('command')
         text = keys.get('text', '')
         # able to specify low-level QAction directly (QPushButton not forced)
@@ -3884,13 +3884,13 @@ class QtIconBarClass:
 
     # @+node:ekr.20110605121601.18267: *3* QtIconBar.addWidget
     def addWidget(self, w: LeoQtFrame) -> None:
-        assert self.w is not None
+        assert self.w
         self.w.addWidget(w)
 
     # @+node:ekr.20110605121601.18268: *3* QtIconBar.clear
     def clear(self) -> None:
         """Destroy all the widgets in the icon bar"""
-        assert self.w is not None
+        assert self.w
         self.w.clear()
         self.actions = []
 
@@ -3905,7 +3905,7 @@ class QtIconBarClass:
     # @+node:ekr.20110605121601.18270: *3* QtIconBar.deleteButton
     def deleteButton(self, w: LeoQtFrame) -> None:
         """w is button"""
-        assert self.w is not None
+        assert self.w
         self.w.removeAction(w)
         self.c.bodyWantsFocus()
         self.c.outerUpdate()
@@ -4382,7 +4382,7 @@ class TabbedFrameFactory:
     def createMaster(self) -> None:
         window = self.masterFrame = LeoTabbedTopLevel(factory=self)
         tabbar = window.tabBar()
-        assert tabbar is not None
+        assert tabbar is not None  # Strange. assert tabbar fails!
         g.app.gui.attachLeoIcon(window)
         try:
             tabbar.setTabsClosable(True)
