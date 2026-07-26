@@ -9,6 +9,9 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
+    runs:
+      using: 'node24'
+      main: 'main.js'
     strategy:
       fail-fast: false
       matrix:
