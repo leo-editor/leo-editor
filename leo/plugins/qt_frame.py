@@ -16,6 +16,7 @@ import urllib
 from typing import cast, Any, TYPE_CHECKING
 from leo.commands import gotoCommands
 from leo.core.leoAPI import StringTextWrapper
+from leo.core.leoColorizer import BaseColorizer
 from leo.core import (
     leoColor,
     leoColorizer,
@@ -56,6 +57,7 @@ from leo.core.leoQt import (
 from leo.plugins import qt_events, qt_text
 from leo.plugins.mod_scripting import build_rclick_tree
 from leo.plugins.qt_text import QLineEditWrapper, QTextEditWrapper
+from leo.plugins.qt_text import QScintillaWrapper
 from leo.plugins.qt_tree import LeoQtTree
 from leo.plugins.qt_layout import LayoutCacheWidget
 
@@ -64,13 +66,12 @@ from leo.plugins.qt_layout import LayoutCacheWidget
 # @+node:ekr.20220415080427.1: ** << qt_frame annotations >>
 if TYPE_CHECKING:  # pragma: no cover
     from typing import TypeAlias  # Requires Python 3.12+
-    from leo.core.leoColorizer import BaseColorizer
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoGui, LeoKeyEvent, NullFrame
     from leo.core.leoNodes import Position
     from leo.plugins.leoFrame import LeoLog
     from leo.plugins.mod_scripting import ScriptingController
-    from leo.plugins.qt_text import LeoQTextBrowser, QScintillaWrapper
+    from leo.plugins.qt_text import LeoQTextBrowser
 
     QBoxLayout = QtWidgets.QBoxLayout
     QComboBox = QtWidgets.QComboBox
@@ -91,11 +92,11 @@ if TYPE_CHECKING:  # pragma: no cover
     QTabWidget = QtWidgets.QTabWidget
     QTextBlock = QtGui.QTextBlock
     QTextCursor = QtGui.QTextCursor
-    QWidget = QtWidgets.QWidget
     RClick = tuple
     RClicks = list[RClick]
 
-    QtWrapper = QScintillaWrapper | QTextEditWrapper
+QWidget = QtWidgets.QWidget
+QtWrapper = QScintillaWrapper | QTextEditWrapper
 
 
 # @-<< qt_frame annotations >>
@@ -1557,16 +1558,20 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
         c.new()
 
     # @+node:ekr.20131115120119.17391: *3* qt_base_tab.detach
-    def detach(self, index: int) -> QWidget:  # A QIcon.
+    def detach(self, index: int) -> QWidget | None:  # A QIcon.
         """detach tab (from tab's context menu)"""
         w = self.widget(index)
+        if w is None:
+            return
         name = self.tabText(index)
         self.detached.append((name, w))
         self.factory.detachTab(w)
         icon = g.app.gui.getImageFinder("application-x-leo-outline.png")
         if icon := QtGui.QIcon(icon):
-            w.window().setWindowIcon(icon)
+            if window := w.window():
+                window.setWindowIcon(icon)
         c = w.leo_c
+        assert c
         if c.styleSheetManager:
             c.styleSheetManager.set_style_sheets(w=w)
         if platform.system() == 'Windows':
@@ -1577,9 +1582,10 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
     # @+node:ekr.20131115120119.17393: *3* qt_base_tab.reattach_all
     def reattach_all(self) -> None:
         """reattach all detached tabs"""
-        for name, w in self.detached:
-            self.addTab(w, name)
-            self.factory.leoFrames[w] = w.leo_c.frame
+        if self.factory:
+            for name, w in self.detached:
+                self.addTab(w, name)
+                self.factory.leoFrames[w] = w.leo_c.frame
         self.detached = []
 
     # @+node:ekr.20131115120119.17394: *3* qt_base_tab.delete
@@ -1647,9 +1653,9 @@ class LeoQtBody(leoFrame.LeoBody):
         super().__init__(frame)
         c = self.c
         assert c.frame == frame and frame.c == c
-        self.colorizer: BaseColorizer | None = None
-        self.wrapper: QtWrapper | None = None
-        self.widget: QWidget | None = None
+        self.colorizer = cast(BaseColorizer, None)
+        self.wrapper = cast(QtWrapper, None)
+        self.widget = cast(QWidget, None)
         self.reloadSettings()
         self.set_widget()  # Sets self.widget and self.wrapper.
         self.setWrap(c.p)
@@ -1809,8 +1815,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
         return f"<LeoQtFrame: {self.title}>"
 
     # @+node:ekr.20250328195727.1: *4* LeoQtFrame.getIconBar
-    def getIconBar(self) -> QtIconBarClass | None:
-        return self.iconBar
+    def getIconBar(self) -> QtIconBarClass:
+        return self.iconBar  # type:ignore
 
     getIconBarObject = getIconBar
 
