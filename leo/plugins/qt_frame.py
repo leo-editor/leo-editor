@@ -4354,7 +4354,7 @@ class TabbedFrameFactory:
     def createFrame(self, leoFrame: QWidget) -> QWidget:
         c = leoFrame.c
         tabw = self.masterFrame
-        assert tabw is not None
+        assert tabw is not None  # Strange: assert tabw fails
         dw = DynamicWindow(c, tabw)
         self.leoFrames[dw] = leoFrame
         # Shorten the title.
@@ -4370,7 +4370,7 @@ class TabbedFrameFactory:
 
         # Work around the problem with missing dirty indicator: always show the tab.
         tabBar = tabw.tabBar()
-        assert tabBar is not None
+        assert tabBar
         tabBar.setVisible(self.alwaysShowTabs or tabw.count() > 1)
         tabw.setTabsClosable(c.config.getBool('outline-tabs-show-close', True))
         if not g.unitTesting:
