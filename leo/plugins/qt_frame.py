@@ -1316,16 +1316,16 @@ class FindTabManager:
             ('search_headline', self.check_box_search_headline),
             ('whole_word',      self.check_box_whole_word),
         )  # fmt: skip
-        for setting_name, w in check_box_table:
+        for setting_name, check_box_w in check_box_table:
             val = c.config.getBool(setting_name, default=False)
             # The setting name is also the name of the LeoFind ivar.
             assert hasattr(find, setting_name), setting_name
             setattr(find, setting_name, val)
             if val:
-                w.toggle()
+                check_box_w.toggle()
 
             def check_box_callback(
-                n: int, setting_name: str = setting_name, w: QWidget = w
+                n: int, setting_name: str = setting_name, w: QWidget = check_box_w
             ) -> None:
                 # The focus has already change when this gets called.
                 # focus_w = QtWidgets.QApplication.focusWidget()
@@ -1337,7 +1337,7 @@ class FindTabManager:
                 # Put focus in minibuffer if minibuffer find is in effect.
                 c.bodyWantsFocusNow()
 
-            w.stateChanged.connect(check_box_callback)
+            check_box_w.stateChanged.connect(check_box_callback)
 
         # Radio buttons
         radio_buttons_table = (
@@ -1346,26 +1346,27 @@ class FindTabManager:
             ('suboutline_only', 'suboutline_only', self.radio_button_suboutline_only),
             ('file_only',       'file_only',       self.radio_button_file_only),
         )  # fmt: skip
-        for setting_name, ivar, w in radio_buttons_table:  # type:ignore
+        for setting_name, ivar, radio_button_w in radio_buttons_table:  # type:ignore
             val = c.config.getBool(setting_name, default=False)
             # The setting name is also the name of the LeoFind ivar.
             if ivar is not None:
                 assert hasattr(find, setting_name), setting_name
                 setattr(find, setting_name, val)
-                w.toggle()  # type:ignore
+                radio_button_w.toggle()
 
             def radio_button_callback(
                 n: int,
                 ivar: str = ivar,
                 setting_name: str = setting_name,
-                w: QWidget = w,  # type:ignore
+                w: QWidget = radio_button_w,
             ) -> None:
                 val = w.isChecked()
                 if ivar:
                     assert hasattr(find, ivar), ivar
                     setattr(find, ivar, val)
 
-            w.toggled.connect(radio_button_callback)  # type:ignore
+            radio_button_w.toggled.connect(radio_button_callback)
+
         # Ensure one radio button is set.
         if not find.node_only and not find.suboutline_only and not find.file_only:
             w = self.radio_button_entire_outline
