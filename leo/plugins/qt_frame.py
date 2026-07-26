@@ -637,7 +637,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
     # @+node:ekr.20110605121601.18156: *4* dw.createGrid
     def createGrid(
         self,
-        parent: QWidget,
+        parent: QWidget | None,
         name: str,
         margin: int = 0,
         spacing: int = 0,
@@ -2163,9 +2163,9 @@ class LeoQtFrame(leoFrame.LeoFrame):
     # @+node:ekr.20190611053431.4: *4* LeoQtFrame.get_window_info
     def get_window_info(self) -> tuple[int, int, int, int]:
         """Return the geometry of the top window."""
-        f: QWidget
-        if getattr(self.top, 'leo_master', None):
-            f = self.top.leo_master
+        f: Any
+        if getattr(self.top, 'leo_master', None):  # type:ignore
+            f = self.top.leo_master if self.top else self.top
         else:
             f = self.top
         rect = f.geometry()
@@ -2184,8 +2184,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
     def getTitle(self) -> str:
         # Fix https://bugs.launchpad.net/leo-editor/+bug/1194209
         # For qt, leo_master (a LeoTabbedTopLevel) contains the QMainWindow.
-        w = self.top.leo_master
-        return w.windowTitle()
+        w = self.top.leo_master if self.top else None
+        return w.windowTitle() if w else ''
 
     # @+node:ekr.20190611053431.5: *4* LeoQtFrame.iconify
     def iconify(self) -> None:
@@ -2210,8 +2210,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
         if self.top:
             # Fix https://bugs.launchpad.net/leo-editor/+bug/1194209
             # When using tabs, leo_master (a LeoTabbedTopLevel) contains the QMainWindow.
-            w = self.top.leo_master
-            w.setWindowTitle(s)
+            if w := self.top.leo_master:
+                w.setWindowTitle(s)
 
     # @+node:ekr.20190611053431.9: *4* LeoQtFrame.setTopGeometry
     def setTopGeometry(self, w: int, h: int, x: int, y: int) -> None:
@@ -2225,7 +2225,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
     def update(self, *args: Any, **keys: Any) -> None:
         if 'size' in g.app.debug:
             g.trace(bool(self.top))
-        self.top.update()
+        if self.top:
+            self.top.update()
 
     # @-others
 
@@ -2245,7 +2246,7 @@ class LeoQtLog(leoFrame.LeoLog):
         self.contentsDict: dict[str, LeoQTextBrowser] = {}  # Keys: tab names.
         self.eventFilters: list = []  # To make filters work!
         self.qtFrameDict: dict[str, QTabWidget] = {}
-        self.logCtrl: Any | None = None  # A Union.
+        self.logCtrl: Any  # A Union.
         self.logDict: dict[str, LeoQTextBrowser] = {}  # Keys: tab names.
         self.logWidget: LeoLog | None = None
         self.menu: qt_text.LeoQTextBrowser | None = None
@@ -2263,17 +2264,20 @@ class LeoQtLog(leoFrame.LeoLog):
 
     def reloadSettings(self) -> None:
         c = self.c
+        assert c
         self.wrap = bool(c.config.getBool('log-pane-wraps'))
 
     # @+node:ekr.20110605121601.18315: *4* LeoQtLog.finishCreate
     def finishCreate(self) -> None:
         """Finish creating the LeoQtLog class."""
         c, log, w = self.c, self, self.tabWidget
+        assert c
 
         # Create the log tab as the leftmost tab.
         log.createTab('Log')
         self.logWidget = self.contentsDict.get('Log')
         logWidget = self.logWidget
+        assert logWidget
         logWidget.setWordWrapMode(WrapMode.WordWrap if self.wrap else WrapMode.NoWrap)
         w.insertTab(0, logWidget, 'Log')  # Required.
 
@@ -2310,7 +2314,8 @@ class LeoQtLog(leoFrame.LeoLog):
     def clearLog(self, event: LeoKeyEvent | None = None) -> None:
         """Clear the log pane."""
         # self.logCtrl may be either a wrapper or a widget.
-        if w := self.logCtrl.widget:
+        w = self.logCtrl.widget if self.logCtrl else None
+        if w:
             w.clear()
 
     @log_cmd('dump-log')
@@ -2318,15 +2323,17 @@ class LeoQtLog(leoFrame.LeoLog):
     def dumpLog(self, event: LeoKeyEvent | None = None) -> None:
         """Clear the log pane."""
         # self.logCtrl may be either a wrapper or a widget.
-        w = self.logCtrl.widget
+        c = self.c
+        assert c
+        w = self.logCtrl.widget if self.logCtrl else None
         if not w:
             return
 
-        fn = self.c.shortFileName()
+        fn = c.shortFileName()
         printable = string.ascii_letters + string.digits + string.punctuation + ' '
 
         def dump(s: str) -> str:
-            return ''.join(c if c in printable else r'\x{0:02x}'.format(ord(c)) for c in s)
+            return ''.join(ch if ch in printable else r'\x{0:02x}'.format(ord(ch)) for ch in s)
 
         g.printObj([dump(z) for z in w.toPlainText().split('\n')], tag=f"{fn}: w.toPlainText")
         g.printObj([f"{dump(z)}<br />" for z in w.toHtml().split('<br />')], tag=f"{fn}: w.toHtml")
@@ -2378,6 +2385,7 @@ class LeoQtLog(leoFrame.LeoLog):
     # @+node:ekr.20110605121601.18339: *3* LeoQtLog.hideFontTab
     def hideFontTab(self, event: LeoKeyEvent | None = None) -> None:
         c = self.c
+        assert c
         c.frame.log.selectTab('Log')
         c.bodyWantsFocus()
 
@@ -2392,9 +2400,11 @@ class LeoQtLog(leoFrame.LeoLog):
 
         :param QUrl link: link that was clicked
         """
+        c = self.c
+        assert c
         s = g.toUnicode(link.toString())
         url = urllib.parse.unquote(s)
-        g.handleUrl(url, c=self.c)
+        g.handleUrl(url, c=c)
 
     # @+node:ekr.20120304214900.9940: *3* LeoQtLog.onCurrentChanged
     def onCurrentChanged(self, idx: int) -> None:
@@ -2457,7 +2467,8 @@ class LeoQtLog(leoFrame.LeoLog):
             s = f'<a href="{link}" title="{link}">{s}</a>'
         w.moveCursor(MoveOperation.End)
         w.insertHtml(s)
-        sb.setSliderPosition(0)  # Force the slider to the initial position.
+        if sb is not None:
+            sb.setSliderPosition(0)  # Force the slider to the initial position.
         w.repaint()  # Slow, but essential.
 
     # @+node:ekr.20220411085334.1: *5* LeoQtLog.to_html
@@ -2493,6 +2504,8 @@ class LeoQtLog(leoFrame.LeoLog):
             g.trace('BAD widget', w.__class__.__name__)
             return
         sb = w.horizontalScrollBar()
+        if sb is None:
+            return
         pos = sb.sliderPosition()
         # Not needed!
         # contents = w.toHtml()
@@ -2505,12 +2518,13 @@ class LeoQtLog(leoFrame.LeoLog):
     def resolve_color(self, color: str) -> str:
         """Resolve the given color name to an actual color name."""
         c = self.c
+        assert c
         # Note: g.actualColor does all color translation.
         if color:
-            color = leoColor.getColor(color)
+            color = leoColor.getColor(color) or ''
         if not color:
             # #788: First, fall back to 'log_black_color', not 'black.
-            color = c.config.getColor('log-black-color')
+            color = c.config.getColor('log-black-color') or ''
             if not color:
                 # Should never be necessary.
                 color = 'black'
@@ -2523,8 +2537,8 @@ class LeoQtLog(leoFrame.LeoLog):
             return
         if tabName:
             self.selectTab(tabName)
-        w = self.logCtrl.widget
-        if not w:
+        w = self.logCtrl.widget if self.logCtrl else None
+        if w is None:
             return
         sb = w.horizontalScrollBar()
         pos = sb.sliderPosition()
@@ -2552,6 +2566,7 @@ class LeoQtLog(leoFrame.LeoLog):
         suitable for log functionality.
         """
         c = self.c
+        assert c
         contents: Any
         if widget is None:
             # widget is subclass of QTextBrowser.
@@ -2589,6 +2604,7 @@ class LeoQtLog(leoFrame.LeoLog):
         Delete the tab if it exists.  Otherwise do *nothing*.
         """
         c = self.c
+        assert c
         w = self.tabWidget
         i = self.findTabIndex(tabName)
         if i is None:
@@ -2654,7 +2670,7 @@ class LeoQtLog(leoFrame.LeoLog):
         i = self.findTabIndex(tabName)
         if i is None:
             g.trace('can not happen', tabName)
-            self.tabName = None
+            self.tabName = ''
             return
         w.setCurrentIndex(i)
         self.tabName = tabName
@@ -2738,6 +2754,8 @@ class LeoQtMenu(leoMenu.LeoMenu):
         if accelerator:
             label = f"{label}\t{accelerator}"
         action = menu.addAction(label)
+        if action is None:
+            return
         # Inject the command name into the action so that it can be enabled/disabled dynamically.
         action.leo_command_name = commandName or ''
         if command:
@@ -2753,8 +2771,8 @@ class LeoQtMenu(leoMenu.LeoMenu):
     def add_separator(self, menu: QMenu) -> None:
         """Wrapper for the Tkinter add_separator menu method."""
         if menu:
-            action = menu.addSeparator()
-            action.leo_menu_label = '*seperator*'
+            if action := menu.addSeparator():
+                action.leo_menu_label = '*seperator*'
 
     # @+node:ekr.20110605121601.18347: *5* LeoQtMenu.delete
     def delete(self, menu: QtMenuWrapper, realItemName: str = '<no name>') -> None:
