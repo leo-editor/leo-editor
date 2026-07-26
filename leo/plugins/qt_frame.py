@@ -2796,7 +2796,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
             if -1 > n > len(label):
                 label = label[:n] + '&' + label[n:]
             action = menu.addAction(label)
-            if command:
+            if command is not None:
 
                 def insert_callback(
                     checked: str, label: str = label, command: Callable = command
@@ -2887,10 +2887,9 @@ class LeoQtMenu(leoMenu.LeoMenu):
                     break
 
     # @+node:ekr.20110605121601.18359: *5* LeoQtMenu.getMenuLabel
-    def getMenuLabel(self, menu: QMenu, name: str) -> None:
-        """Return the index of the menu item whose name (or offset) is given.
-        Return None if there is no such menu item."""
-        # At present, it is valid to always return None.
+    def getMenuLabel(self, menu: QMenu, name: str) -> str:
+        """Return the index of the menu item whose name is given."""
+        return ''
 
     # @+node:ekr.20110605121601.18360: *5* LeoQtMenu.setMenuLabel
     def setMenuLabel(
@@ -3615,12 +3614,13 @@ class LeoQtTreeTab:
         self.iconBar = iconBar
         self.lockout = False  # True: do not redraw.
         self.tabNames: list[str] = []  # The list of tab names. Changes when tabs are renamed.
-        self.w: QComboBox | None = None
+        self.w = cast(QtWidgets.QComboBox, None)
         # self.reloadSettings()
         self.createControl()
 
     # @+node:ekr.20110605121601.18441: *4* LeoQtTreeTab.createControl (defines class LeoQComboBox)
     def createControl(self) -> None:
+
         class LeoQComboBox(QtWidgets.QComboBox):
             """Create a subclass in order to handle focusInEvents."""
 
@@ -3767,18 +3767,18 @@ class QtIconBarClass:
         pass
 
     # @+node:ekr.20110605121601.18265: *3* QtIconBar.add
-    def add(self, *args: Any, **keys: Any) -> QAction:
+    def add(self, *args: Any, **keys: Any) -> QAction | None:
         """Add a button to the icon bar."""
         c = self.c
         if not self.w:
             return None
-        command: Callable = keys.get('command')
-        text: str = keys.get('text')
+        command = keys.get('command')
+        text = keys.get('text', '')
         # able to specify low-level QAction directly (QPushButton not forced)
-        qaction: QAction = keys.get('qaction')
+        qaction = keys.get('qaction')
         if not text and not qaction:
             g.es('bad toolbar item')
-        kind: str = keys.get('kind') or 'generic-button'
+        kind = keys.get('kind', '') or 'generic-button'
         # imagefile = keys.get('imagefile')
         # image = keys.get('image')
 
@@ -3817,7 +3817,7 @@ class QtIconBarClass:
         b.leo_removeAction = rb = QAction('Remove Button', b)
         b.addAction(rb)
         rb.triggered.connect(delete_callback)
-        if command:
+        if command is not None:
 
             def button_callback(event: QEvent, c: Cmdr = c, command: Callable = command) -> None:
                 val = command()
@@ -3841,16 +3841,20 @@ class QtIconBarClass:
 
     # @+node:ekr.20110605121601.18267: *3* QtIconBar.addWidget
     def addWidget(self, w: LeoQtFrame) -> None:
+        if self.w is None:
+            return
         self.w.addWidget(w)
 
     # @+node:ekr.20110605121601.18268: *3* QtIconBar.clear
     def clear(self) -> None:
         """Destroy all the widgets in the icon bar"""
+        if self.w is None:
+            return
         self.w.clear()
         self.actions = []
 
     # @+node:ekr.20110605121601.18269: *3* QtIconBar.createChaptersIcon
-    def createChaptersIcon(self) -> "LeoQtTreeTab":
+    def createChaptersIcon(self) -> LeoQtTreeTab | None:
         c = self.c
         f = c.frame
         if f.use_chapters and f.use_chapter_tabs:
@@ -3860,6 +3864,8 @@ class QtIconBarClass:
     # @+node:ekr.20110605121601.18270: *3* QtIconBar.deleteButton
     def deleteButton(self, w: LeoQtFrame) -> None:
         """w is button"""
+        if self.w is None:
+            return
         self.w.removeAction(w)
         self.c.bodyWantsFocus()
         self.c.outerUpdate()
@@ -3907,7 +3913,7 @@ class QtIconBarClass:
         gnx is the gnx of the @button node.
         script is a static script for common @button nodes.
         """
-        if not command:
+        if command is None:
             return
         b = button.button
         b.clicked.connect(command)
@@ -3933,7 +3939,7 @@ class QtIconBarClass:
         controller: ScriptingController,
         top_level: bool = True,
         button: QWidget | None = None,
-        script: str | None = None,
+        script: str = '',
     ) -> None:
         c = controller.c
         top_offset = -2  # insert before the remove button and goto script items
@@ -3946,7 +3952,9 @@ class QtIconBarClass:
                 act.setSeparator(True)
             elif rc.position.b.strip():
 
-                def cb(checked: str, p: Position = rc.position, button: QWidget = button) -> None:
+                def cb(
+                    checked: str, p: Position = rc.position, button: QWidget | None = button
+                ) -> None:
                     controller.executeScriptFromButton(
                         b=button,
                         buttonText=p.h[8:].strip(),
@@ -4210,7 +4218,6 @@ class QtStatusLineClass:
         fcol_offset = 0
         s2 = line[0:col]
         col = g.computeWidth(s2, c.tab_width)
-        #
         # #195: fcol when using @first directive is inaccurate
         i = line.find('<<')
         j = line.find('>>')
@@ -4221,9 +4228,8 @@ class QtStatusLineClass:
                 if line.startswith(tag):
                     fcol_offset = len(tag)
                     break
-        #
         # fcol is '' if there is no ancestor @<file> node.
-        fcol = None if offset is None else max(0, col + offset - fcol_offset)
+        fcol = 0 if offset is None else max(0, col + offset - fcol_offset)
         return col, fcol
 
     # @+node:chris.20180320072817.2: *4* qstatus.file_line (not used)
@@ -4309,7 +4315,7 @@ class TabbedFrameFactory:
         c = leoFrame.c
         tabw = self.masterFrame
         if tabw is None:
-            return
+            return None
         dw = DynamicWindow(c, tabw)
         self.leoFrames[dw] = leoFrame
         # Shorten the title.
@@ -4325,7 +4331,7 @@ class TabbedFrameFactory:
 
         # Work around the problem with missing dirty indicator
         # by always showing the tab.
-        tabw.tabBar().setVisible(self.alwaysShowTabs or tabw.count() > 1)
+        tabw.tabBar().setVisible(self.alwaysShowTabs or tabw.count() > 1)  # type:ignore
         tabw.setTabsClosable(c.config.getBool('outline-tabs-show-close', True))
         if not g.unitTesting:
             dw.show()
@@ -4370,6 +4376,8 @@ class TabbedFrameFactory:
             """Detach current tab from tab bar"""
             if len(self.leoFrames) < 2:
                 g.es_print_error("Can't detach last tab")
+                return
+            if event is None:
                 return
             c = event['c']
             f = c.frame
@@ -4420,7 +4428,7 @@ class TabbedFrameFactory:
 
     # @+node:ekr.20110605121601.18467: *3* TabbedFrameFactory.deleteFrame
     def deleteFrame(self, wdg: DynamicWindow) -> None:
-        if not wdg:
+        if wdg is None:
             return
         if wdg not in self.leoFrames:
             # probably detached tab
