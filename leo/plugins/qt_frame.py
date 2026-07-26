@@ -4265,7 +4265,7 @@ class QtStatusLineClass:
                     fcol_offset = len(tag)
                     break
         # fcol is '' if there is no ancestor @<file> node.
-        fcol = 0 if offset is None else max(0, col + offset - fcol_offset)
+        fcol = 0 if offset is None else max(0, col + offset - fcol_offset)  # PR #4812
         return col, fcol
 
     # @+node:chris.20180320072817.2: *4* qstatus.file_line (not used)
