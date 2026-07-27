@@ -17,8 +17,8 @@ try:
     import mypy
     from mypy import api as mypy_api
 except Exception:
-    mypy = None
-    mypy_api = None
+    mypy = None  # type:ignore
+    mypy_api = None  # type:ignore
 
 try:
     import flake8  # #2248: Import only flake8.
@@ -34,7 +34,7 @@ except Exception:
 try:
     from pylint import lint
 except Exception:
-    lint = None
+    lint = None  # type:ignore
 
 # Leo imports.
 from leo.core import leoGlobals as g
