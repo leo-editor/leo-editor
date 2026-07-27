@@ -1262,7 +1262,7 @@ class Commands:
         except Exception:
             g.handleScriptException(c, p)
         finally:
-            del sys.path[:2]
+            del sys.path[:2]  # type:ignore
 
     # @+node:ekr.20171123135625.4: *4* @cmd execute-script & public helpers
     @cmd('execute-script')

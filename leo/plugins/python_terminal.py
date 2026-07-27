@@ -217,7 +217,7 @@ if QtWidgets:
                 for i, x in enumerate(history):
                     iSize = len(str(i))
                     delta = len(str(len(history))) - iSize
-                    line = line = ' ' * delta + '%i: %s' % (i, x) + '\n'
+                    line = ' ' * delta + '%i: %s' % (i, x) + '\n'
                     self.write(line)
                 self.updateInterpreterLocals(backup)
                 self.insert_marker()
