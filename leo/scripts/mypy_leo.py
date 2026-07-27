@@ -23,50 +23,9 @@ print(os.path.basename(__file__))
 leo_editor_dir = os.path.abspath(os.path.join(__file__, '..', '..', '..'))
 os.chdir(leo_editor_dir)
 # @-<< mypy_leo.py: imports & startup >>
-incremental = False
-follow = False
-if 1:  # Test all files.
-    files = [
-        'leo',
-    ]
-else:
-    files = [
-        # Files to check with strict_optional in .mypy.ini.
-        'leo/core/leoApp.py',
-        'leo/core/leoGlobals.py',
-        'leo/core/leoCommands.py',
-        'leo/core/leoNodes.py',
-
-        # Follow-on files, with errors uncovered by checking leoCommands.py.
-        'leo/commands/abbrevCommands.py',
-        'leo/core/leoExternalFiles.py',
-        'leo/core/leoserver.py',
-
-        # To be checked in other PRs...
-        #   'leo/core/leoApp.py',
-        #   'leo/core/leoAtFile.py',
-        #   'leo/core/leoKeys.py',
-        #   'leo/plugins/mod_scripting.py',
-        #   'leo/plugins/qt_commands.py',
-        #   'leo/plugins/qt_frame.py',
-        #   'leo/plugins/qt_gui.py',
-        #   'leo/plugins/qt_idle_time.py',
-        #   'leo/plugins/qt_layout.py',
-        #   'leo/plugins/qt_text.py',
-        #   'leo/plugins/qt_tree.py',
-        # 'leo/plugins/viewrendered.py',
-        #   'leo/plugins/viewrendered3.py',
-    ]  # fmt: skip
 
 python = sys.executable
-### incremental_arg = '' if incremental else '--no-incremental'
-### follow_kind = 'normal' if follow else 'skip'
-# args = ' '.join(sys.argv[1:])
-# args = f"--follow-imports={follow_kind} {incremental_arg}"
-args = ''
-files = ' '.join(files)
-command = rf"{python} -m mypy {args} {files}"
-# print(f"{command=}")
+command = rf"{python} -m mypy leo"
 subprocess.Popen(command, shell=True).communicate()
 
 # @@language python
