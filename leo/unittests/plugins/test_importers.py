@@ -3762,7 +3762,7 @@ class TestPython(BaseTestImporter):
 
     class HistoryApp(Application):
 
-        subcommands = Dict(dict(
+        subcommands = dict(dict(
             trim = (HistoryTrim, HistoryTrim.description.splitlines()[0]),
             clear = (HistoryClear, HistoryClear.description.splitlines()[0]),
         ))
@@ -3835,7 +3835,7 @@ class TestPython(BaseTestImporter):
             ),
             (
                 2, 'HistoryApp.start',
-                'subcommands = Dict(dict(\n'
+                'subcommands = dict(dict(\n'
                 '    trim = (HistoryTrim, HistoryTrim.description.splitlines()[0]),\n'
                 '    clear = (HistoryClear, HistoryClear.description.splitlines()[0]),\n'
                 '))\n'

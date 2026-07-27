@@ -8,8 +8,7 @@ from __future__ import annotations
 
 import textwrap
 from collections import OrderedDict
-from typing import Any, Callable, Dict, TYPE_CHECKING
-
+from typing import Any, Callable, TYPE_CHECKING
 from leo.core.leoQt import QtWidgets, Orientation
 from leo.core import leoGlobals as g
 
@@ -503,10 +502,10 @@ class LayoutCacheWidget(QWidget):
         super().__init__(parent)
         self.c = c
         self.setObjectName('leo-layout-cache')
-        self.layout_dict: Dict | None = None
+        self.layout_dict: dict | None = None
 
         # maps splitter objectNames to their splitter object.
-        self.created_splitter_dict: Dict[str, QWidget] = {}
+        self.created_splitter_dict: dict[str, QWidget] = {}
         self.layout_registry = LAYOUT_REGISTRY
 
     # @+others
@@ -675,7 +674,7 @@ class LayoutCacheWidget(QWidget):
                 return
 
     # @+node:tom.20240923194438.6: *4* LCW.restoreFromLayout
-    def restoreFromLayout(self, layout: Dict | None = None) -> None:
+    def restoreFromLayout(self, layout: dict | None = None) -> None:
         self.layout_dict = layout
         if layout is None:
             layout = FALLBACK_LAYOUT
@@ -711,7 +710,7 @@ class LayoutCacheWidget(QWidget):
                 splitter.setObjectName(name)
                 self.created_splitter_dict[name] = splitter
 
-        SPLITTER_DICT: Dict[str, QSplitter] = OrderedDict()
+        SPLITTER_DICT: dict[str, QSplitter] = OrderedDict()
         for name in ORIENTATIONS:  # type:ignore
             splitter = self.find_splitter_by_name(name)
             if splitter is not None and SPLITTER_DICT.get(name, None) is None:
@@ -775,7 +774,7 @@ class LayoutCacheWidget(QWidget):
         # SPLITTERS is an OrderedDict so the widgets will
         # be inserted in the right order.
 
-        splitter_index: Dict = {}
+        splitter_index: dict = {}
         for name, target in SPLITTERS.items():
             widget = self.find_widget(name)
             if widget is None:

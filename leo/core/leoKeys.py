@@ -4367,12 +4367,12 @@ class KeyHandlerClass:
         values are lists of tuples(pane, stroke).
         """
         k = self
-        d = k.masterBindingsDict  # Dict[scope, g.BindingInfo]
+        d = k.masterBindingsDict  # dict[scope, g.BindingInfo]
         result_d: dict[
             str, list[tuple[str, Stroke]]
-        ] = {}  # Dict[command-name, tuple[pane, stroke]]
+        ] = {}  # dict[command-name, tuple[pane, stroke]]
         for scope in sorted(d):
-            d2 = d.get(scope, {})  # Dict[stroke, g.BindingInfo]
+            d2 = d.get(scope, {})  # dict[stroke, g.BindingInfo]
             for stroke in d2:
                 assert g.isStroke(stroke), stroke
                 bi = d2.get(stroke)
