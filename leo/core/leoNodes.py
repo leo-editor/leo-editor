@@ -274,7 +274,12 @@ class Position:
     def __init__(self, v: VNode, childIndex: int = 0, stack: list | None = None) -> None:
         """Create a new position with the given childIndex and parent stack."""
         self._childIndex = childIndex
-        self.v: VNode | None = v  # PR #4767: Yes, p.v may be None.
+
+        # PR #4767 correctly annotates self.v as VNode | None.
+        # The "big little lie": p.v will *almost always* be a valid VNode.
+
+        self.v: VNode = v  # type:ignore # The big little lie.
+
         # Stack entries are tuples (v, childIndex).
         if stack:
             self.stack = stack[:]  # Creating a copy here is safest and best.
@@ -1460,7 +1465,7 @@ class Position:
             p._childIndex -= 1
             p.v = parent_v.children[n - 1]
         else:
-            p.v = None
+            p.v = None  # type:ignore # The big little lie.
         return p
 
     # @+node:ekr.20080416161551.201: *4* p.moveToFirstChild
@@ -1472,7 +1477,7 @@ class Position:
             p.v = p.v.children[0]
             p._childIndex = 0
         else:
-            p.v = None
+            p.v = None  # type:ignore # The big little lie.
         return p
 
     # @+node:ekr.20080416161551.202: *4* p.moveToLastChild
@@ -1485,7 +1490,7 @@ class Position:
             p.v = p.v.children[n - 1]
             p._childIndex = n - 1
         else:
-            p.v = None  # pragma: no cover
+            p.v = None  # type:ignore # The big little lie.
         return p
 
     # @+node:ekr.20080416161551.203: *4* p.moveToLastNode
@@ -1511,7 +1516,7 @@ class Position:
             p._childIndex = n + 1
             p.v = parent_v.children[n + 1]
         else:
-            p.v = None
+            p.v = None  # type:ignore # The big little lie.
         return p
 
     # @+node:ekr.20080416161551.205: *4* p.moveToNodeAfterTree
@@ -1534,7 +1539,7 @@ class Position:
             p._childIndex = n
         else:
             # Leo's code must use the test `if p:` as appropriate.
-            p.v = None
+            p.v = None  # type:ignore # The big little lie.
         return p
 
     # @+node:ekr.20080416161551.207: *4* p.moveToParent
@@ -1545,7 +1550,7 @@ class Position:
             p.v, p._childIndex = p.stack.pop()
         else:
             # Leo's code must use the test `if p:` as appropriate.
-            p.v = None
+            p.v = None  # type:ignore # The big little lie.
         return p
 
     # @+node:ekr.20080416161551.208: *4* p.moveToThreadBack

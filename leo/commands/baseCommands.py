@@ -5,7 +5,7 @@
 # @+<< baseCommands imports & abbreviations >>
 # @+node:ekr.20220828071357.1: ** << baseCommands imports & abbreviations >>
 from __future__ import annotations
-from typing import TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -31,6 +31,7 @@ class BaseEditCommandsClass:
         Subclasses without ctors call this ctor implicitly.
         """
         self.c = c
+        self.undoData: Any
 
     # @+node:ekr.20150514043714.4: *3* BaseEdit.beginCommand
     def beginCommand(self, w: QTextMixin, undoType: str = 'Typing') -> QTextMixin:

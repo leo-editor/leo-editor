@@ -540,6 +540,7 @@ class Visitor(ast.NodeVisitor):
         'c.frame.detached_body_info',
         'c.frame.nav',
         'c.ftm',
+        'c.k.autoCompleter',  # PR #4812
         'c.zoom_delta',
         'g.app.openWithTable',
         'g.insqh',

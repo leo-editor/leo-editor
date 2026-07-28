@@ -302,9 +302,9 @@ class ExternalFilesController:
             'shortcut': menu shortcut (used only by the menu code).
         """
         try:
-            ext = d.get('ext')
+            ext = d.get('ext', '')
             if not g.doHook('openwith1', c=c, p=c.p, v=c.p.v, d=d):
-                root: Position = d.get('p')
+                root = d.get('p')
                 if root:
                     # Open the external file itself.
                     path = c.fullPath(root)  # #1914.
@@ -337,8 +337,8 @@ class ExternalFilesController:
                     ext = g.os_path_splitext(fn)[1]
                     break
         if not ext:
-            language = c.getLanguage(p)
-            ext = g.app.language_extension_dict.get(language)
+            language = c.getLanguage(p) or ''
+            ext = g.app.language_extension_dict.get(language, '')
         if not ext:
             ext = '.txt'
         if ext[0] != '.':
@@ -404,7 +404,7 @@ class ExternalFilesController:
         return path
 
     # @+node:ekr.20100203050306.5937: *5* efc.create_temp_file
-    def create_temp_file(self, c: Cmdr, ext: str, p: Position) -> str:
+    def create_temp_file(self, c: Cmdr, ext: str, p: Position) -> str | None:
         """
         Create the file used by open-with if necessary.
         Add the corresponding ExternalFile instance to self.files
@@ -456,7 +456,7 @@ class ExternalFilesController:
         testing = testing or g.unitTesting
         arg_tuple: list[str] = d.get('args', [])
         arg = ' '.join(arg_tuple)
-        kind: Callable = d.get('kind')
+        kind: Callable | None = d.get('kind')
         try:
             # All of these must be supported because they
             # could exist in @open-with nodes.
@@ -611,7 +611,7 @@ class ExternalFilesController:
         return g.os_path_getmtime(g.os_path_realpath(path))
 
     # @+node:ekr.20150405122428.1: *4* efc.get_time
-    def get_time(self, path: str) -> float:
+    def get_time(self, path: str) -> float | None:
         """
         return timestamp stored for the given path
 

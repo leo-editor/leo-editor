@@ -81,9 +81,9 @@ class ShadowController:
         self.encoding: str = c.config.default_derived_file_encoding
         self.errors = 0
         self.results: list[str] = []
-        self.shadow_subdir: str | None = None
-        self.shadow_prefix: str | None = None
-        self.shadow_in_home_dir: bool | None = None
+        self.shadow_subdir: str = ''
+        self.shadow_prefix: str = ''
+        self.shadow_in_home_dir: bool = False
         # Support for goto-line.
         self.reloadSettings()
 
@@ -97,13 +97,13 @@ class ShadowController:
 
     # @+node:ekr.20080711063656.1: *3* x.File utils
     # @+node:ekr.20080711063656.7: *4* x.baseDirName
-    def baseDirName(self) -> str | None:
+    def baseDirName(self) -> str:
         c = self.c
         if filename := c.fileName():
             return g.os_path_dirname(g.finalize(filename))
         print('')
         self.error('Can not compute shadow path: .leo file has not been saved')
-        return None
+        return ''
 
     # @+node:ekr.20080711063656.4: *4* x.dirName and pathName
     def dirName(self, filename: str) -> str:
@@ -482,11 +482,10 @@ class ShadowController:
         return ''
 
     # @+node:ekr.20080708094444.9: *4* x.markerFromFileName
-    def markerFromFileName(self, filename: str) -> Marker | None:
+    def markerFromFileName(self, filename: str) -> Marker:
         """Return the sentinel delimiter comment to be used for filename."""
         x = self
-        if not filename:
-            return None
+        assert filename
         root, ext = g.os_path_splitext(filename)
         if ext == '.tmp':
             root, ext = os.path.splitext(root)
@@ -562,7 +561,7 @@ class ShadowController:
             self.delim2 = delim2  # Block comment starting delim.
             self.delim3 = delim3  # Block comment ending delim.
             if not delim1 and not delim2:
-                self.delim1 = g.app.language_delims_dict.get('unknown_language')
+                self.delim1 = g.app.language_delims_dict.get('unknown_language', '')
 
         def __repr__(self) -> str:
             if self.delim1:

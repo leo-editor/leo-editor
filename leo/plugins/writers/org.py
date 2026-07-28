@@ -20,7 +20,7 @@ class OrgModeWriter(basewriter.BaseWriter):
 
     # @+others
     # @+node:ekr.20171121020009.1: *3* orgw.load_nodetags
-    def load_nodetags(self) -> Callable:
+    def load_nodetags(self) -> Callable | None:
         """
         Load the nodetags.py plugin if necessary.
         Return c.theTagController.

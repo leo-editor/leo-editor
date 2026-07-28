@@ -323,7 +323,7 @@ def new(self: Self, event: LeoKeyEvent | None = None, gui: LeoGui | None = None)
     )
 
     c = g.app.newCommander(
-        fileName=None,
+        fileName='',
         gui=gui,
         previousSettings=previousSettings,
     )
@@ -730,7 +730,9 @@ def save_node_as_xml_outline(self: Self, event: LeoKeyEvent | None = None) -> No
     Save a node with its subtree as an XML .leo outline file.
     Leave the outline and the file name of the Leo outline unchanged.
     """
-    c = event.c
+    c = event.c if event else None
+    if not c:
+        return
     xml = c.fileCommands.outline_to_clipboard_string()
 
     fileName = g.app.gui.runSaveFileDialog(

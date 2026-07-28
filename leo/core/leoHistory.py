@@ -23,7 +23,7 @@ class NodeHistory:
     def __init__(self, c: Cmdr) -> None:
         """Ctor for NodeHistory class."""
         self.c = c
-        self.beadList: list[tuple[Position, Chapter]] = []
+        self.beadList: list[tuple[Position, Chapter | None]] = []
         self.beadPointer = -1
         self.skipBeadUpdate = False
 
@@ -75,7 +75,7 @@ class NodeHistory:
             self.beadPointer += 1
 
     # @+node:ekr.20130915111638.11294: *3* NodeHistory.select
-    def select(self, p: Position, chapter: Chapter) -> None:
+    def select(self, p: Position, chapter: Chapter | None) -> None:
         """Select p in the given chapter."""
         c, cc = self.c, self.c.chapterController
         assert c.positionExists(p), repr(p)

@@ -107,6 +107,7 @@ def init():
 def open(fileName=None) -> Any:
     # global g
     init()
+    assert g
     if g.unitTesting:
         return None
     if not fileName:
@@ -123,6 +124,8 @@ def open(fileName=None) -> Any:
 # @+node:ekr.20061024084200: ** run-script (pymacs)
 def run_script(c, script, p=None):
     # global g
+    assert g
+    assert g.app
 
     # It is possible to use script=None, in which case p must be defined.
     init()

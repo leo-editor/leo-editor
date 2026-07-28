@@ -160,7 +160,7 @@ class LeoImportCommands:
         self.c = c
         self.encoding = 'utf-8'
         self.errors = 0
-        self.fileName: str | None = None  # The original file name, say x.cpp
+        self.fileName: str = ''  # The original file name, say x.cpp
         self.fileType: str | None = None  # ".py", ".c", etc.
         self.methodName: str | None = None  # x, as in < < x methods > > =
         self.output_newline: str = g.getOutputNewline(c=c)  # Value of @bool output_newline
@@ -484,9 +484,9 @@ class LeoImportCommands:
                 g.es("invalid @+leo sentinel in", fileName)
                 return
             if end_delim:
-                line_delim = None
+                line_delim = ''
             else:
-                line_delim, start_delim = start_delim, None
+                line_delim, start_delim = start_delim, ''
             # @-<< set delims from the header line >>
             s = self.removeSentinelLines(s, line_delim, start_delim, end_delim)
             ext = c.config.getString('remove-sentinels-extension')
@@ -594,7 +594,7 @@ class LeoImportCommands:
             return self.import_binary_file(fileName, parent)
         # Init ivars.
         self.encoding = c.getEncoding(parent)
-        ext, s = self.init_import(ext, fileName, s)
+        ext, s = self.init_import(ext, fileName, s)  # type:ignore
         if not s:
             return None
 
@@ -656,7 +656,7 @@ class LeoImportCommands:
         ext = ext.lower()
         if not s:
             # Set the kind for error messages in readFileIntoString.
-            s, e = g.readFileIntoString(fileName, encoding=self.encoding)
+            s, e = g.readFileIntoString(fileName, encoding=self.encoding)  # type:ignore
             if s is None:
                 return None, None
             if e:
@@ -686,11 +686,11 @@ class LeoImportCommands:
         if ext.startswith('.'):
             ext = ext[1:]
         if ext:
-            z = g.app.extra_extension_dict.get(ext)
+            z = g.app.extra_extension_dict.get(ext, '')
             if z not in (None, 'none', 'None'):
                 language = z
             else:
-                language = g.app.extension_dict.get(ext)
+                language = g.app.extension_dict.get(ext, '')
             if language in (None, 'none', 'None'):
                 language = unknown
         else:
@@ -722,8 +722,8 @@ class LeoImportCommands:
     # @+node:ekr.20031218072017.1810: *4* ic.importDerivedFiles
     def importDerivedFiles(
         self,
-        parent: Position | None = None,
-        paths: list[str] = None,
+        parent: Position,
+        paths: list[str] | None = None,
         command: str = 'Import',
     ) -> Position | None:
         """
@@ -766,7 +766,7 @@ class LeoImportCommands:
     # @+node:ekr.20031218072017.3212: *4* ic.importFilesCommand
     def importFilesCommand(
         self,
-        files: list[str] = None,
+        files: list[str] | None = None,
         parent: Position | None = None,
         shortFn: bool = False,
         treeType: str = '@file',
@@ -791,7 +791,7 @@ class LeoImportCommands:
                 fn = c.relativeDirectory(fn)
                 p.h = f"{treeType} {fn}"
                 u.afterInsertNode(p, 'Import', undoData)
-                p = self.createOutline(parent=p, treeType=self.treeType)
+                p = self.createOutline(parent=p, treeType=self.treeType)  # type:ignore
                 if p:  # createOutline may fail.
                     p.contract()
                     p.setDirty()
@@ -811,7 +811,7 @@ class LeoImportCommands:
         FreeMindImporter(self.c).import_files(files)
 
     # @+node:ekr.20241027003435.1: *4* ic.importJupytextFiles
-    def importJupytextFiles(self, paths: list[str] = None) -> Position | None:
+    def importJupytextFiles(self, paths: list[str] | None = None) -> Position | None:
         """
         Import one or more .ipynb files.
         This is not a command.  It must *not* have an event arg.
@@ -1378,7 +1378,7 @@ class LeoImportCommands:
         return s
 
     # @+node:ekr.20031218072017.1463: *4* ic.setEncoding (deprecated)
-    def setEncoding(self, p: Position | None = None, default: str | None = None) -> None:
+    def setEncoding(self, p: Position, default: str = '') -> None:
         g.deprecated()
         c = self.c
         self.encoding = c.getEncoding(p)
@@ -1719,7 +1719,7 @@ class RecursiveImportController:
         kind: str,
         recursive: bool = True,
         safe_at_file: bool = True,
-        theTypes: list[str] = None,
+        theTypes: list[str] | None = None,
         verbose: bool = True,  # legacy value.
     ) -> None:
         """Ctor for RecursiveImportController class."""
@@ -1728,11 +1728,11 @@ class RecursiveImportController:
         self.kind = kind  # ric.run checks the kind.
         self.n_files: int = 0
         self.recursive = recursive
-        self.root: Position = None
+        self.root: Position | None = None
         file_name = c.fileName()
-        self.outline_directory: str | None = os.path.dirname(file_name) if file_name else None
+        self.outline_directory: str = os.path.dirname(file_name) if file_name else ''
         self.safe_at_file = safe_at_file
-        self.theTypes = theTypes
+        self.theTypes: list[str] = theTypes or []
         self.verbose = verbose
 
     # @+node:ekr.20230828090452.1: *3* ric.error
@@ -1772,6 +1772,7 @@ class RecursiveImportController:
                 g.es_exception()
         if files2 or dirs:
             parent = parent.insertAsLastChild()
+            assert parent.v
             parent.v.h = dir_
             if files2:
                 for f in files2:
@@ -1999,6 +2000,7 @@ class RecursiveImportController:
             undoData = u.beforeInsertNode(last)
             # Always create a new last top-level node.
             self.root = parent = last.insertAfter()
+            assert parent.v
             parent.v.h = 'imported files'
             # Special case for a single file.
             self.n_files = 0
@@ -2142,6 +2144,7 @@ class TabImporter:
     def scan_helper(self, s: str) -> int:
         """Update the stack as necessary and return level."""
         root, separate, stack = self.root, self.separate, self.stack
+        assert root
         if stack:
             level, parent = stack[-1]
         else:
@@ -2319,7 +2322,7 @@ class ToDoImporter:
         g.chdir(names[0])
         d = self.import_files(names)
         for key in sorted(d):
-            tasks = d.get(key)
+            tasks = d.get(key, [])
             print(f"tasks in {g.shortFileName(key)}...\n")
             for task in tasks:
                 print(f"    {task}")

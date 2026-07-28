@@ -113,7 +113,7 @@ def plural(obj: Any) -> str:
 
 
 # @+node:ekr.20230203163544.8: ** tracing_utils.print_obj
-def print_obj(obj: Any, tag: str = None, indent: int = 0) -> None:
+def print_obj(obj: Any, tag: str = '', indent: int = 0) -> None:
     """Pretty print any Python object."""
     print(to_string(obj, indent=indent, tag=tag))
 
@@ -149,7 +149,7 @@ def to_encoded_string(s: Any, encoding: str = 'utf-8') -> bytes:
 
 
 # @+node:ekr.20230203163544.11: ** tracing_utils.to_string
-def to_string(obj: Any, indent: int = 0, tag: str = None, width: int = 120) -> str:
+def to_string(obj: Any, indent: int = 0, tag: str = '', width: int = 120) -> str:
     """
     Pretty print any Python object to a string.
     """

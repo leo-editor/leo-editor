@@ -35,7 +35,7 @@ class ProcessData:
     def __init__(self, c: Cmdr, kind: str, fn: str) -> None:
         """Ctor for the ProcessData class."""
         self.c = c
-        self.callback: Callable = None
+        self.callback: Callable
         self.fn = fn
         self.kind = kind
 
@@ -43,7 +43,7 @@ class ProcessData:
         return (
             f"c: {self.c.shortFileName()} "
             f"kind: {self.kind} "
-            f"callback: {id(self.callback) if self.callback else None} "
+            f"callback: {id(self.callback) if self.callback is not None else None} "
             f"fn: {self.fn}\n"
         )
 
@@ -103,9 +103,8 @@ class BackgroundProcessManager:
         self.process_queue: list = []  # List of g.Bunches.
         self.pid: Popen | None = None  # The process id of the running process.
         self.lock = thread.allocate_lock()
-        self.process_return_data: list[str] = None
+        self.process_return_data: list[str] = []
         # #2528: A timer that runs independently of idle time.
-        self.timer = None
         if QtCore:
             self.timer = QtCore.QTimer()
             self.timer.timeout.connect(self.on_idle)
@@ -122,6 +121,7 @@ class BackgroundProcessManager:
         The return string is split into lines because the
         downstream code expects that.
         """
+        assert self.pid
         result, err = self.pid.communicate()
         result_lines = result.split('\n')
         while self.lock.locked():
@@ -134,7 +134,7 @@ class BackgroundProcessManager:
     def end(self) -> None:
         """End the present process."""
         try:
-            self.pid.kill()
+            self.pid.kill()  # type:ignore
         except OSError:
             pass
         self.timer.stop()
@@ -149,7 +149,7 @@ class BackgroundProcessManager:
             self.process_queue = []
         else:
             self.process_queue = [z for z in self.process_queue if z.kind != kind]
-        if self.pid and kind in ('all', self.data.kind):
+        if self.pid and kind in ('all', self.data.kind):  # type:ignore
             self.put_log(f"killing {kind} process")
             try:
                 self.pid.kill()
@@ -231,7 +231,7 @@ class BackgroundProcessManager:
             self.data = self.process_queue.pop(0)
             self.data.callback()  # The callback starts the next process.
         else:
-            c, kind = self.data.c, self.data.kind
+            c, kind = self.data.c, self.data.kind  # type:ignore
             message = f"{kind}: finished"
             print(message)
             c.frame.log.put(message + '\n')  # Don't use g.es here.
@@ -240,7 +240,7 @@ class BackgroundProcessManager:
             self.timer.stop()
 
     # @+node:ekr.20161026193609.5: *3* bpm.start_process (creates callback)
-    def start_process(self, c: Cmdr, command: str, kind: str, fn: str | None = None) -> None:
+    def start_process(self, c: Cmdr, command: str, kind: str, fn: str = '') -> None:
         """
         Start or queue a process described by command and fn.
         """

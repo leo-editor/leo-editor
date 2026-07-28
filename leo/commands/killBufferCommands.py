@@ -71,7 +71,10 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
     @cmd('backward-kill-sentence')
     def backwardKillSentence(self, event: LeoKeyEvent | None = None) -> None:
         """Kill the previous sentence."""
-        w = event.w if event else None
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
+        if not w:
+            return
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
@@ -91,7 +94,9 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
     def backwardKillWord(self, event: LeoKeyEvent | None = None) -> None:
         """Kill the previous word."""
         c = self.c
-        w = event.w if event else None
+        w = event.w if event else c.frame.body.wrapper
+        if not w:
+            return
         if g.isTextWrapper(w):
             self.beginCommand(w, undoType='backward-kill-word')
             c.editCommands.backwardWord(event)
@@ -100,14 +105,19 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
     @cmd('kill-word')
     def killWord(self, event: LeoKeyEvent | None = None) -> None:
         """Kill the word containing the cursor."""
-        w = event.w if event else None
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
+        if not w:
+            return
         if g.isTextWrapper(w):
             self.beginCommand(w, undoType='kill-word')
             self.killWordHelper(event)
 
     def killWordHelper(self, event: LeoKeyEvent | None = None) -> None:
         c = self.c
-        w = event.w if event else None
+        w = event.w if event else c.frame.body.wrapper
+        if not w:
+            return
         if g.isTextWrapper(w):
             # self.killWs(event)
             c.editCommands.extendToWord(event)
@@ -154,7 +164,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
             aList = g.app.globalKillBuffer  # commands.killBuffer
             if not aList:
                 self.index = 0
-                return None
+                return ''
             if commands.reset is None:
                 i = self.index
             else:
@@ -184,7 +194,9 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         A helper method for all kill commands except kill-paragraph commands.
         """
         c = self.c
-        w = event.w if event else None
+        w = event.w if event else c.frame.body.wrapper
+        if not w:
+            return
         if not g.isTextWrapper(w):
             return
         # Extend (frm, to) if it spans a line.
@@ -212,7 +224,10 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         undoType: str | None = None,
     ) -> None:
         """A helper method for kill-paragraph commands."""
-        w = event.w if event else None
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
+        if not w:
+            return
         if not g.isTextWrapper(w):
             return
         s = w.get(frm, to)
@@ -229,7 +244,10 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
     @cmd('kill-to-end-of-line')
     def killToEndOfLine(self, event: LeoKeyEvent | None = None) -> None:
         """Kill from the cursor to end of the line."""
-        w = event.w if event else None
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
+        if not w:
+            return
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
@@ -253,7 +271,10 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
     @cmd('kill-line')
     def killLine(self, event: LeoKeyEvent | None = None) -> None:
         """Kill the line containing the cursor."""
-        w = event.w if event else None
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
+        if not w:
+            return
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
@@ -276,6 +297,8 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         """Kill the text selection."""
         c = self.c
         w = event.w if event else c.frame.body.wrapper
+        if not w:
+            return
         if not g.isTextWrapper(w):
             return
         i, j = w.getSelectionRange()
@@ -306,8 +329,9 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
     @cmd('kill-sentence')
     def killSentence(self, event: LeoKeyEvent | None = None) -> None:
         """Kill the sentence containing the cursor."""
-        w = event.w if event else None
-        if not g.isTextWrapper(w):
+        c = self.c
+        w = event.w if event else c.frame.body.wrapper
+        if not w:
             return
         s = w.getAllText()
         ins = w.getInsertPoint()
@@ -327,6 +351,8 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         """Kill whitespace."""
         c = self.c
         w = event.w if event else c.frame.body.wrapper
+        if not w:
+            return
         if not g.isTextWrapper(w):
             return
         s = w.getAllText()
@@ -366,6 +392,8 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         """
         c = self.c
         w = event.w if event else c.frame.body.wrapper
+        if not w:
+            return
         if not g.isTextWrapper(w):
             return
         current = c.p
@@ -407,7 +435,7 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         """Kill characters from the insertion point to a given character."""
         c, k = self.c, self.c.k
         w = event.w if event else c.frame.body.wrapper
-        if not g.isTextWrapper(w):
+        if not w:
             return
         state = k.getState('zap-to-char')
         if state == 0:

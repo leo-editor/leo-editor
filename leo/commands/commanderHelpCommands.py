@@ -214,7 +214,7 @@ def openLeoSettings(self: Self, event: LeoKeyEvent | None = None) -> Cmdr | None
 @g.commander_command('open-my-leo-settings')
 @g.commander_command('open-my-leo-settings-leo')  # #1343.
 @g.commander_command('my-leo-settings')
-def openMyLeoSettings(self: Self, event: LeoKeyEvent | None = None) -> Cmdr:
+def openMyLeoSettings(self: Self, event: LeoKeyEvent | None = None) -> Cmdr | None:
     """Open myLeoSettings.leo in a new Leo window."""
     c, lm = self, g.app.loadManager
     if path := lm.computeMyLeoSettingsPath():
@@ -372,7 +372,7 @@ def openPythonWindow(self: Self, event: LeoKeyEvent | None = None) -> None:
     if not m:
         g.trace('can not open idlelib')
         return
-    idle_path = os.path.dirname(m.__file__)
+    idle_path = os.path.dirname(str(m.__file__))
     idle = g.os_path_join(idle_path, 'idle.py')
     args = [sys.executable, idle]
     if 1:  # Use present environment.

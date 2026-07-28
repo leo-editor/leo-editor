@@ -27,7 +27,7 @@ class GoToCommands:
 
     # @+others
     # @+node:ekr.20100216141722.5622: *3* goto.find_file_line & helper
-    def find_file_line(self, n: int, p: Position | None = None) -> tuple[Position, int]:
+    def find_file_line(self, n: int, p: Position | None = None) -> tuple[Position | None, int]:
         """
         Helper for goto-global-line command.
 
@@ -48,7 +48,9 @@ class GoToCommands:
         return p, offset
 
     # @+node:ekr.20230727074847.1: *4* goto.find_file_line_helper
-    def find_file_line_helper(self, n: int, p: Position | None = None) -> tuple[Position, int]:
+    def find_file_line_helper(
+        self, n: int, p: Position | None = None
+    ) -> tuple[Position | None, int]:
         c = self.c
         if n < 0:
             return None, -1
@@ -160,7 +162,7 @@ class GoToCommands:
         return None
 
     # @+node:ekr.20150622140140.1: *3* goto.find_script_line
-    def find_script_line(self, n: int, root: Position) -> tuple[Position, int]:
+    def find_script_line(self, n: int, root: Position) -> tuple[Position | None, int]:
         """
         Go to line n (zero based) of the script with the given root.
         Return (p, offset) if found or (None, -1) otherwise.
@@ -189,8 +191,12 @@ class GoToCommands:
         """
         delim1, delim2 = self.get_delims(root)
         file_s = self.get_external_file_with_sentinels(root)
-        gnx, h, n, node_offset, target_gnx = None, None, -1, None, target_p.gnx
+        gnx = ''  # PR #4812
+        h = ''  # PR #4812
+        n = -1
+        node_offset: int | None = None
         stack: list[tuple[str, str, int]] = []
+        target_gnx = target_p.gnx
         for s in g.splitLines(file_s):
             n += 1  # All lines contribute to the file's line count.
             if self.is_sentinel(delim1, delim2, s):
@@ -208,10 +214,10 @@ class GoToCommands:
                     gnx, h = self.get_script_node_info(s, delim2)
                     node_offset = 0
                 elif s2.startswith('@-node'):
-                    gnx = node_offset = None
+                    gnx, node_offset = '', None
                 elif s2.startswith(('@+others', '@+<<')):
-                    stack.append((gnx, h, node_offset))
-                    gnx, node_offset = None, None
+                    stack.append((gnx, h, node_offset or 0))
+                    gnx, node_offset = '', None
                 elif s2.startswith(('@-others', '@-<<')):
                     gnx, h, node_offset = stack.pop()
             else:
@@ -221,7 +227,7 @@ class GoToCommands:
                 if node_offset is not None:
                     node_offset += 1
         g.trace('\nNot found', target_offset, target_gnx)
-        return None
+        return 0
 
     # @+node:ekr.20150624085605.1: *3* goto.scan_nonsentinel_lines
     def scan_nonsentinel_lines(
@@ -346,7 +352,7 @@ class GoToCommands:
         w.seeInsertPoint()
 
     # @+node:ekr.20100216141722.5626: *4* goto.find_gnx & find_gnx2
-    def find_gnx(self, root: Position, gnx: str, vnodeName: str) -> tuple[Position, bool]:
+    def find_gnx(self, root: Position, gnx: str, vnodeName: str) -> tuple[Position | None, bool]:
         """
         Scan the outline for a node with the given gnx and vnodeName.
         return (p, True) if found or (None, False) otherwise.
@@ -382,7 +388,7 @@ class GoToCommands:
         return None
 
     # @+node:ekr.20100216141722.5627: *4* goto.find_root
-    def find_root(self, p: Position) -> tuple[Position, str]:
+    def find_root(self, p: Position) -> tuple[Position | None, str]:
         """
         Find the closest ancestor @<file> node, except @all nodes and @edit nodes.
         return root, fileName.
@@ -402,7 +408,7 @@ class GoToCommands:
                     if not p2.isAtAllNode():
                         if fileName := p2.anyAtFileNodeName():
                             return p2.copy(), fileName
-        return None, None
+        return None, ''
 
     # @+node:ekr.20150625123747.1: *4* goto.get_delims
     def get_delims(self, root: Position) -> tuple[str, str]:
@@ -416,7 +422,7 @@ class GoToCommands:
             c.target_language = old_target_language
         delims1, delims2, delims3 = delims
         if delims1:
-            return delims1, None
+            return delims1, ''
         return delims2, delims3
 
     # @+node:ekr.20230804034631.1: *4* goto.get_3_delims
@@ -456,7 +462,7 @@ class GoToCommands:
         j = s.find(':', i + 1)
         if i == -1 or j == -1:
             g.error("bad @+node sentinel", s)
-            return None, None
+            return '', ''
         gnx = s[i + 1 : j]
         h = s[j + 1 :]
         h = self.remove_level_stars(h).strip()
@@ -468,11 +474,11 @@ class GoToCommands:
     def is_sentinel(self, delim1: str, delim2: str, s: str) -> bool:
         """Return True if s is a sentinel line with the given delims."""
         # Leo 6.7.2: Use g.is_sentinel, which handles blackened sentinels properly.
-        delims: tuple
+        delims: tuple[str, str, str]
         if delim1 and delim2:
-            delims = (None, delim1, delim2)
+            delims = ('', delim1, delim2)
         else:
-            delims = (delim1, None, None)
+            delims = (delim1, '', '')
         return g.is_sentinel(line=s, delims=delims)
 
     # @+node:ekr.20100728074713.5843: *4* goto.remove_level_stars
@@ -524,7 +530,7 @@ def show_file_line(event: LeoKeyEvent | None = None) -> None:
 
     This bug can not be fixed with any reasonable amount of work.
     """
-    c = event.get('c')
+    c = event.get('c') if event else None
     if not c:
         return
     w = c.frame.body.wrapper

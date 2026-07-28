@@ -9,7 +9,7 @@ from collections.abc import Callable
 import functools
 import re
 import string
-from typing import cast, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 from leo.commands.baseCommands import BaseEditCommandsClass
@@ -68,7 +68,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         self.expanding = False  # True: expanding abbreviations.
         self.subst_env: list[str] = []  # The scripting environment.
         self.tree_abbrevs_d: dict[str, str] = {}  # Keys are names, values are (tree,tag).
-        self.w = cast(QTextMixin, None)
+        self.w: QTextMixin
 
     # @+node:ekr.20150514043850.11: *3* abbrev.expandAbbrev & helpers (entry point)
     def expandAbbrev(self, event: LeoKeyEvent | None, stroke: g.KeyStroke) -> bool:
@@ -680,12 +680,14 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     def dynamicExpandHelper(
         self,
         event: LeoKeyEvent | None = None,
-        prefix: str | None = None,
-        aList: list[str] = None,
+        prefix: str = '',
+        aList: list[str] | None = None,
         w: QTextMixin | None = None,
     ) -> None:
         """State handler for dabbrev-expands command."""
         c, k = self.c, self.c.k
+        if not w:
+            return  # PR #4812
         self.w = w
         if prefix is None:
             prefix = ''

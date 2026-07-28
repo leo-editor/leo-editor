@@ -178,8 +178,8 @@ def computeCopiedBunchList(
     aList = []
     for v in vnodeInfoDict:
         if d.get(v):
-            bunch = vnodeInfoDict.get(v)
-            aList.append(bunch)
+            if bunch := vnodeInfoDict.get(v):
+                aList.append(bunch)
     return aList
 
 
@@ -250,7 +250,7 @@ def pasteAsTemplate(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
             chgnx = xv.get('gnx')
 
         b = bodies[chgnx]
-        gnx = translation.get(chgnx)
+        gnx = translation.get(chgnx, '')
         if gnx in seen:
             yield parent_gnx, gnx, heads.get(gnx), b
         else:

@@ -1656,7 +1656,7 @@ class Commands:
                 g.printObj(p.v.expandedPositions, indent=p.level(), tag=p.h)
 
     # @+node:ekr.20040306220230.1: *5* c.headline_wrapper
-    def headline_wrapper(self, p: Position) -> Widget:
+    def headline_wrapper(self, p: Position) -> Widget | None:
         c = self
         return c.frame.tree.headline_wrapper(p) if p else None
 
@@ -2040,7 +2040,7 @@ class Commands:
 
     # @+node:ekr.20040307104131.3: *5* c.positionExists
     def positionExists(
-        self, p: Position, root: Position | None = None, trace: bool = False
+        self, p: Position | None, root: Position | None = None, trace: bool = False
     ) -> bool:
         """Return True if a position exists in c's tree"""
         if not p or not p.v:
@@ -3584,9 +3584,7 @@ class Commands:
         if rclick is not installed.
         """
 
-        def minibufferCallback(
-            event: LeoKeyEvent | None = None, function: Callable = function
-        ) -> None:
+        def minibufferCallback(event: LeoKeyEvent, function: Callable = function) -> None:
             # Avoid a pylint complaint.
             if hasattr(self, 'theContextMenuController'):
                 cm = self.theContextMenuController
