@@ -879,7 +879,7 @@ class GitDiffController:
             else:
                 c1 = c2 = None
         if c1 and c2:
-            self.make_diff_outlines(c1, c2, fn)
+            self.make_diff_outlines(c1, c2, fn, rev1=branch1, rev2=branch2)
             self.file_node.b = f"{self.file_node.b.rstrip()}\n@language {c2.target_language}\n"
         u.afterInsertNode(self.root, undoType, undoData)
         self.finish()
@@ -1443,11 +1443,13 @@ class GitDiffController:
         """Create nodes describing the changes."""
         if not d:
             return
+        # Clone nodes only if they are in the current branch.
         branches_match = (
             branch == rev2 or
             rev2 == 'HEAD' or
             rev1 == 'HEAD' and rev2 == ''  # diffing the latest changes.
         )  # fmt: skip
+        # g.trace(f"{branch=} {rev1=} {rev2=} {branches_match=}")
         parent = self.file_node.insertAsLastChild()
         parent.setHeadString(f"diff: {kind}")
         for key in d:
