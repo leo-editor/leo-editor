@@ -174,6 +174,20 @@ class TestQtGui(LeoUnitTest):
         ):
             assert issubclass(class_, QTextMixin), repr(class_)
 
+    # @+node:Sanjays2402.20260724103000.1: *3* TestQtGui.test_bug_4817
+    def test_bug_4817(self):
+        # https://github.com/leo-editor/leo-editor/issues/4817
+        top = self.c.frame.top
+        old_use_gutter = top.use_gutter
+        try:
+            top.use_gutter = True
+            parent = QtWidgets.QWidget()
+            pane = top.createBodyPane(parent)
+            gutter = pane.findChild(QtWidgets.QFrame, 'gutter')
+            assert gutter is not None
+        finally:
+            top.use_gutter = old_use_gutter
+
     # @+node:ekr.20210913120449.1: *3* TestQtGui.test_bug_2164
     def test_bug_2164(self):
         # show-invisibles crashes with PyQt6.
