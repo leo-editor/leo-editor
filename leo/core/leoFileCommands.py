@@ -1946,7 +1946,7 @@ class FileCommands:
         """
         # Create list of vnodes.
         vnode_list: list[VNode] = []
-        pDict: dict[VNode, str] = {}
+        pDict: dict[VNode, Any] = {}
         for p2 in p.self_and_subtree(copy=False):
             if hasattr(p2.v, "unknownAttributes"):
                 vnode_list.append(p2.v)
