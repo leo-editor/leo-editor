@@ -1680,7 +1680,7 @@ class QTextEditWrapper(QTextMixin):
                 # Call the base class.
                 QtWidgets.QTextEdit.mouseReleaseEvent(self.widget, event)
                 c = self.c
-                setattr(event, 'c', c)
+                event.c = c  # PR #4827
                 # Open the url on a control-click.
                 if KeyboardModifier.ControlModifier & event.modifiers():
                     g.openUrlOnClick(event)

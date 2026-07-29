@@ -523,6 +523,7 @@ class Visitor(ast.NodeVisitor):
         # Injected by plugins.
         'c._bookmarks',
         'c.cleo',
+        'c.menuAccels',
         'c.quickMove',
         'c.pluginsMenu',
         'c.screenCastController',

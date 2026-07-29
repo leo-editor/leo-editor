@@ -19,7 +19,7 @@ def init():
 
     ok = g.app.gui.guiName() == "qt"
     if ok:
-        setattr(qt_frame.LeoQtFrame, 'setTopGeometry', setTopGeometry_mod_framesize)
+        qt_frame.LeoQtFrame.setTopGeometry = setTopGeometry_mod_framesize  # type:ignore
         g.plugin_signon(__name__)
     return ok
 
