@@ -320,7 +320,7 @@ class SqlitePickleShare:
         return False
 
     # @+node:vitalije.20170716201700.18: *3* items  (SqlitePickleShare)
-    def items(self) -> Generator[tuple, None, None]:
+    def items(self) -> Generator[tuple[str, Any], None, None]:
         sql = 'select key,data from cachevalues;'
         for key, data in self.conn.execute(sql):
             yield key, data

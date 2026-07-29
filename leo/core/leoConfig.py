@@ -1299,7 +1299,7 @@ class GlobalConfigManager:
         self.tree = None
 
     # @+node:ekr.20120222103014.10314: *3* gcm.config_iter
-    def config_iter(self, c: Cmdr) -> Generator[tuple, None, None]:
+    def config_iter(self, c: Cmdr) -> Generator[tuple[str, Any, Cmdr, str], None, None]:
         """Letters:
           leoSettings.leo
         D default settings
