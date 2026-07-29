@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
-<leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
+<!-- Created by Leo: https://leo-editor.github.io/leo-editor/leo_toc.html -->
+<leo_file xmlns:leo="https://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2"/>
 <globals/>
 <preferences/>
@@ -70,8 +70,10 @@
 <v t="swot.20210619072239.1"><vh>Body &amp; other text</vh></v>
 <v t="swot.20210619073932.1"><vh>Borders</vh></v>
 <v t="swot.20210619075533.1"><vh>Buttons</vh></v>
+<v t="tom.20260722190904.1"><vh>Checkboxes</vh></v>
 <v t="swot.20210619080601.1"><vh>Log</vh></v>
 <v t="swot.20210619081006.1"><vh>Gutter</vh></v>
+<v t="tom.20260722190924.1"><vh>Radio Buttons</vh></v>
 <v t="swot.20210619083108.1"><vh>Scroll bars</vh></v>
 <v t="swot.20210619085523.1"><vh>Status area</vh></v>
 <v t="swot.20210618230516.1"><vh>Tree</vh></v>
@@ -310,5 +312,36 @@ url(/home/edward/leo.repo/leo-editor/leo/Icons/nodes-dark/triangles/closed.png)<
 <t tx="swot.20210619095731.1"></t>
 <t tx="swot.20210619100116.1"></t>
 <t tx="swot.20210619100248.1"></t>
+<t tx="tom.20260722190904.1">QCheckBox::indicator {
+    width: 14px;
+    height: 14px;
+    background-color: @text-background;
+    border: 1px solid @text_foreground;
+}
+
+QCheckBox::indicator:checked {
+    background-color: @text_foreground;
+    image: none;
+}
+
+QCheckBox::indicator:unchecked {
+    background-color: @text-background;
+}</t>
+<t tx="tom.20260722190924.1">QRadioButton::indicator {
+    width: 14px;
+    height: 14px;
+    border-radius: 7px;
+    background-color: @text-background;
+    border: 1px solid @text_foreground;
+}
+
+QRadioButton::indicator:checked {
+    background-color: @text_foreground;
+    image: none;
+}
+
+QRadioButton::indicator:unchecked {
+    background-color: @text-background;
+}</t>
 </tnodes>
 </leo_file>

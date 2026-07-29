@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
-<leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
+<!-- Created by Leo: https://leo-editor.github.io/leo-editor/leo_toc.html -->
+<leo_file xmlns:leo="https://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2"/>
 <globals/>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20180312111155.1"><vh>Read me</vh></v>
+<v t="ekr.20180312111155.1" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000007374725f6c656f5f706f7371035805000000322c302c33710473732e"><vh>Read me</vh></v>
 <v t="ekr.20180312110809.1"><vh>Theme Tests</vh>
 <v t="ekr.20180314052441.1"><vh>Syntax coloring template</vh>
 <v t="ekr.20180314052441.2"><vh>&lt;&lt; defined section &gt;&gt;</vh></v>
@@ -14,8 +14,8 @@
 <v t="ekr.20180312110809.4"><vh>Test g.es(color=*)</vh></v>
 <v t="ekr.20180312110809.5"><vh>g.error/note/warning test</vh></v>
 </v>
-<v t="ekr.20180318145515.1"><vh>@settings</vh>
-<v t="ekr.20180318145515.704"><vh>@theme tbp_light_quasi_solarized</vh>
+<v t="ekr.20180318145515.1" descendentVnodeUnknownAttributes="7d71005803000000302e3071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>@settings</vh>
+<v t="ekr.20180318145515.704" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>@theme tbp_light_quasi_solarized</vh>
 <v t="ekr.20180318145515.810"><vh>Theme description settings</vh>
 <v t="ekr.20180318145515.811"><vh>@bool color_theme_is_dark = False</vh></v>
 <v t="ekr.20180318145515.812"><vh>@string color_theme = light</vh></v>
@@ -35,6 +35,7 @@
 <v t="ekr.20180318145515.721"><vh>@color dark-base01 = #93a1a1</vh></v>
 <v t="ekr.20180318145515.722"><vh>@color dark-base02 = #dedede</vh></v>
 <v t="ekr.20180318145515.723"><vh>@color dark-base03 = #ededed</vh></v>
+<v t="tom.20260722200110.1"><vh>@color dark-base-0-lighter = #84a5af</vh></v>
 <v t="ekr.20180318145515.724"><vh>@@color solarized-black = #000005</vh></v>
 <v t="tom.20210611204854.1"><vh>@color solarized-black = #202020</vh></v>
 <v t="ekr.20180318145515.725"><vh>@color solarized-blue = #268bd2</vh></v>
@@ -147,12 +148,14 @@
 <v t="ekr.20180318145515.815"><vh>Body &amp; other text</vh></v>
 <v t="ekr.20180318145515.816"><vh>Borders</vh></v>
 <v t="ekr.20180318145515.817"><vh>Buttons</vh></v>
+<v t="tom.20260722200132.1"><vh>Checkboxes</vh></v>
 <v t="ekr.20190531140643.1"><vh>Dock</vh></v>
 <v t="ekr.20180318145515.818"><vh>Log</vh></v>
 <v t="ekr.20181005084517.1"><vh>Gutter</vh></v>
 <v t="ekr.20180318145515.819"><vh>Menus</vh></v>
 <v t="ekr.20180318145515.820"><vh>Minibuffer &amp; label</vh></v>
 <v t="ekr.20180318145515.821"><vh>Plugins</vh></v>
+<v t="tom.20260722200141.1"><vh>Radio Buttons</vh></v>
 <v t="ekr.20180318145515.822"><vh>Scroll bars</vh></v>
 <v t="ekr.20180318145515.823"><vh>Splitters</vh></v>
 <v t="ekr.20180318145515.824"><vh>Status area</vh></v>
@@ -1023,5 +1026,37 @@ div#bg {background:#000005}
 &lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
 &lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
 </t>
+<t tx="tom.20260722200110.1"></t>
+<t tx="tom.20260722200132.1">QCheckBox::indicator {
+    width: 14px;
+    height: 14px;
+    background-color: @text-background;
+    border: 1px solid @text_foreground;
+}
+
+QCheckBox::indicator:checked {
+    background-color: @dark-base-0-lighter;
+    image: none;
+}
+
+QCheckBox::indicator:unchecked {
+    background-color: @text-background;
+}</t>
+<t tx="tom.20260722200141.1">QRadioButton::indicator {
+    width: 14px;
+    height: 14px;
+    border-radius: 7px;
+    background-color: @text-background;
+    border: 1px solid @text_foreground;
+}
+
+QRadioButton::indicator:checked {
+    background-color: @dark-base-0-lighter;
+    image: none;
+}
+
+QRadioButton::indicator:unchecked {
+    background-color: @text-background;
+}</t>
 </tnodes>
 </leo_file>
