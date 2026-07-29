@@ -759,7 +759,7 @@ class RstCommands:
     def is_rst_node(self, p: Position) -> bool:
         return g.match_word(p.h, 0, "@rst") and not g.match(p.h, 0, "@rst-")
 
-    def rst_parents(self, p: Position) -> Generator:
+    def rst_parents(self, p: Position) -> Generator[Position, None, None]:
         for p2 in p.parents():
             if p2 == self.root:
                 return

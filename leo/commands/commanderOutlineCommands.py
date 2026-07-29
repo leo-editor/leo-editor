@@ -214,7 +214,7 @@ def pasteAsTemplate(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     # Define helpers.
     # @+others
     # @+node:vitalije.20200529112224.1: *4* skip_root
-    def skip_root(v: VNode) -> Generator:
+    def skip_root(v: VNode) -> Generator[VNode, None, None]:
         """
         generates v nodes in the outline order
         but skips a subtree of the node with root_gnx
@@ -235,7 +235,7 @@ def pasteAsTemplate(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
         return g.app.nodeIndices.computeNewIndex()
 
     # @+node:vitalije.20200529115141.1: *4* viter
-    def viter(parent_gnx: str, xv: Any) -> Generator:
+    def viter(parent_gnx: str, xv: Any) -> Generator[tuple, None, None]:
         """
         iterates <v> nodes generating tuples:
 

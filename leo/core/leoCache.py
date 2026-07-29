@@ -226,7 +226,7 @@ class SqlitePickleShare:
         return obj
 
     # @+node:vitalije.20170716201700.7: *4* SqlitePickleShare.__iter__
-    def __iter__(self) -> Generator:
+    def __iter__(self) -> Generator[str, None, None]:
         for k in list(self.keys()):
             yield k
 
@@ -320,7 +320,7 @@ class SqlitePickleShare:
         return False
 
     # @+node:vitalije.20170716201700.18: *3* items  (SqlitePickleShare)
-    def items(self) -> Generator:
+    def items(self) -> Generator[tuple, None, None]:
         sql = 'select key,data from cachevalues;'
         for key, data in self.conn.execute(sql):
             yield key, data
@@ -328,7 +328,7 @@ class SqlitePickleShare:
     # @+node:vitalije.20170716201700.19: *3* keys (SqlitePickleShare)
     # Called by clear, and during unit testing.
 
-    def keys(self, globpat: str = '') -> Generator:
+    def keys(self, globpat: str = '') -> Generator[str, None, None]:
         """Return all keys in DB, or all keys matching a glob"""
         args: tuple
         if not globpat:
