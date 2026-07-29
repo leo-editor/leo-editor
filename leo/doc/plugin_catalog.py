@@ -4,7 +4,7 @@
 
 #@+<< docstring >>
 #@+node:ekr.20111018061632.15902: ** << docstring >>
-"""
+r"""
 Extract plugin status and docs. from docstrings
 
 :last_update: 20100301
