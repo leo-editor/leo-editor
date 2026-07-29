@@ -212,7 +212,7 @@ class TestCommands(LeoUnitTest):
         c = self.c
         abs_base = '/leo_base'
         c.mFileName = f"{abs_base}/test.leo"
-        os.environ = {
+        os.environ = {  # noqa  # Doesn't *clear* os.environ, but that's fine.
             'HOME': '/home',  # Linux.
             'USERPROFILE': r'c:\EKR',  # Windows.
             'LEO_BASE': abs_base,
