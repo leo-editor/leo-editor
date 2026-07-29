@@ -13,12 +13,8 @@
 ignore = [
     # New errors.
 
-    "UP024",    # Replace aliased errors with `OSError`
-    "UP028",    # Replace `yield` over `for` loop with `yield from`
-    "UP030",    # Use implicit references for positional format fields
     "UP031",    # Use format specifiers instead of percent format
     "UP032",    # Use f-string instead of `format` call
-    "UP034",    # Avoid extraneous parentheses
     "UP035",    # Import from `collections.abc` instead: `Iterable`
     "UP037",    # Remove quotes from type annotation
     "UP045",    # Use `X | None` for type annotations
@@ -29,6 +25,7 @@ ignore = [
     # Good, but do these later.
 
     "RUF013",   # PEP 484 prohibits implicit `Optional`
+    "UP024",    # Replace aliased errors with `OSError`
                 
     # Deprecated functions.
     
@@ -100,6 +97,8 @@ ignore = [
     "SIM905",   # Consider using a list literal instead of `str.split`
     "T100",     # Import for `xxx` found
     "TRY004",   # Prefer `TypeError` exception for invalid type
+    "UP028",    # Replace `yield` over `for` loop with `yield from`
+    "UP030",    # Use implicit references for positional format fields
 
     # Previous suppressions. Keep these.
     
