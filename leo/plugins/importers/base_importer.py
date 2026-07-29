@@ -14,7 +14,6 @@ from leo.core.leoNodes import Position, VNode
 
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoNodes import Position
 
     PositionGenerator = Generator[Position, None, None]
 # @-<< imports, annotations: base_importer.py >>

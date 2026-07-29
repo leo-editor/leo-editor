@@ -292,7 +292,7 @@ class LeoFind:
         # Init...
         self.find_text = find_text
         self.change_text = self.replace_back_slashes(change_text)
-        positions: list | Generator
+        positions: list | Generator[Position, None, None]
         if self.node_only:
             positions = [p1]
         elif self.suboutline_only:
