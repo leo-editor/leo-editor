@@ -152,6 +152,8 @@ if TYPE_CHECKING:  # pragma: no cover
     Value = Any
     Widget = Any  # 'Any' is the correct annotation for base class widgets.
 
+    PositionGenerator = Generator[Position, None, None]
+
 # @-<< leoCommands annotations >>
 
 
@@ -1206,7 +1208,7 @@ class Commands:
         """Using pytest, execute all @test nodes for p, p's parents and p's subtree."""
         c = self
 
-        def it(p: Position) -> Generator:
+        def it(p: Position) -> PositionGenerator:
             for p1 in p.self_and_parents():
                 if p1.h.startswith('@test '):
                     yield p1

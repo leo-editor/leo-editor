@@ -223,7 +223,7 @@ class PersistenceDataController:
             h, b = at_ua.h, at_ua.b
             gnx = h[4:].strip()
             if b and gnx and g.match_word(h, 0, '@ua'):
-                if p := d.get(gnx):
+                if p := d.get(gnx):  # type:ignore
                     # Handle all recent variants of the node.
                     lines = g.splitLines(b)
                     if b.startswith('unl:') and len(lines) == 2:
