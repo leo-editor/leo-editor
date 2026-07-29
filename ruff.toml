@@ -13,11 +13,6 @@
 ignore = [
     # New errors.
 
-    "RUF010",   # Use explicit conversion flag
-    "RUF012",   # Mutable default value for class attribute
-    "RUF013",   # PEP 484 prohibits implicit `Optional`
-    "RUF100",   # Unused blanket `noqa` directive
-    "UP007",    # Use `X | Y` for type annotations
     "UP008",    # Use `super()` instead of `super(__class__, self)`
     "UP009",    # UTF-8 encoding declaration is unnecessary
     "UP020",    # Use builtin `open`
@@ -38,6 +33,10 @@ ignore = [
     "TC004",    # Move import `leo.core.leoNodes.Position` out of type-checking block.
                 # Import is used for more than type hinting.
                 
+    # Good, but do these later.
+
+    "RUF013",   # PEP 484 prohibits implicit `Optional`
+                
     # Deprecated functions.
     
     "DTZ003",   # `datetime.datetime.utcnow()` used
@@ -56,6 +55,7 @@ ignore = [
     "PLW0406",  # Module `leo.plugins.demo` imports itself
     "PLW0602",  # Using global for `oldAppCloseLeoWindow` but no assignment is done
     "PLW1510",  # `subprocess.run` without explicit `check` argument
+    "RUF010",   # Use explicit conversion flag
     "RUF015",   # Prefer `next(...)` over single element slice
     "RUF023",   # ShadowController.__slots__` is not sorted
     "RUF034",   # Useless `if`-`else` condition
@@ -99,6 +99,8 @@ ignore = [
     "PLC0206",  # Extracting value from dictionary without calling `.items()`
     "PLR1704",  # Redefining argument with the local name `p`
     "PYI041",   # Use `float` instead of `int | float`
+    "RUF012",   # Mutable default value for class attribute
+    "RUF100",   # Unused blanket `noqa` directive
     "S102",     # Use of `exec` detected
     "S110",     # `try`-`except`-`pass` detected, consider logging the exception
     "S112",     # `try`-`except`-`continue` detected, consider logging the exception

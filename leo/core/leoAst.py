@@ -180,7 +180,7 @@ import textwrap
 
 # import time
 import tokenize
-from typing import Any, Generator, Optional, Union, TYPE_CHECKING
+from typing import Any, Generator, Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
     AnyToken = Any
@@ -1743,7 +1743,7 @@ class Tokenizer:
         Subclasses could override this method to filter out specific tokens.
         """
         assert self.token_kind in ('Token', 'InputToken'), repr(self.token_kind)
-        tok: Union[Token, InputToken]
+        tok: Token | InputToken
         if self.token_kind == 'Token':
             tok = Token(kind, value)
         else:
@@ -2959,7 +2959,7 @@ class TokenOrderGenerator:
         self.op(')')
 
     # @+node:ekr.20191204114930.1: *6* tog.arg_helper
-    def arg_helper(self, node: Union[Node, str]) -> None:
+    def arg_helper(self, node: Node | str) -> None:
         """
         Yield the node, with a special case for strings.
         """
