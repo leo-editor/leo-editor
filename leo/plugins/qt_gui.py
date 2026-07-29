@@ -1495,10 +1495,10 @@ class LeoQtGui(leoGui.LeoGui):
             print(f"{var:20}: {val}")
 
         join = g.os_path_join
-        #
+
         # "Just works" for --theme and theme .leo files *provided* that
         # theme .leo files actually contain these settings!
-        #
+
         theme_name1 = getString('color-theme')
         theme_name2 = getString('theme-name')
         roots = [
@@ -1707,7 +1707,7 @@ class LeoQtGui(leoGui.LeoGui):
             shadow = Shadow.Plain
         if shape is None:
             shape = Shape.NoFrame
-        #
+
         w = QtWidgets.QFrame(parent)
         self.setSizePolicy(w, kind1=hPolicy, kind2=vPolicy)
         w.setFrameShape(shape)

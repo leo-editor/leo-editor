@@ -267,16 +267,16 @@ class GetImage:
             testpath = src
             if '//' in testpath:
                 testpath = testpath.split('//', 1)[-1]
-            #
+
             # file on local file system
             testpath = g.finalize_join(path, testpath)
             if g.os_path_exists(testpath):
                 return QtWidgets.QGraphicsPixmapItem(QtGui.QPixmap(testpath))
-            #
+
             # explicit file://, but no such file exists
             if src.startswith('file://'):
                 return None if fail_ok else GetImage._no_image()
-        #
+
         # no explict file://, so try other protocols
         testpath = src if '//' in src else 'http://%s' % (src)
         data = GetImage.get_url(testpath)

@@ -1088,7 +1088,7 @@ class KeyStroke:
     # @+node:ekr.20180415083926.1: *4* ks.finalize_char & helper
     def finalize_char(self, s: str) -> str:
         """Perform very-last-minute translations on bindings."""
-        #
+
         # Retain "bigger" spelling for gang-of-four bindings with modifiers.
         shift_d = {
             'bksp': 'BackSpace',
@@ -1102,13 +1102,12 @@ class KeyStroke:
         if self.mods and s.lower() in shift_d:
             # Returning '' breaks existing code.
             return shift_d.get(s.lower(), '')
-        #
+
         # Make all other translations...
-        #
+
         # This dict ensures proper capitalization.
         # It also translates legacy Tk binding names to ascii chars.
         translate_d = {
-            #
             # The gang of four...
             'bksp': 'BackSpace',
             'backspace': 'BackSpace',
@@ -1117,7 +1116,6 @@ class KeyStroke:
             '\r': '\n',
             'return': '\n',
             'tab': 'Tab',
-            #
             # Special chars...
             'delete': 'Delete',
             'down': 'Down',
@@ -1131,7 +1129,6 @@ class KeyStroke:
             'prior': 'Prior',
             'right': 'Right',
             'up': 'Up',
-            #
             # Qt key names...
             'del': 'Delete',
             'dnarrow': 'Down',
@@ -1144,7 +1141,6 @@ class KeyStroke:
             'pgup': 'Prior',
             'rtarrow': 'Right',
             'uparrow': 'Up',
-            #
             # Legacy Tk binding names...
             "ampersand": "&",
             "asciicircum": "^",
@@ -1207,7 +1203,7 @@ class KeyStroke:
                         if s.capitalize() in g.app.gui.specialChars:
                             s = s.capitalize()
             return s
-        #
+
         # Translate shifted keys to their appropriate alternatives.
         return self.strip_shift(s)
 
@@ -1734,7 +1730,7 @@ class MatchBrackets:
             # Case 1: w"x//y"z Assume // is inside a string.
             # Case 2: x//y"z Assume " is inside the comment.
             # Case 3: w//x"y"z Assume both quotes are inside the comment.
-            #
+
             # That is, we assume (perhaps wrongly) that a quote terminates a
             # string if and *only* if the string starts *and* ends on the line.
             if self.single_comment:
@@ -6230,7 +6226,7 @@ def wrap_lines(lines: list[str], pageWidth: int, firstLineWidth: int | None = No
             i = k
             # DTHEIN 18-JAN-2004: wrap at exactly the text width,
             # not one character less
-            #
+
             wordLen = len(word)
             if line.endswith(('.', '?', '!')):
                 space = ' ' * sentenceSpacingWidth
@@ -7945,13 +7941,13 @@ def extractExecutableString(c: Cmdr, p: Position, s: str) -> str:
     language = c.getLanguage(p)
     if not language:
         return s
-    #
+
     # Return s if @language is unambiguous.
     pattern = r'^@language\s+(\w+)'
     matches = list(re.finditer(pattern, s, re.MULTILINE))
     if len(matches) < 2:
         return s
-    #
+
     # Scan the lines, extracting only the valid lines.
     extracting = False
     result: list[str] = []

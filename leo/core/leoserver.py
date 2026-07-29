@@ -307,7 +307,7 @@ class ServerExternalFilesController(ExternalFilesController):
 
         # #1240: Check the .leo file itself.
         self.idle_check_leo_file(c)
-        #
+
         # #1100: always scan the entire file for @<file> nodes.
         # #1134: Nested @<file> nodes are no longer valid, but this will do no harm.
         for p in c.all_unique_positions():
@@ -960,18 +960,18 @@ class LeoServer:
 
         global g
         t1 = time.process_time()
-        #
+
         # Init ivars first.
         self.c: Cmdr | None = None  # Currently Selected Commander.
         self.dummy_c: Cmdr | None = None  # Set below, after we set g.
         self.action: str = ''
         self.bad_commands_list: list[str] = []  # Set below.
         self.idle_tasks: list[tuple[Callable, int | float]] = []
-        #
+
         # Debug utilities
         self.current_id = 0  # Id of action being processed.
         self.log_flag = False  # set by "log" key
-        #
+
         # Start the bridge.
         self.bridge = leoBridge.controller(
             gui='nullGui',
@@ -984,36 +984,36 @@ class LeoServer:
         g.in_leo_server = True  # #2098.
         g.leoServer = self  # Set server singleton global reference
         self.leoServerConfig: Param = None  # type:ignore
-        #
+
         # * Intercept Log Pane output: Sends to client's log pane
         g.es = self._es  # pointer - not a function call
         g.es_print = self._es  # Also like es, because es_print would double strings in client
-        #
+
         # Set in _init_connection
         self.web_socket = None  # Main Control Client
         self.loop: Loop = None
-        #
+
         # To inspect commands
         self.dummy_c = g.app.newCommander(fileName=None)
         self.bad_commands_list = self._bad_commands(self.dummy_c)
-        #
+
         # * Replacement instances to Leo's codebase : getScript, IdleTime and externalFilesController
         g.getScript = self._getScript
         g.IdleTime = self._idleTime
-        #
+
         # * hook open2 for commander creation completion and inclusion in windowList
-        #
+
         g.registerHandler('open2', self._open2Hook)
         # override for selectLeoWindow
         g.app.selectLeoWindow = self._selectLeoWindow
-        #
+
         # override for "revert to file" operation
         g.app.gui.runAskOkDialog = self._runAskOkDialog
         g.app.gui.runAskYesNoDialog = self._runAskYesNoDialog
         g.app.gui.runAskYesNoCancelDialog = self._runAskYesNoCancelDialog
         g.app.gui.show_find_success = self._show_find_success
         self.headlineWidget = g.bunch(_name='tree')
-        #
+
         # Complete the initialization, as in LeoApp.initApp.
         g.app.idleTimeManager = leoApp.IdleTimeManager()
         g.app.externalFilesController = ServerExternalFilesController()  # Replace
@@ -2103,11 +2103,10 @@ class LeoServer:
         if "fromOutline" in param:
             fromOutline = param.get("fromOutline", False)
             fromBody = not fromOutline
-            #
             focus = self._get_focus()
             inOutline = ("tree" in focus) or ("head" in focus)
             inBody = not inOutline
-            #
+
             if fromOutline and inBody:
                 fc.in_headline = True
             elif fromBody and inOutline:
@@ -2146,7 +2145,7 @@ class LeoServer:
             p, pos, newpos = fc.do_find_next(settings)
         except Exception as e:
             raise ServerError(f"{tag}: Running interactive_search gave exception: {e}")
-        #
+
         # get focus again after the operation
         focus = self._get_focus()
         selRange = self._get_sel_range()
@@ -2199,11 +2198,10 @@ class LeoServer:
         fc = c.findCommands
         fromOutline = param.get("fromOutline", False)
         fromBody = not fromOutline
-        #
         focus = self._get_focus()
         inOutline = ("tree" in focus) or ("head" in focus)
         inBody = not inOutline
-        #
+
         if fromOutline and inBody:
             fc.in_headline = True
         elif fromBody and inOutline:
@@ -2217,7 +2215,7 @@ class LeoServer:
             p, pos, newpos = fc.do_find_next(settings)
         except Exception as e:
             raise ServerError(f"{tag}: Running find operation gave exception: {e}")
-        #
+
         # get focus again after the operation
         focus = self._get_focus()
         selRange = self._get_sel_range()
@@ -2239,11 +2237,11 @@ class LeoServer:
         fc = c.findCommands
         fromOutline = param.get("fromOutline", False)
         fromBody = not fromOutline
-        #
+
         focus = self._get_focus()
         inOutline = ("tree" in focus) or ("head" in focus)
         inBody = not inOutline
-        #
+
         if fromOutline and inBody:
             fc.in_headline = True
         elif fromBody and inOutline:
@@ -2256,7 +2254,7 @@ class LeoServer:
             p, pos, newpos = fc.do_find_prev(settings)
         except Exception as e:
             raise ServerError(f"{tag}: Running find operation gave exception: {e}")
-        #
+
         # get focus again after the operation
         focus = self._get_focus()
         selRange = self._get_sel_range()
@@ -2278,18 +2276,18 @@ class LeoServer:
         fc = c.findCommands
         fromOutline = param.get("fromOutline", False)
         fromBody = not fromOutline
-        #
+
         focus = self._get_focus()
         inOutline = ("tree" in focus) or ("head" in focus)
         inBody = not inOutline
-        #
+
         if fromOutline and inBody:
             fc.in_headline = True
         elif fromBody and inOutline:
             fc.in_headline = False
             c.bodyWantsFocus()
             c.bodyWantsFocusNow()
-        #
+
         try:
             settings = fc.ftm.get_settings()
             fc._remember_settings(settings)
@@ -2312,18 +2310,18 @@ class LeoServer:
         fc = c.findCommands
         fromOutline = param.get("fromOutline", False)
         fromBody = not fromOutline
-        #
+
         focus = self._get_focus()
         inOutline = ("tree" in focus) or ("head" in focus)
         inBody = not inOutline
-        #
+
         if fromOutline and inBody:
             fc.in_headline = True
         elif fromBody and inOutline:
             fc.in_headline = False
             c.bodyWantsFocus()
             c.bodyWantsFocusNow()
-        #
+
         try:
             settings = fc.ftm.get_settings()
             fc._remember_settings(settings)
@@ -3799,12 +3797,12 @@ class LeoServer:
         """Return the list of command names that connected clients should ignore."""
         d = c.commandsDict if c else {}  # keys are command names, values are functions.
         bad = []
-        #
+
         # leoInteg #173: Remove only vim commands.
         for command_name in sorted(d):
             if command_name.startswith(':'):
                 bad.append(command_name)
-        #
+
         # Remove other commands.
         # This is a hand-curated list.
         bad_list = [
@@ -4993,7 +4991,7 @@ class LeoServer:
         except Exception as e:
             print(f"_do_leo_command Recovered from Error {e!s}", flush=True)
             return self._make_response()  # Return empty on error
-        #
+
         # Tag along a possible return value with info sent back by _make_response
         if self._is_jsonable(value):
             return self._make_response({"return-value": value})
@@ -5038,7 +5036,7 @@ class LeoServer:
         except Exception as e:
             print(f"_do_leo_command Recovered from Error {e!s}", flush=True)
             return self._make_response()  # Return empty on error
-        #
+
         # Tag along a possible return value with info sent back by _make_response
         if self._is_jsonable(value):
             return self._make_response({"return-value": value})

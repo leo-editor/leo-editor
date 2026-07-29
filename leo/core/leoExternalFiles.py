@@ -143,9 +143,9 @@ class ExternalFilesController:
         Check for changed open-with files and all external files in commanders
         for which @bool check_for_changed_external_file is True.
         """
-        #
+
         # #1240: Note: The "asking" dialog prevents idle time.
-        #
+
         if not g.app or g.app.killed or g.app.restarting:  # #1240.
             return
         self.on_idle_count += 1

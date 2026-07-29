@@ -626,7 +626,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             shadow = Shadow.Plain
         if shape is None:
             shape = Shape.NoFrame
-        #
+
         w = QtWidgets.QFrame(parent)
         self.set_widget_size_policy(w, kind1=hPolicy, kind2=vPolicy)
         w.setFrameShape(shape)
@@ -1020,7 +1020,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.verticalLayout.addWidget(frame)
         # Transfers focus request from label to lineEdit.
         label.setBuddy(lineEdit)
-        #
+
         # Official ivars.
         self.lineEdit = lineEdit
         self.leo_minibuffer_frame = frame
@@ -2472,10 +2472,10 @@ class LeoQtLog(leoFrame.LeoLog):
         c = self.c
         if g.app.quitting or not c or not c.exists:
             return
-        #
+
         # *Note*: For reasons that I don't fully understand,
         #         all lines sent to the log must now end in a newline.
-        #
+
         s = s.rstrip() + '\n'
         color = self.resolve_color(color)
         self.selectTab(tabName or 'Log')
@@ -2517,7 +2517,7 @@ class LeoQtLog(leoFrame.LeoLog):
     # @+node:ekr.20110605121601.18323: *4* LeoQtLog.putnl
     def putnl(self, tabName: str = 'Log') -> None:
         """Put a newline to the Qt log."""
-        #
+
         # This is not called normally.
         if g.app.quitting:
             return
@@ -4047,7 +4047,7 @@ class QtMenuWrapper(LeoQtMenu, QtWidgets.QMenu):  # type:ignore[misc,override]
         assert frame
         if parent is None:
             parent = c.frame.top.menuBar()
-        #
+
         # For reasons unknown, the calls must be in this order.
         # Presumably, the order of base classes also matters(!)
         LeoQtMenu.__init__(self, c, frame, label)
@@ -4397,7 +4397,7 @@ class TabbedFrameFactory:
                 f"maximized: {g.app.start_maximized}, "
                 f"fullscreen: {g.app.start_fullscreen}"
             )
-        #
+
         # #1189: We *can* (and should) minimize here, to eliminate flash.
         if g.app.start_minimized:
             window.showMinimized()

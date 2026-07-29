@@ -110,12 +110,10 @@ class TestColorizer(LeoUnitTest):
             (True, '@nocolor-node', ''),  # Does not apply to descendants.
             (False, '@nocolor', ''),
             (False, '@killcolor', ''),
-            #
             # Note: the following tests don't matter because
             # jedit.recolor ignores the self.enabled flag.
             # As a result, *all* color directives, including @nocolor-node,
             # Apply from the directive to the next color directive.
-            #
             # Unambiguous child.
             (False, '', '@killcolor\n'),
             (True, '', '@color\n'),

@@ -97,10 +97,10 @@ def onIconDoubleClick(tag, keywords):
     directive = words[0]
     if directive[0] != '@' or directive not in file_directives:
         return None
-    #
+
     # Get filename by removing directive from node's headstring
     filename = h.replace(directive + " ", "", 1)
-    #
+
     # This writes all modified files, not just the one that has been clicked on.
     # This generates a slightly confusing warning if there are no dirty nodes.
     c.fileCommands.writeDirtyAtFileNodes()

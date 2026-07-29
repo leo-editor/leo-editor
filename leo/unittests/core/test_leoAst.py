@@ -434,7 +434,7 @@ class TestTOG(BaseTest):
 
     # @+node:ekr.20210318214057.1: *5* test_line_315
     def test_line_315(self):
-        #
+
         # Known bug: position-only args exist in Python 3.8,
         #            but there is no easy way of syncing them.
         #            This bug will not be fixed.
@@ -1559,7 +1559,7 @@ class TestFstringify(BaseTest):
         fs.silent = False
         # Test message.
         fs.message("Test:\n<  Left align\n:Colon: align\n>  Right align\n   Default align")
-        #
+
         # change_quotes...
         fs.message("can't create f-fstring: no lt_s!")
         lt_s = "lt_s"

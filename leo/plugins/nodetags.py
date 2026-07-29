@@ -302,20 +302,20 @@ if QtWidgets:
         def initUI(self) -> None:
             """create GUI components."""
             self.setObjectName("LeoTagWidget")
-            #
+
             # verticalLayout_2: contains
             # verticalLayout
             self.verticalLayout_2 = QtWidgets.QVBoxLayout(self)
             self.verticalLayout_2.setContentsMargins(0, 1, 0, 1)
             self.verticalLayout_2.setObjectName("nodetags-verticalLayout_2")
-            #
+
             # horizontalLayout: contains:
             #   "Refresh" button
             #   comboBox
             self.horizontalLayout = QtWidgets.QHBoxLayout()
             self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
             self.horizontalLayout.setObjectName("nodetags-horizontalLayout")
-            #
+
             # horizontalLayout2: contains:
             #   label2
             #   not much by default -- it's a place to add buttons for current tags
@@ -326,7 +326,7 @@ if QtWidgets:
             label2.setObjectName("nodetags-label2")
             label2.setText("Tags for current node (right click to clear):")
             self.horizontalLayout2.addWidget(label2)
-            #
+
             # verticalLayout: contains
             #   horizontalLayout
             #   listWidget
@@ -334,26 +334,26 @@ if QtWidgets:
             #   label
             self.verticalLayout = QtWidgets.QVBoxLayout()
             self.verticalLayout.setObjectName("nodetags-verticalLayout")
-            #
+
             self.comboBox = QtWidgets.QComboBox(self)
             self.comboBox.setObjectName("nodetags-comboBox")
             self.comboBox.setEditable(True)
             self.horizontalLayout.addWidget(self.comboBox)
-            #
+
             # The "+" button
             self.pushButton = QtWidgets.QPushButton("+", self)
             self.pushButton.setObjectName("nodetags-pushButton")
             self.pushButton.setMinimumSize(24, 24)
             self.pushButton.setMaximumSize(24, 24)
-            #
+
             self.horizontalLayout.addWidget(self.pushButton)
             self.verticalLayout.addLayout(self.horizontalLayout)
-            #
+
             self.listWidget = QtWidgets.QListWidget(self)
             self.listWidget.setObjectName("nodetags-listWidget")
             self.verticalLayout.addWidget(self.listWidget)
             self.verticalLayout.addLayout(self.horizontalLayout2)
-            #
+
             # The status area.
             self.label = QtWidgets.QLabel(self)
             self.label.setObjectName("nodetags-label")
@@ -385,7 +385,7 @@ if QtWidgets:
 
         # @+node:peckj.20140804192343.6568: *5* tag_w.update_current_tags
         def update_current_tags(self, p: Position) -> None:
-            #
+
             # Clear horizontalLayout2
             layout = self.horizontalLayout2
             while layout.count():
@@ -395,7 +395,7 @@ if QtWidgets:
             label.setObjectName("nodetags-label2")
             label.setText('Tags for current node (right click to clear):')
             layout.addWidget(label)
-            #
+
             # add tags
             tags = self.tc.get_tags(p)
             for tag in tags:

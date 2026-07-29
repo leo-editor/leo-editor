@@ -136,7 +136,7 @@ class LeoQtEventFilter(QtCore.QObject):
         # Let Qt handle the non-key events.
         if self.doNonKeyEvent(event, obj):
             return False
-        #
+
         # Ignore incomplete key events.
         if self.shouldIgnoreKeyEvent(event, obj):
             return False
@@ -313,13 +313,13 @@ class LeoQtEventFilter(QtCore.QObject):
     # @+node:ekr.20180417161548.1: *5* LeoQtEventFilter.doLateTweaks
     def doLateTweaks(self, binding: str, ch: str) -> tuple[str, str]:
         """Make final tweaks. g.KeyStroke does other tweaks later."""
-        #
+
         # These are needed  because ch is separate from binding.
         if ch == '\r':
             ch = '\n'
         if binding == 'Escape':
             ch = 'Escape'
-        #
+
         # Adjust the case of the binding string (for the minibuffer).
         if len(ch) == 1 and len(binding) == 1 and ch.isalpha() and binding.isalpha():
             if ch != binding:
@@ -370,7 +370,7 @@ class LeoQtEventFilter(QtCore.QObject):
         text:   event.text()
         """
         text, toString, ch = '', '', ''  # Defaults.
-        #
+
         # Leo 6.4: Test keynum's directly.
         #          The values are the same in Qt4, Qt5, Qt6.
         keynum = event.key()

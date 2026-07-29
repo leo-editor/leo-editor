@@ -1138,7 +1138,7 @@ def open_theme_file(self: Self, event: LeoKeyEvent | None = None) -> None:
         return
     leo_dir = g.finalize_join(g.app.loadDir, '..', '..')
     os.chdir(leo_dir)
-    #
+
     # #1425: Open the theme file in a separate process.
     # #1564. Use execute_shell_commands.
     # #1974: allow spaces in path.

@@ -1306,7 +1306,6 @@ class Fstringify:
         val_last = token_last.value
         if delim != val_last:
             return False  # pragma: no cover (defensive)
-        #
         # Check for conflicting delims, preferring f"..." to f'...'.
         for delim in ('"', "'"):
             aList[1] = aList[-1] = Token('string', delim)
@@ -2156,7 +2155,7 @@ class TokenOrderGenerator:
                 f"Looking for: {kind}.{g.truncate(val, 40)}\n"
                 f"      found: end of token list"
             )
-        #
+
         # Step two: Assign *secondary* links only for newline tokens.
         #           Ignore all other non-significant tokens.
         while old_px < px:
@@ -2164,11 +2163,11 @@ class TokenOrderGenerator:
             old_px += 1
             if token.kind in ('comment', 'newline', 'nl'):
                 self.set_links(node, token)
-        #
+
         # Step three: Set links in the found token.
         token = tokens[px]
         self.set_links(node, token)
-        #
+
         # Step four: Advance.
         self.px = px
 
@@ -2327,9 +2326,9 @@ class TokenOrderGenerator:
 
     def do_arguments(self, node: Node) -> None:
         """Arguments to ast.Function or ast.Lambda, **not** ast.Call."""
-        #
+
         # No need to generate commas anywhere below.
-        #
+
         # Let block. Some fields may not exist pre Python 3.8.
         n_plain = len(node.args) - len(node.defaults)
         posonlyargs = getattr(node, 'posonlyargs', [])
@@ -2984,7 +2983,7 @@ class TokenOrderGenerator:
         # *args:    in node.args[]:     Starred(value=Name(id='args'))
         # *[a, 3]:  in node.args[]:     Starred(value=List(elts=[Name(id='a'), Num(n=3)])
         # **kwargs: in node.keywords[]: keyword(arg=None, value=Name(id='kwargs'))
-        #
+
         # Scan args for *name or *List
         args = node.args or []
         keywords = node.keywords or []
@@ -3104,12 +3103,12 @@ class TokenOrderGenerator:
         self.name(token.value)
         self.visit(node.test)
         self.op(':')
-        #
+
         # Body...
         self.level += 1
         self.visit(node.body)
         self.level -= 1
-        #
+
         # Else and elif clauses...
         if node.orelse:
             self.level += 1

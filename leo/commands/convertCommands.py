@@ -812,7 +812,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
         def __init__(self, c: Cmdr) -> None:
             """Ctor for C_To_Python class."""
             super().__init__(c)
-            #
+
             # Internal state...
             # The class name for the present function.  Used to modify ivars.
             self.class_name = ''

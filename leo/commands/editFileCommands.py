@@ -79,7 +79,7 @@ class ConvertAtRoot:
                     p.h = f"@clean {path}"
                 self.do_root(p)
                 self.root = None
-        #
+
         # Check the results.
         link_errors = c.checkOutline()
         self.errors += link_errors

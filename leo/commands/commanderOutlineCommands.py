@@ -1678,7 +1678,7 @@ def moveOutlineDown(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Move the selected node down."""
     # Moving down is more tricky than moving up because we can't
     # move p to be a child of itself.
-    #
+
     # An important optimization:
     # we don't have to call checkMoveWithParentWithWarning() if the parent of
     # the moved node remains the same.

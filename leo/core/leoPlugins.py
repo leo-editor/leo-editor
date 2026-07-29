@@ -337,7 +337,7 @@ class LeoPluginsController:
         """
         if g.app.killed:
             return None
-        #
+
         # Execute hooks in some random order.
         # Return if one of them returns a non-None result.
         for bunch in self.handlers.get(tag, []):
@@ -477,7 +477,7 @@ class LeoPluginsController:
         if not moduleOrFileName.endswith(('py', 'pyw')):
             # A module name. Return it unchanged.
             return moduleOrFileName
-        #
+
         # 1880: The legacy code implicitly assumed that os.path.dirname(fn) was empty!
         #       The new code explicitly ignores any directories in the path.
         fn = g.os_path_basename(moduleOrFileName)
@@ -558,7 +558,7 @@ class LeoPluginsController:
                 return result  # Keep the result, but do no more.
             if hasattr(result, 'init'):
                 return callInitFunction(result)
-            #
+
             # No top-level init function.
             if g.unitTesting:
                 # Do *not* load the module.

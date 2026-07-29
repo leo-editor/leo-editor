@@ -1368,11 +1368,11 @@ class Position:
         assert p.v
         parent_v = p.v.context.hiddenRootNode
         assert parent_v, g.callers()
-        #
+
         # Make p the root position.
         p.stack = []
         p._childIndex = 0
-        #
+
         # Make p.v the first child of parent_v.
         p.v._addLink(0, parent_v)
         return p
@@ -1879,7 +1879,7 @@ class Position:
     def moveToRoot(self) -> Position:
         """Move self to the root position."""
         p = self  # Do NOT copy the position!
-        #
+
         # #1631. The old root can not possibly be affected by unlinking p.
         p._unlink()
         p._linkAsRoot()
@@ -2337,7 +2337,7 @@ class VNode:
 
         # To make VNode's independent of Leo's core,
         # wrap all calls to the VNode ctor::
-        #
+
         #   def allocate_vnode(c,gnx):
         #       v = VNode(c)
         #       g.app.nodeIndices.new_vnode_helper(c,gnx,v)

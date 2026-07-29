@@ -1481,7 +1481,7 @@ class MakeCoffeeScriptController:
             # The parser does not preserve leading whitespace.
             prefix = parser.get('Global', 'prefix_lines')
             self.prefix_lines = prefix.split('\n')
-        #
+
         # self.def_patterns = self.scan_patterns('Def Name Patterns')
         # self.general_patterns = self.scan_patterns('General Patterns')
         # self.make_patterns_dict()

@@ -384,7 +384,7 @@ class Undoer:
             bunch.newSel = 0, 0  # pragma: no cover
         bunch.newYScroll = w.getYScrollPosition() if w else 0
         u.pushBead(bunch)
-        #
+
         if g.unitTesting:
             assert command.lower() != 'typing', g.callers()
         elif command.lower() == 'typing':  # pragma: no cover
@@ -471,7 +471,7 @@ class Undoer:
         u = self
         if u.redoing or u.undoing:
             return  # pragma: no cover
-        #
+
         # Set the type & helpers.
         bunch.kind = 'headline'
         bunch.undoType = command
@@ -1216,7 +1216,7 @@ class Undoer:
             print(f"u.doTyping: {len(oldText)} => {len(newText)}")
         if u.per_node_undo:
             u.putIvarsToVnode(p)
-        #
+
         # Finish updating the text.
         p.v.setBodyString(newText)
         u.updateAfterTyping(p, w)
@@ -1407,7 +1407,7 @@ class Undoer:
             return
         if not u.getBead(u.bead + 1):
             return
-        #
+
         # Init status.
         u.redoing = True
         u.groupCount = 0
@@ -1415,7 +1415,7 @@ class Undoer:
             u.redoHelper()
         else:
             g.trace(f"no redo helper for {u.kind} {u.undoType}")
-        #
+
         # Finish.
         c.checkOutline()
         u.update_status()
@@ -1680,7 +1680,6 @@ class Undoer:
         v.parents.append(u.newParent_v)
         v.parents.remove(u.oldParent_v)
         u.newParent_v.setDirty()
-        #
         u.updateMarks('new')
         u.newP.setDirty()
         c.selectPosition(u.newP)
@@ -1805,17 +1804,17 @@ class Undoer:
             return
         if not u.getBead(u.bead):
             return
-        #
+
         # Init status.
         u.undoing = True
         u.groupCount = 0
-        #
+
         # Dispatch.
         if u.undoHelper:
             u.undoHelper()
         else:
             g.trace(f"no undo helper for {u.kind} {u.undoType}")
-        #
+
         # Finish.
         c.checkOutline()
         u.update_status()

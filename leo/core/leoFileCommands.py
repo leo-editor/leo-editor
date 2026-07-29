@@ -126,7 +126,7 @@ class FastRead:
             return None
         # #1047: only this method changes splitter sizes.
         self.scanGlobals()
-        #
+
         # #1111: ensure that all outlines have at least one node.
         if not v.children:
             new_vnode = leoNodes.VNode(context=self.c)
@@ -143,7 +143,7 @@ class FastRead:
             return None
         # #1047: only this method changes splitter sizes.
         self.scanJsonGlobals(g_dict)
-        #
+
         # #1111: ensure that all outlines have at least one node.
         if not v.children:
             new_vnode = leoNodes.VNode(context=self.c)
@@ -161,7 +161,7 @@ class FastRead:
         hidden_v, _g_element = self.readWithElementTree(path='', s_or_b=s_or_b)
         if not hidden_v:
             return None
-        #
+
         # Ensure that all outlines have at least one node.
         if not hidden_v.children:
             new_vnode = leoNodes.VNode(context=self.c)
@@ -412,14 +412,14 @@ class FastRead:
                     v_element_visitor(e, v)
 
         # @-<< define v_element_visitor >>
-        #
+
         # Create the hidden root vnode.
 
         gnx = 'hidden-root-vnode-gnx'
         hidden_v = leoNodes.VNode(context=c, gnx=gnx)
         hidden_v._headString = '<hidden root vnode>'
         gnx2vnode[gnx] = hidden_v
-        #
+
         # Traverse the tree of v elements.
         v_element_visitor(v_elements, hidden_v)
         return hidden_v
@@ -591,7 +591,7 @@ class FastRead:
         hidden_v = leoNodes.VNode(context=c, gnx=gnx)
         hidden_v._headString = '<hidden root vnode>'
         gnx2vnode[gnx] = hidden_v
-        #
+
         # Traverse the tree of v elements.
         v_element_visitor(v_elements, hidden_v)
 
@@ -1072,7 +1072,7 @@ class FileCommands:
         c, fc = self.c, self
         c.atFileCommands.readAll(c.rootPosition())
         recoveryNode = fc.handleNodeConflicts()
-        #
+
         # Do this after reading external files.
         # The descendant nodes won't exist unless we have read
         # the @thin nodes!

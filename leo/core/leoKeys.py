@@ -594,7 +594,7 @@ class AutoCompleterClass:
                 )
                 d[prefix] = aList
                 return aList
-        #
+
         # Not jedi. Use codewise.
         # Precompute the codewise completions for '.self'.
         if not self.codewiseSelfList:
@@ -719,7 +719,7 @@ class AutoCompleterClass:
         i = w.getInsertPoint()
         p = c.p
         body_s = p.b
-        #
+
         # Get the entire source for jedi.
         t1 = time.process_time()
         goto = c.gotoCommands
@@ -733,14 +733,14 @@ class AutoCompleterClass:
             source = body_s
             n0 = 0
         t2 = time.process_time()
-        #
+
         # Get local line
         lines = g.splitLines(body_s)
         row, column = g.convertPythonIndexToRowCol(body_s, i)
         if row >= len(lines):  # 2020/11/27
             return []
         line = lines[row]
-        #
+
         # Find the global line, and compute offsets.
         source_lines = g.splitLines(source)
         for jedi_line, g_line in enumerate(source_lines[n0:]):  # noqa: B007 # jedi_line used below.
@@ -758,7 +758,7 @@ class AutoCompleterClass:
             if 0:  # This *can* happen.
                 g.printObj(source_lines[n0 - 1 : n0 + 30])
                 print(f"can not happen: not found: {line!r}")
-        #
+
         # Get the jedi completions.
         if jedi and jedi_line is not None:
             try:
@@ -934,7 +934,7 @@ class AutoCompleterClass:
         if not g.isTextWrapper(w):
             return
         c.widgetWantsFocusNow(w)
-        #
+
         # Don't make this undoable.
         # oldText = w.getAllText()
         # oldSel = w.getSelectionRange()
@@ -946,7 +946,7 @@ class AutoCompleterClass:
             w.setSelectionRange(i, j, insert=j)
         else:
             w.setInsertPoint(i + len(s))
-        #
+
         # Don't make this undoable.
         # if 0:
         # u.doTyping(p, 'Typing',
@@ -1366,7 +1366,7 @@ class GetArg:
         if self.is_command(command):
             tabList, common_prefix = g.itemsMatchingPrefixInList(command, tabList)
             return common_prefix, tabList
-        #
+
         # For now, disallow further completions if something follows the command.
         command = self.get_command(command)
         return command, [command]
@@ -1415,7 +1415,7 @@ class GetArg:
             common_prefix, tabList = self.compute_tab_list(tabList)
             if self.cycling_prefix and not self.cycling_prefix.startswith(common_prefix):
                 self.cycling_prefix = common_prefix
-            #
+
             # No tab cycling for completed commands having
             # a 'tab_callback' attribute.
             if len(tabList) == 1 and self.do_tab_callback():
@@ -1632,7 +1632,7 @@ class GetArg:
     ) -> None:
         """Do state 0 processing."""
         c, k = self.c, self.k
-        #
+
         # Set the ga globals...
         k.getArgEscapeFlag = False
         self.after_get_arg_state = returnKind, returnState, handler
@@ -1640,11 +1640,11 @@ class GetArg:
         self.cycling_prefix = ''
         self.handler = handler
         self.tabList = tabList[:] if tabList else []
-        #
+
         # Set the k globals...
         k.functionTail = ''
         k.oneCharacterArg = oneCharacter
-        #
+
         # Do *not* change the label here!
         # Enter the next state.
         c.widgetWantsFocus(c.frame.body.wrapper)
@@ -3636,7 +3636,7 @@ class KeyHandlerClass:
             # k.auto_completer_state_handler returns 'do-standard-keys' for control keys.
             val = k.state.handler(event)
             return val
-        #
+
         # Ignore unbound non-ascii keys.
         if (
             k.ignore_unbound_non_ascii_keys
@@ -4414,10 +4414,10 @@ class KeyHandlerClass:
         if not g.isStroke(stroke):
             # Happens during unit tests.
             stroke = g.KeyStroke(stroke)
-        #
+
         # altgr combos (Alt+Ctrl) are always plain keys
         # g.KeyStroke does not handle this, because it has no "c" ivar.
-        #
+
         if stroke.isAltCtrl() and not self.enable_alt_ctrl_bindings:
             return True
         return stroke.isPlainKey()

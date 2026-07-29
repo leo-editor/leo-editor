@@ -282,18 +282,18 @@ class LeoFrame:
     # @+node:ekr.20051009045404: *4* frame.createFirstTreeNode
     def createFirstTreeNode(self) -> VNode:
         c = self.c
-        #
+
         # #1631: Initialize here, not in p._linkAsRoot.
         c.hiddenRootNode.children = []
-        #
+
         # #1817: Clear the gnxDict.
         c.fileCommands.gnxDict = {}
-        #
+
         # Create the first node.
         v = leoNodes.VNode(context=c)
         p = leoNodes.Position(v)
         v.initHeadString("newHeadline")
-        #
+
         # New in Leo 4.5: p.moveToRoot would be wrong:
         #                 the node hasn't been linked yet.
         p._linkAsRoot()

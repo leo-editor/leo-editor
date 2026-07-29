@@ -1685,7 +1685,7 @@ class Pdb(bdb.Bdb, cmd.Cmd):
     def _runscript(self, filename):
         # The script has to run in __main__ namespace (or imports from
         # __main__ will break).
-        #
+
         # So we clear up the __main__ and set several special variables
         # (this gets rid of pdb's globals and cleans old variables on restarts).
         import __main__

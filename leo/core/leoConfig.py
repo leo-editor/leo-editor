@@ -1072,12 +1072,12 @@ class ActiveSettingsOutline:
     def create_outline(self) -> None:
         """Create the summary outline"""
         c = self.commander
-        #
+
         # Create the root node, with the legend in the body text.
         root = c.rootPosition()
         root.h = f"Legend for {self.c.shortFileName()}"
         root.b = self.legend()
-        #
+
         # Create all the inner settings outlines.
         for kind, commander in self.commanders:
             assert commander
@@ -1085,7 +1085,7 @@ class ActiveSettingsOutline:
             p.h = g.shortFileName(commander.fileName())
             p.b = '@language rest\n@wrap\n'
             self.create_inner_outline(commander, kind, p)
-        #
+
         # Clean all dirty/changed bits, so closing this outline won't prompt for a save.
         for v in c.all_nodes():
             v.clearDirty()
@@ -1970,7 +1970,7 @@ class LocalConfigManager:
             if bi is None:
                 return 'unknown setting', None
             return bi.path, bi.val
-        #
+
         # lm.readGlobalSettingsFiles is opening a settings file.
         # lm.readGlobalSettingsFiles has not yet set lm.globalSettingsDict.
         assert d is None
@@ -1994,7 +1994,7 @@ class LocalConfigManager:
                 # It's important to filter empty strokes here.
                 aList = [z for z in aList if z.stroke and z.stroke.lower() != 'none']
             return key, aList
-        #
+
         # lm.readGlobalSettingsFiles is opening a settings file.
         # lm.readGlobalSettingsFiles has not yet set lm.globalSettingsDict.
         return None, []
@@ -2230,7 +2230,7 @@ class LocalConfigManager:
             h = h[:i].strip()
         p.h = f"{h} = {value}"
         print(f"Updated `{setting}` in {fn}")  # #2390.
-        #
+
         # Delay the second redraw until idle time.
         c.setChanged()
         p.setDirty()

@@ -139,7 +139,7 @@ if g.app.gui.guiName() == "qt":
             self.owner = owner
             super().__init__()
             uiPath = g.os_path_join(g.app.leoDir, 'plugins', 'ToDo.ui')
-            #
+
             # change dir to get themed icons, needed for uic resources
             # These are icons for todo UI, not the tree.
             theme = g.app.config.getString('color-theme')

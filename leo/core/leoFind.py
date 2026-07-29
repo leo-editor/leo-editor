@@ -3452,13 +3452,13 @@ class LeoFind:
             return
         if not g.isTextWrapper(w):
             return
-        #
+
         # #1436: Don't create a selection if there isn't one.
         #        Leave the search pattern alone!
-        #
+
         # if not w.hasSelection():
         #     c.editCommands.extendToWord(event=None, select=True, w=w)
-        #
+
         # #177:  Use selected text as the find string.
         # #1436: Make make sure there is a significant search pattern.
         s = w.getSelectedText()

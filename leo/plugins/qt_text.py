@@ -72,14 +72,14 @@ def zoom_helper(event: LeoKeyEvent | None, delta: int) -> None:
             g.trace('text zoom disabled')
         return
     wrapper = c.frame.body.wrapper
-    #
+
     # For performance, don't call c.styleSheetManager.reload_style_sheets().
     # Apply to body widget directly
     c._style_deltas['font-size-body'] += delta
     ssm = c.styleSheetManager
     sheet = ssm.expand_css_constants(c.active_stylesheet)
     wrapper.widget.setStyleSheet(sheet)
-    #
+
     # #490: Honor language-specific settings.
     colorizer = getattr(c.frame.body, 'colorizer', None)
     if not colorizer:
@@ -1028,7 +1028,7 @@ if QtWidgets:
             """
             # pylint: disable = too-many-locals
             c, vc, w = self.leo_c, self.leo_c.vimCommands, self
-            #
+
             # First, call the base class paintEvent.
             QtWidgets.QTextBrowser.paintEvent(self, event)
 
@@ -1073,27 +1073,26 @@ if QtWidgets:
                     painter.drawLine(rmargin, 0, rmargin, vp.height())
                 # @-<< paint margin guides >>
 
-            #
             # Are we in vim mode?
             if self.leo_vim_mode is None:
                 self.leo_vim_mode = c.config.getBool('vim-mode', default=False)
-            #
+
             # Are we in command mode?
             if self.leo_vim_mode:
                 in_command = vc and vc.state == 'normal'  # vim mode.
             else:
                 in_command = c.k.unboundKeyAction == 'command'  # vim emulation.
-            #
+
             # Draw the box only in command mode, when w is the body pane, with focus.
             if not in_command or w != c.frame.body.widget or w != g.app.gui.get_focus():
                 set_cursor_width(c.config.getInt('qt-cursor-width') or 1)
                 return
-            #
+
             # Set the width of the cursor.
             font = w.currentFont()
             cursor_width = QtGui.QFontMetrics(font).averageCharWidth()
             set_cursor_width(cursor_width)
-            #
+
             # Draw a box around the cursor.
             qp = QtGui.QPainter()
             qp.begin(self.viewport())
@@ -1349,7 +1348,7 @@ class QMinibufferWrapper(QLineEditWrapper):
 
     def setStyleClass(self, style_class: Any) -> None:
         self.widget.setProperty('style_class', style_class)
-        #
+
         # to get the appearance to change because of a property
         # change, unlike a focus or hover change, we need to
         # re-apply the stylesheet.  But re-applying at the top level

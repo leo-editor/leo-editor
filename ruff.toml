@@ -21,7 +21,6 @@ ignore = [
     "DTZ007",   # Naive datetime constructed using `datetime.datetime.strptime()` without %z
     "DTZ011",   # `datetime.date.today()` used
 
-    "PLR2044",  # Line with empty comment
     "PLW0128",  # Redeclared variable `line` in assignment
     "PYI041",   # Use `float` instead of `int | float`
     

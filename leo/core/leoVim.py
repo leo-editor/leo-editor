@@ -2536,7 +2536,7 @@ class VimCommands:
     def set_property(self, w: QTextMixin, focus_flag: bool) -> None:
         """Set the property of w, depending on focus and state."""
         c, state = self.c, self.state
-        #
+
         # #1221: Use a style sheet based on new settings.
         if focus_flag:
             d = {
@@ -2556,7 +2556,7 @@ class VimCommands:
         # g.trace(setting, border)
         w.setStyleSheet(border)
         return
-        #
+
         # This code doesn't work on Qt 5, because of a Qt bug.
         # It probably isn't coming back.
         # selector = f"vim_{state}" if focus_flag else 'vim_unfocused'

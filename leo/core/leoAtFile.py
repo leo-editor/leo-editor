@@ -299,9 +299,8 @@ class AtFile:
             at.startSentinelComment = delim2
             at.endSentinelComment = delim3
         else:  # pragma: no cover
-            #
             # Emergency!
-            #
+
             # Issue an error only if at.language has been set.
             # This suppresses a message from the markdown importer.
             if not g.unitTesting and at.language:
@@ -1450,7 +1449,7 @@ class AtFile:
         else:  # pragma: no cover
             g.trace(f"Can not happen: {p.h}")
             return
-        #
+
         # Clear the dirty bits in all descendant nodes.
         # The persistence data may still have to be written.
         for p2 in p.self_and_subtree(copy=False):
@@ -1462,7 +1461,7 @@ class AtFile:
         raise IOError if p's path has changed *and* user forbids the write.
         """
         at, c = self, self.c
-        #
+
         # Suppress this message during save-as and save-to commands.
         if c.ignoreChangedPaths:
             return  # pragma: no cover
@@ -1939,7 +1938,7 @@ class AtFile:
             at.startSentinelComment, at.endSentinelComment = marker.getDelims()
             if g.unitTesting:
                 ivars_dict = g.getIvarsDict(at)
-            #
+
             # Write the public and private files to strings.
 
             def put(sentinels: bool) -> str:
@@ -2432,7 +2431,7 @@ class AtFile:
         at = self
         j = g.skip_line(s, i)
         s = s[i:j]
-        #
+
         # #1496: Retire the @doc convention:
         #        Strip all trailing ws here.
         if not s.strip():
@@ -3899,7 +3898,7 @@ class FastAtRead:
                 # Whatever happens, retain the original @delims line.
                 delims = m.group(1).strip()
                 body.append(f"@delims {delims}\n")
-                #
+
                 # Parse the delims.
                 self.delims_pat = re.compile(r'^([^ ]+)\s*([^ ]+)?')
                 m2 = self.delims_pat.match(delims)

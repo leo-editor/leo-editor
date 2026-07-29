@@ -1174,10 +1174,8 @@ class LeoApp:
     # @+node:ekr.20031218072017.1981: *5* app.setIdFromDialog
     def setIdFromDialog(self) -> None:
         """Get leoID from a Tk dialog."""
-        #
         # Don't put up a splash screen: it would obscure the coming dialog.
         self.use_splash_screen = False
-        #
         # Get the id, making sure it is at least three characters long.
         attempt = 0
         id_ = None
@@ -1190,7 +1188,6 @@ class LeoApp:
             id_ = self.cleanLeoID(dialog.val, "")
             if id_ and len(id_) > 2:
                 break
-        #
         # Put result in g.app.leoID.
         # Note: For unit tests, leoTest2.py: create_app sets g.app.leoID.
         if not id_:
@@ -1236,7 +1233,6 @@ class LeoApp:
     # @+node:ekr.20031218072017.2619: *4* app.writeWaitingLog
     def writeWaitingLog(self, c: Cmdr) -> None:
         """Write all waiting lines to the log."""
-        #
         # Do not call g.es, g.es_print, g.pr or g.trace here!
         app = self
         if not c or not c.exists:
@@ -2044,7 +2040,6 @@ class LoadManager:
             d1.setName(settingsName)
             d2.setName(shortcutsName)
             return PreviousSettings(d1, d2)
-        #
         # The file does not exist, or is not valid.
         # Get the settings from the globals settings dicts.
         if lm.globalSettingsDict and lm.globalBindingsDict:  # #1766.
@@ -3056,7 +3051,6 @@ class LoadManager:
             # @+node:ekr.20160718102306.1: *7* LeoStdOut.write
             def write(self, *args: list, **keys: dict) -> None:
                 """Put all non-keyword args to the log pane, as in g.es."""
-                #
                 # Tracing will lead to unbounded recursion unless
                 # sys.stderr has been redirected on the command line.
                 app = g.app
@@ -3887,7 +3881,7 @@ class RecentFilesManager:
     # @+node:ekr.20050424131051: *4* rf.writeRecentFilesFileHelper
     def writeRecentFilesFileHelper(self, fileName: str) -> bool:
         # Don't update the file if it begins with read-only.
-        #
+
         # Part 1: Return False if the first line is "readonly".
         #         It's ok if the file doesn't exist.
         if g.os_path_exists(fileName):

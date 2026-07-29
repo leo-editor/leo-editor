@@ -543,7 +543,7 @@ if docutils:
                 return ''
             out = StringIO()
             reportlab.platypus.SimpleDocTemplate(out, pagesize=reportlab.lib.pagesizes.A4)
-            #
+
             # The 'real' code is doc.build(story)
             visitor.buildFromIntermediateFile(s, story, visitor)
             return out.getvalue()
@@ -575,11 +575,11 @@ if docutils:
                     visitor = dummyPDFTranslator(self, self.document, s)
                 except IOError:
                     return
-            #
+
             # Create a list of paragraphs using Platypus.
             self.document.walkabout(visitor)
             story = visitor.as_what()
-            #
+
             # Generate self.output.  Gets sent to reportlab.
             self.output = self.createPDF_usingPlatypus(story)
             # Solve the newline problem by brute force.

@@ -314,7 +314,7 @@ class Commands:
         self.in_qt_dialog = False  # True: in a qt dialog.
         self.loading = False  # True: we are loading a file: disables c.setChanged()
         self.promptingForClose = False  # True: lock out additional closing dialogs.
-        #
+
         # Flags for c.outerUpdate...
         self.enableRedrawFlag = True
         self.requestCloseWindow = False
@@ -3016,7 +3016,7 @@ class Commands:
                     prompts=['Arg1: ', ' Arg2: ', ' Arg3: '])
         """
         # @-<< c.interactive docstring >>
-        #
+
         # This pathetic code should be generalized,
         # but it's not as easy as one might imagine.
         c = self

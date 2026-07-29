@@ -433,7 +433,7 @@ class MarkupCommands:
         if not os.path.exists(output_dir):
             g.error(f"output directory not found: {output_dir!r}")
             return
-        #
+
         # Call sphinx-build to write the output file.
         # sphinx-build [OPTIONS] SOURCEDIR OUTPUTDIR [FILENAMES...]
         command = f"sphinx-build {input_dir} {output_dir} {i_path}"

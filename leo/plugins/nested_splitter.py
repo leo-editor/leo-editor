@@ -419,7 +419,7 @@ class NestedSplitter(QtWidgets.QSplitter):
                 # list of top level NestedSplitter windows opened from 'Open Window'
                 # splitter handle context menu
                 root.zoomed = False
-            #
+
             # NestedSplitter is a kind of meta-widget, in that it manages
             # panes across multiple actual splitters, even windows.
             # So to create a signal for a click on splitter handle, we
