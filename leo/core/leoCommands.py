@@ -4804,33 +4804,32 @@ class Commands:
     def add_command(
         self,
         menu: LeoQtMenu,
+        command: Callable,
+        *,  # 2026/07/29
         accelerator: str = '',  # Not used.
-        command: Callable | None = None,
         commandName: str = '',  # Not used.
         label: str = '',  # Not used.
         underline: int = 0,
     ) -> None:
         c = self
-        if command:
-            # Command is one of two callbacks defined in createMenuEntries.
+        assert command is not None  # 2026/07/29
+        # Command is one of two callbacks defined in createMenuEntries.
 
-            def add_commandCallback(c: Commands = c, command: Callable = command) -> Value:
-                val = command()
-                # Careful: func may destroy c.
-                if c.exists:
-                    c.outerUpdate()
-                return val
+        def add_commandCallback(c: Commands = c, command: Callable = command) -> Value:
+            val = command()
+            # Careful: func may destroy c.
+            if c.exists:
+                c.outerUpdate()
+            return val
 
-            menu.add_command(
-                menu,
-                accelerator=accelerator,
-                command=command,
-                commandName=commandName,
-                label=label,
-                underline=underline,
-            )
-        else:
-            g.trace('can not happen: no "command" arg')
+        menu.add_command(
+            menu,
+            accelerator=accelerator,
+            command=command,
+            commandName=commandName,
+            label=label,
+            underline=underline,
+        )
 
     # @+node:ekr.20171123203044.1: *5* c.Menu Enablers
     # @+node:ekr.20040131170659: *6* c.canClone

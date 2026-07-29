@@ -7602,6 +7602,7 @@ def os_startfile(fname: str) -> None:
                 (lambda ito: itPoll(fname, ree, subPopen, g, ito)),
                 delay=1000,
             )
+            assert itoPolldate  # 2026/07/29
             itoPoll.start()
             # Let the Leo-Editor process run
             # so that Leo-Editor is usable while the file is open.
