@@ -13,11 +13,10 @@
 ignore = [
     # New errors.
 
-    "UP009",    # UTF-8 encoding declaration is unnecessary
+    "T100",     # Import for `pudb` found
+    "UP004",    # Class inherits from `object`
     "UP020",    # Use builtin `open`
     "UP024",    # Replace aliased errors with `OSError`
-    
-    "UP004",    # Class inherits from `object`
     "UP028",    # Replace `yield` over `for` loop with `yield from`
     "UP030",    # Use implicit references for positional format fields
     "UP031",    # Use format specifiers instead of percent format
@@ -27,8 +26,6 @@ ignore = [
     "UP037",    # Remove quotes from type annotation
     "UP045",    # Use `X | None` for type annotations
     "W605",     # Invalid escape sequence: `\*`
-    
-    "T100",     # Import for `pudb` found
     "TC004",    # Move import `leo.core.leoNodes.Position` out of type-checking block.
                 # Import is used for more than type hinting.
                 

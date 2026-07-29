@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 Math extension for Python-Markdown
 ==================================
