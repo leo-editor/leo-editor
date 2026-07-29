@@ -2614,7 +2614,7 @@ class LegacyExternalFileImporter:
             elif s.startswith(ignore):
                 # Ignore these. Use comments instead of @doc bodies.
                 pass
-            elif s.startswith(delim1 + '@+others') or s.startswith(delim1 + '@' + lws + '@+others'):
+            elif s.startswith((delim1 + '@+others', delim1 + '@' + lws + '@+others')):
                 self.add(lws + '@others\n', stack)
             elif s.startswith(delim1 + '@<<'):
                 n = len(delim1 + '@<<')

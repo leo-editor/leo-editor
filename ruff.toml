@@ -21,7 +21,6 @@ ignore = [
     "DTZ007",   # Naive datetime constructed using `datetime.datetime.strptime()` without %z
     "DTZ011",   # `datetime.date.today()` used
     
-    "PIE810",   # Call `endswith` once with a `tuple`
     "PIE794",   # Class field `valid_unls` is defined multiple times
     "PIE808",   # Unnecessary `start` argument in `range`
     "PLR2044",  # Line with empty comment

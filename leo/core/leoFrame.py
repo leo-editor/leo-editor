@@ -1640,7 +1640,7 @@ class NullTree(LeoTree):
         w = self.headline_wrapper(p)
         if w:
             w.delete(0, w.getLastIndex())
-            if s.endswith('\n') or s.endswith('\r'):
+            if s.endswith(('\n', '\r')):
                 s = s[:-1]
             w.insert(0, s)
         else:

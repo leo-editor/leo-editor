@@ -1046,7 +1046,7 @@ class ScreenShotController:
         sc = self
         assert hasattr(sc, option)
         tag = '@' + option
-        isPath = tag.endswith('_fn') or tag.endswith('_path')
+        isPath = tag.endswith(('_fn', '_path'))
         for p in (sc.slideshow_node, sc.slide_node):
             for child in p.children():
                 h = child.h

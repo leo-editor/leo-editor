@@ -3286,9 +3286,7 @@ class LeoFind:
         elif s in ('\b', 'BackSpace'):
             k.updateLabel(event)
             self.isearch_backspace()
-        elif (
-            s.startswith('Ctrl+') or s.startswith('Alt+') or k.isFKey(s)  # 2011/06/13.
-        ):
+        elif s.startswith(('Ctrl+', 'Alt+')) or k.isFKey(s):
             # End the search.
             self.end_search()
             k.masterKeyHandler(event)
@@ -3397,7 +3395,7 @@ class LeoFind:
         c = self.c
         s = self.ftm.get_change_text()
         c.minibufferWantsFocus()
-        while s.endswith('\n') or s.endswith('\r'):
+        while s.endswith(('\n', '\r')):
             s = s[:-1]
         c.k.extendLabel(s, select=True, protect=False)
 
@@ -3407,7 +3405,7 @@ class LeoFind:
         ftm = c.findCommands.ftm
         s = ftm.get_find_text()
         c.minibufferWantsFocus()
-        while s.endswith('\n') or s.endswith('\r'):
+        while s.endswith(('\n', '\r')):
             s = s[:-1]
         k.extendLabel(s, select=True, protect=protect)
 

@@ -6232,7 +6232,7 @@ def wrap_lines(lines: list[str], pageWidth: int, firstLineWidth: int | None = No
             # not one character less
             #
             wordLen = len(word)
-            if line.endswith('.') or line.endswith('?') or line.endswith('!'):
+            if line.endswith(('.', '?', '!')):
                 space = ' ' * sentenceSpacingWidth
             else:
                 space = ' '

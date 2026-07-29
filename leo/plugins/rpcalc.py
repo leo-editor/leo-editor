@@ -908,7 +908,7 @@ class CalcDlg(QWidget):  # type: ignore
         self.calc = CalcCore()
         self.setWindowTitle('rpCalc')
         modPath = os.path.abspath(sys.path[0])
-        if modPath.endswith('.zip') or modPath.endswith('.exe'):
+        if modPath.endswith(('.zip', '.exe')):
             modPath = os.path.dirname(modPath)  # for py2exe/cx_freeze
 
         iconPathList = [iconPath]
@@ -2012,7 +2012,7 @@ class Option:
             self.path = os.path.join(userPath, fileName)
             if not os.path.exists(self.path):
                 modPath = os.path.abspath(sys.path[0])
-                if modPath.endswith('.zip') or modPath.endswith('.exe'):
+                if modPath.endswith(('.zip', '.exe')):
                     modPath = os.path.dirname(modPath)  # for py2exe/cx_freeze
                 self.path = os.path.join(modPath, fileName)
                 if not os.access(self.path, os.W_OK):

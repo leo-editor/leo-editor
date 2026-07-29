@@ -645,7 +645,7 @@ if docutils:
                         if para:
                             self.putParaFromIntermediateFile(para, style)
                             para = []
-                    elif line.startswith('starttag:') or line.startswith('..'):
+                    elif line.startswith(('starttag:', '..')):
                         pass
                     else:
                         para.append(line)

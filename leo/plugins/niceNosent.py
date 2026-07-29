@@ -67,7 +67,7 @@ def onPostSave(tag=None, keywords=None):
             # @+node:ekr.20040331151007.3: *3* << add a newline before def or class >>
             for i, s in enumerate(lines):
                 ls = s.lstrip()
-                if ls.startswith("def ") or ls.startswith("class "):
+                if ls.startswith(("def ", "class ")):
                     try:
                         if lines[i - 1].strip() != "":
                             lines[i] = "\n" + lines[i]
