@@ -153,6 +153,7 @@ if TYPE_CHECKING:  # pragma: no cover
     Widget = Any  # 'Any' is the correct annotation for base class widgets.
 
     PositionGenerator = Generator[Position, None, None]
+    VNodeGenerator = Generator[VNode, None, None]
 
 # @-<< leoCommands annotations >>
 
@@ -1481,13 +1482,13 @@ class Commands:
     # These methods are a fundamental, unchanging, part of Leo's API.
     # @+node:ekr.20091001141621.6061: *4* c.Generators
     # @+node:ekr.20091001141621.6043: *5* c.all_nodes & all_unique_nodes
-    def all_nodes(self) -> Generator:
+    def all_nodes(self) -> VNodeGenerator:
         """A generator returning all vnodes in the outline, in outline order."""
         c = self
         for p in c.all_positions():
             yield p.v
 
-    def all_unique_nodes(self) -> Generator:
+    def all_unique_nodes(self) -> VNodeGenerator:
         """A generator returning each vnode of the outline."""
         c = self
         for p in c.all_unique_positions(copy=False):
@@ -1499,7 +1500,7 @@ class Commands:
     all_unique_vnodes_iter = all_unique_nodes
 
     # @+node:ekr.20091001141621.6044: *5* c.all_positions
-    def all_positions(self, copy: bool = True) -> Generator:
+    def all_positions(self, copy: bool = True) -> PositionGenerator:
         """A generator return all positions of the outline, in outline order."""
         c = self
         p = c.rootPosition()
@@ -1514,7 +1515,7 @@ class Commands:
     safe_all_positions = all_positions
 
     # @+node:ekr.20191014093239.1: *5* c.all_positions_for_v
-    def all_positions_for_v(self, v: VNode, stack: list[tuple] | None = None) -> Generator:
+    def all_positions_for_v(self, v: VNode, stack: list[tuple] | None = None) -> PositionGenerator:
         """
         Generates all positions p in this outline where p.v is v.
 
@@ -1533,7 +1534,7 @@ class Commands:
             g.es_print(f"not a VNode: {v!r}")
             return  # Stop the generator.
 
-        def allinds(v: VNode, target_v: VNode) -> Generator:
+        def allinds(v: VNode, target_v: VNode) -> Generator[int, None, None]:
             """Yield all indices i such that v.children[i] == target_v."""
             for i, x in enumerate(v.children):
                 if x is target_v:
@@ -1554,7 +1555,7 @@ class Commands:
                 stack.pop(0)
 
     # @+node:ekr.20161120121226.1: *5* c.all_roots
-    def all_roots(self, copy: bool = True, predicate: Callable | None = None) -> Generator:
+    def all_roots(self, copy: bool = True, predicate: Callable | None = None) -> PositionGenerator:
         """
         A generator yielding *all* the root positions in the outline that
         satisfy the given predicate. p.isAnyAtFileNode is the default
@@ -1576,7 +1577,7 @@ class Commands:
                 p.moveToThreadNext()
 
     # @+node:ekr.20091001141621.6062: *5* c.all_unique_positions
-    def all_unique_positions(self, copy: bool = True) -> Generator:
+    def all_unique_positions(self, copy: bool = True) -> PositionGenerator:
         """
         A generator return all positions of the outline, in outline order.
         Returns only the first position for each vnode.
@@ -1597,7 +1598,9 @@ class Commands:
     all_positions_with_unique_vnodes_iter = all_unique_positions
 
     # @+node:ekr.20161120125322.1: *5* c.all_unique_roots
-    def all_unique_roots(self, copy: bool = True, predicate: Callable | None = None) -> Generator:
+    def all_unique_roots(
+        self, copy: bool = True, predicate: Callable | None = None
+    ) -> PositionGenerator:
         """
         A generator yielding all unique root positions in the outline that
         satisfy the given predicate. p.isAnyAtFileNode is the default
@@ -1621,7 +1624,7 @@ class Commands:
                 p.moveToThreadNext()
 
     # @+node:felix.20250908230144.1: *5* c.all_root_children
-    def all_root_children(self, copy: bool = True) -> Generator:
+    def all_root_children(self, copy: bool = True) -> PositionGenerator:
         """
         A generator that returns all the (hidden-root's) top children Positions.
         """
@@ -1773,7 +1776,7 @@ class Commands:
         # Original idea by Виталије Милошевић (Vitalije Milosevic).
         # Modified by EKR.
 
-        def v_and_parents(v: VNode) -> Generator:
+        def v_and_parents(v: VNode) -> VNodeGenerator:
             if v in seen:
                 return
             seen.add(v)
