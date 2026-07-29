@@ -121,7 +121,7 @@ def onSave(tag, keys):
     c = keys.get('c')
     if not c:
         return None
-    if getattr(c, '_leo_cloud'):
+    if getattr(c, '_leo_cloud', None):
         c._leo_cloud.save_clouds()
     return None  # explicitly not stopping save1 hook
 
