@@ -7590,7 +7590,7 @@ def os_startfile(fname: str) -> None:
         ree: io.FileIO | None = None
         try:
             wre = tempfile.NamedTemporaryFile()
-            ree = io.open(wre.name, 'rb', buffering=0)
+            ree = open(wre.name, 'rb', buffering=0)
         except IOError:
             g.trace(f"error opening temp file for {fname!r}")
             if ree:

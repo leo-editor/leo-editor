@@ -3745,7 +3745,7 @@ class RecentFilesManager:
         if not g.os_path_exists(fileName):
             return False
         try:
-            with io.open(fileName, encoding='utf-8', mode='r') as f:
+            with open(fileName, encoding='utf-8', mode='r') as f:
                 try:  # Fix #471.
                     lines = f.readlines()
                 except Exception:
@@ -3885,7 +3885,7 @@ class RecentFilesManager:
         # Part 1: Return False if the first line is "readonly".
         #         It's ok if the file doesn't exist.
         if g.os_path_exists(fileName):
-            with io.open(fileName, encoding='utf-8', mode='r') as f:
+            with open(fileName, encoding='utf-8', mode='r') as f:
                 try:
                     # Fix #471.
                     lines = f.readlines()
@@ -3895,7 +3895,7 @@ class RecentFilesManager:
                     return False
         # Part 2: write the files.
         try:
-            with io.open(fileName, encoding='utf-8', mode='w') as f:
+            with open(fileName, encoding='utf-8', mode='w') as f:
                 s = '\n'.join(self.recentFiles) if self.recentFiles else '\n'
                 f.write(g.toUnicode(s))
                 return True
