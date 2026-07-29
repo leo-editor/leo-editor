@@ -15,9 +15,6 @@ ignore = [
     
     # Significant.
    
-    "B019",     # Use of `functools.lru_cache` or `functools.cache` on methods can lead to memory leaks
-    "B020",     # Loop control variable `p` overrides iterable it iterates
-    "B023",     # Function definition does not bind loop variable `name`
     "B026",     # Star-arg unpacking after a keyword argument is strongly discouraged
     "BLE001",   # Do not catch blind exception: `Exception`
 
@@ -101,6 +98,8 @@ ignore = [
     # New suppressions: Keep these for now.
     
     "B008",     # Do not perform function call in argument defaults
+    "B019",     # Use of `functools.lru_cache` or `functools.cache` on methods can lead to memory leaks
+    "B020",     # Loop control variable `p` overrides iterable it iterates
     "C400",     # Unnecessary generator (rewrite as a list comprehension)
     "C401",     # Unnecessary generator (rewrite as a set comprehension)
     "C402",     # Unnecessary generator (rewrite as a dict comprehension)
