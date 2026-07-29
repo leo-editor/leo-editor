@@ -2772,8 +2772,10 @@ class Commands:
                 )
                 try:
                     with open(filename, 'bw') as f:
-                        for s in g.splitLines(translated_contents):
-                            f.write(g.toEncodedString(s, reportErrors=True))
+                        f.writelines(  # PR #4827
+                            g.toEncodedString(s, reportErrors=True)
+                            for s in g.splitLines(translated_contents)
+                        )
                     g.es_print('')
                     g.es_print(f"Wrote {filename}")
                     g.es_print('')

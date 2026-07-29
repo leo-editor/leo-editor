@@ -13,11 +13,6 @@
 ignore = [
     # New errors.
     
-    # Significant.
-   
-    # "B026",     # Star-arg unpacking after a keyword argument is strongly discouraged
-    "BLE001",   # Do not catch blind exception: `Exception`
-
     # Deprecated functions.
     
     "DTZ003",   # `datetime.datetime.utcnow()` used
@@ -26,8 +21,7 @@ ignore = [
     "DTZ007",   # Naive datetime constructed using `datetime.datetime.strptime()` without %z
     "DTZ011",   # `datetime.date.today()` used
 
-    "FLY002",   # Consider `f'{root.h}-->{p.h}'` instead of string join
-    "FURB122",  # Use of `f.write` in a for loop
+    # "FURB122",  # Use of `f.write` in a for loop
     "FURB132",  # Use `tags.discard(tag)` instead of check and `remove`
     
     "PIE810",   # Call `endswith` once with a `tuple`
@@ -67,9 +61,6 @@ ignore = [
 
     # Maybe.
     
-    "PERF102",  # When using only the values of a dict use the `values()` method
-    "PERF402",  # Use `list` or `list.copy` to create a copy of a list
-    "PLC0206",  # Extracting value from dictionary without calling `.items()`
     "PIE790",   # Unnecessary `pass` statement
     "PIE807",   # Prefer `list` over useless lambda
     "PLR0402",  # Use `from leo.plugins.importers import otl` in lieu of alias
@@ -100,6 +91,7 @@ ignore = [
     "B008",     # Do not perform function call in argument defaults
     "B019",     # Use of `functools.lru_cache` or `functools.cache` on methods can lead to memory leaks
     "B020",     # Loop control variable `p` overrides iterable it iterates
+    "BLE001",   # Do not catch blind exception: `Exception`
     "C400",     # Unnecessary generator (rewrite as a list comprehension)
     "C401",     # Unnecessary generator (rewrite as a set comprehension)
     "C402",     # Unnecessary generator (rewrite as a dict comprehension)
@@ -110,9 +102,13 @@ ignore = [
     "C413",     # Unnecessary `list()` call around `sorted()`
     "C414",     # Unnecessary `list()` call within `sorted()`
     "C417",     # Unnecessary `map()` usage (rewrite using a generator expression)
+    "FLY002",   # Consider `f'{root.h}-->{p.h}'` instead of string join
     "FURB105",  # Unnecessary empty string passed to `print`
     "FURB167",  # Use of regular expression alias `re.M`
     "FURB188",  # Prefer `str.removesuffix()` over conditionally replacing with slice.
+    "PERF102",  # When using only the values of a dict use the `values()` method
+    "PERF402",  # Use `list` or `list.copy` to create a copy of a list
+    "PLC0206",  # Extracting value from dictionary without calling `.items()`
     "PLR1704",  # Redefining argument with the local name `p`
     "S102",     # Use of `exec` detected
     "S110",     # `try`-`except`-`pass` detected, consider logging the exception
