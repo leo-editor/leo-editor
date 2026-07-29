@@ -1193,7 +1193,10 @@ class ViewRenderedController(QtWidgets.QWidget):
         """Display the markdown text in `s` in the VR pane."""
         c = self.c
         p = c.p
-        s = s.strip().strip('"""').strip("'''").strip()
+        for prefix in ('"""', "'''"):  # PR #4827
+            if s.startswith(prefix):
+                s = s.removeprefix(prefix).removesuffix(prefix)
+        s = s.strip()
         isHtml = s.startswith('<') and not s.startswith('<<')
         # Do this regardless of whether we show the widget or not.
         w = self.get_base_text_widget()
@@ -1423,7 +1426,10 @@ class ViewRenderedController(QtWidgets.QWidget):
     # @+node:ekr.20110320120020.14477: *4* vr.update_rst & helpers
     def update_rst(self, s: str, keywords: Any) -> None:
         """Show the rst text in `s` in the VR pane."""
-        s = s.strip().strip('"""').strip("'''").strip()
+        for prefix in ('"""', "'''"):  # PR #4827
+            if s.startswith(prefix):
+                s = s.removeprefix(prefix).removesuffix(prefix)
+        s = s.strip()
         isHtml = s.startswith('<') and not s.startswith('<<')
 
         # Do this regardless of whether we show the widget or not.
