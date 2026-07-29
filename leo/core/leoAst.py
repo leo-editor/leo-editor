@@ -180,13 +180,13 @@ import textwrap
 
 # import time
 import tokenize
-from typing import Any, Generator, Optional, TYPE_CHECKING
+from typing import Any, Generator, TYPE_CHECKING
 
 if TYPE_CHECKING:
     AnyToken = Any
     Node = ast.AST
     Value = Any
-    Settings = Optional[dict[str, Value]]
+    Settings = dict[str, Value] | None
 
 try:
     from leo.core import leoGlobals as g
@@ -343,7 +343,7 @@ if 1:  # pragma: no cover
 
     # @+node:ekr.20200113154120.1: *3* functions: tokens
     # @+node:ekr.20191223093539.1: *4* function: find_anchor_token
-    def find_anchor_token(node: Node, global_token_list: list[Token]) -> Optional[Token]:
+    def find_anchor_token(node: Node, global_token_list: list[Token]) -> Token | None:
         """
         Return the anchor_token for node, a token such that token.node == node.
 
@@ -352,7 +352,7 @@ if 1:  # pragma: no cover
 
         node1 = node
 
-        def anchor_token(node: Node) -> Optional[Token]:
+        def anchor_token(node: Node) -> Token | None:
             """Return the anchor token in node.token_list"""
             # Careful: some tokens in the token list may have been killed.
             for token in get_node_token_list(node, global_token_list):
@@ -655,7 +655,7 @@ if 1:  # pragma: no cover
         return tokens
 
     # @+node:ekr.20191027075648.1: *4* function: parse_ast
-    def parse_ast(s: str) -> Optional[Node]:
+    def parse_ast(s: str) -> Node | None:
         """
         Parse string s, catching & reporting all exceptions.
         Return the ast node, or None.
@@ -683,7 +683,7 @@ if 1:  # pragma: no cover
     # @+node:ekr.20191223095408.1: *3* node/token nodes...
     # Functions that associate tokens with nodes.
     # @+node:ekr.20200120082031.1: *4* function: find_statement_node
-    def find_statement_node(node: Node) -> Optional[Node]:
+    def find_statement_node(node: Node) -> Node | None:
         """
         Return the nearest statement node.
         Return None if node has only Module for a parent.
@@ -750,7 +750,7 @@ if 1:  # pragma: no cover
         )  # fmt: skip
 
     # @+node:ekr.20191231082137.1: *4* function: nearest_common_ancestor
-    def nearest_common_ancestor(node1: Node, node2: Node) -> Optional[Node]:
+    def nearest_common_ancestor(node1: Node, node2: Node) -> Node | None:
         """
         Return the nearest common ancestor node for the given nodes.
 
@@ -1507,7 +1507,7 @@ class InputToken:
         self.line = ''  # The entire line containing the token.
         self.line_number = 0  # The line number, for errors and dumps.
         self.level = 0
-        self.node: Optional[Node] = None
+        self.node: Node | None = None
 
     def __repr__(self) -> str:  # pragma: no cover
         s = f"{self.index:<3} {self.kind}"
@@ -1663,7 +1663,7 @@ class Token:
         # Same as five_tuple.start[0]
         self.line_number = 0
         self.level = 0
-        self.node: Optional[Node] = None
+        self.node: Node | None = None
 
     def __repr__(self) -> str:  # pragma: no cover
         s = f"{self.index:<3} {self.kind}"
@@ -2005,7 +2005,7 @@ class TokenOrderGenerator:
     # @+node:ekr.20220402052020.1: *3* tog: synchronizer...
     # The synchronizer sync tokens to nodes.
     # @+node:ekr.20200110162044.1: *4* tog.find_next_significant_token
-    def find_next_significant_token(self) -> Optional[Token]:
+    def find_next_significant_token(self) -> Token | None:
         """
         Scan from *after* self.tokens[px] looking for the next significant
         token.
@@ -2206,7 +2206,7 @@ class TokenOrderGenerator:
                 break
 
     # @+node:ekr.20231214054225.1: *5* tog.find_next_non_ws_token
-    def find_next_non_ws_token(self) -> Optional[Token]:
+    def find_next_non_ws_token(self) -> Token | None:
         """
         Scan from *after* self.tokens[px] looking for the next token that isn't
         whitespace.
@@ -3399,7 +3399,7 @@ class TokenOrderGenerator:
     # withitem = (expr context_expr, expr? optional_vars)
 
     def do_With(self, node: Node) -> None:
-        expr: Optional[ast.AST] = getattr(node, 'context_expression', None)
+        expr: ast.AST | None = getattr(node, 'context_expression', None)
         items: list[ast.AST] = getattr(node, 'items', [])
         self.name('with')
         self.visit(expr)
