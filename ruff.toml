@@ -15,8 +15,6 @@ ignore = [
     
     # Significant.
    
-    # "B010",     # Do not call `setattr` with a constant attribute value. It is not any safer than normal property access.
-    "B018",     # Found useless expression. Either assign it to a variable or remove it.
     "B019",     # Use of `functools.lru_cache` or `functools.cache` on methods can lead to memory leaks
     "B020",     # Loop control variable `p` overrides iterable it iterates
     "B023",     # Function definition does not bind loop variable `name`

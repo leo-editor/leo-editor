@@ -174,10 +174,8 @@ class FTPurl:
     def readline(self):
         """Read one entire line from the remote file."""
         self.lst: list
-        try:
-            self.lst
-        except AttributeError:
-            self.lst = self.read().splitlines(1)
+        if not hasattr(self, 'lst'):
+            self.lst = self.read().splitlines(1)  # PR #4827
 
         if self.currentLine < len(self.lst):
             s = self.lst[self.currentLine]
