@@ -6461,24 +6461,32 @@ def enl(tabName: str = 'Log') -> None:
 
 
 # @+node:ekr.20100914094836.5892: *3* g.error, g.note, g.warning, g.red, g.blue
-def blue(*args: Args, **kwargs: KWargs) -> None:
-    g.es_print(color='blue', *args, **kwargs)
+# PR #4827
+
+
+def blue(*args: Args, **kwargs: Any) -> None:
+    kwargs['color'] = 'blue'
+    g.es_print(*args, **kwargs)
 
 
 def error(*args: Args, **kwargs: KWargs) -> None:
-    g.es_print(color='error', *args, **kwargs)
+    kwargs['color'] = 'error'
+    g.es_print(*args, **kwargs)
 
 
 def note(*args: Args, **kwargs: KWargs) -> None:
-    g.es_print(color='note', *args, **kwargs)
+    kwargs['color'] = 'note'
+    g.es_print(*args, **kwargs)
 
 
 def red(*args: Args, **kwargs: KWargs) -> None:
-    g.es_print(color='red', *args, **kwargs)
+    kwargs['color'] = 'red'
+    g.es_print(*args, **kwargs)
 
 
 def warning(*args: Args, **kwargs: KWargs) -> None:
-    g.es_print(color='warning', *args, **kwargs)
+    kwargs['color'] = 'warning'
+    g.es_print(*args, **kwargs)
 
 
 # @+node:ekr.20070626132332: *3* g.es

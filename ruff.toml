@@ -15,7 +15,7 @@ ignore = [
     
     # Significant.
    
-    "B026",     # Star-arg unpacking after a keyword argument is strongly discouraged
+    # "B026",     # Star-arg unpacking after a keyword argument is strongly discouraged
     "BLE001",   # Do not catch blind exception: `Exception`
 
     # Deprecated functions.
