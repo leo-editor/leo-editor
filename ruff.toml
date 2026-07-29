@@ -13,12 +13,11 @@
 ignore = [
     # New errors.
 
-    "UP008",    # Use `super()` instead of `super(__class__, self)`
     "UP009",    # UTF-8 encoding declaration is unnecessary
     "UP020",    # Use builtin `open`
     "UP024",    # Replace aliased errors with `OSError`
     
-    "UP004",    # Class `PluginCatalog` inherits from `object`
+    "UP004",    # Class inherits from `object`
     "UP028",    # Replace `yield` over `for` loop with `yield from`
     "UP030",    # Use implicit references for positional format fields
     "UP031",    # Use format specifiers instead of percent format
