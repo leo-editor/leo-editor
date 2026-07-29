@@ -20,9 +20,7 @@ ignore = [
     "DTZ006",   # `datetime.datetime.fromtimestamp()` called without a `tz` argument
     "DTZ007",   # Naive datetime constructed using `datetime.datetime.strptime()` without %z
     "DTZ011",   # `datetime.date.today()` used
-    
-    "PIE794",   # Class field `valid_unls` is defined multiple times
-    "PIE808",   # Unnecessary `start` argument in `range`
+
     "PLR2044",  # Line with empty comment
     "PLW0128",  # Redeclared variable `line` in assignment
     "PYI041",   # Use `float` instead of `int | float`
@@ -104,6 +102,7 @@ ignore = [
     "FURB188",  # Prefer `str.removesuffix()` over conditionally replacing with slice.
     "PERF102",  # When using only the values of a dict use the `values()` method
     "PERF402",  # Use `list` or `list.copy` to create a copy of a list
+    "PIE794",   # Class field `valid_unls` is defined multiple times
     "PLC0206",  # Extracting value from dictionary without calling `.items()`
     "PLR1704",  # Redefining argument with the local name `p`
     "S102",     # Use of `exec` detected

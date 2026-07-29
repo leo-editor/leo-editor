@@ -316,7 +316,7 @@ def getStyleSheet():
         ),
         alias='topic-title',
     )
-    for i in range(0, 15):
+    for i in range(15):
         indent = 18 * i
         stylesheet.add(
             ParagraphStyle(

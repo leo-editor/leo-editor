@@ -3639,7 +3639,7 @@ def set_delims_from_string(s: str) -> tuple[str, str, str]:
         delims[2] = delims[1]
         delims[1] = delims[0]
         delims[0] = ''
-    for i in range(0, 3):
+    for i in range(3):
         if delims[i]:
             if delims[i].startswith("@0x"):
                 # Allow delimiter definition as @0x + hexadecimal encoded delimiter

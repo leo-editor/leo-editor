@@ -1618,7 +1618,7 @@ class TokenSync:
         The strings in self.lines may end in a backslash, so care is needed.
         '''
         n, result = len(self.lines), []
-        for i in range(0, n + 1):
+        for i in range(n + 1):
             result.append([])
         for token in tokens:
             t1, t2, t3, t4, t5 = token
