@@ -13,8 +13,7 @@
 ignore = [
     # New errors.
 
-    "T100",     # Import for `pudb` found
-    "UP004",    # Class inherits from `object`
+    # "UP004",    # Class inherits from `object`
     "UP020",    # Use builtin `open`
     "UP024",    # Replace aliased errors with `OSError`
     "UP028",    # Replace `yield` over `for` loop with `yield from`
@@ -101,6 +100,7 @@ ignore = [
     "S110",     # `try`-`except`-`pass` detected, consider logging the exception
     "S112",     # `try`-`except`-`continue` detected, consider logging the exception
     "SIM905",   # Consider using a list literal instead of `str.split`
+    "T100",     # Import for `xxx` found
     "TRY004",   # Prefer `TypeError` exception for invalid type
 
     # Previous suppressions. Keep these.

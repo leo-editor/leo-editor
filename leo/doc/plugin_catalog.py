@@ -73,7 +73,7 @@ def err(s):
     sys.stderr.write(s)
     sys.stderr.flush()
 #@+node:ekr.20111018061632.15913: ** class PluginCatalog
-class PluginCatalog(object):
+class PluginCatalog:
 
     """see module docs. and make_parser()"""
 
