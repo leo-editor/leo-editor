@@ -1444,6 +1444,7 @@ class GitDiffController:
         if not d:
             return
         # Clone nodes only if they are in the current branch.
+        # This logic isn't always correct, but it will do for now.
         branches_match = (
             branch == rev2 or
             rev2 == 'HEAD' or
@@ -1776,8 +1777,8 @@ class GitDiffController:
         c1: Cmdr,
         c2: Cmdr,
         fn: str,
-        rev1: str = '',
-        rev2: str = '',
+        rev1: str,
+        rev2: str,
     ) -> None:
         """Create an outline-oriented diff from the *hidden* outlines c1 and c2."""
         branch, _commit = g.gitInfo()
