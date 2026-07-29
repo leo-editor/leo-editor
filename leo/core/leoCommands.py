@@ -3445,7 +3445,7 @@ class Commands:
                     re.compile(regex)
                 except Exception:
                     g.trace(f"Bad regex: {regex!s}")
-                    return None
+                    return
         # Get the script.
         script = g.getScript(
             c,

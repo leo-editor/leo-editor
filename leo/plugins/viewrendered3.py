@@ -1771,13 +1771,12 @@ def viewrendered(event):
     # global controllers
     gui = g.app.gui
     if gui.guiName() != 'qt':
-        return None
+        return
     c = event.get('c')
     if not c:
-        return None
+        return
 
     getVr3({'c': c})
-    return None  # Make pylint happy
 
 
 # @+node:TomP.20200112232719.1: *3* g.command('vr3-execute')

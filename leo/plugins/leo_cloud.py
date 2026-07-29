@@ -120,10 +120,10 @@ def onCreate(tag, keys):
 def onSave(tag, keys):
     c = keys.get('c')
     if not c:
-        return None
+        return
     if getattr(c, '_leo_cloud', None):
         c._leo_cloud.save_clouds()
-    return None  # explicitly not stopping save1 hook
+    return  # explicitly not stopping save1 hook
 
 
 # @+node:ekr.20201012111338.6: ** lc_read_current (leo_cloud.py)

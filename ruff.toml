@@ -13,8 +13,6 @@
 ignore = [
     # New errors.
 
-    "PYI041",   # Use `float` instead of `int | float`
-    "RET501",   # Do not explicitly `return None` in function if it is the only possible return value
     "RUF010",   # Use explicit conversion flag
     "RUF012",   # Mutable default value for class attribute
     "RUF013",   # PEP 484 prohibits implicit `Optional`
@@ -100,6 +98,7 @@ ignore = [
     "PIE794",   # Class field `valid_unls` is defined multiple times
     "PLC0206",  # Extracting value from dictionary without calling `.items()`
     "PLR1704",  # Redefining argument with the local name `p`
+    "PYI041",   # Use `float` instead of `int | float`
     "S102",     # Use of `exec` detected
     "S110",     # `try`-`except`-`pass` detected, consider logging the exception
     "S112",     # `try`-`except`-`continue` detected, consider logging the exception
