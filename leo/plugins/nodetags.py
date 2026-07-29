@@ -266,8 +266,7 @@ class TagController:
         v = p.v
         # In case JSON storage (leo_cloud plugin) converted to list.
         tags = set(v.u.get(self.TAG_LIST_KEY, set([])))
-        if tag in tags:
-            tags.remove(tag)
+        tags.discard(tag)  # PR #4827
         if tags:
             v.u[self.TAG_LIST_KEY] = tags
         else:

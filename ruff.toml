@@ -20,9 +20,6 @@ ignore = [
     "DTZ006",   # `datetime.datetime.fromtimestamp()` called without a `tz` argument
     "DTZ007",   # Naive datetime constructed using `datetime.datetime.strptime()` without %z
     "DTZ011",   # `datetime.date.today()` used
-
-    # "FURB122",  # Use of `f.write` in a for loop
-    "FURB132",  # Use `tags.discard(tag)` instead of check and `remove`
     
     "PIE810",   # Call `endswith` once with a `tuple`
     "PIE794",   # Class field `valid_unls` is defined multiple times
