@@ -4805,14 +4805,14 @@ class Commands:
         self,
         menu: LeoQtMenu,
         command: Callable,
-        *,  # 2026/07/29
+        *,  # PR #4826
         accelerator: str = '',  # Not used.
         commandName: str = '',  # Not used.
         label: str = '',  # Not used.
         underline: int = 0,
     ) -> None:
         c = self
-        assert command is not None  # 2026/07/29
+        assert command is not None  # PR #4826
         # Command is one of two callbacks defined in createMenuEntries.
 
         def add_commandCallback(c: Commands = c, command: Callable = command) -> Value:
