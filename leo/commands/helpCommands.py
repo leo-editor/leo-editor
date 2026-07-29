@@ -447,7 +447,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
             if m is None:
                 break
             name = m.group(1)
-            junk, aList = c.config.getShortcut(name)
+            _, aList = c.config.getShortcut(name)
             for bi in aList:
                 if bi.pane == 'all':
                     key = c.k.prettyPrintKey(bi.stroke.s)

@@ -1570,7 +1570,7 @@ class LeoServer:
         if derived:
             ic.importDerivedFiles(parent=c.p, paths=derived)
         for fn in others:
-            junk, ext = g.os_path_splitext(fn)
+            _, ext = g.os_path_splitext(fn)
             ext = ext.lower()  # #1522
             if ext.startswith('.'):
                 ext = ext[1:]

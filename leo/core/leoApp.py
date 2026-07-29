@@ -3847,7 +3847,7 @@ class RecentFilesManager:
         if g.unitTesting or g.app.inBridge:
             return
         if localFileName := c.fileName():
-            localPath, junk = g.os_path_split(localFileName)
+            localPath, _ = g.os_path_split(localFileName)
         else:
             localPath = None
         written = False

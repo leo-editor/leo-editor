@@ -231,8 +231,8 @@ class LeoBody:
             # #1742: Move j back if it is at the start of a line.
             if j > i and j > 0 and s[j - 1] == '\n':
                 j -= 1
-            i, junk = g.getLine(s, i)
-            junk, j = g.getLine(s, j)
+            i, _ = g.getLine(s, i)
+            _, j = g.getLine(s, j)
         before = g.checkUnicode(s[0:i])
         sel = g.checkUnicode(s[i:j])
         after = g.checkUnicode(s[j : len(s)])
@@ -800,7 +800,7 @@ class LeoLog:
         lines = s.split('\n')
         # Return False if no lines match initially. This is an efficiency measure.
         for line in lines:
-            m, junk, junk = find_match(line)
+            m, _, _ = find_match(line)
             if m:
                 break
         else:

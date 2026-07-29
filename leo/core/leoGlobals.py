@@ -3208,7 +3208,7 @@ def findTabWidthDirectives(c: Cmdr, p: Position) -> int | None:
                 word = m.group(0)
                 i = m.start(0)
                 j = g.skip_ws(s, i + len(word))
-                junk, w = g.skip_long(s, j)
+                _, w = g.skip_long(s, j)
                 if w == 0:
                     w = None
     return w
@@ -3509,7 +3509,7 @@ def scanAtTabwidthDirectives(aList: list, issue_error_flag: bool = False) -> int
     for d in aList:
         s = d.get('tabwidth')
         if s is not None:
-            junk, val = g.skip_long(s, 0)
+            _, val = g.skip_long(s, 0)
             if val not in (None, 0):
                 return val
             if issue_error_flag and not g.unitTesting:
@@ -4071,7 +4071,7 @@ def readFileIntoString(
         e, bytes_s = g.stripBOM(bytes_s)
         if not e:
             # Python's encoding comments override everything else.
-            junk, ext = g.os_path_splitext(fileName)
+            _, ext = g.os_path_splitext(fileName)
             if ext == '.py':
                 e = g.getPythonEncodingFromString(bytes_s)
         s = g.toUnicode(bytes_s, encoding=e or encoding)

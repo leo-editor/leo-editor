@@ -671,7 +671,7 @@ class AtFile:
         """Read one @asis node. Used only by refresh-from-disk"""
         at, c = self, self.c
         fn = c.fullPath(p)
-        junk, ext = g.os_path_splitext(fn)
+        _, ext = g.os_path_splitext(fn)
         # Remember the full fileName.
         at.rememberReadPath(fn, p)
         s, e = g.readFileIntoString(fn, kind='@edit')
@@ -773,7 +773,7 @@ class AtFile:
         )
         old_private_lines = self.write_at_clean_sentinels(root)
         marker = x.markerFromFileLines(old_private_lines, fileName)
-        old_public_lines, junk = x.separate_sentinels(old_private_lines, marker)
+        old_public_lines, _ = x.separate_sentinels(old_private_lines, marker)
         if old_public_lines:
             new_private_lines = x.propagate_changed_lines(
                 new_public_lines, old_private_lines, marker, p=root
@@ -838,7 +838,7 @@ class AtFile:
         c = at.c
         ic = c.importCommands
         fn = c.fullPath(p)
-        junk, ext = g.os_path_splitext(fn)
+        _, ext = g.os_path_splitext(fn)
         # Fix bug 889175: Remember the full fileName.
         at.rememberReadPath(fn, p)
         s, e = g.readFileIntoString(fn, kind='@edit')
@@ -894,7 +894,7 @@ class AtFile:
         # The body of the update algorithm.
         new_public_lines = g.splitLines(contents)
         old_private_lines = self.write_at_clean_sentinels(root)
-        old_public_lines, junk = x.separate_sentinels(old_private_lines, marker)
+        old_public_lines, _ = x.separate_sentinels(old_private_lines, marker)
         new_private_lines = x.propagate_changed_lines(
             new_public_lines, old_private_lines, marker, p=root
         )
@@ -1488,7 +1488,7 @@ class AtFile:
         """Common helper for atAutoToString and writeOneAtAutoNode."""
         at, c = self, self.c
         # Dispatch the proper writer.
-        junk, ext = g.os_path_splitext(fileName)
+        _, ext = g.os_path_splitext(fileName)
         if writer := at.dispatch(ext, root):
             at.outputList = []
             writer(root)
@@ -1976,7 +1976,7 @@ class AtFile:
         there is a conflict between it and c.target_language."""
         at = self
         c = at.c
-        junk, ext = g.os_path_splitext(fn)
+        _, ext = g.os_path_splitext(fn)
         if ext:
             if ext.startswith('.'):
                 ext = ext[1:]
@@ -2298,7 +2298,7 @@ class AtFile:
         """
         at = self
         i = g.skip_ws(p.h, 0)
-        isSection, junk = at.isSectionName(p.h, i)
+        isSection, _ = at.isSectionName(p.h, i)
         if isSection:
             return False  # A section definition node.
         if at.sentinels:
@@ -2393,7 +2393,7 @@ class AtFile:
         """
         at = self
         if ref := g.findReference(name, p):
-            junk, delta = g.skip_leading_ws_with_indent(s, i, at.tab_width)
+            _, delta = g.skip_leading_ws_with_indent(s, i, at.tab_width)
             at.putLeadInSentinel(s, i, n1)
             at.indent += delta
             at.putSentinel("@+" + name)
@@ -3192,19 +3192,19 @@ class AtFile:
         except IndentationError:  # pragma: no cover
             if g.unitTesting:
                 raise
-            junk2, msg, junk = sys.exc_info()
+            _, msg, _ = sys.exc_info()
             g.error("IndentationError in", p.h)
             g.es('', str(msg))
         except tokenize.TokenError:  # pragma: no cover
             if g.unitTesting:
                 raise
-            junk3, msg, junk = sys.exc_info()
+            _, msg, _ = sys.exc_info()
             g.error("TokenError in", p.h)
             g.es('', str(msg))
         except tabnanny.NannyNag:
             if g.unitTesting:
                 raise
-            junk4, nag, junk = sys.exc_info()
+            _, nag, _ = sys.exc_info()
             badline = nag.get_lineno()  # type:ignore
             line = nag.get_line()  # type:ignore
             message = nag.get_msg()  # type:ignore

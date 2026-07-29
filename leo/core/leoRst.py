@@ -362,7 +362,7 @@ class RstCommands:
     def write_docutils_files(self, fn: str, p: Position, source: str) -> None:
         """Write source to the intermediate file and write the output from docutils.."""
         assert p == self.root, (repr(p), repr(self.root))
-        junk, ext = g.os_path_splitext(fn)
+        _, ext = g.os_path_splitext(fn)
         ext = ext.lower()
         fn = self.computeOutputFileName(fn)
         ok = self.createDirectoryForFile(fn)
@@ -439,7 +439,7 @@ class RstCommands:
         Return True if the directory existed or was made.
         """
         c = self.c
-        theDir, junk = g.os_path_split(fn)
+        theDir, _ = g.os_path_split(fn)
         theDir = g.finalize(theDir)
         if g.os_path_exists(theDir):
             return True

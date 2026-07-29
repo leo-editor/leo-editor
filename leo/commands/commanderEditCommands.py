@@ -407,7 +407,7 @@ def extract(self: Self, event: LeoKeyEvent | None = None) -> None:
         return  # Nothing selected.
 
     # Remove leading whitespace.
-    junk, ws = g.skip_leading_ws_with_indent(lines[0], 0, c.tab_width)
+    _, ws = g.skip_leading_ws_with_indent(lines[0], 0, c.tab_width)
     lines = [g.removeLeadingWhitespace(s, ws, c.tab_width) for s in lines]
     h = lines[0].strip()
     ref_h = extractRef(c, h).strip()

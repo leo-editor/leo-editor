@@ -465,7 +465,7 @@ class ShadowController:
         """Return the sentinel delimiter comment to be used for filename."""
         at, x = self.c.atFileCommands, self
         s = x.findLeoLine(lines)
-        ok, junk, start, end, junk = at.parseLeoSentinel(s)
+        ok, _, start, end, _ = at.parseLeoSentinel(s)
         if end:
             delims = '', start, end
         else:

@@ -1151,7 +1151,7 @@ class FileNameChooser:
             for ext in self.filterExt:
                 tabList = [z for z in tabList if not z.endswith(ext)]
         tabList = [g.os_path_normslashes(z) for z in tabList]
-        junk, common_prefix = g.itemsMatchingPrefixInList(path, tabList)
+        _, common_prefix = g.itemsMatchingPrefixInList(path, tabList)
         return common_prefix, tabList
 
     # @+node:ekr.20140813052702.18197: *3* fnc.do_back_space
@@ -1260,7 +1260,7 @@ class FileNameChooser:
             self.set_label(normslashes(label))
             k.setState(tag, 1, self.get_file_name)
             self.log.selectTab(self.tabName)
-            junk, tabList = self.compute_tab_list()
+            _, tabList = self.compute_tab_list()
             self.show_tab_list(tabList)
             c.minibufferWantsFocus()
         elif char == 'Escape':
@@ -1394,7 +1394,7 @@ class GetArg:
                 w.delete(i, j)
                 w.setSelectionRange(i, i, insert=ins)
         if w.getAllText().strip():
-            junk, tabList = self.compute_tab_list(self.tabList)
+            _, tabList = self.compute_tab_list(self.tabList)
             # Do *not* extend the label to the common prefix.
         else:
             tabList = []
@@ -2358,7 +2358,7 @@ class KeyHandlerClass:
             ('demoNextKey', 'demo-next'),
             ('demoPrevKey', 'demo-prev'),
         ):
-            junk, aList = c.config.getShortcut(commandName)
+            _, aList = c.config.getShortcut(commandName)
             aList, found = aList or [], False
             for pane in ('text', 'all'):
                 for bi in aList:
@@ -3365,7 +3365,7 @@ class KeyHandlerClass:
         else:
             # Try to get a stroke from leoSettings.leo.
             stroke = None
-            junk, aList = c.config.getShortcut(commandName)
+            _, aList = c.config.getShortcut(commandName)
             for bi in aList:
                 if bi.stroke and not bi.pane.endswith('-mode'):
                     stroke = bi.stroke

@@ -12,25 +12,13 @@
 [lint]
 ignore = [
     # New errors.
-    
-    # Deprecated functions.
-    
-    "DTZ003",   # `datetime.datetime.utcnow()` used
-    "DTZ005",   # `datetime.datetime.now()` called without a `tz` argument
-    "DTZ006",   # `datetime.datetime.fromtimestamp()` called without a `tz` argument
-    "DTZ007",   # Naive datetime constructed using `datetime.datetime.strptime()` without %z
-    "DTZ011",   # `datetime.date.today()` used
 
-    "PLW0128",  # Redeclared variable `line` in assignment
     "PYI041",   # Use `float` instead of `int | float`
-    
     "RET501",   # Do not explicitly `return None` in function if it is the only possible return value
-    
     "RUF010",   # Use explicit conversion flag
     "RUF012",   # Mutable default value for class attribute
     "RUF013",   # PEP 484 prohibits implicit `Optional`
     "RUF100",   # Unused blanket `noqa` directive
-
     "UP007",    # Use `X | Y` for type annotations
     "UP008",    # Use `super()` instead of `super(__class__, self)`
     "UP009",    # UTF-8 encoding declaration is unnecessary
@@ -51,6 +39,14 @@ ignore = [
     "T100",     # Import for `pudb` found
     "TC004",    # Move import `leo.core.leoNodes.Position` out of type-checking block.
                 # Import is used for more than type hinting.
+                
+    # Deprecated functions.
+    
+    "DTZ003",   # `datetime.datetime.utcnow()` used
+    "DTZ005",   # `datetime.datetime.now()` called without a `tz` argument
+    "DTZ006",   # `datetime.datetime.fromtimestamp()` called without a `tz` argument
+    "DTZ007",   # Naive datetime constructed using `datetime.datetime.strptime()` without %z
+    "DTZ011",   # `datetime.date.today()` used
 
     # Maybe.
     

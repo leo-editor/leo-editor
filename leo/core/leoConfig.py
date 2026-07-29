@@ -524,7 +524,7 @@ class ParserBaseClass:
             if g.match_word(h, 0, '@menu'):
                 if name := h[len('@menu') :].strip():
                     for z in aList:
-                        name2, junk, junk = z
+                        name2, _, _ = z
                         if name2 == name:
                             self.error(f"Replacing previous @menu {name}")
                             break
@@ -1354,7 +1354,7 @@ class GlobalConfigManager:
         """Return true if a setting of the given kind exists, even if it is None."""
         lm = g.app.loadManager
         if d := lm.globalSettingsDict:
-            junk, found = self.getValFromDict(d, setting, kind)
+            _, found = self.getValFromDict(d, setting, kind)
             return found
         return False
 
@@ -1365,7 +1365,7 @@ class GlobalConfigManager:
         lm = g.app.loadManager
         if d := lm.globalSettingsDict:
             assert isinstance(d, g.SettingsDict), d.__class__.__name__
-            val, junk = self.getValFromDict(d, setting, kind)
+            val, _ = self.getValFromDict(d, setting, kind)
             return val
         return None
 
@@ -1731,7 +1731,7 @@ class LocalConfigManager:
         """Get the setting and make sure its type matches the expected type."""
         if d := self.settingsDict:
             assert isinstance(d, g.SettingsDict), repr(d)
-            val, junk = self.getValFromDict(d, setting, kind)
+            val, _ = self.getValFromDict(d, setting, kind)
             return val
         return None
 
@@ -2055,7 +2055,7 @@ class LocalConfigManager:
     def exists(self, setting: str, kind: str) -> bool:
         """Return true if a setting of the given kind exists, even if it is None."""
         if d := self.settingsDict:
-            junk, found = self.getValFromDict(d, setting, kind)
+            _, found = self.getValFromDict(d, setting, kind)
             if found:
                 return True
         return False

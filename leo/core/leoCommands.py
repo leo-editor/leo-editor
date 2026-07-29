@@ -1805,7 +1805,7 @@ class Commands:
             """Return the extension for @<file> nodes."""
             if v.isAnyAtFileNode():
                 name = v.anyAtFileNodeName()
-                junk, ext = g.os_path_splitext(name)
+                _, ext = g.os_path_splitext(name)
                 ext = ext[1:]  # strip the leading period.
                 language = g.app.extension_dict.get(ext, '')
                 if g.isValidLanguage(language):
@@ -3759,7 +3759,7 @@ class Commands:
                     base_dir = ''
         if base_dir and g.os_path_exists(base_dir):
             if use_git_prefix:
-                git_branch, junk = g.gitInfo()
+                git_branch, _ = g.gitInfo()
             else:
                 git_branch = ''
             theDir, fn = g.os_path_split(c.fileName())

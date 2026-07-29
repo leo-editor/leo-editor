@@ -1734,7 +1734,7 @@ class GitDiffController:
         new_public_lines = g.splitLines(s)
         old_private_lines = at.write_at_clean_sentinels(hidden_root)
         marker = x.markerFromFileLines(old_private_lines, fn)
-        old_public_lines, junk = x.separate_sentinels(old_private_lines, marker)
+        old_public_lines, _ = x.separate_sentinels(old_private_lines, marker)
         if old_public_lines:
             # Fix #1136: The old lines might not exist.
             new_private_lines = x.propagate_changed_lines(

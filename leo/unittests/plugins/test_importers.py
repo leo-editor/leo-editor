@@ -971,7 +971,7 @@ class TestHtml(BaseTestImporter):
         c = self.c
         # Simulate @data import-html-tags, with *only* standard tags.
         tags_list = ['html', 'body', 'head', 'div', 'script', 'table']
-        settingsDict, junk = g.app.loadManager.createDefaultSettingsDicts()
+        settingsDict, _ = g.app.loadManager.createDefaultSettingsDicts()
         c.config.settingsDict = settingsDict
         c.config.set(c.p, 'data', 'import-html-tags', tags_list, warn=True)
 
@@ -5296,7 +5296,7 @@ class TestXML(BaseTestImporter):
         c = self.c
         # Simulate @data import-xml-tags, with *only* standard tags.
         tags_list = ['html', 'body', 'head', 'div', 'script', 'table']
-        settingsDict, junk = g.app.loadManager.createDefaultSettingsDicts()
+        settingsDict, _ = g.app.loadManager.createDefaultSettingsDicts()
         c.config.settingsDict = settingsDict
         c.config.set(c.p, 'data', 'import-xml-tags', tags_list, warn=True)
 

@@ -309,10 +309,10 @@ class To_Python:  # pragma: no cover
         n = len(comment_lines)
         assert n > 0
         s = comment_lines[0]
-        junk, w = g.skip_leading_ws_with_indent(s, 0, tab_width=4)
+        _, w = g.skip_leading_ws_with_indent(s, 0, tab_width=4)
         if n == 1:
             return [f"{' ' * (w - 1)}# {s.strip()}"]
-        junk, w = g.skip_leading_ws_with_indent(s, 0, tab_width=4)
+        _, w = g.skip_leading_ws_with_indent(s, 0, tab_width=4)
         result: list[str] = []
         for i, s in enumerate(comment_lines):
             if s.strip():

@@ -3402,13 +3402,13 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
     def isAutoFile(self, fn: str) -> bool:
         """Return true if fn (a file name) can be parsed with an @auto parser."""
         d = g.app.classDispatchDict
-        junk, ext = g.os_path_splitext(fn)
+        _, ext = g.os_path_splitext(fn)
         return bool(d.get(ext))
 
     # @+node:ekr.20120309075544.9881: *9* LeoQTreeWidget.isBinaryFile
     def isBinaryFile(self, fn: str) -> bool:
         # The default for unknown files is True. Not great, but safe.
-        junk, ext = g.os_path_splitext(fn)
+        _, ext = g.os_path_splitext(fn)
         ext = ext.lower()
         if not ext:
             val = False

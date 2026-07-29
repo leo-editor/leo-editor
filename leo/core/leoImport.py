@@ -79,7 +79,7 @@ class FreeMindImporter:
     def create_outline(self, path: str) -> Position:
         """Create a tree of nodes from a FreeMind file."""
         c = self.c
-        junk, fileName = g.os_path_split(path)
+        _, fileName = g.os_path_split(path)
         undoData = c.undoer.beforeInsertNode(c.p)
         try:
             self.import_file(path)
@@ -479,7 +479,7 @@ class LeoImportCommands:
             at = self.c.atFileCommands
             j = g.skip_line(s, i)
             line = s[i:j]
-            valid, junk, start_delim, end_delim, junk = at.parseLeoSentinel(line)
+            valid, _, start_delim, end_delim, _ = at.parseLeoSentinel(line)
             if not valid:
                 g.es("invalid @+leo sentinel in", fileName)
                 return
@@ -649,7 +649,7 @@ class LeoImportCommands:
         Init ivars imports and read the file into s.
         Return ext, s.
         """
-        junk, self.fileName = g.os_path_split(fileName)
+        _, self.fileName = g.os_path_split(fileName)
         self.methodName, self.fileType = g.os_path_splitext(self.fileName)
         if not ext:
             ext = self.fileType
@@ -866,7 +866,7 @@ class LeoImportCommands:
     def createOutlineFromWeb(self, path: str, parent: Position) -> Position:
         c = self.c
         u = c.undoer
-        junk, fileName = g.os_path_split(path)
+        _, fileName = g.os_path_split(path)
         undoData = u.beforeInsertNode(parent)
         # Create the top-level headline.
         p = parent.insertAfter()
@@ -1398,7 +1398,7 @@ class MindMapImporter:
     # @+node:ekr.20160503130209.1: *3* mindmap.create_outline
     def create_outline(self, path: str) -> Position:
         c = self.c
-        junk, fileName = g.os_path_split(path)
+        _, fileName = g.os_path_split(path)
         undoData = c.undoer.beforeInsertNode(c.p)
         # Create the top-level headline.
         p = c.lastTopLevel().insertAfter()
@@ -1580,14 +1580,14 @@ class MORE_Importer:
             return None
         if not self.check_lines(strings):
             return None
-        firstLevel, junk = self.headlineLevel(strings[0])
+        firstLevel, _ = self.headlineLevel(strings[0])
         lastLevel = -1
         theRoot = last_p = None
         index = 0
         while index < len(strings):
             progress = index
             s = strings[index]
-            level, junk = self.headlineLevel(s)
+            level, _ = self.headlineLevel(s)
             level -= firstLevel
             if level >= 0:
                 # @+<< Link a new position p into the outline >>
@@ -1625,7 +1625,7 @@ class MORE_Importer:
                 index += 1  # Skip the headline.
                 while index < len(strings):
                     s = strings[index]
-                    level, junk = self.headlineLevel(s)
+                    level, _ = self.headlineLevel(s)
                     level -= firstLevel
                     if level >= 0:
                         break
@@ -2573,7 +2573,7 @@ class LegacyExternalFileImporter:
     # @+node:ekr.20200424160847.1: *3* legacy.compute_delim1
     def compute_delim1(self, path: str) -> str | None:
         """Return the opening comment delim for the given file."""
-        junk, ext = os.path.splitext(path)
+        _, ext = os.path.splitext(path)
         if not ext:
             return None
         language = g.app.extension_dict.get(ext[1:])

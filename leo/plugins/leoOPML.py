@@ -716,7 +716,7 @@ class SaxContentHandler(xml.sax.saxutils.XMLGenerator):
         if data is None:
             g.trace('unknown element', name)
         else:
-            junk, func = data
+            _, func = data
             if func:
                 func()
         name2 = self.elementStack.pop()
@@ -744,7 +744,7 @@ class SaxContentHandler(xml.sax.saxutils.XMLGenerator):
         if data is None:
             g.trace('unknown element', name)
         else:
-            func, junk = data
+            func, _ = data
             if func:
                 func(attrs)
 

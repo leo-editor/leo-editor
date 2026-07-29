@@ -950,7 +950,7 @@ class Position:
             if n == 0:
                 parent_v = v.context.hiddenRootNode
             else:
-                parent_v, junk = p.stack[n - 1]
+                parent_v, _ = p.stack[n - 1]
             if len(parent_v.children) > childIndex + 1:
                 # v has a next sibling.
                 return True
@@ -1385,7 +1385,7 @@ class Position:
         if not p.v or p.v == c.hiddenRootNode:
             return c.hiddenRootNode
         if data := p.stack and p.stack[-1]:
-            v, junk = data
+            v, _ = data
             return v
         return c.hiddenRootNode
 

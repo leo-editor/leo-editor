@@ -225,7 +225,7 @@ class GlobalSearch:
         outlines: dict = {}
         for r in res:
             if '#' in r["parent"]:
-                file_name, junk = r["parent"].split('#', 1)
+                file_name, _ = r["parent"].split('#', 1)
             else:
                 file_name = r["parent"]
             outlines.setdefault(file_name, []).append(r)

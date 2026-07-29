@@ -1936,7 +1936,7 @@ class Undoer:
         aList.reverse()
         for p in aList:
             if p.stack:
-                parent_v, junk = p.stack[-1]
+                parent_v, _ = p.stack[-1]
             else:
                 parent_v = c.hiddenRootNode
             p.v._addLink(p._childIndex, parent_v)
