@@ -2312,7 +2312,7 @@ class NullObject:
     def __init__(self, ivars: list[str] | None = None, *args: Args, **kwargs: KWargs) -> None:
         pass
 
-    def __call__(self, *args: Args, **kwargs: KWargs) -> "NullObject":
+    def __call__(self, *args: Args, **kwargs: KWargs) -> NullObject:
         return self
 
     def __repr__(self) -> str:
@@ -2344,7 +2344,7 @@ class NullObject:
     def __setitem__(self, key: str, val: Value) -> None:
         pass
 
-    def __iter__(self) -> "NullObject":
+    def __iter__(self) -> NullObject:
         return self
 
     def __len__(self) -> int:
@@ -2363,7 +2363,7 @@ class TracingNullObject:
     ) -> None:
         tracing_tags[id(self)] = tag  # noqa  # conflict between flake8 and black.
 
-    def __call__(self, *args: Args, **kwargs: KWargs) -> "TracingNullObject":
+    def __call__(self, *args: Args, **kwargs: KWargs) -> TracingNullObject:
         return self
 
     def __repr__(self) -> str:
@@ -2376,7 +2376,7 @@ class TracingNullObject:
     def __delattr__(self, attr: str) -> None:
         return None
 
-    def __getattr__(self, attr: str) -> "TracingNullObject":
+    def __getattr__(self, attr: str) -> TracingNullObject:
         g.null_object_print(id(self), f"attr: {attr}")
         return self  # Required.
 
@@ -2396,7 +2396,7 @@ class TracingNullObject:
         g.null_object_print(id(self), '__getitem__')
         # pylint doesn't like trailing return None.
 
-    def __iter__(self) -> "TracingNullObject":
+    def __iter__(self) -> TracingNullObject:
         g.null_object_print(id(self), '__iter__')
         return self
 
