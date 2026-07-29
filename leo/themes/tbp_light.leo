@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created by Leo: https://leo-editor.github.io/leo-editor/leo_toc.html -->
-<leo_file xmlns:leo="http://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1" >
+<leo_file xmlns:leo="https://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2"/>
 <globals/>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20180312111155.1"><vh>Read me</vh></v>
+<v t="ekr.20180312111155.1" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000007374725f6c656f5f706f7371035805000000322c302c33710473732e"><vh>Read me</vh></v>
 <v t="ekr.20180312110809.1"><vh>Theme Tests</vh>
 <v t="ekr.20180314052441.1"><vh>Syntax coloring template</vh>
 <v t="ekr.20180314052441.2"><vh>&lt;&lt; defined section &gt;&gt;</vh></v>
@@ -15,8 +15,8 @@
 <v t="ekr.20180312110809.4"><vh>Test g.es(color=*)</vh></v>
 <v t="ekr.20180312110809.5"><vh>g.error/note/warning test</vh></v>
 </v>
-<v t="tom.20230218225340.1"><vh>@settings</vh>
-<v t="tom.20230218225340.2"><vh>@theme tbp_light</vh>
+<v t="tom.20230218225340.1" descendentVnodeUnknownAttributes="7d71005803000000302e3071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>@settings</vh>
+<v t="tom.20230218225340.2" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000005f5f626f6f6b6d61726b7371037d7104580700000069735f6475706571054930300a7373732e"><vh>@theme tbp_light</vh>
 <v t="tom.20230218225340.3"><vh>Theme description settings</vh>
 <v t="tom.20230218225340.4"><vh>@bool color_theme_is_dark = False</vh></v>
 <v t="tom.20230218225340.5"><vh>@string color_theme = light</vh></v>
@@ -36,6 +36,7 @@
 <v t="tom.20230218225544.15"><vh>@color base01 = #93a1a1</vh></v>
 <v t="tom.20230218225544.16"><vh>@color base02 = #eee8d5</vh></v>
 <v t="tom.20230218225544.17"><vh>@color base03 = #fdf6e3</vh></v>
+<v t="tom.20260722165724.1"><vh>@color base-0-lighter = #728b94</vh></v>
 <v t="tom.20230218225544.19"><vh>@color solarized-black = #202020</vh></v>
 <v t="tom.20230218225544.20"><vh>@@color solarized-blue = #268bd2</vh></v>
 <v t="tom.20230218225544.22"><vh>@color solarized-cyan = #2aa198</vh></v>
@@ -120,19 +121,20 @@
 <v t="tom.20230218225544.95"><vh>@color button-hover-fg =@base03</vh></v>
 </v>
 </v>
-<v t="tom.20230218225340.96"><vh>Fonts &amp; text sizes</vh>
-<v t="tom.20230218225340.97"><vh>@string font-family = Cousine, Consolas, "Droid Sans Mono", "DejaVu Sans Mono"</vh></v>
-<v t="tom.20230218225340.98"><vh>@string font-family-ui = "Open Sans", "Segoe UI", Verdana, sans-serif</vh></v>
-<v t="tom.20230218225340.99"><vh>@string font-size-text = 10.5pt</vh></v>
-<v t="tom.20230218225340.100"><vh>@string font-size-ui = 9.5pt</vh></v>
-<v t="tom.20230218225340.101"><vh>@string font-size-gutter = 9pt</vh></v>
-<v t="tom.20230218225340.102"><vh>@string font-size-button = @font-size-ui</vh></v>
-<v t="tom.20230218225340.103"><vh>@string font-family-body = @font-family</vh></v>
-<v t="tom.20230218225340.104"><vh>@string font-family-log = @font-family</vh></v>
-<v t="tom.20230218225340.105"><vh>@string font-family-tree = @font-family-ui</vh></v>
-<v t="tom.20230218225340.106"><vh>@string font-size-body = @font-size-text</vh></v>
-<v t="tom.20230218225340.107"><vh>@string font-size-log = @font-size-text</vh></v>
-<v t="tom.20230218225340.108"><vh>@string font-size-tree = @font-size-ui</vh></v>
+<v t="tom.20240813123130.1"><vh>Fonts &amp; text sizes</vh>
+<v t="tom.20240813123130.2"><vh>@string font-family = "Intel One Mono", Cousine, Consolas, "Droid Sans Mono", "DejaVu Sans Mono"</vh></v>
+<v t="tom.20240813123130.3"><vh>@string font-family-ui = "Open Sans", "Segoe UI", Verdana, sans-serif</vh></v>
+<v t="tom.20240813123130.4"><vh>@string font-size-text = 10pt</vh></v>
+<v t="tom.20240813123130.5"><vh>@string font-size-ui = 10.5pt</vh></v>
+<v t="tom.20240813123130.8"><vh>@string font-size-button = 9pt</vh></v>
+<v t="tom.20240813123130.6"><vh>@string font-size-gutter = 8.5pt</vh></v>
+<v t="tom.20240813123130.7"><vh>@int gutter-y-adjust = 5</vh></v>
+<v t="tom.20240813123130.9"><vh>@string font-family-body = @font-family</vh></v>
+<v t="tom.20240813123130.10"><vh>@string font-family-log = @font-family</vh></v>
+<v t="tom.20240813123130.11"><vh>@string font-family-tree = @font-family-ui</vh></v>
+<v t="tom.20240813123130.12"><vh>@string font-size-body = @font-size-text</vh></v>
+<v t="tom.20240813123130.13"><vh>@string font-size-log = @font-size-text</vh></v>
+<v t="tom.20240813123130.14"><vh>@string font-size-tree = @font-size-ui</vh></v>
 </v>
 <v t="tom.20230218225340.109"><vh>Gradients</vh>
 <v t="tom.20230218225340.110"><vh>@string bg-gradient =qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1@text-background-bright, stop:0.4 @text-background, stop:0.6@text-background, stop:0.9 @text-background-bright)</vh></v>
@@ -149,9 +151,11 @@
 <v t="tom.20230218225340.118"><vh>Body &amp; other text</vh></v>
 <v t="tom.20230218225340.119"><vh>Borders</vh></v>
 <v t="tom.20230218225340.120"><vh>Buttons</vh></v>
+<v t="tom.20260722165650.1"><vh>Checkboxes</vh></v>
 <v t="tom.20230218225340.121"><vh>Gutter</vh></v>
 <v t="tom.20230218225340.122"><vh>Menus</vh></v>
 <v t="tom.20230218225340.123"><vh>Minibuffer &amp; label</vh></v>
+<v t="tom.20260722165658.1"><vh>Radio Buttons</vh></v>
 <v t="tom.20230218225340.124"><vh>Scroll bars</vh></v>
 <v t="tom.20230218225340.125"><vh>Status area</vh></v>
 <v t="tom.20230218225340.126"><vh>Splitters</vh></v>
@@ -240,16 +244,6 @@ def spam():
 <t tx="tom.20230218225340.1">@language rest
 @wrap
 </t>
-<t tx="tom.20230218225340.100"></t>
-<t tx="tom.20230218225340.101"></t>
-<t tx="tom.20230218225340.102"></t>
-<t tx="tom.20230218225340.103"></t>
-<t tx="tom.20230218225340.104"></t>
-<t tx="tom.20230218225340.105"></t>
-<t tx="tom.20230218225340.106">(some body text here so there's
-something to see)</t>
-<t tx="tom.20230218225340.107"></t>
-<t tx="tom.20230218225340.108"></t>
 <t tx="tom.20230218225340.109">Utility constants.</t>
 <t tx="tom.20230218225340.110"></t>
 <t tx="tom.20230218225340.111"></t>
@@ -517,10 +511,6 @@ leo_dark_0
 ekr_dark</t>
 <t tx="tom.20230218225340.6"></t>
 <t tx="tom.20230218225340.7"></t>
-<t tx="tom.20230218225340.96">Change these settings to change font sizes.</t>
-<t tx="tom.20230218225340.97"></t>
-<t tx="tom.20230218225340.98"></t>
-<t tx="tom.20230218225340.99"></t>
 <t tx="tom.20230218225544.1"></t>
 <t tx="tom.20230218225544.10">Solarized base03: #002b36</t>
 <t tx="tom.20230218225544.12">@language md
@@ -926,5 +916,52 @@ This is a test
 
 </t>
 <t tx="tom.20230227101705.1"></t>
+<t tx="tom.20240813123130.1">Change these settings to change font sizes.</t>
+<t tx="tom.20240813123130.10"></t>
+<t tx="tom.20240813123130.11"></t>
+<t tx="tom.20240813123130.12">(some body text here so there's
+something to see)</t>
+<t tx="tom.20240813123130.13"></t>
+<t tx="tom.20240813123130.14"></t>
+<t tx="tom.20240813123130.2"></t>
+<t tx="tom.20240813123130.3"></t>
+<t tx="tom.20240813123130.4"></t>
+<t tx="tom.20240813123130.5"></t>
+<t tx="tom.20240813123130.6"></t>
+<t tx="tom.20240813123130.7"></t>
+<t tx="tom.20240813123130.8"></t>
+<t tx="tom.20240813123130.9"></t>
+<t tx="tom.20260722165650.1">QCheckBox::indicator {
+    width: 14px;
+    height: 14px;
+    background-color: @text-background;
+    border: 1px solid @text_foreground;
+}
+
+QCheckBox::indicator:checked {
+    background-color: @base-0-lighter;
+    image: none;
+}
+
+QCheckBox::indicator:unchecked {
+    background-color: @text-background;
+}</t>
+<t tx="tom.20260722165658.1">QRadioButton::indicator {
+    width: 14px;
+    height: 14px;
+    border-radius: 7px;
+    background-color: @text-background;
+    border: 1px solid @text_foreground;
+}
+
+QRadioButton::indicator:checked {
+    background-color: @base-0-lighter;
+    image: none;
+}
+
+QRadioButton::indicator:unchecked {
+    background-color: @text-background;
+}</t>
+<t tx="tom.20260722165724.1"></t>
 </tnodes>
 </leo_file>
