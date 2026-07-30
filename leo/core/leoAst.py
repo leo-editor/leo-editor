@@ -394,8 +394,7 @@ if 1:  # pragma: no cover
                     if node := getattr(node, field, None):
                         if token := anchor_token(node):
                             return token
-                else:
-                    break
+                break
         return None
 
     # @+node:ekr.20191231160225.1: *4* function: find_paren_token

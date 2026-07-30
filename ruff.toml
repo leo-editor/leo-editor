@@ -16,13 +16,8 @@ ignore = [
     "PIE807",   # Prefer `list` over useless lambda
     "PLR0402",  # Use `from leo.plugins.importers import otl` in lieu of alias
     "PLR1730",  # Replace `if` statement with `wsLimit = max(wsLimit, 1)`
-    "PLW0120",  # `else` clause on loop without a `break` statement;remove the `else` and dedent its contents
-    "PLW0406",  # Module `leo.plugins.demo` imports itself
-    "PLW0602",  # Using global for `oldAppCloseLeoWindow` but no assignment is done
-    "PLW1510",  # `subprocess.run` without explicit `check` argument
-    "RUF010",   # Use explicit conversion flag
-    "RUF015",   # Prefer `next(...)` over single element slice
-     
+    # "PLW0120",  # `else` clause on loop without a `break` statement;remove the `else` and dedent its contents
+
     # Good, but do these later.
 
     "RUF013",   # PEP 484 prohibits implicit `Optional`
@@ -63,8 +58,10 @@ ignore = [
     "PLR1704",  # Redefining argument with the local name `p`
     "PYI041",   # Use `float` instead of `int | float`
     
-    # Unused vars.
+    # Refactor? Some of these produce dense code.
+    "RUF010",   # Use explicit conversion flag
     "RUF012",   # Mutable default value for class attribute
+    "RUF015",   # Prefer `next(...)` over single element slice
     "RUF051",   # Use `pop` instead of `key in dict` followed by `del dict[key]`
     "RUF100",   # Unused blanket `noqa` directive
     "RUF059",   # Unpacked variable is never used
@@ -92,6 +89,12 @@ ignore = [
     "UP030",    # Use implicit references for positional format fields
     "UP031",    # Use format specifiers instead of percent format
     "UP032",    # Use f-string instead of `format` call
+    
+    # Do not enable.
+    
+    "PLW0406",  # Module imports itself. There are also pylint suppressions.
+    "PLW0602",  # Using global for but no assignment is done
+    "PLW1510",  # `subprocess.run` without explicit `check` argument
 
     # Previous suppressions. Keep these.
     
