@@ -133,8 +133,9 @@ Tags
 
 # @+<< imports >>
 # @+node:tbrown.20070117104409.2: ** << imports >>
+from collections.abc import Sequence
 from copy import deepcopy
-from typing import Any, Sequence
+from typing import Any
 from leo.core import leoGlobals as g
 from leo.plugins.mod_scripting import scriptingController
 

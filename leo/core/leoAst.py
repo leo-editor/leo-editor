@@ -180,7 +180,8 @@ import textwrap
 
 # import time
 import tokenize
-from typing import Any, Generator, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
+from collections.abc import Generator
 
 if TYPE_CHECKING:
     AnyToken = Any

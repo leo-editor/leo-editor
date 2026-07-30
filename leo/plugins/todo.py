@@ -63,12 +63,12 @@ todo_calendar_cols
 # @+<< todo imports & annotations >>
 # @+node:tbrown.20090119215428.4: ** << todo imports & annotations >>
 from __future__ import annotations
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 import os
 import re
 import datetime
 import time
-from typing import Any, Iterable, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import Qt, QtCore, QtGui, QtWidgets, uic
 from leo.core.leoQt import Checked, Unchecked

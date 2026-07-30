@@ -5,13 +5,14 @@
 # @+<< leoConfig imports & annotations >>
 # @+node:ekr.20041227063801: ** << leoConfig imports & annotations >>
 from __future__ import annotations
+from collections.abc import Callable, Generator
 import copy
 import os
 import sys
 import re
 import textwrap
 import typing
-from typing import Any, Callable, Generator, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from leo.plugins.mod_scripting import build_rclick_tree
 from leo.core import leoGlobals as g
 

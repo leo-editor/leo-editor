@@ -15,7 +15,8 @@ import os
 import pprint
 import sys
 import traceback
-from typing import Any, Sequence
+from collections.abc import Sequence
+from typing import Any
 
 
 # @+others

@@ -3,7 +3,7 @@
 # @+<< leoCommands imports >>
 # @+node:ekr.20040712045933: ** << leoCommands imports >>
 from __future__ import annotations
-from collections.abc import Callable
+from collections.abc import Callable, Generator, Iterable, Sequence
 import glob
 import json
 import os
@@ -15,7 +15,7 @@ import tabnanny
 import tempfile
 import time
 import tokenize
-from typing import cast, Any, Generator, Iterable, Sequence, TYPE_CHECKING
+from typing import cast, Any, TYPE_CHECKING
 import xml.etree.ElementTree as ElementTree
 
 from leo.core import leoGlobals as g

@@ -15,12 +15,12 @@ https://pypi.org/project/docutils/
 # @+<< leoRst imports >>
 # @+node:ekr.20100908120927.5971: ** << leoRst imports >>
 from __future__ import annotations
-from collections.abc import Callable
+from collections.abc import Callable, Generator
 import io
 import os
 import re
 import time
-from typing import Generator, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 # Third-part imports...
 try:

@@ -5,13 +5,13 @@
 # @+<< leoNodes imports & annotations >>
 # @+node:ekr.20060904165452.1: ** << leoNodes imports & annotations >>
 from __future__ import annotations
-from collections.abc import Callable
+from collections.abc import Callable, Generator, Iterable
 import copy
 import os
 import re
 import time
 import uuid
-from typing import Any, Generator, Iterable, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import signal_manager
 

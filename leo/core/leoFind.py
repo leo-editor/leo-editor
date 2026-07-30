@@ -5,11 +5,11 @@
 # @+<< leoFind imports & annotations >>
 # @+node:ekr.20220415005856.1: ** << leoFind imports & annotations >>
 from __future__ import annotations
-from collections.abc import Callable
+from collections.abc import Callable, Generator
 import keyword
 import re
 import time
-from typing import cast, Any, Generator, TYPE_CHECKING
+from typing import cast, Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 from leo.plugins.qt_frame import FindTabManager

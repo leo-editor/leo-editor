@@ -16,7 +16,7 @@ To run externally, do `python -m leo.core.leoserver --password <password>`.
 # pylint: disable=raise-missing-from
 import argparse
 import asyncio
-from collections.abc import Callable
+from collections.abc import Callable, Generator, Iterable, Iterator
 import fnmatch
 import hashlib
 import inspect
@@ -30,7 +30,7 @@ import textwrap
 import time
 import hmac
 import ssl
-from typing import Any, Generator, Iterable, Iterator, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 import warnings
 
 # Third-party.

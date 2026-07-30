@@ -8,11 +8,11 @@
 # @+<< leoColorizer imports >>
 # @+node:ekr.20140827092102.18575: ** << leoColorizer imports >>
 from __future__ import annotations
-from collections.abc import Callable
+from collections.abc import Callable, Generator, Sequence
 import re
 import string
 import time
-from typing import Any, Generator, Sequence, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from types import ModuleType
 import warnings
 

@@ -5,9 +5,9 @@
 # @+<< leoPlugins imports & annotations >>
 # @+node:ekr.20220901071118.1: ** << leoPlugins imports & annotations >>
 from __future__ import annotations
-from collections.abc import Callable
+from collections.abc import Callable, Iterator, Sequence
 import sys
-from typing import Any, Iterator, Sequence, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from types import ModuleType
 from leo.core import leoGlobals as g
 

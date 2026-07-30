@@ -98,9 +98,9 @@ whitespace (calling .strip()).
 # @+<< nodetags imports & annotations >>
 # @+node:ekr.20220828131647.1: ** << nodetags imports & annotations >>
 from __future__ import annotations
-from collections.abc import Callable
+from collections.abc import Callable, Generator
 import re
-from typing import Any, Generator, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 

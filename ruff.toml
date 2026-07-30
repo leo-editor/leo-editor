@@ -12,10 +12,6 @@
 [lint]
 ignore = [
     # New errors.
-
-    "UP031",    # Use format specifiers instead of percent format
-    "UP032",    # Use f-string instead of `format` call
-    "UP035",    # Import from `collections.abc` instead: `Iterable`
                 
     # Good, but do these later.
 
@@ -57,6 +53,8 @@ ignore = [
     "SIM201",   # Use `_last_code_line_num != _numlines - 1` instead of `not _last_code_line_num == _numlines - 1`
     "SIM222",   # Use `True` instead of `True or ...`
     "SIM223",   # Use `False` instead of `False and ...`
+    "UP031",    # Use format specifiers instead of percent format
+    "UP032",    # Use f-string instead of `format` call
 
     # New suppressions: Keep these for now.
     

@@ -45,7 +45,8 @@ Working on this command reminds me why I never want to use or read Lisp!
 # @-<< docstring: indented_languages.py >>
 
 import re
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 from leo.core import leoGlobals as g
 from leo.core.leoNodes import Position
 from leo.plugins.importers.c import C_Importer

@@ -91,11 +91,11 @@ This plugin defines the following commands that can be bound to keys:
 # @+<< quicksearch imports >>
 # @+node:ville.20090314215508.7: ** << quicksearch imports >>
 from __future__ import annotations
-from collections.abc import Callable
+from collections.abc import Callable, Iterable, Iterator
 import fnmatch
 import itertools
 import re
-from typing import Any, Iterable, Iterator
+from typing import Any
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import Qt, QtCore, QtWidgets

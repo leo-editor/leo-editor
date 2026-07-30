@@ -7,7 +7,7 @@
 from __future__ import annotations
 import binascii
 from collections import defaultdict
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 from datetime import datetime
 import difflib
 import hashlib
@@ -20,7 +20,7 @@ import shutil
 import sqlite3
 import tempfile
 import time
-from typing import Any, IO, Iterable, TYPE_CHECKING
+from typing import Any, IO, TYPE_CHECKING
 import zipfile
 import xml.etree.ElementTree as ElementTree
 import xml.sax
