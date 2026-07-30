@@ -23,9 +23,6 @@ ignore = [
     "RUF010",   # Use explicit conversion flag
     "RUF015",   # Prefer `next(...)` over single element slice
     "RUF023",   # ShadowController.__slots__` is not sorted
-    "RUF034",   # Useless `if`-`else` condition
-    # "RUF046",   # Value being cast to `int` is already an integer
-    "RUF051",   # Use `pop` instead of `key in dict` followed by `del dict[key]`
      
     # Good, but do these later.
 
@@ -69,6 +66,7 @@ ignore = [
     
     # Unused vars.
     "RUF012",   # Mutable default value for class attribute
+    "RUF051",   # Use `pop` instead of `key in dict` followed by `del dict[key]`
     "RUF100",   # Unused blanket `noqa` directive
     "RUF059",   # Unpacked variable is never used
     
