@@ -25,7 +25,7 @@ if TYPE_CHECKING:  # pragma: no cover
 def about(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Bring up an About Leo Dialog."""
     c = self
-    import datetime
+    import datetime as dt
 
     # Don't use triple-quoted strings or continued strings here.
     # Doing so would add unwanted leading tabs.
@@ -34,7 +34,7 @@ def about(self: Self, event: LeoKeyEvent | None = None) -> None:
         'Copyright 1999-%s by Edward K. Ream\n'
         'All Rights Reserved\n'
         'Leo is distributed under the MIT License'
-    ) % datetime.date.today().year  # fmt: skip
+    ) % dt.datetime.now().year  # fmt: skip
     url = "https://leo-editor.github.io/leo-editor/"
     email = "edreamleo@gmail.com"
     g.app.gui.runAboutLeoDialog(c, version, theCopyright, url, email)

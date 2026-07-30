@@ -6,7 +6,7 @@
 # @+node:ekr.20140918102920.17891: ** << qt_gui imports >>
 from __future__ import annotations
 from collections.abc import Callable
-import datetime
+import datetime as dt
 import functools
 import re
 import sys
@@ -726,9 +726,9 @@ class LeoQtGui(leoGui.LeoGui):
         c: Cmdr,
         title: str,
         message: str = 'Select Date/Time',
-        init: datetime.datetime | None = None,
+        init: dt.datetime | None = None,
         step_min: dict | None = None,
-    ) -> datetime.datetime | None:
+    ) -> dt.datetime | None:
         """Create and run a qt date/time selection dialog.
 
         init - a datetime, default now
@@ -757,7 +757,7 @@ class LeoQtGui(leoGui.LeoGui):
             def __init__(
                 self,
                 parent: QWidget | None = None,
-                init: datetime.datetime | None = None,
+                init: dt.datetime | None = None,
                 step_min: dict | None = None,
             ) -> None:
                 if step_min is None:
@@ -779,7 +779,7 @@ class LeoQtGui(leoGui.LeoGui):
                 self,
                 parent: QWidget | None = None,
                 message: str = 'Select Date/Time',
-                init: datetime.datetime | None = None,
+                init: dt.datetime | None = None,
                 step_min: dict | None = None,
             ) -> None:
                 if step_min is None:
@@ -802,7 +802,7 @@ class LeoQtGui(leoGui.LeoGui):
         if step_min is None:
             step_min = {}
         if not init:
-            init = datetime.datetime.now()
+            init = dt.datetime.now()
         top_frame: QWidget | None = c.frame.top if c else None
         dialog = Calendar(top_frame, message=message, init=init, step_min=step_min)
         if c:

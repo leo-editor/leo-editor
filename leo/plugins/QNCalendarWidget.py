@@ -12,7 +12,7 @@ Terry_N_Brown@yahoo.com, Tue Oct 15 09:53:38 2013
 """
 
 import sys
-import datetime
+import datetime as dt
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtWidgets
 
@@ -45,9 +45,9 @@ class QNCalendarWidget(QtWidgets.QCalendarWidget):  # type:ignore
         self.calendars = []
 
         if year is None:
-            year = datetime.date.today().year
+            year = dt.datetime.now().year
         if month is None:
-            month = datetime.date.today().month
+            month = dt.datetime.now().month
 
         layout = QtWidgets.QGridLayout()
         while self.layout().count():

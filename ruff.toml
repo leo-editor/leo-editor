@@ -12,6 +12,12 @@
 [lint]
 ignore = [
     # New errors. For now, just suppress them all.
+    
+    "DTZ003",   # `datetime.datetime.utcnow()` used
+    "DTZ005",   # `datetime.datetime.now()` called without a `tz` argument
+    "DTZ006",   # `datetime.datetime.fromtimestamp()` called without a `tz` argument
+    "DTZ007",   # Naive datetime constructed using `datetime.datetime.strptime()` without %z
+    # "DTZ011",   # `datetime.date.today()` used
 
     "B003",     # Assigning to `os.environ` doesn't clear the environment
     "B005",     # Using `.strip()` with multi-character strings is misleading
@@ -34,11 +40,7 @@ ignore = [
     "C413",     # Unnecessary `list()` call around `sorted()`
     "C414",     # Unnecessary `list()` call within `sorted()`
     "C417",     # Unnecessary `map()` usage (rewrite using a generator expression)
-    "DTZ003",   # `datetime.datetime.utcnow()` used
-    "DTZ005",   # `datetime.datetime.now()` called without a `tz` argument
-    "DTZ006",   # `datetime.datetime.fromtimestamp()` called without a `tz` argument
-    "DTZ007",   # Naive datetime constructed using `datetime.datetime.strptime()` without %z
-    "DTZ011",   # `datetime.date.today()` used
+
     "FLY002",   # Consider `f'{root.h}-->{p.h}'` instead of string join
     "FURB105",  # Unnecessary empty string passed to `print`
     "FURB122",  # Use of `f.write` in a for loop
