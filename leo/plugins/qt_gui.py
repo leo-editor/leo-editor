@@ -802,7 +802,7 @@ class LeoQtGui(leoGui.LeoGui):
         if step_min is None:
             step_min = {}
         if not init:
-            init = dt.datetime.now()
+            init = dt.datetime.now(tz=dt.timezone.utc)
         top_frame: QWidget | None = c.frame.top if c else None
         dialog = Calendar(top_frame, message=message, init=init, step_min=step_min)
         if c:

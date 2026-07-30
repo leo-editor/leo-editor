@@ -44,10 +44,11 @@ class QNCalendarWidget(QtWidgets.QCalendarWidget):  # type:ignore
     def build(self, n=3, columns=3, year=None, month=None):
         self.calendars = []
 
+        now = dt.datetime.now(tz=dt.timezone.utc)  # PR #4829
         if year is None:
-            year = dt.datetime.now().year
+            year = now.year
         if month is None:
-            month = dt.datetime.now().month
+            month = now.month
 
         layout = QtWidgets.QGridLayout()
         while self.layout().count():

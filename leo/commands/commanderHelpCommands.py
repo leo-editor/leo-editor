@@ -34,7 +34,7 @@ def about(self: Self, event: LeoKeyEvent | None = None) -> None:
         'Copyright 1999-%s by Edward K. Ream\n'
         'All Rights Reserved\n'
         'Leo is distributed under the MIT License'
-    ) % dt.datetime.now().year  # fmt: skip
+    ) % dt.datetime.now(tz=dt.timezone.utc).year  # fmt: skip
     url = "https://leo-editor.github.io/leo-editor/"
     email = "edreamleo@gmail.com"
     g.app.gui.runAboutLeoDialog(c, version, theCopyright, url, email)

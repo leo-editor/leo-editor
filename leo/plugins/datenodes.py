@@ -172,7 +172,7 @@ class DateNodes:
     # @+node:gfunch.20041208074734: *3* insert_day_node
     def insert_day_node(self, event=None):
         c = self.c
-        today = dt.datetime.now()
+        today = dt.datetime.now(tz=dt.timezone.utc)
         day_fmt = self.settings["day_node_headline"]
         day_node = self._insert_day_node(self.c.p, today, day_fmt)
         c.selectPosition(day_node)
@@ -181,7 +181,7 @@ class DateNodes:
     # @+node:dcb.20060806183928: *3* insert_month_node
     def insert_month_node(self, event=None):
         c = self.c
-        today = dt.datetime.now()
+        today = dt.datetime.now(tz=dt.timezone.utc)
         day_fmt = self.settings["month_node_day_headline"]
         month_fmt = self.settings["month_node_month_headline"]
         omit_saturdays = self.settings["month_node_omit_saturdays"]
@@ -195,7 +195,7 @@ class DateNodes:
     # @+node:dcb.20060806184117: *3* insert_year_node
     def insert_year_node(self, event=None):
         c = self.c
-        today = dt.datetime.now()
+        today = dt.datetime.now(tz=dt.timezone.utc)
         day_fmt = self.settings["year_node_day_headline"]
         month_fmt = self.settings["year_node_month_headline"]
         year_fmt = self.settings["year_node_year_headline"]

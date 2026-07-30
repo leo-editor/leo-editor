@@ -261,28 +261,28 @@ if g.app.gui.guiName() == "qt":
                 self.UI.dueDateEdit,
                 self.UI.dueDateToggle,
                 'setDate',
-                dt.datetime.now() + dt.timedelta(self.date_offset_default),
+                dt.datetime.now(tz=dt.timezone.utc) + dt.timedelta(self.date_offset_default),
             )
 
             self.setDueTime = self.make_func(
                 self.UI.dueTimeEdit,
                 self.UI.dueTimeToggle,
                 'setTime',
-                dt.datetime.now().time(),
+                dt.datetime.now(tz=dt.timezone.utc).time(),
             )
 
             self.setNextWorkDate = self.make_func(
                 self.UI.nxtwkDateEdit,
                 self.UI.nxtwkDateToggle,
                 'setDate',
-                dt.datetime.now() + dt.timedelta(self.date_offset_default),
+                dt.datetime.now(tz=dt.timezone.utc) + dt.timedelta(self.date_offset_default),
             )
 
             self.setNextWorkTime = self.make_func(
                 self.UI.nxtwkTimeEdit,
                 self.UI.nxtwkTimeToggle,
                 'setTime',
-                dt.datetime.now().time(),
+                dt.datetime.now(tz=dt.timezone.utc).time(),
             )
 
             self.UI.butDetails.clicked.connect(
@@ -627,7 +627,7 @@ class todoController:
             iterations = ['progress', 'priority', 'duedate']
         if clear:
             iterations = []
-        today = dt.datetime.now()
+        today = dt.datetime.now(tz=dt.timezone.utc)
         for which in iterations:
             if which == 'priority':
                 pri = self.getat(p.v, 'priority')
@@ -1290,7 +1290,7 @@ class todoController:
 
         p = self.c.currentPosition()
         self.setat(p.v, 'priority', pri)
-        self.setat(p.v, 'prisetdate', str(dt.datetime.now()))
+        self.setat(p.v, 'prisetdate', str(dt.datetime.now(tz=dt.timezone.utc)))
         self.loadIcons(p)
 
     # @+node:tbrown.20090119215428.48: *4* todoController.showDist
@@ -1385,7 +1385,7 @@ class todoController:
             # .strftime doesn't work here! This has has happened...
             try:
                 gdate = self.c.p.v.gnx.split('.')[1][:12]
-                created = dt.datetime.strptime(gdate, '%Y%m%d%H%M')  # noqa
+                created = dt.datetime.strptime(gdate, '%Y%m%d%H%M').replace(tzinfo=dt.timezone.utc)
                 if created.year < 1900:
                     created = None
             except Exception:
@@ -1399,7 +1399,7 @@ class todoController:
         # Update the label.
         h = self.c and self.c.p and self.c.p.h
         due = self.getat(v, 'duedate')
-        now = dt.datetime.now()
+        now = dt.datetime.now(tz=dt.timezone.utc)
         ago = (now - created).days if created else 0
         if due:
             days = (due - now).days
