@@ -866,7 +866,7 @@ class Undoer:
         self,
         p: Position,
         pasteAsClone: bool = False,
-        copiedBunchList: list[g.Bunch] = None,
+        copiedBunchList: list[g.Bunch] | None = None,
     ) -> g.Bunch:
         u = self
         if copiedBunchList is None:
@@ -978,8 +978,8 @@ class Undoer:
         oldText: str,
         newText: str,
         newInsert: int | None = None,
-        oldSel: tuple[int, int] = None,
-        newSel: tuple[int, int] = None,
+        oldSel: tuple[int, int] | None = None,
+        newSel: tuple[int, int] | None = None,
         oldYview: int | None = None,
     ) -> None:
         """

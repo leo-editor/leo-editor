@@ -734,7 +734,7 @@ class QuickSearchController:
 
     # @+node:ekr.20111015194452.15700: *3* Event handlers
     # @+node:ekr.20111015194452.15686: *4* onSelectItem (quicksearch.py)
-    def onSelectItem(self, it: Iterable, it_prev: Iterable = None) -> None:
+    def onSelectItem(self, it: Iterable, it_prev: Iterable | None = None) -> None:
         c = self.c
         if not it:
             return

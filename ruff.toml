@@ -23,8 +23,6 @@ ignore = [
     # To do in separate PRs?
 
     "PLR0402",  # Use `from leo.plugins.importers import otl` in lieu of alias
-    "RUF013",   # PEP 484 prohibits implicit `Optional`
-    # "UP024",    # Replace aliased errors with `OSError`
 
     # New suppressions: Keep these for now.
     
@@ -53,7 +51,7 @@ ignore = [
     "PLR1704",  # Redefining argument with the local name `p`
     "PYI041",   # Use `float` instead of `int | float`
     
-    # Refactor? Some of these produce dense code.
+    # Some of these produce dense code.
     "RUF010",   # Use explicit conversion flag
     "RUF012",   # Mutable default value for class attribute
     "RUF015",   # Prefer `next(...)` over single element slice

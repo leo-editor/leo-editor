@@ -161,7 +161,7 @@ class BaseTest(unittest.TestCase):
         return textwrap.dedent(s.lstrip('\\\n')).rstrip() + '\n'
 
     # @+node:ekr.20200110092217.1: *4* BaseTest.check_roundtrip
-    def check_roundtrip(self, contents, *, debug_list: list[str] = None):
+    def check_roundtrip(self, contents, *, debug_list: list[str] | None = None):
         """Check that the tokenizer round-trips the given contents."""
         contents, tokens, tree = self.make_data(contents, debug_list=debug_list)
         results = tokens_to_string(tokens)
@@ -172,8 +172,8 @@ class BaseTest(unittest.TestCase):
         self,
         contents: str,
         *,
-        description: str = None,
-        debug_list: str = None,
+        description: str = '',
+        debug_list: str = '',
     ) -> tuple[str, list[Token], ast.AST]:  # pragma: no cover
         """Return (contents, tokens, tree) for the given contents."""
         assert contents.strip(), g.callers()

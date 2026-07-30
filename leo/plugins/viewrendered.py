@@ -653,14 +653,14 @@ class ViewRenderedController(QtWidgets.QWidget):
         super().__init__(parent)
         self.create_pane(parent)
         # Ivars set by reloadSettings.
-        self.auto_create: bool = None
-        self.background_color: str = None
-        self.keep_open: bool = None
-        self.katex_template: str = None
-        self.latex_template: str = None
-        self.mathjax_template: str = None
-        self.typst_template: str = None
-        self.pdf_zoom: int = None
+        self.auto_create: bool = False
+        self.background_color: str = ''
+        self.keep_open: bool = False
+        self.katex_template: str = ''
+        self.latex_template: str = ''
+        self.mathjax_template: str = ''
+        self.typst_template: str = ''
+        self.pdf_zoom: int = 0
         # Widgets managed by destroy_widgets.
         self.browser: QWidget = None
         self.gs: QGraphicsScene = None

@@ -112,7 +112,7 @@ class BaseTestImporter(LeoUnitTest):
         return '@file'
 
     # @+node:ekr.20230527075112.1: *3* BaseTestImporter.new_round_trip_test
-    def new_round_trip_test(self, s: str, expected_s: str = None, strict: bool = True) -> None:
+    def new_round_trip_test(self, s: str, expected_s: str = '', strict: bool = True) -> None:
 
         if not expected_s:  # Leo 6.8.7.
             # Define the *strict* expected results.

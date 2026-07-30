@@ -1169,7 +1169,7 @@ class LeoQtGui(leoGui.LeoGui):
         title: str = 'Properties',
         data: Any | None = None,
         callback: Callable | None = None,
-        buttons: list[str] = None,
+        buttons: list[str] | None = None,
     ) -> tuple[str, dict]:
         """Display a modal TkPropertiesDialog"""
         if not g.unitTesting:
@@ -1182,7 +1182,7 @@ class LeoQtGui(leoGui.LeoGui):
         c: Cmdr,
         title: str = 'Save',
         *,
-        filetypes: list[tuple[str, str]] = None,
+        filetypes: list[tuple[str, str]] | None = None,
         defaultextension: str = '',  # Not used.
     ) -> str:
         """Create and run an Qt save file dialog ."""

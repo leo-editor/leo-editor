@@ -609,7 +609,7 @@ class todoController:
 
     # @+node:tbrown.20090119215428.15: *3* todoController.loadAllIcons
     @redrawer
-    def loadAllIcons(self, tag: str = None, k: int = None, clear: bool = None) -> None:
+    def loadAllIcons(self, tag: str = '', k: int | None = None, clear: bool = False) -> None:
         """Load icons to represent cleo state"""
         for p in self.c.all_positions():
             self.loadIcons(p, clear=clear)
@@ -920,8 +920,8 @@ class todoController:
         if p is None:
             p = self.c.currentPosition()
         v = p.v
-        time_totl: str = None
-        time_done: str = None
+        time_totl: str | None = None
+        time_done: str | None = None
 
         # get values from children, if any
         for cn in p.children():
@@ -1323,7 +1323,7 @@ class todoController:
                 )
 
     # @+node:tbrown.20150605111428.1: *3* todoController.updateStyle
-    def updateStyle(self, tag: str = None, k: int = None) -> None:
+    def updateStyle(self, tag: str = '', k: int | None = None) -> None:
         """
         updateStyle - calling widget.setStyleSheet("/* */") is a trick to get Qt to
         update appearance on a widget styled depending on changes in attributes.
@@ -1351,7 +1351,7 @@ class todoController:
                 self._widget_to_style = None
 
     # @+node:tbrown.20090119215428.49: *3* todoController.updateUI
-    def updateUI(self, tag: str = None, k: dict = None) -> None:
+    def updateUI(self, tag: str = '', k: dict | None = None) -> None:
         if k and k['c'] != self.c:
             return  # wrong number
 
