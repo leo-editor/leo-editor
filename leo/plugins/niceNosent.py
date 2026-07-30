@@ -10,11 +10,9 @@ adds a newline before class and functions in the derived file.
 # @-<< docstring >>
 
 import os
-from typing import TYPE_CHECKING
-from leo.core import leoGlobals as g
 
-if TYPE_CHECKING:
-    from leo.core.leoNodes import Position
+from leo.core import leoGlobals as g
+from leo.core.leoNodes import Position
 
 NSPACES = ' ' * 4
 nosentNodes: list[Position] = []

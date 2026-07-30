@@ -16,8 +16,6 @@ ignore = [
     "UP031",    # Use format specifiers instead of percent format
     "UP032",    # Use f-string instead of `format` call
     "UP035",    # Import from `collections.abc` instead: `Iterable`
-    "TC004",    # Move import `leo.core.leoNodes.Position` out of type-checking block.
-                # Import is used for more than type hinting.
                 
     # Good, but do these later.
 
