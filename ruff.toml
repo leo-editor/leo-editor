@@ -15,7 +15,6 @@ ignore = [
     
     "DTZ003",   # `datetime.datetime.utcnow()` used
     "DTZ005",   # `datetime.datetime.now()` called without a `tz` argument
-    "DTZ006",   # `datetime.datetime.fromtimestamp()` called without a `tz` argument
 
     "B003",     # Assigning to `os.environ` doesn't clear the environment
     "B005",     # Using `.strip()` with multi-character strings is misleading

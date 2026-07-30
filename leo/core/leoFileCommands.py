@@ -8,7 +8,7 @@ from __future__ import annotations
 import binascii
 from collections import defaultdict
 from collections.abc import Callable
-from datetime import datetime
+import datetime as dt
 import difflib
 import hashlib
 import io
@@ -698,9 +698,8 @@ class FileCommands:
             return
 
         # Compute the timestamp.
-        timestamp = datetime.now().timestamp()
-        time = datetime.fromtimestamp(timestamp)
-        time_s = time.strftime('%Y-%m-%d-%H-%M-%S')
+        today = dt.datetime.fromtimestamp(time.time(), tz=dt.timezone.utc)  # PR #4829
+        time_s = today.strftime('%Y-%m-%d-%H-%M-%S')
 
         # Compute archive_name.
         archive_name = None
