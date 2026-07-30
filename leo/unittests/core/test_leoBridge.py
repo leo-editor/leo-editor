@@ -3,8 +3,8 @@
 """Tests of leoBridge.py"""
 
 import os
+from leo.core import leoBridge
 from leo.core.leoTest2 import LeoUnitTest
-import leo.core.leoBridge as leoBridge
 
 
 # @+others

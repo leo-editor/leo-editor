@@ -12,10 +12,7 @@ from leo.core.leoTest2 import LeoUnitTest
 from leo.plugins.importers.java import Java_Importer
 from leo.plugins.importers.python import Python_Importer
 from leo.plugins.importers.c import C_Importer
-import leo.plugins.importers.coffeescript as coffeescript
-import leo.plugins.importers.javascript as javascript
-import leo.plugins.importers.markdown as markdown
-import leo.plugins.importers.otl as otl
+from leo.plugins.importers import coffeescript, javascript, markdown, otl
 
 
 # @+others

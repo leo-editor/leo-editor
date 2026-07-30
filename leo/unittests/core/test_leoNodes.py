@@ -899,7 +899,7 @@ class TestNodes(LeoUnitTest):
     # @+node:ekr.20210830095545.34: *4* TestNodes.test_p_moveToVisBack_in_a_chapter
     def test_p_moveToVisBack_in_a_chapter(self):
         # Verify a fix for bug https://bugs.launchpad.net/leo-editor/+bug/1264350
-        import leo.core.leoChapters as leoChapters
+        from leo.core import leoChapters
 
         c, p = self.c, self.c.p
         cc = c.chapterController

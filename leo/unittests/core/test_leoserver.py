@@ -4,7 +4,7 @@
 
 import json
 import os
-import leo.core.leoserver as leoserver
+from leo.core import leoserver
 from leo.core.leoTest2 import LeoUnitTest
 from leo.core import leoGlobals as global_g
 

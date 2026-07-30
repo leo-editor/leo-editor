@@ -1615,7 +1615,7 @@ class LeoQtGui(leoGui.LeoGui):
             yield from self._self_and_subtree(child)
 
     # @+node:ekr.20111027083744.16532: *4* LeoQtGui.enableSignalDebugging
-    import PyQt6.QtTest as QtTest
+    from PyQt6 import QtTest
 
     QSignalSpy = QtTest.QSignalSpy
     assert QSignalSpy

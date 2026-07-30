@@ -22,7 +22,7 @@ ignore = [
 
     # To do in separate PRs?
 
-    "PLR0402",  # Use `from leo.plugins.importers import otl` in lieu of alias
+    # "PLR0402",  # Use `from leo.plugins.importers import otl` in lieu of alias
 
     # New suppressions: Keep these for now.
     

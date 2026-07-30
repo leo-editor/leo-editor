@@ -5,9 +5,8 @@
 from unittest import mock
 
 from leo.core import leoGlobals as g
-import leo.core.leoApp as leoApp
+from leo.core import leoApp, leoExternalFiles
 from leo.core.leoTest2 import LeoUnitTest
-import leo.core.leoExternalFiles as leoExternalFiles
 
 
 # @+others
