@@ -75,7 +75,7 @@ class LeoEditPane(QtWidgets.QWidget):
 
         self.modules = []  # modules we collect widgets from
         self.widget_classes = []  # collected widgets
-        self.widget_for = defaultdict(lambda: [])  # widget by class.lep_type
+        self.widget_for = defaultdict(list)  # widget by class.lep_type
 
         self.c = c
         p = p or self.c.p
