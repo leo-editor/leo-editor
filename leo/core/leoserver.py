@@ -5901,8 +5901,7 @@ def main() -> None:  # pragma: no cover (tested in client)
             sys.exit(1)
 
         # Sanitize limit.
-        if wsLimit < 1:
-            wsLimit = 1
+        wsLimit = max(wsLimit, 1)
 
     # @+node:felix.20260523224253.1: *3* function: get_ssl_context
     def get_ssl_context(cert_path: str | None, key_path: str | None) -> ssl.SSLContext | None:

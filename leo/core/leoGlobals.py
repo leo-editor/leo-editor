@@ -4914,8 +4914,7 @@ def skip_id(s: str, i: int, chars: str = '') -> int:
 def skip_line(s: str, i: int) -> int:
     if i >= len(s):
         return len(s)
-    if i < 0:
-        i = 0
+    i = max(i, 0)
     i = s.find('\n', i)
     if i == -1:
         return len(s)
@@ -4925,8 +4924,7 @@ def skip_line(s: str, i: int) -> int:
 def skip_to_end_of_line(s: str, i: int) -> int:
     if i >= len(s):
         return len(s)
-    if i < 0:
-        i = 0
+    i = max(i, 0)
     i = s.find('\n', i)
     if i == -1:
         return len(s)
@@ -5759,8 +5757,7 @@ def getWord(s: str, i: int) -> tuple[int, int]:
     """Return i,j such that s[i:j] is the word surrounding s[i]."""
     if i >= len(s):
         i = len(s) - 1
-    if i < 0:
-        i = 0
+    i = max(i, 0)
     # Scan backwards.
     while 0 <= i < len(s) and g.isWordChar(s[i]):
         i -= 1
@@ -5780,8 +5777,7 @@ def getLine(s: str, i: int) -> tuple[int, int]:
     """
     if i > len(s):
         i = len(s) - 1
-    if i < 0:
-        i = 0
+    i = max(i, 0)
     # A newline *ends* the line, so look to the left of a newline.
     j = s.rfind('\n', 0, i)
     if j == -1:
@@ -6185,7 +6181,7 @@ def computeWidth(s: str, tab_width: int) -> int:
     return w
 
 
-# @+node:ekr.20110727091744.15083: *4* g.wrap_lines (newer)
+# @+node:ekr.20110727091744.15083: *4* g.wrap_lines
 # @@language rest
 # @+at
 # Important note: this routine need not deal with leading whitespace.
@@ -6201,13 +6197,11 @@ def computeWidth(s: str, tab_width: int) -> int:
 
 def wrap_lines(lines: list[str], pageWidth: int, firstLineWidth: int | None = None) -> list[str]:
     """Returns a list of lines, consisting of the input lines wrapped to the given pageWidth."""
-    if pageWidth < 10:
-        pageWidth = 10
+    pageWidth = max(pageWidth, 10)
     # First line is special
     if not firstLineWidth:
         firstLineWidth = pageWidth
-    if firstLineWidth < 10:
-        firstLineWidth = 10
+    firstLineWidth = max(firstLineWidth, 10)
     outputLineWidth = firstLineWidth
     # Sentence spacing
     # This should be determined by some setting, and can only be either 1 or 2

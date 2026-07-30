@@ -2473,12 +2473,10 @@ class VimCommands:
         # Ensure that i1 <= i2 and that i1 and i2 are in range.
         if i1 > i2:
             i1, i2 = i2, i1
-        if i1 < 0:
-            i1 = 0
+        i1 = max(i1, 0)
         if i1 >= len(s):
             i1 = len(s) - 1
-        if i2 < 0:
-            i2 = 0
+        i2 = max(i2, 0)
         if i2 >= len(s):
             i2 = len(s) - 1
         if s[i2] == '\n':
@@ -2599,8 +2597,7 @@ class VimCommands:
     # @+node:ekr.20140801121720.18080: *4* vc.to_bol & vc.eol
     def to_bol(self, s: str, i: int) -> int:
         """Return the index of the first character on the line containing s[i]"""
-        if i >= len(s):
-            i = len(s)
+        i = min(len(s), i)
         while i > 0 and s[i - 1] != '\n':
             i -= 1
         return i

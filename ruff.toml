@@ -15,8 +15,7 @@ ignore = [
     "PIE790",   # Unnecessary `pass` statement
     "PIE807",   # Prefer `list` over useless lambda
     "PLR0402",  # Use `from leo.plugins.importers import otl` in lieu of alias
-    "PLR1730",  # Replace `if` statement with `wsLimit = max(wsLimit, 1)`
-    # "PLW0120",  # `else` clause on loop without a `break` statement;remove the `else` and dedent its contents
+    # "PLR1730",  # Replace `if` statement with `wsLimit = max(wsLimit, 1)`
 
     # Good, but do these later.
 
