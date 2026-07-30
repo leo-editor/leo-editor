@@ -1399,10 +1399,10 @@ class todoController:
         # Update the label.
         h = self.c and self.c.p and self.c.p.h
         due = self.getat(v, 'duedate')
-        g.trace(created)
-        ago = (dt.datetime.now() - created).days if created else 0
+        now = dt.datetime.now()
+        ago = (now - created).days if created else 0
         if due:
-            days = (due - dt.datetime.now()).days
+            days = (due - now).days
             txt = f"{h}\nCreated {ago} days ago, due in {days}"
         else:
             txt = f"{h}\nCreated {ago} days ago"
