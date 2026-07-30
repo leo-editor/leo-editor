@@ -949,8 +949,7 @@ class LeoServer:
     # @+others
     # @+node:felix.20210621233316.5: *3* server.__init__
     def __init__(self, *, silent: bool = False, testing: bool = False) -> None:
-        import leo.core.leoApp as leoApp
-        import leo.core.leoBridge as leoBridge
+        from leo.core import leoApp, leoBridge
 
         global g
         t1 = time.process_time()

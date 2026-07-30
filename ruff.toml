@@ -20,10 +20,6 @@ ignore = [
     "DTZ007",   # Naive datetime constructed using `datetime.datetime.strptime()` without %z
     "DTZ011",   # `datetime.date.today()` used
 
-    # To do in separate PRs?
-
-    # "PLR0402",  # Use `from leo.plugins.importers import otl` in lieu of alias
-
     # New suppressions: Keep these for now.
     
     "B008",     # Do not perform function call in argument defaults
@@ -84,7 +80,6 @@ ignore = [
     "UP032",    # Use f-string instead of `format` call
     
     # Do not enable.
-    
     "PLW0406",  # Module imports itself. There are also pylint suppressions.
     "PLW0602",  # Using global for but no assignment is done
     "PLW1510",  # `subprocess.run` without explicit `check` argument

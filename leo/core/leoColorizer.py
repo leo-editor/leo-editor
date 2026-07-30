@@ -3446,7 +3446,7 @@ class PygmentsColorizer(JEditColorizer):
         """
         lexer_name = 'python3' if language == 'python' else language
         try:
-            import pygments.lexers as lexers
+            from pygments import lexers
 
             lexers.get_lexer_by_name(lexer_name)
             return True
@@ -3554,7 +3554,7 @@ class PygmentsColorizer(JEditColorizer):
 
     def get_lexer(self, language: str) -> Lexer:
         """Return the lexer for self.language, creating it if necessary."""
-        import pygments.lexers as lexers
+        from pygments import lexers
 
         trace = 'coloring' in g.app.debug
         try:

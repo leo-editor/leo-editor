@@ -16,7 +16,7 @@ import tempfile
 import time
 import tokenize
 from typing import cast, Any, TYPE_CHECKING
-import xml.etree.ElementTree as ElementTree
+from xml.etree import ElementTree
 
 from leo.core import leoGlobals as g
 

@@ -7,7 +7,7 @@
 from __future__ import annotations
 from collections import defaultdict
 from collections.abc import Callable, Generator
-import xml.etree.ElementTree as ElementTree
+from xml.etree import ElementTree
 import json
 import time
 from typing import Any, TYPE_CHECKING

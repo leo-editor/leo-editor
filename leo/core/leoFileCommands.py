@@ -22,7 +22,7 @@ import tempfile
 import time
 from typing import Any, IO, TYPE_CHECKING
 import zipfile
-import xml.etree.ElementTree as ElementTree
+from xml.etree import ElementTree
 import xml.sax
 import xml.sax.saxutils
 from leo.core import leoGlobals as g
