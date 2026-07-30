@@ -57,9 +57,9 @@ class ShadowController:
         'old_sent_lines',
         'results',
         'sentinels',
+        'shadow_in_home_dir',
         'shadow_prefix',
         'shadow_subdir',
-        'shadow_in_home_dir',
         'trailing_sentinels',
         'verbatim_line',
     )

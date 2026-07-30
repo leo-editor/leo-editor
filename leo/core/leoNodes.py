@@ -2268,14 +2268,23 @@ position = Position  # compatibility.
 # @+node:ekr.20031218072017.3341: ** class VNode
 class VNode:
     __slots__ = [
-        '_bodyString', '_headString', '_p_changed',
-        'children', 'fileIndex', 'iconVal', 'parents', 'statusBits',
+        '_bodyString',
+        '_headString',
+        '_p_changed',
+        'at_read',            # Injected by read code.
+        'children',
+        'context',            # Not written to any file.
+        'expandedPositions',  # Not written to any file.
+        'fileIndex',
+        'iconVal',
+        'insertSpot',         # Not written to any file.
+        'parents',
+        'scrollBarSpot',      # Not written to any file.
+        'selectionLength',    # Not written to any file.
+        'selectionStart',     # Not written to any file.
+        'statusBits',
+        'tempAttributes',     # Injected by read code.
         'unknownAttributes',
-        # Injected by read code.
-        'at_read', 'tempAttributes',
-        # Not written to any file.
-        'context', 'expandedPositions', 'insertSpot',
-        'scrollBarSpot', 'selectionLength', 'selectionStart',
     ]  # fmt: skip
     # @+<< VNode constants >>
     # @+node:ekr.20031218072017.951: *3* << VNode constants >>

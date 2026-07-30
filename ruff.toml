@@ -22,7 +22,6 @@ ignore = [
     "PLW1510",  # `subprocess.run` without explicit `check` argument
     "RUF010",   # Use explicit conversion flag
     "RUF015",   # Prefer `next(...)` over single element slice
-    "RUF023",   # ShadowController.__slots__` is not sorted
      
     # Good, but do these later.
 

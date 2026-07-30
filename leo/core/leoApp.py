@@ -3519,9 +3519,9 @@ class RecentFilesManager:
     __slots__ = (
         'edit_headline',
         'groupedMenus',
+        'recentFileMessageWritten',
         'recentFiles',
         'recentFilesMenuName',
-        'recentFileMessageWritten',
         'write_recent_files_as_needed',
     )
 

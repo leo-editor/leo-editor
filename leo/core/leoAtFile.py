@@ -41,7 +41,7 @@ class AtFile:
 
     # @+<< AtFile: define __slots__ >>
     # @+node:ekr.20250403114721.1: *3* << AtFile: define __slots__ >>
-    __slots__ = (
+    __slots__ = (  # noqa  # Leave unsorted.
         # Ivars.
         'c',
         'fileCommands',
