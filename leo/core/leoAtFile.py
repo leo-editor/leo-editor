@@ -922,7 +922,7 @@ class AtFile:
     def readOneAtShadowNode(self, fn: str, p: Position) -> None:  # pragma: no cover
         at, c = self, self.c
         x = c.shadowController
-        if not fn == p.atShadowFileNodeName():
+        if fn != p.atShadowFileNodeName():
             at.error(f"can not happen: fn: {fn} != atShadowNodeName: {p.atShadowFileNodeName()}")
             return
         fn = c.fullPath(p)

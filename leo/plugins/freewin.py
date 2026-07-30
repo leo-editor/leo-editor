@@ -938,7 +938,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
             return
 
         # Make sure our host node still exists
-        if not self.c.p.v == self.v:
+        if self.c.p.v != self.v:
             # Find our node
             found_us: bool = False
             for p1 in self.c.all_unique_positions():

@@ -4668,7 +4668,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 # Last line of code block must be followed by at least one blank line and
                 # then a non-blank, non-indented line, unless we reached the end of the node.
                 _last_code_line_num = _first_code_line_num
-                if not _last_code_line_num == _numlines - 1:
+                if _last_code_line_num != _numlines - 1:
                     for j in range(_first_code_line_num, _numlines):
                         if lines[j].startswith(_indentation):
                             continue

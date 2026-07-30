@@ -3034,11 +3034,11 @@ class EditCommandsClass(BaseEditCommandsClass):
         s = w.getAllText()
         n = len(s)
         i = w.getInsertPoint()
-        while 0 <= i < n and not s[i] == '\n':
+        while 0 <= i < n and s[i] != '\n':
             i -= 1
         i += 1
         i1 = i
-        while 0 <= i < n and not s[i] == '\n':
+        while 0 <= i < n and s[i] != '\n':
             i += 1
         w.setSelectionRange(i1, i)
 

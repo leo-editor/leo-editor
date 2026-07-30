@@ -11,22 +11,6 @@
 
 [lint]
 ignore = [
-    # New errors.
-                
-    # Good, but do these later.
-
-    "RUF013",   # PEP 484 prohibits implicit `Optional`
-    "UP024",    # Replace aliased errors with `OSError`
-                
-    # Deprecated functions.
-    
-    "DTZ003",   # `datetime.datetime.utcnow()` used
-    "DTZ005",   # `datetime.datetime.now()` called without a `tz` argument
-    "DTZ006",   # `datetime.datetime.fromtimestamp()` called without a `tz` argument
-    "DTZ007",   # Naive datetime constructed using `datetime.datetime.strptime()` without %z
-    "DTZ011",   # `datetime.date.today()` used
-
-    # Maybe.
     
     "PIE790",   # Unnecessary `pass` statement
     "PIE807",   # Prefer `list` over useless lambda
@@ -50,11 +34,21 @@ ignore = [
     "SIM115",   # Use a context manager for opening files
     "SIM117",   # Use a single `with` statement with multiple contexts instead of nested `with` statements
     "SIM118",   # Use `key in dict` instead of `key in dict.keys()`
-    "SIM201",   # Use `_last_code_line_num != _numlines - 1` instead of `not _last_code_line_num == _numlines - 1`
-    "SIM222",   # Use `True` instead of `True or ...`
-    "SIM223",   # Use `False` instead of `False and ...`
-    "UP031",    # Use format specifiers instead of percent format
-    "UP032",    # Use f-string instead of `format` call
+                
+    # Good, but do these later.
+
+    "RUF013",   # PEP 484 prohibits implicit `Optional`
+    "UP024",    # Replace aliased errors with `OSError`
+                
+    # Deprecated functions.
+    
+    "DTZ003",   # `datetime.datetime.utcnow()` used
+    "DTZ005",   # `datetime.datetime.now()` called without a `tz` argument
+    "DTZ006",   # `datetime.datetime.fromtimestamp()` called without a `tz` argument
+    "DTZ007",   # Naive datetime constructed using `datetime.datetime.strptime()` without %z
+    "DTZ011",   # `datetime.date.today()` used
+
+   
 
     # New suppressions: Keep these for now.
     
@@ -87,11 +81,15 @@ ignore = [
     "S102",     # Use of `exec` detected
     "S110",     # `try`-`except`-`pass` detected, consider logging the exception
     "S112",     # `try`-`except`-`continue` detected, consider logging the exception
+    "SIM222",   # Use `True` instead of `True or ...`
+    "SIM223",   # Use `False` instead of `False and ...`
     "SIM905",   # Consider using a list literal instead of `str.split`
     "T100",     # Import for `xxx` found
     "TRY004",   # Prefer `TypeError` exception for invalid type
     "UP028",    # Replace `yield` over `for` loop with `yield from`
     "UP030",    # Use implicit references for positional format fields
+    "UP031",    # Use format specifiers instead of percent format
+    "UP032",    # Use f-string instead of `format` call
 
     # Previous suppressions. Keep these.
     

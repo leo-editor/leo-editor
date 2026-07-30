@@ -122,7 +122,7 @@ class View:
         win32clipboard.CloseClipboard()
 
         body = self.current.b.split(divider)
-        if not body[0] == clipboard:
+        if body[0] != clipboard:
             g.es('clipboard now holds %s' % clipboard)
             body.insert(0, clipboard)
             c.setBodyText(self.current, divider.join(body))
