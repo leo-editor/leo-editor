@@ -7575,8 +7575,7 @@ def os_startfile(fname: str) -> None:
     elif sys.platform == 'darwin':
         # From Marc-Antoine Parent.
         try:
-            # Fix bug 1226358: File URL's are broken on MacOS:
-            # use fname, not quoted_fname, as the argument to subprocess.call.
+            # Use fname, not quoted_fname, as the argument to subprocess.call.
             subprocess.call(['open', fname])
         except OSError:
             pass  # There may be a spurious "Interrupted system call"
@@ -7602,6 +7601,7 @@ def os_startfile(fname: str) -> None:
                 (lambda ito: itPoll(fname, ree, subPopen, g, ito)),
                 delay=1000,
             )
+            assert itoPoll is not None  # PR #4826
             itoPoll.start()
             # Let the Leo-Editor process run
             # so that Leo-Editor is usable while the file is open.
