@@ -12,8 +12,6 @@
 [lint]
 ignore = [
     # New errors. For now, just suppress them all.
-    
-    "DTZ003",   # `datetime.datetime.utcnow()` used
 
     "B003",     # Assigning to `os.environ` doesn't clear the environment
     "B005",     # Using `.strip()` with multi-character strings is misleading
