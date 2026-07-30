@@ -508,7 +508,7 @@ class LeoCloud:
                 read = True
             elif read_on_load == 'ask':
                 try:
-                    last_read = datetime.strptime(
+                    last_read = datetime.strptime(  # noqa
                         lc_v.u['_leo_cloud']['last_read'], "%Y-%m-%dT%H:%M:%S.%f"
                     )
                 except KeyError:

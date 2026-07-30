@@ -505,7 +505,7 @@ class todoController:
         """
         if not d.strip():
             return None  # Was ''
-        return dt.datetime.strptime(d.split('T')[0], "%Y-%m-%d").date()
+        return dt.datetime.strptime(d.split('T')[0], "%Y-%m-%d").date()  # noqa
 
     def _time(self, d: str) -> dt.time | None:
         """_time - convert a string to a time
@@ -515,7 +515,7 @@ class todoController:
         """
         if not d.strip():
             return None  # Was ''
-        return dt.datetime.strptime(d, "%H:%M:%S.%f").time()
+        return dt.datetime.strptime(d, "%H:%M:%S.%f").time()  # noqa
 
     # @+node:tbrown.20090630144958.5319: *3* todoController.addPopupMenu
     def addPopupMenu(self, c: Cmdr, p: Position, menu: Menu) -> None:
@@ -1385,7 +1385,7 @@ class todoController:
             # .strftime doesn't work here! This has has happened...
             try:
                 gdate = self.c.p.v.gnx.split('.')[1][:12]
-                created = dt.datetime.strptime(gdate, '%Y%m%d%H%M')
+                created = dt.datetime.strptime(gdate, '%Y%m%d%H%M')  # noqa
                 if created.year < 1900:
                     created = None
             except Exception:
