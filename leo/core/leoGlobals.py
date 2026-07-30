@@ -7077,7 +7077,7 @@ def CheckVersion(
             result = val
             break
     else:
-        raise EnvironmentError("condition must be one of '>=', '>', '==', '!=', '<', or '<='.")
+        raise OSError("condition must be one of '>=', '>', '==', '!=', '<', or '<='.")
     return result
 
 
