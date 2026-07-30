@@ -538,7 +538,7 @@ class CalcCore:
         useEng = self.option.boolData('UseEngNotation')
         exp = 0
         if absNum != 0.0 and (absNum < 1e-4 or absNum >= 1e7 or forceSci or useEng):
-            exp = int(math.floor(math.log10(absNum)))
+            exp = math.floor(math.log10(absNum))
             if useEng:
                 exp = 3 * (exp // 3)
             num /= 10**exp
@@ -619,7 +619,7 @@ class CalcCore:
     def numberStr(self, number, base):
         """Return string of number in given base (2-16)."""
         digits = '0123456789abcdef'
-        number = int(round(number))
+        number = round(number)
         result = ''
         sign = ''
         if number == 0:

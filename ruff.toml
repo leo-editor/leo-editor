@@ -24,17 +24,9 @@ ignore = [
     "RUF015",   # Prefer `next(...)` over single element slice
     "RUF023",   # ShadowController.__slots__` is not sorted
     "RUF034",   # Useless `if`-`else` condition
-    "RUF046",   # Value being cast to `int` is already an integer
+    # "RUF046",   # Value being cast to `int` is already an integer
     "RUF051",   # Use `pop` instead of `key in dict` followed by `del dict[key]`
-    "RUF059",   # Unpacked variable `junk` is never used
-    "SIM102",   # Use a single `if` statement instead of nested `if` statements
-    "SIM103",   # Return the negated condition directly
-    "SIM113",   # Use `enumerate()` for index variable `id_` in `for` loop
-    "SIM114",   # Combine `if` branches using logical `or` operator
-    "SIM115",   # Use a context manager for opening files
-    "SIM117",   # Use a single `with` statement with multiple contexts instead of nested `with` statements
-    "SIM118",   # Use `key in dict` instead of `key in dict.keys()`
-                
+     
     # Good, but do these later.
 
     "RUF013",   # PEP 484 prohibits implicit `Optional`
@@ -47,8 +39,6 @@ ignore = [
     "DTZ006",   # `datetime.datetime.fromtimestamp()` called without a `tz` argument
     "DTZ007",   # Naive datetime constructed using `datetime.datetime.strptime()` without %z
     "DTZ011",   # `datetime.date.today()` used
-
-   
 
     # New suppressions: Keep these for now.
     
@@ -76,14 +66,29 @@ ignore = [
     "PLC0206",  # Extracting value from dictionary without calling `.items()`
     "PLR1704",  # Redefining argument with the local name `p`
     "PYI041",   # Use `float` instead of `int | float`
+    
+    # Unused vars.
     "RUF012",   # Mutable default value for class attribute
     "RUF100",   # Unused blanket `noqa` directive
+    "RUF059",   # Unpacked variable is never used
+    
+    # Security.
     "S102",     # Use of `exec` detected
     "S110",     # `try`-`except`-`pass` detected, consider logging the exception
     "S112",     # `try`-`except`-`continue` detected, consider logging the exception
+    
+    # Simplicity.
+    "SIM102",   # Use a single `if` statement instead of nested `if` statements
+    "SIM103",   # Return the negated condition directly
+    "SIM113",   # Use `enumerate()` for index variable `id_` in `for` loop
+    "SIM114",   # Combine `if` branches using logical `or` operator
+    "SIM115",   # Use a context manager for opening files
+    "SIM117",   # Use a single `with` statement with multiple contexts instead of nested `with` statements
+    "SIM118",   # Use `key in dict` instead of `key in dict.keys()`
     "SIM222",   # Use `True` instead of `True or ...`
     "SIM223",   # Use `False` instead of `False and ...`
     "SIM905",   # Consider using a list literal instead of `str.split`
+
     "T100",     # Import for `xxx` found
     "TRY004",   # Prefer `TypeError` exception for invalid type
     "UP028",    # Replace `yield` over `for` loop with `yield from`
