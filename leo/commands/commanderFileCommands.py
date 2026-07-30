@@ -1020,7 +1020,7 @@ def writeFileFromNode(self: Self, event: LeoKeyEvent | None = None) -> None:
                 f.write(s)
                 f.flush()
                 g.blue('wrote:', fileName)
-        except IOError:
+        except OSError:
             g.error(f"can not write {fileName}")
 
 
@@ -1062,7 +1062,7 @@ def writeFileFromSubtree(self: Self, event: LeoKeyEvent | None = None) -> None:
                 f.write(s)
                 f.flush()
                 g.blue('wrote:', fileName)
-        except IOError:
+        except OSError:
             g.error(f"can not write {fileName}")
 
 

@@ -1084,7 +1084,7 @@ class AtFile:
         try:
             with open(fileName, 'rb') as f:
                 s = f.read()
-        except IOError:  # pragma: no cover
+        except OSError:  # pragma: no cover
             if not g.unitTesting:
                 at.error(f"can not open {fileName}")
         except Exception:  # pragma: no cover
@@ -1429,7 +1429,7 @@ class AtFile:
             return
         try:
             at.writePathChanged(p)
-        except IOError:  # pragma: no cover
+        except OSError:  # pragma: no cover
             return
         table = (
             (p.isAtAsisFileNode, at.asisWrite),
@@ -1458,7 +1458,7 @@ class AtFile:
     # @+node:ekr.20190108105509.1: *7* at.writePathChanged
     def writePathChanged(self, p: Position) -> None:  # pragma: no cover
         """
-        raise IOError if p's path has changed *and* user forbids the write.
+        raise OSError if p's path has changed *and* user forbids the write.
         """
         at, c = self, self.c
 
@@ -1480,7 +1480,7 @@ class AtFile:
                 f"{g.tr('write this file anyway?')}"
             )
         ):  # fmt: skip
-            raise IOError
+            raise OSError
         at.setPathUa(p, newPath)  # Remember that we have changed paths.
 
     # @+node:ekr.20190109172025.1: *5* at.writeAtAutoContents

@@ -579,7 +579,7 @@ def loadDocstring(file_path):
     try:
         src = open(file_path).read()
         src = src.replace('\r\n', '\n').replace('\r', '\n') + '\n'
-    except IOError:
+    except OSError:
         doc_string = "**COULD NOT OPEN / READ FILE**"
         return doc_string
 

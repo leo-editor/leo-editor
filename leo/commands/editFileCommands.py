@@ -652,7 +652,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                 s = w.getAllText()
                 with open(fileName, 'w') as f:
                     f.write(s)
-            except IOError:
+            except OSError:
                 g.es('can not create', fileName)
 
     # @+node:ekr.20170806094319.15: *3* efc.toggleAtAutoAtEdit & helpers

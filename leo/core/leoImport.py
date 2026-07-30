@@ -403,7 +403,7 @@ class LeoImportCommands:
                 for p in p.self_and_subtree(copy=False):
                     head = p.moreHead(firstLevel, useVerticalBar=True)
                     theFile.write(head + nl)
-        except IOError:
+        except OSError:
             g.warning("can not open", fileName)
 
     # @+node:ekr.20031218072017.1147: *4* ic.flattenOutline
@@ -423,7 +423,7 @@ class LeoImportCommands:
         firstLevel = p.level()
         try:
             theFile = open(fileName, 'wb')  # Fix crasher: open in 'wb' mode.
-        except IOError:
+        except OSError:
             g.warning("can not open", fileName)
             return
         for p in p.self_and_subtree(copy=False):
@@ -447,7 +447,7 @@ class LeoImportCommands:
         self.webType = webType
         try:
             theFile = open(fileName, 'w')
-        except IOError:
+        except OSError:
             g.warning("can not open", fileName)
             return
         for p in current.self_and_subtree(copy=False):

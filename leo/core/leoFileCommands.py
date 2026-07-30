@@ -1035,7 +1035,7 @@ class FileCommands:
                         v = FastRead(c, self.gnxDict).readJsonFile(theFile, path)
                     else:
                         v = FastRead(c, self.gnxDict).readFile(theFile, path)
-            except IOError as e:
+            except OSError as e:
                 if not g.unitTesting:
                     g.trace(e)
                     g.error("can not open:", path)

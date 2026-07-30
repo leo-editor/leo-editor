@@ -213,7 +213,7 @@ class leoscreen_Controller:
         """remove temporary file"""
         try:
             os.unlink(self.tmpfile)
-        except IOError:
+        except OSError:
             pass
 
     # @+node:tbrown.20100226095909.12786: *3* screen_cmd

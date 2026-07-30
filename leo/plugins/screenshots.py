@@ -1501,7 +1501,7 @@ class ScreenShotController:
                 img = Image.open(sc.output_fn)
                 img = sc.trim(img, (255, 255, 255, 0))
                 img.save(sc.output_fn)
-            except IOError:
+            except OSError:
                 g.trace('can not open %s' % sc.output_fn)
         sc.make_at_url_node_for_output_file()
 

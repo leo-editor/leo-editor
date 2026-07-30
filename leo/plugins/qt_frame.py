@@ -3256,7 +3256,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         if g.os_path_exists(fn):
             try:
                 f = open(fn, 'rb')
-            except IOError:
+            except OSError:
                 f = None
             if f:
                 b = f.read()

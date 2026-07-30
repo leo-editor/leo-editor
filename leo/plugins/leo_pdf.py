@@ -573,7 +573,7 @@ if docutils:
                     filename = 'intermediateFile.txt'
                     s = open(filename).read()
                     visitor = dummyPDFTranslator(self, self.document, s)
-                except IOError:
+                except OSError:
                     return
 
             # Create a list of paragraphs using Platypus.

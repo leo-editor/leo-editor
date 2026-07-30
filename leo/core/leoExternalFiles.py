@@ -421,7 +421,7 @@ class ExternalFilesController:
                 with open(path, 'wb') as f:
                     f.write(s)
                     f.flush()
-            except IOError:
+            except OSError:
                 g.error(f"exception creating temp file: {path}")
                 g.es_exception()
                 return None

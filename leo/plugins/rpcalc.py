@@ -2040,11 +2040,11 @@ class Option:
                 with open(self.path, 'r', encoding='utf-8') as f:
                     self.loadSet(f.readlines(), self.userDict)
                     return True
-            except IOError:
+            except OSError:
                 try:
                     with open(self.path, 'w', encoding='utf-8') as f:
                         f.writelines([line + '\n' for line in defaultList])
-                except IOError:
+                except OSError:
                     print('Error - could not write to config file', self.path)
                     self.path = ''
                 return False
@@ -2165,7 +2165,7 @@ class Option:
                 with open(self.path, 'w', encoding='utf-8') as f:
                     f.writelines([line for line in fileList])
                 return True
-            except IOError:
+            except OSError:
                 print('Error - could not write to config file', self.path)
         return False
 

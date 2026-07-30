@@ -4019,7 +4019,7 @@ def readFileIntoEncodedString(fn: str, silent: bool = False) -> bytes:
     try:
         with open(fn, 'rb') as f:
             return f.read()
-    except IOError:
+    except OSError:
         if not silent:
             g.error('can not open', fn)
     except Exception:
@@ -4076,7 +4076,7 @@ def readFileIntoString(
                 e = g.getPythonEncodingFromString(bytes_s)
         s = g.toUnicode(bytes_s, encoding=e or encoding)
         return s, e
-    except IOError:
+    except OSError:
         # Translate 'can not open' and kind, but not fileName.
         if verbose:
             g.error('can not open', '', (kind or ''), fileName)
@@ -4093,7 +4093,7 @@ def readFileIntoUnicodeString(fn: str, encoding: str = '', silent: bool = False)
         with open(fn, 'rb') as f:
             s = f.read()
         return g.toUnicode(s, encoding=encoding)
-    except IOError:
+    except OSError:
         if not silent:
             g.error('can not open', fn)
     except Exception:
@@ -5443,7 +5443,7 @@ def gitInfo(path: str = '') -> tuple[str, str]:
         pointer = s.split()[1]
         dirs = pointer.split('/')
         branch = dirs[-1]
-    except IOError:
+    except OSError:
         g.trace('can not open:', path)
         return branch, commit
     # Try to get a better commit number.
@@ -5454,7 +5454,7 @@ def gitInfo(path: str = '') -> tuple[str, str]:
             s = f.read()
         commit = s.strip()[0:12]
         # shorten the hash to a unique shortname
-    except IOError:
+    except OSError:
         try:
             path = g.finalize_join(git_dir, 'packed-refs')
             with open(path) as f:
@@ -5462,7 +5462,7 @@ def gitInfo(path: str = '') -> tuple[str, str]:
                     if line.strip().endswith(' ' + pointer):
                         commit = line.split()[0][0:12]
                         break
-        except IOError:
+        except OSError:
             pass
     return branch, commit
 
@@ -7584,7 +7584,7 @@ def os_startfile(fname: str) -> None:
         try:
             wre = tempfile.NamedTemporaryFile()
             ree = open(wre.name, 'rb', buffering=0)
-        except IOError:
+        except OSError:
             g.trace(f"error opening temp file for {fname!r}")
             if ree:
                 ree.close()

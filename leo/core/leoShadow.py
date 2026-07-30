@@ -169,7 +169,7 @@ class ShadowController:
                 kind = 'wrote' if exists else 'created'
                 g.es(f"{kind:>6}: {fileName}")
             return True
-        except IOError:
+        except OSError:
             x.error(f"unexpected exception writing file: {fileName}")
             g.es_exception()
             return False

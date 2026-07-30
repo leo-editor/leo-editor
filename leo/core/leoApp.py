@@ -1150,7 +1150,7 @@ class LeoApp:
                 if len(id_) > 2:
                     self.leoID = id_
                     return
-            except IOError:
+            except OSError:
                 pass
             except Exception:
                 g.error('unexpected exception in app.setLeoID')
@@ -1210,7 +1210,7 @@ class LeoApp:
                     if g.os_path_exists(fn):
                         g.error('', tag, 'created in', theDir)
                         return
-                except IOError:
+                except OSError:
                     pass
                 g.error('can not create', tag, 'in', theDir)
 
@@ -3446,7 +3446,7 @@ class LoadManager:
             s = theFile.read(name)
             s2 = g.toUnicode(s, 'utf-8')
             return StringIO(s2)
-        except IOError:
+        except OSError:
             # Do not use string + here: it will fail for non-ascii strings!
             if not g.unitTesting:
                 g.error("can not open:", fn)
@@ -3735,7 +3735,7 @@ class RecentFilesManager:
                     with open(fn, 'w'):
                         g.red('created', fn)
                         return
-                except IOError:
+                except OSError:
                     g.error('can not create', fn)
                     g.es_exception()
 
@@ -3750,7 +3750,7 @@ class RecentFilesManager:
                     lines = f.readlines()
                 except Exception:
                     lines = None
-        except IOError:
+        except OSError:
             # The file exists, so FileNotFoundError is not possible.
             g.trace('can not open', fileName)
             return False
@@ -3899,7 +3899,7 @@ class RecentFilesManager:
                 s = '\n'.join(self.recentFiles) if self.recentFiles else '\n'
                 f.write(g.toUnicode(s))
                 return True
-        except IOError:
+        except OSError:
             g.error('error writing', fileName)
             g.es_exception()
         except Exception:

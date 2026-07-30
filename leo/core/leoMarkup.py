@@ -306,7 +306,7 @@ class MarkupCommands:
                 with open(i_path, 'w', encoding='utf-8', errors='replace') as self.output_file:
                     self.write_root(p)
                     i_paths.append(i_path)
-            except IOError:
+            except OSError:
                 g.es_print(f"Can not open {i_path!r}")
             except Exception:
                 g.es_print(f"Unexpected exception opening {i_path!r}")
