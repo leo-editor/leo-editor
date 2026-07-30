@@ -486,7 +486,6 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('do-nothing')
     def doNothing(self, event: LeoKeyEvent | None = None) -> None:
         """A placeholder command, useful for testing bindings."""
-        pass
 
     # @+node:ekr.20150514063305.278: *3* ec.insertFileName
     @cmd('insert-file-name')

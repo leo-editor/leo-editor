@@ -478,8 +478,6 @@ class LeoCompare(BaseLeoCompare):
     These are not very useful comparisons.
     """
 
-    pass
-
 
 # @+node:ekr.20180211170333.1: ** class CompareLeoOutlines
 class CompareLeoOutlines:

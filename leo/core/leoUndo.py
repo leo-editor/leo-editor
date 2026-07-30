@@ -1427,7 +1427,6 @@ class Undoer:
     # @+node:ekr.20191213085226.1: *4*  u.reloadHelper (do nothing)
     def redoHelper(self) -> None:
         """The default do-nothing redo helper."""
-        pass
 
     # @+node:ekr.20201109080732.1: *4* u.redoChangeBody
     def redoChangeBody(self) -> None:
@@ -1826,7 +1825,6 @@ class Undoer:
     # @+node:ekr.20191213085246.1: *4*  u.undoHelper
     def undoHelper(self) -> None:
         """The default do-nothing undo helper."""
-        pass
 
     # @+node:ekr.20201109080631.1: *4* u.undoChangeBody
     def undoChangeBody(self) -> None:

@@ -985,8 +985,6 @@ class noLeoNodePath(Exception):
     Most likely a reference to a picture.
     """
 
-    pass
-
 
 # @+node:EKR.20040517080250.13: ** class RequestHandler
 if asynchat:

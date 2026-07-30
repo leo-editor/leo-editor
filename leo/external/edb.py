@@ -133,8 +133,6 @@ __all__ = [
 class Restart(Exception):
     """Causes a debugger to be restarted for the debugged python program."""
 
-    pass
-
 
 # @+node:ekr.20110914171443.7245: ** Functions
 # @+node:ekr.20110914171443.7246: *3* find_function

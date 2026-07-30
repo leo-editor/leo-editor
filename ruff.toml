@@ -11,15 +11,7 @@
 
 [lint]
 ignore = [
-    
-    "PIE790",   # Unnecessary `pass` statement
 
-    # Good, but do these later.
-
-    "PLR0402",  # Use `from leo.plugins.importers import otl` in lieu of alias
-    "RUF013",   # PEP 484 prohibits implicit `Optional`
-    "UP024",    # Replace aliased errors with `OSError`
-                
     # Deprecated functions.
     
     "DTZ003",   # `datetime.datetime.utcnow()` used
@@ -27,6 +19,12 @@ ignore = [
     "DTZ006",   # `datetime.datetime.fromtimestamp()` called without a `tz` argument
     "DTZ007",   # Naive datetime constructed using `datetime.datetime.strptime()` without %z
     "DTZ011",   # `datetime.date.today()` used
+
+    # Good, but do these later.
+
+    "PLR0402",  # Use `from leo.plugins.importers import otl` in lieu of alias
+    "RUF013",   # PEP 484 prohibits implicit `Optional`
+    "UP024",    # Replace aliased errors with `OSError`
 
     # New suppressions: Keep these for now.
     

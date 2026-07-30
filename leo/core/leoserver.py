@@ -166,19 +166,13 @@ class SetEncoder(json.JSONEncoder):
 class InternalServerError(Exception):  # pragma: no cover
     """The server violated its own coding conventions."""
 
-    pass
-
 
 class ServerError(Exception):  # pragma: no cover
     """The server received an erroneous package."""
 
-    pass
-
 
 class TerminateServer(Exception):  # pragma: no cover
     """Ask the server to terminate."""
-
-    pass
 
 
 # @+node:felix.20210626222905.1: ** class ServerExternalFilesController
@@ -2165,7 +2159,6 @@ class LeoServer:
         c = self._check_c(param)
         fc = c.findCommands
         try:
-            pass
             char = param.get("char")
             if char is None:  # pragma: no cover
                 raise ServerError(f"{tag}: no char in param")
@@ -3250,7 +3243,6 @@ class LeoServer:
         or deeper than the current Leo file, the path is made relative.
         If the file path is at a higher level, it is made absolute.
         """
-        pass
         c = self._check_c(param)
         p = self._get_p(param)
         u = c.undoer

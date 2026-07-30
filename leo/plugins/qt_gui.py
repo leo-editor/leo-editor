@@ -668,11 +668,11 @@ class LeoQtGui(leoGui.LeoGui):
     # @+node:ekr.20110605121601.18492: *4* LeoQtGui.panels
     def createComparePanel(self, c: Cmdr) -> None:
         """Create a qt color picker panel."""
-        pass  # This window is optional.
+        # This window is optional.
 
     def createFindTab(self, c: Cmdr, parentFrame: QWidget) -> None:
         """Create a qt find tab in the indicated frame."""
-        pass  # Now done in dw.createFindTab.
+        # Now done in dw.createFindTab.
 
     def createLeoFrame(self, c: Cmdr, title: str) -> qt_frame.LeoQtFrame:
         """Create a new Leo frame."""

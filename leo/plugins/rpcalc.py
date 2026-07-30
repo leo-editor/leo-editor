@@ -2275,7 +2275,6 @@ class OptionDlgItem:
     # @+node:tom.20230424130102.167: *4* updateData
     def updateData(self):
         """Dummy update function."""
-        pass
 
     # @-others
 

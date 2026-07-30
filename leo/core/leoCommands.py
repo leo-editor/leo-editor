@@ -635,7 +635,6 @@ class Commands:
     # @+node:ekr.20081005065934.1: *4* c.initAfterLoad
     def initAfterLoad(self) -> None:
         """Provide an official hook for late inits of the commander."""
-        pass
 
     # @+node:ekr.20090213065933.6: *4* c.initConfigSettings
     def initConfigSettings(self) -> None:
@@ -4723,7 +4722,6 @@ class Commands:
         """Indicate that the focus is in an invalid location, or is unknown."""
         # c = self
         # c.requestedFocusWidget = None
-        pass
 
     # @+node:ekr.20080514131122.16: *5* c.traceFocus (not used)
     def traceFocus(self, w: Any) -> None:

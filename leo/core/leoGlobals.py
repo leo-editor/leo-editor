@@ -6293,7 +6293,6 @@ def optimizeLeadingWhitespace(line: str, tab_width: int) -> str:
 
 def regularizeTrailingNewlines(s: str, kind: str) -> None:
     """Kind is 'asis', 'zero' or 'one'."""
-    pass
 
 
 # @+node:ekr.20091229090857.11698: *4* g.removeBlankLines

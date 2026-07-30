@@ -316,7 +316,6 @@ class LeoFrame:
     # @+node:ekr.20220916041432.1: *4* LeoFrame.initCompleteHint
     def initCompleteHint(self) -> None:
         """A hook for Qt."""
-        pass
 
     # @+node:ekr.20240510091810.1: *4* LeoFrame.compute_ratio & compute_secondary_ratio
     def compute_ratio(self) -> float:

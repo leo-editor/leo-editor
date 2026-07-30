@@ -1636,7 +1636,6 @@ if docutils:  # NOQA
         # @+node:ekr.20090704103932.5295: *4* invisible_visit
         def invisible_visit(self, node):
             """Invisible nodes should be ignored."""
-            pass
 
         # @+node:ekr.20090704103932.5296: *4* literal (only changes context)
         def visit_literal(self, node):

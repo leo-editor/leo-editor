@@ -131,7 +131,6 @@ class BaseColorizer:
     # @+node:ekr.20190324045134.1: *4* BaseColorizer.init
     def init(self) -> None:
         """May be over-ridden in subclasses."""
-        pass
 
     # @+node:ekr.20110605121601.18574: *4* BaseColorizer.defineDefaultColorsDict
     def defineDefaultColorsDict(self) -> None:

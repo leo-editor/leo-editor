@@ -374,7 +374,6 @@ class SqlitePickleShare:
     # @+node:vitalije.20170716201700.23: *3* uncache (SqlitePickleShare)
     def uncache(self, *items: Args) -> None:
         """not used in SqlitePickleShare"""
-        pass
 
     # @-others
 
