@@ -83,7 +83,8 @@ import tempfile
 import threading
 from typing import Any
 from copy import deepcopy
-from datetime import date, datetime
+from datetime import date
+import datetime as dt
 from hashlib import sha1
 from leo.core import leoGlobals as g
 from leo.core.leoNodes import vnode
@@ -508,14 +509,14 @@ class LeoCloud:
                 read = True
             elif read_on_load == 'ask':
                 try:
-                    last_read = datetime.strptime(
+                    last_read = dt.datetime.strptime(  # PR #4829
                         lc_v.u['_leo_cloud']['last_read'], "%Y-%m-%dT%H:%M:%S.%f"
-                    )
+                    ).replace(tzinfo=dt.timezone.utc)
                 except KeyError:
                     last_read = None
                 message = "Read cloud data '%s', overwriting local nodes?" % kwargs['ID']
                 if last_read:
-                    delta = datetime.now() - last_read
+                    delta = dt.datetime.now(tz=dt.timezone.utc) - last_read
                     message = "%s\n%s, %sh:%sm:%ss ago" % (
                         message,
                         last_read.strftime("%a %b %d %H:%M"),
@@ -584,7 +585,8 @@ class LeoCloud:
         # because we want the user to understand why the outline's changed,
         # so just ignore top node dirtiness in self.subtree_changed()
         self.c.setChanged()
-        p.v.u.setdefault('_leo_cloud', {})['last_read'] = datetime.now().isoformat()
+        tz = dt.timezone.utc
+        p.v.u.setdefault('_leo_cloud', {})['last_read'] = dt.datetime.now(tz=tz).isoformat()
 
     # @+node:ekr.20201012111338.34: *3* LeoCloud.recursive_hash
     @staticmethod
@@ -682,7 +684,7 @@ class LeoCloud:
     @staticmethod
     def _to_json_serial(obj):
         """JSON serializer for objects not serializable by default json code"""
-        if isinstance(obj, (datetime, date)):
+        if isinstance(obj, (dt.datetime, date)):
             return obj.isoformat()
         if isinstance(obj, set):
             return list(obj)
@@ -772,7 +774,8 @@ class LeoCloud:
         lc_io.put_subtree(lc_io.lc_id, p.v)
         g.es("Stored %s" % lc_io.lc_id)
         # writing counts as reading, last read time msg. confusing otherwise
-        p.v.u.setdefault('_leo_cloud', {})['last_read'] = datetime.now().isoformat()
+        tz = dt.timezone.utc
+        p.v.u.setdefault('_leo_cloud', {})['last_read'] = dt.datetime.now(tz=tz).isoformat()
 
     # @-others
 

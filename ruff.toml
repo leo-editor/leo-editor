@@ -12,14 +12,6 @@
 [lint]
 ignore = [
 
-    # Deprecated functions. To do in a separate PR.
-    
-    "DTZ003",   # `datetime.datetime.utcnow()` used
-    "DTZ005",   # `datetime.datetime.now()` called without a `tz` argument
-    "DTZ006",   # `datetime.datetime.fromtimestamp()` called without a `tz` argument
-    "DTZ007",   # Naive datetime constructed using `datetime.datetime.strptime()` without %z
-    "DTZ011",   # `datetime.date.today()` used
-
     # New suppressions: Keep these for now.
     
     "B008",     # Do not perform function call in argument defaults
@@ -36,6 +28,7 @@ ignore = [
     "C413",     # Unnecessary `list()` call around `sorted()`
     "C414",     # Unnecessary `list()` call within `sorted()`
     "C417",     # Unnecessary `map()` usage (rewrite using a generator expression)
+
     "FLY002",   # Consider `f'{root.h}-->{p.h}'` instead of string join
     "FURB105",  # Unnecessary empty string passed to `print`
     "FURB167",  # Use of regular expression alias `re.M`

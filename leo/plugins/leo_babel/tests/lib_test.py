@@ -9,8 +9,7 @@
 
 # @+<< imports >>
 # @+node:bob.20180205135704.1: ** << imports >>
-import datetime
-# import time
+import datetime as dt
 
 from leo.core import leoGlobals as leoG
 
@@ -172,9 +171,9 @@ class TestCmdr:
         self.testCnt = 0
         self.babelExecCnt = 0
 
-        fdR.write(
-            '||* Tests *|| {0}\n'.format(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%s'))
-        )
+        tz = dt.timezone.utc
+        now = dt.datetime.now(tz=tz)  # PR #4829
+        fdR.write('||* Tests *|| {0}\n'.format(now).strftime('%Y-%m-%d %H:%M:%s', tz=tz))
 
     # @-others
 
