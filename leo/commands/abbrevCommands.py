@@ -453,7 +453,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             # crudely allow use of '=' in abbreviation definition -
             #  substitute '\=' with Unicode FULLWIDTH EQUALS SIGN
             data = re.sub("\\\\=", '\uff1d', s).split('=')
-            # Do *not* strip ws, so the user can specify ws. in replacement       
+            # Do *not* strip ws, so the user can specify ws. in replacement
             name = data[0].replace('\\t', '\t').replace('\\n', '\n')
             val = '='.join(data[1:])
             if val.endswith('\n'):
