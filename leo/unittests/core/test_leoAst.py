@@ -161,7 +161,7 @@ class BaseTest(unittest.TestCase):
         return textwrap.dedent(s.lstrip('\\\n')).rstrip() + '\n'
 
     # @+node:ekr.20200110092217.1: *4* BaseTest.check_roundtrip
-    def check_roundtrip(self, contents, *, debug_list: list[str] = None):
+    def check_roundtrip(self, contents, *, debug_list: list[str] | None = None):
         """Check that the tokenizer round-trips the given contents."""
         contents, tokens, tree = self.make_data(contents, debug_list=debug_list)
         results = tokens_to_string(tokens)
@@ -172,8 +172,8 @@ class BaseTest(unittest.TestCase):
         self,
         contents: str,
         *,
-        description: str = None,
-        debug_list: str = None,
+        description: str = '',
+        debug_list: str = '',
     ) -> tuple[str, list[Token], ast.AST]:  # pragma: no cover
         """Return (contents, tokens, tree) for the given contents."""
         assert contents.strip(), g.callers()
@@ -434,7 +434,7 @@ class TestTOG(BaseTest):
 
     # @+node:ekr.20210318214057.1: *5* test_line_315
     def test_line_315(self):
-        #
+
         # Known bug: position-only args exist in Python 3.8,
         #            but there is no easy way of syncing them.
         #            This bug will not be fixed.
@@ -1559,7 +1559,7 @@ class TestFstringify(BaseTest):
         fs.silent = False
         # Test message.
         fs.message("Test:\n<  Left align\n:Colon: align\n>  Right align\n   Default align")
-        #
+
         # change_quotes...
         fs.message("can't create f-fstring: no lt_s!")
         lt_s = "lt_s"

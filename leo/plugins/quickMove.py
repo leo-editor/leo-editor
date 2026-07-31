@@ -1,7 +1,5 @@
-# coding: utf-8
 # @+leo-ver=5-thin
 # @+node:tbrown.20070117104409: * @file ../plugins/quickMove.py
-# @@first
 # @+<< docstring >>
 # @+node:tbrown.20070117104409.1: ** << docstring >>
 """Creates buttons to move nodes quickly to other nodes.
@@ -135,8 +133,9 @@ Tags
 
 # @+<< imports >>
 # @+node:tbrown.20070117104409.2: ** << imports >>
+from collections.abc import Sequence
 from copy import deepcopy
-from typing import Any, Sequence
+from typing import Any
 from leo.core import leoGlobals as g
 from leo.plugins.mod_scripting import scriptingController
 

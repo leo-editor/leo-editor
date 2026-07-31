@@ -369,12 +369,12 @@ def doNodeAction(pClicked, c):
             if messageLevel >= 2:
                 g.blue("nA: Event passed to next plugin")
             return False  # TL - Inform onIconDoubleClick to pass double-click event
-        #
+
         # last matched pattern did not have directive to pass event to plugin
         if messageLevel >= 2:
             g.blue("nA: Event not passed to next plugin")
         return True  # TL - Inform onIconDoubleClick to not pass double-click
-    #
+
     # nodeActions plugin enabled without a 'nodeActions' node
     if messageLevel >= 4:
         g.blue("nA: The nodeActions node does not exist")

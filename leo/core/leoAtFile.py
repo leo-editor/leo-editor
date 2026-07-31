@@ -41,7 +41,7 @@ class AtFile:
 
     # @+<< AtFile: define __slots__ >>
     # @+node:ekr.20250403114721.1: *3* << AtFile: define __slots__ >>
-    __slots__ = (
+    __slots__ = (  # noqa  # Leave unsorted.
         # Ivars.
         'c',
         'fileCommands',
@@ -299,9 +299,8 @@ class AtFile:
             at.startSentinelComment = delim2
             at.endSentinelComment = delim3
         else:  # pragma: no cover
-            #
             # Emergency!
-            #
+
             # Issue an error only if at.language has been set.
             # This suppresses a message from the markdown importer.
             if not g.unitTesting and at.language:
@@ -672,7 +671,7 @@ class AtFile:
         """Read one @asis node. Used only by refresh-from-disk"""
         at, c = self, self.c
         fn = c.fullPath(p)
-        junk, ext = g.os_path_splitext(fn)
+        _, ext = g.os_path_splitext(fn)
         # Remember the full fileName.
         at.rememberReadPath(fn, p)
         s, e = g.readFileIntoString(fn, kind='@edit')
@@ -774,7 +773,7 @@ class AtFile:
         )
         old_private_lines = self.write_at_clean_sentinels(root)
         marker = x.markerFromFileLines(old_private_lines, fileName)
-        old_public_lines, junk = x.separate_sentinels(old_private_lines, marker)
+        old_public_lines, _ = x.separate_sentinels(old_private_lines, marker)
         if old_public_lines:
             new_private_lines = x.propagate_changed_lines(
                 new_public_lines, old_private_lines, marker, p=root
@@ -839,7 +838,7 @@ class AtFile:
         c = at.c
         ic = c.importCommands
         fn = c.fullPath(p)
-        junk, ext = g.os_path_splitext(fn)
+        _, ext = g.os_path_splitext(fn)
         # Fix bug 889175: Remember the full fileName.
         at.rememberReadPath(fn, p)
         s, e = g.readFileIntoString(fn, kind='@edit')
@@ -895,7 +894,7 @@ class AtFile:
         # The body of the update algorithm.
         new_public_lines = g.splitLines(contents)
         old_private_lines = self.write_at_clean_sentinels(root)
-        old_public_lines, junk = x.separate_sentinels(old_private_lines, marker)
+        old_public_lines, _ = x.separate_sentinels(old_private_lines, marker)
         new_private_lines = x.propagate_changed_lines(
             new_public_lines, old_private_lines, marker, p=root
         )
@@ -923,7 +922,7 @@ class AtFile:
     def readOneAtShadowNode(self, fn: str, p: Position) -> None:  # pragma: no cover
         at, c = self, self.c
         x = c.shadowController
-        if not fn == p.atShadowFileNodeName():
+        if fn != p.atShadowFileNodeName():
             at.error(f"can not happen: fn: {fn} != atShadowNodeName: {p.atShadowFileNodeName()}")
             return
         fn = c.fullPath(p)
@@ -1085,7 +1084,7 @@ class AtFile:
         try:
             with open(fileName, 'rb') as f:
                 s = f.read()
-        except IOError:  # pragma: no cover
+        except OSError:  # pragma: no cover
             if not g.unitTesting:
                 at.error(f"can not open {fileName}")
         except Exception:  # pragma: no cover
@@ -1430,7 +1429,7 @@ class AtFile:
             return
         try:
             at.writePathChanged(p)
-        except IOError:  # pragma: no cover
+        except OSError:  # pragma: no cover
             return
         table = (
             (p.isAtAsisFileNode, at.asisWrite),
@@ -1450,7 +1449,7 @@ class AtFile:
         else:  # pragma: no cover
             g.trace(f"Can not happen: {p.h}")
             return
-        #
+
         # Clear the dirty bits in all descendant nodes.
         # The persistence data may still have to be written.
         for p2 in p.self_and_subtree(copy=False):
@@ -1459,10 +1458,10 @@ class AtFile:
     # @+node:ekr.20190108105509.1: *7* at.writePathChanged
     def writePathChanged(self, p: Position) -> None:  # pragma: no cover
         """
-        raise IOError if p's path has changed *and* user forbids the write.
+        raise OSError if p's path has changed *and* user forbids the write.
         """
         at, c = self, self.c
-        #
+
         # Suppress this message during save-as and save-to commands.
         if c.ignoreChangedPaths:
             return  # pragma: no cover
@@ -1481,7 +1480,7 @@ class AtFile:
                 f"{g.tr('write this file anyway?')}"
             )
         ):  # fmt: skip
-            raise IOError
+            raise OSError
         at.setPathUa(p, newPath)  # Remember that we have changed paths.
 
     # @+node:ekr.20190109172025.1: *5* at.writeAtAutoContents
@@ -1489,7 +1488,7 @@ class AtFile:
         """Common helper for atAutoToString and writeOneAtAutoNode."""
         at, c = self, self.c
         # Dispatch the proper writer.
-        junk, ext = g.os_path_splitext(fileName)
+        _, ext = g.os_path_splitext(fileName)
         if writer := at.dispatch(ext, root):
             at.outputList = []
             writer(root)
@@ -1939,7 +1938,7 @@ class AtFile:
             at.startSentinelComment, at.endSentinelComment = marker.getDelims()
             if g.unitTesting:
                 ivars_dict = g.getIvarsDict(at)
-            #
+
             # Write the public and private files to strings.
 
             def put(sentinels: bool) -> str:
@@ -1977,7 +1976,7 @@ class AtFile:
         there is a conflict between it and c.target_language."""
         at = self
         c = at.c
-        junk, ext = g.os_path_splitext(fn)
+        _, ext = g.os_path_splitext(fn)
         if ext:
             if ext.startswith('.'):
                 ext = ext[1:]
@@ -2299,7 +2298,7 @@ class AtFile:
         """
         at = self
         i = g.skip_ws(p.h, 0)
-        isSection, junk = at.isSectionName(p.h, i)
+        isSection, _ = at.isSectionName(p.h, i)
         if isSection:
             return False  # A section definition node.
         if at.sentinels:
@@ -2394,7 +2393,7 @@ class AtFile:
         """
         at = self
         if ref := g.findReference(name, p):
-            junk, delta = g.skip_leading_ws_with_indent(s, i, at.tab_width)
+            _, delta = g.skip_leading_ws_with_indent(s, i, at.tab_width)
             at.putLeadInSentinel(s, i, n1)
             at.indent += delta
             at.putSentinel("@+" + name)
@@ -2432,7 +2431,7 @@ class AtFile:
         at = self
         j = g.skip_line(s, i)
         s = s[i:j]
-        #
+
         # #1496: Retire the @doc convention:
         #        Strip all trailing ws here.
         if not s.strip():
@@ -3193,19 +3192,19 @@ class AtFile:
         except IndentationError:  # pragma: no cover
             if g.unitTesting:
                 raise
-            junk2, msg, junk = sys.exc_info()
+            _, msg, _ = sys.exc_info()
             g.error("IndentationError in", p.h)
             g.es('', str(msg))
         except tokenize.TokenError:  # pragma: no cover
             if g.unitTesting:
                 raise
-            junk3, msg, junk = sys.exc_info()
+            _, msg, _ = sys.exc_info()
             g.error("TokenError in", p.h)
             g.es('', str(msg))
         except tabnanny.NannyNag:
             if g.unitTesting:
                 raise
-            junk4, nag, junk = sys.exc_info()
+            _, nag, _ = sys.exc_info()
             badline = nag.get_lineno()  # type:ignore
             line = nag.get_line()  # type:ignore
             message = nag.get_msg()  # type:ignore
@@ -3899,7 +3898,7 @@ class FastAtRead:
                 # Whatever happens, retain the original @delims line.
                 delims = m.group(1).strip()
                 body.append(f"@delims {delims}\n")
-                #
+
                 # Parse the delims.
                 self.delims_pat = re.compile(r'^([^ ]+)\s*([^ ]+)?')
                 m2 = self.delims_pat.match(delims)

@@ -45,7 +45,7 @@ class ClickySplitter(QtWidgets.QSplitter):
             self._click_state = 'spin'
         else:
             vertical, horizontal = Orientation.Vertical, Orientation.Horizontal
-            self.setOrientation(vertical if self.orientation() == horizontal else vertical)
+            self.setOrientation(horizontal if self.orientation() == horizontal else vertical)
             self._click_state = 'flip'
 
 

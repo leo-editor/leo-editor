@@ -5,8 +5,9 @@
 # @+<< imports, annotations: base_importer.py >>
 # @+node:ekr.20230920091345.1: ** << imports, annotations: base_importer.py >>
 from __future__ import annotations
+from collections.abc import Generator
 import re
-from typing import Generator, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 # This import is safe because these imports happen after initing Leo.

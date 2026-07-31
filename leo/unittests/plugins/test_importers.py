@@ -12,10 +12,7 @@ from leo.core.leoTest2 import LeoUnitTest
 from leo.plugins.importers.java import Java_Importer
 from leo.plugins.importers.python import Python_Importer
 from leo.plugins.importers.c import C_Importer
-import leo.plugins.importers.coffeescript as coffeescript
-import leo.plugins.importers.javascript as javascript
-import leo.plugins.importers.markdown as markdown
-import leo.plugins.importers.otl as otl
+from leo.plugins.importers import coffeescript, javascript, markdown, otl
 
 
 # @+others
@@ -112,7 +109,7 @@ class BaseTestImporter(LeoUnitTest):
         return '@file'
 
     # @+node:ekr.20230527075112.1: *3* BaseTestImporter.new_round_trip_test
-    def new_round_trip_test(self, s: str, expected_s: str = None, strict: bool = True) -> None:
+    def new_round_trip_test(self, s: str, expected_s: str = '', strict: bool = True) -> None:
 
         if not expected_s:  # Leo 6.8.7.
             # Define the *strict* expected results.
@@ -971,7 +968,7 @@ class TestHtml(BaseTestImporter):
         c = self.c
         # Simulate @data import-html-tags, with *only* standard tags.
         tags_list = ['html', 'body', 'head', 'div', 'script', 'table']
-        settingsDict, junk = g.app.loadManager.createDefaultSettingsDicts()
+        settingsDict, _ = g.app.loadManager.createDefaultSettingsDicts()
         c.config.settingsDict = settingsDict
         c.config.set(c.p, 'data', 'import-html-tags', tags_list, warn=True)
 
@@ -5296,7 +5293,7 @@ class TestXML(BaseTestImporter):
         c = self.c
         # Simulate @data import-xml-tags, with *only* standard tags.
         tags_list = ['html', 'body', 'head', 'div', 'script', 'table']
-        settingsDict, junk = g.app.loadManager.createDefaultSettingsDicts()
+        settingsDict, _ = g.app.loadManager.createDefaultSettingsDicts()
         c.config.settingsDict = settingsDict
         c.config.set(c.p, 'data', 'import-xml-tags', tags_list, warn=True)
 

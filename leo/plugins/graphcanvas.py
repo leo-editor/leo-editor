@@ -267,16 +267,16 @@ class GetImage:
             testpath = src
             if '//' in testpath:
                 testpath = testpath.split('//', 1)[-1]
-            #
+
             # file on local file system
             testpath = g.finalize_join(path, testpath)
             if g.os_path_exists(testpath):
                 return QtWidgets.QGraphicsPixmapItem(QtGui.QPixmap(testpath))
-            #
+
             # explicit file://, but no such file exists
             if src.startswith('file://'):
                 return None if fail_ok else GetImage._no_image()
-        #
+
         # no explict file://, so try other protocols
         testpath = src if '//' in src else 'http://%s' % (src)
         data = GetImage.get_url(testpath)
@@ -899,7 +899,7 @@ class graphcanvasController:
 
     # @+node:bob.20110119123023.7412: *3* loadLinked
     def loadLinked(self, what='linked'):
-        blc = getattr(self.c, 'backlinkController')
+        blc = getattr(self.c, 'backlinkController', None)
         if not blc:
             return
         while True:
@@ -963,7 +963,7 @@ class graphcanvasController:
         node.u['_bklnk']['x'] = nodeItem.x()
         node.u['_bklnk']['y'] = nodeItem.y()
 
-        blc = getattr(self.c, 'backlinkController')
+        blc = getattr(self.c, 'backlinkController', None)
         if blc:
             for link in blc.linksFrom(node):
                 if (node, link) in self.linkItem:
@@ -1003,8 +1003,7 @@ class graphcanvasController:
             # event is none if this is an internal call
             self.goto()
 
-        blc = getattr(self.c, 'backlinkController')
-
+        blc = getattr(self.c, 'backlinkController', None)
         if not blc:
             return
 
@@ -1026,7 +1025,7 @@ class graphcanvasController:
     # @+node:bob.20110119123023.7418: *3* pressLink (graphcanvas.py)
     def pressLink(self, linkItem, event):
         """nodeItem is telling us it was clicked"""
-        blc = getattr(self.c, 'backlinkController')
+        blc = getattr(self.c, 'backlinkController', None)
         if not blc:
             return
         # pylint: disable=superfluous-parens
@@ -1098,7 +1097,9 @@ class graphcanvasController:
             self.ui.canvas.removeItem(self.linkItem[i])
         self.linkItem = {}
 
-        blc = getattr(self.c, 'backlinkController')
+        blc = getattr(self.c, 'backlinkController', None)
+        if not blc:
+            return
 
         for i in list(self.nodeItem):
             # can't iterate dict because nodeTable can add items on update

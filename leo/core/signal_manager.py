@@ -38,8 +38,6 @@ class MsgSignalHandled:
     other listeners from being called
     """
 
-    pass
-
 
 # @+node:tbrown.20171028115601.5: ** _setup
 def _setup(obj: object) -> None:
@@ -167,8 +165,6 @@ def main() -> None:
 
     class SomeProxy:
         """Like a public notice board"""
-
-        pass
 
     relay = SomeProxy()
     a = Tester('A', relay)

@@ -343,8 +343,6 @@ WrapMode = QtGui.QTextOption.WrapMode
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
-    from leo.core.leoQt import QtWidgets
-    from leo.core.leoQt import QtGui
     from leo.plugins.qt_text import LeoQTextBrowser
 # @-<< annotations >>
 # @+<< declarations >>
@@ -940,7 +938,7 @@ class ZEditorWin(QtWidgets.QMainWindow):
             return
 
         # Make sure our host node still exists
-        if not self.c.p.v == self.v:
+        if self.c.p.v != self.v:
             # Find our node
             found_us: bool = False
             for p1 in self.c.all_unique_positions():

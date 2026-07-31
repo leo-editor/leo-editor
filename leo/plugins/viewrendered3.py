@@ -1014,7 +1014,7 @@ from contextlib import redirect_stdout
 from enum import Enum, auto
 import html
 from inspect import cleandoc
-from io import StringIO, open as ioOpen
+from io import StringIO
 
 import os
 from pathlib import Path
@@ -1771,13 +1771,12 @@ def viewrendered(event):
     # global controllers
     gui = g.app.gui
     if gui.guiName() != 'qt':
-        return None
+        return
     c = event.get('c')
     if not c:
-        return None
+        return
 
     getVr3({'c': c})
-    return None  # Make pylint happy
 
 
 # @+node:TomP.20200112232719.1: *3* g.command('vr3-execute')
@@ -1813,7 +1812,7 @@ def export_rst_html(event):
     c = vr3.c
     path = c.getPath(c.rootPosition())
     pathname = g.finalize_join(path, VR3_TEMP_FILE)
-    with ioOpen(pathname, 'w', encoding='utf-8') as f:
+    with open(pathname, 'w', encoding='utf-8') as f:
         f.write(_html)
     webbrowser.open_new_tab(pathname)
 
@@ -1858,7 +1857,7 @@ def vr3_help_for_plot_2d(event):
 
     path = c.getPath(c.rootPosition())
     pathname = g.finalize_join(path, VR3_TEMP_FILE)
-    with ioOpen(pathname, 'w', encoding='utf-8') as f:
+    with open(pathname, 'w', encoding='utf-8') as f:
         f.write(_html)
     webbrowser.open_new_tab(pathname)
 
@@ -2841,11 +2840,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
             # pygments cmdline() writes to stdout; we have to redirect it to a file
             g.es('VR3-- creating new MD style sheet')
             style_path = os.path.join(default_style_dir, MD_BASE_STYLESHEET_NAME)
-            with ioOpen(style_path, 'w') as out:
+            with open(style_path, 'w') as out:
                 with redirect_stdout(out):
                     cmdline.main(args)
             # Add some fine-tuning css
-            with ioOpen(style_path, 'a') as out:
+            with open(style_path, 'a') as out:
                 out.write(MD_STYLESHEET_APPEND)
             self.md_stylesheet = 'file:///' + style_path
 
@@ -4669,7 +4668,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 # Last line of code block must be followed by at least one blank line and
                 # then a non-blank, non-indented line, unless we reached the end of the node.
                 _last_code_line_num = _first_code_line_num
-                if not _last_code_line_num == _numlines - 1:
+                if _last_code_line_num != _numlines - 1:
                     for j in range(_first_code_line_num, _numlines):
                         if lines[j].startswith(_indentation):
                             continue

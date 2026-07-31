@@ -4,7 +4,7 @@
 
 import json
 import os
-import leo.core.leoserver as leoserver
+from leo.core import leoserver
 from leo.core.leoTest2 import LeoUnitTest
 from leo.core import leoGlobals as global_g
 
@@ -211,25 +211,25 @@ class TestLeoServer(LeoUnitTest):
         log = False
         # Open the file & create the StringFindTabManager.
         self._request("!open_file", {"log": False, "filename": test_dot_leo})
-        #
+
         # Batch find commands: The answer is a count of found nodes.
         for method in ('!find_all', '!clone_find_all', '!clone_find_all_flattened'):
             answer = self._request(method, {"log": log, "find_text": "def"})
             if log:
                 g.printObj(answer, tag=f"{tag}:{method}: answer")  # pragma: no cover
-        #
+
         # Find commands that may select text: The answer is (p, pos, newpos).
         for method in ('!find_next', '!find_previous', '!find_def', '!find_var'):
             answer = self._request(method, {"log": log, "find_text": "def"})
             if log:
                 g.printObj(answer, tag=f"{tag}:{method}: answer")  # pragma: no cover
-        #
+
         # Change commands: The answer is a count of changed nodes.
         for method in ('!replace_all', '!replace_then_find'):
             answer = self._request(method, {"log": log, "find_text": "def", "change_text": "DEF"})
             if log:
                 g.printObj(answer, tag=f"{tag}:{method}: answer")  # pragma: no cover
-        #
+
         # Tag commands. Why they are in leoFind.py??
         for method in ('!clone_find_tag', '!tag_children'):
             answer = self._request(method, {"log": log, "tag": "my-tag"})

@@ -85,7 +85,7 @@ def importCiscoConfig(c):
         g.es("importing: %s" % name)
         linelist = fh.read().splitlines()
         fh.close()
-    except IOError as msg:
+    except OSError as msg:
         g.es("error reading %s: %s" % (name, msg))
         return
     # @-<< open file >>

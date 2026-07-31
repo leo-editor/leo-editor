@@ -237,7 +237,7 @@ class LeoUnitTest(unittest.TestCase):
     def create_test_outline(self) -> None:
         p = self.c.p
         # Create the following outline:
-        #
+
         # root
         #   child clone a
         #     node clone 1

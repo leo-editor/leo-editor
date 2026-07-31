@@ -45,7 +45,7 @@ all_args: set[str] = set()
 chains_seen: set[str] = set()
 errors: set[str] = set()
 full_check = False  # True: report *all* unknown attrs.
-module_name: str = None
+module_name: str = ''
 report_all_attrs = False
 report_all_args = False
 report_unusual_attrs = False  # True: report only unusual attrs containing '{}[]()'
@@ -343,7 +343,7 @@ class CheckLeo:
         Visitor class.
         """
 
-        def report_set(the_set: set, tag: str = None) -> None:
+        def report_set(the_set: set, tag: str = '') -> None:
             if tag:
                 print(f"\n{len(list(the_set))} {tag}...")
             for z in sorted(list(the_set)):
@@ -523,6 +523,7 @@ class Visitor(ast.NodeVisitor):
         # Injected by plugins.
         'c._bookmarks',
         'c.cleo',
+        'c.menuAccels',
         'c.quickMove',
         'c.pluginsMenu',
         'c.screenCastController',

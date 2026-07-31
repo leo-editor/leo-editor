@@ -48,14 +48,16 @@ class LEP_MarkdownView(HtmlView):
     lep_name = "Markdown(.py) View"
 
     # @+others
-    # @+node:tbrown.20171028115507.4: *3* __init__
+    # @+node:tbrown.20171028115507.4: *3* LEP_MarkdownView.__init__
     def __init__(self, c=None, lep=None, *args, **kwargs):
         """set up"""
-        super().__init__(c=c, lep=lep, *args, **kwargs)
+        kwargs['c'] = c
+        kwargs['lep'] = lep
+        super().__init__(*args, **kwargs)
         self.c = c
         self.lep = lep
 
-    # @+node:tbrown.20171028115507.5: *3* new_text
+    # @+node:tbrown.20171028115507.5: *3* LEP_MarkdownView.new_text
     def new_text(self, text):
         """new_text - update for new text
 
@@ -64,7 +66,7 @@ class LEP_MarkdownView(HtmlView):
         """
         self.setHtml(to_html(text))
 
-    # @+node:tbrown.20171028115507.6: *3* update_text
+    # @+node:tbrown.20171028115507.6: *3* LEP_MarkdownView.update_text
     def update_text(self, text):
         """update_text - update for current text
 
@@ -88,14 +90,16 @@ class LEP_MarkdownHtmlView(TextView):
     lep_name = "Markdown(.py) Html View"
 
     # @+others
-    # @+node:tbrown.20171028115507.8: *3* __init__
+    # @+node:tbrown.20171028115507.8: *3* LEP_MarkdownHtmlView.__init__
     def __init__(self, c=None, lep=None, *args, **kwargs):
         """set up"""
-        super().__init__(c=c, lep=lep, *args, **kwargs)
+        kwargs['c'] = c
+        kwargs['lep'] = lep
+        super().__init__(*args, **kwargs)
         self.c = c
         self.lep = lep
 
-    # @+node:tbrown.20171028115507.9: *3* new_text
+    # @+node:tbrown.20171028115507.9: *3* LEP_MarkdownHtmlView.new_text
     def new_text(self, text):
         """new_text - update for new text
 

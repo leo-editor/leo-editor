@@ -1150,7 +1150,7 @@ class LeoApp:
                 if len(id_) > 2:
                     self.leoID = id_
                     return
-            except IOError:
+            except OSError:
                 pass
             except Exception:
                 g.error('unexpected exception in app.setLeoID')
@@ -1174,10 +1174,8 @@ class LeoApp:
     # @+node:ekr.20031218072017.1981: *5* app.setIdFromDialog
     def setIdFromDialog(self) -> None:
         """Get leoID from a Tk dialog."""
-        #
         # Don't put up a splash screen: it would obscure the coming dialog.
         self.use_splash_screen = False
-        #
         # Get the id, making sure it is at least three characters long.
         attempt = 0
         id_ = None
@@ -1190,7 +1188,6 @@ class LeoApp:
             id_ = self.cleanLeoID(dialog.val, "")
             if id_ and len(id_) > 2:
                 break
-        #
         # Put result in g.app.leoID.
         # Note: For unit tests, leoTest2.py: create_app sets g.app.leoID.
         if not id_:
@@ -1213,7 +1210,7 @@ class LeoApp:
                     if g.os_path_exists(fn):
                         g.error('', tag, 'created in', theDir)
                         return
-                except IOError:
+                except OSError:
                     pass
                 g.error('can not create', tag, 'in', theDir)
 
@@ -1236,7 +1233,6 @@ class LeoApp:
     # @+node:ekr.20031218072017.2619: *4* app.writeWaitingLog
     def writeWaitingLog(self, c: Cmdr) -> None:
         """Write all waiting lines to the log."""
-        #
         # Do not call g.es, g.es_print, g.pr or g.trace here!
         app = self
         if not c or not c.exists:
@@ -1853,7 +1849,7 @@ class LoadManager:
            Load the file given by @string theme-name setting.
 
         3. Finally, look up the @string theme-name in the already-loaded, myLeoSettings.leo.
-           Load the file if setting exists.  Otherwise return None.
+           Load the file if setting exists.  Otherwise an empty string.
         """
         trace = 'themes' in g.app.db
         lm = self
@@ -2044,7 +2040,6 @@ class LoadManager:
             d1.setName(settingsName)
             d2.setName(shortcutsName)
             return PreviousSettings(d1, d2)
-        #
         # The file does not exist, or is not valid.
         # Get the settings from the globals settings dicts.
         if lm.globalSettingsDict and lm.globalBindingsDict:  # #1766.
@@ -3056,7 +3051,6 @@ class LoadManager:
             # @+node:ekr.20160718102306.1: *7* LeoStdOut.write
             def write(self, *args: list, **keys: dict) -> None:
                 """Put all non-keyword args to the log pane, as in g.es."""
-                #
                 # Tracing will lead to unbounded recursion unless
                 # sys.stderr has been redirected on the command line.
                 app = g.app
@@ -3452,7 +3446,7 @@ class LoadManager:
             s = theFile.read(name)
             s2 = g.toUnicode(s, 'utf-8')
             return StringIO(s2)
-        except IOError:
+        except OSError:
             # Do not use string + here: it will fail for non-ascii strings!
             if not g.unitTesting:
                 g.error("can not open:", fn)
@@ -3525,9 +3519,9 @@ class RecentFilesManager:
     __slots__ = (
         'edit_headline',
         'groupedMenus',
+        'recentFileMessageWritten',
         'recentFiles',
         'recentFilesMenuName',
-        'recentFileMessageWritten',
         'write_recent_files_as_needed',
     )
 
@@ -3741,7 +3735,7 @@ class RecentFilesManager:
                     with open(fn, 'w'):
                         g.red('created', fn)
                         return
-                except IOError:
+                except OSError:
                     g.error('can not create', fn)
                     g.es_exception()
 
@@ -3751,12 +3745,12 @@ class RecentFilesManager:
         if not g.os_path_exists(fileName):
             return False
         try:
-            with io.open(fileName, encoding='utf-8', mode='r') as f:
+            with open(fileName, encoding='utf-8', mode='r') as f:
                 try:  # Fix #471.
                     lines = f.readlines()
                 except Exception:
                     lines = None
-        except IOError:
+        except OSError:
             # The file exists, so FileNotFoundError is not possible.
             g.trace('can not open', fileName)
             return False
@@ -3853,7 +3847,7 @@ class RecentFilesManager:
         if g.unitTesting or g.app.inBridge:
             return
         if localFileName := c.fileName():
-            localPath, junk = g.os_path_split(localFileName)
+            localPath, _ = g.os_path_split(localFileName)
         else:
             localPath = None
         written = False
@@ -3887,11 +3881,11 @@ class RecentFilesManager:
     # @+node:ekr.20050424131051: *4* rf.writeRecentFilesFileHelper
     def writeRecentFilesFileHelper(self, fileName: str) -> bool:
         # Don't update the file if it begins with read-only.
-        #
+
         # Part 1: Return False if the first line is "readonly".
         #         It's ok if the file doesn't exist.
         if g.os_path_exists(fileName):
-            with io.open(fileName, encoding='utf-8', mode='r') as f:
+            with open(fileName, encoding='utf-8', mode='r') as f:
                 try:
                     # Fix #471.
                     lines = f.readlines()
@@ -3901,11 +3895,11 @@ class RecentFilesManager:
                     return False
         # Part 2: write the files.
         try:
-            with io.open(fileName, encoding='utf-8', mode='w') as f:
+            with open(fileName, encoding='utf-8', mode='w') as f:
                 s = '\n'.join(self.recentFiles) if self.recentFiles else '\n'
                 f.write(g.toUnicode(s))
                 return True
-        except IOError:
+        except OSError:
             g.error('error writing', fileName)
             g.es_exception()
         except Exception:

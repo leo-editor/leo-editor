@@ -58,9 +58,10 @@ __plugin_priority__
 # @+<< plugins_menu imports & annotations >>
 # @+node:ekr.20050101090207.10: ** << plugins_menu imports & annotations >>
 from __future__ import annotations
+from collections.abc import Sequence
 import configparser as ConfigParser
 import os
-from typing import Any, Sequence, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from types import ModuleType
 from leo.core import leoGlobals as g
 
@@ -92,7 +93,7 @@ def addPluginMenuItem(plugin: PlugIn, c: Cmdr) -> None:
         # Check at runtime to see if the plugin has actually been loaded.
         # This prevents us from calling hasTopLevel() on unloaded plugins.
 
-        def callback(event: Event, c: Cmdr = c, plugin: "PlugIn" = plugin) -> None:
+        def callback(event: Event, c: Cmdr = c, plugin: PlugIn = plugin) -> None:
             path, name = g.os_path_split(plugin.filename)
             name, ext = g.os_path_splitext(name)
             pc = g.app.pluginsController

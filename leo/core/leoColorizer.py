@@ -8,11 +8,11 @@
 # @+<< leoColorizer imports >>
 # @+node:ekr.20140827092102.18575: ** << leoColorizer imports >>
 from __future__ import annotations
-from collections.abc import Callable
+from collections.abc import Callable, Generator, Sequence
 import re
 import string
 import time
-from typing import Any, Generator, Sequence, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from types import ModuleType
 import warnings
 
@@ -131,7 +131,6 @@ class BaseColorizer:
     # @+node:ekr.20190324045134.1: *4* BaseColorizer.init
     def init(self) -> None:
         """May be over-ridden in subclasses."""
-        pass
 
     # @+node:ekr.20110605121601.18574: *4* BaseColorizer.defineDefaultColorsDict
     def defineDefaultColorsDict(self) -> None:
@@ -181,7 +180,7 @@ class BaseColorizer:
             'generic.strong'    : ('generic.strong',     '#000080'),  # bold
             'generic.subheading': ('generic.subheading', '#800080'),  # bold
             'generic.traceback' : ('generic.traceback',  '#04D'),
-            #
+
             # Keyword...
             # tag name              : ( option name,             default color),
             'keyword'               : ('keyword',                '#008000'),  # bold
@@ -253,7 +252,7 @@ class BaseColorizer:
             'string.regex'      : ('string.regex',       '#BB6688'),
             'string.single'     : ('string.single',      '#BA2121'),
             'string.symbol'     : ('string.symbol',      '#19177C'),
-            #
+
             # jEdit tags.
             # tag name  : ( option name,     default color),
             'comment1'  : ('comment1_color', 'red'),
@@ -3447,7 +3446,7 @@ class PygmentsColorizer(JEditColorizer):
         """
         lexer_name = 'python3' if language == 'python' else language
         try:
-            import pygments.lexers as lexers
+            from pygments import lexers
 
             lexers.get_lexer_by_name(lexer_name)
             return True
@@ -3475,10 +3474,10 @@ class PygmentsColorizer(JEditColorizer):
                 g.trace(f"(pygments) NEW NODE: {p.h}\n")
         t1 = time.process_time()
         highlighter = self.highlighter
-        #
+
         # First, set the *expected* lexer. It may change later.
         lexer = self.set_lexer()
-        #
+
         # Restore the state.
         # Based on Jupyter code: (c) Jupyter Development Team.
         stack_ivar = '_saved_state_stack'
@@ -3492,7 +3491,7 @@ class PygmentsColorizer(JEditColorizer):
             setattr(lexer, stack_ivar, prev_data.syntax_stack)
         elif hasattr(lexer, stack_ivar):
             delattr(lexer, stack_ivar)
-        #
+
         # The main loop. Warning: this can change self.language.
         index = 0
         for token, text in lexer.get_tokens(s):
@@ -3503,7 +3502,7 @@ class PygmentsColorizer(JEditColorizer):
                 format = self.getDefaultFormat()
             self.setFormat(index, length, format, s)
             index += length
-        #
+
         # Save the state.
         # Based on Jupyter code: (c) Jupyter Development Team.
         if stack := getattr(lexer, stack_ivar, None):
@@ -3511,7 +3510,7 @@ class PygmentsColorizer(JEditColorizer):
             highlighter.currentBlock().setUserData(data)
             # Clean up for the next go-round.
             delattr(lexer, stack_ivar)
-        #
+
         # New code by EKR:
         # - Fixes a bug so multiline tokens work.
         # - State supports Leo's color directives.
@@ -3555,7 +3554,7 @@ class PygmentsColorizer(JEditColorizer):
 
     def get_lexer(self, language: str) -> Lexer:
         """Return the lexer for self.language, creating it if necessary."""
-        import pygments.lexers as lexers
+        from pygments import lexers
 
         trace = 'coloring' in g.app.debug
         try:

@@ -262,12 +262,12 @@ class GoToCommands:
                     # Invisible, but resets the offset.
                     offset = 0
                     gnx, h = self.get_script_node_info(s, delim2)
-                elif s2.startswith('@+others') or s2.startswith('@+<<'):
+                elif s2.startswith(('@+others', '@+<<')):
                     stack.append((gnx, h, offset))
                     # @verbatim
                     # @others is visible in the outline, but *not* in the file.
                     offset += 1
-                elif s2.startswith('@-others') or s2.startswith('@-<<'):
+                elif s2.startswith(('@-others', '@-<<')):
                     gnx, h, offset = stack.pop()
                     # @verbatim
                     # @-others is invisible.
@@ -314,10 +314,10 @@ class GoToCommands:
                 if s2.startswith('@+node'):
                     offset = 0
                     gnx, h = self.get_script_node_info(s, delim2)
-                elif s2.startswith('@+others') or s2.startswith('@+<<'):
+                elif s2.startswith(('@+others', '@+<<')):
                     stack.append((gnx, h, offset))
                     offset += 1
-                elif s2.startswith('@-others') or s2.startswith('@-<<'):
+                elif s2.startswith(('@-others', '@-<<')):
                     gnx, h, offset = stack.pop()
                     offset += 1
                 else:

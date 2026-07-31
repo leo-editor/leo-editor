@@ -7,5 +7,5 @@
 
 def run(*args, **keys):  # pragma: no cover
     # import pdb; pdb = pdb.set_trace  # type: ignore[assignment]
-    import leo.core.runLeo as runLeo
+    from leo.core import runLeo
     runLeo.run(*args, **keys)

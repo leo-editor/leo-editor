@@ -3,7 +3,7 @@
 """Leo's Qt idle-time code."""
 
 import time
-from typing import Callable
+from collections.abc import Callable
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore
 

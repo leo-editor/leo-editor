@@ -6,11 +6,11 @@
 # @+node:ekr.20220826123551.1: ** << commanderOutlineCommands imports & annotations >>
 from __future__ import annotations
 from collections import defaultdict
-from collections.abc import Callable
-import xml.etree.ElementTree as ElementTree
+from collections.abc import Callable, Generator
+from xml.etree import ElementTree
 import json
 import time
-from typing import Any, Generator, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 from leo.core import leoFileCommands
@@ -1678,7 +1678,7 @@ def moveOutlineDown(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Move the selected node down."""
     # Moving down is more tricky than moving up because we can't
     # move p to be a child of itself.
-    #
+
     # An important optimization:
     # we don't have to call checkMoveWithParentWithWarning() if the parent of
     # the moved node remains the same.
