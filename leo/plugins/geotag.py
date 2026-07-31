@@ -4,7 +4,6 @@
 
 # @+<< imports >>
 # @+node:tbrown.20091214233510.5349: ** << imports >>
-import socket
 from leo.core import leoGlobals as g
 from leo.plugins.pygeotag import pygeotag
 
@@ -22,7 +21,7 @@ def init():
             g.registerHandler('after-create-leo-frame', onCreate)
             g.registerHandler('end1', onQuit)
             g.plugin_signon(__name__)
-        except socket.error:
+        except OSError:
             g.es('Geotag plugin init failed, perhaps port in use')
     return True
 

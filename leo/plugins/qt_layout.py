@@ -8,7 +8,8 @@ from __future__ import annotations
 
 import textwrap
 from collections import OrderedDict
-from typing import Any, Callable, TYPE_CHECKING
+from collections.abc import Callable
+from typing import Any, TYPE_CHECKING
 from leo.core.leoQt import QtWidgets, Orientation
 from leo.core import leoGlobals as g
 

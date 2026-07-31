@@ -11,18 +11,20 @@
 
 [lint]
 ignore = [
-    # New errors. For now, just suppress them all.
 
-    "B003",     # Assigning to `os.environ` doesn't clear the environment
-    "B005",     # Using `.strip()` with multi-character strings is misleading
-    "B008",     # Do not perform function call `c2.fileName` in argument defaults; instead, perform the call within the function, or read the default from a module-level singleton variable
-    "B009",     # Do not call `getattr` with a constant attribute value. It is not any safer than normal property access.
-    "B010",     # Do not call `setattr` with a constant attribute value. It is not any safer than normal property access.
-    "B018",     # Found useless expression. Either assign it to a variable or remove it.
+    # Deprecated functions. To do in a separate PR.
+    
+    ### "DTZ003",   # `datetime.datetime.utcnow()` used
+    ### "DTZ005",   # `datetime.datetime.now()` called without a `tz` argument
+    ### "DTZ006",   # `datetime.datetime.fromtimestamp()` called without a `tz` argument
+    ### "DTZ007",   # Naive datetime constructed using `datetime.datetime.strptime()` without %z
+    ### "DTZ011",   # `datetime.date.today()` used
+
+    # New suppressions: Keep these for now.
+    
+    "B008",     # Do not perform function call in argument defaults
     "B019",     # Use of `functools.lru_cache` or `functools.cache` on methods can lead to memory leaks
     "B020",     # Loop control variable `p` overrides iterable it iterates
-    "B023",     # Function definition does not bind loop variable `name`
-    "B026",     # Star-arg unpacking after a keyword argument is strongly discouraged
     "BLE001",   # Do not catch blind exception: `Exception`
     "C400",     # Unnecessary generator (rewrite as a list comprehension)
     "C401",     # Unnecessary generator (rewrite as a set comprehension)
@@ -37,46 +39,29 @@ ignore = [
 
     "FLY002",   # Consider `f'{root.h}-->{p.h}'` instead of string join
     "FURB105",  # Unnecessary empty string passed to `print`
-    "FURB122",  # Use of `f.write` in a for loop
-    "FURB132",  # Use `tags.discard(tag)` instead of check and `remove`
     "FURB167",  # Use of regular expression alias `re.M`
     "FURB188",  # Prefer `str.removesuffix()` over conditionally replacing with slice.
-    "I001",     # Import block is un-sorted or un-formatted
-    "ISC004",   # Unparenthesized implicit string concatenation in collection
-    "N999",     # Invalid module name: 'test_leoUndo'
     "PERF102",  # When using only the values of a dict use the `values()` method
     "PERF402",  # Use `list` or `list.copy` to create a copy of a list
-    "PIE790",   # Unnecessary `pass` statement
     "PIE794",   # Class field `valid_unls` is defined multiple times
-    "PIE807",   # Prefer `list` over useless lambda
-    "PIE808",   # Unnecessary `start` argument in `range`
-    "PIE810",   # Call `endswith` once with a `tuple`
     "PLC0206",  # Extracting value from dictionary without calling `.items()`
-    "PLR0402",  # Use `from leo.plugins.importers import otl` in lieu of alias
     "PLR1704",  # Redefining argument with the local name `p`
-    "PLR1730",  # Replace `if` statement with `wsLimit = max(wsLimit, 1)`
-    "PLR2044",  # Line with empty comment
-    "PLW0120",  # `else` clause on loop without a `break` statement;
-                # remove the `else` and dedent its contents
-    "PLW0128",  # Redeclared variable `line` in assignment
-    "PLW0406",  # Module `leo.plugins.demo` imports itself
-    "PLW0602",  # Using global for `oldAppCloseLeoWindow` but no assignment is done
-    "PLW1510",  # `subprocess.run` without explicit `check` argument
     "PYI041",   # Use `float` instead of `int | float`
-    "RET501",   # Do not explicitly `return None` in function if it is the only possible return value
+    
+    # Some of these produce dense code.
     "RUF010",   # Use explicit conversion flag
     "RUF012",   # Mutable default value for class attribute
-    "RUF013",   # PEP 484 prohibits implicit `Optional`
     "RUF015",   # Prefer `next(...)` over single element slice
-    "RUF023",   # ShadowController.__slots__` is not sorted
-    "RUF034",   # Useless `if`-`else` condition
-    "RUF046",   # Value being cast to `int` is already an integer
     "RUF051",   # Use `pop` instead of `key in dict` followed by `del dict[key]`
-    "RUF059",   # Unpacked variable `junk` is never used
     "RUF100",   # Unused blanket `noqa` directive
+    "RUF059",   # Unpacked variable is never used
+    
+    # Security.
     "S102",     # Use of `exec` detected
     "S110",     # `try`-`except`-`pass` detected, consider logging the exception
     "S112",     # `try`-`except`-`continue` detected, consider logging the exception
+    
+    # Simplicity.
     "SIM102",   # Use a single `if` statement instead of nested `if` statements
     "SIM103",   # Return the negated condition directly
     "SIM113",   # Use `enumerate()` for index variable `id_` in `for` loop
@@ -84,28 +69,21 @@ ignore = [
     "SIM115",   # Use a context manager for opening files
     "SIM117",   # Use a single `with` statement with multiple contexts instead of nested `with` statements
     "SIM118",   # Use `key in dict` instead of `key in dict.keys()`
-    "SIM201",   # Use `_last_code_line_num != _numlines - 1` instead of `not _last_code_line_num == _numlines - 1`
     "SIM222",   # Use `True` instead of `True or ...`
     "SIM223",   # Use `False` instead of `False and ...`
     "SIM905",   # Consider using a list literal instead of `str.split`
-    "T100",     # Import for `pudb` found
-    "TC004",    # Move import `leo.core.leoNodes.Position` out of type-checking block. Import is used for more than type hinting.
+
+    "T100",     # Import for `xxx` found
     "TRY004",   # Prefer `TypeError` exception for invalid type
-    "UP004",    # Class `PluginCatalog` inherits from `object`
-    "UP007",    # Use `X | Y` for type annotations
-    "UP008",    # Use `super()` instead of `super(__class__, self)`
-    "UP009",    # UTF-8 encoding declaration is unnecessary
-    "UP020",    # Use builtin `open`
-    "UP024",    # Replace aliased errors with `OSError`
     "UP028",    # Replace `yield` over `for` loop with `yield from`
     "UP030",    # Use implicit references for positional format fields
     "UP031",    # Use format specifiers instead of percent format
     "UP032",    # Use f-string instead of `format` call
-    "UP034",    # Avoid extraneous parentheses
-    "UP035",    # Import from `collections.abc` instead: `Iterable`
-    "UP037",    # Remove quotes from type annotation
-    "UP045",    # Use `X | None` for type annotations
-    "W605",     # Invalid escape sequence: `\*`
+    
+    # Do not enable.
+    "PLW0406",  # Module imports itself. There are also pylint suppressions.
+    "PLW0602",  # Using global for but no assignment is done
+    "PLW1510",  # `subprocess.run` without explicit `check` argument
 
     # Previous suppressions. Keep these.
     
@@ -118,6 +96,10 @@ ignore = [
 
     "F401", # `xxx` imported but unused. Pyflakes checks this.
     "F841", # Local variable `xxx` is assigned to but never used. Pyflakes checks this.
+    
+    "I001",     # Import block is un-sorted or un-formatted
+    "ISC004",   # Unparenthesized implicit string concatenation in collection
+    "N999",     # Invalid module name: 'test_leoUndo'
 ]
 
 exclude = [

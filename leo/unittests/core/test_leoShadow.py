@@ -79,7 +79,7 @@ class TestAtShadow(LeoUnitTest):
     # @+node:ekr.20080709062932.22: *4* TestAtShadow.makePublicLines
     def makePublicLines(self, lines):
         """Return the public lines in lines."""
-        lines, junk = self.shadow_controller.separate_sentinels(lines, self.marker)
+        lines, _ = self.shadow_controller.separate_sentinels(lines, self.marker)
         return lines
 
     # @+node:ekr.20080709062932.23: *4* TestAtShadow.mungePrivateLines

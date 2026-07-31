@@ -76,7 +76,7 @@ except Exception:
     _missing_modules.append('PyQt6.QtWebEngineWidgets')
 
 try:
-    import PyQt6.QtSvg as QtSvg
+    from PyQt6 import QtSvg
 except Exception:
     QtSvg = None  # type:ignore
     _missing_modules.append('PyQt6.QtSvg')

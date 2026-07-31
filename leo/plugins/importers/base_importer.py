@@ -5,8 +5,9 @@
 # @+<< imports, annotations: base_importer.py >>
 # @+node:ekr.20230920091345.1: ** << imports, annotations: base_importer.py >>
 from __future__ import annotations
+from collections.abc import Generator
 import re
-from typing import Generator, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 # This import is safe because these imports happen after initing Leo.
@@ -584,7 +585,7 @@ class Importer:
         """Move blank lines from the start of nodes to the end of previous sibling."""
         self.move_blank_lines_helper(parent.children())
 
-    def move_blank_lines_helper(self, children: Generator) -> None:
+    def move_blank_lines_helper(self, children: Generator[Position, None, None]) -> None:
         for child in children:
             self.move_one_blank_line(child)
             self.move_blank_lines_helper(child.children())

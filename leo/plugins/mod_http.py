@@ -280,7 +280,7 @@ def init():
     if config.http_active:
         try:
             Server(config.http_ip, config.http_port, RequestHandler)
-        except socket.error as e:
+        except OSError as e:
             g.es(
                 "mod_http server initialization failed (%s:%s): %s"
                 % (config.http_ip, config.http_port, e)
@@ -418,7 +418,7 @@ if asyncore:
             self.connected = True
             try:
                 self.addr = self.socket.getpeername()
-            except socket.error:
+            except OSError:
                 # The addr isn't crucial
                 pass
 
@@ -985,8 +985,6 @@ class noLeoNodePath(Exception):
     Most likely a reference to a picture.
     """
 
-    pass
-
 
 # @+node:EKR.20040517080250.13: ** class RequestHandler
 if asynchat:
@@ -1184,7 +1182,7 @@ if asyncore:
                 # pylint: disable=unpacking-non-sequence
                 # The following except statements catch this.
                 conn, addr = self.accept()
-            except socket.error:
+            except OSError:
                 self.log_info('warning: server accept() threw an exception', 'warning')
                 return
             except TypeError:
@@ -1290,7 +1288,7 @@ def poll(timeout=0.0):
         # @+node:EKR.20040517080250.41: *4* << try r, w, e = select.select >>
         try:
             r, w, e = select.select(r, w, e, timeout)
-        except select.error:  # as err:
+        except OSError:
             return False  # EKR: EINTR is undefined.
         # @-<< try r, w, e = select.select >>
     for fd in r:

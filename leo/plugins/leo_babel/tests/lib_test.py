@@ -220,7 +220,7 @@ def runTests(itPoll, cmdrT, fdR, testCmdr, genFindTests):
     else:
         if testCmdr.babelExecCnt >= babelCmdr.babelExecCnt:
             return  # Waiting for test to complete
-        #
+
         # Most Recent Test has finished.
         testCmdr.babelExecCnt = babelCmdr.babelExecCnt
         fdR.write('||* Test Name *|| {0}\n'.format(testCmdr.testRootMostRecnt.h))
@@ -242,7 +242,7 @@ def runTests(itPoll, cmdrT, fdR, testCmdr, genFindTests):
             else:
                 fdR.write('||* Other Color *|| {0}\n'.format(color))
                 fdR.write(formatCaptured(outList))
-    #
+
     # Most Recent Test (if any) if done and its output recorded
     # Start the next test.
     try:

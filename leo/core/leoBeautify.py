@@ -205,7 +205,7 @@ def should_beautify(p: Position) -> bool:
                 return False
             # The ambiguous node has no effect.
             # Look up the tree.
-            pass
+            pass  # noqa
         elif beautify:
             return True
         if no_beautify:
@@ -350,7 +350,7 @@ class CPrettyPrinter:
     def skip_ws(self, s: str, i: int) -> int:
         while i < len(s):
             token = s[i]
-            if token.startswith(' ') or token.startswith('\t'):
+            if token.startswith((' ', '\t')):
                 i += 1
             else:
                 break
@@ -362,7 +362,7 @@ class CPrettyPrinter:
             token = s[i]
             if token.isspace():
                 i += 1
-            elif token.startswith('//') or token.startswith('/*'):
+            elif token.startswith(('//', '/*')):
                 i += 1
             else:
                 break
@@ -443,7 +443,7 @@ class CPrettyPrinter:
             s2 = self.result[i]
             if s == s2:
                 return True
-            if s.isspace() or s.startswith('//') or s.startswith('/*'):
+            if s.isspace() or s.startswith(('//', '/*')):
                 i -= 1
             else:
                 return False

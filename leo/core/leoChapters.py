@@ -79,7 +79,7 @@ class ChapterController:
         """Make chapter-select-<chapterName> command."""
         c, cc = self.c, self
         commandName = f"chapter-select-{chapterName}"
-        #
+
         # For tracing:
         # inverseBindingsDict = c.k.computeInverseBindingDict()
         if commandName in c.commandsDict:

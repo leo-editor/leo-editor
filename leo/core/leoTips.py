@@ -32,7 +32,7 @@ class TipManager:
 
     # @+others
     # @+node:ekr.20180121041748.1: *3* tipm.get_next_tip
-    def get_next_tip(self) -> "UserTip":
+    def get_next_tip(self) -> UserTip:
         # global tips
         db = g.app.db
         # Compute list of unseen tips.

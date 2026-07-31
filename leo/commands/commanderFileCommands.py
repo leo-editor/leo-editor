@@ -232,7 +232,7 @@ def importAnyFile(self: Self, event: LeoKeyEvent | None = None) -> None:
     if derived:
         ic.importDerivedFiles(parent=c.p, paths=derived)
     for fn in others:
-        junk, ext = g.os_path_splitext(fn)
+        _, ext = g.os_path_splitext(fn)
         ext = ext.lower()  # #1522
         if ext.startswith('.'):
             ext = ext[1:]
@@ -1020,7 +1020,7 @@ def writeFileFromNode(self: Self, event: LeoKeyEvent | None = None) -> None:
                 f.write(s)
                 f.flush()
                 g.blue('wrote:', fileName)
-        except IOError:
+        except OSError:
             g.error(f"can not write {fileName}")
 
 
@@ -1062,7 +1062,7 @@ def writeFileFromSubtree(self: Self, event: LeoKeyEvent | None = None) -> None:
                 f.write(s)
                 f.flush()
                 g.blue('wrote:', fileName)
-        except IOError:
+        except OSError:
             g.error(f"can not write {fileName}")
 
 
@@ -1138,7 +1138,7 @@ def open_theme_file(self: Self, event: LeoKeyEvent | None = None) -> None:
         return
     leo_dir = g.finalize_join(g.app.loadDir, '..', '..')
     os.chdir(leo_dir)
-    #
+
     # #1425: Open the theme file in a separate process.
     # #1564. Use execute_shell_commands.
     # #1974: allow spaces in path.

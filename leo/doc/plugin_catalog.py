@@ -4,7 +4,7 @@
 
 #@+<< docstring >>
 #@+node:ekr.20111018061632.15902: ** << docstring >>
-"""
+r"""
 Extract plugin status and docs. from docstrings
 
 :last_update: 20100301
@@ -73,7 +73,7 @@ def err(s):
     sys.stderr.write(s)
     sys.stderr.flush()
 #@+node:ekr.20111018061632.15913: ** class PluginCatalog
-class PluginCatalog(object):
+class PluginCatalog:
 
     """see module docs. and make_parser()"""
 

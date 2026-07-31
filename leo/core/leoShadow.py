@@ -57,9 +57,9 @@ class ShadowController:
         'old_sent_lines',
         'results',
         'sentinels',
+        'shadow_in_home_dir',
         'shadow_prefix',
         'shadow_subdir',
-        'shadow_in_home_dir',
         'trailing_sentinels',
         'verbatim_line',
     )
@@ -169,7 +169,7 @@ class ShadowController:
                 kind = 'wrote' if exists else 'created'
                 g.es(f"{kind:>6}: {fileName}")
             return True
-        except IOError:
+        except OSError:
             x.error(f"unexpected exception writing file: {fileName}")
             g.es_exception()
             return False
@@ -465,7 +465,7 @@ class ShadowController:
         """Return the sentinel delimiter comment to be used for filename."""
         at, x = self.c.atFileCommands, self
         s = x.findLeoLine(lines)
-        ok, junk, start, end, junk = at.parseLeoSentinel(s)
+        ok, _, start, end, _ = at.parseLeoSentinel(s)
         if end:
             delims = '', start, end
         else:

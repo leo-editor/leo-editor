@@ -6,11 +6,11 @@
 # @+node:ekr.20220826123551.1: ** << commanderOutlineCommands imports & annotations >>
 from __future__ import annotations
 from collections import defaultdict
-from collections.abc import Callable
-import xml.etree.ElementTree as ElementTree
+from collections.abc import Callable, Generator
+from xml.etree import ElementTree
 import json
 import time
-from typing import Any, Generator, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 from leo.core import leoFileCommands
@@ -214,7 +214,7 @@ def pasteAsTemplate(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     # Define helpers.
     # @+others
     # @+node:vitalije.20200529112224.1: *4* skip_root
-    def skip_root(v: VNode) -> Generator:
+    def skip_root(v: VNode) -> Generator[VNode, None, None]:
         """
         generates v nodes in the outline order
         but skips a subtree of the node with root_gnx
@@ -235,7 +235,7 @@ def pasteAsTemplate(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
         return g.app.nodeIndices.computeNewIndex()
 
     # @+node:vitalije.20200529115141.1: *4* viter
-    def viter(parent_gnx: str, xv: Any) -> Generator:
+    def viter(parent_gnx: str, xv: Any) -> Generator[tuple[str, str, str | None, str], None, None]:
         """
         iterates <v> nodes generating tuples:
 
@@ -1678,7 +1678,7 @@ def moveOutlineDown(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     """Move the selected node down."""
     # Moving down is more tricky than moving up because we can't
     # move p to be a child of itself.
-    #
+
     # An important optimization:
     # we don't have to call checkMoveWithParentWithWarning() if the parent of
     # the moved node remains the same.

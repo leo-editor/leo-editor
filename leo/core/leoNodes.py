@@ -5,13 +5,13 @@
 # @+<< leoNodes imports & annotations >>
 # @+node:ekr.20060904165452.1: ** << leoNodes imports & annotations >>
 from __future__ import annotations
-from collections.abc import Callable
+from collections.abc import Callable, Generator, Iterable
 import copy
 import os
 import re
 import time
 import uuid
-from typing import Any, Generator, Iterable, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import signal_manager
 
@@ -504,7 +504,7 @@ class Position:
 
     # @+node:ekr.20091001141621.6060: *3* p.generators
     # @+node:ekr.20091001141621.6055: *4* p.children
-    def children(self, copy: bool = True) -> Generator:
+    def children(self, copy: bool = True) -> Generator[Position, None, None]:
         """Yield all child positions of p."""
         p = self
         p = p.firstChild()
@@ -517,7 +517,7 @@ class Position:
     children_iter = children
 
     # @+node:ekr.20091002083910.6102: *4* p.following_siblings
-    def following_siblings(self, copy: bool = True) -> Generator:
+    def following_siblings(self, copy: bool = True) -> Generator[Position, None, None]:
         """Yield all siblings positions that follow p, not including p."""
         p = self
         p = p.next()  # pylint: disable=not-callable
@@ -530,7 +530,9 @@ class Position:
     following_siblings_iter = following_siblings
 
     # @+node:ekr.20161120105707.1: *4* p.nearest_roots
-    def nearest_roots(self, copy: bool = True, predicate: Callable | None = None) -> Generator:
+    def nearest_roots(
+        self, copy: bool = True, predicate: Callable | None = None
+    ) -> Generator[Position, None, None]:
         """
         A generator yielding all the root positions "near" p1 = self that
         satisfy the given predicate. p.isAnyAtFileNode is the default
@@ -569,7 +571,7 @@ class Position:
         self,
         copy: bool = True,
         predicate: Callable | None = None,
-    ) -> Generator:
+    ) -> Generator[Position, None, None]:
         """
         A generator yielding all unique root positions "near" p1 = self that
         satisfy the given predicate. p.isAnyAtFileNode is the default
@@ -610,7 +612,7 @@ class Position:
     nearest = nearest_unique_roots
 
     # @+node:ekr.20091002083910.6104: *4* p.nodes
-    def nodes(self) -> Generator:
+    def nodes(self) -> Generator[VNode, None, None]:
         """Yield p.v and all vnodes in p's subtree."""
         p = self
         p = p.copy()
@@ -624,7 +626,7 @@ class Position:
     vnodes_iter = nodes
 
     # @+node:ekr.20091001141621.6058: *4* p.parents
-    def parents(self, copy: bool = True) -> Generator:
+    def parents(self, copy: bool = True) -> Generator[Position, None, None]:
         """Yield all parent positions of p."""
         p = self
         p = p.parent()
@@ -637,7 +639,7 @@ class Position:
     parents_iter = parents
 
     # @+node:ekr.20091002083910.6099: *4* p.self_and_parents
-    def self_and_parents(self, copy: bool = True) -> Generator:
+    def self_and_parents(self, copy: bool = True) -> Generator[Position, None, None]:
         """Yield p and all parent positions of p."""
         p = self
         if not p:  # Don't use assert p here.
@@ -652,7 +654,7 @@ class Position:
     self_and_parents_iter = self_and_parents
 
     # @+node:ekr.20091001141621.6057: *4* p.self_and_siblings
-    def self_and_siblings(self, copy: bool = True) -> Generator:
+    def self_and_siblings(self, copy: bool = True) -> Generator[Position, None, None]:
         """Yield all sibling positions of p including p."""
         p = self
         p = p.copy()
@@ -667,7 +669,7 @@ class Position:
     self_and_siblings_iter = self_and_siblings
 
     # @+node:ekr.20091001141621.6066: *4* p.self_and_subtree
-    def self_and_subtree(self, copy: bool = True) -> Generator:
+    def self_and_subtree(self, copy: bool = True) -> Generator[Position, None, None]:
         """Yield p and all positions in p's subtree."""
         p = self
         p = p.copy()
@@ -681,7 +683,7 @@ class Position:
     self_and_subtree_iter = self_and_subtree
 
     # @+node:ekr.20091001141621.6056: *4* p.subtree
-    def subtree(self, copy: bool = True) -> Generator:
+    def subtree(self, copy: bool = True) -> Generator[Position, None, None]:
         """Yield all positions in p's subtree, but not p."""
         p = self
         p = p.copy()
@@ -696,7 +698,7 @@ class Position:
     subtree_iter = subtree
 
     # @+node:ekr.20091002083910.6105: *4* p.unique_nodes
-    def unique_nodes(self) -> Generator:
+    def unique_nodes(self) -> Generator[VNode, None, None]:
         """Yield p.v and all unique vnodes in p's subtree."""
         p = self
         seen = set()
@@ -710,7 +712,7 @@ class Position:
     unique_vnodes_iter = unique_nodes
 
     # @+node:ekr.20091002083910.6103: *4* p.unique_subtree
-    def unique_subtree(self, copy: bool = True) -> Generator:
+    def unique_subtree(self, copy: bool = True) -> Generator[Position, None, None]:
         """Yield p and all other unique positions in p's subtree."""
         p = self
         seen = set()
@@ -950,7 +952,7 @@ class Position:
             if n == 0:
                 parent_v = v.context.hiddenRootNode
             else:
-                parent_v, junk = p.stack[n - 1]
+                parent_v, _ = p.stack[n - 1]
             if len(parent_v.children) > childIndex + 1:
                 # v has a next sibling.
                 return True
@@ -1368,11 +1370,11 @@ class Position:
         assert p.v
         parent_v = p.v.context.hiddenRootNode
         assert parent_v, g.callers()
-        #
+
         # Make p the root position.
         p.stack = []
         p._childIndex = 0
-        #
+
         # Make p.v the first child of parent_v.
         p.v._addLink(0, parent_v)
         return p
@@ -1385,7 +1387,7 @@ class Position:
         if not p.v or p.v == c.hiddenRootNode:
             return c.hiddenRootNode
         if data := p.stack and p.stack[-1]:
-            v, junk = data
+            v, _ = data
             return v
         return c.hiddenRootNode
 
@@ -1879,7 +1881,7 @@ class Position:
     def moveToRoot(self) -> Position:
         """Move self to the root position."""
         p = self  # Do NOT copy the position!
-        #
+
         # #1631. The old root can not possibly be affected by unlinking p.
         p._unlink()
         p._linkAsRoot()
@@ -2268,14 +2270,23 @@ position = Position  # compatibility.
 # @+node:ekr.20031218072017.3341: ** class VNode
 class VNode:
     __slots__ = [
-        '_bodyString', '_headString', '_p_changed',
-        'children', 'fileIndex', 'iconVal', 'parents', 'statusBits',
+        '_bodyString',
+        '_headString',
+        '_p_changed',
+        'at_read',            # Injected by read code.
+        'children',
+        'context',            # Not written to any file.
+        'expandedPositions',  # Not written to any file.
+        'fileIndex',
+        'iconVal',
+        'insertSpot',         # Not written to any file.
+        'parents',
+        'scrollBarSpot',      # Not written to any file.
+        'selectionLength',    # Not written to any file.
+        'selectionStart',     # Not written to any file.
+        'statusBits',
+        'tempAttributes',     # Injected by read code.
         'unknownAttributes',
-        # Injected by read code.
-        'at_read', 'tempAttributes',
-        # Not written to any file.
-        'context', 'expandedPositions', 'insertSpot',
-        'scrollBarSpot', 'selectionLength', 'selectionStart',
     ]  # fmt: skip
     # @+<< VNode constants >>
     # @+node:ekr.20031218072017.951: *3* << VNode constants >>
@@ -2337,7 +2348,7 @@ class VNode:
 
         # To make VNode's independent of Leo's core,
         # wrap all calls to the VNode ctor::
-        #
+
         #   def allocate_vnode(c,gnx):
         #       v = VNode(c)
         #       g.app.nodeIndices.new_vnode_helper(c,gnx,v)

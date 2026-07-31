@@ -866,7 +866,7 @@ class ScreenShotController:
     # @+node:ekr.20101004082701.5738: *5* get_slide_base_name
     def get_slide_base_name(self):
         sc = self
-        junk, name = g.os_path_split(sc.slideshow_path)
+        _, name = g.os_path_split(sc.slideshow_path)
         return name
 
     # @+node:ekr.20101004082701.5740: *5* get_slide_fn
@@ -922,7 +922,7 @@ class ScreenShotController:
                     g.error('relative sphinx path given but outline not named')
                     return None
                 leo_fn = g.finalize_join(g.app.loadDir, leo_fn)
-                base, junk = g.os_path_split(leo_fn)
+                base, _ = g.os_path_split(leo_fn)
                 path = g.finalize_join(base, sphinx_path)
         else:
             # The default is the leo/doc/html directory.
@@ -979,7 +979,7 @@ class ScreenShotController:
             g.error('relative wink path given but outline not named')
             return None
         leo_fn = g.finalize_join(g.app.loadDir, leo_fn)
-        base, junk = g.os_path_split(leo_fn)
+        base, _ = g.os_path_split(leo_fn)
         path = g.finalize_join(base, path)
         path = sc.fix(path)
         g.trace(path)
@@ -1046,7 +1046,7 @@ class ScreenShotController:
         sc = self
         assert hasattr(sc, option)
         tag = '@' + option
-        isPath = tag.endswith('_fn') or tag.endswith('_path')
+        isPath = tag.endswith(('_fn', '_path'))
         for p in (sc.slideshow_node, sc.slide_node):
             for child in p.children():
                 h = child.h
@@ -1153,7 +1153,7 @@ class ScreenShotController:
             'Makefile',
             'make.bat',
         )
-        slide_path, junk = g.os_path_split(sc.slide_fn)
+        slide_path, _ = g.os_path_split(sc.slide_fn)
         for fn in table:
             path = g.finalize_join(slide_path, fn)
             if not g.os_path_exists(path):
@@ -1163,7 +1163,7 @@ class ScreenShotController:
     def copy_file(self, src_path, dst_path, fn):
         src_fn = g.finalize_join(src_path, fn)
         dst_fn = g.finalize_join(dst_path, fn)
-        junk, dst_dir = g.os_path_split(dst_path)
+        _, dst_dir = g.os_path_split(dst_path)
         g.note('creating', g.os_path_join('slides', dst_dir, fn))
         shutil.copyfile(src_fn, dst_fn)
 
@@ -1227,7 +1227,7 @@ class ScreenShotController:
         )
         for tag, path in table:
             if tag.strip().endswith('fn'):
-                path, junk = g.os_path_split(path)
+                path, _ = g.os_path_split(path)
             if not g.os_path_exists(path):
                 g.trace(tag, path)
                 g.makeAllNonExistentDirectories(path)
@@ -1241,7 +1241,7 @@ class ScreenShotController:
         h = '@url built slide'
         if not sc.find_node(p, h):
             c.selectPosition(p)
-            junk, fn = g.os_path_split(sc.slide_fn)
+            _, fn = g.os_path_split(sc.slide_fn)
             if fn.endswith('.txt'):
                 fn = fn[:-4]
             p2 = p.insertAsLastChild()
@@ -1501,7 +1501,7 @@ class ScreenShotController:
                 img = Image.open(sc.output_fn)
                 img = sc.trim(img, (255, 255, 255, 0))
                 img.save(sc.output_fn)
-            except IOError:
+            except OSError:
                 g.trace('can not open %s' % sc.output_fn)
         sc.make_at_url_node_for_output_file()
 
@@ -2061,7 +2061,7 @@ class ScreenShotController:
 
         def key(s):
             path, ext = g.os_path_splitext(s)
-            junk, n = g.os_path_split(path)
+            _, n = g.os_path_split(path)
             n = n.strip()
             if n.isdigit():
                 return int(n)

@@ -5,11 +5,11 @@
 # @+<< leoFind imports & annotations >>
 # @+node:ekr.20220415005856.1: ** << leoFind imports & annotations >>
 from __future__ import annotations
-from collections.abc import Callable
+from collections.abc import Callable, Generator
 import keyword
 import re
 import time
-from typing import cast, Any, Generator, TYPE_CHECKING
+from typing import cast, Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 from leo.plugins.qt_frame import FindTabManager
@@ -292,7 +292,7 @@ class LeoFind:
         # Init...
         self.find_text = find_text
         self.change_text = self.replace_back_slashes(change_text)
-        positions: list | Generator
+        positions: list | Generator[Position, None, None]
         if self.node_only:
             positions = [p1]
         elif self.suboutline_only:
@@ -3286,9 +3286,7 @@ class LeoFind:
         elif s in ('\b', 'BackSpace'):
             k.updateLabel(event)
             self.isearch_backspace()
-        elif (
-            s.startswith('Ctrl+') or s.startswith('Alt+') or k.isFKey(s)  # 2011/06/13.
-        ):
+        elif s.startswith(('Ctrl+', 'Alt+')) or k.isFKey(s):
             # End the search.
             self.end_search()
             k.masterKeyHandler(event)
@@ -3397,7 +3395,7 @@ class LeoFind:
         c = self.c
         s = self.ftm.get_change_text()
         c.minibufferWantsFocus()
-        while s.endswith('\n') or s.endswith('\r'):
+        while s.endswith(('\n', '\r')):
             s = s[:-1]
         c.k.extendLabel(s, select=True, protect=False)
 
@@ -3407,7 +3405,7 @@ class LeoFind:
         ftm = c.findCommands.ftm
         s = ftm.get_find_text()
         c.minibufferWantsFocus()
-        while s.endswith('\n') or s.endswith('\r'):
+        while s.endswith(('\n', '\r')):
             s = s[:-1]
         k.extendLabel(s, select=True, protect=protect)
 
@@ -3454,13 +3452,13 @@ class LeoFind:
             return
         if not g.isTextWrapper(w):
             return
-        #
+
         # #1436: Don't create a selection if there isn't one.
         #        Leave the search pattern alone!
-        #
+
         # if not w.hasSelection():
         #     c.editCommands.extendToWord(event=None, select=True, w=w)
-        #
+
         # #177:  Use selected text as the find string.
         # #1436: Make make sure there is a significant search pattern.
         s = w.getSelectedText()

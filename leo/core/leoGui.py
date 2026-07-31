@@ -58,7 +58,7 @@ class LeoGui:
         self.utils = None
         # To keep pylint happy.
         self.ScriptingControllerClass = NullScriptingControllerClass
-        #
+
         # Define special keys that may be overridden is subclasses.
         self.ignoreChars: list[str] = []  # Keys that should always be ignored.
         self.FKeys: list[str] = []  # The representation of F-keys.

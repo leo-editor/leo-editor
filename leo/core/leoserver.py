@@ -16,7 +16,7 @@ To run externally, do `python -m leo.core.leoserver --password <password>`.
 # pylint: disable=raise-missing-from
 import argparse
 import asyncio
-from collections.abc import Callable
+from collections.abc import Callable, Generator, Iterable, Iterator
 import fnmatch
 import hashlib
 import inspect
@@ -30,7 +30,7 @@ import textwrap
 import time
 import hmac
 import ssl
-from typing import Any, Generator, Iterable, Iterator, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 import warnings
 
 # Third-party.
@@ -166,19 +166,13 @@ class SetEncoder(json.JSONEncoder):
 class InternalServerError(Exception):  # pragma: no cover
     """The server violated its own coding conventions."""
 
-    pass
-
 
 class ServerError(Exception):  # pragma: no cover
     """The server received an erroneous package."""
 
-    pass
-
 
 class TerminateServer(Exception):  # pragma: no cover
     """Ask the server to terminate."""
-
-    pass
 
 
 # @+node:felix.20210626222905.1: ** class ServerExternalFilesController
@@ -307,7 +301,7 @@ class ServerExternalFilesController(ExternalFilesController):
 
         # #1240: Check the .leo file itself.
         self.idle_check_leo_file(c)
-        #
+
         # #1100: always scan the entire file for @<file> nodes.
         # #1134: Nested @<file> nodes are no longer valid, but this will do no harm.
         for p in c.all_unique_positions():
@@ -955,23 +949,22 @@ class LeoServer:
     # @+others
     # @+node:felix.20210621233316.5: *3* server.__init__
     def __init__(self, *, silent: bool = False, testing: bool = False) -> None:
-        import leo.core.leoApp as leoApp
-        import leo.core.leoBridge as leoBridge
+        from leo.core import leoApp, leoBridge
 
         global g
         t1 = time.process_time()
-        #
+
         # Init ivars first.
         self.c: Cmdr | None = None  # Currently Selected Commander.
         self.dummy_c: Cmdr | None = None  # Set below, after we set g.
         self.action: str = ''
         self.bad_commands_list: list[str] = []  # Set below.
         self.idle_tasks: list[tuple[Callable, int | float]] = []
-        #
+
         # Debug utilities
         self.current_id = 0  # Id of action being processed.
         self.log_flag = False  # set by "log" key
-        #
+
         # Start the bridge.
         self.bridge = leoBridge.controller(
             gui='nullGui',
@@ -984,36 +977,36 @@ class LeoServer:
         g.in_leo_server = True  # #2098.
         g.leoServer = self  # Set server singleton global reference
         self.leoServerConfig: Param = None  # type:ignore
-        #
+
         # * Intercept Log Pane output: Sends to client's log pane
         g.es = self._es  # pointer - not a function call
         g.es_print = self._es  # Also like es, because es_print would double strings in client
-        #
+
         # Set in _init_connection
         self.web_socket = None  # Main Control Client
         self.loop: Loop = None
-        #
+
         # To inspect commands
         self.dummy_c = g.app.newCommander(fileName=None)
         self.bad_commands_list = self._bad_commands(self.dummy_c)
-        #
+
         # * Replacement instances to Leo's codebase : getScript, IdleTime and externalFilesController
         g.getScript = self._getScript
         g.IdleTime = self._idleTime
-        #
+
         # * hook open2 for commander creation completion and inclusion in windowList
-        #
+
         g.registerHandler('open2', self._open2Hook)
         # override for selectLeoWindow
         g.app.selectLeoWindow = self._selectLeoWindow
-        #
+
         # override for "revert to file" operation
         g.app.gui.runAskOkDialog = self._runAskOkDialog
         g.app.gui.runAskYesNoDialog = self._runAskYesNoDialog
         g.app.gui.runAskYesNoCancelDialog = self._runAskYesNoCancelDialog
         g.app.gui.show_find_success = self._show_find_success
         self.headlineWidget = g.bunch(_name='tree')
-        #
+
         # Complete the initialization, as in LeoApp.initApp.
         g.app.idleTimeManager = leoApp.IdleTimeManager()
         g.app.externalFilesController = ServerExternalFilesController()  # Replace
@@ -1570,7 +1563,7 @@ class LeoServer:
         if derived:
             ic.importDerivedFiles(parent=c.p, paths=derived)
         for fn in others:
-            junk, ext = g.os_path_splitext(fn)
+            _, ext = g.os_path_splitext(fn)
             ext = ext.lower()  # #1522
             if ext.startswith('.'):
                 ext = ext[1:]
@@ -2103,11 +2096,10 @@ class LeoServer:
         if "fromOutline" in param:
             fromOutline = param.get("fromOutline", False)
             fromBody = not fromOutline
-            #
             focus = self._get_focus()
             inOutline = ("tree" in focus) or ("head" in focus)
             inBody = not inOutline
-            #
+
             if fromOutline and inBody:
                 fc.in_headline = True
             elif fromBody and inOutline:
@@ -2146,7 +2138,7 @@ class LeoServer:
             p, pos, newpos = fc.do_find_next(settings)
         except Exception as e:
             raise ServerError(f"{tag}: Running interactive_search gave exception: {e}")
-        #
+
         # get focus again after the operation
         focus = self._get_focus()
         selRange = self._get_sel_range()
@@ -2166,7 +2158,6 @@ class LeoServer:
         c = self._check_c(param)
         fc = c.findCommands
         try:
-            pass
             char = param.get("char")
             if char is None:  # pragma: no cover
                 raise ServerError(f"{tag}: no char in param")
@@ -2199,11 +2190,10 @@ class LeoServer:
         fc = c.findCommands
         fromOutline = param.get("fromOutline", False)
         fromBody = not fromOutline
-        #
         focus = self._get_focus()
         inOutline = ("tree" in focus) or ("head" in focus)
         inBody = not inOutline
-        #
+
         if fromOutline and inBody:
             fc.in_headline = True
         elif fromBody and inOutline:
@@ -2217,7 +2207,7 @@ class LeoServer:
             p, pos, newpos = fc.do_find_next(settings)
         except Exception as e:
             raise ServerError(f"{tag}: Running find operation gave exception: {e}")
-        #
+
         # get focus again after the operation
         focus = self._get_focus()
         selRange = self._get_sel_range()
@@ -2239,11 +2229,11 @@ class LeoServer:
         fc = c.findCommands
         fromOutline = param.get("fromOutline", False)
         fromBody = not fromOutline
-        #
+
         focus = self._get_focus()
         inOutline = ("tree" in focus) or ("head" in focus)
         inBody = not inOutline
-        #
+
         if fromOutline and inBody:
             fc.in_headline = True
         elif fromBody and inOutline:
@@ -2256,7 +2246,7 @@ class LeoServer:
             p, pos, newpos = fc.do_find_prev(settings)
         except Exception as e:
             raise ServerError(f"{tag}: Running find operation gave exception: {e}")
-        #
+
         # get focus again after the operation
         focus = self._get_focus()
         selRange = self._get_sel_range()
@@ -2278,18 +2268,18 @@ class LeoServer:
         fc = c.findCommands
         fromOutline = param.get("fromOutline", False)
         fromBody = not fromOutline
-        #
+
         focus = self._get_focus()
         inOutline = ("tree" in focus) or ("head" in focus)
         inBody = not inOutline
-        #
+
         if fromOutline and inBody:
             fc.in_headline = True
         elif fromBody and inOutline:
             fc.in_headline = False
             c.bodyWantsFocus()
             c.bodyWantsFocusNow()
-        #
+
         try:
             settings = fc.ftm.get_settings()
             fc._remember_settings(settings)
@@ -2312,18 +2302,18 @@ class LeoServer:
         fc = c.findCommands
         fromOutline = param.get("fromOutline", False)
         fromBody = not fromOutline
-        #
+
         focus = self._get_focus()
         inOutline = ("tree" in focus) or ("head" in focus)
         inBody = not inOutline
-        #
+
         if fromOutline and inBody:
             fc.in_headline = True
         elif fromBody and inOutline:
             fc.in_headline = False
             c.bodyWantsFocus()
             c.bodyWantsFocusNow()
-        #
+
         try:
             settings = fc.ftm.get_settings()
             fc._remember_settings(settings)
@@ -3252,7 +3242,6 @@ class LeoServer:
         or deeper than the current Leo file, the path is made relative.
         If the file path is at a higher level, it is made absolute.
         """
-        pass
         c = self._check_c(param)
         p = self._get_p(param)
         u = c.undoer
@@ -3799,12 +3788,12 @@ class LeoServer:
         """Return the list of command names that connected clients should ignore."""
         d = c.commandsDict if c else {}  # keys are command names, values are functions.
         bad = []
-        #
+
         # leoInteg #173: Remove only vim commands.
         for command_name in sorted(d):
             if command_name.startswith(':'):
                 bad.append(command_name)
-        #
+
         # Remove other commands.
         # This is a hand-curated list.
         bad_list = [
@@ -4993,7 +4982,7 @@ class LeoServer:
         except Exception as e:
             print(f"_do_leo_command Recovered from Error {e!s}", flush=True)
             return self._make_response()  # Return empty on error
-        #
+
         # Tag along a possible return value with info sent back by _make_response
         if self._is_jsonable(value):
             return self._make_response({"return-value": value})
@@ -5038,7 +5027,7 @@ class LeoServer:
         except Exception as e:
             print(f"_do_leo_command Recovered from Error {e!s}", flush=True)
             return self._make_response()  # Return empty on error
-        #
+
         # Tag along a possible return value with info sent back by _make_response
         if self._is_jsonable(value):
             return self._make_response({"return-value": value})
@@ -5535,7 +5524,7 @@ class LeoServer:
                 raise ServerError(f"{tag}: round-trip failed: ap: {ap!r}, p: {p!r}, p2: {p2!r}")
 
     # @+node:felix.20210625002950.1: *4* server._yieldAllRootChildren
-    def _yieldAllRootChildren(self, c: Cmdr) -> Generator:
+    def _yieldAllRootChildren(self, c: Cmdr) -> Generator[Position, None, None]:
         """Return all root children P nodes"""
         p = c.rootPosition()
         while p:
@@ -5903,8 +5892,7 @@ def main() -> None:  # pragma: no cover (tested in client)
             sys.exit(1)
 
         # Sanitize limit.
-        if wsLimit < 1:
-            wsLimit = 1
+        wsLimit = max(wsLimit, 1)
 
     # @+node:felix.20260523224253.1: *3* function: get_ssl_context
     def get_ssl_context(cert_path: str | None, key_path: str | None) -> ssl.SSLContext | None:

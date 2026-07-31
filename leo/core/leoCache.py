@@ -5,11 +5,12 @@
 # @+<< leoCache imports & annotations >>
 # @+node:ekr.20100208223942.10436: ** << leoCache imports & annotations >>
 from __future__ import annotations
+from collections.abc import Generator
 import fnmatch
 import os
 import pickle
 import sqlite3
-from typing import Any, Generator, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 import zlib
 from leo.core import leoGlobals as g
 
@@ -226,7 +227,7 @@ class SqlitePickleShare:
         return obj
 
     # @+node:vitalije.20170716201700.7: *4* SqlitePickleShare.__iter__
-    def __iter__(self) -> Generator:
+    def __iter__(self) -> Generator[str, None, None]:
         for k in list(self.keys()):
             yield k
 
@@ -320,7 +321,7 @@ class SqlitePickleShare:
         return False
 
     # @+node:vitalije.20170716201700.18: *3* items  (SqlitePickleShare)
-    def items(self) -> Generator:
+    def items(self) -> Generator[tuple[str, Any], None, None]:
         sql = 'select key,data from cachevalues;'
         for key, data in self.conn.execute(sql):
             yield key, data
@@ -328,7 +329,7 @@ class SqlitePickleShare:
     # @+node:vitalije.20170716201700.19: *3* keys (SqlitePickleShare)
     # Called by clear, and during unit testing.
 
-    def keys(self, globpat: str = '') -> Generator:
+    def keys(self, globpat: str = '') -> Generator[str, None, None]:
         """Return all keys in DB, or all keys matching a glob"""
         args: tuple
         if not globpat:
@@ -373,7 +374,6 @@ class SqlitePickleShare:
     # @+node:vitalije.20170716201700.23: *3* uncache (SqlitePickleShare)
     def uncache(self, *items: Args) -> None:
         """not used in SqlitePickleShare"""
-        pass
 
     # @-others
 

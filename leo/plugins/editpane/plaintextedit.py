@@ -111,10 +111,12 @@ class LEP_PlainTextEditB(LEP_PlainTextEdit):
 
         # @-others
 
-    # @+node:tbrown.20171028115504.13: *3* __init__
+    # @+node:tbrown.20171028115504.13: *3* LEP_PlainTextEditB.__init__
     def __init__(self, c=None, lep=None, *args, **kwargs):
         """set up"""
-        super().__init__(c=c, lep=lep, *args, **kwargs)
+        kwargs['c'] = c
+        kwargs['lep'] = lep
+        super().__init__(*args, **kwargs)
         self.setStyleSheet("* {background: #989; color: #222; }")
         self.highlighter = self.BHighlighter(self.document())
 
