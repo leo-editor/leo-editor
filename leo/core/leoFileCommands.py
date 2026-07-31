@@ -698,7 +698,6 @@ class FileCommands:
             return
 
         # Compute the timestamp.
-        ### today = dt.datetime.fromtimestamp(time.time(), tz=dt.timezone.utc)  # PR #4829
         today = dt.datetime.now(tz=dt.timezone.utc)  # PR #4829
         time_s = today.strftime('%Y-%m-%d-%H-%M-%S')
 
