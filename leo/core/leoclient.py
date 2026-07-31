@@ -132,8 +132,8 @@ def _get_action_list():
     middle: list = [
         ("!" + z, {}) for z in test_names if z not in head_names + tail_names + exclude_names
     ]
-    middle_names = [name for (name, package) in middle]  # type:ignore
-    all_tests = head + middle + tail  # type:ignore
+    middle_names = [name for (name, package) in middle]
+    all_tests = head + middle + tail
     if 0:
         g.printObj(middle_names, tag='middle_names')
         all_names = sorted([name for (name, package) in all_tests])
@@ -231,11 +231,10 @@ async def client_main_loop(timeout):
                     inner_n += 1
                     assert inner_n < 50  # Arbitrary.
                     try:
-                        json_s = None
                         json_s = g.toUnicode(await websocket.recv())
                         d = json.loads(json_s)
                     except Exception:
-                        if json_s is not None:
+                        if json_s:
                             g.trace('json_s', json_s)
                             g.print_exception()
                         break

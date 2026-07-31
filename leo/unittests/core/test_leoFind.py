@@ -4,7 +4,7 @@
 
 import re
 from leo.core import leoGlobals as g
-import leo.core.leoFind as leoFind
+from leo.core import leoFind
 from leo.core.leoGui import StringFindTabManager
 from leo.core.leoTest2 import LeoUnitTest
 
@@ -438,7 +438,6 @@ class TestFind(LeoUnitTest):
 
     def test_replace_then_find_in_headline(self):
         c, settings, x = self.c, self.settings, self.x
-        p = c.p
         settings.find_text = 'Node 1'
         settings.change_text = 'Node 1a'
         settings.in_headline = True
@@ -446,7 +445,7 @@ class TestFind(LeoUnitTest):
         p, pos, newpos = x.do_find_next(settings)
         assert p
         self.assertEqual(p.h, settings.find_text)
-        w = self.c.headline_wrapper(p)
+        w = c.headline_wrapper(p)
         assert w
         s = p.h[pos:newpos]
         self.assertEqual(s, settings.find_text)
@@ -1020,8 +1019,8 @@ class TestFind(LeoUnitTest):
     def test_switch_style(self):
         x = self.x
         table = (
-            ('', None),
-            ('TestClass', None),
+            ('', ''),
+            ('TestClass', ''),
             ('camelCase', 'camel_case'),
             ('under_score', 'underScore'),
         )

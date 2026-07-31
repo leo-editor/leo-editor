@@ -3,7 +3,7 @@
 """Nested splitter classes."""
 
 from __future__ import annotations
-from typing import Any, Dict
+from typing import Any
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtGui, QtWidgets
 from leo.core.leoQt import ContextMenuPolicy, Orientation, QAction
@@ -419,7 +419,7 @@ class NestedSplitter(QtWidgets.QSplitter):
                 # list of top level NestedSplitter windows opened from 'Open Window'
                 # splitter handle context menu
                 root.zoomed = False
-            #
+
             # NestedSplitter is a kind of meta-widget, in that it manages
             # panes across multiple actual splitters, even windows.
             # So to create a signal for a click on splitter handle, we
@@ -470,8 +470,7 @@ class NestedSplitter(QtWidgets.QSplitter):
         if self.count() == 1 and local_top != self:
             self.parent().addWidget(self.widget(0))
             self.deleteLater()
-        parent = self.parentWidget()
-        if parent:
+        if parent := self.parentWidget():
             layout = parent.layout()  # QLayout, not a NestedSplitter
         else:
             layout = None
@@ -536,8 +535,7 @@ class NestedSplitter(QtWidgets.QSplitter):
                     return layout, n
                 if not isinstance(i, QtWidgets.QWidget):
                     # then it must be a layout dict
-                    x = hunter(i, id_)
-                    if x:
+                    if x := hunter(i, id_):
                         return x
             return None
 
@@ -636,8 +634,7 @@ class NestedSplitter(QtWidgets.QSplitter):
         """find a provider to provide a context menu service, and do it"""
         for provider in self.root.providers:
             if hasattr(provider, 'ns_do_context'):
-                provided = provider.ns_do_context(id_, self, index)
-                if provided:
+                if provider.ns_do_context(id_, self, index):
                     break
 
     # @+node:ekr.20110605121601.17973: *3* ns.contains
@@ -688,8 +685,7 @@ class NestedSplitter(QtWidgets.QSplitter):
         child = self.top().findChild(child_class, child_name)
         if not child:
             for window in self.root.windows:
-                child = window.findChild(child_class, child_name)
-                if child:
+                if child := window.findChild(child_class, child_name):
                     break
         return child
 
@@ -800,8 +796,7 @@ class NestedSplitter(QtWidgets.QSplitter):
         w: QtCore.QObject = self.root  # A Qt Widget, class NestedSplitter
         sheets = []
         while w:
-            s = w.styleSheet()
-            if s:
+            if s := w.styleSheet():
                 sheets.append(str(s))
             w = w.parent()
         sheets.reverse()
@@ -1058,7 +1053,7 @@ class NestedSplitter(QtWidgets.QSplitter):
         The content entry for non-NestedSplitter items is the provider ID
         string for the item, or 'UNKNOWN', and the splitter entry is omitted.
         """
-        ans: Dict[str, Any] = {
+        ans: dict[str, Any] = {
             'content': [],
             'orientation': 1 if self.orientation() == Orientation.Horizontal else 2,
             'sizes': self.sizes(),
@@ -1080,8 +1075,7 @@ class NestedSplitter(QtWidgets.QSplitter):
             w = self.widget(i)
             # Recursively test w and its descendants.
             if isinstance(w, NestedSplitter):
-                w2 = w.get_splitter_by_name(name)
-                if w2:
+                if w2 := w.get_splitter_by_name(name):
                     return w2
         return None
 
@@ -1110,8 +1104,7 @@ class NestedSplitter(QtWidgets.QSplitter):
                 found += 1
                 new.load_layout(c, content_layout, level + 1)
             else:
-                provided = self.get_provided(content_layout)
-                if provided:
+                if provided := self.get_provided(content_layout):
                     self.insert(found, provided)
                     provided._in_layout = True
                     found += 1
@@ -1165,13 +1158,11 @@ class NestedSplitter(QtWidgets.QSplitter):
         """
         for provider in self.root.providers:
             if hasattr(provider, 'ns_provide'):
-                provided = provider.ns_provide(id_)
-                if provided:
+                if provided := provider.ns_provide(id_):
                     if provided == 'USE_EXISTING':
                         # provider claiming responsibility, and saying
                         # we already have it, i.e. it's a singleton
-                        w = self.top().find_by_id(id_)
-                        if w:
+                        if w := self.top().find_by_id(id_):
                             if not hasattr(w, '_ns_id'):
                                 # IMPORTANT: see docstring
                                 w._ns_id = id_
@@ -1190,8 +1181,7 @@ class NestedSplitter(QtWidgets.QSplitter):
             return "Leo widget window"
         for provider in self.root.providers:
             if hasattr(provider, 'ns_title'):
-                provided = provider.ns_title(id_)
-                if provided:
+                if provided := provider.ns_title(id_):
                     return provided
         return "Leo unnamed window"
 

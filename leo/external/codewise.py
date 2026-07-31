@@ -321,7 +321,7 @@ def getLastTracebackFileAndLineNumber():
         # IndentationError is a subclass of SyntaxError.
         # Much easier in Python 2.6 and 3.x.
         return val.filename, val.lineno  # type:ignore
-    #
+
     # Data is a list of tuples, one per stack entry.
     # Tuples have the form (filename,lineNumber,functionName,text).
     data = traceback.extract_tb(tb)
@@ -329,7 +329,7 @@ def getLastTracebackFileAndLineNumber():
         item = data[-1]  # Get the item at the top of the stack.
         filename, n, functionName, text = item
         return filename, n
-    #
+
     # Should never happen.
     return '<string>', 0
 

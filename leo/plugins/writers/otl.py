@@ -4,7 +4,7 @@
 
 from leo.core import leoGlobals as g
 from leo.core.leoNodes import Position
-import leo.plugins.writers.basewriter as basewriter
+from leo.plugins.writers import basewriter
 
 
 # @+others

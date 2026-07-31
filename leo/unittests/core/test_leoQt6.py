@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
 # @+leo-ver=5-thin
 # @+node:ekr.20220911163718.1: * @file ../unittests/core/test_leoQt6.py
-# @@first
 """Tests of Qt6 methods and attributes."""
 
 from leo.unittests.plugins.test_importers import BaseTestImporter

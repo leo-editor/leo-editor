@@ -73,8 +73,8 @@ def _compare_asts(node1, node2):  # pragma: no cover
     # Compare the nodes themselves.
     _compare_nodes(node1, node2)
     # Get the list of fields.
-    fields1 = getattr(node1, "_fields", [])  # type:ignore
-    fields2 = getattr(node2, "_fields", [])  # type:ignore
+    fields1 = getattr(node1, "_fields", [])
+    fields2 = getattr(node2, "_fields", [])
     if fields1 != fields2:
         raise AstNotEqual(f"node1._fields: {fields1}\nnode2._fields: {fields2}")
     # Recursively compare each field.
@@ -161,7 +161,7 @@ class BaseTest(unittest.TestCase):
         return textwrap.dedent(s.lstrip('\\\n')).rstrip() + '\n'
 
     # @+node:ekr.20200110092217.1: *4* BaseTest.check_roundtrip
-    def check_roundtrip(self, contents, *, debug_list: list[str] = None):
+    def check_roundtrip(self, contents, *, debug_list: list[str] | None = None):
         """Check that the tokenizer round-trips the given contents."""
         contents, tokens, tree = self.make_data(contents, debug_list=debug_list)
         results = tokens_to_string(tokens)
@@ -172,8 +172,8 @@ class BaseTest(unittest.TestCase):
         self,
         contents: str,
         *,
-        description: str = None,
-        debug_list: str = None,
+        description: str = '',
+        debug_list: str = '',
     ) -> tuple[str, list[Token], ast.AST]:  # pragma: no cover
         """Return (contents, tokens, tree) for the given contents."""
         assert contents.strip(), g.callers()
@@ -434,7 +434,7 @@ class TestTOG(BaseTest):
 
     # @+node:ekr.20210318214057.1: *5* test_line_315
     def test_line_315(self):
-        #
+
         # Known bug: position-only args exist in Python 3.8,
         #            but there is no easy way of syncing them.
         #            This bug will not be fixed.
@@ -1421,7 +1421,7 @@ class Optional_TestFiles(BaseTest):
         # @+node:ekr.20200124024159.3: *5* function: atok_name
         def atok_name(token):
             """Return a good looking name for the given 5-tuple"""
-            return token_module.tok_name[token[0]].lower()  # type:ignore
+            return token_module.tok_name[token[0]].lower()
 
         # @+node:ekr.20200124024159.4: *5* function: atok_value
         def atok_value(token):
@@ -1448,7 +1448,7 @@ class Optional_TestFiles(BaseTest):
             if stack:
                 parent = stack[-1]
                 children: list[ast.AST] = getattr(parent, 'children', [])
-                parent.children = children + [node]  # type:ignore
+                parent.children = children + [node]
                 node.parent = parent
             else:
                 node.parent = None
@@ -1476,7 +1476,7 @@ class Optional_TestFiles(BaseTest):
         atok = asttokens.ASTTokens(contents, parse=True, filename=filename)
         t3 = get_time()
         # Create a patchable list of TestToken objects.
-        tokens = [TestToken(atok_name(z), atok_value(z)) for z in atok.tokens]  # type:ignore
+        tokens = [TestToken(atok_name(z), atok_value(z)) for z in atok.tokens]
         # Inject parent/child links into nodes.
         asttokens.util.visit_tree(atok.tree, previsit, postvisit)
         # Create token.token_list for each token.
@@ -1559,7 +1559,7 @@ class TestFstringify(BaseTest):
         fs.silent = False
         # Test message.
         fs.message("Test:\n<  Left align\n:Colon: align\n>  Right align\n   Default align")
-        #
+
         # change_quotes...
         fs.message("can't create f-fstring: no lt_s!")
         lt_s = "lt_s"
@@ -1857,7 +1857,7 @@ class TestTokens(BaseTest):
         # @+node:ekr.20200122170101.1: *5* function: atok_name
         def atok_name(token):
             """Return a good looking name for the given 5-tuple"""
-            return token_module.tok_name[token[0]].lower()  # type:ignore
+            return token_module.tok_name[token[0]].lower()
 
         # @+node:ekr.20200122170101.2: *5* function: atok_value
         def atok_value(token):
@@ -1884,7 +1884,7 @@ class TestTokens(BaseTest):
             if stack:
                 parent = stack[-1]
                 children: list[ast.AST] = getattr(parent, 'children', [])
-                parent.children = children + [node]  # type:ignore
+                parent.children = children + [node]
                 node.parent = parent
             else:
                 node.parent = None

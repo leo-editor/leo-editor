@@ -17,7 +17,7 @@ from leo.core import leoGlobals as g
 @g.command('table-align')
 def table_align(self, event=None):
     c = event.get('c')
-    controller = c and getattr(c, 'tableController')
+    controller = c and getattr(c, 'tableController', None)
     if controller:
         controller.align()
 
@@ -25,7 +25,7 @@ def table_align(self, event=None):
 @g.command('table-toggle-enabled')
 def table_toggle_enabled(self, event=None):
     c = event.get('c')
-    controller = c and getattr(c, 'tableController')
+    controller = c and getattr(c, 'tableController', None)
     if controller:
         controller.toggle()
 

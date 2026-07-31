@@ -79,7 +79,7 @@ class Rst_Importer(Importer):
         assert ch in underlines, repr(ch)
         d = self.rst_seen
         if ch in d:
-            return d.get(ch)
+            return d.get(ch, 0)
         self.rst_level += 1
         d[ch] = self.rst_level
         return self.rst_level
@@ -119,7 +119,7 @@ class Rst_Importer(Importer):
         )
 
     # @+node:ekr.20230529072922.5: *4* rst_i.is_underline
-    def is_underline(self, line: str, extra: str = None) -> bool:
+    def is_underline(self, line: str, extra: str = '') -> bool:
         """True if the line consists of nothing but the same underlining characters."""
         if line.isspace():
             return False

@@ -5,11 +5,12 @@
 # @+<< leoCache imports & annotations >>
 # @+node:ekr.20100208223942.10436: ** << leoCache imports & annotations >>
 from __future__ import annotations
+from collections.abc import Generator
 import fnmatch
 import os
 import pickle
 import sqlite3
-from typing import Any, Generator, Optional, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 import zlib
 from leo.core import leoGlobals as g
 
@@ -49,7 +50,7 @@ class CommanderWrapper:
         self.db = g.app.db
         self.user_keys: set[str] = set()
 
-    def get(self, key: str, default: Value = None) -> Value:
+    def get(self, key: str, default: Value | None = None) -> Value:
         value = self.db.get(f"{self.c.mFileName}:::{key}")
         return default if value is None else value
 
@@ -92,7 +93,7 @@ class GlobalCacher:
             if trace:
                 print('path for g.app.db:', repr(path))
             self.db = SqlitePickleShare(path)
-            if trace and self.db is not None:
+            if trace and self.db:
                 self.dump(tag='Startup')
         except Exception:
             if trace:
@@ -167,7 +168,7 @@ class SqlitePickleShare:
         self.conn = sqlite3.connect(dbfile, isolation_level=None)
         self.init_dbtables(self.conn)
 
-        def loadz(data: Value) -> Optional[Value]:
+        def loadz(data: Value) -> Value | None:
             if data:
                 # Retain this code for maximum compatibility.
                 try:
@@ -208,7 +209,7 @@ class SqlitePickleShare:
             pass
 
     # @+node:vitalije.20170716201700.6: *4* SqlitePickleShare.__getitem__
-    def __getitem__(self, key: str) -> None:
+    def __getitem__(self, key: str) -> Any:
         """db['key'] reading"""
         try:
             obj = None
@@ -226,7 +227,7 @@ class SqlitePickleShare:
         return obj
 
     # @+node:vitalije.20170716201700.7: *4* SqlitePickleShare.__iter__
-    def __iter__(self) -> Generator:
+    def __iter__(self) -> Generator[str, None, None]:
         for k in list(self.keys()):
             yield k
 
@@ -255,7 +256,7 @@ class SqlitePickleShare:
         os.makedirs(fn, mode)
 
     # @+node:vitalije.20170716201700.12: *3* _walkfiles & helpers
-    def _walkfiles(self, s: str, pattern: str = None) -> None:
+    def _walkfiles(self, s: str, pattern: str | None = None) -> None:
         """D.walkfiles() -> iterator over files in D, recursively.
 
         The optional argument, pattern, limits the results to files
@@ -265,7 +266,7 @@ class SqlitePickleShare:
         """
 
     # @+node:vitalije.20170716201700.13: *4* _listdir
-    def _listdir(self, s: str, pattern: str = None) -> list[str]:
+    def _listdir(self, s: str, pattern: str = '') -> list[str]:
         """D.listdir() -> List of items in this directory.
 
         Use D.files() or D.dirs() instead if you want a listing
@@ -277,7 +278,7 @@ class SqlitePickleShare:
         items whose names match the given pattern.
         """
         names = os.listdir(s)
-        if pattern is not None:
+        if pattern:
             names = fnmatch.filter(names, pattern)
         return [join(s, child) for child in names]
 
@@ -300,7 +301,7 @@ class SqlitePickleShare:
         self.conn.execute('delete from cachevalues;')
 
     # @+node:vitalije.20170716201700.16: *3* get  (SqlitePickleShare)
-    def get(self, key: str, default: Value = None) -> Value:
+    def get(self, key: str, default: Value | None = None) -> Value:
         if not self.has_key(key):  # noqa
             return default
         try:
@@ -320,7 +321,7 @@ class SqlitePickleShare:
         return False
 
     # @+node:vitalije.20170716201700.18: *3* items  (SqlitePickleShare)
-    def items(self) -> Generator:
+    def items(self) -> Generator[tuple[str, Any], None, None]:
         sql = 'select key,data from cachevalues;'
         for key, data in self.conn.execute(sql):
             yield key, data
@@ -328,10 +329,10 @@ class SqlitePickleShare:
     # @+node:vitalije.20170716201700.19: *3* keys (SqlitePickleShare)
     # Called by clear, and during unit testing.
 
-    def keys(self, globpat: str = None) -> Generator:
+    def keys(self, globpat: str = '') -> Generator[str, None, None]:
         """Return all keys in DB, or all keys matching a glob"""
         args: tuple
-        if globpat is None:
+        if not globpat:
             sql = 'select key from cachevalues;'
             args = tuple()
         else:
@@ -349,8 +350,7 @@ class SqlitePickleShare:
         # @+others
         # @+node:vitalije.20170818115617.1: *4* do_block
         def do_block(cur: object) -> Value:
-            itms = tuple((self.dumper(self.loader(v)), k) for k, v in cur)
-            if itms:
+            if itms := tuple((self.dumper(self.loader(v)), k) for k, v in cur):
                 self.conn.executemany('update cachevalues set data=? where key=?', itms)
                 self.conn.commit()
                 return itms[-1][1]
@@ -374,7 +374,6 @@ class SqlitePickleShare:
     # @+node:vitalije.20170716201700.23: *3* uncache (SqlitePickleShare)
     def uncache(self, *items: Args) -> None:
         """not used in SqlitePickleShare"""
-        pass
 
     # @-others
 
@@ -383,12 +382,12 @@ class SqlitePickleShare:
 def dump_cache(db: dict | SqlitePickleShare, tag: str) -> None:
     """Dump the given cache."""
     print(f'\n===== {tag} =====\n')
-    if db is None:
-        print('db is None!')
+    if not db:
+        print('No db!')
         return
     # Create a dict, sorted by file prefixes.
     d: dict[str, Any] = {}
-    for key in db.keys():
+    for key in db.keys():  # Don't use d.items().
         key = key[0]
         val = db.get(key)
         data = key.split(':::')
@@ -397,42 +396,25 @@ def dump_cache(db: dict | SqlitePickleShare, tag: str) -> None:
         else:
             fn, key2 = 'None', key
         aList = d.get(fn, [])
-        aList.append(
-            (key2, val),
-        )
+        aList.append((key2, val))
         d[fn] = aList
     # Print the dict.
     files = 0
-    for key in sorted(d.keys()):
+    for key, val in sorted(d.items()):
         if key != 'None':
-            dump_list('File: ' + key, d.get(key))
+            dump_list(f"File: {key}", val)
             files += 1
     if d.get('None'):
-        heading = f"All others ({tag})" if files else None
-        dump_list(heading, d.get('None'))
+        heading = f"All others ({tag})" if files else ''
+        dump_list(heading, d.get('None', []))
+    print('')
 
 
 def dump_list(heading: str, aList: list) -> None:
     if heading:
         print(f'\n{heading}...\n')
-    for aTuple in aList:
-        key, val = aTuple
-        if isinstance(val, str):
-            if key.startswith('windowState'):
-                print(key)
-            elif key.endswith(('leo_expanded', 'leo_marked')):
-                if val:
-                    print(f"{key:30}:")
-                    g.printObj(val.split(','))
-                else:
-                    print(f"{key:30}: []")
-            else:
-                print(f"{key:30}: {val}")
-        elif isinstance(val, (int, float)):
-            print(f"{key:30}: {val}")
-        else:
-            print(f"{key:30}:")
-            g.printObj(val)
+    for key, val in aList:
+        print(f"{key:>30}: {val}")
 
 
 # @-others

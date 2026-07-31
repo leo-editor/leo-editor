@@ -110,7 +110,7 @@ class Demo:
         self.script_i = 0
         # A list of strings (scripts). Scripts are removed when executed.
         self.script_list = []
-        self.speed: float = None
+        self.speed: float | None = None
         self.user_dict = {}  # For use by scripts.
         self.widgets = []  # References to all widgets created by this class.
         # Init...
@@ -358,7 +358,7 @@ class Demo:
         return aList
 
     # @+node:ekr.20170128213103.43: *4* demo.wait & key_wait
-    def key_wait(self, speed: float = None, n1=None, n2=None):
+    def key_wait(self, speed: float | None = None, n1=None, n2=None):
         """Wait for an interval between n1 and n2, in seconds."""
         if n1 is None:
             n1 = self.n1
@@ -538,7 +538,7 @@ class Demo:
         return p
 
     # @+node:ekr.20170211045602.1: *4* demo.insert_node
-    def insert_node(self, headline, end=True, keys=False, speed: float = None):
+    def insert_node(self, headline, end=True, keys=False, speed: float | None = None):
         """Helper for inserting a node."""
         c = self.c
         p = c.insertHeadline()

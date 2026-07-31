@@ -734,7 +734,7 @@ for key in leo_color_database:
 # @+others
 # @+node:bob.20080115070511.3: ** color database functions
 # @+node:bob.20071231111744.2: *3* function: leoColor.get / getColor
-def getColor(name: str, default: str = None) -> str:
+def getColor(name: str, default: str | None = None) -> str | None:
     """Translate a named color into #rrggbb' format.
 
     if 'name' is not a string it is returned unchanged.
@@ -761,24 +761,24 @@ get = getColor
 
 
 # @+node:bob.20080115070511.4: *3* function: leoColor.getRGB / getColorRGB
-def getColorRGB(name: str, default: str = None) -> tuple[int, int, int]:
+def getColorRGB(name: str, default: str = '') -> tuple[int, int, int] | None:
     """Convert a named color into an (r, g, b) tuple."""
-    s = getColor(name, default)
-    try:
-        color = int(s[1:3], 16), int(s[3:5], 16), int(s[5:7], 16)
-    except Exception:
-        color = None
-    return color
+    if s := getColor(name, default):
+        try:
+            return int(s[1:3], 16), int(s[3:5], 16), int(s[5:7], 16)
+        except Exception:
+            return None
+    return None
 
 
 getRGB = getColorRGB
 
 
 # @+node:bob.20080115072302: *3* function: leoColor.getCairo / getColorCairo
-def getColorCairo(name: str, default: str = None) -> tuple[float, float, float]:
+def getColorCairo(name: str, default: str = '') -> tuple[float, float, float] | None:
     """Convert a named color into a cairo color tuple."""
     color = getColorRGB(name, default)
-    if color is None:
+    if not color:
         return None
     try:
         r, g, b = color

@@ -108,7 +108,7 @@ class FTPurl:
     see the documentation of module ftplib).
 
     The mode can be '' (default, for ASCII mode) or 'b' (for binary mode).
-    This class raises an IOError exception if something goes wrong.
+    This class raises an OSError exception if something goes wrong.
     """
 
     # @+others
@@ -116,7 +116,7 @@ class FTPurl:
     def __init__(self, ftpURL, mode=''):
         parse = urlparse(ftpURL)  # type:ignore
         if parse[0] != 'ftp':
-            raise IOError("error reading %s: malformed ftp URL" % ftpURL)
+            raise OSError("error reading %s: malformed ftp URL" % ftpURL)
 
         # ftp URL; syntax: ftp://[username:password@]hostname/filename
         self.mode = mode
@@ -134,7 +134,7 @@ class FTPurl:
             # the URL has username/password
             pwdIndex = auth.find(':')
             if pwdIndex == -1:
-                raise IOError("error reading %s: malformed ftp URL" % ftpURL)
+                raise OSError("error reading %s: malformed ftp URL" % ftpURL)
             user = auth[:pwdIndex]
             password = auth[pwdIndex + 1 :]
             self.ftp.login(user, password)
@@ -168,16 +168,14 @@ class FTPurl:
             return s
         except Exception:
             exception, msg, tb = sys.exc_info()
-            raise IOError(msg)
+            raise OSError(msg)
 
     # @+node:edream.110203113231.883: *4* readline
     def readline(self):
         """Read one entire line from the remote file."""
         self.lst: list
-        try:
-            self.lst
-        except AttributeError:
-            self.lst = self.read().splitlines(1)
+        if not hasattr(self, 'lst'):
+            self.lst = self.read().splitlines(1)  # PR #4827
 
         if self.currentLine < len(self.lst):
             s = self.lst[self.currentLine]
@@ -192,7 +190,7 @@ class FTPurl:
         constructor."""
         self.checkParams()
         if self.filename == '':
-            raise IOError('filename not specified')
+            raise OSError('filename not specified')
 
         try:
             file = StringIO(s)
@@ -203,7 +201,7 @@ class FTPurl:
             file.close()
         except Exception:
             exception, msg, tb = sys.exc_info()
-            raise IOError(msg)
+            raise OSError(msg)
 
     # @+node:edream.110203113231.886: *3* Utilities
     # @+node:edream.110203113231.887: *4* seek
@@ -227,7 +225,7 @@ class FTPurl:
             return '\n'.join(s)
         except Exception:
             exception, msg, tb = sys.exc_info()
-            raise IOError(msg)
+            raise OSError(msg)
 
     # @+node:edream.110203113231.890: *4* exists
     def exists(self, path=None):
@@ -244,9 +242,9 @@ class FTPurl:
     # @+node:edream.110203113231.891: *4* checkParams
     def checkParams(self):
         if self.mode not in ('', 'b'):
-            raise IOError('invalid mode: %s' % self.mode)
+            raise OSError('invalid mode: %s' % self.mode)
         if not self.isConnectionOpen:
-            raise IOError('ftp connection closed')
+            raise OSError('ftp connection closed')
 
     # @+node:edream.110203113231.892: *3* close
     def close(self):
@@ -315,7 +313,7 @@ def insert_read_only_node(c, p, name):
         g.es("..." + name)
         new = f.read()
         f.close()
-    except IOError:  # as msg:
+    except OSError:  # as msg:
         p.b = ""  # Clear the body text.
         return True  # Mark the node as changed.
 

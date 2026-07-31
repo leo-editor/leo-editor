@@ -194,7 +194,7 @@ class TestNodes(LeoUnitTest):
             ('self_and_parents',     root.firstChild().self_and_parents),
             ('self_and_subtree',     root.self_and_subtree),
             ('following_siblings',   root.following_siblings),
-            ('parents',              root.firstChild().firstChild().parents),
+            ('parents',              root.parents),
             ('unique_subtree',       root.unique_subtree),
         )  # fmt: skip
         for kind, generator in table:
@@ -465,7 +465,7 @@ class TestNodes(LeoUnitTest):
         p5 = p.insertAsNthChild(3)
         p5.setHeadString('D')
         p.expand()
-        c.setCurrentPosition(p3)
+        c.p = p3
         c.demote()
         p = c.p
         self.assertEqual(p, p3)
@@ -504,7 +504,7 @@ class TestNodes(LeoUnitTest):
         p3 = p.insertAsNthChild(1)
         p3.setHeadString('B')
         p.expand()
-        c.setCurrentPosition(p2)
+        c.p = p2
         p4 = c.insertHeadline()
         self.assertEqual(p4, c.p)
         p = c.p
@@ -547,7 +547,7 @@ class TestNodes(LeoUnitTest):
         p5 = p.insertAsNthChild(3)
         p5.setHeadString('D')
         p.expand()
-        c.setCurrentPosition(p3)
+        c.p = p3
         c.moveOutlineDown()
         moved = c.p
         self.assertEqual(moved.h, 'B')
@@ -579,7 +579,7 @@ class TestNodes(LeoUnitTest):
         p2 = p.insertAsNthChild(0)
         p2.setHeadString('A')
         p.expand()
-        c.setCurrentPosition(p2)
+        c.p = p2
         c.moveOutlineLeft()
         moved = c.p
         self.assertEqual(moved.h, 'A')
@@ -600,7 +600,7 @@ class TestNodes(LeoUnitTest):
         p4 = p.insertAsNthChild(2)
         p4.setHeadString('C')
         p.expand()
-        c.setCurrentPosition(p3)
+        c.p = p3
         c.moveOutlineRight()
         moved = c.p
         self.assertEqual(moved.h, 'B')
@@ -622,7 +622,7 @@ class TestNodes(LeoUnitTest):
         p5 = p.insertAsNthChild(3)
         p5.setHeadString('D')
         p.expand()
-        c.setCurrentPosition(p4)
+        c.p = p4
         c.moveOutlineUp()
         moved = c.p
         self.assertEqual(moved.h, 'C')
@@ -678,7 +678,7 @@ class TestNodes(LeoUnitTest):
         p.expand()
         p6 = p.insertAsNthChild(2)
         p6.setHeadString('C')
-        c.setCurrentPosition(p3)
+        c.p = p3
         c.promote()
         p = c.p
         self.assertEqual(p, p3)
@@ -899,7 +899,7 @@ class TestNodes(LeoUnitTest):
     # @+node:ekr.20210830095545.34: *4* TestNodes.test_p_moveToVisBack_in_a_chapter
     def test_p_moveToVisBack_in_a_chapter(self):
         # Verify a fix for bug https://bugs.launchpad.net/leo-editor/+bug/1264350
-        import leo.core.leoChapters as leoChapters
+        from leo.core import leoChapters
 
         c, p = self.c, self.c.p
         cc = c.chapterController
@@ -952,12 +952,12 @@ class TestNodes(LeoUnitTest):
         child_b = g.findNodeAnywhere(c, 'child b')
         self.assertTrue(child_b)
         self.assertTrue(child_b.isCloned())
-        #
+
         # child_c must *not* be a clone at first.
         child_c = g.findNodeAnywhere(c, 'child c')
         self.assertTrue(child_c)
         self.assertFalse(child_c.isCloned())
-        #
+
         # Change the tree.
         child_c._relinkAsCloneOf(child_b)
         # self.dump_tree('Before...')
@@ -1139,10 +1139,10 @@ class TestNodeIndices(LeoUnitTest):
     # @+node:ekr.20220306055506.1: *3* TestNodeIndices.test_scanGnx
     def test_scanGnx(self):
         ni = g.app.nodeIndices
-        for s, id1, t1, n1 in (
-            ('ekr.123', 'ekr', '123', None),
+        for s, id1, t1, n1 in (  # PR #4767
+            ('ekr.123', 'ekr', '123', ''),
             ('ekr.456.2', 'ekr', '456', '2'),
-            ('', g.app.leoID, None, None),
+            ('', g.app.leoID, '', ''),
         ):
             id2, t2, n2 = ni.scanGnx(s)
             self.assertEqual(id1, id2)

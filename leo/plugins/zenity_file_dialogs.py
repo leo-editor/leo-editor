@@ -13,7 +13,6 @@ tk dialogs.
 """
 
 import subprocess
-from typing import Optional
 from leo.core import leoGlobals as g
 from leo.core import leoPlugins
 
@@ -53,7 +52,7 @@ def onStart2(tag, keywords):
 
 
 # @+node:ekr.20101110095557.5892: ** callZenity
-def callZenity(title: str, save: bool = False, test: bool = False) -> Optional[bytes]:
+def callZenity(title: str, save: bool = False, test: bool = False) -> bytes | None:
     command = ['zenity', '--file-selection', '--title=%s' % title]
     if save:
         command.append('--save')
@@ -74,7 +73,7 @@ def callZenity(title: str, save: bool = False, test: bool = False) -> Optional[b
 def runOpenFileDialog(
     title,
     *,
-    filetypes: list[tuple[str, str]] = None,
+    filetypes: list[tuple[str, str]] | None = None,
     defaultextension='',  # Not used.
 ):
     """Call zenity's open file(s) dialog."""
@@ -86,7 +85,7 @@ def runOpenFileDialog(
 def runSaveFileDialog(
     title=None,
     *,
-    filetypes: list[tuple[str, str]] = None,
+    filetypes: list[tuple[str, str]] | None = None,
     defaultextension='',  # Not used.
 ) -> bytes:
     """Call zenity's save file dialog."""

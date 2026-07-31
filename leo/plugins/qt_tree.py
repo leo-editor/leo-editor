@@ -65,11 +65,11 @@ class LeoQtTree(leoFrame.LeoTree):
         self.reloadSettings()
         # Components...
         self.canvas = self  # Required! An official ivar used by Leo's core.
-        self.treeWidget: LeoQTreeWidget = frame.top.treeWidget
+        self.treeWidget: LeoQTreeWidget = frame.top.treeWidget  # type:ignore
         w = self.treeWidget
         # Declutter data...
         # list of pairs of patterns for decluttering
-        self.declutter_patterns: list[tuple[Any, Any]] = None
+        self.declutter_patterns: list[tuple[Any, Any]] | None = None
         self.declutter_data: dict[Any, Any] = {}
         self.loaded_images: dict[str, QIcon] = {}
 
@@ -163,11 +163,13 @@ class LeoQtTree(leoFrame.LeoTree):
         w = self.treeWidget
         w.clear()
 
-    # @+node:ekr.20110605121601.17873: *4* LeoQtTree.full_redraw & helpers
-    def full_redraw(self, p: Position = None) -> Position:
+    # @+node:ekr.20110605121601.17873: *4* LeoQtTree.redraw_tree & helpers
+    def redraw_tree(self, p: Position | None = None) -> Position | None:
         """
         Redraw all visible nodes of the tree.
         Preserve the vertical scrolling unless scroll is True.
+
+        Return a Position (which may change) unless drawing is disabled.
         """
         c = self.c
         if g.app.disable_redraw:
@@ -179,13 +181,10 @@ class LeoQtTree(leoFrame.LeoTree):
         if not p:
             p = c.currentPosition()
         elif c.hoistStack and p.h.startswith('@chapter') and p.hasChildren():
-            # Make sure the current position is visible.
-            # Part of fix of bug 875323: Hoist an @chapter node leaves a non-visible node selected.
+            # #875323: Make sure the current position is visible.
             p = p.firstChild()
             c.frame.tree.select(p)
-            c.setCurrentPosition(p)
-        else:
-            c.setCurrentPosition(p)
+        c.p = p
         assert not self.busy, g.callers()
         self.redrawCount += 1
         self.initData()
@@ -198,10 +197,9 @@ class LeoQtTree(leoFrame.LeoTree):
         return p  # Return the position, which may have changed.
 
     # Compatibility
-
-    # mypy complains that there is a mismatch with the base redraw method.
-    redraw = full_redraw  # type:ignore
-    redraw_now = full_redraw  # type:ignore
+    full_redraw = redraw_tree
+    redraw = redraw_tree
+    redraw_now = redraw_tree
 
     # @+node:tbrown.20150807090639.1: *5* LeoQtTree.declutter_node & helpers
     def declutter_node(self, c: Cmdr, v: VNode, item: QTreeWidgetItem) -> QIcon:
@@ -232,7 +230,7 @@ class LeoQtTree(leoFrame.LeoTree):
             return a
 
         # @+node:ekr.20171122064635.1: *6* declutter_replace
-        def declutter_replace(arg: str, cmd: Callable, pattern: str) -> tuple[Callable, str]:
+        def declutter_replace(arg: str, cmd: Callable, pattern: str) -> tuple[Callable | None, str]:
             """
             Executes cmd if cmd is any replace command and returns
             pair (commander, s), where 'commander' corresponds
@@ -240,7 +238,7 @@ class LeoQtTree(leoFrame.LeoTree):
             If cmd is not a replacement command returns (None, None)
             """
             # 's' is string when 'cmd' is recognized and is None otherwise
-            s: str = None
+            s: str
             if cmd == 'REPLACE':
                 try:
                     s = pattern.sub(arg, text)
@@ -259,8 +257,8 @@ class LeoQtTree(leoFrame.LeoTree):
             if isinstance(s, str):
                 # Save the operation
 
-                def string_replacement(item, s):
-                    return item.setText(0, s)
+                def string_replacement(item: Any, s: str) -> None:
+                    item.setText(0, s)
 
                 # ... and apply it
                 string_replacement(item, s)
@@ -269,15 +267,18 @@ class LeoQtTree(leoFrame.LeoTree):
             return None, s
 
         # @+node:ekr.20171122055719.1: *6* declutter_style
-        def declutter_style(arg: str, cmd: Callable) -> tuple[Callable, str]:
+        def declutter_style(arg: str, cmd: Callable) -> tuple[Callable | None, str]:
             """
             Handles style options and returns pair '(commander, param)',
             where 'commander' is the applied style-modifying operation,
             param - the saved argument of that operation.
             Returns (None, param) if 'cmd' is not a style option.
             """
+            if not c.styleSheetManager:
+                return None, ''
+
             param = c.styleSheetManager.expand_css_constants(arg).split()[0]
-            modifier: Callable = None
+            modifier: Callable | None = None
 
             if cmd == 'ICON':
 
@@ -363,9 +364,9 @@ class LeoQtTree(leoFrame.LeoTree):
             modifiers = []
             for cmd, arg in cmds:
                 modifier, param = declutter_replace(arg, cmd, pattern)
-                if not modifier:
+                if modifier is not None:
                     modifier, param = declutter_style(arg, cmd)
-                if modifier:
+                if modifier is not None:
                     modifiers.append((modifier, param))
             return modifiers
 
@@ -425,7 +426,7 @@ class LeoQtTree(leoFrame.LeoTree):
             self.contractItem(parent_item)
 
     # @+node:ekr.20110605121601.17875: *5* LeoQtTree.drawNode
-    def drawNode(self, p: Position, parent_item: QTreeWidgetItem) -> QTreeWidgetItem:
+    def drawNode(self, p: Position, parent_item: QTreeWidgetItem | None) -> QTreeWidgetItem:
         """Draw the node p."""
         c = self.c
         v = p.v
@@ -446,13 +447,11 @@ class LeoQtTree(leoFrame.LeoTree):
         # #1310: Add a tool tip.
         item.setToolTip(0, p.h)
         if self.use_declutter:
-            icon = self.declutter_node(c, p.v, item)
-            if icon:
+            if icon := self.declutter_node(c, p.v, item):
                 item.setIcon(0, icon)
             return item
         # Draw the icon: **Slow**, but allows per-vnode icons.
-        icon = self.getCompositeIconImage(p.v)
-        if icon:
+        if icon := self.getCompositeIconImage(p.v):
             item.setIcon(0, icon)
         return item
 
@@ -483,10 +482,10 @@ class LeoQtTree(leoFrame.LeoTree):
                 p.moveToNext()
         if trace:
             t2 = time.process_time()
-            g.trace(f"{t2 - t1:5.2f} sec.", g.callers(3))
+            g.trace(f"{c.shortFileName()} {t2 - t1:5.2f} sec.")
 
     # @+node:ekr.20110605121601.17877: *5* LeoQtTree.drawTree
-    def drawTree(self, p: Position, parent_item: QTreeWidgetItem = None) -> None:
+    def drawTree(self, p: Position, parent_item: QTreeWidgetItem | None = None) -> None:
         if g.app.gui.isNullGui:
             return
         # Draw the (visible) parent node.
@@ -550,17 +549,6 @@ class LeoQtTree(leoFrame.LeoTree):
                         icon = self.declutter_node(c, p, item)
                         item.setIcon(0, icon)  # 0 is the column number.
 
-    # @+node:ekr.20110605121601.17884: *4* LeoQtTree.redraw_after_select
-    def redraw_after_select(self, p: Position = None) -> None:
-        """Redraw the entire tree when an invisible node is selected."""
-        if self.busy:
-            if 'drawing' in g.app.debug:
-                g.trace('busy!', g.callers(1))
-            return
-        self.full_redraw(p)
-        # c.redraw_after_select calls tree.select indirectly.
-        # Do not call it again here.
-
     # @+node:ekr.20140907201613.18986: *4* LeoQtTree.repaint (not used)
     def repaint(self) -> None:
         """Repaint the widget."""
@@ -571,7 +559,7 @@ class LeoQtTree(leoFrame.LeoTree):
     # @+node:ekr.20110605121601.17885: *3* LeoQtTree: Event handlers
     # @+node:ekr.20110605121601.17887: *4*  LeoQtTree: Click box event handlers
     # @+node:ekr.20110605121601.17888: *5* LeoQtTree.onClickBoxClick
-    def onClickBoxClick(self, event: LeoKeyEvent, p: Position = None) -> None:
+    def onClickBoxClick(self, event: LeoKeyEvent | None = None, p: Position | None = None) -> None:
         if self.busy:
             return
         c = self.c
@@ -580,7 +568,9 @@ class LeoQtTree(leoFrame.LeoTree):
         c.outerUpdate()
 
     # @+node:ekr.20110605121601.17889: *5* LeoQtTree.onClickBoxRightClick
-    def onClickBoxRightClick(self, event: LeoKeyEvent, p: Position = None) -> None:
+    def onClickBoxRightClick(
+        self, event: LeoKeyEvent | None = None, p: Position | None = None
+    ) -> None:
         if self.busy:
             return
         c = self.c
@@ -589,7 +579,9 @@ class LeoQtTree(leoFrame.LeoTree):
         c.outerUpdate()
 
     # @+node:ekr.20110605121601.17890: *5* LeoQtTree.onPlusBoxRightClick
-    def onPlusBoxRightClick(self, event: LeoKeyEvent, p: Position = None) -> None:
+    def onPlusBoxRightClick(
+        self, event: LeoKeyEvent | None = None, p: Position | None = None
+    ) -> None:
         if self.busy:
             return
         c = self.c
@@ -599,7 +591,7 @@ class LeoQtTree(leoFrame.LeoTree):
     # @+node:ekr.20110605121601.17891: *4*  LeoQtTree: Icon box event handlers
     # For Qt, there seems to be no way to trigger these events.
     # @+node:ekr.20110605121601.17892: *5* LeoQtTree.onIconBoxClick
-    def onIconBoxClick(self, event: LeoKeyEvent, p: Position = None) -> None:
+    def onIconBoxClick(self, event: LeoKeyEvent | None = None, p: Position | None = None) -> None:
         if self.busy:
             return
         c = self.c
@@ -608,7 +600,9 @@ class LeoQtTree(leoFrame.LeoTree):
         c.outerUpdate()
 
     # @+node:ekr.20110605121601.17893: *5* LeoQtTree.onIconBoxRightClick
-    def onIconBoxRightClick(self, event: LeoKeyEvent, p: Position = None) -> None:
+    def onIconBoxRightClick(
+        self, event: LeoKeyEvent | None = None, p: Position | None = None
+    ) -> None:
         """Handle a right click in any outline widget."""
         if self.busy:
             return
@@ -618,7 +612,9 @@ class LeoQtTree(leoFrame.LeoTree):
         c.outerUpdate()
 
     # @+node:ekr.20110605121601.17894: *5* LeoQtTree.onIconBoxDoubleClick
-    def onIconBoxDoubleClick(self, event: LeoKeyEvent, p: Position = None) -> None:
+    def onIconBoxDoubleClick(
+        self, event: LeoKeyEvent | None = None, p: Position | None = None
+    ) -> None:
         if self.busy:
             return
         c = self.c
@@ -646,12 +642,11 @@ class LeoQtTree(leoFrame.LeoTree):
         c = self.c
         try:
             self.busy = True
-            p = self.item2position(item)
-            if p:
+            if p := self.item2position(item):
                 auto_edit = self.prev_v == p.v  # #1049.
                 self.prev_v = p.v
                 event = None
-                #
+
                 # Careful. We may have switched gui during unit testing.
                 if hasattr(g.app.gui, 'qtApp'):
                     mods = g.app.gui.qtApp.keyboardModifiers()
@@ -722,7 +717,7 @@ class LeoQtTree(leoFrame.LeoTree):
         c.outerUpdate()
 
     # @+node:tom.20230324155453.1: *5* LeoQtTree.onItemEntered
-    def onItemEntered(self, item: QTreeWidgetItem, col: int):
+    def onItemEntered(self, item: QTreeWidgetItem, col: int) -> None:
         """Expand/Contract a node when mouse moves over it.
 
         <CTRL-hover> -- expand;
@@ -789,8 +784,7 @@ class LeoQtTree(leoFrame.LeoTree):
     def getIcon(self, v: VNode) -> QIcon:
         """Return the proper icon for position p."""
         if self.use_declutter:
-            items = self.vnode2items(v)
-            if items:
+            if items := self.vnode2items(v):
                 return self.declutter_node(self.c, v, items[0])
         return self.getCompositeIconImage(v)
 
@@ -863,16 +857,16 @@ class LeoQtTree(leoFrame.LeoTree):
     def itemHash(self, item: QTreeWidgetItem) -> str:
         return f"{repr(item)} at {str(id(item))}"
 
-    def item2position(self, item: QTreeWidgetItem) -> Position:
+    def item2position(self, item: QTreeWidgetItem) -> Position | None:
         itemHash = self.itemHash(item)
         p = self.item2positionDict.get(itemHash)  # was item
         return p
 
-    def item2vnode(self, item: QTreeWidgetItem) -> VNode:
+    def item2vnode(self, item: QTreeWidgetItem) -> VNode | None:
         itemHash = self.itemHash(item)
         return self.item2vnodeDict.get(itemHash)  # was item
 
-    def position2item(self, p: Position) -> QTreeWidgetItem:
+    def position2item(self, p: Position) -> QTreeWidgetItem | None:
         item = self.position2itemDict.get(p.key())
         return item
 
@@ -885,8 +879,7 @@ class LeoQtTree(leoFrame.LeoTree):
 
     # @+node:ekr.20110605121601.18415: *4* LeoQtTree.childIndexOfItem
     def childIndexOfItem(self, item: QTreeWidgetItem) -> int:
-        parent = item and item.parent()
-        if parent:
+        if parent := item and item.parent():
             n = parent.indexOfChild(item)
         else:
             w = self.treeWidget
@@ -906,10 +899,10 @@ class LeoQtTree(leoFrame.LeoTree):
             w = self.treeWidget
             n = w.topLevelItemCount()
             items = [w.topLevelItem(z) for z in range(n)]
-        return items
+        return [z for z in items if z]  # PR #4812
 
     # @+node:ekr.20110605121601.18418: *4* LeoQtTree.connectEditorWidget & callback
-    def connectEditorWidget(self, w: QLineEdit, item: QTreeWidgetItem) -> QHeadlineWrapper:
+    def connectEditorWidget(self, w: QLineEdit, item: QTreeWidgetItem) -> QHeadlineWrapper | None:
         """
         Connect QLineEdit w to QTreeItem item.
 
@@ -966,15 +959,14 @@ class LeoQtTree(leoFrame.LeoTree):
         if self.use_declutter:
             item.setText(0, item._real_text)
         w.editItem(item)
-        e = w.itemWidget(item, 0)  # e is a QLineEdit
-        if e:
+        if e := w.itemWidget(item, 0):  # e is a QLineEdit
             e.setObjectName('headline')
         # Always do these!
         self.connectEditorWidget(e, item)
         self.sizeTreeEditor(c, e)
 
     # @+node:ekr.20110605121601.18421: *4* LeoQtTree.createTreeItem
-    def createTreeItem(self, p: Position, parent_item: QTreeWidgetItem) -> QTreeWidgetItem:
+    def createTreeItem(self, p: Position, parent_item: QTreeWidgetItem | None) -> QTreeWidgetItem:
         w = self.treeWidget
         itemOrTree = parent_item or w
         item = QtWidgets.QTreeWidgetItem(itemOrTree)
@@ -1000,7 +992,7 @@ class LeoQtTree(leoFrame.LeoTree):
         return item.text(0) if item else '<no item>'
 
     # @+node:ekr.20110605121601.18425: *4* LeoQtTree.getParentItem
-    def getParentItem(self, item: QTreeWidgetItem) -> QTreeWidgetItem:
+    def getParentItem(self, item: QTreeWidgetItem) -> QTreeWidgetItem | None:
         return item and item.parent()
 
     # @+node:ekr.20110605121601.18426: *4* LeoQtTree.getSelectedItems
@@ -1018,7 +1010,7 @@ class LeoQtTree(leoFrame.LeoTree):
         return e
 
     # @+node:ekr.20110605121601.18428: *4* LeoQtTree.getWrapper
-    def getWrapper(self, e: QLineEdit, item: QTreeWidgetItem) -> QHeadlineWrapper:
+    def getWrapper(self, e: QLineEdit, item: QTreeWidgetItem) -> QHeadlineWrapper | None:
         """Return the QHeadlineWrapper that wraps e (a QLineEdit)."""
         c = self.c
         if not e:
@@ -1032,15 +1024,13 @@ class LeoQtTree(leoFrame.LeoTree):
         return wrapper
 
     # @+node:ekr.20110605121601.18429: *4* LeoQtTree.nthChildItem
-    def nthChildItem(self, n: int, parent_item: QTreeWidgetItem) -> QTreeWidgetItem:
+    def nthChildItem(self, n: int, parent_item: QTreeWidgetItem) -> QTreeWidgetItem | None:
         children = self.childItems(parent_item)
         if n < len(children):
-            item = children[n]
-        else:
-            # This is **not* an error.
-            # It simply means that we need to redraw the tree.
-            item = None
-        return item
+            return children[n]
+
+        # This is **not* an error: we must redraw the tree.
+        return None
 
     # @+node:ekr.20110605121601.18430: *4* LeoQtTree.scrollToItem
     def scrollToItem(self, item: QTreeWidgetItem) -> None:
@@ -1141,12 +1131,10 @@ class LeoQtTree(leoFrame.LeoTree):
 
     # @+node:ekr.20110605121601.17905: *3* LeoQtTree: Selecting & editing
     # @+node:ekr.20110605121601.17908: *4* LeoQtTree.headline_wrapper
-    def headline_wrapper(self, p: Position) -> QHeadlineWrapper:
+    def headline_wrapper(self, p: Position) -> QHeadlineWrapper | None:
         """Returns the edit widget (A QLineEdit) for position p."""
-        item = self.position2item(p)
-        if item:
-            e = self.getTreeEditorForItem(item)
-            if e:
+        if item := self.position2item(p):
+            if e := self.getTreeEditorForItem(item):
                 # Create a wrapper widget for Leo's core.
                 w = self.getWrapper(e, item)
                 return w
@@ -1159,39 +1147,34 @@ class LeoQtTree(leoFrame.LeoTree):
 
     # @+node:ekr.20110605121601.17909: *4* LeoQtTree.editLabel and helper
     def editLabel(
-        self,
-        p: Position,
-        selectAll: bool = False,
-        selection: tuple = None,
-    ) -> tuple[QLineEdit, QHeadlineWrapper]:
+        self, p: Position, selectAll: bool = False, selection: tuple | None = None
+    ) -> None:
         """Start editing p's headline."""
         if self.busy:
-            return None
+            return
         c = self.c
         # Do any scheduled redraw.
         # This won't do anything in the new redraw scheme.
         c.outerUpdate()
-        item = self.position2item(p)
-        if item:
+        if item := self.position2item(p):
             if self.use_declutter:
                 item.setText(0, item._real_text)
-            e, wrapper = self.editLabelHelper(item, selectAll, selection)
+            e, _wrapper = self.editLabelHelper(item, selectAll, selection)
         else:
-            e, wrapper = None, None
+            e = None
             self.error(f"no item for {p}")
         if e:
             self.sizeTreeEditor(c, e)
             # A nice hack: just set the focus request.
             c.requestedFocusWidget = e
-        return e, wrapper
 
     # @+node:ekr.20110605121601.18422: *5* LeoQtTree.editLabelHelper
     def editLabelHelper(
         self,
         item: QTreeWidgetItem,
         selectAll: bool = False,
-        selection: tuple = None,
-    ) -> tuple[QLineEdit, QHeadlineWrapper]:
+        selection: tuple | None = None,
+    ) -> tuple[QLineEdit, QHeadlineWrapper | None]:
         """Helper for qtree.editLabel."""
         c, vc = self.c, self.c.vimCommands
         w = self.treeWidget
@@ -1255,7 +1238,8 @@ class LeoQtTree(leoFrame.LeoTree):
 
     # @+node:ekr.20110605121601.17915: *4* LeoQtTree.getSelectedPositions
     def getSelectedPositions(self) -> list[Position]:
-        return [self.item2position(z) for z in self.getSelectedItems()]
+        aList = [self.item2position(z) for z in self.getSelectedItems()]
+        return [z for z in aList if z]
 
     # @+node:ekr.20110605121601.17914: *4* LeoQtTree.setHeadline
     def setHeadline(self, p: Position, s: str) -> None:
@@ -1265,16 +1249,14 @@ class LeoQtTree(leoFrame.LeoTree):
             return
         # Don't do this here: the caller should do it.
         # p.setHeadString(s)
-        w = self.headline_wrapper(p)
-        if w:
+        if w := self.headline_wrapper(p):
             w.setAllText(s)
         else:
-            item = self.position2item(p)
-            if item:
+            if item := self.position2item(p):
                 self.setItemText(item, s)
 
     # @+node:ekr.20110605121601.17913: *4* LeoQtTree.setItemForCurrentPosition
-    def setItemForCurrentPosition(self) -> QTreeWidgetItem:
+    def setItemForCurrentPosition(self) -> QTreeWidgetItem | None:
         """Select the item for c.p"""
         p = self.c.p
         if self.busy:
@@ -1299,8 +1281,7 @@ class LeoQtTree(leoFrame.LeoTree):
 
     # @+node:ekr.20190613080606.1: *4* LeoQtTree.unselectItem
     def unselectItem(self, p: Position) -> None:
-        item = self.position2item(p)
-        if item:
+        if item := self.position2item(p):
             item.setSelected(False)
 
     # @-others

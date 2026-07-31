@@ -8,8 +8,8 @@ from __future__ import annotations
 
 import textwrap
 from collections import OrderedDict
-from typing import Dict, TYPE_CHECKING, Optional
-
+from collections.abc import Callable
+from typing import Any, TYPE_CHECKING
 from leo.core.leoQt import QtWidgets, Orientation
 from leo.core import leoGlobals as g
 
@@ -57,10 +57,11 @@ def is_module_loaded(module_name: str) -> bool:
 
 
 # @+node:tom.20241015161609.1: *3* decorator:  register_layout (qt_layout.py)
-def register_layout(name: str):  # type: ignore
-    def decorator(func):
+def register_layout(name: str) -> Callable:
+
+    def decorator(func: Callable) -> Callable:
         # Register the function's name and docstring in the dictionary
-        LAYOUT_REGISTRY[name] = func.__doc__
+        LAYOUT_REGISTRY[name] = func.__doc__ or ''
         return func  # Ensure the original function is returned
 
     return decorator
@@ -83,7 +84,7 @@ def register_layout(name: str):  # type: ignore
 # @+node:tom.20240928171510.1: *3* command: 'layout-big-tree'
 @g.command('layout-big-tree')
 @register_layout('layout-big-tree')
-def big_tree(event: LeoKeyEvent) -> None:
+def big_tree(event: LeoKeyEvent | None = None) -> None:
     """
     Create Leo's big-tree layout:
 
@@ -95,7 +96,9 @@ def big_tree(event: LeoKeyEvent) -> None:
         │    VR   │  VR3   │
         └─────────┴────────┘
     """
-    c = event.get('c')
+    c = event.get('c') if event else None
+    if not c:
+        return
     cache = c.frame.top.layout_cache
     cache.restoreFromLayout()
     cache.layout_dict = {'name': 'big-tree'}
@@ -150,7 +153,7 @@ def big_tree(event: LeoKeyEvent) -> None:
 # @+node:ekr.20241008180407.1: *3* command: 'layout-legacy'
 @g.command('layout-legacy')
 @register_layout('layout-legacy')
-def quadrants(event: LeoKeyEvent) -> None:
+def quadrants(event: LeoKeyEvent | None = None) -> None:
     """
     Create Leo's legacy layout:
 
@@ -160,7 +163,9 @@ def quadrants(event: LeoKeyEvent) -> None:
         │   body        │ VR │ VR3  │
         └───────────────┴────┴──────┘
     """
-    c = event.get('c')
+    c = event.get('c') if event else None
+    if not c:
+        return
     dw = c.frame.top
     cache = dw.layout_cache
     cache.restoreFromLayout(LEGACY_LAYOUT)
@@ -169,7 +174,7 @@ def quadrants(event: LeoKeyEvent) -> None:
 # @+node:ekr.20241008174427.1: *3* command: 'layout-horizontal-thirds'
 @g.command('layout-horizontal-thirds')
 @register_layout('layout-horizontal-thirds')
-def horizontal_thirds(event: LeoKeyEvent) -> None:
+def horizontal_thirds(event: LeoKeyEvent | None = None) -> None:
     """
     Create Leo's horizontal-thirds layout:
 
@@ -181,7 +186,9 @@ def horizontal_thirds(event: LeoKeyEvent) -> None:
         │   VR    │   VR3   │
         └─────────┴─────────┘
     """
-    c = event.get('c')
+    c = event.get('c') if event else None
+    if not c:
+        return
     dw = c.frame.top
     cache = dw.layout_cache
     cache.restoreFromLayout(HORIZONTAL_THIRDS_LAYOUT)
@@ -190,7 +197,7 @@ def horizontal_thirds(event: LeoKeyEvent) -> None:
 # @+node:ekr.20241008174427.2: *3* command: 'layout-render-focused'
 @g.command('layout-render-focused')
 @register_layout('layout-render-focused')
-def render_focused(event: LeoKeyEvent) -> None:
+def render_focused(event: LeoKeyEvent | None = None) -> None:
     """
     Create Leo's render-focused layout:
 
@@ -204,7 +211,9 @@ def render_focused(event: LeoKeyEvent) -> None:
 
     Note: The expand/contract-main-splitter commands have no effect when using this layout.
     """
-    c = event.get('c')
+    c = event.get('c') if event else None
+    if not c:
+        return
     dw = c.frame.top
     cache = dw.layout_cache
     cache.restoreFromLayout(RENDERED_FOCUSED_LAYOUT)
@@ -213,12 +222,12 @@ def render_focused(event: LeoKeyEvent) -> None:
 # @+node:tom.20240930101515.1: *3* command: 'layout-restore-to-setting'
 @g.command('layout-restore-to-setting')
 @register_layout('layout-restore-to-setting')
-def restoreDefaultLayout(event: LeoKeyEvent) -> None:
+def restoreDefaultLayout(event: LeoKeyEvent | None = None) -> None:
     """
     Select the layout specified by the `@string qt-layout-name` setting in effect
     for this outline. Use the **legacy** layout if the user's setting is erroneous.
     """
-    c = event.get('c')
+    c = event.get('c') if event else None
     if not c:
         return
     event = g.app.gui.create_key_event(c)
@@ -234,13 +243,13 @@ def restoreDefaultLayout(event: LeoKeyEvent) -> None:
 # @+node:tom.20241005163724.1: *3* command: 'layout-swap-log-panel'
 @g.command('layout-swap-log-panel')
 @register_layout('layout-swap-log-panel')
-def swapLogPanel(event: LeoKeyEvent) -> None:
+def swapLogPanel(event: LeoKeyEvent | None = None) -> None:
     """
     Move the Log frame between main and secondary splitters.
 
     **Do not use this layout as the initial layout.**
     """
-    c = event.get('c')
+    c = event.get('c') if event else None
     if not c:
         return
     gui = g.app.gui
@@ -272,7 +281,7 @@ def swapLogPanel(event: LeoKeyEvent) -> None:
 # @+node:ekr.20241008175137.1: *3* command: 'layout-vertical-thirds'
 @g.command('layout-vertical-thirds')
 @register_layout('layout-vertical-thirds')
-def vertical_thirds(event: LeoKeyEvent) -> None:
+def vertical_thirds(event: LeoKeyEvent | None = None) -> None:
     """
     Create Leo's vertical-thirds layout:
 
@@ -284,7 +293,9 @@ def vertical_thirds(event: LeoKeyEvent) -> None:
                     |
                     └─ Main splitter
     """
-    c = event.get('c')
+    c = event.get('c') if event else None
+    if not c:
+        return
     dw = c.frame.top
     cache = dw.layout_cache
     cache.restoreFromLayout(VERTICAL_THIRDS_LAYOUT)
@@ -293,7 +304,7 @@ def vertical_thirds(event: LeoKeyEvent) -> None:
 # @+node:ekr.20241008175303.1: *3* command: 'layout-vertical-thirds2'
 @g.command('layout-vertical-thirds2')
 @register_layout('layout-vertical-thirds2')
-def vertical_thirds2(event: LeoKeyEvent) -> None:
+def vertical_thirds2(event: LeoKeyEvent | None = None) -> None:
     """
     Create Leo's vertical-thirds2 layout:
 
@@ -305,7 +316,9 @@ def vertical_thirds2(event: LeoKeyEvent) -> None:
                     |
                     └─ Main splitter
     """
-    c = event.get('c')
+    c = event.get('c') if event else None
+    if not c:
+        return
     dw = c.frame.top
     cache = dw.layout_cache
     cache.restoreFromLayout(VERTICAL_THIRDS2_LAYOUT)
@@ -314,8 +327,10 @@ def vertical_thirds2(event: LeoKeyEvent) -> None:
 # @+node:tom.20241022170042.1: *3* command: 'show-layouts'
 @g.command('layout-show-layouts')
 @g.command('show-layouts')
-def showLayouts(event) -> None:
+def showLayouts(event: LeoKeyEvent | None) -> None:
     """Show all layout diagrams in the Log Frame's `layouts` tab."""
+    if not event:
+        return
     c = event.get('c')
     if not c:
         return
@@ -334,8 +349,10 @@ def showLayouts(event) -> None:
 
 # @+node:tom.20250106123058.1: *3* command: show_layout_name
 @g.command('show-current-layout')
-def show_layout_name(event: LeoKeyEvent) -> None:
-    c = event.get('c')
+def show_layout_name(event: LeoKeyEvent | None = None) -> None:
+    c = event.get('c') if event else None
+    if not c:
+        return
     cache = c.frame.top.layout_cache
     if cache.layout_dict:
         name = cache.layout_dict.get('name', 'unnamed layout')
@@ -482,45 +499,45 @@ class LayoutCacheWidget(QWidget):
         }
     """
 
-    def __init__(self, c: Cmdr, parent: Optional[QWidget]) -> None:
+    def __init__(self, c: Cmdr, parent: QWidget | None) -> None:
         super().__init__(parent)
         self.c = c
         self.setObjectName('leo-layout-cache')
-        self.layout_dict: Dict = None
+        self.layout_dict: dict | None = None
 
         # maps splitter objectNames to their splitter object.
-        self.created_splitter_dict: Dict[str, QWidget] = {}
+        self.created_splitter_dict: dict[str, QWidget] = {}
         self.layout_registry = LAYOUT_REGISTRY
 
     # @+others
     # @+node:ekr.20241027142532.1: *3* LayoutCasheWidget: contract_*
     # @+node:ekr.20241027124630.1: *4* LCW.contract_body
-    def contract_body(self):
+    def contract_body(self) -> None:
         """Contract the body pane"""
         self.contract_pane(self.c.frame.body.widget)
 
     # @+node:ekr.20241027125414.1: *4* LCW.contract_log
-    def contract_log(self):
+    def contract_log(self) -> None:
         """Contract the log pane"""
         self.contract_pane(self.c.frame.log.logWidget)
 
     # @+node:ekr.20241027125415.1: *4* LCW.contract_outline
-    def contract_outline(self):
+    def contract_outline(self) -> None:
         """Contract the outline pane"""
         self.contract_pane(self.c.frame.tree.treeWidget)
 
     # @+node:ekr.20241027141341.1: *4* LCW.contract_vr
-    def contract_vr(self):
+    def contract_vr(self) -> None:
         """Contract the VR pane if VR is running"""
         c = self.c
         if is_module_loaded(VR_MODULE_NAME):
-            vr = getattr(c, 'vr', None)
-            self.expand_pane(vr)
-        else:
-            g.es_print('VR is not running', color='blue')
+            if vr := getattr(c, 'vr', None):
+                self.expand_pane(vr)
+                return
+        g.es_print('VR is not running', color='blue')
 
     # @+node:ekr.20241027141411.1: *4* LCW.contract_vr3
-    def contract_vr3(self):
+    def contract_vr3(self) -> None:
         """Contract the VR3 pane if VR3 is running"""
         c = self.c
         if is_module_loaded(VR3_MODULE_NAME):
@@ -533,41 +550,41 @@ class LayoutCacheWidget(QWidget):
 
     # @+node:ekr.20241027142605.1: *3* LayoutCacheWidget: expand_*
     # @+node:ekr.20241027124500.1: *4* LCW.expand_body
-    def expand_body(self):
+    def expand_body(self) -> None:
         """Expand the body pane"""
         self.expand_pane(self.c.frame.body.widget)
 
     # @+node:ekr.20241027125500.1: *4* LCW.expand_log
-    def expand_log(self):
+    def expand_log(self) -> None:
         """Expand the log pane"""
         self.expand_pane(self.c.frame.log.logWidget)
 
     # @+node:ekr.20241027124703.1: *4* LCW.expand_outline
-    def expand_outline(self):
+    def expand_outline(self) -> None:
         """Expand the outline pane."""
         self.expand_pane(self.c.frame.tree.treeWidget)
 
     # @+node:ekr.20241027141425.1: *4* LCW.expand_vr
-    def expand_vr(self):
+    def expand_vr(self) -> None:
         """Expand the VR pane if VR is running"""
         c = self.c
         if is_module_loaded(VR_MODULE_NAME):
-            vr = getattr(c, 'vr', None)
-            self.expand_pane(vr)
-        else:
-            g.es_print('VR is not running', color='blue')
+            if vr := getattr(c, 'vr', None):
+                self.expand_pane(vr)
+                return
+        g.es_print('VR is not running', color='blue')
 
     # @+node:ekr.20241027141446.1: *4* LCW.expand_vr3
-    def expand_vr3(self):
+    def expand_vr3(self) -> None:
         """Expand the VR3 pane if VR3 is running"""
         c = self.c
         if is_module_loaded(VR3_MODULE_NAME):
             from leo.plugins.viewrendered3 import controllers
 
-            vr3 = controllers.get(c.hash())
-            self.expand_pane(vr3)
-        else:
-            g.es_print('VR3 is not running', color='blue')
+            if vr3 := controllers.get(c.hash()):
+                self.expand_pane(vr3)
+                return
+        g.es_print('VR3 is not running', color='blue')
 
     # @+node:ekr.20241027162525.1: *3* LayoutCacheWidget: utils
     # @+node:ekr.20241027161121.1: *4* LCW.contract_pane
@@ -581,12 +598,13 @@ class LayoutCacheWidget(QWidget):
         self.resize_pane(widget, delta=40)
 
     # @+node:tom.20240923194438.5: *4* LCW.find_splitter_by_name
-    def find_splitter_by_name(self, name: str) -> Optional[QSplitter]:
+    def find_splitter_by_name(self, name: str) -> QSplitter | None:
         """Return the splitter with the given objectName."""
 
         def is_splitter(obj: object) -> bool:
             return obj is not None and isinstance(obj, QSplitter)
 
+        splitter: Any
         splitter = self.find_widget(name)
         if is_splitter(splitter):
             return splitter  # type:ignore  # We've just checked the type.
@@ -604,9 +622,9 @@ class LayoutCacheWidget(QWidget):
         return g.app.gui.find_widget_by_name(self.c, name)
 
     # @+node:tom.20240923194438.4: *4* LCW.find_widget_in_children
-    def find_widget_in_children(self, name: str) -> Optional[QWidget]:
+    def find_widget_in_children(self, name: str) -> QWidget | None:
         """Return a child widget with the given objectName."""
-        w: QWidget = None
+        w: QWidget | None = None
         for kid in self.children():
             if kid.objectName() == name:
                 w = kid  # type: ignore [assignment]
@@ -657,7 +675,7 @@ class LayoutCacheWidget(QWidget):
                 return
 
     # @+node:tom.20240923194438.6: *4* LCW.restoreFromLayout
-    def restoreFromLayout(self, layout: Dict = None) -> None:
+    def restoreFromLayout(self, layout: dict | None = None) -> None:
         self.layout_dict = layout
         if layout is None:
             layout = FALLBACK_LAYOUT
@@ -665,8 +683,7 @@ class LayoutCacheWidget(QWidget):
         # @+node:tom.20240923194438.7: *5* << initialize data structures >> restoreFromLayout
         ORIENTATIONS = layout['ORIENTATIONS']
 
-        has_vr3 = is_module_loaded(VR3_MODULE_NAME)
-        if has_vr3:
+        if has_vr3 := is_module_loaded(VR3_MODULE_NAME):
             if (vr3 := self.find_widget('viewrendered3_pane')) is None:
                 import leo.plugins.viewrendered3 as vr3_mod
 
@@ -686,14 +703,15 @@ class LayoutCacheWidget(QWidget):
         # Make unknown splitters.
         # If a splitter name is not known or does not exist, create one
         # and add it to self.created_splitter_dict.
+        splitter: Any
         for _, name in SPLITTERS.items():
-            splitter: QWidget = self.find_splitter_by_name(name)
+            splitter = self.find_splitter_by_name(name)  # type:ignore
             if splitter is None:
                 splitter = QSplitter(self)
                 splitter.setObjectName(name)
                 self.created_splitter_dict[name] = splitter
 
-        SPLITTER_DICT: Dict[str, QSplitter] = OrderedDict()
+        SPLITTER_DICT: dict[str, QSplitter] = OrderedDict()
         for name in ORIENTATIONS:  # type:ignore
             splitter = self.find_splitter_by_name(name)
             if splitter is not None and SPLITTER_DICT.get(name, None) is None:
@@ -757,7 +775,7 @@ class LayoutCacheWidget(QWidget):
         # SPLITTERS is an OrderedDict so the widgets will
         # be inserted in the right order.
 
-        splitter_index: Dict = {}
+        splitter_index: dict = {}
         for name, target in SPLITTERS.items():
             widget = self.find_widget(name)
             if widget is None:

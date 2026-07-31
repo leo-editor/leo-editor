@@ -47,7 +47,7 @@ The following commands are available for use via the minibuffer or in
 # @+node:gfunch.20041207100416.3: ** << imports >>
 import calendar
 import codecs
-import datetime
+import datetime as dt
 from leo.core import leoGlobals as g
 # @-<< imports >>
 
@@ -136,7 +136,7 @@ class DateNodes:
         year, month = date.timetuple()[:2]
         first_day_of_month, num_days = calendar.monthrange(year, month)
         for day in range(1, num_days + 1):
-            day_date = datetime.date(year, month, day)
+            day_date = dt.date(year, month, day)
             isoweekday = day_date.isoweekday()
             if (isoweekday == 6 and omit_saturdays) or (isoweekday == 7 and omit_sundays):
                 continue
@@ -158,7 +158,7 @@ class DateNodes:
         year_node = self._insert_date_node(parent, date, year_fmt)
         year, month, day = date.timetuple()[:3]
         for month in range(1, 13):
-            month_date = datetime.date(year, month, day)
+            month_date = dt.date(year, month, day)
             self._insert_month_node(
                 parent=year_node,
                 date=month_date,
@@ -172,7 +172,7 @@ class DateNodes:
     # @+node:gfunch.20041208074734: *3* insert_day_node
     def insert_day_node(self, event=None):
         c = self.c
-        today = datetime.date.today()
+        today = dt.datetime.now(tz=dt.timezone.utc)
         day_fmt = self.settings["day_node_headline"]
         day_node = self._insert_day_node(self.c.p, today, day_fmt)
         c.selectPosition(day_node)
@@ -181,7 +181,7 @@ class DateNodes:
     # @+node:dcb.20060806183928: *3* insert_month_node
     def insert_month_node(self, event=None):
         c = self.c
-        today = datetime.date.today()
+        today = dt.datetime.now(tz=dt.timezone.utc)
         day_fmt = self.settings["month_node_day_headline"]
         month_fmt = self.settings["month_node_month_headline"]
         omit_saturdays = self.settings["month_node_omit_saturdays"]
@@ -195,7 +195,7 @@ class DateNodes:
     # @+node:dcb.20060806184117: *3* insert_year_node
     def insert_year_node(self, event=None):
         c = self.c
-        today = datetime.date.today()
+        today = dt.datetime.now(tz=dt.timezone.utc)
         day_fmt = self.settings["year_node_day_headline"]
         month_fmt = self.settings["year_node_month_headline"]
         year_fmt = self.settings["year_node_year_headline"]

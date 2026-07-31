@@ -169,7 +169,7 @@ class LeoMenu:
             kind, val, val2 = z
             if kind.startswith('@menu'):
                 name = kind[len('@menu') :].strip()
-                if not self.handleSpecialMenus(name, parentName=None):
+                if not self.handleSpecialMenus(name, parentName=''):
                     # #528: Don't create duplicate menu items.
                     # Create top-level menu.
                     menu = self.createNewMenu(name)
@@ -240,7 +240,7 @@ class LeoMenu:
 
     # @+node:ekr.20070927172712: *6* LeoMenu.handleSpecialMenus
     def handleSpecialMenus(
-        self, name: str, parentName: str, alt_name: str = None, table: list = None
+        self, name: str, parentName: str, alt_name: str = '', table: list | None = None
     ) -> bool:
         """
         Handle a special menu if name is the name of a special menu.
@@ -377,7 +377,7 @@ class LeoMenu:
             # First, get the old-style name.
             # #1121: Allow Chinese characters in command names
             commandName = label.strip()
-        command = c.commandsDict.get(commandName)
+        command = c.commandsDict.get(commandName, '')
         return commandName
 
     # @+node:ekr.20111028060955.16565: *5* LeoMenu.getMenuEntryInfo
@@ -413,7 +413,7 @@ class LeoMenu:
                     label, command = data
                 else:
                     # Ignore shortcuts bound in menu tables.
-                    label, junk, command = data
+                    label, _, command = data
                 if label in (None, '-'):
                     self.add_separator(menu)
                     done = True  # That's all.
@@ -435,7 +435,7 @@ class LeoMenu:
                 if n == 2:
                     print(format % (data[0], data[1]))
                 elif n == 3:
-                    name, junk, func = data
+                    name, _, func = data
                     print(format % (name, func and func.__name__ or '<NO FUNC>'))
             else:
                 print(format % (data, ''))
@@ -455,9 +455,7 @@ class LeoMenu:
         g.app.menuWarningsGiven = True
 
     # @+node:ekr.20031218072017.3804: *4* LeoMenu.createNewMenu
-    def createNewMenu(
-        self, menuName: str, parentName: str = "top", before: str = None
-    ) -> QtMenuWrapper:
+    def createNewMenu(self, menuName: str, parentName: str = "top", before: str = '') -> Any:
         try:
             parent = self.getMenu(parentName)  # parent may be None.
             menu = self.getMenu(menuName)
@@ -571,13 +569,12 @@ class LeoMenu:
                 )
 
     # @+node:ekr.20031218072017.4118: *6* LeoMenu.defineOpenWithMenuCallback
-    def defineOpenWithMenuCallback(self, d: dict[str, Any] = None) -> Callable:
-        # The first parameter must be a LeoKeyEvent, and it must default to None.
+    def defineOpenWithMenuCallback(self, d: dict[str, Any] | None = None) -> Callable:
 
         def openWithMenuCallback(
-            event: LeoKeyEvent = None,
+            event: LeoKeyEvent | None = None,
             self: LeoMenu = self,
-            d: dict[str, Any] = d,
+            d: dict[str, Any] | None = d,
         ) -> Any:
             d1 = d.copy() if d else {}
             return self.c.openWith(d=d1)
@@ -657,7 +654,7 @@ class LeoMenu:
         cmn = self.canonicalizeMenuName(menuName)
         del self.menus[cmn]
 
-    # @+node:ekr.20031218072017.3808: *3* LeoMenu: Must be overridden in menu subclasses
+    # @+node:ekr.20031218072017.3808: *3* LeoMenu: May be overridden in menu subclasses
     # @+node:ekr.20031218072017.3809: *4* LeoMenu.9 Routines with Tk spellings
     def add_cascade(self, parent: Widget, label: str, menu: QtMenuWrapper, underline: int) -> None:
         pass
@@ -666,9 +663,9 @@ class LeoMenu:
         self,
         menu: QtMenuWrapper,
         accelerator: str = '',
-        command: Callable = None,
-        commandName: str = None,
-        label: str = None,
+        command: Callable | None = None,
+        commandName: str = '',
+        label: str = '',
         underline: int = 0,
     ) -> None:
         pass
@@ -691,16 +688,16 @@ class LeoMenu:
         position: int,
         label: str,
         command: Callable,
-        underline: int = None,
+        underline: int = 0,
     ) -> None:
         pass
 
     def insert_cascade(
-        self, parent: Widget, index: int, label: str, menu: QtMenuWrapper, underline: int
-    ) -> Widget:
+        self, parent: Any, index: int, label: str, menu: QtMenuWrapper, underline: int
+    ) -> Any:
         pass
 
-    def new_menu(self, parent: Widget, tearoff: int = 0, label: str = '') -> QtMenuWrapper:
+    def new_menu(self, Any: Widget, tearoff: int = 0, label: str = '') -> Any:
         pass
 
     # @+node:ekr.20031218072017.3810: *4* LeoMenu.9 Routines with new spellings
@@ -713,9 +710,7 @@ class LeoMenu:
     def createMenuBar(self, frame: Widget) -> None:
         pass
 
-    def createOpenWithMenu(
-        self, parent: Widget, label: str, index: int, amp_index: int
-    ) -> QtMenuWrapper:
+    def createOpenWithMenu(self, parent: Widget, label: str, index: int, amp_index: int) -> Any:
         pass
 
     def disableMenu(self, menu: QtMenuWrapper, name: str) -> None:

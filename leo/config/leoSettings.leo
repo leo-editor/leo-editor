@@ -200,6 +200,7 @@
 <v t="ekr.20210914081311.1"><vh>@bool highlight-body-line = False</vh></v>
 <v t="ekr.20210914081428.1"><vh>@string line-highlight-color = None</vh></v>
 <v t="ekr.20240726065425.1"><vh>@string qt-layout-name = legacy</vh></v>
+<v t="codex.20260701120000.1"><vh>@bool qt-mac-dont-swap-ctrl-and-meta = False</vh></v>
 <v t="ekr.20140915194122.23431"><vh>Colors</vh>
 <v t="ekr.20140912075503.19318"><vh>Body pane colors</vh>
 <v t="ekr.20140912075503.19319"><vh>@color body-bg = white</vh></v>
@@ -10853,6 +10854,10 @@ Use different names instead.</t>
 False: Legacy operation.
 True:  Replace the Meta key with the Alt Key.
        This allows Windows Keyboards to be used without changing key bindings.
+</t>
+<t tx="codex.20260701120000.1">The setting only has effect on MacOS.
+False: Legacy operation: Qt swaps Command and Control into cross-platform roles.
+True:  Tell Qt not to swap Command and Control before QApplication is created.
 </t>
 <t tx="ekr.20180525053145.1">True: use jedi for autocompletion if available.
 See https://jedi.readthedocs.io/en/latest/index.html

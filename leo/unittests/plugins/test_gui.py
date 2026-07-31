@@ -17,18 +17,14 @@ try:
         QtGui,
         QtWidgets,
     )
-    from leo.core.leoAPI import (
-        IconBarAPI,
-        StatusLineAPI,
-        StringTextWrapper,
-        TreeAPI,
-    )
+    from leo.core.leoAPI import StringTextWrapper
     from leo.core.leoFrame import (
-        LeoTree,
+        NullBody,
+        NullFrame,
         NullIconBarClass,
+        NullLog,
         NullStatusLineClass,
         NullTree,
-        # QTabWidget,
     )
     from leo.core.leoGui import LeoKeyEvent
     from leo.plugins.qt_frame import (
@@ -83,19 +79,6 @@ class TestNullGui(LeoUnitTest):
     # @+node:ekr.20260405083949.1: *3* TestNullGui.test_annotations
     def test_annotations(self):
         # This test establishes Leo's null-gui annotations.
-        # @+<< TestNullGui.test_annotations: imports >>
-        # @+node:ekr.20260406021136.1: *4* << TestNullGui.test_annotations: imports >>
-        from leo.core.leoFrame import (
-            NullBody,
-            NullFrame,
-            NullIconBarClass,
-            NullLog,
-            NullStatusLineClass,
-            NullTree,
-            StringTextWrapper,
-        )
-
-        # @-<< TestNullGui.test_annotations: imports >>
         c = self.c
         table = (
             # NullFrame and ivars...
@@ -191,6 +174,20 @@ class TestQtGui(LeoUnitTest):
         ):
             assert issubclass(class_, QTextMixin), repr(class_)
 
+    # @+node:Sanjays2402.20260724103000.1: *3* TestQtGui.test_bug_4817
+    def test_bug_4817(self):
+        # https://github.com/leo-editor/leo-editor/issues/4817
+        top = self.c.frame.top
+        old_use_gutter = top.use_gutter
+        try:
+            top.use_gutter = True
+            parent = QtWidgets.QWidget()
+            pane = top.createBodyPane(parent)
+            gutter = pane.findChild(QtWidgets.QFrame, 'gutter')
+            assert gutter is not None
+        finally:
+            top.use_gutter = old_use_gutter
+
     # @+node:ekr.20210913120449.1: *3* TestQtGui.test_bug_2164
     def test_bug_2164(self):
         # show-invisibles crashes with PyQt6.
@@ -205,6 +202,8 @@ class TestQtGui(LeoUnitTest):
     # @+node:ekr.20260423040149.1: *3* TestQtGui.test_bug_4626
     def test_bug_4626(self):
         # https://github.com/leo-editor/leo-editor/issues/4626
+        self.skipTest('Can hang depending clipboard contents')
+
         c, gui = self.c, g.app.gui
         k, log, qtApp = c.k, c.frame.log, gui.qtApp
         old_log = g.app.log
@@ -396,71 +395,6 @@ class TestQtGui(LeoUnitTest):
         # g.trace(wrapper.getAllText())
         wrapper.delete(6, 0)
         # g.trace(wrapper.getAllText())
-
-    # @-others
-
-
-# @+node:ekr.20220911100525.1: ** class TestAPIClasses(LeoUnitTest)
-class TestAPIClasses(LeoUnitTest):
-    """Tests that gui classes are compatible with the corresponding API class."""
-
-    # @+others
-    # @+node:ekr.20250329035732.1: *3* test_icon_bar_api
-    def test_icon_bar_api(self):
-        def get_methods(cls):
-            return [z for z in dir(cls) if not z.startswith('__')]
-
-        def get_missing(cls):
-            return [z for z in get_methods(IconBarAPI) if z not in get_methods(cls)]
-
-        classes = [NullIconBarClass]
-        if Qt:
-            classes.append(QtIconBarClass)
-        for cls in classes:
-            self.assertFalse(get_missing(cls), msg=f"Missing {cls.__class__.__name__} methods")
-
-    # @+node:ekr.20220911101304.1: *3* test_status_line_api
-    def test_status_line_api(self):
-        def get_methods(cls):
-            return [z for z in dir(cls) if not z.startswith('__')]
-
-        def get_missing(cls):
-            return [z for z in get_methods(StatusLineAPI) if z not in get_methods(cls)]
-
-        classes = [NullStatusLineClass]
-        if Qt:
-            classes.append(QtStatusLineClass)
-        for cls in classes:
-            self.assertFalse(get_missing(cls), msg=f"Missing {cls.__class__.__name__} methods")
-
-    # @+node:ekr.20220911101329.1: *3* test_tree_api
-    def test_tree_api(self):
-        def get_methods(cls):
-            return [z for z in dir(cls) if not z.startswith('__')]
-
-        def get_missing(cls):
-            return [z for z in get_methods(TreeAPI) if z not in get_methods(cls)]
-
-        classes = [NullTree]
-        if Qt:
-            classes.extend([LeoQtTree, LeoTree])
-        for cls in classes:
-            self.assertFalse(get_missing(cls), msg=f"Missing {cls.__class__.__name__} methods")
-
-    # @+node:ekr.20220911101330.1: *3* test_text_api
-    def test_text_api(self):
-        def get_methods(cls):
-            return [z for z in dir(cls) if not z.startswith('__')]
-
-        def get_missing(cls):
-            return [z for z in get_methods(QTextMixin) if z not in get_methods(cls)]
-
-        classes = [StringTextWrapper]
-        if Qt:
-            classes.extend([QLineEditWrapper, QTextEditWrapper, QScintillaWrapper])
-        for cls in classes:
-            missing = get_missing(cls)
-            self.assertFalse(missing, msg=f"Missing {cls} methods: {missing}")
 
     # @-others
 

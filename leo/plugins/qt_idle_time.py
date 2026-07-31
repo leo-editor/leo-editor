@@ -3,7 +3,7 @@
 """Leo's Qt idle-time code."""
 
 import time
-from typing import Callable
+from collections.abc import Callable
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore
 
@@ -52,12 +52,12 @@ class IdleTime:
 
     # @+others
     # @+node:ekr.20140825042850.18406: *3* IdleTime.__init__
-    def __init__(self, handler: Callable, delay: int = 500, tag: str = None) -> None:
+    def __init__(self, handler: Callable, delay: int = 500, tag: str = '') -> None:
         """ctor for IdleTime class."""
         # For use by handlers...
         self.count = 0  # The number of times handler has been called.
-        self.starting_time: float = None  # Time that the timer started.
-        self.time: float = None  # Time that the handle is called.
+        self.starting_time: float | None = None  # Time that the timer started.
+        self.time: float | None = None  # Time that the handle is called.
         self.tag: str = tag  # For debugging.
 
         # For the IdleTime class...
@@ -76,15 +76,14 @@ class IdleTime:
     # @+node:ekr.20140825102404.18525: *3* IdleTime.__repr__
     def __repr__(self) -> str:
         """IdleTime repr."""
-        tag = self.tag
-        if tag:
+        if tag := self.tag:
             return f"<IdleTime: {tag if isinstance(tag, str) else repr(tag)}>"
         return f"<IdleTime: id: {id(self)}>"
 
     __str__ = __repr__
 
     # @+node:ekr.20140825042850.18407: *3* IdleTime.at_idle_time
-    def at_idle_time(self):
+    def at_idle_time(self) -> None:
         """Call self.handler not more than once every self.delay msec."""
         if g.app.killed:
             self.stop()
@@ -102,7 +101,7 @@ class IdleTime:
             self.timer.stop()
 
     # @+node:ekr.20140825042850.18408: *3* IdleTime.call_handler
-    def call_handler(self):
+    def call_handler(self) -> None:
         """Carefully call the handler."""
         try:
             self.count += 1
@@ -113,13 +112,13 @@ class IdleTime:
             self.stop()
 
     # @+node:ekr.20140825080012.18529: *3* IdleTime.destroy_self
-    def destroy_self(self):
+    def destroy_self(self) -> None:
         """Remove the instance from g.app.idle_timers."""
         if not g.app.killed and self in g.app.idle_timers:
             g.app.idle_timers.remove(self)
 
     # @+node:ekr.20140825042850.18409: *3* IdleTime.start & stop
-    def start(self):
+    def start(self) -> None:
         """Start idle-time processing"""
         self.enabled = True
         if self.starting_time is None:
@@ -127,7 +126,7 @@ class IdleTime:
         # Wait at least self.delay msec, then wait for idle time.
         self.timer.start(self.delay)
 
-    def stop(self):
+    def stop(self) -> None:
         """Stop idle-time processing. May be called during shutdown."""
         self.enabled = False
         if hasattr(self, 'timer') and self.timer.isActive():

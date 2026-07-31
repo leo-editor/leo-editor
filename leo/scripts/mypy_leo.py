@@ -1,7 +1,5 @@
 # @+leo-ver=5-thin
 # @+node:ekr.20240321122413.8: * @file ../scripts/mypy_leo.py
-# @@language python
-
 """
 mypy_leo.py: Run mypy on Leo's files.
 
@@ -13,6 +11,8 @@ EKR's mypy-leo.cmd:
     python -m leo.scripts.mypy_leo
 """
 
+# @+<< mypy_leo.py: imports & startup >>
+# @+node:ekr.20260703122126.1: ** << mypy_leo.py: imports & startup >>
 import os
 import subprocess
 import sys
@@ -22,12 +22,11 @@ print(os.path.basename(__file__))
 # cd to leo-editor
 leo_editor_dir = os.path.abspath(os.path.join(__file__, '..', '..', '..'))
 os.chdir(leo_editor_dir)
+# @-<< mypy_leo.py: imports & startup >>
 
-args = ' '.join(sys.argv[1:])
 python = sys.executable
-if 1:  # Quick.
-    command = rf"{python} -m mypy leo"
-else:  # Safe.
-    command = rf"{python} -m mypy --no-incremental leo"
+command = rf"{python} -m mypy leo"
 subprocess.Popen(command, shell=True).communicate()
+
+# @@language python
 # @-leo

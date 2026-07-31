@@ -1014,7 +1014,7 @@ from contextlib import redirect_stdout
 from enum import Enum, auto
 import html
 from inspect import cleandoc
-from io import StringIO, open as ioOpen
+from io import StringIO
 
 import os
 from pathlib import Path
@@ -1026,7 +1026,7 @@ import string
 import subprocess
 import sys
 import textwrap
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
 import webbrowser
 # from urllib.request import urlopen
@@ -1292,8 +1292,8 @@ asciidoc = None
 asciidoctor = None
 asciidoc_ok = False
 asciidoc3_ok = False
-asciidoc_dirs: Dict[str, Dict] = {'asciidoc': {}, 'asciidoc3': {}}
-asciidoc_processors: List[Any] = []
+asciidoc_dirs: dict[str, dict] = {'asciidoc': {}, 'asciidoc3': {}}
+asciidoc_processors: list[Any] = []
 asciidoc_has_diagram = False
 # @-<< Misc Globals >>
 # @+<< define html templates >>
@@ -1326,8 +1326,8 @@ latex_template = f'''\
 trace = False  # This global trace is convenient.
 
 # keys are c.hash().
-controllers: Dict[str, Any] = {}  # values: VR3 widgets
-positions: Dict[int, Any] = {}  # values: OPENED_IN_TAB, OPENED_IN_SPLITTER, OPENED_SHARING_BODY
+controllers: dict[str, Any] = {}  # values: VR3 widgets
+positions: dict[int, Any] = {}  # values: OPENED_IN_TAB, OPENED_IN_SPLITTER, OPENED_SHARING_BODY
 
 
 # @+others
@@ -1771,13 +1771,12 @@ def viewrendered(event):
     # global controllers
     gui = g.app.gui
     if gui.guiName() != 'qt':
-        return None
+        return
     c = event.get('c')
     if not c:
-        return None
+        return
 
     getVr3({'c': c})
-    return None  # Make pylint happy
 
 
 # @+node:TomP.20200112232719.1: *3* g.command('vr3-execute')
@@ -1813,7 +1812,7 @@ def export_rst_html(event):
     c = vr3.c
     path = c.getPath(c.rootPosition())
     pathname = g.finalize_join(path, VR3_TEMP_FILE)
-    with ioOpen(pathname, 'w', encoding='utf-8') as f:
+    with open(pathname, 'w', encoding='utf-8') as f:
         f.write(_html)
     webbrowser.open_new_tab(pathname)
 
@@ -1841,7 +1840,7 @@ def vr3_help_for_plot_2d(event):
     docstr = cleandoc(doc)
     docstr = 'Help For VR3 Plot 2D\n=====================\n' + docstr
 
-    args: Dict[str, Any] = {'output_encoding': 'utf-8'}
+    args: dict[str, Any] = {'output_encoding': 'utf-8'}
     if vr3.rst_stylesheet and os.path.exists(vr3.rst_stylesheet):
         args['stylesheet_path'] = f'{vr3.rst_stylesheet}'
         args['embed_stylesheet'] = True
@@ -1858,7 +1857,7 @@ def vr3_help_for_plot_2d(event):
 
     path = c.getPath(c.rootPosition())
     pathname = g.finalize_join(path, VR3_TEMP_FILE)
-    with ioOpen(pathname, 'w', encoding='utf-8') as f:
+    with open(pathname, 'w', encoding='utf-8') as f:
         f.write(_html)
     webbrowser.open_new_tab(pathname)
 
@@ -2841,11 +2840,11 @@ class ViewRenderedController3(QtWidgets.QWidget):
             # pygments cmdline() writes to stdout; we have to redirect it to a file
             g.es('VR3-- creating new MD style sheet')
             style_path = os.path.join(default_style_dir, MD_BASE_STYLESHEET_NAME)
-            with ioOpen(style_path, 'w') as out:
+            with open(style_path, 'w') as out:
                 with redirect_stdout(out):
                     cmdline.main(args)
             # Add some fine-tuning css
-            with ioOpen(style_path, 'a') as out:
+            with open(style_path, 'a') as out:
                 out.write(MD_STYLESHEET_APPEND)
             self.md_stylesheet = 'file:///' + style_path
 
@@ -3034,7 +3033,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
             # @-<< is_numeric >>
             # @+<< get_data >>
             # @+node:tom.20211104105903.14: *6* << get_data >>
-            def get_data(pagelines) -> Tuple[Any, Any]:
+            def get_data(pagelines) -> tuple[Any, Any]:
                 num_cols = 0
 
                 # Skip lines starting with """ or '''
@@ -4371,7 +4370,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 result += f'\n::\n\n{indented_err_result}\n'
         # @+node:TomP.20200105214743.1: *6* vr3.get html from docutils
         # @@language python
-        args: Dict[str, Any] = {'output_encoding': 'utf-8'}
+        args: dict[str, Any] = {'output_encoding': 'utf-8'}
         if self.rst_stylesheet and os.path.exists(self.rst_stylesheet):
             args['stylesheet_path'] = f'{self.rst_stylesheet}'
             args['embed_stylesheet'] = True
@@ -4669,7 +4668,7 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 # Last line of code block must be followed by at least one blank line and
                 # then a non-blank, non-indented line, unless we reached the end of the node.
                 _last_code_line_num = _first_code_line_num
-                if not _last_code_line_num == _numlines - 1:
+                if _last_code_line_num != _numlines - 1:
                     for j in range(_first_code_line_num, _numlines):
                         if lines[j].startswith(_indentation):
                             continue

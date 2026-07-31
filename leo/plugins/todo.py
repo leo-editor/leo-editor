@@ -63,12 +63,12 @@ todo_calendar_cols
 # @+<< todo imports & annotations >>
 # @+node:tbrown.20090119215428.4: ** << todo imports & annotations >>
 from __future__ import annotations
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 import os
 import re
-import datetime
+import datetime as dt
 import time
-from typing import Any, Iterable, Optional, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import Qt, QtCore, QtGui, QtWidgets, uic
 from leo.core.leoQt import Checked, Unchecked
@@ -87,7 +87,7 @@ if TYPE_CHECKING:  # pragma: no cover
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 # @-<< todo imports & annotations >>
 
-NO_TIME = datetime.date(3000, 1, 1)
+NO_TIME = dt.date(3000, 1, 1)
 
 # @+others
 # @+node:tbrown.20090119215428.6: ** init (todo.py)
@@ -139,7 +139,7 @@ if g.app.gui.guiName() == "qt":
             self.owner = owner
             super().__init__()
             uiPath = g.os_path_join(g.app.leoDir, 'plugins', 'ToDo.ui')
-            #
+
             # change dir to get themed icons, needed for uic resources
             # These are icons for todo UI, not the tree.
             theme = g.app.config.getString('color-theme')
@@ -261,28 +261,28 @@ if g.app.gui.guiName() == "qt":
                 self.UI.dueDateEdit,
                 self.UI.dueDateToggle,
                 'setDate',
-                datetime.date.today() + datetime.timedelta(self.date_offset_default),
+                dt.datetime.now(tz=dt.timezone.utc) + dt.timedelta(self.date_offset_default),
             )
 
             self.setDueTime = self.make_func(
                 self.UI.dueTimeEdit,
                 self.UI.dueTimeToggle,
                 'setTime',
-                datetime.datetime.now().time(),
+                dt.datetime.now(tz=dt.timezone.utc).time(),
             )
 
             self.setNextWorkDate = self.make_func(
                 self.UI.nxtwkDateEdit,
                 self.UI.nxtwkDateToggle,
                 'setDate',
-                datetime.date.today() + datetime.timedelta(self.date_offset_default),
+                dt.datetime.now(tz=dt.timezone.utc) + dt.timedelta(self.date_offset_default),
             )
 
             self.setNextWorkTime = self.make_func(
                 self.UI.nxtwkTimeEdit,
                 self.UI.nxtwkTimeToggle,
                 'setTime',
-                datetime.datetime.now().time(),
+                dt.datetime.now(tz=dt.timezone.utc).time(),
             )
 
             self.UI.butDetails.clicked.connect(
@@ -497,7 +497,7 @@ class todoController:
             g.unregisterHandler(i[0], i[1])  # type:ignore
 
     # @+node:tbnorth.20170925093004.1: *3* todoController._date
-    def _date(self, d: str) -> Optional[datetime.date]:
+    def _date(self, d: str) -> dt.date | None:
         """_date - convert a string to a date
 
         :param str d: date to convert
@@ -505,9 +505,9 @@ class todoController:
         """
         if not d.strip():
             return None  # Was ''
-        return datetime.datetime.strptime(d.split('T')[0], "%Y-%m-%d").date()
+        return dt.datetime.strptime(d.split('T')[0], "%Y-%m-%d").date()  # noqa
 
-    def _time(self, d: str) -> Optional[datetime.time]:
+    def _time(self, d: str) -> dt.time | None:
         """_time - convert a string to a time
 
         :param str d: time to convert
@@ -515,7 +515,7 @@ class todoController:
         """
         if not d.strip():
             return None  # Was ''
-        return datetime.datetime.strptime(d, "%H:%M:%S.%f").time()
+        return dt.datetime.strptime(d, "%H:%M:%S.%f").time()  # noqa
 
     # @+node:tbrown.20090630144958.5319: *3* todoController.addPopupMenu
     def addPopupMenu(self, c: Cmdr, p: Position, menu: Menu) -> None:
@@ -609,7 +609,7 @@ class todoController:
 
     # @+node:tbrown.20090119215428.15: *3* todoController.loadAllIcons
     @redrawer
-    def loadAllIcons(self, tag: str = None, k: int = None, clear: bool = None) -> None:
+    def loadAllIcons(self, tag: str = '', k: int | None = None, clear: bool = False) -> None:
         """Load icons to represent cleo state"""
         for p in self.c.all_positions():
             self.loadIcons(p, clear=clear)
@@ -627,7 +627,7 @@ class todoController:
             iterations = ['progress', 'priority', 'duedate']
         if clear:
             iterations = []
-        today = datetime.date.today()
+        today = dt.datetime.now(tz=dt.timezone.utc)
         for which in iterations:
             if which == 'priority':
                 pri = self.getat(p.v, 'priority')
@@ -742,9 +742,7 @@ class todoController:
     def setat(self, node: VNode, attrib: Any, val: Any) -> None:
         "new attribute setter"
 
-        if attrib in self._datetime_fields and isinstance(
-            val, (datetime.date, datetime.time, datetime.datetime)
-        ):
+        if attrib in self._datetime_fields and isinstance(val, (dt.date, dt.time, dt.datetime)):
             val = val.isoformat()
 
         if 'annotate' in node.u and 'src_unl' in node.u['annotate']:
@@ -920,8 +918,8 @@ class todoController:
         if p is None:
             p = self.c.currentPosition()
         v = p.v
-        time_totl: str = None
-        time_done: str = None
+        time_totl: str | None = None
+        time_done: str | None = None
 
         # get values from children, if any
         for cn in p.children():
@@ -1188,15 +1186,13 @@ class todoController:
         return pa if pa != 24 else 0
 
     # @+node:tbrown.20110213153425.16373: *4* todoController.duekey
-    def duekey(
-        self, v: VNode, field: str = 'due'
-    ) -> tuple[bool, datetime.date, datetime.time, int]:
+    def duekey(self, v: VNode, field: str = 'due') -> tuple[bool, dt.date, dt.time, int]:
         """key function for sorting by due date/time"""
         # pylint: disable=boolean-datetime
         priority = self.getat(v, 'priority')
         done = priority not in self.todo_priorities
-        date_ = self.getat(v, field + 'date') or datetime.date(3000, 1, 1)
-        time_ = self.getat(v, field + 'time') or datetime.time(23, 59, 59)
+        date_ = self.getat(v, field + 'date') or dt.date(3000, 1, 1)
+        time_ = self.getat(v, field + 'time') or dt.time(23, 59, 59)
         return done, date_, time_, priority
 
     # @+node:tbrown.20110213153425.16377: *4* todoController.dueSort
@@ -1294,7 +1290,7 @@ class todoController:
 
         p = self.c.currentPosition()
         self.setat(p.v, 'priority', pri)
-        self.setat(p.v, 'prisetdate', str(datetime.date.today()))
+        self.setat(p.v, 'prisetdate', str(dt.datetime.now(tz=dt.timezone.utc)))
         self.loadIcons(p)
 
     # @+node:tbrown.20090119215428.48: *4* todoController.showDist
@@ -1323,7 +1319,7 @@ class todoController:
                 )
 
     # @+node:tbrown.20150605111428.1: *3* todoController.updateStyle
-    def updateStyle(self, tag: str = None, k: int = None) -> None:
+    def updateStyle(self, tag: str = '', k: int | None = None) -> None:
         """
         updateStyle - calling widget.setStyleSheet("/* */") is a trick to get Qt to
         update appearance on a widget styled depending on changes in attributes.
@@ -1351,7 +1347,7 @@ class todoController:
                 self._widget_to_style = None
 
     # @+node:tbrown.20090119215428.49: *3* todoController.updateUI
-    def updateUI(self, tag: str = None, k: dict = None) -> None:
+    def updateUI(self, tag: str = '', k: dict | None = None) -> None:
         if k and k['c'] != self.c:
             return  # wrong number
 
@@ -1382,14 +1378,14 @@ class todoController:
         self.ui.setNextWorkDate(self.getat(v, 'nextworkdate'))
         self.ui.setNextWorkTime(self.getat(v, 'nextworktime'))
         created = self.getat(v, 'created')
-        if created and isinstance(created, datetime.datetime) and created.year >= 1900:
+        if created and isinstance(created, dt.datetime) and created.year >= 1900:
             self.ui.UI.createdTxt.setText(created.strftime("%d %b %y"))
             self.ui.UI.createdTxt.setToolTip(created.strftime("Created %H:%M %d %b %Y"))
         else:
             # .strftime doesn't work here! This has has happened...
             try:
                 gdate = self.c.p.v.gnx.split('.')[1][:12]
-                created = datetime.datetime.strptime(gdate, '%Y%m%d%H%M')
+                created = dt.datetime.strptime(gdate, '%Y%m%d%H%M').replace(tzinfo=dt.timezone.utc)
                 if created.year < 1900:
                     created = None
             except Exception:
@@ -1403,9 +1399,10 @@ class todoController:
         # Update the label.
         h = self.c and self.c.p and self.c.p.h
         due = self.getat(v, 'duedate')
-        ago = (datetime.date.today() - created.date()).days if created else 0
+        now = dt.datetime.now(tz=dt.timezone.utc)
+        ago = (now - created).days if created else 0
         if due:
-            days = (due - datetime.date.today()).days
+            days = (due - now).days
             txt = f"{h}\nCreated {ago} days ago, due in {days}"
         else:
             txt = f"{h}\nCreated {ago} days ago"

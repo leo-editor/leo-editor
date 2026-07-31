@@ -58,7 +58,7 @@ class TestSyntax(LeoUnitTest):
                     n += 1
                     fn = g.shortFileName(z)
                     s, e = g.readFileIntoString(z)
-                    self.assertTrue(self.check_syntax(fn, s), msg=fn)
+                    self.assertTrue(self.check_syntax(fn, s or ''), msg=fn)
 
     # @-others
 

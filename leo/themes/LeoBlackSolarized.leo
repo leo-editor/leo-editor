@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
-<leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
+<!-- Created by Leo: https://leo-editor.github.io/leo-editor/leo_toc.html -->
+<leo_file xmlns:leo="https://leo-editor.github.io/leo-editor/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2"/>
 <globals/>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
 <v t="ekr.20180307010409.1"><vh>Read me</vh></v>
-<v t="ekr.20180309203321.1"><vh>Tests</vh>
+<v t="ekr.20180309203321.1" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580b0000007374725f6c656f5f706f7371035803000000312c33710473732e"><vh>Tests</vh>
 <v t="ekr.20180314052647.1"><vh>Syntax coloring template</vh>
 <v t="ekr.20180314052647.2"><vh>&lt;&lt; defined section &gt;&gt;</vh></v>
 </v>
@@ -38,6 +38,7 @@
 <v t="ekr.20180309203459.10"><vh>@color dark-base1 = #93a1a1</vh></v>
 <v t="ekr.20180309203459.11"><vh>@color dark-base2 = #eee8d5</vh></v>
 <v t="ekr.20180309203459.12"><vh>@color dark-base3 = #fdf6e3</vh></v>
+<v t="tom.20260722152034.1"><vh>@color dark-base-0-lighter = #495050</vh></v>
 <v t="ekr.20180309203459.13"><vh>@color solarized-black = #000005</vh></v>
 <v t="ekr.20180309203459.14"><vh>@color solarized-blue = #268bd2</vh></v>
 <v t="ekr.20180309203459.15"><vh>@color solarized-cyan = #2aa198</vh></v>
@@ -130,11 +131,13 @@
 <v t="ekr.20180307010409.106"><vh>Body &amp; other text</vh></v>
 <v t="ekr.20180307010409.107"><vh>Borders</vh></v>
 <v t="ekr.20180307010409.108"><vh>Buttons</vh></v>
+<v t="tom.20260722185803.1"><vh>Checkboxes</vh></v>
 <v t="ekr.20190531140959.1"><vh>Dock</vh></v>
 <v t="ekr.20180307010409.109"><vh>Log</vh></v>
 <v t="ekr.20180307010409.110"><vh>Menus</vh></v>
 <v t="ekr.20180307010409.111"><vh>Minibuffer &amp; label</vh></v>
 <v t="ekr.20180309203342.1"><vh>Plugins</vh></v>
+<v t="tom.20260722151705.1"><vh>Radio Buttons</vh></v>
 <v t="ekr.20180307010409.113"><vh>Scroll bars</vh></v>
 <v t="ekr.20180307010409.114"><vh>Splitters</vh></v>
 <v t="ekr.20180307010409.115"><vh>Status area</vh></v>
@@ -185,6 +188,7 @@
 </v>
 </v>
 <v t="ekr.20180307010409.55"></v>
+<v t="tom.20260722185907.1"><vh>change-all:-darker</vh></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20180306142738.3">@language rest
@@ -790,5 +794,56 @@ QLineEdit#editorLabel {
 <t tx="ekr.20201221105203.1"></t>
 <t tx="ekr.20201221105228.1"></t>
 <t tx="ekr.20201221105519.1"></t>
+<t tx="tom.20260722151705.1">QRadioButton::indicator {
+    width: 14px;
+    height: 14px;
+    border-radius: 7px;
+    background-color: @text-background;
+    border: 1px solid @text_foreground;
+}
+
+QRadioButton::indicator:checked {
+    background-color: @dark-base-0-lighter;
+    image: none;
+}
+
+QRadioButton::indicator:unchecked {
+    background-color: @text-background;
+}</t>
+<t tx="tom.20260722152034.1"></t>
+<t tx="tom.20260722185803.1">QCheckBox::indicator {
+    width: 14px;
+    height: 14px;
+    background-color: @text-background;
+    border: 1px solid @text_foreground;
+}
+
+QCheckBox::indicator:checked {
+    background-color: @dark-base-0-lighter;
+    image: none;
+}
+
+QCheckBox::indicator:unchecked {
+    background-color: @text-background;
+}</t>
+<t tx="tom.20260722185907.1">@nosearch
+# Ignore Case, Head, Body
+
+  ignore-case: True
+        regex: False
+   whole-word: False
+search string: -darker
+
+node: @color dark-base-0-lighter = #495050...
+head: matches: 1
+
+node: Checkboxes...
+body: matches: 1
+    line  9, col 206:     background-color: @dark-base-0-lighter;
+
+node: Radio Buttons...
+body: matches: 1
+    line 10, col 236:     background-color: @dark-base-0-lighter;
+</t>
 </tnodes>
 </leo_file>

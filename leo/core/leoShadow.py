@@ -31,7 +31,7 @@ Settings:
 from __future__ import annotations
 import difflib
 import os
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -57,9 +57,9 @@ class ShadowController:
         'old_sent_lines',
         'results',
         'sentinels',
+        'shadow_in_home_dir',
         'shadow_prefix',
         'shadow_subdir',
-        'shadow_in_home_dir',
         'trailing_sentinels',
         'verbatim_line',
     )
@@ -81,9 +81,9 @@ class ShadowController:
         self.encoding: str = c.config.default_derived_file_encoding
         self.errors = 0
         self.results: list[str] = []
-        self.shadow_subdir: str = None
-        self.shadow_prefix: str = None
-        self.shadow_in_home_dir: bool = None
+        self.shadow_subdir: str = ''
+        self.shadow_prefix: str = ''
+        self.shadow_in_home_dir: bool = False
         # Support for goto-line.
         self.reloadSettings()
 
@@ -97,14 +97,13 @@ class ShadowController:
 
     # @+node:ekr.20080711063656.1: *3* x.File utils
     # @+node:ekr.20080711063656.7: *4* x.baseDirName
-    def baseDirName(self) -> Optional[str]:
+    def baseDirName(self) -> str:
         c = self.c
-        filename = c.fileName()
-        if filename:
+        if filename := c.fileName():
             return g.os_path_dirname(g.finalize(filename))
         print('')
         self.error('Can not compute shadow path: .leo file has not been saved')
-        return None
+        return ''
 
     # @+node:ekr.20080711063656.4: *4* x.dirName and pathName
     def dirName(self, filename: str) -> str:
@@ -144,8 +143,7 @@ class ShadowController:
         Return True if theFile was changed.
         """
         x, c = self, self.c
-        exists = g.os_path_exists(fileName)
-        if exists:
+        if exists := g.os_path_exists(fileName):
             # Read the file.  Return if it is the same.
             s2, e = g.readFileIntoString(fileName)
             if s2 is None:
@@ -171,7 +169,7 @@ class ShadowController:
                 kind = 'wrote' if exists else 'created'
                 g.es(f"{kind:>6}: {fileName}")
             return True
-        except IOError:
+        except OSError:
             x.error(f"unexpected exception writing file: {fileName}")
             g.es_exception()
             return False
@@ -211,7 +209,7 @@ class ShadowController:
         new_public_lines: list[str],
         old_private_lines: list[str],
         marker: Marker,
-        p: Position = None,
+        p: Position | None = None,
     ) -> list[str]:
         # @+<< docstring >>
         # @+node:ekr.20150207044400.9: *5*  << docstring >>
@@ -432,6 +430,7 @@ class ShadowController:
         if copy and x.errors == 0 and at.errors == 0:
             s = ''.join(new_private_lines)
             x.replaceFileWithString(at.encoding, fn, s)
+            x.message(f"updated private {fn} from public {old_public_file}")
         return copy
 
     # @+node:bwmulder.20041231170726: *4* x.updatePublicAndPrivateFiles
@@ -442,11 +441,7 @@ class ShadowController:
         x = self
         if x.isSignificantPublicFile(fn):
             # Update the private shadow file from the public file.
-            written = x.propagate_changes(fn, shadow_fn)
-            if written:
-                x.message(f"updated private {shadow_fn} from public {fn}")
-        else:
-            pass  # Don't write *anything*.
+            x.propagate_changes(fn, shadow_fn)
 
     # @+node:ekr.20080708094444.89: *3* x.Utils...
     # @+node:ekr.20080708094444.85: *4* x.error & message & verbatim_error
@@ -470,7 +465,7 @@ class ShadowController:
         """Return the sentinel delimiter comment to be used for filename."""
         at, x = self.c.atFileCommands, self
         s = x.findLeoLine(lines)
-        ok, junk, start, end, junk = at.parseLeoSentinel(s)
+        ok, _, start, end, _ = at.parseLeoSentinel(s)
         if end:
             delims = '', start, end
         else:
@@ -490,8 +485,7 @@ class ShadowController:
     def markerFromFileName(self, filename: str) -> Marker:
         """Return the sentinel delimiter comment to be used for filename."""
         x = self
-        if not filename:
-            return None
+        assert filename
         root, ext = g.os_path_splitext(filename)
         if ext == '.tmp':
             root, ext = os.path.splitext(root)
@@ -567,7 +561,7 @@ class ShadowController:
             self.delim2 = delim2  # Block comment starting delim.
             self.delim3 = delim3  # Block comment ending delim.
             if not delim1 and not delim2:
-                self.delim1 = g.app.language_delims_dict.get('unknown_language')
+                self.delim1 = g.app.language_delims_dict.get('unknown_language', '')
 
         def __repr__(self) -> str:
             if self.delim1:

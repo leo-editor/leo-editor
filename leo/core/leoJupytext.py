@@ -12,7 +12,7 @@ from __future__ import annotations
 import io
 import os
 import textwrap
-from typing import Any, Tuple, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 # Defer importing jupytext until first use: jupytext imports pandoc at module
@@ -109,15 +109,13 @@ class JupytextManager:
 
         # Case 1: the first line is a non-trivial comment.
         if line1.startswith('#'):
-            comment = line1[1:].strip()
-            if comment:
+            if comment := line1[1:].strip():
                 return shorten(comment)
 
         # Case 2: The first line contains a non-trivial comment.
         i = line1.find('#')
         if i > -1:
-            comment = line1[i + 1 :].strip()
-            if comment:
+            if comment := line1[i + 1 :].strip():
                 return shorten(comment)
 
         # Case 3: Return the entire shortened python line.
@@ -220,15 +218,14 @@ class JupytextManager:
         from jupytext.config import find_jupytext_configuration_file
         import tomllib
 
-        config_file = find_jupytext_configuration_file(os.getcwd())
-        if config_file:
+        if config_file := find_jupytext_configuration_file(os.getcwd()):
             with open(config_file, 'rb') as f:
                 data = tomllib.load(f)
                 g.printObj(data, tag=f"jupytext: contents of {config_file!r}")
         return config_file
 
     # @+node:ekr.20241023155136.1: *3* jtm.read
-    def read(self, c: Cmdr, p: Position) -> Tuple[str, str]:  # pragma: no cover
+    def read(self, c: Cmdr, p: Position) -> tuple[str, str]:  # pragma: no cover
         """
         Called from at.readOneAtJupytextNode.
         p must be an @jupytext node describing an .ipynb file.
@@ -248,6 +245,7 @@ class JupytextManager:
         # jupytext.read can crash, so be safe.
         fmt = c.config.getString('jupytext-fmt') or 'py:percent'
         try:
+            assert jupytext
             notebook = jupytext.read(path, fmt=fmt)
             with io.StringIO() as f:
                 # Use jupytext.write, *not* jupytext.writes.
@@ -296,6 +294,7 @@ class JupytextManager:
         # Write the .ipynb file.
         # Write the paired .py file, only if fmt specifies pairing.
         # See https://jupytext.readthedocs.io/en/latest/config.html
+        assert jupytext
         fmt = c.config.getString('jupytext-fmt') or 'py:percent'
         notebook = jupytext.reads(contents, fmt=fmt)
         jupytext.write(notebook, path, fmt=fmt)

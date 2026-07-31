@@ -238,8 +238,7 @@ def init() -> bool:
     if g.app.gui is None:
         g.app.createQtGui(__file__)
     # This plugin is now gui-independent.
-    ok = bool(g.app.gui) and g.app.gui.guiName() in ('qt', 'nullGui')
-    if ok:
+    if ok := bool(g.app.gui) and g.app.gui.guiName() in ('qt', 'nullGui'):
         sc = 'ScriptingControllerClass'
         if (
             not hasattr(g.app.gui, sc)
@@ -256,8 +255,7 @@ def init() -> bool:
 # @+node:ekr.20060328125248.5: *3* mod_scripting.onCreate
 def onCreate(tag: str, keys: KWargs) -> None:
     """Handle the onCreate event in the mod_scripting plugin."""
-    c = keys.get('c')
-    if c:
+    if c := keys.get('c'):
         sc = g.app.gui.ScriptingControllerClass(c)
         c.theScriptingController = sc
         sc.createAllButtons()
@@ -311,8 +309,7 @@ class AtButtonCallback:
     # @+node:ekr.20170203043042.1: *3* AtButtonCallback.execute_script & helper
     def execute_script(self) -> Value:
         """Execute the script associated with this button."""
-        script = self.find_script()
-        if script:
+        if script := self.find_script():
             return self.controller.executeScriptFromButton(
                 b=self.b,
                 buttonText=self.buttonText,
@@ -405,9 +402,8 @@ class ScriptingController:
         p = c.p
         h = p.h
         buttonText = self.getButtonText(h)
-        shortcut = self.getShortcut(h)
         statusLine = "Run Script: %s" % buttonText
-        if shortcut:
+        if shortcut := self.getShortcut(h):
             statusLine = statusLine + " @key=" + shortcut
         self.createLocalAtButtonHelper(p, h, statusLine, kind='script-button', verbose=True)
         c.bodyWantsFocus()
@@ -417,8 +413,7 @@ class ScriptingController:
         """Called when user presses the 'debug-script' button or executes the debug-script command."""
         c = self.c
         p = c.p
-        script = g.getScript(c, p, useSelectedText=True, useSentinels=False)
-        if script:
+        if script := g.getScript(c, p, useSelectedText=True, useSentinels=False):
             # @+<< set debugging if debugger is active >>
             # @+node:ekr.20060523084441: *5* << set debugging if debugger is active >>
             g.trace(self.debuggerKind)
@@ -601,8 +596,8 @@ class ScriptingController:
         text: str,
         command: Callable,
         statusLine: str,
-        bg: str = None,
-        kind: str = None,
+        bg: str = '',
+        kind: str = '',
     ) -> QtWidgets.QButton:
         """
         Create one icon button.
@@ -665,7 +660,7 @@ class ScriptingController:
         buttonText: str,
         p: Position,
         script: str,
-        script_gnx: str = None,
+        script_gnx: str = '',
     ) -> Value:
         """Execute an @button script in p.b or script."""
         c = self.c
@@ -704,8 +699,8 @@ class ScriptingController:
                 return c, p2
         # Fix bug 74: problems with @button if defined in myLeoSettings.leo.
         for f in (c.openMyLeoSettings, c.openLeoSettings):
-            c2 = f()  # Open the settings file.
-            if c2:
+            if c2 := f():
+                # Open the settings file.
                 for p2 in c2.all_positions():
                     if p2.gnx == gnx:
                         return c2, p2
@@ -750,8 +745,8 @@ class ScriptingController:
         # Fix bug #74: problems with @button if defined in myLeoSettings.leo
         docstring = g.getDocString(p.b).strip()
         statusLine = docstring or 'Global script button'
-        shortcut = self.getShortcut(p.h)  # Get the shortcut from the @key field in the headline.
-        if shortcut:
+        if shortcut := self.getShortcut(p.h):
+            # Get the shortcut from the @key field in the headline.
             statusLine = '%s = %s' % (statusLine.rstrip(), shortcut)
 
         # We must define the callback *after* defining b,
@@ -854,10 +849,9 @@ class ScriptingController:
         not appear in the status line nor the button name.
         """
         h = p.h
-        shortcut = self.getShortcut(h)
         docstring = g.getDocString(p.b).strip()
         statusLine = docstring if docstring else 'Local script button'
-        if shortcut:
+        if shortcut := self.getShortcut(h):
             statusLine = '%s = %s' % (statusLine, shortcut)
         g.app.config.atLocalButtonsList.append(p.copy())
         # This helper is also called by the script-button callback.
@@ -1148,7 +1142,7 @@ class ScriptingController:
         h: str,
         pane: str,
         source_c: Cmdr = None,
-        tag: str = None,
+        tag: str = '',
     ) -> None:
         """Register @button <name> and @rclick <name> and <name>"""
         c, k = self.c, self.c.k

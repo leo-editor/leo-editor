@@ -9,11 +9,11 @@ from collections.abc import Callable
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass
+from leo.plugins.qt_text import QTextMixin
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
-    from leo.plugins.qt_text import QTextMixin
 # @-<< rectangleCommands imports & annotations >>
 
 
@@ -32,7 +32,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         # pylint: disable=super-init-not-called
         self.c = c
         self.theKillRectangle: list[str] = []  # Do not re-init this!
-        self.stringRect: tuple[int, int, int, int] = None
+        self.stringRect: tuple[int, int, int, int]
         self.commandsDict = {
             'c': ('clear-rectangle', self.clearRectangle),
             'd': ('delete-rectangle', self.deleteRectangle),
@@ -42,7 +42,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
             't': ('string-rectangle', self.stringRectangle),
             'y': ('yank-rectangle', self.yankRectangle),
         }
-        self.w: QTextMixin = None
+        self.w: QTextMixin
 
     # @+node:ekr.20150514043714.13: *3* RectangleCommandsClass.getRectanglePoints
     def getRectanglePoints(self, w: QTextMixin) -> tuple[int, int, int, int]:
@@ -58,7 +58,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
     # @+node:ekr.20150514063305.453: *3* RectangleCommandsClass.Entries
     # @+node:ekr.20150514063305.454: *4* RectangleCommandsClass.clearRectangle
     @cmd('rectangle-clear')
-    def clearRectangle(self, event: LeoKeyEvent) -> None:
+    def clearRectangle(self, event: LeoKeyEvent | None = None) -> None:
         """Clear the rectangle defined by the start and end of selected text."""
         c = self.c
         w = event.w if event else c.frame.body.wrapper
@@ -82,7 +82,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.455: *4* RectangleCommandsClass.closeRectangle
     @cmd('rectangle-close')
-    def closeRectangle(self, event: LeoKeyEvent) -> None:
+    def closeRectangle(self, event: LeoKeyEvent | None = None) -> None:
         """Delete the rectangle if it contains nothing but whitespace.."""
         c = self.c
         w = event.w if event else c.frame.body.wrapper
@@ -111,7 +111,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.456: *4* RectangleCommandsClass.deleteRectangle
     @cmd('rectangle-delete')
-    def deleteRectangle(self, event: LeoKeyEvent) -> None:
+    def deleteRectangle(self, event: LeoKeyEvent | None = None) -> None:
         """Delete the rectangle defined by the start and end of selected text."""
         c = self.c
         w = event.w if event else c.frame.body.wrapper
@@ -134,7 +134,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.457: *4* RectangleCommandsClass.killRectangle
     @cmd('rectangle-kill')
-    def killRectangle(self, event: LeoKeyEvent) -> None:
+    def killRectangle(self, event: LeoKeyEvent | None = None) -> None:
         """Kill the rectangle defined by the start and end of selected text."""
         c = self.c
         w = event.w if event else c.frame.body.wrapper
@@ -161,7 +161,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.458: *4* RectangleCommandsClass.openRectangle
     @cmd('rectangle-open')
-    def openRectangle(self, event: LeoKeyEvent) -> None:
+    def openRectangle(self, event: LeoKeyEvent | None = None) -> None:
         """
         Insert blanks in the rectangle defined by the start and end of selected
         text. This pushes the previous contents of the rectangle rightward.
@@ -188,7 +188,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.459: *4* RectangleCommandsClass.stringRectangle
     @cmd('rectangle-string')
-    def stringRectangle(self, event: LeoKeyEvent) -> None:
+    def stringRectangle(self, event: LeoKeyEvent | None = None) -> None:
         """
         Prompt for a string, then replace the contents of a rectangle
         with a string on each line.
@@ -206,7 +206,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
             k.setLabelBlue('String rectangle: ')
             k.get1Arg(event, handler=self.stringRectangle1)
 
-    def stringRectangle1(self, event: LeoKeyEvent) -> None:
+    def stringRectangle1(self, event: LeoKeyEvent | None = None) -> None:
         c, k = self.c, self.c.k
         k.clearState()
         k.resetLabel()
@@ -230,7 +230,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
 
     # @+node:ekr.20150514063305.460: *4* RectangleCommandsClass.yankRectangle
     @cmd('rectangle-yank')
-    def yankRectangle(self, event: LeoKeyEvent) -> None:
+    def yankRectangle(self, event: LeoKeyEvent | None = None) -> None:
         """Yank into the rectangle defined by the start and end of selected text."""
         c, k = self.c, self.c.k
         w = event.w if event else c.frame.body.wrapper

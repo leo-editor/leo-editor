@@ -8,7 +8,7 @@ import getpass
 import os
 import subprocess
 import tempfile
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -72,7 +72,7 @@ class ExternalFilesController:
 
     # @+others
     # @+node:ekr.20150404083533.1: *3* efc.ctor
-    def __init__(self, c: Cmdr = None) -> None:
+    def __init__(self, c: Cmdr | None = None) -> None:
         """Ctor for ExternalFiles class."""
         self.checksum_d: dict[str, str] = {}  # Keys are full paths, values are file checksums.
         # For efc.on_idle.
@@ -92,7 +92,7 @@ class ExternalFilesController:
         # DO NOT alter directly, use set_time(path) and
         # get_time(path), see set_time() for notes.
         self._time_d: dict[str, float] = {}
-        self.yesno_all_answer: str = None  # answer, 'yes-all', or 'no-all'
+        self.yesno_all_answer: str = ''  # answer, 'yes-all', or 'no-all'
         g.app.idleTimeManager.add_callback(self.on_idle)
 
     # @+node:ekr.20150405105938.1: *3* efc.entries
@@ -122,7 +122,7 @@ class ExternalFilesController:
         self.files = [z for z in self.files if z.path not in paths]
 
     # @+node:ekr.20150407141838.1: *4* efc.find_path_for_node (called from vim.py)
-    def find_path_for_node(self, p: Position) -> Optional[str]:
+    def find_path_for_node(self, p: Position) -> str | None:
         """
         Find the path corresponding to node p.
         called from vim.py.
@@ -143,16 +143,15 @@ class ExternalFilesController:
         Check for changed open-with files and all external files in commanders
         for which @bool check_for_changed_external_file is True.
         """
-        #
+
         # #1240: Note: The "asking" dialog prevents idle time.
-        #
+
         if not g.app or g.app.killed or g.app.restarting:  # #1240.
             return
         self.on_idle_count += 1
         # New in Leo 5.7: always handle delayed requests.
         if g.app.windowList:
-            c = g.app.log and g.app.log.c
-            if c:
+            if c := g.app.log and g.app.log.c:
                 c.outerUpdate()
         # Fix #262: Improve performance when @bool check-for-changed-external-files is True.
         if self.unchecked_files:
@@ -186,6 +185,7 @@ class ExternalFilesController:
         # #1134: Nested @<file> nodes are no longer valid, but this will do no harm.
         changed = False
         state = 'no'
+        changed_roots: set[str] = set()
         for p in c.all_unique_positions():
             if not p.isAnyAtFileNode():
                 continue
@@ -215,6 +215,7 @@ class ExternalFilesController:
                         p2.v.setDirty()
                 # #4565: set all ancestor file nodes dirty and redraw.
                 p.v.setDirty()
+                changed_roots.add(p.h)
                 to_do_set: set[VNode] = set()
                 for p2 in c.all_positions():
                     if p2.v.isDirty():
@@ -224,10 +225,6 @@ class ExternalFilesController:
             return
         # #4570: Write all update messages here, and only here.
         if not g.unitTesting:
-            changed_roots: set[str] = set()
-            for p2 in c.all_positions():
-                if p2.isAnyAtFileNode() and p2.isDirty():
-                    changed_roots.add(p2.h)
             for s in sorted(list(changed_roots)):
                 g.es_print('update:', s, color='blue')
         c.redraw()
@@ -281,7 +278,7 @@ class ExternalFilesController:
         c, p = ef.c, ef.p.copy()
         g.blue(f"updated {p.h}")
         s, e = g.readFileIntoString(ef.path)
-        p.b = s
+        p.b = s or ''
         if c.config.getBool('open-with-goto-node-on-update'):
             c.selectPosition(p)
         if c.config.getBool('open-with-save-on-update'):
@@ -305,9 +302,9 @@ class ExternalFilesController:
             'shortcut': menu shortcut (used only by the menu code).
         """
         try:
-            ext = d.get('ext')
+            ext = d.get('ext', '')
             if not g.doHook('openwith1', c=c, p=c.p, v=c.p.v, d=d):
-                root: Position = d.get('p')
+                root = d.get('p')
                 if root:
                     # Open the external file itself.
                     path = c.fullPath(root)  # #1914.
@@ -316,8 +313,7 @@ class ExternalFilesController:
                     # Open a temp file containing just the node.
                     p = c.p
                     ext = self.compute_ext(c, p, ext)
-                    path = self.compute_temp_file_path(c, p, ext)
-                    if path:
+                    if path := self.compute_temp_file_path(c, p, ext):
                         self.remove_temp_file(p, path)
                         self.create_temp_file(c, ext, p)
                         self.open_file_in_external_editor(c, d, path)
@@ -341,8 +337,8 @@ class ExternalFilesController:
                     ext = g.os_path_splitext(fn)[1]
                     break
         if not ext:
-            language = c.getLanguage(p)
-            ext = g.app.language_extension_dict.get(language)
+            language = c.getLanguage(p) or ''
+            ext = g.app.language_extension_dict.get(language, '')
         if not ext:
             ext = '.txt'
         if ext[0] != '.':
@@ -408,7 +404,7 @@ class ExternalFilesController:
         return path
 
     # @+node:ekr.20100203050306.5937: *5* efc.create_temp_file
-    def create_temp_file(self, c: Cmdr, ext: str, p: Position) -> str:
+    def create_temp_file(self, c: Cmdr, ext: str, p: Position) -> str | None:
         """
         Create the file used by open-with if necessary.
         Add the corresponding ExternalFile instance to self.files
@@ -425,7 +421,7 @@ class ExternalFilesController:
                 with open(path, 'wb') as f:
                     f.write(s)
                     f.flush()
-            except IOError:
+            except OSError:
                 g.error(f"exception creating temp file: {path}")
                 g.es_exception()
                 return None
@@ -460,21 +456,18 @@ class ExternalFilesController:
         testing = testing or g.unitTesting
         arg_tuple: list[str] = d.get('args', [])
         arg = ' '.join(arg_tuple)
-        kind: Callable = d.get('kind')
+        kind: Callable | None = d.get('kind')
         try:
             # All of these must be supported because they
             # could exist in @open-with nodes.
-            command = '<no command>'
             if kind in ('os.system', 'os.startfile'):
                 c_arg = self.join(arg, fn)
+                command = f"{kind} {c_arg}"
                 if not testing:
-                    try:
-                        subprocess.Popen(c_arg)
-                    except OSError:
-                        g.es_print('c_arg', repr(c_arg))
-                        g.es_exception()
+                    subprocess.Popen(c_arg)
             elif kind == 'exec':
-                g.es_print('open-with exec no longer valid.')
+                command = 'open-with exec no longer valid.'
+                g.es_print(command)
             elif kind == 'os.spawnl':
                 filename = g.os_path_basename(arg)
                 command = f"os.spawnl({arg},{filename},{fn})"
@@ -489,16 +482,15 @@ class ExternalFilesController:
                 vtuple.append(fn)
                 command = f"os.spawnv({vtuple})"
                 if not testing:
-                    os.spawnv(os.P_NOWAIT, arg[0], vtuple)  # ???
+                    os.spawnv(os.P_NOWAIT, arg[0], vtuple)
             elif kind == 'subprocess.Popen':
-                c_arg = self.join(arg, fn)
-                command = f"subprocess.Popen({c_arg})"
+                popen_arg: list | str = (
+                    self.join(arg, fn) if os.name == 'nt' else
+                    self.make_popen_args(arg_tuple, fn)
+                )  # fmt: skip
+                command = f"subprocess.Popen({popen_arg})"
                 if not testing:
-                    try:
-                        subprocess.Popen(c_arg)
-                    except OSError:
-                        g.es_print('c_arg', repr(c_arg))
-                        g.es_exception()
+                    subprocess.Popen(popen_arg)
             elif callable(kind):
                 # Invoke openWith like this:
                 # c.openWith(data=[func,None,None])
@@ -507,14 +499,13 @@ class ExternalFilesController:
                 if not testing:
                     kind(fn)
             else:
-                command = 'bad command:' + str(kind)
+                command = f"bad command: {kind}"
                 if not testing:
                     g.trace(command)
-            return command  # for unit testing.
         except Exception:
-            g.es('exception executing open-with command:', command)
+            g.es(f"exception executing open-with command: {command=}")
             g.es_exception()
-            return f"oops: {command}"
+        return command  # for unit testing.
 
     # @+node:ekr.20190123051253.1: *5* efc.remove_temp_file
     def remove_temp_file(self, p: Position, path: str) -> None:
@@ -548,7 +539,7 @@ class ExternalFilesController:
     # @+node:ekr.20150405110219.1: *3* efc.utilities
 
     # @+node:ekr.20150405200212.1: *4* efc.ask
-    def ask(self, c: Cmdr, path: str, p: Position = None) -> str:
+    def ask(self, c: Cmdr, path: str, p: Position | None = None) -> str:
         """
         Ask user whether to overwrite an @<file> tree.
 
@@ -620,7 +611,7 @@ class ExternalFilesController:
         return g.os_path_getmtime(g.os_path_realpath(path))
 
     # @+node:ekr.20150405122428.1: *4* efc.get_time
-    def get_time(self, path: str) -> float:
+    def get_time(self, path: str) -> float | None:
         """
         return timestamp stored for the given path
 
@@ -679,8 +670,20 @@ class ExternalFilesController:
         """Return s1 + ' ' + s2"""
         return f"{s1} {s2}"
 
+    # @+node:axk.20260706115344.1: *4* efc.make_popen_args
+    def make_popen_args(self, args: list[str], fn: str) -> list[str]:
+        """Return argv suitable for subprocess.Popen on posix platforms."""
+        return [self.unquote_arg(z) for z in args] + [fn]
+
+    # @+node:axk.20260706115344.2: *4* efc.unquote_arg
+    def unquote_arg(self, s: str) -> str:
+        """Strip matching quotes surrounding an @openwith arg."""
+        if len(s) >= 2 and s[0] == s[-1] and s[0] in '"\'':
+            return s[1:-1]
+        return s
+
     # @+node:tbrown.20150904102518.1: *4* efc.set_time
-    def set_time(self, path: str, new_time: float = None) -> None:
+    def set_time(self, path: str, new_time: float | None = None) -> None:
         """
         Implements c.setTimeStamp.
 
