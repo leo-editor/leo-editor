@@ -21,3 +21,20 @@ jobs:
           cache: pip
       - run: pip install ruff
       - run: ruff check leo
+
+  # Informational only: ty (https://github.com/astral-sh/ty) is an
+  # actively-developed, much faster alternative to mypy, still in beta.
+  # It's noticeably stricter than our current mypy config in some areas
+  # (see ty.toml), so this job is not allowed to fail the build -- it's
+  # here so its findings show up in PR logs while we evaluate it.
+  ty:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install ty PyQt6 PyQt6-QScintilla
+      - run: ty check --python "$(python -c 'import sys; print(sys.prefix)')" leo
