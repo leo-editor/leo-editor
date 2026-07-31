@@ -1606,7 +1606,7 @@ class LeoQtGui(leoGui.LeoGui):
 
     # @+node:ekr.20140825042850.18411: *3* LeoQtGui: Utils
     # @+node:ekr.20240519114809.1: *4* LeoQtGui._self_and_subtree
-    def _self_and_subtree(self, qt_obj: QObject) -> Generator:
+    def _self_and_subtree(self, qt_obj: QObject) -> Generator[Any, None, None]:
         """Yield w and all of w's descendants."""
         if not qt_obj:
             return

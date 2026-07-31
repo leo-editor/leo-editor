@@ -5524,7 +5524,7 @@ class LeoServer:
                 raise ServerError(f"{tag}: round-trip failed: ap: {ap!r}, p: {p!r}, p2: {p2!r}")
 
     # @+node:felix.20210625002950.1: *4* server._yieldAllRootChildren
-    def _yieldAllRootChildren(self, c: Cmdr) -> Generator:
+    def _yieldAllRootChildren(self, c: Cmdr) -> Generator[Position, None, None]:
         """Return all root children P nodes"""
         p = c.rootPosition()
         while p:

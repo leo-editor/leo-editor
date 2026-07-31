@@ -232,7 +232,7 @@ class TagController:
         return nodelist
 
     # @+node:vitalije.20170811150914.1: *4* tag_c.get_tagged_gnxes
-    def get_tagged_gnxes(self, tag: str) -> Generator:
+    def get_tagged_gnxes(self, tag: str) -> Generator[str, None, None]:
         c = self.c
         tag = tag.replace('*', '.*')
         regex = re.compile(tag)

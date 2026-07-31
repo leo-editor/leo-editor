@@ -585,7 +585,7 @@ class Importer:
         """Move blank lines from the start of nodes to the end of previous sibling."""
         self.move_blank_lines_helper(parent.children())
 
-    def move_blank_lines_helper(self, children: Generator) -> None:
+    def move_blank_lines_helper(self, children: Generator[Position, None, None]) -> None:
         for child in children:
             self.move_one_blank_line(child)
             self.move_blank_lines_helper(child.children())

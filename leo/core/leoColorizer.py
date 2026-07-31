@@ -3525,7 +3525,9 @@ class PygmentsColorizer(JEditColorizer):
         self.tot_time += time.process_time() - t1
 
     # @+node:ekr.20190323045655.1: *4* pyg_c.at_color_callback
-    def at_color_callback(self, lexer: object, match: re.Match) -> Generator:
+    def at_color_callback(
+        self, lexer: object, match: re.Match
+    ) -> Generator[tuple[int, str, str], None, None]:
         from pygments.token import Name, Text
 
         kind = match.group(0)
@@ -3536,7 +3538,9 @@ class PygmentsColorizer(JEditColorizer):
             yield match.start(), Text, kind
 
     # @+node:ekr.20190323045735.1: *4* pyg_c.at_language_callback
-    def at_language_callback(self, lexer: object, match: re.Match) -> Generator:
+    def at_language_callback(
+        self, lexer: object, match: re.Match
+    ) -> Generator[tuple[int, str, str], None, None]:
         """Colorize the name only if the language has a lexer."""
         from pygments.token import Name
 
@@ -3600,7 +3604,9 @@ class PygmentsColorizer(JEditColorizer):
             return lexer
 
     # @+node:ekr.20190322133358.1: *4* pyg_c.section_ref_callback
-    def section_ref_callback(self, lexer: Lexer, match: re.Match) -> Generator:
+    def section_ref_callback(
+        self, lexer: Lexer, match: re.Match
+    ) -> Generator[tuple[int, str, str], None, None]:
         """pygments callback for section references."""
         c = self.c
         from pygments.token import Comment, Name
@@ -3841,7 +3847,11 @@ if pygments:
     # Copyright (c) Jupyter Development Team.
     # Distributed under the terms of the Modified BSD License.
 
-    def get_tokens_unprocessed(self: Any, text: str, stack: Sequence[str] = ('root',)) -> Generator:
+    def get_tokens_unprocessed(
+        self: Any,
+        text: str,
+        stack: Sequence[str] = ('root',),
+    ) -> Generator[tuple[int, str, str], None, None]:
         """
         Split ``text`` into (tokentype, text) pairs.
 
