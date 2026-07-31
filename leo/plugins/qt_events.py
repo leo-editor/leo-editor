@@ -2,8 +2,22 @@
 # @+node:ekr.20140907103315.18766: * @file ../plugins/qt_events.py
 """Leo's Qt event handling code."""
 
+# @+<< qt_events.py: imports & annotations >>
+# @+node:ekr.20260731163956.1: ** << qt_events.py: imports & annotations >>
 from __future__ import annotations
 
+import sys
+from typing import Any, TYPE_CHECKING
+from leo.core import leoGlobals as g
+from leo.core import leoGui
+from leo.core.leoQt import QtCore, QtGui, QtWidgets
+from leo.core.leoQt import Key, KeyboardModifier, Type
+
+if TYPE_CHECKING:
+    from leo.core.leoCommands import Commands as Cmdr
+    from leo.core.leoGui import LeoKeyEvent
+    from QtCore import QKeyEvent
+# @-<< qt_events.py: imports & annotations >>
 # @+<< about internal bindings >>
 # @+node:ekr.20110605121601.18538: ** << about internal bindings >>
 # @@language rest
@@ -36,16 +50,6 @@ from __future__ import annotations
 # with Tk's key-event specifiers). It is also, I think, the least confusing set of
 # rules.
 # @-<< about internal bindings >>
-import sys
-from typing import Any, TYPE_CHECKING
-from leo.core import leoGlobals as g
-from leo.core import leoGui
-from leo.core.leoQt import QtCore, QtGui, QtWidgets
-from leo.core.leoQt import Key, KeyboardModifier, Type
-
-if TYPE_CHECKING:
-    from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent
 
 
 # @+others
@@ -416,7 +420,7 @@ class LeoQtEventFilter(QtCore.QObject):
 
     # @+node:ekr.20140907103315.18767: *3* LeoQtEventFilter: Tracing
     # @+node:ekr.20190922075339.1: *4* LeoQtEventFilter.traceKeys
-    def traceKeys(self, obj: Any, event: LeoKeyEvent) -> None:
+    def traceKeys(self, obj: Any, event: QKeyEvent) -> None:
         if g.unitTesting:
             return
         e = QtCore.QEvent
@@ -426,7 +430,7 @@ class LeoQtEventFilter(QtCore.QObject):
             e.Type.Shortcut: 'shortcut',  # 117
             e.Type.ShortcutOverride: 'shortcut-override',  # 51
         }
-        if kind := key_events.get(event.type()):  # type:ignore
+        if kind := key_events.get(event.type()):
             mods = ','.join(self.qtMods(event))
             g.trace(f"{kind:>20}: {mods:>7} {event.text()!r}")
 
