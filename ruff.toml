@@ -12,14 +12,6 @@
 [lint]
 ignore = [
 
-    # Deprecated functions. To do in a separate PR.
-    
-    ### "DTZ003",   # `datetime.datetime.utcnow()` used
-    ### "DTZ005",   # `datetime.datetime.now()` called without a `tz` argument
-    ### "DTZ006",   # `datetime.datetime.fromtimestamp()` called without a `tz` argument
-    ### "DTZ007",   # Naive datetime constructed using `datetime.datetime.strptime()` without %z
-    ### "DTZ011",   # `datetime.date.today()` used
-
     # New suppressions: Keep these for now.
     
     "B008",     # Do not perform function call in argument defaults
