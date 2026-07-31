@@ -427,7 +427,7 @@ class LeoQtEventFilter(QtCore.QObject):
             e.Type.Shortcut: 'shortcut',  # 117
             e.Type.ShortcutOverride: 'shortcut-override',  # 51
         }
-        if kind := key_events.get(event.type()):  # type:ignore
+        if kind := key_events.get(event.type()):
             mods = ','.join(self.qtMods(event))
             g.trace(f"{kind:>20}: {mods:>7} {event.text()!r}")
 
