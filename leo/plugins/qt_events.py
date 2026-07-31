@@ -46,6 +46,7 @@ from leo.core.leoQt import Key, KeyboardModifier, Type
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
+    from QtCore import QKeyEvent
 
 
 # @+others
@@ -416,7 +417,7 @@ class LeoQtEventFilter(QtCore.QObject):
 
     # @+node:ekr.20140907103315.18767: *3* LeoQtEventFilter: Tracing
     # @+node:ekr.20190922075339.1: *4* LeoQtEventFilter.traceKeys
-    def traceKeys(self, obj: Any, event: LeoKeyEvent) -> None:
+    def traceKeys(self, obj: Any, event: QKeyEvent) -> None:
         if g.unitTesting:
             return
         e = QtCore.QEvent
