@@ -205,6 +205,7 @@ def should_beautify(p: Position) -> bool:
                 return False
             # The ambiguous node has no effect.
             # Look up the tree.
+            pass  # noqa
         elif beautify:
             return True
         if no_beautify:
