@@ -5,13 +5,13 @@
 # @+<< leoNodes imports & annotations >>
 # @+node:ekr.20060904165452.1: ** << leoNodes imports & annotations >>
 from __future__ import annotations
-from collections.abc import Callable
+from collections.abc import Callable, Generator, Iterable
 import copy
 import os
 import re
 import time
 import uuid
-from typing import Any, Generator, Iterable, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import signal_manager
 
@@ -952,7 +952,7 @@ class Position:
             if n == 0:
                 parent_v = v.context.hiddenRootNode
             else:
-                parent_v, junk = p.stack[n - 1]
+                parent_v, _ = p.stack[n - 1]
             if len(parent_v.children) > childIndex + 1:
                 # v has a next sibling.
                 return True
@@ -1370,11 +1370,11 @@ class Position:
         assert p.v
         parent_v = p.v.context.hiddenRootNode
         assert parent_v, g.callers()
-        #
+
         # Make p the root position.
         p.stack = []
         p._childIndex = 0
-        #
+
         # Make p.v the first child of parent_v.
         p.v._addLink(0, parent_v)
         return p
@@ -1387,7 +1387,7 @@ class Position:
         if not p.v or p.v == c.hiddenRootNode:
             return c.hiddenRootNode
         if data := p.stack and p.stack[-1]:
-            v, junk = data
+            v, _ = data
             return v
         return c.hiddenRootNode
 
@@ -1881,7 +1881,7 @@ class Position:
     def moveToRoot(self) -> Position:
         """Move self to the root position."""
         p = self  # Do NOT copy the position!
-        #
+
         # #1631. The old root can not possibly be affected by unlinking p.
         p._unlink()
         p._linkAsRoot()
@@ -2270,14 +2270,23 @@ position = Position  # compatibility.
 # @+node:ekr.20031218072017.3341: ** class VNode
 class VNode:
     __slots__ = [
-        '_bodyString', '_headString', '_p_changed',
-        'children', 'fileIndex', 'iconVal', 'parents', 'statusBits',
+        '_bodyString',
+        '_headString',
+        '_p_changed',
+        'at_read',            # Injected by read code.
+        'children',
+        'context',            # Not written to any file.
+        'expandedPositions',  # Not written to any file.
+        'fileIndex',
+        'iconVal',
+        'insertSpot',         # Not written to any file.
+        'parents',
+        'scrollBarSpot',      # Not written to any file.
+        'selectionLength',    # Not written to any file.
+        'selectionStart',     # Not written to any file.
+        'statusBits',
+        'tempAttributes',     # Injected by read code.
         'unknownAttributes',
-        # Injected by read code.
-        'at_read', 'tempAttributes',
-        # Not written to any file.
-        'context', 'expandedPositions', 'insertSpot',
-        'scrollBarSpot', 'selectionLength', 'selectionStart',
     ]  # fmt: skip
     # @+<< VNode constants >>
     # @+node:ekr.20031218072017.951: *3* << VNode constants >>
@@ -2339,7 +2348,7 @@ class VNode:
 
         # To make VNode's independent of Leo's core,
         # wrap all calls to the VNode ctor::
-        #
+
         #   def allocate_vnode(c,gnx):
         #       v = VNode(c)
         #       g.app.nodeIndices.new_vnode_helper(c,gnx,v)

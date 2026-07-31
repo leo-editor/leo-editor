@@ -653,14 +653,14 @@ class ViewRenderedController(QtWidgets.QWidget):
         super().__init__(parent)
         self.create_pane(parent)
         # Ivars set by reloadSettings.
-        self.auto_create: bool = None
-        self.background_color: str = None
-        self.keep_open: bool = None
-        self.katex_template: str = None
-        self.latex_template: str = None
-        self.mathjax_template: str = None
-        self.typst_template: str = None
-        self.pdf_zoom: int = None
+        self.auto_create: bool = False
+        self.background_color: str = ''
+        self.keep_open: bool = False
+        self.katex_template: str = ''
+        self.latex_template: str = ''
+        self.mathjax_template: str = ''
+        self.typst_template: str = ''
+        self.pdf_zoom: int = 0
         # Widgets managed by destroy_widgets.
         self.browser: QWidget = None
         self.gs: QGraphicsScene = None
@@ -1193,7 +1193,10 @@ class ViewRenderedController(QtWidgets.QWidget):
         """Display the markdown text in `s` in the VR pane."""
         c = self.c
         p = c.p
-        s = s.strip().strip('"""').strip("'''").strip()
+        for prefix in ('"""', "'''"):  # PR #4827
+            if s.startswith(prefix):
+                s = s.removeprefix(prefix).removesuffix(prefix)
+        s = s.strip()
         isHtml = s.startswith('<') and not s.startswith('<<')
         # Do this regardless of whether we show the widget or not.
         w = self.get_base_text_widget()
@@ -1423,7 +1426,10 @@ class ViewRenderedController(QtWidgets.QWidget):
     # @+node:ekr.20110320120020.14477: *4* vr.update_rst & helpers
     def update_rst(self, s: str, keywords: Any) -> None:
         """Show the rst text in `s` in the VR pane."""
-        s = s.strip().strip('"""').strip("'''").strip()
+        for prefix in ('"""', "'''"):  # PR #4827
+            if s.startswith(prefix):
+                s = s.removeprefix(prefix).removesuffix(prefix)
+        s = s.strip()
         isHtml = s.startswith('<') and not s.startswith('<<')
 
         # Do this regardless of whether we show the widget or not.

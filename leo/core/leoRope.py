@@ -8,9 +8,8 @@ from leo.core import leoGlobals as g
 
 # Third-party imports.
 try:
-    import rope.base.project as project
-    import rope.base.simplify as simplify
-    import rope.refactor as refactor
+    from rope import refactor
+    from rope.base import project, simplify
 
     has_rope = True
 except Exception:

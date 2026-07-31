@@ -413,7 +413,7 @@ class LeoMenu:
                     label, command = data
                 else:
                     # Ignore shortcuts bound in menu tables.
-                    label, junk, command = data
+                    label, _, command = data
                 if label in (None, '-'):
                     self.add_separator(menu)
                     done = True  # That's all.
@@ -435,7 +435,7 @@ class LeoMenu:
                 if n == 2:
                     print(format % (data[0], data[1]))
                 elif n == 3:
-                    name, junk, func = data
+                    name, _, func = data
                     print(format % (name, func and func.__name__ or '<NO FUNC>'))
             else:
                 print(format % (data, ''))

@@ -5,11 +5,12 @@
 # @+<< leoCache imports & annotations >>
 # @+node:ekr.20100208223942.10436: ** << leoCache imports & annotations >>
 from __future__ import annotations
+from collections.abc import Generator
 import fnmatch
 import os
 import pickle
 import sqlite3
-from typing import Any, Generator, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 import zlib
 from leo.core import leoGlobals as g
 
@@ -373,7 +374,6 @@ class SqlitePickleShare:
     # @+node:vitalije.20170716201700.23: *3* uncache (SqlitePickleShare)
     def uncache(self, *items: Args) -> None:
         """not used in SqlitePickleShare"""
-        pass
 
     # @-others
 

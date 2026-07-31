@@ -194,22 +194,20 @@ class CtagsController:
         """Initialize."""
         c = self.c
 
-        #
         # Create the callback to insert the selected completion.
         def completion_callback(completion, self=self):
             self.end(completion)
 
-        #
         # Create the completer.
         cpl = c.frame.top.completer = self.completer = QCompleter()
         cpl.setWidget(self.body_widget)
         cpl.activated.connect(completion_callback)
-        #
+
         # Set the flag for the event filter: all keystrokes will go to cc.onKey.
         self.active = True
         self.ev_filter.ctagscompleter_active = True
         self.ev_filter.ctagscompleter_onKey = self.onKey
-        #
+
         # Show the completions.
         self.complete(event)
 

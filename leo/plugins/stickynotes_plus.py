@@ -287,7 +287,7 @@ class notetextedit(QTextEdit):
             text = '<a href="{0}">{1}</a> '.format(text, text[7:])
         else:
             text = '<a href="http://{0}">{0}</a> '.format(text)
-        #
+
         # The below works but doesn't pick up highlighting of an anchor
         # would have to do the underlining and blue color
         # format = QTextCharFormat()
@@ -295,7 +295,7 @@ class notetextedit(QTextEdit):
         # format.setAnchorHref(text)
         # cursor.setCharFormat(format)
         # self.setTextCursor(cursor)
-        #
+
         # This also works and generates highlighting
         cursor.deleteChar()
         cursor.insertHtml(text)  # also self.insertHtml should work

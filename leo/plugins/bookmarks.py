@@ -1088,15 +1088,15 @@ class BookMarkDisplay:
         w.layout().addStretch()
 
     # @+node:tbrown.20110712100955.39218: *3* update
-    def update(self, tag, keywords):
+    def update(self, tag, keywords) -> None:
         """re-show the current list of bookmarks"""
 
         if keywords['c'] is not self.c:
-            return None
+            return
 
         self.show_list(self.get_list())
 
-        return None  # do not stop processing the select1 hook
+        return  # do not stop processing the select1 hook
 
     # @+node:tbrown.20130222093439.30271: *3* delete_bookmark
     def delete_bookmark(self, bm):

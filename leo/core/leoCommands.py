@@ -3,7 +3,7 @@
 # @+<< leoCommands imports >>
 # @+node:ekr.20040712045933: ** << leoCommands imports >>
 from __future__ import annotations
-from collections.abc import Callable
+from collections.abc import Callable, Generator, Iterable, Sequence
 import glob
 import json
 import os
@@ -15,8 +15,8 @@ import tabnanny
 import tempfile
 import time
 import tokenize
-from typing import cast, Any, Generator, Iterable, Sequence, TYPE_CHECKING
-import xml.etree.ElementTree as ElementTree
+from typing import cast, Any, TYPE_CHECKING
+from xml.etree import ElementTree
 
 from leo.core import leoGlobals as g
 
@@ -317,7 +317,7 @@ class Commands:
         self.in_qt_dialog = False  # True: in a qt dialog.
         self.loading = False  # True: we are loading a file: disables c.setChanged()
         self.promptingForClose = False  # True: lock out additional closing dialogs.
-        #
+
         # Flags for c.outerUpdate...
         self.enableRedrawFlag = True
         self.requestCloseWindow = False
@@ -638,7 +638,6 @@ class Commands:
     # @+node:ekr.20081005065934.1: *4* c.initAfterLoad
     def initAfterLoad(self) -> None:
         """Provide an official hook for late inits of the commander."""
-        pass
 
     # @+node:ekr.20090213065933.6: *4* c.initConfigSettings
     def initConfigSettings(self) -> None:
@@ -1810,7 +1809,7 @@ class Commands:
             """Return the extension for @<file> nodes."""
             if v.isAnyAtFileNode():
                 name = v.anyAtFileNodeName()
-                junk, ext = g.os_path_splitext(name)
+                _, ext = g.os_path_splitext(name)
                 ext = ext[1:]  # strip the leading period.
                 language = g.app.extension_dict.get(ext, '')
                 if g.isValidLanguage(language):
@@ -2777,7 +2776,7 @@ class Commands:
                 )
                 try:
                     with open(filename, 'bw') as f:
-                        for s in g.splitLines(translated_contents):
+                        for s in g.splitLines(translated_contents):  # noqa
                             f.write(g.toEncodedString(s, reportErrors=True))
                     g.es_print('')
                     g.es_print(f"Wrote {filename}")
@@ -3019,7 +3018,7 @@ class Commands:
                     prompts=['Arg1: ', ' Arg2: ', ' Arg3: '])
         """
         # @-<< c.interactive docstring >>
-        #
+
         # This pathetic code should be generalized,
         # but it's not as easy as one might imagine.
         c = self
@@ -3448,7 +3447,7 @@ class Commands:
                     re.compile(regex)
                 except Exception:
                     g.trace(f"Bad regex: {regex!s}")
-                    return None
+                    return
         # Get the script.
         script = g.getScript(
             c,
@@ -3762,7 +3761,7 @@ class Commands:
                     base_dir = ''
         if base_dir and g.os_path_exists(base_dir):
             if use_git_prefix:
-                git_branch, junk = g.gitInfo()
+                git_branch, _ = g.gitInfo()
             else:
                 git_branch = ''
             theDir, fn = g.os_path_split(c.fileName())
@@ -4726,7 +4725,6 @@ class Commands:
         """Indicate that the focus is in an invalid location, or is unknown."""
         # c = self
         # c.requestedFocusWidget = None
-        pass
 
     # @+node:ekr.20080514131122.16: *5* c.traceFocus (not used)
     def traceFocus(self, w: Any) -> None:
@@ -4809,33 +4807,32 @@ class Commands:
     def add_command(
         self,
         menu: LeoQtMenu,
+        command: Callable,
+        *,  # PR #4826
         accelerator: str = '',  # Not used.
-        command: Callable | None = None,
         commandName: str = '',  # Not used.
         label: str = '',  # Not used.
         underline: int = 0,
     ) -> None:
         c = self
-        if command:
-            # Command is one of two callbacks defined in createMenuEntries.
+        assert command is not None  # PR #4826
+        # Command is one of two callbacks defined in createMenuEntries.
 
-            def add_commandCallback(c: Commands = c, command: Callable = command) -> Value:
-                val = command()
-                # Careful: func may destroy c.
-                if c.exists:
-                    c.outerUpdate()
-                return val
+        def add_commandCallback(c: Commands = c, command: Callable = command) -> Value:
+            val = command()
+            # Careful: func may destroy c.
+            if c.exists:
+                c.outerUpdate()
+            return val
 
-            menu.add_command(
-                menu,
-                accelerator=accelerator,
-                command=command,
-                commandName=commandName,
-                label=label,
-                underline=underline,
-            )
-        else:
-            g.trace('can not happen: no "command" arg')
+        menu.add_command(
+            menu,
+            accelerator=accelerator,
+            command=command,
+            commandName=commandName,
+            label=label,
+            underline=underline,
+        )
 
     # @+node:ekr.20171123203044.1: *5* c.Menu Enablers
     # @+node:ekr.20040131170659: *6* c.canClone

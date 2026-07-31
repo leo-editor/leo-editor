@@ -486,7 +486,6 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('do-nothing')
     def doNothing(self, event: LeoKeyEvent | None = None) -> None:
         """A placeholder command, useful for testing bindings."""
-        pass
 
     # @+node:ekr.20150514063305.278: *3* ec.insertFileName
     @cmd('insert-file-name')
@@ -3034,11 +3033,11 @@ class EditCommandsClass(BaseEditCommandsClass):
         s = w.getAllText()
         n = len(s)
         i = w.getInsertPoint()
-        while 0 <= i < n and not s[i] == '\n':
+        while 0 <= i < n and s[i] != '\n':
             i -= 1
         i += 1
         i1 = i
-        while 0 <= i < n and not s[i] == '\n':
+        while 0 <= i < n and s[i] != '\n':
             i += 1
         w.setSelectionRange(i1, i)
 

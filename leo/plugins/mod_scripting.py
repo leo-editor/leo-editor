@@ -596,8 +596,8 @@ class ScriptingController:
         text: str,
         command: Callable,
         statusLine: str,
-        bg: str = None,
-        kind: str = None,
+        bg: str = '',
+        kind: str = '',
     ) -> QtWidgets.QButton:
         """
         Create one icon button.
@@ -660,7 +660,7 @@ class ScriptingController:
         buttonText: str,
         p: Position,
         script: str,
-        script_gnx: str = None,
+        script_gnx: str = '',
     ) -> Value:
         """Execute an @button script in p.b or script."""
         c = self.c
@@ -1142,7 +1142,7 @@ class ScriptingController:
         h: str,
         pane: str,
         source_c: Cmdr = None,
-        tag: str = None,
+        tag: str = '',
     ) -> None:
         """Register @button <name> and @rclick <name> and <name>"""
         c, k = self.c, self.c.k

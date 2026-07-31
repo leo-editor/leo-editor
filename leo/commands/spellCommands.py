@@ -73,7 +73,7 @@ class BaseSpellWrapper:
             f = open(fn, mode='wb')
             f.close()
             g.note(f"created: {fn}")
-        except IOError:
+        except OSError:
             g.error(f"can not create: {fn}")
         except Exception:
             g.error(f"unexpected error creating: {fn}")

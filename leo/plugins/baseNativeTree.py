@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # @+leo-ver=5-thin
 # @+node:ekr.20110605121601.17863: * @file ../plugins/baseNativeTree.py
 # @@first

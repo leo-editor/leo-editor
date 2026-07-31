@@ -101,14 +101,14 @@ class BaseLeoCompare:
         files1 = []
         files2 = []
         for f in list1:
-            junk, ext = g.os_path_splitext(f)
+            _, ext = g.os_path_splitext(f)
             if self.limitToExtension:
                 if ext == self.limitToExtension:
                     files1.append(f)
             else:
                 files1.append(f)
         for f in list2:
-            junk, ext = g.os_path_splitext(f)
+            _, ext = g.os_path_splitext(f)
             if self.limitToExtension:
                 if ext == self.limitToExtension:
                     files2.append(f)
@@ -477,8 +477,6 @@ class LeoCompare(BaseLeoCompare):
 
     These are not very useful comparisons.
     """
-
-    pass
 
 
 # @+node:ekr.20180211170333.1: ** class CompareLeoOutlines

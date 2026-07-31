@@ -148,26 +148,26 @@ class extendForth:
     # @+node:ekr.20150326145530.5: *3* ctor
     def __init__(self):
         self.c = None  # set by pre_init_mode function.
-        #
+
         # Default forth keywords: extended by @data forth-words
         # Forth words to be rendered in boldface: extended by @data forth-bold-words
         self.boldwords = []
-        #
+
         # Forth bold-italics words: extended by @data forth-bold-italic-words
         # Note: on some boxen, bold italics may show in plain bold.
         self.bolditalicwords = []
-        #
+
         # Forth words that define brackets: extended by @data forth-delimiter-pairs
         self.brackets = []  # Helper: a list of tuples.
         self.brackets1 = []
         self.brackets2 = []
-        #
+
         # Words which define other words: extended by forth-defwords
         self.definingwords = []
-        #
+
         # Forth words to be rendered in italics: extended by forth-italic-words
         self.italicwords = []
-        #
+
         # Default keywords: extended by @data forth-keywords
         self.keywords = []
         # "variable", "constant", "code", "end-code",
@@ -184,7 +184,7 @@ class extendForth:
         # "@", "!", ",", "1+", "+", "-",
         # "<", "<=", "=", ">=", ">",
         # "invert", "and", "or",
-        #
+
         # Forth words which start strings: extended by @data forth-string-word-pairs
         self.stringwords = []
         self.stringwords1 = []

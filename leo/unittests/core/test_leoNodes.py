@@ -899,7 +899,7 @@ class TestNodes(LeoUnitTest):
     # @+node:ekr.20210830095545.34: *4* TestNodes.test_p_moveToVisBack_in_a_chapter
     def test_p_moveToVisBack_in_a_chapter(self):
         # Verify a fix for bug https://bugs.launchpad.net/leo-editor/+bug/1264350
-        import leo.core.leoChapters as leoChapters
+        from leo.core import leoChapters
 
         c, p = self.c, self.c.p
         cc = c.chapterController
@@ -952,12 +952,12 @@ class TestNodes(LeoUnitTest):
         child_b = g.findNodeAnywhere(c, 'child b')
         self.assertTrue(child_b)
         self.assertTrue(child_b.isCloned())
-        #
+
         # child_c must *not* be a clone at first.
         child_c = g.findNodeAnywhere(c, 'child c')
         self.assertTrue(child_c)
         self.assertFalse(child_c.isCloned())
-        #
+
         # Change the tree.
         child_c._relinkAsCloneOf(child_b)
         # self.dump_tree('Before...')

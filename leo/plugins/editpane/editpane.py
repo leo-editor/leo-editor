@@ -75,7 +75,7 @@ class LeoEditPane(QtWidgets.QWidget):
 
         self.modules = []  # modules we collect widgets from
         self.widget_classes = []  # collected widgets
-        self.widget_for = defaultdict(lambda: [])  # widget by class.lep_type
+        self.widget_for = defaultdict(list)  # widget by class.lep_type
 
         self.c = c
         p = p or self.c.p
@@ -182,10 +182,9 @@ class LeoEditPane(QtWidgets.QWidget):
         """
         c = keywords['c']
         if c != self.c:
-            return None
+            return
         if self.track:
             self.new_position(keywords['new_p'])
-        return None
 
     # @+node:tbrown.20171028115438.10: *3* _before_select
     def _before_select(self, tag, keywords):
@@ -198,14 +197,14 @@ class LeoEditPane(QtWidgets.QWidget):
 
         c = keywords['c']
         if c != self.c:
-            return None
+            return
 
         # currently nothing to do here, focusOut in widget takes care
         # of any text updates
 
         # BUT keyboard driven position change might need some action here
         # BUT then again, textChanged in widget is probably sufficient
-        return None
+        return
 
     # @+node:tbrown.20171028115438.11: *3* _find_gnx_node
     def _find_gnx_node(self, gnx):

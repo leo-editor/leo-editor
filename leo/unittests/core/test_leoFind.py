@@ -4,7 +4,7 @@
 
 import re
 from leo.core import leoGlobals as g
-import leo.core.leoFind as leoFind
+from leo.core import leoFind
 from leo.core.leoGui import StringFindTabManager
 from leo.core.leoTest2 import LeoUnitTest
 

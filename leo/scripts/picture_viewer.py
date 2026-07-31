@@ -220,7 +220,7 @@ def main():
 class Slides(QtWidgets.QWidget):  # type:ignore
     # Command-line arguments...
     scale: float = 1.0
-    starting_directory: str = None
+    starting_directory: str = ''
     use_db: bool = False
     trace: bool = False
     verbose: bool = False

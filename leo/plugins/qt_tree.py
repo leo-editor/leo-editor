@@ -646,7 +646,7 @@ class LeoQtTree(leoFrame.LeoTree):
                 auto_edit = self.prev_v == p.v  # #1049.
                 self.prev_v = p.v
                 event = None
-                #
+
                 # Careful. We may have switched gui during unit testing.
                 if hasattr(g.app.gui, 'qtApp'):
                     mods = g.app.gui.qtApp.keyboardModifiers()

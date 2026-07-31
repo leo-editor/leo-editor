@@ -6,7 +6,7 @@ try:
     import docutils
 except Exception:  # pragma: no cover
     docutils = None
-import leo.core.leoRst as leoRst  # Required for coverage tests.
+from leo.core import leoRst  # Required for coverage tests.
 from leo.core.leoTest2 import LeoUnitTest
 
 assert leoRst

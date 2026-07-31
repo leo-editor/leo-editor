@@ -238,7 +238,7 @@ class OpmlController:
             f = open(path, 'rb')
             s = f.read()  # type(s) is bytes for Python 3.x.
             s = self.cleanSaxInputString(s)
-        except IOError:
+        except OSError:
             return g.trace('can not open %s' % path)
 
         try:
@@ -716,7 +716,7 @@ class SaxContentHandler(xml.sax.saxutils.XMLGenerator):
         if data is None:
             g.trace('unknown element', name)
         else:
-            junk, func = data
+            _, func = data
             if func:
                 func()
         name2 = self.elementStack.pop()
@@ -744,7 +744,7 @@ class SaxContentHandler(xml.sax.saxutils.XMLGenerator):
         if data is None:
             g.trace('unknown element', name)
         else:
-            func, junk = data
+            func, _ = data
             if func:
                 func(attrs)
 
