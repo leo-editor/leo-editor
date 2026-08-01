@@ -272,10 +272,10 @@ class AtButtonCallback:
         controller: ScriptingController,
         b: QtWidgets.QButton,
         c: Cmdr,
-        buttonText: str,
+        buttonText: str | None,
         docstring: str,
         gnx: str,
-        script: str,
+        script: str | None,
     ) -> None:
         """AtButtonCallback.__init__."""
         self.b = b  # A QButton.
@@ -320,7 +320,7 @@ class AtButtonCallback:
         return None
 
     # @+node:ekr.20180313171043.1: *4* AtButtonCallback.find_script
-    def find_script(self) -> str:
+    def find_script(self) -> str | None:
         gnx = self.gnx
         # First, search self.c for the gnx.
         for p in self.c.all_positions():
@@ -594,7 +594,7 @@ class ScriptingController:
         self,
         args: Args,
         text: str,
-        command: Callable,
+        command: Callable | None,
         statusLine: str,
         bg: str = '',
         kind: str = '',
@@ -657,8 +657,8 @@ class ScriptingController:
     def executeScriptFromButton(
         self,
         b: QtWidgets.QButton,
-        buttonText: str,
-        p: Position,
+        buttonText: str | None,
+        p: Position | None,
         script: str,
         script_gnx: str = '',
     ) -> Value:
@@ -1039,7 +1039,7 @@ class ScriptingController:
             self.c.bodyWantsFocus()
 
     # @+node:ekr.20080813064908.4: *4* sc.getArgs
-    def getArgs(self, p: Position) -> list[str]:
+    def getArgs(self, p: Position | None) -> list[str]:
         """Return the list of @args field of p.h."""
         args: list[str] = []
         if not p:
@@ -1124,7 +1124,7 @@ class ScriptingController:
         return shortcut
 
     # @+node:ekr.20150402042350.1: *4* sc.getScript
-    def getScript(self, p: Position) -> str:
+    def getScript(self, p: Position | None) -> str:
         """Return the script composed from p and its descendants."""
         return g.getScript(
             self.c,
@@ -1149,7 +1149,7 @@ class ScriptingController:
         trace = False and not g.unitTesting
         shortcut = self.getShortcut(h) or ''
         commandName = self.cleanButtonText(h)
-        fileName = source_c.fileName() if source_c else None
+        fileName = source_c.fileName() if source_c else ''
 
         if trace and not g.isascii(commandName):
             g.trace(commandName)

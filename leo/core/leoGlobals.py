@@ -7853,7 +7853,7 @@ def findTopLevelNode(c: Cmdr, headline: str, exact: bool = True) -> Position | N
 # @+node:EKR.20040614071102.1: *3* g.getScript & helpers
 def getScript(
     c: Cmdr,
-    p: Position,
+    p: Position | None,
     useSelectedText: bool = True,
     forcePythonSentinels: bool = True,
     useSentinels: bool = True,
