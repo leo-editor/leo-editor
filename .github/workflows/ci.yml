@@ -22,6 +22,20 @@ jobs:
       - run: pip install ruff
       - run: ruff check leo
 
+  mypy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install "mypy<2" mypy-extensions typing_extensions
+          types-docutils types-Markdown types-paramiko types-PyYAML
+          types-requests types-six
+          "PyQt6>=6.6" PyQt6-QScintilla PyQt6-WebEngine
+      - run: python -m mypy leo
+
   # Informational only: ty (https://github.com/astral-sh/ty) is an
   # actively-developed, much faster alternative to mypy, still in beta.
   # It's noticeably stricter than our current mypy config in some areas
