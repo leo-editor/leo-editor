@@ -1757,7 +1757,7 @@ class QTextEditWrapper(QTextMixin):
         def after(func: Callable) -> None:
             QtCore.QTimer.singleShot(delay, func)
 
-        def addFlashCallback(self: QTextEditWrapper = self, w: QWidget = w) -> None:
+        def addFlashCallback(self: QTextEditWrapper = self, w: Any = w) -> None:
             i = self.flashIndex
             cursor = w.textCursor()  # Must be the widget's cursor.
             cursor.setPosition(i)
@@ -1774,7 +1774,7 @@ class QTextEditWrapper(QTextMixin):
             self.flashCount -= 1
             after(removeFlashCallback)
 
-        def removeFlashCallback(self: QTextEditWrapper = self, w: QWidget = w) -> None:
+        def removeFlashCallback(self: QTextEditWrapper = self, w: Any = w) -> None:
             w.setExtraSelections(last_selections)
             if self.flashCount > 0:
                 after(addFlashCallback)

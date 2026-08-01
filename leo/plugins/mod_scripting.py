@@ -170,7 +170,7 @@ if TYPE_CHECKING:  # pragma: no cover
 # @+node:ekr.20180328085010.1: ** Top level (mod_scripting)
 # @+node:tbrown.20140819100840.37719: *3* mod_scripting.build_rclick_tree
 def build_rclick_tree(
-    command_p: Position, rclicks: RClicks = None, top_level: bool = False
+    command_p: Position, rclicks: RClicks | None = None, top_level: bool = False
 ) -> list:
     """
     Return a list of top level RClicks for the button at command_p, which can be
@@ -288,7 +288,7 @@ class AtButtonCallback:
         self.__doc__ = docstring  # The docstring for this callback for g.getDocStringForFunction.
 
     # @+node:ekr.20141031053508.10: *3* __call__ (AtButtonCallback)
-    def __call__(self, event: Event = None) -> Value:
+    def __call__(self, event: Event | None = None) -> Value:
         """AtButtonCallbgack.__call__. The callback for @button nodes."""
         return self.execute_script()
 
@@ -396,7 +396,7 @@ class ScriptingController:
 
     # @+node:ekr.20150401113822.1: *3* sc.Callbacks
     # @+node:ekr.20060328125248.23: *4* sc.addScriptButtonCommand
-    def addScriptButtonCommand(self, event: Event = None) -> None:
+    def addScriptButtonCommand(self, event: Event | None = None) -> None:
         """Called when the user presses the 'script-button' button or executes the script-button command."""
         c = self.c
         p = c.p
@@ -409,7 +409,7 @@ class ScriptingController:
         c.bodyWantsFocus()
 
     # @+node:ekr.20060522105937.1: *4* sc.runDebugScriptCommand
-    def runDebugScriptCommand(self, event: Event = None) -> None:
+    def runDebugScriptCommand(self, event: Event | None = None) -> None:
         """Called when user presses the 'debug-script' button or executes the debug-script command."""
         c = self.c
         p = c.p
@@ -471,7 +471,7 @@ class ScriptingController:
         c.bodyWantsFocus()
 
     # @+node:ekr.20060328125248.21: *4* sc.runScriptCommand
-    def runScriptCommand(self, event: Event = None) -> None:
+    def runScriptCommand(self, event: Event | None = None) -> None:
         """Called when user presses the 'run-script' button or executes the run-script command."""
         c, p = self.c, self.c.p
         args = self.getArgs(p)
@@ -631,7 +631,7 @@ class ScriptingController:
             )
 
         def deleteButtonCallback(
-            event: Event = None, self: Any = self, b: QtWidgets.QButton = b
+            event: Event | None = None, self: Any = self, b: QtWidgets.QButton = b
         ) -> None:
             self.deleteButton(b, event=event)
 
@@ -727,7 +727,7 @@ class ScriptingController:
                 self.createCommonButton(p, script, rclicks)
 
     # @+node:ekr.20070926084600: *4* sc.createCommonButton (common @button)
-    def createCommonButton(self, p: Position, script: str, rclicks: RClicks = None) -> None:
+    def createCommonButton(self, p: Position, script: str, rclicks: RClicks) -> None:
         """
         Create a button in the icon area for a common @button node in an
         @buttons node in an @setting tree. Binds button presses to a callback
@@ -866,7 +866,7 @@ class ScriptingController:
         args = self.getArgs(p)
 
         def atCommandCallback(
-            event: Event = None,
+            event: Event | None = None,
             args: Args = args,
             c: Cmdr = c,
             p: Position = p.copy(),
@@ -913,7 +913,7 @@ class ScriptingController:
         args = self.getArgs(p)
 
         def atCommandCallback(
-            event: Event = None,
+            event: Event | None = None,
             args: Args = args,
             c: Cmdr = c,
             p: Position = p.copy(),
@@ -1141,7 +1141,7 @@ class ScriptingController:
         func: Callable,
         h: str,
         pane: str,
-        source_c: Cmdr = None,
+        source_c: Cmdr | None = None,
         tag: str = '',
     ) -> None:
         """Register @button <name> and @rclick <name> and <name>"""
@@ -1172,7 +1172,7 @@ class ScriptingController:
                 # Create a *second* func, to avoid collision in c.commandsDict.
 
                 def registerAllCommandsCallback(
-                    event: Event = None, func: Callable = func
+                    event: Event | None = None, func: Callable = func
                 ) -> Callable:
                     return func()
 

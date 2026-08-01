@@ -845,13 +845,13 @@ class todoController:
     # @+node:tbrown.20090119215428.31: *4* todoController.progress_clear
     @redrawer
     @projectChanger
-    def progress_clear(self, v: VNode = None) -> None:
+    def progress_clear(self, v: VNode | None = None) -> None:
         self.setat(self.c.currentPosition().v, 'progress', '')
 
     # @+node:tbrown.20090119215428.32: *4* todoController.set_progress
     @redrawer
     @projectChanger
-    def set_progress(self, p: Position = None, val: Any = None) -> None:  # Hard to annotate.
+    def set_progress(self, p: Position | None = None, val: Any = None) -> None:  # Hard to annotate.
         if p is None:
             p = self.c.currentPosition()
         v = p.v
@@ -864,7 +864,7 @@ class todoController:
     # @+node:tbrown.20090119215428.33: *4* todoController.set_time_req
     @redrawer
     @projectChanger
-    def set_time_req(self, p: Position = None, val: Any = None) -> None:  # Hard to annotate.
+    def set_time_req(self, p: Position | None = None, val: Any = None) -> None:  # Hard to annotate.
         if p is None:
             p = self.c.currentPosition()
         v = p.v
@@ -876,7 +876,7 @@ class todoController:
 
     # @+node:tbrown.20090119215428.34: *4* todoController.show_times
     @redrawer
-    def show_times(self, p: Position = None, show: bool = False) -> None:
+    def show_times(self, p: Position | None = None, show: bool = False) -> None:
         def rnd(x: float) -> str:
             return re.sub('.0$', '', '%.1f' % x)
 
@@ -914,7 +914,7 @@ class todoController:
                 self.loadIcons(nd)  # update progress icon
 
     # @+node:tbrown.20090119215428.35: *4* todoController.recalc_time
-    def recalc_time(self, p: Position = None, clear: bool = False) -> tuple[str, str]:
+    def recalc_time(self, p: Position | None = None, clear: bool = False) -> tuple[str, str]:
         if p is None:
             p = self.c.currentPosition()
         v = p.v
@@ -967,7 +967,7 @@ class todoController:
     # @+node:tbrown.20090119215428.36: *4* todoController.clear_time_req
     @redrawer
     @projectChanger
-    def clear_time_req(self, p: Position = None) -> None:
+    def clear_time_req(self, p: Position | None = None) -> None:
         if p is None:
             p = self.c.currentPosition()
         v = p.v
@@ -975,7 +975,7 @@ class todoController:
 
     # @+node:tbrown.20090119215428.37: *4* todoController.update_project
     @redrawer
-    def update_project(self, p: Position = None) -> None:
+    def update_project(self, p: Position | None = None) -> None:
         """Find highest parent with '@project' in headline and run recalc_time
         and maybe show_times (if headline has '@project time')"""
 
@@ -998,18 +998,18 @@ class todoController:
 
     # @+node:tbrown.20090119215428.38: *4* todoController.local_recalc
     @redrawer
-    def local_recalc(self, p: Position = None) -> None:
+    def local_recalc(self, p: Position | None = None) -> None:
         self.recalc_time(p)
 
     # @+node:tbrown.20090119215428.39: *4* todoController.local_clear
     @redrawer
-    def local_clear(self, p: Position = None) -> None:
+    def local_clear(self, p: Position | None = None) -> None:
         self.recalc_time(p, clear=True)
 
     # @+node:tbrown.20110213091328.16233: *4* todoController.set_due_date
     def set_due_date(
         self,
-        p: Position = None,
+        p: Position | None = None,
         val: Any = None,  # Hard to annotate.
         mode: str = 'adjust',
         field: str = 'duedate',
@@ -1039,7 +1039,7 @@ class todoController:
     # @+node:tbrown.20110213091328.16235: *4* todoController.set_due_time
     def set_due_time(
         self,
-        p: Position = None,
+        p: Position | None = None,
         val: Any = None,  # Hard to annotate.
         mode: str = 'adjust',
         field: str = 'duetime',
@@ -1099,7 +1099,7 @@ class todoController:
     # @+node:tbrown.20090119215428.40: *3* todoController:ToDo icon related...
     # @+node:tbrown.20090119215428.41: *4* todoController.childrenTodo
     @redrawer
-    def childrenTodo(self, p: Position = None) -> None:
+    def childrenTodo(self, p: Position | None = None) -> None:
         if p is None:
             p = self.c.currentPosition()
         for p in p.children():
@@ -1110,7 +1110,7 @@ class todoController:
 
     # @+node:tbrown.20130207095125.20463: *4* todoController.dueClear
     @redrawer
-    def dueClear(self, p: Position = None) -> None:
+    def dueClear(self, p: Position | None = None) -> None:
         """clear due date on descendants, useful for creating a master todo
         item with sub items which previously had their own dates"""
         if p is None:
@@ -1120,7 +1120,7 @@ class todoController:
 
     # @+node:tbrown.20130207103126.28498: *4* todoController.needs_doing
     def needs_doing(
-        self, v: VNode = None, pri: Any = None, due: Any = None
+        self, v: VNode | None = None, pri: Any = None, due: Any = None
     ) -> bool:  # Hard to annotate.
         """needs_doing - Return true if the node is a todo node that needs doing
 
@@ -1136,7 +1136,7 @@ class todoController:
 
     # @+node:tbrown.20090119215428.42: *4* todoController.find_todo
     @redrawer
-    def find_todo(self, p: Position = None, stage: int = 0) -> bool:
+    def find_todo(self, p: Position | None = None, stage: int = 0) -> bool:
         """Recursively find the next todo"""
 
         # search is like XPath 'following' axis, all nodes after p in document order.
@@ -1197,7 +1197,7 @@ class todoController:
 
     # @+node:tbrown.20110213153425.16377: *4* todoController.dueSort
     @redrawer
-    def dueSort(self, p: Position = None, field: str = 'due') -> None:
+    def dueSort(self, p: Position | None = None, field: str = 'due') -> None:
         if p is None:
             p = self.c.currentPosition()
         self.c.selectPosition(p)
@@ -1205,7 +1205,7 @@ class todoController:
 
     # @+node:tbrown.20090119215428.44: *4* todoController.priority_clear
     @redrawer
-    def priority_clear(self, v: VNode = None) -> None:
+    def priority_clear(self, v: VNode | None = None) -> None:
         if v is None:
             v = self.c.currentPosition().v
         self.setat(v, 'priority', 9999)
@@ -1213,7 +1213,7 @@ class todoController:
 
     # @+node:tbrown.20090119215428.45: *4* todoController.priSort
     @redrawer
-    def priSort(self, p: Position = None) -> None:
+    def priSort(self, p: Position | None = None) -> None:
         if p is None:
             p = self.c.currentPosition()
         self.c.selectPosition(p)
@@ -1221,7 +1221,7 @@ class todoController:
 
     # @+node:tbrown.20090119215428.46: *4* todoController.reclassify
     @redrawer
-    def reclassify(self, p: Position = None) -> None:
+    def reclassify(self, p: Position | None = None) -> None:
         """change priority codes"""
 
         if p is None:
@@ -1294,7 +1294,7 @@ class todoController:
         self.loadIcons(p)
 
     # @+node:tbrown.20090119215428.48: *4* todoController.showDist
-    def showDist(self, p: Position = None) -> None:
+    def showDist(self, p: Position | None = None) -> None:
         """show distribution of priority levels in subtree"""
         if p is None:
             p = self.c.currentPosition()

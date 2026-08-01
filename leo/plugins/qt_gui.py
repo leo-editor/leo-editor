@@ -341,8 +341,8 @@ class LeoQtGui(leoGui.LeoGui):
             b: QPushButton = b,
             c: Cmdr = c,
             buttonText: str = buttonText,
-            p: Position = p and p.copy(),
-            script: str = script,
+            p: Position | None = p and p.copy(),
+            script: str | None = script,
         ) -> None:
             if c.disableCommandsMessage:
                 g.blue('', c.disableCommandsMessage)

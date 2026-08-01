@@ -1357,7 +1357,7 @@ class FindTabManager:
 
             def radio_button_callback(
                 n: int,
-                ivar: str = ivar,
+                ivar: str | None = ivar,
                 setting_name: str = setting_name,
                 w: QWidget = radio_button_w,
             ) -> None:
@@ -3855,7 +3855,7 @@ class QtIconBarClass:
         b.setObjectName(button_name)
         b.setContextMenuPolicy(ContextMenuPolicy.ActionsContextMenu)
 
-        def delete_callback(checked: str, action: str = action) -> None:
+        def delete_callback(checked: str, action: Any = action) -> None:
             self.w.removeAction(action)
 
         b.leo_removeAction = rb = QAction('Remove Button', b)

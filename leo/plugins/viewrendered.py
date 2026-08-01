@@ -318,7 +318,7 @@ def init() -> bool:
 
 # @+node:ekr.20240727091022.1: *3* vr function: getVR
 def getVr(
-    *, c: Any = None, event: Any = None, parent: QtWidgets.QWidget = None
+    *, c: Any = None, event: Any = None, parent: QtWidgets.QWidget | None = None
 ) -> ViewRenderedController | None:
     """Return the ViewRenderedController instance or None."""
     if g.app.gui.guiName() != 'qt':
@@ -646,7 +646,7 @@ class ViewRenderedController(QtWidgets.QWidget):
     # @-<< vr: default templates >>
     # @+others
     # @+node:ekr.20110317080650.14380: *3*  vr.ctor & helpers
-    def __init__(self, c: Cmdr, parent: QWidget = None) -> None:
+    def __init__(self, c: Cmdr, parent: QWidget | None = None) -> None:
         """Ctor for ViewRenderedController class."""
         self.c = c
         # Create the widget.
@@ -744,7 +744,7 @@ class ViewRenderedController(QtWidgets.QWidget):
         self.typst_template = get_template('typst')
 
     # @+node:ekr.20190614065659.1: *4* vr.create_pane
-    def create_pane(self, parent: QWidget) -> None:
+    def create_pane(self, parent: QWidget | None) -> None:
         """Create the VR pane."""
         if g.unitTesting:
             return
