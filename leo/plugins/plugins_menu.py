@@ -61,7 +61,7 @@ from __future__ import annotations
 from collections.abc import Sequence
 import configparser as ConfigParser
 import os
-from typing import Any, TYPE_CHECKING
+from typing import Any, Callable, TYPE_CHECKING
 from types import ModuleType
 from leo.core import leoGlobals as g
 
@@ -113,11 +113,11 @@ def addPluginMenuItem(plugin: PlugIn, c: Cmdr) -> None:
             menu_location = "&Plugins"
         # @-<< Get menu location >>
         m = c.frame.menu.createNewMenu(plugin_name, menu_location)
-        table = [("About...", None, plugin.about)]
+        entries: list[tuple[str, None, Callable | None]] = [("About...", None, plugin.about)]
         if plugin.hasconfig:
-            table.append(("Properties...", None, plugin.properties))
+            entries.append(("Properties...", None, plugin.properties))
         if plugin.othercmds:
-            table.append(("-", None, None))
+            entries.append(("-", None, None))
             items = []
             d = plugin.othercmds
             for cmd in list(d.keys()):
@@ -125,8 +125,8 @@ def addPluginMenuItem(plugin: PlugIn, c: Cmdr) -> None:
                 items.append(
                     (cmd, None, fn),
                 )  # No need for a callback.
-            table.extend(sorted(items))
-        c.frame.menu.createMenuEntries(m, table)
+            entries.extend(sorted(items))
+        c.frame.menu.createMenuEntries(m, entries)
     else:
         table = [(plugin_name, None, plugin.about)]
         c.frame.menu.createMenuEntries(PluginDatabase.getMenu(plugin), table)
@@ -214,7 +214,7 @@ class _PluginDatabase:
         self.menus: dict[str, LeoMenu] = {}
 
     # @+node:pap.20050305152751.2: *3* addPlugin
-    def addPlugin(self, item: PlugIn, group: str) -> None:
+    def addPlugin(self, item: PlugIn, group: str | None) -> None:
         """Add a plugin"""
         if group:
             self.plugins_by_group.setdefault(group, []).append(item)
@@ -236,7 +236,7 @@ class _PluginDatabase:
     def getMenu(self, item: PlugIn) -> LeoMenu:
         """Get the menu for a particular item"""
         try:
-            return self.menus[item.group]
+            return self.menus[item.group] if item.group else self.menus["Default"]
         except KeyError:
             return self.menus["Default"]
 
@@ -278,6 +278,7 @@ class PlugIn:
         self.version = self.mod.__dict__.get("__version__", "<unknown>")
         # g.pr(self.version,g.shortFileName(filename))
         # Configuration...
+        assert plgMod.__file__
         self.configfilename = "%s.ini" % os.path.splitext(plgMod.__file__)[0]
         # True if this can be configured.
         self.hasconfig = os.path.isfile(self.configfilename)
@@ -308,6 +309,7 @@ class PlugIn:
         """Put information about this plugin in a scrolledMessage dialog."""
         c = self.c
         msg = self.doc.strip() + '\n' if self.doc else ''
+        assert self.name
         c.putHelpFor(msg, short_title=self.name)
 
     # @+node:pap.20050317183526: *3* PlugIn.getNiceName
@@ -355,6 +357,7 @@ class PlugIn:
         self.sourceConfig = data
         # Open a modal dialog and wait for it to return.
         # Provide the dialog with a callback for the 'Appply' function.
+        assert self.name
         title = "Properties of " + self.name
         result, data = g.app.gui.runPropertiesDialog(title, data, callback, buttons)
         if result != 'Cancel' and data:
