@@ -681,7 +681,7 @@ class LeoQtGui(leoGui.LeoGui):
 
     def createSpellTab(
         self, c: Cmdr, spellHandler: Callable, tabName: str
-    ) -> qt_frame.LeoQtSpellTab:
+    ) -> qt_frame.LeoQtSpellTab | None:
         if g.unitTesting:
             return None
         return qt_frame.LeoQtSpellTab(c, spellHandler, tabName)
@@ -769,11 +769,11 @@ class LeoQtGui(leoGui.LeoGui):
                 else:
                     super().__init__(parent)
 
-            def stepBy(self, step: int) -> None:
+            def stepBy(self, steps: int) -> None:
                 cs = self.currentSection()
-                if cs in self.step_min and abs(step) < self.step_min[cs]:
-                    step = self.step_min[cs] if step > 0 else -self.step_min[cs]
-                QtWidgets.QDateTimeEdit.stepBy(self, step)
+                if cs in self.step_min and abs(steps) < self.step_min[cs]:
+                    steps = self.step_min[cs] if steps > 0 else -self.step_min[cs]
+                QtWidgets.QDateTimeEdit.stepBy(self, steps)
 
         class Calendar(QtWidgets.QDialog):
             def __init__(
@@ -947,7 +947,7 @@ class LeoQtGui(leoGui.LeoGui):
 
         """
         if g.unitTesting:
-            return None
+            return 'cancel'
 
         # Create the dialog.
         top_frame: QWidget | None = c.frame.top if c else None
@@ -1010,7 +1010,7 @@ class LeoQtGui(leoGui.LeoGui):
         - `no_all`: bool - show NoToAll button
         """
         if g.unitTesting:
-            return None
+            return 'no'
 
         # Create the dialog.
         top_frame: QWidget | None = c.frame.top if c else None
@@ -1394,22 +1394,21 @@ class LeoQtGui(leoGui.LeoGui):
 
     # @+node:ekr.20110605121601.18508: *3* LeoQtGui: Focus
     # @+node:ekr.20190601055031.1: *4* LeoQtGui.ensure_commander_visible
-    def ensure_commander_visible(self, c1: Cmdr) -> None:
+    def ensure_commander_visible(self, c: Cmdr) -> None:
         """
         Check to see if c.frame is in a tabbed ui, and if so, make sure
         the tab is visible
         """
         if 'focus' in g.app.debug:
-            g.trace(c1)
+            g.trace(c)
         if hasattr(g.app.gui, 'frameFactory'):
             factory = g.app.gui.frameFactory
             if factory and hasattr(factory, 'setTabForCommander'):
-                c = c1
                 factory.setTabForCommander(c)
                 c.bodyWantsFocusNow()
 
     # @+node:ekr.20190601054958.1: *4* LeoQtGui.get_focus
-    def get_focus(self, c: Cmdr | None = None, raw: bool = False, at_idle: bool = False) -> QWidget:
+    def get_focus(self, c: Cmdr | None = None, raw: bool = False, at_idle: bool = False) -> QWidget | None:
         """Returns the widget that has focus."""
         trace = 'focus' in g.app.debug and not at_idle
         w = QtWidgets.QApplication.focusWidget()
@@ -1570,7 +1569,9 @@ class LeoQtGui(leoGui.LeoGui):
                     svg_height, svg_width = size.height(), size.width()
 
                     # Scale to fraction of screen height
-                    geom = QScreen.availableGeometry(QApplication.primaryScreen())
+                    screen = QApplication.primaryScreen()
+                    assert screen is not None
+                    geom = QScreen.availableGeometry(screen)
                     screen_height = geom.height()
                     target_height_px = screen_height // 4
                     scaleby = target_height_px / svg_height

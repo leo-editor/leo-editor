@@ -3918,7 +3918,7 @@ or do g.app.db['LEO_EDITOR'] = "gvim"''',
 
 
 # @+node:ekr.20160330204014.1: *3* g.init_dialog_folder
-def init_dialog_folder(c: Cmdr, p: Position, use_at_path: bool = True) -> str:
+def init_dialog_folder(c: Cmdr | None, p: Position | None, use_at_path: bool = True) -> str:
     """Return the most convenient folder to open or save a file."""
     if c and p and use_at_path:
         if path := c.fullPath(p):
