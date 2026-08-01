@@ -478,7 +478,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     def dumpCaches(self, event: LeoKeyEvent | None = None) -> None:  # pragma: no cover
         """Dump, all of Leo's file caches."""
         if hasattr(g.app.global_cacher, 'dump'):
-            g.app.global_cacher.dump()
+            cast(Any, g.app.global_cacher).dump()
         else:
             g.printObj(g.app.global_cacher)
 
@@ -2604,7 +2604,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         spots = ('end-line', 'finish-line', 'start-line')
         if hasattr(w, 'leoMoveCursorHelper') and spot not in spots:
             extend = extend or self.extendMode
-            w.leoMoveCursorHelper(kind=spot, extend=extend)
+            cast(Any, w).leoMoveCursorHelper(kind=spot, extend=extend)
         else:
             s = w.getAllText()
             ins = w.getInsertPoint()
@@ -2867,7 +2867,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         w.seeInsertPoint()
         if hasattr(w, 'leoMoveCursorHelper'):
             extend = extend or self.extendMode
-            w.leoMoveCursorHelper(kind=direction, extend=extend)
+            cast(Any, w).leoMoveCursorHelper(kind=direction, extend=extend)
         else:
             # Find the start of the next/prev line.
             row, col = g.convertPythonIndexToRowCol(s, ins)
@@ -2911,7 +2911,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             return  # pragma: no cover (defensive)
         if hasattr(w, 'leoMoveCursorHelper'):
             extend = extend or self.extendMode
-            w.leoMoveCursorHelper(kind=spot, extend=extend)
+            cast(Any, w).leoMoveCursorHelper(kind=spot, extend=extend)
         else:
             if spot == 'home':
                 self.moveToHelper(event, 0, extend=extend)
@@ -2950,7 +2950,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             return
         if hasattr(w, 'leoMoveCursorHelper'):
             extend = extend or self.extendMode
-            w.leoMoveCursorHelper(kind=spot, extend=extend)
+            cast(Any, w).leoMoveCursorHelper(kind=spot, extend=extend)
         else:
             i = w.getInsertPoint()
             if spot == 'left':
@@ -3011,7 +3011,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         if not g.isTextWrapper(w):
             return
         if hasattr(w, 'leoMoveCursorHelper'):
-            w.leoMoveCursorHelper(kind='exchange', extend=False)
+            cast(Any, w).leoMoveCursorHelper(kind='exchange', extend=False)
         else:
             c.widgetWantsFocusNow(w)
             i, j = w.getSelectionRange(sort=False)
@@ -3232,7 +3232,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         linesPerPage = 15  # To do.
         if hasattr(w, 'leoMoveCursorHelper'):
             extend = extend or self.extendMode
-            w.leoMoveCursorHelper(
+            cast(Any, w).leoMoveCursorHelper(
                 kind='page-down' if kind == 'forward' else 'page-up',
                 extend=extend,
                 linesPerPage=linesPerPage,
@@ -3930,7 +3930,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         w = event and event.w
         if w and hasattr(w, 'scrollDelegate'):
             kind = direction + '-' + distance
-            w.scrollDelegate(kind)
+            cast(Any, w).scrollDelegate(kind)
 
     # @+node:ekr.20150514063305.337: *4* ec.scrollOutlineUp/Down/Line/Page
     @cmd('scroll-outline-down-line')
