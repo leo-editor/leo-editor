@@ -1494,19 +1494,21 @@ class ViewRenderedController(QtWidgets.QWidget):
         if not h.startswith('@jinja'):
             return
 
-        def find_root(p: Position) -> tuple[Position, Position] | None:
+        def find_root(p: Position) -> tuple[Position, Position] | tuple[None, None]:
             for newp in p.parents():
                 if newp.h.strip() == '@jinja':
                     oldp, p = p, newp
                     return oldp, p
             return None, None
 
-        def find_inputs(p: Position) -> tuple[Position, Position] | None:
+        def find_inputs(p: Position) -> tuple[Position, Position] | tuple[None, None]:
             for newp in p.parents():
                 if newp.h.strip() == '@jinja inputs':
                     oldp, p = p, newp
-                    _, p = find_root(p)
-                    return oldp, p
+                    _, root_p = find_root(p)
+                    if root_p is None:
+                        return None, None
+                    return oldp, root_p
             return None, None
 
         # if on jinja node's children, find the parent
@@ -1517,6 +1519,10 @@ class ViewRenderedController(QtWidgets.QWidget):
         elif h.startswith('@jinja variable'):
             # not at @jinja, first find @jinja inputs, then @jinja
             oldp, p = find_inputs(p)
+
+        if p is None:
+            g.es("Could not find enclosing @jinja node.")
+            return
 
         def untangle(c: Cmdr, p: Position) -> str:
             return g.getScript(c, p, useSelectedText=False, useSentinels=False)

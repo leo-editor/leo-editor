@@ -684,7 +684,7 @@ class ScriptingController:
         return result
 
     # @+node:ekr.20130912061655.11294: *3* sc.open_gnx
-    def open_gnx(self, c: Cmdr, gnx: str) -> tuple[Cmdr, Position]:
+    def open_gnx(self, c: Cmdr, gnx: str) -> tuple[Cmdr | None, Position | None]:
         """
         Find the node with the given gnx in c, myLeoSettings.leo and leoSettings.leo.
         If found, open the tab/outline and return c,p of the found node.
@@ -1089,7 +1089,7 @@ class ScriptingController:
     # @+node:peckj.20140103101946.10404: *4* sc.getColor
     def getColor(self, h: str) -> str:
         """Returns the background color from the given headline string"""
-        color = None
+        color = ''
         tag = '@color'
         i = h.find(tag)
         if i > -1:
@@ -1105,7 +1105,7 @@ class ScriptingController:
     # @+node:ekr.20060328125248.16: *4* sc.getShortcut
     def getShortcut(self, h: str) -> str:
         """Return the keyboard shortcut from the given headline string"""
-        shortcut = None
+        shortcut = ''
         i = h.find('@key')
         if i > -1:
             j = g.skip_ws(h, i + len('@key'))

@@ -420,7 +420,7 @@ class Indented_Lisp(Indented_Importer):
 
     # @+others
     # @+node:ekr.20231024045727.1: *3* indented_lisp.find_matching_paren
-    def find_matching_paren(self, i: int, tokens: list[Token]) -> int:
+    def find_matching_paren(self, i: int, tokens: list[Token]) -> int | None:
         """Return the index of the matching closing parenthesis."""
         assert tokens[i].kind == '(', tokens[i]
         start_i = i

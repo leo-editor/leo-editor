@@ -13,7 +13,7 @@ import re
 import sys
 import textwrap
 from time import sleep
-from typing import Any, TYPE_CHECKING
+from typing import Any, cast, TYPE_CHECKING
 from leo.core import (
     leoColor,
     leoGlobals as g,
@@ -1535,7 +1535,7 @@ class LeoQtGui(leoGui.LeoGui):
 
     # @+node:ekr.20110605121601.18518: *4* LeoQtGui.getTreeImage
     @functools.lru_cache(maxsize=128)
-    def getTreeImage(self, c: Cmdr, path: str) -> tuple[QPixmap, int]:
+    def getTreeImage(self, c: Cmdr, path: str) -> tuple[QPixmap, int] | tuple[None, None]:
         image = QtGui.QPixmap(path)
         if image.height() > 0 and image.width() > 0:
             return image, image.height()
@@ -1543,7 +1543,7 @@ class LeoQtGui(leoGui.LeoGui):
 
     # @+node:ekr.20111215193352.10220: *3* LeoQtGui: Splash Screen
     # @+node:ekr.20110605121601.18479: *4* LeoQtGui.createSplashScreen
-    def createSplashScreen(self) -> QWidget:
+    def createSplashScreen(self) -> QWidget | None:
         """Put up a splash screen with Leo's logo."""
         try:
             QApplication = QtWidgets.QApplication
@@ -1645,7 +1645,7 @@ class LeoQtGui(leoGui.LeoGui):
         parent = widget.parent()
         while parent:
             if isinstance(parent, QtWidgets.QSplitter):
-                return parent, direct_child
+                return parent, cast(QWidget, direct_child)
             direct_child = parent
             parent = parent.parent()
         return None
@@ -1658,7 +1658,7 @@ class LeoQtGui(leoGui.LeoGui):
         return None
 
     # @+node:ekr.20240519115157.1: *4* LeoQtGui.get_top_splitter
-    def get_top_splitter(self, c: Cmdr) -> QWidget:
+    def get_top_splitter(self, c: Cmdr) -> QWidget | None:
         return self.find_widget_by_name(c, 'main_splitter')
 
     # @+node:ekr.20110605121601.18522: *4* LeoQtGui.isTextWidget/Wrapper
@@ -1816,7 +1816,7 @@ class StyleClassManager:
     def has_sclass(self, w: QTextMixin, prop: str) -> bool:
         """Check for style class or list of classes prop on QWidget w"""
         if not prop:
-            return None
+            return False
         props = self.sclasses(w)
         if isinstance(prop, str):
             ans = [prop in props]
@@ -2292,7 +2292,7 @@ class StyleSheetManager:
                 scaled = max(float(sz) * factor, 1)
             except Exception as e:
                 g.es('ssm.rescale_fonts:', e)
-                return None
+                return matchobj.group(0)
             return f'{prefix} {scaled:.1f}{units}'
 
         newsheet = re.sub(RE, scale, sheet)

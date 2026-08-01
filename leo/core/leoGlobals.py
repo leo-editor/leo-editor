@@ -3414,7 +3414,7 @@ def isValidLanguage(language: str) -> bool:
 
 # @+node:ekr.20250403040834.1: *3* --- to be deprecated! Using directives list
 # @+node:ekr.20080827175609.52: *4* g.scanAtCommentAndLanguageDirectives (deprecated)
-def scanAtCommentAndAtLanguageDirectives(aList: list) -> dict[str, str] | None:
+def scanAtCommentAndAtLanguageDirectives(aList: list) -> dict[str, Any] | None:
     """
     Scan aList for @comment and @language directives.
 
@@ -3899,7 +3899,7 @@ def guessExternalEditor(c: Cmdr | None = None) -> str:
         and g.app.db.get("LEO_EDITOR")
     )
     if editor:
-        return editor
+        return str(editor)
     # fallbacks
     platform = sys.platform.lower()
     if platform.startswith('win'):
@@ -7650,7 +7650,7 @@ def getDocStringForFunction(func: Callable) -> str:
     """Return the docstring for a function that creates a Leo command."""
 
     def name(func: Callable) -> str:
-        return func.__name__ if hasattr(func, '__name__') else '<no __name__>'
+        return str(func.__name__) if hasattr(func, '__name__') else '<no __name__>'
 
     def get_defaults(func: Callable, i: int) -> Value:
         defaults = inspect.getfullargspec(func)[3]

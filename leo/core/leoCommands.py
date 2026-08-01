@@ -1421,7 +1421,7 @@ class Commands:
             g.inScript = g.app.inScript = True  # g.inScript is a synonym for g.app.inScript.
             if c.write_script_file:
                 scriptFile = self.writeScriptFile(script)
-                exec(compile(script, scriptFile, 'exec'), d)
+                exec(compile(script, scriptFile or '<string>', 'exec'), d)
             else:
                 exec(script, d)
             # Return the optional value of a 'result' global, if defined, to be returned.
@@ -3620,7 +3620,7 @@ class Commands:
     universallCallback = universalCallback
 
     # @+node:ekr.20070115135502: *4* c.writeScriptFile
-    def writeScriptFile(self, script: str) -> str:
+    def writeScriptFile(self, script: str) -> str | None:
         # Get the path to the file.
         c = self
         if path := c.config.getString('script-file-path'):
@@ -4605,7 +4605,7 @@ class Commands:
         h = p.h.lower()
         if extend:
             prefix = c.navPrefix + ch
-            return h.startswith(prefix.lower()) and prefix
+            return prefix if h.startswith(prefix.lower()) else ''
         if h.startswith(ch):
             return ch
         # New feature: search for first non-blank character after @x for common x.
@@ -4864,7 +4864,7 @@ class Commands:
     # @+node:ekr.20031218072017.2958: *6* c.canContractParent
     def canContractParent(self) -> bool:
         c = self
-        return c.p.parent()
+        return bool(c.p.parent())
 
     # @+node:ekr.20031218072017.2959: *6* c.canContractSubheads
     def canContractSubheads(self) -> bool:
@@ -4973,7 +4973,7 @@ class Commands:
     # @+node:ekr.20031218072017.2970: *6* c.canMoveOutlineDown
     def canMoveOutlineDown(self) -> bool:
         c, p = self, self.p
-        return p and p.visNext(c)
+        return bool(p and p.visNext(c))
 
     # @+node:ekr.20031218072017.2971: *6* c.canMoveOutlineLeft
     def canMoveOutlineLeft(self) -> bool:
@@ -4984,15 +4984,15 @@ class Commands:
                 p.moveToParent()
                 return p != bunch.p and bunch.p.isAncestorOf(p)
             return False
-        return p and p.hasParent()
+        return bool(p and p.hasParent())
 
     # @+node:ekr.20031218072017.2972: *6* c.canMoveOutlineRight
     def canMoveOutlineRight(self) -> bool:
         c, p = self, self.p
         if c.hoistStack:
             bunch = c.hoistStack[-1]
-            return p and p.hasBack() and p != bunch.p
-        return p and p.hasBack()
+            return bool(p and p.hasBack() and p != bunch.p)
+        return bool(p and p.hasBack())
 
     # @+node:ekr.20031218072017.2973: *6* c.canMoveOutlineUp Bug!
     def canMoveOutlineUp(self) -> bool:
@@ -5032,7 +5032,7 @@ class Commands:
     # @+node:ekr.20031218072017.2975: *6* c.canPromote
     def canPromote(self) -> bool:
         p = self.p
-        return p and p.hasChildren()
+        return bool(p and p.hasChildren())
 
     # @+node:ekr.20031218072017.2977: *6* c.canSelect....
     def canSelectThreadBack(self) -> bool:
@@ -5045,11 +5045,11 @@ class Commands:
 
     def canSelectVisBack(self) -> bool:
         c, p = self, self.p
-        return p.visBack(c)
+        return bool(p.visBack(c))
 
     def canSelectVisNext(self) -> bool:
         c, p = self, self.p
-        return p.visNext(c)
+        return bool(p.visNext(c))
 
     # @+node:ekr.20031218072017.2978: *6* c.canShiftBodyLeft/Right
     def canShiftBodyLeft(self) -> bool:
@@ -5062,11 +5062,11 @@ class Commands:
     # @+node:ekr.20031218072017.2979: *6* c.canSortChildren, canSortSiblings
     def canSortChildren(self) -> bool:
         p = self.p
-        return p and p.hasChildren()
+        return bool(p and p.hasChildren())
 
     def canSortSiblings(self) -> bool:
         p = self.p
-        return p and (p.hasNext() or p.hasBack())
+        return bool(p and (p.hasNext() or p.hasBack()))
 
     # @+node:ekr.20031218072017.2980: *6* c.canUndo & canRedo
     def canUndo(self) -> bool:

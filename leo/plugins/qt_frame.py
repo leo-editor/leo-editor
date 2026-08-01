@@ -2585,7 +2585,7 @@ class LeoQtLog(leoFrame.LeoLog):
         createText: bool = True,
         widget: QWidget | None = None,
         wrap: str = 'none',
-    ) -> QWidget:  # Widget or LeoQTextBrowser.
+    ) -> QWidget | qt_text.QTextEditWrapper:  # Widget or LeoQTextBrowser.
         """
         Create a new tab in tab widget
         if widget is None, Create a QTextBrowser,
@@ -3921,6 +3921,7 @@ class QtIconBarClass:
         c = self.c
         c2, p = controller.open_gnx(c, gnx)
         if p:
+            assert c2 is not None
             assert c2.positionExists(p)
             if c == c2:
                 c2.selectPosition(p)

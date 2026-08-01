@@ -117,7 +117,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
     QEvent: TypeAlias = QtCore.QEvent
     Match = re.Match
-    Match_Iter = Iterator[re.Match[str]]
+    Match_Iter = Iterator[re.Match[str]] | None
     Match_List = list[tuple[Position, Match_Iter]]
     QWidget = QtWidgets.QWidget
     QListWidget = QtWidgets.QListWidget
@@ -220,8 +220,10 @@ def install_qt_quicksearch_tab(c: Cmdr) -> None:
 
 
 # @+node:ekr.20111014074810.15659: *3* matchLines
-def matchlines(b: str, miter: Iterator[Match[str]]) -> list:
-    res = []
+def matchlines(b: str, miter: Iterator[Match[str]] | None) -> list:
+    res: list = []
+    if miter is None:
+        return res
     for m in miter:
         st, en = g.getLine(b, m.start())
         li = b[st:en].strip()
@@ -405,7 +407,7 @@ class QuickSearchController:
 
         def searcher(inp: str) -> tuple[Match_List, Match_List]:
             if self.frozen:
-                return None
+                return [], []
             exp = inp.replace(" ", "*")
             res = self.bgSearch(exp)
             return res
@@ -660,7 +662,7 @@ class QuickSearchController:
     # @+node:ville.20121118193144.3620: *3* bgSearch
     def bgSearch(self, pat: str) -> tuple[Match_List, Match_List]:
         if self.frozen:
-            return None
+            return [], []
         if not pat.startswith('r:'):
             hpat = fnmatch.translate('*' + pat + '*').replace(r"\Z(?ms)", "")
             flags = re.IGNORECASE

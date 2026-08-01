@@ -87,7 +87,7 @@ def runSaveFileDialog(
     *,
     filetypes: list[tuple[str, str]] | None = None,
     defaultextension='',  # Not used.
-) -> bytes:
+) -> bytes | None:
     """Call zenity's save file dialog."""
     # initialdir=g.app.globalOpenDir or g.os_path_abspath(os.getcwd())
     return callZenity(title, save=True)

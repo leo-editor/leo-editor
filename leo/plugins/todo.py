@@ -914,7 +914,7 @@ class todoController:
                 self.loadIcons(nd)  # update progress icon
 
     # @+node:tbrown.20090119215428.35: *4* todoController.recalc_time
-    def recalc_time(self, p: Position | None = None, clear: bool = False) -> tuple[str, str]:
+    def recalc_time(self, p: Position | None = None, clear: bool = False) -> tuple[str | None, str | None]:
         if p is None:
             p = self.c.currentPosition()
         v = p.v
@@ -1411,7 +1411,7 @@ class todoController:
         self.ui.UI.txtDetails.setToolTip("Priority set %s" % (str(prisetdate).strip() or '?'))
 
     # @+node:tbrown.20121129095833.39490: *3* todoController.unl_to_pos
-    def unl_to_pos(self, unl: Any, for_p: Any) -> tuple[Cmdr, Position]:
+    def unl_to_pos(self, unl: Any, for_p: Any) -> tuple[Cmdr | None, Position | None]:
         """ "unl may be an outline (like c) or an UNL (string)
 
         return c, p where c is an outline and p is a node to copy data to

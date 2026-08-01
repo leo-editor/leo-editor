@@ -15,7 +15,6 @@ import sys
 import textwrap
 import time
 from typing import Any, TYPE_CHECKING
-from types import ModuleType
 from leo.core import leoGlobals as g
 from leo.external import codewise
 from leo.core.leoFrame import NullLog
@@ -806,7 +805,7 @@ class AutoCompleterClass:
         return aList
 
     # @+node:ekr.20110512090917.14466: *4* ac.get_leo_namespace
-    def get_leo_namespace(self, prefix: str) -> dict[str, ModuleType]:
+    def get_leo_namespace(self, prefix: str) -> dict[str, Any]:
         """
         Return an environment in which to evaluate prefix.
         Add some common standard library modules as needed.
