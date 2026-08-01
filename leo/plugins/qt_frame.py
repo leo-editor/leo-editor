@@ -12,7 +12,7 @@ import platform
 import string
 import sys
 import time
-import urllib
+import urllib.parse
 from typing import cast, Any, TYPE_CHECKING
 from leo.commands import gotoCommands
 from leo.core.leoAPI import StringTextWrapper

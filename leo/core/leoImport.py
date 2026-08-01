@@ -11,7 +11,7 @@ import re
 import textwrap
 import time
 from typing import Any, TYPE_CHECKING
-import urllib
+import urllib.parse
 
 #
 # Third-party imports.

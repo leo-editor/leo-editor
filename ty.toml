@@ -42,3 +42,10 @@ exclude = [
 # leo/core, leo/commands, leo/plugins, leo/modes, leo/external -- the
 # same reason .mypy.ini disables `attr-defined` for those packages.
 unresolved-attribute = "ignore"
+
+# Mirrors .mypy.ini's `ignore_missing_imports = True`. Covers both
+# genuinely optional third-party deps (flake8, matplotlib, enchant,
+# whoosh, ...) not installed in every environment, and Leo's
+# TYPE_CHECKING-only imports of names that are conditionally/
+# dynamically defined at runtime (leoQt.py, leoGui.py, leoApp.py).
+unresolved-import = "ignore"
