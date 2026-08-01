@@ -2620,7 +2620,7 @@ class LeoQtLog(leoFrame.LeoLog):
             else:
                 widget.leo_log_wrapper = None  # Tell the truth.
             g.app.gui.setFilter(c, widget, contents, 'tabWidget')
-            self.contentsDict[tabName] = contents
+            self.contentsDict[tabName] = cast(Any, contents)
             self.tabWidget.addTab(contents, tabName)
         return contents
 

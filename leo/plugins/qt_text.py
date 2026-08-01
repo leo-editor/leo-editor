@@ -6,7 +6,7 @@
 # @+node:ekr.20220416085845.1: ** << qt_text imports & annotations >>
 from __future__ import annotations
 from collections.abc import Callable
-from typing import Any, TYPE_CHECKING
+from typing import Any, cast, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtGui, Qsci, QtWidgets
 from leo.core.leoQt import ContextMenuPolicy, Key, KeyboardModifier
@@ -1691,7 +1691,7 @@ class QTextEditWrapper(QTextMixin):
                     c.k.keyboardQuit(setFocus=False)
 
             # @-others
-            self.widget.mouseReleaseEvent = mouseReleaseEvent
+            cast(Any, self.widget).mouseReleaseEvent = mouseReleaseEvent
 
     # @+node:ekr.20200312052821.1: *3* QTextEditWrapper.repr
     def __repr__(self) -> str:

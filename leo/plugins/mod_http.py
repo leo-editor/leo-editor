@@ -234,7 +234,7 @@ except Exception:
     asynchat = asyncore = None  # type:ignore
 import http.server
 import json
-from typing import Any
+from typing import Any, cast
 import io
 import os
 import select
@@ -287,7 +287,7 @@ def init():
                 % (config.http_ip, config.http_port, e)
             )
             return False
-        asyncore.read = a_read
+        asyncore.read = cast(Any, a_read)
         g.registerHandler("idle", plugin_wrapper)
         g.es("http serving enabled at %s:%s" % (config.http_ip, config.http_port), color="purple")
     g.plugin_signon(__name__)
@@ -336,7 +336,7 @@ def onFileOpen(tag, keywords):
     getConfiguration(c)
     if config.http_active and not wasactive:  # Ok for unit testing:
         Server('', config.http_port, RequestHandler)
-        asyncore.read = a_read
+        asyncore.read = cast(Any, a_read)
         g.registerHandler("idle", plugin_wrapper)
         g.es("http serving enabled on port %s, " % (config.http_port), color="purple")
 

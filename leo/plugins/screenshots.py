@@ -312,6 +312,7 @@ the @slideshow tree whose sanitized name is
 # @+node:ekr.20100908110845.5604: ** << imports >>
 import copy
 import glob
+from typing import Any, cast
 import os
 import shutil
 import subprocess
@@ -1950,7 +1951,7 @@ class ScreenShotController:
         else:
             s = '.. image:: %s' % sc.directive_fn.replace('\\', '/')
         if p.b.find(s) == -1:
-            p.b = p.b.rstrip() + '\n\n%s\n\n' % (s)
+            cast(Any, p).b = p.b.rstrip() + '\n\n%s\n\n' % (s)
 
     # @+node:ekr.20101113193341.5452: *6* delete_at_url_built_slide_node
     def delete_at_url_built_slide_node(self, p):

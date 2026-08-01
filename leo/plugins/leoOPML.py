@@ -74,6 +74,7 @@ If True, when expanding as above, skip blank dict entries.
 # @+<< imports >>
 # @+node:ekr.20060904103412.3: ** << imports >>
 import io
+from typing import Any, cast
 import xml.sax
 import xml.sax.saxutils
 from leo.core import leoGlobals as g
@@ -726,7 +727,7 @@ class SaxContentHandler(xml.sax.saxutils.XMLGenerator):
     def endBodyText(self):
         """End a <leo:body> element."""
         if self.content:
-            self.node.bodyString = ''.join(self.content)
+            cast(Any, self.node).bodyString = ''.join(self.content)
         self.content = []
 
     # @+node:ekr.20060917185948: *4* endOutline
@@ -782,7 +783,7 @@ class SaxContentHandler(xml.sax.saxutils.XMLGenerator):
 
     # @+node:ekr.20060904141220.34: *5* doOutlineAttributes
     def doOutlineAttributes(self, attrs):
-        node = self.node
+        node = cast(Any, self.node)
         for bunch in self.attrsToList(attrs):
             name, val = bunch.name, bunch.val
             if name == 'text':  # Text is the 'official' opml attribute for headlines.

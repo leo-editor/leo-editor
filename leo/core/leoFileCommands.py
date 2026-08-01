@@ -1739,7 +1739,7 @@ class FileCommands:
                         g.printObj(p.v.unknownAttributes)
 
             # result for specific starting p
-            result = {
+            result: dict[str, Value] = {
                 'leoHeader': {'fileFormat': 2},
                 'vnodes': [self.leojs_vnode(sp, gnxSet)],
                 'tnodes': {

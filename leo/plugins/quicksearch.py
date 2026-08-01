@@ -746,7 +746,7 @@ class QuickSearchController:
 
         # tgt = self.its.get(it and id(it))
 
-        tgt: Callable = self.its.get(id(it))
+        tgt: Callable | None = self.its.get(id(it))
         if not tgt:
             return
         # if Ctrl key is down, delete item and
