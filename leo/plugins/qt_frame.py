@@ -574,7 +574,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 return self.oldEvent(event)
 
             # @+node:ekr.20131118172620.16895: *7* EventWrapper.keyRelease
-            def keyRelease(self, event: QEvent) -> bool:
+            def keyRelease(self, event: LeoKeyEvent) -> bool:
                 return self.oldEvent(event)
 
             # @+node:ekr.20131118172620.16893: *7* EventWrapper.wrapper
