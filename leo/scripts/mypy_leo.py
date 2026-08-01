@@ -25,7 +25,8 @@ os.chdir(leo_editor_dir)
 # @-<< mypy_leo.py: imports & startup >>
 
 python = sys.executable
-command = rf"{python} -m mypy leo"
+args = ''.join(sys.argv[1:])
+command = rf"{python} -m mypy {args} leo"
 subprocess.Popen(command, shell=True).communicate()
 
 # @@language python
