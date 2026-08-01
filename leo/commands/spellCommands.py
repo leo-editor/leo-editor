@@ -37,8 +37,10 @@ def cmd(name: str) -> Callable:
 class BaseSpellWrapper:
     """Code common to EnchantWrapper and DefaultWrapper"""
 
-    # pylint: disable=no-member
     # Subclasses set self.c and self.d
+    c: Cmdr
+    d: dict
+
     # @+others
     # @+node:ekr.20150514063305.513: *3* BaseSpellWrapper.clean_dict
     def clean_dict(self, fn: str) -> None:
@@ -71,7 +73,7 @@ class BaseSpellWrapper:
             f = open(fn, mode='wb')
             f.close()
             g.note(f"created: {fn}")
-        except IOError:
+        except OSError:
             g.error(f"can not create: {fn}")
         except Exception:
             g.error(f"unexpected error creating: {fn}")
@@ -91,6 +93,11 @@ class BaseSpellWrapper:
         except Exception:
             return {}
 
+    # @+node:ekr.20260725045445.1: *3* BaseSpellWrapper.find_user_dict
+    def find_user_dict(self) -> str:
+        """Must be overridden in subclasses"""
+        return ''
+
     # @+node:ekr.20150514063305.515: *3* BaseSpellWrapper.ignore
     def ignore(self, word: str) -> None:
         self.d.add_to_session(word)
@@ -103,26 +110,26 @@ class BaseSpellWrapper:
         """
         d = self.d
         if not d:
-            return None
+            return []
         if d.check(word):
-            return None
+            return []
         # Speed doesn't matter here. The more we find, the more convenient.
         # Remove all digits.
         word = ''.join([i for i in word if not i.isdigit()])
         if d.check(word) or d.check(word.lower()):
-            return None
+            return []
         if word.find('_') > -1:
             # Snake case.
             words = word.split('_')
             for word2 in words:
                 if not d.check(word2) and not d.check(word2.lower()):
                     return d.suggest(word)
-            return None
+            return []
         if words := g.unCamel(word):
             for word2 in words:
                 if not d.check(word2) and not d.check(word2.lower()):
                     return d.suggest(word)
-            return None
+            return []
         return d.suggest(word)
 
     # @+node:ekr.20180209142310.1: *3* BaseSpellWrapper.show_info
@@ -143,7 +150,7 @@ class BaseSpellWrapper:
 class DefaultDict:
     """A class with the same interface as the enchant dict class."""
 
-    def __init__(self, words: list[str] = None) -> None:
+    def __init__(self, words: list[str] | None = None) -> None:
         self.added_words: set[str] = set()
         self.ignored_words: set[str] = set()
         self.words: set[str] = set() if words is None else set(words)
@@ -264,15 +271,15 @@ class DefaultWrapper(BaseSpellWrapper):
         return fn if g.os_path_exists(fn) else None
 
     # @+node:ekr.20230926171905.1: *3* DefaultWrapper.find_user_dict
-    def find_user_dict(self) -> str | None:
+    def find_user_dict(self) -> str:
         """Return the full path to the global dictionary."""
         c = self.c
-        fn = c.config.getString('enchant-local-dictionary')
+        fn = c.config.getString('enchant-local-dictionary') or ''
         if fn and g.os_path_exists(fn):
             return fn
         # Default to ~/.leo/main_spelling_dict.txt
         fn = g.finalize_join(g.app.homeDir, '.leo', 'spellpyx.txt')
-        return fn if g.os_path_exists(fn) else None
+        return fn if g.os_path_exists(fn) else ''
 
     # @+node:ekr.20180207073815.1: *3* DefaultWrapper.read_words
     def read_words(self, kind: str, fn: str) -> set[str]:
@@ -313,10 +320,12 @@ class DefaultWrapper(BaseSpellWrapper):
 
     # @+node:ekr.20180211104628.1: *3* DefaultWrapper.save_main/user_dict
     def save_main_dict(self, trace: bool = False) -> None:
-        self.save_dict('main', self.main_fn, trace=trace)
+        if self.main_fn:
+            self.save_dict('main', self.main_fn, trace=trace)
 
     def save_user_dict(self, trace: bool = False) -> None:
-        self.save_dict('user', self.user_fn, trace=trace)
+        if self.user_fn:
+            self.save_dict('user', self.user_fn, trace=trace)
 
     # @+node:ekr.20180209141933.1: *3* DefaultWrapper.show_info
     def show_info(self) -> None:
@@ -408,7 +417,7 @@ class EnchantWrapper(BaseSpellWrapper):
         """Open or create the dict with the given fn."""
         language = self.language
         if not fn or not language:
-            return None
+            return {}
         if g.app.spellDict:
             return g.app.spellDict
         if not g.os_path_exists(fn):
@@ -476,7 +485,7 @@ class SpellCommandsClass(BaseEditCommandsClass):
             log.selectTab(tabName)
             self.handler = SpellTabHandler(c, tabName)
         # Bug fix: 2013/05/22.
-        if not self.handler.loaded:
+        if self.handler and not self.handler.loaded:
             log.deleteTab(tabName)
         # spell as you type stuff
         self.suggestions: list[str] = []
@@ -552,6 +561,9 @@ class SpellCommandsClass(BaseEditCommandsClass):
         if kwargs['ch'] not in '\'",.:) \n\t':
             return
         c = self.c
+        handler = c.spellCommands.handler
+        if not handler:
+            return  # PR #4812
         spell_ok = True
         if self.spell_as_you_type:  # might just be for wrapping
             w = c.frame.body.wrapper
@@ -560,8 +572,7 @@ class SpellCommandsClass(BaseEditCommandsClass):
             word = txt[:i].rsplit(None, 1)[-1]
             if word := ''.join(i if i.isalpha() else ' ' for i in word).split():
                 word = word[-1]
-                ec = c.spellCommands.handler.spellController
-                if suggests := ec.process_word(word):
+                if suggests := handler.spellController.process_word(word):
                     spell_ok = False
                     g.es(
                         ' '.join(suggests[:5]) + ('...' if len(suggests) > 5 else ''),
@@ -630,7 +641,8 @@ class SpellTabHandler:
         # New in Leo 6.7.5: This class works in a null gui.
         self.c = c
         self.body = c.frame.body
-        self.currentWord: str | None = None
+        self.currentWord: str = ''
+        self.loaded = False
         self.outerScrolledFrame = None
         self.seen: set[str] = set()  # Adding a word to seen will ignore it until restart.
         self.spellController: EnchantWrapper | DefaultWrapper
@@ -768,7 +780,7 @@ class SpellTabHandler:
                 # Don't check words following `(http|https)://`.
                 i, j = g.getLine(s, ins + start)
                 line = s[i:j]
-                m = self.re_http.match(line)
+                m = self.re_http.match(line)  # type:ignore # See next line.
                 if m and word in m.group(2):
                     continue
 

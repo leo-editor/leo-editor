@@ -92,6 +92,8 @@ class PersistenceDataController:
             return None
             # was return at_data # for at-file-to-at-auto command.
         at_data = self.find_at_data_node(root)
+        if not at_data:
+            return None  # PR #4812
         self.delete_at_data_children(at_data, root)
         # Create the data for the @gnxs and @uas trees.
         aList, seen = [], []
@@ -103,10 +105,15 @@ class PersistenceDataController:
                 aList.append(p.copy())
         # Create the @gnxs node
         at_gnxs = self.find_at_gnxs_node(root)
+        if not at_gnxs:
+            return None  # PR #4812
         at_gnxs.b = ''.join([f"gnx: {p.v.gnx}\nunl: {self.relative_unl(p, root)}\n" for p in aList])
         # Create the @uas tree.
         if uas := [p for p in aList if p.v.u]:
             at_uas = self.find_at_uas_node(root)
+            if not at_uas:
+                return None  # PR #4812
+            assert at_uas.v
             if at_uas.hasChildren():
                 at_uas.v._deleteAllChildren()
             for p in uas:
@@ -121,6 +128,7 @@ class PersistenceDataController:
     # @+node:ekr.20140716021139.17773: *5* pd.delete_at_data_children
     def delete_at_data_children(self, at_data: Position, root: Position) -> None:
         """Delete all children of the @data node"""
+        assert at_data.v
         if at_data.hasChildren():
             at_data.v._deleteAllChildren()
 
@@ -198,6 +206,7 @@ class PersistenceDataController:
                 g.es_print('mismatch in cloned node', p1.h)
         else:
             # Fix #526: A major bug: this was not set!
+            assert p1.v
             p1.v.fileIndex = gnx
         g.app.nodeIndices.updateLastIndex(g.toUnicode(gnx))
 
@@ -214,7 +223,7 @@ class PersistenceDataController:
             h, b = at_ua.h, at_ua.b
             gnx = h[4:].strip()
             if b and gnx and g.match_word(h, 0, '@ua'):
-                if p := d.get(gnx):
+                if p := d.get(gnx):  # type:ignore # PR #4824
                     # Handle all recent variants of the node.
                     lines = g.splitLines(b)
                     if b.startswith('unl:') and len(lines) == 2:
@@ -274,6 +283,8 @@ class PersistenceDataController:
         if not self.at_persistence:
             return None
         data = self.find_at_data_node(root)
+        if not data:
+            return None  # PR #4812
         if p := g.findNodeInTree(self.c, data, h):
             return p
         p = data.insertAsLastChild()
@@ -282,7 +293,7 @@ class PersistenceDataController:
         return p
 
     # @+node:ekr.20140711111623.17863: *5* pd.find_at_persistence_node
-    def find_at_persistence_node(self) -> Position:
+    def find_at_persistence_node(self) -> Position | None:
         """
         Find the first @persistence node in the outline.
         If it does not exist, create it as the *last* top-level node,
@@ -311,15 +322,16 @@ class PersistenceDataController:
         if not self.at_persistence:
             return None
         auto_view = self.find_at_data_node(root)
+        if not auto_view:
+            return None  # PR #4812
         if p := g.findNodeInTree(self.c, auto_view, h):
             return p
-        p = auto_view.insertAsLastChild()
-        if p:  # #2103
+        if p := auto_view.insertAsLastChild():  # #2103
             p.h = h
         return p
 
     # @+node:ekr.20140711111623.17861: *5* pd.find_position_for_relative_unl & helpers
-    def find_position_for_relative_unl(self, root: Position, unl: str) -> Position:
+    def find_position_for_relative_unl(self, root: Position, unl: str) -> Position | None:
         """
         Given a unl relative to root, return the node whose
         unl matches the longest suffix of the given unl.
@@ -362,7 +374,7 @@ class PersistenceDataController:
         return None
 
     # @+node:ekr.20140716021139.17765: *6* pd.find_exact_match
-    def find_exact_match(self, root: Position, unl_list: list[str]) -> Position:
+    def find_exact_match(self, root: Position, unl_list: list[str]) -> Position | None:
         """
         Find an exact match of the unl_list in root's tree.
         The root does not appear in the unl_list.

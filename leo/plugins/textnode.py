@@ -91,7 +91,7 @@ def readtextnode(c, p):
         p.b = file.read()
         p.clearDirty()
         file.close()
-    except IOError as msg:
+    except OSError as msg:
         g.es("error reading %s: %s" % (name, msg))
         g.es("...not found: " + name)
         p.b = ''
@@ -106,7 +106,7 @@ def savetextnode(c, p):
         g.es("writing " + name)
         file.write(p.b)
         file.close()
-    except IOError as msg:
+    except OSError as msg:
         g.es("error writing %s: %s" % (name, msg))
         p.setDirty()
         p.setMarked()

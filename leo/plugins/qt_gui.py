@@ -5,14 +5,15 @@
 # @+<< qt_gui imports  >>
 # @+node:ekr.20140918102920.17891: ** << qt_gui imports >>
 from __future__ import annotations
-from collections.abc import Callable
-import datetime
+
+from collections.abc import Callable, Generator
+import datetime as dt
 import functools
 import re
 import sys
 import textwrap
 from time import sleep
-from typing import Any, Generator, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from leo.core import (
     leoColor,
     leoGlobals as g,
@@ -668,11 +669,11 @@ class LeoQtGui(leoGui.LeoGui):
     # @+node:ekr.20110605121601.18492: *4* LeoQtGui.panels
     def createComparePanel(self, c: Cmdr) -> None:
         """Create a qt color picker panel."""
-        pass  # This window is optional.
+        # This window is optional.
 
     def createFindTab(self, c: Cmdr, parentFrame: QWidget) -> None:
         """Create a qt find tab in the indicated frame."""
-        pass  # Now done in dw.createFindTab.
+        # Now done in dw.createFindTab.
 
     def createLeoFrame(self, c: Cmdr, title: str) -> qt_frame.LeoQtFrame:
         """Create a new Leo frame."""
@@ -726,9 +727,9 @@ class LeoQtGui(leoGui.LeoGui):
         c: Cmdr,
         title: str,
         message: str = 'Select Date/Time',
-        init: datetime.datetime | None = None,
+        init: dt.datetime | None = None,
         step_min: dict | None = None,
-    ) -> datetime.datetime | None:
+    ) -> dt.datetime | None:
         """Create and run a qt date/time selection dialog.
 
         init - a datetime, default now
@@ -757,7 +758,7 @@ class LeoQtGui(leoGui.LeoGui):
             def __init__(
                 self,
                 parent: QWidget | None = None,
-                init: datetime.datetime | None = None,
+                init: dt.datetime | None = None,
                 step_min: dict | None = None,
             ) -> None:
                 if step_min is None:
@@ -779,7 +780,7 @@ class LeoQtGui(leoGui.LeoGui):
                 self,
                 parent: QWidget | None = None,
                 message: str = 'Select Date/Time',
-                init: datetime.datetime | None = None,
+                init: dt.datetime | None = None,
                 step_min: dict | None = None,
             ) -> None:
                 if step_min is None:
@@ -802,7 +803,7 @@ class LeoQtGui(leoGui.LeoGui):
         if step_min is None:
             step_min = {}
         if not init:
-            init = datetime.datetime.now()
+            init = dt.datetime.now(tz=dt.timezone.utc)
         top_frame: QWidget | None = c.frame.top if c else None
         dialog = Calendar(top_frame, message=message, init=init, step_min=step_min)
         if c:
@@ -1169,7 +1170,7 @@ class LeoQtGui(leoGui.LeoGui):
         title: str = 'Properties',
         data: Any | None = None,
         callback: Callable | None = None,
-        buttons: list[str] = None,
+        buttons: list[str] | None = None,
     ) -> tuple[str, dict]:
         """Display a modal TkPropertiesDialog"""
         if not g.unitTesting:
@@ -1182,7 +1183,7 @@ class LeoQtGui(leoGui.LeoGui):
         c: Cmdr,
         title: str = 'Save',
         *,
-        filetypes: list[tuple[str, str]] = None,
+        filetypes: list[tuple[str, str]] | None = None,
         defaultextension: str = '',  # Not used.
     ) -> str:
         """Create and run an Qt save file dialog ."""
@@ -1495,10 +1496,10 @@ class LeoQtGui(leoGui.LeoGui):
             print(f"{var:20}: {val}")
 
         join = g.os_path_join
-        #
+
         # "Just works" for --theme and theme .leo files *provided* that
         # theme .leo files actually contain these settings!
-        #
+
         theme_name1 = getString('color-theme')
         theme_name2 = getString('theme-name')
         roots = [
@@ -1606,7 +1607,7 @@ class LeoQtGui(leoGui.LeoGui):
 
     # @+node:ekr.20140825042850.18411: *3* LeoQtGui: Utils
     # @+node:ekr.20240519114809.1: *4* LeoQtGui._self_and_subtree
-    def _self_and_subtree(self, qt_obj: QObject) -> Generator:
+    def _self_and_subtree(self, qt_obj: QObject) -> Generator[Any, None, None]:
         """Yield w and all of w's descendants."""
         if not qt_obj:
             return
@@ -1615,7 +1616,7 @@ class LeoQtGui(leoGui.LeoGui):
             yield from self._self_and_subtree(child)
 
     # @+node:ekr.20111027083744.16532: *4* LeoQtGui.enableSignalDebugging
-    import PyQt6.QtTest as QtTest
+    from PyQt6 import QtTest
 
     QSignalSpy = QtTest.QSignalSpy
     assert QSignalSpy
@@ -1707,7 +1708,7 @@ class LeoQtGui(leoGui.LeoGui):
             shadow = Shadow.Plain
         if shape is None:
             shape = Shape.NoFrame
-        #
+
         w = QtWidgets.QFrame(parent)
         self.setSizePolicy(w, kind1=hPolicy, kind2=vPolicy)
         w.setFrameShape(shape)
@@ -2306,7 +2307,7 @@ class StyleSheetManager:
         """
         if top is None:
             top = self.c.frame.top
-        master = top.leo_master or top
+        master = top.leo_master or top  # type:ignore
         return master
 
     # @+node:ekr.20140913054442.19391: *4* StyleSheetManager.set selected_style_sheet

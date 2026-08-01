@@ -32,7 +32,7 @@ class TipManager:
 
     # @+others
     # @+node:ekr.20180121041748.1: *3* tipm.get_next_tip
-    def get_next_tip(self) -> "UserTip":
+    def get_next_tip(self) -> UserTip:
         # global tips
         db = g.app.db
         # Compute list of unseen tips.
@@ -59,7 +59,9 @@ class TipManager:
 class UserTip:
     """A User Tip."""
 
-    def __init__(self, n: int = 0, tags: list[str] = None, text: str = '', title: str = '') -> None:
+    def __init__(
+        self, n: int = 0, tags: list[str] | None = None, text: str = '', title: str = ''
+    ) -> None:
         self.n = n  # Not used.
         self.tags: list[str] = tags or []  # Not used.
         self.title = title.strip()

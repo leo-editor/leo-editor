@@ -16,7 +16,7 @@ To run externally, do `python -m leo.core.leoserver --password <password>`.
 # pylint: disable=raise-missing-from
 import argparse
 import asyncio
-from collections.abc import Callable
+from collections.abc import Callable, Generator, Iterable, Iterator
 import fnmatch
 import hashlib
 import inspect
@@ -30,14 +30,14 @@ import textwrap
 import time
 import hmac
 import ssl
-from typing import Any, Generator, Iterable, Iterator, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 import warnings
 
 # Third-party.
 try:
     import tkinter as Tk
 except Exception:
-    Tk = None
+    Tk = None  # type:ignore
 # #2300
 try:
     import websockets as _websockets_module
@@ -61,7 +61,7 @@ try:
     from websockets.exceptions import ConnectionClosed, ConnectionClosedError
 
 except Exception as e:
-    websockets = None
+    websockets = None  # type:ignore
     print("Websockets setup failed:", e)
 
 # Make sure the parent of the leo directory is on sys.path.
@@ -119,7 +119,8 @@ __version__ = f"leoserver.py version {v1}.{v2}.{v3}"
 # @-<< leoserver version >>
 # @+<< leoserver globals >>
 # @+node:ekr.20220820160701.1: ** << leoserver globals >>
-g = None  # The bridge's leoGlobals module.
+g: Any = None  # The bridge's leoGlobals module.
+
 # Server defaults
 SERVER_STARTED_TOKEN = "LeoBridge started"  # Output when started successfully
 # Websocket connections (to be sent 'notify' messages)
@@ -165,19 +166,13 @@ class SetEncoder(json.JSONEncoder):
 class InternalServerError(Exception):  # pragma: no cover
     """The server violated its own coding conventions."""
 
-    pass
-
 
 class ServerError(Exception):  # pragma: no cover
     """The server received an erroneous package."""
 
-    pass
-
 
 class TerminateServer(Exception):  # pragma: no cover
     """Ask the server to terminate."""
-
-    pass
 
 
 # @+node:felix.20210626222905.1: ** class ServerExternalFilesController
@@ -200,14 +195,14 @@ class ServerExternalFilesController(ExternalFilesController):
         self.yesno_all_answer = ''  # answer, 'yes-all', or 'no-all'
 
         # if yesAll/noAll forced, then just show info message after idle_check_commander
-        self.infoMessage: str = None  # False or "detected", "refreshed" or "ignored"
+        self.infoMessage: str = ''  # Empty or "detected", "refreshed" or "ignored"
 
         g.app.idleTimeManager.add_callback(self.on_idle)
 
         self.waitingForAnswer = False
         # last p node that was asked for if not set to "AllYes\AllNo"
-        self.lastPNode: Position = None
-        self.lastCommander: Cmdr = None
+        self.lastPNode: Position | None = None
+        self.lastCommander: Cmdr | None = None
         self.unchecked_commanders: list[Cmdr] = []
 
     # @+node:felix.20210626222905.6: *3* sefc.clientResult
@@ -237,7 +232,8 @@ class ServerExternalFilesController(ExternalFilesController):
             # 4- if yes: REFRESH self.lastPNode, and unblock 'ask'
             # 5- if yesAll: REFRESH self.lastPNode, set yesAll, and unblock 'ask'
             if bool(p_result and 'yes' in p_result.lower()):
-                self.lastCommander.refreshFromDisk(self.lastPNode)
+                if self.lastCommander:  # PR #4812
+                    self.lastCommander.refreshFromDisk(self.lastPNode)
         elif self.lastCommander:
             path = self.lastCommander.fileName()
             # 6- Same but for Leo file commander (close and reopen .leo file)
@@ -300,12 +296,12 @@ class ServerExternalFilesController(ExternalFilesController):
         Check all external files corresponding to @<file> nodes in c for
         changes.
         """
-        self.infoMessage = None  # reset infoMessage
+        self.infoMessage = ''  # reset infoMessage
         # False or "detected", "refreshed" or "ignored"
 
         # #1240: Check the .leo file itself.
         self.idle_check_leo_file(c)
-        #
+
         # #1100: always scan the entire file for @<file> nodes.
         # #1134: Nested @<file> nodes are no longer valid, but this will do no harm.
         for p in c.all_unique_positions():
@@ -332,7 +328,8 @@ class ServerExternalFilesController(ExternalFilesController):
         if self.ask(c, path):
             # reload Commander
             # self.lastCommander.close() Stops too much if last file closed
-            g.app.closeLeoWindow(self.lastCommander.frame, finish_quit=False)
+            if self.lastCommander:  # PR #4812
+                g.app.closeLeoWindow(self.lastCommander.frame, finish_quit=False)
             g.leoServer.open_file({"filename": path})  # ignore returned value
 
     # @+node:felix.20210626222905.5: *5* sefc.idle_check_at_file_node
@@ -666,9 +663,7 @@ class QuickSearchController:
     def qsc_sort_by_gnx(self) -> None:
         """Return positions by gnx."""
         c = self.c
-        timeline: list[tuple[Position, Match_Iter]] = [
-            (p.copy(), None) for p in c.all_unique_positions()
-        ]
+        timeline = [(p.copy(), None) for p in c.all_unique_positions()]
         timeline.sort(key=lambda x: x[0].gnx, reverse=True)
         self.clear()
         self.addHeadlineMatches(timeline)
@@ -702,9 +697,7 @@ class QuickSearchController:
     # @+node:felix.20220225003906.13: *4* QSC.qsc_find_changed
     def qsc_find_changed(self) -> None:
         c = self.c
-        changed: list[tuple[Position, Match_Iter]] = [
-            (p.copy(), None) for p in c.all_unique_positions() if p.isDirty()
-        ]
+        changed = [(p.copy(), None) for p in c.all_unique_positions() if p.isDirty()]
         self.clear()
         self.addHeadlineMatches(changed)
 
@@ -744,7 +737,7 @@ class QuickSearchController:
         return it
 
     # @+node:felix.20220313185430.1: *5* QSC.find_tag
-    def find_tag(self, pat: str) -> list[tuple[Position, Match_Iter]]:
+    def find_tag(self, pat: str) -> list[tuple[Position, Any]]:
         """
         Return list of all positions that have matching tags
         """
@@ -784,17 +777,17 @@ class QuickSearchController:
                 resultset -= nodes
             elif op == '^':
                 resultset ^= nodes
-        aList: list[tuple[Position, Match_Iter]] = []
+        aList: list[tuple[Position, Any]] = []
         for gnx in resultset:
             n = gnxDict.get(gnx)
             if n is not None:
-                p = c.vnode2position(n)
-                aList.append((p.copy(), None))
+                if p := c.vnode2position(n):
+                    aList.append((p.copy(), None))
         return aList
 
     # @+node:felix.20220225003906.10: *4* QSC.qsc_get_history
     def qsc_get_history(self) -> None:
-        headlines: list[tuple[Position, Match_Iter]] = [
+        headlines: list[tuple[Position, Any]] = [
             (po[0].copy(), None) for po in self.c.nodeHistory.beadList
         ]
         headlines.reverse()
@@ -809,7 +802,7 @@ class QuickSearchController:
 
     # @+node:ekr.20220818083228.1: *3* QSC: helpers
     # @+node:felix.20220225003906.8: *4* QSC.addHeadlineMatches
-    def addHeadlineMatches(self, position_list: list[tuple[Position, Match_Iter]]) -> None:
+    def addHeadlineMatches(self, position_list: list[tuple[Position, Any]]) -> None:
         for p in position_list:
             it = {"type": "headline", "label": p[0].h}
             if self.addItem(it, (p[0], None)):
@@ -889,7 +882,7 @@ class QuickSearchController:
         regex: str,
         positions: list[Position],
         flags: RegexFlag = re.IGNORECASE,
-    ) -> list[tuple[Position, Match_Iter]]:
+    ) -> list[tuple[Position, Any]]:
         """
         Return the list of all tuple (Position, matchiter/None) whose headline matches the given pattern.
         """
@@ -956,23 +949,22 @@ class LeoServer:
     # @+others
     # @+node:felix.20210621233316.5: *3* server.__init__
     def __init__(self, *, silent: bool = False, testing: bool = False) -> None:
-        import leo.core.leoApp as leoApp
-        import leo.core.leoBridge as leoBridge
+        from leo.core import leoApp, leoBridge
 
         global g
         t1 = time.process_time()
-        #
+
         # Init ivars first.
-        self.c: Cmdr = None  # Currently Selected Commander.
-        self.dummy_c: Cmdr = None  # Set below, after we set g.
-        self.action: str = None
+        self.c: Cmdr | None = None  # Currently Selected Commander.
+        self.dummy_c: Cmdr | None = None  # Set below, after we set g.
+        self.action: str = ''
         self.bad_commands_list: list[str] = []  # Set below.
         self.idle_tasks: list[tuple[Callable, int | float]] = []
-        #
+
         # Debug utilities
         self.current_id = 0  # Id of action being processed.
         self.log_flag = False  # set by "log" key
-        #
+
         # Start the bridge.
         self.bridge = leoBridge.controller(
             gui='nullGui',
@@ -984,37 +976,37 @@ class LeoServer:
         self.g = g = self.bridge.globals()  # Also sets global 'g' object
         g.in_leo_server = True  # #2098.
         g.leoServer = self  # Set server singleton global reference
-        self.leoServerConfig: Param = None
-        #
+        self.leoServerConfig: Param = None  # type:ignore
+
         # * Intercept Log Pane output: Sends to client's log pane
         g.es = self._es  # pointer - not a function call
         g.es_print = self._es  # Also like es, because es_print would double strings in client
-        #
+
         # Set in _init_connection
         self.web_socket = None  # Main Control Client
         self.loop: Loop = None
-        #
+
         # To inspect commands
         self.dummy_c = g.app.newCommander(fileName=None)
         self.bad_commands_list = self._bad_commands(self.dummy_c)
-        #
+
         # * Replacement instances to Leo's codebase : getScript, IdleTime and externalFilesController
         g.getScript = self._getScript
         g.IdleTime = self._idleTime
-        #
+
         # * hook open2 for commander creation completion and inclusion in windowList
-        #
+
         g.registerHandler('open2', self._open2Hook)
         # override for selectLeoWindow
         g.app.selectLeoWindow = self._selectLeoWindow
-        #
+
         # override for "revert to file" operation
         g.app.gui.runAskOkDialog = self._runAskOkDialog
         g.app.gui.runAskYesNoDialog = self._runAskYesNoDialog
         g.app.gui.runAskYesNoCancelDialog = self._runAskYesNoCancelDialog
         g.app.gui.show_find_success = self._show_find_success
         self.headlineWidget = g.bunch(_name='tree')
-        #
+
         # Complete the initialization, as in LeoApp.initApp.
         g.app.idleTimeManager = leoApp.IdleTimeManager()
         g.app.externalFilesController = ServerExternalFilesController()  # Replace
@@ -1065,15 +1057,15 @@ class LeoServer:
         if not hasattr(self, 'c') or not self.c:
             return
         try:
-            w = self.c.headline_wrapper(self.c.p)
-            w.setSelectionRange(0, 0, insert=0)
+            if w := self.c.headline_wrapper(self.c.p):
+                w.setSelectionRange(0, 0, insert=0)
         except Exception:
             print("Could not reset headline cursor")
         # Important: this will redraw if necessary.
         self.c.frame.tree.onHeadChanged(self.c.p)
 
     # @+node:felix.20210711194729.1: *4* LeoServer._runAskOkDialog
-    def _runAskOkDialog(self, c: Cmdr, title: str, message: str = None, text: str = "Ok") -> None:
+    def _runAskOkDialog(self, c: Cmdr, title: str, message: str = '', text: str = "Ok") -> None:
         """Create and run an askOK dialog ."""
         # Called by many commands in Leo
         if message:
@@ -1088,7 +1080,7 @@ class LeoServer:
         self,
         c: Cmdr,
         title: str,
-        message: str = None,
+        message: str = '',
         yes_all: bool = False,
         no_all: bool = False,
     ) -> str:
@@ -1115,12 +1107,12 @@ class LeoServer:
         self,
         c: Cmdr,
         title: str,
-        message: str = None,
+        message: str = '',
         yesMessage: str = "Yes",
         noMessage: str = "No",
-        yesToAllMessage: str = None,
+        yesToAllMessage: str = '',
         defaultButton: str = "Yes",
-        cancelMessage: str = None,
+        cancelMessage: str = '',
     ) -> str:
         """Create and run an askYesNoCancel dialog ."""
         # used in dangerous write with title: 'Overwrite existing file?'
@@ -1277,9 +1269,8 @@ class LeoServer:
                     w_rclickChosen = toChooseFrom[i_rc]
                     toChooseFrom = w_rclickChosen.children
                 if w_rclickChosen:
-                    sc = getattr(c, "theScriptingController", None)
-                    sc.executeScriptFromButton(button, "", w_rclickChosen.position, "")
-
+                    if sc := getattr(c, "theScriptingController", None):
+                        sc.executeScriptFromButton(button, "", w_rclickChosen.position, "")
             else:
                 button.command()
         except Exception as e:
@@ -1364,11 +1355,11 @@ class LeoServer:
         if key:
             try:
                 gnx = key.command.gnx
-                sc = getattr(c, "theScriptingController", None)
-                c2, p = sc.open_gnx(c, gnx)
-                if c2:
-                    self.c = c2
-                    c2.selectPosition(p)
+                if sc := getattr(c, "theScriptingController", None):
+                    c2, p = sc.open_gnx(c, gnx)
+                    if c2:
+                        self.c = c2
+                        c2.selectPosition(p)
             except Exception as e:
                 raise ServerError(f"{tag}: exception going to script of button {index!r}: {e}")
         else:
@@ -1423,7 +1414,7 @@ class LeoServer:
                 if os.path.isfile(i_file):
                     self.open_file({"filename": i_file})
         total = len(g.app.commanders())
-        filename = self.c.fileName() if total else ""
+        filename = self.c.fileName() if self.c and total else ""
         result = {"total": total, "filename": filename}
         return self._make_response(result)
 
@@ -1572,7 +1563,7 @@ class LeoServer:
         if derived:
             ic.importDerivedFiles(parent=c.p, paths=derived)
         for fn in others:
-            junk, ext = g.os_path_splitext(fn)
+            _, ext = g.os_path_splitext(fn)
             ext = ext.lower()  # #1522
             if ext.startswith('.'):
                 ext = ext[1:]
@@ -1750,7 +1741,7 @@ class LeoServer:
         return self._make_response()
 
     # @+node:felix.20220810001309.1: *5* server.read-file-into-node
-    def read_file_into_node(self, param: Param) -> Response:
+    def read_file_into_node(self, param: Param) -> Response | None:
         """
         Read a file into a single node.
         """
@@ -2105,11 +2096,10 @@ class LeoServer:
         if "fromOutline" in param:
             fromOutline = param.get("fromOutline", False)
             fromBody = not fromOutline
-            #
             focus = self._get_focus()
             inOutline = ("tree" in focus) or ("head" in focus)
             inBody = not inOutline
-            #
+
             if fromOutline and inBody:
                 fc.in_headline = True
             elif fromBody and inOutline:
@@ -2120,7 +2110,7 @@ class LeoServer:
         backward = param.get("backward")
         regex = param.get("regex")
         word = param.get("word")
-        find_pattern = param.get("findText")
+        find_pattern = param.get("findText", '')
         if backward:
             # Set flag for show_find_options.
             fc.reverse = True
@@ -2148,7 +2138,7 @@ class LeoServer:
             p, pos, newpos = fc.do_find_next(settings)
         except Exception as e:
             raise ServerError(f"{tag}: Running interactive_search gave exception: {e}")
-        #
+
         # get focus again after the operation
         focus = self._get_focus()
         selRange = self._get_sel_range()
@@ -2168,7 +2158,6 @@ class LeoServer:
         c = self._check_c(param)
         fc = c.findCommands
         try:
-            pass
             char = param.get("char")
             if char is None:  # pragma: no cover
                 raise ServerError(f"{tag}: no char in param")
@@ -2201,11 +2190,10 @@ class LeoServer:
         fc = c.findCommands
         fromOutline = param.get("fromOutline", False)
         fromBody = not fromOutline
-        #
         focus = self._get_focus()
         inOutline = ("tree" in focus) or ("head" in focus)
         inBody = not inOutline
-        #
+
         if fromOutline and inBody:
             fc.in_headline = True
         elif fromBody and inOutline:
@@ -2219,7 +2207,7 @@ class LeoServer:
             p, pos, newpos = fc.do_find_next(settings)
         except Exception as e:
             raise ServerError(f"{tag}: Running find operation gave exception: {e}")
-        #
+
         # get focus again after the operation
         focus = self._get_focus()
         selRange = self._get_sel_range()
@@ -2241,11 +2229,11 @@ class LeoServer:
         fc = c.findCommands
         fromOutline = param.get("fromOutline", False)
         fromBody = not fromOutline
-        #
+
         focus = self._get_focus()
         inOutline = ("tree" in focus) or ("head" in focus)
         inBody = not inOutline
-        #
+
         if fromOutline and inBody:
             fc.in_headline = True
         elif fromBody and inOutline:
@@ -2258,7 +2246,7 @@ class LeoServer:
             p, pos, newpos = fc.do_find_prev(settings)
         except Exception as e:
             raise ServerError(f"{tag}: Running find operation gave exception: {e}")
-        #
+
         # get focus again after the operation
         focus = self._get_focus()
         selRange = self._get_sel_range()
@@ -2280,18 +2268,18 @@ class LeoServer:
         fc = c.findCommands
         fromOutline = param.get("fromOutline", False)
         fromBody = not fromOutline
-        #
+
         focus = self._get_focus()
         inOutline = ("tree" in focus) or ("head" in focus)
         inBody = not inOutline
-        #
+
         if fromOutline and inBody:
             fc.in_headline = True
         elif fromBody and inOutline:
             fc.in_headline = False
             c.bodyWantsFocus()
             c.bodyWantsFocusNow()
-        #
+
         try:
             settings = fc.ftm.get_settings()
             fc._remember_settings(settings)
@@ -2314,18 +2302,18 @@ class LeoServer:
         fc = c.findCommands
         fromOutline = param.get("fromOutline", False)
         fromBody = not fromOutline
-        #
+
         focus = self._get_focus()
         inOutline = ("tree" in focus) or ("head" in focus)
         inBody = not inOutline
-        #
+
         if fromOutline and inBody:
             fc.in_headline = True
         elif fromBody and inOutline:
             fc.in_headline = False
             c.bodyWantsFocus()
             c.bodyWantsFocusNow()
-        #
+
         try:
             settings = fc.ftm.get_settings()
             fc._remember_settings(settings)
@@ -2545,7 +2533,7 @@ class LeoServer:
                 print("Make sure nodetags.py is an active plugin in myLeoSettings.leo")
                 print("", flush=True)
             if hasattr(tc, 'add_tag'):
-                tc.add_tag(p, tag_param)
+                tc.add_tag(p, tag_param)  # type:ignore
         except Exception as e:
             raise ServerError(f"{tag}: Running tag_node gave exception: {e}")
         return self._make_response()
@@ -2569,7 +2557,7 @@ class LeoServer:
                 print("", flush=True)
             if hasattr(tc, 'remove_tag'):
                 if v.u and '__node_tags' in v.u:
-                    tc.remove_tag(p, tag_param)
+                    tc.remove_tag(p, tag_param)  # type:ignore
         except Exception as e:
             raise ServerError(f"{tag}: Running remove_tag gave exception: {e}")
         return self._make_response()
@@ -2591,7 +2579,8 @@ class LeoServer:
                     print("Make sure nodetags.py is an active plugin in myLeoSettings.leo")
                     print("", flush=True)
                 if hasattr(tc, 'initialize_taglist'):
-                    tc.initialize_taglist()  # reset tag list: some may have been removed
+                    # reset tag list: some may have been removed
+                    tc.initialize_taglist()  # type:ignore
         except Exception as e:
             raise ServerError(f"{tag}: Running remove_tags gave exception: {e}")
         return self._make_response()
@@ -2605,12 +2594,11 @@ class LeoServer:
         try:
             c = self._check_c(param)
             assert c
-            ap = param.get("ap")
-            gnx = ap.get("gnx")
-            if gnx:
-                for p in c.all_unique_positions(copy=False):
-                    if p.gnx == gnx:
-                        return self._make_minimal_response({'valid': True})
+            if ap := param.get("ap"):  # PR #4812
+                if gnx := ap.get("gnx", ''):
+                    for p in c.all_unique_positions(copy=False):
+                        if p.gnx == gnx:
+                            return self._make_minimal_response({'valid': True})
         except Exception:  # pragma: no cover
             pass
         return self._make_minimal_response()
@@ -2684,7 +2672,7 @@ class LeoServer:
         except Exception:  # pragma: no cover
             # If p or c was specified but is now invalid/deleted
             return self._make_response()
-        gnx = param.get("gnx")
+        gnx = param.get("gnx", '')
         v = c.fileCommands.gnxDict.get(gnx)  # vitalije
         body = ""
         if v:
@@ -2702,9 +2690,8 @@ class LeoServer:
         except Exception:  # pragma: no cover
             # If p or c was specified but is now invalid/deleted
             return self._make_response()
-        gnx = param.get("gnx")
-        w_v = c.fileCommands.gnxDict.get(gnx)  # vitalije
-        if w_v:
+        gnx = param.get("gnx", '')
+        if w_v := c.fileCommands.gnxDict.get(gnx):  # vitalije
             # Length in bytes, not just by character count.
             return self._make_minimal_response({"len": len(w_v.b.encode('utf-8'))})
         return self._make_minimal_response({"len": 0})  # empty as default
@@ -2733,7 +2720,7 @@ class LeoServer:
             line, col = wrapper.toPythonIndexRowCol(i)
             return {"line": line, "col": col, "index": i}
 
-        def row_col_pv_dict(i: int, s: str) -> dict:
+        def row_col_pv_dict(i: int | None, s: str) -> dict:
             if not i:
                 i = 0  # prevent none type
             # BUG: this uses current selection wrapper only, use
@@ -3255,7 +3242,6 @@ class LeoServer:
         or deeper than the current Leo file, the path is made relative.
         If the file path is at a higher level, it is made absolute.
         """
-        pass
         c = self._check_c(param)
         p = self._get_p(param)
         u = c.undoer
@@ -3530,15 +3516,14 @@ class LeoServer:
                 # set this node as selection
                 c.selectPosition(p)
             else:
-                ap = param.get('ap')
-                foundPNode = self._positionFromGnx(ap.get('gnx', ""), c)
-                if foundPNode:
-                    c.selectPosition(foundPNode)
-                else:
-                    print(
-                        f"{tag}: node does not exist! ap was: {json.dumps(ap, cls=SetEncoder)}",
-                        flush=True,
-                    )
+                if ap := param.get('ap'):  # PR #4812
+                    if foundPNode := self._positionFromGnx(ap.get('gnx', ""), c):
+                        c.selectPosition(foundPNode)
+                    else:
+                        print(
+                            f"{tag}: node does not exist! ap was: {json.dumps(ap, cls=SetEncoder)}",
+                            flush=True,
+                        )
         return self._make_response()
 
     # @+node:felix.20210621233316.62: *5* server.set_headline
@@ -3803,12 +3788,12 @@ class LeoServer:
         """Return the list of command names that connected clients should ignore."""
         d = c.commandsDict if c else {}  # keys are command names, values are functions.
         bad = []
-        #
+
         # leoInteg #173: Remove only vim commands.
         for command_name in sorted(d):
             if command_name.startswith(':'):
                 bad.append(command_name)
-        #
+
         # Remove other commands.
         # This is a hand-curated list.
         bad_list = [
@@ -4875,7 +4860,7 @@ class LeoServer:
             def d_to_childIndex_v(d: dict[str, str]) -> tuple[int, VNode]:
                 """Helper: return childIndex and v from d ["childIndex"] and d["gnx"]."""
                 childIndex: int
-                childIndex_s: str = d.get('childIndex')
+                childIndex_s = d.get('childIndex', '')
                 if childIndex_s is None:
                     raise ServerError(f"{tag}: no childIndex in {d}")
                 try:
@@ -4915,7 +4900,7 @@ class LeoServer:
         return p
 
     # @+node:felix.20210621233316.80: *4* server._check_c
-    def _check_c(self, param: Param = None) -> Cmdr:
+    def _check_c(self, param: Param | None = None) -> Cmdr:
         """
         Return self.c, or a specific commander chosen by id,
         or raise ServerError no commander found.
@@ -4997,7 +4982,7 @@ class LeoServer:
         except Exception as e:
             print(f"_do_leo_command Recovered from Error {e!s}", flush=True)
             return self._make_response()  # Return empty on error
-        #
+
         # Tag along a possible return value with info sent back by _make_response
         if self._is_jsonable(value):
             return self._make_response({"return-value": value})
@@ -5042,7 +5027,7 @@ class LeoServer:
         except Exception as e:
             print(f"_do_leo_command Recovered from Error {e!s}", flush=True)
             return self._make_response()  # Return empty on error
-        #
+
         # Tag along a possible return value with info sent back by _make_response
         if self._is_jsonable(value):
             return self._make_response({"return-value": value})
@@ -5081,10 +5066,10 @@ class LeoServer:
         if action is None:  # pragma: no cover
             raise ServerError(f"{tag}: no action")
 
-        param: dict | None = d.get('param', {})
+        param: dict = d.get('param', {})
         # Set log flag.
         if param:
-            self.log_flag = param.get("log")
+            self.log_flag = param.get("log", False)
         else:
             param = {}
 
@@ -5162,7 +5147,7 @@ class LeoServer:
             raise ServerError(f"{tag}: no loop ready for emit_signon")
 
     # @+node:felix.20210625230236.1: *4* server._get_commander_method
-    def _get_commander_method(self, command: str, c: Cmdr) -> Callable:
+    def _get_commander_method(self, command: str, c: Cmdr) -> Callable | None:
         """Return the given method (p_command) in the Commands class or subcommanders."""
         func = getattr(c, command, None)
         if func:
@@ -5333,13 +5318,13 @@ class LeoServer:
         try:
             if hasattr(w, "sel"):
                 return w.sel[0], w.sel[1]
-            c = self.c
-            w = c.headline_wrapper(c.p)
-            selRange = w.getSelectionRange()
-            return selRange
+            if c := self.c:  # PR #4812
+                if w := c.headline_wrapper(c.p):
+                    selRange = w.getSelectionRange()
+                    return selRange
         except Exception:
             print("Error retrieving current focused widget selection range.")
-            return 0, 0
+        return 0, 0
 
     # @+node:felix.20210705211625.1: *4* server._is_jsonable
     def _is_jsonable(self, x: Any) -> bool:
@@ -5354,7 +5339,7 @@ class LeoServer:
             return False
 
     # @+node:felix.20210621233316.94: *4* server._make_minimal_response
-    def _make_minimal_response(self, package: Package = None) -> str:
+    def _make_minimal_response(self, package: Package | None = None) -> str:
         """
         Return a json string representing a response dict.
 
@@ -5381,7 +5366,7 @@ class LeoServer:
         return json.dumps(package, separators=(',', ':'), cls=SetEncoder)
 
     # @+node:felix.20210621233316.93: *4* server._make_response
-    def _make_response(self, package: Package = None) -> str:
+    def _make_response(self, package: Package | None = None) -> str:
         """
         Return a json string representing a response dict.
 
@@ -5423,7 +5408,7 @@ class LeoServer:
             raise InternalServerError(f"{tag}: bad p kwarg: {p!r}")
         if p and not c:  # pragma: no cover
             raise InternalServerError(f"{tag}: p but not c")
-        if p and not c.positionExists(p):  # pragma: no cover
+        if c and p and not c.positionExists(p):  # pragma: no cover
             raise InternalServerError(f"{tag}: p does not exist: {p!r}")
         if c and not c.p:  # pragma: no cover
             raise InternalServerError(f"{tag}: empty c.p")
@@ -5539,7 +5524,7 @@ class LeoServer:
                 raise ServerError(f"{tag}: round-trip failed: ap: {ap!r}, p: {p!r}, p2: {p2!r}")
 
     # @+node:felix.20210625002950.1: *4* server._yieldAllRootChildren
-    def _yieldAllRootChildren(self, c: Cmdr) -> Generator:
+    def _yieldAllRootChildren(self, c: Cmdr) -> Generator[Position, None, None]:
         """Return all root children P nodes"""
         p = c.rootPosition()
         while p:
@@ -5608,12 +5593,12 @@ def main() -> None:  # pragma: no cover (tested in client)
     def general_yes_no_dialog(
         c: Cmdr,
         title: str,  # Not used.
-        message: str = None,  # Must exist.
+        message: str = '',  # Must exist.
         yesMessage: str = "&Yes",  # Not used.
         noMessage: str = "&No",  # Not used.
-        yesToAllMessage: str = None,  # Not used.
+        yesToAllMessage: str = '',  # Not used.
         defaultButton: str = "Yes",  # Not used
-        cancelMessage: str = None,  # Not used.
+        cancelMessage: str = '',  # Not used.
     ) -> str:
         """
         Monkey-patched implementation of LeoQtGui.runAskYesNoCancelDialog
@@ -5631,8 +5616,10 @@ def main() -> None:  # pragma: no cover (tested in client)
             Tk version of LeoQtGui.runAskYesNoCancelDialog, with *only* Yes/No buttons.
             """
             if g.unitTesting:
-                return None
-            root = top = val = None  # Non-locals
+                return ''
+            # Non-locals
+            root = top = None
+            val = ''
 
             # @+others  # define helper functions
             # @+node:ekr.20210801180311.4: *5* function: create_yes_no_frame
@@ -5697,7 +5684,7 @@ def main() -> None:  # pragma: no cover (tested in client)
             Qt version of LeoQtGui.runAskYesNoCancelDialog, with *only* Yes/No buttons.
             """
             if g.unitTesting:
-                return None
+                return ''
             dialog = QtWidgets.QMessageBox(None)
             dialog.setIcon(Information.Warning)
             dialog.setWindowTitle("Saved changed outline?")
@@ -5905,8 +5892,7 @@ def main() -> None:  # pragma: no cover (tested in client)
             sys.exit(1)
 
         # Sanitize limit.
-        if wsLimit < 1:
-            wsLimit = 1
+        wsLimit = max(wsLimit, 1)
 
     # @+node:felix.20260523224253.1: *3* function: get_ssl_context
     def get_ssl_context(cert_path: str | None, key_path: str | None) -> ssl.SSLContext | None:
@@ -5983,6 +5969,7 @@ def main() -> None:  # pragma: no cover (tested in client)
         connected = False
         registered = False
         peer = websocket.remote_address if websocket.remote_address else 'unknown peer'
+        assert g.app
 
         try:
             # Websocket connection startup

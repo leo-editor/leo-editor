@@ -382,11 +382,10 @@ class HelpCommandsClass(BaseEditCommandsClass):
         else:
             if commandName:
                 bindings = self.getBindingsForCommand(commandName)
-                func = c.commandsDict.get(commandName)
-                if s := g.getDocStringForFunction(func):
-                    s = self.replaceBindingPatterns(s)
-                else:
-                    s = 'no docstring available'
+                s = 'no docstring available'
+                if func := c.commandsDict.get(commandName):
+                    if s := g.getDocStringForFunction(func):
+                        s = self.replaceBindingPatterns(s)
                 # Create the title.
                 s2 = f"{commandName} ({bindings})" if bindings else commandName
                 underline = '+' * len(s2)
@@ -448,7 +447,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
             if m is None:
                 break
             name = m.group(1)
-            junk, aList = c.config.getShortcut(name)
+            _, aList = c.config.getShortcut(name)
             for bi in aList:
                 if bi.pane == 'all':
                     key = c.k.prettyPrintKey(bi.stroke.s)
@@ -820,6 +819,8 @@ class HelpCommandsClass(BaseEditCommandsClass):
     def helpForKeystroke(self, event: LeoKeyEvent | None = None) -> None:
         """Prompts for any key and prints the bindings for that key."""
         c, k = self.c, self.c.k
+        if not event:
+            return  # PR #4812
         state_name = 'help-for-keystroke'
         state = k.getState(state_name)
         if state == 0:

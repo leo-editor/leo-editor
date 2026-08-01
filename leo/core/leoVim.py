@@ -1,5 +1,7 @@
 # @+leo-ver=5-thin
 # @+node:ekr.20131109170017.16504: * @file leoVim.py
+# type:ignore
+
 # @+<< leoVim docstring >>
 # @+node:ekr.20220824081749.1: ** << leoVim docstring >>
 """
@@ -23,7 +25,7 @@ from __future__ import annotations
 from collections.abc import Callable
 import os
 import string
-from typing import cast, Any, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoGui import LeoKeyEvent
 from leo.plugins.qt_text import QTextMixin
@@ -101,7 +103,7 @@ class VimCommands:
         """The ctor for the VimCommands class."""
         self.c = c
         self.k = c.k
-        self.w = cast(QTextMixin, None)
+        self.w: QTextMixin | None = None
         # Toggled by :toggle-vim-trace.
         self.trace_flag = 'keys' in g.app.debug
         self.init_constant_ivars()
@@ -143,7 +145,7 @@ class VimCommands:
                         # d[key] = f2
 
     # @+node:ekr.20140222064735.16702: *5* vc.create_motion_dispatch_d
-    def create_motion_dispatch_d(self) -> dict[str, Callable]:
+    def create_motion_dispatch_d(self) -> dict[str, Callable | None]:
         """
         Return the dispatch dict for motions.
         Keys are strokes, values are methods.
@@ -236,7 +238,7 @@ class VimCommands:
         return d
 
     # @+node:ekr.20131111061547.16460: *5* vc.create_normal_dispatch_d
-    def create_normal_dispatch_d(self) -> dict[str, Callable]:
+    def create_normal_dispatch_d(self) -> dict[str, Callable | None]:
         """
         Return the dispatch dict for normal mode.
         Keys are strokes, values are methods.
@@ -446,7 +448,7 @@ class VimCommands:
         self.command_i: int | None = None  # The offset into the text at the start of a command.
         self.command_list: list[VimEvent] = []  # The list of all characters seen in this command.
         self.command_n: int | None = None  # The repeat count in effect at the start of a command.
-        self.command_w = cast(QTextMixin, None)  # The widget in effect at the start of a command.
+        self.command_w: QTextMixin | None = None  # The widget in effect at the start of a command.
         self.event: QEvent | None = None  # The event for the current key.
         self.extend = False  # True: extending selection.
         self.handler: Callable = self.do_normal_mode  # Use the handler for normal mode.
@@ -469,14 +471,14 @@ class VimCommands:
         self.visual_line_flag = False  # True: in visual-line state.
         self.vis_mode_i: int | None = None  # The insertion point at the start of visual mode.
         # The widget in effect at the start of visual mode.
-        self.vis_mode_w = cast(QTextMixin, None)
+        self.vis_mode_w: QTextMixin | None = None
 
     # @+node:ekr.20140803220119.18107: *5* vc.init_persistent_ivars
     def init_persistent_ivars(self) -> None:
         """Init ivars that are never re-inited."""
         c = self.c
         # The widget that has focus when a ':' command begins.  May be None.
-        self.colon_w = cast(QTextMixin, None)
+        self.colon_w: QTextMixin | None = None
         # True: allow f,F,h,l,t,T,x to cross line boundaries.
         self.cross_lines = c.config.getBool('vim-crosses-lines', default=True)
         self.register_d: dict[str, str] = {}  # Keys are letters; values are strings.
@@ -2471,12 +2473,10 @@ class VimCommands:
         # Ensure that i1 <= i2 and that i1 and i2 are in range.
         if i1 > i2:
             i1, i2 = i2, i1
-        if i1 < 0:
-            i1 = 0
+        i1 = max(i1, 0)
         if i1 >= len(s):
             i1 = len(s) - 1
-        if i2 < 0:
-            i2 = 0
+        i2 = max(i2, 0)
         if i2 >= len(s):
             i2 = len(s) - 1
         if s[i2] == '\n':
@@ -2534,7 +2534,7 @@ class VimCommands:
     def set_property(self, w: QTextMixin, focus_flag: bool) -> None:
         """Set the property of w, depending on focus and state."""
         c, state = self.c, self.state
-        #
+
         # #1221: Use a style sheet based on new settings.
         if focus_flag:
             d = {
@@ -2554,7 +2554,7 @@ class VimCommands:
         # g.trace(setting, border)
         w.setStyleSheet(border)
         return
-        #
+
         # This code doesn't work on Qt 5, because of a Qt bug.
         # It probably isn't coming back.
         # selector = f"vim_{state}" if focus_flag else 'vim_unfocused'
@@ -2597,8 +2597,7 @@ class VimCommands:
     # @+node:ekr.20140801121720.18080: *4* vc.to_bol & vc.eol
     def to_bol(self, s: str, i: int) -> int:
         """Return the index of the first character on the line containing s[i]"""
-        if i >= len(s):
-            i = len(s)
+        i = min(len(s), i)
         while i > 0 and s[i - 1] != '\n':
             i -= 1
         return i

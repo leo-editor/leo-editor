@@ -45,7 +45,8 @@ Working on this command reminds me why I never want to use or read Lisp!
 # @-<< docstring: indented_languages.py >>
 
 import re
-from typing import Any, Callable, Optional, Union
+from collections.abc import Callable
+from typing import Any
 from leo.core import leoGlobals as g
 from leo.core.leoNodes import Position
 from leo.plugins.importers.c import C_Importer
@@ -104,7 +105,7 @@ class Indented_Importer:
 
     # @+others
     # @+node:ekr.20231022073537.1: *3* indented_i.do_import (driver)
-    def do_import(self) -> Optional[Position]:
+    def do_import(self) -> Position | None:
         """
         Base_Indented_Importer.do_import: Create a top-level node containing study outlines for all files in
         c.p and its descendants.
@@ -443,7 +444,7 @@ class Indented_Lisp(Indented_Importer):
         return None
 
     # @+node:ekr.20231027085715.1: *3* indented_lisp.flatten
-    def flatten(self, obj: Union[list, Token]) -> list[Token]:
+    def flatten(self, obj: list | Token) -> list[Token]:
         """Flatten the given object."""
         if isinstance(obj, Token):
             return [obj]

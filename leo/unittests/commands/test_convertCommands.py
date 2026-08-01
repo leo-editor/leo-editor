@@ -50,7 +50,7 @@ class TestAddMypyAnnotations(LeoUnitTest):
             'c': 'Cmdr',
             'ch': 'str',
             'gnx': 'str',
-            'd': 'Dict[str, str]',
+            'd': 'dict[str, str]',
             'event': 'Event',
             'i': 'int',
             'j': 'int',

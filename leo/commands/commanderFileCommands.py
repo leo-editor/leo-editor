@@ -232,7 +232,7 @@ def importAnyFile(self: Self, event: LeoKeyEvent | None = None) -> None:
     if derived:
         ic.importDerivedFiles(parent=c.p, paths=derived)
     for fn in others:
-        junk, ext = g.os_path_splitext(fn)
+        _, ext = g.os_path_splitext(fn)
         ext = ext.lower()  # #1522
         if ext.startswith('.'):
             ext = ext[1:]
@@ -323,7 +323,7 @@ def new(self: Self, event: LeoKeyEvent | None = None, gui: LeoGui | None = None)
     )
 
     c = g.app.newCommander(
-        fileName=None,
+        fileName='',
         gui=gui,
         previousSettings=previousSettings,
     )
@@ -730,7 +730,9 @@ def save_node_as_xml_outline(self: Self, event: LeoKeyEvent | None = None) -> No
     Save a node with its subtree as an XML .leo outline file.
     Leave the outline and the file name of the Leo outline unchanged.
     """
-    c = event.c
+    c = event.c if event else None
+    if not c:
+        return
     xml = c.fileCommands.outline_to_clipboard_string()
 
     fileName = g.app.gui.runSaveFileDialog(
@@ -1018,7 +1020,7 @@ def writeFileFromNode(self: Self, event: LeoKeyEvent | None = None) -> None:
                 f.write(s)
                 f.flush()
                 g.blue('wrote:', fileName)
-        except IOError:
+        except OSError:
             g.error(f"can not write {fileName}")
 
 
@@ -1060,7 +1062,7 @@ def writeFileFromSubtree(self: Self, event: LeoKeyEvent | None = None) -> None:
                 f.write(s)
                 f.flush()
                 g.blue('wrote:', fileName)
-        except IOError:
+        except OSError:
             g.error(f"can not write {fileName}")
 
 
@@ -1136,7 +1138,7 @@ def open_theme_file(self: Self, event: LeoKeyEvent | None = None) -> None:
         return
     leo_dir = g.finalize_join(g.app.loadDir, '..', '..')
     os.chdir(leo_dir)
-    #
+
     # #1425: Open the theme file in a separate process.
     # #1564. Use execute_shell_commands.
     # #1974: allow spaces in path.

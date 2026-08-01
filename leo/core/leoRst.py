@@ -15,12 +15,12 @@ https://pypi.org/project/docutils/
 # @+<< leoRst imports >>
 # @+node:ekr.20100908120927.5971: ** << leoRst imports >>
 from __future__ import annotations
-from collections.abc import Callable
+from collections.abc import Callable, Generator
 import io
 import os
 import re
 import time
-from typing import Generator, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 # Third-part imports...
 try:
@@ -88,7 +88,7 @@ class RstCommands:
         self.encoding = 'utf-8'  # From any @encoding directive.
         self.path = ''  # The path from any @path directive.
         self.result_list: list[str] = []  # The intermediate results.
-        self.root: Position | None = None  # The @rst node being processed.
+        self.root: Position  # The @rst node being processed.
 
         # Default settings.
         self.default_underline_characters = '#=+*^~-:><'
@@ -362,7 +362,7 @@ class RstCommands:
     def write_docutils_files(self, fn: str, p: Position, source: str) -> None:
         """Write source to the intermediate file and write the output from docutils.."""
         assert p == self.root, (repr(p), repr(self.root))
-        junk, ext = g.os_path_splitext(fn)
+        _, ext = g.os_path_splitext(fn)
         ext = ext.lower()
         fn = self.computeOutputFileName(fn)
         ok = self.createDirectoryForFile(fn)
@@ -393,6 +393,7 @@ class RstCommands:
             self.n_docutils += 1
             self.report(fn)
             if self.root.v not in self.changed_vnodes:
+                assert self.root.v
                 self.changed_positions.append(self.root.copy())
                 self.changed_vnodes.add(self.root.v)
 
@@ -438,7 +439,7 @@ class RstCommands:
         Return True if the directory existed or was made.
         """
         c = self.c
-        theDir, junk = g.os_path_split(fn)
+        theDir, _ = g.os_path_split(fn)
         theDir = g.finalize(theDir)
         if g.os_path_exists(theDir):
             return True
@@ -466,6 +467,7 @@ class RstCommands:
         if changed := g.write_file_if_changed(fn, s, encoding=self.encoding):
             self.n_intermediate += 1
             self.report(fn)
+            assert self.root.v
             if self.root.v not in self.changed_vnodes:
                 self.changed_positions.append(self.root.copy())
                 self.changed_vnodes.add(self.root.v)
@@ -481,7 +483,7 @@ class RstCommands:
         join = g.finalize_join
         openDirectory = g.os_path_dirname(c.fileName())
         overrides = {'output_encoding': self.encoding}
-        #
+
         # Compute the args list if the stylesheet path does not exist.
         styleSheetArgsDict = self.handleMissingStyleSheetArgs()
         if ext == '.pdf':
@@ -505,7 +507,7 @@ class RstCommands:
             else:
                 g.error(f"unknown docutils extension: {ext}")
                 return None
-        #
+
         # Make the stylesheet path relative to open directory.
         rel_stylesheet_path = self.stylesheet_path or ''
         stylesheet_path = join(openDirectory, rel_stylesheet_path)
@@ -515,12 +517,12 @@ class RstCommands:
             rel_path = join(rel_stylesheet_path, self.stylesheet_name)
             rel_path = rel_path.replace('\\', '/')
             overrides['stylesheet'] = rel_path
-            overrides['stylesheet_path'] = None
-            overrides['embed_stylesheet'] = None
+            overrides['stylesheet_path'] = ''
+            overrides['embed_stylesheet'] = ''
         elif os.path.exists(path):
             if ext != '.pdf':
                 overrides['stylesheet'] = path
-                overrides['stylesheet_path'] = None
+                overrides['stylesheet_path'] = ''
         elif styleSheetArgsDict:
             g.es_print('using publish_argv_for_missing_stylesheets', styleSheetArgsDict)
             overrides.update(styleSheetArgsDict)  # MWC add args to settings
@@ -569,7 +571,7 @@ class RstCommands:
             s = self.publish_argv_for_missing_stylesheets
         if not s:
             return {}
-        #
+
         # Handle argument lists such as this:
         # --language=en,--documentclass=report,--documentoptions=[english,12pt,lettersize]
         d = {}
@@ -649,13 +651,13 @@ class RstCommands:
         # User-defined underlining characters make no sense in @auto-rst.
         d = p.v.u.get('rst-import', {})
         underlines2 = d.get('underlines2', '')
-        #
+
         # Do *not* set a default for overlining characters.
         if len(underlines2) > 1:
             underlines2 = underlines2[0]
             g.warning(f"too many top-level underlines, using {underlines2}")
         underlines1 = d.get('underlines1', '')
-        #
+
         # Pad underlines with default characters.
         default_underlines = '=+*^~"\'`-:><_'
         if underlines1:
@@ -757,7 +759,7 @@ class RstCommands:
     def is_rst_node(self, p: Position) -> bool:
         return g.match_word(p.h, 0, "@rst") and not g.match(p.h, 0, "@rst-")
 
-    def rst_parents(self, p: Position) -> Generator:
+    def rst_parents(self, p: Position) -> Generator[Position, None, None]:
         for p2 in p.parents():
             if p2 == self.root:
                 return
@@ -825,7 +827,7 @@ class RstCommands:
                 return f"{ch * n}\n{p.h}\n{ch * n}"
             # Generate only an underline.
             return f"{p.h}\n{ch * n}"
-        #
+
         # The user is responsible for top-level overlining.
         u = self.underline_characters  # '''#=+*^~"'`-:><_'''
         level = max(0, p.level() - self.root.level())

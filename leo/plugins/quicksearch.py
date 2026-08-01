@@ -91,11 +91,11 @@ This plugin defines the following commands that can be bound to keys:
 # @+<< quicksearch imports >>
 # @+node:ville.20090314215508.7: ** << quicksearch imports >>
 from __future__ import annotations
-from collections.abc import Callable
+from collections.abc import Callable, Iterable, Iterator
 import fnmatch
 import itertools
 import re
-from typing import Any, Iterable, Iterator
+from typing import Any
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import Qt, QtCore, QtWidgets
@@ -734,7 +734,7 @@ class QuickSearchController:
 
     # @+node:ekr.20111015194452.15700: *3* Event handlers
     # @+node:ekr.20111015194452.15686: *4* onSelectItem (quicksearch.py)
-    def onSelectItem(self, it: Iterable, it_prev: Iterable = None) -> None:
+    def onSelectItem(self, it: Iterable, it_prev: Iterable | None = None) -> None:
         c = self.c
         if not it:
             return

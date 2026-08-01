@@ -25,7 +25,7 @@ if TYPE_CHECKING:  # pragma: no cover
 def about(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Bring up an About Leo Dialog."""
     c = self
-    import datetime
+    import datetime as dt
 
     # Don't use triple-quoted strings or continued strings here.
     # Doing so would add unwanted leading tabs.
@@ -34,7 +34,7 @@ def about(self: Self, event: LeoKeyEvent | None = None) -> None:
         'Copyright 1999-%s by Edward K. Ream\n'
         'All Rights Reserved\n'
         'Leo is distributed under the MIT License'
-    ) % datetime.date.today().year  # fmt: skip
+    ) % dt.datetime.now(tz=dt.timezone.utc).year  # fmt: skip
     url = "https://leo-editor.github.io/leo-editor/"
     email = "edreamleo@gmail.com"
     g.app.gui.runAboutLeoDialog(c, version, theCopyright, url, email)
@@ -214,7 +214,7 @@ def openLeoSettings(self: Self, event: LeoKeyEvent | None = None) -> Cmdr | None
 @g.commander_command('open-my-leo-settings')
 @g.commander_command('open-my-leo-settings-leo')  # #1343.
 @g.commander_command('my-leo-settings')
-def openMyLeoSettings(self: Self, event: LeoKeyEvent | None = None) -> Cmdr:
+def openMyLeoSettings(self: Self, event: LeoKeyEvent | None = None) -> Cmdr | None:
     """Open myLeoSettings.leo in a new Leo window."""
     c, lm = self, g.app.loadManager
     if path := lm.computeMyLeoSettingsPath():
@@ -372,7 +372,7 @@ def openPythonWindow(self: Self, event: LeoKeyEvent | None = None) -> None:
     if not m:
         g.trace('can not open idlelib')
         return
-    idle_path = os.path.dirname(m.__file__)
+    idle_path = os.path.dirname(str(m.__file__))
     idle = g.os_path_join(idle_path, 'idle.py')
     args = [sys.executable, idle]
     if 1:  # Use present environment.

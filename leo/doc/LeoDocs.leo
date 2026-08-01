@@ -24095,6 +24095,16 @@ Leo's markup applies to scripts as well as external files. Leo's ``execute-scrip
     Controller(c).run # c *is* defined.
 
 **Important**: Leo recognizes section references *everywhere*, even inside strings or comments.
+
+*Note*: Section names are case insensitive and blanks are ignored within section names.
+The following sections are equivalent:
+
+.. code-block:: python
+
+    &lt;&lt; a section &gt;&gt;
+    &lt;&lt; A Section &gt;&gt;
+    &lt;&lt;a s e c t i o n&gt;&gt;
+
 </t>
 <t tx="ekr.20201014052236.1">Leo 6.3, https://leo-editor.github.io/leo-editor/ is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).

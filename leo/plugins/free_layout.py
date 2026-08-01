@@ -274,10 +274,10 @@ class FreeLayoutController:
             for name in sorted(d.keys()):
 
                 def func(event: LeoKeyEvent) -> None:
-                    if layout := d.get(name):
+                    if layout := d.get(name):  # noqa
                         c.free_layout.get_top_splitter().load_layout(c, layout)
                     else:
-                        g.trace('no layout', name)
+                        g.trace('no layout', name)  # noqa
 
                 name_s = name.strip().lower().replace(' ', '-')
                 commandName = f"free-layout-load-{name_s}"

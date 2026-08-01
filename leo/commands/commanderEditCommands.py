@@ -187,7 +187,7 @@ def convertBlanks(self: Self, event: LeoKeyEvent | None = None) -> bool:
 def convertTabs(self: Self, event: LeoKeyEvent | None = None) -> bool:
     """Convert all tabs to blanks in the selected node."""
     c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
-    #
+
     # "Before" snapshot.
     bunch = u.beforeChangeBody(p)
     # Data...
@@ -204,20 +204,20 @@ def convertTabs(self: Self, event: LeoKeyEvent | None = None) -> bool:
         result.append(s)
     if not changed:
         return False
-    #
+
     # Set p.b and w's text first.
     middle = ''.join(result)
     p.b = head + middle + tail  # Sets dirty and changed bits.
     w.setAllText(head + middle + tail)
-    #
+
     # Calculate the proper selection range (i, j, ins).
     i = len(head)
     j = max(i, len(head) + len(middle) - 1)
-    #
+
     # Set the selection range and scroll position.
     w.setSelectionRange(i, j, insert=j)
     w.setYScrollPosition(oldYview)
-    #
+
     # "after" snapshot.
     u.afterChangeBody(p, 'Convert Tabs', bunch)
     return True
@@ -228,13 +228,13 @@ def convertTabs(self: Self, event: LeoKeyEvent | None = None) -> bool:
 def dedentBody(self: Self, event: LeoKeyEvent | None = None) -> None:
     """Remove one tab's worth of indentation from all presently selected lines."""
     c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
-    #
+
     # Initial data.
     sel_1, sel_2 = w.getSelectionRange()
     tab_width = c.getTabWidth(c.p)
     head, lines, tail, oldSel, oldYview = self.getBodyLines()
     bunch = u.beforeChangeBody(p)
-    #
+
     # Calculate the result.
     changed, result = False, []
     for line in lines:
@@ -245,13 +245,13 @@ def dedentBody(self: Self, event: LeoKeyEvent | None = None) -> None:
         result.append(s)
     if not changed:
         return
-    #
+
     # Set p.b and w's text first.
     middle = ''.join(result)
     all = head + middle + tail
     p.b = all  # Sets dirty and changed bits.
     w.setAllText(all)
-    #
+
     # Calculate the proper selection range (i, j, ins).
     if sel_1 == sel_2:
         line = result[0]
@@ -262,7 +262,7 @@ def dedentBody(self: Self, event: LeoKeyEvent | None = None) -> None:
         j = len(head) + len(middle)
         if middle.endswith('\n'):  # #1742.
             j -= 1
-    #
+
     # Set the selection range and scroll position.
     w.setSelectionRange(i, j, insert=j)
     w.setYScrollPosition(oldYview)
@@ -288,10 +288,10 @@ def deleteComments(self: Self, event: LeoKeyEvent | None = None) -> None:
     """
     # @-<< deleteComments docstring >>
     c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
-    #
+
     # "Before" snapshot.
     bunch = u.beforeChangeBody(p)
-    #
+
     # Initial data.
     head, lines, tail, oldSel, oldYview = self.getBodyLines()
     if not lines:
@@ -302,7 +302,7 @@ def deleteComments(self: Self, event: LeoKeyEvent | None = None) -> None:
     if c.hasAmbiguousLanguage(p):
         language = c.getLanguageAtCursor(p, language)
     d1, d2, d3 = g.set_delims_from_language(language)
-    #
+
     # Calculate the result.
     changed, result = False, []
     if d1:
@@ -338,18 +338,18 @@ def deleteComments(self: Self, event: LeoKeyEvent | None = None) -> None:
                 result.append(s)
     if not changed:
         return
-    #
+
     # Set p.b and w's text first.
     middle = ''.join(result)
     p.b = head + middle + tail  # Sets dirty and changed bits.
     w.setAllText(head + middle + tail)
-    #
+
     # Set the selection range and scroll position.
     i = len(head)
     j = ins = max(i, len(head) + len(middle) - 1)
     w.setSelectionRange(i, j, insert=ins)
     w.setYScrollPosition(oldYview)
-    #
+
     # "after" snapshot.
     u.afterChangeBody(p, 'Delete Comments', bunch)
 
@@ -405,9 +405,9 @@ def extract(self: Self, event: LeoKeyEvent | None = None) -> None:
     head, lines, tail, oldSel, oldYview = c.getBodyLines()
     if not lines:
         return  # Nothing selected.
-    #
+
     # Remove leading whitespace.
-    junk, ws = g.skip_leading_ws_with_indent(lines[0], 0, c.tab_width)
+    _, ws = g.skip_leading_ws_with_indent(lines[0], 0, c.tab_width)
     lines = [g.removeLeadingWhitespace(s, ws, c.tab_width) for s in lines]
     h = lines[0].strip()
     ref_h = extractRef(c, h).strip()
@@ -417,7 +417,7 @@ def extract(self: Self, event: LeoKeyEvent | None = None) -> None:
         def_h = extractDef_find(c, [lines[0]])  # Only look at the first line for a definition.
     else:
         def_h = extractDef_find(c, lines)  # Default to look at all lines for a definition.
-    #
+
     # First check for reference, then definition, then default to the first line.
     if ref_h:
         h, b, middle = ref_h, lines[1:], ' ' * ws + lines[0]  # By vitalije.
@@ -425,35 +425,35 @@ def extract(self: Self, event: LeoKeyEvent | None = None) -> None:
         h, b, middle = def_h, lines, ''
     else:
         h, b, middle = lines[0].strip(), lines[1:], ''
-    #
+
     # Start the outer undo group.
     u.beforeChangeGroup(c.p, undoType)
     undoData = u.beforeInsertNode(c.p)
     p = createFirstChildNode(c, c.p, h, ''.join(b))
     u.afterInsertNode(p, undoType, undoData)
-    #
+
     # Start inner undo.
     if oldSel:
         i, j = oldSel
         w.setSelectionRange(i, j, insert=j)
     bunch = u.beforeChangeBody(c.p)  # Not p.
-    #
+
     # Update the text and selection
     c.p.v.b = head + middle + tail  # Don't redraw.
     w.setAllText(head + middle + tail)
     i = len(head)
     j = max(i, len(head) + len(middle) - 1)
     w.setSelectionRange(i, j, insert=j)
-    #
+
     # End the inner undo.
     u.afterChangeBody(c.p, undoType, bunch)
-    #
+
     # Scroll as necessary.
     if oldYview:
         w.setYScrollPosition(oldYview)
     else:
         w.seeInsertPoint()
-    #
+
     # Add the changes to the outer undo group.
     u.afterChangeGroup(c.p, undoType=undoType)
     p.parent().expand()
@@ -560,7 +560,7 @@ def extractSectionNames(self: Self, event: LeoKeyEvent | None = None) -> None:
             if not found:
                 u.beforeChangeGroup(current, undoType)  # first one!
             undoData = u.beforeInsertNode(current)
-            p = createFirstChildNode(c, current, name, None)
+            p = createFirstChildNode(c, current, name, '')
             u.afterInsertNode(p, undoType, undoData)
             found = True
     c.checkOutline()
@@ -570,6 +570,8 @@ def extractSectionNames(self: Self, event: LeoKeyEvent | None = None) -> None:
     else:
         g.warning("selected text should contain section names")
     # Restore the selection.
+    if not oldSel:
+        return  # PR #4812
     i, j = oldSel
     if w := body.wrapper:
         w.setSelectionRange(i, j)
@@ -577,7 +579,7 @@ def extractSectionNames(self: Self, event: LeoKeyEvent | None = None) -> None:
 
 
 # @+node:ekr.20171123135625.28: *3* function: findSectionName
-def findSectionName(self: Self, s: str) -> str | None:
+def findSectionName(self: Self, s: str) -> str:
     head1 = s.find("<<")
     if head1 > -1:
         head2 = s.find(">>", head1)
@@ -586,7 +588,7 @@ def findSectionName(self: Self, s: str) -> str | None:
         if head1 > -1:
             head2 = s.find("@>", head1)
     if head1 == -1 or head2 == -1 or head1 > head2:
-        name = None
+        name = ''
     else:
         name = s[head1 : head2 + 2]
     return name
@@ -618,21 +620,23 @@ def alwaysIndentBody(self: Self, event: LeoKeyEvent | None = None) -> None:
     indentation.
     """
     c, p, u, w = self, self.p, self.undoer, self.frame.body.wrapper
-    #
+    if not event:
+        return
+
     # #1801: Don't rely on bindings to ensure that we are editing the body.
     event_w = event and event.w
     if event_w != w:
         c.insertCharFromEvent(event)
         return
-    #
+
     # "Before" snapshot.
     bunch = u.beforeChangeBody(p)
-    #
+
     # Initial data.
     sel_1, sel_2 = w.getSelectionRange()
     tab_width = c.getTabWidth(p)
     head, lines, tail, oldSel, oldYview = self.getBodyLines()
-    #
+
     # Calculate the result.
     changed, result = False, []
     for line in lines:
@@ -646,13 +650,13 @@ def alwaysIndentBody(self: Self, event: LeoKeyEvent | None = None) -> None:
             result.append('\n')  # #2418
     if not changed:
         return
-    #
+
     # Set p.b and w's text first.
     middle = ''.join(result)
     all = head + middle + tail
     p.b = all  # Sets dirty and changed bits.
     w.setAllText(all)
-    #
+
     # Calculate the proper selection range (i, j, ins).
     if sel_1 == sel_2:
         line = result[0]
@@ -663,11 +667,11 @@ def alwaysIndentBody(self: Self, event: LeoKeyEvent | None = None) -> None:
         j = len(head) + len(middle)
         if middle.endswith('\n'):  # #1742.
             j -= 1
-    #
+
     # Set the selection range and scroll position.
     w.setSelectionRange(i, j, insert=j)
     w.setYScrollPosition(oldYview)
-    #
+
     # "after" snapshot.
     u.afterChangeBody(p, 'Indent Region', bunch)
 
@@ -682,7 +686,12 @@ def indentBody(self: Self, event: LeoKeyEvent | None = None) -> None:
 
     The @tabwidth directive in effect determines amount of indentation.
     """
-    c, event_w, w = self, event and event.w, self.frame.body.wrapper
+    if not event:
+        return
+    c = self
+    event_w = event.w
+    w = self.frame.body.wrapper
+
     # #1801: Don't rely on bindings to ensure that we are editing the body.
     if event_w != w:
         c.insertCharFromEvent(event)
@@ -749,23 +758,23 @@ def line_to_headline(self: Self, event: LeoKeyEvent | None = None) -> None:
     if not line:
         return
     u.beforeChangeGroup(p, undoType)
-    #
+
     # Start outer undo.
     undoData = u.beforeInsertNode(p)
     p2 = p.insertAsLastChild()
     p2.h = line
     u.afterInsertNode(p2, undoType, undoData)
-    #
+
     # "before" snapshot.
     bunch = u.beforeChangeBody(p)
     p.b = s[:i] + s[j:]
     w.setInsertPoint(i)
     p2.setDirty()
     c.setChanged()
-    #
+
     # "after" snapshot.
     u.afterChangeBody(p, undoType, bunch)
-    #
+
     # Finish outer undo.
     u.afterChangeGroup(p, undoType=undoType)
     p.expand()
@@ -896,7 +905,7 @@ def find_bound_paragraph(c: Cmdr) -> tuple[str, list[str], str]:
         tail_lines = para_lines[i:] if ended else []  # pylint: disable=undefined-loop-variable
         tail = ''.join(tail_lines)
         return head, result, tail  # string, list, string
-    return None, None, None
+    return '', [], ''
 
 
 # @+node:ekr.20171123135625.45: *3* function: rp_get_args
@@ -950,7 +959,7 @@ def rp_reformat(
     bunch = u.beforeChangeBody(p)
     if changed:
         w.setAllText(s)  # Destroys coloring.
-    #
+
     # #1748: Always advance to the next paragraph.
     i = len(head)
     j = max(i, len(head) + len(result) - 1)
@@ -966,14 +975,14 @@ def rp_reformat(
             break
     ins = min(ins, len(s))
     w.setSelectionRange(ins, ins, insert=ins)
-    #
+
     # Show more lines, if they exist.
     k = g.see_more_lines(s, ins, 4)
     p.v.insertSpot = ins
     w.see(k)  # New in 6.4. w.see works!
     if not changed:
         return
-    #
+
     # Finish.
     p.v.b = s  # p.b would cause a redraw.
     u.afterChangeBody(p, undoType, bunch)
@@ -1043,7 +1052,7 @@ def startsParagraph(s: str) -> bool:
         # This could cause problems in some situations.
         val = (g.match(s, 1, ')') or g.match(s, 1, '.')) and (len(s) < 2 or s[2] in ' \t\n')
     else:
-        val = s.startswith('@') or s.startswith('-')
+        val = s.startswith(('@', '-'))
     return val
 
 
@@ -1074,14 +1083,14 @@ def reformatSelection(
     s = head + result + tail
     if s == original:
         return
-    #
+
     # Update the text and the selection.
     w.setAllText(s)  # Destroys coloring.
     i = len(head)
     j = max(i, len(head) + len(result) - 1)
     j = min(j, len(s))
     w.setSelectionRange(i, j, insert=j)
-    #
+
     # Finish.
     p.v.b = s  # p.b would cause a redraw.
     u.afterChangeBody(p, undoType, bunch)

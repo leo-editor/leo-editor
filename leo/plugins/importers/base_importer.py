@@ -5,8 +5,9 @@
 # @+<< imports, annotations: base_importer.py >>
 # @+node:ekr.20230920091345.1: ** << imports, annotations: base_importer.py >>
 from __future__ import annotations
+from collections.abc import Generator
 import re
-from typing import Generator, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 # This import is safe because these imports happen after initing Leo.
@@ -40,10 +41,10 @@ class Block:
         self.kind = kind
         self.lines = lines
         self.name = name
-        self.parent_v: VNode = None
+        self.parent_v: VNode
         self.start = start
         self.start_body = start_body
-        self.v: VNode = None
+        self.v: VNode
 
     def __repr__(self) -> str:
         kind_name_s = f"{self.kind} {self.name}"
@@ -83,7 +84,7 @@ class Importer:
     minimum_block_size = 0  # 0: create all blocks.
 
     # Must be overridden in subclasses.
-    language: str = None
+    language: str = ''
 
     # May be overridden in subclasses.
     block_patterns: tuple = tuple()
@@ -96,7 +97,7 @@ class Importer:
         """Importer.__init__"""
         assert self.language, g.callers()  # Do not remove.
         self.c = c  # May be None.
-        self.root: Position = None
+        self.root: Position
         delims = g.set_delims_from_language(self.language)
         self.single_comment, self.block1, self.block2 = delims
         self.tab_width = 0  # Must be set later.
@@ -584,7 +585,7 @@ class Importer:
         """Move blank lines from the start of nodes to the end of previous sibling."""
         self.move_blank_lines_helper(parent.children())
 
-    def move_blank_lines_helper(self, children: Generator) -> None:
+    def move_blank_lines_helper(self, children: Generator[Position, None, None]) -> None:
         for child in children:
             self.move_one_blank_line(child)
             self.move_blank_lines_helper(child.children())

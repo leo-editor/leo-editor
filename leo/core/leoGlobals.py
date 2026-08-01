@@ -10,7 +10,7 @@ Important: This module imports no other Leo module.
 # @+node:ekr.20050208101229: ** << leoGlobals: imports >>
 from __future__ import annotations
 import binascii
-from collections.abc import Callable
+from collections.abc import Callable, Iterable, Sequence
 import codecs
 import copy
 import fnmatch
@@ -38,7 +38,7 @@ import time
 import traceback
 import types
 from types import ModuleType
-from typing import cast, Any, IO, Iterable, Sequence, TYPE_CHECKING
+from typing import cast, Any, IO, TYPE_CHECKING
 import unittest
 import urllib
 import urllib.parse as urlparse
@@ -1088,7 +1088,7 @@ class KeyStroke:
     # @+node:ekr.20180415083926.1: *4* ks.finalize_char & helper
     def finalize_char(self, s: str) -> str:
         """Perform very-last-minute translations on bindings."""
-        #
+
         # Retain "bigger" spelling for gang-of-four bindings with modifiers.
         shift_d = {
             'bksp': 'BackSpace',
@@ -1102,13 +1102,12 @@ class KeyStroke:
         if self.mods and s.lower() in shift_d:
             # Returning '' breaks existing code.
             return shift_d.get(s.lower(), '')
-        #
+
         # Make all other translations...
-        #
+
         # This dict ensures proper capitalization.
         # It also translates legacy Tk binding names to ascii chars.
         translate_d = {
-            #
             # The gang of four...
             'bksp': 'BackSpace',
             'backspace': 'BackSpace',
@@ -1117,7 +1116,6 @@ class KeyStroke:
             '\r': '\n',
             'return': '\n',
             'tab': 'Tab',
-            #
             # Special chars...
             'delete': 'Delete',
             'down': 'Down',
@@ -1131,7 +1129,6 @@ class KeyStroke:
             'prior': 'Prior',
             'right': 'Right',
             'up': 'Up',
-            #
             # Qt key names...
             'del': 'Delete',
             'dnarrow': 'Down',
@@ -1144,7 +1141,6 @@ class KeyStroke:
             'pgup': 'Prior',
             'rtarrow': 'Right',
             'uparrow': 'Up',
-            #
             # Legacy Tk binding names...
             "ampersand": "&",
             "asciicircum": "^",
@@ -1207,7 +1203,7 @@ class KeyStroke:
                         if s.capitalize() in g.app.gui.specialChars:
                             s = s.capitalize()
             return s
-        #
+
         # Translate shifted keys to their appropriate alternatives.
         return self.strip_shift(s)
 
@@ -1734,7 +1730,7 @@ class MatchBrackets:
             # Case 1: w"x//y"z Assume // is inside a string.
             # Case 2: x//y"z Assume " is inside the comment.
             # Case 3: w//x"y"z Assume both quotes are inside the comment.
-            #
+
             # That is, we assume (perhaps wrongly) that a quote terminates a
             # string if and *only* if the string starts *and* ends on the line.
             if self.single_comment:
@@ -2316,7 +2312,7 @@ class NullObject:
     def __init__(self, ivars: list[str] | None = None, *args: Args, **kwargs: KWargs) -> None:
         pass
 
-    def __call__(self, *args: Args, **kwargs: KWargs) -> "NullObject":
+    def __call__(self, *args: Args, **kwargs: KWargs) -> NullObject:
         return self
 
     def __repr__(self) -> str:
@@ -2348,7 +2344,7 @@ class NullObject:
     def __setitem__(self, key: str, val: Value) -> None:
         pass
 
-    def __iter__(self) -> "NullObject":
+    def __iter__(self) -> NullObject:
         return self
 
     def __len__(self) -> int:
@@ -2367,7 +2363,7 @@ class TracingNullObject:
     ) -> None:
         tracing_tags[id(self)] = tag  # noqa  # conflict between flake8 and black.
 
-    def __call__(self, *args: Args, **kwargs: KWargs) -> "TracingNullObject":
+    def __call__(self, *args: Args, **kwargs: KWargs) -> TracingNullObject:
         return self
 
     def __repr__(self) -> str:
@@ -2380,7 +2376,7 @@ class TracingNullObject:
     def __delattr__(self, attr: str) -> None:
         return None
 
-    def __getattr__(self, attr: str) -> "TracingNullObject":
+    def __getattr__(self, attr: str) -> TracingNullObject:
         g.null_object_print(id(self), f"attr: {attr}")
         return self  # Required.
 
@@ -2400,7 +2396,7 @@ class TracingNullObject:
         g.null_object_print(id(self), '__getitem__')
         # pylint doesn't like trailing return None.
 
-    def __iter__(self) -> "TracingNullObject":
+    def __iter__(self) -> TracingNullObject:
         g.null_object_print(id(self), '__iter__')
         return self
 
@@ -3212,7 +3208,7 @@ def findTabWidthDirectives(c: Cmdr, p: Position) -> int | None:
                 word = m.group(0)
                 i = m.start(0)
                 j = g.skip_ws(s, i + len(word))
-                junk, w = g.skip_long(s, j)
+                _, w = g.skip_long(s, j)
                 if w == 0:
                     w = None
     return w
@@ -3513,7 +3509,7 @@ def scanAtTabwidthDirectives(aList: list, issue_error_flag: bool = False) -> int
     for d in aList:
         s = d.get('tabwidth')
         if s is not None:
-            junk, val = g.skip_long(s, 0)
+            _, val = g.skip_long(s, 0)
             if val not in (None, 0):
                 return val
             if issue_error_flag and not g.unitTesting:
@@ -3639,7 +3635,7 @@ def set_delims_from_string(s: str) -> tuple[str, str, str]:
         delims[2] = delims[1]
         delims[1] = delims[0]
         delims[0] = ''
-    for i in range(0, 3):
+    for i in range(3):
         if delims[i]:
             if delims[i].startswith("@0x"):
                 # Allow delimiter definition as @0x + hexadecimal encoded delimiter
@@ -4023,7 +4019,7 @@ def readFileIntoEncodedString(fn: str, silent: bool = False) -> bytes:
     try:
         with open(fn, 'rb') as f:
             return f.read()
-    except IOError:
+    except OSError:
         if not silent:
             g.error('can not open', fn)
     except Exception:
@@ -4075,12 +4071,12 @@ def readFileIntoString(
         e, bytes_s = g.stripBOM(bytes_s)
         if not e:
             # Python's encoding comments override everything else.
-            junk, ext = g.os_path_splitext(fileName)
+            _, ext = g.os_path_splitext(fileName)
             if ext == '.py':
                 e = g.getPythonEncodingFromString(bytes_s)
         s = g.toUnicode(bytes_s, encoding=e or encoding)
         return s, e
-    except IOError:
+    except OSError:
         # Translate 'can not open' and kind, but not fileName.
         if verbose:
             g.error('can not open', '', (kind or ''), fileName)
@@ -4097,7 +4093,7 @@ def readFileIntoUnicodeString(fn: str, encoding: str = '', silent: bool = False)
         with open(fn, 'rb') as f:
             s = f.read()
         return g.toUnicode(s, encoding=encoding)
-    except IOError:
+    except OSError:
         if not silent:
             g.error('can not open', fn)
     except Exception:
@@ -4918,8 +4914,7 @@ def skip_id(s: str, i: int, chars: str = '') -> int:
 def skip_line(s: str, i: int) -> int:
     if i >= len(s):
         return len(s)
-    if i < 0:
-        i = 0
+    i = max(i, 0)
     i = s.find('\n', i)
     if i == -1:
         return len(s)
@@ -4929,8 +4924,7 @@ def skip_line(s: str, i: int) -> int:
 def skip_to_end_of_line(s: str, i: int) -> int:
     if i >= len(s):
         return len(s)
-    if i < 0:
-        i = 0
+    i = max(i, 0)
     i = s.find('\n', i)
     if i == -1:
         return len(s)
@@ -5449,7 +5443,7 @@ def gitInfo(path: str = '') -> tuple[str, str]:
         pointer = s.split()[1]
         dirs = pointer.split('/')
         branch = dirs[-1]
-    except IOError:
+    except OSError:
         g.trace('can not open:', path)
         return branch, commit
     # Try to get a better commit number.
@@ -5460,7 +5454,7 @@ def gitInfo(path: str = '') -> tuple[str, str]:
             s = f.read()
         commit = s.strip()[0:12]
         # shorten the hash to a unique shortname
-    except IOError:
+    except OSError:
         try:
             path = g.finalize_join(git_dir, 'packed-refs')
             with open(path) as f:
@@ -5468,7 +5462,7 @@ def gitInfo(path: str = '') -> tuple[str, str]:
                     if line.strip().endswith(' ' + pointer):
                         commit = line.split()[0][0:12]
                         break
-        except IOError:
+        except OSError:
             pass
     return branch, commit
 
@@ -5611,7 +5605,7 @@ def getLoadedPlugins() -> list:
     return pc.getLoadedPlugins()
 
 
-def getPluginModule(moduleName: str) -> ModuleType:
+def getPluginModule(moduleName: str) -> ModuleType | None:
     pc = g.app.pluginsController
     assert pc
     return pc.getPluginModule(moduleName)
@@ -5763,8 +5757,7 @@ def getWord(s: str, i: int) -> tuple[int, int]:
     """Return i,j such that s[i:j] is the word surrounding s[i]."""
     if i >= len(s):
         i = len(s) - 1
-    if i < 0:
-        i = 0
+    i = max(i, 0)
     # Scan backwards.
     while 0 <= i < len(s) and g.isWordChar(s[i]):
         i -= 1
@@ -5784,8 +5777,7 @@ def getLine(s: str, i: int) -> tuple[int, int]:
     """
     if i > len(s):
         i = len(s) - 1
-    if i < 0:
-        i = 0
+    i = max(i, 0)
     # A newline *ends* the line, so look to the left of a newline.
     j = s.rfind('\n', 0, i)
     if j == -1:
@@ -6189,7 +6181,7 @@ def computeWidth(s: str, tab_width: int) -> int:
     return w
 
 
-# @+node:ekr.20110727091744.15083: *4* g.wrap_lines (newer)
+# @+node:ekr.20110727091744.15083: *4* g.wrap_lines
 # @@language rest
 # @+at
 # Important note: this routine need not deal with leading whitespace.
@@ -6205,13 +6197,11 @@ def computeWidth(s: str, tab_width: int) -> int:
 
 def wrap_lines(lines: list[str], pageWidth: int, firstLineWidth: int | None = None) -> list[str]:
     """Returns a list of lines, consisting of the input lines wrapped to the given pageWidth."""
-    if pageWidth < 10:
-        pageWidth = 10
+    pageWidth = max(pageWidth, 10)
     # First line is special
     if not firstLineWidth:
         firstLineWidth = pageWidth
-    if firstLineWidth < 10:
-        firstLineWidth = 10
+    firstLineWidth = max(firstLineWidth, 10)
     outputLineWidth = firstLineWidth
     # Sentence spacing
     # This should be determined by some setting, and can only be either 1 or 2
@@ -6230,9 +6220,9 @@ def wrap_lines(lines: list[str], pageWidth: int, firstLineWidth: int | None = No
             i = k
             # DTHEIN 18-JAN-2004: wrap at exactly the text width,
             # not one character less
-            #
+
             wordLen = len(word)
-            if line.endswith('.') or line.endswith('?') or line.endswith('!'):
+            if line.endswith(('.', '?', '!')):
                 space = ' ' * sentenceSpacingWidth
             else:
                 space = ' '
@@ -6303,7 +6293,6 @@ def optimizeLeadingWhitespace(line: str, tab_width: int) -> str:
 
 def regularizeTrailingNewlines(s: str, kind: str) -> None:
     """Kind is 'asis', 'zero' or 'one'."""
-    pass
 
 
 # @+node:ekr.20091229090857.11698: *4* g.removeBlankLines
@@ -6461,24 +6450,32 @@ def enl(tabName: str = 'Log') -> None:
 
 
 # @+node:ekr.20100914094836.5892: *3* g.error, g.note, g.warning, g.red, g.blue
-def blue(*args: Args, **kwargs: KWargs) -> None:
-    g.es_print(color='blue', *args, **kwargs)
+# PR #4827
+
+
+def blue(*args: Args, **kwargs: Any) -> None:
+    kwargs['color'] = 'blue'
+    g.es_print(*args, **kwargs)
 
 
 def error(*args: Args, **kwargs: KWargs) -> None:
-    g.es_print(color='error', *args, **kwargs)
+    kwargs['color'] = 'error'
+    g.es_print(*args, **kwargs)
 
 
 def note(*args: Args, **kwargs: KWargs) -> None:
-    g.es_print(color='note', *args, **kwargs)
+    kwargs['color'] = 'note'
+    g.es_print(*args, **kwargs)
 
 
 def red(*args: Args, **kwargs: KWargs) -> None:
-    g.es_print(color='red', *args, **kwargs)
+    kwargs['color'] = 'red'
+    g.es_print(*args, **kwargs)
 
 
 def warning(*args: Args, **kwargs: KWargs) -> None:
-    g.es_print(color='warning', *args, **kwargs)
+    kwargs['color'] = 'warning'
+    g.es_print(*args, **kwargs)
 
 
 # @+node:ekr.20070626132332: *3* g.es
@@ -7080,7 +7077,7 @@ def CheckVersion(
             result = val
             break
     else:
-        raise EnvironmentError("condition must be one of '>=', '>', '==', '!=', '<', or '<='.")
+        raise OSError("condition must be one of '>=', '>', '==', '!=', '<', or '<='.")
     return result
 
 
@@ -7575,8 +7572,7 @@ def os_startfile(fname: str) -> None:
     elif sys.platform == 'darwin':
         # From Marc-Antoine Parent.
         try:
-            # Fix bug 1226358: File URL's are broken on MacOS:
-            # use fname, not quoted_fname, as the argument to subprocess.call.
+            # Use fname, not quoted_fname, as the argument to subprocess.call.
             subprocess.call(['open', fname])
         except OSError:
             pass  # There may be a spurious "Interrupted system call"
@@ -7586,8 +7582,8 @@ def os_startfile(fname: str) -> None:
         ree: io.FileIO | None = None
         try:
             wre = tempfile.NamedTemporaryFile()
-            ree = io.open(wre.name, 'rb', buffering=0)
-        except IOError:
+            ree = open(wre.name, 'rb', buffering=0)
+        except OSError:
             g.trace(f"error opening temp file for {fname!r}")
             if ree:
                 ree.close()
@@ -7602,6 +7598,7 @@ def os_startfile(fname: str) -> None:
                 (lambda ito: itPoll(fname, ree, subPopen, g, ito)),
                 delay=1000,
             )
+            assert itoPoll is not None  # PR #4826
             itoPoll.start()
             # Let the Leo-Editor process run
             # so that Leo-Editor is usable while the file is open.
@@ -7937,13 +7934,13 @@ def extractExecutableString(c: Cmdr, p: Position, s: str) -> str:
     language = c.getLanguage(p)
     if not language:
         return s
-    #
+
     # Return s if @language is unambiguous.
     pattern = r'^@language\s+(\w+)'
     matches = list(re.finditer(pattern, s, re.MULTILINE))
     if len(matches) < 2:
         return s
-    #
+
     # Scan the lines, extracting only the valid lines.
     extracting = False
     result: list[str] = []

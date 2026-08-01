@@ -5,9 +5,9 @@
 # @+<< leoPlugins imports & annotations >>
 # @+node:ekr.20220901071118.1: ** << leoPlugins imports & annotations >>
 from __future__ import annotations
-from collections.abc import Callable
+from collections.abc import Callable, Iterator, Sequence
 import sys
-from typing import Any, Iterator, Sequence, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from types import ModuleType
 from leo.core import leoGlobals as g
 
@@ -304,7 +304,7 @@ class LeoPluginsController:
         self.loadedModules: dict[str, ModuleType] = {}
         # The stack of module names. The top is the module being loaded.
         self.loadingModuleNameStack: list[str] = []
-        self.signonModule = None  # A hack for plugin_signon.
+        self.signonModule: Any = None  # A hack for plugin_signon.
         # Settings.  Set these here in case finishCreate is never called.
         self.warn_on_failure = True
         g.act_on_node = CommandChainDispatcher()
@@ -337,7 +337,7 @@ class LeoPluginsController:
         """
         if g.app.killed:
             return None
-        #
+
         # Execute hooks in some random order.
         # Return if one of them returns a non-None result.
         for bunch in self.handlers.get(tag, []):
@@ -345,7 +345,7 @@ class LeoPluginsController:
             if val is not None:
                 return val
         if 'all' in self.handlers:
-            bunches = self.handlers.get('all')
+            bunches = self.handlers.get('all', [])
             for bunch in bunches:
                 self.callTagHandler(bunch, tag, keywords)
         return None
@@ -399,7 +399,7 @@ class LeoPluginsController:
         return list(self.loadedModules.keys())
 
     # @+node:ekr.20100908125007.6020: *4* plugins.getPluginModule
-    def getPluginModule(self, moduleName: str) -> ModuleType:
+    def getPluginModule(self, moduleName: str) -> ModuleType | None:
         return self.loadedModules.get(moduleName)
 
     # @+node:ekr.20100908125007.6021: *4* plugins.isLoaded
@@ -416,17 +416,17 @@ class LeoPluginsController:
         # keys are module names: values are lists of tags.
         modules_d: dict[str, list[str]] = {}
         for tag in self.handlers:
-            bunches = self.handlers.get(tag)
+            bunches = self.handlers.get(tag, [])
             for bunch in bunches:
-                fn = bunch.fn
-                name = bunch.moduleName
+                fn = bunch.fn  # type:ignore
+                name = bunch.moduleName  # type:ignore
                 tags = modules_d.get(name, [])
                 tags.append(tag)
                 key = f"{name}.{fn.__name__}"
                 modules_d[key] = tags
         n = 4
         for module in sorted(modules_d):
-            tags = modules_d.get(module)
+            tags = modules_d.get(module, [])
             for tag in tags:
                 n = max(n, len(tag))
                 data.append((tag, module))
@@ -477,7 +477,7 @@ class LeoPluginsController:
         if not moduleOrFileName.endswith(('py', 'pyw')):
             # A module name. Return it unchanged.
             return moduleOrFileName
-        #
+
         # 1880: The legacy code implicitly assumed that os.path.dirname(fn) was empty!
         #       The new code explicitly ignores any directories in the path.
         fn = g.os_path_basename(moduleOrFileName)
@@ -558,11 +558,11 @@ class LeoPluginsController:
                 return result  # Keep the result, but do no more.
             if hasattr(result, 'init'):
                 return callInitFunction(result)
-            #
+
             # No top-level init function.
             if g.unitTesting:
                 # Do *not* load the module.
-                self.loadedModules[moduleName] = None
+                self.loadedModules[moduleName] = None  # type:ignore
                 return None
             # Guess that the module was loaded correctly.
             report(f"fyi: no top-level init() function in {moduleName}")
@@ -661,7 +661,7 @@ class LeoPluginsController:
                 g.pr('unloading', moduleName)
             del self.loadedModules[moduleName]
         for tag in self.handlers:
-            bunches = self.handlers.get(tag)
+            bunches = self.handlers.get(tag, [])
             bunches = [bunch for bunch in bunches if bunch.moduleName != moduleName]
             self.handlers[tag] = bunches
 
@@ -727,7 +727,7 @@ class LeoPluginsController:
             self.unregisterOneHandler(tags, fn)  # type:ignore[arg-type]
 
     def unregisterOneHandler(self, tag: str, fn: Callable) -> None:
-        bunches = self.handlers.get(tag)
+        bunches = self.handlers.get(tag, [])
         bunches = [bunch for bunch in bunches if bunch and bunch.fn != fn]
         self.handlers[tag] = bunches
 

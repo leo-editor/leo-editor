@@ -538,7 +538,7 @@ class CalcCore:
         useEng = self.option.boolData('UseEngNotation')
         exp = 0
         if absNum != 0.0 and (absNum < 1e-4 or absNum >= 1e7 or forceSci or useEng):
-            exp = int(math.floor(math.log10(absNum)))
+            exp = math.floor(math.log10(absNum))
             if useEng:
                 exp = 3 * (exp // 3)
             num /= 10**exp
@@ -619,7 +619,7 @@ class CalcCore:
     def numberStr(self, number, base):
         """Return string of number in given base (2-16)."""
         digits = '0123456789abcdef'
-        number = int(round(number))
+        number = round(number)
         result = ''
         sign = ''
         if number == 0:
@@ -908,7 +908,7 @@ class CalcDlg(QWidget):  # type: ignore
         self.calc = CalcCore()
         self.setWindowTitle('rpCalc')
         modPath = os.path.abspath(sys.path[0])
-        if modPath.endswith('.zip') or modPath.endswith('.exe'):
+        if modPath.endswith(('.zip', '.exe')):
             modPath = os.path.dirname(modPath)  # for py2exe/cx_freeze
 
         iconPathList = [iconPath]
@@ -2012,7 +2012,7 @@ class Option:
             self.path = os.path.join(userPath, fileName)
             if not os.path.exists(self.path):
                 modPath = os.path.abspath(sys.path[0])
-                if modPath.endswith('.zip') or modPath.endswith('.exe'):
+                if modPath.endswith(('.zip', '.exe')):
                     modPath = os.path.dirname(modPath)  # for py2exe/cx_freeze
                 self.path = os.path.join(modPath, fileName)
                 if not os.access(self.path, os.W_OK):
@@ -2040,11 +2040,11 @@ class Option:
                 with open(self.path, 'r', encoding='utf-8') as f:
                     self.loadSet(f.readlines(), self.userDict)
                     return True
-            except IOError:
+            except OSError:
                 try:
                     with open(self.path, 'w', encoding='utf-8') as f:
                         f.writelines([line + '\n' for line in defaultList])
-                except IOError:
+                except OSError:
                     print('Error - could not write to config file', self.path)
                     self.path = ''
                 return False
@@ -2165,7 +2165,7 @@ class Option:
                 with open(self.path, 'w', encoding='utf-8') as f:
                     f.writelines([line for line in fileList])
                 return True
-            except IOError:
+            except OSError:
                 print('Error - could not write to config file', self.path)
         return False
 
@@ -2275,7 +2275,6 @@ class OptionDlgItem:
     # @+node:tom.20230424130102.167: *4* updateData
     def updateData(self):
         """Dummy update function."""
-        pass
 
     # @-others
 

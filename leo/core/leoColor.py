@@ -761,14 +761,14 @@ get = getColor
 
 
 # @+node:bob.20080115070511.4: *3* function: leoColor.getRGB / getColorRGB
-def getColorRGB(name: str, default: str | None = None) -> tuple[int, int, int] | None:
+def getColorRGB(name: str, default: str = '') -> tuple[int, int, int] | None:
     """Convert a named color into an (r, g, b) tuple."""
-    s = getColor(name, default)
-    try:
-        color = int(s[1:3], 16), int(s[3:5], 16), int(s[5:7], 16)
-    except Exception:
-        color = None
-    return color
+    if s := getColor(name, default):
+        try:
+            return int(s[1:3], 16), int(s[3:5], 16), int(s[5:7], 16)
+        except Exception:
+            return None
+    return None
 
 
 getRGB = getColorRGB

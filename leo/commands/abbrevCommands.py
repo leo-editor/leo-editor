@@ -9,7 +9,7 @@ from collections.abc import Callable
 import functools
 import re
 import string
-from typing import cast, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 from leo.commands.baseCommands import BaseEditCommandsClass
@@ -41,10 +41,10 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         'abbrevs',
         'c',
         'dyna_regex',
-        'in_head',
-        'scripting_enabled',
         'expanding',
+        'in_head',
         'number_regex',
+        'scripting_enabled',
         'subst_env',
         'tree_abbrevs_d',
         'w',
@@ -62,13 +62,13 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         self.dyna_regex = re.compile(  # For dynamic abbreviations
             r'[%s%s\-_]+' % (string.ascii_letters, string.digits)
         )
-        self.in_head = False  #
+        self.in_head = False
         self.number_regex = re.compile(r'(?<!\\)\\n')  # to replace \\n but not \\\\n
         self.scripting_enabled = False  # Global setting.
         self.expanding = False  # True: expanding abbreviations.
         self.subst_env: list[str] = []  # The scripting environment.
         self.tree_abbrevs_d: dict[str, str] = {}  # Keys are names, values are (tree,tag).
-        self.w = cast(QTextMixin, None)
+        self.w: QTextMixin
 
     # @+node:ekr.20150514043850.11: *3* abbrev.expandAbbrev & helpers (entry point)
     def expandAbbrev(self, event: LeoKeyEvent | None, stroke: g.KeyStroke) -> bool:
@@ -544,7 +544,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     def init_tree_abbrev(self) -> None:
         """Init tree_abbrevs_d from @data tree-abbreviations nodes."""
         c = self.c
-        #
+
         # Careful. This happens early in startup.
         root = c.rootPosition()
         if not root:
@@ -560,12 +560,11 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         # #904: data may be a string or a list of two strings.
         aList = [data] if isinstance(data, str) else data
         for tree_s in aList:
-            #
             # Expand the tree so we can traverse it.
             if not c.canPasteOutline(tree_s):
                 return
             c.fileCommands.leo_file_encoding = 'utf-8'
-            #
+
             # As part of #427, disable all redraws.
             old_disable = g.app.disable_redraw
             try:
@@ -680,12 +679,14 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     def dynamicExpandHelper(
         self,
         event: LeoKeyEvent | None = None,
-        prefix: str | None = None,
-        aList: list[str] = None,
+        prefix: str = '',
+        aList: list[str] | None = None,
         w: QTextMixin | None = None,
     ) -> None:
         """State handler for dabbrev-expands command."""
         c, k = self.c, self.c.k
+        if not w:
+            return  # PR #4812
         self.w = w
         if prefix is None:
             prefix = ''

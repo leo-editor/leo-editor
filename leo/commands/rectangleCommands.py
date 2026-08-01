@@ -6,7 +6,7 @@
 # @+node:ekr.20150514050446.1: ** << rectangleCommands imports & annotations >>
 from __future__ import annotations
 from collections.abc import Callable
-from typing import cast, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass
 from leo.plugins.qt_text import QTextMixin
@@ -32,7 +32,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         # pylint: disable=super-init-not-called
         self.c = c
         self.theKillRectangle: list[str] = []  # Do not re-init this!
-        self.stringRect: tuple[int, int, int, int] = None
+        self.stringRect: tuple[int, int, int, int]
         self.commandsDict = {
             'c': ('clear-rectangle', self.clearRectangle),
             'd': ('delete-rectangle', self.deleteRectangle),
@@ -42,7 +42,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
             't': ('string-rectangle', self.stringRectangle),
             'y': ('yank-rectangle', self.yankRectangle),
         }
-        self.w = cast(QTextMixin, None)
+        self.w: QTextMixin
 
     # @+node:ekr.20150514043714.13: *3* RectangleCommandsClass.getRectanglePoints
     def getRectanglePoints(self, w: QTextMixin) -> tuple[int, int, int, int]:

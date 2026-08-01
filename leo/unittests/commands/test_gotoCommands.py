@@ -51,7 +51,7 @@ class TestGotoCommands(LeoUnitTest):
 
             # Init the comment delims.
             delim1, delim2 = x.get_delims(root)
-            assert (delim1, delim2) == ('#', None)
+            assert (delim1, delim2) == ('#', '')
             delims = x.get_3_delims(root)
 
             # Create contents, the file *with* sentinels.

@@ -4,7 +4,7 @@
 
 import sys
 import leo.core.leoGlobals as g
-import leo.core.leoGui as leoGui
+from leo.core import leoGui
 
 
 # pylint: disable=arguments-differ

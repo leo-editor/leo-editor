@@ -17,8 +17,8 @@ try:
     import mypy
     from mypy import api as mypy_api
 except Exception:
-    mypy = None
-    mypy_api = None
+    mypy = None  # type:ignore
+    mypy_api = None  # type:ignore
 
 try:
     import flake8  # #2248: Import only flake8.
@@ -34,7 +34,7 @@ except Exception:
 try:
     from pylint import lint
 except Exception:
-    lint = None
+    lint = None  # type:ignore
 
 # Leo imports.
 from leo.core import leoGlobals as g
@@ -540,7 +540,7 @@ class PyflakesCommand:
     class LogStream:
         """A log stream for pyflakes."""
 
-        def __init__(self, fn_n: int = 0, roots: list[Position] = None) -> None:
+        def __init__(self, fn_n: int = 0, roots: list[Position] | None = None) -> None:
             self.fn_n = fn_n
             self.roots = roots
 
@@ -665,7 +665,7 @@ class PylintCommand:
         data: list[tuple[str, Position]] = []
         is_at_file = False
         if roots := g.findRootsWithPredicate(c, root, predicate=predicate):
-            data = [(self.get_fn(p), p.copy()) for p in roots]
+            data = [(self.get_fn(p), p.copy()) for p in roots]  # type:ignore # See next line.
             data = [z for z in data if z[0] is not None]
             is_at_file = True
         else:

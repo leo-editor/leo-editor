@@ -241,7 +241,8 @@ def universal_line_numbers(root, target_p, delim_st, delim_en):
             for p1 in others_iterator(p):
                 n = numerate_node(p1, n)
             n = inc(n)
-            return (0, n - st) if delim_st else (0, n - st)
+            # return (0, n - st) if delim_st else (0, n - st)
+            return (0, n - st)  # PR #4827
         # @+node:vitalije.20170726193858.1: *4* directives in clean
         if not delim_st and g.isDirective(line):
             return 0, 0
@@ -273,7 +274,9 @@ def universal_line_numbers(root, target_p, delim_st, delim_en):
             n = inc(st)
             n = numerate_node(p1, n)
             n = inc(n)
-            return (0, n - st) if delim_st else (0, n - st)
+            # return (0, n - st) if delim_st else (0, n - st)
+            return (0, n - st)  # PR #4827
+
         # @+node:vitalije.20170726193933.1: *4* doc part
         if doc_pattern.match(line):
             if delim_st:

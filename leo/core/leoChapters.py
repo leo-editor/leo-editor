@@ -7,7 +7,7 @@
 from __future__ import annotations
 from collections.abc import Callable
 import re
-from typing import TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -79,7 +79,7 @@ class ChapterController:
         """Make chapter-select-<chapterName> command."""
         c, cc = self.c, self
         commandName = f"chapter-select-{chapterName}"
-        #
+
         # For tracing:
         # inverseBindingsDict = c.k.computeInverseBindingDict()
         if commandName in c.commandsDict:
@@ -197,7 +197,10 @@ class ChapterController:
         elif chapter.name == 'main':
             pass  # Do not use c.p.
         else:
-            chapter.p = chapter.findRootNode()
+            if p := chapter.findRootNode():
+                chapter.p = p
+            else:
+                return  # PR #4812
         # #2718: Leave the expansion state of all nodes strictly unchanged!
         #        - c.contractAllHeadlines can change c.p!
         #        - Expanding chapter.p would be confusing and annoying.
@@ -236,11 +239,11 @@ class ChapterController:
         """Return the name of a chapter containing p or None if p does not exist."""
         cc, c = self, self.c
         if not p or not c.positionExists(p):
-            return None
+            return ''
         for name in cc.chaptersDict:
             if name != 'main':
                 theChapter = cc.chaptersDict.get(name)
-                if theChapter.positionIsInChapter(p):
+                if theChapter and theChapter.positionIsInChapter(p):
                     return name
         return 'main'
 
@@ -262,12 +265,12 @@ class ChapterController:
         return None  # Not an error.
 
     # @+node:ekr.20070318124004: *4* cc.getChapter
-    def getChapter(self, name: str) -> Chapter:
+    def getChapter(self, name: str) -> Chapter | None:
         cc = self
         return cc.chaptersDict.get(name)
 
     # @+node:ekr.20070318122708: *4* cc.getSelectedChapter
-    def getSelectedChapter(self) -> Chapter:
+    def getSelectedChapter(self) -> Chapter | None:
         cc = self
         return cc.selectedChapter
 
@@ -307,7 +310,7 @@ class ChapterController:
         return s[:128]
 
     # @+node:ekr.20070615075643: *4* cc.selectChapterForPosition (calls c.redraw_later)
-    def selectChapterForPosition(self, p: Position, chapter: "Chapter" = None) -> None:
+    def selectChapterForPosition(self, p: Position, chapter: Chapter | None = None) -> None:
         """
         Select a chapter containing position p.
         New in Leo 4.11: prefer the given chapter if possible.
@@ -327,7 +330,7 @@ class ChapterController:
         if not c.positionExists(p):
             return
         # New in Leo 4.11: prefer the given chapter if possible.
-        theChapter = chapter or selChapter
+        theChapter: Any = chapter or selChapter
         if not theChapter:
             return
         # First, try the presently selected chapter.
@@ -385,8 +388,8 @@ class Chapter:
         self.name: str = g.checkUnicode(name)
         self.selectLockout = False  # True: in chapter.select logic.
         # State variables: saved/restored when the chapter is unselected/selected.
-        self.p: Position | None = c.p
-        self.root: Position | None = self.findRootNode()
+        self.p: Position = c.p
+        self.root: Position
         if cc.tt:
             cc.tt.createTab(name)
 
@@ -427,7 +430,7 @@ class Chapter:
             return
 
         # Remember the root (it may have changed) for dehoist.
-        self.root = root = self.findRootNode()
+        self.root = root = self.findRootNode()  # type:ignore
         if not root:
             # Might happen during unit testing or startup.
             return

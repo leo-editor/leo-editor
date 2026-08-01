@@ -5,8 +5,86 @@
 # This file includes options only for the ruff linter.
 # pyproject.toml contains all `ruff format` options.
 
+# To add suppressions
+# find: ^(\s+)(\w+) (.+?)$
+# repl: \1"\2", # \3
+
 [lint]
 ignore = [
+
+    # New suppressions: Keep these for now.
+    
+    "B008",     # Do not perform function call in argument defaults
+    "B019",     # Use of `functools.lru_cache` or `functools.cache` on methods can lead to memory leaks
+    "B020",     # Loop control variable `p` overrides iterable it iterates
+    "BLE001",   # Do not catch blind exception: `Exception`
+    "C400",     # Unnecessary generator (rewrite as a list comprehension)
+    "C401",     # Unnecessary generator (rewrite as a set comprehension)
+    "C402",     # Unnecessary generator (rewrite as a dict comprehension)
+    "C403",     # Unnecessary list comprehension (rewrite as a set comprehension)
+    "C404",     # Unnecessary list comprehension (rewrite as a dict comprehension)
+    "C405",     # Unnecessary list literal (rewrite as a set literal)
+    "C408",     # Unnecessary `dict()` call (rewrite as a literal)
+    "C413",     # Unnecessary `list()` call around `sorted()`
+    "C414",     # Unnecessary `list()` call within `sorted()`
+    "C417",     # Unnecessary `map()` usage (rewrite using a generator expression)
+
+    "FLY002",   # Consider `f'{root.h}-->{p.h}'` instead of string join
+    "FURB105",  # Unnecessary empty string passed to `print`
+    "FURB167",  # Use of regular expression alias `re.M`
+    "FURB188",  # Prefer `str.removesuffix()` over conditionally replacing with slice.
+    "PERF102",  # When using only the values of a dict use the `values()` method
+    "PERF402",  # Use `list` or `list.copy` to create a copy of a list
+    "PIE794",   # Class field `valid_unls` is defined multiple times
+    "PLC0206",  # Extracting value from dictionary without calling `.items()`
+    "PLR1704",  # Redefining argument with the local name `p`
+    "PYI041",   # Use `float` instead of `int | float`
+    
+    # Some of these produce dense code.
+    "RUF010",   # Use explicit conversion flag
+    "RUF012",   # Mutable default value for class attribute
+    "RUF015",   # Prefer `next(...)` over single element slice
+    "RUF051",   # Use `pop` instead of `key in dict` followed by `del dict[key]`
+    "RUF100",   # Unused blanket `noqa` directive
+    "RUF059",   # Unpacked variable is never used
+    
+    # Security.
+    "S102",     # Use of `exec` detected
+    "S110",     # `try`-`except`-`pass` detected, consider logging the exception
+    "S112",     # `try`-`except`-`continue` detected, consider logging the exception
+    
+    # Simplicity.
+    "SIM102",   # Use a single `if` statement instead of nested `if` statements
+    "SIM103",   # Return the negated condition directly
+    "SIM113",   # Use `enumerate()` for index variable `id_` in `for` loop
+    "SIM114",   # Combine `if` branches using logical `or` operator
+    "SIM115",   # Use a context manager for opening files
+    "SIM117",   # Use a single `with` statement with multiple contexts instead of nested `with` statements
+    "SIM118",   # Use `key in dict` instead of `key in dict.keys()`
+    "SIM222",   # Use `True` instead of `True or ...`
+    "SIM223",   # Use `False` instead of `False and ...`
+    "SIM905",   # Consider using a list literal instead of `str.split`
+
+    "T100",     # Import for `xxx` found
+    "TRY004",   # Prefer `TypeError` exception for invalid type
+    "UP028",    # Replace `yield` over `for` loop with `yield from`
+    "UP030",    # Use implicit references for positional format fields
+    "UP031",    # Use format specifiers instead of percent format
+    "UP032",    # Use f-string instead of `format` call
+    
+    # Do not enable.
+    "PLW0406",  # Module imports itself. There are also pylint suppressions.
+    "PLW0602",  # Using global for but no assignment is done
+    "PLW1510",  # `subprocess.run` without explicit `check` argument
+
+    # These compare the git executable bit to the presence of a shebang line.
+    # The check is disabled on Windows and WSL, so it can't be verified before
+    # pushing, and the executable bit drifts easily across platforms/editors.
+    "EXE001",   # Shebang is present but file is not executable
+    "EXE002",   # The file is executable but no shebang is present
+
+    # Previous suppressions. Keep these.
+    
     "E402", # Module level import not at top of file
     "E701", # Multiple statements on one line (colon)
     "E702", # Multiple statements on one line (semicolon)
@@ -16,6 +94,10 @@ ignore = [
 
     "F401", # `xxx` imported but unused. Pyflakes checks this.
     "F841", # Local variable `xxx` is assigned to but never used. Pyflakes checks this.
+    
+    "I001",     # Import block is un-sorted or un-formatted
+    "ISC004",   # Unparenthesized implicit string concatenation in collection
+    "N999",     # Invalid module name: 'test_leoUndo'
 ]
 
 exclude = [
@@ -34,6 +116,6 @@ exclude = [
     "leo/test/scriptFile.py",  # Generated by *user* scripts.
     "leo/test/beautify_node.py",  # Generated from user scripts.
     "leo/unittests/py3_test_grammar.py",  # Contains many errors on purpose.
-]
+]  # fmt: skip
     
 #@-leo

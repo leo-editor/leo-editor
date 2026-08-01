@@ -3,7 +3,7 @@
 # @+<< leoCommands imports >>
 # @+node:ekr.20040712045933: ** << leoCommands imports >>
 from __future__ import annotations
-from collections.abc import Callable
+from collections.abc import Callable, Generator, Iterable, Sequence
 import glob
 import json
 import os
@@ -15,8 +15,8 @@ import tabnanny
 import tempfile
 import time
 import tokenize
-from typing import cast, Any, Generator, Iterable, Sequence, TYPE_CHECKING
-import xml.etree.ElementTree as ElementTree
+from typing import cast, Any, TYPE_CHECKING
+from xml.etree import ElementTree
 
 from leo.core import leoGlobals as g
 
@@ -151,6 +151,9 @@ if TYPE_CHECKING:  # pragma: no cover
     RegexFlag = int | re.RegexFlag  # re.RegexFlag does not define 0
     Value = Any
     Widget = Any  # 'Any' is the correct annotation for base class widgets.
+
+    PositionGenerator = Generator[Position, None, None]
+    VNodeGenerator = Generator[VNode, None, None]
 
 # @-<< leoCommands annotations >>
 
@@ -314,7 +317,7 @@ class Commands:
         self.in_qt_dialog = False  # True: in a qt dialog.
         self.loading = False  # True: we are loading a file: disables c.setChanged()
         self.promptingForClose = False  # True: lock out additional closing dialogs.
-        #
+
         # Flags for c.outerUpdate...
         self.enableRedrawFlag = True
         self.requestCloseWindow = False
@@ -635,7 +638,6 @@ class Commands:
     # @+node:ekr.20081005065934.1: *4* c.initAfterLoad
     def initAfterLoad(self) -> None:
         """Provide an official hook for late inits of the commander."""
-        pass
 
     # @+node:ekr.20090213065933.6: *4* c.initConfigSettings
     def initConfigSettings(self) -> None:
@@ -1206,7 +1208,7 @@ class Commands:
         """Using pytest, execute all @test nodes for p, p's parents and p's subtree."""
         c = self
 
-        def it(p: Position) -> Generator:
+        def it(p: Position) -> PositionGenerator:
             for p1 in p.self_and_parents():
                 if p1.h.startswith('@test '):
                     yield p1
@@ -1262,7 +1264,7 @@ class Commands:
         except Exception:
             g.handleScriptException(c, p)
         finally:
-            del sys.path[:2]
+            del sys.path[:2]  # type:ignore
 
     # @+node:ekr.20171123135625.4: *4* @cmd execute-script & public helpers
     @cmd('execute-script')
@@ -1479,13 +1481,13 @@ class Commands:
     # These methods are a fundamental, unchanging, part of Leo's API.
     # @+node:ekr.20091001141621.6061: *4* c.Generators
     # @+node:ekr.20091001141621.6043: *5* c.all_nodes & all_unique_nodes
-    def all_nodes(self) -> Generator:
+    def all_nodes(self) -> VNodeGenerator:
         """A generator returning all vnodes in the outline, in outline order."""
         c = self
         for p in c.all_positions():
             yield p.v
 
-    def all_unique_nodes(self) -> Generator:
+    def all_unique_nodes(self) -> VNodeGenerator:
         """A generator returning each vnode of the outline."""
         c = self
         for p in c.all_unique_positions(copy=False):
@@ -1497,7 +1499,7 @@ class Commands:
     all_unique_vnodes_iter = all_unique_nodes
 
     # @+node:ekr.20091001141621.6044: *5* c.all_positions
-    def all_positions(self, copy: bool = True) -> Generator:
+    def all_positions(self, copy: bool = True) -> PositionGenerator:
         """A generator return all positions of the outline, in outline order."""
         c = self
         p = c.rootPosition()
@@ -1512,7 +1514,7 @@ class Commands:
     safe_all_positions = all_positions
 
     # @+node:ekr.20191014093239.1: *5* c.all_positions_for_v
-    def all_positions_for_v(self, v: VNode, stack: list[tuple] | None = None) -> Generator:
+    def all_positions_for_v(self, v: VNode, stack: list[tuple] | None = None) -> PositionGenerator:
         """
         Generates all positions p in this outline where p.v is v.
 
@@ -1531,7 +1533,7 @@ class Commands:
             g.es_print(f"not a VNode: {v!r}")
             return  # Stop the generator.
 
-        def allinds(v: VNode, target_v: VNode) -> Generator:
+        def allinds(v: VNode, target_v: VNode) -> Generator[int, None, None]:
             """Yield all indices i such that v.children[i] == target_v."""
             for i, x in enumerate(v.children):
                 if x is target_v:
@@ -1552,7 +1554,7 @@ class Commands:
                 stack.pop(0)
 
     # @+node:ekr.20161120121226.1: *5* c.all_roots
-    def all_roots(self, copy: bool = True, predicate: Callable | None = None) -> Generator:
+    def all_roots(self, copy: bool = True, predicate: Callable | None = None) -> PositionGenerator:
         """
         A generator yielding *all* the root positions in the outline that
         satisfy the given predicate. p.isAnyAtFileNode is the default
@@ -1574,7 +1576,7 @@ class Commands:
                 p.moveToThreadNext()
 
     # @+node:ekr.20091001141621.6062: *5* c.all_unique_positions
-    def all_unique_positions(self, copy: bool = True) -> Generator:
+    def all_unique_positions(self, copy: bool = True) -> PositionGenerator:
         """
         A generator return all positions of the outline, in outline order.
         Returns only the first position for each vnode.
@@ -1595,7 +1597,9 @@ class Commands:
     all_positions_with_unique_vnodes_iter = all_unique_positions
 
     # @+node:ekr.20161120125322.1: *5* c.all_unique_roots
-    def all_unique_roots(self, copy: bool = True, predicate: Callable | None = None) -> Generator:
+    def all_unique_roots(
+        self, copy: bool = True, predicate: Callable | None = None
+    ) -> PositionGenerator:
         """
         A generator yielding all unique root positions in the outline that
         satisfy the given predicate. p.isAnyAtFileNode is the default
@@ -1619,7 +1623,7 @@ class Commands:
                 p.moveToThreadNext()
 
     # @+node:felix.20250908230144.1: *5* c.all_root_children
-    def all_root_children(self, copy: bool = True) -> Generator:
+    def all_root_children(self, copy: bool = True) -> PositionGenerator:
         """
         A generator that returns all the (hidden-root's) top children Positions.
         """
@@ -1656,7 +1660,7 @@ class Commands:
                 g.printObj(p.v.expandedPositions, indent=p.level(), tag=p.h)
 
     # @+node:ekr.20040306220230.1: *5* c.headline_wrapper
-    def headline_wrapper(self, p: Position) -> Widget:
+    def headline_wrapper(self, p: Position) -> Widget | None:
         c = self
         return c.frame.tree.headline_wrapper(p) if p else None
 
@@ -1771,7 +1775,7 @@ class Commands:
         # Original idea by Виталије Милошевић (Vitalije Milosevic).
         # Modified by EKR.
 
-        def v_and_parents(v: VNode) -> Generator:
+        def v_and_parents(v: VNode) -> VNodeGenerator:
             if v in seen:
                 return
             seen.add(v)
@@ -1805,7 +1809,7 @@ class Commands:
             """Return the extension for @<file> nodes."""
             if v.isAnyAtFileNode():
                 name = v.anyAtFileNodeName()
-                junk, ext = g.os_path_splitext(name)
+                _, ext = g.os_path_splitext(name)
                 ext = ext[1:]  # strip the leading period.
                 language = g.app.extension_dict.get(ext, '')
                 if g.isValidLanguage(language):
@@ -2040,7 +2044,7 @@ class Commands:
 
     # @+node:ekr.20040307104131.3: *5* c.positionExists
     def positionExists(
-        self, p: Position, root: Position | None = None, trace: bool = False
+        self, p: Position | None, root: Position | None = None, trace: bool = False
     ) -> bool:
         """Return True if a position exists in c's tree"""
         if not p or not p.v:
@@ -2772,7 +2776,7 @@ class Commands:
                 )
                 try:
                     with open(filename, 'bw') as f:
-                        for s in g.splitLines(translated_contents):
+                        for s in g.splitLines(translated_contents):  # noqa
                             f.write(g.toEncodedString(s, reportErrors=True))
                     g.es_print('')
                     g.es_print(f"Wrote {filename}")
@@ -3014,7 +3018,7 @@ class Commands:
                     prompts=['Arg1: ', ' Arg2: ', ' Arg3: '])
         """
         # @-<< c.interactive docstring >>
-        #
+
         # This pathetic code should be generalized,
         # but it's not as easy as one might imagine.
         c = self
@@ -3443,7 +3447,7 @@ class Commands:
                     re.compile(regex)
                 except Exception:
                     g.trace(f"Bad regex: {regex!s}")
-                    return None
+                    return
         # Get the script.
         script = g.getScript(
             c,
@@ -3584,9 +3588,7 @@ class Commands:
         if rclick is not installed.
         """
 
-        def minibufferCallback(
-            event: LeoKeyEvent | None = None, function: Callable = function
-        ) -> None:
+        def minibufferCallback(event: LeoKeyEvent, function: Callable = function) -> None:
             # Avoid a pylint complaint.
             if hasattr(self, 'theContextMenuController'):
                 cm = self.theContextMenuController
@@ -3759,7 +3761,7 @@ class Commands:
                     base_dir = ''
         if base_dir and g.os_path_exists(base_dir):
             if use_git_prefix:
-                git_branch, junk = g.gitInfo()
+                git_branch, _ = g.gitInfo()
             else:
                 git_branch = ''
             theDir, fn = g.os_path_split(c.fileName())
@@ -4723,7 +4725,6 @@ class Commands:
         """Indicate that the focus is in an invalid location, or is unknown."""
         # c = self
         # c.requestedFocusWidget = None
-        pass
 
     # @+node:ekr.20080514131122.16: *5* c.traceFocus (not used)
     def traceFocus(self, w: Any) -> None:
@@ -4806,33 +4807,32 @@ class Commands:
     def add_command(
         self,
         menu: LeoQtMenu,
+        command: Callable,
+        *,  # PR #4826
         accelerator: str = '',  # Not used.
-        command: Callable | None = None,
         commandName: str = '',  # Not used.
         label: str = '',  # Not used.
         underline: int = 0,
     ) -> None:
         c = self
-        if command:
-            # Command is one of two callbacks defined in createMenuEntries.
+        assert command is not None  # PR #4826
+        # Command is one of two callbacks defined in createMenuEntries.
 
-            def add_commandCallback(c: Commands = c, command: Callable = command) -> Value:
-                val = command()
-                # Careful: func may destroy c.
-                if c.exists:
-                    c.outerUpdate()
-                return val
+        def add_commandCallback(c: Commands = c, command: Callable = command) -> Value:
+            val = command()
+            # Careful: func may destroy c.
+            if c.exists:
+                c.outerUpdate()
+            return val
 
-            menu.add_command(
-                menu,
-                accelerator=accelerator,
-                command=command,
-                commandName=commandName,
-                label=label,
-                underline=underline,
-            )
-        else:
-            g.trace('can not happen: no "command" arg')
+        menu.add_command(
+            menu,
+            accelerator=accelerator,
+            command=command,
+            commandName=commandName,
+            label=label,
+            underline=underline,
+        )
 
     # @+node:ekr.20171123203044.1: *5* c.Menu Enablers
     # @+node:ekr.20040131170659: *6* c.canClone

@@ -40,11 +40,9 @@ class TestKeys(LeoUnitTest):
             ('Alt-\r', 'Alt+Return'),
             ('Alt-return', 'Alt+Return'),
             ('Alt-tab', 'Alt+Tab'),
-            #
             # #912: tilde.
             ('~', '~'),
             ('Shift-~', '~'),
-            #
             # Alpha
             ('1', '1'),
             ('a', 'a'),

@@ -39,6 +39,7 @@ class BufferCommandsClass(BaseEditCommandsClass):
         # pylint: disable=super-init-not-called
         self.c = c
         self.fromName = ''  # Saved name from getBufferName.
+        self.getBufferNameFinisher: Callable | None = None
         self.nameList: list[str] = []  # [n: <headline>]
         self.names: dict[str, list[str]] = {}
         self.vnodes: dict[str, VNode] = {}  # Keys are n: <headline>, values are vnodes.
@@ -240,7 +241,8 @@ class BufferCommandsClass(BaseEditCommandsClass):
         k.clearState()
         finisher = self.getBufferNameFinisher
         self.getBufferNameFinisher = None
-        finisher(k.arg)
+        if finisher:
+            finisher(k.arg)
 
     # @-others
 

@@ -279,7 +279,7 @@ readme = "README.md"
 # Yes, we must duplicate requirements.txt.
 #@+<< pyproject.toml: dependencies >>
 #@+node:ekr.20240713074535.1: ** << pyproject.toml: dependencies >>
-# Warning: these dependencies should match those in pyproject.toml.
+# Warning: these dependencies should match those in requirements.txt.
 
 dependencies = [
 

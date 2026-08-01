@@ -101,14 +101,14 @@ class BaseLeoCompare:
         files1 = []
         files2 = []
         for f in list1:
-            junk, ext = g.os_path_splitext(f)
+            _, ext = g.os_path_splitext(f)
             if self.limitToExtension:
                 if ext == self.limitToExtension:
                     files1.append(f)
             else:
                 files1.append(f)
         for f in list2:
-            junk, ext = g.os_path_splitext(f)
+            _, ext = g.os_path_splitext(f)
             if self.limitToExtension:
                 if ext == self.limitToExtension:
                     files2.append(f)
@@ -385,7 +385,7 @@ class BaseLeoCompare:
                 z = tag + str(line)
                 tag2 = z.rjust(6) + "+:"
                 self.dump(tag2, s)
-            s = None
+            s = ''
         self.show(tag + str(trailingLines) + " trailing lines")
         return trailingLines
 
@@ -478,8 +478,6 @@ class LeoCompare(BaseLeoCompare):
     These are not very useful comparisons.
     """
 
-    pass
-
 
 # @+node:ekr.20180211170333.1: ** class CompareLeoOutlines
 class CompareLeoOutlines:
@@ -491,13 +489,13 @@ class CompareLeoOutlines:
     def __init__(self, c: Cmdr) -> None:
         """Ctor for the LeoOutlineCompare class."""
         self.c = c
-        self.file_node: Position | None = None
-        self.root: Position | None = None
-        self.path1: str | None = None
-        self.path2: str | None = None
+        self.file_node: Position
+        self.root: Position
+        self.path1: str
+        self.path2: str
 
     # @+others
-    # @+node:ekr.20180211170333.2: *3* loc.diff_list_of_files (entry)
+    # @+node:ekr.20180211170333.2: *3* CompareLeoOutlines.diff_list_of_files (entry)
     def diff_list_of_files(self, aList: list[str], visible: bool = True) -> None:
         """
         The main entry point for scripts.
@@ -520,7 +518,7 @@ class CompareLeoOutlines:
         u.afterInsertNode(self.root, undoType, undoData)
         self.finish()
 
-    # @+node:ekr.20180211170333.3: *3* loc.diff_two_files
+    # @+node:ekr.20180211170333.3: *3* CompareLeoOutlines.diff_two_files
     def diff_two_files(self, fn1: str, fn2: str) -> None:
         """Create an outline describing the git diffs for fn."""
         self.path1, self.path2 = fn1, fn2
@@ -538,8 +536,8 @@ class CompareLeoOutlines:
             self.make_diff_outlines(c1, c2)
             self.file_node.b = f"{self.file_node.b.rstrip()}\n@language {c2.target_language}\n"
 
-    # @+node:ekr.20180211170333.4: *3* loc.Utils
-    # @+node:ekr.20180211170333.5: *4* loc.compute_dicts
+    # @+node:ekr.20180211170333.4: *3* CompareLeoOutlines.Utils
+    # @+node:ekr.20180211170333.5: *4* CompareLeoOutlines.compute_dicts
     def compute_dicts(self, c1: Cmdr, c2: Cmdr) -> tuple[dict, dict, dict]:
         """Compute inserted, deleted, changed dictionaries."""
         d1 = {v.fileIndex: v for v in c1.all_unique_nodes()}
@@ -557,7 +555,7 @@ class CompareLeoOutlines:
                     changed[key] = (v1, v2)
         return added, deleted, changed
 
-    # @+node:ekr.20180211170333.6: *4* loc.create_compare_node
+    # @+node:ekr.20180211170333.6: *4* CompareLeoOutlines.create_compare_node
     def create_compare_node(
         self, c1: Cmdr, c2: Cmdr, d: dict[str, tuple[VNode, VNode]], kind: str
     ) -> None:
@@ -568,7 +566,7 @@ class CompareLeoOutlines:
         parent.setHeadString(kind)
         for key in d:
             if kind.lower() == 'changed':
-                v1, v2 = d.get(key)
+                v1, v2 = d.get(key)  # type:ignore
                 # Organizer node: contains diff
                 organizer = parent.insertAsLastChild()
                 organizer.h = v2.h
@@ -597,11 +595,12 @@ class CompareLeoOutlines:
                 p2.b = v2.b
             else:
                 v = d.get(key)
+                assert v
                 p = parent.insertAsLastChild()
                 p.h = v.h
                 p.b = v.b
 
-    # @+node:ekr.20180211170333.7: *4* loc.create_file_node
+    # @+node:ekr.20180211170333.7: *4* CompareLeoOutlines.create_file_node
     def create_file_node(self, diff_list: list, fn1: str, fn2: str) -> Position:
         """Create an organizer node for the file."""
         p = self.root.insertAsLastChild()
@@ -609,7 +608,7 @@ class CompareLeoOutlines:
         p.b = ''.join(diff_list)
         return p
 
-    # @+node:ekr.20180211170333.8: *4* loc.create_root
+    # @+node:ekr.20180211170333.8: *4* CompareLeoOutlines.create_root
     def create_root(self, aList: list[str]) -> Position:
         """Create the top-level organizer node describing all the diffs."""
         c = self.c
@@ -618,7 +617,7 @@ class CompareLeoOutlines:
         p.b = '\n'.join(aList) + '\n'
         return p
 
-    # @+node:ekr.20180211170333.10: *4* loc.finish
+    # @+node:ekr.20180211170333.10: *4* CompareLeoOutlines.finish
     def finish(self) -> None:
         """Finish execution of this command."""
         c = self.c
@@ -630,14 +629,14 @@ class CompareLeoOutlines:
         c.bodyWantsFocus()
         c.redraw()
 
-    # @+node:ekr.20180211170333.11: *4* loc.get_file
+    # @+node:ekr.20180211170333.11: *4* CompareLeoOutlines.get_file
     def get_file(self, path: str) -> str:
         """Return the contents of the file whose path is given."""
         with open(path, 'rb') as f:
             s = f.read()
         return g.toUnicode(s).replace('\r', '')
 
-    # @+node:ekr.20180211170333.13: *4* loc.make_diff_outlines
+    # @+node:ekr.20180211170333.13: *4* CompareLeoOutlines.make_diff_outlines
     def make_diff_outlines(self, c1: Cmdr, c2: Cmdr) -> None:
         """Create an outline-oriented diff from the outlines c1 and c2."""
         added, deleted, changed = self.compute_dicts(c1, c2)
@@ -649,7 +648,7 @@ class CompareLeoOutlines:
         for d, kind in table:
             self.create_compare_node(c1, c2, d, kind)
 
-    # @+node:ekr.20180211170333.14: *4* loc.open_outline
+    # @+node:ekr.20180211170333.14: *4* CompareLeoOutlines.open_outline
     def open_outline(self, fn: str) -> Cmdr:
         """
         Find the commander for fn, creating a new outline tab if necessary.

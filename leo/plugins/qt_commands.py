@@ -117,13 +117,15 @@ def showColorNames(event: LeoKeyEvent | None = None) -> None:
             sheet = template % (color, color)
             box.setStyleSheet(sheet)
             g.es("copied to clipboard:", color)
-            QtWidgets.QApplication.clipboard().setText(color)
+            QtWidgets.QApplication.clipboard().setText(color)  # type:ignore
 
         box.activated.connect(onActivated)
         color_db = leoColor.leo_color_database
         for key in sorted(color_db):
             if not key.startswith('grey'):  # Use gray, not grey.
-                val = color_db.get(key)
+                val = color_db.get(key, '')
+                if not val:
+                    continue
                 color = QtGui.QColor(val)
                 color_list.append(val)
                 pixmap = QtGui.QPixmap(40, 40)
@@ -145,7 +147,7 @@ def showColorWheel(self: Any, event: LeoKeyEvent | None = None) -> None:
     picker = QtWidgets.QColorDialog()
     in_color_setting = p.h.startswith('@color ')
     try:
-        text = QtWidgets.QApplication.clipboard().text()
+        text = QtWidgets.QApplication.clipboard().text()  # type:ignore
         if in_color_setting:
             text = p.h.split('=', 1)[1].strip()
         color = QtGui.QColor(text)
@@ -163,7 +165,7 @@ def showColorWheel(self: Any, event: LeoKeyEvent | None = None) -> None:
     else:
         text = picker.selectedColor().name()
         g.es("copied to clipboard:", text)
-        QtWidgets.QApplication.clipboard().setText(text)
+        QtWidgets.QApplication.clipboard().setText(text)  # type:ignore
 
 
 # @+node:ekr.20170324143944.3: ** qt: show-fonts

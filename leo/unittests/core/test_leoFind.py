@@ -4,7 +4,7 @@
 
 import re
 from leo.core import leoGlobals as g
-import leo.core.leoFind as leoFind
+from leo.core import leoFind
 from leo.core.leoGui import StringFindTabManager
 from leo.core.leoTest2 import LeoUnitTest
 
@@ -1019,8 +1019,8 @@ class TestFind(LeoUnitTest):
     def test_switch_style(self):
         x = self.x
         table = (
-            ('', None),
-            ('TestClass', None),
+            ('', ''),
+            ('TestClass', ''),
             ('camelCase', 'camel_case'),
             ('under_score', 'underScore'),
         )

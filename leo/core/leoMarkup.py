@@ -259,7 +259,7 @@ class MarkupCommands:
 
     def __init__(self, c: Cmdr) -> None:
         self.c = c
-        self.kind: str | None = None  # 'adoc' or 'pandoc'
+        self.kind: str = ''  # 'adoc' or 'pandoc'
         self.level_offset = 0
         self.root_level = 0
         self.reload_settings()
@@ -306,7 +306,7 @@ class MarkupCommands:
                 with open(i_path, 'w', encoding='utf-8', errors='replace') as self.output_file:
                     self.write_root(p)
                     i_paths.append(i_path)
-            except IOError:
+            except OSError:
                 g.es_print(f"Can not open {i_path!r}")
             except Exception:
                 g.es_print(f"Unexpected exception opening {i_path!r}")
@@ -342,7 +342,7 @@ class MarkupCommands:
     # @+node:ekr.20190515084219.1: *4* markup.filename
     adoc_pattern = re.compile(r'^@(adoc|asciidoctor)')
 
-    def filename(self, p: Position) -> str | None:
+    def filename(self, p: Position) -> str:
         """Return the filename of the @adoc, @pandoc or @sphinx node, or None."""
         kind = self.kind
         h = p.h.rstrip()
@@ -350,14 +350,14 @@ class MarkupCommands:
             if m := self.adoc_pattern.match(h):
                 prefix = m.group(1)
                 return h[1 + len(prefix) :].strip()
-            return None
+            return ''
         if kind in ('pandoc', 'sphinx'):
             prefix = f"@{kind}"
             if g.match_word(h, 0, prefix):
                 return h[len(prefix) :].strip()
-            return None
+            return ''
         g.trace('BAD KIND', kind)
-        return None
+        return ''
 
     # @+node:ekr.20191007053522.1: *4* markup.compute_opath
     def compute_opath(self, i_path: str) -> str:
@@ -433,7 +433,7 @@ class MarkupCommands:
         if not os.path.exists(output_dir):
             g.error(f"output directory not found: {output_dir!r}")
             return
-        #
+
         # Call sphinx-build to write the output file.
         # sphinx-build [OPTIONS] SOURCEDIR OUTPUTDIR [FILENAMES...]
         command = f"sphinx-build {input_dir} {output_dir} {i_path}"

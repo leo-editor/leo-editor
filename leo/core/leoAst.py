@@ -1,5 +1,7 @@
 # @+leo-ver=5-thin
 # @+node:ekr.20141012064706.18389: * @file leoAst.py
+# type:ignore
+
 # This file is part of Leo: https://leo-editor.github.io/leo-editor
 # Leo's copyright notice is based on the MIT license:
 # https://leo-editor.github.io/leo-editor/license.html
@@ -178,13 +180,14 @@ import textwrap
 
 # import time
 import tokenize
-from typing import Any, Generator, Optional, Union, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
+from collections.abc import Generator
 
 if TYPE_CHECKING:
     AnyToken = Any
     Node = ast.AST
     Value = Any
-    Settings = Optional[dict[str, Value]]
+    Settings = dict[str, Value] | None
 
 try:
     from leo.core import leoGlobals as g
@@ -341,7 +344,7 @@ if 1:  # pragma: no cover
 
     # @+node:ekr.20200113154120.1: *3* functions: tokens
     # @+node:ekr.20191223093539.1: *4* function: find_anchor_token
-    def find_anchor_token(node: Node, global_token_list: list[Token]) -> Optional[Token]:
+    def find_anchor_token(node: Node, global_token_list: list[Token]) -> Token | None:
         """
         Return the anchor_token for node, a token such that token.node == node.
 
@@ -350,7 +353,7 @@ if 1:  # pragma: no cover
 
         node1 = node
 
-        def anchor_token(node: Node) -> Optional[Token]:
+        def anchor_token(node: Node) -> Token | None:
             """Return the anchor token in node.token_list"""
             # Careful: some tokens in the token list may have been killed.
             for token in get_node_token_list(node, global_token_list):
@@ -391,8 +394,7 @@ if 1:  # pragma: no cover
                     if node := getattr(node, field, None):
                         if token := anchor_token(node):
                             return token
-                else:
-                    break
+                break
         return None
 
     # @+node:ekr.20191231160225.1: *4* function: find_paren_token
@@ -653,7 +655,7 @@ if 1:  # pragma: no cover
         return tokens
 
     # @+node:ekr.20191027075648.1: *4* function: parse_ast
-    def parse_ast(s: str) -> Optional[Node]:
+    def parse_ast(s: str) -> Node | None:
         """
         Parse string s, catching & reporting all exceptions.
         Return the ast node, or None.
@@ -681,7 +683,7 @@ if 1:  # pragma: no cover
     # @+node:ekr.20191223095408.1: *3* node/token nodes...
     # Functions that associate tokens with nodes.
     # @+node:ekr.20200120082031.1: *4* function: find_statement_node
-    def find_statement_node(node: Node) -> Optional[Node]:
+    def find_statement_node(node: Node) -> Node | None:
         """
         Return the nearest statement node.
         Return None if node has only Module for a parent.
@@ -748,7 +750,7 @@ if 1:  # pragma: no cover
         )  # fmt: skip
 
     # @+node:ekr.20191231082137.1: *4* function: nearest_common_ancestor
-    def nearest_common_ancestor(node1: Node, node2: Node) -> Optional[Node]:
+    def nearest_common_ancestor(node1: Node, node2: Node) -> Node | None:
         """
         Return the nearest common ancestor node for the given nodes.
 
@@ -1304,7 +1306,6 @@ class Fstringify:
         val_last = token_last.value
         if delim != val_last:
             return False  # pragma: no cover (defensive)
-        #
         # Check for conflicting delims, preferring f"..." to f'...'.
         for delim in ('"', "'"):
             aList[1] = aList[-1] = Token('string', delim)
@@ -1506,7 +1507,7 @@ class InputToken:
         self.line = ''  # The entire line containing the token.
         self.line_number = 0  # The line number, for errors and dumps.
         self.level = 0
-        self.node: Optional[Node] = None
+        self.node: Node | None = None
 
     def __repr__(self) -> str:  # pragma: no cover
         s = f"{self.index:<3} {self.kind}"
@@ -1662,7 +1663,7 @@ class Token:
         # Same as five_tuple.start[0]
         self.line_number = 0
         self.level = 0
-        self.node: Optional[Node] = None
+        self.node: Node | None = None
 
     def __repr__(self) -> str:  # pragma: no cover
         s = f"{self.index:<3} {self.kind}"
@@ -1742,7 +1743,7 @@ class Tokenizer:
         Subclasses could override this method to filter out specific tokens.
         """
         assert self.token_kind in ('Token', 'InputToken'), repr(self.token_kind)
-        tok: Union[Token, InputToken]
+        tok: Token | InputToken
         if self.token_kind == 'Token':
             tok = Token(kind, value)
         else:
@@ -2004,7 +2005,7 @@ class TokenOrderGenerator:
     # @+node:ekr.20220402052020.1: *3* tog: synchronizer...
     # The synchronizer sync tokens to nodes.
     # @+node:ekr.20200110162044.1: *4* tog.find_next_significant_token
-    def find_next_significant_token(self) -> Optional[Token]:
+    def find_next_significant_token(self) -> Token | None:
         """
         Scan from *after* self.tokens[px] looking for the next significant
         token.
@@ -2154,7 +2155,7 @@ class TokenOrderGenerator:
                 f"Looking for: {kind}.{g.truncate(val, 40)}\n"
                 f"      found: end of token list"
             )
-        #
+
         # Step two: Assign *secondary* links only for newline tokens.
         #           Ignore all other non-significant tokens.
         while old_px < px:
@@ -2162,11 +2163,11 @@ class TokenOrderGenerator:
             old_px += 1
             if token.kind in ('comment', 'newline', 'nl'):
                 self.set_links(node, token)
-        #
+
         # Step three: Set links in the found token.
         token = tokens[px]
         self.set_links(node, token)
-        #
+
         # Step four: Advance.
         self.px = px
 
@@ -2205,7 +2206,7 @@ class TokenOrderGenerator:
                 break
 
     # @+node:ekr.20231214054225.1: *5* tog.find_next_non_ws_token
-    def find_next_non_ws_token(self) -> Optional[Token]:
+    def find_next_non_ws_token(self) -> Token | None:
         """
         Scan from *after* self.tokens[px] looking for the next token that isn't
         whitespace.
@@ -2325,9 +2326,9 @@ class TokenOrderGenerator:
 
     def do_arguments(self, node: Node) -> None:
         """Arguments to ast.Function or ast.Lambda, **not** ast.Call."""
-        #
+
         # No need to generate commas anywhere below.
-        #
+
         # Let block. Some fields may not exist pre Python 3.8.
         n_plain = len(node.args) - len(node.defaults)
         posonlyargs = getattr(node, 'posonlyargs', [])
@@ -2958,7 +2959,7 @@ class TokenOrderGenerator:
         self.op(')')
 
     # @+node:ekr.20191204114930.1: *6* tog.arg_helper
-    def arg_helper(self, node: Union[Node, str]) -> None:
+    def arg_helper(self, node: Node | str) -> None:
         """
         Yield the node, with a special case for strings.
         """
@@ -2982,7 +2983,7 @@ class TokenOrderGenerator:
         # *args:    in node.args[]:     Starred(value=Name(id='args'))
         # *[a, 3]:  in node.args[]:     Starred(value=List(elts=[Name(id='a'), Num(n=3)])
         # **kwargs: in node.keywords[]: keyword(arg=None, value=Name(id='kwargs'))
-        #
+
         # Scan args for *name or *List
         args = node.args or []
         keywords = node.keywords or []
@@ -3102,12 +3103,12 @@ class TokenOrderGenerator:
         self.name(token.value)
         self.visit(node.test)
         self.op(':')
-        #
+
         # Body...
         self.level += 1
         self.visit(node.body)
         self.level -= 1
-        #
+
         # Else and elif clauses...
         if node.orelse:
             self.level += 1
@@ -3398,7 +3399,7 @@ class TokenOrderGenerator:
     # withitem = (expr context_expr, expr? optional_vars)
 
     def do_With(self, node: Node) -> None:
-        expr: Optional[ast.AST] = getattr(node, 'context_expression', None)
+        expr: ast.AST | None = getattr(node, 'context_expression', None)
         items: list[ast.AST] = getattr(node, 'items', [])
         self.name('with')
         self.visit(expr)

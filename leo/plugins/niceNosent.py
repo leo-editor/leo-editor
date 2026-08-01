@@ -10,11 +10,9 @@ adds a newline before class and functions in the derived file.
 # @-<< docstring >>
 
 import os
-from typing import TYPE_CHECKING
-from leo.core import leoGlobals as g
 
-if TYPE_CHECKING:
-    from leo.core.leoNodes import Position
+from leo.core import leoGlobals as g
+from leo.core.leoNodes import Position
 
 NSPACES = ' ' * 4
 nosentNodes: list[Position] = []
@@ -67,7 +65,7 @@ def onPostSave(tag=None, keywords=None):
             # @+node:ekr.20040331151007.3: *3* << add a newline before def or class >>
             for i, s in enumerate(lines):
                 ls = s.lstrip()
-                if ls.startswith("def ") or ls.startswith("class "):
+                if ls.startswith(("def ", "class ")):
                     try:
                         if lines[i - 1].strip() != "":
                             lines[i] = "\n" + lines[i]

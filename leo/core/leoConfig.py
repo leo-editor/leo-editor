@@ -5,13 +5,14 @@
 # @+<< leoConfig imports & annotations >>
 # @+node:ekr.20041227063801: ** << leoConfig imports & annotations >>
 from __future__ import annotations
+from collections.abc import Callable, Generator
 import copy
 import os
 import sys
 import re
 import textwrap
 import typing
-from typing import Any, Callable, Generator, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 from leo.plugins.mod_scripting import build_rclick_tree
 from leo.core import leoGlobals as g
 
@@ -524,7 +525,7 @@ class ParserBaseClass:
             if g.match_word(h, 0, '@menu'):
                 if name := h[len('@menu') :].strip():
                     for z in aList:
-                        name2, junk, junk = z
+                        name2, _, _ = z
                         if name2 == name:
                             self.error(f"Replacing previous @menu {name}")
                             break
@@ -1072,12 +1073,12 @@ class ActiveSettingsOutline:
     def create_outline(self) -> None:
         """Create the summary outline"""
         c = self.commander
-        #
+
         # Create the root node, with the legend in the body text.
         root = c.rootPosition()
         root.h = f"Legend for {self.c.shortFileName()}"
         root.b = self.legend()
-        #
+
         # Create all the inner settings outlines.
         for kind, commander in self.commanders:
             assert commander
@@ -1085,7 +1086,7 @@ class ActiveSettingsOutline:
             p.h = g.shortFileName(commander.fileName())
             p.b = '@language rest\n@wrap\n'
             self.create_inner_outline(commander, kind, p)
-        #
+
         # Clean all dirty/changed bits, so closing this outline won't prompt for a save.
         for v in c.all_nodes():
             v.clearDirty()
@@ -1299,7 +1300,7 @@ class GlobalConfigManager:
         self.tree = None
 
     # @+node:ekr.20120222103014.10314: *3* gcm.config_iter
-    def config_iter(self, c: Cmdr) -> Generator:
+    def config_iter(self, c: Cmdr) -> Generator[tuple[str, Any, Cmdr, str], None, None]:
         """Letters:
           leoSettings.leo
         D default settings
@@ -1354,7 +1355,7 @@ class GlobalConfigManager:
         """Return true if a setting of the given kind exists, even if it is None."""
         lm = g.app.loadManager
         if d := lm.globalSettingsDict:
-            junk, found = self.getValFromDict(d, setting, kind)
+            _, found = self.getValFromDict(d, setting, kind)
             return found
         return False
 
@@ -1365,7 +1366,7 @@ class GlobalConfigManager:
         lm = g.app.loadManager
         if d := lm.globalSettingsDict:
             assert isinstance(d, g.SettingsDict), d.__class__.__name__
-            val, junk = self.getValFromDict(d, setting, kind)
+            val, _ = self.getValFromDict(d, setting, kind)
             return val
         return None
 
@@ -1731,7 +1732,7 @@ class LocalConfigManager:
         """Get the setting and make sure its type matches the expected type."""
         if d := self.settingsDict:
             assert isinstance(d, g.SettingsDict), repr(d)
-            val, junk = self.getValFromDict(d, setting, kind)
+            val, _ = self.getValFromDict(d, setting, kind)
             return val
         return None
 
@@ -1970,7 +1971,7 @@ class LocalConfigManager:
             if bi is None:
                 return 'unknown setting', None
             return bi.path, bi.val
-        #
+
         # lm.readGlobalSettingsFiles is opening a settings file.
         # lm.readGlobalSettingsFiles has not yet set lm.globalSettingsDict.
         assert d is None
@@ -1994,7 +1995,7 @@ class LocalConfigManager:
                 # It's important to filter empty strokes here.
                 aList = [z for z in aList if z.stroke and z.stroke.lower() != 'none']
             return key, aList
-        #
+
         # lm.readGlobalSettingsFiles is opening a settings file.
         # lm.readGlobalSettingsFiles has not yet set lm.globalSettingsDict.
         return None, []
@@ -2055,7 +2056,7 @@ class LocalConfigManager:
     def exists(self, setting: str, kind: str) -> bool:
         """Return true if a setting of the given kind exists, even if it is None."""
         if d := self.settingsDict:
-            junk, found = self.getValFromDict(d, setting, kind)
+            _, found = self.getValFromDict(d, setting, kind)
             if found:
                 return True
         return False
@@ -2230,7 +2231,7 @@ class LocalConfigManager:
             h = h[:i].strip()
         p.h = f"{h} = {value}"
         print(f"Updated `{setting}` in {fn}")  # #2390.
-        #
+
         # Delay the second redraw until idle time.
         c.setChanged()
         p.setDirty()

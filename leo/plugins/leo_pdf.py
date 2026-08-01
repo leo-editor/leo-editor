@@ -316,7 +316,7 @@ def getStyleSheet():
         ),
         alias='topic-title',
     )
-    for i in range(0, 15):
+    for i in range(15):
         indent = 18 * i
         stylesheet.add(
             ParagraphStyle(
@@ -543,7 +543,7 @@ if docutils:
                 return ''
             out = StringIO()
             reportlab.platypus.SimpleDocTemplate(out, pagesize=reportlab.lib.pagesizes.A4)
-            #
+
             # The 'real' code is doc.build(story)
             visitor.buildFromIntermediateFile(s, story, visitor)
             return out.getvalue()
@@ -573,13 +573,13 @@ if docutils:
                     filename = 'intermediateFile.txt'
                     s = open(filename).read()
                     visitor = dummyPDFTranslator(self, self.document, s)
-                except IOError:
+                except OSError:
                     return
-            #
+
             # Create a list of paragraphs using Platypus.
             self.document.walkabout(visitor)
             story = visitor.as_what()
-            #
+
             # Generate self.output.  Gets sent to reportlab.
             self.output = self.createPDF_usingPlatypus(story)
             # Solve the newline problem by brute force.
@@ -645,7 +645,7 @@ if docutils:
                         if para:
                             self.putParaFromIntermediateFile(para, style)
                             para = []
-                    elif line.startswith('starttag:') or line.startswith('..'):
+                    elif line.startswith(('starttag:', '..')):
                         pass
                     else:
                         para.append(line)
@@ -1636,7 +1636,6 @@ if docutils:  # NOQA
         # @+node:ekr.20090704103932.5295: *4* invisible_visit
         def invisible_visit(self, node):
             """Invisible nodes should be ignored."""
-            pass
 
         # @+node:ekr.20090704103932.5296: *4* literal (only changes context)
         def visit_literal(self, node):

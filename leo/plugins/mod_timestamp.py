@@ -23,7 +23,7 @@ def init():
 def timestamp(tag=None, keywords=None):
     cmd = keywords.get('label', 'save')
 
-    if cmd.startswith("save") or cmd.startswith("tangle"):
+    if cmd.startswith(("save", "tangle")):
         g.es("%s: %s" % (cmd, time.ctime()))
 
 

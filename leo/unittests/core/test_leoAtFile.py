@@ -484,7 +484,7 @@ class TestAtFile(LeoUnitTest):
     def test_replaceFile_no_target_file(self):
         at = self.at
         encoding = 'utf-8'
-        at.targetFileName = None  # The point of this test, but I'm not sure it matters.
+        at.targetFileName = ''  # The point of this test.
         try:
             # https://stackoverflow.com/questions/23212435
             f = tempfile.NamedTemporaryFile(delete=False, encoding=encoding, mode='w')

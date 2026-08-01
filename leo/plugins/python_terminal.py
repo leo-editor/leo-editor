@@ -115,14 +115,14 @@ if QtWidgets:
         # @+node:peckj.20150428142729.9: *3* PyInterp.__init__
         def __init__(self, parent, c):
             super().__init__(parent)
-            #
+
             # this widget swallows stdout + stderr while focused,
             # but resets them upon losing focus
             if not g.user_dict.get('old_stdout', None):
                 g.user_dict['old_stdout'] = sys.stdout
             if not g.user_dict.get('old_stderr', None):
                 g.user_dict['old_stderr'] = sys.stderr
-            #
+
             # init ivars.
             self.indent = 0
             self.refreshMarker = False  # to change back to >>> from ...
@@ -134,10 +134,10 @@ if QtWidgets:
             self.historyIndex = -1
             self.interpreterLocals = {}
             self.c = c
-            #
+
             # initilize interpreter with self locals
             self.initInterpreter(locals())
-            #
+
             # update p when new node selected
             g.registerHandler('select2', self.select2_hook)
 
@@ -190,7 +190,7 @@ if QtWidgets:
             length = len(self.document().lastBlock().text()[4:])
             if length == 0:
                 return None
-            #
+
             # should have a better way of doing this but I can't find it.
             # [self.textCursor().deletePreviousChar() for x in xrange(length)]
             for x in range(length):
@@ -217,7 +217,7 @@ if QtWidgets:
                 for i, x in enumerate(history):
                     iSize = len(str(i))
                     delta = len(str(len(history))) - iSize
-                    line = line = ' ' * delta + '%i: %s' % (i, x) + '\n'
+                    line = ' ' * delta + '%i: %s' % (i, x) + '\n'
                     self.write(line)
                 self.updateInterpreterLocals(backup)
                 self.insert_marker()
@@ -309,7 +309,7 @@ if QtWidgets:
         # @+node:ekr.20180307132016.1: *4* PyInterp.doEnter & helpers
         def doEnter(self, event):
             """Handle the <return> key."""
-            #
+
             # Binding for functions.
             interp = self.interpreter
 
@@ -356,7 +356,7 @@ if QtWidgets:
                 return False
 
             # @-others
-            #
+
             # Set cursor to end of line to avoid line splitting
             textCursor = self.textCursor()
             position = len(self.document().toPlainText())
@@ -364,7 +364,7 @@ if QtWidgets:
             self.setTextCursor(textCursor)
             lines: list[str] = []
             block = self.document().lastBlock()
-            #
+
             # Scan backward, looking for lines.
             while block:
                 line = g.toUnicode(block.text())
@@ -377,26 +377,26 @@ if QtWidgets:
                     lines.insert(0, line[4:])
                 else:
                     lines.insert(0, line)
-            #
+
             # Always end the log line.
             self.append('')
-            #
+
             # Clean the lines and compute the last line.
             last_line = lines[-1].rstrip() if lines else ''
             lines = [z.rstrip() + '\n' for z in lines if z.strip()]
             if self.customCommands(last_line):
                 return
-            #
+
             # Handle the history and set self.indent for insert_marker.
             if last_line.strip():
                 self.history.insert(0, last_line)
                 self.indent = compute_indent(last_line)
-            #
+
             # Check for a continued line.
             if self.indent > 0 and last_line:
                 self.insert_marker()
                 return
-            #
+
             # Execute lines in groups, delimited by indentation.
             indent: int = 0
             ok: bool = True

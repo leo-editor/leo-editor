@@ -31,7 +31,7 @@ Author: vitalije(at)kviziracija.net
 # @-<< docstring >>
 # @+<< imports: history_tracer.py >>
 # @+node:vitalije.20190928154420.3: ** << imports: history_tracer.py >>
-import datetime
+import datetime as dt
 import time
 import threading
 from urllib.request import urlopen
@@ -124,8 +124,8 @@ def save_snapshot(c):
 
 # @+node:vitalije.20190928160538.1: ** snap
 def snap(c):
-    dt = datetime.datetime.utcnow()
-    buf = [c.mFileName, '\n', dt.strftime('%Y-%m-%dT%H:%M:%S.000000'), '\n']
+    today = dt.datetime.now(tz=dt.timezone.utc)  # PR #4829
+    buf = [c.mFileName, '\n', today.strftime('%Y-%m-%dT%H:%M:%S.000000'), '\n']
     nbuf = {}
 
     def it(v, lev):

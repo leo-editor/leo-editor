@@ -3,7 +3,7 @@
 """Nested splitter classes."""
 
 from __future__ import annotations
-from typing import Any, Dict
+from typing import Any
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtGui, QtWidgets
 from leo.core.leoQt import ContextMenuPolicy, Orientation, QAction
@@ -419,7 +419,7 @@ class NestedSplitter(QtWidgets.QSplitter):
                 # list of top level NestedSplitter windows opened from 'Open Window'
                 # splitter handle context menu
                 root.zoomed = False
-            #
+
             # NestedSplitter is a kind of meta-widget, in that it manages
             # panes across multiple actual splitters, even windows.
             # So to create a signal for a click on splitter handle, we
@@ -1053,7 +1053,7 @@ class NestedSplitter(QtWidgets.QSplitter):
         The content entry for non-NestedSplitter items is the provider ID
         string for the item, or 'UNKNOWN', and the splitter entry is omitted.
         """
-        ans: Dict[str, Any] = {
+        ans: dict[str, Any] = {
             'content': [],
             'orientation': 1 if self.orientation() == Orientation.Horizontal else 2,
             'sizes': self.sizes(),
