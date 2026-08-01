@@ -298,6 +298,9 @@ def pasteAsTemplate(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 
         # create vnode
         v, _ = getv(gnx)
+        # h is never None here: this first row is always xv[0] itself (the
+        # root of the copied tree), which viter() never treats as "seen".
+        assert h is not None
         v.h = h
         v.b = b
 
@@ -312,6 +315,11 @@ def pasteAsTemplate(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
             # get or create a child `v`
             v, isNew = getv(gnx)
             if isNew:
+                # h is never None here: viter() only yields h=None for gnx
+                # values already in `seen` (nodes outside the copied tree),
+                # and those always resolve to an existing vnode, so isNew
+                # is False for them.
+                assert h is not None
                 v.h = h
                 v.b = b
                 if ua := uas.get(gnx):

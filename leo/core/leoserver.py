@@ -3190,7 +3190,7 @@ class LeoServer:
         p = self._get_p(param)
         oldPosition: Position | None = None if p == c.p else c.p
 
-        newHeadline = param.get('name')
+        newHeadline = param.get('name') or ''
         bunch = c.undoer.beforeInsertNode(p)
         newNode = p.insertAfter()
         # Set this node's new headline
@@ -3220,7 +3220,7 @@ class LeoServer:
         """
         c = self._check_c(param)
         p = self._get_p(param)
-        newHeadline = param.get('name')
+        newHeadline = param.get('name') or ''
         bunch = c.undoer.beforeInsertNode(p)
         if c.config.getBool('insert-new-nodes-at-end'):
             newNode = p.insertAsLastChild()
