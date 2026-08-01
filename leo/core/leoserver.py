@@ -30,7 +30,7 @@ import textwrap
 import time
 import hmac
 import ssl
-from typing import Any, TYPE_CHECKING
+from typing import Any, cast, TYPE_CHECKING
 import warnings
 
 # Third-party.
@@ -1024,7 +1024,7 @@ class LeoServer:
                 c.findCommands.ftm = StringFindTabManager(c)  # type: ignore
                 cc = QuickSearchController(c)
                 # Patch up quick-search controller to the commander
-                c.patched_quicksearch_controller = cc
+                cast(Any, c).patched_quicksearch_controller = cc
                 # Patch up for 'selection range' in headlines left by the search commands.
                 c.frame.tree.endEditLabel = self._endEditLabel
                 c.recreateGnxDict()  # refresh c.fileCommands.gnxDict used in ap_to_p

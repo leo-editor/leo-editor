@@ -471,7 +471,7 @@ class JEditColorizer(BaseColorizer):
         super().__init__(c)
         self.widget: QWidget = widget
         if widget:  # #503: widget may be None during unit tests.
-            widget.leo_colorizer = self
+            cast(Any, widget).leo_colorizer = self
 
         # Configuration dicts...
         self.configDict: dict[str, str] = {}  # Keys are tags, values are colors (names or values).
@@ -1972,7 +1972,7 @@ class JEditColorizer(BaseColorizer):
                 # Set the bindings to VNode callbacks.
                 tagName = "hyper" + str(self.hyperCount)
                 self.hyperCount += 1
-                ref.tagName = tagName
+                cast(Any, ref).tagName = tagName
                 # @-<< set the hyperlink >>
             else:
                 self.colorRangeWithTag(s, i + n1, k, 'link')

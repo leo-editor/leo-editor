@@ -2720,7 +2720,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         assert self.menuBar
         # Inject this dict into the commander.
         if not hasattr(c, 'menuAccels'):
-            c.menuAccels = {}  # PR #4827
+            cast(Any, c).menuAccels = {}  # PR #4827
         if 0:
             self.font = c.config.getFontFromParams(
                 'menu_text_font_family',

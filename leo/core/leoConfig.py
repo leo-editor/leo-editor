@@ -1274,6 +1274,9 @@ class ActiveSettingsOutline:
 class GlobalConfigManager:
     """A class to manage configuration settings."""
 
+    # context_menus is set lazily (see doPopup), not in __init__.
+    context_menus: dict
+
     # @+others
     # @+node:ekr.20041117062717.2: *3*  gcm.ctor
     def __init__(self) -> None:
