@@ -23,13 +23,13 @@ except Exception:
 try:
     import flake8  # #2248: Import only flake8.
 except ImportError:
-    flake8 = None
+    flake8 = None  # type:ignore
 
 try:
     import pyflakes
     from pyflakes import api, reporter
 except Exception:
-    pyflakes = None
+    pyflakes = None  # type:ignore
 
 try:
     from pylint import lint

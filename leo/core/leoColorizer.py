@@ -21,7 +21,7 @@ try:
     import pygments
     from pygments.lexer import DelegatingLexer, RegexLexer, _TokenType, Text, Error
 except ImportError:
-    pygments = None
+    pygments = None  # type:ignore
 
 # Leo imports...
 from leo.core import leoGlobals as g

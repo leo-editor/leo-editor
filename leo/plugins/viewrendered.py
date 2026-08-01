@@ -232,7 +232,7 @@ try:
     import docutils
     import docutils.core
 except ImportError:
-    docutils = None
+    docutils = None  # type:ignore
 if docutils:
     try:
         from docutils.core import publish_string

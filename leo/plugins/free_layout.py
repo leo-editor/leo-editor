@@ -40,7 +40,7 @@ try:  # #1973
     from leo.core.leoQt import MouseButton
     from leo.plugins.nested_splitter import NestedSplitter  # NestedSplitterChoice
 except Exception:
-    QtWidgets = None
+    QtWidgets = None  # type:ignore
     MouseButton = None  # type:ignore
     NestedSplitter = None  # type:ignore
 

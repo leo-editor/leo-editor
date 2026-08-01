@@ -231,7 +231,7 @@ try:
     import asynchat
     import asyncore
 except Exception:
-    asynchat = asyncore = None
+    asynchat = asyncore = None  # type:ignore
 import http.server
 import json
 import io
