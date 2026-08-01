@@ -100,7 +100,8 @@ def colorize(c, p, item):
             # color
             try:
                 if f['color']:
-                    item.setForeground(0, cast(Any, QBrush)(cast(Any, QColor)("#" + str(f['color']))))
+                    color = cast(Any, QColor)("#" + str(f['color']))
+                    item.setForeground(0, cast(Any, QBrush)(color))
             except Exception:
                 print(item)
             # weight

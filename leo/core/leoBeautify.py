@@ -269,9 +269,13 @@ class CPrettyPrinter:
 
     # @+node:ekr.20110917174948.6911: *3* cpp.indent & helpers
     @overload
-    def indent(self, p: Position, toList: Literal[True], giveWarnings: bool = True) -> list[str]: ...
+    def indent(
+        self, p: Position, toList: Literal[True], giveWarnings: bool = True
+    ) -> list[str]: ...
     @overload
-    def indent(self, p: Position, toList: Literal[False] = False, giveWarnings: bool = True) -> str: ...
+    def indent(
+        self, p: Position, toList: Literal[False] = False, giveWarnings: bool = True
+    ) -> str: ...
     def indent(
         self,
         p: Position,
