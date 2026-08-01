@@ -625,6 +625,7 @@ class ScreenShotController:
     def build(self):
         """Do a complete sphinx build."""
         sc = self
+        assert sc.slideshow_path
         os.chdir(sc.slideshow_path)
         os.system('make clean')
         os.system('make html')
@@ -829,6 +830,7 @@ class ScreenShotController:
     def get_directive_fn(self):
         """Compute the path for use in an .. image:: directive."""
         sc = self
+        assert sc.output_fn
         return g.shortFileName(sc.output_fn)
 
     # @+node:ekr.20100911044508.5627: *5* get_output_fn
@@ -867,6 +869,7 @@ class ScreenShotController:
     # @+node:ekr.20101004082701.5738: *5* get_slide_base_name
     def get_slide_base_name(self):
         sc = self
+        assert sc.slideshow_path
         _, name = g.os_path_split(sc.slideshow_path)
         return name
 
@@ -1154,6 +1157,7 @@ class ScreenShotController:
             'Makefile',
             'make.bat',
         )
+        assert sc.slide_fn
         slide_path, _ = g.os_path_split(sc.slide_fn)
         for fn in table:
             path = g.finalize_join(slide_path, fn)
@@ -1227,6 +1231,7 @@ class ScreenShotController:
             ('_static       ', static_dir),
         )
         for tag, path in table:
+            assert path is not None
             if tag.strip().endswith('fn'):
                 path, _ = g.os_path_split(path)
             if not g.os_path_exists(path):
@@ -1242,6 +1247,7 @@ class ScreenShotController:
         h = '@url built slide'
         if not sc.find_node(p, h):
             c.selectPosition(p)
+            assert sc.slide_fn
             _, fn = g.os_path_split(sc.slide_fn)
             if fn.endswith('.txt'):
                 fn = fn[:-4]
@@ -1415,6 +1421,7 @@ class ScreenShotController:
         # "@url working file" inhibits making a new working file.
         if sc.find_node(sc.slide_node, '@url working file'):
             # Make a new output file *only* if the working file is newer.
+            assert sc.working_fn
             if (
                 g.os_path_exists(sc.working_fn)
                 and sc.output_fn
@@ -1440,6 +1447,7 @@ class ScreenShotController:
         g.red('Opening Inkscape...\n')
         sc.c.outerUpdate()
         sc.enable_filters(sc.working_fn, False)
+        assert sc.inkscape_bin and sc.working_fn
         cmd = [sc.inkscape_bin, "--with-gui", sc.working_fn]
         proc = subprocess.Popen(cmd, stderr=subprocess.PIPE)
         proc.communicate()  # Wait for Inkscape to terminate.
@@ -1485,10 +1493,12 @@ class ScreenShotController:
             if sc.verbose:
                 g.note('no output file')
             return
+        output_fn = sc.output_fn
+        assert sc.inkscape_bin and sc.working_fn
         cmd = (
             sc.inkscape_bin,
             "--without-gui",
-            "--export-png=" + sc.output_fn,
+            "--export-png=" + output_fn,
             "--export-area-drawing",
             "--export-area-snap",
             sc.working_fn,
@@ -1496,14 +1506,14 @@ class ScreenShotController:
         proc = subprocess.Popen(cmd, stderr=subprocess.PIPE)
         proc.communicate()  # Wait for Inkscape to terminate.
         if sc.verbose:
-            g.note('wrote:  %s' % g.shortFileName(sc.output_fn))
+            g.note('wrote:  %s' % g.shortFileName(output_fn))
         if Image:  # trim transparent border
             try:
-                img = Image.open(sc.output_fn)
+                img = Image.open(output_fn)
                 img = sc.trim(img, (255, 255, 255, 0))
-                img.save(sc.output_fn)
+                img.save(output_fn)
             except OSError:
-                g.trace('can not open %s' % sc.output_fn)
+                g.trace('can not open %s' % output_fn)
         sc.make_at_url_node_for_output_file()
 
     # @+node:ekr.20100908110845.5555: *5* trim
@@ -1525,6 +1535,7 @@ class ScreenShotController:
         """Write sc.slide_node.b to <sc.slide_fn>, a .html.txt file."""
         sc = self
         fn = sc.slide_fn
+        assert fn
         s = sc.make_slide_contents()
         try:
             f = open(fn, 'w')
@@ -1644,6 +1655,7 @@ class ScreenShotController:
     def get_template(self):
         """Load and check the template SVG and return DOM"""
         sc = self
+        assert sc.template_fn
         infile = open(sc.template_fn)
         template = etree.parse(infile)
         ids_d = sc.getIds(template.getroot())
@@ -1746,6 +1758,7 @@ class ScreenShotController:
         """Create the working file from the template."""
         sc = self
         fn = sc.working_fn
+        assert fn
         outfile = open(fn, 'w')
         template.write(outfile)
         if sc.verbose:
@@ -1764,6 +1777,7 @@ class ScreenShotController:
         ok = sc.setup_screen_shot(fn)
         if ok:
             if sc.verbose:
+                assert sc.screenshot_fn
                 g.note('wrote:  %s' % g.shortFileName(sc.screenshot_fn))
                 # g.note('slide node:  %s' % p.h)
             sc.add_image_directive()
@@ -1840,6 +1854,7 @@ class ScreenShotController:
         if sc.select_node:
             cmd.append('--select="%s"' % (sc.select_node))
         if sc.pause_flag:
+            assert sc.screenshot_fn
             g.red('Pausing:', g.shortFileName(sc.screenshot_fn))
             g.note('Please take the screenshot by hand')
             c.outerUpdate()
@@ -2058,6 +2073,7 @@ class ScreenShotController:
     def get_wink_screenshots(self):
         """Return the properly sorted list of wink screenshots."""
         sc = self
+        assert sc.wink_path
         aList = glob.glob(sc.wink_path + '/*.png')
 
         def key(s):
