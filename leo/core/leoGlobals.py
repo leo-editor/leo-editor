@@ -7175,7 +7175,7 @@ def init_zodb(pathToZodbStorage: str, verbose: bool = True) -> Value:
     if init_zodb_failed.get(pathToZodbStorage):
         return None
     try:
-        import ZODB  # type:ignore
+        import ZODB
     except ImportError:
         if verbose:
             g.es('g.init_zodb: can not import ZODB')

@@ -65,7 +65,7 @@ def callZenity(title: str, save: bool = False, test: bool = False) -> bytes | No
     if ret:
         return None
     # if multiple:
-    # return filename.split('|')  # type:ignore
+    # return filename.split('|')
     return filename
 
 

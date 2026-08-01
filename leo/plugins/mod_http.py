@@ -766,7 +766,7 @@ class LeoActions:
         one_tab_links = []
         if 'www.one-tab.com' in url.lower():
             one_tab_links = query.get('ln', [''])[0]
-            one_tab_links = json.loads(one_tab_links)  # type:ignore
+            one_tab_links = json.loads(one_tab_links)
         c = None  # outline for bookmarks
         previous = None  # previous bookmark for adding selections
         parent = None  # parent node for new bookmarks
@@ -1062,7 +1062,7 @@ if asynchat:
             bytesToRead = int(self.headers.getheader('content-length'))
             # set terminator to length (will read bytesToRead bytes)
             self.set_terminator(bytesToRead)
-            self.buffer = StringIO()  # type:ignore
+            self.buffer = StringIO()
             # control will be passed to a new found_terminator
             self.found_terminator = self.handle_post_data  # type:ignore
 

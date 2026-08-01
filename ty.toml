@@ -49,3 +49,11 @@ unresolved-attribute = "ignore"
 # TYPE_CHECKING-only imports of names that are conditionally/
 # dynamically defined at runtime (leoQt.py, leoGui.py, leoApp.py).
 unresolved-import = "ignore"
+
+# mypy and ty enforce different (and sometimes incompatible) rules for
+# the same line -- e.g. ty's stricter Optional/override checks vs
+# mypy's. A `# type: ignore` that mypy's config requires is invisible
+# to ty when ty has nothing to report on that line, so ty calls it
+# "unused". Don't let that override mypy's needs: silence the warning
+# rather than deleting comments mypy still relies on.
+unused-type-ignore-comment = "ignore"
