@@ -1507,7 +1507,7 @@ class GlobalConfigManager:
         """Return the value of @float setting."""
         val = self.get(setting, "float")
         try:
-            return float(val)  # type:ignore
+            return float(val)
         except TypeError:
             return None
 
@@ -1547,7 +1547,7 @@ class GlobalConfigManager:
         """Return the value of @int setting."""
         val = self.get(setting, "int")
         try:
-            return int(val)  # type:ignore
+            return int(val)
         except TypeError:
             return None
 
@@ -1576,7 +1576,7 @@ class GlobalConfigManager:
         """
         val = self.get(setting, "ratio")
         try:
-            val_f = float(val)  # type:ignore
+            val_f = float(val)
             if 0.0 <= val_f <= 1.0:
                 return val_f
         except TypeError:
@@ -1886,7 +1886,7 @@ class LocalConfigManager:
         """Return the value of @float setting."""
         val = self.get(setting, "float")
         try:
-            return float(val)  # type:ignore
+            return float(val)
         except TypeError:
             return None
 
@@ -1926,7 +1926,7 @@ class LocalConfigManager:
         """Return the value of @int setting."""
         val = self.get(setting, "int")
         try:
-            return int(val)  # type:ignore
+            return int(val)
         except TypeError:
             return None
 

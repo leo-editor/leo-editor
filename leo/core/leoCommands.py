@@ -555,7 +555,7 @@ class Commands:
         if not c.gui.isNullGui and not g.unitTesting:
             # #2485: register idle_focus_helper in the proper context.
             assert g.app.pluginsController
-            try:  # type:ignore
+            try:
                 g.app.pluginsController.loadingModuleNameStack.append('leo.core.leoCommands')
                 g.registerHandler('idle', c.idle_focus_helper)
             finally:
@@ -1264,7 +1264,7 @@ class Commands:
         except Exception:
             g.handleScriptException(c, p)
         finally:
-            del sys.path[:2]  # type:ignore
+            del sys.path[:2]
 
     # @+node:ekr.20171123135625.4: *4* @cmd execute-script & public helpers
     @cmd('execute-script')
@@ -3181,7 +3181,7 @@ class Commands:
         aList = g.get_directives_dict_list(p)
         d: dict[str, Value] = {}
         for key, default, func in table:
-            val = func(aList)  # type:ignore
+            val = func(aList)
             d[key] = default if val is None else val
 
         # Post process: do *not* set commander ivars.

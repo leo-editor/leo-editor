@@ -267,7 +267,7 @@ def show_unittest_failures(event: LeoKeyEvent) -> None:
 
 
 # @+node:ekr.20111015194452.15716: ** class QuickSearchEventFilter (QObject)
-class QuickSearchEventFilter(QtCore.QObject):  # type:ignore
+class QuickSearchEventFilter(QtCore.QObject):
     # @+others
     # @+node:ekr.20111015194452.15718: *3* quick_ev.ctor
     def __init__(self, c: Cmdr, w: QListWidget, lineedit: Any) -> None:
@@ -307,7 +307,7 @@ class QuickSearchEventFilter(QtCore.QObject):  # type:ignore
 
 
 # @+node:ville.20090314215508.2: ** class LeoQuickSearchWidget (QWidget)
-class LeoQuickSearchWidget(QtWidgets.QWidget):  # type:ignore
+class LeoQuickSearchWidget(QtWidgets.QWidget):
     """'Find in files'/grep style search widget"""
 
     # @+others

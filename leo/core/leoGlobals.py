@@ -626,7 +626,7 @@ def new_cmd_decorator(name: str, ivars: list[str]) -> Callable:
                 c = event.get('c')
             else:
                 c = event.c
-            self = g.ivars2instance(c, g, ivars)  # type:ignore
+            self = g.ivars2instance(c, g, ivars)
             try:
                 # Don't use a keyword for self.
                 # This allows the VimCommands class to use vc instead.

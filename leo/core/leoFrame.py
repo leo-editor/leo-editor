@@ -265,7 +265,7 @@ class LeoFrame:
         self.tree: LeoTree | NullTree | LeoQtTree
 
         # Add required inits.
-        self.menu = None  # type:ignore
+        self.menu = None
         self.miniBufferWidget = None  # type:ignore
         self.top = None  # type:ignore
 

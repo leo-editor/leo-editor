@@ -94,7 +94,7 @@ def project_wizard(event):
         ("Python files", "*.py"),
     ]
     fname = g.app.gui.runOpenFileDialog(c, title="Open", filetypes=filetypes)
-    pth = os.path.dirname(os.path.abspath(fname))  # type:ignore
+    pth = os.path.dirname(os.path.abspath(fname))
     g.es(pth)
     tgt = c.currentPosition().insertAsLastChild()
     c.selectPosition(tgt)

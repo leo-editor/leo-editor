@@ -14,7 +14,7 @@ from typing import TYPE_CHECKING
 try:
     import black
 except Exception:
-    black = None  # type:ignore
+    black = None
 
 # Leo imports.
 from leo.core import leoGlobals as g

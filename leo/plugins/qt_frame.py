@@ -976,9 +976,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
             """In case user has hidden minibuffer with gui-minibuffer-hide"""
 
             def focusInEvent(self, event: QFocusEvent) -> None:  # type:ignore[override]
-                self.parent().show()  # type:ignore
+                self.parent().show()
                 # Call the base class method.
-                super().focusInEvent(event)  # type:ignore
+                super().focusInEvent(event)
 
             def focusOutEvent(self, event: QFocusEvent) -> None:  # type:ignore[override]
                 self.store_selection()
@@ -1103,8 +1103,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
             n = c.frame.body.numberOfEditors
         n = max(0, n - 1)
         # mypy error: grid is a QGridLayout, not a QLayout.
-        grid.addWidget(label, 0, n)  # type:ignore
-        grid.addWidget(w, 1, n)  # type:ignore
+        grid.addWidget(label, 0, n)
+        grid.addWidget(w, 1, n)
         grid.setRowStretch(0, 0)  # Don't grow the label vertically.
         grid.setRowStretch(1, 1)  # Give row 1 as much as vertical room as possible.
         # Inject the ivar.
@@ -1347,7 +1347,7 @@ class FindTabManager:
             ('suboutline_only', 'suboutline_only', self.radio_button_suboutline_only),
             ('file_only',       'file_only',       self.radio_button_file_only),
         )  # fmt: skip
-        for setting_name, ivar, radio_button_w in radio_buttons_table:  # type:ignore
+        for setting_name, ivar, radio_button_w in radio_buttons_table:
             val = c.config.getBool(setting_name, default=False)
             # The setting name is also the name of the LeoFind ivar.
             if ivar is not None:
@@ -4483,7 +4483,7 @@ class TabbedFrameFactory:
         del self.leoFrames[dw]
         if dw2 := tabw.currentWidget():
             g.app.selectLeoWindow(dw2.leo_c)
-        tabw.tabBar().setVisible(self.alwaysShowTabs or tabw.count() > 1)  # type:ignore
+        tabw.tabBar().setVisible(self.alwaysShowTabs or tabw.count() > 1)
 
     # @+node:ekr.20110605121601.18471: *3* TabbedFrameFactory.focusCurrentBody
     def focusCurrentBody(self) -> None:
@@ -4784,7 +4784,7 @@ def toggleMinibuffer(event: LeoKeyEvent | None = None) -> None:
         dw = c.frame.top
         w = dw.leo_minibuffer_frame
         if w.isVisible():
-            w.hide()  # type:ignore
+            w.hide()
         else:
             w.show()
 

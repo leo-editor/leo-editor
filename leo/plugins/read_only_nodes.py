@@ -158,7 +158,7 @@ class FTPurl:
         try:
             if self.mode == '':  # mode='': ASCII mode
                 slist: list = []
-                self.ftp.retrlines('RETR %s' % self.path, slist.append)  # type:ignore
+                self.ftp.retrlines('RETR %s' % self.path, slist.append)
                 s = '\n'.join(slist)
             else:  # mode='b': binary mode
                 file = StringIO()

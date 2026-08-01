@@ -2560,7 +2560,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                     n = min(self.moveCol, max(0, len(line) - 1))
                 else:
                     n = min(self.moveCol, max(0, len(line)))  # A tricky boundary.
-                spot = g.convertRowColToPythonIndex(s, row, n)  # type:ignore
+                spot = g.convertRowColToPythonIndex(s, row, n)
             else:  # Plain move forward or back.
                 self.setMoveCol(w, spot)  # sets self.moveSpot.
         if extend:

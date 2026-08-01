@@ -254,9 +254,9 @@ def swapLogPanel(event: LeoKeyEvent | None = None) -> None:
         return
     gui = g.app.gui
 
-    ms = gui.find_widget_by_name(c, 'main_splitter')  # type: ignore
-    ss = gui.find_widget_by_name(c, 'secondary_splitter')  # type: ignore
-    lf = gui.find_widget_by_name(c, 'logFrame')  # type: ignore
+    ms = gui.find_widget_by_name(c, 'main_splitter')
+    ss = gui.find_widget_by_name(c, 'secondary_splitter')
+    lf = gui.find_widget_by_name(c, 'logFrame')
 
     lf_parent = lf.parent()
     lf_parent_container = lf_parent.parent()
@@ -275,7 +275,7 @@ def swapLogPanel(event: LeoKeyEvent | None = None) -> None:
 
     if widget is not None:
         target.addWidget(widget)
-        gui.equalize_splitter(target)  # type: ignore
+        gui.equalize_splitter(target)
 
 
 # @+node:ekr.20241008175137.1: *3* command: 'layout-vertical-thirds'
@@ -705,7 +705,7 @@ class LayoutCacheWidget(QWidget):
         # and add it to self.created_splitter_dict.
         splitter: Any
         for _, name in SPLITTERS.items():
-            splitter = self.find_splitter_by_name(name)  # type:ignore
+            splitter = self.find_splitter_by_name(name)
             if splitter is None:
                 splitter = QSplitter(self)
                 splitter.setObjectName(name)
@@ -766,7 +766,7 @@ class LayoutCacheWidget(QWidget):
         # {'main_splitter':Orientation.Horizontal...}
 
         for splitter_name, splitter in SPLITTER_DICT.items():
-            orientation = ORIENTATIONS[splitter_name]  # type:ignore
+            orientation = ORIENTATIONS[splitter_name]
             splitter.setOrientation(orientation)
         # @-<< set default orientations >>
         # @+<< move widgets to targets >>

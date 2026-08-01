@@ -132,7 +132,7 @@ def popup_entry(c: Cmdr, p: Position, menu: Menu) -> None:
 # @+node:tbrown.20090119215428.8: ** class todoQtUI(QWidget)
 if g.app.gui.guiName() == "qt":
 
-    class todoQtUI(QtWidgets.QWidget):  # type:ignore
+    class todoQtUI(QtWidgets.QWidget):
         # @+others
         # @+node:ekr.20111118104929.10204: *3* ctor (todoQtUI(QWidget))
         def __init__(self, owner: Any, logTab: bool = True) -> None:
@@ -600,7 +600,7 @@ class todoController:
         """decorator for methods which change projects"""
 
         # pylint: disable=no-self-argument
-        def project_changer_callback(self, *args: Args, **kargs: Any) -> Any:  # type:ignore
+        def project_changer_callback(self, *args: Args, **kargs: Any) -> Any:
             ans = fn(self, *args, **kargs)  # pylint: disable=not-callable
             self.update_project()
             return ans

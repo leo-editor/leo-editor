@@ -69,7 +69,7 @@ def c12_hook(tag, keys):
 def init_idle_checker(tag, keys):
     global idle_checker
 
-    class IdleChecker(QtCore.QObject):  # type:ignore
+    class IdleChecker(QtCore.QObject):
         def __init__(self):
             QtCore.QObject.__init__(self)
             self._tid = self.startTimer(5000)

@@ -252,7 +252,7 @@ else:
 try:
     from jinja2 import Template
 except ImportError:
-    Template = None  # type:ignore
+    Template = None
 
 # Markdown.
 try:
@@ -260,7 +260,7 @@ try:
 
     got_markdown = True
 except ImportError:
-    got_markdown = False  # type:ignore
+    got_markdown = False
 
 # nbformat (@jupyter) support.
 try:
