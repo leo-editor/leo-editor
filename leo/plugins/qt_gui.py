@@ -889,11 +889,8 @@ class LeoQtGui(leoGui.LeoGui):
         dialog.setWindowTitle(title)
         dialog.setLabelText(message)
         dialog.setTextValue(default)
-        if wide:
-            # pylint: disable=unsubscriptable-object
-            dialog.resize(
-                int(g.windows()[0].get_window_info()[0] * 0.9), 100
-            )  # g.windows is a list.
+        if wide and (windows := g.windows()):
+            dialog.resize(int(windows[0].get_window_info()[0] * 0.9), 100)
         if cancelButtonText:
             dialog.setCancelButtonText(cancelButtonText)
         if okButtonText:

@@ -10,7 +10,7 @@ from collections.abc import Callable, Generator
 from xml.etree import ElementTree
 import json
 import time
-from typing import Any, TYPE_CHECKING
+from typing import Any, cast, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 from leo.core import leoFileCommands
@@ -347,7 +347,7 @@ def pasteAsTemplate(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 
     if not isJson:
         xroot = ElementTree.fromstring(s)
-        xvelements = xroot.find('vnodes')  # <v> elements.
+        xvelements = cast(Any, xroot.find('vnodes'))  # <v> elements.
         xtelements = xroot.find('tnodes')  # <t> elements.
         bodies, uas = x.scanTnodes(xtelements)
         root_gnx = xvelements[0].attrib.get('t')  # the gnx of copied node

@@ -38,7 +38,7 @@ import time
 import traceback
 import types
 from types import ModuleType
-from typing import cast, Any, IO, TYPE_CHECKING
+from typing import cast, Any, IO, NoReturn, TYPE_CHECKING
 import unittest
 import urllib
 import urllib.parse as urlparse
@@ -2338,7 +2338,10 @@ class NullObject:
     def __contains__(self, item: object) -> bool:
         return False
 
-    def __getitem__(self, key: str) -> None:
+    def __getitem__(self, key: str) -> NoReturn:
+        raise KeyError
+
+    def __delitem__(self, key: str) -> NoReturn:
         raise KeyError
 
     def __setitem__(self, key: str, val: Value) -> None:
@@ -2351,7 +2354,7 @@ class NullObject:
         return 0
 
     # Iteration methods:
-    def __next__(self) -> None:
+    def __next__(self) -> NoReturn:
         raise StopIteration
 
 

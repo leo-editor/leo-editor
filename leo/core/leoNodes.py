@@ -2288,6 +2288,10 @@ class VNode:
         'tempAttributes',     # Injected by read code.
         'unknownAttributes',
     ]  # fmt: skip
+
+    # unknownAttributes is set lazily (see v.u property below), not in __init__.
+    unknownAttributes: dict
+
     # @+<< VNode constants >>
     # @+node:ekr.20031218072017.951: *3* << VNode constants >>
     # Define the meaning of status bits in new vnodes.
