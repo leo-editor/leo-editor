@@ -412,7 +412,7 @@ class leoscreen_Controller:
             [('CURRENT: ' if i == self.use_screen else '') + i, False, i]
             for i in out.split('\n')
             if i.startswith('\t')
-        ]  # type:ignore
+        ]
 
         ld = ListDialog(None, 'Pick screen', 'Pick screen', screens)
         ld.exec()

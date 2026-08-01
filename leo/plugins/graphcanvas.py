@@ -126,7 +126,7 @@ def toggle_autoload(event):
 
 
 # @+node:bob.20110119123023.7395: ** class graphcanvasUI
-class graphcanvasUI(QtWidgets.QWidget):  # type:ignore
+class graphcanvasUI(QtWidgets.QWidget):
     # @+others
     # @+node:bob.20110119123023.7396: *3* __init__
     def __init__(self, owner=None):
@@ -199,7 +199,7 @@ class graphcanvasUI(QtWidgets.QWidget):  # type:ignore
 
 
 # @+node:bob.20110119123023.7397: ** class GraphicsView
-class GraphicsView(QtWidgets.QGraphicsView):  # type:ignore
+class GraphicsView(QtWidgets.QGraphicsView):
     # @+others
     # @+node:bob.20110119123023.7398: *3* __init__
     def __init__(self, glue, *args, **kargs):
@@ -305,7 +305,7 @@ class GetImage:
 
 
 # @+node:tbrown.20110407091036.17531: ** class nodeBase
-class nodeBase(QtWidgets.QGraphicsItemGroup):  # type:ignore
+class nodeBase(QtWidgets.QGraphicsItemGroup):
     node_types: dict[str, Any] = {}
 
     @classmethod
@@ -618,7 +618,7 @@ nodeBase.node_types[nodeImage.__name__] = nodeImage
 
 
 # @+node:bob.20110121161547.3424: ** class linkItem
-class linkItem(QtWidgets.QGraphicsItemGroup):  # type:ignore
+class linkItem(QtWidgets.QGraphicsItemGroup):
     """Node on the canvas"""
 
     # @+others

@@ -404,7 +404,7 @@ class GlobalSearch:
 
 
 # @+node:ekr.20140919160020.17920: ** class LeoConnector
-class LeoConnector(QtCore.QObject):  # type:ignore
+class LeoConnector(QtCore.QObject):
     pass
 
 

@@ -281,7 +281,7 @@ class TagController:
 # @+node:peckj.20140804114520.15199: ** class LeoTagWidget
 if QtWidgets:
 
-    class LeoTagWidget(QtWidgets.QWidget):  # type:ignore
+    class LeoTagWidget(QtWidgets.QWidget):
         # @+others
         # @+node:peckj.20140804114520.15200: *3* tag_w.__init__
         def __init__(self, c: Cmdr, parent: QtWidgets.QWidget = None) -> None:

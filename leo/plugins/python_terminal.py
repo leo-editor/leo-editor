@@ -73,7 +73,7 @@ g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 
 # @+others
 # @+node:peckj.20150428142729.3: ** class MyInterpreter
-class MyInterpreter(QtWidgets.QWidget):  # type:ignore
+class MyInterpreter(QtWidgets.QWidget):
     def __init__(self, parent, c):
         super().__init__(parent)
         hBox = QtWidgets.QHBoxLayout()
@@ -110,7 +110,7 @@ class InteractiveInterpreter(code.InteractiveInterpreter):
 # @+node:peckj.20150428142729.5: ** class PyInterp (QTextEdit)
 if QtWidgets:
 
-    class PyInterp(QtWidgets.QTextEdit):  # type:ignore
+    class PyInterp(QtWidgets.QTextEdit):
         # @+others
         # @+node:peckj.20150428142729.9: *3* PyInterp.__init__
         def __init__(self, parent, c):
@@ -257,7 +257,7 @@ if QtWidgets:
                 # #1212: Disable this by default.
                 if use_rlcompleter and event.key() == Key.Key_Tab:
                     line = str(self.document().lastBlock().text())[4:]
-                    completer = Completer(self.interpreter.locals)  # type:ignore
+                    completer = Completer(self.interpreter.locals)
                     suggestion = completer.complete(line, 0)
                     if suggestion is not None:
                         self.insertPlainText(suggestion[len(line) :])
@@ -421,8 +421,8 @@ if QtWidgets:
         def focusInEvent(self, event=None):
             # set stdout+stderr properly
             QtWidgets.QTextEdit.focusInEvent(self, event)
-            sys.stdout = self  # type:ignore
-            sys.stderr = self  # type:ignore
+            sys.stdout = self
+            sys.stderr = self
             self.ensureCursorVisible()
 
         # @+node:peckj.20150428142729.21: *3* PyInterp.focusOutEvent

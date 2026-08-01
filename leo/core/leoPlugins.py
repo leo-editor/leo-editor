@@ -418,8 +418,8 @@ class LeoPluginsController:
         for tag in self.handlers:
             bunches = self.handlers.get(tag, [])
             for bunch in bunches:
-                fn = bunch.fn  # type:ignore
-                name = bunch.moduleName  # type:ignore
+                fn = bunch.fn
+                name = bunch.moduleName
                 tags = modules_d.get(name, [])
                 tags.append(tag)
                 key = f"{name}.{fn.__name__}"

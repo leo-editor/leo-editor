@@ -842,7 +842,7 @@ class Callout(Label):
 
 
 # @+node:ekr.20170208065111.1: *3* class Image (QLabel)
-class Image(QtWidgets.QLabel):  # type:ignore
+class Image(QtWidgets.QLabel):
     def __init__(self, fn, pane=None, magnification=None, position=None, size=None):
         """Image.__init__."""
         demo, w = g.app.demo, self
@@ -891,7 +891,7 @@ class Image(QtWidgets.QLabel):  # type:ignore
 
 
 # @+node:ekr.20170208095240.1: *3* class Text (QPlainTextEdit)
-class Text(QtWidgets.QPlainTextEdit):  # type:ignore
+class Text(QtWidgets.QPlainTextEdit):
     def __init__(self, text, font=None, pane=None, position=None, size=None, stylesheet=None):
         """Pop up a QPlainTextEdit in the indicated pane."""
         demo, w = g.app.demo, self

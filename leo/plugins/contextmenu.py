@@ -392,7 +392,7 @@ def openatleo_rclick(c: Cmdr, p: Position, menu: LeoQtMenu) -> None:
     def openatleo_rclick_cb() -> None:
         path = c.fullPath(p)
         if g.os_path_exists(path):
-            g.openWithFileName(path, old_c=c)  # type:ignore
+            g.openWithFileName(path, old_c=c)
         else:
             g.red(f"file not found: {path}")
 

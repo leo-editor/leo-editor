@@ -97,7 +97,7 @@ def main():
     itPoll = leoG.IdleTime(
         (
             lambda itRunTests: lib_test.runTests(
-                itRunTests,  # type:ignore
+                itRunTests,
                 cmdrT,
                 fdR,
                 testCmdr,

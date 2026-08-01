@@ -1,0 +1,44 @@
+# Config for `ty` (https://github.com/astral-sh/ty), run as a second,
+# non-blocking type checker alongside mypy (see .mypy.ini).
+#
+# ty is still in beta, and is noticeably stricter than mypy's current
+# config in a few areas (Optional handling, PyQt override signatures).
+# This job is informational only -- see the "ty" job in
+# .github/workflows/ci.yml -- so this file intentionally does not try
+# to fully silence those findings, just the one pattern that's a
+# deliberate, accepted part of Leo's architecture.
+
+[src]
+include = ["leo"]
+exclude = [
+    # Mirrors the [mypy] exclude list in .mypy.ini.
+    "leo/doc",
+    "leo/dist",
+    "leo/editpane",
+    "leo/examples",
+    "leo/extensions",
+    "leo/external",
+    "leo/modes",
+    "leo/plugins/obsolete",
+    "leo/scripts",
+    "leo/themes",
+    "leo/unittests",
+    "leo/www",
+    "leo/plugins/freewin.py",
+    "leo/test/scriptFile.py",
+    "leo/plugins/beautify_node.py",
+    "leo/plugins/viewrendered3*",
+    "leo/plugins/leo_pdf*",
+    "leo/plugins/leo_to_rtf*",
+    "leo/plugins/mnplugins*",
+    "leo/plugins/mod_speedups*",
+    "leo/plugins/settings_finder*",
+    "leo/plugins/stickynotes_plus*",
+    "leo/plugins/qt_main*",
+]
+
+[rules]
+# Leo assigns attributes dynamically outside __init__ throughout
+# leo/core, leo/commands, leo/plugins, leo/modes, leo/external -- the
+# same reason .mypy.ini disables `attr-defined` for those packages.
+unresolved-attribute = "ignore"

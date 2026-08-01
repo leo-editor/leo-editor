@@ -81,7 +81,7 @@ def importCiscoConfig(c):
     c.redraw()
 
     try:
-        fh = open(name)  # type:ignore
+        fh = open(name)
         g.es("importing: %s" % name)
         linelist = fh.read().splitlines()
         fh.close()
