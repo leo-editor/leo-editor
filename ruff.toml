@@ -77,6 +77,12 @@ ignore = [
     "PLW0602",  # Using global for but no assignment is done
     "PLW1510",  # `subprocess.run` without explicit `check` argument
 
+    # These compare the git executable bit to the presence of a shebang line.
+    # The check is disabled on Windows and WSL, so it can't be verified before
+    # pushing, and the executable bit drifts easily across platforms/editors.
+    "EXE001",   # Shebang is present but file is not executable
+    "EXE002",   # The file is executable but no shebang is present
+
     # Previous suppressions. Keep these.
     
     "E402", # Module level import not at top of file
