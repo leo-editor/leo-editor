@@ -621,7 +621,7 @@ class LeoQtGui(leoGui.LeoGui):
                 # dialog.setStyleSheet(c.active_stylesheet)
                 # Set the commander's FindTabManager.
                 assert g.app.globalFindTabManager
-                c.ftm = g.app.globalFindTabManager
+                cast(Any, c).ftm = g.app.globalFindTabManager
                 fn = c.shortFileName() or 'Untitled'
             else:
                 fn = 'Untitled'

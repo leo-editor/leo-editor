@@ -8,7 +8,7 @@ from __future__ import annotations
 from collections.abc import Callable
 import re
 import time
-from typing import Any, TYPE_CHECKING
+from typing import Any, cast, TYPE_CHECKING
 from leo.core.leoQt import QtCore, QtGui, QtWidgets
 from leo.core.leoQt import EndEditHint, Format, ItemFlag, KeyboardModifier
 from leo.core import leoGlobals as g
@@ -1055,7 +1055,7 @@ class LeoQtTree(leoFrame.LeoTree):
         if item:
             item.setText(0, s)
             if self.use_declutter:
-                item._real_text = s
+                cast(Any, item)._real_text = s
 
     # @+node:tbrown.20160406221505.1: *4* LeoQtTree.sizeTreeEditor
     @staticmethod

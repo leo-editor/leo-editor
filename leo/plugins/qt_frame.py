@@ -748,7 +748,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
             w.setLineWidth(lineWidth)
             self.setName(w, name)
         if not hasattr(w, 'leo_wrapper'):
-            w.leo_wrapper = QTextEditWrapper(widget=w, name=name, c=c)
+            cast(Any, w).leo_wrapper = QTextEditWrapper(widget=w, name=name, c=c)
         return w
 
     # @+node:ekr.20110605121601.18164: *4* dw.createTreeWidget
@@ -2782,7 +2782,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         action = menu.addAction(label)
         assert action
         # Inject the command name into the action so that it can be enabled/disabled dynamically.
-        action.leo_command_name = commandName or ''
+        cast(Any, action).leo_command_name = commandName or ''
         if command:
 
             def qt_add_command_callback(
@@ -2799,7 +2799,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
             return
         action = menu.addSeparator()
         assert action
-        action.leo_menu_label = '*seperator*'
+        cast(Any, action).leo_menu_label = '*seperator*'
 
     # @+node:ekr.20110605121601.18347: *5* LeoQtMenu.delete
     def delete(self, menu: QtMenuWrapper, realItemName: str = '<no name>') -> None:
@@ -2868,7 +2868,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         else:
             self.menuBar.addMenu(menu)
         if action := menu.menuAction():
-            action.leo_menu_label = label
+            cast(Any, action).leo_menu_label = label
         else:
             g.trace('no action for menu', label)
         return menu
@@ -4056,7 +4056,7 @@ class QtMenuWrapper(LeoQtMenu, QtWidgets.QMenu):  # type:ignore[misc,override]
         label = label.replace('&', '').lower()
         self.leo_menu_label = label
         if action := self.menuAction():
-            action.leo_menu_label = label
+            cast(Any, action).leo_menu_label = label
         self.aboutToShow.connect(self.onAboutToShow)
 
     def __repr__(self) -> str:
