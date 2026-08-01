@@ -8,6 +8,7 @@ http://pypi.python.org/pypi/pudb
 """
 
 # By VMV.
+from typing import Any, cast
 try:
     import pudb
 except ImportError:
@@ -25,7 +26,7 @@ def init():
         def pudb_set_trace(*args):
             pudb.set_trace()
 
-        g.pdb = pudb_set_trace
+        g.pdb = cast(Any, pudb_set_trace)
         g.plugin_signon(__name__)
     return ok
 

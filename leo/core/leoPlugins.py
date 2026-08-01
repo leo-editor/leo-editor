@@ -7,7 +7,7 @@
 from __future__ import annotations
 from collections.abc import Callable, Iterator, Sequence
 import sys
-from typing import Any, TYPE_CHECKING
+from typing import Any, cast, TYPE_CHECKING
 from types import ModuleType
 from leo.core import leoGlobals as g
 
@@ -307,7 +307,7 @@ class LeoPluginsController:
         self.signonModule: Any = None  # A hack for plugin_signon.
         # Settings.  Set these here in case finishCreate is never called.
         self.warn_on_failure = True
-        g.act_on_node = CommandChainDispatcher()
+        g.act_on_node = cast(Any, CommandChainDispatcher())
         g.visit_tree_item = CommandChainDispatcher()
         g.tree_popup_handlers = []
 

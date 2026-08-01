@@ -104,8 +104,9 @@ def run(c, all):
     def timer_callback(tag):
         timer_callback_helper(c, t, timer)
 
-    timer.handler = timer_callback
-    timer.start()
+    if timer:
+        timer.handler = timer_callback
+        timer.start()
 
 
 # @+node:ekr.20040915085351.2: *3* getList

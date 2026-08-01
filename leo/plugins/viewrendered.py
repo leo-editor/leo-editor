@@ -862,7 +862,7 @@ class ViewRenderedController(QtWidgets.QWidget):
         if not self.must_update(keywords):
             return
         # Suppress updates until we change nodes.
-        f: Callable = None
+        f: Callable | None = None
         self.node_changed = self.gnx != p.v.gnx
         self.gnx = p.v.gnx
         self.length = len(p.b)  # not s

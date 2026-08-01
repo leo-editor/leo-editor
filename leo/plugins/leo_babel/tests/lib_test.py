@@ -10,6 +10,7 @@
 # @+<< imports >>
 # @+node:bob.20180205135704.1: ** << imports >>
 import datetime as dt
+from typing import Any, cast
 
 from leo.core import leoGlobals as leoG
 
@@ -49,7 +50,7 @@ class EsCapture:
     # @+node:bob.20180116152036.1: *3* __init__()
     def __init__(self):
         self._es = leoG.es
-        leoG.es = self.esCapture
+        leoG.es = cast(Any, self.esCapture)
         self._colorDict = None
 
     # @+node:bob.20180116152548.1: *3* beginCollection()

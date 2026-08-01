@@ -3375,7 +3375,7 @@ class PygmentsColorizer(JEditColorizer):
         self.getDefaultFormat: Callable
         self.old_v: VNode | None = None
         # Monkey-patch g.isValidLanguage.
-        g.isValidLanguage = self.pygments_isValidLanguage
+        g.isValidLanguage = cast(Any, self.pygments_isValidLanguage)
         # Init common data...
         self.reloadSettings()
 

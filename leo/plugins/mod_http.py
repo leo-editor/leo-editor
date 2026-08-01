@@ -234,6 +234,7 @@ except Exception:
     asynchat = asyncore = None  # type:ignore
 import http.server
 import json
+from typing import Any
 import io
 import os
 import select
@@ -383,7 +384,7 @@ def getData(setting):
 class config:
     enabled = None  # True when security check re http-allow-remote-exec passes.
     http_active = False
-    http_timeout = 0
+    http_timeout: float = 0
     http_ip = '127.0.0.1'
     http_port = 8130
     rst2_http_attributename = 'rst_http_attribute'
@@ -1197,7 +1198,7 @@ if asyncore:
 
 # @+node:ekr.20140920145803.17997: ** functions
 # @+node:EKR.20040517080250.47: *3* a_read (asynchore override)
-def a_read(obj):
+def a_read(obj: Any) -> None:
     try:
         obj.handle_read_event()
     except asyncore.ExitNow:

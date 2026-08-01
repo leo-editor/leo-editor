@@ -3041,15 +3041,15 @@ class LoadManager:
 
             def __init__(self, kind: str) -> None:
                 self.kind = kind
-                g.es_print = self.write
-                g.pr = self.write
+                g.es_print = cast(Any, self.write)
+                g.pr = cast(Any, self.write)
 
-            def flush(self, *args: list, **keys: dict) -> None:
+            def flush(self, *args: Any, **keys: Any) -> None:
                 pass
 
             # @+others
             # @+node:ekr.20160718102306.1: *7* LeoStdOut.write
-            def write(self, *args: list, **keys: dict) -> None:
+            def write(self, *args: Any, **keys: Any) -> None:
                 """Put all non-keyword args to the log pane, as in g.es."""
                 # Tracing will lead to unbounded recursion unless
                 # sys.stderr has been redirected on the command line.
