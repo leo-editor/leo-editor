@@ -12,7 +12,7 @@ from collections.abc import Callable, Generator, Sequence
 import re
 import string
 import time
-from typing import Any, TYPE_CHECKING
+from typing import Any, cast, TYPE_CHECKING
 from types import ModuleType
 import warnings
 
@@ -3734,7 +3734,7 @@ class QScintillaColorizer(BaseColorizer):
         lexer.setFont(font)
         lexer.setEolFill(False, -1)
         if hasattr(lexer, 'setStringsOverNewlineAllowed'):
-            lexer.setStringsOverNewlineAllowed(False)
+            cast(Any, lexer).setStringsOverNewlineAllowed(False)
         table: list[tuple[str, str]] = []
         aList = c.config.getData('qt-scintilla-styles')
         color: str

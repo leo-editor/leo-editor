@@ -1676,7 +1676,7 @@ class LeoQtGui(leoGui.LeoGui):
     # @+node:ekr.20110605121601.18527: *4* LeoQtGui.widget_name
     def widget_name(self, w: QWidget) -> str:
         return (
-                 w.getName()    or '' if hasattr(w, 'getName')
+                 cast(Any, w).getName() or '' if hasattr(w, 'getName')
             else w.objectName() or '' if hasattr(w, 'objectName')
             else ''
         )  # fmt: skip

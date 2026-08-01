@@ -1768,7 +1768,7 @@ class LeoQtBody(leoFrame.LeoBody):
         if obj.objectName() == 'richTextEdit':
             self.onFocusColorHelper('focus-out', obj)
             if hasattr(obj, 'setReadOnly'):
-                obj.setReadOnly(True)
+                cast(Any, obj).setReadOnly(True)
 
     # @+node:ekr.20110605121601.18224: *4* LeoQtBody.qtBody.onFocusColorHelper (revised)
     def onFocusColorHelper(self, kind: str, obj: QObject) -> None:

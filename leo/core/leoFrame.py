@@ -14,7 +14,7 @@ from collections.abc import Callable
 import os
 import re
 import string
-from typing import Any, TYPE_CHECKING
+from typing import Any, cast, TYPE_CHECKING
 from leo.core import (
     leoColorizer,
     leoGlobals as g,
@@ -909,7 +909,7 @@ class LeoTree:
                 else:
                     c.outerUpdate()  # Bring the tree up to date.
                     if hasattr(self, 'setItemForCurrentPosition'):
-                        self.setItemForCurrentPosition()
+                        cast(Any, self).setItemForCurrentPosition()
             else:
                 c.requestLaterRedraw = True
 
@@ -963,7 +963,7 @@ class LeoTree:
             self.endEditLabel()
             # #1168: Ctrl-minus selects multiple nodes.
             if hasattr(self, 'unselectItem'):
-                self.unselectItem(old_p)
+                cast(Any, self).unselectItem(old_p)
         if call_event_handlers:
             g.doHook("unselect2", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
 
