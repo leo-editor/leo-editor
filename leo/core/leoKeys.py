@@ -14,7 +14,7 @@ import string
 import sys
 import textwrap
 import time
-from typing import Any, TYPE_CHECKING
+from typing import Any, cast, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.external import codewise
 from leo.core.leoFrame import NullLog
@@ -2220,7 +2220,7 @@ class KeyHandlerClass:
         assert g.isStroke(stroke), stroke
         inv_d = lm.invert(c.config.shortcutsDict)
         inv_d[stroke] = []
-        c.config.shortcutsDict = lm.uninvert(inv_d)
+        cast(Any, c.config).shortcutsDict = lm.uninvert(inv_d)
 
     # @+node:ekr.20061031131434.92: *5* k.remove_conflicting_definitions
     def remove_conflicting_definitions(
@@ -2377,7 +2377,7 @@ class KeyHandlerClass:
         # strokes, so repeated startup-wide rebuilds must not reuse that
         # already-trimmed dict as input.
         raw_shortcuts = k.c.config.shortcutsDictRaw
-        k.c.config.shortcutsDict = raw_shortcuts.copy() if raw_shortcuts else None
+        cast(Any, k.c.config).shortcutsDict = raw_shortcuts.copy() if raw_shortcuts else None
         k.bindingsDict = {}
         k.addModeCommands()
         k.makeBindingsFromCommandsDict()

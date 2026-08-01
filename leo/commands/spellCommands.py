@@ -7,7 +7,7 @@
 from __future__ import annotations
 from collections.abc import Callable
 import re
-from typing import Any, TYPE_CHECKING
+from typing import Any, cast, TYPE_CHECKING
 
 # Third-party annotations
 try:
@@ -238,7 +238,7 @@ class DefaultWrapper(BaseSpellWrapper):
         self.c = c
         if not g.app.spellDict:
             g.app.spellDict = DefaultDict()  # 2024/05/15: bug fix.
-        self.d: dict = g.app.spellDict
+        self.d: dict = cast(dict, g.app.spellDict)
         self.user_fn = self.find_user_dict()
         if not g.os_path_exists(self.user_fn):
             self.create(self.user_fn)

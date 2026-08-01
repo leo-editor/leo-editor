@@ -3590,6 +3590,7 @@ class Commands:
 
         def minibufferCallback(event: LeoKeyEvent, function: Callable = function) -> None:
             # Avoid a pylint complaint.
+            keywords: dict[str, Any] | None
             if hasattr(self, 'theContextMenuController'):
                 cm = self.theContextMenuController
                 keywords = cm.mb_keywords
@@ -3609,8 +3610,8 @@ class Commands:
                     # Even if there is an error:
                     #   clear mb_keywords prior to next command and
                     #   ensure mb_retval from last command is wiped
-                    cm.mb_keywords = None
-                    cm.mb_retval = retval
+                    cast(Any, cm).mb_keywords = None
+                    cast(Any, cm).mb_retval = retval
 
         minibufferCallback.__doc__ = function.__doc__  # For g.getDocStringForFunction
         minibufferCallback.source_c = source_c  # For GetArgs.command_source

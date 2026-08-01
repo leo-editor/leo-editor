@@ -12,7 +12,7 @@ import sys
 import re
 import textwrap
 import typing
-from typing import Any, TYPE_CHECKING
+from typing import Any, cast, TYPE_CHECKING
 from leo.plugins.mod_scripting import build_rclick_tree
 from leo.core import leoGlobals as g
 
@@ -1004,8 +1004,8 @@ class ActiveSettingsOutline:
         # Create the ordered list of commander tuples, including the local .leo file.
         self.create_commanders_list()
         # Jam the old settings into the new commander.
-        self.commander.config.settingsDict = settings_copy
-        self.commander.config.shortcutsDict = shortcuts_copy
+        cast(Any, self.commander.config).settingsDict = settings_copy
+        cast(Any, self.commander.config).shortcutsDict = shortcuts_copy
 
     # @+node:ekr.20190905091614.3: *4* aso.create_commanders_list
     def create_commanders_list(self) -> None:
