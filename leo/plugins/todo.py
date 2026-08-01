@@ -916,12 +916,12 @@ class todoController:
     # @+node:tbrown.20090119215428.35: *4* todoController.recalc_time
     def recalc_time(
         self, p: Position | None = None, clear: bool = False
-    ) -> tuple[str | None, str | None]:
+    ) -> tuple[float | None, float | None]:
         if p is None:
             p = self.c.currentPosition()
         v = p.v
-        time_totl: str | None = None
-        time_done: str | None = None
+        time_totl: float | None = None
+        time_done: float | None = None
 
         # get values from children, if any
         for cn in p.children():

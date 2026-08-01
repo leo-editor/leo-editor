@@ -664,14 +664,14 @@ class ViewRenderedController(QtWidgets.QWidget):
         self.typst_template: str = ''
         self.pdf_zoom: int = 0
         # Widgets managed by destroy_widgets.
-        self.browser: QWidget = None
-        self.gs: QGraphicsScene = None
-        self.gv: QGraphicsView = None
+        self.browser: QWidget | None = None
+        self.gs: QGraphicsScene | None = None
+        self.gv: QGraphicsView | None = None
         self.vp: QMediaPlayer = None
-        self.w: QWidget = None  # The present widget in the rendering pane.
+        self.w: QWidget | None = None  # The present widget in the rendering pane.
         # Set the ivars.
         self.active = True
-        self.gnx: str = None
+        self.gnx: str | None = None
         self.keep_open = False  # True: keep the VR pane open even when showing text.
         self.is_visible = False
         self.length = 0  # The length of previous p.b.

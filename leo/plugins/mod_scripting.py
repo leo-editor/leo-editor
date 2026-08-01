@@ -1219,10 +1219,11 @@ class ScriptingController:
         if not bg.startswith('#'):
             bg0 = bg
             d = leoColor.leo_color_database
-            bg = d.get(bg.lower())
-            if not bg:
+            resolved_bg = d.get(bg.lower())
+            if not resolved_bg:
                 g.trace('bad color? %s' % bg0)
                 return
+            bg = resolved_bg
         try:
             b.button.setStyleSheet("QPushButton{background-color: %s}" % (bg))
         except Exception:

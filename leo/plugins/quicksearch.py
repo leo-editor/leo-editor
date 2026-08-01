@@ -248,12 +248,15 @@ def show_unittest_failures(event: LeoKeyEvent) -> None:
     nav.scon.clear()
     if fails:
         for gnx, stack in fails:
-            pos: Position = None
+            pos: Position | None = None
             # sucks
             for p in c.all_positions():
                 if p.gnx == gnx:
                     pos = p.copy()
                     break
+            if pos is None:
+                # The position no longer exists (e.g. the node was deleted).
+                continue
 
             def mkcb(p: Position, stack: Any) -> Any:
                 def focus() -> None:

@@ -199,7 +199,7 @@ class TagController:
         # Print all tags.
         if d:
             for key in sorted(d):
-                aList = d.get(key)
+                aList = d[key]
                 for h in sorted(aList):
                     print(f"{key:>8} {h}")
         else:

@@ -184,7 +184,7 @@ class FreeLayoutController:
         layout = top_splitter.get_saveable_layout()
         nd = g.findNodeAnywhere(c, "@data free-layout-layout")
         if not nd:
-            settings: Position
+            settings: Position | None
             settings = g.findNodeAnywhere(c, "@settings")
             if not settings:
                 settings = c.rootPosition().insertAfter()

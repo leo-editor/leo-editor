@@ -59,7 +59,7 @@ else:
 
 # misc global variables...
 RunNode = None
-RunList: list[Any] = None  # List of Positions.
+RunList: list[Any] | None = None  # List of Positions.
 WorkDir = None
 ExitCode = None
 

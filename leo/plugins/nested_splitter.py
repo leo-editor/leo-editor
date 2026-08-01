@@ -793,7 +793,7 @@ class NestedSplitter(QtWidgets.QSplitter):
         ns.setSizes([0, 1])  # but hide one initially
         self.root.windows.append(window)
         # copy the main main window's stylesheet to new window
-        w: QtCore.QObject = self.root  # A Qt Widget, class NestedSplitter
+        w: QtCore.QObject | None = self.root  # A Qt Widget, class NestedSplitter
         sheets = []
         while w:
             if s := w.styleSheet():

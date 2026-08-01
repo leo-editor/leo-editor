@@ -33,7 +33,7 @@ def init() -> bool:
 @g.command('bottom-of-pane')
 def bottomOfPane(event: LeoKeyEvent | None = None) -> None:
     """move the text cursor to the last character visible in the body pane"""
-    c: Cmdr = event.c if event else None
+    c: Cmdr | None = event.c if event else None
     if not c:
         return
     w: QWidget = c.frame.body.widget
@@ -64,7 +64,7 @@ def bottomOfPane(event: LeoKeyEvent | None = None) -> None:
 @g.command('top-of-pane')
 def topOfPane(event: LeoKeyEvent | None = None) -> None:
     """move the text cursor to the first character visible in the body pane"""
-    c: Cmdr = event.c if event else None
+    c: Cmdr | None = event.c if event else None
     if not c:
         return
     w: QWidget = c.frame.body.widget
