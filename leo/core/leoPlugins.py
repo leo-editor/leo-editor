@@ -669,12 +669,11 @@ class LeoPluginsController:
     # @+node:ekr.20100908125007.6028: *4* plugins.registerExclusiveHandler
     def registerExclusiveHandler(self, tags: str | Sequence[str], fn: Callable) -> None:
         """Register one or more exclusive handlers"""
-        if isinstance(tags, (list, tuple)):
+        if isinstance(tags, str):
+            self.registerOneExclusiveHandler(tags, fn)
+        else:
             for tag in tags:
                 self.registerOneExclusiveHandler(tag, fn)
-        else:
-            # We have just tested the type.
-            self.registerOneExclusiveHandler(tags, fn)  # type:ignore[arg-type]
 
     def registerOneExclusiveHandler(self, tag: str, fn: Callable) -> None:
         """Register one exclusive handler"""
@@ -696,12 +695,11 @@ class LeoPluginsController:
     # @+node:ekr.20100908125007.6029: *4* plugins.registerHandler & registerOneHandler
     def registerHandler(self, tags: str | Sequence[str], fn: Callable) -> None:
         """Register one or more handlers"""
-        if isinstance(tags, (list, tuple)):
+        if isinstance(tags, str):
+            self.registerOneHandler(tags, fn)
+        else:
             for tag in tags:
                 self.registerOneHandler(tag, fn)
-        else:
-            # We have just tested the type.
-            self.registerOneHandler(tags, fn)  # type:ignore[arg-type]
 
     def registerOneHandler(self, tag: str, fn: Callable) -> None:
         """Register one handler"""
@@ -719,12 +717,11 @@ class LeoPluginsController:
 
     # @+node:ekr.20100908125007.6031: *4* plugins.unregisterHandler
     def unregisterHandler(self, tags: str | Sequence[str], fn: Callable) -> None:
-        if isinstance(tags, (list, tuple)):
+        if isinstance(tags, str):
+            self.unregisterOneHandler(tags, fn)
+        else:
             for tag in tags:
                 self.unregisterOneHandler(tag, fn)
-        else:
-            # We have just tested the type.
-            self.unregisterOneHandler(tags, fn)  # type:ignore[arg-type]
 
     def unregisterOneHandler(self, tag: str, fn: Callable) -> None:
         bunches = self.handlers.get(tag, [])
