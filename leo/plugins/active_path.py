@@ -177,7 +177,7 @@ def popup_entry(c, p, menu):
     for key in d:
         if key.startswith('active-path'):
             a = pathmenu.addAction(key)
-            command = d.get(key)
+            command = d[key]
 
             def active_path_wrapper(aBool, command=command, c=c):
                 event = {'c': c}

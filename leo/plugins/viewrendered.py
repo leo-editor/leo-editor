@@ -397,7 +397,7 @@ def show_scrolled_message(tag: str, kw: Any) -> None:
     vr.gnx = p.v.gnx
     vr.length = len(p.v.b)
     # Render!
-    f = vr.dispatch_dict.get('rest')
+    f = vr.dispatch_dict['rest']
     f(s, kw)
     c.bodyWantsFocusNow()
 

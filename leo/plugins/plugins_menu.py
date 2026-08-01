@@ -250,6 +250,8 @@ PluginDatabase = _PluginDatabase()
 class PlugIn:
     """A class to hold information about one plugin"""
 
+    hastoplevel: Any
+
     # @+others
     # @+node:EKR.20040517080555.4: *3* PlugIn.__init__ & helper
     def __init__(self, plgMod: ModuleType, c: Cmdr | None = None) -> None:
