@@ -1123,11 +1123,11 @@ class DynamicWindow(QtWidgets.QMainWindow):
 
     def setGeometry(self, rect: QRect) -> None:  # type:ignore[override,valid-type]
         """Set the window geometry, but only once when using the qt gui."""
-        m = self.leo_master
         assert self.leo_master
+        m = self.leo_master
         # Only set the geometry once, even for new files.
         if not hasattr(m, 'leo_geom_inited'):
-            m.leo_geom_inited = True
+            cast(Any, m).leo_geom_inited = True
             self.leo_master.setGeometry(rect)
             super().setGeometry(rect)
 

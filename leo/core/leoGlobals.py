@@ -685,8 +685,8 @@ user_dict: dict[str, Value] = {}  # Non-persistent dictionary for scripts and pl
 app: LeoApp = None  # type:ignore # There seems to be no way to init g.app here.
 
 # Global status vars.
-inScript = False  # A synonym for app.inScript
-unitTesting = False  # A synonym for app.unitTesting.
+inScript: bool = False  # A synonym for app.inScript
+unitTesting: bool = False  # A synonym for app.unitTesting.
 
 
 # @+others

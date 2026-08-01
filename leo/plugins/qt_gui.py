@@ -1284,10 +1284,12 @@ class LeoQtGui(leoGui.LeoGui):
         dialog.setIcon(Icon.Information)
         dialog.addButton('Ok', ButtonRole.YesRole)
         try:
-            c.in_qt_dialog = True
+            if c:
+                c.in_qt_dialog = True
             dialog.exec()
         finally:
-            c.in_qt_dialog = False
+            if c:
+                c.in_qt_dialog = False
         # @-<< emergency fallback >>
 
     # @+node:ekr.20110607182447.16456: *3* LeoQtGui: Event handlers

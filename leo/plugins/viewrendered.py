@@ -353,6 +353,8 @@ def onCreate(tag: str, keys: dict) -> None:
     if not c:
         return
     vr = getVr(c=c)
+    if not vr:
+        return
     g.registerHandler('select2', vr.update_vr)
     g.registerHandler('idle', vr.update_vr)
     vr.active = True
@@ -390,7 +392,7 @@ def show_scrolled_message(tag: str, kw: Any) -> None:
     if not vr:
         return
     # Make sure we will show the message.
-    vr.is_active = True
+    vr.active = True
     vr.is_visible = True
     vr.show()
     # A hack: suppress updates until the node changes.

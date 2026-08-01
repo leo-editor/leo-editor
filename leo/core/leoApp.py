@@ -255,7 +255,7 @@ class LeoApp:
         self.already_open_files: list[str] = []
         self.dragging = False  # True: dragging.
         self.inBridge = False  # True: running from leoBridge module.
-        self.inScript = False  # True: executing a script.
+        self.inScript: bool = False  # True: executing a script.
         self.initing = True  # True: we are initing the app.
         self.initComplete = False  # True: late bindings are not allowed.
         self.initStyleFlag = False  # True: setQtStyle called.
