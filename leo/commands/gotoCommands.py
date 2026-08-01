@@ -290,7 +290,9 @@ class GoToCommands:
         return gnx, h, offset
 
     # @+node:ekr.20150623175314.1: *3* goto.scan_sentinel_lines
-    def scan_sentinel_lines(self, lines: list[str], n: int, root: Position) -> tuple[str | None, str | None, int]:
+    def scan_sentinel_lines(
+        self, lines: list[str], n: int, root: Position
+    ) -> tuple[str | None, str | None, int]:
         """
         Scan a list of lines containing sentinels, looking for the node and
         offset within the node of the n'th (one-based) line.

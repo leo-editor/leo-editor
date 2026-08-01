@@ -914,7 +914,9 @@ class todoController:
                 self.loadIcons(nd)  # update progress icon
 
     # @+node:tbrown.20090119215428.35: *4* todoController.recalc_time
-    def recalc_time(self, p: Position | None = None, clear: bool = False) -> tuple[str | None, str | None]:
+    def recalc_time(
+        self, p: Position | None = None, clear: bool = False
+    ) -> tuple[str | None, str | None]:
         if p is None:
             p = self.c.currentPosition()
         v = p.v
