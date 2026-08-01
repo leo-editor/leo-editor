@@ -34,7 +34,7 @@ except Exception:
 try:
     from pylint import lint
 except Exception:
-    lint = None
+    lint = None  # type:ignore
 
 # Leo imports.
 from leo.core import leoGlobals as g
