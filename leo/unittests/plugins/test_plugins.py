@@ -271,5 +271,17 @@ class TestIndentedLisp(LeoUnitTest):
     # @-others
 
 
+# @+node:ekr.20260802060059.1: ** class TestTodo(LeoUnitTest)
+class TestTodo(LeoUnitTest):
+    """Tests for todo.py plugin."""
+
+    # @+others
+    # @+node:ekr.20260802060227.1: *3* TestTodo.test_one
+    def test_one(self):
+        self.skipTest('Not Ready')
+
+    # @-others
+
+
 # @-others
 # @-leo
