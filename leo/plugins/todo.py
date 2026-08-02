@@ -83,8 +83,9 @@ if TYPE_CHECKING:  # pragma: no cover
     Menu = Any
     Priority = int | str
 
+###
 # Fail fast, right after all imports.
-g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
+# g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 # @-<< todo imports & annotations >>
 
 NO_TIME = dt.date(3000, 1, 1)
@@ -130,244 +131,236 @@ def popup_entry(c: Cmdr, p: Position, menu: Menu) -> None:
 
 
 # @+node:tbrown.20090119215428.8: ** class todoQtUI(QWidget)
-if g.app.gui.guiName() == "qt":
+class todoQtUI(QtWidgets.QWidget):
+    # @+others
+    # @+node:ekr.20111118104929.10204: *3* ctor (todoQtUI(QWidget))
+    def __init__(self, owner: Any, logTab: bool = True) -> None:
+        self.owner = owner
+        super().__init__()
+        uiPath = g.os_path_join(g.app.leoDir, 'plugins', 'ToDo.ui')
 
-    class todoQtUI(QtWidgets.QWidget):
-        # @+others
-        # @+node:ekr.20111118104929.10204: *3* ctor (todoQtUI(QWidget))
-        def __init__(self, owner: Any, logTab: bool = True) -> None:
-            self.owner = owner
-            super().__init__()
-            uiPath = g.os_path_join(g.app.leoDir, 'plugins', 'ToDo.ui')
-
-            # change dir to get themed icons, needed for uic resources
-            # These are icons for todo UI, not the tree.
-            theme = g.app.config.getString('color-theme')
-            if theme:
-                testPath = g.os_path_join(g.app.homeLeoDir, 'themes', theme, 'Icons', 'cleo')
+        # change dir to get themed icons, needed for uic resources
+        # These are icons for todo UI, not the tree.
+        theme = g.app.config.getString('color-theme')
+        if theme:
+            testPath = g.os_path_join(g.app.homeLeoDir, 'themes', theme, 'Icons', 'cleo')
+            if g.os_path_exists(testPath):
+                iconPath = g.os_path_dirname(testPath)
+            else:
+                testPath = g.os_path_join(g.app.loadDir, '..', 'themes', theme, 'Icons', 'cleo')
                 if g.os_path_exists(testPath):
                     iconPath = g.os_path_dirname(testPath)
                 else:
-                    testPath = g.os_path_join(g.app.loadDir, '..', 'themes', theme, 'Icons', 'cleo')
-                    if g.os_path_exists(testPath):
-                        iconPath = g.os_path_dirname(testPath)
-                    else:
-                        iconPath = g.os_path_join(g.app.leoDir, 'Icons')
-            else:
-                iconPath = g.os_path_join(g.app.leoDir, 'Icons')
-            os.chdir(iconPath)
-            form_class, base_class = uic.loadUiType(uiPath)
-            if logTab:
-                self.owner.c.frame.log.createTab('Task', widget=self)
-            self.UI = form_class()
-            self.UI.setupUi(self)
-            u = self.UI
-            o = self.owner
-            self.menu = QtWidgets.QMenu()
-            self.populateMenu(self.menu, o)
-            u.butMenu.setMenu(self.menu)
+                    iconPath = g.os_path_join(g.app.leoDir, 'Icons')
+        else:
+            iconPath = g.os_path_join(g.app.leoDir, 'Icons')
+        os.chdir(iconPath)
+        form_class, base_class = uic.loadUiType(uiPath)
+        if logTab:
+            self.owner.c.frame.log.createTab('Task', widget=self)
+        self.UI = form_class()
+        self.UI.setupUi(self)
+        u = self.UI
+        o = self.owner
+        self.menu = QtWidgets.QMenu()
+        self.populateMenu(self.menu, o)
+        u.butMenu.setMenu(self.menu)
 
-            u.butHelp.clicked.connect(lambda checked: o.showHelp())
-            u.butClrProg.clicked.connect(lambda checked: o.progress_clear())
-            u.butClrTime.clicked.connect(lambda checked: o.clear_time_req())
-            u.butPriClr.clicked.connect(lambda checked: o.priority_clear())
-            # if live update is too slow change valueChanged(*) to editingFinished()
-            u.spinTime.valueChanged.connect(lambda v: o.set_time_req(val=u.spinTime.value()))
-            u.spinProg.valueChanged.connect(lambda v: o.set_progress(val=u.spinProg.value()))
+        u.butHelp.clicked.connect(lambda checked: o.showHelp())
+        u.butClrProg.clicked.connect(lambda checked: o.progress_clear())
+        u.butClrTime.clicked.connect(lambda checked: o.clear_time_req())
+        u.butPriClr.clicked.connect(lambda checked: o.priority_clear())
+        # if live update is too slow change valueChanged(*) to editingFinished()
+        u.spinTime.valueChanged.connect(lambda v: o.set_time_req(val=u.spinTime.value()))
+        u.spinProg.valueChanged.connect(lambda v: o.set_progress(val=u.spinProg.value()))
 
-            u.dueDateEdit.dateChanged.connect(lambda v: o.set_due_date(val=u.dueDateEdit.date()))
-            u.dueTimeEdit.timeChanged.connect(lambda v: o.set_due_time(val=u.dueTimeEdit.time()))
+        u.dueDateEdit.dateChanged.connect(lambda v: o.set_due_date(val=u.dueDateEdit.date()))
+        u.dueTimeEdit.timeChanged.connect(lambda v: o.set_due_time(val=u.dueTimeEdit.time()))
 
-            u.nxtwkDateEdit.dateChanged.connect(
-                lambda v: o.set_due_date(val=u.nxtwkDateEdit.date(), field='nextworkdate')
-            )
-            u.nxtwkTimeEdit.timeChanged.connect(
-                lambda v: o.set_due_time(val=u.nxtwkTimeEdit.time(), field='nextworktime')
-            )
+        u.nxtwkDateEdit.dateChanged.connect(
+            lambda v: o.set_due_date(val=u.nxtwkDateEdit.date(), field='nextworkdate')
+        )
+        u.nxtwkTimeEdit.timeChanged.connect(
+            lambda v: o.set_due_time(val=u.nxtwkTimeEdit.time(), field='nextworktime')
+        )
 
-            u.dueDateToggle.stateChanged.connect(
-                lambda v: o.set_due_date(val=u.dueDateEdit.date(), mode='check')
-            )
-            u.dueTimeToggle.stateChanged.connect(
-                lambda v: o.set_due_time(val=u.dueTimeEdit.time(), mode='check')
-            )
-            u.nxtwkDateToggle.stateChanged.connect(
-                lambda v: o.set_due_date(
-                    val=u.nxtwkDateEdit.date(), mode='check', field='nextworkdate'
-                )
-            )
-            u.nxtwkTimeToggle.stateChanged.connect(
-                lambda v: o.set_due_time(
-                    val=u.nxtwkTimeEdit.time(), mode='check', field='nextworktime'
-                )
-            )
+        u.dueDateToggle.stateChanged.connect(
+            lambda v: o.set_due_date(val=u.dueDateEdit.date(), mode='check')
+        )
+        u.dueTimeToggle.stateChanged.connect(
+            lambda v: o.set_due_time(val=u.dueTimeEdit.time(), mode='check')
+        )
+        u.nxtwkDateToggle.stateChanged.connect(
+            lambda v: o.set_due_date(val=u.nxtwkDateEdit.date(), mode='check', field='nextworkdate')
+        )
+        u.nxtwkTimeToggle.stateChanged.connect(
+            lambda v: o.set_due_time(val=u.nxtwkTimeEdit.time(), mode='check', field='nextworktime')
+        )
 
-            for but in [
-                "butPri1",
-                "butPri6",
-                "butPriChk",
-                "butPri2",
-                "butPri4",
-                "butPri5",
-                "butPri8",
-                "butPri9",
-                "butPri0",
-                "butPriToDo",
-                "butPriXgry",
-                "butPriBang",
-                "butPriX",
-                "butPriQuery",
-                "butPriBullet",
-                "butPri7",
-                "butPri3",
-            ]:
-                w = getattr(u, but)
-                # w.property() seems to give QVariant in python 2.x and int in 3.x!?
+        for but in [
+            "butPri1",
+            "butPri6",
+            "butPriChk",
+            "butPri2",
+            "butPri4",
+            "butPri5",
+            "butPri8",
+            "butPri9",
+            "butPri0",
+            "butPriToDo",
+            "butPriXgry",
+            "butPriBang",
+            "butPriX",
+            "butPriQuery",
+            "butPriBullet",
+            "butPri7",
+            "butPri3",
+        ]:
+            w = getattr(u, but)
+            # w.property() seems to give QVariant in python 2.x and int in 3.x!?
+            try:
+                pri = int(w.property('priority'))
+            except (TypeError, ValueError):
                 try:
-                    pri = int(w.property('priority'))
+                    pri, ok = w.property('priority').toInt()
                 except (TypeError, ValueError):
-                    try:
-                        pri, ok = w.property('priority').toInt()
-                    except (TypeError, ValueError):
-                        pri = -1
+                    pri = -1
 
-                def setter(pri: int = pri) -> None:
-                    o.setPri(pri)
+            def setter(pri: int = pri) -> None:
+                o.setPri(pri)
 
-                w.clicked.connect(lambda checked, setter=setter: setter())
+            w.clicked.connect(lambda checked, setter=setter: setter())
 
-            offsets = self.owner.c.config.getData('todo_due_date_offsets')
-            if not offsets:
-                offsets = (
-                    '+7 +0 +1 +2 +3 +4 +5 +6 +10 +14 +21 +28 +42 +60 +90 +120 +150 >7 <7 <14 >14 <28 >28'
-                ).split()
-            self.date_offset_default = int(offsets[0].strip('>').replace('<', '-'))
-            offsets = sorted(
-                set(offsets), key=lambda x: (x[0], int(x[1:].strip('>').replace('<', '-')))
-            )
-            u.dueDateOffset.addItems(offsets)
-            u.dueDateOffset.setCurrentIndex(self.date_offset_default)
+        offsets = self.owner.c.config.getData('todo_due_date_offsets')
+        if not offsets:
+            offsets = (
+                '+7 +0 +1 +2 +3 +4 +5 +6 +10 +14 +21 +28 +42 +60 +90 +120 +150 >7 <7 <14 >14 <28 >28'
+            ).split()
+        self.date_offset_default = int(offsets[0].strip('>').replace('<', '-'))
+        offsets = sorted(
+            set(offsets), key=lambda x: (x[0], int(x[1:].strip('>').replace('<', '-')))
+        )
+        u.dueDateOffset.addItems(offsets)
+        u.dueDateOffset.setCurrentIndex(self.date_offset_default)
 
-            self.UI.dueDateOffset.activated.connect(lambda v: o.set_date_offset(field='duedate'))
+        self.UI.dueDateOffset.activated.connect(lambda v: o.set_date_offset(field='duedate'))
 
-            u.nxtwkDateOffset.addItems(offsets)
-            u.nxtwkDateOffset.setCurrentIndex(self.date_offset_default)
+        u.nxtwkDateOffset.addItems(offsets)
+        u.nxtwkDateOffset.setCurrentIndex(self.date_offset_default)
 
-            self.UI.nxtwkDateOffset.activated.connect(
-                lambda v: o.set_date_offset(field='nextworkdate')
-            )
+        self.UI.nxtwkDateOffset.activated.connect(lambda v: o.set_date_offset(field='nextworkdate'))
 
-            self.setDueDate = self.make_func(
-                self.UI.dueDateEdit,
-                self.UI.dueDateToggle,
-                'setDate',
-                dt.datetime.now(tz=dt.timezone.utc) + dt.timedelta(self.date_offset_default),
-            )
+        self.setDueDate = self.make_func(
+            self.UI.dueDateEdit,
+            self.UI.dueDateToggle,
+            'setDate',
+            dt.datetime.now(tz=dt.timezone.utc) + dt.timedelta(self.date_offset_default),
+        )
 
-            self.setDueTime = self.make_func(
-                self.UI.dueTimeEdit,
-                self.UI.dueTimeToggle,
-                'setTime',
-                dt.datetime.now(tz=dt.timezone.utc).time(),
-            )
+        self.setDueTime = self.make_func(
+            self.UI.dueTimeEdit,
+            self.UI.dueTimeToggle,
+            'setTime',
+            dt.datetime.now(tz=dt.timezone.utc).time(),
+        )
 
-            self.setNextWorkDate = self.make_func(
-                self.UI.nxtwkDateEdit,
-                self.UI.nxtwkDateToggle,
-                'setDate',
-                dt.datetime.now(tz=dt.timezone.utc) + dt.timedelta(self.date_offset_default),
-            )
+        self.setNextWorkDate = self.make_func(
+            self.UI.nxtwkDateEdit,
+            self.UI.nxtwkDateToggle,
+            'setDate',
+            dt.datetime.now(tz=dt.timezone.utc) + dt.timedelta(self.date_offset_default),
+        )
 
-            self.setNextWorkTime = self.make_func(
-                self.UI.nxtwkTimeEdit,
-                self.UI.nxtwkTimeToggle,
-                'setTime',
-                dt.datetime.now(tz=dt.timezone.utc).time(),
-            )
+        self.setNextWorkTime = self.make_func(
+            self.UI.nxtwkTimeEdit,
+            self.UI.nxtwkTimeToggle,
+            'setTime',
+            dt.datetime.now(tz=dt.timezone.utc).time(),
+        )
 
-            self.UI.butDetails.clicked.connect(
-                lambda checked: self.UI.frmDetails.setVisible(not self.UI.frmDetails.isVisible())
-            )
+        self.UI.butDetails.clicked.connect(
+            lambda checked: self.UI.frmDetails.setVisible(not self.UI.frmDetails.isVisible())
+        )
 
-            if self.owner.c.config.getBool("todo-compact-interface"):
-                self.UI.frmDetails.setVisible(False)
+        if self.owner.c.config.getBool("todo-compact-interface"):
+            self.UI.frmDetails.setVisible(False)
 
-            self.UI.butNext.clicked.connect(lambda checked: self.owner.c.selectVisNext())
-            self.UI.butNextTodo.clicked.connect(lambda checked: self.owner.find_todo())
-            self.UI.butApplyDueOffset.clicked.connect(
-                lambda checked: o.set_date_offset(field='duedate')
-            )
-            self.UI.butApplyOffset.clicked.connect(
-                lambda checked: o.set_date_offset(field='nextworkdate')
-            )
+        self.UI.butNext.clicked.connect(lambda checked: self.owner.c.selectVisNext())
+        self.UI.butNextTodo.clicked.connect(lambda checked: self.owner.find_todo())
+        self.UI.butApplyDueOffset.clicked.connect(
+            lambda checked: o.set_date_offset(field='duedate')
+        )
+        self.UI.butApplyOffset.clicked.connect(
+            lambda checked: o.set_date_offset(field='nextworkdate')
+        )
 
-            n = g.app.config.getInt("todo-calendar-n")
-            cols = g.app.config.getInt("todo-calendar-cols")
-            if n or cols:
-                self.UI.dueDateEdit.calendarWidget().build(n or 3, cols or 3)
-                self.UI.nxtwkDateEdit.calendarWidget().build(n or 3, cols or 3)
+        n = g.app.config.getInt("todo-calendar-n")
+        cols = g.app.config.getInt("todo-calendar-cols")
+        if n or cols:
+            self.UI.dueDateEdit.calendarWidget().build(n or 3, cols or 3)
+            self.UI.nxtwkDateEdit.calendarWidget().build(n or 3, cols or 3)
 
-        # @+node:ekr.20111118104929.10203: *3* make_func
-        def make_func(self, edit: Any, toggle: Any, method: Any, default: Any) -> Callable:
-            def func(
-                value: Any,
-                edit: Any = edit,
-                toggle: Any = toggle,
-                method: Any = method,
-                default: Any = default,
-                self: Any = self,
-            ) -> None:
-                edit.blockSignals(True)
-                toggle.blockSignals(True)
-                if value:
-                    getattr(edit, method)(value)
-                    # edit.setEnabled(True)
-                    toggle.setChecked(True)
-                else:
-                    getattr(edit, method)(default)
-                    toggle.setChecked(False)
-                edit.blockSignals(False)
-                toggle.blockSignals(False)
+    # @+node:ekr.20111118104929.10203: *3* make_func
+    def make_func(self, edit: Any, toggle: Any, method: Any, default: Any) -> Callable:
+        def func(
+            value: Any,
+            edit: Any = edit,
+            toggle: Any = toggle,
+            method: Any = method,
+            default: Any = default,
+            self: Any = self,
+        ) -> None:
+            edit.blockSignals(True)
+            toggle.blockSignals(True)
+            if value:
+                getattr(edit, method)(value)
+                # edit.setEnabled(True)
+                toggle.setChecked(True)
+            else:
+                getattr(edit, method)(default)
+                toggle.setChecked(False)
+            edit.blockSignals(False)
+            toggle.blockSignals(False)
 
-            return func
+        return func
 
-        # @+node:ekr.20111118104929.10205: *3* populateMenu
-        @staticmethod
-        def populateMenu(menu: Menu, o: Any) -> None:
-            menu.addAction('Find next ToDo', o.find_todo)
-            m = menu.addMenu("Priority")
-            m.addAction('Priority Sort', o.priSort)
-            m.addAction('Due Date Sort', o.dueSort)
-            m.addAction('Next Work Date Sort', lambda: o.dueSort(field='nextwork'))
-            m.addAction('Clear Descendant Due Dates', o.dueClear)
-            m.addAction('Mark children todo', o.childrenTodo)
-            m.addAction('Show distribution', o.showDist)
-            m.addAction('Redistribute', o.reclassify)
-            m = menu.addMenu("Time")
-            m.addAction('Show times', lambda: o.show_times(show=True))
-            m.addAction('Hide times', lambda: o.show_times(show=False))
-            m.addAction('Re-calc. derived times', o.local_recalc)
-            m.addAction('Clear derived times', o.local_clear)
-            m = menu.addMenu("Misc.")
-            m.addAction('Hide all Todo icons', lambda: o.loadAllIcons(clear=True))
-            m.addAction('Show all Todo icons', o.loadAllIcons)
-            m.addAction('Delete Todo from node', o.clear_all)
-            m.addAction('Delete Todo from subtree', lambda: o.clear_all(recurse=True))
-            m.addAction('Delete Todo from all', lambda: o.clear_all(all=True))
+    # @+node:ekr.20111118104929.10205: *3* populateMenu
+    @staticmethod
+    def populateMenu(menu: Menu, o: Any) -> None:
+        menu.addAction('Find next ToDo', o.find_todo)
+        m = menu.addMenu("Priority")
+        m.addAction('Priority Sort', o.priSort)
+        m.addAction('Due Date Sort', o.dueSort)
+        m.addAction('Next Work Date Sort', lambda: o.dueSort(field='nextwork'))
+        m.addAction('Clear Descendant Due Dates', o.dueClear)
+        m.addAction('Mark children todo', o.childrenTodo)
+        m.addAction('Show distribution', o.showDist)
+        m.addAction('Redistribute', o.reclassify)
+        m = menu.addMenu("Time")
+        m.addAction('Show times', lambda: o.show_times(show=True))
+        m.addAction('Hide times', lambda: o.show_times(show=False))
+        m.addAction('Re-calc. derived times', o.local_recalc)
+        m.addAction('Clear derived times', o.local_clear)
+        m = menu.addMenu("Misc.")
+        m.addAction('Hide all Todo icons', lambda: o.loadAllIcons(clear=True))
+        m.addAction('Show all Todo icons', o.loadAllIcons)
+        m.addAction('Delete Todo from node', o.clear_all)
+        m.addAction('Delete Todo from subtree', lambda: o.clear_all(recurse=True))
+        m.addAction('Delete Todo from all', lambda: o.clear_all(all=True))
 
-        # @+node:ekr.20111118104929.10207: *3* setProgress
-        def setProgress(self, prgr: Any) -> None:
-            self.UI.spinProg.blockSignals(True)
-            self.UI.spinProg.setValue(prgr)
-            self.UI.spinProg.blockSignals(False)
+    # @+node:ekr.20111118104929.10207: *3* setProgress
+    def setProgress(self, prgr: Any) -> None:
+        self.UI.spinProg.blockSignals(True)
+        self.UI.spinProg.setValue(prgr)
+        self.UI.spinProg.blockSignals(False)
 
-        # @+node:ekr.20111118104929.10208: *3* setTime
-        def setTime(self, timeReq: Any) -> None:
-            self.UI.spinTime.blockSignals(True)
-            self.UI.spinTime.setValue(timeReq)
-            self.UI.spinTime.blockSignals(False)
+    # @+node:ekr.20111118104929.10208: *3* setTime
+    def setTime(self, timeReq: Any) -> None:
+        self.UI.spinTime.blockSignals(True)
+        self.UI.spinTime.setValue(timeReq)
+        self.UI.spinTime.blockSignals(False)
 
-        # @-others
+    # @-others
 
 
 # @+node:tbrown.20090119215428.9: ** class todoController
