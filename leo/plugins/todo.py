@@ -95,7 +95,7 @@ NO_TIME = dt.date(3000, 1, 1)
 warning_given = False
 
 
-def init() -> bool:
+def init() -> bool:  # pragma: no cover
     """Return True if the plugin has loaded successfully."""
     global warning_given
     if warning_given:
