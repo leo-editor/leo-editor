@@ -95,18 +95,18 @@ NO_TIME = dt.date(3000, 1, 1)
 warning_given = False
 
 
-def init() -> bool:  # pragma: no cover
+def init() -> bool:
     """Return True if the plugin has loaded successfully."""
     global warning_given
     if warning_given:
         return False
     name = g.app.gui.guiName()
-    if name != "qt":
+    if name != "qt":  # pragma: no cover
         warning_given = True
         if name not in ('browser', 'curses', 'nullGui'):
             print('todo.py plugin not loaded because gui is not Qt')
         return False
-    if not uic:
+    if not uic:  # pragma: no cover
         warning_given = True
         print('todo.py plugin not loaded because uic can not be imported')
         return False

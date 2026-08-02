@@ -2,13 +2,59 @@
 # @+node:ekr.20210907081548.1: * @file ../unittests/plugins/test_plugins.py
 """General tests of plugins."""
 
+# @+<< test_plugins: imports >>
+# @+node:ekr.20260802082604.1: ** << test_plugins: imports >>
 import glob
 import os
 import re
 from leo.core import leoGlobals as g
-from leo.core.leoTest2 import LeoUnitTest
+from leo.core.leoTest2 import LeoUnitTest, create_app
 from leo.core.leoPlugins import LeoPluginsController
 from leo.plugins import indented_languages
+
+try:
+    from leo.core.leoQt import (
+        Qt,
+        QtCore,
+        QtGui,
+        QtWidgets,
+    )
+    from leo.core.leoAPI import StringTextWrapper
+    from leo.core.leoFrame import (
+        NullBody,
+        NullFrame,
+        NullIconBarClass,
+        NullLog,
+        NullStatusLineClass,
+        NullTree,
+    )
+    from leo.core.leoGui import LeoKeyEvent
+    from leo.plugins.qt_frame import (
+        DynamicWindow,
+        LeoQtBody,
+        LeoQtFrame,
+        LeoQtLog,
+        LeoQtMenu,
+        LeoQtTree,
+        LeoQTreeWidget,
+        QtIconBarClass,
+        QtStatusLineClass,
+    )
+    from leo.plugins.qt_text import (
+        LeoQTextBrowser,
+        QHeadlineWrapper,
+        QLineEditWrapper,
+        QMinibufferWrapper,
+        QScintillaWrapper,
+        QTextEditWrapper,
+        QTextMixin,
+    )
+
+    QTabWidget = QtWidgets.QTabWidget
+except Exception:
+    g.es_exception()
+    Qt = QtCore = QTabWidget = None
+# @-<< test_plugins: imports >>
 
 
 # @+others
@@ -275,12 +321,27 @@ class TestIndentedLisp(LeoUnitTest):
 class TestTodo(LeoUnitTest):
     """Tests for todo.py plugin."""
 
-    def setUp(self):
-        from leo.plugins import todo
+    @classmethod
+    def setUpClass(cls):
+        create_app(gui_name='qt')
 
-        self.todo = todo
+    def setUp(self):
+        super().setUp()
+        # Don't run *any* tests if Qt has not been installed.
+        if not Qt:
+            self.skipTest('import Qt failed')
 
     # @+others
+    # @+node:ekr.20260802060227.1: *3* TestTodo.test_init
+    def test_init(self):
+
+        from leo.plugins import todo
+
+        assert todo.init()
+
+        todo.warning_given = True
+        assert not todo.init()
+
     # @-others
 
 
