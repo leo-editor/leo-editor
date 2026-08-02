@@ -77,15 +77,12 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
+    from leo.plugins.qt_frame import LeoQtMenu
 
-    Args = Any
-    Icon = Any  # QtGui.QIcon
-    Menu = Any
+    Icon = QtGui.QIcon
+    Menu = QMenu
     Priority = int | str
 
-###
-# Fail fast, right after all imports.
-# g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
 # @-<< todo imports & annotations >>
 
 NO_TIME = dt.date(3000, 1, 1)
@@ -125,7 +122,7 @@ def onCreate(tag: str, key: dict) -> None:
 
 
 # @+node:tbrown.20090630144958.5318: ** popup_entry (todo.py)
-def popup_entry(c: Cmdr, p: Position, menu: Menu) -> None:
+def popup_entry(c: Cmdr, p: Position, menu: LeoQtMenu) -> None:
     if getattr(c, 'cleo', None):  # #2856.
         c.cleo.addPopupMenu(c, p, menu)
 
@@ -403,7 +400,7 @@ class todoController:
         self.c = c
         c.cleo = self
         self.donePriority = 100
-        self.menuicons: dict[Priority, Icon] = {}  # menu icon cache
+        self.menuicons: dict[Priority, Icon] = {}
         self.recentIcons: list[Icon] = []
         self.redrawLevels = 0
         self._widget_to_style = None  # see updateStyle()
@@ -489,29 +486,32 @@ class todoController:
         for i in self.handlers:
             g.unregisterHandler(i[0], i[1])  # type:ignore
 
-    # @+node:tbnorth.20170925093004.1: *3* todoController._date
-    def _date(self, d: str) -> dt.date | None:
+    # @+node:tbnorth.20170925093004.1: *3* todoController._date & _time
+    def _date(self, timestamp: str) -> dt.date | None:
         """_date - convert a string to a date
 
-        :param str d: date to convert
-        :return: datetime.date
+        :param timestamp: date to convert
+        :return: datetime.date or None.
         """
-        if not d.strip():
+        if not timestamp.strip():
             return None  # Was ''
-        return dt.datetime.strptime(d.split('T')[0], "%Y-%m-%d").date()  # noqa
+        # g.trace(f"{timestamp!r} => {dt.datetime.fromisoformat(timestamp).date()}")
+        return dt.datetime.fromisoformat(timestamp).date()
 
-    def _time(self, d: str) -> dt.time | None:
+    def _time(self, timestamp: str) -> dt.time | None:
         """_time - convert a string to a time
 
-        :param str d: time to convert
-        :return: datetime.time
+        :param timestamp: time to convert
+        :return: datetime.time or None.
         """
-        if not d.strip():
+        if not timestamp.strip():
             return None  # Was ''
-        return dt.datetime.strptime(d, "%H:%M:%S.%f").time()  # noqa
+        # g.trace(f"{timestamp!r} => {dt.datetime.fromisoformat(timestamp).time()}")
+        return dt.datetime.fromisoformat(timestamp).time()
 
     # @+node:tbrown.20090630144958.5319: *3* todoController.addPopupMenu
-    def addPopupMenu(self, c: Cmdr, p: Position, menu: Menu) -> None:
+    def addPopupMenu(self, c: Cmdr, p: Position, menu: LeoQtMenu) -> None:
+
         def rnd(x: float) -> str:
             return re.sub('.0$', '', '%.1f' % x)
 
@@ -557,7 +557,7 @@ class todoController:
         todoQtUI.populateMenu(taskmenu, self)
 
     # @+node:tbrown.20090630144958.5320: *3* todoController.menuicon
-    def menuicon(self, pri: int, progress: bool = False) -> Icon:
+    def menuicon(self, pri: Priority, progress: bool = False) -> Icon:
         """return icon from cache, placing it there if needed"""
         key: Priority = f"prog-{pri}" if progress else pri
         # mypy doesn't know (and can't be told) that priorities[key]["icon"] is a string.
@@ -574,7 +574,7 @@ class todoController:
     def redrawer(fn: Callable) -> Callable:  # type:ignore
         """decorator for methods which create the need for a redraw"""
 
-        def todo_redrawer_callback(self: Any, *args: Args, **kargs: Any) -> Any:
+        def todo_redrawer_callback(self: Any, *args: Any, **kargs: Any) -> Any:
             self.redrawLevels += 1
             try:
                 self.c.endEditing()  # #3932.
@@ -593,7 +593,7 @@ class todoController:
         """decorator for methods which change projects"""
 
         # pylint: disable=no-self-argument
-        def project_changer_callback(self, *args: Args, **kargs: Any) -> Any:
+        def project_changer_callback(self, *args: Any, **kargs: Any) -> Any:
             ans = fn(self, *args, **kargs)  # pylint: disable=not-callable
             self.update_project()
             return ans
@@ -718,6 +718,7 @@ class todoController:
             and attrib in node.unknownAttributes["annotate"]
         ):
             x: Any = node.unknownAttributes["annotate"][attrib]
+            ### g.trace(f"{x=}")
             if attrib in self._date_fields and isinstance(x, str):
                 x = self._date(x)
             if attrib in self._time_fields and isinstance(x, str):
@@ -1275,7 +1276,8 @@ class todoController:
 
     # @+node:tbrown.20090119215428.47: *4* todoController.setPri
     @redrawer
-    def setPri(self, pri: Any) -> None:
+    def setPri(self, pri: int) -> None:
+        g.trace(f"{pri=}: {self.recentIcons=}")
         if pri in self.recentIcons:
             self.recentIcons.remove(pri)
         self.recentIcons.insert(0, pri)
