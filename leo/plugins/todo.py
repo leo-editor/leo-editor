@@ -80,8 +80,7 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.plugins.qt_frame import LeoQtMenu
 
     Icon = QtGui.QIcon
-    Menu = QMenu
-    Priority = int | str
+
 
 # @-<< todo imports & annotations >>
 
@@ -115,14 +114,18 @@ def init() -> bool:
     return True
 
 
-# @+node:tbrown.20090119215428.7: ** onCreate
+# @+node:tbrown.20090119215428.7: ** onCreate (todo.py)
 def onCreate(tag: str, key: dict) -> None:
-    c = key.get('c')
-    todoController(c)
+    if c := key.get('c'):  # PR #4840
+        todoController(c)
 
 
 # @+node:tbrown.20090630144958.5318: ** popup_entry (todo.py)
-def popup_entry(c: Cmdr, p: Position, menu: LeoQtMenu) -> None:
+def popup_entry(c: Cmdr, p: Position, menu: QtWidgets.QMenu) -> None:
+    """Add the menus for the todo.py plugin.  Called from Qt."""
+
+    assert isinstance(menu, QtWidgets.QMenu)  # PR #4840
+
     if getattr(c, 'cleo', None):  # #2856.
         c.cleo.addPopupMenu(c, p, menu)
 
@@ -323,7 +326,7 @@ class todoQtUI(QtWidgets.QWidget):
 
     # @+node:ekr.20111118104929.10205: *3* populateMenu
     @staticmethod
-    def populateMenu(menu: Menu, o: Any) -> None:
+    def populateMenu(menu: QtWidgets.QMenu, o: Any) -> None:
         menu.addAction('Find next ToDo', o.find_todo)
         m = menu.addMenu("Priority")
         m.addAction('Priority Sort', o.priSort)
@@ -400,7 +403,7 @@ class todoController:
         self.c = c
         c.cleo = self
         self.donePriority = 100
-        self.menuicons: dict[Priority, Icon] = {}
+        self.menuicons: dict[int | str, Icon] = {}
         self.recentIcons: list[Icon] = []
         self.redrawLevels = 0
         self._widget_to_style = None  # see updateStyle()
@@ -510,7 +513,9 @@ class todoController:
         return dt.datetime.fromisoformat(timestamp).time()
 
     # @+node:tbrown.20090630144958.5319: *3* todoController.addPopupMenu
-    def addPopupMenu(self, c: Cmdr, p: Position, menu: LeoQtMenu) -> None:
+    def addPopupMenu(self, c: Cmdr, p: Position, menu: QtWidgets.QMenu) -> None:
+
+        assert isinstance(menu, QtWidgets.QMenu)
 
         def rnd(x: float) -> str:
             return re.sub('.0$', '', '%.1f' % x)
@@ -557,9 +562,9 @@ class todoController:
         todoQtUI.populateMenu(taskmenu, self)
 
     # @+node:tbrown.20090630144958.5320: *3* todoController.menuicon
-    def menuicon(self, pri: Priority, progress: bool = False) -> Icon:
+    def menuicon(self, pri: int | str, progress: bool = False) -> Icon:
         """return icon from cache, placing it there if needed"""
-        key: Priority = f"prog-{pri}" if progress else pri
+        key: int | str = f"prog-{pri}" if progress else pri
         # mypy doesn't know (and can't be told) that priorities[key]["icon"] is a string.
         fn: str = 'prg%03d.png' % pri if progress else self.priorities[key]["icon"]  # type:ignore
         if key not in self.menuicons:
@@ -1277,7 +1282,7 @@ class todoController:
     # @+node:tbrown.20090119215428.47: *4* todoController.setPri
     @redrawer
     def setPri(self, pri: int) -> None:
-        g.trace(f"{pri=}: {self.recentIcons=}")
+        ### g.trace(f"{pri=}: {self.recentIcons=}")
         if pri in self.recentIcons:
             self.recentIcons.remove(pri)
         self.recentIcons.insert(0, pri)
