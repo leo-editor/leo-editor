@@ -19,7 +19,7 @@ EKR's ft.cmd runs all tests:
     cls
     cd {path-to-leo-editor}
     call python -m leo.scripts.fast_test_leo
-    echo fft.cmd: Done!
+    echo ft.cmd: Done!
 """
 
 import os
