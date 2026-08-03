@@ -318,6 +318,7 @@ class TestTodo(LeoUnitTest):
         todo.todo_fix_datetime(event)
         todo.todo_dec_pri(event)
         todo.todo_inc_pri(event)
+        todo.find_todo(event)
 
         # Test controller commands.
         controller = todo.todoController(c)

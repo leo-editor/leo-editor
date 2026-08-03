@@ -1502,7 +1502,7 @@ def todo_inc_pri(event: LeoKeyEvent) -> None:
 # @+node:ekr.20260803125533.1: ** command find-todo
 @g.command('find-todo')
 @g.command('todo-find')
-def todo_find_command(event: LeoKeyEvent) -> None:
+def find_todo(event: LeoKeyEvent) -> None:
     c = event['c']
     if hasattr(c, 'cleo'):
         c.cleo.find_todo(c.p)
