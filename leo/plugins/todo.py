@@ -75,7 +75,7 @@ from leo.core.leoQt import Checked, Unchecked
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event
+    from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position, VNode
 
 # May raise g.UiTypeException, caught by the plugins manager.
@@ -1459,7 +1459,7 @@ class todoController:
 
 # @+node:tbrown.20170928065405.1: ** command fix datetime
 @g.command('todo-fix-datetime')
-def todo_fix_datetime(event: Event) -> None:
+def todo_fix_datetime(event: LeoKeyEvent) -> None:
     c = event['c']
     if not hasattr(c, 'cleo'):  # 2856.
         return
@@ -1476,7 +1476,7 @@ def todo_fix_datetime(event: Event) -> None:
 
 # @+node:tbrown.20100701093750.13800: ** command inc/dec priority
 @g.command('todo-dec-pri')
-def todo_dec_pri(event: Event, direction: int = 1) -> None:
+def todo_dec_pri(event: LeoKeyEvent, direction: int = 1) -> None:
     c = event['c']
     if not hasattr(c, 'cleo'):  # 2856.
         return
@@ -1496,7 +1496,7 @@ def todo_dec_pri(event: Event, direction: int = 1) -> None:
 
 
 @g.command('todo-inc-pri')
-def todo_inc_pri(event: Event) -> None:
+def todo_inc_pri(event: LeoKeyEvent) -> None:
     todo_dec_pri(event, direction=-1)
 
 
@@ -1505,7 +1505,7 @@ for cmd, method in [
     ("todo-find-todo", "find_todo"),
 ]:
 
-    def f(event: Event, method: str = method) -> None:
+    def f(event: LeoKeyEvent, method: str = method) -> None:
         getattr(event.c.cleo, method)()
         event.c.redraw()
 
