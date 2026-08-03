@@ -297,8 +297,8 @@ class TestTodo(LeoUnitTest):
             self.skipTest('import Qt failed')
 
     # @+others
-    # @+node:ekr.20260802060227.1: *3* TestTodo.test_outer_functions
-    def test_outer_functions(self):
+    # @+node:ekr.20260802060227.1: *3* TestTodo.test_cover_todo
+    def test_cover_todo(self):
 
         from leo.plugins import todo
 
@@ -323,8 +323,22 @@ class TestTodo(LeoUnitTest):
         # Test controller commands.
         controller = todo.todoController(c)
         controller.find_todo(c.p)
+        controller.find_todo()
         c.doCommandByName('find-todo', event)
         c.doCommandByName('todo-find', event)
+
+        # Test g.app.config.getString('color-theme')
+        d = g.app.loadManager.globalSettingsDict
+        d['colortheme'] = g.GeneralSetting(kind='string', val='ekr_dark')
+        assert g.app.config.getString('color-theme') == 'ekr_dark'
+        controller = todo.todoController(c)
+        controller.find_todo()
+
+        # Test g.app.config.getInt("todo-calendar-cols")
+        d['todocalendarcols'] = g.GeneralSetting(kind='int', val=5)
+        assert g.app.config.getInt('todo-calendar-cols') == 5
+        controller = todo.todoController(c)
+        controller.find_todo()
 
     # @-others
 
