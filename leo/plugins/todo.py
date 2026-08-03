@@ -1151,6 +1151,8 @@ class todoController:
 
     # @+node:tbrown.20090119215428.42: *4* todoController.find_todo
     @redrawer
+    @g.command('find-todo')
+    @g.command('todo-find-todo')
     def find_todo(self, p: Position = None, stage: int = 0) -> bool:
         """Recursively find the next todo"""
 
@@ -1492,7 +1494,6 @@ def todo_dec_pri(event: LeoKeyEvent, direction: int = 1) -> None:
 
     priority = c.cleo.setPri(priority)
     c.redraw()
-    # c.doCommandByName("todo-inc-pri")
 
 
 @g.command('todo-inc-pri')
@@ -1500,16 +1501,6 @@ def todo_inc_pri(event: LeoKeyEvent) -> None:
     todo_dec_pri(event, direction=-1)
 
 
-for cmd, method in [
-    ("todo-children-todo", "childrenTodo"),
-    ("todo-find-todo", "find_todo"),
-]:
-
-    def f(event: LeoKeyEvent, method: str = method) -> None:
-        getattr(event.c.cleo, method)()
-        event.c.redraw()
-
-    g.command(cmd)(f)
 # @-others
 # @@language python
 # @@tabwidth -4

@@ -313,9 +313,15 @@ class TestTodo(LeoUnitTest):
         todo.onCreate(tag=g.my_name(), key={'c': c})
         todo.popup_entry(c=c, p=c.p, menu=QtWidgets.QMenu())
 
-        # Test commands.
+        # Test outer commands.
         event = LeoKeyEvent(c=c)
         todo.todo_fix_datetime(event)
+        todo.todo_dec_pri(event)
+        todo.todo_inc_pri(event)
+
+        # Test controller commands.
+        controller = todo.todoController(c)
+        controller.find_todo(c.p)
 
     # @-others
 
