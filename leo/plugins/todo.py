@@ -77,10 +77,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
-
-    Icon = QtGui.QIcon
-
-
 # @-<< todo imports & annotations >>
 
 NO_TIME = dt.date(3000, 1, 1)
@@ -402,8 +398,8 @@ class todoController:
         self.c = c
         c.cleo = self
         self.donePriority = 100
-        self.menuicons: dict[int | str, Icon] = {}
-        self.recentIcons: list[int | str] = []  # PR #4840: was list[Icon] (!)
+        self.menuicons: dict[int | str, QtGui.QIcon] = {}
+        self.recentIcons: list[int | str] = []  # PR #4840: was list[QtGui.QIcon] (!)
         self.redrawLevels = 0
         self._widget_to_style = None  # see updateStyle()
         self.reloadSettings()
@@ -561,7 +557,7 @@ class todoController:
         todoQtUI.populateMenu(taskmenu, self)
 
     # @+node:tbrown.20090630144958.5320: *3* todoController.menuicon
-    def menuicon(self, pri: int | str, progress: bool = False) -> Icon:
+    def menuicon(self, pri: int | str, progress: bool = False) -> QtGui.QIcon:
         """return icon from cache, placing it there if needed"""
         key = f"prog-{pri}" if progress else pri
         # mypy doesn't know (and can't be told) that priorities[key]["icon"] is a string.
