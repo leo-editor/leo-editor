@@ -506,7 +506,6 @@ class todoController:
         """
         if not timestamp.strip():
             return None  # Was ''
-        # g.trace(f"{timestamp!r} => {dt.datetime.fromisoformat(timestamp).date()}")
         return dt.datetime.fromisoformat(timestamp).date()
 
     def _time(self, timestamp: str) -> dt.time | None:
@@ -517,7 +516,6 @@ class todoController:
         """
         if not timestamp.strip():
             return None  # Was ''
-        # g.trace(f"{timestamp!r} => {dt.datetime.fromisoformat(timestamp).time()}")
         return dt.datetime.fromisoformat(timestamp).time()
 
     # @+node:tbrown.20090630144958.5319: *3* todoController.addPopupMenu
@@ -624,8 +622,8 @@ class todoController:
     @redrawer
     def loadIcons(self, p: Position, clear: bool = False) -> None:
         c = self.c
-        com = c.editCommands
-        allIcons = com.getIconList(p.v)
+        editCommands = c.editCommands
+        allIcons = editCommands.getIconList(p.v)
         icons = [i for i in allIcons if 'cleoIcon' not in i]
         if self.icon_order == 'pri-first':
             iterations = ['priority', 'progress', 'duedate']
@@ -640,7 +638,7 @@ class todoController:
                 if pri:
                     pri = int(pri)
                 if pri in self.priorities:
-                    com.appendImageDictToList(
+                    editCommands.appendImageDictToList(
                         icons,
                         g.os_path_join('cleo', self.priorities[pri]['icon']),
                         2,
@@ -657,7 +655,7 @@ class todoController:
                     prog = int(prog or 0)
                     use = prog // 10 * 10
                     use = 'prg%03d.png' % use  # type:ignore
-                    com.appendImageDictToList(
+                    editCommands.appendImageDictToList(
                         icons,
                         g.os_path_join('cleo', use),
                         2,
@@ -677,7 +675,7 @@ class todoController:
                     else:
                         icon = "date_future.png"
                     # Append the icon to the icons list.
-                    com.appendImageDictToList(
+                    editCommands.appendImageDictToList(
                         icons,
                         g.os_path_join('cleo', icon),
                         2,
@@ -686,7 +684,7 @@ class todoController:
                         where=self.prog_location,
                     )
         # Set the p.v.u for the icons.
-        com.setIconList(p, icons)
+        editCommands.setIconList(p, icons)
         p.v.updateIcon()  # #2870.
 
     # @+node:tbrown.20090119215428.17: *3* todoController.close
@@ -709,7 +707,6 @@ class todoController:
     # @+node:tbrown.20090119215428.20: *4* todoController.delUD
     def delUD(self, node: VNode, udict: str = "annotate") -> None:
         """Remove our dict from the node"""
-        g.trace(f"{udict=} {node.h=} {g.callers(2)}")  ###
         if hasattr(node, "unknownAttributes") and udict in node.unknownAttributes:
             del node.unknownAttributes[udict]
 
@@ -799,9 +796,8 @@ class todoController:
             attrib not in node.unknownAttributes["annotate"]
             or node.unknownAttributes["annotate"][attrib] != val
         ):
-            g.trace(f"{attrib=} {val=}")  ###
+            # PR #4840: Don't dirty the node.
             self.c.setChanged()
-            node.setDirty()
 
         node.unknownAttributes["annotate"][attrib] = val
 
@@ -899,7 +895,9 @@ class todoController:
             p = self.c.currentPosition()
 
         for nd in p.self_and_subtree():
-            nd.h = re.sub(' <[^>]*>$', '', nd.headString())
+            new_h = re.sub(' <[^>]*>$', '', nd.headString())
+            if new_h != nd.h:  # PR #4840: Don't mark nodes dirty unless they change!
+                nd.h = new_h
             tr = self.getat(nd.v, 'time_req')
             pr = self.getat(nd.v, 'progress')
             try:
@@ -1298,7 +1296,6 @@ class todoController:
     # @+node:tbrown.20090119215428.47: *4* todoController.setPri
     @redrawer
     def setPri(self, priority: int) -> None:
-        ### g.trace(f"{priority=}: {self.recentIcons=}")
         if priority in self.recentIcons:
             self.recentIcons.remove(priority)
         self.recentIcons.insert(0, priority)
@@ -1367,11 +1364,8 @@ class todoController:
         if k and k['c'] != self.c:
             return  # wrong number
 
-        g.trace(self.c.p.h, g.callers(1))  ###
-
-        v = self.c.currentPosition().v
-
         # check work date < due date and do stylesheet re-evaluation stuff
+        v = self.c.currentPosition().v
         nwd = self.getat(v, 'nextworkdate')
         due = self.getat(v, 'duedate')
         if hasattr(self.ui.UI, "frmDates"):
