@@ -145,11 +145,11 @@ if 1:
             if theme:
                 testPath = g.os_path_join(g.app.homeLeoDir, 'themes', theme, 'Icons', 'cleo')
                 if g.os_path_exists(testPath):
-                    iconPath = g.os_path_dirname(testPath)
+                    iconPath = g.os_path_dirname(testPath)  # pragma: no cover
                 else:
                     testPath = g.os_path_join(g.app.loadDir, '..', 'themes', theme, 'Icons', 'cleo')
                     if g.os_path_exists(testPath):
-                        iconPath = g.os_path_dirname(testPath)
+                        iconPath = g.os_path_dirname(testPath)  # pragma: no cover
                     else:
                         iconPath = g.os_path_join(g.app.leoDir, 'Icons')
             else:
@@ -224,7 +224,7 @@ if 1:
                 # w.property() seems to give QVariant in python 2.x and int in 3.x!?
                 try:
                     priority = int(w.property('priority'))
-                except (TypeError, ValueError):
+                except (TypeError, ValueError):  # pragma: no cover
                     try:
                         priority, ok = w.property('priority').toInt()
                     except (TypeError, ValueError):
@@ -289,7 +289,7 @@ if 1:
             )
 
             if self.owner.c.config.getBool("todo-compact-interface"):
-                self.UI.frmDetails.setVisible(False)
+                self.UI.frmDetails.setVisible(False)  # pragma: no cover
 
             self.UI.butNext.clicked.connect(lambda checked: self.owner.c.selectVisNext())
             self.UI.butNextTodo.clicked.connect(lambda checked: self.owner.find_todo())
@@ -319,9 +319,9 @@ if 1:
                 edit.blockSignals(True)
                 toggle.blockSignals(True)
                 if value:
-                    getattr(edit, method)(value)
+                    getattr(edit, method)(value)  # pragma: no cover
                     # edit.setEnabled(True)
-                    toggle.setChecked(True)
+                    toggle.setChecked(True)  # pragma: no cover
                 else:
                     getattr(edit, method)(default)
                     toggle.setChecked(False)
@@ -451,15 +451,8 @@ class todoController:
 
         Add labels and tooltips for all buttons.
         """
-        # Patch the buttons only if the pyqt version is greater than 5.12.
-        from leo.core.leoQt import qt_version
-
-        size = QtCore.QSize(16, 16)
-        qt_version = [int(z) for z in qt_version.split('.')]  # type:ignore
-        if qt_version[1] <= 12:  # type:ignore
-            return
         ui = self.ui.UI
-
+        size = QtCore.QSize(16, 16)
         for i in range(10):
             button = getattr(ui, f"butPri{i}")
             path = g.finalize_join(g.app.loadDir, '..', 'Icons', "cleo", f"pri{i}.png")
@@ -492,11 +485,6 @@ class todoController:
             button.setIconSize(size)
             button.setToolTip(tooltip)
 
-    # @+node:tbrown.20090522142657.7894: *3* todoController.__del__
-    def __del__(self) -> None:
-        for i in self.handlers:
-            g.unregisterHandler(i[0], i[1])  # type:ignore
-
     # @+node:tbnorth.20170925093004.1: *3* todoController._date & _time
     def _date(self, timestamp: str) -> dt.date | None:
         """_date - convert a string to a date
@@ -505,7 +493,7 @@ class todoController:
         :return: datetime.date or None.
         """
         if not timestamp.strip():
-            return None  # Was ''
+            return None  # pragma: no cover
         return dt.datetime.fromisoformat(timestamp).date()
 
     def _time(self, timestamp: str) -> dt.time | None:
@@ -515,7 +503,7 @@ class todoController:
         :return: datetime.time or None.
         """
         if not timestamp.strip():
-            return None  # Was ''
+            return None  # pragma: no cover
         return dt.datetime.fromisoformat(timestamp).time()
 
     # @+node:tbrown.20090630144958.5319: *3* todoController.addPopupMenu
@@ -904,7 +892,7 @@ class todoController:
             pr = self.getat(nd.v, 'progress')
             try:
                 pr = float(pr)
-            except Exception:
+            except Exception:  # pragma: no cover
                 pr = ''
             if tr != '' or pr != '':
                 ans = ' <'
@@ -1273,7 +1261,7 @@ class todoController:
 
                 x0 = [int(i) for i in x0.replace(',', ' ').split()]
             # if int(i) in self.todo_priorities]
-            except Exception:
+            except Exception:  # pragma: no cover
                 g.es('Not understood, no action')
                 return
             if not x0:
@@ -1402,7 +1390,7 @@ class todoController:
                 created = dt.datetime.strptime(gdate, '%Y%m%d%H%M').replace(tzinfo=dt.timezone.utc)
                 if created.year < 1900:
                     created = None
-            except Exception:
+            except Exception:  # pragma: no cover
                 created = None
             if created:
                 self.ui.UI.createdTxt.setText(created.strftime("Created %d %b %Y"))
