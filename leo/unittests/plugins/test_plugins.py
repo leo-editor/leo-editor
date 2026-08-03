@@ -138,8 +138,8 @@ class TestPlugins(LeoUnitTest):
         for filename in files:
             self.check_syntax(filename)
 
-    # @+node:ekr.20210907081455.3: *3* TestPlugins.xxx_test_all_qt_plugins_call_g_assertUi_qt_
-    def xxx_test_all_qt_plugins_call_g_assertUi_qt_(self):
+    # @+node:ekr.20210907081455.3: *3* TestPlugins.test_all_qt_plugins_call_g_assertUi_qt_
+    def test_all_qt_plugins_call_g_assertUi_qt_(self):
         files = self.get_plugins()
         excludes = (
             # Special cases, handling Qt imports in unusual ways.

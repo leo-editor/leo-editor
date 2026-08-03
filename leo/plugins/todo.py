@@ -77,6 +77,9 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
+
+# May raise g.UiTypeException, caught by the plugins manager.
+g.assertUi('qt')
 # @-<< todo imports & annotations >>
 
 NO_TIME = dt.date(3000, 1, 1)
