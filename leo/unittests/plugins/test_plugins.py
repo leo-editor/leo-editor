@@ -13,43 +13,7 @@ from leo.core.leoPlugins import LeoPluginsController
 from leo.plugins import indented_languages
 
 try:
-    from leo.core.leoQt import (
-        Qt,
-        QtCore,
-        # QtGui,
-        QtWidgets,
-    )
-    # from leo.core.leoAPI import StringTextWrapper
-
-    # from leo.core.leoFrame import (
-    #     NullBody,
-    #     NullFrame,
-    #     NullIconBarClass,
-    #     NullLog,
-    #     NullStatusLineClass,
-    #     NullTree,
-    # )
-    # from leo.core.leoGui import LeoKeyEvent
-    # from leo.plugins.qt_frame import (
-    #     DynamicWindow,
-    #     LeoQtBody,
-    #     LeoQtFrame,
-    #     LeoQtLog,
-    #     LeoQtMenu,
-    #     LeoQtTree,
-    #     LeoQTreeWidget,
-    #     QtIconBarClass,
-    #     QtStatusLineClass,
-    # )
-    # from leo.plugins.qt_text import (
-    #     LeoQTextBrowser,
-    #     QHeadlineWrapper,
-    #     QLineEditWrapper,
-    #     QMinibufferWrapper,
-    #     QScintillaWrapper,
-    #     QTextEditWrapper,
-    #     QTextMixin,
-    # )
+    from leo.core.leoQt import Qt, QtWidgets
 
     QTabWidget = QtWidgets.QTabWidget
 except Exception:
@@ -344,10 +308,8 @@ class TestTodo(LeoUnitTest):
         assert not todo.init()
 
         c = self.c
-
         todo.onCreate(tag=g.my_name(), key={'c': c})
-
-        todo.popup_entry(c=c, p=c.p, menu=c.frame.menu)
+        todo.popup_entry(c=c, p=c.p, menu=QtWidgets.QMenu())
 
     # @-others
 
