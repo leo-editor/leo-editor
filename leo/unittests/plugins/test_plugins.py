@@ -8,17 +8,17 @@ import glob
 import os
 import re
 from leo.core import leoGlobals as g
-from leo.core.leoTest2 import LeoUnitTest, create_app
+from leo.core.leoGui import LeoKeyEvent
 from leo.core.leoPlugins import LeoPluginsController
+from leo.core.leoTest2 import LeoUnitTest, create_app
 from leo.plugins import indented_languages
 
 try:
     from leo.core.leoQt import Qt, QtWidgets
 
-    QTabWidget = QtWidgets.QTabWidget
 except Exception:
     g.es_exception()
-    Qt = QtCore = QTabWidget = None
+    Qt = QtWidgets = None
 # @-<< test_plugins: imports >>
 
 
@@ -302,14 +302,20 @@ class TestTodo(LeoUnitTest):
 
         from leo.plugins import todo
 
-        assert todo.init()
+        c = self.c
 
+        # test init.
+        assert todo.init()
         todo.warning_given = True
         assert not todo.init()
 
-        c = self.c
+        # Test top-level functions.
         todo.onCreate(tag=g.my_name(), key={'c': c})
         todo.popup_entry(c=c, p=c.p, menu=QtWidgets.QMenu())
+
+        # Test commands.
+        event = LeoKeyEvent(c=c)
+        todo.todo_fix_datetime(event)
 
     # @-others
 
