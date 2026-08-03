@@ -134,7 +134,7 @@ if 1:
     class todoQtUI(QtWidgets.QWidget):
         # @+others
         # @+node:ekr.20111118104929.10204: *3* ctor (todoQtUI(QWidget))
-        def __init__(self, owner: Any, logTab: bool = True) -> None:
+        def __init__(self, owner: todoController, logTab: bool = True) -> None:
             self.owner = owner
             super().__init__()
             uiPath = g.os_path_join(g.app.leoDir, 'plugins', 'ToDo.ui')
@@ -414,7 +414,7 @@ class todoController:
         self.menuicons: dict[int | str, QtGui.QIcon] = {}
         self.recentIcons: list[int | str] = []  # PR #4840: was list[QtGui.QIcon] (!)
         self.redrawLevels = 0
-        self._widget_to_style = None  # see updateStyle()
+        self._widget_to_style: Any | None = None  # see updateStyle()
         self.reloadSettings()
         self.handlers = [
             ("close-frame", self.close),
@@ -1359,13 +1359,13 @@ class todoController:
         nwd = self.getat(v, 'nextworkdate')
         due = self.getat(v, 'duedate')
         if hasattr(self.ui.UI, "frmDates"):
-            w = self.ui.UI.frmDates
-            if nwd and due and str(nwd) > str(due):
-                w.setProperty('style_class', 'tododate_error')
-            else:
-                w.setProperty('style_class', '')
-            # update style on this widget on idle, see updateStyle()
-            self._widget_to_style = (w, time.time())
+            if w := self.ui.UI.frmDates:
+                if nwd and due and str(nwd) > str(due):
+                    w.setProperty('style_class', 'tododate_error')
+                else:
+                    w.setProperty('style_class', '')
+                # update style on this widget on idle, see updateStyle()
+                self._widget_to_style = (w, time.time())
 
         self.ui.setProgress(int(self.getat(v, 'progress') or 0))
         self.ui.setTime(float(self.getat(v, 'time_req') or 0))
