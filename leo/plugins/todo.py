@@ -77,7 +77,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent as Event
     from leo.core.leoNodes import Position, VNode
-    from leo.plugins.qt_frame import LeoQtMenu
 
     Icon = QtGui.QIcon
 
@@ -219,15 +218,15 @@ class todoQtUI(QtWidgets.QWidget):
             w = getattr(u, but)
             # w.property() seems to give QVariant in python 2.x and int in 3.x!?
             try:
-                pri = int(w.property('priority'))
+                priority = int(w.property('priority'))
             except (TypeError, ValueError):
                 try:
-                    pri, ok = w.property('priority').toInt()
+                    priority, ok = w.property('priority').toInt()
                 except (TypeError, ValueError):
-                    pri = -1
+                    priority = -1
 
-            def setter(pri: int = pri) -> None:
-                o.setPri(pri)
+            def setter(priority: int = priority) -> None:
+                o.setPri(priority)
 
             w.clicked.connect(lambda checked, setter=setter: setter())
 
@@ -404,7 +403,7 @@ class todoController:
         c.cleo = self
         self.donePriority = 100
         self.menuicons: dict[int | str, Icon] = {}
-        self.recentIcons: list[Icon] = []
+        self.recentIcons: list[int | str] = []  # PR #4840: was list[Icon] (!)
         self.redrawLevels = 0
         self._widget_to_style = None  # see updateStyle()
         self.reloadSettings()
@@ -529,8 +528,8 @@ class todoController:
             a = m.addAction(icon, self.priorities[i]["long"])
             a.setIconVisibleInMenu(True)
 
-            def icon_cb(checked: Any, pri: int = i) -> None:
-                self.setPri(pri)
+            def icon_cb(checked: Any, priority: int | str = i) -> None:
+                self.setPri(priority)
 
             a.triggered.connect(icon_cb)
         submenu = taskmenu.addMenu("Progress")
@@ -564,7 +563,7 @@ class todoController:
     # @+node:tbrown.20090630144958.5320: *3* todoController.menuicon
     def menuicon(self, pri: int | str, progress: bool = False) -> Icon:
         """return icon from cache, placing it there if needed"""
-        key: int | str = f"prog-{pri}" if progress else pri
+        key = f"prog-{pri}" if progress else pri
         # mypy doesn't know (and can't be told) that priorities[key]["icon"] is a string.
         fn: str = 'prg%03d.png' % pri if progress else self.priorities[key]["icon"]  # type:ignore
         if key not in self.menuicons:
@@ -1281,15 +1280,15 @@ class todoController:
 
     # @+node:tbrown.20090119215428.47: *4* todoController.setPri
     @redrawer
-    def setPri(self, pri: int) -> None:
-        ### g.trace(f"{pri=}: {self.recentIcons=}")
-        if pri in self.recentIcons:
-            self.recentIcons.remove(pri)
-        self.recentIcons.insert(0, pri)
+    def setPri(self, priority: int) -> None:
+        ### g.trace(f"{priority=}: {self.recentIcons=}")
+        if priority in self.recentIcons:
+            self.recentIcons.remove(priority)
+        self.recentIcons.insert(0, priority)
         self.recentIcons = self.recentIcons[:3]
 
         p = self.c.currentPosition()
-        self.setat(p.v, 'priority', pri)
+        self.setat(p.v, 'priority', priority)
         self.setat(p.v, 'prisetdate', str(dt.datetime.now(tz=dt.timezone.utc)))
         self.loadIcons(p)
 
@@ -1467,15 +1466,16 @@ def todo_dec_pri(event: Event, direction: int = 1) -> None:
     if not hasattr(c, 'cleo'):  # 2856.
         return
     p = c.p
-    pri = int(c.cleo.getat(p.v, 'priority'))
+    priority = int(c.cleo.getat(p.v, 'priority'))
 
-    if pri not in c.cleo.priorities:
-        pri = 1
+    if priority not in c.cleo.priorities:
+        priority = 1
     else:
-        ordered = sorted(c.cleo.priorities.keys())
-        pri = ordered[(ordered.index(pri) + direction) % len(ordered)]
+        keys = sorted(c.cleo.priorities.keys())
+        index = (keys.index(priority) + direction) % len(keys)
+        priority = keys[index]
 
-    pri = c.cleo.setPri(pri)
+    priority = c.cleo.setPri(priority)
     c.redraw()
     # c.doCommandByName("todo-inc-pri")
 
