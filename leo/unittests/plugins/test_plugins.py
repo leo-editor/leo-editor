@@ -323,6 +323,7 @@ class TestTodo(LeoUnitTest):
         controller = todo.todoController(c)
         controller.find_todo(c.p)
         c.doCommandByName('find-todo', event)
+        c.doCommandByName('todo-find', event)
 
     # @-others
 
