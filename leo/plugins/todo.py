@@ -63,7 +63,7 @@ todo_calendar_cols
 # @+<< todo imports & annotations >>
 # @+node:tbrown.20090119215428.4: ** << todo imports & annotations >>
 from __future__ import annotations
-from collections.abc import Callable, Iterable
+from collections.abc import Callable
 import os
 import re
 import datetime as dt
@@ -350,15 +350,17 @@ if 1:
             m = menu.addMenu("Misc.")
             m.addAction('Hide all Todo icons', lambda: o.loadAllIcons(clear=True))
             m.addAction('Show all Todo icons', o.loadAllIcons)
-            m.addAction('Delete Todo from node', o.clear_all)
-            m.addAction('Delete Todo from subtree', lambda: o.clear_all(recurse=True))
-            m.addAction('Delete Todo from all', lambda: o.clear_all(all=True))
+            m.addAction('Delete Todo from node', o.clear_node)
+            m.addAction('Delete Todo from subtree', lambda: o.clear_subtree)
+            m.addAction('Delete Todo from all', lambda: o.clear_all)
 
         # @+node:ekr.20111118104929.10207: *3* setProgress
         def setProgress(self, prgr: Any) -> None:
-            self.UI.spinProg.blockSignals(True)
-            self.UI.spinProg.setValue(prgr)
-            self.UI.spinProg.blockSignals(False)
+            try:
+                self.UI.spinProg.blockSignals(True)
+                self.UI.spinProg.setValue(prgr)
+            finally:
+                self.UI.spinProg.blockSignals(False)
 
         # @+node:ekr.20111118104929.10208: *3* setTime
         def setTime(self, timeReq: Any) -> None:
@@ -707,6 +709,7 @@ class todoController:
     # @+node:tbrown.20090119215428.20: *4* todoController.delUD
     def delUD(self, node: VNode, udict: str = "annotate") -> None:
         """Remove our dict from the node"""
+        g.trace(f"{udict=} {node.h=} {g.callers(2)}")  ###
         if hasattr(node, "unknownAttributes") and udict in node.unknownAttributes:
             del node.unknownAttributes[udict]
 
@@ -796,6 +799,7 @@ class todoController:
             attrib not in node.unknownAttributes["annotate"]
             or node.unknownAttributes["annotate"][attrib] != val
         ):
+            g.trace(f"{attrib=} {val=}")  ###
             self.c.setChanged()
             node.setDirty()
 
@@ -830,18 +834,24 @@ class todoController:
             del d[k]
 
     # @+node:tbrown.20090119215428.27: *3* todoController:drawing...
-    # @+node:tbrown.20090119215428.29: *4* todoController.clear_all
+    # @+node:tbrown.20090119215428.29: *4* todoController.clear_*
     @redrawer
-    def clear_all(self, recurse: bool = False, all: bool = False) -> None:
-        what: Iterable
-        if all:
-            what = self.c.all_positions()
-        elif recurse:
-            what = self.c.currentPosition().self_and_subtree()
-        else:
-            what = iter([self.c.currentPosition()])
+    def clear_all(self) -> None:
+        for p in self.c.all_unique_positions():
+            self.delUD(p.v)
+            self.loadIcons(p)
+            self.show_times(p)
 
-        for p in what:
+    @redrawer
+    def clear_node(self) -> None:
+        p = self.c.p
+        self.delUD(p.v)
+        self.loadIcons(p)
+        self.show_times(p)
+
+    @redrawer
+    def clear_subtree(self) -> None:
+        for p in self.c.p.self_and_subtree():
             self.delUD(p.v)
             self.loadIcons(p)
             self.show_times(p)
@@ -1356,6 +1366,8 @@ class todoController:
     def updateUI(self, tag: str = '', k: dict | None = None) -> None:
         if k and k['c'] != self.c:
             return  # wrong number
+
+        g.trace(self.c.p.h, g.callers(1))  ###
 
         v = self.c.currentPosition().v
 
