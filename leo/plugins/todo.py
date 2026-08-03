@@ -1151,8 +1151,6 @@ class todoController:
 
     # @+node:tbrown.20090119215428.42: *4* todoController.find_todo
     @redrawer
-    @g.command('find-todo')
-    @g.command('todo-find-todo')
     def find_todo(self, p: Position = None, stage: int = 0) -> bool:
         """Recursively find the next todo"""
 
@@ -1463,8 +1461,8 @@ class todoController:
 @g.command('todo-fix-datetime')
 def todo_fix_datetime(event: LeoKeyEvent) -> None:
     c = event['c']
-    if not hasattr(c, 'cleo'):  # 2856.
-        return
+    if not hasattr(c, 'cleo'):
+        return  # pragma: no cover
     changed = 0
     for nd in c.all_unique_nodes():
         for key in c.cleo._datetime_fields:
@@ -1480,8 +1478,8 @@ def todo_fix_datetime(event: LeoKeyEvent) -> None:
 @g.command('todo-dec-pri')
 def todo_dec_pri(event: LeoKeyEvent, direction: int = 1) -> None:
     c = event['c']
-    if not hasattr(c, 'cleo'):  # 2856.
-        return
+    if not hasattr(c, 'cleo'):
+        return  # pragma: no cover
     p = c.p
     priority = int(c.cleo.getat(p.v, 'priority'))
 
@@ -1499,6 +1497,16 @@ def todo_dec_pri(event: LeoKeyEvent, direction: int = 1) -> None:
 @g.command('todo-inc-pri')
 def todo_inc_pri(event: LeoKeyEvent) -> None:
     todo_dec_pri(event, direction=-1)
+
+
+# @+node:ekr.20260803125533.1: ** command find-todo
+@g.command('find-todo')
+@g.command('todo-find')
+def todo_find_command(event: LeoKeyEvent) -> None:
+    c = event['c']
+    if hasattr(c, 'cleo'):
+        c.cleo.find_todo(c.p)
+        c.redraw()
 
 
 # @-others
