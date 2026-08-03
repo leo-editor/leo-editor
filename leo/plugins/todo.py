@@ -747,13 +747,15 @@ class todoController:
     def setat(self, node: VNode, attrib: Any, val: Any) -> None:
         "new attribute setter"
 
+        c = self.c
+
         if attrib in self._datetime_fields and isinstance(val, (dt.date, dt.time, dt.datetime)):
             val = val.isoformat()
 
         if 'annotate' in node.u and 'src_unl' in node.u['annotate']:
             if not hasattr(node, '_cached_src_vnode') or not node._cached_src_vnode:
                 src_unl = node.u['annotate']['src_unl']
-                c1 = self.c
+                c1 = c
                 p1 = c1.vnode2position(node)
                 c2, p2 = self.unl_to_pos(src_unl, p1)
                 if p2 is None:
@@ -796,8 +798,8 @@ class todoController:
             attrib not in node.unknownAttributes["annotate"]
             or node.unknownAttributes["annotate"][attrib] != val
         ):
-            # PR #4840: Don't dirty the node.
-            self.c.setChanged()
+            c.setChanged()
+            node.setDirty()
 
         node.unknownAttributes["annotate"][attrib] = val
 
