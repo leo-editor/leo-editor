@@ -5721,32 +5721,36 @@ def import_module(name: str, package: str = '') -> ModuleType | None:
 
 # @+node:ekr.20260804150348.1: ** g.Icons
 # @+node:ekr.20260804152751.1: *3* g.add_icon_to_node
-def add_icon_to_node(icon_name: str, p: Position) -> None:
+def add_icon_to_node(
+    icon_name: str,
+    p: Position,
+    pixmap: Any,  # A QStyle.StandardPixmap.
+) -> None:
     """Add an icon to p."""
-    # from PyQt6.QtGui import QIcon  # pylint: disable=no-name-in-module
+    from PyQt6.QtWidgets import QStyle
 
-    # assert isinstance(icon, QIcon), f"{icon=} {p.v.h}"
-    g.trace(icon_name)
-    g.trace(p.v.h)
-
+    assert isinstance(pixmap, QStyle.StandardPixmap)
     v = p.v
+    g.trace(icon_name)
 
-    # From ec.insertIcon
+    assert v  ###
 
-    aList: list[dict[str, Value]] = []
-    xoffset = 2
-    for path in paths:
-        xoffset = xxx.appendImageDictToList(aList, path, xoffset)
+    # # From ec.insertIcon
 
-    ### aList2 = self.getIconList(p.v)
-    aList2 = []
-    if hasattr(v, 'unknownAttributes'):
-        dict_list = [dict(i) for i in v.u.get('icons', [])]
-        for i in dict_list:
-            i['on'] = 'VNode'
+    # aList: list[dict[str, Value]] = []
+    # xoffset = 2
+    # for path in paths:
+    #     xoffset = xxx.appendImageDictToList(aList, path, xoffset)
 
-        # # # aList2.extend(aList)
-        # # # self.setIconList(p, aList2)
+    # ### aList2 = self.getIconList(p.v)
+    # aList2 = []
+    # if hasattr(v, 'unknownAttributes'):
+    #     dict_list = [dict(i) for i in v.u.get('icons', [])]
+    #     for i in dict_list:
+    #         i['on'] = 'VNode'
+
+    #     # # # aList2.extend(aList)
+    #     # # # self.setIconList(p, aList2)
 
 
 # @+node:ekr.20260804150402.1: *3* g.delete_node_icons
