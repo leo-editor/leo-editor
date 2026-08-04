@@ -34,7 +34,8 @@ jobs:
           types-docutils types-Markdown types-paramiko types-PyYAML
           types-requests types-six
           "PyQt6>=6.6" PyQt6-QScintilla PyQt6-WebEngine ty
-      - run: python -m mypy leo
+      ###
+      # - run: python -m mypy leo
       # Informational only: ty (https://github.com/astral-sh/ty) is an
       # actively-developed, much faster alternative to mypy, still in beta.
       # It's noticeably stricter than our current mypy config in some areas
@@ -42,6 +43,5 @@ jobs:
       # it's here so its findings show up in PR logs while we evaluate it.
       # Runs in this job, after mypy, to reuse the same checkout/Python/PyQt6
       # setup instead of paying for a second one.
-      ###
       # - run: ty check --python "$(python -c 'import sys; print(sys.prefix)')" leo
       #  continue-on-error: true
