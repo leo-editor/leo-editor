@@ -10,13 +10,11 @@ import re
 from leo.core import leoGlobals as g
 from leo.core.leoGui import LeoKeyEvent
 from leo.core.leoPlugins import LeoPluginsController
-from leo.core.leoQt import QtCore
 from leo.core.leoTest2 import LeoUnitTest, create_app
 from leo.plugins import indented_languages
 
 try:
-    from leo.core.leoQt import Qt, QtWidgets
-
+    from leo.core.leoQt import Qt, QtCore, QtWidgets
 except Exception:
     g.es_exception()
     Qt = QtCore = QtWidgets = None
@@ -309,6 +307,8 @@ class TestTodo(LeoUnitTest):
         v = p.v
         now = dt.datetime.now(tz=dt.timezone.utc)
 
+        # todoQtUI = todo.todoQtUI(x)
+
         # test init.
         assert todo.init()
         todo.warning_given = True
@@ -363,7 +363,6 @@ class TestTodo(LeoUnitTest):
         x.clear_time_req()
         x.local_recalc()
         x.local_clear()
-        todoQtUI = todo.todoQtUI(x)
         x.set_due_date(QtCore.QDate(2026, 1, 1))
         x.set_due_time(QtCore.QTime(6, 6))
         x.set_progress(100)
