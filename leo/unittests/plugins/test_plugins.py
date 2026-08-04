@@ -7,6 +7,7 @@
 import glob
 import os
 import re
+import time
 from leo.core import leoGlobals as g
 from leo.core.leoGui import LeoKeyEvent
 from leo.core.leoPlugins import LeoPluginsController
@@ -288,6 +289,11 @@ class TestTodo(LeoUnitTest):
     @classmethod
     def setUpClass(cls):
         create_app(gui_name='qt')
+
+    @classmethod
+    def tearDownClass(cls):
+        g.app.finishQuit()
+        time.sleep(0.5)
 
     def setUp(self):
         super().setUp()

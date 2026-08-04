@@ -115,6 +115,10 @@ class TestQtGui(LeoUnitTest):
     def setUpClass(cls):
         create_app(gui_name='qt')
 
+    @classmethod
+    def tearDownClass(cls):
+        g.app.finishQuit()
+
     def setUp(self):
         super().setUp()
         # Don't run *any* tests if Qt has not been installed.
