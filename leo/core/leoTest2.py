@@ -109,6 +109,10 @@ class LeoUnitTest(unittest.TestCase):
     def setUpClass(cls: Any) -> None:
         create_app(gui_name='null')
 
+    @classmethod
+    def tearDownClass(cls):
+        g.app.finishQuit()
+
     # @+others
     # @+node:ekr.20210901140855.2: *3*  LeoUnitTest.setUp & tearDown
     def setUp(self) -> None:

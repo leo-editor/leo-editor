@@ -50,5 +50,5 @@ jobs:
       # it's here so its findings show up in PR logs while we evaluate it.
       # Runs in this job, after mypy, to reuse the same checkout/Python/PyQt6
       # setup instead of paying for a second one.
-      - run: ty check --python "$(python -c 'import sys; print(sys.prefix)')" leo
-        continue-on-error: true
+      # - run: ty check --python "$(python -c 'import sys; print(sys.prefix)')" leo
+      #  continue-on-error: true

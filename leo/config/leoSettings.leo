@@ -2337,6 +2337,10 @@ The following integer values are supported:
 </t>
 <t tx="btheado.20131124162237.2493"></t>
 <t tx="chris.20180324074923.1"></t>
+<t tx="codex.20260701120000.1">The setting only has effect on MacOS.
+False: Legacy operation: Qt swaps Command and Control into cross-platform roles.
+True:  Tell Qt not to swap Command and Control before QApplication is created.
+</t>
 <t tx="edward.20081129091117.12">horizontal: body pane to the right
 vertical: body pane on the botton
 
@@ -3709,7 +3713,6 @@ mod_scripting.py
 nav_qt.py           # Forward/back buttons &amp; goto-next/prev-history-node
 nodetags.py
 quicksearch.py      # Nav pane.
-todo.py             # Task pane.
 viewrendered.py     # (Or viewrendered3.py) Plugins menu support.
 leo_to_html_outline_viewer.py  # Self-contained HTML Outline Viewer</t>
 <t tx="ekr.20070318065601">True:  Chapter commands are functional.
@@ -10854,10 +10857,6 @@ Use different names instead.</t>
 False: Legacy operation.
 True:  Replace the Meta key with the Alt Key.
        This allows Windows Keyboards to be used without changing key bindings.
-</t>
-<t tx="codex.20260701120000.1">The setting only has effect on MacOS.
-False: Legacy operation: Qt swaps Command and Control into cross-platform roles.
-True:  Tell Qt not to swap Command and Control before QApplication is created.
 </t>
 <t tx="ekr.20180525053145.1">True: use jedi for autocompletion if available.
 See https://jedi.readthedocs.io/en/latest/index.html

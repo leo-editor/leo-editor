@@ -2,13 +2,24 @@
 # @+node:ekr.20210907081548.1: * @file ../unittests/plugins/test_plugins.py
 """General tests of plugins."""
 
+# @+<< test_plugins: imports >>
+# @+node:ekr.20260802082604.1: ** << test_plugins: imports >>
 import glob
 import os
 import re
+import time
 from leo.core import leoGlobals as g
-from leo.core.leoTest2 import LeoUnitTest
+from leo.core.leoGui import LeoKeyEvent
 from leo.core.leoPlugins import LeoPluginsController
+from leo.core.leoTest2 import LeoUnitTest, create_app
 from leo.plugins import indented_languages
+
+try:
+    from leo.core.leoQt import Qt, QtCore, QtWidgets
+except Exception:
+    g.es_exception()
+    Qt = QtCore = QtWidgets = None
+# @-<< test_plugins: imports >>
 
 
 # @+others
@@ -70,6 +81,21 @@ class TestPlugins(LeoUnitTest):
         files = [g.os_path_abspath(z) for z in files]
         return sorted(files)
 
+    # @+node:ekr.20210909165720.1: *3* TestPlugins.slow_test_import_all_plugins
+    def slow_test_import_of_all_plugins(self):  # pragma: no cover
+        # This works, but is slow.
+        files = self.get_plugins()
+        for filename in files:
+            plugin_module = g.shortFileName(filename)[:-3]
+            try:
+                exec(f"import leo.plugins.{plugin_module}")
+            except g.UiTypeException:
+                pass
+            except AttributeError:
+                pass
+            except ImportError:
+                pass
+
     # @+node:ekr.20210907081455.2: *3* TestPlugins.test_all_plugins_have_top_level_init_method
     def test_all_plugins_have_top_level_init_method(self):
         # Ensure all plugins have top-level init method *without* importing them.
@@ -79,29 +105,6 @@ class TestPlugins(LeoUnitTest):
                 contents = f.read()
             s = g.toUnicode(contents)
             assert 'def init()' in s, repr(fn)
-
-    # @+node:ekr.20210907081455.3: *3* TestPlugins.test_all_qt_plugins_call_g_assertUi_qt_
-    def test_all_qt_plugins_call_g_assertUi_qt_(self):
-        files = self.get_plugins()
-        excludes = (
-            # Special cases, handling Qt imports in unusual ways.
-            'backlink.py',  # Qt code is optional, disabled with module-level guard.
-            'leoscreen.py',  # Qt imports are optional.
-            'mod_scripting.py',
-            'nodetags.py',  # #2031: Qt imports are optional.
-            'pyplot_backend.py',  # Not a real plugin.
-            'qt_layout.py',  # Not a real plugin.
-        )
-        pattern = re.compile(r'\b(QtCore|QtGui|QtWidgets)\b')  # Don't search for Qt.
-        for fn in files:
-            if g.shortFileName(fn) in excludes:
-                continue
-            with open(fn, 'rb') as f:
-                contents = f.read()
-            s = g.toUnicode(contents)
-            if not re.search(pattern, s):
-                continue
-            self.assertTrue(re.search(r"g\.assertUi\(['\"]qt['\"]\)", s), msg=fn)
 
     # @+node:ekr.20210909161328.2: *3* TestPlugins.test_c_vnode2position
     def test_c_vnode2position(self):
@@ -135,20 +138,28 @@ class TestPlugins(LeoUnitTest):
         for filename in files:
             self.check_syntax(filename)
 
-    # @+node:ekr.20210909165720.1: *3* TestPlugins.slow_test_import_all_plugins
-    def slow_test_import_of_all_plugins(self):  # pragma: no cover
-        # This works, but is slow.
+    # @+node:ekr.20210907081455.3: *3* TestPlugins.test_all_qt_plugins_call_g_assertUi_qt_
+    def test_all_qt_plugins_call_g_assertUi_qt_(self):
         files = self.get_plugins()
-        for filename in files:
-            plugin_module = g.shortFileName(filename)[:-3]
-            try:
-                exec(f"import leo.plugins.{plugin_module}")
-            except g.UiTypeException:
-                pass
-            except AttributeError:
-                pass
-            except ImportError:
-                pass
+        excludes = (
+            # Special cases, handling Qt imports in unusual ways.
+            'backlink.py',  # Qt code is optional, disabled with module-level guard.
+            'leoscreen.py',  # Qt imports are optional.
+            'mod_scripting.py',
+            'nodetags.py',  # #2031: Qt imports are optional.
+            'pyplot_backend.py',  # Not a real plugin.
+            'qt_layout.py',  # Not a real plugin.
+        )
+        pattern = re.compile(r'\b(QtCore|QtGui|QtWidgets)\b')  # Don't search for Qt.
+        for fn in files:
+            if g.shortFileName(fn) in excludes:
+                continue
+            with open(fn, 'rb') as f:
+                contents = f.read()
+            s = g.toUnicode(contents)
+            if not re.search(pattern, s):
+                continue
+            self.assertTrue(re.search(r"g\.assertUi\(['\"]qt['\"]\)", s), msg=fn)
 
     # @-others
 
@@ -267,6 +278,114 @@ class TestIndentedLisp(LeoUnitTest):
             print(contents)
             print('')
             print(p.b)
+
+    # @-others
+
+
+# @+node:ekr.20260802060059.1: ** class TestTodo(LeoUnitTest)
+class TestTodo(LeoUnitTest):
+    """Tests for todo.py plugin."""
+
+    @classmethod
+    def setUpClass(cls):
+        create_app(gui_name='qt')
+
+    @classmethod
+    def tearDownClass(cls):
+        g.app.finishQuit()
+        time.sleep(0.5)
+
+    def setUp(self):
+        super().setUp()
+        # Don't run *any* tests if Qt has not been installed.
+        if not Qt:
+            self.skipTest('import Qt failed')
+
+    # @+others
+    # @+node:ekr.20260802060227.1: *3* TestTodo.test_cover_todo
+    def test_cover_todo(self):
+
+        import datetime as dt
+        from leo.plugins import todo
+
+        c = self.c
+        p = c.p
+        v = p.v
+        now = dt.datetime.now(tz=dt.timezone.utc)
+
+        # todoQtUI = todo.todoQtUI(x)
+
+        # test init.
+        assert todo.init()
+        todo.warning_given = True
+        assert not todo.init()
+
+        # Test top-level functions.
+        todo.onCreate(tag=g.my_name(), key={'c': c})
+        todo.popup_entry(c=c, p=p, menu=QtWidgets.QMenu())
+
+        # Test outer commands.
+        event = LeoKeyEvent(c=c)
+        todo.todo_fix_datetime(event)
+        todo.todo_dec_pri(event)
+        todo.todo_inc_pri(event)
+        todo.find_todo(event)
+
+        # Test controller commands.
+        x = todo.todoController(c)
+        x.find_todo(c.p)
+        x.find_todo()
+        c.doCommandByName('find-todo', event)
+        c.doCommandByName('todo-find', event)
+
+        # Test g.app.config.getString('color-theme')
+        d = g.app.loadManager.globalSettingsDict
+        d['colortheme'] = g.GeneralSetting(kind='string', val='ekr_dark')
+        assert g.app.config.getString('color-theme') == 'ekr_dark'
+        x = todo.todoController(c)
+        x.find_todo()
+
+        # Test g.app.config.getInt("todo-calendar-cols")
+        d['todocalendarcols'] = g.GeneralSetting(kind='int', val=5)
+        assert g.app.config.getInt('todo-calendar-cols') == 5
+        x = todo.todoController(c)
+        x.find_todo()
+
+        # Cover more methods.
+        x = todo.todoController(c)
+        x._date()
+        x._time()
+        x._time(timestamp=str(now))
+        x.loadIcons(c.p, clear=True)
+        x.showHelp()
+
+        # uAs.
+        x.set_progress(2)
+        x.hasUD(v)
+        x.delUD(v)
+        x.dropEmpty(v)
+        x.set_progress(3)
+        x.set_time_req(100)
+        x.clear_time_req()
+        x.local_recalc()
+        x.local_clear()
+        x.set_due_date(QtCore.QDate(2026, 1, 1))
+        x.set_due_time(QtCore.QTime(6, 6))
+        x.set_progress(100)
+        x.set_time_req(50)
+        x.set_progress()
+        x.set_time_req('')
+        x.show_times(show=True)
+        x.show_times(show=False)
+        x.recalc_time(p)
+        x.clear_node()
+        x.clear_subtree()
+        x.clear_all()
+        x.progress_clear()
+
+        # Last.
+        g.app.pluginsController = LeoPluginsController()
+        x.close(tag='test', d={'c': c})
 
     # @-others
 
