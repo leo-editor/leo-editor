@@ -496,7 +496,10 @@ class todoController:
         """
         if not timestamp.strip():
             return None  # pragma: no cover
-        return dt.datetime.fromisoformat(timestamp).date()
+        try:
+            return dt.datetime.fromisoformat(timestamp).date()
+        except ValueError:
+            return None  # pragma: no cover
 
     def _time(self, timestamp: str = '') -> dt.time | None:
         """_time - convert a string to a time
@@ -506,7 +509,10 @@ class todoController:
         """
         if not timestamp.strip():
             return None  # pragma: no cover
-        return dt.datetime.fromisoformat(timestamp).time()
+        try:
+            return dt.datetime.fromisoformat(timestamp).time()
+        except ValueError:
+            return None  # pragma: no cover
 
     # @+node:tbrown.20090630144958.5319: *3* todoController.addPopupMenu
     def addPopupMenu(self, c: Cmdr, p: Position, menu: QtWidgets.QMenu) -> None:
@@ -998,7 +1004,7 @@ class todoController:
     # @+node:tbrown.20110213091328.16233: *4* todoController.set_due_date
     def set_due_date(
         self,
-        val: Any,  # Example, dt.datetime.now(tz=dt.timezone.utc))
+        val: QtCore.QDate | None = None,
         mode: str = 'adjust',
         field: str = 'duedate',
     ) -> None:
@@ -1027,14 +1033,13 @@ class todoController:
     # @+node:tbrown.20110213091328.16235: *4* todoController.set_due_time
     def set_due_time(
         self,
-        p: Position = None,
-        val: Any = None,  # Hard to annotate.
+        val: QtCore.QTime | None = None,
         mode: str = 'adjust',
         field: str = 'duetime',
     ) -> None:
         "mode: `adjust` for change in time, `check` for checkbox toggle"
-        if p is None:
-            p = self.c.currentPosition()
+        c = self.c
+        p = c.p
         v = p.v
 
         if field == 'duetime':

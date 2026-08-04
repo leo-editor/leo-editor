@@ -10,6 +10,7 @@ import re
 from leo.core import leoGlobals as g
 from leo.core.leoGui import LeoKeyEvent
 from leo.core.leoPlugins import LeoPluginsController
+from leo.core.leoQt import QtCore
 from leo.core.leoTest2 import LeoUnitTest, create_app
 from leo.plugins import indented_languages
 
@@ -18,7 +19,7 @@ try:
 
 except Exception:
     g.es_exception()
-    Qt = QtWidgets = None
+    Qt = QtCore = QtWidgets = None
 # @-<< test_plugins: imports >>
 
 
@@ -363,7 +364,8 @@ class TestTodo(LeoUnitTest):
         x.local_recalc()
         x.local_clear()
         todoQtUI = todo.todoQtUI(x)
-        x.set_due_date(todoQtUI.UI.dueDateEdit.date())
+        x.set_due_date(QtCore.QDate(2026, 1, 1))
+        x.set_due_time(QtCore.QTime(6, 6))
         x.set_progress(100)
         x.set_time_req(50)
         x.set_progress()
