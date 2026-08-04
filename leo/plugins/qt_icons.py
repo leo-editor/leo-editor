@@ -15,9 +15,8 @@ from leo.core import leoGlobals as g
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-
-    ### from leo.core.leoGui import LeoKeyEvent
-    ### from leo.core.leoNodes import Position, VNode
+    from leo.core.leoGui import LeoKeyEvent
+    from leo.core.leoNodes import Position
 
 # @-<< qt_icons: imports & annotations >>
 
@@ -55,11 +54,11 @@ class IconController:
     """A per-commander class that manages Qt QIcons."""
 
     # @+others
-    # @+node:ekr.20260804103004.15: *3* IconController.__init__ & reloadSettings
+    # @+node:ekr.20260804111629.1: *3* IconController.__init__ & reloadSettings
     def __init__(self, c: Cmdr) -> None:
         """ctor for IconController class."""
         self.c = c
-        c.cleo = self
+        c.qt_icons = self
         self.default_icons_dir = g.os_path_join(g.app.loadDir, '..', 'Icons')
         self.reloadSettings()
         os.chdir(self.icons_dir)
@@ -69,7 +68,47 @@ class IconController:
         c.registerReloadSettings(self)
         self.icons_dir = c.config.getString('qt-icons-directory') or self.default_icons_dir
 
+    # @+node:ekr.20260804111707.1: *3* IconController.delete_node_icons & delete_all_icons
+    def delete_node_icons(self, p: Position) -> None:
+        """Delete all icons attached to p."""
+
+    def delete_all_icons(self) -> None:
+        """Delete all icons in the outline."""
+        c = self.c
+        for p in c.all_unique_positions():
+            self.delete_node_icons(p)
+
+    # @+node:ekr.20260804112039.1: *3* IconController.add_icons
+    def add_icons(self) -> None:
+        """Add icons to c.p.h"""
+
     # @-others
+
+
+# @+node:ekr.20260804111455.1: ** 'icons-add-icons'
+@g.command('icons-add-icons')
+def icons_add_icons(event: LeoKeyEvent) -> None:
+    """Attach icons to c.p"""
+    c = event['c']
+    if hasattr(c, 'qt_icons'):
+        c.qt_icons.add_icons()
+
+
+# @+node:ekr.20260804111220.1: ** 'icons-delete' & 'icons-delete-all'
+@g.command('icons-delete-icons')
+def icons_delete_node_icons(event: LeoKeyEvent) -> None:
+    """Delete all icons attached to c.p"""
+    c = event['c']
+    if hasattr(c, 'qt_icons'):
+        c.qt_icons.delete_node_icons(c.p)
+
+
+@g.command('icons-delete-all')
+def icons_delete_all_icons(event: LeoKeyEvent) -> None:
+    """Delete all icons in the outline."""
+    c = event['c']
+    if hasattr(c, 'qt_icons'):
+        c.qt_icons.delete_all_icons()
 
 
 # @-others
