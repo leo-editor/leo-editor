@@ -536,12 +536,12 @@ class todoController:
 
             a.triggered.connect(icon_cb)
         submenu = taskmenu.addMenu("Progress")
-        for i in range(11):
-            icon = self.menuicon(10 * i, progress=True)
-            a = submenu.addAction(icon, "%d%%" % (i * 10))
+        for pct in range(11):
+            icon = self.menuicon(10 * pct, progress=True)
+            a = submenu.addAction(icon, "%d%%" % (pct * 10))
             a.setIconVisibleInMenu(True)
 
-            def progress_cb(checked: bool, prog: int = i) -> None:
+            def progress_cb(checked: bool, prog: int = pct) -> None:
                 self.set_progress(val=10 * prog)
 
             a.triggered.connect(progress_cb)
@@ -909,7 +909,9 @@ class todoController:
                 self.loadIcons(nd)  # update progress icon
 
     # @+node:tbrown.20090119215428.35: *4* todoController.recalc_time
-    def recalc_time(self, p: Position, clear: Position | None = None) -> tuple[str, str]:
+    def recalc_time(
+        self, p: Position, clear: Position | None = None
+    ) -> tuple[float | None, float | None]:
         assert isinstance(p, Position), repr(p)
         assert isinstance(clear, (Position, NoneType)), repr(clear)
         v = p.v
