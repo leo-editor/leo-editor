@@ -8,6 +8,7 @@ qt_icons: add icons to nodes.
 # @+node:ekr.20260804103004.3: ** << qt_icons: imports & annotations >>
 from __future__ import annotations
 
+import os
 from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
 
@@ -41,7 +42,7 @@ window: QWidget | None = None
 
 
 @g.command('icons-add-icons')
-def icons_add_icons(event: LeoKeyEvent) -> None:
+def icons_add_icons(event: LeoKeyEvent | None = None) -> None:
     """Attach icons to c.p"""
     global window
     c = event['c'] if event else None
@@ -53,6 +54,8 @@ def icons_add_icons(event: LeoKeyEvent) -> None:
 
     default_icons_dir = g.os_path_join(g.app.loadDir, '..', 'Icons')
     icons_dir = c.config.getString('qt-icons-directory') or default_icons_dir
+    if not os.path.exists(icons_dir):
+        return
 
     class Window(QWidget):
         def __init__(self):
