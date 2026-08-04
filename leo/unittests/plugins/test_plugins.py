@@ -300,9 +300,13 @@ class TestTodo(LeoUnitTest):
     # @+node:ekr.20260802060227.1: *3* TestTodo.test_cover_todo
     def test_cover_todo(self):
 
+        import datetime as dt
         from leo.plugins import todo
 
         c = self.c
+        p = c.p
+        v = p.v
+        now = dt.datetime.now(tz=dt.timezone.utc)
 
         # test init.
         assert todo.init()
@@ -311,7 +315,7 @@ class TestTodo(LeoUnitTest):
 
         # Test top-level functions.
         todo.onCreate(tag=g.my_name(), key={'c': c})
-        todo.popup_entry(c=c, p=c.p, menu=QtWidgets.QMenu())
+        todo.popup_entry(c=c, p=p, menu=QtWidgets.QMenu())
 
         # Test outer commands.
         event = LeoKeyEvent(c=c)
@@ -321,9 +325,9 @@ class TestTodo(LeoUnitTest):
         todo.find_todo(event)
 
         # Test controller commands.
-        controller = todo.todoController(c)
-        controller.find_todo(c.p)
-        controller.find_todo()
+        x = todo.todoController(c)
+        x.find_todo(c.p)
+        x.find_todo()
         c.doCommandByName('find-todo', event)
         c.doCommandByName('todo-find', event)
 
@@ -331,14 +335,44 @@ class TestTodo(LeoUnitTest):
         d = g.app.loadManager.globalSettingsDict
         d['colortheme'] = g.GeneralSetting(kind='string', val='ekr_dark')
         assert g.app.config.getString('color-theme') == 'ekr_dark'
-        controller = todo.todoController(c)
-        controller.find_todo()
+        x = todo.todoController(c)
+        x.find_todo()
 
         # Test g.app.config.getInt("todo-calendar-cols")
         d['todocalendarcols'] = g.GeneralSetting(kind='int', val=5)
         assert g.app.config.getInt('todo-calendar-cols') == 5
-        controller = todo.todoController(c)
-        controller.find_todo()
+        x = todo.todoController(c)
+        x.find_todo()
+
+        # Cover more methods.
+        x = todo.todoController(c)
+        x._date()
+        x._time()
+        x._time(timestamp=str(now))
+        x.loadIcons(c.p, clear=True)
+        x.showHelp()
+
+        # uAs.
+        x.set_progress(2)
+        x.hasUD(v)
+        x.delUD(v)
+        x.dropEmpty(v)
+        x.set_progress(3)
+        x.set_time_req(100)
+        x.clear_time_req()
+        x.local_recalc()
+        x.local_clear()
+        todoQtUI = todo.todoQtUI(x)
+        x.set_due_date(todoQtUI.UI.dueDateEdit.date())
+        x.set_time_req(50)
+        x.set_progress(100)
+        x.show_times(show=True)
+        x.show_times(show=False)
+        x.recalc_time(p)
+
+        # Last.
+        g.app.pluginsController = LeoPluginsController()
+        x.close(tag='test', d={'c': c})
 
     # @-others
 
