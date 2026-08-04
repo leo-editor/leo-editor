@@ -118,6 +118,7 @@ class TestQtGui(LeoUnitTest):
     @classmethod
     def tearDownClass(cls):
         g.app.finishQuit()
+        time.sleep(0.5)
 
     def setUp(self):
         super().setUp()
