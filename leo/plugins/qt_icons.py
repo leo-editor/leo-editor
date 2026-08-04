@@ -104,7 +104,7 @@ class IconController:
                 for i, icon in enumerate(icons):
                     button = QPushButton(icon)
 
-                    def callback(button=button, icon=icon):
+                    def callback(icon=icon):
                         g.trace(f"Clicked {icon=}")
                         controller.add_icon_to_node(icon)
 
