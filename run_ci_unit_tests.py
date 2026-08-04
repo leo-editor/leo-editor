@@ -1,11 +1,11 @@
 # @+leo-ver=5-thin
-# @+node:ekr.20181009072707.1: * @file ../../run_travis_unit_tests.py
+# @+node:ekr.20181009072707.1: * @file ../../run_ci_unit_tests.py
 import os
 import sys
 import traceback
 import unittest
 
-tag = 'run_travis_unit_tests.py'
+tag = 'run_ci_unit_tests.py'
 try:
     base_dir = os.path.dirname(__file__)
     unittests_dir = os.path.abspath(os.path.join(base_dir, 'leo', 'unittests'))

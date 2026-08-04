@@ -40,7 +40,7 @@ jobs:
       - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends
           libegl1 libgl1 libxkbcommon0 libdbus-1-3 libfontconfig1
       - run: pip install asttokens Pygments "PyQt6>=6.6" PyQt6-QScintilla
-      - run: python run_travis_unit_tests.py
+      - run: python run_ci_unit_tests.py
 
   mypy:
     runs-on: ubuntu-latest
