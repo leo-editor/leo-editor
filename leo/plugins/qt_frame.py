@@ -975,12 +975,12 @@ class DynamicWindow(QtWidgets.QMainWindow):
         class VisLineEdit(QtWidgets.QLineEdit):
             """In case user has hidden minibuffer with gui-minibuffer-hide"""
 
-            def focusInEvent(self, event: QFocusEvent) -> None:  # type:ignore[override]  # ty: ignore[invalid-method-override]
+            def focusInEvent(self, event: QFocusEvent) -> None:  # type:ignore[override]  # ty: ignore[invalid-method-override]  # pylint: disable=line-too-long
                 self.parent().show()
                 # Call the base class method.
                 super().focusInEvent(event)
 
-            def focusOutEvent(self, event: QFocusEvent) -> None:  # type:ignore[override]  # ty: ignore[invalid-method-override]
+            def focusOutEvent(self, event: QFocusEvent) -> None:  # type:ignore[override]  # ty: ignore[invalid-method-override]  # pylint: disable=line-too-long
                 self.store_selection()
                 super().focusOutEvent(event)
 
@@ -1121,7 +1121,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
     # @+node:ekr.20110605121601.18178: *4* dw.set_geometry
     # Mypy complaint because this overrides QMainWindow.setGeometry.
 
-    def setGeometry(self, rect: QRect) -> None:  # type:ignore[override,valid-type]  # ty: ignore[invalid-method-override]
+    def setGeometry(self, rect: QRect) -> None:  # type:ignore[override,valid-type]  # ty: ignore[invalid-method-override]  # pylint: disable=line-too-long
         """Set the window geometry, but only once when using the qt gui."""
         assert self.leo_master
         m = self.leo_master
@@ -3675,7 +3675,7 @@ class LeoQtTreeTab:
                 # Fix #458: Chapters drop-down list is not automatically resized.
                 self.setSizeAdjustPolicy(SizeAdjustPolicy.AdjustToContents)
 
-            def focusInEvent(self, event: QFocusEvent) -> None:  # type:ignore[override]  # ty: ignore[invalid-method-override]
+            def focusInEvent(self, event: QFocusEvent) -> None:  # type:ignore[override]  # ty: ignore[invalid-method-override]  # pylint: disable=line-too-long
                 self.leo_tt.setNames()
                 QtWidgets.QComboBox.focusInEvent(self, event)  # Call the base class
 
@@ -3833,7 +3833,7 @@ class QtIconBarClass:
                 self.text_val = text  # self.text is a method!
                 self.toolbar = toolbar
 
-            def createWidget(self, parent: QWidget) -> QtWidgets.QPushButton:  # type:ignore[override]  # ty: ignore[invalid-method-override]
+            def createWidget(self, parent: QWidget) -> QtWidgets.QPushButton:  # type:ignore[override]  # ty: ignore[invalid-method-override]  # pylint: disable=line-too-long
                 self.button = QtWidgets.QPushButton(self.text_val, parent)
                 self.button.setProperty('button_kind', kind)  # for styling
                 return self.button
@@ -4323,7 +4323,7 @@ class QtTabBarWrapper(QtWidgets.QTabBar):
         self.setMovable(True)
 
     # @+node:peckj.20140516114832.10109: *3* QtTabBarWrapper.mouseReleaseEvent
-    def mouseReleaseEvent(self, event: QMouseEvent) -> None:  # type:ignore[override]  # ty: ignore[invalid-method-override]
+    def mouseReleaseEvent(self, event: QMouseEvent) -> None:  # type:ignore[override]  # ty: ignore[invalid-method-override]  # pylint: disable=line-too-long
         # middle click close on tabs -- JMP 20140505
         # closes Launchpad bug: https://bugs.launchpad.net/leo-editor/+bug/1183528
         if event.button() == MouseButton.MiddleButton:
