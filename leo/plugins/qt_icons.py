@@ -13,7 +13,13 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
 
-from PyQt6.QtWidgets import QGridLayout, QPushButton, QStyle, QWidget
+from PyQt6.QtWidgets import (  # pylint: disable=no-name-in-module
+    QGridLayout,
+    QPushButton,
+    QStyle,
+    QWidget,
+)
+from PyQt6.QtGui import QIcon  # pylint: disable=no-name-in-module
 
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
@@ -59,30 +65,12 @@ class IconController:
     # @+node:ekr.20260804111629.1: *3* IconController.__init__ & reloadSettings
     def __init__(self, c: Cmdr) -> None:
         """ctor for IconController class."""
-        g.trace(c)  ###
         self.c = c
         c.qt_icons = self
         self.w: QWidget | None = None
         self.default_icons_dir = g.os_path_join(g.app.loadDir, '..', 'Icons')
         self.reloadSettings()
         # os.chdir(self.icons_dir)
-
-        # class Window(QWidget):
-        #     def __init__(self) -> None:
-        #         super().__init__()
-        #         icons = sorted([z for z in dir(QStyle.StandardPixmap) if z.startswith("SP_")])
-        #         layout = QGridLayout()
-        #         for n, name in enumerate(icons):
-        #             button = QPushButton(name)
-        #             pixmap = getattr(QStyle.StandardPixmap, name)
-        #             icon = self.style().standardIcon(pixmap)
-        #             button.setIcon(icon)
-        #             layout.addWidget(button, int(n / 4), int(n % 4))
-        #         self.setLayout(layout)
-
-        # self.w = Window()
-        # self.w.hide()
-        # g.trace(self.w)
 
     def reloadSettings(self) -> None:
         c = self.c
@@ -99,11 +87,10 @@ class IconController:
         for p in c.all_unique_positions():
             self.delete_node_icons(p)
 
-    # @+node:ekr.20260804112039.1: *3* IconController.add_icons
+    # @+node:ekr.20260804112039.1: *3* IconController.add_icons & helper
     def add_icons(self) -> None:
         """Add icons to c.p.h"""
-        c = self.c
-        g.trace(c.p.h)
+        controller = self
 
         if self.w is not None:
             self.w.show()
@@ -114,16 +101,26 @@ class IconController:
                 super().__init__()
                 icons = sorted([z for z in dir(QStyle.StandardPixmap) if z.startswith("SP_")])
                 layout = QGridLayout()
-                for n, name in enumerate(icons):
-                    button = QPushButton(name)
-                    pixmap = getattr(QStyle.StandardPixmap, name)
-                    icon = self.style().standardIcon(pixmap)
-                    button.setIcon(icon)
-                    layout.addWidget(button, int(n / 4), int(n % 4))
+                for i, icon in enumerate(icons):
+                    button = QPushButton(icon)
+
+                    def callback(button=button, icon=icon):
+                        g.trace(f"Clicked {icon=}")
+                        controller.add_icon_to_node(icon)
+
+                    button.released.connect(callback)
+                    pixmap = getattr(QStyle.StandardPixmap, icon)
+                    styled_icon = self.style().standardIcon(pixmap)
+                    button.setIcon(styled_icon)
+                    layout.addWidget(button, int(i / 4), int(i % 4))
                 self.setLayout(layout)
 
         self.w = Window()
         self.w.show()
+
+    # @+node:ekr.20260804125022.1: *4* IconController.add_icon_to_node
+    def add_icon_to_node(self, icon: QIcon) -> None:
+        g.trace(icon)
 
     # @-others
 
