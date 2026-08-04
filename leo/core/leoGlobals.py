@@ -5722,7 +5722,8 @@ def import_module(name: str, package: str = '') -> ModuleType | None:
 # @+node:ekr.20260804150348.1: ** g.Icons
 # @+node:ekr.20260804152751.1: *3* g.add_icon_to_node
 def add_icon_to_node(
-    icon_name: str,
+    icons_dir: str,  # The directory to search for icons.
+    icon_name: str,  # The name of the icon.
     p: Position,
     pixmap: Any,  # A QStyle.StandardPixmap.
 ) -> None:

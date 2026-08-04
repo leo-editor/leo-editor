@@ -67,13 +67,14 @@ def icons_add_icons(event: LeoKeyEvent | None = None) -> None:
                 pixmap = getattr(QStyle.StandardPixmap, icon_name)
 
                 def callback(
+                    icons_dir: str = icons_dir,
                     icon_name: str = icon_name,
                     pixmap: Any = pixmap,
                     *args: Any,
                     **kwargs: Any,
                 ) -> None:
                     g.trace(f"Clicked {icon_name}")
-                    g.add_icon_to_node(icon_name, c.p, pixmap)
+                    g.add_icon_to_node(icons_dir, icon_name, c.p, pixmap)
 
                 button.released.connect(callback)
                 styled_icon = self.style().standardIcon(pixmap)
