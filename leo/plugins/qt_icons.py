@@ -36,6 +36,7 @@ def init() -> bool:
         return False
     name = g.app.gui.guiName()
     if name == 'qt':
+        g.registerHandler('after-create-leo-frame', onCreate)
         g.plugin_signon(__name__)
     else:
         warning_given = True
@@ -46,7 +47,7 @@ def init() -> bool:
 # @+node:ekr.20260804103004.5: ** qt_icons: onCreate
 def onCreate(tag: str, key: dict) -> None:
     if c := key.get('c'):
-        IconController(c)  # Sets c.cleo.
+        IconController(c)  # Sets c.qt_icons
 
 
 # @+node:ekr.20260804103004.13: ** class IconController
@@ -81,6 +82,8 @@ class IconController:
     # @+node:ekr.20260804112039.1: *3* IconController.add_icons
     def add_icons(self) -> None:
         """Add icons to c.p.h"""
+        c = self.c
+        g.trace(c.p.h)
 
     # @-others
 
