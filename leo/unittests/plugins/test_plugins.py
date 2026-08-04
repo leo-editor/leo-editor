@@ -7,18 +7,10 @@
 import glob
 import os
 import re
-import time
 from leo.core import leoGlobals as g
-from leo.core.leoGui import LeoKeyEvent
 from leo.core.leoPlugins import LeoPluginsController
-from leo.core.leoTest2 import LeoUnitTest, create_app
+from leo.core.leoTest2 import LeoUnitTest
 from leo.plugins import indented_languages
-
-try:
-    from leo.core.leoQt import Qt, QtCore, QtWidgets
-except Exception:
-    g.es_exception()
-    Qt = QtCore = QtWidgets = None
 # @-<< test_plugins: imports >>
 
 
