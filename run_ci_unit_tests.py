@@ -20,9 +20,8 @@ try:
         sys.stdout.flush()
         os._exit(1)
     print(f"{tag}: {n} unit tests passed.")
-    # os._exit, not sys.exit: skips Python/Qt interpreter finalization, which
-    # can segfault during Qt's atexit cleanup on some platforms after all
-    # tests have already passed, turning a green run into a false CI failure.
+    # os._exit, not sys.exit: avoids a Qt atexit segfault that could
+    # otherwise report this passing run as a CI failure.
     sys.stdout.flush()
     os._exit(0)
 except Exception:
