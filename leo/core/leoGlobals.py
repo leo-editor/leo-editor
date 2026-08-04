@@ -5719,6 +5719,48 @@ def import_module(name: str, package: str = '') -> ModuleType | None:
     return m
 
 
+# @+node:ekr.20260804150348.1: ** g.Icons
+# @+node:ekr.20260804152751.1: *3* g.add_icon_to_node
+def add_icon_to_node(icon_name: str, p: Position) -> None:
+    """Add an icon to p."""
+    # from PyQt6.QtGui import QIcon  # pylint: disable=no-name-in-module
+
+    # assert isinstance(icon, QIcon), f"{icon=} {p.v.h}"
+    g.trace(icon_name)
+    g.trace(p.v.h)
+
+    v = p.v
+
+    # From ec.insertIcon
+
+    aList: list[dict[str, Value]] = []
+    xoffset = 2
+    for path in paths:
+        xoffset = xxx.appendImageDictToList(aList, path, xoffset)
+
+    ### aList2 = self.getIconList(p.v)
+    aList2 = []
+    if hasattr(v, 'unknownAttributes'):
+        dict_list = [dict(i) for i in v.u.get('icons', [])]
+        for i in dict_list:
+            i['on'] = 'VNode'
+
+        # # # aList2.extend(aList)
+        # # # self.setIconList(p, aList2)
+
+
+# @+node:ekr.20260804150402.1: *3* g.delete_node_icons
+def delete_node_icons(p: Position) -> None:
+    """Delete all icons from p.v."""
+    v = p.v
+    c = v.context
+    if hasattr(v, 'unknownAttributes') and 'icons' in v.unknownAttributes:
+        del v.unknownAttributes['icons']
+        v._p_changed = True
+        p.setDirty()
+        c.setChanged()
+
+
 # @+node:ekr.20140711071454.17650: ** g.Indices, Strings, Unicode & Whitespace
 # @+node:ekr.20140711071454.17647: *3* g.Indices
 # @+node:ekr.20050314140957: *4* g.convertPythonIndexToRowCol

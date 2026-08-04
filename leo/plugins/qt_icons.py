@@ -66,7 +66,6 @@ class IconController:
     def __init__(self, c: Cmdr) -> None:
         """ctor for IconController class."""
         self.c = c
-        c.qt_icons = self
         self.w: QWidget | None = None
         self.default_icons_dir = g.os_path_join(g.app.loadDir, '..', 'Icons')
         self.reloadSettings()
@@ -76,16 +75,6 @@ class IconController:
         c = self.c
         c.registerReloadSettings(self)
         self.icons_dir = c.config.getString('qt-icons-directory') or self.default_icons_dir
-
-    # @+node:ekr.20260804111707.1: *3* IconController.delete_node_icons & delete_all_icons
-    def delete_node_icons(self, p: Position) -> None:
-        """Delete all icons attached to p."""
-
-    def delete_all_icons(self) -> None:
-        """Delete all icons in the outline."""
-        c = self.c
-        for p in c.all_unique_positions():
-            self.delete_node_icons(p)
 
     # @+node:ekr.20260804112039.1: *3* IconController.add_icons & helper
     def add_icons(self) -> None:
@@ -126,30 +115,59 @@ class IconController:
 
 
 # @+node:ekr.20260804111455.1: ** 'icons-add-icons'
+window: QWidget | None = None
+
+
 @g.command('icons-add-icons')
 def icons_add_icons(event: LeoKeyEvent) -> None:
     """Attach icons to c.p"""
-    c = event['c']
-    g.trace(c, c.qt_icons)
-    if hasattr(c, 'qt_icons'):
-        c.qt_icons.add_icons()
+    global window
+    c = event['c'] if event else None
+    if not c:
+        return
+    if window is not None:
+        window.show()
+        return
+
+    class Window(QWidget):
+        def __init__(self):
+            super().__init__()
+            icon_names = sorted([z for z in dir(QStyle.StandardPixmap) if z.startswith("SP_")])
+            layout = QGridLayout()
+            for i, icon_name in enumerate(icon_names):
+                button = QPushButton(icon_name)
+                pixmap = getattr(QStyle.StandardPixmap, icon_name)
+
+                def callback(icon=icon):
+                    g.trace(f"Clicked {icon_name}")
+                    g.add_icon_to_node(icon_name, pixmap, c.p)
+
+                button.released.connect(callback)
+                styled_icon = self.style().standardIcon(pixmap)
+                button.setIcon(styled_icon)
+                layout.addWidget(button, int(i / 4), int(i % 4))
+            self.setLayout(layout)
+
+    window = Window()
+    window.show()
 
 
 # @+node:ekr.20260804111220.1: ** 'icons-delete' & 'icons-delete-all'
 @g.command('icons-delete-icons')
-def icons_delete_node_icons(event: LeoKeyEvent) -> None:
+def icons_delete_node_icons(event: LeoKeyEvent | None = None) -> None:
     """Delete all icons attached to c.p"""
-    c = event['c']
-    if hasattr(c, 'qt_icons'):
-        c.qt_icons.delete_node_icons(c.p)
+    c = event['c'] if event else None
+    if c:
+        g.delete_node_icons(c.p)
 
 
 @g.command('icons-delete-all')
-def icons_delete_all_icons(event: LeoKeyEvent) -> None:
+def icons_delete_all_icons(event: LeoKeyEvent | None = None) -> None:
     """Delete all icons in the outline."""
-    c = event['c']
-    if hasattr(c, 'qt_icons'):
-        c.qt_icons.delete_all_icons()
+    c = event['c'] if event else None
+    if c:
+        for p in c.all_unique_positions():
+            g.delete_node_icons(p)
 
 
 # @-others
