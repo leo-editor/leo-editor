@@ -364,11 +364,17 @@ class TestTodo(LeoUnitTest):
         x.local_clear()
         todoQtUI = todo.todoQtUI(x)
         x.set_due_date(todoQtUI.UI.dueDateEdit.date())
-        x.set_time_req(50)
         x.set_progress(100)
+        x.set_time_req(50)
+        x.set_progress()
+        x.set_time_req('')
         x.show_times(show=True)
         x.show_times(show=False)
         x.recalc_time(p)
+        x.clear_node()
+        x.clear_subtree()
+        x.clear_all()
+        x.progress_clear()
 
         # Last.
         g.app.pluginsController = LeoPluginsController()

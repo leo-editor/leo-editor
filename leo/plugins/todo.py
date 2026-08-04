@@ -841,27 +841,25 @@ class todoController:
     # @+node:tbrown.20090119215428.31: *4* todoController.progress_clear
     @redrawer
     @projectChanger
-    def progress_clear(self, v: VNode = None) -> None:
-        self.setat(self.c.currentPosition().v, 'progress', '')
+    def progress_clear(self) -> None:
+        self.setat(self.c.p.v, 'progress', '')
 
     # @+node:tbrown.20090119215428.32: *4* todoController.set_progress
     @redrawer
     @projectChanger
-    def set_progress(self, val: str | int) -> None:
+    def set_progress(self, val: str | int = '') -> None:
         c = self.c
-        if val is not None:
-            self.setat(c.p.v, 'progress', val)
+        self.setat(c.p.v, 'progress', val)
 
     # @+node:tbrown.20090119215428.33: *4* todoController.set_time_req
     @redrawer
     @projectChanger
     def set_time_req(self, val: str | int = '') -> None:
         c = self.c
-        if val:
-            v = c.p.v
-            self.setat(v, 'time_req', val)
-            if self.getat(v, 'progress') == '':
-                self.setat(v, 'progress', 0)
+        v = c.p.v
+        self.setat(v, 'time_req', val)
+        if self.getat(v, 'progress') == '':
+            self.setat(v, 'progress', 0)
 
     # @+node:tbrown.20090119215428.34: *4* todoController.show_times
     @redrawer
