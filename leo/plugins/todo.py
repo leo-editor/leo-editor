@@ -68,15 +68,17 @@ import os
 import re
 import datetime as dt
 import time
+from types import NoneType
 from typing import Any, TYPE_CHECKING
 from leo.core import leoGlobals as g
+from leo.core.leoNodes import Position
 from leo.core.leoQt import Qt, QtCore, QtGui, QtWidgets, uic
 from leo.core.leoQt import Checked, Unchecked
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
-    from leo.core.leoGui import LeoKeyEvent as Event
-    from leo.core.leoNodes import Position, VNode
+    from leo.core.leoGui import LeoKeyEvent
+    from leo.core.leoNodes import VNode
 
 # May raise g.UiTypeException, caught by the plugins manager.
 g.assertUi('qt')
@@ -134,7 +136,7 @@ if 1:
     class todoQtUI(QtWidgets.QWidget):
         # @+others
         # @+node:ekr.20111118104929.10204: *3* ctor (todoQtUI(QWidget))
-        def __init__(self, owner: Any, logTab: bool = True) -> None:
+        def __init__(self, owner: todoController, logTab: bool = True) -> None:
             self.owner = owner
             super().__init__()
             uiPath = g.os_path_join(g.app.leoDir, 'plugins', 'ToDo.ui')
@@ -145,11 +147,11 @@ if 1:
             if theme:
                 testPath = g.os_path_join(g.app.homeLeoDir, 'themes', theme, 'Icons', 'cleo')
                 if g.os_path_exists(testPath):
-                    iconPath = g.os_path_dirname(testPath)
+                    iconPath = g.os_path_dirname(testPath)  # pragma: no cover
                 else:
                     testPath = g.os_path_join(g.app.loadDir, '..', 'themes', theme, 'Icons', 'cleo')
                     if g.os_path_exists(testPath):
-                        iconPath = g.os_path_dirname(testPath)
+                        iconPath = g.os_path_dirname(testPath)  # pragma: no cover
                     else:
                         iconPath = g.os_path_join(g.app.leoDir, 'Icons')
             else:
@@ -224,13 +226,13 @@ if 1:
                 # w.property() seems to give QVariant in python 2.x and int in 3.x!?
                 try:
                     priority = int(w.property('priority'))
-                except (TypeError, ValueError):
+                except (TypeError, ValueError):  # pragma: no cover
                     try:
                         priority, ok = w.property('priority').toInt()
                     except (TypeError, ValueError):
                         priority = -1
 
-                def setter(priority: int = priority) -> None:
+                def setter(priority: int = priority) -> None:  # pragma: no cover
                     o.setPri(priority)
 
                 w.clicked.connect(lambda checked, setter=setter: setter())
@@ -289,7 +291,7 @@ if 1:
             )
 
             if self.owner.c.config.getBool("todo-compact-interface"):
-                self.UI.frmDetails.setVisible(False)
+                self.UI.frmDetails.setVisible(False)  # pragma: no cover
 
             self.UI.butNext.clicked.connect(lambda checked: self.owner.c.selectVisNext())
             self.UI.butNextTodo.clicked.connect(lambda checked: self.owner.find_todo())
@@ -319,9 +321,9 @@ if 1:
                 edit.blockSignals(True)
                 toggle.blockSignals(True)
                 if value:
-                    getattr(edit, method)(value)
+                    getattr(edit, method)(value)  # pragma: no cover
                     # edit.setEnabled(True)
-                    toggle.setChecked(True)
+                    toggle.setChecked(True)  # pragma: no cover
                 else:
                     getattr(edit, method)(default)
                     toggle.setChecked(False)
@@ -414,9 +416,9 @@ class todoController:
         self.menuicons: dict[int | str, QtGui.QIcon] = {}
         self.recentIcons: list[int | str] = []  # PR #4840: was list[QtGui.QIcon] (!)
         self.redrawLevels = 0
-        self._widget_to_style = None  # see updateStyle()
+        self._widget_to_style: Any | None = None  # see updateStyle()
         self.reloadSettings()
-        self.handlers = [
+        self.handlers: list[tuple[str, Any]] = [
             ("close-frame", self.close),
             ('select3', self.updateUI),
             ('save2', self.loadAllIcons),
@@ -451,15 +453,8 @@ class todoController:
 
         Add labels and tooltips for all buttons.
         """
-        # Patch the buttons only if the pyqt version is greater than 5.12.
-        from leo.core.leoQt import qt_version
-
-        size = QtCore.QSize(16, 16)
-        qt_version = [int(z) for z in qt_version.split('.')]  # type:ignore
-        if qt_version[1] <= 12:  # type:ignore
-            return
         ui = self.ui.UI
-
+        size = QtCore.QSize(16, 16)
         for i in range(10):
             button = getattr(ui, f"butPri{i}")
             path = g.finalize_join(g.app.loadDir, '..', 'Icons', "cleo", f"pri{i}.png")
@@ -492,38 +487,39 @@ class todoController:
             button.setIconSize(size)
             button.setToolTip(tooltip)
 
-    # @+node:tbrown.20090522142657.7894: *3* todoController.__del__
-    def __del__(self) -> None:
-        for i in self.handlers:
-            g.unregisterHandler(i[0], i[1])  # type:ignore
-
     # @+node:tbnorth.20170925093004.1: *3* todoController._date & _time
-    def _date(self, timestamp: str) -> dt.date | None:
+    def _date(self, timestamp: str = '') -> dt.date | None:
         """_date - convert a string to a date
 
         :param timestamp: date to convert
         :return: datetime.date or None.
         """
         if not timestamp.strip():
-            return None  # Was ''
-        return dt.datetime.fromisoformat(timestamp).date()
+            return None  # pragma: no cover
+        try:
+            return dt.datetime.fromisoformat(timestamp).date()
+        except ValueError:
+            return None  # pragma: no cover
 
-    def _time(self, timestamp: str) -> dt.time | None:
+    def _time(self, timestamp: str = '') -> dt.time | None:
         """_time - convert a string to a time
 
         :param timestamp: time to convert
         :return: datetime.time or None.
         """
         if not timestamp.strip():
-            return None  # Was ''
-        return dt.datetime.fromisoformat(timestamp).time()
+            return None  # pragma: no cover
+        try:
+            return dt.datetime.fromisoformat(timestamp).time()
+        except ValueError:
+            return None  # pragma: no cover
 
     # @+node:tbrown.20090630144958.5319: *3* todoController.addPopupMenu
     def addPopupMenu(self, c: Cmdr, p: Position, menu: QtWidgets.QMenu) -> None:
 
         assert isinstance(menu, QtWidgets.QMenu)
 
-        def rnd(x: float) -> str:
+        def rnd(x: float) -> str:  # pragma: no cover
             return re.sub('.0$', '', '%.1f' % x)
 
         taskmenu = menu.addMenu("Task")
@@ -605,6 +601,7 @@ class todoController:
 
         # pylint: disable=no-self-argument
         def project_changer_callback(self, *args: Any, **kargs: Any) -> Any:
+            # g.trace(f"{fn=} {g.callers()=}")
             ans = fn(self, *args, **kargs)  # pylint: disable=not-callable
             self.update_project()
             return ans
@@ -628,10 +625,10 @@ class todoController:
         if self.icon_order == 'pri-first':
             iterations = ['priority', 'progress', 'duedate']
         else:
-            iterations = ['progress', 'priority', 'duedate']
+            iterations = ['progress', 'priority', 'duedate']  # pragma: no cover
         if clear:
             iterations = []
-        today = dt.datetime.now(tz=dt.timezone.utc)
+        today = dt.datetime.now(tz=dt.timezone.utc).date()  # PR #4841
         for which in iterations:
             if which == 'priority':
                 pri = self.getat(p.v, 'priority')
@@ -666,7 +663,10 @@ class todoController:
             elif which == 'duedate':
                 duedate = self.getat(p.v, 'duedate')
                 nextworkdate = self.getat(p.v, 'nextworkdate')
-                icondate = min(duedate or NO_TIME, nextworkdate or NO_TIME)
+                icondate = min(  # PR #4841
+                    duedate or NO_TIME,
+                    nextworkdate.date() if nextworkdate else NO_TIME
+                )  # fmt: skip
                 if icondate != NO_TIME:
                     if icondate < today:
                         icon = "date_past.png"
@@ -676,25 +676,21 @@ class todoController:
                         icon = "date_future.png"
                     # Append the icon to the icons list.
                     editCommands.appendImageDictToList(
-                        icons,
-                        g.os_path_join('cleo', icon),
-                        2,
+                        icons, g.os_path_join('cleo', icon), 2,
                         on='vnode',
                         cleoIcon='1',
                         where=self.prog_location,
-                    )
+                    )  # fmt: skip
         # Set the p.v.u for the icons.
         editCommands.setIconList(p, icons)
         p.v.updateIcon()  # #2870.
 
     # @+node:tbrown.20090119215428.17: *3* todoController.close
-    def close(self, tag: str, key: Any) -> None:
+    def close(self, tag: str, d: dict) -> None:
         "unregister handlers on closing commander"
-
-        if self.c != key['c']:
-            return  # not our problem
-        for i in self.handlers:
-            g.unregisterHandler(i[0], i[1])  # type:ignore
+        if self.c == d.get('c'):
+            for tag, func in self.handlers:
+                g.unregisterHandler(tag, func)
 
     # @+node:tbrown.20090119215428.18: *3* todoController.showHelp
     def showHelp(self) -> None:
@@ -747,13 +743,15 @@ class todoController:
     def setat(self, node: VNode, attrib: Any, val: Any) -> None:
         "new attribute setter"
 
+        c = self.c
+
         if attrib in self._datetime_fields and isinstance(val, (dt.date, dt.time, dt.datetime)):
             val = val.isoformat()
 
         if 'annotate' in node.u and 'src_unl' in node.u['annotate']:
             if not hasattr(node, '_cached_src_vnode') or not node._cached_src_vnode:
                 src_unl = node.u['annotate']['src_unl']
-                c1 = self.c
+                c1 = c
                 p1 = c1.vnode2position(node)
                 c2, p2 = self.unl_to_pos(src_unl, p1)
                 if p2 is None:
@@ -796,38 +794,31 @@ class todoController:
             attrib not in node.unknownAttributes["annotate"]
             or node.unknownAttributes["annotate"][attrib] != val
         ):
-            # PR #4840: Don't dirty the node.
-            self.c.setChanged()
+            c.setChanged()
+            node.setDirty()
 
         node.unknownAttributes["annotate"][attrib] = val
 
         if isDefault:  # check if all default, if so drop dict.
-            self.dropEmpty(node, dictOk=True)
+            self.dropEmpty(node)  ###, dictOk=True)
 
     # @+node:tbrown.20090119215428.25: *4* todoController.dropEmpty
-    def dropEmpty(self, node: VNode, dictOk: bool = False) -> bool:
+    def dropEmpty(self, v: VNode) -> bool:
         if (
-            dictOk
-            or hasattr(node, 'unknownAttributes')
-            and "annotate" in node.unknownAttributes
-            and isinstance(node.unknownAttributes["annotate"], dict)
+            hasattr(v, 'unknownAttributes')
+            and "annotate" in v.unknownAttributes
+            and isinstance(v.unknownAttributes["annotate"], dict)
         ):
             isDefault = True
-            for ky, vl in node.unknownAttributes["annotate"].items():
-                if not self.testDefault(ky, vl):
+            for key, value in v.unknownAttributes["annotate"].items():
+                if not self.testDefault(key, value):
                     isDefault = False
                     break
             if isDefault:  # no non-defaults seen, drop the whole cleo dictionary
-                del node.unknownAttributes["annotate"]
+                del v.unknownAttributes["annotate"]
                 self.c.setChanged()
                 return True
         return False
-
-    # @+node:tbrown.20090119215428.26: *4* todoController.safe_del
-    def safe_del(self, d: dict[str, Any], k: Any) -> None:
-        "delete a key from a dict. if present"
-        if k in d:
-            del d[k]
 
     # @+node:tbrown.20090119215428.27: *3* todoController:drawing...
     # @+node:tbrown.20090119215428.29: *4* todoController.clear_*
@@ -856,38 +847,29 @@ class todoController:
     # @+node:tbrown.20090119215428.31: *4* todoController.progress_clear
     @redrawer
     @projectChanger
-    def progress_clear(self, v: VNode = None) -> None:
-        self.setat(self.c.currentPosition().v, 'progress', '')
+    def progress_clear(self) -> None:
+        self.setat(self.c.p.v, 'progress', '')
 
     # @+node:tbrown.20090119215428.32: *4* todoController.set_progress
     @redrawer
     @projectChanger
-    def set_progress(self, p: Position = None, val: Any = None) -> None:  # Hard to annotate.
-        if p is None:
-            p = self.c.currentPosition()
-        v = p.v
-
-        if val is None:
-            return
-
-        self.setat(v, 'progress', val)
+    def set_progress(self, val: str | int = '') -> None:
+        c = self.c
+        self.setat(c.p.v, 'progress', val)
 
     # @+node:tbrown.20090119215428.33: *4* todoController.set_time_req
     @redrawer
     @projectChanger
-    def set_time_req(self, p: Position = None, val: Any = None) -> None:  # Hard to annotate.
-        if p is None:
-            p = self.c.currentPosition()
-        v = p.v
-        if val is None:
-            return
+    def set_time_req(self, val: str | int = '') -> None:
+        c = self.c
+        v = c.p.v
         self.setat(v, 'time_req', val)
         if self.getat(v, 'progress') == '':
             self.setat(v, 'progress', 0)
 
     # @+node:tbrown.20090119215428.34: *4* todoController.show_times
     @redrawer
-    def show_times(self, p: Position = None, show: bool = False) -> None:
+    def show_times(self, p: Position = None, *, show: bool = False) -> None:
         def rnd(x: float) -> str:
             return re.sub('.0$', '', '%.1f' % x)
 
@@ -902,7 +884,7 @@ class todoController:
             pr = self.getat(nd.v, 'progress')
             try:
                 pr = float(pr)
-            except Exception:
+            except Exception:  # pragma: no cover
                 pr = ''
             if tr != '' or pr != '':
                 ans = ' <'
@@ -927,16 +909,16 @@ class todoController:
                 self.loadIcons(nd)  # update progress icon
 
     # @+node:tbrown.20090119215428.35: *4* todoController.recalc_time
-    def recalc_time(self, p: Position = None, clear: bool = False) -> tuple[str, str]:
-        if p is None:
-            p = self.c.currentPosition()
+    def recalc_time(self, p: Position, clear: Position | None = None) -> tuple[str, str]:
+        assert isinstance(p, Position), repr(p)
+        assert isinstance(clear, (Position, NoneType)), repr(clear)
         v = p.v
         time_totl: str | None = None
         time_done: str | None = None
 
         # get values from children, if any
         for cn in p.children():
-            ans = self.recalc_time(cn.copy(), clear)
+            ans = self.recalc_time(cn, clear)
             if time_totl is None:
                 time_totl = ans[0]
             else:
@@ -980,28 +962,28 @@ class todoController:
     # @+node:tbrown.20090119215428.36: *4* todoController.clear_time_req
     @redrawer
     @projectChanger
-    def clear_time_req(self, p: Position = None) -> None:
-        if p is None:
-            p = self.c.currentPosition()
-        v = p.v
-        self.setat(v, 'time_req', '')
+    def clear_time_req(self) -> None:
+        c = self.c
+        self.setat(c.p.v, 'time_req', '')
 
     # @+node:tbrown.20090119215428.37: *4* todoController.update_project
     @redrawer
     def update_project(self, p: Position = None) -> None:
-        """Find highest parent with '@project' in headline and run recalc_time
-        and maybe show_times (if headline has '@project time')"""
+        """
+        Find highest parent with '@project' in headline and run recalc_time
+        and maybe show_times (if headline has '@project time')
+        """
 
         if p is None:
             p = self.c.currentPosition()
-        project = None
+        project: Position | None = None
 
         for nd in p.self_and_parents():
             if nd.headString().find('@project') > -1:
                 project = nd.copy()
 
         if project:
-            self.recalc_time(project)
+            self.recalc_time(p, project)
             if project.headString().find('@project time') > -1:
                 self.show_times(project, show=True)
             else:
@@ -1011,25 +993,24 @@ class todoController:
 
     # @+node:tbrown.20090119215428.38: *4* todoController.local_recalc
     @redrawer
-    def local_recalc(self, p: Position = None) -> None:
-        self.recalc_time(p)
+    def local_recalc(self) -> None:
+        self.recalc_time(self.c.p)
 
     # @+node:tbrown.20090119215428.39: *4* todoController.local_clear
     @redrawer
-    def local_clear(self, p: Position = None) -> None:
-        self.recalc_time(p, clear=True)
+    def local_clear(self) -> None:
+        self.recalc_time(self.c.p)
 
     # @+node:tbrown.20110213091328.16233: *4* todoController.set_due_date
     def set_due_date(
         self,
-        p: Position = None,
-        val: Any = None,  # Hard to annotate.
+        val: QtCore.QDate | None = None,
         mode: str = 'adjust',
         field: str = 'duedate',
     ) -> None:
         "mode: `adjust` for change in time, `check` for checkbox toggle"
-        if p is None:
-            p = self.c.currentPosition()
+        c = self.c
+        p = c.p
         v = p.v
 
         if field == 'duedate':
@@ -1052,14 +1033,13 @@ class todoController:
     # @+node:tbrown.20110213091328.16235: *4* todoController.set_due_time
     def set_due_time(
         self,
-        p: Position = None,
-        val: Any = None,  # Hard to annotate.
+        val: QtCore.QTime | None = None,
         mode: str = 'adjust',
         field: str = 'duetime',
     ) -> None:
         "mode: `adjust` for change in time, `check` for checkbox toggle"
-        if p is None:
-            p = self.c.currentPosition()
+        c = self.c
+        p = c.p
         v = p.v
 
         if field == 'duetime':
@@ -1271,7 +1251,7 @@ class todoController:
 
                 x0 = [int(i) for i in x0.replace(',', ' ').split()]
             # if int(i) in self.todo_priorities]
-            except Exception:
+            except Exception:  # pragma: no cover
                 g.es('Not understood, no action')
                 return
             if not x0:
@@ -1369,13 +1349,13 @@ class todoController:
         nwd = self.getat(v, 'nextworkdate')
         due = self.getat(v, 'duedate')
         if hasattr(self.ui.UI, "frmDates"):
-            w = self.ui.UI.frmDates
-            if nwd and due and str(nwd) > str(due):
-                w.setProperty('style_class', 'tododate_error')
-            else:
-                w.setProperty('style_class', '')
-            # update style on this widget on idle, see updateStyle()
-            self._widget_to_style = (w, time.time())
+            if w := self.ui.UI.frmDates:
+                if nwd and due and str(nwd) > str(due):
+                    w.setProperty('style_class', 'tododate_error')
+                else:
+                    w.setProperty('style_class', '')
+                # update style on this widget on idle, see updateStyle()
+                self._widget_to_style = (w, time.time())
 
         self.ui.setProgress(int(self.getat(v, 'progress') or 0))
         self.ui.setTime(float(self.getat(v, 'time_req') or 0))
@@ -1391,27 +1371,18 @@ class todoController:
         self.ui.setNextWorkTime(self.getat(v, 'nextworktime'))
         created = self.getat(v, 'created')
         if created and isinstance(created, dt.datetime) and created.year >= 1900:
+            created = created.date()  # PR #4841
             self.ui.UI.createdTxt.setText(created.strftime("%d %b %y"))
             self.ui.UI.createdTxt.setToolTip(created.strftime("Created %H:%M %d %b %Y"))
         else:
-            # .strftime doesn't work here! This has has happened...
-            try:
-                gdate = self.c.p.v.gnx.split('.')[1][:12]
-                created = dt.datetime.strptime(gdate, '%Y%m%d%H%M').replace(tzinfo=dt.timezone.utc)
-                if created.year < 1900:
-                    created = None
-            except Exception:
-                created = None
-            if created:
-                self.ui.UI.createdTxt.setText(created.strftime("Created %d %b %Y"))
-                self.ui.UI.createdTxt.setToolTip(created.strftime("gnx created %H:%M %d %b %Y"))
-            else:
-                self.ui.UI.createdTxt.setText("")
+            created = dt.datetime.now(tz=dt.timezone.utc).date()
+            self.ui.UI.createdTxt.setText(created.strftime("Created %d %b %Y"))
+            self.ui.UI.createdTxt.setToolTip(created.strftime("gnx created %H:%M %d %b %Y"))
 
         # Update the label.
         h = self.c and self.c.p and self.c.p.h
         due = self.getat(v, 'duedate')
-        now = dt.datetime.now(tz=dt.timezone.utc)
+        now = dt.datetime.now(tz=dt.timezone.utc).date()  # PR #4841
         ago = (now - created).days if created else 0
         if due:
             days = (due - now).days
@@ -1457,10 +1428,10 @@ class todoController:
 
 # @+node:tbrown.20170928065405.1: ** command fix datetime
 @g.command('todo-fix-datetime')
-def todo_fix_datetime(event: Event) -> None:
+def todo_fix_datetime(event: LeoKeyEvent) -> None:
     c = event['c']
-    if not hasattr(c, 'cleo'):  # 2856.
-        return
+    if not hasattr(c, 'cleo'):
+        return  # pragma: no cover
     changed = 0
     for nd in c.all_unique_nodes():
         for key in c.cleo._datetime_fields:
@@ -1474,10 +1445,10 @@ def todo_fix_datetime(event: Event) -> None:
 
 # @+node:tbrown.20100701093750.13800: ** command inc/dec priority
 @g.command('todo-dec-pri')
-def todo_dec_pri(event: Event, direction: int = 1) -> None:
+def todo_dec_pri(event: LeoKeyEvent, direction: int = 1) -> None:
     c = event['c']
-    if not hasattr(c, 'cleo'):  # 2856.
-        return
+    if not hasattr(c, 'cleo'):
+        return  # pragma: no cover
     p = c.p
     priority = int(c.cleo.getat(p.v, 'priority'))
 
@@ -1490,24 +1461,23 @@ def todo_dec_pri(event: Event, direction: int = 1) -> None:
 
     priority = c.cleo.setPri(priority)
     c.redraw()
-    # c.doCommandByName("todo-inc-pri")
 
 
 @g.command('todo-inc-pri')
-def todo_inc_pri(event: Event) -> None:
+def todo_inc_pri(event: LeoKeyEvent) -> None:
     todo_dec_pri(event, direction=-1)
 
 
-for cmd, method in [
-    ("todo-children-todo", "childrenTodo"),
-    ("todo-find-todo", "find_todo"),
-]:
+# @+node:ekr.20260803125533.1: ** command find-todo
+@g.command('find-todo')
+@g.command('todo-find')
+def find_todo(event: LeoKeyEvent) -> None:
+    c = event['c']
+    if hasattr(c, 'cleo'):
+        c.cleo.find_todo(c.p)
+        c.redraw()
 
-    def f(event: Event, method: str = method) -> None:
-        getattr(event.c.cleo, method)()
-        event.c.redraw()
 
-    g.command(cmd)(f)
 # @-others
 # @@language python
 # @@tabwidth -4
