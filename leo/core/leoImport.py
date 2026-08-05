@@ -2457,7 +2457,7 @@ class ZimImportController:
             # mypy: error: "str" has no attribute "decode"; maybe "encode"?  [attr-defined]
             path = [
                 g.os_path_abspath(g.os_path_join(pathToZim, unquote(result[2]).decode('utf-8')))
-            ]  # type:ignore
+            ]
             results.append((level, name, path))
         return results
 

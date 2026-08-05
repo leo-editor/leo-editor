@@ -3742,7 +3742,7 @@ class QScintillaColorizer(BaseColorizer):
         if aList:
             for z in [s.split(',') for s in aList]:  # #4753
                 if len(z) == 2:
-                    color, style = z  # type:ignore
+                    color, style = z
                     table.append((color.strip(), style.strip()))
                 else:
                     g.trace(f"entry: {z}")

@@ -2,13 +2,16 @@
 # @+node:ekr.20210907081548.1: * @file ../unittests/plugins/test_plugins.py
 """General tests of plugins."""
 
+# @+<< test_plugins: imports >>
+# @+node:ekr.20260802082604.1: ** << test_plugins: imports >>
 import glob
 import os
 import re
 from leo.core import leoGlobals as g
-from leo.core.leoTest2 import LeoUnitTest
 from leo.core.leoPlugins import LeoPluginsController
+from leo.core.leoTest2 import LeoUnitTest
 from leo.plugins import indented_languages
+# @-<< test_plugins: imports >>
 
 
 # @+others
@@ -70,6 +73,21 @@ class TestPlugins(LeoUnitTest):
         files = [g.os_path_abspath(z) for z in files]
         return sorted(files)
 
+    # @+node:ekr.20210909165720.1: *3* TestPlugins.slow_test_import_all_plugins
+    def slow_test_import_of_all_plugins(self):  # pragma: no cover
+        # This works, but is slow.
+        files = self.get_plugins()
+        for filename in files:
+            plugin_module = g.shortFileName(filename)[:-3]
+            try:
+                exec(f"import leo.plugins.{plugin_module}")
+            except g.UiTypeException:
+                pass
+            except AttributeError:
+                pass
+            except ImportError:
+                pass
+
     # @+node:ekr.20210907081455.2: *3* TestPlugins.test_all_plugins_have_top_level_init_method
     def test_all_plugins_have_top_level_init_method(self):
         # Ensure all plugins have top-level init method *without* importing them.
@@ -79,29 +97,6 @@ class TestPlugins(LeoUnitTest):
                 contents = f.read()
             s = g.toUnicode(contents)
             assert 'def init()' in s, repr(fn)
-
-    # @+node:ekr.20210907081455.3: *3* TestPlugins.test_all_qt_plugins_call_g_assertUi_qt_
-    def test_all_qt_plugins_call_g_assertUi_qt_(self):
-        files = self.get_plugins()
-        excludes = (
-            # Special cases, handling Qt imports in unusual ways.
-            'backlink.py',  # Qt code is optional, disabled with module-level guard.
-            'leoscreen.py',  # Qt imports are optional.
-            'mod_scripting.py',
-            'nodetags.py',  # #2031: Qt imports are optional.
-            'pyplot_backend.py',  # Not a real plugin.
-            'qt_layout.py',  # Not a real plugin.
-        )
-        pattern = re.compile(r'\b(QtCore|QtGui|QtWidgets)\b')  # Don't search for Qt.
-        for fn in files:
-            if g.shortFileName(fn) in excludes:
-                continue
-            with open(fn, 'rb') as f:
-                contents = f.read()
-            s = g.toUnicode(contents)
-            if not re.search(pattern, s):
-                continue
-            self.assertTrue(re.search(r"g\.assertUi\(['\"]qt['\"]\)", s), msg=fn)
 
     # @+node:ekr.20210909161328.2: *3* TestPlugins.test_c_vnode2position
     def test_c_vnode2position(self):
@@ -135,20 +130,28 @@ class TestPlugins(LeoUnitTest):
         for filename in files:
             self.check_syntax(filename)
 
-    # @+node:ekr.20210909165720.1: *3* TestPlugins.slow_test_import_all_plugins
-    def slow_test_import_of_all_plugins(self):  # pragma: no cover
-        # This works, but is slow.
+    # @+node:ekr.20210907081455.3: *3* TestPlugins.test_all_qt_plugins_call_g_assertUi_qt_
+    def test_all_qt_plugins_call_g_assertUi_qt_(self):
         files = self.get_plugins()
-        for filename in files:
-            plugin_module = g.shortFileName(filename)[:-3]
-            try:
-                exec(f"import leo.plugins.{plugin_module}")
-            except g.UiTypeException:
-                pass
-            except AttributeError:
-                pass
-            except ImportError:
-                pass
+        excludes = (
+            # Special cases, handling Qt imports in unusual ways.
+            'backlink.py',  # Qt code is optional, disabled with module-level guard.
+            'leoscreen.py',  # Qt imports are optional.
+            'mod_scripting.py',
+            'nodetags.py',  # #2031: Qt imports are optional.
+            'pyplot_backend.py',  # Not a real plugin.
+            'qt_layout.py',  # Not a real plugin.
+        )
+        pattern = re.compile(r'\b(QtCore|QtGui|QtWidgets)\b')  # Don't search for Qt.
+        for fn in files:
+            if g.shortFileName(fn) in excludes:
+                continue
+            with open(fn, 'rb') as f:
+                contents = f.read()
+            s = g.toUnicode(contents)
+            if not re.search(pattern, s):
+                continue
+            self.assertTrue(re.search(r"g\.assertUi\(['\"]qt['\"]\)", s), msg=fn)
 
     # @-others
 

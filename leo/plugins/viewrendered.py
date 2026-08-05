@@ -260,7 +260,7 @@ try:
 
     got_markdown = True
 except ImportError:
-    got_markdown = False  # type:ignore
+    got_markdown = False
 
 # nbformat (@jupyter) support.
 try:

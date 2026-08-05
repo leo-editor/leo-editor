@@ -95,7 +95,7 @@ def init():
 
 
 # @+node:tbrown.20130813134319.5691: ** class CKEEditor
-class CKEEditor(QtWidgets.QWidget):  # type:ignore
+class CKEEditor(QtWidgets.QWidget):
     # @+others
     # @+node:tbrown.20130813134319.7225: *3* __init__ & reloadSettings (CKEEditor)
     def __init__(self, *args, **kwargs):

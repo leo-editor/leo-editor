@@ -117,7 +117,7 @@ def showColorNames(event: LeoKeyEvent | None = None) -> None:
             sheet = template % (color, color)
             box.setStyleSheet(sheet)
             g.es("copied to clipboard:", color)
-            QtWidgets.QApplication.clipboard().setText(color)  # type:ignore
+            QtWidgets.QApplication.clipboard().setText(color)
 
         box.activated.connect(onActivated)
         color_db = leoColor.leo_color_database
@@ -147,7 +147,7 @@ def showColorWheel(self: Any, event: LeoKeyEvent | None = None) -> None:
     picker = QtWidgets.QColorDialog()
     in_color_setting = p.h.startswith('@color ')
     try:
-        text = QtWidgets.QApplication.clipboard().text()  # type:ignore
+        text = QtWidgets.QApplication.clipboard().text()
         if in_color_setting:
             text = p.h.split('=', 1)[1].strip()
         color = QtGui.QColor(text)
@@ -165,7 +165,7 @@ def showColorWheel(self: Any, event: LeoKeyEvent | None = None) -> None:
     else:
         text = picker.selectedColor().name()
         g.es("copied to clipboard:", text)
-        QtWidgets.QApplication.clipboard().setText(text)  # type:ignore
+        QtWidgets.QApplication.clipboard().setText(text)
 
 
 # @+node:ekr.20170324143944.3: ** qt: show-fonts

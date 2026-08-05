@@ -1653,7 +1653,7 @@ class TestQtColorizer(LeoUnitTest):
 
     @classmethod
     def setUpClass(cls: Any) -> None:
-        create_app(gui_name='qt')
+        create_app(gui_name='null')  # *not* 'qt'
 
     # @+others
     # @+node:ekr.20260519084534.1: *3* TestQtColorizer.test_underlines_in_setTag

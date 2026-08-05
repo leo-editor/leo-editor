@@ -65,7 +65,7 @@ class LeoQtTree(leoFrame.LeoTree):
         self.reloadSettings()
         # Components...
         self.canvas = self  # Required! An official ivar used by Leo's core.
-        self.treeWidget: LeoQTreeWidget = frame.top.treeWidget  # type:ignore
+        self.treeWidget: LeoQTreeWidget = frame.top.treeWidget
         w = self.treeWidget
         # Declutter data...
         # list of pairs of patterns for decluttering

@@ -278,7 +278,7 @@ class Position:
         # PR #4767 correctly annotates self.v as VNode | None.
         # The "big little lie": p.v will *almost always* be a valid VNode.
 
-        self.v: VNode = v  # type:ignore # The big little lie.
+        self.v: VNode = v  # The big little lie.
 
         # Stack entries are tuples (v, childIndex).
         if stack:
@@ -2914,7 +2914,7 @@ class VNode:
             v._headString = s.replace('\n', '')
         else:  # pragma: no cover
             s = g.toUnicode(s, reportErrors=True)
-            v._headString = s.replace('\n', '')  # type:ignore
+            v._headString = s.replace('\n', '')
             self.contentModified()  # #1413.
         # #4394: Clear the the mod_time.
         if '_mod_time' in v.u:

@@ -133,7 +133,7 @@ Tags
 
 # @+<< imports >>
 # @+node:tbrown.20070117104409.2: ** << imports >>
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from copy import deepcopy
 from typing import Any
 from leo.core import leoGlobals as g
@@ -418,15 +418,16 @@ class quickMove:
                 # def cb_clear(event=None, c=c, v=v):
                 #     c.quickMove.clearButton(v)
 
-                for cb, txt in [
+                cb_list: list[tuple[Callable, str]] = [
                     (cb_goto_target, 'Goto target'),
                     (cb_permanent, 'Make permanent'),
                     # (cb_clear, 'Clear permanent'),
                     (cb_set_parent, 'Set parent'),
-                ]:
+                ]
+                for cb, txt in cb_list:
                     but = b.button
                     rc = QAction(txt, but)
-                    rc.triggered.connect(cb)  # type:ignore
+                    rc.triggered.connect(cb)
                     # insert rc before Remove Button
                     but.insertAction(but.actions()[-1], rc)
 
