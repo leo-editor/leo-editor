@@ -1483,7 +1483,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         #     0: {
         #         'type': 'file',
         #         'file': 'C:/Repos/leo-editor/leo/Icons/application-x-leo-outline.png',
-        #         'relPath': 'C:/Repos/leo-editor/leo/Icons/application-x-leo-outline.png',
         #         'where': 'beforeHeadline',
         #         'yoffset': 0,
         #         'xoffset': 2,
@@ -1523,7 +1522,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         xoffset: int,
     ) -> int:
         c = self.c
-        relPath = path  # for finding icon on load in different environment
         path = g.app.gui.getImageFinder(path)
         image, image_height = g.app.gui.getTreeImage(c, path)
         if not image:
@@ -1532,7 +1530,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         d = {
             'type': 'file',
             'file': path,
-            'relPath': relPath,
             'where': 'beforeHeadline',
             'yoffset': 0,
             'xoffset': xoffset,
