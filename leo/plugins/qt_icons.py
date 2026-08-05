@@ -57,6 +57,7 @@ def icons_add_icons(event: LeoKeyEvent | None = None) -> None:
     if not os.path.exists(icons_dir):
         return
 
+    # Adapted from https://gist.github.com/ostr00000/30c9e732550baa0c13a73fd3320e7d55
     class Window(QWidget):
         def __init__(self):
             super().__init__()
