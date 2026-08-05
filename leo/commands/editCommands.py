@@ -9,10 +9,6 @@ from collections.abc import Callable
 import re
 from typing import cast, Any, TYPE_CHECKING
 
-try:
-    from PyQt6.QtWidgets import QStyle
-except ImportError:
-    pass
 from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass
 from leo.plugins.qt_text import QTextMixin
@@ -1411,92 +1407,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         ### g.printObj(aList2, tag=p.h)
         p.setDirty()
         c.setChanged()
-
-    # @+node:ekr.20260805111552.1: *5* 'insert-qt-icon' & helper
-    @cmd('insert-qt-icon')
-    def insertQtIcon(self, event: LeoKeyEvent | None = None) -> None:
-        """
-        Show a window previewing all standard Qt icons.
-        Add each selected icon to c.p.h.
-        """
-        controller = self
-        d = g.app.scriptDict
-        key = 'insert_qt_icon_window'
-        insert_qt_icon_window = d.get(key)
-        if not insert_qt_icon_window:
-            # @+<< define class QtPreviewWindow >>
-            # @+node:ekr.20260805111828.1: *6* << define class QtPreviewWindow >>
-            from PyQt6.QtWidgets import (  # pylint: disable=no-name-in-module
-                QGridLayout,
-                QPushButton,
-                QStyle,
-                QWidget,
-            )
-
-            # Adapted from https://gist.github.com/ostr00000/30c9e732550baa0c13a73fd3320e7d55
-            class QtPreviewWindow(QWidget):
-                def __init__(self):
-                    super().__init__()
-                    icon_names = sorted(
-                        [z for z in dir(QStyle.StandardPixmap) if z.startswith("SP_")]
-                    )
-                    layout = QGridLayout()
-                    for i, icon_name in enumerate(icon_names):
-                        button = QPushButton(icon_name)
-                        pixmap = getattr(QStyle.StandardPixmap, icon_name)
-                        if pixmap is None:
-                            g.trace(f"No pixmap for {icon_name=}")
-                            continue
-
-                        def callback(
-                            icon_name: str = icon_name, pixmap: QStyle.StandardPixmap = pixmap
-                        ) -> None:
-                            controller._addPixmapToNode(icon_name, pixmap)
-
-                        button.released.connect(callback)
-                        styled_icon = self.style().standardIcon(pixmap)  # type:ignore
-                        button.setIcon(styled_icon)
-                        layout.addWidget(button, int(i / 4), int(i % 4))
-                    self.setLayout(layout)
-
-            # @-<< define class QtPreviewWindow >>
-            d[key] = insert_qt_icon_window = QtPreviewWindow()
-        insert_qt_icon_window.show()
-
-    # @+node:ekr.20260805114313.1: *6* ec._addPixmapToNode (to do)
-    def _addPixmapToNode(self, icon_name: str, pixmap: QStyle.StandardPixmap) -> None:
-        """Convert the given pixmap to an icon and add it to c.p.h."""
-        c = self.c
-        assert isinstance(pixmap, QStyle.StandardPixmap)
-        g.trace(icon_name)
-
-        # Convert the pixmap to a QIcon?.
-
-        ### To do:
-
-        # xoffset = 2
-        # for path in paths:
-        #     xoffset = self.appendImageDictToList(aList, path, xoffset)
-
-        # Example aList2.
-        # [
-        #     0: {
-        #         'type': 'file',
-        #         'file': 'C:/Repos/leo-editor/leo/Icons/application-x-leo-outline.png',
-        #         'where': 'beforeHeadline',
-        #         'yoffset': 0,
-        #         'xoffset': 2,
-        #         'xpad': 1,
-        #         }
-        # ]
-
-        # iconList = self.getIconList(p.v)
-        # iconList.extend(aList)
-        # self.setIconList(p, iconList)
-
-        c.p.setDirty()
-        c.setChanged()
-        c.redraw()
 
     # @+node:ekr.20150514063305.230: *4* ec: Icon helpers
     # @+node:ekr.20150514063305.235: *5* ec._setIconUA
