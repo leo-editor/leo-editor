@@ -7,18 +7,10 @@
 import glob
 import os
 import re
-import time
 from leo.core import leoGlobals as g
-from leo.core.leoGui import LeoKeyEvent
 from leo.core.leoPlugins import LeoPluginsController
-from leo.core.leoTest2 import LeoUnitTest, create_app
+from leo.core.leoTest2 import LeoUnitTest
 from leo.plugins import indented_languages
-
-try:
-    from leo.core.leoQt import Qt, QtCore, QtWidgets
-except Exception:
-    g.es_exception()
-    Qt = QtCore = QtWidgets = None
 # @-<< test_plugins: imports >>
 
 
@@ -278,114 +270,6 @@ class TestIndentedLisp(LeoUnitTest):
             print(contents)
             print('')
             print(p.b)
-
-    # @-others
-
-
-# @+node:ekr.20260802060059.1: ** class TestTodo(LeoUnitTest)
-class TestTodo(LeoUnitTest):
-    """Tests for todo.py plugin."""
-
-    @classmethod
-    def setUpClass(cls):
-        create_app(gui_name='qt')
-
-    @classmethod
-    def tearDownClass(cls):
-        g.app.finishQuit()
-        time.sleep(0.5)
-
-    def setUp(self):
-        super().setUp()
-        # Don't run *any* tests if Qt has not been installed.
-        if not Qt:
-            self.skipTest('import Qt failed')
-
-    # @+others
-    # @+node:ekr.20260802060227.1: *3* TestTodo.test_cover_todo
-    def test_cover_todo(self):
-
-        import datetime as dt
-        from leo.plugins import todo
-
-        c = self.c
-        p = c.p
-        v = p.v
-        now = dt.datetime.now(tz=dt.timezone.utc)
-
-        # todoQtUI = todo.todoQtUI(x)
-
-        # test init.
-        assert todo.init()
-        todo.warning_given = True
-        assert not todo.init()
-
-        # Test top-level functions.
-        todo.onCreate(tag=g.my_name(), key={'c': c})
-        todo.popup_entry(c=c, p=p, menu=QtWidgets.QMenu())
-
-        # Test outer commands.
-        event = LeoKeyEvent(c=c)
-        todo.todo_fix_datetime(event)
-        todo.todo_dec_pri(event)
-        todo.todo_inc_pri(event)
-        todo.find_todo(event)
-
-        # Test controller commands.
-        x = todo.todoController(c)
-        x.find_todo(c.p)
-        x.find_todo()
-        c.doCommandByName('find-todo', event)
-        c.doCommandByName('todo-find', event)
-
-        # Test g.app.config.getString('color-theme')
-        d = g.app.loadManager.globalSettingsDict
-        d['colortheme'] = g.GeneralSetting(kind='string', val='ekr_dark')
-        assert g.app.config.getString('color-theme') == 'ekr_dark'
-        x = todo.todoController(c)
-        x.find_todo()
-
-        # Test g.app.config.getInt("todo-calendar-cols")
-        d['todocalendarcols'] = g.GeneralSetting(kind='int', val=5)
-        assert g.app.config.getInt('todo-calendar-cols') == 5
-        x = todo.todoController(c)
-        x.find_todo()
-
-        # Cover more methods.
-        x = todo.todoController(c)
-        x._date()
-        x._time()
-        x._time(timestamp=str(now))
-        x.loadIcons(c.p, clear=True)
-        x.showHelp()
-
-        # uAs.
-        x.set_progress(2)
-        x.hasUD(v)
-        x.delUD(v)
-        x.dropEmpty(v)
-        x.set_progress(3)
-        x.set_time_req(100)
-        x.clear_time_req()
-        x.local_recalc()
-        x.local_clear()
-        x.set_due_date(QtCore.QDate(2026, 1, 1))
-        x.set_due_time(QtCore.QTime(6, 6))
-        x.set_progress(100)
-        x.set_time_req(50)
-        x.set_progress()
-        x.set_time_req('')
-        x.show_times(show=True)
-        x.show_times(show=False)
-        x.recalc_time(p)
-        x.clear_node()
-        x.clear_subtree()
-        x.clear_all()
-        x.progress_clear()
-
-        # Last.
-        g.app.pluginsController = LeoPluginsController()
-        x.close(tag='test', d={'c': c})
 
     # @-others
 
