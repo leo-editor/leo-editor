@@ -14,6 +14,7 @@ To run externally, do `python -m leo.core.leoserver --password <password>`.
 # @+<< leoserver imports >>
 # @+node:felix.20210621233316.2: ** << leoserver imports >>
 # pylint: disable=raise-missing-from
+from __future__ import annotations
 import argparse
 import asyncio
 from collections.abc import Callable, Generator, Iterable, Iterator
