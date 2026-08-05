@@ -1500,6 +1500,21 @@ class EditCommandsClass(BaseEditCommandsClass):
         c.redraw()
 
     # @+node:ekr.20150514063305.230: *4* ec: Icon helpers
+    # @+node:ekr.20150514063305.235: *5* ec._setIconUA
+    def _setIconUA(self, p: Position, aList: list[Any]) -> None:
+        """Set icon UA for p.v. to the given list of Icons."""
+        v = p.v
+        if aList:  # Update the uA.
+            if not hasattr(v, 'unknownAttributes'):
+                v.unknownAttributes = {}
+            v.unknownAttributes['icons'] = list(aList)
+            v._p_changed = True
+        else:  # delete the uA.
+            if hasattr(v, 'unknownAttributes'):
+                if 'icons' in v.unknownAttributes:
+                    del v.unknownAttributes['icons']
+                    v._p_changed = True
+
     # @+node:ekr.20150514063305.231: *5* ec.appendImageDictToList
     def appendImageDictToList(
         self,
@@ -1539,52 +1554,16 @@ class EditCommandsClass(BaseEditCommandsClass):
             d_list = [dict(i) for i in v.u.get('icons', [])]
         return d_list
 
-    # @+node:ekr.20150514063305.241: *5* ec.insertIconFromFile
-    def insertIconFromFile(
-        self, path: str, p: Position | None = None, pos: int | None = None
-    ) -> None:
-        c = self.c
-        if not p:
-            p = c.p
-        aList: list[Any] = []
-        xoffset = 2
-        xoffset = self.appendImageDictToList(aList, path, xoffset)
-        aList2 = self.getIconList(p.v)
-        if pos is None:
-            pos = len(aList2)
-        aList2.insert(pos, aList[0])
-        self.setIconList(p, aList2)
-        p.setDirty()
-        c.setChanged()
-
-    # @+node:ekr.20150514063305.234: *5* ec.setIconList & helpers
+    # @+node:ekr.20150514063305.234: *5* ec.setIconList
     def setIconList(self, p: Position, aList: list[Any]) -> None:
         """Set list of icons for position p to aList"""
         current = self.getIconList(p.v)
         if not aList and not current:
-            return  # nothing to do
+            return
         lHash = ''.join([self.dHash(i) for i in aList])
         cHash = ''.join([self.dHash(i) for i in current])
-        if lHash == cHash:
-            # no difference between original and current list of dictionaries
-            return
-        # set p.u.
-        self._setIconListHelper(p, aList)
-
-    # @+node:ekr.20150514063305.235: *6* ec._setIconListHelper
-    def _setIconListHelper(self, p: Position, aList: list[Any]) -> None:
-        """Set icon UA for p.v. to the given list of Icons."""
-        v = p.v
-        if aList:  # Update the uA.
-            if not hasattr(v, 'unknownAttributes'):
-                v.unknownAttributes = {}
-            v.unknownAttributes['icons'] = list(aList)
-            v._p_changed = True
-        else:  # delete the uA.
-            if hasattr(v, 'unknownAttributes'):
-                if 'icons' in v.unknownAttributes:
-                    del v.unknownAttributes['icons']
-                    v._p_changed = True
+        if lHash != cHash:
+            self._setIconUA(p, aList)
 
     # @+node:ekr.20150514063305.242: *3* ec: indent
     # @+node:ekr.20150514063305.243: *4* ec.deleteIndentation
