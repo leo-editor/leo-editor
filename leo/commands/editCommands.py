@@ -1410,9 +1410,79 @@ class EditCommandsClass(BaseEditCommandsClass):
         p.setDirty()
         c.setChanged()
 
+    # @+node:ekr.20260805111552.1: *5* 'insert-qt-icon'
+    @cmd('insert-qt-icon')
+    def insertQtIcon(self, event: LeoKeyEvent | None = None) -> None:
+        """
+        Show a window previewing all standard Qt icons.
+        Add each selected icon to c.p.h.
+        """
+        c = self.c
+        d = g.app.scriptDict
+        key = 'insert_qt_icon_window'
+
+        insert_qt_icon_window = d.get(key)
+        if not insert_qt_icon_window:
+            # @+<< define class QtPreviewWindow >>
+            # @+node:ekr.20260805111828.1: *6* << define class QtPreviewWindow >>
+            from PyQt6.QtWidgets import QGridLayout, QPushButton, QStyle, QWidget
+
+            # Adapted from https://gist.github.com/ostr00000/30c9e732550baa0c13a73fd3320e7d55
+            class QtPreviewWindow(QWidget):
+                def __init__(self):
+                    super().__init__()
+                    icon_names = sorted(
+                        [z for z in dir(QStyle.StandardPixmap) if z.startswith("SP_")]
+                    )
+                    layout = QGridLayout()
+                    for i, icon_name in enumerate(icon_names):
+                        button = QPushButton(icon_name)
+                        pixmap = getattr(QStyle.StandardPixmap, icon_name)
+                        if pixmap is None:
+                            g.trace(f"No pixmap for {icon_name=}")
+                            continue
+
+                        def callback(
+                            icon_name: str = icon_name, pixmap: QStyle.StandardPixmap = pixmap
+                        ) -> None:
+                            g.trace(icon_name, pixmap.__class__.__name__)
+                            ### g.add_icon_to_node(icons_dir, icon_name, c.p, pixmap)
+                            c.p.setDirty()
+                            c.setChanged()
+                            c.redraw()
+
+                        button.released.connect(callback)
+                        styled_icon = self.style().standardIcon(pixmap)  # type:ignore
+                        button.setIcon(styled_icon)
+                        layout.addWidget(button, int(i / 4), int(i % 4))
+                    self.setLayout(layout)
+
+            # @-<< define class QtPreviewWindow >>
+            d[key] = insert_qt_icon_window = QtPreviewWindow()
+
+        insert_qt_icon_window.show()
+
+        # if not paths:
+        #     return
+        # aList: list[dict[str, Value]] = []
+        # xoffset = 2
+        # for path in paths:
+        #     xoffset = self.appendImageDictToList(aList, path, xoffset)
+        # aList2 = self.getIconList(p.v)
+        # aList2.extend(aList)
+        # self.setIconList(p, aList2)
+        # p.setDirty()
+        # c.setChanged()
+
     # @+node:ekr.20150514063305.230: *4* ec: Icon helpers
     # @+node:ekr.20150514063305.231: *5* ec.appendImageDictToList
-    def appendImageDictToList(self, aList: list, path: str, xoffset: int, **kargs: KWargs) -> int:
+    def appendImageDictToList(
+        self,
+        aList: list,
+        path: str,
+        xoffset: int,
+        **kargs: KWargs,
+    ) -> int:
         c = self.c
         relPath = path  # for finding icon on load in different environment
         path = g.app.gui.getImageFinder(path)
