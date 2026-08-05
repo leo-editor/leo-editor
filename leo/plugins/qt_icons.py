@@ -73,8 +73,8 @@ def icons_add_icons(event: LeoKeyEvent | None = None) -> None:
                     *args: Any,
                     **kwargs: Any,
                 ) -> None:
-                    g.trace(f"Clicked {icon_name}")
                     g.add_icon_to_node(icons_dir, icon_name, c.p, pixmap)
+                    c.redraw()
 
                 button.released.connect(callback)
                 styled_icon = self.style().standardIcon(pixmap)
