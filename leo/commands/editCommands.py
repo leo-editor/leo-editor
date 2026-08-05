@@ -6,7 +6,6 @@
 # @+node:ekr.20150514050149.1: **  << editCommands imports & annotations >>
 from __future__ import annotations
 from collections.abc import Callable
-import os
 import re
 from typing import cast, Any, TYPE_CHECKING
 
