@@ -1392,7 +1392,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         """Prompt for an icon, and insert it into the node's icon list."""
         c, p = self.c, self.c.p
         iconDir = g.finalize_join(g.app.loadDir, "..", "Icons")
-        os.chdir(iconDir)
         paths = g.app.gui.runOpenFilesDialog(
             c,
             title='Get Icons',
@@ -1402,6 +1401,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 ('Bitmap', '*.bmp'),
                 ('Icon', '*.ico'),
             ],
+            startpath=iconDir,
         )
         if not paths:
             return
@@ -1473,10 +1473,14 @@ class EditCommandsClass(BaseEditCommandsClass):
         assert isinstance(pixmap, QStyle.StandardPixmap)
         g.trace(icon_name)
 
+        # Convert the pixmap to a QIcon?.
+
         ### To do:
+
         # xoffset = 2
         # for path in paths:
         #     xoffset = self.appendImageDictToList(aList, path, xoffset)
+
         # iconList = self.getIconList(p.v)
         # iconList.extend(aList)
         # self.setIconList(p, iconList)
