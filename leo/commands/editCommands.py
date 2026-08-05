@@ -21,9 +21,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position, VNode
-
-    KWargs = Any
-    Value = Any
 # @-<< editCommands imports & annotations  >>
 
 
@@ -1404,13 +1401,14 @@ class EditCommandsClass(BaseEditCommandsClass):
         )
         if not paths:
             return
-        aList: list[dict[str, Value]] = []
+        aList: list[dict[str, Any]] = []
         xoffset = 2
         for path in paths:
             xoffset = self.appendImageDictToList(aList, path, xoffset)
         aList2 = self.getIconList(p.v)
         aList2.extend(aList)
         self.setIconList(p, aList2)
+        g.printObj(aList2, tag=p.h)
         p.setDirty()
         c.setChanged()
 
@@ -1480,6 +1478,19 @@ class EditCommandsClass(BaseEditCommandsClass):
         # for path in paths:
         #     xoffset = self.appendImageDictToList(aList, path, xoffset)
 
+        # Example aList2.
+        # [
+        #     0: {
+        #         'type': 'file',
+        #         'file': 'C:/Repos/leo-editor/leo/Icons/application-x-leo-outline.png',
+        #         'relPath': 'C:/Repos/leo-editor/leo/Icons/application-x-leo-outline.png',
+        #         'where': 'beforeHeadline',
+        #         'yoffset': 0,
+        #         'xoffset': 2,
+        #         'xpad': 1,
+        #         }
+        # ]
+
         # iconList = self.getIconList(p.v)
         # iconList.extend(aList)
         # self.setIconList(p, iconList)
@@ -1495,7 +1506,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         aList: list,
         path: str,
         xoffset: int,
-        **kargs: KWargs,
     ) -> int:
         c = self.c
         relPath = path  # for finding icon on load in different environment
@@ -1504,75 +1514,41 @@ class EditCommandsClass(BaseEditCommandsClass):
         if not image:
             g.es('can not load image:', path)
             return xoffset
-        if image_height is None:
-            yoffset = 0
-        else:
-            yoffset = 0  # (c.frame.tree.line_height-image_height)/2
-            # TNB: I suspect this is being done again in the drawing code
-        newEntry = {
+        d = {
             'type': 'file',
             'file': path,
             'relPath': relPath,
             'where': 'beforeHeadline',
-            'yoffset': yoffset,
+            'yoffset': 0,
             'xoffset': xoffset,
             'xpad': 1,  # -2,
-            'on': 'VNode',
         }
-        newEntry.update(kargs)  # may switch 'on' to 'VNode'
-        aList.append(newEntry)
-        xoffset += 2
-        return xoffset
-
-    # @+node:ekr.20150514063305.237: *5* ec.deleteIconByName
-    def deleteIconByName(self, t: object, name: str, relPath: str) -> None:  # t not used.
-        """for use by the right-click remove icon callback"""
-        c, p = self.c, self.c.p
-        aList = self.getIconList(p.v)
-        if not aList:
-            return
-        basePath = g.finalize_join(g.app.loadDir, "..", "Icons")
-        absRelPath = g.finalize_join(basePath, relPath)
-        name = g.finalize(name)
-        newList = []
-        for d in aList:
-            name2 = d.get('file') or ''
-            name2 = g.finalize(name2)
-            name2rel = d.get('relPath')
-            if not (name == name2 or absRelPath == name2 or relPath == name2rel):
-                newList.append(d)
-        if len(newList) != len(aList):
-            self.setIconList(p, newList)
-            p.setDirty()
-            c.setChanged()
-        else:
-            g.trace('not found', name)
+        aList.append(d)
+        return xoffset + 2
 
     # @+node:ekr.20150514063305.232: *5* ec.dHash
     def dHash(self, d: dict[str, str]) -> str:
         """Hash a dictionary"""
-        return ''.join([f"{str(k)}{str(d[k])}" for k in sorted(d)])
+        return ''.join([f"{str(key)}{str(d[key])}" for key in sorted(d)])
 
     # @+node:ekr.20150514063305.233: *5* ec.getIconList
-    def getIconList(self, v: VNode) -> list[dict]:
+    def getIconList(self, v: VNode) -> list[dict[str, Any]]:
         """Return list of icons for v."""
-        fromVnode: list[dict[str, Value]] = []
+        d_list: list[dict[str, Any]] = []
         if hasattr(v, 'unknownAttributes'):
-            fromVnode = [dict(i) for i in v.u.get('icons', [])]
-            for i in fromVnode:
-                i['on'] = 'VNode'
-        return fromVnode
+            d_list = [dict(i) for i in v.u.get('icons', [])]
+        return d_list
 
     # @+node:ekr.20150514063305.241: *5* ec.insertIconFromFile
     def insertIconFromFile(
-        self, path: str, p: Position | None = None, pos: int | None = None, **kargs: KWargs
+        self, path: str, p: Position | None = None, pos: int | None = None
     ) -> None:
         c = self.c
         if not p:
             p = c.p
-        aList: list[Value] = []
+        aList: list[Any] = []
         xoffset = 2
-        xoffset = self.appendImageDictToList(aList, path, xoffset, **kargs)
+        xoffset = self.appendImageDictToList(aList, path, xoffset)
         aList2 = self.getIconList(p.v)
         if pos is None:
             pos = len(aList2)
@@ -1582,7 +1558,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         c.setChanged()
 
     # @+node:ekr.20150514063305.234: *5* ec.setIconList & helpers
-    def setIconList(self, p: Position, aList: list[Value]) -> None:
+    def setIconList(self, p: Position, aList: list[Any]) -> None:
         """Set list of icons for position p to aList"""
         current = self.getIconList(p.v)
         if not aList and not current:
@@ -1596,7 +1572,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         self._setIconListHelper(p, aList)
 
     # @+node:ekr.20150514063305.235: *6* ec._setIconListHelper
-    def _setIconListHelper(self, p: Position, aList: list[Value]) -> None:
+    def _setIconListHelper(self, p: Position, aList: list[Any]) -> None:
         """Set icon UA for p.v. to the given list of Icons."""
         v = p.v
         if aList:  # Update the uA.
@@ -3077,7 +3053,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         if g.isTextWrapper(w):
             self.extendMode = val
             if not g.unitTesting:
-                # g.red('extend mode','on' if val else 'off'))
                 c.k.showStateAndMode()
             c.widgetWantsFocusNow(w)
 
