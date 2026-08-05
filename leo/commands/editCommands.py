@@ -1340,7 +1340,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     # To do:
     # - Define standard icons in a subfolder of Icons folder?
     # - Tree control recomputes height of each line.
-    # @+node:ekr.20150514063305.230: *4* ec. Helpers
+    # @+node:ekr.20150514063305.230: *4* ec: Helpers
     # @+node:ekr.20150514063305.231: *5* ec.appendImageDictToList
     def appendImageDictToList(self, aList: list, path: str, xoffset: int, **kargs: KWargs) -> int:
         c = self.c
@@ -1370,6 +1370,30 @@ class EditCommandsClass(BaseEditCommandsClass):
         xoffset += 2
         return xoffset
 
+    # @+node:ekr.20150514063305.237: *5* ec.deleteIconByName
+    def deleteIconByName(self, t: object, name: str, relPath: str) -> None:  # t not used.
+        """for use by the right-click remove icon callback"""
+        c, p = self.c, self.c.p
+        aList = self.getIconList(p.v)
+        if not aList:
+            return
+        basePath = g.finalize_join(g.app.loadDir, "..", "Icons")
+        absRelPath = g.finalize_join(basePath, relPath)
+        name = g.finalize(name)
+        newList = []
+        for d in aList:
+            name2 = d.get('file') or ''
+            name2 = g.finalize(name2)
+            name2rel = d.get('relPath')
+            if not (name == name2 or absRelPath == name2 or relPath == name2rel):
+                newList.append(d)
+        if len(newList) != len(aList):
+            self.setIconList(p, newList)
+            p.setDirty()
+            c.setChanged()
+        else:
+            g.trace('not found', name)
+
     # @+node:ekr.20150514063305.232: *5* ec.dHash
     def dHash(self, d: dict[str, str]) -> str:
         """Hash a dictionary"""
@@ -1384,6 +1408,24 @@ class EditCommandsClass(BaseEditCommandsClass):
             for i in fromVnode:
                 i['on'] = 'VNode'
         return fromVnode
+
+    # @+node:ekr.20150514063305.241: *5* ec.insertIconFromFile
+    def insertIconFromFile(
+        self, path: str, p: Position | None = None, pos: int | None = None, **kargs: KWargs
+    ) -> None:
+        c = self.c
+        if not p:
+            p = c.p
+        aList: list[Value] = []
+        xoffset = 2
+        xoffset = self.appendImageDictToList(aList, path, xoffset, **kargs)
+        aList2 = self.getIconList(p.v)
+        if pos is None:
+            pos = len(aList2)
+        aList2.insert(pos, aList[0])
+        self.setIconList(p, aList2)
+        p.setDirty()
+        c.setChanged()
 
     # @+node:ekr.20150514063305.234: *5* ec.setIconList & helpers
     def setIconList(self, p: Position, aList: list[Value]) -> None:
@@ -1414,7 +1456,8 @@ class EditCommandsClass(BaseEditCommandsClass):
                     del v.unknownAttributes['icons']
                     v._p_changed = True
 
-    # @+node:ekr.20150514063305.236: *4* ec.deleteFirstIcon
+    # @+node:ekr.20260805071803.1: *4* ec: Commands
+    # @+node:ekr.20150514063305.236: *5* 'delete-first-icon'
     @cmd('delete-first-icon')
     def deleteFirstIcon(self, event: LeoKeyEvent | None = None) -> None:
         """Delete the first icon in the selected node's icon list."""
@@ -1424,31 +1467,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             p.setDirty()
             c.setChanged()
 
-    # @+node:ekr.20150514063305.237: *4* ec.deleteIconByName
-    def deleteIconByName(self, t: object, name: str, relPath: str) -> None:  # t not used.
-        """for use by the right-click remove icon callback"""
-        c, p = self.c, self.c.p
-        aList = self.getIconList(p.v)
-        if not aList:
-            return
-        basePath = g.finalize_join(g.app.loadDir, "..", "Icons")
-        absRelPath = g.finalize_join(basePath, relPath)
-        name = g.finalize(name)
-        newList = []
-        for d in aList:
-            name2 = d.get('file') or ''
-            name2 = g.finalize(name2)
-            name2rel = d.get('relPath')
-            if not (name == name2 or absRelPath == name2 or relPath == name2rel):
-                newList.append(d)
-        if len(newList) != len(aList):
-            self.setIconList(p, newList)
-            p.setDirty()
-            c.setChanged()
-        else:
-            g.trace('not found', name)
-
-    # @+node:ekr.20150514063305.238: *4* ec.deleteLastIcon
+    # @+node:ekr.20150514063305.238: *5* 'delete-last-icon'
     @cmd('delete-last-icon')
     def deleteLastIcon(self, event: LeoKeyEvent | None = None) -> None:
         """Delete the first icon in the selected node's icon list."""
@@ -1458,7 +1477,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             p.setDirty()
             c.setChanged()
 
-    # @+node:ekr.20150514063305.239: *4* ec.deleteNodeIcons
+    # @+node:ekr.20150514063305.239: *5* 'delete-node-icons'
     @cmd('delete-node-icons')
     def deleteNodeIcons(self, event: LeoKeyEvent | None = None, p: Position | None = None) -> None:
         """Delete all of the selected node's icons."""
@@ -1470,7 +1489,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             p.setDirty()
             c.setChanged()
 
-    # @+node:ekr.20150514063305.240: *4* ec.insertIcon
+    # @+node:ekr.20150514063305.240: *5* 'insert-icon'
     @cmd('insert-icon')
     def insertIcon(self, event: LeoKeyEvent | None = None) -> None:
         """Prompt for an icon, and insert it into the node's icon list."""
@@ -1495,24 +1514,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             xoffset = self.appendImageDictToList(aList, path, xoffset)
         aList2 = self.getIconList(p.v)
         aList2.extend(aList)
-        self.setIconList(p, aList2)
-        p.setDirty()
-        c.setChanged()
-
-    # @+node:ekr.20150514063305.241: *4* ec.insertIconFromFile
-    def insertIconFromFile(
-        self, path: str, p: Position | None = None, pos: int | None = None, **kargs: KWargs
-    ) -> None:
-        c = self.c
-        if not p:
-            p = c.p
-        aList: list[Value] = []
-        xoffset = 2
-        xoffset = self.appendImageDictToList(aList, path, xoffset, **kargs)
-        aList2 = self.getIconList(p.v)
-        if pos is None:
-            pos = len(aList2)
-        aList2.insert(pos, aList[0])
         self.setIconList(p, aList2)
         p.setDirty()
         c.setChanged()
