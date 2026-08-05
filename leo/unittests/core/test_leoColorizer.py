@@ -4,7 +4,6 @@
 
 # pylint: disable=line-too-long
 
-import time
 from typing import Any
 from leo.core import leoGlobals as g
 from leo.core import leoColorizer
@@ -1654,12 +1653,7 @@ class TestQtColorizer(LeoUnitTest):
 
     @classmethod
     def setUpClass(cls: Any) -> None:
-        create_app(gui_name='qt')
-
-    @classmethod
-    def tearDownClass(cls):
-        g.app.finishQuit()
-        time.sleep(0.5)
+        create_app(gui_name='null')  # *not* 'qt'
 
     # @+others
     # @+node:ekr.20260519084534.1: *3* TestQtColorizer.test_underlines_in_setTag
