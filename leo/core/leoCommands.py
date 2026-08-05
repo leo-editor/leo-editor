@@ -5411,7 +5411,6 @@ class Commands:
                     {
                         'type': 'file',
                         'file': iconPath,
-                        'on': 'VNode',
                         'where': 'beforeHeadline',
                         'xoffset': 2,
                         'xpad': 1,

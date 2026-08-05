@@ -1408,7 +1408,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         aList2 = self.getIconList(p.v)
         aList2.extend(aList)
         self.setIconList(p, aList2)
-        g.printObj(aList2, tag=p.h)
+        ### g.printObj(aList2, tag=p.h)
         p.setDirty()
         c.setChanged()
 
