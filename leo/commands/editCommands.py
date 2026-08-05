@@ -1341,6 +1341,14 @@ class EditCommandsClass(BaseEditCommandsClass):
     # - Define standard icons in a subfolder of Icons folder?
     # - Tree control recomputes height of each line.
     # @+node:ekr.20260805071803.1: *4* ec: Icon commands
+    # @+node:ekr.20260805110912.1: *5* 'delete-all-icons'
+    @cmd('delete-all-icons')
+    def deleteAllIcons(self, event: LeoKeyEvent | None = None) -> None:
+        """Delete all icons in the outline.."""
+        c = self.c
+        for p in c.all_unique_positions():
+            self.deleteNodeIcons(p)
+
     # @+node:ekr.20150514063305.236: *5* 'delete-first-icon'
     @cmd('delete-first-icon')
     def deleteFirstIcon(self, event: LeoKeyEvent | None = None) -> None:
