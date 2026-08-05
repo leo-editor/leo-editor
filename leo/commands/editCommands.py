@@ -9,6 +9,11 @@ from collections.abc import Callable
 import os
 import re
 from typing import cast, Any, TYPE_CHECKING
+
+try:
+    from PyQt6.QtWidgets import QStyle
+except ImportError:
+    pass
 from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass
 from leo.plugins.qt_text import QTextMixin
@@ -1410,22 +1415,26 @@ class EditCommandsClass(BaseEditCommandsClass):
         p.setDirty()
         c.setChanged()
 
-    # @+node:ekr.20260805111552.1: *5* 'insert-qt-icon'
+    # @+node:ekr.20260805111552.1: *5* 'insert-qt-icon' & helper
     @cmd('insert-qt-icon')
     def insertQtIcon(self, event: LeoKeyEvent | None = None) -> None:
         """
         Show a window previewing all standard Qt icons.
         Add each selected icon to c.p.h.
         """
-        c = self.c
+        controller = self
         d = g.app.scriptDict
         key = 'insert_qt_icon_window'
-
         insert_qt_icon_window = d.get(key)
         if not insert_qt_icon_window:
             # @+<< define class QtPreviewWindow >>
             # @+node:ekr.20260805111828.1: *6* << define class QtPreviewWindow >>
-            from PyQt6.QtWidgets import QGridLayout, QPushButton, QStyle, QWidget
+            from PyQt6.QtWidgets import (  # pylint: disable=no-name-in-module
+                QGridLayout,
+                QPushButton,
+                QStyle,
+                QWidget,
+            )
 
             # Adapted from https://gist.github.com/ostr00000/30c9e732550baa0c13a73fd3320e7d55
             class QtPreviewWindow(QWidget):
@@ -1445,11 +1454,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                         def callback(
                             icon_name: str = icon_name, pixmap: QStyle.StandardPixmap = pixmap
                         ) -> None:
-                            g.trace(icon_name, pixmap.__class__.__name__)
-                            ### g.add_icon_to_node(icons_dir, icon_name, c.p, pixmap)
-                            c.p.setDirty()
-                            c.setChanged()
-                            c.redraw()
+                            controller._addPixmapToNode(icon_name, pixmap)
 
                         button.released.connect(callback)
                         styled_icon = self.style().standardIcon(pixmap)  # type:ignore
@@ -1459,20 +1464,26 @@ class EditCommandsClass(BaseEditCommandsClass):
 
             # @-<< define class QtPreviewWindow >>
             d[key] = insert_qt_icon_window = QtPreviewWindow()
-
         insert_qt_icon_window.show()
 
-        # if not paths:
-        #     return
-        # aList: list[dict[str, Value]] = []
+    # @+node:ekr.20260805114313.1: *6* ec._addPixmapToNode (to do)
+    def _addPixmapToNode(self, icon_name: str, pixmap: QStyle.StandardPixmap) -> None:
+        """Convert the given pixmap to an icon and add it to c.p.h."""
+        c = self.c
+        assert isinstance(pixmap, QStyle.StandardPixmap)
+        g.trace(icon_name)
+
+        ### To do:
         # xoffset = 2
         # for path in paths:
         #     xoffset = self.appendImageDictToList(aList, path, xoffset)
-        # aList2 = self.getIconList(p.v)
-        # aList2.extend(aList)
-        # self.setIconList(p, aList2)
-        # p.setDirty()
-        # c.setChanged()
+        # iconList = self.getIconList(p.v)
+        # iconList.extend(aList)
+        # self.setIconList(p, iconList)
+
+        c.p.setDirty()
+        c.setChanged()
+        c.redraw()
 
     # @+node:ekr.20150514063305.230: *4* ec: Icon helpers
     # @+node:ekr.20150514063305.231: *5* ec.appendImageDictToList
