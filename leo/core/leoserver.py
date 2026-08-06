@@ -31,7 +31,7 @@ import textwrap
 import time
 import hmac
 import ssl
-from typing import Any, TYPE_CHECKING
+from typing import Any, cast, TYPE_CHECKING
 import warnings
 
 # Third-party.
@@ -1025,7 +1025,7 @@ class LeoServer:
                 c.findCommands.ftm = StringFindTabManager(c)  # type: ignore
                 cc = QuickSearchController(c)
                 # Patch up quick-search controller to the commander
-                c.patched_quicksearch_controller = cc
+                cast(Any, c).patched_quicksearch_controller = cc
                 # Patch up for 'selection range' in headlines left by the search commands.
                 c.frame.tree.endEditLabel = self._endEditLabel
                 c.recreateGnxDict()  # refresh c.fileCommands.gnxDict used in ap_to_p
@@ -3191,7 +3191,7 @@ class LeoServer:
         p = self._get_p(param)
         oldPosition: Position | None = None if p == c.p else c.p
 
-        newHeadline = param.get('name')
+        newHeadline = param.get('name') or ''
         bunch = c.undoer.beforeInsertNode(p)
         newNode = p.insertAfter()
         # Set this node's new headline
@@ -3221,7 +3221,7 @@ class LeoServer:
         """
         c = self._check_c(param)
         p = self._get_p(param)
-        newHeadline = param.get('name')
+        newHeadline = param.get('name') or ''
         bunch = c.undoer.beforeInsertNode(p)
         if c.config.getBool('insert-new-nodes-at-end'):
             newNode = p.insertAsLastChild()

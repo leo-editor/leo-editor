@@ -117,7 +117,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
     QEvent: TypeAlias = QtCore.QEvent
     Match = re.Match
-    Match_Iter = Iterator[re.Match[str]]
+    Match_Iter = Iterator[re.Match[str]] | None
     Match_List = list[tuple[Position, Match_Iter]]
     QWidget = QtWidgets.QWidget
     QListWidget = QtWidgets.QListWidget
@@ -220,8 +220,10 @@ def install_qt_quicksearch_tab(c: Cmdr) -> None:
 
 
 # @+node:ekr.20111014074810.15659: *3* matchLines
-def matchlines(b: str, miter: Iterator[Match[str]]) -> list:
-    res = []
+def matchlines(b: str, miter: Iterator[Match[str]] | None) -> list:
+    res: list = []
+    if miter is None:
+        return res
     for m in miter:
         st, en = g.getLine(b, m.start())
         li = b[st:en].strip()
@@ -246,12 +248,15 @@ def show_unittest_failures(event: LeoKeyEvent) -> None:
     nav.scon.clear()
     if fails:
         for gnx, stack in fails:
-            pos: Position = None
+            pos: Position | None = None
             # sucks
             for p in c.all_positions():
                 if p.gnx == gnx:
                     pos = p.copy()
                     break
+            if pos is None:
+                # The position no longer exists (e.g. the node was deleted).
+                continue
 
             def mkcb(p: Position, stack: Any) -> Any:
                 def focus() -> None:
@@ -312,7 +317,7 @@ class LeoQuickSearchWidget(QtWidgets.QWidget):
 
     # @+others
     # @+node:ekr.20111015194452.15695: *3* quick_w.ctor
-    def __init__(self, c: Cmdr, mode: str = "nav", parent: QWidget = None) -> None:
+    def __init__(self, c: Cmdr, mode: str = "nav", parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.ui: Any = qt_quicksearch.Ui_LeoQuickSearchWidget()
         self.ui.setupUi(self)
@@ -405,7 +410,7 @@ class QuickSearchController:
 
         def searcher(inp: str) -> tuple[Match_List, Match_List]:
             if self.frozen:
-                return None
+                return [], []
             exp = inp.replace(" ", "*")
             res = self.bgSearch(exp)
             return res
@@ -660,7 +665,7 @@ class QuickSearchController:
     # @+node:ville.20121118193144.3620: *3* bgSearch
     def bgSearch(self, pat: str) -> tuple[Match_List, Match_List]:
         if self.frozen:
-            return None
+            return [], []
         if not pat.startswith('r:'):
             hpat = fnmatch.translate('*' + pat + '*').replace(r"\Z(?ms)", "")
             flags = re.IGNORECASE
@@ -741,7 +746,7 @@ class QuickSearchController:
 
         # tgt = self.its.get(it and id(it))
 
-        tgt: Callable = self.its.get(id(it))
+        tgt: Callable | None = self.its.get(id(it))
         if not tgt:
             return
         # if Ctrl key is down, delete item and

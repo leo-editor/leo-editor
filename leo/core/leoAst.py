@@ -386,7 +386,7 @@ if 1:  # pragma: no cover
             if isinstance(node, ast.Call):
                 node = node.func
             elif isinstance(node, ast.Tuple):
-                node = node.elts  # type:ignore
+                node = node.elts
             # Finally, try all other nodes.
             else:
                 # This will be used rarely.
@@ -893,7 +893,7 @@ class AstDumper:  # pragma: no cover
                 else:
                     assert isinstance(z, (ast.FormattedValue, ast.Constant))
                     if isinstance(z, ast.Constant):
-                        results.append(z.value)  # type:ignore
+                        results.append(z.value)
                         strings += 1
                     else:
                         results.append(z.__class__.__name__)

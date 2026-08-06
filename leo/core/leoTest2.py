@@ -16,7 +16,7 @@ import textwrap
 import time
 import unittest
 import warnings
-from typing import Any, TYPE_CHECKING
+from typing import Any, cast, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoApp
 
@@ -80,7 +80,7 @@ def create_app(gui_name: str = 'null') -> Cmdr:
     settings_d, bindings_d = lm.createDefaultSettingsDicts()
     lm.globalSettingsDict = settings_d
     lm.globalBindingsDict = bindings_d
-    c.config.settingsDict = settings_d
+    cast(Any, c.config).settingsDict = settings_d
     assert g.unitTesting is True  # Defensive.
     t4 = time.process_time()
     if trace and t4 - t3 > 0.1:  # pragma: no cover

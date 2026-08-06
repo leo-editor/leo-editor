@@ -2,12 +2,21 @@
 #@+node:ekr.20240406013108.1: * @file ../../ruff.toml
 #@@language toml
 
-# This file includes options only for the ruff linter.
-# pyproject.toml contains all `ruff format` options.
+# NOTE: when this file exists, ruff ignores pyproject.toml's [tool.ruff] and
+# [tool.ruff.format] tables entirely (no merging), so line-length and format
+# options must be repeated here to actually take effect.
 
 # To add suppressions
 # find: ^(\s+)(\w+) (.+?)$
 # repl: \1"\2", # \3
+
+line-length = 100
+
+[format]
+docstring-code-format = false
+indent-style = "space"
+line-ending = "native"
+quote-style = "preserve"
 
 [lint]
 ignore = [

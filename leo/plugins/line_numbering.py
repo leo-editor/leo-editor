@@ -160,7 +160,7 @@ def universal_line_numbers(root, target_p, delim_st, delim_en):
     roots = c.user_dict.get('line_numbering_roots', set())
     roots.add(root.gnx)
     c.user_dict['line_numbering_roots'] = roots
-    flines_data = {}
+    flines_data: dict[tuple, tuple] = {}
     # @+others
     # @+node:vitalije.20170726110242.1: *3* write patterns
     section_pat = re.compile(r'^(\s*)(<{2}[^>]+>>)(.*)$')

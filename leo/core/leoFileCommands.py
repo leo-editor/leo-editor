@@ -1395,6 +1395,7 @@ class FileCommands:
             current = c.archivedPositionToPosition(str_pos)
         if not c.positionExists(current):  # #4789.
             current = c.rootPosition()
+        assert current is not None  # positionExists(None) is always False.
         c.p = current
 
     # @+node:ekr.20031218072017.3032: *3* fc: Writing
@@ -1738,7 +1739,7 @@ class FileCommands:
                         g.printObj(p.v.unknownAttributes)
 
             # result for specific starting p
-            result = {
+            result: dict[str, Value] = {
                 'leoHeader': {'fileFormat': 2},
                 'vnodes': [self.leojs_vnode(sp, gnxSet)],
                 'tnodes': {

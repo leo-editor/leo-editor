@@ -14,8 +14,7 @@ import string
 import sys
 import textwrap
 import time
-from typing import Any, TYPE_CHECKING
-from types import ModuleType
+from typing import Any, cast, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.external import codewise
 from leo.core.leoFrame import NullLog
@@ -806,7 +805,7 @@ class AutoCompleterClass:
         return aList
 
     # @+node:ekr.20110512090917.14466: *4* ac.get_leo_namespace
-    def get_leo_namespace(self, prefix: str) -> dict[str, ModuleType]:
+    def get_leo_namespace(self, prefix: str) -> dict[str, Any]:
         """
         Return an environment in which to evaluate prefix.
         Add some common standard library modules as needed.
@@ -1826,8 +1825,8 @@ class KeyHandlerClass:
         """Define internal ivars of the KeyHandlerClass class."""
         self.abbreviationsDict: dict = {}  # Abbreviations created by @alias nodes.
         # Previously defined bindings...
-        # Keys are Tk key names, values are lists of string or BindingInfo objects.
-        self.bindingsDict: dict[str, list] = {}
+        # Keys are KeyStroke objects, values are lists of BindingInfo objects.
+        self.bindingsDict: dict[Any, list] = {}
         # Previously defined binding tags.
         self.bindtagsDict: dict[str, bool] = {}  # Keys are strings (the tag), values are 'True'
         self.commandHistory: list[str] = []
@@ -2221,7 +2220,7 @@ class KeyHandlerClass:
         assert g.isStroke(stroke), stroke
         inv_d = lm.invert(c.config.shortcutsDict)
         inv_d[stroke] = []
-        c.config.shortcutsDict = lm.uninvert(inv_d)
+        cast(Any, c.config).shortcutsDict = lm.uninvert(inv_d)
 
     # @+node:ekr.20061031131434.92: *5* k.remove_conflicting_definitions
     def remove_conflicting_definitions(
@@ -2378,7 +2377,7 @@ class KeyHandlerClass:
         # strokes, so repeated startup-wide rebuilds must not reuse that
         # already-trimmed dict as input.
         raw_shortcuts = k.c.config.shortcutsDictRaw
-        k.c.config.shortcutsDict = raw_shortcuts.copy() if raw_shortcuts else None
+        cast(Any, k.c.config).shortcutsDict = raw_shortcuts.copy() if raw_shortcuts else None
         k.bindingsDict = {}
         k.addModeCommands()
         k.makeBindingsFromCommandsDict()

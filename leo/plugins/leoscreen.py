@@ -151,7 +151,7 @@ from leo.core import leoGlobals as g
 try:
     from leo.plugins import stickynotes
 except ImportError:
-    stickynotes = None
+    stickynotes = None  # type:ignore
 from leo.plugins.attrib_edit import ListDialog
 
 

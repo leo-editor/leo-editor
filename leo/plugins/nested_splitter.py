@@ -3,7 +3,7 @@
 """Nested splitter classes."""
 
 from __future__ import annotations
-from typing import Any
+from typing import Any, cast
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtGui, QtWidgets
 from leo.core.leoQt import ContextMenuPolicy, Orientation, QAction
@@ -793,7 +793,7 @@ class NestedSplitter(QtWidgets.QSplitter):
         ns.setSizes([0, 1])  # but hide one initially
         self.root.windows.append(window)
         # copy the main main window's stylesheet to new window
-        w: QtCore.QObject = self.root  # A Qt Widget, class NestedSplitter
+        w: QtCore.QObject | None = self.root  # A Qt Widget, class NestedSplitter
         sheets = []
         while w:
             if s := w.styleSheet():
@@ -834,7 +834,7 @@ class NestedSplitter(QtWidgets.QSplitter):
         """
         # drop any providers with the same id
         if hasattr(provider, 'ns_provider_id'):
-            id_ = provider.ns_provider_id()
+            id_ = cast(Any, provider).ns_provider_id()
             cull = []
             for i in self.root.providers:
                 if hasattr(i, 'ns_provider_id') and i.ns_provider_id() == id_:

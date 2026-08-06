@@ -13,7 +13,7 @@ import re
 import sys
 import textwrap
 from time import sleep
-from typing import Any, TYPE_CHECKING
+from typing import Any, cast, TYPE_CHECKING
 from leo.core import (
     leoColor,
     leoGlobals as g,
@@ -341,8 +341,8 @@ class LeoQtGui(leoGui.LeoGui):
             b: QPushButton = b,
             c: Cmdr = c,
             buttonText: str = buttonText,
-            p: Position = p and p.copy(),
-            script: str = script,
+            p: Position | None = p and p.copy(),
+            script: str | None = script,
         ) -> None:
             if c.disableCommandsMessage:
                 g.blue('', c.disableCommandsMessage)
@@ -621,7 +621,7 @@ class LeoQtGui(leoGui.LeoGui):
                 # dialog.setStyleSheet(c.active_stylesheet)
                 # Set the commander's FindTabManager.
                 assert g.app.globalFindTabManager
-                c.ftm = g.app.globalFindTabManager
+                cast(Any, c).ftm = g.app.globalFindTabManager
                 fn = c.shortFileName() or 'Untitled'
             else:
                 fn = 'Untitled'
@@ -681,7 +681,7 @@ class LeoQtGui(leoGui.LeoGui):
 
     def createSpellTab(
         self, c: Cmdr, spellHandler: Callable, tabName: str
-    ) -> qt_frame.LeoQtSpellTab:
+    ) -> qt_frame.LeoQtSpellTab | None:
         if g.unitTesting:
             return None
         return qt_frame.LeoQtSpellTab(c, spellHandler, tabName)
@@ -769,11 +769,11 @@ class LeoQtGui(leoGui.LeoGui):
                 else:
                     super().__init__(parent)
 
-            def stepBy(self, step: int) -> None:
+            def stepBy(self, steps: int) -> None:
                 cs = self.currentSection()
-                if cs in self.step_min and abs(step) < self.step_min[cs]:
-                    step = self.step_min[cs] if step > 0 else -self.step_min[cs]
-                QtWidgets.QDateTimeEdit.stepBy(self, step)
+                if cs in self.step_min and abs(steps) < self.step_min[cs]:
+                    steps = self.step_min[cs] if steps > 0 else -self.step_min[cs]
+                QtWidgets.QDateTimeEdit.stepBy(self, steps)
 
         class Calendar(QtWidgets.QDialog):
             def __init__(
@@ -889,11 +889,8 @@ class LeoQtGui(leoGui.LeoGui):
         dialog.setWindowTitle(title)
         dialog.setLabelText(message)
         dialog.setTextValue(default)
-        if wide:
-            # pylint: disable=unsubscriptable-object
-            dialog.resize(
-                int(g.windows()[0].get_window_info()[0] * 0.9), 100
-            )  # g.windows is a list.
+        if wide and (windows := g.windows()):
+            dialog.resize(int(windows[0].get_window_info()[0] * 0.9), 100)
         if cancelButtonText:
             dialog.setCancelButtonText(cancelButtonText)
         if okButtonText:
@@ -950,7 +947,7 @@ class LeoQtGui(leoGui.LeoGui):
 
         """
         if g.unitTesting:
-            return None
+            return 'cancel'
 
         # Create the dialog.
         top_frame: QWidget | None = c.frame.top if c else None
@@ -1013,7 +1010,7 @@ class LeoQtGui(leoGui.LeoGui):
         - `no_all`: bool - show NoToAll button
         """
         if g.unitTesting:
-            return None
+            return 'no'
 
         # Create the dialog.
         top_frame: QWidget | None = c.frame.top if c else None
@@ -1287,10 +1284,12 @@ class LeoQtGui(leoGui.LeoGui):
         dialog.setIcon(Icon.Information)
         dialog.addButton('Ok', ButtonRole.YesRole)
         try:
-            c.in_qt_dialog = True
+            if c:
+                c.in_qt_dialog = True
             dialog.exec()
         finally:
-            c.in_qt_dialog = False
+            if c:
+                c.in_qt_dialog = False
         # @-<< emergency fallback >>
 
     # @+node:ekr.20110607182447.16456: *3* LeoQtGui: Event handlers
@@ -1395,22 +1394,23 @@ class LeoQtGui(leoGui.LeoGui):
 
     # @+node:ekr.20110605121601.18508: *3* LeoQtGui: Focus
     # @+node:ekr.20190601055031.1: *4* LeoQtGui.ensure_commander_visible
-    def ensure_commander_visible(self, c1: Cmdr) -> None:
+    def ensure_commander_visible(self, c: Cmdr) -> None:
         """
         Check to see if c.frame is in a tabbed ui, and if so, make sure
         the tab is visible
         """
         if 'focus' in g.app.debug:
-            g.trace(c1)
+            g.trace(c)
         if hasattr(g.app.gui, 'frameFactory'):
             factory = g.app.gui.frameFactory
             if factory and hasattr(factory, 'setTabForCommander'):
-                c = c1
                 factory.setTabForCommander(c)
                 c.bodyWantsFocusNow()
 
     # @+node:ekr.20190601054958.1: *4* LeoQtGui.get_focus
-    def get_focus(self, c: Cmdr | None = None, raw: bool = False, at_idle: bool = False) -> QWidget:
+    def get_focus(
+        self, c: Cmdr | None = None, raw: bool = False, at_idle: bool = False
+    ) -> QWidget | None:
         """Returns the widget that has focus."""
         trace = 'focus' in g.app.debug and not at_idle
         w = QtWidgets.QApplication.focusWidget()
@@ -1535,7 +1535,7 @@ class LeoQtGui(leoGui.LeoGui):
 
     # @+node:ekr.20110605121601.18518: *4* LeoQtGui.getTreeImage
     @functools.lru_cache(maxsize=128)
-    def getTreeImage(self, c: Cmdr, path: str) -> tuple[QPixmap, int]:
+    def getTreeImage(self, c: Cmdr, path: str) -> tuple[QPixmap, int] | tuple[None, None]:
         image = QtGui.QPixmap(path)
         if image.height() > 0 and image.width() > 0:
             return image, image.height()
@@ -1543,7 +1543,7 @@ class LeoQtGui(leoGui.LeoGui):
 
     # @+node:ekr.20111215193352.10220: *3* LeoQtGui: Splash Screen
     # @+node:ekr.20110605121601.18479: *4* LeoQtGui.createSplashScreen
-    def createSplashScreen(self) -> QWidget:
+    def createSplashScreen(self) -> QWidget | None:
         """Put up a splash screen with Leo's logo."""
         try:
             QApplication = QtWidgets.QApplication
@@ -1571,7 +1571,9 @@ class LeoQtGui(leoGui.LeoGui):
                     svg_height, svg_width = size.height(), size.width()
 
                     # Scale to fraction of screen height
-                    geom = QScreen.availableGeometry(QApplication.primaryScreen())
+                    screen = QApplication.primaryScreen()
+                    assert screen is not None
+                    geom = QScreen.availableGeometry(screen)
                     screen_height = geom.height()
                     target_height_px = screen_height // 4
                     scaleby = target_height_px / svg_height
@@ -1645,7 +1647,7 @@ class LeoQtGui(leoGui.LeoGui):
         parent = widget.parent()
         while parent:
             if isinstance(parent, QtWidgets.QSplitter):
-                return parent, direct_child
+                return parent, cast(QWidget, direct_child)
             direct_child = parent
             parent = parent.parent()
         return None
@@ -1658,7 +1660,7 @@ class LeoQtGui(leoGui.LeoGui):
         return None
 
     # @+node:ekr.20240519115157.1: *4* LeoQtGui.get_top_splitter
-    def get_top_splitter(self, c: Cmdr) -> QWidget:
+    def get_top_splitter(self, c: Cmdr) -> QWidget | None:
         return self.find_widget_by_name(c, 'main_splitter')
 
     # @+node:ekr.20110605121601.18522: *4* LeoQtGui.isTextWidget/Wrapper
@@ -1679,7 +1681,7 @@ class LeoQtGui(leoGui.LeoGui):
     # @+node:ekr.20110605121601.18527: *4* LeoQtGui.widget_name
     def widget_name(self, w: QWidget) -> str:
         return (
-                 w.getName()    or '' if hasattr(w, 'getName')
+                 cast(Any, w).getName() or '' if hasattr(w, 'getName')
             else w.objectName() or '' if hasattr(w, 'objectName')
             else ''
         )  # fmt: skip
@@ -1816,7 +1818,7 @@ class StyleClassManager:
     def has_sclass(self, w: QTextMixin, prop: str) -> bool:
         """Check for style class or list of classes prop on QWidget w"""
         if not prop:
-            return None
+            return False
         props = self.sclasses(w)
         if isinstance(prop, str):
             ans = [prop in props]
@@ -2292,7 +2294,7 @@ class StyleSheetManager:
                 scaled = max(float(sz) * factor, 1)
             except Exception as e:
                 g.es('ssm.rescale_fonts:', e)
-                return None
+                return matchobj.group(0)
             return f'{prefix} {scaled:.1f}{units}'
 
         newsheet = re.sub(RE, scale, sheet)

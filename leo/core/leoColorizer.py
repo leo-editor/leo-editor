@@ -12,7 +12,7 @@ from collections.abc import Callable, Generator, Sequence
 import re
 import string
 import time
-from typing import Any, TYPE_CHECKING
+from typing import Any, cast, TYPE_CHECKING
 from types import ModuleType
 import warnings
 
@@ -21,7 +21,7 @@ try:
     import pygments
     from pygments.lexer import DelegatingLexer, RegexLexer, _TokenType, Text, Error
 except ImportError:
-    pygments = None
+    pygments = None  # type:ignore
 
 # Leo imports...
 from leo.core import leoGlobals as g
@@ -471,7 +471,7 @@ class JEditColorizer(BaseColorizer):
         super().__init__(c)
         self.widget: QWidget = widget
         if widget:  # #503: widget may be None during unit tests.
-            widget.leo_colorizer = self
+            cast(Any, widget).leo_colorizer = self
 
         # Configuration dicts...
         self.configDict: dict[str, str] = {}  # Keys are tags, values are colors (names or values).
@@ -1972,7 +1972,7 @@ class JEditColorizer(BaseColorizer):
                 # Set the bindings to VNode callbacks.
                 tagName = "hyper" + str(self.hyperCount)
                 self.hyperCount += 1
-                ref.tagName = tagName
+                cast(Any, ref).tagName = tagName
                 # @-<< set the hyperlink >>
             else:
                 self.colorRangeWithTag(s, i + n1, k, 'link')
@@ -3375,7 +3375,7 @@ class PygmentsColorizer(JEditColorizer):
         self.getDefaultFormat: Callable
         self.old_v: VNode | None = None
         # Monkey-patch g.isValidLanguage.
-        g.isValidLanguage = self.pygments_isValidLanguage
+        g.isValidLanguage = cast(Any, self.pygments_isValidLanguage)
         # Init common data...
         self.reloadSettings()
 
@@ -3734,7 +3734,7 @@ class QScintillaColorizer(BaseColorizer):
         lexer.setFont(font)
         lexer.setEolFill(False, -1)
         if hasattr(lexer, 'setStringsOverNewlineAllowed'):
-            lexer.setStringsOverNewlineAllowed(False)
+            cast(Any, lexer).setStringsOverNewlineAllowed(False)
         table: list[tuple[str, str]] = []
         aList = c.config.getData('qt-scintilla-styles')
         color: str

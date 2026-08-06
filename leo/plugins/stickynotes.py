@@ -340,7 +340,7 @@ if encOK:
 
 
 # @+node:tbrown.20141214173054.3: ** class TextEditSearch
-class TextEditSearch(QtWidgets.QWidget):  # type:ignore
+class TextEditSearch(QtWidgets.QWidget):
     """A QTextEdit with a search box
 
     Used to make decoded encoded body text searchable, so when you've decoded
@@ -424,7 +424,7 @@ class FocusingPlaintextEdit(TextEditSearch):
 
 
 # @+node:ville.20091023181249.5264: ** class SimpleRichText
-class SimpleRichText(QtWidgets.QTextEdit):  # type:ignore
+class SimpleRichText(QtWidgets.QTextEdit):
     # pylint: disable=method-hidden
 
     def __init__(self, focusin, focusout):
@@ -657,7 +657,7 @@ def tabula_subtree_f(event):
 
 
 # @+node:ville.20100703194946.5584: *3* class Tabula(QMainWindow)
-class Tabula(QtWidgets.QMainWindow):  # type:ignore
+class Tabula(QtWidgets.QMainWindow):
     # @+others
     # @+node:ekr.20101114061906.5445: *4* __init__
     def __init__(self, c):
