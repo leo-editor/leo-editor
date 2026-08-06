@@ -2041,6 +2041,7 @@
 <v t="ekr.20190323043913.1"><vh>@bool use-pygments = False</vh></v>
 <v t="ekr.20190324042831.1"><vh>@bool use-pygments-styles = True</vh></v>
 <v t="ekr.20190323043928.1"><vh>@string pygments-style-name = default</vh></v>
+<v t="vv.20260806120001.1"><vh>@bool use-tree-sitter = False</vh></v>
 <v t="ekr.20170202104705.1"><vh>@bool color-doc-parts-as-rest = True</vh></v>
 <v t="ekr.20250110165136.1"><vh>@bool color-docstrings-as-rest = False</vh></v>
 <v t="ekr.20060828110551"><vh>Default colors, used if no language-specific color are in effect</vh>
@@ -11094,6 +11095,13 @@ False: Use @color settings to configure pygments tokens.
        This allows per-language configuration, just as with Leo's jEdit-based colorers.
 
 
+</t>
+<t tx="vv.20260806120001.1">True: Leo uses a tree-sitter based colorizer (issue #4839) if the
+tree-sitter package and a per-language grammar package are available.
+
+This is a proof of concept. Only @language python and @language javascript
+are supported so far; any other language falls back to no highlighting.
+Requires: pip install tree-sitter tree-sitter-python tree-sitter-javascript
 </t>
 <t tx="ekr.20190324140542.1"># The setting names are names of pygments tokens.
 # Not all tokens are represented here.</t>

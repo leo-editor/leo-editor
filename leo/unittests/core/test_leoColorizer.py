@@ -5,6 +5,7 @@
 # pylint: disable=line-too-long
 
 from typing import Any
+import pytest
 from leo.core import leoGlobals as g
 from leo.core import leoColorizer
 from leo.core.leoColorizer import JEditColorizer
@@ -1643,6 +1644,110 @@ class TestColorizer(LeoUnitTest):
         """
         )
         self.color('pug', text)
+
+    # @-others
+
+
+# @+node:vv.20260806120002.1: ** class TestTreeSitterColorizer(LeoUnitTest)
+class TestTreeSitterColorizer(LeoUnitTest):
+    """Tests of the tree-sitter proof-of-concept colorizer (#4839)."""
+
+    @classmethod
+    def setUpClass(cls: Any) -> None:
+        pytest.importorskip('tree_sitter')
+        pytest.importorskip('tree_sitter_python')
+        pytest.importorskip('tree_sitter_javascript')
+        create_app(gui_name='null')
+
+    # @+others
+    # @+node:vv.20260806120002.2: *3* TestTreeSitterColorizer.tag_at
+    def tag_at(self, x, text, needle):
+        """Return the set of tags covering the first occurrence of `needle` in `text`."""
+        offset = text.index(needle)
+        i, j = offset, offset + len(needle)
+        tags = set()
+        for start, end, tag in x.captures:
+            if start <= i and end >= j:
+                tags.add(tag)
+        return tags
+
+    # @+node:vv.20260806120002.3: *3* TestTreeSitterColorizer.test_python_captures
+    def test_python_captures(self):
+        c = self.c
+        x = leoColorizer.TreeSitterColorizer(c, None)
+        x.language = 'python'
+        x.enabled = True
+        text = self.prep(
+            """
+            # a comment
+            class Foo:
+                def bar(self, x):
+                    if x and not False:
+                        return self.baz(x + 1)
+                    return None
+            """
+        )
+        x.reparse(text)
+        assert x.captures, 'expected at least one capture'
+        self.assertIn('comment1', self.tag_at(x, text, '# a comment'))
+        self.assertIn('keyword4', self.tag_at(x, text, 'Foo'))
+        self.assertIn('keyword1', self.tag_at(x, text, 'def'))
+        self.assertIn('function', self.tag_at(x, text, 'bar'))
+        self.assertIn('keyword2', self.tag_at(x, text, 'False'))
+        self.assertIn('keyword2', self.tag_at(x, text, 'None'))
+
+        # Colorizing line-by-line must not raise, and must call setTag
+        # for at least one line (widget is None, so setTag no-ops safely).
+        offset = 0
+        for line in g.splitLines(text):
+            x.colorLine(line, offset)
+            offset += len(line)
+
+    # @+node:vv.20260806120002.4: *3* TestTreeSitterColorizer.test_javascript_captures
+    def test_javascript_captures(self):
+        c = self.c
+        x = leoColorizer.TreeSitterColorizer(c, None)
+        x.language = 'javascript'
+        x.enabled = True
+        text = self.prep(
+            """
+            // a comment
+            class Foo {
+                bar(x) {
+                    if (x && !false) {
+                        return this.baz(x + 1);
+                    }
+                    return null;
+                }
+            }
+            """
+        )
+        x.reparse(text)
+        assert x.captures, 'expected at least one capture'
+        self.assertIn('comment1', self.tag_at(x, text, '// a comment'))
+        self.assertIn('keyword4', self.tag_at(x, text, 'Foo'))
+        self.assertIn('function', self.tag_at(x, text, 'bar'))
+
+    # @+node:vv.20260806120002.5: *3* TestTreeSitterColorizer.test_unsupported_language
+    def test_unsupported_language(self):
+        """An unsupported @language must not crash: it just yields no captures."""
+        c = self.c
+        x = leoColorizer.TreeSitterColorizer(c, None)
+        x.language = 'rust'
+        x.enabled = True
+        x.reparse('fn main() {}\n')
+        self.assertEqual(x.captures, [])
+
+    # @+node:vv.20260806120002.6: *3* TestTreeSitterColorizer.test_non_ascii_offsets
+    def test_non_ascii_offsets(self):
+        """Captures after multi-byte characters must land at correct char offsets."""
+        c = self.c
+        x = leoColorizer.TreeSitterColorizer(c, None)
+        x.language = 'python'
+        x.enabled = True
+        text = 'x = "café"\ndef bar():\n    pass\n'
+        x.reparse(text)
+        self.assertIn('keyword1', self.tag_at(x, text, 'def'))
 
     # @-others
 

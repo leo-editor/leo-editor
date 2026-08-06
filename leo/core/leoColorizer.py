@@ -9,6 +9,7 @@
 # @+node:ekr.20140827092102.18575: ** << leoColorizer imports >>
 from __future__ import annotations
 from collections.abc import Callable, Generator, Sequence
+import importlib
 import re
 import string
 import time
@@ -22,6 +23,12 @@ try:
     from pygments.lexer import DelegatingLexer, RegexLexer, _TokenType, Text, Error
 except ImportError:
     pygments = None  # type:ignore
+
+# #4839: tree-sitter is an optional alternative colorizer backend.
+try:
+    from tree_sitter import Language, Parser, Query, QueryCursor
+except ImportError:
+    Language = Parser = Query = QueryCursor = None  # type:ignore
 
 # Leo imports...
 from leo.core import leoGlobals as g
@@ -78,8 +85,16 @@ _url_bearing_tags = frozenset(
 
 # @+others
 # @+node:ekr.20190323044524.1: ** function: make_colorizer
-def make_colorizer(c: Cmdr, widget: QWidget) -> JEditColorizer | PygmentsColorizer:
-    """Return an instance of JEditColorizer or PygmentsColorizer."""
+def make_colorizer(
+    c: Cmdr, widget: QWidget
+) -> JEditColorizer | PygmentsColorizer | TreeSitterColorizer:
+    """Return an instance of JEditColorizer, PygmentsColorizer, or TreeSitterColorizer."""
+    if c.config.getBool('use-tree-sitter', default=False):
+        if Language is not None:
+            return TreeSitterColorizer(c, widget)
+        if not g.unitTesting:
+            g.es_print('ignoring @bool use-tree-sitter', color='red')
+            g.es_print('pip install tree-sitter tree-sitter-python tree-sitter-javascript', color='red')
     if c.config.getBool('use-pygments', default=False):
         if pygments:
             return PygmentsColorizer(c, widget)
@@ -3652,6 +3667,232 @@ class PygmentsColorizer(JEditColorizer):
             self.pygmentsMainLoop(s)
 
     # @-others
+
+
+# @+node:vv.20260806120000.1: ** class TreeSitterColorizer(JEditColorizer)
+#
+# #4839: Proof-of-concept colorizer using tree-sitter grammars and highlight
+# queries instead of jEdit mode files. Only python and javascript are
+# supported so far; any other @language falls back to *no* highlighting
+# (not to JEditColorizer -- automatically falling back per-language is
+# future work). The highlight queries below are hand-written for this PoC;
+# swapping in the fuller queries from nvim-treesitter is future work too.
+#
+# Known limitation: tree-sitter reports node ranges as UTF-8 *byte* offsets,
+# while Qt/Python index body text in *characters*. byte_to_char_offsets()
+# below converts once per reparse so non-ASCII source still colors at the
+# right columns.
+_ts_python_query = """
+(comment) @comment
+(string) @string
+[(integer) (float)] @number
+[
+  "def" "class" "return" "if" "elif" "else" "for" "while" "try" "except"
+  "finally" "with" "as" "import" "from" "pass" "break" "continue" "lambda"
+  "yield" "global" "nonlocal" "assert" "del" "raise" "async" "await" "in"
+  "is" "not" "and" "or"
+] @keyword
+[(true) (false) (none)] @constant.builtin
+(function_definition name: (identifier) @function)
+(class_definition name: (identifier) @type)
+(call function: (identifier) @function)
+(call function: (attribute attribute: (identifier) @function))
+(decorator) @function.builtin
+[
+  "+" "-" "*" "/" "//" "%" "**" "=" "==" "!=" "<" ">" "<=" ">=" "->"
+] @operator
+"""
+_ts_javascript_query = """
+(comment) @comment
+(string) @string
+(number) @number
+[
+  "function" "return" "if" "else" "for" "while" "do" "switch" "case"
+  "default" "break" "continue" "var" "let" "const" "class" "extends"
+  "new" "try" "catch" "finally" "throw" "typeof" "instanceof" "in" "of"
+  "async" "await" "yield" "export" "import" "from" "as" "static" "get" "set"
+] @keyword
+[(true) (false) (null) (undefined)] @constant.builtin
+(function_declaration name: (identifier) @function)
+(class_declaration name: (identifier) @type)
+(method_definition name: (property_identifier) @function)
+(call_expression function: (identifier) @function)
+(call_expression function: (member_expression property: (property_identifier) @function))
+[
+  "+" "-" "*" "/" "%" "=" "==" "===" "!=" "!==" "<" ">" "<=" ">=" "=>"
+] @operator
+"""
+
+
+class TreeSitterColorizer(JEditColorizer):
+    """
+    A proof-of-concept colorizer (issue #4839) that colors body text using
+    tree-sitter grammars and highlight queries.
+
+    This is c.frame.body.colorizer when @bool use-tree-sitter is True.
+    """
+
+    # Leo language name -> pip package exposing a `language()` capsule.
+    grammar_modules = {
+        'python': 'tree_sitter_python',
+        'javascript': 'tree_sitter_javascript',
+    }
+
+    # Leo language name -> hand-written tree-sitter highlight query.
+    queries = {
+        'python': _ts_python_query,
+        'javascript': _ts_javascript_query,
+    }
+
+    # tree-sitter capture name -> Leo/jEdit tag name (see JEditColorizer.setTag).
+    # Captures with no entry here are simply left uncolored.
+    capture_to_tag = {
+        'comment': 'comment1',
+        'string': 'literal1',
+        'number': 'literal2',
+        'keyword': 'keyword1',
+        'constant.builtin': 'keyword2',
+        'function': 'function',
+        'function.builtin': 'keyword3',
+        'type': 'keyword4',
+        'operator': 'operator',
+    }
+
+    def __init__(self, c: Cmdr, widget: QWidget) -> None:
+        """Ctor for TreeSitterColorizer class."""
+        # Set these *before* calling super().__init__(): JEditColorizer.__init__
+        # calls reloadSettings(), which calls self.init(), which (being
+        # overridden below) needs these ivars to already exist.
+        self.ts_languages: dict[str, Any] = {}  # language name -> Language, or None.
+        self.ts_parsers: dict[str, Any] = {}  # language name -> Parser, or None.
+        self.ts_queries: dict[str, Any] = {}  # language name -> Query, or None.
+        self.warned_languages: set[str] = set()
+        self.captures: list[tuple[int, int, str]] = []  # Sorted (start, end, tag) triples.
+        self.source_text: str | None = None
+        self.old_v: VNode | None = None
+        super().__init__(c, widget)
+
+    def init(self) -> None:
+        """Parse the current node's body text and cache query captures."""
+        self.reparse(self.c.p.b)
+
+    def reparse(self, text: str) -> None:
+        """Parse `text` with tree-sitter and cache its query captures."""
+        self.source_text = text
+        self.captures = []
+        if self.language not in self.grammar_modules:
+            return
+        parser = self.get_parser(self.language)
+        query = self.get_query(self.language)
+        if not parser or not query:
+            return
+        tree = parser.parse(text.encode('utf-8'))
+        char_offsets = self.byte_to_char_offsets(text)
+        captures: list[tuple[int, int, str]] = []
+        for name, nodes in QueryCursor(query).captures(tree.root_node).items():
+            tag = self.capture_to_tag.get(name)
+            if not tag:
+                continue
+            for node in nodes:
+                captures.append((char_offsets[node.start_byte], char_offsets[node.end_byte], tag))
+        captures.sort()
+        self.captures = captures
+
+    def get_language(self, language: str) -> Any:
+        """Return the tree_sitter.Language for `language`, loading it lazily. May be None."""
+        if language not in self.ts_languages:
+            result = None
+            module_name = self.grammar_modules.get(language)
+            if module_name:
+                try:
+                    module = importlib.import_module(module_name)
+                    result = Language(module.language())
+                except Exception:
+                    if language not in self.warned_languages and not g.unitTesting:
+                        self.warned_languages.add(language)
+                        g.es_print(f"tree-sitter: no grammar for {language!r}", color='red')
+                        g.es_print(f"pip install {module_name}", color='red')
+            self.ts_languages[language] = result
+        return self.ts_languages[language]
+
+    def get_parser(self, language: str) -> Any:
+        """Return a cached tree_sitter.Parser for `language`. May be None."""
+        if language not in self.ts_parsers:
+            ts_language = self.get_language(language)
+            self.ts_parsers[language] = Parser(ts_language) if ts_language else None
+        return self.ts_parsers[language]
+
+    def get_query(self, language: str) -> Any:
+        """Return a cached tree_sitter.Query for `language`. May be None."""
+        if language not in self.ts_queries:
+            ts_language = self.get_language(language)
+            query_source = self.queries.get(language)
+            query = None
+            if ts_language and query_source:
+                try:
+                    query = Query(ts_language, query_source)
+                except Exception:
+                    g.es_exception()
+            self.ts_queries[language] = query
+        return self.ts_queries[language]
+
+    def byte_to_char_offsets(self, text: str) -> list[int]:
+        """
+        Return a list mapping each UTF-8 byte offset of `text` to the
+        corresponding character (code point) offset.
+
+        tree-sitter reports node ranges in UTF-8 bytes; Qt/Python index body
+        text in characters, so multi-byte characters would otherwise throw
+        off every capture that follows them on the line.
+        """
+        offsets: list[int] = []
+        for i, ch in enumerate(text):
+            offsets.extend([i] * len(ch.encode('utf-8')))
+        offsets.append(len(text))
+        return offsets
+
+    def recolor(self, s: str) -> None:
+        """
+        TreeSitterColorizer.recolor: Recolor a *single* line, s.
+        QSyntaxHighlighter calls this method repeatedly and automatically.
+        """
+        p = self.c.p
+        self.recolorCount += 1
+        if p.v != self.old_v:
+            self.updateSyntaxColorer(p)
+            self.old_v = p.v
+            self.init()
+        elif p.b != self.source_text:
+            # #4839 open question: this reparses the whole node on every edit
+            # rather than applying an incremental tree_sitter edit. Fine for
+            # the node-sized bodies Leo typically has; a real incremental
+            # model is follow-up work.
+            self.reparse(p.b)
+        if not s or not self.enabled:
+            return
+        offset = self.highlighter.currentBlock().position()
+        self.colorLine(s, offset)
+
+    def colorLine(self, s: str, offset: int) -> None:
+        """Colorize line `s`, whose first character is at character offset `offset`."""
+        end_offset = offset + len(s)
+        for start, end, tag in self.captures:
+            if start >= end_offset:
+                break
+            if end <= offset:
+                continue
+            i, j = max(0, start - offset), min(len(s), end - offset)
+            if i < j:
+                self.setTag(tag, s, i, j)
+
+    def force_recolor(self) -> None:
+        """Force a complete recolor. A hook for the 'recolor' command."""
+        p = self.c.p
+        self.updateSyntaxColorer(p)
+        self.old_v = p.v
+        self.init()
+        if QtGui and isinstance(self.highlighter, QtGui.QSyntaxHighlighter):
+            self.highlighter.rehighlight()
 
 
 # @+node:ekr.20140906081909.18689: ** class QScintillaColorizer(BaseColorizer)
