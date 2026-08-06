@@ -60,7 +60,7 @@ multiprefix = '@multiprefix'
 multipath = '@multipath'
 haveseen: weakref.WeakKeyDictionary = weakref.WeakKeyDictionary()
 files: dict[str, Any] = {}  # Values are positions.
-original_precheck = None
+original_precheck: Any = None
 
 
 # @+others

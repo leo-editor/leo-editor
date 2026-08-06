@@ -25,7 +25,7 @@ def init():
     return True  # For unit tests.
 
 
-class QNCalendarWidget(QtWidgets.QCalendarWidget):  # type:ignore
+class QNCalendarWidget(QtWidgets.QCalendarWidget):
     def __init__(self, n=3, columns=3, year=None, month=None):
         """set up
 
@@ -117,7 +117,7 @@ class QNCalendarWidget(QtWidgets.QCalendarWidget):  # type:ignore
         self.activated.emit(date)
 
 
-class QNDateEdit(QtWidgets.QDateEdit):  # type:ignore
+class QNDateEdit(QtWidgets.QDateEdit):
     def __init__(self, parent=None, n=3, columns=3):
         """set up
 

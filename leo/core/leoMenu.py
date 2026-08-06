@@ -697,7 +697,7 @@ class LeoMenu:
     ) -> Any:
         pass
 
-    def new_menu(self, Any: Widget, tearoff: int = 0, label: str = '') -> Any:
+    def new_menu(self, parent: Widget, tearoff: int = 0, label: str = '') -> Any:
         pass
 
     # @+node:ekr.20031218072017.3810: *4* LeoMenu.9 Routines with new spellings

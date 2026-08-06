@@ -82,7 +82,7 @@ class NavController:
 
     # @+others
     # @+node:ville.20090518182905.5427: *3* NavController.makeButtons
-    def makeButtons(self) -> tuple[Action, Action]:
+    def makeButtons(self) -> tuple[Action, Action] | None:
         c = self.c
         w = c.frame.iconBar.w
         if not w:

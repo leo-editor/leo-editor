@@ -9,6 +9,7 @@ By Adrian Calvin.
 
 # @+<< imports auto_colorize2_0.py >>
 # @+node:ekr.20170619151859.3: ** << imports auto_colorize2_0.py >>
+from typing import Any, cast
 import yaml
 from leo.core import leoGlobals as g
 
@@ -99,7 +100,8 @@ def colorize(c, p, item):
             # color
             try:
                 if f['color']:
-                    item.setForeground(0, QBrush(QColor("#" + str(f['color']))))
+                    color = cast(Any, QColor)("#" + str(f['color']))
+                    item.setForeground(0, cast(Any, QBrush)(color))
             except Exception:
                 print(item)
             # weight

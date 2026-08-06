@@ -43,10 +43,10 @@ class PyGeoTag(object):
         self.synchronous = synchronous
 
         if callback is not None:
-            self.callback = callback  # type:ignore
+            self.callback = callback
 
         if synchronous:
-            self.callback = self._store  # type:ignore
+            self.callback = self._store
 
         self.server_thread: threading.Thread = None
         self.running = False

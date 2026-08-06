@@ -51,7 +51,7 @@ with some modifications made for Leo embedding.
 import re
 import sys
 import code
-from typing import Any
+from typing import Any, cast
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtWidgets
 from leo.core.leoQt import Key
@@ -168,7 +168,7 @@ if QtWidgets:
                 # and reinsert the locals back into the interpreter dictionary
                 selfName = interpreterLocals['self'].__class__.__name__
                 interpreterLocalVars = interpreterLocals.pop('self')
-                self.interpreterLocals[selfName] = interpreterLocalVars
+                cast(Any, self.interpreterLocals)[selfName] = interpreterLocalVars
             else:
                 self.interpreterLocals = interpreterLocals
 
@@ -177,7 +177,7 @@ if QtWidgets:
         # @+node:peckj.20150428142729.14: *3* PyInterp.updateInterpreterLocals
         def updateInterpreterLocals(self, newLocals):
             className = newLocals.__class__.__name__
-            self.interpreterLocals[className] = newLocals
+            cast(Any, self.interpreterLocals)[className] = newLocals
 
         # @+node:peckj.20150428142729.15: *3* PyInterp.write
         def write(self, line):

@@ -231,9 +231,10 @@ try:
     import asynchat
     import asyncore
 except Exception:
-    asynchat = asyncore = None
+    asynchat = asyncore = None  # type:ignore
 import http.server
 import json
+from typing import Any, cast
 import io
 import os
 import select
@@ -286,7 +287,7 @@ def init():
                 % (config.http_ip, config.http_port, e)
             )
             return False
-        asyncore.read = a_read
+        asyncore.read = cast(Any, a_read)
         g.registerHandler("idle", plugin_wrapper)
         g.es("http serving enabled at %s:%s" % (config.http_ip, config.http_port), color="purple")
     g.plugin_signon(__name__)
@@ -335,7 +336,7 @@ def onFileOpen(tag, keywords):
     getConfiguration(c)
     if config.http_active and not wasactive:  # Ok for unit testing:
         Server('', config.http_port, RequestHandler)
-        asyncore.read = a_read
+        asyncore.read = cast(Any, a_read)
         g.registerHandler("idle", plugin_wrapper)
         g.es("http serving enabled on port %s, " % (config.http_port), color="purple")
 
@@ -383,7 +384,7 @@ def getData(setting):
 class config:
     enabled = None  # True when security check re http-allow-remote-exec passes.
     http_active = False
-    http_timeout = 0
+    http_timeout: float = 0
     http_ip = '127.0.0.1'
     http_port = 8130
     rst2_http_attributename = 'rst_http_attribute'
@@ -765,7 +766,7 @@ class LeoActions:
         one_tab_links = []
         if 'www.one-tab.com' in url.lower():
             one_tab_links = query.get('ln', [''])[0]
-            one_tab_links = json.loads(one_tab_links)  # type:ignore
+            one_tab_links = json.loads(one_tab_links)
         c = None  # outline for bookmarks
         previous = None  # previous bookmark for adding selections
         parent = None  # parent node for new bookmarks
@@ -1061,7 +1062,7 @@ if asynchat:
             bytesToRead = int(self.headers.getheader('content-length'))
             # set terminator to length (will read bytesToRead bytes)
             self.set_terminator(bytesToRead)
-            self.buffer = StringIO()  # type:ignore
+            self.buffer = StringIO()
             # control will be passed to a new found_terminator
             self.found_terminator = self.handle_post_data  # type:ignore
 
@@ -1197,7 +1198,7 @@ if asyncore:
 
 # @+node:ekr.20140920145803.17997: ** functions
 # @+node:EKR.20040517080250.47: *3* a_read (asynchore override)
-def a_read(obj):
+def a_read(obj: Any) -> None:
     try:
         obj.handle_read_event()
     except asyncore.ExitNow:

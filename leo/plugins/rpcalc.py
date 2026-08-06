@@ -232,7 +232,7 @@ def onCreate(tag: str, keys: Any) -> None:
 # @+node:tom.20230424130102.2: **  altbasedialog
 # @+others
 # @+node:tom.20230424130102.3: *3* class AltBaseDialog
-class AltBaseDialog(QWidget):  # type: ignore
+class AltBaseDialog(QWidget):
     """Displays edit boxes for other number bases."""
 
     baseCode = {'X': 16, 'O': 8, 'B': 2, 'D': 10}
@@ -367,7 +367,7 @@ class AltBaseDialog(QWidget):  # type: ignore
 
 
 # @+node:tom.20230424130102.13: *3* class AltBaseBox
-class AltBaseBox(QLabel):  # type: ignore
+class AltBaseBox(QLabel):
     """Displays an edit box at a particular base."""
 
     # @+others
@@ -403,7 +403,7 @@ class AltBaseBox(QLabel):  # type: ignore
 # @+node:tom.20230424130102.18: **  calcbutton
 # @+others
 # @+node:tom.20230424130102.19: *3* class CalcButton
-class CalcButton(QPushButton):  # type: ignore
+class CalcButton(QPushButton):
     """Calculator button class - size change & emits clicked text signal."""
 
     activated = pyqtSignal(str)
@@ -898,7 +898,7 @@ class CalcCore:
 # @@language python
 # @@tabwidth -4
 # @+node:tom.20230424130102.50: ** class CalcDlg
-class CalcDlg(QWidget):  # type: ignore
+class CalcDlg(QWidget):
     """Main dialog for calculator program."""
 
     # @+others
@@ -1443,7 +1443,7 @@ class CalcDlg(QWidget):  # type: ignore
 
 # @+others
 # @+node:tom.20230424130102.76: *3* class Lcd
-class Lcd(QLCDNumber):  # type: ignore
+class Lcd(QLCDNumber):
     """Main LCD Display."""
 
     # @+others
@@ -1475,7 +1475,7 @@ class Lcd(QLCDNumber):  # type: ignore
 
 
 # @+node:tom.20230424130102.80: *3* class LcdBox
-class LcdBox(QFrame):  # type: ignore
+class LcdBox(QFrame):
     """Frame for LCD display."""
 
     # @+others
@@ -1552,13 +1552,13 @@ class CalcStack(list):
 
 # @+others
 # @+node:tom.20230424130102.94: *3* class ExtraViewWidget(QTreeWidget)
-class ExtraViewWidget(QTreeWidget):  # type: ignore
+class ExtraViewWidget(QTreeWidget):
     """Base class of list views for ExtraDisplay."""
 
     # @+others
     # @+node:tom.20230424130102.95: *4* __init__
     def __init__(self, calcRef, parent=None):
-        QListView.__init__(self, parent)  # type:ignore  # pylint: disable=non-parent-init-called
+        QListView.__init__(self, parent)  # pylint: disable=non-parent-init-called
         self.calcRef = calcRef
         self.setRootIsDecorated(False)
 
@@ -1680,7 +1680,7 @@ class MemViewWidget(ExtraViewWidget):
 
 
 # @+node:tom.20230424130102.109: *3* class ExtraDisplay
-class ExtraDisplay(QWidget):  # type: ignore
+class ExtraDisplay(QWidget):
     """Displays registers, history or memory values, allows copies."""
 
     # @+others
@@ -1799,7 +1799,7 @@ class ExtraDisplay(QWidget):  # type: ignore
 # @+node:tom.20230424130102.121: **  helpview
 # @+others
 # @+node:tom.20230424130102.122: *3* class HelpView
-class HelpView(QMainWindow):  # type: ignore
+class HelpView(QMainWindow):
     """Main window for viewing an html help file."""
 
     # @+others
@@ -1897,7 +1897,7 @@ class HelpView(QMainWindow):  # type: ignore
 
 
 # @+node:tom.20230424130102.128: *3* class HelpViewer
-class HelpViewer(QTextBrowser):  # type: ignore
+class HelpViewer(QTextBrowser):
     """Shows an html help file."""
 
     # @+others
@@ -2024,8 +2024,8 @@ class Option:
                             print('Error - could not write to config dir')
                             self.path = ''
         self.keySpaces = keySpaces
-        self.dfltDict = {}  # type: ignore
-        self.userDict = {}  # type: ignore
+        self.dfltDict = {}
+        self.userDict = {}
         self.dictList = (self.userDict, self.dfltDict)
         self.chgList = []
 
@@ -2175,7 +2175,7 @@ class Option:
 # @+node:tom.20230424130102.156: **  optiondlg
 # @+others
 # @+node:tom.20230424130102.157: *3* class OptionDlg
-class OptionDlg(QDialog):  # type: ignore
+class OptionDlg(QDialog):
     """Works with Option class to provide a dialog for pref/options."""
 
     # @+others

@@ -38,7 +38,7 @@ import time
 import traceback
 import types
 from types import ModuleType
-from typing import cast, Any, IO, TYPE_CHECKING
+from typing import cast, Any, IO, NoReturn, TYPE_CHECKING
 import unittest
 import urllib
 import urllib.parse as urlparse
@@ -685,8 +685,8 @@ user_dict: dict[str, Value] = {}  # Non-persistent dictionary for scripts and pl
 app: LeoApp = None  # type:ignore # There seems to be no way to init g.app here.
 
 # Global status vars.
-inScript = False  # A synonym for app.inScript
-unitTesting = False  # A synonym for app.unitTesting.
+inScript: bool = False  # A synonym for app.inScript
+unitTesting: bool = False  # A synonym for app.unitTesting.
 
 
 # @+others
@@ -2338,7 +2338,10 @@ class NullObject:
     def __contains__(self, item: object) -> bool:
         return False
 
-    def __getitem__(self, key: str) -> None:
+    def __getitem__(self, key: str) -> NoReturn:
+        raise KeyError
+
+    def __delitem__(self, key: str) -> NoReturn:
         raise KeyError
 
     def __setitem__(self, key: str, val: Value) -> None:
@@ -2351,7 +2354,7 @@ class NullObject:
         return 0
 
     # Iteration methods:
-    def __next__(self) -> None:
+    def __next__(self) -> NoReturn:
         raise StopIteration
 
 
@@ -3413,7 +3416,7 @@ def isValidLanguage(language: str) -> bool:
 
 # @+node:ekr.20250403040834.1: *3* --- to be deprecated! Using directives list
 # @+node:ekr.20080827175609.52: *4* g.scanAtCommentAndLanguageDirectives (deprecated)
-def scanAtCommentAndAtLanguageDirectives(aList: list) -> dict[str, str] | None:
+def scanAtCommentAndAtLanguageDirectives(aList: list) -> dict[str, Any] | None:
     """
     Scan aList for @comment and @language directives.
 
@@ -3898,7 +3901,7 @@ def guessExternalEditor(c: Cmdr | None = None) -> str:
         and g.app.db.get("LEO_EDITOR")
     )
     if editor:
-        return editor
+        return str(editor)
     # fallbacks
     platform = sys.platform.lower()
     if platform.startswith('win'):
@@ -3914,7 +3917,7 @@ or do g.app.db['LEO_EDITOR'] = "gvim"''',
 
 
 # @+node:ekr.20160330204014.1: *3* g.init_dialog_folder
-def init_dialog_folder(c: Cmdr, p: Position, use_at_path: bool = True) -> str:
+def init_dialog_folder(c: Cmdr | None, p: Position | None, use_at_path: bool = True) -> str:
     """Return the most convenient folder to open or save a file."""
     if c and p and use_at_path:
         if path := c.fullPath(p):
@@ -7171,7 +7174,7 @@ def init_zodb(pathToZodbStorage: str, verbose: bool = True) -> Value:
     if init_zodb_failed.get(pathToZodbStorage):
         return None
     try:
-        import ZODB  # type:ignore
+        import ZODB
     except ImportError:
         if verbose:
             g.es('g.init_zodb: can not import ZODB')
@@ -7649,7 +7652,7 @@ def getDocStringForFunction(func: Callable) -> str:
     """Return the docstring for a function that creates a Leo command."""
 
     def name(func: Callable) -> str:
-        return func.__name__ if hasattr(func, '__name__') else '<no __name__>'
+        return str(func.__name__) if hasattr(func, '__name__') else '<no __name__>'
 
     def get_defaults(func: Callable, i: int) -> Value:
         defaults = inspect.getfullargspec(func)[3]
@@ -7849,7 +7852,7 @@ def findTopLevelNode(c: Cmdr, headline: str, exact: bool = True) -> Position | N
 # @+node:EKR.20040614071102.1: *3* g.getScript & helpers
 def getScript(
     c: Cmdr,
-    p: Position,
+    p: Position | None,
     useSelectedText: bool = True,
     forcePythonSentinels: bool = True,
     useSentinels: bool = True,

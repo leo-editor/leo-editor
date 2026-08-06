@@ -17,7 +17,7 @@ Terry Brown, terrynbrown@gmail.com, Thu Mar 23 21:13:38 2017
 from __future__ import annotations
 from collections import defaultdict
 from collections.abc import Callable
-from typing import Any
+from typing import Any, cast
 
 
 # @-<< signal_manager imports >>
@@ -42,7 +42,7 @@ class MsgSignalHandled:
 # @+node:tbrown.20171028115601.5: ** _setup
 def _setup(obj: object) -> None:
     if not hasattr(obj, '_signal_data'):
-        obj._signal_data = SignalData()
+        cast(Any, obj)._signal_data = SignalData()
 
 
 # @+node:tbrown.20171028115601.6: ** emit

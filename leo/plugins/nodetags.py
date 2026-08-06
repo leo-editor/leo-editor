@@ -108,7 +108,7 @@ try:
     from leo.core.leoQt import QtCore, QtWidgets
     from leo.core.leoQt import MouseButton
 except Exception:
-    QtCore = QtWidgets = None
+    QtCore = QtWidgets = None  # type:ignore
 
 if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
@@ -199,7 +199,7 @@ class TagController:
         # Print all tags.
         if d:
             for key in sorted(d):
-                aList = d.get(key)
+                aList = d[key]
                 for h in sorted(aList):
                     print(f"{key:>8} {h}")
         else:
@@ -284,7 +284,7 @@ if QtWidgets:
     class LeoTagWidget(QtWidgets.QWidget):
         # @+others
         # @+node:peckj.20140804114520.15200: *3* tag_w.__init__
-        def __init__(self, c: Cmdr, parent: QtWidgets.QWidget = None) -> None:
+        def __init__(self, c: Cmdr, parent: QtWidgets.QWidget | None = None) -> None:
             super().__init__(parent)
             self.c = c
             self.tc = self.c.theTagController
@@ -493,7 +493,7 @@ if QtWidgets:
             self.update_current_tags(self.c.p)
 
         # @+node:peckj.20140806145948.6579: *4* tag_w.add_tag
-        def add_tag(self, event: Event = None) -> None:
+        def add_tag(self, event: Event | None = None) -> None:
             p = self.c.p
             tag = str(self.comboBox.currentText()).strip()
             if not tag:

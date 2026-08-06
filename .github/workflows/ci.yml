@@ -54,8 +54,15 @@ jobs:
           types-docutils types-Markdown types-paramiko types-PyYAML
           types-requests types-six
           "PyQt6>=6.6" PyQt6-QScintilla PyQt6-WebEngine ty
-      ###
-      # - run: python -m mypy leo
+          black pylint Jinja2 flake8 pyflakes Pygments
+      # These 6 are optional runtime deps for individual plugins/commands
+      # (leoBeautify.py, checkerCommands.py, viewrendered.py, leoColorizer.py),
+      # each guarded by 'try: import X except: X = None'. Installing them
+      # here matches a typical dev environment (they're common enough to
+      # often be present) so mypy/ty check the same code path CI and
+      # contributors actually see, instead of only the ignore_missing_imports
+      # fallback.
+      - run: python -m mypy leo
       # Informational only: ty (https://github.com/astral-sh/ty) is an
       # actively-developed, much faster alternative to mypy, still in beta.
       # It's noticeably stricter than our current mypy config in some areas

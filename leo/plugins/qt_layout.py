@@ -627,7 +627,7 @@ class LayoutCacheWidget(QWidget):
         w: QWidget | None = None
         for kid in self.children():
             if kid.objectName() == name:
-                w = kid  # type: ignore [assignment]
+                w = kid  # type:ignore
         return w
 
     # @+node:ekr.20241027181931.1: *4* LCW.resize_pane
@@ -694,7 +694,7 @@ class LayoutCacheWidget(QWidget):
         # This is indicated by using the name VRX_PLACEHOLDER_NAME in the layout.
         # In building the SPLITTER dict we replace the placeholder
         # by VR3_OBJ_NAME if it exists, otherwise VR_OBJ_NAME.
-        SPLITTERS: dict[str, str] = dict()
+        SPLITTERS: dict[str, Any] = dict()
         for k, v in layout['SPLITTERS'].items():  # type:ignore
             if k == VRX_PLACEHOLDER_NAME:
                 k = VR3_OBJ_NAME if has_vr3 else VR_OBJ_NAME
