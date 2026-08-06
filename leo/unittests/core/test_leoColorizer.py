@@ -1808,6 +1808,70 @@ class TestTreeSitterColorizer(LeoUnitTest):
         self.assertEqual(col, 0)
         self.assertEqual(x.charToByteOffset(text, len(text)), len(text.encode('utf-8')))
 
+    # @+node:vv.20260806120002.9: *3* TestTreeSitterColorizer.test_fallback_to_jedit_for_unsupported_language
+    def test_fallback_to_jedit_for_unsupported_language(self):
+        """
+        A language tree-sitter doesn't cover must be colored by
+        JEditColorizer's real engine, not left uncolored.
+        """
+        c = self.c
+        x = leoColorizer.TreeSitterColorizer(c, None)
+        x.language = 'rest'  # Not in grammar_modules.
+        x.enabled = True
+        self.assertFalse(x.tsSupported('rest'))
+
+        # init() must dispatch to the real jEdit engine, not the tree-sitter path.
+        x.init()
+        self.assertFalse(x.use_tree_sitter)
+        self.assertIsNotNone(x.mode)  # A jEdit mode was actually loaded.
+
+        # Drive jEdit's own line loop directly (same convention TestColorizer.color
+        # uses to test JEditColorizer without a live Qt widget).
+        text = "This is *emphasized* rest text.\n"
+        n = x.initBlock0()
+        tags_before = x.tagCount
+        x.mainLoop(n, text, 0, len(text))
+        self.assertGreater(x.tagCount, tags_before)  # Something was actually colored.
+
+    # @+node:vv.20260806120002.10: *3* TestTreeSitterColorizer.test_use_tree_sitter_recomputed_per_node
+    def test_use_tree_sitter_recomputed_per_node(self):
+        """use_tree_sitter must reflect *this* node's language, not a stale value."""
+        c = self.c
+        x = leoColorizer.TreeSitterColorizer(c, None)
+
+        x.language = 'python'
+        x.enabled = True
+        x.init()
+        self.assertTrue(x.use_tree_sitter)
+
+        x.language = 'forth'  # Not in grammar_modules.
+        x.enabled = True
+        x.init()
+        self.assertFalse(x.use_tree_sitter)
+        self.assertIsNotNone(x.mode)
+
+    # @+node:vv.20260806120002.11: *3* TestTreeSitterColorizer.test_reparse_epoch_advances_on_real_edits_only
+    def test_reparse_epoch_advances_on_real_edits_only(self):
+        """
+        reparse_epoch must bump on every reparse() that runs a real parse, so
+        Qt's own state-cascade (see recolor()) repaints downstream lines after
+        an edit -- but recolor() only calls reparse() when the text actually
+        changed, so re-parsing the same text must not bump it further.
+        """
+        c = self.c
+        x = leoColorizer.TreeSitterColorizer(c, None)
+        x.language = 'python'
+        x.enabled = True
+
+        text1 = 'x = 1\n'
+        x.reparse(text1)
+        epoch1 = x.reparse_epoch
+        self.assertGreater(epoch1, 0)
+
+        text2 = 'x = 12\n'
+        x.reparse(text2)
+        self.assertGreater(x.reparse_epoch, epoch1)
+
     # @-others
 
 

@@ -3673,10 +3673,12 @@ class PygmentsColorizer(JEditColorizer):
 #
 # #4839: Proof-of-concept colorizer using tree-sitter grammars and highlight
 # queries instead of jEdit mode files. Only python and javascript are
-# supported so far; any other @language falls back to *no* highlighting
-# (not to JEditColorizer -- automatically falling back per-language is
-# future work). The highlight queries below are hand-written for this PoC;
-# swapping in the fuller queries from nvim-treesitter is future work too.
+# colored via tree-sitter so far; every other @language is colored by
+# JEditColorizer's real engine instead (decided once per node -- see
+# recolor()), so turning this on doesn't take away highlighting for the
+# ~150 languages tree-sitter grammars don't (yet) cover here. The highlight
+# queries below are hand-written for this PoC; swapping in the fuller
+# queries from nvim-treesitter is future work.
 #
 # Known limitation: tree-sitter reports node ranges as UTF-8 *byte* offsets,
 # while Qt/Python index body text in *characters*. byte_to_char_offsets()
@@ -3726,8 +3728,10 @@ _ts_javascript_query = """
 
 class TreeSitterColorizer(JEditColorizer):
     """
-    A proof-of-concept colorizer (issue #4839) that colors body text using
-    tree-sitter grammars and highlight queries.
+    A proof-of-concept colorizer (issue #4839) that colors @language python
+    and @language javascript nodes using tree-sitter grammars and highlight
+    queries, and delegates every other language to JEditColorizer's own
+    engine unchanged.
 
     This is c.frame.body.colorizer when @bool use-tree-sitter is True.
     """
@@ -3771,13 +3775,28 @@ class TreeSitterColorizer(JEditColorizer):
         self.source_text: str | None = None
         self.tree: Any = None  # The last tree_sitter.Tree for the *current* node, or None.
         self.old_v: VNode | None = None
+        self.reparse_epoch = 0  # Bumped on every real reparse; see recolor().
+        self.use_tree_sitter = True  # Recomputed by init(); True is fine pre-init.
         super().__init__(c, widget)
 
+    def tsSupported(self, language: str) -> bool:
+        """True if tree-sitter can actually parse and query `language` right now."""
+        return bool(self.get_parser(language)) and bool(self.get_query(language))
+
     def init(self) -> None:
-        """Parse the current node's body text and cache query captures."""
-        # A different node may use a different language: never carry a tree across nodes.
-        self.tree = None
-        self.reparse(self.c.p.b)
+        """
+        Init for self.language: tree-sitter if it's supported, otherwise
+        fall back to JEditColorizer's real jEdit-mode-file engine so turning
+        this colorizer on doesn't take away highlighting for the ~150
+        languages tree-sitter grammars don't (yet) cover here.
+        """
+        self.use_tree_sitter = self.tsSupported(self.language)
+        if self.use_tree_sitter:
+            # A different node may use a different language: never carry a tree across nodes.
+            self.tree = None
+            self.reparse(self.c.p.b)
+        else:
+            super().init()
 
     def reparse(self, text: str) -> None:
         """
@@ -3792,6 +3811,7 @@ class TreeSitterColorizer(JEditColorizer):
         self.source_text = text
         self.captures = []
         self.tree = None
+        self.reparse_epoch += 1
         if self.language not in self.grammar_modules:
             return
         parser = self.get_parser(self.language)
@@ -3918,19 +3938,41 @@ class TreeSitterColorizer(JEditColorizer):
         """
         TreeSitterColorizer.recolor: Recolor a *single* line, s.
         QSyntaxHighlighter calls this method repeatedly and automatically.
+
+        Dispatches per-node to tree-sitter (python/javascript) or, for
+        every other @language, to JEditColorizer's own engine -- decided
+        once per node so an embedded-language switch mid-node can't flip
+        engines out from under a half-finished parse.
         """
         p = self.c.p
         self.recolorCount += 1
         if p.v != self.old_v:
             self.updateSyntaxColorer(p)
             self.old_v = p.v
-            self.init()
-        elif p.b != self.source_text:
-            self.reparse(p.b)  # Incremental: reuses self.tree via applyEdit().
-        if not s or not self.enabled:
+            self.init()  # Also recomputes self.use_tree_sitter for this node.
+        if not self.use_tree_sitter:
+            # #4839 / Edward's review: JEditColorizer.recolor is built
+            # entirely around QSyntaxHighlighter's line-by-line contract
+            # (previousBlockState()/setCurrentBlockState() state chains).
+            # Call the real thing rather than reimplementing any of it.
+            JEditColorizer.recolor(self, s)
             return
-        offset = self.highlighter.currentBlock().position()
-        self.colorLine(s, offset)
+        if p.b != self.source_text:
+            self.reparse(p.b)  # Incremental: reuses self.tree via applyEdit().
+        if s and self.enabled:
+            offset = self.highlighter.currentBlock().position()
+            self.colorLine(s, offset)
+        # QSyntaxHighlighter only keeps calling highlightBlock() for *later*
+        # blocks when this block's state differs from its previous run.
+        # tree-sitter reparses the whole node, not line-by-line, so without
+        # this an edit that changes captures on downstream lines (e.g.
+        # opening a multi-line string) wouldn't get repainted until
+        # something else happened to touch those lines. Stamping every
+        # block with the current reparse epoch makes each one "changed"
+        # right after a real reparse, so Qt's own (safe, non-reentrant)
+        # cascading propagates the repaint for us -- the same mechanism
+        # JEditColorizer relies on, not a competing one.
+        self.setState(self.reparse_epoch)
 
     def colorLine(self, s: str, offset: int) -> None:
         """Colorize line `s`, whose first character is at character offset `offset`."""
@@ -3949,7 +3991,10 @@ class TreeSitterColorizer(JEditColorizer):
         p = self.c.p
         self.updateSyntaxColorer(p)
         self.old_v = p.v
-        self.init()
+        self.init()  # Also recomputes self.use_tree_sitter for this node.
+        # Safe here: unlike recolor(), this runs from a user command, not
+        # from inside a highlightBlock() callback, so calling rehighlight()
+        # directly (rather than via the epoch/setState trick) is fine.
         if QtGui and isinstance(self.highlighter, QtGui.QSyntaxHighlighter):
             self.highlighter.rehighlight()
 
