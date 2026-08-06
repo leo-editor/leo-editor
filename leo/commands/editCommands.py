@@ -1491,15 +1491,15 @@ class EditCommandsClass(BaseEditCommandsClass):
         return ''.join([f"{str(key)}{str(d[key])}" for key in sorted(d)])
 
     # @+node:ekr.20150514063305.233: *5* ec.getIconList
-    def getIconList(self, v: VNode) -> list[dict[str, Any]]:
+    def getIconList(self, v: VNode) -> list[dict[str, str]]:
         """Return list of icons for v."""
-        d_list: list[dict[str, Any]] = []
+        d_list: list[dict[str, str]] = []
         if hasattr(v, 'unknownAttributes'):
             d_list = [dict(i) for i in v.u.get('icons', [])]
         return d_list
 
     # @+node:ekr.20150514063305.234: *5* ec.setIconList
-    def setIconList(self, p: Position, aList: list[Any]) -> None:
+    def setIconList(self, p: Position, aList: list[dict[str, str]]) -> None:
         """Set list of icons for position p to aList"""
         current = self.getIconList(p.v)
         if not aList and not current:
