@@ -5412,9 +5412,6 @@ class Commands:
                         'type': 'file',
                         'file': iconPath,
                         'where': 'beforeHeadline',
-                        'xoffset': 2,
-                        'xpad': 1,
-                        'yoffset': 0,
                     }
                 )
                 p.v.u['icons'] = aList

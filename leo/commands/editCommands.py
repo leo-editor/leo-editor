@@ -1398,13 +1398,11 @@ class EditCommandsClass(BaseEditCommandsClass):
         if not paths:
             return
         aList: list[dict[str, Any]] = []
-        xoffset = 2
         for path in paths:
-            xoffset = self.appendImageDictToList(aList, path, xoffset)
+            self.appendImageDictToList(aList, path)
         aList2 = self.getIconList(p.v)
         aList2.extend(aList)
         self.setIconList(p, aList2)
-        ### g.printObj(aList2, tag=p.h)
         p.setDirty()
         c.setChanged()
 
@@ -1443,8 +1441,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         if not p:
             p = c.p
         aList: list[Any] = []
-        xoffset = 2
-        xoffset = self.appendImageDictToList(aList, path, xoffset)
+        self.appendImageDictToList(aList, path)
         aList2 = self.getIconList(p.v)
         if pos is None:
             pos = len(aList2)
@@ -1473,24 +1470,20 @@ class EditCommandsClass(BaseEditCommandsClass):
         self,
         aList: list,
         path: str,
-        xoffset: int,
-    ) -> int:
+    ) -> None:
         c = self.c
         path = g.app.gui.getImageFinder(path)
-        image, image_height = g.app.gui.getTreeImage(c, path)
-        if not image:
+        image, _image_height = g.app.gui.getTreeImage(c, path)
+        if image:
+            aList.append(
+                {
+                    'type': 'file',
+                    'file': path,
+                    'where': 'beforeHeadline',
+                }
+            )
+        else:
             g.es('can not load image:', path)
-            return xoffset
-        d = {
-            'type': 'file',
-            'file': path,
-            'where': 'beforeHeadline',
-            'yoffset': 0,
-            'xoffset': xoffset,
-            'xpad': 1,  # -2,
-        }
-        aList.append(d)
-        return xoffset + 2
 
     # @+node:ekr.20150514063305.232: *5* ec.dHash
     def dHash(self, d: dict[str, str]) -> str:
