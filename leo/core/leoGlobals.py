@@ -2695,7 +2695,6 @@ widget_classes = [
     'QTextBrowser',
     'QTextEditWrapper',
     'StringTextWrapper',
-    'todoQtUI',  # todo.py, a QtWidgets.QWidget.
     'VisLineEdit',
 ]
 

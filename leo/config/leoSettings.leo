@@ -10924,7 +10924,7 @@ See https://jedi.readthedocs.io/en/latest/index.html
     # These plugins/use settings in non-standard ways.
     if setting.startswith((
             'bookmarks', 'datenodes', 'http', 'opml',
-            'rst3', 'todo', 'vim', 'zodb'
+            'rst3', 'vim', 'zodb'
         ),
     ):
         return False
@@ -10981,7 +10981,7 @@ See https://jedi.readthedocs.io/en/latest/index.html
     # These plugins use settings in non-standard ways.
     if setting.startswith((
         'activepath', 'bookmarks', 'datenodes', 'http', 'opml',
-        'rst3', 'todo', 'vim', 'vr3', 'zodb'),
+        'rst3', 'vim', 'vr3', 'zodb'),
     ):
         return False
     #
@@ -11494,7 +11494,6 @@ False: Use the default stylesheet at leo/plugins/viewrendered3.
 # systray.py
 # testRegisterCommand.py
 # textnode.py
-# todo.py
 # tomboy_import.py
 # trace_gc_plugin.py
 # trace_keys.py
@@ -11551,7 +11550,6 @@ Compatibility notes:
     
 - All forms of gnx strings (legacy, UUIDs and KSUIDs) may safely coexist in the same document.
 - All versions of Leo from 4.1 onward can read all forms of gnxs.
-- The "sort by creation date" of the todo plugin will not work with UUIDs or KSUIDs.
 
 For more details, see https://github.com/leo-editor/leo-editor/issues/3047
 </t>
