@@ -1408,7 +1408,9 @@ class LeoQtGui(leoGui.LeoGui):
                 c.bodyWantsFocusNow()
 
     # @+node:ekr.20190601054958.1: *4* LeoQtGui.get_focus
-    def get_focus(self, c: Cmdr | None = None, raw: bool = False, at_idle: bool = False) -> QWidget | None:
+    def get_focus(
+        self, c: Cmdr | None = None, raw: bool = False, at_idle: bool = False
+    ) -> QWidget | None:
         """Returns the widget that has focus."""
         trace = 'focus' in g.app.debug and not at_idle
         w = QtWidgets.QApplication.focusWidget()
