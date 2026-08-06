@@ -1497,9 +1497,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             a_keys == c_keys and
             all(aList.get(key) == current.get(key) for key in a_keys)
         )  # fmt: skip
-        # lHash = ''.join([self.dHash(i) for i in aList])
-        # cHash = ''.join([self.dHash(i) for i in current])
-        # if lHash != cHash:
         if not equal:
             g.trace(aList)
             self._setIconUA(p, aList)
