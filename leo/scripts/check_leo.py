@@ -230,7 +230,7 @@ class CheckLeo:
                 # 'textnode.py',
                 # 'threadutil.py',
                 # 'timestamp.py',
-                'todo.py',
+                # 'todo.py',
                 # 'tomboy_import.py',
                 # 'trace_gc_plugin.py',
                 # 'trace_tags.py',
