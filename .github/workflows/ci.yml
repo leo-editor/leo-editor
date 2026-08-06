@@ -21,6 +21,8 @@ jobs:
           cache: pip
       - run: pip install ruff
       - run: ruff check leo
+      # Enable once leo/modes is reformatted to lf (issue #4847):
+      # - run: ruff format --check leo
 
   test:
     runs-on: ubuntu-latest

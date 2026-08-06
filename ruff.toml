@@ -12,10 +12,12 @@
 
 line-length = 100
 
+extend-exclude = ["*.md"]
+
 [format]
 docstring-code-format = false
 indent-style = "space"
-line-ending = "native"
+line-ending = "lf"
 quote-style = "preserve"
 
 [lint]
