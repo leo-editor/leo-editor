@@ -3699,7 +3699,20 @@ _ts_python_query = """
 (class_definition name: (identifier) @type)
 (call function: (identifier) @function)
 (call function: (attribute attribute: (identifier) @function))
-(decorator) @function.builtin
+(decorator) @decorator
+(parameters (identifier) @parameter)
+(default_parameter name: (identifier) @parameter)
+(typed_parameter (identifier) @parameter)
+(typed_default_parameter (identifier) @parameter)
+(attribute attribute: (identifier) @attribute)
+(keyword_argument name: (identifier) @keyword.argument)
+(import_statement name: (dotted_name (identifier) @namespace))
+(import_from_statement module_name: (dotted_name (identifier) @namespace))
+(typed_parameter type: (_) @type.annotation)
+(typed_default_parameter type: (_) @type.annotation)
+(function_definition return_type: (_) @type.annotation)
+((identifier) @builtin.pseudo (#match? @builtin.pseudo "^(self|cls)$"))
+((identifier) @constant (#match? @constant "^[A-Z][A-Z0-9_]+$"))
 [
   "+" "-" "*" "/" "//" "%" "**" "=" "==" "!=" "<" ">" "<=" ">=" "->"
 ] @operator
@@ -3757,7 +3770,14 @@ class TreeSitterColorizer(JEditColorizer):
         'keyword': 'keyword1',
         'constant.builtin': 'keyword2',
         'function': 'function',
-        'function.builtin': 'keyword3',
+        'decorator': 'name.decorator',
+        'parameter': 'name.variable',
+        'attribute': 'name.attribute',
+        'keyword.argument': 'name.label',
+        'namespace': 'name.namespace',
+        'type.annotation': 'keyword.type',
+        'builtin.pseudo': 'name.builtin.pseudo',
+        'constant': 'name.constant',
         'type': 'keyword4',
         'operator': 'operator',
     }
@@ -3984,6 +4004,11 @@ class TreeSitterColorizer(JEditColorizer):
 
     def colorLine(self, s: str, offset: int) -> None:
         """Colorize line `s`, whose first character is at character offset `offset`."""
+        # Leo directives are not part of the host language's syntax tree.
+        # Apply them first so a real tree-sitter string/comment capture can
+        # still override an apparent directive inside Python source text.
+        self.colorLeoDirective(s)
+        self.colorLeoSectionReferences(s)
         end_offset = offset + len(s)
         for start, end, tag in self.captures:
             if start >= end_offset:
@@ -3993,6 +4018,24 @@ class TreeSitterColorizer(JEditColorizer):
             i, j = max(0, start - offset), min(len(s), end - offset)
             if i < j:
                 self.setTag(tag, s, i, j)
+
+    def colorLeoDirective(self, s: str) -> None:
+        """Color a Leo directive at the start of a tree-sitter-colored line."""
+        i = len(s) - len(s.lstrip())
+        if i >= len(s) or s[i] != '@':
+            return
+        j = i + 1
+        while j < len(s) and (s[j].isalnum() or s[j] in '_-'):
+            j += 1
+        if s[i + 1 : j] in self.leoKeywordsDict:
+            self.setTag('leokeyword', s, i, j)
+
+    def colorLeoSectionReferences(self, s: str) -> None:
+        """Color all Leo section references in a tree-sitter-colored line."""
+        i = 0
+        while (i := s.find(self.section_delim1, i)) != -1:
+            n = self.match_section_ref(s, i)
+            i += n if n else len(self.section_delim1)
 
     def force_recolor(self) -> None:
         """Force a complete recolor. A hook for the 'recolor' command."""

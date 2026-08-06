@@ -1728,6 +1728,57 @@ class TestTreeSitterColorizer(LeoUnitTest):
         self.assertIn('keyword4', self.tag_at(x, text, 'Foo'))
         self.assertIn('function', self.tag_at(x, text, 'bar'))
 
+    def test_python_richer_captures(self):
+        """Tree-sitter distinguishes common identifier roles for richer themes."""
+        c = self.c
+        x = leoColorizer.TreeSitterColorizer(c, None)
+        x.language = 'python'
+        x.enabled = True
+        text = self.prep(
+            """
+            import package.module
+
+            @decorate
+            def render(self, value: Widget, limit=MAX_ITEMS) -> Result:
+                return self.output(theme="dark")
+            """
+        )
+        x.reparse(text)
+        self.assertIn('name.namespace', self.tag_at(x, text, 'package'))
+        self.assertIn('name.decorator', self.tag_at(x, text, '@decorate'))
+        self.assertIn('name.builtin.pseudo', self.tag_at(x, text, 'self'))
+        self.assertIn('name.variable', self.tag_at(x, text, 'value'))
+        self.assertIn('keyword.type', self.tag_at(x, text, 'Widget'))
+        self.assertIn('name.constant', self.tag_at(x, text, 'MAX_ITEMS'))
+        self.assertIn('name.attribute', self.tag_at(x, text, 'output'))
+        self.assertIn('name.label', self.tag_at(x, text, 'theme'))
+
+    def test_tree_sitter_colors_leo_directives(self):
+        """Leo directives remain highlighted outside the host-language query."""
+        c = self.c
+        x = leoColorizer.TreeSitterColorizer(c, None)
+        calls = []
+        x.setTag = lambda tag, s, i, j: calls.append((tag, s[i:j]))
+        x.colorLine('@others', 0)
+        x.colorLine('    @pagewidth 70', 8)
+        self.assertIn(('leokeyword', '@others'), calls)
+        self.assertIn(('leokeyword', '@pagewidth'), calls)
+
+    def test_tree_sitter_colors_section_references(self):
+        """Leo section references remain highlighted outside the Python query."""
+        c = self.c
+        x = leoColorizer.TreeSitterColorizer(c, None)
+        x.use_hyperlinks = False
+        calls = []
+        x.setTag = lambda tag, s, i, j: calls.append((tag, s[i:j]))
+        x.colorLine('<< bufferCommands imports & annotations >>', 0)
+        self.assertIn(('namebrackets', '<<'), calls)
+        self.assertIn(('namebrackets', '>>'), calls)
+        self.assertTrue(
+            ('link', ' bufferCommands imports & annotations ') in calls
+            or ('name', ' bufferCommands imports & annotations ') in calls
+        )
+
     # @+node:vv.20260806120002.5: *3* TestTreeSitterColorizer.test_unsupported_language
     def test_unsupported_language(self):
         """An unsupported @language must not crash: it just yields no captures."""
