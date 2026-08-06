@@ -6,9 +6,9 @@
 # @+node:ekr.20150514050149.1: **  << editCommands imports & annotations >>
 from __future__ import annotations
 from collections.abc import Callable
-import os
 import re
 from typing import cast, Any, TYPE_CHECKING
+
 from leo.core import leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass
 from leo.plugins.qt_text import QTextMixin
@@ -17,9 +17,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from leo.core.leoCommands import Commands as Cmdr
     from leo.core.leoGui import LeoKeyEvent
     from leo.core.leoNodes import Position, VNode
-
-    KWargs = Any
-    Value = Any
 # @-<< editCommands imports & annotations  >>
 
 
@@ -1340,67 +1337,119 @@ class EditCommandsClass(BaseEditCommandsClass):
     # To do:
     # - Define standard icons in a subfolder of Icons folder?
     # - Tree control recomputes height of each line.
-    # @+node:ekr.20150514063305.230: *4* ec. Helpers
-    # @+node:ekr.20150514063305.231: *5* ec.appendImageDictToList
-    def appendImageDictToList(self, aList: list, path: str, xoffset: int, **kargs: KWargs) -> int:
+    # @+node:ekr.20260805071803.1: *4* ec: Icon commands
+    # @+node:ekr.20260805110912.1: *5* 'delete-all-icons'
+    @cmd('delete-all-icons')
+    def deleteAllIcons(self, event: LeoKeyEvent | None = None) -> None:
+        """Delete all icons in the outline.."""
         c = self.c
-        relPath = path  # for finding icon on load in different environment
-        path = g.app.gui.getImageFinder(path)
-        image, image_height = g.app.gui.getTreeImage(c, path)
-        if not image:
-            g.es('can not load image:', path)
-            return xoffset
-        if image_height is None:
-            yoffset = 0
-        else:
-            yoffset = 0  # (c.frame.tree.line_height-image_height)/2
-            # TNB: I suspect this is being done again in the drawing code
-        newEntry = {
-            'type': 'file',
-            'file': path,
-            'relPath': relPath,
-            'where': 'beforeHeadline',
-            'yoffset': yoffset,
-            'xoffset': xoffset,
-            'xpad': 1,  # -2,
-            'on': 'VNode',
-        }
-        newEntry.update(kargs)  # may switch 'on' to 'VNode'
-        aList.append(newEntry)
-        xoffset += 2
-        return xoffset
+        for p in c.all_unique_positions():
+            self.deleteNodeIcons(p)
 
-    # @+node:ekr.20150514063305.232: *5* ec.dHash
-    def dHash(self, d: dict[str, str]) -> str:
-        """Hash a dictionary"""
-        return ''.join([f"{str(k)}{str(d[k])}" for k in sorted(d)])
+    # @+node:ekr.20150514063305.236: *5* 'delete-first-icon'
+    @cmd('delete-first-icon')
+    def deleteFirstIcon(self, event: LeoKeyEvent | None = None) -> None:
+        """Delete the first icon in the selected node's icon list."""
+        c, p = self.c, self.c.p
+        if aList := self.getIconList(c.p.v):
+            self.setIconList(p, aList[1:])
+            p.setDirty()
+            c.setChanged()
 
-    # @+node:ekr.20150514063305.233: *5* ec.getIconList
-    def getIconList(self, v: VNode) -> list[dict]:
-        """Return list of icons for v."""
-        fromVnode: list[dict[str, Value]] = []
-        if hasattr(v, 'unknownAttributes'):
-            fromVnode = [dict(i) for i in v.u.get('icons', [])]
-            for i in fromVnode:
-                i['on'] = 'VNode'
-        return fromVnode
+    # @+node:ekr.20150514063305.238: *5* 'delete-last-icon'
+    @cmd('delete-last-icon')
+    def deleteLastIcon(self, event: LeoKeyEvent | None = None) -> None:
+        """Delete the first icon in the selected node's icon list."""
+        c, p = self.c, self.c.p
+        if aList := self.getIconList(p.v):
+            self.setIconList(c.p, aList[:-1])
+            p.setDirty()
+            c.setChanged()
 
-    # @+node:ekr.20150514063305.234: *5* ec.setIconList & helpers
-    def setIconList(self, p: Position, aList: list[Value]) -> None:
-        """Set list of icons for position p to aList"""
-        current = self.getIconList(p.v)
-        if not aList and not current:
-            return  # nothing to do
-        lHash = ''.join([self.dHash(i) for i in aList])
-        cHash = ''.join([self.dHash(i) for i in current])
-        if lHash == cHash:
-            # no difference between original and current list of dictionaries
+    # @+node:ekr.20150514063305.239: *5* 'delete-node-icons'
+    @cmd('delete-node-icons')
+    def deleteNodeIcons(self, event: LeoKeyEvent | None = None, p: Position | None = None) -> None:
+        """Delete all of the selected node's icons."""
+        c = self.c
+        p = p or c.p
+        if p.u:
+            p.v._p_changed = True
+            self.setIconList(p, [])
+            p.setDirty()
+            c.setChanged()
+
+    # @+node:ekr.20150514063305.240: *5* 'insert-icon'
+    @cmd('insert-icon')
+    def insertIcon(self, event: LeoKeyEvent | None = None) -> None:
+        """Prompt for an icon, and insert it into the node's icon list."""
+        c, p = self.c, self.c.p
+        iconDir = g.finalize_join(g.app.loadDir, "..", "Icons")
+        paths = g.app.gui.runOpenFilesDialog(
+            c,
+            title='Get Icons',
+            filetypes=[
+                ('All files', '*'),
+                ('Gif', '*.gif'),
+                ('Bitmap', '*.bmp'),
+                ('Icon', '*.ico'),
+            ],
+            startpath=iconDir,
+        )
+        if not paths:
             return
-        # set p.u.
-        self._setIconListHelper(p, aList)
+        aList: list[dict[str, Any]] = []
+        for path in paths:
+            self.appendImageDictToList(aList, path)
+        aList2 = self.getIconList(p.v)
+        aList2.extend(aList)
+        self.setIconList(p, aList2)
+        p.setDirty()
+        c.setChanged()
 
-    # @+node:ekr.20150514063305.235: *6* ec._setIconListHelper
-    def _setIconListHelper(self, p: Position, aList: list[Value]) -> None:
+    # @+node:ekr.20150514063305.230: *4* ec: Icon helpers
+    # @+node:ekr.20260806001912.1: *5* ec: Unused helpers
+    # Retained for compatibility
+    # @+node:ekr.20150514063305.237: *6* ec.deleteIconByName (not used)
+    def deleteIconByName(self, t: object, name: str, relPath: str) -> None:  # t not used.
+        """for use by the right-click remove icon callback"""
+        c, p = self.c, self.c.p
+        aList = self.getIconList(p.v)
+        if not aList:
+            return
+        basePath = g.finalize_join(g.app.loadDir, "..", "Icons")
+        absRelPath = g.finalize_join(basePath, relPath)
+        name = g.finalize(name)
+        newList = []
+        for d in aList:
+            name2 = g.finalize(d.get('file') or '')
+            if name != name2 or absRelPath != name2:
+                newList.append(d)
+        if len(newList) != len(aList):
+            self.setIconList(p, newList)
+            p.setDirty()
+            c.setChanged()
+        else:
+            g.trace('not found', name)
+
+    # @+node:ekr.20150514063305.241: *6* ec.insertIconFromFile (not used)
+    def insertIconFromFile(
+        self, path: str, p: Position | None = None, pos: int | None = None
+    ) -> None:
+        c = self.c
+        if not p:
+            p = c.p
+        aList: list[Any] = []
+        self.appendImageDictToList(aList, path)
+        aList2 = self.getIconList(p.v)
+        if pos is None:
+            pos = len(aList2)
+        aList2.insert(pos, aList[0])
+        self.setIconList(p, aList2)
+        p.setDirty()
+        c.setChanged()
+
+    # @+node:ekr.20150514063305.235: *5* ec._setIconUA
+    def _setIconUA(self, p: Position, aList: list[Any]) -> None:
         """Set icon UA for p.v. to the given list of Icons."""
         v = p.v
         if aList:  # Update the uA.
@@ -1414,108 +1463,42 @@ class EditCommandsClass(BaseEditCommandsClass):
                     del v.unknownAttributes['icons']
                     v._p_changed = True
 
-    # @+node:ekr.20150514063305.236: *4* ec.deleteFirstIcon
-    @cmd('delete-first-icon')
-    def deleteFirstIcon(self, event: LeoKeyEvent | None = None) -> None:
-        """Delete the first icon in the selected node's icon list."""
-        c, p = self.c, self.c.p
-        if aList := self.getIconList(c.p.v):
-            self.setIconList(p, aList[1:])
-            p.setDirty()
-            c.setChanged()
-
-    # @+node:ekr.20150514063305.237: *4* ec.deleteIconByName
-    def deleteIconByName(self, t: object, name: str, relPath: str) -> None:  # t not used.
-        """for use by the right-click remove icon callback"""
-        c, p = self.c, self.c.p
-        aList = self.getIconList(p.v)
-        if not aList:
-            return
-        basePath = g.finalize_join(g.app.loadDir, "..", "Icons")
-        absRelPath = g.finalize_join(basePath, relPath)
-        name = g.finalize(name)
-        newList = []
-        for d in aList:
-            name2 = d.get('file') or ''
-            name2 = g.finalize(name2)
-            name2rel = d.get('relPath')
-            if not (name == name2 or absRelPath == name2 or relPath == name2rel):
-                newList.append(d)
-        if len(newList) != len(aList):
-            self.setIconList(p, newList)
-            p.setDirty()
-            c.setChanged()
-        else:
-            g.trace('not found', name)
-
-    # @+node:ekr.20150514063305.238: *4* ec.deleteLastIcon
-    @cmd('delete-last-icon')
-    def deleteLastIcon(self, event: LeoKeyEvent | None = None) -> None:
-        """Delete the first icon in the selected node's icon list."""
-        c, p = self.c, self.c.p
-        if aList := self.getIconList(p.v):
-            self.setIconList(c.p, aList[:-1])
-            p.setDirty()
-            c.setChanged()
-
-    # @+node:ekr.20150514063305.239: *4* ec.deleteNodeIcons
-    @cmd('delete-node-icons')
-    def deleteNodeIcons(self, event: LeoKeyEvent | None = None, p: Position | None = None) -> None:
-        """Delete all of the selected node's icons."""
-        c = self.c
-        p = p or c.p
-        if p.u:
-            p.v._p_changed = True
-            self.setIconList(p, [])
-            p.setDirty()
-            c.setChanged()
-
-    # @+node:ekr.20150514063305.240: *4* ec.insertIcon
-    @cmd('insert-icon')
-    def insertIcon(self, event: LeoKeyEvent | None = None) -> None:
-        """Prompt for an icon, and insert it into the node's icon list."""
-        c, p = self.c, self.c.p
-        iconDir = g.finalize_join(g.app.loadDir, "..", "Icons")
-        os.chdir(iconDir)
-        paths = g.app.gui.runOpenFilesDialog(
-            c,
-            title='Get Icons',
-            filetypes=[
-                ('All files', '*'),
-                ('Gif', '*.gif'),
-                ('Bitmap', '*.bmp'),
-                ('Icon', '*.ico'),
-            ],
-        )
-        if not paths:
-            return
-        aList: list[dict[str, Value]] = []
-        xoffset = 2
-        for path in paths:
-            xoffset = self.appendImageDictToList(aList, path, xoffset)
-        aList2 = self.getIconList(p.v)
-        aList2.extend(aList)
-        self.setIconList(p, aList2)
-        p.setDirty()
-        c.setChanged()
-
-    # @+node:ekr.20150514063305.241: *4* ec.insertIconFromFile
-    def insertIconFromFile(
-        self, path: str, p: Position | None = None, pos: int | None = None, **kargs: KWargs
+    # @+node:ekr.20150514063305.231: *5* ec.appendImageDictToList
+    def appendImageDictToList(
+        self,
+        aList: list,
+        path: str,
     ) -> None:
         c = self.c
-        if not p:
-            p = c.p
-        aList: list[Value] = []
-        xoffset = 2
-        xoffset = self.appendImageDictToList(aList, path, xoffset, **kargs)
-        aList2 = self.getIconList(p.v)
-        if pos is None:
-            pos = len(aList2)
-        aList2.insert(pos, aList[0])
-        self.setIconList(p, aList2)
-        p.setDirty()
-        c.setChanged()
+        path = g.app.gui.getImageFinder(path)
+        image, _image_height = g.app.gui.getTreeImage(c, path)
+        if image:
+            aList.append({'file': path})
+        else:
+            g.es('can not load image:', path)
+
+    # @+node:ekr.20150514063305.233: *5* ec.getIconList
+    def getIconList(self, v: VNode) -> list[dict[str, str]]:
+        """Return list of icons for v."""
+        d_list: list[dict[str, str]] = []
+        if hasattr(v, 'unknownAttributes'):
+            d_list = [dict(i) for i in v.u.get('icons', [])]
+        return d_list
+
+    # @+node:ekr.20150514063305.234: *5* ec.setIconList
+    def setIconList(self, p: Position, aList: list[dict[str, str]]) -> None:
+        """Set list of icons for position p to aList"""
+        current = self.getIconList(p.v)
+        if not aList and not current:
+            return
+        a_keys = list(sorted(z.keys() for z in aList))
+        c_keys = list(sorted(z.keys() for z in current))
+        equal = (
+            a_keys == c_keys and
+            all(aList.get(key) == current.get(key) for key in a_keys)
+        )  # fmt: skip
+        if not equal:
+            self._setIconUA(p, aList)
 
     # @+node:ekr.20150514063305.242: *3* ec: indent
     # @+node:ekr.20150514063305.243: *4* ec.deleteIndentation
@@ -2984,7 +2967,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         if g.isTextWrapper(w):
             self.extendMode = val
             if not g.unitTesting:
-                # g.red('extend mode','on' if val else 'off'))
                 c.k.showStateAndMode()
             c.widgetWantsFocusNow(w)
 
