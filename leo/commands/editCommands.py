@@ -1498,7 +1498,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             all(aList.get(key) == current.get(key) for key in a_keys)
         )  # fmt: skip
         if not equal:
-            g.trace(aList)
             self._setIconUA(p, aList)
 
     # @+node:ekr.20150514063305.242: *3* ec: indent
