@@ -1409,6 +1409,50 @@ class EditCommandsClass(BaseEditCommandsClass):
         c.setChanged()
 
     # @+node:ekr.20150514063305.230: *4* ec: Icon helpers
+    # @+node:ekr.20260806001912.1: *5* ec: Unused helpers
+    # Retained for compatibility
+    # @+node:ekr.20150514063305.237: *6* ec.deleteIconByName (not used)
+    def deleteIconByName(self, t: object, name: str, relPath: str) -> None:  # t not used.
+        """for use by the right-click remove icon callback"""
+        c, p = self.c, self.c.p
+        aList = self.getIconList(p.v)
+        if not aList:
+            return
+        basePath = g.finalize_join(g.app.loadDir, "..", "Icons")
+        absRelPath = g.finalize_join(basePath, relPath)
+        name = g.finalize(name)
+        newList = []
+        for d in aList:
+            name2 = d.get('file') or ''
+            name2 = g.finalize(name2)
+            name2rel = d.get('relPath')
+            if not (name == name2 or absRelPath == name2 or relPath == name2rel):
+                newList.append(d)
+        if len(newList) != len(aList):
+            self.setIconList(p, newList)
+            p.setDirty()
+            c.setChanged()
+        else:
+            g.trace('not found', name)
+
+    # @+node:ekr.20150514063305.241: *6* ec.insertIconFromFile (not used)
+    def insertIconFromFile(
+        self, path: str, p: Position | None = None, pos: int | None = None
+    ) -> None:
+        c = self.c
+        if not p:
+            p = c.p
+        aList: list[Any] = []
+        xoffset = 2
+        xoffset = self.appendImageDictToList(aList, path, xoffset)
+        aList2 = self.getIconList(p.v)
+        if pos is None:
+            pos = len(aList2)
+        aList2.insert(pos, aList[0])
+        self.setIconList(p, aList2)
+        p.setDirty()
+        c.setChanged()
+
     # @+node:ekr.20150514063305.235: *5* ec._setIconUA
     def _setIconUA(self, p: Position, aList: list[Any]) -> None:
         """Set icon UA for p.v. to the given list of Icons."""

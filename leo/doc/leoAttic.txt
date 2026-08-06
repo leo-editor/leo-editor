@@ -7,10 +7,7 @@
 # @@killbeautify
 # @+all
 # @+node:ekr.20240617085704.1: ** Permanent attic
-# @+node:ekr.20230913144248.1: *3* g.SherlockTracer
-# I am going to leave this class in the attic indefinitely.
-# It might be useful as the base for other classes.
-# @+node:ekr.20121128031949.12605: *4* class g.SherlockTracer
+# @+node:ekr.20121128031949.12605: *3* class g.SherlockTracer
 class SherlockTracer:
     """
     A stand-alone tracer class with many of Sherlock's features.
@@ -47,7 +44,7 @@ class SherlockTracer:
     g.SherlockTracer(patterns).run()
     """
     @others
-# @+node:ekr.20121128031949.12602: *5* sherlock.__init__
+# @+node:ekr.20121128031949.12602: *4* sherlock.__init__
 def __init__(
     self,
     patterns: list[Any],
@@ -76,17 +73,17 @@ def __init__(
             QtCore.pyqtRemoveInputHook()
     except Exception:
         pass
-# @+node:ekr.20140326100337.16844: *5* sherlock.__call__
+# @+node:ekr.20140326100337.16844: *4* sherlock.__call__
 def __call__(self, frame: Any, event: Any, arg: Any) -> Any:
     """Exists so that self.dispatch can return self."""
     return self.dispatch(frame, event, arg)
-# @+node:ekr.20140326100337.16846: *5* sherlock.bad_pattern
+# @+node:ekr.20140326100337.16846: *4* sherlock.bad_pattern
 def bad_pattern(self, pattern: Any) -> None:
     """Report a bad Sherlock pattern."""
     if pattern not in self.bad_patterns:
         self.bad_patterns.append(pattern)
         print(f"\nignoring bad pattern: {pattern}\n")
-# @+node:ekr.20140326100337.16847: *5* sherlock.check_pattern
+# @+node:ekr.20140326100337.16847: *4* sherlock.check_pattern
 def check_pattern(self, pattern: str) -> bool:
     """Give an error and return False for an invalid pattern."""
     try:
@@ -99,7 +96,7 @@ def check_pattern(self, pattern: str) -> bool:
     except Exception:
         self.bad_pattern(pattern)
         return False
-# @+node:ekr.20121128031949.12609: *5* sherlock.dispatch
+# @+node:ekr.20121128031949.12609: *4* sherlock.dispatch
 def dispatch(self, frame: Any, event: Any, arg: Any) -> Any:
     """The dispatch method."""
     if event == 'call':
@@ -110,7 +107,7 @@ def dispatch(self, frame: Any, event: Any, arg: Any) -> Any:
         self.do_line(frame, arg)
     # Queue the SherlockTracer instance again.
     return self
-# @+node:ekr.20121128031949.12603: *5* sherlock.do_call & helper
+# @+node:ekr.20121128031949.12603: *4* sherlock.do_call & helper
 def do_call(self, frame: Any, unused_arg: Any) -> None:
     """Trace through a function call."""
     frame1 = frame
@@ -147,7 +144,7 @@ def do_call(self, frame: Any, unused_arg: Any) -> None:
     d = self.stats.get(file_name, {})
     d[full_name] = 1 + d.get(full_name, 0)
     self.stats[file_name] = d
-# @+node:ekr.20130111185820.10194: *6* sherlock.get_args
+# @+node:ekr.20130111185820.10194: *5* sherlock.get_args
 def get_args(self, frame: Any) -> list[str]:
     """Return a list of string "name=val" for each arg in the function call."""
     code = frame.f_code
@@ -174,7 +171,7 @@ def get_args(self, frame: Any) -> list[str]:
                 if val:
                     result.append(f"{name}={val}")
     return result
-# @+node:ekr.20140402060647.16845: *5* sherlock.do_line (not used)
+# @+node:ekr.20140402060647.16845: *4* sherlock.do_line (not used)
 bad_fns: list[str] = []
 
 def do_line(self, frame: Any, arg: Any) -> None:
@@ -208,7 +205,7 @@ def do_line(self, frame: Any, arg: Any) -> None:
         print(f"{name:3} {line}")
     else:
         print(f"{g.shortFileName(file_name)} {n} {full_name} {line}")
-# @+node:ekr.20130109154743.10172: *5* sherlock.do_return & helper
+# @+node:ekr.20130109154743.10172: *4* sherlock.do_return & helper
 def do_return(self, frame: Any, arg: Any) -> None:  # Arg *is* used below.
     """Trace a return statement."""
     code = frame.f_code
@@ -231,7 +228,7 @@ def do_return(self, frame: Any, arg: Any) -> None:  # Arg *is* used below.
             self.put_ret(f"<{ret1.__class__.__name__}>", n, path)
     else:
         self.put_ret(arg, n, path)
-# @+node:ekr.20220605141445.1: *6* sherlock.put_ret
+# @+node:ekr.20220605141445.1: *5* sherlock.put_ret
 def put_ret(self, arg: Any, n: int, path: str) -> None:
     """Print arg, the value returned by a "return" statement."""
     indent = ' ' * max(0, n - self.n + 1) if self.indent else ''
@@ -262,7 +259,7 @@ def put_ret(self, arg: Any, n: int, path: str) -> None:
             f"{path}:{indent}-{self.full_name} -> "
             f"{exctype.__name__}, {value} {arg_s}"
         )
-# @+node:ekr.20121128111829.12185: *5* sherlock.fn_is_enabled
+# @+node:ekr.20121128111829.12185: *4* sherlock.fn_is_enabled
 def fn_is_enabled(self, func: Any, patterns: list[str]) -> bool:
     """Return True if tracing for the given function is enabled."""
     if func in self.ignored_functions:
@@ -309,7 +306,7 @@ def fn_is_enabled(self, func: Any, patterns: list[str]) -> bool:
     except Exception:
         self.bad_pattern(pattern)
         return False
-# @+node:ekr.20130112093655.10195: *5* sherlock.get_full_name
+# @+node:ekr.20130112093655.10195: *4* sherlock.get_full_name
 def get_full_name(self, locals_: Any, name: str) -> str:
     """Return class_name::name if possible."""
     full_name = name
@@ -320,7 +317,7 @@ def get_full_name(self, locals_: Any, name: str) -> str:
     except Exception:
         pass
     return full_name
-# @+node:ekr.20121128111829.12183: *5* sherlock.is_enabled
+# @+node:ekr.20121128111829.12183: *4* sherlock.is_enabled
 ignored_files: list[str] = []  # List of files.
 ignored_functions: list[str] = []  # List of files.
 
@@ -398,7 +395,7 @@ def is_enabled(
         except Exception:
             self.bad_pattern(pattern)
     return enabled
-# @+node:ekr.20121128111829.12182: *5* sherlock.print_stats
+# @+node:ekr.20121128111829.12182: *4* sherlock.print_stats
 def print_stats(self, patterns: list[str] = None) -> None:
     """Print all accumulated statisitics."""
     print('\nSherlock statistics...')
@@ -418,7 +415,7 @@ def print_stats(self, patterns: list[str] = None) -> None:
             print('/'.join(parts[-2:]))
             for key in result:
                 print(f"{d.get(key):4} {key}")
-# @+node:ekr.20121128031949.12614: *5* sherlock.run
+# @+node:ekr.20121128031949.12614: *4* sherlock.run
 # Modified from pdb.Pdb.set_trace.
 
 def run(self, frame: Any = None) -> None:
@@ -433,7 +430,7 @@ def run(self, frame: Any = None) -> None:
         self.n += 1
     # Pass self to sys.settrace to give easy access to all methods.
     sys.settrace(self)
-# @+node:ekr.20140322090829.16834: *5* sherlock.push & pop
+# @+node:ekr.20140322090829.16834: *4* sherlock.push & pop
 def push(self, patterns: list[str]) -> None:
     """Push the old patterns and set the new."""
     self.pattern_stack.append(self.patterns)  # type:ignore
@@ -447,11 +444,11 @@ def pop(self) -> None:
         print(f"SherlockTracer.pop: {self.patterns}")
     else:
         print('SherlockTracer.pop: pattern stack underflow')
-# @+node:ekr.20140326100337.16845: *5* sherlock.set_patterns
+# @+node:ekr.20140326100337.16845: *4* sherlock.set_patterns
 def set_patterns(self, patterns: list[str]) -> None:
     """Set the patterns in effect."""
     self.patterns = [z for z in patterns if self.check_pattern(z)]
-# @+node:ekr.20140322090829.16831: *5* sherlock.show
+# @+node:ekr.20140322090829.16831: *4* sherlock.show
 def show(self, item: Any) -> str:
     """return the best representation of item."""
     if not item:
@@ -468,7 +465,7 @@ def show(self, item: Any) -> str:
     if s.startswith("<object object"):
         s = "_dummy"
     return s
-# @+node:ekr.20121128093229.12616: *5* sherlock.stop
+# @+node:ekr.20121128093229.12616: *4* sherlock.stop
 def stop(self) -> None:
     """Stop all tracing."""
     sys.settrace(None)
@@ -608,187 +605,7 @@ def peep_hole(self, opcodes):
         result.append(op0)
         i += 1
     return result
-# @+node:ekr.20260323083821.41: *3* Theory of operation: c.deletePositionsInList
-@language rest
-
-*** Note: As of Leo 6.8.8, Leo uses a much simpler version of c.deletePositionsInList.
-*** Happily, this documentation is no longer needed.
-
-The positions passed to c.deletePositionsInList only *specify* the desired
-changes; the only way to *make* those changes is to operate on vnodes!
-
-Consider this outline, containing no clones::
-
-    + ROOT
-      - A
-      - B
-
-The fundamental problem is this. If we delete node A, the index of
-node B in ROOT.children will change. This problem has (almost) nothing
-to do with clones or positions.
-
-**Proof that c.deletePositionsInList is correct**
-
-Clearly, deleting a positions ultimately means changing vnodes,
-specifically, v.parents and v.children for v in some set of vnodes. We must
-show that the particular set of changed vnodes in the new code is the
-correct set of vnodes, and that the changes made to that set are correct.
-This is far from obvious at first glance.
-
-**The new code**
-
-Here is Vitalije's version of c.deletePositionsInList, without the docstring:
-
-.. code-block:: python
-
-    def deletePositionsInList(self, aList):
-        c = self
-
-        # Ensure all positions are valid.
-        aList = [p for p in aList if c.positionExists(p)]
-        if not aList:
-            return
-
-        def p2link(p):
-            parent_v = p.stack[-1][0] if p.stack else c.hiddenRootNode
-            return p._childIndex, parent_v
-
-        links_to_be_cut = sorted(set(map(p2link, aList)), key=lambda x:-x[0])
-
-        # The main loop.
-        for i, v in links_to_be_cut:
-            child_v = v.children.pop(i)
-            child_v.parents.remove(v)
-
-To begin the proof, note that the main loop has the expected "form". That
-is, when we delete a node, we will:
-
-1. Delete child_v = v.children[i] for some v and i.
-
-2. Delete child_v from its parents array.
-
-v.parents is an unordered array, so child_v.parents.remove(v) is all that
-is needed. This line might crash if one of the positions is invalid. It
-will also crash if v is not present in child_v.parents. I'll discuss this
-later.
-
-To complete the proof, we must show that the main loop deletes all and only
-those vnodes implied by the positions in aList. We can tentatively assume
-that the main loop will work properly if that data in links_to_be_cut is
-correct, but there are some subtleties lurking here which I'll discuss later.
-
-The following code creates links_to_be_cut:
-
-.. code-block:: python
-
-    def p2link(p):
-        parent_v = p.stack[-1][0] if p.stack else c.hiddenRootNode
-        return p._childIndex, parent_v
-
-    links_to_be_cut = sorted(set(map(p2link, aList)), key=lambda x:-x[0])
-
-This is elegant (compressed) code. Let's examine it carefully...
-
-p2link produces tuples (childIndex, parent_v). These become bound to i, v
-in the main loop:
-
-.. code-block:: python
-
-    # The main loop.
-    for i, v in links_to_be_cut:
-        child_v = v.children.pop(i)
-        child_v.parents.remove(v)
-
-To make this work, parent_v must be the vnode whose i'th child should be
-deleted:
-
-.. code-block:: python
-
-    parent_v = p.stack[-1][0] if p.stack else c.hiddenRootNode
-
-- p.stack entries have the form (v, childIndex), so p.stack[-1] is the
-  position p's immediate parent vnode, if p has a parent. Otherwise,
-  c.hiddenRootNode is the proper parent vnode.
-
-- p._childIndex is also the correct value for i.
-
-We have just proved the following::
-
-    Deleting position p means executing the main loop for (i, v) returned by p2link(p)
-
-**Sorting and filtering**
-
-The following line filters and sorts the results produced by p2link:
-
-.. code-block:: python
-
-    links_to_be_cut = sorted(set(map(p2link, aList)), key=lambda x:-x[0]
-
-Let's break this into parts, from "inside" to "outside"
-
-- ``map(p2link, aList)`` applies ``p2link`` to every position in ``aList``.
-  The result is a list of tuples ``(i, v)``. This list may contain
-  duplicates.
-
-- ``set(map(p2link, aList)`` removes those duplicates.
-  Let **theSet** be ``set(map(p2link, aList)``.
-
-- Finally, ``sorted(theSet, key=lambda x:-x[0])`` creates a generator
-  equivalent to a sorted list.
-
-The generator will deliver the tuples in descending order of ``i``, when
-several tuples have the same vnode ``v``. The generator does not order
-tuples on ``v``, and there is no need to do so.
-
-It's easy to understand the intent of this sort order. The main loop
-contains this line:
-
-.. code-block:: python
-
-    child_v = v.children.pop(i)
-
-The sort order means that ``pop(i)`` happens before ``pop(j)`` if ``i >
-j``. This condition ensures that the precomputed values of ``i`` won't
-change in the main loop.
-
-**Completing the proof**
-
-The algorithm appears sound. The tuples ``(i, v)`` computed from
-``p2link(p)`` correctly describe the work to be done. Filtering ensures
-that the work is done once. Sorting ensures that child indices ``i`` will
-not change during the main loop.
-
-The tuples are sorted on ``i``, but not ``v``. ``aList`` can contain positions
-in any order, so we know only that for any particular vnode ``v`` the main loop
-will handle tuples ``(i1, v), (i2, v), ...`` in the correct order.
-
-There are two final questions to consider:
-
-First, does the order in which the main loop handles vnodes matter?
-
-No. The vnode data are independent. The main loop works regardless of
-whether a vnode has already been unlinked.
-
-Second, could the following lines ever fail?
-
-.. code-block:: python
-
-    child_v = v.children.pop(i)
-    child_v.parents.remove(v)
-
-No. Sorting and filtering ensure that tuples are unique. ``v`` is guaranteed to
-be in ``child_v.parents`` because ``v.children[i]`` must exist.
-
-This concludes the proof.
-
-**Discussion**
-
-The algorithm is sound because the tuples ``(i, v)`` contain no duplicates.
-For any particular ``v``, the main loop will process the tuples in descending
-order of ``i``. This resolves the question of whether deleting already deleted
-positions is valid.
 # @+node:ekr.20181103094900.1: *3* ../plugins/leoflexx.py
-
 # Disable mypy checking.
 # type:ignore
 
@@ -3281,660 +3098,75 @@ class LeoFlexxTreeItem(flx.TreeItem):
         return 'head'  # Required, for proper pane bindings.
 
     @others
-# @+node:ekr.20150107090324.1: *3* ../plugins/cursesGui.py
-"""A minimal text-oriented gui."""
-
-@
-Things not found in the GUI 'interface' classes (in leoFrame.py, leoGui.py, etc)
-are labeled: # undoc: where the AttributeError comes from other implementations
-of method.
-@c
-# pylint: disable=arguments-differ
-<< cursesGui.py: imports & annotations >>
-<< TODO >>
-@others
-@language python
-@tabwidth -4
-# @+node:ekr.20150107090324.2: *4* << cursesGui.py: imports & annotations >>
-from collections.abc import Callable
-import os
-from typing import Any
-from leo.core import leoGlobals as g
-from leo.core import leoChapters
-from leo.core import leoGui
-from leo.core import leoKeys
-from leo.core import leoFrame
-from leo.core import leoMenu
-from leo.core import leoNodes
-from leo.core.leoAPI import StringTextWrapper
-
-get_input = input
-
-
-# @+node:ekr.20150107090324.3: *4* << TODO >>
-@nocolor-node
-@
-Body text:
-Is the "signature" of the typing event right?
-What does the InsertPoint do when text is inserted and deleted?
-What does the SelectionRange do, period?
-What about mouse input? What does createBindings() do?
-What does set_focus() do?
-What does the GUI need to do for Leo's undo features?
-What about that minibuffer thing? (I've never used it.)
-When should runMainLoop return?
-What kind of newlines does the body text control get? How should it treat them?
-Headline editing?
-Body text selection.
-(Strip trailing whitespace from this file. :P)
-< < Random cruft >>
-Pay attention to being direct and code-terse.
-Not at all user-friendly.
-Comments in the body reflect current status only.
-Ideally, comments in the body go away as the "leoGUI interface" improves.
-Written on a hundred-column terminal. :S
-# @+node:ekr.20150107090324.4: *4* init
-def init():
-    ok = not g.app.gui and not g.unitTesting  # Not Ok for unit testing!
-    if ok:
-        g.app.gui = textGui()
-        g.app.root = g.app.gui.createRootWindow()
-        g.app.gui.finishCreate()
-        g.plugin_signon(__name__)
-    elif g.app.gui and not g.unitTesting:
-        s = "Can't install text gui: previous gui installed"
-        g.es_print(s, color="red")
-    return ok
-
-
-# @+node:ekr.20150107090324.5: *4* underline
-def underline(s, idx):
-    if idx < 0 or idx > len(s) - 1:
-        return s
-    return s[:idx] + '&' + s[idx:]
-
-
-# @+node:ekr.20150107090324.6: *4* class textGui: cursesGui.py
-class textGui(leoGui.LeoGui):
-    @others
-
-
-# @+node:ekr.20150107090324.7: *5* __init__
-def __init__(self):
-    super().__init__("text")
-    self.frames = []
-    self.killed = False
-    # TODO leoTkinterFrame finishCreate g.app.windowList.append(f) - use that?
-
-# @+node:ekr.20150107090324.8: *5* createKeyHandlerClass
-def createKeyHandlerClass(self, c):
-    return leoKeys.KeyHandlerClass(c)
-
-# @+node:ekr.20150107090324.9: *5* createLeoFrame
-def createLeoFrame(self, c, title=None) -> Any:
-    gui = self
-    ret = TextFrame(c, gui)
-    self.frames.append(ret)
-    return ret
-
-# @+node:ekr.20150107090324.10: *5* createRootWindow
-def createRootWindow(self):
-    pass  # N/A
-
-# @+node:ekr.20150107090324.11: *5* destroySelf
-def destroySelf(self):
-    self.killed = True
-
-# @+node:ekr.20150107090324.12: *5* finishCreate (cursesGui.py)
-def finishCreate(self):
-    pass
-
-# @+node:ekr.20150107090324.17: *5* get/set_focus
-def get_focus(self, c):
-    pass
-
-def set_focus(self, c, w):
-    pass
-
-# @+node:ekr.20150107090324.13: *5* isTextWidget (cursesGui.py)
-def isTextWidget(self, w):
-    """Return True if w is a Text widget suitable for text-oriented commands."""
-    return w and isinstance(w, StringTextWrapper)
-
-# @+node:ekr.20150107090324.69: *5* runAskYesNoDialog (cursesGui.py)
-def runAskYesNoDialog(self, c, title, message=None, yes_all=False, no_all=False):
-    return 'yes'
-
-# @+node:ekr.20150107090324.15: *5* runMainLoop
-def runMainLoop(self):
-    self.text_run()
-
-# @+node:ekr.20150107090324.16: *5* runOpenFileDialog (cursesGui2)
-def runOpenFileDialog(
-    self,
-    c,
-    title,
-    *,
-    filetypes: list[tuple[str, str]],
-    defaultextension='',  # Not used.
-    startpath=None,
-) -> str:
-    initialdir = g.app.globalOpenDir or g.os_path_abspath(os.getcwd())
-    ret = get_input("Open which %s file (from %s?) > " % (repr(filetypes), initialdir))
-    return ret
-
-# @+node:ekr.20150107090324.18: *5* text_run & helper
-def text_run(self):
-    frame_idx = 0
-    while not self.killed:
-        # Frames can come and go.
-        if frame_idx > len(self.frames) - 1:
-            frame_idx = 0
-        f = self.frames[frame_idx]
-        g.pr(f.getTitle())
-        s = get_input('Do what? (menu,key,body,frames,tree,quit) > ')
-        try:
-            self.doChoice(f, s)
-        except Exception:
-            g.es_exception()
-
-# @+node:ekr.20150107090324.19: *6* doChoice
-def doChoice(self, f, s):
-    if s in ('m', 'menu'):
-        f.menu.show_menu()
-    elif s in ('k', 'key'):
-        f.text_key()
-    elif s in ('b', 'body'):
-        f.body.text_show()
-    elif s in ('f', 'frames'):
-        for i, f in enumerate(self.frames):
-            g.pr(i, ')', f.getTitle())
-        s = get_input('Operate on which frame? > ')
-        try:
-            s = int(s)
-        except ValueError:
-            s = -1
-        # if s >= 0 and s <= len(self.frames) - 1:
-        #    frame_idx = s
-    elif s in ('t', 'tree'):
-        f.tree.text_draw_tree()
-    elif s in ('q', 'quit'):
-        self.killed = True
-
-# @+node:ekr.20150107090324.20: *5* widget_name (cursesGui.py)
-def widget_name(self, w):
-    if isinstance(w, textBodyCtrl):
-        return 'body'
-    return leoGui.LeoGui.widget_name(self, w)
-
-# @+node:ekr.20150107090324.21: *4* class TextFrame: cursesGui.py
-class TextFrame(leoFrame.LeoFrame):
-    @others
-
-
-# @+node:ekr.20150107090324.22: *5* __init__
-def __init__(self, c, gui):
-    super().__init__(c, gui)
-    assert self.c == c
-    self.top = None
-
-# @+node:ekr.20150107090324.23: *5* createFirstTreeNode (cursesGui.py)
-def createFirstTreeNode(self):
-    c = self.c
-    #
-    # #1631: Initialize here, not in p._linkAsRoot.
-    c.hiddenRootNode.children = []
-    #
-    # #1817: Clear the gnxDict.
-    c.fileCommands.gnxDict = {}
-    #
-    v = leoNodes.vnode(context=c)
-    p = leoNodes.Position(v)
-    v.initHeadString("newHeadline")
-    # New in Leo 4.5: p.moveToRoot would be wrong:
-    # the node hasn't been linked yet.
-    p._linkAsRoot()
-    # c.setRootPosition(p) # New in 4.4.2.
-
-# @+node:ekr.20150107090324.24: *5* deiconify
-def deiconify(self):
-    pass  # N/A
-
-def lift(self):
-    pass  # N/A
-
-# @+node:ekr.20150107090324.25: *5* destroySelf
-def destroySelf(self):
-    pass
-
-# @+node:ekr.20150107090324.26: *5* finishCreate (cursesGui.py)
-def finishCreate(self):
-    c, f = self.c, self
-    f.tree = textTree(self)
-    f.body = textBody(frame=self)
-    f.log = textLog(frame=self)
-    f.menu = textLeoMenu(self)
-    if f.body.use_chapters:
-        c.chapterController = leoChapters.ChapterController(c)
-    f.createFirstTreeNode()
-    # (*after* setting self.log)
-    c.setLog()  # writeWaitingLog hangs without this(!)
-    # So updateRecentFiles will update our menus.
-    g.app.windowList.append(f)
-
-# @+node:ekr.20161118195504.1: *5* getFocus
-def getFocus(self):
-    return None
-
-# @+node:ekr.20150107090324.27: *5* setInitialWindowGeometry
-def setInitialWindowGeometry(self):
-    pass  # N/A
-
-# @+node:ekr.20150107090324.28: *5* setMinibufferBindings
-def setMinibufferBindings(self):
-    pass
-
-def setTopGeometry(self, w, h, x, y):
-    pass  # N/A
-
-# @+node:ekr.20150107090324.29: *5* text_key
-def text_key(self):
-    c = self.c
-    k = c.k
-    w = self.body.bodyCtrl
-    key = get_input('Keystroke > ')
-    if not key:
-        return
-
-    class leoTypingEvent:
-        def __init__(self, c, w, char, keysym):
-            self.c = c
-            self.char = char
-            self.keysym = keysym
-            self.leoWidget = w
-            self.widget = w
-
-    char = key
-    stroke = c.k.shortcutFromSetting(char)
-    g.trace('char', repr(char), 'stroke', repr(stroke))
-    e = leoTypingEvent(c, w, char, stroke)
-    k.masterKeyHandler(event=e)
-
-# @+node:ekr.20150107090324.30: *5* update
-def update(self):
-    pass
-
-def resizePanesToRatio(self, ratio: float, ratio2: float) -> None:
-    pass  # N/A
-
-# @+node:ekr.20150107090324.31: *4* class textBody: cursesGui.py
-class textBody(leoFrame.LeoBody):
-    @others
-
-
-# @+node:ekr.20150107090324.32: *5* textBody.__init__
-def __init__(self, frame):
-    super().__init__(frame)
-    c = frame.c
-    name = 'body'
-    self.bodyCtrl = textBodyCtrl(c, name)
-    self.colorizer = leoFrame.NullColorizer(self.c)
-
-# @+node:ekr.20150107090324.33: *5* bind
-# undoc: newLeoCommanderAndFrame -> c.finishCreate -> k.finishCreate ->
-# k.completeAllBindings -> k.makeMasterGuiBinding -> 2156 w.bind ; nullBody
-
-def bind(self, bindStroke, callback):
-    pass
-
-# @+node:ekr.20150107090324.34: *5* setEditorColors
-def setEditorColors(self, bg, fg):
-    pass  # N/A
-
-def createBindings(self, w=None):
-    pass
-
-# @+node:ekr.20150107090324.35: *5* text_show
-def text_show(self):
-    w = self.bodyCtrl
-    g.pr('--- body ---')
-    g.pr('ins', w.ins, 'sel', w.sel)
-    g.pr(w.s)
-
-# @+node:ekr.20150107090324.36: *4* class textBodyCtrl (StringTextWrapper) cursesGui.py
-class textBodyCtrl(StringTextWrapper):
-    pass
-
-
-# @+node:ekr.20150107090324.37: *4* class textMenuCascade: cursesGui.py
-class textMenuCascade:
-    def __init__(self, menu, label, underline):
-        self.menu = menu
-        self.label = label
-        self.underline = underline
-
-    @others
-
-
-# @+node:ekr.20150107090324.39: *5* display
-def display(self):
-    ret = underline(self.label, self.underline)
-    if not self.menu.entries:
-        ret += ' [Submenu with no entries]'
-    return ret
-
-# @+node:ekr.20150107090324.40: *4* class textMenuEntry: cursesGui.py
-class textMenuEntry:
-    @others
-
-
-# @+node:ekr.20150107090324.41: *5* __init__
-def __init__(self, label, underline, accel, callback):
-    self.label = label
-    self.underline = underline
-    self.accel = accel
-    self.callback = callback
-
-# @+node:ekr.20150107090324.42: *5* display
-def display(self):
-    return "%s %s" % (
-        underline(self.label, self.underline),
-        self.accel,
-    )
-
-# @+node:ekr.20150107090324.43: *4* class textMenuSep: cursesGui.py
-class textMenuSep:
-    @others
-
-
-# @+node:ekr.20150107090324.44: *5* display
-def display(self):
-    return '-' * 5
-
-# @+node:ekr.20150107090324.45: *4* class textLeoMenu (LeoMenu) cursesGui.py
-class textLeoMenu(leoMenu.LeoMenu):
-    @others
-
-
-# @+node:ekr.20150107090324.46: *5* ctor (textLeoMenu)
-def __init__(self, frame):
-    self.entries = []
-    self.c = frame.c
-    super().__init__(frame)
-
-# @+node:ekr.20150107090324.47: *5* createMenuBar
-def createMenuBar(self, frame):
-    g.trace(frame.c)
-    self._top_menu = textLeoMenu(frame)
-    self.createMenusFromTables()
-
-# @+node:ekr.20150107090324.48: *5* new_menu
-def new_menu(self, parent: Any, tearoff: int = 0, labe: str = ''):
-    if tearoff:
-        raise NotImplementedError(repr(tearoff))
-    menu = textLeoMenu(parent or self.frame)
-    menu.entries = []
-    return menu
-
-# @+node:ekr.20150107090324.49: *5* add_cascade (cursesGui.py)
-def add_cascade(self, parent: Any, label: str, menu: Any, underline: int):
-    if parent is None:
-        parent = self._top_menu
-    parent.entries.append(
-        textMenuCascade(
-            menu,
-            label,
-            underline,
+# @+node:ekr.20260805111552.1: *3* 'insert-qt-icon' & helper
+@cmd('insert-qt-icon')
+def insertQtIcon(self, event: LeoKeyEvent | None = None) -> None:
+    """
+    Show a window previewing all standard Qt icons.
+    Add each selected icon to c.p.h.
+    """
+   
+    controller = self
+    d = g.app.scriptDict
+    key = 'insert_qt_icon_window'
+    insert_qt_icon_window = d.get(key)
+    if not insert_qt_icon_window:
+        << define class QtPreviewWindow >>
+        d[key] = insert_qt_icon_window = QtPreviewWindow()
+    insert_qt_icon_window.show()
+
+# @+node:ekr.20260805111828.1: *4* << define class QtPreviewWindow >>
+from PyQt6.QtWidgets import (  # pylint: disable=no-name-in-module
+    QGridLayout,
+    QPushButton,
+    QStyle,
+    QWidget,
+)
+
+# Adapted from https://gist.github.com/ostr00000/30c9e732550baa0c13a73fd3320e7d55
+class QtPreviewWindow(QWidget):
+    def __init__(self):
+        super().__init__()
+        icon_names = sorted(
+            [z for z in dir(QStyle.StandardPixmap) if z.startswith("SP_")]
         )
-    )
-
-# @+node:ekr.20150107090324.50: *5* add_command (cursesGui.py)
-def add_command(
-    self,
-    menu: Any,
-    accelerator: str = '',
-    command: Callable = None,
-    commandName: str = None,
-    label: str = None,
-    underline: int = 0,
-) -> None:
-    # ?
-    # underline - Offset into label. For those who memorised Alt, F, X rather than Alt+F4.
-    # accelerator - For display only; these are implemented by Leo's key handling.
-    menu = self
-
-    def doNothingCallback():
-        pass
-
-    if not command:
-        command = doNothingCallback
-
-    # label = keys.get('label') or 'no label'
-    # underline = keys.get('underline') or 0
-    # accelerator = keys.get('accelerator') or ''
-    # command = keys.get('command') or doNothingCallback
-    entry = textMenuEntry(label, underline, accelerator, command)
-    menu.entries.append(entry)
-
-# @+node:ekr.20150107090324.51: *5* add_separator
-def add_separator(self, menu):
-    menu.entries.append(textMenuSep())
-
-# @+node:ekr.20150107090324.52: *5* delete_range
-def delete_range(self, *args, **keys):
-    pass
-
-# @+node:ekr.20150107090324.53: *5* show_menu
-def show_menu(self):
-    last_menu = self._top_menu
-    while True:
-        entries = last_menu.entries
-        for i, entry in enumerate(entries):
-            g.pr(i, ')', entry.display())
-        g.pr(len(last_menu.entries), ')', '[Prev]')
-        which = get_input('Which menu entry? > ')
-        which = which.strip()
-        if not which:
-            continue
-        try:
-            n = int(which)
-        except ValueError:
-            # Look for accelerator character.
-            ch = which[0].lower()
-            for n, z in enumerate(entries):
-                if hasattr(z, 'underline') and ch == z.label[z.underline].lower():
-                    break
-            else:
+        layout = QGridLayout()
+        for i, icon_name in enumerate(icon_names):
+            button = QPushButton(icon_name)
+            pixmap = getattr(QStyle.StandardPixmap, icon_name)
+            if pixmap is None:
+                g.trace(f"No pixmap for {icon_name=}")
                 continue
-        if n == len(entries):
-            return
-        if n < 0 or n > len(entries) - 1:
-            continue
-        menu = entries[n]
-        if isinstance(menu, textMenuEntry):
-            menu.callback()
-            return
-        if isinstance(menu, textMenuCascade):
-            last_menu = menu.menu
-        else:
-            pass
 
-# @+node:ekr.20150107090324.54: *4* class textLog: cursesGui.py
-class textLog(leoFrame.LeoLog):
-    @others
+            def callback(
+                icon_name: str = icon_name, pixmap: QStyle.StandardPixmap = pixmap
+            ) -> None:
+                controller._addPixmapToNode(icon_name, pixmap)
 
+            button.released.connect(callback)
+            styled_icon = self.style().standardIcon(pixmap)  # type:ignore
+            button.setIcon(styled_icon)
+            layout.addWidget(button, int(i / 4), int(i % 4))
+        self.setLayout(layout)
 
-# @+node:ekr.20150107090324.58: *5* createControl
-# < < HACK Quiet, oops. >>
-
-def createControl(self, parentFrame):
-    pass
-
-def setFontFromConfig(self):
-    pass  # N/A
-
-# @+node:ekr.20150107090324.68: *5* finishCreate (cursesGui.py)
-def finishCreate(self):
-    pass
-
-# @+node:ekr.20150107090324.56: *5* put
-def put(self, s, color=None, tabName='Log', from_redirect=False):
-    g.pr(s, newline=False)
-
-# @+node:ekr.20150107090324.57: *5* putnl
-def putnl(self, tabName='log'):
-    g.pr('')
-
-# @+node:ekr.20150107090324.59: *5* setColorFromConfig
-def setColorFromConfig(self):
-    pass
-
-# @+node:ekr.20150107090324.55: *5* setTabBindings
-def setTabBindings(self, tabName):
-    pass
-
-# @+node:ekr.20150107090324.60: *4* class textTree: cursesGui.py
-class textTree(leoFrame.LeoTree):
-    @others
-
-
-# @+node:ekr.20150107090324.61: *5* setBindings
-def setBindings(self):
-    pass
-
-# @+node:ekr.20150107090324.62: *5* begin/endUpdate & redraw/now
-def redraw(self, p=None):
-    self.text_draw_tree()
-
-redraw_now = redraw
-
-# @+node:ekr.20150107090324.63: *5* endUpdate
-# @+node:ekr.20150107090324.64: *5* textTree.__init__
-def __init__(self, frame):
-    # undoc: openWithFileName -> treeWantsFocus -> c.frame.tree.canvas
-    self.c = frame.c
-    super().__init__(frame)
-
-# @+node:ekr.20150107090324.65: *5* select
-def select(self, p, scroll=True):
-    # TODO Much more here: there's four hooks and all sorts of other things called in the TK version.
+# @+node:ekr.20260805114313.1: *4* ec._addPixmapToNode (to do)
+def _addPixmapToNode(self, icon_name: str, pixmap: QStyle.StandardPixmap) -> None:
+    """Convert the given pixmap to an icon and add it to c.p.h."""
     c = self.c
-    w = c.frame.body.bodyCtrl
-    c.setCurrentPosition(p)
-    # This is also where the body-text control is given the text of the selected node...
-    # Always do this.    Otherwise there can be problems with trailing hewlines.
-    w.setAllText(p.b)
-    # and something to do with undo?
+    assert isinstance(pixmap, QStyle.StandardPixmap)
+    g.trace(icon_name)
 
-# @+node:ekr.20150107090324.66: *5* editLabel & headline_wrapper (cursesGui)
-def editLabel(self, v, selectAll: bool = False, selection: tuple = None) -> tuple[None, None]:
-    return None, None
+    # Convert the pixmap to a QIcon?.
 
-def headline_wrapper(self, p):
-    return None
+    # iconList = self.getIconList(p.v)
+    # iconList.extend(aList)
+    # self.setIconList(p, iconList)
 
-# @+node:ekr.20150107090324.67: *5* text_draw_tree & helper
-def text_draw_tree(self):
-    g.pr('--- tree ---')
-    self.draw_tree_helper(self.c.rootPosition(), indent=0)
-
-def draw_tree_helper(self, p, indent):
-    for p in p.self_and_siblings():
-        if p.hasChildren():
-            box = '+' if p.isExpanded() else '-'
-        else:
-            box = ' '
-        icons = '%s%s%s%s' % (
-            'b' if p.b else ' ',
-            'm' if p.isMarked() else ' ',
-            '@' if p.isCloned() else ' ',
-            '*' if p.isDirty() else ' ',
-        )
-        g.pr(" " * indent * 2, icons, box, p.h)
-        if p.isExpanded() and p.hasChildren():
-            self.draw_tree_helper(p.firstChild(), indent + 1)
-
-# @+node:ekr.20170419093747.1: *3* app.createTextGui (was createCursesGui)
-def createTextGui(self, fileName: str = '', verbose: bool = False) -> None:
-    app = self
-    app.pluginsController.loadOnePlugin('leo.plugins.cursesGui', verbose=verbose)
+    c.p.setDirty()
+    c.setChanged()
+    c.redraw()
 
 # @+node:ekr.20260323083734.1: ** Temporary Attic
-# @+node:ekr.20260804174332.1: *3* --- @button clone-callers
-# @+node:ekr.20260707105715.1: *4* @@@button clone-callers (abandoned)
-g.cls()
-
-import re
-
-h = '--- signatures return str'
-p = g.findNodeAnywhere(c, h)
-u = c.undoer
-assert p, h
-
-@others  # Define helpers
-
-# Make root node
-undoData = u.beforeInsertNode(c.p)  # c.p is subject of 'insertAfter'
-root = c.lastTopLevel().insertAfter()
-root.h = 'Callers'
-# Discover all names.
-names = set()
-for p in p.children():
-    if p.h.startswith('class '):
-        continue
-    s = g.splitLines(p.b)[0]
-    if m := re.match(r'^def ([_\w]+)', s):
-        names.add(m.group(1))
-        # find_clones(c, m.group(1))
-    else:
-        print(f"Skip: {p.h}")
-# Do cff for all names:
-for name in sorted(names):
-    find_clones(c, name)
-    
-# Finish
-c.selectPosition(root)
-c.demote()
-u.afterInsertNode(root, 'clone-callers', undoData)
-c.redraw(root)
-# @+node:ekr.20260707111229.1: *5* function: find_clones
-def find_clones(c, name):
-    """
-    do clone-find-all for name(...)
-    """
-    finder = c.findCommands
-    # find_text = rf'\.{name}\(.*?\)'
-    find_text = f"[ .]{name}\(.*?\)"
-    print(f"cff: {name}")
-    settings = g.Bunch(
-        # State...
-        in_headline     = False,
-        reverse         = False,
-        # Find/change strings...
-        find_text       = find_text,
-        change_text     = '',
-        # Find options...
-        file_only       = False,
-        ignore_case     = False,
-        mark_changes    = False,
-        mark_finds      = False,
-        node_only       = False,
-        pattern_match   = True,
-        search_body     = True,
-        search_headline = False,
-        suboutline_only = False,
-        whole_word      = False
-    )  # fmt: skip
-    finder.do_clone_find_all_flattened(settings)
-    # for p in c.all_unique_positions():
-    #     for s in g.splitLines(p.b):
-    #         if m := re.match(rf'^.*?\b{name}\(', s):
-    #             if s.strip().startswith('def'):
-    #                 continue
-    #             else:
-    #                 where_s = f"{g.truncate(p.h, 30):>40} {name:>30}"
-    #                 print(f"{where_s:<70} {g.truncate(s.strip(), 80)}")
-    #                 break
 # @+node:ekr.20260407033920.1: *3* Deleted by PR #4576
 https://github.com/leo-editor/leo-editor/pull/4576
 # @+node:ekr.20160427062131.1: *4* c.is_unusual_focus
@@ -4867,7 +4099,7 @@ def editLabel(
 def headline_wrapper(self, p: Position) -> Widget:
     raise NotImplementedError
 
-# @+node:ekr.20260805144030.1: *3* Delete todo.py
+# @+node:ekr.20260805144030.1: *3* todo.py
 # @+node:ekr.20260804173430.1: *4* Deleted by PR #4844
 # @+node:ekr.20260802060059.1: *5* class TestTodo(LeoUnitTest)
 class TestTodo(LeoUnitTest):
