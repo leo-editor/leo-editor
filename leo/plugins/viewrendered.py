@@ -232,7 +232,7 @@ try:
     import docutils
     import docutils.core
 except ImportError:
-    docutils = None
+    docutils = None  # type:ignore
 if docutils:
     try:
         from docutils.core import publish_string
@@ -318,7 +318,7 @@ def init() -> bool:
 
 # @+node:ekr.20240727091022.1: *3* vr function: getVR
 def getVr(
-    *, c: Any = None, event: Any = None, parent: QtWidgets.QWidget = None
+    *, c: Any = None, event: Any = None, parent: QtWidgets.QWidget | None = None
 ) -> ViewRenderedController | None:
     """Return the ViewRenderedController instance or None."""
     if g.app.gui.guiName() != 'qt':
@@ -353,6 +353,8 @@ def onCreate(tag: str, keys: dict) -> None:
     if not c:
         return
     vr = getVr(c=c)
+    if not vr:
+        return
     g.registerHandler('select2', vr.update_vr)
     g.registerHandler('idle', vr.update_vr)
     vr.active = True
@@ -390,14 +392,14 @@ def show_scrolled_message(tag: str, kw: Any) -> None:
     if not vr:
         return
     # Make sure we will show the message.
-    vr.is_active = True
+    vr.active = True
     vr.is_visible = True
     vr.show()
     # A hack: suppress updates until the node changes.
     vr.gnx = p.v.gnx
     vr.length = len(p.v.b)
     # Render!
-    f = vr.dispatch_dict.get('rest')
+    f = vr.dispatch_dict['rest']
     f(s, kw)
     c.bodyWantsFocusNow()
 
@@ -646,7 +648,7 @@ class ViewRenderedController(QtWidgets.QWidget):
     # @-<< vr: default templates >>
     # @+others
     # @+node:ekr.20110317080650.14380: *3*  vr.ctor & helpers
-    def __init__(self, c: Cmdr, parent: QWidget = None) -> None:
+    def __init__(self, c: Cmdr, parent: QWidget | None = None) -> None:
         """Ctor for ViewRenderedController class."""
         self.c = c
         # Create the widget.
@@ -662,14 +664,14 @@ class ViewRenderedController(QtWidgets.QWidget):
         self.typst_template: str = ''
         self.pdf_zoom: int = 0
         # Widgets managed by destroy_widgets.
-        self.browser: QWidget = None
-        self.gs: QGraphicsScene = None
-        self.gv: QGraphicsView = None
+        self.browser: QWidget | None = None
+        self.gs: QGraphicsScene | None = None
+        self.gv: QGraphicsView | None = None
         self.vp: QMediaPlayer = None
-        self.w: QWidget = None  # The present widget in the rendering pane.
+        self.w: QWidget | None = None  # The present widget in the rendering pane.
         # Set the ivars.
         self.active = True
-        self.gnx: str = None
+        self.gnx: str | None = None
         self.keep_open = False  # True: keep the VR pane open even when showing text.
         self.is_visible = False
         self.length = 0  # The length of previous p.b.
@@ -744,7 +746,7 @@ class ViewRenderedController(QtWidgets.QWidget):
         self.typst_template = get_template('typst')
 
     # @+node:ekr.20190614065659.1: *4* vr.create_pane
-    def create_pane(self, parent: QWidget) -> None:
+    def create_pane(self, parent: QWidget | None) -> None:
         """Create the VR pane."""
         if g.unitTesting:
             return
@@ -860,7 +862,7 @@ class ViewRenderedController(QtWidgets.QWidget):
         if not self.must_update(keywords):
             return
         # Suppress updates until we change nodes.
-        f: Callable = None
+        f: Callable | None = None
         self.node_changed = self.gnx != p.v.gnx
         self.gnx = p.v.gnx
         self.length = len(p.b)  # not s
@@ -1494,19 +1496,21 @@ class ViewRenderedController(QtWidgets.QWidget):
         if not h.startswith('@jinja'):
             return
 
-        def find_root(p: Position) -> tuple[Position, Position] | None:
+        def find_root(p: Position) -> tuple[Position, Position] | tuple[None, None]:
             for newp in p.parents():
                 if newp.h.strip() == '@jinja':
                     oldp, p = p, newp
                     return oldp, p
             return None, None
 
-        def find_inputs(p: Position) -> tuple[Position, Position] | None:
+        def find_inputs(p: Position) -> tuple[Position, Position] | tuple[None, None]:
             for newp in p.parents():
                 if newp.h.strip() == '@jinja inputs':
                     oldp, p = p, newp
-                    _, p = find_root(p)
-                    return oldp, p
+                    _, root_p = find_root(p)
+                    if root_p is None:
+                        return None, None
+                    return oldp, root_p
             return None, None
 
         # if on jinja node's children, find the parent
@@ -1517,6 +1521,10 @@ class ViewRenderedController(QtWidgets.QWidget):
         elif h.startswith('@jinja variable'):
             # not at @jinja, first find @jinja inputs, then @jinja
             oldp, p = find_inputs(p)
+
+        if p is None:
+            g.es("Could not find enclosing @jinja node.")
+            return
 
         def untangle(c: Cmdr, p: Position) -> str:
             return g.getScript(c, p, useSelectedText=False, useSentinels=False)

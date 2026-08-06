@@ -6,7 +6,7 @@
 # @+node:ekr.20220416085845.1: ** << qt_text imports & annotations >>
 from __future__ import annotations
 from collections.abc import Callable
-from typing import Any, TYPE_CHECKING
+from typing import Any, cast, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core.leoQt import QtCore, QtGui, Qsci, QtWidgets
 from leo.core.leoQt import ContextMenuPolicy, Key, KeyboardModifier
@@ -528,7 +528,7 @@ class LeoLineTextWidget(QtWidgets.QFrame):
         e.viewport().installEventFilter(self)
 
     # @+node:ekr.20150403094706.10: *3* LeoLineTextWidget.eventFilter
-    def eventFilter(self, obj: QObject, event: QEvent) -> bool:
+    def eventFilter(self, obj: QObject, event: QEvent) -> bool:  # ty: ignore[invalid-method-override]
         """
         Update the line numbers for all events on the text edit and the viewport.
         This is easier than connecting all necessary signals.
@@ -607,7 +607,7 @@ if QtWidgets:
                 self.itemClicked.connect(self.select_callback)
 
             # @+node:ekr.20110605121601.18011: *5* LeoQListWidget.closeEvent
-            def closeEvent(self, event: QEvent) -> None:
+            def closeEvent(self, event: QEvent) -> None:  # ty: ignore[invalid-method-override]
                 """Kill completion and close the window."""
                 self.leo_c.k.autoCompleter.abort()
 
@@ -631,7 +631,7 @@ if QtWidgets:
                 return self.currentItem().text()
 
             # @+node:ekr.20110605121601.18013: *5* LeoQListWidget.keyPressEvent
-            def keyPressEvent(self, event: QKeyEvent) -> None:
+            def keyPressEvent(self, event: QKeyEvent) -> None:  # ty: ignore[invalid-method-override]
                 """Handle a key event from QListWidget."""
                 c = self.leo_c
                 w = c.frame.body.wrapper
@@ -719,6 +719,7 @@ if QtWidgets:
                 c = self.leo_c
                 w = c.frame.body.wrapper.widget
                 vp = self.viewport()
+                assert vp is not None
                 r = w.cursorRect()
                 geom = self.geometry()  # In viewport coordinates.
                 gr_topLeft = to_global(w, r.topLeft())
@@ -1018,7 +1019,7 @@ if QtWidgets:
 
         leo_vim_mode: bool | None = None
 
-        def paintEvent(self, event: QPaintEvent) -> None:
+        def paintEvent(self, event: QPaintEvent) -> None:  # ty: ignore[invalid-method-override]
             """
             LeoQTextBrowser.paintEvent.
 
@@ -1100,7 +1101,7 @@ if QtWidgets:
             qp.end()
 
         # @+node:tbrown.20130411145310.18855: *3* LeoQTextBrowser.wheelEvent
-        def wheelEvent(self, event: QWheelEvent) -> None:
+        def wheelEvent(self, event: QWheelEvent) -> None:  # ty: ignore[invalid-method-override]
             """Handle a wheel event."""
             if KeyboardModifier.ControlModifier & event.modifiers():
                 d = {'c': self.leo_c}
@@ -1154,7 +1155,7 @@ class NumberBar(QtWidgets.QFrame):
         self.y_adjust = c.config.getInt('gutter-y-adjust') or 10
 
     # @+node:ekr.20181005085507.1: *3* NumberBar.mousePressEvent
-    def mousePressEvent(self, event: QMouseEvent) -> None:
+    def mousePressEvent(self, event: QMouseEvent) -> None:  # ty: ignore[invalid-method-override]
         c = self.c
 
         def find_line(y: int) -> int:
@@ -1181,7 +1182,7 @@ class NumberBar(QtWidgets.QFrame):
             xdb.qc.put(f"b {path}:{n}")
 
     # @+node:ekr.20150403094706.5: *3* NumberBar.update
-    def update(self, *args: Any) -> None:
+    def update(self, *args: Any) -> None:  # ty: ignore[invalid-method-override]
         """
         Updates the number bar to display the current set of numbers.
         Also, adjusts the width of the number bar if necessary.
@@ -1194,7 +1195,7 @@ class NumberBar(QtWidgets.QFrame):
         QtWidgets.QWidget.update(self, *args)
 
     # @+node:ekr.20150403094706.6: *3* NumberBar.paintEvent
-    def paintEvent(self, event: QPaintEvent) -> None:
+    def paintEvent(self, event: QPaintEvent) -> None:  # ty: ignore[invalid-method-override]
         """
         Enhance QFrame.paintEvent.
         Paint all visible text blocks in the editor's document.
@@ -1691,7 +1692,7 @@ class QTextEditWrapper(QTextMixin):
                     c.k.keyboardQuit(setFocus=False)
 
             # @-others
-            self.widget.mouseReleaseEvent = mouseReleaseEvent
+            cast(Any, self.widget).mouseReleaseEvent = mouseReleaseEvent
 
     # @+node:ekr.20200312052821.1: *3* QTextEditWrapper.repr
     def __repr__(self) -> str:
@@ -1757,7 +1758,7 @@ class QTextEditWrapper(QTextMixin):
         def after(func: Callable) -> None:
             QtCore.QTimer.singleShot(delay, func)
 
-        def addFlashCallback(self: QTextEditWrapper = self, w: QWidget = w) -> None:
+        def addFlashCallback(self: QTextEditWrapper = self, w: Any = w) -> None:
             i = self.flashIndex
             cursor = w.textCursor()  # Must be the widget's cursor.
             cursor.setPosition(i)
@@ -1774,7 +1775,7 @@ class QTextEditWrapper(QTextMixin):
             self.flashCount -= 1
             after(removeFlashCallback)
 
-        def removeFlashCallback(self: QTextEditWrapper = self, w: QWidget = w) -> None:
+        def removeFlashCallback(self: QTextEditWrapper = self, w: Any = w) -> None:
             w.setExtraSelections(last_selections)
             if self.flashCount > 0:
                 after(addFlashCallback)
@@ -1831,7 +1832,7 @@ class QTextEditWrapper(QTextMixin):
         return self.widget.textCursor().hasSelection()
 
     # @+node:ekr.20110605121601.18089: *4* QTextEditWrapper.insert (avoid call to setAllText)
-    def insert(self, i: int, s: str) -> None:
+    def insert(self, i: int, s: str) -> None:  # ty: ignore[invalid-method-override]
         """QTextEditWrapper."""
         w = self.widget
         cursor = w.textCursor()

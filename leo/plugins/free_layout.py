@@ -40,7 +40,7 @@ try:  # #1973
     from leo.core.leoQt import MouseButton
     from leo.plugins.nested_splitter import NestedSplitter  # NestedSplitterChoice
 except Exception:
-    QtWidgets = None
+    QtWidgets = None  # type:ignore
     MouseButton = None  # type:ignore
     NestedSplitter = None  # type:ignore
 
@@ -184,7 +184,7 @@ class FreeLayoutController:
         layout = top_splitter.get_saveable_layout()
         nd = g.findNodeAnywhere(c, "@data free-layout-layout")
         if not nd:
-            settings: Position
+            settings: Position | None
             settings = g.findNodeAnywhere(c, "@settings")
             if not settings:
                 settings = c.rootPosition().insertAfter()

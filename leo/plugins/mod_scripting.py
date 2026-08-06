@@ -170,7 +170,7 @@ if TYPE_CHECKING:  # pragma: no cover
 # @+node:ekr.20180328085010.1: ** Top level (mod_scripting)
 # @+node:tbrown.20140819100840.37719: *3* mod_scripting.build_rclick_tree
 def build_rclick_tree(
-    command_p: Position, rclicks: RClicks = None, top_level: bool = False
+    command_p: Position, rclicks: RClicks | None = None, top_level: bool = False
 ) -> list:
     """
     Return a list of top level RClicks for the button at command_p, which can be
@@ -272,10 +272,10 @@ class AtButtonCallback:
         controller: ScriptingController,
         b: QtWidgets.QButton,
         c: Cmdr,
-        buttonText: str,
+        buttonText: str | None,
         docstring: str,
         gnx: str,
-        script: str,
+        script: str | None,
     ) -> None:
         """AtButtonCallback.__init__."""
         self.b = b  # A QButton.
@@ -288,7 +288,7 @@ class AtButtonCallback:
         self.__doc__ = docstring  # The docstring for this callback for g.getDocStringForFunction.
 
     # @+node:ekr.20141031053508.10: *3* __call__ (AtButtonCallback)
-    def __call__(self, event: Event = None) -> Value:
+    def __call__(self, event: Event | None = None) -> Value:
         """AtButtonCallbgack.__call__. The callback for @button nodes."""
         return self.execute_script()
 
@@ -320,7 +320,7 @@ class AtButtonCallback:
         return None
 
     # @+node:ekr.20180313171043.1: *4* AtButtonCallback.find_script
-    def find_script(self) -> str:
+    def find_script(self) -> str | None:
         gnx = self.gnx
         # First, search self.c for the gnx.
         for p in self.c.all_positions():
@@ -396,7 +396,7 @@ class ScriptingController:
 
     # @+node:ekr.20150401113822.1: *3* sc.Callbacks
     # @+node:ekr.20060328125248.23: *4* sc.addScriptButtonCommand
-    def addScriptButtonCommand(self, event: Event = None) -> None:
+    def addScriptButtonCommand(self, event: Event | None = None) -> None:
         """Called when the user presses the 'script-button' button or executes the script-button command."""
         c = self.c
         p = c.p
@@ -409,7 +409,7 @@ class ScriptingController:
         c.bodyWantsFocus()
 
     # @+node:ekr.20060522105937.1: *4* sc.runDebugScriptCommand
-    def runDebugScriptCommand(self, event: Event = None) -> None:
+    def runDebugScriptCommand(self, event: Event | None = None) -> None:
         """Called when user presses the 'debug-script' button or executes the debug-script command."""
         c = self.c
         p = c.p
@@ -471,7 +471,7 @@ class ScriptingController:
         c.bodyWantsFocus()
 
     # @+node:ekr.20060328125248.21: *4* sc.runScriptCommand
-    def runScriptCommand(self, event: Event = None) -> None:
+    def runScriptCommand(self, event: Event | None = None) -> None:
         """Called when user presses the 'run-script' button or executes the run-script command."""
         c, p = self.c, self.c.p
         args = self.getArgs(p)
@@ -527,7 +527,7 @@ class ScriptingController:
             else:
                 self.seen.add(gnx)
                 if m := pattern.match(p.h):
-                    func = d.get(m.group(1))
+                    func = d[m.group(1)]
                     func(p)
                 p.moveToThreadNext()
 
@@ -594,7 +594,7 @@ class ScriptingController:
         self,
         args: Args,
         text: str,
-        command: Callable,
+        command: Callable | None,
         statusLine: str,
         bg: str = '',
         kind: str = '',
@@ -631,7 +631,7 @@ class ScriptingController:
             )
 
         def deleteButtonCallback(
-            event: Event = None, self: Any = self, b: QtWidgets.QButton = b
+            event: Event | None = None, self: Any = self, b: QtWidgets.QButton = b
         ) -> None:
             self.deleteButton(b, event=event)
 
@@ -657,8 +657,8 @@ class ScriptingController:
     def executeScriptFromButton(
         self,
         b: QtWidgets.QButton,
-        buttonText: str,
-        p: Position,
+        buttonText: str | None,
+        p: Position | None,
         script: str,
         script_gnx: str = '',
     ) -> Value:
@@ -684,7 +684,7 @@ class ScriptingController:
         return result
 
     # @+node:ekr.20130912061655.11294: *3* sc.open_gnx
-    def open_gnx(self, c: Cmdr, gnx: str) -> tuple[Cmdr, Position]:
+    def open_gnx(self, c: Cmdr, gnx: str) -> tuple[Cmdr | None, Position | None]:
         """
         Find the node with the given gnx in c, myLeoSettings.leo and leoSettings.leo.
         If found, open the tab/outline and return c,p of the found node.
@@ -727,7 +727,7 @@ class ScriptingController:
                 self.createCommonButton(p, script, rclicks)
 
     # @+node:ekr.20070926084600: *4* sc.createCommonButton (common @button)
-    def createCommonButton(self, p: Position, script: str, rclicks: RClicks = None) -> None:
+    def createCommonButton(self, p: Position, script: str, rclicks: RClicks) -> None:
         """
         Create a button in the icon area for a common @button node in an
         @buttons node in an @setting tree. Binds button presses to a callback
@@ -866,7 +866,7 @@ class ScriptingController:
         args = self.getArgs(p)
 
         def atCommandCallback(
-            event: Event = None,
+            event: Event | None = None,
             args: Args = args,
             c: Cmdr = c,
             p: Position = p.copy(),
@@ -913,7 +913,7 @@ class ScriptingController:
         args = self.getArgs(p)
 
         def atCommandCallback(
-            event: Event = None,
+            event: Event | None = None,
             args: Args = args,
             c: Cmdr = c,
             p: Position = p.copy(),
@@ -1039,7 +1039,7 @@ class ScriptingController:
             self.c.bodyWantsFocus()
 
     # @+node:ekr.20080813064908.4: *4* sc.getArgs
-    def getArgs(self, p: Position) -> list[str]:
+    def getArgs(self, p: Position | None) -> list[str]:
         """Return the list of @args field of p.h."""
         args: list[str] = []
         if not p:
@@ -1089,7 +1089,7 @@ class ScriptingController:
     # @+node:peckj.20140103101946.10404: *4* sc.getColor
     def getColor(self, h: str) -> str:
         """Returns the background color from the given headline string"""
-        color = None
+        color = ''
         tag = '@color'
         i = h.find(tag)
         if i > -1:
@@ -1105,7 +1105,7 @@ class ScriptingController:
     # @+node:ekr.20060328125248.16: *4* sc.getShortcut
     def getShortcut(self, h: str) -> str:
         """Return the keyboard shortcut from the given headline string"""
-        shortcut = None
+        shortcut = ''
         i = h.find('@key')
         if i > -1:
             j = g.skip_ws(h, i + len('@key'))
@@ -1124,7 +1124,7 @@ class ScriptingController:
         return shortcut
 
     # @+node:ekr.20150402042350.1: *4* sc.getScript
-    def getScript(self, p: Position) -> str:
+    def getScript(self, p: Position | None) -> str:
         """Return the script composed from p and its descendants."""
         return g.getScript(
             self.c,
@@ -1141,7 +1141,7 @@ class ScriptingController:
         func: Callable,
         h: str,
         pane: str,
-        source_c: Cmdr = None,
+        source_c: Cmdr | None = None,
         tag: str = '',
     ) -> None:
         """Register @button <name> and @rclick <name> and <name>"""
@@ -1149,7 +1149,7 @@ class ScriptingController:
         trace = False and not g.unitTesting
         shortcut = self.getShortcut(h) or ''
         commandName = self.cleanButtonText(h)
-        fileName = source_c.fileName() if source_c else None
+        fileName = source_c.fileName() if source_c else ''
 
         if trace and not g.isascii(commandName):
             g.trace(commandName)
@@ -1172,7 +1172,7 @@ class ScriptingController:
                 # Create a *second* func, to avoid collision in c.commandsDict.
 
                 def registerAllCommandsCallback(
-                    event: Event = None, func: Callable = func
+                    event: Event | None = None, func: Callable = func
                 ) -> Callable:
                     return func()
 
@@ -1219,10 +1219,11 @@ class ScriptingController:
         if not bg.startswith('#'):
             bg0 = bg
             d = leoColor.leo_color_database
-            bg = d.get(bg.lower())
-            if not bg:
+            resolved_bg = d.get(bg.lower())
+            if not resolved_bg:
                 g.trace('bad color? %s' % bg0)
                 return
+            bg = resolved_bg
         try:
             b.button.setStyleSheet("QPushButton{background-color: %s}" % (bg))
         except Exception:

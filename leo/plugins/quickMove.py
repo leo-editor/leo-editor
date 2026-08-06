@@ -343,8 +343,8 @@ class quickMove:
         # c.frame.menu.createNewMenu('Move', 'Outline')
 
         self.local_imps: list[tuple] = []  # make table for createMenuItemsFromTable()
-        for func, name, text in self.imps:
-            self.local_imps.append((text, None, func))
+        for fn, _name, text in self.imps:
+            self.local_imps.append((text, None, fn))
 
         self.local_imps.extend(self.table)
         c.frame.menu.createMenuItemsFromTable('Move', self.table)

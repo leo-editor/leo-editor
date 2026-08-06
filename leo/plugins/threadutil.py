@@ -234,7 +234,8 @@ class SysProcessRunner:
             err = str(p.readAllStandardError())
             cb = ent['cb'] or self.default_cb
             later(self.sched)
-            cb(out, err, status, ent)
+            if cb:
+                cb(out, err, status, ent)
 
         cmd = ent['arg'][0]
         args = ent['arg'][1:]

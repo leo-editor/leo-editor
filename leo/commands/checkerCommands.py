@@ -23,13 +23,13 @@ except Exception:
 try:
     import flake8  # #2248: Import only flake8.
 except ImportError:
-    flake8 = None
+    flake8 = None  # type:ignore
 
 try:
     import pyflakes
     from pyflakes import api, reporter
 except Exception:
-    pyflakes = None
+    pyflakes = None  # type:ignore
 
 try:
     from pylint import lint
@@ -95,7 +95,7 @@ def check_nodes(event: LeoKeyEvent | None = None) -> None:
       Headlines that match these suppressions *exactly* are not considered dubious.
       Default: None.
     """
-    c = event and event.get('c')
+    c = event.c if event else None
     if not c:
         return
     CheckNodes(c).check(event)
@@ -108,7 +108,7 @@ def find_long_lines(event: LeoKeyEvent | None = None) -> None:
     Report long lines in c.p's tree.
     Generate clickable links in the log.
     """
-    c = event and event.get('c')
+    c = event.c if event else None
     if not c:
         return
 
@@ -168,7 +168,7 @@ def find_long_lines(event: LeoKeyEvent | None = None) -> None:
 @g.command('find-missing-docstrings')
 def find_missing_docstrings(event: LeoKeyEvent | None = None) -> None:
     """Report missing docstrings in the log, with clickable links."""
-    c = event and event.get('c')
+    c = event.c if event else None
     if not c:
         return
 
@@ -246,7 +246,7 @@ def flake8_command(event: LeoKeyEvent | None = None) -> None:
     if not flake8:
         g.es_print(f"{tag} can not import flake8")
         return
-    c = event and event.get('c')
+    c = event.c if event else None
     if not c or not c.p:
         return
     python = sys.executable
@@ -292,7 +292,7 @@ def mypy_command(event: LeoKeyEvent | None = None) -> None:
 
     See leoSettings.leo for details.
     """
-    c = event and event.get('c')
+    c = event.c if event else None
     if not c:
         return
     if c.isChanged():
@@ -310,7 +310,7 @@ def pyflakes_command(event: LeoKeyEvent | None = None) -> None:
     Run pyflakes on all nodes of the selected tree,
     or the first @<file> node in an ancestor.
     """
-    c = event and event.get('c')
+    c = event.c if event else None
     if not c:
         return
     if c.isChanged():
@@ -334,7 +334,7 @@ def pylint_command(event: LeoKeyEvent | None = None) -> None:
     or the last checked @<file> node.
     """
     global last_pylint_path
-    if c := event and event.get('c'):
+    if c := (event.c if event else None):
         if c.isChanged():
             c.save()
         if data := PylintCommand(c).run(c.p, last_path=last_pylint_path):

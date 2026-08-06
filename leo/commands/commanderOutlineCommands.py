@@ -10,7 +10,7 @@ from collections.abc import Callable, Generator
 from xml.etree import ElementTree
 import json
 import time
-from typing import Any, TYPE_CHECKING
+from typing import Any, cast, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.core import leoNodes
 from leo.core import leoFileCommands
@@ -298,6 +298,9 @@ def pasteAsTemplate(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 
         # create vnode
         v, _ = getv(gnx)
+        # h is never None here: this first row is always xv[0] itself (the
+        # root of the copied tree), which viter() never treats as "seen".
+        assert h is not None
         v.h = h
         v.b = b
 
@@ -312,6 +315,11 @@ def pasteAsTemplate(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
             # get or create a child `v`
             v, isNew = getv(gnx)
             if isNew:
+                # h is never None here: viter() only yields h=None for gnx
+                # values already in `seen` (nodes outside the copied tree),
+                # and those always resolve to an existing vnode, so isNew
+                # is False for them.
+                assert h is not None
                 v.h = h
                 v.b = b
                 if ua := uas.get(gnx):
@@ -347,7 +355,7 @@ def pasteAsTemplate(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
 
     if not isJson:
         xroot = ElementTree.fromstring(s)
-        xvelements = xroot.find('vnodes')  # <v> elements.
+        xvelements = cast(Any, xroot.find('vnodes'))  # <v> elements.
         xtelements = xroot.find('tnodes')  # <t> elements.
         bodies, uas = x.scanTnodes(xtelements)
         root_gnx = xvelements[0].attrib.get('t')  # the gnx of copied node

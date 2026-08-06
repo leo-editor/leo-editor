@@ -11,7 +11,7 @@ import re
 import textwrap
 import time
 from typing import Any, TYPE_CHECKING
-import urllib
+import urllib.parse
 
 #
 # Third-party imports.
@@ -1456,18 +1456,18 @@ class MindMapImporter:
             self.csv_string(row)
             if new_level > n:
                 p = p.insertAsLastChild().copy()
-                p.b = self.csv_string(row)
+                p.b = self.csv_string(row) or ''
                 n = n + 1
             elif new_level == n:
                 p = p.insertAfter().copy()
-                p.b = self.csv_string(row)
+                p.b = self.csv_string(row) or ''
             elif new_level < n:
                 for item in p.parents():
                     if item.level() == new_level - 1:
                         p = item.copy()
                         break
                 p = p.insertAsLastChild().copy()
-                p.b = self.csv_string(row)
+                p.b = self.csv_string(row) or ''
                 n = p.level()
         for p in target.unique_subtree():
             lines = p.b.splitlines()
@@ -1493,7 +1493,7 @@ class MindMapImporter:
     def csv_string(self, row: list[str]) -> str | None:
         """Return the string for the given csv row."""
         count = 0
-        while count <= len(row):
+        while count < len(row):
             if row[count]:
                 return row[count]
             count = count + 1

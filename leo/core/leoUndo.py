@@ -937,11 +937,11 @@ class Undoer:
     # @+node:ekr.20031218072017.3610: *4* u.canRedo & canUndo
     # Translation does not affect these routines.
 
-    def canRedo(self) -> None:
+    def canRedo(self) -> bool:
         u = self
         return u.redoMenuLabel != "Can't Redo"
 
-    def canUndo(self) -> None:
+    def canUndo(self) -> bool:
         u = self
         return u.undoMenuLabel != "Can't Undo"
 

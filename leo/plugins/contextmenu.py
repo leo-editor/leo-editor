@@ -75,6 +75,7 @@ def cm_external_editor(event: LeoKeyEvent | None = None) -> None:
 
     Set LEO_EDITOR/EDITOR environment variable to get the editor you want.
     """
+    assert event is not None
     c = event['c']
 
     editor, _ = getEditor(c)

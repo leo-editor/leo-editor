@@ -118,7 +118,8 @@ filetypes = [
 ]
 
 # xml namespace mapping from prefix to full namespace
-NSMAP: dict[str, Any] = {}
+# (a None key holds the default namespace, per lxml's nsmap convention)
+NSMAP: dict[str | None, Any] = {}
 
 
 # @+node:tbrown.20110428102237.20325: ** append_element
