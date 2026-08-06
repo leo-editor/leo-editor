@@ -1383,7 +1383,7 @@ class JEditColorizer(BaseColorizer):
         self.tot_time += time.process_time() - t1
 
     # @+node:ekr.20110605121601.18640: *3* jedit.recolor & helpers
-    def recolor(self, s: str) -> None:
+    def recolor(self, s: str, *, from_tree_sitter: bool = False) -> None:
         """
         jEdit.recolor: Recolor a *single* line, s.
         QSyntaxHighligher calls this method repeatedly and automatically.
@@ -1399,7 +1399,7 @@ class JEditColorizer(BaseColorizer):
             return
 
         # Do not remove this unit test!
-        if g.callers(1) != 'highlightBlock':
+        if not from_tree_sitter and g.callers(1) != 'highlightBlock':
             message = f"jedit.recolor: invalid caller: {g.callers()}"
             g.print_unique_message(message)
 
@@ -3794,7 +3794,10 @@ class TreeSitterColorizer(JEditColorizer):
         if self.use_tree_sitter:
             # A different node may use a different language: never carry a tree across nodes.
             self.tree = None
-            self.reparse(self.c.p.b)
+            # During commander construction there may not be a current vnode yet.
+            # The normal recolor path reparses the body once a position exists.
+            p = self.c.p
+            self.reparse(p.b if p and p.v else '')
         else:
             super().init()
 
@@ -3955,10 +3958,15 @@ class TreeSitterColorizer(JEditColorizer):
             # entirely around QSyntaxHighlighter's line-by-line contract
             # (previousBlockState()/setCurrentBlockState() state chains).
             # Call the real thing rather than reimplementing any of it.
-            JEditColorizer.recolor(self, s)
+            JEditColorizer.recolor(self, s, from_tree_sitter=True)
             return
-        if p.b != self.source_text:
-            self.reparse(p.b)  # Incremental: reuses self.tree via applyEdit().
+        # QSyntaxHighlighter runs synchronously while Qt edits its document,
+        # before Leo's body-change handler has necessarily copied the new text
+        # to p.b.  Parse the live document or capture offsets lag one edit behind.
+        document = self.highlighter.document()
+        text = document.toPlainText()
+        if text != self.source_text:
+            self.reparse(text)  # Incremental: reuses self.tree via applyEdit().
         if s and self.enabled:
             offset = self.highlighter.currentBlock().position()
             self.colorLine(s, offset)
