@@ -5,7 +5,6 @@
 # pylint: disable=line-too-long
 
 from typing import Any
-import pytest
 from leo.core import leoGlobals as g
 from leo.core import leoColorizer
 from leo.core import leoTreeSitter

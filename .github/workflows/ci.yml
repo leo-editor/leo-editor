@@ -40,6 +40,7 @@ jobs:
       - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends
           libegl1 libgl1 libxkbcommon0 libdbus-1-3 libfontconfig1
       - run: pip install asttokens Pygments "PyQt6>=6.6" PyQt6-QScintilla
+          tree-sitter tree-sitter-python tree-sitter-javascript
       - run: python run_ci_unit_tests.py
 
   mypy:
@@ -55,6 +56,7 @@ jobs:
           types-requests types-six
           "PyQt6>=6.6" PyQt6-QScintilla PyQt6-WebEngine ty
           black pylint Jinja2 flake8 pyflakes Pygments
+          tree-sitter tree-sitter-python tree-sitter-javascript
       # These 6 are optional runtime deps for individual plugins/commands
       # (leoBeautify.py, checkerCommands.py, viewrendered.py, leoColorizer.py),
       # each guarded by 'try: import X except: X = None'. Installing them
