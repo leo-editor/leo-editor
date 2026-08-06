@@ -8,6 +8,7 @@ from typing import Any
 import pytest
 from leo.core import leoGlobals as g
 from leo.core import leoColorizer
+from leo.core import leoTreeSitter
 from leo.core.leoColorizer import JEditColorizer
 from leo.core.leoQt import Qt, QtGui, UnderlineStyle
 from leo.core.leoTest2 import create_app, LeoUnitTest
@@ -1671,7 +1672,7 @@ class TestTreeSitterColorizer(LeoUnitTest):
     # @+node:vv.20260806120002.3: *3* TestTreeSitterColorizer.test_python_captures
     def test_python_captures(self):
         c = self.c
-        x = leoColorizer.TreeSitterColorizer(c, None)
+        x = leoTreeSitter.TreeSitterColorizer(c, None)
         x.language = 'python'
         x.enabled = True
         text = self.prep(
@@ -1703,7 +1704,7 @@ class TestTreeSitterColorizer(LeoUnitTest):
     # @+node:vv.20260806120002.4: *3* TestTreeSitterColorizer.test_javascript_captures
     def test_javascript_captures(self):
         c = self.c
-        x = leoColorizer.TreeSitterColorizer(c, None)
+        x = leoTreeSitter.TreeSitterColorizer(c, None)
         x.language = 'javascript'
         x.enabled = True
         text = self.prep(
@@ -1728,7 +1729,7 @@ class TestTreeSitterColorizer(LeoUnitTest):
     def test_python_richer_captures(self):
         """Tree-sitter distinguishes common identifier roles for richer themes."""
         c = self.c
-        x = leoColorizer.TreeSitterColorizer(c, None)
+        x = leoTreeSitter.TreeSitterColorizer(c, None)
         x.language = 'python'
         x.enabled = True
         text = self.prep(
@@ -1751,20 +1752,33 @@ class TestTreeSitterColorizer(LeoUnitTest):
         self.assertIn('name.label', self.tag_at(x, text, 'theme'))
 
     def test_tree_sitter_colors_leo_directives(self):
-        """Leo directives remain highlighted outside the host-language query."""
+        """All Leo directives override decorator-like tree-sitter captures."""
         c = self.c
-        x = leoColorizer.TreeSitterColorizer(c, None)
+        x = leoTreeSitter.TreeSitterColorizer(c, None)
+        x.language = 'python'
+        text = '@others\n@language python\n@tabwidth -4\n@pagewidth 70\n'
+        x.reparse(text)
         calls = []
         x.setTag = lambda tag, s, i, j: calls.append((tag, s[i:j]))
-        x.colorLine('@others', 0)
-        x.colorLine('    @pagewidth 70', 8)
-        self.assertIn(('leokeyword', '@others'), calls)
-        self.assertIn(('leokeyword', '@pagewidth'), calls)
+        offset = 0
+        for line in text.splitlines():
+            x.colorLine(line, offset)
+            offset += len(line) + 1
+        for directive in ('@others', '@language', '@tabwidth', '@pagewidth'):
+            tags = [tag for tag, captured_text in calls if captured_text == directive]
+            self.assertEqual(tags[-1], 'leokeyword')
+
+        # An apparent directive inside a real Python string remains a string.
+        text = 'value = """\n@others\n"""\n'
+        x.reparse(text)
+        calls.clear()
+        x.colorLine('@others', len('value = """\n'))
+        self.assertNotIn(('leokeyword', '@others'), calls)
 
     def test_tree_sitter_colors_section_references(self):
         """Leo section references remain highlighted outside the Python query."""
         c = self.c
-        x = leoColorizer.TreeSitterColorizer(c, None)
+        x = leoTreeSitter.TreeSitterColorizer(c, None)
         x.use_hyperlinks = False
         calls = []
         x.setTag = lambda tag, s, i, j: calls.append((tag, s[i:j]))
@@ -1780,7 +1794,7 @@ class TestTreeSitterColorizer(LeoUnitTest):
     def test_unsupported_language(self):
         """An unsupported @language must not crash: it just yields no captures."""
         c = self.c
-        x = leoColorizer.TreeSitterColorizer(c, None)
+        x = leoTreeSitter.TreeSitterColorizer(c, None)
         x.language = 'rust'
         x.enabled = True
         x.reparse('fn main() {}\n')
@@ -1790,7 +1804,7 @@ class TestTreeSitterColorizer(LeoUnitTest):
     def test_non_ascii_offsets(self):
         """Captures after multi-byte characters must land at correct char offsets."""
         c = self.c
-        x = leoColorizer.TreeSitterColorizer(c, None)
+        x = leoTreeSitter.TreeSitterColorizer(c, None)
         x.language = 'python'
         x.enabled = True
         text = 'x = "café"\ndef bar():\n    pass\n'
@@ -1805,7 +1819,7 @@ class TestTreeSitterColorizer(LeoUnitTest):
         parsing the final text from scratch would.
         """
         c = self.c
-        x = leoColorizer.TreeSitterColorizer(c, None)
+        x = leoTreeSitter.TreeSitterColorizer(c, None)
         x.language = 'python'
         x.enabled = True
 
@@ -1828,7 +1842,7 @@ class TestTreeSitterColorizer(LeoUnitTest):
         incremental_captures = x.captures
 
         # A second, independent colorizer parsing the final text cold must agree exactly.
-        y = leoColorizer.TreeSitterColorizer(c, None)
+        y = leoTreeSitter.TreeSitterColorizer(c, None)
         y.language = 'python'
         y.enabled = True
         y.reparse(text2)
@@ -1837,7 +1851,7 @@ class TestTreeSitterColorizer(LeoUnitTest):
         # Also exercise a non-ASCII edit through the same incremental path.
         text3 = text2.replace('return x + 1', 'return x + 1  # café')
         x.reparse(text3)
-        z = leoColorizer.TreeSitterColorizer(c, None)
+        z = leoTreeSitter.TreeSitterColorizer(c, None)
         z.language = 'python'
         z.enabled = True
         z.reparse(text3)
@@ -1847,7 +1861,7 @@ class TestTreeSitterColorizer(LeoUnitTest):
     def test_apply_edit_helpers(self):
         """Unit-test the byte/point conversion helpers applyEdit() relies on."""
         c = self.c
-        x = leoColorizer.TreeSitterColorizer(c, None)
+        x = leoTreeSitter.TreeSitterColorizer(c, None)
         text = 'abc\ncafé\nxyz'
         # 'x' of the second 'xyz' line: after 2 lines, "café" is 4 chars / 5 bytes (é is 2 bytes).
         char_index = text.index('xyz')
@@ -1863,7 +1877,7 @@ class TestTreeSitterColorizer(LeoUnitTest):
         JEditColorizer's real engine, not left uncolored.
         """
         c = self.c
-        x = leoColorizer.TreeSitterColorizer(c, None)
+        x = leoTreeSitter.TreeSitterColorizer(c, None)
         x.language = 'rest'  # Not in grammar_modules.
         x.enabled = True
         self.assertFalse(x.tsSupported('rest'))
@@ -1885,7 +1899,7 @@ class TestTreeSitterColorizer(LeoUnitTest):
     def test_use_tree_sitter_recomputed_per_node(self):
         """use_tree_sitter must reflect *this* node's language, not a stale value."""
         c = self.c
-        x = leoColorizer.TreeSitterColorizer(c, None)
+        x = leoTreeSitter.TreeSitterColorizer(c, None)
 
         x.language = 'python'
         x.enabled = True
@@ -1907,7 +1921,7 @@ class TestTreeSitterColorizer(LeoUnitTest):
         changed, so re-parsing the same text must not bump it further.
         """
         c = self.c
-        x = leoColorizer.TreeSitterColorizer(c, None)
+        x = leoTreeSitter.TreeSitterColorizer(c, None)
         x.language = 'python'
         x.enabled = True
 
