@@ -1421,10 +1421,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         name = g.finalize(name)
         newList = []
         for d in aList:
-            name2 = d.get('file') or ''
-            name2 = g.finalize(name2)
-            name2rel = d.get('relPath')
-            if not (name == name2 or absRelPath == name2 or relPath == name2rel):
+            name2 = g.finalize(d.get('file') or '')
+            if name != name2 or absRelPath != name2:
                 newList.append(d)
         if len(newList) != len(aList):
             self.setIconList(p, newList)
@@ -1475,20 +1473,9 @@ class EditCommandsClass(BaseEditCommandsClass):
         path = g.app.gui.getImageFinder(path)
         image, _image_height = g.app.gui.getTreeImage(c, path)
         if image:
-            aList.append(
-                {
-                    'type': 'file',
-                    'file': path,
-                    'where': 'beforeHeadline',
-                }
-            )
+            aList.append({'file': path})
         else:
             g.es('can not load image:', path)
-
-    # @+node:ekr.20150514063305.232: *5* ec.dHash
-    def dHash(self, d: dict[str, str]) -> str:
-        """Hash a dictionary"""
-        return ''.join([f"{str(key)}{str(d[key])}" for key in sorted(d)])
 
     # @+node:ekr.20150514063305.233: *5* ec.getIconList
     def getIconList(self, v: VNode) -> list[dict[str, str]]:
@@ -1504,9 +1491,14 @@ class EditCommandsClass(BaseEditCommandsClass):
         current = self.getIconList(p.v)
         if not aList and not current:
             return
-        lHash = ''.join([self.dHash(i) for i in aList])
-        cHash = ''.join([self.dHash(i) for i in current])
-        if lHash != cHash:
+        a_keys = list(sorted(z.keys() for z in aList))
+        c_keys = list(sorted(z.keys() for z in current))
+        equal = (
+            a_keys == c_keys and
+            all(aList.get(key) == current.get(key) for key in a_keys)
+        )  # fmt: skip
+        if not equal:
+            g.trace(aList)
             self._setIconUA(p, aList)
 
     # @+node:ekr.20150514063305.242: *3* ec: indent

@@ -792,12 +792,11 @@ class LeoQtTree(leoFrame.LeoTree):
     def icon_filenames_for_node(self, v: VNode) -> list[str]:
         """Returns a list of icon filenames for v."""
         nicon = f'box{v.iconVal:02d}.png'
-        fnames = self.nodeIconsDict.get(v.gnx)
+        fnames = self.nodeIconsDict.get(v.gnx) or []
         if not fnames:
             icons = self.c.editCommands.getIconList(v)
-            fnames = [x['file'] for x in icons if x['where'] == 'beforeIcon']
             fnames.append(nicon)
-            fnames.extend(x['file'] for x in icons if x['where'] == 'beforeHeadline')
+            fnames.extend(x['file'] for x in icons)
             self.nodeIconsDict[v.gnx] = fnames
         pat = re.compile(r'^box\d\d\.png$')
         loaded_images = self.loaded_images
