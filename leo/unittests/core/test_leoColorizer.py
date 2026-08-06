@@ -1749,6 +1749,65 @@ class TestTreeSitterColorizer(LeoUnitTest):
         x.reparse(text)
         self.assertIn('keyword1', self.tag_at(x, text, 'def'))
 
+    # @+node:vv.20260806120002.7: *3* TestTreeSitterColorizer.test_incremental_edit_matches_full_reparse
+    def test_incremental_edit_matches_full_reparse(self):
+        """
+        reparse() must reuse self.tree via applyEdit()+Tree.edit() on a
+        second call for the same node, and produce the *same* captures as
+        parsing the final text from scratch would.
+        """
+        c = self.c
+        x = leoColorizer.TreeSitterColorizer(c, None)
+        x.language = 'python'
+        x.enabled = True
+
+        text1 = self.prep(
+            """
+            def foo(x):
+                return x + 1
+            """
+        )
+        x.reparse(text1)
+        tree_after_first_parse = x.tree
+        self.assertIsNotNone(tree_after_first_parse)
+
+        # Edit mid-line (insert a parameter): must trigger the incremental path.
+        text2 = text1.replace('def foo(x):', 'def foo(x, y):')
+        x.reparse(text2)
+        self.assertIs(
+            x.tree.__class__, tree_after_first_parse.__class__
+        )  # sanity: still a real Tree, not None.
+        incremental_captures = x.captures
+
+        # A second, independent colorizer parsing the final text cold must agree exactly.
+        y = leoColorizer.TreeSitterColorizer(c, None)
+        y.language = 'python'
+        y.enabled = True
+        y.reparse(text2)
+        self.assertEqual(incremental_captures, y.captures)
+
+        # Also exercise a non-ASCII edit through the same incremental path.
+        text3 = text2.replace('return x + 1', 'return x + 1  # café')
+        x.reparse(text3)
+        z = leoColorizer.TreeSitterColorizer(c, None)
+        z.language = 'python'
+        z.enabled = True
+        z.reparse(text3)
+        self.assertEqual(x.captures, z.captures)
+
+    # @+node:vv.20260806120002.8: *3* TestTreeSitterColorizer.test_apply_edit_helpers
+    def test_apply_edit_helpers(self):
+        """Unit-test the byte/point conversion helpers applyEdit() relies on."""
+        c = self.c
+        x = leoColorizer.TreeSitterColorizer(c, None)
+        text = 'abc\ncafé\nxyz'
+        # 'x' of the second 'xyz' line: after 2 lines, "café" is 4 chars / 5 bytes (é is 2 bytes).
+        char_index = text.index('xyz')
+        row, col = x.treeSitterPoint(text, char_index)
+        self.assertEqual(row, 2)
+        self.assertEqual(col, 0)
+        self.assertEqual(x.charToByteOffset(text, len(text)), len(text.encode('utf-8')))
+
     # @-others
 
 

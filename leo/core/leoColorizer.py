@@ -3769,24 +3769,41 @@ class TreeSitterColorizer(JEditColorizer):
         self.warned_languages: set[str] = set()
         self.captures: list[tuple[int, int, str]] = []  # Sorted (start, end, tag) triples.
         self.source_text: str | None = None
+        self.tree: Any = None  # The last tree_sitter.Tree for the *current* node, or None.
         self.old_v: VNode | None = None
         super().__init__(c, widget)
 
     def init(self) -> None:
         """Parse the current node's body text and cache query captures."""
+        # A different node may use a different language: never carry a tree across nodes.
+        self.tree = None
         self.reparse(self.c.p.b)
 
     def reparse(self, text: str) -> None:
-        """Parse `text` with tree-sitter and cache its query captures."""
+        """
+        Parse `text` with tree-sitter and cache its query captures.
+
+        If a tree from a *previous* call already exists (same node, text
+        edited since), apply the edit incrementally via Tree.edit() so
+        tree-sitter only re-parses the changed region instead of the whole
+        node body -- this is the main point of using tree-sitter at all.
+        """
+        old_text, old_tree = self.source_text, self.tree
         self.source_text = text
         self.captures = []
+        self.tree = None
         if self.language not in self.grammar_modules:
             return
         parser = self.get_parser(self.language)
         query = self.get_query(self.language)
         if not parser or not query:
             return
-        tree = parser.parse(text.encode('utf-8'))
+        if old_tree is not None and old_text is not None and old_text != text:
+            self.applyEdit(old_tree, old_text, text)
+            tree = parser.parse(text.encode('utf-8'), old_tree)
+        else:
+            tree = parser.parse(text.encode('utf-8'))
+        self.tree = tree
         char_offsets = self.byte_to_char_offsets(text)
         captures: list[tuple[int, int, str]] = []
         for name, nodes in QueryCursor(query).captures(tree.root_node).items():
@@ -3851,6 +3868,52 @@ class TreeSitterColorizer(JEditColorizer):
         offsets.append(len(text))
         return offsets
 
+    def applyEdit(self, tree: Any, old_text: str, new_text: str) -> None:
+        """
+        Diff `old_text` against `new_text` by common prefix/suffix, and call
+        `tree.edit()` with the resulting byte/point ranges so the next
+        `parser.parse(..., tree)` call can reuse unaffected parts of `tree`.
+
+        Leo doesn't get precise edit ranges from Qt here (recolor() only
+        sees whole-body text), so this recovers them by diffing. It's exact
+        for the common case (a single contiguous edit, e.g. one keystroke or
+        a paste) and safely degrades to *replacing everything between the
+        first and last differing character* for multi-region edits -- still
+        correct, just less of a size win for tree-sitter to exploit.
+        """
+        prefix_len = 0
+        max_prefix = min(len(old_text), len(new_text))
+        while prefix_len < max_prefix and old_text[prefix_len] == new_text[prefix_len]:
+            prefix_len += 1
+        old_end, new_end = len(old_text), len(new_text)
+        while (
+            old_end > prefix_len
+            and new_end > prefix_len
+            and old_text[old_end - 1] == new_text[new_end - 1]
+        ):
+            old_end -= 1
+            new_end -= 1
+        tree.edit(
+            start_byte=self.charToByteOffset(old_text, prefix_len),
+            old_end_byte=self.charToByteOffset(old_text, old_end),
+            new_end_byte=self.charToByteOffset(new_text, new_end),
+            start_point=self.treeSitterPoint(old_text, prefix_len),
+            old_end_point=self.treeSitterPoint(old_text, old_end),
+            new_end_point=self.treeSitterPoint(new_text, new_end),
+        )
+
+    def charToByteOffset(self, text: str, char_index: int) -> int:
+        """Return the UTF-8 byte offset of character offset `char_index` in `text`."""
+        return len(text[:char_index].encode('utf-8'))
+
+    def treeSitterPoint(self, text: str, char_index: int) -> tuple[int, int]:
+        """Return the tree-sitter (row, byte-column) point for character offset `char_index`."""
+        prefix = text[:char_index]
+        row = prefix.count('\n')
+        line_start = prefix.rfind('\n') + 1
+        column = len(prefix[line_start:].encode('utf-8'))
+        return (row, column)
+
     def recolor(self, s: str) -> None:
         """
         TreeSitterColorizer.recolor: Recolor a *single* line, s.
@@ -3863,11 +3926,7 @@ class TreeSitterColorizer(JEditColorizer):
             self.old_v = p.v
             self.init()
         elif p.b != self.source_text:
-            # #4839 open question: this reparses the whole node on every edit
-            # rather than applying an incremental tree_sitter edit. Fine for
-            # the node-sized bodies Leo typically has; a real incremental
-            # model is follow-up work.
-            self.reparse(p.b)
+            self.reparse(p.b)  # Incremental: reuses self.tree via applyEdit().
         if not s or not self.enabled:
             return
         offset = self.highlighter.currentBlock().position()
