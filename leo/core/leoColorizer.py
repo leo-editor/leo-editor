@@ -9,7 +9,6 @@
 # @+node:ekr.20140827092102.18575: ** << leoColorizer imports >>
 from __future__ import annotations
 from collections.abc import Callable, Generator, Sequence
-import importlib
 import re
 import string
 import time
@@ -24,11 +23,9 @@ try:
 except ImportError:
     pygments = None  # type:ignore
 
-# #4839: tree-sitter is an optional alternative colorizer backend.
-try:
-    from tree_sitter import Language, Parser, Query, QueryCursor
-except ImportError:
-    Language = Parser = Query = QueryCursor = None  # type:ignore
+from tree_sitter import Language, Parser, Query, QueryCursor
+import tree_sitter_javascript
+import tree_sitter_python
 
 # Leo imports...
 from leo.core import leoGlobals as g
@@ -90,11 +87,7 @@ def make_colorizer(
 ) -> JEditColorizer | PygmentsColorizer | TreeSitterColorizer:
     """Return an instance of JEditColorizer, PygmentsColorizer, or TreeSitterColorizer."""
     if c.config.getBool('use-tree-sitter', default=False):
-        if Language is not None:
-            return TreeSitterColorizer(c, widget)
-        if not g.unitTesting:
-            g.es_print('ignoring @bool use-tree-sitter', color='red')
-            g.es_print('pip install tree-sitter tree-sitter-python tree-sitter-javascript', color='red')
+        return TreeSitterColorizer(c, widget)
     if c.config.getBool('use-pygments', default=False):
         if pygments:
             return PygmentsColorizer(c, widget)
@@ -3749,10 +3742,10 @@ class TreeSitterColorizer(JEditColorizer):
     This is c.frame.body.colorizer when @bool use-tree-sitter is True.
     """
 
-    # Leo language name -> pip package exposing a `language()` capsule.
+    # Leo language name -> grammar module exposing a `language()` capsule.
     grammar_modules = {
-        'python': 'tree_sitter_python',
-        'javascript': 'tree_sitter_javascript',
+        'python': tree_sitter_python,
+        'javascript': tree_sitter_javascript,
     }
 
     # Leo language name -> hand-written tree-sitter highlight query.
@@ -3790,7 +3783,6 @@ class TreeSitterColorizer(JEditColorizer):
         self.ts_languages: dict[str, Any] = {}  # language name -> Language, or None.
         self.ts_parsers: dict[str, Any] = {}  # language name -> Parser, or None.
         self.ts_queries: dict[str, Any] = {}  # language name -> Query, or None.
-        self.warned_languages: set[str] = set()
         self.captures: list[tuple[int, int, str]] = []  # Sorted (start, end, tag) triples.
         self.source_text: str | None = None
         self.tree: Any = None  # The last tree_sitter.Tree for the *current* node, or None.
@@ -3861,18 +3853,8 @@ class TreeSitterColorizer(JEditColorizer):
     def get_language(self, language: str) -> Any:
         """Return the tree_sitter.Language for `language`, loading it lazily. May be None."""
         if language not in self.ts_languages:
-            result = None
-            module_name = self.grammar_modules.get(language)
-            if module_name:
-                try:
-                    module = importlib.import_module(module_name)
-                    result = Language(module.language())
-                except Exception:
-                    if language not in self.warned_languages and not g.unitTesting:
-                        self.warned_languages.add(language)
-                        g.es_print(f"tree-sitter: no grammar for {language!r}", color='red')
-                        g.es_print(f"pip install {module_name}", color='red')
-            self.ts_languages[language] = result
+            module = self.grammar_modules.get(language)
+            self.ts_languages[language] = Language(module.language()) if module else None
         return self.ts_languages[language]
 
     def get_parser(self, language: str) -> Any:

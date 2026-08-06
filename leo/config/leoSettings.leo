@@ -11097,19 +11097,14 @@ False: Use @color settings to configure pygments tokens.
 
 </t>
 <t tx="vv.20260806120001.1">True: Leo uses a tree-sitter based colorizer (issue #4839) for
-@language python and @language javascript nodes, if the tree-sitter
-package and the matching grammar package are installed. Every other
+@language python and @language javascript nodes. Every other
 language is still colored by Leo's normal jEdit-mode-file engine,
 unchanged -- this only replaces coloring for the two supported
 languages, decided once per node.
 
 This is a proof of concept: the highlight queries are hand-written and
-minimal, not the full nvim-treesitter queries. If tree-sitter or a
-grammar package isn't installed, Leo prints a one-line warning and
-uses the jEdit engine for python/javascript too, same as if this
-setting were False.
-
-Requires: pip install tree-sitter tree-sitter-python tree-sitter-javascript
+limited, not the full nvim-treesitter queries. The tree-sitter runtime
+and the Python and JavaScript grammars are normal Leo dependencies.
 </t>
 <t tx="ekr.20190324140542.1"># The setting names are names of pygments tokens.
 # Not all tokens are represented here.</t>

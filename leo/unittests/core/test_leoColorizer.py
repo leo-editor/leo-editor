@@ -1654,9 +1654,6 @@ class TestTreeSitterColorizer(LeoUnitTest):
 
     @classmethod
     def setUpClass(cls: Any) -> None:
-        pytest.importorskip('tree_sitter')
-        pytest.importorskip('tree_sitter_python')
-        pytest.importorskip('tree_sitter_javascript')
         create_app(gui_name='null')
 
     # @+others
