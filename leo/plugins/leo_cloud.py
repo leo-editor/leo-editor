@@ -52,8 +52,7 @@ The plugin stores headline, body, and uA (unknown attributes). The caveat is
 that it must be JSON serializable, this is to avoid pickle flavor issues. I
 don't think this will cause problems except for sets in the tags plugin. I think
 both can be fixed easily - a custom JSON writer can write datetime as iso string
-time and sets as lists, and the tags plugin can coerce lists to sets. I think
-the todo.py plugin already reads iso string time values.
+time and sets as lists, and the tags plugin can coerce lists to sets.
 
 My intended use was a common synchronized todo list across machines, which this
 achieves.
