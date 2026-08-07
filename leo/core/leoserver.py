@@ -73,7 +73,7 @@ if leo_path not in sys.path:
     sys.path.insert(0, leo_path)
 del core_dir, leo_path
 
-# Leo: suppress pyflakes warnings about imports not at top of file.
+# Leo: suppress ruff warnings about imports not at top of file.
 from leo.core import leoImport  # noqa
 from leo.core.leoCommands import Commands as Cmdr  # noqa
 from leo.core.leoNodes import Position, VNode  # noqa
@@ -4371,7 +4371,6 @@ class LeoServer:
             'insert-soft-tab',
             'kill-line',
             'kill-paragraph',
-            'kill-pylint',
             'kill-region',
             'kill-region-save',
             'kill-sentence',
@@ -4655,7 +4654,6 @@ class LeoServer:
             'find-def',
             'find-long-lines',
             'find-missing-docstrings',
-            'flake8-files',
             # 'flatten-outline',
             'flatten-outline-to-node',
             'flatten-script',
@@ -4710,9 +4708,6 @@ class LeoServer:
             # 'print-tree-html',
             # 'print-tree-nodes',
             # 'print-window-state',
-            'pyflakes',
-            'pylint',
-            'pylint-kill',
             'python-to-coffeescript',
             # 'quit-leo',
             # 'reformat-body',

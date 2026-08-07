@@ -1421,7 +1421,6 @@ class ViewRenderedController(QtWidgets.QWidget):
             silent=False,
             namespace=namespace,
             raiseFlag=False,
-            runPyflakes=False,  # Suppress warnings about pre-defined symbols.
         )
         c.bodyWantsFocusNow()
 

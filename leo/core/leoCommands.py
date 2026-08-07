@@ -1281,7 +1281,6 @@ class Commands:
         silent: bool = False,
         namespace: dict | None = None,
         raiseFlag: bool = False,
-        runPyflakes: bool = True,
     ) -> Value:
         # @+<< executeScript: docstring >>
         # @+node:ekr.20250508025320.1: *5* << executeScript: docstring >>
@@ -1297,7 +1296,6 @@ class Commands:
         silent=False            No longer used.
         namespace=None          Not None: execute the script in this namespace.
         raiseFlag=False         True: reraise any exceptions.
-        runPyflakes=True        True: run pyflakes if allowed by setting.
         """
         # @-<< executeScript: docstring >>
         c = self
@@ -1310,11 +1308,6 @@ class Commands:
         beautify_flag = (
             language == 'python'
             and c.config.getBool('beautify-python-code-on-write', default=False)
-        )
-        pyflakes_flag = (
-            runPyflakes
-            and language == 'python'
-            and c.config.getBool('run-pyflakes-on-write', default=False)
         )
         # fmt: on
         if not script and language not in ('jupytext', 'python'):  # #4197, #4226.
@@ -1344,16 +1337,6 @@ class Commands:
             if c.forceExecuteEntireBody:
                 useSelectedText = False
             script = g.getScript(c, p, useSelectedText=useSelectedText)
-
-        # #532: Optionally check all scripts with pyflakes.
-        if pyflakes_flag and not g.unitTesting:
-            from leo.commands import checkerCommands as cc
-
-            prefix = (
-                'c,g,p,script_gnx=None,None,None,None;'
-                'assert c and g and p and script_gnx;\n'
-            )  # fmt: skip
-            cc.PyflakesCommand(c).check_script(script_p, prefix + script)
 
         # Execute the script!
         self.redirectScriptOutput()

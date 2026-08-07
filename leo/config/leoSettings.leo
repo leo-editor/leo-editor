@@ -632,9 +632,7 @@
 <v t="ekr.20150403055250.1"><vh>@bool check-for-changed-external-files = True</vh></v>
 <v t="ekr.20090514111518.8379"><vh>@bool check-python-code-on-write = True</vh></v>
 <v t="ekr.20260326111743.1"><vh>@bool raise-file-update-dialogs = False</vh></v>
-<v t="ekr.20221128115636.1"><vh>@bool run-flake8-on-write = False</vh></v>
-<v t="ekr.20161021095001.1"><vh>@bool run-pyflakes-on-write = False</vh></v>
-<v t="ekr.20240924055407.1"><vh>@bool run-pylint-on-write = False</vh></v>
+<v t="vv.20260807130000.1"><vh>@bool run-ruff-on-write = False</vh></v>
 <v t="ekr.20150710084507.1"><vh>@bool syntax-error-popup = False</vh></v>
 <v t="ekr.20150321090958.1"><vh>@bool verbose-check-outline = False</vh></v>
 </v>
