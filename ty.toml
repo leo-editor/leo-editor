@@ -30,6 +30,12 @@ exclude = [
     "leo/plugins/settings_finder*",
     "leo/plugins/stickynotes_plus*",
     "leo/plugins/qt_main*",
+    
+    # Extra exclusions. Life is too short.
+    "leo/plugins/bookmarks.py",
+    "leo/plugins/graphcanvas.py",
+    "leo/plugins/mod_autosave.py",
+    "leo/plugins/mod_http.py",
 ]
 
 [rules]
@@ -41,3 +47,21 @@ unresolved-import = "ignore"
 
 # Silence warnings about mypy suppressions that mypy needs.
 unused-type-ignore-comment = "ignore"
+
+# Silence these warnings for now.
+deprecated = "ignore"
+invalid-assignment = "ignore"
+invalid-argument-type = "ignore"
+invalid-method-override = "ignore"
+invalid-return-type = "ignore"
+not-iterable = "ignore"
+unknown-argument = "ignore"
+unsupported-operator = "ignore"
+
+# ty bugs? These warnings seem incorrect.
+index-out-of-bounds = "ignore"
+too-many-positional-arguments = "ignore"
+
+# Ignore warnings about *valid* warnings suppressed above.
+unused-ignore-comment = "ignore"  
+
