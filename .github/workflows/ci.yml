@@ -21,8 +21,9 @@ jobs:
           cache: pip
       - run: pip install ruff
       - run: ruff check leo
-      # Enable once leo/modes is reformatted to lf (issue #4847):
-      # - run: ruff format --check leo
+      # Requires #4857 (normalizes leo/modes to lf) to be merged first;
+      # see issue #4847.
+      - run: ruff format --check leo
 
   test:
     runs-on: ubuntu-latest
@@ -83,12 +84,10 @@ jobs:
       # contributors actually see, instead of only the ignore_missing_imports
       # fallback.
       - run: python -m mypy leo
-      # Informational only: ty (https://github.com/astral-sh/ty) is an
-      # actively-developed, much faster alternative to mypy, still in beta.
-      # It's noticeably stricter than our current mypy config in some areas
-      # (see ty.toml), so this step is not allowed to fail the build --
-      # it's here so its findings show up in PR logs while we evaluate it.
+      # ty (https://github.com/astral-sh/ty) is an actively-developed, much
+      # faster alternative to mypy, still in beta. It's noticeably stricter
+      # than our current mypy config in some areas (see ty.toml). It's clean
+      # against this codebase, so it now blocks the build like mypy does.
       # Runs in this job, after mypy, to reuse the same checkout/Python/PyQt6
       # setup instead of paying for a second one.
-      # - run: ty check --python "$(python -c 'import sys; print(sys.prefix)')" leo
-      #  continue-on-error: true
+      - run: ty check --python "$(python -c 'import sys; print(sys.prefix)')" leo
