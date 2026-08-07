@@ -627,11 +627,8 @@ class ScreenShotController:
         sc = self
         assert sc.slideshow_path
         os.chdir(sc.slideshow_path)
-        os.system('make clean')
-        os.system('make html')
-        # cmd = ['make','html']
-        # proc = subprocess.Popen(cmd)
-        # proc.communicate() # Wait
+        subprocess.run(['make', 'clean'], check=False)
+        subprocess.run(['make', 'html'], check=False)
 
     # @+node:ekr.20100915074635.5651: *3* init
     def init(self, p):
