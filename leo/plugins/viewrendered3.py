@@ -1628,17 +1628,17 @@ def onCreate(tag, keys):
     pass
 
 
-# @+at
-# def onCreate(tag: str, keys: dict) -> None:
-#     c = keys.get('c')
-#     if not c:
-#         return
-#     vr = getVr(c=c)
-#     g.registerHandler('select2', vr.update)
-#     g.registerHandler('idle', vr.update)
-#     vr.active = True
-#     vr.is_visible = False
-#     vr.hide()
+    # @+at
+    # def onCreate(tag: str, keys: dict) -> None:
+    #     c = keys.get('c')
+    #     if not c:
+    #         return
+    #     vr = getVr(c=c)
+    #     g.registerHandler('select2', vr.update)
+    #     g.registerHandler('idle', vr.update)
+    #     vr.active = True
+    #     vr.is_visible = False
+    #     vr.hide()
 # @+node:TomP.20191215195433.12: *3* vr3.onClose
 def onClose(tag, keys):
     c = keys.get('c')

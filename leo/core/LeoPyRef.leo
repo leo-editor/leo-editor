@@ -995,7 +995,7 @@ c.backup_helper(sub_dir='leoPy')
 <t tx="ekr.20150514035207.1"></t>
 <t tx="ekr.20160122104332.1">@language python
 </t>
-<t tx="ekr.20160123142722.1" _mod_time="4741da24cf0b43cf212e"># An example configuration file for make_stub_files.py.
+<t tx="ekr.20160123142722.1" _mod_time="4741da9d31854271d22e"># An example configuration file for make_stub_files.py.
 # By default, this is ~/stubs/make_stub_files.cfg.
 # Can be changed using the --config=path command-line option.
 
@@ -1014,7 +1014,8 @@ output_directory: ~/stubs
 
 prefix_lines:
     # Lines to be inserted at the start of each stub file.
-    from typing import TypeVar, Iterable
+    from collections.abc import Iterable
+    from typing import TypeVar
     T = TypeVar('T', int, float, complex)
 
 [Def Name Patterns]
@@ -1078,9 +1079,9 @@ print('done! wrote %s' % fn)
 <t tx="ekr.20180225010913.1"></t>
 <t tx="ekr.20180504191650.36"></t>
 <t tx="ekr.20180504191650.42"></t>
-<t tx="ekr.20180504191650.68" _mod_time="4741da24cf053b9aa12e"></t>
+<t tx="ekr.20180504191650.68" _mod_time="4741da9d31854421032e"></t>
 <t tx="ekr.20180504192522.1"></t>
-<t tx="ekr.20180708145905.1" _mod_time="4741da24cf0b43cf212e">@language rest
+<t tx="ekr.20180708145905.1" _mod_time="4741da9d31854271d22e">@language rest
 @wrap
 
 This is the theory of operation document for py2cs.py. The most interesting aspect of this script is the TokenSync class. This class provides a reliable way of associating tokenizer tokens with ast nodes.
@@ -1882,7 +1883,7 @@ assert core_p and command_p and globals_p
     # 'toString', 'toUnicode', 'trace', 'translateString',
     # 'underline', 'undoHelper', 'unl', 'values', 'visit',
     # 'warn', 'warning', 'word',</t>
-<t tx="ekr.20220823195205.1" _mod_time="4741da7f9b3a5a3e6d2e">"""
+<t tx="ekr.20220823195205.1" _mod_time="4741da9d318542633b2e">"""
 Stand alone GUI free index builder for Leo's full text search system::
 
   python leoftsindex.py &lt;file1&gt; &lt;file2&gt; &lt;file3&gt;...
@@ -2045,7 +2046,7 @@ writers = 'leo.unittests.plugins.test_writers'
 # f"{plugins}.test_plugins",
 # f"{plugins}.test_writers",
 </t>
-<t tx="ekr.20230624114517.1" _mod_time="4741da24cf053b9aa12e"></t>
+<t tx="ekr.20230624114517.1" _mod_time="4741da9d318543cb102e"></t>
 <t tx="ekr.20230720115916.1">g.cls()
 import leo.commands.editFileCommands as efc
 
@@ -2130,7 +2131,7 @@ print('done')</t>
 <t tx="ekr.20240107154430.1"></t>
 <t tx="ekr.20240204082420.1"></t>
 <t tx="ekr.20240204082924.1"></t>
-<t tx="ekr.20240206161713.1" _mod_time="4741da7f9b3abce1da2e">@language ini
+<t tx="ekr.20240206161713.1" _mod_time="4741da9d318547277e2e">@language ini
 
 [bdist_wheel]
 
@@ -2276,7 +2277,7 @@ extend-ignore =
     # global `whatever` is unused: name is never assigned in scope.
     # F824
 </t>
-<t tx="ekr.20240317061516.1" _mod_time="4741da5a5ae8fea4c22e">@language python
+<t tx="ekr.20240317061516.1" _mod_time="4741da9d31853186802e">@language python
 
 # Order matters!
 

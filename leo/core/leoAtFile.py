@@ -68,6 +68,7 @@ class AtFile:
         'public_s',
         # Writing.
         'indent',
+        'doc_indent',
         'sentinels',
         'section_delim1',
         'section_delim2',
@@ -140,6 +141,7 @@ class AtFile:
         self.endSentinelComment = ""
         # Writing.
         self.indent = 0  # write indentation, in blanks.
+        self.doc_indent = 0  # #4864: extra indent for a doc part's own sentinels.
         self.outputFile: io.StringIO | None = None
         self.outputList: list[str] = []
         self.sentinels = False
@@ -192,6 +194,7 @@ class AtFile:
         at.endSentinelComment = ""
         # Writing.
         at.indent = 0  # Output indentation, in blanks.
+        at.doc_indent = 0  # #4864: extra indent for a doc part's own sentinels.
         at.outputFile = None
         at.outputList = []
         at.sentinels = False
@@ -2134,14 +2137,32 @@ class AtFile:
 
         i = 0
         status = LeoIOStatus()
-        while i < len(s):
-            next_i = g.skip_line(s, i)
-            assert next_i > i, 'putBody'
-            kind = at.directiveKind4(s, i)
-            at.putLine(i, kind, p, s, status)
-            i = next_i
-        if not status.in_code:
-            at.putEndDocLine()
+        # #4864: doc_indent tracks the indentation of the most recently written
+        # code line in *this* node's own body, so that a doc part's sentinels
+        # (@+at/@doc/@c) nested in a leaf node's own block can match the
+        # indentation of the surrounding code, not just at.indent (which only
+        # tracks @others/section-reference nesting). Save/restore around
+        # recursive putBody calls (@others, section refs) so a child's
+        # trailing code indentation can't leak into the parent or a sibling.
+        old_doc_indent = at.doc_indent
+        at.doc_indent = 0
+        try:
+            while i < len(s):
+                next_i = g.skip_line(s, i)
+                assert next_i > i, 'putBody'
+                kind = at.directiveKind4(s, i)
+                at.putLine(i, kind, p, s, status)
+                i = next_i
+            if not status.in_code:
+                at.putEndDocLine()
+                # #4864: the body ended without an explicit @c/@code, so the
+                # at.indent bump made when this (still-open) doc part started
+                # was never undone. Undo it now, or it would leak into
+                # whatever gets written next (a sibling node, or the rest of
+                # this node's parent).
+                at.indent -= at.doc_indent
+        finally:
+            at.doc_indent = old_doc_indent
         return status.has_at_others
 
     # @+node:ekr.20041005105605.163: *6* at.putLine
@@ -2162,6 +2183,15 @@ class AtFile:
             if not status.in_code:
                 # Bug fix 12/31/04: handle adjacent doc parts.
                 at.putEndDocLine()
+            else:
+                # #4864: elevate at.indent for the whole doc part (sentinels
+                # *and* content) to match the most recently written code
+                # line in this node's own body. `at.directiveKind4` still
+                # requires the '@'/'@doc' marker at column 0 in the body
+                # text, so this indentation can't be recovered from the
+                # marker itself -- only from nearby code. Restored when the
+                # doc part closes, below.
+                at.indent += at.doc_indent
             at.putStartDocLine(s, i, kind)
             status.in_code = False
         elif kind in (at.cDirective, at.codeDirective):
@@ -2169,6 +2199,9 @@ class AtFile:
             if not status.in_code:
                 at.putEndDocLine()
             at.putDirective(s, i, p)
+            if not status.in_code:
+                # #4864: match the indent applied when the doc part was opened.
+                at.indent -= at.doc_indent
             status.in_code = True
         elif kind == at.allDirective:
             if status.in_code:
@@ -2351,6 +2384,11 @@ class AtFile:
         j = g.skip_line(s, i)
         k = g.skip_ws(s, i)
         line = s[i:j]
+
+        # #4864: remember this (non-blank) code line's own indentation, so that
+        # a doc part's sentinels immediately following can match it.
+        if line.strip():
+            _, at.doc_indent = g.skip_leading_ws_with_indent(s, i, at.tab_width)
 
         def put_verbatim_sentinel() -> None:
             """Put an @verbatim sentinel."""

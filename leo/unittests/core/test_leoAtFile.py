@@ -250,6 +250,56 @@ class TestAtFile(LeoUnitTest):
             g.printObj(result, tag='result')
         self.assertEqual(result, expected)
 
+    # @+node:ekr.20211102110237.2: *3* TestAtFile.test_putBody_at_doc_part_indent_in_leaf
+    def test_putBody_at_doc_part_indent_in_leaf(self):
+        # #4864: a doc part nested inside a leaf node's own (unsplit) block
+        # must get sentinels indented to match the surrounding code, and the
+        # result must round-trip losslessly and stay stable on re-derivation.
+        at, c = self.at, self.c
+        root = c.rootPosition()
+        root.h = '@file test_4864.py'
+        # The '@' and '@c' directives *must* be at column 0: only nearby
+        # code lines carry the leaf's own literal indentation.
+        root.b = (
+            "def foo():\n"
+            "    a = 1\n"
+            "@ A nested doc part\n"
+            "    Line 2.\n"
+            "@c\n"
+            "    b = 2\n"
+        )
+        at.initWriteIvars(root)
+        at.putBody(root)
+        result = ''.join(at.outputList)
+        expected = (
+            "def foo():\n"
+            "    a = 1\n"
+            "    # @+at A nested doc part\n"
+            "    #     Line 2.\n"
+            "    # @@c\n"
+            "    b = 2\n"
+        )
+        self.assertEqual(result, expected)
+
+        # Full round trip: derive, read back purely in memory, re-derive.
+        # The second derivation must be byte-identical to the first: #4864
+        # was a bug where sentinel indentation drifted on every save.
+        at.initWriteIvars(root)
+        at.sentinels = True
+        at.outputList = []
+        at.putFile(root, sentinels=True)
+        derived1 = ''.join(at.outputList)
+        ok = leoAtFile.FastAtRead(c, c.fileCommands.gnxDict).read_into_root(
+            derived1, 'test_4864.py', root)
+        self.assertTrue(ok)
+        at2 = leoAtFile.AtFile(c)
+        at2.initWriteIvars(root)
+        at2.sentinels = True
+        at2.outputList = []
+        at2.putFile(root, sentinels=True)
+        derived2 = ''.join(at2.outputList)
+        self.assertEqual(derived1, derived2)
+
     # @+node:ekr.20211102110833.1: *3* TestAtFile.test_putBody_at_all
     def test_putBody_at_all(self):
         at, c = self.at, self.c
