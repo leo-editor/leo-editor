@@ -19,10 +19,12 @@ Python_Importer *unchanged*, because none of that is a parsing problem: it's
 Leo-specific outline-shaping that just consumes whichever Block list
 `find_blocks` hands it.
 
-`python.py`'s `do_import()` uses this importer when tree-sitter and the
-python grammar are both installed and @bool use-tree-sitter is True (the
-same setting and default the tree-sitter colorizer uses), falling back to
-the regex-based Python_Importer otherwise -- see python.py.do_import().
+`python.py`'s `do_import()` uses this importer whenever @bool
+use-tree-sitter is True (the same setting/default the tree-sitter
+colorizer uses), falling back to the regex-based Python_Importer
+otherwise -- see python.py.do_import(). The tree-sitter runtime and the
+python grammar are normal Leo dependencies (see leoTreeSitter.py), not
+optional here either.
 
 Validated by running leo/unittests/plugins/test_importers.py's *existing*
 TestPython suite (17 tests accumulated over years of edge cases -- nested
@@ -32,14 +34,10 @@ all 17 pass unchanged.
 """
 from __future__ import annotations
 from typing import TYPE_CHECKING
+from tree_sitter import Language, Parser
+import tree_sitter_python
 from leo.plugins.importers.base_importer import Block
 from leo.plugins.importers.python import Python_Importer
-
-try:
-    from tree_sitter import Language, Parser
-    import tree_sitter_python as tspython
-except ImportError:
-    Language = Parser = tspython = None  # type:ignore
 
 if TYPE_CHECKING:
     from leo.core.leoCommands import Commands as Cmdr
@@ -65,17 +63,11 @@ class Python_TreeSitter_Importer(Python_Importer):
         super().__init__(c)
         self._blocks_by_range: dict[tuple[int, int], list[Block]] = {}
 
-    # @+node:vv.20260807090000.4: *3* ts_i.is_available
-    @staticmethod
-    def is_available() -> bool:
-        """True if tree-sitter and the python grammar are both importable."""
-        return Parser is not None and tspython is not None
-
     # @+node:vv.20260807090000.5: *3* ts_i.get_ts_parser
     def get_ts_parser(self) -> Parser:
         cls = Python_TreeSitter_Importer
         if cls._ts_language is None:
-            cls._ts_language = Language(tspython.language())
+            cls._ts_language = Language(tree_sitter_python.language())
         return Parser(cls._ts_language)
 
     # @+node:vv.20260807090000.6: *3* ts_i.make_guide_lines

@@ -4427,12 +4427,6 @@ class TestPythonTreeSitter(BaseTestImporter):
 
     ext = '.py'
 
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        if not Python_TreeSitter_Importer.is_available():
-            pytest.skip('tree-sitter and/or tree-sitter-python not installed')
-
     # @+others
     # @+node:vv.20260807091500.2: *3* TestPythonTreeSitter.compare_to_regex_importer
     def compare_to_regex_importer(self, s: str) -> None:
@@ -4577,16 +4571,27 @@ class TestPythonTreeSitter(BaseTestImporter):
             do_import(c, parent, 'def f():\n    pass\n')
             spy.assert_called_once()
 
-    # @+node:vv.20260807091500.7: *3* TestPythonTreeSitter.test_do_import_falls_back_when_unavailable
-    def test_do_import_falls_back_when_unavailable(self):
-        """When tree-sitter isn't available, do_import() must still work, via Python_Importer."""
+    # @+node:vv.20260807091500.7: *3* TestPythonTreeSitter.test_do_import_falls_back_when_setting_is_false
+    def test_do_import_falls_back_when_setting_is_false(self):
+        """With @bool use-tree-sitter False, do_import() must use the regex-based Python_Importer."""
         c = self.c
-        with mock.patch.object(Python_TreeSitter_Importer, 'is_available', return_value=False):
-            from leo.plugins.importers.python import do_import
+        real_get_bool = c.config.getBool
 
-            parent = c.rootPosition().insertAsLastChild()
-            do_import(c, parent, 'def f():\n    pass\n')
-            self.assertEqual(parent.firstChild().h, 'function: f')
+        def fake_get_bool(setting, default=None):
+            if setting == 'use-tree-sitter':
+                return False
+            return real_get_bool(setting, default=default)
+
+        with mock.patch.object(c.config, 'getBool', side_effect=fake_get_bool):
+            with mock.patch.object(
+                Python_TreeSitter_Importer, 'import_from_string', autospec=True
+            ) as ts_spy:
+                from leo.plugins.importers.python import do_import
+
+                parent = c.rootPosition().insertAsLastChild()
+                do_import(c, parent, 'def f():\n    pass\n')
+                ts_spy.assert_not_called()
+                self.assertEqual(parent.firstChild().h, 'function: f')
 
     # @-others
 

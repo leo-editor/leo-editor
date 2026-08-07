@@ -390,20 +390,18 @@ def do_import(c: Cmdr, parent: Position, s: str) -> None:
     """
     The importer callback for python.
 
-    #4839: Uses Python_TreeSitter_Importer (tree_sitter + tree_sitter_python
-    finding block boundaries) when both are installed and @bool
-    use-tree-sitter is True -- same setting/default the tree-sitter
-    colorizer uses. Falls back to the regex-based Python_Importer
-    otherwise, so this works with no extra dependencies installed.
+    #4839: Uses Python_TreeSitter_Importer (finds block boundaries with
+    tree-sitter) when @bool use-tree-sitter is True -- same setting/default
+    the tree-sitter colorizer uses. Falls back to the regex-based
+    Python_Importer otherwise.
     """
     if c.config.getBool('use-tree-sitter', default=True):
         # Local import: python_ts.py imports Python_Importer from *this*
         # module, so importing it at module level here would be circular.
         from leo.plugins.importers.python_ts import Python_TreeSitter_Importer
 
-        if Python_TreeSitter_Importer.is_available():
-            Python_TreeSitter_Importer(c).import_from_string(parent, s)
-            return
+        Python_TreeSitter_Importer(c).import_from_string(parent, s)
+        return
     Python_Importer(c).import_from_string(parent, s)
 
 
