@@ -175,7 +175,9 @@ def shellScriptInWindow(c, script):
         os.close(handle)
         os.chmod(path, 0x700)
         # @-<< write script to temporary MacOS file >>
-        subprocess.run("open -a /Applications/Utilities/Terminal.app " + path, shell=True, check=False)
+        subprocess.run(
+            "open -a /Applications/Utilities/Terminal.app " + path, shell=True, check=False
+        )
 
     elif sys.platform == 'win32':
         g.error("shellScriptInWindow not ready for Windows")
