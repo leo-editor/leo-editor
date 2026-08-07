@@ -1,12 +1,7 @@
-# Config for `ty` (https://github.com/astral-sh/ty), run as a second,
-# non-blocking type checker alongside mypy (see .mypy.ini).
-#
-# ty is still in beta, and is noticeably stricter than mypy's current
-# config in a few areas (Optional handling, PyQt override signatures).
-# This job is informational only -- see the "ty" job in
-# .github/workflows/ci.yml -- so this file intentionally does not try
-# to fully silence those findings, just the one pattern that's a
-# deliberate, accepted part of Leo's architecture.
+# Config for `ty` (https://github.com/astral-sh/ty)
+# See the "ty" job in .github/workflows/ci.yml
+
+# ty is still in beta, and is noticeably stricter than mypy.
 
 [src]
 include = ["leo"]
@@ -38,22 +33,11 @@ exclude = [
 ]
 
 [rules]
-# Leo assigns attributes dynamically outside __init__ throughout
-# leo/core, leo/commands, leo/plugins, leo/modes, leo/external -- the
-# same reason .mypy.ini disables `attr-defined` for those packages.
+# Like `disable_error_code=attr-defined` in .mypy.ini.
 unresolved-attribute = "ignore"
 
-# Mirrors .mypy.ini's `ignore_missing_imports = True`. Covers both
-# genuinely optional third-party deps (flake8, matplotlib, enchant,
-# whoosh, ...) not installed in every environment, and Leo's
-# TYPE_CHECKING-only imports of names that are conditionally/
-# dynamically defined at runtime (leoQt.py, leoGui.py, leoApp.py).
+# Like `ignore_missing_imports = True` in .mypy.ini.
 unresolved-import = "ignore"
 
-# mypy and ty enforce different (and sometimes incompatible) rules for
-# the same line -- e.g. ty's stricter Optional/override checks vs
-# mypy's. A `# type: ignore` that mypy's config requires is invisible
-# to ty when ty has nothing to report on that line, so ty calls it
-# "unused". Don't let that override mypy's needs: silence the warning
-# rather than deleting comments mypy still relies on.
+# Silence warnings about mypy suppressions that mypy needs.
 unused-type-ignore-comment = "ignore"
