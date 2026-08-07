@@ -260,14 +260,7 @@ class TestAtFile(LeoUnitTest):
         root.h = '@file test_4864.py'
         # The '@' and '@c' directives *must* be at column 0: only nearby
         # code lines carry the leaf's own literal indentation.
-        root.b = (
-            "def foo():\n"
-            "    a = 1\n"
-            "@ A nested doc part\n"
-            "    Line 2.\n"
-            "@c\n"
-            "    b = 2\n"
-        )
+        root.b = "def foo():\n    a = 1\n@ A nested doc part\n    Line 2.\n@c\n    b = 2\n"
         at.initWriteIvars(root)
         at.putBody(root)
         result = ''.join(at.outputList)
@@ -290,7 +283,8 @@ class TestAtFile(LeoUnitTest):
         at.putFile(root, sentinels=True)
         derived1 = ''.join(at.outputList)
         ok = leoAtFile.FastAtRead(c, c.fileCommands.gnxDict).read_into_root(
-            derived1, 'test_4864.py', root)
+            derived1, 'test_4864.py', root
+        )
         self.assertTrue(ok)
         at2 = leoAtFile.AtFile(c)
         at2.initWriteIvars(root)

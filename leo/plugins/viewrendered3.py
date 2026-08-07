@@ -1627,8 +1627,6 @@ def xisVisible():
 def onCreate(tag, keys):
     pass
 
-
-    # @+at
     # def onCreate(tag: str, keys: dict) -> None:
     #     c = keys.get('c')
     #     if not c:
@@ -1639,6 +1637,8 @@ def onCreate(tag, keys):
     #     vr.active = True
     #     vr.is_visible = False
     #     vr.hide()
+
+
 # @+node:TomP.20191215195433.12: *3* vr3.onClose
 def onClose(tag, keys):
     c = keys.get('c')
