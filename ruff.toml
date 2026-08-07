@@ -2,13 +2,8 @@
 #@+node:ekr.20240406013108.1: * @file ../../ruff.toml
 #@@language toml
 
-# NOTE: when this file exists, ruff ignores pyproject.toml's [tool.ruff] and
-# [tool.ruff.format] tables entirely (no merging), so line-length and format
-# options must be repeated here to actually take effect.
-
-# To add suppressions
-# find: ^(\s+)(\w+) (.+?)$
-# repl: \1"\2", # \3
+# When this file exists, ruff ignores pyproject.toml's [tool.ruff] and [tool.ruff.format] tables.
+# Options must be repeated here to  take effect!
 
 line-length = 100
 
