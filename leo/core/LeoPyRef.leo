@@ -513,7 +513,6 @@
 <v t="tbrown.20130420091241.44181"><vh>@file ../plugins/screen_capture.py</vh></v>
 <v t="ville.20090815203828.5235"><vh>@file ../plugins/spydershell.py</vh></v>
 <v t="ekr.20100103093121.5329"><vh>@file ../plugins/stickynotes.py</vh></v>
-<v t="tbrown.20090119215428.2"><vh>@file ../plugins/todo.py</vh></v>
 <v t="tbrown.20100318101414.5990"><vh>@file ../plugins/viewrendered.py</vh></v>
 <v t="TomP.20191215195433.1"><vh>@file ../plugins/viewrendered3.py</vh></v>
 </v>
