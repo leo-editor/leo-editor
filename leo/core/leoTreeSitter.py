@@ -355,7 +355,10 @@ class TreeSitterColorizer(JEditColorizer):
                 continue
             i, j = max(0, start - offset), min(len(s), end - offset)
             if i < j:
-                self.setTag(tag, s, i, j)
+                # colorRangeWithTag (not plain setTag) so JEditColorizer's own
+                # URL/GNX/UNL sub-scan also runs inside comment/string
+                # captures -- same as every jEdit-colored language gets.
+                self.colorRangeWithTag(s, i, j, tag)
         # Leo constructs are not part of the host language's syntax tree and
         # may look like Python decorators. Apply these overlays last so all
         # recognized directives use Leo's color consistently.

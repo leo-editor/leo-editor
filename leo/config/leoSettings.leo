@@ -2055,6 +2055,7 @@
 <v t="ekr.20111024091133.16671"><vh>@color url-color = purple</vh></v>
 </v>
 <v t="ekr.20111024091133.16651"><vh>Colors for standard jEdit tags</vh>
+<v t="vv.20260807100000.1"><vh>@color function-color = black</vh></v>
 <v t="ekr.20060504140351"><vh>@color comment1-color = firebrick3</vh></v>
 <v t="ekr.20060504140408"><vh>@color comment2-color = firebrick3</vh></v>
 <v t="ekr.20060504140408.1"><vh>@color comment3-color = plum3</vh></v>
@@ -2081,13 +2082,20 @@
 <v t="ekr.20190325050733.7"><vh>@color generic.strong = solarized-blue</vh></v>
 <v t="ekr.20190325050733.8"><vh>@color generic.subheading = solarized-magenta</vh></v>
 <v t="ekr.20190325050733.9"><vh>@color keyword = solarized-blue</vh></v>
+<v t="vv.20260807100000.2"><vh>@color keyword.type = solarized-violet</vh></v>
 <v t="ekr.20190325050733.10"><vh>@color name = solarized-red</vh></v>
+<v t="vv.20260807100000.3"><vh>@color name.attribute = solarized-yellow</vh></v>
+<v t="vv.20260807100000.4"><vh>@color name.builtin.pseudo = solarized-green</vh></v>
 <v t="ekr.20190325050733.11"><vh>@color name.class = white</vh></v>
+<v t="vv.20260807100000.5"><vh>@color name.constant = solarized-red</vh></v>
 <v t="ekr.20190325050733.12"><vh>@color name.decorator = solarized-orange</vh></v>
 <v t="ekr.20190325050733.13"><vh>@color name.entity = solarized-blue</vh></v>
 <v t="ekr.20190325050733.14"><vh>@color name.function = white</vh></v>
+<v t="vv.20260807100000.6"><vh>@color name.label = solarized-magenta</vh></v>
+<v t="vv.20260807100000.7"><vh>@color name.namespace = solarized-blue</vh></v>
 <v t="ekr.20190325050733.15"><vh>@color name.other = solarized-red</vh></v>
 <v t="ekr.20190325050733.16"><vh>@color name.tag = solarized-magenta</vh></v>
+<v t="vv.20260807100000.8"><vh>@color name.variable = solarized-cyan</vh></v>
 <v t="ekr.20190325050733.17"><vh>@color string = alt-solarized-green</vh></v>
 <v t="ekr.20190325050733.18"><vh>@color string.doc = solarized-orange</vh></v>
 <v t="ekr.20190325050733.20"><vh>@color string.double = alt-solarized-green</vh></v>
@@ -11107,7 +11115,13 @@ limited, not the full nvim-treesitter queries. The tree-sitter runtime
 and the Python and JavaScript grammars are normal Leo dependencies.
 </t>
 <t tx="ekr.20190324140542.1"># The setting names are names of pygments tokens.
-# Not all tokens are represented here.</t>
+# Not all tokens are represented here.
+#
+# #4839: TreeSitterColorizer's capture_to_tag also maps onto several of
+# these same tag names (name.decorator, name.variable, name.attribute,
+# name.label, name.namespace, keyword.type, name.builtin.pseudo,
+# name.constant), so these settings control tree-sitter-colored
+# @language python/javascript nodes too, not just @bool use-pygments.</t>
 <t tx="ekr.20190324182659.1">from  leo.core.leoColor import leo_color_database as color_d
 
 d = {

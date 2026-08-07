@@ -1789,6 +1789,32 @@ class TestTreeSitterColorizer(LeoUnitTest):
             or ('name', ' bufferCommands imports & annotations ') in calls
         )
 
+    def test_tree_sitter_colors_urls_and_unls(self):
+        """
+        URLs and UNLs inside tree-sitter comment/string captures still get
+        colored, via the same colorRangeWithTag URL/UNL/GNX sub-scan every
+        jEdit-colored language already gets (match_unl tags UNLs 'url' too:
+        there's no separate 'unl' tag in this codebase).
+        """
+        c = self.c
+        x = leoTreeSitter.TreeSitterColorizer(c, None)
+        x.language = 'python'
+        calls = []
+        x.setTag = lambda tag, s, i, j: calls.append((tag, s[i:j]))
+
+        text = '# see https://example.com/docs for details\n'
+        x.reparse(text)
+        x.colorLine(text.rstrip('\n'), 0)
+        self.assertIn(('comment1', '# see https://example.com/docs for details'), calls)
+        self.assertTrue(any(tag == 'url' and 'https://example.com/docs' in txt for tag, txt in calls))
+
+        # A UNL inside a string capture must also be found and colored.
+        calls.clear()
+        text2 = 'x = "see unl://x.leo#gnx here"\n'
+        x.reparse(text2)
+        x.colorLine(text2.rstrip('\n'), 0)
+        self.assertTrue(any(tag == 'url' and txt.startswith('unl:') for tag, txt in calls))
+
     # @+node:vv.20260806120002.5: *3* TestTreeSitterColorizer.test_unsupported_language
     def test_unsupported_language(self):
         """An unsupported @language must not crash: it just yields no captures."""
