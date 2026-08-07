@@ -2137,13 +2137,10 @@ class AtFile:
 
         i = 0
         status = LeoIOStatus()
-        # #4864: doc_indent tracks the indentation of the most recently written
-        # code line in *this* node's own body, so that a doc part's sentinels
-        # (@+at/@doc/@c) nested in a leaf node's own block can match the
-        # indentation of the surrounding code, not just at.indent (which only
-        # tracks @others/section-reference nesting). Save/restore around
-        # recursive putBody calls (@others, section refs) so a child's
-        # trailing code indentation can't leak into the parent or a sibling.
+        # #4864: doc_indent lets a doc part nested in a leaf node's own block
+        # (not via @others) match the surrounding code's indentation. It's
+        # reset per node and saved/restored here so a child's trailing code
+        # indentation can't leak into the parent or a sibling.
         old_doc_indent = at.doc_indent
         at.doc_indent = 0
         try:
@@ -2155,11 +2152,8 @@ class AtFile:
                 i = next_i
             if not status.in_code:
                 at.putEndDocLine()
-                # #4864: the body ended without an explicit @c/@code, so the
-                # at.indent bump made when this (still-open) doc part started
-                # was never undone. Undo it now, or it would leak into
-                # whatever gets written next (a sibling node, or the rest of
-                # this node's parent).
+                # An unclosed doc part (no @c/@code) still has its at.indent
+                # bump in effect; undo it or it leaks into whatever's next.
                 at.indent -= at.doc_indent
         finally:
             at.doc_indent = old_doc_indent
@@ -2184,13 +2178,7 @@ class AtFile:
                 # Bug fix 12/31/04: handle adjacent doc parts.
                 at.putEndDocLine()
             else:
-                # #4864: elevate at.indent for the whole doc part (sentinels
-                # *and* content) to match the most recently written code
-                # line in this node's own body. `at.directiveKind4` still
-                # requires the '@'/'@doc' marker at column 0 in the body
-                # text, so this indentation can't be recovered from the
-                # marker itself -- only from nearby code. Restored when the
-                # doc part closes, below.
+                # #4864: elevate at.indent for the whole doc part; restored on close, below.
                 at.indent += at.doc_indent
             at.putStartDocLine(s, i, kind)
             status.in_code = False
@@ -2385,8 +2373,7 @@ class AtFile:
         k = g.skip_ws(s, i)
         line = s[i:j]
 
-        # #4864: remember this (non-blank) code line's own indentation, so that
-        # a doc part's sentinels immediately following can match it.
+        # #4864: remember this line's indentation for a doc part that may follow.
         if line.strip():
             _, at.doc_indent = g.skip_leading_ws_with_indent(s, i, at.tab_width)
 
