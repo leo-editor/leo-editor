@@ -356,7 +356,7 @@ def pasteAsTemplate(self: Cmdr, event: LeoKeyEvent | None = None) -> None:
     if not isJson:
         xroot = ElementTree.fromstring(s)
         xvelements = cast(Any, xroot.find('vnodes'))  # <v> elements.
-        xtelements = xroot.find('tnodes')  # <t> elements.
+        xtelements = cast(Any, xroot.find('tnodes'))  # <t> elements.
         bodies, uas = x.scanTnodes(xtelements)
         root_gnx = xvelements[0].attrib.get('t')  # the gnx of copied node
     else:

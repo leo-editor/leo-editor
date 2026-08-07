@@ -527,7 +527,7 @@ class FlowLayout(QtWidgets.QLayout):
             item = self.takeAt(0)
 
     # @+node:ekr.20140917180536.17899: *3* addItem
-    def addItem(self, item):
+    def addItem(self, item: QtWidgets.QLayoutItem) -> None:
         self.itemList.append(item)
 
     # @+node:ekr.20140917180536.17900: *3* insertWidget
@@ -569,12 +569,12 @@ class FlowLayout(QtWidgets.QLayout):
         return True
 
     # @+node:ekr.20140917180536.17906: *3* heightForWidth
-    def heightForWidth(self, width):
+    def heightForWidth(self, width: int) -> int:
         height = self.doLayout(QtCore.QRect(0, 0, width, 0), True)
         return height
 
     # @+node:ekr.20140917180536.17907: *3* setGeometry
-    def setGeometry(self, rect):
+    def setGeometry(self, rect: QtCore.QRect) -> None:
         super().setGeometry(rect)
         self.doLayout(rect, False)
 
@@ -704,7 +704,7 @@ class BookMarkDisplay:
                 AlfShift navigate
                 AltControlShift hoist
             """.split('\n')
-        self.mod_map = dict(i.strip().split() for i in mod_map if i.strip())
+        self.mod_map = {k: v for k, v in (i.strip().split() for i in mod_map if i.strip())}
 
     # @+node:tbrown.20131227100801.30379: *3* background_clicked
     def background_clicked(self, event, bookmarks, row_parent):

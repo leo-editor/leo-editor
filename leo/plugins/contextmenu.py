@@ -225,7 +225,7 @@ def deletenodes_rclick(c: Cmdr, p: Position, menu: LeoQtMenu) -> None:
         # move to a node that still exists
         for v in nextviz:
             pos = c.vnode2position(v)
-            if c.positionExists(pos):
+            if pos and c.positionExists(pos):
                 c.selectPosition(pos)
                 break
         else:

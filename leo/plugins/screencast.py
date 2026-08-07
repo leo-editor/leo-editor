@@ -798,7 +798,7 @@ class ScreenCastController:
         k = c.k
         m.key_w = w
         if len(ch) > 1:
-            char = None
+            char = ''
             binding = k.strokeFromSetting(ch).s
         else:
             char = binding = ch

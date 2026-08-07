@@ -11,7 +11,7 @@ from shutil import which
 import os
 import re
 import time
-from typing import TYPE_CHECKING
+from typing import cast, TYPE_CHECKING
 import leo.core.leoGlobals as g
 
 # Abbreviation.
@@ -289,7 +289,7 @@ class MarkupCommands:
         t1 = time.time()
         c = self.c
         self.kind = kind
-        p = event.p if event and hasattr(event, 'p') else c.p
+        p = cast('Position', event.p) if event and hasattr(event, 'p') else c.p
         roots = g.findRootsWithPredicate(c, p, predicate=predicate)
         if not roots:
             g.warning('No @adoc nodes in', p.h)

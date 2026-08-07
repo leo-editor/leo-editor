@@ -145,22 +145,22 @@ wsKey = ""
 # @+others
 # @+node:felix.20210712224107.1: ** class SetEncoder
 class SetEncoder(json.JSONEncoder):
-    def default(self, obj: Any) -> Any:
+    def default(self, o: Any) -> Any:
         # Sets become basic javascript arrays
-        if isinstance(obj, set):
-            return list(obj)
+        if isinstance(o, set):
+            return list(o)
         # Leo Positions get converted with same simple algorithm as p_to_ap
-        if isinstance(obj, Position):
-            stack = [{'gnx': v.gnx, 'childIndex': childIndex} for (v, childIndex) in obj.stack]
+        if isinstance(o, Position):
+            stack = [{'gnx': v.gnx, 'childIndex': childIndex} for (v, childIndex) in o.stack]
             return {
-                'childIndex': obj._childIndex,
-                'gnx': obj.v.gnx,
+                'childIndex': o._childIndex,
+                'gnx': o.v.gnx,
                 'stack': stack,
             }
         # Leo VNodes are represented as their gnx
-        if isinstance(obj, VNode):
-            return {'gnx': obj.gnx}
-        return json.JSONEncoder.default(self, obj)  # otherwise, return default
+        if isinstance(o, VNode):
+            return {'gnx': o.gnx}
+        return json.JSONEncoder.default(self, o)  # otherwise, return default
 
 
 # @+node:felix.20210621233316.3: ** Exception classes

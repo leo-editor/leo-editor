@@ -100,7 +100,7 @@ class Undoer:
         self.afterTree = None
         self.beforeTree = None
         self.children = None
-        self.deleteMarkedNodesData: g.Bunch | None = None
+        self.deleteMarkedNodesData: list[Position] | None = None
         self.followingSibs: list[VNode] = None
         self.headlines: dict[str, tuple[str, str]]
         self.inHead: bool | None = None
@@ -622,7 +622,7 @@ class Undoer:
         u.pushBead(bunch)
 
     # @+node:ekr.20111005152227.15555: *5* u.afterDeleteMarkedNodes
-    def afterDeleteMarkedNodes(self, data: g.Bunch, p: Position) -> None:
+    def afterDeleteMarkedNodes(self, data: list[Position], p: Position) -> None:
         u = self
         if u.redoing or u.undoing:
             return
@@ -833,7 +833,7 @@ class Undoer:
         return bunch
 
     # @+node:ekr.20231225131907.1: *5* u.beforeChangeUA
-    def beforeChangeUA(self, p: Position) -> None:
+    def beforeChangeUA(self, p: Position) -> g.Bunch:
         u = self
         bunch = u.createCommonBunch(p)
         bunch.oldUA = p.v.u

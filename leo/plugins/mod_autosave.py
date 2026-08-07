@@ -82,10 +82,13 @@ def onIdle(tag, keywords):
     d = gDict.get(c.hash())
     if not d or not c or not c.exists or not c.changed or not c.mFileName:
         return
-    # Wait the entire interval.
-    if time.time() - d.get('last') < d.get('interval'):
+    last, interval = d.get('last'), d.get('interval')
+    if last is None or interval is None:
         return
-    save(c, d.get('verbose'))
+    # Wait the entire interval.
+    if time.time() - last < interval:
+        return
+    save(c, bool(d.get('verbose')))
     # Do *not* update the outline's change status.
     # Continue to save the outline to the .bak file
     # until the user explicitly saves the outline.

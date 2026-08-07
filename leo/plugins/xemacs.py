@@ -78,7 +78,7 @@ def open_in_emacs_helper(c, p):
         return
     # Search the open-files list for a file corresponding to v.
     efc = g.app.externalFilesController
-    path = efc and efc.find_path_for_node(p)
+    path = efc.find_path_for_node(p) if efc else None
     emacs_cmd = c.config.getString('xemacs-exe') or _emacs_cmd
     if (
         not path

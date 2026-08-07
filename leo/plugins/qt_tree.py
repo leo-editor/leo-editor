@@ -546,7 +546,7 @@ class LeoQtTree(leoFrame.LeoTree):
                 if self.isValidItem(item):
                     self.setItemText(item, h)
                     if self.use_declutter:  # #2844.
-                        icon = self.declutter_node(c, p, item)
+                        icon = self.declutter_node(c, p.v, item)
                         item.setIcon(0, icon)  # 0 is the column number.
 
     # @+node:ekr.20140907201613.18986: *4* LeoQtTree.repaint (not used)

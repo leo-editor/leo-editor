@@ -363,7 +363,7 @@ def show_layout_name(event: LeoKeyEvent | None = None) -> None:
 
 # @+node:ekr.20241008174638.1: ** Layouts
 # @+node:tom.20240923194438.3: *3* FALLBACK_LAYOUT
-FALLBACK_LAYOUT = {
+FALLBACK_LAYOUT: dict[str, Any] = {
     'SPLITTERS': OrderedDict(
         (
             ('outlineFrame', 'secondary_splitter'),
@@ -544,7 +544,8 @@ class LayoutCacheWidget(QWidget):
             from leo.plugins.viewrendered3 import controllers
 
             vr3 = controllers.get(c.hash())
-            self.contract_pane(vr3)
+            if vr3:
+                self.contract_pane(vr3)
         else:
             g.es_print('VR3 is not running', color='blue')
 

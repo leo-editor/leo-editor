@@ -3440,9 +3440,9 @@ class LoadManager:
                 return None
             # Read the file into an StringIO file.
             aList = theFile.namelist()
-            name = aList and len(aList) == 1 and aList[0]
-            if not name:
+            if len(aList) != 1:
                 return None
+            name = aList[0]
             s = theFile.read(name)
             s2 = g.toUnicode(s, 'utf-8')
             return StringIO(s2)
@@ -3494,7 +3494,9 @@ class PreviousSettings:
 
     __slots__ = ('settingsDict', 'shortcutsDict')
 
-    def __init__(self, settingsDict: g.SettingsDict, shortcutsDict: g.SettingsDict) -> None:
+    def __init__(
+        self, settingsDict: g.SettingsDict | None, shortcutsDict: g.SettingsDict | None
+    ) -> None:
         if not shortcutsDict or not settingsDict:  # #1766: unit tests.
             lm = g.app.loadManager
             settingsDict, shortcutsDict = lm.createDefaultSettingsDicts()

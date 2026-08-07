@@ -769,7 +769,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
 
     # @+node:ekr.20240730053128.1: *3* dw: events
     # @+node:ekr.20110605121601.18140: *4* dw.closeEvent
-    def closeEvent(self, event: QEvent) -> None:  # type:ignore[override]  # ty: ignore[invalid-method-override]
+    def closeEvent(self, event: QEvent) -> None:  # type:ignore[override]
         """Handle a close event in the Leo window."""
         c = self.leo_c
         if not c.exists:
@@ -975,12 +975,12 @@ class DynamicWindow(QtWidgets.QMainWindow):
         class VisLineEdit(QtWidgets.QLineEdit):
             """In case user has hidden minibuffer with gui-minibuffer-hide"""
 
-            def focusInEvent(self, event: QFocusEvent) -> None:  # type:ignore[override]  # ty: ignore[invalid-method-override]  # pylint: disable=line-too-long
+            def focusInEvent(self, event: QFocusEvent) -> None:  # type:ignore[override]
                 self.parent().show()
                 # Call the base class method.
                 super().focusInEvent(event)
 
-            def focusOutEvent(self, event: QFocusEvent) -> None:  # type:ignore[override]  # ty: ignore[invalid-method-override]  # pylint: disable=line-too-long
+            def focusOutEvent(self, event: QFocusEvent) -> None:  # type:ignore[override]
                 self.store_selection()
                 super().focusOutEvent(event)
 
@@ -1121,7 +1121,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
     # @+node:ekr.20110605121601.18178: *4* dw.set_geometry
     # Mypy complaint because this overrides QMainWindow.setGeometry.
 
-    def setGeometry(self, rect: QRect) -> None:  # type:ignore[override,valid-type]  # ty: ignore[invalid-method-override]  # pylint: disable=line-too-long
+    def setGeometry(self, rect: QRect) -> None:  # type:ignore[override,valid-type]
         """Set the window geometry, but only once when using the qt gui."""
         assert self.leo_master
         m = self.leo_master
@@ -1650,7 +1650,7 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
                 self.setTabToolTip(i, tooltip)  # #4558 also update tooltip if given.
 
     # @+node:ekr.20131115120119.17397: *3* qt_base_tab.closeEvent
-    def closeEvent(self, event: QEvent) -> None:  # type:ignore[override]  # ty: ignore[invalid-method-override]
+    def closeEvent(self, event: QEvent) -> None:  # type:ignore[override]
         """Handle a close event."""
         g.app.gui.close_event(event)
 
@@ -3015,13 +3015,13 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
 
     __str__ = __repr__
 
-    def dragMoveEvent(self, ev: QEvent) -> None:  # type:ignore[override]  # ty: ignore[invalid-method-override]
+    def dragMoveEvent(self, ev: QEvent) -> None:  # type:ignore[override]
         pass  # Called during drags.
 
     # @+others
     # @+node:ekr.20111022222228.16980: *3* LeoQTreeWidget: Event handlers
     # @+node:ekr.20110605121601.18364: *4* LeoQTreeWidget.dragEnterEvent & helper
-    def dragEnterEvent(self, ev: QEvent) -> None:  # type:ignore[override]  # ty: ignore[invalid-method-override]
+    def dragEnterEvent(self, ev: QEvent) -> None:  # type:ignore[override]
         """Export c.p's tree as a Leo mime-data."""
         c = self.c
         if not ev:
@@ -3052,7 +3052,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         md.setText(f"{fn},{s}")
 
     # @+node:ekr.20110605121601.18365: *4* LeoQTreeWidget.dropEvent & helpers
-    def dropEvent(self, ev: QEvent) -> None:  # type:ignore[override]  # ty: ignore[invalid-method-override]
+    def dropEvent(self, ev: QEvent) -> None:  # type:ignore[override]
         """Handle a drop event in the QTreeWidget."""
         if not ev:
             return
@@ -3675,7 +3675,7 @@ class LeoQtTreeTab:
                 # Fix #458: Chapters drop-down list is not automatically resized.
                 self.setSizeAdjustPolicy(SizeAdjustPolicy.AdjustToContents)
 
-            def focusInEvent(self, event: QFocusEvent) -> None:  # type:ignore[override]  # ty: ignore[invalid-method-override]  # pylint: disable=line-too-long
+            def focusInEvent(self, event: QFocusEvent) -> None:  # type:ignore[override]
                 self.leo_tt.setNames()
                 QtWidgets.QComboBox.focusInEvent(self, event)  # Call the base class
 
@@ -3833,7 +3833,7 @@ class QtIconBarClass:
                 self.text_val = text  # self.text is a method!
                 self.toolbar = toolbar
 
-            def createWidget(self, parent: QWidget) -> QtWidgets.QPushButton:  # type:ignore[override]  # ty: ignore[invalid-method-override]  # pylint: disable=line-too-long
+            def createWidget(self, parent: QWidget) -> QtWidgets.QPushButton:  # type:ignore[override]  # pylint: disable=line-too-long
                 self.button = QtWidgets.QPushButton(self.text_val, parent)
                 self.button.setProperty('button_kind', kind)  # for styling
                 return self.button
@@ -4033,7 +4033,7 @@ class QtIconBarClass:
 # mypy complains about the font ivar and incompatible destroy methods(!)
 
 
-class QtMenuWrapper(LeoQtMenu, QtWidgets.QMenu):  # type:ignore[misc,override]  # ty: ignore[invalid-method-override]
+class QtMenuWrapper(LeoQtMenu, QtWidgets.QMenu):  # type:ignore[misc,override]
     # @+others
     # @+node:ekr.20110605121601.18459: *3* QtMenuWrapper.__init__ and __repr__
     def __init__(
@@ -4323,7 +4323,7 @@ class QtTabBarWrapper(QtWidgets.QTabBar):
         self.setMovable(True)
 
     # @+node:peckj.20140516114832.10109: *3* QtTabBarWrapper.mouseReleaseEvent
-    def mouseReleaseEvent(self, event: QMouseEvent) -> None:  # type:ignore[override]  # ty: ignore[invalid-method-override]  # pylint: disable=line-too-long
+    def mouseReleaseEvent(self, event: QMouseEvent) -> None:  # type:ignore[override]
         # middle click close on tabs -- JMP 20140505
         # closes Launchpad bug: https://bugs.launchpad.net/leo-editor/+bug/1183528
         if event.button() == MouseButton.MiddleButton:
