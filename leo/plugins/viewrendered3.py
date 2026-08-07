@@ -4258,15 +4258,13 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 s = node_list[0].b
                 s = self.remove_directives(s)
             isHtml = s and s[0] == '<'
-    # @+at
-    #         # In case we bring back QtSvg again)
-    #         if s.startswith('<svg'):
-    #             if QtSvg is None:
-    #                 g.es(NO_SVG_WIDGET_MSG, color='red')
-    #                 return
-    #             else:
-    #                 self.update_svg(s, keywords)
-    # @@c
+            # In case we bring back QtSvg again)
+            # if s.startswith('<svg'):
+            #     if QtSvg is None:
+            #         g.es(NO_SVG_WIDGET_MSG, color='red')
+            #         return
+            #     else:
+            #         self.update_svg(s, keywords)
             self.rst_html = ''
             if s and isHtml:
                 _code = [n.b for n in node_list]
