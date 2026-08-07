@@ -19,3 +19,6 @@ docs/*                          export-ignore
 leo/core/leoPy.leo              export-ignore
 leo/core/ekrLeoPy.leo           export-ignore
 leo/test/unittest/.leo_shadow/  export-ignore
+
+*.py                             text eol=lf
+leo/modes/*.py                   -text -eol

@@ -7105,10 +7105,10 @@ def cls(
     """Clear the screen."""
     if g.isWindows:
         # Leo 6.7.5: Two calls seem to be required!
-        os.system('cls')
-        os.system('cls')
+        subprocess.run('cls', shell=True, check=False)
+        subprocess.run('cls', shell=True, check=False)
     else:
-        os.system('clear')
+        subprocess.run('clear', shell=True, check=False)
 
 
 # @+node:ekr.20131114124839.16665: *3* g.createScratchCommander

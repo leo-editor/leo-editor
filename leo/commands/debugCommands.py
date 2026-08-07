@@ -7,6 +7,7 @@
 from __future__ import annotations
 from collections.abc import Callable
 import os
+import subprocess
 import sys
 from typing import TYPE_CHECKING
 from leo.core import leoGlobals as g
@@ -59,8 +60,8 @@ class DebugCommandsClass(BaseEditCommandsClass):
             return
         # Invoke the debugger, retaining the present environment.
         os.chdir(g.app.loadDir)
-        args = [sys.executable, winpdb, '-t', filename]
-        os.spawnv(os.P_NOWAIT, python, args)
+        args = [python, winpdb, '-t', filename]
+        subprocess.Popen(args)
 
     # @+node:ekr.20150514063305.105: *3* debug.findDebugger
     def findDebugger(self) -> str | None:

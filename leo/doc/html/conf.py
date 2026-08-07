@@ -24,7 +24,7 @@ html_css_files = ['custom.css']  # Relative to html_static_paths.
 
 # Options...
 html_sidebars = {
-   '**': [
+    '**': [
         'relations.html',  # Enable links to the previous and next documents.
         'searchbox.html',  # Enable “quick search” box.
         # 'localtoc.html',  # Use a fine-grained table of contents.

@@ -1,12 +1,12 @@
-#@+leo-ver=4-thin
-#@+node:bob.20071231111744:@thin colors.py
-#@@language python
-#@@tabwidth -4
+# @+leo-ver=4-thin
+# @+node:bob.20071231111744:@thin colors.py
+# @@language python
+# @@tabwidth -4
 
 
-#@<< docstring >>
-#@+node:bob.20071231115213:<< docstring >>
-""" Colors module provides a colors names database and functions to access it.
+# @<< docstring >>
+# @+node:bob.20071231115213:<< docstring >>
+"""Colors module provides a colors names database and functions to access it.
 
 The database is a python dictionary with reduced colornames as keys and
 color data in the form '#RRGGBB' as values.
@@ -37,9 +37,8 @@ Functions to access the data base are:
 """
 
 
-
-#@-node:bob.20071231115213:<< docstring >>
-#@nl
+# @-node:bob.20071231115213:<< docstring >>
+# @nl
 
 import re
 
@@ -47,29 +46,27 @@ __revision__ = re.sub(r'^\D+([\d\.]+)\D+$', r'\1', "$Revision: 1.1 $")
 
 __version__ = '%s' % __revision__
 
-#@<< version history >>
-#@+node:bob.20071231115213.1:<< version history >>
-#@@killcolor
-#@+at
+# @<< version history >>
+# @+node:bob.20071231115213.1:<< version history >>
+# @@killcolor
+# @+at
 #
 # 0.1 plumloco: initial version
 # 0.2 plumloco:
 # - leofied file adding docstring and verison info
 # - fixed getColor to return #... strings unmodified
 # - fixed getColor to convert default color if it is returned.
-#@-at
-#@-node:bob.20071231115213.1:<< version history >>
-#@nl
+# @-at
+# @-node:bob.20071231115213.1:<< version history >>
+# @nl
 
-#@+others
-#@+node:bob.20071231111744.1:colors declarations
+# @+others
+# @+node:bob.20071231111744.1:colors declarations
 colors = {
-
     # leo colors
-    "leoblue": "#F0F8FF",  #alice blue
+    "leoblue": "#F0F8FF",  # alice blue
     "leoyellow": "#ffffec",
     "leopink": "#FFE4E1",  # misty rose
-
     "aliceblue": "#F0F8FF",
     "antiquewhite": "#FAEBD7",
     "antiquewhite1": "#FFEFDB",
@@ -726,14 +723,15 @@ colors = {
     "yellow2": "#EEEE00",
     "yellow3": "#CDCD00",
     "yellow4": "#8B8B00",
-    "yellowgreen": "#9ACD32"
+    "yellowgreen": "#9ACD32",
 }
 
-#@-node:bob.20071231111744.1:colors declarations
-#@+node:bob.20071231111744.2:getColor
+
+# @-node:bob.20071231111744.1:colors declarations
+# @+node:bob.20071231111744.2:getColor
 def getColor(name, default=None):
 
-    #print 'getColor', name, default
+    # print 'getColor', name, default
 
     if name[0] == '#':
         return name
@@ -749,8 +747,8 @@ def getColor(name, default=None):
     return None
 
 
-#@-node:bob.20071231111744.2:getColor
-#@+node:bob.20071231111744.3:getColorRGB
+# @-node:bob.20071231111744.2:getColor
+# @+node:bob.20071231111744.3:getColorRGB
 def getColorRGB(name, default=None):
 
     s = getColor(name, default)
@@ -761,8 +759,10 @@ def getColorRGB(name, default=None):
         color = None
 
     return color
-#@-node:bob.20071231111744.3:getColorRGB
-#@-others
-#@nonl
-#@-node:bob.20071231111744:@thin colors.py
-#@-leo
+
+
+# @-node:bob.20071231111744.3:getColorRGB
+# @-others
+# @nonl
+# @-node:bob.20071231111744:@thin colors.py
+# @-leo

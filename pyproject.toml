@@ -353,10 +353,12 @@ Issues = "https://github.com/leo-editor/leo-editor/issues"
 [tool.ruff]
 line-length = 100
 
+extend-exclude = ["*.md"]
+
 # @string black-toml gives the path to a pyproject.toml or ruff.toml file.
 [tool.ruff.format]
 docstring-code-format = false
 indent-style = "space"
-line-ending = "native"
+line-ending = "lf"
 quote-style = "preserve"
 #@-leo
