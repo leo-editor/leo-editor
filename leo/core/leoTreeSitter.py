@@ -12,7 +12,7 @@ import tree_sitter_javascript
 import tree_sitter_python
 
 from leo.core import leoGlobals as g
-from leo.core.leoColorizer import JEditColorizer
+from leo.core.leoColorizer import _url_bearing_tags, _url_leadins_set, JEditColorizer
 from leo.core.leoQt import QtGui, QtWidgets
 
 if TYPE_CHECKING:
@@ -355,15 +355,48 @@ class TreeSitterColorizer(JEditColorizer):
                 continue
             i, j = max(0, start - offset), min(len(s), end - offset)
             if i < j:
-                # colorRangeWithTag (not plain setTag) so JEditColorizer's own
-                # URL/GNX/UNL sub-scan also runs inside comment/string
-                # captures -- same as every jEdit-colored language gets.
-                self.colorRangeWithTag(s, i, j, tag)
+                self.setTag(tag, s, i, j)
         # Leo constructs are not part of the host language's syntax tree and
         # may look like Python decorators. Apply these overlays last so all
         # recognized directives use Leo's color consistently.
         self.colorLeoDirective(s, offset)
         self.colorLeoSectionReferences(s, offset)
+        self.colorUrlsAndUnls(s, offset)
+
+    def colorUrlsAndUnls(self, s: str, offset: int) -> None:
+        """
+        Color URLs, UNLs, and GNX references inside comment/string captures.
+
+        This is the same detection JEditColorizer.colorRangeWithTag() gives
+        every jEdit-colored language (gated on tag in _url_bearing_tags),
+        but calls match_gnx/match_unl/match_any_url directly instead of
+        going through colorRangeWithTag. Those three matchers already call
+        setTag() themselves -- colorRangeWithTag's only extra step is its
+        inColorState() guard, a real highlighter.currentBlockState() Qt
+        call. Tree-sitter already tells us which ranges are comments/
+        strings for the *whole* line in self.captures, so re-deriving
+        "is coloring enabled here" per capture via Qt is redundant: this
+        method runs at most once per line, not once per capture.
+        """
+        end_offset = offset + len(s)
+        for start, end, tag in self.captures:
+            if start >= end_offset:
+                break
+            if end <= offset or tag not in _url_bearing_tags:
+                continue
+            i, j = max(0, start - offset), min(len(s), end - offset)
+            while i < j:
+                ch = s[i]
+                if ch in 'gG' and (n := self.match_gnx(s, i)) > 0:
+                    i += n
+                    continue
+                if ch in 'uU' and (n := self.match_unl(s, i)) > 0:
+                    i += n
+                    continue
+                if ch in _url_leadins_set and (n := self.match_any_url(s, i)) > 0:
+                    i += n
+                    continue
+                i += 1
 
     def colorLeoDirective(self, s: str, offset: int) -> None:
         """Color a Leo directive at the start of a tree-sitter-colored line."""

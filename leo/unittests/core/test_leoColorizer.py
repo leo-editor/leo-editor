@@ -1792,15 +1792,21 @@ class TestTreeSitterColorizer(LeoUnitTest):
     def test_tree_sitter_colors_urls_and_unls(self):
         """
         URLs and UNLs inside tree-sitter comment/string captures still get
-        colored, via the same colorRangeWithTag URL/UNL/GNX sub-scan every
-        jEdit-colored language already gets (match_unl tags UNLs 'url' too:
-        there's no separate 'unl' tag in this codebase).
+        colored: colorLine() calls colorUrlsAndUnls(), which finds them via
+        match_gnx/match_unl/match_any_url directly (match_unl tags UNLs
+        'url' too -- there's no separate 'unl' tag in this codebase). This
+        must *not* go through colorRangeWithTag(): its inColorState() guard
+        is a real highlighter.currentBlockState() Qt call that colorLine()
+        would otherwise pay once per capture instead of not at all, since
+        tree-sitter's own captures already say which ranges are colorable.
         """
         c = self.c
         x = leoTreeSitter.TreeSitterColorizer(c, None)
         x.language = 'python'
         calls = []
         x.setTag = lambda tag, s, i, j: calls.append((tag, s[i:j]))
+        colorRangeWithTag_calls = []
+        x.colorRangeWithTag = lambda *a, **k: colorRangeWithTag_calls.append((a, k))
 
         text = '# see https://example.com/docs for details\n'
         x.reparse(text)
@@ -1814,6 +1820,8 @@ class TestTreeSitterColorizer(LeoUnitTest):
         x.reparse(text2)
         x.colorLine(text2.rstrip('\n'), 0)
         self.assertTrue(any(tag == 'url' and txt.startswith('unl:') for tag, txt in calls))
+
+        self.assertEqual(colorRangeWithTag_calls, [])
 
     # @+node:vv.20260806120002.5: *3* TestTreeSitterColorizer.test_unsupported_language
     def test_unsupported_language(self):
