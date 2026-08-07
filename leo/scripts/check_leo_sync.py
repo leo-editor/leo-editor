@@ -35,7 +35,11 @@ from leo.core import leoBridge  # noqa: E402
 def main() -> int:
     leo_path = os.path.join(leo_editor_dir, 'leo', 'core', 'LeoPyRef.leo')
     bridge = leoBridge.controller(
-        gui='nullGui', loadPlugins=False, readSettings=False, silent=True, verbose=False,
+        gui='nullGui',
+        loadPlugins=False,
+        readSettings=False,
+        silent=True,
+        verbose=False,
     )
     c = bridge.openLeoFile(leo_path)
     at = c.atFileCommands
