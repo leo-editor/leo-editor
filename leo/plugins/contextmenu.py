@@ -126,7 +126,6 @@ def install_handlers() -> None:
         marknodes_rclick,
         # deletenodes_rclick,
         openurl_rclick,
-        pylint_rclick,
     ]
     g.tree_popup_handlers.extend(handlers)
 
@@ -401,17 +400,6 @@ def openatleo_rclick(c: Cmdr, p: Position, menu: LeoQtMenu) -> None:
     if len(split) >= 2 and p.isAtLeoNode():
         action = menu.addAction("Open @leo file")
         action.triggered.connect(openatleo_rclick_cb)
-
-
-# @+node:ekr.20140724211116.19258: *3* pylint_rclick
-def pylint_rclick(c: Cmdr, p: Position, menu: LeoQtMenu) -> None:
-    """Run pylint on the selected node."""
-    action = menu.addAction("Run Pylint")
-
-    def pylint_rclick_cb(aBool: bool) -> None:
-        c.doCommandByName('pylint')
-
-    action.triggered.connect(pylint_rclick_cb)
 
 
 # @+node:ekr.20140724211116.19256: ** Helpers

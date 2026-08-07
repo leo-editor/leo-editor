@@ -254,11 +254,8 @@
 <v t="ekr.20240321122614.1"><vh>--- test scripts</vh>
 <v t="ekr.20240323050520.1"><vh>@file ../scripts/beautify_all_leo.py</vh></v>
 <v t="ekr.20251129060454.1"><vh>@file ../scripts/check_leo.py</vh></v>
-<v t="ekr.20240322084902.1"><vh>@file ../scripts/flake8_leo.py</vh></v>
 <v t="ekr.20240323051724.1"><vh>@file ../scripts/full_test_leo.py</vh></v>
 <v t="ekr.20240321122413.8"><vh>@file ../scripts/mypy_leo.py</vh></v>
-<v t="ekr.20250227032644.1"><vh>@file ../scripts/pyflakes_leo.py</vh></v>
-<v t="ekr.20240321122413.9"><vh>@file ../scripts/pylint_leo.py</vh></v>
 <v t="ekr.20240406061929.1"><vh>@file ../scripts/ruff_leo.py</vh></v>
 <v t="ekr.20240322162616.1"><vh>@file ../scripts/run_test_leo.py</vh></v>
 </v>
@@ -995,7 +992,7 @@ c.backup_helper(sub_dir='leoPy')
 <t tx="ekr.20150514035207.1"></t>
 <t tx="ekr.20160122104332.1">@language python
 </t>
-<t tx="ekr.20160123142722.1" _mod_time="4741da24cf0b43cf212e"># An example configuration file for make_stub_files.py.
+<t tx="ekr.20160123142722.1" _mod_time="4741da9b424882f9722e"># An example configuration file for make_stub_files.py.
 # By default, this is ~/stubs/make_stub_files.cfg.
 # Can be changed using the --config=path command-line option.
 
@@ -1014,7 +1011,8 @@ output_directory: ~/stubs
 
 prefix_lines:
     # Lines to be inserted at the start of each stub file.
-    from typing import TypeVar, Iterable
+    from collections.abc import Iterable
+    from typing import TypeVar
     T = TypeVar('T', int, float, complex)
 
 [Def Name Patterns]
@@ -1078,9 +1076,9 @@ print('done! wrote %s' % fn)
 <t tx="ekr.20180225010913.1"></t>
 <t tx="ekr.20180504191650.36"></t>
 <t tx="ekr.20180504191650.42"></t>
-<t tx="ekr.20180504191650.68" _mod_time="4741da24cf053b9aa12e"></t>
+<t tx="ekr.20180504191650.68" _mod_time="4741da79241a98ab6a2e"></t>
 <t tx="ekr.20180504192522.1"></t>
-<t tx="ekr.20180708145905.1" _mod_time="4741da24cf0b43cf212e">@language rest
+<t tx="ekr.20180708145905.1" _mod_time="4741da79241a9722342e">@language rest
 @wrap
 
 This is the theory of operation document for py2cs.py. The most interesting aspect of this script is the TokenSync class. This class provides a reliable way of associating tokenizer tokens with ast nodes.
@@ -2045,7 +2043,7 @@ writers = 'leo.unittests.plugins.test_writers'
 # f"{plugins}.test_plugins",
 # f"{plugins}.test_writers",
 </t>
-<t tx="ekr.20230624114517.1" _mod_time="4741da24cf053b9aa12e"></t>
+<t tx="ekr.20230624114517.1" _mod_time="4741da79241a98ab6a2e"></t>
 <t tx="ekr.20230720115916.1">g.cls()
 import leo.commands.editFileCommands as efc
 
@@ -2130,7 +2128,7 @@ print('done')</t>
 <t tx="ekr.20240107154430.1"></t>
 <t tx="ekr.20240204082420.1"></t>
 <t tx="ekr.20240204082924.1"></t>
-<t tx="ekr.20240206161713.1" _mod_time="4741da7f9b3abce1da2e">@language ini
+<t tx="ekr.20240206161713.1" _mod_time="4741da9d7634243cee2e">@language ini
 
 [bdist_wheel]
 
@@ -2141,142 +2139,8 @@ universal=0
 
 # Becomes the home-page in `pip show leo`.
 url = https://leo-editor.github.io/leo-editor/
-
-[flake8]
-
-exclude =
-    .git,
-    __pycache__,
-    leo/build,
-    leo/dist,
-    leo/doc,
-    leo/extensions,
-    leo/external,
-    leo/modes,
-    leo/plugins,
-    leo/scripts,
-    leo/test,
-    leo/unittests/py3_test_grammar.py,
-
-extend-ignore =
-
-    # Don't check B020. It conflicts with Leo idioms like `for p in p.children():
-    # Found for loop that reassigns the iterable it is iterating with each iterable value.
-    # B020
-
-    # blank line contains whitespace
-    # W293
-
-    # Comments and continuation lines...
-
-    # expected an indented block (comment)
-    # E115
-
-    # unexpected indentation (comment)
-    E116
-
-    # over-indented (comment)
-    E117
-
-    # continuation line over-indented for visual indent
-    E127
-
-    # continuation line missing indentation or outdented.
-    E122
-
-    # closing bracket does not match visual indentation.
-    E124
-
-    # continuation line with same indent as next logical line
-    E125
-
-    # continuation line under-indented for visual indent.
-    E128
-
-    # visually indented line with same indent as next logical line
-    E129
-
-    # continuation line unaligned for hanging indent.
-    E131
-
-    # whitespace before ':'
-    # Conflict between black and flake8.
-    E203
-
-    # whitespace before '['
-    # E211
-
-    # multiple spaces before operator
-    # Conflicts with extra spacing in @nobeautify nodes.
-    E221
-
-    # multiple spaces after operator
-    # Conflicts with extra spacing in @nobeautify nodes.
-    E222
-
-    # missing whitespace around operator
-    # Conflicts with extra spacing in @nobeautify nodes.
-    # E225
-
-    # missing whitespace after ','
-    # E231
-
-    # unexpected spaces around keyword / parameter equals
-    # Conflicts with extra spacing in @nobeautify nodes.
-    E251
-
-    # at least two spaces before inline comment
-    # E261
-
-    # missing whitespace around parameter equals.
-    # E252
-
-    # inline comment should start with '# '
-    E262
-
-    # block comment should start with '# '.
-    E265
-
-    # too many leading '#' for block comment
-    # Prohibits ### comments.
-    E266
-
-    # multiple spaces before keyword
-    # Interferes with @nobeautify
-    E272
-
-    # missing whitespace after keyword.
-    # Interferes with @nobeautify. Also warns about assert(whatever) and except(list).
-    E275
-
-    # trailing whitespace
-    # E293
-
-    # expected 1 blank line, found 0.
-    E301
-
-    # expected 2 blank lines, found 1.
-    E302
-
-    # whitespace before ':'
-    # E203
-
-    # too many blank lines (2)
-    E303
-
-    # expected 2 blank lines after class or function definition, found 0.
-    # E305
-
-    # expected 1 blank line before a nested definition, found 0.
-    E306
-
-    # Line too long.
-    E501
-
-    # global `whatever` is unused: name is never assigned in scope.
-    # F824
 </t>
-<t tx="ekr.20240317061516.1" _mod_time="4741da5a5ae8fea4c22e">@language python
+<t tx="ekr.20240317061516.1" _mod_time="4741da79241a83ef0a2e">@language python
 
 # Order matters!
 

@@ -355,20 +355,6 @@ tips: list[UserTip] = [
 
     """,
     ),
-    # @+node:ekr.20180324065153.2: *4* pylint command
-    UserTip(
-        n=622,
-        tags=['Command', 'Testing'],
-        title="<html>The pylint command",
-        text="""
-    <p>Leo's pylint command runs
-    <a href="https://www.pylint.org/">pylint</a>
-    on all `@<file>` nodes in the selected trees.</p>
-
-    <p>Pylint runs in the background. It doesn't interfere with Leo.</p>
-
-    </html>""",
-    ),
     # @+node:ekr.20180324073008.1: *4* repeat-complex-command
     UserTip(
         n=0,
@@ -478,24 +464,6 @@ tips: list[UserTip] = [
     <p>You must
     <a href="https://leo-editor.github.io/leo-editor/running.html#running-leo-from-a-console-window">
     run Leo from a console</a> for this to work.</p>
-
-    </html>""",
-    ),
-    # @+node:ekr.20180324065152.4: *4* Pyflakes
-    UserTip(
-        n=624,
-        tags=['Settings', 'Scripting'],
-        title="<html>The pyflakes command",
-        text="""\
-    <p><a href="https://pypi.python.org/pypi/pyflakes">pyflakes</a>
-    checks python files almost instantly.</p>
-
-    <p>Enable pyflakes with these settings:
-    <pre>
-    @bool run-pyflakes-on-write = True
-    @bool syntax-error-popup = True
-    </pre>
-    </p>
 
     </html>""",
     ),

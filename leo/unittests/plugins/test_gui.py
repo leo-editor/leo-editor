@@ -178,16 +178,6 @@ class TestQtGui(LeoUnitTest):
                 True,
                 'File "test_file.py", line 5',
             ),
-            # pylint.
-            (
-                True,
-                r'leo\unittest\test_file.py:1326:8: W0101: Unreachable code (unreachable)',
-            ),
-            # pyflakes.
-            (
-                True,
-                r"test_file.py:51:13 'leo.core.leoQt5.*' imported but unused",
-            ),
             # mypy...
             (
                 True,
@@ -204,6 +194,11 @@ class TestQtGui(LeoUnitTest):
             (
                 False,
                 'mypy: done',
+            ),
+            # ruff.
+            (
+                True,
+                r'test_file.py:51:13: F401 [*] `leo.core.leoQt5.*` imported but unused',
             ),
             # Random output.
             (
