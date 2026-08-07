@@ -23,7 +23,7 @@ class TestGlobals(LeoUnitTest):
     error_templates: dict[str, str]
     files_data: tuple[str, str]
     invalid_unls: tuple[str]
-    tools = ['flake8', 'mypy', 'pyflakes', 'pylint', 'python']
+    tools = ['mypy', 'python']
     valid_unls: tuple[str]
     # @-<< TestGlobals: declare all data >>
     # @+<< TestGlboals: define unchanging data >>
@@ -51,10 +51,7 @@ class TestGlobals(LeoUnitTest):
     # @+node:ekr.20230701060854.1: *4* << define error_patterns >> (test_leoGlobals.py)
     # m.group(1) is the filename and m.group(2) is the line number.
     error_patterns = {
-        'flake8': g.flake8_pat,  # r'(.+?):([0-9]+):[0-9]+:.*$'
         'mypy': g.mypy_pat,  # r'^(.+?):([0-9]+):\s*(error|note)\s*(.*)\s*$'
-        'pyflakes': g.pyflakes_pat,  # r'^(.*):([0-9]+):[0-9]+ .*?$'
-        'pylint': g.pylint_pat,  # r'^(.*):\s*([0-9]+)[,:]\s*[0-9]+:.*?\(.*\)\s*$'
         'python': g.python_pat,  # r'^\s*File\s+"(.*?)",\s*line\s*([0-9]+)\s*$'
     }
     # @-<< define error_patterns >>
@@ -62,10 +59,7 @@ class TestGlobals(LeoUnitTest):
     # @+node:ekr.20230701071240.1: *4* << define error_templates >>
     # Error message templates.
     error_templates = {
-        'flake8': 'FILE:LINE:COL:ERR',
         'mypy': 'FILE:LINE:error ERR',
-        'pyflakes': 'FILE:LINE:COL ERR',
-        'pylint': 'FILE:LINE:COL: (ERR)',
         'python': 'File "FILE", line LINE',
     }
     # @-<< define error_templates >>

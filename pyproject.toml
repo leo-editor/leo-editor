@@ -302,9 +302,6 @@ dependencies = [
   "asttokens",       # For unit tests.
   "beautifulsoup4",  # For link testing.
   "black",           # For unit tests.
-  "flake8",
-  "pyflakes",
-  "pylint",
   "pytest",
   "pytest-cov",      # For coverage testing.
   "ruff",

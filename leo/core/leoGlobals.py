@@ -457,11 +457,9 @@ cmd_instance_dict: dict[str, list[str]] = {
 
 # See link_table above LeoLog.put_html_links.
 
-flake8_pat = re.compile(r'(.+?):([0-9]+):[0-9]+:.*$')
 mypy_pat = re.compile(r'^(.+?):([0-9]+):\s*(error|note)\s*(.*)\s*$')
-pyflakes_pat = re.compile(r'^(.*):([0-9]+):[0-9]+ .*?$')
-pylint_pat = re.compile(r'^(.*):\s*([0-9]+)[,:]\s*[0-9]+:.*?\(.*\)\s*$')
 python_pat = re.compile(r'^\s*File\s+"(.*?)",\s*line\s*([0-9]+)\s*$')
+ruff_pat = re.compile(r'^(.+?):([0-9]+):[0-9]+:.*$')  # ruff's --output-format=concise.
 
 
 # @-<< define global error regexes >>
@@ -4333,9 +4331,8 @@ def findRootsWithPredicate(
     Commands often want to find one or more **roots**, given a position p.
     A root is the position of any node matching a predicate.
 
-    This function formalizes the search order used by the black,
-    pylint, pyflakes and the rst3 commands, returning a list of zero
-    or more found roots.
+    This function formalizes the search order used by the black-beautify
+    and rst3 commands, returning a list of zero or more found roots.
     """
     seen = []
     roots = []
@@ -8112,7 +8109,7 @@ def run_unit_tests(tests: str = '', verbose: bool = False) -> None:
 # @+at
 # Clickable links have four forms:
 #
-# 1. Error messages produced by flake8, mypy, pyflakes, pylint, python:
+# 1. Error messages produced by mypy, python:
 #
 #    Some of these tools produce clickable links in the log pane when run
 #    *within* Leo. Some do not.

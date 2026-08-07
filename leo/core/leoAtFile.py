@@ -87,9 +87,7 @@ class AtFile:
         # User switches.
         'beautifyOnWrite',
         'checkPythonCodeOnWrite',
-        'runFlake8OnWrite',
-        'runPyFlakesOnWrite',
-        'runPylintOnWrite',
+        'runRuffOnWrite',
         # Testing hacks.
         'at_shadow_test_hack',  # Injected by TestShadow.makePrivateLines.
     )
@@ -160,9 +158,7 @@ class AtFile:
         # User switches: set in reloadSettings.
         self.beautifyOnWrite = False
         self.checkPythonCodeOnWrite = False
-        self.runFlake8OnWrite = False
-        self.runPyFlakesOnWrite = False
-        self.runPylintOnWrite = False
+        self.runRuffOnWrite = False
         # Initialize all user switches.
         self.reloadSettings()
 
@@ -172,9 +168,7 @@ class AtFile:
         c = self.c
         self.beautifyOnWrite = c.config.getBool('beautify-python-code-on-write', default=False)
         self.checkPythonCodeOnWrite = c.config.getBool('check-python-code-on-write', default=True)
-        self.runFlake8OnWrite = c.config.getBool('run-flake8-on-write', default=False)
-        self.runPyFlakesOnWrite = c.config.getBool('run-pyflakes-on-write', default=False)
-        self.runPylintOnWrite = c.config.getBool('run-pylint-on-write', default=False)
+        self.runRuffOnWrite = c.config.getBool('run-ruff-on-write', default=False)
 
     # @+node:ekr.20250403154610.1: *4* at.initAllIvars
     def initAllIvars(self, root: Position) -> None:
@@ -2626,12 +2620,8 @@ class AtFile:
             ok = self.checkPythonSyntax(root, contents)
         if ok and self.beautifyOnWrite:  # Second.
             ok = self.runRuffFormat(contents, root, fileName)
-        if ok and self.runPyFlakesOnWrite:  # Creates clickable links.
-            ok = self.runPyflakes(root)
-        if ok and self.runFlake8OnWrite:  # Does *not* create clickable links.
-            ok = self.runFlake8(root)
-        if ok and self.runPylintOnWrite:
-            ok = self.runPylint(root)
+        if ok and self.runRuffOnWrite:  # Third. Creates clickable links.
+            ok = self.runRuff(root)
         if not ok:
             g.app.syntax_error_files.append(g.shortFileName(fileName))
 
@@ -2724,47 +2714,16 @@ class AtFile:
         c.redraw(old_p)
         return True
 
-    # @+node:ekr.20221128123139.1: *6* at.runFlake8
-    def runFlake8(self, root: Position) -> bool:  # pragma: no cover
-        """Run flake8 on the selected node."""
+    # @+node:vv.20260807130000.1: *6* at.runRuff
+    def runRuff(self, root: Position) -> bool:  # pragma: no cover
+        """Run ruff check on the selected node. Return True if no errors."""
         try:
             from leo.commands import checkerCommands
 
-            if checkerCommands.flake8:
-                x = checkerCommands.Flake8Command(self.c)
-                x.run(root)
-                return True
-            return True  # Suppress error if pyflakes can not be imported.
-        except Exception:
-            g.es_exception()
-            return True  # Pretend all is well
-
-    # @+node:ekr.20161021084954.1: *6* at.runPyflakes
-    def runPyflakes(self, root: Position) -> bool:  # pragma: no cover
-        """Run pyflakes on the selected node."""
-        try:
-            from leo.commands import checkerCommands
-
-            if checkerCommands.pyflakes:
-                x = checkerCommands.PyflakesCommand(self.c)
-                ok = x.run(root)
-                return ok
-            return True  # Suppress error if pyflakes can not be imported.
-        except Exception:
-            g.es_exception()
-            return True  # Pretend all is well
-
-    # @+node:ekr.20240924054208.1: *6* at.runPylint
-    def runPylint(self, root: Position) -> bool:  # pragma: no cover
-        """Run pylint on the selected node."""
-        try:
-            from leo.commands import checkerCommands
-
-            if checkerCommands.lint:
-                x = checkerCommands.PylintCommand(self.c)
-                ok = bool(x.run(root))
-                return ok
-            return True  # Suppress error if pylint can not be imported.
+            if checkerCommands.ruff:
+                x = checkerCommands.RuffCommand(self.c)
+                return x.check_on_write(root)
+            return True  # Suppress error if ruff can not be imported.
         except Exception:
             g.es_exception()
             return True  # Pretend all is well
