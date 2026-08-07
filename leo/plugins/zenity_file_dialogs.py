@@ -83,7 +83,7 @@ def runOpenFileDialog(
 
 # @+node:ekr.20101110095557.5896: ** runSaveFileDialog
 def runSaveFileDialog(
-    title=None,
+    title='',
     *,
     filetypes: list[tuple[str, str]] | None = None,
     defaultextension='',  # Not used.

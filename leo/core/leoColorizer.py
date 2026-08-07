@@ -598,7 +598,7 @@ class JEditColorizer(BaseColorizer):
     # @+node:ekr.20110605121601.18577: *4* jedit.addLeoRules
     def addLeoRules(self, theDict: dict[str, RuleSet]) -> None:
         """Put Leo-specific rules to theList."""
-        table = [
+        table: list[tuple[str, Callable, bool]] = [
             # Rules added at front are added in **reverse** order.
             # Debatable: Leo keywords override langauge keywords.
             (
@@ -780,7 +780,7 @@ class JEditColorizer(BaseColorizer):
             if key not in keys:
                 d[key] = 'leokeyword'
         # Create a temporary chars list.  It will be converted to a dict later.
-        chars = [z for z in string.ascii_letters + string.digits]
+        chars: list[str] = [z for z in string.ascii_letters + string.digits]
         chars.append('_')  # #2933.
         for key in list(d.keys()):
             for ch in key:

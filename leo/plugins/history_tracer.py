@@ -77,7 +77,7 @@ def init_idle_checker(tag, keys):
         def stop(self):
             self.killTimer(self._tid)
 
-        def timerEvent(self, ev):
+        def timerEvent(self, ev: QtCore.QTimerEvent) -> None:
             t = time.time()
             for i, cx in enumerate(g.app.commanders()):
                 t1 = cx.user_dict.get('last_command_at', t)

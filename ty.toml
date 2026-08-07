@@ -4,9 +4,7 @@
 # ty is still in beta, and is noticeably stricter than mypy's current
 # config in a few areas (Optional handling, PyQt override signatures).
 # This job is informational only -- see the "ty" job in
-# .github/workflows/ci.yml -- so this file intentionally does not try
-# to fully silence those findings, just the one pattern that's a
-# deliberate, accepted part of Leo's architecture.
+# .github/workflows/ci.yml.
 
 [src]
 include = ["leo"]
@@ -57,3 +55,12 @@ unresolved-import = "ignore"
 # "unused". Don't let that override mypy's needs: silence the warning
 # rather than deleting comments mypy still relies on.
 unused-type-ignore-comment = "ignore"
+
+# PyQt/PySide stub signatures name event-handler parameters `a0`, `a1`,
+# etc. (they're wrapped C++ methods with no meaningful Python names),
+# so any override using a readable parameter name (`event`, `obj`, ...)
+# trips ty's Liskov keyword-compatibility check. This is a structural
+# mismatch between Qt's stubs and Leo's Qt subclasses throughout
+# leo/plugins (event filters, close/focus/mouse events, JSONEncoder.default,
+# importer find_end_of_block overrides), not a real override bug.
+invalid-method-override = "ignore"

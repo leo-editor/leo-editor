@@ -47,7 +47,7 @@ class NestedSplitterTopLevel(QtWidgets.QWidget):
             self.setWindowTitle(window_title)
 
     # @+node:tbrown.20120418121002.25714: *3* closeEvent (NestedSplitterTopLevel)
-    def closeEvent(self, event):
+    def closeEvent(self, event: QtGui.QCloseEvent) -> None:
         """A top-level NestedSplitter window has been closed, check all the
         panes for widgets which must be preserved, and move any found
         back into the main splitter."""
@@ -355,7 +355,7 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):
             widget[i].setStyleSheet(sheet[i])
 
     # @+node:tbnorth.20160510091151.1: *3* nsh.mouseEvents
-    def mousePressEvent(self, event):
+    def mousePressEvent(self, event: QtGui.QMouseEvent) -> None:
         """mouse event - mouse pressed on splitter handle,
         pass info. up to splitter
 
@@ -364,7 +364,7 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):
         super().mousePressEvent(event)
         self.splitter()._splitter_clicked(self, event, release=False, double=False)
 
-    def mouseReleaseEvent(self, event):
+    def mouseReleaseEvent(self, event: QtGui.QMouseEvent) -> None:
         """mouse event - mouse pressed on splitter handle,
         pass info. up to splitter
 
@@ -373,7 +373,7 @@ class NestedSplitterHandle(QtWidgets.QSplitterHandle):
         super().mouseReleaseEvent(event)
         self.splitter()._splitter_clicked(self, event, release=True, double=False)
 
-    def mouseDoubleClickEvent(self, event):
+    def mouseDoubleClickEvent(self, event: QtGui.QMouseEvent) -> None:
         """mouse event - mouse pressed on splitter handle,
         pass info. up to splitter
 
@@ -447,7 +447,7 @@ class NestedSplitter(QtWidgets.QSplitter):
         return NestedSplitterHandle(self)
 
     # @+node:tbrown.20110729101912.30820: *4* ns.childEvent
-    def childEvent(self, event):
+    def childEvent(self, event: QtCore.QChildEvent) -> None:
         """If a panel client is closed not by us, there may be zero
         splitter handles left, so add an Action button
 

@@ -53,7 +53,7 @@ import sys
 import code
 from typing import Any, cast
 from leo.core import leoGlobals as g
-from leo.core.leoQt import QtWidgets
+from leo.core.leoQt import QtGui, QtWidgets
 from leo.core.leoQt import Key
 
 # A workaround for #1212: segfaults at startup when importing this file.
@@ -251,7 +251,7 @@ if QtWidgets:
             return False
 
         # @+node:peckj.20150428142729.19: *3* PyInterp.keyPressEvent & helper
-        def keyPressEvent(self, event):
+        def keyPressEvent(self, event: QtGui.QKeyEvent) -> None:
             completer: Any
             try:
                 # #1212: Disable this by default.
@@ -418,7 +418,7 @@ if QtWidgets:
             self.insert_marker()
 
         # @+node:peckj.20150428142729.20: *3* PyInterp.focusInEvent
-        def focusInEvent(self, event=None):
+        def focusInEvent(self, event: QtGui.QFocusEvent | None = None) -> None:
             # set stdout+stderr properly
             QtWidgets.QTextEdit.focusInEvent(self, event)
             sys.stdout = self
@@ -426,7 +426,7 @@ if QtWidgets:
             self.ensureCursorVisible()
 
         # @+node:peckj.20150428142729.21: *3* PyInterp.focusOutEvent
-        def focusOutEvent(self, event):
+        def focusOutEvent(self, event: QtGui.QFocusEvent) -> None:
             # set stdout+stderr properly
             QtWidgets.QTextEdit.focusOutEvent(self, event)
             sys.stdout = g.user_dict['old_stdout']

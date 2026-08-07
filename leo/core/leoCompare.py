@@ -748,7 +748,9 @@ def diffMarkedNodes(event: LeoKeyEvent | None = None) -> None:
 # @+node:ekr.20180213104627.1: *3* diff_leo_files_helper
 def diff_leo_files_helper(event: LeoKeyEvent | None, title: str, visible: bool) -> None:
     """Prompt for a list of Leo files to open."""
-    c = event and event.get('c')
+    if not event:
+        return
+    c = event.get('c')
     if not c:
         return
     filetypes = [

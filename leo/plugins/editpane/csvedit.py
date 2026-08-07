@@ -324,7 +324,7 @@ class ListTable(QtCore.QAbstractTableModel):
 
     # @+node:ekr.20211210174103.8: *3* data
     # This function must exist, but it appears to hide the self._data array!
-    def data(self, index, role):  # ty: ignore[invalid-method-override]
+    def data(self, index, role):
         if role in (ItemDataRole.DisplayRole, ItemDataRole.EditRole):  # #2347
             return self._data[index.row()][index.column()]
         return None
@@ -357,7 +357,7 @@ class ListTable(QtCore.QAbstractTableModel):
         return text
 
     # @+node:ekr.20211210174103.10: *3* setData
-    def setData(self, index, value, role):  # ty: ignore[invalid-method-override]
+    def setData(self, index, value, role):
         self._data[index.row()][index.column()] = value
         self.dataChanged.emit(index, index)
         return True
@@ -569,7 +569,7 @@ class LEP_CSVEdit(QtWidgets.QWidget):
         self.ui.table.setFocus(Qt.OtherFocusReason)
 
     # @+node:ekr.20211210174103.19: *3* move
-    def move(self, name):  # ty: ignore[invalid-method-override]
+    def move(self, name):
         self.insert(name, move=True)
 
     # @+node:ekr.20211210174103.20: *3* prev_tbl
@@ -589,13 +589,13 @@ class LEP_CSVEdit(QtWidgets.QWidget):
         self.update_state()
 
     # @+node:ekr.20211210174103.21: *3* focusInEvent
-    def focusInEvent(self, event: QtGui.QFocusEvent) -> None:  # ty: ignore[invalid-method-override]
+    def focusInEvent(self, event: QtGui.QFocusEvent) -> None:
         QtWidgets.QWidget.focusInEvent(self, event)
         DBG("focusin()")
         self.lep.edit_widget_focus()
 
     # @+node:ekr.20211210174103.22: *3* focusOutEvent
-    def focusOutEvent(self, event: QtGui.QFocusEvent) -> None:  # ty: ignore[invalid-method-override]
+    def focusOutEvent(self, event: QtGui.QFocusEvent) -> None:
         QtWidgets.QWidget.focusOutEvent(self, event)
         DBG("focusout()")
 

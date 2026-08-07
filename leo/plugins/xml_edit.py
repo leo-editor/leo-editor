@@ -340,7 +340,7 @@ def xml2leo(event, from_string=None):
             xml_.docinfo.encoding,
         )
     if NSMAP:
-        for k in sorted(NSMAP):
+        for k in sorted(NSMAP, key=lambda k: k or ''):
             if k:
                 nd.b += "%s: %s\n" % (k, NSMAP[k])
             else:

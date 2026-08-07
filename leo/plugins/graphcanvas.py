@@ -1132,28 +1132,13 @@ class graphcanvasController:
             return
         v = self.node[self.lastNodeItem]
         p = self.c.vnode2position(v)
-        if self.c.positionExists(p):
+        if p and self.c.positionExists(p):
             self.internal_select = True
             self.c.selectPosition(p)
 
     # @+node:tbrown.20110205084504.15370: *3* scale_centers
     def scale_centers(self, direction):
         direction = 0.9 if direction < 0 else 1.1
-
-        minx = maxx = miny = maxy = None
-
-        for i in self.nodeItem:
-            if i.u['_bklnk']['x'] < minx or minx is None:
-                minx = i.u['_bklnk']['x']
-            if i.u['_bklnk']['x'] > maxx or maxx is None:
-                maxx = i.u['_bklnk']['x']
-            if i.u['_bklnk']['y'] < miny or miny is None:
-                miny = i.u['_bklnk']['y']
-            if i.u['_bklnk']['y'] > maxy or maxy is None:
-                maxy = i.u['_bklnk']['y']
-
-        midx = (minx + maxx) / 2.0
-        midy = (miny + maxy) / 2.0
 
         bbox = self.ui.canvas.itemsBoundingRect()
         midx = bbox.center().x()

@@ -1046,7 +1046,8 @@ class ViewRenderedController(QtWidgets.QWidget):
             self.gs = QtWidgets.QGraphicsScene(splitter)
             self.gv = QtWidgets.QGraphicsView(self.gs)
             w = self.w = self.gv.viewport()  # A QWidget
-            self.embed_widget(w)
+            if w:
+                self.embed_widget(w)
 
         c.executeScript(
             script=s,
@@ -1077,7 +1078,9 @@ class ViewRenderedController(QtWidgets.QWidget):
         if not s.strip():
             return
         lines = g.splitLines(s) or []
-        fn = lines and lines[0].strip()
+        if not lines:
+            return
+        fn = lines[0].strip()
         if not fn:
             return
         w = self.get_base_text_widget()

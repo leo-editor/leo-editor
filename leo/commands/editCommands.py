@@ -4173,7 +4173,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     def clearNodeUas(self, event: LeoKeyEvent | None = None) -> None:
         """Clear the uA's in the selected VNode."""
         c = self.c
-        p = c and c.p
+        p = c.p
         u = c.undoer
         if p and p.v.u:
             bunch = u.beforeChangeUA(p)

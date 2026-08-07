@@ -921,7 +921,7 @@ class EmergencyDialog:
             underline = d.get("underline", 0)
             command = d.get("command", None)
             bd = 4 if isDefault else 2
-            b = Tk.Button(f, width=6, text=text, bd=bd, underline=underline, command=command)
+            b = Tk.Button(f, width=6, text=text, bd=bd, underline=underline, command=command or '')
             b.pack(side="left", padx=5, pady=10)
             buttonList.append(b)
             if isDefault and command:
@@ -2911,7 +2911,7 @@ def objToString(
         if obj:
             result_list = ['{\n']
             try:
-                keys = sorted(obj)
+                keys = sorted(obj, key=str)
             except TypeError:  # Unsortable keys.
                 keys = obj.keys()  # type:ignore
             for key in keys:
@@ -4120,7 +4120,7 @@ def readlineForceUnixNewline(f: IO, fileName: str = '') -> str:
     except UnicodeDecodeError:
         g.trace(f"UnicodeDecodeError: {fileName}", f, g.callers())
         s = ''
-    if len(s) >= 2 and s[-2] == "\r" and s[-1] == "\n":
+    if s.endswith("\r\n"):
         s = s[0:-2] + "\n"
     return s
 
@@ -5633,7 +5633,7 @@ def enableIdleTimeHook(*args: Args, **kwargs: KWargs) -> None:
 
 
 # @+node:ekr.20140825042850.18410: *3* g.IdleTime
-def IdleTime(handler: Callable, delay: int = 500, tag: str = '') -> QtIdleTime | None:
+def IdleTime(handler: Callable | None, delay: int = 500, tag: str = '') -> QtIdleTime | None:
     """
     A thin wrapper for the LeoQtGui.IdleTime class.
 

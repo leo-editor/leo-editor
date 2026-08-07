@@ -80,10 +80,10 @@ def dump_gnx_dict(event: LeoKeyEvent | None = None) -> None:
 # @+node:felix.20220618222639.1: ** class SetEncoder
 class SetJSONEncoder(json.JSONEncoder):
     # Used to encode JSON in leojs files
-    def default(self, obj: object) -> Value:
-        if isinstance(obj, set):
-            return list(obj)
-        return json.JSONEncoder.default(self, obj)
+    def default(self, o: object) -> Value:
+        if isinstance(o, set):
+            return list(o)
+        return json.JSONEncoder.default(self, o)
 
 
 # @+node:ekr.20060918164811: ** class BadLeoFile
