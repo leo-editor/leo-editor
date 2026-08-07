@@ -19,6 +19,7 @@ appear in Leo.
 # @+<< imports >>
 # @+node:ekr.20050218024153: ** << imports >> (xemacs.py)
 import os
+import subprocess
 import sys
 from typing import Any
 from leo.core import leoGlobals as g
@@ -92,7 +93,7 @@ def open_in_emacs_helper(c, p):
             # efc = g.app.externalFilesController
             # if efc: efc.forget_path(path)
             os.remove(path)
-            os.system(emacs_cmd)
+            subprocess.run(emacs_cmd, shell=True, check=False)
         v.OpenWithOldBody = v.b  # Remember the old contents
         # open the node in emacs (note the space after _emacs_cmd)
         # data = "os.spawnl", emacs_cmd, None
@@ -100,7 +101,7 @@ def open_in_emacs_helper(c, p):
         c.openWith(d=d)
     else:
         # Reopen the old temp file.
-        os.system(emacs_cmd)
+        subprocess.run(emacs_cmd, shell=True, check=False)
 
 
 # @+node:ekr.20120315101404.9747: ** g.command('emacs-open-node')

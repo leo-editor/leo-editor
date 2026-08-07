@@ -6,6 +6,7 @@
 # @+node:ekr.20220826122759.1: ** << commanderHelpCommands imports & annotations >>
 from __future__ import annotations
 import os
+import subprocess
 import sys
 import time
 from typing import TYPE_CHECKING
@@ -376,9 +377,9 @@ def openPythonWindow(self: Self, event: LeoKeyEvent | None = None) -> None:
     idle = g.os_path_join(idle_path, 'idle.py')
     args = [sys.executable, idle]
     if 1:  # Use present environment.
-        os.spawnv(os.P_NOWAIT, sys.executable, args)
+        subprocess.Popen(args)
     else:  # Use a pristine environment.
-        os.spawnve(os.P_NOWAIT, sys.executable, args, os.environ)
+        subprocess.Popen(args, env=os.environ)
 
 
 # @+node:ekr.20131213072223.19532: ** c_help.selectAtSettingsNode

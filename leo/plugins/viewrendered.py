@@ -201,6 +201,7 @@ from collections.abc import Callable
 import os
 from pathlib import Path
 import shutil
+import subprocess
 import sys
 import textwrap
 from typing import Any, TYPE_CHECKING
@@ -1480,8 +1481,10 @@ class ViewRenderedController(QtWidgets.QWidget):
         with open("temp.plantuml", "w") as f:
             f.write(s)
         pth_plantuml_jar = "~/.leo"
-        os.system(
-            "cat temp.plantuml | java -jar %s/plantuml.jar -pipe > %s" % (pth_plantuml_jar, path)
+        subprocess.run(
+            "cat temp.plantuml | java -jar %s/plantuml.jar -pipe > %s" % (pth_plantuml_jar, path),
+            shell=True,
+            check=False,
         )
         template = self.image_template % (path)
         template = textwrap.dedent(template).strip()

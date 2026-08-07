@@ -472,7 +472,7 @@ class ExternalFilesController:
                 filename = g.os_path_basename(arg)
                 command = f"os.spawnl({arg},{filename},{fn})"
                 if not testing:
-                    os.spawnl(os.P_NOWAIT, arg, filename, fn)
+                    subprocess.Popen([filename, fn], executable=arg)
             elif kind == 'os.spawnv':
                 filename = os.path.basename(arg_tuple[0])
                 vtuple = arg_tuple[1:]
@@ -482,7 +482,7 @@ class ExternalFilesController:
                 vtuple.append(fn)
                 command = f"os.spawnv({vtuple})"
                 if not testing:
-                    os.spawnv(os.P_NOWAIT, arg[0], vtuple)
+                    subprocess.Popen(vtuple, executable=arg_tuple[0])
             elif kind == 'subprocess.Popen':
                 popen_arg: list | str = (
                     self.join(arg, fn) if os.name == 'nt' else
