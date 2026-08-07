@@ -5,12 +5,15 @@
 import glob
 import importlib
 import textwrap
+from unittest import mock
+import pytest
 from leo.core import leoGlobals as g
 from leo.core.leoJupytext import JupytextManager
 from leo.core.leoNodes import Position
 from leo.core.leoTest2 import LeoUnitTest
 from leo.plugins.importers.java import Java_Importer
 from leo.plugins.importers.python import Python_Importer
+from leo.plugins.importers.python_ts import Python_TreeSitter_Importer
 from leo.plugins.importers.c import C_Importer
 from leo.plugins.importers import coffeescript, javascript, markdown, otl
 
@@ -4410,6 +4413,180 @@ class TestPython(BaseTestImporter):
             ),
         )  # fmt: skip
         self.new_run_test(s, expected_results)
+
+    # @-others
+
+
+# @+node:vv.20260807091500.1: ** class TestPythonTreeSitter (BaseTestImporter)
+class TestPythonTreeSitter(BaseTestImporter):
+    """
+    Tests of Python_TreeSitter_Importer (#4839): python.py's do_import()
+    uses this importer instead of the regex-based Python_Importer when
+    tree-sitter and the python grammar are both installed.
+    """
+
+    ext = '.py'
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        if not Python_TreeSitter_Importer.is_available():
+            pytest.skip('tree-sitter and/or tree-sitter-python not installed')
+
+    # @+others
+    # @+node:vv.20260807091500.2: *3* TestPythonTreeSitter.compare_to_regex_importer
+    def compare_to_regex_importer(self, s: str) -> None:
+        """Import s with both importers directly (bypassing dispatch) and assert identical outlines."""
+        c = self.c
+        s = textwrap.dedent(s).lstrip()
+
+        regex_root = c.rootPosition().insertAsLastChild()
+        regex_root.h = '@auto regex.py'
+        Python_Importer(c).import_from_string(regex_root, s)
+
+        ts_root = c.rootPosition().insertAsLastChild()
+        ts_root.h = '@auto ts.py'
+        Python_TreeSitter_Importer(c).import_from_string(ts_root, s)
+
+        def dump(p: Position) -> list:
+            return [(z.level() - p.level(), z.h, z.b) for z in p.self_and_subtree()][1:]
+
+        regex_result, ts_result = dump(regex_root), dump(ts_root)
+        self.assertEqual(
+            [(lvl, h) for lvl, h, b in regex_result],
+            [(lvl, h) for lvl, h, b in ts_result],
+            msg='headlines differ',
+        )
+        self.assertEqual(
+            [b for _, _, b in regex_result],
+            [b for _, _, b in ts_result],
+            msg='bodies differ',
+        )
+
+    # @+node:vv.20260807091500.3: *3* TestPythonTreeSitter.test_matches_regex_importer_basic
+    def test_matches_regex_importer_basic(self):
+        self.compare_to_regex_importer(
+            '''
+            """Module docstring."""
+            import os
+
+            CONST = "fake def not_a_func(): pass"
+
+            def top_level(a, b):
+                """A top-level function."""
+                def helper(x):
+                    return x + 1
+                return helper(a) + b
+
+
+            class Foo:
+                """Foo's docstring."""
+
+                def method_one(self, x):
+                    return x * 2
+
+                def method_two(self):
+                    def nested():
+                        pass
+                    return nested()
+
+                class Inner:
+                    def inner_method(self):
+                        pass
+
+
+            @some_decorator
+            def decorated():
+                pass
+            '''
+        )
+
+    # @+node:vv.20260807091500.4: *3* TestPythonTreeSitter.test_matches_regex_importer_tricky
+    def test_matches_regex_importer_tricky(self):
+        """Multi-line signature, f-string/dict braces, and a docstring containing fake def/class text."""
+        self.compare_to_regex_importer(
+            '''
+            import os
+
+            def multiline_sig(
+                a,
+                b,
+                *,
+                c=None,
+            ):
+                d = {
+                    "class Fake:": 1,
+                    "def fake(): pass": 2,
+                }
+                return d
+
+            class Weird:
+                def f(self, x):
+                    y = f"{x:{width}}"
+                    z = {1: 2, 3: [4, 5, {6: 7}]}
+                    return y, z
+
+                # a trailing comment
+                def g(self):
+                    """
+                    def not_a_real_def():
+                        class NotARealClass:
+                            pass
+                    """
+                    return 1
+            '''
+        )
+
+    # @+node:vv.20260807091500.5: *3* TestPythonTreeSitter.test_trailing_non_block_code_not_absorbed
+    def test_trailing_non_block_code_not_absorbed(self):
+        """
+        A trailing `if __name__ == '__main__':` after the last def must stay
+        out of that def's body, not get silently absorbed into it.
+        """
+        self.compare_to_regex_importer(
+            '''
+            class TracerCore:
+
+                def start(self):
+                    """Start this tracer."""
+
+                def stop(self):
+                    """Stop this tracer."""
+
+            # About main
+            def main():
+                pass
+
+            if __name__ == '__main__':
+                main()
+            '''
+        )
+
+    # @+node:vv.20260807091500.6: *3* TestPythonTreeSitter.test_do_import_dispatches_to_tree_sitter
+    def test_do_import_dispatches_to_tree_sitter(self):
+        """python.py's do_import() must actually use Python_TreeSitter_Importer by default."""
+        c = self.c
+        with mock.patch.object(
+            Python_TreeSitter_Importer,
+            'import_from_string',
+            autospec=True,
+        ) as spy:
+            from leo.plugins.importers.python import do_import
+
+            parent = c.rootPosition().insertAsLastChild()
+            do_import(c, parent, 'def f():\n    pass\n')
+            spy.assert_called_once()
+
+    # @+node:vv.20260807091500.7: *3* TestPythonTreeSitter.test_do_import_falls_back_when_unavailable
+    def test_do_import_falls_back_when_unavailable(self):
+        """When tree-sitter isn't available, do_import() must still work, via Python_Importer."""
+        c = self.c
+        with mock.patch.object(Python_TreeSitter_Importer, 'is_available', return_value=False):
+            from leo.plugins.importers.python import do_import
+
+            parent = c.rootPosition().insertAsLastChild()
+            do_import(c, parent, 'def f():\n    pass\n')
+            self.assertEqual(parent.firstChild().h, 'function: f')
 
     # @-others
 
