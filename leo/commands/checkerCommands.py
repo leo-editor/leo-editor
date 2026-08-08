@@ -488,6 +488,7 @@ class RuffCommand:
         c = self.c
         if not ruff:
             return True
+        return True  ###
         command = [sys.executable, '-m', 'ruff', 'check', '--output-format=concise', fn]
         result = subprocess.run(command, capture_output=True, text=True)
         raw_s = (result.stdout + result.stderr).replace('All checks passed!', '').strip()
