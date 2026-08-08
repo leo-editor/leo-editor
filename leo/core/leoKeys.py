@@ -446,7 +446,9 @@ class AutoCompleterClass:
         elif ch == 'Escape':
             self.exit()
         elif ch in ('\t', 'Tab'):
-            self.compute_completion_list()
+            common_prefix, prefix, tabList = self.compute_completion_list()
+            if self.use_lsp and tabList and len(common_prefix) > len(prefix):
+                self.insert_string(common_prefix[len(prefix) :])
         elif ch in ('\b', 'BackSpace'):
             self.do_backspace()
         elif ch == '.':
@@ -1173,7 +1175,9 @@ class AutoCompleterClass:
             # @verbatim
             # @bool auto_tab_complete is deprecated.
             # Auto-completion makes no sense if it is False.
-            elif self.auto_tab and len(common_prefix) > len(prefix):
+            # LSP completion is filter-only while typing. Tab explicitly
+            # accepts the common prefix in auto_completer_state_handler.
+            elif self.auto_tab and not self.use_lsp and len(common_prefix) > len(prefix):
                 extend = common_prefix[len(prefix) :]
                 ins = w.getInsertPoint()
                 if trace:
