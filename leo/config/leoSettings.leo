@@ -486,6 +486,8 @@
 <v t="ekr.20051027175030"><vh>@bool autocomplete-brackets = False</vh></v>
 <v t="ekr.20060216170801"><vh>@bool enable-calltips-initially = False</vh></v>
 <v t="ekr.20110617081407.14760"><vh>@bool forbid-invalid-completions = False</vh></v>
+<v t=".20260808234509.1"><vh>@data language-servers</vh></v>
+<v t=".20260808234509.2"><vh>@bool use-lsp = False</vh></v>
 <v t="ekr.20180525053145.1"><vh>@bool use-jedi = False</vh></v>
 <v t="ekr.20110510071925.14589"><vh>@bool use-qcompleter = True</vh></v>
 </v>
@@ -2291,6 +2293,45 @@
 <v t="ekr.20260111055007.1"></v>
 </vnodes>
 <tnodes>
+<t tx=".20260808234509.1"># One 'language command args...' line per language (#4871).
+# language is Leo's OWN language name -- whatever c.getLanguage
+# returns for a node, which matches @language directive values and
+# leo/modes/&lt;name&gt;.py mode-file names. This sometimes diverges from
+# the LSP spec's textDocument.languageId (confirmed for markdown:
+# Leo says 'md', LSP says 'markdown' -- see
+# AutoCompleterClass._LSP_LANGUAGE_ID_OVERRIDES in leoKeys.py, which
+# translates for the wire protocol; this table's keys are always
+# Leo's names, not the LSP ones). command is a shell-style argv for
+# the LSP server to spawn -- split on whitespace, so quote no
+# arguments that themselves contain spaces.
+#
+# A language with no line here has no LSP server. 'off' as the
+# command explicitly disables a language, distinct from simply
+# omitting it (e.g. to turn off a language a broader/future default
+# would otherwise cover).
+#
+# Requires @bool use-lsp = True and the named server binaries
+# installed separately -- Leo does not bundle or install any LSP
+# server, and none of these binaries are committed to this repo.
+#
+# python: pip install ty
+python ty server
+#
+# md (markdown): self-contained native binary, no Node/JVM/.NET
+# runtime needed -- download marksman-linux-x64 (or the build for
+# your OS) from
+# https://github.com/artempyanykh/marksman/releases/latest, chmod +x
+# it, and put it on PATH as `marksman`. Note: unlike `ty`, marksman
+# indexes the *entire* workspace folder on startup, not just the
+# opened document -- fine for most repos (~30ms for ~750 files when
+# this was tested), but a real cost model difference on very large
+# monorepos.
+md marksman server
+</t>
+<t tx=".20260808234509.2">True: use LSP-backed completions, live diagnostics, and hover info
+(#4871) for languages configured in @data language-servers, instead of
+(or in addition to) jedi/codewise. Spike-status: opt-in and off by default.
+</t>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
 
 If False: Don't save the Leo file or any derived files when the external editor saves a file.</t>
@@ -10202,7 +10243,6 @@ de-hoist                            = Ctrl-Alt-Shift-h
 The OSX shortcuts posted by karstenw at the link below solved all of my keycode problems on a Mac:
 
 https://github.com/karstenw/leo-shortcuts-osx/blob/master/myLeoSettings.leo</t>
-<t tx="ekr.20161021095001.1">True: run Pyflakes on each saved file, but only if it has been changed.</t>
 <t tx="ekr.20161025090757.1">Leo&amp;Dist.leo</t>
 <t tx="ekr.20161121044950.1"># The headline must be: @outline-data tree-abbreviations
 
@@ -11507,7 +11547,6 @@ False: Use the default stylesheet at leo/plugins/viewrendered3.
 # xsltWithNodes.py
 # zenity_file_dialogs.py
 </t>
-<t tx="ekr.20221128115636.1">True: run flake8 on each saved file, but only if it has been changed.</t>
 <t tx="ekr.20230104130512.1"></t>
 <t tx="ekr.20230104150532.1"></t>
 <t tx="ekr.20230104150550.1"># Headlines starting with any of the following strings are not considered dubious.
@@ -11699,7 +11738,6 @@ vertical-thirds2
     │           │  body │       │
     └───────────┴───────┴───────┘
 </t>
-<t tx="ekr.20240924055407.1">True: run Pylint on each saved file, but only if it has been changed.</t>
 <t tx="ekr.20240926065158.1"># True: When saving a file, beautify external files using ruff format.
 </t>
 <t tx="ekr.20241012050620.1">True: Leo's git-diff command will diff .leo and .leojs files.</t>
@@ -12610,5 +12648,6 @@ paste-retaining-clones Paste Node As Clone
 <t tx="vitalije.20170811125150.1"></t>
 <t tx="vitalije.20190928173155.1"></t>
 <t tx="vitalije.20190928173236.1"></t>
+<t tx="vv.20260807130000.1"></t>
 </tnodes>
 </leo_file>

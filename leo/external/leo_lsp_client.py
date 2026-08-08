@@ -129,6 +129,16 @@ class LspClient:
         """False once the reader thread has seen EOF on the server's stdout."""
         return self._alive
 
+    @property
+    def start_error(self) -> Exception | None:
+        """The exception that failed the handshake, or None if it hasn't (yet) failed.
+
+        None while a cold start is still in progress -- check is_ready
+        first to tell "still starting" apart from "will never be ready"
+        (e.g. the configured command doesn't exist). See get_client.
+        """
+        return self._start_error if self._ready.is_set() else None
+
     def start(self, timeout: float = 10.0) -> None:
         """Spawn the server and perform the initialize/initialized handshake.
 
@@ -138,15 +148,21 @@ class LspClient:
         if self._started:
             return
         self._started = True
-        self.proc = subprocess.Popen(
-            self.command,
-            stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.DEVNULL,
-            cwd=self.root_path,  # See root_uri/workspace_folders note below.
-        )
-        threading.Thread(target=self._read_loop, daemon=True).start()
         try:
+            # Popen itself (e.g. the configured command isn't on PATH) must
+            # fail into the same _start_error/_ready bookkeeping as a
+            # handshake failure below -- it used to be outside this
+            # try/finally, so a bad command silently left is_ready False
+            # forever with start_error still None, indistinguishable from
+            # "still cold-starting" (#4871 follow-up).
+            self.proc = subprocess.Popen(
+                self.command,
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.DEVNULL,
+                cwd=self.root_path,  # See root_uri/workspace_folders note below.
+            )
+            threading.Thread(target=self._read_loop, daemon=True).start()
             self.request(
                 types.INITIALIZE,
                 types.InitializeParams(

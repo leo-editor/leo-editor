@@ -230,6 +230,7 @@ class AutoCompleterClass:
         self._lsp_bridge: _LspBridge | None = None
         self._lsp_generation = 0
         self.lsp_change_serial = 0  # Debounce serial for schedule_lsp_diagnostics.
+        self._lsp_warned_commands: set[str] = set()  # Commands already reported as unlaunchable.
         self.reloadSettings()
 
     def reloadSettings(self) -> None:
@@ -239,10 +240,67 @@ class AutoCompleterClass:
         self.use_jedi = c.config.getBool('use-jedi', False)
         # Spike for #4871: LSP-backed completions. See ac.get_lsp_completions.
         self.use_lsp = c.config.getBool('use-lsp', False)
-        self.lsp_command = c.config.getString('lsp-command') or 'ty server'
+        self.lsp_language_servers = self._parse_language_servers(c)
         # True: show results in autocompleter tab.
         # False: show results in a QCompleter widget.
         self.use_qcompleter = c.config.getBool('use-qcompleter', False)
+
+    def _parse_language_servers(self, c: Cmdr) -> dict[str, list[str] | None]:
+        """
+        Parse @data language-servers (#4871): one 'language command args...'
+        pair per line, e.g. 'python ty server'. A language with no line here
+        has no LSP server. 'off' as the command explicitly disables a
+        language, distinct from simply omitting it.
+        """
+        servers: dict[str, list[str] | None] = {}
+        for line in c.config.getData('language-servers') or []:
+            parts = line.split()
+            if len(parts) < 2:
+                continue
+            language, command = parts[0], parts[1:]
+            servers[language] = None if command == ['off'] else command
+        return servers
+
+    def lsp_command_for(self, language: str) -> list[str] | None:
+        """Return the configured LSP server command for `language`, or None if none/disabled."""
+        return self.lsp_language_servers.get(language)
+
+    # Leo's own language names (c.getLanguage / @language, matching
+    # leo/modes/*.py mode-file names) occasionally diverge from the LSP
+    # spec's textDocument.languageId list -- confirmed for markdown, where
+    # Leo says 'md' (leo/modes/md.py) but the LSP spec says 'markdown'.
+    # Add entries here only where the two are confirmed to actually differ
+    # for a language you've wired a server for; most already match (e.g.
+    # 'python', 'typescript', 'rust').
+    _LSP_LANGUAGE_ID_OVERRIDES = {'md': 'markdown'}
+
+    def _lsp_language_id(self, root: Position) -> str:
+        """Return the LSP textDocument.languageId for root's @language."""
+        language = self.c.getLanguage(root)
+        return self._LSP_LANGUAGE_ID_OVERRIDES.get(language, language)
+
+    def _get_lsp_client(self, root: Position, abs_path: str) -> leo_lsp_client.LspClient | None:
+        """
+        Return a ready LspClient for `root`'s @language, or None if LSP
+        can't be used for it right now: no server configured for the
+        language, a cold start still in progress (self-heals within a
+        keystroke or two), or the configured command failed to launch
+        (e.g. binary not on PATH) -- logged once per command, not on every
+        call, since callers here run on every keystroke/debounce tick.
+        """
+        c = self.c
+        command = self.lsp_command_for(c.getLanguage(root))
+        if not command:
+            return None
+        client = leo_lsp_client.get_client(command, os.path.dirname(abs_path))
+        if not client.is_ready:
+            if client.start_error is not None:
+                key = ' '.join(command)
+                if key not in self._lsp_warned_commands:
+                    self._lsp_warned_commands.add(key)
+                    g.es_print(f"LSP: could not start {key!r}: {client.start_error!r}")
+            return None
+        return client
 
     # @+node:ekr.20061031131434.8: *3* ac.Top level
     # @+node:ekr.20061031131434.9: *4* ac.autoComplete
@@ -912,15 +970,11 @@ class AutoCompleterClass:
         truncated_source = ''.join(truncated_lines)
 
         abs_path = g.fullPath(c, root)
-        try:
-            client = leo_lsp_client.get_client(self.lsp_command.split(), os.path.dirname(abs_path))
-        except Exception as exception:
-            g.es_print(f"LSP: could not start server: {exception!r}")
+        client = self._get_lsp_client(root, abs_path)
+        if client is None:
             return []
         if client.on_diagnostics is None:
             client.on_diagnostics = self._make_lsp_diagnostics_pusher()
-        if not client.is_ready:
-            return []  # Cold start or crashed-server respawn in progress; self-heals.
 
         bridge = self._ensure_lsp_bridge()
         if bridge is None:
@@ -929,6 +983,7 @@ class AutoCompleterClass:
         self._lsp_generation += 1
         generation = self._lsp_generation
         uri = leo_lsp_client.path_to_uri(abs_path)
+        language_id = self._lsp_language_id(root)
 
         def deliver(items: list) -> None:
             # items are typed lsprotocol.types.CompletionItem objects
@@ -945,10 +1000,10 @@ class AutoCompleterClass:
             # back so the next publishDiagnostics notification -- which
             # on_diagnostics relays to the GUI thread -- reflects the
             # truth.
-            client.sync_document(uri, source)
+            client.sync_document(uri, source, language_id=language_id)
             bridge.completions_ready.emit(generation, prefix, names)
 
-        client.sync_document(uri, truncated_source)
+        client.sync_document(uri, truncated_source, language_id=language_id)
         client.completions_async(uri, line=target_line_no, character=column, callback=deliver)
         return []
 
@@ -1050,13 +1105,18 @@ class AutoCompleterClass:
         root, fileName = goto.find_root(p)
         if not root or not fileName:
             return
-        source = goto.get_external_file_with_sentinels(root=root)
         abs_path = g.fullPath(c, root)
+        client = self._get_lsp_client(root, abs_path)
+        if client is None:
+            return
+        source = goto.get_external_file_with_sentinels(root=root)
         uri = leo_lsp_client.path_to_uri(abs_path)
         try:
-            client = leo_lsp_client.get_client(self.lsp_command.split(), os.path.dirname(abs_path))
-            client.sync_document(uri, source)
+            client.sync_document(uri, source, language_id=self._lsp_language_id(root))
         except Exception as exception:
+            # A ready client can still fail here if the server crashes
+            # mid-request -- rare, unlike the launch failures _get_lsp_client
+            # already filters out silently-except-once above.
             g.es_print(f"LSP: diagnostic sync failed: {exception!r}")
             return
         # publishDiagnostics is asynchronous. Repaint quickly when possible,
@@ -1101,9 +1161,11 @@ class AutoCompleterClass:
             - (len(local_line) - len(local_line.lstrip())),
         )
         abs_path = g.fullPath(c, root)
+        client = self._get_lsp_client(root, abs_path)
+        if client is None:
+            return ''
         uri = leo_lsp_client.path_to_uri(abs_path)
         try:
-            client = leo_lsp_client.get_client(self.lsp_command.split(), os.path.dirname(abs_path))
             return client.hover(uri, target_row, column)
         except Exception:
             return ''
@@ -1148,12 +1210,10 @@ class AutoCompleterClass:
                 break
 
         abs_path = g.fullPath(c, root)
-        uri = leo_lsp_client.path_to_uri(abs_path)
-        try:
-            client = leo_lsp_client.get_client(self.lsp_command.split(), os.path.dirname(abs_path))
-        except Exception as exception:
-            g.es_print(f"LSP: could not read diagnostics: {exception!r}")
+        client = self._get_lsp_client(root, abs_path)
+        if client is None:
             return []
+        uri = leo_lsp_client.path_to_uri(abs_path)
         results = []
         for d in client.diagnostics.get(uri, []):
             # d is a typed lsprotocol.types.Diagnostic (leo_lsp_client
