@@ -488,7 +488,21 @@ class RuffCommand:
         c = self.c
         if not ruff:
             return True
-        command = [sys.executable, '-m', 'ruff', 'check', '--output-format=concise', fn]
+        command = [
+            sys.executable,
+            '-m',
+            'ruff',
+            'check',
+            # Scripts get c, g and p injected into their namespace at exec time
+            # (see executeScriptHelper), so ruff can't see them as defined.
+            # --isolated skips any ancestor pyproject.toml/ruff.toml so this
+            # allowance can't leak into (or be overridden by) project-wide config.
+            '--isolated',
+            '--config',
+            'builtins=["c", "g", "p"]',
+            '--output-format=concise',
+            fn,
+        ]
         result = subprocess.run(command, capture_output=True, text=True)
         raw_s = (result.stdout + result.stderr).replace('All checks passed!', '').strip()
         # Strip out cruft.
