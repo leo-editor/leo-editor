@@ -170,6 +170,27 @@ def cmd(name: str) -> Callable:
     return g.new_cmd_decorator(name, ['c', 'k'])
 
 
+# @+node:spike4871.20260808140000.1: ** class _LspBridge (#4871)
+class _LspBridge(QtCore.QObject):
+    """
+    Qt-thread bridge for leo_lsp_client's background reader/timer threads
+    (#4871).
+
+    LspClient invokes request_async/completions_async callbacks -- and
+    the on_diagnostics hook -- from its own reader thread (or a timer
+    thread on timeout), never from the GUI thread. Qt widgets may only be
+    touched from the thread that owns them. Emitting a signal from any
+    thread and connecting it to a slot on a QObject that lives on the GUI
+    thread makes Qt auto-queue delivery onto that thread's event loop, so
+    the connected slot always runs safely there, however the signal was
+    emitted. This class carries no state of its own; it exists only to
+    give AutoCompleterClass's slots a QObject to connect signals to.
+    """
+
+    completions_ready = QtCore.pyqtSignal(int, str, list)  # generation, prefix, labels
+    diagnostics_ready = QtCore.pyqtSignal(str)  # uri
+
+
 # @+node:ekr.20061031131434.4: ** class AutoCompleterClass
 class AutoCompleterClass:
     """A class that inserts autocompleted and calltip text in text widgets.
@@ -202,7 +223,13 @@ class AutoCompleterClass:
         # Codewise pre-computes...
         self.codewiseSelfList: list[str] = []  # The (global) completions for "self."
         self.completionsDict: dict[str, list[str]] = {}  # keys: prefixes. values: completion lists.
-        self.lsp_change_serial = 0
+        # LSP support (#4871). _lsp_bridge is created lazily (see
+        # ac.get_lsp_completions) because it needs a live QApplication.
+        # _lsp_generation guards against a slow async response landing
+        # after the user has moved on to a different prefix/node/file.
+        self._lsp_bridge: _LspBridge | None = None
+        self._lsp_generation = 0
+        self.lsp_change_serial = 0  # Debounce serial for schedule_lsp_diagnostics.
         self.reloadSettings()
 
     def reloadSettings(self) -> None:
@@ -586,6 +613,10 @@ class AutoCompleterClass:
         """Return lsp, jedi, or codewise completions."""
         d = self.completionsDict
         if self.use_lsp:
+            # get_lsp_completions always returns [] itself (#4871): the
+            # real answer, if any, arrives later via
+            # _on_lsp_completions_ready and overwrites d[prefix] then.
+            # get_leo_completions is what's actually shown this keystroke.
             aList = self.get_lsp_completions(prefix) or self.get_leo_completions(prefix)
             d[prefix] = aList
             return aList
@@ -807,11 +838,11 @@ class AutoCompleterClass:
             prefix = '.'.join(aList[:-1]) + '.'
         return s if s.startswith(prefix) else prefix + s
 
-    # @+node:spike4871.20260808120000.1: *5* ac.get_lsp_completions (spike, #4871)
+    # @+node:spike4871.20260808120000.1: *5* ac.get_lsp_completions (#4871)
     def get_lsp_completions(self, prefix: str) -> list[str]:
         """
-        Spike for #4871: return completions from an LSP server (default:
-        `ty server`) instead of jedi.
+        Return completions from an LSP server (default: `ty server`)
+        instead of jedi.
 
         Reuses get_jedi_completions' source-reconstruction and
         position-mapping: turning a node-local row/col into a file-global
@@ -821,6 +852,18 @@ class AutoCompleterClass:
         Only handles @file-backed nodes: an LSP server wants a real
         `file://` URI, per the design sketched in #4871 (no virtual-document
         scheme). Falls back to get_leo_completions otherwise.
+
+        Non-blocking (#4871): the LSP request always happens in the
+        background, so this method itself never has the real answer to
+        return -- it always returns [] here, which sends get_completions
+        to get_leo_completions for whatever's shown *this* keystroke. When
+        the server responds, _on_lsp_completions_ready refreshes the
+        completion popup in place via the same code path
+        compute_completion_list already uses, so the real, LSP-sourced
+        list replaces the provisional one a moment later without blocking
+        the GUI thread. A cold server (initial indexing) or an unready
+        client after Leo just started behaves the same way: no completions
+        this keystroke, real ones within a keystroke or two.
         """
         c = self.c
         w = c.frame.body.wrapper
@@ -874,21 +917,120 @@ class AutoCompleterClass:
         except Exception as exception:
             g.es_print(f"LSP: could not start server: {exception!r}")
             return []
+        if client.on_diagnostics is None:
+            client.on_diagnostics = self._make_lsp_diagnostics_pusher()
+        if not client.is_ready:
+            return []  # Cold start or crashed-server respawn in progress; self-heals.
+
+        bridge = self._ensure_lsp_bridge()
+        if bridge is None:
+            return []  # No live QApplication (non-Qt gui, or headless test) -- nothing to deliver to.
+
+        self._lsp_generation += 1
+        generation = self._lsp_generation
         uri = leo_lsp_client.path_to_uri(abs_path)
+
+        def deliver(items: list) -> None:
+            # items are typed lsprotocol.types.CompletionItem objects
+            # (leo_lsp_client parses the wire response through lsprotocol).
+            # Runs on LspClient's reader/timer thread -- never touch
+            # widgets here. Only pure data wrangling, then hand off via
+            # the bridge signal, which Qt safely re-delivers on the GUI
+            # thread (see _LspBridge's docstring).
+            names = sorted({it.label for it in items if it.label.startswith(typed)})
+            # The server's last-known document is now the *truncated*
+            # copy, which would make diagnostics lie about the missing
+            # tail of this line (e.g. flag an unmatched paren that only
+            # exists because we cut the line short). Push the real source
+            # back so the next publishDiagnostics notification -- which
+            # on_diagnostics relays to the GUI thread -- reflects the
+            # truth.
+            client.sync_document(uri, source)
+            bridge.completions_ready.emit(generation, prefix, names)
+
         client.sync_document(uri, truncated_source)
-        items = client.completions(uri, line=target_line_no, character=column)
-        names = sorted(
-            {it.get('label', '') for it in items if it.get('label', '').startswith(typed)}
-        )
-        # The server's last-known document is now the *truncated* copy, which
-        # would make diagnostics lie about the missing tail of this line
-        # (e.g. flag an unmatched paren that only exists because we cut the
-        # line short). Push the real source back so the next
-        # publishDiagnostics notification -- which show_lsp_diagnostics reads,
-        # possibly one keystroke later since it's async -- reflects the truth.
-        client.sync_document(uri, source)
+        client.completions_async(uri, line=target_line_no, character=column, callback=deliver)
+        return []
+
+    # @+node:spike4871.20260808140000.2: *5* ac._ensure_lsp_bridge
+    def _ensure_lsp_bridge(self) -> _LspBridge | None:
+        """
+        Return this instance's _LspBridge, creating it on first use.
+
+        Deferred out of __init__ because constructing a QObject needs a
+        live QApplication, and AutoCompleterClass is created for every
+        gui, not just Qt ones (compare show_lsp_diagnostics' isinstance
+        check). Returns None if there's no QApplication to attach to,
+        e.g. under a non-Qt gui or in a headless test -- callers treat
+        that the same as "can't use LSP here right now".
+        """
+        if self._lsp_bridge is None and QtWidgets.QApplication.instance() is not None:
+            self._lsp_bridge = _LspBridge()
+            self._lsp_bridge.completions_ready.connect(self._on_lsp_completions_ready)
+            self._lsp_bridge.diagnostics_ready.connect(self._on_lsp_diagnostics_ready)
+        return self._lsp_bridge
+
+    # @+node:spike4871.20260808140000.3: *5* ac._make_lsp_diagnostics_pusher
+    def _make_lsp_diagnostics_pusher(self) -> Callable[[str, list], None]:
+        """
+        Return a callback for LspClient.on_diagnostics: relays a
+        publishDiagnostics push to the GUI thread via the bridge, so
+        squigglies can update on their own once a request that's already
+        in flight (e.g. get_lsp_completions' sync_document calls) causes
+        the server to publish new diagnostics -- not only right after a
+        completion request returns.
+
+        Runs on LspClient's reader thread; only touches the bridge (safe
+        from any thread -- see _LspBridge's docstring) and never widgets
+        directly.
+        """
+
+        def on_diagnostics(uri: str, diagnostics: list) -> None:
+            bridge = self._lsp_bridge  # Set by the time this can fire; never touch widgets here.
+            if bridge is not None:
+                bridge.diagnostics_ready.emit(uri)
+
+        return on_diagnostics
+
+    # @+node:spike4871.20260808140000.4: *5* ac._on_lsp_completions_ready
+    def _on_lsp_completions_ready(self, generation: int, prefix: str, names: list) -> None:
+        """
+        Qt slot (runs on the GUI thread): apply an LSP completions
+        response that arrived after get_lsp_completions already returned.
+
+        Two guards keep a slow response from clobbering newer state:
+        - generation must match the request that's still current, so a
+          response for a prefix/node/file the user has since left alone
+          doesn't reappear.
+        - the autocomplete state machine (auto_completer_state_handler)
+          must still be active, so a response arriving after the user
+          pressed Escape/Return doesn't reopen the completion popup.
+        """
+        if generation != self._lsp_generation:
+            return
+        if self.k.getState('auto-complete') != 1:
+            return
+        if names:
+            self.completionsDict[prefix] = [self.add_prefix(prefix, z) for z in names]
+        if self.get_autocompleter_prefix() == prefix:
+            self.compute_completion_list()
+
+    # @+node:spike4871.20260808140000.5: *5* ac._on_lsp_diagnostics_ready
+    def _on_lsp_diagnostics_ready(self, uri: str) -> None:
+        """
+        Qt slot (runs on the GUI thread): a publishDiagnostics push
+        arrived for `uri`. Redraw squigglies only if that's the @file
+        root of the node currently shown -- a push for some other file
+        the LSP server is also tracking shouldn't touch this body pane.
+        """
+        c = self.c
+        goto = c.gotoCommands
+        root, fileName = goto.find_root(c.p)
+        if not root or not fileName:
+            return
+        if leo_lsp_client.path_to_uri(g.fullPath(c, root)) != uri:
+            return
         self.show_lsp_diagnostics()
-        return [self.add_prefix(prefix, z) for z in names]
 
     # @+node:spike4871.20260808130000.3: *5* ac.schedule_lsp_diagnostics & helpers
     def schedule_lsp_diagnostics(self) -> None:
@@ -1014,18 +1156,19 @@ class AutoCompleterClass:
             return []
         results = []
         for d in client.diagnostics.get(uri, []):
-            rng = d.get('range', {})
-            start, end = rng.get('start', {}), rng.get('end', {})
-            srow, erow = start.get('line', -1), end.get('line', -1)
+            # d is a typed lsprotocol.types.Diagnostic (leo_lsp_client
+            # parses publishDiagnostics through lsprotocol).
+            start, end = d.range.start, d.range.end
+            srow, erow = start.line, end.line
             if not (n0 <= srow < n1 and n0 <= erow < n1):
                 continue  # Diagnostic belongs to another node in this file.
             results.append(
                 (
                     srow - n0,
-                    max(0, start.get('character', 0) - delta),
+                    max(0, start.character - delta),
                     erow - n0,
-                    max(0, end.get('character', 0) - delta),
-                    d.get('message', ''),
+                    max(0, end.character - delta),
+                    d.message,
                 )
             )
         return results
@@ -1042,6 +1185,8 @@ class AutoCompleterClass:
         if not isinstance(widget, QtWidgets.QTextEdit):
             return
         doc = widget.document()
+        if doc is None:
+            return
         selections = []
         diagnostics = self.get_lsp_diagnostics_for_node()
         for srow, scol, erow, ecol, message in diagnostics:

@@ -1360,6 +1360,14 @@ class LeoApp:
             if g.app.global_cacher:  # #1766.
                 if isinstance(g.app.global_cacher, GlobalCacher):
                     g.app.global_cacher.commit_and_close()
+        # #4871: terminate any `ty server` (or other @string lsp-command)
+        # processes spawned this session -- otherwise they outlive Leo.
+        try:
+            from leo.external import leo_lsp_client
+
+            leo_lsp_client.shutdown_all()
+        except Exception:
+            pass
         g.app.destroyAllOpenWithFiles()
 
         # Disable all further hooks and events.

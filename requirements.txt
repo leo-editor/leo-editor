@@ -38,6 +38,7 @@ docutils        # For Sphinx and rST plugins.
 # flexx           # leoflexx.py plugin.
 jedi            # For autocompletion.
 jupytext        # For paired .ipynb/.py files.
+lsprotocol      # Typed LSP messages for leo_lsp_client.py (#4871).
 markdown        # VR3 plugin.
 matplotlib      # VR3 plugin.
 # meta          # livecode.py plugin.
