@@ -455,21 +455,6 @@ class RuffCommand:
         bpm = g.app.backgroundProcessManager
         bpm.start_process(c, command, fn=fn, kind='ruff')
 
-    # @+node:vv.20260807120000.5: *3* ruff.run (entry)
-    def run(self, p: Position) -> None:
-        """Run ruff on all Python @<file> nodes in c.p's tree."""
-        c = self.c
-        if not ruff:
-            print('install ruff with `pip install ruff`')
-            return
-        root = p.copy()
-        # Make sure the parent of the leo directory is on sys.path.
-        path = os.path.normpath(os.path.join(g.app.loadDir, '..', '..'))
-        if path not in sys.path:
-            sys.path.insert(0, path)
-        roots = g.findRootsWithPredicate(c, root, predicate=None)
-        self.check_all(roots)
-
     # @+node:vv.20260807120000.6: *3* ruff.check_on_write (sync, for on-write checking)
     def check_on_write(self, root: Position) -> bool:
         """
@@ -486,11 +471,47 @@ class RuffCommand:
         fn = os.path.normpath(c.fullPath(root))
         command = [sys.executable, '-m', 'ruff', 'check', '--output-format=concise', fn]
         result = subprocess.run(command, capture_output=True, text=True)
-        s = (result.stdout + result.stderr).strip()
+        raw_s = (result.stdout + result.stderr).replace('All checks passed!', '').strip()
+        # Strip out cruft.
+        s = ''.join(z for z in g.splitLines(raw_s) if not z.startswith('Found')).strip()
         if s:
-            if not c.frame.log.put_html_links(s):
-                g.es(s)
+            c.frame.log.put_html_links(s)
         return result.returncode == 0
+
+    # @+node:ekr.20260808005852.1: *3* ruff.check_script_file
+    def check_script_file(self, fn: str) -> bool:
+        """
+        Run ruff synchronously the file. Return True if ruff reports no errors.
+
+        Used by execute-script.
+        """
+        c = self.c
+        if not ruff:
+            return True
+        command = [sys.executable, '-m', 'ruff', 'check', '--output-format=concise', fn]
+        result = subprocess.run(command, capture_output=True, text=True)
+        raw_s = (result.stdout + result.stderr).replace('All checks passed!', '').strip()
+        # Strip out cruft.
+        s = ''.join(z for z in g.splitLines(raw_s) if not z.startswith('Found')).strip()
+        s = s.replace(fn, c.p.h)  # A hack.
+        if s:
+            c.frame.log.put_html_links(s)
+        return result.returncode == 0
+
+    # @+node:vv.20260807120000.5: *3* ruff.run (entry)
+    def run(self, p: Position) -> None:
+        """Run ruff on all Python @<file> nodes in c.p's tree."""
+        c = self.c
+        if not ruff:
+            print('install ruff with `pip install ruff`')
+            return
+        root = p.copy()
+        # Make sure the parent of the leo directory is on sys.path.
+        path = os.path.normpath(os.path.join(g.app.loadDir, '..', '..'))
+        if path not in sys.path:
+            sys.path.insert(0, path)
+        roots = g.findRootsWithPredicate(c, root, predicate=None)
+        self.check_all(roots)
 
     # @-others
 

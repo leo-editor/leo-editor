@@ -1355,7 +1355,7 @@ class Commands:
                         namespace.update(script_gnx=script_p.gnx)
                     # We *always* execute the script with p = c.p.
                     callResult = c.executeScriptHelper(
-                        args or [], define_g, define_name, namespace, script
+                        args or [], define_g, define_name, language, namespace, script
                     )
                 except KeyboardInterrupt:
                     g.es('interrupted')
@@ -1380,6 +1380,7 @@ class Commands:
         args: list,
         define_g: bool,
         define_name: str,
+        language: str,
         namespace: dict,
         script: str,
     ) -> Value:
@@ -1404,6 +1405,20 @@ class Commands:
             g.inScript = g.app.inScript = True  # g.inScript is a synonym for g.app.inScript.
             if c.write_script_file:
                 scriptFile = self.writeScriptFile(script)
+                if (
+                    scriptFile
+                    and language == 'python'
+                    and not g.unitTesting
+                    and c.config.getBool('run-ruff-on-write', default=False)
+                ):
+                    from leo.commands import checkerCommands
+
+                    if checkerCommands.ruff:
+                        x = checkerCommands.RuffCommand(c)
+                        if not x.check_script_file(scriptFile):
+                            g.app.syntax_error_files.append(scriptFile)
+                            c.syntaxErrorDialog()
+                            return
                 exec(compile(script, scriptFile or '<string>', 'exec'), d)
             else:
                 exec(script, d)
