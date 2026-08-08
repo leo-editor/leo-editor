@@ -1406,12 +1406,9 @@ class Commands:
             if c.write_script_file:
                 scriptFile = self.writeScriptFile(script)
                 if (
-                    False
-                    and scriptFile
-                    and language == 'python'
-                    and not g.unitTesting
+                    scriptFile and language == 'python' and not g.unitTesting
                     and c.config.getBool('run-ruff-on-write', default=False)
-                ):
+                ):  # fmt: skip
                     from leo.commands import checkerCommands
 
                     if checkerCommands.ruff:
