@@ -19,7 +19,8 @@ from leo.core import leoGlobals as g
 from leo.external import codewise
 from leo.external import leo_lsp_client
 from leo.core.leoFrame import NullLog
-from leo.core.leoQt import QtWidgets
+from leo.core.leoQt import QtGui, QtWidgets
+from leo.core.leoQt import MoveMode, UnderlineStyle
 
 try:
     import jedi
@@ -864,7 +865,7 @@ class AutoCompleterClass:
         truncated_lines[target_line_no] = truncated_lines[target_line_no][:column] + '\n'
         truncated_source = ''.join(truncated_lines)
 
-        abs_path = os.path.abspath(fileName)
+        abs_path = g.fullPath(c, root)
         try:
             client = leo_lsp_client.get_client(self.lsp_command.split(), os.path.dirname(abs_path))
         except Exception:
@@ -875,7 +876,107 @@ class AutoCompleterClass:
         names = sorted(
             {it.get('label', '') for it in items if it.get('label', '').startswith(typed)}
         )
+        # The server's last-known document is now the *truncated* copy, which
+        # would make diagnostics lie about the missing tail of this line
+        # (e.g. flag an unmatched paren that only exists because we cut the
+        # line short). Push the real source back so the next
+        # publishDiagnostics notification -- which show_lsp_diagnostics reads,
+        # possibly one keystroke later since it's async -- reflects the truth.
+        client.sync_document(uri, source)
+        self.show_lsp_diagnostics()
         return [self.add_prefix(prefix, z) for z in names]
+
+    # @+node:spike4871.20260808130000.1: *5* ac.get_lsp_diagnostics_for_node
+    def get_lsp_diagnostics_for_node(self) -> list[tuple[int, int, int, int, str]]:
+        """
+        Spike for #4871: return (start_row, start_col, end_row, end_col,
+        message) tuples, in NODE-LOCAL coordinates, for whatever diagnostics
+        the LSP client currently has cached for c.p's @file root.
+
+        Doesn't talk to the server -- reads whatever the last
+        publishDiagnostics notification put in LspClient.diagnostics, so
+        it's only as fresh as the last sync_document call (see
+        get_lsp_completions).
+        """
+        c = self.c
+        p = c.p
+        body_s = p.b
+        goto = c.gotoCommands
+        root, fileName = goto.find_root(p)
+        if not root or not fileName:
+            return []
+        source = goto.get_external_file_with_sentinels(root=root)
+        n0 = goto.find_node_start(p=p, s=source)
+        if n0 is None:
+            return []
+        lines = g.splitLines(body_s)
+        source_lines = g.splitLines(source)
+        n1 = n0 + len(lines)
+
+        # Every line of a node is written with the same constant indent
+        # offset relative to p.b -- that's how Leo derives external files,
+        # via @others expansion -- so one delta (from the node's first
+        # non-blank line) applies to every diagnostic in the node.
+        delta = 0
+        for local_line, global_line in zip(lines, source_lines[n0:n1]):
+            if local_line.strip():
+                delta = (len(global_line) - len(global_line.lstrip())) - (
+                    len(local_line) - len(local_line.lstrip())
+                )
+                break
+
+        abs_path = g.fullPath(c, root)
+        uri = 'file://' + abs_path
+        try:
+            client = leo_lsp_client.get_client(self.lsp_command.split(), os.path.dirname(abs_path))
+        except Exception:
+            return []
+        results = []
+        for d in client.diagnostics.get(uri, []):
+            rng = d.get('range', {})
+            start, end = rng.get('start', {}), rng.get('end', {})
+            srow, erow = start.get('line', -1), end.get('line', -1)
+            if not (n0 <= srow < n1 and n0 <= erow < n1):
+                continue  # Diagnostic belongs to another node in this file.
+            results.append(
+                (
+                    srow - n0,
+                    max(0, start.get('character', 0) - delta),
+                    erow - n0,
+                    max(0, end.get('character', 0) - delta),
+                    d.get('message', ''),
+                )
+            )
+        return results
+
+    # @+node:spike4871.20260808130000.2: *5* ac.show_lsp_diagnostics
+    def show_lsp_diagnostics(self) -> None:
+        """
+        Spike for #4871: render get_lsp_diagnostics_for_node's results as
+        wavy red underlines in the body pane -- the "live squigglies" half
+        of the issue. Qt only; a harmless no-op under other guis.
+        """
+        c = self.c
+        widget = c.frame.body.wrapper.widget
+        if not isinstance(widget, QtWidgets.QTextEdit):
+            return
+        doc = widget.document()
+        selections = []
+        for srow, scol, erow, ecol, message in self.get_lsp_diagnostics_for_node():
+            start_block = doc.findBlockByNumber(srow)
+            end_block = doc.findBlockByNumber(erow)
+            if not start_block.isValid() or not end_block.isValid():
+                continue
+            cursor = QtGui.QTextCursor(start_block)
+            cursor.setPosition(start_block.position() + scol)
+            cursor.setPosition(end_block.position() + ecol, MoveMode.KeepAnchor)
+            selection = widget.ExtraSelection()
+            selection.cursor = cursor
+            selection.format.setUnderlineStyle(UnderlineStyle.WaveUnderline)
+            selection.format.setUnderlineColor(QtGui.QColor('red'))
+            selection.format.setToolTip(message)
+            selections.append(selection)
+        widget.setExtraSelections(selections)
 
     # @+node:ekr.20110509064011.14557: *5* ac.get_leo_completions
     def get_leo_completions(self, prefix: str) -> list[str]:
