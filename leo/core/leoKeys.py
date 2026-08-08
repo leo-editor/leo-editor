@@ -17,6 +17,7 @@ import time
 from typing import Any, cast, TYPE_CHECKING
 from leo.core import leoGlobals as g
 from leo.external import codewise
+from leo.external import leo_lsp_client
 from leo.core.leoFrame import NullLog
 from leo.core.leoQt import QtWidgets
 
@@ -207,6 +208,9 @@ class AutoCompleterClass:
         self.auto_tab = c.config.getBool('auto-tab-complete', True)
         self.forbid_invalid = c.config.getBool('forbid-invalid-completions', False)
         self.use_jedi = c.config.getBool('use-jedi', False)
+        # Spike for #4871: LSP-backed completions. See ac.get_lsp_completions.
+        self.use_lsp = c.config.getBool('use-lsp', False)
+        self.lsp_command = c.config.getString('lsp-command') or 'ty server'
         # True: show results in autocompleter tab.
         # False: show results in a QCompleter widget.
         self.use_qcompleter = c.config.getBool('use-qcompleter', False)
@@ -575,8 +579,12 @@ class AutoCompleterClass:
     jedi_warning = False
 
     def get_completions(self, prefix: str) -> list[str]:
-        """Return jedi or codewise completions."""
+        """Return lsp, jedi, or codewise completions."""
         d = self.completionsDict
+        if self.use_lsp:
+            aList = self.get_lsp_completions(prefix) or self.get_leo_completions(prefix)
+            d[prefix] = aList
+            return aList
         if self.use_jedi:
             try:
                 import jedi
@@ -794,6 +802,76 @@ class AutoCompleterClass:
             aList = prefix.split('.')
             prefix = '.'.join(aList[:-1]) + '.'
         return s if s.startswith(prefix) else prefix + s
+
+    # @+node:spike4871.20260808120000.1: *5* ac.get_lsp_completions (spike, #4871)
+    def get_lsp_completions(self, prefix: str) -> list[str]:
+        """
+        Spike for #4871: return completions from an LSP server (default:
+        `ty server`) instead of jedi.
+
+        Reuses get_jedi_completions' source-reconstruction and
+        position-mapping: turning a node-local row/col into a file-global
+        row/col is the same problem no matter which backend answers the
+        completion request.
+
+        Only handles @file-backed nodes: an LSP server wants a real
+        `file://` URI, per the design sketched in #4871 (no virtual-document
+        scheme). Falls back to get_leo_completions otherwise.
+        """
+        c = self.c
+        w = c.frame.body.wrapper
+        i = w.getInsertPoint()
+        p = c.p
+        body_s = p.b
+
+        goto = c.gotoCommands
+        root, fileName = goto.find_root(p)
+        if not root or not fileName:
+            return []
+        source = goto.get_external_file_with_sentinels(root=root)
+        n0 = goto.find_node_start(p=p, s=source) or 0
+
+        lines = g.splitLines(body_s)
+        row, column = g.convertPythonIndexToRowCol(body_s, i)
+        if row >= len(lines):
+            return []
+        line = lines[row]
+
+        source_lines = g.splitLines(source)
+        for lsp_line, g_line in enumerate(source_lines[n0:]):
+            if line.lstrip() == g_line.lstrip():
+                indent1 = len(line) - len(line.lstrip())
+                indent2 = len(g_line) - len(g_line.lstrip())
+                if indent2 >= indent1:
+                    column += abs(indent2 - indent1)
+                    break
+        else:
+            return []
+
+        # ty only returns completions when there's no text after the cursor
+        # on the same physical line (confirmed by spiking: a dangling "self."
+        # at true end-of-line returns members; the identical dot mid-line,
+        # with real code continuing after the cursor, returns nothing, even
+        # one character further in). That's fine for the common
+        # type-then-complete flow (cursor sits at the true end of the typed
+        # text), but it's a real maturity gap next to jedi, which handles
+        # mid-line completion without trouble -- worth keeping in mind
+        # against the pyright fallback #4871 already flags.
+        dot = prefix.rfind('.')
+        typed = prefix[dot + 1 :] if dot != -1 else prefix
+
+        abs_path = os.path.abspath(fileName)
+        try:
+            client = leo_lsp_client.get_client(self.lsp_command.split(), os.path.dirname(abs_path))
+        except Exception:
+            return []
+        uri = 'file://' + abs_path
+        client.sync_document(uri, source)
+        items = client.completions(uri, line=n0 + lsp_line, character=column)
+        names = sorted(
+            {it.get('label', '') for it in items if it.get('label', '').startswith(typed)}
+        )
+        return [self.add_prefix(prefix, z) for z in names]
 
     # @+node:ekr.20110509064011.14557: *5* ac.get_leo_completions
     def get_leo_completions(self, prefix: str) -> list[str]:
