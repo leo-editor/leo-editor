@@ -33,12 +33,14 @@ Python language server, `pip install ty`):
   end-of-line returns members; the identical position with real code
   continuing after the cursor on the same line (e.g. mid-edit of an
   existing statement) returns nothing, even one character further in.
-  It *does* do server-side prefix filtering once positioned correctly
-  (`self.f` at end-of-line returns only names starting with `f`), so
-  no client-side re-implementation of that part was needed. This is a
-  real maturity gap next to jedi, which completes mid-line without
-  trouble -- see `AutoCompleterClass.get_lsp_completions` in
-  leoKeys.py, and the pyright-as-fallback note already in #4871.
+  Worked around with a "phantom EOL": `get_lsp_completions` sends a copy
+  of the source with just the cursor's line truncated at the cursor, so
+  the server always sees end-of-line there (confirmed this restores
+  mid-line completions). The untruncated source is unaffected -- the
+  truncated copy exists only for that one completion request.
+  `ty` *does* do server-side prefix filtering once positioned correctly
+  (`self.f` at end-of-line returns only names starting with `f`), so no
+  client-side re-implementation of that part was needed.
 """
 
 from __future__ import annotations

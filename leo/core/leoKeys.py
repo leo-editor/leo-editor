@@ -852,13 +852,17 @@ class AutoCompleterClass:
         # on the same physical line (confirmed by spiking: a dangling "self."
         # at true end-of-line returns members; the identical dot mid-line,
         # with real code continuing after the cursor, returns nothing, even
-        # one character further in). That's fine for the common
-        # type-then-complete flow (cursor sits at the true end of the typed
-        # text), but it's a real maturity gap next to jedi, which handles
-        # mid-line completion without trouble -- worth keeping in mind
-        # against the pyright fallback #4871 already flags.
+        # one character further in). Work around it with a "phantom EOL":
+        # send the server a copy of the source with just the cursor's line
+        # truncated at the cursor, so it always sees end-of-line there. The
+        # untruncated `source` is still what get_jedi_completions/future
+        # diagnostics work with -- this copy exists only for this request.
         dot = prefix.rfind('.')
         typed = prefix[dot + 1 :] if dot != -1 else prefix
+        target_line_no = n0 + lsp_line
+        truncated_lines = list(source_lines)
+        truncated_lines[target_line_no] = truncated_lines[target_line_no][:column] + '\n'
+        truncated_source = ''.join(truncated_lines)
 
         abs_path = os.path.abspath(fileName)
         try:
@@ -866,8 +870,8 @@ class AutoCompleterClass:
         except Exception:
             return []
         uri = 'file://' + abs_path
-        client.sync_document(uri, source)
-        items = client.completions(uri, line=n0 + lsp_line, character=column)
+        client.sync_document(uri, truncated_source)
+        items = client.completions(uri, line=target_line_no, character=column)
         names = sorted(
             {it.get('label', '') for it in items if it.get('label', '').startswith(typed)}
         )
