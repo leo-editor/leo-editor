@@ -173,13 +173,13 @@
 </v>
 <v t="ekr.20180225010644.1"><vh>Other files</vh>
 <v t="ekr.20180225010707.1"><vh>In leo-editor directory</vh>
-<v t="ekr.20240317061516.1"><vh>@clean ../../MANIFEST.in</vh></v>
+<v t="ekr.20240317061516.1"><vh>@edit ../../MANIFEST.in</vh></v>
 <v t="ekr.20220222130955.1"><vh>@clean ../../.mypy.ini</vh></v>
 <v t="ekr.20231108150521.1"><vh>@edit ../../CONTRIBUTING.md</vh></v>
 <v t="ekr.20210302164046.1"><vh>@edit ../../launchLeo.py</vh></v>
 <v t="ekr.20240319094534.1"><vh>@edit ../../PKG-INFO.TXT</vh></v>
 <v t="ekr.20240206153029.1"><vh>@edit ../../README.md</vh></v>
-<v t="ekr.20240206161713.1"><vh>@clean ../../setup.cfg </vh></v>
+<v t="ekr.20240206161713.1"><vh>@edit ../../setup.cfg</vh></v>
 <v t="ekr.20150304125314.4"><vh>@file ../../leo_to_html.xsl</vh></v>
 <v t="ekr.20240227064614.1"><vh>@file ../../pyproject.toml</vh></v>
 <v t="ekr.20240406013108.1"><vh>@file ../../ruff.toml</vh></v>
@@ -195,8 +195,8 @@
 </v>
 <v t="ekr.20180225010743.1"><vh>In leo/external</vh>
 <v t="ekr.20190607124533.1"><vh>@nopylint</vh>
-<v t="ekr.20220823195205.1"><vh>@clean ../external/leoftsindex.py</vh></v>
-<v t="ekr.20160123142722.1"><vh>@clean ../external/make_stub_files.cfg</vh></v>
+<v t="ekr.20220823195205.1"><vh>@edit ../external/leoftsindex.py</vh></v>
+<v t="ekr.20160123142722.1"><vh>@edit ../external/make_stub_files.cfg</vh></v>
 <v t="ekr.20180708145905.1"><vh>@clean ../external/py2cs_theory.md</vh>
 <v t="ekr.20180708152000.1"><vh>The problem</vh></v>
 <v t="ekr.20180708152018.1"><vh>Design</vh></v>
@@ -434,13 +434,13 @@
 <v t="ekr.20140723122936.18137"><vh>@file ../plugins/importers/xml.py</vh></v>
 </v>
 <v t="ekr.20180504192522.1"><vh>leo_babel</vh>
-<v t="ekr.20230624114517.1"><vh>@clean ../plugins/leo_babel/__init__.py</vh></v>
+<v t="ekr.20230624114517.1"><vh>@edit ../plugins/leo_babel/__init__.py</vh></v>
 <v t="ekr.20180504191650.36"><vh>examples</vh>
 <v t="bob.20170716135108.2"><vh>@file ../plugins/leo_babel/examples/slowOut.py</vh></v>
 <v t="bob.20170716135108.3"><vh>@file ../plugins/leo_babel/examples/slowOutNoFlush.py</vh></v>
 </v>
 <v t="ekr.20180504191650.42"><vh>tests</vh>
-<v t="ekr.20180504191650.68"><vh>@clean ../plugins/leo_babel/tests/__init__.py</vh></v>
+<v t="ekr.20180504191650.68"><vh>@edit ../plugins/leo_babel/tests/__init__.py</vh></v>
 <v t="bob.20180206123613.1"><vh>@file ../plugins/leo_babel/tests/idle_time.py</vh></v>
 <v t="bob.20180205135005.1"><vh>@file ../plugins/leo_babel/tests/lib_test.py</vh></v>
 <v t="bob.20180125160225.1"><vh>@file ../plugins/leo_babel/tests/tests.py</vh></v>
@@ -971,33 +971,6 @@ c.backup_helper(sub_dir='leoPy')
 <t tx="ekr.20150514035207.1"></t>
 <t tx="ekr.20160122104332.1">@language python
 </t>
-<t tx="ekr.20160123142722.1" _mod_time="4741da9ddfe1f8ea3d2e"># An example configuration file for make_stub_files.py.
-# By default, this is ~/stubs/make_stub_files.cfg.
-# Can be changed using the --config=path command-line option.
-
-[Global]
-
-files:
-
-    # Files to be used *only* if no files are given on the command line.
-    # glob.glob wildcards are supported.
-
-    # c:/Repos/leo-editor/leo/core/leoAst.py
-    # c:/Repos/leo-editor/leo/core/*.py
-    # c:/Repos/leo-editor/plugins/*.py
-
-output_directory: ~/stubs
-
-prefix_lines:
-    # Lines to be inserted at the start of each stub file.
-    from collections.abc import Iterable
-    from typing import TypeVar
-    T = TypeVar('T', int, float, complex)
-
-[Def Name Patterns]
-
-[General Patterns]
-</t>
 <t tx="ekr.20170427114412.1"></t>
 <t tx="ekr.20170428084123.1">@language python
 """Recursively import all python files in a directory and clean the result."""
@@ -1055,9 +1028,8 @@ print('done! wrote %s' % fn)
 <t tx="ekr.20180225010913.1"></t>
 <t tx="ekr.20180504191650.36"></t>
 <t tx="ekr.20180504191650.42"></t>
-<t tx="ekr.20180504191650.68" _mod_time="4741da9ddfe1fbb0f42e"></t>
 <t tx="ekr.20180504192522.1"></t>
-<t tx="ekr.20180708145905.1" _mod_time="4741da9ddfe1f8ea3d2e">@language rest
+<t tx="ekr.20180708145905.1">@language rest
 @wrap
 
 This is the theory of operation document for py2cs.py. The most interesting aspect of this script is the TokenSync class. This class provides a reliable way of associating tokenizer tokens with ast nodes.
@@ -1601,7 +1573,7 @@ def do_sec(i, m, s):
     child.h = h.strip()
     parents.append(('@ ', child))
 </t>
-<t tx="ekr.20220222130955.1" _mod_time="4741da9ddfe1e3cea32e"># Config file for mypy
+<t tx="ekr.20220222130955.1" _mod_time="4741da9b7bb18011332e"># Config file for mypy
 
 # Note: Do not put comments after settings.
 
@@ -1912,116 +1884,6 @@ assert core_p and command_p and globals_p
     # 'toString', 'toUnicode', 'trace', 'translateString',
     # 'underline', 'undoHelper', 'unl', 'values', 'visit',
     # 'warn', 'warning', 'word',</t>
-<t tx="ekr.20220823195205.1" _mod_time="4741da9ddfe1f8cb5a2e">"""
-Stand alone GUI free index builder for Leo's full text search system::
-
-  python leoftsindex.py &lt;file1&gt; &lt;file2&gt; &lt;file3&gt;...
-
-If the file name starts with @ it's a assumed to be a simple
-text file listing files to be indexed.
-
-If &lt;file&gt; does not contain '#' it's assumed to be a .leo file
-to index, and is indexed.
-
-If &lt;file&gt; does contain '#' it's assumed to be a .leo file
-containing a list of .leo files to index, with the list in
-the node indicated by the UNL after the #, e.g.::
-
-   path/to/myfile.leo#Lists--&gt;List of outlines
-
-In the latter case, if the node identified by the UNL has children,
-the list of files to scan is built from the first line of the body
-of each child node of the identified node (works well with bookmarks.py).
-If the node identified by the UNL does not have children, the
-node's body is assumed to be a simple text listing of paths to .leo files).
-
-.. note::
-
-    It may be necessary to quote the "file" on the command line,
-    as the '#' may be interpreted as a comment delimiter::
-
-        python leoftsindex.py "workbook.leo#Links"
-
-
-"""
-
-import sys
-
-# add folder containing 'leo' folder to path
-# sys.path.append("/home/tbrown/Package/leo/bzr/leo.repo/trunk")
-import leo.core.leoBridge as leoBridge
-import leo.plugins.leofts as leofts
-
-controller = leoBridge.controller(
-    gui='nullGui',
-    loadPlugins=False,  # True: attempt to load plugins.
-    readSettings=False,  # True: read standard settings files.
-    silent=False,  # True: don't print signon messages.
-    verbose=False,
-)
-g = controller.globals()
-
-# list of "files" to process
-files = sys.argv[1:]
-
-# set up leofts
-leofts.set_leo(g)
-g._gnxcache = leofts.GnxCache()
-fts = leofts.get_fts()
-
-fn2c = {}  # cache to avoid loading same outline twice
-done = set()  # outlines scanned, to avoid repetition repetition
-
-todo = list(files)
-
-while todo:
-    item = todo.pop(0)
-
-    print("INDEX: %s" % item)
-
-    if '#' in item:
-        fn, node = item.split('#', 1)
-    else:
-        fn, node = item, None
-
-    if node:
-        c = fn2c.setdefault(fn, controller.openLeoFile(fn))
-        found, dummy, p = g.recursiveUNLSearch(node.split('--&gt;'), c)
-        if not found:
-            print("Could not find '%s'" % item)
-            break
-        if not p:
-            p = c.p
-        if p.hasChildren():
-            # use file named in first node of each child
-            files = [chl.b.strip().split('\n', 1)[0].strip() for chl in p.children()]
-        else:
-            # use all files listed in body
-            files = [i.strip() for i in p.b.strip().split('\n')]
-
-    elif fn.startswith('@'):
-        todo.extend(open(fn[1:]).read().strip().split('\n'))
-        files = []
-
-    else:
-        files = [fn]
-
-    for fn in files:
-        # file names may still have '#' if taken from a node list
-        real_name = fn.split('#', 1)[0]
-        if real_name in done:
-            continue
-        done.add(real_name)
-
-        if len(files) != 1:
-            print(" FILE: %s" % real_name)
-
-        c = fn2c.setdefault(real_name, controller.openLeoFile(fn))
-        fts.drop_document(real_name)
-        fts.index_nodes(c)
-@language python
-@tabwidth -4
-</t>
 <t tx="ekr.20220904210247.1"># This is a copy of the @enabled-plugins node from leoSettings.leo,
 # ensuring that the @enabled-plugins node in myLeoSettings.leo has no effect.
 
@@ -2074,7 +1936,6 @@ writers = 'leo.unittests.plugins.test_writers'
 # f"{plugins}.test_plugins",
 # f"{plugins}.test_writers",
 </t>
-<t tx="ekr.20230624114517.1" _mod_time="4741da9ddfe1fb2db82e"></t>
 <t tx="ekr.20230720115916.1">g.cls()
 import leo.commands.editFileCommands as efc
 
@@ -2160,46 +2021,6 @@ print('done')</t>
 <t tx="ekr.20240107154430.1"></t>
 <t tx="ekr.20240204082420.1"></t>
 <t tx="ekr.20240204082924.1"></t>
-<t tx="ekr.20240206161713.1" _mod_time="4741da9de2eca964d12e">@language ini
-
-[bdist_wheel]
-
-# Leo only supports Python 3, so universal should be zero.
-universal=0
-
-[metadata]
-
-# Becomes the home-page in `pip show leo`.
-url = https://leo-editor.github.io/leo-editor/
-</t>
-<t tx="ekr.20240317061516.1" _mod_time="4741da9ddfe1e3cea32e">@language python
-
-# Order matters!
-
-# Include *everything* in the leo folder.
-graft leo
-
-global-exclude *.py[cod] *.__pycache__ *.so
-global-exclude *mypy_cache *.mypy_cache, *.mypy_stubs, *.gitattributes, *.htmlcov
-
-# Add files in the top-level leo-editor folder.
-
-include *.py
-include *.TXT
-
-# No longer required.
-# obscure pip bug fix https://github.com/pypa/setuptools/issues/1694
-#include pyproject.toml
-
-# Tweaks
-
-prune leo/unittests/htmlcov
-prune leo/doc/html
-include leo/doc/html/conf.py
-
-# #3853.
-include leo/doc/_static
-</t>
 <t tx="ekr.20240321122614.1"># These are Leo's test scripts.
 
 # Run these scripts from the leo-editor folder.

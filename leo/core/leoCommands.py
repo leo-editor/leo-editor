@@ -307,6 +307,10 @@ class Commands:
         self.nodeConflictFileName: str = ''  # The fileName for c.nodeConflictList.
         # Non-persistent dictionary for free use by scripts and plugins.
         self.user_dict: dict[str, Value] = {}
+        # #4875: In-memory, session-scoped cache of @clean nodes' last-seen file
+        # mod times, keyed by gnx. Never serialized: avoids spurious diffs when a
+        # file's mtime moves without its content changing.
+        self.mod_time_cache: dict[str, float] = {}
 
     # @+node:ekr.20120217070122.10467: *5* c.initEventIvars
     def initEventIvars(self) -> None:
