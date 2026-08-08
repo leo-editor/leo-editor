@@ -488,7 +488,17 @@ class RuffCommand:
         c = self.c
         if not ruff:
             return True
-        command = [sys.executable, '-m', 'ruff', 'check', '--output-format=concise', fn]
+        command = [
+            sys.executable,
+            '-m',
+            'ruff',
+            'check',
+            '--isolated',  # Ignore all configuration files.
+            '--config',
+            'builtins=["c", "g", "p"]',
+            '--output-format=concise',
+            fn,
+        ]  # fmt: skip
         result = subprocess.run(command, capture_output=True, text=True)
         raw_s = (result.stdout + result.stderr).replace('All checks passed!', '').strip()
         # Strip out cruft.
