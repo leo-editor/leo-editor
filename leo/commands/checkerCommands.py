@@ -495,18 +495,15 @@ class RuffCommand:
             'check',
             '--isolated',  # Ignore all configuration files.
             '--config',
-            'lint.flake8-builtins.ignorelist = ["c", "g", "p"]',
+            'builtins=["c", "g", "p"]',
             '--output-format=concise',
-            '--verbose',
             fn,
         ]  # fmt: skip
-        g.trace(command)
         result = subprocess.run(command, capture_output=True, text=True)
         raw_s = (result.stdout + result.stderr).replace('All checks passed!', '').strip()
         # Strip out cruft.
         s = ''.join(z for z in g.splitLines(raw_s) if not z.startswith('Found')).strip()
         s = s.replace(fn, c.p.h)  # A hack.
-        g.printObj(s, tag=g.my_name())
         if s:
             c.frame.log.put_html_links(s)
         return result.returncode == 0
