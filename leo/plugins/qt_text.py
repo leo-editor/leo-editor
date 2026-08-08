@@ -1028,16 +1028,6 @@ if QtWidgets:
             """
             # pylint: disable = too-many-locals
             c, vc, w = self.leo_c, self.leo_c.vimCommands, self
-
-            # First, call the base class paintEvent.
-            QtWidgets.QTextBrowser.paintEvent(self, event)
-
-            def set_cursor_width(width: int) -> None:
-                """Set the cursor width, but only if necessary."""
-                if self.leo_cursor_width != width:
-                    self.leo_cursor_width = width
-                    w.setCursorWidth(width)
-
             if w == getattr(c.frame.body, 'widget', None) and c.config.getBool(
                 'show-rmargin-guide'
             ):
@@ -1046,8 +1036,7 @@ if QtWidgets:
                 # based on https://stackoverflow.com/questions/30371613
                 # draw-vertical-lines-on-qtextedit-in-pyqt
                 # Honor @pagewidth directive if any
-                rcol = c.config.getInt('rguide-col')
-                rcol = c.getPageWidth(c.p) if rcol is None else rcol
+                rcol = c.getPageWidth(c.p) or c.config.getInt('rguide-col', 80)
                 vp = w.viewport()
                 palette = vp.palette()
                 font = w.document().defaultFont()
@@ -1072,6 +1061,15 @@ if QtWidgets:
                     painter.setPen(pen)
                     painter.drawLine(rmargin, 0, rmargin, vp.height())
                 # @-<< paint margin guides >>
+
+            # First, call the base class paintEvent.
+            QtWidgets.QTextBrowser.paintEvent(self, event)
+
+            def set_cursor_width(width: int) -> None:
+                """Set the cursor width, but only if necessary."""
+                if self.leo_cursor_width != width:
+                    self.leo_cursor_width = width
+                    w.setCursorWidth(width)
 
             # Are we in vim mode?
             if self.leo_vim_mode is None:
