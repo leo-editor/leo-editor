@@ -19,7 +19,7 @@ from leo.core import leoGlobals as g
 from leo.external import codewise
 from leo.external import leo_lsp_client
 from leo.core.leoFrame import NullLog
-from leo.core.leoQt import QtGui, QtWidgets
+from leo.core.leoQt import QtCore, QtGui, QtWidgets
 from leo.core.leoQt import MoveMode, UnderlineStyle
 
 try:
@@ -202,6 +202,7 @@ class AutoCompleterClass:
         # Codewise pre-computes...
         self.codewiseSelfList: list[str] = []  # The (global) completions for "self."
         self.completionsDict: dict[str, list[str]] = {}  # keys: prefixes. values: completion lists.
+        self.lsp_change_serial = 0
         self.reloadSettings()
 
     def reloadSettings(self) -> None:
@@ -868,9 +869,10 @@ class AutoCompleterClass:
         abs_path = g.fullPath(c, root)
         try:
             client = leo_lsp_client.get_client(self.lsp_command.split(), os.path.dirname(abs_path))
-        except Exception:
+        except Exception as exception:
+            g.es_print(f"LSP: could not start server: {exception!r}")
             return []
-        uri = 'file://' + abs_path
+        uri = leo_lsp_client.path_to_uri(abs_path)
         client.sync_document(uri, truncated_source)
         items = client.completions(uri, line=target_line_no, character=column)
         names = sorted(
@@ -885,6 +887,82 @@ class AutoCompleterClass:
         client.sync_document(uri, source)
         self.show_lsp_diagnostics()
         return [self.add_prefix(prefix, z) for z in names]
+
+    # @+node:spike4871.20260808130000.3: *5* ac.schedule_lsp_diagnostics & helpers
+    def schedule_lsp_diagnostics(self) -> None:
+        """Debounce an LSP document sync after a body-pane edit."""
+        if not self.use_lsp or not self.c.exists:
+            return
+        self.lsp_change_serial += 1
+        serial = self.lsp_change_serial
+        QtCore.QTimer.singleShot(300, lambda: self.sync_lsp_diagnostics(serial))
+
+    def sync_lsp_diagnostics(self, serial: int) -> None:
+        """Sync the current @file document and schedule asynchronous rendering."""
+        if serial != self.lsp_change_serial or not self.c.exists:
+            return
+        c, p = self.c, self.c.p
+        goto = c.gotoCommands
+        root, fileName = goto.find_root(p)
+        if not root or not fileName:
+            return
+        source = goto.get_external_file_with_sentinels(root=root)
+        abs_path = g.fullPath(c, root)
+        uri = leo_lsp_client.path_to_uri(abs_path)
+        try:
+            client = leo_lsp_client.get_client(self.lsp_command.split(), os.path.dirname(abs_path))
+            client.sync_document(uri, source)
+        except Exception as exception:
+            g.es_print(f"LSP: diagnostic sync failed: {exception!r}")
+            return
+        # publishDiagnostics is asynchronous. Repaint quickly when possible,
+        # then again after slower initial workspace indexing.
+        for delay in (100, 500, 1500):
+            QtCore.QTimer.singleShot(
+                delay, lambda serial=serial: self.render_lsp_diagnostics(serial)
+            )
+
+    def render_lsp_diagnostics(self, serial: int) -> None:
+        """Render diagnostics unless a newer body edit superseded this sync."""
+        if serial == self.lsp_change_serial and self.c.exists:
+            self.show_lsp_diagnostics()
+
+    def get_lsp_hover(self, body_position: int) -> str:
+        """Return LSP hover text for a body-pane character position."""
+        if not self.use_lsp:
+            return ''
+        c, p = self.c, self.c.p
+        body_s = p.b
+        row, column = g.convertPythonIndexToRowCol(body_s, body_position)
+        lines = g.splitLines(body_s)
+        if row >= len(lines):
+            return ''
+        goto = c.gotoCommands
+        root, fileName = goto.find_root(p)
+        if not root or not fileName:
+            return ''
+        source = goto.get_external_file_with_sentinels(root=root)
+        n0 = goto.find_node_start(p=p, s=source)
+        if n0 is None:
+            return ''
+        source_lines = g.splitLines(source)
+        target_row = n0 + row
+        if target_row >= len(source_lines):
+            return ''
+        local_line = lines[row]
+        global_line = source_lines[target_row]
+        column += max(
+            0,
+            (len(global_line) - len(global_line.lstrip()))
+            - (len(local_line) - len(local_line.lstrip())),
+        )
+        abs_path = g.fullPath(c, root)
+        uri = leo_lsp_client.path_to_uri(abs_path)
+        try:
+            client = leo_lsp_client.get_client(self.lsp_command.split(), os.path.dirname(abs_path))
+            return client.hover(uri, target_row, column)
+        except Exception:
+            return ''
 
     # @+node:spike4871.20260808130000.1: *5* ac.get_lsp_diagnostics_for_node
     def get_lsp_diagnostics_for_node(self) -> list[tuple[int, int, int, int, str]]:
@@ -926,10 +1004,11 @@ class AutoCompleterClass:
                 break
 
         abs_path = g.fullPath(c, root)
-        uri = 'file://' + abs_path
+        uri = leo_lsp_client.path_to_uri(abs_path)
         try:
             client = leo_lsp_client.get_client(self.lsp_command.split(), os.path.dirname(abs_path))
-        except Exception:
+        except Exception as exception:
+            g.es_print(f"LSP: could not read diagnostics: {exception!r}")
             return []
         results = []
         for d in client.diagnostics.get(uri, []):
@@ -962,7 +1041,8 @@ class AutoCompleterClass:
             return
         doc = widget.document()
         selections = []
-        for srow, scol, erow, ecol, message in self.get_lsp_diagnostics_for_node():
+        diagnostics = self.get_lsp_diagnostics_for_node()
+        for srow, scol, erow, ecol, message in diagnostics:
             start_block = doc.findBlockByNumber(srow)
             end_block = doc.findBlockByNumber(erow)
             if not start_block.isValid() or not end_block.isValid():
@@ -976,7 +1056,11 @@ class AutoCompleterClass:
             selection.format.setUnderlineColor(QtGui.QColor('red'))
             selection.format.setToolTip(message)
             selections.append(selection)
-        widget.setExtraSelections(selections)
+        widget.leo_lsp_selections = selections
+        if hasattr(widget, 'highlightCurrentLine'):
+            widget.highlightCurrentLine()
+        else:
+            widget.setExtraSelections(selections)
 
     # @+node:ekr.20110509064011.14557: *5* ac.get_leo_completions
     def get_leo_completions(self, prefix: str) -> list[str]:

@@ -49,7 +49,13 @@ import os
 import subprocess
 import threading
 import time
+from pathlib import Path
 from typing import Any
+
+
+def path_to_uri(path: str) -> str:
+    """Return a standards-compliant absolute file URI on every platform."""
+    return Path(path).resolve().as_uri()
 
 
 class LspClient:
@@ -82,10 +88,11 @@ class LspClient:
             'initialize',
             {
                 'processId': os.getpid(),
-                'rootUri': 'file://' + self.root_path,
+                'rootUri': path_to_uri(self.root_path),
                 'capabilities': {
                     'textDocument': {
                         'completion': {'completionItem': {'snippetSupport': False}},
+                        'hover': {'contentFormat': ['plaintext', 'markdown']},
                         'publishDiagnostics': {},
                     },
                 },
@@ -193,6 +200,40 @@ class LspClient:
             return []
         items = result.get('items', []) if isinstance(result, dict) else result
         return items or []
+
+    def hover(self, uri: str, line: int, character: int, timeout: float = 2.0) -> str:
+        """Return plain hover text at the given 0-based position."""
+        try:
+            response = self.request(
+                'textDocument/hover',
+                {
+                    'textDocument': {'uri': uri},
+                    'position': {'line': line, 'character': character},
+                },
+                timeout=timeout,
+            )
+        except TimeoutError:
+            return ''
+        result = response.get('result')
+        if not isinstance(result, dict):
+            return ''
+        contents = result.get('contents', '')
+        if isinstance(contents, str):
+            text = contents
+        elif isinstance(contents, dict):
+            text = contents.get('value', '')
+        elif isinstance(contents, list):
+            parts = [z.get('value', '') if isinstance(z, dict) else str(z) for z in contents]
+            text = '\n\n'.join(z for z in parts if z)
+        else:
+            return ''
+        # LSP markdown commonly wraps type signatures in a fenced code block.
+        lines = text.splitlines()
+        if lines and lines[0].startswith('```'):
+            lines = lines[1:]
+        if lines and lines[-1] == '```':
+            lines = lines[:-1]
+        return '\n'.join(lines).strip()
 
     def shutdown(self) -> None:
         if not self._started or self.proc is None:

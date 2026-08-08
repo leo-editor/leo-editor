@@ -158,6 +158,7 @@ class QTextMixin:
         """Ctor for QTextMixin class"""
         self.c = c
         self.changingText = False  # A lockout for onTextChanged.
+
         self.enabled = True
         self.tags: dict[str, str] = {}
         self.permanent = True  # False if selecting the minibuffer will make the widget go away.
@@ -192,6 +193,7 @@ class QTextMixin:
         # because it generates no events in the body pane.
         if not name.startswith('body'):
             return
+        c.k.autoCompleter.schedule_lsp_diagnostics()
         if hasattr(c.frame, 'statusLine'):
             c.frame.statusLine.update()
 
@@ -231,6 +233,7 @@ class QTextMixin:
             newInsert=newInsert,
             newSel=newSel,
         )
+        c.k.autoCompleter.schedule_lsp_diagnostics()
 
     # @+node:ekr.20140901122110.18734: *3* QTextMixin.Generic high-level interface
     # These call only wrapper methods.
@@ -565,6 +568,7 @@ if QtWidgets:
             # Connect event handlers...
             self.cursorPositionChanged.connect(self.highlightCurrentLine)
             self.textChanged.connect(self.highlightCurrentLine)
+            self.viewport().installEventFilter(self)
             self.setContextMenuPolicy(ContextMenuPolicy.CustomContextMenu)
             self.customContextMenuRequested.connect(self.onContextMenu)
             # This event handler is the easy way to keep track of the vertical scroll position.
@@ -585,6 +589,27 @@ if QtWidgets:
                 'last_bg': '',
                 'last_hl_color': hl_color,
             }
+
+        # @+node:spike4871.20260808150000.1: *3* LeoQTextBrowser.eventFilter
+        def eventFilter(self, obj: QObject, event: QEvent) -> bool:
+            """Show an LSP diagnostic while hovering its squiggly range."""
+            if obj is self.viewport() and event.type() == QtCore.QEvent.Type.ToolTip:
+                position = self.cursorForPosition(event.pos()).position()
+                for selection in getattr(self, 'leo_lsp_selections', []):
+                    cursor = selection.cursor
+                    if cursor.selectionStart() <= position < cursor.selectionEnd():
+                        message = selection.format.toolTip()
+                        if message:
+                            QtWidgets.QToolTip.showText(event.globalPos(), message, self)
+                            return True
+                message = self.leo_c.k.autoCompleter.get_lsp_hover(position)
+                if message:
+                    QtWidgets.QToolTip.showText(event.globalPos(), message, self)
+                    return True
+                QtWidgets.QToolTip.hideText()
+                event.ignore()
+                return True
+            return super().eventFilter(obj, event)
 
         # @+node:ekr.20110605121601.18007: *3* LeoQTextBrowser. __repr__ & __str__
         def __repr__(self) -> str:
@@ -877,7 +902,7 @@ if QtWidgets:
                 return
 
             if not c.config.getBool('highlight-body-line', True):
-                editor.setExtraSelections([])
+                editor.setExtraSelections(getattr(editor, 'leo_lsp_selections', []))
                 return
 
             curs = editor.textCursor()
@@ -939,7 +964,8 @@ if QtWidgets:
             selection.cursor = curs
             selection.cursor.clearSelection()
 
-            editor.setExtraSelections([selection])
+            lsp_selections = getattr(editor, 'leo_lsp_selections', [])
+            editor.setExtraSelections([selection, *lsp_selections])
             # @-<< Apply Highlight >>
 
         # @+node:ekr.20141103061944.31: *3* LeoQTextBrowser.get/setXScrollPosition
