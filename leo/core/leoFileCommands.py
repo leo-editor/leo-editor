@@ -101,7 +101,6 @@ class FastRead:
     # @+<< FastRead: define nativeVnodeAttributes >>
     # @+node:ekr.20250806185821.1: *3* << FastRead: define nativeVnodeAttributes >>
     nativeVnodeAttributes = (
-        '_mod_time',  # Leo 6.8.7.
         'a',
         'descendentTnodeUnknownAttributes',
         'descendentVnodeUnknownAttributes',
@@ -335,7 +334,9 @@ class FastRead:
             gnx2body[gnx] = e.text or ''
             # Next, scan for uA's for this gnx.
             for key, val in e.attrib.items():
-                if key != 'tx':
+                # #4875: Discard any legacy `_mod_time` uA left over from Leo 6.8.7-6.8.x
+                # files written before `_mod_time` became purely in-memory.
+                if key not in ('tx', '_mod_time'):
                     s: str = self.resolveUa(key, val)
                     if s:
                         gnx2ua[gnx][key] = s
@@ -1976,9 +1977,6 @@ class FileCommands:
             if isinstance(v.unknownAttributes, dict):
                 # Create a new dict containing only entries that can be pickled.
                 d = dict(v.unknownAttributes)  # Copy the dict.
-                # New in Leo 6.8.7: Remove '_mod_time' from the uA.
-                if '_mod_time' in d:
-                    del d['_mod_time']
                 for key in d:
                     # Just see if val can be pickled.  Suppress any error.
                     if not self.pickle(v=v, val=d.get(key), tag=''):

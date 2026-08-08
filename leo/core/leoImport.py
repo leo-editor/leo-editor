@@ -1804,12 +1804,12 @@ class RecursiveImportController:
             verbose=self.verbose,  # Leo 6.6.
         )
 
-        # #4385: set mod time for @clean files. Clear the mod time for all other files.
+        # #4385, #4875: cache the mod time for @clean files. Clear it for all other files.
         p = parent.lastChild()
         if self.kind == '@clean':
-            p.v.u['_mod_time'] = g.os_path_getmtime(path)
-        elif '_mod_time' in p.v.u:
-            del p.v.u['_mod_time']
+            c.mod_time_cache[p.v.gnx] = g.os_path_getmtime(path)
+        else:
+            c.mod_time_cache.pop(p.v.gnx, None)
 
         if self.safe_at_file:
             p.v.h = '@' + p.v.h
@@ -2022,7 +2022,7 @@ class RecursiveImportController:
             g.app.disable_redraw = False
             for p2 in parent.self_and_subtree(copy=False):
                 p2.contract()
-            c.setChanged()  # #4385: Ensure that mod times are written.
+            c.setChanged()  # Imported nodes must be saved.
             c.redraw(parent)
         if not g.unitTesting:
             t2 = time.time()

@@ -411,9 +411,8 @@ def refreshFromDisk(
     c.nodeConflictList = []
     c.recreateGnxDict()
 
-    # Always clear the `_mod_time` uA *before* reading the file.
-    if '_mod_time' in p.v.u:
-        del p.v.u['_mod_time']
+    # #4875: Always clear the cached mod time *before* reading the file.
+    c.mod_time_cache.pop(p.v.gnx, None)
 
     at.readFileAtPosition(p)  # Leo 6.8.6.
 
