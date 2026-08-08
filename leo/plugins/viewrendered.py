@@ -268,7 +268,7 @@ try:
     import nbformat
     from nbconvert import HTMLExporter
 except ImportError:
-    nbformat = None
+    nbformat = None  # type:ignore
 
 try:
     import pyperclip
