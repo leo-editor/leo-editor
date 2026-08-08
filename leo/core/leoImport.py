@@ -687,8 +687,8 @@ class LeoImportCommands:
         if ext.startswith('.'):
             ext = ext[1:]
         if ext:
-            z = g.app.extra_extension_dict.get(ext, '')
-            if z not in (None, 'none', 'None'):
+            z = g.app.extra_extension_dict.get(ext)
+            if z is not None and z not in ('none', 'None'):
                 language = z
             else:
                 language = g.app.extension_dict.get(ext, '')
