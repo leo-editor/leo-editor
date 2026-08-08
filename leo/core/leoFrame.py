@@ -749,7 +749,6 @@ class LeoLog:
         Otherwise, return False.
         """
         c = self.c
-        trace = False and not g.unitTesting
         if not c:
             return False  # PR #4812
         assert c
@@ -811,19 +810,15 @@ class LeoLog:
             if m:
                 filename = m.group(filename_i)  # type:ignore
                 line_number = m.group(line_number_i)  # type:ignore
-                p = find_at_file_node(filename)
-                if p:
+                if p := find_at_file_node(filename):
                     unl = p.get_UNL()
                     found_matches += 1
-                    if trace:
-                        g.trace(f"{p.h} nodeLink: {unl}::-{line_number}")
+                    # g.trace(f"{p.h} nodeLink: {unl}::-{line_number}")
                     self.put(line, nodeLink=f"{unl}::-{line_number}")  # Use global line.
-                else:  # An unusual case.
-                    message = f"no p for {filename!r}"
-                    if g.unitTesting:
-                        raise ValueError(message)
-                        # g.trace(f"{i:2} p not found! {filename!r}")
-                    self.put(line)
+                else:
+                    unl = c.p.get_UNL()
+                    found_matches += 1
+                    self.put(line, nodeLink=f"{unl}::{line_number}")  # Use local line.
             else:  # None of the patterns match.
                 self.put(line)
         return bool(found_matches)
