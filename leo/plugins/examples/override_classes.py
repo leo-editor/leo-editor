@@ -27,7 +27,6 @@ def init():
             oldAppCloseLeoWindow = g.app.closeLeoWindow
 
             def myAppCloseLeoWindow(self, frame):
-                global oldAppCloseLeoWindow
                 oldAppCloseLeoWindow(frame)
                 g.trace("after closeLeoWindow")
 

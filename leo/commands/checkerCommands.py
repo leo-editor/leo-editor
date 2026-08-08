@@ -6,8 +6,8 @@
 # @+node:ekr.20161021092038.1: ** << checkerCommands imports >>
 from __future__ import annotations
 import os
-import pathlib
 import re
+import subprocess
 import sys
 import time
 from typing import TYPE_CHECKING
@@ -21,20 +21,9 @@ except Exception:
     mypy_api = None  # type:ignore
 
 try:
-    import flake8  # #2248: Import only flake8.
-except ImportError:
-    flake8 = None  # type:ignore
-
-try:
-    import pyflakes
-    from pyflakes import api, reporter
+    import ruff
 except Exception:
-    pyflakes = None  # type:ignore
-
-try:
-    from pylint import lint
-except Exception:
-    lint = None  # type:ignore
+    ruff = None  # type:ignore
 
 # Leo imports.
 from leo.core import leoGlobals as g
@@ -235,38 +224,6 @@ def find_missing_docstrings(event: LeoKeyEvent | None = None) -> None:
     )
 
 
-# @+node:ekr.20160517133001.1: *3* flake8-files command
-@g.command('flake8-files')
-def flake8_command(event: LeoKeyEvent | None = None) -> None:
-    """
-    Run flake8 on all nodes of the selected tree,
-    or the first @<file> node in an ancestor.
-    """
-    tag = 'flake8-files'
-    if not flake8:
-        g.es_print(f"{tag} can not import flake8")
-        return
-    c = event.c if event else None
-    if not c or not c.p:
-        return
-    python = sys.executable
-    for root in g.findRootsWithPredicate(c, c.p):
-        path = c.fullPath(root)
-        if path and os.path.exists(path):
-            # g.es_print(f"{tag}: {path}")
-            g.execute_shell_commands(f'&"{python}" -m flake8 "{path}"')
-        else:
-            g.es_print(f"{tag}: file not found:{path}")
-
-
-# @+node:ekr.20161026092059.1: *3* kill-pylint
-@g.command('kill-pylint')
-@g.command('pylint-kill')
-def kill_pylint(event: LeoKeyEvent | None = None) -> None:
-    """Kill any running pylint processes and clear the queue."""
-    g.app.backgroundProcessManager.kill('pylint')
-
-
 # @+node:ekr.20210302111730.1: *3* mypy command
 @g.command('mypy')
 def mypy_command(event: LeoKeyEvent | None = None) -> None:
@@ -303,43 +260,25 @@ def mypy_command(event: LeoKeyEvent | None = None) -> None:
         g.es_print('can not import mypy')
 
 
-# @+node:ekr.20160516072613.1: *3* pyflakes command
-@g.command('pyflakes')
-def pyflakes_command(event: LeoKeyEvent | None = None) -> None:
+# @+node:vv.20260807120000.1: *3* ruff command
+@g.command('ruff')
+def ruff_command(event: LeoKeyEvent | None = None) -> None:
     """
-    Run pyflakes on all nodes of the selected tree,
-    or the first @<file> node in an ancestor.
+    Run ruff on all @<file> nodes of the selected tree, or the first
+    @<file> node in an ancestor.
+
+    Unlike running ruff outside of Leo, Leo's ruff command creates
+    clickable links in Leo's log pane for each error. See g.ruff_pat.
     """
     c = event.c if event else None
     if not c:
         return
     if c.isChanged():
         c.save()
-    if not pyflakes:
-        g.es_print('can not import pyflakes')
-        return
-    if PyflakesCommand(c).run(c.p):
-        g.es('OK: pyflakes')
-
-
-# @+node:ekr.20150514125218.7: *3* pylint command
-last_pylint_path: str | None = None
-
-
-@g.command('pylint')
-def pylint_command(event: LeoKeyEvent | None = None) -> None:
-    """
-    Run pylint on all nodes of the selected tree,
-    or the first @<file> node in an ancestor,
-    or the last checked @<file> node.
-    """
-    global last_pylint_path
-    if c := (event.c if event else None):
-        if c.isChanged():
-            c.save()
-        if data := PylintCommand(c).run(c.p, last_path=last_pylint_path):
-            path, p = data  # pylint: disable=unpacking-non-sequence
-            last_pylint_path = path
+    if ruff:
+        RuffCommand(c).run(c.p)
+    else:
+        g.es_print('can not import ruff')
 
 
 # @+node:ekr.20230221105941.1: ** class CheckNodes
@@ -486,264 +425,103 @@ class MypyCommand:
     # @-others
 
 
-# @+node:ekr.20221128123238.1: ** class Flake8Command
-class Flake8Command:
-    """A class to run flake8 on all Python @<file> nodes in c.p's tree."""
+# @+node:vv.20260807120000.2: ** class RuffCommand
+class RuffCommand:
+    """A class to run ruff on all Python @<file> nodes in c.p's tree."""
+
+    # See g.ruff_pat for the regex that creates clickable links.
 
     def __init__(self, c: Cmdr) -> None:
-        """ctor for Flake8Command class."""
+        """ctor for RuffCommand class."""
         self.c = c
-        self.seen: list[str] = []  # List of checked paths.
 
     # @+others
-    # @+node:ekr.20221128123523.3: *3* flake8.check_all
+    # @+node:vv.20260807120000.3: *3* ruff.check_all
     def check_all(self, roots: list[Position]) -> None:
-        """Run flake8 on all files in paths."""
-        c, tag = self.c, 'flake8'
-        for root in roots:
-            path = c.fullPath(root)
-            if path and os.path.exists(path):
-                # g.es_print(f"{tag}: {path}")
-                g.execute_shell_commands(f'&"{sys.executable}" -m flake8 "{path}"')
-            else:
-                g.es_print(f"{tag}: file not found: {path}")
-
-    # @+node:ekr.20221128123523.6: *3* flake8.run
-    def run(self, p: Position) -> None:
-        """
-        Run flake8 on all Python @<file> nodes in p's tree.
-        """
-        c, root = self.c, p
-        if not flake8:
-            return
-        # Make sure the parent of the leo directory is on sys.path.
-        path = os.path.normpath(os.path.join(g.app.loadDir, '..', '..'))
-        if path not in sys.path:
-            sys.path.insert(0, path)
-        if roots := g.findRootsWithPredicate(c, root, predicate=None):
-            self.check_all(roots)
-
-    # @-others
-
-
-# @+node:ekr.20160516072613.2: ** class PyflakesCommand
-class PyflakesCommand:
-    """A class to run pyflakes on all Python @<file> nodes in c.p's tree."""
-
-    def __init__(self, c: Cmdr) -> None:
-        """ctor for PyflakesCommand class."""
-        self.c = c
-        self.seen: list[str] = []  # List of checked paths.
-
-    # @+others
-    # @+node:ekr.20171228013818.1: *3* class PyflakesCommand.LogStream
-    class LogStream:
-        """A log stream for pyflakes."""
-
-        def __init__(self, fn_n: int = 0, roots: list[Position] | None = None) -> None:
-            self.fn_n = fn_n
-            self.roots = roots
-
-        def write(self, s: str) -> None:
-            fn_n, roots = self.fn_n, self.roots
-            if not s.strip():
-                return
-            g.pr(s)
-            # It *is* useful to send pyflakes errors to the console.
-            if roots:
-                try:
-                    root = roots[fn_n]
-                    line = int(s.split(':')[1])
-                    unl = root.get_UNL()
-                    g.es(s, nodeLink=f"{unl}::{(-line)}")  # Global line
-                except (IndexError, TypeError, ValueError):
-                    # in case any assumptions fail
-                    g.es(s)
-            else:
-                g.es(s)
-
-    # @+node:ekr.20160516072613.6: *3* pyflakes.check_all
-    def check_all(self, roots: list[Position]) -> int:
-        """Run pyflakes on all files in roots."""
+        """Run ruff on all files in roots."""
         c = self.c
-        total_errors = 0
-        for i, root in enumerate(roots):
+        for root in roots:
             fn = os.path.normpath(c.fullPath(root))
-            sfn = g.shortFileName(fn)
-            # #1306: nopyflakes
-            if any(z.strip().startswith('@nopyflakes') for z in g.splitLines(root.b)):
-                continue
-            # Report the file name.
-            s = g.readFileIntoEncodedString(fn)
-            if s and s.strip():
-                # Send all output to the log pane.
-                r = reporter.Reporter(
-                    errorStream=self.LogStream(i, roots),
-                    warningStream=self.LogStream(i, roots),
-                )
-                errors = api.check(g.toUnicode(s), sfn, r)
-                total_errors += errors
-        return total_errors
+            self.check_file(fn, root)
 
-    # @+node:ekr.20171228013625.1: *3* pyflakes.check_script
-    def check_script(self, p: Position, script: str) -> bool:
-        """Call pyflakes to check the given script."""
-        try:
-            from pyflakes import api, reporter
-        except Exception:  # ModuleNotFoundError
-            return True  # Pretend all is fine.
-        # #1306: nopyflakes
-        lines = g.splitLines(p.b)
-        for line in lines:
-            if line.strip().startswith('@nopyflakes'):
-                return True
-        r = reporter.Reporter(
-            errorStream=self.LogStream(),
-            warningStream=self.LogStream(),
-        )
-        errors = api.check(script, '', r)
-        return errors == 0
+    # @+node:vv.20260807120000.4: *3* ruff.check_file
+    def check_file(self, fn: str, root: Position) -> None:
+        """Run ruff on one file."""
+        c = self.c
+        if not ruff:
+            print('install ruff with `pip install ruff`')
+            return
+        command = f"{sys.executable} -m ruff check --output-format=concise {fn}"
+        bpm = g.app.backgroundProcessManager
+        bpm.start_process(c, command, fn=fn, kind='ruff')
 
-    # @+node:ekr.20160516072613.5: *3* pyflakes.run
-    def run(self, p: Position) -> bool:
-        """Run Pyflakes on all Python @<file> nodes in p's tree."""
-        c, root = self.c, p
-        if not pyflakes:
+    # @+node:vv.20260807120000.6: *3* ruff.check_on_write (sync, for on-write checking)
+    def check_on_write(self, root: Position) -> bool:
+        """
+        Run ruff synchronously on root's file. Return True if ruff reports no errors.
+
+        Unlike check_file (which uses the BackgroundProcessManager so the GUI
+        doesn't block while checking a whole tree), this runs in the foreground:
+        it's used for run-ruff-on-write, which checks a single just-saved file
+        and needs a real pass/fail result before the write completes.
+        """
+        c = self.c
+        if not ruff:
             return True
+        fn = os.path.normpath(c.fullPath(root))
+        command = [sys.executable, '-m', 'ruff', 'check', '--output-format=concise', fn]
+        result = subprocess.run(command, capture_output=True, text=True)
+        raw_s = (result.stdout + result.stderr).replace('All checks passed!', '').strip()
+        # Strip out cruft.
+        s = ''.join(z for z in g.splitLines(raw_s) if not z.startswith('Found')).strip()
+        if s:
+            c.frame.log.put_html_links(s)
+        return result.returncode == 0
+
+    # @+node:ekr.20260808005852.1: *3* ruff.check_script_file
+    def check_script_file(self, fn: str) -> bool:
+        """
+        Run ruff synchronously the file. Return True if ruff reports no errors.
+
+        Used by execute-script.
+        """
+        c = self.c
+        if not ruff:
+            return True
+        command = [
+            sys.executable,
+            '-m',
+            'ruff',
+            'check',
+            '--isolated',  # Ignore all configuration files.
+            '--config',
+            'builtins=["c", "g", "p"]',
+            '--output-format=concise',
+            fn,
+        ]  # fmt: skip
+        result = subprocess.run(command, capture_output=True, text=True)
+        raw_s = (result.stdout + result.stderr).replace('All checks passed!', '').strip()
+        # Strip out cruft.
+        s = ''.join(z for z in g.splitLines(raw_s) if not z.startswith('Found')).strip()
+        s = s.replace(fn, c.p.h)  # A hack.
+        if s:
+            c.frame.log.put_html_links(s)
+        return result.returncode == 0
+
+    # @+node:vv.20260807120000.5: *3* ruff.run (entry)
+    def run(self, p: Position) -> None:
+        """Run ruff on all Python @<file> nodes in c.p's tree."""
+        c = self.c
+        if not ruff:
+            print('install ruff with `pip install ruff`')
+            return
+        root = p.copy()
         # Make sure the parent of the leo directory is on sys.path.
         path = os.path.normpath(os.path.join(g.app.loadDir, '..', '..'))
         if path not in sys.path:
             sys.path.insert(0, path)
         roots = g.findRootsWithPredicate(c, root, predicate=None)
-        if not roots:
-            return True
-        total_errors = self.check_all(roots)
-        if total_errors > 0:
-            # This message is important for clarity.
-            g.es(f"ERROR: pyflakes: {total_errors} error{g.plural(total_errors)}")
-        return total_errors == 0
-
-    # @-others
-
-
-# @+node:ekr.20150514125218.8: ** class PylintCommand
-class PylintCommand:
-    """A class to run pylint on all Python @<file> nodes in c.p's tree."""
-
-    def __init__(self, c: Cmdr) -> None:
-        self.c = c
-        self.rc_fn: str | None = None  # Name of the rc file.
-
-    # @+others
-    # @+node:ekr.20150514125218.11: *3* 1. pylint.run
-    def run(
-        self,
-        root: Position,
-        *,
-        last_path: str | None = None,
-    ) -> tuple[str, Position] | None:
-        """Run Pylint on all Python @<file> nodes in root's tree."""
-        c = self.c
-        if not lint:
-            g.es_print('pylint is not installed')
-            return None
-        self.rc_fn = self.get_rc_file()
-        if not self.rc_fn:
-            return None
-        # Make sure the parent of the leo directory is on sys.path.
-        path = os.path.normpath(os.path.join(g.app.loadDir, '..', '..'))
-        if path not in sys.path:
-            sys.path.insert(0, path)
-
-        # Ignore @nopylint trees.
-        def predicate(p: Position) -> bool:
-            for parent in p.self_and_parents():
-                if g.match_word(parent.h, 0, '@nopylint'):
-                    return False
-            return p.isAnyAtFileNode() and p.h.strip().endswith(('.py', '.pyw'))  # #2354.
-
-        data: list[tuple[str, Position]] = []
-        is_at_file = False
-        if roots := g.findRootsWithPredicate(c, root, predicate=predicate):
-            data = [(self.get_fn(p), p.copy()) for p in roots]  # type:ignore # See next line.
-            data = [z for z in data if z[0] is not None]
-            is_at_file = True
-        else:
-            last_path = None
-        if not data:
-            if not last_path:
-                return None
-            # Default to the last path.
-            fn = last_path
-            for p in c.all_positions():
-                if p.isAnyAtFileNode() and c.fullPath(p) == fn:
-                    data = [(fn, p.copy())]
-                    break
-        for fn, p in data:
-            self.run_pylint(fn, p)
-        # #1808: return the last data file.
-        return data[-1] if data and is_at_file else None
-
-    # @+node:ekr.20150514125218.10: *3* 3. pylint.get_rc_file
-    def get_rc_file(self) -> str | None:
-        """Return the path to the pylint configuration file."""
-        c = self.c
-        base1 = '.pylintrc'  # Standard name.
-        base2 = 'pylint-leo-rc.txt'  # Leo-centric name
-        local_dir = g.os_path_dirname(c.fileName()) if c else os.getcwd()
-        # 4191: Allow scripts to call this method.
-        try:
-            load_dir = g.app.loadDir
-        except AttributeError:
-            load_dir = g.finalize_join(local_dir, 'leo')
-        home_dir = pathlib.Path.home()
-        table = (
-            # In the directory containing the outline.
-            g.finalize_join(local_dir, base1),
-            g.finalize_join(local_dir, base2),
-            # In ~/.leo
-            g.finalize_join(home_dir, '.leo', base1),
-            g.finalize_join(home_dir, '.leo', base2),
-            # In leo/test
-            g.finalize_join(load_dir, '..', '..', 'leo', 'test', base1),
-            g.finalize_join(load_dir, '..', '..', 'leo', 'test', base2),
-        )
-        for fn in table:
-            fn = g.os_path_abspath(fn)
-            if g.os_path_exists(fn):
-                return fn
-        table_s = '\n'.join(table)
-        g.es_print(f"no pylint configuration file found in\n{table_s}")
-        # g.es_print('Not found: .pylintrc and pylint-leo-rc.txt')
-        return None
-
-    # @+node:ekr.20150514125218.9: *3* 4. pylint.get_fn
-    def get_fn(self, p: Position) -> str | None:
-        """
-        Finalize p's file name.
-        Return if p is not an @file node for a python file.
-        """
-        c = self.c
-        fn = p.isAnyAtFileNode()
-        if not fn:
-            g.trace(f"not an @<file> node: {p.h!r}")
-            return None
-        return c.fullPath(p)  # #1914
-
-    # @+node:ekr.20150514125218.12: *3* 5. pylint.run_pylint
-    def run_pylint(self, fn: str, p: Position) -> None:
-        """Run pylint on fn with the given pylint configuration file."""
-        c, rc_fn = self.c, self.rc_fn
-
-        # Invoke pylint directly.
-        args = ','.join([f"'--rcfile={rc_fn}'", f"'{fn}'"])
-        if g.isWindows:
-            args = args.replace('\\', '\\\\')
-        command = f'{sys.executable} -c "from pylint import lint; args=[{args}]; lint.Run(args)"'
-
-        # Run the command using the BPM.
-        bpm = g.app.backgroundProcessManager
-        bpm.start_process(c, command, fn=fn, kind='pylint')
+        self.check_all(roots)
 
     # @-others
 

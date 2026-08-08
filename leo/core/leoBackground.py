@@ -78,7 +78,7 @@ class BackgroundProcessManager:
     or 'all', all processes are killed.
 
     You can add processes to the queue at any time. For example, you can rerun
-    the 'pylint' command while a background process is running.
+    the 'mypy' command while a background process is running.
 
     The BackgroundProcessManager is completely safe: all of its code runs in
     the main process.

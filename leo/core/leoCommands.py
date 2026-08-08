@@ -1285,7 +1285,6 @@ class Commands:
         silent: bool = False,
         namespace: dict | None = None,
         raiseFlag: bool = False,
-        runPyflakes: bool = True,
     ) -> Value:
         # @+<< executeScript: docstring >>
         # @+node:ekr.20250508025320.1: *5* << executeScript: docstring >>
@@ -1301,7 +1300,6 @@ class Commands:
         silent=False            No longer used.
         namespace=None          Not None: execute the script in this namespace.
         raiseFlag=False         True: reraise any exceptions.
-        runPyflakes=True        True: run pyflakes if allowed by setting.
         """
         # @-<< executeScript: docstring >>
         c = self
@@ -1314,11 +1312,6 @@ class Commands:
         beautify_flag = (
             language == 'python'
             and c.config.getBool('beautify-python-code-on-write', default=False)
-        )
-        pyflakes_flag = (
-            runPyflakes
-            and language == 'python'
-            and c.config.getBool('run-pyflakes-on-write', default=False)
         )
         # fmt: on
         if not script and language not in ('jupytext', 'python'):  # #4197, #4226.
@@ -1349,16 +1342,6 @@ class Commands:
                 useSelectedText = False
             script = g.getScript(c, p, useSelectedText=useSelectedText)
 
-        # #532: Optionally check all scripts with pyflakes.
-        if pyflakes_flag and not g.unitTesting:
-            from leo.commands import checkerCommands as cc
-
-            prefix = (
-                'c,g,p,script_gnx=None,None,None,None;'
-                'assert c and g and p and script_gnx;\n'
-            )  # fmt: skip
-            cc.PyflakesCommand(c).check_script(script_p, prefix + script)
-
         # Execute the script!
         self.redirectScriptOutput()
         oldLog = g.app.log
@@ -1376,7 +1359,7 @@ class Commands:
                         namespace.update(script_gnx=script_p.gnx)
                     # We *always* execute the script with p = c.p.
                     callResult = c.executeScriptHelper(
-                        args or [], define_g, define_name, namespace, script
+                        args or [], define_g, define_name, language, namespace, script
                     )
                 except KeyboardInterrupt:
                     g.es('interrupted')
@@ -1401,6 +1384,7 @@ class Commands:
         args: list,
         define_g: bool,
         define_name: str,
+        language: str,
         namespace: dict,
         script: str,
     ) -> Value:
@@ -1425,6 +1409,18 @@ class Commands:
             g.inScript = g.app.inScript = True  # g.inScript is a synonym for g.app.inScript.
             if c.write_script_file:
                 scriptFile = self.writeScriptFile(script)
+                if (
+                    scriptFile and language == 'python' and not g.unitTesting
+                    and c.config.getBool('run-ruff-on-write', default=False)
+                ):  # fmt: skip
+                    from leo.commands import checkerCommands
+
+                    if checkerCommands.ruff:
+                        x = checkerCommands.RuffCommand(c)
+                        if not x.check_script_file(scriptFile):
+                            g.app.syntax_error_files.append(scriptFile)
+                            c.syntaxErrorDialog()
+                            return
                 exec(compile(script, scriptFile or '<string>', 'exec'), d)
             else:
                 exec(script, d)

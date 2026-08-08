@@ -1627,18 +1627,18 @@ def xisVisible():
 def onCreate(tag, keys):
     pass
 
+    # def onCreate(tag: str, keys: dict) -> None:
+    #     c = keys.get('c')
+    #     if not c:
+    #         return
+    #     vr = getVr(c=c)
+    #     g.registerHandler('select2', vr.update)
+    #     g.registerHandler('idle', vr.update)
+    #     vr.active = True
+    #     vr.is_visible = False
+    #     vr.hide()
 
-# @+at
-# def onCreate(tag: str, keys: dict) -> None:
-#     c = keys.get('c')
-#     if not c:
-#         return
-#     vr = getVr(c=c)
-#     g.registerHandler('select2', vr.update)
-#     g.registerHandler('idle', vr.update)
-#     vr.active = True
-#     vr.is_visible = False
-#     vr.hide()
+
 # @+node:TomP.20191215195433.12: *3* vr3.onClose
 def onClose(tag, keys):
     c = keys.get('c')
@@ -4226,7 +4226,6 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 silent=False,
                 namespace=namespace,
                 raiseFlag=False,
-                runPyflakes=False,  # Suppress warnings about pre-defined symbols.
             )
             c.bodyWantsFocusNow()
 
@@ -4258,15 +4257,13 @@ class ViewRenderedController3(QtWidgets.QWidget):
                 s = node_list[0].b
                 s = self.remove_directives(s)
             isHtml = s and s[0] == '<'
-            # @+at
-            #         # In case we bring back QtSvg again)
-            #         if s.startswith('<svg'):
-            #             if QtSvg is None:
-            #                 g.es(NO_SVG_WIDGET_MSG, color='red')
-            #                 return
-            #             else:
-            #                 self.update_svg(s, keywords)
-            # @@c
+            # In case we bring back QtSvg again)
+            # if s.startswith('<svg'):
+            #     if QtSvg is None:
+            #         g.es(NO_SVG_WIDGET_MSG, color='red')
+            #         return
+            #     else:
+            #         self.update_svg(s, keywords)
             self.rst_html = ''
             if s and isHtml:
                 _code = [n.b for n in node_list]

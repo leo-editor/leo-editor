@@ -28,9 +28,6 @@ types-six
 asttokens       # For unit tests.
 beautifulsoup4  # For link testing.
 black           # For unit tests.
-flake8
-pylint
-pyflakes
 pytest
 pytest-cov      # For coverage testing.
 ruff

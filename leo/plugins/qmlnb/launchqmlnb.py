@@ -1,6 +1,6 @@
 import sys
 
-from PyQt4.QtCore import QDateTime, QObject, QUrl, pyqtSignal
+from PyQt4.QtCore import QUrl
 from PyQt4.QtGui import QApplication
 from PyQt4.QtDeclarative import QDeclarativeView
 
@@ -14,13 +14,12 @@ def create_dv():
     view.setGeometry(100, 100, 400, 240)
     view.show()
 
-    rootObject = view.rootObject()
     return view
 
 
 def main():
     app = QApplication(sys.argv)
-    v = create_dv()
+    create_dv()
     app.exec_()
 
 
