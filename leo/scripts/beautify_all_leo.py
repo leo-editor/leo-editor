@@ -29,6 +29,7 @@ assert os.path.exists(toml_file), toml_file
 args = " ".join(
     (
         f"--config {toml_file}",
+        '--no-cache',
         # '--verbose',
     )
 )
