@@ -1405,17 +1405,17 @@ class Commands:
             g.inScript = g.app.inScript = True  # g.inScript is a synonym for g.app.inScript.
             if c.write_script_file:
                 scriptFile = self.writeScriptFile(script)
-                if scriptFile and language == 'python':
+                if (
+                    scriptFile
+                    and language == 'python'
+                    and not g.unitTesting
+                    and c.config.getBool('run-ruff-on-write', default=False)
+                ):
                     from leo.commands import checkerCommands
 
-                    if (
-                        checkerCommands.ruff
-                        and not g.unitTesting
-                        and c.config.getBool('run-ruff-on-write', default=False)
-                    ):
+                    if checkerCommands.ruff:
                         x = checkerCommands.RuffCommand(c)
-                        ok = x.check_script_file(scriptFile)
-                        if not ok:
+                        if not x.check_script_file(scriptFile):
                             g.app.syntax_error_files.append(scriptFile)
                             c.syntaxErrorDialog()
                             return
