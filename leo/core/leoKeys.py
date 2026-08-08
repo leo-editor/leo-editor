@@ -1170,6 +1170,98 @@ class AutoCompleterClass:
         except Exception:
             return ''
 
+    # @+node:spike4871.20260809120000.1: *5* ac.lsp_goto_definition & helper
+    @ac_cmd('lsp-goto-definition')
+    def lsp_goto_definition(self, event: LeoKeyEvent | None = None) -> None:
+        """
+        Jump to the LSP-reported definition of the symbol at the cursor
+        (#4871). Works within the current node, across nodes in the same
+        @file tree, and across different @file trees in the same outline
+        (e.g. leoKeys.py -> leoCommands.py, confirmed against a live `ty`
+        server). If the definition lands in a file no node in this
+        outline manages (stdlib, a venv package, ...) there's nothing to
+        select -- report the location instead of failing silently.
+
+        Row/col mapping mirrors get_lsp_hover (a single cursor position),
+        not get_lsp_completions (which maps a whole truncated line for
+        the phantom-EOL workaround) -- this is a one-shot lookup at one
+        point, the same shape of problem as hover.
+        """
+        if not self.use_lsp:
+            return
+        c = self.c
+        w = c.frame.body.wrapper
+        p = c.p
+        body_s = p.b
+        row, column = g.convertPythonIndexToRowCol(body_s, w.getInsertPoint())
+        lines = g.splitLines(body_s)
+        if row >= len(lines):
+            return
+
+        goto = c.gotoCommands
+        root, fileName = goto.find_root(p)
+        if not root or not fileName:
+            return
+        source = goto.get_external_file_with_sentinels(root=root)
+        n0 = goto.find_node_start(p=p, s=source)
+        if n0 is None:
+            return
+        source_lines = g.splitLines(source)
+        target_row = n0 + row
+        if target_row >= len(source_lines):
+            return
+        local_line = lines[row]
+        global_line = source_lines[target_row]
+        column += max(
+            0,
+            (len(global_line) - len(global_line.lstrip()))
+            - (len(local_line) - len(local_line.lstrip())),
+        )
+
+        abs_path = g.fullPath(c, root)
+        client = self._get_lsp_client(root, abs_path)
+        if client is None:
+            return
+        uri = leo_lsp_client.path_to_uri(abs_path)
+        client.sync_document(uri, source, language_id=self._lsp_language_id(root))
+        try:
+            results = client.definition(uri, target_row, column)
+        except Exception as exception:
+            g.es_print(f"LSP: goto-definition failed: {exception!r}")
+            return
+        if not results:
+            g.es_print('LSP: no definition found')
+            return
+
+        target_uri, target_line, _target_col = results[0]
+        target_path = leo_lsp_client.uri_to_path(target_uri)
+        target_root: Position | None
+        if os.path.normpath(target_path) == os.path.normpath(abs_path):
+            target_root = root
+        else:
+            target_root = self._find_at_file_node_for_path(target_path)
+        if target_root is None:
+            g.es_print(f"LSP: definition is outside this outline: {target_path}:{target_line + 1}")
+            return
+        # find_file_line does the rest: select the node, redraw, place the
+        # cursor on the right line, give the body focus -- the same
+        # machinery goto-global-line uses for compiler/traceback line
+        # numbers (gotoCommands.py).
+        goto.find_file_line(target_line + 1, target_root)
+
+    def _find_at_file_node_for_path(self, abs_path: str) -> Position | None:
+        """
+        Return the @<file> node in this outline whose external file
+        matches abs_path, or None if no node manages that file (e.g. it's
+        in the stdlib or a venv package, outside this outline entirely).
+        """
+        c = self.c
+        target = os.path.normpath(abs_path)
+        for p in c.all_positions():
+            if p.isAnyAtFileNode() and os.path.normpath(g.fullPath(c, p)) == target:
+                return p.copy()
+        return None
+
     # @+node:spike4871.20260808130000.1: *5* ac.get_lsp_diagnostics_for_node
     def get_lsp_diagnostics_for_node(self) -> list[tuple[int, int, int, int, str]]:
         """

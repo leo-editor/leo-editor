@@ -70,6 +70,8 @@ import threading
 import time
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlparse
+from urllib.request import url2pathname
 from lsprotocol import converters, types
 
 _converter = converters.get_converter()
@@ -78,6 +80,17 @@ _converter = converters.get_converter()
 def path_to_uri(path: str) -> str:
     """Return a standards-compliant absolute file URI on every platform."""
     return Path(path).resolve().as_uri()
+
+
+def uri_to_path(uri: str) -> str:
+    """Return an absolute filesystem path for a standards-compliant file:// URI.
+
+    Inverse of path_to_uri. Pure stdlib (url2pathname already handles
+    percent-decoding and, on Windows, drive-letter unmangling) -- no
+    pathlib.Path.from_uri, which needs Python 3.13+ and this repo
+    supports 3.10+ (#4871, for LSP definition results).
+    """
+    return url2pathname(urlparse(uri).path)
 
 
 class LspClient:
@@ -531,6 +544,45 @@ class LspClient:
             parts = [LspClient._hover_text(z) for z in contents]
             return '\n\n'.join(z for z in parts if z)
         return ''
+
+    def definition(
+        self, uri: str, line: int, character: int, timeout: float = 2.0
+    ) -> list[tuple[str, int, int]]:
+        """Return [(uri, line, character), ...] definition targets (0-based).
+
+        Blocks, with a short default timeout -- like hover(), this backs a
+        one-shot user-triggered goto-definition command, not something
+        sent on every keystroke, so there's no async variant. Normalizes
+        the response's Location | list[Location] | list[LocationLink] |
+        None union into one flat shape so callers never touch the union
+        type.
+        """
+        try:
+            result = self.request(
+                types.TEXT_DOCUMENT_DEFINITION,
+                types.DefinitionParams(
+                    text_document=types.TextDocumentIdentifier(uri=uri),
+                    position=types.Position(line=line, character=character),
+                ),
+                timeout=timeout,
+            )
+        except (TimeoutError, RuntimeError):
+            return []
+        if result is None:
+            return []
+        items = result if isinstance(result, (list, tuple)) else [result]
+        targets: list[tuple[str, int, int]] = []
+        for item in items:
+            if isinstance(item, types.LocationLink):
+                start = item.target_selection_range.start
+                targets.append((item.target_uri, start.line, start.character))
+            elif isinstance(item, types.Location):
+                start = item.range.start
+                targets.append((item.uri, start.line, start.character))
+            # Anything else (a raw dict from a structuring fallback -- see
+            # _structure_result) is silently skipped: rare in practice,
+            # and a missed definition target is a no-op, not a wrong one.
+        return targets
 
     def shutdown(self) -> None:
         self._alive = False
