@@ -64,6 +64,7 @@ leoVersion.version:     Leo's version number.
 # 6.8.7:  October 11, 2025.
 # 6.8.8:  April 14, 2026.
 # 6.8.9:  June 1, 2026.
+# 6.8.10: August 9, 2026.
 # @-<< version dates >>
 try:
     from importlib.metadata import version as _installed_version
