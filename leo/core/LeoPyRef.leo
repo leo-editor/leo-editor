@@ -1573,7 +1573,7 @@ def do_sec(i, m, s):
     child.h = h.strip()
     parents.append(('@ ', child))
 </t>
-<t tx="ekr.20220222130955.1" _mod_time="4741da9b7bb18011332e"># Config file for mypy
+<t tx="ekr.20220222130955.1"># Config file for mypy
 
 # Note: Do not put comments after settings.
 

@@ -380,7 +380,7 @@
 </v>
 </v>
 <v t="ekr.20050831195331.1"><vh>FAQ</vh>
-<v t="ekr.20050830115714"><vh>@rst html\FAQ.html</vh>
+<v t="ekr.20050830115714"><vh>@rst html/FAQ.html</vh>
 <v t="ekr.20050830120007"><vh>@rst-no-head Links (FAQ)</vh></v>
 <v t="ekr.20050830115714.1"><vh>Learning to use Leo</vh>
 <v t="ekr.20161207052511.1"><vh>How can I learn Leo, or python, or anything</vh></v>
@@ -522,8 +522,8 @@
 </v>
 </v>
 <v t="ekr.20091130111843.6787"><vh>Tutorials</vh>
-<v t="ekr.20091130111843.6788"><vh>@rst html\tutorial.html</vh></v>
-<v t="ekr.20131008041326.16203"><vh>@rst html\tutorial-basics.html</vh>
+<v t="ekr.20091130111843.6788"><vh>@rst html/tutorial.html</vh></v>
+<v t="ekr.20131008041326.16203"><vh>@rst html/tutorial-basics.html</vh>
 <v t="ekr.20131002055813.15973"><vh>Leo's main window</vh></v>
 <v t="ekr.20170215105125.1"><vh>Commands</vh></v>
 <v t="ekr.20170215031129.1"><vh>Outlines and clones</vh></v>
@@ -545,7 +545,7 @@
 </v>
 <v t="ekr.20131005214621.16090"><vh>Summary</vh></v>
 </v>
-<v t="ekr.20131008041326.16222"><vh>@rst html\tutorial-pim.html</vh>
+<v t="ekr.20131008041326.16222"><vh>@rst html/tutorial-pim.html</vh>
 <v t="ekr.20131004073415.16044"><vh>Clones</vh></v>
 <v t="ekr.20131018100353.16706"><vh>Clones create views</vh></v>
 <v t="ekr.20131009100732.16760"><vh>Using abbreviations and templates</vh></v>
@@ -553,7 +553,7 @@
 <v t="ekr.20170312083548.1"><vh>Using Chapters</vh></v>
 <v t="ekr.20131008041326.16066"><vh>Summary</vh></v>
 </v>
-<v t="ekr.20131008041326.16241"><vh>@rst html\tutorial-rst3.html</vh>
+<v t="ekr.20131008041326.16241"><vh>@rst html/tutorial-rst3.html</vh>
 <v t="ekr.20131102044158.16488"><vh>Install docutils and (optional) sphinx</vh></v>
 <v t="ekr.20131009100732.16748"><vh>Create the @rst node</vh></v>
 <v t="ekr.20131027064821.17144"><vh>The output and intermediate files</vh></v>
@@ -574,7 +574,7 @@
 <v t="ekr.20131005214621.16128"><vh>Summary</vh></v>
 <v t="ekr.20131009100732.16753"><vh>Further study</vh></v>
 </v>
-<v t="ekr.20040403171740"><vh>@rst html\tutorial-scripting.html</vh>
+<v t="ekr.20040403171740"><vh>@rst html/tutorial-scripting.html</vh>
 <v t="ekr.20131013060803.16852"><vh>Hello world</vh></v>
 <v t="ekr.20170313111502.1"><vh>Create outline nodes</vh></v>
 <v t="ekr.20170313111626.1"><vh>Generate an output file from nodes</vh></v>
@@ -588,7 +588,7 @@
 <v t="ekr.20131017051340.16735"><vh>Example position scripts</vh></v>
 </v>
 </v>
-<v t="ekr.20180126061923.1"><vh>@rst html\tutorial-tips.html</vh>
+<v t="ekr.20180126061923.1"><vh>@rst html/tutorial-tips.html</vh>
 <v t="ekr.20180126063015.1"><vh>The most important tips</vh>
 <v t="ekr.20180126061429.16"><vh>You don't have to remember command names</vh></v>
 <v t="ekr.20180126061429.15"><vh>Learn to use clones</vh></v>
@@ -933,7 +933,7 @@
 <v t="mhw.20191008134029.1"><vh>@rst html/leoandasciidoc.html</vh></v>
 </v>
 <v t="ekr.20061025065357"><vh>Leo and Emacs</vh>
-<v t="ekr.20061025065357.1"><vh>@rst html\emacs.html</vh>
+<v t="ekr.20061025065357.1"><vh>@rst html/emacs.html</vh>
 <v t="ekr.20170315072706.1"><vh>Leo vs org mode</vh></v>
 <v t="ekr.20140720203932.17747"><vh>Using org-mode (.org) files in Leo</vh></v>
 <v t="ekr.20061025081359"><vh>Controlling Leo from Emacs using Pymacs</vh></v>
@@ -942,7 +942,7 @@
 </v>
 </v>
 <v t="TL.20080804095315.1"><vh>Leo and Vim</vh>
-<v t="TL.20080804095315.2"><vh>@rst html\vimBindings.html</vh>
+<v t="TL.20080804095315.2"><vh>@rst html/vimBindings.html</vh>
 <v t="ekr.20140810085801.18230"><vh>Using Leo's native vim mode</vh>
 <v t="ekr.20140810153947.6747"><vh>Supported commands</vh></v>
 <v t="ekr.20140810153947.6752"><vh>Differences from the real vim</vh></v>
@@ -962,7 +962,7 @@
 </v>
 </v>
 <v t="ekr.20241027051721.1"><vh>Leo and Jupyter Notebooks</vh>
-<v t="ekr.20241027051739.1"><vh>@rst html\jupyternotebooks.html</vh>
+<v t="ekr.20241027051739.1"><vh>@rst html/jupyternotebooks.html</vh>
 <v t="ekr.20241107063856.1"><vh>Creating and populating @jupytext trees</vh></v>
 <v t="ekr.20241105100428.1"><vh>Reading @jupytext trees</vh></v>
 <v t="ekr.20241107070438.1"><vh>Editing @jupytext trees</vh></v>
@@ -972,7 +972,7 @@
 </v>
 </v>
 <v t="ekr.20070317033759"><vh>Embedding Leo with the leoBridge module</vh>
-<v t="ekr.20070317033759.1"><vh>@rst html\leoBridge.html</vh>
+<v t="ekr.20070317033759.1"><vh>@rst html/leoBridge.html</vh>
 <v t="ekr.20070317033759.3"><vh>Overview</vh></v>
 <v t="ekr.20071210094621"><vh>Running leoBridge from within Leo</vh></v>
 </v>
@@ -997,7 +997,7 @@
 <v t="ekr.20101025080245.5799"><vh>Advanced Topics</vh>
 <v t="ekr.20131008041326.16099"><vh>@rst html/intermediatetopics.html</vh></v>
 <v t="ekr.20060612102055"><vh>Writing Plugins</vh>
-<v t="ekr.20060612103240"><vh>@rst html\writingPlugins.html</vh>
+<v t="ekr.20060612103240"><vh>@rst html/writingPlugins.html</vh>
 <v t="ekr.20131008041326.16053"><vh>About Plugins</vh></v>
 <v t="EKR.20040524104904.224"><vh>Important security warnings</vh></v>
 <v t="peckj.20130813123907.6841"><vh>Documenting plugins</vh></v>
@@ -1009,7 +1009,7 @@
 </v>
 </v>
 <v t="ekr.20060527105211"><vh>Debugging with Leo</vh>
-<v t="ekr.20060527105617"><vh>@rst html\debuggers.html</vh>
+<v t="ekr.20060527105617"><vh>@rst html/debuggers.html</vh>
 <v t="ekr.20070116062405"><vh>Using g.trace and g.pdb</vh></v>
 <v t="ekr.20060527112801"><vh>Settings for winpdb</vh></v>
 <v t="ekr.20070115172724"><vh>Debugging scripts with winpdb</vh>
@@ -1020,7 +1020,7 @@
 </v>
 </v>
 <v t="ekr.20131015104133.16763"><vh>A scripting miscellany</vh>
-<v t="ekr.20131015091948.16784"><vh>@rst html\scripting-miscellany.html</vh>
+<v t="ekr.20131015091948.16784"><vh>@rst html/scripting-miscellany.html</vh>
 <v t="ekr.20131014053720.16816"><vh>\@button example</vh></v>
 <v t="ekr.20150817125512.1"><vh>Comparing two similar outlines</vh></v>
 <v t="tom.20230107235603.1"><vh>Converting Body Text To Title Case</vh></v>
@@ -1100,10 +1100,10 @@
 </v>
 </v>
 <v t="ekr.20131019035402.17557"><vh>The Leonine world</vh>
-<v t="ekr.20131019035402.17573"><vh>@rst html\leonine-world.html</vh></v>
+<v t="ekr.20131019035402.17573"><vh>@rst html/leonine-world.html</vh></v>
 </v>
 <v t="ekr.20180505114327.1"><vh>Leo University</vh>
-<v t="ekr.20180509042555.1"><vh>@rst html\leo-university.html</vh>
+<v t="ekr.20180509042555.1"><vh>@rst html/leo-university.html</vh>
 <v t="ekr.20180505114327.5"><vh>Lesson 1: Think process, not knowledge</vh></v>
 <v t="ekr.20180505114327.7"><vh>Lesson 2: Learn Leo's debugging tools</vh></v>
 <v t="ekr.20180505114327.8"><vh>Lesson 3: Running unit tests</vh></v>
@@ -1118,7 +1118,7 @@
 </v>
 </v>
 <v t="ekr.20131008041326.16091"><vh>Cheat Sheet</vh>
-<v t="ekr.20131007143750.16070"><vh>@rst html\cheatsheet.html</vh>
+<v t="ekr.20131007143750.16070"><vh>@rst html/cheatsheet.html</vh>
 <v t="ekr.20131019061259.16693"><vh>Key bindings</vh>
 <v t="ekr.20131015035606.16778"><vh>Selecting outline nodes</vh></v>
 <v t="ekr.20131015035606.16800"><vh>Moving outline nodes</vh></v>
@@ -25448,7 +25448,7 @@ any change to one clone inevitably affects all other clones.
 <t tx="ekr.20230121061309.1"></t>
 <t tx="ekr.20230121061335.1"></t>
 <t tx="ekr.20230121061433.1"></t>
-<t tx="ekr.20230121110340.1" _mod_time="4741da464e3720be372e">@language batch
+<t tx="ekr.20230121110340.1">@language batch
 echo off
 echo off
 cd C:\Repos\leo-editor\leo\doc\html
@@ -25456,7 +25456,7 @@ echo make clean
 call make clean
 </t>
 <t tx="ekr.20230121110345.1"></t>
-<t tx="ekr.20230121110533.1" _mod_time="4741da464e3720ce992e">@language batch
+<t tx="ekr.20230121110533.1">@language batch
 echo off
 echo off
 cd C:\Repos\leo-editor\leo\doc\html
