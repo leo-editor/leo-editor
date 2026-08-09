@@ -1305,7 +1305,7 @@ class Commands:
         c = self
         p = p or c.p
         language = g.findLanguageDirectives(c, p)
-        script_p = p or c.p  # Only for error reporting below.
+        script_p = p or c.p  # For error reporting.
 
         # Compute flags
         # fmt: off
@@ -1359,7 +1359,13 @@ class Commands:
                         namespace.update(script_gnx=script_p.gnx)
                     # We *always* execute the script with p = c.p.
                     callResult = c.executeScriptHelper(
-                        args or [], define_g, define_name, language, namespace, script
+                        args or [],
+                        define_g,
+                        define_name,
+                        language,
+                        namespace,
+                        script,
+                        script_p,
                     )
                 except KeyboardInterrupt:
                     g.es('interrupted')
@@ -1387,6 +1393,7 @@ class Commands:
         language: str,
         namespace: dict,
         script: str,
+        script_p: Position,
     ) -> Value:
         c = self
         if c.p:
@@ -1417,7 +1424,7 @@ class Commands:
 
                     if checkerCommands.ruff:
                         x = checkerCommands.RuffCommand(c)
-                        if not x.check_script_file(scriptFile):
+                        if not x.check_script_file(scriptFile, script_p):
                             g.app.syntax_error_files.append(scriptFile)
                             c.syntaxErrorDialog()
                             return
