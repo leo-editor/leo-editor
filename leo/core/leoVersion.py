@@ -67,6 +67,7 @@ leoVersion.version:     Leo's version number.
 # @-<< version dates >>
 try:
     from importlib.metadata import version as _installed_version
+
     version = _installed_version('leo')
 except Exception:
     # Not pip-installed (e.g. running from a git checkout): version is unknown.
