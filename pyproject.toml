@@ -234,7 +234,7 @@ packages = [
 
 [project]
 requires-python = ">= 3.10"
-version = "6.8.9"  # No space.
+version = "6.8.10.dev0"  # No space.
 name = "leo"
 
 #@+<< developer info >>
