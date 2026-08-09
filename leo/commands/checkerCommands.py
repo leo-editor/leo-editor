@@ -479,7 +479,7 @@ class RuffCommand:
         return result.returncode == 0
 
     # @+node:ekr.20260808005852.1: *3* ruff.check_script_file
-    def check_script_file(self, fn: str) -> bool:
+    def check_script_file(self, fn: str, script_p: Position) -> bool:
         """
         Run ruff synchronously the file. Return True if ruff reports no errors.
 
@@ -505,7 +505,7 @@ class RuffCommand:
         s = ''.join(z for z in g.splitLines(raw_s) if not z.startswith('Found')).strip()
         s = s.replace(fn, c.p.h)  # A hack.
         if s:
-            c.frame.log.put_html_links(s)
+            c.frame.log.put_html_links(s, script_p=script_p)
         return result.returncode == 0
 
     # @+node:vv.20260807120000.5: *3* ruff.run (entry)

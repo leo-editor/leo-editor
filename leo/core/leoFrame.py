@@ -741,7 +741,7 @@ class LeoLog:
         (1, 2, g.ruff_pat),
     ]
 
-    def put_html_links(self, s: str) -> bool:
+    def put_html_links(self, s: str, script_p: Position | None = None) -> bool:
         """
         If *any* line in s contains a matches against known error patterns,
         then output *all* lines in s to the log, and return True.
@@ -815,10 +815,12 @@ class LeoLog:
                     found_matches += 1
                     # g.trace(f"{p.h} nodeLink: {unl}::-{line_number}")
                     self.put(line, nodeLink=f"{unl}::-{line_number}")  # Use global line.
-                else:
-                    unl = c.p.get_UNL()
+                elif script_p:
+                    unl = script_p.get_UNL()
                     found_matches += 1
                     self.put(line, nodeLink=f"{unl}::{line_number}")  # Use local line.
+                else:
+                    self.put(line)  # No useful Position.
             else:  # None of the patterns match.
                 self.put(line)
         return bool(found_matches)

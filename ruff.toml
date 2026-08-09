@@ -98,7 +98,6 @@ ignore = [
     "FURB105",  # Unnecessary empty string passed to `print`
     "FURB167",  # Use of regular expression alias `re.M`
     "FURB188",  # Prefer `str.removesuffix()` over conditionally replacing with slice.
-    "I001",     # Import block is un-sorted or un-formatted
     "PERF102",  # When using only the values of a dict use the `values()` method
     "PERF402",  # Use `list` or `list.copy` to create a copy of a list
     "PIE794",   # Class field `valid_unls` is defined multiple times
