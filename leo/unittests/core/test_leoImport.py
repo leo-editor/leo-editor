@@ -229,6 +229,24 @@ class TestLeoImport(BaseTestImporter):
         u.redo()
         self.check_outline(target, expected_results)
 
+    # @+node:vv.20260808220000.1: *3* TestLeoImport.test_languageForExtension
+    def test_languageForExtension(self):
+        """
+        #4882: g.app.extra_extension_dict.get(ext, '') used '' as a default,
+        which incorrectly short-circuited the fallback to g.app.extension_dict,
+        since '' passes the `z not in (None, 'none', 'None')` check.
+        """
+        c = self.c
+        ic = c.importCommands
+        # Extensions known only to g.app.extension_dict must still resolve.
+        self.assertEqual(ic.languageForExtension('.py'), 'python')
+        self.assertEqual(ic.languageForExtension('.cfg'), 'config')
+        # Extensions in g.app.extra_extension_dict must still resolve.
+        self.assertEqual(ic.languageForExtension('.pod'), 'perl')
+        self.assertEqual(ic.languageForExtension('.w'), 'c')
+        # A genuinely unknown extension resolves to ''.
+        self.assertEqual(ic.languageForExtension('.zzz_no_such_ext'), '')
+
     # @-others
 
 
