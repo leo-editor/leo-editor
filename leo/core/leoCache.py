@@ -349,7 +349,7 @@ class SqlitePickleShare:
 
         # @+others
         # @+node:vitalije.20170818115617.1: *4* do_block
-        def do_block(cur: object) -> Value:
+        def do_block(cur: sqlite3.Cursor) -> Value:
             if itms := tuple((self.dumper(self.loader(v)), k) for k, v in cur):
                 self.conn.executemany('update cachevalues set data=? where key=?', itms)
                 self.conn.commit()

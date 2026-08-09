@@ -201,6 +201,7 @@ from collections.abc import Callable
 import os
 from pathlib import Path
 import shutil
+import subprocess
 import sys
 import textwrap
 from typing import Any, TYPE_CHECKING
@@ -267,7 +268,7 @@ try:
     import nbformat
     from nbconvert import HTMLExporter
 except ImportError:
-    nbformat = None
+    nbformat = None  # type:ignore
 
 try:
     import pyperclip
@@ -1046,7 +1047,8 @@ class ViewRenderedController(QtWidgets.QWidget):
             self.gs = QtWidgets.QGraphicsScene(splitter)
             self.gv = QtWidgets.QGraphicsView(self.gs)
             w = self.w = self.gv.viewport()  # A QWidget
-            self.embed_widget(w)
+            if w:
+                self.embed_widget(w)
 
         c.executeScript(
             script=s,
@@ -1077,7 +1079,9 @@ class ViewRenderedController(QtWidgets.QWidget):
         if not s.strip():
             return
         lines = g.splitLines(s) or []
-        fn = lines and lines[0].strip()
+        if not lines:
+            return
+        fn = lines[0].strip()
         if not fn:
             return
         w = self.get_base_text_widget()
@@ -1418,7 +1422,6 @@ class ViewRenderedController(QtWidgets.QWidget):
             silent=False,
             namespace=namespace,
             raiseFlag=False,
-            runPyflakes=False,  # Suppress warnings about pre-defined symbols.
         )
         c.bodyWantsFocusNow()
 
@@ -1477,8 +1480,10 @@ class ViewRenderedController(QtWidgets.QWidget):
         with open("temp.plantuml", "w") as f:
             f.write(s)
         pth_plantuml_jar = "~/.leo"
-        os.system(
-            "cat temp.plantuml | java -jar %s/plantuml.jar -pipe > %s" % (pth_plantuml_jar, path)
+        subprocess.run(
+            "cat temp.plantuml | java -jar %s/plantuml.jar -pipe > %s" % (pth_plantuml_jar, path),
+            shell=True,
+            check=False,
         )
         template = self.image_template % (path)
         template = textwrap.dedent(template).strip()

@@ -51,8 +51,8 @@ class Ui_LeoQuickSearchWidget:
 
     def retranslateUi(self, LeoQuickSearchWidget):
         self.showParents.setText(
-            QtWidgets.QApplication.translate("LeoQuickSearchWidget", "Show Parents", None)
+            QtWidgets.QApplication.translate("LeoQuickSearchWidget", "Show Parents")
         )
         LeoQuickSearchWidget.setWindowTitle(
-            QtWidgets.QApplication.translate("LeoQuickSearchWidget", "Form", None)
+            QtWidgets.QApplication.translate("LeoQuickSearchWidget", "Form")
         )

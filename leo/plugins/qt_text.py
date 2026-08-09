@@ -528,7 +528,7 @@ class LeoLineTextWidget(QtWidgets.QFrame):
         e.viewport().installEventFilter(self)
 
     # @+node:ekr.20150403094706.10: *3* LeoLineTextWidget.eventFilter
-    def eventFilter(self, obj: QObject, event: QEvent) -> bool:  # ty: ignore[invalid-method-override]
+    def eventFilter(self, obj: QObject, event: QEvent) -> bool:
         """
         Update the line numbers for all events on the text edit and the viewport.
         This is easier than connecting all necessary signals.
@@ -607,7 +607,7 @@ if QtWidgets:
                 self.itemClicked.connect(self.select_callback)
 
             # @+node:ekr.20110605121601.18011: *5* LeoQListWidget.closeEvent
-            def closeEvent(self, event: QEvent) -> None:  # ty: ignore[invalid-method-override]
+            def closeEvent(self, event: QEvent) -> None:
                 """Kill completion and close the window."""
                 self.leo_c.k.autoCompleter.abort()
 
@@ -631,7 +631,7 @@ if QtWidgets:
                 return self.currentItem().text()
 
             # @+node:ekr.20110605121601.18013: *5* LeoQListWidget.keyPressEvent
-            def keyPressEvent(self, event: QKeyEvent) -> None:  # ty: ignore[invalid-method-override]
+            def keyPressEvent(self, event: QKeyEvent) -> None:
                 """Handle a key event from QListWidget."""
                 c = self.leo_c
                 w = c.frame.body.wrapper
@@ -1019,7 +1019,7 @@ if QtWidgets:
 
         leo_vim_mode: bool | None = None
 
-        def paintEvent(self, event: QPaintEvent) -> None:  # ty: ignore[invalid-method-override]
+        def paintEvent(self, event: QPaintEvent) -> None:
             """
             LeoQTextBrowser.paintEvent.
 
@@ -1029,16 +1029,6 @@ if QtWidgets:
             """
             # pylint: disable = too-many-locals
             c, vc, w = self.leo_c, self.leo_c.vimCommands, self
-
-            # First, call the base class paintEvent.
-            QtWidgets.QTextBrowser.paintEvent(self, event)
-
-            def set_cursor_width(width: int) -> None:
-                """Set the cursor width, but only if necessary."""
-                if self.leo_cursor_width != width:
-                    self.leo_cursor_width = width
-                    w.setCursorWidth(width)
-
             if w == getattr(c.frame.body, 'widget', None) and c.config.getBool(
                 'show-rmargin-guide'
             ):
@@ -1047,8 +1037,7 @@ if QtWidgets:
                 # based on https://stackoverflow.com/questions/30371613
                 # draw-vertical-lines-on-qtextedit-in-pyqt
                 # Honor @pagewidth directive if any
-                rcol = c.config.getInt('rguide-col')
-                rcol = c.getPageWidth(c.p) if rcol is None else rcol
+                rcol = c.getPageWidth(c.p) or c.config.getInt('rguide-col', 80)
                 vp = w.viewport()
                 palette = vp.palette()
                 font = w.document().defaultFont()
@@ -1073,6 +1062,15 @@ if QtWidgets:
                     painter.setPen(pen)
                     painter.drawLine(rmargin, 0, rmargin, vp.height())
                 # @-<< paint margin guides >>
+
+            # First, call the base class paintEvent.
+            QtWidgets.QTextBrowser.paintEvent(self, event)
+
+            def set_cursor_width(width: int) -> None:
+                """Set the cursor width, but only if necessary."""
+                if self.leo_cursor_width != width:
+                    self.leo_cursor_width = width
+                    w.setCursorWidth(width)
 
             # Are we in vim mode?
             if self.leo_vim_mode is None:
@@ -1101,7 +1099,7 @@ if QtWidgets:
             qp.end()
 
         # @+node:tbrown.20130411145310.18855: *3* LeoQTextBrowser.wheelEvent
-        def wheelEvent(self, event: QWheelEvent) -> None:  # ty: ignore[invalid-method-override]
+        def wheelEvent(self, event: QWheelEvent) -> None:
             """Handle a wheel event."""
             if KeyboardModifier.ControlModifier & event.modifiers():
                 d = {'c': self.leo_c}
@@ -1155,7 +1153,7 @@ class NumberBar(QtWidgets.QFrame):
         self.y_adjust = c.config.getInt('gutter-y-adjust') or 10
 
     # @+node:ekr.20181005085507.1: *3* NumberBar.mousePressEvent
-    def mousePressEvent(self, event: QMouseEvent) -> None:  # ty: ignore[invalid-method-override]
+    def mousePressEvent(self, event: QMouseEvent) -> None:
         c = self.c
 
         def find_line(y: int) -> int:
@@ -1182,7 +1180,7 @@ class NumberBar(QtWidgets.QFrame):
             xdb.qc.put(f"b {path}:{n}")
 
     # @+node:ekr.20150403094706.5: *3* NumberBar.update
-    def update(self, *args: Any) -> None:  # ty: ignore[invalid-method-override]
+    def update(self, *args: Any) -> None:
         """
         Updates the number bar to display the current set of numbers.
         Also, adjusts the width of the number bar if necessary.
@@ -1195,7 +1193,7 @@ class NumberBar(QtWidgets.QFrame):
         QtWidgets.QWidget.update(self, *args)
 
     # @+node:ekr.20150403094706.6: *3* NumberBar.paintEvent
-    def paintEvent(self, event: QPaintEvent) -> None:  # ty: ignore[invalid-method-override]
+    def paintEvent(self, event: QPaintEvent) -> None:
         """
         Enhance QFrame.paintEvent.
         Paint all visible text blocks in the editor's document.
@@ -1832,7 +1830,7 @@ class QTextEditWrapper(QTextMixin):
         return self.widget.textCursor().hasSelection()
 
     # @+node:ekr.20110605121601.18089: *4* QTextEditWrapper.insert (avoid call to setAllText)
-    def insert(self, i: int, s: str) -> None:  # ty: ignore[invalid-method-override]
+    def insert(self, i: int, s: str) -> None:
         """QTextEditWrapper."""
         w = self.widget
         cursor = w.textCursor()

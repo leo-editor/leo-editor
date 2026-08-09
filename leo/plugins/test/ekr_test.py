@@ -31,8 +31,8 @@ def onmenu2(tag, keys):
     c = keys.get('c')
     if c:
         g.trace(c.k)
-        g.funcToMethod(f=ekrCommand1, theClass=c, name=None)
-        g.funcToMethod(f=ekrCommand2, theClass=c, name=None)
+        g.funcToMethod(f=ekrCommand1, theClass=c)
+        g.funcToMethod(f=ekrCommand2, theClass=c)
         c.k.registerCommand('ekr-command1', c.ekrCommand1)
         c.k.registerCommand('ekr-command2', c.ekrCommand2)
 

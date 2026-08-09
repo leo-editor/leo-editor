@@ -348,55 +348,6 @@ class Position:
 
     __repr__ = __str__
 
-    # @+node:ekr.20230726063237.1: *4* p.archive
-    def archive(self) -> dict[str, Value] | None:
-        """Return a json-like archival dictionary for p/v.unarchive."""
-        p = self
-        if not p.v:
-            return None  # PR #4767
-        c = p.v.context
-
-        # Create an *initial* list of all vnodes in p.self_and_subtree.
-        all_unique_vnodes: list[VNode] = []
-        for p in p.self_and_subtree():
-            if p.v not in all_unique_vnodes:
-                all_unique_vnodes.append(p.v)
-
-        def ref(v: VNode) -> str | None:
-            if v == c.hiddenRootNode:
-                return None
-            if v.gnx not in all_unique_vnodes:
-                all_unique_vnodes.append(v.gnx)
-            return v.gnx
-
-        parents_dict: dict[str, list[str]] = {}
-        for p2 in p.self_and_subtree():
-            v = p2.v
-            parents_list = [ref(z) for z in v.parents]
-            parents_dict[v.gnx] = [z for z in parents_list if z]
-
-        children_dict: dict[str, list[str]] = {}
-        for p2 in p.self_and_subtree():
-            v = p2.v
-            childrens_list = [ref(z.gnx) for z in v.children]
-            children_dict[v.gnx] = [z for z in childrens_list if z]
-
-        marks_dict: dict[str, str] = {}
-        for v in all_unique_vnodes:
-            marks_dict[v.gnx] = str(int(v.isMarked()))
-
-        uas_dict: dict[str, dict] = {}
-        for v in all_unique_vnodes:
-            uas_dict[v.gnx] = v.archive_ua()  # To do.
-
-        return {
-            'vnodes': all_unique_vnodes,
-            'parents': parents_dict,
-            'children': children_dict,
-            'marks': marks_dict,
-            'uAs': uas_dict,
-        }
-
     # @+node:ekr.20061006092649: *4* p.archivedPosition
     def archivedPosition(self, root_p: Position | None = None) -> list[int]:
         """Return a representation of a position suitable for use in .leo files."""
@@ -1963,7 +1914,7 @@ class Position:
         use p.v.b instead of p.b.
         """
         p = self
-        if c := p.v and p.v.context:
+        if p.v and (c := p.v.context):
             c.setBodyString(p, val)
             # Warning: c.setBodyString is *expensive*.
 
@@ -1990,7 +1941,7 @@ class Position:
         use p.v.h instead of p.h.
         """
         p = self
-        if c := p.v and p.v.context:
+        if p.v and (c := p.v.context):
             c.setHeadString(p, val)
             # Warning: c.setHeadString is *expensive*.
 
@@ -2922,9 +2873,8 @@ class VNode:
             s = g.toUnicode(s, reportErrors=True)
             v._headString = s.replace('\n', '')
             self.contentModified()  # #1413.
-        # #4394: Clear the the mod_time.
-        if '_mod_time' in v.u:
-            del v.u['_mod_time']
+        # #4394, #4875: Clear the cached mod time (in-memory only).
+        v.context.mod_time_cache.pop(v.gnx, None)
         # Update the icon last.
         v.updateIcon()
 

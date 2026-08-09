@@ -414,7 +414,7 @@ if asyncore:
             aList = [g.toEncodedString(z) for z in self.buffer]
             self.out_buffer = b''.join(aList)
             del self.buffer
-            self.set_socket(self.socket, None)
+            self.set_socket(self.socket, None)  # type:ignore
             self.socket.setblocking(False)
             self.connected = True
             try:
@@ -1120,7 +1120,7 @@ if asynchat:
         def handle_request_line(self):
             """Called when the http request line and headers have been received"""
             # prepare attributes needed in parse_request()
-            self.rfile = BytesIO(self.buffer.getvalue())
+            self.rfile = BytesIO(self.buffer.getvalue())  # type:ignore
             self.raw_requestline = self.rfile.readline()
             self.parse_request()
             # if there is a Query String, decodes it in a QUERY dictionary
@@ -1143,7 +1143,7 @@ if asynchat:
                 self.send_error(501, "Unsupported method (%s)" % self.command)
 
         # @+node:ekr.20110522152535.18256: *3* found_terminator
-        def found_terminator(self):
+        def found_terminator(self) -> None:
             # pylint: disable=method-hidden
             # Control may be passed to another found_terminator.
             self.handle_request_line()
@@ -1182,7 +1182,7 @@ if asyncore:
             try:
                 # pylint: disable=unpacking-non-sequence
                 # The following except statements catch this.
-                conn, addr = self.accept()
+                conn, addr = self.accept()  # type:ignore
             except OSError:
                 self.log_info('warning: server accept() threw an exception', 'warning')
                 return

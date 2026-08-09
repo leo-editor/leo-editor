@@ -14,6 +14,7 @@ See https://github.com/gi1242/python-markdown-math for license, more info.
 from markdown.inlinepatterns import InlineProcessor
 from markdown.extensions import Extension
 
+
 class inlineMathProcessor(InlineProcessor):
     def handleMatch(self, m, data):
         # MathJAX handles all the math. Just set the uses_math flag, and
@@ -21,11 +22,11 @@ class inlineMathProcessor(InlineProcessor):
         self.md.uses_math = True
         return m.group(0), m.start(0), m.end(0)
 
+
 class MathExtension(Extension):
     def __init__(self, *args, **kwargs):
         self.config = {
-            'enable_dollar_delimiter':
-                [False, 'Enable single-dollar delimiter'],
+            'enable_dollar_delimiter': [False, 'Enable single-dollar delimiter'],
         }
         super().__init__(*args, **kwargs)
 
@@ -43,14 +44,14 @@ class MathExtension(Extension):
             mathRegExps.append(r'(?<!\\|\$)\$.+?\$')  # $ ... $
         for i, pattern in enumerate(mathRegExps):
             # we should have higher priority than 'escape' which has 180
-            md.inlinePatterns.register(
-                inlineMathProcessor(pattern, md), f'math-inline-{i}', 185)
+            md.inlinePatterns.register(inlineMathProcessor(pattern, md), f'math-inline-{i}', 185)
 
         md.uses_math = False
         self.md = md
 
     def reset(self):
         self.md.uses_math = False
+
 
 def makeExtension(*args, **kwargs):
     return MathExtension(*args, **kwargs)

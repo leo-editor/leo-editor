@@ -5,6 +5,7 @@
 import hashlib
 import os
 import shutil
+import subprocess
 from leo.core import leoGlobals as g
 
 
@@ -42,7 +43,7 @@ def git_dump_f(event):
         g.es("Initializing git repo at " + flatroot)
         os.makedirs(flatroot)
         os.chdir(flatroot)
-        os.system('git init')
+        subprocess.run(['git', 'init'], check=False)
     assert os.path.isdir(flatroot)
     comment = g.app.gui.runAskOkCancelStringDialog(c, "Checkin comment", "Comment")
     if not comment:
@@ -61,8 +62,10 @@ def git_dump_f(event):
     with open(titlename, 'w', encoding='utf-8') as f:
         f.write(html)
     g.es("committing to " + flatroot)
-    os.system('git add *')
-    out = os.popen('git commit -m "%s"' % comment).read()
+    subprocess.run('git add *', shell=True, check=False)
+    out = subprocess.run(
+        ['git', 'commit', '-m', comment], capture_output=True, text=True, check=False
+    ).stdout
     g.es("committed")
     g.es(out)
     g.es('Outline in ' + os.path.abspath(titlename))
@@ -76,7 +79,7 @@ def git_log_f(event):
     # os.chdir ??
     inf = contfile(c, p)
     print("f", inf)
-    os.system("gitk %s" % inf)
+    subprocess.run(['gitk', inf], check=False)
 
 
 # @-others

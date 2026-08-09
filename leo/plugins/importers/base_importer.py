@@ -463,9 +463,6 @@ class Importer:
         self, parent: Position, outer_block: Block, result_blocks: list[Block]
     ) -> None:
         """Carefully generate bodies from the given blocks."""
-        c = self.c
-        at = c.atFileCommands
-
         # Keys: VNodes containing @others directives.
         self.at_others_dict: dict[VNode, bool] = {}
         seen_blocks: dict[Block, bool] = {}

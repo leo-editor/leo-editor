@@ -328,11 +328,11 @@ from leo.core.leoQt import QtCore
 try:
     from PIL import Image
 except Exception:
-    Image = None
+    Image = None  # type:ignore
 try:
     from PIL import ImageChops
 except ImportError:
-    ImageChops = None
+    ImageChops = None  # type:ignore
 
 # Fail fast, right after all imports.
 g.assertUi('qt')  # May raise g.UiTypeException, caught by the plugins manager.
@@ -627,11 +627,8 @@ class ScreenShotController:
         sc = self
         assert sc.slideshow_path
         os.chdir(sc.slideshow_path)
-        os.system('make clean')
-        os.system('make html')
-        # cmd = ['make','html']
-        # proc = subprocess.Popen(cmd)
-        # proc.communicate() # Wait
+        subprocess.run(['make', 'clean'], check=False)
+        subprocess.run(['make', 'html'], check=False)
 
     # @+node:ekr.20100915074635.5651: *3* init
     def init(self, p):
@@ -1623,7 +1620,7 @@ class ScreenShotController:
         img_element = ids_d.get('co_shot')
         img_element.set(sc.xlink + 'href', sc.screenshot_fn)
         # adjust screen shot dimensions
-        if Image:
+        if Image and sc.screenshot_fn:
             img = Image.open(sc.screenshot_fn)
             img_element.set('width', str(img.size[0]))
             img_element.set('height', str(img.size[1]))

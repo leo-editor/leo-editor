@@ -40,7 +40,7 @@ class LeoEditPane(QtWidgets.QWidget):
     # @+node:tbrown.20171028115438.5: *3* __init__
     def __init__(
         self,
-        c=None,
+        c,
         p=None,
         mode='edit',
         show_head=True,

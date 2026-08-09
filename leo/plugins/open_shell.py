@@ -23,6 +23,7 @@ Current limitations:
 
 # Written by Ed Taekema.  Modified by EKR
 import os
+import subprocess
 import sys
 from leo.core import leoGlobals as g
 
@@ -96,21 +97,21 @@ class pluginController:
 
         d = self._getCurrentNodePath()
         myCmd = 'cd ' + d
-        os.spawnl(os.P_NOWAIT, pathToCmd, '/k ', myCmd)
+        subprocess.Popen(['/k ', myCmd], executable=pathToCmd)
 
     # @+node:EKR.20040517080049.10: *3* launchExplorer
     def launchExplorer(self, event=None):
         # global pathToExplorer
 
         d = self._getCurrentNodePath()
-        os.spawnl(os.P_NOWAIT, pathToExplorer, ' ', d)
+        subprocess.Popen([' ', d], executable=pathToExplorer)
 
     # @+node:EKR.20040517080049.11: *3* launchxTerm
     def launchxTerm(self, event=None):
         d = self._getCurrentNodePath()
         curdir = os.getcwd()
         os.chdir(d)
-        os.spawnlp(os.P_NOWAIT, 'xterm', '-title Leo')
+        subprocess.Popen(['-title Leo'], executable='xterm')
         os.chdir(curdir)
 
     # @-others

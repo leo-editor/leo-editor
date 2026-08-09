@@ -39,13 +39,13 @@ class LEP_PlainTextEdit(QtWidgets.QTextEdit):
         self.textChanged.connect(self.text_changed)
 
     # @+node:tbrown.20171028115504.5: *3* focusInEvent
-    def focusInEvent(self, event):
+    def focusInEvent(self, event: QtGui.QFocusEvent) -> None:
         QtWidgets.QTextEdit.focusInEvent(self, event)
         DBG("focusin()")
         self.lep.edit_widget_focus()
 
     # @+node:tbrown.20171028115504.6: *3* focusOutEvent
-    def focusOutEvent(self, event):
+    def focusOutEvent(self, event: QtGui.QFocusEvent) -> None:
         QtWidgets.QTextEdit.focusOutEvent(self, event)
         DBG("focusout()")
 

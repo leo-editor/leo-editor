@@ -13,7 +13,7 @@ from typing import Any, cast, TYPE_CHECKING
 try:
     import enchant
 except Exception:  # May throw WinError(!)
-    enchant = None
+    enchant = None  # type:ignore
 from leo.commands.baseCommands import BaseEditCommandsClass
 from leo.core import leoGlobals as g
 
@@ -82,14 +82,14 @@ class BaseSpellWrapper:
     # @+node:ekr.20180207074613.1: *3* BaseSpellWrapper.default_dict
     def default_dict(self, language: str) -> SpellDict:
         try:
-            return enchant.Dict(language)
+            return enchant.Dict(language)  # type:ignore
         except Exception:
             return {}
 
     # @+node:ekr.20180207073536.1: *3* BaseSpellWrapper.create_dict_from_file
     def create_dict_from_file(self, fn: str, language: str) -> SpellDict:
         try:
-            return enchant.DictWithPWL(language, fn)
+            return enchant.DictWithPWL(language, fn)  # type:ignore
         except Exception:
             return {}
 
@@ -443,7 +443,7 @@ class EnchantWrapper(BaseSpellWrapper):
         if not d:
             g.es_print('Error opening dictionary')
             g.es_print('pip install pyenchant, NOT enchant')
-        return d
+        return d  # type:ignore
 
     # @-others
 
@@ -682,7 +682,7 @@ class SpellTabHandler:
             # Use getattr to keep pylint happy.
             i = getattr(self.tab, 'change_i', None)
             j = getattr(self.tab, 'change_j', None)
-            if i is not None:
+            if i is not None and j is not None:
                 start, end = i, j
             else:
                 start, end = w.getSelectionRange()

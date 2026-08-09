@@ -312,7 +312,7 @@ class BridgeController:
         return bool(g and g.app and g.app.gui)
 
     # @+node:ekr.20070227092442.5: *3* bridge.openLeoFile & helpers
-    def openLeoFile(self, fileName: str) -> Cmdr | None:
+    def openLeoFile(self, fileName: str | None) -> Cmdr | None:
         """Open a .leo file, or create a new Leo frame if no fileName is given."""
         g = self.g
         g.app.silentMode = self.silentMode
@@ -344,7 +344,7 @@ class BridgeController:
         return c
 
     # @+node:ekr.20070227093629.5: *4* bridge.completeFileName
-    def completeFileName(self, fileName: str) -> str:
+    def completeFileName(self, fileName: str | None) -> str:
         g = self.g
         if not (fileName and fileName.strip()):
             return ''

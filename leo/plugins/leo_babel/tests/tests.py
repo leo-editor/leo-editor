@@ -30,7 +30,6 @@ optional arguments:
 # @+<< imports >>
 # @+node:bob.20180125160501.1: ** << imports >>
 import argparse
-import codecs
 import os
 
 from leo.core import leoBridge
@@ -91,7 +90,7 @@ def main():
     cmdrT = bridge.openLeoFile(args.fpnTests)
     if os.path.exists(args.fpnResults):
         os.remove(args.fpnResults)
-    fdR = codecs.open(args.fpnResults, 'w', encoding='utf-8')
+    fdR = open(args.fpnResults, 'w', encoding='utf-8')
     testCmdr = lib_test.TestCmdr(cmdrT, fdR)
     genFindTests = lib_test.findTests(cmdrT)
     itPoll = leoG.IdleTime(

@@ -249,7 +249,7 @@ class OpmlController:
             # The actual feature name is "http://xml.org/sax/features/external-general-entities"
             parser.setFeature(xml.sax.handler.feature_external_pes, 0)
             handler = SaxContentHandler(c, fn)
-            parser.setContentHandler(handler)
+            parser.setContentHandler(handler)  # ty: ignore[invalid-argument-type]
             parser.parse(theFile)  # expat does not support parseString
             sax_node = handler.getNode()
         except xml.sax.SAXParseException:

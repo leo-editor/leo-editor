@@ -73,7 +73,7 @@ if leo_path not in sys.path:
     sys.path.insert(0, leo_path)
 del core_dir, leo_path
 
-# Leo: suppress pyflakes warnings about imports not at top of file.
+# Leo: suppress ruff warnings about imports not at top of file.
 from leo.core import leoImport  # noqa
 from leo.core.leoCommands import Commands as Cmdr  # noqa
 from leo.core.leoNodes import Position, VNode  # noqa
@@ -145,22 +145,22 @@ wsKey = ""
 # @+others
 # @+node:felix.20210712224107.1: ** class SetEncoder
 class SetEncoder(json.JSONEncoder):
-    def default(self, obj: Any) -> Any:
+    def default(self, o: Any) -> Any:
         # Sets become basic javascript arrays
-        if isinstance(obj, set):
-            return list(obj)
+        if isinstance(o, set):
+            return list(o)
         # Leo Positions get converted with same simple algorithm as p_to_ap
-        if isinstance(obj, Position):
-            stack = [{'gnx': v.gnx, 'childIndex': childIndex} for (v, childIndex) in obj.stack]
+        if isinstance(o, Position):
+            stack = [{'gnx': v.gnx, 'childIndex': childIndex} for (v, childIndex) in o.stack]
             return {
-                'childIndex': obj._childIndex,
-                'gnx': obj.v.gnx,
+                'childIndex': o._childIndex,
+                'gnx': o.v.gnx,
                 'stack': stack,
             }
         # Leo VNodes are represented as their gnx
-        if isinstance(obj, VNode):
-            return {'gnx': obj.gnx}
-        return json.JSONEncoder.default(self, obj)  # otherwise, return default
+        if isinstance(o, VNode):
+            return {'gnx': o.gnx}
+        return json.JSONEncoder.default(self, o)  # otherwise, return default
 
 
 # @+node:felix.20210621233316.3: ** Exception classes
@@ -4371,7 +4371,6 @@ class LeoServer:
             'insert-soft-tab',
             'kill-line',
             'kill-paragraph',
-            'kill-pylint',
             'kill-region',
             'kill-region-save',
             'kill-sentence',
@@ -4655,7 +4654,6 @@ class LeoServer:
             'find-def',
             'find-long-lines',
             'find-missing-docstrings',
-            'flake8-files',
             # 'flatten-outline',
             'flatten-outline-to-node',
             'flatten-script',
@@ -4710,9 +4708,6 @@ class LeoServer:
             # 'print-tree-html',
             # 'print-tree-nodes',
             # 'print-window-state',
-            'pyflakes',
-            'pylint',
-            'pylint-kill',
             'python-to-coffeescript',
             # 'quit-leo',
             # 'reformat-body',

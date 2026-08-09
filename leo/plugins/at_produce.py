@@ -95,7 +95,7 @@ def run(c, all):
         runList(c, aList)
 
     t = threading.Thread(target=thread_target)
-    t.setDaemon(True)  # pylint: disable=deprecated-method
+    t.daemon = True
     t.start()
     timer = g.IdleTime(handler=None, delay=500, tag='at-produce')
     c._at_produce_max = 20

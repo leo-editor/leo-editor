@@ -457,11 +457,9 @@ cmd_instance_dict: dict[str, list[str]] = {
 
 # See link_table above LeoLog.put_html_links.
 
-flake8_pat = re.compile(r'(.+?):([0-9]+):[0-9]+:.*$')
 mypy_pat = re.compile(r'^(.+?):([0-9]+):\s*(error|note)\s*(.*)\s*$')
-pyflakes_pat = re.compile(r'^(.*):([0-9]+):[0-9]+ .*?$')
-pylint_pat = re.compile(r'^(.*):\s*([0-9]+)[,:]\s*[0-9]+:.*?\(.*\)\s*$')
 python_pat = re.compile(r'^\s*File\s+"(.*?)",\s*line\s*([0-9]+)\s*$')
+ruff_pat = re.compile(r'^(.+?):([0-9]+):[0-9]+:.*$')  # ruff's --output-format=concise.
 
 
 # @-<< define global error regexes >>
@@ -921,7 +919,7 @@ class EmergencyDialog:
             underline = d.get("underline", 0)
             command = d.get("command", None)
             bd = 4 if isDefault else 2
-            b = Tk.Button(f, width=6, text=text, bd=bd, underline=underline, command=command)
+            b = Tk.Button(f, width=6, text=text, bd=bd, underline=underline, command=command or '')
             b.pack(side="left", padx=5, pady=10)
             buttonList.append(b)
             if isDefault and command:
@@ -2911,7 +2909,7 @@ def objToString(
         if obj:
             result_list = ['{\n']
             try:
-                keys = sorted(obj)
+                keys = sorted(obj, key=str)
             except TypeError:  # Unsortable keys.
                 keys = obj.keys()  # type:ignore
             for key in keys:
@@ -4120,7 +4118,7 @@ def readlineForceUnixNewline(f: IO, fileName: str = '') -> str:
     except UnicodeDecodeError:
         g.trace(f"UnicodeDecodeError: {fileName}", f, g.callers())
         s = ''
-    if len(s) >= 2 and s[-2] == "\r" and s[-1] == "\n":
+    if s.endswith("\r\n"):
         s = s[0:-2] + "\n"
     return s
 
@@ -4333,9 +4331,8 @@ def findRootsWithPredicate(
     Commands often want to find one or more **roots**, given a position p.
     A root is the position of any node matching a predicate.
 
-    This function formalizes the search order used by the black,
-    pylint, pyflakes and the rst3 commands, returning a list of zero
-    or more found roots.
+    This function formalizes the search order used by the black-beautify
+    and rst3 commands, returning a list of zero or more found roots.
     """
     seen = []
     roots = []
@@ -5633,7 +5630,7 @@ def enableIdleTimeHook(*args: Args, **kwargs: KWargs) -> None:
 
 
 # @+node:ekr.20140825042850.18410: *3* g.IdleTime
-def IdleTime(handler: Callable, delay: int = 500, tag: str = '') -> QtIdleTime | None:
+def IdleTime(handler: Callable | None, delay: int = 500, tag: str = '') -> QtIdleTime | None:
     """
     A thin wrapper for the LeoQtGui.IdleTime class.
 
@@ -7108,10 +7105,10 @@ def cls(
     """Clear the screen."""
     if g.isWindows:
         # Leo 6.7.5: Two calls seem to be required!
-        os.system('cls')
-        os.system('cls')
+        subprocess.run('cls', shell=True, check=False)
+        subprocess.run('cls', shell=True, check=False)
     else:
-        os.system('clear')
+        subprocess.run('clear', shell=True, check=False)
 
 
 # @+node:ekr.20131114124839.16665: *3* g.createScratchCommander
@@ -8112,7 +8109,7 @@ def run_unit_tests(tests: str = '', verbose: bool = False) -> None:
 # @+at
 # Clickable links have four forms:
 #
-# 1. Error messages produced by flake8, mypy, pyflakes, pylint, python:
+# 1. Error messages produced by mypy, python:
 #
 #    Some of these tools produce clickable links in the log pane when run
 #    *within* Leo. Some do not.

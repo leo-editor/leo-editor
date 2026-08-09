@@ -23,7 +23,7 @@ from leo.core.leoQt import QtWidgets
 try:
     import jedi
 except ImportError:
-    jedi = None
+    jedi = None  # type:ignore
 # @-<< leoKeys imports >>
 # @+<< leoKeys annotations >>
 # @+node:ekr.20220414165644.1: ** << leoKeys annotations >>
@@ -581,7 +581,7 @@ class AutoCompleterClass:
             try:
                 import jedi
             except ImportError:
-                jedi = None
+                jedi = None  # type:ignore
                 if not self.jedi_warning:
                     self.jedi_warning = True
                     g.es_print('can not import jedi')
