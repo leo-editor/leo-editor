@@ -22,6 +22,13 @@ jobs:
           python-version: '3.12'
           cache: pip
 
+      - name: Set version from release tag
+        run: |
+          VERSION="${{ github.event.inputs.tag || github.event.release.tag_name }}"
+          VERSION="${VERSION#v}"
+          sed -i "s/^version = .*/version = \"$VERSION\"/" pyproject.toml
+          echo "Set version to $VERSION"
+
       - run: python -m pip install --upgrade build
       - run: python -m build
       - run: ls -la dist/

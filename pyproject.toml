@@ -234,7 +234,7 @@ packages = [
 
 [project]
 requires-python = ">= 3.10"
-version = "6.8.10.dev1"  # No space.
+version = "0.0.0"  # Placeholder: publish.yml stamps the real version from the release tag at build time.
 name = "leo"
 
 #@+<< developer info >>
