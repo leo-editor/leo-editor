@@ -71,7 +71,7 @@ try:
     version = _installed_version('leo')
 except Exception:
     # Not pip-installed (e.g. running from a git checkout): version is unknown.
-    version = '0.0.0-devel'
+    version = '0.0.0.dev0'
 static_date = 'June 3, 2026'
 # @@language python
 # @@tabwidth -4
