@@ -22,12 +22,16 @@ jobs:
           python-version: '3.12'
           cache: pip
 
-      - name: Set version from release tag
+      - name: Set version and release date from release tag
         run: |
           VERSION="${{ github.event.inputs.tag || github.event.release.tag_name }}"
           VERSION="${VERSION#v}"
           sed -i "s/^version = .*/version = \"$VERSION\"/" pyproject.toml
           echo "Set version to $VERSION"
+
+          RELEASE_DATE="$(date -u +'%B %-d, %Y')"
+          sed -i "s/^static_date = .*/static_date = '$RELEASE_DATE'/" leo/core/leoVersion.py
+          echo "Set static_date to $RELEASE_DATE"
 
       - run: python -m pip install --upgrade build
       - run: python -m build
