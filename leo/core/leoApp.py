@@ -539,10 +539,6 @@ class LeoApp:
 
             "JSON":     "json",
             "MD":       "md",
-            "INI":      "ini",
-            "TXT":      "plain",
-            "SQL":      "plsql",
-            "TEX":      "latex",
             "YAML":     "yaml",
             "VIM":      "vim",
             "SH":       "shell",
