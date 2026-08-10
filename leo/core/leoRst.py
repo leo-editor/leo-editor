@@ -88,7 +88,7 @@ class RstCommands:
         self.encoding = 'utf-8'  # From any @encoding directive.
         self.path = ''  # The path from any @path directive.
         self.result_list: list[str] = []  # The intermediate results.
-        self.root: Position  # The @rst node being processed.
+        self.root: Position | None = None  # The @rst node being processed.
 
         # Default settings.
         self.default_underline_characters = '#=+*^~-:><'
@@ -467,7 +467,7 @@ class RstCommands:
         if changed := g.write_file_if_changed(fn, s, encoding=self.encoding):
             self.n_intermediate += 1
             self.report(fn)
-            assert self.root.v
+            assert self.root is not None and self.root.v
             if self.root.v not in self.changed_vnodes:
                 self.changed_positions.append(self.root.copy())
                 self.changed_vnodes.add(self.root.v)
@@ -761,7 +761,7 @@ class RstCommands:
 
     def rst_parents(self, p: Position) -> Generator[Position, None, None]:
         for p2 in p.parents():
-            if p2 == self.root:
+            if self.root is not None and p2 == self.root:
                 return
             yield p2
 
@@ -802,6 +802,7 @@ class RstCommands:
         # Never add the root's headline.
         if not s:
             return ''
+        assert self.root is not None
         encoded_s = g.toEncodedString(s, encoding=self.encoding, reportErrors=False)
         if self.at_auto_write:
             # We *might* generate overlines for top-level sections.

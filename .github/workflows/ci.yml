@@ -60,6 +60,23 @@ jobs:
       - run: pip install "PyQt6>=6.6" PyQt6-QScintilla
       - run: python -m leo.scripts.check_leo_sync
 
+  docs:
+    # Catch LeoDocs.leo failing to build into Sphinx HTML.
+    # See leo/scripts/build_docs.py.
+    runs-on: ubuntu-latest
+    env:
+      QT_QPA_PLATFORM: offscreen
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends
+          libegl1 libgl1 libxkbcommon0 libdbus-1-3 libfontconfig1
+      - run: pip install "PyQt6>=6.6" PyQt6-QScintilla docutils sphinx
+      - run: python -m leo.scripts.build_docs
+
   mypy:
     runs-on: ubuntu-latest
     steps:
