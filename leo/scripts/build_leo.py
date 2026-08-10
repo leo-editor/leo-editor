@@ -38,7 +38,7 @@ command = f"{python} -m build > build_log.txt"
 print('')
 print(command)
 print('')
-subprocess.Popen(command, shell=True).communicate()
+subprocess.run(command)
 
 print('See build_log.txt')
 # @-leo
