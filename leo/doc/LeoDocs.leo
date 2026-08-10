@@ -184,8 +184,8 @@
 <v t="ekr.20241124083101.1"><vh>@edit _static/custom.css</vh></v>
 <v t="ekr.20101112045055.5064"><vh>@file plugin_catalog.py</vh></v>
 <v t="ekr.20131005214621.16088"><vh>Home pages</vh>
-<v t="ekr.20230110155708.1"><vh>@file ../../docs/redirect_index.html</vh></v>
-<v t="ekr.20100808060203.4273"><vh>@file ../../docs/index.html</vh></v>
+<v t="ekr.20230110155708.1"><vh>@file html/redirect_index.html</vh></v>
+<v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 </v>
 <v t="ekr.20040414161647"><vh>Leo's Documentation</vh>
@@ -28182,7 +28182,7 @@ sphinx_version_pat = re.compile(r'^(.*?)Sphinx\s*([0-9]+\.[0-9]+\.[0-9]+)(.*)$')
 def patch_home_page():
     """
     Update (in *this*file) the "Last updated" and "Created using" fields in
-    the node `@file ../../docs/index.html` or its descendants.
+    the node `@file html/index.html` or its descendants.
     """
     today = datetime.today()
     date = datetime.date(today).strftime("%B %d, %Y")  # Same as conf.py.
@@ -28208,7 +28208,7 @@ def patch_home_page():
         (leo_version_pat, leo_version_repl),
         (sphinx_version_pat, sphinx_version_repl),
     )
-    h = '@file ../../docs/index.html'
+    h = '@file html/index.html'
     home_page = g.findNodeAnywhere(c, h)
     if not home_page:
         g.trace(f"Not found: {h!r}")
