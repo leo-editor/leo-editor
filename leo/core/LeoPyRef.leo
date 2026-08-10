@@ -257,6 +257,7 @@
 <v t="ekr.20240321122413.8"><vh>@file ../scripts/mypy_leo.py</vh></v>
 <v t="ekr.20240406061929.1"><vh>@file ../scripts/ruff_leo.py</vh></v>
 <v t="ekr.20240322162616.1"><vh>@file ../scripts/run_test_leo.py</vh></v>
+<v t="ekr.20260809120840.1"><vh>@file ../scripts/ty_leo.py</vh></v>
 </v>
 </v>
 </v>
@@ -1573,7 +1574,7 @@ def do_sec(i, m, s):
     child.h = h.strip()
     parents.append(('@ ', child))
 </t>
-<t tx="ekr.20220222130955.1" _mod_time="4741da9b7bb18011332e"># Config file for mypy
+<t tx="ekr.20220222130955.1"># Config file for mypy
 
 # Note: Do not put comments after settings.
 

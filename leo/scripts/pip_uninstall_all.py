@@ -31,7 +31,7 @@ for command in [
     print('')
     print(command)
     print('')
-    subprocess.run(command)
+    subprocess.run(command, shell=True)
 
 if os.path.exists('temp_requirements.txt'):
     print('')
