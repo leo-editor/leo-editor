@@ -63,7 +63,7 @@ def run_sphinx(out_dir: str) -> int:
 
 def copy_home_page(out_dir: str) -> str:
     """Copy Leo's hand-maintained home page into the Sphinx output directory."""
-    source = os.path.join(leo_editor_dir, 'docs', 'index.html')
+    source = os.path.join(leo_editor_dir, 'leo', 'doc', 'html', 'index.html')
     target = os.path.join(out_dir, 'index.html')
     shutil.copy2(source, target)
     return target
