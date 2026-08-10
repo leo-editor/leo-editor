@@ -1276,6 +1276,7 @@
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20101025080245.5791"><vh>@rst html/what-is-new.html</vh>
 <v t="ekr.20071116062917.2"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20260810021658.1"><vh>What's new in Leo 6.8.10</vh></v>
 <v t="ekr.20260531063902.1"><vh>What's new in Leo 6.8.9</vh></v>
 <v t="ekr.20251204122149.1"><vh>What's new in Leo 6.8.8</vh></v>
 <v t="ekr.20250830050946.1"><vh>What's new in Leo 6.8.7</vh></v>
@@ -1467,6 +1468,7 @@
 </v>
 <v t="ekr.20180125034510.1"><vh>Release Notes</vh>
 <v t="ekr.20250422050948.1"><vh>Leo 6.8.x release notes</vh>
+<v t="ekr.20260716061125.1"><vh>Leo 6.8.10 release notes</vh></v>
 <v t="ekr.20260531063735.1"><vh>Leo 6.8.9 release notes</vh></v>
 <v t="ekr.20251204122305.1"><vh>Leo 6.8.8 release notes</vh></v>
 <v t="ekr.20250830050853.1"><vh>Leo 6.8.7 release notes</vh></v>
@@ -2175,8 +2177,8 @@
 </v>
 <v t="ekr.20260531063902.1"></v>
 <v t="ekr.20260531063735.1"></v>
-<v t="ekr.20260716061125.1"><vh>Leo 6.8.10 release notes</vh></v>
-<v t="ekr.20260716061137.1"><vh>Breaking changes to Leo's API</vh></v>
+<v t="ekr.20260810021658.1"></v>
+<v t="ekr.20260716061125.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is ``@settings``. When opening a .leo file, Leo looks for ``@settings`` trees not only in the outline being opened but also in various ``leoSettings.leo`` files. This scheme allows for the following kinds of settings:
@@ -25448,7 +25450,7 @@ any change to one clone inevitably affects all other clones.
 <t tx="ekr.20230121061309.1"></t>
 <t tx="ekr.20230121061335.1"></t>
 <t tx="ekr.20230121061433.1"></t>
-<t tx="ekr.20230121110340.1" _mod_time="4741da464e3720be372e">@language batch
+<t tx="ekr.20230121110340.1">@language batch
 echo off
 echo off
 cd C:\Repos\leo-editor\leo\doc\html
@@ -25456,7 +25458,7 @@ echo make clean
 call make clean
 </t>
 <t tx="ekr.20230121110345.1"></t>
-<t tx="ekr.20230121110533.1" _mod_time="4741da464e3720ce992e">@language batch
+<t tx="ekr.20230121110533.1">@language batch
 echo off
 echo off
 cd C:\Repos\leo-editor\leo\doc\html
@@ -28301,16 +28303,91 @@ def run():
     if total_n == 0:
         g.es_print('No intermediate files changed', color='red')
     return total_n &gt; 0</t>
-<t tx="ekr.20260716061125.1"></t>
-<t tx="ekr.20260716061137.1">Leo 6.8.10 changes the values *returned* by several methods. As described below, in some cases these changes might break existing scripts or plugins.
+<t tx="ekr.20260716061125.1">Leo https://leo-editor.github.io/leo-editor/ 6.8.10 is now available on [GitHub](https://github.com/leo-editor/leo-editor/releases) and [pypi](https://pypi.org/project/leo/).
 
-### Changed string functions
+Leo is an [outline-oriented text editor](https://leo-editor.github.io/leo-editor/preface.html).
 
-The functions and methods listed below now return an empty string instead of None. Tests against None will no longer work as expected--the "truthy" tests below must be used instead::
+**The highlights of Leo 6.8.10**
 
-    if s:
-    if not s:
+- Add authentication &amp; secure websockets to leoserver.py.
+- Add the ``show-node-files`` command.
+- Add the ``clone-diff-pr`` command.
+- Add the ``c.p`` setter.
+- Update most theme files.
+- Add ``vv-dark.leo`` theme.
+- Add a Leo launcher generator for MacOS.
+- Remove the ``todo.py`` plugin.
+- **Breaking changes to Leo's API**: See the What's New section for details.
+- The usual bug fixes.
 
+**Links**
+
+- [Install Leo](https://leo-editor.github.io/leo-editor/installing.html)
+- [6.8.10 Issues](https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A6.8.10+)
+- [6.8.10 Pull Requests](https://github.com/leo-editor/leo-editor/pulls?q=is%3Apr+milestone%3A6.8.10)
+- [Documentation](https://leo-editor.github.io/leo-editor/leo_toc.html)
+- [Tutorials](https://leo-editor.github.io/leo-editor/tutorial.html)
+- [Video tutorials](https://leo-editor.github.io/leo-editor/screencasts.html)
+- [Forum](https://groups.google.com/group/leo-editor)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](https://leo-editor.github.io/leo-editor/testimonials.html)
+- [More links](https://leo-editor.github.io/leo-editor/leoLinks.html)
+</t>
+<t tx="ekr.20260810021658.1">.. _`PR #4721`: https://github.com/leo-editor/leo-editor/pull/4721
+.. _`PR #4737`: https://github.com/leo-editor/leo-editor/pull/4737
+.. _`PR #4747`: https://github.com/leo-editor/leo-editor/pull/4747
+.. _`PR #4nnn`: https://github.com/leo-editor/leo-editor/pull/4753
+.. _`PR #4nnn`: https://github.com/leo-editor/leo-editor/pull/4781
+.. _`PR #4nnn`: https://github.com/leo-editor/leo-editor/pull/4782
+.. _`PR #4nnn`: https://github.com/leo-editor/leo-editor/pull/4783
+.. _`PR #4nnn`: https://github.com/leo-editor/leo-editor/pull/4790
+.. _`PR #4nnn`: https://github.com/leo-editor/leo-editor/pull/4788
+.. _`PR #4nnn`: https://github.com/leo-editor/leo-editor/pull/4770
+.. _`PR #4nnn`: https://github.com/leo-editor/leo-editor/pull/4771
+.. _`PR #4nnn`: https://github.com/leo-editor/leo-editor/pull/4810
+.. _`PR #4nnn`: https://github.com/leo-editor/leo-editor/pull/4812
+.. _`PR #4nnn`: https://github.com/leo-editor/leo-editor/pull/4814
+.. _`PR #4nnn`: https://github.com/leo-editor/leo-editor/pull/4825
+.. _`PR #4nnn`: https://github.com/leo-editor/leo-editor/pull/4827
+.. _`PR #4nnn`: https://github.com/leo-editor/leo-editor/pull/4824
+.. _`PR #4nnn`: https://github.com/leo-editor/leo-editor/pull/4848
+.. _`PR #4nnn`: https://github.com/leo-editor/leo-editor/pull/4851
+.. _`PR #4nnn`: https://github.com/leo-editor/leo-editor/pull/4852
+.. _`PR #4nnn`: https://github.com/leo-editor/leo-editor/pull/4849
+.. _`PR #4nnn`: https://github.com/leo-editor/leo-editor/pull/4856
+.. _`PR #4nnn`: https://github.com/leo-editor/leo-editor/pull/4870
+
+**Enhancements**
+
+- `PR #4721`_: Add authentication &amp; secure websockets to leoserver.py.
+- `PR #4747`_: Add the ``show-node-files`` command.
+- `PR #4781`_: Add the ``clone-diff-pr`` command.
+- `PR #4788`_: ``@auto-md`` nodes respect ``@noheader``.
+- `PR #4771`_: Add a Leo launcher generator for MacOS.
+- `PR #4810`_: Add ``c.p`` setter.
+- `PR #4814`_: Update most theme files.
+- `PR #4852`_: Add ``vv-dark.leo`` theme file.
+
+**Settings**
+
+- `PR #4770`_: Add ``@bool qt-mac-dont-swap-ctrl-and-meta`` setting.
+- `PR #4856`_: Add ``@bool run-ruff-on-write``. Remove:``@bool run-flake8-on-write``, ``@bool run-pyflakes-on-write``, ``@bool run-pylint-on-write``, and ``@bool run-ruff-on-write``
+
+**Code changes**
+
+- `PR #4753`_, `PR #4782`_, `PR #4782`_, `PR #4790`_, `PR #4812`_, `PR #4827`_, `PR #4824`_: Improve mypy annotations in 150+ files.
+- `PR #4848`_, - `PR #4851`_, `PR #4870`_: Remove ``ty`` complaints in 100+ files.
+- `PR #4849`_, `PR #4856`_: Make all files compatible with ``ruff format``. This is a huge step forward.
+
+**Documentation**
+
+- `PR #4737`_: Update documentation for abbreviations.
+- `PR #4825`_: Document section syntax.
+
+**Breaking changes to Leo's API**
+
+The functions and methods listed below now return an empty string instead of None:
 
 - AtFile.readFileToUnicode.
 - g.findAtTabWidthDirectives.
@@ -28324,40 +28401,14 @@ The functions and methods listed below now return an empty string instead of Non
 - g.stripBOM.
 - g.readFileIntoEncodedString.
 - RecentFilesManager.sanitize.
-- RecursiveImportController.resolve_dir_arg.
 
-The following methods now return an empty string instead of None:
+For these routines, *tests against None will no longer work as expected*.
+Use these "truthy" tests instead::
 
-- SettingsDict.get_setting and SettingsDict.get_string_setting.
+    if s:
+    if not s:
 
-### Changed commander functions
-
-The functions below may return None instead of a commander:
-
-- g.openUNLFile and g.openUrlHelper.
-- g.handleUnl.
-
-*Note* g.openWithFileName now *always* returns a valid commander. This is *not* a breaking change.
-
-### Changed position functions
-
-The functions below may return None instead of a position:
-
-- g.findUnl, g.findGnx, and g.findAnyUnl.
-
-### Deleted global functions and methods
-
-- AtFile.chmod.
-
-mypy revealed that the following functions  were impossible to use.
-
-- g.execute_shell_commands_with_options.
-- g.computeBaseDir.
-- g.computeCommands.
-
-### Other breaking changes
-
-- LeoImportCommands.removeSentinelsCommand: Remove unused ``toString`` kwarg.</t>
+</t>
 <t tx="felix.20210825213137.1">Since a WebSocket server can receive events from clients, process them to update the
 application state, and synchronize the resulting state across clients, leoserver.py
 has the ability to listen and interact with more than one concurrent client, and have
