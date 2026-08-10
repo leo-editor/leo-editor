@@ -352,6 +352,7 @@ class LeoApp:
             "c":        "c",
             "c++":      "cplusplus",
             "cbl":      "cobol",  # Only one extension is valid: .cob
+            "cob":      "cobol",
             "cc":       "cplusplus",
             "cfg":      "config",
             "cfm":      "coldfusion",
@@ -501,6 +502,54 @@ class LeoApp:
             "vert":     "glsl",
             "vue":      "javascript",
             "zpt":      "zpt",
+
+            # UPPERCASE VARIANTS: legacy languages that suported, or even expected, uppercase extensions.
+            "BAS":      "rapidq",
+            "BAT":      "batch",
+            "CBL":      "cobol",
+            "CMD":      "batch",
+
+            "F":        "fortran",
+            "F90":      "fortran90",
+
+            "H":        "c",
+            "C":        "cplusplus",
+            "CC":       "cplusplus",
+            "CPP":      "cplusplus",
+
+            "MAK":      "makefile",
+            "P":        "pascal",
+            "PL1":      "pl1",
+            "PRG":      "foxpro",
+            "REX":      "objectrexx",
+
+            "VHD":      "vhdl",
+            "VHDL":     "vhdl",
+
+            "ADA":      "ada95",
+            "IDL":      "idl",
+            "INI":      "ini",
+            "MOD":      "modula3",
+            "PRO":      "prolog",
+            "PS":       "postscript",
+            "SQL":      "plsql",
+            "TCL":      "tcl",
+            "TEX":      "latex",
+            "TXT":      "plain",
+
+            "JSON":     "json",
+            "MD":       "md",
+            "INI":      "ini",
+            "TXT":      "plain",
+            "SQL":      "plsql",
+            "TEX":      "latex",
+            "YAML":     "yaml",
+            "VIM":      "vim",
+            "SH":       "shell",
+            "PL":       "perl",
+            "RB":       "ruby",
+
+
         }  # fmt: skip
 
         # These aren't real languages, or have no delims...
