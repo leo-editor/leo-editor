@@ -1,28 +1,140 @@
-/*
-leo/doc/_static/custom.css.
+/* Landing-page components shared by Leo's Sphinx documentation theme. */
 
-This is the ultimate source of custom.css.
+:root,
+html[data-theme="light"],
+html[data-theme="dark"] {
+    --leo-red: #9b2c3b;
+    --leo-red-dark: #6f1d2a;
+    --leo-gold: #e5a83b;
+    --leo-radius: 0.75rem;
+}
 
-The make-sphinx script will copy this to leo-editor/docs/static.
-*/
+.bd-article {
+    line-height: 1.7;
+}
 
-img.logo {
-    background-color: white;
+.bd-article p,
+.bd-article li {
+    max-width: 76ch;
+}
+
+.bd-article img {
+    height: auto;
+    max-width: 100%;
+}
+
+.sidebar-brand-text {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.leo-hero {
+    align-items: center;
+    display: grid;
+    gap: clamp(1.5rem, 4vw, 3rem);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin: 1rem 0 4rem;
+    padding: clamp(1rem, 3vw, 2rem) 0;
+}
+
+.leo-hero > * {
+    min-width: 0;
+}
+
+.bd-article > section:has(> .leo-hero) > h1:first-child {
+    display: none;
+}
+
+.leo-eyebrow {
+    color: var(--leo-red);
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    margin: 0 0 0.75rem;
+    text-transform: uppercase;
+}
+
+.leo-hero h1 {
+    color: var(--pst-color-text-base);
+    font-size: clamp(2.6rem, 4.2vw, 4rem);
+    letter-spacing: -0.055em;
+    line-height: 0.98;
+    margin: 0;
+}
+
+.leo-tagline {
+    color: var(--pst-color-text-muted);
+    font-size: clamp(1.05rem, 2vw, 1.3rem);
+    line-height: 1.55;
+    margin: 1.4rem 0 1.8rem;
+}
+
+.leo-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.leo-button {
+    border: 1px solid var(--leo-red);
+    border-radius: 999px;
+    display: inline-block;
+    font-weight: 700;
+    padding: 0.7rem 1.1rem;
+    text-decoration: none;
+}
+
+.leo-button-primary {
+    background: var(--leo-red);
+    color: white !important;
+}
+
+.leo-button-secondary {
+    color: var(--leo-red) !important;
+}
+
+.leo-hero-image {
+    background: linear-gradient(145deg, #2d2628, #121011);
+    border-radius: 1rem;
+    box-shadow: 0 1.5rem 4rem rgb(46 25 28 / 25%);
+    padding: 0.65rem;
+    transform: rotate(1deg);
+}
+
+.leo-hero-image img {
+    border-radius: 0.55rem;
+    display: block;
     width: 100%;
 }
 
-img {
-    width: 50%;
+.leo-features {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin: 1.5rem 0 4rem;
 }
 
-
-/* --- These apply to all pages, including Leo's home page --- */
-.section, .body, div.body {
-    background-color: #fffbdc;  /* Leo yellow */
-    color: black;
+.leo-card {
+    background: var(--pst-color-surface);
+    border: 1px solid var(--pst-color-border);
+    border-radius: var(--leo-radius);
+    padding: 1.35rem;
 }
 
-a:link {
-  /* --- color: purple; --- */
-  text-decoration: underline;
+.leo-card h3 {
+    font-size: 1.05rem;
+    margin: 0 0 0.45rem;
+}
+
+.leo-card p {
+    color: var(--pst-color-text-muted);
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+@media (max-width: 800px) {
+    .leo-hero { grid-template-columns: 1fr; }
+    .leo-features { grid-template-columns: 1fr; }
+    .leo-hero-image { transform: none; }
+    .leo-hero h1 { font-size: clamp(2.1rem, 11vw, 3.2rem); }
 }
