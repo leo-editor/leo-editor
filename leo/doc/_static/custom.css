@@ -28,6 +28,10 @@ html[data-theme="dark"] {
     letter-spacing: -0.02em;
 }
 
+.bd-sidebar-primary .navbar-brand .logo__image {
+    max-width: 85%;
+}
+
 .leo-hero {
     align-items: center;
     display: grid;
